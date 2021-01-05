@@ -2,123 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F1A42EA5F4
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 08:28:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FEF82EA5F9
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 08:30:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726606AbhAEH2q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 02:28:46 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:32794 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726212AbhAEH2p (ORCPT
+        id S1726671AbhAEH3l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 02:29:41 -0500
+Received: from m43-15.mailgun.net ([69.72.43.15]:60763 "EHLO
+        m43-15.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725710AbhAEH3l (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 02:28:45 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1609831639;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=yLi+sRfWovFP4SWZkCDhE0WXKSyNbBNcSRSqglRIET0=;
-        b=JeGiTqhI1IWrv8wWlrrr9J6xM/SkfzJPlGb5mR7oGuQwDLASsa2+32aqPfQdHBlM4rgRa6
-        qedxme74zQQom0sC7G5wDVsWTS9OTFPtz6CWQQOWAiWJfDradcJpZI5tsb5gFmuBAK1iOt
-        LuUALQbjWZBwdrU+mOHGXGUxQlZzzLw=
-Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
- [209.85.128.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-320-VIVQkWoUOPK77BKA0CsRFg-1; Tue, 05 Jan 2021 02:27:16 -0500
-X-MC-Unique: VIVQkWoUOPK77BKA0CsRFg-1
-Received: by mail-wm1-f70.google.com with SMTP id z12so862511wmf.9
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Jan 2021 23:27:16 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=yLi+sRfWovFP4SWZkCDhE0WXKSyNbBNcSRSqglRIET0=;
-        b=H4IBFXoS7fcMbxuNU1p1h0PA2s0Fdu8N9+wTd27RG1xnO6LCoSc6ScIGOUFd5mIrbJ
-         BDSK/haKW1Q29Fhg5jiz0dE3beat9d9MpNmgwem0A4k1zcdAJbh27qfdOgZy13Njr4Mv
-         BJK4UInQOxDeeVAsfSGcjqp6v+sNGisUwdiAdGxzHEDCrXoO3Uq1jUDAh1KxsCTY9O68
-         VsQQBUwvzBV3jNyS65NngWc0m1KeVyXAf16Ku5RAHdvb+N9T9F76qdPgYHM1v877o8VB
-         0nwzCVwaifDCa4LyjwcSakUJdG2Pj8O5y9IVDJ2oFIYi3Ou1IBKTPk3l82upc3jAOvsw
-         FHLA==
-X-Gm-Message-State: AOAM533fMtRT54UxwtdCHYHZM7xwXKBHi3O4Qzvm706q/tA6XPVu3mE6
-        IuI7fpADF9TgfGBnlQBiXPhEprHOMTBP8c9iBJVjFglmCWVjczxUI5O3L09ctctbYSTOSYzsM6H
-        SxtNKg+YYMgWaJYIkYH0ynO31
-X-Received: by 2002:a5d:674c:: with SMTP id l12mr82014910wrw.399.1609831635482;
-        Mon, 04 Jan 2021 23:27:15 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJwXOvkNcqBuyy0EkHXdQlPxr86w8if4j/0XYHqZCidCHd3pSnhLPYbVcoCMZxikKIYvl6WJdw==
-X-Received: by 2002:a5d:674c:: with SMTP id l12mr82014894wrw.399.1609831635230;
-        Mon, 04 Jan 2021 23:27:15 -0800 (PST)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id r20sm2685257wmh.15.2021.01.04.23.27.14
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 04 Jan 2021 23:27:14 -0800 (PST)
-Subject: Re: Possible regression in cpuacct.stats system time
-To:     Nitesh Narayan Lal <nitesh@redhat.com>,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        tglx@linutronix.de, alexandre.chartre@oracle.com,
-        peterz@infradead.org, w90p710@gmail.com,
-        sean.j.christopherson@intel.com, vkuznets@redhat.com
-References: <12a1b9d4-8534-e23a-6bbd-736474928e6b@redhat.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <49664b8e-8b14-eb5c-f25c-da604b7c077b@redhat.com>
-Date:   Tue, 5 Jan 2021 08:27:13 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+        Tue, 5 Jan 2021 02:29:41 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1609831757; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=rlMezvFGRyW9K07G6YKtgfUDZelNds7a4+4Moz15juI=;
+ b=uJ+DnDPYHnZbJXhLlq2t/1hLviCffw3wQ/oT9mbi/uNcPZLp354royDPC0m3lkbXWJZ7k4w9
+ TdwpH0bkuzn6X89bOLtbl7cuXmg/JjlBomULlM5XRPfO8OWYXgUt7536mB1X/YopFdmGQu9Y
+ yXJv36LF8IGrvXfCPefBGfKl6cg=
+X-Mailgun-Sending-Ip: 69.72.43.15
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n08.prod.us-east-1.postgun.com with SMTP id
+ 5ff4153100a8b472193ad22a (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 05 Jan 2021 07:28:49
+ GMT
+Sender: cang=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 92019C43469; Tue,  5 Jan 2021 07:28:48 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: cang)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 2E8DEC433C6;
+        Tue,  5 Jan 2021 07:28:47 +0000 (UTC)
 MIME-Version: 1.0
-In-Reply-To: <12a1b9d4-8534-e23a-6bbd-736474928e6b@redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Tue, 05 Jan 2021 15:28:47 +0800
+From:   Can Guo <cang@codeaurora.org>
+To:     Adrian Hunter <adrian.hunter@intel.com>
+Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Ziqi Chen <ziqichen@codeaurora.org>, asutoshd@codeaurora.org,
+        nguyenb@codeaurora.org, hongwus@codeaurora.org,
+        rnayak@codeaurora.org, vinholikatti@gmail.com,
+        jejb@linux.vnet.ibm.com, martin.petersen@oracle.com,
+        linux-scsi@vger.kernel.org, kernel-team@android.com,
+        saravanak@google.com, salyzyn@google.com, kwmad.kim@samsung.com,
+        stanley.chu@mediatek.com, Alim Akhtar <alim.akhtar@samsung.com>,
+        Avri Altman <avri.altman@wdc.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        Andy Gross <agross@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Bean Huo <beanhuo@micron.com>,
+        Bart Van Assche <bvanassche@acm.org>,
+        Satya Tangirala <satyat@google.com>,
+        "moderated list:UNIVERSAL FLASH STORAGE HOST CONTROLLER DRIVER..." 
+        <linux-mediatek@lists.infradead.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        "open list:ARM/QUALCOMM SUPPORT" <linux-arm-msm@vger.kernel.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-arm-kernel@lists.infradead.org>
+Subject: Re: [PATCH RFC v4 1/1] scsi: ufs: Fix ufs power down/on specs
+ violation
+In-Reply-To: <b82dd5f1-179c-6834-9d8f-88005b74ce51@intel.com>
+References: <1608644981-46267-1-git-send-email-ziqichen@codeaurora.org>
+ <e8980753-fa48-7862-e5ce-0d756d5d97a6@intel.com>
+ <X/NkktFnWI48XNcp@builder.lan>
+ <b82dd5f1-179c-6834-9d8f-88005b74ce51@intel.com>
+Message-ID: <ff2c3c4379cb8bc41580d5615b01f86a@codeaurora.org>
+X-Sender: cang@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 04/01/21 22:24, Nitesh Narayan Lal wrote:
-> Hi,
+On 2021-01-05 15:16, Adrian Hunter wrote:
+> On 4/01/21 8:55 pm, Bjorn Andersson wrote:
+>> On Mon 04 Jan 03:15 CST 2021, Adrian Hunter wrote:
+>> 
+>>> On 22/12/20 3:49 pm, Ziqi Chen wrote:
+>>>> As per specs, e.g, JESD220E chapter 7.2, while powering
+>>>> off/on the ufs device, RST_N signal and REF_CLK signal
+>>>> should be between VSS(Ground) and VCCQ/VCCQ2.
+>>>> 
+>>>> To flexibly control device reset line, refactor the function
+>>>> ufschd_vops_device_reset(sturct ufs_hba *hba) to ufshcd_
+>>>> vops_device_reset(sturct ufs_hba *hba, bool asserted). The
+>>>> new parameter "bool asserted" is used to separate device reset
+>>>> line pulling down from pulling up.
+>>> 
+>>> This patch assumes the power is controlled by voltage regulators, but 
+>>> for us
+>>> it is controlled by firmware (ACPI), so it is not correct to change 
+>>> RST_n
+>>> for all host controllers as you are doing.
+>>> 
+>>> Also we might need to use a firmware interface for device reset, in 
+>>> which
+>>> case the 'asserted' value doe not make sense.
+>>> 
+>> 
+>> Are you saying that the entire flip-flop-the-reset is a single 
+>> firmware
+>> operation in your case?
 > 
-> Last year I reported an issue of "suspicious RCU usage" [1] with the debug
-> kernel which was fixed with the patch:
+> Yes
 > 
->      87fa7f3e98 "x86/kvm: Move context tracking where it belongs"
+>>                         If you look at the Mediatek driver, the
+>> implementation of ufs_mtk_device_reset_ctrl() is a jump to firmware.
+>> 
+>> 
+>> But perhaps "asserted" isn't the appropriate English word for saying
+>> "the reset is in the resetting state"?
+>> 
+>> I just wanted to avoid the use of "high"/"lo" as if you look at the
+>> Mediatek code they pass the expected line-level to the firmware, while
+>> in the Qualcomm code we pass the logical state to the GPIO code which 
+>> is
+>> setup up as "active low" and thereby flip the meaning before hitting 
+>> the
+>> pad.
+>> 
+>>> Can we leave the device reset callback alone, and instead introduce a 
+>>> new
+>>> variant operation for setting RST_n to match voltage regulator power 
+>>> changes?
+>> 
+>> Wouldn't this new function just have to look like the proposed 
+>> patches?
+>> In which case for existing platforms we'd have both?
+>> 
+>> How would you implement this, or would you simply skip implementing
+>> this?
 > 
-> Recently I have come across a possible regression because of this
-> patch in the cpuacct.stats system time.
+> Functionally, doing a device reset is not the same as adjusting signal
+> levels to meet power up/off ramp requirements.  However, the issue is 
+> that
+> we do not use regulators, so the power is not necessarily being changed 
+> at
+> those points, and we definitely do not want to reset instead of 
+> entering
+> DeepSleep for example.
 > 
-> With the latest upstream kernel (5.11-rc2) when we set up a VM and start
-> observing the system time value from cpuacct.stat then it is significantly
-> higher than value reported with the kernel that doesn't have the
-> previously mentioned patch.
-> 
-> FWIU the reason behind this increase is the moving of guest_exit_irqoff()
-> to its proper location (near vmexit). This leads to the accounting
-> of instructions that were previously accounted into the guest context as a
-> part of the system time.
-> 
-> IMO this should be an expected behavior after the previously mentioned
-> change. Is that a right conclusion or I am missing something here?
+> Off the top of my head, I imagine something like a callback called
+> ufshcd_vops_prepare_power_ramp(hba, bool on) which is called only if
+> hba->vreg_info->vcc is not NULL.
 
-Yes it's expected and I think it's more precise, since this is host 
-overhead rather than guest operation .
+Hi Adrian,
 
-> Another question that I have is about the patch
-> 
->      d7a08882a0 "KVM: x86: Unconditionally enable irqs in guest context"
-> 
-> considering we are enabling irqs early now in the code path, do we still
-> need this patch?
-
-No, we don't.  Since the code is a bit simpler without it, feel free to 
-send a revert.
+I don't see you have the vops device_reset() implemented anywhere in
+current code base, how is this change impacting you? Do I miss anything
+or are you planning to push a change which implements device_reset() 
+soon?
 
 Thanks,
-
-Paolo
-
-> 
-> [1] https://lore.kernel.org/lkml/ece36eb1-253a-8ec6-c183-309c10bb35d5@redhat.com/
-> 
-> --
-> Thanks
-> Nitesh
-> 
-
+Can Guo.
