@@ -2,75 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 337AD2EA9C6
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 12:26:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B4972EA9C9
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 12:26:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729062AbhAELZD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 06:25:03 -0500
-Received: from foss.arm.com ([217.140.110.172]:53030 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725939AbhAELZC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 06:25:02 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 401541FB;
-        Tue,  5 Jan 2021 03:24:17 -0800 (PST)
-Received: from p8cg001049571a15.arm.com (unknown [10.163.89.46])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 405893F70D;
-        Tue,  5 Jan 2021 03:24:15 -0800 (PST)
-From:   Anshuman Khandual <anshuman.khandual@arm.com>
-To:     linux-arm-kernel@lists.infradead.org
-Cc:     Anshuman Khandual <anshuman.khandual@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, linux-kernel@vger.kernel.org
-Subject: [PATCH] arm64/mm: Add warning for outside range requests in vmemmap_populate()
-Date:   Tue,  5 Jan 2021 16:54:11 +0530
-Message-Id: <1609845851-25064-1-git-send-email-anshuman.khandual@arm.com>
-X-Mailer: git-send-email 2.7.4
+        id S1729497AbhAELZQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 06:25:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56190 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729103AbhAELZL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Jan 2021 06:25:11 -0500
+Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC052C061794
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Jan 2021 03:24:30 -0800 (PST)
+Received: by mail-pl1-x62b.google.com with SMTP id r4so16195088pls.11
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Jan 2021 03:24:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=0iojE0FbfksPxGDHaoi7nGrdC6/TZhC32X4xFEfuq34=;
+        b=sNDlCvXHU9mLxar1M2e31cqruXME5LN6Jy9m4aJa+LZqduw2ZZJhttZy1wsk5HnFNY
+         BsMZQz/Gc7kJDGvxkMNuV7koBFW+CsLmmomfJBuFE1x+awiQFt2rLV+rdDDWWH2cS2+3
+         7jwg7++0ZQLrwLOiCxfg+uiBg9RYAaDDIm2X96sU5o28cBbRiWkDBVrazPLHLGPefiQx
+         Hbh/hBSI0U97n0l0lzKxJiT4xtabaMeYDIxYz47b7WKTsWyziykZklTrenfhvtR5vsvi
+         7z8LLzsAjwxYQdM/bP+8U+QLCYtcFSYAp+BkkcInf5lkPKfJVIcDqKjppqYaTUVb7l1d
+         RElg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=0iojE0FbfksPxGDHaoi7nGrdC6/TZhC32X4xFEfuq34=;
+        b=U0OvJsrhIVzs8Y8ViFeyZnYUwy7/h006xogIrkHRJtM4s9E6yZKq5r+yCeEdMHKGVr
+         hiligiWPpiHOUqCBBPg4l+pwW8f7cqYpmVbK16HATInp5mO4C2XMMO/GGgC/ARAWlp9K
+         qioPFPBcEAV4QV6ljnnoZBUGYPP39xzztIi+z+uRSnDt0z2/L/nhzzHrWkGLgfZIQwlX
+         hNaoF53U578XHud2oSFTlqxYzZsZERhpmCZsO7viwHkhSKDeg7F34hUIb4fJBeFX9M3t
+         pTNLgdeUaz2juBrccG1RhqPWzK2DMH6+YwwBB1bWTRoE4M/X7WvRuY0RMkevNO9hwc1g
+         coMw==
+X-Gm-Message-State: AOAM531UYMnCuq9pLl2WyX3PbiPYCXeNpFCAa8XXZvlLviBpK92SBIv8
+        WJIkM0LyIvf0BfwYWYiWAAZ7KA==
+X-Google-Smtp-Source: ABdhPJwzVyGl0/EingPinXtXC3JWREuAJMsR+Ve0tkMJ6goYPApiB5S/0FlD1EUbTmkYQxJgdKCCbg==
+X-Received: by 2002:a17:90a:c82:: with SMTP id v2mr3574430pja.171.1609845870173;
+        Tue, 05 Jan 2021 03:24:30 -0800 (PST)
+Received: from localhost ([122.172.20.109])
+        by smtp.gmail.com with ESMTPSA id k3sm39035119pgm.94.2021.01.05.03.24.28
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 05 Jan 2021 03:24:29 -0800 (PST)
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Pantelis Antoniou <pantelis.antoniou@konsulko.com>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>
+Cc:     Viresh Kumar <viresh.kumar@linaro.org>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-kbuild@vger.kernel.org,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Bill Mills <bill.mills@linaro.org>, tero.kristo@gmail.com
+Subject: [RFC 0/2] kbuild: Add support to build overlays (%.dtbo)
+Date:   Tue,  5 Jan 2021 16:54:15 +0530
+Message-Id: <cover.1609844956.git.viresh.kumar@linaro.org>
+X-Mailer: git-send-email 2.25.0.rc1.19.g042ed3e048af
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-vmemmap_populate() does not validate the requested vmemmap address range to
-be inside the platform assigned space i.e [VMEMMAP_START..VMEMMAP_END] for
-vmemmap. Instead it would just go ahead and create the mapping which might
-then overlap with other sections in the kernel virtual address space.
+Hello,
 
-Just adding an warning here for range overrun which would help detect the
-problem earlier on, before a potential struct page corruption. This also
-makes vmemmap_populate() symmetrical with vmemmap_free() which already has
-a similar warning.
+Here is an attempt to make some changes in the kernel to allow building
+of device tree overlays.
 
-Cc: Catalin Marinas <catalin.marinas@arm.com>
-Cc: Will Deacon <will@kernel.org>
-Cc: linux-arm-kernel@lists.infradead.org
-Cc: linux-kernel@vger.kernel.org
-Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
----
-This applies on v5.11-rc2
+While at it, I would also like to discuss about how we should mention
+the base DT blobs in the Makefiles for the overlays, so they can be
+build tested to make sure the overlays apply properly.
 
- arch/arm64/mm/mmu.c | 2 ++
- 1 file changed, 2 insertions(+)
+A simple way is to mention that with -base extension, like this:
 
-diff --git a/arch/arm64/mm/mmu.c b/arch/arm64/mm/mmu.c
-index ae0c3d023824..f938e8020523 100644
---- a/arch/arm64/mm/mmu.c
-+++ b/arch/arm64/mm/mmu.c
-@@ -1094,6 +1094,7 @@ static void free_empty_tables(unsigned long addr, unsigned long end,
- int __meminit vmemmap_populate(unsigned long start, unsigned long end, int node,
- 		struct vmem_altmap *altmap)
- {
-+	WARN_ON((start < VMEMMAP_START) || (end > VMEMMAP_END));
- 	return vmemmap_populate_basepages(start, end, node, altmap);
- }
- #else	/* !ARM64_SWAPPER_USES_SECTION_MAPS */
-@@ -1107,6 +1108,7 @@ int __meminit vmemmap_populate(unsigned long start, unsigned long end, int node,
- 	pud_t *pudp;
- 	pmd_t *pmdp;
- 
-+	WARN_ON((start < VMEMMAP_START) || (end > VMEMMAP_END));
- 	do {
- 		next = pmd_addr_end(addr, end);
- 
+$(overlay-file)-base := platform-base.dtb
+
+Any other preference ?
+
+Also fdtoverlay is an external entity right now, and is not part of the
+kernel. Do we need to make it part of the kernel ? Or keep using the
+external entity ?
+
+Thanks.
+
+--
+Viresh
+
+Viresh Kumar (2):
+  kbuild: Add support to build overlays (%.dtbo)
+  scripts: dtc: Handle outform dtbo
+
+ Makefile             |  4 ++--
+ scripts/Makefile.lib | 12 ++++++++++++
+ scripts/dtc/dtc.c    |  2 ++
+ 3 files changed, 16 insertions(+), 2 deletions(-)
+
 -- 
-2.20.1
+2.25.0.rc1.19.g042ed3e048af
 
