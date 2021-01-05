@@ -2,138 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E854D2EABBB
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 14:19:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CE9412EABBD
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 14:19:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729418AbhAENSd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 08:18:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45642 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727759AbhAENSa (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 08:18:30 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A85F4C061793
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Jan 2021 05:17:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=m1epUrXXadkkLVjAnDRqjJFcX9If8AVdefiX//g51fc=; b=l6KKsWvexzz0NQFF/DX6fLxCQu
-        zVp4Bs4XEkpgGuGz7acrw+fbOqPzZExp2zDlxythraQv5kx3HKpcVt2rC3LSdQ2fKzMjds89C99w3
-        MVWn8UmWQj9g6fbfAJmDt38ZZqeM9nbWdn0ZzALJQ8yVHNLW9IS/TfZXLrqtTn+qAMDRDaucYqCqL
-        4XiAjuQyz/U3BovB5eDvZoBpFscRxha7fNXqBfYYNk2TTEsPG1gxhfww0jgJJaLcvoeq8LBruA30K
-        EGS0ZWEP0C29uhWg/G5pSuiIyFH2AmjIKEsXkw2ZQXEnLu3PJMGtNVXwSyDQE7tPHzzMFqYLtv59P
-        gar3GXkA==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kwmDV-0003z2-ID; Tue, 05 Jan 2021 13:17:42 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id F35373013E5;
-        Tue,  5 Jan 2021 14:17:37 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id BA6A620CBF4B5; Tue,  5 Jan 2021 14:17:37 +0100 (CET)
-Date:   Tue, 5 Jan 2021 14:17:37 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Lai Jiangshan <jiangshanlai@gmail.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Qian Cai <cai@redhat.com>,
-        Vincent Donnefort <vincent.donnefort@arm.com>,
-        Dexuan Cui <decui@microsoft.com>,
-        Lai Jiangshan <laijs@linux.alibaba.com>,
-        Tejun Heo <tj@kernel.org>
-Subject: Re: [PATCH -tip V3 3/8] workqueue: introduce wq_online_cpumask
-Message-ID: <20210105131737.GH3040@hirez.programming.kicks-ass.net>
-References: <20201226025117.2770-1-jiangshanlai@gmail.com>
- <20201226025117.2770-4-jiangshanlai@gmail.com>
- <20210104135649.GO3021@hirez.programming.kicks-ass.net>
- <CAJhGHyB_MUHG8GGANcN9sQbjY7M5m8WPHQgXp-PmkGK481M5Tg@mail.gmail.com>
- <CAJhGHyCwyuzikMZAxub=rxn9oe-N2P5C8CEOmyigd9d55SV5YA@mail.gmail.com>
+        id S1730044AbhAENSl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 08:18:41 -0500
+Received: from mail.kernel.org ([198.145.29.99]:32992 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727759AbhAENSj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Jan 2021 08:18:39 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 095ED2255F;
+        Tue,  5 Jan 2021 13:17:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1609852679;
+        bh=L5vHanvorBgMxhq0DojAdOuvn1iR/NL4qzHRjPW9Rz0=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=B/lPjlRiB/OiiuDORF6tlLamB+abCzelpmqsPYdVNMBy/BhmrOfIB+37xbb5q3cu4
+         P7LjsucH1m3yADaZokCX0U2YedpRH0selh3I0PilcGuXo/2jFoVf4+/Sz5gOrX3H7x
+         h6kUMI1gaDUEl4yHvw1Lio4xYqYkiK3StVU3ytyJrUstKfa/pyyNm81sV6AL68xT7k
+         5WUXZ76EyJoUX0CTSd5cO8CZ4eCqORnD8pOjaAZe+quzSOT936Vkgx7VzRuk7Q0p7J
+         iUPQB8nSD74125Fmtm1fKCBZLXrJny08akKMx+bR6PCYd8ASPVcmxHU1vUrCps+E/J
+         0dvAEaon6qIDg==
+Received: by mail-oi1-f172.google.com with SMTP id q25so35927882oij.10;
+        Tue, 05 Jan 2021 05:17:58 -0800 (PST)
+X-Gm-Message-State: AOAM530HlQvCvJ6R2m4JntqafWCQwyk8Tm7Er80O4STwP8kwQB4Fik90
+        leJfIH414SnEYr51NF+pHbUakLuCB+w6eLmV5wI=
+X-Google-Smtp-Source: ABdhPJx+rCRx2J9DjkpBdhpIuUOPFKuhkgg+uls3dm0E7tLK6vQKddiiPx4bSJMfckXyViv8JSfbvJrScFJ3GGJSksY=
+X-Received: by 2002:aca:fd91:: with SMTP id b139mr2427344oii.67.1609852678326;
+ Tue, 05 Jan 2021 05:17:58 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAJhGHyCwyuzikMZAxub=rxn9oe-N2P5C8CEOmyigd9d55SV5YA@mail.gmail.com>
+References: <20210104085806.4176886-1-arnd@kernel.org> <ad54481b-15da-e795-0c1a-bd54d3e8ab87@physik.fu-berlin.de>
+ <CAK8P3a3zDB5wh-bdg+fq6nvg9gHrESFhhgss4f47VJ1JOvoE1Q@mail.gmail.com> <71274a7cdf7d48bf9c2fda873fa37727@intel.com>
+In-Reply-To: <71274a7cdf7d48bf9c2fda873fa37727@intel.com>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Tue, 5 Jan 2021 14:17:41 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a2KhaEZ-ErAXGi0wOr_z2YT-GUV7r5QMhUoV+e+tpc5zw@mail.gmail.com>
+Message-ID: <CAK8P3a2KhaEZ-ErAXGi0wOr_z2YT-GUV7r5QMhUoV+e+tpc5zw@mail.gmail.com>
+Subject: Re: [PATCH] ia64: fix xchg() warning
+To:     "Luck, Tony" <tony.luck@intel.com>
+Cc:     John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+        "Yu, Fenghua" <fenghua.yu@intel.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        "linux-ia64@vger.kernel.org" <linux-ia64@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 05, 2021 at 04:23:44PM +0800, Lai Jiangshan wrote:
-> On Tue, Jan 5, 2021 at 10:41 AM Lai Jiangshan <jiangshanlai@gmail.com> wrote:
-> > On Mon, Jan 4, 2021 at 9:56 PM Peter Zijlstra <peterz@infradead.org> wrote:
-> > > On Sat, Dec 26, 2020 at 10:51:11AM +0800, Lai Jiangshan wrote:
-> > > > From: Lai Jiangshan <laijs@linux.alibaba.com>
-> > > >
-> > > > wq_online_cpumask is the cached result of cpu_online_mask with the
-> > > > going-down cpu cleared.
-> > >
-> > > You can't use cpu_active_mask ?
-> >
-> > When a cpu is going out:
-> > (cpu_active_mask is not protected by workqueue mutexs.)
+On Mon, Jan 4, 2021 at 5:00 PM Luck, Tony <tony.luck@intel.com> wrote:
+>
+> > I have not received any reply from the ia64 maintainers, I assume they were
+> > both out of office for Christmas.
+>
+> I'm back in the office ... but have no working ia64 machines, nor time to look at patches :-(
+>
+> Should drop me from the MAINTAINTERS file.
 
-But it is protected by the hotplug lock, which is really all you need
-afaict.
+If you like, I can apply the patch below and take that through my
+asm-generic tree along with the two bug fixes I sent:
 
-If the worker thread gets spawned before workqueue_offline_cpu(), said
-function will observe it and adjust the mask, if it gets spawned after
-it, it must observe a 'reduced' cpu_active_mask.
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 0f2e55faaf7f..b74093803154 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -8432,11 +8432,8 @@ F: drivers/i3c/
+ F: include/linux/i3c/
 
-> >
-> > create_worker() for unbound pool  |  cpu offlining
-> > check cpu_active_mask             |
-> check wq_online_cpumask
-> >                                   |  remove bit from cpu_active_mask
-> >                                   |  no cpu in pool->attrs->cpumask is active
-> > set pool->attrs->cpumask to worker|
-> > and hit the warning
->                                     |  remove bit from wq_online_cpumask
-> 
-> Even with the help of wq_online_cpumask, the patchset can't silence
-> the warning in __set_cpus_allowed_ptr() in this case.  It is indeed
-> hard to suppress the warning for unbound pools.  Maybe we need something
-> like this (outmost callback of CPUHP_AP_WORKQUEUE_UNBOUND_ONLINE,
-> so that workqueue can do preparation when offlining before AP_ACTIVE):
-> 
-> diff --git a/include/linux/cpuhotplug.h b/include/linux/cpuhotplug.h
-> index 0042ef362511..ac2103deb20b 100644
-> --- a/include/linux/cpuhotplug.h
-> +++ b/include/linux/cpuhotplug.h
-> @@ -20,6 +20,9 @@
->   *               |                               ^
->   *               v                               |
->   *              AP_ACTIVE                      AP_ACTIVE
-> + *               |                               ^
-> + *               v                               |
-> + *              ONLINE                         ONLINE
->   */
-> 
->  enum cpuhp_state {
-> @@ -194,6 +197,7 @@ enum cpuhp_state {
->         CPUHP_AP_X86_HPET_ONLINE,
->         CPUHP_AP_X86_KVM_CLK_ONLINE,
->         CPUHP_AP_ACTIVE,
-> +       CPUHP_AP_WORKQUEUE_UNBOUND_ONLINE,
->         CPUHP_ONLINE,
->  };
-> 
+ IA64 (Itanium) PLATFORM
+-M: Tony Luck <tony.luck@intel.com>
+-M: Fenghua Yu <fenghua.yu@intel.com>
+ L: linux-ia64@vger.kernel.org
+-S: Odd Fixes
+-T: git git://git.kernel.org/pub/scm/linux/kernel/git/aegl/linux.git
++S: Orphan
+ F: Documentation/ia64/
+ F: arch/ia64/
 
-That's waay to late, by then userspace is long running and expecting
-things to 'just-work'.
+Is that what you had in mind? I see that Fenghua Yu has not been
+actively involved for a long time. If you are both out, that would
+make the port unmaintained, but that may actually help find someone
+else to either volunteer as a maintainer or pay someone if they
+have a commercial interest.
 
-But afaict, things will mostly work for you when you use cpu_active_mask
-on cpu-down and cpu_online_mask on cpu-up.
-
-But I think I see the problem, it is spawning a new worker after
-workqueue_online_cpu() but before sched_cpu_activate(), right? That
-wants to have the wider mask set.
-
-To solve that, the spawning of workers thing needs to know where we are
-in the hotplug process, and it can track that using
-workqueue_{on,off}line_cpu(). If it happens after offline, it needs to
-use cpu_active_mask, if it happens after online cpu_online_mask is your
-guy.
-
-Does that make sense?
+    Arnd
