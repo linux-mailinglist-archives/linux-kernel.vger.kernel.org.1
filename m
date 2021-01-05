@@ -2,170 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5E392EA72E
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 10:20:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C5652EA731
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 10:23:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727556AbhAEJUd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 04:20:33 -0500
-Received: from mail.loongson.cn ([114.242.206.163]:33284 "EHLO loongson.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725876AbhAEJUc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 04:20:32 -0500
-Received: from localhost.localdomain (unknown [112.20.112.14])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9DxTzYxL_RfPGYKAA--.726S2;
-        Tue, 05 Jan 2021 17:19:46 +0800 (CST)
-From:   siyanteng@loongson.cn
-To:     Harry Wei <harryxiyou@gmail.com>
-Cc:     Alex Shi <alex.shi@linux.alibaba.com>,
-        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Huacai Chen <chenhuacai@loongson.cn>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        Yanteng Si <siyanteng@loongson.cn>
-Subject: [PATCH] docs/zh_CN: add Chinese booting and index file
-Date:   Tue,  5 Jan 2021 17:19:42 +0800
-Message-Id: <20210105091942.812515-1-siyanteng@loongson.cn>
-X-Mailer: git-send-email 2.27.0
+        id S1727481AbhAEJVZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 04:21:25 -0500
+Received: from mx2.suse.de ([195.135.220.15]:42524 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725800AbhAEJVY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Jan 2021 04:21:24 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1609838438; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=LkWEVAne/Zp8rRQWRngkUvl4UBybdMI2J/82AEM+QYg=;
+        b=Ow/Cqmex8Vu/mFIxqsr8sPRiLZJva5ws1xp7G4QywxnsDFYkOBWxL4goYV7K7MFPXGmSyv
+        0+Ek2ps4Oro+Niefyb9alahZ0/wm8ZTZ1xQX2nLuHri6RXqxgnMA7WznpkCvQ3KrU1Wd4l
+        ge8iAJ1j6RxsdCW5Jq1YLrx0TTu8f0k=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 02FA6B720;
+        Tue,  5 Jan 2021 09:20:38 +0000 (UTC)
+Date:   Tue, 5 Jan 2021 10:20:37 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     Dave Hansen <dave.hansen@intel.com>
+Cc:     David Hildenbrand <david@redhat.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Alexander Duyck <alexander.h.duyck@linux.intel.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Liang Li <liliangleo@didiglobal.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org,
+        virtualization@lists.linux-foundation.org
+Subject: Re: [RFC v2 PATCH 4/4] mm: pre zero out free pages to speed up page
+ allocation for __GFP_ZERO
+Message-ID: <20210105092037.GY13207@dhcp22.suse.cz>
+References: <a5ba7bdf-8510-d0a0-9c22-ec1b81019982@intel.com>
+ <43576DAD-8A3B-4691-8808-90C5FDCF03B7@redhat.com>
+ <6bfcc500-7c11-f66a-26ea-e8b8bcc79e28@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: AQAAf9DxTzYxL_RfPGYKAA--.726S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxZr48AF4rKrWxtr4rAr13urg_yoW7Jw17pr
-        s3GryfKa1UA342vrWfKF1UJr1rJr4fGFWUJ3Wktw1kXrn7AF18JrnFyry0yry7Kry8uFW2
-        vrWUKrWjkr1Yk3DanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUva14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWUuVWrJwAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-        1l84ACjcxK6xIIjxv20xvE14v26ryj6F1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4j
-        6r4UJwA2z4x0Y4vEx4A2jsIE14v26F4UJVW0owA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
-        CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
-        2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
-        W8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lw4CEc2x0rVAKj4xx
-        MxkIecxEwVAFwVW8uwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s
-        026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_
-        Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20x
-        vEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2z280
-        aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVWUJVW8JbIYCTnIWIevJa73UjIFyT
-        uYvjfUntxhDUUUU
-X-CM-SenderInfo: pvl1t0pwhqwqxorr0wxvrqhubq/
+In-Reply-To: <6bfcc500-7c11-f66a-26ea-e8b8bcc79e28@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yanteng Si <siyanteng@loongson.cn>
+On Mon 04-01-21 15:00:31, Dave Hansen wrote:
+> On 1/4/21 12:11 PM, David Hildenbrand wrote:
+> >> Yeah, it certainly can't be the default, but it *is* useful for
+> >> thing where we know that there are no cache benefits to zeroing
+> >> close to where the memory is allocated.
+> >> 
+> >> The trick is opting into it somehow, either in a process or a VMA.
+> >> 
+> > The patch set is mostly trying to optimize starting a new process. So
+> > process/vma doesn‘t really work.
+> 
+> Let's say you have a system-wide tunable that says: pre-zero pages and
+> keep 10GB of them around.  Then, you opt-in a process to being allowed
+> to dip into that pool with a process-wide flag or an madvise() call.
+> You could even have the flag be inherited across execve() if you wanted
+> to have helper apps be able to set the policy and access the pool like
+> how numactl works.
 
-This is the Chinese version of booting and index file
+While possible, it sounds quite heavy weight to me. Page allocator would
+have to somehow maintain those pre-zeroed pages. This pool will also
+become a very scarce resource very soon because everybody just want to
+run faster. So this would open many more interesting questions.
 
-Signed-off-by: Yanteng Si <siyanteng@loongson.cn>
----
- .../translations/zh_CN/mips/booting.rst       | 47 +++++++++++++++++++
- .../translations/zh_CN/mips/index.rst         | 45 ++++++++++++++++++
- 2 files changed, 92 insertions(+)
- create mode 100644 Documentation/translations/zh_CN/mips/booting.rst
- create mode 100644 Documentation/translations/zh_CN/mips/index.rst
+A global knob with all or nothing sounds like an easier to use and
+maintain solution to me.
 
-diff --git a/Documentation/translations/zh_CN/mips/booting.rst b/Documentation/translations/zh_CN/mips/booting.rst
-new file mode 100644
-index 000000000000..12e0aa76b485
---- /dev/null
-+++ b/Documentation/translations/zh_CN/mips/booting.rst
-@@ -0,0 +1,47 @@
-+.. SPDX-License-Identifier: GPL-2.0
-+
-+Chinese translated version of Documentation/mips/booting.rst
-+
-+If you have any comment or update to the content, please contact the
-+original document maintainer directly.  However, if you have a problem
-+communicating in English you can also ask the Chinese maintainer for
-+help.  Contact the Chinese maintainer if this translation is outdated
-+or if there is a problem with the translation.
-+
-+Chinese maintainer: Yanteng Si <siyanteng@loongson.cn>
-+---------------------------------------------------------------------
-+Documentation/mips/booting.rst 的中文翻译
-+
-+如果想评论或更新本文的内容，请直接联系原文档的维护者。如果你使用英文
-+交流有困难的话，也可以向中文版维护者求助。如果本翻译更新不及时或者翻
-+译存在问题，请联系中文版维护者。
-+
-+中文版维护者： 司延腾  Yanteng Si <siyanteng@loongson.cn>
-+中文版翻译者： 司延腾  Yanteng Si <siyanteng@loongson.cn>
-+中文版校译者： 司延腾  Yanteng Si <siyanteng@loongson.cn>
-+
-+以下为正文
-+---------------------------------------------------------------------
-+
-+BMIPS设备树引导
-+------------------------
-+
-+  一些bootloaders只支持在内核镜像开始地址处的单一入口点。而其它
-+  bootloaders将跳转到ELF的开始地址处。两种方案都被支持的；因为
-+  CONFIG_BOOT_RAW=y and CONFIG_NO_EXCEPT_FILL=y, 所以第一条指令
-+  会立即跳转到kernel_entry()入口处执行。
-+
-+  与arch/arm情况(b)类似，dt感知的引导加载程序需要设置以下寄存器:
-+
-+         a0 : 0
-+
-+         a1 : 0xffffffff
-+
-+         a2 : RAM中指向设备树块的物理指针(在chapterII中定义)。
-+              设备树可以位于前512MB物理地址空间(0x00000000 -
-+              0x1fffffff)的任何位置，以64位边界对齐。
-+
-+  legacy bootloaders不会使用这样的约定，并且它们不传入DT块。
-+  在这种情况下，Linux将通过选中CONFIG_DT_*查找DTB。
-+
-+  这个约定只在32位系统中定义，因为目前没有任何64位的BMIPS实现。
-diff --git a/Documentation/translations/zh_CN/mips/index.rst b/Documentation/translations/zh_CN/mips/index.rst
-new file mode 100644
-index 000000000000..244b16b7ef51
---- /dev/null
-+++ b/Documentation/translations/zh_CN/mips/index.rst
-@@ -0,0 +1,45 @@
-+.. SPDX-License-Identifier: GPL-2.0
-+
-+Chinese translated version of Documentation/mips/index.rst
-+
-+If you have any comment or update to the content, please contact the
-+original document maintainer directly.  However, if you have a problem
-+communicating in English you can also ask the Chinese maintainer for
-+help.  Contact the Chinese maintainer if this translation is outdated
-+or if there is a problem with the translation.
-+
-+Chinese maintainer: Yanteng Si <siyanteng@loongson.cn>
-+---------------------------------------------------------------------
-+Documentation/mips/index.rst 的中文翻译
-+
-+如果想评论或更新本文的内容，请直接联系原文档的维护者。如果你使用英文
-+交流有困难的话，也可以向中文版维护者求助。如果本翻译更新不及时或者翻
-+译存在问题，请联系中文版维护者。
-+
-+中文版维护者： 司延腾  Yanteng Si <siyanteng@loongson.cn>
-+中文版翻译者： 司延腾  Yanteng Si <siyanteng@loongson.cn>
-+中文版校译者： 司延腾  Yanteng Si <siyanteng@loongson.cn>
-+
-+以下为正文
-+---------------------------------------------------------------------
-+
-+
-+===========================
-+MIPS特性文档
-+===========================
-+
-+.. toctree::
-+   :maxdepth: 2
-+   :numbered:
-+
-+   booting
-+   ingenic-tcu
-+
-+   features
-+
-+.. only::  subproject and html
-+
-+   Indices
-+   =======
-+
-+   * :ref:`genindex`
+> Dan makes a very good point about using filesystems for this, though.
+> It wouldn't be rocket science to set up a special tmpfs mount just for
+> VM memory and pre-zero it from userspace.  For qemu, you'd need to teach
+> the management layer to hand out zeroed files via mem-path=.
+
+Agreed. That would be an interesting option.
+
+> Heck, if
+> you taught MADV_FREE how to handle tmpfs, you could even pre-zero *and*
+> get the memory back quickly if those files ended up over-sized somehow.
+
+We can probably allow MADV_FREE on shmem but that would require an
+exclusively mapped page. Shared case is really tricky because of silent
+data corruption in uncoordinated userspace.
 -- 
-2.27.0
-
+Michal Hocko
+SUSE Labs
