@@ -2,124 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A2AEF2EA15C
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 01:13:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2CAF72EA160
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 01:15:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727959AbhAEAM5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 19:12:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37058 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726864AbhAEAM5 (ORCPT
+        id S1727973AbhAEAOc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 19:14:32 -0500
+Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:13656 "EHLO
+        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726258AbhAEAOc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 19:12:57 -0500
-Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B6EDC0617A2
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Jan 2021 16:11:49 -0800 (PST)
-Received: by mail-pl1-x636.google.com with SMTP id x18so15423540pln.6
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Jan 2021 16:11:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=CvqJReQ8p0Q2wrcytP2TtmywERHqcvpbJnQQt8vIrRI=;
-        b=ScUimOvRWjQnaVl3XASbOdDlbmovU5P/7tEX4ORdNnIB9j9wH5ytoq2cCDVznY8O30
-         eWgD9UXUHHlO9+50t+PPEVX+4CPMTPPcRsOA9d9fy6QHgz6DC0RWtq4zVhuKED0lX97P
-         m0r1OSN/9xz2wHbXEElVpx3wFAvjk4kL5TQ5E=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=CvqJReQ8p0Q2wrcytP2TtmywERHqcvpbJnQQt8vIrRI=;
-        b=YecjKCUYR3TBTzqDeoJoVPo1UkFNXuzjnIbEDMxW7i7cKTWpr1xP6/8MW4kX9Uu5Uw
-         JOSGEQ7ALoKCuc+vt7swz5I7g/9bqdzMD8SguKaS2hSDS4BkV71CvHsf9SC0/wVQ0AMe
-         QZWh6LMksGXfULNBqj5Etjm4xrRfuCr1B7YFDEMp75vSdiEVZGbbfl02l2DSQKnMjOVd
-         bgO8RZP0t1jiiU87o37aLSgUe0cRuFqonbwzD9IsXBABVRobrVT9XPTn0js0aMUes4Wj
-         Mff+ye7OyeN+UfiyUgU8vJfFOJ/pNCS4n9Z6nPCgNV/fiCwxOXM5U9IbT9iJYPlSPYIK
-         wWvg==
-X-Gm-Message-State: AOAM533NF1zh1dFhfltQcIUsNT2r1SUi/8JLMd+HaFDT0+ixlB2mAJFe
-        OYxfBFe+fn08f+U4vSknOv7aGA==
-X-Google-Smtp-Source: ABdhPJz9/LbtEhIm8FWyQjCxzQx0i1/dDotSyolZEhpKdMauZYRkQLUTKYO5bNPm7nnBtipcZbEHrQ==
-X-Received: by 2002:a17:902:8a8d:b029:dc:8ac6:a149 with SMTP id p13-20020a1709028a8db02900dc8ac6a149mr14187800plo.18.1609805508768;
-        Mon, 04 Jan 2021 16:11:48 -0800 (PST)
-Received: from drinkcat2.tpe.corp.google.com ([2401:fa00:1:b:7220:84ff:fe09:41dc])
-        by smtp.gmail.com with ESMTPSA id bf3sm465620pjb.45.2021.01.04.16.11.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 Jan 2021 16:11:48 -0800 (PST)
-From:   Nicolas Boichat <drinkcat@chromium.org>
-To:     Rob Herring <robh@kernel.org>, Steven Price <steven.price@arm.com>,
-        Alyssa Rosenzweig <alyssa.rosenzweig@collabora.com>
-Cc:     hsinyi@chromium.org, hoegsberg@chromium.org, fshao@chromium.org,
-        boris.brezillon@collabora.com,
-        Nicolas Boichat <drinkcat@chromium.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Tomeu Vizoso <tomeu.vizoso@collabora.com>,
-        dri-devel@lists.freedesktop.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-mediatek@lists.infradead.org
-Subject: [PATCH v6 4/4] drm/panfrost: Add mt8183-mali compatible string
-Date:   Tue,  5 Jan 2021 08:11:19 +0800
-Message-Id: <20210105081111.v6.4.I5f6b04431828ec9c3e41e65f3337cec6a127480d@changeid>
-X-Mailer: git-send-email 2.29.2.729.g45daf8777d-goog
-In-Reply-To: <20210105001119.2129559-1-drinkcat@chromium.org>
-References: <20210105001119.2129559-1-drinkcat@chromium.org>
+        Mon, 4 Jan 2021 19:14:32 -0500
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5ff3af3e0002>; Mon, 04 Jan 2021 16:13:50 -0800
+Received: from HQMAIL101.nvidia.com (172.20.187.10) by HQMAIL111.nvidia.com
+ (172.20.187.18) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Tue, 5 Jan
+ 2021 00:13:47 +0000
+Received: from NAM02-CY1-obe.outbound.protection.outlook.com (104.47.37.57) by
+ HQMAIL101.nvidia.com (172.20.187.10) with Microsoft SMTP Server (TLS) id
+ 15.0.1473.3 via Frontend Transport; Tue, 5 Jan 2021 00:13:47 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=GFK+FndG/cFiE3fxW/2iKBiUSK06fiuto1bMhKb1SnY3Ow6Pzp4sMp0afneZwshtZYDgXTcxsJ4vB3WXMDe4L4BrSbCK5vfgpIUgE/EccfnwkYWMdxrhTwMM/llBYq/VRIgJGeMaStWeq3XwQjAdP7tWHdLtttsHj4TFNfHC2S+xkanup04qZMw4uxsSo3PjjJAkNodQoIosfUQQwnqCTh7l6TfT1QxGiyR+R81dh5k9XGKEN5nSqgqH2aHgsRtpvOYcHKxLTJFJds6RuxBvHOnGgrJhBK3EYY05A3KgPbxFwGCXkLEkiC+6G/OzlYmSUIYK7GLBueZ2cmCSp5XNDg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ouPoyixJhHTpwOQtyr0SENnRQLXTJ/B4V1AQwbdoQ+E=;
+ b=LnwF3zFeGuDvJnOlUrzhDTXbUpIzYYq8LCCZMNwh675n58vYhgQHc+5blg+ISx7HGieYHgRRzilCxAc0H4ZGEqezulE8x/9CKB1LME2Cl9nMR9SXk3qeUb8XY4EG09bz6jWRp0GtLoJEjSYjdRMdKNY94m+Swc0G4Qk2bMSsojOMULMrVFib1dryCt8ZxnsB8DNfmuZPwcXxzBjBIBH4JVv1pETay2+gYDjvOJmMqNO0RSjPPAq3pa4hK3jmIyI+52RcWVFvbKPD9rjuNWflqWF3gfXSbhRI9aA1ckImr0pLVfOt2y4kLiV489aHFdHwsFk7dLT3we+TLvIbPTlOKQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
+ by DM6PR12MB3212.namprd12.prod.outlook.com (2603:10b6:5:186::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3721.20; Tue, 5 Jan
+ 2021 00:13:44 +0000
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::546d:512c:72fa:4727]) by DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::546d:512c:72fa:4727%7]) with mapi id 15.20.3721.024; Tue, 5 Jan 2021
+ 00:13:44 +0000
+Date:   Mon, 4 Jan 2021 20:13:41 -0400
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Mark Brown <broonie@kernel.org>
+CC:     Greg KH <gregkh@linuxfoundation.org>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        <alsa-devel@alsa-project.org>, Kiran Patil <kiran.patil@intel.com>,
+        linux-rdma <linux-rdma@vger.kernel.org>,
+        Shiraz Saleem <shiraz.saleem@intel.com>,
+        Martin Habets <mhabets@solarflare.com>,
+        "Liam Girdwood" <lgirdwood@gmail.com>,
+        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+        Fred Oh <fred.oh@linux.intel.com>,
+        "Dave Ertman" <david.m.ertman@intel.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Netdev <netdev@vger.kernel.org>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        David Miller <davem@davemloft.net>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Parav Pandit <parav@mellanox.com>, <lee.jones@linaro.org>
+Subject: Re: [resend/standalone PATCH v4] Add auxiliary bus support
+Message-ID: <20210105001341.GL552508@nvidia.com>
+References: <20201218140854.GW552508@nvidia.com>
+ <20201218155204.GC5333@sirena.org.uk> <20201218162817.GX552508@nvidia.com>
+ <20201218180310.GD5333@sirena.org.uk> <20201218184150.GY552508@nvidia.com>
+ <20201218203211.GE5333@sirena.org.uk> <20201218205856.GZ552508@nvidia.com>
+ <20201221185140.GD4521@sirena.org.uk> <20210104180831.GD552508@nvidia.com>
+ <20210104211930.GI5645@sirena.org.uk>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20210104211930.GI5645@sirena.org.uk>
+X-ClientProxiedBy: MN2PR16CA0032.namprd16.prod.outlook.com
+ (2603:10b6:208:134::45) To DM6PR12MB3834.namprd12.prod.outlook.com
+ (2603:10b6:5:14a::12)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (206.223.160.26) by MN2PR16CA0032.namprd16.prod.outlook.com (2603:10b6:208:134::45) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3721.19 via Frontend Transport; Tue, 5 Jan 2021 00:13:43 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1kwZyn-0025iE-PI; Mon, 04 Jan 2021 20:13:41 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1609805630; bh=ouPoyixJhHTpwOQtyr0SENnRQLXTJ/B4V1AQwbdoQ+E=;
+        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
+         From:To:CC:Subject:Message-ID:References:Content-Type:
+         Content-Disposition:In-Reply-To:X-ClientProxiedBy:MIME-Version:
+         X-MS-Exchange-MessageSentRepresentingType;
+        b=qxfuyl5g/kR9w+ajGwau+5FZEwAJtDvC3UMqi3WiBOPaC04QfVmiQzMDPbFJ+m9JB
+         dNii3ODMcuvXXz4jviuLyd6c3fi9BCdKLZpY5NkbNUlri4//6j3YbH2OW2I1nSjOi3
+         lwdRBqAyMSYnam0aBtD6Q28oSIClTZPqMc9v48sUe7jLtfbkBOOvRT3BMi9nomWXgV
+         Wh4dgL3DSJgliOtg7M8G8uieBzIUdhFDoBMzALvfyaW8DHBcAHJbwLCcqZxZlA0tq5
+         Yi8R8Gld3MeYkdl8TIaFTDI80CDVu7eAissXPabehYbkHDaWlHNaCACDa1aEfaOTTQ
+         40/FjwjJ31LMQ==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add support for MT8183's G-57 Bifrost.
+On Mon, Jan 04, 2021 at 09:19:30PM +0000, Mark Brown wrote:
 
-Signed-off-by: Nicolas Boichat <drinkcat@chromium.org>
----
 
-Changes in v6:
- - Context conflicts, reflow the code.
- - Use ARRAY_SIZE for power domains too.
+> > Regardless of the shortcut to make everything a struct
+> > platform_device, I think it was a mistake to put OF devices on
+> > platform_bus. Those should have remained on some of_bus even if they
+> 
+> Like I keep saying the same thing applies to all non-enumerable buses -
+> exactly the same considerations exist for all the other buses like I2C
+> (including the ACPI naming issue you mention below), and for that matter
+> with enumerable buses which can have firmware info.
 
-Changes in v5:
- - Change power domain name from 2d to core2.
-
-Changes in v4:
- - Add power domain names.
-
-Changes in v3:
- - Match mt8183-mali instead of bifrost, as we require special
-   handling for the 2 regulators and 3 power domains.
-
- drivers/gpu/drm/panfrost/panfrost_drv.c | 10 ++++++++++
- 1 file changed, 10 insertions(+)
-
-diff --git a/drivers/gpu/drm/panfrost/panfrost_drv.c b/drivers/gpu/drm/panfrost/panfrost_drv.c
-index 83a461bdeea8..ca07098a6141 100644
---- a/drivers/gpu/drm/panfrost/panfrost_drv.c
-+++ b/drivers/gpu/drm/panfrost/panfrost_drv.c
-@@ -665,6 +665,15 @@ static const struct panfrost_compatible amlogic_data = {
- 	.vendor_quirk = panfrost_gpu_amlogic_quirk,
- };
+And most busses do already have their own bus type. ACPI, I2C, PCI,
+etc. It is just a few that have been squished into platform, notably
+OF.
  
-+const char * const mediatek_mt8183_supplies[] = { "mali", "sram" };
-+const char * const mediatek_mt8183_pm_domains[] = { "core0", "core1", "core2" };
-+static const struct panfrost_compatible mediatek_mt8183_data = {
-+	.num_supplies = ARRAY_SIZE(mediatek_mt8183_supplies),
-+	.supply_names = mediatek_mt8183_supplies,
-+	.num_pm_domains = ARRAY_SIZE(mediatek_mt8183_pm_domains),
-+	.pm_domain_names = mediatek_mt8183_pm_domains,
-+};
-+
- static const struct of_device_id dt_match[] = {
- 	/* Set first to probe before the generic compatibles */
- 	{ .compatible = "amlogic,meson-gxm-mali",
-@@ -681,6 +690,7 @@ static const struct of_device_id dt_match[] = {
- 	{ .compatible = "arm,mali-t860", .data = &default_data, },
- 	{ .compatible = "arm,mali-t880", .data = &default_data, },
- 	{ .compatible = "arm,mali-bifrost", .data = &default_data, },
-+	{ .compatible = "mediatek,mt8183-mali", .data = &mediatek_mt8183_data },
- 	{}
- };
- MODULE_DEVICE_TABLE(of, dt_match);
--- 
-2.29.2.729.g45daf8777d-goog
+> > are represented by struct platform_device and fiddling in the core
+> > done to make that work OK.
+> 
+> What exactly is the fiddling in the core here, I'm a bit unclear?
 
+I'm not sure, but I bet there is a small fall out to making bus_type
+not 1:1 with the struct device type.. Would have to attempt it to see
+
+> > This feels like a good conference topic someday..
+> 
+> We should have this discussion *before* we get too far along with trying
+> to implement things, we should at least have some idea where we want to
+> head there.
+
+Well, auxillary bus is clearly following the original bus model
+intention with a dedicated bus type with a controlled naming
+scheme. The debate here seems to be "what about platform bus" and
+"what to do with mfd"?
+
+> Those APIs all take a struct device for lookup so it's the same call for
+> looking things up regardless of the bus the device is on or what
+> firmware the system is using - where there are firmware specific lookup
+> functions they're generally historical and shouldn't be used for new
+> code.  It's generally something in the form
+> 
+> 	api_type *api_get(struct device *dev, const char *name);
+
+Well, that is a nice improvement since a few years back when I last
+worked on this stuff.
+
+But now it begs the question, why not push harder to make 'struct
+device' the generic universal access point and add some resource_get()
+API along these lines so even a platform_device * isn't needed?
+
+Then the path seems much clearer, add a multi-bus-type device_driver
+that has a probe(struct device *) and uses the 'universal api_get()'
+style interface to find the generic 'resources'.
+
+The actual bus types and bus structs can then be split properly
+without the boilerplate that caused them all to be merged to platform,
+even PCI could be substantially merged like this.
+
+Bonus points to replace the open coded method disptach:
+
+int gpiod_count(struct device *dev, const char *con_id)
+{
+	int count = -ENOENT;
+
+	if (IS_ENABLED(CONFIG_OF) && dev && dev->of_node)
+		count = of_gpio_get_count(dev, con_id);
+	else if (IS_ENABLED(CONFIG_ACPI) && dev && ACPI_HANDLE(dev))
+		count = acpi_gpio_count(dev, con_id);
+
+	if (count < 0)
+		count = platform_gpio_count(dev, con_id);
+
+With an actual bus specific virtual function:
+
+    return dev->bus->gpio_count(dev);
+
+> ...and then do the same thing for every other bus with firmware
+> bindings.  If it's about the firmware interfaces it really isn't a
+> platform bus specific thing.  It's not clear to me if that's what it is
+> though or if this is just some tangent.
+
+It should be split up based on the unique naming scheme and any bus
+specific API elements - like raw access to ACPI or OF data or what
+have you for other FW bus types.
+
+Jason
