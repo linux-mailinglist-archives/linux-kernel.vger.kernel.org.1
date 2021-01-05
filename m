@@ -2,79 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2036B2EAFF5
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 17:24:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A8622EAFF7
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 17:24:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728078AbhAEQWc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 11:22:32 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39640 "EHLO mail.kernel.org"
+        id S1728245AbhAEQWp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 11:22:45 -0500
+Received: from mx2.suse.de ([195.135.220.15]:44032 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725880AbhAEQWb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 11:22:31 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B56B922D04;
-        Tue,  5 Jan 2021 16:21:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1609863711;
-        bh=/AduAAI4tZbebeHCUJOPRqAxhsYnZgNeDS2PrMgEiD0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=XYVwTxZ7gcoAgro9GbsM2i62gt2JgDU/jjDAJSMqqD5ZLNsEKTEDXh0DevrHgnTIk
-         LaOYfyrm38BSv4/gARhxNdGXJpj+1hInCvz0r6kM7Mwd4WSkJbWaG0BsiRfwn7oFjE
-         XFg3xx188EI05IyiSW1O35hciv/AzHTVyTb0bZvsAGr5ZH0eWMn4RRX4dQaV1QPg96
-         7sUTGqYOSMnEFpQ4iYYDOKDNzIQbV50jiS+6D+w3Q3vORuCDFQYLmULB4KWKzQYdPv
-         xIxgdYPT6mpsjo5jdE4vmmw4fRCctij/PoCjisD65zJhP6eLy1YvNDcXF85A+qKspu
-         kpGDvPhz4bgIw==
-Date:   Tue, 5 Jan 2021 17:21:45 +0100
-From:   Wolfram Sang <wsa@kernel.org>
-To:     Rayagonda Kokatanur <rayagonda.kokatanur@broadcom.com>
-Cc:     Ray Jui <ray.jui@broadcom.com>,
-        Dhananjay Phadke <dphadke@linux.microsoft.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        BCM Kernel Feedback <bcm-kernel-feedback-list@broadcom.com>,
+        id S1725880AbhAEQWo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Jan 2021 11:22:44 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1609863718; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=sAZnmja/35ubIGv8myiWVL1zjOD22NksoZUG90z16ZY=;
+        b=N5lSNrvfp+JEwbplJF7qFGUjWCDyY4Qh9sL32Lw+RMPhqI0WISPiGFXtHtOv5vmR04eecj
+        rk+Q+Wx+JGKu1AUhv3t39I4jV0Z1JJEvFBbYleYUXQjHQf/oKvxG3SuNY/muvcvATPzMjg
+        95AAwUghundkS4Y0hczvUEy1aKHNz0o=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id F1DD4AF7B;
+        Tue,  5 Jan 2021 16:21:57 +0000 (UTC)
+Date:   Tue, 5 Jan 2021 17:21:57 +0100
+From:   Petr Mladek <pmladek@suse.com>
+To:     Shuah Khan <skhan@linuxfoundation.org>
+Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        David Gow <davidgow@google.com>,
         Brendan Higgins <brendanhiggins@google.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
-        linux-i2c <linux-i2c@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Lori Hikichi <lori.hikichi@broadcom.com>,
-        Ray Jui <rjui@broadcom.com>,
-        Scott Branden <sbranden@broadcom.com>
-Subject: Re: [PATCH v3 5/6] i2c: iproc: handle master read request
-Message-ID: <20210105162145.GG1842@ninjato>
-References: <38a23afc-57da-a01f-286c-15f8b3d61705@broadcom.com>
- <1605316659-3422-1-git-send-email-dphadke@linux.microsoft.com>
- <CAHO=5PFzd9KTR93ntUvAX5dqzxqJQpVXEirs5uoXdvcnZ7hL4g@mail.gmail.com>
- <20201202143505.GA874@kunai>
- <23a2f2e8-06ad-c728-98eb-91b164572ba4@broadcom.com>
- <CAHO=5PE=BRADou_Hn8qP3mgWiSwDezPCxDjuqa0v1MxMOJRyHQ@mail.gmail.com>
- <35541129-df37-fa6f-5dae-34eb34a78731@broadcom.com>
- <CAHO=5PFCsWQb7nv5Sg00DAX6XXTfV7V8BH-ithK-Scq8eFFVbA@mail.gmail.com>
+        Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
+        linux-kselftest@vger.kernel.org, kunit-dev@googlegroups.com,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] kunit: tool: Force the use of the 'tty' console for UML
+Message-ID: <X/SSJQ+I5zEMaYYJ@alley>
+References: <20201222073900.3490607-1-davidgow@google.com>
+ <20201222111102.GC4077@smile.fi.intel.com>
+ <4ae7779c-15c5-0474-5840-44531dcf1d94@linuxfoundation.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <CAHO=5PFCsWQb7nv5Sg00DAX6XXTfV7V8BH-ithK-Scq8eFFVbA@mail.gmail.com>
+In-Reply-To: <4ae7779c-15c5-0474-5840-44531dcf1d94@linuxfoundation.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon 2021-01-04 09:23:57, Shuah Khan wrote:
+> On 12/22/20 4:11 AM, Andy Shevchenko wrote:
+> > On Mon, Dec 21, 2020 at 11:39:00PM -0800, David Gow wrote:
+> > > kunit_tool relies on the UML console outputting printk() output to the
+> > > tty in order to get results. Since the default console driver could
+> > > change, pass 'console=tty' to the kernel.
+> > > 
+> > > This is triggered by a change[1] to use ttynull as a fallback console
+> > > driver which -- by chance or by design -- seems to have changed the
+> > > default console output on UML, breaking kunit_tool. While this may be
+> > > fixed, we should be less fragile to such changes in the default.
+> > > 
+> > > [1]:
+> > > https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=757055ae8dedf5333af17b3b5b4b70ba9bc9da4e
+> > 
+> > Reported-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> > Tested-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> > 
+> 
+> Thank you all. Now in linux-kselftest kunit-fixes branch.
+> 
+> Will send this up for rc3.
+> 
+> Sorry for the delay - have been away from the keyboard for a
+> bit.
 
-> > I think that makes sense, and I'm okay with these patches going in as
-> > they are now.
-> >
-> > Acked-by: Ray Jui <ray.jui@broadcom.com>
->=20
-> Thank you.
+JFYI, I am not sure that this is the right solution. I am
+looking into it, see
+https://lore.kernel.org/linux-kselftest/X%2FSRA1P8t+ONZFKb@alley/
+for more details.
 
-Yes, thank you everyone.
-
-All applied to for-next, thanks!
-
-> --=20
-> This electronic communication and the information and any files transmitt=
-ed=20
-> with it, or attached to it, are confidential and are intended solely for=
-=20
-=2E..
-
-Please remove this paragraph for mailing lists.
-
+Best Regards,
+Petr
