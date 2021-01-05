@@ -2,93 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA4882EA6EC
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 10:07:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E7D552EA703
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 10:11:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727593AbhAEJGG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 04:06:06 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45246 "EHLO mail.kernel.org"
+        id S1726020AbhAEJLN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 04:11:13 -0500
+Received: from mga07.intel.com ([134.134.136.100]:29675 "EHLO mga07.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726189AbhAEJGE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 04:06:04 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5E1372255F;
-        Tue,  5 Jan 2021 09:05:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609837523;
-        bh=HsxNQ3hY9JJAVm03uoKx2FYQuoFXeHhxoEY7BQJSUcI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=urNOYSD3LnSIWXqIjYoQ4MmR4LHPqtdBgC5kvhQWTkQi77B9r2XCetN7/iGKe61Vq
-         XUDf9nlzJuOJW2aOjFM70QSomb8lIkcUO05HSY6h9z4qpNp/sbEQ76bG9pW8WlonzH
-         91jOeGVvz5BGYnc73CsL4CDFYoreseICrHklcT78=
-Date:   Tue, 5 Jan 2021 10:06:48 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Daniel =?iso-8859-1?Q?D=EDaz?= <daniel.diaz@linaro.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
-        lkft-triage@lists.linaro.org,
-        linux- stable <stable@vger.kernel.org>,
-        Pavel Machek <pavel@denx.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>
-Subject: Re: [PATCH 4.19 00/35] 4.19.165-rc1 review
-Message-ID: <X/QsKKc0YR/wddUb@kroah.com>
-References: <20210104155703.375788488@linuxfoundation.org>
- <CAEUSe78+F1Q9LFjpf8SQzQa6+Ak4wcPiiNcUVxEcv+KPdrYvBw@mail.gmail.com>
+        id S1725789AbhAEJLM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Jan 2021 04:11:12 -0500
+IronPort-SDR: 7BFXAPgowt6F1qzfRF7X0x0dfceWR68oYAZXfvLt7IErLvxSTw/vPSc+n0T1hT9kyq3b49PjjC
+ GcbzWDXEwOuw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9854"; a="241160344"
+X-IronPort-AV: E=Sophos;i="5.78,476,1599548400"; 
+   d="scan'208";a="241160344"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Jan 2021 01:09:26 -0800
+IronPort-SDR: OJstUvai6uTrf/tAQsQMDyNtKkiDITzatLeNyTPnszEXk+IUi4lSFDSPyQgnQIoeESoCKWV5nF
+ WoxoNk4ZN8Rg==
+X-IronPort-AV: E=Sophos;i="5.78,476,1599548400"; 
+   d="scan'208";a="386981017"
+Received: from paasikivi.fi.intel.com ([10.237.72.42])
+  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Jan 2021 01:09:23 -0800
+Received: by paasikivi.fi.intel.com (Postfix, from userid 1000)
+        id 80BE4206FD; Tue,  5 Jan 2021 11:09:21 +0200 (EET)
+Date:   Tue, 5 Jan 2021 11:09:21 +0200
+From:   Sakari Ailus <sakari.ailus@linux.intel.com>
+To:     Rob Herring <robh@kernel.org>
+Cc:     Guennadi Liakhovetski <g.liakhovetski@gmx.de>,
+        Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Jacopo Mondi <jacopo@jmondi.org>,
+        Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-media@vger.kernel.org
+Subject: Re: [PATCH v4 2/2] dt-bindings: media: Use graph and
+ video-interfaces schemas
+Message-ID: <20210105090921.GP11878@paasikivi.fi.intel.com>
+References: <20210104165808.2166686-1-robh@kernel.org>
+ <20210104165808.2166686-3-robh@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAEUSe78+F1Q9LFjpf8SQzQa6+Ak4wcPiiNcUVxEcv+KPdrYvBw@mail.gmail.com>
+In-Reply-To: <20210104165808.2166686-3-robh@kernel.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 04, 2021 at 11:43:28AM -0600, Daniel Díaz wrote:
-> Hello!
-> 
-> On Mon, 4 Jan 2021 at 09:58, Greg Kroah-Hartman
-> <gregkh@linuxfoundation.org> wrote:
-> > This is the start of the stable review cycle for the 4.19.165 release.
-> > There are 35 patches in this series, all will be posted as a response
-> > to this one.  If anyone has any issues with these being applied, please
-> > let me know.
-> >
-> > Responses should be made by Wed, 06 Jan 2021 15:56:52 +0000.
-> > Anything received after that time might be too late.
-> >
-> > The whole patch series can be found in one patch at:
-> >         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.19.165-rc1.gz
-> > or in the git tree and branch at:
-> >         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.19.y
-> > and the diffstat can be found below.
-> >
-> > thanks,
-> >
-> > greg k-h
-> >
-> > -------------
-> > Pseudo-Shortlog of commits:
-> >
-> > Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> >     Linux 4.19.165-rc1
-> [...]
-> > Peter Zijlstra <peterz@infradead.org>
-> >     mm/mmu_gather: invalidate TLB correctly on batch allocation failure and flush
-> [...]
-> 
-> This one fails to compile on the X15 (arm 32-bits) with:
-> | /srv/oe/build/tmp-lkft-glibc/work-shared/am57xx-evm/kernel-source/mm/memory.c:
-> In function 'tlb_table_invalidate':
-> | /srv/oe/build/tmp-lkft-glibc/work-shared/am57xx-evm/kernel-source/mm/memory.c:342:6:
-> error: implicit declaration of function 'tlb_needs_table_invalidate';
-> did you mean 'tlb_table_invalidate'?
-> [-Werror=implicit-function-declaration]
-> |   if (tlb_needs_table_invalidate()) {
-> |       ^~~~~~~~~~~~~~~~~~~~~~~~~~
-> |       tlb_table_invalidate
+Hi Rob,
 
-Thanks for letting me know, will go drop this and the other patches in
-this series and do a -rc2 soon.
+On Mon, Jan 04, 2021 at 09:58:08AM -0700, Rob Herring wrote:
+> Now that we have graph and video-interfaces schemas, rework the media
+> related schemas to use them.
+> 
+> Cc: Maxime Ripard <mripard@kernel.org>
+> Cc: Mauro Carvalho Chehab <mchehab@kernel.org>
+> Cc: Jacopo Mondi <jacopo@jmondi.org>
+> Cc: Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>
+> Cc: linux-media@vger.kernel.org
+> Signed-off-by: Rob Herring <robh@kernel.org>
 
-greg k-h
+Thanks, this really cleans things up!
+
+Acked-by: Sakari Ailus <sakari.ailus@linux.intel.com>
+
+-- 
+Sakari Ailus
