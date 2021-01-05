@@ -2,159 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C439C2EA143
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 01:05:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D619C2EA14E
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 01:10:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727620AbhAEAFY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 19:05:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35872 "EHLO
+        id S1727404AbhAEAKU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 19:10:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36640 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726826AbhAEAFX (ORCPT
+        with ESMTP id S1726681AbhAEAKU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 19:05:23 -0500
-Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA809C061793
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Jan 2021 16:04:42 -0800 (PST)
-Received: by mail-lf1-x12d.google.com with SMTP id h205so68589192lfd.5
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Jan 2021 16:04:42 -0800 (PST)
+        Mon, 4 Jan 2021 19:10:20 -0500
+Received: from mail-qv1-xf31.google.com (mail-qv1-xf31.google.com [IPv6:2607:f8b0:4864:20::f31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 483FBC061796;
+        Mon,  4 Jan 2021 16:09:39 -0800 (PST)
+Received: by mail-qv1-xf31.google.com with SMTP id l7so13957196qvt.4;
+        Mon, 04 Jan 2021 16:09:39 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=RIAu8uS5feNbhsyipiwLYRptnpa/P53/nDDHuTAmANU=;
-        b=Bg9iEFVIyFaOS5eu9+24tFOHTVbPYXmXuPa8fLOxoTJNvzX7lxDPyZ8FAgHgcuxGaB
-         rNhgDMM2EisQbSa2Aj0W4NSs3lhHF6a74Ql9LVu/WjaiGVHd7gE92eQZ0c/CRKtu4JzJ
-         t/mD5T/ww180To3bcVRi1WuBNjyUSBRo97HViY0FMmvBtDXhlUIIrTy/XTGz3fIwFHkK
-         kHiEZC0MaxBAUF8ROHsWr7rD5NvAzo4FTMeU+gGGXMJmHuv8bjr4kABJUaH6RTCw5DHh
-         /9K7UvN+ot87vJi5tatgaZ6zBm8NK9C6k3l1aHFojaY0KShox6iK0tzjrdDt0ysO/eRQ
-         41Iw==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=1uhXG5VLD6CUWlhDkTTNObylxsn0kU6AAjea0UpYc9Q=;
+        b=Wdw5+9ayMkyUjE86o9LD+DLDPhWZSBgPYRrKLJABWOUK0ScKeOK6gUu5kxe7Xm2/Dm
+         X2GOzpIRxzUQ6G3QaRI+I5m2NJfeq272OE5bMHI8ICIod1eL4aYE0FR4ApEiNAh2w74m
+         2H9lZuy9r6iFT08w9jbSPmpBIe2HjHa3AGMP55k9mpR7D4OEpdmNAIAkTdoix20yhKKD
+         73r8RhyPB65nvjDjDnEgHL/H7SWqaKcG6E6QYvg6UqGqghk5PyRpAvPi3LW7Flww0WUU
+         q3onOZY9Negv/VMkzkAGzjOQWgxj2JibBOmq/1n+Ybg3RoUbA0yf7C9b7Ptr9i8kV9CM
+         FbqQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=RIAu8uS5feNbhsyipiwLYRptnpa/P53/nDDHuTAmANU=;
-        b=egID+kh7l0rmgWZKw3lsLxCtUuMV39rxuyd+ZyJHm46lBZEr1NJKzc32gcSVFvk+aO
-         K74Xg10R+VT+djQPavWiY4M7TcY1D1PHm4eGinhs0Hp5oYeBLDHUyoPwm5bcMWEexKGk
-         UhM7Wa5nVKTEROIdnMz72NSWa8Mx+p5otzNfFYsPtLC3DOU4jLCzoRXY0veDkNX+XuQE
-         2lJwZpTOWGlmy3lGpXIHnobHDzdp66tQkf68qtx3FBMlfPURGeTYyDTD2g9snaJkVXn5
-         r/iYviCo4+yhjUcRTpPSUndZcKvpthxjg2XP3XXVPkGPQErBwUI7o2rMzKfybNt2JLWP
-         MZIA==
-X-Gm-Message-State: AOAM531CkkorPdF+Bf2u5wUdxnzcLzER53uhO9aP+XadJTWmUk9kE2B3
-        rl2O59uTbfB+bBTEEQI7HkvFqRpYbswdX8ohtQE=
-X-Google-Smtp-Source: ABdhPJzCBtNw3KUV+mj0Gs5HT7pcbktTyblGdVU5raqwsE0oZINcZDbSwiY7ga3F3OiSvTBdo312EebrkCkPF+R6x98=
-X-Received: by 2002:a19:301:: with SMTP id 1mr31231450lfd.67.1609805081256;
- Mon, 04 Jan 2021 16:04:41 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=1uhXG5VLD6CUWlhDkTTNObylxsn0kU6AAjea0UpYc9Q=;
+        b=GUen2ulEI/OjZX3RuFAVjHVtmB6E+WHjvLTk+Zv2iPayZxzGUmdJSswGTXDbnSMss8
+         KSH1nYnAD9CU4TBV/ln2sbvBrssw246Le2q8QKYZVDNOCfYNFsFUNb8ka/3twg5MDR76
+         E/TNw9QPtvcqIxlceiJMJpLfZBCT53OXhI7Ac0tiXHW/7zMRNnoEvfqBMqUyyKEOFcng
+         N3letBthKOohUwL3FWqRvHUUEwy8ZJV0MMeGwQxwGoTbvFDjcdDHwCQoh3LOuegk46pB
+         cl1A9z0nnpbHMfXVX1V0Ke4O7K3z6yWkw5wkwo3qERC8vZDmoXKdpI3SJoAquHZXMqrP
+         +35g==
+X-Gm-Message-State: AOAM53066AdubmhRARNzkza7nnQocovEwsKByvZXTQDPHvwsq9yMsYAl
+        rtYaYJdrlRjSk0xLpd1KB70=
+X-Google-Smtp-Source: ABdhPJzeBD+3xgKhHIcXSJTOBqR0uRZrJ9tts6d+f2ljfZGyPPE0opqUHa88iSp86VgmC9J2ozLGuQ==
+X-Received: by 2002:ad4:4761:: with SMTP id d1mr79302383qvx.12.1609805378458;
+        Mon, 04 Jan 2021 16:09:38 -0800 (PST)
+Received: from ubuntu-m3-large-x86 ([2604:1380:45f1:1d00::1])
+        by smtp.gmail.com with ESMTPSA id f59sm38218142qtd.84.2021.01.04.16.09.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 04 Jan 2021 16:09:37 -0800 (PST)
+Date:   Mon, 4 Jan 2021 17:09:36 -0700
+From:   Nathan Chancellor <natechancellor@gmail.com>
+To:     Alexander Lobakin <alobakin@pm.me>
+Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Kees Cook <keescook@chromium.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Fangrui Song <maskray@google.com>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Ralf Baechle <ralf@linux-mips.org>,
+        Alex Smith <alex.smith@imgtec.com>,
+        Markos Chandras <markos.chandras@imgtec.com>,
+        linux-mips@vger.kernel.org, stable@vger.kernel.org,
+        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com
+Subject: Re: [PATCH mips-next 0/4] MIPS: vmlinux.lds.S sections fix & cleanup
+Message-ID: <20210105000936.GA3877085@ubuntu-m3-large-x86>
+References: <20210104121729.46981-1-alobakin@pm.me>
 MIME-Version: 1.0
-References: <1acf4202-e5e6-f3fb-73c3-11bc965d3058@canonical.com>
-In-Reply-To: <1acf4202-e5e6-f3fb-73c3-11bc965d3058@canonical.com>
-From:   Daeho Jeong <daeho43@gmail.com>
-Date:   Tue, 5 Jan 2021 09:04:30 +0900
-Message-ID: <CACOAw_zqsY9u4t5zhh+yk-bNVVhZS2J3f6fyOX78tZBc19JeBg@mail.gmail.com>
-Subject: Re: [f2fs-dev] f2fs: add F2FS_IOC_DECOMPRESS_FILE and F2FS_IOC_COMPRESS_FILE
-To:     Colin Ian King <colin.king@canonical.com>
-Cc:     Daeho Jeong <daehojeong@google.com>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        linux-f2fs-devel@lists.sourceforge.net
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210104121729.46981-1-alobakin@pm.me>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Colin,
+On Mon, Jan 04, 2021 at 12:18:10PM +0000, Alexander Lobakin wrote:
+> This series hunts the problems discovered after manual enabling of
+> ARCH_WANT_LD_ORPHAN_WARN, notably the missing PAGE_ALIGNED_DATA()
+> section affecting VDSO placement (marked for stable).
+> 
+> Compile and runtime tested on MIPS32R2 CPS board with no issues.
+> 
+> Alexander Lobakin (4):
+>   MIPS: vmlinux.lds.S: add missing PAGE_ALIGNED_DATA() section
+>   MIPS: vmlinux.lds.S: add ".rel.dyn" to DISCARDS
+>   MIPS: vmlinux.lds.S: add ".gnu.attributes" to DISCARDS
+>   MIPS: select ARCH_WANT_LD_ORPHAN_WARN
+> 
+>  arch/mips/Kconfig              | 1 +
+>  arch/mips/kernel/vmlinux.lds.S | 5 ++++-
+>  2 files changed, 5 insertions(+), 1 deletion(-)
+> 
+> -- 
+> 2.30.0
+> 
 
-Thanks for notifying me. We need to just continue without
-set_page_dirty() and f2fs_put_page().
+Glad to see ARCH_WANT_LD_ORPHAN_WARN catching on :)
 
-2021=EB=85=84 1=EC=9B=94 4=EC=9D=BC (=EC=9B=94) =EC=98=A4=ED=9B=84 11:43, C=
-olin Ian King <colin.king@canonical.com>=EB=8B=98=EC=9D=B4 =EC=9E=91=EC=84=
-=B1:
->
-> Hi,
->
-> Static analysis using Coverity has detected a potential null pointer
-> dereference after a null check in the following commit:
->
-> commit 5fdb322ff2c2b4ad519f490dcb7ebb96c5439af7
-> Author: Daeho Jeong <daehojeong@google.com>
-> Date:   Thu Dec 3 15:56:15 2020 +0900
->
->     f2fs: add F2FS_IOC_DECOMPRESS_FILE and F2FS_IOC_COMPRESS_FILE
->
-> The analysis is as follows:
->
-> 4025 static int redirty_blocks(struct inode *inode, pgoff_t page_idx,
-> int len)
-> 4026 {
-> 4027        DEFINE_READAHEAD(ractl, NULL, inode->i_mapping, page_idx);
-> 4028        struct address_space *mapping =3D inode->i_mapping;
-> 4029        struct page *page;
-> 4030        pgoff_t redirty_idx =3D page_idx;
-> 4031        int i, page_len =3D 0, ret =3D 0;
-> 4032
-> 4033        page_cache_ra_unbounded(&ractl, len, 0);
-> 4034
->
->     1. Condition i < len, taking true branch.
->     4. Condition i < len, taking true branch.
->
-> 4035        for (i =3D 0; i < len; i++, page_idx++) {
-> 4036                page =3D read_cache_page(mapping, page_idx, NULL, NUL=
-L);
->
->     2. Condition IS_ERR(page), taking false branch.
->     5. Condition IS_ERR(page), taking true branch.
->
-> 4037                if (IS_ERR(page)) {
-> 4038                        ret =3D PTR_ERR(page);
->
->     6. Breaking from loop.
->
-> 4039                        break;
-> 4040                }
-> 4041                page_len++;
->
->     3. Jumping back to the beginning of the loop.
->
-> 4042        }
-> 4043
->
->     7. Condition i < page_len, taking true branch.
->
-> 4044        for (i =3D 0; i < page_len; i++, redirty_idx++) {
-> 4045                page =3D find_lock_page(mapping, redirty_idx);
->
->     8. Condition !page, taking true branch.
->     9. var_compare_op: Comparing page to null implies that page might be
-> null.
->
-> 4046                if (!page)
-> 4047                        ret =3D -ENOENT;
->
-> Dereference after null check (FORWARD_NULL)
->
->    10. var_deref_model: Passing null pointer page to set_page_dirty,
-> which dereferences it.
->
-> 4048                set_page_dirty(page);
-> 4049                f2fs_put_page(page, 1);
-> 4050                f2fs_put_page(page, 0);
-> 4051        }
-> 4052
-> 4053        return ret;
-> 4054 }
->
-> The !page check on line 4046 sets ret appropriately but we have a
-> following call to set_page_dirty on a null page that causes the error.
-> Not sure how this should be fixed, should the check bail out immediately
-> or just avoid the following set_page_dirty anf f2fs_put_page calls?
->
-> Colin
->
->
->
-> _______________________________________________
-> Linux-f2fs-devel mailing list
-> Linux-f2fs-devel@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/linux-f2fs-devel
+I took this for a spin with clang with malta_kvm_guest_defconfig and I
+only see one section unaccounted for:
+
+$ make -skj"$(nproc)" ARCH=mips CROSS_COMPILE=mipsel-linux-gnu- LLVM=1 O=out/mips distclean malta_kvm_guest_defconfig all
+...
+ld.lld: warning: <internal>:(.got) is being placed in '.got'
+ld.lld: warning: <internal>:(.got) is being placed in '.got'
+ld.lld: warning: <internal>:(.got) is being placed in '.got'
+
+Looks like most architectures place it in .got (ia64, nios2, powerpc)
+or .text (arm64).
+
+Cheers,
+Nathan
