@@ -2,102 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BBDD2EA84F
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 11:14:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E0142EA859
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 11:14:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728752AbhAEKMs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 05:12:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44944 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728074AbhAEKMr (ORCPT
+        id S1728859AbhAEKNp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 05:13:45 -0500
+Received: from bmail1.ministro.hu ([5.249.150.236]:52358 "EHLO
+        bmail1.ministro.hu" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728067AbhAEKNo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 05:12:47 -0500
-Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E418C061793;
-        Tue,  5 Jan 2021 02:12:07 -0800 (PST)
-Received: by mail-pg1-x52a.google.com with SMTP id n10so20971009pgl.10;
-        Tue, 05 Jan 2021 02:12:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=s6MIg1by4xxMrWniV9WmT7wL3vQp0SC+5JFNaInbk7g=;
-        b=IxQVrP0of1IbChhiAKviNyE6d95TPLiOq/QqK6rbSqrFX7ayK0s3nAK8E15gNzxosg
-         UXIE0C+4AEIg6kX5YcT11cbMYHb85nt/rFFyuGsBoMsO7K7AIxdeKxjSG2XWDoVxjUkh
-         nfHCiLo1b8w6lkajAx1UKSdmzGFAW+MFHrm3YqTOUrJiNPKV2IFj7ktlKzOwK9QvMFhj
-         iHGWoIRSaJ/wX1PqyMcgjF/U6xTQ3Fdfg9FJva0QQ2erzWvkjvVSV7uzv8rT6eNKz9mk
-         WVpcnhhaRUyHj34Z0QlUHuGK9lQ2RDAS6FxWt9Obin96Z3DGdbZ9ZYTi18kHOtPWOwZi
-         DDcQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=s6MIg1by4xxMrWniV9WmT7wL3vQp0SC+5JFNaInbk7g=;
-        b=AiP3WXRTlO3wNZWdpVOr0gPRI1WuM5cTCTetP/z5DQ6AnStz/mE3QGOfTKdn9YIELn
-         kZlFpKemEv0X/Nw13n3q5tgl1BH8pCXxeJy54+TGTVXyp6puZMlCDgqs05oulT4G6G2j
-         q5vot3+L98/8DMzOhiGs+DZ1eGsjWH2cX/wlEiF7iZxZaITYBWUkjorBUWt7MZU0ovkp
-         ojHIP88ssxIk9Eh4HN+C7rJOPx3zK0jpcq/74qcUHKd438ErCT0rrIUSoabpddmEKpr3
-         id6GTiPTGjeze+4n5Ab5kAgP4r/bhwcpu1Zjaz1i2/fYp1wXa6Q8zzIx806q27Z3Eg6J
-         831w==
-X-Gm-Message-State: AOAM531cVAQdSFM9XdjbJ/c8YKpWKUPS+ryASZidU1YbfzkzttJbGqzS
-        hhi8kgIzhtrvF2oSV9mO32dVOOU2Svk=
-X-Google-Smtp-Source: ABdhPJzMmTATlj4o28EQdMzNkIFfTFD63ya/GZyNscl6IKKhdhsYxo35yHvASuXrlDytfK5JCFtvrQ==
-X-Received: by 2002:a05:6a00:22ce:b029:197:9168:80fb with SMTP id f14-20020a056a0022ceb0290197916880fbmr48483416pfj.38.1609841527168;
-        Tue, 05 Jan 2021 02:12:07 -0800 (PST)
-Received: from localhost ([211.108.35.36])
-        by smtp.gmail.com with ESMTPSA id u12sm57403310pfh.98.2021.01.05.02.12.05
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Tue, 05 Jan 2021 02:12:06 -0800 (PST)
-Date:   Tue, 5 Jan 2021 19:12:02 +0900
-From:   Minwoo Im <minwoo.im.dev@gmail.com>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Chaitanya Kulkarni <Chaitanya.Kulkarni@wdc.com>
-Subject: Re: [RFC PATCH V3 1/1] block: reject I/O for same fd if block size
- changed
-Message-ID: <20210105101202.GA9970@localhost.localdomain>
-References: <20210104130659.22511-1-minwoo.im.dev@gmail.com>
- <20210104130659.22511-2-minwoo.im.dev@gmail.com>
- <20210104171108.GA27235@lst.de>
- <20210104171141.GB27235@lst.de>
- <20210105010456.GA6454@localhost.localdomain>
- <20210105075009.GA30039@lst.de>
+        Tue, 5 Jan 2021 05:13:44 -0500
+Received: from localhost (localhost [127.0.0.1])
+        by bmail1.ministro.hu (Postfix) with ESMTP id 3BD7911F84F;
+        Tue,  5 Jan 2021 11:13:02 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ministro.hu;
+        s=201804; t=1609841582;
+        bh=/+byBqZvoSDCctSRWxIZMu5f2V01FrVLCGvDFaB5oyw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=t6P3/1QG5ZMdlDSACP2F7uiEmV1WPh9QlHt1nBruIyBGuR5paI+k7pVxO8kdtgnKE
+         Ew91igGozNcFtY90rNwaBPmNg2+gYfcX5bjEhXjYpd4kf4Xbo54l3jRYyjj6VbEzSp
+         +L9BhjYEQmcfNYhyeMOzAcdjsa4vz9SmwOcNHdirBu/ml5Ytz/bhy3kp5LjeVC/Max
+         0kQvSKf0q7yLdhbzSCi3xdsO4AvSgw0XtgAFJnH/6NgeHQUtYPy+3qNmM6pMOg9UUP
+         ziGWcC/vwMcFumy/hKtFj0inccXUDtLpnb3gYwUfiCAA5O6CtFyM5mxU12MkYrNGZm
+         yxOX4nY5SrFxg==
+X-Virus-Scanned: Debian amavisd-new at ministro.hu
+Received: from bmail1.ministro.hu ([127.0.0.1])
+        by localhost (bmail1.ministro.hu [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id Hl2DmTyJirux; Tue,  5 Jan 2021 11:12:15 +0100 (CET)
+Received: from dev (localhost [127.0.0.1])
+        by bmail1.ministro.hu (Postfix) with ESMTPSA id 14A4511F84E;
+        Tue,  5 Jan 2021 11:12:13 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ministro.hu;
+        s=201804; t=1609841535;
+        bh=/+byBqZvoSDCctSRWxIZMu5f2V01FrVLCGvDFaB5oyw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Np15jG1nY4XPYIykOytyXzFUJpSrHgCTYIDhLGbwMEFqXpRYtw7bJEG87dXdcADRC
+         KSFwKZW/Y4rqxHpkL9NZkk2s2dAPxgvViedIV2VzdM8ZIBbtaRBpXvGA30h0A4Uap6
+         1mj5ibdvVU56XUPht8himYKPj62hf62wNFw7W756kyCu/pG6LsunlAmWoGgQbl8AyL
+         gWnUc8wu22pFv1P3xwLW/wsdFTogVAxS9nXjTDhofx/eoKhap2oysKcWv460t4M+IV
+         SqSmVBWRsLBPdaYjTtrYJiHIbFgRYDY+j/81BtTgkg30stEM5K83964WNSoGmE77cB
+         7YG5IezbNNcTQ==
+Date:   Tue, 5 Jan 2021 10:12:11 +0000
+From:   =?iso-8859-1?Q?J=F3zsef_Horv=E1th?= <info@ministro.hu>
+To:     Jiri Slaby <jirislaby@kernel.org>
+Cc:     'Greg Kroah-Hartman' <gregkh@linuxfoundation.org>,
+        'Rob Herring' <robh+dt@kernel.org>,
+        linux-serial@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v6] Serial: silabs si4455 serial driver
+Message-ID: <20210105101211.GA9717@dev>
+References: <20201215181506.GA20057@dev>
+ <fcbd72c2-e3a1-241e-a34b-7aecc41c8964@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20210105075009.GA30039@lst.de>
-User-Agent: Mutt/1.11.4 (2019-03-13)
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <fcbd72c2-e3a1-241e-a34b-7aecc41c8964@kernel.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
-
-On 21-01-05 08:50:09, Christoph Hellwig wrote:
-> On Tue, Jan 05, 2021 at 10:04:56AM +0900, Minwoo Im wrote:
-> > It was a point that I really would like to ask by RFC whether we can
-> > have backpointer to the gendisk from the request_queue.  And I'd like to
-> > have it to simplify this routine and for future usages also.
+On Wed, Dec 16, 2020 at 09:25:47AM +0100, Jiri Slaby wrote:
+> On 15. 12. 20, 19:15, József Horváth wrote:
+> > --- /dev/null
+> > +++ b/drivers/tty/serial/si4455.c
+> > @@ -0,0 +1,1372 @@
+> ...
+> > +static int si4455_write_data(struct uart_port *port, u8 command, int poll,
+> > +			     int length, const u8 *data)
+> > +{
+> > +	int ret = 0;
+> > +	u8 *data_out;
+> > +
+> > +	if (poll) {
+> > +		ret = si4455_poll_cts(port);
+> > +		if (ret)
+> > +			return ret;
+> > +	}
+> > +
+> > +	data_out = kzalloc(1 + length, GFP_KERNEL);
+> > +	if (!data_out)
+> > +		return -ENOMEM;
+> > +
+> > +	data_out[0] = command;
+> > +	memcpy(&data_out[1], data, length);
+> > +	ret = spi_write(to_spi_device(port->dev), data_out, 1 + length);
+> > +	if (ret) {
+> > +		dev_err(port->dev,
+> > +			"%s: spi_write error (%i)\n", __func__, ret);
+> > +	}
+> > +
+> > +	kfree(data_out);
+> > +
+> > +	return ret;
+> > +}
+> > +
+> > +static void si4455_set_power(struct si4455_port *priv, int on)
 > 
-> I think it is the right thing to do, at least mid-term, although I
-> don't want to enforce the burden on you right now.
+> "on" can be bool here. And "poll" in earlier functions. And "on" in later
+> ones.
 > 
-> > I will restrict this one by checking GENHD_FL_UP flag from the gendisk
-> > for the next patch.
-> > 
-> > > 
-> > > Alternatively we could make this request_queue QUEUE* flag for now.
-> > 
-> > As this patch rejects I/O from the block layer partition code, can we
-> > have this flag in gendisk rather than request_queue ?
+> > +{
+> > +	if (!priv->shdn_gpio)
+> > +		return;
+> > +	if (on) {
+> > +		gpiod_direction_output(priv->shdn_gpio, 0);
+> > +		usleep_range(4000, 5000);
+> > +		gpiod_set_value(priv->shdn_gpio, 1);
+> > +		usleep_range(4000, 5000);
+> > +	} else {
+> > +		gpiod_direction_output(priv->shdn_gpio, 0);
+> > +	}
 > 
-> For now we can as the request_queue is required.  I have some plans to
-> clean up this area, but just using a request_queue flag for now is
-> probably the simplest, even if it means more work for me later.
+> The above can be simpler:
+> 
+> gpiod_direction_output(priv->shdn_gpio, 0);
+> 
+> if (on) {
+> 	usleep_range(4000, 5000);
+> 	gpiod_set_value(priv->shdn_gpio, 1);
+> 	usleep_range(4000, 5000);
+> }
+> 
+> > +static void si4455_handle_rx_pend(struct si4455_port *s)
+> > +{
+> > +	struct uart_port *port = &s->port;
+> > +	u8 *data = NULL;
+> 
+> Unused initialization.
+> 
+> > +	int sret = 0;
+> > +	int i = 0;
+> > +
+> > +	if (s->package_size == 0) {
+> > +		//TODO: variable packet length
+> > +		dev_err(port->dev, "%s: variable packet length is not supported by the driver\n",
+> > +			__func__);
+> > +		return;
+> > +	}
+> > +
+> > +	data = kzalloc(s->package_size, GFP_KERNEL);
+> 
+> Missing check of data.
+> 
+> > +	sret = si4455_end_rx(port, s->package_size, data);
+> > +	if (sret) {
+> > +		dev_err(port->dev, "%s: si4455_end_rx error (%i)\n",
+> > +			__func__, sret);
+> > +	} else {
+> > +		for (i = 0; i < s->package_size; i++) {
+> > +			uart_insert_char(port, 0, 0, data[i], TTY_NORMAL);
+> > +			port->icount.rx++;
+> > +		}
+> > +		tty_flip_buffer_push(&port->state->port);
+> > +	}
+> > +	kfree(data);
+> > +}
+> ...
+> thanks,
+> -- 
+> js
+> suse labs
 
-Please let me prepare the next quick fix for this issue with request_queue
-flag.
+Thank you for suggestions.
 
-Thanks!
+Üdvözlettel / Best regards:
+József Horváth
+
