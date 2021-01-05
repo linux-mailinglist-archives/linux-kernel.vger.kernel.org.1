@@ -2,102 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3AB692EAE1F
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 16:22:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A261C2EAE22
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 16:22:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727660AbhAEPWb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 10:22:31 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58876 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727155AbhAEPWa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 10:22:30 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D1C3522B4B;
-        Tue,  5 Jan 2021 15:21:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1609860110;
-        bh=97UVCrOKT2ErdgEJfAOSkI21WLa7Deputq5XkcrSorU=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=NwTwNrVi66RUa3GtNfMNr9IQIcz725PAprzh5MioC9eDPEj3xGYCWy4hHotoKqH8E
-         GjvP+MwWSlLBrKVr3NusyLcs6M4RltorOOK/iqcvwIWD2NS5V8K2Ky5TzAvjve6G/g
-         VCL5Prj92RXGBsbN/5AMqKXrWaYV0jdi6T4YR6P/C+EhaVAl7yk+48QA+hLtPcfr5+
-         /gF4xJQSJ1YMBWwfDO5cwG+zvl8SuwsDlz0CgVbIHNG4Tt6bjNRpFMn1yCSLiVPPBw
-         lWwDzcOq54Oi8OVxi7mG7nfy989go6YqxfFNdd3cKr77mBRAY0HrETBh23d7MwmO1N
-         Ro1R0RfgHGuOw==
-Received: by mail-ed1-f46.google.com with SMTP id c7so363929edv.6;
-        Tue, 05 Jan 2021 07:21:49 -0800 (PST)
-X-Gm-Message-State: AOAM533TkKfpbQjwK763c3SIjPlrNZ0V1yIAUV6SyXV+isBgJ4EB+aNO
-        BDSHlkmmfIYpcyvs43uFozvqxdPahZ/UkJccTQ==
-X-Google-Smtp-Source: ABdhPJxr4lrBHt+Qp69qQk6ZwZ9AkMYQpVMgEu/oYmZ68rq63mVXGURBFWpkJLNl5EZw+QhMgDoua1jHUFC8pgLapGU=
-X-Received: by 2002:a50:f404:: with SMTP id r4mr286028edm.62.1609860108469;
- Tue, 05 Jan 2021 07:21:48 -0800 (PST)
+        id S1727750AbhAEPWi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 10:22:38 -0500
+Received: from mail-oi1-f181.google.com ([209.85.167.181]:43330 "EHLO
+        mail-oi1-f181.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727155AbhAEPWi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Jan 2021 10:22:38 -0500
+Received: by mail-oi1-f181.google.com with SMTP id q25so36328257oij.10;
+        Tue, 05 Jan 2021 07:22:22 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=SyJz6levXME/UC68QYJ+4uWzdWFE5a0wg54YwkbqupA=;
+        b=sFr/tVBKMYMXmvM59hcEeuqJM/4x9aYYEe+YCnLFwj5OiuNJvNTavTALsQhEbzA41q
+         e5DTvZsocWnPoydSPVrji+JGfbp3JSHIukjOgZ2NuKMdbyzhDsHJr+nf4d3AaydGrjOR
+         CTjE9SvKyimO+TPg+h8sByWjXz8qyMiDZ09I9hjcvIzbqGwdG/3TYtiI0GneBRm9KKR1
+         3jAp0GYhJh1z9eSY7/VeETslz/j3NTfpg+O5ZhL12lnKNnPkDzwkqn1zKaOPoJZQZDAE
+         TjL1TuhLGgNkWjuYPd21s3Lx4rxjp9/QlLg7gy7emzIIo2cOMvCZlvQw+kBIdAbu++ai
+         yiAg==
+X-Gm-Message-State: AOAM531bQ38XdoKCdR2xggok27yTeAiurHzKrsNAsh+FF8IUrkrzU+kN
+        QeaGOVCyhuaDV0M57aS9TneXa8rc7Jt+vQ3+bTA=
+X-Google-Smtp-Source: ABdhPJzkhKmVXnk0Pj461vV/IRhT+3JmtzHyPQ5LcBcKlrPuJ0N6+JVymPrMth8UpJzTmbW/WgwN/RKozZ0duOtuXg8=
+X-Received: by 2002:aca:3cc5:: with SMTP id j188mr39452oia.54.1609860117189;
+ Tue, 05 Jan 2021 07:21:57 -0800 (PST)
 MIME-Version: 1.0
-References: <cover.1609844956.git.viresh.kumar@linaro.org>
-In-Reply-To: <cover.1609844956.git.viresh.kumar@linaro.org>
-From:   Rob Herring <robh+dt@kernel.org>
-Date:   Tue, 5 Jan 2021 08:21:36 -0700
-X-Gmail-Original-Message-ID: <CAL_JsqJMr3vfz2B29vzvFALCt_5-J__eJv2TZHJ0sR9nM=xXaw@mail.gmail.com>
-Message-ID: <CAL_JsqJMr3vfz2B29vzvFALCt_5-J__eJv2TZHJ0sR9nM=xXaw@mail.gmail.com>
-Subject: Re: [RFC 0/2] kbuild: Add support to build overlays (%.dtbo)
-To:     Viresh Kumar <viresh.kumar@linaro.org>,
-        Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>
-Cc:     Pantelis Antoniou <pantelis.antoniou@konsulko.com>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        devicetree@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Bill Mills <bill.mills@linaro.org>, tero.kristo@gmail.com
+References: <20201227130407.10991-1-wsa+renesas@sang-engineering.com> <20201227130407.10991-3-wsa+renesas@sang-engineering.com>
+In-Reply-To: <20201227130407.10991-3-wsa+renesas@sang-engineering.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Tue, 5 Jan 2021 16:21:46 +0100
+Message-ID: <CAMuHMdXaOQRjp1vMwRDKK2ckBKX9BpLrqSfzGXRMnbXyKzSygQ@mail.gmail.com>
+Subject: Re: [PATCH 2/5] clk: renesas: r8a779a0: add clocks for RAVB
+To:     Wolfram Sang <wsa+renesas@sang-engineering.com>
+Cc:     Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 5, 2021 at 4:24 AM Viresh Kumar <viresh.kumar@linaro.org> wrote:
+Hi Wolfram,
+
+On Sun, Dec 27, 2020 at 2:04 PM Wolfram Sang
+<wsa+renesas@sang-engineering.com> wrote:
+> Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
+
+Thanks for your patch!
+
+> --- a/drivers/clk/renesas/r8a779a0-cpg-mssr.c
+> +++ b/drivers/clk/renesas/r8a779a0-cpg-mssr.c
+> @@ -148,6 +148,12 @@ static const struct cpg_core_clk r8a779a0_core_clks[] __initconst = {
+>  };
 >
-> Hello,
->
-> Here is an attempt to make some changes in the kernel to allow building
-> of device tree overlays.
->
-> While at it, I would also like to discuss about how we should mention
-> the base DT blobs in the Makefiles for the overlays, so they can be
-> build tested to make sure the overlays apply properly.
->
-> A simple way is to mention that with -base extension, like this:
->
-> $(overlay-file)-base := platform-base.dtb
->
-> Any other preference ?
+>  static const struct mssr_mod_clk r8a779a0_mod_clks[] __initconst = {
+> +       DEF_MOD("avb0",         211,    R8A779A0_CLK_S3D1),
+> +       DEF_MOD("avb1",         212,    R8A779A0_CLK_S3D1),
+> +       DEF_MOD("avb2",         213,    R8A779A0_CLK_S3D1),
+> +       DEF_MOD("avb3",         214,    R8A779A0_CLK_S3D1),
+> +       DEF_MOD("avb4",         215,    R8A779A0_CLK_S3D1),
+> +       DEF_MOD("avb5",         216,    R8A779A0_CLK_S3D1),
 
-I think we'll want something similar to how '-objs' works for modules:
+For all other SoCs, we used the HP clock (S3D2 on R-Car V3U) instead
+of the ZS clock as the parent clock of the EtherAVB module clocks.
+Hence I think we should be consequent and use S3D2 here.
 
-foo-board-1-dtbs := foo-board.dtb foo-overlay1.dtbo
-foo-board-2-dtbs := foo-board.dtb foo-overlay2.dtbo
-foo-board-1-2-dtbs := foo-board.dtb foo-overlay1.dtbo foo-overlay2.dtbo
-dtbs-y += foo-board-1.dtb foo-board-2.dtb foo-board-1-2.dtb
+>         DEF_MOD("csi40",        331,    R8A779A0_CLK_CSI0),
+>         DEF_MOD("csi41",        400,    R8A779A0_CLK_CSI0),
+>         DEF_MOD("csi42",        401,    R8A779A0_CLK_CSI0),
 
-(One difference here is we will want all the intermediate targets
-unlike .o files.)
+Gr{oetje,eeting}s,
 
-You wouldn't necessarily have all the above combinations, but you have
-to allow for them. I'm not sure how we'd handle applying any common
-overlays where the base and overlay are in different directories.
+                        Geert
 
-Another thing here is adding all the above is not really going to
-scale on arm32 where we have a single dts directory. We need to move
-things to per vendor/soc family directories. I have the script to do
-this. We just need to agree on the vendor names and get Arnd/Olof to
-run it. I also want that so we can enable schema checks by default
-once a vendor is warning free (the whole tree is going to take
-forever).
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-> Also fdtoverlay is an external entity right now, and is not part of the
-> kernel. Do we need to make it part of the kernel ? Or keep using the
-> external entity ?
-
-Part of the kernel. We just need to add it to the dtc sync script and
-makefile I think.
-
-Rob
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
