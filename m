@@ -2,83 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 536632EA71B
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 10:13:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 84A612EA717
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 10:13:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727939AbhAEJNk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 04:13:40 -0500
-Received: from mga17.intel.com ([192.55.52.151]:50274 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727922AbhAEJNh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 04:13:37 -0500
-IronPort-SDR: aFYyTwkkOO51OzhiK9CXy4FsjM4rmXkqDabpuIHL0OILHRtiU2dY1/wHrHZpftN70r1mu/r8Ub
- IYD7g0sU2NsQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9854"; a="156862078"
-X-IronPort-AV: E=Sophos;i="5.78,476,1599548400"; 
-   d="scan'208";a="156862078"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Jan 2021 01:11:51 -0800
-IronPort-SDR: VVhF95p9st5xLBTXdLZ6yja8BVMHiBlCOm/ZMHGL6AmvzZXwA4+G3hwSiRE1uoUxK+B8JXqBOA
- jypsA8TDu8mQ==
-X-IronPort-AV: E=Sophos;i="5.78,476,1599548400"; 
-   d="scan'208";a="378794974"
-Received: from bard-ubuntu.sh.intel.com ([10.239.13.33])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Jan 2021 01:11:49 -0800
-From:   Bard Liao <yung-chuan.liao@linux.intel.com>
-To:     gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
-        andriy.shevchenko@linux.intel.com, linux-acpi@vger.kernel.org,
-        heikki.krogerus@linux.intel.com, rafael@kernel.org
-Cc:     bard.liao@intel.com
-Subject: [PATCH 2/2] device property: add description of fwnode cases
-Date:   Tue,  5 Jan 2021 17:11:46 +0800
-Message-Id: <20210105091146.25422-3-yung-chuan.liao@linux.intel.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210105091146.25422-1-yung-chuan.liao@linux.intel.com>
-References: <20210105091146.25422-1-yung-chuan.liao@linux.intel.com>
+        id S1727822AbhAEJNQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 04:13:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35776 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725789AbhAEJNN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Jan 2021 04:13:13 -0500
+Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18EF9C061574;
+        Tue,  5 Jan 2021 01:12:33 -0800 (PST)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4D96G46wxFz9sVv;
+        Tue,  5 Jan 2021 20:12:25 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
+        s=201909; t=1609837949;
+        bh=yIBmNFY7IIvoYm6vloU8xR4+rOYHg+/39Nso3nw/G/Q=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=QJ4XIMcNpUoJzuoLThPU+S4kvNMOQ0JvXD2FvV7JBizappV2V81lztYDSaaWc0wxx
+         sO6nyx6xdkOItuNnYiaiTPTFfA9U0pVjjLcpdcXrNwMgyIkmKa+WiW2eC06NgIytj1
+         82IZMpTp/X8XdxCWmUSruiSHlTN5O80eA0yTgHnMnMkB8nvzyVNqW3m5XfzHRA/wQb
+         QJ99m/4s1CLJUSuRcwV9z5oMq+lW7zDxsVtCu9grXdkmpEgnNN7q/5BbaTs3Q5irMq
+         SkYUXf2ksR4jMHHYVR7JsY578JXhi0wrpnY/6w+OqRmyU1DUhNOmCD1MWqeelicQOS
+         n7J7OF+aLF9Ng==
+From:   Michael Ellerman <mpe@ellerman.id.au>
+To:     Andrew Lunn <andrew@lunn.ch>
+Cc:     netdev@vger.kernel.org, davem@davemloft.net,
+        pantelis.antoniou@gmail.com, kuba@kernel.org,
+        linux-kernel@vger.kernel.org, linuxppc-dev@ozlabs.org
+Subject: Re: [PATCH] net: ethernet: fs_enet: Add missing MODULE_LICENSE
+In-Reply-To: <X/PRX+RziaU3IJGi@lunn.ch>
+References: <20210105022229.54601-1-mpe@ellerman.id.au> <X/PRX+RziaU3IJGi@lunn.ch>
+Date:   Tue, 05 Jan 2021 20:12:21 +1100
+Message-ID: <87zh1ng32i.fsf@mpe.ellerman.id.au>
+MIME-Version: 1.0
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There are only four valid fwnode cases which are
-- primary --> secondary --> -ENODEV
-- primary --> NULL
-- secondary --> -ENODEV
-- NULL
+Andrew Lunn <andrew@lunn.ch> writes:
+> On Tue, Jan 05, 2021 at 01:22:29PM +1100, Michael Ellerman wrote:
+>> Since commit 1d6cd3929360 ("modpost: turn missing MODULE_LICENSE()
+>> into error") the ppc32_allmodconfig build fails with:
+>> 
+>>   ERROR: modpost: missing MODULE_LICENSE() in drivers/net/ethernet/freescale/fs_enet/mii-fec.o
+>>   ERROR: modpost: missing MODULE_LICENSE() in drivers/net/ethernet/freescale/fs_enet/mii-bitbang.o
+>> 
+>> Add the missing MODULE_LICENSEs to fix the build. Both files include a
+>> copyright header indicating they are GPL v2.
+>> 
+>> Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+>> ---
+>>  drivers/net/ethernet/freescale/fs_enet/mii-bitbang.c | 1 +
+>>  drivers/net/ethernet/freescale/fs_enet/mii-fec.c     | 1 +
+>>  2 files changed, 2 insertions(+)
+>> 
+>> diff --git a/drivers/net/ethernet/freescale/fs_enet/mii-bitbang.c b/drivers/net/ethernet/freescale/fs_enet/mii-bitbang.c
+>> index c8e5d889bd81..76ac1a9eab58 100644
+>> --- a/drivers/net/ethernet/freescale/fs_enet/mii-bitbang.c
+>> +++ b/drivers/net/ethernet/freescale/fs_enet/mii-bitbang.c
+>> @@ -223,3 +223,4 @@ static struct platform_driver fs_enet_bb_mdio_driver = {
+>>  };
+>>  
+>>  module_platform_driver(fs_enet_bb_mdio_driver);
+>> +MODULE_LICENSE("GPL v2");
+>> diff --git a/drivers/net/ethernet/freescale/fs_enet/mii-fec.c b/drivers/net/ethernet/freescale/fs_enet/mii-fec.c
+>> index 8b51ee142fa3..407c330b432f 100644
+>> --- a/drivers/net/ethernet/freescale/fs_enet/mii-fec.c
+>> +++ b/drivers/net/ethernet/freescale/fs_enet/mii-fec.c
+>> @@ -224,3 +224,4 @@ static struct platform_driver fs_enet_fec_mdio_driver = {
+>>  };
+>>  
+>>  module_platform_driver(fs_enet_fec_mdio_driver);
+>> +MODULE_LICENSE("GPL v2");
+>
+> Hi Michael
+>
+> The use of "GPL v2" has been deprecated. Please use just "GPL". There
+> is a discussion about this here:
+>
+> https://lore.kernel.org/patchwork/patch/1036331/
+>
+> https://www.kernel.org/doc/html/latest/process/license-rules.html#id1
 
-dev->fwnode should be converted between the 4 cases above no matter
-how/when set_primary_fwnode() and set_secondary_fwnode() are called.
-Describe it in the code so people will keep it in mind.
+Ah sorry, I just grepped for "GPL v2" and saw lots of examples so copied
+that. Will post a new version using "GPL".
 
-Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
----
- drivers/base/core.c | 7 +++++++
- 1 file changed, 7 insertions(+)
-
-diff --git a/drivers/base/core.c b/drivers/base/core.c
-index 51b9545a050b..17eb14607074 100644
---- a/drivers/base/core.c
-+++ b/drivers/base/core.c
-@@ -4414,6 +4414,12 @@ static inline bool fwnode_is_primary(struct fwnode_handle *fwnode)
-  *
-  * Set the device's firmware node pointer to @fwnode, but if a secondary
-  * firmware node of the device is present, preserve it.
-+ *
-+ * Valid fwnode cases are:
-+ *  - primary --> secondary --> -ENODEV
-+ *  - primary --> NULL
-+ *  - secondary --> -ENODEV
-+ *  - NULL
-  */
- void set_primary_fwnode(struct device *dev, struct fwnode_handle *fwnode)
- {
-@@ -4432,6 +4438,7 @@ void set_primary_fwnode(struct device *dev, struct fwnode_handle *fwnode)
- 	} else {
- 		if (fwnode_is_primary(fn)) {
- 			dev->fwnode = fn->secondary;
-+			/* Set fn->secondary = NULL to keep fn as a primary fwnode */
- 			if (!(parent && fn == parent->fwnode))
- 				fn->secondary = NULL;
- 		} else {
--- 
-2.17.1
-
+cheers
