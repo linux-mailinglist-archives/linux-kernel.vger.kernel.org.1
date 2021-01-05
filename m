@@ -2,142 +2,209 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 159F32EA79F
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 10:36:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 989BB2EA7A9
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 10:36:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727869AbhAEJeG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 04:34:06 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:20417 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727927AbhAEJeF (ORCPT
+        id S1728230AbhAEJex (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 04:34:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39052 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726558AbhAEJeq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 04:34:05 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1609839158;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=KDRR0z0TUONmOgv9BLItAtpsqP3CgvwXGzYeT1dfz/4=;
-        b=bf1xH8KvDnGykQu0C/o3Wa+gXdSmeQFcYlcaHsy7UKFZ3wWKsW8NVIrqmfnthskML+4Pej
-        sNg6DlL6L8H9EUHFg1N580QDdsh8XSGcoNJo/j256T2L1c75hmH+DEvALfiCDZN4WZfbaK
-        sauM4zdsIybNmTvMS1doiw7j+0Sv1JM=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-411-X9SbBh3RMIqosxb8yBjmxw-1; Tue, 05 Jan 2021 04:32:34 -0500
-X-MC-Unique: X9SbBh3RMIqosxb8yBjmxw-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0CD97801A9E;
-        Tue,  5 Jan 2021 09:32:31 +0000 (UTC)
-Received: from [10.72.13.192] (ovpn-13-192.pek2.redhat.com [10.72.13.192])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id EFA7C60873;
-        Tue,  5 Jan 2021 09:32:20 +0000 (UTC)
-Subject: Re: [PATCH netdev 0/5] virtio-net support xdp socket zero copy xmit
-To:     Xuan Zhuo <xuanzhuo@linux.alibaba.com>, netdev@vger.kernel.org
-Cc:     dust.li@linux.alibaba.com, tonylu@linux.alibaba.com,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn.topel@intel.com>,
-        Magnus Karlsson <magnus.karlsson@intel.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        KP Singh <kpsingh@kernel.org>,
-        "open list:VIRTIO CORE AND NET DRIVERS" 
-        <virtualization@lists.linux-foundation.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "open list:XDP SOCKETS (AF_XDP)" <bpf@vger.kernel.org>
-References: <cover.1609837120.git.xuanzhuo@linux.alibaba.com>
-From:   Jason Wang <jasowang@redhat.com>
-Message-ID: <a67e00af-47fb-4d92-8342-27dc93c8aab9@redhat.com>
-Date:   Tue, 5 Jan 2021 17:32:19 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Tue, 5 Jan 2021 04:34:46 -0500
+Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04871C061574
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Jan 2021 01:34:06 -0800 (PST)
+Received: by mail-ej1-x636.google.com with SMTP id g20so40431172ejb.1
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Jan 2021 01:34:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=intel-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Lc40jslbH1xRRt0tOrq2I1ZmHYI3/bYLf9otRfEpUFk=;
+        b=rKpX+X0MWo5QydxMNyHcqd9s5JBAW647cOe8vtiCCX65S/9NSl0eg1QHLIt9bxoAJk
+         z3rrGpOkcPfm85NbQRhX0umHfyG1K6qdJLoIIf85eIVZVCN+Nn588np60lG1C3Ftm/+M
+         bj8DqBRCWncztjRWrU/H06CMC8lrA3FvvES8439LQGheiD3KZrYl7UVdhHyk6nUveo3Q
+         HRpUAozHBg2dO/9UTni1gaQKmTkfiURbV9eS7VOFsnjvgNMhnjihZyufzZ1FvndYzFpc
+         XC5qvyahSYwDTD0JRxw4WCWNBURBAbN+HcuoWd2Y7OuB16xxaQ/Wx3NCcgEQcFygkrIO
+         T2Mw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Lc40jslbH1xRRt0tOrq2I1ZmHYI3/bYLf9otRfEpUFk=;
+        b=H+zzNzXkn3nhkM7qi7eQwGLqzVzNl9FZj21F5iwSajTrVgLHc80ZeEeNsQ3IkFF52D
+         4mXCny7todhvt71fDe/nPuvWTbwQm6laN21KlWZTljKuzy2dRDztpxpSAJoaYZMvoaiW
+         WsB9r6reUgrC0I5JH/6e2zGpP+NNCjyzqr9EQAUx8q68p4Alfe9/zA18mbn9KwlSSip4
+         VskDqVctRH8j2mIJzetD2rAMRB/hlpgPYGB/QlvvKlvoDUW4TkoZisix6HxcbwGC8rUT
+         /8t6+bG0APggc4LDsexHTxUYfBw0UngmZZw30n0q6wLoTszWAgE9oP+71UxlqwYEdtc9
+         wYtQ==
+X-Gm-Message-State: AOAM532Y48AEr65iGE4tOcsT/7WNtp0k1nc46F4FUwKYv5HkYjCmo+nw
+        xs6duUMjgxiyCbjCYHyInZSjFehpQ17fyoxpxsIDrbnm188=
+X-Google-Smtp-Source: ABdhPJz0s5USw1zthbkXSVgOudrPSW2c+rbE9kTkPDW2X9QGuBOTMQpJ9jn8HrLwqO5H9PAuCMzICwvXLawGabKz/Ms=
+X-Received: by 2002:a17:906:a29a:: with SMTP id i26mr69039772ejz.45.1609839244729;
+ Tue, 05 Jan 2021 01:34:04 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <cover.1609837120.git.xuanzhuo@linux.alibaba.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+References: <20210104100323.GC13207@dhcp22.suse.cz> <033e1cd6-9762-5de6-3e88-47d3038fda7f@redhat.com>
+ <CAPcyv4h6mdKrwpqXfO0e_=sKjB-pY5KbP9ii+tQyFsK5bPkb=A@mail.gmail.com> <b5109800-a860-0f82-3e45-c0768cb1b038@redhat.com>
+In-Reply-To: <b5109800-a860-0f82-3e45-c0768cb1b038@redhat.com>
+From:   Dan Williams <dan.j.williams@intel.com>
+Date:   Tue, 5 Jan 2021 01:33:58 -0800
+Message-ID: <CAPcyv4jATooJTwXXGBvPrcCu57Ldt=6aBSEzaSqbwcHmczVaZg@mail.gmail.com>
+Subject: Re: uninitialized pmem struct pages
+To:     David Hildenbrand <david@redhat.com>
+Cc:     Michal Hocko <mhocko@suse.com>, Linux MM <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Jan 5, 2021 at 1:25 AM David Hildenbrand <david@redhat.com> wrote:
+>
+> On 05.01.21 06:17, Dan Williams wrote:
+> > On Mon, Jan 4, 2021 at 2:45 AM David Hildenbrand <david@redhat.com> wrote:
+> >>
+> >> On 04.01.21 11:03, Michal Hocko wrote:
+> >>> Hi,
+> >>> back in March [1] you have recommended 53cdc1cb29e8
+> >>> ("drivers/base/memory.c: indicate all memory blocks as removable") to be
+> >>> backported to stable trees and that has led to a more general discussion
+> >>> about the current state of pfn walkers wrt. uninitialized pmem struct
+> >>> pages. We haven't concluded any specific solution for that except for a
+> >>> general sentiment that pfn_to_online_page should be able to catch those.
+> >>> I might have missed any follow ups on that but I do not think we have
+> >>> landed on any actual solution in the end. Have I just missed any followups?
+> >>
+> >> Thanks for raising this issue. It's still on my list of "broken and
+> >> non-trivial to fix" things.
+> >>
+> >> So, as far as I recall, we still have the following two issues remaining:
+> >>
+> >> 1. pfn_to_online_page() false positives
+> >>
+> >> The semantics of pfn_to_online_page() were broken with sub-section
+> >> hot-add in corner cases.
+> >
+> > The motivation for that backport was for pre-subsection kernels. When
+> > onlining pmem that collides with the same section as System-RAM we may
+> > have a situation like:
+> >
+> > |--               SECTION                   -- |
+> > |-- System RAM      --        PMEM          -- |
+> > |-- pfn_valid()     --     PMEM metadata    -- |
+> >
+> > So problem 0. is just System RAM + PMEM collisions independent of
+> > sub-section support.
+>
+> IIRC, you were not able to hot-add the PMEM device before sub-section
+> support (which was bad and fixed by sub-section hot-add). How was this a
+> problem before?
 
-On 2021/1/5 下午5:11, Xuan Zhuo wrote:
-> The first patch made some adjustments to xsk.
-
-
-Thanks a lot for the work. It's rather interesting.
-
+The details are in the subsection changelog but the tl;dr is that I
+clumsily hacked around it by throwing away PMEM, but that breaks when
+PMEM shifts around in physical address space from one boot to the
+next. The moving around is on 64MB granularity, so subsection hotplug
+lets those shifts be covered and enables smaller granularity /
+alignment support for smaller things like p2pdma mappings.
 
 >
-> The second patch itself can be used as an independent patch to solve the problem
-> that XDP may fail to load when the number of queues is insufficient.
-
-
-It would be better to send this as a separated patch. Several people 
-asked for this before.
-
-
+> >
+> >>
+> >> If we have ZONE_DEVICE hot-added memory that overlaps in a section with
+> >> boot memory, this memory section will contain parts ZONE_DEVICE memory
+> >> and parts !ZONE_DEVICE memory. This can happen in sub-section
+> >> granularity (2MB IIRC). pfn_to_online_page() will succeed on ZONE_DEVICE
+> >> memory parts as the whole section is marked as online. Bad.
+> >>
+> >> One instance where this is still an issue is
+> >> mm/memory-failure.c:memory_failure() and
+> >> mm/memory-failure.c:soft_offline_page(). I thought for a while about
+> >> "fixing" these, but to me it felt like fixing pfn_to_online_page() is
+> >> actually the right approach.
+> >
+> > This is complicated by MEMORY_DEVICE_PRIVATE that I believe wants to
+> > say "yes" to pfn_to_online_page().
+> >
+> >>
+> >> But worse, before ZONE_DEVICE hot-add
+> >> 1. The whole section memmap does already exist (early sections always
+> >> have a full memmap for the whole section)
+> >> 2. The whole section memmap is initialized (although eventually with
+> >> dummy node/zone 0/0 for memory holes until that part is fixed) and might
+> >> be accessed by pfn walkers.
+> >>
+> >> So when hotadding ZONE_DEVICE we are modifying already existing and
+> >> visible memmaps. Bad.
+> >
+> > Where does the rewrite of a dummy page entry matter in practice? It
+> > would certainly be exceedingly Bad if in-use 'struct page' instances
+> > we're rewritten. You're only alleging the former, correct?
 >
-> The third to last patch implements support for xsk in virtio-net.
+> Yes, just another piece of the puzzle.
 >
-> A practical problem with virtio is that tx interrupts are not very reliable.
-> There will always be some missing or delayed tx interrupts. So I specially added
-> a point timer to solve this problem. Of course, considering performance issues,
-> The timer only triggers when the ring of the network card is full.
-
-
-This is sub-optimal. We need figure out the root cause. We don't meet 
-such issue before.
-
-Several questions:
-
-- is tx interrupt enabled?
-- can you still see the issue if you disable event index?
-- what's backend did you use? qemu or vhost(user)?
-
-
+> >> 2. Deferred init of ZONE_DEVICE ranges
+> >>
+> >> memmap_init_zone_device() runs after the ZONE_DEVICE zone was resized
+> >> and outside the memhp lock. I did not follow if the use of
+> >> get_dev_pagemap() actually makes sure that memmap_init_zone_device() in
+> >> pagemap_range() actually completed. I don't think it does.
+> >>
+> >>>
+> >>> Is anybody working on that?
+> >>>
+> >>
+> >> I believe Dan mentioned somewhere that he wants to see a real instance
+> >> of this producing a BUG before actually moving forward with a fix. I
+> >> might be wrong.
+> >
+> > I think I'm missing an argument for the user-visible effects of the
+> > "Bad." statements above. I think soft_offline_page() is a candidate
+> > for a local fix because mm/memory-failure.c already has a significant
+> > amount of page-type specific knowledge. So teaching it "yes" for
+> > MEMORY_DEVICE_PRIVATE-ZONE_DEVICE and "no" for other ZONE_DEVICE seems
+> > ok to me.
 >
-> Regarding the issue of virtio-net supporting xsk's zero copy rx, I am also
-> developing it, but I found that the modification may be relatively large, so I
-> consider this patch set to be separated from the code related to xsk zero copy
-> rx.
-
-
-That's fine, but a question here.
-
-How is the multieuque being handled here. I'm asking since there's no 
-programmable filters/directors support in virtio spec now.
-
-Thanks
-
-
+> I am not completely against working around the issue we have in the code
+> but nobody stumbled over them. IMHO it's just error prone code and
+> handling we have here that will bite us in the long term. E.g., any pfn
+> walker/code that sticks to the current documentation of
+> pfn_to_online_page().
 >
-> Xuan Zhuo (5):
->    xsk: support get page for drv
->    virtio-net: support XDP_TX when not more queues
->    virtio-net, xsk: distinguish XDP_TX and XSK XMIT ctx
->    xsk, virtio-net: prepare for support xsk
->    virtio-net, xsk: virtio-net support xsk zero copy tx
+> I am not sure it's the right thing to do for
+> MEMORY_DEVICE_PRIVATE-ZONE_DEVICE, that requires more discussion.
 >
->   drivers/net/virtio_net.c    | 643 +++++++++++++++++++++++++++++++++++++++-----
->   include/linux/netdevice.h   |   1 +
->   include/net/xdp_sock_drv.h  |  10 +
->   include/net/xsk_buff_pool.h |   1 +
->   net/xdp/xsk_buff_pool.c     |  10 +-
->   5 files changed, 597 insertions(+), 68 deletions(-)
+> >> We might tackle 1. by:
 >
-> --
-> 1.8.3.1
+> [...]
+> >> d) fixed by not allowing ZONE_DEVICE and !ZONE_DEVICE within a single
+> >> section. In the worst case, don't add partially present sections that
+> >> have big holes in the beginning/end. Like, if there is a 128MB section
+> >> with 126MB of memory followed by a 2MB hole, don't add that memory to
+> >> Linux with CONFIG_ZONE_DEVICE. Might turn some memory unusable, but
+> >> well, it would be the price to pay for simplicity. Being able to hotadd
+> >> PMEM is more important than using each and every last MB of memory.
+> >
+> > The collisions that are out there in the wild are 64MB System RAM
+> > followed by 64MB of PMEM. If you're suggesting reducing System RAM
+> > that collides with PMEM that's a consideration. It can't go the other
+> > way because there are deployed configurations that have persistent
+> > data there. Reducing System RAM runs into the problem of how early
+> > does the kernel know that it's bordering ZONE_DEVICE. It's not just
+> > PMEM, it's also EFI_MEMORY_SP (Linux Soft Reserved) memory.
 >
+> Yeah, obviously the first one. Being able to add+use PMEM is more
+> important than using each and every last MB of main memory.
+>
+> I wonder if we can just stop adding any system RAM like
+>
+> [     Memory Section    ]
+> [ RAM ] [      Hole     ]
+>
+> When there could be the possibility that the hole might actually be
+> PMEM. (e.g., with CONFIG_ZONE_DEVICE and it being the last section in a
+> sequence of sections, not just a tiny hole)
 
+I like the simplicity of it... I worry that the capacity loss
+regression is easy to notice by looking at the output of free(1) from
+one kernel to the next and someone screams.
