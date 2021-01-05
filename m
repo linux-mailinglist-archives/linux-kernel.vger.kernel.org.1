@@ -2,93 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A0092EA87D
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 11:24:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 61B2D2EA884
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 11:24:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728782AbhAEKUk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 05:20:40 -0500
-Received: from youngberry.canonical.com ([91.189.89.112]:51600 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726171AbhAEKUk (ORCPT
+        id S1729001AbhAEKVs convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 5 Jan 2021 05:21:48 -0500
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.85.151]:27007 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728981AbhAEKVr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 05:20:40 -0500
-Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <colin.king@canonical.com>)
-        id 1kwjRV-0002M9-C5; Tue, 05 Jan 2021 10:19:57 +0000
-From:   Colin King <colin.king@canonical.com>
-To:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Stephen Warren <swarren@nvidia.com>, linux-pm@vger.kernel.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH][V3] cpufreq: powernow-k8: pass policy rather than use cpufreq_cpu_get
-Date:   Tue,  5 Jan 2021 10:19:57 +0000
-Message-Id: <20210105101957.59072-1-colin.king@canonical.com>
-X-Mailer: git-send-email 2.29.2
+        Tue, 5 Jan 2021 05:21:47 -0500
+Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-30-uoFF9HGNMyeCKOzMT-0d8g-1; Tue, 05 Jan 2021 10:20:07 +0000
+X-MC-Unique: uoFF9HGNMyeCKOzMT-0d8g-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
+ Server (TLS) id 15.0.1347.2; Tue, 5 Jan 2021 10:20:07 +0000
+Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
+ AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
+ Tue, 5 Jan 2021 10:20:07 +0000
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Joe Perches' <joe@perches.com>,
+        Dwaipayan Ray <dwaipayanray1@gmail.com>
+CC:     "linux-kernel-mentees@lists.linuxfoundation.org" 
+        <linux-kernel-mentees@lists.linuxfoundation.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH] checkpatch: add a new check for strcpy/strlcpy uses
+Thread-Topic: [PATCH] checkpatch: add a new check for strcpy/strlcpy uses
+Thread-Index: AQHW4z9Q88VHmIJ6eEaZbDSrKKOd0aoY0EBw
+Date:   Tue, 5 Jan 2021 10:20:07 +0000
+Message-ID: <d081ca22bbd44f969fa45a8abc543606@AcuMS.aculab.com>
+References: <20210105082303.15310-1-dwaipayanray1@gmail.com>
+ <50cc861121b62b3c1518222f24f679c3f72b868d.camel@perches.com>
+In-Reply-To: <50cc861121b62b3c1518222f24f679c3f72b868d.camel@perches.com>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+From: Joe Perches
+> Sent: 05 January 2021 08:44
+> 
+> On Tue, 2021-01-05 at 13:53 +0530, Dwaipayan Ray wrote:
+> > strcpy() performs no bounds checking on the destination buffer.
+> > This could result in linear overflows beyond the end of the buffer.
+> >
+> > strlcpy() reads the entire source buffer first. This read
+> > may exceed the destination size limit. This can be both inefficient
+> > and lead to linear read overflows.
+> >
+> > The safe replacement to both of these is to use strscpy() instead.
+> > Add a new checkpatch warning which alerts the user on finding usage of
+> > strcpy() or strlcpy().
+> 
+> I do not believe that strscpy is preferred over strcpy.
+> 
+> When the size of the output buffer is known to be larger
+> than the input, strcpy is faster.
+> 
+> There are about 2k uses of strcpy.
+> Is there a use where strcpy use actually matters?
+> I don't know offhand...
+> 
+> But I believe compilers do not optimize away the uses of strscpy
+> to a simple memcpy like they do for strcpy with a const from
+> 
+> 	strcpy(foo, "bar");
 
-Currently there is an unlikely case where cpufreq_cpu_get returns a
-null policy and this will cause a null pointer dereference later on.
-Fix this by passing the policy to transition_frequency_fidvid from the
-caller and hence eliminating the need for the cpufreq_cpu_get and
-cpufreq_cpu_put.  Thanks to Viresh Kumar for suggesting the fix.
+It ought to be possible to convert:
+	strscpy(foo, "bar", constant_sz)
+to a memcpy() within the .h file.
 
-Addresses-Coverity: ("Dereference null return")
-Fixes: b43a7ffbf33b ("cpufreq: Notify all policy->cpus in cpufreq_notify_transition()")
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
----
+Similarly it should be possible to error
+	strcpy(foo, "bar")
+Unless foo is large enough and "bar" is constant.
 
-V2: pass the policy to transition_frequency_fidvid rather than add
-    a null pointer check on the return from a cpufreq_cpu_get call.
-V3: update subject line to match the fix
+After all with a length check
+	strcpy(foo, "bar")
+is actually safer than
+	strspy(foo, "bar", sizeof foo)
+because there is less room for error.
 
----
- drivers/cpufreq/powernow-k8.c | 9 +++------
- 1 file changed, 3 insertions(+), 6 deletions(-)
+	David
 
-diff --git a/drivers/cpufreq/powernow-k8.c b/drivers/cpufreq/powernow-k8.c
-index 0acc9e241cd7..b9ccb6a3dad9 100644
---- a/drivers/cpufreq/powernow-k8.c
-+++ b/drivers/cpufreq/powernow-k8.c
-@@ -878,9 +878,9 @@ static int get_transition_latency(struct powernow_k8_data *data)
- 
- /* Take a frequency, and issue the fid/vid transition command */
- static int transition_frequency_fidvid(struct powernow_k8_data *data,
--		unsigned int index)
-+		unsigned int index,
-+		struct cpufreq_policy *policy)
- {
--	struct cpufreq_policy *policy;
- 	u32 fid = 0;
- 	u32 vid = 0;
- 	int res;
-@@ -912,9 +912,6 @@ static int transition_frequency_fidvid(struct powernow_k8_data *data,
- 	freqs.old = find_khz_freq_from_fid(data->currfid);
- 	freqs.new = find_khz_freq_from_fid(fid);
- 
--	policy = cpufreq_cpu_get(smp_processor_id());
--	cpufreq_cpu_put(policy);
 -
- 	cpufreq_freq_transition_begin(policy, &freqs);
- 	res = transition_fid_vid(data, fid, vid);
- 	cpufreq_freq_transition_end(policy, &freqs, res);
-@@ -969,7 +966,7 @@ static long powernowk8_target_fn(void *arg)
- 
- 	powernow_k8_acpi_pst_values(data, newstate);
- 
--	ret = transition_frequency_fidvid(data, newstate);
-+	ret = transition_frequency_fidvid(data, newstate, pol);
- 
- 	if (ret) {
- 		pr_err("transition frequency failed\n");
--- 
-2.29.2
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+Registration No: 1397386 (Wales)
 
