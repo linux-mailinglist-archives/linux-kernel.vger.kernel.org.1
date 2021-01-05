@@ -2,216 +2,307 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 62F0F2EABEE
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 14:30:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 22DAB2EABE7
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 14:28:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729251AbhAEN3B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 08:29:01 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:43098 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728541AbhAEN3A (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 08:29:00 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1609853253;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=AuJdJsTyCFlQnRguqyE12Pcn4kKOYDILhxDjEZQeYnM=;
-        b=VAN7JR7LHc7XzzJs9JTdeKJBwQWpd1mfvFGLaiCzDK0WWRSPD28rYIlhuGWgvXum/nK+KQ
-        JtYrgZYPUbQNKf3oP4Du8/hfI7G/U2AcMpWC6IQttja12bia9++k9zsVqERpe2GP77P1FW
-        7Ds7vElyBgIYoAGZIBA6+XVmJHNa7QE=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-181-MsXiY_ljOQi7HEXjF9cZsA-1; Tue, 05 Jan 2021 08:27:28 -0500
-X-MC-Unique: MsXiY_ljOQi7HEXjF9cZsA-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 1267EA0CBE;
-        Tue,  5 Jan 2021 13:27:27 +0000 (UTC)
-Received: from localhost (ovpn-12-37.pek2.redhat.com [10.72.12.37])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 1A91D1002382;
-        Tue,  5 Jan 2021 13:27:21 +0000 (UTC)
-From:   Ming Lei <ming.lei@redhat.com>
-To:     Jens Axboe <axboe@kernel.dk>
-Cc:     linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
-        Christoph Hellwig <hch@lst.de>, Ming Lei <ming.lei@redhat.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        "Darrick J . Wong" <darrick.wong@oracle.com>,
-        linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Subject: [RFC PATCH] fs: block_dev: compute nr_vecs hint for improving writeback bvecs allocation
-Date:   Tue,  5 Jan 2021 21:26:47 +0800
-Message-Id: <20210105132647.3818503-1-ming.lei@redhat.com>
+        id S1729447AbhAEN1h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 08:27:37 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35004 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729270AbhAEN1d (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Jan 2021 08:27:33 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C2877229C5;
+        Tue,  5 Jan 2021 13:26:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1609853212;
+        bh=W+IJs7urgK/jizFjM9m8hHegfA4Pv/rQbKGR6L2Iuno=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=SQmDp6iVBmWk+GZDr9TgzIdxQTc4EmgnSI7qSGotEP2IAau0DBtl1a2Jh8t+h3TXp
+         rbGKdapTRqphhfRejBGu7I6MOi8w+uBuQVmOAAZUySYq6da06DkOVm1HbLCFqv+KsK
+         GSJ5AAsIjUadZWbXEreNOxGLYI2avr2ZVYxwsDm4=
+Date:   Tue, 5 Jan 2021 14:28:16 +0100
+From:   'Greg Kroah-Hartman' <gregkh@linuxfoundation.org>
+To:     =?iso-8859-1?Q?J=F3zsef_Horv=E1th?= <info@ministro.hu>
+Cc:     'Rob Herring' <robh+dt@kernel.org>,
+        'Jiri Slaby' <jirislaby@kernel.org>,
+        linux-serial@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v7,1/2] Serial: silabs si4455 serial driver
+Message-ID: <X/RpcButq6PhqdIs@kroah.com>
+References: <20210105102921.GA10736@dev>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+In-Reply-To: <20210105102921.GA10736@dev>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Writeback code always allocates bio with max allowed bvecs(BIO_MAX_PAGES)
-since it is hard to know in advance how many pages will be written in
-single bio. And BIO_MAX_PAGES bvecs takes one 4K page.
+On Tue, Jan 05, 2021 at 10:29:25AM +0000, József Horváth wrote:
+> This is a serial port driver for
+>  Silicon Labs Si4455 Sub-GHz transciver.
+> 
+> The goal of this driver is to removing wires
+>  between central(linux) device and remote serial devices/sensors,
+>  but keeping the original user software.
+>  It represents regular serial interface for the user space.
+> 
+> Datasheet: https://www.silabs.com/documents/public/data-sheets/Si4455.pdf
+> 
+> Guide: https://github.com/dministro/linux-serial-si4455
+> 
+> Signed-off-by: Jozsef Horvath <info@ministro.hu>
+> ---
+> 
+> changes v1:
+>  - fixed: drivers: serial: si4455: coding style
+>  - fixed: drivers: serial: si4455: error checking and order
+>  - fixed: drivers: serial: si4455: remove unnecessary compatibility
+>    strings from si4455_dt_ids
+> 
+> changes v2:
+>  - fixed: drivers: serial: si4455: coding style
+> 
+> changes v3:
+>  - fixed: drivers: serial: si4455: coding style
+>  - fixed: drivers: serial: si4455: replace device configuration procedure
+>    (SI4455_IOC_SEZC ioctl call) with request_firmware(...).
+>    The firmware name comes from dt (silabs,ez-config)
+>  - fixed: drivers: serial: si4455: replace transmit/receive channel
+>    select (SI4455_IOC_STXC/SI4455_IOC_SRXC ioctl calls)
+>    with sysfs entries (tx_channel, rx_channel).
+>    Initial values comes from dt (silabs,tx-channel and silabs,rx-channel)
+>  - fixed: drivers: serial: si4455: replace package size setting
+>    (SI4455_IOC_SSIZ ioctl call) with sysfs entry (package_size).
+>    Initial value comes from dt (silabs,package-size)
+>  - fixed: drivers: serial: si4455: replace getting last rssi
+>    (SI4455_IOC_GRSSI ioctl call) with sysfs entry (current_rssi)
+>  - fixed: drivers: serial: si4455: remove si4455_api.h
+>    and custom ioctl definitions
+> 
+> changes v5:
+>  - fixed: drivers: serial: si4455: coding style
+>  - fixed: drivers: serial: si4455: remove struct si4455_one,
+>    members moved to struct si4455_port
+>  - fixed: drivers: serial: si4455: fix line endings in dev_err and
+>    dev_dbg messages
+>  - fixed: drivers: serial: si4455: remove unnecessary else { ... }
+>  - fixed: drivers: serial: si4455: refactor si4455_do_work(...),
+>    xmit circular buffer handling and start tx moved to
+>    si4455_start_tx_xmit(...)
+>  - fixed: drivers: serial: si4455: refactor si4455_configure
+>  - fixed: drivers: serial: si4455: refactor interrupt handling,
+>    remove unnecessary wrapper
+>  - fixed: drivers: serial: si4455: modem line(si4455_get_mctrl)
+>    and tx buffer status(si4455_tx_empty) conditions and signaling
+>  - fixed: drivers: serial: si4455: remove unsafe int to pointer conversion
+> 
+> changes v6:
+>  - fixed: drivers: serial: si4455: illegal characters in
+>    MODULE_AUTHOR("...") Reported-by: kernel test robot <lkp@intel.com>
+> 
+> changes v7:
+>  - added: drivers: serial: si4455: variable packet length support
+>  - added: drivers: serial: si4455: extended error handling
+>  - added: dt: bindings: silabs,si4455: silabs,tx-timeout property definition
+> ---
+>  MAINTAINERS                 |    6 +
+>  drivers/tty/serial/Kconfig  |    8 +
+>  drivers/tty/serial/Makefile |    1 +
+>  drivers/tty/serial/si4455.c | 1721 +++++++++++++++++++++++++++++++++++
+>  4 files changed, 1736 insertions(+)
+>  create mode 100644 drivers/tty/serial/si4455.c
+> 
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index a008b70f3c16..ca6e32693a74 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -15952,6 +15952,12 @@ M:	Jérôme Pouiller <jerome.pouiller@silabs.com>
+>  S:	Supported
+>  F:	drivers/staging/wfx/
+>  
+> +SILICON LABS SI4455 SERIAL DRIVER
+> +M:	Jozsef Horvath <info@ministro.hu>
+> +S:	Maintained
+> +F:	Documentation/devicetree/bindings/serial/silabs,si4455.yaml
+> +F:	drivers/tty/serial/si4455.c
+> +
+>  SILICON MOTION SM712 FRAME BUFFER DRIVER
+>  M:	Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+>  M:	Teddy Wang <teddy.wang@siliconmotion.com>
+> diff --git a/drivers/tty/serial/Kconfig b/drivers/tty/serial/Kconfig
+> index 28f22e58639c..560aa311cd03 100644
+> --- a/drivers/tty/serial/Kconfig
+> +++ b/drivers/tty/serial/Kconfig
+> @@ -1583,6 +1583,14 @@ config SERIAL_MILBEAUT_USIO_CONSOLE
+>  	  receives all kernel messages and warnings and which allows logins in
+>  	  single user mode).
+>  
+> +config SERIAL_SI4455
+> +	tristate "Si4455 support"
+> +	depends on SPI
+> +	select SERIAL_CORE
+> +	help
+> +	  This driver is for Silicon Labs's Si4455 Sub-GHz transciver.
+> +	  Say 'Y' here if you wish to use it as serial port.
+> +
 
-On the other hand, for workloads of random IO, most of writeback bios just
-uses <= 4 bvecs; for workloads of sequential IO, attributes to multipage
-bvec, quite a lot of pages are contiguous because of space/time locality
-for pages in sequential IO workloads, then either nr_bvecs is small enough
-or size of bio is very big. So in reality, it is quite often to see most
-of writeback bios just uses <=4 bvecs, which can be allocated inline. This
-can be observed in normal tests(kernel build, git clone kernel, dbench,
-...)
+No module name?
 
-So improve bvec allocation by using Exponential Weighted Moving Average(
-EWMA) to compute nr_bvecs hint for writeback bio. With this simple
-approach, it is observed[1] that most of writeback bios just need <=4
-nr_bvecs in normal workloads, then bvecs can be allocated inline with bio
-together, meantime one extra 4k allocation is avoided.
+>  endmenu
+>  
+>  config SERIAL_MCTRL_GPIO
+> diff --git a/drivers/tty/serial/Makefile b/drivers/tty/serial/Makefile
+> index caf167f0c10a..f01ff43db1d6 100644
+> --- a/drivers/tty/serial/Makefile
+> +++ b/drivers/tty/serial/Makefile
+> @@ -89,6 +89,7 @@ obj-$(CONFIG_SERIAL_MPS2_UART)	+= mps2-uart.o
+>  obj-$(CONFIG_SERIAL_OWL)	+= owl-uart.o
+>  obj-$(CONFIG_SERIAL_RDA)	+= rda-uart.o
+>  obj-$(CONFIG_SERIAL_MILBEAUT_USIO) += milbeaut_usio.o
+> +obj-$(CONFIG_SERIAL_SI4455)	+= si4455.o
+>  obj-$(CONFIG_SERIAL_SIFIVE)	+= sifive.o
+>  
+>  # GPIOLIB helpers for modem control lines
+> diff --git a/drivers/tty/serial/si4455.c b/drivers/tty/serial/si4455.c
+> new file mode 100644
+> index 000000000000..615c783b7aa2
+> --- /dev/null
+> +++ b/drivers/tty/serial/si4455.c
+> @@ -0,0 +1,1721 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * Copyright (C) 2020 József Horváth <info@ministro.hu>
+> + *
+> + */
+> +#include <linux/bitops.h>
+> +#include <linux/clk.h>
+> +#include <linux/delay.h>
+> +#include <linux/device.h>
+> +#include <linux/gpio/driver.h>
+> +#include <linux/module.h>
+> +#include <linux/of.h>
+> +#include <linux/of_device.h>
+> +#include <linux/of_gpio.h>
+> +#include <linux/regmap.h>
+> +#include <linux/serial_core.h>
+> +#include <linux/serial.h>
+> +#include <linux/tty.h>
+> +#include <linux/tty_flip.h>
+> +#include <linux/spi/spi.h>
+> +#include <linux/uaccess.h>
+> +#include <linux/string.h>
+> +#include <linux/firmware.h>
+> +#include <linux/timer.h>
+> +#ifdef CONFIG_DEBUG_FS
+> +#include <linux/debugfs.h>
+> +#endif
 
-[1] bpftrace script for observing writeback .bi_max_vcnt & .bi_vcnt
-histogram
-http://people.redhat.com/minlei/tests/tools/wb_vcnt.bt
+No need for #ifdef for .h files.
 
-Cc: Alexander Viro <viro@zeniv.linux.org.uk>
-Cc: Darrick J. Wong <darrick.wong@oracle.com>
-Cc: linux-xfs@vger.kernel.org
-Cc: linux-fsdevel@vger.kernel.org
-Signed-off-by: Ming Lei <ming.lei@redhat.com>
----
- fs/block_dev.c            |  1 +
- fs/iomap/buffered-io.c    | 13 +++++++++----
- include/linux/bio.h       |  2 --
- include/linux/blk_types.h | 31 +++++++++++++++++++++++++++++++
- 4 files changed, 41 insertions(+), 6 deletions(-)
+> +
+> +#define PORT_SI4455						1096
+> +#define SI4455_NAME						"Si4455"
+> +#define SI4455_MAJOR						432
+> +#define SI4455_MINOR						567
 
-diff --git a/fs/block_dev.c b/fs/block_dev.c
-index 3e5b02f6606c..0490f16a96db 100644
---- a/fs/block_dev.c
-+++ b/fs/block_dev.c
-@@ -880,6 +880,7 @@ struct block_device *bdev_alloc(struct gendisk *disk, u8 partno)
- #ifdef CONFIG_SYSFS
- 	INIT_LIST_HEAD(&bdev->bd_holder_disks);
- #endif
-+	bdev->bd_wb_nr_vecs_hint = BIO_MAX_PAGES / 2;
- 	bdev->bd_stats = alloc_percpu(struct disk_stats);
- 	if (!bdev->bd_stats) {
- 		iput(inode);
-diff --git a/fs/iomap/buffered-io.c b/fs/iomap/buffered-io.c
-index 16a1e82e3aeb..1e031af182db 100644
---- a/fs/iomap/buffered-io.c
-+++ b/fs/iomap/buffered-io.c
-@@ -1210,6 +1210,7 @@ iomap_submit_ioend(struct iomap_writepage_ctx *wpc, struct iomap_ioend *ioend,
- 		return error;
- 	}
- 
-+	bdev_update_wb_nr_vecs_hint(wpc->iomap.bdev, ioend->io_bio);
- 	submit_bio(ioend->io_bio);
- 	return 0;
- }
-@@ -1221,7 +1222,8 @@ iomap_alloc_ioend(struct inode *inode, struct iomap_writepage_ctx *wpc,
- 	struct iomap_ioend *ioend;
- 	struct bio *bio;
- 
--	bio = bio_alloc_bioset(GFP_NOFS, BIO_MAX_PAGES, &iomap_ioend_bioset);
-+	bio = bio_alloc_bioset(GFP_NOFS, bdev_wb_nr_vecs_hint(wpc->iomap.bdev),
-+			&iomap_ioend_bioset);
- 	bio_set_dev(bio, wpc->iomap.bdev);
- 	bio->bi_iter.bi_sector = sector;
- 	bio->bi_opf = REQ_OP_WRITE | wbc_to_write_flags(wbc);
-@@ -1248,11 +1250,13 @@ iomap_alloc_ioend(struct inode *inode, struct iomap_writepage_ctx *wpc,
-  * traversal in iomap_finish_ioend().
-  */
- static struct bio *
--iomap_chain_bio(struct bio *prev)
-+iomap_chain_bio(struct bio *prev, struct block_device *bdev)
- {
- 	struct bio *new;
- 
--	new = bio_alloc(GFP_NOFS, BIO_MAX_PAGES);
-+	bdev_update_wb_nr_vecs_hint(bdev, prev);
-+
-+	new = bio_alloc(GFP_NOFS, bdev_wb_nr_vecs_hint(bdev));
- 	bio_copy_dev(new, prev);/* also copies over blkcg information */
- 	new->bi_iter.bi_sector = bio_end_sector(prev);
- 	new->bi_opf = prev->bi_opf;
-@@ -1308,7 +1312,8 @@ iomap_add_to_ioend(struct inode *inode, loff_t offset, struct page *page,
- 	if (!merged) {
- 		if (bio_full(wpc->ioend->io_bio, len)) {
- 			wpc->ioend->io_bio =
--				iomap_chain_bio(wpc->ioend->io_bio);
-+				iomap_chain_bio(wpc->ioend->io_bio,
-+						wpc->iomap.bdev);
- 		}
- 		bio_add_page(wpc->ioend->io_bio, page, len, poff);
- 	}
-diff --git a/include/linux/bio.h b/include/linux/bio.h
-index 70914dd6a70d..ad0cd1a2abbe 100644
---- a/include/linux/bio.h
-+++ b/include/linux/bio.h
-@@ -19,8 +19,6 @@
- #define BIO_BUG_ON
- #endif
- 
--#define BIO_MAX_PAGES		256
--
- #define bio_prio(bio)			(bio)->bi_ioprio
- #define bio_set_prio(bio, prio)		((bio)->bi_ioprio = prio)
- 
-diff --git a/include/linux/blk_types.h b/include/linux/blk_types.h
-index 866f74261b3b..078e212f5e1f 100644
---- a/include/linux/blk_types.h
-+++ b/include/linux/blk_types.h
-@@ -24,6 +24,7 @@ struct block_device {
- 	sector_t		bd_start_sect;
- 	struct disk_stats __percpu *bd_stats;
- 	unsigned long		bd_stamp;
-+	unsigned short		bd_wb_nr_vecs_hint;
- 	bool			bd_read_only;	/* read-only policy */
- 	dev_t			bd_dev;
- 	int			bd_openers;
-@@ -307,6 +308,8 @@ enum {
- 	BIO_FLAG_LAST
- };
- 
-+#define BIO_MAX_PAGES		256
-+
- /* See BVEC_POOL_OFFSET below before adding new flags */
- 
- /*
-@@ -565,4 +568,32 @@ struct blk_rq_stat {
- 	u64 batch;
- };
- 
-+/* called before submitting writeback bios */
-+static inline void bdev_update_wb_nr_vecs_hint(struct block_device *bdev,
-+		struct bio *bio)
-+{
-+	unsigned short nr_vecs;
-+
-+	if (!bdev)
-+		return;
-+
-+	nr_vecs = bdev->bd_wb_nr_vecs_hint;
-+	/*
-+	 * If this bio is full, double current nr_vecs_hint for fast convergence.
-+	 * Otherwise use Exponential Weighted Moving Average to figure out the
-+	 * hint
-+	 */
-+	if (bio->bi_vcnt >= bio->bi_max_vecs)
-+		nr_vecs *= 2;
-+	else
-+		nr_vecs = (nr_vecs * 3 + bio->bi_vcnt + 3) / 4;
-+
-+	bdev->bd_wb_nr_vecs_hint = clamp_val(nr_vecs, 1, BIO_MAX_PAGES);
-+}
-+
-+static inline unsigned short bdev_wb_nr_vecs_hint(struct block_device *bdev)
-+{
-+	return bdev->bd_wb_nr_vecs_hint;
-+}
-+
- #endif /* __LINUX_BLK_TYPES_H */
--- 
-2.28.0
+Where are these major/minor numbers being used and where did they come
+from?  Why do you need them?
 
+> +struct si4455_port {
+> +	struct uart_port port;
+> +#ifdef CONFIG_DEBUG_FS
+> +	struct dentry *dbgfs_dir;
+> +#endif
+
+Do not put #ifdefs in .c code, you never need to check for this type of
+thing.
+
+> +static struct uart_driver si4455_uart = {
+> +	.owner			= THIS_MODULE,
+> +	.driver_name		= SI4455_NAME,
+> +#ifdef CONFIG_DEVFS_FS
+> +	.dev_name		= "ttySI%d",
+
+Looks like you are porting this from a _VERY_ old kernel.  That config
+option went away 15+ years ago.  Are you sure this works?
+
+
+> +#else
+> +	.dev_name		= "ttySI",
+
+Where did you get that name from?
+
+
+> +static int si4455_begin_tx(struct uart_port *port, u32 channel, int length,
+> +			   u8 *data)
+> +{
+> +	int ret = 0;
+> +	struct si4455_int_status int_status = { 0 };
+> +	struct si4455_fifo_info fifo_info = { 0 };
+> +
+> +	dev_dbg(port->dev, "%s(%u, %u)\n", __func__, channel, length);
+
+No need for these types of debugging lines, just use ftrace.
+
+Please remove them, you have them in a few places (same for the end of
+functions.)
+
+> +static void si4455_null_void(struct uart_port *port)
+> +{
+> +	/* Do nothing */
+
+Why do you need this???
+
+> +#ifdef CONFIG_DEBUG_FS
+
+Again, no #ifdef needed.
+
+> +static int si4455_debugfs_init(struct device *dev)
+> +{
+> +	struct si4455_port *s = dev_get_drvdata(dev);
+> +	struct dentry *dbgfs_si_dir;
+> +	struct dentry *dbgfs_partinfo_dir;
+> +	struct dentry *dbgfs_entry;
+> +
+> +	s->dbgfs_dir = debugfs_create_dir(dev_name(dev), NULL);
+> +	if (IS_ERR(s->dbgfs_dir))
+> +		return PTR_ERR(s->dbgfs_dir);
+
+No  need to check any debugfs return value, just use it and move on.
+
+> +
+> +	dbgfs_si_dir = debugfs_create_dir("si4455", s->dbgfs_dir);
+> +	if (IS_ERR(dbgfs_si_dir))
+> +		return PTR_ERR(dbgfs_si_dir);
+> +
+> +	dbgfs_entry = debugfs_create_u32("cts_error_count", 0444,
+> +					 dbgfs_si_dir, &s->cts_error_count);
+> +	if (IS_ERR(dbgfs_entry))
+> +		return PTR_ERR(dbgfs_entry);
+
+Same for all of these, no need to check anything.
+
+> +
+> +	dbgfs_entry = debugfs_create_u32("tx_error_count", 0444,
+> +					 dbgfs_si_dir, &s->tx_error_count);
+> +	if (IS_ERR(dbgfs_entry))
+> +		return PTR_ERR(dbgfs_entry);
+> +
+> +	dbgfs_partinfo_dir = debugfs_create_dir("partinfo", dbgfs_si_dir);
+> +	if (IS_ERR(dbgfs_partinfo_dir))
+> +		return PTR_ERR(dbgfs_partinfo_dir);
+> +
+> +	dbgfs_entry = debugfs_create_u8("chip_rev", 0444,
+> +					dbgfs_partinfo_dir,
+> +					&s->part_info.chip_rev);
+
+Wait, did you even build this code?  Does it work?  It shouldn't, these
+debugfs calls have changed...
+
+I'm stopping reviewing here.
+
+thanks,
+
+greg k-h
