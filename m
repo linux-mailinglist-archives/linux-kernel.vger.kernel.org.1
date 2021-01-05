@@ -2,116 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B3E152EB1F1
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 19:05:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E671B2EB203
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 19:07:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728860AbhAESFG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 13:05:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34342 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726890AbhAESFG (ORCPT
+        id S1730065AbhAESFY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 13:05:24 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:37291 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727404AbhAESFX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 13:05:06 -0500
-Received: from mail-il1-x132.google.com (mail-il1-x132.google.com [IPv6:2607:f8b0:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC9F8C061795
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Jan 2021 10:03:49 -0800 (PST)
-Received: by mail-il1-x132.google.com with SMTP id q5so491880ilc.10
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Jan 2021 10:03:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=Hqrt+PwCKLvidXgUzGrHqQMSJASmhipg5696ppeG5c0=;
-        b=CtCLXyNUtmtaow1eT+GTdhyEtXfzNZL9/CU7QY/upeZhPAk5e3mkRxdM5aRt8WEV84
-         +73v7eoUNrmy/Yo1f8SZ6qXMz+R7FMSXQj/tUY8Q6oqcPbSm459AF4sM+SytiopQ0o76
-         u0iGfBA2u28C3ZTCJbSXQ+PntXh6NgE/q1zQA=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Hqrt+PwCKLvidXgUzGrHqQMSJASmhipg5696ppeG5c0=;
-        b=inOtv4m4eXHkVLibVHA7O9zLSNs28FxX5rxhOua8nAM08JnU7YIPtZODd1EDj9br6I
-         Rj8bSBSVVrq4WSKL2jkbKrS+GKS3m2k2WoBfxG1V2nKSGU9b0AQYidDCDPo/42GvoVzB
-         nklXOzqYoA3yM7mNqdHbZNTrlHl74u7U/oKJUjwA5ksERDmGVBX0O/1FMRtBj6ouOcHF
-         tWV1tl30Bmd8CK2DPtF1l1p1I0Z2W9zayEj/nBXz8gkNRfJIUTICQHCJSxP+tWFu4xqa
-         nfnBR8zsy5mIydEA6vxJDXiXJ4ACVHIhg4M5WXlIdI5IOpHK8ZA4tMzog9mNxuX0X208
-         XbKA==
-X-Gm-Message-State: AOAM533udv0Y3Cxsx55C/nVZyww2E77GrpxMZVTgXQIwympmnfPQLdt4
-        aMmEBAkV7FS2IfhWG48Qcnj5vA==
-X-Google-Smtp-Source: ABdhPJy6UW68+zLAd4n8vMeMjV1rLdBufYPU4lfZyLPJ7J5lwkXDbUT3YAmfgIvt27sS8hfw7AsFvw==
-X-Received: by 2002:a92:c561:: with SMTP id b1mr760977ilj.65.1609869829152;
-        Tue, 05 Jan 2021 10:03:49 -0800 (PST)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id m8sm35946ild.18.2021.01.05.10.03.47
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 05 Jan 2021 10:03:48 -0800 (PST)
-Subject: Re: [PATCH] cpuidle_set accepts alpha numeric values for idle-set
- operation
-To:     Brahadambal Srinivasan <latha@linux.vnet.ibm.com>,
-        shuah@kernel.org, trenn@suse.com
-Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Shuah Khan <skhan@linuxfoundation.org>
-References: <20210105122452.8687-1-latha@linux.vnet.ibm.com>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <e2234e38-e18e-e0d3-1a2a-7c8b136d8817@linuxfoundation.org>
-Date:   Tue, 5 Jan 2021 11:03:47 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+        Tue, 5 Jan 2021 13:05:23 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1609869837;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=tjij9xYMf6Y62hwh1O7GXaGMsMvqywzvQeHIvJ4Lc+s=;
+        b=SbEjl9w6eEmY+VCdEaVzFoyufe9vXicPhHXGdKGW23mX2iEwR8ouiYH9mJgle5X909JPoa
+        SJtINKopGqxvo2LP9UE65hRE080+p6rBqHIFxU1jkwQCmPJyF2QaWDWmj5XhmYhPpT4X8N
+        kccAuO7Xkk2flaIX+yudZBXxOlbTEuM=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-156-Xh2GoTdcN1qQiXdJXLzRog-1; Tue, 05 Jan 2021 13:03:53 -0500
+X-MC-Unique: Xh2GoTdcN1qQiXdJXLzRog-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0B25DA0CA0;
+        Tue,  5 Jan 2021 18:03:52 +0000 (UTC)
+Received: from mail (ovpn-112-76.rdu2.redhat.com [10.10.112.76])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id D6DBB5E1B5;
+        Tue,  5 Jan 2021 18:03:48 +0000 (UTC)
+Date:   Tue, 5 Jan 2021 13:03:48 -0500
+From:   Andrea Arcangeli <aarcange@redhat.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Xu <peterx@redhat.com>,
+        Nadav Amit <nadav.amit@gmail.com>, Yu Zhao <yuzhao@google.com>,
+        linux-mm <linux-mm@kvack.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Pavel Emelyanov <xemul@openvz.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>,
+        stable <stable@vger.kernel.org>,
+        Minchan Kim <minchan@kernel.org>, Will Deacon <will@kernel.org>
+Subject: Re: [PATCH] mm/userfaultfd: fix memory corruption due to writeprotect
+Message-ID: <X/SqBG7KDKZhSUHu@redhat.com>
+References: <CAHk-=wg_UBuo7ro1fpEGkMyFKA1+PxrE85f9J_AhUfr-nJPpLQ@mail.gmail.com>
+ <9E301C7C-882A-4E0F-8D6D-1170E792065A@gmail.com>
+ <CAHk-=wg-Y+svNy3CDkJjj0X_CJkSbpERLg64-Vqwq5u7SC4z0g@mail.gmail.com>
+ <X+ESkna2z3WjjniN@google.com>
+ <1FCC8F93-FF29-44D3-A73A-DF943D056680@gmail.com>
+ <20201221223041.GL6640@xz-x1>
+ <CAHk-=wh-bG4thjXUekLtrCg8FRrdWjtT40ibXXLSm_hzQG8eOw@mail.gmail.com>
+ <CALCETrV=8tY7h=aaudWBEn-MJnNkm2wz5qjH49SYqwkjYTpOaA@mail.gmail.com>
+ <CAHk-=wj=CcOHQpG0cUGfoMCt2=Uaifpqq-p-mMOmW8XmrBn4fQ@mail.gmail.com>
+ <20210105153727.GK3040@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-In-Reply-To: <20210105122452.8687-1-latha@linux.vnet.ibm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210105153727.GK3040@hirez.programming.kicks-ass.net>
+User-Agent: Mutt/2.0.4 (2020-12-30)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 1/5/21 5:24 AM, Brahadambal Srinivasan wrote:
-> For both the d and e options in cpuidle_set, an atoi() conversion is
-> done without checking if the input argument is all numeric. So, an
-> atoi conversion is done on any character provided as input and the
-> CPU idle_set operation continues with that integer value, which may
-> not be what is intended or entirely correct.
-> 
-> A similar check is present for cpufreq-set already.
-> 
-> This patch adds a check to see that the idle_set value is all numeric
-> before doing a string-to-int conversion.
-> 
-> Signed-off-by: Brahadambal Srinivasan <latha@linux.vnet.ibm.com>
-> ---
->   tools/power/cpupower/utils/cpuidle-set.c | 39 +++++++++++++++++++++---
->   1 file changed, 34 insertions(+), 5 deletions(-)
-> 
-> diff --git a/tools/power/cpupower/utils/cpuidle-set.c b/tools/power/cpupower/utils/cpuidle-set.c
-> index 46158928f9ad..b3dec48e7141 100644
-> --- a/tools/power/cpupower/utils/cpuidle-set.c
-> +++ b/tools/power/cpupower/utils/cpuidle-set.c
-> @@ -21,6 +21,19 @@ static struct option info_opts[] = {
->        { },
->   };
->   
-> +int is_number(char *arg)
-> +{
-> +	size_t len, i = 0;
-> +
-> +	len = strlen(arg);
-> +
-> +	for (i = 0; i < len; i++) {
-> +		if (!isdigit(arg[i]))
-> +			return 0;
-> +	}
-> +
-> +	return 1;
-> +}
->   
+On Tue, Jan 05, 2021 at 04:37:27PM +0100, Peter Zijlstra wrote:
+> (your other email clarified this point; the COW needs to copy while
+> holding the PTL and we need TLBI under PTL if we're to change this)
 
-Any reason why you can't use isdigit()? Please see isdigit()
-usages examples in other tools and cpupower itself.
+The COW doesn't need to hold the PT lock, the TLBI broadcast doesn't
+need to be delivered under PT lock either.
 
-thanks,
--- Shuah
+Simply there need to be a TLBI broadcast before the copy. The patch I
+sent here https://lkml.kernel.org/r/X+QLr1WmGXMs33Ld@redhat.com that
+needs to be cleaned up with some abstraction and better commentary
+also misses a smp_mb() in the case flush_tlb_page is not called, but
+that's a small detail.
 
-thanks,
--- Shuah
+> And I'm thinking the speculative page fault series steps right into all
+> this, it fundamentally avoids mmap_sem and entirely relies on the PTL.
+
+I thought about that but that only applies to some kind of "anon" page
+fault.
+
+Here the problem isn't just the page fault, the problem is not to
+regress clear_refs to block on page fault I/O, and all
+MAP_PRIVATE/MAP_SHARED filebacked faults bitting the disk to read
+/usr/ will still prevent clear_refs from running (and the other way
+around) if it has to take the mmap_sem for writing.
+
+I don't look at the speculative page fault for a while but last I
+checked there was nothing there that can tame the above major
+regression from CPU speed to disk I/O speed that would be inflicted on
+both clear_refs on huge mm and on uffd-wp.
+
+Thanks,
+Andrea
+
