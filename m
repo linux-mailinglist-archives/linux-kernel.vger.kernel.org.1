@@ -2,121 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F0932EB2C0
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 19:47:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F3D82EB2CA
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 19:50:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729910AbhAESrE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 13:47:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40884 "EHLO
+        id S1730389AbhAESrh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 13:47:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40970 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726258AbhAESrD (ORCPT
+        with ESMTP id S1726258AbhAESrg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 13:47:03 -0500
-Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD0B6C061793
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Jan 2021 10:46:21 -0800 (PST)
-Received: by mail-pf1-x435.google.com with SMTP id c12so243564pfo.10
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Jan 2021 10:46:21 -0800 (PST)
+        Tue, 5 Jan 2021 13:47:36 -0500
+Received: from mail-ot1-x32c.google.com (mail-ot1-x32c.google.com [IPv6:2607:f8b0:4864:20::32c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F11AFC061795
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Jan 2021 10:46:55 -0800 (PST)
+Received: by mail-ot1-x32c.google.com with SMTP id a109so692009otc.1
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Jan 2021 10:46:55 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=SNZVfIWKd37qkkuluejVnpuaXcVb0tUzeQd+fsRy+IQ=;
-        b=Sya9EbW75MKED8LnBpNrd8mk7PYXd4wgZEgJkIHJxP5PIx2RfX9mmv4/yJLMpO1I2H
-         8hEbv75X8/4JizHMC0Eebms5sug9C8tETWTkjxEJWkTpVD0QLAinlcyhfQ0na6aXUnY3
-         heL2qOcFFqz/0jpsJw/gXjAuIG6ThoGwA0EsMUuUQMe3H0jwq23TJ3hNCDnPyx1Wzs4P
-         5Am1bieNnlVTDUQHjm1K+mqTOsQmK/0ia1e1daoNejBpsgC2fu23efGLBS8mCDEXrY2y
-         xkDVOTIp1zSQn1FrPt4g6uhKHfRE7aPkYDP7LagTTot5p/KwRxFF70mxs/kK/MZDkFWM
-         RguA==
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=FQHYXsCfIUt8mD0gX69m0hlAumqmzATTTaH1ALT+r0M=;
+        b=hg7JludzVwRDPNyqVGsLQ0++/uCbJCFiHzBlSYXsiqMt6nkIP0+1DUtGXNfLdDGQ3y
+         YOu5K2thDC9v5BIynDMUdtAhtHxbKaRHpvw2PYgISnDPIXfeRCIseppO72AvngX/Dj8t
+         E+SutA4sZY+EYI+gClSMF2F7sXwooH+pDi2ij9ATHkx8gyRbFx9GKI/PhUyyYR/PC+7R
+         na8f5MujMn79vXpnV7yQpTAikd9Evv1ravJeVXSKiWqi02+TDt+iKpIyDwurwWQiBhiu
+         FqW8Ab4iZyspFrxKAatImrTfCEjSYOmzVia5hb41KguQvY+e/pLP3fvMLSAeAm33oVzG
+         h59Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=SNZVfIWKd37qkkuluejVnpuaXcVb0tUzeQd+fsRy+IQ=;
-        b=M9Evy9r2PYsblXMf377XcPYiC0TTroejpA/cnizrNBqVBAhaC2kY79HQV49sAQZ5Rh
-         pcGirI/1wcuccNXeBQH/9Nfw8SQCZ8dhczu7NzMLx9aO5qOHGMtX933t3Lh7v47SzALu
-         pZLkdxH4N2Dax83DYedWXpqh02J4prtdVEiYogCABQ/RNHEjRJPalK1iQkwdrg6Fun29
-         zC4LVhEaKOx0ZuHyvsNPIGHBQw+CofjyBYoX5AtdwV86LiN7ZAT4sMI9+itvpti9AVab
-         mwXaSyXrQrhdEQx5chqekKLpQtgoFTQWVRt33LkjEHof0JzyATyISkw0UTuKebMBlJpe
-         Dyiw==
-X-Gm-Message-State: AOAM5323a3iiklaSbYjs5x5nKs0sAVZ0O9z3VvdCCt7VCwh22jrCunsn
-        ZbTNXA83ZbdQAxjQO82Px4ts7w==
-X-Google-Smtp-Source: ABdhPJxPLtLy+4w4Yda8CaLzL1Zz0ILQQNIXP5BzeYA3N4xxinShgiNZl3jB9KiYZ44bcF7raVdSwA==
-X-Received: by 2002:a63:5a08:: with SMTP id o8mr680896pgb.118.1609872380492;
-        Tue, 05 Jan 2021 10:46:20 -0800 (PST)
-Received: from google.com ([2620:15c:f:10:1ea0:b8ff:fe73:50f5])
-        by smtp.gmail.com with ESMTPSA id u11sm261441pjy.17.2021.01.05.10.46.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 Jan 2021 10:46:19 -0800 (PST)
-Date:   Tue, 5 Jan 2021 10:46:12 -0800
-From:   Sean Christopherson <seanjc@google.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Ben Gardon <bgardon@google.com>, leohou1402 <leohou1402@gmail.com>,
-        "maciej.szmigiero@oracle.com" <maciej.szmigiero@oracle.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "cannonmatthews@google.com" <cannonmatthews@google.com>,
-        "peterx@redhat.com" <peterx@redhat.com>,
-        "pshier@google.com" <pshier@google.com>,
-        "pfeiner@google.com" <pfeiner@google.com>,
-        "junaids@google.com" <junaids@google.com>,
-        "jmattson@google.com" <jmattson@google.com>,
-        "yulei.kernel@gmail.com" <yulei.kernel@gmail.com>,
-        "kernellwp@gmail.com" <kernellwp@gmail.com>,
-        "vkuznets@redhat.com" <vkuznets@redhat.com>
-Subject: Re: reproducible BUG() in kvm_mmu_get_root() in TDP MMU
-Message-ID: <X/Sz9EN0cKbyd1gQ@google.com>
-References: <4bf6fcae-20e7-3eae-83ec-51fb52110487@oracle.com>
- <8A352C2E-E7D2-4873-807F-635A595DCAEF@gmail.com>
- <CANgfPd_cbBxWHmPsw0x5NfKrMXzij3YAAiaq665zxn5nnraPGg@mail.gmail.com>
- <CANgfPd8fFB6QM3bOhxQ0WPjw6f5FLqBm1ynCenAxymByq4Lz5g@mail.gmail.com>
- <f360715b-e61b-7e68-1aa9-84df51331d95@redhat.com>
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to:user-agent;
+        bh=FQHYXsCfIUt8mD0gX69m0hlAumqmzATTTaH1ALT+r0M=;
+        b=kORLghzCQOxJQPK8v0CbZCVEaxnPQcoKO2jCnRoA//m1WeJ+iLBbq0Ci07DOgxnJxa
+         bRKeCx1qMZAhy0RB4Tn1yDtO1UXeVlsmH+1JcTc8PhZlvI1FdTaKycfe348S8Bm5CoLa
+         rumOx8WWyDMYS3a1XzS3REx8y/HnXAmJxOouc1IGE0x+v0BjtTtsosiTXJsiXJNlbWnS
+         KywiKr7RaH55Ev7Ep5oFYSj7eJdW9bjts2p//lSLAvMJPLlERwjRsTXDp6x3R+QFpzVY
+         fBUxZ/V5OPvlwlnNxzYZJLk1u8+S/dPsJaxuNwXSBWB38/QNmsuE3FcydPxS1UEsLNoq
+         //PA==
+X-Gm-Message-State: AOAM533LM+t7J10cYTz+s0Kk1iGCeaJ4N3QGzp1aWn7gXs3+5crZ0lKh
+        c3ZCFgFvBfPWOung0zQJDdFdVfd6e24=
+X-Google-Smtp-Source: ABdhPJy2r7KyoYSkwjO89tdOY4o1eleC31KjqrVapGOI4xAFiboeCdHp1DkiB4Okd0BT8Q/Ypdsx1A==
+X-Received: by 2002:a05:6830:11d5:: with SMTP id v21mr622116otq.306.1609872415433;
+        Tue, 05 Jan 2021 10:46:55 -0800 (PST)
+Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id f201sm55555oig.21.2021.01.05.10.46.53
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Tue, 05 Jan 2021 10:46:54 -0800 (PST)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Tue, 5 Jan 2021 10:46:53 -0800
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: Linux 5.11-rc2
+Message-ID: <20210105184653.GA88051@roeck-us.net>
+References: <CAHk-=whS+rzNMSsU6vRoLMzrm0JPN-OVg+BxhybMet3NpqpR-Q@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <f360715b-e61b-7e68-1aa9-84df51331d95@redhat.com>
+In-Reply-To: <CAHk-=whS+rzNMSsU6vRoLMzrm0JPN-OVg+BxhybMet3NpqpR-Q@mail.gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 05, 2021, Paolo Bonzini wrote:
-> On 05/01/21 18:49, Ben Gardon wrote:
-> > for_each_tdp_mmu_root(kvm, root) {
-> >          kvm_mmu_get_root(kvm, root);
-> >          <Do something, yield the MMU lock>
-> >          kvm_mmu_put_root(kvm, root);
-> > }
-> > 
-> > In these cases the get and put root calls are there to ensure that the
-> > root is not freed while the function is running, however they do this
-> > too well. If the put root call reduces the root's root_count to 0, it
-> > should be removed from the roots list and freed before the MMU lock is
-> > released. However the above pattern never bothers to free the root.
-> > The following would fix this bug:
-> > 
-> > -kvm_mmu_put_root(kvm, root);
-> > +if (kvm_mmu_put_root(kvm, root))
-> > +       kvm_tdp_mmu_free_root(kvm, root);
+On Sun, Jan 03, 2021 at 04:13:08PM -0800, Linus Torvalds wrote:
+> Ok, let's be honest - not a lot has happened in the last week or two.
 > 
-> Is it worth writing a more complex iterator struct, so that
-> for_each_tdp_mmu_root takes care of the get and put?
+> The merge window itself may not have been hugely impacted by the
+> holiday season, but that's because all the new code should already
+> have been ready before the merge window even opened, so the holidays
+> just didn't end up affecting things all that much.
+> 
+> But people have (rightly) mostly been offline since, presumably
+> over-eating and doing all the other traditional holiday things. And
+> just generally not being hugely active. That very much shows in a tiny
+> rc2 release.
+> 
+> I expect next week to slowly start ramping up fixes, but I know some
+> people are still on vacation or just in an extended food coma, and
+> there's a delay from testing to fixes, so we'll see. Maybe rc3 ends up
+> being fairly small too.
+> 
+> It's much too early to say whether this will then end up causing some
+> delays in the final release - it's possible, but with 5.11 not being a
+> particularly big release maybe it doesn't even matter that we had a
+> fairly quiet week or two in the early rc series.
+> 
+> Anyway, for whatever reasons, the few fixes we _do_ have in rc2 tend
+> to be mostly in SCSI and block devices. But there's a random
+> smattering of other things too. For once, the shortlog is so small
+> that you might as well just read it.
+> 
+> Time to slowly crawl out from under all the xmas wrapping paper piles
+> and go test...
+> 
+Build results:
+	total: 153 pass: 151 fail: 2
+Failed builds:
+	arm64:allmodconfig
+	ia64:defconfig
+Qemu test results:
+	total: 430 pass: 428 fail: 2
+Failed tests:
+	arm:raspi2:multi_v7_defconfig:bcm2836-rpi-2-b:initrd
+	arm:raspi2:multi_v7_defconfig:sd:bcm2836-rpi-2-b:rootfs
 
-Ya, and maybe with an "as_id" variant to avoid the get/put?  Not sure that's a
-worthwhile optimization though.
+arm64:allmodconfig:
 
-On a related topic, there are a few subtleties with respect to
-for_each_tdp_mmu_root() that we should document/comment.  The flows that drop
-mmu_lock while iterating over the roots don't protect against the list itself
-from being modified.  E.g. the next entry could be deleted, or a new root
-could be added.  I think I've convinced myself that there are no existing bugs,
-but we should document that the exact current behavior is required for
-correctness.
+ERROR: modpost: "irq_check_status_bit" [drivers/perf/arm_spe_pmu.ko] undefined!
 
-The use of "unsafe" list_for_each_entry() in particular is unintuitive, as using
-the "safe" variant would dereference a deleted entry in the "next entry is
-deleted" scenario.
+ia64:defconfig:
 
-And regarding addomg a root, using list_add_tail() instead of list_add() in
-get_tdp_mmu_vcpu_root() would cause iteration to visit a root that was added
-after the iteration started (though I don't think this would ever be problematic
-in practice?).
+include/linux/mmzone.h:1156:2: error: #error Allocator MAX_ORDER exceeds SECTION_SIZE
+
+arm:raspi2 boot tests stall during boot.
+
+Problems are as already reported against v5.11-rc1.
+
+Guenter
