@@ -2,59 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 59B0F2EB68D
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 00:56:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0853B2EB690
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 00:57:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725903AbhAEX4O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 18:56:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32996 "EHLO
+        id S1726216AbhAEX4r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 18:56:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33090 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725813AbhAEX4N (ORCPT
+        with ESMTP id S1725822AbhAEX4q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 18:56:13 -0500
-Received: from mail-io1-xd31.google.com (mail-io1-xd31.google.com [IPv6:2607:f8b0:4864:20::d31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 333E2C061574
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Jan 2021 15:55:33 -0800 (PST)
-Received: by mail-io1-xd31.google.com with SMTP id p187so1075364iod.4
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Jan 2021 15:55:33 -0800 (PST)
+        Tue, 5 Jan 2021 18:56:46 -0500
+Received: from mail-il1-x136.google.com (mail-il1-x136.google.com [IPv6:2607:f8b0:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3AA77C06179A
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Jan 2021 15:56:06 -0800 (PST)
+Received: by mail-il1-x136.google.com with SMTP id w12so1413801ilm.12
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Jan 2021 15:56:06 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=P9cxczu5SWz8K1Y8wh3jbN1kCg9PCTdSsNoKF/csdlw=;
-        b=qmNvR6Y/mZMkV6xILKuddIBlO+MgpZ1uOjExFkQI7O3ZtG3D4htKuT+nhTw2Woju73
-         BBYSDSi1wgJNMcEDvZqYZlQjcfGA7YEPkNaoEUMHd7p4c/6F3XY4/+ED9arPqqvbVt92
-         A75zfWz4A3zw6/dB1NE09vYCvq+/WH1AWWmvASlOKfCeLGn5ROr6V9wLcKsGR7xJKyrY
-         BmDpRISIOchC7Ldtj6+DKjH6twXii0PxPzTJiLYF21W5ifrt3dCHR5YC3I2X0V/5d/1M
-         7f16lvU2pmb8vsnQlafiaMXfmlSWiXqc3K3LIMvzWwhSSTbbulHzapjjIMtOg/kEcxzB
-         xv2g==
+        bh=zC1K9HT6QN2ehRxAnmxur1sKN3lHvBdwnEoZbLeAquU=;
+        b=cqjAnSYnENX5ERg+DqsuwA89OKXd3JYILriBzg9c/vBQYcUXwOKtxA50oGH73NZBRc
+         2b1dUlqhMPmzLcfzNwsU1c7XYIwlmZ0/JQdJqQZJIbl5Dhcr7dITxAExlHf83hrVh4R6
+         gz3Ws9dVyiSGabvZ29Rnpac0tn6zf5pxkZYa+S2z0GRsCXt6YvgSl5QZuo+fAAkilCNQ
+         rMivHUPLk5yqV53PpawDTFMea3LUNaaVbw4qARkqtAHjWyDz2A488J9/SDWjMbBBEp8f
+         cwN32aSkxdIqly1CXOclOVeB2qcJr/CmioAxs75DDpk8izmMibcqpwImtx8IQI5PNYZd
+         Kc1w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=P9cxczu5SWz8K1Y8wh3jbN1kCg9PCTdSsNoKF/csdlw=;
-        b=TomMDfmNVeAy/om6QCAqvzML4qsB/PF7G0jRZ+SmZv5rqzjDpQIgBNcnJeC9hnoR/p
-         Nj68pTNyYv0mKmXmT5ChpkvJA1ru8UquIONEsXjJqrZkxtQ+/185X4vx8Fceub+M2PMD
-         rI+I5uEQXPGQTtGXEhH/Of27XHiTiMawjLdzVPS5j1TvRe08gy8psEcYYutDBM/cjdk4
-         BD+WIuVSQqiyRYB0AbsvFdvjbURPBpTTtQmHnWXgbP8e81GPUII/SbX+1JVuvyVdsRmW
-         bX+7gdNU5KQ5mZ811sGeo2k6Sdud00eTk3aq0vzVTv2FIGAQKr7BOEwaVqzgpp69olbf
-         1HdQ==
-X-Gm-Message-State: AOAM533TOe5JEXoh8s8Ei1BBauOyAzTRFqSbFHrXlK35Vk67OuR4xd9T
-        J2nOD9EQenarbdpiv87lv9vCQQ==
-X-Google-Smtp-Source: ABdhPJzW0+1wnI9+dPf7LC4hQ8rzEpvmwauqfoEQSeWVbbF2/K0RUMfJbui7qv5jnsQNWqNZ6ZlyTw==
-X-Received: by 2002:a5d:959a:: with SMTP id a26mr1194505ioo.94.1609890932533;
-        Tue, 05 Jan 2021 15:55:32 -0800 (PST)
+        bh=zC1K9HT6QN2ehRxAnmxur1sKN3lHvBdwnEoZbLeAquU=;
+        b=XoZry2zXSVtlP+ybl71xFbmpzEpjXSEGkOruNw7oaz97LTk31zP02BOrfNryeKHpl+
+         Pc/Gn9NP8dKg6fN0a860WI7lX4dcnKPDTDOoFxS7PElZ9byZJwA83h4iVMB+lNPVgGJA
+         3KvSSXIInwecbDxN1zVbGIgtyHJl1XLyjdQ1kZnRi61fx1QVQazzxeRorx+xsOfBByhg
+         yOAhOPTILq4TfHPUmSWGIkHwmQs5u0NS7hiorLPR14fEUY3TtR7Bg9n5qF5ohJkY92lN
+         BhxDZ8uYA+DCPFpclTV+W8Re/fE2WFeg2voVaCQg9180TA7EDxxrRnFKJfTz0sX8MS+2
+         bAQQ==
+X-Gm-Message-State: AOAM533EPzpIlKS6r60rlLocW0Vn6tvEbxM7lm/Ie8SEBd+tr9JsTlFh
+        fHy9KaoRjOpTQ9wkFgXlcB5CBUp+w76UXA==
+X-Google-Smtp-Source: ABdhPJxY10byWvvKPUjmD2YnqJmZrfCbcnQO9DqeyTWZ6xLXVXsi1iJ+5UBTeXrEvIMS/9iTb/e0HQ==
+X-Received: by 2002:a05:6e02:60f:: with SMTP id t15mr2004518ils.250.1609890965620;
+        Tue, 05 Jan 2021 15:56:05 -0800 (PST)
 Received: from beast.localdomain (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
-        by smtp.gmail.com with ESMTPSA id a18sm543488ilt.52.2021.01.05.15.55.31
+        by smtp.gmail.com with ESMTPSA id l4sm509077ilo.29.2021.01.05.15.56.04
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 Jan 2021 15:55:31 -0800 (PST)
+        Tue, 05 Jan 2021 15:56:05 -0800 (PST)
 From:   Alex Elder <elder@linaro.org>
 To:     bjorn.andersson@linaro.org, agross@kernel.org, ohad@wizery.com
 Cc:     linux-arm-msm@vger.kernel.org, linux-remoteproc@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH] rpmsg: glink: add a header file
-Date:   Tue,  5 Jan 2021 17:55:28 -0600
-Message-Id: <20210105235528.32538-1-elder@linaro.org>
+Subject: [PATCH] rpmsg: glink: fix some kerneldoc comments
+Date:   Tue,  5 Jan 2021 17:56:03 -0600
+Message-Id: <20210105235603.32663-1-elder@linaro.org>
 X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -62,28 +62,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-With an x86_64 architecture W=1 build, qcom_glink_ssr_notify() is
-reported as having no previous prototype.  The prototype is found in
-"qcom_glink.h", so we just need "qcom_glink_ssr.c" to include that
-file.
+The kerneldoc comments for the do_cleanup_msg and cleanup_done_msg
+structures describe the fields, but don't prefix the field names
+with "@".  Add those, to get rid of some W=1 build warnings on
+an x86_64 architecture build.
 
 Signed-off-by: Alex Elder <elder@linaro.org>
 ---
- drivers/rpmsg/qcom_glink_ssr.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/rpmsg/qcom_glink_ssr.c | 16 ++++++++--------
+ 1 file changed, 8 insertions(+), 8 deletions(-)
 
 diff --git a/drivers/rpmsg/qcom_glink_ssr.c b/drivers/rpmsg/qcom_glink_ssr.c
-index dcd1ce6169747..4da6c7d985568 100644
+index dcd1ce6169747..1fc2bf5354f50 100644
 --- a/drivers/rpmsg/qcom_glink_ssr.c
 +++ b/drivers/rpmsg/qcom_glink_ssr.c
-@@ -8,6 +8,7 @@
- #include <linux/module.h>
- #include <linux/notifier.h>
- #include <linux/rpmsg.h>
-+#include <linux/rpmsg/qcom_glink.h>
- #include <linux/remoteproc/qcom_rproc.h>
+@@ -12,11 +12,11 @@
  
  /**
+  * struct do_cleanup_msg - The data structure for an SSR do_cleanup message
+- * version:     The G-Link SSR protocol version
+- * command:     The G-Link SSR command - do_cleanup
+- * seq_num:     Sequence number
+- * name_len:    Length of the name of the subsystem being restarted
+- * name:        G-Link edge name of the subsystem being restarted
++ * @version:	The G-Link SSR protocol version
++ * @command:	The G-Link SSR command - do_cleanup
++ * @seq_num:	Sequence number
++ * @name_len:	Length of the name of the subsystem being restarted
++ * @name:	G-Link edge name of the subsystem being restarted
+  */
+ struct do_cleanup_msg {
+ 	__le32 version;
+@@ -28,9 +28,9 @@ struct do_cleanup_msg {
+ 
+ /**
+  * struct cleanup_done_msg - The data structure for an SSR cleanup_done message
+- * version:     The G-Link SSR protocol version
+- * response:    The G-Link SSR response to a do_cleanup command, cleanup_done
+- * seq_num:     Sequence number
++ * @version:	The G-Link SSR protocol version
++ * @response:	The G-Link SSR response to a do_cleanup command, cleanup_done
++ * @seq_num:	Sequence number
+  */
+ struct cleanup_done_msg {
+ 	__le32 version;
 -- 
 2.20.1
 
