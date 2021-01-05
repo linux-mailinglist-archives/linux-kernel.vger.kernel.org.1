@@ -2,185 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 224402EA6D0
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 09:59:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 950AD2EA6D4
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 10:00:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727746AbhAEI6c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 03:58:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33530 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727225AbhAEI6c (ORCPT
+        id S1727351AbhAEJAA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 04:00:00 -0500
+Received: from new4-smtp.messagingengine.com ([66.111.4.230]:42237 "EHLO
+        new4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726982AbhAEI77 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 03:58:32 -0500
-Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88646C061574
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Jan 2021 00:57:51 -0800 (PST)
-Received: by mail-ej1-x62e.google.com with SMTP id ce23so40246489ejb.8
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Jan 2021 00:57:51 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intel-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=lzN2o2LdBqrUYg8vvHhs6dHiXB1i+wevas9zOqN/X00=;
-        b=B+SbppEJZY5i8jO/nmkf2E7nH16EDj8jES6Xtbzp3wjTjHnYlFrTJCXJcUZrF6Ba7e
-         A5tHYzNYH/2Sv06M4WhaKv1+OPhP5tjWVAByRsYJPDV3hBp1s9HPqJyDaYvenNQ40y33
-         +/tRXRmsd926ojJUtTog0H6ZKQOa/qGMzME5Cpn4xfWQr6cbmFN2ghzrmsG2lc+kTsH+
-         FOiQoynxF6H7K/08dR9K32Z9HpeCPbIAsT2/NwQvkxP3tHmNm1QhCoaiG5U2u6qHWu+6
-         2mFIUyn1AgJoZ2URClW81pBRRXHURSLTjSKobxuECtJ5jbnhEviHzb+O328KWa5zBaIi
-         yTOA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=lzN2o2LdBqrUYg8vvHhs6dHiXB1i+wevas9zOqN/X00=;
-        b=uio81B1xv5E7o45kvSZI+V2SzxU+rKD9Bg9emLxECEH8ZngWQT3B8Db5GaXFZjMAhv
-         44f3GrwKXM1HFbGF4RD4RKLySM6mYtcAxzZe7KASN2TuZMwSLDjhRTVT6imE2TLnbkxH
-         kkUxjCz8vZ3n5naSf9oZ3ZgcAt6u3MNqB9mCyJGRsmukMjtx7q/5/kzUrZE6LTOEBA3+
-         qusQ4asdQP0Qub53pfbhwPgiegehVruEdaGMzGy5k5iG6g7TrErOCGx0Z/lO09sc2ktC
-         CXSgN+YftVSlVcW05KJ6PNwzsUEoP+UjO0QAWx2IaodWrKLm7b6qPGYyL1KJCFBx4/7y
-         FqKA==
-X-Gm-Message-State: AOAM5329sRfBam/znhVelSyEX0FGaIpPE8pw7drpIm4kwViecI0W27Qr
-        2v1papqVOojeOJ6EHdxUdeX/wrCca2BuicjW/YHkMA==
-X-Google-Smtp-Source: ABdhPJxesbVcOI40YNDHTbOdMG4nAy1fJbekG96SQZE18PfwJjGgBoI6OrKUJfmOct4SdjXl2qpD7BpzlLaZYnqXBW4=
-X-Received: by 2002:a17:907:c15:: with SMTP id ga21mr70396089ejc.472.1609837070212;
- Tue, 05 Jan 2021 00:57:50 -0800 (PST)
+        Tue, 5 Jan 2021 03:59:59 -0500
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+        by mailnew.nyi.internal (Postfix) with ESMTP id 29A5358049B;
+        Tue,  5 Jan 2021 03:59:13 -0500 (EST)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute6.internal (MEProxy); Tue, 05 Jan 2021 03:59:13 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=flygoat.com; h=
+        subject:to:cc:references:from:message-id:date:mime-version
+        :in-reply-to:content-type:content-transfer-encoding; s=fm1; bh=K
+        wHmlBlSYwHrDiz4lTbH37Kq075cZSKda6f/07inWNs=; b=lV928XRb5T4InzEV6
+        QI7e1C76AIKWbduwZ0Ar2S6JI5ucUPUuZDHyKvMEfnLkyyhGVKFz6FiSmddalZNh
+        t+AFrkWSdUJGxeOM7AodFLYeCpnyxg2N6hvlAGrq8htRBHJecgHAnzo87B5brL50
+        yxzJKRVM3A1cViiAP4/r5DzcmHnaEqoakikE2NNoKqkxCGsIwYXapQ9YW6AKAuxK
+        8QgBBkveKz2jxOd2/zlQ1gfSVlqn7Eb+Yo4zHbER5WZAavtUISCNLSPKJBBF4Ary
+        tmSnBLTN0yQy52sGxSBJYMGuVrOtrerw6iQSvOe8170WCM3qosRVZghyhK4SKowX
+        cM/jw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:content-type
+        :date:from:in-reply-to:message-id:mime-version:references
+        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm1; bh=KwHmlBlSYwHrDiz4lTbH37Kq075cZSKda6f/07inW
+        Ns=; b=XOm/h1GnqHc3oSkjeXx1xkn2OqdXDdXKuR9O3/BLEXhRnh6i0yAHzabm/
+        7CeMoKY4BS7Ocfg2i3lOc+osz6sMHTSBgfLkrKtJqMULx/38BSClKq/u9racyJgL
+        AO6CgdVwNDkzqGDmTzuf9IgVmxOgBsX3phNHwSpxJEX1GWqEVFiyX8xB40eU+CbQ
+        3lTIkCjSkSfe6kiIuqfWnIOIJ9HNlsZo7fsDNdSFa2+pIyBEBPQVsfBzLQcIQrZp
+        IFZIaXDvqqshAII2R4wCLtUovmmpRD5BQ742omn28fg3VAuFdiBjoBsTIYzO+D7z
+        jlxbnlM2J8Nn/u692SrePewwK9XAQ==
+X-ME-Sender: <xms:YCr0X9IAHI6v1p99QOqApXFazPDtaTi46vR3u42wtozZM5dbo16Y1A>
+    <xme:YCr0X5IhN9DBM61Mwi6r8YYA9mNMKyiaa5EMPLLZr2f4tvAiNmWz7TZnCNcy4zUAb
+    2Noti03fBbZ3Zy1_Ts>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrvdefgedguddvgecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enucfjughrpefuvfhfhffkffgfgggjtgfgsehtkeertddtfeejnecuhfhrohhmpeflihgr
+    gihunhcujggrnhhguceojhhirgiguhhnrdihrghnghesfhhlhihgohgrthdrtghomheqne
+    cuggftrfgrthhtvghrnhephffgteehteeuuddtvdeikeduvdeuiedukeeiuddtgeevledt
+    ueekteejfeevffdunecuffhomhgrihhnpehlughsrdhssgdpohhpthhiohhnshdrvghhne
+    cukfhppeeghedrfeefrdehtddrvdehgeenucevlhhushhtvghrufhiiigvpedtnecurfgr
+    rhgrmhepmhgrihhlfhhrohhmpehjihgrgihunhdrhigrnhhgsehflhihghhorghtrdgtoh
+    hm
+X-ME-Proxy: <xmx:YCr0X1vPmrUpd046QM50WwFKiSORi1m3tGPmDLOqlxyRbcwbFiB65w>
+    <xmx:YCr0X-Z3_b_uv_TlP-bMKBA78TFPI1qwyfpidNU9X2GEvSS9SwdUyQ>
+    <xmx:YCr0X0Z18LDcoTLppjyeUMuXoxRrz64ByO3iqnQpCQFYhzV-ovv-uA>
+    <xmx:YCr0X0401DTvDt2GD25Cp1uBzB283PTpc5kkz8yw-3VsxXWVCz9kVvDjIFg>
+Received: from [0.0.0.0] (li1000-254.members.linode.com [45.33.50.254])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 054A1108005B;
+        Tue,  5 Jan 2021 03:59:07 -0500 (EST)
+Subject: Re: [PATCH mips-next 2/4] MIPS: vmlinux.lds.S: add ".rel.dyn" to
+ DISCARDS
+To:     =?UTF-8?B?RsSBbmctcnXDrCBTw7JuZw==?= <maskray@google.com>,
+        Alexander Lobakin <alobakin@pm.me>
+Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Kees Cook <keescook@chromium.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Ralf Baechle <ralf@linux-mips.org>,
+        Alex Smith <alex.smith@imgtec.com>,
+        Markos Chandras <markos.chandras@imgtec.com>,
+        linux-mips <linux-mips@vger.kernel.org>,
+        "# 3.4.x" <stable@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+References: <20210104121729.46981-1-alobakin@pm.me>
+ <20210104122016.47308-1-alobakin@pm.me>
+ <20210104122016.47308-2-alobakin@pm.me>
+ <CAFP8O3LA87zyi8f64Sk5g+aLFdYhnZqsEbLC_uTsQk3+6Qus3A@mail.gmail.com>
+From:   Jiaxun Yang <jiaxun.yang@flygoat.com>
+Message-ID: <2add3f2d-ab2a-1ca3-5e04-d7b66738bfbe@flygoat.com>
+Date:   Tue, 5 Jan 2021 16:59:03 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-References: <20210104142624.GI13207@dhcp22.suse.cz> <23a4eea2-9fdb-fd1d-ee92-9cd8ac6e8f41@redhat.com>
- <20210104151005.GK13207@dhcp22.suse.cz> <26db2c3e-10c7-c6e3-23f7-21eb5101b31a@redhat.com>
- <20210104153300.GL13207@dhcp22.suse.cz> <bf26f568-79b3-67f9-832a-9d8ef3f72c43@redhat.com>
- <6106ca7f-3247-0916-3e1e-ad6af17272ea@redhat.com> <20210105080057.GT13207@dhcp22.suse.cz>
- <20210105081654.GU13207@dhcp22.suse.cz> <CAPcyv4jKKWqjgdpi3yiPCaFdfHYzPDrgAc1YvELEPogD3go2PA@mail.gmail.com>
- <20210105084224.GV13207@dhcp22.suse.cz>
-In-Reply-To: <20210105084224.GV13207@dhcp22.suse.cz>
-From:   Dan Williams <dan.j.williams@intel.com>
-Date:   Tue, 5 Jan 2021 00:57:43 -0800
-Message-ID: <CAPcyv4jYJdmRRhDCaT1j-s2pij3OnML7muWjgJRe9s65ujjZFw@mail.gmail.com>
-Subject: Re: uninitialized pmem struct pages
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     David Hildenbrand <david@redhat.com>,
-        Linux MM <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Oscar Salvador <osalvador@suse.de>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <CAFP8O3LA87zyi8f64Sk5g+aLFdYhnZqsEbLC_uTsQk3+6Qus3A@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 5, 2021 at 12:42 AM Michal Hocko <mhocko@suse.com> wrote:
+在 2021/1/5 下午3:39, Fāng-ruì Sòng 写道:
+> On Mon, Jan 4, 2021 at 4:21 AM Alexander Lobakin <alobakin@pm.me> wrote:
+>> GCC somehow manages to place some of the symbols from main.c into
+>> .rel.dyn section:
+>>
+>> mips-alpine-linux-musl-ld: warning: orphan section `.rel.dyn'
+>> from `init/main.o' being placed in section `.rel.dyn'
+>>
+>> I couldn't catch up the exact symbol, but seems like it's harmless
+>> to discard it from the final vmlinux as kernel doesn't use or
+>> support dynamic relocations.
+>>
+>> Misc: sort DISCARDS section entries alphabetically.
+>>
+>> Signed-off-by: Alexander Lobakin <alobakin@pm.me>
+>> ---
+>>   arch/mips/kernel/vmlinux.lds.S | 3 ++-
+>>   1 file changed, 2 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/arch/mips/kernel/vmlinux.lds.S b/arch/mips/kernel/vmlinux.lds.S
+>> index 83e27a181206..1c3c2e903062 100644
+>> --- a/arch/mips/kernel/vmlinux.lds.S
+>> +++ b/arch/mips/kernel/vmlinux.lds.S
+>> @@ -221,9 +221,10 @@ SECTIONS
+>>                  /* ABI crap starts here */
+>>                  *(.MIPS.abiflags)
+>>                  *(.MIPS.options)
+>> +               *(.eh_frame)
+>>                  *(.options)
+>>                  *(.pdr)
+>>                  *(.reginfo)
+>> -               *(.eh_frame)
+>> +               *(.rel.dyn)
+>>          }
+>>   }
+>> --
+>> 2.30.0
+>>
+>>
+> (I don't know why I am on the CC list since I know little about
+> mips... Anyway, I know the LLD linker's behavior in case that was the
+> intention... )
 >
-> On Tue 05-01-21 00:27:34, Dan Williams wrote:
-> > On Tue, Jan 5, 2021 at 12:17 AM Michal Hocko <mhocko@suse.com> wrote:
-> > >
-> > > On Tue 05-01-21 09:01:00, Michal Hocko wrote:
-> > > > On Mon 04-01-21 16:44:52, David Hildenbrand wrote:
-> > > > > On 04.01.21 16:43, David Hildenbrand wrote:
-> > > > > > On 04.01.21 16:33, Michal Hocko wrote:
-> > > > > >> On Mon 04-01-21 16:15:23, David Hildenbrand wrote:
-> > > > > >>> On 04.01.21 16:10, Michal Hocko wrote:
-> > > > > >> [...]
-> > > > > >>> Do the physical addresses you see fall into the same section as boot
-> > > > > >>> memory? Or what's around these addresses?
-> > > > > >>
-> > > > > >> Yes I am getting a garbage for the first struct page belonging to the
-> > > > > >> pmem section [1]
-> > > > > >> [    0.020161] ACPI: SRAT: Node 0 PXM 0 [mem 0x100000000-0x603fffffff]
-> > > > > >> [    0.020163] ACPI: SRAT: Node 4 PXM 4 [mem 0x6060000000-0x11d5fffffff] non-volatile
-> > > > > >>
-> > > > > >> The pfn without the initialized struct page is 0x6060000. This is a
-> > > > > >> first pfn in a section.
-> > > > > >
-> > > > > > Okay, so we're not dealing with the "early section" mess I described,
-> > > > > > different story.
-> > > > > >
-> > > > > > Due to [1], is_mem_section_removable() called
-> > > > > > pfn_to_page(PHYS_PFN(0x6060000)). page_zone(page) made it crash, as not
-> > > > > > initialized.
-> > > > > >
-> > > > > > Let's assume this is indeed a reserved pfn in the altmap. What's the
-> > > > > > actual address of the memmap?
-> > > > > >
-> > > > > > I do wonder what hosts pfn_to_page(PHYS_PFN(0x6060000)) - is it actually
-> > > > > > part of the actual altmap (i.e. > 0x6060000) or maybe even self-hosted?
-> > > > > >
-> > > > > > If it's not self-hosted, initializing the relevant memmaps should work
-> > > > > > just fine I guess. Otherwise things get more complicated.
-> > > > >
-> > > > > Oh, I forgot: pfn_to_online_page() should at least in your example make
-> > > > > sure other pfn walkers are safe. It was just an issue of
-> > > > > is_mem_section_removable().
-> > > >
-> > > > Hmm, I suspect you are right. I haven't put this together, thanks! The memory
-> > > > section is indeed marked offline so pfn_to_online_page would indeed bail
-> > > > out:
-> > > > crash> p (0x6060000>>15)
-> > > > $3 = 3084
-> > > > crash> p mem_section[3084/128][3084 & 127]
-> > > > $4 = {
-> > > >   section_mem_map = 18446736128020054019,
-> > > >   usage = 0xffff902dcf956680,
-> > > >   page_ext = 0x0,
-> > > >   pad = 0
-> > > > }
-> > > > crash> p 18446736128020054019 & (1UL<<2)
-> > > > $5 = 0
-> > > >
-> > > > That makes it considerably less of a problem than I thought!
-> > >
-> > > Forgot to add that those who are running kernels without 53cdc1cb29e8
-> > > ("drivers/base/memory.c: indicate all memory blocks as removable") for
-> > > some reason can fix the crash by the following simple patch.
-> > >
-> > > Index: linux-5.3-users_mhocko_SLE15-SP2_for-next/drivers/base/memory.c
-> > > ===================================================================
-> > > --- linux-5.3-users_mhocko_SLE15-SP2_for-next.orig/drivers/base/memory.c
-> > > +++ linux-5.3-users_mhocko_SLE15-SP2_for-next/drivers/base/memory.c
-> > > @@ -152,9 +152,14 @@ static ssize_t removable_show(struct dev
-> > >                 goto out;
-> > >
-> > >         for (i = 0; i < sections_per_block; i++) {
-> > > -               if (!present_section_nr(mem->start_section_nr + i))
-> > > +               unsigned long nr = mem->start_section_nr + i;
-> > > +               if (!present_section_nr(nr))
-> > >                         continue;
-> > > -               pfn = section_nr_to_pfn(mem->start_section_nr + i);
-> > > +               if (!online_section_nr()) {
-> >
-> > I assume that's onlince_section_nr(nr) in the version that compiles?
+> I think it'd be good to know the reason why these dynamic relocations
+> are produced and fix the root cause.
 >
-> Yup.
->
-> > This makes sense because the memory block size is larger than the
-> > section size. I suspect you have 1GB memory block size on this system,
-> > but since the System RAM and PMEM collide at a 512MB alignment in a
-> > memory block you end up walking the back end of the last 512MB of the
-> > System RAM memory block and run into the offline PMEM section.
->
-> Sections are 128MB and memory blocks are 2GB on this system.
->
-> > So, I don't think it's pfn_to_online_page that necessarily needs to
-> > know how to disambiguate each page, it's things that walk sections and
-> > memory blocks and expects them to be consistent over the span.
->
-> Well, memory hotplug code is hard wired to sparse memory model so in
-> this particular case asking about the section is ok. But pfn walkers
-> shouldn't really care and only rely on pfn_to_online_page. But that will
-> do the right thing here. So we are good as long as the section is marked
-> properly. But this would become a problem as soon as the uninitialized
-> pages where sharing the same memory section as David pointed out.
-> pfn_to_online_page would then return something containing garbage. So we
-> should still think of a way to either initialize all those pages or make
-> sure pfn_to_online_page recognizes them. The former is preferred IMHO.
+> arch/x86/kernel/vmlinux.lds.S asserts no dynamic relocation:
+> ASSERT(SIZEOF(.rela.dyn) == 0, "Unexpected run-time relocations
+> (.rela) detected!")
+Hi all,
 
-The former would not have saved the crash in this case because
-pfn_to_online_page() is not used in v5.3:removable_show() that I can
-see, nor some of the other paths that might walk pfns and the wrong
-thing with ZONE_DEVICE.
+Runtime .rela can't be avoided as MIPS kernel can't be built with fPIC.
+Our relocatable kernel uses another approach, fixup dynamic relocations
+at boot time.
 
-However, I do think pfn_to_online_page() should be reliable, and I
-prefer to just brute force add a section flag to indicate whether the
-section might be ZONE_DEVICE polluted and fallback to the
-get_dev_pagemap() slow-path in that case.
+abicalls simply gave us too much overhead on PIC code, which is unacceptable
+for kernel.
 
-...but it would still require hunting to find the places where
-pfn_to_online_page() is missing for assumptions like this crash which
-assumed memblock-online + section-present == section-online.
+In my local tests, PIC kernel reduced unix bench results for around 30%.
+
+For MIPS Release6 and afterwards, we may utilize new pcrel instructions to
+reduce overhead but for older ISA I don't have any idea.
+
+Thanks.
+
+- Jiaxun
+
+
