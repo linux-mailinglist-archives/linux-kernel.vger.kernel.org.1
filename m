@@ -2,86 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C41282EA838
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 11:10:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D22F2EA83B
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 11:10:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728651AbhAEKIU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 05:08:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44254 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728054AbhAEKIT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 05:08:19 -0500
-Received: from mail-io1-xd35.google.com (mail-io1-xd35.google.com [IPv6:2607:f8b0:4864:20::d35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B60EC061793;
-        Tue,  5 Jan 2021 02:07:39 -0800 (PST)
-Received: by mail-io1-xd35.google.com with SMTP id o6so27647043iob.10;
-        Tue, 05 Jan 2021 02:07:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Ccgp0E4J7ckyMBD4S6oa4zMRT5+hLIG3b8SFsxJtqgc=;
-        b=jQcfDMrbHYolNtINIECH9yXVONwXqWTPajdwaDyOJAyy+8K944lEVJichjqBoFTEOA
-         ZplKD2EVZQu43FJE+jZ+tAdzd8qRFLyY4o9X1H8gYdhpzFbaDUTHvG73fApA8p1tFzc1
-         G6/JcbTA97Ss7datuoJPfCT20IOc2+WKvJUbK9vaCUQ1qPy50pcllC5HIraiCvceH5Rz
-         P6MoohTATljkVoY1g+Q0lnnqlgN9rHUaLa6Fh2/sk87fGw//OHrhuy5sAQjG5C7XVKaY
-         N/kWBHjj3jST43pTqGR1rdCjIWuCyi+CQo3CZSMIoNwM79UBCNye4elvYNBB978YHsLv
-         YbQQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Ccgp0E4J7ckyMBD4S6oa4zMRT5+hLIG3b8SFsxJtqgc=;
-        b=kwfNF+4xNHb0yy5O9SxJxApeG/OVW9xfxl6YzwLLfTzxNXshHzFPjQ7huvwN+VwEwB
-         CAadBeD6Dzr5ppnsFCC3t8IpP/32Rg+rStkk4LBnegowgkbZSkkwsS6EaTbGW6KbQKG8
-         odYekYQjrrs4VmCbrwxuMv4GKrYRyRpnFprq4eFPLepi/P/1GFoJa/EAgVYj/zya99fx
-         hAmUcBDZyL1NEnA8f8GEh1vKO8Q3yOe6O3OUZEpLNmY5JM1pugC6Qvgl5fJdqZMJBJQR
-         dRwMq8VnyMU17Vkfzekpk6oHf5T8QTjh2S+rb+9rkyqV86AnYViwO1tLzNOzV5QRwPYB
-         gqBQ==
-X-Gm-Message-State: AOAM530RWSO4LHkQrsY7FE8hr+3W5krXMahDh8F3Ua0WO+2xCrc5V+4K
-        ObOKBhHwBFsSf3tu4tl0FYg=
-X-Google-Smtp-Source: ABdhPJynVL0XaQ3YFzifBmzpkJjRWDlbjn3Pz6YeaKeymHLhnqauorQNsT+tWTVW4ijSCcyXvzLbNg==
-X-Received: by 2002:a02:9f8b:: with SMTP id a11mr66785147jam.108.1609841258942;
-        Tue, 05 Jan 2021 02:07:38 -0800 (PST)
-Received: from localhost.localdomain ([156.146.37.136])
-        by smtp.gmail.com with ESMTPSA id v66sm38930437iod.34.2021.01.05.02.07.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 Jan 2021 02:07:38 -0800 (PST)
-From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
-To:     song@kernel.org, linux-raid@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Bhaskar Chowdhury <unixbhaskar@gmail.com>
-Subject: [PATCH] drivers: md: Fix another spelling at top of the file
-Date:   Tue,  5 Jan 2021 15:37:36 +0530
-Message-Id: <20210105100736.6237-1-unixbhaskar@gmail.com>
-X-Mailer: git-send-email 2.26.2
+        id S1728467AbhAEKJd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 05:09:33 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57060 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726171AbhAEKJd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Jan 2021 05:09:33 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2890C224F9;
+        Tue,  5 Jan 2021 10:08:50 +0000 (UTC)
+Date:   Tue, 5 Jan 2021 10:08:47 +0000
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     Keqian Zhu <zhukeqian1@huawei.com>
+Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        kvm@vger.kernel.org, kvmarm@lists.cs.columbia.edu,
+        Marc Zyngier <maz@kernel.org>, Will Deacon <will@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        James Morse <james.morse@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        wanghaibin.wang@huawei.com
+Subject: Re: [PATCH] arm64/smp: Remove unused variable irq in
+ arch_show_interrupts()
+Message-ID: <20210105100847.GB11802@gaia>
+References: <20210105092221.15144-1-zhukeqian1@huawei.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210105092221.15144-1-zhukeqian1@huawei.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-s/fautly/faulty/p
+On Tue, Jan 05, 2021 at 05:22:21PM +0800, Keqian Zhu wrote:
+> The local variable irq is added in commit a26388152531 ("arm64:
+> Remove custom IRQ stat accounting"), but forget to remove in
+> commit 5089bc51f81f ("arm64/smp: Use irq_desc_kstat_cpu() in
+> arch_show_interrupts()"). Just remove it.
+> 
+> Signed-off-by: Keqian Zhu <zhukeqian1@huawei.com>
 
-Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
----
- drivers/md/md-faulty.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+I already queued a similar fix in arm64 for-next/fixes (it should appear
+in linux-next at some point).
 
-diff --git a/drivers/md/md-faulty.c b/drivers/md/md-faulty.c
-index fda4cb3f936f..076b93f7d443 100644
---- a/drivers/md/md-faulty.c
-+++ b/drivers/md/md-faulty.c
-@@ -4,7 +4,7 @@
-  *
-  * Copyright (C) 2004 Neil Brown
-  *
-- * fautly-device-simulator personality for md
-+ * faulty-device-simulator personality for md
-  */
-
-
---
-2.26.2
-
+-- 
+Catalin
