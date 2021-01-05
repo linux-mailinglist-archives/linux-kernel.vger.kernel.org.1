@@ -2,185 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 426902EB29C
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 19:30:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C7422EB293
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 19:30:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730605AbhAES3d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 13:29:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38178 "EHLO
+        id S1729886AbhAES2w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 13:28:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38060 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730486AbhAES3c (ORCPT
+        with ESMTP id S1728690AbhAES2v (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 13:29:32 -0500
-Received: from mail-wr1-x44a.google.com (mail-wr1-x44a.google.com [IPv6:2a00:1450:4864:20::44a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48689C0617A5
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Jan 2021 10:28:32 -0800 (PST)
-Received: by mail-wr1-x44a.google.com with SMTP id u3so174317wri.19
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Jan 2021 10:28:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:in-reply-to:message-id:mime-version:references:subject
-         :from:to:cc;
-        bh=oRho7+sQYL8W8g66lzn3SO+/RCe3iCmUxBQsmdc55nY=;
-        b=VubKJ4tGao6rr39K7dEx8xeHG8th8u0W76NMnX2RgStyrhptBxDAuVLL2jUWFyKyVb
-         CiSab5ZOJMH+oUNih6ugHcAhtNgXlG0WH8r9T70W+LSBjDC/g6VgoyvGP4teEnJffBYA
-         9vUy5dDJA+86MKvcD0pZN9HyN3Fx+zmW6tD8wvH+/oBohedPUCQSeH8UBzRaLjscXver
-         3z2flUWE3gPwKy6z5TQ3zusM3e3GepNs/zVftxGPm6lCwhtemL+D3Q6Y/obzjMmWhSVp
-         4DFFpbjNizMfHnG/4zp4JX6aflPp8f0lzJSigNmUK8b9By/StVB2BOou2FiQ9VY1M0LC
-         k34A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=oRho7+sQYL8W8g66lzn3SO+/RCe3iCmUxBQsmdc55nY=;
-        b=U/WWkuyxmlGajQp63+W5GJZuG1Uvh/bJ8hhY54i5ZMc6+yw6H+SwU1OuDeoyiJZEOd
-         SwE/SJtfvF3/kuE8AL3EygPPzazoa+F7qfOOVWLsUvHjnyY5Kt4OV9qEC8ALTvQPdyrG
-         NTh0M/q8yn+hAWWPXgGk897T0Gl8JxqpuQ4ZCuTO9trz+xPLg2MLTgnYFWqLUm9Ibgvg
-         pRysInFmlTbcKE4QZg56XxhX9iULJTxwdtVa7FM+VBvdjHK7xkhreslG2AhzAXlYpfDd
-         ZvL0NhlTscAjMkF6B+j6QX7GxDuQ1U71amk1gAH9q90CBb2JPUKaKKhRIyMuB6rJGSKT
-         iQbQ==
-X-Gm-Message-State: AOAM532LE+a63j7Mdhc0dLHxj9LbTcQXoz1K8wvtc4WZNurPr2VIC5tK
-        f/NpBQ2AcqIcXSN/C50/eE9cv95k3UxUTlK4
-X-Google-Smtp-Source: ABdhPJxoWEP6BJ1reenr7C4SoK8UHxtinLKxkeHYeahf+7ie4bLyMFrFVqrKacmxVO7J7mnxTF4jJg0mL8c0//vU
-Sender: "andreyknvl via sendgmr" <andreyknvl@andreyknvl3.muc.corp.google.com>
-X-Received: from andreyknvl3.muc.corp.google.com ([2a00:79e0:15:13:7220:84ff:fe09:7e9d])
- (user=andreyknvl job=sendgmr) by 2002:adf:9b98:: with SMTP id
- d24mr846317wrc.240.1609871311014; Tue, 05 Jan 2021 10:28:31 -0800 (PST)
-Date:   Tue,  5 Jan 2021 19:27:55 +0100
-In-Reply-To: <cover.1609871239.git.andreyknvl@google.com>
-Message-Id: <15ca1976b26aa9edcec4a9d0f3b73f5b6536e5d0.1609871239.git.andreyknvl@google.com>
-Mime-Version: 1.0
-References: <cover.1609871239.git.andreyknvl@google.com>
-X-Mailer: git-send-email 2.29.2.729.g45daf8777d-goog
-Subject: [PATCH 11/11] kasan: add proper page allocator tests
-From:   Andrey Konovalov <andreyknvl@google.com>
-To:     Catalin Marinas <catalin.marinas@arm.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Alexander Potapenko <glider@google.com>,
-        Marco Elver <elver@google.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Will Deacon <will.deacon@arm.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Evgenii Stepanov <eugenis@google.com>,
-        Branislav Rankov <Branislav.Rankov@arm.com>,
-        Kevin Brodsky <kevin.brodsky@arm.com>,
-        kasan-dev@googlegroups.com, linux-arm-kernel@lists.infradead.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Andrey Konovalov <andreyknvl@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        Tue, 5 Jan 2021 13:28:51 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52F60C061798;
+        Tue,  5 Jan 2021 10:28:11 -0800 (PST)
+Date:   Tue, 05 Jan 2021 18:28:07 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1609871288;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=X75TBPO0punS/DRVX3qhlp0d7NpDwu3ZcCMazY6Mg8I=;
+        b=HZgD0CO6vUCeL+nYJ+6ihTAob/e0ArcJKZjogDkzJM+JGeMcLopmKssALNmvqZhqRLPHJ/
+        DQP/9cZsc60dR9tRQrd2+RflC3nVhu9pSkTWc6pch4pWInmdCZk0VSFfbDX2WdkalXtuyK
+        Xvofao878dFwWnkhY3vG0Ij6MmAocjRyHWmleI04p0P5DD1QUiflz9mCU14Ei7sJbBLjZc
+        yZe0AbNmYTKDA10sUBI1hbAyDctUB+vtLuzJXNRXN/1E3fbfEYa9bj97rVhOSjXmxy3qod
+        yyHpwNeVbYnb7Z+C6vkdDRStOm/jMwBAwo4jYilNFKNHIRbhNKPHDOyBQDMlEw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1609871288;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=X75TBPO0punS/DRVX3qhlp0d7NpDwu3ZcCMazY6Mg8I=;
+        b=xb3aH5Ok96BXu6Th7EXx/IN2OREbjXW70uHArnfRe0A9jQlDNRBj5RySn9wupfaAmoovAQ
+        RXQlqBD362J+ymCg==
+From:   "tip-bot2 for Adrian Huang" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/cleanups] x86/mm: Refine mmap syscall implementation
+Cc:     Adrian Huang <ahuang12@lenovo.com>, Borislav Petkov <bp@suse.de>,
+        Christoph Hellwig <hch@lst.de>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <20201217052648.24656-1-adrianhuang0701@gmail.com>
+References: <20201217052648.24656-1-adrianhuang0701@gmail.com>
+MIME-Version: 1.0
+Message-ID: <160987128790.414.308593720085652897.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The currently existing page allocator tests rely on kmalloc fallback
-with large sizes that is only present for SLUB. Add proper tests that
-use alloc/free_pages().
+The following commit has been merged into the x86/cleanups branch of tip:
 
-Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
-Link: https://linux-review.googlesource.com/id/Ia173d5a1b215fe6b2548d814ef0f4433cf983570
+Commit-ID:     91a8f6cb06b33adc79fbf5f7381d907485767c00
+Gitweb:        https://git.kernel.org/tip/91a8f6cb06b33adc79fbf5f7381d907485767c00
+Author:        Adrian Huang <ahuang12@lenovo.com>
+AuthorDate:    Thu, 17 Dec 2020 13:26:48 +08:00
+Committer:     Borislav Petkov <bp@suse.de>
+CommitterDate: Tue, 05 Jan 2021 19:07:42 +01:00
+
+x86/mm: Refine mmap syscall implementation
+
+It is unnecessary to use the local variable 'error' in the mmap syscall
+implementation function - just return -EINVAL directly and get rid of
+the local variable altogether.
+
+ [ bp: Massage commit message. ]
+
+Signed-off-by: Adrian Huang <ahuang12@lenovo.com>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Reviewed-by: Christoph Hellwig <hch@lst.de>
+Link: https://lkml.kernel.org/r/20201217052648.24656-1-adrianhuang0701@gmail.com
 ---
- lib/test_kasan.c | 54 +++++++++++++++++++++++++++++++++++++++++++-----
- 1 file changed, 49 insertions(+), 5 deletions(-)
+ arch/x86/kernel/sys_x86_64.c | 8 ++------
+ 1 file changed, 2 insertions(+), 6 deletions(-)
 
-diff --git a/lib/test_kasan.c b/lib/test_kasan.c
-index 6261521e57ad..24798c034d05 100644
---- a/lib/test_kasan.c
-+++ b/lib/test_kasan.c
-@@ -128,6 +128,12 @@ static void kmalloc_node_oob_right(struct kunit *test)
- 	kfree(ptr);
- }
- 
-+/*
-+ * These kmalloc_pagealloc_* tests try allocating a memory chunk that doesn't
-+ * fit into a slab cache and therefore is allocated via the page allocator
-+ * fallback. Since this kind of fallback is only implemented for SLUB, these
-+ * tests are limited to that allocator.
-+ */
- static void kmalloc_pagealloc_oob_right(struct kunit *test)
+diff --git a/arch/x86/kernel/sys_x86_64.c b/arch/x86/kernel/sys_x86_64.c
+index 504fa54..660b788 100644
+--- a/arch/x86/kernel/sys_x86_64.c
++++ b/arch/x86/kernel/sys_x86_64.c
+@@ -90,14 +90,10 @@ SYSCALL_DEFINE6(mmap, unsigned long, addr, unsigned long, len,
+ 		unsigned long, prot, unsigned long, flags,
+ 		unsigned long, fd, unsigned long, off)
  {
- 	char *ptr;
-@@ -138,14 +144,11 @@ static void kmalloc_pagealloc_oob_right(struct kunit *test)
- 		return;
- 	}
+-	long error;
+-	error = -EINVAL;
+ 	if (off & ~PAGE_MASK)
+-		goto out;
++		return -EINVAL;
  
--	/*
--	 * Allocate a chunk that does not fit into a SLUB cache to trigger
--	 * the page allocator fallback.
--	 */
- 	ptr = kmalloc(size, GFP_KERNEL);
- 	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, ptr);
- 
- 	KUNIT_EXPECT_KASAN_FAIL(test, ptr[size + OOB_TAG_OFF] = 0);
-+
- 	kfree(ptr);
+-	error = ksys_mmap_pgoff(addr, len, prot, flags, fd, off >> PAGE_SHIFT);
+-out:
+-	return error;
++	return ksys_mmap_pgoff(addr, len, prot, flags, fd, off >> PAGE_SHIFT);
  }
  
-@@ -161,8 +164,8 @@ static void kmalloc_pagealloc_uaf(struct kunit *test)
- 
- 	ptr = kmalloc(size, GFP_KERNEL);
- 	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, ptr);
--
- 	kfree(ptr);
-+
- 	KUNIT_EXPECT_KASAN_FAIL(test, ptr[0] = 0);
- }
- 
-@@ -182,6 +185,45 @@ static void kmalloc_pagealloc_invalid_free(struct kunit *test)
- 	KUNIT_EXPECT_KASAN_FAIL(test, kfree(ptr + 1));
- }
- 
-+static void pagealloc_oob_right(struct kunit *test)
-+{
-+	char *ptr;
-+	struct page *pages;
-+	size_t order = 4;
-+	size_t size = (1UL << (PAGE_SHIFT + order));
-+
-+	/*
-+	 * With generic KASAN page allocations have no redzones, thus
-+	 * out-of-bounds detection is not guaranteed.
-+	 * See https://bugzilla.kernel.org/show_bug.cgi?id=210503.
-+	 */
-+	if (IS_ENABLED(CONFIG_KASAN_GENERIC)) {
-+		kunit_info(test, "skipping, CONFIG_KASAN_GENERIC enabled");
-+		return;
-+	}
-+
-+	pages = alloc_pages(GFP_KERNEL, order);
-+	ptr = page_address(pages);
-+	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, ptr);
-+
-+	KUNIT_EXPECT_KASAN_FAIL(test, ptr[size] = 0);
-+	free_pages((unsigned long)ptr, order);
-+}
-+
-+static void pagealloc_uaf(struct kunit *test)
-+{
-+	char *ptr;
-+	struct page *pages;
-+	size_t order = 4;
-+
-+	pages = alloc_pages(GFP_KERNEL, order);
-+	ptr = page_address(pages);
-+	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, ptr);
-+	free_pages((unsigned long)ptr, order);
-+
-+	KUNIT_EXPECT_KASAN_FAIL(test, ptr[0] = 0);
-+}
-+
- static void kmalloc_large_oob_right(struct kunit *test)
- {
- 	char *ptr;
-@@ -933,6 +975,8 @@ static struct kunit_case kasan_kunit_test_cases[] = {
- 	KUNIT_CASE(kmalloc_pagealloc_oob_right),
- 	KUNIT_CASE(kmalloc_pagealloc_uaf),
- 	KUNIT_CASE(kmalloc_pagealloc_invalid_free),
-+	KUNIT_CASE(pagealloc_oob_right),
-+	KUNIT_CASE(pagealloc_uaf),
- 	KUNIT_CASE(kmalloc_large_oob_right),
- 	KUNIT_CASE(kmalloc_oob_krealloc_more),
- 	KUNIT_CASE(kmalloc_oob_krealloc_less),
--- 
-2.29.2.729.g45daf8777d-goog
-
+ static void find_start_end(unsigned long addr, unsigned long flags,
