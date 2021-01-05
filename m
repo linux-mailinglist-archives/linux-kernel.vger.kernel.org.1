@@ -2,350 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E7BB62EADB7
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 15:50:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 07EE02EADBA
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 15:51:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728691AbhAEOsi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 09:48:38 -0500
-Received: from Galois.linutronix.de ([193.142.43.55]:58940 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725835AbhAEOsh (ORCPT
+        id S1726652AbhAEOu1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 09:50:27 -0500
+Received: from relay11.mail.gandi.net ([217.70.178.231]:52269 "EHLO
+        relay11.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726313AbhAEOu1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 09:48:37 -0500
-Date:   Tue, 05 Jan 2021 14:47:51 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1609858073;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=4yzAS/LKFprocVzBGk9g1G10eHKLCr3slIGCsk1jOpc=;
-        b=LWcDQpCuMMQhmQpa7LHwyNZGuK2OxI+g1QTsaS7N9cymCqawEFo30vIm3FzojnY4Sr/OFj
-        LihzB2+CvNLd5DBGVfqJozm8EWh3GdkzHbjf7C93lZwU2SspBP/4X43kUSbsJ81mFpA20c
-        Y3Z/DHea2MmOFDzt0OAp7GqU9LC2Ps4wy4l+rf0qU+GoKrE168c3a9F78a3zLq+6pe/efE
-        8IOICjx1sHbGTPjMqlucTN09U+I4uGa41Z6ROoDEEB4TZT8BlZPlbkJ1fhoddLwbzdWL+o
-        0qMcaERIkbIFVfUfEMFndUZIZQg+xnE3p56f9EVZfyJIhSatxAzb9gJp6O3tfw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1609858073;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=4yzAS/LKFprocVzBGk9g1G10eHKLCr3slIGCsk1jOpc=;
-        b=mzJMRuYGAUU2VgkzPVag+YxHOlp6b/+Jwpm4OCch4BCxO4DIhyHNhkUHHpnOpNz6vucEQa
-        pKW7xejFsUbRtOBw==
-From:   "tip-bot2 for Masami Hiramatsu" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: perf/kprobes] x86/kprobes: Do not decode opcode in resume_execution()
-Cc:     Masami Hiramatsu <mhiramat@kernel.org>,
-        Borislav Petkov <bp@suse.de>,
-        "Steven Rostedt (VMware)" <rostedt@goodmis.org>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <160830072561.349576.3014979564448023213.stgit@devnote2>
-References: <160830072561.349576.3014979564448023213.stgit@devnote2>
+        Tue, 5 Jan 2021 09:50:27 -0500
+Received: from aptenodytes (196.109.29.93.rev.sfr.net [93.29.109.196])
+        (Authenticated sender: paul.kocialkowski@bootlin.com)
+        by relay11.mail.gandi.net (Postfix) with ESMTPSA id A24A110000A;
+        Tue,  5 Jan 2021 14:49:41 +0000 (UTC)
+Date:   Tue, 5 Jan 2021 15:49:41 +0100
+From:   Paul Kocialkowski <paul.kocialkowski@bootlin.com>
+To:     Sakari Ailus <sakari.ailus@linux.intel.com>
+Cc:     linux-media@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Maxime Ripard <mripard@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Hans Verkuil <hverkuil@xs4all.nl>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        kevin.lhopital@hotmail.com,
+        =?utf-8?B?S8OpdmluIEwnaMO0cGl0YWw=?= <kevin.lhopital@bootlin.com>
+Subject: Re: [PATCH v4 2/3] media: i2c: Add support for the OV8865 image
+ sensor
+Message-ID: <X/R8hUdfB8Tbd8mJ@aptenodytes>
+References: <20201231142702.3095260-1-paul.kocialkowski@bootlin.com>
+ <20201231142702.3095260-3-paul.kocialkowski@bootlin.com>
+ <20210104120749.GK11878@paasikivi.fi.intel.com>
+ <X/Qzp8/4gd/ANdXh@aptenodytes>
+ <20210105144150.GS11878@paasikivi.fi.intel.com>
 MIME-Version: 1.0
-Message-ID: <160985807183.414.394791965475735165.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="UmQFmlcrjB44pt9h"
+Content-Disposition: inline
+In-Reply-To: <20210105144150.GS11878@paasikivi.fi.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the perf/kprobes branch of tip:
 
-Commit-ID:     abd82e533d88df1521e3da6799b83ce88852ab88
-Gitweb:        https://git.kernel.org/tip/abd82e533d88df1521e3da6799b83ce88852ab88
-Author:        Masami Hiramatsu <mhiramat@kernel.org>
-AuthorDate:    Fri, 18 Dec 2020 23:12:05 +09:00
-Committer:     Borislav Petkov <bp@suse.de>
-CommitterDate: Tue, 05 Jan 2021 15:42:30 +01:00
+--UmQFmlcrjB44pt9h
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-x86/kprobes: Do not decode opcode in resume_execution()
+Hi Sakari,
 
-Currently, kprobes decodes the opcode right after single-stepping in
-resume_execution(). But the opcode was already decoded while preparing
-arch_specific_insn in arch_copy_kprobe().
+On Tue 05 Jan 21, 16:41, Sakari Ailus wrote:
+> Hi Paul,
+>=20
+> On Tue, Jan 05, 2021 at 10:38:47AM +0100, Paul Kocialkowski wrote:
+> > Hi Sakari,
+> >=20
+> > On Mon 04 Jan 21, 14:07, Sakari Ailus wrote:
+> > > Hi Paul,
+> > >=20
+> > > On Thu, Dec 31, 2020 at 03:27:01PM +0100, Paul Kocialkowski wrote:
+> > > > The OV8865 is a 8 Mpx CMOS image sensor producing 3264x2448 at 30 f=
+ps.
+> > > > Other modes (including some with sub-sampling) are available too.
+> > > > It outputs 10-bit bayer CFA data through a MIPI CSI-2 interface with
+> > > > up to 4 lanes supported.
+> > >=20
+> > > I've added the patches to a pull request to Mauro; there appear to st=
+ill be
+> > > some checkpatch.pl issues in both of the drivers.
+> > >=20
+> > > I don't mind the warnings on the assignment or the mutex though. Coul=
+d you
+> > > address these in additional patches, please?
+> >=20
+> > Sorry about that, I realized that I never run checkpatch with --strict
+> > so I completely missed those.
+> >=20
+> > I'll fix the cosmetic issues in a following patch.
+> >=20
+> > Just to clarify one thing:
+> > #define OV8865_PAD_PK_DRIVE_STRENGTH_2X		(1 << 5)
+> > #define OV8865_BLC_CTRL1_COL_SHIFT_128		(1 << 4)
+> >=20
+> > these are not single-bit fields so even though it looks like they should
+> > use BIT(), this would be incoherent with other possible values, such as:
+> > #define OV8865_PAD_PK_DRIVE_STRENGTH_3X		(2 << 5)
+> > #define OV8865_BLC_CTRL1_COL_SHIFT_64		(2 << 4)
+>=20
+> Agreed.
+>=20
+> You might not assign the top bit, but if you did, the left operand would
+> have to be unsigned to guarantee the intended result (otherwise it's
+> undefined).
 
-Decode the opcode in arch_copy_kprobe() instead of in resume_execution()
-and set some flags which classify the opcode for the resuming process.
+Ah right, that's the issue with shifting signed constants up to the sign bi=
+t.
+I had a quick look and I think this driver's safe about it.
 
- [ bp: Massage commit message. ]
+Cheers,
 
-Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Acked-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
-Link: https://lkml.kernel.org/r/160830072561.349576.3014979564448023213.stgit@devnote2
----
- arch/x86/include/asm/kprobes.h |  11 +-
- arch/x86/kernel/kprobes/core.c | 168 ++++++++++++++------------------
- 2 files changed, 81 insertions(+), 98 deletions(-)
+Paul
 
-diff --git a/arch/x86/include/asm/kprobes.h b/arch/x86/include/asm/kprobes.h
-index 991a7ad..d20a3d6 100644
---- a/arch/x86/include/asm/kprobes.h
-+++ b/arch/x86/include/asm/kprobes.h
-@@ -58,14 +58,17 @@ struct arch_specific_insn {
- 	/* copy of the original instruction */
- 	kprobe_opcode_t *insn;
- 	/*
--	 * boostable = false: This instruction type is not boostable.
--	 * boostable = true: This instruction has been boosted: we have
-+	 * boostable = 0: This instruction type is not boostable.
-+	 * boostable = 1: This instruction has been boosted: we have
- 	 * added a relative jump after the instruction copy in insn,
- 	 * so no single-step and fixup are needed (unless there's
- 	 * a post_handler).
- 	 */
--	bool boostable;
--	bool if_modifier;
-+	unsigned boostable:1;
-+	unsigned if_modifier:1;
-+	unsigned is_call:1;
-+	unsigned is_pushf:1;
-+	unsigned is_abs_ip:1;
- 	/* Number of bytes of text poked */
- 	int tp_len;
- };
-diff --git a/arch/x86/kernel/kprobes/core.c b/arch/x86/kernel/kprobes/core.c
-index a65e9e9..df776cd 100644
---- a/arch/x86/kernel/kprobes/core.c
-+++ b/arch/x86/kernel/kprobes/core.c
-@@ -133,26 +133,6 @@ void synthesize_relcall(void *dest, void *from, void *to)
- NOKPROBE_SYMBOL(synthesize_relcall);
- 
- /*
-- * Skip the prefixes of the instruction.
-- */
--static kprobe_opcode_t *skip_prefixes(kprobe_opcode_t *insn)
--{
--	insn_attr_t attr;
--
--	attr = inat_get_opcode_attribute((insn_byte_t)*insn);
--	while (inat_is_legacy_prefix(attr)) {
--		insn++;
--		attr = inat_get_opcode_attribute((insn_byte_t)*insn);
--	}
--#ifdef CONFIG_X86_64
--	if (inat_is_rex_prefix(attr))
--		insn++;
--#endif
--	return insn;
--}
--NOKPROBE_SYMBOL(skip_prefixes);
--
--/*
-  * Returns non-zero if INSN is boostable.
-  * RIP relative instructions are adjusted at copying time in 64 bits mode
-  */
-@@ -312,25 +292,6 @@ static int can_probe(unsigned long paddr)
- }
- 
- /*
-- * Returns non-zero if opcode modifies the interrupt flag.
-- */
--static int is_IF_modifier(kprobe_opcode_t *insn)
--{
--	/* Skip prefixes */
--	insn = skip_prefixes(insn);
--
--	switch (*insn) {
--	case 0xfa:		/* cli */
--	case 0xfb:		/* sti */
--	case 0xcf:		/* iret/iretd */
--	case 0x9d:		/* popf/popfd */
--		return 1;
--	}
--
--	return 0;
--}
--
--/*
-  * Copy an instruction with recovering modified instruction by kprobes
-  * and adjust the displacement if the instruction uses the %rip-relative
-  * addressing mode. Note that since @real will be the final place of copied
-@@ -411,9 +372,9 @@ static int prepare_boost(kprobe_opcode_t *buf, struct kprobe *p,
- 		synthesize_reljump(buf + len, p->ainsn.insn + len,
- 				   p->addr + insn->length);
- 		len += JMP32_INSN_SIZE;
--		p->ainsn.boostable = true;
-+		p->ainsn.boostable = 1;
- 	} else {
--		p->ainsn.boostable = false;
-+		p->ainsn.boostable = 0;
- 	}
- 
- 	return len;
-@@ -450,6 +411,67 @@ void free_insn_page(void *page)
- 	module_memfree(page);
- }
- 
-+static void set_resume_flags(struct kprobe *p, struct insn *insn)
-+{
-+	insn_byte_t opcode = insn->opcode.bytes[0];
-+
-+	switch (opcode) {
-+	case 0xfa:		/* cli */
-+	case 0xfb:		/* sti */
-+	case 0x9d:		/* popf/popfd */
-+		/* Check whether the instruction modifies Interrupt Flag or not */
-+		p->ainsn.if_modifier = 1;
-+		break;
-+	case 0x9c:	/* pushfl */
-+		p->ainsn.is_pushf = 1;
-+		break;
-+	case 0xcf:	/* iret */
-+		p->ainsn.if_modifier = 1;
-+		fallthrough;
-+	case 0xc2:	/* ret/lret */
-+	case 0xc3:
-+	case 0xca:
-+	case 0xcb:
-+	case 0xea:	/* jmp absolute -- ip is correct */
-+		/* ip is already adjusted, no more changes required */
-+		p->ainsn.is_abs_ip = 1;
-+		/* Without resume jump, this is boostable */
-+		p->ainsn.boostable = 1;
-+		break;
-+	case 0xe8:	/* call relative - Fix return addr */
-+		p->ainsn.is_call = 1;
-+		break;
-+#ifdef CONFIG_X86_32
-+	case 0x9a:	/* call absolute -- same as call absolute, indirect */
-+		p->ainsn.is_call = 1;
-+		p->ainsn.is_abs_ip = 1;
-+		break;
-+#endif
-+	case 0xff:
-+		opcode = insn->opcode.bytes[1];
-+		if ((opcode & 0x30) == 0x10) {
-+			/*
-+			 * call absolute, indirect
-+			 * Fix return addr; ip is correct.
-+			 * But this is not boostable
-+			 */
-+			p->ainsn.is_call = 1;
-+			p->ainsn.is_abs_ip = 1;
-+			break;
-+		} else if (((opcode & 0x31) == 0x20) ||
-+			   ((opcode & 0x31) == 0x21)) {
-+			/*
-+			 * jmp near and far, absolute indirect
-+			 * ip is correct.
-+			 */
-+			p->ainsn.is_abs_ip = 1;
-+			/* Without resume jump, this is boostable */
-+			p->ainsn.boostable = 1;
-+		}
-+		break;
-+	}
-+}
-+
- static int arch_copy_kprobe(struct kprobe *p)
- {
- 	struct insn insn;
-@@ -467,8 +489,8 @@ static int arch_copy_kprobe(struct kprobe *p)
- 	 */
- 	len = prepare_boost(buf, p, &insn);
- 
--	/* Check whether the instruction modifies Interrupt Flag or not */
--	p->ainsn.if_modifier = is_IF_modifier(buf);
-+	/* Analyze the opcode and set resume flags */
-+	set_resume_flags(p, &insn);
- 
- 	/* Also, displacement change doesn't affect the first byte */
- 	p->opcode = buf[0];
-@@ -491,6 +513,9 @@ int arch_prepare_kprobe(struct kprobe *p)
- 
- 	if (!can_probe((unsigned long)p->addr))
- 		return -EILSEQ;
-+
-+	memset(&p->ainsn, 0, sizeof(p->ainsn));
-+
- 	/* insn: must be on special executable page on x86. */
- 	p->ainsn.insn = get_insn_slot();
- 	if (!p->ainsn.insn)
-@@ -806,11 +831,6 @@ NOKPROBE_SYMBOL(trampoline_handler);
-  * 2) If the single-stepped instruction was a call, the return address
-  * that is atop the stack is the address following the copied instruction.
-  * We need to make it the address following the original instruction.
-- *
-- * If this is the first time we've single-stepped the instruction at
-- * this probepoint, and the instruction is boostable, boost it: add a
-- * jump instruction after the copied instruction, that jumps to the next
-- * instruction after the probepoint.
-  */
- static void resume_execution(struct kprobe *p, struct pt_regs *regs,
- 			     struct kprobe_ctlblk *kcb)
-@@ -818,60 +838,20 @@ static void resume_execution(struct kprobe *p, struct pt_regs *regs,
- 	unsigned long *tos = stack_addr(regs);
- 	unsigned long copy_ip = (unsigned long)p->ainsn.insn;
- 	unsigned long orig_ip = (unsigned long)p->addr;
--	kprobe_opcode_t *insn = p->ainsn.insn;
--
--	/* Skip prefixes */
--	insn = skip_prefixes(insn);
- 
- 	regs->flags &= ~X86_EFLAGS_TF;
--	switch (*insn) {
--	case 0x9c:	/* pushfl */
-+
-+	/* Fixup the contents of top of stack */
-+	if (p->ainsn.is_pushf) {
- 		*tos &= ~(X86_EFLAGS_TF | X86_EFLAGS_IF);
- 		*tos |= kcb->kprobe_old_flags;
--		break;
--	case 0xc2:	/* iret/ret/lret */
--	case 0xc3:
--	case 0xca:
--	case 0xcb:
--	case 0xcf:
--	case 0xea:	/* jmp absolute -- ip is correct */
--		/* ip is already adjusted, no more changes required */
--		p->ainsn.boostable = true;
--		goto no_change;
--	case 0xe8:	/* call relative - Fix return addr */
-+	} else if (p->ainsn.is_call) {
- 		*tos = orig_ip + (*tos - copy_ip);
--		break;
--#ifdef CONFIG_X86_32
--	case 0x9a:	/* call absolute -- same as call absolute, indirect */
--		*tos = orig_ip + (*tos - copy_ip);
--		goto no_change;
--#endif
--	case 0xff:
--		if ((insn[1] & 0x30) == 0x10) {
--			/*
--			 * call absolute, indirect
--			 * Fix return addr; ip is correct.
--			 * But this is not boostable
--			 */
--			*tos = orig_ip + (*tos - copy_ip);
--			goto no_change;
--		} else if (((insn[1] & 0x31) == 0x20) ||
--			   ((insn[1] & 0x31) == 0x21)) {
--			/*
--			 * jmp near and far, absolute indirect
--			 * ip is correct. And this is boostable
--			 */
--			p->ainsn.boostable = true;
--			goto no_change;
--		}
--		break;
--	default:
--		break;
- 	}
- 
--	regs->ip += orig_ip - copy_ip;
-+	if (!p->ainsn.is_abs_ip)
-+		regs->ip += orig_ip - copy_ip;
- 
--no_change:
- 	restore_btf();
- }
- NOKPROBE_SYMBOL(resume_execution);
+--=20
+Paul Kocialkowski, Bootlin
+Embedded Linux and kernel engineering
+https://bootlin.com
+
+--UmQFmlcrjB44pt9h
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEEJZpWjZeIetVBefti3cLmz3+fv9EFAl/0fIUACgkQ3cLmz3+f
+v9GA3Qf+PbkUakvgTadm3DLLo6iY8bQ1j+VKKrmJHJ1f2qEjuje+B5oSFkNFtBSS
+Aq7A2ZvO9qa2c7UzJHN5ZVlsGhrRBs4q6dPXblJF/YFno6BcfY6JlJan9OB6G8pY
+zYWuYcM6mL8SDP8V9pctbp77492sBRRmFezOw+W1/JTQUuIz/4wUPrJ62Z+IQjSb
+u4oBIgGqtmSgowDC7NpRfXKhIPcSmcnGqsPcTxcQLMuHPFbKuL9vgRbDOUjBvyY/
+qvtaRUp05zc/SU7GpqJ6E/dCW3Wm3Pyz+v/giDek3zZ/cc34GdABeAXOGbbn3W+R
+1hLwnNIwbStljzlbDpVc6Pp9+JcWWQ==
+=VFPQ
+-----END PGP SIGNATURE-----
+
+--UmQFmlcrjB44pt9h--
