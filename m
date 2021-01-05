@@ -2,88 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A76362EAD29
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 15:12:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D64B22EAD34
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 15:17:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729032AbhAEOLJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 09:11:09 -0500
-Received: from vps0.lunn.ch ([185.16.172.187]:50172 "EHLO vps0.lunn.ch"
+        id S1727323AbhAEOP1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 09:15:27 -0500
+Received: from mout.gmx.net ([212.227.15.15]:54483 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726961AbhAEOLI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 09:11:08 -0500
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
-        (envelope-from <andrew@lunn.ch>)
-        id 1kwn2L-00GAxa-O1; Tue, 05 Jan 2021 15:10:13 +0100
-Date:   Tue, 5 Jan 2021 15:10:13 +0100
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Ioana Ciornei <ioana.ciornei@nxp.com>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        Sergei Shtylyov <sergei.shtylyov@gmail.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-renesas-soc@vger.kernel.org" 
-        <linux-renesas-soc@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] [RFC] net: phy: Fix reboot crash if CONFIG_IP_PNP is not
- set
-Message-ID: <X/RzRd0zXHzAqLDl@lunn.ch>
-References: <20210104122415.1263541-1-geert+renesas@glider.be>
- <20210104145331.tlwjwbzey5i4vgvp@skbuf>
- <CAMuHMdUVsSuAur1wWkjs7FW5N-36XV9iXA6wmvst59eKoUFDHQ@mail.gmail.com>
- <20210104170112.hn6t3kojhifyuaf6@skbuf>
- <X/NNS3FUeSNxbqwo@lunn.ch>
- <X/NQ2fYdBygm3CYc@lunn.ch>
- <20210104184341.szvnl24wnfnxg4k7@skbuf>
- <alpine.DEB.2.22.394.2101051038550.302140@ramsan.of.borg>
+        id S1726563AbhAEOP0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Jan 2021 09:15:26 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1609855991;
+        bh=rIm3ten6xMY2bpiwJvYlrDob4DhAeDaQbfnjwTDj7mQ=;
+        h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
+        b=KyIgysHaHSNRakHKEzSp1JAYtwj69aW40BzqAS/7AzhwfrTI80VHT3Zfs6JeEipuc
+         T4RU69ta4RIfnjYTyV54GnWeqdTgRpc5GEJ/R83mKDOecoeFEwJvkb07dmasLaGmEe
+         J+7YiQD/VlGtreUDI9BhV5s/XmY4MnTGY2qXolPg=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [5.186.118.182] ([5.186.118.182]) by web-mail.gmx.net
+ (3c-app-gmx-bs20.server.lan [172.19.170.72]) (via HTTP); Tue, 5 Jan 2021
+ 15:13:11 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <alpine.DEB.2.22.394.2101051038550.302140@ramsan.of.borg>
+Message-ID: <trinity-d842a18b-6a07-4739-a779-e621d6bbca7c-1609855991515@3c-app-gmx-bs20>
+From:   Hans-Frieder Vogt <hfvogt@gmx.net>
+To:     david@lechnology.com
+Cc:     linux-kernel@vger.kernel.org
+Subject: RE: [PATCH 2/2] soc: ti: pruss: add support for AM18XX/OMAP-L138
+ PRUSS
+Content-Type: text/plain; charset=UTF-8
+Date:   Tue, 5 Jan 2021 15:13:11 +0100
+Importance: normal
+Sensitivity: Normal
+X-Priority: 3
+X-Provags-ID: V03:K1:O2oLusDc/RiIXUaePJc44XCXwBzkGnWZfNk7UkjdDhdTlOOON6iXQeT/yBaDmuKm9Dypc
+ w8VrE4l07wIUSp5QaeC8KzLW5FF5C3Tl/unvSoS8H8FRzSyHQXvLbkMgsY9Tnt9eXw+Mdewf9j6a
+ BTabgd6s3bkkFXNBnlOWpieMHSvCXQSOMQd+IYKJN5dN+rRS5oSGx9XpJ/+FrRTOXEjZMQcP+iE1
+ TQ9weqh6u36tgRHMSKX2xi9zhIskN+9uBc4GCnS+bZqInJwjeXhdFd/P0mfoLPie28tXLeM5jfe4
+ Jc=
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:XLAyO5RU3Cg=:MUx0l7t/z5E/HQF3FxZuZC
+ SCnjQy4xUIy7tcB6wfrtmBW/WoWrxjxq5a9G3C/DKxAwiKy41Y8sRT4EzPFctXfiJ0IzPucJ5
+ 4b0t3HuvlylYDrmIbxe6wDJ/9J8MulNFR2KozICviHuZaBAxlrCFeuyi7101t5WBK8xv2vze3
+ /uoBIhEKtBJ9PJou2Ine1VqZGY52xGhzqhty+QLMfBJ9sK6GQSg7TsYF4/f2pEV6iExQK7NIz
+ N9xr0PUwQijR9sDWH4oSju0l5Qkr3DGMmESmx1U5ge1wj9Ock/5/ezeyW/vbDA4hTKrab4/hb
+ 39WGiOUzou8Kg4evXLkuPXJf32UOrJsr4gWkNXfB//2N9deKT/gQw/CzIsBb6IKzEdSK41ksp
+ XaoVwD4CuJDIjz0PeZVos1OjMkUip+Nd2364e8h9Tbrt040Ah3jzEe33kHXtd9z14M3D8iT1O
+ yjDbAH8YpJBsquC2dgBRfwsIvEo8he7rdkjTAoAQTevTUcCk7Eq2oKtMc9aYTqcR8emE5B4+6
+ rrbur7H25xOBeyyFmeIPDO4saYXgUbjj2G7pOTAdtRtFJsuGdzQrtlXC6vn+ePIAd6iFk4B2l
+ eyr4eZOkKLXEw=
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> I added a statically-linked ethtool binary to my initramfs, and can
-> confirm that retrieving the PHY statistics does not access the PHY
-> registers when the device is suspended:
-> 
->     # ethtool --phy-statistics eth0
->     no stats available
->     # ifconfig eth0 up
->     # ethtool --phy-statistics eth0
->     PHY statistics:
-> 	 phy_receive_errors: 0
-> 	 phy_idle_errors: 0
->     #
-> 
-> In the past, we've gone to great lengths to avoid accessing the PHY
-> registers when the device is suspended, usually in the statistics
-> handling (see e.g. [1][2]).
+Hi David,
 
-I would argue that is the wrong approach. The PHY device is a
-device. It has its own lifetime. You would not suspend a PCI bus
-controller without first suspending all PCI devices on the bus etc.
+since you introduced a configuration parameter which was implicitly true b=
+efore, the config parameter now needs to be explicitly set to true for all=
+ SoCs which have cfg registers (specifically AM33XX and AM57XX), see below=
+.
 
-> +static int sh_mdiobb_read(struct mii_bus *bus, int phy, int reg)
-> +{
-> +	struct bb_info *bb = container_of(bus->priv, struct bb_info, ctrl);
+On Mon, Jan 4, 2021, David Lechner wrote:
+> This adds support for the PRUSS found in AM18XX/OMAP-L138. This PRUSS
+> doesn't have a CFG register, so that is made optional as selected by
+> the device tree compatible string.
+>
+> ARCH_DAVINCI is added in the Kconfig so that the driver can be selected
+> on that platform.
+>
+> Signed-off-by: David Lechner <david@lechnology.com>
 
-mii_bus->parent should give you dev, so there is no need to add it to
-bb_info.
+... shortened ...
 
-> +	/* Wrap accessors with Runtime PM-aware ops */
-> +	bitbang->read = mdp->mii_bus->read;
-> +	bitbang->write = mdp->mii_bus->write;
-> +	mdp->mii_bus->read = sh_mdiobb_read;
-> +	mdp->mii_bus->write = sh_mdiobb_write;
+> @@ -309,19 +313,27 @@ static int pruss_remove(struct platform_device *pd=
+ev)
+>  }
+>
+>  /* instance-specific driver private data */
+> +static const struct pruss_private_data am18xx_pruss_data =3D {
+> +	.has_no_sharedram =3D true,
+> +};
+> +
+>  static const struct pruss_private_data am437x_pruss1_data =3D {
+>  	.has_no_sharedram =3D false,
+> +	.has_cfg =3D true,
+>  };
+>
+>  static const struct pruss_private_data am437x_pruss0_data =3D {
+>  	.has_no_sharedram =3D true,
+> +	.has_cfg =3D true,
+>  };
+>
+>  static const struct pruss_private_data am65x_j721e_pruss_data =3D {
+>  	.has_core_mux_clock =3D true,
+> +	.has_cfg =3D true,
+>  };
+>
+>  static const struct of_device_id pruss_of_match[] =3D {
+> +	{ .compatible =3D "ti,am1806-pruss", .data =3D &am18xx_pruss_data, },
+>  	{ .compatible =3D "ti,am3356-pruss" },
 
-I did wonder about just exporting the two functions so you can
-directly call them.
+needs something like:
+ 	{ .compatible =3D "ti,am3356-pruss", .data =3D &am33xx_am57xx_pruss_data=
+, },
+ 	{ .compatible =3D "ti,am5728-pruss", .data =3D &am33xx_am57xx_pruss_data=
+, },
+with
+ static const struct pruss_private_data am33xx_am57xx_pruss_data =3D {
+	.has_cfg =3D true,
+ };
 
-Otherwise, this looks good.
+>  	{ .compatible =3D "ti,am4376-pruss0", .data =3D &am437x_pruss0_data, }=
+,
+>  	{ .compatible =3D "ti,am4376-pruss1", .data =3D &am437x_pruss1_data, }=
+,
 
-	   Andrew
+=2D--
+Best regards,
+Hans-Frieder
