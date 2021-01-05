@@ -2,109 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 189672EA375
+	by mail.lfdr.de (Postfix) with ESMTP id F297F2EA377
 	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 03:51:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727992AbhAECtu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 21:49:50 -0500
-Received: from mail.zju.edu.cn ([61.164.42.155]:11702 "EHLO zju.edu.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726239AbhAECtt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 21:49:49 -0500
-Received: by ajax-webmail-mail-app2 (Coremail) ; Tue, 5 Jan 2021 10:48:32
- +0800 (GMT+08:00)
-X-Originating-IP: [222.205.25.254]
-Date:   Tue, 5 Jan 2021 10:48:32 +0800 (GMT+08:00)
-X-CM-HeaderCharset: UTF-8
-From:   dinghao.liu@zju.edu.cn
-To:     "Lu Baolu" <baolu.lu@linux.intel.com>
-Cc:     kjlu@umn.edu, "David Woodhouse" <dwmw2@infradead.org>,
-        "Joerg Roedel" <joro@8bytes.org>, "Will Deacon" <will@kernel.org>,
-        "Jiang Liu" <jiang.liu@linux.intel.com>,
-        "Thomas Gleixner" <tglx@linutronix.de>,
-        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org
-Subject: Re: Re: [PATCH] iommu/intel: Fix memleak in
- intel_irq_remapping_alloc
-X-Priority: 3
-X-Mailer: Coremail Webmail Server Version XT5.0.13 build 20200917(3e19599d)
- Copyright (c) 2002-2021 www.mailtech.cn zju.edu.cn
-In-Reply-To: <dda6e03a-147a-a482-4f31-f3dcb8aa47bd@linux.intel.com>
-References: <20210102095029.29053-1-dinghao.liu@zju.edu.cn>
- <18add30d-a830-c531-6fd2-58a1898b157f@linux.intel.com>
- <50870a42.15f1a.176c66eaf92.Coremail.dinghao.liu@zju.edu.cn>
- <6e1ce9ac-ac17-2b16-84d3-a18c011768f2@linux.intel.com>
- <3b0b2129.17762.176c6e9114d.Coremail.dinghao.liu@zju.edu.cn>
- <dda6e03a-147a-a482-4f31-f3dcb8aa47bd@linux.intel.com>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset=UTF-8
+        id S1728108AbhAECt6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 21:49:58 -0500
+Received: from mail-il1-f198.google.com ([209.85.166.198]:49383 "EHLO
+        mail-il1-f198.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726599AbhAECt5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 4 Jan 2021 21:49:57 -0500
+Received: by mail-il1-f198.google.com with SMTP id x13so22709732ilv.16
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Jan 2021 18:49:41 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=Qw/22jOZ8d9ckeL7b+PrbTIdW53/o+UBIWUIwEw3J0Q=;
+        b=HB1vuqZPylJGGcNLMnn29dVuug3RAhO9JGF4j9CN9EfbZfdWx5IeKJhjUjlNYsfT7z
+         L7zORFmWhuDWEsRSKvin1nT+jpfr48DkgmvHYqQIARHNmbgcIE6btUTu0gEFkcBhrXLm
+         JGFSi15MTugsFIGCw0cUTRbk49L5zrwgN4OPKMFzlIv/jmuvFx6dvftGrz68wGKyIyUN
+         zeiZB/xcIbIl/jd3clLkAx1HDf5mgTbMSUF2zjwBcZaKo0wCoVlL3lBck4+9wKvL5lPG
+         B3o3gJ+MymG1feM78lgBMbNzf38vX3aQEeT0Kbq5YfXs1evVlf+h8M05YPx4VNBISw1i
+         H09A==
+X-Gm-Message-State: AOAM532xPgc3uEsY8dTBFyO+hK7xQqxa6bTLHAQ2btdq5zuzWJZ6LyBv
+        5kpPNZjhecbddLNwcpxU6eju+CAPrriRLyJeGvAYqg7fcBd5
+X-Google-Smtp-Source: ABdhPJxBaQLizthDThzIt1ZAtGhrdmxMzQ7Fdi/4JaJ7KDjS9Vco3Uxvce8OZyRQPW5O04Fqhy0AS1nBJYitS5rUZj7dzkNTX4LS
 MIME-Version: 1.0
-Message-ID: <577ae864.1df8f.176d0722e45.Coremail.dinghao.liu@zju.edu.cn>
-X-Coremail-Locale: zh_CN
-X-CM-TRANSID: by_KCgDnrvCA0_Nflw0IAA--.1157W
-X-CM-SenderInfo: qrrzjiaqtzq6lmxovvfxof0/1tbiAgMQBlZdtR1gpwAAsz
-X-Coremail-Antispam: 1Ur529EdanIXcx71UUUUU7IcSsGvfJ3iIAIbVAYjsxI4VWxJw
-        CS07vEb4IE77IF4wCS07vE1I0E4x80FVAKz4kxMIAIbVAFxVCaYxvI4VCIwcAKzIAtYxBI
-        daVFxhVjvjDU=
+X-Received: by 2002:a92:ad05:: with SMTP id w5mr69783289ilh.226.1609814956132;
+ Mon, 04 Jan 2021 18:49:16 -0800 (PST)
+Date:   Mon, 04 Jan 2021 18:49:16 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000009d50ae05b81e4091@google.com>
+Subject: memory leak in usb_urb_init
+From:   syzbot <syzbot+3c2be7424cea3b932b0e@syzkaller.appspotmail.com>
+To:     linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+        mchehab@kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-PiBPbiAxLzMvMjEgMjoyMiBQTSwgZGluZ2hhby5saXVAemp1LmVkdS5jbiB3cm90ZToKPiA+PiBP
-biAyMDIxLzEvMyAxMjowOCwgZGluZ2hhby5saXVAemp1LmVkdS5jbiB3cm90ZToKPiA+Pj4+IEhp
-LAo+ID4+Pj4KPiA+Pj4+IE9uIDIwMjEvMS8yIDE3OjUwLCBEaW5naGFvIExpdSB3cm90ZToKPiA+
-Pj4+PiBXaGVuIGlycV9kb21haW5fZ2V0X2lycV9kYXRhKCkgb3IgaXJxZF9jZmcoKSBmYWlscwo+
-ID4+Pj4+IG1lYW53aGlsZSBpID09IDAsIGRhdGEgYWxsb2NhdGVkIGJ5IGt6YWxsb2MoKSBoYXMg
-bm90Cj4gPj4+Pj4gYmVlbiBmcmVlZCBiZWZvcmUgcmV0dXJuaW5nLCB3aGljaCBsZWFkcyB0byBt
-ZW1sZWFrLgo+ID4+Pj4+Cj4gPj4+Pj4gRml4ZXM6IGIxMDZlZTYzYWJjY2IgKCJpcnFfcmVtYXBw
-aW5nL3Z0LWQ6IEVuaGFuY2UgSW50ZWwgSVIgZHJpdmVyIHRvIHN1cHBvcnQgaGllcmFyY2hpY2Fs
-IGlycWRvbWFpbnMiKQo+ID4+Pj4+IFNpZ25lZC1vZmYtYnk6IERpbmdoYW8gTGl1IDxkaW5naGFv
-LmxpdUB6anUuZWR1LmNuPgo+ID4+Pj4+IC0tLQo+ID4+Pj4+ICAgICBkcml2ZXJzL2lvbW11L2lu
-dGVsL2lycV9yZW1hcHBpbmcuYyB8IDIgKysKPiA+Pj4+PiAgICAgMSBmaWxlIGNoYW5nZWQsIDIg
-aW5zZXJ0aW9ucygrKQo+ID4+Pj4+Cj4gPj4+Pj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvaW9tbXUv
-aW50ZWwvaXJxX3JlbWFwcGluZy5jIGIvZHJpdmVycy9pb21tdS9pbnRlbC9pcnFfcmVtYXBwaW5n
-LmMKPiA+Pj4+PiBpbmRleCBhZWZmZGE5MmIxMGIuLmNkYWVlZDM2NzUwZiAxMDA2NDQKPiA+Pj4+
-PiAtLS0gYS9kcml2ZXJzL2lvbW11L2ludGVsL2lycV9yZW1hcHBpbmcuYwo+ID4+Pj4+ICsrKyBi
-L2RyaXZlcnMvaW9tbXUvaW50ZWwvaXJxX3JlbWFwcGluZy5jCj4gPj4+Pj4gQEAgLTEzNTQsNiAr
-MTM1NCw4IEBAIHN0YXRpYyBpbnQgaW50ZWxfaXJxX3JlbWFwcGluZ19hbGxvYyhzdHJ1Y3QgaXJx
-X2RvbWFpbiAqZG9tYWluLAo+ID4+Pj4+ICAgICAJCWlycV9jZmcgPSBpcnFkX2NmZyhpcnFfZGF0
-YSk7Cj4gPj4+Pj4gICAgIAkJaWYgKCFpcnFfZGF0YSB8fCAhaXJxX2NmZykgewo+ID4+Pj4+ICAg
-ICAJCQlyZXQgPSAtRUlOVkFMOwo+ID4+Pj4+ICsJCQlrZnJlZShkYXRhKTsKPiA+Pj4+PiArCQkJ
-ZGF0YSA9IE5VTEw7Cj4gPj4+Pgo+ID4+Pj4gRG8geW91IG5lZWQgdG8gY2hlY2sgKGkgPT0gMCkg
-aGVyZT8gQGRhdGEgd2lsbCBub3QgYmUgdXNlZCBhbnltb3JlIGFzIGl0Cj4gPj4+PiBnb2VzIHRv
-IG91dCBicmFuY2gsIHdoeSBzZXR0aW5nIGl0IHRvIE5VTEwgaGVyZT8KPiA+Pj4+Cj4gPj4+Cj4g
-Pj4+IGRhdGEgd2lsbCBiZSBwYXNzZWQgdG8gaXJlX2RhdGEtPmNoaXBfZGF0YSB3aGVuIGkgPT0g
-MCBhbmQKPiA+Pj4gaW50ZWxfZnJlZV9pcnFfcmVzb3VyY2VzKCkgd2lsbCBmcmVlIGl0IG9uIGZh
-aWx1cmUuIFRodXMgSQo+ID4+Cj4gPj4gSXNuJ3QgaXQgZ29pbmcgdG8gImdvdG8gb3V0X2ZyZWVf
-ZGF0YSI/IElmICJpID09IDAiLCB0aGUgYWxsb2NhdGVkIEBkYXRhCj4gPj4gd29uJ3QgYmUgZnJl
-ZWQgYnkgaW50ZWxfZnJlZV9pcnFfcmVzb3VyY2VzKCksIGhlbmNlIG1lbW9yeSBsZWFraW5nLiBE
-b2VzCj4gPj4gdGhpcyBwYXRjaCBhaW0gdG8gZml4IHRoaXM/Cj4gPj4KPiA+PiBCZXN0IHJlZ2Fy
-ZHMsCj4gPj4gYmFvbHUKPiA+Pgo+ID4gCj4gPiBDb3JyZWN0LCB0aGlzIGlzIHdoYXQgSSBtZWFu
-LiBXaGVuIGkgPiAwLCBkYXRhIGhhcyBiZWVuIHBhc3NlZCB0bwo+ID4gaXJxX2RhdGEtPmNoaXBf
-ZGF0YSwgd2hpY2ggd2lsbCBiZSBmcmVlZCBpbiBpbnRlbF9mcmVlX2lycV9yZXNvdXJjZXMoKQo+
-ID4gb24gZmFpbHVyZS4gU28gdGhlcmUgaXMgbm8gbWVtbGVhayBpbiB0aGlzIGNhc2UuIFRoZSBt
-ZW1sZWFrIG9ubHkgb2NjdXJzCj4gPiBvbiBmYWlsdXJlIHdoZW4gaSA9PSAwIChkYXRhIGhhcyBu
-b3QgYmVlbiBwYXNzZWQgdG8gaXJxX2RhdGEtPmNoaXBfZGF0YSkuCj4gCj4gU28gaG93IGFib3V0
-Cj4gCj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvaW9tbXUvaW50ZWwvaXJxX3JlbWFwcGluZy5jIAo+
-IGIvZHJpdmVycy9pb21tdS9pbnRlbC9pcnFfcmVtYXBwaW5nLmMKPiBpbmRleCBhZWZmZGE5MmIx
-MGIuLjY4NTIwMGE1Y2ZmMCAxMDA2NDQKPiAtLS0gYS9kcml2ZXJzL2lvbW11L2ludGVsL2lycV9y
-ZW1hcHBpbmcuYwo+ICsrKyBiL2RyaXZlcnMvaW9tbXUvaW50ZWwvaXJxX3JlbWFwcGluZy5jCj4g
-QEAgLTEzNTMsNiArMTM1Myw4IEBAIHN0YXRpYyBpbnQgaW50ZWxfaXJxX3JlbWFwcGluZ19hbGxv
-YyhzdHJ1Y3QgCj4gaXJxX2RvbWFpbiAqZG9tYWluLAo+ICAgICAgICAgICAgICAgICAgaXJxX2Rh
-dGEgPSBpcnFfZG9tYWluX2dldF9pcnFfZGF0YShkb21haW4sIHZpcnEgKyBpKTsKPiAgICAgICAg
-ICAgICAgICAgIGlycV9jZmcgPSBpcnFkX2NmZyhpcnFfZGF0YSk7Cj4gICAgICAgICAgICAgICAg
-ICBpZiAoIWlycV9kYXRhIHx8ICFpcnFfY2ZnKSB7Cj4gKyAgICAgICAgICAgICAgICAgICAgICAg
-aWYgKCFpKQo+ICsgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAga2ZyZWUoZGF0YSk7Cj4g
-ICAgICAgICAgICAgICAgICAgICAgICAgIHJldCA9IC1FSU5WQUw7Cj4gICAgICAgICAgICAgICAg
-ICAgICAgICAgIGdvdG8gb3V0X2ZyZWVfZGF0YTsKPiAgICAgICAgICAgICAgICAgIH0KPiAKPiA+
-IEkgc2V0IGRhdGEgdG8gTlVMTCBhZnRlciBrZnJlZSgpIGluIHRoaXMgcGF0Y2ggdG8gcHJldmVu
-dCBkb3VibGUtZnJlZQo+ID4gd2hlbiB0aGUgZmFpbHVyZSBvY2N1cnMgYXQgaSA+IDAuCj4gCj4g
-aWYgaT4wLCBAZGF0YSBoYXMgYmVlbiBwYXNzZWQgYW5kIHdpbGwgYmUgZnJlZWQgYnkKPiBpbnRl
-bF9mcmVlX2lycV9yZXNvdXJjZXMoKSBvbiB0aGUgZmFpbHVyZSBwYXRoLiBObyBuZWVkIHRvIGZy
-ZWUgb3IKPiBjbGVhciwgcmlnaHQ/CgpSaWdodCwgdGhpcyBpcyBjbGVhcmVyLiBUaGFuayB5b3Ug
-Zm9yIHlvdXIgYWR2aWNlIGFuZCBJIHdpbGwgcmVzZW5kIGEKbmV3IHBhdGNoIHNvb24uCgpSZWdh
-cmRzLApEaW5naGFvCgo+IAo+IEJlc3QgcmVnYXJkcywKPiBiYW9sdQo+IAo+ID4gCj4gPiBSZWdh
-cmRzLAo+ID4gRGluZ2hhbwo+ID4gCj4gPj4+IHNldCBpdCB0byBOVUxMIHRvIHByZXZlbnQgZG91
-YmxlLWZyZWUuIEhvd2V2ZXIsIGlmIHdlIGFkZAo+ID4+PiBhIGNoZWNrIChpID09IDApIGhlcmUs
-IHdlIHdpbGwgbm90IG5lZWQgdG8gc2V0IGl0IHRvIE5VTEwuCj4gPj4+IElmIHRoaXMgaXMgYmV0
-dGVyLCBJIHdpbGwgcmVzZW5kIGEgbmV3IHBhdGNoIHNvb24uCj4gPj4+Cj4gPj4+IFJlZ2FyZHMs
-Cj4gPj4+IERpbmdoYW8KPiA+Pj4K
+Hello,
+
+syzbot found the following issue on:
+
+HEAD commit:    f6e1ea19 Merge tag 'ceph-for-5.11-rc2' of git://github.com..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=102e814f500000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=1dcbf163b62a8256
+dashboard link: https://syzkaller.appspot.com/bug?extid=3c2be7424cea3b932b0e
+compiler:       gcc (GCC) 10.1.0-syz 20200507
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1509c9c0d00000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=12e15e0b500000
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+3c2be7424cea3b932b0e@syzkaller.appspotmail.com
+
+BUG: memory leak
+unreferenced object 0xffff888114a12180 (size 192):
+  comm "kworker/1:3", pid 8132, jiffies 4294980969 (age 13.460s)
+  hex dump (first 32 bytes):
+    01 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+    00 00 00 00 00 00 00 00 98 21 a1 14 81 88 ff ff  .........!......
+  backtrace:
+    [<00000000270adc89>] kmalloc include/linux/slab.h:557 [inline]
+    [<00000000270adc89>] usb_alloc_urb+0x66/0xe0 drivers/usb/core/urb.c:74
+    [<000000007ddd474e>] usb_bulk_urb_init drivers/media/usb/dvb-usb/usb-urb.c:148 [inline]
+    [<000000007ddd474e>] usb_urb_init+0x17a/0x3d0 drivers/media/usb/dvb-usb/usb-urb.c:229
+    [<00000000bdcce353>] dvb_usb_adapter_stream_init+0x5b/0x120 drivers/media/usb/dvb-usb/dvb-usb-urb.c:108
+    [<00000000adc3ae74>] dvb_usb_adapter_init drivers/media/usb/dvb-usb/dvb-usb-init.c:82 [inline]
+    [<00000000adc3ae74>] dvb_usb_init drivers/media/usb/dvb-usb/dvb-usb-init.c:173 [inline]
+    [<00000000adc3ae74>] dvb_usb_device_init.cold+0x483/0x6ae drivers/media/usb/dvb-usb/dvb-usb-init.c:287
+    [<00000000979fb93a>] m920x_probe+0x1d7/0x470 drivers/media/usb/dvb-usb/m920x.c:834
+    [<00000000dc58d155>] usb_probe_interface+0x177/0x370 drivers/usb/core/driver.c:396
+    [<0000000011b900cd>] really_probe+0x159/0x480 drivers/base/dd.c:561
+    [<000000003bf38880>] driver_probe_device+0x84/0x100 drivers/base/dd.c:745
+    [<000000003450ad28>] __device_attach_driver+0xee/0x110 drivers/base/dd.c:851
+    [<000000005a93a91d>] bus_for_each_drv+0xb7/0x100 drivers/base/bus.c:431
+    [<0000000058084795>] __device_attach+0x122/0x250 drivers/base/dd.c:919
+    [<00000000e0d09782>] bus_probe_device+0xc6/0xe0 drivers/base/bus.c:491
+    [<000000004566d8b7>] device_add+0x5be/0xc30 drivers/base/core.c:3091
+    [<000000000471371f>] usb_set_configuration+0x9d9/0xb90 drivers/usb/core/message.c:2164
+    [<00000000d93dc50f>] usb_generic_driver_probe+0x8c/0xc0 drivers/usb/core/generic.c:238
+    [<00000000a0057c67>] usb_probe_device+0x5c/0x140 drivers/usb/core/driver.c:293
+
+BUG: memory leak
+unreferenced object 0xffff888114a126c0 (size 192):
+  comm "kworker/1:3", pid 8132, jiffies 4294980969 (age 13.460s)
+  hex dump (first 32 bytes):
+    01 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+    00 00 00 00 00 00 00 00 d8 26 a1 14 81 88 ff ff  .........&......
+  backtrace:
+    [<00000000270adc89>] kmalloc include/linux/slab.h:557 [inline]
+    [<00000000270adc89>] usb_alloc_urb+0x66/0xe0 drivers/usb/core/urb.c:74
+    [<000000007ddd474e>] usb_bulk_urb_init drivers/media/usb/dvb-usb/usb-urb.c:148 [inline]
+    [<000000007ddd474e>] usb_urb_init+0x17a/0x3d0 drivers/media/usb/dvb-usb/usb-urb.c:229
+    [<00000000bdcce353>] dvb_usb_adapter_stream_init+0x5b/0x120 drivers/media/usb/dvb-usb/dvb-usb-urb.c:108
+    [<00000000adc3ae74>] dvb_usb_adapter_init drivers/media/usb/dvb-usb/dvb-usb-init.c:82 [inline]
+    [<00000000adc3ae74>] dvb_usb_init drivers/media/usb/dvb-usb/dvb-usb-init.c:173 [inline]
+    [<00000000adc3ae74>] dvb_usb_device_init.cold+0x483/0x6ae drivers/media/usb/dvb-usb/dvb-usb-init.c:287
+    [<00000000979fb93a>] m920x_probe+0x1d7/0x470 drivers/media/usb/dvb-usb/m920x.c:834
+    [<00000000dc58d155>] usb_probe_interface+0x177/0x370 drivers/usb/core/driver.c:396
+    [<0000000011b900cd>] really_probe+0x159/0x480 drivers/base/dd.c:561
+    [<000000003bf38880>] driver_probe_device+0x84/0x100 drivers/base/dd.c:745
+    [<000000003450ad28>] __device_attach_driver+0xee/0x110 drivers/base/dd.c:851
+    [<000000005a93a91d>] bus_for_each_drv+0xb7/0x100 drivers/base/bus.c:431
+    [<0000000058084795>] __device_attach+0x122/0x250 drivers/base/dd.c:919
+    [<00000000e0d09782>] bus_probe_device+0xc6/0xe0 drivers/base/bus.c:491
+    [<000000004566d8b7>] device_add+0x5be/0xc30 drivers/base/core.c:3091
+    [<000000000471371f>] usb_set_configuration+0x9d9/0xb90 drivers/usb/core/message.c:2164
+    [<00000000d93dc50f>] usb_generic_driver_probe+0x8c/0xc0 drivers/usb/core/generic.c:238
+    [<00000000a0057c67>] usb_probe_device+0x5c/0x140 drivers/usb/core/driver.c:293
+
+BUG: memory leak
+unreferenced object 0xffff888114bbf900 (size 192):
+  comm "kworker/1:3", pid 8132, jiffies 4294980969 (age 13.460s)
+  hex dump (first 32 bytes):
+    01 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+    00 00 00 00 00 00 00 00 18 f9 bb 14 81 88 ff ff  ................
+  backtrace:
+    [<00000000270adc89>] kmalloc include/linux/slab.h:557 [inline]
+    [<00000000270adc89>] usb_alloc_urb+0x66/0xe0 drivers/usb/core/urb.c:74
+    [<000000007ddd474e>] usb_bulk_urb_init drivers/media/usb/dvb-usb/usb-urb.c:148 [inline]
+    [<000000007ddd474e>] usb_urb_init+0x17a/0x3d0 drivers/media/usb/dvb-usb/usb-urb.c:229
+    [<00000000bdcce353>] dvb_usb_adapter_stream_init+0x5b/0x120 drivers/media/usb/dvb-usb/dvb-usb-urb.c:108
+    [<00000000adc3ae74>] dvb_usb_adapter_init drivers/media/usb/dvb-usb/dvb-usb-init.c:82 [inline]
+    [<00000000adc3ae74>] dvb_usb_init drivers/media/usb/dvb-usb/dvb-usb-init.c:173 [inline]
+    [<00000000adc3ae74>] dvb_usb_device_init.cold+0x483/0x6ae drivers/media/usb/dvb-usb/dvb-usb-init.c:287
+    [<00000000979fb93a>] m920x_probe+0x1d7/0x470 drivers/media/usb/dvb-usb/m920x.c:834
+    [<00000000dc58d155>] usb_probe_interface+0x177/0x370 drivers/usb/core/driver.c:396
+    [<0000000011b900cd>] really_probe+0x159/0x480 drivers/base/dd.c:561
+    [<000000003bf38880>] driver_probe_device+0x84/0x100 drivers/base/dd.c:745
+    [<000000003450ad28>] __device_attach_driver+0xee/0x110 drivers/base/dd.c:851
+    [<000000005a93a91d>] bus_for_each_drv+0xb7/0x100 drivers/base/bus.c:431
+    [<0000000058084795>] __device_attach+0x122/0x250 drivers/base/dd.c:919
+    [<00000000e0d09782>] bus_probe_device+0xc6/0xe0 drivers/base/bus.c:491
+    [<000000004566d8b7>] device_add+0x5be/0xc30 drivers/base/core.c:3091
+    [<000000000471371f>] usb_set_configuration+0x9d9/0xb90 drivers/usb/core/message.c:2164
+    [<00000000d93dc50f>] usb_generic_driver_probe+0x8c/0xc0 drivers/usb/core/generic.c:238
+    [<00000000a0057c67>] usb_probe_device+0x5c/0x140 drivers/usb/core/driver.c:293
+
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
