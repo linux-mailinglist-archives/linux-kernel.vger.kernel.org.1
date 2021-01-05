@@ -2,187 +2,216 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D4602EA1A0
-	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 01:52:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CB632EA1BE
+	for <lists+linux-kernel@lfdr.de>; Tue,  5 Jan 2021 01:58:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726773AbhAEAwl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 4 Jan 2021 19:52:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43226 "EHLO
+        id S1726917AbhAEAyt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 4 Jan 2021 19:54:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43552 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726163AbhAEAwk (ORCPT
+        with ESMTP id S1726397AbhAEAys (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 4 Jan 2021 19:52:40 -0500
-Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F363BC061794
-        for <linux-kernel@vger.kernel.org>; Mon,  4 Jan 2021 16:51:59 -0800 (PST)
-Received: by mail-ed1-x529.google.com with SMTP id cw27so29323355edb.5
-        for <linux-kernel@vger.kernel.org>; Mon, 04 Jan 2021 16:51:59 -0800 (PST)
+        Mon, 4 Jan 2021 19:54:48 -0500
+Received: from mail-oo1-xc31.google.com (mail-oo1-xc31.google.com [IPv6:2607:f8b0:4864:20::c31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA36EC061793
+        for <linux-kernel@vger.kernel.org>; Mon,  4 Jan 2021 16:54:07 -0800 (PST)
+Received: by mail-oo1-xc31.google.com with SMTP id o5so6711308oop.12
+        for <linux-kernel@vger.kernel.org>; Mon, 04 Jan 2021 16:54:07 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intel-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=WBmAQEVK+d4iAJti2GEvFbY9xySgwvFGBDCdqOb6r0o=;
-        b=VH4YB3KAxYrKdsAEQNP8eGJvmHZPYEIOL/Wk5c1jc1CaDg0kbcYFUxsMzIIdMEw6NJ
-         roxcZmJiCU51O0ZrSmD2phPcmySG3sPOi2M/NJaZw8gPK2V+eyGY97r+oS8igSd+voqd
-         OrjM6uXZUYzkHrzjGNWvYIoBvw/O7+aNi51H0LOmgcljqkAbT7kzzANZKl4fVSqiQRaM
-         eNMgYm4AiYljDOm5/K05WqyKJZuZnYwAidOXCdsSgvEM7cdb02iEWL6u4Ey+rE8v2mwz
-         +2McsRVPDBLvpXX9Y87Bd8pdQw19z/iCdiYH2EqAk28vs1SHisBJsjZAo4M50pvK4S4K
-         YC9Q==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=jtqEQP8dMn914fve/E2X3TGiywCoAD5JLxrBTJ+dQpA=;
+        b=E8KfBWO1IhdIwqUnpbbl+Ggs+RC266Bfh4VFOhsoXt2O3DQSQnBMhFx3x/0nRYwcKL
+         G1P1AnqXdF8WBF/wCNNh1PaZ/6BSrl5GXLFBbUb+5mvpvCzZzIYZo74ofV8wAh8hOAoF
+         p84NobMaBbsEfTOREXZ6aAeyBGZPhrVY6RARe95UzweKBkVGhlIJC+kD1mnQ+lnhps27
+         yTT+f8NIYQDsioKHRNiymXzPq0jnefiIs2Fbqt9DkdjbPVRt0kcrfbtoX2jBM2y6u6Ut
+         NrduKsaNKXNysMOjtEiPGOJF2c2CfSV5L3Z50GpRMGpTPbhRqdMd398ho07qY+I48bhC
+         Zamw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=WBmAQEVK+d4iAJti2GEvFbY9xySgwvFGBDCdqOb6r0o=;
-        b=qgXQHOBhk7sigZazQ46MvnsmwuRMrtsHag3lM1oRCNUejUkrlV6G43tfJCmch5MZ0/
-         H3JUYm+g5Efpsmxnj+rp6F7RecigttOTAOpGZkoA88z62ymPK0kojfWGkdWEBiB0E/DU
-         HLvHNDIV+sF6NTGpEN5EBm8/4BrGXXbdOwJtPCcHpRYBE/04D4oCpyj0A0+lPJsxliWY
-         5RV4obV5zEYVi8ARBrU2vZOj2/hWYiCi/xZNlIVL/8Ey8mHs7nBHlp/x4dcqC/13311l
-         qbMMsVrBxLq7NmFsf9ApsvtefHhGfDnH+isdPlO5kJ76H5DUCMT4P8+z4sgXuq5Fj+8m
-         /uAg==
-X-Gm-Message-State: AOAM531fVH9+HrYV7SEln65Eh1iUXU6Toe4p01cOH8xTn9YWU+ctaSuT
-        U6Jogt4Aq2bb1yerEbEbLhUjF3JfXOJDlBrWBw3tRw==
-X-Google-Smtp-Source: ABdhPJx/xFK6oHnwbgHxjjQstwquyCH8dZKA1eVEWKIXofDnOHNlD62w60xu2i4e02Nc/f/wfco70KpV1hZ/ILyBB1k=
-X-Received: by 2002:aa7:c3cd:: with SMTP id l13mr72431946edr.97.1609807918552;
- Mon, 04 Jan 2021 16:51:58 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=jtqEQP8dMn914fve/E2X3TGiywCoAD5JLxrBTJ+dQpA=;
+        b=E2M9qY/pi+sHk/edphBeVBUu7RLTlIR9YdXfpLxOnDNGJ6q29+T1IBLm0CUT6HPj7Z
+         JHJqe+vr2GryQcG6XG9W0E3WZSsG9nGzzfOEJgI2cS5W21wW4EkIlbNZv6UHOxg9luMC
+         FRamO7s+KSl/YJaUUtOPUihR+8yj+GQ3JfpWhWfdRNhzOxOxFPtyl/h9HpgkY/qNcgB/
+         1WXvWYgmBHDn/2Bv2LsNrxaJCP5eaRKDEOcIzI5Tmz3plf/LU9+b9Mn3cXevhJleLtn0
+         LpD0exBpnM1qtDvRNajq4PiGe/9lQUuNrD8MwU5n8WMAyVOh2o4iqw5pYhdQ4baTvwn6
+         9Qjw==
+X-Gm-Message-State: AOAM5327ZzyCXF38Cwc+T+yVAK/8VsXycyCgagFMH9LLXNJt+1f5hIgD
+        5MGFWJe/6Z4zlw7n0pKJ8uvPcg==
+X-Google-Smtp-Source: ABdhPJxpr8Tjmjv+Dd1D+ni2oQ9dH6AS/6Q2QSyDsCPhM5GBoOmvu30Ud9bTE/JY0nBg6v4nzfacTw==
+X-Received: by 2002:a4a:5590:: with SMTP id e138mr50970690oob.13.1609808047293;
+        Mon, 04 Jan 2021 16:54:07 -0800 (PST)
+Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id t72sm13502220oie.47.2021.01.04.16.54.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 04 Jan 2021 16:54:06 -0800 (PST)
+Date:   Mon, 4 Jan 2021 18:54:05 -0600
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
+Cc:     Ohad Ben-Cohen <ohad@wizery.com>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Andy Gross <agross@kernel.org>,
+        linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-msm@vger.kernel.org
+Subject: Re: [PATCH v2 07/16] rpmsg: char: clean up rpmsg class
+Message-ID: <X/O4rZfY74ryFQK4@builder.lan>
+References: <20201222105726.16906-1-arnaud.pouliquen@foss.st.com>
+ <20201222105726.16906-8-arnaud.pouliquen@foss.st.com>
+ <X/O3KkJrmVfGvFEF@builder.lan>
 MIME-Version: 1.0
-References: <20201218140854.GW552508@nvidia.com> <20201218155204.GC5333@sirena.org.uk>
- <20201218162817.GX552508@nvidia.com> <20201218180310.GD5333@sirena.org.uk>
- <20201218184150.GY552508@nvidia.com> <20201218203211.GE5333@sirena.org.uk>
- <20201218205856.GZ552508@nvidia.com> <20201221185140.GD4521@sirena.org.uk>
- <20210104180831.GD552508@nvidia.com> <20210104211930.GI5645@sirena.org.uk> <20210105001341.GL552508@nvidia.com>
-In-Reply-To: <20210105001341.GL552508@nvidia.com>
-From:   Dan Williams <dan.j.williams@intel.com>
-Date:   Mon, 4 Jan 2021 16:51:51 -0800
-Message-ID: <CAPcyv4gxprMo1LwGTqGDyN-z2TrXLcAvJ3AN9-fbUs6y-LwXeA@mail.gmail.com>
-Subject: Re: [resend/standalone PATCH v4] Add auxiliary bus support
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Mark Brown <broonie@kernel.org>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        alsa-devel@alsa-project.org, Kiran Patil <kiran.patil@intel.com>,
-        linux-rdma <linux-rdma@vger.kernel.org>,
-        Shiraz Saleem <shiraz.saleem@intel.com>,
-        Martin Habets <mhabets@solarflare.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
-        Fred Oh <fred.oh@linux.intel.com>,
-        Dave Ertman <david.m.ertman@intel.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Netdev <netdev@vger.kernel.org>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        David Miller <davem@davemloft.net>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Parav Pandit <parav@mellanox.com>,
-        Lee Jones <lee.jones@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <X/O3KkJrmVfGvFEF@builder.lan>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 4, 2021 at 4:14 PM Jason Gunthorpe <jgg@nvidia.com> wrote:
->
-> On Mon, Jan 04, 2021 at 09:19:30PM +0000, Mark Brown wrote:
->
->
-> > > Regardless of the shortcut to make everything a struct
-> > > platform_device, I think it was a mistake to put OF devices on
-> > > platform_bus. Those should have remained on some of_bus even if they
-> >
-> > Like I keep saying the same thing applies to all non-enumerable buses -
-> > exactly the same considerations exist for all the other buses like I2C
-> > (including the ACPI naming issue you mention below), and for that matter
-> > with enumerable buses which can have firmware info.
->
-> And most busses do already have their own bus type. ACPI, I2C, PCI,
-> etc. It is just a few that have been squished into platform, notably
-> OF.
->
+On Mon 04 Jan 18:47 CST 2021, Bjorn Andersson wrote:
 
-I'll note that ACPI is an outlier that places devices on 2 buses,
-where new acpi_driver instances are discouraged [1] in favor of
-platform_drivers. ACPI scan handlers are awkwardly integrated into the
-Linux device model.
+> On Tue 22 Dec 04:57 CST 2020, Arnaud Pouliquen wrote:
+> 
+> This patch doesn't "clean up" the class, as described in $subject. It
+> just removes it.
+> 
+> > Suppress the management of the rpmsg class as attribute. It is already
+> > handled in /sys/bus rpmsg as specified in
+> > documentation/ABI/testing/sysfs-bus-rpmsg.
+> 
+> Afaict it doesn't relate to /sys/bus/rpmsg, but rather what attributes
+> should be associated with the rpmsg_device (and thereby present in its
+> sysfs directory). But if these attributes are also added by the bus,
+> then why do we have this code? If that's the case this seems like a nice
+> cleanup that we should do outside/before merging the other patches.
+> 
+> > This patch prepares the migration of the control device in rpmsg_ctrl.
+> > 
+> 
+> It would be useful if the commit message described how it prepares for
+> the migration and why.
+> 
 
-So while I agree with sentiment that an "ACPI bus" should
-theoretically stand on its own there is legacy to unwind.
+Now I see what this patch does, it removes the attributes from the
+character device's struct device, because they are provided by the
+struct rpmsg_device's bus!
 
-I only bring that up to keep the focus on how to organize drivers
-going forward, because trying to map some of these arguments backwards
-runs into difficulties.
+I wish your commit message made this obvious.
 
-[1]: http://lore.kernel.org/r/CAJZ5v0j_ReK3AGDdw7fLvmw_7knECCg2U_huKgJzQeLCy8smug@mail.gmail.com
+Also, this implies that for a few patches here rpmsg_char is just
+broken - which I don't like.
 
-> > > are represented by struct platform_device and fiddling in the core
-> > > done to make that work OK.
-> >
-> > What exactly is the fiddling in the core here, I'm a bit unclear?
->
-> I'm not sure, but I bet there is a small fall out to making bus_type
-> not 1:1 with the struct device type.. Would have to attempt it to see
->
-> > > This feels like a good conference topic someday..
-> >
-> > We should have this discussion *before* we get too far along with trying
-> > to implement things, we should at least have some idea where we want to
-> > head there.
->
-> Well, auxillary bus is clearly following the original bus model
-> intention with a dedicated bus type with a controlled naming
-> scheme. The debate here seems to be "what about platform bus" and
-> "what to do with mfd"?
->
-> > Those APIs all take a struct device for lookup so it's the same call for
-> > looking things up regardless of the bus the device is on or what
-> > firmware the system is using - where there are firmware specific lookup
-> > functions they're generally historical and shouldn't be used for new
-> > code.  It's generally something in the form
-> >
-> >       api_type *api_get(struct device *dev, const char *name);
->
-> Well, that is a nice improvement since a few years back when I last
-> worked on this stuff.
->
-> But now it begs the question, why not push harder to make 'struct
-> device' the generic universal access point and add some resource_get()
-> API along these lines so even a platform_device * isn't needed?
->
-> Then the path seems much clearer, add a multi-bus-type device_driver
-> that has a probe(struct device *) and uses the 'universal api_get()'
-> style interface to find the generic 'resources'.
->
-> The actual bus types and bus structs can then be split properly
-> without the boilerplate that caused them all to be merged to platform,
-> even PCI could be substantially merged like this.
->
-> Bonus points to replace the open coded method disptach:
->
-> int gpiod_count(struct device *dev, const char *con_id)
-> {
->         int count = -ENOENT;
->
->         if (IS_ENABLED(CONFIG_OF) && dev && dev->of_node)
->                 count = of_gpio_get_count(dev, con_id);
->         else if (IS_ENABLED(CONFIG_ACPI) && dev && ACPI_HANDLE(dev))
->                 count = acpi_gpio_count(dev, con_id);
->
->         if (count < 0)
->                 count = platform_gpio_count(dev, con_id);
->
-> With an actual bus specific virtual function:
->
->     return dev->bus->gpio_count(dev);
->
-> > ...and then do the same thing for every other bus with firmware
-> > bindings.  If it's about the firmware interfaces it really isn't a
-> > platform bus specific thing.  It's not clear to me if that's what it is
-> > though or if this is just some tangent.
->
-> It should be split up based on the unique naming scheme and any bus
-> specific API elements - like raw access to ACPI or OF data or what
-> have you for other FW bus types.
+Regards,
+Bjorn
 
-I agree that the pendulum may have swung too far towards "reuse
-existing bus_type", and auxiliary-bus unwinds some of that, but does
-the bus_type really want to be an indirection for driver apis outside
-of bus-specific operations?
+> Regards,
+> Bjorn
+> 
+> > Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
+> > ---
+> >  drivers/rpmsg/rpmsg_char.c | 48 --------------------------------------
+> >  1 file changed, 48 deletions(-)
+> > 
+> > diff --git a/drivers/rpmsg/rpmsg_char.c b/drivers/rpmsg/rpmsg_char.c
+> > index 4bbbacdbf3bb..732f5caf068a 100644
+> > --- a/drivers/rpmsg/rpmsg_char.c
+> > +++ b/drivers/rpmsg/rpmsg_char.c
+> > @@ -27,7 +27,6 @@
+> >  #define RPMSG_DEV_MAX	(MINORMASK + 1)
+> >  
+> >  static dev_t rpmsg_major;
+> > -static struct class *rpmsg_class;
+> >  
+> >  static DEFINE_IDA(rpmsg_ctrl_ida);
+> >  static DEFINE_IDA(rpmsg_ept_ida);
+> > @@ -291,41 +290,6 @@ static const struct file_operations rpmsg_eptdev_fops = {
+> >  	.compat_ioctl = compat_ptr_ioctl,
+> >  };
+> >  
+> > -static ssize_t name_show(struct device *dev, struct device_attribute *attr,
+> > -			 char *buf)
+> > -{
+> > -	struct rpmsg_eptdev *eptdev = dev_get_drvdata(dev);
+> > -
+> > -	return sprintf(buf, "%s\n", eptdev->chinfo.name);
+> > -}
+> > -static DEVICE_ATTR_RO(name);
+> > -
+> > -static ssize_t src_show(struct device *dev, struct device_attribute *attr,
+> > -			 char *buf)
+> > -{
+> > -	struct rpmsg_eptdev *eptdev = dev_get_drvdata(dev);
+> > -
+> > -	return sprintf(buf, "%d\n", eptdev->chinfo.src);
+> > -}
+> > -static DEVICE_ATTR_RO(src);
+> > -
+> > -static ssize_t dst_show(struct device *dev, struct device_attribute *attr,
+> > -			 char *buf)
+> > -{
+> > -	struct rpmsg_eptdev *eptdev = dev_get_drvdata(dev);
+> > -
+> > -	return sprintf(buf, "%d\n", eptdev->chinfo.dst);
+> > -}
+> > -static DEVICE_ATTR_RO(dst);
+> > -
+> > -static struct attribute *rpmsg_eptdev_attrs[] = {
+> > -	&dev_attr_name.attr,
+> > -	&dev_attr_src.attr,
+> > -	&dev_attr_dst.attr,
+> > -	NULL
+> > -};
+> > -ATTRIBUTE_GROUPS(rpmsg_eptdev);
+> > -
+> >  static void rpmsg_eptdev_release_device(struct device *dev)
+> >  {
+> >  	struct rpmsg_eptdev *eptdev = dev_to_eptdev(dev);
+> > @@ -358,9 +322,7 @@ static int rpmsg_eptdev_create(struct rpmsg_ctrldev *ctrldev,
+> >  	init_waitqueue_head(&eptdev->readq);
+> >  
+> >  	device_initialize(dev);
+> > -	dev->class = rpmsg_class;
+> >  	dev->parent = &ctrldev->dev;
+> > -	dev->groups = rpmsg_eptdev_groups;
+> >  	dev_set_drvdata(dev, eptdev);
+> >  
+> >  	cdev_init(&eptdev->cdev, &rpmsg_eptdev_fops);
+> > @@ -477,7 +439,6 @@ static int rpmsg_chrdev_probe(struct rpmsg_device *rpdev)
+> >  	dev = &ctrldev->dev;
+> >  	device_initialize(dev);
+> >  	dev->parent = &rpdev->dev;
+> > -	dev->class = rpmsg_class;
+> >  
+> >  	cdev_init(&ctrldev->cdev, &rpmsg_ctrldev_fops);
+> >  	ctrldev->cdev.owner = THIS_MODULE;
+> > @@ -553,17 +514,9 @@ static int rpmsg_char_init(void)
+> >  		return ret;
+> >  	}
+> >  
+> > -	rpmsg_class = class_create(THIS_MODULE, "rpmsg");
+> > -	if (IS_ERR(rpmsg_class)) {
+> > -		pr_err("failed to create rpmsg class\n");
+> > -		unregister_chrdev_region(rpmsg_major, RPMSG_DEV_MAX);
+> > -		return PTR_ERR(rpmsg_class);
+> > -	}
+> > -
+> >  	ret = register_rpmsg_driver(&rpmsg_chrdev_driver);
+> >  	if (ret < 0) {
+> >  		pr_err("rpmsgchr: failed to register rpmsg driver\n");
+> > -		class_destroy(rpmsg_class);
+> >  		unregister_chrdev_region(rpmsg_major, RPMSG_DEV_MAX);
+> >  	}
+> >  
+> > @@ -574,7 +527,6 @@ postcore_initcall(rpmsg_char_init);
+> >  static void rpmsg_chrdev_exit(void)
+> >  {
+> >  	unregister_rpmsg_driver(&rpmsg_chrdev_driver);
+> > -	class_destroy(rpmsg_class);
+> >  	unregister_chrdev_region(rpmsg_major, RPMSG_DEV_MAX);
+> >  }
+> >  module_exit(rpmsg_chrdev_exit);
+> > -- 
+> > 2.17.1
+> > 
