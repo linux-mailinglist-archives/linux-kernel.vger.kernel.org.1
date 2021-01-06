@@ -2,124 +2,239 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CE642EBBF8
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 10:57:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E49B42EBBFD
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 10:57:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726752AbhAFJzr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Jan 2021 04:55:47 -0500
-Received: from relay.sw.ru ([185.231.240.75]:48020 "EHLO relay3.sw.ru"
+        id S1727226AbhAFJ4J convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 6 Jan 2021 04:56:09 -0500
+Received: from mail-eopbgr1310108.outbound.protection.outlook.com ([40.107.131.108]:11619
+        "EHLO APC01-SG2-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726298AbhAFJzp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Jan 2021 04:55:45 -0500
-Received: from [192.168.15.143]
-        by relay3.sw.ru with esmtp (Exim 4.94)
-        (envelope-from <ktkhai@virtuozzo.com>)
-        id 1kx5Vr-00FcgL-7c; Wed, 06 Jan 2021 12:53:56 +0300
-Subject: Re: [v3 PATCH 03/11] mm: vmscan: use shrinker_rwsem to protect
- shrinker_maps allocation
-To:     Yang Shi <shy828301@gmail.com>, guro@fb.com, shakeelb@google.com,
-        david@fromorbit.com, hannes@cmpxchg.org, mhocko@suse.com,
-        akpm@linux-foundation.org
-Cc:     linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210105225817.1036378-1-shy828301@gmail.com>
- <20210105225817.1036378-4-shy828301@gmail.com>
-From:   Kirill Tkhai <ktkhai@virtuozzo.com>
-Message-ID: <56d26993-1577-3747-2d89-1275d92f7a15@virtuozzo.com>
-Date:   Wed, 6 Jan 2021 12:54:05 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        id S1727181AbhAFJ4I (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 Jan 2021 04:56:08 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=JE0CSUkyeTgF1Cn0lDvhRKR1bquysq79MX93hcdUOlZffarMuMtVhoG0T/nlFe7zTq6sDi97tub5cdOOFVeWeSKmMI0DFvESIN+EVfgF7zCkQfwIwOXttUFxutAm8qrmuV18AbEa0z5RTa0f9AlmsjxbIv4/AfgJk99yMBqisoBP3Ccaf8TjRguGeGDJiWTu5RBlA4N62ZbfHcANGrtXWcsT92PIUEm6Au35fiyqyBFrYQOxXXt9aajV3BWg0IaasksoPPIcRvqROVjDkIUtT5PCXmrIEvLcDUYn28C4Sulc/gRi1DZ5s/oLxWwRYNtm5mek8r7dH5TO4RHjTAbAwQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=fiRP0cECQVCWJTWkJTbluaT+asK5PZ3X4TQUPYtvMjM=;
+ b=XEJDyMbX4v5M+gArLXheLlwk+otZfSrqWlN6sBM+7K6civmFQnOZl9DkJL8zG32+yPpWySHdkVYsVQ+kW9JI3QQ/IAsAApMqnB/3BeDgsTgH9jj2q9gsEifiVok2QcmFD9PW6kGYBUtIDZh5qQfx5G0C9qw+mh3FjQfATGPsqKHpxqqff99/KdAeBaBbf8ObFhk9t2mEIceKMeOs/wgeDGuVUfl2naz7YPVmFbj5UqnyInWgkQrjBBptK41uOBq80UlIUFV4+DAGt6ebH9L3HWkEIFu8gsq6rP3R0EO/TCMdjIeEYTg21TyKXtlYbPjtVFZJPZlLWsAF73vx+aWkhA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=aspeedtech.com; dmarc=pass action=none
+ header.from=aspeedtech.com; dkim=pass header.d=aspeedtech.com; arc=none
+Received: from HK0PR06MB3380.apcprd06.prod.outlook.com (2603:1096:203:82::18)
+ by HK0PR06MB2339.apcprd06.prod.outlook.com (2603:1096:203:4c::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3721.23; Wed, 6 Jan
+ 2021 09:54:30 +0000
+Received: from HK0PR06MB3380.apcprd06.prod.outlook.com
+ ([fe80::116:1437:5d9a:16e9]) by HK0PR06MB3380.apcprd06.prod.outlook.com
+ ([fe80::116:1437:5d9a:16e9%6]) with mapi id 15.20.3721.024; Wed, 6 Jan 2021
+ 09:54:30 +0000
+From:   Ryan Chen <ryan_chen@aspeedtech.com>
+To:     John Wang <wangzhiqiang.bj@bytedance.com>,
+        "xuxiaohan@bytedance.com" <xuxiaohan@bytedance.com>,
+        "yulei.sh@bytedance.com" <yulei.sh@bytedance.com>
+CC:     Robert Lippert <rlippert@google.com>,
+        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
+        <linux-aspeed@lists.ozlabs.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Vernon Mauery <vernon.mauery@linux.intel.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        Jae Hyun Yoo <jae.hyun.yoo@intel.com>,
+        Patrick Venture <venture@google.com>,
+        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
+        <linux-arm-kernel@lists.infradead.org>
+Subject: RE: [PATCH v2 1/2] misc: Add clock control logic into Aspeed LPC
+ SNOOP driver
+Thread-Topic: [PATCH v2 1/2] misc: Add clock control logic into Aspeed LPC
+ SNOOP driver
+Thread-Index: AQHWzUMNmbahDDZWh0mpYVY7renfO6oaiJvQ
+Date:   Wed, 6 Jan 2021 09:54:30 +0000
+Message-ID: <HK0PR06MB33807C054FCE9E355346E204F2D00@HK0PR06MB3380.apcprd06.prod.outlook.com>
+References: <20201208091748.1920-1-wangzhiqiang.bj@bytedance.com>
+In-Reply-To: <20201208091748.1920-1-wangzhiqiang.bj@bytedance.com>
+Accept-Language: zh-TW, en-US
+Content-Language: zh-TW
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: bytedance.com; dkim=none (message not signed)
+ header.d=none;bytedance.com; dmarc=none action=none
+ header.from=aspeedtech.com;
+x-originating-ip: [211.20.114.70]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 08ec1f1e-921e-417d-81f4-08d8b2291021
+x-ms-traffictypediagnostic: HK0PR06MB2339:
+x-microsoft-antispam-prvs: <HK0PR06MB2339154829ED5C8A7F0DC87BF2D00@HK0PR06MB2339.apcprd06.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:3968;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: PFnsOGH00lg6aU4vYRXJJ/nJZ3fhU1FpV+BRh6zELVu1e7faFWe6tZ/QaEbtTxiD07shWnEKRCmsRccVoa8+X17RfyOwwXFPXyxdW8i0+R6kvaPMeqMZFqpMDRaVa2pO4Hk632qlgXteUU7brlqSqK34Zs6M1L01Prr18yWi3905mOPL95ihjVg3Q4Bu60VZJDH0sI/umu5/CNidWD3uuUimqluJu4cUUv3JQOB45SsEsjLivsn1LQ8kZgPOirRxdynZgplfcI8/5nlkS8thLiwurKlqETqI1Wde58mbAP9tDttYi3OkLzfo1elON7u+1McbnYq53Sth4oJL3XcaKQ2+/L924tJ8Qlj8Yyog9U67XbQ0530olajoJUaNj7G/Or14eLp093l1fz87Iaz9z0FHnVykKgG8ui2umkxGQwP63IftX7aCK20JcbuMgl4mjm7ulYU1o9Fx5vdYwp28Zg==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:HK0PR06MB3380.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(39850400004)(376002)(396003)(136003)(346002)(33656002)(186003)(7696005)(110136005)(316002)(53546011)(76116006)(2906002)(55236004)(26005)(66946007)(54906003)(83380400001)(6506007)(966005)(8936002)(52536014)(478600001)(8676002)(71200400001)(4326008)(66476007)(55016002)(7416002)(66556008)(9686003)(66446008)(86362001)(64756008)(5660300002);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: =?us-ascii?Q?1jn03ALJDOVtFwa+Vhu1W9O19n7D3u2EAH+gy9aY9IrfPkFlbuZuxlcJvaPx?=
+ =?us-ascii?Q?eyXLJvAyqeatZzQ9pd90m1dAflCxzusPsgVJYopb3xKVm9YdM+Yy/k9W609a?=
+ =?us-ascii?Q?60eTNHiN7zJZIUZ7UnDt/c0h4EE+oNeBwKceAqHfHUghEJHbW7hGbUnNrvZv?=
+ =?us-ascii?Q?iJV2rLWzfWVJ5qH4usB9eOEZY9R/H+N13KV8+uFiDvKAfuJ+yjzCnNEXsZ5C?=
+ =?us-ascii?Q?LyYE1wscHeIhR7N6vi9fEFF4wQ9Z07g9Kvy+THdsDx+mKoTl13Lb5M0/pAAx?=
+ =?us-ascii?Q?FWi9SIZ0yXpbFKFOVYXqekhnBxcy56L76vsq1NZ1ftRyiFhnQHg67gT5u8ST?=
+ =?us-ascii?Q?QrYeJM/D6SCfweYzDQF/88XcKb8EhsaCiFJJk9CjDniYM0LwtT/6NuEomrIC?=
+ =?us-ascii?Q?oN6CodTB1nSF+K7hBJ9hHfzJaDC3sp4/Jsy1fCtiAx4il0E8TImK0tmH46wl?=
+ =?us-ascii?Q?xaC+lg5uo14F34pPlPb44SRO1eLhLxaTzDkKusTRdVI5u7S/weq3HP3t9fll?=
+ =?us-ascii?Q?lpARPU139BqJDhReg7AkJ61O0ZSsDvumxJXKgE2cwdkaLu0yXDuSZWP9LE6j?=
+ =?us-ascii?Q?5esJvw9hue/db/xZhFRM2w+IMOHous62bBgkkxRPKzWjTVUnd7g9vOHIpx5Y?=
+ =?us-ascii?Q?LRWewT9Ily1mSzwDnI5x01OPFm2aHG65XfVHkXcfM0H9ib2XoI216VBvEle+?=
+ =?us-ascii?Q?rU0TOudkF6Evp+LQ4ulMN0CgD1G5EQ3++XEAHgZpBwE9ZAEt6Ru1u4xTKKsk?=
+ =?us-ascii?Q?9afxherRtewOoE687tMtpEv9U0YsMH5oPq4a0O8h2VpLGrKBg4guU9WzS1dE?=
+ =?us-ascii?Q?J/sHZmtOhr+9yuwq1AGE20S3ucBvTFqcfOYG8IaM6GBp2lqWTdvcZb+5tnyN?=
+ =?us-ascii?Q?9ABvSEj3Z6RcraJSQUiPwMWGEPyCWsGeWrQAvViGm643+bHx1d21cqRXULMn?=
+ =?us-ascii?Q?WF2Nn8S+shVYhbdGJHi9YQweewxqxQfyQi8+dOygPyY=3D?=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-In-Reply-To: <20210105225817.1036378-4-shy828301@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-OriginatorOrg: aspeedtech.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: HK0PR06MB3380.apcprd06.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 08ec1f1e-921e-417d-81f4-08d8b2291021
+X-MS-Exchange-CrossTenant-originalarrivaltime: 06 Jan 2021 09:54:30.5520
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 43d4aa98-e35b-4575-8939-080e90d5a249
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: kSFWATslxUJ0j33xUrpYlibdnug3yeiBB7eTUFoLlExANDq0VNi9wrJTw+f3X9tbPEHgO7GUzuglHST5shgfJciB+N2ptYRPIMvg937+RM8=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: HK0PR06MB2339
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 06.01.2021 01:58, Yang Shi wrote:
-> Since memcg_shrinker_map_size just can be changd under holding shrinker_rwsem
-> exclusively, the read side can be protected by holding read lock, so it sounds
-> superfluous to have a dedicated mutex.  This should not exacerbate the contention
-> to shrinker_rwsem since just one read side critical section is added.
+Hello John, Joel, Jae,
+	For this should be set LCLK to be CRITICAL it will fix LPC related driver. (KCS/BT/SNOOP)
+	I have send the patch before.	
+	https://patchwork.ozlabs.org/project/linux-aspeed/patch/20200928070108.14040-2-ryan_chen@aspeedtech.com/
+
+Hello Joel,
+	Will you consider this patch? 
+	Beside KCS/BT/SNOOP, UART1/UART2 will be most related issue for host side. 
+
+
+> -----Original Message-----
+> From: Linux-aspeed
+> <linux-aspeed-bounces+ryan_chen=aspeedtech.com@lists.ozlabs.org> On
+> Behalf Of John Wang
+> Sent: Tuesday, December 8, 2020 5:18 PM
+> To: xuxiaohan@bytedance.com; yulei.sh@bytedance.com
+> Cc: Robert Lippert <rlippert@google.com>; moderated list:ARM/ASPEED
+> MACHINE SUPPORT <linux-aspeed@lists.ozlabs.org>; Greg Kroah-Hartman
+> <gregkh@linuxfoundation.org>; Vernon Mauery
+> <vernon.mauery@linux.intel.com>; open list <linux-kernel@vger.kernel.org>;
+> Jae Hyun Yoo <jae.hyun.yoo@intel.com>; Patrick Venture
+> <venture@google.com>; moderated list:ARM/ASPEED MACHINE SUPPORT
+> <linux-arm-kernel@lists.infradead.org>
+> Subject: [PATCH v2 1/2] misc: Add clock control logic into Aspeed LPC SNOOP
+> driver
 > 
-> Signed-off-by: Yang Shi <shy828301@gmail.com>
+> From: Jae Hyun Yoo <jae.hyun.yoo@intel.com>
+> 
+> If LPC SNOOP driver is registered ahead of lpc-ctrl module, LPC SNOOP block
+> will be enabled without heart beating of LCLK until lpc-ctrl enables the LCLK.
+> This issue causes improper handling on host interrupts when the host sends
+> interrupt in that time frame.
+> Then kernel eventually forcibly disables the interrupt with dumping stack and
+> printing a 'nobody cared this irq' message out.
+> 
+> To prevent this issue, all LPC sub-nodes should enable LCLK individually so this
+> patch adds clock control logic into the LPC SNOOP driver.
+> 
+> Fixes: 3772e5da4454 ("drivers/misc: Aspeed LPC snoop output using misc
+> chardev")
+> 
+> Signed-off-by: Jae Hyun Yoo <jae.hyun.yoo@intel.com>
+> Signed-off-by: Vernon Mauery <vernon.mauery@linux.intel.com>
+> Signed-off-by: John Wang <wangzhiqiang.bj@bytedance.com>
 > ---
->  mm/vmscan.c | 16 ++++++----------
->  1 file changed, 6 insertions(+), 10 deletions(-)
+> v2:
+>   reword: Add fixes line
+> ---
+>  drivers/soc/aspeed/aspeed-lpc-snoop.c | 30 ++++++++++++++++++++++++---
+>  1 file changed, 27 insertions(+), 3 deletions(-)
 > 
-> diff --git a/mm/vmscan.c b/mm/vmscan.c
-> index 9db7b4d6d0ae..ddb9f972f856 100644
-> --- a/mm/vmscan.c
-> +++ b/mm/vmscan.c
-> @@ -187,7 +187,6 @@ static DECLARE_RWSEM(shrinker_rwsem);
->  #ifdef CONFIG_MEMCG
->  
->  static int memcg_shrinker_map_size;
-> -static DEFINE_MUTEX(memcg_shrinker_map_mutex);
->  
->  static void memcg_free_shrinker_map_rcu(struct rcu_head *head)
->  {
-> @@ -200,8 +199,6 @@ static int memcg_expand_one_shrinker_map(struct mem_cgroup *memcg,
->  	struct memcg_shrinker_map *new, *old;
->  	int nid;
->  
-> -	lockdep_assert_held(&memcg_shrinker_map_mutex);
-> -
->  	for_each_node(nid) {
->  		old = rcu_dereference_protected(
->  			mem_cgroup_nodeinfo(memcg, nid)->shrinker_map, true);
-> @@ -250,7 +247,7 @@ int memcg_alloc_shrinker_maps(struct mem_cgroup *memcg)
->  	if (mem_cgroup_is_root(memcg))
->  		return 0;
->  
-> -	mutex_lock(&memcg_shrinker_map_mutex);
-> +	down_read(&shrinker_rwsem);
->  	size = memcg_shrinker_map_size;
->  	for_each_node(nid) {
->  		map = kvzalloc(sizeof(*map) + size, GFP_KERNEL);
-> @@ -261,7 +258,7 @@ int memcg_alloc_shrinker_maps(struct mem_cgroup *memcg)
->  		}
->  		rcu_assign_pointer(memcg->nodeinfo[nid]->shrinker_map, map);
-
-Here we do STORE operation, and since we want the assignment is visible
-for shrink_slab_memcg() under down_read(), we have to use down_write()
-in memcg_alloc_shrinker_maps().
-
+> diff --git a/drivers/soc/aspeed/aspeed-lpc-snoop.c
+> b/drivers/soc/aspeed/aspeed-lpc-snoop.c
+> index 682ba0eb4eba..20acac6342ef 100644
+> --- a/drivers/soc/aspeed/aspeed-lpc-snoop.c
+> +++ b/drivers/soc/aspeed/aspeed-lpc-snoop.c
+> @@ -11,6 +11,7 @@
+>   */
+> 
+>  #include <linux/bitops.h>
+> +#include <linux/clk.h>
+>  #include <linux/interrupt.h>
+>  #include <linux/fs.h>
+>  #include <linux/kfifo.h>
+> @@ -67,6 +68,7 @@ struct aspeed_lpc_snoop_channel {  struct
+> aspeed_lpc_snoop {
+>  	struct regmap		*regmap;
+>  	int			irq;
+> +	struct clk		*clk;
+>  	struct aspeed_lpc_snoop_channel chan[NUM_SNOOP_CHANNELS];  };
+> 
+> @@ -282,22 +284,42 @@ static int aspeed_lpc_snoop_probe(struct
+> platform_device *pdev)
+>  		return -ENODEV;
 >  	}
-> -	mutex_unlock(&memcg_shrinker_map_mutex);
-> +	up_read(&shrinker_rwsem);
->  
->  	return ret;
->  }
-> @@ -276,9 +273,8 @@ static int memcg_expand_shrinker_maps(int new_id)
->  	if (size <= old_size)
->  		return 0;
->  
-> -	mutex_lock(&memcg_shrinker_map_mutex);
->  	if (!root_mem_cgroup)
-> -		goto unlock;
-> +		goto out;
->  
->  	memcg = mem_cgroup_iter(NULL, NULL, NULL);
->  	do {
-> @@ -287,13 +283,13 @@ static int memcg_expand_shrinker_maps(int new_id)
->  		ret = memcg_expand_one_shrinker_map(memcg, size, old_size);
->  		if (ret) {
->  			mem_cgroup_iter_break(NULL, memcg);
-> -			goto unlock;
-> +			goto out;
->  		}
->  	} while ((memcg = mem_cgroup_iter(NULL, memcg, NULL)) != NULL);
-> -unlock:
-> +out:
->  	if (!ret)
->  		memcg_shrinker_map_size = size;
-> -	mutex_unlock(&memcg_shrinker_map_mutex);
-> +
->  	return ret;
->  }
->  
 > 
+> +	lpc_snoop->clk = devm_clk_get(dev, NULL);
+> +	if (IS_ERR(lpc_snoop->clk)) {
+> +		rc = PTR_ERR(lpc_snoop->clk);
+> +		if (rc != -EPROBE_DEFER)
+> +			dev_err(dev, "couldn't get clock\n");
+> +		return rc;
+> +	}
+> +	rc = clk_prepare_enable(lpc_snoop->clk);
+> +	if (rc) {
+> +		dev_err(dev, "couldn't enable clock\n");
+> +		return rc;
+> +	}
+> +
+>  	rc = aspeed_lpc_snoop_config_irq(lpc_snoop, pdev);
+>  	if (rc)
+> -		return rc;
+> +		goto err;
+> 
+>  	rc = aspeed_lpc_enable_snoop(lpc_snoop, dev, 0, port);
+>  	if (rc)
+> -		return rc;
+> +		goto err;
+> 
+>  	/* Configuration of 2nd snoop channel port is optional */
+>  	if (of_property_read_u32_index(dev->of_node, "snoop-ports",
+>  				       1, &port) == 0) {
+>  		rc = aspeed_lpc_enable_snoop(lpc_snoop, dev, 1, port);
+> -		if (rc)
+> +		if (rc) {
+>  			aspeed_lpc_disable_snoop(lpc_snoop, 0);
+> +			goto err;
+> +		}
+>  	}
+> 
+> +	return 0;
+> +
+> +err:
+> +	clk_disable_unprepare(lpc_snoop->clk);
+> +
+>  	return rc;
+>  }
+> 
+> @@ -309,6 +331,8 @@ static int aspeed_lpc_snoop_remove(struct
+> platform_device *pdev)
+>  	aspeed_lpc_disable_snoop(lpc_snoop, 0);
+>  	aspeed_lpc_disable_snoop(lpc_snoop, 1);
+> 
+> +	clk_disable_unprepare(lpc_snoop->clk);
+> +
+>  	return 0;
+>  }
+> 
+> --
+> 2.25.1
 
