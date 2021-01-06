@@ -2,79 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 000F22EBFCC
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 15:47:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B14662EBFD0
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 15:48:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727288AbhAFOrE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Jan 2021 09:47:04 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60708 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726680AbhAFOrC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Jan 2021 09:47:02 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0CA7323100;
-        Wed,  6 Jan 2021 14:46:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1609944382;
-        bh=VDYduDZ2hYzgBR2lAzOGuFpTrOM22sbWMH0q5980R7o=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=bb2QQWnkMIfGcV6jACTTjibZJuLKMNz+CgcJhVbTadUtcbc4pUTIEyNhT7Mi7tm4v
-         LNTxWhcEbl4cPzoicZOdBf6IA5MaomPwPWRBiYdMCHf/Pm0JjABrAPljY9JYG22dNL
-         181H/DQWYOfWmRX2tvr4kDS9STTX8AYxVWVtbTD2OE6fFf/mAydUUX8W3CAor9ljZg
-         rIlzkEMOgLCxDQ4fZqyxgVx/lBS2PC2+QDxpZZmjb0jM43Vu0kPSQaGQxomSCIrVJb
-         6DVvlvfaQb2LE9mF1qcm7KEw/Ajeb61kCfyCrbl32vWWBjCcJYzWj+jFobM+J3FISm
-         x0X+YZRpusqUg==
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id B877135225EC; Wed,  6 Jan 2021 06:46:21 -0800 (PST)
-Date:   Wed, 6 Jan 2021 06:46:21 -0800
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     tglx@linutronix.de, linux-kernel@vger.kernel.org,
-        valentin.schneider@arm.com, bristot@redhat.com, frederic@kernel.org
-Subject: Re: lockdep splat in v5.11-rc1 involving console_sem and rq locks
-Message-ID: <20210106144621.GJ17086@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20210105220115.GA27357@paulmck-ThinkPad-P72>
- <X/WITr5JuNvuMH+p@hirez.programming.kicks-ass.net>
+        id S1726749AbhAFOrW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Jan 2021 09:47:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59766 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726780AbhAFOrU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 Jan 2021 09:47:20 -0500
+Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23B2BC06134C;
+        Wed,  6 Jan 2021 06:46:40 -0800 (PST)
+Received: by mail-pg1-x535.google.com with SMTP id 30so2367442pgr.6;
+        Wed, 06 Jan 2021 06:46:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=8RtYlRfwSJShEtBkKPbMykBunRB098Pg/K11epxtPxI=;
+        b=egbitT1INxyeLUr11UWjnSvF8BO5JDX3uwAHGYuayo2WKCdYKyqsbJKi3RxNAuAr49
+         1GV376HCoB/tMwz7tbtzSzx0eCBxZiLvzCUfSik9b7fwDIR+nkgjeBxvimQxmqyVtOHg
+         keX26FZ/Vbvsp+ODDw/GMDDCePrsCpmEB+JLmLsTI9gIyLF9P0uv2vWnC44W3nytPrCN
+         0ns7h0pKyNH9vdgBmesS3eBuVQoj4m7FOJAOc4LEz5iQtBa67e7VXq6B3pL6yd9ylAHM
+         dasbVBcM0JggxFKiokizl+IzXfHfLFMGVybjZqIKSQd/8CJxAPwRvDJLWdPijl3GBQOe
+         ULxA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=8RtYlRfwSJShEtBkKPbMykBunRB098Pg/K11epxtPxI=;
+        b=qhU3xGRYTZPHYso0BNRZlYUVGRjPBoU5hZ5GYr57bb8mKbpPBhjZnzzxoL+1w0HKZ5
+         AMqXFgpNjbnn8uPsxp01PxNsLwLEwFsasYrVKDCUPCGIkISbhAAGx65hbjjNXivKYhG5
+         +dGQRvLpNtnaDh0pWB7dNO7kktTviBAwLw7AyI5grMIC1EMBVBAwevXgtGv/q6uBOq5S
+         KUR6FcTC/1EpmfmKlrE2K8cGquLqMwzsSUDpNlNF6gkhX0h7JN9fVy/khTlAwy9okhyk
+         rddz17Gkmixptux0/C2aLIAB0Q7VDUe9Nuazu/+3WnKOI2NL2W6FPGtaPJE4wZ9U31ZH
+         44vA==
+X-Gm-Message-State: AOAM533Dx49CWM4AuI1PA6T+Letb37NgV3vb8X7WejO8kYn7G9jm/w0y
+        zDXzOO5ViHtJzLE8clDUnLc=
+X-Google-Smtp-Source: ABdhPJyFqDZnj+I7FglNtd+4tePEgR3ckAW9tRvGDoyFDBxKOlhvMZrxJMCN2niIWSR/0fpQa47b5w==
+X-Received: by 2002:a63:fe05:: with SMTP id p5mr4864089pgh.161.1609944399759;
+        Wed, 06 Jan 2021 06:46:39 -0800 (PST)
+Received: from hoboy.vegasvil.org (c-73-241-114-122.hsd1.ca.comcast.net. [73.241.114.122])
+        by smtp.gmail.com with ESMTPSA id q23sm2867001pfg.192.2021.01.06.06.46.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 06 Jan 2021 06:46:39 -0800 (PST)
+Date:   Wed, 6 Jan 2021 06:46:36 -0800
+From:   Richard Cochran <richardcochran@gmail.com>
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     linux-kernel@vger.kernel.org, kernel test robot <lkp@intel.com>,
+        netdev@vger.kernel.org, "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Subject: Re: [PATCH] ptp: ptp_ines: prevent build when HAS_IOMEM is not set
+Message-ID: <20210106144636.GB10150@hoboy.vegasvil.org>
+References: <20210106042531.1351-1-rdunlap@infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <X/WITr5JuNvuMH+p@hirez.programming.kicks-ass.net>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20210106042531.1351-1-rdunlap@infradead.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 06, 2021 at 10:52:14AM +0100, Peter Zijlstra wrote:
-> On Tue, Jan 05, 2021 at 02:01:15PM -0800, Paul E. McKenney wrote:
-> > Hello!
-> > 
-> > The RUDE01 rcutorture scenario (and less often, the TASKS01 scenario)
-> > results in occasional lockdep splats on v5.11-rc1 on x86.  This failure
-> > is probabalistic, sometimes happening as much as 30% of the time, but
-> > sometimes happening quite a bit less frequently.  (And yes, this did
-> > result in a false bisection.  Why do you ask?)  The problem seems to
-> > happen more frequently shortly after boot, so for fastest reproduction
-> > run lots of 10-minute RUDE01 runs, which did eventually result in a
-> > good bisection.  (Yes, I did hammer the last good commit for awhile.)
-> > 
-> > The first bad commit is 1cf12e08bc4d ("sched/hotplug: Consolidate task
-> > migration on CPU unplug").  An example splat is shown below.
-> > 
-> > Thoughts?
+On Tue, Jan 05, 2021 at 08:25:31PM -0800, Randy Dunlap wrote:
+> ptp_ines.c uses devm_platform_ioremap_resource(), which is only
+> built/available when CONFIG_HAS_IOMEM is enabled.
+> CONFIG_HAS_IOMEM is not enabled for arch/s390/, so builds on S390
+> have a build error:
 > 
-> The splat is because you hit a WARN, we're working on that.
+> s390-linux-ld: drivers/ptp/ptp_ines.o: in function `ines_ptp_ctrl_probe':
+> ptp_ines.c:(.text+0x17e6): undefined reference to `devm_platform_ioremap_resource'
+> 
+> Prevent builds of ptp_ines.c when HAS_IOMEM is not set.
 
-Huh.  The WARN does not always generate the lockdep complaint.  But
-fair enough.
-
->   https://lkml.kernel.org/r/20201226025117.2770-1-jiangshanlai@gmail.com
-
-Thomas pointed me at this one a couple of weeks ago.  Here is an
-additional fix for rcutorture: f67e04bb0695 ("torture: Break affinity
-of kthreads last running on outgoing CPU").  I am still getting WARNs
-and lockdep splats with both applied.
-
-What would break if I made the code dump out a few entries in the
-runqueue if the warning triggered?
-
-						Thanx, Paul
+Acked-by: Richard Cochran <richardcochran@gmail.com>
