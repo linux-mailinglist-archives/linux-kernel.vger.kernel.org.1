@@ -2,77 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E30622EB806
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 03:20:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 086B02EB808
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 03:24:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726059AbhAFCTV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 21:19:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55896 "EHLO
+        id S1726231AbhAFCV5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 21:21:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56342 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725730AbhAFCTV (ORCPT
+        with ESMTP id S1725978AbhAFCV4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 21:19:21 -0500
+        Tue, 5 Jan 2021 21:21:56 -0500
 Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2528C061387;
-        Tue,  5 Jan 2021 18:18:39 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98F64C061387
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Jan 2021 18:21:16 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
-        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
-        Content-Description:In-Reply-To:References;
-        bh=LIaWes6GL5/coUIDfM1TqdIbbzbCTmUwH4VD0Q/gdoE=; b=LI5OpgDBafj/vEhcm8ebq9I1zd
-        wX+ikXiec+Q7WQKbnbvd9EzVvxVZI49mL1gDwS7FU7NJbkYd1V/j+NpBaTjI9/zEufqenxYYsacpk
-        f1CIZVECMVDBRC1rRO4F1+xDGk23AxqP5d6XrNYHidj8fW0SzsAzS4QiyA/dsSv/fjHBEj2/A18Qs
-        F/XjF+Y2fpOZ8J5Pj7pYt/UWp0JrzwJUFji4evPIyEDK7lkjImeBaAxG0YsdE/9g6e+e2dS5hrKIP
-        y0iOtcVcUUTxtPxkBR7hra3qcRv2y7AS1DMWT3CiYIvVI1Ztn20h/X3/ivK2wnhWnR4Tx5IkWNYuR
-        3gpB1atw==;
-Received: from [2601:1c0:6280:3f0::64ea] (helo=smtpauth.infradead.org)
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:Subject:Sender:
+        Reply-To:Cc:Content-ID:Content-Description;
+        bh=DwXo5OtthLO/ovJHBO2OaqlsvlKPhfS9FzWXNA2R03w=; b=NJ8lsE016yMA0O3c6CI+fNdOHV
+        16fKw+Q3tCvv1IzaRiOJL5IQZ7UmYqB8ehMKyXJXOvuykJ9xrrR1KhRxTJyVmE9zB0yCxScRdGIlI
+        xyJ+HxIzO10aSJ0hy3J4l/0hOAgO+gBzx5+GaNrRgH5hNM69MtGgaIlAF63nPVaXXavOTP/DWXeoC
+        0TvHOh+3Jn8TZzYj3gDjnl40fLIYXN+j5Fuw91r5XE15GrJvizpOYGq61odHCwa+E5iSsi65EH4nP
+        gFSaX33WskvgxxXLEFxBuPzn4T+VZs+80Y5WsPrl+kg12+xOlSX1S5KQnYK1rcG1i305TqM/r1rUg
+        dTemnIJQ==;
+Received: from [2601:1c0:6280:3f0::64ea]
         by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1kwyOz-001uSQ-9h; Wed, 06 Jan 2021 02:18:25 +0000
+        id 1kwyRI-001uc0-QK; Wed, 06 Jan 2021 02:21:03 +0000
+Subject: Re: [PATCH 1/1] arm64: make section size configurable for memory
+ hotplug
+To:     Sudarshan Rajagopalan <sudaraja@codeaurora.org>,
+        akpm@linux-foundation.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+References: <cover.1609895500.git.sudaraja@codeaurora.org>
+ <66f79b0c06602c22df4da8ff4a5c2b97c9275250.1609895500.git.sudaraja@codeaurora.org>
 From:   Randy Dunlap <rdunlap@infradead.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        kernel test robot <lkp@intel.com>,
-        Kurt Kanzenbach <kurt@linutronix.de>, netdev@vger.kernel.org,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH] net: dsa: fix led_classdev build errors
-Date:   Tue,  5 Jan 2021 18:18:15 -0800
-Message-Id: <20210106021815.31796-1-rdunlap@infradead.org>
-X-Mailer: git-send-email 2.26.2
+Message-ID: <1c4613bc-56e9-de99-e9de-4313b4aa88a2@infradead.org>
+Date:   Tue, 5 Jan 2021 18:20:40 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <66f79b0c06602c22df4da8ff4a5c2b97c9275250.1609895500.git.sudaraja@codeaurora.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix build errors when LEDS_CLASS=m and NET_DSA_HIRSCHMANN_HELLCREEK=y.
-This limits the latter to =m when LEDS_CLASS=m.
+On 1/5/21 5:28 PM, Sudarshan Rajagopalan wrote:
+> diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
+> index 6d232837cbee..34124eee65da 100644
+> --- a/arch/arm64/Kconfig
+> +++ b/arch/arm64/Kconfig
+> @@ -294,6 +294,17 @@ config ARCH_ENABLE_MEMORY_HOTREMOVE
+>  config SMP
+>  	def_bool y
+>  
+> +config HOTPLUG_SIZE_BITS
+> +	int "Memory hotplug block size(29 => 512MB 30 => 1GB)"
 
-microblaze-linux-ld: drivers/net/dsa/hirschmann/hellcreek_ptp.o: in function `hellcreek_ptp_setup':
-(.text+0xf80): undefined reference to `led_classdev_register_ext'
-microblaze-linux-ld: (.text+0xf94): undefined reference to `led_classdev_register_ext'
-microblaze-linux-ld: drivers/net/dsa/hirschmann/hellcreek_ptp.o: in function `hellcreek_ptp_free':
-(.text+0x1018): undefined reference to `led_classdev_unregister'
-microblaze-linux-ld: (.text+0x1024): undefined reference to `led_classdev_unregister'
+	                    block size (29 => 512MB, 30 => 1GB)"
 
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Reported-by: kernel test robot <lkp@intel.com>
-Link: lore.kernel.org/r/202101060655.iUvMJqS2-lkp@intel.com
-Cc: Kurt Kanzenbach <kurt@linutronix.de>
-Cc: netdev@vger.kernel.org
-Cc: "David S. Miller" <davem@davemloft.net>
-Cc: Jakub Kicinski <kuba@kernel.org>
----
- drivers/net/dsa/hirschmann/Kconfig |    1 +
- 1 file changed, 1 insertion(+)
+> +	depends on SPARSEMEM
+> +	depends on MEMORY_HOTPLUG
+> +	range 28 30
+> +	default 30
+> +	help
+> +	 Selects granularity of hotplug memory. Block size for
+> +	 memory hotplug is represent as a power of 2.
 
---- lnx-511-rc2.orig/drivers/net/dsa/hirschmann/Kconfig
-+++ lnx-511-rc2/drivers/net/dsa/hirschmann/Kconfig
-@@ -4,6 +4,7 @@ config NET_DSA_HIRSCHMANN_HELLCREEK
- 	depends on HAS_IOMEM
- 	depends on NET_DSA
- 	depends on PTP_1588_CLOCK
-+	depends on LEDS_CLASS
- 	select NET_DSA_TAG_HELLCREEK
- 	help
- 	  This driver adds support for Hirschmann Hellcreek TSN switches.
+	                   represented
+
+> +	 If unsure, stick with default value.
+
+and all of the help text should be indented with 1 tab + 2 spaces.
+
+
+thanks.
+-- 
+~Randy
+
