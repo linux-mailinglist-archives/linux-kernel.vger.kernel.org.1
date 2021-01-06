@@ -2,106 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22A1F2EBB50
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 09:51:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DE70C2EBB74
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 09:59:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726773AbhAFIvA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Jan 2021 03:51:00 -0500
-Received: from mail-io1-f71.google.com ([209.85.166.71]:57073 "EHLO
-        mail-io1-f71.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725822AbhAFIvA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Jan 2021 03:51:00 -0500
-Received: by mail-io1-f71.google.com with SMTP id m2so276131iow.23
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Jan 2021 00:50:44 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=FsvQnsUURhV2OmdsEUEnsDCv+OlmKNzEOUKXr4QWTqA=;
-        b=KPKSLZhmfc7QE2jK246ciAbx/QXblsl1Egjw9oTo41u1uyEnddFkaPZTWrJagJ0Iaf
-         Y26Tem4xUXl4m2s8kstTjoFX0PkgMWfndMqAQeVpW+9/t5A8OtoNsOwbYUmAmM47Q54+
-         m7VqdIr6Ko6OXeinQQZNu3UScpQ3EHNJOqAdKApnu4Srd3xt0vO8xBpTi21gkjikvPvi
-         4ExoNDl6u14GqSOxF49AzXM6WiIx+QjjrjvzsZXrAC1ljmB/A2W515Cr7Z+RHBQqhJp/
-         ZenD3YTMssZ5LqBcttPBWnULHKkxlC3BSWG37WbyEYxv+HCmhfIoI8AfejVExh3mSvsw
-         8O1g==
-X-Gm-Message-State: AOAM531LRFnMDzbJzxRwgaBMRTnFT3mN6k/SFnNT18ZGlWhqjtIMYnkQ
-        lcPjh73ErbN44JwVvggM5TlRCJWIiUPcnkX8SpBRxfLjPaAk
-X-Google-Smtp-Source: ABdhPJxC6iwpniVCevtAsbkQZmeqHoCOk5aS8CU+gRoT5hxw0rXkOnyvPOVKjfrFWyt/lhjeB3T76UnmKUcLbhj/lNwNQHd7Q8F7
+        id S1726792AbhAFI64 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Jan 2021 03:58:56 -0500
+Received: from mga02.intel.com ([134.134.136.20]:9556 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726473AbhAFI64 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 Jan 2021 03:58:56 -0500
+IronPort-SDR: 01zKe0lo6XqYNfIKDqYH3u3B7C68PPe/bQvs4HI4ZWg3AxB8qIJRTFqksUOnNEUZORg9lxdZvk
+ rXrbyTShQfOA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9855"; a="164322509"
+X-IronPort-AV: E=Sophos;i="5.78,479,1599548400"; 
+   d="scan'208";a="164322509"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Jan 2021 00:58:15 -0800
+IronPort-SDR: S8858dBH4eM/cR2PNZhdpu116YWdOo4bpNpPX4y2On1tMPy+dlwYTQ66TNF0/dF2T7a7E+Maun
+ wk6ewBUVub7A==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.78,479,1599548400"; 
+   d="scan'208";a="350746261"
+Received: from yilunxu-optiplex-7050.sh.intel.com (HELO localhost) ([10.239.159.141])
+  by fmsmga008.fm.intel.com with ESMTP; 06 Jan 2021 00:58:13 -0800
+Date:   Wed, 6 Jan 2021 16:53:29 +0800
+From:   Xu Yilun <yilun.xu@intel.com>
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     arnd@arndb.de, lee.jones@linaro.org, linux-kernel@vger.kernel.org,
+        trix@redhat.com, lgoncalv@redhat.com, hao.wu@intel.com,
+        matthew.gerlach@intel.com, russell.h.weight@intel.com
+Subject: Re: [PATCH 2/2] misc: add support for retimers interfaces on Intel
+  MAX 10 BMC
+Message-ID: <20210106085329.GA13860@yilunxu-OptiPlex-7050>
+References: <1609918567-13339-1-git-send-email-yilun.xu@intel.com>
+ <1609918567-13339-3-git-send-email-yilun.xu@intel.com>
+ <X/VtOvRyoKJ9wCkH@kroah.com>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:104a:: with SMTP id p10mr3152877ilj.247.1609923018986;
- Wed, 06 Jan 2021 00:50:18 -0800 (PST)
-Date:   Wed, 06 Jan 2021 00:50:18 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000a99c7105b83769d7@google.com>
-Subject: UBSAN: array-index-out-of-bounds in qfq_update_agg
-From:   syzbot <syzbot+7c315a573dd9374a3220@syzkaller.appspotmail.com>
-To:     davem@davemloft.net, jhs@mojatatu.com, jiri@resnulli.us,
-        kuba@kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com,
-        xiyou.wangcong@gmail.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <X/VtOvRyoKJ9wCkH@kroah.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Wed, Jan 06, 2021 at 08:56:42AM +0100, Greg KH wrote:
+> On Wed, Jan 06, 2021 at 03:36:07PM +0800, Xu Yilun wrote:
+> > This driver supports the ethernet retimers (C827) for the Intel PAC
+> > (Programmable Acceleration Card) N3000, which is a FPGA based Smart NIC.
+> > 
+> > C827 is an Intel(R) Ethernet serdes transceiver chip that supports
+> > up to 100G transfer. On Intel PAC N3000 there are 2 C827 chips
+> > managed by the Intel MAX 10 BMC firmware. They are configured in 4 ports
+> > 10G/25G retimer mode. Host could query their link states and firmware
+> > version information via retimer interfaces (Shared registers) on Intel
+> > MAX 10 BMC. The driver creates sysfs interfaces for users to query these
+> > information.
+> > 
+> > Signed-off-by: Xu Yilun <yilun.xu@intel.com>
+> > ---
+> >  .../ABI/testing/sysfs-driver-intel-m10-bmc-retimer |  32 +++++
+> >  drivers/misc/Kconfig                               |  10 ++
+> >  drivers/misc/Makefile                              |   1 +
+> >  drivers/misc/intel-m10-bmc-retimer.c               | 158 +++++++++++++++++++++
+> >  4 files changed, 201 insertions(+)
+> >  create mode 100644 Documentation/ABI/testing/sysfs-driver-intel-m10-bmc-retimer
+> >  create mode 100644 drivers/misc/intel-m10-bmc-retimer.c
+> > 
+> > diff --git a/Documentation/ABI/testing/sysfs-driver-intel-m10-bmc-retimer b/Documentation/ABI/testing/sysfs-driver-intel-m10-bmc-retimer
+> > new file mode 100644
+> > index 0000000..528712a
+> > --- /dev/null
+> > +++ b/Documentation/ABI/testing/sysfs-driver-intel-m10-bmc-retimer
+> > @@ -0,0 +1,32 @@
+> > +What:		/sys/bus/platform/devices/n3000bmc-retimer.*.auto/tag
+> > +Date:		Jan 2021
+> > +KernelVersion:	5.12
+> > +Contact:	Xu Yilun <yilun.xu@intel.com>
+> > +Description:	Read only. Returns the tag of the retimer chip. Now there are 2
+> > +		retimer chips on Intel PAC N3000, they are tagged as
+> > +		'retimer_A' and 'retimer_B'.
+> > +		Format: "retimer_%c".
+> > +
+> > +What:		/sys/bus/platform/devices/n3000bmc-retimer.*.auto/sbus_version
+> > +Date:		Jan 2021
+> > +KernelVersion:	5.12
+> > +Contact:	Xu Yilun <yilun.xu@intel.com>
+> > +Description:	Read only. Returns the Transceiver bus firmware version of
+> > +		the retimer chip.
+> > +		Format: "0x%04x".
+> > +
+> > +What:		/sys/bus/platform/devices/n3000bmc-retimer.*.auto/serdes_version
+> > +Date:		Jan 2021
+> > +KernelVersion:	5.12
+> > +Contact:	Xu Yilun <yilun.xu@intel.com>
+> > +Description:	Read only. Returns the SERDES firmware version of the retimer
+> > +		chip.
+> > +		Format: "0x%04x".
+> > +
+> > +What:		/sys/bus/platform/devices/n3000bmc-retimer.*.auto/link_statusX
+> > +Date:		Jan 2021
+> > +KernelVersion:	5.12
+> > +Contact:	Xu Yilun <yilun.xu@intel.com>
+> > +Description:	Read only. Returns the status of each line side link. "1" for
+> > +		link up, "0" for link down.
+> > +		Format: "%u".
+> 
+> Who is going to use all of these read-only attributes?
 
-syzbot found the following issue on:
+The Intel OPAE (Open Programmable Acceleration Engine) lib handles these
+attrs.
 
-HEAD commit:    3db1a3fa Merge tag 'staging-5.11-rc1' of git://git.kernel...
-git tree:       net-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=1286be67500000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=a6e6725884106332
-dashboard link: https://syzkaller.appspot.com/bug?extid=7c315a573dd9374a3220
-compiler:       gcc (GCC) 10.1.0-syz 20200507
+For the version attrs, the OPAE retimer firmware update tool will query
+them to make sure the update is succeed.
 
-Unfortunately, I don't have any reproducer for this issue yet.
+For the link_status attrs, the OPAE net tools handles it.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+7c315a573dd9374a3220@syzkaller.appspotmail.com
+> 
+> And why isn't this information exported in the "normal" way for network
+> devices?  Having them as custom sysfs attributes ensures that no
+> existing tools will work with these at all, right?  Why not do the
+> standard thing here isntead?
 
-================================================================================
-UBSAN: array-index-out-of-bounds in net/sched/sch_qfq.c:300:24
-index 29 is out of range for type 'qfq_group [25]'
-CPU: 0 PID: 20516 Comm: syz-executor.3 Not tainted 5.10.0-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:79 [inline]
- dump_stack+0x107/0x163 lib/dump_stack.c:120
- ubsan_epilogue+0xb/0x5a lib/ubsan.c:148
- __ubsan_handle_out_of_bounds.cold+0x62/0x6c lib/ubsan.c:356
- qfq_update_agg+0x7b8/0x7d0 net/sched/sch_qfq.c:300
- qfq_add_to_agg+0x75/0x500 net/sched/sch_qfq.c:317
- qfq_change_class+0x5da/0x18f0 net/sched/sch_qfq.c:510
- tc_ctl_tclass+0x526/0xc70 net/sched/sch_api.c:2111
- rtnetlink_rcv_msg+0x493/0xb40 net/core/rtnetlink.c:5564
- netlink_rcv_skb+0x153/0x420 net/netlink/af_netlink.c:2494
- netlink_unicast_kernel net/netlink/af_netlink.c:1304 [inline]
- netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1330
- netlink_sendmsg+0x907/0xe10 net/netlink/af_netlink.c:1919
- sock_sendmsg_nosec net/socket.c:652 [inline]
- sock_sendmsg+0xd3/0x130 net/socket.c:672
- ____sys_sendmsg+0x6e8/0x810 net/socket.c:2336
- ___sys_sendmsg+0xf3/0x170 net/socket.c:2390
- __sys_sendmsg+0xe5/0x1b0 net/socket.c:2423
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x45e219
-Code: 0d b4 fb ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 db b3 fb ff c3 66 2e 0f 1f 84 00 00 00 00
-RSP: 002b:00007fe1c8c30c68 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
-RAX: ffffffffffffffda RBX: 0000000000000003 RCX: 000000000045e219
-RDX: 0000000000000000 RSI: 0000000020000540 RDI: 0000000000000003
-RBP: 000000000119c068 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 000000000119c034
-R13: 00007ffc62cfe08f R14: 00007fe1c8c319c0 R15: 000000000119c034
-================================================================================
+I had sent some RFC patches to expose the Line Side Ether Group + retimer +
+QSFP as a netdev, and got some comments from netdev Maintainers.
 
+The network part of the N3000 card is like the following:
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+                       +----------------------------------------+
+                       |                  FPGA                  |
+  +----+   +-------+   +-----------+  +----------+  +-----------+   +----------+
+  |QSFP|---|retimer|---|Line Side  |--|User logic|--|Host Side  |---|XL710     |
+  +----+   +-------+   |Ether Group|  |          |  |Ether Group|   |Ethernet  |
+                       |(PHY + MAC)|  |wiring &  |  |(MAC + PHY)|   |Controller|
+                       +-----------+  |offloading|  +-----------+   +----------+
+                       |              +----------+              |
+                       |                                        |
+                       +----------------------------------------+
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+The main concern is that physically the QSFP & retimer is managed by the
+BMC and host could only get the retimer link states. This is not enough
+to support some necessary netdev ops.  E.g. host cannot realize the
+type/speed of the SFP by "ethtool -m", then users could not configure the
+various layers accordingly.
+
+This means the existing net tool can not work with it, so this patch just
+expose the link states as custom sysfs attrs.
+
+Thanks,
+Yilun 
