@@ -2,112 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB07F2EBB9D
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 10:19:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BD6AC2EBB9E
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 10:23:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726352AbhAFJSz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Jan 2021 04:18:55 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:39713 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725952AbhAFJSy (ORCPT
+        id S1726059AbhAFJXM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Jan 2021 04:23:12 -0500
+Received: from szxga01-in.huawei.com ([45.249.212.187]:4131 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725868AbhAFJXL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Jan 2021 04:18:54 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1609924648;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=74reAFMP9bENCEIgFbfQOXKA/PsWi2wcOMNMUHX6jRs=;
-        b=NncPIcfMenZN+GlJydfVWrMld/lrhzHQHBmSoMdt9BAVrc98/miKmT9CZfD71AH9I4EDor
-        OG5dlzqln/LgNIKh8S9GBG9FkqbFroffq24LyCc0MpUWK+eKDAl9LMI4eik2RDaRE+gOlZ
-        N0nTZf5G460yhn3MV6GzAFch0WLdemY=
-Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
- [209.85.218.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-505-0lLnaQJrMMiLv4E3O7YBig-1; Wed, 06 Jan 2021 04:17:26 -0500
-X-MC-Unique: 0lLnaQJrMMiLv4E3O7YBig-1
-Received: by mail-ej1-f69.google.com with SMTP id dc13so1048075ejb.9
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Jan 2021 01:17:26 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=74reAFMP9bENCEIgFbfQOXKA/PsWi2wcOMNMUHX6jRs=;
-        b=pzGkYnPPm/FIWCeQl+J8RjuTmYqFZi//0OGbmCXWnvHqQDGZNe6ZNxN2x3z5QxSmPI
-         PLO9pu9Eg0oIk42vFUUHkqxEGYRAr8DboO3boH+pGjRFLQDToOU8YmRa0gNkgW17alen
-         qlAPHQlZFgjdgoUEuNt6bOrnSTUP+JukdnKsuK01sbxcAsg96p8TtJJJCyIZJ95GIExr
-         EsHN4wQQpVfk3sDCVDOUxFGQZ8r4nx9e/Eno7Nr/xjBNpV9aBearMsJL9gEBepkZQMsH
-         k3mNs+RbHqGrxHVMP5XLkCBsx7j2abt02JWaOjL0+YLnnGRlum8K8hmC7tlVSCAd7PK6
-         E7kg==
-X-Gm-Message-State: AOAM531n+15Tnf/j/qbu/bZ0FRaiwwMxECrlJBt+MvVOu20UoIsTGmxo
-        V8b23Dp28GjkaEiTVFlN/vr3Cf17OU9++xILTdn9DoJFgm0YAzfdqWGmXsQ+aHy3hu9GXqXMa1v
-        t1rOak8CenS2Eod2mHM7kz4HZhcEV0nYd5Cj/dU1D1SJDT+y9UqbdEm+eh/A1RNs58WJwddjywm
-        RD
-X-Received: by 2002:a05:6402:746:: with SMTP id p6mr3354049edy.313.1609924645449;
-        Wed, 06 Jan 2021 01:17:25 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJySWOSAgxnffC8LBV3wDGbija0UW5bX4NCm1gy26Oam0C1xmlbog1r2rFQq7ZWJYvqHt58O5w==
-X-Received: by 2002:a05:6402:746:: with SMTP id p6mr3354035edy.313.1609924645315;
-        Wed, 06 Jan 2021 01:17:25 -0800 (PST)
-Received: from x1.localdomain (2001-1c00-0c1e-bf00-37a3-353b-be90-1238.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:37a3:353b:be90:1238])
-        by smtp.gmail.com with ESMTPSA id z24sm1187871edr.9.2021.01.06.01.17.24
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 06 Jan 2021 01:17:24 -0800 (PST)
-Subject: Re: [PATCH 0/2] IdeaPad platform profile support
-To:     "Rafael J. Wysocki" <rafael@kernel.org>
-Cc:     Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        Platform Driver <platform-driver-x86@vger.kernel.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <lenb@kernel.org>,
-        Mark Gross <mgross@linux.intel.com>,
-        Ike Panhc <ike.pan@canonical.com>,
-        Mark Pearson <markpearson@lenovo.com>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-References: <20210101125629.20974-1-jiaxun.yang@flygoat.com>
- <35ac853a-266c-6944-6e5e-6286456865e3@redhat.com>
- <CAJZ5v0jcCD3qWUJQcS+nFVJWSCQEbq2eN3i07mN8yFr3WZD9dg@mail.gmail.com>
- <6a29f338-d9e4-150c-81dd-2ffb54f5bc35@redhat.com>
- <CAJZ5v0je41iXQnr3m-RY9fD_C-qnqbLdqYMvUzp0qgBwEvVoJA@mail.gmail.com>
-From:   Hans de Goede <hdegoede@redhat.com>
-Message-ID: <9e745724-d704-6250-9bfb-e347f3611ec4@redhat.com>
-Date:   Wed, 6 Jan 2021 10:17:23 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        Wed, 6 Jan 2021 04:23:11 -0500
+Received: from DGGEML402-HUB.china.huawei.com (unknown [172.30.72.56])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4D9kQB0fM5zXwM3;
+        Wed,  6 Jan 2021 17:21:38 +0800 (CST)
+Received: from DGGEML422-HUB.china.huawei.com (10.1.199.39) by
+ DGGEML402-HUB.china.huawei.com (10.3.17.38) with Microsoft SMTP Server (TLS)
+ id 14.3.487.0; Wed, 6 Jan 2021 17:22:27 +0800
+Received: from DGGEML510-MBX.china.huawei.com ([169.254.2.253]) by
+ dggeml422-hub.china.huawei.com ([10.1.199.39]) with mapi id 14.03.0487.000;
+ Wed, 6 Jan 2021 17:22:18 +0800
+From:   wanghuiqiang <wanghuiqiang@huawei.com>
+To:     Shameerali Kolothum Thodi <shameerali.kolothum.thodi@huawei.com>,
+        "'Ard Biesheuvel'" <ardb@kernel.org>
+CC:     'Marc Zyngier' <maz@kernel.org>,
+        "'eric.auger@redhat.com'" <eric.auger@redhat.com>,
+        "'linux-kernel@vger.kernel.org'" <linux-kernel@vger.kernel.org>,
+        "'linux-arm-kernel@lists.infradead.org'" 
+        <linux-arm-kernel@lists.infradead.org>,
+        Linuxarm <linuxarm@huawei.com>, "xuwei (O)" <xuwei5@huawei.com>
+Subject: =?utf-8?B?562U5aSNOiBbUEFUQ0hdIGlycWNoaXAvZ2ljLXYzOiBDaGVjayBTUkUgYml0?=
+ =?utf-8?Q?_for_GICv2_legacy_support?=
+Thread-Topic: [PATCH] irqchip/gic-v3: Check SRE bit for GICv2 legacy support
+Thread-Index: AQHWxwN3YOmayqAkS0a1b5qHlXVEh6ngmnQAgAABpXCAACfogIAABzIwgAA00gCAAnf7sIAUZQBAgCKuEbA=
+Date:   Wed, 6 Jan 2021 09:22:18 +0000
+Message-ID: <07084A11A8AB5A40A40B0218FE6F1CCA0F5B3322@dggeml510-mbx.china.huawei.com>
+References: <20201130102639.7504-1-shameerali.kolothum.thodi@huawei.com>
+ <f8a97f360073fa495cae75acc11ecf4f@kernel.org>
+ <85bb389a75f347d29ab3f75e4cfae060@huawei.com>
+ <846387e4168f1a22638ad07ae670c531@kernel.org>
+ <e93770e46c73413882584ebc3fe732e3@huawei.com>
+ <CAMj1kXGdEbDzFN2cCNpCx_QJk3++v3zrWZ7Yw08Exrzyy_Q97w@mail.gmail.com>
+ <931f76fa185e488fb9e942b2026ae7be@huawei.com>
+ <07084A11A8AB5A40A40B0218FE6F1CCA0F59630F@dggeml510-mbx.china.huawei.com>
+In-Reply-To: <07084A11A8AB5A40A40B0218FE6F1CCA0F59630F@dggeml510-mbx.china.huawei.com>
+Accept-Language: zh-CN, en-US
+Content-Language: zh-CN
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.40.193.81]
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-In-Reply-To: <CAJZ5v0je41iXQnr3m-RY9fD_C-qnqbLdqYMvUzp0qgBwEvVoJA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On 1/5/21 6:18 PM, Rafael J. Wysocki wrote:
-> On Mon, Jan 4, 2021 at 9:58 PM Hans de Goede <hdegoede@redhat.com> wrote:
-
-<snip>
-
->> Patch 1/2 does use a slightly different approach then I suggest above,
->> thinking more about this it would be cleaner IMHO to just pass the
->> cur_profile pointer to the callbacks as the pseudo-code patch which I
->> wrote above does. Drivers which use globals can then just ignore
->> the extra argument (and keep the platform_profile_handler struct const)
->> where as drivers which use dynamic allocation can embed the struct in
->> their driver's data-struct.
-> 
-> Agreed.
-
-Note that Jiaxun has provided a v2 of this patch-set with patch 1/2 implementing
-the new approach.
-
-Can you merge merge that patch please and then once you're happy that this
-has seen enough exposure in -next, provide me with an immutable branch with
-the 3 platform-profile patches in it ?
-
-Regards,
-
-Hans
-
+SGkgQXJkIGFuZCBhbGwsDQoNClRoZSBpc3N1ZSBpcyByb290IGNhdXNlZCwgaXQgaXMgaW50cm9k
+dWNlZCBieSBCSU9TIG5ldyBmZWF0dXJlIGltcGxlbWVudGVkLiANCldpdGggb2xkIEJJT1PvvIx3
+ZSB1c2Ugc3RhdGljIE1BRFQgdGFibGUgYW5kIHRoZSBHSUNWL0dJQ0ggaXMgc2V0IHRvIDAgYW5k
+IHJlcG9ydGVkIHRoaXMgdGFibGUgdG8gT1MuIEJ1dCB3ZSBhZGRlZCBuZXcgZmVhdHVyZXMgd2hp
+Y2ggd2lsbCBkeW5hbWljIHVwZGF0ZSBNQURUIHRhYmxlIGJhc2VkIG9uIHNvbWUgZXh0ZXJuYWwg
+aW5wdXQsIHRoZSBkZXZlbG9wZXIgaXMgc2V0IEdJQ1YvR0lDSCBhcyB3aGF0IHdlIGhhdmUgZG9u
+ZSBsaWtlIHByZXZpb3VzIGdlbmVyYXRpb24gY2hpcHNldCBjb2RlIGRpZC4gQnV0IGluIGZhY3Qs
+IHRoZXJlIGlzIGRpZmZlcmVudCBjb21wYXJlZCB3aXRoIG9sZCBnZW5lcmF0aW9uIGNoaXBzZXQg
+Y29kZS4NCkknbGwgbGV0IG15IGludGVybmFsIHRlYW0ga25vdyB0aGlzIGFuZCBmaXggdGhpcyBp
+c3N1ZSBpbiBsYXRlciBCSU9TIHJlbGVhc2UuDQoNClRoYW5rcyEgIA0KDQotLS0tLemCruS7tuWO
+n+S7ti0tLS0tDQrlj5Hku7bkuro6IHdhbmdodWlxaWFuZyANCuWPkemAgeaXtumXtDogMjAyMOW5
+tDEy5pyIMTXml6UgMTU6NDkNCuaUtuS7tuS6ujogU2hhbWVlcmFsaSBLb2xvdGh1bSBUaG9kaSA8
+c2hhbWVlcmFsaS5rb2xvdGh1bS50aG9kaUBodWF3ZWkuY29tPjsgQXJkIEJpZXNoZXV2ZWwgPGFy
+ZGJAa2VybmVsLm9yZz4NCuaKhOmAgTogTWFyYyBaeW5naWVyIDxtYXpAa2VybmVsLm9yZz47IGVy
+aWMuYXVnZXJAcmVkaGF0LmNvbTsgbGludXgta2VybmVsQHZnZXIua2VybmVsLm9yZzsgbGludXgt
+YXJtLWtlcm5lbEBsaXN0cy5pbmZyYWRlYWQub3JnOyBMaW51eGFybSA8bGludXhhcm1AaHVhd2Vp
+LmNvbT47IHh1d2VpIChPKSA8eHV3ZWk1QGh1YXdlaS5jb20+DQrkuLvpopg6IOetlOWkjTogW1BB
+VENIXSBpcnFjaGlwL2dpYy12MzogQ2hlY2sgU1JFIGJpdCBmb3IgR0lDdjIgbGVnYWN5IHN1cHBv
+cnQNCg0KU29ycnkgcmVzcG9uc2UgbGF0ZS4NCkhpIFNoYW1lZXIgJiBBcmQsDQoNCkNvdWxkIHlv
+dSBsZXQgbWUga25vdyB3aGljaCBmaXJtd2FyZSB5b3UgYXJlIHVzaW5nPyBJZiB0aGUgZGlmZmVy
+ZW5jZSBpcyBNYWR0IHRhYmxlIHZHSUMgeW91ciBwb2ludGVkICwgdGhleSBhcmUgdGhlIHNhbWUu
+IFdlIGNoYW5nZWQgdGhlIHZHSUMgbWVtb3J5IGJhc2UgYWRkcmVzcyBhdCB2ZXJ5IGVhcmx5IGRl
+c2lnbiBzdGFnZS4NCg0KVGhhbmtz77yBIA0KDQotLS0tLemCruS7tuWOn+S7ti0tLS0tDQrlj5Hk
+u7bkuro6IFNoYW1lZXJhbGkgS29sb3RodW0gVGhvZGkNCuWPkemAgeaXtumXtDogMjAyMOW5tDEy
+5pyIMuaXpSAxNjoyMw0K5pS25Lu25Lq6OiBBcmQgQmllc2hldXZlbCA8YXJkYkBrZXJuZWwub3Jn
+Pg0K5oqE6YCBOiBNYXJjIFp5bmdpZXIgPG1hekBrZXJuZWwub3JnPjsgZXJpYy5hdWdlckByZWRo
+YXQuY29tOyBsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnOyBsaW51eC1hcm0ta2VybmVsQGxp
+c3RzLmluZnJhZGVhZC5vcmc7IExpbnV4YXJtIDxsaW51eGFybUBodWF3ZWkuY29tPjsgd2FuZ2h1
+aXFpYW5nIDx3YW5naHVpcWlhbmdAaHVhd2VpLmNvbT47IHh1d2VpIChPKSA8eHV3ZWk1QGh1YXdl
+aS5jb20+DQrkuLvpopg6IFJFOiBbUEFUQ0hdIGlycWNoaXAvZ2ljLXYzOiBDaGVjayBTUkUgYml0
+IGZvciBHSUN2MiBsZWdhY3kgc3VwcG9ydA0KDQpbK10NCg0KPiAtLS0tLU9yaWdpbmFsIE1lc3Nh
+Z2UtLS0tLQ0KPiBGcm9tOiBBcmQgQmllc2hldXZlbCBbbWFpbHRvOmFyZGJAa2VybmVsLm9yZ10N
+Cj4gU2VudDogMzAgTm92ZW1iZXIgMjAyMCAxODozMg0KPiBUbzogU2hhbWVlcmFsaSBLb2xvdGh1
+bSBUaG9kaSA8c2hhbWVlcmFsaS5rb2xvdGh1bS50aG9kaUBodWF3ZWkuY29tPg0KPiBDYzogTWFy
+YyBaeW5naWVyIDxtYXpAa2VybmVsLm9yZz47IGVyaWMuYXVnZXJAcmVkaGF0LmNvbTsgDQo+IGxp
+bnV4LWtlcm5lbEB2Z2VyLmtlcm5lbC5vcmc7IGxpbnV4LWFybS1rZXJuZWxAbGlzdHMuaW5mcmFk
+ZWFkLm9yZzsNCj4gTGludXhhcm0gPGxpbnV4YXJtQGh1YXdlaS5jb20+DQo+IFN1YmplY3Q6IFJl
+OiBbUEFUQ0hdIGlycWNoaXAvZ2ljLXYzOiBDaGVjayBTUkUgYml0IGZvciBHSUN2MiBsZWdhY3kg
+DQo+IHN1cHBvcnQNCj4gDQouLi4NCg0KPiANCj4gQW55IGNsdWUgd2h5IHByb2R1Y3Rpb24gRDA2
+IGZpcm13YXJlIGRldmlhdGVzIGZyb20gdGhlIEQwNiBwb3J0IHRoYXQgDQo+IGV4aXN0cyBpbiBU
+aWFub2NvcmUncyBlZGsyLXBsYXRmb3JtcyByZXBvc2l0b3J5PyBCZWNhdXNlIHRoYXQgdmVyc2lv
+biANCj4gZG9lcyBub3QgaGF2ZSB0aGlzIGJ1ZywgYW5kIEkgd29uZGVyIHdoeSB0aGF0IGNvZGUg
+d2FzIHVwc3RyZWFtZWQgYXQgDQo+IGFsbCBpZiBhIHN1YnN0YW50aWFsbHkgZGlmZmVyZW50IHZl
+cnNpb24gZ2V0cyBzaGlwcGVkIHdpdGggcHJvZHVjdGlvbiANCj4gaGFyZHdhcmUuDQoNCk9rLiBU
+aGFua3MgZm9yIHBvaW50aW5nIHRoaXMgb3V0LiBJIGhhdmUgaW5mb3JtZWQgb3VyIFVFRkkgdGVh
+bSBhYm91dCB0aGlzLg0KVGhleSB3aWxsIGNoZWNrIEludGVybmFsbHkgYW5kIGNsYXJpZnkuDQoN
+ClJlZ2FyZHMsDQpTaGFtZWVyDQo=
