@@ -2,125 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D7A272EB797
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 02:28:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EE33E2EB79B
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 02:30:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726477AbhAFB1F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 20:27:05 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33758 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726278AbhAFB1D (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 20:27:03 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AAF5422EBD;
-        Wed,  6 Jan 2021 01:26:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1609896379;
-        bh=cJOj+l42qVsxBC/Fb21yEyqB5JhGYqpAyF0TScZRQ0w=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=FwrA87W43zc44rNT5mPvZ3qkhTmpJU/mFIoSVOoPV1k6zR8btHR3zMJLuCgWh68tp
-         5+VeJjuNPAIPK7mN6eCEpzHsA/A3cFlVx1hFncXUfn1fUrQAtvJj1dg1x31GLpD5Xz
-         U7cqBKp3qu98yjQq1U+4714/OXRPd3pjEqsTPA/c9S3LsOE2uPq3MEyTnf6EahymIs
-         /Gpk0GVkQIJJ6nmYBF4ieONoUBeuI++Drw/z36TrlTdXNUc9jxSj85w4BVVCbO2ECT
-         AEpt5Lncma53j4gecpzm6sXWlGH1pOrqriDle/dRn1l/R0kK+qJ6vqEO7eBmbo9YhP
-         hChRYLwPN5Ruw==
-From:   paulmck@kernel.org
-To:     rcu@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
-        jiangshanlai@gmail.com, akpm@linux-foundation.org,
-        mathieu.desnoyers@efficios.com, josh@joshtriplett.org,
-        tglx@linutronix.de, peterz@infradead.org, rostedt@goodmis.org,
-        dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
-        oleg@redhat.com, joel@joelfernandes.org,
-        "Paul E . McKenney" <paulmck@kernel.org>
-Subject: [PATCH tip/core/rcu 6/6] rcu/segcblist: Add debug checks for segment lengths
-Date:   Tue,  5 Jan 2021 17:26:17 -0800
-Message-Id: <20210106012617.14122-6-paulmck@kernel.org>
-X-Mailer: git-send-email 2.9.5
-In-Reply-To: <20210106012541.GA13972@paulmck-ThinkPad-P72>
-References: <20210106012541.GA13972@paulmck-ThinkPad-P72>
+        id S1726363AbhAFB3r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 20:29:47 -0500
+Received: from so254-31.mailgun.net ([198.61.254.31]:40719 "EHLO
+        so254-31.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725906AbhAFB3q (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Jan 2021 20:29:46 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1609896566; h=Content-Transfer-Encoding: MIME-Version:
+ Message-Id: Date: Subject: Cc: To: From: Sender;
+ bh=4p4DqJ5urwWJifyBoVvu5TpdqgDgH0bV0rmDfagihD0=; b=TQ/a51do0MsIUXOwfUgYnfD3OlbddBSc4asCVexMXpduobPG+yagguev/oeI3OslblRhw2Zp
+ qDrsGkJk3Y7xxF4HQ5MX8Pb41MLVDobGnYZ6njBEsbZECVtPV67Ih0pMEYXwZSfzuXgJDdWQ
+ PHYgdWGptv4NgXaIPgXTV+8lr/E=
+X-Mailgun-Sending-Ip: 198.61.254.31
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n10.prod.us-west-2.postgun.com with SMTP id
+ 5ff51258d3eb3c36b4d97031 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 06 Jan 2021 01:28:56
+ GMT
+Sender: sudaraja=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id F1C8DC433ED; Wed,  6 Jan 2021 01:28:55 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from th-lint-014.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: sudaraja)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 30F7FC433CA;
+        Wed,  6 Jan 2021 01:28:55 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 30F7FC433CA
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=sudaraja@codeaurora.org
+From:   Sudarshan Rajagopalan <sudaraja@codeaurora.org>
+To:     akpm@linux-foundation.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Cc:     Sudarshan Rajagopalan <sudaraja@codeaurora.org>
+Subject: [PATCH 0/1] arm64: make section size configurable for memory hotplug
+Date:   Tue,  5 Jan 2021 17:28:45 -0800
+Message-Id: <cover.1609895500.git.sudaraja@codeaurora.org>
+X-Mailer: git-send-email 2.25.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Joel Fernandes (Google)" <joel@joelfernandes.org>
 
-This commit adds debug checks near the end of rcu_do_batch() that emit
-warnings if an empty rcu_segcblist structure has non-zero segment counts,
-or, conversely, if a non-empty structure has all-zero segment counts.
+The section size defines the granularity of memory hotplug. This is currently
+hard coded to 1GB on arm64 linux, which defines that the least size of memblock
+that can be hotplugged out is 1GB. Some DDR configurations (especially low RAM
+and dual-rank DDRs) may have section sizes that are less than 1GB (ex. 512MB, 256MB etc.).
+Having an option to reduce the memblock size to section size or lower gives more
+granularity of memory hotplug. For example, a system with DDR section size of 512MB
+and kernel memblock size of 1GB, we would have to remove two segments of DDR sections
+in order to hotplug out atleast 1 memblock from kernel POV. 
 
-Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-[ paulmck: Fix queue/segment-length checks. ]
-Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
----
- kernel/rcu/rcu_segcblist.c | 12 ++++++++++++
- kernel/rcu/rcu_segcblist.h |  3 +++
- kernel/rcu/tree.c          |  8 ++++++--
- 3 files changed, 21 insertions(+), 2 deletions(-)
+Section sizes of DDRs vary based on specs (number of ranks, channels, regions etc.)
+Making this section size configurable helps users to assign based on the DDR being used.
+The default is set to 1GB which is the current memblock size.
 
-diff --git a/kernel/rcu/rcu_segcblist.c b/kernel/rcu/rcu_segcblist.c
-index 5059b61..094de25 100644
---- a/kernel/rcu/rcu_segcblist.c
-+++ b/kernel/rcu/rcu_segcblist.c
-@@ -94,6 +94,18 @@ static long rcu_segcblist_get_seglen(struct rcu_segcblist *rsclp, int seg)
- 	return READ_ONCE(rsclp->seglen[seg]);
- }
- 
-+/* Return number of callbacks in segmented callback list by summing seglen. */
-+long rcu_segcblist_n_segment_cbs(struct rcu_segcblist *rsclp)
-+{
-+	long len = 0;
-+	int i;
-+
-+	for (i = RCU_DONE_TAIL; i < RCU_CBLIST_NSEGS; i++)
-+		len += rcu_segcblist_get_seglen(rsclp, i);
-+
-+	return len;
-+}
-+
- /* Set the length of a segment of the rcu_segcblist structure. */
- static void rcu_segcblist_set_seglen(struct rcu_segcblist *rsclp, int seg, long v)
- {
-diff --git a/kernel/rcu/rcu_segcblist.h b/kernel/rcu/rcu_segcblist.h
-index cd35c9f..18e101d 100644
---- a/kernel/rcu/rcu_segcblist.h
-+++ b/kernel/rcu/rcu_segcblist.h
-@@ -15,6 +15,9 @@ static inline long rcu_cblist_n_cbs(struct rcu_cblist *rclp)
- 	return READ_ONCE(rclp->len);
- }
- 
-+/* Return number of callbacks in segmented callback list by summing seglen. */
-+long rcu_segcblist_n_segment_cbs(struct rcu_segcblist *rsclp);
-+
- void rcu_cblist_init(struct rcu_cblist *rclp);
- void rcu_cblist_enqueue(struct rcu_cblist *rclp, struct rcu_head *rhp);
- void rcu_cblist_flush_enqueue(struct rcu_cblist *drclp,
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index 6bf269c..8086c04 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -2434,6 +2434,7 @@ int rcutree_dead_cpu(unsigned int cpu)
- static void rcu_do_batch(struct rcu_data *rdp)
- {
- 	int div;
-+	bool __maybe_unused empty;
- 	unsigned long flags;
- 	const bool offloaded = rcu_segcblist_is_offloaded(&rdp->cblist);
- 	struct rcu_head *rhp;
-@@ -2548,9 +2549,12 @@ static void rcu_do_batch(struct rcu_data *rdp)
- 	 * The following usually indicates a double call_rcu().  To track
- 	 * this down, try building with CONFIG_DEBUG_OBJECTS_RCU_HEAD=y.
- 	 */
--	WARN_ON_ONCE(count == 0 && !rcu_segcblist_empty(&rdp->cblist));
-+	empty = rcu_segcblist_empty(&rdp->cblist);
-+	WARN_ON_ONCE(count == 0 && !empty);
- 	WARN_ON_ONCE(!IS_ENABLED(CONFIG_RCU_NOCB_CPU) &&
--		     count != 0 && rcu_segcblist_empty(&rdp->cblist));
-+		     count != 0 && empty);
-+	WARN_ON_ONCE(count == 0 && rcu_segcblist_n_segment_cbs(&rdp->cblist) != 0);
-+	WARN_ON_ONCE(!empty && rcu_segcblist_n_segment_cbs(&rdp->cblist) == 0);
- 
- 	rcu_nocb_unlock_irqrestore(rdp, flags);
- 
+Sudarshan Rajagopalan (1):
+  arm64: Make section size configurable for memory hotplug
+
+ arch/arm64/Kconfig                 | 11 +++++++++++
+ arch/arm64/include/asm/sparsemem.h |  4 ++++
+ 2 files changed, 15 insertions(+)
+
 -- 
-2.9.5
+Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
+a Linux Foundation Collaborative Project
 
