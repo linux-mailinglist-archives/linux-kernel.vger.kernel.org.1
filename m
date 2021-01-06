@@ -2,99 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1211E2EC162
+	by mail.lfdr.de (Postfix) with ESMTP id 7E3FB2EC163
 	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 17:45:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727632AbhAFQpA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Jan 2021 11:45:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49900 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727177AbhAFQo7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Jan 2021 11:44:59 -0500
-Received: from mail-vs1-xe32.google.com (mail-vs1-xe32.google.com [IPv6:2607:f8b0:4864:20::e32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78B80C06134C
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Jan 2021 08:44:19 -0800 (PST)
-Received: by mail-vs1-xe32.google.com with SMTP id x4so2084602vsp.7
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Jan 2021 08:44:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=tTDfLxUkFhfwS50KBXMNM9ZHcsAJTAU0wgDhHJKxUrw=;
-        b=kAT4LDRfAvqRTBm/OHK9G1+UWr19HsI1gTt5otkoJU/K+hCsNF1IoD7GgTBAbAeQdS
-         mEJHHroEq4QT8jXtCXGSk0sBwPFw4Owu4zC2VXQCGubIIqm/2f0V8wp5LL898Whyo4I0
-         +XPwKOGT/wT2x5VhAwFJ593EkO/BQWenH/Uq0=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=tTDfLxUkFhfwS50KBXMNM9ZHcsAJTAU0wgDhHJKxUrw=;
-        b=FM7F2CHQVqDfS6R75MKPBdbBJzYPONFwG9pyAcqmxfefzUewDUYlJAwv5kyGnkG6Eq
-         c3jqB4mbz3Ixs9wZRbovdPnHqQt4fffJUbRLfVMUnL6u07XiQJFUh6M0xVC88XZEN12L
-         GACbzDoj9SJThaTOJgz2HJV2YPnx//FuBDOzeT1bkq164fLI6WGnUCI9TSil756cnYlb
-         xlhrPCmZIHIFFU7JMSL0KCXwkvPRnmmvB/IvJZzB6yTvyjW7t410H9mOm83ucKT9nvKS
-         qb2qUuuF5i2uTei1bYYft5RcISrWNsBWsbfQCtzA+BB8VYNZSSh5SLTKp7WIi/dANfq/
-         Y3vg==
-X-Gm-Message-State: AOAM533QcY7WeDNGDAUPL4HrWQOkmNfJacY1/3z0F6dTEWrJW9igklU2
-        bvz0nryt65yTmYorLhSeykn0pFK94L7bOQ==
-X-Google-Smtp-Source: ABdhPJxCGmRYMnpsU7MuKqpnRUE8AW2ZjWjZOrSt7Mn1iSCc6Yr6tsNZZlr4LS6VD9NDjF7ZFxYfxw==
-X-Received: by 2002:a67:fc87:: with SMTP id x7mr3720123vsp.38.1609951458561;
-        Wed, 06 Jan 2021 08:44:18 -0800 (PST)
-Received: from mail-ua1-f48.google.com (mail-ua1-f48.google.com. [209.85.222.48])
-        by smtp.gmail.com with ESMTPSA id j192sm451834vkc.17.2021.01.06.08.44.16
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 06 Jan 2021 08:44:17 -0800 (PST)
-Received: by mail-ua1-f48.google.com with SMTP id f16so1258639uav.12
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Jan 2021 08:44:16 -0800 (PST)
-X-Received: by 2002:ab0:2e99:: with SMTP id f25mr4254458uaa.104.1609951456419;
- Wed, 06 Jan 2021 08:44:16 -0800 (PST)
+        id S1727672AbhAFQpN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Jan 2021 11:45:13 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53842 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727177AbhAFQpM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 Jan 2021 11:45:12 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C92D123132;
+        Wed,  6 Jan 2021 16:44:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1609951472;
+        bh=e4tUkqNaZkqQTwm0KVYjRZbhKx3YSzLR0ZJevmpAV0o=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=d6z/k89BS9nvZrJcyTm9N72JND36l1OI6Jz0FTpmRQQtAdLpUAI/ngjPmpA7U/xyI
+         2tG1pMbeqUKndDPverX9YZqdZx1wMC5fRcQqk4fpQPLnmB3DV6oH00NRz72Yl0ROCY
+         A3F11qddQdkdSVhflI9HVtCJcqZkGsWyWFyRDFbgEbsR0ESY/KW3TMoVTmiLv5Y1Ft
+         C9F9Lpof91yF67DTv6muG+lZ35SMtonaX1jPgPVkl4zqXuiPdI5bvw8lw0Dbo3Mr2M
+         lRszP24zvhtxvpSN26MotEqH3zcjhGGsgV5jysq8QovwDVLT8jLo8AiM0KlruwzkUT
+         vGu0vhvJT8HpA==
+Date:   Wed, 6 Jan 2021 08:44:30 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     dinghao.liu@zju.edu.cn
+Cc:     "Konstantin Ryabitsev" <konstantin@linuxfoundation.org>,
+        "Florian Fainelli" <f.fainelli@gmail.com>,
+        "Andrew Lunn" <andrew@lunn.ch>, kjlu@umn.edu,
+        "David S. Miller" <davem@davemloft.net>,
+        "Jesse Brandeburg" <jesse.brandeburg@intel.com>,
+        "Arnd Bergmann" <arnd@arndb.de>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] net: ethernet: Fix memleak in ethoc_probe
+Message-ID: <20210106084430.291a90cc@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <328f073a.222d7.176d7572f29.Coremail.dinghao.liu@zju.edu.cn>
+References: <20201223153304.GD3198262@lunn.ch>
+        <20201223123218.1cf7d9cb@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        <20201223210044.GA3253993@lunn.ch>
+        <20201223131149.15fff8d2@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        <680850a9-8ab0-4672-498e-6dc740720da3@gmail.com>
+        <20201223174146.37e62326@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        <20201224180631.l4zieher54ncqvwl@chatter.i7.local>
+        <fc7be127-648c-6b09-6f00-3542e0388197@gmail.com>
+        <20201228202302.afkxtco27j4ahh6d@chatter.i7.local>
+        <08e2b663-c144-d1bb-3f90-5e4ef240d14b@gmail.com>
+        <20201228211417.m5gdnqexjzgt4ix6@chatter.i7.local>
+        <20201230133618.7c242856@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        <328f073a.222d7.176d7572f29.Coremail.dinghao.liu@zju.edu.cn>
 MIME-Version: 1.0
-References: <20201211222448.2115188-1-dianders@chromium.org> <20201211142412.v8.4.If41b7d621633b94d56653c6d53f5f89c5274de7b@changeid>
-In-Reply-To: <20201211142412.v8.4.If41b7d621633b94d56653c6d53f5f89c5274de7b@changeid>
-From:   Doug Anderson <dianders@chromium.org>
-Date:   Wed, 6 Jan 2021 08:44:05 -0800
-X-Gmail-Original-Message-ID: <CAD=FV=Wn2kBP-jL9g52ZQ_nHRi-BWwuW_oxs8CUv-k=6QcBFDA@mail.gmail.com>
-Message-ID: <CAD=FV=Wn2kBP-jL9g52ZQ_nHRi-BWwuW_oxs8CUv-k=6QcBFDA@mail.gmail.com>
-Subject: Re: [PATCH v8 4/4] HID: i2c-hid: Introduce goodix-i2c-hid using
- i2c-hid core
-To:     Jiri Kosina <jkosina@suse.cz>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Cc:     Hans de Goede <hdegoede@redhat.com>,
-        "open list:HID CORE LAYER" <linux-input@vger.kernel.org>,
-        Kai-Heng Feng <kai.heng.feng@canonical.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Andrea Borgia <andrea@borgia.bo.it>,
-        Jiri Kosina <jikos@kernel.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Wed, 6 Jan 2021 18:56:23 +0800 (GMT+08:00) dinghao.liu@zju.edu.cn
+wrote:
+> > I used this one for a test:
+> > 
+> > https://patchwork.kernel.org/project/netdevbpf/patch/1609312994-121032-1-git-send-email-abaci-bugfix@linux.alibaba.com/
+> > 
+> > I'm not getting the Fixes tag when I download the mbox.  
+> 
+> It seems that automatically generating Fixes tags is a hard work.
+> Both patches and bugs could be complex. Sometimes even human cannot
+> determine which commit introduced a target bug.
+> 
+> Is this an already implemented functionality?
 
-On Fri, Dec 11, 2020 at 2:25 PM Douglas Anderson <dianders@chromium.org> wrote:
->
-> +static const struct goodix_i2c_hid_timing_data goodix_gt7375p_timing_data = {
-> +       .post_power_delay_ms = 10,
-> +       .post_gpio_reset_delay_ms = 120,
+I'm not sure I understand. Indeed finding the right commit to use in 
+a Fixes tag is not always easy, and definitely not easy to automate.
+Human validation is always required.
 
-As I've been going through my holiday email I found that Goodix has
-released a new datasheet (datasheet rev 0.6 from 2020-12-11) where
-this moves from 120 ms to 180 ms.  Sigh.
+If we could easily automate finding the commit which introduced a
+problem we wouldn't need to add the explicit tag, backporters could
+just run such script locally.. That's why it's best if the author 
+does the digging and provides the right tag.
 
-I'm hoping that we can just land it with the 120 though and then I'll
-send a follow-up patch to change to 180.  This will avoid spamming
-everyone with a v9 of the patch series.  Please yell if there are any
-objections to that plan.  I'd also be fine if you wanted to just
-change it to 180 when landing it.
-
-Thanks much!
-
--Doug
+The conversation with Konstantin and Florian was about automatically
+picking up Fixes tags from the mailing list by the patchwork software,
+when such tags are posted in reply to the original posting, just like
+review tags. But the tags are still generated by humans.
