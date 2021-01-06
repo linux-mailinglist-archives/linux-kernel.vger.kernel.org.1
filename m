@@ -2,182 +2,206 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EEE732EB8FE
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 05:37:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E17402EB900
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 05:43:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726038AbhAFEf4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 23:35:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49100 "EHLO
+        id S1726092AbhAFElQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 23:41:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49908 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725822AbhAFEfz (ORCPT
+        with ESMTP id S1725730AbhAFElQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 23:35:55 -0500
-Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16F96C06134C
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Jan 2021 20:35:15 -0800 (PST)
-Received: by mail-pg1-x534.google.com with SMTP id i5so1405474pgo.1
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Jan 2021 20:35:15 -0800 (PST)
+        Tue, 5 Jan 2021 23:41:16 -0500
+Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A61BEC06134C;
+        Tue,  5 Jan 2021 20:40:35 -0800 (PST)
+Received: by mail-pj1-x1036.google.com with SMTP id w1so2001750pjc.0;
+        Tue, 05 Jan 2021 20:40:35 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=0jZbWD+sHK2GdWV/CUfefgawgJK/eGwztAnh5wrZIDg=;
-        b=e49I3amGEEQbWoPzQpGgiyM82/JwRi3TmzYiIu71mWZMeD9cLdyDHHneOsCo4bGoyb
-         JEwGp13KKX+dOOIz4oBCZ0QzmtAsOdWIvHgKAoqw/zJ4P4/akalOoY1NOrStWAuN+b0H
-         HDIDBmc0N08ZGAezGW3I9KUaGlbulHaBtdevif1RV/2MhRiZpAb/g8AzIXlux+GI7ow9
-         VTDGNj/E+D7mpmM114VgA2sO3Z3I+cdr6Iov3m17EeXHhzjMZUuT9TPHMFUPhG2gooMd
-         6KNuba+O28y6Qu7gbyf4NefmL9NrLAz+VRiL8I5xm+NNT/C5nXVXwBAtYSCGc5KlIVPy
-         3nwg==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=DuXcLJPBV6qEiukzGu9D3PVWj2HReH+4NSpmOpTZWs8=;
+        b=O+3n6Celd8/USAo5TyXwgI3na8lAhkc2E3TDUTtuhbv78TaSB+0LkJF+pZ97cd+X8I
+         8UUMM6yYfag2CI/OYtJ7amlWgtsDNfhcInvuQSjVe5/ixqQiiXATDFb6L55W1CarCn4M
+         Wt1hYb6MZiUWQJ6TBnZdMq1qA3QE+h4PBy2CayaUKg+HRrQb+zwb2dtmgzipYbrSfB62
+         siC1hdhEctNOxV0zKaoUmjZF/l3FKTFvkIpttJRdIq5VBHDR6ZUOnE7Y9hCSrNfFUsZi
+         trFN9ZSUqHC0hoQ9qUWp+wivQ1TEqspsEn5T/U3AcTDdWKjpgicy9casfTRYvDD3TZpc
+         s4Vw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=0jZbWD+sHK2GdWV/CUfefgawgJK/eGwztAnh5wrZIDg=;
-        b=fT5cnjIfO6Z6cEcsx8LZPYAPTIsoASD8bvIin++R5GmiU1HgzgKcc4it1OBF69BAoy
-         wLJq1a+zIRzhcmlAYThznjePXtDn8IQodkli934eCbw82vfn556gFlcvPMqZoXSupNXB
-         i8M0MU6YpaHjA0SDmpwcFRkOCO/++PV8KRa0mYvAtDP4fUQc8znNNVasnzgo1XbyDMzv
-         bHgWLstoY9BQgjkLELyc6UziXThIddrYer4oKGKzObYPZi8AWdv8ohGtpO8NfpjgzIZI
-         Sy+AundSHtS8PdNYwjxyHxrdTCBRwixucniQeiWgulGba6hF4+YhcyZBEORhHcL0nvy9
-         SdrA==
-X-Gm-Message-State: AOAM531ictEif5f4wnQdq+/8f0LNufe5LUFO/TVtGgYs0UiL5XpIhfd6
-        hpITnhDUJW7qoEC3rGk3+bs=
-X-Google-Smtp-Source: ABdhPJzAzO/AR5pYurC3nPtm4+x7dCWobfUGcfWgeDQjQ+mad39HlBjM0nJkEPZ33deCU+4ljhI2MQ==
-X-Received: by 2002:a63:5d10:: with SMTP id r16mr2476110pgb.406.1609907714470;
-        Tue, 05 Jan 2021 20:35:14 -0800 (PST)
-Received: from localhost ([2409:10:2e40:5100:6e29:95ff:fe2d:8f34])
-        by smtp.gmail.com with ESMTPSA id 193sm832263pfz.36.2021.01.05.20.35.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 Jan 2021 20:35:13 -0800 (PST)
-Date:   Wed, 6 Jan 2021 13:35:11 +0900
-From:   Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
-To:     =?utf-8?Q?=E2=80=9CWilliam?= Roche <william.roche@oracle.com>
-Cc:     linux-kernel@vger.kernel.org,
-        John Ogness <john.ogness@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Petr Mladek <pmladek@suse.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>
-Subject: Re: [PATCH v1] panic: push panic() messages to the console even from
- the MCE nmi handler
-Message-ID: <X/U9/yawcAoXQ7qG@jagdpanzerIV.localdomain>
-References: <1609794955-3661-1-git-send-email-william.roche@oracle.com>
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=DuXcLJPBV6qEiukzGu9D3PVWj2HReH+4NSpmOpTZWs8=;
+        b=qJGQQ9oy9YJ1DFaQqBS7LemkKyA63f+msF3yxvfZkGkIQRjAXDIVLHMwc+h7Xa43OE
+         k6XfJN7lia6I117ggTAQS5WfvIPapUId3FNt/76RC8JDpk1IYGtoRMujF/JdfjGFT63K
+         r1pLOrgadgZNikB0AOgmHZLzzFEsJm2X34/cITWBMVwH3wPvmQOMZlDDbKG8rZMMCdoJ
+         ubZZeQJOfMdOffUsGcVoUQpDts9rTZPiuYamTljqMtrIHLp6CRp/55nL1A9bXc0RBYal
+         TM7b1FNVyeGHRpxECF45MbhIAT5iXxv66O7Hgcdv7Xq4lKBlDqGu3lIZcLXGMMnezxVy
+         ZxRw==
+X-Gm-Message-State: AOAM530Z7wM978KxPAOh1nmqSSEvk1drKvjf289FwoZOeq1QVktAbs+S
+        cafZTQMBzfRjPgX5QY22hineoytGF7gkpw==
+X-Google-Smtp-Source: ABdhPJz4p5bEF+D/m0lR22SCRMLJcabEYUEEY3iItjEx9TJM7OcDSQXzFyC12Q3NAc2WI+48XDyXOQ==
+X-Received: by 2002:a17:90b:3d3:: with SMTP id go19mr2350224pjb.201.1609908035150;
+        Tue, 05 Jan 2021 20:40:35 -0800 (PST)
+Received: from localhost.localdomain ([27.122.242.75])
+        by smtp.gmail.com with ESMTPSA id a13sm837791pfr.59.2021.01.05.20.40.31
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 05 Jan 2021 20:40:34 -0800 (PST)
+From:   Hyeongseok Kim <hyeongseok@gmail.com>
+To:     namjae.jeon@samsung.com, sj1557.seo@samsung.com
+Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Hyeongseok Kim <hyeongseok@gmail.com>
+Subject: [PATCH] exfat: improve performance of exfat_free_cluster when using dirsync mount option
+Date:   Wed,  6 Jan 2021 13:39:45 +0900
+Message-Id: <20210106043945.36546-1-hyeongseok@gmail.com>
+X-Mailer: git-send-email 2.27.0.83.g0313f36
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <1609794955-3661-1-git-send-email-william.roche@oracle.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On (21/01/04 16:15), “William Roche wrote:
-[..]
-> diff --git a/kernel/panic.c b/kernel/panic.c
-> index 332736a..eb90cc0 100644
-> --- a/kernel/panic.c
-> +++ b/kernel/panic.c
-> @@ -166,6 +166,15 @@ static void panic_print_sys_info(void)
->  		ftrace_dump(DUMP_ALL);
->  }
->  
-> +/*
-> + * Force flush messages to the console.
-> + */
-> +static void panic_flush_to_console(void)
-> +{
-> +	printk_safe_flush_on_panic();
-> +	console_flush_on_panic(CONSOLE_FLUSH_PENDING);
-> +}
+There are stressful update of cluster allocation bitmap when using
+dirsync mount option which is doing sync buffer on every cluster bit
+clearing. This could result in performance degradation when deleting
+big size file.
+Fix to update only when the bitmap buffer index is changed would make
+less disk access, improving performance especially for truncate operation.
 
-You must debug_locks_off() as the very first step here. But see below.
+Testing with Samsung 256GB sdcard, mounted with dirsync option
+(mount -t exfat /dev/block/mmcblk0p1 /temp/mount -o dirsync)
 
->  /**
->   *	panic - halt the system
->   *	@fmt: The text string to print
-> @@ -247,7 +256,7 @@ void panic(const char *fmt, ...)
->  	 * Bypass the panic_cpu check and call __crash_kexec directly.
->  	 */
->  	if (!_crash_kexec_post_notifiers) {
-> -		printk_safe_flush_on_panic();
-> +		panic_flush_to_console();
->  		__crash_kexec(NULL);
+Remove 4GB file, blktrace result.
+[Before] : 39 secs.
+Total (blktrace):
+ Reads Queued:      0,        0KiB	 Writes Queued:      32775,    16387KiB
+ Read Dispatches:   0,        0KiB	 Write Dispatches:   32775,    16387KiB
+ Reads Requeued:    0		         Writes Requeued:        0
+ Reads Completed:   0,        0KiB	 Writes Completed:   32775,    16387KiB
+ Read Merges:       0,        0KiB	 Write Merges:           0,        0KiB
+ IO unplugs:        2        	     Timer unplugs:          0
 
-It's dangerous to call console_flush_on_panic() before we stop secondary
-CPUs. console_flush_on_panic() ignores the state console_sem, so if any
-of the secondary is currently printing something on the consoles you'll
-get corrupted messages - we use `static char buffer` for messages we
-push to consoles.
+[After] : 1 sec.
+Total (blktrace):
+ Reads Queued:      0,        0KiB	 Writes Queued:         13,        6KiB
+ Read Dispatches:   0,        0KiB	 Write Dispatches:      13,        6KiB
+ Reads Requeued:    0		         Writes Requeued:        0
+ Reads Completed:   0,        0KiB	 Writes Completed:      13,        6KiB
+ Read Merges:       0,        0KiB	 Write Merges:           0,        0KiB
+ IO unplugs:        1        	     Timer unplugs:          0
 
-Another issue is that with this panic_flush_to_console() call console_sem
-can end up being locked once (by secondary CPU) and unlocked twice (by
-second and panic CPUs) [*]
-
->  		/*
-> @@ -271,9 +280,8 @@ void panic(const char *fmt, ...)
->  	 */
->  	atomic_notifier_call_chain(&panic_notifier_list, 0, buf);
->  
-> -	/* Call flush even twice. It tries harder with a single online CPU */
-> -	printk_safe_flush_on_panic();
->  	kmsg_dump(KMSG_DUMP_PANIC);
-> +	panic_flush_to_console();
-
-Why?
-
->  	/*
->  	 * If you doubt kdump always works fine in any situation,
-> @@ -298,7 +306,7 @@ void panic(const char *fmt, ...)
->  	 * buffer.  Try to acquire the lock then release it regardless of the
->  	 * result.  The release will also print the buffers out.  Locks debug
->  	 * should be disabled to avoid reporting bad unlock balance when
-> -	 * panic() is not being callled from OOPS.
-> +	 * panic() is not being called from OOPS.
->  	 */
->  	debug_locks_off();
->  	console_flush_on_panic(CONSOLE_FLUSH_PENDING);
-> @@ -314,6 +322,7 @@ void panic(const char *fmt, ...)
->  		 * We can't use the "normal" timers since we just panicked.
->  		 */
->  		pr_emerg("Rebooting in %d seconds..\n", panic_timeout);
-> +		panic_flush_to_console();
-
-[*] So this
-
->  		for (i = 0; i < panic_timeout * 1000; i += PANIC_TIMER_STEP) {
->  			touch_nmi_watchdog();
-> @@ -347,6 +356,7 @@ void panic(const char *fmt, ...)
->  	disabled_wait();
->  #endif
->  	pr_emerg("---[ end Kernel panic - not syncing: %s ]---\n", buf);
-> +	panic_flush_to_console();
-
-[*] and this are both very interesting points.
-
-Those extra console_flush_on_panic() calls indicate that normal printk()
-cannot succeed in locking the console_sem so it doesn't try to
-console_unlock(): either because we killed the secondary CPU while it
-was holding the lock, or because we locked it once and unlocked it twice.
-
-I think it would make sense to just re-init console_sem, so that normal
-printk()-s will have chance to grab the console_sem lock and then we don't
-need any extra panic_flush_to_console() calls. Maybe we can do something
-like this
-
+Signed-off-by: Hyeongseok Kim <hyeongseok@gmail.com>
 ---
+ fs/exfat/balloc.c   |  4 ++--
+ fs/exfat/exfat_fs.h |  2 +-
+ fs/exfat/fatent.c   | 42 ++++++++++++++++++++++++++++++++++++------
+ 3 files changed, 39 insertions(+), 9 deletions(-)
 
-diff --git a/kernel/printk/printk.c b/kernel/printk/printk.c
-index ffdd0dc7ec6d..4bd2e29c8cc0 100644
---- a/kernel/printk/printk.c
-+++ b/kernel/printk/printk.c
-@@ -2638,6 +2638,7 @@ void console_flush_on_panic(enum con_flush_mode mode)
- 	 * context and we don't want to get preempted while flushing,
- 	 * ensure may_schedule is cleared.
- 	 */
-+	sema_init(&console_sem, 1);
- 	console_trylock();
- 	console_may_schedule = 0;
+diff --git a/fs/exfat/balloc.c b/fs/exfat/balloc.c
+index a987919686c0..761c79c3a4ba 100644
+--- a/fs/exfat/balloc.c
++++ b/fs/exfat/balloc.c
+@@ -166,7 +166,7 @@ int exfat_set_bitmap(struct inode *inode, unsigned int clu)
+  * If the value of "clu" is 0, it means cluster 2 which is the first cluster of
+  * the cluster heap.
+  */
+-void exfat_clear_bitmap(struct inode *inode, unsigned int clu)
++void exfat_clear_bitmap(struct inode *inode, unsigned int clu, bool sync)
+ {
+ 	int i, b;
+ 	unsigned int ent_idx;
+@@ -180,7 +180,7 @@ void exfat_clear_bitmap(struct inode *inode, unsigned int clu)
+ 	b = BITMAP_OFFSET_BIT_IN_SECTOR(sb, ent_idx);
  
+ 	clear_bit_le(b, sbi->vol_amap[i]->b_data);
+-	exfat_update_bh(sbi->vol_amap[i], IS_DIRSYNC(inode));
++	exfat_update_bh(sbi->vol_amap[i], sync);
+ 
+ 	if (opts->discard) {
+ 		int ret_discard;
+diff --git a/fs/exfat/exfat_fs.h b/fs/exfat/exfat_fs.h
+index b8f0e829ecbd..764bc645241e 100644
+--- a/fs/exfat/exfat_fs.h
++++ b/fs/exfat/exfat_fs.h
+@@ -408,7 +408,7 @@ int exfat_count_num_clusters(struct super_block *sb,
+ int exfat_load_bitmap(struct super_block *sb);
+ void exfat_free_bitmap(struct exfat_sb_info *sbi);
+ int exfat_set_bitmap(struct inode *inode, unsigned int clu);
+-void exfat_clear_bitmap(struct inode *inode, unsigned int clu);
++void exfat_clear_bitmap(struct inode *inode, unsigned int clu, bool sync);
+ unsigned int exfat_find_free_bitmap(struct super_block *sb, unsigned int clu);
+ int exfat_count_used_clusters(struct super_block *sb, unsigned int *ret_count);
+ 
+diff --git a/fs/exfat/fatent.c b/fs/exfat/fatent.c
+index c3c9afee7418..b0118ad53845 100644
+--- a/fs/exfat/fatent.c
++++ b/fs/exfat/fatent.c
+@@ -157,6 +157,7 @@ int exfat_free_cluster(struct inode *inode, struct exfat_chain *p_chain)
+ 	unsigned int clu;
+ 	struct super_block *sb = inode->i_sb;
+ 	struct exfat_sb_info *sbi = EXFAT_SB(sb);
++	int cur_cmap_i, next_cmap_i;
+ 
+ 	/* invalid cluster number */
+ 	if (p_chain->dir == EXFAT_FREE_CLUSTER ||
+@@ -176,21 +177,50 @@ int exfat_free_cluster(struct inode *inode, struct exfat_chain *p_chain)
+ 
+ 	clu = p_chain->dir;
+ 
++	cur_cmap_i = BITMAP_OFFSET_SECTOR_INDEX(sb, CLUSTER_TO_BITMAP_ENT(clu));
++
+ 	if (p_chain->flags == ALLOC_NO_FAT_CHAIN) {
++		unsigned int last_cluster = p_chain->dir + p_chain->size - 1;
+ 		do {
+-			exfat_clear_bitmap(inode, clu);
+-			clu++;
++			bool sync = false;
++
++			if (clu < last_cluster)
++				next_cmap_i =
++				  BITMAP_OFFSET_SECTOR_INDEX(sb, CLUSTER_TO_BITMAP_ENT(clu+1));
+ 
++			/* flush bitmap only if index would be changed or for last cluster */
++			if (clu == last_cluster || cur_cmap_i != next_cmap_i) {
++				sync = true;
++				cur_cmap_i = next_cmap_i;
++			}
++
++			exfat_clear_bitmap(inode, clu, (sync && IS_DIRSYNC(inode)));
++			clu++;
+ 			num_clusters++;
+ 		} while (num_clusters < p_chain->size);
+ 	} else {
+ 		do {
+-			exfat_clear_bitmap(inode, clu);
+-
+-			if (exfat_get_next_cluster(sb, &clu))
+-				goto dec_used_clus;
++			bool sync = false;
++			unsigned int n_clu = clu;
++			int err = exfat_get_next_cluster(sb, &n_clu);
++
++			if (err || n_clu == EXFAT_EOF_CLUSTER)
++				sync = true;
++			else
++				next_cmap_i =
++				  BITMAP_OFFSET_SECTOR_INDEX(sb, CLUSTER_TO_BITMAP_ENT(n_clu));
++
++			if (cur_cmap_i != next_cmap_i) {
++				sync = true;
++				cur_cmap_i = next_cmap_i;
++			}
+ 
++			exfat_clear_bitmap(inode, clu, (sync && IS_DIRSYNC(inode)));
++			clu = n_clu;
+ 			num_clusters++;
++
++			if (err)
++				goto dec_used_clus;
+ 		} while (clu != EXFAT_EOF_CLUSTER);
+ 	}
+ 
+-- 
+2.27.0.83.g0313f36
+
