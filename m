@@ -2,68 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C77E2EC25A
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 18:35:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A52A42EC263
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 18:36:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728185AbhAFRee (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Jan 2021 12:34:34 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52510 "EHLO mail.kernel.org"
+        id S1727552AbhAFRga (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Jan 2021 12:36:30 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53068 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727760AbhAFRed (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Jan 2021 12:34:33 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 914F02312F;
-        Wed,  6 Jan 2021 17:33:52 +0000 (UTC)
+        id S1726535AbhAFRga (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 Jan 2021 12:36:30 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 27EE620657;
+        Wed,  6 Jan 2021 17:35:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1609954432;
-        bh=uCyrTySTOecUcjr22U1nEfXeLczGcpalxZJbqBxUHRg=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=NnawW+P9fXBrLscxZuBGVG5ZJ95Y7wnd5cjZbvuYWcLwF9vVm1mfczFssOuyqF7fD
-         mkMLtimVtVNPcrnhg9bkaWCnuGnuf0Xt9pR4UglzQx2ZLbxHxrkP9TaPG2ZRmkYMiO
-         iogmV7053lK5ApYzWM+ygc4tRymdnFg/hhDAGpuBFLIwTi2cXpGy4Ttv1VQSSgwRXd
-         /jhKnjJ4O87h3NOCRCHPl6RInK41Y7Wrym3s+QQmAnhoWaRFEVnn1dqgN6/rq31B+N
-         l/VoSn1uhoHnN/MvrClgW53f3pZbbK8OrppU+mNm1ZQeybJteVjoUDTR+mXaeD0Ant
-         17iS+Nxo00KmQ==
-From:   paulmck@kernel.org
-To:     linux-kernel@vger.kernel.org, kasan-dev@googlegroups.com,
+        s=k20201202; t=1609954549;
+        bh=k/pidVaDKztHR41se4lBhvy8bU+Plsc0TOzwpF2mduk=;
+        h=Date:From:To:Cc:Subject:Reply-To:From;
+        b=hnsJIqRKhC24C/Stvdg5YKGmas3ubUsxEHrnaljMTkRZZZfYugDUrOd8B04PHjptH
+         74s04YV9YWhg6RsV7VHoIbEgIKGqbO0Ft7uPuGoXUFg16s9bZ9T4mTbY02mv5+ukT9
+         B8rZDLHondps6aXX+pohT/nmRJFF115otfGe3PQZbs2AMYczh48nflSHYbJeYFgpuq
+         k2gq2X2g/U42mEKpwQFsFgRSSTp9xAPstrqxFauKu4vi+2ZJprMP08obC9hMFNIB3C
+         xZMJqdzdNgAPPOu7ErBpkHL7YCLEwS+cbwhUkRkV0EwV9VRfiKM5IY685xRviQLMxz
+         apXhNnxsJ2C8w==
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id E421735225EC; Wed,  6 Jan 2021 09:35:48 -0800 (PST)
+Date:   Wed, 6 Jan 2021 09:35:48 -0800
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
         kernel-team@fb.com, mingo@kernel.org
-Cc:     elver@google.com, andreyknvl@google.com, glider@google.com,
-        dvyukov@google.com, cai@lca.pw, boqun.feng@gmail.com,
-        "Paul E . McKenney" <paulmck@kernel.org>
-Subject: [PATCH tip/core/rcu 2/2] random32: Re-enable KCSAN instrumentation
-Date:   Wed,  6 Jan 2021 09:33:51 -0800
-Message-Id: <20210106173351.23377-2-paulmck@kernel.org>
-X-Mailer: git-send-email 2.9.5
-In-Reply-To: <20210106173323.GA23292@paulmck-ThinkPad-P72>
-References: <20210106173323.GA23292@paulmck-ThinkPad-P72>
+Cc:     stern@rowland.harvard.edu, parri.andrea@gmail.com, will@kernel.org,
+        peterz@infradead.org, boqun.feng@gmail.com, npiggin@gmail.com,
+        dhowells@redhat.com, j.alglave@ucl.ac.uk, luc.maranget@inria.fr,
+        akiyks@gmail.com
+Subject: [PATCH memory-model 0/3] LKMM updates for v5.12
+Message-ID: <20210106173548.GA23664@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Marco Elver <elver@google.com>
+Hello!
 
-Re-enable KCSAN instrumentation, now that KCSAN no longer relies on code
-in lib/random32.c.
+This series provides a few LKMM updates:
 
-Signed-off-by: Marco Elver <elver@google.com>
-Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
----
- lib/Makefile | 3 ---
- 1 file changed, 3 deletions(-)
+1.	tools/memory-model: Tie acquire loads to reads-from.
 
-diff --git a/lib/Makefile b/lib/Makefile
-index afeff05..dc09208 100644
---- a/lib/Makefile
-+++ b/lib/Makefile
-@@ -27,9 +27,6 @@ KASAN_SANITIZE_string.o := n
- CFLAGS_string.o += -fno-stack-protector
- endif
- 
--# Used by KCSAN while enabled, avoid recursion.
--KCSAN_SANITIZE_random32.o := n
--
- lib-y := ctype.o string.o vsprintf.o cmdline.o \
- 	 rbtree.o radix-tree.o timerqueue.o xarray.o \
- 	 idr.o extable.o sha1.o irq_regs.o argv_split.o \
--- 
-2.9.5
+2.	tools/memory-model: Remove redundant initialization in litmus
+	tests, courtesy of Akira Yokosawa.
 
+3.	tools/memory-model: Fix typo in klitmus7 compatibility table,
+	courtesy of Akira Yokosawa.
+
+						Thanx, Paul
+
+------------------------------------------------------------------------
+
+ Documentation/glossary.txt                                              |   12 +++++++---
+ README                                                                  |    2 -
+ litmus-tests/CoRR+poonceonce+Once.litmus                                |    4 ---
+ litmus-tests/CoRW+poonceonce+Once.litmus                                |    4 ---
+ litmus-tests/CoWR+poonceonce+Once.litmus                                |    4 ---
+ litmus-tests/CoWW+poonceonce.litmus                                     |    4 ---
+ litmus-tests/IRIW+fencembonceonces+OnceOnce.litmus                      |    5 ----
+ litmus-tests/IRIW+poonceonces+OnceOnce.litmus                           |    5 ----
+ litmus-tests/ISA2+pooncelock+pooncelock+pombonce.litmus                 |    7 -----
+ litmus-tests/ISA2+poonceonces.litmus                                    |    6 -----
+ litmus-tests/ISA2+pooncerelease+poacquirerelease+poacquireonce.litmus   |    6 -----
+ litmus-tests/LB+fencembonceonce+ctrlonceonce.litmus                     |    5 ----
+ litmus-tests/LB+poacquireonce+pooncerelease.litmus                      |    5 ----
+ litmus-tests/LB+poonceonces.litmus                                      |    5 ----
+ litmus-tests/MP+fencewmbonceonce+fencermbonceonce.litmus                |    5 ----
+ litmus-tests/MP+onceassign+derefonce.litmus                             |    4 ---
+ litmus-tests/MP+polockmbonce+poacquiresilsil.litmus                     |    5 ----
+ litmus-tests/MP+polockonce+poacquiresilsil.litmus                       |    5 ----
+ litmus-tests/MP+polocks.litmus                                          |    6 -----
+ litmus-tests/MP+poonceonces.litmus                                      |    5 ----
+ litmus-tests/MP+pooncerelease+poacquireonce.litmus                      |    5 ----
+ litmus-tests/MP+porevlocks.litmus                                       |    6 -----
+ litmus-tests/R+fencembonceonces.litmus                                  |    5 ----
+ litmus-tests/R+poonceonces.litmus                                       |    5 ----
+ litmus-tests/S+fencewmbonceonce+poacquireonce.litmus                    |    5 ----
+ litmus-tests/S+poonceonces.litmus                                       |    5 ----
+ litmus-tests/SB+fencembonceonces.litmus                                 |    5 ----
+ litmus-tests/SB+poonceonces.litmus                                      |    5 ----
+ litmus-tests/SB+rfionceonce-poonceonces.litmus                          |    5 ----
+ litmus-tests/WRC+poonceonces+Once.litmus                                |    5 ----
+ litmus-tests/WRC+pooncerelease+fencermbonceonce+Once.litmus             |    5 ----
+ litmus-tests/Z6.0+pooncelock+poonceLock+pombonce.litmus                 |    7 -----
+ litmus-tests/Z6.0+pooncelock+pooncelock+pombonce.litmus                 |    7 -----
+ litmus-tests/Z6.0+pooncerelease+poacquirerelease+fencembonceonce.litmus |    6 -----
+ 34 files changed, 42 insertions(+), 138 deletions(-)
