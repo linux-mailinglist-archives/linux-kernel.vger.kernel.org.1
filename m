@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 40F702EB916
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 05:52:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EEBE2EB91A
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 05:52:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727182AbhAFEuh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 23:50:37 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33366 "EHLO mail.kernel.org"
+        id S1727243AbhAFEvD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 23:51:03 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34386 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727102AbhAFEuc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 23:50:32 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D5082230FC;
-        Wed,  6 Jan 2021 04:48:58 +0000 (UTC)
+        id S1726929AbhAFEu6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Jan 2021 23:50:58 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3A15822EBD;
+        Wed,  6 Jan 2021 04:48:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1609908539;
-        bh=DIO0eY77jlMD4O2dMKMXcweDuDIG/CCwsKDWfgWKbkQ=;
+        bh=5SeAK+bq0bQ/1fswjZJ7SP6VISQRi8xTmdWNusdE4MA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=mRftl8KVPmN72nvp8w4f2Wqc9fNnVybCxuLCBxApslUGrgFEkRLiLCS9ONBlLn+3a
-         Rn/bPg/UUcijbKjNo3yUEGlqFoHP9Da6Iyoq6Q+fehsno8bgWPIZ+eScTuO0bk32Vy
-         l8HkmxwNJ4c+o6kJl1dOkwp5z/bPvC465t7771oFPVuB1D5RO++udge+Xy5pww9NMN
-         7DM6K+LZ8+AtVtBrMenQRD2TAuUPaqYN8tOWQDekYqpToHc5VCM0ZrCVpWRSnfEUxU
-         jLEAwJ81aigPHEhvo/xEYz5GqUPgEXVu6467FvIv7QooJBGd+wi2RRXrnLpAaEAD/W
-         yUU5WbKT8SLSA==
+        b=nHoF+r0szJOAFdzUMLKdChPv19XGUawu3K4Y91ff1VBZM+FUYIxjq+nEGyMQ4ACxj
+         +22eqL6FHh1K0MP0A6BkemFJYQfGI0fFDjtf4Wp3KoUj9A3bWK6xKaRPXRKXxgfWQN
+         YWnFqGWbKspXy3jmjVTenhlJNK8GH+aW1r8V/xHSwAAg4fkRphqaueRZOCDwmm++VQ
+         fz1+7rtgz6hbb3wDdAoaRQH//ROe3dFPSggwJF6tgsr+GuaF7vLs3PDbN80S1x/k3A
+         4MUkbE8LFNB28t2G6C3iG1OGkDay0qC6f17BTbpgLJMQRP8C4q4RIeWbZ++xyzNLT6
+         Lf0IqTVaKspHQ==
 From:   paulmck@kernel.org
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -31,10 +31,11 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         tglx@linutronix.de, peterz@infradead.org, rostedt@goodmis.org,
         dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
         oleg@redhat.com, joel@joelfernandes.org,
-        "Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH tip/core/rcu 19/21] rcu/nocb: Add nocb CB kthread list to show_rcu_nocb_state() output
-Date:   Tue,  5 Jan 2021 20:48:51 -0800
-Message-Id: <20210106044853.20812-19-paulmck@kernel.org>
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>
+Subject: [PATCH tip/core/rcu 20/21] rcu/nocb: Code-style nits in callback-offloading toggling
+Date:   Tue,  5 Jan 2021 20:48:52 -0800
+Message-Id: <20210106044853.20812-20-paulmck@kernel.org>
 X-Mailer: git-send-email 2.9.5
 In-Reply-To: <20210106013950.GA14663@paulmck-ThinkPad-P72>
 References: <20210106013950.GA14663@paulmck-ThinkPad-P72>
@@ -44,26 +45,85 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: "Paul E. McKenney" <paulmck@kernel.org>
 
-This commit improves debuggability by indicating laying out the order
-in which rcuoc kthreads appear in the ->nocb_next_cb_rdp list.
+This commit addresses a few code-style nits in callback-offloading
+toggling, including one that predates this toggling.
 
+Cc: Frederic Weisbecker <frederic@kernel.org>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/rcu/tree_plugin.h | 1 +
- 1 file changed, 1 insertion(+)
+ kernel/rcu/rcu_segcblist.h | 19 ++++++-------------
+ kernel/rcu/tree_plugin.h   | 10 +++++-----
+ 2 files changed, 11 insertions(+), 18 deletions(-)
 
+diff --git a/kernel/rcu/rcu_segcblist.h b/kernel/rcu/rcu_segcblist.h
+index 3110602..9a19328 100644
+--- a/kernel/rcu/rcu_segcblist.h
++++ b/kernel/rcu/rcu_segcblist.h
+@@ -80,17 +80,12 @@ static inline bool rcu_segcblist_is_enabled(struct rcu_segcblist *rsclp)
+ 	return rcu_segcblist_test_flags(rsclp, SEGCBLIST_ENABLED);
+ }
+ 
+-/* Is the specified rcu_segcblist offloaded?  */
++/* Is the specified rcu_segcblist offloaded, or is SEGCBLIST_SOFTIRQ_ONLY set? */
+ static inline bool rcu_segcblist_is_offloaded(struct rcu_segcblist *rsclp)
+ {
+-	if (IS_ENABLED(CONFIG_RCU_NOCB_CPU)) {
+-		/*
+-		 * Complete de-offloading happens only when SEGCBLIST_SOFTIRQ_ONLY
+-		 * is set.
+-		 */
+-		if (!rcu_segcblist_test_flags(rsclp, SEGCBLIST_SOFTIRQ_ONLY))
+-			return true;
+-	}
++	if (IS_ENABLED(CONFIG_RCU_NOCB_CPU) &&
++	    !rcu_segcblist_test_flags(rsclp, SEGCBLIST_SOFTIRQ_ONLY))
++		return true;
+ 
+ 	return false;
+ }
+@@ -99,10 +94,8 @@ static inline bool rcu_segcblist_completely_offloaded(struct rcu_segcblist *rscl
+ {
+ 	int flags = SEGCBLIST_KTHREAD_CB | SEGCBLIST_KTHREAD_GP | SEGCBLIST_OFFLOADED;
+ 
+-	if (IS_ENABLED(CONFIG_RCU_NOCB_CPU)) {
+-		if ((rsclp->flags & flags) == flags)
+-			return true;
+-	}
++	if (IS_ENABLED(CONFIG_RCU_NOCB_CPU) && (rsclp->flags & flags) == flags)
++		return true;
+ 
+ 	return false;
+ }
 diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
-index 5ee1113..bc63a6b 100644
+index bc63a6b..0ad278d 100644
 --- a/kernel/rcu/tree_plugin.h
 +++ b/kernel/rcu/tree_plugin.h
-@@ -2730,6 +2730,7 @@ static void show_rcu_nocb_state(struct rcu_data *rdp)
- 	sprintf(bufr, "%ld", rsclp->gp_seq[RCU_NEXT_READY_TAIL]);
- 	pr_info("   CB %d^%d->%d %c%c%c%c%c%c F%ld L%ld C%d %c%c%s%c%s%c%c q%ld %c CPU %d%s\n",
- 		rdp->cpu, rdp->nocb_gp_rdp->cpu,
-+		rdp->nocb_next_cb_rdp ? rdp->nocb_next_cb_rdp->cpu : -1,
- 		"kK"[!!rdp->nocb_cb_kthread],
- 		"bB"[raw_spin_is_locked(&rdp->nocb_bypass_lock)],
- 		"cC"[!!atomic_read(&rdp->nocb_lock_contended)],
+@@ -2160,11 +2160,11 @@ static inline bool nocb_cb_wait_cond(struct rcu_data *rdp)
+ static void nocb_cb_wait(struct rcu_data *rdp)
+ {
+ 	struct rcu_segcblist *cblist = &rdp->cblist;
+-	struct rcu_node *rnp = rdp->mynode;
+-	bool needwake_state = false;
+-	bool needwake_gp = false;
+ 	unsigned long cur_gp_seq;
+ 	unsigned long flags;
++	bool needwake_state = false;
++	bool needwake_gp = false;
++	struct rcu_node *rnp = rdp->mynode;
+ 
+ 	local_irq_save(flags);
+ 	rcu_momentary_dyntick_idle();
+@@ -2217,8 +2217,8 @@ static void nocb_cb_wait(struct rcu_data *rdp)
+ 		swait_event_interruptible_exclusive(rdp->nocb_cb_wq,
+ 						    nocb_cb_wait_cond(rdp));
+ 
+-		/* ^^^ Ensure CB invocation follows _sleep test. */
+-		if (smp_load_acquire(&rdp->nocb_cb_sleep)) {
++		// VVV Ensure CB invocation follows _sleep test.
++		if (smp_load_acquire(&rdp->nocb_cb_sleep)) { // ^^^
+ 			WARN_ON(signal_pending(current));
+ 			trace_rcu_nocb_wake(rcu_state.name, rdp->cpu, TPS("WokeEmpty"));
+ 		}
 -- 
 2.9.5
 
