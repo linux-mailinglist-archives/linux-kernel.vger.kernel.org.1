@@ -2,212 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD1B12EBDDD
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 13:52:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ACA942EBDE7
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 13:54:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726133AbhAFMui (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Jan 2021 07:50:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41482 "EHLO
+        id S1726421AbhAFMyV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Jan 2021 07:54:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42066 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725788AbhAFMuh (ORCPT
+        with ESMTP id S1725836AbhAFMyU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Jan 2021 07:50:37 -0500
-Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89D9EC06134C
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Jan 2021 04:49:56 -0800 (PST)
-Received: by mail-wm1-x330.google.com with SMTP id q75so2544717wme.2
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Jan 2021 04:49:56 -0800 (PST)
+        Wed, 6 Jan 2021 07:54:20 -0500
+Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7128FC06134C
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Jan 2021 04:53:40 -0800 (PST)
+Received: by mail-pj1-x1030.google.com with SMTP id b5so1547359pjl.0
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Jan 2021 04:53:40 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=/TFNqMpjunBcCKiBrnJeP1y//MIqYHWIDR79kkwgfkE=;
-        b=sfyGdo3EWT8gzyt2KwZFAV2LDV/McqqryurFOfjaIbHKRCP4fQb27tRRH8M23FaAhE
-         945R71c4322OL7XhYfrbBQEZ05JUrtgPLRjK9bhbeH+MK1jFGCpMkMlqBiuVNO9r6iZo
-         Zri8qk+Z/hYPnRDL6f8me30sUXLW962btc9aBcbe2ao6+x11LVZsXRAkqmqR540gGF9N
-         RHw8emMoe+c1RLAiRGOgF/TyNaFiMeXTTAiF/2yt5vWy1NIrFd3rsdkuqSYAWaf0zs1/
-         mFWC0Ut+kYnKqdD4VdQbsX+UAAh7wwSzHOYJC8az9BMCrdTfdj/5QJOAN2bZKV9Y5z5c
-         ZsVg==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=3PyWDubPE7bDQlqfk8UIpEmsm+9VUy6BtD0d93J0jbw=;
+        b=BvqeiOejm5t74mEbD1T9szJiGG8swq3q9dD28NmWlaz2gG0PmLihFTn+0cv5+ilm3f
+         pGjos2fnfT/p32UFiwVey47V7pW2o8XRvBUWZdYZXzK+ft407LvHJxAzRPn/qSMY1w2N
+         degyLQKFZ6y59ZjkLHg06mBBeiEeyzFxMCeKuul2Vvq0Zd4LTN7kM7y1DXsRqocusLMC
+         3H6pfgtd3+tMTKhMSXfunZgbMKgdwG6zqIaL9MdfvUJjAsj9z20wyCcgX1vRtNJZ1JB/
+         pze5M0l3qqNnIMcWYzUmJIniSJApPZjMaD83YApFDkyFvaFF1EaY9gXSqMOyrGGGRkjy
+         Azcg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=/TFNqMpjunBcCKiBrnJeP1y//MIqYHWIDR79kkwgfkE=;
-        b=QtiYIqPqCFrohimLs1MIWPIgeTwpY6qNq+BGUN+brAAhKm9uQP30ePMtYIbwMn+fb+
-         NKRWxXcWy1qHzRyqlexJLreYz57UhstnalxAw/PH8Lnbv0Muqk0PXJIWtUK4SFfZMB+b
-         vHkvNfsgXl2Z7oJAgdI6Aiba7K+GysLt/E+0xmRb3F35SXJHWR5WzSLuQ544jwoWsF1K
-         N/M4i7CldkLjUpr+Sby4bZzb2NrjPM/AbV59LSER/ZBzKviY+r/3FhJB+Kj2BWjjgIwV
-         5lSAKa85h58xPJpyyCrcmFe6RPiOlufIuwLdKtoKsbOWUZ0i9K7dbxS6LnItxkhokeU3
-         9RmA==
-X-Gm-Message-State: AOAM533R5YBtHYaNJOPpw0jdKauVWAxKuTgD49rksvsO1OMQ0Yj3wwh+
-        Tc6B8YTxisBGG9P5XiyDU3n60A==
-X-Google-Smtp-Source: ABdhPJyALikTC19hcprzApRUBK4PYCJ8dtTZah4EqhL5+ULtjNc3izsNuUYa1xkbqfRLADF5kGFFdQ==
-X-Received: by 2002:a1c:7716:: with SMTP id t22mr3526846wmi.126.1609937395097;
-        Wed, 06 Jan 2021 04:49:55 -0800 (PST)
-Received: from MacBook-Pro.local ([212.45.67.2])
-        by smtp.googlemail.com with ESMTPSA id z6sm2990551wrw.58.2021.01.06.04.49.53
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 06 Jan 2021 04:49:54 -0800 (PST)
-Subject: Re: [PATCH V6 08/13] interconnect: mediatek: Add interconnect
- provider driver
-To:     =?UTF-8?B?SGVucnlDIENoZW4gKOmZs+W7uuixqik=?= 
-        <HenryC.Chen@mediatek.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Ryan Case <ryandcase@chromium.org>,
-        Mark Brown <broonie@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Nicolas Boichat <drinkcat@google.com>,
-        =?UTF-8?B?RmFuIENoZW4gKOmZs+WHoSk=?= <fan.chen@mediatek.com>,
-        =?UTF-8?B?SmFtZXNKSiBMaWFvICjlu5blu7rmmbop?= 
-        <jamesjj.liao@mediatek.com>,
-        =?UTF-8?B?QXJ2aW4gV2FuZyAo546L5b+X6YqYKQ==?= 
-        <Arvin.Wang@mediatek.com>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-mediatek@lists.infradead.org" 
-        <linux-mediatek@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>
-References: <1608790134-27425-1-git-send-email-henryc.chen@mediatek.com>
- <1608790134-27425-9-git-send-email-henryc.chen@mediatek.com>
- <c8b951b0-6412-d905-99e1-6350283b57c1@linaro.org>
- <1609918232.23066.5.camel@mtksdaap41>
- <a416a55c-0a7e-6505-ef53-b03f5dbc6cdc@linaro.org>
- <c9b360dcb17e452595f45adb51dd4c31@mtkmbs02n1.mediatek.inc>
-From:   Georgi Djakov <georgi.djakov@linaro.org>
-Message-ID: <88d123cf-c69e-dc7f-ddf1-f9ade47d33fc@linaro.org>
-Date:   Wed, 6 Jan 2021 14:49:51 +0200
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=3PyWDubPE7bDQlqfk8UIpEmsm+9VUy6BtD0d93J0jbw=;
+        b=jm/lZlW2g28l91re4+nUWl23kipIEUS5oRmX0/nG0Y0t9Xk4TkE5dNgf49kZf/ot2v
+         JjBMzGTCjDTLsus78cS6y6cuhq7baI3Jy2AArThr38YHURg7as2FmnMhXb7yeQf8yF5K
+         QXpKPUHVPMX/n+CykYF1OLHCQ2bwcZ1EcNZXPg2MIkcaBrIB7Zak19zM/5oRfmb3bkPR
+         90W008eQLIFYuY7Kxpk7lAv2MYxjDdNMSVMGHXPjL+bOp7YLjFso8qNmoJH7inXNbLMN
+         OY0hiV3jvop11NgEyvv7bEtoSO395Eg+WnFduBRfALQVRaX3Zh6dwTsi7a6zf0/grzI+
+         NDTQ==
+X-Gm-Message-State: AOAM531F4p48PiMRgHcA8kAaaEzomMGPPLyib3f8dnVk1AzQGKt+Dg6N
+        TcGzs2dAUsIZGC/9M0G1Nkii
+X-Google-Smtp-Source: ABdhPJymo2jDyvADA7s7nqxyY5xoaHg7KOPIVHqvqVbSkCnFWOXBCRPM2Yi6MqJZ/9eHq/107S2UJg==
+X-Received: by 2002:a17:90a:d18c:: with SMTP id fu12mr4246121pjb.50.1609937619732;
+        Wed, 06 Jan 2021 04:53:39 -0800 (PST)
+Received: from localhost.localdomain ([2409:4072:6102:e7a2:51f0:bf72:bf80:ec88])
+        by smtp.gmail.com with ESMTPSA id n128sm2918182pga.55.2021.01.06.04.53.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 06 Jan 2021 04:53:38 -0800 (PST)
+From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To:     agross@kernel.org, bjorn.andersson@linaro.org
+Cc:     linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Subject: [PATCH v3 00/18] Devicetree update for SDX55 platform
+Date:   Wed,  6 Jan 2021 18:23:04 +0530
+Message-Id: <20210106125322.61840-1-manivannan.sadhasivam@linaro.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <c9b360dcb17e452595f45adb51dd4c31@mtkmbs02n1.mediatek.inc>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 6.01.21 12:44, HenryC Chen (陳建豪) wrote:
->> -----Original Message-----
->> From: Georgi Djakov [mailto:georgi.djakov@linaro.org]
->> Sent: Wednesday, January 06, 2021 4:14 PM
->> To: HenryC Chen (陳建豪)
->> Cc: Rob Herring; Matthias Brugger; Stephen Boyd; Ryan Case; Mark Brown; Mark
->> Rutland; Nicolas Boichat; Fan Chen (陳凡); JamesJJ Liao (廖建智); Arvin Wang
->> (王志銘); devicetree@vger.kernel.org; linux-arm-kernel@lists.infradead.org;
->> linux-mediatek@lists.infradead.org; linux-kernel@vger.kernel.org; linux-
->> pm@vger.kernel.org
->> Subject: Re: [PATCH V6 08/13] interconnect: mediatek: Add interconnect
->> provider driver
->> 
->> On 1/6/21 09:30, Henry Chen wrote:
->> > On Mon, 2021-01-04 at 20:36 +0200, Georgi Djakov wrote:
->> >> On 12/24/20 08:08, Henry Chen wrote:
->> >>> Introduce Mediatek MT6873/MT8183/MT8192 specific provider driver
->> >>> using the interconnect framework.
->> >>>
->> >>>                ICC provider         ICC Nodes
->> >>>                                 ----          ----
->> >>>                ---------       |CPU |   |--- |VPU |
->> >>>       -----   |         |-----  ----    |     ----
->> >>>      |DRAM |--|DRAM     |       ----    |     ----
->> >>>      |     |--|scheduler|----- |GPU |   |--- |DISP|
->> >>>      |     |--|(EMI)    |       ----    |     ----
->> >>>      |     |--|         |       -----   |     ----
->> >>>       -----   |         |----- |MMSYS|--|--- |VDEC|
->> >>>                ---------        -----   |     ----
->> >>>                  /|\                    |     ----
->> >>>                   |change DRAM freq     |--- |VENC|
->> >>>                ----------               |     ----
->> >>>               |  DVFSR   |              |
->> >>>               |          |              |     ----
->> >>>                ----------               |--- |IMG |
->> >>>                                         |     ----
->> >>>                                         |     ----
->> >>>                                         |--- |CAM |
->> >>>                                               ----
->> >>>
->> >>> Signed-off-by: Henry Chen <henryc.chen@mediatek.com>
->> >>> ---
->> >>>    drivers/interconnect/Kconfig            |   1 +
->> >>>    drivers/interconnect/Makefile           |   1 +
->> >>>    drivers/interconnect/mediatek/Kconfig   |  13 ++
->> >>>    drivers/interconnect/mediatek/Makefile  |   3 +
->> >>>    drivers/interconnect/mediatek/mtk-emi.c | 330
->> ++++++++++++++++++++++++++++++++
->> >>>    5 files changed, 348 insertions(+)
->> >>>    create mode 100644 drivers/interconnect/mediatek/Kconfig
->> >>>    create mode 100644 drivers/interconnect/mediatek/Makefile
->> >>>    create mode 100644 drivers/interconnect/mediatek/mtk-emi.c
->> >>>
->> >>> diff --git a/drivers/interconnect/Kconfig
->> >>> b/drivers/interconnect/Kconfig index 5b7204e..e939f5a 100644
->> >>> --- a/drivers/interconnect/Kconfig
->> >>> +++ b/drivers/interconnect/Kconfig
->> >>> @@ -13,5 +13,6 @@ if INTERCONNECT
->> >>>
->> >>>    source "drivers/interconnect/imx/Kconfig"
->> >>>    source "drivers/interconnect/qcom/Kconfig"
->> >>> +source "drivers/interconnect/mediatek/Kconfig"
->> >>
->> >> Sort alphabetically please.
->> > Ok
->> >>
->> >>>
->> >>>    endif
->> >>> diff --git a/drivers/interconnect/Makefile
->> >>> b/drivers/interconnect/Makefile index d203520..0643a24 100644
->> >>> --- a/drivers/interconnect/Makefile
->> >>> +++ b/drivers/interconnect/Makefile
->> >>> @@ -6,3 +6,4 @@ icc-core-objs:= core.o bulk.o
->> >>>    obj-$(CONFIG_INTERCONNECT)+= icc-core.o
->> >>>    obj-$(CONFIG_INTERCONNECT_IMX)+= imx/
->> >>>    obj-$(CONFIG_INTERCONNECT_QCOM)+= qcom/
->> >>> +obj-$(CONFIG_INTERCONNECT_MTK)+= mediatek/
->> >>
->> >> Ditto.
->> > Ok
->> >>
->> >>> diff --git a/drivers/interconnect/mediatek/Kconfig
->> >>> b/drivers/interconnect/mediatek/Kconfig
->> >>> new file mode 100644
->> >>> index 0000000..972d3bb
->> >>> --- /dev/null
->> >>> +++ b/drivers/interconnect/mediatek/Kconfig
->> >>> @@ -0,0 +1,13 @@
->> >>> +config INTERCONNECT_MTK
->> >>> +bool "Mediatek Network-on-Chip interconnect drivers"
->> >>> +depends on ARCH_MEDIATEK
->> >>> +help
->> >>> +  Support for Mediatek's Network-on-Chip interconnect hardware.
->> >>> +
->> >>> +config INTERCONNECT_MTK_EMI
->> >>> +tristate "Mediatek EMI interconnect driver"
->> >>> +depends on INTERCONNECT_MTK
->> >>> +depends on (MTK_DVFSRC && OF)
->> >>
->> >> Would it be possible to enable COMPILE_TEST?
->> > Do you means change to "depends on (MTK_DVFSRC && OF) || COMPILE_TEST" ?
->> 
->> Yeah, there is a stub for mtk_dvfsrc_send_request(). Maybe we could even
->> change it for INTERCONNECT_MTK to something like:
->> depends on ARCH_MEDIATEK || COMPILE_TEST Will this work?
-> Hi Georgi,
-> 
-> So..only change to as following?
-> 
-> config INTERCONNECT_MTK
-> bool "Mediatek Network-on-Chip interconnect drivers"
-> depends on ARCH_MEDIATEK || COMPILE_TEST
-> help
->    Support for Mediatek's Network-on-Chip interconnect hardware.
+Hi Bjorn,
 
-I would say to add COMPILE_TEST for both INTERCONNECT_MTK and
-INTERCONNECT_MTK_EMI, unless there is some dependency which does
-not allow us to do so.
+This series updates devicetree for the SDX55 platform and the MTP board.
+Most of the SDX55 specific driver codes are already merged and some of
+existing driver support got reused.
 
 Thanks,
-Georgi
+Mani
+
+Changes in v3:
+
+* Dropped interrupts property in spmi-gpio node
+* Used dma-controller node name
+* Reworked tcsr mutex node
+* Sorted binding compatibles
+* Collected reviews from Vinod
+
+Changes in v2:
+
+* Changed "SoC" to "platform" and modified FIXME in commit message
+
+Bjorn Andersson (1):
+  ARM: dts: qcom: sdx55: Enable ARM SMMU
+
+Manivannan Sadhasivam (9):
+  dt-bindings: mmc: sdhci-msm: Document the SDX55 compatible
+  ARM: dts: qcom: sdx55: Add support for SDHCI controller
+  dt-bindings: arm-smmu: Add binding for Qcom SDX55 SMMU
+  ARM: dts: qcom: sdx55: Add support for TCSR Mutex
+  ARM: dts: qcom: sdx55: Add Shared memory manager support
+  ARM: dts: qcom: sdx55: Add QPIC BAM support
+  ARM: dts: qcom: sdx55: Add QPIC NAND support
+  ARM: dts: qcom: sdx55-mtp: Enable BAM DMA
+  ARM: dts: qcom: sdx55-mtp: Enable QPIC NAND
+
+Vinod Koul (8):
+  ARM: dts: qcom: sdx55: Add pincontrol node
+  ARM: dts: qcom: sdx55: Add reserved memory nodes
+  ARM: dts: qcom: sdx55: Add spmi node
+  ARM: dts: qcom: sdx55-mtp: Add pm8150b pmic
+  ARM: dts: qcom: sdx55-mtp: Add pmx55 pmic
+  ARM: dts: qcom: sdx55: Add rpmpd node
+  ARM: dts: qcom: Add PMIC pmx55 dts
+  ARM: dts: qcom: sdx55-mtp: Add regulator nodes
+
+ .../devicetree/bindings/iommu/arm,smmu.yaml   |   1 +
+ .../devicetree/bindings/mmc/sdhci-msm.txt     |   5 +-
+ arch/arm/boot/dts/qcom-pmx55.dtsi             |  84 +++++++
+ arch/arm/boot/dts/qcom-sdx55-mtp.dts          | 203 +++++++++++++++++
+ arch/arm/boot/dts/qcom-sdx55.dtsi             | 214 ++++++++++++++++++
+ 5 files changed, 505 insertions(+), 2 deletions(-)
+ create mode 100644 arch/arm/boot/dts/qcom-pmx55.dtsi
+
+-- 
+2.25.1
 
