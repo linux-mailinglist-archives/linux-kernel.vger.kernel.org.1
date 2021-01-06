@@ -2,139 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 39E842EB9E2
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 07:12:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 882F12EB9ED
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 07:19:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726078AbhAFGLz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Jan 2021 01:11:55 -0500
-Received: from foss.arm.com ([217.140.110.172]:35978 "EHLO foss.arm.com"
+        id S1726192AbhAFGS4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Jan 2021 01:18:56 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47556 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725562AbhAFGLy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Jan 2021 01:11:54 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A8C4E31B;
-        Tue,  5 Jan 2021 22:11:08 -0800 (PST)
-Received: from [10.163.87.111] (unknown [10.163.87.111])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 614FE3F70D;
-        Tue,  5 Jan 2021 22:11:07 -0800 (PST)
-Subject: Re: [PATCH 1/1] arm64: make section size configurable for memory
- hotplug
-To:     Sudarshan Rajagopalan <sudaraja@codeaurora.org>,
-        akpm@linux-foundation.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-References: <cover.1609895500.git.sudaraja@codeaurora.org>
- <66f79b0c06602c22df4da8ff4a5c2b97c9275250.1609895500.git.sudaraja@codeaurora.org>
-From:   Anshuman Khandual <anshuman.khandual@arm.com>
-Message-ID: <055b0aca-af60-12ad-cd68-e15440ade64b@arm.com>
-Date:   Wed, 6 Jan 2021 11:41:26 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1725562AbhAFGSz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 Jan 2021 01:18:55 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AA573207AB;
+        Wed,  6 Jan 2021 06:18:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1609913894;
+        bh=5lp+13jiD6sIpu3g6HHgflH2MeBd+glQhPUXzn5sEb0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=CakvhJq/S0InR70KIkE0nT8f4OsK8tazYsMYaSFjfmUD+Huax/XAoFChfqSwh2Ko3
+         O2Yr5kMJTtRg84SKasb5ZjVbjiriRmjXC//Mp6svMTkOguihXcYD8Y7jrNAu5hhU9s
+         NdGVzXNjj+s9GjbUJWIyH+IHiUgF6TmPNadTJjfPC+mngpvbFg7c/5UFpGfay3esh2
+         cYJ3MG2vwyVhJDX/j+RFuMWxX9ZlY7uvVKpUVyQmSjwgaHtsGBtJTIpjBfFO76T5xG
+         lQPLPifs3+qF6HuckWFMEKtmfxytThn8qOgCOh6FZpFqy+bNi0rc5xLf/Si1eeEIi4
+         d5j4VPRJ+OyIg==
+Date:   Wed, 6 Jan 2021 11:48:10 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc:     Matt Mackall <mpm@selenic.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Dan Williams <dan.j.williams@intel.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Mark Brown <broonie@kernel.org>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>, linux-mips@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org,
+        dmaengine@vger.kernel.org, linux-ide@vger.kernel.org,
+        linux-mtd@lists.infradead.org, netdev@vger.kernel.org,
+        linux-rtc@vger.kernel.org, linux-spi@vger.kernel.org,
+        linux-watchdog@vger.kernel.org, alsa-devel@alsa-project.org
+Subject: Re: [PATCH 05/10] dma: tx49 removal
+Message-ID: <20210106061810.GO2771@vkoul-mobl>
+References: <20210105140305.141401-1-tsbogend@alpha.franken.de>
+ <20210105140305.141401-6-tsbogend@alpha.franken.de>
 MIME-Version: 1.0
-In-Reply-To: <66f79b0c06602c22df4da8ff4a5c2b97c9275250.1609895500.git.sudaraja@codeaurora.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210105140305.141401-6-tsbogend@alpha.franken.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Sudershan,
+On 05-01-21, 15:02, Thomas Bogendoerfer wrote:
+> Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 
-This patch (and the cover letter) does not copy LAKML even though the
-entire change here is arm64 specific. Please do copy all applicable
-mailing lists for a given patch.
+Applied after fixing subsystem name, thanks
 
-On 1/6/21 6:58 AM, Sudarshan Rajagopalan wrote:
-> Currently on arm64, memory section size is hard-coded to 1GB.
-> Make this configurable if memory-hotplug is enabled, to support
-> more finer granularity for hotplug-able memory.
-
-Section size has always been decided by the platform. It cannot be a
-configurable option because the user would not know the constraints
-for memory representation on the platform and besides it also cannot
-be trusted.
-
-> 
-> Signed-off-by: Sudarshan Rajagopalan <sudaraja@codeaurora.org>
-> ---
->  arch/arm64/Kconfig                 | 11 +++++++++++
->  arch/arm64/include/asm/sparsemem.h |  4 ++++
->  2 files changed, 15 insertions(+)
-> 
-> diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
-> index 6d232837cbee..34124eee65da 100644
-> --- a/arch/arm64/Kconfig
-> +++ b/arch/arm64/Kconfig
-> @@ -294,6 +294,17 @@ config ARCH_ENABLE_MEMORY_HOTREMOVE
->  config SMP
->  	def_bool y
->  
-> +config HOTPLUG_SIZE_BITS
-> +	int "Memory hotplug block size(29 => 512MB 30 => 1GB)"
-> +	depends on SPARSEMEM
-> +	depends on MEMORY_HOTPLUG
-> +	range 28 30
-
-28 would not work for 64K pages.
-
-> +	default 30
-> +	help
-> +	 Selects granularity of hotplug memory. Block size for
-> +	 memory hotplug is represent as a power of 2.
-> +	 If unsure, stick with default value.
-> +
->  config KERNEL_MODE_NEON
->  	def_bool y
->  
-> diff --git a/arch/arm64/include/asm/sparsemem.h b/arch/arm64/include/asm/sparsemem.h
-> index 1f43fcc79738..3d5310f3aad5 100644
-> --- a/arch/arm64/include/asm/sparsemem.h
-> +++ b/arch/arm64/include/asm/sparsemem.h
-> @@ -7,7 +7,11 @@
->  
->  #ifdef CONFIG_SPARSEMEM
->  #define MAX_PHYSMEM_BITS	CONFIG_ARM64_PA_BITS
-> +#ifndef CONFIG_MEMORY_HOTPLUG
->  #define SECTION_SIZE_BITS	30
-> +#else
-> +#define SECTION_SIZE_BITS	CONFIG_HOTPLUG_SIZE_BITS
-> +#endif
->  #endif
->  
->  #endif
-> 
-
-There was an inconclusive discussion regarding this last month.
-
-https://lore.kernel.org/linux-arm-kernel/20201204014443.43329-1-liwei213@huawei.com/
-
-I have been wondering if this would solve the problem for 4K page size
-config which requires PMD mapping for the vmemmap mapping while making
-section size bits dependent on max order. But this has not been tested
-properly.
-
-diff --git a/arch/arm64/include/asm/sparsemem.h b/arch/arm64/include/asm/sparsemem.h
-index 1f43fcc79738..fe4353cb1dce 100644
---- a/arch/arm64/include/asm/sparsemem.h
-+++ b/arch/arm64/include/asm/sparsemem.h
-@@ -7,7 +7,18 @@
- 
- #ifdef CONFIG_SPARSEMEM
- #define MAX_PHYSMEM_BITS       CONFIG_ARM64_PA_BITS
--#define SECTION_SIZE_BITS      30
--#endif
-+
-+#ifdef CONFIG_ARM64_4K_PAGES
-+#define SECTION_SIZE_BITS 27
-+#else
-+#ifdef CONFIG_FORCE_MAX_ZONEORDER
-+#define SECTION_SIZE_BITS (CONFIG_FORCE_MAX_ZONEORDER - 1 + PAGE_SHIFT)
-+#else
-+#define SECTION_SIZE_BITS 30
-+#endif /* CONFIG_FORCE_MAX_ZONEORDER */
-+
-+#endif /* CONFIG_ARM64_4K_PAGES */
-+
-+#endif /* CONFIG_SPARSEMEM*/
- 
- #endif
+-- 
+~Vinod
