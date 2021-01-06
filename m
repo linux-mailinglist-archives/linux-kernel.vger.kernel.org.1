@@ -2,139 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D76F2EBB8C
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 10:08:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DAAA52EBB89
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 10:06:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726843AbhAFJGr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Jan 2021 04:06:47 -0500
-Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:12249 "EHLO
-        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725877AbhAFJGo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Jan 2021 04:06:44 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5ff57d7b0001>; Wed, 06 Jan 2021 01:06:03 -0800
-Received: from mtl-vdi-166.wap.labs.mlnx (172.20.145.6) by
- HQMAIL107.nvidia.com (172.20.187.13) with Microsoft SMTP Server (TLS) id
- 15.0.1473.3; Wed, 6 Jan 2021 09:06:01 +0000
-Date:   Wed, 6 Jan 2021 11:05:57 +0200
-From:   Eli Cohen <elic@nvidia.com>
-To:     <mst@redhat.com>, <jasowang@redhat.com>,
-        <virtualization@lists.linux-foundation.org>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-CC:     <lulu@redhat.com>, <elic@nvidia.com>
-Subject: [PATCH] vdpa/mlx5: Fix memory key MTT population
-Message-ID: <20210106090557.GA170338@mtl-vdi-166.wap.labs.mlnx>
+        id S1726810AbhAFJFk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Jan 2021 04:05:40 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48290 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726731AbhAFJFe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 Jan 2021 04:05:34 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 04FC92310A;
+        Wed,  6 Jan 2021 09:04:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1609923892;
+        bh=sZvoIahKG/sNJMkgiygvNzXeRBts4zBsF7PhddKvqTI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=HJ89Y8AE5++IfGOfpBPNtBXbQewUf+JuSwWtoG9d4Z5SL4shLMM1b8NAKMmVaSY5+
+         M+7ic3upkbcKXa716wzZqHwLgCRtBRf6sHWaMY424/z06p4xZAvxtpAjmKts1tVpBO
+         RRsB2/g6DNoheHFwz5B9+riBOnF83K8BSi7lXWfI=
+Date:   Wed, 6 Jan 2021 10:06:14 +0100
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Xu Yilun <yilun.xu@intel.com>
+Cc:     arnd@arndb.de, lee.jones@linaro.org, linux-kernel@vger.kernel.org,
+        trix@redhat.com, lgoncalv@redhat.com, hao.wu@intel.com,
+        matthew.gerlach@intel.com, russell.h.weight@intel.com
+Subject: Re: [PATCH 2/2] misc: add support for retimers interfaces on Intel
+ MAX 10 BMC
+Message-ID: <X/V9hvXYlUOT9U2n@kroah.com>
+References: <1609918567-13339-1-git-send-email-yilun.xu@intel.com>
+ <1609918567-13339-3-git-send-email-yilun.xu@intel.com>
+ <X/VtOvRyoKJ9wCkH@kroah.com>
+ <20210106085329.GA13860@yilunxu-OptiPlex-7050>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-User-Agent: Mutt/1.9.5 (bf161cf53efb) (2018-04-13)
-X-Originating-IP: [172.20.145.6]
-X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
- HQMAIL107.nvidia.com (172.20.187.13)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1609923964; bh=/6zQ5JVLCnlALckA+soCkshFtscBTwWdM/kojj3UBbc=;
-        h=Date:From:To:CC:Subject:Message-ID:MIME-Version:Content-Type:
-         Content-Disposition:User-Agent:X-Originating-IP:X-ClientProxiedBy;
-        b=ZOHgEzkNwAxbNyOW0BuLSEj2lUITltuumCcArPpUc+abiYkuK5c31dUP9QRu3TT+d
-         FkjdRAqv4d9+DHC9xOUTjulTj2HL+m3c2y45txzQk1EzJ3d4YK0GlL+csKwCUsTqIb
-         Blv8Amtgfc1NWozC8lorZxcjxrds5a3mR5kb3AKQjuKLGu9597DL/4yIu+bEgaEKZ3
-         r2BfUfP1BhCwxjOZ5YDdpux+9S9m2Cq5qI+8gHon2Enb+7IV4BfslGAq9YmWI1NXwc
-         oHzvqcF31nu/LbIpVPcavIWgQ5fMmwOyAc++fE2yeQKT9+0WPIyq3L45yLtLpikj/X
-         yu9cpyK9ySWtA==
+In-Reply-To: <20210106085329.GA13860@yilunxu-OptiPlex-7050>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-map_direct_mr() assumed that the number of scatter/gather entries
-returned by dma_map_sg_attrs() was equal to the number of segments in
-the sgl list. This led to wrong population of the mkey object. Fix this
-by properly referring to the returned value.
+On Wed, Jan 06, 2021 at 04:53:29PM +0800, Xu Yilun wrote:
+> On Wed, Jan 06, 2021 at 08:56:42AM +0100, Greg KH wrote:
+> > On Wed, Jan 06, 2021 at 03:36:07PM +0800, Xu Yilun wrote:
+> > > This driver supports the ethernet retimers (C827) for the Intel PAC
+> > > (Programmable Acceleration Card) N3000, which is a FPGA based Smart NIC.
+> > > 
+> > > C827 is an Intel(R) Ethernet serdes transceiver chip that supports
+> > > up to 100G transfer. On Intel PAC N3000 there are 2 C827 chips
+> > > managed by the Intel MAX 10 BMC firmware. They are configured in 4 ports
+> > > 10G/25G retimer mode. Host could query their link states and firmware
+> > > version information via retimer interfaces (Shared registers) on Intel
+> > > MAX 10 BMC. The driver creates sysfs interfaces for users to query these
+> > > information.
+> > > 
+> > > Signed-off-by: Xu Yilun <yilun.xu@intel.com>
+> > > ---
+> > >  .../ABI/testing/sysfs-driver-intel-m10-bmc-retimer |  32 +++++
+> > >  drivers/misc/Kconfig                               |  10 ++
+> > >  drivers/misc/Makefile                              |   1 +
+> > >  drivers/misc/intel-m10-bmc-retimer.c               | 158 +++++++++++++++++++++
+> > >  4 files changed, 201 insertions(+)
+> > >  create mode 100644 Documentation/ABI/testing/sysfs-driver-intel-m10-bmc-retimer
+> > >  create mode 100644 drivers/misc/intel-m10-bmc-retimer.c
+> > > 
+> > > diff --git a/Documentation/ABI/testing/sysfs-driver-intel-m10-bmc-retimer b/Documentation/ABI/testing/sysfs-driver-intel-m10-bmc-retimer
+> > > new file mode 100644
+> > > index 0000000..528712a
+> > > --- /dev/null
+> > > +++ b/Documentation/ABI/testing/sysfs-driver-intel-m10-bmc-retimer
+> > > @@ -0,0 +1,32 @@
+> > > +What:		/sys/bus/platform/devices/n3000bmc-retimer.*.auto/tag
+> > > +Date:		Jan 2021
+> > > +KernelVersion:	5.12
+> > > +Contact:	Xu Yilun <yilun.xu@intel.com>
+> > > +Description:	Read only. Returns the tag of the retimer chip. Now there are 2
+> > > +		retimer chips on Intel PAC N3000, they are tagged as
+> > > +		'retimer_A' and 'retimer_B'.
+> > > +		Format: "retimer_%c".
+> > > +
+> > > +What:		/sys/bus/platform/devices/n3000bmc-retimer.*.auto/sbus_version
+> > > +Date:		Jan 2021
+> > > +KernelVersion:	5.12
+> > > +Contact:	Xu Yilun <yilun.xu@intel.com>
+> > > +Description:	Read only. Returns the Transceiver bus firmware version of
+> > > +		the retimer chip.
+> > > +		Format: "0x%04x".
+> > > +
+> > > +What:		/sys/bus/platform/devices/n3000bmc-retimer.*.auto/serdes_version
+> > > +Date:		Jan 2021
+> > > +KernelVersion:	5.12
+> > > +Contact:	Xu Yilun <yilun.xu@intel.com>
+> > > +Description:	Read only. Returns the SERDES firmware version of the retimer
+> > > +		chip.
+> > > +		Format: "0x%04x".
+> > > +
+> > > +What:		/sys/bus/platform/devices/n3000bmc-retimer.*.auto/link_statusX
+> > > +Date:		Jan 2021
+> > > +KernelVersion:	5.12
+> > > +Contact:	Xu Yilun <yilun.xu@intel.com>
+> > > +Description:	Read only. Returns the status of each line side link. "1" for
+> > > +		link up, "0" for link down.
+> > > +		Format: "%u".
+> > 
+> > Who is going to use all of these read-only attributes?
+> 
+> The Intel OPAE (Open Programmable Acceleration Engine) lib handles these
+> attrs.
 
-In addition, get rid of fill_sg() whjich effect is overwritten bu
-populate_mtts().
+I have no idea what that is, you should put a pointer to the source for
+this in either the changelog comment, or here in the sysfs entries to
+show who is using this.
 
-Fixes: 94abbccdf291 ("vdpa/mlx5: Add shared memory registration code")
-Signed-off-by: Eli Cohen <elic@nvidia.com>
----
- drivers/vdpa/mlx5/core/mlx5_vdpa.h |  1 +
- drivers/vdpa/mlx5/core/mr.c        | 28 ++++++++++++----------------
- 2 files changed, 13 insertions(+), 16 deletions(-)
+> For the version attrs, the OPAE retimer firmware update tool will query
+> them to make sure the update is succeed.
 
-diff --git a/drivers/vdpa/mlx5/core/mlx5_vdpa.h b/drivers/vdpa/mlx5/core/mlx5_vdpa.h
-index 5c92a576edae..08f742fd2409 100644
---- a/drivers/vdpa/mlx5/core/mlx5_vdpa.h
-+++ b/drivers/vdpa/mlx5/core/mlx5_vdpa.h
-@@ -15,6 +15,7 @@ struct mlx5_vdpa_direct_mr {
- 	struct sg_table sg_head;
- 	int log_size;
- 	int nsg;
-+	int nent;
- 	struct list_head list;
- 	u64 offset;
- };
-diff --git a/drivers/vdpa/mlx5/core/mr.c b/drivers/vdpa/mlx5/core/mr.c
-index 4b6195666c58..d300f799efcd 100644
---- a/drivers/vdpa/mlx5/core/mr.c
-+++ b/drivers/vdpa/mlx5/core/mr.c
-@@ -25,17 +25,6 @@ static int get_octo_len(u64 len, int page_shift)
- 	return (npages + 1) / 2;
- }
- 
--static void fill_sg(struct mlx5_vdpa_direct_mr *mr, void *in)
--{
--	struct scatterlist *sg;
--	__be64 *pas;
--	int i;
--
--	pas = MLX5_ADDR_OF(create_mkey_in, in, klm_pas_mtt);
--	for_each_sg(mr->sg_head.sgl, sg, mr->nsg, i)
--		(*pas) = cpu_to_be64(sg_dma_address(sg));
--}
--
- static void mlx5_set_access_mode(void *mkc, int mode)
- {
- 	MLX5_SET(mkc, mkc, access_mode_1_0, mode & 0x3);
-@@ -45,10 +34,18 @@ static void mlx5_set_access_mode(void *mkc, int mode)
- static void populate_mtts(struct mlx5_vdpa_direct_mr *mr, __be64 *mtt)
- {
- 	struct scatterlist *sg;
-+	int nsg = mr->nsg;
-+	u64 dma_addr;
-+	u64 dma_len;
-+	int j = 0;
- 	int i;
- 
--	for_each_sg(mr->sg_head.sgl, sg, mr->nsg, i)
--		mtt[i] = cpu_to_be64(sg_dma_address(sg));
-+	for_each_sg(mr->sg_head.sgl, sg, mr->nent, i) {
-+		for (dma_addr = sg_dma_address(sg), dma_len = sg_dma_len(sg);
-+		     nsg && dma_len;
-+		     nsg--, dma_addr += BIT(mr->log_size), dma_len -= BIT(mr->log_size))
-+			mtt[j++] = cpu_to_be64(dma_addr);
-+	}
- }
- 
- static int create_direct_mr(struct mlx5_vdpa_dev *mvdev, struct mlx5_vdpa_direct_mr *mr)
-@@ -64,7 +61,6 @@ static int create_direct_mr(struct mlx5_vdpa_dev *mvdev, struct mlx5_vdpa_direct
- 		return -ENOMEM;
- 
- 	MLX5_SET(create_mkey_in, in, uid, mvdev->res.uid);
--	fill_sg(mr, in);
- 	mkc = MLX5_ADDR_OF(create_mkey_in, in, memory_key_mkey_entry);
- 	MLX5_SET(mkc, mkc, lw, !!(mr->perm & VHOST_MAP_WO));
- 	MLX5_SET(mkc, mkc, lr, !!(mr->perm & VHOST_MAP_RO));
-@@ -276,8 +272,8 @@ static int map_direct_mr(struct mlx5_vdpa_dev *mvdev, struct mlx5_vdpa_direct_mr
- done:
- 	mr->log_size = log_entity_size;
- 	mr->nsg = nsg;
--	err = dma_map_sg_attrs(dma, mr->sg_head.sgl, mr->nsg, DMA_BIDIRECTIONAL, 0);
--	if (!err)
-+	mr->nent = dma_map_sg_attrs(dma, mr->sg_head.sgl, mr->nsg, DMA_BIDIRECTIONAL, 0);
-+	if (!mr->nent)
- 		goto err_map;
- 
- 	err = create_direct_mr(mvdev, mr);
--- 
-2.28.0
+Why does anyone care about that?  The firmware download logic should
+handle that properly, right?
 
+> For the link_status attrs, the OPAE net tools handles it.
+
+So not the normal userspace networking tools?
+
+If not, we need to get an ack from the networking developers as to why
+you are not following their existing user/kernel apis.
+
+thanks,
+
+greg k-h
