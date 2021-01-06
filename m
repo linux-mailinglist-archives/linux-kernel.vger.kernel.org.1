@@ -2,135 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 86A4E2EB8DA
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 05:25:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 761462EB8DC
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 05:25:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726345AbhAFEXg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 23:23:36 -0500
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:7312 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725800AbhAFEXg (ORCPT
+        id S1726463AbhAFEYf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 23:24:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47330 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726051AbhAFEYe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 23:23:36 -0500
-Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 1064LKri003974
-        for <linux-kernel@vger.kernel.org>; Tue, 5 Jan 2021 20:22:53 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-transfer-encoding :
- content-type; s=facebook; bh=hTa7wGlTEvxFN0YmAvxNjAujkmBK3LO29C6uRsljk+I=;
- b=jyzb2UJyiw/Q2zQKh6i9jLI5iZpofVfM3Pz7HvRKxQo2tbhBA1a3VGqZJQPM+nKkhDA9
- Xj8SiQdmUcWJ9YgYIMoeEehkvKi+2P1zouN6dylOhAjbDM2BkZpRyqbs0xUpg1Lty+hH
- VO8cn7iA27XOMAFgOHJcR+rYMjA7yPjvJbI= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 35vcs8ej1e-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Jan 2021 20:22:53 -0800
-Received: from intmgw004.06.prn3.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:82::f) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Tue, 5 Jan 2021 20:22:51 -0800
-Received: by devvm3388.prn0.facebook.com (Postfix, from userid 111017)
-        id 1677D2A26DA4; Tue,  5 Jan 2021 20:22:42 -0800 (PST)
-From:   Roman Gushchin <guro@fb.com>
-To:     Andrew Morton <akpm@linux-foundation.org>, <linux-mm@kvack.org>
-CC:     Michal Hocko <mhocko@kernel.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Shakeel Butt <shakeelb@google.com>,
-        <linux-kernel@vger.kernel.org>, <kernel-team@fb.com>,
-        Roman Gushchin <guro@fb.com>,
-        Imran Khan <imran.f.khan@oracle.com>
-Subject: [PATCH] mm: memcg/slab: optimize objcg stock draining
-Date:   Tue, 5 Jan 2021 20:22:39 -0800
-Message-ID: <20210106042239.2860107-1-guro@fb.com>
-X-Mailer: git-send-email 2.24.1
+        Tue, 5 Jan 2021 23:24:34 -0500
+Received: from mail-oi1-x235.google.com (mail-oi1-x235.google.com [IPv6:2607:f8b0:4864:20::235])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 449EEC06134D
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Jan 2021 20:23:54 -0800 (PST)
+Received: by mail-oi1-x235.google.com with SMTP id p5so2163214oif.7
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Jan 2021 20:23:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=k0i3enRu3hyKlPA+1xEo/MmMl5HhXf8GucycwKwD1yE=;
+        b=YmLbNsAnXgfNy224NEcuX9hdiztWZPxaNC2Cvt3F6ZqAOPQDUJ6iYzm14W5r6EbCDW
+         USpwl0tBwuUFyDzeqgaoGAR2wEEq/FlQxRs64PNon0Hf9N6sTGQ1x0FvkCoP6jb1iJNv
+         7LYZqKeO9g9O2joaQYO4wdbxfwMhIoWJhcv5PeJBZEIHIBRCxbBcQcclQFjJ3o+lXhRl
+         QIFlNi3/EYxbA+OXyrqNS2sKLRQnOTG/fX+jQHH9npJDkK3eCgPC1h8NWOl5lu9qe5/t
+         T1itW7BWibsKQnuVDMS3NQZwMm/QSjTZwgSdYbkup3QbTxTdeGhcZC8pp55qcMHtOGU9
+         yxjw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=k0i3enRu3hyKlPA+1xEo/MmMl5HhXf8GucycwKwD1yE=;
+        b=nQawJZCDEbWk6vsiJFRbQWnhn9ljfB6al3bwa6iCELl/lZa2459N00o0sPut6DmAkP
+         QD1KpWCSuO0VdlS2oWLN67MaN91tCPglTALpMz3ciiS73IhTzrYcTxp48KOM3QSiE/Ky
+         9fDnXq502utUvd3yQH+Wr7wGk1AXBKs0qIsTZ/HFP1cCE1yS4NfG2WrnsVawkZ7a6vtp
+         9Eq6WY1IIa1hfDqydQb41qNBGCsPUeNDkefskMCAq05yT+5Jv8aWsUsso7wpTpJvVFgp
+         CjoSDF/yBRKWuAvKl/Zrvat5ku8S/Sf4dNHrd2C826oznBEk5wDiMKwhABS9e+iSDGNU
+         mZrw==
+X-Gm-Message-State: AOAM5336i1TRbJ2TaIuziMB7vshbz2J+CRos1bUb1zv6vBPdrsTvQQWz
+        2ZQEOQuTpETjCsaOYykWeIJROQ==
+X-Google-Smtp-Source: ABdhPJz2xl+B7kjgfvIk6OHpFiqGJZ8MncwBec6HcfksdGfnE6TVHnyumO3Y5Sj3Uy0zR75UjnpSNg==
+X-Received: by 2002:a54:4694:: with SMTP id k20mr2074670oic.64.1609907033620;
+        Tue, 05 Jan 2021 20:23:53 -0800 (PST)
+Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id z14sm291412otk.70.2021.01.05.20.23.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 05 Jan 2021 20:23:52 -0800 (PST)
+Date:   Tue, 5 Jan 2021 22:23:51 -0600
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Alex Elder <elder@linaro.org>
+Cc:     kernel test robot <lkp@intel.com>, agross@kernel.org,
+        ohad@wizery.com, kbuild-all@lists.01.org,
+        linux-arm-msm@vger.kernel.org, linux-remoteproc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] rpmsg: glink: add a header file
+Message-ID: <X/U7Vz1LaA0o0M5u@builder.lan>
+References: <20210105235528.32538-1-elder@linaro.org>
+ <202101061021.f4FjA3GK-lkp@intel.com>
+ <X/U2MmdpU96WdUGw@builder.lan>
+ <f2325ccf-3d59-0c26-9371-20734cc61376@linaro.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2021-01-06_03:2021-01-05,2021-01-06 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 spamscore=0 clxscore=1015
- impostorscore=0 lowpriorityscore=0 bulkscore=0 malwarescore=0
- suspectscore=0 mlxlogscore=999 adultscore=0 mlxscore=0 phishscore=0
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2101060025
-X-FB-Internal: deliver
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <f2325ccf-3d59-0c26-9371-20734cc61376@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Imran Khan reported a regression in hackbench results caused by the
-commit f2fe7b09a52b ("mm: memcg/slab: charge individual slab objects
-instead of pages"). The regression is noticeable in the case of
-a consequent allocation of several relatively large slab objects,
-e.g. skb's. As soon as the amount of stocked bytes exceeds PAGE_SIZE,
-drain_obj_stock() and __memcg_kmem_uncharge() are called, and it leads
-to a number of atomic operations in page_counter_uncharge().
+On Tue 05 Jan 22:19 CST 2021, Alex Elder wrote:
 
-The corresponding call graph is below (provided by Imran Khan):
-  |__alloc_skb
-  |    |
-  |    |__kmalloc_reserve.isra.61
-  |    |    |
-  |    |    |__kmalloc_node_track_caller
-  |    |    |    |
-  |    |    |    |slab_pre_alloc_hook.constprop.88
-  |    |    |     obj_cgroup_charge
-  |    |    |    |    |
-  |    |    |    |    |__memcg_kmem_charge
-  |    |    |    |    |    |
-  |    |    |    |    |    |page_counter_try_charge
-  |    |    |    |    |
-  |    |    |    |    |refill_obj_stock
-  |    |    |    |    |    |
-  |    |    |    |    |    |drain_obj_stock.isra.68
-  |    |    |    |    |    |    |
-  |    |    |    |    |    |    |__memcg_kmem_uncharge
-  |    |    |    |    |    |    |    |
-  |    |    |    |    |    |    |    |page_counter_uncharge
-  |    |    |    |    |    |    |    |    |
-  |    |    |    |    |    |    |    |    |page_counter_cancel
-  |    |    |    |
-  |    |    |    |
-  |    |    |    |__slab_alloc
-  |    |    |    |    |
-  |    |    |    |    |___slab_alloc
-  |    |    |    |    |
-  |    |    |    |slab_post_alloc_hook
+> On 1/5/21 10:01 PM, Bjorn Andersson wrote:
+> > On Tue 05 Jan 20:42 CST 2021, kernel test robot wrote:
+> > 
+> > > Hi Alex,
+> > > 
+> > > I love your patch! Yet something to improve:
+> > > 
+> > 
+> > Alex, this turns out to be an existing problem. Please have a look at my
+> > proposal for a fix here:
+> > 
+> > https://lore.kernel.org/linux-remoteproc/20210106035905.4153692-1-bjorn.andersson@linaro.org/T/#u
+> > 
+> > If you like it I can merge it and then apply this patch on top.
+> 
+> Go ahead and merge your patch.  If you are sure mine will
+> work afterward (I think it will) I would be happy to have
+> you accept that as well.  Thanks.
+> 
 
-Instead of directly uncharging the accounted kernel memory, it's
-possible to refill the generic page-sized per-cpu stock instead.
-It's a much faster operation, especially on a default hierarchy.
-As a bonus, __memcg_kmem_uncharge_page() will also get faster,
-so the freeing of page-sized kernel allocations (e.g. large kmallocs)
-will become faster.
+Thank you Alex. I've merged the pair (and that other patch of yours).
 
-A similar change has been done earlier for the socket memory by
-the commit 475d0487a2ad ("mm: memcontrol: use per-cpu stocks for
-socket memory uncharging").
+And thanks KTR for reporting this.
 
-Signed-off-by: Roman Gushchin <guro@fb.com>
-Reported-by: Imran Khan <imran.f.khan@oracle.com>
----
- mm/memcontrol.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+Regards,
+Bjorn
 
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index 0d74b80fa4de..8148c1df3aff 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -3122,9 +3122,7 @@ void __memcg_kmem_uncharge(struct mem_cgroup *memcg=
-, unsigned int nr_pages)
- 	if (!cgroup_subsys_on_dfl(memory_cgrp_subsys))
- 		page_counter_uncharge(&memcg->kmem, nr_pages);
-=20
--	page_counter_uncharge(&memcg->memory, nr_pages);
--	if (do_memsw_account())
--		page_counter_uncharge(&memcg->memsw, nr_pages);
-+	refill_stock(memcg, nr_pages);
- }
-=20
- /**
---=20
-2.26.2
-
+> 					-Alex
+> 
+> > 
+> > Thanks,
+> > Bjorn
+> > 
+> > > [auto build test ERROR on linus/master]
+> > > [also build test ERROR on v5.11-rc2 next-20210104]
+> > > [If your patch is applied to the wrong git tree, kindly drop us a note.
+> > > And when submitting patch, we suggest to use '--base' as documented in
+> > > https://git-scm.com/docs/git-format-patch]
+> > > 
+> > > url:    https://github.com/0day-ci/linux/commits/Alex-Elder/rpmsg-glink-add-a-header-file/20210106-080024
+> > > base:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git e71ba9452f0b5b2e8dc8aa5445198cd9214a6a62
+> > > config: x86_64-randconfig-s021-20210106 (attached as .config)
+> > > compiler: gcc-9 (Debian 9.3.0-15) 9.3.0
+> > > reproduce:
+> > >          # apt-get install sparse
+> > >          # sparse version: v0.6.3-208-g46a52ca4-dirty
+> > >          # https://github.com/0day-ci/linux/commit/333b19e6f90b89d18b94be972c0823959373dad8
+> > >          git remote add linux-review https://github.com/0day-ci/linux
+> > >          git fetch --no-tags linux-review Alex-Elder/rpmsg-glink-add-a-header-file/20210106-080024
+> > >          git checkout 333b19e6f90b89d18b94be972c0823959373dad8
+> > >          # save the attached .config to linux build tree
+> > >          make W=1 C=1 CF='-fdiagnostic-prefix -D__CHECK_ENDIAN__' ARCH=x86_64
+> > > 
+> > > If you fix the issue, kindly add following tag as appropriate
+> > > Reported-by: kernel test robot <lkp@intel.com>
+> > > 
+> > > All errors (new ones prefixed by >>):
+> > > 
+> > > > > drivers/rpmsg/qcom_glink_ssr.c:65:6: error: redefinition of 'qcom_glink_ssr_notify'
+> > >        65 | void qcom_glink_ssr_notify(const char *ssr_name)
+> > >           |      ^~~~~~~~~~~~~~~~~~~~~
+> > >     In file included from drivers/rpmsg/qcom_glink_ssr.c:11:
+> > >     include/linux/rpmsg/qcom_glink.h:27:20: note: previous definition of 'qcom_glink_ssr_notify' was here
+> > >        27 | static inline void qcom_glink_ssr_notify(const char *ssr_name) {}
+> > >           |                    ^~~~~~~~~~~~~~~~~~~~~
+> > > 
+> > > 
+> > > vim +/qcom_glink_ssr_notify +65 drivers/rpmsg/qcom_glink_ssr.c
+> > > 
+> > > 5d1f2e3c8090c07 drivers/soc/qcom/glink_ssr.c Bjorn Andersson 2020-04-22  60
+> > > 5d1f2e3c8090c07 drivers/soc/qcom/glink_ssr.c Bjorn Andersson 2020-04-22  61  /**
+> > > 5d1f2e3c8090c07 drivers/soc/qcom/glink_ssr.c Bjorn Andersson 2020-04-22  62   * qcom_glink_ssr_notify() - notify GLINK SSR about stopped remoteproc
+> > > 5d1f2e3c8090c07 drivers/soc/qcom/glink_ssr.c Bjorn Andersson 2020-04-22  63   * @ssr_name:	name of the remoteproc that has been stopped
+> > > 5d1f2e3c8090c07 drivers/soc/qcom/glink_ssr.c Bjorn Andersson 2020-04-22  64   */
+> > > 5d1f2e3c8090c07 drivers/soc/qcom/glink_ssr.c Bjorn Andersson 2020-04-22 @65  void qcom_glink_ssr_notify(const char *ssr_name)
+> > > 5d1f2e3c8090c07 drivers/soc/qcom/glink_ssr.c Bjorn Andersson 2020-04-22  66  {
+> > > 5d1f2e3c8090c07 drivers/soc/qcom/glink_ssr.c Bjorn Andersson 2020-04-22  67  	blocking_notifier_call_chain(&ssr_notifiers, 0, (void *)ssr_name);
+> > > 5d1f2e3c8090c07 drivers/soc/qcom/glink_ssr.c Bjorn Andersson 2020-04-22  68  }
+> > > 5d1f2e3c8090c07 drivers/soc/qcom/glink_ssr.c Bjorn Andersson 2020-04-22  69  EXPORT_SYMBOL_GPL(qcom_glink_ssr_notify);
+> > > 5d1f2e3c8090c07 drivers/soc/qcom/glink_ssr.c Bjorn Andersson 2020-04-22  70
+> > > 
+> > > ---
+> > > 0-DAY CI Kernel Test Service, Intel Corporation
+> > > https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+> > 
+> > 
+> 
