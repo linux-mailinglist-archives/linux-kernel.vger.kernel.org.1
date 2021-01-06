@@ -2,148 +2,258 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D3E6D2EC093
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 16:42:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E5F22EC095
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 16:42:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727261AbhAFPl6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Jan 2021 10:41:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40110 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726251AbhAFPl5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Jan 2021 10:41:57 -0500
-Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A5F6C06134C
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Jan 2021 07:41:17 -0800 (PST)
-Received: by mail-lf1-x129.google.com with SMTP id m25so7379491lfc.11
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Jan 2021 07:41:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=QnsZVMNNWqyoVgF4tUbGmmkENHhENYQondkwh2lusPc=;
-        b=efvi54/wi5hfPe2INnC+GViZusEotLSPaOUbdfe36KnDEhpaNfF8CWvtW9CeigLeb4
-         FSNXlqRrbcYzdhN+ZgiouWQguOp5lTmSR3dGqEbLdPyBc4+fKDZbATy71kz+42BpSXL6
-         LB9js5kYDQCT0IdLSeil1HSP+4DKmeQV2rTGx6CMX83WN/osMJNHJ59UyqUeiiHKmWDR
-         GTN1xAFy/VVWKQ1A8mwKFAkLEprUv4A5g5Thsp/3WnRMiOIQ4nxn6Pxb+KZj/lVYFwYF
-         eBckLIUFdHJUBbqf2LuM3QmJ+C9qaRb6LfUdk3hdNW5pheFdWwsZxpW9Y/kweIEXZq7g
-         i0yw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=QnsZVMNNWqyoVgF4tUbGmmkENHhENYQondkwh2lusPc=;
-        b=ckZAFIw5hZk9JTPz6lgx/DnNeuFThChDkSuriJGdGMW3PmPJFl+O+Y5stYxSuu1Quq
-         d1oJW0ppj5KlXiAxMV+PuyLe9soUlaAQsVdW7drAiq/Azr3Csmhekk54u4RLPRq74iSi
-         2K7e7F2IlzFKkPwjKgYlLOHBIEht9ok9DRtzoXZkovoNjAdJHc9sE6shxuaAN1mO5WX4
-         Gqw7WPCHljsQf7+LUfGgMhpKRa3Td2ScZdcwJxyXeWhqf9Qlk93096dCJJDewIF+XBmx
-         29vO9krHfTizBDvacCC+ZGD/B5yiRqQPA3JK63zrDVIWjGe2YbUxO+aUZVMh1jBawbiJ
-         i6QA==
-X-Gm-Message-State: AOAM530siG7pXysBNvf4MGn3x4rKuwVWJ4bA8Pw1VlbHkaMhsY9tggKR
-        za+sI4xVIU7HTOpb+LcNIuLbjMtWO1dsrdYzvukEYg==
-X-Google-Smtp-Source: ABdhPJx0Vr8kotlPC2HaFczchGsQMQHErclYzYUxX/91yqmB3xhQddvI7OGsk3RNhEaD+gygMz3+QnH6qJrBb4gCHT8=
-X-Received: by 2002:a2e:9246:: with SMTP id v6mr2234434ljg.221.1609947675565;
- Wed, 06 Jan 2021 07:41:15 -0800 (PST)
+        id S1727294AbhAFPmQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Jan 2021 10:42:16 -0500
+Received: from mx2.suse.de ([195.135.220.15]:55002 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726251AbhAFPmP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 Jan 2021 10:42:15 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id ECD4AAA35;
+        Wed,  6 Jan 2021 15:41:32 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id 8FA231E0812; Wed,  6 Jan 2021 16:41:32 +0100 (CET)
+Date:   Wed, 6 Jan 2021 16:41:32 +0100
+From:   Jan Kara <jack@suse.cz>
+To:     Shiyang Ruan <ruansy.fnst@cn.fujitsu.com>
+Cc:     linux-kernel@vger.kernel.org, linux-xfs@vger.kernel.org,
+        linux-nvdimm@lists.01.org, linux-mm@kvack.org,
+        linux-fsdevel@vger.kernel.org, linux-raid@vger.kernel.org,
+        darrick.wong@oracle.com, dan.j.williams@intel.com,
+        david@fromorbit.com, hch@lst.de, song@kernel.org, rgoldwyn@suse.de,
+        qi.fuli@fujitsu.com, y-goto@fujitsu.com
+Subject: Re: [PATCH 04/10] mm, fsdax: Refactor memory-failure handler for dax
+ mapping
+Message-ID: <20210106154132.GC29271@quack2.suse.cz>
+References: <20201230165601.845024-1-ruansy.fnst@cn.fujitsu.com>
+ <20201230165601.845024-5-ruansy.fnst@cn.fujitsu.com>
 MIME-Version: 1.0
-References: <20210106133419.2971-1-vincent.guittot@linaro.org>
- <20210106133419.2971-4-vincent.guittot@linaro.org> <X/XTlRMiOVs7L28B@hirez.programming.kicks-ass.net>
-In-Reply-To: <X/XTlRMiOVs7L28B@hirez.programming.kicks-ass.net>
-From:   Vincent Guittot <vincent.guittot@linaro.org>
-Date:   Wed, 6 Jan 2021 16:41:04 +0100
-Message-ID: <CAKfTPtCEV5zzXLM3RNf2-6XhVcDsstHdzh9OKX_j6WviRUVeYw@mail.gmail.com>
-Subject: Re: [PATCH 3/3] sched/fair: reduce cases for active balance
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Ingo Molnar <mingo@redhat.com>, Juri Lelli <juri.lelli@redhat.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201230165601.845024-5-ruansy.fnst@cn.fujitsu.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 6 Jan 2021 at 16:13, Peter Zijlstra <peterz@infradead.org> wrote:
->
-> On Wed, Jan 06, 2021 at 02:34:19PM +0100, Vincent Guittot wrote:
-> > Active balance is triggered for a number of voluntary case like misfit or
->                                                         cases
-> > pinned tasks cases but also after that a number of load balance failed to
->                                                                  ^attempts
-> > migrate a task. Remove the active load balance case for overloaded group
->                                                          ^an ?
-> > as an overloaded state means that there is at least one waiting tasks. The
->                                                                   task
-> > threshold on the upper limit of the task's load will decrease with the
-> > number of failed LB until the task has migrated.
->
-> And I'm not sure I follow that last part, irrespective of spelling nits,
-> help?
+On Thu 31-12-20 00:55:55, Shiyang Ruan wrote:
+> The current memory_failure_dev_pagemap() can only handle single-mapped
+> dax page for fsdax mode.  The dax page could be mapped by multiple files
+> and offsets if we let reflink feature & fsdax mode work together.  So,
+> we refactor current implementation to support handle memory failure on
+> each file and offset.
+> 
+> Signed-off-by: Shiyang Ruan <ruansy.fnst@cn.fujitsu.com>
 
-Argh, come back to work is difficult for me
+Overall this looks OK to me, a few comments below.
 
-Let me try again:
+> ---
+>  fs/dax.c            | 21 +++++++++++
+>  include/linux/dax.h |  1 +
+>  include/linux/mm.h  |  9 +++++
+>  mm/memory-failure.c | 91 ++++++++++++++++++++++++++++++++++-----------
+>  4 files changed, 100 insertions(+), 22 deletions(-)
+> 
+> diff --git a/fs/dax.c b/fs/dax.c
+> index 5b47834f2e1b..799210cfa687 100644
+> --- a/fs/dax.c
+> +++ b/fs/dax.c
+> @@ -378,6 +378,27 @@ static struct page *dax_busy_page(void *entry)
+>  	return NULL;
+>  }
+>  
+> +/*
+> + * dax_load_pfn - Load pfn of the DAX entry corresponding to a page
+> + * @mapping: The file whose entry we want to load
+> + * @index:   The offset where the DAX entry located in
+> + *
+> + * Return:   pfn of the DAX entry
+> + */
+> +unsigned long dax_load_pfn(struct address_space *mapping, unsigned long index)
+> +{
+> +	XA_STATE(xas, &mapping->i_pages, index);
+> +	void *entry;
+> +	unsigned long pfn;
+> +
+> +	xas_lock_irq(&xas);
+> +	entry = xas_load(&xas);
+> +	pfn = dax_to_pfn(entry);
+> +	xas_unlock_irq(&xas);
+> +
+> +	return pfn;
+> +}
+> +
+>  /*
+>   * dax_lock_mapping_entry - Lock the DAX entry corresponding to a page
+>   * @page: The page whose entry we want to lock
+> diff --git a/include/linux/dax.h b/include/linux/dax.h
+> index b52f084aa643..89e56ceeffc7 100644
+> --- a/include/linux/dax.h
+> +++ b/include/linux/dax.h
+> @@ -150,6 +150,7 @@ int dax_writeback_mapping_range(struct address_space *mapping,
+>  
+>  struct page *dax_layout_busy_page(struct address_space *mapping);
+>  struct page *dax_layout_busy_page_range(struct address_space *mapping, loff_t start, loff_t end);
+> +unsigned long dax_load_pfn(struct address_space *mapping, unsigned long index);
+>  dax_entry_t dax_lock_page(struct page *page);
+>  void dax_unlock_page(struct page *page, dax_entry_t cookie);
+>  #else
+> diff --git a/include/linux/mm.h b/include/linux/mm.h
+> index db6ae4d3fb4e..db3059a1853e 100644
+> --- a/include/linux/mm.h
+> +++ b/include/linux/mm.h
+> @@ -1141,6 +1141,14 @@ static inline bool is_device_private_page(const struct page *page)
+>  		page->pgmap->type == MEMORY_DEVICE_PRIVATE;
+>  }
+>  
+> +static inline bool is_device_fsdax_page(const struct page *page)
+> +{
+> +	return IS_ENABLED(CONFIG_DEV_PAGEMAP_OPS) &&
+> +		IS_ENABLED(CONFIG_DEVICE_PRIVATE) &&
+> +		is_zone_device_page(page) &&
+> +		page->pgmap->type == MEMORY_DEVICE_FS_DAX;
+> +}
+> +
+>  static inline bool is_pci_p2pdma_page(const struct page *page)
+>  {
+>  	return IS_ENABLED(CONFIG_DEV_PAGEMAP_OPS) &&
+> @@ -3030,6 +3038,7 @@ enum mf_flags {
+>  	MF_MUST_KILL = 1 << 2,
+>  	MF_SOFT_OFFLINE = 1 << 3,
+>  };
+> +extern int mf_dax_mapping_kill_procs(struct address_space *mapping, pgoff_t index, int flags);
+>  extern int memory_failure(unsigned long pfn, int flags);
+>  extern void memory_failure_queue(unsigned long pfn, int flags);
+>  extern void memory_failure_queue_kick(int cpu);
+> diff --git a/mm/memory-failure.c b/mm/memory-failure.c
+> index 5d880d4eb9a2..37bc6e2a9564 100644
+> --- a/mm/memory-failure.c
+> +++ b/mm/memory-failure.c
+> @@ -56,6 +56,7 @@
+>  #include <linux/kfifo.h>
+>  #include <linux/ratelimit.h>
+>  #include <linux/page-isolation.h>
+> +#include <linux/dax.h>
+>  #include "internal.h"
+>  #include "ras/ras_event.h"
+>  
+> @@ -120,6 +121,9 @@ static int hwpoison_filter_dev(struct page *p)
+>  	if (PageSlab(p))
+>  		return -EINVAL;
+>  
+> +	if (is_device_fsdax_page(p))
+> +		return 0;
+> +
+>  	mapping = page_mapping(p);
+>  	if (mapping == NULL || mapping->host == NULL)
+>  		return -EINVAL;
+> @@ -290,9 +294,8 @@ void shake_page(struct page *p, int access)
+>  EXPORT_SYMBOL_GPL(shake_page);
+>  
+>  static unsigned long dev_pagemap_mapping_shift(struct page *page,
+> -		struct vm_area_struct *vma)
+> +		struct vm_area_struct *vma, unsigned long address)
 
-Active balance is triggered for a number of voluntary cases like
-misfit or pinned tasks cases but also after that a number of load
-balance attempts failed to migrate a task. There is no need to use
-active load balance when the group is overloaded because an overloaded
-state means that there is at least one waiting task. Nevertheless, the
-waiting task is not selected and detached until the threshold becomes
-higher than its load. This threshold increases with the number of
-failed lb (see the condition if ((load >> env->sd->nr_balance_failed)
-> env->imbalance) in detach_tasks()) and the waiting task will end up
-to be selected after a number of attempts.
+The 'page' argument is now unused. Drop it?
 
->
-> > Signed-off-by: Vincent Guittot <vincent.guittot@linaro.org>
-> > ---
-> >  kernel/sched/fair.c | 43 +++++++++++++++++++++----------------------
-> >  1 file changed, 21 insertions(+), 22 deletions(-)
-> >
-> > diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> > index 69a455113b10..ee87fd6f7359 100644
-> > --- a/kernel/sched/fair.c
-> > +++ b/kernel/sched/fair.c
-> > @@ -9499,13 +9499,30 @@ asym_active_balance(struct lb_env *env)
-> >  }
-> >
-> >  static inline bool
-> > -voluntary_active_balance(struct lb_env *env)
-> > +imbalanced_active_balance(struct lb_env *env)
-> > +{
-> > +     struct sched_domain *sd = env->sd;
-> > +
-> > +     /* The imbalanced case includes the case of pinned tasks preventing a fair
-> > +      * distribution of the load on the system but also the even distribution of the
-> > +      * threads on a system with spare capacity
-> > +      */
->
-> comment style fail
->
-> > +     if ((env->migration_type == migrate_task) &&
-> > +             (sd->nr_balance_failed > sd->cache_nice_tries+2))
->
-> indent fail; try: set cino=(0:0
->
-> > +             return 1;
-> > +
-> > +     return 0;
-> > +}
-> > +
-> > +static int need_active_balance(struct lb_env *env)
-> >  {
-> >       struct sched_domain *sd = env->sd;
-> >
-> >       if (asym_active_balance(env))
-> >               return 1;
-> >
-> > +     if (imbalanced_active_balance(env))
-> > +             return 1;
->
-> + whitespace
->
-> >       /*
-> >        * The dst_cpu is idle and the src_cpu CPU has only 1 CFS task.
-> >        * It's worth migrating the task if the src_cpu's capacity is reduced
+>  {
+> -	unsigned long address = vma_address(page, vma);
+>  	pgd_t *pgd;
+>  	p4d_t *p4d;
+>  	pud_t *pud;
+> @@ -333,8 +336,8 @@ static unsigned long dev_pagemap_mapping_shift(struct page *page,
+>   * Uses GFP_ATOMIC allocations to avoid potential recursions in the VM.
+>   */
+>  static void add_to_kill(struct task_struct *tsk, struct page *p,
+> -		       struct vm_area_struct *vma,
+> -		       struct list_head *to_kill)
+> +			struct address_space *mapping, pgoff_t pgoff,
+> +			struct vm_area_struct *vma, struct list_head *to_kill)
+>  {
+>  	struct to_kill *tk;
+>  
+> @@ -345,9 +348,12 @@ static void add_to_kill(struct task_struct *tsk, struct page *p,
+>  	}
+>  
+>  	tk->addr = page_address_in_vma(p, vma);
+> -	if (is_zone_device_page(p))
+> -		tk->size_shift = dev_pagemap_mapping_shift(p, vma);
+> -	else
+> +	if (is_zone_device_page(p)) {
+> +		if (is_device_fsdax_page(p))
+> +			tk->addr = vma->vm_start +
+> +					((pgoff - vma->vm_pgoff) << PAGE_SHIFT);
+
+It seems strange to use 'pgoff' for dax pages and not for any other page.
+Why? I'd rather pass correct pgoff from all callers of add_to_kill() and
+avoid this special casing...
+
+> +		tk->size_shift = dev_pagemap_mapping_shift(p, vma, tk->addr);
+> +	} else
+>  		tk->size_shift = page_shift(compound_head(p));
+>  
+>  	/*
+> @@ -495,7 +501,7 @@ static void collect_procs_anon(struct page *page, struct list_head *to_kill,
+>  			if (!page_mapped_in_vma(page, vma))
+>  				continue;
+>  			if (vma->vm_mm == t->mm)
+> -				add_to_kill(t, page, vma, to_kill);
+> +				add_to_kill(t, page, NULL, 0, vma, to_kill);
+>  		}
+>  	}
+>  	read_unlock(&tasklist_lock);
+> @@ -505,24 +511,19 @@ static void collect_procs_anon(struct page *page, struct list_head *to_kill,
+>  /*
+>   * Collect processes when the error hit a file mapped page.
+>   */
+> -static void collect_procs_file(struct page *page, struct list_head *to_kill,
+> -				int force_early)
+> +static void collect_procs_file(struct page *page, struct address_space *mapping,
+> +		pgoff_t pgoff, struct list_head *to_kill, int force_early)
+>  {
+>  	struct vm_area_struct *vma;
+>  	struct task_struct *tsk;
+> -	struct address_space *mapping = page->mapping;
+> -	pgoff_t pgoff;
+>  
+>  	i_mmap_lock_read(mapping);
+>  	read_lock(&tasklist_lock);
+> -	pgoff = page_to_pgoff(page);
+>  	for_each_process(tsk) {
+>  		struct task_struct *t = task_early_kill(tsk, force_early);
+> -
+>  		if (!t)
+>  			continue;
+> -		vma_interval_tree_foreach(vma, &mapping->i_mmap, pgoff,
+> -				      pgoff) {
+> +		vma_interval_tree_foreach(vma, &mapping->i_mmap, pgoff, pgoff) {
+>  			/*
+>  			 * Send early kill signal to tasks where a vma covers
+>  			 * the page but the corrupted page is not necessarily
+> @@ -531,7 +532,7 @@ static void collect_procs_file(struct page *page, struct list_head *to_kill,
+>  			 * to be informed of all such data corruptions.
+>  			 */
+>  			if (vma->vm_mm == t->mm)
+> -				add_to_kill(t, page, vma, to_kill);
+> +				add_to_kill(t, page, mapping, pgoff, vma, to_kill);
+>  		}
+>  	}
+>  	read_unlock(&tasklist_lock);
+> @@ -550,7 +551,8 @@ static void collect_procs(struct page *page, struct list_head *tokill,
+>  	if (PageAnon(page))
+>  		collect_procs_anon(page, tokill, force_early);
+>  	else
+> -		collect_procs_file(page, tokill, force_early);
+> +		collect_procs_file(page, page->mapping, page_to_pgoff(page),
+
+Why not use page_mapping() helper here? It would be safer for THPs if they
+ever get here...
+
+								Honza
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
