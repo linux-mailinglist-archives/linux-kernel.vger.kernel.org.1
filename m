@@ -2,120 +2,235 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CE122EB85D
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 04:11:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4AE422EB865
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 04:20:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726508AbhAFDK4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 22:10:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35948 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726255AbhAFDK4 (ORCPT
+        id S1726076AbhAFDTL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 22:19:11 -0500
+Received: from audible.transient.net ([24.143.126.66]:60276 "HELO
+        audible.transient.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with SMTP id S1725730AbhAFDTL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 22:10:56 -0500
-Received: from mail-oi1-x233.google.com (mail-oi1-x233.google.com [IPv6:2607:f8b0:4864:20::233])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D58C2C06134C
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Jan 2021 19:10:15 -0800 (PST)
-Received: by mail-oi1-x233.google.com with SMTP id s75so2051097oih.1
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Jan 2021 19:10:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:in-reply-to:message-id:references
-         :user-agent:mime-version;
-        bh=W/PpEKlUbN28jcfj5YrFvkIXjBCbIDL7mYlBH/tOtfs=;
-        b=bmoh1VQZHSZjSrOM6u1ba6MIirJY9CfW1kYiAp9WYOf/riWyAnLCEGxk/5FH3HjjpE
-         pYap8ubcX3zHFbkOERTsYBbzxYK7rH+ZsL88OuIAwJl2BWR2FyddP6Eb6+k8KfDnrLGd
-         2fjyOIK+OXv5qRpdFTIJOC+SSSk6qdmSazk/6zHuESaSbyhyLWM8Nmn2MX5G/LkSdZu0
-         i8d8eXZ+UG+wCxiHc4J8coLbNuOHX6k7dBvxkeTf2WdxrmLjb41ACPKpYp6SFcie82FK
-         gLUHYI2dBDx0VRGINwGa1rxqAreOsOVQKJZmp2Eri5C1uU0UzFHGtSLXJwDBUD30L+lV
-         nTfw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
-         :references:user-agent:mime-version;
-        bh=W/PpEKlUbN28jcfj5YrFvkIXjBCbIDL7mYlBH/tOtfs=;
-        b=RUlQQk7SAwxbOkDET0ScFnkAUnABuV5HZhBA8w3WYYc/3GjqizU+PDZqN/SY36AvV4
-         eTEBlUtRmt1LcfFlDkgTxlin32hRvavDDzTTdB7sYE3BxAS/IuUZ2k90UiCo23WkoG4k
-         EDzvezj8NvGGYjDvJDLmBC9vxWzRmbx0d1bzd0ZYU/+rioGZfyUNIJjqMoQRksFzbhb+
-         S40rSGSmVKPsVBdUa547YsoosaBitOB2qX01V87DN11WxIKo3IyxrL/NQnCSXfTpflnS
-         pK5PzT/8DOVJvi1Iq6OpFPlMuOUn7aDRgjn/YYh9KKDXLZlHO6vdDMy/0fU6TILcyhWV
-         m2Rg==
-X-Gm-Message-State: AOAM5305yTxTHGbo1JZQqRat6i9If7SqziWU2lNFNAYe8qfxQp32xh1A
-        /GOJwsgnfUtWmB9AMqgV60AUzg==
-X-Google-Smtp-Source: ABdhPJwfDgp3jhoh27r8VrRwITx2/zk4fqf+o+Wra6UnFfGPgOP3Lw3+1mTRais5hrS2Y3X1Q4S+mA==
-X-Received: by 2002:aca:c697:: with SMTP id w145mr1828526oif.117.1609902614989;
-        Tue, 05 Jan 2021 19:10:14 -0800 (PST)
-Received: from eggly.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
-        by smtp.gmail.com with ESMTPSA id i8sm341755oih.2.2021.01.05.19.10.12
-        (version=TLS1 cipher=ECDHE-ECDSA-AES128-SHA bits=128/128);
-        Tue, 05 Jan 2021 19:10:14 -0800 (PST)
-Date:   Tue, 5 Jan 2021 19:10:01 -0800 (PST)
-From:   Hugh Dickins <hughd@google.com>
-X-X-Sender: hugh@eggly.anvils
-To:     Qian Cai <qcai@redhat.com>
-cc:     Hugh Dickins <hughd@google.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Alex Shi <alex.shi@linux.alibaba.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Tejun Heo <tj@kernel.org>,
-        Konstantin Khlebnikov <khlebnikov@yandex-team.ru>,
-        Daniel Jordan <daniel.m.jordan@oracle.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        kernel test robot <lkp@intel.com>,
-        Linux MM <linux-mm@kvack.org>,
+        Tue, 5 Jan 2021 22:19:11 -0500
+Received: (qmail 18976 invoked from network); 6 Jan 2021 03:18:30 -0000
+Received: from cucamonga.audible.transient.net (192.168.2.5)
+  by canarsie.audible.transient.net with QMQP; 6 Jan 2021 03:18:30 -0000
+Received: (nullmailer pid 4867 invoked by uid 1000);
+        Wed, 06 Jan 2021 03:18:30 -0000
+Date:   Wed, 6 Jan 2021 03:18:29 +0000
+From:   Jamie Heilman <jamie@audible.transient.net>
+To:     Karol Herbst <kherbst@redhat.com>, Ben Skeggs <bskeggs@redhat.com>,
         LKML <linux-kernel@vger.kernel.org>,
-        Cgroups <cgroups@vger.kernel.org>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Wei Yang <richard.weiyang@gmail.com>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        alexander.duyck@gmail.com,
-        kernel test robot <rong.a.chen@intel.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Yang Shi <shy828301@gmail.com>
-Subject: Re: [PATCH v21 00/19] per memcg lru lock
-In-Reply-To: <f127c35a34a391d20b05c53c17adeb72464b28ee.camel@redhat.com>
-Message-ID: <alpine.LSU.2.11.2101051834450.1361@eggly.anvils>
-References: <1604566549-62481-1-git-send-email-alex.shi@linux.alibaba.com> <aebcdd933df3abad378aeafc1a07dfe9bbb25548.camel@redhat.com> <CALvZod448Ebw7YE-HVCNXNSbtvTcTvQx+_EqcyxTVd_SZ4ATBA@mail.gmail.com> <49be27f2652d4658f80c95bea171142c35513761.camel@redhat.com>
- <alpine.LSU.2.11.2101051326410.6519@eggly.anvils> <f127c35a34a391d20b05c53c17adeb72464b28ee.camel@redhat.com>
-User-Agent: Alpine 2.11 (LSU 23 2013-08-11)
+        nouveau <nouveau@lists.freedesktop.org>
+Subject: Re: [Nouveau] nouveau regression post v5.8, still present in v5.10
+Message-ID: <X/UsBWwFR+V0hIOS@audible.transient.net>
+Mail-Followup-To: Karol Herbst <kherbst@redhat.com>,
+        Ben Skeggs <bskeggs@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        nouveau <nouveau@lists.freedesktop.org>
+References: <X+WV8OiQzTIfLdgW@audible.transient.net>
+ <CACO55tt9GbwBU6igAJ_8RjwzSZcDbu+_1wGWKiye3TosgoiHyw@mail.gmail.com>
+ <X/NO9kAlCd/k8Di2@audible.transient.net>
+ <X/NT0iN9KlSXQJJ7@audible.transient.net>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <X/NT0iN9KlSXQJJ7@audible.transient.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 5 Jan 2021, Qian Cai wrote:
-> On Tue, 2021-01-05 at 13:35 -0800, Hugh Dickins wrote:
-> > This patchset went into mmotm 2020-11-16-16-23, so probably linux-next
-> > on 2020-11-17: you'll have had three trouble-free weeks testing with it
-> > in, so it's not a likely suspect.  I haven't looked yet at your report,
-> > to think of a more likely suspect: will do.
+Jamie Heilman wrote:
+> Jamie Heilman wrote:
+> > Karol Herbst wrote:
+> > > do you think you'd be able to do a kernel bisect in order to pinpoint
+> > > the actual commit causing it? Thanks
+> > 
+> > No.  I can't reproduce it reliably.  I if I could, bisection wouldn't
+> > be a problem but as I can't and as it can take weeks for the problem
+> > to occur there's essentially no chance.  I know it regressed roughly
+> > in 5.8-rc1 only because that's what I was running when the first event
+> > occured.
 > 
-> Probably my memory was bad then. Unfortunately, I had 2 weeks holidays before
-> the Thanksgiving as well. I have tried a few times so far and only been able to
-> reproduce once. Looks nasty...
+> er, 5.9.0-rc1 rather
 
-I have not found a likely suspect.
+Actually ... I've found a way to reproduce this in hours intead of
+weeks, so I think I may be able to bisect it after all, it's something
+of a brute force approach and its probably doing horrible things to
+the backlight in my poor old monitor, but just running this:
 
-What it smells like is a defect in cloning anon_vma during fork,
-such that mappings of the THP can get added even after all that
-could be found were unmapped (tree lookup ordering should prevent
-that).  But I've not seen any recent change there.
+#!/bin/sh
+sleep 5
+while ! dmesg | tail | grep -q nouveau
+do
+    xset dpms force off
+    sleep 65
+    xdotool mousemove 1024 1024 mousemove restore
+    sleep 10
+done
 
-It would be very easily fixed by deleting the whole BUG() block,
-which is only there as a sanity check for developers: but we would
-not want to delete it without understanding why it has gone wrong
-(and would also have to reconsider two related VM_BUG_ON_PAGEs).
+Does manage to trip the issue sooner than it would otherwise happen
+with natural usage.  Given that this is my primary workstation and I
+sort of need it functional during waking hours, it'll take me a bit,
+but I'll update folks when I have the error more dialed in.
 
-It is possible that b6769834aac1 ("mm/thp: narrow lru locking") of this
-patchset has changed the timing and made a pre-existing bug more likely
-in some situations: it used to hold an lru_lock before that BUG() on
-total_mapcount(), and now does not; but that's not a lock which should
-be relevant to the check.
+I'm using git bisect start -- drivers/gpu/drm include/drm include/video
+in an effort to make this go a bit quicker, let me know if you think
+that's a bad idea or I should add other paths.
 
-When you get more info (or not), please repost the bugstack in a
-new email thread: this thread is not really useful for pursuing it.
+> > > On Sun, Dec 27, 2020 at 8:16 PM Jamie Heilman
+> > > <jamie@audible.transient.net> wrote:
+> > > >
+> > > > Something between v5.8 and v5.9 has resulted in periodically losing video.
+> > > > Unfortunately, I can't reliably reproduce it, it seems to happen every
+> > > > once in a long while---I can go weeks without an occurance, but it
+> > > > always seems to happen after my workstation has been idle long enough
+> > > > to screen blank and put the monitor to sleep.  I'm using a single
+> > > > display (Dell 2405FPW) connected via DVI, running X (Xorg 1.20.x from
+> > > > Debian sid).  I don't really do anything fancy, xterms, a browser or
+> > > > two, play the occasional video, but like I said, I can't reliably
+> > > > reproduce this.  I've had it happen about 11 times since August.
+> > > >
+> > > > lspci -vv output is:
+> > > >
+> > > > 01:00.0 VGA compatible controller: NVIDIA Corporation G86 [Quadro NVS 290] (rev a1) (prog-if 00 [VGA controller])
+> > > >         Subsystem: NVIDIA Corporation G86 [Quadro NVS 290]
+> > > >         Control: I/O+ Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop- ParErr- Stepping- SERR- FastB2B- DisINTx+
+> > > >         Status: Cap+ 66MHz- UDF- FastB2B- ParErr- DEVSEL=fast >TAbort- <TAbort- <MAbort- >SERR- <PERR- INTx-
+> > > >         Latency: 0, Cache Line Size: 64 bytes
+> > > >         Interrupt: pin A routed to IRQ 28
+> > > >         Region 0: Memory at fc000000 (32-bit, non-prefetchable) [size=16M]
+> > > >         Region 1: Memory at d0000000 (64-bit, prefetchable) [size=256M]
+> > > >         Region 3: Memory at fa000000 (64-bit, non-prefetchable) [size=32M]
+> > > >         Region 5: I/O ports at dc80 [size=128]
+> > > >         Expansion ROM at 000c0000 [disabled] [size=128K]
+> > > >         Capabilities: [60] Power Management version 2
+> > > >                 Flags: PMEClk- DSI- D1- D2- AuxCurrent=0mA PME(D0-,D1-,D2-,D3hot-,D3cold-)
+> > > >                 Status: D0 NoSoftRst- PME-Enable- DSel=0 DScale=0 PME-
+> > > >         Capabilities: [68] MSI: Enable+ Count=1/1 Maskable- 64bit+
+> > > >                 Address: 00000000fee01004  Data: 4023
+> > > >         Capabilities: [78] Express (v1) Endpoint, MSI 00
+> > > >                 DevCap: MaxPayload 128 bytes, PhantFunc 0, Latency L0s <512ns, L1 <4us
+> > > >                         ExtTag+ AttnBtn- AttnInd- PwrInd- RBE+ FLReset- SlotPowerLimit 25.000W
+> > > >                 DevCtl: CorrErr- NonFatalErr+ FatalErr+ UnsupReq-
+> > > >                         RlxdOrd+ ExtTag+ PhantFunc- AuxPwr- NoSnoop+
+> > > >                         MaxPayload 128 bytes, MaxReadReq 512 bytes
+> > > >                 DevSta: CorrErr- NonFatalErr- FatalErr- UnsupReq- AuxPwr- TransPend-
+> > > >                 LnkCap: Port #0, Speed 2.5GT/s, Width x16, ASPM L0s L1, Exit Latency L0s <512ns, L1 <4us
+> > > >                         ClockPM- Surprise- LLActRep- BwNot- ASPMOptComp-
+> > > >                 LnkCtl: ASPM Disabled; RCB 64 bytes, Disabled- CommClk+
+> > > >                         ExtSynch- ClockPM- AutWidDis- BWInt- AutBWInt-
+> > > >                 LnkSta: Speed 2.5GT/s (ok), Width x16 (ok)
+> > > >                         TrErr- Train- SlotClk+ DLActive- BWMgmt- ABWMgmt-
+> > > >         Capabilities: [100 v1] Virtual Channel
+> > > >                 Caps:   LPEVC=0 RefClk=100ns PATEntryBits=1
+> > > >                 Arb:    Fixed- WRR32- WRR64- WRR128-
+> > > >                 Ctrl:   ArbSelect=Fixed
+> > > >                 Status: InProgress-
+> > > >                 VC0:    Caps:   PATOffset=00 MaxTimeSlots=1 RejSnoopTrans-
+> > > >                         Arb:    Fixed- WRR32- WRR64- WRR128- TWRR128- WRR256-
+> > > >                         Ctrl:   Enable+ ID=0 ArbSelect=Fixed TC/VC=01
+> > > >                         Status: NegoPending- InProgress-
+> > > >         Capabilities: [128 v1] Power Budgeting <?>
+> > > >         Capabilities: [600 v1] Vendor Specific Information: ID=0001 Rev=1 Len=024 <?>
+> > > >         Kernel driver in use: nouveau
+> > > >
+> > > > The last time this happened, this is what got logged:
+> > > >
+> > > > nouveau 0000:01:00.0: disp: ERROR 5 [INVALID_STATE] 06 [] chid 1 mthd 0080 data 00000001
+> > > > nouveau 0000:01:00.0: disp: Base 1:
+> > > > nouveau 0000:01:00.0: disp:        0084: 00000000
+> > > > nouveau 0000:01:00.0: disp:        0088: 00000000
+> > > > nouveau 0000:01:00.0: disp:        008c: 00000000
+> > > > nouveau 0000:01:00.0: disp:        0090: 00000000
+> > > > nouveau 0000:01:00.0: disp:        0094: 00000000
+> > > > nouveau 0000:01:00.0: disp:        00a0: 00000060 -> 00000070
+> > > > nouveau 0000:01:00.0: disp:        00a4: 00000000 -> f0000000
+> > > > nouveau 0000:01:00.0: disp:        00c0: 00000000
+> > > > nouveau 0000:01:00.0: disp:        00c4: 00000000
+> > > > nouveau 0000:01:00.0: disp:        00c8: 00000000
+> > > > nouveau 0000:01:00.0: disp:        00cc: 00000000
+> > > > nouveau 0000:01:00.0: disp:        00e0: 40000000
+> > > > nouveau 0000:01:00.0: disp:        00e4: 00000000
+> > > > nouveau 0000:01:00.0: disp:        00e8: 00000000
+> > > > nouveau 0000:01:00.0: disp:        00ec: 00000000
+> > > > nouveau 0000:01:00.0: disp:        00fc: 00000000
+> > > > nouveau 0000:01:00.0: disp:        0100: fffe0000
+> > > > nouveau 0000:01:00.0: disp:        0104: 00000000
+> > > > nouveau 0000:01:00.0: disp:        0110: 00000000
+> > > > nouveau 0000:01:00.0: disp:        0114: 00000000
+> > > > nouveau 0000:01:00.0: disp: Base 1 - Image 0:
+> > > > nouveau 0000:01:00.0: disp:        0800: 00009500
+> > > > nouveau 0000:01:00.0: disp:        0804: 00000000
+> > > > nouveau 0000:01:00.0: disp:        0808: 04b00780
+> > > > nouveau 0000:01:00.0: disp:        080c: 00007804
+> > > > nouveau 0000:01:00.0: disp:        0810: 0000cf00
+> > > > nouveau 0000:01:00.0: disp: Base 1 - Image 1:
+> > > > nouveau 0000:01:00.0: disp:        0c00: 00009500
+> > > > nouveau 0000:01:00.0: disp:        0c04: 00000000
+> > > > nouveau 0000:01:00.0: disp:        0c08: 04b00780
+> > > > nouveau 0000:01:00.0: disp:        0c0c: 00007804
+> > > > nouveau 0000:01:00.0: disp:        0c10: 0000cf00
+> > > > nouveau 0000:01:00.0: disp: ERROR 5 [INVALID_STATE] 06 [] chid 1 mthd 0080 data 00000001
+> > > > nouveau 0000:01:00.0: disp: Base 1:
+> > > > nouveau 0000:01:00.0: disp:        0084: 00000000
+> > > > nouveau 0000:01:00.0: disp:        0088: 00000000
+> > > > nouveau 0000:01:00.0: disp:        008c: 00000000
+> > > > nouveau 0000:01:00.0: disp:        0090: 00000000
+> > > > nouveau 0000:01:00.0: disp:        0094: 00000000
+> > > > nouveau 0000:01:00.0: disp:        00a0: 00000060 -> 00000070
+> > > > nouveau 0000:01:00.0: disp:        00a4: 00000000 -> f0000000
+> > > > nouveau 0000:01:00.0: disp:        00c0: 00000000
+> > > > nouveau 0000:01:00.0: disp:        00c4: 00000000
+> > > > nouveau 0000:01:00.0: disp:        00c8: 00000000
+> > > > nouveau 0000:01:00.0: disp:        00cc: 00000000
+> > > > nouveau 0000:01:00.0: disp:        00e0: 40000000
+> > > > nouveau 0000:01:00.0: disp:        00e4: 00000000
+> > > > nouveau 0000:01:00.0: disp:        00e8: 00000000
+> > > > nouveau 0000:01:00.0: disp:        00ec: 00000000
+> > > > nouveau 0000:01:00.0: disp:        00fc: 00000000
+> > > > nouveau 0000:01:00.0: disp:        0100: fffe0000
+> > > > nouveau 0000:01:00.0: disp:        0104: 00000000
+> > > > nouveau 0000:01:00.0: disp:        0110: 00000000
+> > > > nouveau 0000:01:00.0: disp:        0114: 00000000
+> > > > nouveau 0000:01:00.0: disp: Base 1 - Image 0:
+> > > > nouveau 0000:01:00.0: disp:        0800: 00009500
+> > > > nouveau 0000:01:00.0: disp:        0804: 00000000
+> > > > nouveau 0000:01:00.0: disp:        0808: 04b00780
+> > > > nouveau 0000:01:00.0: disp:        080c: 00007804
+> > > > nouveau 0000:01:00.0: disp:        0810: 0000cf00
+> > > > nouveau 0000:01:00.0: disp: Base 1 - Image 1:
+> > > > nouveau 0000:01:00.0: disp:        0c00: 00009500
+> > > > nouveau 0000:01:00.0: disp:        0c04: 00000000
+> > > > nouveau 0000:01:00.0: disp:        0c08: 04b00780
+> > > > nouveau 0000:01:00.0: disp:        0c0c: 00007804
+> > > > nouveau 0000:01:00.0: disp:        0c10: 0000cf00
+> > > > nouveau 0000:01:00.0: DRM: core notifier timeout
+> > > > nouveau 0000:01:00.0: DRM: base-0: timeout
+> > > >
+> > > > I've got logs of all of this, if they help I can collect them.  The
+> > > > timeout message are consistent the error messages a little less so.
+> > > >
+> > > > If there's more debugging I can do when this happens, I'd love to know
+> > > > what it is.
+> > > >
+> > > > kernel config: http://audible.transient.net/~jamie/k/nouveau.config-5.10.0
+> > > > dmesg at boot: http://audible.transient.net/~jamie/k/nouveau.dmesg
+> > > >
+> > > > --
+> > > > Jamie Heilman                     http://audible.transient.net/~jamie/
+> > > > _______________________________________________
+> > > > Nouveau mailing list
+> > > > Nouveau@lists.freedesktop.org
+> > > > https://lists.freedesktop.org/mailman/listinfo/nouveau
+> > > >
+> > > 
+> > 
+> > -- 
+> > Jamie Heilman                     http://audible.transient.net/~jamie/
+> 
+> -- 
+> Jamie Heilman                     http://audible.transient.net/~jamie/
 
-Hugh
+-- 
+Jamie Heilman                     http://audible.transient.net/~jamie/
