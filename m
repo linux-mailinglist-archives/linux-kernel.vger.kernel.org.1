@@ -2,129 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BD372EB77F
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 02:18:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 555852EB77C
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 02:16:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726176AbhAFBQv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 20:16:51 -0500
-Received: from mail.cn.fujitsu.com ([183.91.158.132]:9310 "EHLO
-        heian.cn.fujitsu.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1725843AbhAFBQu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 20:16:50 -0500
-X-IronPort-AV: E=Sophos;i="5.78,478,1599494400"; 
-   d="scan'208";a="103219147"
-Received: from unknown (HELO cn.fujitsu.com) ([10.167.33.5])
-  by heian.cn.fujitsu.com with ESMTP; 06 Jan 2021 09:16:01 +0800
-Received: from G08CNEXMBPEKD04.g08.fujitsu.local (unknown [10.167.33.201])
-        by cn.fujitsu.com (Postfix) with ESMTP id 71F5B4CE6D6F;
-        Wed,  6 Jan 2021 09:15:55 +0800 (CST)
-Received: from [10.167.225.206] (10.167.225.206) by
- G08CNEXMBPEKD04.g08.fujitsu.local (10.167.33.201) with Microsoft SMTP Server
- (TLS) id 15.0.1497.2; Wed, 6 Jan 2021 09:15:54 +0800
-Subject: Re: [PATCH] Documentation/dax: Update description of DAX policy
- changing
-To:     Ira Weiny <ira.weiny@intel.com>
-CC:     <corbet@lwn.net>, <davem@davemloft.net>,
-        <gregkh@linuxfoundation.org>, <alexander.deucher@amd.com>,
-        <mchehab+huawei@kernel.org>, <lee.jones@linaro.org>,
-        <linux-doc@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <20210104024040.5381-1-lihao2018.fnst@cn.fujitsu.com>
- <20210104163653.GG3097896@iweiny-DESK2.sc.intel.com>
-From:   "Li, Hao" <lihao2018.fnst@cn.fujitsu.com>
-Message-ID: <1a4dc84b-56ee-bf77-cf0d-dd9e0637b90c@cn.fujitsu.com>
-Date:   Wed, 6 Jan 2021 09:15:53 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+        id S1726029AbhAFBQo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 20:16:44 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59600 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725843AbhAFBQo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Jan 2021 20:16:44 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9128E22CB9;
+        Wed,  6 Jan 2021 01:16:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1609895763;
+        bh=gqYGodUeEfE+IFOU5c94LdliSPO97nX2c6Hd1dXR480=;
+        h=Date:From:To:Cc:Subject:Reply-To:From;
+        b=K/560yCCAHiLp3e3H254eK5j/GtSHTlfnAhYmbx4EvD5QYWlo2xqjbCvgpXljs2yi
+         Mkt4g1igxrD6o67ouNmENuLb93JFqF8/jJWrwq+ZRPS3+h6VYxP3hc3X4exzOZPSbM
+         TbgUd8M9uNPu19la9rA0IAulqKwEuhEnv7fht0HVOGxJg16O8tv07ar8iTBTHjdF4f
+         m6S2snyzv+KGF6QcLgGOD8FQdiBBnvKkIH9/FtsR2Mado8F532qjFzx/fYXRR8juGF
+         RPudlqIQxislos7qx8adDPAmkCtFng4FUX80Ufa8MTGKkT4hSMVtMIEyxEBzDSQLOS
+         cI+JtOLuONV3g==
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id 5B1B135228C6; Tue,  5 Jan 2021 17:16:03 -0800 (PST)
+Date:   Tue, 5 Jan 2021 17:16:03 -0800
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
+        linux-mm@kvack.org
+Cc:     cl@linux.com, penberg@kernel.org, rientjes@google.com,
+        iamjoonsoo.kim@lge.com, akpm@linux-foundation.org,
+        ming.lei@redhat.com, axboe@kernel.dk, kernel-team@fb.com
+Subject: [PATCH v4 sl-b 0/6] Export return addresses etc. for better
+ diagnostics
+Message-ID: <20210106011603.GA13180@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
 MIME-Version: 1.0
-In-Reply-To: <20210104163653.GG3097896@iweiny-DESK2.sc.intel.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Originating-IP: [10.167.225.206]
-X-ClientProxiedBy: G08CNEXCHPEKD06.g08.fujitsu.local (10.167.33.205) To
- G08CNEXMBPEKD04.g08.fujitsu.local (10.167.33.201)
-X-yoursite-MailScanner-ID: 71F5B4CE6D6F.AFE1B
-X-yoursite-MailScanner: Found to be clean
-X-yoursite-MailScanner-From: lihao2018.fnst@cn.fujitsu.com
-X-Spam-Status: No
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/1/5 0:36, Ira Weiny wrote:
-> On Mon, Jan 04, 2021 at 10:40:40AM +0800, Hao Li wrote:
->> After commit 77573fa310d9 ("fs: Kill DCACHE_DONTCACHE dentry even if
->> DCACHE_REFERENCED is set"), changes to DAX policy will take effect
->> as soon as all references to this file are gone.
->>
->> Update the documentation accordingly.
->>
->> Signed-off-by: Hao Li <lihao2018.fnst@cn.fujitsu.com>
->> ---
->>  Documentation/filesystems/dax.txt | 15 ++-------------
->>  1 file changed, 2 insertions(+), 13 deletions(-)
->>
->> diff --git a/Documentation/filesystems/dax.txt b/Documentation/filesystems/dax.txt
->> index 8fdb78f3c6c9..a5af22831087 100644
->> --- a/Documentation/filesystems/dax.txt
->> +++ b/Documentation/filesystems/dax.txt
->> @@ -84,19 +84,8 @@ Summary
->>         described in 6) below.
->>  
->>   6. When changing the S_DAX policy via toggling the persistent FS_XFLAG_DAX flag,
->                                                                                   ^^
->                                                   I would delete this '.' as well.
->
->> -    the change in behaviour for existing regular files may not occur
->> -    immediately.  If the change must take effect immediately, the administrator
->> -    needs to:
->> -
->> -    a) stop the application so there are no active references to the data set
->> -       the policy change will affect
->> -
->> -    b) evict the data set from kernel caches so it will be re-instantiated when
->> -       the application is restarted. This can be achieved by:
->> -
->> -       i. drop-caches
->> -       ii. a filesystem unmount and mount cycle
->> -       iii. a system reboot
->> +    the change to existing regular file won't take effect until the file is closed
->                                                                       ^^^^^
->                                                                       files
->
->> +    by all processes or all processes referencing the file are stopped.
->
-> So how about:
->
->    6. When changing the S_DAX policy via toggling the persistent FS_XFLAG_DAX
->       flag the change to existing regular files won't take effect until the file
->       is closed by all processes or all processes referencing the file are
->       stopped.
->
-> I also feel like mentioning the stoppage of process' is redundant as users
-> should know that will result in the closing of those FDs but I'm ok leaving it
-> if others like it.
+Hello!
 
-Thanks, it's much better than before.
+This is v4 of the series the improves diagnostics by providing access
+to additional information including the return addresses, slab names,
+offsets, and sizes collected by the sl*b allocators and by vmalloc().
+If the allocator is not configured to collect this information, the
+diagnostics fall back to a reasonable approximation of their earlier
+state.
 
-Regards,
-Hao Li
+One use case is the queue_rcu_work() function, which might be used
+by any number of kernel subsystems.  If the caller does back-to-back
+invocations of queue_rcu_work(), this constitutes a double-free bug,
+and (if so configured) the debug-objects system will flag this, printing
+the callback function.  In most cases, printing this function suffices.
+However, for double-free bugs involving queue_rcu_work(), the RCU callback
+function will always be rcu_work_rcufn(), which provides almost no help to
+the poor person trying to find this double-free bug.  The return address
+from the allocator of the memory containing the rcu_work structure can
+provide an additional valuable clue.
 
->
->
-> Ira
->
->>  
->>  
->>  Details
->> --
->> 2.29.2
->>
->>
->>
->
->
+Another use case is the percpu_ref_switch_to_atomic_rcu() function,
+which detects percpu_ref reference-count underflow.  Unfortunately,
+the only data that this function has access to doesn't have much in the
+way of identifying characteristics.  Yes, it might be possible to gain
+more information from a crash dump, but it is more convenient for the
+needed hints to be in the console log.
 
+Unfortunately, printing the return address in this case is of little help
+because this object is allocated from percpu_ref_init(), regardless of
+what part of the kernel is responsible for the reference-count underflow
+(though perhaps the slab and offsets might help in some cases).  However,
+CONFIG_STACKTRACE=y kernels (such as those enabling ftrace) using slub
+with debugging enabled also collect stack traces.  This series therefore
+also provides a way of extracting these stack traces to provide additional
+information to those debugging percpu_ref reference-count underflows.
 
+The patches are as follows:
 
+1.	Add mem_dump_obj() to print source of memory block.
+
+2.	Make mem_dump_obj() handle NULL and zero-sized pointers.
+
+3.	Make mem_dump_obj() handle vmalloc() memory.
+
+4.	Make mem_obj_dump() vmalloc() dumps include start and length.
+
+5.	Make call_rcu() print mem_dump_obj() info for double-freed
+	callback.
+
+6.	percpu_ref: Dump mem_dump_obj() info upon reference-count
+	underflow.
+
+						Thanx, Paul
+
+Changes since v3 (https://lore.kernel.org/lkml/20201211011907.GA16110@paulmck-ThinkPad-P72/):
+
+o	Extract more information from CONFIG_SLUB_DEBUG=n builds.
+
+o	Add Joonsoo Kim's Acked-by to 1/6 above.
+
+o	Rebased onto v5.11-rc1.
+
+Changes since v2:
+
+o	Apply more feedback from Joonsoo Kim on naming and code structure.
+
+o	Based on discussions with Vlastimil Babka, added code to print
+	offsets and sizes where available.  This can help identify which
+	structure is involved.
+
+Changes since v1:
+
+o	Apply feedback from Joonsoo Kim, mostly around naming and
+	code structure.
+
+o	Apply fix suggested by Stephen Rothwell for a bug that was
+	also located by kbuild test robot.
+
+o	Add support for vmalloc().
+
+o	Add support for special pointers.
+
+o	Additional rework simplifying use of mem_dump_obj(), which
+	simplifies both the RCU and the percpu_ref uses.
+
+------------------------------------------------------------------------
+
+ include/linux/mm.h      |    2 +
+ include/linux/slab.h    |    2 +
+ include/linux/vmalloc.h |    6 +++
+ kernel/rcu/tree.c       |    7 +++-
+ lib/percpu-refcount.c   |   12 +++++--
+ mm/slab.c               |   20 ++++++++++++
+ mm/slab.h               |   12 +++++++
+ mm/slab_common.c        |   74 ++++++++++++++++++++++++++++++++++++++++++++++++
+ mm/slob.c               |    6 +++
+ mm/slub.c               |   40 +++++++++++++++++++++++++
+ mm/util.c               |   45 ++++++++++++++++++++++++-----
+ mm/vmalloc.c            |   15 +++++++++
+ 12 files changed, 228 insertions(+), 13 deletions(-)
