@@ -2,111 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D8FC62EC337
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 19:26:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 95E5C2EC33D
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 19:30:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726499AbhAFS0L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Jan 2021 13:26:11 -0500
-Received: from smtprelay0122.hostedemail.com ([216.40.44.122]:46328 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725789AbhAFS0K (ORCPT
+        id S1726638AbhAFSaF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Jan 2021 13:30:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38234 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726118AbhAFSaE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Jan 2021 13:26:10 -0500
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay02.hostedemail.com (Postfix) with ESMTP id 48EF11730875;
-        Wed,  6 Jan 2021 18:25:29 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:968:982:988:989:1260:1261:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1542:1593:1594:1711:1730:1747:1777:1792:1801:2393:2553:2559:2562:2828:2911:3138:3139:3140:3141:3142:3354:3622:3865:3866:3867:3868:3870:3871:3872:3873:4321:4425:4605:5007:7652:7875:7903:8660:9040:10004:10400:10848:11026:11232:11473:11657:11658:11783:11914:12043:12297:12438:12555:12663:12740:12895:13095:13148:13161:13229:13230:13439:13894:14181:14659:14721:21080:21433:21451:21627:21939:30029:30054:30070:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:2,LUA_SUMMARY:none
-X-HE-Tag: stick86_3e0252b274e3
-X-Filterd-Recvd-Size: 3649
-Received: from [192.168.1.159] (unknown [47.151.137.21])
-        (Authenticated sender: joe@perches.com)
-        by omf11.hostedemail.com (Postfix) with ESMTPA;
-        Wed,  6 Jan 2021 18:25:27 +0000 (UTC)
-Message-ID: <c9284a7f1443146b3885e8ceae3dcf113c531a36.camel@perches.com>
-Subject: Re: [PATCH] media: atomisp: ov2722: replace hardcoded function name
-From:   Joe Perches <joe@perches.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Filip Kolev <fil.kolev@gmail.com>
-Cc:     devel@driverdev.osuosl.org,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-kernel@vger.kernel.org,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        linux-media@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>
-Date:   Wed, 06 Jan 2021 10:25:26 -0800
-In-Reply-To: <X/X45909l1Tk7Bni@kroah.com>
-References: <20210105202945.26913-1-fil.kolev@gmail.com>
-         <X/VsF364jpGz6oze@kroah.com>
-         <dcdda829-89d6-badd-4f22-72d95d24e9e3@gmail.com>
-         <X/X45909l1Tk7Bni@kroah.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.38.1-1 
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        Wed, 6 Jan 2021 13:30:04 -0500
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01BC7C06134D
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Jan 2021 10:29:24 -0800 (PST)
+Received: by mail-yb1-xb4a.google.com with SMTP id d187so5573214ybc.6
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Jan 2021 10:29:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=sender:reply-to:date:message-id:mime-version:subject:from:to:cc;
+        bh=vqdOFJEXH8f+fWCwR3dVWB92iRCynRAkA1NtJxXRz/A=;
+        b=YLTV+pfKZtX4PnvgyYfIm7AKkd+zJg6rQm0hn3UsJKVjIVUqVkobDIO4IiP3t3uAD3
+         kZncdvXLNjVrvLkj9sin8sPSyAzP3XzgergppzkoKUIlymdw1zHGmWNCrF7qFJJ33ut7
+         PBma0K+U9lS/Q6lVYkJBpgFKEBHPoJBLFVJsptKWGFw7r3Arac0hlvZvA9jgUZC7lg+c
+         quaw6kejs2qmJhrvGePvuta/IjVaKQd2Z5f5/9fFEWCj1Xusvp+aVQkty6wC1f2iWUfB
+         OMMbyazcLEzq6hHKPTYdBmdbQC7ImUf6URxaNyjNguX5oNwrzx1b6sJdB8ZFZ7hOdMnO
+         gUkw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:reply-to:date:message-id:mime-version
+         :subject:from:to:cc;
+        bh=vqdOFJEXH8f+fWCwR3dVWB92iRCynRAkA1NtJxXRz/A=;
+        b=Yg5k1EMEhugQ5YZS+87Y2+oP557wi6ObCPTEW1534OlBz6LEAQpbVKrmUT8huKqbTH
+         2uC48PU2y4902PKHcC7sMb8fUoRvq7xcyBRTEb012s0pPd56xXxi24zvgMURq5j8+01/
+         +vF84v6Qx23XyR3zoX/PCLB7vNFXLBUULRTf+2a1T+oa1FVBjC6oJcOLMENuX6TC4N9x
+         i8Fh4NaCAZKhrlCqeBUHoLQ/SmHjvAOAR1LhZ5f1c7p7Im/ww+6QWjf+SQshBFskePDU
+         GOMcDVlHgMWPfvbGQV8cG1OcLDtxA0l/9Zu0v57Aetf8xbOH3JE3ed1WEM+aq9pBd6+W
+         4Yow==
+X-Gm-Message-State: AOAM532tWvEhHPo3uV153QSf4ZQkHsqbBZ3l8nMnmNelX5yTevqEXiSG
+        fmaYjje1UyRRlc9N4ij0+SuJoIsi+VY=
+X-Google-Smtp-Source: ABdhPJy5Nk7Cr77AbZRfg3A9DCxnmvwiVFW2DlCrmtDO9UTWOO6MrKn3bHVaX4hQ2C/j3ZhAmWVRREMR2ac=
+Sender: "seanjc via sendgmr" <seanjc@seanjc798194.pdx.corp.google.com>
+X-Received: from seanjc798194.pdx.corp.google.com ([2620:15c:f:10:1ea0:b8ff:fe73:50f5])
+ (user=seanjc job=sendgmr) by 2002:a25:6981:: with SMTP id e123mr8170015ybc.194.1609957763232;
+ Wed, 06 Jan 2021 10:29:23 -0800 (PST)
+Reply-To: Sean Christopherson <seanjc@google.com>
+Date:   Wed,  6 Jan 2021 10:29:16 -0800
+Message-Id: <20210106182916.331743-1-seanjc@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.29.2.729.g45daf8777d-goog
+Subject: [PATCH] MAINTAINERS: Really update email address for Sean Christopherson
+From:   Sean Christopherson <seanjc@google.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Sean Christopherson <seanjc@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2021-01-06 at 18:52 +0100, Greg Kroah-Hartman wrote:
-> On Wed, Jan 06, 2021 at 07:43:42PM +0200, Filip Kolev wrote: 
-> > On 06-Jan-21 09:51, Greg Kroah-Hartman wrote:
-> > > On Tue, Jan 05, 2021 at 10:29:18PM +0200, Filip Kolev wrote:
-> > > > There is a debug message using hardcoded function name instead of the
-> > > > __func__ macro. Replace it.
-> > > > 
-> > > > Report from checkpatch.pl on the file:
-> > > > 
-> > > > WARNING: Prefer using '"%s...", __func__' to using 'ov2722_remove', this function's name, in a string
-> > > > +	dev_dbg(&client->dev, "ov2722_remove...\n");
-[]
-> > > > diff --git a/drivers/staging/media/atomisp/i2c/atomisp-ov2722.c b/drivers/staging/media/atomisp/i2c/atomisp-ov2722.c
-[]
-> > > > @@ -1175,7 +1175,7 @@ static int ov2722_remove(struct i2c_client *client)
-> > > >   	struct v4l2_subdev *sd = i2c_get_clientdata(client);
-> > > >   	struct ov2722_device *dev = to_ov2722_sensor(sd);
-> > > > -	dev_dbg(&client->dev, "ov2722_remove...\n");
-> > > > +	dev_dbg(&client->dev, "%s...\n", __func__);
-> > > 
-> > > dev_dbg() provides the function name already, and this is just a "trace"
-> > > call, and ftrace should be used instead, so the whole line should be
-> > > removed entirely.
-> > 
-> > Thank you for the review!
-> > 
-> > How do I go about this? Do I amend the patch and re-send as v2 or create a
-> > new patch entirely?
-> 
-> New patch entirely please.
+Use my @google.com address in MAINTAINERS, somehow only the .mailmap
+entry was added when the original update patch was applied.
 
-There are quite a lot of these relatively useless function tracing like
-uses in the kernel:
-
-$ git grep -P '"%s[\.\!]*\\n"\s*,\s*__func__\s*\)' | wc -l
-1065
-
-Perhaps yet another checkpatch warning would be useful:
+Fixes: c2b1209d852f ("MAINTAINERS: Update email address for Sean Christopherson")
+Cc: kvm@vger.kernel.org
+Reported-by: Nathan Chancellor <natechancellor@gmail.com>
+Signed-off-by: Sean Christopherson <seanjc@google.com>
 ---
- scripts/checkpatch.pl | 8 ++++++++
- 1 file changed, 8 insertions(+)
+ MAINTAINERS | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
-index e6857bdfcb2d..46b8ec8fe9e1 100755
---- a/scripts/checkpatch.pl
-+++ b/scripts/checkpatch.pl
-@@ -5981,6 +5981,14 @@ sub process {
- 			     "Prefer using '\"%s...\", __func__' to using '$context_function', this function's name, in a string\n" . $herecurr);
- 		}
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 7c1e45c416b1..9201e6147cba 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -9776,7 +9776,7 @@ F:	tools/testing/selftests/kvm/s390x/
  
-+# check for unnecessary function tracing like uses
-+		if ($rawline =~ /^\+\s*$logFunctions\s*\([^"]*"%s[\.\!]*\\n"\s*,\s*__func__\s*\)\s*;\s*$/) {
-+			if (WARN("TRACING_LOGGING",
-+				 "Unnecessary ftrace-like logging - prefer using ftrace\n" . $herecurr) &&
-+			    $fix) {
-+                                fix_delete_line($fixlinenr, $rawline);
-+			}
-+		}
- # check for spaces before a quoted newline
- 		if ($rawline =~ /^.*\".*\s\\n/) {
- 			if (WARN("QUOTED_WHITESPACE_BEFORE_NEWLINE",
+ KERNEL VIRTUAL MACHINE FOR X86 (KVM/x86)
+ M:	Paolo Bonzini <pbonzini@redhat.com>
+-R:	Sean Christopherson <sean.j.christopherson@intel.com>
++R:	Sean Christopherson <seanjc@google.com>
+ R:	Vitaly Kuznetsov <vkuznets@redhat.com>
+ R:	Wanpeng Li <wanpengli@tencent.com>
+ R:	Jim Mattson <jmattson@google.com>
+-- 
+2.29.2.729.g45daf8777d-goog
 
