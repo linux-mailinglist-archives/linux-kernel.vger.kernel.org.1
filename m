@@ -2,105 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D1502EB6FA
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 01:43:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 075262EB6FD
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 01:45:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727386AbhAFAnX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 19:43:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40292 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727335AbhAFAnX (ORCPT
+        id S1727413AbhAFAo2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 19:44:28 -0500
+Received: from so254-31.mailgun.net ([198.61.254.31]:16530 "EHLO
+        so254-31.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727394AbhAFAo1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 19:43:23 -0500
-Received: from mail-ot1-x32a.google.com (mail-ot1-x32a.google.com [IPv6:2607:f8b0:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8C88C061793;
-        Tue,  5 Jan 2021 16:42:42 -0800 (PST)
-Received: by mail-ot1-x32a.google.com with SMTP id d8so1551502otq.6;
-        Tue, 05 Jan 2021 16:42:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=rJIW+TkPHzwAadsvHwzFBYVv7eO9qsc4zllpELWrOHY=;
-        b=vYgYsI83SZA8A5U0getZRGvfhjMCAL5Ne8nN37EtfYwvQppWY/NfjnZ4mGukHW93BH
-         RCzpxpmlS1KT+8L0xC9/2/oRZTCg0mReYfVd/YcraTS1pH8pUfKbA91BcW6CoehdHY6X
-         gmItY2fXMuXfrt2CFgAU79pFRn3xpnMvtz1ya/KbFC9sS5vsQSc07ACc+7efcxzDVp5I
-         NsHyaKrEM2a4NSzqiNNF0lGBGfxWqfl/L4v091ViSEFrAP2Bqwcuu/mSDibQ/IzTAHRb
-         74boqnDUhGfg27UkJBkjUOyRsniYh1L53cn+e3J5LqvHJJt6NXAHSiCVA+NM55jkWe0L
-         CtEQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=rJIW+TkPHzwAadsvHwzFBYVv7eO9qsc4zllpELWrOHY=;
-        b=hqL3rSrrPjG+bsZkJ4ByfQx1OLUbi3+M1iCw9ukes8UUKl4af3HqtV++p4J8sAu47q
-         OgKnnmphUpOimA/DjWRbnITUKIyZOm1Nk3HlPSqJR0LZwGRQcktkTB8w0UFjitzEuhWc
-         y62RUpxF8UPERoWNRM6yAaF4AxD2yXBDSPktSVBazdjnXuDWfYv4g3Uu1tAEU4Nd+GSU
-         J2Umzb2WVSN7qhfMvomTPPrncATGHM+b4+iszTuRmWFc/p98IVY+FjiVCrH1b8rcM/fz
-         0qmyJtaaD/mCdWah71o+HHapfQx/K1Vy0Q8JxKM5gHGglQFs0xR0VvG7viuBcNr4f7MN
-         S9gg==
-X-Gm-Message-State: AOAM530aORZnwUSP+yOJ4UI3ue/JqEo7+aC+pSLZUNnU+tCWrjz/K3u7
-        VK+86Bc2wu2FKEvf9EmOu/ihyzLVPsjm1U5PyTR0o1Fn
-X-Google-Smtp-Source: ABdhPJw7uTz6EV6kWmBFWPuO1J4Mue7BQ1TFNTgr7/WHNUxB12RqCFbcDGM8pUG8APcybpqefZ2MWaiaZYPq2LbecAg=
-X-Received: by 2002:a05:6830:4f:: with SMTP id d15mr1541713otp.185.1609893762440;
- Tue, 05 Jan 2021 16:42:42 -0800 (PST)
+        Tue, 5 Jan 2021 19:44:27 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1609893847; h=Content-Transfer-Encoding: MIME-Version:
+ Message-Id: Date: Subject: Cc: To: From: Sender;
+ bh=pzrh7dwncd17lj6KkzA6WwnlG1QsGgiLO7PzX4xZ938=; b=ZLhdmIOtlE7atH24/czrHOWrU+EJq5Ktmdk43tACy2U3PlBgIP6dbVN2QC/R2h/MFWzBHCxA
+ O/1fVzi3RJ6lhoWrkxIzAf5HBSmbe+VIIvl/j4Nqv6ca3AMtWkdZEkE4Acadbe6lz8cMqAQb
+ HyN0XG5d9MnkbwcLWfDWz/ToMsE=
+X-Mailgun-Sending-Ip: 198.61.254.31
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n06.prod.us-west-2.postgun.com with SMTP id
+ 5ff507bdd3eb3c36b4c12da6 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 06 Jan 2021 00:43:41
+ GMT
+Sender: sudaraja=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 7D329C433CA; Wed,  6 Jan 2021 00:43:41 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from th-lint-014.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: sudaraja)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 77EF6C433CA;
+        Wed,  6 Jan 2021 00:43:40 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 77EF6C433CA
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=sudaraja@codeaurora.org
+From:   Sudarshan Rajagopalan <sudaraja@codeaurora.org>
+To:     akpm@linux-foundation.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Cc:     Sudarshan Rajagopalan <sudaraja@codeaurora.org>
+Subject: [PATCH] mm: vmscan: support complete shrinker reclaim
+Date:   Tue,  5 Jan 2021 16:43:38 -0800
+Message-Id: <2d1f1dbb7e018ad02a9e7af36a8c86397a1598a7.1609892546.git.sudaraja@codeaurora.org>
+X-Mailer: git-send-email 2.25.0
 MIME-Version: 1.0
-References: <20210105192844.296277-1-nitesh@redhat.com>
-In-Reply-To: <20210105192844.296277-1-nitesh@redhat.com>
-From:   Wanpeng Li <kernellwp@gmail.com>
-Date:   Wed, 6 Jan 2021 08:42:31 +0800
-Message-ID: <CANRm+CwW0NfqD3e+xEZtKrpV+igwZoCp_Tz_5sztj2-8WXGu0A@mail.gmail.com>
-Subject: Re: [PATCH] Revert "KVM: x86: Unconditionally enable irqs in guest context"
-To:     Nitesh Narayan Lal <nitesh@redhat.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>, kvm <kvm@vger.kernel.org>,
-        seanjc@google.com, w90p710@gmail.com,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 6 Jan 2021 at 06:30, Nitesh Narayan Lal <nitesh@redhat.com> wrote:
->
-> This reverts commit d7a08882a0a4b4e176691331ee3f492996579534.
->
-> After the introduction of the patch:
->
->         87fa7f3e9: x86/kvm: Move context tracking where it belongs
->
-> since we have moved guest_exit_irqoff closer to the VM-Exit, explicit
-> enabling of irqs to process pending interrupts should not be required
-> within vcpu_enter_guest anymore.
->
-> Conflicts:
->         arch/x86/kvm/svm.c
->
-> Signed-off-by: Nitesh Narayan Lal <nitesh@redhat.com>
-> ---
->  arch/x86/kvm/svm/svm.c |  9 +++++++++
->  arch/x86/kvm/x86.c     | 11 -----------
->  2 files changed, 9 insertions(+), 11 deletions(-)
->
-> diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
-> index cce0143a6f80..c9b2fbb32484 100644
-> --- a/arch/x86/kvm/svm/svm.c
-> +++ b/arch/x86/kvm/svm/svm.c
-> @@ -4187,6 +4187,15 @@ static int svm_check_intercept(struct kvm_vcpu *vcpu,
->
->  static void svm_handle_exit_irqoff(struct kvm_vcpu *vcpu)
->  {
-> +       kvm_before_interrupt(vcpu);
-> +       local_irq_enable();
-> +       /*
-> +        * We must have an instruction with interrupts enabled, so
-> +        * the timer interrupt isn't delayed by the interrupt shadow.
-> +        */
-> +       asm("nop");
-> +       local_irq_disable();
-> +       kvm_after_interrupt(vcpu);
->  }
+Ensure that shrinkers are given the option to completely drop
+their caches even when their caches are smaller than the batch size.
+This change helps improve memory headroom by ensuring that under
+significant memory pressure shrinkers can drop all of their caches.
+This change only attempts to more aggressively call the shrinkers
+during background memory reclaim, inorder to avoid hurting the
+performance of direct memory reclaim.
 
-Why do we need to reintroduce this part?
+Signed-off-by: Sudarshan Rajagopalan <sudaraja@codeaurora.org>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+---
+ mm/vmscan.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
-    Wanpeng
+diff --git a/mm/vmscan.c b/mm/vmscan.c
+index 9727dd8e2581..35973665ae64 100644
+--- a/mm/vmscan.c
++++ b/mm/vmscan.c
+@@ -424,6 +424,10 @@ static unsigned long do_shrink_slab(struct shrink_control *shrinkctl,
+ 	long batch_size = shrinker->batch ? shrinker->batch
+ 					  : SHRINK_BATCH;
+ 	long scanned = 0, next_deferred;
++	long min_cache_size = batch_size;
++
++	if (current_is_kswapd())
++		min_cache_size = 0;
+ 
+ 	if (!(shrinker->flags & SHRINKER_NUMA_AWARE))
+ 		nid = 0;
+@@ -503,7 +507,7 @@ static unsigned long do_shrink_slab(struct shrink_control *shrinkctl,
+ 	 * scanning at high prio and therefore should try to reclaim as much as
+ 	 * possible.
+ 	 */
+-	while (total_scan >= batch_size ||
++	while (total_scan > min_cache_size ||
+ 	       total_scan >= freeable) {
+ 		unsigned long ret;
+ 		unsigned long nr_to_scan = min(batch_size, total_scan);
+-- 
+Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
+a Linux Foundation Collaborative Project
+
