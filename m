@@ -2,261 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BF062EBE05
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 13:57:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E7BCF2EBDFE
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 13:57:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727016AbhAFMzr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Jan 2021 07:55:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42196 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726883AbhAFMzh (ORCPT
+        id S1726830AbhAFMzd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Jan 2021 07:55:33 -0500
+Received: from jabberwock.ucw.cz ([46.255.230.98]:43598 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726303AbhAFMzc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Jan 2021 07:55:37 -0500
-Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1688C061378
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Jan 2021 04:54:53 -0800 (PST)
-Received: by mail-pf1-x430.google.com with SMTP id t8so1655960pfg.8
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Jan 2021 04:54:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=ATR9yRNBQQTnbKCfntyTDHLVwzrGaXdBCPAvcP9FhJU=;
-        b=Scevy0bILl2yBVR8ByQXwgtx90/CV1F8Fn2s8NsQAtDYvdj/BQ5VQSLZWrkGieBajo
-         D9WnNOptSQxak+2W6M3NoKyD0E7kZwuCIOgk9kGHfoXoFZxbGZjyeHE2lWfRek4FzpAU
-         NOQKQhuYtOkF50NxuhcvLDCMI7mhCURQGvfqxbOZ84RV3UQz/r6OzRMFDU1sxYBM4F1p
-         6C2+S7/zAOA0Kcx86Yo/xHAW64gR4iU8x72mpQ4MusU4iHJTWJ+i/imFe6sksvn/VU2i
-         VGSZA4nLTpVYWvSHAPvj9K0QIJkIpGwcgmUC8PXEIYyr32y7I/1Rpu900r0Rdbp1uhEz
-         ++xA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=ATR9yRNBQQTnbKCfntyTDHLVwzrGaXdBCPAvcP9FhJU=;
-        b=PBk6TJ0tsxo7R415hC32KlPihrtV1B0t2gyHdwPJlygnw5bJf5gx0RVBdxNOFdmMMr
-         wxOW5cR8SGsD/bjPyjnwOD3bJhb2ZcZW6kwKaKVnIy/m1I3E0W0qQwi8GR2OQBQ8VLfo
-         iiCb7e0wtPqZASESW+u/T0VEM3f0FFEV9UsP59SCDuKRXY2hRiGbxIdnWdskp5yxlZru
-         p6ETF6TB6/5GoUI/CTXAhzVUn8iScryqkFDxwAzB5Dgfm7aboPfJkUEKaRVo2AK2fywU
-         a1uT1qh4IsywK6S3VaWWXu/sXi21ql7uWweeHWIcM75HbCYh/jzS74esBLunMfZaA1oY
-         /C/w==
-X-Gm-Message-State: AOAM531dN5ejEat7ekC0v/wQ6k7QYct2jpyAeMR7UqvXxLjgfKR4WBhP
-        4FeHKkImEKVo/9wuniyWRQy4
-X-Google-Smtp-Source: ABdhPJyG7ZXnSUw9wylD8jNDsy7YobQYtV4evLzXy+EAvXl2kqTrSneZQ+vR9kBuVnFQJGOcCv2gYA==
-X-Received: by 2002:aa7:868e:0:b029:19e:3ac9:f622 with SMTP id d14-20020aa7868e0000b029019e3ac9f622mr3960247pfo.37.1609937693223;
-        Wed, 06 Jan 2021 04:54:53 -0800 (PST)
-Received: from localhost.localdomain ([2409:4072:6102:e7a2:51f0:bf72:bf80:ec88])
-        by smtp.gmail.com with ESMTPSA id n128sm2918182pga.55.2021.01.06.04.54.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 06 Jan 2021 04:54:52 -0800 (PST)
-From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To:     agross@kernel.org, bjorn.andersson@linaro.org
-Cc:     linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Vinod Koul <vkoul@kernel.org>,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Subject: [PATCH v3 18/18] ARM: dts: qcom: sdx55-mtp: Add regulator nodes
-Date:   Wed,  6 Jan 2021 18:23:22 +0530
-Message-Id: <20210106125322.61840-19-manivannan.sadhasivam@linaro.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210106125322.61840-1-manivannan.sadhasivam@linaro.org>
-References: <20210106125322.61840-1-manivannan.sadhasivam@linaro.org>
+        Wed, 6 Jan 2021 07:55:32 -0500
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id DED801C0B9B; Wed,  6 Jan 2021 13:54:49 +0100 (CET)
+Date:   Wed, 6 Jan 2021 13:54:49 +0100
+From:   Pavel Machek <pavel@ucw.cz>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Naohiro Aota <naohiro.aota@wdc.com>,
+        Damien Le Moal <damien.lemoal@wdc.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Johannes Thumshirn <johannes.thumshirn@wdc.com>,
+        Jens Axboe <axboe@kernel.dk>
+Subject: Re: [PATCH 4.19 13/35] null_blk: Fix zone size initialization
+Message-ID: <20210106125449.GA7589@duo.ucw.cz>
+References: <20210104155703.375788488@linuxfoundation.org>
+ <20210104155704.049016882@linuxfoundation.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="IS0zKkzwUGydFO0o"
+Content-Disposition: inline
+In-Reply-To: <20210104155704.049016882@linuxfoundation.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vinod Koul <vkoul@kernel.org>
 
-This adds the regulators found on SDX55 MTP.
+--IS0zKkzwUGydFO0o
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Vinod Koul <vkoul@kernel.org>
-Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
----
- arch/arm/boot/dts/qcom-sdx55-mtp.dts | 164 +++++++++++++++++++++++++++
- 1 file changed, 164 insertions(+)
+Hi!
 
-diff --git a/arch/arm/boot/dts/qcom-sdx55-mtp.dts b/arch/arm/boot/dts/qcom-sdx55-mtp.dts
-index 5b247f628d18..96b6a295f813 100644
---- a/arch/arm/boot/dts/qcom-sdx55-mtp.dts
-+++ b/arch/arm/boot/dts/qcom-sdx55-mtp.dts
-@@ -7,6 +7,7 @@
- /dts-v1/;
- 
- #include "qcom-sdx55.dtsi"
-+#include <dt-bindings/regulator/qcom,rpmh-regulator.h>
- #include <arm64/qcom/pm8150b.dtsi>
- #include "qcom-pmx55.dtsi"
- 
-@@ -43,6 +44,169 @@ mpss_adsp_mem: memory@90c00000 {
- 			reg = <0x90c00000 0xd400000>;
- 		};
- 	};
-+
-+	vph_pwr: vph-pwr-regulator {
-+		compatible = "regulator-fixed";
-+		regulator-name = "vph_pwr";
-+		regulator-min-microvolt = <3700000>;
-+		regulator-max-microvolt = <3700000>;
-+	};
-+
-+	vreg_bob_3p3: pmx55-bob {
-+		compatible = "regulator-fixed";
-+		regulator-name = "vreg_bob_3p3";
-+		regulator-min-microvolt = <3300000>;
-+		regulator-max-microvolt = <3300000>;
-+
-+		regulator-always-on;
-+		regulator-boot-on;
-+
-+		vin-supply = <&vph_pwr>;
-+	};
-+
-+	vreg_s7e_mx_0p752: pmx55-s7e {
-+		compatible = "regulator-fixed";
-+		regulator-name = "vreg_s7e_mx_0p752";
-+		regulator-min-microvolt = <752000>;
-+		regulator-max-microvolt = <752000>;
-+
-+		vin-supply = <&vph_pwr>;
-+	};
-+};
-+
-+&apps_rsc {
-+	pmx55-rpmh-regulators {
-+		compatible = "qcom,pmx55-rpmh-regulators";
-+		qcom,pmic-id = "e";
-+
-+		vdd-s1-supply = <&vph_pwr>;
-+		vdd-s2-supply = <&vph_pwr>;
-+		vdd-s3-supply = <&vph_pwr>;
-+		vdd-s4-supply = <&vph_pwr>;
-+		vdd-s5-supply = <&vph_pwr>;
-+		vdd-s6-supply = <&vph_pwr>;
-+		vdd-s7-supply = <&vph_pwr>;
-+		vdd-l1-l2-supply = <&vreg_s2e_1p224>;
-+		vdd-l3-l9-supply = <&vreg_s3e_0p824>;
-+		vdd-l4-l12-supply = <&vreg_s4e_1p904>;
-+		vdd-l5-l6-supply = <&vreg_s4e_1p904>;
-+		vdd-l7-l8-supply = <&vreg_s3e_0p824>;
-+		vdd-l10-l11-l13-supply = <&vreg_bob_3p3>;
-+		vdd-l14-supply = <&vreg_s7e_mx_0p752>;
-+		vdd-l15-supply = <&vreg_s2e_1p224>;
-+		vdd-l16-supply = <&vreg_s4e_1p904>;
-+
-+		vreg_s2e_1p224: smps2 {
-+			regulator-min-microvolt = <1280000>;
-+			regulator-max-microvolt = <1400000>;
-+		};
-+
-+		vreg_s3e_0p824: smps3 {
-+			regulator-min-microvolt = <800000>;
-+			regulator-max-microvolt = <1000000>;
-+		};
-+
-+		vreg_s4e_1p904: smps4 {
-+			regulator-min-microvolt = <1800000>;
-+			regulator-max-microvolt = <1960000>;
-+		};
-+
-+		ldo1 {
-+			regulator-min-microvolt = <1200000>;
-+			regulator-max-microvolt = <1200000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_LPM>;
-+		};
-+
-+		ldo2 {
-+			regulator-min-microvolt = <1128000>;
-+			regulator-max-microvolt = <1128000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_LPM>;
-+		};
-+
-+		ldo3 {
-+			regulator-min-microvolt = <800000>;
-+			regulator-max-microvolt = <800000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_LPM>;
-+		};
-+
-+		ldo4 {
-+			regulator-min-microvolt = <872000>;
-+			regulator-max-microvolt = <872000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_LPM>;
-+		};
-+
-+		ldo5 {
-+			regulator-min-microvolt = <1704000>;
-+			regulator-max-microvolt = <1900000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_LPM>;
-+		};
-+
-+		ldo6 {
-+			regulator-min-microvolt = <1800000>;
-+			regulator-max-microvolt = <1800000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_LPM>;
-+		};
-+
-+		ldo7 {
-+			regulator-min-microvolt = <480000>;
-+			regulator-max-microvolt = <900000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_LPM>;
-+		};
-+
-+		ldo8 {
-+			regulator-min-microvolt = <480000>;
-+			regulator-max-microvolt = <900000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_LPM>;
-+		};
-+
-+		ldo9 {
-+			regulator-min-microvolt = <800000>;
-+			regulator-max-microvolt = <800000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_LPM>;
-+		};
-+
-+		ldo10 {
-+			regulator-min-microvolt = <3088000>;
-+			regulator-max-microvolt = <3088000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_LPM>;
-+		};
-+
-+		ldo11 {
-+			regulator-min-microvolt = <1704000>;
-+			regulator-max-microvolt = <2928000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_LPM>;
-+		};
-+
-+		ldo12 {
-+			regulator-min-microvolt = <1200000>;
-+			regulator-max-microvolt = <1200000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_LPM>;
-+		};
-+
-+		ldo13 {
-+			regulator-min-microvolt = <1704000>;
-+			regulator-max-microvolt = <2928000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_LPM>;
-+		};
-+
-+		ldo14 {
-+			regulator-min-microvolt = <600000>;
-+			regulator-max-microvolt = <800000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_LPM>;
-+		};
-+
-+		ldo15 {
-+			regulator-min-microvolt = <1200000>;
-+			regulator-max-microvolt = <1200000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_LPM>;
-+		};
-+
-+		ldo16 {
-+			regulator-min-microvolt = <1704000>;
-+			regulator-max-microvolt = <1904000>;
-+			regulator-initial-mode = <RPMH_REGULATOR_MODE_LPM>;
-+		};
-+	};
- };
- 
- &blsp1_uart3 {
--- 
-2.25.1
+> commit 0ebcdd702f49aeb0ad2e2d894f8c124a0acc6e23 upstream.
+>=20
+> For a null_blk device with zoned mode enabled is currently initialized
+> with a number of zones equal to the device capacity divided by the zone
+> size, without considering if the device capacity is a multiple of the
+> zone size. If the zone size is not a divisor of the capacity, the zones
+> end up not covering the entire capacity, potentially resulting is out
+> of bounds accesses to the zone array.
+>=20
+> Fix this by adding one last smaller zone with a size equal to the
+> remainder of the disk capacity divided by the zone size if the capacity
+> is not a multiple of the zone size. For such smaller last zone, the zone
+> capacity is also checked so that it does not exceed the smaller zone
+> size.
 
+> --- a/drivers/block/null_blk_zoned.c
+> +++ b/drivers/block/null_blk_zoned.c
+> @@ -1,9 +1,9 @@
+>  // SPDX-License-Identifier: GPL-2.0
+>  #include <linux/vmalloc.h>
+> +#include <linux/sizes.h>
+>  #include "null_blk.h"
+> =20
+> -/* zone_size in MBs to sectors. */
+> -#define ZONE_SIZE_SHIFT		11
+> +#define MB_TO_SECTS(mb) (((sector_t)mb * SZ_1M) >> SECTOR_SHIFT)
+
+This macro is quite dangerous. (mb) would help, but inline function
+would be better.
+
+
+> +	dev->nr_zones =3D dev_capacity_sects >> ilog2(dev->zone_size_sects);
+> +	if (dev_capacity_sects & (dev->zone_size_sects - 1))
+> +		dev->nr_zones++;
+
+Is this same as nr_zones =3D DIV_ROUND_UP(dev_capacity_sects,
+dev->zone_size_sects)? Would that be faster, more readable and robust
+against weird dev->zone_size_sects sizes?
+
+Best regards,
+								Pavel
+--=20
+http://www.livejournal.com/~pavelmachek
+
+--IS0zKkzwUGydFO0o
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCX/WzGQAKCRAw5/Bqldv6
+8lqUAKC4lnEVavZsVvuVOURrv5t1AOeYXACaArcggbTBIyOc+PTZkdqWBpNO+O0=
+=UkhQ
+-----END PGP SIGNATURE-----
+
+--IS0zKkzwUGydFO0o--
