@@ -2,78 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B1E322EB733
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 01:59:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D00CE2EB73C
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 01:59:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726602AbhAFA5y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 19:57:54 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55772 "EHLO mail.kernel.org"
+        id S1726960AbhAFA6W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 19:58:22 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55864 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726018AbhAFA5x (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 19:57:53 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5177222227;
-        Wed,  6 Jan 2021 00:57:13 +0000 (UTC)
+        id S1725906AbhAFA6S (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Jan 2021 19:58:18 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D9DBE22242;
+        Wed,  6 Jan 2021 00:57:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1609894633;
-        bh=h+AMq7p+XkXwIOapaMS0m3bye6R942zGsf+4iuMVXZc=;
-        h=Date:From:To:Cc:Subject:Reply-To:From;
-        b=DMoUtOnnYsiX6DEEJYn8WN3fV69OnKydY4xtmITjPFNIzQbymnaORJyuDPjnztiOb
-         TwY/kCPGS9n1M/g8xpeU6L3uvpNqE/BRyVawo2DLlA5dJmPZScvJWJovmFBHVi+DCc
-         3lVmrlWrRJZeWumWOwwJsT43VW1STYzD0F6Lgku94aT+jCbKDdiI4toPbTnc/vSIIg
-         sy59GKaJYhClTEMtHucPI9JJIwvPNUMF6BqzgZP3UyRhzDHzWyZSp7+Gr60nMEGg7b
-         GZI7ySUvXppf9zl7+Evw3kasZ2HpPASoTaRuDoBb2ab1ZeMkmSELZTK/7CmSXak7g3
-         LWl7l4VmEjgUQ==
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 176D435228C6; Tue,  5 Jan 2021 16:57:13 -0800 (PST)
-Date:   Tue, 5 Jan 2021 16:57:13 -0800
-From:   "Paul E. McKenney" <paulmck@kernel.org>
+        s=k20201202; t=1609894657;
+        bh=F1aJ2etmruJ4EftXrNZVMY6RTkzkxwYaVyLLjQxisb4=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=kJASGUiPciBKh69qTblSD8WasAgRehroNc5Qwe2pJev4oKR0Dnq0XkrmSE+3iWqez
+         JJRPwvk3WvFbrcdllyol8hN3FY2xn47f17hPSYJUek1g8CB5ntkPc9wUgtQbz6LXwB
+         ggU0a6VMHfi78CoSWT1qLHTmARQEQrC6lyJujqRKTMT9xwvh9rNrAngXGcA7/z3tyc
+         UboBYfrdEl0uHJKJZO6t7JLbtvtXEnPRI8aMORPI5LCvn7oP8pYTQibbpMyonNQtJM
+         l1dGEliETsZZsfjfYXTfAiKvyLQi53USAHTLsWkv93HzgkZHNPSrs8VfxWFf+xeEp4
+         /OK9OpwSNHpIA==
+From:   paulmck@kernel.org
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         jiangshanlai@gmail.com, akpm@linux-foundation.org,
         mathieu.desnoyers@efficios.com, josh@joshtriplett.org,
         tglx@linutronix.de, peterz@infradead.org, rostedt@goodmis.org,
         dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
-        oleg@redhat.com, joel@joelfernandes.org
-Subject: [PATCH tip/core/rcu 0/6] Miscellaneous fixes for v5.12
-Message-ID: <20210106005713.GA12492@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.9.4 (2018-02-28)
+        oleg@redhat.com, joel@joelfernandes.org,
+        "Paul E . McKenney" <paulmck@kernel.org>
+Subject: [PATCH tip/core/rcu 1/6] sched/core: Allow try_invoke_on_locked_down_task() with irqs disabled
+Date:   Tue,  5 Jan 2021 16:57:31 -0800
+Message-Id: <20210106005736.12613-1-paulmck@kernel.org>
+X-Mailer: git-send-email 2.9.5
+In-Reply-To: <20210106005713.GA12492@paulmck-ThinkPad-P72>
+References: <20210106005713.GA12492@paulmck-ThinkPad-P72>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello!
+From: Peter Zijlstra <peterz@infradead.org>
 
-This series contains miscellaneous fixes.
+The try_invoke_on_locked_down_task() function currently requires
+that interrupts be enabled, but it is called with interrupts
+disabled from rcu_print_task_stall(), resulting in an "IRQs not
+enabled as expected" diagnostic.  This commit therefore updates
+try_invoke_on_locked_down_task() to use raw_spin_lock_irqsave() instead
+of raw_spin_lock_irq(), thus allowing use from either context.
 
-1.	Allow try_invoke_on_locked_down_task() with irqs disabled,
-	courtesy of Peter Zijlstra.
+Link: https://lore.kernel.org/lkml/000000000000903d5805ab908fc4@google.com/
+Link: https://lore.kernel.org/lkml/20200928075729.GC2611@hirez.programming.kicks-ass.net/
+Reported-by: syzbot+cb3b69ae80afd6535b0e@syzkaller.appspotmail.com
+Signed-off-by: Peter Zijlstra <peterz@infradead.org>
+Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+---
+ kernel/sched/core.c | 9 ++++-----
+ 1 file changed, 4 insertions(+), 5 deletions(-)
 
-2.	Remove duplicate include of percpu-rwsem.h, courtesy of Wang Qing.
+diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+index e7e4534..f768bb0 100644
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -2989,7 +2989,7 @@ try_to_wake_up(struct task_struct *p, unsigned int state, int wake_flags)
+ 
+ /**
+  * try_invoke_on_locked_down_task - Invoke a function on task in fixed state
+- * @p: Process for which the function is to be invoked.
++ * @p: Process for which the function is to be invoked, can be @current.
+  * @func: Function to invoke.
+  * @arg: Argument to function.
+  *
+@@ -3007,12 +3007,11 @@ try_to_wake_up(struct task_struct *p, unsigned int state, int wake_flags)
+  */
+ bool try_invoke_on_locked_down_task(struct task_struct *p, bool (*func)(struct task_struct *t, void *arg), void *arg)
+ {
+-	bool ret = false;
+ 	struct rq_flags rf;
++	bool ret = false;
+ 	struct rq *rq;
+ 
+-	lockdep_assert_irqs_enabled();
+-	raw_spin_lock_irq(&p->pi_lock);
++	raw_spin_lock_irqsave(&p->pi_lock, rf.flags);
+ 	if (p->on_rq) {
+ 		rq = __task_rq_lock(p, &rf);
+ 		if (task_rq(p) == rq)
+@@ -3029,7 +3028,7 @@ bool try_invoke_on_locked_down_task(struct task_struct *p, bool (*func)(struct t
+ 				ret = func(p, arg);
+ 		}
+ 	}
+-	raw_spin_unlock_irq(&p->pi_lock);
++	raw_spin_unlock_irqrestore(&p->pi_lock, rf.flags);
+ 	return ret;
+ }
+ 
+-- 
+2.9.5
 
-3.	Add lockdep_assert_irqs_disabled() to rcu_sched_clock_irq()
-	and callees.
-
-4.	Add lockdep_assert_irqs_disabled() to raw_spin_unlock_rcu_node()
-	macros.
-
-5.	rcu-tasks: Add RCU-tasks self tests, courtesy of Uladzislau Rezki.
-
-6.	Make TASKS_TRACE_RCU select IRQ_WORK.
-
-						Thanx, Paul
-
-------------------------------------------------------------------------
-
- locking/locktorture.c |    1 
- rcu/Kconfig           |    1 
- rcu/rcu.h             |   16 ++++++++--
- rcu/tasks.h           |   79 ++++++++++++++++++++++++++++++++++++++++++++++++++
- rcu/tree.c            |    4 ++
- rcu/tree_plugin.h     |    1 
- rcu/tree_stall.h      |    8 +++++
- sched/core.c          |    9 ++---
- 8 files changed, 110 insertions(+), 9 deletions(-)
