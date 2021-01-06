@@ -2,84 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F1062EBAC1
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 08:52:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 522892EBAC7
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 08:52:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726724AbhAFHv4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Jan 2021 02:51:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51276 "EHLO
+        id S1726808AbhAFHwK convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 6 Jan 2021 02:52:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51316 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726695AbhAFHvz (ORCPT
+        with ESMTP id S1725971AbhAFHwI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Jan 2021 02:51:55 -0500
-Received: from baptiste.telenet-ops.be (baptiste.telenet-ops.be [IPv6:2a02:1800:120:4::f00:13])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D35EAC06134D
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Jan 2021 23:51:14 -0800 (PST)
-Received: from ramsan.of.borg ([84.195.186.194])
-        by baptiste.telenet-ops.be with bizsmtp
-        id DKrD2400P4C55Sk01KrDZH; Wed, 06 Jan 2021 08:51:13 +0100
-Received: from rox.of.borg ([192.168.97.57])
-        by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1kx3b7-001VcN-49; Wed, 06 Jan 2021 08:51:13 +0100
-Received: from geert by rox.of.borg with local (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1kx3b6-006gRf-Np; Wed, 06 Jan 2021 08:51:12 +0100
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-To:     Alexander Viro <viro@zeniv.linux.org.uk>
-Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2] binfmt_elf: Fix fill_prstatus() call in fill_note_info()
-Date:   Wed,  6 Jan 2021 08:51:12 +0100
-Message-Id: <20210106075112.1593084-1-geert@linux-m68k.org>
-X-Mailer: git-send-email 2.25.1
+        Wed, 6 Jan 2021 02:52:08 -0500
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E25BC061358
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Jan 2021 23:51:28 -0800 (PST)
+Received: from pty.hi.pengutronix.de ([2001:67c:670:100:1d::c5])
+        by metis.ext.pengutronix.de with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ore@pengutronix.de>)
+        id 1kx3bJ-0008WM-Ld; Wed, 06 Jan 2021 08:51:25 +0100
+Received: from ore by pty.hi.pengutronix.de with local (Exim 4.89)
+        (envelope-from <ore@pengutronix.de>)
+        id 1kx3bI-0006db-0A; Wed, 06 Jan 2021 08:51:24 +0100
+Date:   Wed, 6 Jan 2021 08:51:23 +0100
+From:   Oleksij Rempel <o.rempel@pengutronix.de>
+To:     Shawn Guo <shawnguo@kernel.org>
+Cc:     Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        David Jander <david@protonic.nl>,
+        Fabio Estevam <festevam@gmail.com>,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v2 2/2] ARM: dts: add Protonic MVT board
+Message-ID: <20210106075123.dkutuzcycokox2xr@pengutronix.de>
+References: <20201201074125.11806-1-o.rempel@pengutronix.de>
+ <20201201074125.11806-3-o.rempel@pengutronix.de>
+ <20210105023515.GH4142@dragon>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8BIT
+In-Reply-To: <20210105023515.GH4142@dragon>
+X-Sent-From: Pengutronix Hildesheim
+X-URL:  http://www.pengutronix.de/
+X-IRC:  #ptxdist @freenode
+X-Accept-Language: de,en
+X-Accept-Content-Type: text/plain
+X-Uptime: 08:32:25 up 34 days, 21:38, 28 users,  load average: 0.07, 0.02,
+ 0.00
+User-Agent: NeoMutt/20170113 (1.7.2)
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c5
+X-SA-Exim-Mail-From: ore@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On m68k, which does not define CORE_DUMP_USE_REGSET:
+Hi Shawn,
 
-    fs/binfmt_elf.c: In function ‘fill_note_info’:
-    fs/binfmt_elf.c:2040:20: error: passing argument 1 of ‘fill_prstatus’ from incompatible pointer type [-Werror=incompatible-pointer-types]
-     2040 |  fill_prstatus(info->prstatus, current, siginfo->si_signo);
-	  |                ~~~~^~~~~~~~~~
-	  |                    |
-	  |                    struct elf_prstatus *
-    fs/binfmt_elf.c:1498:55: note: expected ‘struct elf_prstatus_common *’ but argument is of type ‘struct elf_prstatus *’
-     1498 | static void fill_prstatus(struct elf_prstatus_common *prstatus,
-	  |                           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~
+On Tue, Jan 05, 2021 at 10:35:17AM +0800, Shawn Guo wrote:
+> On Tue, Dec 01, 2020 at 08:41:25AM +0100, Oleksij Rempel wrote:
+> > PRTMVT is the reference platform for Protonic industrial touchscreen terminals.
+> > 
+> > Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
 
-The fill_prstatus() signature was changed, but one caller was not
-updated.
+> > ---
+> > +	gpio-keys {
+> > +		compatible = "gpio-keys";
+> > +		pinctrl-names = "default";
+> > +		pinctrl-0 = <&pinctrl_gpiokeys>;
+> > +		autorepeat;
+> > +
+> > +		power {
+> > +			label = "Power Button";
+> > +			gpios = <&gpio2 23 GPIO_ACTIVE_LOW>;
+> > +			linux,code = <116>; /* KEY_POWER */
+> 
+> Why not just using defines?
 
-Reported-by: noreply@ellerman.id.au
-Fixes: 147d88b334cd5416 ("elf_prstatus: collect the common part (everything before pr_reg) into a struct")
-Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
----
-Compile-tested only.  Feel free to fold into the original commit.
+Uff, I didn't noticed there are existing defines. Thx, done.
 
-v2:
-  - Drop unrelated patches from series.
----
- fs/binfmt_elf.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> > +			wakeup-source;
+> > +		};
+> > +
 
-diff --git a/fs/binfmt_elf.c b/fs/binfmt_elf.c
-index 1b678aff3bac93eb..4c1550b13899efd7 100644
---- a/fs/binfmt_elf.c
-+++ b/fs/binfmt_elf.c
-@@ -2037,7 +2037,7 @@ static int fill_note_info(struct elfhdr *elf, int phdrs,
- 	}
- 	/* now collect the dump for the current */
- 	memset(info->prstatus, 0, sizeof(*info->prstatus));
--	fill_prstatus(info->prstatus, current, siginfo->si_signo);
-+	fill_prstatus(&info->prstatus->common, current, siginfo->si_signo);
- 	elf_core_copy_regs(&info->prstatus->pr_reg, regs);
- 
- 	/* Set up header */
+> > +	panel {
+> > +		compatible = "kyo,tcg070wvlq", "lg,lb070wv8";
+> 
+> Why do you need two compatibles for a panel?  The first one seems
+> undocumented.
+
+kyo,tcg070wvlq seems to be compatible with lg,lb070wv8. Currently there
+is no need for driver modification.
+The kyo,tcg070wvlq documentation should be added with the patch:
+"dt-bindings: display: simple: Add Kyocera tcg070wvlq panel"
+https://lkml.org/lkml/2020/12/7/591
+
+> > +		backlight = <&backlight>;
+> > +		power-supply = <&reg_3v3>;
+> > +	video@5c {
+> > +		compatible = "ti,tvp5150";
+> > +		reg = <0x5c>;
+> > +
+> 
+> Unnecessary newline.
+
+done
+
+> > +		#address-cells = <1>;
+> > +		#size-cells = <0>;
+> > +
+> > +		port@0 {
+> > +			reg = <0>;
+> 
+> Have a newline between properties and child node.
+
+done
+
+> > +			tvp5150_comp0_in: endpoint {
+> > +				remote-endpoint = <&comp0_out>;
+> > +			};
+> > +		};
+> > +
+> > +		/* Output port 2 is video output pad */
+> > +		port@2 {
+> > +			reg = <2>;
+> > +			tvp5151_to_ipu1_csi0_mux: endpoint {
+> > +				remote-endpoint = <&ipu1_csi0_mux_from_parallel_sensor>;
+> > +			};
+> > +		};
+> > +	};
+> > +
+> > +	gpio_pca: gpio@74 {
+> > +		#gpio-cells = <2>;
+> 
+> We usually begin with 'compatible'.  Can you move this line after
+> 'gpio-controller' maybe?
+
+done
+
+Regards,
+Oleksij
+
 -- 
-2.25.1
-
+Pengutronix e.K.                           |                             |
+Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
+31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
