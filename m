@@ -2,152 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A9B8E2EB6A2
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 01:02:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 929992EB6A5
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 01:02:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727134AbhAFABx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 19:01:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33876 "EHLO
+        id S1726463AbhAFACK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 19:02:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33924 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727012AbhAFABw (ORCPT
+        with ESMTP id S1725817AbhAFACJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 19:01:52 -0500
-Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E913C061793
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Jan 2021 16:01:12 -0800 (PST)
-Received: by mail-ej1-x62a.google.com with SMTP id 6so2846268ejz.5
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Jan 2021 16:01:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=zfAl9KpSkJTd6+U94OCEriXL161o3FlE2sDMdIxmbKg=;
-        b=Nm/doGyRQLbdfDauhHJdBMWjqc8dfsV0Ro8t+lUY4IOId9KByo/HmTzrWnYe+azun7
-         4znDTF6xd9f2RL72SvmRnRraFzK+o0ExupZGqeZ9FpLuwM9ojh68bhAvIl2Is6ZT6Ls7
-         EwZgjtShg6ffB9qGAHMidgzE8KqBcdWmVaItT8V1RRd4nvVSoRwsWVMI4SxwXmAvkmw7
-         6u3VoeUyEdQUB+iGPEYBoXQj/3t7J+5Hyk5gRbKG41FjIx5VK9MW3HTaT8myas7Vb8Ez
-         Kvy6Jm/WVyeAELN8jKn8Iv9PqyJ/aBgB61WW/PQdS6HroeC4AQLzPGJ0jnndtWQ2D3ws
-         Lxwg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=zfAl9KpSkJTd6+U94OCEriXL161o3FlE2sDMdIxmbKg=;
-        b=rx5mkFigpbbLrUePSYcoM34U3KmViFjDgqxyisT6mTIPDo2PYf+D70T/xw9wbTNMuf
-         DXg8LBklwkvIZDrybBclkcA+gV54C7Qw89meglHNLvHWijABi7K1L+41QXlkK0o2juUY
-         3CNW2IVk5qiyy2LVA8DdxrzXkdp+ok6LyCzPJ2hivPJ1cCabRrMU5v4CNIpklIuGfghc
-         cS2aT+75GPCuQc2Ztd0sz2Nj3/a910eD6IT5x5Fo88+rapWuRQVl1jefEYRjs4xmC0Wo
-         wmbMe6d6yZHrIx1yMuqmnGU/w7/3WeiprID8QoyL9Qqz0eAdh85evZPJ3Lz1rpnRaCer
-         tUjQ==
-X-Gm-Message-State: AOAM530PQlAke9DWe2FsfwiQzjdAU/39r8qBiQQ90YNsG2sYrR0hSFpD
-        ER38jV0ky18oDTGOuTZW9jr1SwZmBhw7u0N/q+gA
-X-Google-Smtp-Source: ABdhPJy2NH+qJf3iqobhjGlTY0DvacTF962UFEkfYVCmTW7lYKZyjdrP0z6+z04lqkN/DK52natckhmozbFQ2B7nwAY=
-X-Received: by 2002:a17:907:4126:: with SMTP id mx6mr1206433ejb.91.1609891270677;
- Tue, 05 Jan 2021 16:01:10 -0800 (PST)
-MIME-Version: 1.0
-References: <20210104232123.31378-1-stephen.s.brennan@oracle.com>
- <20210105055935.GT3579531@ZenIV.linux.org.uk> <20210105165005.GV3579531@ZenIV.linux.org.uk>
- <20210105195937.GX3579531@ZenIV.linux.org.uk> <87a6tnge5k.fsf@stepbren-lnx.us.oracle.com>
-In-Reply-To: <87a6tnge5k.fsf@stepbren-lnx.us.oracle.com>
-From:   Paul Moore <paul@paul-moore.com>
-Date:   Tue, 5 Jan 2021 19:00:59 -0500
-Message-ID: <CAHC9VhQnQW8RvTzyb4MTAvGZ7b=AHJXS8PzD=egTcpdDz73Yzg@mail.gmail.com>
-Subject: Re: [PATCH v4] proc: Allow pid_revalidate() during LOOKUP_RCU
-To:     Stephen Brennan <stephen.s.brennan@oracle.com>
-Cc:     Al Viro <viro@zeniv.linux.org.uk>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        linux-security-module@vger.kernel.org,
-        Stephen Smalley <stephen.smalley.work@gmail.com>,
-        Eric Paris <eparis@parisplace.org>, selinux@vger.kernel.org,
-        Casey Schaufler <casey@schaufler-ca.com>,
-        Eric Biederman <ebiederm@xmission.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Matthew Wilcox <willy@infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+        Tue, 5 Jan 2021 19:02:09 -0500
+Received: from mail.monkeyblade.net (shards.monkeyblade.net [IPv6:2620:137:e000::1:9])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 740DCC06179A;
+        Tue,  5 Jan 2021 16:01:29 -0800 (PST)
+Received: from localhost (unknown [IPv6:2601:601:9f00:477::3d5])
+        by mail.monkeyblade.net (Postfix) with ESMTPSA id C50A34CBCE183;
+        Tue,  5 Jan 2021 16:01:28 -0800 (PST)
+Date:   Tue, 05 Jan 2021 16:01:28 -0800 (PST)
+Message-Id: <20210105.160128.1507085075662342045.davem@davemloft.net>
+To:     zhengyongjun3@huawei.com
+Cc:     kuba@kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, mlxsw@nvidia.com
+Subject: Re: [PATCH net-next] net/mlxfw: Use kzalloc for allocating only
+ one thing
+From:   David Miller <davem@davemloft.net>
+In-Reply-To: <20201230081835.536-1-zhengyongjun3@huawei.com>
+References: <20201230081835.536-1-zhengyongjun3@huawei.com>
+X-Mailer: Mew version 6.8 on Emacs 27.1
+Mime-Version: 1.0
+Content-Type: Text/Plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
+X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.6.2 (mail.monkeyblade.net [0.0.0.0]); Tue, 05 Jan 2021 16:01:29 -0800 (PST)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 5, 2021 at 6:27 PM Stephen Brennan
-<stephen.s.brennan@oracle.com> wrote:
-> Al Viro <viro@zeniv.linux.org.uk> writes:
->
-> > On Tue, Jan 05, 2021 at 04:50:05PM +0000, Al Viro wrote:
-> >
-> >> LSM_AUDIT_DATA_DENTRY is easy to handle - wrap
-> >>                 audit_log_untrustedstring(ab, a->u.dentry->d_name.name);
-> >> into grabbing/dropping a->u.dentry->d_lock and we are done.
-> >
-> > Incidentally, LSM_AUDIT_DATA_DENTRY in mainline is *not* safe wrt
-> > rename() - for long-named dentries it is possible to get preempted
-> > in the middle of
-> >                 audit_log_untrustedstring(ab, a->u.dentry->d_name.name);
-> > and have the bugger renamed, with old name ending up freed.  The
-> > same goes for LSM_AUDIT_DATA_INODE...
->
-> In the case of proc_pid_permission(), this preemption doesn't seem
-> possible. We have task_lock() (a spinlock) held by ptrace_may_access()
-> during this call, so preemption should be disabled:
->
-> proc_pid_permission()
->   has_pid_permissions()
->     ptrace_may_access()
->       task_lock()
->       __ptrace_may_access()
->       | security_ptrace_access_check()
->       |   ptrace_access_check -> selinux_ptrace_access_check()
->       |     avc_has_perm()
->       |       avc_audit() // note that has_pid_permissions() didn't get a
->       |                   // flags field to propagate, so flags will not
->       |                   // contain MAY_NOT_BLOCK
->       |         slow_avc_audit()
->       |           common_lsm_audit()
->       |             dump_common_audit_data()
->       task_unlock()
->
-> I understand the issue of d_name.name being freed across a preemption is
-> more general than proc_pid_permission() (as other callers may have
-> preemption enabled). However, it seems like there's another issue here.
-> avc_audit() seems to imply that slow_avc_audit() would sleep:
->
-> static inline int avc_audit(struct selinux_state *state,
->                             u32 ssid, u32 tsid,
->                             u16 tclass, u32 requested,
->                             struct av_decision *avd,
->                             int result,
->                             struct common_audit_data *a,
->                             int flags)
-> {
->         u32 audited, denied;
->         audited = avc_audit_required(requested, avd, result, 0, &denied);
->         if (likely(!audited))
->                 return 0;
->         /* fall back to ref-walk if we have to generate audit */
->         if (flags & MAY_NOT_BLOCK)
->                 return -ECHILD;
->         return slow_avc_audit(state, ssid, tsid, tclass,
->                               requested, audited, denied, result,
->                               a);
-> }
->
-> If there are other cases in here where we might sleep, it would be a
-> problem to sleep with the task lock held, correct?
+From: Zheng Yongjun <zhengyongjun3@huawei.com>
+Date: Wed, 30 Dec 2020 16:18:35 +0800
 
-I would expect the problem here to be the currently allocated audit
-buffer isn't large enough to hold the full audit record, in which case
-it will attempt to expand the buffer by a call to pskb_expand_head() -
-don't ask why audit buffers are skbs, it's awful - using a gfp flag
-that was established when the buffer was first created.  In this
-particular case it is GFP_ATOMIC|__GFP_NOWARN, which I believe should
-be safe in that it will not sleep on an allocation miss.
+> Use kzalloc rather than kcalloc(1,...)
+> 
+> The semantic patch that makes this change is as follows:
+> (http://coccinelle.lip6.fr/)
+> 
+> // <smpl>
+> @@
+> @@
+> 
+> - kcalloc(1,
+> + kzalloc(
+>           ...)
+> // </smpl>
+> 
+> Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>
 
-I need to go deal with dinner, so I can't trace the entire path at the
-moment, but I believe the potential audit buffer allocation is the
-main issue.
-
--- 
-paul moore
-www.paul-moore.com
+Applied.
