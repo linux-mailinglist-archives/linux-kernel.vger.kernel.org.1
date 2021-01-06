@@ -2,130 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BD6F2EC16B
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 17:49:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 171662EC171
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 17:50:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727707AbhAFQsv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Jan 2021 11:48:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50492 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727519AbhAFQsv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Jan 2021 11:48:51 -0500
-Received: from mail-oi1-x22f.google.com (mail-oi1-x22f.google.com [IPv6:2607:f8b0:4864:20::22f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7B80C06134C
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Jan 2021 08:48:08 -0800 (PST)
-Received: by mail-oi1-x22f.google.com with SMTP id d189so4038094oig.11
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Jan 2021 08:48:08 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=ul3z+zPYyErER25sLdRQyHxYuVeArqXgOYoH6Iif2tA=;
-        b=xnr9R7Osri/fA96VspyfVZmLyshJO2Rq5Q8oYcbT9/pOILj5EE6ugUcpCetuytQ65R
-         ZdqURe6AQD5HSXQfp2p3t/XMeZaUoY9X0j9EmoUbGlWsDacuW0JztS4dVpg+lS7SsoLN
-         tfA7IOcuHKvOFfxp/i45x2+HCHvnExX42mdAWAR+2raJR6GBw8vJoEabelrMcQlYt1s+
-         oZJkd3aSwGJNguTNfTTzWKn/+03gWx7jFZflnBsPoFyGkUpPKZREc8Cmw9opt+uYHCPs
-         LTdfWkc99o3c1zQp1qIVDDRW9+fjrPt2Y75YubIPdrrnlgTLUdbiOVrKhYCxTPUSOHpx
-         8XZw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ul3z+zPYyErER25sLdRQyHxYuVeArqXgOYoH6Iif2tA=;
-        b=FU/ZfEtOQ6QNirdIuK7Un6FcWopOdkocFiWQwtcrDiquZptyUDsC2MuLraFUYNiLiu
-         2gSUVtluuIJK8HTOwCa8r2/RzGcBvxBMG41Hw2AXrBBNsrDVAT7HJZMkTgoSVyCFqSdO
-         9c+2HtraiDCoVt8ljFhgIdMfhDTc18VkNJANKEI+Vt9nGMuLeP30fL6d6b6nhCkZKbYD
-         irg4+KdkOkT4EBbDIOlP+6gSKgC0PESQoRx+G4iguNKYESwl/wAA8frHLlnLOOXUalCj
-         yA+M1nhf5UQBbgMKkEtTnK1aSFmbjiS1HBUXQhpU5lLDVqR0N+WgooKKyT1t3b88V5tC
-         eFLg==
-X-Gm-Message-State: AOAM531Ufb8sR1gZkxwio5tngcCknM52StBZ0pbzufHjAtjl1Fw1ckpa
-        l13/fYplMRcKj0Iwf0kgpvVsFg==
-X-Google-Smtp-Source: ABdhPJxxRuCnYDf8FtFTNwcplgFnRhX6u7tlycCQ/ZVJNpGJXKzwRPzUivQBtqh6G5FQclk39qXrJw==
-X-Received: by 2002:aca:6146:: with SMTP id v67mr3702322oib.102.1609951688292;
-        Wed, 06 Jan 2021 08:48:08 -0800 (PST)
-Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id o135sm597707ooo.38.2021.01.06.08.48.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 06 Jan 2021 08:48:07 -0800 (PST)
-Date:   Wed, 6 Jan 2021 10:48:05 -0600
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Cc:     agross@kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 00/18] Devicetree update for SDX55 platform
-Message-ID: <X/Xpxecneh5RHdzx@builder.lan>
-References: <20210106125322.61840-1-manivannan.sadhasivam@linaro.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210106125322.61840-1-manivannan.sadhasivam@linaro.org>
+        id S1727723AbhAFQsw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Jan 2021 11:48:52 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54620 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727686AbhAFQsw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 Jan 2021 11:48:52 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3025A23118;
+        Wed,  6 Jan 2021 16:48:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1609951691;
+        bh=heSMN5xcKRabpSBv4fJMPtXPF24uDi8PAuzbiJca4Zs=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=Z9G09+HetkNNUdeowdfN6KSll51PJbyIgIGbCd9Y1dg927Dzfya8y/2SBsL8LfTZD
+         p6Dhwfm4EOZxOX1lKMEcGgcNL5Kucpwm+oJXpW9S5steRTf0tn/oPuxR0S/MUunS5H
+         mfMombfSkoJZTX9BG8sAQRt4N/OVBloXAa4apEZyUJmpQ2bto/pQ8tAm+GTckWQMje
+         w5VKXD4NJ1Z3xiMzQvpsaGJfJO2zxLBivTjTNQwF770NCJsZOrDUQfNPSV+wp3PA4S
+         ROGmn8rpW0utTouw0i6gHqqXnD44p4YdrPXKxb+D0lraolLXGoiQc8QRRs/pnT290A
+         pD7zW2OGgDwBA==
+From:   paulmck@kernel.org
+To:     rcu@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
+        jiangshanlai@gmail.com, akpm@linux-foundation.org,
+        mathieu.desnoyers@efficios.com, josh@joshtriplett.org,
+        tglx@linutronix.de, peterz@infradead.org, rostedt@goodmis.org,
+        dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
+        oleg@redhat.com, joel@joelfernandes.org,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        "Paul E . McKenney" <paulmck@kernel.org>
+Subject: [PATCH tip/core/rcu 1/3] rcu: Make RCU_BOOST default on CONFIG_PREEMPT_RT
+Date:   Wed,  6 Jan 2021 08:48:07 -0800
+Message-Id: <20210106164809.20068-1-paulmck@kernel.org>
+X-Mailer: git-send-email 2.9.5
+In-Reply-To: <20210106164746.GA19969@paulmck-ThinkPad-P72>
+References: <20210106164746.GA19969@paulmck-ThinkPad-P72>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 06 Jan 06:53 CST 2021, Manivannan Sadhasivam wrote:
+From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 
-> Hi Bjorn,
-> 
-> This series updates devicetree for the SDX55 platform and the MTP board.
-> Most of the SDX55 specific driver codes are already merged and some of
-> existing driver support got reused.
-> 
-> Thanks,
-> Mani
-> 
+On PREEMPT_RT kernels, RCU callbacks are deferred to the `rcuc' kthread.
+This can stall RCU grace periods due to lengthy preemption not only of RCU
+readers but also of 'rcuc' kthreads, either of which prevent grace periods
+from completing, which can in turn result in OOM.  Because PREEMPT_RT
+kernels have more kthreads that can block grace periods, it is more
+important for such kernels to enable RCU_BOOST.
 
-Thanks Mani, I've applied the DTS changes. Please resend the dt-bindings
-to the appropriate maintainers.
+This commit therefore makes RCU_BOOST the default on PREEMPT_RT.
+RCU_BOOST can still be manually disabled if need be.
 
-Regards,
-Bjorn
+Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+---
+ kernel/rcu/Kconfig | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-> Changes in v3:
-> 
-> * Dropped interrupts property in spmi-gpio node
-> * Used dma-controller node name
-> * Reworked tcsr mutex node
-> * Sorted binding compatibles
-> * Collected reviews from Vinod
-> 
-> Changes in v2:
-> 
-> * Changed "SoC" to "platform" and modified FIXME in commit message
-> 
-> Bjorn Andersson (1):
->   ARM: dts: qcom: sdx55: Enable ARM SMMU
-> 
-> Manivannan Sadhasivam (9):
->   dt-bindings: mmc: sdhci-msm: Document the SDX55 compatible
->   ARM: dts: qcom: sdx55: Add support for SDHCI controller
->   dt-bindings: arm-smmu: Add binding for Qcom SDX55 SMMU
->   ARM: dts: qcom: sdx55: Add support for TCSR Mutex
->   ARM: dts: qcom: sdx55: Add Shared memory manager support
->   ARM: dts: qcom: sdx55: Add QPIC BAM support
->   ARM: dts: qcom: sdx55: Add QPIC NAND support
->   ARM: dts: qcom: sdx55-mtp: Enable BAM DMA
->   ARM: dts: qcom: sdx55-mtp: Enable QPIC NAND
-> 
-> Vinod Koul (8):
->   ARM: dts: qcom: sdx55: Add pincontrol node
->   ARM: dts: qcom: sdx55: Add reserved memory nodes
->   ARM: dts: qcom: sdx55: Add spmi node
->   ARM: dts: qcom: sdx55-mtp: Add pm8150b pmic
->   ARM: dts: qcom: sdx55-mtp: Add pmx55 pmic
->   ARM: dts: qcom: sdx55: Add rpmpd node
->   ARM: dts: qcom: Add PMIC pmx55 dts
->   ARM: dts: qcom: sdx55-mtp: Add regulator nodes
-> 
->  .../devicetree/bindings/iommu/arm,smmu.yaml   |   1 +
->  .../devicetree/bindings/mmc/sdhci-msm.txt     |   5 +-
->  arch/arm/boot/dts/qcom-pmx55.dtsi             |  84 +++++++
->  arch/arm/boot/dts/qcom-sdx55-mtp.dts          | 203 +++++++++++++++++
->  arch/arm/boot/dts/qcom-sdx55.dtsi             | 214 ++++++++++++++++++
->  5 files changed, 505 insertions(+), 2 deletions(-)
->  create mode 100644 arch/arm/boot/dts/qcom-pmx55.dtsi
-> 
-> -- 
-> 2.25.1
-> 
+diff --git a/kernel/rcu/Kconfig b/kernel/rcu/Kconfig
+index cdc57b4..aa8cc8c9 100644
+--- a/kernel/rcu/Kconfig
++++ b/kernel/rcu/Kconfig
+@@ -188,8 +188,8 @@ config RCU_FAST_NO_HZ
+ 
+ config RCU_BOOST
+ 	bool "Enable RCU priority boosting"
+-	depends on RT_MUTEXES && PREEMPT_RCU && RCU_EXPERT
+-	default n
++	depends on (RT_MUTEXES && PREEMPT_RCU && RCU_EXPERT) || PREEMPT_RT
++	default y if PREEMPT_RT
+ 	help
+ 	  This option boosts the priority of preempted RCU readers that
+ 	  block the current preemptible RCU grace period for too long.
+-- 
+2.9.5
+
