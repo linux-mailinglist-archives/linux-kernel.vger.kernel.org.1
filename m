@@ -2,92 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 316992EC001
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 16:01:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F1402EC008
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 16:01:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726375AbhAFPAZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Jan 2021 10:00:25 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35376 "EHLO mail.kernel.org"
+        id S1726951AbhAFPAn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Jan 2021 10:00:43 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35494 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725800AbhAFPAY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Jan 2021 10:00:24 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F05FC22B45;
-        Wed,  6 Jan 2021 14:59:42 +0000 (UTC)
+        id S1725803AbhAFPAk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 Jan 2021 10:00:40 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9F3092311B;
+        Wed,  6 Jan 2021 14:59:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1609945183;
-        bh=9N8TfJsEA7J2oir+XxY6pt6ih2/gDFppXOSBqjRFQOs=;
-        h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-        b=LQs3UkTF5XQpfKOdKGHBK3cwfbvmsE0Ls7v4mQkI4g4TSuZFkqTfWOpneqE5DLMDJ
-         BrKEH8mGCJkLuIwswM8W5kkgRZikYv8MOWSPASgB4CkKd1wtRtRLv6X3FpOEwLNz97
-         h8FtG0cbhqHEHKTVvU0cecybvehPnYzC1VwsEiIsh7Q7UFsGDO1xn7PJv8ffJES8Mo
-         D3S4PGchojs+uFaWGgdJ9kigr54BsB6cymwSPv3NyaynRkXQTZ2qqDpYzym6zKke15
-         yD2qaCWdx52rKAQEQnfZKpSim0y1eCmpNilRiAZQV+B9JO2MFn3xi5PCfipmJePwJO
-         Yusqz6Qij+OvA==
+        s=k20201202; t=1609945200;
+        bh=Ujxg+0YYoFI8WvUgcbYeDyszhm5GGvsP5kBNDrttEm4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=eItwBxH/7Rl3eFXNVlqkYSiWt5yHJjAiI2z7nilX/on7EZhML6y6/h3uImpBDEw2x
+         fnHj99bYw601Xgw97w8SuohFfEF1qFwvjmDvWCpERVkWYZpuHla2rggXRCHv0EnLy5
+         4b9lGjj/ADITb2N474R9DPECO3CuBz3Bl6VtnDm4A8Jwz4xLdZeUjCoYQI6jEFbduC
+         /+fclNi8qNSGc5vhx0OpTjiZlQQk9g3s1RkvEXJfxcWuTfQ7k2FrKdAEoD0BkxF3Fv
+         j/oDsWp3ZEmSKhFI5Qd+eFw+zuqxqPfcb53qyeHLnWkgqvQW4zx+f6El/jRhwTiYnM
+         eo/gQcWiedtDA==
+Date:   Wed, 6 Jan 2021 14:59:31 +0000
 From:   Mark Brown <broonie@kernel.org>
-To:     thierry.reding@gmail.com, lukas@wunner.de, robh+dt@kernel.org,
-        jonathanh@nvidia.com, Sowjanya Komatineni <skomatineni@nvidia.com>
-Cc:     devicetree@vger.kernel.org, tudor.ambarus@microchip.com,
-        bbrezillon@kernel.org, linux-tegra@vger.kernel.org,
-        linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        p.yadav@ti.com
-In-Reply-To: <1608585459-17250-1-git-send-email-skomatineni@nvidia.com>
-References: <1608585459-17250-1-git-send-email-skomatineni@nvidia.com>
-Subject: Re: (subset) [PATCH v5 0/9] Add Tegra Quad SPI driver
-Message-Id: <160994515510.52247.6457410235851345560.b4-ty@kernel.org>
-Date:   Wed, 06 Jan 2021 14:59:15 +0000
+To:     Krzysztof Kozlowski <krzk@kernel.org>
+Cc:     Timon Baetz <timon.baetz@protonmail.com>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        MyungJoo Ham <myungjoo.ham@samsung.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        Sebastian Reichel <sre@kernel.org>,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-pm@vger.kernel.org,
+        ~postmarketos/upstreaming@lists.sr.ht
+Subject: Re: [PATCH v6 2/8] regulator: dt-bindings: Document max8997-pmic
+ nodes
+Message-ID: <20210106145931.GE4752@sirena.org.uk>
+References: <20201230205139.1812366-1-timon.baetz@protonmail.com>
+ <20201230205139.1812366-2-timon.baetz@protonmail.com>
+ <20210104135156.GB5645@sirena.org.uk>
+ <20210104181825.GB27043@kozik-lap>
+ <20210104182734.GH5645@sirena.org.uk>
+ <20210104183821.GA29033@kozik-lap>
+ <20210104212449.GJ5645@sirena.org.uk>
+ <20210105165529.GB20401@kozik-lap>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="jKBxcB1XkHIR0Eqt"
+Content-Disposition: inline
+In-Reply-To: <20210105165529.GB20401@kozik-lap>
+X-Cookie: Happy feast of the pig!
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 21 Dec 2020 13:17:30 -0800, Sowjanya Komatineni wrote:
-> This series adds Tegra210, Tegra186, and Tegra194 Quad SPI driver and
-> enables Quad SPI on Jetson Nano and Jetson Xavier NX.
-> 
-> QSPI controller is available on Tegra210, Tegra186 and Tegra194.
-> 
-> Tegra186 and Tegra194 has additional feature of combined sequence mode
-> where command, address and data can all be transferred in a single transfer.
-> Combined sequence mode is useful only when using DMA mode transfer.
-> 
-> [...]
 
-Applied to
+--jKBxcB1XkHIR0Eqt
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git for-next
+On Tue, Jan 05, 2021 at 05:55:29PM +0100, Krzysztof Kozlowski wrote:
+> On Mon, Jan 04, 2021 at 09:24:49PM +0000, Mark Brown wrote:
 
-Thanks!
+> > I'm not sure I follow, sorry?  Either the core driver can parse the
+> > bindings enough to know what children it has or (probably better) it can
+> > instantiate the children unconditionally and then the function drivers
+> > can figure out if they need to do anything.
 
-[1/9] dt-bindings: clock: tegra: Add clock ID TEGRA210_CLK_QSPI_PM
-      commit: b499779761278d6f5339daa230938211d98861ef
-[2/9] dt-bindings: spi: Add Tegra Quad SPI device tree binding
-      commit: 9684752e5fe3989b45f686a4e0202a683038be4a
-[3/9] MAINTAINERS: Add Tegra Quad SPI driver section
-      commit: e5c92bb924ce4bda9c4312b8596cf62ad7b07e2e
-[4/9] spi: tegra210-quad: Add support for Tegra210 QSPI controller
-      commit: 921fc1838fb036f690b8ba52e6a6d3644b475cbb
-[5/9] spi: spi-mem: Mark dummy transfers by setting dummy_data bit
-      commit: 98621ed011c57ba6e52e01a5982b221c9943b6d9
-[6/9] spi: tegra210-quad: Add support for hardware dummy cycles transfer
-      commit: 6a8a8b51703c69fa2d6adbbcbf731ce9b991c696
+> Currently the MFD parent/core driver will instantiate children
+> unconditionally.  It would have to be adapted. With proposed bindings -
+> nothing to change.  MFD core already does the thing.
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
+We're not talking massive amounts of code here, but we are talking ABI
+for a DT update.
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
+> The point is that function drivers should not be even bound, should not
+> start to probe. Otherwise if they probe and fail, they will pollute the
+> dmesg/probe log with failure. With the failure coming from looking for
+> missing of_node or any other condition from parent/core driver.
 
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
+There will only be an error message if one is printed, if we can do a
+definitive -ENODEV there should be no need to print an error.
 
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+> > > Another point, is that this reflects the real hardware. The same as we
+> > > model entire SoC as multiple children of soc node (with their own
+> > > properties), here we represent smaller chip which also has
+> > > sub-components.
 
-Thanks,
-Mark
+> > Components we're calling things like "extcon"...
+
+> I am rather thinking about charger, but yes, extcon as well. Either you
+> have USB socket (and want to use associated logic) or not.
+
+Right, I'm just saying we don't need to add new device nodes reflecting
+implementation details into the DT to do that.
+
+--jKBxcB1XkHIR0Eqt
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl/10FMACgkQJNaLcl1U
+h9AKwAf7BqMZl8eI7FlLmnCtP1/zU+16wmpeCfQRZE9Fo8WGj+eF2U0pmb86KjEb
+GgTkf9j0in+XnO2qzg6QpikLqcZjyk5HUx/0UJElo5iuS+nWpNqvLIQtoD6m+YFB
+pGeYoYlw0s+7oTaiNFqt/8SeuQ0NFChOVQSxwew39wc16L0Ushv72bIqztZz4HHd
+V9CHJKRG8J+5Ol5TlFb6FyobI4z5/tyWfX/LlGHedN3EsMbdn80SC2y2h6q5doZ+
+U/TpBofzh5K/Hmu++4GZP20bOLSc18YhyfO8W/bJk//o8BXXWEfp57v/hlxSgHLb
+sSxSZYSaINOsb7kUXaSjuwFrdlHuZg==
+=MxWV
+-----END PGP SIGNATURE-----
+
+--jKBxcB1XkHIR0Eqt--
