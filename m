@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C18C2EB910
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 05:52:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 683722EB91D
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 05:52:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726924AbhAFEuS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 23:50:18 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33366 "EHLO mail.kernel.org"
+        id S1727308AbhAFEvW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 23:51:22 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33376 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726345AbhAFEuR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1726791AbhAFEuR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 5 Jan 2021 23:50:17 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B1DA5230F9;
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DD862230FE;
         Wed,  6 Jan 2021 04:48:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1609908536;
-        bh=mYC8n2tBoXxFl/HWwwJQ1b2I6TPQeCleiL/VfsurVHY=;
+        s=k20201202; t=1609908537;
+        bh=4N/ttNNejpsHl6sFyhRfALMQ7Vl3QKfj945XUGPFMaA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=hnVvRZmVFkw1E/Z7mICfj3thmjT88JXkcECr+CS7+8B6IN06cDTBsU98ISUFUnzjF
-         MzOLqku3auq/RF3wOVuk5ZBb9Ou1WjYA4Ze6pOJWK+DTEJ/Y0IcR2dhVKPaFeUZS+A
-         0CkqqHe4v9A+Xk4D/XiOvmdCKHoS1gTf036ypLrmbX56bJbsejhIZaB57Lg++IGR8A
-         ukBi0Da4C7IQb+Ry/SEpx3B9W7XDzHKC+zUaNZuhJhqcDyL87sjMLfrtikeTrSxCwL
-         RdmqTRGk5PTEWMYIRdRw2NBUF/kCZ/vpyI5lTLKuHMJaVMjcJ+O3hwp7sxoR6DXcEn
-         QDoWdJB59rMMA==
+        b=W9QpSS64Ko5SeN3Ta8jJtsoDq0TvmLq5pJddrrB8+jikQ42e2L94cxm4fGVsUBx3+
+         +FUzJsx69+LUs5R+WyIHjy7FGFotEV5nLmiTPb7vyBRSZ6zN3KSh8fZQUcOGPINjEh
+         jI4sIMRYmbRasDQayPzGWzxSU0hbzZtCB01NSu8cw1yNm+OBUldN7HiwT61hOJHXRm
+         sxxgvlbOFaaZkfqIKqUEIRQ318UX4vSsdqaIVibrCcrqpt3u1mNzWjOZLBHp2Wnm6d
+         ggep5H1EduyAzGCbjaQyF0O34Mk0Ity3rOM6CzwjkLOsQjOr9MrEQMqdcGvqzR2Ijc
+         yO5pyo1phHC3Q==
 From:   paulmck@kernel.org
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -34,9 +34,9 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         Frederic Weisbecker <frederic@kernel.org>,
         Neeraj Upadhyay <neeraju@codeaurora.org>,
         "Paul E . McKenney" <paulmck@kernel.org>
-Subject: [PATCH tip/core/rcu 09/21] rcu/nocb: Flush bypass before setting SEGCBLIST_SOFTIRQ_ONLY
-Date:   Tue,  5 Jan 2021 20:48:41 -0800
-Message-Id: <20210106044853.20812-9-paulmck@kernel.org>
+Subject: [PATCH tip/core/rcu 10/21] rcu/nocb: Set SEGCBLIST_SOFTIRQ_ONLY at the very last stage of de-offloading
+Date:   Tue,  5 Jan 2021 20:48:42 -0800
+Message-Id: <20210106044853.20812-10-paulmck@kernel.org>
 X-Mailer: git-send-email 2.9.5
 In-Reply-To: <20210106013950.GA14663@paulmck-ThinkPad-P72>
 References: <20210106013950.GA14663@paulmck-ThinkPad-P72>
@@ -46,10 +46,9 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Frederic Weisbecker <frederic@kernel.org>
 
-This commit flushes the bypass queue and sets state to avoid its being
-refilled before switching to the final de-offloaded state.  To avoid
-refilling, this commit sets SEGCBLIST_SOFTIRQ_ONLY before re-enabling
-IRQs.
+This commit sets SEGCBLIST_SOFTIRQ_ONLY once toggling is otherwise fully
+complete, allowing further RCU callback manipulation to be carried out
+locklessly and locally.
 
 Cc: Josh Triplett <josh@joshtriplett.org>
 Cc: Steven Rostedt <rostedt@goodmis.org>
@@ -63,36 +62,29 @@ Tested-by: Boqun Feng <boqun.feng@gmail.com>
 Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/rcu/tree_plugin.h | 11 ++++++++++-
- 1 file changed, 10 insertions(+), 1 deletion(-)
+ kernel/rcu/tree_plugin.h | 9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
 
 diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
-index c88ad62..35dc9b3 100644
+index 35dc9b3..8641b72 100644
 --- a/kernel/rcu/tree_plugin.h
 +++ b/kernel/rcu/tree_plugin.h
-@@ -2339,12 +2339,21 @@ static int __rcu_nocb_rdp_deoffload(struct rcu_data *rdp)
- 	swait_event_exclusive(rdp->nocb_state_wq,
- 			      !rcu_segcblist_test_flags(cblist, SEGCBLIST_KTHREAD_CB |
- 							SEGCBLIST_KTHREAD_GP));
--	/* Make sure nocb timer won't stay around */
+@@ -2352,7 +2352,14 @@ static int __rcu_nocb_rdp_deoffload(struct rcu_data *rdp)
+ 	 */
  	rcu_nocb_lock_irqsave(rdp, flags);
-+	/* Make sure nocb timer won't stay around */
- 	WRITE_ONCE(rdp->nocb_defer_wakeup, RCU_NOCB_WAKE_OFF);
- 	rcu_nocb_unlock_irqrestore(rdp, flags);
- 	del_timer_sync(&rdp->nocb_timer);
- 
+ 	rcu_nocb_flush_bypass(rdp, NULL, jiffies);
+-	rcu_nocb_unlock_irqrestore(rdp, flags);
++	rcu_segcblist_set_flags(cblist, SEGCBLIST_SOFTIRQ_ONLY);
 +	/*
-+	 * Flush bypass. While IRQs are disabled and once we set
-+	 * SEGCBLIST_SOFTIRQ_ONLY, no callback is supposed to be
-+	 * enqueued on bypass.
++	 * With SEGCBLIST_SOFTIRQ_ONLY, we can't use
++	 * rcu_nocb_unlock_irqrestore() anymore. Theoretically we
++	 * could set SEGCBLIST_SOFTIRQ_ONLY with cb unlocked and IRQs
++	 * disabled now, but let's be paranoid.
 +	 */
-+	rcu_nocb_lock_irqsave(rdp, flags);
-+	rcu_nocb_flush_bypass(rdp, NULL, jiffies);
-+	rcu_nocb_unlock_irqrestore(rdp, flags);
-+
++	raw_spin_unlock_irqrestore(&rdp->nocb_lock, flags);
+ 
  	return ret;
  }
- 
 -- 
 2.9.5
 
