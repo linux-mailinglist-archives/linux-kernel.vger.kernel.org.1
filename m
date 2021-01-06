@@ -2,288 +2,388 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C8DD62EBE28
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 14:01:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D0972EBE2B
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 14:02:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727313AbhAFM7a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Jan 2021 07:59:30 -0500
-Received: from muru.com ([72.249.23.125]:41028 "EHLO muru.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727270AbhAFM7U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Jan 2021 07:59:20 -0500
-Received: from hillo.muru.com (localhost [127.0.0.1])
-        by muru.com (Postfix) with ESMTP id 36728815B;
-        Wed,  6 Jan 2021 12:58:59 +0000 (UTC)
-From:   Tony Lindgren <tony@atomide.com>
-To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Cc:     linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-omap@vger.kernel.org,
-        Arthur Demchenkov <spinal.by@gmail.com>,
-        Carl Philipp Klemm <philipp@uvos.xyz>,
-        Merlijn Wajer <merlijn@wizzup.org>,
-        Pavel Machek <pavel@ucw.cz>, ruleh <ruleh@gmx.de>,
-        Sebastian Reichel <sre@kernel.org>
-Subject: [PATCH 3/4] Input: omap4-keypad - use PM runtime to check keys for errata
-Date:   Wed,  6 Jan 2021 14:58:21 +0200
-Message-Id: <20210106125822.31315-4-tony@atomide.com>
-X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210106125822.31315-1-tony@atomide.com>
-References: <20210106125822.31315-1-tony@atomide.com>
+        id S1726773AbhAFNCc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Jan 2021 08:02:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43368 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726722AbhAFNCb (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 Jan 2021 08:02:31 -0500
+Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72EAEC06134D
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Jan 2021 05:01:50 -0800 (PST)
+Received: by mail-ej1-x62a.google.com with SMTP id n26so4908418eju.6
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Jan 2021 05:01:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:mime-version
+         :content-disposition;
+        bh=KNdjAdSU7GXnb7OjjYKzs3OQ1C9o0XD3mOBVZ4EtD7g=;
+        b=OhptvGyZkQ8LXgAgerp2Ozpb1RNg5sSlI5w6Uz9b8LdKdsvyj4E5g3w0tKomIzNx7X
+         SFeoRhB/K8oOonqyoyiumXBsLQv6jTkva4afbSIM7/LZoVk40T7ksg3btCNNHpe6V2eq
+         hGz41inmJheiL4Yy9RC9B3DRhuRzTsaVkaXyp0e1xJ944OPrfDTtcytZ65LWEXCKkzrh
+         /xhkiWJYtzr8AGoF3bexaIPEJfjzmGqkqs4b8kAd0hqbA/w/2FYrPryDoMZz2zHK2dxo
+         I4NXxnKt4L29nlNqsUsrzb21aWrRuo6HyvSdDWHpA6aoil/pvShIgZf8e6mZGlqykfQJ
+         TvLA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:mime-version:content-disposition;
+        bh=KNdjAdSU7GXnb7OjjYKzs3OQ1C9o0XD3mOBVZ4EtD7g=;
+        b=MWEKyFuu/pDW4GlBa0CNrSJwvEmEXAhNyJaHbfVbBx9IlXSsYZvsa4W9qxRorLSUOd
+         HnsCzYzyrFtyHFo/ty4UOwOBsCg+NN3bQJ85Iwur/fwKloh0qYnigjASoEG4qhC+WE1V
+         ZShUEeU0XdRwC+1/NMIF+Jy2TsWIcpGu3Z3ZQITYCAnb+AObECekxyc+mIhfcjcSFFYK
+         VjS5MFrceBHt01heLbgCrZR3Tt6+KgfCHtLlwVu8xUo7DCauqrBhZ3wyeAbXjfuRYtP6
+         FSGTjhHzlpNETC4mn9fkrEDafOobENva9AOP9HeYXauWNT+gV6YNWq+u2R7a1SUAzdwi
+         7y6A==
+X-Gm-Message-State: AOAM530TGbb3hSYgzl8dS+CsqTdF/4lkIjU7XGQ9N3YW5NrUetfW0sBo
+        cL516BPpYQ16ih7KVQS8uBs=
+X-Google-Smtp-Source: ABdhPJwy91eQHOODhc08jZmfLV7JyL1DZce8RuUlp8E2zc5PR2DAx4HnkqPwchRQbarwJ9ykW09SSA==
+X-Received: by 2002:a17:906:b09a:: with SMTP id x26mr2902780ejy.199.1609938108971;
+        Wed, 06 Jan 2021 05:01:48 -0800 (PST)
+Received: from raspi.lan (94-21-74-47.pool.digikabel.hu. [94.21.74.47])
+        by smtp.gmail.com with ESMTPSA id j25sm1232823ejx.125.2021.01.06.05.01.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 06 Jan 2021 05:01:48 -0800 (PST)
+Date:   Wed, 6 Jan 2021 14:01:46 +0100
+From:   Gabor Gombas <gombasgg@gmail.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     intel-gfx@lists.freedesktop.org, alsa-devel@alsa-project.org
+Subject: 5.10 regression: hang at shutdown, DRM or ALSA suspected
+Message-ID: <X/W0ugszWM5OVSMR@lan>
+Mail-Followup-To: linux-kernel@vger.kernel.org,
+        intel-gfx@lists.freedesktop.org, alsa-devel@alsa-project.org
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We are still missing handling for errata i689 related issues for the
-case where we never see a key up interrupt for the last pressed key.
+Hi,
 
-To fix the issue, we must scan the key state again after the keyboard
-controller has idled to check if a key up event was missed. This is
-described in the omap4 silicon errata documentation for Errata ID i689
-"1.32 Keyboard Key Up Event Can Be Missed":
+I have an Intel NUC D54250WYK which no longer shuts down properly after
+moving from 5.9.16 to 5.10.4, because systemd hangs. The kernel logs
+make me beleive it is likely a locking issue in either DRM or ALSA or
+both. Relevant messages which I could extract from the journal:
 
-"When a key is released for a time shorter than the debounce time,
- in-between 2 key press (KP1 and KP2), the keyboard state machine will go
- to idle mode and will never detect the key release (after KP1, and also
- after KP2), and thus will never generate a new IRQ indicating the key
- release."
+Jan 05 22:21:38 host systemd[2664]: pulseaudio.service: State 'stop-sigterm' timed out. Killing.
+Jan 05 22:21:38 host systemd[2664]: pulseaudio.service: Killing process 2805 (pulseaudio) with signal SIGKILL.
+Jan 05 22:23:03 host kernel: INFO: task systemd:1 blocked for more than 122 seconds.
+Jan 05 22:23:03 host kernel:       Not tainted 5.10.4 #307
+Jan 05 22:23:03 host kernel: "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+Jan 05 22:23:03 host kernel: task:systemd         state:D stack:    0 pid:    1 ppid:     0 flags:0x00004002
+Jan 05 22:23:03 host kernel: Call Trace:
+Jan 05 22:23:03 host kernel:  __schedule+0x27b/0x870
+Jan 05 22:23:03 host kernel:  schedule+0x45/0xe0
+Jan 05 22:23:03 host kernel:  schedule_preempt_disabled+0x14/0x20
+Jan 05 22:23:03 host kernel:  __mutex_lock.constprop.0+0x239/0x500
+Jan 05 22:23:03 host kernel:  drm_fb_helper_restore_fbdev_mode_unlocked+0x41/0x90
+Jan 05 22:23:03 host kernel:  intel_fbdev_restore_mode+0x30/0x80
+Jan 05 22:23:03 host kernel:  drm_release_noglobal+0x69/0xa0
+Jan 05 22:23:03 host kernel:  __fput+0x8e/0x230
+Jan 05 22:23:03 host kernel:  task_work_run+0x5c/0x90
+Jan 05 22:23:03 host kernel:  exit_to_user_mode_prepare+0xe9/0x110
+Jan 05 22:23:03 host kernel:  syscall_exit_to_user_mode+0x22/0x160
+Jan 05 22:23:03 host kernel:  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+Jan 05 22:23:03 host kernel: RIP: 0033:0x7fdc7c9a46eb
+Jan 05 22:23:03 host kernel: RSP: 002b:00007ffd0c397370 EFLAGS: 00000293 ORIG_RAX: 0000000000000003
+Jan 05 22:23:03 host kernel: RAX: 0000000000000000 RBX: 00007fdc7c1d66c8 RCX: 00007fdc7c9a46eb
+Jan 05 22:23:03 host kernel: RDX: 0000000000000000 RSI: 0000000000000007 RDI: 000000000000006f
+Jan 05 22:23:03 host kernel: RBP: 000000000000006f R08: 0000000000000000 R09: 00005613a68cd80a
+Jan 05 22:23:03 host kernel: R10: 0000000000000000 R11: 0000000000000293 R12: 0000000000000000
+Jan 05 22:23:03 host kernel: R13: 0000000000000000 R14: 00005613a68cf050 R15: 00005613a71e5f50
+Jan 05 22:23:03 host kernel: INFO: task systemd-logind:807 blocked for more than 122 seconds.
+Jan 05 22:23:03 host kernel:       Not tainted 5.10.4 #307
+Jan 05 22:23:03 host kernel: "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+Jan 05 22:23:03 host kernel: task:systemd-logind  state:D stack:    0 pid:  807 ppid:     1 flags:0x000043a0
+Jan 05 22:23:03 host kernel: Call Trace:
+Jan 05 22:23:03 host kernel:  __schedule+0x27b/0x870
+Jan 05 22:23:03 host kernel:  schedule+0x45/0xe0
+Jan 05 22:23:03 host kernel:  schedule_preempt_disabled+0x14/0x20
+Jan 05 22:23:03 host kernel:  __mutex_lock.constprop.0+0x239/0x500
+Jan 05 22:23:03 host kernel:  sync_eld_via_acomp+0x3f/0x350
+Jan 05 22:23:03 host kernel:  check_presence_and_report+0x57/0x80
+Jan 05 22:23:03 host kernel:  intel_audio_codec_enable+0x11f/0x180
+Jan 05 22:23:03 host kernel:  intel_enable_ddi+0x447/0x5a0
+Jan 05 22:23:03 host kernel:  intel_encoders_enable+0x75/0xa0
+Jan 05 22:23:03 host kernel:  hsw_crtc_enable+0x1bf/0x5c0
+Jan 05 22:23:03 host kernel:  intel_enable_crtc+0x48/0x60
+Jan 05 22:23:03 host kernel:  intel_commit_modeset_enables+0x48/0x70
+Jan 05 22:23:03 host kernel:  intel_atomic_commit_tail+0x2c9/0x1230
+Jan 05 22:23:03 host kernel:  ? complete+0x2f/0x40
+Jan 05 22:23:03 host kernel:  ? _raw_spin_unlock_irqrestore+0x14/0x30
+Jan 05 22:23:03 host kernel:  ? flush_workqueue_prep_pwqs+0x11e/0x130
+Jan 05 22:23:03 host kernel:  ? flush_workqueue+0x178/0x3c0
+Jan 05 22:23:03 host kernel:  intel_atomic_commit+0x318/0x3a0
+Jan 05 22:23:03 host kernel:  drm_client_modeset_commit_atomic+0x1d9/0x220
+Jan 05 22:23:03 host kernel:  drm_client_modeset_commit_locked+0x56/0x150
+Jan 05 22:23:03 host kernel:  drm_fb_helper_set_par+0x75/0xd0
+Jan 05 22:23:03 host kernel:  intel_fbdev_set_par+0x16/0x60
+Jan 05 22:23:03 host kernel:  fb_set_var+0x186/0x330
+Jan 05 22:23:03 host kernel:  ? _raw_spin_unlock_irqrestore+0x14/0x30
+Jan 05 22:23:03 host kernel:  ? __wake_up_common_lock+0x8a/0xc0
+Jan 05 22:23:03 host kernel:  fbcon_blank+0x17a/0x280
+Jan 05 22:23:03 host kernel:  do_unblank_screen+0x9c/0x130
+Jan 05 22:23:03 host kernel:  vt_ioctl+0x1229/0x1550
+Jan 05 22:23:03 host kernel:  ? slab_free_freelist_hook+0xe8/0x110
+Jan 05 22:23:03 host kernel:  ? tty_release+0x346/0x5d0
+Jan 05 22:23:03 host kernel:  ? kfree+0x3b0/0x410
+Jan 05 22:23:03 host kernel:  tty_ioctl+0x395/0x910
+Jan 05 22:23:03 host kernel:  ? tty_unlock+0x1d/0x40
+Jan 05 22:23:03 host kernel:  __x64_sys_ioctl+0x83/0xb0
+Jan 05 22:23:03 host kernel:  do_syscall_64+0x33/0x80
+Jan 05 22:23:03 host kernel:  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+Jan 05 22:23:03 host kernel: RIP: 0033:0x7fa76794ccc7
+Jan 05 22:23:03 host kernel: RSP: 002b:00007ffca85a3038 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
+Jan 05 22:23:03 host kernel: RAX: ffffffffffffffda RBX: 0000555ca73da410 RCX: 00007fa76794ccc7
+Jan 05 22:23:03 host kernel: RDX: 0000000000000000 RSI: 0000000000004b3a RDI: 000000000000000a
+Jan 05 22:23:03 host kernel: RBP: 000000000000000a R08: 0000000000000000 R09: 0000000000000000
+Jan 05 22:23:03 host kernel: R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+Jan 05 22:23:03 host kernel: R13: 0000000000000019 R14: 00007ffca85a3188 R15: 00007ffca85a31a0
+Jan 05 22:23:03 host kernel: INFO: task pulseaudio:2805 blocked for more than 122 seconds.
+Jan 05 22:23:03 host kernel:       Not tainted 5.10.4 #307
+Jan 05 22:23:03 host kernel: "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+Jan 05 22:23:03 host kernel: task:pulseaudio      state:D stack:    0 pid: 2805 ppid:  2664 flags:0x000003a4
+Jan 05 22:23:03 host kernel: Call Trace:
+Jan 05 22:23:03 host kernel:  __schedule+0x27b/0x870
+Jan 05 22:23:03 host kernel:  schedule+0x45/0xe0
+Jan 05 22:23:03 host kernel:  rwsem_down_write_slowpath+0x263/0x4d0
+Jan 05 22:23:03 host kernel:  snd_ctl_release+0x75/0x120
+Jan 05 22:23:03 host kernel:  __fput+0x8e/0x230
+Jan 05 22:23:03 host kernel:  task_work_run+0x5c/0x90
+Jan 05 22:23:03 host kernel:  exit_to_user_mode_prepare+0xe9/0x110
+Jan 05 22:23:03 host kernel:  syscall_exit_to_user_mode+0x22/0x160
+Jan 05 22:23:03 host kernel:  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+Jan 05 22:23:03 host kernel: RIP: 0033:0x7f1ee209d11b
+Jan 05 22:23:03 host kernel: RSP: 002b:00007ffcb6c726e0 EFLAGS: 00000293 ORIG_RAX: 0000000000000003
+Jan 05 22:23:03 host kernel: RAX: 0000000000000000 RBX: 000055dbcfc2c430 RCX: 00007f1ee209d11b
+Jan 05 22:23:03 host kernel: RDX: 00007f1ee1f2ebe0 RSI: 0000000000000000 RDI: 000000000000000f
+Jan 05 22:23:03 host kernel: RBP: 000055dbcfe1d5c0 R08: 0000000000000000 R09: 00007ffcb6c726b0
+Jan 05 22:23:03 host kernel: R10: 0000000000000001 R11: 0000000000000293 R12: 0000000000000000
+Jan 05 22:23:03 host kernel: R13: 000055dbcfe185f0 R14: 000055dbcfcf8008 R15: 0000000000000019
+Jan 05 22:23:03 host kernel: INFO: task alsactl:24113 blocked for more than 122 seconds.
+Jan 05 22:23:03 host kernel:       Not tainted 5.10.4 #307
+Jan 05 22:23:03 host kernel: "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+Jan 05 22:23:03 host kernel: task:alsactl         state:D stack:    0 pid:24113 ppid:     1 flags:0x00000080
+Jan 05 22:23:03 host kernel: Call Trace:
+Jan 05 22:23:03 host kernel:  __schedule+0x27b/0x870
+Jan 05 22:23:03 host kernel:  schedule+0x45/0xe0
+Jan 05 22:23:03 host kernel:  schedule_preempt_disabled+0x14/0x20
+Jan 05 22:23:03 host kernel:  __mutex_lock.constprop.0+0x239/0x500
+Jan 05 22:23:03 host kernel:  ? chrdev_open+0xc2/0x240
+Jan 05 22:23:03 host kernel:  hdmi_eld_ctl_info+0x36/0xa0
+Jan 05 22:23:03 host kernel:  __snd_ctl_elem_info.constprop.0+0x1d/0x110
+Jan 05 22:23:03 host kernel:  snd_ctl_elem_info_user+0x86/0xf0
+Jan 05 22:23:03 host kernel:  snd_ctl_ioctl+0x1ef/0x750
+Jan 05 22:23:03 host kernel:  __x64_sys_ioctl+0x83/0xb0
+Jan 05 22:23:03 host kernel:  do_syscall_64+0x33/0x80
+Jan 05 22:23:03 host kernel:  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+Jan 05 22:23:03 host kernel: RIP: 0033:0x7ffa0105dcc7
+Jan 05 22:23:03 host kernel: RSP: 002b:00007ffeded89848 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
+Jan 05 22:23:03 host kernel: RAX: ffffffffffffffda RBX: 000055f392b7a6c0 RCX: 00007ffa0105dcc7
+Jan 05 22:23:03 host kernel: RDX: 00007ffeded89860 RSI: 00000000c1105511 RDI: 0000000000000004
+Jan 05 22:23:03 host kernel: RBP: 00007ffeded8a130 R08: 000055f392b7b9d0 R09: 0000000000000000
+Jan 05 22:23:03 host kernel: R10: 000055f392b7bd40 R11: 0000000000000246 R12: 00007ffeded89860
+Jan 05 22:23:03 host kernel: R13: 00007ffeded89980 R14: 00007ffeded8a140 R15: 000055f392ba6ec0
+Jan 05 22:23:08 host systemd[2664]: pulseaudio.service: Processes still around after SIGKILL. Ignoring.
+Jan 05 22:24:38 host systemd[2664]: pulseaudio.service: State 'final-sigterm' timed out. Killing.
+Jan 05 22:24:38 host systemd[2664]: pulseaudio.service: Killing process 2805 (pulseaudio) with signal SIGKILL.
+Jan 05 22:25:06 host kernel: INFO: task systemd:1 blocked for more than 245 seconds.
+Jan 05 22:25:06 host kernel:       Not tainted 5.10.4 #307
+Jan 05 22:25:06 host kernel: "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+Jan 05 22:25:06 host kernel: task:systemd         state:D stack:    0 pid:    1 ppid:     0 flags:0x00004002
+Jan 05 22:25:06 host kernel: Call Trace:
+Jan 05 22:25:06 host kernel:  __schedule+0x27b/0x870
+Jan 05 22:25:06 host kernel:  schedule+0x45/0xe0
+Jan 05 22:25:06 host kernel:  schedule_preempt_disabled+0x14/0x20
+Jan 05 22:25:06 host kernel:  __mutex_lock.constprop.0+0x239/0x500
+Jan 05 22:25:06 host kernel:  drm_fb_helper_restore_fbdev_mode_unlocked+0x41/0x90
+Jan 05 22:25:06 host kernel:  intel_fbdev_restore_mode+0x30/0x80
+Jan 05 22:25:06 host kernel:  drm_release_noglobal+0x69/0xa0
+Jan 05 22:25:06 host kernel:  __fput+0x8e/0x230
+Jan 05 22:25:06 host kernel:  task_work_run+0x5c/0x90
+Jan 05 22:25:06 host kernel:  exit_to_user_mode_prepare+0xe9/0x110
+Jan 05 22:25:06 host kernel:  syscall_exit_to_user_mode+0x22/0x160
+Jan 05 22:25:06 host kernel:  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+Jan 05 22:25:06 host kernel: RIP: 0033:0x7fdc7c9a46eb
+Jan 05 22:25:06 host kernel: RSP: 002b:00007ffd0c397370 EFLAGS: 00000293 ORIG_RAX: 0000000000000003
+Jan 05 22:25:06 host kernel: RAX: 0000000000000000 RBX: 00007fdc7c1d66c8 RCX: 00007fdc7c9a46eb
+Jan 05 22:25:06 host kernel: RDX: 0000000000000000 RSI: 0000000000000007 RDI: 000000000000006f
+Jan 05 22:25:06 host kernel: RBP: 000000000000006f R08: 0000000000000000 R09: 00005613a68cd80a
+Jan 05 22:25:06 host kernel: R10: 0000000000000000 R11: 0000000000000293 R12: 0000000000000000
+Jan 05 22:25:06 host kernel: R13: 0000000000000000 R14: 00005613a68cf050 R15: 00005613a71e5f50
+Jan 05 22:25:06 host kernel: INFO: task systemd-logind:807 blocked for more than 245 seconds.
+Jan 05 22:25:06 host kernel:       Not tainted 5.10.4 #307
+Jan 05 22:25:06 host kernel: "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+Jan 05 22:25:06 host kernel: task:systemd-logind  state:D stack:    0 pid:  807 ppid:     1 flags:0x000043a0
+Jan 05 22:25:06 host kernel: Call Trace:
+Jan 05 22:25:06 host kernel:  __schedule+0x27b/0x870
+Jan 05 22:25:06 host kernel:  schedule+0x45/0xe0
+Jan 05 22:25:06 host kernel:  schedule_preempt_disabled+0x14/0x20
+Jan 05 22:25:06 host kernel:  __mutex_lock.constprop.0+0x239/0x500
+Jan 05 22:25:06 host kernel:  sync_eld_via_acomp+0x3f/0x350
+Jan 05 22:25:06 host kernel:  check_presence_and_report+0x57/0x80
+Jan 05 22:25:06 host kernel:  intel_audio_codec_enable+0x11f/0x180
+Jan 05 22:25:06 host kernel:  intel_enable_ddi+0x447/0x5a0
+Jan 05 22:25:06 host kernel:  intel_encoders_enable+0x75/0xa0
+Jan 05 22:25:06 host kernel:  hsw_crtc_enable+0x1bf/0x5c0
+Jan 05 22:25:06 host kernel:  intel_enable_crtc+0x48/0x60
+Jan 05 22:25:06 host kernel:  intel_commit_modeset_enables+0x48/0x70
+Jan 05 22:25:06 host kernel:  intel_atomic_commit_tail+0x2c9/0x1230
+Jan 05 22:25:06 host kernel:  ? complete+0x2f/0x40
+Jan 05 22:25:06 host kernel:  ? _raw_spin_unlock_irqrestore+0x14/0x30
+Jan 05 22:25:06 host kernel:  ? flush_workqueue_prep_pwqs+0x11e/0x130
+Jan 05 22:25:06 host kernel:  ? flush_workqueue+0x178/0x3c0
+Jan 05 22:25:06 host kernel:  intel_atomic_commit+0x318/0x3a0
+Jan 05 22:25:06 host kernel:  drm_client_modeset_commit_atomic+0x1d9/0x220
+Jan 05 22:25:06 host kernel:  drm_client_modeset_commit_locked+0x56/0x150
+Jan 05 22:25:06 host kernel:  drm_fb_helper_set_par+0x75/0xd0
+Jan 05 22:25:06 host kernel:  intel_fbdev_set_par+0x16/0x60
+Jan 05 22:25:06 host kernel:  fb_set_var+0x186/0x330
+Jan 05 22:25:06 host kernel:  ? _raw_spin_unlock_irqrestore+0x14/0x30
+Jan 05 22:25:06 host kernel:  ? __wake_up_common_lock+0x8a/0xc0
+Jan 05 22:25:06 host kernel:  fbcon_blank+0x17a/0x280
+Jan 05 22:25:06 host kernel:  do_unblank_screen+0x9c/0x130
+Jan 05 22:25:06 host kernel:  vt_ioctl+0x1229/0x1550
+Jan 05 22:25:06 host kernel:  ? slab_free_freelist_hook+0xe8/0x110
+Jan 05 22:25:06 host kernel:  ? tty_release+0x346/0x5d0
+Jan 05 22:25:06 host kernel:  ? kfree+0x3b0/0x410
+Jan 05 22:25:06 host kernel:  tty_ioctl+0x395/0x910
+Jan 05 22:25:06 host kernel:  ? tty_unlock+0x1d/0x40
+Jan 05 22:25:06 host kernel:  __x64_sys_ioctl+0x83/0xb0
+Jan 05 22:25:06 host kernel:  do_syscall_64+0x33/0x80
+Jan 05 22:25:06 host kernel:  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+Jan 05 22:25:06 host kernel: RIP: 0033:0x7fa76794ccc7
+Jan 05 22:25:06 host kernel: RSP: 002b:00007ffca85a3038 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
+Jan 05 22:25:06 host kernel: RAX: ffffffffffffffda RBX: 0000555ca73da410 RCX: 00007fa76794ccc7
+Jan 05 22:25:06 host kernel: RDX: 0000000000000000 RSI: 0000000000004b3a RDI: 000000000000000a
+Jan 05 22:25:06 host kernel: RBP: 000000000000000a R08: 0000000000000000 R09: 0000000000000000
+Jan 05 22:25:06 host kernel: R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+Jan 05 22:25:06 host kernel: R13: 0000000000000019 R14: 00007ffca85a3188 R15: 00007ffca85a31a0
+Jan 05 22:25:06 host kernel: INFO: task pulseaudio:2805 blocked for more than 245 seconds.
+Jan 05 22:25:06 host kernel:       Not tainted 5.10.4 #307
+Jan 05 22:25:06 host kernel: "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+Jan 05 22:25:06 host kernel: task:pulseaudio      state:D stack:    0 pid: 2805 ppid:  2664 flags:0x000003a4
+Jan 05 22:25:06 host kernel: Call Trace:
+Jan 05 22:25:06 host kernel:  __schedule+0x27b/0x870
+Jan 05 22:25:06 host kernel:  schedule+0x45/0xe0
+Jan 05 22:25:06 host kernel:  rwsem_down_write_slowpath+0x263/0x4d0
+Jan 05 22:25:06 host kernel:  snd_ctl_release+0x75/0x120
+Jan 05 22:25:06 host kernel:  __fput+0x8e/0x230
+Jan 05 22:25:06 host kernel:  task_work_run+0x5c/0x90
+Jan 05 22:25:06 host kernel:  exit_to_user_mode_prepare+0xe9/0x110
+Jan 05 22:25:06 host kernel:  syscall_exit_to_user_mode+0x22/0x160
+Jan 05 22:25:06 host kernel:  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+Jan 05 22:25:06 host kernel: RIP: 0033:0x7f1ee209d11b
+Jan 05 22:25:06 host kernel: RSP: 002b:00007ffcb6c726e0 EFLAGS: 00000293 ORIG_RAX: 0000000000000003
+Jan 05 22:25:06 host kernel: RAX: 0000000000000000 RBX: 000055dbcfc2c430 RCX: 00007f1ee209d11b
+Jan 05 22:25:06 host kernel: RDX: 00007f1ee1f2ebe0 RSI: 0000000000000000 RDI: 000000000000000f
+Jan 05 22:25:06 host kernel: RBP: 000055dbcfe1d5c0 R08: 0000000000000000 R09: 00007ffcb6c726b0
+Jan 05 22:25:06 host kernel: R10: 0000000000000001 R11: 0000000000000293 R12: 0000000000000000
+Jan 05 22:25:06 host kernel: R13: 000055dbcfe185f0 R14: 000055dbcfcf8008 R15: 0000000000000019
+Jan 05 22:25:06 host kernel: INFO: task alsactl:24113 blocked for more than 245 seconds.
+Jan 05 22:25:06 host kernel:       Not tainted 5.10.4 #307
+Jan 05 22:25:06 host kernel: "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+Jan 05 22:25:06 host kernel: task:alsactl         state:D stack:    0 pid:24113 ppid:     1 flags:0x00000080
+Jan 05 22:25:06 host kernel: Call Trace:
+Jan 05 22:25:06 host kernel:  __schedule+0x27b/0x870
+Jan 05 22:25:06 host kernel:  schedule+0x45/0xe0
+Jan 05 22:25:06 host kernel:  schedule_preempt_disabled+0x14/0x20
+Jan 05 22:25:06 host kernel:  __mutex_lock.constprop.0+0x239/0x500
+Jan 05 22:25:06 host kernel:  ? chrdev_open+0xc2/0x240
+Jan 05 22:25:06 host kernel:  hdmi_eld_ctl_info+0x36/0xa0
+Jan 05 22:25:06 host kernel:  __snd_ctl_elem_info.constprop.0+0x1d/0x110
+Jan 05 22:25:06 host kernel:  snd_ctl_elem_info_user+0x86/0xf0
+Jan 05 22:25:06 host kernel:  snd_ctl_ioctl+0x1ef/0x750
+Jan 05 22:25:06 host kernel:  __x64_sys_ioctl+0x83/0xb0
+Jan 05 22:25:06 host kernel:  do_syscall_64+0x33/0x80
+Jan 05 22:25:06 host kernel:  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+Jan 05 22:25:06 host kernel: RIP: 0033:0x7ffa0105dcc7
+Jan 05 22:25:06 host kernel: RSP: 002b:00007ffeded89848 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
+Jan 05 22:25:06 host kernel: RAX: ffffffffffffffda RBX: 000055f392b7a6c0 RCX: 00007ffa0105dcc7
+Jan 05 22:25:06 host kernel: RDX: 00007ffeded89860 RSI: 00000000c1105511 RDI: 0000000000000004
+Jan 05 22:25:06 host kernel: RBP: 00007ffeded8a130 R08: 000055f392b7b9d0 R09: 0000000000000000
+Jan 05 22:25:06 host kernel: R10: 000055f392b7bd40 R11: 0000000000000246 R12: 00007ffeded89860
+Jan 05 22:25:06 host kernel: R13: 00007ffeded89980 R14: 00007ffeded8a140 R15: 000055f392ba6ec0
+Jan 05 22:26:08 host systemd[2664]: pulseaudio.service: Processes still around after final SIGKILL. Entering failed mode.
+Jan 05 22:26:08 host systemd[2664]: pulseaudio.service: Failed with result 'timeout'.
+Jan 05 22:26:08 host systemd[2664]: pulseaudio.service: Unit process 2805 (pulseaudio) remains running after unit stopped.
+Jan 05 22:27:09 host kernel: INFO: task systemd:1 blocked for more than 368 seconds.
+Jan 05 22:27:09 host kernel:       Not tainted 5.10.4 #307
+Jan 05 22:27:09 host kernel: "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+Jan 05 22:27:09 host kernel: task:systemd         state:D stack:    0 pid:    1 ppid:     0 flags:0x00004002
+Jan 05 22:27:09 host kernel: Call Trace:
+Jan 05 22:27:09 host kernel:  __schedule+0x27b/0x870
+Jan 05 22:27:09 host kernel:  schedule+0x45/0xe0
+Jan 05 22:27:09 host kernel:  schedule_preempt_disabled+0x14/0x20
+Jan 05 22:27:09 host kernel:  __mutex_lock.constprop.0+0x239/0x500
+Jan 05 22:27:09 host kernel:  drm_fb_helper_restore_fbdev_mode_unlocked+0x41/0x90
+Jan 05 22:27:09 host kernel:  intel_fbdev_restore_mode+0x30/0x80
+Jan 05 22:27:09 host kernel:  drm_release_noglobal+0x69/0xa0
+Jan 05 22:27:09 host kernel:  __fput+0x8e/0x230
+Jan 05 22:27:09 host kernel:  task_work_run+0x5c/0x90
+Jan 05 22:27:09 host kernel:  exit_to_user_mode_prepare+0xe9/0x110
+Jan 05 22:27:09 host kernel:  syscall_exit_to_user_mode+0x22/0x160
+Jan 05 22:27:09 host kernel:  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+Jan 05 22:27:09 host kernel: RIP: 0033:0x7fdc7c9a46eb
+Jan 05 22:27:09 host kernel: RSP: 002b:00007ffd0c397370 EFLAGS: 00000293 ORIG_RAX: 0000000000000003
+Jan 05 22:27:09 host kernel: RAX: 0000000000000000 RBX: 00007fdc7c1d66c8 RCX: 00007fdc7c9a46eb
+Jan 05 22:27:09 host kernel: RDX: 0000000000000000 RSI: 0000000000000007 RDI: 000000000000006f
+Jan 05 22:27:09 host kernel: RBP: 000000000000006f R08: 0000000000000000 R09: 00005613a68cd80a
+Jan 05 22:27:09 host kernel: R10: 0000000000000000 R11: 0000000000000293 R12: 0000000000000000
+Jan 05 22:27:09 host kernel: R13: 0000000000000000 R14: 00005613a68cf050 R15: 00005613a71e5f50
+Jan 05 22:27:09 host kernel: INFO: task systemd-logind:807 blocked for more than 368 seconds.
+Jan 05 22:27:09 host kernel:       Not tainted 5.10.4 #307
+Jan 05 22:27:09 host kernel: "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+Jan 05 22:27:09 host kernel: task:systemd-logind  state:D stack:    0 pid:  807 ppid:     1 flags:0x000043a0
+Jan 05 22:27:09 host kernel: Call Trace:
+Jan 05 22:27:09 host kernel:  __schedule+0x27b/0x870
+Jan 05 22:27:09 host kernel:  schedule+0x45/0xe0
+Jan 05 22:27:09 host kernel:  schedule_preempt_disabled+0x14/0x20
+Jan 05 22:27:09 host kernel:  __mutex_lock.constprop.0+0x239/0x500
+Jan 05 22:27:09 host kernel:  sync_eld_via_acomp+0x3f/0x350
+Jan 05 22:27:09 host kernel:  check_presence_and_report+0x57/0x80
+Jan 05 22:27:09 host kernel:  intel_audio_codec_enable+0x11f/0x180
+Jan 05 22:27:09 host kernel:  intel_enable_ddi+0x447/0x5a0
+Jan 05 22:27:09 host kernel:  intel_encoders_enable+0x75/0xa0
+Jan 05 22:27:09 host kernel:  hsw_crtc_enable+0x1bf/0x5c0
+Jan 05 22:27:09 host kernel:  intel_enable_crtc+0x48/0x60
+Jan 05 22:27:09 host kernel:  intel_commit_modeset_enables+0x48/0x70
+Jan 05 22:27:09 host kernel:  intel_atomic_commit_tail+0x2c9/0x1230
+Jan 05 22:27:09 host kernel:  ? complete+0x2f/0x40
+Jan 05 22:27:09 host kernel:  ? _raw_spin_unlock_irqrestore+0x14/0x30
+Jan 05 22:27:09 host kernel:  ? flush_workqueue_prep_pwqs+0x11e/0x130
+Jan 05 22:27:09 host kernel:  ? flush_workqueue+0x178/0x3c0
+Jan 05 22:27:09 host kernel:  intel_atomic_commit+0x318/0x3a0
+Jan 05 22:27:09 host kernel:  drm_client_modeset_commit_atomic+0x1d9/0x220
+Jan 05 22:27:09 host kernel:  drm_client_modeset_commit_locked+0x56/0x150
+Jan 05 22:27:09 host kernel:  drm_fb_helper_set_par+0x75/0xd0
+Jan 05 22:27:09 host kernel:  intel_fbdev_set_par+0x16/0x60
+Jan 05 22:27:09 host kernel:  fb_set_var+0x186/0x330
+Jan 05 22:27:09 host kernel:  ? _raw_spin_unlock_irqrestore+0x14/0x30
+Jan 05 22:27:09 host kernel:  ? __wake_up_common_lock+0x8a/0xc0
+Jan 05 22:27:09 host kernel:  fbcon_blank+0x17a/0x280
+Jan 05 22:27:09 host kernel:  do_unblank_screen+0x9c/0x130
+Jan 05 22:27:09 host kernel:  vt_ioctl+0x1229/0x1550
+Jan 05 22:27:09 host kernel:  ? slab_free_freelist_hook+0xe8/0x110
+Jan 05 22:27:09 host kernel:  ? tty_release+0x346/0x5d0
+Jan 05 22:27:09 host kernel:  ? kfree+0x3b0/0x410
+Jan 05 22:27:09 host kernel:  tty_ioctl+0x395/0x910
+Jan 05 22:27:09 host kernel:  ? tty_unlock+0x1d/0x40
+Jan 05 22:27:09 host kernel:  __x64_sys_ioctl+0x83/0xb0
+Jan 05 22:27:09 host kernel:  do_syscall_64+0x33/0x80
+Jan 05 22:27:09 host kernel:  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+Jan 05 22:27:09 host kernel: RIP: 0033:0x7fa76794ccc7
+Jan 05 22:27:09 host kernel: RSP: 002b:00007ffca85a3038 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
+Jan 05 22:27:09 host kernel: RAX: ffffffffffffffda RBX: 0000555ca73da410 RCX: 00007fa76794ccc7
+Jan 05 22:27:09 host kernel: RDX: 0000000000000000 RSI: 0000000000004b3a RDI: 000000000000000a
+Jan 05 22:27:09 host kernel: RBP: 000000000000000a R08: 0000000000000000 R09: 0000000000000000
+Jan 05 22:27:09 host kernel: R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+Jan 05 22:27:09 host kernel: R13: 0000000000000019 R14: 00007ffca85a3188 R15: 00007ffca85a31a0
 
-We can use PM runtime autosuspend features to check the keyboard state
-again after it enters idle. We have the hardware support for clock
-auto gating, and the keyboard is capable of generating wake-up events
-in runtime suspended state.
-
-Cc: Arthur Demchenkov <spinal.by@gmail.com>
-Cc: Carl Philipp Klemm <philipp@uvos.xyz>
-Cc: Merlijn Wajer <merlijn@wizzup.org>
-Cc: Pavel Machek <pavel@ucw.cz>
-Cc: ruleh <ruleh@gmx.de>
-Cc: Sebastian Reichel <sre@kernel.org>
-Signed-off-by: Tony Lindgren <tony@atomide.com>
----
- drivers/input/keyboard/omap4-keypad.c | 105 +++++++++++++++++++++++---
- 1 file changed, 94 insertions(+), 11 deletions(-)
-
-diff --git a/drivers/input/keyboard/omap4-keypad.c b/drivers/input/keyboard/omap4-keypad.c
---- a/drivers/input/keyboard/omap4-keypad.c
-+++ b/drivers/input/keyboard/omap4-keypad.c
-@@ -60,6 +60,7 @@
- 	((((dbms) * 1000) / ((1 << ((ptv) + 1)) * (1000000 / 32768))) - 1)
- #define OMAP4_VAL_DEBOUNCINGTIME_16MS					\
- 	OMAP4_KEYPAD_DEBOUNCINGTIME_MS(16, OMAP4_KEYPAD_PTV_DIV_128)
-+#define OMAP4_KEYPAD_AUTOIDLE_MS	50	/* Approximate measured time */
- 
- enum {
- 	KBD_REVISION_OMAP4 = 0,
-@@ -71,6 +72,7 @@ struct omap4_keypad {
- 
- 	void __iomem *base;
- 	unsigned int irq;
-+	struct mutex lock;		/* for key scan */
- 
- 	unsigned int rows;
- 	unsigned int cols;
-@@ -154,17 +156,19 @@ static irqreturn_t omap4_keypad_irq_handler(int irq, void *dev_id)
- 	return IRQ_NONE;
- }
- 
--static irqreturn_t omap4_keypad_irq_thread_fn(int irq, void *dev_id)
-+static bool omap4_keypad_scan_keys(struct omap4_keypad *keypad_data, bool clear)
- {
--	struct omap4_keypad *keypad_data = dev_id;
- 	struct input_dev *input_dev = keypad_data->input;
- 	int keys_up, keys_down;
- 	u32 low, high;
--	u64 keys;
-+	u64 keys = 0;
- 
--	low = kbd_readl(keypad_data, OMAP4_KBD_FULLCODE31_0);
--	high = kbd_readl(keypad_data, OMAP4_KBD_FULLCODE63_32);
--	keys = low | (u64)high << 32;
-+	mutex_lock(&keypad_data->lock);
-+	if (!clear) {
-+		low = kbd_readl(keypad_data, OMAP4_KBD_FULLCODE31_0);
-+		high = kbd_readl(keypad_data, OMAP4_KBD_FULLCODE63_32);
-+		keys = low | (u64)high << 32;
-+	}
- 
- 	/* Scan for key up events for lost key-up interrupts */
- 	keys_up = omap4_keypad_scan_state(keypad_data, keys, false);
-@@ -176,18 +180,49 @@ static irqreturn_t omap4_keypad_irq_thread_fn(int irq, void *dev_id)
- 
- 	keypad_data->keys = keys;
- 
-+	mutex_unlock(&keypad_data->lock);
-+
-+	return keys_down;
-+}
-+
-+static irqreturn_t omap4_keypad_irq_thread_fn(int irq, void *dev_id)
-+{
-+	struct omap4_keypad *keypad_data = dev_id;
-+	struct device *dev = keypad_data->input->dev.parent;
-+	bool down_events;
-+	int error;
-+
-+	error = pm_runtime_get_sync(dev);
-+	if (error < 0) {
-+		pm_runtime_put_noidle(dev);
-+
-+		return IRQ_NONE;
-+	}
-+
-+	down_events = omap4_keypad_scan_keys(keypad_data, false);
-+
- 	/* clear pending interrupts */
- 	kbd_write_irqreg(keypad_data, OMAP4_KBD_IRQSTATUS,
- 			 kbd_read_irqreg(keypad_data, OMAP4_KBD_IRQSTATUS));
- 
-+	pm_runtime_mark_last_busy(dev);
-+	pm_runtime_put_autosuspend(dev);
-+
- 	return IRQ_HANDLED;
- }
- 
- static int omap4_keypad_open(struct input_dev *input)
- {
- 	struct omap4_keypad *keypad_data = input_get_drvdata(input);
-+	struct device *dev = input->dev.parent;
-+	int error;
- 
--	pm_runtime_get_sync(input->dev.parent);
-+	error = pm_runtime_get_sync(dev);
-+	if (error < 0) {
-+		pm_runtime_put_noidle(dev);
-+
-+		return error;
-+	}
- 
- 	disable_irq(keypad_data->irq);
- 
-@@ -206,6 +241,9 @@ static int omap4_keypad_open(struct input_dev *input)
- 
- 	enable_irq(keypad_data->irq);
- 
-+	pm_runtime_mark_last_busy(dev);
-+	pm_runtime_put_autosuspend(dev);
-+
- 	return 0;
- }
- 
-@@ -223,14 +261,23 @@ static void omap4_keypad_stop(struct omap4_keypad *keypad_data)
- 
- static void omap4_keypad_close(struct input_dev *input)
- {
--	struct omap4_keypad *keypad_data;
-+	struct omap4_keypad *keypad_data = input_get_drvdata(input);
-+	struct device *dev = input->dev.parent;
-+	int error;
-+
-+	error = pm_runtime_get_sync(dev);
-+	if (error < 0) {
-+		pm_runtime_put_noidle(dev);
-+
-+		return;
-+	}
- 
--	keypad_data = input_get_drvdata(input);
- 	disable_irq(keypad_data->irq);
- 	omap4_keypad_stop(keypad_data);
- 	enable_irq(keypad_data->irq);
- 
--	pm_runtime_put_sync(input->dev.parent);
-+	pm_runtime_mark_last_busy(dev);
-+	pm_runtime_put_autosuspend(dev);
- }
- 
- static int omap4_keypad_parse_dt(struct device *dev,
-@@ -301,6 +348,7 @@ static int omap4_keypad_probe(struct platform_device *pdev)
- 	}
- 
- 	keypad_data->irq = irq;
-+	mutex_init(&keypad_data->lock);
- 
- 	error = omap4_keypad_parse_dt(&pdev->dev, keypad_data);
- 	if (error)
-@@ -320,6 +368,8 @@ static int omap4_keypad_probe(struct platform_device *pdev)
- 		goto err_release_mem;
- 	}
- 
-+	pm_runtime_use_autosuspend(&pdev->dev);
-+	pm_runtime_set_autosuspend_delay(&pdev->dev, OMAP4_KEYPAD_AUTOIDLE_MS);
- 	pm_runtime_enable(&pdev->dev);
- 
- 	/*
-@@ -337,7 +387,6 @@ static int omap4_keypad_probe(struct platform_device *pdev)
- 			/* Ensure device does not raise interrupts */
- 			omap4_keypad_stop(keypad_data);
- 		}
--		pm_runtime_put_sync(&pdev->dev);
- 	}
- 	if (error)
- 		goto err_pm_disable;
-@@ -406,6 +455,9 @@ static int omap4_keypad_probe(struct platform_device *pdev)
- 
- 	platform_set_drvdata(pdev, keypad_data);
- 
-+	pm_runtime_mark_last_busy(&pdev->dev);
-+	pm_runtime_put_autosuspend(&pdev->dev);
-+
- 	return 0;
- 
- err_free_irq:
-@@ -415,6 +467,8 @@ static int omap4_keypad_probe(struct platform_device *pdev)
- err_free_input:
- 	input_free_device(input_dev);
- err_pm_disable:
-+	pm_runtime_put_sync(&pdev->dev);
-+	pm_runtime_dont_use_autosuspend(&pdev->dev);
- 	pm_runtime_disable(&pdev->dev);
- 	iounmap(keypad_data->base);
- err_release_mem:
-@@ -433,6 +487,7 @@ static int omap4_keypad_remove(struct platform_device *pdev)
- 
- 	free_irq(keypad_data->irq, keypad_data);
- 
-+	pm_runtime_dont_use_autosuspend(&pdev->dev);
- 	pm_runtime_disable(&pdev->dev);
- 
- 	input_unregister_device(keypad_data->input);
-@@ -454,6 +509,34 @@ static const struct of_device_id omap_keypad_dt_match[] = {
- };
- MODULE_DEVICE_TABLE(of, omap_keypad_dt_match);
- 
-+/*
-+ * Errata ID i689 "1.32 Keyboard Key Up Event Can Be Missed".
-+ * Interrupt may not happen for key-up events.
-+ */
-+static int __maybe_unused omap4_keypad_runtime_suspend(struct device *dev)
-+{
-+	struct platform_device *pdev = to_platform_device(dev);
-+	struct omap4_keypad *keypad_data = platform_get_drvdata(pdev);
-+	bool events;
-+	u32 active;
-+
-+	active = kbd_readl(keypad_data, OMAP4_KBD_STATEMACHINE);
-+	if (active) {
-+		pm_runtime_mark_last_busy(dev);
-+		return -EBUSY;
-+	}
-+
-+	events = omap4_keypad_scan_keys(keypad_data, true);
-+	if (events)
-+		dev_info(dev, "cleared stuck events on idle\n");
-+
-+	return 0;
-+}
-+
-+static const struct dev_pm_ops omap4_keypad_pm_ops = {
-+	SET_RUNTIME_PM_OPS(omap4_keypad_runtime_suspend, NULL, NULL)
-+};
-+
- static struct platform_driver omap4_keypad_driver = {
- 	.probe		= omap4_keypad_probe,
- 	.remove		= omap4_keypad_remove,
--- 
-2.30.0
+Regards,
+Gabor
