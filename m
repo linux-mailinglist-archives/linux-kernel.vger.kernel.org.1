@@ -2,48 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 72EC52EBAB2
+	by mail.lfdr.de (Postfix) with ESMTP id DF9B82EBAB3
 	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 08:52:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726442AbhAFHuw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Jan 2021 02:50:52 -0500
-Received: from coyote.holtmann.net ([212.227.132.17]:42715 "EHLO
+        id S1726483AbhAFHuy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Jan 2021 02:50:54 -0500
+Received: from coyote.holtmann.net ([212.227.132.17]:57933 "EHLO
         mail.holtmann.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725788AbhAFHuv (ORCPT
+        with ESMTP id S1725788AbhAFHuy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Jan 2021 02:50:51 -0500
+        Wed, 6 Jan 2021 02:50:54 -0500
 Received: from marcel-macbook.holtmann.net (p5b3d23d0.dip0.t-ipconnect.de [91.61.35.208])
-        by mail.holtmann.org (Postfix) with ESMTPSA id 9A6D1CED0F;
-        Wed,  6 Jan 2021 08:57:30 +0100 (CET)
+        by mail.holtmann.org (Postfix) with ESMTPSA id D955ACED10;
+        Wed,  6 Jan 2021 08:57:32 +0100 (CET)
 Content-Type: text/plain;
         charset=us-ascii
 Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.40.0.2.32\))
-Subject: Re: [PATCH 2/2] Bluetooth: hci_h5: Add support for binding RTL8723DS
- with device tree
+Subject: Re: [PATCH] Bluetooth: avoid u128_xor() on potentially misaligned
+ inputs
 From:   Marcel Holtmann <marcel@holtmann.org>
-In-Reply-To: <20210102214116.1098030-1-johnny86@gmx.de>
-Date:   Wed, 6 Jan 2021 08:50:09 +0100
+In-Reply-To: <20210105161053.6642-1-ardb@kernel.org>
+Date:   Wed, 6 Jan 2021 08:50:11 +0100
 Cc:     Johan Hedberg <johan.hedberg@gmail.com>,
         Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
-        linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        linux-bluetooth <linux-bluetooth@vger.kernel.org>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
 Content-Transfer-Encoding: 7bit
-Message-Id: <B3488D5C-B436-42E6-B488-96E5E8E84463@holtmann.org>
-References: <20210102214116.1098030-1-johnny86@gmx.de>
-To:     John-Eric Kamps <johnny86@gmx.de>
+Message-Id: <51147682-7227-45AF-8B2F-77F14B02EA7A@holtmann.org>
+References: <20210105161053.6642-1-ardb@kernel.org>
+To:     Ard Biesheuvel <ardb@kernel.org>
 X-Mailer: Apple Mail (2.3654.40.0.2.32)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi John-Eric,
+Hi Ard,
 
-> RTL8723DS could be handled by btrtl-driver, so add ability to bind it
-> using device tree.
+> u128_xor() takes pointers to quantities that are assumed to be at least
+> 64-bit aligned, which is not guaranteed to be the case in the smp_c1()
+> routine. So switch to crypto_xor() instead.
 > 
-> Signed-off-by: John-Eric Kamps <johnny86@gmx.de>
+> Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
 > ---
-> drivers/bluetooth/hci_h5.c | 2 ++
-> 1 file changed, 2 insertions(+)
+> net/bluetooth/smp.c | 5 ++---
+> 1 file changed, 2 insertions(+), 3 deletions(-)
 
 patch has been applied to bluetooth-next tree.
 
