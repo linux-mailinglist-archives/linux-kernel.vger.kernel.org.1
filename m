@@ -2,86 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 723292EB906
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 05:47:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CBC5D2EB909
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 05:52:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726324AbhAFEqf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 23:46:35 -0500
-Received: from mga06.intel.com ([134.134.136.31]:11318 "EHLO mga06.intel.com"
+        id S1726492AbhAFEtg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 23:49:36 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60484 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726195AbhAFEqe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 23:46:34 -0500
-IronPort-SDR: QgGR8L3RTTc1FTb+8TZtKZeAZLq+f//Py4kK/eTFjcBMekEdalUaxsVRUcEIFS+kZXt8k7gK8M
- IR4D0+FdQeyg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9855"; a="238777854"
-X-IronPort-AV: E=Sophos;i="5.78,479,1599548400"; 
-   d="scan'208";a="238777854"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Jan 2021 20:45:53 -0800
-IronPort-SDR: 1dFXjE8Uz9vBuNBcfiNT3fvqJvx8WsbzyCNMuMOHgCYhpf3S32eKLMrH0nyGVu2Kq14rlNSyk0
- +hn6t/PQBBDg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.78,479,1599548400"; 
-   d="scan'208";a="398088495"
-Received: from shbuild999.sh.intel.com (HELO localhost) ([10.239.147.98])
-  by fmsmga002.fm.intel.com with ESMTP; 05 Jan 2021 20:45:50 -0800
-Date:   Wed, 6 Jan 2021 12:45:50 +0800
-From:   Feng Tang <feng.tang@intel.com>
-To:     Chris Down <chris@chrisdown.name>, Roman Gushchin <guro@fb.com>
-Cc:     Shakeel Butt <shakeelb@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Linux MM <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>, andi.kleen@intel.com,
-        "Chen, Tim C" <tim.c.chen@intel.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Huang Ying <ying.huang@intel.com>
-Subject: Re: [PATCH 2/2] mm: memcg: add a new MEMCG_UPDATE_BATCH
-Message-ID: <20210106044550.GA3184@shbuild999.sh.intel.com>
-References: <1609252514-27795-1-git-send-email-feng.tang@intel.com>
- <1609252514-27795-2-git-send-email-feng.tang@intel.com>
- <CALvZod5ir6F6BkJiVoXztNu6CancqJ2sNusg_hwTPcEssYkDdQ@mail.gmail.com>
- <20210106021213.GD101866@shbuild999.sh.intel.com>
- <X/Ux6CT6EsP+QQ8S@chrisdown.name>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <X/Ux6CT6EsP+QQ8S@chrisdown.name>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+        id S1725815AbhAFEtf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Jan 2021 23:49:35 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AC17E22BF3;
+        Wed,  6 Jan 2021 04:48:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1609908534;
+        bh=hzRekz/qkB4gSiswq1KEvcP3lwbreNJQzdQzCIjeNs8=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=JbKyec84hR+WyLoCiaVQALe1Ol2Osl0kdSo58eGBkmAuE2+4WsBLYmTCUQ7Abizl0
+         X1NpN8TDuYW5q2old6rR8+n+s/0b+/T9vWi52eB/GntxJa3JB+ge6UtaA1gqIhEuzj
+         iVzvLguRvARkeSbC7JwAHJnhSfHl7lspMySde5rhgOUNvlMo07MZv/87O39HsHvBje
+         4cIV0BtT2wcnBmYj9LwWKp3vTheolxHPL0cuepOVtMTk3GdVCuz7W2tI9BmHMN4glu
+         zhV1WmMqSMi1eN1GDvbu21yGG78i0NBLxB57gpLTVnPAI6IiqSkfaqMdOeHD1HR1Tz
+         2ANZ745hqFrww==
+From:   paulmck@kernel.org
+To:     rcu@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
+        jiangshanlai@gmail.com, akpm@linux-foundation.org,
+        mathieu.desnoyers@efficios.com, josh@joshtriplett.org,
+        tglx@linutronix.de, peterz@infradead.org, rostedt@goodmis.org,
+        dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
+        oleg@redhat.com, joel@joelfernandes.org,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Neeraj Upadhyay <neeraju@codeaurora.org>,
+        "Paul E . McKenney" <paulmck@kernel.org>
+Subject: [PATCH tip/core/rcu 01/21] rcu/nocb: Turn enabled/offload states into a common flag
+Date:   Tue,  5 Jan 2021 20:48:33 -0800
+Message-Id: <20210106044853.20812-1-paulmck@kernel.org>
+X-Mailer: git-send-email 2.9.5
+In-Reply-To: <20210106013950.GA14663@paulmck-ThinkPad-P72>
+References: <20210106013950.GA14663@paulmck-ThinkPad-P72>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Chris,
+From: Frederic Weisbecker <frederic@kernel.org>
 
-On Wed, Jan 06, 2021 at 03:43:36AM +0000, Chris Down wrote:
-> Feng Tang writes:
-> >One further thought is, there are quite some "BATCH" number in
-> >kernel for perf-cpu/global data updating, maybe we can add a
-> >global flag 'sysctl_need_accurate_stats' for
-> >	if (sysctl_need_accurate_stats)
-> >		batch = SMALLER_BATCH
-> >	else
-> >		batch = BIGGER_BATCH
-> 
-> Moving decisions like this to the system administrator is not really a
-> solution to the problem -- inclusion should at least be contingent on either
-> having "correct-ish" stats exported to userspace. Displaying broken stats to
-> the user -- even with a configuration knob -- is less than ideal and is
-> likely to confuse and confound issues in future.
-> 
-> I would also like to see numbers from more real-world workloads.
+This commit gathers the rcu_segcblist ->enabled and ->offloaded property
+field into a single ->flags bitmask to avoid further proliferation of
+individual u8 fields in the structure.  This change prepares for the
+state formerly known as ->offloaded state to be modified at runtime.
 
-Sure. Roman also mentioned this. Do you have some suggestions for the
-workload or benchmarks? I don't have much knowledge on this, and have
-only leveraged some of 0day's benchmarking systems.
+Cc: Josh Triplett <josh@joshtriplett.org>
+Cc: Steven Rostedt <rostedt@goodmis.org>
+Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Cc: Lai Jiangshan <jiangshanlai@gmail.com>
+Cc: Joel Fernandes <joel@joelfernandes.org>
+Cc: Neeraj Upadhyay <neeraju@codeaurora.org>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Inspired-by: Paul E. McKenney <paulmck@kernel.org>
+Tested-by: Boqun Feng <boqun.feng@gmail.com>
+Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
+Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+---
+ include/linux/rcu_segcblist.h |  6 ++++--
+ kernel/rcu/rcu_segcblist.c    |  6 +++---
+ kernel/rcu/rcu_segcblist.h    | 23 +++++++++++++++++++++--
+ 3 files changed, 28 insertions(+), 7 deletions(-)
 
-Thanks,
-Feng
+diff --git a/include/linux/rcu_segcblist.h b/include/linux/rcu_segcblist.h
+index 6c01f09..4714b02 100644
+--- a/include/linux/rcu_segcblist.h
++++ b/include/linux/rcu_segcblist.h
+@@ -63,6 +63,9 @@ struct rcu_cblist {
+ #define RCU_NEXT_TAIL		3
+ #define RCU_CBLIST_NSEGS	4
+ 
++#define SEGCBLIST_ENABLED	BIT(0)
++#define SEGCBLIST_OFFLOADED	BIT(1)
++
+ struct rcu_segcblist {
+ 	struct rcu_head *head;
+ 	struct rcu_head **tails[RCU_CBLIST_NSEGS];
+@@ -73,8 +76,7 @@ struct rcu_segcblist {
+ 	long len;
+ #endif
+ 	long seglen[RCU_CBLIST_NSEGS];
+-	u8 enabled;
+-	u8 offloaded;
++	u8 flags;
+ };
+ 
+ #define RCU_SEGCBLIST_INITIALIZER(n) \
+diff --git a/kernel/rcu/rcu_segcblist.c b/kernel/rcu/rcu_segcblist.c
+index 094de25..406c67b 100644
+--- a/kernel/rcu/rcu_segcblist.c
++++ b/kernel/rcu/rcu_segcblist.c
+@@ -246,7 +246,7 @@ void rcu_segcblist_init(struct rcu_segcblist *rsclp)
+ 		rcu_segcblist_set_seglen(rsclp, i, 0);
+ 	}
+ 	rcu_segcblist_set_len(rsclp, 0);
+-	rsclp->enabled = 1;
++	rcu_segcblist_set_flags(rsclp, SEGCBLIST_ENABLED);
+ }
+ 
+ /*
+@@ -257,7 +257,7 @@ void rcu_segcblist_disable(struct rcu_segcblist *rsclp)
+ {
+ 	WARN_ON_ONCE(!rcu_segcblist_empty(rsclp));
+ 	WARN_ON_ONCE(rcu_segcblist_n_cbs(rsclp));
+-	rsclp->enabled = 0;
++	rcu_segcblist_clear_flags(rsclp, SEGCBLIST_ENABLED);
+ }
+ 
+ /*
+@@ -266,7 +266,7 @@ void rcu_segcblist_disable(struct rcu_segcblist *rsclp)
+  */
+ void rcu_segcblist_offload(struct rcu_segcblist *rsclp)
+ {
+-	rsclp->offloaded = 1;
++	rcu_segcblist_set_flags(rsclp, SEGCBLIST_OFFLOADED);
+ }
+ 
+ /*
+diff --git a/kernel/rcu/rcu_segcblist.h b/kernel/rcu/rcu_segcblist.h
+index 18e101d..ff372db 100644
+--- a/kernel/rcu/rcu_segcblist.h
++++ b/kernel/rcu/rcu_segcblist.h
+@@ -53,19 +53,38 @@ static inline long rcu_segcblist_n_cbs(struct rcu_segcblist *rsclp)
+ #endif
+ }
+ 
++static inline void rcu_segcblist_set_flags(struct rcu_segcblist *rsclp,
++					   int flags)
++{
++	rsclp->flags |= flags;
++}
++
++static inline void rcu_segcblist_clear_flags(struct rcu_segcblist *rsclp,
++					     int flags)
++{
++	rsclp->flags &= ~flags;
++}
++
++static inline bool rcu_segcblist_test_flags(struct rcu_segcblist *rsclp,
++					    int flags)
++{
++	return READ_ONCE(rsclp->flags) & flags;
++}
++
+ /*
+  * Is the specified rcu_segcblist enabled, for example, not corresponding
+  * to an offline CPU?
+  */
+ static inline bool rcu_segcblist_is_enabled(struct rcu_segcblist *rsclp)
+ {
+-	return rsclp->enabled;
++	return rcu_segcblist_test_flags(rsclp, SEGCBLIST_ENABLED);
+ }
+ 
+ /* Is the specified rcu_segcblist offloaded?  */
+ static inline bool rcu_segcblist_is_offloaded(struct rcu_segcblist *rsclp)
+ {
+-	return IS_ENABLED(CONFIG_RCU_NOCB_CPU) && rsclp->offloaded;
++	return IS_ENABLED(CONFIG_RCU_NOCB_CPU) &&
++		rcu_segcblist_test_flags(rsclp, SEGCBLIST_OFFLOADED);
+ }
+ 
+ /*
+-- 
+2.9.5
 
-> MEMCG_CHARGE_BATCH is certainly fairly arbitrary as-is, but if it is going
-> to be changed, the reason for that change and its implications (positive and
-> negative) for real-world workloads must be well understood, and I'm not sure
-> we're there yet.
