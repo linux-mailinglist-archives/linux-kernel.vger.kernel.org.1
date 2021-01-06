@@ -2,174 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 933082EBA01
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 07:31:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 82FDD2EBA06
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 07:34:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726109AbhAFGb0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Jan 2021 01:31:26 -0500
-Received: from out30-45.freemail.mail.aliyun.com ([115.124.30.45]:39393 "EHLO
-        out30-45.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725788AbhAFGb0 (ORCPT
+        id S1726297AbhAFGdo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Jan 2021 01:33:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39028 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725905AbhAFGdo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Jan 2021 01:31:26 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R911e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04357;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0UKtVM.C_1609914638;
-Received: from IT-FVFX43SYHV2H.local(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0UKtVM.C_1609914638)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Wed, 06 Jan 2021 14:30:39 +0800
-Subject: Re: [PATCH] docs/zh_CN: add Chinese booting and index file
-To:     siyanteng@loongson.cn, Harry Wei <harryxiyou@gmail.com>
-Cc:     Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Huacai Chen <chenhuacai@loongson.cn>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>
-References: <20210105091942.812515-1-siyanteng@loongson.cn>
-From:   Alex Shi <alex.shi@linux.alibaba.com>
-Message-ID: <4eed2bbe-1567-38cf-8471-bd8165c5da7f@linux.alibaba.com>
-Date:   Wed, 6 Jan 2021 14:30:38 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.0; rv:68.0)
- Gecko/20100101 Thunderbird/68.12.0
+        Wed, 6 Jan 2021 01:33:44 -0500
+Received: from mail-il1-x133.google.com (mail-il1-x133.google.com [IPv6:2607:f8b0:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D45DC06134C
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Jan 2021 22:33:03 -0800 (PST)
+Received: by mail-il1-x133.google.com with SMTP id n9so2235569ili.0
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Jan 2021 22:33:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=D2T0nuiqZ51cyL88bRrJqH5KD+Rsokp1j/idw8L4Z2k=;
+        b=QKSPDy2ZTbkhVhckQQ42x04UuQib50pGNHr+cMccflrfxlG/+CN9CIjoIQ6jzuoizC
+         0FHrAZxmCdQvBJVqX8suCv1gYTEWvycLK30U+Td3tbO+yKAaMir/Td4etF4GCVhIcrPU
+         CZlvvUrF1vSfrqDR1JmbWsDUG1kHS9hEEFWa2qJeOxj2tKFeH19t7jkkCuNfOy1FKFG1
+         OgIfQ1g5fJ+o3qet9dE7Lvo1/3JavFgXJKQVaoHuc/QdUE4VZd2gEeXAFiWh8OpE4gnr
+         wiqKUwQzZdrLXwIsRWndOu6vngI7nhkuPx/alKnI/H3XFhpelA41iieNDajPsFFsjNW/
+         4yQQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=D2T0nuiqZ51cyL88bRrJqH5KD+Rsokp1j/idw8L4Z2k=;
+        b=tb+IIOVAQiasOqE7fEBhW/LOUp0rr9Bnr3sZeBYcQok6Imc975ofi94pgjBVOcINny
+         1VsArOgnGmQFvofJRDOmyHqcn8jUoUshXvqBWyTnvYO4g4/WtvBilrHQcry+qm/xCDhJ
+         +vd0bboFugV2Y5SC4kA3A9Tdd5HgE8uskFPIlooeDykqeXWwxtbMW5fnGXnvtSlcAykz
+         vh51ORDTef9Jxwi6Q+iE5YtV4hBBwCcSrw6fybCwKNNAo2TLdnqKzd5Na5C/rNUdK3uz
+         9+cCHU0uaijSToYpeSrYFqmSqmOpZTE9t0mDYRVfCeo8TsF2W5EMVJ1pJoEXn6AzTCx3
+         cznQ==
+X-Gm-Message-State: AOAM532UB7KCZHK5Hgih2Ip5gC8iJ0XaLOgVxSwqJy5/rEebMtlrps+H
+        FBRrfihuw0xIX6GhWJMr4ArWRsTTyB5nrHNHB8w=
+X-Google-Smtp-Source: ABdhPJzU4Y0t/m/adhM+A7kQWthDtfj85Kt0KW0FSOMDlY2gJ1z2URFaFiR7g+1FN9VZLMoYAS86l5VdCgbJfEY+f9w=
+X-Received: by 2002:a05:6e02:20c4:: with SMTP id 4mr2950339ilq.170.1609914782855;
+ Tue, 05 Jan 2021 22:33:02 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20210105091942.812515-1-siyanteng@loongson.cn>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
+References: <20210106004850.GA11682@paulmck-ThinkPad-P72> <20210106004956.11961-2-paulmck@kernel.org>
+In-Reply-To: <20210106004956.11961-2-paulmck@kernel.org>
+From:   Yury Norov <yury.norov@gmail.com>
+Date:   Tue, 5 Jan 2021 22:32:51 -0800
+Message-ID: <CAAH8bW_euakp=vSKcZoH4=6WHuAuEH-4LdKm21C=-+4jdrT8xQ@mail.gmail.com>
+Subject: Re: [PATCH RFC cpumask 2/5] cpumask: Make "all" alias global and not
+ just RCU
+To:     paulmck@kernel.org
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>, kernel-team@fb.com,
+        Paul Gortmaker <paul.gortmaker@windriver.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Paul,
 
-
-在 2021/1/5 下午5:19, siyanteng@loongson.cn 写道:
-> From: Yanteng Si <siyanteng@loongson.cn>
-> 
-> This is the Chinese version of booting and index file
-> 
-> Signed-off-by: Yanteng Si <siyanteng@loongson.cn>
+On Tue, Jan 5, 2021 at 4:49 PM <paulmck@kernel.org> wrote:
+>
+> From: Paul Gortmaker <paul.gortmaker@windriver.com>
+>
+> It is probably better that we don't have subsystem specific
+> abbreviations or aliases for generic CPU list specifications.
+>
+> Hence we move the "all" from RCU out to lib/ so that it can be
+> used in any instance where CPU lists are being parsed.
+>
+> Signed-off-by: Paul Gortmaker <paul.gortmaker@windriver.com>
+> Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 > ---
->  .../translations/zh_CN/mips/booting.rst       | 47 +++++++++++++++++++
->  .../translations/zh_CN/mips/index.rst         | 45 ++++++++++++++++++
->  2 files changed, 92 insertions(+)
->  create mode 100644 Documentation/translations/zh_CN/mips/booting.rst
->  create mode 100644 Documentation/translations/zh_CN/mips/index.rst
-> 
-> diff --git a/Documentation/translations/zh_CN/mips/booting.rst b/Documentation/translations/zh_CN/mips/booting.rst
-> new file mode 100644
-> index 000000000000..12e0aa76b485
-> --- /dev/null
-> +++ b/Documentation/translations/zh_CN/mips/booting.rst
-> @@ -0,0 +1,47 @@
-> +.. SPDX-License-Identifier: GPL-2.0
+>  Documentation/admin-guide/kernel-parameters.rst |  7 +++++++
+>  Documentation/admin-guide/kernel-parameters.txt |  4 +---
+>  kernel/rcu/tree_plugin.h                        | 13 ++++---------
+>  lib/cpumask.c                                   |  6 ++++++
+>  4 files changed, 18 insertions(+), 12 deletions(-)
+>
+> diff --git a/Documentation/admin-guide/kernel-parameters.rst b/Documentation/admin-guide/kernel-parameters.rst
+> index 06fb1b4..cdf4e81 100644
+> --- a/Documentation/admin-guide/kernel-parameters.rst
+> +++ b/Documentation/admin-guide/kernel-parameters.rst
+> @@ -68,6 +68,13 @@ For example one can add to the command line following parameter:
+>
+>  where the final item represents CPUs 100,101,125,126,150,151,...
+>
+> +The following convenience aliases are also accepted and used:
 > +
-> +Chinese translated version of Documentation/mips/booting.rst
+> +        foo_cpus=all
 > +
-> +If you have any comment or update to the content, please contact the
-> +original document maintainer directly.  However, if you have a problem
-> +communicating in English you can also ask the Chinese maintainer for
-> +help.  Contact the Chinese maintainer if this translation is outdated
-> +or if there is a problem with the translation.
-> +
-> +Chinese maintainer: Yanteng Si <siyanteng@loongson.cn>
-> +---------------------------------------------------------------------
-> +Documentation/mips/booting.rst 的中文翻译
-> +
-> +如果想评论或更新本文的内容，请直接联系原文档的维护者。如果你使用英文
-> +交流有困难的话，也可以向中文版维护者求助。如果本翻译更新不及时或者翻
-> +译存在问题，请联系中文版维护者。
-> +
-> +中文版维护者： 司延腾  Yanteng Si <siyanteng@loongson.cn>
-> +中文版翻译者： 司延腾  Yanteng Si <siyanteng@loongson.cn>
-> +中文版校译者： 司延腾  Yanteng Si <siyanteng@loongson.cn>
+> +is equivalent to "foo_cpus=0-N" -- where "N" is the numerically last CPU on
+> +the system, thus avoiding looking up the value in "/sys/devices/system/cpu"
+> +in advance on each deployed system.
+>
+>
+>  This document may not be entirely up to date and comprehensive. The command
+> diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
+> index c722ec1..0f4379b 100644
+> --- a/Documentation/admin-guide/kernel-parameters.txt
+> +++ b/Documentation/admin-guide/kernel-parameters.txt
+> @@ -4037,9 +4037,7 @@
+>                                 see CONFIG_RAS_CEC help text.
+>
+>         rcu_nocbs=      [KNL]
+> -                       The argument is a cpu list, as described above,
+> -                       except that the string "all" can be used to
+> -                       specify every CPU on the system.
+> +                       The argument is a cpu list, as described above.
+>
+>                         In kernels built with CONFIG_RCU_NOCB_CPU=y, set
+>                         the specified list of CPUs to be no-callback CPUs.
+> diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
+> index 7e291ce..642ebd6 100644
+> --- a/kernel/rcu/tree_plugin.h
+> +++ b/kernel/rcu/tree_plugin.h
+> @@ -1463,20 +1463,15 @@ static void rcu_cleanup_after_idle(void)
+>
+>  /*
+>   * Parse the boot-time rcu_nocb_mask CPU list from the kernel parameters.
+> - * The string after the "rcu_nocbs=" is either "all" for all CPUs, or a
+> - * comma-separated list of CPUs and/or CPU ranges.  If an invalid list is
+> - * given, a warning is emitted and all CPUs are offloaded.
+> + * If the list is invalid, a warning is emitted and all CPUs are offloaded.
+>   */
+>  static int __init rcu_nocb_setup(char *str)
+>  {
+>         alloc_bootmem_cpumask_var(&rcu_nocb_mask);
+> -       if (!strcasecmp(str, "all"))
+> +       if (cpulist_parse(str, rcu_nocb_mask)) {
+> +               pr_warn("rcu_nocbs= bad CPU range, all CPUs set\n");
+>                 cpumask_setall(rcu_nocb_mask);
+> -       else
+> -               if (cpulist_parse(str, rcu_nocb_mask)) {
+> -                       pr_warn("rcu_nocbs= bad CPU range, all CPUs set\n");
+> -                       cpumask_setall(rcu_nocb_mask);
+> -               }
+> +       }
+>         return 1;
+>  }
+>  __setup("rcu_nocbs=", rcu_nocb_setup);
+> diff --git a/lib/cpumask.c b/lib/cpumask.c
+> index 6e6e835..9f8ff72 100644
+> --- a/lib/cpumask.c
+> +++ b/lib/cpumask.c
+> @@ -2,6 +2,7 @@
+>  #include <linux/slab.h>
+>  #include <linux/kernel.h>
+>  #include <linux/bitops.h>
+> +#include <linux/string.h>
+>  #include <linux/cpumask.h>
+>  #include <linux/export.h>
+>  #include <linux/memblock.h>
+> @@ -104,6 +105,11 @@ EXPORT_SYMBOL(cpumask_next_wrap);
+>   */
+>  int cpulist_parse(const char *buf, struct cpumask *dstp)
+>  {
+> +       if (!strcmp(buf, "all")) {
+> +               cpumask_setall(dstp);
+> +               return 0;
+> +       }
 
-Could you like to reuse disclaimer-zh_CN.rst, and the just keep the translator
-is fine if all roles are youself.
+I like the extensions. Can you move this chunk inside  bitmap_parselist()
+to let other users like nodelist_parse() use it?
 
-
-> +
-> +以下为正文
-> +---------------------------------------------------------------------
-> +
-> +BMIPS设备树引导
-> +------------------------
-> +
-> +  一些bootloaders只支持在内核镜像开始地址处的单一入口点。而其它
-> +  bootloaders将跳转到ELF的开始地址处。两种方案都被支持的；因为
-
-How about the following changes?
-
-s/被支持/支持/
-> +  CONFIG_BOOT_RAW=y and CONFIG_NO_EXCEPT_FILL=y, 所以第一条指令
-> +  会立即跳转到kernel_entry()入口处执行。
-> +
-> +  与arch/arm情况(b)类似，dt感知的引导加载程序需要设置以下寄存器:
-> +
-> +         a0 : 0
-> +
-> +         a1 : 0xffffffff
-> +
-> +         a2 : RAM中指向设备树块的物理指针(在chapterII中定义)。
-> +              设备树可以位于前512MB物理地址空间(0x00000000 -
-> +              0x1fffffff)的任何位置，以64位边界对齐。
-> +
-> +  legacy bootloaders不会使用这样的约定，并且它们不传入DT块。
-
-s/legacy/传统/
-
-> +  在这种情况下，Linux将通过选中CONFIG_DT_*查找DTB。
-> +
-> +  这个约定只在32位系统中定义，因为目前没有任何64位的BMIPS实现。
-
-s/这个/以上/
-
-Thanks
-Alex
-
-> diff --git a/Documentation/translations/zh_CN/mips/index.rst b/Documentation/translations/zh_CN/mips/index.rst
-> new file mode 100644
-> index 000000000000..244b16b7ef51
-> --- /dev/null
-> +++ b/Documentation/translations/zh_CN/mips/index.rst
-> @@ -0,0 +1,45 @@
-> +.. SPDX-License-Identifier: GPL-2.0
-> +
-> +Chinese translated version of Documentation/mips/index.rst
-> +
-> +If you have any comment or update to the content, please contact the
-> +original document maintainer directly.  However, if you have a problem
-> +communicating in English you can also ask the Chinese maintainer for
-> +help.  Contact the Chinese maintainer if this translation is outdated
-> +or if there is a problem with the translation.
-> +
-> +Chinese maintainer: Yanteng Si <siyanteng@loongson.cn>
-> +---------------------------------------------------------------------
-> +Documentation/mips/index.rst 的中文翻译
-> +
-> +如果想评论或更新本文的内容，请直接联系原文档的维护者。如果你使用英文
-> +交流有困难的话，也可以向中文版维护者求助。如果本翻译更新不及时或者翻
-> +译存在问题，请联系中文版维护者。
-> +
-> +中文版维护者： 司延腾  Yanteng Si <siyanteng@loongson.cn>
-> +中文版翻译者： 司延腾  Yanteng Si <siyanteng@loongson.cn>
-> +中文版校译者： 司延腾  Yanteng Si <siyanteng@loongson.cn>
-> +
-> +以下为正文
-> +---------------------------------------------------------------------
-> +
-> +
-> +===========================
-> +MIPS特性文档
-> +===========================
-> +
-> +.. toctree::
-> +   :maxdepth: 2
-> +   :numbered:
-> +
-> +   booting
-> +   ingenic-tcu
-> +
-> +   features
-> +
-> +.. only::  subproject and html
-> +
-> +   Indices
-> +   =======
-> +
-> +   * :ref:`genindex`
-> 
+>         return bitmap_parselist(buf, cpumask_bits(dstp), nr_cpumask_bits);
+>  }
+>  EXPORT_SYMBOL(cpulist_parse);
+> --
+> 2.9.5
+>
