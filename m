@@ -2,117 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 00CC92EB872
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 04:37:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BB7932EB884
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 04:42:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726215AbhAFDgr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 22:36:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39904 "EHLO
+        id S1725903AbhAFDmN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 22:42:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40740 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725868AbhAFDgq (ORCPT
+        with ESMTP id S1725792AbhAFDmN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 22:36:46 -0500
-Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 441C3C06134C;
-        Tue,  5 Jan 2021 19:36:06 -0800 (PST)
-Received: by mail-lf1-x136.google.com with SMTP id o19so3619524lfo.1;
-        Tue, 05 Jan 2021 19:36:06 -0800 (PST)
+        Tue, 5 Jan 2021 22:42:13 -0500
+Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CB16C06134D
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Jan 2021 19:41:33 -0800 (PST)
+Received: by mail-pj1-x1032.google.com with SMTP id v1so873622pjr.2
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Jan 2021 19:41:33 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=2snO45VnQ9DfpOQUXz5os2mTBvmAqZ+J43JJFFTkk28=;
-        b=BxzymUjKVx+WjEM1RGa5cBOvn9Q5KkUj32bIVyB6xAujEHAJpCJMoYPoNehAl2jN7H
-         PuwALS1bXxIoCZpV5ofFT3bysPxSxPZ02kzaPNDQHEz3ws3CSzalTEYCQKo/N3Cr75U7
-         Li7jyB4gWQ/RUCB+KY9vEM1bCIGh9B0DRZiofOnl17ZU05vHn5vIPdI+ZJT6jEjtCE7J
-         gJgFayYFT8IYIdiid94DZahr3+4pB0GBewn2ixGbjhp0z8HeyJgGGbxTx1TW4cZwehAs
-         Z/T7DeACIHLWbHYUU4qZYo0tbD4LCd0zrrLE40M9ewoCSSvoBrn/qbRK7ui/rpYg+zdr
-         ky4Q==
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=U3TpLfW+vImhvH0nGRTRbZCkU/q6uvDGxQ/ffdS/DVM=;
+        b=akatZ9qvuVqvk7jTIGmhjfDVt/R+fkDe7KGtuV2FiL0W9X0lfcwuxwQ5SDHkDWvo/Y
+         OU4FPQJAhXwq03c8Ys0HNgl+IupiV5k8xFok85r5ImLAz1DYG9c87lF8ePniw4ZUVnDj
+         udHjYJ0V3gqIMjH0S4jHAYa5kPGyqU1QS8adQ=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=2snO45VnQ9DfpOQUXz5os2mTBvmAqZ+J43JJFFTkk28=;
-        b=Qofh7R4lbyDMwU4B7ij51B2iw+D+VfgIl/+xQmDoJlvkhPAmpPCwMSi4VGdtt5iMLJ
-         lCfKQfsGWdRLctGRsqyIiTZhKS2EEXd4IPi7MAwK0ynaxuXxnW6gJnFgCJP7deAQyqd2
-         7WJuNJcPydssvVYlj37P+YWq9NNVT91BB6u/wxpyAYc0UJSq+2qFGZwIpIEBEoWugTLU
-         ySQkgAnK+jTFRbRbEgKQvrmk+kIDbxDmXFII5fD+xgCQD1AVwIu/xYAq6BZkeKLuwI4J
-         2P6nwyq/2gVgHu/iq4hjZyY1mvuz622ssD8wJtVgf68Zk2e53CnyV8kxsgpTpmB9ZkeP
-         FZgg==
-X-Gm-Message-State: AOAM530SlO/4osO/W8BJt++jdEAZiEwgEOVoVIaoExzEbvohck3M7yJ9
-        HfOGUHoZ06+gHhoyt25ID+YrYvbYOvUWsz+rH4I=
-X-Google-Smtp-Source: ABdhPJwAoJvTQAyXXm5os8FCgE/dnwkr4Z6fBn2DAwhxeExEsV64TG0r0pOfaFH+aARaxG2E+EzzkxiWgCAEiOa5g4c=
-X-Received: by 2002:ac2:5ff1:: with SMTP id s17mr1114188lfg.139.1609904164760;
- Tue, 05 Jan 2021 19:36:04 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=U3TpLfW+vImhvH0nGRTRbZCkU/q6uvDGxQ/ffdS/DVM=;
+        b=e9x6uqf7Nb1vGMQINyCRHWQKaTxYHBTnKujCXInhLpPLumEPKKzu+IHN+W2agXrlGt
+         PWge/+58rLqkxkQ6ajtOGgPF3d1OYgUnzqC8UCCZXJfh7VzWjclkdRz7pPQyRbJsibbn
+         Zhae1WE2D6eVhnW6LBCehVMARavY6T1zT/dPdmdrPNMpQOIfwxy0u7zFaFF13hPWvWwr
+         7qqJnV8sGb6LJH+6hwg4jK/X2SjUGhBjeUCpE4Pzy8vc/1HEBP6Cn8dExflB3NVbCoj+
+         /+lgPuj62mHbkxni/RdyGX5GQzv5FGHtQJGPO3SbSItNiQW0/4Mevwp45Wa8RdYUjQUg
+         6DAw==
+X-Gm-Message-State: AOAM530cB5PYfL835eL+9+DtHKJCZ5nyyclyTpq/wUJM/pFllaeeiZ42
+        QIBPEDMA7aAQqCBB9SiNw7JSJA==
+X-Google-Smtp-Source: ABdhPJzMVJXWuHdnqMMSkgz9jt5n+Akn+pP0QJigxunJGEBd/ODEkJmP1Ra/LRA2SYqMSUv/fxQHkA==
+X-Received: by 2002:a17:90a:4582:: with SMTP id v2mr1714522pjg.58.1609904492458;
+        Tue, 05 Jan 2021 19:41:32 -0800 (PST)
+Received: from localhost ([2401:fa00:1:10:3e52:82ff:fe5e:cc9d])
+        by smtp.gmail.com with ESMTPSA id v10sm544816pjr.47.2021.01.05.19.41.26
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 05 Jan 2021 19:41:31 -0800 (PST)
+From:   Claire Chang <tientzu@chromium.org>
+To:     robh+dt@kernel.org, mpe@ellerman.id.au, benh@kernel.crashing.org,
+        paulus@samba.org, joro@8bytes.org, will@kernel.org,
+        frowand.list@gmail.com, konrad.wilk@oracle.com,
+        boris.ostrovsky@oracle.com, jgross@suse.com,
+        sstabellini@kernel.org, hch@lst.de, m.szyprowski@samsung.com,
+        robin.murphy@arm.com
+Cc:     grant.likely@arm.com, xypron.glpk@gmx.de, treding@nvidia.com,
+        mingo@kernel.org, bauerman@linux.ibm.com, peterz@infradead.org,
+        gregkh@linuxfoundation.org, saravanak@google.com,
+        rafael.j.wysocki@intel.com, heikki.krogerus@linux.intel.com,
+        andriy.shevchenko@linux.intel.com, rdunlap@infradead.org,
+        dan.j.williams@intel.com, bgolaszewski@baylibre.com,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, iommu@lists.linux-foundation.org,
+        xen-devel@lists.xenproject.org, tfiga@chromium.org,
+        drinkcat@chromium.org, Claire Chang <tientzu@chromium.org>
+Subject: [RFC PATCH v3 0/6] Restricted DMA
+Date:   Wed,  6 Jan 2021 11:41:18 +0800
+Message-Id: <20210106034124.30560-1-tientzu@chromium.org>
+X-Mailer: git-send-email 2.29.2.729.g45daf8777d-goog
 MIME-Version: 1.0
-References: <20210105041630.1393157-1-daeho43@gmail.com> <dba4be04-70dd-d48b-391c-1f2355591097@web.de>
- <6c8e6561-8a5d-010f-3d7c-8c051b4027e6@huawei.com>
-In-Reply-To: <6c8e6561-8a5d-010f-3d7c-8c051b4027e6@huawei.com>
-From:   Daeho Jeong <daeho43@gmail.com>
-Date:   Wed, 6 Jan 2021 12:35:53 +0900
-Message-ID: <CACOAw_wCh_Zh83SgRU2z_NR1OztKZ4b85JFkxWWhV3D6TGQCew@mail.gmail.com>
-Subject: Re: [f2fs-dev] [PATCH v2] f2fs: fix null page reference in redirty_blocks
-To:     Chao Yu <yuchao0@huawei.com>
-Cc:     Daeho Jeong <daehojeong@google.com>,
-        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net,
-        Markus Elfring <Markus.Elfring@web.de>,
-        Colin Ian King <colin.king@canonical.com>,
-        kernel-team@android.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thanks for the notice~
+This series implements mitigations for lack of DMA access control on
+systems without an IOMMU, which could result in the DMA accessing the
+system memory at unexpected times and/or unexpected addresses, possibly
+leading to data leakage or corruption.
 
-2021=EB=85=84 1=EC=9B=94 6=EC=9D=BC (=EC=88=98) =EC=98=A4=EC=A0=84 10:04, C=
-hao Yu <yuchao0@huawei.com>=EB=8B=98=EC=9D=B4 =EC=9E=91=EC=84=B1:
->
-> Daeho,
->
-> FYI
->
-> https://www.spinics.net/lists/kernel/msg3595944.html
->
-> On 2021/1/5 20:04, Markus Elfring wrote:
-> >> Fixed null page reference when find_lock_page() fails in
-> >> redirty_blocks().
-> >
-> > I suggest to choose an other imperative wording for this change descrip=
-tion.
-> >
-> > See also:
-> > https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree=
-/Documentation/process/submitting-patches.rst?id=3D36bbbd0e234d817938bdc521=
-21a0f5473b3e58f5#n89
-> >
-> >
-> >> v2: changed error value and break the loop when error occurs
-> >
-> > I propose to use a return statement instead of a break in the second if=
- branch
-> > for this function implementation.
-> >
-> > See also:
-> > https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree=
-/Documentation/process/coding-style.rst?id=3D36bbbd0e234d817938bdc52121a0f5=
-473b3e58f5#n481
-> >
-> > Regards,
-> > Markus
-> >
-> >
-> > _______________________________________________
-> > Linux-f2fs-devel mailing list
-> > Linux-f2fs-devel@lists.sourceforge.net
-> > https://lists.sourceforge.net/lists/listinfo/linux-f2fs-devel
-> > .
-> >
->
->
-> _______________________________________________
-> Linux-f2fs-devel mailing list
-> Linux-f2fs-devel@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/linux-f2fs-devel
+For example, we plan to use the PCI-e bus for Wi-Fi and that PCI-e bus is
+not behind an IOMMU. As PCI-e, by design, gives the device full access to
+system memory, a vulnerability in the Wi-Fi firmware could easily escalate
+to a full system exploit (remote wifi exploits: [1a], [1b] that shows a
+full chain of exploits; [2], [3]).
+
+To mitigate the security concerns, we introduce restricted DMA. Restricted
+DMA utilizes the existing swiotlb to bounce streaming DMA in and out of a
+specially allocated region and does memory allocation from the same region.
+The feature on its own provides a basic level of protection against the DMA
+overwriting buffer contents at unexpected times. However, to protect
+against general data leakage and system memory corruption, the system needs
+to provide a way to restrict the DMA to a predefined memory region (this is
+usually done at firmware level, e.g. in ATF on some ARM platforms).
+
+[1a] https://googleprojectzero.blogspot.com/2017/04/over-air-exploiting-broadcoms-wi-fi_4.html
+[1b] https://googleprojectzero.blogspot.com/2017/04/over-air-exploiting-broadcoms-wi-fi_11.html
+[2] https://blade.tencent.com/en/advisories/qualpwn/
+[3] https://www.bleepingcomputer.com/news/security/vulnerabilities-found-in-highly-popular-firmware-for-wifi-chips/
+
+Claire Chang (6):
+  swiotlb: Add io_tlb_mem struct
+  swiotlb: Add restricted DMA pool
+  swiotlb: Use restricted DMA pool if available
+  swiotlb: Add restricted DMA alloc/free support.
+  dt-bindings: of: Add restricted DMA pool
+  of: Add plumbing for restricted DMA pool
+
+ .../reserved-memory/reserved-memory.txt       |  24 +
+ arch/powerpc/platforms/pseries/svm.c          |   4 +-
+ drivers/iommu/dma-iommu.c                     |  12 +-
+ drivers/of/address.c                          |  21 +
+ drivers/of/device.c                           |   4 +
+ drivers/of/of_private.h                       |   5 +
+ drivers/xen/swiotlb-xen.c                     |   4 +-
+ include/linux/device.h                        |   4 +
+ include/linux/swiotlb.h                       |  61 +-
+ kernel/dma/Kconfig                            |   1 +
+ kernel/dma/direct.c                           |  20 +-
+ kernel/dma/direct.h                           |  10 +-
+ kernel/dma/swiotlb.c                          | 576 +++++++++++-------
+ 13 files changed, 514 insertions(+), 232 deletions(-)
+
+-- 
+2.29.2.729.g45daf8777d-goog
+
+v3: 
+  Using only one reserved memory region for both streaming DMA and memory
+  allocation.
+
+v2:
+  Building on top of swiotlb.
+  https://lore.kernel.org/patchwork/cover/1280705/
+
+v1:
+  Using dma_map_ops.
+  https://lore.kernel.org/patchwork/cover/1271660/
