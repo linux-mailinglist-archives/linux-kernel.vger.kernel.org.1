@@ -2,74 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF9C82EC0DD
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 17:10:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B95B52EC0E0
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 17:12:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727041AbhAFQJP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Jan 2021 11:09:15 -0500
-Received: from mx2.suse.de ([195.135.220.15]:42068 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725925AbhAFQJO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Jan 2021 11:09:14 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1609949308; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=DqIGbcceYvDxkWsAJN0aQAT/RO0PdGdUprcpKKPoJYc=;
-        b=FVZ5LPOFge/VBmJ/fHjfRqNhyng0Huq1LpfiWWD8JBDYkeUpBuOzuKdagFWmKgeB4wDJSF
-        HOCiWnDetJMcdA9xdbaqvnv8ZyuuS79gUWWGdKyhKnSpEyBK8T/nl+UcqSKksTj18dDQ60
-        ucJYQeRrMLsVu65tHG7RQoeTGpgmM0M=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 7A7FBAD8C;
-        Wed,  6 Jan 2021 16:08:28 +0000 (UTC)
-Date:   Wed, 6 Jan 2021 17:08:27 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     Liang Li <liliang324@gmail.com>
-Cc:     Alexander Duyck <alexander.h.duyck@linux.intel.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        David Hildenbrand <david@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Liang Li <liliangleo@didiglobal.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org,
-        virtualization@lists.linux-foundation.org
-Subject: Re: [PATCH 3/6] hugetlb: add free page reporting support
-Message-ID: <20210106160827.GO13207@dhcp22.suse.cz>
-References: <20210106034918.GA1154@open-light-1.localdomain>
+        id S1727134AbhAFQME (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Jan 2021 11:12:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44786 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726251AbhAFQME (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 Jan 2021 11:12:04 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECC9BC06134C
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Jan 2021 08:11:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=+qfyMs5FDgoaco8XbmopXuzDpnstYMRh4Uqdozaw48Q=; b=cfS+8NKNIyjueFubKoNIY/8dwW
+        4sY+B79+qt7Fy8e8VGegR0z37jeWagFOWSMdT9SSgzNQ+pbGeUK87HlB3RFn1idn8aj+N7t7TKcZx
+        ylxVPalDbHIuHBZ5JdQ27WiSiFWy6PTGPu9xutAFY/+iCWlytsGpP9J7LMsJ6hiq7D6Q22mxQwOHv
+        EVIRiAEGlw8/uwKVWHTbNYnFG0my4GQElFrh11I4zi2HbAZE2m+lAiMSJMK2vjGQvByz0UlusLL4M
+        Vp8py+u3GGd2I9BcaefMWsjZ986jPJNcDUWpHsp7zWgJrwQskRlv3pu5WpMk/UvKAlOM6cte2PNrF
+        NkNE4sEA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kxBOt-00071A-Ry; Wed, 06 Jan 2021 16:11:08 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id D94183013E5;
+        Wed,  6 Jan 2021 17:11:03 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id CDFE82029C723; Wed,  6 Jan 2021 17:11:03 +0100 (CET)
+Date:   Wed, 6 Jan 2021 17:11:03 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Vincent Guittot <vincent.guittot@linaro.org>
+Cc:     Ingo Molnar <mingo@redhat.com>, Juri Lelli <juri.lelli@redhat.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 3/3] sched/fair: reduce cases for active balance
+Message-ID: <X/XhFzKo/Gv+bFsx@hirez.programming.kicks-ass.net>
+References: <20210106133419.2971-1-vincent.guittot@linaro.org>
+ <20210106133419.2971-4-vincent.guittot@linaro.org>
+ <X/XTlRMiOVs7L28B@hirez.programming.kicks-ass.net>
+ <CAKfTPtCEV5zzXLM3RNf2-6XhVcDsstHdzh9OKX_j6WviRUVeYw@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210106034918.GA1154@open-light-1.localdomain>
+In-Reply-To: <CAKfTPtCEV5zzXLM3RNf2-6XhVcDsstHdzh9OKX_j6WviRUVeYw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 05-01-21 22:49:21, Liang Li wrote:
-> hugetlb manages its page in hstate's free page list, not in buddy
-> system, this patch try to make it works for hugetlbfs. It canbe
-> used for memory overcommit in virtualization and hugetlb pre zero
-> out.
+On Wed, Jan 06, 2021 at 04:41:04PM +0100, Vincent Guittot wrote:
 
-David has layed down some more fundamental questions in the reply to the
-cover letter (btw. can you fix your scripts to send patches and make all
-the patches to be in reply to the cover letter please?). But I would
-like to point out that this changelog would need to change a lot as
-well. It doesn't explain really what, why and how. E.g. what would any
-guest gain by being able to report free huge pages? What would guarantee
-that the pool is replenished when there is a demand? Can this make the
-fault fail or it just takes more time to be satisfied? Why did you
-decide that the reporting infrastructure should be abused to do the
-zeroying? I do remember Alexander pushing back against that and so you
-should better have a very strong arguments to proceed that way.
+> Let me try again:
+> 
+> Active balance is triggered for a number of voluntary cases like
+> misfit or pinned tasks cases but also after that a number of load
+> balance attempts failed to migrate a task. There is no need to use
+> active load balance when the group is overloaded because an overloaded
+> state means that there is at least one waiting task. Nevertheless, the
+> waiting task is not selected and detached until the threshold becomes
+> higher than its load. This threshold increases with the number of
+> failed lb (see the condition if ((load >> env->sd->nr_balance_failed)
+> > env->imbalance) in detach_tasks()) and the waiting task will end up
+> to be selected after a number of attempts.
 
-I am pretty sure there are more questions to come when more details are
-uncovered.
--- 
-Michal Hocko
-SUSE Labs
+Ah, makes sense now. Thanks!
