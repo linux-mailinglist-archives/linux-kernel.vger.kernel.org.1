@@ -2,59 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 642B82EBF11
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 14:50:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1ADA12EBF0B
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 14:49:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727480AbhAFNpe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Jan 2021 08:45:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50036 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726709AbhAFNpd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Jan 2021 08:45:33 -0500
-Received: from ZenIV.linux.org.uk (zeniv.linux.org.uk [IPv6:2002:c35c:fd02::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71411C06135B;
-        Wed,  6 Jan 2021 05:44:33 -0800 (PST)
-Received: from viro by ZenIV.linux.org.uk with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kx96y-007MOe-Sh; Wed, 06 Jan 2021 13:44:28 +0000
-Date:   Wed, 6 Jan 2021 13:44:28 +0000
-From:   Al Viro <viro@zeniv.linux.org.uk>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] binfmt_elf: Fix fill_prstatus() call in
- fill_note_info()
-Message-ID: <20210106134428.GB3579531@ZenIV.linux.org.uk>
-References: <20210106075112.1593084-1-geert@linux-m68k.org>
+        id S1727404AbhAFNpO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Jan 2021 08:45:14 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49358 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726740AbhAFNpN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 Jan 2021 08:45:13 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E870922B40;
+        Wed,  6 Jan 2021 13:44:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1609940672;
+        bh=SzOY2Xyg40x/wYalPmWwEwm/jAZmFh6b493Z8dQdrns=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=EaDFNJHLbOIhWUQxrhByJQhs9/PlGwq/Y4IdD27NEWKXPc5PjZ4og+qkvkkBtjzBV
+         MuDRZZvDmtIrIGfWuy9YUR9tWZi3Z/b1MDx66Fgk4PUZHxmJvYyjArTFOKkHawyxV5
+         rEPVM6B5+IAcNbE80TLq6mEopXH1yfp2WcTTwZBw=
+Date:   Wed, 6 Jan 2021 14:45:49 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Daniel =?iso-8859-1?Q?D=EDaz?= <daniel.diaz@linaro.org>
+Cc:     linux-kernel@vger.kernel.org, shuah@kernel.org,
+        patches@kernelci.org, lkft-triage@lists.linaro.org,
+        stable@vger.kernel.org, pavel@denx.de, akpm@linux-foundation.org,
+        torvalds@linux-foundation.org, linux@roeck-us.net
+Subject: Re: [PATCH 4.19 00/29] 4.19.165-rc2 review
+Message-ID: <X/W/DUTQOEB2dwgq@kroah.com>
+References: <20210105090818.518271884@linuxfoundation.org>
+ <6e2c8118-fa1a-1b56-a969-73501b002bcc@linaro.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210106075112.1593084-1-geert@linux-m68k.org>
-Sender: Al Viro <viro@ftp.linux.org.uk>
+In-Reply-To: <6e2c8118-fa1a-1b56-a969-73501b002bcc@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 06, 2021 at 08:51:12AM +0100, Geert Uytterhoeven wrote:
-> On m68k, which does not define CORE_DUMP_USE_REGSET:
+On Tue, Jan 05, 2021 at 04:29:44PM -0600, Daniel Díaz wrote:
+> Hello!
 > 
->     fs/binfmt_elf.c: In function ‘fill_note_info’:
->     fs/binfmt_elf.c:2040:20: error: passing argument 1 of ‘fill_prstatus’ from incompatible pointer type [-Werror=incompatible-pointer-types]
->      2040 |  fill_prstatus(info->prstatus, current, siginfo->si_signo);
-> 	  |                ~~~~^~~~~~~~~~
-> 	  |                    |
-> 	  |                    struct elf_prstatus *
->     fs/binfmt_elf.c:1498:55: note: expected ‘struct elf_prstatus_common *’ but argument is of type ‘struct elf_prstatus *’
->      1498 | static void fill_prstatus(struct elf_prstatus_common *prstatus,
-> 	  |                           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~
+> On 1/5/21 3:28 AM, Greg Kroah-Hartman wrote:
+> > This is the start of the stable review cycle for the 4.19.165 release.
+> > There are 29 patches in this series, all will be posted as a response
+> > to this one.  If anyone has any issues with these being applied, please
+> > let me know.
+> > 
+> > Responses should be made by Thu, 07 Jan 2021 09:08:03 +0000.
+> > Anything received after that time might be too late.
+> > 
+> > The whole patch series can be found in one patch at:
+> > 	https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.19.165-rc2.gz
+> > or in the git tree and branch at:
+> > 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.19.y
+> > and the diffstat can be found below.
+> > 
+> > thanks,
+> > 
+> > greg k-h
 > 
-> The fill_prstatus() signature was changed, but one caller was not
-> updated.
+> Results from Linaro’s test farm.
+> No regressions on arm64, arm, x86_64, and i386.
 > 
-> Reported-by: noreply@ellerman.id.au
-> Fixes: 147d88b334cd5416 ("elf_prstatus: collect the common part (everything before pr_reg) into a struct")
-> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
-> ---
-> Compile-tested only.  Feel free to fold into the original commit.
+> Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
-Thanks, folded and pushed out...
+Great, thanks for testing them all and letting me know.
+
+greg k-h
