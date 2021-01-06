@@ -2,78 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DBA662EB77B
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 02:16:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8369E2EB781
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 02:18:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725860AbhAFBQM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 20:16:12 -0500
-Received: from mga09.intel.com ([134.134.136.24]:28981 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725766AbhAFBQM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 20:16:12 -0500
-IronPort-SDR: /J4YRNnm9dlDJwYkbR14IaEhRZYXTWnKizjQuahkQlfXl+Fenqiyqi9+t3RBsBK7cNb+cSCoGI
- KFONAnspXPiA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9855"; a="177361739"
-X-IronPort-AV: E=Sophos;i="5.78,478,1599548400"; 
-   d="scan'208";a="177361739"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Jan 2021 17:14:26 -0800
-IronPort-SDR: Uc7toaoXygV4ij3rNtEGMj56KxFlvoN5+ltEWxTtgOBsH+UAbO8oS2jZpkufOe3pwrHjLOjtiy
- I8HD2A7cRDQA==
-X-IronPort-AV: E=Sophos;i="5.78,478,1599548400"; 
-   d="scan'208";a="379090776"
-Received: from jan-mobl.ccr.corp.intel.com (HELO [10.255.29.66]) ([10.255.29.66])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Jan 2021 17:14:23 -0800
-Cc:     baolu.lu@linux.intel.com, Joerg Roedel <joro@8bytes.org>,
-        Ashok Raj <ashok.raj@intel.com>,
-        Jacob Pan <jacob.jun.pan@linux.intel.com>,
-        Guo Kaijie <Kaijie.Guo@intel.com>,
-        Liu Yi L <yi.l.liu@intel.com>,
-        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 3/5] iommu/vt-d: Remove unused dma map/unmap trace events
-To:     Will Deacon <will@kernel.org>
-References: <20201231005323.2178523-1-baolu.lu@linux.intel.com>
- <20201231005323.2178523-3-baolu.lu@linux.intel.com>
- <20210105190443.GB12182@willie-the-truck>
-From:   Lu Baolu <baolu.lu@linux.intel.com>
-Message-ID: <8bf33c93-3154-e832-1197-891c684d6ded@linux.intel.com>
-Date:   Wed, 6 Jan 2021 09:14:22 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
-MIME-Version: 1.0
-In-Reply-To: <20210105190443.GB12182@willie-the-truck>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        id S1726294AbhAFBRA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 20:17:00 -0500
+Received: from linux.microsoft.com ([13.77.154.182]:54186 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725828AbhAFBQ7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Jan 2021 20:16:59 -0500
+Received: by linux.microsoft.com (Postfix, from userid 1004)
+        id 092F020B7192; Tue,  5 Jan 2021 17:16:19 -0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 092F020B7192
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linuxonhyperv.com;
+        s=default; t=1609895779;
+        bh=zm8eC3xF7Hbpi33J1Uuo/TnBL28HOT6rtMl6r25E81M=;
+        h=From:To:Cc:Subject:Date:From;
+        b=MBn80HGVHCr1Ovb9MezP70/Ql/+s95GPGjaeYslojxb2Hg6bL+Vhsy+2pyquLvUtN
+         hge5GGxTETUHWOBgZ+rrCITkM9s60SxT4zqqsnqwFNKTYQBWpDxTv/gvP/MwCTyXPA
+         y//rZkafgJ+8++58Njdda9ETIymD+2ZI4bmcxr+c=
+From:   Long Li <longli@linuxonhyperv.com>
+To:     "K. Y. Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, linux-hyperv@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Long Li <longli@microsoft.com>
+Subject: [PATCH 1/3] hv_netvsc: Check VF datapath when sending traffic to VF
+Date:   Tue,  5 Jan 2021 17:15:51 -0800
+Message-Id: <1609895753-30445-1-git-send-email-longli@linuxonhyperv.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Will,
+From: Long Li <longli@microsoft.com>
 
-On 2021/1/6 3:04, Will Deacon wrote:
-> On Thu, Dec 31, 2020 at 08:53:21AM +0800, Lu Baolu wrote:
->> With commit c588072bba6b5 ("iommu/vt-d: Convert intel iommu driver to
->> the iommu ops"), the trace events for dma map/unmap have no users any
->> more. Remove them so that they don't show up under
->> /sys/kernel/debug/tracing/events/intel_iommu. The users should use the
->> map/unmap traces defined in the iommu core from now on.
->>
->> Fixes: c588072bba6b5 ("iommu/vt-d: Convert intel iommu driver to the iommu ops")
->> Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
->> ---
->>   include/trace/events/intel_iommu.h | 119 -----------------------------
->>   1 file changed, 119 deletions(-)
-> 
-> Is this needed in 5.11, or can it wait until 5.12?
+The driver needs to check if the datapath has been switched to VF before
+sending traffic to VF.
 
-It's necessary for 5.11 as far as I can see. Without this, users still
-see the events under /sys/kernel/debug/tracing/events/intel_iommu, but
-they will get nothing traced even they enable the events.
+Signed-off-by: Long Li <longli@microsoft.com>
+---
+ drivers/net/hyperv/netvsc_drv.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-> 
-> Will
-> 
+diff --git a/drivers/net/hyperv/netvsc_drv.c b/drivers/net/hyperv/netvsc_drv.c
+index f32f28311d57..5dd4f37afa3d 100644
+--- a/drivers/net/hyperv/netvsc_drv.c
++++ b/drivers/net/hyperv/netvsc_drv.c
+@@ -539,7 +539,8 @@ static int netvsc_xmit(struct sk_buff *skb, struct net_device *net, bool xdp_tx)
+ 	 */
+ 	vf_netdev = rcu_dereference_bh(net_device_ctx->vf_netdev);
+ 	if (vf_netdev && netif_running(vf_netdev) &&
+-	    netif_carrier_ok(vf_netdev) && !netpoll_tx_running(net))
++	    netif_carrier_ok(vf_netdev) && !netpoll_tx_running(net) &&
++	    net_device_ctx->data_path_is_vf)
+ 		return netvsc_vf_xmit(net, vf_netdev, skb);
+ 
+ 	/* We will atmost need two pages to describe the rndis
+-- 
+2.27.0
 
-Best regards,
-baolu
