@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E01B32EB913
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 05:52:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 27C342EB918
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 05:52:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727098AbhAFEua (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 23:50:30 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33426 "EHLO mail.kernel.org"
+        id S1727188AbhAFEuy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 23:50:54 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33428 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726345AbhAFEuT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 23:50:19 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4D2A6230FD;
+        id S1726929AbhAFEuS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Jan 2021 23:50:18 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 874B823100;
         Wed,  6 Jan 2021 04:48:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1609908537;
-        bh=D1m3BF8ayF7685no0WewgN1Fftbnj9LqYHWO2mgiERY=;
+        bh=Qzy/YwWUsOGCBsgvf0qpdXbbOiGRjfOUm9RbKUJgSO0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=pGkpvwnXNULHDLrVZokN5O3NOMsQSz5NImNcv12mKxgHxvYQCECtUyoXfNeYhaOVv
-         Y2aIXMdzllpukU24Rtw3OUYlqdGITeMk+w7ZGxiQ9lUrLklLNdAelp3YBSw7POJmFK
-         kC14zxjCXPGTTFyM2YgH3Qe7nTtUJomBnlou3odsH9LcIEyIQL41ugFvOtLvUnBq6f
-         nOCk7/Z33AlEpXgVO+0rIlsXhiKFXrCGXZgAf5lkNVhpmoWMKIrKcbiTvTIkS4zmhL
-         NfqCQra8EKcwWUxf7hnF7tmD3QZxbvheHCTO7HsQx9Vd+Fd/j9APj5qfiaLJfGfX70
-         tiPc3KUgBUTdw==
+        b=J1BSEDmTn+w0DOq/0xetVNLHYC3UBqkbOJvgdYsv0Pdaj8I8MwWlv1pNqW4+f6hEl
+         WzjRI7ZW7pJDMlUzjJgjZdhmEnT9HM4aaV6JbAWfcxh7SMvyzhYM6YZ5a4zTSqGZVN
+         9TCkHqQ5A2cnQD1Cktj4FXrhURaiexSwZx2U2nZA7nrRA4S4zgrOcM2+RXfZ8u66Ov
+         io3Jb/C0ygkhsMO5yXa3f1Q6fcA2Gq4jmvgNi19+3dULURosodZJ9QLzx8tOw8slEZ
+         aD6bXcc6UXDS2OlyvAScpIOuoSWP/mdngL/02RfIUg84W7v6/1rqN+9pyYgs2KZOwA
+         Iyzu0ke/trzIQ==
 From:   paulmck@kernel.org
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -34,9 +34,9 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         Frederic Weisbecker <frederic@kernel.org>,
         Neeraj Upadhyay <neeraju@codeaurora.org>,
         "Paul E . McKenney" <paulmck@kernel.org>
-Subject: [PATCH tip/core/rcu 12/21] rcu/nocb: Process batch locally as long as offloading isn't complete
-Date:   Tue,  5 Jan 2021 20:48:44 -0800
-Message-Id: <20210106044853.20812-12-paulmck@kernel.org>
+Subject: [PATCH tip/core/rcu 13/21] rcu/nocb: Locally accelerate callbacks as long as offloading isn't complete
+Date:   Tue,  5 Jan 2021 20:48:45 -0800
+Message-Id: <20210106044853.20812-13-paulmck@kernel.org>
 X-Mailer: git-send-email 2.9.5
 In-Reply-To: <20210106013950.GA14663@paulmck-ThinkPad-P72>
 References: <20210106013950.GA14663@paulmck-ThinkPad-P72>
@@ -46,10 +46,10 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Frederic Weisbecker <frederic@kernel.org>
 
-This commit makes sure to process the callbacks locally (via either
-RCU_SOFTIRQ or the rcuc kthread) whenever the segcblist isn't entirely
-offloaded.  This ensures that callbacks are invoked one way or another
-while a CPU is in the middle of a toggle operation.
+The local callbacks processing checks if any callbacks need acceleration.
+This commit carries out this checking under nocb lock protection in
+the middle of toggle operations, during which time rcu_core() executes
+concurrently with GP/CB kthreads.
 
 Cc: Josh Triplett <josh@joshtriplett.org>
 Cc: Steven Rostedt <rostedt@goodmis.org>
@@ -63,54 +63,36 @@ Tested-by: Boqun Feng <boqun.feng@gmail.com>
 Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/rcu/rcu_segcblist.h | 12 ++++++++++++
- kernel/rcu/tree.c          |  3 ++-
- 2 files changed, 14 insertions(+), 1 deletion(-)
+ kernel/rcu/tree.c | 7 +++----
+ 1 file changed, 3 insertions(+), 4 deletions(-)
 
-diff --git a/kernel/rcu/rcu_segcblist.h b/kernel/rcu/rcu_segcblist.h
-index 28c9a52..afad6fc 100644
---- a/kernel/rcu/rcu_segcblist.h
-+++ b/kernel/rcu/rcu_segcblist.h
-@@ -95,6 +95,18 @@ static inline bool rcu_segcblist_is_offloaded(struct rcu_segcblist *rsclp)
- 	return false;
- }
- 
-+static inline bool rcu_segcblist_completely_offloaded(struct rcu_segcblist *rsclp)
-+{
-+	int flags = SEGCBLIST_KTHREAD_CB | SEGCBLIST_KTHREAD_GP | SEGCBLIST_OFFLOADED;
-+
-+	if (IS_ENABLED(CONFIG_RCU_NOCB_CPU)) {
-+		if ((rsclp->flags & flags) == flags)
-+			return true;
-+	}
-+
-+	return false;
-+}
-+
- /*
-  * Are all segments following the specified segment of the specified
-  * rcu_segcblist structure empty of callbacks?  (The specified
 diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index 4ef59a5..ec14c01 100644
+index ec14c01..03810a5 100644
 --- a/kernel/rcu/tree.c
 +++ b/kernel/rcu/tree.c
-@@ -2700,6 +2700,7 @@ static __latent_entropy void rcu_core(void)
+@@ -2699,7 +2699,6 @@ static __latent_entropy void rcu_core(void)
+ 	unsigned long flags;
  	struct rcu_data *rdp = raw_cpu_ptr(&rcu_data);
  	struct rcu_node *rnp = rdp->mynode;
- 	const bool offloaded = rcu_segcblist_is_offloaded(&rdp->cblist);
-+	const bool do_batch = !rcu_segcblist_completely_offloaded(&rdp->cblist);
+-	const bool offloaded = rcu_segcblist_is_offloaded(&rdp->cblist);
+ 	const bool do_batch = !rcu_segcblist_completely_offloaded(&rdp->cblist);
  
  	if (cpu_is_offline(smp_processor_id()))
- 		return;
-@@ -2729,7 +2730,7 @@ static __latent_entropy void rcu_core(void)
+@@ -2720,11 +2719,11 @@ static __latent_entropy void rcu_core(void)
+ 
+ 	/* No grace period and unregistered callbacks? */
+ 	if (!rcu_gp_in_progress() &&
+-	    rcu_segcblist_is_enabled(&rdp->cblist) && !offloaded) {
+-		local_irq_save(flags);
++	    rcu_segcblist_is_enabled(&rdp->cblist) && do_batch) {
++		rcu_nocb_lock_irqsave(rdp, flags);
+ 		if (!rcu_segcblist_restempty(&rdp->cblist, RCU_NEXT_READY_TAIL))
+ 			rcu_accelerate_cbs_unlocked(rnp, rdp);
+-		local_irq_restore(flags);
++		rcu_nocb_unlock_irqrestore(rdp, flags);
+ 	}
+ 
  	rcu_check_gp_start_stall(rnp, rdp, rcu_jiffies_till_stall_check());
- 
- 	/* If there are callbacks ready, invoke them. */
--	if (!offloaded && rcu_segcblist_ready_cbs(&rdp->cblist) &&
-+	if (do_batch && rcu_segcblist_ready_cbs(&rdp->cblist) &&
- 	    likely(READ_ONCE(rcu_scheduler_fully_active)))
- 		rcu_do_batch(rdp);
- 
 -- 
 2.9.5
 
