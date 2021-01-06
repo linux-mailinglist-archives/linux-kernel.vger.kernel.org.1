@@ -2,86 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 34C872EC158
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 17:42:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D20AF2EC15B
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 17:44:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727412AbhAFQmb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Jan 2021 11:42:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49510 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726661AbhAFQmb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Jan 2021 11:42:31 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6FDEC06134D;
-        Wed,  6 Jan 2021 08:41:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=qZq90mmL68TTEu2JR4PK3LFmriBAdAePndUjOjY8mwg=; b=OcZhu5sfoSwgx9xpuoqXf/ekjy
-        vsJ1bTkkDyjVLU3hznXR3X429kRne9UKKpuWQu0zzchRkhrmo94Cr2O+L+yTXVIAvxyGqfiaskFyf
-        +DrIU+/DiNEcg2q4Lht0qTfjix4wsjD9ac+kJC4Hsq9il83r2plQiHrZ88+orp/YknY7IMUiHg5Da
-        PY6Qm7/OZaZAViCLnmfgpgy8UpBAR4olNyuQ7UyFloCpcD2FitStpCghfdtyrNZ39TdLZ/xA6ju09
-        Rz8b5zIDNAtwEwsHQnFJlUkzlFftwrcwo7ltTb5RJOPm2rpgdFAJOIcq3i2ryU6B3/hduSEaQM13m
-        h3voRpPA==;
-Received: from [2601:1c0:6280:3f0::79df]
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kxBsY-0004Ia-Es; Wed, 06 Jan 2021 16:41:46 +0000
-Subject: Re: [PATCH v2] docs: octeontx2: tune rst markup
-To:     Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-        George Cherian <george.cherian@marvell.com>,
-        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org
-Cc:     Sunil Goutham <sgoutham@marvell.com>,
-        Linu Cherian <lcherian@marvell.com>,
-        Geetha Sowjanya <gakula@marvell.com>,
-        Jerin Jacob <jerinj@marvell.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210106161735.21751-1-lukas.bulwahn@gmail.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <878ae398-818a-4859-6968-e04070b34d15@infradead.org>
-Date:   Wed, 6 Jan 2021 08:41:38 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        id S1727463AbhAFQnM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Jan 2021 11:43:12 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53372 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726661AbhAFQnM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 Jan 2021 11:43:12 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6278423136;
+        Wed,  6 Jan 2021 16:42:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1609951351;
+        bh=wU5/hSQmjyU1JL5g7k1xb3fISw69WCPfgnVr0jjxhhs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=KB/Etz3uNVe37B1mwrZKRmCRVCoOi0NOKAGDgYEEc1nRvfVxtdcyKkSOIoxBgBaT0
+         8UOHrPDR6ar9ObCfDBiKxsvrUzn7mcKzEgxV8rMYWcOj3iLEwrAaHXmqkqk0IJmW4l
+         +M6yjKY+e8fnYyGUTmfmdiGaSplJCQ9hx9Agj32ETlf2GRPRrU+7Wz5nGBRVdcnc38
+         BbzjPIY2I05ijo0F02pPQ3wce1nXTbnXlqx0kSXKAIQyficDWUo3pCY/8mSUYHn+6e
+         XfENKLP1WB11W+8PNel4CsC2YxgAPfiz9lrSMLO6tf2R0UCUoH0KpX0BsZn9nszDth
+         6Y5wgVZs60gjw==
+Date:   Wed, 6 Jan 2021 16:42:26 +0000
+From:   Will Deacon <will@kernel.org>
+To:     Vincenzo Frascino <vincenzo.frascino@arm.com>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kasan-dev@googlegroups.com,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will.deacon@arm.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Alexander Potapenko <glider@google.com>,
+        Marco Elver <elver@google.com>,
+        Evgenii Stepanov <eugenis@google.com>,
+        Branislav Rankov <Branislav.Rankov@arm.com>,
+        Andrey Konovalov <andreyknvl@google.com>
+Subject: Re: [PATCH 0/4] arm64: ARMv8.5-A: MTE: Add async mode support
+Message-ID: <20210106164225.GA1916@willie-the-truck>
+References: <20210106115519.32222-1-vincenzo.frascino@arm.com>
+ <9a78cd4f-838d-0410-62fa-16e4ab921681@arm.com>
 MIME-Version: 1.0
-In-Reply-To: <20210106161735.21751-1-lukas.bulwahn@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <9a78cd4f-838d-0410-62fa-16e4ab921681@arm.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 1/6/21 8:17 AM, Lukas Bulwahn wrote:
-> Commit 80b9414832a1 ("docs: octeontx2: Add Documentation for NPA health
-> reporters") added new documentation with improper formatting for rst, and
-> caused a few new warnings for make htmldocs in octeontx2.rst:169--202.
+On Wed, Jan 06, 2021 at 04:35:29PM +0000, Vincenzo Frascino wrote:
 > 
-> Tune markup and formatting for better presentation in the HTML view.
+> On 1/6/21 11:55 AM, Vincenzo Frascino wrote:
+> > This patchset implements the asynchronous mode support for ARMv8.5-A
+> > Memory Tagging Extension (MTE), which is a debugging feature that allows
+> > to detect with the help of the architecture the C and C++ programmatic
+> > memory errors like buffer overflow, use-after-free, use-after-return, etc.
+> > 
+> > MTE is built on top of the AArch64 v8.0 virtual address tagging TBI
+> > (Top Byte Ignore) feature and allows a task to set a 4 bit tag on any
+> > subset of its address space that is multiple of a 16 bytes granule. MTE
+> > is based on a lock-key mechanism where the lock is the tag associated to
+> > the physical memory and the key is the tag associated to the virtual
+> > address.
+> > When MTE is enabled and tags are set for ranges of address space of a task,
+> > the PE will compare the tag related to the physical memory with the tag
+> > related to the virtual address (tag check operation). Access to the memory
+> > is granted only if the two tags match. In case of mismatch the PE will raise
+> > an exception.
+> > 
+> > The exception can be handled synchronously or asynchronously. When the
+> > asynchronous mode is enabled:
+> >   - Upon fault the PE updates the TFSR_EL1 register.
+> >   - The kernel detects the change during one of the following:
+> >     - Context switching
+> >     - Return to user/EL0
+> >     - Kernel entry from EL1
+> >     - Kernel exit to EL1
+> >   - If the register has been updated by the PE the kernel clears it and
+> >     reports the error.
+> > 
+> > The series contains as well an optimization to mte_assign_mem_tag_range().
+> > 
+> > The series is based on linux 5.11-rc2.
+> > 
+> > To simplify the testing a tree with the new patches on top has been made
+> > available at [1].
+> > 
+> > [1] https://git.gitlab.arm.com/linux-arm/linux-vf.git mte/v10.async
+> > 
+> > Cc: Catalin Marinas <catalin.marinas@arm.com>
+> > Cc: Will Deacon <will.deacon@arm.com>
 > 
-> Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
-> ---
-> v1 -> v2: minor stylistic tuning as suggested by Randy
-> 
-> applies cleanly on current master (v5.11-rc2) and next-20210106
-> 
-> George, please ack.
-> Jonathan, please pick this minor formatting clean-up patch.
-> 
->  .../ethernet/marvell/octeontx2.rst            | 62 +++++++++++--------
->  1 file changed, 36 insertions(+), 26 deletions(-)
-> 
-> diff --git a/Documentation/networking/device_drivers/ethernet/marvell/octeontx2.rst b/Documentation/networking/device_drivers/ethernet/marvell/octeontx2.rst
-> index d3fcf536d14e..61e850460e18 100644
-> --- a/Documentation/networking/device_drivers/ethernet/marvell/octeontx2.rst
-> +++ b/Documentation/networking/device_drivers/ethernet/marvell/octeontx2.rst
+> Will is not in arm anymore :( Sorry Will... I will fix this in v2.
 
-Acked-by: Randy Dunlap <rdunlap@infradead.org>
+If only you worked for payroll ;)
 
-Thanks.
-
--- 
-~Randy
+Will
