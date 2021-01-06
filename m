@@ -2,121 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C74CE2EBBC7
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 10:43:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B03FE2EBBC8
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 10:44:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726301AbhAFJmt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Jan 2021 04:42:49 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:50540 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725905AbhAFJms (ORCPT
+        id S1726397AbhAFJoO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Jan 2021 04:44:14 -0500
+Received: from eu-smtp-delivery-151.mimecast.com ([207.82.80.151]:42587 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726308AbhAFJoN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Jan 2021 04:42:48 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1609926082;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=K9CA1AR5nXWGzRi5gkPRl8C2ixPan6lcvaX7CUQMGuI=;
-        b=SZZM7f9UOCBnFa/DkD2Q9sh+KD5oZkkvAn6aXRulfnUKLzNdUPvWxS721XBd/n/QC03tdP
-        o0Z7ksy28Ro3NcHwcAbL9cBS4ru5bET6sjeUw2ZyH+rwevIjjlJLI2jpIQQ0q24V+DvBhZ
-        kKS9Z8/U+VL7zScjHFIPzdF3aVafDOQ=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-431-yV9DYsxyOcmAP7AkRXFbng-1; Wed, 06 Jan 2021 04:41:18 -0500
-X-MC-Unique: yV9DYsxyOcmAP7AkRXFbng-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id EBF57800D53;
-        Wed,  6 Jan 2021 09:41:15 +0000 (UTC)
-Received: from [10.36.112.160] (ovpn-112-160.ams2.redhat.com [10.36.112.160])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id AA58F71CA1;
-        Wed,  6 Jan 2021 09:41:09 +0000 (UTC)
-Subject: Re: [PATCH 0/6] hugetlbfs: support free page reporting
-To:     Alexander Duyck <alexander.h.duyck@linux.intel.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Liang Li <liliangleo@didiglobal.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org,
-        virtualization@lists.linux-foundation.org
-References: <20210106034623.GA1128@open-light-1.localdomain>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat GmbH
-Message-ID: <effc0673-0452-08d8-819b-70aee14643c5@redhat.com>
-Date:   Wed, 6 Jan 2021 10:41:08 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+        Wed, 6 Jan 2021 04:44:13 -0500
+Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-134-GOWJFpBUNTOJhoaGXAnJhw-1; Wed, 06 Jan 2021 09:42:34 +0000
+X-MC-Unique: GOWJFpBUNTOJhoaGXAnJhw-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
+ Server (TLS) id 15.0.1347.2; Wed, 6 Jan 2021 09:42:33 +0000
+Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
+ AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
+ Wed, 6 Jan 2021 09:42:33 +0000
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Andy Lutomirski' <luto@kernel.org>
+CC:     "Eric W. Biederman" <ebiederm@xmission.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Christoph Hellwig <hch@lst.de>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        X86 ML <x86@kernel.org>
+Subject: RE: in_compat_syscall() on x86
+Thread-Topic: in_compat_syscall() on x86
+Thread-Index: AQHW4tnp52+Fp/HYSH2MXxqk00t/OqoYCInQgAANioCAALOoMIAAgtuAgABZLEA=
+Date:   Wed, 6 Jan 2021 09:42:33 +0000
+Message-ID: <113ae3678beb4d33882506a85b398362@AcuMS.aculab.com>
+References: <fe2629460b4e4b44a120a8b56efe0ac1@AcuMS.aculab.com>
+ <091174F9-F6E4-468E-83F5-93706D83F9D2@amacapital.net>
+ <9108ae60809f4fab846e610fe84f607f@AcuMS.aculab.com>
+ <CALCETrV_Ng4xjd1fanXZJ5=EFN4w2RYMK0EqsnKmMkSYbQhN0w@mail.gmail.com>
+In-Reply-To: <CALCETrV_Ng4xjd1fanXZJ5=EFN4w2RYMK0EqsnKmMkSYbQhN0w@mail.gmail.com>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-In-Reply-To: <20210106034623.GA1128@open-light-1.localdomain>
-Content-Type: text/plain; charset=utf-8
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 06.01.21 04:46, Liang Li wrote:
-> A typical usage of hugetlbfs it's to reserve amount of memory
-> during the kernel booting stage, and the reserved pages are
-> unlikely to return to the buddy system. When application need
-> hugepages, kernel will allocate them from the reserved pool.
-> when application terminates, huge pages will return to the
-> reserved pool and are kept in the free list for hugetlbfs,
-> these free pages will not return to buddy freelist unless the
-> size of reserved pool is changed. 
-> Free page reporting only supports buddy pages, it can't report
-> the free pages reserved for hugetlbfs. On the other hand,
-> hugetlbfs is a good choice for system with a huge amount of RAM,
-> because it can help to reduce the memory management overhead and
-> improve system performance.
-> This patch add the support for reporting hugepages in the free
-> list of hugetlbfs, it can be used by virtio_balloon driver for
-> memory overcommit and pre zero out free pages for speeding up
-> memory population and page fault handling.
-
-You should lay out the use case + measurements. Further you should
-describe what this patch set actually does, how behavior can be tuned,
-pros and cons, etc... And you should most probably keep this RFC.
-
-> 
-> Most of the code are 'copied' from free page reporting because
-> they are working in the same way. So the code can be refined to
-> remove duplication. It can be done later.
-
-Nothing speaks about getting it right from the beginning. Otherwise it
-will most likely never happen.
-
-> 
-> Since some guys have some concern about side effect of the 'buddy
-> free page pre zero out' feature brings, I remove it from this
-> serier.
-
-You should really point out what changed size the last version. I
-remember Alex and Mike had some pretty solid points of what they don't
-want to see (especially: don't use free page reporting infrastructure
-and don't temporarily allocate huge pages for processing them).
-
-I am not convinced that we want to use the free page reporting
-infrastructure for this (pre-zeroing huge pages). What speaks about a
-thread simply iterating over huge pages one at a time, zeroing them? The
-whole free page reporting infrastructure was invented because we have to
-do expensive coordination (+ locking) when going via the hypervisor. For
-the main use case of zeroing huge pages in the background, I don't see a
-real need for that. If you believe this is the right thing to do, please
-add a discussion regarding this.
-
--- 
-Thanks,
-
-David / dhildenb
+RnJvbTogQW5keSBMdXRvbWlyc2tpDQo+IFNlbnQ6IDA1IEphbnVhcnkgMjAyMSAxNzozNQ0KPiAN
+Cj4gT24gVHVlLCBKYW4gNSwgMjAyMSBhdCAxOjUzIEFNIERhdmlkIExhaWdodCA8RGF2aWQuTGFp
+Z2h0QGFjdWxhYi5jb20+IHdyb3RlOg0KPiA+IC4uLg0KLi4uDQo+ID4gPiA+IEkgYWxzbyB3b25k
+ZXJlZCBhYm91dCByZXNldHRpbmcgaXQgdG8gemVybyB3aGVuIGFuIHgzMiBzeXN0ZW0gY2FsbA0K
+PiA+ID4gPiBleGl0cyAocmF0aGVyIHRoYW4gZW50cnkgdG8gYSA2NGJpdCBvbmUpLg0KPiA+ID4g
+Pg0KPiA+ID4gPiBGb3IgaWEzMiB0aGUgZmxhZyBpcyBzZXQgKHdpdGggfD0pIG9uIGV2ZXJ5IHN5
+c2NhbGwgZW50cnkuDQo+ID4gPiA+IEV2ZW4gdGhvdWdoIEknbSBwcmV0dHkgc3VyZSBpdCBjYW4g
+b25seSBjaGFuZ2UgZHVyaW5nIGV4ZWMuDQo+ID4gPg0KPiA+ID4gSXQgY2FuIGNoYW5nZSBmb3Ig
+ZXZlcnkgc3lzY2FsbC4gSSBoYXZlIHRlc3RzIHRoYXQgZG8gdGhpcy4NCj4gPg0KPiA+IERvIHRo
+ZXkgc3RpbGwgd29yaz8NCj4gDQo+IFRoZXkgc2VlbSB0by4NCj4gDQo+ID4gSSBkb24ndCB0aGlu
+ayB0aGUgaWEzMiBmbGFnIGlzIGNsZWFyZWQgYW55d2hlcmUuDQo+IA0KPiBJdCdzIGhpZGluZyBp
+biBhcmNoX2V4aXRfdG9fdXNlcl9tb2RlX3ByZXBhcmUoKS4NCg0KTm8gd29uZGVyIEkgZG9uJ3Qg
+bm90aWNlLg0KVGhlcmUgaXMgYSBSTVcgdG8gY2xlYXIgVFNfQ09NUEFUIHwgVFNfSTM4Nl9SRUdT
+X1BPS0VEIGFzIChhYm91dCkNCnRoZSB2ZXJ5IGxhc3QgdGhpbmcgZG9uZSBiZWZvcmUgcmV0dXJu
+aW5nIHRvIHVzZXIuDQoNClNob3J0IG9yIHJlbmFtaW5nIHRoZSAnc3RhdHVzJyBmaWVsZCBhbmQg
+Zml4aW5nIHRoZSBjb21waWxhdGlvbiBlcnJvcnMNCkkgY2FuJ3Qgc2VlIGFuIG9idmlvdXMgd2F5
+IG9mIGRldGVjdGluZyBhbnkgb3RoZXIgc3RhdHVzIGZsYWcgYml0cy4NCg0KSWYgbm9uZSBhcmUg
+dXNlZCAob3IgYSBkaWZmZXJlbnQgZmllbGQgaXMgdXNlZCkgdGhlbiBhbiB1bmNvbmRpdGlvbmFs
+DQp3cml0ZSBvZiB0aGUgc3lzY2FsbCB0eXBlIGluIHRoZSBlbnRyeSBwYXRocyB3b3VsZCByZW1v
+dmUgdGhlIG5lZWQgZm9yDQp0aGUgY2xlYXIgaW4gdGhlIHN5c2NhbGwgZXhpdCBwYXRoLg0KDQoJ
+RGF2aWQNCg0KLQ0KUmVnaXN0ZXJlZCBBZGRyZXNzIExha2VzaWRlLCBCcmFtbGV5IFJvYWQsIE1v
+dW50IEZhcm0sIE1pbHRvbiBLZXluZXMsIE1LMSAxUFQsIFVLDQpSZWdpc3RyYXRpb24gTm86IDEz
+OTczODYgKFdhbGVzKQ0K
 
