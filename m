@@ -2,95 +2,229 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E16D92EBB54
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 09:51:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D31AD2EBB47
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 09:50:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727016AbhAFIvG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Jan 2021 03:51:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60666 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726063AbhAFIvE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Jan 2021 03:51:04 -0500
-Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24776C06135D
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Jan 2021 00:50:03 -0800 (PST)
-Received: by mail-pl1-x62d.google.com with SMTP id r4so1205735pls.11
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Jan 2021 00:50:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=ZzyixQGA22PztCHoWMVb3aoY+aYlev25PUQfD61xRIU=;
-        b=c1h2czxUSUbpHsdB4iBoOCMv92fTBJlrTNNN8pZTRAkAVXAMpC7mvGeNEujZTSK7ES
-         9lVAhDo1svl3YRAnZ8TQ+fL4pj6wKKHoiH4JzVA7TNDRza61TbLNEqODnH1kqlG0SRof
-         QkSyY89PQ3YMT8FqXRFF87g1AKBBRor7qUoNTzqnfLYq+1vwBsIimaiyAj6h7YzDDsOl
-         wTKSkO/ZE+Md2PT5bw/8f6elxhgmnZNDadXoxnX65sgMOMHhRi29DR0eqQ4KgtKClqWY
-         bifB2nrVqj3dgL/Y0j/dfXnF0B4GflTvaXIRMI3hjPbHNl0BFRhfW3+Ekh8LEZ2L3hvV
-         umBg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=ZzyixQGA22PztCHoWMVb3aoY+aYlev25PUQfD61xRIU=;
-        b=KaKOcCoKQHF2kkTLbSBmsdxgzpMc3H9hGf8P1+uldYK2XEVPB6MmpiYwpim7cebxFB
-         e6xH5a0qdrc+oKWDdDFBA2kqJ82Qn2yT3IF6hBLBFvXAXbe/Bu8Ct/qntqrlZkKqia9H
-         1JZhjyRbSNUE7mLjKSfrij70sNv4gMzgUqvGtmSATGK9QutrCh5kiIwiaYMh/RlnmJf8
-         WZyxiENTiujI30VrR+I0pO49eoi2VdY28lhBm6uWmBQ4uU7fRmgvj5gblgNKdI7+0QvG
-         Vfk2CEQNCQALuImVsDT0m3MTOkgi2gch4x+QmOZN7Zx3B0FpVETFqqB1IKLWK4Oooan3
-         Z4FQ==
-X-Gm-Message-State: AOAM532ILN6OaeeUEn2IIL0OuB6A2ujRtD+bBTHBnNT9ZGzPTjvCCdsT
-        rov2SSy+Hi/j9g5jasCxoo7p5RMjfcoKi+FjmFA=
-X-Google-Smtp-Source: ABdhPJypfVLEzKgsmoKlg4BWX+DeSaJaZcfQVkmc7fId0VbM26E/aLydbaqPJl7gy+SNKpR4XNHETg==
-X-Received: by 2002:a17:90a:f194:: with SMTP id bv20mr3315484pjb.11.1609923002773;
-        Wed, 06 Jan 2021 00:50:02 -0800 (PST)
-Received: from localhost.localdomain ([139.177.225.232])
-        by smtp.gmail.com with ESMTPSA id h8sm1851806pjc.2.2021.01.06.00.49.59
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 06 Jan 2021 00:50:02 -0800 (PST)
-From:   Muchun Song <songmuchun@bytedance.com>
-To:     mike.kravetz@oracle.com, akpm@linux-foundation.org
-Cc:     n-horiguchi@ah.jp.nec.com, ak@linux.intel.com, mhocko@suse.cz,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Muchun Song <songmuchun@bytedance.com>
-Subject: [PATCH v2 6/6] mm: hugetlb: remove VM_BUG_ON_PAGE from page_huge_active
-Date:   Wed,  6 Jan 2021 16:47:39 +0800
-Message-Id: <20210106084739.63318-7-songmuchun@bytedance.com>
-X-Mailer: git-send-email 2.21.0 (Apple Git-122)
-In-Reply-To: <20210106084739.63318-1-songmuchun@bytedance.com>
-References: <20210106084739.63318-1-songmuchun@bytedance.com>
+        id S1726545AbhAFItp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Jan 2021 03:49:45 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45674 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726433AbhAFItp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 Jan 2021 03:49:45 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BC51123118;
+        Wed,  6 Jan 2021 08:49:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1609922943;
+        bh=gT3/+tWZtzKe1j6x5VFIce7vv/uhbvZNpLPaNlsXcKM=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=np2gSS/mPFxgqMcu+9+al7Nh78bO3/FEXITDBqeJ69Vt6G7smIWAuO5u1QB36GjXX
+         6ZbAYTL86VdhGSNMDHxo6QWlqSCCgfr34eBwbKDY82OZTK0PfrW5OTdxYqlflR9TBm
+         D6ubYtlKGL+/OiK7hkAUTYRc9TSGHQtL2qYGiwZaS9NMV4xaSrWb/eaASTOu+HJ3FJ
+         ch3rM6h55SWBP4Ik01eeps6tBAFaESZ5C60MALPLRcQT5I/hAlah7550Co5SpdFHH9
+         w7fyAwQOtsWqeo104orTBUT2OHnVrQSwfJZ1AzCpc1M+l4my4vXHGz1lT9QcNrrhT5
+         eO2B/p27lufjA==
+Received: by mail-ot1-f44.google.com with SMTP id 11so2328891oty.9;
+        Wed, 06 Jan 2021 00:49:03 -0800 (PST)
+X-Gm-Message-State: AOAM533I6qie+FBV9wsT75+OoHlglYYjZPJlbufFq6r3Tia/QlawaDWG
+        CFK8sOjWBoUXu+Of6ZryiGwf3snIdup7dlRMJCg=
+X-Google-Smtp-Source: ABdhPJy3gx1O+/hZNiiIEIl7JAsbZS46QiIzX4CWfduzbKOPXb9L+t7kxJpvAnO5PDTD34g7IHQ7qtIXvsXh5hW4M7w=
+X-Received: by 2002:a9d:7a4b:: with SMTP id z11mr2443064otm.305.1609922942761;
+ Wed, 06 Jan 2021 00:49:02 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210106064807.253112-1-Sonicadvance1@gmail.com>
+In-Reply-To: <20210106064807.253112-1-Sonicadvance1@gmail.com>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Wed, 6 Jan 2021 09:48:46 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a2tV3HzPpbCR7mAeutx38_D2d-vfpEgpXv+GW_98w3VSQ@mail.gmail.com>
+Message-ID: <CAK8P3a2tV3HzPpbCR7mAeutx38_D2d-vfpEgpXv+GW_98w3VSQ@mail.gmail.com>
+Subject: Re: [PATCH] Adds a new ioctl32 syscall for backwards compatibility layers
+To:     sonicadvance1@gmail.com
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Minchan Kim <minchan@kernel.org>,
+        Aleksa Sarai <cyphar@cyphar.com>,
+        Sargun Dhillon <sargun@sargun.me>,
+        Miklos Szeredi <mszeredi@redhat.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        "Amanieu d'Antras" <amanieu@gmail.com>,
+        Willem de Bruijn <willemb@google.com>,
+        YueHaibing <yuehaibing@huawei.com>,
+        Xiaoming Ni <nixiaoming@huawei.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Joe Perches <joe@perches.com>, Jan Kara <jack@suse.cz>,
+        David Rientjes <rientjes@google.com>,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
+        Linux API <linux-api@vger.kernel.org>,
+        linux-arch <linux-arch@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The page_huge_active() can be called from scan_movable_pages() which
-do not hold a reference count to the HugeTLB page. So when we call
-page_huge_active() from scan_movable_pages(), the HugeTLB page can
-be freed parallel. Then we will trigger a BUG_ON which is in the
-page_huge_active() when CONFIG_DEBUG_VM is enabled. Just remove the
-VM_BUG_ON_PAGE.
+On Wed, Jan 6, 2021 at 7:48 AM <sonicadvance1@gmail.com> wrote:
+> From: Ryan Houdek <Sonicadvance1@gmail.com>
+...
+> This does not solve the following problems:
+> 1) compat_alloc_user_space inside ioctl
+> 2) ioctls that check task mode instead of entry point for behaviour
+> 3) ioctls allocating memory
+> 4) struct packing problems between architectures
+>
+> Workarounds for the problems presented:
+> 1a) Do a stack pivot to the lower 32bits from userspace
+>   - Forces host 64bit process to have its thread stacks to live in 32bit
+>   space. Not ideal.
+>   - Only do a stack pivot on ioctl to save previous 32bit VA space
+> 1b) Teach kernel that compat_alloc_userspace can return a 64bit pointer
+>   - x86-64 truncates stack from this function
+>   - AArch64 returns the full stack pointer
+>   - Only ~29 users. Validating all of them support a 64bit stack is
+>   trivial?
 
-Fixes: 7e1f049efb86 ("mm: hugetlb: cleanup using paeg_huge_active()")
-Signed-off-by: Muchun Song <songmuchun@bytedance.com>
-Reviewed-by: Mike Kravetz <mike.kravetz@oracle.com>
----
- mm/hugetlb.c | 1 -
- 1 file changed, 1 deletion(-)
+I've almost completed the removal of compat_alloc_user_space(),
+that should no longer be a concern when the syscall gets added.
 
-diff --git a/mm/hugetlb.c b/mm/hugetlb.c
-index 67200dd25b1d..7a24ed28ec4f 100644
---- a/mm/hugetlb.c
-+++ b/mm/hugetlb.c
-@@ -1372,7 +1372,6 @@ struct hstate *size_to_hstate(unsigned long size)
-  */
- bool page_huge_active(struct page *page)
- {
--	VM_BUG_ON_PAGE(!PageHuge(page), page);
- 	return PageHead(page) && PagePrivate(&page[1]);
- }
- 
--- 
-2.11.0
+> 2a) Any application using these can be checked for compatibility in
+> userspace and put on a block list.
+> 2b) Fix any ioctls doing broken behaviour based on task mode rather than
+> ioctl entry point
 
+What the ioctls() actually check is 'in_compat_syscall()', which is not
+the mode of the task but the type of syscall. There is actually a general
+trend to use this helper more rather than less, and I think the only
+way forward here is to ensure that this returns true when entering
+through the new syscall number.
+
+For x86, this has another complication, as some ioctls also need to
+check whether they are in an ia32 task (with packed u64 and 32-bit
+__kernel_old_time_t) or an x32 task (with aligned u64 and 64-bit
+__kernel_old_time_t). If the new syscall gets wired up on x86 as well,
+you'd need to decide which of the two behaviors you want.
+
+> 3a) Userspace consumes all VA space above 32bit. Forcing allocations to
+> occur in lower 32bits
+>   - This is the current implementation
+> 3b) Ensure any allocation in the ioctl handles ioctl entrypoint rather
+> than just allow generic memory allocations in full VA space
+>   - This is hard to guarantee
+
+What kind of allocation do you mean here? Can you give an example of
+an ioctl that does this?
+
+> 4a) Blocklist any application using ioctls that have different struct
+> packing across the boundary
+>   - Can happen when struct packing of 32bit x86 application goes down
+>   the aarch64 compat_ioctl path
+>   - Userspace is a AArch64 process passing 32bit x86 ioctl structures
+>   through the compat_ioctl path which is typically for AArch32 processes
+>   - None currently identified
+> 4b) Work with upstream kernel and userspace projects to evaluate and fix
+>   - Identify the problem ioctls
+>   - Implement a new ioctl with more sane struct packing that matches
+>   cross-arch
+>   - Implement new ioctl while maintaining backwards compatibility with
+>   previous ioctl handler
+>   - Change upstream project to use the new compatibility ioctl
+>   - ioctl deprecation will be case by case per device and project
+> 4b) Userspace implements a full ioctl emulation layer
+>   - Parses the full ioctl tree
+>   - Either passes through ioctls that it doesn't understand or
+>   transforms ioctls that it knows are trouble
+>   - Has the downside that it can still run in to edge cases that will
+>   fail
+>   - Performance of additional tracking is a concern
+>   - Prone to failure keeping the kernel ioctl and userspace ioctl
+>   handling in sync
+>   - Really want to have it in the kernel space as much as possible
+
+I think there are only a few ioctls that are affected, and you can
+probably get a list from qemu, which emulates them in user space
+already. Doing that transformation should not be all that hard
+in the end.
+
+If we want to do this in the kernel, this probably requires changes
+to the syscall calling convention. Adding a flag to pick a particular
+style of ioctl arguments would work, and this could enable the
+case of emulating arm32 ioctls on x86-64 hosts.
+
+> diff --git a/arch/arm64/include/asm/unistd.h b/arch/arm64/include/asm/unistd.h
+> index 86a9d7b3eabe..949788f5ba40 100644
+> --- a/arch/arm64/include/asm/unistd.h
+> +++ b/arch/arm64/include/asm/unistd.h
+> @@ -38,7 +38,7 @@
+>  #define __ARM_NR_compat_set_tls                (__ARM_NR_COMPAT_BASE + 5)
+>  #define __ARM_NR_COMPAT_END            (__ARM_NR_COMPAT_BASE + 0x800)
+>
+> -#define __NR_compat_syscalls           442
+> +#define __NR_compat_syscalls           443
+>  #endif
+>
+>  #define __ARCH_WANT_SYS_CLONE
+> diff --git a/arch/arm64/include/asm/unistd32.h b/arch/arm64/include/asm/unistd32.h
+> index cccfbbefbf95..35e3bc83dbdc 100644
+> --- a/arch/arm64/include/asm/unistd32.h
+> +++ b/arch/arm64/include/asm/unistd32.h
+> @@ -891,6 +891,8 @@ __SYSCALL(__NR_faccessat2, sys_faccessat2)
+>  __SYSCALL(__NR_process_madvise, sys_process_madvise)
+>  #define __NR_epoll_pwait2 441
+>  __SYSCALL(__NR_epoll_pwait2, compat_sys_epoll_pwait2)
+> +#define __NR_ioctl32 442
+> +__SYSCALL(__NR_ioctl32, compat_sys_ioctl)
+>
+
+I'm not sure why you want this in 32-bit processes, can't they just call
+the normal ioctl() function?
+
+>  }
+> +
+> +COMPAT_SYSCALL_DEFINE3(ioctl, unsigned int, fd, unsigned int, cmd,
+> +                       compat_ulong_t, arg)
+> +{
+> +       return do_ioctl32(fd, cmd, arg);
+> +}
+> +
+> +SYSCALL_DEFINE3(ioctl32, unsigned int, fd, unsigned int, cmd,
+> +                       compat_ulong_t, arg)
+> +{
+> +       return do_ioctl32(fd, cmd, arg);
+> +}
+
+These two look identical to me, I don't think you need to add a wrapper
+here at all, but can just use the normal compat_sys_ioctl entry point
+unless you want to add a 'flags' argument to control the struct padding.
+
+> diff --git a/include/uapi/asm-generic/unistd.h b/include/uapi/asm-generic/unistd.h
+> index 728752917785..18279e5b7b4f 100644
+> --- a/include/uapi/asm-generic/unistd.h
+> +++ b/include/uapi/asm-generic/unistd.h
+> @@ -862,8 +862,15 @@ __SYSCALL(__NR_process_madvise, sys_process_madvise)
+>  #define __NR_epoll_pwait2 441
+>  __SC_COMP(__NR_epoll_pwait2, sys_epoll_pwait2, compat_sys_epoll_pwait2)
+>
+> +#define __NR_ioctl32 442
+> +#ifdef CONFIG_COMPAT
+> +__SC_COMP(__NR_ioctl32, sys_ioctl32, compat_sys_ioctl)
+> +#else
+> +__SC_COMP(__NR_ioctl32, sys_ni_syscall, sys_ni_syscall)
+> +#endif
+> +
+>  #undef __NR_syscalls
+> -#define __NR_syscalls 442
+> +#define __NR_syscalls 443
+
+(already mentioned on IRC)
+
+If you add it here, the same number should be assigned across all architectures,
+or at least a comment added to declare the number as reserved, to keep
+the following syscalls in sync.
+
+        Arnd
