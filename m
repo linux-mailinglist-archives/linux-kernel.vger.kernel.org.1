@@ -2,170 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 78EC32EB706
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 01:48:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F82A2EB70A
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 01:48:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727463AbhAFArv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 19:47:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40988 "EHLO
+        id S1727449AbhAFAsd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 19:48:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41086 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726097AbhAFArv (ORCPT
+        with ESMTP id S1725939AbhAFAs1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 19:47:51 -0500
-Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DA62C061793
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Jan 2021 16:47:11 -0800 (PST)
-Received: by mail-pf1-x42f.google.com with SMTP id t22so741544pfl.3
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Jan 2021 16:47:11 -0800 (PST)
+        Tue, 5 Jan 2021 19:48:27 -0500
+Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83B86C061796
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Jan 2021 16:47:46 -0800 (PST)
+Received: by mail-lf1-x130.google.com with SMTP id s26so2795317lfc.8
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Jan 2021 16:47:46 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=kfZHZyAWKT0gu1CtPbXfDi7dkaM3yoFhEPhGiiQ+Kio=;
-        b=mznuT4pmE2K/KBt/x1qYYASeoW2mxiPhdL9Sbt/9EFV6uHc00DGWuRrJ6CDOKiDNPu
-         3Upf+SBQDOXEjaikajh/x9WEmOrPNw9tnGdMIeZayGxdsD4qS54GvoAM+jAYRk79g2+h
-         TlpBA0N4VR6/UCBCV4gb4UT8UQWnMETvvHYxP+bDAfocQz4oyR8OQ8BuHtHiIAHFBp8I
-         obTORNwqYBEYb6xse0xjjf2uod7csj+3joSolWkamlPLuduLvYCIgngG/Ro3XvYzXjkm
-         46qOfVcMb1IOK1aBxqOG52EgucJC+mECAmeTyFsfITUk8Ehk+ZCDzDOhdKBLyMYw7KgL
-         fwxg==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=RMNiD2AYhlcEkCed4y/yG9fQtf+nimzBnHckuWdc+Do=;
+        b=Nnsz0TFWUjFmvHF4/2OXj3ES9s++zvfDXtHLLakj8ltds1BgcYY6qfyLQIYXuEg1c6
+         Z97RlEwab64WjFoc2dFTEZ/bn/eRI9gfPAQaZ9dZ7o9xfPnL1kKznPBG1OtsdRdWoMxX
+         HdB0ET2V4/ZEgBv1P97iJFsf+/o8nwDSKBg7z/oZJiJtRkWzuCRqrXuziAXsud1zbiwK
+         GzbVruqbQz8j6FLNhm2XAfRfRk5sjSjZKjJpTU6YWSqBqIDG0++5K/bAMWFzZ0Tnp8GY
+         FqEWEdYntA7GqVtk8tMCzJkL7lwIYuqESHrZ+J0h7+Gq30nmwA3haaD9ia6t1gh2CEdc
+         BfsA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=kfZHZyAWKT0gu1CtPbXfDi7dkaM3yoFhEPhGiiQ+Kio=;
-        b=BarCVrMMS9CqSgU38/0i1cpCmxBNekNUeIMSzHXFZ+euYEvowsEvbFwof83fga0+ac
-         sI5Korkz2pX58fm0x1el26DvDBM0A5taIMJyZ0P8dL84+F+OW0eklXtds3YZuKG32m7B
-         YSUTEzB6nrKthb4Bwz4sTMxct/J9M8483eFyZgIcGNXCDEyl2HGjplIudIpL3V2UtG76
-         AXFrNZ9ktX1FBXEi278CZi333J514+iIrh52Q8w2CD3r3zu19c7kGdbAu/6Ak2XbSTUR
-         GvF+xkEb44TOYGSqDBc5dgwoPm1pSjlE4b/bs8PlVh63b5XuYcI+8M/Gpvafy5tV4TXa
-         zaRQ==
-X-Gm-Message-State: AOAM531YaMF1P2nPyisO9XDBjrO0o9ZWpf49v1TMkpGI90NUsWGY3rc2
-        lNh3Xna7j3jd8m69KWHGc0L8wA==
-X-Google-Smtp-Source: ABdhPJyu5Tyi0wca8RhA5ga+vXWR4SVQ9h7Ae2a/N1qGEmPIiGmMlZWuKMfrxz4HvVSvOpgbdkdYmg==
-X-Received: by 2002:a63:591f:: with SMTP id n31mr1748019pgb.244.1609894030333;
-        Tue, 05 Jan 2021 16:47:10 -0800 (PST)
-Received: from google.com ([2620:15c:f:10:1ea0:b8ff:fe73:50f5])
-        by smtp.gmail.com with ESMTPSA id a12sm368788pgq.5.2021.01.05.16.47.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 Jan 2021 16:47:09 -0800 (PST)
-Date:   Tue, 5 Jan 2021 16:47:03 -0800
-From:   Sean Christopherson <seanjc@google.com>
-To:     Nitesh Narayan Lal <nitesh@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        w90p710@gmail.com, pbonzini@redhat.com, vkuznets@redhat.com,
-        Thomas Gleixner <tglx@linutronix.de>
-Subject: Re: [PATCH] Revert "KVM: x86: Unconditionally enable irqs in guest
- context"
-Message-ID: <X/UIh1PqmSLNg8vM@google.com>
-References: <20210105192844.296277-1-nitesh@redhat.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=RMNiD2AYhlcEkCed4y/yG9fQtf+nimzBnHckuWdc+Do=;
+        b=m3SmJxWroninmwnrKAsZVifUHjpMgS8/q1XilC761eJMwqx0pxou4ruWDhHlpxRfL3
+         F0UNxtLulXoUCKeN8JGlDAcN98cXnRB+9PSE9s6yGMEVSo88TdvHYk3J6iqrs1A5+ybR
+         QNSPbEe6NV65k1UDYUedhzrNSYSW6R12J3IIzGUrrZVht7v7xuUNQ5pjtN5H0bxMm/5b
+         O4ZPY/soZt5tmb2s0CPeGB0DqTSpC9yQogq79J6OUA67SY4d0gnZUdAlwQOcjrjSh1Ek
+         SjFRltnqvlufkEpqYr5cB6vkF2daKZjxDhhNN0EOa4yNgMBoutIgifTwOfc+88VipX58
+         ZMoA==
+X-Gm-Message-State: AOAM530pCFew77mqJcuE1qIzhucllYlFA/4ESvotBd/t622y3gYOt1Ab
+        siBfHISUhGkLqNIonyY8aB2HmY0K9wuDRYLec7xTfN+pTpI=
+X-Google-Smtp-Source: ABdhPJx6V+KDy+trQYd0fYxF2cvxQIvtVgVQcRsV69kDDgkZ6IgTLQyoYoxxud9z973lLCD7O1cO4Oge3eTykpa3ksE=
+X-Received: by 2002:a05:6512:20c1:: with SMTP id u1mr818859lfr.549.1609894064820;
+ Tue, 05 Jan 2021 16:47:44 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210105192844.296277-1-nitesh@redhat.com>
+References: <1609252514-27795-1-git-send-email-feng.tang@intel.com> <1609252514-27795-2-git-send-email-feng.tang@intel.com>
+In-Reply-To: <1609252514-27795-2-git-send-email-feng.tang@intel.com>
+From:   Shakeel Butt <shakeelb@google.com>
+Date:   Tue, 5 Jan 2021 16:47:33 -0800
+Message-ID: <CALvZod5ir6F6BkJiVoXztNu6CancqJ2sNusg_hwTPcEssYkDdQ@mail.gmail.com>
+Subject: Re: [PATCH 2/2] mm: memcg: add a new MEMCG_UPDATE_BATCH
+To:     Feng Tang <feng.tang@intel.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Linux MM <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>, andi.kleen@intel.com,
+        "Chen, Tim C" <tim.c.chen@intel.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Huang Ying <ying.huang@intel.com>, Roman Gushchin <guro@fb.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-+tglx
+On Tue, Dec 29, 2020 at 6:35 AM Feng Tang <feng.tang@intel.com> wrote:
+>
+> When profiling memory cgroup involved benchmarking, status update
+> sometimes take quite some CPU cycles. Current MEMCG_CHARGE_BATCH
+> is used for both charging and statistics/events updating, and is
+> set to 32, which may be good for accuracy of memcg charging, but
+> too small for stats update which causes concurrent access to global
+> stats data instead of per-cpu ones.
+>
+> So handle them differently, by adding a new bigger batch number
+> for stats updating, while keeping the value for charging (though
+> comments in memcontrol.h suggests to consider a bigger value too)
+>
+> The new batch is set to 512, which considers 2MB huge pages (512
+> pages), as the check logic mostly is:
+>
+>     if (x > BATCH), then skip updating global data
+>
+> so it will save 50% global data updating for 2MB pages
+>
+> Following are some performance data with the patch, against
+> v5.11-rc1, on several generations of Xeon platforms. Each category
+> below has several subcases run on different platform, and only the
+> worst and best scores are listed:
+>
+> fio:                             +2.0% ~  +6.8%
+> will-it-scale/malloc:            -0.9% ~  +6.2%
+> will-it-scale/page_fault1:       no change
+> will-it-scale/page_fault2:      +13.7% ~ +26.2%
+>
+> One thought is it could be dynamically calculated according to
+> memcg limit and number of CPUs, and another is to add a periodic
+> syncing of the data for accuracy reason similar to vmstat, as
+> suggested by Ying.
+>
 
-On Tue, Jan 05, 2021, Nitesh Narayan Lal wrote:
-> This reverts commit d7a08882a0a4b4e176691331ee3f492996579534.
-> 
-> After the introduction of the patch:
-> 
-> 	87fa7f3e9: x86/kvm: Move context tracking where it belongs
-> 
-> since we have moved guest_exit_irqoff closer to the VM-Exit, explicit
-> enabling of irqs to process pending interrupts should not be required
-> within vcpu_enter_guest anymore.
-
-Ugh, except that commit completely broke tick-based accounting, on both Intel
-and AMD.  With guest_exit_irqoff() being called immediately after VM-Exit, any
-tick that happens after IRQs are disabled will be accounted to the host.  E.g.
-on Intel, even an IRQ VM-Exit that has already been acked by the CPU isn't
-processed until kvm_x86_ops.handle_exit_irqoff(), well after PF_VCPU has been
-cleared.
-
-CONFIG_VIRT_CPU_ACCOUNTING_GEN=y should still work (I didn't bother to verify).
-
-Thomas, any clever ideas?  Handling IRQs in {vmx,svm}_vcpu_enter_exit() isn't an
-option as KVM hasn't restored enough state to handle an IRQ, e.g. PKRU and XCR0
-are still guest values.  Is it too heinous to fudge PF_VCPU across KVM's
-"pending" IRQ handling?  E.g. this god-awful hack fixes the accounting:
-
-diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-index 836912b42030..5a777fd35b4b 100644
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -9028,6 +9028,7 @@ static int vcpu_enter_guest(struct kvm_vcpu *vcpu)
-        vcpu->mode = OUTSIDE_GUEST_MODE;
-        smp_wmb();
- 
-+       current->flags |= PF_VCPU;
-        kvm_x86_ops.handle_exit_irqoff(vcpu);
- 
-        /*
-@@ -9042,6 +9043,7 @@ static int vcpu_enter_guest(struct kvm_vcpu *vcpu)
-        ++vcpu->stat.exits;
-        local_irq_disable();
-        kvm_after_interrupt(vcpu);
-+       current->flags &= ~PF_VCPU;
- 
-        if (lapic_in_kernel(vcpu)) {
-                s64 delta = vcpu->arch.apic->lapic_timer.advance_expire_delta;
-
-> Conflicts:
-> 	arch/x86/kvm/svm.c
-> 
-> Signed-off-by: Nitesh Narayan Lal <nitesh@redhat.com>
-> ---
->  arch/x86/kvm/svm/svm.c |  9 +++++++++
->  arch/x86/kvm/x86.c     | 11 -----------
->  2 files changed, 9 insertions(+), 11 deletions(-)
-> 
-> diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
-> index cce0143a6f80..c9b2fbb32484 100644
-> --- a/arch/x86/kvm/svm/svm.c
-> +++ b/arch/x86/kvm/svm/svm.c
-> @@ -4187,6 +4187,15 @@ static int svm_check_intercept(struct kvm_vcpu *vcpu,
->  
->  static void svm_handle_exit_irqoff(struct kvm_vcpu *vcpu)
->  {
-> +	kvm_before_interrupt(vcpu);
-> +	local_irq_enable();
-> +	/*
-> +	 * We must have an instruction with interrupts enabled, so
-> +	 * the timer interrupt isn't delayed by the interrupt shadow.
-> +	 */
-> +	asm("nop");
-> +	local_irq_disable();
-> +	kvm_after_interrupt(vcpu);
->  }
->  
->  static void svm_sched_in(struct kvm_vcpu *vcpu, int cpu)
-> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-> index 3f7c1fc7a3ce..3e17c9ffcad8 100644
-> --- a/arch/x86/kvm/x86.c
-> +++ b/arch/x86/kvm/x86.c
-> @@ -9023,18 +9023,7 @@ static int vcpu_enter_guest(struct kvm_vcpu *vcpu)
->  
->  	kvm_x86_ops.handle_exit_irqoff(vcpu);
->  
-> -	/*
-> -	 * Consume any pending interrupts, including the possible source of
-> -	 * VM-Exit on SVM and any ticks that occur between VM-Exit and now.
-> -	 * An instruction is required after local_irq_enable() to fully unblock
-> -	 * interrupts on processors that implement an interrupt shadow, the
-> -	 * stat.exits increment will do nicely.
-> -	 */
-> -	kvm_before_interrupt(vcpu);
-> -	local_irq_enable();
->  	++vcpu->stat.exits;
-> -	local_irq_disable();
-> -	kvm_after_interrupt(vcpu);
->  
->  	if (lapic_in_kernel(vcpu)) {
->  		s64 delta = vcpu->arch.apic->lapic_timer.advance_expire_delta;
-> -- 
-> 2.27.0
-> 
+I am going to push back on this change. On a large system where jobs
+can run on any available cpu, this will totally mess up the stats
+(which is actually what happens on our production servers). These
+stats are used for multiple purposes like debugging or understanding
+the memory usage of the job or doing data analysis.
