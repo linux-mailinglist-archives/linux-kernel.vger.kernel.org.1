@@ -2,101 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E7BCF2EBDFE
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 13:57:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1374F2EBE16
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 13:59:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726830AbhAFMzd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Jan 2021 07:55:33 -0500
-Received: from jabberwock.ucw.cz ([46.255.230.98]:43598 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726303AbhAFMzc (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Jan 2021 07:55:32 -0500
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id DED801C0B9B; Wed,  6 Jan 2021 13:54:49 +0100 (CET)
-Date:   Wed, 6 Jan 2021 13:54:49 +0100
-From:   Pavel Machek <pavel@ucw.cz>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        Naohiro Aota <naohiro.aota@wdc.com>,
-        Damien Le Moal <damien.lemoal@wdc.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Johannes Thumshirn <johannes.thumshirn@wdc.com>,
-        Jens Axboe <axboe@kernel.dk>
-Subject: Re: [PATCH 4.19 13/35] null_blk: Fix zone size initialization
-Message-ID: <20210106125449.GA7589@duo.ucw.cz>
-References: <20210104155703.375788488@linuxfoundation.org>
- <20210104155704.049016882@linuxfoundation.org>
+        id S1727217AbhAFM6r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Jan 2021 07:58:47 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37364 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726571AbhAFM6p (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 Jan 2021 07:58:45 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 20EF5229EF;
+        Wed,  6 Jan 2021 12:58:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1609937884;
+        bh=HSMx8d9zy+tZkY9keTyJN0MxqU4glFmqhX63BZf7qyI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=f93pOZYmLaNT4qGfs8aJ7j9C7Y7hvOgFgp0N8HFPrG76q8mQboC2kzKhkH4i/fWDP
+         c9te+0IBQw7P40nSPWAyi0tdXab7QVdGf23Ws3+k1146ZDKPChFyXpdTTvnpGCBTPK
+         M+KUT6WmZt0L0x5UL3sSzg+/1ku1kxs6T01dIWIDi3zkGp8iqBo+f2T3WBBbCDS9L6
+         gx+nYD1d9vjWaHrfIYGK8Cfir48CUCFgS30hqbDwTtnK3rHZtw2xSZHZ5ZdK20/Lj1
+         9xrE7bIx4CEJjISblFjKTDMrLvYKt5vl/em8DFFrcAxYkREVrG7nxHMmmRLkBrR4CO
+         ID/cxOJmDQg7w==
+Date:   Wed, 6 Jan 2021 12:57:35 +0000
+From:   Mark Brown <broonie@kernel.org>
+To:     Bert Vermeulen <bert@biot.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Birger Koblitz <mail@birger-koblitz.de>,
+        linux-spi@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 1/2] dt-bindings: spi: Realtek RTL838x/RTL839x SPI
+ controller
+Message-ID: <20210106125735.GB4752@sirena.org.uk>
+References: <20210105232815.3218063-1-bert@biot.com>
+ <20210105232815.3218063-2-bert@biot.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="IS0zKkzwUGydFO0o"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="98e8jtXdkpgskNou"
 Content-Disposition: inline
-In-Reply-To: <20210104155704.049016882@linuxfoundation.org>
+In-Reply-To: <20210105232815.3218063-2-bert@biot.com>
+X-Cookie: Happy feast of the pig!
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---IS0zKkzwUGydFO0o
+--98e8jtXdkpgskNou
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-Hi!
+On Wed, Jan 06, 2021 at 12:28:14AM +0100, Bert Vermeulen wrote:
 
-> commit 0ebcdd702f49aeb0ad2e2d894f8c124a0acc6e23 upstream.
->=20
-> For a null_blk device with zoned mode enabled is currently initialized
-> with a number of zones equal to the device capacity divided by the zone
-> size, without considering if the device capacity is a multiple of the
-> zone size. If the zone size is not a divisor of the capacity, the zones
-> end up not covering the entire capacity, potentially resulting is out
-> of bounds accesses to the zone array.
->=20
-> Fix this by adding one last smaller zone with a size equal to the
-> remainder of the disk capacity divided by the zone size if the capacity
-> is not a multiple of the zone size. For such smaller last zone, the zone
-> capacity is also checked so that it does not exceed the smaller zone
-> size.
+> +    oneOf:
+> +      - const: realtek,rtl838x-spi
+> +      - const: realtek,rtl839x-spi
 
-> --- a/drivers/block/null_blk_zoned.c
-> +++ b/drivers/block/null_blk_zoned.c
-> @@ -1,9 +1,9 @@
->  // SPDX-License-Identifier: GPL-2.0
->  #include <linux/vmalloc.h>
-> +#include <linux/sizes.h>
->  #include "null_blk.h"
-> =20
-> -/* zone_size in MBs to sectors. */
-> -#define ZONE_SIZE_SHIFT		11
-> +#define MB_TO_SECTS(mb) (((sector_t)mb * SZ_1M) >> SECTOR_SHIFT)
+These should list exact models, not wildcards.
 
-This macro is quite dangerous. (mb) would help, but inline function
-would be better.
-
-
-> +	dev->nr_zones =3D dev_capacity_sects >> ilog2(dev->zone_size_sects);
-> +	if (dev_capacity_sects & (dev->zone_size_sects - 1))
-> +		dev->nr_zones++;
-
-Is this same as nr_zones =3D DIV_ROUND_UP(dev_capacity_sects,
-dev->zone_size_sects)? Would that be faster, more readable and robust
-against weird dev->zone_size_sects sizes?
-
-Best regards,
-								Pavel
---=20
-http://www.livejournal.com/~pavelmachek
-
---IS0zKkzwUGydFO0o
+--98e8jtXdkpgskNou
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCX/WzGQAKCRAw5/Bqldv6
-8lqUAKC4lnEVavZsVvuVOURrv5t1AOeYXACaArcggbTBIyOc+PTZkdqWBpNO+O0=
-=UkhQ
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl/1s78ACgkQJNaLcl1U
+h9BWEQf+NleJ5fXZOwgfeBGDb7tGHF0T9waVgNLaLZ1hg/wrDNi9cw40Y0EieKhm
+2UceJlnz4L8BSh+4RyojYk6G9sKLsqRgl2YV6Glb4RYtTxlbfAqi7RwLLz8DFlFs
+o251gz9g05/+TxIaK07LBNSuZAq15MuyRX+j2f+AWDzHm1lyV5lNmTvoXVVaHc8Y
+ksYYot0SBsvHJ8zS8ZVvY8dfb2EpYKE91K0YbPkFxe30Nna61oQvV8Dllt601Wwm
+t8qMnk8Fp/UUmevV7+35vswn9DCOUxVpd/NGNIrtUlcCCuh0UYjfmx2FXvPlmERX
+5Dfr1HoX4FdQbODlEIx6urt/wRUv3w==
+=4t1j
 -----END PGP SIGNATURE-----
 
---IS0zKkzwUGydFO0o--
+--98e8jtXdkpgskNou--
