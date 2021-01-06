@@ -2,186 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5590A2EC196
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 17:58:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A73972EC198
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 17:59:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727887AbhAFQ5U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Jan 2021 11:57:20 -0500
-Received: from mx2.suse.de ([195.135.220.15]:41424 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727688AbhAFQ5U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Jan 2021 11:57:20 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1609952193; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
+        id S1727938AbhAFQ6k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Jan 2021 11:58:40 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:52874 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727502AbhAFQ6j (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 Jan 2021 11:58:39 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1609952233;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=qiheZRBSRWkEQcLVqG0V1bcsRtJR6iOQZay+ZlhjKEE=;
-        b=LZBfBMvJmZ/yHxVwMtszS1+EUlv4d13yCNd5iuDm00YQ+1mWh3zAwm4esKeBYgEeMoXuuo
-        aMUh7vqmxG4k/b8iS5kR2ycMeTU5aM2IRvywtErIbcQiZSb8ywRaDdz6JbV8+Nnsh0nWeY
-        jOxiBC0iEGr5bvqW6h/FBkpKO2B4anw=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 75553ACAF;
-        Wed,  6 Jan 2021 16:56:33 +0000 (UTC)
-Date:   Wed, 6 Jan 2021 17:56:32 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     Muchun Song <songmuchun@bytedance.com>
-Cc:     mike.kravetz@oracle.com, akpm@linux-foundation.org,
-        n-horiguchi@ah.jp.nec.com, ak@linux.intel.com, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 3/6] mm: hugetlb: fix a race between freeing and
- dissolving the page
-Message-ID: <20210106165632.GT13207@dhcp22.suse.cz>
-References: <20210106084739.63318-1-songmuchun@bytedance.com>
- <20210106084739.63318-4-songmuchun@bytedance.com>
+        bh=9VLLWEiPKgR359BbzU+UUPOHxLugO8L8LfVhmpzJuXo=;
+        b=T86d46wmpwBM1AoFuLpGkwxSpZh4IBsyZGY1PBpQAfaNRHYQzhSC/1LPbLuNmBzUhRwDrV
+        KMoWp76JtzEzainWG5aT2a6v3hsN8WWuuZe5pnhn5MnUO+JZl9+5wHhLC593r/7FWp3DHj
+        cUo8lxQwdMM1BNIgGSs5MYnwW408DSM=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-553-WNuxAZqtPZSOLxYrmOAT0Q-1; Wed, 06 Jan 2021 11:57:09 -0500
+X-MC-Unique: WNuxAZqtPZSOLxYrmOAT0Q-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D6BD6107ACF6;
+        Wed,  6 Jan 2021 16:57:07 +0000 (UTC)
+Received: from warthog.procyon.org.uk (ovpn-112-8.rdu2.redhat.com [10.10.112.8])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id DBC265C1C4;
+        Wed,  6 Jan 2021 16:57:05 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+From:   David Howells <dhowells@redhat.com>
+In-Reply-To: <c2cc898d-171a-25da-c565-48f57d407777@redhat.com>
+References: <c2cc898d-171a-25da-c565-48f57d407777@redhat.com> <20201229173916.1459499-1-trix@redhat.com> <259549.1609764646@warthog.procyon.org.uk>
+To:     Tom Rix <trix@redhat.com>
+Cc:     dhowells@redhat.com, davem@davemloft.net, kuba@kernel.org,
+        natechancellor@gmail.com, ndesaulniers@google.com,
+        linux-afs@lists.infradead.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com
+Subject: Re: [PATCH] rxrpc: fix handling of an unsupported token type in rxrpc_read()
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210106084739.63318-4-songmuchun@bytedance.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <548096.1609952225.1@warthog.procyon.org.uk>
+Content-Transfer-Encoding: quoted-printable
+Date:   Wed, 06 Jan 2021 16:57:05 +0000
+Message-ID: <548097.1609952225@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 06-01-21 16:47:36, Muchun Song wrote:
-> There is a race condition between __free_huge_page()
-> and dissolve_free_huge_page().
-> 
-> CPU0:                         CPU1:
-> 
-> // page_count(page) == 1
-> put_page(page)
->   __free_huge_page(page)
->                               dissolve_free_huge_page(page)
->                                 spin_lock(&hugetlb_lock)
->                                 // PageHuge(page) && !page_count(page)
->                                 update_and_free_page(page)
->                                 // page is freed to the buddy
->                                 spin_unlock(&hugetlb_lock)
->     spin_lock(&hugetlb_lock)
->     clear_page_huge_active(page)
->     enqueue_huge_page(page)
->     // It is wrong, the page is already freed
->     spin_unlock(&hugetlb_lock)
-> 
-> The race windows is between put_page() and spin_lock() which
-> is in the __free_huge_page().
+How about this?
 
-The race window reall is between put_page and dissolve_free_huge_page.
-And the result is that the put_page path would clobber an unrelated page
-(either free or already reused page) which is quite serious.
-Fortunatelly pages are dissolved very rarely. I believe that user would
-require to be privileged to hit this by intention.
+David
+---
+commit 5d370a9db65a6fae82f09a009430ae40c564b0ef
+Author: David Howells <dhowells@redhat.com>
+Date:   Wed Jan 6 16:21:40 2021 +0000
 
-> We should make sure that the page is already on the free list
-> when it is dissolved.
+    rxrpc: Fix handling of an unsupported token type in rxrpc_read()
+    =
 
-Another option would be to check for PageHuge in __free_huge_page. Have
-you considered that rather than add yet another state? The scope of the
-spinlock would have to be extended. If that sounds more tricky then can
-we check the page->lru in the dissolve path? If the page is still
-PageHuge and reference count 0 then there shouldn't be many options
-where it can be queued, right?
+    Clang static analysis reports the following:
+    =
 
-> Fixes: c8721bbbdd36 ("mm: memory-hotplug: enable memory hotplug to handle hugepage")
-> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
-> ---
->  mm/hugetlb.c | 38 ++++++++++++++++++++++++++++++++++++++
->  1 file changed, 38 insertions(+)
-> 
-> diff --git a/mm/hugetlb.c b/mm/hugetlb.c
-> index 4741d60f8955..8ff138c17129 100644
-> --- a/mm/hugetlb.c
-> +++ b/mm/hugetlb.c
-> @@ -79,6 +79,21 @@ DEFINE_SPINLOCK(hugetlb_lock);
->  static int num_fault_mutexes;
->  struct mutex *hugetlb_fault_mutex_table ____cacheline_aligned_in_smp;
->  
-> +static inline bool PageHugeFreed(struct page *head)
-> +{
-> +	return (unsigned long)head[3].mapping == -1U;
-> +}
-> +
-> +static inline void SetPageHugeFreed(struct page *head)
-> +{
-> +	head[3].mapping = (void *)-1U;
-> +}
-> +
-> +static inline void ClearPageHugeFreed(struct page *head)
-> +{
-> +	head[3].mapping = NULL;
-> +}
-> +
->  /* Forward declaration */
->  static int hugetlb_acct_memory(struct hstate *h, long delta);
->  
-> @@ -1028,6 +1043,7 @@ static void enqueue_huge_page(struct hstate *h, struct page *page)
->  	list_move(&page->lru, &h->hugepage_freelists[nid]);
->  	h->free_huge_pages++;
->  	h->free_huge_pages_node[nid]++;
-> +	SetPageHugeFreed(page);
->  }
->  
->  static struct page *dequeue_huge_page_node_exact(struct hstate *h, int nid)
-> @@ -1044,6 +1060,7 @@ static struct page *dequeue_huge_page_node_exact(struct hstate *h, int nid)
->  
->  		list_move(&page->lru, &h->hugepage_activelist);
->  		set_page_refcounted(page);
-> +		ClearPageHugeFreed(page);
->  		h->free_huge_pages--;
->  		h->free_huge_pages_node[nid]--;
->  		return page;
-> @@ -1291,6 +1308,17 @@ static inline void destroy_compound_gigantic_page(struct page *page,
->  						unsigned int order) { }
->  #endif
->  
-> +/*
-> + * Because we reuse the mapping field of some tail page structs, we should
-> + * reset those mapping to initial value before @head is freed to the buddy
-> + * allocator. The invalid value will be checked in the free_tail_pages_check().
-> + */
-> +static inline void reset_tail_page_mapping(struct hstate *h, struct page *head)
-> +{
-> +	if (!hstate_is_gigantic(h))
-> +		head[3].mapping = TAIL_MAPPING;
-> +}
-> +
->  static void update_and_free_page(struct hstate *h, struct page *page)
->  {
->  	int i;
-> @@ -1298,6 +1326,7 @@ static void update_and_free_page(struct hstate *h, struct page *page)
->  	if (hstate_is_gigantic(h) && !gigantic_page_runtime_supported())
->  		return;
->  
-> +	reset_tail_page_mapping(h, page);
->  	h->nr_huge_pages--;
->  	h->nr_huge_pages_node[page_to_nid(page)]--;
->  	for (i = 0; i < pages_per_huge_page(h); i++) {
-> @@ -1504,6 +1533,7 @@ static void prep_new_huge_page(struct hstate *h, struct page *page, int nid)
->  	spin_lock(&hugetlb_lock);
->  	h->nr_huge_pages++;
->  	h->nr_huge_pages_node[nid]++;
-> +	ClearPageHugeFreed(page);
->  	spin_unlock(&hugetlb_lock);
->  }
->  
-> @@ -1770,6 +1800,14 @@ int dissolve_free_huge_page(struct page *page)
->  		int nid = page_to_nid(head);
->  		if (h->free_huge_pages - h->resv_huge_pages == 0)
->  			goto out;
-> +
-> +		/*
-> +		 * We should make sure that the page is already on the free list
-> +		 * when it is dissolved.
-> +		 */
-> +		if (unlikely(!PageHugeFreed(head)))
-> +			goto out;
-> +
->  		/*
->  		 * Move PageHWPoison flag from head page to the raw error page,
->  		 * which makes any subpages rather than the error page reusable.
-> -- 
-> 2.11.0
+    net/rxrpc/key.c:657:11: warning: Assigned value is garbage or undefine=
+d
+                    toksize =3D toksizes[tok++];
+                            ^ ~~~~~~~~~~~~~~~
+    =
 
--- 
-Michal Hocko
-SUSE Labs
+    rxrpc_read() contains two consecutive loops.  The first loop calculate=
+s the
+    token sizes and stores the results in toksizes[] and the second one us=
+es
+    the array.  When there is an error in identifying the token in the fir=
+st
+    loop, the token is skipped, no change is made to the toksizes[] array.
+    When the same error happens in the second loop, the token is not skipp=
+ed.
+    This will cause the toksizes[] array to be out of step and will overru=
+n
+    past the calculated sizes.
+    =
+
+    Fix the second loop so that it doesn't encode the size and type of an
+    unsupported token, but rather just ignore it as does the first loop.
+    =
+
+    Fixes: 9a059cd5ca7d ("rxrpc: Downgrade the BUG() for unsupported token=
+ type in rxrpc_read()")
+    Reported-by: Tom Rix <trix@redhat.com>
+    Signed-off-by: David Howells <dhowells@redhat.com>
+
+diff --git a/net/rxrpc/key.c b/net/rxrpc/key.c
+index 9631aa8543b5..c8e298c8d314 100644
+--- a/net/rxrpc/key.c
++++ b/net/rxrpc/key.c
+@@ -655,12 +655,12 @@ static long rxrpc_read(const struct key *key,
+ 	tok =3D 0;
+ 	for (token =3D key->payload.data[0]; token; token =3D token->next) {
+ 		toksize =3D toksizes[tok++];
+-		ENCODE(toksize);
+ 		oldxdr =3D xdr;
+-		ENCODE(token->security_index);
+ =
+
+ 		switch (token->security_index) {
+ 		case RXRPC_SECURITY_RXKAD:
++			ENCODE(toksize);
++			ENCODE(token->security_index);
+ 			ENCODE(token->kad->vice_id);
+ 			ENCODE(token->kad->kvno);
+ 			ENCODE_BYTES(8, token->kad->session_key);
+
