@@ -2,91 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5EF6A2EBB33
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 09:43:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F0EB22EBB37
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 09:45:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726516AbhAFImn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Jan 2021 03:42:43 -0500
-Received: from mailgw01.mediatek.com ([210.61.82.183]:45377 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1725836AbhAFImm (ORCPT
+        id S1726641AbhAFIo0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Jan 2021 03:44:26 -0500
+Received: from szxga07-in.huawei.com ([45.249.212.35]:10393 "EHLO
+        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726464AbhAFIoZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Jan 2021 03:42:42 -0500
-X-UUID: 344a96c5f6c448c197ebc83a23976be8-20210106
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=HjDudKT6CirLj9XUT1/FsMduOj9/1XKYdNqPso3wAXI=;
-        b=ZUvHxZ9U/OW4QIu8hz2QCXzAwn1b7a4Ftz3MbmO+w5wLR4nFCGB0431y8ldOlmmF3xuEVcL53zrVf93Li2A0Nna2jNgHl5uZwlpCciXlx8O0iAlrDdqPN6TgsOYUT/cH6z3iNGhTIT8ypEM2sQkcy+sEeYRYOos7kxAoEhfDUMI=;
-X-UUID: 344a96c5f6c448c197ebc83a23976be8-20210106
-Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw01.mediatek.com
-        (envelope-from <roger.lu@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 189377158; Wed, 06 Jan 2021 16:41:56 +0800
-Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
- mtkmbs02n1.mediatek.inc (172.21.101.77) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Wed, 6 Jan 2021 16:41:54 +0800
-Received: from [172.21.77.4] (172.21.77.4) by MTKCAS06.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Wed, 6 Jan 2021 16:41:55 +0800
-Message-ID: <1609922515.18506.17.camel@mtksdaap41>
-Subject: Re: [PATCH v10 3/7] [v10, 3/7]: soc: mediatek: SVS: introduce MTK
- SVS engine
-From:   Roger Lu <roger.lu@mediatek.com>
-To:     Nicolas Boichat <drinkcat@chromium.org>
-CC:     Mark Rutland <mark.rutland@arm.com>,
-        Nicolas Boichat <drinkcat@google.com>,
-        Nishanth Menon <nm@ti.com>, Kevin Hilman <khilman@kernel.org>,
-        Enric Balletbo Serra <eballetbo@gmail.com>,
-        "open list:THERMAL" <linux-pm@vger.kernel.org>,
-        Angus Lin <Angus.Lin@mediatek.com>,
-        Xiaoqing Liu <Xiaoqing.Liu@mediatek.com>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        "Devicetree List" <devicetree@vger.kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        HenryC Chen <HenryC.Chen@mediatek.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        "Charles Yang" <Charles.Yang@mediatek.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        YT Lee <yt.lee@mediatek.com>, Fan Chen <fan.chen@mediatek.com>,
-        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>
-Date:   Wed, 6 Jan 2021 16:41:55 +0800
-In-Reply-To: <1609750266.20758.40.camel@mtksdaap41>
-References: <20201227105449.11452-1-roger.lu@mediatek.com>
-         <20201227105449.11452-4-roger.lu@mediatek.com>
-         <CANMq1KBNKy708Vz67WOc+n7V7ne4L1EZVkUVGj6abd5voxKjxA@mail.gmail.com>
-         <1609750266.20758.40.camel@mtksdaap41>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.10.4-0ubuntu2 
+        Wed, 6 Jan 2021 03:44:25 -0500
+Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4D9jYM2Vlfz7QkH;
+        Wed,  6 Jan 2021 16:42:47 +0800 (CST)
+Received: from [10.174.178.63] (10.174.178.63) by
+ DGGEMS406-HUB.china.huawei.com (10.3.19.206) with Microsoft SMTP Server id
+ 14.3.498.0; Wed, 6 Jan 2021 16:43:35 +0800
+Subject: Re: [PATCH v4] drivers/perf: Add support for ARMv8.3-SPE
+From:   "liwei (GF)" <liwei391@huawei.com>
+To:     Will Deacon <will@kernel.org>
+CC:     <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <guohanjun@huawei.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        "Mark Rutland" <mark.rutland@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Ionela Voinescu <ionela.voinescu@arm.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        "Amit Daniel Kachhap" <amit.kachhap@arm.com>,
+        Vladimir Murzin <vladimir.murzin@arm.com>
+References: <20201203141609.14148-1-liwei391@huawei.com>
+Message-ID: <1598fd83-eb61-cdf6-398f-1bb6d708fb29@huawei.com>
+Date:   Wed, 6 Jan 2021 16:43:34 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.0
 MIME-Version: 1.0
-X-MTK:  N
-Content-Transfer-Encoding: base64
+In-Reply-To: <20201203141609.14148-1-liwei391@huawei.com>
+Content-Type: text/plain; charset="gbk"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.178.63]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGkgTmljb2xhcywNCg0KW3NuaXBdDQo+ID4gDQo+ID4gPiArDQo+ID4gPiArICAgICAgIC8qIFN2
-cyBlZnVzZSBwYXJzaW5nICovDQo+ID4gPiArICAgICAgIGZ0X3BnbSA9IChzdnNwLT5lZnVzZVsw
-XSA+PiA0KSAmIEdFTk1BU0soMywgMCk7DQo+ID4gPiArDQo+ID4gPiArICAgICAgIGZvciAoaWR4
-ID0gMDsgaWR4IDwgc3ZzcC0+YmFua19udW07IGlkeCsrKSB7DQo+ID4gPiArICAgICAgICAgICAg
-ICAgc3ZzYiA9ICZzdnNwLT5iYW5rc1tpZHhdOw0KPiA+ID4gKw0KPiA+ID4gKyAgICAgICAgICAg
-ICAgIGlmIChmdF9wZ20gPD0gMSkNCj4gPiA+ICsgICAgICAgICAgICAgICAgICAgICAgIHN2c2It
-PmluaXQwMV92b2x0X2ZsYWcgPSBTVlNCX0lOSVQwMV9WT0xUX0lHTk9SRTsNCj4gPiA+ICsNCj4g
-PiA+ICsgICAgICAgICAgICAgICBzd2l0Y2ggKHN2c2ItPnN3X2lkKSB7DQo+ID4gPiArICAgICAg
-ICAgICAgICAgY2FzZSBTVlNCX0NQVV9MSVRUTEU6DQo+ID4gPiArICAgICAgICAgICAgICAgICAg
-ICAgICBzdnNiLT5iZGVzID0gc3ZzcC0+ZWZ1c2VbMTZdICYgR0VOTUFTSyg3LCAwKTsNCj4gPiA+
-ICsgICAgICAgICAgICAgICAgICAgICAgIHN2c2ItPm1kZXMgPSAoc3ZzcC0+ZWZ1c2VbMTZdID4+
-IDgpICYgR0VOTUFTSyg3LCAwKTsNCj4gPiA+ICsgICAgICAgICAgICAgICAgICAgICAgIHN2c2It
-PmRjYmRldCA9IChzdnNwLT5lZnVzZVsxNl0gPj4gMTYpICYgR0VOTUFTSyg3LCAwKTsNCj4gPiA+
-ICsgICAgICAgICAgICAgICAgICAgICAgIHN2c2ItPmRjbWRldCA9IChzdnNwLT5lZnVzZVsxNl0g
-Pj4gMjQpICYgR0VOTUFTSyg3LCAwKTsNCj4gPiA+ICsgICAgICAgICAgICAgICAgICAgICAgIHN2
-c2ItPm10ZGVzICA9IChzdnNwLT5lZnVzZVsxN10gPj4gMTYpICYgR0VOTUFTSyg3LCAwKTsNCj4g
-PiANCj4gPiBBZ2FpbiwgaWYgYWxsIG9mIHRob3NlIHZhbHVlcyB3ZXJlIHU4LCB0aGVyZSdkIGJl
-IG5vIG5lZWQgZm9yIHRoZXNlIEdFTk1BU0sNCj4gDQo+IE9rLCBJJ2xsIHVzZSB1OCBpbnN0ZWFk
-IG9mIEdFTk1BU0suIFRoYW5rcy4NCg0KQWZ0ZXIgcmVmaW5pbmcgdGhlIGNvZGVzLCBJIHRoaW5r
-IGl0J3MgbXVjaCBleHBsaWNpdCB0byBhc3NpZ24gdGhlIGJpdHMNCkkgd2FudCBieSBHRU5NQVNL
-KCkgYW5kIHdpbGwgcmVtb3ZlIG90aGVyIEdFTk1BU0soKSB0aGF0IGFyZSByZXBldGl0aXZlDQps
-aWtlIGluIHN2c19zZXRfYmFua19waGFzZSgpIG9yIHN2c19zZXRfZnJlcXNfcGN0X3YyKCkuDQoN
-CltzbmlwXQ0KDQo=
+Ping...
 
+On 2020/12/3 22:16, Wei Li wrote:
+> Armv8.3 extends the SPE by adding:
+> - Alignment field in the Events packet, and filtering on this event
+>   using PMSEVFR_EL1.
+> - Support for the Scalable Vector Extension (SVE).
+> 
+> The main additions for SVE are:
+> - Recording the vector length for SVE operations in the Operation Type
+>   packet. It is not possible to filter on vector length.
+> - Incomplete predicate and empty predicate fields in the Events packet,
+>   and filtering on these events using PMSEVFR_EL1.
+> 
+> Update the check of pmsevfr for empty/partial predicated SVE and
+> alignment event in SPE driver.
+> 
+> Signed-off-by: Wei Li <liwei391@huawei.com>
+> ---
+> v3 -> v4:
+>  - Return the highest supported version in default in arm_spe_pmsevfr_res0().
+>  - Drop the exposing of 'pmsver'.
+>    (Suggested by Will.)
+> ---
+> v2 -> v3:
+>  - Make the definition of 'pmsevfr_res0' progressive and easy to check.
+>    (Suggested by Will.)
+> ---
+> v1 -> v2:
+>  - Rename 'pmuver' to 'pmsver', change it's type to 'u16' from 'int'.
+>    (Suggested by Will and Leo.)
+>  - Expose 'pmsver' as cap attribute through sysfs, instead of printing.
+>    (Suggested by Will.)
+> ---
+>  arch/arm64/include/asm/sysreg.h |  9 ++++++++-
+>  drivers/perf/arm_spe_pmu.c      | 17 +++++++++++++++--
+>  2 files changed, 23 insertions(+), 3 deletions(-)
+> 
+> diff --git a/arch/arm64/include/asm/sysreg.h b/arch/arm64/include/asm/sysreg.h
+> index d52c1b3ce589..57e5aee6f7e6 100644
+> --- a/arch/arm64/include/asm/sysreg.h
+> +++ b/arch/arm64/include/asm/sysreg.h
+> @@ -287,7 +287,11 @@
+>  #define SYS_PMSFCR_EL1_ST_SHIFT		18
+>  
+>  #define SYS_PMSEVFR_EL1			sys_reg(3, 0, 9, 9, 5)
+> -#define SYS_PMSEVFR_EL1_RES0		0x0000ffff00ff0f55UL
+> +#define SYS_PMSEVFR_EL1_RES0_8_2	\
+> +	(GENMASK_ULL(47, 32) | GENMASK_ULL(23, 16) | GENMASK_ULL(11, 8) |\
+> +	 BIT_ULL(6) | BIT_ULL(4) | BIT_ULL(2) | BIT_ULL(0))
+> +#define SYS_PMSEVFR_EL1_RES0_8_3	\
+> +	(SYS_PMSEVFR_EL1_RES0_8_2 & ~(BIT_ULL(18) | BIT_ULL(17) | BIT_ULL(11)))
+>  
+>  #define SYS_PMSLATFR_EL1		sys_reg(3, 0, 9, 9, 6)
+>  #define SYS_PMSLATFR_EL1_MINLAT_SHIFT	0
+> @@ -829,6 +833,9 @@
+>  #define ID_AA64DFR0_PMUVER_8_5		0x6
+>  #define ID_AA64DFR0_PMUVER_IMP_DEF	0xf
+>  
+> +#define ID_AA64DFR0_PMSVER_8_2		0x1
+> +#define ID_AA64DFR0_PMSVER_8_3		0x2
+> +
+>  #define ID_DFR0_PERFMON_SHIFT		24
+>  
+>  #define ID_DFR0_PERFMON_8_1		0x4
+> diff --git a/drivers/perf/arm_spe_pmu.c b/drivers/perf/arm_spe_pmu.c
+> index cc00915ad6d1..bce9aff9f546 100644
+> --- a/drivers/perf/arm_spe_pmu.c
+> +++ b/drivers/perf/arm_spe_pmu.c
+> @@ -54,7 +54,7 @@ struct arm_spe_pmu {
+>  	struct hlist_node			hotplug_node;
+>  
+>  	int					irq; /* PPI */
+> -
+> +	u16					pmsver;
+>  	u16					min_period;
+>  	u16					counter_sz;
+>  
+> @@ -655,6 +655,18 @@ static irqreturn_t arm_spe_pmu_irq_handler(int irq, void *dev)
+>  	return IRQ_HANDLED;
+>  }
+>  
+> +static u64 arm_spe_pmsevfr_res0(u16 pmsver)
+> +{
+> +	switch (pmsver) {
+> +	case ID_AA64DFR0_PMSVER_8_2:
+> +		return SYS_PMSEVFR_EL1_RES0_8_2;
+> +	case ID_AA64DFR0_PMSVER_8_3:
+> +	/* Return the highest version we support in default */
+> +	default:
+> +		return SYS_PMSEVFR_EL1_RES0_8_3;
+> +	}
+> +}
+> +
+>  /* Perf callbacks */
+>  static int arm_spe_pmu_event_init(struct perf_event *event)
+>  {
+> @@ -670,7 +682,7 @@ static int arm_spe_pmu_event_init(struct perf_event *event)
+>  	    !cpumask_test_cpu(event->cpu, &spe_pmu->supported_cpus))
+>  		return -ENOENT;
+>  
+> -	if (arm_spe_event_to_pmsevfr(event) & SYS_PMSEVFR_EL1_RES0)
+> +	if (arm_spe_event_to_pmsevfr(event) & arm_spe_pmsevfr_res0(spe_pmu->pmsver))
+>  		return -EOPNOTSUPP;
+>  
+>  	if (attr->exclude_idle)
+> @@ -937,6 +949,7 @@ static void __arm_spe_pmu_dev_probe(void *info)
+>  			fld, smp_processor_id());
+>  		return;
+>  	}
+> +	spe_pmu->pmsver = (u16)fld;
+>  
+>  	/* Read PMBIDR first to determine whether or not we have access */
+>  	reg = read_sysreg_s(SYS_PMBIDR_EL1);
+> 
