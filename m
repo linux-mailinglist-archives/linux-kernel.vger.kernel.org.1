@@ -2,117 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF04E2EC0AF
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 16:54:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 48DE52EC0B5
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 16:57:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727267AbhAFPxV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Jan 2021 10:53:21 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44500 "EHLO mail.kernel.org"
+        id S1727085AbhAFP4P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Jan 2021 10:56:15 -0500
+Received: from mx2.suse.de ([195.135.220.15]:34760 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727037AbhAFPxV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Jan 2021 10:53:21 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4EDA42312E;
-        Wed,  6 Jan 2021 15:52:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1609948360;
-        bh=+w6Esc4y84H6JBMFik8yqtrwIDRoK5oIoGIZfR8uB0M=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=b632MbNZC2D6/Tuw1MaYs620dA3xca476erWP8k0+nPq1XCP6+zcLhqqQPghua9GB
-         o5O9MRoWLPntUOpMc7hwzDnEkofnpPzvsmgvnF3edZRyTHmZbKiEnkKKv6i3K1AgDF
-         9rQFc9pYHls8+sf7VYmvhkt0GGfnuCsqfKQZSwOmO+y3X3+81QmFycevq7wei9Jyfv
-         9x2MduzaNQ5Rvgk8bLHwyvX5//8f5YXK9cW68v1uznxJhyTbLlTSS80Oe59SXcxCwf
-         u5H8qQyU7Wfpbo3siNh24roz6udvTuNHwTv3zmWCk9OffWtMLhwEAPnU0iO6uGB5RR
-         WP6uKuiwS/39g==
-Received: by mail-ed1-f54.google.com with SMTP id j16so4879588edr.0;
-        Wed, 06 Jan 2021 07:52:40 -0800 (PST)
-X-Gm-Message-State: AOAM532j32ycGH5EXRgNYbsJk9Gm2O7XcYqjNEIfomhSvubN2o54Ys6F
-        MFM+72LnjClZFxmadGzppGNqN/0TpDt903HljA==
-X-Google-Smtp-Source: ABdhPJyQdyKhsl0F/RZctARYn67Dm7nJHSI3xIXZUvaFdcK0gjTA8Ilgz+WhkN1yPHPxfvkVeZhxjt1wHE1uIGrmBwE=
-X-Received: by 2002:a05:6402:1841:: with SMTP id v1mr4515172edy.194.1609948358753;
- Wed, 06 Jan 2021 07:52:38 -0800 (PST)
+        id S1726206AbhAFP4P (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 Jan 2021 10:56:15 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 73352AA35;
+        Wed,  6 Jan 2021 15:55:33 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id DAFDD1E0812; Wed,  6 Jan 2021 16:55:32 +0100 (CET)
+Date:   Wed, 6 Jan 2021 16:55:32 +0100
+From:   Jan Kara <jack@suse.cz>
+To:     Shiyang Ruan <ruansy.fnst@cn.fujitsu.com>
+Cc:     linux-kernel@vger.kernel.org, linux-xfs@vger.kernel.org,
+        linux-nvdimm@lists.01.org, linux-mm@kvack.org,
+        linux-fsdevel@vger.kernel.org, linux-raid@vger.kernel.org,
+        darrick.wong@oracle.com, dan.j.williams@intel.com,
+        david@fromorbit.com, hch@lst.de, song@kernel.org, rgoldwyn@suse.de,
+        qi.fuli@fujitsu.com, y-goto@fujitsu.com
+Subject: Re: [PATCH 05/10] mm, pmem: Implement ->memory_failure() in pmem
+ driver
+Message-ID: <20210106155532.GD29271@quack2.suse.cz>
+References: <20201230165601.845024-1-ruansy.fnst@cn.fujitsu.com>
+ <20201230165601.845024-6-ruansy.fnst@cn.fujitsu.com>
 MIME-Version: 1.0
-References: <CAL_JsqJMr3vfz2B29vzvFALCt_5-J__eJv2TZHJ0sR9nM=xXaw@mail.gmail.com>
- <5a416b44155409e45b99c5624d66992a2138cd4c.1609927722.git.viresh.kumar@linaro.org>
-In-Reply-To: <5a416b44155409e45b99c5624d66992a2138cd4c.1609927722.git.viresh.kumar@linaro.org>
-From:   Rob Herring <robh+dt@kernel.org>
-Date:   Wed, 6 Jan 2021 08:52:27 -0700
-X-Gmail-Original-Message-ID: <CAL_JsqKeF+KE_cXfyKFYo_sU+-LzedCmYjbVT=ZyhTEXvxfbiw@mail.gmail.com>
-Message-ID: <CAL_JsqKeF+KE_cXfyKFYo_sU+-LzedCmYjbVT=ZyhTEXvxfbiw@mail.gmail.com>
-Subject: Re: [PATCH] scripts: dtc: Start building fdtoverlay and fdtdump
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     Pantelis Antoniou <pantelis.antoniou@konsulko.com>,
-        Frank Rowand <frowand.list@gmail.com>,
-        devicetree@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Bill Mills <bill.mills@linaro.org>,
-        Anmar Oueja <anmar.oueja@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201230165601.845024-6-ruansy.fnst@cn.fujitsu.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 6, 2021 at 3:09 AM Viresh Kumar <viresh.kumar@linaro.org> wrote:
->
-> We will start building overlays for platforms soon in the kernel and
-> would need these tools going forward. Lets fetch and build these.
->
-> Note that a copy of fdtdump.c was already copied back in the year 2012,
-> but it was never updated or built for some reason.
->
-> Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
+On Thu 31-12-20 00:55:56, Shiyang Ruan wrote:
+> Call the ->memory_failure() which is implemented by pmem driver, in
+> order to finally notify filesystem to handle the corrupted data.  The
+> old collecting and killing processes are moved into
+> mf_dax_mapping_kill_procs(), which will be called by filesystem.
+> 
+> Signed-off-by: Shiyang Ruan <ruansy.fnst@cn.fujitsu.com>
+
+I understand the intent but this patch breaks DAX hwpoison handling for
+everybody at this point in the series (nobody implements ->memory_failure()
+handler yet) so it is bisection unfriendly. This should really be the last
+step in the series once all the other infrastructure is implemented.
+Furthermore AFAIU it breaks DAX hwpoison handling terminally for all
+filesystems which don't implement ->corrupted_range() - e.g. for ext4.
+Your series needs to implement ->corrupted_range() for all filesystems
+supporting DAX so that we don't regress current functionality...
+
+								Honza
+
 > ---
->  scripts/dtc/Makefile             | 8 +++++++-
->  scripts/dtc/update-dtc-source.sh | 6 +++---
-
-This needs to be 2 patches so we can do a dtc sync in between. So
-update update-dtc-source.sh, run update-dtc-source.sh, update the
-Makefile.
-
->  2 files changed, 10 insertions(+), 4 deletions(-)
->
-> diff --git a/scripts/dtc/Makefile b/scripts/dtc/Makefile
-> index 4852bf44e913..c607980a5c17 100644
-> --- a/scripts/dtc/Makefile
-> +++ b/scripts/dtc/Makefile
-> @@ -1,12 +1,18 @@
->  # SPDX-License-Identifier: GPL-2.0
->  # scripts/dtc makefile
->
-> -hostprogs-always-$(CONFIG_DTC)         += dtc
-> +hostprogs-always-$(CONFIG_DTC)         += dtc fdtdump fdtoverlay
->  hostprogs-always-$(CHECK_DT_BINDING)   += dtc
->
->  dtc-objs       := dtc.o flattree.o fstree.o data.o livetree.o treesource.o \
->                    srcpos.o checks.o util.o
->  dtc-objs       += dtc-lexer.lex.o dtc-parser.tab.o
-> +fdtdump-objs   := fdtdump.o util.o
+>  drivers/nvdimm/pmem.c | 24 +++++++++++++++++++++
+>  mm/memory-failure.c   | 50 +++++--------------------------------------
+>  2 files changed, 29 insertions(+), 45 deletions(-)
+> 
+> diff --git a/drivers/nvdimm/pmem.c b/drivers/nvdimm/pmem.c
+> index 875076b0ea6c..4a114937c43b 100644
+> --- a/drivers/nvdimm/pmem.c
+> +++ b/drivers/nvdimm/pmem.c
+> @@ -363,9 +363,33 @@ static void pmem_release_disk(void *__pmem)
+>  	put_disk(pmem->disk);
+>  }
+>  
+> +static int pmem_pagemap_memory_failure(struct dev_pagemap *pgmap,
+> +		unsigned long pfn, int flags)
+> +{
+> +	struct pmem_device *pdev;
+> +	struct gendisk *disk;
+> +	loff_t disk_offset;
+> +	int rc = 0;
+> +	unsigned long size = page_size(pfn_to_page(pfn));
 > +
-> +libfdt_dir     = libfdt
-> +libfdt-objs    := fdt.o fdt_ro.o fdt_wip.o fdt_sw.o fdt_rw.o fdt_strerror.o fdt_empty_tree.o fdt_addresses.o fdt_overlay.o
-> +libfdt         = $(addprefix $(libfdt_dir)/,$(libfdt-objs))
-> +fdtoverlay-objs        := $(libfdt) fdtoverlay.o util.o
->
->  # Source files need to get at the userspace version of libfdt_env.h to compile
->  HOST_EXTRACFLAGS += -I $(srctree)/$(src)/libfdt
-> diff --git a/scripts/dtc/update-dtc-source.sh b/scripts/dtc/update-dtc-source.sh
-> index bc704e2a6a4a..9bc4afb71415 100755
-> --- a/scripts/dtc/update-dtc-source.sh
-> +++ b/scripts/dtc/update-dtc-source.sh
-> @@ -31,9 +31,9 @@ set -ev
->  DTC_UPSTREAM_PATH=`pwd`/../dtc
->  DTC_LINUX_PATH=`pwd`/scripts/dtc
->
-> -DTC_SOURCE="checks.c data.c dtc.c dtc.h flattree.c fstree.c livetree.c srcpos.c \
-> -               srcpos.h treesource.c util.c util.h version_gen.h yamltree.c \
-> -               dtc-lexer.l dtc-parser.y"
-> +DTC_SOURCE="checks.c data.c dtc.c dtc.h fdtdump.c fdtoverlay.c flattree.c \
-> +               fstree.c livetree.c srcpos.c srcpos.h treesource.c util.c \
-> +               util.h version_gen.h yamltree.c dtc-lexer.l dtc-parser.y"
->  LIBFDT_SOURCE="fdt.c fdt.h fdt_addresses.c fdt_empty_tree.c \
->                 fdt_overlay.c fdt_ro.c fdt_rw.c fdt_strerror.c fdt_sw.c \
->                 fdt_wip.c libfdt.h libfdt_env.h libfdt_internal.h"
-> --
-> 2.25.0.rc1.19.g042ed3e048af
->
+> +	pdev = container_of(pgmap, struct pmem_device, pgmap);
+> +	disk = pdev->disk;
+> +	if (!disk)
+> +		return -ENXIO;
+> +
+> +	disk_offset = PFN_PHYS(pfn) - pdev->phys_addr - pdev->data_offset;
+> +	if (disk->fops->corrupted_range) {
+> +		rc = disk->fops->corrupted_range(disk, NULL, disk_offset, size, &flags);
+> +		if (rc == -ENODEV)
+> +			rc = -ENXIO;
+> +	}
+> +	return rc;
+> +}
+> +
+>  static const struct dev_pagemap_ops fsdax_pagemap_ops = {
+>  	.kill			= pmem_pagemap_kill,
+>  	.cleanup		= pmem_pagemap_cleanup,
+> +	.memory_failure		= pmem_pagemap_memory_failure,
+>  };
+>  
+>  static int pmem_attach_disk(struct device *dev,
+> diff --git a/mm/memory-failure.c b/mm/memory-failure.c
+> index 37bc6e2a9564..0109ad607fb8 100644
+> --- a/mm/memory-failure.c
+> +++ b/mm/memory-failure.c
+> @@ -1269,28 +1269,11 @@ static int memory_failure_dev_pagemap(unsigned long pfn, int flags,
+>  		struct dev_pagemap *pgmap)
+>  {
+>  	struct page *page = pfn_to_page(pfn);
+> -	const bool unmap_success = true;
+> -	unsigned long size = 0;
+> -	struct to_kill *tk;
+> -	LIST_HEAD(to_kill);
+>  	int rc = -EBUSY;
+> -	loff_t start;
+> -	dax_entry_t cookie;
+> -
+> -	/*
+> -	 * Prevent the inode from being freed while we are interrogating
+> -	 * the address_space, typically this would be handled by
+> -	 * lock_page(), but dax pages do not use the page lock. This
+> -	 * also prevents changes to the mapping of this pfn until
+> -	 * poison signaling is complete.
+> -	 */
+> -	cookie = dax_lock_page(page);
+> -	if (!cookie)
+> -		goto out;
+>  
+>  	if (hwpoison_filter(page)) {
+>  		rc = 0;
+> -		goto unlock;
+> +		goto out;
+>  	}
+>  
+>  	if (pgmap->type == MEMORY_DEVICE_PRIVATE) {
+> @@ -1298,7 +1281,7 @@ static int memory_failure_dev_pagemap(unsigned long pfn, int flags,
+>  		 * TODO: Handle HMM pages which may need coordination
+>  		 * with device-side memory.
+>  		 */
+> -		goto unlock;
+> +		goto out;
+>  	}
+>  
+>  	/*
+> @@ -1307,33 +1290,10 @@ static int memory_failure_dev_pagemap(unsigned long pfn, int flags,
+>  	 */
+>  	SetPageHWPoison(page);
+>  
+> -	/*
+> -	 * Unlike System-RAM there is no possibility to swap in a
+> -	 * different physical page at a given virtual address, so all
+> -	 * userspace consumption of ZONE_DEVICE memory necessitates
+> -	 * SIGBUS (i.e. MF_MUST_KILL)
+> -	 */
+> -	flags |= MF_ACTION_REQUIRED | MF_MUST_KILL;
+> -	collect_procs_file(page, page->mapping, page->index, &to_kill,
+> -			   flags & MF_ACTION_REQUIRED);
+> +	/* call driver to handle the memory failure */
+> +	if (pgmap->ops->memory_failure)
+> +		rc = pgmap->ops->memory_failure(pgmap, pfn, flags);
+>  
+> -	list_for_each_entry(tk, &to_kill, nd)
+> -		if (tk->size_shift)
+> -			size = max(size, 1UL << tk->size_shift);
+> -	if (size) {
+> -		/*
+> -		 * Unmap the largest mapping to avoid breaking up
+> -		 * device-dax mappings which are constant size. The
+> -		 * actual size of the mapping being torn down is
+> -		 * communicated in siginfo, see kill_proc()
+> -		 */
+> -		start = (page->index << PAGE_SHIFT) & ~(size - 1);
+> -		unmap_mapping_range(page->mapping, start, start + size, 0);
+> -	}
+> -	kill_procs(&to_kill, flags & MF_MUST_KILL, !unmap_success, pfn, flags);
+> -	rc = 0;
+> -unlock:
+> -	dax_unlock_page(page, cookie);
+>  out:
+>  	/* drop pgmap ref acquired in caller */
+>  	put_dev_pagemap(pgmap);
+> -- 
+> 2.29.2
+> 
+> 
+> 
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
