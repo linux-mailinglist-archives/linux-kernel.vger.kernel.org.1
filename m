@@ -2,159 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 761462EB8DC
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 05:25:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DAB92EB8E2
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 05:29:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726463AbhAFEYf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 23:24:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47330 "EHLO
+        id S1726492AbhAFE0Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 23:26:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47612 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726051AbhAFEYe (ORCPT
+        with ESMTP id S1725808AbhAFE0X (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 23:24:34 -0500
-Received: from mail-oi1-x235.google.com (mail-oi1-x235.google.com [IPv6:2607:f8b0:4864:20::235])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 449EEC06134D
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Jan 2021 20:23:54 -0800 (PST)
-Received: by mail-oi1-x235.google.com with SMTP id p5so2163214oif.7
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Jan 2021 20:23:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=k0i3enRu3hyKlPA+1xEo/MmMl5HhXf8GucycwKwD1yE=;
-        b=YmLbNsAnXgfNy224NEcuX9hdiztWZPxaNC2Cvt3F6ZqAOPQDUJ6iYzm14W5r6EbCDW
-         USpwl0tBwuUFyDzeqgaoGAR2wEEq/FlQxRs64PNon0Hf9N6sTGQ1x0FvkCoP6jb1iJNv
-         7LYZqKeO9g9O2joaQYO4wdbxfwMhIoWJhcv5PeJBZEIHIBRCxbBcQcclQFjJ3o+lXhRl
-         QIFlNi3/EYxbA+OXyrqNS2sKLRQnOTG/fX+jQHH9npJDkK3eCgPC1h8NWOl5lu9qe5/t
-         T1itW7BWibsKQnuVDMS3NQZwMm/QSjTZwgSdYbkup3QbTxTdeGhcZC8pp55qcMHtOGU9
-         yxjw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=k0i3enRu3hyKlPA+1xEo/MmMl5HhXf8GucycwKwD1yE=;
-        b=nQawJZCDEbWk6vsiJFRbQWnhn9ljfB6al3bwa6iCELl/lZa2459N00o0sPut6DmAkP
-         QD1KpWCSuO0VdlS2oWLN67MaN91tCPglTALpMz3ciiS73IhTzrYcTxp48KOM3QSiE/Ky
-         9fDnXq502utUvd3yQH+Wr7wGk1AXBKs0qIsTZ/HFP1cCE1yS4NfG2WrnsVawkZ7a6vtp
-         9Eq6WY1IIa1hfDqydQb41qNBGCsPUeNDkefskMCAq05yT+5Jv8aWsUsso7wpTpJvVFgp
-         CjoSDF/yBRKWuAvKl/Zrvat5ku8S/Sf4dNHrd2C826oznBEk5wDiMKwhABS9e+iSDGNU
-         mZrw==
-X-Gm-Message-State: AOAM5336i1TRbJ2TaIuziMB7vshbz2J+CRos1bUb1zv6vBPdrsTvQQWz
-        2ZQEOQuTpETjCsaOYykWeIJROQ==
-X-Google-Smtp-Source: ABdhPJz2xl+B7kjgfvIk6OHpFiqGJZ8MncwBec6HcfksdGfnE6TVHnyumO3Y5Sj3Uy0zR75UjnpSNg==
-X-Received: by 2002:a54:4694:: with SMTP id k20mr2074670oic.64.1609907033620;
-        Tue, 05 Jan 2021 20:23:53 -0800 (PST)
-Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id z14sm291412otk.70.2021.01.05.20.23.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 Jan 2021 20:23:52 -0800 (PST)
-Date:   Tue, 5 Jan 2021 22:23:51 -0600
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Alex Elder <elder@linaro.org>
-Cc:     kernel test robot <lkp@intel.com>, agross@kernel.org,
-        ohad@wizery.com, kbuild-all@lists.01.org,
-        linux-arm-msm@vger.kernel.org, linux-remoteproc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] rpmsg: glink: add a header file
-Message-ID: <X/U7Vz1LaA0o0M5u@builder.lan>
-References: <20210105235528.32538-1-elder@linaro.org>
- <202101061021.f4FjA3GK-lkp@intel.com>
- <X/U2MmdpU96WdUGw@builder.lan>
- <f2325ccf-3d59-0c26-9371-20734cc61376@linaro.org>
+        Tue, 5 Jan 2021 23:26:23 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22447C06134D;
+        Tue,  5 Jan 2021 20:25:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:MIME-Version:
+        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+        Content-Description:In-Reply-To:References;
+        bh=2BjP3I/22j14cC7xYb+IGTqn5EWyFRNS8lMyLgi/7lo=; b=BiyuYZAPWKCCBypAusZR7een8H
+        yLhuDL7W0cqFxNPu4NaXHs1KNkFpaXAoVwxtoGHU/2V+hcMV2NrJx6kcgIFCVtsYdQ5AcwRIfxuPA
+        zmxcoNtwkh01HGsDwYyg9e8o/9vtOjopUiDbqP6brlcmzr3UV/ZpeziqdyB6I77dSn58PNKwdHoiq
+        jCYrkHoieClHY/a0Q94CVPdEk3Dyayq28ZU6EZEB1wAs6WxHmxz+v5iJN+o27gIU5hYJgM5vKDqES
+        GoZS0T9YulM97cSSFv3rbc3oJJwq37Pk9pwKevYr1NUNSVVH4ZknWcCh/XN7qd90JCom+4MEiBDey
+        8QZiU2Og==;
+Received: from [2601:1c0:6280:3f0::64ea] (helo=smtpauth.infradead.org)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kx0O8-00073N-Uv; Wed, 06 Jan 2021 04:25:37 +0000
+From:   Randy Dunlap <rdunlap@infradead.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        kernel test robot <lkp@intel.com>,
+        Richard Cochran <richardcochran@gmail.com>,
+        netdev@vger.kernel.org, "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Subject: [PATCH] ptp: ptp_ines: prevent build when HAS_IOMEM is not set
+Date:   Tue,  5 Jan 2021 20:25:31 -0800
+Message-Id: <20210106042531.1351-1-rdunlap@infradead.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <f2325ccf-3d59-0c26-9371-20734cc61376@linaro.org>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 05 Jan 22:19 CST 2021, Alex Elder wrote:
+ptp_ines.c uses devm_platform_ioremap_resource(), which is only
+built/available when CONFIG_HAS_IOMEM is enabled.
+CONFIG_HAS_IOMEM is not enabled for arch/s390/, so builds on S390
+have a build error:
 
-> On 1/5/21 10:01 PM, Bjorn Andersson wrote:
-> > On Tue 05 Jan 20:42 CST 2021, kernel test robot wrote:
-> > 
-> > > Hi Alex,
-> > > 
-> > > I love your patch! Yet something to improve:
-> > > 
-> > 
-> > Alex, this turns out to be an existing problem. Please have a look at my
-> > proposal for a fix here:
-> > 
-> > https://lore.kernel.org/linux-remoteproc/20210106035905.4153692-1-bjorn.andersson@linaro.org/T/#u
-> > 
-> > If you like it I can merge it and then apply this patch on top.
-> 
-> Go ahead and merge your patch.  If you are sure mine will
-> work afterward (I think it will) I would be happy to have
-> you accept that as well.  Thanks.
-> 
+s390-linux-ld: drivers/ptp/ptp_ines.o: in function `ines_ptp_ctrl_probe':
+ptp_ines.c:(.text+0x17e6): undefined reference to `devm_platform_ioremap_resource'
 
-Thank you Alex. I've merged the pair (and that other patch of yours).
+Prevent builds of ptp_ines.c when HAS_IOMEM is not set.
 
-And thanks KTR for reporting this.
+Fixes: bad1eaa6ac31 ("ptp: Add a driver for InES time stamping IP core.")
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Reported-by: kernel test robot <lkp@intel.com>
+Link: lore.kernel.org/r/202101031125.ZEFCUiKi-lkp@intel.com
+Cc: Richard Cochran <richardcochran@gmail.com>
+Cc: netdev@vger.kernel.org
+Cc: "David S. Miller" <davem@davemloft.net>
+Cc: Jakub Kicinski <kuba@kernel.org>
+---
+ drivers/ptp/Kconfig |    1 +
+ 1 file changed, 1 insertion(+)
 
-Regards,
-Bjorn
-
-> 					-Alex
-> 
-> > 
-> > Thanks,
-> > Bjorn
-> > 
-> > > [auto build test ERROR on linus/master]
-> > > [also build test ERROR on v5.11-rc2 next-20210104]
-> > > [If your patch is applied to the wrong git tree, kindly drop us a note.
-> > > And when submitting patch, we suggest to use '--base' as documented in
-> > > https://git-scm.com/docs/git-format-patch]
-> > > 
-> > > url:    https://github.com/0day-ci/linux/commits/Alex-Elder/rpmsg-glink-add-a-header-file/20210106-080024
-> > > base:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git e71ba9452f0b5b2e8dc8aa5445198cd9214a6a62
-> > > config: x86_64-randconfig-s021-20210106 (attached as .config)
-> > > compiler: gcc-9 (Debian 9.3.0-15) 9.3.0
-> > > reproduce:
-> > >          # apt-get install sparse
-> > >          # sparse version: v0.6.3-208-g46a52ca4-dirty
-> > >          # https://github.com/0day-ci/linux/commit/333b19e6f90b89d18b94be972c0823959373dad8
-> > >          git remote add linux-review https://github.com/0day-ci/linux
-> > >          git fetch --no-tags linux-review Alex-Elder/rpmsg-glink-add-a-header-file/20210106-080024
-> > >          git checkout 333b19e6f90b89d18b94be972c0823959373dad8
-> > >          # save the attached .config to linux build tree
-> > >          make W=1 C=1 CF='-fdiagnostic-prefix -D__CHECK_ENDIAN__' ARCH=x86_64
-> > > 
-> > > If you fix the issue, kindly add following tag as appropriate
-> > > Reported-by: kernel test robot <lkp@intel.com>
-> > > 
-> > > All errors (new ones prefixed by >>):
-> > > 
-> > > > > drivers/rpmsg/qcom_glink_ssr.c:65:6: error: redefinition of 'qcom_glink_ssr_notify'
-> > >        65 | void qcom_glink_ssr_notify(const char *ssr_name)
-> > >           |      ^~~~~~~~~~~~~~~~~~~~~
-> > >     In file included from drivers/rpmsg/qcom_glink_ssr.c:11:
-> > >     include/linux/rpmsg/qcom_glink.h:27:20: note: previous definition of 'qcom_glink_ssr_notify' was here
-> > >        27 | static inline void qcom_glink_ssr_notify(const char *ssr_name) {}
-> > >           |                    ^~~~~~~~~~~~~~~~~~~~~
-> > > 
-> > > 
-> > > vim +/qcom_glink_ssr_notify +65 drivers/rpmsg/qcom_glink_ssr.c
-> > > 
-> > > 5d1f2e3c8090c07 drivers/soc/qcom/glink_ssr.c Bjorn Andersson 2020-04-22  60
-> > > 5d1f2e3c8090c07 drivers/soc/qcom/glink_ssr.c Bjorn Andersson 2020-04-22  61  /**
-> > > 5d1f2e3c8090c07 drivers/soc/qcom/glink_ssr.c Bjorn Andersson 2020-04-22  62   * qcom_glink_ssr_notify() - notify GLINK SSR about stopped remoteproc
-> > > 5d1f2e3c8090c07 drivers/soc/qcom/glink_ssr.c Bjorn Andersson 2020-04-22  63   * @ssr_name:	name of the remoteproc that has been stopped
-> > > 5d1f2e3c8090c07 drivers/soc/qcom/glink_ssr.c Bjorn Andersson 2020-04-22  64   */
-> > > 5d1f2e3c8090c07 drivers/soc/qcom/glink_ssr.c Bjorn Andersson 2020-04-22 @65  void qcom_glink_ssr_notify(const char *ssr_name)
-> > > 5d1f2e3c8090c07 drivers/soc/qcom/glink_ssr.c Bjorn Andersson 2020-04-22  66  {
-> > > 5d1f2e3c8090c07 drivers/soc/qcom/glink_ssr.c Bjorn Andersson 2020-04-22  67  	blocking_notifier_call_chain(&ssr_notifiers, 0, (void *)ssr_name);
-> > > 5d1f2e3c8090c07 drivers/soc/qcom/glink_ssr.c Bjorn Andersson 2020-04-22  68  }
-> > > 5d1f2e3c8090c07 drivers/soc/qcom/glink_ssr.c Bjorn Andersson 2020-04-22  69  EXPORT_SYMBOL_GPL(qcom_glink_ssr_notify);
-> > > 5d1f2e3c8090c07 drivers/soc/qcom/glink_ssr.c Bjorn Andersson 2020-04-22  70
-> > > 
-> > > ---
-> > > 0-DAY CI Kernel Test Service, Intel Corporation
-> > > https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
-> > 
-> > 
-> 
+--- lnx-511-rc2.orig/drivers/ptp/Kconfig
++++ lnx-511-rc2/drivers/ptp/Kconfig
+@@ -78,6 +78,7 @@ config DP83640_PHY
+ config PTP_1588_CLOCK_INES
+ 	tristate "ZHAW InES PTP time stamping IP core"
+ 	depends on NETWORK_PHY_TIMESTAMPING
++	depends on HAS_IOMEM
+ 	depends on PHYLIB
+ 	depends on PTP_1588_CLOCK
+ 	help
