@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D4A592EC224
+	by mail.lfdr.de (Postfix) with ESMTP id 66EE02EC223
 	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 18:27:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727804AbhAFR10 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Jan 2021 12:27:26 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37046 "EHLO mail.kernel.org"
+        id S1727777AbhAFR1Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Jan 2021 12:27:25 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37048 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725803AbhAFR1Y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1726468AbhAFR1Y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 6 Jan 2021 12:27:24 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 42CA123331;
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6E75823159;
         Wed,  6 Jan 2021 17:26:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1609953972;
-        bh=yMMd62yyNc8bJ1C62oo2KduVedAyxxuUOxTIHhRgCek=;
+        bh=JyVBwsvKEgrfSpqv7BpwvNNnxHOXNKBnYtSAE8a7MRE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=l1ErYxu4c1WAy5hlz2eJrPB4jC/K/OKy4wAx74GmyE6Y5K96BgR8QJ12ADYSyfHjm
-         ZLuGb+PRWbr7JUINe0YGyS3/wMMkt5HvhLVniakfK53AUiwP6Gbcdw9GXcNx5bZko/
-         R7Fx0CWZBy6vC89Iicw2rEsQwg2fsqXH1xR3hYlD0kmkYJg7MP0O3YoRqfmOsCdPCy
-         qKHXpVIjudpLPRcmRRVXzYPWKOS6xRokbOUOiQ6WLr8Za/xmtw4Uy/y1YRotOBs7NG
-         uX88bZGs2WNVqoPC79/LgcUdKe8xK63CGufz/Aofu6qCzTzYDK6fdCXXD4dH1P32Wf
-         i8EBQfbeV1R/w==
+        b=UoaI16ma2v2bA9JY45GXoU2Cw8Ydwht948e4vm1esCJAzviFgX/ZTPOyGjKHwbm9E
+         UO55EbfRMAYs4KLF39Mt+u5NieRKMB+33mE2c7z450KslVc0bzGhzgJs7zDDL4cQje
+         M5Kxzd4lH82zbINBOIW/wzoWiTZZtXzal3AI1qohdtcYzsS+vppf+ibvXMMqN4okR5
+         UNIFEXB1aUkY9tcFXvfRCIr3+6BrnBceVuftvu5ACACW8F3f7R223jQd9FAEHbakf7
+         IYa6/NSLS1JFfUYagu5ux2rXB8i9aUioCYBDs7ICfUdqinwM+F0s296EIK6EDvas3E
+         V7VkNatdgOIqA==
 From:   paulmck@kernel.org
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -32,9 +32,9 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
         oleg@redhat.com, joel@joelfernandes.org,
         "Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH tip/core/rcu 16/20] torture: s/STOP/STOP.1/ to avoid scenario collision
-Date:   Wed,  6 Jan 2021 09:26:03 -0800
-Message-Id: <20210106172607.22816-16-paulmck@kernel.org>
+Subject: [PATCH tip/core/rcu 17/20] torture: Simplify exit-code plumbing for kvm-recheck.sh and kvm-find-errors.sh
+Date:   Wed,  6 Jan 2021 09:26:04 -0800
+Message-Id: <20210106172607.22816-17-paulmck@kernel.org>
 X-Mailer: git-send-email 2.9.5
 In-Reply-To: <20210106172547.GA22404@paulmck-ThinkPad-P72>
 References: <20210106172547.GA22404@paulmck-ThinkPad-P72>
@@ -44,69 +44,50 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: "Paul E. McKenney" <paulmck@kernel.org>
 
-This commit changes the "STOP" file that is used to cleanly halt a running
-rcutorture run to "STOP.1" because no scenario directory will ever end
-with ".1".  If there really was a scenario named "STOP", its directories
-would instead be named "STOP", "STOP.2", "STOP.3", and so on.  While in
-the area, the commit also changes the kernel-run-time checks for this
-file to look directly in the directory above $resdir, thus avoiding the
-need to pass the TORTURE_STOPFILE environment variable to remote systems.
-
-While in the area, move the STOP.1 file to the top-level directory
-covering all of the scenarios.
+This commit simplifies exit-code plumbing.  It makes kvm-recheck.sh return
+the value 1 for a build error and 2 for a runtime error.  It also makes
+kvm-find-errors.sh avoid checking runtime files for --build-only runs.
 
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- tools/testing/selftests/rcutorture/bin/kvm-test-1-run.sh | 8 ++++----
- tools/testing/selftests/rcutorture/bin/kvm.sh            | 2 +-
- 2 files changed, 5 insertions(+), 5 deletions(-)
+ tools/testing/selftests/rcutorture/bin/kvm-find-errors.sh | 1 +
+ tools/testing/selftests/rcutorture/bin/kvm-recheck.sh     | 3 ++-
+ 2 files changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/tools/testing/selftests/rcutorture/bin/kvm-test-1-run.sh b/tools/testing/selftests/rcutorture/bin/kvm-test-1-run.sh
-index 4bc0e62..536d103 100755
---- a/tools/testing/selftests/rcutorture/bin/kvm-test-1-run.sh
-+++ b/tools/testing/selftests/rcutorture/bin/kvm-test-1-run.sh
-@@ -211,7 +211,7 @@ do
- 		if test -n "$TORTURE_KCONFIG_GDB_ARG"
- 		then
- 			:
--		elif test $kruntime -ge $seconds || test -f "$TORTURE_STOPFILE"
-+		elif test $kruntime -ge $seconds || test -f "$resdir/../STOP.1"
- 		then
- 			break;
- 		fi
-@@ -254,16 +254,16 @@ then
- fi
- if test $commandcompleted -eq 0 -a -n "$qemu_pid"
+diff --git a/tools/testing/selftests/rcutorture/bin/kvm-find-errors.sh b/tools/testing/selftests/rcutorture/bin/kvm-find-errors.sh
+index be26598..0670841 100755
+--- a/tools/testing/selftests/rcutorture/bin/kvm-find-errors.sh
++++ b/tools/testing/selftests/rcutorture/bin/kvm-find-errors.sh
+@@ -46,6 +46,7 @@ fi
+ if grep -q -e "--buildonly" < ${rundir}/log
  then
--	if ! test -f "$TORTURE_STOPFILE"
-+	if ! test -f "$resdir/../STOP.1"
- 	then
- 		echo Grace period for qemu job at pid $qemu_pid
- 	fi
- 	oldline="`tail $resdir/console.log`"
- 	while :
- 	do
--		if test -f "$TORTURE_STOPFILE"
-+		if test -f "$resdir/../STOP.1"
- 		then
--			echo "PID $qemu_pid killed due to run STOP request" >> $resdir/Warnings 2>&1
-+			echo "PID $qemu_pid killed due to run STOP.1 request" >> $resdir/Warnings 2>&1
- 			kill -KILL $qemu_pid
- 			break
- 		fi
-diff --git a/tools/testing/selftests/rcutorture/bin/kvm.sh b/tools/testing/selftests/rcutorture/bin/kvm.sh
-index 6b900360..6051868 100755
---- a/tools/testing/selftests/rcutorture/bin/kvm.sh
-+++ b/tools/testing/selftests/rcutorture/bin/kvm.sh
-@@ -386,7 +386,7 @@ then
+ 	echo Build-only run, no console logs to check.
++	exit $editorret
  fi
- mkdir -p $resdir/$ds
- TORTURE_RESDIR="$resdir/$ds"; export TORTURE_RESDIR
--TORTURE_STOPFILE="$resdir/$ds/STOP"; export TORTURE_STOPFILE
-+TORTURE_STOPFILE="$resdir/$ds/STOP.1"; export TORTURE_STOPFILE
- echo Results directory: $resdir/$ds
- echo $scriptname $args
- touch $resdir/$ds/log
+ 
+ # Find console logs with errors
+diff --git a/tools/testing/selftests/rcutorture/bin/kvm-recheck.sh b/tools/testing/selftests/rcutorture/bin/kvm-recheck.sh
+index 840a467..47cf4db 100755
+--- a/tools/testing/selftests/rcutorture/bin/kvm-recheck.sh
++++ b/tools/testing/selftests/rcutorture/bin/kvm-recheck.sh
+@@ -87,15 +87,16 @@ do
+ 	fi
+ done
+ EDITOR=echo kvm-find-errors.sh "${@: -1}" > $T 2>&1
+-ret=$?
+ builderrors="`tr ' ' '\012' < $T | grep -c '/Make.out.diags'`"
+ if test "$builderrors" -gt 0
+ then
+ 	echo $builderrors runs with build errors.
++	ret=1
+ fi
+ runerrors="`tr ' ' '\012' < $T | grep -c '/console.log.diags'`"
+ if test "$runerrors" -gt 0
+ then
+ 	echo $runerrors runs with runtime errors.
++	ret=2
+ fi
+ exit $ret
 -- 
 2.9.5
 
