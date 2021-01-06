@@ -2,131 +2,271 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF3F42EC398
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 20:00:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 85AC52EC399
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 20:01:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726369AbhAFS7d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Jan 2021 13:59:33 -0500
-Received: from aserp2120.oracle.com ([141.146.126.78]:49432 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725800AbhAFS7c (ORCPT
+        id S1726551AbhAFTAg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Jan 2021 14:00:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43102 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725822AbhAFTAg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Jan 2021 13:59:32 -0500
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 106It0hC028017;
-        Wed, 6 Jan 2021 18:58:07 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=qgEi3Qa2hyF376sE4mh5A9+MilrONCFfI4KMkx2vQvA=;
- b=XbcsGl1XP/I/qKOicRYCGWl0CuALE4QAftUapu+rjN2oKyJJpd+mgeDnQE+VIjaegTwc
- pNVgp9Vf/szLcDU/3px/SNSlkRITzlqpN4PEHWvg+8ncgKpYIz2ge7iUcezzo8adAy/F
- XSujrBZctl3KJu+bPMJKe2wqb4lfcl9nb+kJ5pDapf38ZZzP/V5SQScw1EdT8j/INqKG
- EZMqn7KHrhXf7jC+64G57UpWXyce+gDU/LD+A4DWyRIOWyFTqi2POu42+olRuP/J3fRw
- R5UyKH8ecQNJZaBlrfmJp5ZwD86IDgwyhop2LHAMXqeJoeg2qokq0H36JsvvmgDo/4Tz Hg== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by aserp2120.oracle.com with ESMTP id 35wepm9cyr-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 06 Jan 2021 18:58:07 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 106IoQod159497;
-        Wed, 6 Jan 2021 18:58:06 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by userp3020.oracle.com with ESMTP id 35w3qsd0gy-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 06 Jan 2021 18:58:06 +0000
-Received: from abhmp0001.oracle.com (abhmp0001.oracle.com [141.146.116.7])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 106Iw1TS006276;
-        Wed, 6 Jan 2021 18:58:01 GMT
-Received: from localhost.localdomain (/209.6.208.110)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Wed, 06 Jan 2021 10:58:01 -0800
-Date:   Wed, 6 Jan 2021 13:57:57 -0500
-From:   Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
-To:     Claire Chang <tientzu@chromium.org>
-Cc:     robh+dt@kernel.org, mpe@ellerman.id.au, benh@kernel.crashing.org,
-        paulus@samba.org, joro@8bytes.org, will@kernel.org,
-        frowand.list@gmail.com, boris.ostrovsky@oracle.com,
-        jgross@suse.com, sstabellini@kernel.org, hch@lst.de,
-        m.szyprowski@samsung.com, robin.murphy@arm.com,
-        grant.likely@arm.com, xypron.glpk@gmx.de, treding@nvidia.com,
-        mingo@kernel.org, bauerman@linux.ibm.com, peterz@infradead.org,
-        gregkh@linuxfoundation.org, saravanak@google.com,
-        rafael.j.wysocki@intel.com, heikki.krogerus@linux.intel.com,
-        andriy.shevchenko@linux.intel.com, rdunlap@infradead.org,
-        dan.j.williams@intel.com, bgolaszewski@baylibre.com,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, iommu@lists.linux-foundation.org,
-        xen-devel@lists.xenproject.org, tfiga@chromium.org,
-        drinkcat@chromium.org
-Subject: Re: [RFC PATCH v3 5/6] dt-bindings: of: Add restricted DMA pool
-Message-ID: <20210106185757.GB109735@localhost.localdomain>
-References: <20210106034124.30560-1-tientzu@chromium.org>
- <20210106034124.30560-6-tientzu@chromium.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210106034124.30560-6-tientzu@chromium.org>
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9856 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 malwarescore=0 mlxscore=0
- spamscore=0 mlxlogscore=999 phishscore=0 bulkscore=0 suspectscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2101060106
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9856 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 bulkscore=0 spamscore=0
- impostorscore=0 phishscore=0 lowpriorityscore=0 suspectscore=0
- priorityscore=1501 mlxscore=0 malwarescore=0 clxscore=1015 mlxlogscore=999
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2101060106
+        Wed, 6 Jan 2021 14:00:36 -0500
+Received: from mail-pg1-x54a.google.com (mail-pg1-x54a.google.com [IPv6:2607:f8b0:4864:20::54a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D81BAC06134C
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Jan 2021 10:59:55 -0800 (PST)
+Received: by mail-pg1-x54a.google.com with SMTP id l2so2586016pgi.5
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Jan 2021 10:59:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=sender:date:message-id:mime-version:subject:from:to:cc;
+        bh=VJVLSLdtxSjf51v52sLnCTCAPMVR3FicOzzHbZ1zDdk=;
+        b=ZKYZc57KqCVwsRiFhOTTFLdKMqgTg5ofcjrSGRQ7puNhLXoQZpZg71cq/Ep5JpXzg9
+         Mwpy3zp4bvNPoFoTfP8ExyqKtwCG3kn/DrZy6MTd7TQ3QZlmaqYhHxbal1WkVHE02bWw
+         ROSDeUCD4XZX/oGYdQMM0aEcKfFog6yT5qQ8V4/P8W4SY1rnYSw2bN/4dKQgGlVu+OQ3
+         SOxj7YLCPI5VarLLPN7D0Myvy6UgRUFAgpLSmO1mOTV8pLdoVkjZzPVLf4NTkfvfNMgB
+         Cvf4ctTcL6+h/bFShidIfdDZ5o2/KGG8SZAhB+uUc1CUhWR4J1rf8otMP2nRxzz69rHJ
+         hK/Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :to:cc;
+        bh=VJVLSLdtxSjf51v52sLnCTCAPMVR3FicOzzHbZ1zDdk=;
+        b=OPlLg0qliRYGmmaRnM19nLdacTH3WYrUrgMlcUEKlChZTQPpBSVR7A/NdHpHii3vA/
+         kk41lX8n06UTPvHfreq7JGKFXXEFsEgaNvLjvBa7tKbzIGiE2UvHJJplXBYlfTHn4aYe
+         hll0SWVhRqLq7Uwisy/V3vmVI0gwPJMa0+EshRGwQiTdROBRVvBxjScrWsAth0o7hjxT
+         iehulQZG5GnAX2cUg51+Q3jizaUVt+v006j/2aAWvnqCZRoA3HHwXmkpGYUvXtboDRCU
+         tRzYW3g9Oj2MSXoTH0SoMH5d5r3mdL8Eae5nupBAaNoIUQhBibYNJmdIhvj8GnC/hPdV
+         egGA==
+X-Gm-Message-State: AOAM530S1J4zpWSDTFMYGVcWecYVEffNCP+neXm2gzMIQ18nn09LV9SP
+        SMD5hizSXLhr6EwVXgOoe2VEHBHOIpwyL5L58ojkHGEgY9jY3erlsMtQT15V7ceWtooIUBT6LpK
+        qYAXm+K2Y67rQQVrRKh+NTVI5SGprTDzekQ5AwJIvzXxjImDOlW1uawW1AM2xEiOo+LNMacIF
+X-Google-Smtp-Source: ABdhPJwbL9wte8oWAvJxfPktFTF95fs7X3SzrOa7dpHTxm2hGggMhjiaWmc70D9nzkQo9SR/+yCz4VxME/CR
+Sender: "bgardon via sendgmr" <bgardon@bgardon.sea.corp.google.com>
+X-Received: from bgardon.sea.corp.google.com ([2620:15c:100:202:f693:9fff:fef4:a293])
+ (user=bgardon job=sendgmr) by 2002:a05:6a00:8c7:b029:19d:afa5:34e5 with SMTP
+ id s7-20020a056a0008c7b029019dafa534e5mr5524385pfu.30.1609959595127; Wed, 06
+ Jan 2021 10:59:55 -0800 (PST)
+Date:   Wed,  6 Jan 2021 10:59:50 -0800
+Message-Id: <20210106185951.2966575-1-bgardon@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.29.2.729.g45daf8777d-goog
+Subject: [PATCH v2 1/2] KVM: x86/mmu: Ensure TDP MMU roots are freed after yield
+From:   Ben Gardon <bgardon@google.com>
+To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Peter Shier <pshier@google.com>,
+        "Maciej S . Szmigiero" <maciej.szmigiero@oracle.com>,
+        Leo Hou <leohou1402@gmail.com>, Ben Gardon <bgardon@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 06, 2021 at 11:41:23AM +0800, Claire Chang wrote:
-> Introduce the new compatible string, restricted-dma-pool, for restricted
-> DMA. One can specify the address and length of the restricted DMA memory
-> region by restricted-dma-pool in the device tree.
-> 
-> Signed-off-by: Claire Chang <tientzu@chromium.org>
-> ---
->  .../reserved-memory/reserved-memory.txt       | 24 +++++++++++++++++++
->  1 file changed, 24 insertions(+)
-> 
-> diff --git a/Documentation/devicetree/bindings/reserved-memory/reserved-memory.txt b/Documentation/devicetree/bindings/reserved-memory/reserved-memory.txt
-> index e8d3096d922c..44975e2a1fd2 100644
-> --- a/Documentation/devicetree/bindings/reserved-memory/reserved-memory.txt
-> +++ b/Documentation/devicetree/bindings/reserved-memory/reserved-memory.txt
-> @@ -51,6 +51,20 @@ compatible (optional) - standard definition
->            used as a shared pool of DMA buffers for a set of devices. It can
->            be used by an operating system to instantiate the necessary pool
->            management subsystem if necessary.
-> +        - restricted-dma-pool: This indicates a region of memory meant to be
-> +          used as a pool of restricted DMA buffers for a set of devices. The
-> +          memory region would be the only region accessible to those devices.
-> +          When using this, the no-map and reusable properties must not be set,
-> +          so the operating system can create a virtual mapping that will be used
-> +          for synchronization. The main purpose for restricted DMA is to
-> +          mitigate the lack of DMA access control on systems without an IOMMU,
-> +          which could result in the DMA accessing the system memory at
-> +          unexpected times and/or unexpected addresses, possibly leading to data
-> +          leakage or corruption. The feature on its own provides a basic level
-> +          of protection against the DMA overwriting buffer contents at
-> +          unexpected times. However, to protect against general data leakage and
-> +          system memory corruption, the system needs to provide way to restrict
-> +          the DMA to a predefined memory region.
+Many TDP MMU functions which need to perform some action on all TDP MMU
+roots hold a reference on that root so that they can safely drop the MMU
+lock in order to yield to other threads. However, when releasing the
+reference on the root, there is a bug: the root will not be freed even
+if its reference count (root_count) is reduced to 0.
 
-Heya!
+To simplify acquiring and releasing references on TDP MMU root pages, and
+to ensure that these roots are properly freed, move the get/put operations
+into the TDP MMU root iterator macro. Not all functions which use the macro
+currently get and put a reference to the root, but adding this behavior is
+harmless.
 
-I think I am missing something obvious here so please bear with my
-questions:
+Moving the get/put operations into the iterator macro also helps
+simplify control flow when a root does need to be freed. Note that using
+the list_for_each_entry_unsafe macro would not have been appropriate in
+this situation because it could keep a reference to the next root across
+an MMU lock release + reacquire.
 
- - This code adds the means of having the SWIOTLB pool tied to a specific
-   memory correct?
+Reported-by: Maciej S. Szmigiero <maciej.szmigiero@oracle.com>
+Suggested-by: Paolo Bonzini <pbonzini@redhat.com>
+Fixes: faaf05b00aec ("kvm: x86/mmu: Support zapping SPTEs in the TDP MMU")
+Fixes: 063afacd8730 ("kvm: x86/mmu: Support invalidate range MMU notifier for TDP MMU")
+Fixes: a6a0b05da9f3 ("kvm: x86/mmu: Support dirty logging for the TDP MMU")
+Fixes: 14881998566d ("kvm: x86/mmu: Support disabling dirty logging for the tdp MMU")
+Signed-off-by: Ben Gardon <bgardon@google.com>
+---
+ arch/x86/kvm/mmu/tdp_mmu.c | 97 +++++++++++++++++---------------------
+ 1 file changed, 44 insertions(+), 53 deletions(-)
 
- - Nothing stops the physical device from bypassing the SWIOTLB buffer.
-   That is if an errant device screwed up the length or DMA address, the
-   SWIOTLB would gladly do what the device told it do?
+diff --git a/arch/x86/kvm/mmu/tdp_mmu.c b/arch/x86/kvm/mmu/tdp_mmu.c
+index 75db27fda8f3..6e076b66973c 100644
+--- a/arch/x86/kvm/mmu/tdp_mmu.c
++++ b/arch/x86/kvm/mmu/tdp_mmu.c
+@@ -44,8 +44,44 @@ void kvm_mmu_uninit_tdp_mmu(struct kvm *kvm)
+ 	WARN_ON(!list_empty(&kvm->arch.tdp_mmu_roots));
+ }
+ 
+-#define for_each_tdp_mmu_root(_kvm, _root)			    \
+-	list_for_each_entry(_root, &_kvm->arch.tdp_mmu_roots, link)
++static void tdp_mmu_put_root(struct kvm *kvm, struct kvm_mmu_page *root)
++{
++	if (kvm_mmu_put_root(kvm, root))
++		kvm_tdp_mmu_free_root(kvm, root);
++}
++
++static inline bool tdp_mmu_next_root_valid(struct kvm *kvm,
++					   struct kvm_mmu_page *root)
++{
++	if (list_entry_is_head(root, &kvm->arch.tdp_mmu_roots, link))
++		return false;
++
++	kvm_mmu_get_root(kvm, root);
++	return true;
++
++}
++
++static inline struct kvm_mmu_page *tdp_mmu_next_root(struct kvm *kvm,
++						     struct kvm_mmu_page *root)
++{
++	struct kvm_mmu_page *next_root;
++
++	next_root = list_next_entry(root, link);
++	tdp_mmu_put_root(kvm, root);
++	return next_root;
++}
++
++/*
++ * Note: this iterator gets and puts references to the roots it iterates over.
++ * This makes it safe to release the MMU lock and yield within the loop, but
++ * if exiting the loop early, the caller must drop the reference to the most
++ * recent root. (Unless keeping a live reference is desirable.)
++ */
++#define for_each_tdp_mmu_root(_kvm, _root)				\
++	for (_root = list_first_entry(&_kvm->arch.tdp_mmu_roots,	\
++				      typeof(*_root), link);		\
++	     tdp_mmu_next_root_valid(_kvm, _root);			\
++	     _root = tdp_mmu_next_root(_kvm, _root))
+ 
+ bool is_tdp_mmu_root(struct kvm *kvm, hpa_t hpa)
+ {
+@@ -128,7 +164,11 @@ static struct kvm_mmu_page *get_tdp_mmu_vcpu_root(struct kvm_vcpu *vcpu)
+ 	/* Check for an existing root before allocating a new one. */
+ 	for_each_tdp_mmu_root(kvm, root) {
+ 		if (root->role.word == role.word) {
+-			kvm_mmu_get_root(kvm, root);
++			/*
++			 * The iterator already acquired a reference to this
++			 * root, so simply return early without dropping the
++			 * reference.
++			 */
+ 			spin_unlock(&kvm->mmu_lock);
+ 			return root;
+ 		}
+@@ -447,18 +487,9 @@ bool kvm_tdp_mmu_zap_gfn_range(struct kvm *kvm, gfn_t start, gfn_t end)
+ 	struct kvm_mmu_page *root;
+ 	bool flush = false;
+ 
+-	for_each_tdp_mmu_root(kvm, root) {
+-		/*
+-		 * Take a reference on the root so that it cannot be freed if
+-		 * this thread releases the MMU lock and yields in this loop.
+-		 */
+-		kvm_mmu_get_root(kvm, root);
+-
++	for_each_tdp_mmu_root(kvm, root)
+ 		flush |= zap_gfn_range(kvm, root, start, end, true);
+ 
+-		kvm_mmu_put_root(kvm, root);
+-	}
+-
+ 	return flush;
+ }
+ 
+@@ -620,12 +651,6 @@ static int kvm_tdp_mmu_handle_hva_range(struct kvm *kvm, unsigned long start,
+ 	int as_id;
+ 
+ 	for_each_tdp_mmu_root(kvm, root) {
+-		/*
+-		 * Take a reference on the root so that it cannot be freed if
+-		 * this thread releases the MMU lock and yields in this loop.
+-		 */
+-		kvm_mmu_get_root(kvm, root);
+-
+ 		as_id = kvm_mmu_page_as_id(root);
+ 		slots = __kvm_memslots(kvm, as_id);
+ 		kvm_for_each_memslot(memslot, slots) {
+@@ -647,8 +672,6 @@ static int kvm_tdp_mmu_handle_hva_range(struct kvm *kvm, unsigned long start,
+ 			ret |= handler(kvm, memslot, root, gfn_start,
+ 				       gfn_end, data);
+ 		}
+-
+-		kvm_mmu_put_root(kvm, root);
+ 	}
+ 
+ 	return ret;
+@@ -843,16 +866,8 @@ bool kvm_tdp_mmu_wrprot_slot(struct kvm *kvm, struct kvm_memory_slot *slot,
+ 		if (root_as_id != slot->as_id)
+ 			continue;
+ 
+-		/*
+-		 * Take a reference on the root so that it cannot be freed if
+-		 * this thread releases the MMU lock and yields in this loop.
+-		 */
+-		kvm_mmu_get_root(kvm, root);
+-
+ 		spte_set |= wrprot_gfn_range(kvm, root, slot->base_gfn,
+ 			     slot->base_gfn + slot->npages, min_level);
+-
+-		kvm_mmu_put_root(kvm, root);
+ 	}
+ 
+ 	return spte_set;
+@@ -911,16 +926,8 @@ bool kvm_tdp_mmu_clear_dirty_slot(struct kvm *kvm, struct kvm_memory_slot *slot)
+ 		if (root_as_id != slot->as_id)
+ 			continue;
+ 
+-		/*
+-		 * Take a reference on the root so that it cannot be freed if
+-		 * this thread releases the MMU lock and yields in this loop.
+-		 */
+-		kvm_mmu_get_root(kvm, root);
+-
+ 		spte_set |= clear_dirty_gfn_range(kvm, root, slot->base_gfn,
+ 				slot->base_gfn + slot->npages);
+-
+-		kvm_mmu_put_root(kvm, root);
+ 	}
+ 
+ 	return spte_set;
+@@ -1034,16 +1041,8 @@ bool kvm_tdp_mmu_slot_set_dirty(struct kvm *kvm, struct kvm_memory_slot *slot)
+ 		if (root_as_id != slot->as_id)
+ 			continue;
+ 
+-		/*
+-		 * Take a reference on the root so that it cannot be freed if
+-		 * this thread releases the MMU lock and yields in this loop.
+-		 */
+-		kvm_mmu_get_root(kvm, root);
+-
+ 		spte_set |= set_dirty_gfn_range(kvm, root, slot->base_gfn,
+ 				slot->base_gfn + slot->npages);
+-
+-		kvm_mmu_put_root(kvm, root);
+ 	}
+ 	return spte_set;
+ }
+@@ -1094,16 +1093,8 @@ void kvm_tdp_mmu_zap_collapsible_sptes(struct kvm *kvm,
+ 		if (root_as_id != slot->as_id)
+ 			continue;
+ 
+-		/*
+-		 * Take a reference on the root so that it cannot be freed if
+-		 * this thread releases the MMU lock and yields in this loop.
+-		 */
+-		kvm_mmu_get_root(kvm, root);
+-
+ 		zap_collapsible_spte_range(kvm, root, slot->base_gfn,
+ 					   slot->base_gfn + slot->npages);
+-
+-		kvm_mmu_put_root(kvm, root);
+ 	}
+ }
+ 
+-- 
+2.29.2.729.g45daf8777d-goog
 
- - This has to be combined with SWIOTLB-force-ish to always use the
-   bounce buffer, otherwise you could still do DMA without using
-   SWIOTLB (by not hitting the criteria for needing to use SWIOTLB)?
