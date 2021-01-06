@@ -2,59 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 047DA2EBDF1
+	by mail.lfdr.de (Postfix) with ESMTP id 783D02EBDF2
 	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 13:57:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726645AbhAFMzG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Jan 2021 07:55:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42194 "EHLO
+        id S1726693AbhAFMzI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Jan 2021 07:55:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42198 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726504AbhAFMzE (ORCPT
+        with ESMTP id S1726590AbhAFMzF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Jan 2021 07:55:04 -0500
-Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E688C06135E
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Jan 2021 04:53:56 -0800 (PST)
-Received: by mail-pl1-x632.google.com with SMTP id r4so1487807pls.11
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Jan 2021 04:53:56 -0800 (PST)
+        Wed, 6 Jan 2021 07:55:05 -0500
+Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85B2CC061360
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Jan 2021 04:54:00 -0800 (PST)
+Received: by mail-pj1-x1030.google.com with SMTP id iq13so1502746pjb.3
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Jan 2021 04:54:00 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=4f6Doc0dS1yZ2IXHgqMpKz/2VTxor/Phil/0B11oX0Y=;
-        b=IPnRw5+xkAOsx/g01cDapsdINozu5g4jMhVdyzsKZct4elXMJIYLpIX4cjIJ4xws4v
-         ho4dhjtKaFsbmjjmPShlAfPBIOcF3/5kC7BkuME62WXLd72wjl0B5cg2/UoFmw/vtGdz
-         CLdRjiMoAuEUyWzNkejG1XO6uLUFLEPFxVP96zXaBrvmQrW01gAX8T6puoj+ItYDCPgv
-         ddNRjCe5wjr92/I52OA2E9Km2NFqH35ua3RM40KZKIbqVIs/krpd1/NHrQXrC26pPzzM
-         UQQSAqMZDrf+KOVZRtYnppJhTWBKS8e0uGiR7HotghvPb14Jo2CjFHzLbqZeu2qSzY6e
-         UkUQ==
+        bh=UMuTgmfW7boX1iQQTydlfmLnxOmK9dbluKSLAHWL4GA=;
+        b=W30c9RmPScXo3q0goOcwJhd6NjCM6Q+lW11AkU8W8tUCT7CFl9KTIsrgJr6ChYnt1D
+         ZtnUx8boLsW0bTpy0ftealN8CgS0g6M4cVEfbkPDav1Tomu6fwS1OD3YcjgwhtZ4NXH6
+         3jgS5Cq9NRET7DPlBZVRRgnJ20STsF2EvnR0xgvkje6Ra8xc6P1L0xoHN8xJGfVpCLRh
+         spazQzx0UGbAqOaxpyn3Dnl3V0sbstzi00q7Y45YTPSLmuXIboVlDUsMBGryrgmm4qXl
+         tv6tbSRofYqtLtb6KFP2Q6kr/M0WsqE0WxPlluw7zB3iP8O+SscIbVL0bRE3ZMyjDNZ8
+         a5Gw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=4f6Doc0dS1yZ2IXHgqMpKz/2VTxor/Phil/0B11oX0Y=;
-        b=CxDC6KC75JeZGJLbJpttucgyh54DWDQ38j3TTDCaBp0lCI+HuLoHIUDvZeYEsGPs4y
-         nsmpHn9kt56K+6p/CN9mzYuhbErsrHrdGzC2LmRz/9g3cjHbif1KKxVkblDYGE4HcTHT
-         8KjnPT8IAYrkUXOJ+JzgGYs7dLZpvOVMBApfRArpBOR2wZHYXVxHeKVWzR+eh5KJyZgM
-         y6KQc4T9opB8FXda0/h3nYbRR7/f078ZLWfBXbvOa6UkzlnSBtgfdgX5CV8AIHlWhTaX
-         uNkFvARrbqp0yS9e+24Suw94yHlVY4+9GtBfcr7TZrNtNSj+qkY4e9mNWJZPzvEicYDm
-         OjJw==
-X-Gm-Message-State: AOAM533XUutrXW/Gsej9z/KGTfyZQ+bQjjtX7ENchaY3KMW9aerxalSx
-        EzMQ/gX+RFKzQx61bjCjnurS
-X-Google-Smtp-Source: ABdhPJyA4ZkYo24CYbsSb6qaA4OoCqoFwuBn5LIFRriPQvm2Tlg780GJPG2TcOPUZVhtQy1EAoKXvA==
-X-Received: by 2002:a17:90a:8c87:: with SMTP id b7mr4289488pjo.158.1609937635598;
-        Wed, 06 Jan 2021 04:53:55 -0800 (PST)
+        bh=UMuTgmfW7boX1iQQTydlfmLnxOmK9dbluKSLAHWL4GA=;
+        b=tTSlbIOBfSRV4hgCx0w4TclpGjC0H61U9UC1bokGQfkCMd62FWeT/3Ut3fRWf/Ro1F
+         Gjq/bc9KnRh3dOyLGFGLKZ82KdrQnrXTp6ZFajdo/El06cSSekpzDQjYZdzVvRINOoiy
+         XkUd93kPDNErjk8WLl/6pg0h1G6P3AYfEhAtvnM/iBvBQYWpxTAtPFT8pFbzDX+7fdaG
+         xa1ZxjvktPqj2Si8ofmxNlZVCZ8eBuLk/sIGJWqIQZa2M1VhirZ0eLzca8xteP/j2RyI
+         We0Br4Pks0H6OF/6wrfIq5R9bnnoMdoPj2oNUjuorMRiN06VG+50OAsNXx3Nv+VQIxHi
+         KLRg==
+X-Gm-Message-State: AOAM531PID2TtqDLZoDgPFkGPF+nhWGd0SFFDp68V0W2uAMVZd/KHfsf
+        oEWpfpOxZ7U2w2M8Gk6RcXFr
+X-Google-Smtp-Source: ABdhPJxA2CzevUlx4wNHH1PbrquYizwRNpaG8kaHQlPr2k23vk1HJB8rObcUHJgzAo+I6UsKmDVPMw==
+X-Received: by 2002:a17:90a:cb8b:: with SMTP id a11mr4149333pju.3.1609937640016;
+        Wed, 06 Jan 2021 04:54:00 -0800 (PST)
 Received: from localhost.localdomain ([2409:4072:6102:e7a2:51f0:bf72:bf80:ec88])
-        by smtp.gmail.com with ESMTPSA id n128sm2918182pga.55.2021.01.06.04.53.51
+        by smtp.gmail.com with ESMTPSA id n128sm2918182pga.55.2021.01.06.04.53.56
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 06 Jan 2021 04:53:55 -0800 (PST)
+        Wed, 06 Jan 2021 04:53:59 -0800 (PST)
 From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
 To:     agross@kernel.org, bjorn.andersson@linaro.org
 Cc:     linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Subject: [PATCH v3 04/18] ARM: dts: qcom: sdx55: Add support for SDHCI controller
-Date:   Wed,  6 Jan 2021 18:23:08 +0530
-Message-Id: <20210106125322.61840-5-manivannan.sadhasivam@linaro.org>
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        Vinod Koul <vkoul@kernel.org>
+Subject: [PATCH v3 05/18] dt-bindings: arm-smmu: Add binding for Qcom SDX55 SMMU
+Date:   Wed,  6 Jan 2021 18:23:09 +0530
+Message-Id: <20210106125322.61840-6-manivannan.sadhasivam@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210106125322.61840-1-manivannan.sadhasivam@linaro.org>
 References: <20210106125322.61840-1-manivannan.sadhasivam@linaro.org>
@@ -64,39 +66,28 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add devicetree support for SDHCI controller found in Qualcomm SDX55
-platform. The SDHCI controller is based on the MSM SDHCI v5 IP.
-Hence, the support is added by reusing the existing sdhci driver with
-"qcom,sdhci-msm-v5" as the fallback.
+Add devicetree binding for Qualcomm SDX55 SMMU.
 
+Cc: Rob Herring <robh+dt@kernel.org>
+Cc: devicetree@vger.kernel.org
 Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Reviewed-by: Vinod Koul <vkoul@kernel.org>
 ---
- arch/arm/boot/dts/qcom-sdx55.dtsi | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
+ Documentation/devicetree/bindings/iommu/arm,smmu.yaml | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/arch/arm/boot/dts/qcom-sdx55.dtsi b/arch/arm/boot/dts/qcom-sdx55.dtsi
-index 194936064884..8b71f476e5b1 100644
---- a/arch/arm/boot/dts/qcom-sdx55.dtsi
-+++ b/arch/arm/boot/dts/qcom-sdx55.dtsi
-@@ -139,6 +139,18 @@ blsp1_uart3: serial@831000 {
- 			status = "disabled";
- 		};
- 
-+		sdhc_1: sdhci@8804000 {
-+			compatible = "qcom,sdx55-sdhci", "qcom,sdhci-msm-v5";
-+			reg = <0x08804000 0x1000>;
-+			interrupts = <GIC_SPI 210 IRQ_TYPE_LEVEL_HIGH>,
-+				     <GIC_SPI 227 IRQ_TYPE_LEVEL_HIGH>;
-+			interrupt-names = "hc_irq", "pwr_irq";
-+			clocks = <&gcc GCC_SDCC1_AHB_CLK>,
-+				 <&gcc GCC_SDCC1_APPS_CLK>;
-+			clock-names = "iface", "core";
-+			status = "disabled";
-+		};
-+
- 		pdc: interrupt-controller@b210000 {
- 			compatible = "qcom,sdx55-pdc", "qcom,pdc";
- 			reg = <0x0b210000 0x30000>;
+diff --git a/Documentation/devicetree/bindings/iommu/arm,smmu.yaml b/Documentation/devicetree/bindings/iommu/arm,smmu.yaml
+index 3b63f2ae24db..3a1cefce8bc4 100644
+--- a/Documentation/devicetree/bindings/iommu/arm,smmu.yaml
++++ b/Documentation/devicetree/bindings/iommu/arm,smmu.yaml
+@@ -35,6 +35,7 @@ properties:
+           - enum:
+               - qcom,sc7180-smmu-500
+               - qcom,sdm845-smmu-500
++              - qcom,sdx55-smmu-500
+               - qcom,sm8150-smmu-500
+               - qcom,sm8250-smmu-500
+           - const: arm,mmu-500
 -- 
 2.25.1
 
