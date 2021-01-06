@@ -2,163 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DD052EBCB5
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 11:51:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 412F42EBCC9
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 11:53:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726504AbhAFKuu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Jan 2021 05:50:50 -0500
-Received: from mailgw02.mediatek.com ([210.61.82.184]:58807 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726216AbhAFKut (ORCPT
+        id S1727083AbhAFKwh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Jan 2021 05:52:37 -0500
+Received: from mailout1.samsung.com ([203.254.224.24]:51559 "EHLO
+        mailout1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726098AbhAFKwg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Jan 2021 05:50:49 -0500
-X-UUID: 21d37c71cc3e4f47b6e60409881c5a7c-20210106
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=MIME-Version:Content-Transfer-Encoding:Content-Type:In-Reply-To:References:Message-ID:Date:Subject:CC:To:From; bh=L5jbNfbduFFY4GVpBpR4LES09K8qYrQx0j95YJ91PUo=;
-        b=copkDjGzYWeZFdAS77qHxEf0/hkpKk6Dcf/seFmBsbCOc8ywqlJXRbeLe8cZF8hxnfu4ek61X4a6PWoSlrmvm4vAirUiv8VTNxA0TK7gOJKb2uxs//6zJgIhTkAWZmoQ11w6l47aKnf5b0wt5959R2pp+nh5ZU2HXdL7aX4MEaw=;
-X-UUID: 21d37c71cc3e4f47b6e60409881c5a7c-20210106
-Received: from mtkcas06.mediatek.inc [(172.21.101.30)] by mailgw02.mediatek.com
-        (envelope-from <henryc.chen@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 739599793; Wed, 06 Jan 2021 18:44:54 +0800
-Received: from MTKMBS02N1.mediatek.inc (172.21.101.77) by
- mtkmbs02n1.mediatek.inc (172.21.101.77) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Wed, 6 Jan 2021 18:44:52 +0800
-Received: from MTKMBS02N1.mediatek.inc ([fe80::387d:548a:5384:acb9]) by
- mtkmbs02n1.mediatek.inc ([fe80::387d:548a:5384:acb9%13]) with mapi id
- 15.00.1497.000; Wed, 6 Jan 2021 18:44:52 +0800
-From:   =?utf-8?B?SGVucnlDIENoZW4gKOmZs+W7uuixqik=?= 
-        <HenryC.Chen@mediatek.com>
-To:     Georgi Djakov <georgi.djakov@linaro.org>
-CC:     Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Ryan Case <ryandcase@chromium.org>,
-        Mark Brown <broonie@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Nicolas Boichat <drinkcat@google.com>,
-        =?utf-8?B?RmFuIENoZW4gKOmZs+WHoSk=?= <fan.chen@mediatek.com>,
-        =?utf-8?B?SmFtZXNKSiBMaWFvICjlu5blu7rmmbop?= 
-        <jamesjj.liao@mediatek.com>,
-        =?utf-8?B?QXJ2aW4gV2FuZyAo546L5b+X6YqYKQ==?= 
-        <Arvin.Wang@mediatek.com>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-mediatek@lists.infradead.org" 
-        <linux-mediatek@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>
-Subject: RE: [PATCH V6 08/13] interconnect: mediatek: Add interconnect
- provider driver
-Thread-Topic: [PATCH V6 08/13] interconnect: mediatek: Add interconnect
- provider driver
-Thread-Index: AQHW2btE1mStvoHjDEWYdYBoJOjN6aoXV1cAgAJqtwCAAAxEAIAAr6Ng
-Date:   Wed, 6 Jan 2021 10:44:52 +0000
-Message-ID: <c9b360dcb17e452595f45adb51dd4c31@mtkmbs02n1.mediatek.inc>
-References: <1608790134-27425-1-git-send-email-henryc.chen@mediatek.com>
- <1608790134-27425-9-git-send-email-henryc.chen@mediatek.com>
- <c8b951b0-6412-d905-99e1-6350283b57c1@linaro.org>
- <1609918232.23066.5.camel@mtksdaap41>
- <a416a55c-0a7e-6505-ef53-b03f5dbc6cdc@linaro.org>
-In-Reply-To: <a416a55c-0a7e-6505-ef53-b03f5dbc6cdc@linaro.org>
-Accept-Language: zh-TW, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [172.21.101.239]
+        Wed, 6 Jan 2021 05:52:36 -0500
+Received: from epcas5p4.samsung.com (unknown [182.195.41.42])
+        by mailout1.samsung.com (KnoxPortal) with ESMTP id 20210106105152epoutp01fdc646d8a924719c6691708e97787b8f~Xnxbndck31591215912epoutp01i
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Jan 2021 10:51:52 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com 20210106105152epoutp01fdc646d8a924719c6691708e97787b8f~Xnxbndck31591215912epoutp01i
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1609930312;
+        bh=kiqqzxtVs6YoPEWPZalZapoDdUqZXOdKnWnJ1ba2mq8=;
+        h=From:To:Cc:Subject:Date:References:From;
+        b=JZHaPifvMQEWVj3MyU4R507TgVmHpxt34ACrbzq5a7yNv5KcAvbrtim2BgG4JIuCW
+         8tGqRTJw2vP4L2z1FktnxCjqhcSA60aBa9dRYW7Ig1r2fITV0Y/zHP0uGTfYDpBlF4
+         f/qWoPZLLZaeqhrzZupShlKnISSfUq1I9ODKWiKI=
+Received: from epsmges5p2new.samsung.com (unknown [182.195.42.74]) by
+        epcas5p3.samsung.com (KnoxPortal) with ESMTP id
+        20210106105151epcas5p3691528765db86836643f095dcf4e5fa9~Xnxagy5fK1437014370epcas5p3e;
+        Wed,  6 Jan 2021 10:51:51 +0000 (GMT)
+Received: from epcas5p2.samsung.com ( [182.195.41.40]) by
+        epsmges5p2new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        D0.AA.50652.74695FF5; Wed,  6 Jan 2021 19:51:51 +0900 (KST)
+Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
+        epcas5p3.samsung.com (KnoxPortal) with ESMTPA id
+        20210106104514epcas5p37d8e3a88aefdf109f7fb4157d4a1f07a~XnrpNB2w71198811988epcas5p3P;
+        Wed,  6 Jan 2021 10:45:14 +0000 (GMT)
+Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
+        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20210106104514epsmtrp1d3b79d70711aed99945e84c55d5b6862~XnrpL-j1D0422104221epsmtrp1M;
+        Wed,  6 Jan 2021 10:45:14 +0000 (GMT)
+X-AuditID: b6c32a4a-6b3ff7000000c5dc-77-5ff59647b2c0
+Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
+        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        5A.90.13470.AB495FF5; Wed,  6 Jan 2021 19:45:14 +0900 (KST)
+Received: from ubuntu.sa.corp.samsungelectronics.net (unknown
+        [107.108.83.125]) by epsmtip1.samsung.com (KnoxPortal) with ESMTPA id
+        20210106104512epsmtip13b470853fec3f5e7413b62be7aba60fe~XnrnSgZMt3031630316epsmtip1J;
+        Wed,  6 Jan 2021 10:45:12 +0000 (GMT)
+From:   Shradha Todi <shradha.t@samsung.com>
+To:     linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org
+Cc:     jingoohan1@gmail.com, gustavo.pimentel@synopsys.com,
+        robh@kernel.org, lorenzo.pieralisi@arm.com, bhelgaas@google.com,
+        pankaj.dubey@samsung.com, sriram.dash@samsung.com,
+        niyas.ahmed@samsung.com, p.rajanbabu@samsung.com,
+        l.mehra@samsung.com, hari.tv@samsung.com,
+        Shradha Todi <shradha.t@samsung.com>
+Subject: [PATCH v2] PCI: dwc: Change size to u64 for EP outbound iATU
+Date:   Wed,  6 Jan 2021 16:15:00 +0530
+Message-Id: <1609929900-19082-1-git-send-email-shradha.t@samsung.com>
+X-Mailer: git-send-email 2.7.4
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrPIsWRmVeSWpSXmKPExsWy7bCmhq77tK/xBu1f+C2WNGVY7LrbwW7x
+        cdpKJosVX2ayW9x5foPR4vKuOWwWZ+cdZ7N48/sFu8WTKY9YLY5uDLZYtPULu8X/PTvYLXoP
+        11rcWM/uwOexZt4aRo+ds+6yeyzYVOqxaVUnm0ffllWMHlv2f2b0+LxJLoA9issmJTUnsyy1
+        SN8ugSvj1tyzbAXfeSu+XXzE2sB4iLuLkZNDQsBE4uj3FaxdjFwcQgK7GSWev1rNBOF8YpRY
+        8/sfC4TzjVHi/o7ZTDAtX45PYYZI7GWUeDdnHjtIQkighUmidY0iiM0moCXR+LWLGcQWEbCW
+        ONy+hQ2kgVlgK5PE2cUL2UASwgKuEm8eNjOC2CwCqhKX13SCxXmB4lt3PWaB2CYncfNcJ9g2
+        CYG37BI/Hi4FauAAclwkfrUHQdQIS7w6voUdwpaSeNnfBmXnS0y98JQForxCYnlPHUTYXuLA
+        lTlgYWYBTYn1u/QhwrISU0+tA/uRWYBPovf3E6h/eSV2zIOxlSW+/N0DdZmkxLxjl1khbA+J
+        d2vWMUKCIVbiyZW/jBMYZWchbFjAyLiKUTK1oDg3PbXYtMAoL7Vcrzgxt7g0L10vOT93EyM4
+        jWh57WB8+OCD3iFGJg7GQ4wSHMxKIrwWx77EC/GmJFZWpRblxxeV5qQWH2KU5mBREufdYfAg
+        XkggPbEkNTs1tSC1CCbLxMEp1cDUxd2wY84938P3JZdfUInpetLBJxD3U2huQ/fUtAyem5Kr
+        rLIuOdcs3/F/8X2fnt6i6+2Tvvw+ePGH0JIVeUe7DxorSWveXvK00fL89GqutQ4sm4r4JzNO
+        mcE81dV3z+37eZrbVn5/b5rX/Db8xcuHj26zcK1dqNEsdeHyadvojWfPzXzf/+yjAWfwOaEz
+        iV/WfF0fceSS1fd7rSLGV7z3iMjVFGh/klwXWy8yu7rJk8nvgZjrnFMP7pQ80ctqfdq+WS47
+        Vu5Oc8HibRf5HJ2frokIV1528VqQ1rGnM4LqYt7Ind3MWMWfpnr7s/4K01CZJ4/9faXij/w4
+        x2I8s+CgTFp4lc55tyeqWRf/vVjzUImlOCPRUIu5qDgRANp1F+eSAwAA
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrBLMWRmVeSWpSXmKPExsWy7bCSnO6uKV/jDeY3qFksacqw2HW3g93i
+        47SVTBYrvsxkt7jz/AajxeVdc9gszs47zmbx5vcLdosnUx6xWhzdGGyxaOsXdov/e3awW/Qe
+        rrW4sZ7dgc9jzbw1jB47Z91l91iwqdRj06pONo++LasYPbbs/8zo8XmTXAB7FJdNSmpOZllq
+        kb5dAlfGrbln2Qq+81Z8u/iItYHxEHcXIyeHhICJxJfjU5i7GLk4hAR2M0p0b1vOBpGQlPh8
+        cR0ThC0ssfLfc3aIoiYmifPz7oMVsQloSTR+7WIGsUUEbCXuP5rMClLELHCYSeJj/0OwhLCA
+        q8Sbh82MIDaLgKrE5TWdYM28QPGtux6zQGyQk7h5rpN5AiPPAkaGVYySqQXFuem5xYYFhnmp
+        5XrFibnFpXnpesn5uZsYwYGppbmDcfuqD3qHGJk4GA8xSnAwK4nwWhz7Ei/Em5JYWZValB9f
+        VJqTWnyIUZqDRUmc90LXyXghgfTEktTs1NSC1CKYLBMHp1QDU3TF2x2V6UrlhxpnLWQQtz12
+        bNuCP59Oed5kFX/PuvKjl9k/o4vrdofN7JjS9Mdm8p6fso6HNoS/qLLUe1Ql/OTlJ88DTtt2
+        7G/aNuuKJ5vZkmrWG3ePLed3O7H6Sbf1pn/cSWcFppnECSil3vvE8SZ++z2btvunJ0/4E1xX
+        9CVogl/KzIxV+oWTHmWH/dtd86/66JQ6m4Mcs9c7ya3+VXz2k5/6rh9cxe87dvxJTpY3OJRp
+        ss8uxCF72XSVeTyme35kLzeeqps3mfO7V6jFv2dRP/Rdl6z+8qX+6OpPDPeOsEg+3rci+5vB
+        x/tCNuktf9rCVhXPDzzykFHd2uJhpdexSwvtzKv7/qru4LtVF/RLiaU4I9FQi7moOBEAPUTf
+        bbsCAAA=
+X-CMS-MailID: 20210106104514epcas5p37d8e3a88aefdf109f7fb4157d4a1f07a
+X-Msg-Generator: CA
 Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-MIME-Version: 1.0
+X-Sendblock-Type: REQ_APPROVE
+CMS-TYPE: 105P
+X-CMS-RootMailID: 20210106104514epcas5p37d8e3a88aefdf109f7fb4157d4a1f07a
+References: <CGME20210106104514epcas5p37d8e3a88aefdf109f7fb4157d4a1f07a@epcas5p3.samsung.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-PiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPiBGcm9tOiBHZW9yZ2kgRGpha292IFttYWls
-dG86Z2VvcmdpLmRqYWtvdkBsaW5hcm8ub3JnXQ0KPiBTZW50OiBXZWRuZXNkYXksIEphbnVhcnkg
-MDYsIDIwMjEgNDoxNCBQTQ0KPiBUbzogSGVucnlDIENoZW4gKOmZs+W7uuixqikNCj4gQ2M6IFJv
-YiBIZXJyaW5nOyBNYXR0aGlhcyBCcnVnZ2VyOyBTdGVwaGVuIEJveWQ7IFJ5YW4gQ2FzZTsgTWFy
-ayBCcm93bjsgTWFyaw0KPiBSdXRsYW5kOyBOaWNvbGFzIEJvaWNoYXQ7IEZhbiBDaGVuICjpmbPl
-h6EpOyBKYW1lc0pKIExpYW8gKOW7luW7uuaZuik7IEFydmluIFdhbmcNCj4gKOeOi+W/l+mKmCk7
-IGRldmljZXRyZWVAdmdlci5rZXJuZWwub3JnOyBsaW51eC1hcm0ta2VybmVsQGxpc3RzLmluZnJh
-ZGVhZC5vcmc7DQo+IGxpbnV4LW1lZGlhdGVrQGxpc3RzLmluZnJhZGVhZC5vcmc7IGxpbnV4LWtl
-cm5lbEB2Z2VyLmtlcm5lbC5vcmc7IGxpbnV4LQ0KPiBwbUB2Z2VyLmtlcm5lbC5vcmcNCj4gU3Vi
-amVjdDogUmU6IFtQQVRDSCBWNiAwOC8xM10gaW50ZXJjb25uZWN0OiBtZWRpYXRlazogQWRkIGlu
-dGVyY29ubmVjdA0KPiBwcm92aWRlciBkcml2ZXINCj4gDQo+IE9uIDEvNi8yMSAwOTozMCwgSGVu
-cnkgQ2hlbiB3cm90ZToNCj4gPiBPbiBNb24sIDIwMjEtMDEtMDQgYXQgMjA6MzYgKzAyMDAsIEdl
-b3JnaSBEamFrb3Ygd3JvdGU6DQo+ID4+IE9uIDEyLzI0LzIwIDA4OjA4LCBIZW5yeSBDaGVuIHdy
-b3RlOg0KPiA+Pj4gSW50cm9kdWNlIE1lZGlhdGVrIE1UNjg3My9NVDgxODMvTVQ4MTkyIHNwZWNp
-ZmljIHByb3ZpZGVyIGRyaXZlcg0KPiA+Pj4gdXNpbmcgdGhlIGludGVyY29ubmVjdCBmcmFtZXdv
-cmsuDQo+ID4+Pg0KPiA+Pj4gICAgICAgICAgICAgICAgSUNDIHByb3ZpZGVyICAgICAgICAgSUND
-IE5vZGVzDQo+ID4+PiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIC0tLS0gICAgICAg
-ICAgLS0tLQ0KPiA+Pj4gICAgICAgICAgICAgICAgLS0tLS0tLS0tICAgICAgIHxDUFUgfCAgIHwt
-LS0gfFZQVSB8DQo+ID4+PiAgICAgICAtLS0tLSAgIHwgICAgICAgICB8LS0tLS0gIC0tLS0gICAg
-fCAgICAgLS0tLQ0KPiA+Pj4gICAgICB8RFJBTSB8LS18RFJBTSAgICAgfCAgICAgICAtLS0tICAg
-IHwgICAgIC0tLS0NCj4gPj4+ICAgICAgfCAgICAgfC0tfHNjaGVkdWxlcnwtLS0tLSB8R1BVIHwg
-ICB8LS0tIHxESVNQfA0KPiA+Pj4gICAgICB8ICAgICB8LS18KEVNSSkgICAgfCAgICAgICAtLS0t
-ICAgIHwgICAgIC0tLS0NCj4gPj4+ICAgICAgfCAgICAgfC0tfCAgICAgICAgIHwgICAgICAgLS0t
-LS0gICB8ICAgICAtLS0tDQo+ID4+PiAgICAgICAtLS0tLSAgIHwgICAgICAgICB8LS0tLS0gfE1N
-U1lTfC0tfC0tLSB8VkRFQ3wNCj4gPj4+ICAgICAgICAgICAgICAgIC0tLS0tLS0tLSAgICAgICAg
-LS0tLS0gICB8ICAgICAtLS0tDQo+ID4+PiAgICAgICAgICAgICAgICAgIC98XCAgICAgICAgICAg
-ICAgICAgICAgfCAgICAgLS0tLQ0KPiA+Pj4gICAgICAgICAgICAgICAgICAgfGNoYW5nZSBEUkFN
-IGZyZXEgICAgIHwtLS0gfFZFTkN8DQo+ID4+PiAgICAgICAgICAgICAgICAtLS0tLS0tLS0tICAg
-ICAgICAgICAgICAgfCAgICAgLS0tLQ0KPiA+Pj4gICAgICAgICAgICAgICB8ICBEVkZTUiAgIHwg
-ICAgICAgICAgICAgIHwNCj4gPj4+ICAgICAgICAgICAgICAgfCAgICAgICAgICB8ICAgICAgICAg
-ICAgICB8ICAgICAtLS0tDQo+ID4+PiAgICAgICAgICAgICAgICAtLS0tLS0tLS0tICAgICAgICAg
-ICAgICAgfC0tLSB8SU1HIHwNCj4gPj4+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICB8ICAgICAtLS0tDQo+ID4+PiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgfCAgICAgLS0tLQ0KPiA+Pj4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgIHwtLS0gfENBTSB8DQo+ID4+PiAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgLS0tLQ0KPiA+Pj4NCj4gPj4+IFNpZ25lZC1vZmYtYnk6IEhlbnJ5
-IENoZW4gPGhlbnJ5Yy5jaGVuQG1lZGlhdGVrLmNvbT4NCj4gPj4+IC0tLQ0KPiA+Pj4gICAgZHJp
-dmVycy9pbnRlcmNvbm5lY3QvS2NvbmZpZyAgICAgICAgICAgIHwgICAxICsNCj4gPj4+ICAgIGRy
-aXZlcnMvaW50ZXJjb25uZWN0L01ha2VmaWxlICAgICAgICAgICB8ICAgMSArDQo+ID4+PiAgICBk
-cml2ZXJzL2ludGVyY29ubmVjdC9tZWRpYXRlay9LY29uZmlnICAgfCAgMTMgKysNCj4gPj4+ICAg
-IGRyaXZlcnMvaW50ZXJjb25uZWN0L21lZGlhdGVrL01ha2VmaWxlICB8ICAgMyArDQo+ID4+PiAg
-ICBkcml2ZXJzL2ludGVyY29ubmVjdC9tZWRpYXRlay9tdGstZW1pLmMgfCAzMzANCj4gKysrKysr
-KysrKysrKysrKysrKysrKysrKysrKysrKysNCj4gPj4+ICAgIDUgZmlsZXMgY2hhbmdlZCwgMzQ4
-IGluc2VydGlvbnMoKykNCj4gPj4+ICAgIGNyZWF0ZSBtb2RlIDEwMDY0NCBkcml2ZXJzL2ludGVy
-Y29ubmVjdC9tZWRpYXRlay9LY29uZmlnDQo+ID4+PiAgICBjcmVhdGUgbW9kZSAxMDA2NDQgZHJp
-dmVycy9pbnRlcmNvbm5lY3QvbWVkaWF0ZWsvTWFrZWZpbGUNCj4gPj4+ICAgIGNyZWF0ZSBtb2Rl
-IDEwMDY0NCBkcml2ZXJzL2ludGVyY29ubmVjdC9tZWRpYXRlay9tdGstZW1pLmMNCj4gPj4+DQo+
-ID4+PiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9pbnRlcmNvbm5lY3QvS2NvbmZpZw0KPiA+Pj4gYi9k
-cml2ZXJzL2ludGVyY29ubmVjdC9LY29uZmlnIGluZGV4IDViNzIwNGUuLmU5MzlmNWEgMTAwNjQ0
-DQo+ID4+PiAtLS0gYS9kcml2ZXJzL2ludGVyY29ubmVjdC9LY29uZmlnDQo+ID4+PiArKysgYi9k
-cml2ZXJzL2ludGVyY29ubmVjdC9LY29uZmlnDQo+ID4+PiBAQCAtMTMsNSArMTMsNiBAQCBpZiBJ
-TlRFUkNPTk5FQ1QNCj4gPj4+DQo+ID4+PiAgICBzb3VyY2UgImRyaXZlcnMvaW50ZXJjb25uZWN0
-L2lteC9LY29uZmlnIg0KPiA+Pj4gICAgc291cmNlICJkcml2ZXJzL2ludGVyY29ubmVjdC9xY29t
-L0tjb25maWciDQo+ID4+PiArc291cmNlICJkcml2ZXJzL2ludGVyY29ubmVjdC9tZWRpYXRlay9L
-Y29uZmlnIg0KPiA+Pg0KPiA+PiBTb3J0IGFscGhhYmV0aWNhbGx5IHBsZWFzZS4NCj4gPiBPaw0K
-PiA+Pg0KPiA+Pj4NCj4gPj4+ICAgIGVuZGlmDQo+ID4+PiBkaWZmIC0tZ2l0IGEvZHJpdmVycy9p
-bnRlcmNvbm5lY3QvTWFrZWZpbGUNCj4gPj4+IGIvZHJpdmVycy9pbnRlcmNvbm5lY3QvTWFrZWZp
-bGUgaW5kZXggZDIwMzUyMC4uMDY0M2EyNCAxMDA2NDQNCj4gPj4+IC0tLSBhL2RyaXZlcnMvaW50
-ZXJjb25uZWN0L01ha2VmaWxlDQo+ID4+PiArKysgYi9kcml2ZXJzL2ludGVyY29ubmVjdC9NYWtl
-ZmlsZQ0KPiA+Pj4gQEAgLTYsMyArNiw0IEBAIGljYy1jb3JlLW9ianMJCQkJOj0gY29yZS5vIGJ1
-bGsubw0KPiA+Pj4gICAgb2JqLSQoQ09ORklHX0lOVEVSQ09OTkVDVCkJCSs9IGljYy1jb3JlLm8N
-Cj4gPj4+ICAgIG9iai0kKENPTkZJR19JTlRFUkNPTk5FQ1RfSU1YKQkJKz0gaW14Lw0KPiA+Pj4g
-ICAgb2JqLSQoQ09ORklHX0lOVEVSQ09OTkVDVF9RQ09NKQkJKz0gcWNvbS8NCj4gPj4+ICtvYmot
-JChDT05GSUdfSU5URVJDT05ORUNUX01USykJCSs9IG1lZGlhdGVrLw0KPiA+Pg0KPiA+PiBEaXR0
-by4NCj4gPiBPaw0KPiA+Pg0KPiA+Pj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvaW50ZXJjb25uZWN0
-L21lZGlhdGVrL0tjb25maWcNCj4gPj4+IGIvZHJpdmVycy9pbnRlcmNvbm5lY3QvbWVkaWF0ZWsv
-S2NvbmZpZw0KPiA+Pj4gbmV3IGZpbGUgbW9kZSAxMDA2NDQNCj4gPj4+IGluZGV4IDAwMDAwMDAu
-Ljk3MmQzYmINCj4gPj4+IC0tLSAvZGV2L251bGwNCj4gPj4+ICsrKyBiL2RyaXZlcnMvaW50ZXJj
-b25uZWN0L21lZGlhdGVrL0tjb25maWcNCj4gPj4+IEBAIC0wLDAgKzEsMTMgQEANCj4gPj4+ICtj
-b25maWcgSU5URVJDT05ORUNUX01USw0KPiA+Pj4gKwlib29sICJNZWRpYXRlayBOZXR3b3JrLW9u
-LUNoaXAgaW50ZXJjb25uZWN0IGRyaXZlcnMiDQo+ID4+PiArCWRlcGVuZHMgb24gQVJDSF9NRURJ
-QVRFSw0KPiA+Pj4gKwloZWxwDQo+ID4+PiArCSAgU3VwcG9ydCBmb3IgTWVkaWF0ZWsncyBOZXR3
-b3JrLW9uLUNoaXAgaW50ZXJjb25uZWN0IGhhcmR3YXJlLg0KPiA+Pj4gKw0KPiA+Pj4gK2NvbmZp
-ZyBJTlRFUkNPTk5FQ1RfTVRLX0VNSQ0KPiA+Pj4gKwl0cmlzdGF0ZSAiTWVkaWF0ZWsgRU1JIGlu
-dGVyY29ubmVjdCBkcml2ZXIiDQo+ID4+PiArCWRlcGVuZHMgb24gSU5URVJDT05ORUNUX01USw0K
-PiA+Pj4gKwlkZXBlbmRzIG9uIChNVEtfRFZGU1JDICYmIE9GKQ0KPiA+Pg0KPiA+PiBXb3VsZCBp
-dCBiZSBwb3NzaWJsZSB0byBlbmFibGUgQ09NUElMRV9URVNUPw0KPiA+IERvIHlvdSBtZWFucyBj
-aGFuZ2UgdG8gImRlcGVuZHMgb24gKE1US19EVkZTUkMgJiYgT0YpIHx8IENPTVBJTEVfVEVTVCIg
-Pw0KPiANCj4gWWVhaCwgdGhlcmUgaXMgYSBzdHViIGZvciBtdGtfZHZmc3JjX3NlbmRfcmVxdWVz
-dCgpLiBNYXliZSB3ZSBjb3VsZCBldmVuDQo+IGNoYW5nZSBpdCBmb3IgSU5URVJDT05ORUNUX01U
-SyB0byBzb21ldGhpbmcgbGlrZToNCj4gCWRlcGVuZHMgb24gQVJDSF9NRURJQVRFSyB8fCBDT01Q
-SUxFX1RFU1QgV2lsbCB0aGlzIHdvcms/DQpIaSBHZW9yZ2ksDQoNClNvLi5vbmx5IGNoYW5nZSB0
-byBhcyBmb2xsb3dpbmc/IA0KDQpjb25maWcgSU5URVJDT05ORUNUX01USw0KCWJvb2wgIk1lZGlh
-dGVrIE5ldHdvcmstb24tQ2hpcCBpbnRlcmNvbm5lY3QgZHJpdmVycyINCglkZXBlbmRzIG9uIEFS
-Q0hfTUVESUFURUsgfHwgQ09NUElMRV9URVNUDQoJaGVscA0KCSAgU3VwcG9ydCBmb3IgTWVkaWF0
-ZWsncyBOZXR3b3JrLW9uLUNoaXAgaW50ZXJjb25uZWN0IGhhcmR3YXJlLg0KDQo+IA0KPiBUaGFu
-a3MsDQo+IEdlb3JnaQ0K
+Since outbound iATU permits size to be greater than 4GB for which the
+support is also available, allow EP function to send u64 size instead of
+truncating to u32.
+
+Signed-off-by: Shradha Todi <shradha.t@samsung.com>
+---
+v1: https://lkml.org/lkml/2020/12/18/690
+v2:
+   Addressed Bjorn's review on to keep commit message length limit to 75
+
+ drivers/pci/controller/dwc/pcie-designware.c | 2 +-
+ drivers/pci/controller/dwc/pcie-designware.h | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/pci/controller/dwc/pcie-designware.c b/drivers/pci/controller/dwc/pcie-designware.c
+index 1d62ca9..db407ed 100644
+--- a/drivers/pci/controller/dwc/pcie-designware.c
++++ b/drivers/pci/controller/dwc/pcie-designware.c
+@@ -326,7 +326,7 @@ void dw_pcie_prog_outbound_atu(struct dw_pcie *pci, int index, int type,
+ 
+ void dw_pcie_prog_ep_outbound_atu(struct dw_pcie *pci, u8 func_no, int index,
+ 				  int type, u64 cpu_addr, u64 pci_addr,
+-				  u32 size)
++				  u64 size)
+ {
+ 	__dw_pcie_prog_outbound_atu(pci, func_no, index, type,
+ 				    cpu_addr, pci_addr, size);
+diff --git a/drivers/pci/controller/dwc/pcie-designware.h b/drivers/pci/controller/dwc/pcie-designware.h
+index 7da79eb..359151f 100644
+--- a/drivers/pci/controller/dwc/pcie-designware.h
++++ b/drivers/pci/controller/dwc/pcie-designware.h
+@@ -302,7 +302,7 @@ void dw_pcie_prog_outbound_atu(struct dw_pcie *pci, int index,
+ 			       u64 size);
+ void dw_pcie_prog_ep_outbound_atu(struct dw_pcie *pci, u8 func_no, int index,
+ 				  int type, u64 cpu_addr, u64 pci_addr,
+-				  u32 size);
++				  u64 size);
+ int dw_pcie_prog_inbound_atu(struct dw_pcie *pci, u8 func_no, int index,
+ 			     int bar, u64 cpu_addr,
+ 			     enum dw_pcie_as_type as_type);
+-- 
+2.7.4
+
