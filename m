@@ -2,104 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 083EA2EBB52
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 09:51:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 22A1F2EBB50
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 09:51:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726932AbhAFIvB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Jan 2021 03:51:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60652 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726063AbhAFIvA (ORCPT
+        id S1726773AbhAFIvA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Jan 2021 03:51:00 -0500
+Received: from mail-io1-f71.google.com ([209.85.166.71]:57073 "EHLO
+        mail-io1-f71.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725822AbhAFIvA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 6 Jan 2021 03:51:00 -0500
-Received: from mail-io1-xd29.google.com (mail-io1-xd29.google.com [IPv6:2607:f8b0:4864:20::d29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33877C06135B
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Jan 2021 00:49:58 -0800 (PST)
-Received: by mail-io1-xd29.google.com with SMTP id i18so2085407ioa.1
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Jan 2021 00:49:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=iibSmPq0eLjVX/S5+pf4M3ZmZCgI0X4nBBazQytepq8=;
-        b=enRj3UJck+B7jDr9WMCk8x8sFE9xWXZP0rwVFDPxIOnaOWpU9HBK2QpAsmQuBu0jx4
-         O+KF4CxoNh3XPXe4zX4uoou9LzxbEPjLYHr/jKS0RhjVM8Bq5kWbhv+3AMzxXSqWGpTd
-         gS4lQ8q9QsZrLfLB8vhH+1/CN32lltmJ1OqI4P7iA7QvCdPKB4WbM4eSXeQtIgJRi0Oy
-         zObUsJlESGGuZ+kI8a1kGO/WfJjbNj7pwn9bCKayEz0LJ8NxT1LLrE+lmF/WDrEHP1A0
-         zgC31ra8/PgcX6BAHWjChvp2+m6GuWLQderxBxn15eo54btiWOm2rTizGmw1HIVlHQVL
-         Bzhw==
+Received: by mail-io1-f71.google.com with SMTP id m2so276131iow.23
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Jan 2021 00:50:44 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=iibSmPq0eLjVX/S5+pf4M3ZmZCgI0X4nBBazQytepq8=;
-        b=UdHzp/I4GSl/bjpAnRUZUiFKV5fAF9Ejev9t5xQ3E5le2dioJvFaObT95R87ws7XXS
-         GzZCpADbZ1cjbNw4K7YDUGrIJGGSvTzH3nETUQvWls8t6I9TP4kRzLnHY/WUQjw6N6Mp
-         9eqUHBW+pp1+KEqiUZW/S4Pjd4Hslj2YpxFcBu/q2d1ocMRZA5bEdpbRABa+UQd9xlnl
-         5G7oVlP/n3snIRALtEUMXD+UP7LjlpAvwraYkc4XoaTyhtomNWRWALbFRL1ikZQFa14G
-         VMF82kqYIF55CSgAaLN9HHp6MJVD/8MyK49H1TsDE0du7RiHX7uAl4ov9Ck0+CDAjv2+
-         N/lg==
-X-Gm-Message-State: AOAM532EaaPs13ceEy714gQrC7XrRxMTkBcz0lbKDJJloUzNWIo8arff
-        RqyjI3cDZv+Y+TB61V7CoQxUVi13vUSBp5SsuW3ehJCSrQk=
-X-Google-Smtp-Source: ABdhPJwjxL1rOtX8rTMTGgznA5BoxcBf5qXD2FiPG89ll77Pvuc+RRsQ/3CCiGmKvuL5TSuLt+avz0ARMpz/M+lrE7U=
-X-Received: by 2002:a02:b042:: with SMTP id q2mr2849056jah.29.1609922997523;
- Wed, 06 Jan 2021 00:49:57 -0800 (PST)
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=FsvQnsUURhV2OmdsEUEnsDCv+OlmKNzEOUKXr4QWTqA=;
+        b=KPKSLZhmfc7QE2jK246ciAbx/QXblsl1Egjw9oTo41u1uyEnddFkaPZTWrJagJ0Iaf
+         Y26Tem4xUXl4m2s8kstTjoFX0PkgMWfndMqAQeVpW+9/t5A8OtoNsOwbYUmAmM47Q54+
+         m7VqdIr6Ko6OXeinQQZNu3UScpQ3EHNJOqAdKApnu4Srd3xt0vO8xBpTi21gkjikvPvi
+         4ExoNDl6u14GqSOxF49AzXM6WiIx+QjjrjvzsZXrAC1ljmB/A2W515Cr7Z+RHBQqhJp/
+         ZenD3YTMssZ5LqBcttPBWnULHKkxlC3BSWG37WbyEYxv+HCmhfIoI8AfejVExh3mSvsw
+         8O1g==
+X-Gm-Message-State: AOAM531LRFnMDzbJzxRwgaBMRTnFT3mN6k/SFnNT18ZGlWhqjtIMYnkQ
+        lcPjh73ErbN44JwVvggM5TlRCJWIiUPcnkX8SpBRxfLjPaAk
+X-Google-Smtp-Source: ABdhPJxC6iwpniVCevtAsbkQZmeqHoCOk5aS8CU+gRoT5hxw0rXkOnyvPOVKjfrFWyt/lhjeB3T76UnmKUcLbhj/lNwNQHd7Q8F7
 MIME-Version: 1.0
-References: <20210106004850.GA11682@paulmck-ThinkPad-P72>
-In-Reply-To: <20210106004850.GA11682@paulmck-ThinkPad-P72>
-From:   Yury Norov <yury.norov@gmail.com>
-Date:   Wed, 6 Jan 2021 00:49:46 -0800
-Message-ID: <CAAH8bW95nyx6PEnPiBPoHMLoduvgU9KO7N=K7mhLORkA+zzhDw@mail.gmail.com>
-Subject: Re: [PATCH RFC cpumask] Allow "all", "none", and "last" in cpumask strings
-To:     paulmck@kernel.org
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        paul.gortmaker@windriver.com, kernel-team@fb.com
+X-Received: by 2002:a05:6e02:104a:: with SMTP id p10mr3152877ilj.247.1609923018986;
+ Wed, 06 Jan 2021 00:50:18 -0800 (PST)
+Date:   Wed, 06 Jan 2021 00:50:18 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000a99c7105b83769d7@google.com>
+Subject: UBSAN: array-index-out-of-bounds in qfq_update_agg
+From:   syzbot <syzbot+7c315a573dd9374a3220@syzkaller.appspotmail.com>
+To:     davem@davemloft.net, jhs@mojatatu.com, jiri@resnulli.us,
+        kuba@kernel.org, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com,
+        xiyou.wangcong@gmail.com
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 5, 2021 at 4:48 PM Paul E. McKenney <paulmck@kernel.org> wrote:
->
-> Hello!
->
-> This series allows "all", "none", and "last" to be used in cpumask
-> strings.  This allows these strings to be less dependent on the underlying
-> system.  For example, currently a string specifying all but the first
-> CPU must be "1-7" on an eight-CPU system and "1-15" on a 16-CPU system.
-> With this series, the single string "1-last" can be used regardless of the
-> number of CPUs (at least assuming that each system has at least one CPU).
+Hello,
 
-'none' may be implemented as an empty string or string with separators only,
-but I have nothing against explicit 'none'. See other comments inline.
+syzbot found the following issue on:
 
-Thanks,
-Yury.
+HEAD commit:    3db1a3fa Merge tag 'staging-5.11-rc1' of git://git.kernel...
+git tree:       net-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=1286be67500000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=a6e6725884106332
+dashboard link: https://syzkaller.appspot.com/bug?extid=7c315a573dd9374a3220
+compiler:       gcc (GCC) 10.1.0-syz 20200507
 
-> 1.      Un-inline cpulist_parse for SMP; prepare for ascii helpers,
->         courtesy of Paul Gortmaker.
->
-> 2.      Make "all" alias global and not just RCU, courtesy of Paul
->         Gortmaker.
->
-> 3.      Add a "none" alias to complement "all", courtesy of Paul
->         Gortmaker.
->
-> 4.      Add "last" alias for cpu list specifications, courtesy of Paul
->         Gortmaker.
->
-> 5.      Use "all" and "last" in "nohz_full" and "rcu_nocbs".
->
->                                                 Thanx, Paul
->
-> ------------------------------------------------------------------------
->
->  Documentation/admin-guide/kernel-parameters.rst            |   20 +
->  Documentation/admin-guide/kernel-parameters.txt            |    4
->  include/linux/cpumask.h                                    |    8
->  kernel/rcu/tree_plugin.h                                   |   13 -
->  lib/cpumask.c                                              |  136 ++++++++++++-
->  tools/testing/selftests/rcutorture/configs/rcu/TREE04.boot |    2
->  tools/testing/selftests/rcutorture/configs/rcu/TREE08.boot |    2
->  7 files changed, 169 insertions(+), 16 deletions(-)
+Unfortunately, I don't have any reproducer for this issue yet.
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+7c315a573dd9374a3220@syzkaller.appspotmail.com
+
+================================================================================
+UBSAN: array-index-out-of-bounds in net/sched/sch_qfq.c:300:24
+index 29 is out of range for type 'qfq_group [25]'
+CPU: 0 PID: 20516 Comm: syz-executor.3 Not tainted 5.10.0-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:79 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:120
+ ubsan_epilogue+0xb/0x5a lib/ubsan.c:148
+ __ubsan_handle_out_of_bounds.cold+0x62/0x6c lib/ubsan.c:356
+ qfq_update_agg+0x7b8/0x7d0 net/sched/sch_qfq.c:300
+ qfq_add_to_agg+0x75/0x500 net/sched/sch_qfq.c:317
+ qfq_change_class+0x5da/0x18f0 net/sched/sch_qfq.c:510
+ tc_ctl_tclass+0x526/0xc70 net/sched/sch_api.c:2111
+ rtnetlink_rcv_msg+0x493/0xb40 net/core/rtnetlink.c:5564
+ netlink_rcv_skb+0x153/0x420 net/netlink/af_netlink.c:2494
+ netlink_unicast_kernel net/netlink/af_netlink.c:1304 [inline]
+ netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1330
+ netlink_sendmsg+0x907/0xe10 net/netlink/af_netlink.c:1919
+ sock_sendmsg_nosec net/socket.c:652 [inline]
+ sock_sendmsg+0xd3/0x130 net/socket.c:672
+ ____sys_sendmsg+0x6e8/0x810 net/socket.c:2336
+ ___sys_sendmsg+0xf3/0x170 net/socket.c:2390
+ __sys_sendmsg+0xe5/0x1b0 net/socket.c:2423
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x45e219
+Code: 0d b4 fb ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 db b3 fb ff c3 66 2e 0f 1f 84 00 00 00 00
+RSP: 002b:00007fe1c8c30c68 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
+RAX: ffffffffffffffda RBX: 0000000000000003 RCX: 000000000045e219
+RDX: 0000000000000000 RSI: 0000000020000540 RDI: 0000000000000003
+RBP: 000000000119c068 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 000000000119c034
+R13: 00007ffc62cfe08f R14: 00007fe1c8c319c0 R15: 000000000119c034
+================================================================================
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
