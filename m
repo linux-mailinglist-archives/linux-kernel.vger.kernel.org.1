@@ -2,123 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A85E2EC2AE
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 18:47:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D1AE52EC2B4
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 18:49:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727665AbhAFRqu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Jan 2021 12:46:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59510 "EHLO
+        id S1727661AbhAFRst (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Jan 2021 12:48:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59814 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727333AbhAFRqu (ORCPT
+        with ESMTP id S1726375AbhAFRss (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Jan 2021 12:46:50 -0500
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9DB8C06134C;
-        Wed,  6 Jan 2021 09:46:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=yg/yc1gkRipPRCPATrDmoHEixH/ByfJCw5yp10C32Mw=; b=iLVcD3MNntOoNsrc0twA4vn/2
-        dcdOulHlRF7RTJYqGc7d5mZGg13191U1JDHaH1aIqf0pRRtwAn4Pg1OGDHAYNhOHfFFmLH+amL9ms
-        4EiYNSBK6NJmg8NG9un8MeQv/3HgXzySX/tEQV9F7Knv5+ubCrSEHJk7TY8P22yr5hw67KlcwBlgc
-        9vGwVl8roCskmgHfp670zsadJr6CNkw6tlfM2hEjxpx3i4UHkNRhIRFC2hccL84FAeYy5mrY4OM/l
-        W/qZ5Y43ELnfV5RDxklcOm8Ml/c/S0qL1u7UtdrDffTeQHle9+ErM3cLTUW6jHHcUawXNmjh7xYbY
-        4ZtL9/bmQ==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:45192)
-        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1kxCso-0001rk-Pm; Wed, 06 Jan 2021 17:46:06 +0000
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1kxCsn-0000QR-Qs; Wed, 06 Jan 2021 17:46:05 +0000
-Date:   Wed, 6 Jan 2021 17:46:05 +0000
-From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
-To:     Will Deacon <will@kernel.org>
-Cc:     Mark Rutland <mark.rutland@arm.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Theodore Ts'o <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        linux-ext4@vger.kernel.org
-Subject: Re: Aarch64 EXT4FS inode checksum failures - seems to be weak memory
- ordering issues
-Message-ID: <20210106174605.GL1551@shell.armlinux.org.uk>
-References: <20210105154726.GD1551@shell.armlinux.org.uk>
- <20210106115359.GB26994@C02TD0UTHF1T.local>
- <20210106135253.GJ1551@shell.armlinux.org.uk>
- <20210106172033.GA2165@willie-the-truck>
+        Wed, 6 Jan 2021 12:48:48 -0500
+Received: from ZenIV.linux.org.uk (zeniv.linux.org.uk [IPv6:2002:c35c:fd02::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6AAD1C06134C
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Jan 2021 09:48:08 -0800 (PST)
+Received: from viro by ZenIV.linux.org.uk with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kxCuc-007Qx9-BB; Wed, 06 Jan 2021 17:47:58 +0000
+Date:   Wed, 6 Jan 2021 17:47:58 +0000
+From:   Al Viro <viro@zeniv.linux.org.uk>
+To:     Ionela Voinescu <ionela.voinescu@arm.com>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        kernel test robot <lkp@intel.com>, kbuild-all@lists.01.org,
+        linux-kernel@vger.kernel.org, Sudeep Holla <sudeep.holla@arm.com>
+Subject: Re: arch/arm64/kernel/topology.c:367:22: sparse: sparse: dereference
+ of noderef expression
+Message-ID: <20210106174758.GD3579531@ZenIV.linux.org.uk>
+References: <202012180512.hxAiUO00-lkp@intel.com>
+ <20201218104410.GB5258@gaia>
+ <20210106150724.GA16591@arm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210106172033.GA2165@willie-the-truck>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Sender: Russell King - ARM Linux admin <linux@armlinux.org.uk>
+In-Reply-To: <20210106150724.GA16591@arm.com>
+Sender: Al Viro <viro@ftp.linux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 06, 2021 at 05:20:34PM +0000, Will Deacon wrote:
-> I've managed to reproduce the corruption on my AMD Seattle board (8x A57).
-> I haven't had a chance to dig deeper yet, but here's the recipe which works
-> for me:
-> 
-> 1. I'm using GCC 4.9.4 simply to try to get as close as I can to rmk's
->    setup. I don't know if this is necessary or not, but the toolchain is
->    here:
-> 
->    https://kernel.org/pub/tools/crosstool/files/bin/arm64/4.9.4/arm64-gcc-4.9.4-nolibc-aarch64-linux-gnu.tar.xz
-> 
->    and I needed to pull down an old libmpfr to get cc1 to work:
-> 
->    http://ports.ubuntu.com/pool/main/m/mpfr4/libmpfr4_3.1.2-1_arm64.deb
-> 
-> 2. I build a 5.9 kernel with the config here:
-> 
->    https://mirrors.edge.kernel.org/pub/linux/kernel/people/will/bugs/rmk/config-5.9.0
-> 
->    and the resulting Image is here:
-> 
->    https://mirrors.edge.kernel.org/pub/linux/kernel/people/will/bugs/rmk/Image-5.9.0
-> 
-> 3. Using that kernel, I boot into a 64-bit Debian 10 filesystem and open a
->    couple of terminals over SSH.
-> 
-> 4. In one terminal, I run:
-> 
->    $ while (true); do find /var /usr /bin /sbin -type f -print0 | xargs -0
->      md5sum > /dev/null; echo 2 | sudo tee /proc/sys/vm/drop_caches; done
-> 
->    (note that sudo will prompt you for a password on the first iteration)
-> 
-> 5. In the other terminal, I run:
-> 
->    $ while (true); do ./hackbench ; sleep 1; done
-> 
->    where hackbench is built from:
-> 
->    https://people.redhat.com/mingo/cfs-scheduler/tools/hackbench.c
-> 
->    and compiled according to comment in the source code.
-> 
-> With that, I see the following after ten seconds or so:
-> 
->   EXT4-fs error (device sda2): ext4_lookup:1707: inode #674497: comm md5sum: iget: checksum invalid
-> 
-> Russell, Mark -- does this recipe explode reliably for you too?
+On Wed, Jan 06, 2021 at 03:07:24PM +0000, Ionela Voinescu wrote:
 
-It took a couple of iterations of the find loop (4) here on a kernel
-where I'd dropped BLK_WBT=y from my .config... whereas I wasn't able
-to provoke it before. So running hackbench in parallel seems to
-increase the probability.
+> > >  > 367		switch ((u64)reg->address) {
+> > 
+> > That's not a dereference but I guess sparse complains of dropping the
+> > __iomem. We could change the cast to (__force u64) to silence sparse.
 
-I rebooted, set it going again, and on the first iteration it exploded
-with ext4 inode checksum failure. And again on the following reboot.
-So yes, it looks like you've found a way to more reliably reproduce
-it.
+Oh, yes, it is - that of &reg->address, to fetch the value you are
+casting to u64.  And nonsense in declaration of struct cpc_reg says
+that its 'address' field somehow manages to be located in iomem,
+regardless of where the entire structure is stored.
 
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
+Qualifiers apply to lvalues - it's "how can that object be accessed".
+They don't say anything with the values _stored_ in that object.
+It is possible to have them applied to individual fields of a structure;
+for some qualifiers that might be legitimate - e.g. you could do
+struct foo {
+	char *s;
+	volatile int x;
+} *p;
+telling the compiler that p->x is to be treated as volatile (make no
+assumptions about the value not being changed behind your back, etc.),
+while p->s is not.
+
+However, for __iomem (or __user, etc.) that makes no sense whatsoever;
+you are saying "this field lives in iomem, no matter where the entire
+structure is located".
+
+To quote C99 6.3.2.1[2]:
+	Except when it is the operand of the sizeof operator, the unary & operator, the ++
+operator, the -- operator, or the left operand of the . operator or an assignment operator,
+an lvalue that does not have array type is converted to the value stored in the designated
+object (and is no longer an lvalue). If the lvalue has qualified type, the value has the
+unqualified version of the type of the lvalue; otherwise, the value has the type of the
+lvalue. If the lvalue has an incomplete type and does not have array type, the behavior is
+undefined.
+
+	IOW, in the example above, as lvalue p->x will have "volatile int"
+for type; using it as argument of cast operator will convert it (_before_
+doing the cast) to whatever integer that had been found stored
+in that field and the type of that will be "int", not "volatile int".
+As soon as you fetch the value stored in object, qualifiers are gone.
+
+	The syntax is somewhat unfortunate - it's easy to confuse
+qualified pointer to type with pointer to qualified type.
+	const int *r
+means "r is an unqualified pointer to const int"; the value stored in r may
+be modified, but the value stored in *r may not.
+	int * const r
+means "r is a const pointer to int"; the value stored in r may not be modified,
+but the value stored in *r may.
+
+	You often run into something like
+struct foo {
+	...
+	u64 __iomem *some_reg;
+	...
+} *p;
+and, unlike the mess in struct cpc_reg declaration, here p->some_reg is *NOT*
+__iomem-qualified.  It's a perfectly normal field of a structure somewhere
+in kernel memory, it can be fetched from, stored into, etc.  The contents
+of that field is a pointer to __iomem u64.  It can be passed to e.g.
+readq(), but trying to directly fetch *(p->some_reg) will barf.
+	In such cases the limitations apply not to how we can access the
+field itself, but to what we can do with the value we find in that
+field.
+
+	At a guess, the intent of that (mis)annotation had been
+"this field contains a 64bit unsigned integer that happens to contain
+an address of something in iomem".  But qualifiers are useless for
+that - once you've fetched that value, all you have is plain u64.
+Nor would they be carried through the arithmetics, etc.
+
+	It might be possible to cook something more useful by a bit
+of creative misuse of __bitwise, but I hadn't looked through the
+places where that field is used.
