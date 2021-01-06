@@ -2,82 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 14B442EBCCF
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 11:53:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 33D522EBC60
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 11:30:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727195AbhAFKxJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Jan 2021 05:53:09 -0500
-Received: from mail-m965.mail.126.com ([123.126.96.5]:37614 "EHLO
-        mail-m965.mail.126.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727141AbhAFKxG (ORCPT
+        id S1726050AbhAFKah (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Jan 2021 05:30:37 -0500
+Received: from frasgout.his.huawei.com ([185.176.79.56]:2295 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725828AbhAFKag (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Jan 2021 05:53:06 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=126.com;
-        s=s110527; h=From:Subject:Date:Message-Id; bh=kac8Op8JKO4gkXnod9
-        2DPX6leg0btALZxe/OkgtHHE8=; b=goVI9g/mYj213ySnAQEVPrfEKFAE6WWIS1
-        P8R0k5qNYMU+ocgtLr0qHIIpBFV+SM1jYz3jFhw+Rx3Ic+d2ae3z9g4u29adN7y1
-        OodG8cozsos/hP6NRnsxSggFEsrabtdhr9MErQ5IhnnjhfdWNHj8vGcM1c6ZRLYB
-        yRQthOuFQ=
-Received: from localhost.localdomain (unknown [43.250.200.43])
-        by smtp10 (Coremail) with SMTP id NuRpCgAn46dvXfVfSxsJjA--.31892S2;
-        Wed, 06 Jan 2021 14:49:20 +0800 (CST)
-From:   wangyingjie55@126.com
-To:     kuba@kernel.org
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Yingjie Wang <wangyingjie55@126.com>
-Subject: [PATCH v2] af/rvu_cgx: Fix missing check bugs in rvu_cgx.c
-Date:   Tue,  5 Jan 2021 22:49:17 -0800
-Message-Id: <1609915757-4282-1-git-send-email-wangyingjie55@126.com>
-X-Mailer: git-send-email 2.7.4
-X-CM-TRANSID: NuRpCgAn46dvXfVfSxsJjA--.31892S2
-X-Coremail-Antispam: 1Uf129KBjvJXoW7Aw13Cr4xJryDtFWrKry5CFg_yoW8Xryxpw
-        40y34rZrs2kr4xC3yDJa18G3yjva1DtFWktryUu3s5CFn5uF13XFs8Ka1jk3WUCrWrC3y7
-        tF1jkan3CF1DGrDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07b2FALUUUUU=
-X-Originating-IP: [43.250.200.43]
-X-CM-SenderInfo: 5zdqw5xlqjyxrhvvqiyswou0bp/1tbifhASp1pEB+qgBwAAsP
+        Wed, 6 Jan 2021 05:30:36 -0500
+Received: from fraeml703-chm.china.huawei.com (unknown [172.18.147.206])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4D9lqR6PB1z67Xwb;
+        Wed,  6 Jan 2021 18:25:07 +0800 (CST)
+Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
+ fraeml703-chm.china.huawei.com (10.206.15.52) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2106.2; Wed, 6 Jan 2021 11:29:53 +0100
+Received: from localhost (10.47.75.92) by lhreml710-chm.china.huawei.com
+ (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2106.2; Wed, 6 Jan 2021
+ 10:29:53 +0000
+Date:   Wed, 6 Jan 2021 10:29:17 +0000
+From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To:     Jyoti Bhayana <jbhayana@google.com>
+CC:     Jonathan Cameron <jic23@kernel.org>,
+        Hartmut Knaack <knaack.h@gmx.de>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Rob Herring <robh@kernel.org>,
+        "Lukas Bulwahn" <lukas.bulwahn@gmail.com>,
+        <linux-kernel@vger.kernel.org>, <linux-iio@vger.kernel.org>,
+        <cristian.marussi@arm.com>, <sudeep.holla@arm.com>,
+        <egranata@google.com>, <mikhail.golubev@opensynergy.com>,
+        <Igor.Skalkin@opensynergy.com>, <Peter.hilber@opensynergy.com>,
+        <ankitarora@google.com>
+Subject: Re: Reply to [RFC PATCH v2 0/1] Adding support for IIO SCMI based
+ sensors
+Message-ID: <20210106102917.0000332c@Huawei.com>
+In-Reply-To: <20210105230920.769144-1-jbhayana@google.com>
+References: <20201230123748.4e969f82@archlinux>
+        <20210105230920.769144-1-jbhayana@google.com>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 3.17.4 (GTK+ 2.24.32; i686-w64-mingw32)
+MIME-Version: 1.0
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.47.75.92]
+X-ClientProxiedBy: lhreml720-chm.china.huawei.com (10.201.108.71) To
+ lhreml710-chm.china.huawei.com (10.201.108.61)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yingjie Wang <wangyingjie55@126.com>
+On Tue, 5 Jan 2021 23:09:20 +0000
+Jyoti Bhayana <jbhayana@google.com> wrote:
 
-In rvu_mbox_handler_cgx_mac_addr_get()
-and rvu_mbox_handler_cgx_mac_addr_set(),
-the msg is expected only from PFs that are mapped to CGX LMACs.
-It should be checked before mapping,
-so we add the is_cgx_config_permitted() in the functions.
+> Hi Jonathan,
+> 
+> > So, sensor_max_range can effectively be exposed as a combination of
+> > scale and the *_raw_avail for a raw read (via the read_avail callback in IIO).
+> > We'll ignore the fact the interface assumes a single value (so I assume symmetric?)  
+> 
+> Based on the SCMI specification the sensor min range and max range are 64 bits signed number.
+> 
+> looks like IIO_AVAIL_RANGE can only take the following
+> types of data which all looks like 32 bit. IIO_VAL_FRACTIONAL
+> also takes two int type numbers.
+> How can I send 64 bit sensor range using this and read_avail callback?
+> 
+> #define IIO_VAL_INT 1
+> #define IIO_VAL_INT_PLUS_MICRO 2
+> #define IIO_VAL_INT_PLUS_NANO 3
+> #define IIO_VAL_INT_PLUS_MICRO_DB 4
+> #define IIO_VAL_INT_MULTIPLE 5
+> #define IIO_VAL_FRACTIONAL 10
+> #define IIO_VAL_FRACTIONAL_LOG2 11
+> #define IIO_VAL_CHAR 12
 
-Fixes: 85482bb ("af/rvu_cgx: Fix missing check bugs in rvu_cgx.c")
-Signed-off-by: Yingjie Wang <wangyingjie55@126.com>
----
- drivers/net/ethernet/marvell/octeontx2/af/rvu_cgx.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+Hmm It is a bit unfortunate that SCMI decided to pretend that real sensor resolutions were
+greater than 32 bits. I doubt they will ever actually be any (as such accurate measurements
+are completely pointless) and they aren't anywhere near that today.  Only way it might end
+up looking a bit like that would be result of a highly non linear sensor being shoved through
+an interface that pretends it isn't (goody).
 
-diff --git a/drivers/net/ethernet/marvell/octeontx2/af/rvu_cgx.c b/drivers/net/ethernet/marvell/octeontx2/af/rvu_cgx.c
-index d298b93..6c6b411 100644
---- a/drivers/net/ethernet/marvell/octeontx2/af/rvu_cgx.c
-+++ b/drivers/net/ethernet/marvell/octeontx2/af/rvu_cgx.c
-@@ -469,6 +469,9 @@ int rvu_mbox_handler_cgx_mac_addr_set(struct rvu *rvu,
- 	int pf = rvu_get_pf(req->hdr.pcifunc);
- 	u8 cgx_id, lmac_id;
+Having said that, specifications are what they are and we have to cope with that.
+
+There is no real problem with defining a new value type except for the fact that any
+legacy userspace won't necessarily expect to see values that large. Given we need the full
+64 bits it would have to be something like
+IIO_VAL_INT_H32_L32 with the 64 bit values split up appropriately and put back together
+at time of formatting.   Not particularly pretty but I'm not keep to put that much effort
+in to support something like this for one driver (so not interesting in changing that
+the read_raw_* interfaces)
+
+Jonathan
  
-+	if (!is_cgx_config_permitted(rvu, req->hdr.pcifunc))
-+		return -EPERM;
-+
- 	rvu_get_cgx_lmac_id(rvu->pf2cgxlmac_map[pf], &cgx_id, &lmac_id);
- 
- 	cgx_lmac_addr_set(cgx_id, lmac_id, req->mac_addr);
-@@ -485,6 +488,9 @@ int rvu_mbox_handler_cgx_mac_addr_get(struct rvu *rvu,
- 	int rc = 0, i;
- 	u64 cfg;
- 
-+	if (!is_cgx_config_permitted(rvu, req->hdr.pcifunc))
-+		return -EPERM;
-+
- 	rvu_get_cgx_lmac_id(rvu->pf2cgxlmac_map[pf], &cgx_id, &lmac_id);
- 
- 	rsp->hdr.rc = rc;
--- 
-2.7.4
+
+> 
+> 
+> 
+> Thanks,
+> Jyoti
+> 
 
