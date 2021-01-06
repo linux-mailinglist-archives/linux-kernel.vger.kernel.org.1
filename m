@@ -2,41 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 501A92EBAA6
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 08:45:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BA412EBAA7
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 08:46:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726471AbhAFHnw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Jan 2021 02:43:52 -0500
-Received: from mail-lf1-f42.google.com ([209.85.167.42]:36972 "EHLO
-        mail-lf1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725789AbhAFHnw (ORCPT
+        id S1726324AbhAFHp2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Jan 2021 02:45:28 -0500
+Received: from mail-lf1-f53.google.com ([209.85.167.53]:32841 "EHLO
+        mail-lf1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726052AbhAFHp1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Jan 2021 02:43:52 -0500
-Received: by mail-lf1-f42.google.com with SMTP id o17so4586154lfg.4
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Jan 2021 23:43:36 -0800 (PST)
+        Wed, 6 Jan 2021 02:45:27 -0500
+Received: by mail-lf1-f53.google.com with SMTP id l11so4652854lfg.0
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Jan 2021 23:45:11 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=T7joZOEV5tEggBQcxQYFcqrG1vJ2WO+0SJXQMNdqmnM=;
-        b=rK/8bVUgQCILzmVUDyiGQFgrQw7UMhAli32YzPUeUH4SaK3fqIMPNMgb9m4iBP0Yvm
-         hYASgZdaMwsxGyFuRrHEHxXHWTPeMgKKbpPXBUhRd/79yCRoTKwE4u2G3Bdbnba/F7Gk
-         Wm3E8ttYgFVkehsNgbcyWPo710w0T6TSc8ZXF0EmMe75VGpr2x8na7/eJO2C83kBwR/q
-         1hsdWNo5EQz5GsATcWRnKleDdU4U8WklT2MjK8vvl0Y0Y6L10ckkc+/Slwbt5j7h9FMK
-         EckRjVFwpN1m1fdbP4DiiGbhCX4VKbKE94pxCMKR4cMXdwgqRQ+T1BaIRTZLnaucB6kd
-         HSIw==
-X-Gm-Message-State: AOAM532/rnBU2NBQFjqv/l/Upjytw+GbykquOckzcnvWD6Ps9ULARE29
-        C+sJL/JKShbnvlvtvX/FVYDd71mETn9ToNVSDWs=
-X-Google-Smtp-Source: ABdhPJxINjWnoqewn3kGgDrr8vDiKP0tw8X1bdQ9Yt9XbFjfj0+Ele1Re8iBx7fReoudkJwCyLt13ZM7xGhZ/4fz7mk=
-X-Received: by 2002:a05:651c:301:: with SMTP id a1mr1480387ljp.275.1609918990464;
- Tue, 05 Jan 2021 23:43:10 -0800 (PST)
+        bh=jGl7n31+lmcli5gt/Id1KfpdOHI+TiVqlrww2nZOPyU=;
+        b=cpunOUw8z1DJWiwTdt905Ad5/Rf+/hhAI+UNuHCO6T2o5O1QKA/Y0o3UA6T0j1bLLZ
+         i4bs+P3hL92IeHUKbV/qM4FOBdP+foIFfJ7qRDN+ZmTHD8ejGU8TcR7iWNkHzJKnTqZQ
+         JmPsc6gjfcuvTKGSF5l2y1aMX2jbk49IoD9lqWqDSKQLbDG146fs0b9M2ZG+vJCzEoNe
+         yeiByOwdcASg1hYTWbyB16d088hE3NRqPxwiZsiac3Mnx6VrzZrkKd+2nb5ibfd5KcEf
+         sGkZsV4BRKZhhMpuO9s0VgL+sSorc3sEFfpqj5plbIDmrUZA1F1Kvfa2gTWWHlWDqmNU
+         Oj/A==
+X-Gm-Message-State: AOAM533717j75l/2zo/hWlj/paPb/rT3i9prmFf/7b+IKtfCfBK3pHAQ
+        BHp2lyCLWhfBV94h3EVCg33Ux4fECJytCg58ig4=
+X-Google-Smtp-Source: ABdhPJyPJ5tO3AUUzoHpZSOeQIpfj+OxkDTSopU9ROAaNwyc6HaZ8NdBbHHGrM2ID9cHHo3Ojm7MX2xrQSBPugNO7cM=
+X-Received: by 2002:a2e:bc16:: with SMTP id b22mr1695325ljf.166.1609919085635;
+ Tue, 05 Jan 2021 23:44:45 -0800 (PST)
 MIME-Version: 1.0
-References: <20201213133850.10070-1-leo.yan@linaro.org> <20201213133850.10070-4-leo.yan@linaro.org>
-In-Reply-To: <20201213133850.10070-4-leo.yan@linaro.org>
+References: <20201213133850.10070-1-leo.yan@linaro.org> <20201213133850.10070-5-leo.yan@linaro.org>
+In-Reply-To: <20201213133850.10070-5-leo.yan@linaro.org>
 From:   Namhyung Kim <namhyung@kernel.org>
-Date:   Wed, 6 Jan 2021 16:42:59 +0900
-Message-ID: <CAM9d7cjOkSZRZz6JJW-eCD0Dx5E6rGzfmvU3deQyEr2RLUgzGA@mail.gmail.com>
-Subject: Re: [PATCH v2 03/11] perf c2c: Add dimensions for load miss
+Date:   Wed, 6 Jan 2021 16:44:34 +0900
+Message-ID: <CAM9d7cjnHpZ2G5rBnCZonhfeGOS9vB1nrLLvhet_XG=f7O5ysQ@mail.gmail.com>
+Subject: Re: [PATCH v2 04/11] perf c2c: Rename for shared cache line stats
 To:     Leo Yan <leo.yan@linaro.org>
 Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
         Jiri Olsa <jolsa@redhat.com>,
@@ -58,31 +58,35 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 On Sun, Dec 13, 2020 at 10:39 PM Leo Yan <leo.yan@linaro.org> wrote:
 >
-> Add dimensions for load miss and its percentage calculation, which is to
-> be displayed in the single cache line output.
+> For shared cache line statistics, it relies on HITM.  We can use more
+> general naming rather than only binding to HITM, so replace "hitm_stats"
+> with "shared_clines_stats" in structure perf_c2c, and rename function
+> resort_hitm_cb() to resort_shared_cl_cb().
 >
 > Signed-off-by: Leo Yan <leo.yan@linaro.org>
 > ---
->  tools/perf/builtin-c2c.c | 107 +++++++++++++++++++++++++++++++++++++++
->  1 file changed, 107 insertions(+)
+>  tools/perf/builtin-c2c.c | 14 +++++++-------
+>  1 file changed, 7 insertions(+), 7 deletions(-)
 >
 > diff --git a/tools/perf/builtin-c2c.c b/tools/perf/builtin-c2c.c
-> index 00014e3d81fa..27745340c14a 100644
+> index 27745340c14a..580c4ead68db 100644
 > --- a/tools/perf/builtin-c2c.c
 > +++ b/tools/perf/builtin-c2c.c
-> @@ -624,6 +624,10 @@ tot_hitm_cmp(struct perf_hpp_fmt *fmt __maybe_unused,
->          (stats)->rmt_hitm +            \
->          (stats)->rmt_hit)
+> @@ -97,8 +97,8 @@ struct perf_c2c {
+>         bool                     symbol_full;
+>         bool                     stitch_lbr;
 >
-> +#define TOT_LD_MISS(stats)             \
-> +       ((stats)->lcl_dram +            \
-> +        (stats)->rmt_dram)
-> +
+> -       /* HITM shared clines stats */
+> -       struct c2c_stats        hitm_stats;
+> +       /* Shared clines stats */
 
-Is this true always?  I'm not sure if there's a case where stores can go to DRAM
-directly.. maybe like a kind of uncached accesses.
-
-Also it can be a static function..
+Please change it to "Shared cache line stats".
 
 Thanks,
 Namhyung
+
+
+> +       struct c2c_stats        shared_clines_stats;
+>         int                     shared_clines;
+>
+>         int                      display;
