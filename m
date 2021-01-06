@@ -2,104 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E7772EC6A9
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 00:16:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 424CC2EC6B3
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 00:19:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727290AbhAFXQ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Jan 2021 18:16:28 -0500
-Received: from bilbo.ozlabs.org ([203.11.71.1]:60945 "EHLO ozlabs.org"
+        id S1727483AbhAFXST (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Jan 2021 18:18:19 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48236 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726449AbhAFXQ1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Jan 2021 18:16:27 -0500
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4DB4wd5Fk7z9sVm;
-        Thu,  7 Jan 2021 10:15:45 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1609974945;
-        bh=hhb42+3r30dgguSUrIG0v7hh9TznE7SYcmCkuQPPfy8=;
-        h=Date:From:To:Cc:Subject:From;
-        b=hEQeX3ekhB8sl3BrD4SMo2PaDu1c0IBgGr8k8uOu2zCEfJNuAgN2sNjgOzSNZmbIR
-         Mwjz2KrZ10SwYGfwudTSeNxGwKQB2tS/u8z/24yf9u7nixdvbl63fKRM9Skzq92GNA
-         XrMeuI161PHfdkftGo4jYqtR2iXoYeuqWTEXoOBAEIi0R2OLq59WcNyBmHHYqqdMXH
-         COEjEwx/8Lq0nuJDvNzvrrQFEBsdUdROZ9G8lXNpI1fq19hLlRXQ1H90PnVrFwlzGZ
-         Ifa7oahIek7t4YiHWz3hKXi2O1qzD2CqKckDzol/huJPuJf1UtQP+tMsj/ZFuVKCmZ
-         2rdkm9GrVIyWQ==
-Date:   Thu, 7 Jan 2021 10:15:44 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Al Viro <viro@ZenIV.linux.org.uk>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build warning after merge of the vfs tree
-Message-ID: <20210107101544.68bdd395@canb.auug.org.au>
-MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/p_/hmkyYWBCIHY50hXBferM";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+        id S1726119AbhAFXSS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 Jan 2021 18:18:18 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AC14023332;
+        Wed,  6 Jan 2021 23:17:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1609975058;
+        bh=vKhyMmIuw4dVwfOPSyfNwOpSYaEo7Zn9XZymkFCSHQU=;
+        h=From:To:Cc:Subject:Date:From;
+        b=h41X+2ABQGKohRVdjEt2dYr3etneeWKi9iNfXaPDBQFjBuflnIYSmANx9OQf+8t87
+         RbI1Jr+VAtYTytEu92EVPbgRebX5SuoygMEHw8sZGDMpYWA6ICzTE7PK7vYEr9c6bP
+         zj00b4vPMiJ2ovmsYqYgoE1Yl8b90qULYrS8P+7LyBb2ll1d+SKBprgDTL0NfYx5jO
+         tPGb5MLJV7kxIVinQ4gCfB8RJAPcMmSTpVLsaqXWDj6K+28me7F+qVnlOqO+mEqhGo
+         Xg86qtucp1LJ0lxKC+rgcI+j3a03+tWjU+4zh6/lTJrZRpPfBM+UyFx6RKftdgkZ6V
+         FcfTAfLpHzxIg==
+From:   Chun-Kuang Hu <chunkuang.hu@kernel.org>
+To:     Matthias Brugger <matthias.bgg@gmail.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>
+Cc:     linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-mediatek@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org,
+        Chun-Kuang Hu <chunkuang.hu@kernel.org>
+Subject: [PATCH v2 0/5] Share mtk mutex driver for both DRM and MDP
+Date:   Thu,  7 Jan 2021 07:17:24 +0800
+Message-Id: <20210106231729.17173-1-chunkuang.hu@kernel.org>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/p_/hmkyYWBCIHY50hXBferM
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+mtk mutex is a driver used by DRM and MDP [1], so this series move
+mtk mutex driver from DRM folder to soc folder, so it could be used
+by DRM and MDP.
 
-Hi all,
+Changes in v2:
+1. Rebase onto mediatek-drm-next [2].
+2. Export symbol for mtk-mutex API.
 
-After merging the vfs tree, today's linux-next build (x86_64 allmodconfig)
-produced this warning:
+[1] https://patchwork.kernel.org/patch/11140751/
+[2] https://git.kernel.org/pub/scm/linux/kernel/git/chunkuang.hu/linux.git/log/?h=mediatek-drm-next
 
-In file included from fs/erofs/xattr.h:10,
-                 from fs/erofs/namei.c:7:
-fs/erofs/namei.c: In function 'erofs_lookup':
-fs/erofs/internal.h:23:21: warning: format '%s' expects argument of type 'c=
-har *', but argument 4 has type 'struct dentry *' [-Wformat=3D]
-   23 | #define pr_fmt(fmt) "erofs: " fmt
-      |                     ^~~~~~~~~
-include/linux/dynamic_debug.h:129:15: note: in expansion of macro 'pr_fmt'
-  129 |   func(&id, ##__VA_ARGS__);  \
-      |               ^~~~~~~~~~~
-include/linux/dynamic_debug.h:147:2: note: in expansion of macro '__dynamic=
-_func_call'
-  147 |  __dynamic_func_call(__UNIQUE_ID(ddebug), fmt, func, ##__VA_ARGS__)
-      |  ^~~~~~~~~~~~~~~~~~~
-include/linux/dynamic_debug.h:157:2: note: in expansion of macro '_dynamic_=
-func_call'
-  157 |  _dynamic_func_call(fmt, __dynamic_pr_debug,  \
-      |  ^~~~~~~~~~~~~~~~~~
-include/linux/printk.h:424:2: note: in expansion of macro 'dynamic_pr_debug'
-  424 |  dynamic_pr_debug(fmt, ##__VA_ARGS__)
-      |  ^~~~~~~~~~~~~~~~
-fs/erofs/internal.h:34:33: note: in expansion of macro 'pr_debug'
-   34 | #define erofs_dbg(x, ...)       pr_debug(x "\n", ##__VA_ARGS__)
-      |                                 ^~~~~~~~
-fs/erofs/namei.c:237:3: note: in expansion of macro 'erofs_dbg'
-  237 |   erofs_dbg("%pd, %s (nid %llu) found, d_type %u", __func__,
-      |   ^~~~~~~~~
+CK Hu (5):
+  drm/mediatek: Remove redundant file including
+  drm/mediatek: Rename file mtk_drm_ddp to mtk_mutex
+  drm/mediatek: Change disp/ddp term to mutex in mtk mutex driver
+  drm/mediatek: Automatically search unclaimed mtk mutex in
+    mtk_mutex_get()
+  soc / drm: mediatek: Move mtk mutex driver to soc folder
 
-Introduced by commit
+ drivers/gpu/drm/mediatek/Makefile             |   1 -
+ drivers/gpu/drm/mediatek/mtk_drm_crtc.c       |  32 +-
+ drivers/gpu/drm/mediatek/mtk_drm_ddp.h        |  28 --
+ drivers/gpu/drm/mediatek/mtk_drm_drv.c        |   3 -
+ drivers/gpu/drm/mediatek/mtk_drm_drv.h        |   1 -
+ drivers/soc/mediatek/Makefile                 |   1 +
+ .../mediatek/mtk-mutex.c}                     | 328 +++++++++---------
+ include/linux/soc/mediatek/mtk-mutex.h        |  26 ++
+ 8 files changed, 212 insertions(+), 208 deletions(-)
+ delete mode 100644 drivers/gpu/drm/mediatek/mtk_drm_ddp.h
+ rename drivers/{gpu/drm/mediatek/mtk_drm_ddp.c => soc/mediatek/mtk-mutex.c} (53%)
+ create mode 100644 include/linux/soc/mediatek/mtk-mutex.h
 
-  879d4376533c ("erofs: use %pd instead of messing with ->d_name")
+-- 
+2.17.1
 
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/p_/hmkyYWBCIHY50hXBferM
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl/2RKAACgkQAVBC80lX
-0GzU5gf+OD18YwDbbT94D/YnDHDab7jRjP74OVQLS90yvaDxWzpDHtxfTgng6fJQ
-mnYfBXrIz6TGDm70hy9BETLmA9CB9ZtWjQ6qmfwQh1ecFWaOnqTsM/KPlPQgwuyt
-YGebOcZ55bzBkZV+h3PrNaZdzx7Ulj0Q7z5YpkWC4TWB9RRNDV1MpAXnm9/69EsP
-v6Bti4w7MY6m+Y1J6h7n93DjuLseV+YSwMoWDVCFOcTbMB2l/N6PWa0h8mwXjtdS
-HAwS2jneM3Qo4u3wKfE7sVmIAHvX8oKhutdTPhd7bKIM0DF5H2P4C5V/7XomO5kf
-8jCNAhkIk5qQQGDtX+KXJlEOqdF7MQ==
-=0YgP
------END PGP SIGNATURE-----
-
---Sig_/p_/hmkyYWBCIHY50hXBferM--
