@@ -2,380 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C0AD32EB7B5
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 02:37:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2523F2EB7B8
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 02:37:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726658AbhAFBg0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 20:36:26 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:38821 "EHLO
+        id S1726492AbhAFBg7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 20:36:59 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:29981 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726098AbhAFBg0 (ORCPT
+        by vger.kernel.org with ESMTP id S1726157AbhAFBg6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 20:36:26 -0500
+        Tue, 5 Jan 2021 20:36:58 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1609896898;
+        s=mimecast20190719; t=1609896931;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=HDpANMTcyT2Uqd3EIOoZ8Qsh7PbjWNpZHuGhjEweub0=;
-        b=PiysCux4pVc9mSMeuaAScP1jQ8YD7tl++UVTce3NZvytJYXGKKpNLJ4N1pmKiBCgQOOoPf
-        qxwO94ePiXacRd6FIxm06v9gqtMyhPpiLxJUdN+4aRtvgZanW++KwG2jmdXCABB77QoGKv
-        H2K7bDWK03/KQ2ZbfWQ/cqvFj+Gt01A=
+        bh=hfo2Cvq3ATvx2T/cgdPX/GnBQ6IRxGdJrImGfK4T+dA=;
+        b=SaYxcMoj64K7e7Prv38M0ls5TYLH1jXb0xdy7gP7RDtZQKe+pBjpOQAuhoD7kjWMUzLClU
+        16KFv4GYvlT6PJjyC+6/Q2fWGV909vuuTtP4Z33qstK/EzDhNucf4ynguQckjGSSldX51Z
+        CWG6ZRd051tUn5YT3/NqXeWFiGh4YAM=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-126-wkSmyCgnN72mHhqaGlZsjA-1; Tue, 05 Jan 2021 20:34:57 -0500
-X-MC-Unique: wkSmyCgnN72mHhqaGlZsjA-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+ us-mta-253-S0RL1n1-Ng6rSVE22t9dEQ-1; Tue, 05 Jan 2021 20:35:29 -0500
+X-MC-Unique: S0RL1n1-Ng6rSVE22t9dEQ-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 668ED10054FF;
-        Wed,  6 Jan 2021 01:34:54 +0000 (UTC)
-Received: from Ruby.redhat.com (ovpn-112-235.rdu2.redhat.com [10.10.112.235])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id B44AF71C96;
-        Wed,  6 Jan 2021 01:34:50 +0000 (UTC)
-From:   Lyude Paul <lyude@redhat.com>
-To:     intel-gfx@lists.freedesktop.org
-Cc:     Jani Nikula <jani.nikula@intel.com>, thaytan@noraisin.net,
-        Vasily Khoruzhick <anarsoul@gmail.com>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        =?UTF-8?q?Ville=20Syrj=C3=A4l=C3=A4?= 
-        <ville.syrjala@linux.intel.com>, Imre Deak <imre.deak@intel.com>,
-        Manasi Navare <manasi.d.navare@intel.com>,
-        Dave Airlie <airlied@redhat.com>,
-        Sean Paul <seanpaul@chromium.org>,
-        Lucas De Marchi <lucas.demarchi@intel.com>,
-        Uma Shankar <uma.shankar@intel.com>,
-        Gwan-gyeong Mun <gwan-gyeong.mun@intel.com>,
-        Ankit Nautiyal <ankit.k.nautiyal@intel.com>,
-        Wambui Karuga <wambui.karugax@gmail.com>,
-        =?UTF-8?q?Jos=C3=A9=20Roberto=20de=20Souza?= <jose.souza@intel.com>,
-        Pankaj Bharadiya <pankaj.laxminarayan.bharadiya@intel.com>,
-        Lee Shawn C <shawn.c.lee@intel.com>,
-        Anshuman Gupta <anshuman.gupta@intel.com>,
-        dri-devel@lists.freedesktop.org (open list:DRM DRIVERS),
-        linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH v4 4/4] drm/dp: Revert "drm/dp: Introduce EDID-based quirks"
-Date:   Tue,  5 Jan 2021 20:34:08 -0500
-Message-Id: <20210106013408.271217-5-lyude@redhat.com>
-In-Reply-To: <20210106013408.271217-1-lyude@redhat.com>
-References: <20210106013408.271217-1-lyude@redhat.com>
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A79FC180A089;
+        Wed,  6 Jan 2021 01:35:28 +0000 (UTC)
+Received: from [10.10.112.14] (ovpn-112-14.rdu2.redhat.com [10.10.112.14])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id BF1B860BE2;
+        Wed,  6 Jan 2021 01:35:27 +0000 (UTC)
+Subject: Re: [PATCH] Revert "KVM: x86: Unconditionally enable irqs in guest
+ context"
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        w90p710@gmail.com, pbonzini@redhat.com, vkuznets@redhat.com,
+        Thomas Gleixner <tglx@linutronix.de>
+References: <20210105192844.296277-1-nitesh@redhat.com>
+ <X/UIh1PqmSLNg8vM@google.com>
+From:   Nitesh Narayan Lal <nitesh@redhat.com>
+Organization: Red Hat Inc,
+Message-ID: <e2ecdb77-a6ec-c73f-db66-a9eb4ca1dffd@redhat.com>
+Date:   Tue, 5 Jan 2021 20:35:26 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+In-Reply-To: <X/UIh1PqmSLNg8vM@google.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This reverts commit 0883ce8146ed6074c76399f4e70dbed788582e12. Originally
-these quirks were added because of the issues with using the eDP
-backlight interfaces on certain laptop panels, which made it impossible
-to properly probe for DPCD backlight support without having a whitelist
-for panels that we know have working VESA backlight control interfaces
-over DPCD. As well, it should be noted it was impossible to use the
-normal sink OUI for recognizing these panels as none of them actually
-filled out their OUIs, hence needing to resort to checking EDIDs.
 
-At the time we weren't really sure why certain panels had issues with
-DPCD backlight controls, but we eventually figured out that there was a
-second interface that these problematic laptop panels actually did work
-with and advertise properly: Intel's proprietary backlight interface for
-HDR panels. So far the testing we've done hasn't brought any panels to
-light that advertise this interface and don't support it properly, which
-means we finally have a real solution to this problem.
+On 1/5/21 7:47 PM, Sean Christopherson wrote:
+> +tglx
+>
+> On Tue, Jan 05, 2021, Nitesh Narayan Lal wrote:
+>> This reverts commit d7a08882a0a4b4e176691331ee3f492996579534.
+>>
+>> After the introduction of the patch:
+>>
+>> 	87fa7f3e9: x86/kvm: Move context tracking where it belongs
+>>
+>> since we have moved guest_exit_irqoff closer to the VM-Exit, explicit
+>> enabling of irqs to process pending interrupts should not be required
+>> within vcpu_enter_guest anymore.
+> Ugh, except that commit completely broke tick-based accounting, on both Intel
+> and AMD.
 
-As a result, we now have no need for the force DPCD backlight quirk, and
-furthermore this also removes the need for any kind of EDID quirk
-checking in DRM. So, let's just revert it for now since we were the only
-driver using this.
+I did notice some discrepancies in the system time reported after the
+introduction of this patch but I wrongly concluded that the behavior is correct.
 
-v3:
-* Rebase
-v2:
-* Fix indenting error picked up by checkpatch in
-  intel_edp_init_connector()
+I reported this yesterday [1] but I think I added your old email ID in
+that thread (sorry about that).
 
-Signed-off-by: Lyude Paul <lyude@redhat.com>
-Acked-by: Jani Nikula <jani.nikula@intel.com>
-Cc: thaytan@noraisin.net
-Cc: Vasily Khoruzhick <anarsoul@gmail.com>
----
- drivers/gpu/drm/drm_dp_helper.c               | 83 +------------------
- drivers/gpu/drm/drm_dp_mst_topology.c         |  3 +-
- .../drm/i915/display/intel_display_types.h    |  1 -
- drivers/gpu/drm/i915/display/intel_dp.c       |  9 +-
- drivers/gpu/drm/i915/display/intel_dp_mst.c   |  3 +-
- drivers/gpu/drm/i915/display/intel_psr.c      |  2 +-
- include/drm/drm_dp_helper.h                   | 21 +----
- 7 files changed, 9 insertions(+), 113 deletions(-)
+>   With guest_exit_irqoff() being called immediately after VM-Exit, any
+> tick that happens after IRQs are disabled will be accounted to the host.  E.g.
+> on Intel, even an IRQ VM-Exit that has already been acked by the CPU isn't
+> processed until kvm_x86_ops.handle_exit_irqoff(), well after PF_VCPU has been
+> cleared.
 
-diff --git a/drivers/gpu/drm/drm_dp_helper.c b/drivers/gpu/drm/drm_dp_helper.c
-index 3ecde451f523..19dbdeb581cb 100644
---- a/drivers/gpu/drm/drm_dp_helper.c
-+++ b/drivers/gpu/drm/drm_dp_helper.c
-@@ -1236,7 +1236,7 @@ bool drm_dp_read_sink_count_cap(struct drm_connector *connector,
- 	return connector->connector_type != DRM_MODE_CONNECTOR_eDP &&
- 		dpcd[DP_DPCD_REV] >= DP_DPCD_REV_11 &&
- 		dpcd[DP_DOWNSTREAMPORT_PRESENT] & DP_DWN_STRM_PORT_PRESENT &&
--		!drm_dp_has_quirk(desc, 0, DP_DPCD_QUIRK_NO_SINK_COUNT);
-+		!drm_dp_has_quirk(desc, DP_DPCD_QUIRK_NO_SINK_COUNT);
- }
- EXPORT_SYMBOL(drm_dp_read_sink_count_cap);
- 
-@@ -1957,87 +1957,6 @@ drm_dp_get_quirks(const struct drm_dp_dpcd_ident *ident, bool is_branch)
- #undef DEVICE_ID_ANY
- #undef DEVICE_ID
- 
--struct edid_quirk {
--	u8 mfg_id[2];
--	u8 prod_id[2];
--	u32 quirks;
--};
--
--#define MFG(first, second) { (first), (second) }
--#define PROD_ID(first, second) { (first), (second) }
--
--/*
-- * Some devices have unreliable OUIDs where they don't set the device ID
-- * correctly, and as a result we need to use the EDID for finding additional
-- * DP quirks in such cases.
-- */
--static const struct edid_quirk edid_quirk_list[] = {
--	/* Optional 4K AMOLED panel in the ThinkPad X1 Extreme 2nd Generation
--	 * only supports DPCD backlight controls
--	 */
--	{ MFG(0x4c, 0x83), PROD_ID(0x41, 0x41), BIT(DP_QUIRK_FORCE_DPCD_BACKLIGHT) },
--	/*
--	 * Some Dell CML 2020 systems have panels support both AUX and PWM
--	 * backlight control, and some only support AUX backlight control. All
--	 * said panels start up in AUX mode by default, and we don't have any
--	 * support for disabling HDR mode on these panels which would be
--	 * required to switch to PWM backlight control mode (plus, I'm not
--	 * even sure we want PWM backlight controls over DPCD backlight
--	 * controls anyway...). Until we have a better way of detecting these,
--	 * force DPCD backlight mode on all of them.
--	 */
--	{ MFG(0x06, 0xaf), PROD_ID(0x9b, 0x32), BIT(DP_QUIRK_FORCE_DPCD_BACKLIGHT) },
--	{ MFG(0x06, 0xaf), PROD_ID(0xeb, 0x41), BIT(DP_QUIRK_FORCE_DPCD_BACKLIGHT) },
--	{ MFG(0x4d, 0x10), PROD_ID(0xc7, 0x14), BIT(DP_QUIRK_FORCE_DPCD_BACKLIGHT) },
--	{ MFG(0x4d, 0x10), PROD_ID(0xe6, 0x14), BIT(DP_QUIRK_FORCE_DPCD_BACKLIGHT) },
--	{ MFG(0x4c, 0x83), PROD_ID(0x47, 0x41), BIT(DP_QUIRK_FORCE_DPCD_BACKLIGHT) },
--	{ MFG(0x09, 0xe5), PROD_ID(0xde, 0x08), BIT(DP_QUIRK_FORCE_DPCD_BACKLIGHT) },
--};
--
--#undef MFG
--#undef PROD_ID
--
--/**
-- * drm_dp_get_edid_quirks() - Check the EDID of a DP device to find additional
-- * DP-specific quirks
-- * @edid: The EDID to check
-- *
-- * While OUIDs are meant to be used to recognize a DisplayPort device, a lot
-- * of manufacturers don't seem to like following standards and neglect to fill
-- * the dev-ID in, making it impossible to only use OUIDs for determining
-- * quirks in some cases. This function can be used to check the EDID and look
-- * up any additional DP quirks. The bits returned by this function correspond
-- * to the quirk bits in &drm_dp_quirk.
-- *
-- * Returns: a bitmask of quirks, if any. The driver can check this using
-- * drm_dp_has_quirk().
-- */
--u32 drm_dp_get_edid_quirks(const struct edid *edid)
--{
--	const struct edid_quirk *quirk;
--	u32 quirks = 0;
--	int i;
--
--	if (!edid)
--		return 0;
--
--	for (i = 0; i < ARRAY_SIZE(edid_quirk_list); i++) {
--		quirk = &edid_quirk_list[i];
--		if (memcmp(quirk->mfg_id, edid->mfg_id,
--			   sizeof(edid->mfg_id)) == 0 &&
--		    memcmp(quirk->prod_id, edid->prod_code,
--			   sizeof(edid->prod_code)) == 0)
--			quirks |= quirk->quirks;
--	}
--
--	DRM_DEBUG_KMS("DP sink: EDID mfg %*phD prod-ID %*phD quirks: 0x%04x\n",
--		      (int)sizeof(edid->mfg_id), edid->mfg_id,
--		      (int)sizeof(edid->prod_code), edid->prod_code, quirks);
--
--	return quirks;
--}
--EXPORT_SYMBOL(drm_dp_get_edid_quirks);
--
- /**
-  * drm_dp_read_desc - read sink/branch descriptor from DPCD
-  * @aux: DisplayPort AUX channel
-diff --git a/drivers/gpu/drm/drm_dp_mst_topology.c b/drivers/gpu/drm/drm_dp_mst_topology.c
-index 0401b2f47500..a2e692a0c6c2 100644
---- a/drivers/gpu/drm/drm_dp_mst_topology.c
-+++ b/drivers/gpu/drm/drm_dp_mst_topology.c
-@@ -5824,8 +5824,7 @@ struct drm_dp_aux *drm_dp_mst_dsc_aux_for_port(struct drm_dp_mst_port *port)
- 	if (drm_dp_read_desc(port->mgr->aux, &desc, true))
- 		return NULL;
- 
--	if (drm_dp_has_quirk(&desc, 0,
--			     DP_DPCD_QUIRK_DSC_WITHOUT_VIRTUAL_DPCD) &&
-+	if (drm_dp_has_quirk(&desc, DP_DPCD_QUIRK_DSC_WITHOUT_VIRTUAL_DPCD) &&
- 	    port->mgr->dpcd[DP_DPCD_REV] >= DP_DPCD_REV_14 &&
- 	    port->parent == port->mgr->mst_primary) {
- 		u8 downstreamport;
-diff --git a/drivers/gpu/drm/i915/display/intel_display_types.h b/drivers/gpu/drm/i915/display/intel_display_types.h
-index b24d80ffd18b..744bdf39a7b1 100644
---- a/drivers/gpu/drm/i915/display/intel_display_types.h
-+++ b/drivers/gpu/drm/i915/display/intel_display_types.h
-@@ -1390,7 +1390,6 @@ struct intel_dp {
- 	int max_link_rate;
- 	/* sink or branch descriptor */
- 	struct drm_dp_desc desc;
--	u32 edid_quirks;
- 	struct drm_dp_aux aux;
- 	u32 aux_busy_last_status;
- 	u8 train_set[4];
-diff --git a/drivers/gpu/drm/i915/display/intel_dp.c b/drivers/gpu/drm/i915/display/intel_dp.c
-index 8a00e609085f..7fcb8ca10f96 100644
---- a/drivers/gpu/drm/i915/display/intel_dp.c
-+++ b/drivers/gpu/drm/i915/display/intel_dp.c
-@@ -162,8 +162,7 @@ static void intel_dp_set_sink_rates(struct intel_dp *intel_dp)
- 	int i, max_rate;
- 	int max_lttpr_rate;
- 
--	if (drm_dp_has_quirk(&intel_dp->desc, 0,
--			     DP_DPCD_QUIRK_CAN_DO_MAX_LINK_RATE_3_24_GBPS)) {
-+	if (drm_dp_has_quirk(&intel_dp->desc, DP_DPCD_QUIRK_CAN_DO_MAX_LINK_RATE_3_24_GBPS)) {
- 		/* Needed, e.g., for Apple MBP 2017, 15 inch eDP Retina panel */
- 		static const int quirk_rates[] = { 162000, 270000, 324000 };
- 
-@@ -2823,8 +2822,7 @@ intel_dp_compute_config(struct intel_encoder *encoder,
- 	struct intel_connector *intel_connector = intel_dp->attached_connector;
- 	struct intel_digital_connector_state *intel_conn_state =
- 		to_intel_digital_connector_state(conn_state);
--	bool constant_n = drm_dp_has_quirk(&intel_dp->desc, 0,
--					   DP_DPCD_QUIRK_CONSTANT_N);
-+	bool constant_n = drm_dp_has_quirk(&intel_dp->desc, DP_DPCD_QUIRK_CONSTANT_N);
- 	int ret = 0, output_bpp;
- 
- 	if (HAS_PCH_SPLIT(dev_priv) && !HAS_DDI(dev_priv) && port != PORT_A)
-@@ -7007,7 +7005,6 @@ intel_dp_set_edid(struct intel_dp *intel_dp)
- 	}
- 
- 	drm_dp_cec_set_edid(&intel_dp->aux, edid);
--	intel_dp->edid_quirks = drm_dp_get_edid_quirks(edid);
- }
- 
- static void
-@@ -7021,7 +7018,6 @@ intel_dp_unset_edid(struct intel_dp *intel_dp)
- 
- 	intel_dp->has_hdmi_sink = false;
- 	intel_dp->has_audio = false;
--	intel_dp->edid_quirks = 0;
- 
- 	intel_dp->dfp.max_bpc = 0;
- 	intel_dp->dfp.max_dotclock = 0;
-@@ -8425,7 +8421,6 @@ static bool intel_edp_init_connector(struct intel_dp *intel_dp,
- 	if (edid) {
- 		if (drm_add_edid_modes(connector, edid)) {
- 			drm_connector_update_edid_property(connector, edid);
--			intel_dp->edid_quirks = drm_dp_get_edid_quirks(edid);
- 		} else {
- 			kfree(edid);
- 			edid = ERR_PTR(-EINVAL);
-diff --git a/drivers/gpu/drm/i915/display/intel_dp_mst.c b/drivers/gpu/drm/i915/display/intel_dp_mst.c
-index 27f04aed8764..3e7bbf8d6620 100644
---- a/drivers/gpu/drm/i915/display/intel_dp_mst.c
-+++ b/drivers/gpu/drm/i915/display/intel_dp_mst.c
-@@ -53,8 +53,7 @@ static int intel_dp_mst_compute_link_config(struct intel_encoder *encoder,
- 	struct drm_i915_private *i915 = to_i915(connector->base.dev);
- 	const struct drm_display_mode *adjusted_mode =
- 		&crtc_state->hw.adjusted_mode;
--	bool constant_n = drm_dp_has_quirk(&intel_dp->desc, 0,
--					   DP_DPCD_QUIRK_CONSTANT_N);
-+	bool constant_n = drm_dp_has_quirk(&intel_dp->desc, DP_DPCD_QUIRK_CONSTANT_N);
- 	int bpp, slots = -EINVAL;
- 
- 	crtc_state->lane_count = limits->max_lane_count;
-diff --git a/drivers/gpu/drm/i915/display/intel_psr.c b/drivers/gpu/drm/i915/display/intel_psr.c
-index c24ae69426cf..1e6c1fa59d4a 100644
---- a/drivers/gpu/drm/i915/display/intel_psr.c
-+++ b/drivers/gpu/drm/i915/display/intel_psr.c
-@@ -305,7 +305,7 @@ void intel_psr_init_dpcd(struct intel_dp *intel_dp)
- 	drm_dbg_kms(&dev_priv->drm, "eDP panel supports PSR version %x\n",
- 		    intel_dp->psr_dpcd[0]);
- 
--	if (drm_dp_has_quirk(&intel_dp->desc, 0, DP_DPCD_QUIRK_NO_PSR)) {
-+	if (drm_dp_has_quirk(&intel_dp->desc, DP_DPCD_QUIRK_NO_PSR)) {
- 		drm_dbg_kms(&dev_priv->drm,
- 			    "PSR support not currently available for this panel\n");
- 		return;
-diff --git a/include/drm/drm_dp_helper.h b/include/drm/drm_dp_helper.h
-index 6236f212da61..edffd1dcca3e 100644
---- a/include/drm/drm_dp_helper.h
-+++ b/include/drm/drm_dp_helper.h
-@@ -2029,16 +2029,13 @@ struct drm_dp_desc {
- 
- int drm_dp_read_desc(struct drm_dp_aux *aux, struct drm_dp_desc *desc,
- 		     bool is_branch);
--u32 drm_dp_get_edid_quirks(const struct edid *edid);
- 
- /**
-  * enum drm_dp_quirk - Display Port sink/branch device specific quirks
-  *
-  * Display Port sink and branch devices in the wild have a variety of bugs, try
-  * to collect them here. The quirks are shared, but it's up to the drivers to
-- * implement workarounds for them. Note that because some devices have
-- * unreliable OUIDs, the EDID of sinks should also be checked for quirks using
-- * drm_dp_get_edid_quirks().
-+ * implement workarounds for them.
-  */
- enum drm_dp_quirk {
- 	/**
-@@ -2070,16 +2067,6 @@ enum drm_dp_quirk {
- 	 * The DSC caps can be read from the physical aux instead.
- 	 */
- 	DP_DPCD_QUIRK_DSC_WITHOUT_VIRTUAL_DPCD,
--	/**
--	 * @DP_QUIRK_FORCE_DPCD_BACKLIGHT:
--	 *
--	 * The device is telling the truth when it says that it uses DPCD
--	 * backlight controls, even if the system's firmware disagrees. This
--	 * quirk should be checked against both the ident and panel EDID.
--	 * When present, the driver should honor the DPCD backlight
--	 * capabilities advertised.
--	 */
--	DP_QUIRK_FORCE_DPCD_BACKLIGHT,
- 	/**
- 	 * @DP_DPCD_QUIRK_CAN_DO_MAX_LINK_RATE_3_24_GBPS:
- 	 *
-@@ -2092,16 +2079,14 @@ enum drm_dp_quirk {
- /**
-  * drm_dp_has_quirk() - does the DP device have a specific quirk
-  * @desc: Device descriptor filled by drm_dp_read_desc()
-- * @edid_quirks: Optional quirk bitmask filled by drm_dp_get_edid_quirks()
-  * @quirk: Quirk to query for
-  *
-  * Return true if DP device identified by @desc has @quirk.
-  */
- static inline bool
--drm_dp_has_quirk(const struct drm_dp_desc *desc, u32 edid_quirks,
--		 enum drm_dp_quirk quirk)
-+drm_dp_has_quirk(const struct drm_dp_desc *desc, enum drm_dp_quirk quirk)
- {
--	return (desc->quirks | edid_quirks) & BIT(quirk);
-+	return desc->quirks & BIT(quirk);
- }
- 
- #ifdef CONFIG_DRM_DP_CEC
+Right that also explains the higher system time reported by the cpuacct.stats.
+
+>
+> CONFIG_VIRT_CPU_ACCOUNTING_GEN=y should still work (I didn't bother to verify).
+
+For the cpuacct stats that I have shared in the other thread, this config was
+enabled.
+
+>
+> Thomas, any clever ideas?  Handling IRQs in {vmx,svm}_vcpu_enter_exit() isn't an
+> option as KVM hasn't restored enough state to handle an IRQ, e.g. PKRU and XCR0
+> are still guest values.  Is it too heinous to fudge PF_VCPU across KVM's
+> "pending" IRQ handling?  E.g. this god-awful hack fixes the accounting:
+>
+> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+> index 836912b42030..5a777fd35b4b 100644
+> --- a/arch/x86/kvm/x86.c
+> +++ b/arch/x86/kvm/x86.c
+> @@ -9028,6 +9028,7 @@ static int vcpu_enter_guest(struct kvm_vcpu *vcpu)
+>         vcpu->mode = OUTSIDE_GUEST_MODE;
+>         smp_wmb();
+>  
+> +       current->flags |= PF_VCPU;
+>         kvm_x86_ops.handle_exit_irqoff(vcpu);
+>  
+>         /*
+> @@ -9042,6 +9043,7 @@ static int vcpu_enter_guest(struct kvm_vcpu *vcpu)
+>         ++vcpu->stat.exits;
+>         local_irq_disable();
+>         kvm_after_interrupt(vcpu);
+> +       current->flags &= ~PF_VCPU;
+>  
+>         if (lapic_in_kernel(vcpu)) {
+>                 s64 delta = vcpu->arch.apic->lapic_timer.advance_expire_delta;
+>
+
+I can give this a try.
+What is the right way to test this (via cpuacct stats maybe)?
+
+[1] https://lore.kernel.org/lkml/12a1b9d4-8534-e23a-6bbd-736474928e6b@redhat.com/
+
 -- 
-2.29.2
+Thanks
+Nitesh
 
