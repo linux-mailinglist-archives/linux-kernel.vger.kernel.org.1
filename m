@@ -2,123 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FE582EB7FB
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 03:13:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F7052EB7FD
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 03:13:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725884AbhAFCM7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 21:12:59 -0500
-Received: from mga03.intel.com ([134.134.136.65]:3721 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725730AbhAFCM7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 21:12:59 -0500
-IronPort-SDR: X6Yiu3MDyITW6aCy1tH/PIbE+66IdGQYWiFEYajVEug+IEgH5Rkqpg2Cww+GrlOHHblkNCXaA7
- ma5A71Gi8LmQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9855"; a="177314920"
-X-IronPort-AV: E=Sophos;i="5.78,478,1599548400"; 
-   d="scan'208";a="177314920"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Jan 2021 18:12:17 -0800
-IronPort-SDR: i6BjHQCTGiTSbmJTLNZuZdyY3yWoZJj4nMQ3V/KInbUW0o6BZgXm9/5F+amNJieJDlhGsQHt0x
- xp5mYDTGjwiw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.78,478,1599548400"; 
-   d="scan'208";a="402536536"
-Received: from shbuild999.sh.intel.com (HELO localhost) ([10.239.147.98])
-  by FMSMGA003.fm.intel.com with ESMTP; 05 Jan 2021 18:12:14 -0800
-Date:   Wed, 6 Jan 2021 10:12:13 +0800
-From:   Feng Tang <feng.tang@intel.com>
-To:     Shakeel Butt <shakeelb@google.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Linux MM <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>, andi.kleen@intel.com,
-        "Chen, Tim C" <tim.c.chen@intel.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Huang Ying <ying.huang@intel.com>, Roman Gushchin <guro@fb.com>
-Subject: Re: [PATCH 2/2] mm: memcg: add a new MEMCG_UPDATE_BATCH
-Message-ID: <20210106021213.GD101866@shbuild999.sh.intel.com>
-References: <1609252514-27795-1-git-send-email-feng.tang@intel.com>
- <1609252514-27795-2-git-send-email-feng.tang@intel.com>
- <CALvZod5ir6F6BkJiVoXztNu6CancqJ2sNusg_hwTPcEssYkDdQ@mail.gmail.com>
+        id S1726098AbhAFCNN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 21:13:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54822 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725948AbhAFCNN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Jan 2021 21:13:13 -0500
+Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35A5AC061387;
+        Tue,  5 Jan 2021 18:12:32 -0800 (PST)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4D9Xv059kdz9sVs;
+        Wed,  6 Jan 2021 13:12:28 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1609899148;
+        bh=vFEIujuVqfrRP3UOX60pSDIsJIHaEcdfg1j+cDC90po=;
+        h=Date:From:To:Cc:Subject:From;
+        b=t5bEx2z8ZFvBvHHcswErrKBIrfHKberKFFweWLXLnvG+S1Y40G4Z2ZIM8ZyMPBs2Q
+         OiByuUx84vmj1AucIJAFs6xs5zmmz7qAZOqD1a0VHknYppzx7dc73LkdyqB7saRZyz
+         RSbKqv9PSSPKF6fDL0kMvT+XneQNsBINEQ4/QuGc/cYzq9Al3dYxXqfiYxXAdWjmx1
+         8I642UuuZykcguiab2yWcNlXA5TcohIeUzpiQeggIyURPeXShNCTA30vLtFQpZwRUX
+         NZGXwoteWSfqKZtzr+rIxefWTfxVJZTJr1eln3Aj+7QrvhHmY6+HdOXRgNVuh8tD7T
+         ahpfWCJn1Y2aw==
+Date:   Wed, 6 Jan 2021 13:12:25 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Greg KH <greg@kroah.com>
+Cc:     Wesley Cheng <wcheng@codeaurora.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: build warning after merge of the usb tree
+Message-ID: <20210106131225.66e82b5c@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CALvZod5ir6F6BkJiVoXztNu6CancqJ2sNusg_hwTPcEssYkDdQ@mail.gmail.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+Content-Type: multipart/signed; boundary="Sig_/UUtXkT6vDTJyjiYRgYHukH0";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Shakeel,
+--Sig_/UUtXkT6vDTJyjiYRgYHukH0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, Jan 05, 2021 at 04:47:33PM -0800, Shakeel Butt wrote:
-> On Tue, Dec 29, 2020 at 6:35 AM Feng Tang <feng.tang@intel.com> wrote:
-> >
-> > When profiling memory cgroup involved benchmarking, status update
-> > sometimes take quite some CPU cycles. Current MEMCG_CHARGE_BATCH
-> > is used for both charging and statistics/events updating, and is
-> > set to 32, which may be good for accuracy of memcg charging, but
-> > too small for stats update which causes concurrent access to global
-> > stats data instead of per-cpu ones.
-> >
-> > So handle them differently, by adding a new bigger batch number
-> > for stats updating, while keeping the value for charging (though
-> > comments in memcontrol.h suggests to consider a bigger value too)
-> >
-> > The new batch is set to 512, which considers 2MB huge pages (512
-> > pages), as the check logic mostly is:
-> >
-> >     if (x > BATCH), then skip updating global data
-> >
-> > so it will save 50% global data updating for 2MB pages
-> >
-> > Following are some performance data with the patch, against
-> > v5.11-rc1, on several generations of Xeon platforms. Each category
-> > below has several subcases run on different platform, and only the
-> > worst and best scores are listed:
-> >
-> > fio:                             +2.0% ~  +6.8%
-> > will-it-scale/malloc:            -0.9% ~  +6.2%
-> > will-it-scale/page_fault1:       no change
-> > will-it-scale/page_fault2:      +13.7% ~ +26.2%
-> >
-> > One thought is it could be dynamically calculated according to
-> > memcg limit and number of CPUs, and another is to add a periodic
-> > syncing of the data for accuracy reason similar to vmstat, as
-> > suggested by Ying.
-> >
-> 
-> I am going to push back on this change. On a large system where jobs
-> can run on any available cpu, this will totally mess up the stats
-> (which is actually what happens on our production servers). These
-> stats are used for multiple purposes like debugging or understanding
-> the memory usage of the job or doing data analysis.
+Hi all,
 
-Thanks for sharing the usage case, and I agree  it will bring more
-trouble for debugging and analyzing.
+After merging the usb tree, today's linux-next build (htmldocs) produced
+this warning:
 
-Though we lack real world load, but the micro benchmarks do show
-obvious benefits, 0day rebot reported a 43.4% improvement for
-vm-scalability lru-shm case, and it is up to +60% against 5.11-rc1.
+drivers/usb/dwc3/core.h:1259: warning: Function parameter or member 'gadget=
+_max_speed' not described in 'dwc3'
 
-The memory cgroup stats updating hotspots has been on our radar
-for a long time, which could be seen in the perf profile data.
+Introduced by commit
 
-So I am wondering if we could make the batch a configurable knob,
-so that it can benefit workload without need for accurate stats.
+  7c9a2598463a ("usb: dwc3: gadget: Preserve UDC max speed setting")
 
-One further thought is, there are quite some "BATCH" number in
-kernel for perf-cpu/global data updating, maybe we can add a
-global flag 'sysctl_need_accurate_stats' for
-	if (sysctl_need_accurate_stats)
-		batch = SMALLER_BATCH
-	else
-		batch = BIGGER_BATCH
+--=20
+Cheers,
+Stephen Rothwell
 
+--Sig_/UUtXkT6vDTJyjiYRgYHukH0
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
-Thanks,
-Feng
+-----BEGIN PGP SIGNATURE-----
 
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl/1HIkACgkQAVBC80lX
+0GzY/ggAgBzmOnOCVJTBKxPCbXfz/rzE8xP0d5wndDXFXR/XrEDwDM3JC6nA3Lv2
+ZXVePZphv39bl+pASNdp3eyxVpygcFD+CTjMhaBJCsUxcSBHqhyjd5d++/TiDQ0k
+uoU5+LTAoKJ9EAInL4V7BGJWjriNruS9IXdO7mQCePv73UgWP1DLQHCbMvNpa8mI
+Qkzfs+CTcr48v7wQ5XfE25gsZkqJY6a1JM6Ty/x5CgMUDxhiSRvq3s+sUTRJ/go1
+TfHZnPpYTfP8iQxgMqdroLQcDLlNBQ3XyN6g7KPTwHMaykY0SPuTPy9qQo2cQ4o3
+qIy6HV4Q8xZs2Qa5Bam7kDCHl9oXLA==
+=walZ
+-----END PGP SIGNATURE-----
 
+--Sig_/UUtXkT6vDTJyjiYRgYHukH0--
