@@ -2,76 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 856D42EBC85
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 11:38:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F7342EBC64
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 11:33:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726918AbhAFKgx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Jan 2021 05:36:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48948 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726862AbhAFKgx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Jan 2021 05:36:53 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C63CAC061357;
-        Wed,  6 Jan 2021 02:36:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=bVpL1mGdE1znAIBZqUAoV1hHGWEPvW8K3ojw3xc9b+M=; b=omZNe+9FXXLxjBfSEMIE4cUKb3
-        rnyZVbDU3fbqcK9qpv/Ck2jBkMrwr3aQiL//361OiVvEoUbCdEFQu18X82YROGTWUED3YQ0MyJzgM
-        h9Zaw3jVVldE335/DSoyOnvxXo+jexl+7ddRehUhOV5JaqMmuLtlcSvDPEh8L8ZAhX77gtaNDYnJP
-        hBql9d3ZRNJfxEAyuCUpFDxIvk5GCmmht89lB5rnLjmnN+YFvZLcoJDI2kX3Mp5mV/MiowQoGMXi3
-        PBaiGYGtxll9pO/IlDnllQlS7f3wCuHU0XTGFXujT4c3l6p/wvHRX0iukAPsj5JAnvCPsRMELE7/r
-        AAuiuMMA==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1kx68E-002Ewa-Ib; Wed, 06 Jan 2021 10:34:05 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 99A053013E5;
-        Wed,  6 Jan 2021 11:33:33 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 88C6E2029F4C3; Wed,  6 Jan 2021 11:33:33 +0100 (CET)
-Date:   Wed, 6 Jan 2021 11:33:33 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Frederic Weisbecker <frederic@kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        Fabio Estevam <festevam@gmail.com>, stable@vger.kernel.org,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Len Brown <lenb@kernel.org>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>
-Subject: Re: [PATCH 1/4] sched/idle: Fix missing need_resched() check after
- rcu_idle_enter()
-Message-ID: <X/WR/QSrKTdfRgGt@hirez.programming.kicks-ass.net>
-References: <20210104152058.36642-1-frederic@kernel.org>
- <20210104152058.36642-2-frederic@kernel.org>
- <20210105095503.GF3040@hirez.programming.kicks-ass.net>
- <20210105125722.GA68490@lothringen>
+        id S1726447AbhAFKdB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Jan 2021 05:33:01 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58008 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725971AbhAFKdB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 Jan 2021 05:33:01 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0B66D2310D;
+        Wed,  6 Jan 2021 10:32:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1609929140;
+        bh=8orHryq6VnH6jtYez3tMeFosmYrZSBFx73SQxgbE9EA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=qAGBatnSWl+hg9LtX0ozJrIWea13acKYZ1KBJtRAU+lEqkyf6KUqAgyfS/1lMljFe
+         oghlrZJARLTTUAnpbCqJWJD12MYXH80mbHk69QBi6L/XS7evnTHiyZxRKj36MKxMSY
+         kctCfaLutNwPPytJAqCp6a0Jp3533uXe/g+c7HJc=
+Date:   Wed, 6 Jan 2021 11:33:39 +0100
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Siddharth Gupta <sidgup@codeaurora.org>
+Cc:     mcgrof@kernel.org, rafael@kernel.org, viro@zeniv.linux.org.uk,
+        linux-fsdevel@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "psodagud@codeaurora.org" <psodagud@codeaurora.org>
+Subject: Re: PROBLEM: Firmware loader fallback mechanism no longer works with
+ sendfile
+Message-ID: <X/WSA7nmsUSrpsfr@kroah.com>
+References: <7e6f44b1-a0d2-d1d1-9c11-dcea163f8f03@codeaurora.org>
+ <X/QJCgoLPhfECEmP@kroah.com>
+ <180bdfaf-8c84-6946-b46f-3729d4eb17cc@codeaurora.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210105125722.GA68490@lothringen>
+In-Reply-To: <180bdfaf-8c84-6946-b46f-3729d4eb17cc@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 05, 2021 at 01:57:22PM +0100, Frederic Weisbecker wrote:
-
-> > Something like the below, combined with a fixup for all callers (which
-> > the compiler will help us find thanks to __must_check).
+On Tue, Jan 05, 2021 at 05:00:58PM -0800, Siddharth Gupta wrote:
 > 
-> Right, I just need to make sure that the wake up is local as the kthread
-> awaken can be queued anywhere. But a simple need_resched() check after the
-> wake up should be fine to get that.
+> On 1/4/2021 10:36 PM, Greg KH wrote:
+> > On Mon, Jan 04, 2021 at 02:43:45PM -0800, Siddharth Gupta wrote:
+> > > Hi all,
+> > > 
+> > > With the introduction of the filesystem change "fs: don't allow splice
+> > > read/write without explicit ops"[1] the fallback mechanism of the firmware
+> > > loader[2] no longer works when using sendfile[3] from the userspace.
+> > What userspace program are you using to load firmware?
+> The userspace program is in the android userspace which listens to a uevent
+> from the firmware loader and then loads the firmware using sendfile[1].
+> >   Are you not using the in-kernel firmware loader for some reason?
+> We have certain non-standard firmware paths that should not be added to the
+> linux kernel, and the firmware_class.path only supports a single path.
 
-Duh, yes. Clearly I'm having startup problems after the holidays ;-)
+That option is just for a single override, which should be all that you
+need if the other paths that are built into the kernel do not work.
+Surely one of the 5 different paths here are acceptable?
+
+If not, how many more do you need?
+
+And last I looked, Android wants you to use the built-in kernel firmware
+loader, and NOT an external firmware binary anymore.  So this shouldn't
+be an issue for your newer systems anyway :)
+
+> > > Since the binary attributes don't support splice_{read,write} functions the
+> > > calls to splice_{read,write} used the default kernel_{read,write} functions.
+> > > With the above change this results in an -EINVAL return from
+> > > do_splice_from[4].
+> > > 
+> > > This essentially means that sendfile will not work for any binary attribute
+> > > in the sysfs.
+> > Have you tried fixing this with a patch much like what we did for the
+> > proc files that needed this?  If not, can you?
+> I am not aware of this fix, could you provide me a link for reference? I
+> will try it out.
+
+Look at the series of commits starting at fe33850ff798 ("proc: wire up
+generic_file_splice_read for iter ops") for how this was fixed in procfs
+as an example of what also needs to be done for binary sysfs files.
+
+thanks,
+
+greg k-h
