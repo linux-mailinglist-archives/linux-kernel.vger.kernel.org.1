@@ -2,112 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3538D2EC0C3
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 17:03:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 295292EC0CB
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 17:03:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727106AbhAFQCN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Jan 2021 11:02:13 -0500
-Received: from userp2130.oracle.com ([156.151.31.86]:54890 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725925AbhAFQCM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Jan 2021 11:02:12 -0500
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 106FtftW089467;
-        Wed, 6 Jan 2021 15:59:37 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-type :
- content-transfer-encoding; s=corp-2020-01-29;
- bh=e280thpeH4MDj+q41MOrlKwQhwr0+ZqgSZTW/ewQcjs=;
- b=uIjNH2JKtab15z7hmqijke50pN59OsA9mCfXgSYKnP+BVSpOY99S1dFzULkEt8DTmxgm
- kyW11yuqL5W4R2CFhbEGUmZR3MofR66qamrCL4+bwtB8fhWCuus87VLeDNNFcyh5E6Ci
- u/PMxhJjfdBUY+nQ4wPR7X2WGEUUE2jbRLzi/CtE4zuNqQkoWTlurLwyf2lxNBsMJ+4e
- z8heDckYwbXjOT7CD4Z1FIX7HHZVhnu8Km7ldoTQsLaZJMCTvEq+epkWn9x01r4tdW09
- EX8ovXxkcHGJjaTNtCefu3UF9eTLFoh8dSzVkIWykrM82CGxnRt56m7Oliarp2GfVVm4 3A== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by userp2130.oracle.com with ESMTP id 35wftx856u-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 06 Jan 2021 15:59:37 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 106FtOwo154567;
-        Wed, 6 Jan 2021 15:59:37 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by userp3030.oracle.com with ESMTP id 35w3g17tm9-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 06 Jan 2021 15:59:37 +0000
-Received: from abhmp0018.oracle.com (abhmp0018.oracle.com [141.146.116.24])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 106FxXO2027087;
-        Wed, 6 Jan 2021 15:59:33 GMT
-Received: from localhost.uk.oracle.com (/10.175.165.159)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Wed, 06 Jan 2021 15:59:33 +0000
-From:   Alan Maguire <alan.maguire@oracle.com>
-To:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org
-Cc:     kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org, toke@redhat.com,
-        wanghai38@huawei.com, quentin@isovalent.com,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Alan Maguire <alan.maguire@oracle.com>
-Subject: [PATCH bpf] bpftool: fix compilation failure for net.o with older glibc
-Date:   Wed,  6 Jan 2021 15:59:06 +0000
-Message-Id: <1609948746-15369-1-git-send-email-alan.maguire@oracle.com>
-X-Mailer: git-send-email 1.8.3.1
+        id S1727246AbhAFQCo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Jan 2021 11:02:44 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46158 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727148AbhAFQCn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 Jan 2021 11:02:43 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CEE4F23130;
+        Wed,  6 Jan 2021 16:02:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1609948922;
+        bh=Bj3wP943wNO3hXxH8XiZsDzLprL5iIOMpywhWsXIvV8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=K0vJgR5eGuTZh7qe6YrDaTPEpiiZunQ/FLQ8x1xdI9GyWnqnRZbP4JkhY5fxhJW+t
+         wbsvUXM3/MYOcy13+sl0KjV1FENQ4tuJsCfJ5JY97u3GPyOegJKyCFGx72KCrNaIan
+         5+GbITivVTmMxxVMiwRa3f2MHlElL3FyPXij96T/4/OHx9Xx80odwO+bTIKHnW43sm
+         0+Gq6d7p+ifeq2/6+ZP5vnRPNnRd1rOsNPUlHh4pnUkb4lMfLLnft6TQhoY/LxW1fD
+         t8NqtmhV4M33/thTKNO5pEIUj6RgeAXokjg+hLrZag8qmv4TkIZtfEovzqB1ur9Jnh
+         yb355h1ZTmb1g==
+Date:   Wed, 6 Jan 2021 18:01:58 +0200
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Lu Baolu <baolu.lu@linux.intel.com>, tglx@linutronix.de,
+        ashok.raj@intel.com, kevin.tian@intel.com, dave.jiang@intel.com,
+        megha.dey@intel.com, dwmw2@infradead.org,
+        alex.williamson@redhat.com, bhelgaas@google.com,
+        dan.j.williams@intel.com, dmaengine@vger.kernel.org,
+        eric.auger@redhat.com, jacob.jun.pan@intel.com,
+        kvm@vger.kernel.org, kwankhede@nvidia.com,
+        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
+        maz@kernel.org, mona.hossain@intel.com, netanelg@mellanox.com,
+        parav@mellanox.com, pbonzini@redhat.com, rafael@kernel.org,
+        samuel.ortiz@intel.com, sanjay.k.kumar@intel.com,
+        shahafs@mellanox.com, tony.luck@intel.com, vkoul@kernel.org,
+        yan.y.zhao@linux.intel.com, yi.l.liu@intel.com
+Subject: Re: [RFC PATCH v2 1/1] platform-msi: Add platform check for
+ subdevice irq domain
+Message-ID: <20210106160158.GX31158@unreal>
+References: <20210106022749.2769057-1-baolu.lu@linux.intel.com>
+ <20210106060613.GU31158@unreal>
+ <3d2620f9-bbd4-3dd0-8e29-0cfe492a109f@linux.intel.com>
+ <20210106104017.GV31158@unreal>
+ <20210106152339.GA552508@nvidia.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9855 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 malwarescore=0 adultscore=0
- phishscore=0 spamscore=0 mlxlogscore=939 suspectscore=0 bulkscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2101060098
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9855 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 suspectscore=0 mlxscore=0
- bulkscore=0 priorityscore=1501 impostorscore=0 clxscore=1011
- lowpriorityscore=0 mlxlogscore=942 malwarescore=0 spamscore=0 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2101060098
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210106152339.GA552508@nvidia.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-For older glibc ~2.17, #include'ing both linux/if.h and net/if.h
-fails due to complaints about redefinition of interface flags:
+On Wed, Jan 06, 2021 at 11:23:39AM -0400, Jason Gunthorpe wrote:
+> On Wed, Jan 06, 2021 at 12:40:17PM +0200, Leon Romanovsky wrote:
+>
+> > I asked what will you do when QEMU will gain needed functionality?
+> > Will you remove QEMU from this list? If yes, how such "new" kernel will
+> > work on old QEMU versions?
+>
+> The needed functionality is some VMM hypercall, so presumably new
+> kernels that support calling this hypercall will be able to discover
+> if the VMM hypercall exists and if so superceed this entire check.
 
-  CC       net.o
-In file included from net.c:13:0:
-/usr/include/linux/if.h:71:2: error: redeclaration of enumerator ‘IFF_UP’
-  IFF_UP    = 1<<0,  /* sysfs */
-  ^
-/usr/include/net/if.h:44:5: note: previous definition of ‘IFF_UP’ was here
-     IFF_UP = 0x1,  /* Interface is up.  */
+Let's not speculate, do we have well-known path?
+Will such patch be taken to stable@/distros?
 
-The issue was fixed in kernel headers in [1], but since compilation
-of net.c picks up system headers the problem can recur.
+Thanks
 
-Dropping #include <linux/if.h> resolves the issue and it is
-not needed for compilation anyhow.
-
-[1] https://lore.kernel.org/netdev/1461512707-23058-1-git-send-email-mikko.rapeli__34748.27880641$1462831734$gmane$org@iki.fi/
-
-Fixes: f6f3bac08ff9 ("tools/bpf: bpftool: add net support")
-Signed-off-by: Alan Maguire <alan.maguire@oracle.com>
----
- tools/bpf/bpftool/net.c | 1 -
- 1 file changed, 1 deletion(-)
-
-diff --git a/tools/bpf/bpftool/net.c b/tools/bpf/bpftool/net.c
-index 3fae61e..ff3aa0c 100644
---- a/tools/bpf/bpftool/net.c
-+++ b/tools/bpf/bpftool/net.c
-@@ -11,7 +11,6 @@
- #include <bpf/bpf.h>
- #include <bpf/libbpf.h>
- #include <net/if.h>
--#include <linux/if.h>
- #include <linux/rtnetlink.h>
- #include <linux/socket.h>
- #include <linux/tc_act/tc_bpf.h>
--- 
-1.8.3.1
-
+>
+> Jason
