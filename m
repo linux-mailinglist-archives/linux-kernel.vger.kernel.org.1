@@ -2,144 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AFC3D2EC4E8
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 21:30:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EAE902EC4ED
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 21:32:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727294AbhAFU3e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Jan 2021 15:29:34 -0500
-Received: from mail-40131.protonmail.ch ([185.70.40.131]:58202 "EHLO
-        mail-40131.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726655AbhAFU3d (ORCPT
+        id S1727148AbhAFUcc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Jan 2021 15:32:32 -0500
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:59958 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726366AbhAFUcc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Jan 2021 15:29:33 -0500
-Date:   Wed, 06 Jan 2021 20:28:46 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me; s=protonmail;
-        t=1609964930; bh=SEcJEYlogdS7Rm1Ra3IfaXQRRP547iaFsSnUQcDN8PQ=;
-        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
-        b=lNVn8GyejzywUtXRPJXjXM1HhMAx8VJZpL4SurVQp06rwRg9lnOZIdwtG9QuDLsYU
-         56/z1w+Y+TWn1rCr7G2D84U20omS2QgOi085OYaecOSRBEAT9UoQEibsKjnTF1dDEF
-         hcHvQwGPCm9uQ0DRsjxwPrZWCAq5X+1iOFXIcHUGcdwF4LlxTNK1SnmBY2B8pL/Byc
-         COhvu4caJkcCuAyHc/J+ksDcpM3sku4gHSS5q782lYrR5JPzhWiPCzDot3T5oCtrSP
-         xqNnQuLH5uvTMPKRefSh/2WCOukEJLZbM1SeawEmEyiCN7mw0zhYExr8KtSbfhb1dW
-         Faub7FhPGZjfg==
-To:     Nathan Chancellor <natechancellor@gmail.com>
-From:   Alexander Lobakin <alobakin@pm.me>
-Cc:     Alexander Lobakin <alobakin@pm.me>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Kees Cook <keescook@chromium.org>,
-        Fangrui Song <maskray@google.com>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        Alex Smith <alex.smith@imgtec.com>,
-        Ralf Baechle <ralf@linux-mips.org>,
-        Markos Chandras <markos.chandras@imgtec.com>,
-        linux-mips@vger.kernel.org, stable@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Reply-To: Alexander Lobakin <alobakin@pm.me>
-Subject: Re: [PATCH v2 mips-next 3/4] MIPS: vmlinux.lds.S: catch bad .got, .plt and .rel.dyn at link time
-Message-ID: <20210106202831.33419-1-alobakin@pm.me>
-In-Reply-To: <20210106200801.31993-3-alobakin@pm.me>
-References: <20210106200713.31840-1-alobakin@pm.me> <20210106200801.31993-1-alobakin@pm.me> <20210106200801.31993-3-alobakin@pm.me>
+        Wed, 6 Jan 2021 15:32:32 -0500
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: sre)
+        with ESMTPSA id 740C91F4609F
+Received: by earth.universe (Postfix, from userid 1000)
+        id 702733C0C94; Wed,  6 Jan 2021 21:31:48 +0100 (CET)
+Date:   Wed, 6 Jan 2021 21:31:48 +0100
+From:   Sebastian Reichel <sebastian.reichel@collabora.com>
+To:     Ricardo Rivera-Matos <r-rivera-matos@ti.com>
+Cc:     robh+dt@kernel.org, linux-pm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        dmurphy@ti.com
+Subject: Re: [PATCH v10 0/2] Introduce the BQ256XX family of chargers
+Message-ID: <20210106203148.vl274vshztry5nka@earth.universe>
+References: <20210106195849.9489-1-r-rivera-matos@ti.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
-        autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
-        mailout.protonmail.ch
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="yo3hchluwdbo56sy"
+Content-Disposition: inline
+In-Reply-To: <20210106195849.9489-1-r-rivera-matos@ti.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nathan Chancellor <natechancellor@gmail.com>
-Date: Wed, 6 Jan 2021 13:23:24 -0700
 
-On Wed, Jan 06, 2021 at 08:08:29PM +0000, Alexander Lobakin wrote:
->> Catch any symbols placed in .got, .got.plt, .plt, .rel.dyn
->> or .rela.dyn and check for these sections to be zero-sized
->> at link time.
->>
->> At least two of them were noticed in real builds:
->>
->> mips-alpine-linux-musl-ld: warning: orphan section `.rel.dyn'
->> from `init/main.o' being placed in section `.rel.dyn'
->>
->> ld.lld: warning: <internal>:(.got) is being placed in '.got'
->>
->> Adopted from x86/kernel/vmlinux.lds.S.
->>
->> Reported-by: Nathan Chancellor <natechancellor@gmail.com> # .got
->> Suggested-by: Fangrui Song <maskray@google.com> # .rel.dyn
->> Signed-off-by: Alexander Lobakin <alobakin@pm.me>
->> ---
->>  arch/mips/kernel/vmlinux.lds.S | 35 ++++++++++++++++++++++++++++++++++
->>  1 file changed, 35 insertions(+)
->>
->> diff --git a/arch/mips/kernel/vmlinux.lds.S b/arch/mips/kernel/vmlinux.l=
-ds.S
->> index 5d6563970ab2..05eda9d9a7d5 100644
->> --- a/arch/mips/kernel/vmlinux.lds.S
->> +++ b/arch/mips/kernel/vmlinux.lds.S
->> @@ -227,4 +227,39 @@ SECTIONS
->>  =09=09*(.pdr)
->>  =09=09*(.reginfo)
->>  =09}
->> +
->> +=09/*
->> +=09 * Sections that should stay zero sized, which is safer to
->> +=09 * explicitly check instead of blindly discarding.
->> +=09 */
->> +
->> +=09.got : {
->> +=09=09*(.got)
->> +=09=09*(.igot.*)
->> +=09}
->> +=09ASSERT(SIZEOF(.got) =3D=3D 0, "Unexpected GOT entries detected!")
->
-> This assertion does trigger now.
->
-> $ make -skj"$(nproc)" ARCH=3Dmips CROSS_COMPILE=3Dmipsel-linux-gnu- LLVM=
-=3D1 \
->        O=3Dout/mipsel distclean malta_kvm_guest_defconfig all
-> ...
-> ld.lld: error: Unexpected GOT entries detected!
-> ld.lld: error: Unexpected GOT entries detected!
-> ...
+--yo3hchluwdbo56sy
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Oops. I'll build my kernel with LLVM stack and dig into it deeper
-tomorrow.
+Hi Ricardo,
 
->> +=09.got.plt (INFO) : {
->> +=09=09*(.got.plt)
->> +=09}
->> +=09ASSERT(SIZEOF(.got.plt) =3D=3D 0, "Unexpected GOT/PLT entries detect=
-ed!")
->> +
->> +=09.plt : {
->> +=09=09*(.plt)
->> +=09=09*(.plt.*)
->> +=09=09*(.iplt)
->> +=09}
->> +=09ASSERT(SIZEOF(.plt) =3D=3D 0, "Unexpected run-time procedure linkage=
-s detected!")
->> +
->> +=09.rel.dyn : {
->> +=09=09*(.rel.*)
->> +=09=09*(.rel_*)
->> +=09}
->> +=09ASSERT(SIZEOF(.rel.dyn) =3D=3D 0, "Unexpected run-time relocations (=
-.rel) detected!")
->> +
->> +=09.rela.dyn : {
->> +=09=09*(.rela.*)
->> +=09=09*(.rela_*)
->> +=09}
->> +=09ASSERT(SIZEOF(.rela.dyn) =3D=3D 0, "Unexpected run-time relocations =
-(.rela) detected!")
->>  }
->> --
->> 2.30.0
+On Wed, Jan 06, 2021 at 01:58:47PM -0600, Ricardo Rivera-Matos wrote:
+> Hello,
+>=20
+> This patchset introduces the bq256xx family of charging ICs. The bq256xx
+> ICs are highly integrated, buck, switching chargers intended for use in=
+=20
+> smartphones, tablets, and portable electronics.
+>=20
+> Ricardo Rivera-Matos (2):
+>   dt-bindings: power: Add the bq256xx dt bindings
+>   power: supply: bq256xx: Introduce the BQ256XX charger driver
+>=20
+>  .../bindings/power/supply/bq256xx.yaml        |  110 ++
+>  drivers/power/supply/Kconfig                  |   11 +
+>  drivers/power/supply/Makefile                 |    1 +
+>  drivers/power/supply/bq256xx_charger.c        | 1745 +++++++++++++++++
+>  4 files changed, 1867 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/power/supply/bq256x=
+x.yaml
+>  create mode 100644 drivers/power/supply/bq256xx_charger.c
+
+Thanks, I merged this patchset. I fixed up another pointer issue
+in bq256xx_state_changed() while applying the patch. Before the
+state probably always "changed" for you, so please check everything
+works as expected :)
 
 Thanks,
-Al
 
+-- Sebastian
+
+--yo3hchluwdbo56sy
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAl/2HiwACgkQ2O7X88g7
++pqcSBAAgAvPDJyrXLuezyhALKIYpEHO3NDbaghLiCRhqhu13rmXbHXaTO0NDMh4
+uY/EM4AzXKiEHoIGC1e1KT8853Ui3MODdKbgCDkDB8iiSftXlx3qgRFNQXzPazvk
+YUkX5WSRDDoSU23FAr+mUuI5SjQu8zqCANg8Ra5U1Bg6pB+iWmpP3WCYTYIRWRKv
+tT0auUhtR1bHbWoMvduDArtwplDoecHJym+pGjoov7MM2tn5zwQkbNfa3wjeciEy
+LY2Jp4oyKxc+0el3DD7PMdPk2YYnNm3dF4NCes10uQ0cROaz9CmEOfvJyz8WX/ge
+fpNFpV+0POjqlHRPtqzAZ5SpF0pKG2wz3tneuAAKB7SZfOJz+AfAWsqv/TVIyjv7
+ZF01g71kkJUG4Mz0KqxjKgF4VlKLHHp42au60K+3SlTYc3Eo/vv1Y0lckh6hrUuW
+suQiPuI4kni9jaeBPd2ywFm+V3Q2CuGKFx+krqNU/p9C4jsSgCdQgAy1QE3h7ggA
+SatYBqD1Whk/r5ih7nhJTbH8Gvq5mvvv0qHoCKql1HRmG9V0PLrG23jFctG1T97B
+6urt26Sw+4zs34jeKpifMdbLvhah8WhYspw641Ppcer94B9d+Et+kxf0D8Dk/hTL
+6T+gRb8ZfUgUdwBlr/UAvjjBEfh9+rfdoP4yTCWCftJgINt9EUU=
+=EC5H
+-----END PGP SIGNATURE-----
+
+--yo3hchluwdbo56sy--
