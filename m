@@ -2,175 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82FDD2EBA06
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 07:34:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9178D2EBA0B
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 07:35:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726297AbhAFGdo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Jan 2021 01:33:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39028 "EHLO
+        id S1726311AbhAFGfc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Jan 2021 01:35:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39308 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725905AbhAFGdo (ORCPT
+        with ESMTP id S1725837AbhAFGfc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Jan 2021 01:33:44 -0500
-Received: from mail-il1-x133.google.com (mail-il1-x133.google.com [IPv6:2607:f8b0:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D45DC06134C
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Jan 2021 22:33:03 -0800 (PST)
-Received: by mail-il1-x133.google.com with SMTP id n9so2235569ili.0
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Jan 2021 22:33:03 -0800 (PST)
+        Wed, 6 Jan 2021 01:35:32 -0500
+Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA75EC061357
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Jan 2021 22:34:51 -0800 (PST)
+Received: by mail-ej1-x629.google.com with SMTP id 6so3685222ejz.5
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Jan 2021 22:34:51 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=bgdev-pl.20150623.gappssmtp.com; s=20150623;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=D2T0nuiqZ51cyL88bRrJqH5KD+Rsokp1j/idw8L4Z2k=;
-        b=QKSPDy2ZTbkhVhckQQ42x04UuQib50pGNHr+cMccflrfxlG/+CN9CIjoIQ6jzuoizC
-         0FHrAZxmCdQvBJVqX8suCv1gYTEWvycLK30U+Td3tbO+yKAaMir/Td4etF4GCVhIcrPU
-         CZlvvUrF1vSfrqDR1JmbWsDUG1kHS9hEEFWa2qJeOxj2tKFeH19t7jkkCuNfOy1FKFG1
-         OgIfQ1g5fJ+o3qet9dE7Lvo1/3JavFgXJKQVaoHuc/QdUE4VZd2gEeXAFiWh8OpE4gnr
-         wiqKUwQzZdrLXwIsRWndOu6vngI7nhkuPx/alKnI/H3XFhpelA41iieNDajPsFFsjNW/
-         4yQQ==
+        bh=0BSeqRkCM+aoGwHCkguo5YisOBwQa8OgLWvbVoLYyH0=;
+        b=gJLV5vbxf1a/179odUydFTH8lmjKqtF0d7/aFz8xmjKorL8UNk0CHofsZEYltf2T66
+         pXup4EWeBM/dd5H0rvzwl20rQ/uWhBmSDb5rjYaJizSw1OK42trxPs4FIQkKtzwpJUZ/
+         q4AqggkZm96L2FTWsRIaDlyzkq7nRHkiroSOl0+wMBCmtOQC3v1cPAcNE447q1gggmH2
+         IUJwwU4VzI5Z+o1JznT2H/gPLb0z80PBNwYje1P92nMuPAhSGNWqmrWdD3fvjZ9wu5am
+         kHhqkh5I9ZNGbgi3g2ID7qj5TR6Noe3hf8jZIEDJk5xvmgN89m8xSPZsoyCLEUICQe98
+         ofkQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=D2T0nuiqZ51cyL88bRrJqH5KD+Rsokp1j/idw8L4Z2k=;
-        b=tb+IIOVAQiasOqE7fEBhW/LOUp0rr9Bnr3sZeBYcQok6Imc975ofi94pgjBVOcINny
-         1VsArOgnGmQFvofJRDOmyHqcn8jUoUshXvqBWyTnvYO4g4/WtvBilrHQcry+qm/xCDhJ
-         +vd0bboFugV2Y5SC4kA3A9Tdd5HgE8uskFPIlooeDykqeXWwxtbMW5fnGXnvtSlcAykz
-         vh51ORDTef9Jxwi6Q+iE5YtV4hBBwCcSrw6fybCwKNNAo2TLdnqKzd5Na5C/rNUdK3uz
-         9+cCHU0uaijSToYpeSrYFqmSqmOpZTE9t0mDYRVfCeo8TsF2W5EMVJ1pJoEXn6AzTCx3
-         cznQ==
-X-Gm-Message-State: AOAM532UB7KCZHK5Hgih2Ip5gC8iJ0XaLOgVxSwqJy5/rEebMtlrps+H
-        FBRrfihuw0xIX6GhWJMr4ArWRsTTyB5nrHNHB8w=
-X-Google-Smtp-Source: ABdhPJzU4Y0t/m/adhM+A7kQWthDtfj85Kt0KW0FSOMDlY2gJ1z2URFaFiR7g+1FN9VZLMoYAS86l5VdCgbJfEY+f9w=
-X-Received: by 2002:a05:6e02:20c4:: with SMTP id 4mr2950339ilq.170.1609914782855;
- Tue, 05 Jan 2021 22:33:02 -0800 (PST)
+        bh=0BSeqRkCM+aoGwHCkguo5YisOBwQa8OgLWvbVoLYyH0=;
+        b=Bb33D8cE94VipslAmokdn8qAI63C/oj+X6j17S/LQvhjG2j235OMXNDgiKt3v2FXbt
+         tw6fndJm9S594u9qP1pEq+KvFRXVeiESh+9RnybkABH+l/mVZZMyijx2YDBvUAPvM0Bo
+         kMYM53amMEYWWmK0N+Qqrnjiz2s/YF/S/P0IkLf1YO2yH8pDI+FqGyfKb2u1LOcISBSo
+         f180BHewLtj3Re4SYCCcURXc+QRYs9qRv0z1PixJSAWEHPAqbOOkvsEauZQxV+9T9og2
+         IuMwPVmDiq5MNeSYI4i8KcWu0Kp2stA6e6iFIyyKvMeKUxzSHLlLOvcpfoqiv/u092tt
+         g0NA==
+X-Gm-Message-State: AOAM530GP6xMd0ivEJ22rL6EHt8zTLUsSnyjMqLUmyofBoJDbzKAAIvX
+        XcbgwTb2LsuyTEb+H4vaXAHONMBGeBWAnz+Rzhng6g==
+X-Google-Smtp-Source: ABdhPJyUqauHu3c/ORqQX039FTkRPFkAHZrIWHwoKd95sfGeNU1t0nioq+caOBkVHhjlOxs45IZEoOf2QQ3Xhv6HYAk=
+X-Received: by 2002:a17:906:5912:: with SMTP id h18mr1875139ejq.261.1609914890538;
+ Tue, 05 Jan 2021 22:34:50 -0800 (PST)
 MIME-Version: 1.0
-References: <20210106004850.GA11682@paulmck-ThinkPad-P72> <20210106004956.11961-2-paulmck@kernel.org>
-In-Reply-To: <20210106004956.11961-2-paulmck@kernel.org>
-From:   Yury Norov <yury.norov@gmail.com>
-Date:   Tue, 5 Jan 2021 22:32:51 -0800
-Message-ID: <CAAH8bW_euakp=vSKcZoH4=6WHuAuEH-4LdKm21C=-+4jdrT8xQ@mail.gmail.com>
-Subject: Re: [PATCH RFC cpumask 2/5] cpumask: Make "all" alias global and not
- just RCU
-To:     paulmck@kernel.org
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>, kernel-team@fb.com,
-        Paul Gortmaker <paul.gortmaker@windriver.com>
+References: <20210105134424.30632-1-brgl@bgdev.pl> <20210105165014.GA20401@kozik-lap>
+In-Reply-To: <20210105165014.GA20401@kozik-lap>
+From:   Bartosz Golaszewski <brgl@bgdev.pl>
+Date:   Wed, 6 Jan 2021 07:34:39 +0100
+Message-ID: <CAMRc=MeEbDJMxoF6Pyfj6GKPVR6eRLd+2oh1ZJUWsz2L6j-Ymg@mail.gmail.com>
+Subject: Re: [PATCH] rtc: s5m: use devm_i2c_new_dummy_device()
+To:     Krzysztof Kozlowski <krzk@kernel.org>
+Cc:     Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-samsung-soc@vger.kernel.org, linux-rtc@vger.kernel.org,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Paul,
+On Tue, Jan 5, 2021 at 5:50 PM Krzysztof Kozlowski <krzk@kernel.org> wrote:
+>
+> On Tue, Jan 05, 2021 at 02:44:24PM +0100, Bartosz Golaszewski wrote:
+> > From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+> >
+> > Use the managed variant of i2c_new_dummy_device() to shrink code and
+> > remove the goto label.
+> >
+> > Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+> > ---
+> >  drivers/rtc/rtc-s5m.c | 24 ++++++++----------------
+> >  1 file changed, 8 insertions(+), 16 deletions(-)
+> >
+> > diff --git a/drivers/rtc/rtc-s5m.c b/drivers/rtc/rtc-s5m.c
+> > index eb9dde4095a9..3432c6213b4c 100644
+> > --- a/drivers/rtc/rtc-s5m.c
+> > +++ b/drivers/rtc/rtc-s5m.c
+> > @@ -760,7 +760,8 @@ static int s5m_rtc_probe(struct platform_device *pdev)
+> >               return -ENODEV;
+> >       }
+> >
+> > -     info->i2c = i2c_new_dummy_device(s5m87xx->i2c->adapter, RTC_I2C_ADDR);
+> > +     info->i2c = devm_i2c_new_dummy_device(&pdev->dev, s5m87xx->i2c->adapter,
+> > +                                           RTC_I2C_ADDR);
+> >       if (IS_ERR(info->i2c)) {
+> >               dev_err(&pdev->dev, "Failed to allocate I2C for RTC\n");
+> >               return PTR_ERR(info->i2c);
+> > @@ -768,10 +769,9 @@ static int s5m_rtc_probe(struct platform_device *pdev)
+> >
+> >       info->regmap = devm_regmap_init_i2c(info->i2c, regmap_cfg);
+> >       if (IS_ERR(info->regmap)) {
+> > -             ret = PTR_ERR(info->regmap);
+> >               dev_err(&pdev->dev, "Failed to allocate RTC register map: %d\n",
+> > -                             ret);
+> > -             goto err;
+> > +                     ret);
+> > +             return PTR_ERR(info->regmap);
+> >       }
+> >
+> >       info->dev = &pdev->dev;
+> > @@ -781,10 +781,9 @@ static int s5m_rtc_probe(struct platform_device *pdev)
+> >       if (s5m87xx->irq_data) {
+> >               info->irq = regmap_irq_get_virq(s5m87xx->irq_data, alarm_irq);
+> >               if (info->irq <= 0) {
+> > -                     ret = -EINVAL;
+> >                       dev_err(&pdev->dev, "Failed to get virtual IRQ %d\n",
+> >                               alarm_irq);
+> > -                     goto err;
+> > +                     return -EINVAL;
+> >               }
+> >       }
+> >
+> > @@ -797,10 +796,8 @@ static int s5m_rtc_probe(struct platform_device *pdev)
+> >       info->rtc_dev = devm_rtc_device_register(&pdev->dev, "s5m-rtc",
+> >                                                &s5m_rtc_ops, THIS_MODULE);
+> >
+> > -     if (IS_ERR(info->rtc_dev)) {
+> > -             ret = PTR_ERR(info->rtc_dev);
+> > -             goto err;
+> > -     }
+> > +     if (IS_ERR(info->rtc_dev))
+> > +             return PTR_ERR(info->rtc_dev);
+> >
+> >       if (!info->irq) {
+> >               dev_info(&pdev->dev, "Alarm IRQ not available\n");
+> > @@ -813,15 +810,10 @@ static int s5m_rtc_probe(struct platform_device *pdev)
+> >       if (ret < 0) {
+> >               dev_err(&pdev->dev, "Failed to request alarm IRQ: %d: %d\n",
+> >                       info->irq, ret);
+> > -             goto err;
+> > +             return ret;
+> >       }
+> >
+> >       return 0;
+> > -
+> > -err:
+> > -     i2c_unregister_device(info->i2c);
+> > -
+> > -     return ret;
+> >  }
+> >
+> >  static int s5m_rtc_remove(struct platform_device *pdev)
+>
+> Unbind should OOPS now.
+>
 
-On Tue, Jan 5, 2021 at 4:49 PM <paulmck@kernel.org> wrote:
->
-> From: Paul Gortmaker <paul.gortmaker@windriver.com>
->
-> It is probably better that we don't have subsystem specific
-> abbreviations or aliases for generic CPU list specifications.
->
-> Hence we move the "all" from RCU out to lib/ so that it can be
-> used in any instance where CPU lists are being parsed.
->
-> Signed-off-by: Paul Gortmaker <paul.gortmaker@windriver.com>
-> Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-> ---
->  Documentation/admin-guide/kernel-parameters.rst |  7 +++++++
->  Documentation/admin-guide/kernel-parameters.txt |  4 +---
->  kernel/rcu/tree_plugin.h                        | 13 ++++---------
->  lib/cpumask.c                                   |  6 ++++++
->  4 files changed, 18 insertions(+), 12 deletions(-)
->
-> diff --git a/Documentation/admin-guide/kernel-parameters.rst b/Documentation/admin-guide/kernel-parameters.rst
-> index 06fb1b4..cdf4e81 100644
-> --- a/Documentation/admin-guide/kernel-parameters.rst
-> +++ b/Documentation/admin-guide/kernel-parameters.rst
-> @@ -68,6 +68,13 @@ For example one can add to the command line following parameter:
->
->  where the final item represents CPUs 100,101,125,126,150,151,...
->
-> +The following convenience aliases are also accepted and used:
-> +
-> +        foo_cpus=all
-> +
-> +is equivalent to "foo_cpus=0-N" -- where "N" is the numerically last CPU on
-> +the system, thus avoiding looking up the value in "/sys/devices/system/cpu"
-> +in advance on each deployed system.
->
->
->  This document may not be entirely up to date and comprehensive. The command
-> diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-> index c722ec1..0f4379b 100644
-> --- a/Documentation/admin-guide/kernel-parameters.txt
-> +++ b/Documentation/admin-guide/kernel-parameters.txt
-> @@ -4037,9 +4037,7 @@
->                                 see CONFIG_RAS_CEC help text.
->
->         rcu_nocbs=      [KNL]
-> -                       The argument is a cpu list, as described above,
-> -                       except that the string "all" can be used to
-> -                       specify every CPU on the system.
-> +                       The argument is a cpu list, as described above.
->
->                         In kernels built with CONFIG_RCU_NOCB_CPU=y, set
->                         the specified list of CPUs to be no-callback CPUs.
-> diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
-> index 7e291ce..642ebd6 100644
-> --- a/kernel/rcu/tree_plugin.h
-> +++ b/kernel/rcu/tree_plugin.h
-> @@ -1463,20 +1463,15 @@ static void rcu_cleanup_after_idle(void)
->
->  /*
->   * Parse the boot-time rcu_nocb_mask CPU list from the kernel parameters.
-> - * The string after the "rcu_nocbs=" is either "all" for all CPUs, or a
-> - * comma-separated list of CPUs and/or CPU ranges.  If an invalid list is
-> - * given, a warning is emitted and all CPUs are offloaded.
-> + * If the list is invalid, a warning is emitted and all CPUs are offloaded.
->   */
->  static int __init rcu_nocb_setup(char *str)
->  {
->         alloc_bootmem_cpumask_var(&rcu_nocb_mask);
-> -       if (!strcasecmp(str, "all"))
-> +       if (cpulist_parse(str, rcu_nocb_mask)) {
-> +               pr_warn("rcu_nocbs= bad CPU range, all CPUs set\n");
->                 cpumask_setall(rcu_nocb_mask);
-> -       else
-> -               if (cpulist_parse(str, rcu_nocb_mask)) {
-> -                       pr_warn("rcu_nocbs= bad CPU range, all CPUs set\n");
-> -                       cpumask_setall(rcu_nocb_mask);
-> -               }
-> +       }
->         return 1;
->  }
->  __setup("rcu_nocbs=", rcu_nocb_setup);
-> diff --git a/lib/cpumask.c b/lib/cpumask.c
-> index 6e6e835..9f8ff72 100644
-> --- a/lib/cpumask.c
-> +++ b/lib/cpumask.c
-> @@ -2,6 +2,7 @@
->  #include <linux/slab.h>
->  #include <linux/kernel.h>
->  #include <linux/bitops.h>
-> +#include <linux/string.h>
->  #include <linux/cpumask.h>
->  #include <linux/export.h>
->  #include <linux/memblock.h>
-> @@ -104,6 +105,11 @@ EXPORT_SYMBOL(cpumask_next_wrap);
->   */
->  int cpulist_parse(const char *buf, struct cpumask *dstp)
->  {
-> +       if (!strcmp(buf, "all")) {
-> +               cpumask_setall(dstp);
-> +               return 0;
-> +       }
+Yes... Yes it should. And it won't in v2. :)
 
-I like the extensions. Can you move this chunk inside  bitmap_parselist()
-to let other users like nodelist_parse() use it?
-
->         return bitmap_parselist(buf, cpumask_bits(dstp), nr_cpumask_bits);
->  }
->  EXPORT_SYMBOL(cpulist_parse);
-> --
-> 2.9.5
->
+Thanks!
+Bart
