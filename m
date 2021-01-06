@@ -2,94 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 415682EBBE0
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 10:52:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 726932EBBD7
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 10:51:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726422AbhAFJvp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Jan 2021 04:51:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41836 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725868AbhAFJvp (ORCPT
+        id S1726429AbhAFJvK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Jan 2021 04:51:10 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:54416 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726295AbhAFJvK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Jan 2021 04:51:45 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92F93C06134C
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Jan 2021 01:51:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=W0OTywhWfbLTNxAki2N8MQFvTOCjHX4ICZyvkpyBfr0=; b=Lhh+7CLTBFOALHM6dnNlkoW6wh
-        L6hHVGZ4TVOJfmRetubHGjqsnn82leLcLVMExJhwjG1MXx4/B6/FIMa0GH7qQb3N2BC1DifyCMgal
-        wvanuKAZhXh1Y1hRXIlUqxStgsob0tVxnyZs0g8W1wbHJZDLNGkMcTfrfcw68ply1BOW3ipl557P4
-        cMHlFoARI783btX2uzVqwzSnIW2kucdKuJDnlPgIm5I5Wcdp6sXPdfvdLrQ0WSuvuv39T7uNihwDd
-        xxsxmpJS1g+dxgPC/Gd9s7jT2NABLad+aCnoDEqB4VSX/ey/bHLQ4JKaUnDNLZm/Wsb4pq0uBlIy+
-        /YK9alpQ==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1kx5RG-002CkE-PZ; Wed, 06 Jan 2021 09:49:26 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 72BDF3060AE;
-        Wed,  6 Jan 2021 10:49:07 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 352092029F4C3; Wed,  6 Jan 2021 10:49:07 +0100 (CET)
-Date:   Wed, 6 Jan 2021 10:49:07 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     paulmck@kernel.org
-Cc:     linux-kernel@vger.kernel.org, yury.norov@gmail.com,
-        kernel-team@fb.com, Paul Gortmaker <paul.gortmaker@windriver.com>
-Subject: Re: [PATCH RFC cpumask 4/5] cpumask: Add "last" alias for cpu list
- specifications
-Message-ID: <X/WHk1hY3cmMAXQz@hirez.programming.kicks-ass.net>
-References: <20210106004850.GA11682@paulmck-ThinkPad-P72>
- <20210106004956.11961-4-paulmck@kernel.org>
+        Wed, 6 Jan 2021 04:51:10 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1609926582;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=3xvIXrxygPNnEfu8Dcpv34MDYgTRdegYiN0XObRauc0=;
+        b=NiMzulw3sBUoSttXFaf0Yl3ol62shdC2h3ZIdThKeVCZASgzAEXpyc4O6mZIbbLUJZyTiG
+        kJ1X16Ro+MoWR/IFMJUEanv6bGwtZ7Q5jwt5GuLO+LpCwZTLPjXvItltkFJ6fx4MqWuInq
+        XdZ8zOpPrHIllCNgmcyj27uAmseHuyU=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-35-FL0bwCVZM-S1mp2xBZl5Hg-1; Wed, 06 Jan 2021 04:49:40 -0500
+X-MC-Unique: FL0bwCVZM-S1mp2xBZl5Hg-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 564CC10054FF;
+        Wed,  6 Jan 2021 09:49:38 +0000 (UTC)
+Received: from krava (unknown [10.40.194.249])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 2347771CA1;
+        Wed,  6 Jan 2021 09:49:34 +0000 (UTC)
+Date:   Wed, 6 Jan 2021 10:49:34 +0100
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Stephane Eranian <eranian@google.com>
+Cc:     Jiri Olsa <jolsa@kernel.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        Ingo Molnar <mingo@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Michael Petlan <mpetlan@redhat.com>,
+        Ian Rogers <irogers@google.com>,
+        Alexei Budankov <abudankov@huawei.com>
+Subject: Re: [PATCHv2] perf tools: Detect when pipe is passed as perf data
+Message-ID: <20210106094934.GA972880@krava>
+References: <20201230110935.582332-1-jolsa@kernel.org>
+ <CABPqkBTQfFWvEba-=T6ms=GTsjrZUosRQyZZK-EMZ2c_2NQvAA@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210106004956.11961-4-paulmck@kernel.org>
+In-Reply-To: <CABPqkBTQfFWvEba-=T6ms=GTsjrZUosRQyZZK-EMZ2c_2NQvAA@mail.gmail.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 05, 2021 at 04:49:55PM -0800, paulmck@kernel.org wrote:
-> From: Paul Gortmaker <paul.gortmaker@windriver.com>
+On Tue, Jan 05, 2021 at 05:33:38PM -0800, Stephane Eranian wrote:
+> Hi,
 > 
-> It seems that a common configuration is to use the 1st couple cores
-> for housekeeping tasks, and or driving a busy peripheral that generates
-> a lot of interrupts, or something similar.
-> 
-> This tends to leave the remaining ones to form a pool of similarly
-> configured cores to take on the real workload of interest to the user.
-> 
-> So on machine A - with 32 cores, it could be 0-3 for "system" and then
-> 4-31 being used in boot args like nohz_full=, or rcu_nocbs= as part of
-> setting up the worker pool of CPUs.
-> 
-> But then newer machine B is added, and it has 48 cores, and so while
-> the 0-3 part remains unchanged, the pool setup cpu list becomes 4-47.
-> 
-> Deployment would be easier if we could just simply replace 31 and 47
-> with "last" and let the system substitute in the actual number at boot;
-> a number that it knows better than we do.
-> 
-> No need to have custom boot args per node, no need to do a trial boot
-> in order to snoop /proc/cpuinfo and/or /sys/devices/system/cpu - no
-> more fencepost errors of using 32 and 48 instead of 31 and 47.
-> 
-> A generic token replacement is used to substitute "last" with the
-> number of CPUs present before handing off to bitmap processing.  But
-> it could just as easily be used to replace any placeholder token with
-> any other token or value only known at/after boot.
+> On Wed, Dec 30, 2020 at 3:09 AM Jiri Olsa <jolsa@kernel.org> wrote:
+> >
+> > Currently we allow pipe input/output only through '-' string
+> > being passed to '-o' or '-i' options, like:
+> >
+> It seems to me it would be useful to auto-detect that the perf.data
+> file is in pipe vs. file mode format.
+> Your patch detects the type of the file which is something different
+> from the format of its content.
 
-Aside from the comments Yury made, on how all this is better in
-bitmap_parselist(), how about doing s/last/N/ here? For me something
-like: "4-N" reads much saner than "4-last".
+hi,
+it goes together with the format, once the output file
+is pipe, the format is pipe as well
 
-Also, it might make sense to teach all this about core/node topology,
-but that's going to be messy. Imagine something like "Core1-CoreN" or
-"Nore1-NodeN" to mean the mask all/{Core,Node}0.
+jirka
 
-And that is another feature that seems to be missing from parselist,
-all/except.
+> Thanks.
+> 
+> >   # mkfifo perf.pipe
+> >   # perf record --no-buffering -e 'sched:sched_switch' -o - > perf.pipe &
+> >   [1] 354406
+> >   # cat perf.pipe | ./perf --no-pager script -i - | head -3
+> >             perf 354406 [000] 168190.164921: sched:sched_switch: perf:354406..
+> >      migration/0    12 [000] 168190.164928: sched:sched_switch: migration/0:..
+> >             perf 354406 [001] 168190.164981: sched:sched_switch: perf:354406..
+> >   ...
+> >
+> > This patch detects if given path is pipe and set the perf data
+> > object accordingly, so it's possible now to do above with:
+> >
+> >   # mkfifo perf.pipe
+> >   # perf record --no-buffering -e 'sched:sched_switch' -o perf.pipe &
+> >   [1] 360188
+> >   # perf --no-pager script -i ./perf.pipe | head -3
+> >             perf 354442 [000] 168275.464895: sched:sched_switch: perf:354442..
+> >      migration/0    12 [000] 168275.464902: sched:sched_switch: migration/0:..
+> >             perf 354442 [001] 168275.464953: sched:sched_switch: perf:354442..
+> >
+> > It's of course possible to combine any of above ways.
+> >
+> > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+> > ---
+> > v2:
+> >   - removed O_CREAT|O_TRUNC flags from pipe's write end
+> >
+> >  tools/perf/util/data.c | 27 +++++++++++++++++++++------
+> >  1 file changed, 21 insertions(+), 6 deletions(-)
+> >
+> > diff --git a/tools/perf/util/data.c b/tools/perf/util/data.c
+> > index f29af4fc3d09..4dfa9e0f2fec 100644
+> > --- a/tools/perf/util/data.c
+> > +++ b/tools/perf/util/data.c
+> > @@ -159,7 +159,7 @@ int perf_data__update_dir(struct perf_data *data)
+> >         return 0;
+> >  }
+> >
+> > -static bool check_pipe(struct perf_data *data)
+> > +static int check_pipe(struct perf_data *data)
+> >  {
+> >         struct stat st;
+> >         bool is_pipe = false;
+> > @@ -172,6 +172,15 @@ static bool check_pipe(struct perf_data *data)
+> >         } else {
+> >                 if (!strcmp(data->path, "-"))
+> >                         is_pipe = true;
+> > +               else if (!stat(data->path, &st) && S_ISFIFO(st.st_mode)) {
+> > +                       int flags = perf_data__is_read(data) ?
+> > +                                   O_RDONLY : O_WRONLY;
+> > +
+> > +                       fd = open(data->path, flags);
+> > +                       if (fd < 0)
+> > +                               return -EINVAL;
+> > +                       is_pipe = true;
+> > +               }
+> >         }
+> >
+> >         if (is_pipe) {
+> > @@ -190,7 +199,8 @@ static bool check_pipe(struct perf_data *data)
+> >                 }
+> >         }
+> >
+> > -       return data->is_pipe = is_pipe;
+> > +       data->is_pipe = is_pipe;
+> > +       return 0;
+> >  }
+> >
+> >  static int check_backup(struct perf_data *data)
+> > @@ -344,8 +354,11 @@ static int open_dir(struct perf_data *data)
+> >
+> >  int perf_data__open(struct perf_data *data)
+> >  {
+> > -       if (check_pipe(data))
+> > -               return 0;
+> > +       int err;
+> > +
+> > +       err = check_pipe(data);
+> > +       if (err || data->is_pipe)
+> > +               return err;
+> >
+> >         /* currently it allows stdio for pipe only */
+> >         data->use_stdio = false;
+> > @@ -410,8 +423,10 @@ int perf_data__switch(struct perf_data *data,
+> >  {
+> >         int ret;
+> >
+> > -       if (check_pipe(data))
+> > -               return -EINVAL;
+> > +       ret = check_pipe(data);
+> > +       if (ret || data->is_pipe)
+> > +               return ret;
+> > +
+> >         if (perf_data__is_read(data))
+> >                 return -EINVAL;
+> >
+> > --
+> > 2.26.2
+> >
+> 
+
