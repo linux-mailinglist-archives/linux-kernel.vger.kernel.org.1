@@ -2,145 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF3FA2EC3C9
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 20:20:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E29FD2EC3C4
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 20:18:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726982AbhAFTSb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Jan 2021 14:18:31 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:47226 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726925AbhAFTS2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Jan 2021 14:18:28 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1609960621;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=kZW03CYYNY68WyUOo3YGjnMbs8Y0uQISMJf1Yyuwv54=;
-        b=WWguPe27Nyq5VP3RLygMxdLwKKryzkURB66n1Y6sCHavLSK8ikIYmwZmoxfHegUqaz16MN
-        qgJ0Da5bBobwUycANx9V0eMXg7sZgQQxaThKlOmD6WJJ0C4KE/0xxDl7zxDA9wvN4Dfpq/
-        lYc8ITPZ6l3iOg8QJLvf3p0Pm0MTpvQ=
-Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
- [209.85.218.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-154-mQbu0trCOEak3yXiwmKQzw-1; Wed, 06 Jan 2021 14:16:58 -0500
-X-MC-Unique: mQbu0trCOEak3yXiwmKQzw-1
-Received: by mail-ej1-f72.google.com with SMTP id dv25so1673583ejb.15
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Jan 2021 11:16:58 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=kZW03CYYNY68WyUOo3YGjnMbs8Y0uQISMJf1Yyuwv54=;
-        b=eU2+r8M9qL13eWdRni2Ix2BOwPvrCdkufXk3qzJHPAJcPLzL54nnaa5GvQChYbia6Y
-         mfA9S9fiif4IBapwoXrRxLyEdN9gopqQDmWNI4OSAcFHsm/MHLx/e79H2cRavtF9Gkyd
-         HVPcc+9YTO7CDwB0d74oFBbMLYAtqcESeB1ZigCCWh8bwfIoAQYan8ymkF59n/jz5Rf9
-         it5e5qMlhyhYA6r2teb1cKnFjDu/3zWpsqkKH1BD10qr+f4PS9xVZZahHVIO7N6it6Fq
-         Yf7XQyKNfSLXZicSpXW/sqhCfg6Y3jItXFF/6n8o8vURTLfzJwg+Kbzxgsp4N5bawRpi
-         dB0A==
-X-Gm-Message-State: AOAM530MXu5fqI0otaXy4sNevIT89YrlFYxOKeo0maNYgam2BQi4ThXG
-        7hZN+7RcSDZ+248+SfqO7WFW6u4DY4EVEAuwn2CeEp+i/h40EYwNJMTFRQfpHJD3+HNFoPXWp+q
-        3khq2yPMfbEntM2OpjQpGbk7Tk5ilzGutjO5YkhqRaRs3DqBSqz2iXR05P79+npt3yRfyvkretK
-        Eh
-X-Received: by 2002:a17:907:4126:: with SMTP id mx6mr3848398ejb.91.1609960617509;
-        Wed, 06 Jan 2021 11:16:57 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJwRv4XRjPfzqXQnoVnknm0ljP3mzn+/3THqB8xygTKCn+nmiy4sSY8G9CP4mpqFP4JKk+apGA==
-X-Received: by 2002:a17:907:4126:: with SMTP id mx6mr3848385ejb.91.1609960617279;
-        Wed, 06 Jan 2021 11:16:57 -0800 (PST)
-Received: from x1.localdomain (2001-1c00-0c1e-bf00-37a3-353b-be90-1238.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:37a3:353b:be90:1238])
-        by smtp.gmail.com with ESMTPSA id f18sm1746142edt.60.2021.01.06.11.16.56
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 06 Jan 2021 11:16:56 -0800 (PST)
-Subject: Re: (hid-logitech) Support for non-DJ receivers
-To:     =?UTF-8?Q?Filipe_La=c3=adns?= <filipe.lains@gmail.com>,
-        Jiri Kosina <jikos@kernel.org>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        "linux-input@vger.kernel.org" <linux-input@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <4990836470c5fb01babcf416ca6ccf9e5e21d152.camel@gmail.com>
-From:   Hans de Goede <hdegoede@redhat.com>
-Message-ID: <308ef1e5-16ae-899f-9d89-d63f854b12bc@redhat.com>
-Date:   Wed, 6 Jan 2021 20:16:56 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        id S1726680AbhAFTRt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Jan 2021 14:17:49 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38640 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726315AbhAFTRt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 Jan 2021 14:17:49 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 50B2823123;
+        Wed,  6 Jan 2021 19:17:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1609960628;
+        bh=yreYIyYCDlZPK1zmAnRhTF4c7ED3cMyCU7MTbH+WuMw=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=eMLo5Ikuj6X8rUzZoni6+xw6ImrnDk7Z6mSPANf6rSRDIPE4jQ0SqU5ZU3gby2a3D
+         vdAbOt5PpW14FA1jns4Rq1mhZhKbtjdI64nhBKDHajY7AEfm41vycv66rlLOWRQ/dS
+         ZJIHZx1+ltSXdrq4HmKBucGK8z7KjT6ymeokQAHSD8dc3wWtovo554/C/vegtt1qZR
+         CbdeYM4G3K44qHaNQwjtjwdbingz4ZUAGh7/aZHtdWrZWe2w583LF1xH+Jx46m228z
+         GdFEgBKf3TicB4B+YwEAWfqZzgwITkFRNESeBeHOFSGbcLDGVXGSGWkMtA9g6HBjQ4
+         5RetBx7XZTNyA==
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id 0D8C135225DC; Wed,  6 Jan 2021 11:17:08 -0800 (PST)
+Date:   Wed, 6 Jan 2021 11:17:08 -0800
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     "Luck, Tony" <tony.luck@intel.com>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "linux-edac@vger.kernel.org" <linux-edac@vger.kernel.org>,
+        "bp@alien8.de" <bp@alien8.de>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "hpa@zytor.com" <hpa@zytor.com>,
+        "kernel-team@fb.com" <kernel-team@fb.com>
+Subject: Re: [PATCH RFC x86/mce] Make mce_timed_out() identify holdout CPUs
+Message-ID: <20210106191708.GB2743@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <20210106174102.GA23874@paulmck-ThinkPad-P72>
+ <3513b04e2bb543d2871ca8c152dcf5ae@intel.com>
 MIME-Version: 1.0
-In-Reply-To: <4990836470c5fb01babcf416ca6ccf9e5e21d152.camel@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <3513b04e2bb543d2871ca8c152dcf5ae@intel.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Filipe,
-
-On 1/6/21 8:07 PM, Filipe Laíns wrote:
-> Hey,
+On Wed, Jan 06, 2021 at 06:39:30PM +0000, Luck, Tony wrote:
+> > The "Timeout: Not all CPUs entered broadcast exception handler" message
+> > will appear from time to time given enough systems, but this message does
+> > not identify which CPUs failed to enter the broadcast exception handler.
+> > This information would be valuable if available, for example, in order to
+> > correlated with other hardware-oriented error messages.  This commit
+> > therefore maintains a cpumask_t of CPUs that have entered this handler,
+> > and prints out which ones failed to enter in the event of a timeout.
 > 
-> Some of the new Logitech receivers do not have the DJ interface, this creates an
-> issue userspace applications like libratbag, as seen in [1], because we can't
-> identify the device based on the hidraw PID.
+> I tried doing this a while back, but found that in my test case where I forced
+> an error that would cause both threads from one core to be "missing", the
+> output was highly unpredictable. Some random number of extra CPUs were
+> reported as missing. After I added some extra breadcrumbs it became clear
+> that pretty much all the CPUs (except the missing pair) entered do_machine_check(),
+> but some got hung up at various points beyond the entry point. My only theory
+> was that they were trying to snoop caches from the dead core (or access some
+> other resource held by the dead core) and so they hung too.
 > 
-> There are two solutions for this:
-> 
-> 1) Implement device discovery via the internal Logitech ID in libratbag and all
-> other userspace apps.
-> 
-> 2) Make hid-logitech-dj export a duplicated hidraw node with internal Logitech
-> ID as PID, just like it does for the DJ interface.
-> 
-> In case you aren't aware of what the DJ interface is, it is essentially a
-> multiplexing protocol that receivers support. 6 devices could be connected to
-> the same receiver, hid-logitech-dj enables the DJ mode and the receiver will
-> essentially perpend the device ID to each HID report. hid-logitech-dj then
-> creates a HID device for each connected device and routes the HID reports to the
-> correspondent HID device.
-> 
-> Option 2) would be the easier on userspace, as it keeps the same interface we
-> use for DJ receivers for other Logitech HID++ receivers and avoids all userspace
-> apps to have to reimplement the same discovery logic.
-> 
-> Any thoughts?
+> Your code is much neater than mine ... and perhaps works in other cases, but
+> maybe the message needs to allow for the fact that some of the cores that
+> are reported missing may just be collateral damage from the initial problem.
 
-hid-logitech-dj already supports exposing devices behind a non-DJ / non-unifying
-receiver as separate HID child-devices of the receiver as we doe for DJ devices.
+Understood.  The system is probably not in the best shape if this code
+is ever executed, after all.  ;-)
 
-ATM hid-logitech-dj does not yet support the c541 PID receiver, but with some
-luck that could be as simple as adding this patch to the kernel:
+So how about like this?
 
-diff --git a/drivers/hid/hid-logitech-dj.c b/drivers/hid/hid-logitech-dj.c
-index 1ffcfc9a1e03..ee7051f3c926 100644
---- a/drivers/hid/hid-logitech-dj.c
-+++ b/drivers/hid/hid-logitech-dj.c
-@@ -1877,6 +1877,10 @@ static const struct hid_device_id logi_dj_receivers[] = {
- 	  HID_USB_DEVICE(USB_VENDOR_ID_LOGITECH,
- 		USB_DEVICE_ID_LOGITECH_NANO_RECEIVER_LIGHTSPEED_1_1),
- 	 .driver_data = recvr_type_gaming_hidpp},
-+	{ /* Logitech lightspeed receiver (0xc541) */
-+	  HID_USB_DEVICE(USB_VENDOR_ID_LOGITECH,
-+		0xc541),
-+	 .driver_data = recvr_type_gaming_hidpp},
- 	{ /* Logitech 27 MHz HID++ 1.0 receiver (0xc513) */
- 	  HID_USB_DEVICE(USB_VENDOR_ID_LOGITECH, USB_DEVICE_ID_MX3000_RECEIVER),
- 	 .driver_data = recvr_type_27mhz},
+	pr_info("%s: MCE holdout CPUs (may include false positives): %*pbl\n",
 
-Where the second 0xc541 should really be a
-USB_DEVICE_ID_LOGITECH_NANO_RECEIVER_LIGHTSPEED_1_2 define in hid-ids.h, but we
-can fix that when upstreaming this.
+Easy enough if so!
 
-For now if you can get the reporter of the bug to build a kernel with the
-above change and test that, then that would be great. If things do not work
-OOTB with this change, then we may need to do some additional work on
-the kernel side, but we do already support lightspeed receivers, so
-we should be able to add support for this new model too.
+> If I get time in the next day or two, I'll run my old test against your code to
+> see what happens.
 
-Regards,
+Thank you very much in advance!
 
-Hans
+For my own testing, is this still the right thing to use?
 
-[1] https://github.com/libratbag/libratbag/pull/1071
+	https://github.com/andikleen/mce-inject
 
-
-
+							Thanx, Paul
