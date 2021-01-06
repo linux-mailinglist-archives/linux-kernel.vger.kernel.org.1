@@ -2,90 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B6372EBBCF
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 10:47:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C0C1F2EBBD4
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 10:49:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726521AbhAFJrO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Jan 2021 04:47:14 -0500
-Received: from szxga07-in.huawei.com ([45.249.212.35]:10395 "EHLO
-        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725905AbhAFJrN (ORCPT
+        id S1726687AbhAFJsP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Jan 2021 04:48:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41292 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726251AbhAFJsO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Jan 2021 04:47:13 -0500
-Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4D9kxq1PFhz7Qp2;
-        Wed,  6 Jan 2021 17:45:35 +0800 (CST)
-Received: from [10.174.177.149] (10.174.177.149) by
- DGGEMS406-HUB.china.huawei.com (10.3.19.206) with Microsoft SMTP Server id
- 14.3.498.0; Wed, 6 Jan 2021 17:46:22 +0800
-Subject: Re: [v2] net: qrtr: fix null pointer dereference in qrtr_ns_remove
-To:     Markus Elfring <Markus.Elfring@web.de>, <netdev@vger.kernel.org>
-CC:     <linux-kernel@vger.kernel.org>, <kernel-janitors@vger.kernel.org>,
-        <hulkci@huawei.com>, "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-References: <20210105055754.16486-1-miaoqinglang@huawei.com>
- <4596fb37-5e74-5bf6-60e5-ded6fbb83969@web.de>
- <fdea7394-3e4a-0afe-6b22-7e3a258f5607@huawei.com>
- <b70726b8-0965-1fb9-2af1-2e05609905ea@web.de>
-From:   Qinglang Miao <miaoqinglang@huawei.com>
-Message-ID: <1a736322-42ce-e803-f91c-dc7595acffdd@huawei.com>
-Date:   Wed, 6 Jan 2021 17:46:22 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        Wed, 6 Jan 2021 04:48:14 -0500
+Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4BE7C061359
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Jan 2021 01:47:33 -0800 (PST)
+Received: by mail-ej1-x62d.google.com with SMTP id 6so4230984ejz.5
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Jan 2021 01:47:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=amarulasolutions.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=BkCCsh4gMOjo/AEllVdOt08zLRkTEYDX13jd8VQoyfM=;
+        b=JazHcfOklVp6oR2Mx22vR82cebwsjMmUriXCRkUmcqM58SfpOUKHRlfSmqjOEr68Ut
+         thByJQfNJGMTyLtDFLsF2kwEAst2JW180MHHYZwkhZpoSZL9y1GVOqpebSHC+drwcaGj
+         9QW8pWXEtIHNrb/aK84HQnG3bJ5Eh1AAo3TME=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=BkCCsh4gMOjo/AEllVdOt08zLRkTEYDX13jd8VQoyfM=;
+        b=ZBvA0vbd1vZGI3UklcTtZbmJX4gCzEf5Nq3m6OhBhZCT7bBPisJ+QtAf4OZPhlOdX2
+         NZqRZ7CYm9FIPJ415nYjB3kDENNXkJAssuPRxDNKmj9Jthh2PG0CADFTvsDqIQmbpGvV
+         xsqIpJga4Tr67cmNrEzONTLVnuMV2scNxktgdqVDuToUyYoKOOE5azxHGJfM4KBM047I
+         sgkNQskzxOoaCGKQK/0Q2Lpj2XSBuEwVLJW3e/Q+kSZG78UNpukiL/DH3JI7izHozeK0
+         kB7v3PRM3DF4HHAYNz24f4guYhT0N6nq9tQsvRmHmBa1Oe/TsX9FPQX4Wuj5nUkzBf5Y
+         +AgA==
+X-Gm-Message-State: AOAM530gS0gXuNCxuaeO/IKPVHmEdkhju1enxxvTihKVPNXE7dmVVRRm
+        rQbcxFMdf0nZUfitwzocRlWdmXDBfQqy1DWe9ZFS4/D97F3PIoVi
+X-Google-Smtp-Source: ABdhPJwRsLUHwjPiTZh6TI27HBF3OVWMoQ9t8GUS/t5MOc2+BGz+Y1B6Cwt47SyKc4vT/sQ7/OcL3Ib2Eh9c0b+eYcc=
+X-Received: by 2002:a17:906:4ec7:: with SMTP id i7mr2386067ejv.252.1609926452552;
+ Wed, 06 Jan 2021 01:47:32 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <b70726b8-0965-1fb9-2af1-2e05609905ea@web.de>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.177.149]
-X-CFilter-Loop: Reflected
+References: <20201128125257.1626588-1-icenowy@aosc.io>
+In-Reply-To: <20201128125257.1626588-1-icenowy@aosc.io>
+From:   Jagan Teki <jagan@amarulasolutions.com>
+Date:   Wed, 6 Jan 2021 15:17:20 +0530
+Message-ID: <CAMty3ZCkEb9g5t6Hs5DN5yHXYvDhymriYqqV+6DZiC+Qb645ww@mail.gmail.com>
+Subject: Re: [PATCH] drm/panel: feiyang-fy07024di26a30d: cleanup if panel
+ attaching failed
+To:     Icenowy Zheng <icenowy@aosc.io>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-在 2021/1/6 16:09, Markus Elfring 写道:
->>>> A null-ptr-deref bug is reported by Hulk Robot like this:
->>>
->>> Can it be clearer to use the term “null pointer dereference” for the final commit message?
->> This advice is too detailed for 'null-ptr-deref' is known as a general phrase
-> 
-> This key word was provided already by the referenced KASAN report.
+On Sat, Nov 28, 2020 at 6:23 PM Icenowy Zheng <icenowy@aosc.io> wrote:
 >
-Yep, you're right. 'null-ptr-deref' is not really proper here.
-> 
->> like 'use-after-free' for kernel developer, I think.
-> I suggest to reconsider the use of abbreviations at some places.
->  >
->>>> Fix it by making …
->>>
->>> Would you like to replace this wording by the tag “Fixes”?
->> Sorry, I didn't get your words.
->>
->> 'Fix it by' follows the solution
-> 
-> I propose to specify the desired adjustments without such a prefix
-> in the change description.
-Sorry, I can understand what you means, but I still disagree with this 
-one, for:
+> Attaching the panel can fail, so cleanup work is necessary, otherwise
+> a pointer to freed struct drm_panel* will remain in drm_panel code.
+>
+> Do the cleanup if panel attaching failed.
+>
+> Fixes: 69dc678abc2b ("drm/panel: Add Feiyang FY07024DI26A30-D MIPI-DSI LCD panel")
 
-1. 'Fix it by' is everywhere in kernel commit message.
-2. I think adding it or not makes no change for understanding.
-3. I'm not sure this is an official proposal.
+The fact that this has failed to probe due to recent changes in
+sun6i_mipi_dsi.c I don't know how to put that into the commit message.
+> Signed-off-by: Icenowy Zheng <icenowy@aosc.io>
+> ---
 
-> 
-> 
->> In fact, I do considered using 'Fixes' on this one,
-> 
-> Thanks for such information.
-> 
-> 
->> but it's hard to tell which specific commit brought this null pointer dereference.
-> 
-> This aspect is unfortunate here. >
-> Regards,
-> Markus
-> .
-> 
-
-Thanks anyway, I shall pay more attention to commit message. ;D
+Reviewed-by: Jagan Teki <jagan@amarulasolutions.com>
