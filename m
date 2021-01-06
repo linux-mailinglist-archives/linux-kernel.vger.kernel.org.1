@@ -2,124 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B53762EC200
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 18:22:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 900E12EC21A
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 18:27:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727495AbhAFRVT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Jan 2021 12:21:19 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33256 "EHLO mail.kernel.org"
+        id S1727329AbhAFR02 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Jan 2021 12:26:28 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35470 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727305AbhAFRVT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Jan 2021 12:21:19 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7033123106;
-        Wed,  6 Jan 2021 17:20:37 +0000 (UTC)
+        id S1727078AbhAFR02 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 Jan 2021 12:26:28 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 904E923120;
+        Wed,  6 Jan 2021 17:25:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1609953638;
-        bh=tG483r6vSnH9q4KcPpc+fYsYrKAgLFenh4LOpI9MOeE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=XrEv5AiFCg7oby6QMVQS2REt2mZxeBqgKabR3TufWYYR+rnHN/Y+pCL/etyHK8KY5
-         yXuJIG8lSFwu9PDqysxCE0Wwv04s53xiA/21+EAN/EdrRfqpn2K/NcM0LPoevRC8YZ
-         Zn6jf36KYBLxvLDfo8H+DlV1nsZpe6PLOqUj0eYM+DTTko+7JOUfd8CLw2+pvq7ZkG
-         SDSEikynYeiOcdrodBp4lgEObuMnGCfEIHXpxuUUc6TTUIqV7A7Al7kps0BmLWZMWf
-         Ca0nfbVxz3SaYqw/CaN8fBGbyRWZCeClW0NG7tJBRTH+ghblhrmqxCw4dDi2OBiljq
-         YvohqFfz2gh3g==
-Date:   Wed, 6 Jan 2021 17:20:34 +0000
-From:   Will Deacon <will@kernel.org>
-To:     Russell King - ARM Linux admin <linux@armlinux.org.uk>
-Cc:     Mark Rutland <mark.rutland@arm.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Theodore Ts'o <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        linux-ext4@vger.kernel.org
-Subject: Re: Aarch64 EXT4FS inode checksum failures - seems to be weak memory
- ordering issues
-Message-ID: <20210106172033.GA2165@willie-the-truck>
-References: <20210105154726.GD1551@shell.armlinux.org.uk>
- <20210106115359.GB26994@C02TD0UTHF1T.local>
- <20210106135253.GJ1551@shell.armlinux.org.uk>
+        s=k20201202; t=1609953947;
+        bh=4HmOLBsUYP9E055pH2bhMEoPGh4H1q6GjxZeSZYqljg=;
+        h=Date:From:To:Cc:Subject:Reply-To:From;
+        b=fr5cVav8GLKjZtGmvPz/mPiXBpfV4IEs76iFcVrTZGnh+WR0OBgK9CKhCkW9hwYqC
+         qkWHLtFea4fnu5kOoUTLqlbL7Duqo+IF+ySQtg/mlx3eaL7NifQpR10BUVuRkVx1Q2
+         uSUtPWTCe8uyG3/lXCBlUD+23Y2lYlyN+xeb1sunlJ6i9URqiUUJsxNFncsfTGmSR/
+         OOEV2hpsLUV5FHA4inrjGIwGTBM25tTmEFTzTmeCC1IxHLHGfV4viGYNeFLAVQSqgE
+         kzJ2WEJLyfIQwSeer2V+Wm+EE/zjYI69FhHO8p1Ltho5tcUMyyb78fTF42dj+hD71t
+         ECXZyCqsSvtcA==
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id 5DAB735225EC; Wed,  6 Jan 2021 09:25:47 -0800 (PST)
+Date:   Wed, 6 Jan 2021 09:25:47 -0800
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     rcu@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
+        jiangshanlai@gmail.com, akpm@linux-foundation.org,
+        mathieu.desnoyers@efficios.com, josh@joshtriplett.org,
+        tglx@linutronix.de, peterz@infradead.org, rostedt@goodmis.org,
+        dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
+        oleg@redhat.com, joel@joelfernandes.org
+Subject: [PATCH tip/core/rcu 0/20] Torture scripting updates for v5.12
+Message-ID: <20210106172547.GA22404@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210106135253.GJ1551@shell.armlinux.org.uk>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 06, 2021 at 01:52:53PM +0000, Russell King - ARM Linux admin wrote:
-> On Wed, Jan 06, 2021 at 11:53:59AM +0000, Mark Rutland wrote:
-> > ... and are you using defconfig or something else?
-> 
-> Not sure I replied to this. I'm not using the defconfig, I've my own
-> .config
-> 
-> As I mentioned, Will has built a 5.10 kernel using Arnd's gcc 4.9.4
-> and hasn't been able to reproduce it. He's sent me his kernel, which
-> I've booted here, and haven't yet been able to provoke it.
-> 
-> Meanwhile, my 5.9 kernel continues to exhibit this problem, so I've
-> sent Will my .config (which I'll include here.) There are differences
-> in some of the block layer configuration. There's differences in the
-> errata configuration, but we don't think that's a cause (they're not
-> relevant for Cortex A72).
-> 
-> Our plan is:
-> - Will is switching to 5.9, and using my config as a base for his
->   platform.
-> - Will is going to send me his modified version of my config.
-> - We are both going to build using the same kernel sources and same
->   config.
-> - We are going to test our own kernels, and also swap kernel images
->   and test each others.
-> 
-> Watch this space for more news...
+Hello!
 
-I've managed to reproduce the corruption on my AMD Seattle board (8x A57).
-I haven't had a chance to dig deeper yet, but here's the recipe which works
-for me:
+This series contains torture-test updates for the rcutorture scripting in
+tools/testing/selftests/rcutorture.
 
-1. I'm using GCC 4.9.4 simply to try to get as close as I can to rmk's
-   setup. I don't know if this is necessary or not, but the toolchain is
-   here:
+1.	Make --kcsan specify lockdep.
 
-   https://kernel.org/pub/tools/crosstool/files/bin/arm64/4.9.4/arm64-gcc-4.9.4-nolibc-aarch64-linux-gnu.tar.xz
+2.	Make kvm.sh "--dryrun sched" summarize number of batches.
 
-   and I needed to pull down an old libmpfr to get cc1 to work:
+3.	Make kvm.sh "--dryrun sched" summarize number of builds.
 
-   http://ports.ubuntu.com/pool/main/m/mpfr4/libmpfr4_3.1.2-1_arm64.deb
+4.	Allow kvm.sh --datestamp to specify subdirectories.
 
-2. I build a 5.9 kernel with the config here:
+5.	Prepare for splitting qemu execution from kvm-test-1-run.sh.
 
-   https://mirrors.edge.kernel.org/pub/linux/kernel/people/will/bugs/rmk/config-5.9.0
+6.	Add config2csv.sh script to compare torture scenarios.
 
-   and the resulting Image is here:
+7.	Make identify_qemu_vcpus() independent of local language,
+	courtesy of Frederic Weisbecker.
 
-   https://mirrors.edge.kernel.org/pub/linux/kernel/people/will/bugs/rmk/Image-5.9.0
+8.	Make kvm.sh "Test Summary" date be end of test.
 
-3. Using that kernel, I boot into a 64-bit Debian 10 filesystem and open a
-   couple of terminals over SSH.
+9.	Make kvm.sh arguments accumulate.
 
-4. In one terminal, I run:
+10.	Print run duration at end of kvm.sh execution.
 
-   $ while (true); do find /var /usr /bin /sbin -type f -print0 | xargs -0
-     md5sum > /dev/null; echo 2 | sudo tee /proc/sys/vm/drop_caches; done
+11.	Make kvm.sh return failure upon build failure.
 
-   (note that sudo will prompt you for a password on the first iteration)
+12.	Make kvm.sh include --kconfig arguments in CPU calculation.
 
-5. In the other terminal, I run:
+13.	Add kvm.sh test summary to end of log file.
 
-   $ while (true); do ./hackbench ; sleep 1; done
+14.	Stop hanging on panic.
 
-   where hackbench is built from:
+15.	Add --dryrun batches to help schedule a distributed run.
 
-   https://people.redhat.com/mingo/cfs-scheduler/tools/hackbench.c
+16.	s/STOP/STOP.1/ to avoid scenario collision.
 
-   and compiled according to comment in the source code.
+17.	Simplify exit-code plumbing for kvm-recheck.sh and
+	kvm-find-errors.sh.
 
-With that, I see the following after ten seconds or so:
+18.	Remove "Failed to add ttynull console" false positive.
 
-  EXT4-fs error (device sda2): ext4_lookup:1707: inode #674497: comm md5sum: iget: checksum invalid
+19.	Allow standalone kvm-recheck.sh run detect --trust-make.
 
-Russell, Mark -- does this recipe explode reliably for you too?
+20.	Do Kconfig analysis only once per scenario.
 
-Will
+						Thanx, Paul
+
+------------------------------------------------------------------------
+
+ config2csv.sh      |   67 +++++++++++++++++++++++++++++++++
+ console-badness.sh |    1 
+ functions.sh       |   36 +++++++++++++++++
+ kvm-find-errors.sh |    9 +++-
+ kvm-recheck.sh     |    3 -
+ kvm-test-1-run.sh  |   12 +++--
+ kvm.sh             |  107 +++++++++++++++++++++++++++++++++++++----------------
+ parse-build.sh     |    2 
+ parse-console.sh   |    2 
+ 9 files changed, 197 insertions(+), 42 deletions(-)
