@@ -2,119 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 46F8B2EBC46
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 11:24:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C0BE82EBC52
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 11:25:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726600AbhAFKXO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Jan 2021 05:23:14 -0500
-Received: from relay.sw.ru ([185.231.240.75]:58152 "EHLO relay3.sw.ru"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726406AbhAFKXN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Jan 2021 05:23:13 -0500
-Received: from [192.168.15.143]
-        by relay3.sw.ru with esmtp (Exim 4.94)
-        (envelope-from <ktkhai@virtuozzo.com>)
-        id 1kx5wT-00FcpY-3Q; Wed, 06 Jan 2021 13:21:25 +0300
-Subject: Re: [v3 PATCH 05/11] mm: vmscan: use a new flag to indicate shrinker
- is registered
-To:     Yang Shi <shy828301@gmail.com>, guro@fb.com, shakeelb@google.com,
-        david@fromorbit.com, hannes@cmpxchg.org, mhocko@suse.com,
-        akpm@linux-foundation.org
-Cc:     linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210105225817.1036378-1-shy828301@gmail.com>
- <20210105225817.1036378-6-shy828301@gmail.com>
-From:   Kirill Tkhai <ktkhai@virtuozzo.com>
-Message-ID: <bdf650e0-6728-4481-3454-c865649bbdcf@virtuozzo.com>
-Date:   Wed, 6 Jan 2021 13:21:34 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        id S1726386AbhAFKZH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Jan 2021 05:25:07 -0500
+Received: from foss.arm.com ([217.140.110.172]:38538 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726063AbhAFKZG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 Jan 2021 05:25:06 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 7C6021FB;
+        Wed,  6 Jan 2021 02:24:20 -0800 (PST)
+Received: from C02TD0UTHF1T.local (unknown [10.57.36.216])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id A4A273F719;
+        Wed,  6 Jan 2021 02:24:17 -0800 (PST)
+Date:   Wed, 6 Jan 2021 10:24:10 +0000
+From:   Mark Rutland <mark.rutland@arm.com>
+To:     James Clark <james.clark@arm.com>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-perf-users@vger.kernel.org, will@kernel.org,
+        leo.yan@linaro.org, Al Grant <al.grant@arm.com>,
+        John Garry <john.garry@huawei.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Catalin Marinas <catalin.marinas@arm.com>
+Subject: Re: [PATCH v2] drivers/perf: Enable PID_IN_CONTEXTIDR with SPE
+Message-ID: <20210106102327.GA26994@C02TD0UTHF1T.local>
+References: <20201214084502.19954-1-james.clark@arm.com>
 MIME-Version: 1.0
-In-Reply-To: <20210105225817.1036378-6-shy828301@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201214084502.19954-1-james.clark@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 06.01.2021 01:58, Yang Shi wrote:
-> Currently registered shrinker is indicated by non-NULL shrinker->nr_deferred.
-> This approach is fine with nr_deferred at the shrinker level, but the following
-> patches will move MEMCG_AWARE shrinkers' nr_deferred to memcg level, so their
-> shrinker->nr_deferred would always be NULL.  This would prevent the shrinkers
-> from unregistering correctly.
+On Mon, Dec 14, 2020 at 10:45:02AM +0200, James Clark wrote:
+> Enable PID_IN_CONTEXTIDR by default when Arm SPE is enabled.
+> This flag is required to get PID data in the SPE trace. Without
+> it the perf tool will report 0 for PID which isn't very useful,
+> especially when doing system wide profiling or profiling
+> applications that fork.
 > 
-> Signed-off-by: Yang Shi <shy828301@gmail.com>
+> There is a small performance overhead when enabling
+> PID_IN_CONTEXTIDR, but SPE itself is optional and not enabled by
+> default so the impact is minimised.
+> 
+> Cc: Will Deacon <will@kernel.org>
+> Cc: Mark Rutland <mark.rutland@arm.com>
+> Cc: Al Grant <al.grant@arm.com>
+> Cc: Leo Yan <leo.yan@linaro.org>
+> Cc: John Garry <john.garry@huawei.com>
+> Cc: Suzuki K Poulose <suzuki.poulose@arm.com>
+> Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
+> Cc: Catalin Marinas <catalin.marinas@arm.com>
+> Signed-off-by: James Clark <james.clark@arm.com>
 > ---
->  include/linux/shrinker.h |  7 ++++---
->  mm/vmscan.c              | 13 +++++++++----
->  2 files changed, 13 insertions(+), 7 deletions(-)
+>  arch/arm64/Kconfig.debug | 1 +
+>  1 file changed, 1 insertion(+)
 > 
-> diff --git a/include/linux/shrinker.h b/include/linux/shrinker.h
-> index 0f80123650e2..1eac79ce57d4 100644
-> --- a/include/linux/shrinker.h
-> +++ b/include/linux/shrinker.h
-> @@ -79,13 +79,14 @@ struct shrinker {
->  #define DEFAULT_SEEKS 2 /* A good number if you don't know better. */
+> diff --git a/arch/arm64/Kconfig.debug b/arch/arm64/Kconfig.debug
+> index 265c4461031f..b030bb21a0bb 100644
+> --- a/arch/arm64/Kconfig.debug
+> +++ b/arch/arm64/Kconfig.debug
+> @@ -2,6 +2,7 @@
 >  
->  /* Flags */
-> -#define SHRINKER_NUMA_AWARE	(1 << 0)
-> -#define SHRINKER_MEMCG_AWARE	(1 << 1)
-> +#define SHRINKER_REGISTERED	(1 << 0)
-> +#define SHRINKER_NUMA_AWARE	(1 << 1)
-> +#define SHRINKER_MEMCG_AWARE	(1 << 2)
->  /*
->   * It just makes sense when the shrinker is also MEMCG_AWARE for now,
->   * non-MEMCG_AWARE shrinker should not have this flag set.
->   */
-> -#define SHRINKER_NONSLAB	(1 << 2)
-> +#define SHRINKER_NONSLAB	(1 << 3)
->  
->  extern int prealloc_shrinker(struct shrinker *shrinker);
->  extern void register_shrinker_prepared(struct shrinker *shrinker);
-> diff --git a/mm/vmscan.c b/mm/vmscan.c
-> index 8da765a85569..9761c7c27412 100644
-> --- a/mm/vmscan.c
-> +++ b/mm/vmscan.c
-> @@ -494,6 +494,7 @@ void register_shrinker_prepared(struct shrinker *shrinker)
->  	if (shrinker->flags & SHRINKER_MEMCG_AWARE)
->  		idr_replace(&shrinker_idr, shrinker, shrinker->id);
->  #endif
-> +	shrinker->flags |= SHRINKER_REGISTERED;
+>  config PID_IN_CONTEXTIDR
+>  	bool "Write the current PID to the CONTEXTIDR register"
+> +	default y if ARM_SPE_PMU
+>  	help
+>  	  Enabling this option causes the kernel to write the current PID to
+>  	  the CONTEXTIDR register, at the expense of some additional
 
-In case of we introduce this new flag, we should kill old flag SHRINKER_REGISTERING,
-which are not needed anymore (we should you the new flag instead of that).
+Given that PID_IN_CONTEXTIDR doesn't take PID namespacing into account,
+IIUC it's kinda broken today (and arguably removing that support would
+be better).
 
->  	up_write(&shrinker_rwsem);
->  }
->  
-> @@ -513,13 +514,17 @@ EXPORT_SYMBOL(register_shrinker);
->   */
->  void unregister_shrinker(struct shrinker *shrinker)
->  {
-> -	if (!shrinker->nr_deferred)
-> -		return;
-> -	if (shrinker->flags & SHRINKER_MEMCG_AWARE)
-> -		unregister_memcg_shrinker(shrinker);
->  	down_write(&shrinker_rwsem);
+Can we not track the (namespaced) PID in thte main ringbuffer regardless
+of PID_IN_CONTEXTIDR, and leave PID_IN_CONTEXTIDR as an external debug
+aid only?
 
-I do not think there are some users which registration may race with unregistration.
-So, I think we should check SHRINKER_REGISTERED unlocked similar to we used to check
-shrinker->nr_deferred unlocked.
+Making this default y is ARM_SPE_PMU implies it'll be on in all distro
+kernels, and I think we need to think harder before doing that.
 
-> +	if (!(shrinker->flags & SHRINKER_REGISTERED)) {
-> +		up_write(&shrinker_rwsem);
-> +		return;
-> +	}
->  	list_del(&shrinker->list);
-> +	shrinker->flags &= ~SHRINKER_REGISTERED;
->  	up_write(&shrinker_rwsem);
-> +
-> +	if (shrinker->flags & SHRINKER_MEMCG_AWARE)
-> +		unregister_memcg_shrinker(shrinker);
->  	kfree(shrinker->nr_deferred);
->  	shrinker->nr_deferred = NULL;
->  }
-> 
-
+Thanks,
+Mark.
