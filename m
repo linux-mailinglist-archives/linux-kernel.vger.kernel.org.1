@@ -2,98 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F22032EC3ED
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 20:33:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 461692EC3F2
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 20:33:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727149AbhAFTcZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Jan 2021 14:32:25 -0500
-Received: from aserp2120.oracle.com ([141.146.126.78]:50926 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725822AbhAFTcY (ORCPT
+        id S1726685AbhAFTdt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Jan 2021 14:33:49 -0500
+Received: from mx13.kaspersky-labs.com ([91.103.66.164]:59393 "EHLO
+        mx13.kaspersky-labs.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726572AbhAFTds (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Jan 2021 14:32:24 -0500
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 106JSv4x096316;
-        Wed, 6 Jan 2021 19:31:30 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=LKX+v411qJTSzQmb+cGxJEJkOBIOhcRhlSFMC+/Hg1k=;
- b=jqjUbeXc/xNjQSXYN3ogeUGIbB7rFX1hPcU2tEsbE49Cg6NdNxP6ALf1V+PKDwneEemk
- FdwOcfUmT1DBXWfn1vQ06W/DoKADh8Zm+ebH4P7mpHueLXkgwk4eAwMc0MrLNvTDL5zY
- cXcTRLlB1pwNrtk5VX9wPsKe7s9erfIa2LoQegRtuj9F25lU8U3LWizXdakIHmgM/kvm
- C0TDmZbCKMg018oUC08XjOoFtACknDu6BFSz8XlUxV2NAQ7Z8/3rFXE8YVLSJ0ufe9c8
- HN3tC/VVhYbH77LIsadSCJ7O+cEtRgxG2YMDK08i8dY67Dba1gO57/fQtekkmqjLABzb tg== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by aserp2120.oracle.com with ESMTP id 35wepm9h4p-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 06 Jan 2021 19:31:30 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 106JUchj071415;
-        Wed, 6 Jan 2021 19:31:29 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by userp3020.oracle.com with ESMTP id 35w3qsed49-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 06 Jan 2021 19:31:29 +0000
-Received: from abhmp0007.oracle.com (abhmp0007.oracle.com [141.146.116.13])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 106JVQCp018580;
-        Wed, 6 Jan 2021 19:31:26 GMT
-Received: from kadam (/102.36.221.92)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Wed, 06 Jan 2021 11:31:25 -0800
-Date:   Wed, 6 Jan 2021 22:31:16 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Alan Stern <stern@rowland.harvard.edu>,
-        Hans Verkuil <hans.verkuil@cisco.com>
-Cc:     Antoine Jacquet <royale@zerezo.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-usb@vger.kernel.org, linux-media@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] media: zr364xx: fix memory leaks in probe()
-Message-ID: <20210106193116.GE2831@kadam>
-References: <X/WMfVDCsxRghKHH@mwanda>
- <20210106164550.GB1012582@rowland.harvard.edu>
+        Wed, 6 Jan 2021 14:33:48 -0500
+Received: from relay13.kaspersky-labs.com (unknown [127.0.0.10])
+        by relay13.kaspersky-labs.com (Postfix) with ESMTP id 034675213F2;
+        Wed,  6 Jan 2021 22:33:05 +0300 (MSK)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kaspersky.com;
+        s=mail; t=1609961585;
+        bh=hTIIZQzD6N5aU747gWKjNnEL0LKndO4pfs1RLjYJ+FA=;
+        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type;
+        b=iRd3D5GxmIOzcZaTx/aZwW9LOIEK7wxT9iewfzXwU55tsVcNjxzoKcHY+uhNiEG1H
+         Fgv9BZ8rl/rLZ7Tb7tfdapAac/W7GYEpCbsO6vl7lcUeh87TnpKSSxFo3mUfKuFkva
+         hFtzKODf5lBAMhpplsJ+ziXcr0V4lvaAc2/JmtDM=
+Received: from mail-hq2.kaspersky.com (unknown [91.103.66.206])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (Client CN "mail-hq2.kaspersky.com", Issuer "Kaspersky MailRelays CA G3" (verified OK))
+        by mailhub13.kaspersky-labs.com (Postfix) with ESMTPS id 3E627521359;
+        Wed,  6 Jan 2021 22:33:04 +0300 (MSK)
+Received: from [10.16.171.77] (10.64.64.121) by hqmailmbx3.avp.ru
+ (10.64.67.243) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2044.4; Wed, 6 Jan
+ 2021 22:33:03 +0300
+Subject: Re: [PATCH 0/5] virtio/vsock: introduce SOCK_SEQPACKET support.
+To:     stsp <stsp2@yandex.ru>, Stefan Hajnoczi <stefanha@redhat.com>,
+        Stefano Garzarella <sgarzare@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Colin Ian King <colin.king@canonical.com>,
+        Jorgen Hansen <jhansen@vmware.com>,
+        Arseniy Krasnov <oxffffaa@gmail.com>,
+        Andra Paraschiv <andraprs@amazon.com>,
+        Jeff Vander Stoep <jeffv@google.com>
+CC:     "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "virtualization@lists.linux-foundation.org" 
+        <virtualization@lists.linux-foundation.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20210103195454.1954169-1-arseny.krasnov@kaspersky.com>
+ <b93e36c7-fd0b-6c5c-f598-234520b9fe01@yandex.ru>
+From:   Arseny Krasnov <arseny.krasnov@kaspersky.com>
+Message-ID: <669392c9-8e30-c44d-e4c0-e920bf768af2@kaspersky.com>
+Date:   Wed, 6 Jan 2021 22:33:02 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210106164550.GB1012582@rowland.harvard.edu>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9856 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 malwarescore=0 mlxscore=0
- spamscore=0 mlxlogscore=999 phishscore=0 bulkscore=0 suspectscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2101060109
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9856 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 bulkscore=0 spamscore=0
- impostorscore=0 phishscore=0 lowpriorityscore=0 suspectscore=0
- priorityscore=1501 mlxscore=0 malwarescore=0 clxscore=1011 mlxlogscore=999
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2101060109
+In-Reply-To: <b93e36c7-fd0b-6c5c-f598-234520b9fe01@yandex.ru>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Originating-IP: [10.64.64.121]
+X-ClientProxiedBy: hqmailmbx2.avp.ru (10.64.67.242) To hqmailmbx3.avp.ru
+ (10.64.67.243)
+X-KSE-ServerInfo: hqmailmbx3.avp.ru, 9
+X-KSE-AntiSpam-Interceptor-Info: scan successful
+X-KSE-AntiSpam-Version: 5.9.16, Database issued on: 01/06/2021 19:18:01
+X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
+X-KSE-AntiSpam-Method: none
+X-KSE-AntiSpam-Rate: 0
+X-KSE-AntiSpam-Info: Lua profiles 160996 [Jan 06 2021]
+X-KSE-AntiSpam-Info: LuaCore: 419 419 70b0c720f8ddd656e5f4eb4a4449cf8ce400df94
+X-KSE-AntiSpam-Info: Version: 5.9.16.0
+X-KSE-AntiSpam-Info: Envelope from: arseny.krasnov@kaspersky.com
+X-KSE-AntiSpam-Info: {Tracking_content_type, plain}
+X-KSE-AntiSpam-Info: {Tracking_date, moscow}
+X-KSE-AntiSpam-Info: {Tracking_c_tr_enc, eight_bit}
+X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
+X-KSE-AntiSpam-Info: 127.0.0.199:7.1.2;kaspersky.com:7.1.1;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1
+X-KSE-AntiSpam-Info: Rate: 0
+X-KSE-AntiSpam-Info: Status: not_detected
+X-KSE-AntiSpam-Info: Method: none
+X-KSE-Antiphishing-Info: Clean
+X-KSE-Antiphishing-ScanningType: Deterministic
+X-KSE-Antiphishing-Method: None
+X-KSE-Antiphishing-Bases: 01/06/2021 19:21:00
+X-KSE-AttachmentFiltering-Interceptor-Info: no applicable attachment filtering
+ rules found
+X-KSE-Antivirus-Interceptor-Info: scan successful
+X-KSE-Antivirus-Info: Clean, bases: 06.01.2021 15:19:00
+X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
+X-KSE-AttachmentFiltering-Interceptor-Info: no applicable attachment filtering
+ rules found
+X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
+X-KLMS-Rule-ID: 52
+X-KLMS-Message-Action: clean
+X-KLMS-AntiSpam-Status: not scanned, disabled by settings
+X-KLMS-AntiSpam-Interceptor-Info: not scanned
+X-KLMS-AntiPhishing: Clean, bases: 2021/01/06 17:58:00
+X-KLMS-AntiVirus: Kaspersky Security for Linux Mail Server, version 8.0.3.30, bases: 2021/01/06 15:19:00 #16022888
+X-KLMS-AntiVirus-Status: Clean, skipped
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 06, 2021 at 11:45:50AM -0500, Alan Stern wrote:
-> On Wed, Jan 06, 2021 at 01:10:05PM +0300, Dan Carpenter wrote:
-> > Syzbot discovered that the probe error handling doesn't clean up the
-> > resources allocated in zr364xx_board_init().  There are several
-> > related bugs in this code so I have re-written the error handling.
-> 
-> Dan:
-> 
-> I recently sent in a patch for a similar problem in the gspca driver
-> (commit e469d0b09a19 "media: gspca: Fix memory leak in probe").  It
-> seems there may be similar issues in that driver: one single function
-> call tries to undo an indeterminate number of initializations.
-> 
-> I don't know enough about these subsystems to evaluate this.  Can you
-> take a look at it?
-> 
+> Hi Arseny, thanks for your work on this!
+> I did a small review in a hope it helps.
+> Also it may be cool to have the driver feature
+> for that (so that the host can see if its supported).
+> But I guess this was already said by Michael. :)
 
-The probe error handling in gspca_dev_probe2() is fine now.  All those
-functions are no-ops when they haven't been allocated/registered.
+Hello, thank You for your review, i'll prepare
+v2 as soon as possible.
 
-regards,
-dan carpenter
 
