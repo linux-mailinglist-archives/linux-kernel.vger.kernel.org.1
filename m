@@ -2,80 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E12D42EBE97
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 14:26:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B5D5D2EBE9C
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 14:29:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727225AbhAFN0N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Jan 2021 08:26:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47008 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727148AbhAFN0M (ORCPT
+        id S1726397AbhAFN1q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Jan 2021 08:27:46 -0500
+Received: from relay12.mail.gandi.net ([217.70.178.232]:36957 "EHLO
+        relay12.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725944AbhAFN1p (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Jan 2021 08:26:12 -0500
-Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49836C06134C;
-        Wed,  6 Jan 2021 05:25:32 -0800 (PST)
-Received: by mail-pl1-x629.google.com with SMTP id t6so1557961plq.1;
-        Wed, 06 Jan 2021 05:25:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=rfSaaKFPCsYTMKsjFLgb3PFNNPkndz/7XIsR9mU4RAc=;
-        b=GTlDexopRbKwOa+ypeSiLjjyE8zwQquIDctLHgca8vAQm1SRUs823w6TlQY15E5LQs
-         RtJjhiY+fbzXELiUkaQs9I0FimvmjxAI7R0ybH04bJDymL1wRi5tsfXzsvJqry97BlXY
-         aPMUk8OeLmzttl/1gHfwBU8jczaV3h3sD3T5mf7F7weo7f461oVQ+B/5kktHYTxWyxvh
-         skAKkQ0ZcH2NK4IKolmAjMWWNJHDnv/2vdlKT/qNHdK6usElk12N5L+lMxOHj5A25K5u
-         oPCshmYSzgdy0/n/BLBkEgXR/01JdSh5FOqLNE2jsquIn6v+OeyAGaTlddEtP+smEj9v
-         g+8Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=rfSaaKFPCsYTMKsjFLgb3PFNNPkndz/7XIsR9mU4RAc=;
-        b=Z7Nbz5/iNN9u9AUEmjnLg5E2DugR40ZAxNZszcPvo2SZHtVO+2vnhdcDerp/sNdUdJ
-         aJCDYsYoU0f4vAEaqSF/x2dJtQFhAoOR49fWb1U4lEINpeIL2RDClO5YoZ/nyuYtQ/D4
-         m4XFW+2yMmKFIgbPneM2LNfnzIR+/oiCPgXjAH4vnum665YZHHo1HjdD/OKZsdbR0atN
-         uh7DgeXwWp0LUhTG6VEkOlXZ99CIGcXpZxrVNlfYOQ2zqeHzASkR3wfCXZPxnknpQj50
-         GF94MeH0eb0PdZcRSnBMu7f3qByhD2+whkkZCsAKIj+hnLFkdp4ZzBla3+W7dtNxN7Ot
-         dOmQ==
-X-Gm-Message-State: AOAM533SbpPqTtZuGTWTYfUQKnB2ZzNU7kpzZQwF7jiVxhjjtvHCOHd8
-        dP93VQiX726lC4Nn5aHgHroAgntokzVs07v1Bko=
-X-Google-Smtp-Source: ABdhPJy0QSxbDksTicF54QIKxE4nVtTb7NqYcG/EoK3gOoKqzHtI0LBY1KG4w+K3hjjFWLCC+ppAdbbcbcOGwfKtig8=
-X-Received: by 2002:a17:902:e98c:b029:da:cb88:f11d with SMTP id
- f12-20020a170902e98cb02900dacb88f11dmr4265530plb.17.1609939531800; Wed, 06
- Jan 2021 05:25:31 -0800 (PST)
+        Wed, 6 Jan 2021 08:27:45 -0500
+Received: from localhost (lfbn-lyo-1-13-140.w86-202.abo.wanadoo.fr [86.202.109.140])
+        (Authenticated sender: alexandre.belloni@bootlin.com)
+        by relay12.mail.gandi.net (Postfix) with ESMTPSA id 75C5420000C;
+        Wed,  6 Jan 2021 13:27:03 +0000 (UTC)
+Date:   Wed, 6 Jan 2021 14:27:03 +0100
+From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
+To:     Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-rtc@vger.kernel.org
+Subject: Re: [PATCH 1/2] rtc: goldfish: Remove GOLDFISH dependency
+Message-ID: <20210106132703.GM122615@piout.net>
+References: <20201114130921.651882-1-jiaxun.yang@flygoat.com>
+ <20201114130921.651882-2-jiaxun.yang@flygoat.com>
+ <CAMuHMdXo9o9af-YBt5g53QHRhuLxdSy_C9n4wdEEh7yzDidr-w@mail.gmail.com>
+ <20210104144841.GC3313@piout.net>
+ <CAMuHMdWGnBcYvXLnydSnkxcmG6GksZLfq1aWADuWg8ibZ3V8Lg@mail.gmail.com>
+ <20210104154303.GD3313@piout.net>
+ <CAMuHMdW2nDwJGmOtoDgOEMgEDaD9nMMCv=Y4nZaDqCM1UNadvQ@mail.gmail.com>
 MIME-Version: 1.0
-References: <20210106131932.774-1-zhengyongjun3@huawei.com>
-In-Reply-To: <20210106131932.774-1-zhengyongjun3@huawei.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Wed, 6 Jan 2021 15:25:15 +0200
-Message-ID: <CAHp75VeihR0kDy0dW4d=bwykFkS8+G3=u_yjS-SFU74C=i6z9g@mail.gmail.com>
-Subject: Re: [PATCH -next] gpio: wcove: use resource_size
-To:     Zheng Yongjun <zhengyongjun3@huawei.com>
-Cc:     Andy Shevchenko <andy@kernel.org>,
-        Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAMuHMdW2nDwJGmOtoDgOEMgEDaD9nMMCv=Y4nZaDqCM1UNadvQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 6, 2021 at 3:19 PM Zheng Yongjun <zhengyongjun3@huawei.com> wrote:
->
-> Use resource_size rather than a verbose computation on
-> the end and start fields.
+On 04/01/2021 16:51:40+0100, Geert Uytterhoeven wrote:
+> > > Is it used on ARM platforms?
+> > > qemu:hw/riscv/Kconfig selects GOLDFISH_RTC, but that's it?
+> >
+> > My understanding is that this was used on the original ARM based goldfish
+> > android emulator but I don't think this was ever upstreamed.
+> 
+> Upstream indeed only has GOLDFISH support in arch/x86/Kconfig.
+> Still, that would be handled by the dependency on GOLDFISH.
+> 
+> Or do you mean upstream QEMU Goldfish support?
+> 
 
-Wrong commit message (or the code).
+Yes, I meant upstream in QEMU. If I refer to the doc from google:
 
-> -       wg->chip.set_config = wcove_gpio_set_config,
-> +       wg->chip.set_config = wcove_gpio_set_config;
+'goldfish' is the name of a family of similar virtual hardware platforms, that
+mostly differ in the virtual CPU they support. 'goldfish' started as an
+ARM-specific platform, but has now been ported to x86 and MIPS virtual CPUs.
+
+Goldfish was based on QEMU 0.8.2, they then moved to ranchu, this time
+on a more upstream QEMU but I don't think this is upstream either.
 
 
 -- 
-With Best Regards,
-Andy Shevchenko
+Alexandre Belloni, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
