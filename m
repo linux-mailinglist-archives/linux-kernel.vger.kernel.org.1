@@ -2,277 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A99082EC1DD
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 18:15:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1569D2EC1E0
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 18:15:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727429AbhAFROv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Jan 2021 12:14:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54518 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726545AbhAFROu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Jan 2021 12:14:50 -0500
-Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E6EBC06134D;
-        Wed,  6 Jan 2021 09:14:10 -0800 (PST)
-Received: by mail-ed1-x52c.google.com with SMTP id p22so5006380edu.11;
-        Wed, 06 Jan 2021 09:14:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=wjdy3LSwb/LBfqLrKmUZfH/sdZsTFfQCddG/+mZNi4k=;
-        b=IAJL+4tVOUuFWrxidklnnmun8q2GPQH5dmcCLtTT6TabYVCqYVady9pV1kMGOrRPZG
-         xbKuRyZ4qgmE4xFCVpUrm28B3743gKh4BT6udZCvkIdZTkS/gFm/6JxZJwPjZ28laHir
-         iu1hrRchGnQQF7V7T91RJSbETUUYMT77vJdBkWUK3GR4uwk29GBf+loCApxo89mGKFxq
-         LK/FxxjWdlqBypMN9a69qfj4UuwuOnv/y/5xLIoXh6kwYb7EASYL+u7tMzuauHQlSNhG
-         NIcG31/Qecd07ZLdVurBiJ1IVyWEKxsf1wc8T3TdqyiRhjqH/htNh7DxubEDUu/eKmKs
-         i/nA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=wjdy3LSwb/LBfqLrKmUZfH/sdZsTFfQCddG/+mZNi4k=;
-        b=MyjVFcYlIIY2juK0VZWKcN2ZNsFRjgrrMEu3hgCy+l9mB/uV2kM2J2NY1MhvBvXDeH
-         jK04I8prfyukfH1OI9poGZHgveOYGuJSfpKvVvUqIJpRpUAnIHcWrfkCs7fnetn6AbOS
-         KtWt1jC7W4/1OOIx9yk8ktmdYQDn0kuUtYD9giTP9vaL4DyMh8dGGyhRRhFelwGp+Pon
-         g8bbYz2cuQgU4zcB84taBph4MXjZCkCDNSDvhLvl4qQH3lqzJGC2C76/E/jsa4NoxoTx
-         vzQYQ3kmpyxFflaBpljA27+VErNcGx4s/Z9SLBT2OwaOcmgcBQWhNnYMApd5j2ueIs5N
-         2peA==
-X-Gm-Message-State: AOAM531rTpvLeXmw5V6q5X7341Z0pNN2T93D+i8ml4mRAR5xDPF1Z9nB
-        8Tf0rdkVTOweo6TJxQ6zH9TtLBTH64TsXnLRUGM=
-X-Google-Smtp-Source: ABdhPJyt70emFsZtycX+Ivkkh+Ze/wujYVUQihhieax+ht6Bm3DG8Kibi4NwcKRq7krczvUKB+QgS+wIjJWm6m0xa78=
-X-Received: by 2002:a50:ec18:: with SMTP id g24mr4599966edr.6.1609953248684;
- Wed, 06 Jan 2021 09:14:08 -0800 (PST)
+        id S1727689AbhAFRPM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Jan 2021 12:15:12 -0500
+Received: from mx2.suse.de ([195.135.220.15]:54610 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727525AbhAFRPL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 Jan 2021 12:15:11 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 05EF5ACAF;
+        Wed,  6 Jan 2021 17:14:30 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id A0C771E0816; Wed,  6 Jan 2021 18:14:29 +0100 (CET)
+Date:   Wed, 6 Jan 2021 18:14:29 +0100
+From:   Jan Kara <jack@suse.cz>
+To:     Shiyang Ruan <ruansy.fnst@cn.fujitsu.com>
+Cc:     linux-kernel@vger.kernel.org, linux-xfs@vger.kernel.org,
+        linux-nvdimm@lists.01.org, linux-mm@kvack.org,
+        linux-fsdevel@vger.kernel.org, linux-raid@vger.kernel.org,
+        darrick.wong@oracle.com, dan.j.williams@intel.com,
+        david@fromorbit.com, hch@lst.de, song@kernel.org, rgoldwyn@suse.de,
+        qi.fuli@fujitsu.com, y-goto@fujitsu.com
+Subject: Re: [PATCH 08/10] md: Implement ->corrupted_range()
+Message-ID: <20210106171429.GE29271@quack2.suse.cz>
+References: <20201230165601.845024-1-ruansy.fnst@cn.fujitsu.com>
+ <20201230165601.845024-9-ruansy.fnst@cn.fujitsu.com>
 MIME-Version: 1.0
-References: <CGME20210104085750epcas2p1a5b22559d87df61ef3c8215ae0b470b5@epcas2p1.samsung.com>
- <1609750005-115609-1-git-send-email-dseok.yi@samsung.com> <CAF=yD-+bDdYg7X+WpP14w3fbv+JewySpdCbjdwWXB-syCwQ9uQ@mail.gmail.com>
- <017f01d6e3cb$698246a0$3c86d3e0$@samsung.com> <CAF=yD-Lg92JdpCU8CEQnutzi4VyS67_VNfAniRU=RxDvfYMruw@mail.gmail.com>
- <019b01d6e3dc$9a940330$cfbc0990$@samsung.com>
-In-Reply-To: <019b01d6e3dc$9a940330$cfbc0990$@samsung.com>
-From:   Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-Date:   Wed, 6 Jan 2021 12:13:33 -0500
-Message-ID: <CAF=yD-+w489MoSKfpaH23dYXhVCL2qh4f0x4COd2nsT5DT8Aiw@mail.gmail.com>
-Subject: Re: [PATCH net] net: fix use-after-free when UDP GRO with shared fraglist
-To:     Dongseok Yi <dseok.yi@samsung.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Willem de Bruijn <willemb@google.com>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Florian Westphal <fw@strlen.de>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Guillaume Nault <gnault@redhat.com>,
-        Yunsheng Lin <linyunsheng@huawei.com>,
-        Steffen Klassert <steffen.klassert@secunet.com>,
-        Yadu Kishore <kyk.segfault@gmail.com>,
-        Marco Elver <elver@google.com>,
-        Network Development <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, namkyu78.kim@samsung.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201230165601.845024-9-ruansy.fnst@cn.fujitsu.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 5, 2021 at 10:32 PM Dongseok Yi <dseok.yi@samsung.com> wrote:
->
-> On 2021-01-06 12:07, Willem de Bruijn wrote:
-> >
-> > On Tue, Jan 5, 2021 at 8:29 PM Dongseok Yi <dseok.yi@samsung.com> wrote:
-> > >
-> > > On 2021-01-05 06:03, Willem de Bruijn wrote:
-> > > >
-> > > > On Mon, Jan 4, 2021 at 4:00 AM Dongseok Yi <dseok.yi@samsung.com> wrote:
-> > > > >
-> > > > > skbs in frag_list could be shared by pskb_expand_head() from BPF.
-> > > >
-> > > > Can you elaborate on the BPF connection?
-> > >
-> > > With the following registered ptypes,
-> > >
-> > > /proc/net # cat ptype
-> > > Type Device      Function
-> > > ALL           tpacket_rcv
-> > > 0800          ip_rcv.cfi_jt
-> > > 0011          llc_rcv.cfi_jt
-> > > 0004          llc_rcv.cfi_jt
-> > > 0806          arp_rcv
-> > > 86dd          ipv6_rcv.cfi_jt
-> > >
-> > > BPF checks skb_ensure_writable between tpacket_rcv and ip_rcv
-> > > (or ipv6_rcv). And it calls pskb_expand_head.
-> > >
-> > > [  132.051228] pskb_expand_head+0x360/0x378
-> > > [  132.051237] skb_ensure_writable+0xa0/0xc4
-> > > [  132.051249] bpf_skb_pull_data+0x28/0x60
-> > > [  132.051262] bpf_prog_331d69c77ea5e964_schedcls_ingres+0x5f4/0x1000
-> > > [  132.051273] cls_bpf_classify+0x254/0x348
-> > > [  132.051284] tcf_classify+0xa4/0x180
-> >
-> > Ah, you have a BPF program loaded at TC. That was not entirely obvious.
-> >
-> > This program gets called after packet sockets with ptype_all, before
-> > those with a specific protocol.
-> >
-> > Tcpdump will have inserted a program with ptype_all, which cloned the
-> > skb. This triggers skb_ensure_writable -> pskb_expand_head ->
-> > skb_clone_fraglist -> skb_get.
-> >
-> > > [  132.051294] __netif_receive_skb_core+0x590/0xd28
-> > > [  132.051303] __netif_receive_skb+0x50/0x17c
-> > > [  132.051312] process_backlog+0x15c/0x1b8
-> > >
-> > > >
-> > > > > While tcpdump, sk_receive_queue of PF_PACKET has the original frag_list.
-> > > > > But the same frag_list is queued to PF_INET (or PF_INET6) as the fraglist
-> > > > > chain made by skb_segment_list().
-> > > > >
-> > > > > If the new skb (not frag_list) is queued to one of the sk_receive_queue,
-> > > > > multiple ptypes can see this. The skb could be released by ptypes and
-> > > > > it causes use-after-free.
-> > > >
-> > > > If I understand correctly, a udp-gro-list skb makes it up the receive
-> > > > path with one or more active packet sockets.
-> > > >
-> > > > The packet socket will call skb_clone after accepting the filter. This
-> > > > replaces the head_skb, but shares the skb_shinfo and thus frag_list.
-> > > >
-> > > > udp_rcv_segment later converts the udp-gro-list skb to a list of
-> > > > regular packets to pass these one-by-one to udp_queue_rcv_one_skb.
-> > > > Now all the frags are fully fledged packets, with headers pushed
-> > > > before the payload. This does not change their refcount anymore than
-> > > > the skb_clone in pf_packet did. This should be 1.
-> > > >
-> > > > Eventually udp_recvmsg will call skb_consume_udp on each packet.
-> > > >
-> > > > The packet socket eventually also frees its cloned head_skb, which triggers
-> > > >
-> > > >   kfree_skb_list(shinfo->frag_list)
-> > > >     kfree_skb
-> > > >       skb_unref
-> > > >         refcount_dec_and_test(&skb->users)
-> > >
-> > > Every your understanding is right, but
-> > >
-> > > >
-> > > > >
-> > > > > [ 4443.426215] ------------[ cut here ]------------
-> > > > > [ 4443.426222] refcount_t: underflow; use-after-free.
-> > > > > [ 4443.426291] WARNING: CPU: 7 PID: 28161 at lib/refcount.c:190
-> > > > > refcount_dec_and_test_checked+0xa4/0xc8
-> > > > > [ 4443.426726] pstate: 60400005 (nZCv daif +PAN -UAO)
-> > > > > [ 4443.426732] pc : refcount_dec_and_test_checked+0xa4/0xc8
-> > > > > [ 4443.426737] lr : refcount_dec_and_test_checked+0xa0/0xc8
-> > > > > [ 4443.426808] Call trace:
-> > > > > [ 4443.426813]  refcount_dec_and_test_checked+0xa4/0xc8
-> > > > > [ 4443.426823]  skb_release_data+0x144/0x264
-> > > > > [ 4443.426828]  kfree_skb+0x58/0xc4
-> > > > > [ 4443.426832]  skb_queue_purge+0x64/0x9c
-> > > > > [ 4443.426844]  packet_set_ring+0x5f0/0x820
-> > > > > [ 4443.426849]  packet_setsockopt+0x5a4/0xcd0
-> > > > > [ 4443.426853]  __sys_setsockopt+0x188/0x278
-> > > > > [ 4443.426858]  __arm64_sys_setsockopt+0x28/0x38
-> > > > > [ 4443.426869]  el0_svc_common+0xf0/0x1d0
-> > > > > [ 4443.426873]  el0_svc_handler+0x74/0x98
-> > > > > [ 4443.426880]  el0_svc+0x8/0xc
-> > > > >
-> > > > > Fixes: 3a1296a38d0c (net: Support GRO/GSO fraglist chaining.)
-> > > > > Signed-off-by: Dongseok Yi <dseok.yi@samsung.com>
-> > > > > ---
-> > > > >  net/core/skbuff.c | 20 +++++++++++++++++++-
-> > > > >  1 file changed, 19 insertions(+), 1 deletion(-)
-> > > > >
-> > > > > diff --git a/net/core/skbuff.c b/net/core/skbuff.c
-> > > > > index f62cae3..1dcbda8 100644
-> > > > > --- a/net/core/skbuff.c
-> > > > > +++ b/net/core/skbuff.c
-> > > > > @@ -3655,7 +3655,8 @@ struct sk_buff *skb_segment_list(struct sk_buff *skb,
-> > > > >         unsigned int delta_truesize = 0;
-> > > > >         unsigned int delta_len = 0;
-> > > > >         struct sk_buff *tail = NULL;
-> > > > > -       struct sk_buff *nskb;
-> > > > > +       struct sk_buff *nskb, *tmp;
-> > > > > +       int err;
-> > > > >
-> > > > >         skb_push(skb, -skb_network_offset(skb) + offset);
-> > > > >
-> > > > > @@ -3665,11 +3666,28 @@ struct sk_buff *skb_segment_list(struct sk_buff *skb,
-> > > > >                 nskb = list_skb;
-> > > > >                 list_skb = list_skb->next;
-> > > > >
-> > > > > +               err = 0;
-> > > > > +               if (skb_shared(nskb)) {
-> > > >
-> > > > I must be missing something still. This does not square with my
-> > > > understanding that the two sockets are operating on clones, with each
-> > > > frag_list skb having skb->users == 1.
-> > > >
-> > > > Unless the packet socket patch previously also triggered an
-> > > > skb_unclone/pskb_expand_head, as that call skb_clone_fraglist, which
-> > > > calls skb_get on each frag_list skb.
-> > >
-> > > A cloned skb after tpacket_rcv cannot go through skb_ensure_writable
-> > > with the original shinfo. pskb_expand_head reallocates the shinfo of
-> > > the skb and call skb_clone_fraglist. skb_release_data in
-> > > pskb_expand_head could not reduce skb->users of the each frag_list skb
-> > > if skb_shinfo(skb)->dataref == 2.
-> > >
-> > > After the reallocation, skb_shinfo(skb)->dataref == 1 but each frag_list
-> > > skb could have skb->users == 2.
-> >
-> > Yes, that makes sense. skb_clone_fraglist just increments the
-> > frag_list skb's refcounts.
-> >
-> > skb_segment_list must create an unshared struct sk_buff before it
-> > changes skb data to insert the protocol headers.
-> >
-> > > >
-> > > >
-> > > > > +                       tmp = skb_clone(nskb, GFP_ATOMIC);
-> > > > > +                       if (tmp) {
-> > > > > +                               kfree_skb(nskb);
-> > > > > +                               nskb = tmp;
-> > > > > +                               err = skb_unclone(nskb, GFP_ATOMIC);
-> >
-> > Calling clone and unclone in quick succession looks odd.
-> >
-> > But you need the first to create a private skb and to trigger the
-> > second to create a private copy of the linear data (as well as frags,
-> > if any, but these are not touched). So this looks okay.
-> >
-> > > > > +                       } else {
-> > > > > +                               err = -ENOMEM;
-> > > > > +                       }
-> > > > > +               }
-> > > > > +
-> > > > >                 if (!tail)
-> > > > >                         skb->next = nskb;
-> > > > >                 else
-> > > > >                         tail->next = nskb;
-> > > > >
-> > > > > +               if (unlikely(err)) {
-> > > > > +                       nskb->next = list_skb;
-> >
-> > To avoid leaking these skbs when calling kfree_skb_list(skb->next). Is
-> > that concern new with this patch, or also needed for the existing
-> > error case?
->
-> It's new for this patch. nskb can lose next skb due to
-> tmp = skb_clone(nskb, GFP_ATOMIC); on the prior. I believe it is not
-> needed for the existing errors.
+On Thu 31-12-20 00:55:59, Shiyang Ruan wrote:
+> With the support of ->rmap(), it is possible to obtain the superblock on
+> a mapped device.
+> 
+> If a pmem device is used as one target of mapped device, we cannot
+> obtain its superblock directly.  With the help of SYSFS, the mapped
+> device can be found on the target devices.  So, we iterate the
+> bdev->bd_holder_disks to obtain its mapped device.
+> 
+> Signed-off-by: Shiyang Ruan <ruansy.fnst@cn.fujitsu.com>
 
-Ah, skb_clone clears the next pointer, indeed. Thanks.
+Thanks for the patch. Two comments below.
 
-Yes, then this looks correct to me. Thanks for fixing, not an obvious
-code path or bug at all.
+> diff --git a/drivers/nvdimm/pmem.c b/drivers/nvdimm/pmem.c
+> index 4688bff19c20..9f9a2f3bf73b 100644
+> --- a/drivers/nvdimm/pmem.c
+> +++ b/drivers/nvdimm/pmem.c
+> @@ -256,21 +256,16 @@ static int pmem_rw_page(struct block_device *bdev, sector_t sector,
+>  static int pmem_corrupted_range(struct gendisk *disk, struct block_device *bdev,
+>  				loff_t disk_offset, size_t len, void *data)
+>  {
+> -	struct super_block *sb;
+>  	loff_t bdev_offset;
+>  	sector_t disk_sector = disk_offset >> SECTOR_SHIFT;
+> -	int rc = 0;
+> +	int rc = -ENODEV;
+>  
+>  	bdev = bdget_disk_sector(disk, disk_sector);
+>  	if (!bdev)
+> -		return -ENODEV;
+> +		return rc;
+>  
+>  	bdev_offset = (disk_sector - get_start_sect(bdev)) << SECTOR_SHIFT;
+> -	sb = get_super(bdev);
+> -	if (sb && sb->s_op->corrupted_range) {
+> -		rc = sb->s_op->corrupted_range(sb, bdev, bdev_offset, len, data);
+> -		drop_super(sb);
+> -	}
+> +	rc = bd_corrupted_range(bdev, bdev_offset, bdev_offset, len, data);
+>  
+>  	bdput(bdev);
+>  	return rc;
 
-Acked-by: Willem de Bruijn <willemb@google.com>
+This (and the fs/block_dev.c change below) is just refining the function
+you've implemented in the patch 6. I think it's confusing to split changes
+like this - why not implement things correctly from the start in patch 6?
 
-The patch is already marked as changes requested in
-https://patchwork.kernel.org/project/netdevbpf , so you might have to
-resubmit it.
+> diff --git a/fs/block_dev.c b/fs/block_dev.c
+> index 9e84b1928b94..0e50f0e8e8af 100644
+> --- a/fs/block_dev.c
+> +++ b/fs/block_dev.c
+> @@ -1171,6 +1171,27 @@ struct bd_holder_disk {
+>  	int			refcnt;
+>  };
+>  
+> +static int bd_disk_holder_corrupted_range(struct block_device *bdev, loff_t off,
+> +					  size_t len, void *data)
+> +{
+> +	struct bd_holder_disk *holder;
+> +	struct gendisk *disk;
+> +	int rc = 0;
+> +
+> +	if (list_empty(&(bdev->bd_holder_disks)))
+> +		return -ENODEV;
 
-If so, please expand a little bit in the commit message on the fact
-that a bpf filter is loaded at TC, which triggers skb_ensure_writable
--> pskb_expand_head -> skb_clone_fraglist -> skb_get on each skb in
-the fraglist.
+This will not compile for !CONFIG_SYSFS kernels. Not that it would be
+common but still. Also I'm not sure whether using bd_holder_disks like this
+is really the right thing to do (when it seems to be only a sysfs thing),
+although admittedly I'm not aware of a better way of getting this
+information.
+
+								Honza
+
+> +
+> +	list_for_each_entry(holder, &bdev->bd_holder_disks, list) {
+> +		disk = holder->disk;
+> +		if (disk->fops->corrupted_range) {
+> +			rc = disk->fops->corrupted_range(disk, bdev, off, len, data);
+> +			if (rc != -ENODEV)
+> +				break;
+> +		}
+> +	}
+> +	return rc;
+> +}
+> +
+>  static struct bd_holder_disk *bd_find_holder_disk(struct block_device *bdev,
+>  						  struct gendisk *disk)
+>  {
+> @@ -1378,6 +1399,22 @@ void bd_set_nr_sectors(struct block_device *bdev, sector_t sectors)
+>  }
+>  EXPORT_SYMBOL(bd_set_nr_sectors);
+>  
+> +int bd_corrupted_range(struct block_device *bdev, loff_t disk_off, loff_t bdev_off, size_t len, void *data)
+> +{
+> +	struct super_block *sb = get_super(bdev);
+> +	int rc = 0;
+> +
+> +	if (!sb) {
+> +		rc = bd_disk_holder_corrupted_range(bdev, disk_off, len, data);
+> +		return rc;
+> +	} else if (sb->s_op->corrupted_range)
+> +		rc = sb->s_op->corrupted_range(sb, bdev, bdev_off, len, data);
+> +	drop_super(sb);
+> +
+> +	return rc;
+> +}
+> +EXPORT_SYMBOL(bd_corrupted_range);
+> +
+>  static void __blkdev_put(struct block_device *bdev, fmode_t mode, int for_part);
+>  
+>  int bdev_disk_changed(struct block_device *bdev, bool invalidate)
+> diff --git a/include/linux/genhd.h b/include/linux/genhd.h
+> index ed06209008b8..42290470810d 100644
+> --- a/include/linux/genhd.h
+> +++ b/include/linux/genhd.h
+> @@ -376,6 +376,8 @@ void revalidate_disk_size(struct gendisk *disk, bool verbose);
+>  bool bdev_check_media_change(struct block_device *bdev);
+>  int __invalidate_device(struct block_device *bdev, bool kill_dirty);
+>  void bd_set_nr_sectors(struct block_device *bdev, sector_t sectors);
+> +int bd_corrupted_range(struct block_device *bdev, loff_t disk_off,
+> +		       loff_t bdev_off, size_t len, void *data);
+>  
+>  /* for drivers/char/raw.c: */
+>  int blkdev_ioctl(struct block_device *, fmode_t, unsigned, unsigned long);
+> -- 
+> 2.29.2
+> 
+> 
+> 
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
