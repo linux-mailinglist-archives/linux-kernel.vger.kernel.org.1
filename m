@@ -2,123 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A73972EC198
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 17:59:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E6EF2EC19B
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 18:00:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727938AbhAFQ6k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Jan 2021 11:58:40 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:52874 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727502AbhAFQ6j (ORCPT
+        id S1727650AbhAFQ75 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Jan 2021 11:59:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52198 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727273AbhAFQ75 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Jan 2021 11:58:39 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1609952233;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=9VLLWEiPKgR359BbzU+UUPOHxLugO8L8LfVhmpzJuXo=;
-        b=T86d46wmpwBM1AoFuLpGkwxSpZh4IBsyZGY1PBpQAfaNRHYQzhSC/1LPbLuNmBzUhRwDrV
-        KMoWp76JtzEzainWG5aT2a6v3hsN8WWuuZe5pnhn5MnUO+JZl9+5wHhLC593r/7FWp3DHj
-        cUo8lxQwdMM1BNIgGSs5MYnwW408DSM=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-553-WNuxAZqtPZSOLxYrmOAT0Q-1; Wed, 06 Jan 2021 11:57:09 -0500
-X-MC-Unique: WNuxAZqtPZSOLxYrmOAT0Q-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D6BD6107ACF6;
-        Wed,  6 Jan 2021 16:57:07 +0000 (UTC)
-Received: from warthog.procyon.org.uk (ovpn-112-8.rdu2.redhat.com [10.10.112.8])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id DBC265C1C4;
-        Wed,  6 Jan 2021 16:57:05 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-In-Reply-To: <c2cc898d-171a-25da-c565-48f57d407777@redhat.com>
-References: <c2cc898d-171a-25da-c565-48f57d407777@redhat.com> <20201229173916.1459499-1-trix@redhat.com> <259549.1609764646@warthog.procyon.org.uk>
-To:     Tom Rix <trix@redhat.com>
-Cc:     dhowells@redhat.com, davem@davemloft.net, kuba@kernel.org,
-        natechancellor@gmail.com, ndesaulniers@google.com,
-        linux-afs@lists.infradead.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com
-Subject: Re: [PATCH] rxrpc: fix handling of an unsupported token type in rxrpc_read()
+        Wed, 6 Jan 2021 11:59:57 -0500
+Received: from mail-il1-x12d.google.com (mail-il1-x12d.google.com [IPv6:2607:f8b0:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 967F7C06134C
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Jan 2021 08:59:16 -0800 (PST)
+Received: by mail-il1-x12d.google.com with SMTP id e7so3841467ile.7
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Jan 2021 08:59:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=3EmfUTuYnuTvPsdC4hdIk2/vIKZRsbh5sYgRQoKisdc=;
+        b=kBn4N4cJQY1i+4o8/OjUAlYWOoo4zZhtiRIw2uz9KnHglVk+6VWWFzkj8sI7zU+85G
+         PhR6dzXAwWuVGiDXkHkXqG9lLgitcz8TlgzkJvMxp1i4rUCgyqFXE9Ipu0kstODAcX0g
+         mpayT3d4Uwaaw6k6mNhrite1jm4Oq9cQntsaW1Y/NDC1s0fslrfPs+8GY7jR0km7SESU
+         HOndvPqqmkmf8ZhRmj4NZAy6zeYOCS+QTUb2iHWxdUDKZ43BTgQl8IJqXx/tpCi4BmjM
+         0tRgZ3kA4x4S2356P19eTh3+DsEr5Fw3USj0OCBf3WQTQIiMZNtObrhY2i+GzQtpW8Z2
+         w4BA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=3EmfUTuYnuTvPsdC4hdIk2/vIKZRsbh5sYgRQoKisdc=;
+        b=Qxf3h9JDUGN9l0eDfGhx+yAkVrZbPF2WrEtIdKSjQGecIBzw3fjHsY33+pz/O9Xtxx
+         OjzjBfVsoEpJhkFCkJcvajFfJRPXykiSyobV2GeswR/MviVurdHw2rhhQUr1B8Jl3RhW
+         hK5ENqYUKZNYMOIPdxDqJjxqhiqze3ACYbDWcO1jzC5pjFO4IUZ0urSmMOStc2S2xCbx
+         oSXYzAwUoO+JGgeJmECe4R2dN7QPs2bYLdjTm7SHgohy5SkvcNgJ4a2OxWFWp8vPRGQM
+         y7XDvxGxmgizEJ9UH5H/YROvbr/z0snCxPk2pMjXUYlo7xs2cYMqtfUcKIijA8rIXZa6
+         Z0hw==
+X-Gm-Message-State: AOAM530y/JBLfnK3hog+1EgBNqOq4wpWiJaGHrwDTgZwMUYuqP+3fgPa
+        sBbJOKfMvcrZZeCI37EH0R1DJBln1kxn9S2JRJg=
+X-Google-Smtp-Source: ABdhPJzjwgaxVsHtTZws6cL84ADauyumJ8mJ0Jvu4/J1N8I/u89+8vWMx+nTn/GdpCCaz5MlKXGT+g3VPF3uG37FwtE=
+X-Received: by 2002:a92:d8cc:: with SMTP id l12mr4972019ilo.64.1609952354762;
+ Wed, 06 Jan 2021 08:59:14 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <548096.1609952225.1@warthog.procyon.org.uk>
-Content-Transfer-Encoding: quoted-printable
-Date:   Wed, 06 Jan 2021 16:57:05 +0000
-Message-ID: <548097.1609952225@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+References: <20210106034715.GA1138@open-light-1.localdomain>
+In-Reply-To: <20210106034715.GA1138@open-light-1.localdomain>
+From:   Alexander Duyck <alexander.duyck@gmail.com>
+Date:   Wed, 6 Jan 2021 08:59:03 -0800
+Message-ID: <CAKgT0Uf=iQ-vzk7woNBsgAOvVD2RS41x9dRC-Y06TCGwykHzSw@mail.gmail.com>
+Subject: Re: [PATCH 1/6] mm: Add batch size for free page reporting
+To:     Alexander Duyck <alexander.h.duyck@linux.intel.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        David Hildenbrand <david@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Liang Li <liliangleo@didiglobal.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        linux-mm <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        virtualization@lists.linux-foundation.org
+Cc:     Liang Li <liliang324@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-How about this?
+On Tue, Jan 5, 2021 at 7:47 PM Liang Li <liliang324@gmail.com> wrote:
+>
+> Use the page order as the only threshold for page reporting
+> is not flexible and has some flaws. Because scan a long free
+> list is not cheap, it's better to wake up the page reporting
+> worker when there are more pages, wake it up for a sigle page
+> may not worth.
+> This patch add a batch size as another threshold to control the
+> waking up of reporting worker.
+>
+> Cc: Alexander Duyck <alexander.h.duyck@linux.intel.com>
+> Cc: Mel Gorman <mgorman@techsingularity.net>
+> Cc: Andrea Arcangeli <aarcange@redhat.com>
+> Cc: Dan Williams <dan.j.williams@intel.com>
+> Cc: Dave Hansen <dave.hansen@intel.com>
+> Cc: David Hildenbrand <david@redhat.com>
+> Cc: Michal Hocko <mhocko@kernel.org>
+> Cc: Andrew Morton <akpm@linux-foundation.org>
+> Cc: Alex Williamson <alex.williamson@redhat.com>
+> Cc: Michael S. Tsirkin <mst@redhat.com>
+> Cc: Liang Li <liliang324@gmail.com>
+> Signed-off-by: Liang Li <liliangleo@didiglobal.com>
 
-David
----
-commit 5d370a9db65a6fae82f09a009430ae40c564b0ef
-Author: David Howells <dhowells@redhat.com>
-Date:   Wed Jan 6 16:21:40 2021 +0000
+So you are going to need a lot more explanation for this. Page
+reporting already had the concept of batching as you could only scan
+once every 2 seconds as I recall. Thus the "PAGE_REPORTING_DELAY". The
+change you are making doesn't make any sense without additional
+context.
 
-    rxrpc: Fix handling of an unsupported token type in rxrpc_read()
-    =
+> ---
+>  mm/page_reporting.c |  1 +
+>  mm/page_reporting.h | 12 ++++++++++--
+>  2 files changed, 11 insertions(+), 2 deletions(-)
+>
+> diff --git a/mm/page_reporting.c b/mm/page_reporting.c
+> index cd8e13d41df4..694df981ddd2 100644
+> --- a/mm/page_reporting.c
+> +++ b/mm/page_reporting.c
+> @@ -12,6 +12,7 @@
+>
+>  #define PAGE_REPORTING_DELAY   (2 * HZ)
+>  static struct page_reporting_dev_info __rcu *pr_dev_info __read_mostly;
+> +unsigned long page_report_batch_size  __read_mostly = 16 * 1024 * 1024UL;
+>
+>  enum {
+>         PAGE_REPORTING_IDLE = 0,
+> diff --git a/mm/page_reporting.h b/mm/page_reporting.h
+> index 2c385dd4ddbd..b8fb3bbb345f 100644
+> --- a/mm/page_reporting.h
+> +++ b/mm/page_reporting.h
+> @@ -12,6 +12,8 @@
+>
+>  #define PAGE_REPORTING_MIN_ORDER       pageblock_order
+>
+> +extern unsigned long page_report_batch_size;
+> +
+>  #ifdef CONFIG_PAGE_REPORTING
+>  DECLARE_STATIC_KEY_FALSE(page_reporting_enabled);
+>  void __page_reporting_notify(void);
+> @@ -33,6 +35,8 @@ static inline bool page_reported(struct page *page)
+>   */
+>  static inline void page_reporting_notify_free(unsigned int order)
+>  {
+> +       static long batch_size;
+> +
 
-    Clang static analysis reports the following:
-    =
+I'm not sure this makes a tone of sense to place the value in an
+inline function. It might make more sense to put this new code in
+__page_reporting_notify so that all callers would be referring to the
+same batch_size value and you don't have to bother with the export of
+the page_report_batch_size value.
 
-    net/rxrpc/key.c:657:11: warning: Assigned value is garbage or undefine=
-d
-                    toksize =3D toksizes[tok++];
-                            ^ ~~~~~~~~~~~~~~~
-    =
+>         /* Called from hot path in __free_one_page() */
+>         if (!static_branch_unlikely(&page_reporting_enabled))
+>                 return;
+> @@ -41,8 +45,12 @@ static inline void page_reporting_notify_free(unsigned int order)
+>         if (order < PAGE_REPORTING_MIN_ORDER)
+>                 return;
+>
+> -       /* This will add a few cycles, but should be called infrequently */
+> -       __page_reporting_notify();
+> +       batch_size += (1 << order) << PAGE_SHIFT;
+> +       if (batch_size >= page_report_batch_size) {
+> +               batch_size = 0;
 
-    rxrpc_read() contains two consecutive loops.  The first loop calculate=
-s the
-    token sizes and stores the results in toksizes[] and the second one us=
-es
-    the array.  When there is an error in identifying the token in the fir=
-st
-    loop, the token is skipped, no change is made to the toksizes[] array.
-    When the same error happens in the second loop, the token is not skipp=
-ed.
-    This will cause the toksizes[] array to be out of step and will overru=
-n
-    past the calculated sizes.
-    =
+I would probably run this in the opposite direction. Rather than
+running batch_size to zero I would look at adding a "batch_remaining"
+and then when it is < 0 you could then reset it back to
+page_report_batch_size. Doing that you only have to read one variable
+most of the time instead of doing a comparison against two.
 
-    Fix the second loop so that it doesn't encode the size and type of an
-    unsupported token, but rather just ignore it as does the first loop.
-    =
-
-    Fixes: 9a059cd5ca7d ("rxrpc: Downgrade the BUG() for unsupported token=
- type in rxrpc_read()")
-    Reported-by: Tom Rix <trix@redhat.com>
-    Signed-off-by: David Howells <dhowells@redhat.com>
-
-diff --git a/net/rxrpc/key.c b/net/rxrpc/key.c
-index 9631aa8543b5..c8e298c8d314 100644
---- a/net/rxrpc/key.c
-+++ b/net/rxrpc/key.c
-@@ -655,12 +655,12 @@ static long rxrpc_read(const struct key *key,
- 	tok =3D 0;
- 	for (token =3D key->payload.data[0]; token; token =3D token->next) {
- 		toksize =3D toksizes[tok++];
--		ENCODE(toksize);
- 		oldxdr =3D xdr;
--		ENCODE(token->security_index);
- =
-
- 		switch (token->security_index) {
- 		case RXRPC_SECURITY_RXKAD:
-+			ENCODE(toksize);
-+			ENCODE(token->security_index);
- 			ENCODE(token->kad->vice_id);
- 			ENCODE(token->kad->kvno);
- 			ENCODE_BYTES(8, token->kad->session_key);
-
+> +               /* This add a few cycles, but should be called infrequently */
+> +               __page_reporting_notify();
+> +       }
+>  }
+>  #else /* CONFIG_PAGE_REPORTING */
+>  #define page_reported(_page)   false
+> --
+> 2.18.2
+>
+>
