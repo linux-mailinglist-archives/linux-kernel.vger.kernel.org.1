@@ -2,121 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 81DDC2EC40C
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 20:38:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C1DDF2EC3EB
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 20:32:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727293AbhAFThC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Jan 2021 14:37:02 -0500
-Received: from mail.micronovasrl.com ([212.103.203.10]:59238 "EHLO
-        mail.micronovasrl.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727107AbhAFThB (ORCPT
+        id S1726890AbhAFTad (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Jan 2021 14:30:33 -0500
+Received: from mx12.kaspersky-labs.com ([91.103.66.155]:29384 "EHLO
+        mx12.kaspersky-labs.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726366AbhAFTac (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Jan 2021 14:37:01 -0500
-Received: from mail.micronovasrl.com (mail.micronovasrl.com [127.0.0.1])
-        by mail.micronovasrl.com (Postfix) with ESMTP id D1720B045F1
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Jan 2021 20:28:05 +0100 (CET)
-Authentication-Results: mail.micronovasrl.com (amavisd-new); dkim=pass
-        reason="pass (just generated, assumed good)" header.d=micronovasrl.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=micronovasrl.com;
-         h=content-transfer-encoding:content-type:content-type
-        :mime-version:references:in-reply-to:x-mailer:message-id:date
-        :date:subject:subject:to:from:from; s=dkim; t=1609961285; x=
-        1610825286; bh=ve6PpitMBRMOaeoWwDbFW/+W2p3l0jAVa8GJuKa7cPU=; b=b
-        ApMn1yPa/M9MRkOLZrYDeqI1D0qJ0zs/K4MEj3eASbCXv0hzGbkCmnpvv8YwCnR8
-        JzC1hi8ZRaDlTORuM0lkNBNqCmhWUSZS9kyG7GZfXdl1uUWzvuovJGZ3srZqxp9i
-        a2JYntIWh2BNlRNSOruxcDm1PQ3Rrk8EohRME9GkRs=
-X-Virus-Scanned: Debian amavisd-new at mail.micronovasrl.com
-X-Spam-Flag: NO
-X-Spam-Score: -2.9
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 tagged_above=-10 required=4.5
-        tests=[ALL_TRUSTED=-1, BAYES_00=-1.9]
-        autolearn=unavailable autolearn_force=no
-Received: from mail.micronovasrl.com ([127.0.0.1])
-        by mail.micronovasrl.com (mail.micronovasrl.com [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id qiewOOqfVPTa for <linux-kernel@vger.kernel.org>;
-        Wed,  6 Jan 2021 20:28:05 +0100 (CET)
-Received: from ubuntu.localdomain (146-241-198-163.dyn.eolo.it [146.241.198.163])
-        by mail.micronovasrl.com (Postfix) with ESMTPSA id D3D2DB04586;
-        Wed,  6 Jan 2021 20:28:02 +0100 (CET)
-From:   Giulio Benetti <giulio.benetti@micronovasrl.com>
-To:     Maxime Ripard <maxime@cerno.tech>
-Cc:     Marjan Pascolo <marjan.pascolo@trexom.it>, wens@csie.org,
-        daniel@ffwll.ch, airlied@linux.ie, treding@nvidia.com,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        dri-devel@lists.freedesktop.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Giulio Benetti <giulio.benetti@micronovasrl.com>
-Subject: [PATCH 2/2] drm/sun4i: tcon: improve DCLK polarity handling
-Date:   Wed,  6 Jan 2021 20:28:00 +0100
-Message-Id: <20210106192800.164052-3-giulio.benetti@micronovasrl.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210106192800.164052-1-giulio.benetti@micronovasrl.com>
-References: <20210106192800.164052-1-giulio.benetti@micronovasrl.com>
+        Wed, 6 Jan 2021 14:30:32 -0500
+Received: from relay12.kaspersky-labs.com (unknown [127.0.0.10])
+        by relay12.kaspersky-labs.com (Postfix) with ESMTP id 7595078C48;
+        Wed,  6 Jan 2021 22:29:48 +0300 (MSK)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kaspersky.com;
+        s=mail; t=1609961388;
+        bh=uPbj9POde78FdvKvzqkCOR6EdnAvoxjENfLChHuiiPY=;
+        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type;
+        b=M5sskh+UWznmJZ7jcWeqPaGVx4xlQ2mvd1ykKwx6Q6uWG9DxHHcl/oAlhNcVdKa3U
+         8DIDyvdb825x+Lrfq0sG76f4tobjCfufAI60kXSRDp2eluv+3DhEXGGYn5S9e8i8Yh
+         CCpc7W1ljH3eILTQFIoeInjmXkA4PNN00prFMB24=
+Received: from mail-hq2.kaspersky.com (unknown [91.103.66.206])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (Client CN "mail-hq2.kaspersky.com", Issuer "Kaspersky MailRelays CA G3" (verified OK))
+        by mailhub12.kaspersky-labs.com (Postfix) with ESMTPS id 3532B78C0E;
+        Wed,  6 Jan 2021 22:29:48 +0300 (MSK)
+Received: from [10.16.171.77] (10.64.68.128) by hqmailmbx3.avp.ru
+ (10.64.67.243) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2044.4; Wed, 6 Jan
+ 2021 22:29:46 +0300
+Subject: Re: [PATCH 4/5] af_vsock: add socket ops for SOCK_SEQPACKET.
+To:     stsp <stsp2@yandex.ru>, Stefan Hajnoczi <stefanha@redhat.com>,
+        Stefano Garzarella <sgarzare@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Andra Paraschiv <andraprs@amazon.com>,
+        Jorgen Hansen <jhansen@vmware.com>,
+        Arseniy Krasnov <oxffffaa@gmail.com>,
+        Colin Ian King <colin.king@canonical.com>,
+        Jeff Vander Stoep <jeffv@google.com>
+CC:     "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "virtualization@lists.linux-foundation.org" 
+        <virtualization@lists.linux-foundation.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20210103195454.1954169-1-arseny.krasnov@kaspersky.com>
+ <20210103200421.1956545-1-arseny.krasnov@kaspersky.com>
+ <f790ca57-cec9-4884-c8e5-bf8806364dd7@yandex.ru>
+From:   Arseny Krasnov <arseny.krasnov@kaspersky.com>
+Message-ID: <2420227d-67b5-46df-e10e-e7822253ce94@kaspersky.com>
+Date:   Wed, 6 Jan 2021 22:29:45 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <f790ca57-cec9-4884-c8e5-bf8806364dd7@yandex.ru>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Originating-IP: [10.64.68.128]
+X-ClientProxiedBy: hqmailmbx3.avp.ru (10.64.67.243) To hqmailmbx3.avp.ru
+ (10.64.67.243)
+X-KSE-ServerInfo: hqmailmbx3.avp.ru, 9
+X-KSE-AntiSpam-Interceptor-Info: scan successful
+X-KSE-AntiSpam-Version: 5.9.16, Database issued on: 01/06/2021 19:07:02
+X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
+X-KSE-AntiSpam-Method: none
+X-KSE-AntiSpam-Rate: 0
+X-KSE-AntiSpam-Info: Lua profiles 160996 [Jan 06 2021]
+X-KSE-AntiSpam-Info: LuaCore: 419 419 70b0c720f8ddd656e5f4eb4a4449cf8ce400df94
+X-KSE-AntiSpam-Info: Version: 5.9.16.0
+X-KSE-AntiSpam-Info: Envelope from: arseny.krasnov@kaspersky.com
+X-KSE-AntiSpam-Info: {Tracking_content_type, plain}
+X-KSE-AntiSpam-Info: {Tracking_date, moscow}
+X-KSE-AntiSpam-Info: {Tracking_c_tr_enc, eight_bit}
+X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
+X-KSE-AntiSpam-Info: d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;127.0.0.199:7.1.2;kaspersky.com:7.1.1
+X-KSE-AntiSpam-Info: Rate: 0
+X-KSE-AntiSpam-Info: Status: not_detected
+X-KSE-AntiSpam-Info: Method: none
+X-KSE-Antiphishing-Info: Clean
+X-KSE-Antiphishing-ScanningType: Deterministic
+X-KSE-Antiphishing-Method: None
+X-KSE-Antiphishing-Bases: 01/06/2021 19:10:00
+X-KSE-AttachmentFiltering-Interceptor-Info: no applicable attachment filtering
+ rules found
+X-KSE-Antivirus-Interceptor-Info: scan successful
+X-KSE-Antivirus-Info: Clean, bases: 06.01.2021 15:19:00
+X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
+X-KSE-AttachmentFiltering-Interceptor-Info: no applicable attachment filtering
+ rules found
+X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
+X-KLMS-Rule-ID: 52
+X-KLMS-Message-Action: clean
+X-KLMS-AntiSpam-Status: not scanned, disabled by settings
+X-KLMS-AntiSpam-Interceptor-Info: not scanned
+X-KLMS-AntiPhishing: Clean, bases: 2021/01/06 17:58:00
+X-KLMS-AntiVirus: Kaspersky Security for Linux Mail Server, version 8.0.3.30, bases: 2021/01/06 15:19:00 #16022888
+X-KLMS-AntiVirus-Status: Clean, skipped
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It turned out(Maxime suggestion) that bit 26 of SUN4I_TCON0_IO_POL_REG is
-dedicated to invert DCLK polarity and this makes thing really easier than
-before. So let's handle DCLK polarity by adding
-SUN4I_TCON0_IO_POL_DCLK_POSITIVE as bit 26 and activating according to
-bus_flags the same way is done for all the other signals.
+> Is ENODEV the right error here?
+> Just a quick look at a man page, and
+> I am under impression something like
+> EPROTONOSUPPORT or ESOCKNOSUPPORT
+> may suit?
 
-Cc: Maxime Ripard <maxime@cerno.tech>
-Signed-off-by: Giulio Benetti <giulio.benetti@micronovasrl.com>
----
- drivers/gpu/drm/sun4i/sun4i_tcon.c | 20 +-------------------
- drivers/gpu/drm/sun4i/sun4i_tcon.h |  1 +
- 2 files changed, 2 insertions(+), 19 deletions(-)
-
-diff --git a/drivers/gpu/drm/sun4i/sun4i_tcon.c b/drivers/gpu/drm/sun4i/sun4i_tcon.c
-index 52598bb0fb0b..30171ccd87e5 100644
---- a/drivers/gpu/drm/sun4i/sun4i_tcon.c
-+++ b/drivers/gpu/drm/sun4i/sun4i_tcon.c
-@@ -569,26 +569,8 @@ static void sun4i_tcon0_mode_set_rgb(struct sun4i_tcon *tcon,
- 	if (info->bus_flags & DRM_BUS_FLAG_DE_LOW)
- 		val |= SUN4I_TCON0_IO_POL_DE_NEGATIVE;
- 
--	/*
--	 * On A20 and similar SoCs, the only way to achieve Positive Edge
--	 * (Rising Edge), is setting dclk clock phase to 2/3(240°).
--	 * By default TCON works in Negative Edge(Falling Edge),
--	 * this is why phase is set to 0 in that case.
--	 * Unfortunately there's no way to logically invert dclk through
--	 * IO_POL register.
--	 * The only acceptable way to work, triple checked with scope,
--	 * is using clock phase set to 0° for Negative Edge and set to 240°
--	 * for Positive Edge.
--	 * On A33 and similar SoCs there would be a 90° phase option,
--	 * but it divides also dclk by 2.
--	 * Following code is a way to avoid quirks all around TCON
--	 * and DOTCLOCK drivers.
--	 */
- 	if (info->bus_flags & DRM_BUS_FLAG_PIXDATA_DRIVE_POSEDGE)
--		clk_set_phase(tcon->dclk, 0);
--
--	if (info->bus_flags & DRM_BUS_FLAG_PIXDATA_DRIVE_NEGEDGE)
--		clk_set_phase(tcon->dclk, 240);
-+		val |= SUN4I_TCON0_IO_POL_DCLK_POSITIVE;
- 
- 	regmap_update_bits(tcon->regs, SUN4I_TCON0_IO_POL_REG,
- 			   SUN4I_TCON0_IO_POL_HSYNC_POSITIVE |
-diff --git a/drivers/gpu/drm/sun4i/sun4i_tcon.h b/drivers/gpu/drm/sun4i/sun4i_tcon.h
-index cfbf4e6c1679..0ce71d10a31b 100644
---- a/drivers/gpu/drm/sun4i/sun4i_tcon.h
-+++ b/drivers/gpu/drm/sun4i/sun4i_tcon.h
-@@ -113,6 +113,7 @@
- #define SUN4I_TCON0_IO_POL_REG			0x88
- #define SUN4I_TCON0_IO_POL_DCLK_PHASE(phase)		((phase & 3) << 28)
- #define SUN4I_TCON0_IO_POL_DE_NEGATIVE			BIT(27)
-+#define SUN4I_TCON0_IO_POL_DCLK_POSITIVE		BIT(26)
- #define SUN4I_TCON0_IO_POL_HSYNC_POSITIVE		BIT(25)
- #define SUN4I_TCON0_IO_POL_VSYNC_POSITIVE		BIT(24)
- 
--- 
-2.25.1
+I used ENODEV because this code is returned some
+lines below when !new_transport(e.g. valid transport
+not found). But i think you codes will be also ok.
 
