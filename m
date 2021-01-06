@@ -2,158 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 311562EC5D1
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 22:40:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B02572EC5D5
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 22:41:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726433AbhAFVjh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Jan 2021 16:39:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39590 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725788AbhAFVjg (ORCPT
+        id S1726790AbhAFVlF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Jan 2021 16:41:05 -0500
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:48262 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726225AbhAFVlE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Jan 2021 16:39:36 -0500
-Received: from mail-qk1-x735.google.com (mail-qk1-x735.google.com [IPv6:2607:f8b0:4864:20::735])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BE2FC061757
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Jan 2021 13:38:56 -0800 (PST)
-Received: by mail-qk1-x735.google.com with SMTP id 19so3891729qkm.8
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Jan 2021 13:38:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=dl1djWeKeSwJeX9gv/m26fBrhfl77JKKmwSMVyYVnk8=;
-        b=FBNS7GR/ve44GhwbR7o87MFtwxy8te1QAspY1GygkskBrckPaFQbMBJh2Zfnb8GWNX
-         iTlw0xaMortAHCOr8lWDBYRD5XB/Elv507PTr1wm7xEt+4IuLhEbEuDm/qbaP6ldcrFo
-         jFTAU2gKKqactHSaw5Bk8cLj/DNlPu4zrcih7qfBPwOvD/tXZqK6WwuoY3kpEUhr7te3
-         QIDyX2lw7Zk1BjacHIhuozvxFtjoJKfcVrb/X1kei8pSSjp6APC7DV0Igwnwf/Gh86vX
-         GM6w7ZssRLz8wDmZQvziiRXBIvp5/fbWVkdb1g5qN8e5PBRQCM7ExEZJO+r5KcXyDr8D
-         M0Yw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=dl1djWeKeSwJeX9gv/m26fBrhfl77JKKmwSMVyYVnk8=;
-        b=IZy6Fg+WFDze/YHTFKZj9rKztpw0LbexqfDZ81a4wd78Lk7Lb9EUaRFeA46d194GYI
-         1uH3HUTubLd9r0rPhzu01BNRliXrq40l6Wcf4pMRW/sGXMJgD2mwVUmEm5uu1Rhn2KsU
-         PJ3+ru3SqLKS+IdcXhrcQlZzUHCpvWYlpIPiqrK5zkDTVXwms67nuzOThGYYwSguXGCG
-         Qw3dahnJaY7YEbQSwx2sk5/Cuei7N0kU7OG41u61764KoehJSmUIWX6UG5CXubCgUwYP
-         NuKkXU2I6HFnr6V5iuCOZUcTigu7SA3JRR/HiLvPCNEKgVgYPRVEBTM6Z/jBV5NEVoXa
-         V/SA==
-X-Gm-Message-State: AOAM532K+91rEIDOMxPWg1CZjo1a9huQZX8KKXugDA69VZCgMUr24qNK
-        Sg92KKxRIubbYv3jeoxJ9rg=
-X-Google-Smtp-Source: ABdhPJzKWhPBG8CeBzhDpw9fyTR7YHM2yMSd6/NyciKSXA4EoViz1vJB8qULe4d3sxp35xN1ULKqIw==
-X-Received: by 2002:a05:620a:147a:: with SMTP id j26mr6313243qkl.190.1609969135209;
-        Wed, 06 Jan 2021 13:38:55 -0800 (PST)
-Received: from ubuntu-m3-large-x86 ([2604:1380:45f1:1d00::1])
-        by smtp.gmail.com with ESMTPSA id 5sm1800666qtp.55.2021.01.06.13.38.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 06 Jan 2021 13:38:54 -0800 (PST)
-Date:   Wed, 6 Jan 2021 14:38:53 -0700
-From:   Nathan Chancellor <natechancellor@gmail.com>
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Marco Elver <elver@google.com>, Kees Cook <keescook@chromium.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        George Popescu <georgepope@android.com>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        LKML <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>
-Subject: Re: [PATCH] ubsan: disable unsigned-integer-overflow sanitizer with
- clang
-Message-ID: <20210106213853.GA3617315@ubuntu-m3-large-x86>
-References: <20201230154749.746641-1-arnd@kernel.org>
- <CANpmjNNGmbgg_pFMC6X_6vZcj53jy7PsNyZAC88rOQC5zrOiFw@mail.gmail.com>
- <20210104223336.GA2562866@ubuntu-m3-large-x86>
- <CAK8P3a3J1HGia3cPy+ArFQGzQWj1gy8bx7DdjnRFE=1+JmsrKw@mail.gmail.com>
- <CAK8P3a01iSXxc+05sTtSWvxSYX=g4J1vK-nfnn5oNkR8FO_OTQ@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+        Wed, 6 Jan 2021 16:41:04 -0500
+Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
+        by m0001303.ppops.net (8.16.0.43/8.16.0.43) with SMTP id 106LMJAh027294;
+        Wed, 6 Jan 2021 13:39:56 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
+ subject : message-id : references : content-type :
+ content-transfer-encoding : in-reply-to : mime-version; s=facebook;
+ bh=N5/IGZH1DuiwviUa62guIiX/6K5eA1KdxHBXzodBugw=;
+ b=nt+Qb+YoWtkIAY6ZwPwIhRjj6IowQQxrQbU68JSJ8rSoKpawsC6Hofgaqymqua/86+AH
+ RKm0Mka1C8TaI6rcqvi6xl45W0/yEHLJ+xc/fvLoadRwimUU3z4ACChk/xx6tKe7YxuE
+ SiQg/z8saIa6k4tqPvH2PN4A54diDCorZWM= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by m0001303.ppops.net with ESMTP id 35wjnj0x2s-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Wed, 06 Jan 2021 13:39:56 -0800
+Received: from NAM02-SN1-obe.outbound.protection.outlook.com (100.104.31.183)
+ by o365-in.thefacebook.com (100.104.36.102) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Wed, 6 Jan 2021 13:39:55 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Twoh656uCJ00XbpWzg6Su0ETJ0MyMYDN8ClwjEGEUnKmWilvnYWTHjs8h89cCzm9aMUR0qmz1rACrl22Ruy71zATKsdXqdpUlEV4qfJ2SqJzUIwnkER47l0RggRBupu6fp0cnF+eDsPAChRTOri6AZ1+SXSEvRTZ900zXvk18BrLRNQuJKNdqQr/2f35rj0cokn3LjLpnZL4WifwpEZp8w476oUUAPlPBshcdXxXF5Q7YHp8JeIGZpbDh5HeiiXL/pQBJXyqXCFc8cIEwwk6LXhCaLSBxNN+NQKlmubG0lovpgBnKr96kRtvVPGXkfwi9YXKVAK4z4DH+hUKbcBr0Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=N5/IGZH1DuiwviUa62guIiX/6K5eA1KdxHBXzodBugw=;
+ b=J98KZs70h2dVaReJjuXJSF3YX/1Jlz7/qBo/qa0b0qC+1R1OrqguVG1rY7ismJ/j82GuKZ17fRODNBDfyW7yDwtpao/9C7Pa0WcXz3c/WfUqcrSXSA+ltcNmheem79h83kixdkmg/wHdDap22p1T8ShXTlU32pTVwDf6wIgSPpxkbtxY3dfYwnxN+GpPxVj6eLcMRhy3zDxf99ch6h3IziwH5s3PtCU/o9Kuyw5whFih0EHx3LGyjIoYe3wMf1Rljqhavf/YAmyC7bCgZKNgWbtEOCC0hGAbIvhMzKqWmqZn5bstwQzatykzPhObXBhDaB5IanGoqAGhKfnS+5dxwg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
+ s=selector2-fb-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=N5/IGZH1DuiwviUa62guIiX/6K5eA1KdxHBXzodBugw=;
+ b=feLOERPaQMtQi28/OCEVQFxc4FSXvJvxH4ILGSYk/MsTzwCXIzdRPiuoi6noVF8UTutXx2gnaK/wYeZTEgQLkdiE3J29ImJRtD7fSS34UWnwx3UpagZ4QKdFHnUCL5ZXfbGRiu++oph1YAJtxSjnrethc+vfcxqZ7G03Nc6U4CE=
+Authentication-Results: oracle.com; dkim=none (message not signed)
+ header.d=none;oracle.com; dmarc=none action=none header.from=fb.com;
+Received: from BY5PR15MB3571.namprd15.prod.outlook.com (2603:10b6:a03:1f6::32)
+ by BYAPR15MB2582.namprd15.prod.outlook.com (2603:10b6:a03:154::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3742.6; Wed, 6 Jan
+ 2021 21:39:53 +0000
+Received: from BY5PR15MB3571.namprd15.prod.outlook.com
+ ([fe80::217e:885b:1cef:e1f7]) by BY5PR15MB3571.namprd15.prod.outlook.com
+ ([fe80::217e:885b:1cef:e1f7%7]) with mapi id 15.20.3721.024; Wed, 6 Jan 2021
+ 21:39:53 +0000
+Date:   Wed, 6 Jan 2021 13:39:46 -0800
+From:   Martin KaFai Lau <kafai@fb.com>
+To:     Alan Maguire <alan.maguire@oracle.com>
+CC:     <ast@kernel.org>, <daniel@iogearbox.net>, <andrii@kernel.org>,
+        <songliubraving@fb.com>, <yhs@fb.com>, <john.fastabend@gmail.com>,
+        <kpsingh@kernel.org>, <toke@redhat.com>, <wanghai38@huawei.com>,
+        <quentin@isovalent.com>, <netdev@vger.kernel.org>,
+        <bpf@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH bpf] bpftool: fix compilation failure for net.o with
+ older glibc
+Message-ID: <20210106213946.sfnjfiycieo3f3em@kafai-mbp.dhcp.thefacebook.com>
+References: <1609948746-15369-1-git-send-email-alan.maguire@oracle.com>
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <CAK8P3a01iSXxc+05sTtSWvxSYX=g4J1vK-nfnn5oNkR8FO_OTQ@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1609948746-15369-1-git-send-email-alan.maguire@oracle.com>
+X-Originating-IP: [2620:10d:c090:400::5:5a1c]
+X-ClientProxiedBy: CO1PR15CA0077.namprd15.prod.outlook.com
+ (2603:10b6:101:20::21) To BY5PR15MB3571.namprd15.prod.outlook.com
+ (2603:10b6:a03:1f6::32)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from kafai-mbp.dhcp.thefacebook.com (2620:10d:c090:400::5:5a1c) by CO1PR15CA0077.namprd15.prod.outlook.com (2603:10b6:101:20::21) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3742.6 via Frontend Transport; Wed, 6 Jan 2021 21:39:51 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: b725db9f-ddd1-4d54-5f47-08d8b28b9a62
+X-MS-TrafficTypeDiagnostic: BYAPR15MB2582:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <BYAPR15MB25827F65FD46FD3993B28016D5D00@BYAPR15MB2582.namprd15.prod.outlook.com>
+X-FB-Source: Internal
+X-MS-Oob-TLC-OOBClassifiers: OLM:7691;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: uVFIJ1tfhIYXnmWEBO7LUNzbInmfxHuwMwITI3Wc/leZuzTdGuGHmbIHlhHCYiw/UwNwktRiKsUIJWUZUJWLe2A59wj+n7A2jrV9VKhtZPdZk5zcW6aXEY0m0+ML6ZMEFVzMXoFJGPTxzHjjKUXY/aJwnxcbRaIBuM1WuF2akDgsN67GdmRe9isHsL6EsJCr/BIW72B0P2mW211Jo3t15bUc4cFgljHIY7YRHimFHb2SOmeYRKvOPmzZSBMmRAOhx960c9oc3lpo1fGfXU3z14vFilH8C+3vllpb/sQTTaEM83iDmNlRC3nrQWmM/xKMW04wd5Ff0Et1LoCcFCSm3lQDpDhSCxDmT/hTgDbo/jL79xSIHLTXlSq3YkweHlCxsX3YFlrUfrWVIEad4DaBew==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR15MB3571.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(39860400002)(366004)(346002)(396003)(136003)(376002)(4744005)(86362001)(9686003)(186003)(7696005)(1076003)(52116002)(6506007)(5660300002)(16526019)(8936002)(478600001)(6916009)(55016002)(4326008)(6666004)(66946007)(7416002)(66476007)(2906002)(8676002)(316002)(66556008);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?RFh3dTRuYVNLTVI1Q1I1ZmlxL3MwSXBPR2ljNGpvaGtvTUIzQVNKaU8vSHdX?=
+ =?utf-8?B?MEtLd0lMajVqcVJ1YUtvRzQyQ3FyMzN4d2szM1VqQlArWlk2R0s0UEIyUkF6?=
+ =?utf-8?B?cE9qUkVEbzRoVUpGdDVHcnFvdzFSR2RTZDVwczB1T1BOK25kSDZHOUxQbjg2?=
+ =?utf-8?B?eXMxU0tTc01BT2tsRitVK1hVRnN0ZkZ4dGsza1psTVBuZERWZjlzejhQTWx1?=
+ =?utf-8?B?cXl0RnVMaU53Y2E3aGZER0dxOWR5bWtXNW55MHJnNTdBWTBIS3pWczUxL0Zu?=
+ =?utf-8?B?OW5iWWMzZVBBQUVOQlB2QWxxTzNQWTQwWkRqMisxWTRVMW1MNDlWRUhxMzBI?=
+ =?utf-8?B?UHhHTFg5R3U0eW0xdzFndjMvRjVwaTNyYmJSekovTFMzTWlWM0cyaitnbEhR?=
+ =?utf-8?B?cnVLOFVIOGhUYjNjSlB2N3h6VUtZUHU5eEdBN2RSSTROckFtdG5GRDQ4RGZt?=
+ =?utf-8?B?WjBtOUpGcHhzd0ZvYTI1YmNZQ2l6NmVINXExdW5PQXpBSGVaRVNxemp0bmVT?=
+ =?utf-8?B?SGV1bTM1RFhoYzJueVkzZ0lFOEZHVlhXTTNCL0ZIYnpIQkV4RUFTWHlLVFRC?=
+ =?utf-8?B?RGMzeFdienh0aGlzVG0rVGFPUFZzUXkvd09ZMDFDKysxYlU2aktocmlFaFMw?=
+ =?utf-8?B?RS9UZmpJdERuODkxZDR2UWhXWC9nKzMyTGN2bWFYdXNSVDFJejVUeDhCT1ZV?=
+ =?utf-8?B?WVQ2bUVvNVArTjQ1QmNMMk1uSzdtcWw3SlRVZnV2WXJySmlRQklHd1EvWHdM?=
+ =?utf-8?B?dEFxK3QzSTdyeVFHM1pmWG1Ma0JhYUlCTUhUT1k1ZU9aNlFBZDhMcEJnTGVU?=
+ =?utf-8?B?aGxhWEZjVVZ6WHYxQ1ZwUUVlcm5DR0tKNkRnSm9ya0E0d0dNL0N6WG1GWW5O?=
+ =?utf-8?B?R2RrNG81MGwwbld4MXBiUC82RFhwNjgwWlpaRjJDN1Nuc0RCM1J5emJCdEY5?=
+ =?utf-8?B?VXMxRU5wTW8zZk9rak5PejlLS1RZOGhtbm9GNnZKSTVJNlVmNmhmdnhMRnFp?=
+ =?utf-8?B?dXZnQnRoUEhDVUIrcDYwdnBBd09wb3k1bUpEYVQ1VXp5UWtKWG5jM3JZdE0v?=
+ =?utf-8?B?NWRBMXY1YlRIdmg5NkNONGxaV2xFbnVua294ZFR1djcrY3E4dE1KWlpJQkww?=
+ =?utf-8?B?VjlxeDFEL0hxUUFmeHk1UzlyRWtiZXZRUWxpUG5HTEZ3QUloL043R2J4SlJH?=
+ =?utf-8?B?bTlhWW9xbHVuUEQxYjhqWGZZSWZ2M2dqeWg4SHhJemlEakNWM1VrQW5nWnNK?=
+ =?utf-8?B?dnp0VjRtcFkxY1FWa0xibUhoN1JFOTEzWjJPaERkVXhwTnNIRmUyTk9RVzl4?=
+ =?utf-8?B?SFhVdHROVHp3aXB3WEk2Sy9SS2dXNExhUTJib0xqSHBXV3RScHFrUnFCMSty?=
+ =?utf-8?B?M0NwMmk1dnJWckE9PQ==?=
+X-MS-Exchange-CrossTenant-AuthSource: BY5PR15MB3571.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Jan 2021 21:39:53.2342
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-Network-Message-Id: b725db9f-ddd1-4d54-5f47-08d8b28b9a62
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: H+6gO7hNjX0OsyF5Z+7inc7pqA6Z50ZcPJY1Lz7EPU7ycY48xv4jU5tC2YzhF4xV
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB2582
+X-OriginatorOrg: fb.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
+ definitions=2021-01-06_12:2021-01-06,2021-01-06 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 bulkscore=0
+ mlxlogscore=665 impostorscore=0 suspectscore=0 spamscore=0 clxscore=1011
+ lowpriorityscore=0 malwarescore=0 adultscore=0 priorityscore=1501
+ mlxscore=0 phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2101060122
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 06, 2021 at 10:12:51AM +0100, Arnd Bergmann wrote:
-> On Tue, Jan 5, 2021 at 10:25 AM Arnd Bergmann <arnd@kernel.org> wrote:
-> >
-> > On Mon, Jan 4, 2021 at 11:33 PM Nathan Chancellor
-> > <natechancellor@gmail.com> wrote:
-> > > On Wed, Dec 30, 2020 at 05:13:03PM +0100, Marco Elver wrote:
-> > > > On Wed, 30 Dec 2020 at 16:47, Arnd Bergmann <arnd@kernel.org> wrote:
-> > > > >
-> > > > > From: Arnd Bergmann <arnd@arndb.de>
-> > > > >
-> > > > > Building ubsan kernels even for compile-testing introduced these
-> > > > > warnings in my randconfig environment:
-> > > > >
-> > > > > crypto/blake2b_generic.c:98:13: error: stack frame size of 9636 bytes in function 'blake2b_compress' [-Werror,-Wframe-larger-than=]
-> > > > > static void blake2b_compress(struct blake2b_state *S,
-> > > > > crypto/sha512_generic.c:151:13: error: stack frame size of 1292 bytes in function 'sha512_generic_block_fn' [-Werror,-Wframe-larger-than=]
-> > > > > static void sha512_generic_block_fn(struct sha512_state *sst, u8 const *src,
-> > > > > lib/crypto/curve25519-fiat32.c:312:22: error: stack frame size of 2180 bytes in function 'fe_mul_impl' [-Werror,-Wframe-larger-than=]
-> > > > > static noinline void fe_mul_impl(u32 out[10], const u32 in1[10], const u32 in2[10])
-> > > > > lib/crypto/curve25519-fiat32.c:444:22: error: stack frame size of 1588 bytes in function 'fe_sqr_impl' [-Werror,-Wframe-larger-than=]
-> > > > > static noinline void fe_sqr_impl(u32 out[10], const u32 in1[10])
-> > > > >
-> > > > > Further testing showed that this is caused by
-> > > > > -fsanitize=unsigned-integer-overflow.
-> > > > >
-> > > > > The one in blake2b immediately overflows the 8KB stack area on 32-bit
-> > > > > architectures, so better ensure this never happens by making this
-> > > > > option gcc-only.
-> > >
-> > > This patch also fixes the failed BUILD_BUG issue in mm/mremap.c that you
-> > > sent a patch for [1], along with a couple of other issues I see such as:
-> >
-> > I'm fairly sure I still saw that BUILD_BUG() even after I had applied this
-> > patch, I would guess that one just depends on inlining decisions that
-> > are influenced by all kinds of compiler options including
-> > -fsanitize=unsigned-integer-overflow, so it becomes less likely.
-> >
-> > I'll revert my other patch in the randconfig tree to see if it comes back.
+On Wed, Jan 06, 2021 at 03:59:06PM +0000, Alan Maguire wrote:
+> For older glibc ~2.17, #include'ing both linux/if.h and net/if.h
+> fails due to complaints about redefinition of interface flags:
 > 
-> The qcom/gpi.c failure still happens with this patch applied:
+>   CC       net.o
+> In file included from net.c:13:0:
+> /usr/include/linux/if.h:71:2: error: redeclaration of enumerator ‘IFF_UP’
+>   IFF_UP    = 1<<0,  /* sysfs */
+>   ^
+> /usr/include/net/if.h:44:5: note: previous definition of ‘IFF_UP’ was here
+>      IFF_UP = 0x1,  /* Interface is up.  */
 > 
-> In file included from /git/arm-soc/drivers/dma/qcom/gpi.c:8:
-> In function 'field_multiplier',
->     inlined from 'gpi_update_reg' at
-> /git/arm-soc/include/linux/bitfield.h:124:17:
-> /git/arm-soc/include/linux/bitfield.h:119:3: error: call to
-> '__bad_mask' declared with attribute error: bad bitfield mask
->   119 |   __bad_mask();
->       |   ^~~~~~~~~~~~
-> In function 'field_multiplier',
->     inlined from 'gpi_update_reg' at
-> /git/arm-soc/include/linux/bitfield.h:154:1:
-> /git/arm-soc/include/linux/bitfield.h:119:3: error: call to
-> '__bad_mask' declared with attribute error: bad bitfield mask
->   119 |   __bad_mask();
->       |   ^~~~~~~~~~~~
+> The issue was fixed in kernel headers in [1], but since compilation
+> of net.c picks up system headers the problem can recur.
 > 
-> See https://pastebin.com/8UH6x4A2 for the .config
-> 
->        Arnd
-
-That config does not build for me, am I holding it wrong?
-
-$ curl -LSso .config https://pastebin.com/raw/8UH6x4A2
-
-$ make -skj"$(nproc)" ARCH=arm CROSS_COMPILE=arm-linux-gnueabi- LLVM=1 olddefconfig vmlinux
-.config:364:warning: override: ARCH_DOVE changes choice state
-arch/arm/kernel/sys_oabi-compat.c:257:6: error: implicit declaration of function 'ep_op_has_event' [-Werror,-Wimplicit-function-declaration]
-        if (ep_op_has_event(op) &&
-            ^
-arch/arm/kernel/sys_oabi-compat.c:264:9: error: implicit declaration of function 'do_epoll_ctl' [-Werror,-Wimplicit-function-declaration]
-        return do_epoll_ctl(epfd, op, fd, &kernel, false);
-               ^
-arch/arm/kernel/sys_oabi-compat.c:264:9: note: did you mean 'sys_epoll_ctl'?
-./include/linux/syscalls.h:359:17: note: 'sys_epoll_ctl' declared here
-asmlinkage long sys_epoll_ctl(int epfd, int op, int fd,
-                ^
-2 errors generated.
-...
-
-Cheers,
-Nathan
+> Dropping #include <linux/if.h> resolves the issue and it is
+> not needed for compilation anyhow.
+Acked-by: Martin KaFai Lau <kafai@fb.com>
