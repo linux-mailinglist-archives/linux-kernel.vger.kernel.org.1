@@ -2,216 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A04D2EBB8D
+	by mail.lfdr.de (Postfix) with ESMTP id 1D76F2EBB8C
 	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 10:08:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726878AbhAFJHT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Jan 2021 04:07:19 -0500
-Received: from ptr.189.cn ([183.61.185.104]:11122 "EHLO 189.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726301AbhAFJHK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Jan 2021 04:07:10 -0500
-HMM_SOURCE_IP: 10.64.10.37:53476.2129512322
-HMM_ATTACHE_NUM: 0000
-HMM_SOURCE_TYPE: SMTP
-Received: from clientip-123.150.8.42 (unknown [10.64.10.37])
-        by 189.cn (HERMES) with SMTP id 1DF7C100785;
-        Wed,  6 Jan 2021 17:04:15 +0800 (CST)
-Received: from  ([10.64.8.34])
-        by gateway-151646-dep-54888d799-th9t2 with ESMTP id 1cf8cf80e2d742e289891543a81b04e9 for greg@kroah.com;
-        Wed Jan  6 17:04:16 2021
-X-Transaction-ID: 1cf8cf80e2d742e289891543a81b04e9
-X-filter-score: 
-X-Real-From: chensong_2000@189.cn
-X-Receive-IP: 10.64.8.34
-X-MEDUSA-Status: 0
-Sender: chensong_2000@189.cn
-From:   Song Chen <chensong_2000@189.cn>
-To:     greg@kroah.com, linux-kernel@vger.kernel.org, jkc@redhat.com,
-        sparmaintainer@unisys.com
-Cc:     Song Chen <chensong_2000@189.cn>
-Subject: [PATCH] staging: unisys: visorhba: enhance visorhba to use channel_interrupt
-Date:   Wed,  6 Jan 2021 17:04:23 +0800
-Message-Id: <1609923863-6650-1-git-send-email-chensong_2000@189.cn>
-X-Mailer: git-send-email 2.7.4
+        id S1726843AbhAFJGr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Jan 2021 04:06:47 -0500
+Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:12249 "EHLO
+        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725877AbhAFJGo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 Jan 2021 04:06:44 -0500
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5ff57d7b0001>; Wed, 06 Jan 2021 01:06:03 -0800
+Received: from mtl-vdi-166.wap.labs.mlnx (172.20.145.6) by
+ HQMAIL107.nvidia.com (172.20.187.13) with Microsoft SMTP Server (TLS) id
+ 15.0.1473.3; Wed, 6 Jan 2021 09:06:01 +0000
+Date:   Wed, 6 Jan 2021 11:05:57 +0200
+From:   Eli Cohen <elic@nvidia.com>
+To:     <mst@redhat.com>, <jasowang@redhat.com>,
+        <virtualization@lists.linux-foundation.org>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC:     <lulu@redhat.com>, <elic@nvidia.com>
+Subject: [PATCH] vdpa/mlx5: Fix memory key MTT population
+Message-ID: <20210106090557.GA170338@mtl-vdi-166.wap.labs.mlnx>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+User-Agent: Mutt/1.9.5 (bf161cf53efb) (2018-04-13)
+X-Originating-IP: [172.20.145.6]
+X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1609923964; bh=/6zQ5JVLCnlALckA+soCkshFtscBTwWdM/kojj3UBbc=;
+        h=Date:From:To:CC:Subject:Message-ID:MIME-Version:Content-Type:
+         Content-Disposition:User-Agent:X-Originating-IP:X-ClientProxiedBy;
+        b=ZOHgEzkNwAxbNyOW0BuLSEj2lUITltuumCcArPpUc+abiYkuK5c31dUP9QRu3TT+d
+         FkjdRAqv4d9+DHC9xOUTjulTj2HL+m3c2y45txzQk1EzJ3d4YK0GlL+csKwCUsTqIb
+         Blv8Amtgfc1NWozC8lorZxcjxrds5a3mR5kb3AKQjuKLGu9597DL/4yIu+bEgaEKZ3
+         r2BfUfP1BhCwxjOZ5YDdpux+9S9m2Cq5qI+8gHon2Enb+7IV4BfslGAq9YmWI1NXwc
+         oHzvqcF31nu/LbIpVPcavIWgQ5fMmwOyAc++fE2yeQKT9+0WPIyq3L45yLtLpikj/X
+         yu9cpyK9ySWtA==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-visorhba uses kthread to obtain the responses from the IO
-Service Partition periodically, on the other hand, visorbus
-provides periodic work to serve such request, therefore,
-kthread should be replaced by channel_interrupt.
+map_direct_mr() assumed that the number of scatter/gather entries
+returned by dma_map_sg_attrs() was equal to the number of segments in
+the sgl list. This led to wrong population of the mkey object. Fix this
+by properly referring to the returned value.
 
-Signed-off-by: Song Chen <chensong_2000@189.cn>
+In addition, get rid of fill_sg() whjich effect is overwritten bu
+populate_mtts().
+
+Fixes: 94abbccdf291 ("vdpa/mlx5: Add shared memory registration code")
+Signed-off-by: Eli Cohen <elic@nvidia.com>
 ---
- drivers/staging/unisys/visorhba/visorhba_main.c | 90 +++++--------------------
- 1 file changed, 16 insertions(+), 74 deletions(-)
+ drivers/vdpa/mlx5/core/mlx5_vdpa.h |  1 +
+ drivers/vdpa/mlx5/core/mr.c        | 28 ++++++++++++----------------
+ 2 files changed, 13 insertions(+), 16 deletions(-)
 
-diff --git a/drivers/staging/unisys/visorhba/visorhba_main.c b/drivers/staging/unisys/visorhba/visorhba_main.c
-index 7ae5306..4455d26 100644
---- a/drivers/staging/unisys/visorhba/visorhba_main.c
-+++ b/drivers/staging/unisys/visorhba/visorhba_main.c
-@@ -74,14 +74,10 @@ struct visorhba_devdata {
- 	unsigned long long interrupts_notme;
- 	unsigned long long interrupts_disabled;
- 	u64 __iomem *flags_addr;
--	atomic_t interrupt_rcvd;
--	wait_queue_head_t rsp_queue;
- 	struct visordisk_info head;
- 	unsigned int max_buff_len;
- 	int devnum;
--	struct task_struct *thread;
--	int thread_wait_ms;
--
-+	struct uiscmdrsp *cmdrsp;
- 	/*
- 	 * allows us to pass int handles back-and-forth between us and
- 	 * iovm, instead of raw pointers
-@@ -97,39 +93,6 @@ struct visorhba_devices_open {
+diff --git a/drivers/vdpa/mlx5/core/mlx5_vdpa.h b/drivers/vdpa/mlx5/core/mlx5_vdpa.h
+index 5c92a576edae..08f742fd2409 100644
+--- a/drivers/vdpa/mlx5/core/mlx5_vdpa.h
++++ b/drivers/vdpa/mlx5/core/mlx5_vdpa.h
+@@ -15,6 +15,7 @@ struct mlx5_vdpa_direct_mr {
+ 	struct sg_table sg_head;
+ 	int log_size;
+ 	int nsg;
++	int nent;
+ 	struct list_head list;
+ 	u64 offset;
  };
- 
- /*
-- * visor_thread_start - Starts a thread for the device
-- * @threadfn:   Function the thread starts
-- * @thrcontext: Context to pass to the thread, i.e. devdata
-- * @name:	String describing name of thread
-- *
-- * Starts a thread for the device.
-- *
-- * Return: The task_struct * denoting the thread on success,
-- *	   or NULL on failure
-- */
--static struct task_struct *visor_thread_start(int (*threadfn)(void *),
--					      void *thrcontext, char *name)
--{
--	struct task_struct *task;
--
--	task = kthread_run(threadfn, thrcontext, "%s", name);
--	if (IS_ERR(task)) {
--		pr_err("visorbus failed to start thread\n");
--		return NULL;
--	}
--	return task;
--}
--
--/*
-- * visor_thread_stop - Stops the thread if it is running
-- * @task: Description of process to stop
-- */
--static void visor_thread_stop(struct task_struct *task)
--{
--	kthread_stop(task);
--}
--
--/*
-  * add_scsipending_entry - Save off io command that is pending in
-  *			   Service Partition
-  * @devdata: Pointer to devdata
-@@ -730,7 +693,7 @@ static void visorhba_serverdown_complete(struct visorhba_devdata *devdata)
- 	/* Stop using the IOVM response queue (queue should be drained
- 	 * by the end)
- 	 */
--	visor_thread_stop(devdata->thread);
-+	visorbus_disable_channel_interrupts(devdata->dev);
- 
- 	/* Fail commands that weren't completed */
- 	spin_lock_irqsave(&devdata->privlock, flags);
-@@ -952,37 +915,18 @@ static void drain_queue(struct uiscmdrsp *cmdrsp,
+diff --git a/drivers/vdpa/mlx5/core/mr.c b/drivers/vdpa/mlx5/core/mr.c
+index 4b6195666c58..d300f799efcd 100644
+--- a/drivers/vdpa/mlx5/core/mr.c
++++ b/drivers/vdpa/mlx5/core/mr.c
+@@ -25,17 +25,6 @@ static int get_octo_len(u64 len, int page_shift)
+ 	return (npages + 1) / 2;
  }
  
- /*
-- * process_incoming_rsps - Process responses from IOSP
-- * @v:  Void pointer to visorhba_devdata
-- *
-- * Main function for the thread that processes the responses
-- * from the IO Service Partition. When the queue is empty, wait
-- * to check to see if it is full again.
-- *
-- * Return: 0 on success, -ENOMEM on failure
-+ * This is used only when this driver is active as an hba driver in the
-+ * client guest partition.  It is called periodically so we can obtain
-+ * and process the command respond from the IO Service Partition periodically.
-  */
--static int process_incoming_rsps(void *v)
-+static void visorhba_channel_interrupt(struct visor_device *dev)
+-static void fill_sg(struct mlx5_vdpa_direct_mr *mr, void *in)
+-{
+-	struct scatterlist *sg;
+-	__be64 *pas;
+-	int i;
+-
+-	pas = MLX5_ADDR_OF(create_mkey_in, in, klm_pas_mtt);
+-	for_each_sg(mr->sg_head.sgl, sg, mr->nsg, i)
+-		(*pas) = cpu_to_be64(sg_dma_address(sg));
+-}
+-
+ static void mlx5_set_access_mode(void *mkc, int mode)
  {
--	struct visorhba_devdata *devdata = v;
--	struct uiscmdrsp *cmdrsp = NULL;
--	const int size = sizeof(*cmdrsp);
-+	struct visorhba_devdata *devdata = dev_get_drvdata(&dev->device);
+ 	MLX5_SET(mkc, mkc, access_mode_1_0, mode & 0x3);
+@@ -45,10 +34,18 @@ static void mlx5_set_access_mode(void *mkc, int mode)
+ static void populate_mtts(struct mlx5_vdpa_direct_mr *mr, __be64 *mtt)
+ {
+ 	struct scatterlist *sg;
++	int nsg = mr->nsg;
++	u64 dma_addr;
++	u64 dma_len;
++	int j = 0;
+ 	int i;
  
--	cmdrsp = kmalloc(size, GFP_ATOMIC);
--	if (!cmdrsp)
--		return -ENOMEM;
-+	if (!devdata)
-+		return;
- 
--	while (1) {
--		if (kthread_should_stop())
--			break;
--		wait_event_interruptible_timeout(
--			devdata->rsp_queue, (atomic_read(
--					     &devdata->interrupt_rcvd) == 1),
--				msecs_to_jiffies(devdata->thread_wait_ms));
--		/* drain queue */
--		drain_queue(cmdrsp, devdata);
--	}
--	kfree(cmdrsp);
--	return 0;
-+	drain_queue(devdata->cmdrsp, devdata);
+-	for_each_sg(mr->sg_head.sgl, sg, mr->nsg, i)
+-		mtt[i] = cpu_to_be64(sg_dma_address(sg));
++	for_each_sg(mr->sg_head.sgl, sg, mr->nent, i) {
++		for (dma_addr = sg_dma_address(sg), dma_len = sg_dma_len(sg);
++		     nsg && dma_len;
++		     nsg--, dma_addr += BIT(mr->log_size), dma_len -= BIT(mr->log_size))
++			mtt[j++] = cpu_to_be64(dma_addr);
++	}
  }
  
- /*
-@@ -1028,8 +972,7 @@ static int visorhba_resume(struct visor_device *dev,
- 	if (devdata->serverdown && !devdata->serverchangingstate)
- 		devdata->serverchangingstate = true;
+ static int create_direct_mr(struct mlx5_vdpa_dev *mvdev, struct mlx5_vdpa_direct_mr *mr)
+@@ -64,7 +61,6 @@ static int create_direct_mr(struct mlx5_vdpa_dev *mvdev, struct mlx5_vdpa_direct
+ 		return -ENOMEM;
  
--	devdata->thread = visor_thread_start(process_incoming_rsps, devdata,
--					     "vhba_incming");
-+	visorbus_enable_channel_interrupts(dev);
- 	devdata->serverdown = false;
- 	devdata->serverchangingstate = false;
+ 	MLX5_SET(create_mkey_in, in, uid, mvdev->res.uid);
+-	fill_sg(mr, in);
+ 	mkc = MLX5_ADDR_OF(create_mkey_in, in, memory_key_mkey_entry);
+ 	MLX5_SET(mkc, mkc, lw, !!(mr->perm & VHOST_MAP_WO));
+ 	MLX5_SET(mkc, mkc, lr, !!(mr->perm & VHOST_MAP_RO));
+@@ -276,8 +272,8 @@ static int map_direct_mr(struct mlx5_vdpa_dev *mvdev, struct mlx5_vdpa_direct_mr
+ done:
+ 	mr->log_size = log_entity_size;
+ 	mr->nsg = nsg;
+-	err = dma_map_sg_attrs(dma, mr->sg_head.sgl, mr->nsg, DMA_BIDIRECTIONAL, 0);
+-	if (!err)
++	mr->nent = dma_map_sg_attrs(dma, mr->sg_head.sgl, mr->nsg, DMA_BIDIRECTIONAL, 0);
++	if (!mr->nent)
+ 		goto err_map;
  
-@@ -1095,7 +1038,6 @@ static int visorhba_probe(struct visor_device *dev)
- 		goto err_debugfs_dir;
- 	}
- 
--	init_waitqueue_head(&devdata->rsp_queue);
- 	spin_lock_init(&devdata->privlock);
- 	devdata->serverdown = false;
- 	devdata->serverchangingstate = false;
-@@ -1113,9 +1055,8 @@ static int visorhba_probe(struct visor_device *dev)
- 
- 	idr_init(&devdata->idr);
- 
--	devdata->thread_wait_ms = 2;
--	devdata->thread = visor_thread_start(process_incoming_rsps, devdata,
--					     "vhba_incoming");
-+	devdata->cmdrsp = kmalloc(sizeof(*devdata->cmdrsp), GFP_ATOMIC);
-+	visorbus_enable_channel_interrupts(dev);
- 
- 	scsi_scan_host(scsihost);
- 
-@@ -1150,7 +1091,8 @@ static void visorhba_remove(struct visor_device *dev)
- 		return;
- 
- 	scsihost = devdata->scsihost;
--	visor_thread_stop(devdata->thread);
-+	kfree(devdata->cmdrsp);
-+	visorbus_disable_channel_interrupts(dev);
- 	scsi_remove_host(scsihost);
- 	scsi_host_put(scsihost);
- 
-@@ -1173,7 +1115,7 @@ static struct visor_driver visorhba_driver = {
- 	.remove = visorhba_remove,
- 	.pause = visorhba_pause,
- 	.resume = visorhba_resume,
--	.channel_interrupt = NULL,
-+	.channel_interrupt = visorhba_channel_interrupt,
- };
- 
- /*
+ 	err = create_direct_mr(mvdev, mr);
 -- 
-2.7.4
+2.28.0
 
