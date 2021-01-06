@@ -2,249 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D580C2EBC27
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 11:12:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BF9F2EBC2D
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 11:12:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726606AbhAFKLM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Jan 2021 05:11:12 -0500
-Received: from aserp2130.oracle.com ([141.146.126.79]:52042 "EHLO
-        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726011AbhAFKLK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Jan 2021 05:11:10 -0500
-Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
-        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 106A4kYH125899;
-        Wed, 6 Jan 2021 10:10:23 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : mime-version : content-type; s=corp-2020-01-29;
- bh=WYfGnMIIkzNczac23WBRITSIgqNt2y4/Vo4OY/dZozg=;
- b=LPqOV4L4A9b5R/BRWV1H1iqhXkuuPkZ1zySIn0pBVI4VMkxV717pDikzK437rOmPkxlS
- EtItT5CQ9HFN2wyUgHvVfo4HtpjouCcDVIfksALC7+YAtHII+94nNkK63Gy7zMj3NVIJ
- QZ4BKljtfe2vDLR+g8AJ6WZEvsV+l9FaYbRV3MO5dO/E8VRE52VgEHNOuvicMY/si2w9
- bq2pdsYM93Mhq1mV+C03ivEs9RviIUPeYsO6hDBQJv9wbEjXV9jK8xoDYSc26uhbnw/C
- Hq5zJmDLWwEmv18Dc+J9KIWlnRKgu5dypt2D+QIYzVBcbtCljttD1uxVSJl3Fl0P7ljJ Hg== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by aserp2130.oracle.com with ESMTP id 35w7p0grpg-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 06 Jan 2021 10:10:23 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 106A6oOu141980;
-        Wed, 6 Jan 2021 10:10:23 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by aserp3020.oracle.com with ESMTP id 35v1f9qtp4-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 06 Jan 2021 10:10:22 +0000
-Received: from abhmp0004.oracle.com (abhmp0004.oracle.com [141.146.116.10])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 106AAJQe008541;
-        Wed, 6 Jan 2021 10:10:20 GMT
-Received: from mwanda (/102.36.221.92)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Wed, 06 Jan 2021 02:10:19 -0800
-Date:   Wed, 6 Jan 2021 13:10:05 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Antoine Jacquet <royale@zerezo.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-usb@vger.kernel.org, linux-media@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        royale@zerezo.com,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        syzbot+b4d54814b339b5c6bbd4@syzkaller.appspotmail.com
-Subject: [PATCH] media: zr364xx: fix memory leaks in probe()
-Message-ID: <X/WMfVDCsxRghKHH@mwanda>
+        id S1726762AbhAFKMH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Jan 2021 05:12:07 -0500
+Received: from mga03.intel.com ([134.134.136.65]:16400 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725941AbhAFKMG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 Jan 2021 05:12:06 -0500
+IronPort-SDR: I7Qt2+AcbC1AMAKHLOSCbx0GAvvvBBybYL/p6OHCRt/xLXxjSnqLLrlNWDz3cYBLbUIedIxWpz
+ F+RZR8/vvuDw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9855"; a="177357367"
+X-IronPort-AV: E=Sophos;i="5.78,479,1599548400"; 
+   d="scan'208";a="177357367"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Jan 2021 02:10:19 -0800
+IronPort-SDR: d08z5hl0XnBjFC605NW3Hlw0yXQdq+NUzEy5P5L4DpQIY0tLy8DeV7WHHXWC+t/VS4vT0Em7qx
+ t3sOQngMY85Q==
+X-IronPort-AV: E=Sophos;i="5.78,479,1599548400"; 
+   d="scan'208";a="379231175"
+Received: from blu2-mobl3.ccr.corp.intel.com (HELO [10.255.29.66]) ([10.255.29.66])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Jan 2021 02:10:12 -0800
+Cc:     baolu.lu@linux.intel.com, tglx@linutronix.de, ashok.raj@intel.com,
+        kevin.tian@intel.com, dave.jiang@intel.com, megha.dey@intel.com,
+        dwmw2@infradead.org, alex.williamson@redhat.com,
+        bhelgaas@google.com, dan.j.williams@intel.com,
+        dmaengine@vger.kernel.org, eric.auger@redhat.com,
+        jacob.jun.pan@intel.com, jgg@mellanox.com, kvm@vger.kernel.org,
+        kwankhede@nvidia.com, linux-kernel@vger.kernel.org,
+        linux-pci@vger.kernel.org, maz@kernel.org, mona.hossain@intel.com,
+        netanelg@mellanox.com, parav@mellanox.com, pbonzini@redhat.com,
+        rafael@kernel.org, samuel.ortiz@intel.com,
+        sanjay.k.kumar@intel.com, shahafs@mellanox.com,
+        tony.luck@intel.com, vkoul@kernel.org, yan.y.zhao@linux.intel.com,
+        yi.l.liu@intel.com
+To:     Leon Romanovsky <leon@kernel.org>
+References: <20210106022749.2769057-1-baolu.lu@linux.intel.com>
+ <20210106060613.GU31158@unreal>
+From:   Lu Baolu <baolu.lu@linux.intel.com>
+Subject: Re: [RFC PATCH v2 1/1] platform-msi: Add platform check for subdevice
+ irq domain
+Message-ID: <3d2620f9-bbd4-3dd0-8e29-0cfe492a109f@linux.intel.com>
+Date:   Wed, 6 Jan 2021 18:10:09 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Mailer: git-send-email haha only kidding
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9855 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 phishscore=0
- suspectscore=0 spamscore=0 bulkscore=0 adultscore=0 mlxscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2101060060
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9855 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 phishscore=0 adultscore=0
- lowpriorityscore=0 spamscore=0 suspectscore=0 impostorscore=0 mlxscore=0
- priorityscore=1501 malwarescore=0 clxscore=1015 mlxlogscore=999
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2101060060
+In-Reply-To: <20210106060613.GU31158@unreal>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Syzbot discovered that the probe error handling doesn't clean up the
-resources allocated in zr364xx_board_init().  There are several
-related bugs in this code so I have re-written the error handling.
+Hi Leon,
 
-1)  Introduce a new function zr364xx_board_uninit() which cleans up
-    the resources in zr364xx_board_init().
-2)  In zr364xx_board_init() if the call to zr364xx_start_readpipe()
-    fails then release the "cam->buffer.frame[i].lpvbits" memory
-    before returning.  This way every function either allocates
-    everything successfully or it cleans up after itself.
-3)  Re-write the probe function so that each failure path goto frees
-    the most recent allocation.  That way we don't free anything
-    before it has been allocated and we can also verify that
-    everything is freed.
-4)  Originally, in the probe function the "cam->v4l2_dev.release"
-    pointer was set to "zr364xx_release" near the start but I moved
-    that assignment to the end, after everything had succeeded.  The
-    release function was never actually called during the probe cleanup
-    process, but with this change I wanted to make it clear that we
-    don't want to call zr364xx_release() until everything is
-    allocated successfully.
+On 2021/1/6 14:06, Leon Romanovsky wrote:
+> On Wed, Jan 06, 2021 at 10:27:49AM +0800, Lu Baolu wrote:
+>> The pci_subdevice_msi_create_irq_domain() should fail if the underlying
+>> platform is not able to support IMS (Interrupt Message Storage). Otherwise,
+>> the isolation of interrupt is not guaranteed.
+>>
+>> For x86, IMS is only supported on bare metal for now. We could enable it
+>> in the virtualization environments in the future if interrupt HYPERCALL
+>> domain is supported or the hardware has the capability of interrupt
+>> isolation for subdevices.
+>>
+>> Suggested-by: Thomas Gleixner <tglx@linutronix.de>
+>> Link: https://lore.kernel.org/linux-pci/87pn4nk7nn.fsf@nanos.tec.linutronix.de/
+>> Link: https://lore.kernel.org/linux-pci/877dqrnzr3.fsf@nanos.tec.linutronix.de/
+>> Link: https://lore.kernel.org/linux-pci/877dqqmc2h.fsf@nanos.tec.linutronix.de/
+>> Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
+>> ---
+>>   arch/x86/pci/common.c       | 47 +++++++++++++++++++++++++++++++++++++
+>>   drivers/base/platform-msi.c |  8 +++++++
+>>   include/linux/msi.h         |  1 +
+>>   3 files changed, 56 insertions(+)
+>>
+>>
+>> Background:
+>> Learnt from the discussions in this thread:
+>>
+>> https://lore.kernel.org/linux-pci/160408357912.912050.17005584526266191420.stgit@djiang5-desk3.ch.intel.com/
+>>
+>> The device IMS (Interrupt Message Storage) should not be enabled in any
+>> virtualization environments unless there is a HYPERCALL domain which
+>> makes the changes in the message store managed by the hypervisor.
+>>
+>> As the initial step, we allow the IMS to be enabled only if we are
+>> running on the bare metal. It's easy to enable IMS in the virtualization
+>> environments if above preconditions are met in the future.
+>>
+>> We ever thought about moving on_bare_metal() to a generic file so that
+>> it could be well maintained and used. But we need some suggestions about
+>> where to put it. Your comments are very appreciated.
+>>
+>> This patch is only for comments purpose. Please don't merge it. We will
+>> include it in the Intel IMS implementation later once we reach a
+>> consensus.
+>>
+>> Change log:
+>> v1->v2:
+>>   - v1:
+>>     https://lore.kernel.org/linux-pci/20201210004624.345282-1-baolu.lu@linux.intel.com/
+>>   - Rename probably_on_bare_metal() with on_bare_metal();
+>>   - Some vendors might use the same name for both bare metal and virtual
+>>     environment. Before we add vendor specific code to distinguish
+>>     between them, let's return false in on_bare_metal(). This won't
+>>     introduce any regression. The only impact is that the coming new
+>>     platform msi feature won't be supported until the vendor specific code
+>>     is provided.
+>>
+>> Best regards,
+>> baolu
+>>
+>> diff --git a/arch/x86/pci/common.c b/arch/x86/pci/common.c
+>> index 3507f456fcd0..963e0401f2b2 100644
+>> --- a/arch/x86/pci/common.c
+>> +++ b/arch/x86/pci/common.c
+>> @@ -724,3 +724,50 @@ struct pci_dev *pci_real_dma_dev(struct pci_dev *dev)
+>>   	return dev;
+>>   }
+>>   #endif
+>> +
+>> +/*
+>> + * We want to figure out which context we are running in. But the hardware
+>> + * does not introduce a reliable way (instruction, CPUID leaf, MSR, whatever)
+>> + * which can be manipulated by the VMM to let the OS figure out where it runs.
+>> + * So we go with the below probably on_bare_metal() function as a replacement
+>> + * for definitely on_bare_metal() to go forward only for the very simple reason
+>> + * that this is the only option we have.
+>> + *
+>> + * People might use the same vendor name for both bare metal and virtual
+>> + * environment. We can remove those names once we have vendor specific code to
+>> + * distinguish between them.
+>> + */
+>> +static const char * const vmm_vendor_name[] = {
+>> +	"QEMU", "Bochs", "KVM", "Xen", "VMware", "VMW", "VMware Inc.",
+>> +	"innotek GmbH", "Oracle Corporation", "Parallels", "BHYVE",
+>> +	"Microsoft Corporation", "Amazon EC2"
+>> +};
+> 
+> Maybe it is not concern at all, but this approach will make
+> forward/backward compatibility without kernel upgrade impossible.
+> 
+> Once QEMU (example) will have needed support, someone will need to remove
+> the QEMU from this array, rewrite on_bare_metal() because it is not bare
+> vs. virtual anymore and require kernel upgrade/downgrade every time QEMU
+> version is switched.
+> 
+> Plus need to update stable@ and distros.
+> 
+> I'm already feeling pain from the fields while they debug such code.
+> 
+> Am I missing it completely?
 
-Next I re-wrote the zr364xx_release() function.  Ideally this would
-have been a simple matter of copy and pasting the cleanup code from
-probe and adding an additional call to video_unregister_device().  But
-there are several quirks to note.
+The basic need here is that we want to disallow a brand new feature
+(device ims) to be enabled in any VMM environment.
 
-1)  The original code never called video_unregister_device().  In other
-    words, this is an additional bugfix.
-2)  The probe function does not call videobuf_mmap_free() and I don't
-    know where the videobuf_mmap is allocated.  I left the code as-is to
-    avoid introducing a bug in code I don't understand.
-3)  The zr364xx_board_uninit() has a call to zr364xx_stop_readpipe()
-    which is a change from the original behavior with regards to
-    unloading the driver.  Calling zr364xx_stop_readpipe() on a stopped
-    pipe is not a problem so this is safe and is potentially a bugfix.
+The cpuid (X86_FEATURE_HYPERVISOR) is a good choice, but it's optional
+and even not documented. So besides it, we maintain a block list
+(vmm_vendor_name) which lists all possible VMM vendor names. If
+dmi_match(DMI_SYS_VENDOR) hits, the new feature is not allowed to be
+enabled.
 
-Reported-by: syzbot+b4d54814b339b5c6bbd4@syzkaller.appspotmail.com
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
----
- drivers/media/usb/zr364xx/zr364xx.c | 50 ++++++++++++++++++-----------
- 1 file changed, 32 insertions(+), 18 deletions(-)
+This block list is a bit overkill since some vendor names could also be
+used on bare metal. We will delay enabling the new feature for those
+cases until we have a vendor-specific way to distinguish between bare
+metal and VMM environments.
 
-diff --git a/drivers/media/usb/zr364xx/zr364xx.c b/drivers/media/usb/zr364xx/zr364xx.c
-index 1e1c6b4d1874..62a232f995a7 100644
---- a/drivers/media/usb/zr364xx/zr364xx.c
-+++ b/drivers/media/usb/zr364xx/zr364xx.c
-@@ -1181,15 +1181,11 @@ static int zr364xx_open(struct file *file)
- 	return err;
- }
- 
--static void zr364xx_release(struct v4l2_device *v4l2_dev)
-+static void zr364xx_board_uninit(struct zr364xx_camera *cam)
- {
--	struct zr364xx_camera *cam =
--		container_of(v4l2_dev, struct zr364xx_camera, v4l2_dev);
- 	unsigned long i;
- 
--	v4l2_device_unregister(&cam->v4l2_dev);
--
--	videobuf_mmap_free(&cam->vb_vidq);
-+	zr364xx_stop_readpipe(cam);
- 
- 	/* release sys buffers */
- 	for (i = 0; i < FRAMES; i++) {
-@@ -1200,9 +1196,20 @@ static void zr364xx_release(struct v4l2_device *v4l2_dev)
- 		cam->buffer.frame[i].lpvbits = NULL;
- 	}
- 
--	v4l2_ctrl_handler_free(&cam->ctrl_handler);
- 	/* release transfer buffer */
- 	kfree(cam->pipe->transfer_buffer);
-+}
-+
-+static void zr364xx_release(struct v4l2_device *v4l2_dev)
-+{
-+	struct zr364xx_camera *cam =
-+		container_of(v4l2_dev, struct zr364xx_camera, v4l2_dev);
-+
-+	videobuf_mmap_free(&cam->vb_vidq);
-+	video_unregister_device(&cam->vdev);
-+	v4l2_ctrl_handler_free(&cam->ctrl_handler);
-+	zr364xx_board_uninit(cam);
-+	v4l2_device_unregister(&cam->v4l2_dev);
- 	kfree(cam);
- }
- 
-@@ -1376,11 +1383,14 @@ static int zr364xx_board_init(struct zr364xx_camera *cam)
- 	/* start read pipe */
- 	err = zr364xx_start_readpipe(cam);
- 	if (err)
--		goto err_free;
-+		goto err_free_frames;
- 
- 	DBG(": board initialized\n");
- 	return 0;
- 
-+err_free_frames:
-+	for (i = 0; i < FRAMES; i++)
-+		vfree(cam->buffer.frame[i].lpvbits);
- err_free:
- 	kfree(cam->pipe->transfer_buffer);
- 	cam->pipe->transfer_buffer = NULL;
-@@ -1409,12 +1419,10 @@ static int zr364xx_probe(struct usb_interface *intf,
- 	if (!cam)
- 		return -ENOMEM;
- 
--	cam->v4l2_dev.release = zr364xx_release;
- 	err = v4l2_device_register(&intf->dev, &cam->v4l2_dev);
- 	if (err < 0) {
- 		dev_err(&udev->dev, "couldn't register v4l2_device\n");
--		kfree(cam);
--		return err;
-+		goto free_cam;
- 	}
- 	hdl = &cam->ctrl_handler;
- 	v4l2_ctrl_handler_init(hdl, 1);
-@@ -1423,7 +1431,7 @@ static int zr364xx_probe(struct usb_interface *intf,
- 	if (hdl->error) {
- 		err = hdl->error;
- 		dev_err(&udev->dev, "couldn't register control\n");
--		goto fail;
-+		goto unregister;
- 	}
- 	/* save the init method used by this camera */
- 	cam->method = id->driver_info;
-@@ -1496,7 +1504,7 @@ static int zr364xx_probe(struct usb_interface *intf,
- 	if (!cam->read_endpoint) {
- 		err = -ENOMEM;
- 		dev_err(&intf->dev, "Could not find bulk-in endpoint\n");
--		goto fail;
-+		goto unregister;
- 	}
- 
- 	/* v4l */
-@@ -1507,10 +1515,11 @@ static int zr364xx_probe(struct usb_interface *intf,
- 
- 	/* load zr364xx board specific */
- 	err = zr364xx_board_init(cam);
--	if (!err)
--		err = v4l2_ctrl_handler_setup(hdl);
- 	if (err)
--		goto fail;
-+		goto unregister;
-+	err = v4l2_ctrl_handler_setup(hdl);
-+	if (err)
-+		goto board_uninit;
- 
- 	spin_lock_init(&cam->slock);
- 
-@@ -1525,16 +1534,21 @@ static int zr364xx_probe(struct usb_interface *intf,
- 	err = video_register_device(&cam->vdev, VFL_TYPE_VIDEO, -1);
- 	if (err) {
- 		dev_err(&udev->dev, "video_register_device failed\n");
--		goto fail;
-+		goto free_handler;
- 	}
-+	cam->v4l2_dev.release = zr364xx_release;
- 
- 	dev_info(&udev->dev, DRIVER_DESC " controlling device %s\n",
- 		 video_device_node_name(&cam->vdev));
- 	return 0;
- 
--fail:
-+free_handler:
- 	v4l2_ctrl_handler_free(hdl);
-+board_uninit:
-+	zr364xx_board_uninit(cam);
-+unregister:
- 	v4l2_device_unregister(&cam->v4l2_dev);
-+free_cam:
- 	kfree(cam);
- 	return err;
- }
--- 
-2.29.2
+Honestly speaking, I can't see any compatible issue as it's common that
+a new feature is supported in a new kernel but not in an old one.
 
+Best regards,
+baolu
