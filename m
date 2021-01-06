@@ -2,129 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 16FEF2EC603
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 23:09:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BD8E2EC606
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 23:09:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727571AbhAFWHi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Jan 2021 17:07:38 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41732 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727150AbhAFWHh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Jan 2021 17:07:37 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BCEA123331
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Jan 2021 22:06:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1609970816;
-        bh=Ixc+goeMvYqUDQiLxNgX+122s0AjmJqZ7wbVeiF+/pw=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=s4kUfmRSy2kqOn63TsGBzxFkeYfc0040WS8cDg4sIKsvPCj4NwOvUWb5qshIv5Ovm
-         uE134PQRFTidMRFTL56+keSsVo6nIp1gmaOjXb+n0WI52VPCUCIKcInoPcL+7xvsfG
-         0D7GgiI1Xcjm6tgynUzV0YE8d6VbEUmpt4FxbDws0dE5nhLZSuX6Qyi+Xiv4ZS4G1L
-         yqJ+1W40BE2/c89kPF4CYKco9jotiOAkrnsDRtGJj79D8XeDQI7oDhuakjjnuoBWp9
-         Cw7DOEYygTMgMiCvUKyx7UBH9Uz73RjxhNHIyR0dKZq1JN/5gqqftkx5SP0QGfh9/t
-         D78LmVFMGuDxQ==
-Received: by mail-ot1-f44.google.com with SMTP id w3so4449476otp.13
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Jan 2021 14:06:56 -0800 (PST)
-X-Gm-Message-State: AOAM532VKMqTN5Oen7uk5D8THCNjAgj6yeAAEpw19wPFX99o0VKQ3sth
-        UwLpLpuG37fLkefPzPb0GaL0nJDnFbX9tg7h0Mg=
-X-Google-Smtp-Source: ABdhPJwMhLEgWEXAO74Y9bfhfPnMwjhBsUWGRjslTLeXbrQTwe54LWEAz0kWs4O5YxTTummK+isX23bC7e8RWvKcP0g=
-X-Received: by 2002:a05:6830:2413:: with SMTP id j19mr4857998ots.251.1609970816014;
- Wed, 06 Jan 2021 14:06:56 -0800 (PST)
+        id S1727657AbhAFWHu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Jan 2021 17:07:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44062 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727150AbhAFWHu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 Jan 2021 17:07:50 -0500
+Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EEACEC061786
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Jan 2021 14:07:09 -0800 (PST)
+Received: by mail-pj1-x102b.google.com with SMTP id b5so2365357pjl.0
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Jan 2021 14:07:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=97bTCu9/bzmLzrhctga1J2iFmuyfoogQ7hmoxWlzhpk=;
+        b=MHvyLbjHzGYY/d2eSM18499bLDNbuoRUCVJKrih26oS3pMLrwHUwEX0vtpb7g+pbVB
+         zxVYPJi9a/XBs5bgqwr3lP2REnJrpTgQHhRWa6vs8S2i61bGw2bEdgjTJoujUMNT99YQ
+         8KFORDJPn2cFDq9ijNxgxYiL7hwg6YgjTmkLM=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=97bTCu9/bzmLzrhctga1J2iFmuyfoogQ7hmoxWlzhpk=;
+        b=SFwMwkYTgYYwT2/5qDJhXUg7za/Ih/92P2aX514+qEDJBEX2xlrBAlIQMI9yoQat88
+         2bLfnsEWErLGIh6fBDhVPbB9VxuL098zomMFbHDm4xztjqpRye7/5ti4ck41Lg42PLIa
+         3aWha9jd1oMH0a0zcxxRV1zcpfwL9BCjjBP3ZOu7ftAq8SRO3OHRyOMwKH0vcL2Wvl+V
+         Q08oExuSBsk4ge75wrRgE8xMm72NidGfVnGB7dEUDumQdb3pJSg1fTGvddVsNVTKOWv5
+         tCzlUlq8yxOy5WY/YpnGBhHVCFzzVC7MT3wLAO+BuFHjvAlr4Yjwz1JDSln0XM0Tov1F
+         zj4g==
+X-Gm-Message-State: AOAM5322esIq6ILXVpLn4MPTQ6A77luCfUKVnc1WuF7oyGn4UFlK6Jrm
+        8s/8LWSpmkmj7RJMib7css4EOQ==
+X-Google-Smtp-Source: ABdhPJxKM0L8EziSFUGgh8qzAMXGV2beB7hn7pXRl3sdjvtm+H0Mr16vdfmpvdb+5BX3AFsp79wzdg==
+X-Received: by 2002:a17:90a:6fc7:: with SMTP id e65mr6190115pjk.116.1609970829428;
+        Wed, 06 Jan 2021 14:07:09 -0800 (PST)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id o32sm3821053pgm.10.2021.01.06.14.07.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 06 Jan 2021 14:07:08 -0800 (PST)
+Date:   Wed, 6 Jan 2021 14:07:07 -0800
+From:   Kees Cook <keescook@chromium.org>
+To:     Alexander Lobakin <alobakin@pm.me>
+Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Fangrui Song <maskray@google.com>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Alex Smith <alex.smith@imgtec.com>,
+        Ralf Baechle <ralf@linux-mips.org>,
+        Markos Chandras <markos.chandras@imgtec.com>,
+        linux-mips@vger.kernel.org, stable@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 mips-next 2/4] MIPS: vmlinux.lds.S: add
+ ".gnu.attributes" to DISCARDS
+Message-ID: <202101061400.8F83981AE@keescook>
+References: <20210106200713.31840-1-alobakin@pm.me>
+ <20210106200801.31993-1-alobakin@pm.me>
+ <20210106200801.31993-2-alobakin@pm.me>
 MIME-Version: 1.0
-References: <20201230154749.746641-1-arnd@kernel.org> <CANpmjNNGmbgg_pFMC6X_6vZcj53jy7PsNyZAC88rOQC5zrOiFw@mail.gmail.com>
- <20210104223336.GA2562866@ubuntu-m3-large-x86> <CAK8P3a3J1HGia3cPy+ArFQGzQWj1gy8bx7DdjnRFE=1+JmsrKw@mail.gmail.com>
- <CAK8P3a01iSXxc+05sTtSWvxSYX=g4J1vK-nfnn5oNkR8FO_OTQ@mail.gmail.com> <20210106213853.GA3617315@ubuntu-m3-large-x86>
-In-Reply-To: <20210106213853.GA3617315@ubuntu-m3-large-x86>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Wed, 6 Jan 2021 23:06:39 +0100
-X-Gmail-Original-Message-ID: <CAK8P3a3JHLKc=1V_6mgvQeS_oP+_Y=m_nhHzWSPrs2S+p7gvMg@mail.gmail.com>
-Message-ID: <CAK8P3a3JHLKc=1V_6mgvQeS_oP+_Y=m_nhHzWSPrs2S+p7gvMg@mail.gmail.com>
-Subject: Re: [PATCH] ubsan: disable unsigned-integer-overflow sanitizer with clang
-To:     Nathan Chancellor <natechancellor@gmail.com>
-Cc:     Marco Elver <elver@google.com>, Kees Cook <keescook@chromium.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        George Popescu <georgepope@android.com>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        LKML <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210106200801.31993-2-alobakin@pm.me>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 6, 2021 at 10:38 PM Nathan Chancellor
-<natechancellor@gmail.com> wrote:
-> On Wed, Jan 06, 2021 at 10:12:51AM +0100, Arnd Bergmann wrote:
-> > On Tue, Jan 5, 2021 at 10:25 AM Arnd Bergmann <arnd@kernel.org> wrote:
-> > >
-> > > On Mon, Jan 4, 2021 at 11:33 PM Nathan Chancellor
-> > > <natechancellor@gmail.com> wrote:
-> > > > On Wed, Dec 30, 2020 at 05:13:03PM +0100, Marco Elver wrote:
-> > > > > On Wed, 30 Dec 2020 at 16:47, Arnd Bergmann <arnd@kernel.org> wrote:
-> > > > > >
-> > > > > > From: Arnd Bergmann <arnd@arndb.de>
-> > > > > >
-> > > > > > Building ubsan kernels even for compile-testing introduced these
-> > > > > > warnings in my randconfig environment:
-> > > > > >
-> > > > > > crypto/blake2b_generic.c:98:13: error: stack frame size of 9636 bytes in function 'blake2b_compress' [-Werror,-Wframe-larger-than=]
-> > > > > > static void blake2b_compress(struct blake2b_state *S,
-> > > > > > crypto/sha512_generic.c:151:13: error: stack frame size of 1292 bytes in function 'sha512_generic_block_fn' [-Werror,-Wframe-larger-than=]
-> > > > > > static void sha512_generic_block_fn(struct sha512_state *sst, u8 const *src,
-> > > > > > lib/crypto/curve25519-fiat32.c:312:22: error: stack frame size of 2180 bytes in function 'fe_mul_impl' [-Werror,-Wframe-larger-than=]
-> > > > > > static noinline void fe_mul_impl(u32 out[10], const u32 in1[10], const u32 in2[10])
-> > > > > > lib/crypto/curve25519-fiat32.c:444:22: error: stack frame size of 1588 bytes in function 'fe_sqr_impl' [-Werror,-Wframe-larger-than=]
-> > > > > > static noinline void fe_sqr_impl(u32 out[10], const u32 in1[10])
-> > > > > >
-> > > > > > Further testing showed that this is caused by
-> > > > > > -fsanitize=unsigned-integer-overflow.
-> > > > > >
-> > > > > > The one in blake2b immediately overflows the 8KB stack area on 32-bit
-> > > > > > architectures, so better ensure this never happens by making this
-> > > > > > option gcc-only.
-> > > >
-> > > > This patch also fixes the failed BUILD_BUG issue in mm/mremap.c that you
-> > > > sent a patch for [1], along with a couple of other issues I see such as:
-> > >
-> > > I'm fairly sure I still saw that BUILD_BUG() even after I had applied this
-> > > patch, I would guess that one just depends on inlining decisions that
-> > > are influenced by all kinds of compiler options including
-> > > -fsanitize=unsigned-integer-overflow, so it becomes less likely.
-> > >
-> > > I'll revert my other patch in the randconfig tree to see if it comes back.
-> >
-> > The qcom/gpi.c failure still happens with this patch applied:
-> >
-> > In file included from /git/arm-soc/drivers/dma/qcom/gpi.c:8:
-> > In function 'field_multiplier',
-> >     inlined from 'gpi_update_reg' at
-> > /git/arm-soc/include/linux/bitfield.h:124:17:
-> > /git/arm-soc/include/linux/bitfield.h:119:3: error: call to
-> > '__bad_mask' declared with attribute error: bad bitfield mask
-> >   119 |   __bad_mask();
-> >       |   ^~~~~~~~~~~~
-> > In function 'field_multiplier',
-> >     inlined from 'gpi_update_reg' at
-> > /git/arm-soc/include/linux/bitfield.h:154:1:
-> > /git/arm-soc/include/linux/bitfield.h:119:3: error: call to
-> > '__bad_mask' declared with attribute error: bad bitfield mask
-> >   119 |   __bad_mask();
-> >       |   ^~~~~~~~~~~~
-> >
-> > See https://pastebin.com/8UH6x4A2 for the .config
-> >
-> >        Arnd
->
-> That config does not build for me, am I holding it wrong?
->
-> $ curl -LSso .config https://pastebin.com/raw/8UH6x4A2
+On Wed, Jan 06, 2021 at 08:08:19PM +0000, Alexander Lobakin wrote:
+> Discard GNU attributes at link time as kernel doesn't use it at all.
+> Solves a dozen of the following ld warnings (one per every file):
+> 
+> mips-alpine-linux-musl-ld: warning: orphan section `.gnu.attributes'
+> from `arch/mips/kernel/head.o' being placed in section
+> `.gnu.attributes'
+> mips-alpine-linux-musl-ld: warning: orphan section `.gnu.attributes'
+> from `init/main.o' being placed in section `.gnu.attributes'
+> 
+> Misc: sort DISCARDS section entries alphabetically.
 
-Sorry about that, you ran into a bug that I have applied a
-local fix for. You could enable CONFIG_EPOLL, or apply
-this patch:
+Hmm, I wonder what is causing the appearance of .eh_frame? With help I
+tracked down all the causes of this on x86, arm, and arm64, so that's
+why it's not in the asm-generic DISCARDS section. I suspect this could
+be cleaned up for mips too?
 
-https://lore.kernel.org/linux-arm-kernel/20200429132349.1294904-1-arnd@arndb.de/
+Similarly for .gnu.attributes. What is generating that? (Or, more
+specifically, why is it both being generated AND discarded?)
 
-      Arnd
+-Kees
+
+> 
+> Signed-off-by: Alexander Lobakin <alobakin@pm.me>
+> ---
+>  arch/mips/kernel/vmlinux.lds.S | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/arch/mips/kernel/vmlinux.lds.S b/arch/mips/kernel/vmlinux.lds.S
+> index 83e27a181206..5d6563970ab2 100644
+> --- a/arch/mips/kernel/vmlinux.lds.S
+> +++ b/arch/mips/kernel/vmlinux.lds.S
+> @@ -221,9 +221,10 @@ SECTIONS
+>  		/* ABI crap starts here */
+>  		*(.MIPS.abiflags)
+>  		*(.MIPS.options)
+> +		*(.eh_frame)
+> +		*(.gnu.attributes)
+>  		*(.options)
+>  		*(.pdr)
+>  		*(.reginfo)
+> -		*(.eh_frame)
+>  	}
+>  }
+> -- 
+> 2.30.0
+> 
+> 
+
+-- 
+Kees Cook
