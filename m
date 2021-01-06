@@ -2,183 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 726932EBBD7
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 10:51:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 417322EBBE2
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 10:53:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726429AbhAFJvK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Jan 2021 04:51:10 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:54416 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726295AbhAFJvK (ORCPT
+        id S1726600AbhAFJwt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Jan 2021 04:52:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42002 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726464AbhAFJws (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Jan 2021 04:51:10 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1609926582;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=3xvIXrxygPNnEfu8Dcpv34MDYgTRdegYiN0XObRauc0=;
-        b=NiMzulw3sBUoSttXFaf0Yl3ol62shdC2h3ZIdThKeVCZASgzAEXpyc4O6mZIbbLUJZyTiG
-        kJ1X16Ro+MoWR/IFMJUEanv6bGwtZ7Q5jwt5GuLO+LpCwZTLPjXvItltkFJ6fx4MqWuInq
-        XdZ8zOpPrHIllCNgmcyj27uAmseHuyU=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-35-FL0bwCVZM-S1mp2xBZl5Hg-1; Wed, 06 Jan 2021 04:49:40 -0500
-X-MC-Unique: FL0bwCVZM-S1mp2xBZl5Hg-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 564CC10054FF;
-        Wed,  6 Jan 2021 09:49:38 +0000 (UTC)
-Received: from krava (unknown [10.40.194.249])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 2347771CA1;
-        Wed,  6 Jan 2021 09:49:34 +0000 (UTC)
-Date:   Wed, 6 Jan 2021 10:49:34 +0100
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Stephane Eranian <eranian@google.com>
-Cc:     Jiri Olsa <jolsa@kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Ingo Molnar <mingo@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Michael Petlan <mpetlan@redhat.com>,
-        Ian Rogers <irogers@google.com>,
-        Alexei Budankov <abudankov@huawei.com>
-Subject: Re: [PATCHv2] perf tools: Detect when pipe is passed as perf data
-Message-ID: <20210106094934.GA972880@krava>
-References: <20201230110935.582332-1-jolsa@kernel.org>
- <CABPqkBTQfFWvEba-=T6ms=GTsjrZUosRQyZZK-EMZ2c_2NQvAA@mail.gmail.com>
+        Wed, 6 Jan 2021 04:52:48 -0500
+Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B4A6C061357;
+        Wed,  6 Jan 2021 01:52:07 -0800 (PST)
+Received: by mail-ed1-x535.google.com with SMTP id b73so3768693edf.13;
+        Wed, 06 Jan 2021 01:52:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=wFYVdNCGZo254Md4m2v48sFF9I2fZhhCJRCbYo96ynw=;
+        b=r2hEt3YhyZtRbtTbKEgM7AOCqI7maZ7J138o7yqh2U812EyJXex68bYOO1VKErnc7a
+         TyfLHIvKIAN4jpLN8ISxdbLNv5IGt6zkxgcqC8Zfj+O0TPMTrjyfeYatRMLY3rPQnPV9
+         WHooaDbovRFSuCmtx1hbVe13OkZL+o8IkJwLi5v2X2etGgPp7z61ORFGyvkwknDoqaTy
+         OZgvBQoXxLT2LhjIOllhwVtZBGj7ehBLwJ8dh0AJZzj2qqWbu/Aj5n6inx9EBArJQlW/
+         EWDrGYPKnqKaayDO+8Ke/iXzt1PnKp22uvAd/uQlcBfKvO1YD7AYlqDdKMdg+UHGP8JK
+         9zLg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=wFYVdNCGZo254Md4m2v48sFF9I2fZhhCJRCbYo96ynw=;
+        b=bvl6A0f+Sqo/RSSuoaIrtedhrd2Z95W0csY6YaLCv7Bl+Z/VdNmHFSzIkpJgDZz/Uu
+         Po8QZU0y/tAgdgNBv3/70NJn6dxg8Apgv7DKcG4zKmy5DU1j+tcFe8Wz6/azVQEI+vXA
+         XkoTjH5YamE6/XYJ/WNMFLG/rVxPfH3ykqiVGijGQtBqygyefZu69X/w4LsHxA8lHS+L
+         zHTq5CcyKWX2qw9DYwenhfSF87n/xD37N3F6LFdMnPXLCLWWNyGYvvABzCjE46WYSksX
+         +wPf2KUMhdUzP98e6r2f4PCkf0rT+LlogoN2nBKOcIQF5zGHOPzvJXB+djYfZjtWirYC
+         3R0w==
+X-Gm-Message-State: AOAM530tXgh39+EiwmNLsKxJmowuhp3LO5PtE5IeuAo4U0m+P9pAWqXN
+        h8+i8uJ3X2EHRvo5FA+KzwY=
+X-Google-Smtp-Source: ABdhPJx6jQJEjUJu+pPJq4VL96D+e7Xlxkq7a+kpLfhHQq9snCSQsVZHsxrmUc2CD5wkfstxBayVaA==
+X-Received: by 2002:a50:fb85:: with SMTP id e5mr3402235edq.153.1609926726098;
+        Wed, 06 Jan 2021 01:52:06 -0800 (PST)
+Received: from localhost.localdomain (5-12-227-87.residential.rdsnet.ro. [5.12.227.87])
+        by smtp.gmail.com with ESMTPSA id n8sm1019587eju.33.2021.01.06.01.52.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 06 Jan 2021 01:52:05 -0800 (PST)
+From:   Vladimir Oltean <olteanv@gmail.com>
+To:     Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, bridge@lists.linux-foundation.org,
+        Roopa Prabhu <roopa@nvidia.com>,
+        Nikolay Aleksandrov <nikolay@nvidia.com>,
+        "David S. Miller" <davem@davemloft.net>
+Cc:     DENG Qingfang <dqfext@gmail.com>,
+        Tobias Waldekranz <tobias@waldekranz.com>,
+        Marek Behun <marek.behun@nic.cz>,
+        Russell King - ARM Linux admin <linux@armlinux.org.uk>,
+        Alexandra Winter <wintera@linux.ibm.com>,
+        Jiri Pirko <jiri@resnulli.us>,
+        Ido Schimmel <idosch@idosch.org>,
+        Claudiu Manoil <claudiu.manoil@nxp.com>,
+        UNGLinuxDriver@microchip.com
+Subject: [PATCH v4 net-next 0/7] Offload software learnt bridge addresses to DSA
+Date:   Wed,  6 Jan 2021 11:51:29 +0200
+Message-Id: <20210106095136.224739-1-olteanv@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CABPqkBTQfFWvEba-=T6ms=GTsjrZUosRQyZZK-EMZ2c_2NQvAA@mail.gmail.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 05, 2021 at 05:33:38PM -0800, Stephane Eranian wrote:
-> Hi,
-> 
-> On Wed, Dec 30, 2020 at 3:09 AM Jiri Olsa <jolsa@kernel.org> wrote:
-> >
-> > Currently we allow pipe input/output only through '-' string
-> > being passed to '-o' or '-i' options, like:
-> >
-> It seems to me it would be useful to auto-detect that the perf.data
-> file is in pipe vs. file mode format.
-> Your patch detects the type of the file which is something different
-> from the format of its content.
+From: Vladimir Oltean <vladimir.oltean@nxp.com>
 
-hi,
-it goes together with the format, once the output file
-is pipe, the format is pipe as well
+This series tries to make DSA behave a bit more sanely when bridged with
+"foreign" (non-DSA) interfaces and source address learning is not
+supported on the hardware CPU port (which would make things work more
+seamlessly without software intervention). When a station A connected to
+a DSA switch port needs to talk to another station B connected to a
+non-DSA port through the Linux bridge, DSA must explicitly add a route
+for station B towards its CPU port.
 
-jirka
+Initial RFC was posted here:
+https://patchwork.ozlabs.org/project/netdev/cover/20201108131953.2462644-1-olteanv@gmail.com/
 
-> Thanks.
-> 
-> >   # mkfifo perf.pipe
-> >   # perf record --no-buffering -e 'sched:sched_switch' -o - > perf.pipe &
-> >   [1] 354406
-> >   # cat perf.pipe | ./perf --no-pager script -i - | head -3
-> >             perf 354406 [000] 168190.164921: sched:sched_switch: perf:354406..
-> >      migration/0    12 [000] 168190.164928: sched:sched_switch: migration/0:..
-> >             perf 354406 [001] 168190.164981: sched:sched_switch: perf:354406..
-> >   ...
-> >
-> > This patch detects if given path is pipe and set the perf data
-> > object accordingly, so it's possible now to do above with:
-> >
-> >   # mkfifo perf.pipe
-> >   # perf record --no-buffering -e 'sched:sched_switch' -o perf.pipe &
-> >   [1] 360188
-> >   # perf --no-pager script -i ./perf.pipe | head -3
-> >             perf 354442 [000] 168275.464895: sched:sched_switch: perf:354442..
-> >      migration/0    12 [000] 168275.464902: sched:sched_switch: migration/0:..
-> >             perf 354442 [001] 168275.464953: sched:sched_switch: perf:354442..
-> >
-> > It's of course possible to combine any of above ways.
-> >
-> > Signed-off-by: Jiri Olsa <jolsa@kernel.org>
-> > ---
-> > v2:
-> >   - removed O_CREAT|O_TRUNC flags from pipe's write end
-> >
-> >  tools/perf/util/data.c | 27 +++++++++++++++++++++------
-> >  1 file changed, 21 insertions(+), 6 deletions(-)
-> >
-> > diff --git a/tools/perf/util/data.c b/tools/perf/util/data.c
-> > index f29af4fc3d09..4dfa9e0f2fec 100644
-> > --- a/tools/perf/util/data.c
-> > +++ b/tools/perf/util/data.c
-> > @@ -159,7 +159,7 @@ int perf_data__update_dir(struct perf_data *data)
-> >         return 0;
-> >  }
-> >
-> > -static bool check_pipe(struct perf_data *data)
-> > +static int check_pipe(struct perf_data *data)
-> >  {
-> >         struct stat st;
-> >         bool is_pipe = false;
-> > @@ -172,6 +172,15 @@ static bool check_pipe(struct perf_data *data)
-> >         } else {
-> >                 if (!strcmp(data->path, "-"))
-> >                         is_pipe = true;
-> > +               else if (!stat(data->path, &st) && S_ISFIFO(st.st_mode)) {
-> > +                       int flags = perf_data__is_read(data) ?
-> > +                                   O_RDONLY : O_WRONLY;
-> > +
-> > +                       fd = open(data->path, flags);
-> > +                       if (fd < 0)
-> > +                               return -EINVAL;
-> > +                       is_pipe = true;
-> > +               }
-> >         }
-> >
-> >         if (is_pipe) {
-> > @@ -190,7 +199,8 @@ static bool check_pipe(struct perf_data *data)
-> >                 }
-> >         }
-> >
-> > -       return data->is_pipe = is_pipe;
-> > +       data->is_pipe = is_pipe;
-> > +       return 0;
-> >  }
-> >
-> >  static int check_backup(struct perf_data *data)
-> > @@ -344,8 +354,11 @@ static int open_dir(struct perf_data *data)
-> >
-> >  int perf_data__open(struct perf_data *data)
-> >  {
-> > -       if (check_pipe(data))
-> > -               return 0;
-> > +       int err;
-> > +
-> > +       err = check_pipe(data);
-> > +       if (err || data->is_pipe)
-> > +               return err;
-> >
-> >         /* currently it allows stdio for pipe only */
-> >         data->use_stdio = false;
-> > @@ -410,8 +423,10 @@ int perf_data__switch(struct perf_data *data,
-> >  {
-> >         int ret;
-> >
-> > -       if (check_pipe(data))
-> > -               return -EINVAL;
-> > +       ret = check_pipe(data);
-> > +       if (ret || data->is_pipe)
-> > +               return ret;
-> > +
-> >         if (perf_data__is_read(data))
-> >                 return -EINVAL;
-> >
-> > --
-> > 2.26.2
-> >
-> 
+v2 was posted here:
+https://patchwork.kernel.org/project/netdevbpf/cover/20201213024018.772586-1-vladimir.oltean@nxp.com/
+
+v3 was posted here:
+https://patchwork.kernel.org/project/netdevbpf/cover/20201213140710.1198050-1-vladimir.oltean@nxp.com/
+
+This is a resend of the previous v3 with some added Reviewed-by tags.
+
+Vladimir Oltean (7):
+  net: bridge: notify switchdev of disappearance of old FDB entry upon
+    migration
+  net: dsa: be louder when a non-legacy FDB operation fails
+  net: dsa: don't use switchdev_notifier_fdb_info in
+    dsa_switchdev_event_work
+  net: dsa: move switchdev event implementation under the same
+    switch/case statement
+  net: dsa: exit early in dsa_slave_switchdev_event if we can't program
+    the FDB
+  net: dsa: listen for SWITCHDEV_{FDB,DEL}_ADD_TO_DEVICE on foreign
+    bridge neighbors
+  net: dsa: ocelot: request DSA to fix up lack of address learning on
+    CPU port
+
+ drivers/net/dsa/ocelot/felix.c |   1 +
+ include/net/dsa.h              |   5 +
+ net/bridge/br_fdb.c            |   1 +
+ net/dsa/dsa_priv.h             |  12 +++
+ net/dsa/slave.c                | 174 +++++++++++++++++++++------------
+ 5 files changed, 130 insertions(+), 63 deletions(-)
+
+-- 
+2.25.1
 
