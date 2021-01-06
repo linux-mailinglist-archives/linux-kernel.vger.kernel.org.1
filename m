@@ -2,117 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D3132EC061
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 16:28:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E9BBD2EC06C
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 16:33:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726878AbhAFP2I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Jan 2021 10:28:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37952 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726638AbhAFP2H (ORCPT
+        id S1726390AbhAFPcs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Jan 2021 10:32:48 -0500
+Received: from mail-io1-f41.google.com ([209.85.166.41]:45695 "EHLO
+        mail-io1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726077AbhAFPcr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Jan 2021 10:28:07 -0500
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8842C06134C;
-        Wed,  6 Jan 2021 07:27:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:
-        Content-Transfer-Encoding:Content-Type:MIME-Version:References:Message-ID:
-        Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=PO444vyN9SKLGQ8W6QVpVfS28Mi7lKRCIfYcrcAFIC0=; b=cLJfkODI7a7jQBjERS8zK6Vpn
-        iAg318ysbk5//9C6hewXT8zrfsVFCIPJbJUbAsTSubz0QohjB97hFEMZ9cbF9cmV10khmahEUitKo
-        KaJDoHuKTIllGpAEm4CU2z5lUXJGoILOEi2yv1xLmfJesqQnKS9x02NZJIr/Xhca2q2dtw1sToMEF
-        hgYvDK7bBilHzev/3MU0uMLLKpvU01u13yaIdinPzZrUW240SEtipk2j6VzhavrE2WKafyvKzil4G
-        A17BAgyMp9n/gWLTm8kGfekd3a22lrmXWONlRJW8R/pmCP/ZLi8tNMHQ4pq2YSFMcW6mnON7tpyF8
-        kom4wFoMQ==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:45190)
-        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1kxAiK-0001jz-61; Wed, 06 Jan 2021 15:27:08 +0000
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1kxAiJ-0000L5-Pi; Wed, 06 Jan 2021 15:27:07 +0000
-Date:   Wed, 6 Jan 2021 15:27:07 +0000
-From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
-To:     Pali =?iso-8859-1?Q?Roh=E1r?= <pali@kernel.org>
-Cc:     Andrew Lunn <andrew@lunn.ch>,
-        Thomas Schreiber <tschreibe@gmail.com>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Marek =?iso-8859-1?Q?Beh=FAn?= <kabel@kernel.org>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/4] net: sfp: add workaround for Realtek RTL8672 and
- RTL9601C chips
-Message-ID: <20210106152707.GO1605@shell.armlinux.org.uk>
-References: <20201231121410.2xlxtyqjelrlysd2@pali>
- <X+3ume1+wz8HXHEf@lunn.ch>
- <20201231170039.zkoa6mij3q3gt7c6@pali>
- <X+4GwpFnJ0Asq/Yj@lunn.ch>
- <20210102014955.2xv27xla65eeqyzz@pali>
- <CALQZrspktLr3SfVRhBrVK2zhjFzJMm9tQjWXU_07zjwJytk7Cg@mail.gmail.com>
- <20210103024132.fpvjumilazrxiuzj@pali>
- <20210106145532.xynhoufpfyzmurd5@pali>
- <20210106152138.GK1551@shell.armlinux.org.uk>
- <20210106152338.GN1605@shell.armlinux.org.uk>
+        Wed, 6 Jan 2021 10:32:47 -0500
+Received: by mail-io1-f41.google.com with SMTP id n4so3061694iow.12;
+        Wed, 06 Jan 2021 07:32:32 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=t80RrQIP9pcWO65dqznFuyn9d1RG+MW1J0H6Xs08o5Q=;
+        b=VgebxhUgSIFbPZXPTVu7VCAaeN8Fp/HAOY37qvMM26MC67knywFbrGPV/th8wUQGs1
+         itL2skiAy0u8a7XM2KsD7dO22eXytekojEziQl4C2TYNva8qAc7H3gsDvjN2yLjS2miv
+         Z3c7iawVoPeL0okCisZsoNd/Mgq6nQY5zZdJczX/iSspZL8MXT3D4h5vJa4/97vVCqRP
+         ERYD5E0R1+18n3mgN/DwhYBlN7C5eqojkM6ey5tt4gPwgyrxtDG97k0BPPWsDMgdBQD0
+         nyG9jfgW4kETyL8GlGc3Jc3hXb5jBL1QM9OS0Lfyy6I28/zUwUl+mXACGxU34xm9uQY2
+         IE3g==
+X-Gm-Message-State: AOAM532umtMvBSC4U2hSBBtBREOFlWGomVZ9uWN81fmBTf9g1iAQ8jK8
+        b1Raf2kV8/ioSmN1OdICow==
+X-Google-Smtp-Source: ABdhPJyz6kf7fccUgN42Q21kf9oT8emUqUG0qvmMQDGTyBYyMTKFCZbUVC4pPwY/vKQfpxrz6D+Cnw==
+X-Received: by 2002:a02:b709:: with SMTP id g9mr4250778jam.90.1609947126638;
+        Wed, 06 Jan 2021 07:32:06 -0800 (PST)
+Received: from robh.at.kernel.org ([64.188.179.253])
+        by smtp.gmail.com with ESMTPSA id n10sm2371751ila.69.2021.01.06.07.32.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 06 Jan 2021 07:32:05 -0800 (PST)
+Received: (nullmailer pid 2267272 invoked by uid 1000);
+        Wed, 06 Jan 2021 15:32:02 -0000
+Date:   Wed, 6 Jan 2021 08:32:02 -0700
+From:   Rob Herring <robh@kernel.org>
+To:     "Chia-Wei, Wang" <chiawei_wang@aspeedtech.com>
+Cc:     joel@jms.id.au, andrew@aj.id.au, tglx@linutronix.de,
+        maz@kernel.org, p.zabel@pengutronix.de,
+        linux-aspeed@lists.ozlabs.org, openbmc@lists.ozlabs.org,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, BMC-SW@aspeedtech.com
+Subject: Re: [PATCH 5/6] soc: aspeed: Add eSPI driver
+Message-ID: <20210106153202.GA2258036@robh.at.kernel.org>
+References: <20210106055939.19386-1-chiawei_wang@aspeedtech.com>
+ <20210106055939.19386-6-chiawei_wang@aspeedtech.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210106152338.GN1605@shell.armlinux.org.uk>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Sender: Russell King - ARM Linux admin <linux@armlinux.org.uk>
+In-Reply-To: <20210106055939.19386-6-chiawei_wang@aspeedtech.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 06, 2021 at 03:23:38PM +0000, Russell King - ARM Linux admin wrote:
-> On Wed, Jan 06, 2021 at 03:21:38PM +0000, Russell King - ARM Linux admin wrote:
-> > On Wed, Jan 06, 2021 at 03:55:32PM +0100, Pali Rohár wrote:
-> > > On my tested CarlitoxxPro module is:
-> > > 
-> > >         Option values                             : 0x00 0x1c
-> > >         Option                                    : RX_LOS implemented, inverted
-> > >         Option                                    : TX_FAULT implemented
-> > >         Option                                    : TX_DISABLE implemented
-> > > 
-> > > When cable is disconnected then in EEPROM at position 0x16e is value
-> > > 0x82. If I call 'ip link set eth1 up' then value changes to 0x02, module
-> > > itself has a link and I can connect to its internal telnet/webserver to
-> > > configure it.
-> > 
-> > Bit 7 reflects the TX_DISABLE pin state. Bit 1 reflects the RX_LOS pin
-> > state. It isn't specified whether the inverted/non-inverted state is
-> > reflected in bit 1 or not - the definition just says that bit 1 is
-> > "Digital state of the RX_LOS Output Pin."
-> > 
-> > > I also tested UBNT module and result is:
-> > > 
-> > >         Option values                             : 0x00 0x06
-> > >         Option                                    : RX_LOS implemented
-> > >         Option                                    : RX_LOS implemented, inverted
-> > > 
-> > > Which means that those bits are not implemented.
-> > > 
-> > > Anyway I check position 0x16e and value on its value is randomly either
-> > > 0x79 or 0xff independently of the state of the GPON module.
-> > > 
-> > > So it is really not implemented on UBNT.
-> > 
-> > There are enhanced options at offset 93 which tell you which of the
-> > offset 110 signals are implemented.
+On Wed, Jan 06, 2021 at 01:59:38PM +0800, Chia-Wei, Wang wrote:
+> The Aspeed eSPI controller is slave device to communicate with
+> the master through the Enhanced Serial Peripheral Interface (eSPI).
+> All of the four eSPI channels, namely peripheral, virtual wire,
+> out-of-band, and flash are supported.
 > 
-> That's the ID EEPROM (A0) offset 93 for the Diagnostic address (A2)
-> offset 110.
+> Signed-off-by: Chia-Wei, Wang <chiawei_wang@aspeedtech.com>
+> ---
+>  drivers/soc/aspeed/Kconfig                  |  49 ++
+>  drivers/soc/aspeed/Makefile                 |   5 +
+>  drivers/soc/aspeed/aspeed-espi-ctrl.c       | 197 ++++++
+>  drivers/soc/aspeed/aspeed-espi-flash.c      | 490 ++++++++++++++
+>  drivers/soc/aspeed/aspeed-espi-oob.c        | 706 ++++++++++++++++++++
+>  drivers/soc/aspeed/aspeed-espi-peripheral.c | 613 +++++++++++++++++
+>  drivers/soc/aspeed/aspeed-espi-vw.c         | 211 ++++++
+>  include/uapi/linux/aspeed-espi.h            | 160 +++++
+>  8 files changed, 2431 insertions(+)
+>  create mode 100644 drivers/soc/aspeed/aspeed-espi-ctrl.c
+>  create mode 100644 drivers/soc/aspeed/aspeed-espi-flash.c
+>  create mode 100644 drivers/soc/aspeed/aspeed-espi-oob.c
+>  create mode 100644 drivers/soc/aspeed/aspeed-espi-peripheral.c
+>  create mode 100644 drivers/soc/aspeed/aspeed-espi-vw.c
 
-Looking at the EEPROM dumps you've sent me... the VSOL V2801F has
-0xe0 at offset 93, meaning TX_DISABLE and TX_FAULT soft signals
-(which is basically offset 110) are implemented, RX_LOS is not. No
-soft signals are implemented on the Ubiquiti module.
+drivers/spi/ is the correct location for a SPI controller.
 
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
+>  create mode 100644 include/uapi/linux/aspeed-espi.h
+
+This userspace interface is not going to be accepted upstream.
+
+I'd suggest you look at similar SPI flash capable SPI controller drivers 
+upstream and model your driver after them. This looks like it needs 
+major reworking.
+
+Rob
