@@ -2,191 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 48DE52EC0B5
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 16:57:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3538D2EC0C3
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 17:03:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727085AbhAFP4P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Jan 2021 10:56:15 -0500
-Received: from mx2.suse.de ([195.135.220.15]:34760 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726206AbhAFP4P (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Jan 2021 10:56:15 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 73352AA35;
-        Wed,  6 Jan 2021 15:55:33 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id DAFDD1E0812; Wed,  6 Jan 2021 16:55:32 +0100 (CET)
-Date:   Wed, 6 Jan 2021 16:55:32 +0100
-From:   Jan Kara <jack@suse.cz>
-To:     Shiyang Ruan <ruansy.fnst@cn.fujitsu.com>
-Cc:     linux-kernel@vger.kernel.org, linux-xfs@vger.kernel.org,
-        linux-nvdimm@lists.01.org, linux-mm@kvack.org,
-        linux-fsdevel@vger.kernel.org, linux-raid@vger.kernel.org,
-        darrick.wong@oracle.com, dan.j.williams@intel.com,
-        david@fromorbit.com, hch@lst.de, song@kernel.org, rgoldwyn@suse.de,
-        qi.fuli@fujitsu.com, y-goto@fujitsu.com
-Subject: Re: [PATCH 05/10] mm, pmem: Implement ->memory_failure() in pmem
- driver
-Message-ID: <20210106155532.GD29271@quack2.suse.cz>
-References: <20201230165601.845024-1-ruansy.fnst@cn.fujitsu.com>
- <20201230165601.845024-6-ruansy.fnst@cn.fujitsu.com>
+        id S1727106AbhAFQCN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Jan 2021 11:02:13 -0500
+Received: from userp2130.oracle.com ([156.151.31.86]:54890 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725925AbhAFQCM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 Jan 2021 11:02:12 -0500
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 106FtftW089467;
+        Wed, 6 Jan 2021 15:59:37 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type :
+ content-transfer-encoding; s=corp-2020-01-29;
+ bh=e280thpeH4MDj+q41MOrlKwQhwr0+ZqgSZTW/ewQcjs=;
+ b=uIjNH2JKtab15z7hmqijke50pN59OsA9mCfXgSYKnP+BVSpOY99S1dFzULkEt8DTmxgm
+ kyW11yuqL5W4R2CFhbEGUmZR3MofR66qamrCL4+bwtB8fhWCuus87VLeDNNFcyh5E6Ci
+ u/PMxhJjfdBUY+nQ4wPR7X2WGEUUE2jbRLzi/CtE4zuNqQkoWTlurLwyf2lxNBsMJ+4e
+ z8heDckYwbXjOT7CD4Z1FIX7HHZVhnu8Km7ldoTQsLaZJMCTvEq+epkWn9x01r4tdW09
+ EX8ovXxkcHGJjaTNtCefu3UF9eTLFoh8dSzVkIWykrM82CGxnRt56m7Oliarp2GfVVm4 3A== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by userp2130.oracle.com with ESMTP id 35wftx856u-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 06 Jan 2021 15:59:37 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 106FtOwo154567;
+        Wed, 6 Jan 2021 15:59:37 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by userp3030.oracle.com with ESMTP id 35w3g17tm9-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 06 Jan 2021 15:59:37 +0000
+Received: from abhmp0018.oracle.com (abhmp0018.oracle.com [141.146.116.24])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 106FxXO2027087;
+        Wed, 6 Jan 2021 15:59:33 GMT
+Received: from localhost.uk.oracle.com (/10.175.165.159)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Wed, 06 Jan 2021 15:59:33 +0000
+From:   Alan Maguire <alan.maguire@oracle.com>
+To:     ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org
+Cc:     kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
+        john.fastabend@gmail.com, kpsingh@kernel.org, toke@redhat.com,
+        wanghai38@huawei.com, quentin@isovalent.com,
+        netdev@vger.kernel.org, bpf@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Alan Maguire <alan.maguire@oracle.com>
+Subject: [PATCH bpf] bpftool: fix compilation failure for net.o with older glibc
+Date:   Wed,  6 Jan 2021 15:59:06 +0000
+Message-Id: <1609948746-15369-1-git-send-email-alan.maguire@oracle.com>
+X-Mailer: git-send-email 1.8.3.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201230165601.845024-6-ruansy.fnst@cn.fujitsu.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9855 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 malwarescore=0 adultscore=0
+ phishscore=0 spamscore=0 mlxlogscore=939 suspectscore=0 bulkscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2101060098
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9855 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 suspectscore=0 mlxscore=0
+ bulkscore=0 priorityscore=1501 impostorscore=0 clxscore=1011
+ lowpriorityscore=0 mlxlogscore=942 malwarescore=0 spamscore=0 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2101060098
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu 31-12-20 00:55:56, Shiyang Ruan wrote:
-> Call the ->memory_failure() which is implemented by pmem driver, in
-> order to finally notify filesystem to handle the corrupted data.  The
-> old collecting and killing processes are moved into
-> mf_dax_mapping_kill_procs(), which will be called by filesystem.
-> 
-> Signed-off-by: Shiyang Ruan <ruansy.fnst@cn.fujitsu.com>
+For older glibc ~2.17, #include'ing both linux/if.h and net/if.h
+fails due to complaints about redefinition of interface flags:
 
-I understand the intent but this patch breaks DAX hwpoison handling for
-everybody at this point in the series (nobody implements ->memory_failure()
-handler yet) so it is bisection unfriendly. This should really be the last
-step in the series once all the other infrastructure is implemented.
-Furthermore AFAIU it breaks DAX hwpoison handling terminally for all
-filesystems which don't implement ->corrupted_range() - e.g. for ext4.
-Your series needs to implement ->corrupted_range() for all filesystems
-supporting DAX so that we don't regress current functionality...
+  CC       net.o
+In file included from net.c:13:0:
+/usr/include/linux/if.h:71:2: error: redeclaration of enumerator ‘IFF_UP’
+  IFF_UP    = 1<<0,  /* sysfs */
+  ^
+/usr/include/net/if.h:44:5: note: previous definition of ‘IFF_UP’ was here
+     IFF_UP = 0x1,  /* Interface is up.  */
 
-								Honza
+The issue was fixed in kernel headers in [1], but since compilation
+of net.c picks up system headers the problem can recur.
 
-> ---
->  drivers/nvdimm/pmem.c | 24 +++++++++++++++++++++
->  mm/memory-failure.c   | 50 +++++--------------------------------------
->  2 files changed, 29 insertions(+), 45 deletions(-)
-> 
-> diff --git a/drivers/nvdimm/pmem.c b/drivers/nvdimm/pmem.c
-> index 875076b0ea6c..4a114937c43b 100644
-> --- a/drivers/nvdimm/pmem.c
-> +++ b/drivers/nvdimm/pmem.c
-> @@ -363,9 +363,33 @@ static void pmem_release_disk(void *__pmem)
->  	put_disk(pmem->disk);
->  }
->  
-> +static int pmem_pagemap_memory_failure(struct dev_pagemap *pgmap,
-> +		unsigned long pfn, int flags)
-> +{
-> +	struct pmem_device *pdev;
-> +	struct gendisk *disk;
-> +	loff_t disk_offset;
-> +	int rc = 0;
-> +	unsigned long size = page_size(pfn_to_page(pfn));
-> +
-> +	pdev = container_of(pgmap, struct pmem_device, pgmap);
-> +	disk = pdev->disk;
-> +	if (!disk)
-> +		return -ENXIO;
-> +
-> +	disk_offset = PFN_PHYS(pfn) - pdev->phys_addr - pdev->data_offset;
-> +	if (disk->fops->corrupted_range) {
-> +		rc = disk->fops->corrupted_range(disk, NULL, disk_offset, size, &flags);
-> +		if (rc == -ENODEV)
-> +			rc = -ENXIO;
-> +	}
-> +	return rc;
-> +}
-> +
->  static const struct dev_pagemap_ops fsdax_pagemap_ops = {
->  	.kill			= pmem_pagemap_kill,
->  	.cleanup		= pmem_pagemap_cleanup,
-> +	.memory_failure		= pmem_pagemap_memory_failure,
->  };
->  
->  static int pmem_attach_disk(struct device *dev,
-> diff --git a/mm/memory-failure.c b/mm/memory-failure.c
-> index 37bc6e2a9564..0109ad607fb8 100644
-> --- a/mm/memory-failure.c
-> +++ b/mm/memory-failure.c
-> @@ -1269,28 +1269,11 @@ static int memory_failure_dev_pagemap(unsigned long pfn, int flags,
->  		struct dev_pagemap *pgmap)
->  {
->  	struct page *page = pfn_to_page(pfn);
-> -	const bool unmap_success = true;
-> -	unsigned long size = 0;
-> -	struct to_kill *tk;
-> -	LIST_HEAD(to_kill);
->  	int rc = -EBUSY;
-> -	loff_t start;
-> -	dax_entry_t cookie;
-> -
-> -	/*
-> -	 * Prevent the inode from being freed while we are interrogating
-> -	 * the address_space, typically this would be handled by
-> -	 * lock_page(), but dax pages do not use the page lock. This
-> -	 * also prevents changes to the mapping of this pfn until
-> -	 * poison signaling is complete.
-> -	 */
-> -	cookie = dax_lock_page(page);
-> -	if (!cookie)
-> -		goto out;
->  
->  	if (hwpoison_filter(page)) {
->  		rc = 0;
-> -		goto unlock;
-> +		goto out;
->  	}
->  
->  	if (pgmap->type == MEMORY_DEVICE_PRIVATE) {
-> @@ -1298,7 +1281,7 @@ static int memory_failure_dev_pagemap(unsigned long pfn, int flags,
->  		 * TODO: Handle HMM pages which may need coordination
->  		 * with device-side memory.
->  		 */
-> -		goto unlock;
-> +		goto out;
->  	}
->  
->  	/*
-> @@ -1307,33 +1290,10 @@ static int memory_failure_dev_pagemap(unsigned long pfn, int flags,
->  	 */
->  	SetPageHWPoison(page);
->  
-> -	/*
-> -	 * Unlike System-RAM there is no possibility to swap in a
-> -	 * different physical page at a given virtual address, so all
-> -	 * userspace consumption of ZONE_DEVICE memory necessitates
-> -	 * SIGBUS (i.e. MF_MUST_KILL)
-> -	 */
-> -	flags |= MF_ACTION_REQUIRED | MF_MUST_KILL;
-> -	collect_procs_file(page, page->mapping, page->index, &to_kill,
-> -			   flags & MF_ACTION_REQUIRED);
-> +	/* call driver to handle the memory failure */
-> +	if (pgmap->ops->memory_failure)
-> +		rc = pgmap->ops->memory_failure(pgmap, pfn, flags);
->  
-> -	list_for_each_entry(tk, &to_kill, nd)
-> -		if (tk->size_shift)
-> -			size = max(size, 1UL << tk->size_shift);
-> -	if (size) {
-> -		/*
-> -		 * Unmap the largest mapping to avoid breaking up
-> -		 * device-dax mappings which are constant size. The
-> -		 * actual size of the mapping being torn down is
-> -		 * communicated in siginfo, see kill_proc()
-> -		 */
-> -		start = (page->index << PAGE_SHIFT) & ~(size - 1);
-> -		unmap_mapping_range(page->mapping, start, start + size, 0);
-> -	}
-> -	kill_procs(&to_kill, flags & MF_MUST_KILL, !unmap_success, pfn, flags);
-> -	rc = 0;
-> -unlock:
-> -	dax_unlock_page(page, cookie);
->  out:
->  	/* drop pgmap ref acquired in caller */
->  	put_dev_pagemap(pgmap);
-> -- 
-> 2.29.2
-> 
-> 
-> 
+Dropping #include <linux/if.h> resolves the issue and it is
+not needed for compilation anyhow.
+
+[1] https://lore.kernel.org/netdev/1461512707-23058-1-git-send-email-mikko.rapeli__34748.27880641$1462831734$gmane$org@iki.fi/
+
+Fixes: f6f3bac08ff9 ("tools/bpf: bpftool: add net support")
+Signed-off-by: Alan Maguire <alan.maguire@oracle.com>
+---
+ tools/bpf/bpftool/net.c | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/tools/bpf/bpftool/net.c b/tools/bpf/bpftool/net.c
+index 3fae61e..ff3aa0c 100644
+--- a/tools/bpf/bpftool/net.c
++++ b/tools/bpf/bpftool/net.c
+@@ -11,7 +11,6 @@
+ #include <bpf/bpf.h>
+ #include <bpf/libbpf.h>
+ #include <net/if.h>
+-#include <linux/if.h>
+ #include <linux/rtnetlink.h>
+ #include <linux/socket.h>
+ #include <linux/tc_act/tc_bpf.h>
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+1.8.3.1
+
