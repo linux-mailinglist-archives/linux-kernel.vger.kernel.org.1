@@ -2,121 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 758252EC5F1
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 22:58:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ABBFB2EC5F3
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 23:01:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726924AbhAFV57 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Jan 2021 16:57:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42404 "EHLO
+        id S1727049AbhAFV7o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Jan 2021 16:59:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42630 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726245AbhAFV56 (ORCPT
+        with ESMTP id S1726674AbhAFV7o (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Jan 2021 16:57:58 -0500
-Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A75CC061575
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Jan 2021 13:57:18 -0800 (PST)
-Received: by mail-pl1-x62d.google.com with SMTP id y8so2236939plp.8
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Jan 2021 13:57:18 -0800 (PST)
+        Wed, 6 Jan 2021 16:59:44 -0500
+Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0E4DC061575;
+        Wed,  6 Jan 2021 13:58:40 -0800 (PST)
+Received: by mail-ed1-x52c.google.com with SMTP id b73so5721248edf.13;
+        Wed, 06 Jan 2021 13:58:40 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=WOP/JQcRWppeMUbSb8zNlIsrDTGlMJqIRNx0QEh8i0o=;
-        b=FSKh9c3s51wOpqj3W1aMxGdVDrs0sbkZ08Kqj9GjFYgi0wMdQolD8/4ogtdmhiwFZv
-         gF5jFRcDoiJRdRkDesyUbrFruI99qDzRTKVwXTh1noJK5ef/DBnggSDr4bS+uc7sQj1A
-         yu6dxK47GlIrkTD4s3L56DfKqYh0NxH+SY1qM=
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=P+NJQyB4dJl3kE78FgPWzygB5svv50HkNremhOQCqaE=;
+        b=vKg9vME9/2B9JoXXrm+0O4A5rHrVIwnY59vLD/ZyJ2GuV+UblYbykqJ8HqEorRDXOq
+         LQb6hCgR8xqbggbsAmCFZuGh5/2agW8QV1q8/Vuzy9U5xX/srPG4YCpHUqkqRc5pMaoF
+         Z7pzrRPa+9Y4eRBN26+qDVYlj7eS/FP6MxaCeUhGXvu8ZwCdfU1Y0FJLceJmJsSMqBm8
+         0HEq7bcFRRxkcCwlKSlJh2eLOhuWKSHFW4nggTRIrsjICwbpPwjuS0YwvkVwiE9k/fC/
+         akEBgoYhCPUo6c4lvdlB1SEaDHwl1sVmsN7d05gLOy+F0UIpEsw26GynMrlP1a9qamiW
+         M16g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=WOP/JQcRWppeMUbSb8zNlIsrDTGlMJqIRNx0QEh8i0o=;
-        b=gCxKpiIsfq+DistztCOagnJnCYmWY/STZPgl3P/6pUnwkbx8FyvtxYSzJhUNjZu5IF
-         hTFzGVYawXbw3SDiizV/fhzR8F7Za1aLN2CAIsFhwPWGpk5kWxhZshCVO+b9RegKVf9l
-         pJJdowRH1WcF71SwXUiFtlz5fPmMqnROyuFMvEiFYjviA5KM+MfHU1WjAFFtj+jy8p5p
-         dtY8+t3buiZDRS6d0MxIwcmWWcMroUq6JQUIwYk5mExE4Cv2Q/X3/hbLKX2D2dRhvRHC
-         z3WaApILH9xsOrvlWOSj6XvaWIKi43wPNrIR4R/uLtVZFBlJmqCuWpNEQGsLFatDEDaq
-         mnlw==
-X-Gm-Message-State: AOAM531bEWIrC+A1sQVMG0vzfYeL+tjTTjY18FvNKCTrAhNzfnYZpvsd
-        6ls5CefZJXhBBI4XrCdn+qM3BA==
-X-Google-Smtp-Source: ABdhPJydhjolQfh9BHShbehtf4H/P9Qp9aTohevB6N9HJd2+j9CRu0vRdqFkgqKyiiFq7Ve/OYG2vg==
-X-Received: by 2002:a17:902:7207:b029:da:fd0c:521a with SMTP id ba7-20020a1709027207b02900dafd0c521amr6196896plb.45.1609970237539;
-        Wed, 06 Jan 2021 13:57:17 -0800 (PST)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id d124sm3739593pgc.68.2021.01.06.13.57.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 06 Jan 2021 13:57:16 -0800 (PST)
-Date:   Wed, 6 Jan 2021 13:57:15 -0800
-From:   Kees Cook <keescook@chromium.org>
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Marco Elver <elver@google.com>,
-        George Popescu <georgepope@android.com>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com
-Subject: Re: [PATCH] ubsan: disable unsigned-integer-overflow sanitizer with
- clang
-Message-ID: <202101061350.913E1FDF6@keescook>
-References: <20201230154749.746641-1-arnd@kernel.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=P+NJQyB4dJl3kE78FgPWzygB5svv50HkNremhOQCqaE=;
+        b=XLw9sxVEFaYe9rV4QosmTAtHF0Nm3Coluo5k7L6fzy/pGVdDYRcrnwKmBSIlOW52+l
+         hxDMmao8Fe7fK57GOtiFOXHGi6rmcA+WhSYiHDe3SMkiTxXQhnmC6W2aAvg7gdUAqs3O
+         9PtvKTojaKRg9qknqJN+tkfAT0Hi8G0iNQtQa8YPbEMGBbqqvpriVf/rsRMnwlXbkyXa
+         svOgC0BolpLLGZT2/zDNhlAlayBoBxo11fbl9nnPB9n/fjSocnjdWb5ARZIhq42L1CmM
+         SNLPDuHDd5y8H+2Xz8Zv0OhyUX31TuyLkhYM5i/kLgFBNQQcVB9tSH+Ca9e2O0kRzJoJ
+         ztmQ==
+X-Gm-Message-State: AOAM531DAWaSmQh1rmgrnDpjrSldy9HloHBbpcOQ2fyeCSJ/zKaWKWGH
+        J9spcdD/Btgwo08v9+jAXduhHfsOOFechHBrJcU=
+X-Google-Smtp-Source: ABdhPJxOHBRYFuXA858OcL9XemA5fduTRiMaPWSuvZFAwdUE/v4VfqL2k0QlQ4WBLkLCDb41WN2dhBE6api/jmkoawQ=
+X-Received: by 2002:aa7:cf85:: with SMTP id z5mr5341394edx.274.1609970319592;
+ Wed, 06 Jan 2021 13:58:39 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201230154749.746641-1-arnd@kernel.org>
+References: <CGME20210106013242epcms2p5b6b4ed8ca86f29456fdf56aa580e74b4@epcms2p5>
+ <20210106013242epcms2p5b6b4ed8ca86f29456fdf56aa580e74b4@epcms2p5>
+In-Reply-To: <20210106013242epcms2p5b6b4ed8ca86f29456fdf56aa580e74b4@epcms2p5>
+From:   harshad shirwadkar <harshadshirwadkar@gmail.com>
+Date:   Wed, 6 Jan 2021 13:58:28 -0800
+Message-ID: <CAD+ocbyp+SOzpDDYsJVpd+t+UcjanZRtR85dHLgykLdURhV5wA@mail.gmail.com>
+Subject: Re: [PATCH] ext4: Remove expensive flush on fast commit
+To:     daejun7.park@samsung.com
+Cc:     "tytso@mit.edu" <tytso@mit.edu>,
+        "adilger.kernel@dilger.ca" <adilger.kernel@dilger.ca>,
+        "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 30, 2020 at 04:47:35PM +0100, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
-> 
-> Building ubsan kernels even for compile-testing introduced these
-> warnings in my randconfig environment:
-> 
-> crypto/blake2b_generic.c:98:13: error: stack frame size of 9636 bytes in function 'blake2b_compress' [-Werror,-Wframe-larger-than=]
-> static void blake2b_compress(struct blake2b_state *S,
-> crypto/sha512_generic.c:151:13: error: stack frame size of 1292 bytes in function 'sha512_generic_block_fn' [-Werror,-Wframe-larger-than=]
-> static void sha512_generic_block_fn(struct sha512_state *sst, u8 const *src,
-> lib/crypto/curve25519-fiat32.c:312:22: error: stack frame size of 2180 bytes in function 'fe_mul_impl' [-Werror,-Wframe-larger-than=]
-> static noinline void fe_mul_impl(u32 out[10], const u32 in1[10], const u32 in2[10])
-> lib/crypto/curve25519-fiat32.c:444:22: error: stack frame size of 1588 bytes in function 'fe_sqr_impl' [-Werror,-Wframe-larger-than=]
-> static noinline void fe_sqr_impl(u32 out[10], const u32 in1[10])
-> 
-> Further testing showed that this is caused by
-> -fsanitize=unsigned-integer-overflow.
-> 
-> The one in blake2b immediately overflows the 8KB stack area on 32-bit
-> architectures, so better ensure this never happens by making this
-> option gcc-only.
-> 
-> Fixes: d0a3ac549f38 ("ubsan: enable for all*config builds")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Thanks Daejun! This looks good.
+
+Reviewed-by: Harshad Shirwadkar <harshadshirwadkar@gmail.com>
+
+On Tue, Jan 5, 2021 at 5:32 PM Daejun Park <daejun7.park@samsung.com> wrote:
+>
+> In the fast commit, it adds REQ_FUA and REQ_PREFLUSH on each fast commit
+> block when barrier is enabled. However, in recovery phase, ext4 compares
+> CRC value in the tail. So it is sufficient adds REQ_FUA and REQ_PREFLUSH
+> on the block that has tail.
+>
+> Signed-off-by: Daejun Park <daejun7.park@samsung.com>
 > ---
->  lib/Kconfig.ubsan | 2 ++
->  1 file changed, 2 insertions(+)
-> 
-> diff --git a/lib/Kconfig.ubsan b/lib/Kconfig.ubsan
-> index 8b635fd75fe4..e23873282ba7 100644
-> --- a/lib/Kconfig.ubsan
-> +++ b/lib/Kconfig.ubsan
-> @@ -122,6 +122,8 @@ config UBSAN_SIGNED_OVERFLOW
->  
->  config UBSAN_UNSIGNED_OVERFLOW
->  	bool "Perform checking for unsigned arithmetic overflow"
-> +	# clang hugely expands stack usage with -fsanitize=object-size
-> +	depends on !CC_IS_CLANG
->  	depends on $(cc-option,-fsanitize=unsigned-integer-overflow)
-
-Because of Clang implementation issues (see commit c637693b20da), this is
-already "default n" (and not supported under GCC at all). IIUC, setting
-this to "depends on !COMPILE_TEST" won't work for randconfigs, yes?
-
-Is there some better way to mark this as "known to have issues, please
-don't include in randconfig?"
-
-I'd like to keep it around so people can continue to work out the
-problems with it, but not have unexpecting folks trip over it. ;)
-
--- 
-Kees Cook
+>  fs/ext4/fast_commit.c | 10 +++++-----
+>  1 file changed, 5 insertions(+), 5 deletions(-)
+>
+> diff --git a/fs/ext4/fast_commit.c b/fs/ext4/fast_commit.c
+> index 4fcc21c25e79..e66507be334c 100644
+> --- a/fs/ext4/fast_commit.c
+> +++ b/fs/ext4/fast_commit.c
+> @@ -604,13 +604,13 @@ void ext4_fc_track_range(handle_t *handle, struct inode *inode, ext4_lblk_t star
+>         trace_ext4_fc_track_range(inode, start, end, ret);
+>  }
+>
+> -static void ext4_fc_submit_bh(struct super_block *sb)
+> +static void ext4_fc_submit_bh(struct super_block *sb, bool is_tail)
+>  {
+>         int write_flags = REQ_SYNC;
+>         struct buffer_head *bh = EXT4_SB(sb)->s_fc_bh;
+>
+> -       /* TODO: REQ_FUA | REQ_PREFLUSH is unnecessarily expensive. */
+> -       if (test_opt(sb, BARRIER))
+> +       /* Add REQ_FUA | REQ_PREFLUSH only its tail */
+> +       if (test_opt(sb, BARRIER) && is_tail)
+>                 write_flags |= REQ_FUA | REQ_PREFLUSH;
+>         lock_buffer(bh);
+>         set_buffer_dirty(bh);
+> @@ -684,7 +684,7 @@ static u8 *ext4_fc_reserve_space(struct super_block *sb, int len, u32 *crc)
+>                 *crc = ext4_chksum(sbi, *crc, tl, sizeof(*tl));
+>         if (pad_len > 0)
+>                 ext4_fc_memzero(sb, tl + 1, pad_len, crc);
+> -       ext4_fc_submit_bh(sb);
+> +       ext4_fc_submit_bh(sb, false);
+>
+>         ret = jbd2_fc_get_buf(EXT4_SB(sb)->s_journal, &bh);
+>         if (ret)
+> @@ -741,7 +741,7 @@ static int ext4_fc_write_tail(struct super_block *sb, u32 crc)
+>         tail.fc_crc = cpu_to_le32(crc);
+>         ext4_fc_memcpy(sb, dst, &tail.fc_crc, sizeof(tail.fc_crc), NULL);
+>
+> -       ext4_fc_submit_bh(sb);
+> +       ext4_fc_submit_bh(sb, true);
+>
+>         return 0;
+>  }
+> --
+> 2.25.1
+>
