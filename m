@@ -2,206 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA4FB2EC71F
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 00:58:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2196A2EC728
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 00:59:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727870AbhAFX4u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Jan 2021 18:56:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32866 "EHLO
+        id S1727926AbhAFX73 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Jan 2021 18:59:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33278 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727288AbhAFX4t (ORCPT
+        with ESMTP id S1726918AbhAFX72 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Jan 2021 18:56:49 -0500
-Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99F2CC06136C
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Jan 2021 15:56:09 -0800 (PST)
-Received: by mail-pl1-x62a.google.com with SMTP id j1so2381711pld.3
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Jan 2021 15:56:09 -0800 (PST)
+        Wed, 6 Jan 2021 18:59:28 -0500
+Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00A55C06136C
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Jan 2021 15:58:47 -0800 (PST)
+Received: by mail-pj1-x1036.google.com with SMTP id w1so3186703pjc.0
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Jan 2021 15:58:47 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rajagiritech-edu-in.20150623.gappssmtp.com; s=20150623;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :user-agent:mime-version:content-transfer-encoding;
-        bh=ENlTdyGwVxSb4me32guopKBMcEMFFJ6gIQIeemIR0MQ=;
-        b=LKOAb8shKr4lACnLHxXBrVO3HHFl3OTQyeBJ+mvlvBMpLFnEmjqROiDZMw1izyT7i3
-         oVleMZBdZAHC5M3Oso4bwIAvgMGQtw6pXoeIjKaLBHUmU5cHRXTiLzpD/cv6xdp3rz9I
-         KDsdjlXvtg58+mwAIpSPB0Wh3Jp9nT9Mb8XVLWBlUd65e20AqjOKwxA6hOWJMKlvwPAH
-         i78Dn7cOBVghRCFKYC+zy3FQp0WOLj/th7tD9HMsnSBhsX8Cuihg0ZbWXQfQQjmm7UFT
-         xylOiX6cBRyz6zvOX2czj46e3fBD0Hb3iVBnwercYAqtYuqOyRLchbfW69qSHGoNMLRQ
-         pjKQ==
+        d=ozlabs-ru.20150623.gappssmtp.com; s=20150623;
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=nHM/zNarT82wu+x4lgAdGC2mHx8Guijmtu+f0YBziZs=;
+        b=NA3F+XKmnhNi6kzCESfIdsxKS2uZOsStA6v3UFprwRKw/OhFhOWV573G2OwOoRXJ9G
+         jpkX1PlTe24W+T6jmj/B9TdYvsqrmput3qZCO1iiRFiYVl8Nq5JykFYmHdH7fIBlGNO9
+         CjocitqQhG0jlGmIOTyGy0VGw5YZXa0E2JaYi54EB7YUp+23q3wIVe/ioL3JnNDIXwMW
+         0tLRdb8hjdQgj4wze3oBgV1PFShLjU29t90MrOXd5ZFilZTglcaLd7kxppWvJXysCH8b
+         CB9pxhKFB7fm4Sue3R5jjV3cX9ZHnG2ftbIES6aCsKS/kx9wrVNWV088nQ8W8BXgVKsT
+         hGgw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:user-agent:mime-version:content-transfer-encoding;
-        bh=ENlTdyGwVxSb4me32guopKBMcEMFFJ6gIQIeemIR0MQ=;
-        b=uGcBQDKq0p9Y9zYsFckJBCuOouACzl//ATvBOa/Vz6ZJFX0xOwDW0bkoDyZi0ifZ7B
-         MW42Wo+bD2Am0IpwMl+DDM8B90aOuI1EAmR3yK32dGQGGsLeHgLqT38wGH664C9GPGNa
-         /ASaglKBYdG9jZUa1RhKmOXnGld2jM3MaYK2Ne+3VrFGHi755SExu/nn9jcuSqxyrgLk
-         YeFZZ1jn6lA/YHttKE3NoEMJpljzZ41FoMs/utfwX+fm7Vg6EIeo8DdsjLyW6tkdicig
-         KghSC8FGp2R7+2WRI9zbpnDFintH6wWglrpb+L8MJiQn0bUWcAwcVtKmG305EF/TjmyM
-         QBdg==
-X-Gm-Message-State: AOAM530Uer/FpZ2jx/IZwVCiCJ+LpL4unlMACiwrzqajqxZMzeUofrvI
-        3vV7Y4Ud/iEu5emspLQ1dTPHUQ==
-X-Google-Smtp-Source: ABdhPJzDEFaCDRhEU4/rbzYAv6tE8cdZ8AYmewWdHkhrVwvhPlc9e81pEz5wkTvLa5c6cCs8s0W/Lg==
-X-Received: by 2002:a17:90a:ec0e:: with SMTP id l14mr6656503pjy.123.1609977369073;
-        Wed, 06 Jan 2021 15:56:09 -0800 (PST)
-Received: from [192.168.0.4] ([122.164.82.190])
-        by smtp.gmail.com with ESMTPSA id l2sm3343359pjz.27.2021.01.06.15.56.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 06 Jan 2021 15:56:08 -0800 (PST)
-Message-ID: <269f0c8fef67713814b16737098bbac2f942bda7.camel@rajagiritech.edu.in>
-Subject: Re: [PATCH 5.10 00/40] 5.10.3-rc1 review
-From:   Jeffrin Jose T <jeffrin@rajagiritech.edu.in>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Guenter Roeck <linux@roeck-us.net>, Pavel Machek <pavel@denx.de>,
-        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, stable@vger.kernel.org
-Date:   Thu, 07 Jan 2021 05:26:03 +0530
-In-Reply-To: <X/YUPr5fmVDKcSAK@kroah.com>
-References: <1b12b1311e5f0ff7e96d444bf258facc6b0c6ae4.camel@rajagiritech.edu.in>
-         <X+dRkTq+T+A6nWPz@kroah.com>
-         <58d01e9ee69b4fe51d75bcecdf12db219d261ff1.camel@rajagiritech.edu.in>
-         <X+iwvG2d0QfPl+mc@kroah.com>
-         <c7688d9a00a510975f115305a9e8d245a4403773.camel@rajagiritech.edu.in>
-         <20201228095040.GA11960@amd>
-         <356ddc03-038e-71b6-8134-5b41f090d448@roeck-us.net>
-         <aa62485a757305b46df190e6f90dfbd6bc31a144.camel@rajagiritech.edu.in>
-         <X/Kz4KHxoU/YYEvu@kroah.com>
-         <4474633bf649e93f3292d8d248b352066c063a20.camel@rajagiritech.edu.in>
-         <X/YUPr5fmVDKcSAK@kroah.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.1-2 
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=nHM/zNarT82wu+x4lgAdGC2mHx8Guijmtu+f0YBziZs=;
+        b=Eu9877YYiey12AY64ARvXgkIYANQPxVxww+tFeJf4l8Y3u0+LQIRVFcSdEqTOY4cW6
+         Q6ra2h+VQFzXs1wxpZxU7E41PK3TnoIlqzTJrSXK0F6WQyxVB/OnKaVLmA6tZvN7Vt2+
+         oqXf4Xm0J6LNjh6IvqOf+w4ck5SUiUYgrjgqTr+tyzbvAFK2oExPbwHNTKbUJY5gWzIM
+         7sEuwJYIQYG8wgByJD7OcvxSbhdH2gM+dQQteL1+CwksCjLsln2EVpiETpAOWaHkwhpe
+         AK88XSLCYiVlFv7J30VqgiCdn53rTnBwcSsofESXYh9trXUIxvMuSe+5lOum5vVRvCpL
+         50ow==
+X-Gm-Message-State: AOAM533yLU+0UPVKw4+a5lTU+a9M+zQ204UMTS9HAw90AKyeLjRheuWY
+        UHAQ6LZ5k7cALe//UWhkddptVkh8jt5S84WX
+X-Google-Smtp-Source: ABdhPJwv5izWk5XM30g9rPSPMdovHLcTpT0DO/uurwnBAYjc/lVBVQTLqZutGbJkbfaM5c98RBK3cQ==
+X-Received: by 2002:a17:90a:1706:: with SMTP id z6mr1080632pjd.0.1609977526924;
+        Wed, 06 Jan 2021 15:58:46 -0800 (PST)
+Received: from [192.168.10.153] (124-171-107-241.dyn.iinet.net.au. [124.171.107.241])
+        by smtp.gmail.com with UTF8SMTPSA id d6sm3384801pfo.199.2021.01.06.15.58.42
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 06 Jan 2021 15:58:46 -0800 (PST)
+Message-ID: <5e6716a6-0314-8360-4fb6-5c959022a24c@ozlabs.ru>
+Date:   Thu, 7 Jan 2021 10:58:39 +1100
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:85.0) Gecko/20100101
+ Thunderbird/85.0
+Subject: Re: [RFC PATCH kernel] block: initialize block_device::bd_bdi for
+ bdev_cache
+Content-Language: en-US
+To:     Jan Kara <jack@suse.cz>
+Cc:     Christoph Hellwig <hch@lst.de>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Hannes Reinecke <hare@suse.de>, Jens Axboe <axboe@kernel.dk>,
+        Tejun Heo <tj@kernel.org>, linux-block@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210106092900.26595-1-aik@ozlabs.ru>
+ <20210106104106.GA29271@quack2.suse.cz>
+From:   Alexey Kardashevskiy <aik@ozlabs.ru>
+In-Reply-To: <20210106104106.GA29271@quack2.suse.cz>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2021-01-06 at 20:49 +0100, Greg Kroah-Hartman wrote:
-> On Thu, Jan 07, 2021 at 01:08:01AM +0530, Jeffrin Jose T wrote:
-> > On Mon, 2021-01-04 at 07:21 +0100, Greg Kroah-Hartman wrote:
-> > > On Sun, Jan 03, 2021 at 06:37:51PM +0530, Jeffrin Jose T wrote:
-> > > > On Mon, 2020-12-28 at 12:41 -0800, Guenter Roeck wrote:
-> > > > > On 12/28/20 1:50 AM, Pavel Machek wrote:
-> > > > > > Hi!
-> > > > > > 
-> > > > > > > > > > > > https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.3-rc1.gz
-> > > > > > > > > > > > or in the git tree and branch at:
-> > > > > > > > > > > >         git://git.kernel.org/pub/scm/linux/kern
-> > > > > > > > > > > > el/g
-> > > > > > > > > > > > it/s
-> > > > > > > > > > > > table/
-> > > > > > > > > > > > linu
-> > > > > > > > > > > > x-
-> > > > > > > > > > > > stable-rc.git linux-5.10.y
-> > > > > > > > > > > > and the diffstat can be found below.
-> > > > > > > > > > > > 
-> > > > > > > > > > > > thanks,
-> > > > > > > > > > > > 
-> > > > > > > > > > > > greg k-h
-> > > > > > > > > > > 
-> > > > > > > > > > > hello ,
-> > > > > > > > > > > Compiled and booted 5.10.3-rc1+.
-> > > > > > > > > > > 
-> > > > > > > > > > > dmesg -l err gives...
-> > > > > > > > > > > --------------x-------------x------------------->
-> > > > > > > > > > >    43.190922] Bluetooth: hci0: don't support
-> > > > > > > > > > > firmware
-> > > > > > > > > > > rome
-> > > > > > > > > > > 0x31010100
-> > > > > > > > > > > --------------x---------------x----------------->
-> > > > > > > > > > > 
-> > > > > > > > > > > My Bluetooth is Off.
-> > > > > > > > > > 
-> > > > > > > > > > Is this a new warning?  Does it show up on 5.10.2?
-> > > > > > > > > > 
-> > > > > > > > > > > Tested-by: Jeffrin Jose T <
-> > > > > > > > > > > jeffrin@rajagiritech.edu.in>
-> > > > > > > > > > 
-> > > > > > > > > > thanks for testing?
-> > > > > > > > > > 
-> > > > > > > > > > greg k-h
-> > > > > > > > > 
-> > > > > > > > > this does not show up in 5.10.2-rc1+
-> > > > > > > > 
-> > > > > > > > Odd.  Can you run 'git bisect' to find the offending
-> > > > > > > > commit?
-> > > > > > > > 
-> > > > > > > > Does this same error message show up in Linus's git
-> > > > > > > > tree?
-> > > > > > 
-> > > > > > > i will try to do "git bisect" .  i saw this error in
-> > > > > > > linus's 
-> > > > > > > tree.
-> > > > > > 
-> > > > > > The bug is in -stable, too, so it is probably easiest to do
-> > > > > > bisect
-> > > > > > on
-> > > > > > -stable tree. IIRC there's less then few hundred commits,
-> > > > > > so it
-> > > > > > should
-> > > > > > be feasible to do bisection by hand if you are not familiar
-> > > > > > with
-> > > > > > git
-> > > > > > bisect.
-> > > > > > 
-> > > > > 
-> > > > > My wild guess would be commit b260e4a68853 ("Bluetooth: Fix
-> > > > > slab-
-> > > > > out-
-> > > > > of-bounds
-> > > > > read in hci_le_direct_adv_report_evt()"), but I don't see
-> > > > > what
-> > > > > might
-> > > > > be wrong
-> > > > > with it unless some BT device sends a bad report which used
-> > > > > to be
-> > > > > accepted
-> > > > > but is now silently ignored.
-> > > > > 
-> > > > > Guenter
-> > > > > 
-> > > > hello,
-> > > > 
-> > > > Did  "git bisect" in  a typically ok fashion and found that
-> > > > 5.9.0
-> > > > is
-> > > > working for bluetooth related. But 5.10.0-rc1  related is not
-> > > > working.
-> > > > 
-> > > > some related information in bisect.txt  attached.
-> > > > 
-> > > > -- 
-> > > > software engineer
-> > > > rajagiri school of engineering and technology - autonomous
-> > > > 
-> > > 
-> > > > $sudo git bisect bad
-> > > > Bisecting: 0 revisions left to test after this (roughly 1 step)
-> > > > [194810f78402128fe07676646cf9027fd3ed431c] dt-bindings: leds:
-> > > > Update devicetree documents for ID_RGB
-> > > > 
-> > > > $sudo git bisect bad
-> > > > Bisecting: 0 revisions left to test after this (roughly 0
-> > > > steps)
-> > > > [3650b228f83adda7e5ee532e2b90429c03f7b9ec] Linux 5.10-rc1
-> > > 
-> > > That's really odd, as that commit only has a Makefile change.
-> > 
-> > i will try to work on it again
-> > 
-> > > Also, why run this as root?
-> > > 
-> > there may be some problem in my sudo configurtion or the way in run
-> > sudo.\
-> > when i run "make modules_install" and "make install" using sudo
-> > typical
-> > files 
-> > ownership changes to root.
+
+
+On 06/01/2021 21:41, Jan Kara wrote:
+> On Wed 06-01-21 20:29:00, Alexey Kardashevskiy wrote:
+>> This is a workaround to fix a null derefence crash:
+>>
+>> [c00000000b01f840] c00000000b01f880 (unreliable)
+>> [c00000000b01f880] c000000000769a3c bdev_evict_inode+0x21c/0x370
+>> [c00000000b01f8c0] c00000000070bacc evict+0x11c/0x230
+>> [c00000000b01f900] c00000000070c138 iput+0x2a8/0x4a0
+>> [c00000000b01f970] c0000000006ff030 dentry_unlink_inode+0x220/0x250
+>> [c00000000b01f9b0] c0000000007001c0 __dentry_kill+0x190/0x320
+>> [c00000000b01fa00] c000000000701fb8 dput+0x5e8/0x860
+>> [c00000000b01fa80] c000000000705848 shrink_dcache_for_umount+0x58/0x100
+>> [c00000000b01fb00] c0000000006cf864 generic_shutdown_super+0x54/0x200
+>> [c00000000b01fb80] c0000000006cfd48 kill_anon_super+0x38/0x60
+>> [c00000000b01fbc0] c0000000006d12cc deactivate_locked_super+0xbc/0x110
+>> [c00000000b01fbf0] c0000000006d13bc deactivate_super+0x9c/0xc0
+>> [c00000000b01fc20] c00000000071a340 cleanup_mnt+0x1b0/0x250
+>> [c00000000b01fc80] c000000000278fa8 task_work_run+0xf8/0x180
+>> [c00000000b01fcd0] c00000000002b4ac do_notify_resume+0x4dc/0x5d0
+>> [c00000000b01fda0] c00000000004ba0c syscall_exit_prepare+0x28c/0x370
+>> [c00000000b01fe10] c00000000000e06c system_call_common+0xfc/0x27c
+>> --- Exception: c00 (System Call) at 0000000010034890
+>>
+>> Is this fixed properly already somewhere? Thanks,
+>>
+>> Fixes: e6cb53827ed6 ("block: initialize struct block_device in bdev_alloc")
 > 
-> That's fine when installing the kernel, but not when building or
-> running
-> git, please don't do that.
+> I don't think it's fixed anywhere and I've seen the syzbot report and I was
+> wondering how this can happen when bdev_alloc() initializes bdev->bd_bdi
+> and it also wasn't clear to me whether bd_bdi is really the only field that
+> is problematic - if we can get to bdev_evict_inode() without going through
+> bdev_alloc(), we are probably missing initialization of other fields in
+> that place as well...
+> 
+> But now I've realized that probably the inode is a root inode for bdev
+> superblock which is allocated by VFS through new_inode() and thus doesn't
+> undergo the initialization in bdev_alloc(). 
 
-ok related .
+yup, this is the case.
 
+> And AFAICT the root inode on
+> bdev superblock can get only to bdev_evict_inode() and bdev_free_inode().
+> Looking at bdev_evict_inode() the only thing that's used there from struct
+> block_device is really bd_bdi. bdev_free_inode() will also access
+> bdev->bd_stats and bdev->bd_meta_info. So we need to at least initialize
+> these to NULL as well.
+
+These are all NULL.
+
+> IMO the most logical place for all these
+> initializations is in bdev_alloc_inode()...
+
+
+This works. We can also check for NULL where it crashes. But I do not 
+know the code to make an informed decision...
+
+> 
+> 								Honza
+> 
+>> ---
+>>   fs/block_dev.c | 2 ++
+>>   1 file changed, 2 insertions(+)
+>>
+>> diff --git a/fs/block_dev.c b/fs/block_dev.c
+>> index 3e5b02f6606c..86fdc28d565e 100644
+>> --- a/fs/block_dev.c
+>> +++ b/fs/block_dev.c
+>> @@ -792,8 +792,10 @@ static void bdev_free_inode(struct inode *inode)
+>>   static void init_once(void *data)
+>>   {
+>>   	struct bdev_inode *ei = data;
+>> +	struct block_device *bdev = &ei->bdev;
+>>   
+>>   	inode_init_once(&ei->vfs_inode);
+>> +	bdev->bd_bdi = &noop_backing_dev_info;
+>>   }
+>>   
+>>   static void bdev_evict_inode(struct inode *inode)
+>> -- 
+>> 2.17.1
+>>
+
+-- 
+Alexey
