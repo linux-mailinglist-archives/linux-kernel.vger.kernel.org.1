@@ -2,87 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BA832EC68F
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 00:11:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D976C2EC69F
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 00:12:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726952AbhAFXK6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Jan 2021 18:10:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53836 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726310AbhAFXK5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Jan 2021 18:10:57 -0500
-Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A54CCC061799
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Jan 2021 15:10:17 -0800 (PST)
-Received: by mail-pf1-x429.google.com with SMTP id x126so2595363pfc.7
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Jan 2021 15:10:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=axakR3V8Px/scAgH93voC/mtIO5dG1PShrCOBx0oSuQ=;
-        b=csHjke2t8Ll0E6OubejG57TgVe6VHXNFpLMhiBdQRRCutar+xa87WJc5VHGZMcT1j2
-         fJ7I6HDt6nYZRqBjwBfNp7OhvBj6P65MhLHnhFYk/Bdzi+OttQAl1K+Krw4eE6EHXKhf
-         JP9rvM3eh3NcxiiWj6GrEqbrziuWNlVcED89c=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=axakR3V8Px/scAgH93voC/mtIO5dG1PShrCOBx0oSuQ=;
-        b=lrTO4nWB6ogoXoU2v20s9R9sx7sxL8gSQnMaZNtCHYkt10CabvPKXo9HmqpRADBJqJ
-         uZn/sgiosf6IdaLWHQKwM5HMqAwi+9Q1vRYni0rEec6BFil0JvLhHuKKD8d8FiLXmoaZ
-         YbY1YjSBhzAY28zbkGLTXDzEXsrn0dq2Z++y8eBgWhAyPTEGJ4xKItIBg7cuIlgTW0HM
-         yrAlXTGEXI2Y5xuWB+bxA/0+c7Sjs5s69nYtOvGZ7pjKft5BNZIcSSI7C1haocfh/pWX
-         Vk8CsMNp4ckA0MzHx16Sb0vH1r86DySfXtR/aXw3EVRhHnRxCkDUUd0cWC30VKqTbHnm
-         qcqw==
-X-Gm-Message-State: AOAM532e4nMiND+S1jFVLu3PZFTded6XhUckWoq6M7vn+vMVYnsn0lmr
-        KCBtuHGtqMw26pqmyelI48sZCg==
-X-Google-Smtp-Source: ABdhPJxKgVI2vxQQnj6Y2VwwC48vKM49s7TZmuVnIrPHI7UEvLlX/5hkXht2F4PdIa4y51aCwp5ttA==
-X-Received: by 2002:a63:2265:: with SMTP id t37mr6720232pgm.336.1609974617144;
-        Wed, 06 Jan 2021 15:10:17 -0800 (PST)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id x1sm3469752pfc.112.2021.01.06.15.10.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 06 Jan 2021 15:10:16 -0800 (PST)
-From:   Kees Cook <keescook@chromium.org>
-To:     =?UTF-8?q?Valdis=20Kl=C4=93tnieks?= <valdis.kletnieks@vt.edu>
-Cc:     Kees Cook <keescook@chromium.org>, linux-hardening@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Josh Poimboeuf <jpoimboe@redhat.com>
-Subject: Re: [PATCH] gcc-plugins: fix gcc 11 indigestion with plugins...
-Date:   Wed,  6 Jan 2021 15:09:42 -0800
-Message-Id: <160997457204.3687425.15622431721220616573.b4-ty@chromium.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <82487.1609006918@turing-police>
-References: <82487.1609006918@turing-police>
+        id S1727056AbhAFXMW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Jan 2021 18:12:22 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47582 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725788AbhAFXMV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 Jan 2021 18:12:21 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 631FD225AC;
+        Wed,  6 Jan 2021 23:11:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1609974700;
+        bh=C4lkCxq3GgpIZnzJfvMgGcqHjmU2Xc7PbSpPSnKU/7A=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=MPCGJRH+rxnFAiLtgNX43diPJzGYKtNVmdsQNqc7ITnYe7s1YxYF4b5m23Xm0xgiJ
+         owZ/vBZYJmDsixuBNrON2YUAMPMV3ks+B+pAPxj79/plkwvRe/4pdB79mLHgqLCROZ
+         opbYJnAMrW/htY19T+KTSsGKVhdBiZyQ/TecMneAsH+uH+y97OdNkcPu5Rj131ZrGt
+         y+kw6ft6WCt6a689lqrt2lpUW4Ay7nJAZijjPEo0vgfGDBrMPbgRWacXVSoKtZP+Ds
+         kLjRgmeg5EU/faSdPi5YwVlX3RvTgcKbMRb+S471if/hTECfxAReQxyxe1UAOyNSfk
+         KpLjyA2RguIlQ==
+Date:   Wed, 6 Jan 2021 17:11:39 -0600
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Jim Quinlan <jim2101024@gmail.com>
+Cc:     Jim Quinlan <james.quinlan@broadcom.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        linux-pci <linux-pci@vger.kernel.org>,
+        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        Mark Brown <broonie@kernel.org>,
+        bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Rob Herring <robh@kernel.org>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
+        <linux-rpi-kernel@lists.infradead.org>,
+        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2 5/6] PCI: brcmstb: Add panic/die handler to RC driver
+Message-ID: <20210106231139.GA1350432@bjorn-Precision-5520>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CANCKTBt7C+EhcpbgYdreK=xvQuOzEaDm+us-6P+PtoEfCny2Vg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 26 Dec 2020 13:21:58 -0500, Valdis Klētnieks wrote:
-> Fedora Rawhide has started including gcc 11,and the g++ compiler
-> throws a wobbly when it hits scripts/gcc-plugins:
+On Wed, Jan 06, 2021 at 02:57:19PM -0500, Jim Quinlan wrote:
+> On Wed, Jan 6, 2021 at 2:42 PM Jim Quinlan <james.quinlan@broadcom.com> wrote:
+> >
+> > ---------- Forwarded message ---------
+> > From: Bjorn Helgaas <helgaas@kernel.org>
+> > Date: Wed, Jan 6, 2021 at 2:19 PM
+> > Subject: Re: [PATCH v2 5/6] PCI: brcmstb: Add panic/die handler to RC driver
+> > To: Jim Quinlan <james.quinlan@broadcom.com>
+> > Cc: <linux-pci@vger.kernel.org>, Nicolas Saenz Julienne
+> > <nsaenzjulienne@suse.de>, <broonie@kernel.org>,
+> > <bcm-kernel-feedback-list@broadcom.com>, Lorenzo Pieralisi
+> > <lorenzo.pieralisi@arm.com>, Rob Herring <robh@kernel.org>, Bjorn
+> > Helgaas <bhelgaas@google.com>, Florian Fainelli
+> > <f.fainelli@gmail.com>, moderated list:BROADCOM BCM2711/BCM2835 ARM
+> > ARCHITECTURE <linux-rpi-kernel@lists.infradead.org>, moderated
+> > list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE
+> > <linux-arm-kernel@lists.infradead.org>, open list
+> > <linux-kernel@vger.kernel.org>
+> >
+> >
+> > On Mon, Nov 30, 2020 at 04:11:42PM -0500, Jim Quinlan wrote:
+> > > Whereas most PCIe HW returns 0xffffffff on illegal accesses and the like,
+> > > by default Broadcom's STB PCIe controller effects an abort.  This simple
+> > > handler determines if the PCIe controller was the cause of the abort and if
+> > > so, prints out diagnostic info.
+> > >
+> > > Example output:
+> > >   brcm-pcie 8b20000.pcie: Error: Mem Acc: 32bit, Read, @0x38000000
+> > >   brcm-pcie 8b20000.pcie:  Type: TO=0 Abt=0 UnspReq=1 AccDsble=0 BadAddr=0
+> >
+> > What does this mean for all the other PCI core code that expects
+> > 0xffffffff data returns?  Does it work?  Does it break differently on
+> > STB than on other platforms?
+> Hi Bjorn,
 > 
->   HOSTCXX scripts/gcc-plugins/latent_entropy_plugin.so
-> In file included from /usr/include/c++/11/type_traits:35,
->                  from /usr/lib/gcc/x86_64-redhat-linux/11/plugin/include/system.h:244,
->                  from /usr/lib/gcc/x86_64-redhat-linux/11/plugin/include/gcc-plugin.h:28,
->                  from scripts/gcc-plugins/gcc-common.h:7,
->                  from scripts/gcc-plugins/latent_entropy_plugin.c:78:
-> /usr/include/c++/11/bits/c++0x_warning.h:32:2: error: #error This file requires compiler and library support for the ISO
->  C++ 2011 standard. This support must be enabled with the -std=c++11 or -std=gnu++11 compiler options.
->    32 | #error This file requires compiler and library support \
+> Our PCIe HW causes a CPU abort when this happens.  Occasionally a
+> customer will have a fault handler try to fix up the abort and
+> continue on, but we recommend solving the root problem.  This commit
+> just gives us a chance to glean info about the problem.  Our newer
+> SOCs have a mode that doesn't abort and instead returns 0xffffffff.
 > 
-> [...]
+> BTW, can you point me to example files where "PCI core code that
+> expects  0xffffffff data returns" [on bad accesses]?
 
-Applied to for-linus/gcc-plugins, thanks!
+The most important case is during enumeration.  A config read to a
+device that doesn't exist normally terminates as an Unsupported
+Request, and pci_bus_generic_read_dev_vendor_id() depends on reading
+0xffffffff in that case.  I assume this particular case does work that
+way for brcm-pcie, because I assume enumeration does work.
 
-[1/1] gcc-plugins: fix gcc 11 indigestion with plugins...
-      https://git.kernel.org/kees/c/67a5a6801305
+pci_cfg_space_size_ext() is similar.  I assume this also works for
+brcm-pcie for the same reason.
 
--- 
-Kees Cook
+pci_raw_set_power_state() looks for ~0, which it may see if it does a
+config read to a device in D3cold.  pci_dev_wait(), dpc_irq(),
+pcie_pme_work_fn(), pcie_pme_irq() are all similar.
 
+Yes, this is ugly and we should check for these more consistently.
+
+The above are all for config reads.  The PCI core doesn't do MMIO
+accesses except for a few cases like MSI-X.  But drivers do, and if
+they check for PCIe errors on MMIO reads, they do it by looking for
+0xffffffff, e.g., pci_mmio_enabled() (in hfi1),
+qib_pci_mmio_enabled(), bnx2x_get_hwinfo(), etc.
+
+Bjorn
