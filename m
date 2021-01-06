@@ -2,107 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A4722EC3EC
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 20:32:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F22032EC3ED
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 20:33:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727100AbhAFTbX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Jan 2021 14:31:23 -0500
-Received: from aserp2130.oracle.com ([141.146.126.79]:52030 "EHLO
-        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726490AbhAFTbX (ORCPT
+        id S1727149AbhAFTcZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Jan 2021 14:32:25 -0500
+Received: from aserp2120.oracle.com ([141.146.126.78]:50926 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725822AbhAFTcY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Jan 2021 14:31:23 -0500
-Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
-        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 106JSl8n085070;
-        Wed, 6 Jan 2021 19:30:30 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=lYqY4R4rCGt7CcD1/khqbNBn6sz24a509rvrObgWS+A=;
- b=Dg4Iin60anhc9VgLpxCM4XDI+eucaWctPxKpeR6xHqbLwlI4digrKKbQk5HGM2+iS0iX
- f6x/gCi6VofvrXnuqBcNTvJKz4vp4W17k59ir0oORtuc6uWHFnC0ZtepOXhFalZO6v1X
- 6bu6w0sDPzZ71z9oZxtUfFZOuagwVLp6pvNrPSAL0AT+WpJI0cy9R40XdT8fvRvYQa2V
- iiFR6Sd34E1APZvYCfWvzp2B0z9xkgDFFIP3LQYhdFDtcp1ujlkkGAzAZUDnEl7FbDVE
- VlGnhBMw9taCFaHhtBEhxHJrJqUANpaWCp6PDzbhfOygBLWG8dHQphMYbwNyL2H7nuxk HA== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by aserp2130.oracle.com with ESMTP id 35wcuxsvwu-1
+        Wed, 6 Jan 2021 14:32:24 -0500
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 106JSv4x096316;
+        Wed, 6 Jan 2021 19:31:30 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=LKX+v411qJTSzQmb+cGxJEJkOBIOhcRhlSFMC+/Hg1k=;
+ b=jqjUbeXc/xNjQSXYN3ogeUGIbB7rFX1hPcU2tEsbE49Cg6NdNxP6ALf1V+PKDwneEemk
+ FdwOcfUmT1DBXWfn1vQ06W/DoKADh8Zm+ebH4P7mpHueLXkgwk4eAwMc0MrLNvTDL5zY
+ cXcTRLlB1pwNrtk5VX9wPsKe7s9erfIa2LoQegRtuj9F25lU8U3LWizXdakIHmgM/kvm
+ C0TDmZbCKMg018oUC08XjOoFtACknDu6BFSz8XlUxV2NAQ7Z8/3rFXE8YVLSJ0ufe9c8
+ HN3tC/VVhYbH77LIsadSCJ7O+cEtRgxG2YMDK08i8dY67Dba1gO57/fQtekkmqjLABzb tg== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by aserp2120.oracle.com with ESMTP id 35wepm9h4p-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 06 Jan 2021 19:30:30 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 106JKtBg148451;
-        Wed, 6 Jan 2021 19:30:29 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by aserp3020.oracle.com with ESMTP id 35v1fa8af9-1
+        Wed, 06 Jan 2021 19:31:30 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 106JUchj071415;
+        Wed, 6 Jan 2021 19:31:29 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by userp3020.oracle.com with ESMTP id 35w3qsed49-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 06 Jan 2021 19:30:29 +0000
-Received: from abhmp0010.oracle.com (abhmp0010.oracle.com [141.146.116.16])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 106JUQHR020391;
-        Wed, 6 Jan 2021 19:30:27 GMT
-Received: from [192.168.2.112] (/50.38.35.18)
+        Wed, 06 Jan 2021 19:31:29 +0000
+Received: from abhmp0007.oracle.com (abhmp0007.oracle.com [141.146.116.13])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 106JVQCp018580;
+        Wed, 6 Jan 2021 19:31:26 GMT
+Received: from kadam (/102.36.221.92)
         by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Wed, 06 Jan 2021 11:30:26 -0800
-Subject: Re: [PATCH v2 2/6] mm: hugetlbfs: fix cannot migrate the fallocated
- HugeTLB page
-To:     Michal Hocko <mhocko@suse.com>,
-        Muchun Song <songmuchun@bytedance.com>
-Cc:     akpm@linux-foundation.org, n-horiguchi@ah.jp.nec.com,
-        ak@linux.intel.com, linux-mm@kvack.org,
+        with ESMTP ; Wed, 06 Jan 2021 11:31:25 -0800
+Date:   Wed, 6 Jan 2021 22:31:16 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Alan Stern <stern@rowland.harvard.edu>,
+        Hans Verkuil <hans.verkuil@cisco.com>
+Cc:     Antoine Jacquet <royale@zerezo.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-usb@vger.kernel.org, linux-media@vger.kernel.org,
         linux-kernel@vger.kernel.org
-References: <20210106084739.63318-1-songmuchun@bytedance.com>
- <20210106084739.63318-3-songmuchun@bytedance.com>
- <20210106163513.GS13207@dhcp22.suse.cz>
-From:   Mike Kravetz <mike.kravetz@oracle.com>
-Message-ID: <7e69a55c-d501-6b42-8225-a677f09fb829@oracle.com>
-Date:   Wed, 6 Jan 2021 11:30:25 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.1.1
+Subject: Re: [PATCH] media: zr364xx: fix memory leaks in probe()
+Message-ID: <20210106193116.GE2831@kadam>
+References: <X/WMfVDCsxRghKHH@mwanda>
+ <20210106164550.GB1012582@rowland.harvard.edu>
 MIME-Version: 1.0
-In-Reply-To: <20210106163513.GS13207@dhcp22.suse.cz>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210106164550.GB1012582@rowland.harvard.edu>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9856 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 phishscore=0
- suspectscore=0 spamscore=0 bulkscore=0 adultscore=0 mlxscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2101060108
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 malwarescore=0 mlxscore=0
+ spamscore=0 mlxlogscore=999 phishscore=0 bulkscore=0 suspectscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2101060109
 X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9856 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 bulkscore=0
- clxscore=1015 spamscore=0 impostorscore=0 priorityscore=1501 mlxscore=0
- adultscore=0 mlxlogscore=999 lowpriorityscore=0 phishscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2101060109
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 bulkscore=0 spamscore=0
+ impostorscore=0 phishscore=0 lowpriorityscore=0 suspectscore=0
+ priorityscore=1501 mlxscore=0 malwarescore=0 clxscore=1011 mlxlogscore=999
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2101060109
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 1/6/21 8:35 AM, Michal Hocko wrote:
-> On Wed 06-01-21 16:47:35, Muchun Song wrote:
->> Because we only can isolate a active page via isolate_huge_page()
->> and hugetlbfs_fallocate() forget to mark it as active, we cannot
->> isolate and migrate those pages.
+On Wed, Jan 06, 2021 at 11:45:50AM -0500, Alan Stern wrote:
+> On Wed, Jan 06, 2021 at 01:10:05PM +0300, Dan Carpenter wrote:
+> > Syzbot discovered that the probe error handling doesn't clean up the
+> > resources allocated in zr364xx_board_init().  There are several
+> > related bugs in this code so I have re-written the error handling.
 > 
-> I've little bit hard time to understand this initially and had to dive
-> into the code to make sense of it. I would consider the following
-> wording easier to grasp. Feel free to reuse if you like.
-> "
-> If a new hugetlb page is allocated during fallocate it will not be
-> marked as active (set_page_huge_active) which will result in a later
-> isolate_huge_page failure when the page migration code would like to
-> move that page. Such a failure would be unexpected and wrong.
-> "
+> Dan:
 > 
-> Now to the fix. I believe that this patch shows that the
-> set_page_huge_active is just too subtle. Is there any reason why we
-> cannot make all freshly allocated huge pages active by default?
+> I recently sent in a patch for a similar problem in the gspca driver
+> (commit e469d0b09a19 "media: gspca: Fix memory leak in probe").  It
+> seems there may be similar issues in that driver: one single function
+> call tries to undo an indeterminate number of initializations.
+> 
+> I don't know enough about these subsystems to evaluate this.  Can you
+> take a look at it?
+> 
 
-I looked into that yesterday.  The primary issue is in page fault code,
-hugetlb_no_page is an example.  If page_huge_active is set, then it can
-be isolated for migration.  So, migration could race with the page fault
-and the page could be migrated before being added to the page table of
-the faulting task.  This was an issue when hugetlb_no_page set_page_huge_active
-right after allocating and clearing the huge page.  Commit cb6acd01e2e4
-moved the set_page_huge_active after adding the page to the page table
-to address this issue.
--- 
-Mike Kravetz
+The probe error handling in gspca_dev_probe2() is fine now.  All those
+functions are no-ops when they haven't been allocated/registered.
+
+regards,
+dan carpenter
+
