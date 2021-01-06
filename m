@@ -2,111 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1663E2EC6A4
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 00:16:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E7772EC6A9
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 00:16:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726883AbhAFXPV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Jan 2021 18:15:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54530 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726439AbhAFXPU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Jan 2021 18:15:20 -0500
-Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2D294C061757
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Jan 2021 15:14:40 -0800 (PST)
-Received: by mail-pg1-x529.google.com with SMTP id c22so3261884pgg.13
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Jan 2021 15:14:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=xYoNxurN7RYiLRX5DTFEbJhs2mXXLc0TcPBStbYi+bI=;
-        b=XCjXVexqO6br84vuNCwmm7JX8bKGx7p6bQKGwZ1PNxBDpTTn95YiNwBdCtol83AFFq
-         LF/S4oy8uRyrRJbv0sTumUYa4D729fwANR9/L/AQ2hMGeRHn6OiVvrjt6Qv/QHYXVQHy
-         0VgbEOKZSSxVqkY+4iW9v0YcGcvStS5sdvCnc=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=xYoNxurN7RYiLRX5DTFEbJhs2mXXLc0TcPBStbYi+bI=;
-        b=n37amv710BN+iAgc8qc2elDjAYKoFz9vBHkIORqcTtfmVoJJv89Z8r7C1XgrR3Dn66
-         anRLX1HHlpOZA2+AP03fExgQfdV6tqWSYxM4k+NMhbEnVGZAgR2hNgdfdDEWmtdorP7/
-         Uv15Kdq67DZxSJKjUX24qOfEATCLq3wJz1UPtVTX3i9yKM2TJaGOvhHRh4qNoJtd6x7U
-         AeKfU7vCLrCPZ6p6U+GAApOVpkjU2HWd4g9XmahGqqBiMBI7hkx6tGS/IY9nSCiIx4UJ
-         Zq2NoWEht7QVt9fiCvqI7cer79iWV1ogtqV2USpWdM7CvnpoIBdiJFJYwRezKTEENf9g
-         xdQA==
-X-Gm-Message-State: AOAM530OoQHdVUE/CHgFUfpsFrzNiuS4bYp1ZITNOuFusUtcihgtncYc
-        MDVntq0AivhPHwcJtfioL0EPg9GVo/sNTw==
-X-Google-Smtp-Source: ABdhPJxtZyANiYJ8vcaoNCZrhZrHCEaOmZXeCmfUZxjm5K/haIY+u0RwyoKcYRG5tmjKmHgTCak23A==
-X-Received: by 2002:a63:101d:: with SMTP id f29mr6740389pgl.165.1609974879822;
-        Wed, 06 Jan 2021 15:14:39 -0800 (PST)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id 84sm3659234pfy.9.2021.01.06.15.14.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 06 Jan 2021 15:14:39 -0800 (PST)
-Date:   Wed, 6 Jan 2021 15:14:38 -0800
-From:   Kees Cook <keescook@chromium.org>
-To:     Dinh Nguyen <dinguyen@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, masahiroy@kernel.org
-Subject: Re: commit ("1e860048c53ee gcc-plugins: simplify GCC plugin-dev
- capability test")
-Message-ID: <202101061512.E0F3D28@keescook>
-References: <2368d10b-85df-728f-675a-7a082ed0f54c@kernel.org>
+        id S1727290AbhAFXQ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Jan 2021 18:16:28 -0500
+Received: from bilbo.ozlabs.org ([203.11.71.1]:60945 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726449AbhAFXQ1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 Jan 2021 18:16:27 -0500
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4DB4wd5Fk7z9sVm;
+        Thu,  7 Jan 2021 10:15:45 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1609974945;
+        bh=hhb42+3r30dgguSUrIG0v7hh9TznE7SYcmCkuQPPfy8=;
+        h=Date:From:To:Cc:Subject:From;
+        b=hEQeX3ekhB8sl3BrD4SMo2PaDu1c0IBgGr8k8uOu2zCEfJNuAgN2sNjgOzSNZmbIR
+         Mwjz2KrZ10SwYGfwudTSeNxGwKQB2tS/u8z/24yf9u7nixdvbl63fKRM9Skzq92GNA
+         XrMeuI161PHfdkftGo4jYqtR2iXoYeuqWTEXoOBAEIi0R2OLq59WcNyBmHHYqqdMXH
+         COEjEwx/8Lq0nuJDvNzvrrQFEBsdUdROZ9G8lXNpI1fq19hLlRXQ1H90PnVrFwlzGZ
+         Ifa7oahIek7t4YiHWz3hKXi2O1qzD2CqKckDzol/huJPuJf1UtQP+tMsj/ZFuVKCmZ
+         2rdkm9GrVIyWQ==
+Date:   Thu, 7 Jan 2021 10:15:44 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Al Viro <viro@ZenIV.linux.org.uk>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: build warning after merge of the vfs tree
+Message-ID: <20210107101544.68bdd395@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <2368d10b-85df-728f-675a-7a082ed0f54c@kernel.org>
+Content-Type: multipart/signed; boundary="Sig_/p_/hmkyYWBCIHY50hXBferM";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 06, 2021 at 08:44:58AM -0600, Dinh Nguyen wrote:
-> Hi Masahiro,
-> 
-> With v5.11-rc1 and commit("1e860048c53ee gcc-plugins: simplify GCC
-> plugin-dev capability test"), I get this error for my arm socfpga_defconfig
-> build. I have been building the kernel the same way for many years now. Do
-> you know what I might be doing wrong?
-> 
-> $ make ARCH=arm CROSS_COMPILE=${CROSS_COMPILE}
->   SYNC    include/config/auto.conf.cmd
->   SYSHDR  arch/arm/include/generated/uapi/asm/unistd-common.h
->   SYSHDR  arch/arm/include/generated/uapi/asm/unistd-oabi.h
->   SYSHDR  arch/arm/include/generated/uapi/asm/unistd-eabi.h
->   REMOVE  arch/arm/include/generated/asm/mm-arch-hooks.h
->   HOSTCXX scripts/gcc-plugins/arm_ssp_per_task_plugin.so
-> In file included from scripts/gcc-plugins/gcc-common.h:103:0,
->                  from scripts/gcc-plugins/arm_ssp_per_task_plugin.c:3:
-> /home/dinguyen/linux_dev/gcc-arm-10.2-2020.11-x86_64-arm-none-linux-gnueabihf/bin/../lib/gcc/arm-none-linux-gnueabihf/10.2.1/plugin/include/builtins.h:23:10:
-> fatal error: mpc.h: No such file or directory
-> #include <mpc.h>
->           ^~~~~~~
-> compilation terminated.
-> scripts/gcc-plugins/Makefile:47: recipe for target
-> 'scripts/gcc-plugins/arm_ssp_per_task_plugin.so' failed
-> make[2]: *** [scripts/gcc-plugins/arm_ssp_per_task_plugin.so] Error 1
-> scripts/Makefile.build:496: recipe for target 'scripts/gcc-plugins' failed
-> make[1]: *** [scripts/gcc-plugins] Error 2
-> Makefile:1190: recipe for target 'scripts' failed
-> make: *** [scripts] Error 2
-> make: *** Waiting for unfinished jobs....
->   UPD     include/config/kernel.release
-> 
-> Thanks,
-> Dinh
+--Sig_/p_/hmkyYWBCIHY50hXBferM
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Hi! Thanks for the report. Other folks have also encountered this,
-and it appears to be a problem with distro packaging of the gcc plugin
-development packages. You'll need to install the GNU multiprecision
-libraries ("gmp-devel" on most rpm-based systems, "libgmp-dev" on most
-debian systems)[1].
+Hi all,
 
-Hopefully that'll work!
+After merging the vfs tree, today's linux-next build (x86_64 allmodconfig)
+produced this warning:
 
--Kees
+In file included from fs/erofs/xattr.h:10,
+                 from fs/erofs/namei.c:7:
+fs/erofs/namei.c: In function 'erofs_lookup':
+fs/erofs/internal.h:23:21: warning: format '%s' expects argument of type 'c=
+har *', but argument 4 has type 'struct dentry *' [-Wformat=3D]
+   23 | #define pr_fmt(fmt) "erofs: " fmt
+      |                     ^~~~~~~~~
+include/linux/dynamic_debug.h:129:15: note: in expansion of macro 'pr_fmt'
+  129 |   func(&id, ##__VA_ARGS__);  \
+      |               ^~~~~~~~~~~
+include/linux/dynamic_debug.h:147:2: note: in expansion of macro '__dynamic=
+_func_call'
+  147 |  __dynamic_func_call(__UNIQUE_ID(ddebug), fmt, func, ##__VA_ARGS__)
+      |  ^~~~~~~~~~~~~~~~~~~
+include/linux/dynamic_debug.h:157:2: note: in expansion of macro '_dynamic_=
+func_call'
+  157 |  _dynamic_func_call(fmt, __dynamic_pr_debug,  \
+      |  ^~~~~~~~~~~~~~~~~~
+include/linux/printk.h:424:2: note: in expansion of macro 'dynamic_pr_debug'
+  424 |  dynamic_pr_debug(fmt, ##__VA_ARGS__)
+      |  ^~~~~~~~~~~~~~~~
+fs/erofs/internal.h:34:33: note: in expansion of macro 'pr_debug'
+   34 | #define erofs_dbg(x, ...)       pr_debug(x "\n", ##__VA_ARGS__)
+      |                                 ^~~~~~~~
+fs/erofs/namei.c:237:3: note: in expansion of macro 'erofs_dbg'
+  237 |   erofs_dbg("%pd, %s (nid %llu) found, d_type %u", __func__,
+      |   ^~~~~~~~~
 
-[1] https://lore.kernel.org/lkml/CAHk-=wjjiYjCp61gdAMpDOsUBU-A2hFFKJoVx5VAC7yV4K6WYg@mail.gmail.com/
+Introduced by commit
 
--- 
-Kees Cook
+  879d4376533c ("erofs: use %pd instead of messing with ->d_name")
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/p_/hmkyYWBCIHY50hXBferM
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl/2RKAACgkQAVBC80lX
+0GzU5gf+OD18YwDbbT94D/YnDHDab7jRjP74OVQLS90yvaDxWzpDHtxfTgng6fJQ
+mnYfBXrIz6TGDm70hy9BETLmA9CB9ZtWjQ6qmfwQh1ecFWaOnqTsM/KPlPQgwuyt
+YGebOcZ55bzBkZV+h3PrNaZdzx7Ulj0Q7z5YpkWC4TWB9RRNDV1MpAXnm9/69EsP
+v6Bti4w7MY6m+Y1J6h7n93DjuLseV+YSwMoWDVCFOcTbMB2l/N6PWa0h8mwXjtdS
+HAwS2jneM3Qo4u3wKfE7sVmIAHvX8oKhutdTPhd7bKIM0DF5H2P4C5V/7XomO5kf
+8jCNAhkIk5qQQGDtX+KXJlEOqdF7MQ==
+=0YgP
+-----END PGP SIGNATURE-----
+
+--Sig_/p_/hmkyYWBCIHY50hXBferM--
