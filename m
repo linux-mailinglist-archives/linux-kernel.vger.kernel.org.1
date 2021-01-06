@@ -2,98 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B6F02EB7D2
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 02:56:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 997072EB7F4
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 02:59:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726536AbhAFB4T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 20:56:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51952 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725860AbhAFB4R (ORCPT
+        id S1726826AbhAFB7r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 20:59:47 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:31805 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726092AbhAFB7r (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 20:56:17 -0500
-Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 227A9C061382;
-        Tue,  5 Jan 2021 17:55:37 -0800 (PST)
-Received: by mail-pj1-x102a.google.com with SMTP id b5so770884pjk.2;
-        Tue, 05 Jan 2021 17:55:37 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=M2SnuavxPcXUJasCexKnjXWwhRBi46twzYFZCFVtxIA=;
-        b=jaDmkjxUvv933vnXaE4le+w+4C0Bd4foHxhGcP6dcW/tNQyBdvdC1uMwWxXqUJtanL
-         h/JnWWeoprKpQ5HR8NxHvwUySBVL7w0jELn2jUrKjC7FlK89tbyez+y1IiScIIvPhxc8
-         AiXvSOYqXH3Np15o8MSmUnThKxABfQxLT4vZq83I3lWVJISw1kh2vfPKoNvJc1xvaOJB
-         fEPXTm6XgOztjw7QJS08uxTdw6zqn8T3nnquHMHqFjI5ukqv+HRTwSJmCpQOx1bV3Xkd
-         NG2cHtrZOP+7buEgNt6n5rNGFG8hzxitWbJV1V3FRmCJPCs/DS99SJmJmqTU06qHid4e
-         DJsw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=M2SnuavxPcXUJasCexKnjXWwhRBi46twzYFZCFVtxIA=;
-        b=Gm4NK1HjAkIyZFrndQ4RKI0zXoUbRudM6Lpluk6pub1t8h/Vq6MjsNUKWhXzdb/k4i
-         fgUDbhR12HmfZB5qdgRnEIf8lqAV3+m3ywDb1jda2G5wuo2jRUQTG3dgUuhUitJsm2h7
-         O2wTqqrcizMbELImebwFqAWTn8qL052zC0zIgnvMpyXc01XRGyTpvbj7Wtzm23AXqVjq
-         rBqHMChSQlG4zwzoz/V8QfhwLUN8cz32BmLUOhXFbKcJerrajq8PHPd3qbwHO+P3Fmbj
-         gpIAySaZ8EUdr5+qKPYV1vXxSAxuJqE897Rt9papNXkiuWTUCUinzqu8UwH9rSbeFbZl
-         j2jQ==
-X-Gm-Message-State: AOAM5335hddFYcwt693gwDcgKmDbd9S+lEdw6CiNR0Y3lo5vJe4R8b/+
-        Sf/5sOuuL5PjHb5t9X2s9JfibKu+uNA=
-X-Google-Smtp-Source: ABdhPJyBKCiWl8KqpA3d/9qhuLzYJM2/8URZ+PH/AyWme2ojcsE4nRsA6SZa1w/6+Y6vqjUiBP87Hg==
-X-Received: by 2002:a17:902:6e02:b029:dc:8e14:a928 with SMTP id u2-20020a1709026e02b02900dc8e14a928mr1938073plk.24.1609898136435;
-        Tue, 05 Jan 2021 17:55:36 -0800 (PST)
-Received: from google.com ([2620:15c:202:201:a6ae:11ff:fe11:fcc3])
-        by smtp.gmail.com with ESMTPSA id gm18sm425052pjb.55.2021.01.05.17.55.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 Jan 2021 17:55:35 -0800 (PST)
-Date:   Tue, 5 Jan 2021 17:55:31 -0800
-From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
-To:     Rob Herring <robh@kernel.org>
-Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jens Axboe <axboe@kernel.dk>, Stephen Boyd <sboyd@kernel.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        MyungJoo Ham <myungjoo.ham@samsung.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Jonathan Cameron <jic23@kernel.org>,
+        Tue, 5 Jan 2021 20:59:47 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1609898300;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=soD85oBuoFoOYel/RvfxRXBHF3St3W2ynqAXS24SPmw=;
+        b=fZQbRu4/AHhbLZKN7TiGHUaXP03iL4I/iJd436AqXuKHtH3JvsubU6nO6x8VxH1fxPaXHv
+        lADtLHLNxnTIGRRfrlVkFTpxqLQaNYcrY3M42VstEDNEAF5wRqHxrRfxoKqCvSLwpsTt2R
+        cb+iAdjYvjzHgH25hOw77f9rCqRurIQ=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-338-JHBlh4rAP6e4dfOFx3YvyQ-1; Tue, 05 Jan 2021 20:58:16 -0500
+X-MC-Unique: JHBlh4rAP6e4dfOFx3YvyQ-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 97EE4180A089;
+        Wed,  6 Jan 2021 01:58:14 +0000 (UTC)
+Received: from treble (ovpn-113-48.rdu2.redhat.com [10.10.113.48])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id D323B5D735;
+        Wed,  6 Jan 2021 01:58:12 +0000 (UTC)
+Date:   Tue, 5 Jan 2021 19:58:10 -0600
+From:   Josh Poimboeuf <jpoimboe@redhat.com>
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Andy Lutomirski <luto@kernel.org>,
         Thomas Gleixner <tglx@linutronix.de>,
-        Marc Zyngier <maz@kernel.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Sebastian Reichel <sre@kernel.org>,
-        Ohad Ben-Cohen <ohad@wizery.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-arm-kernel@lists.infradead.org, linux-ide@vger.kernel.org,
-        linux-clk@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        linux-gpio@vger.kernel.org, linux-iio@vger.kernel.org,
-        linux-input@vger.kernel.org, linux-media@vger.kernel.org,
-        linux-mmc@vger.kernel.org, netdev@vger.kernel.org,
-        linux-pm@vger.kernel.org, linux-remoteproc@vger.kernel.org,
-        linux-riscv@lists.infradead.org, linux-serial@vger.kernel.org,
-        alsa-devel@alsa-project.org, linux-spi@vger.kernel.org,
-        linux-usb@vger.kernel.org
-Subject: Re: [PATCH] dt-bindings: Add missing array size constraints
-Message-ID: <X/UYk4RESSfjCIPI@google.com>
-References: <20210104230253.2805217-1-robh@kernel.org>
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Fangrui Song <maskray@google.com>,
+        Arnd Bergmann <arnd@arndb.de>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com
+Subject: Re: [PATCH v2] x86/entry: use STB_GLOBAL for register restoring thunk
+Message-ID: <20210106015810.5p6crnh7jqtmjtv4@treble>
+References: <20201224045502.zkm34cc5srdgpddb@treble>
+ <20210106004351.79130-1-ndesaulniers@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210104230253.2805217-1-robh@kernel.org>
+In-Reply-To: <20210106004351.79130-1-ndesaulniers@google.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 04, 2021 at 04:02:53PM -0700, Rob Herring wrote:
->  .../input/touchscreen/elan,elants_i2c.yaml    |  1 +
+On Tue, Jan 05, 2021 at 04:43:51PM -0800, Nick Desaulniers wrote:
+> Arnd found a randconfig that produces the warning:
+> 
+> arch/x86/entry/thunk_64.o: warning: objtool: missing symbol for insn at
+> offset 0x3e
+> 
+> when building with LLVM_IAS=1 (use Clang's integrated assembler). Josh
+> notes:
+> 
+>   With the LLVM assembler stripping the .text section symbol, objtool
+>   has no way to reference this code when it generates ORC unwinder
+>   entries, because this code is outside of any ELF function.
+> 
+> Fangrui notes that this is helpful for reducing images size when
+> compiling with -ffunction-sections and -fdata-sections. I have observerd
+> on the order of tens of thousands of symbols for the kernel images built
+> with those flags. A patch has been authored against GNU binutils to
+> match this behavior, with a new flag
+> --generate-unused-section-symbols=[yes|no].
+> 
+> Use a global symbol for the thunk that way
+> objtool can generate proper unwind info here with LLVM_IAS=1.
 
-Acked-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+On second thought, there's no need to make the symbol global.  Just
+getting rid of the '.L' local label symbol prefix should be enough to
+make an ELF symbol:
 
--- 
-Dmitry
+diff --git a/arch/x86/entry/thunk_64.S b/arch/x86/entry/thunk_64.S
+index ccd32877a3c4..c9a9fbf1655f 100644
+--- a/arch/x86/entry/thunk_64.S
++++ b/arch/x86/entry/thunk_64.S
+@@ -31,7 +31,7 @@ SYM_FUNC_START_NOALIGN(\name)
+ 	.endif
+ 
+ 	call \func
+-	jmp  .L_restore
++	jmp  __thunk_restore
+ SYM_FUNC_END(\name)
+ 	_ASM_NOKPROBE(\name)
+ 	.endm
+@@ -44,7 +44,7 @@ SYM_FUNC_END(\name)
+ #endif
+ 
+ #ifdef CONFIG_PREEMPTION
+-SYM_CODE_START_LOCAL_NOALIGN(.L_restore)
++SYM_CODE_START_LOCAL_NOALIGN(__thunk_restore)
+ 	popq %r11
+ 	popq %r10
+ 	popq %r9
+@@ -56,6 +56,6 @@ SYM_CODE_START_LOCAL_NOALIGN(.L_restore)
+ 	popq %rdi
+ 	popq %rbp
+ 	ret
+-	_ASM_NOKPROBE(.L_restore)
+-SYM_CODE_END(.L_restore)
++	_ASM_NOKPROBE(__thunk_restore)
++SYM_CODE_END(__thunk_restore)
+ #endif
+
