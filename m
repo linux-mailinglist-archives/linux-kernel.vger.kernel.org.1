@@ -2,94 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 764482EBCA7
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 11:47:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 602D62EBCAB
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 11:49:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726326AbhAFKrk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Jan 2021 05:47:40 -0500
-Received: from outpost1.zedat.fu-berlin.de ([130.133.4.66]:43089 "EHLO
-        outpost1.zedat.fu-berlin.de" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725788AbhAFKrk (ORCPT
+        id S1726050AbhAFKsl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Jan 2021 05:48:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50762 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725789AbhAFKsl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Jan 2021 05:47:40 -0500
-Received: from inpost2.zedat.fu-berlin.de ([130.133.4.69])
-          by outpost.zedat.fu-berlin.de (Exim 4.94)
-          with esmtps (TLS1.2)
-          tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-          (envelope-from <glaubitz@zedat.fu-berlin.de>)
-          id 1kx6L8-001eES-UM; Wed, 06 Jan 2021 11:46:54 +0100
-Received: from p5b13a61e.dip0.t-ipconnect.de ([91.19.166.30] helo=[192.168.178.139])
-          by inpost2.zedat.fu-berlin.de (Exim 4.94)
-          with esmtpsa (TLS1.2)
-          tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-          (envelope-from <glaubitz@physik.fu-berlin.de>)
-          id 1kx6L8-000KPC-2m; Wed, 06 Jan 2021 11:46:54 +0100
-Subject: Re: [PATCH] ia64: fix xchg() warning
-To:     "Luck, Tony" <tony.luck@intel.com>, Arnd Bergmann <arnd@kernel.org>
-Cc:     "Yu, Fenghua" <fenghua.yu@intel.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        "linux-ia64@vger.kernel.org" <linux-ia64@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <20210104085806.4176886-1-arnd@kernel.org>
- <ad54481b-15da-e795-0c1a-bd54d3e8ab87@physik.fu-berlin.de>
- <CAK8P3a3zDB5wh-bdg+fq6nvg9gHrESFhhgss4f47VJ1JOvoE1Q@mail.gmail.com>
- <71274a7cdf7d48bf9c2fda873fa37727@intel.com>
- <CAK8P3a2KhaEZ-ErAXGi0wOr_z2YT-GUV7r5QMhUoV+e+tpc5zw@mail.gmail.com>
- <20210105153603.GA17644@agluck-desk2.amr.corp.intel.com>
-From:   John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-Message-ID: <c49a5ed2-c3d5-8cb4-7d28-7087eea2e707@physik.fu-berlin.de>
-Date:   Wed, 6 Jan 2021 11:46:53 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        Wed, 6 Jan 2021 05:48:41 -0500
+Received: from mail-vk1-xa33.google.com (mail-vk1-xa33.google.com [IPv6:2607:f8b0:4864:20::a33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 854A8C06134D
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Jan 2021 02:48:00 -0800 (PST)
+Received: by mail-vk1-xa33.google.com with SMTP id d6so667565vkb.13
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Jan 2021 02:48:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=QhxW/qWUK1qHu3S5dKAsL/bE2CX9Mjir76mO+yFF09s=;
+        b=CNtpzWHcVIutiMTLVCAVjQF6s8sXiFJfl+fPbNc8rpoExJe+4TByxzq/8dv6vqvsUl
+         ZqBm9GRH+1lYMdc3Zm6sxtEjlcUNwUf76BSbbIz07pOhCbMHdeJyKjp0k19MyPeScAoX
+         vi3gk6Ai9pAgR6lQSLEoA7bjw+COUAdNgarFI=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=QhxW/qWUK1qHu3S5dKAsL/bE2CX9Mjir76mO+yFF09s=;
+        b=tZ31k9o+hnqQIx7t8+R0t2N3j385UnD5lCqbHCDi0N8rQWG636gZJsPDtIWUjyQSan
+         LeUb3icNF3uTXN1hHLmsBaXNPUXFCZVIlnKrVfrqhqiScIso37oODi6+tHl93BlH68kl
+         8J1X9BrrT6e9EKlKr33Zrmc8PVwfVHnugC8njcLHAE7672JdJaEM0ngMghgjlhrpLi6s
+         yoLv7xATFlW6tsM5bpYwNYJES2lbPxtm+tHj0EgSnqUNI/mTRDsoXh7ANG2vn5gIG8rf
+         /ICRA+1dtuUYqclAiUHTOg7Ytw6ARdnLpyR+2JoeQEGdE52RK5lokkVIu5C9UcAaAzJK
+         j8/A==
+X-Gm-Message-State: AOAM531pz+Z6KlG885rmCuZzBFUE1hZZgvTya0MbvJqB3klN1plXQIsx
+        Q6y9OSZ0+I5T/Y4YueuU0mm5AJHWSauOdhONWaY8rQ==
+X-Google-Smtp-Source: ABdhPJy0jjS8DnZo6n0jcWiNil0zF7Su8pV8YGWDFMNynC2TIWBinJzDX9ZG164nRYdyQ+nmGzyP55SCRpsBsYZk8DQ=
+X-Received: by 2002:a1f:a78c:: with SMTP id q134mr2864312vke.17.1609930079603;
+ Wed, 06 Jan 2021 02:47:59 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20210105153603.GA17644@agluck-desk2.amr.corp.intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Original-Sender: glaubitz@physik.fu-berlin.de
-X-Originating-IP: 91.19.166.30
+References: <20210106084626.2181286-1-hsinyi@chromium.org>
+In-Reply-To: <20210106084626.2181286-1-hsinyi@chromium.org>
+From:   Nicolas Boichat <drinkcat@chromium.org>
+Date:   Wed, 6 Jan 2021 18:47:48 +0800
+Message-ID: <CANMq1KAoboK45uOhKMYZ-=TvBBQRZhEeij=ha6MqSKZiYx64eQ@mail.gmail.com>
+Subject: Re: [PATCH 1/2] arm64: dts: mt8183: config dsi node
+To:     Hsin-Yi Wang <hsinyi@chromium.org>
+Cc:     linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        Devicetree List <devicetree@vger.kernel.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        lkml <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi!
+On Wed, Jan 6, 2021 at 4:46 PM Hsin-Yi Wang <hsinyi@chromium.org> wrote:
+>
+> Config dsi node for mt8183 kukui. Set panel and ports.
+>
+> Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
+> ---
+>  .../arm64/boot/dts/mediatek/mt8183-kukui.dtsi | 38 +++++++++++++++++++
+>  1 file changed, 38 insertions(+)
+>
+> diff --git a/arch/arm64/boot/dts/mediatek/mt8183-kukui.dtsi b/arch/arm64/boot/dts/mediatek/mt8183-kukui.dtsi
+> index bf2ad1294dd30..4cfb3560e5d11 100644
+> --- a/arch/arm64/boot/dts/mediatek/mt8183-kukui.dtsi
+> +++ b/arch/arm64/boot/dts/mediatek/mt8183-kukui.dtsi
+> @@ -249,6 +249,36 @@ &cpu7 {
+>         proc-supply = <&mt6358_vproc11_reg>;
+>  };
+>
+> +&dsi0 {
+> +       status = "okay";
+> +       #address-cells = <1>;
+> +       #size-cells = <0>;
+> +       panel: panel@0 {
+> +               compatible = "boe,tv101wum-nl6";
 
-On 1/5/21 4:36 PM, Luck, Tony wrote:
->> diff --git a/MAINTAINERS b/MAINTAINERS
->> index 0f2e55faaf7f..b74093803154 100644
->> --- a/MAINTAINERS
->> +++ b/MAINTAINERS
->> @@ -8432,11 +8432,8 @@ F: drivers/i3c/
->>  F: include/linux/i3c/
->>
->>  IA64 (Itanium) PLATFORM
->> -M: Tony Luck <tony.luck@intel.com>
->> -M: Fenghua Yu <fenghua.yu@intel.com>
->>  L: linux-ia64@vger.kernel.org
->> -S: Odd Fixes
->> -T: git git://git.kernel.org/pub/scm/linux/kernel/git/aegl/linux.git
->> +S: Orphan
->>  F: Documentation/ia64/
->>  F: arch/ia64/
->>
->> Is that what you had in mind? I see that Fenghua Yu has not been
->> actively involved for a long time. If you are both out, that would
->> make the port unmaintained, but that may actually help find someone
->> else to either volunteer as a maintainer or pay someone if they
->> have a commercial interest.
-> 
-> Yes. Fenghua has moved to working on other things, so that looks good.
-> 
-> Acked-by: Tony Luck <tony.luck@intel.com>
+We're going to have many panels in the kukui family, so I think I'd
+prefer it if you moved the compatible string to krane-sku0 dts: it
+makes it easier to figure out what's different with sku0.
 
-I wonder whether I can take over maintainership. I'm certainly not experienced as
-Tony or Fenghua, but I guess one can grow with the task, can't one?
+Then maybe leave all the other properties in this file, as it seems
+like all MIPI panels use the exact same pin/supplies?
 
-Adrian
+(And add a comment here saying that the compatible needs to be set in
+board dts?)
 
--- 
- .''`.  John Paul Adrian Glaubitz
-: :' :  Debian Developer - glaubitz@debian.org
-`. `'   Freie Universitaet Berlin - glaubitz@physik.fu-berlin.de
-  `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
-
+> +               reg = <0>;
+> +               enable-gpios = <&pio 45 0>;
+> +               pinctrl-names = "default";
+> +               pinctrl-0 = <&panel_pins_default>;
+> +               avdd-supply = <&ppvarn_lcd>;
+> +               avee-supply = <&ppvarp_lcd>;
+> +               pp1800-supply = <&pp1800_lcd>;
+> +               status = "okay";
+> +               port {
+> +                       panel_in: endpoint {
+> +                               remote-endpoint = <&dsi_out>;
+> +                       };
+> +               };
+> +       };
+> +
+> +       ports {
+> +               port {
+> +                       dsi_out: endpoint {
+> +                               remote-endpoint = <&panel_in>;
+> +                       };
+> +               };
+> +       };
+> +};
+> +
+>  &i2c0 {
+>         pinctrl-names = "default";
+>         pinctrl-0 = <&i2c0_pins>;
+> @@ -547,6 +577,14 @@ pins_clk {
+>                 };
+>         };
+>
+> +       panel_pins_default: panel_pins_default {
+> +               panel_reset {
+> +                       pinmux = <PINMUX_GPIO45__FUNC_GPIO45>;
+> +                       output-low;
+> +                       bias-pull-up;
+> +               };
+> +       };
+> +
+>         pwm0_pin_default: pwm0_pin_default {
+>                 pins1 {
+>                         pinmux = <PINMUX_GPIO176__FUNC_GPIO176>;
+> --
+> 2.29.2.729.g45daf8777d-goog
+>
