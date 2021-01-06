@@ -2,178 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BF9F2EBC2D
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 11:12:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CE152EBC2F
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 11:12:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726762AbhAFKMH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Jan 2021 05:12:07 -0500
-Received: from mga03.intel.com ([134.134.136.65]:16400 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725941AbhAFKMG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Jan 2021 05:12:06 -0500
-IronPort-SDR: I7Qt2+AcbC1AMAKHLOSCbx0GAvvvBBybYL/p6OHCRt/xLXxjSnqLLrlNWDz3cYBLbUIedIxWpz
- F+RZR8/vvuDw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9855"; a="177357367"
-X-IronPort-AV: E=Sophos;i="5.78,479,1599548400"; 
-   d="scan'208";a="177357367"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Jan 2021 02:10:19 -0800
-IronPort-SDR: d08z5hl0XnBjFC605NW3Hlw0yXQdq+NUzEy5P5L4DpQIY0tLy8DeV7WHHXWC+t/VS4vT0Em7qx
- t3sOQngMY85Q==
-X-IronPort-AV: E=Sophos;i="5.78,479,1599548400"; 
-   d="scan'208";a="379231175"
-Received: from blu2-mobl3.ccr.corp.intel.com (HELO [10.255.29.66]) ([10.255.29.66])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Jan 2021 02:10:12 -0800
-Cc:     baolu.lu@linux.intel.com, tglx@linutronix.de, ashok.raj@intel.com,
-        kevin.tian@intel.com, dave.jiang@intel.com, megha.dey@intel.com,
-        dwmw2@infradead.org, alex.williamson@redhat.com,
-        bhelgaas@google.com, dan.j.williams@intel.com,
-        dmaengine@vger.kernel.org, eric.auger@redhat.com,
-        jacob.jun.pan@intel.com, jgg@mellanox.com, kvm@vger.kernel.org,
-        kwankhede@nvidia.com, linux-kernel@vger.kernel.org,
-        linux-pci@vger.kernel.org, maz@kernel.org, mona.hossain@intel.com,
-        netanelg@mellanox.com, parav@mellanox.com, pbonzini@redhat.com,
-        rafael@kernel.org, samuel.ortiz@intel.com,
-        sanjay.k.kumar@intel.com, shahafs@mellanox.com,
-        tony.luck@intel.com, vkoul@kernel.org, yan.y.zhao@linux.intel.com,
-        yi.l.liu@intel.com
-To:     Leon Romanovsky <leon@kernel.org>
-References: <20210106022749.2769057-1-baolu.lu@linux.intel.com>
- <20210106060613.GU31158@unreal>
-From:   Lu Baolu <baolu.lu@linux.intel.com>
-Subject: Re: [RFC PATCH v2 1/1] platform-msi: Add platform check for subdevice
- irq domain
-Message-ID: <3d2620f9-bbd4-3dd0-8e29-0cfe492a109f@linux.intel.com>
-Date:   Wed, 6 Jan 2021 18:10:09 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        id S1726827AbhAFKMU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Jan 2021 05:12:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45112 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726011AbhAFKMT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 Jan 2021 05:12:19 -0500
+Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87996C06134D
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Jan 2021 02:11:39 -0800 (PST)
+Received: by mail-wr1-x432.google.com with SMTP id r3so1907615wrt.2
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Jan 2021 02:11:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bgdev-pl.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=o0MmhDNA3JbSjnUwo4vbVyBUWMBScjtNa0FqK3mxVOs=;
+        b=TLaT5tZspuVGJZFrMHC8bGl0qbSPO+ECMvHJ4TiDeg1q3v+PceZlD+8SPNhsysjBgk
+         tBBRgoiXtApQIJCJ58HMcbM/XYmcMtFNoxP8ZHnRTZkutvAzI7aC4XV8hjWDuBw6tSm/
+         TFhRoJ6uQxzrSJkhfBIjt+O3JsAh7PSY8SgUbN8gP8nWHcOp/uRcJrfcPTVRiBr9sMKe
+         xZaN8cP9LJFbTTBVB7ZUudgGUNTaM+u1l7q7Kq2tMgh5wszhD6NuPMHnucvv+lXlTTwa
+         zExSc9YfK5BD1Kk5r0B26T/9YW8Tr3SmHWwNkL6ZN3DnryVhPo11nkhsnR3DdtBEWd7L
+         bwJQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=o0MmhDNA3JbSjnUwo4vbVyBUWMBScjtNa0FqK3mxVOs=;
+        b=QPZ8L2jLhIbRKu2x/muqlEdgO4hpYOLh3aTXtwtZzFI5Gpp8vhYIJaIVT/uBuVRDn5
+         aATgzf0TCMk9aoTd+p1ptUL8tOC7yUfJkhQKhxP92lHh33azho5ZVcADeuWv2fiMxZ3O
+         IBwxiwmH46XD6CmJxTMqECx/mQVqrwweuknTUClPdADDu9E0qxbCV/UXeht5Y9O6jfWQ
+         OVvoK4TRVacHRWCubrvQGO3uQaFZ8TpbCx5AgK2/Bp1eVJ9GfoC/uALmyeevBqiwtnak
+         w9M59DAPdyhA8TphqFsM4wlNOPYRpdDn4+MJrzHPoOKEscRsCS2ogP2C7eNfPUZMY4lF
+         Q1hw==
+X-Gm-Message-State: AOAM530JZxppUa0Ixm+0FqUO2ksCWuIqqSGOZxX+LfUp4j21AfzqFC9K
+        tWaPmEnWapbWfLsrp2zGKE8JIg==
+X-Google-Smtp-Source: ABdhPJw8NVN0Lxgf38SkFphNspwZgDglPoduNDrlf19AVkDO02vMAf1eEWYq48lSM6zhqccjQaleWg==
+X-Received: by 2002:a5d:4e8c:: with SMTP id e12mr3417456wru.321.1609927898267;
+        Wed, 06 Jan 2021 02:11:38 -0800 (PST)
+Received: from localhost.localdomain (pop.92-184-102-148.mobile.abo.orange.fr. [92.184.102.148])
+        by smtp.gmail.com with ESMTPSA id r16sm2635656wrx.36.2021.01.06.02.11.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 06 Jan 2021 02:11:37 -0800 (PST)
+From:   Bartosz Golaszewski <brgl@bgdev.pl>
+To:     Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        linux-power@fi.rohmeurope.com, linux-gpio@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Subject: [PATCH] gpio: bd7xxxx: use helper variable for pdev->dev
+Date:   Wed,  6 Jan 2021 11:11:33 +0100
+Message-Id: <20210106101133.18379-1-brgl@bgdev.pl>
+X-Mailer: git-send-email 2.29.1
 MIME-Version: 1.0
-In-Reply-To: <20210106060613.GU31158@unreal>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Leon,
+From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
 
-On 2021/1/6 14:06, Leon Romanovsky wrote:
-> On Wed, Jan 06, 2021 at 10:27:49AM +0800, Lu Baolu wrote:
->> The pci_subdevice_msi_create_irq_domain() should fail if the underlying
->> platform is not able to support IMS (Interrupt Message Storage). Otherwise,
->> the isolation of interrupt is not guaranteed.
->>
->> For x86, IMS is only supported on bare metal for now. We could enable it
->> in the virtualization environments in the future if interrupt HYPERCALL
->> domain is supported or the hardware has the capability of interrupt
->> isolation for subdevices.
->>
->> Suggested-by: Thomas Gleixner <tglx@linutronix.de>
->> Link: https://lore.kernel.org/linux-pci/87pn4nk7nn.fsf@nanos.tec.linutronix.de/
->> Link: https://lore.kernel.org/linux-pci/877dqrnzr3.fsf@nanos.tec.linutronix.de/
->> Link: https://lore.kernel.org/linux-pci/877dqqmc2h.fsf@nanos.tec.linutronix.de/
->> Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
->> ---
->>   arch/x86/pci/common.c       | 47 +++++++++++++++++++++++++++++++++++++
->>   drivers/base/platform-msi.c |  8 +++++++
->>   include/linux/msi.h         |  1 +
->>   3 files changed, 56 insertions(+)
->>
->>
->> Background:
->> Learnt from the discussions in this thread:
->>
->> https://lore.kernel.org/linux-pci/160408357912.912050.17005584526266191420.stgit@djiang5-desk3.ch.intel.com/
->>
->> The device IMS (Interrupt Message Storage) should not be enabled in any
->> virtualization environments unless there is a HYPERCALL domain which
->> makes the changes in the message store managed by the hypervisor.
->>
->> As the initial step, we allow the IMS to be enabled only if we are
->> running on the bare metal. It's easy to enable IMS in the virtualization
->> environments if above preconditions are met in the future.
->>
->> We ever thought about moving on_bare_metal() to a generic file so that
->> it could be well maintained and used. But we need some suggestions about
->> where to put it. Your comments are very appreciated.
->>
->> This patch is only for comments purpose. Please don't merge it. We will
->> include it in the Intel IMS implementation later once we reach a
->> consensus.
->>
->> Change log:
->> v1->v2:
->>   - v1:
->>     https://lore.kernel.org/linux-pci/20201210004624.345282-1-baolu.lu@linux.intel.com/
->>   - Rename probably_on_bare_metal() with on_bare_metal();
->>   - Some vendors might use the same name for both bare metal and virtual
->>     environment. Before we add vendor specific code to distinguish
->>     between them, let's return false in on_bare_metal(). This won't
->>     introduce any regression. The only impact is that the coming new
->>     platform msi feature won't be supported until the vendor specific code
->>     is provided.
->>
->> Best regards,
->> baolu
->>
->> diff --git a/arch/x86/pci/common.c b/arch/x86/pci/common.c
->> index 3507f456fcd0..963e0401f2b2 100644
->> --- a/arch/x86/pci/common.c
->> +++ b/arch/x86/pci/common.c
->> @@ -724,3 +724,50 @@ struct pci_dev *pci_real_dma_dev(struct pci_dev *dev)
->>   	return dev;
->>   }
->>   #endif
->> +
->> +/*
->> + * We want to figure out which context we are running in. But the hardware
->> + * does not introduce a reliable way (instruction, CPUID leaf, MSR, whatever)
->> + * which can be manipulated by the VMM to let the OS figure out where it runs.
->> + * So we go with the below probably on_bare_metal() function as a replacement
->> + * for definitely on_bare_metal() to go forward only for the very simple reason
->> + * that this is the only option we have.
->> + *
->> + * People might use the same vendor name for both bare metal and virtual
->> + * environment. We can remove those names once we have vendor specific code to
->> + * distinguish between them.
->> + */
->> +static const char * const vmm_vendor_name[] = {
->> +	"QEMU", "Bochs", "KVM", "Xen", "VMware", "VMW", "VMware Inc.",
->> +	"innotek GmbH", "Oracle Corporation", "Parallels", "BHYVE",
->> +	"Microsoft Corporation", "Amazon EC2"
->> +};
-> 
-> Maybe it is not concern at all, but this approach will make
-> forward/backward compatibility without kernel upgrade impossible.
-> 
-> Once QEMU (example) will have needed support, someone will need to remove
-> the QEMU from this array, rewrite on_bare_metal() because it is not bare
-> vs. virtual anymore and require kernel upgrade/downgrade every time QEMU
-> version is switched.
-> 
-> Plus need to update stable@ and distros.
-> 
-> I'm already feeling pain from the fields while they debug such code.
-> 
-> Am I missing it completely?
+Using a helper local variable to store the address of &pdev->dev adds
+to readability and allows us to avoid unnecessary line breaks.
 
-The basic need here is that we want to disallow a brand new feature
-(device ims) to be enabled in any VMM environment.
+Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+---
+ drivers/gpio/gpio-bd70528.c | 17 ++++++++---------
+ drivers/gpio/gpio-bd71828.c | 15 +++++++--------
+ 2 files changed, 15 insertions(+), 17 deletions(-)
 
-The cpuid (X86_FEATURE_HYPERVISOR) is a good choice, but it's optional
-and even not documented. So besides it, we maintain a block list
-(vmm_vendor_name) which lists all possible VMM vendor names. If
-dmi_match(DMI_SYS_VENDOR) hits, the new feature is not allowed to be
-enabled.
+diff --git a/drivers/gpio/gpio-bd70528.c b/drivers/gpio/gpio-bd70528.c
+index 276a0fe6346d..397a50d6bc65 100644
+--- a/drivers/gpio/gpio-bd70528.c
++++ b/drivers/gpio/gpio-bd70528.c
+@@ -181,15 +181,15 @@ static int bd70528_gpio_get(struct gpio_chip *chip, unsigned int offset)
+ 
+ static int bd70528_probe(struct platform_device *pdev)
+ {
++	struct device *dev = &pdev->dev;
+ 	struct bd70528_gpio *bdgpio;
+ 	int ret;
+ 
+-	bdgpio = devm_kzalloc(&pdev->dev, sizeof(*bdgpio),
+-			      GFP_KERNEL);
++	bdgpio = devm_kzalloc(dev, sizeof(*bdgpio), GFP_KERNEL);
+ 	if (!bdgpio)
+ 		return -ENOMEM;
+-	bdgpio->dev = &pdev->dev;
+-	bdgpio->gpio.parent = pdev->dev.parent;
++	bdgpio->dev = dev;
++	bdgpio->gpio.parent = dev->parent;
+ 	bdgpio->gpio.label = "bd70528-gpio";
+ 	bdgpio->gpio.owner = THIS_MODULE;
+ 	bdgpio->gpio.get_direction = bd70528_get_direction;
+@@ -202,16 +202,15 @@ static int bd70528_probe(struct platform_device *pdev)
+ 	bdgpio->gpio.ngpio = 4;
+ 	bdgpio->gpio.base = -1;
+ #ifdef CONFIG_OF_GPIO
+-	bdgpio->gpio.of_node = pdev->dev.parent->of_node;
++	bdgpio->gpio.of_node = dev->parent->of_node;
+ #endif
+-	bdgpio->regmap = dev_get_regmap(pdev->dev.parent, NULL);
++	bdgpio->regmap = dev_get_regmap(dev->parent, NULL);
+ 	if (!bdgpio->regmap)
+ 		return -ENODEV;
+ 
+-	ret = devm_gpiochip_add_data(&pdev->dev, &bdgpio->gpio,
+-				     bdgpio);
++	ret = devm_gpiochip_add_data(dev, &bdgpio->gpio, bdgpio);
+ 	if (ret)
+-		dev_err(&pdev->dev, "gpio_init: Failed to add bd70528-gpio\n");
++		dev_err(dev, "gpio_init: Failed to add bd70528-gpio\n");
+ 
+ 	return ret;
+ }
+diff --git a/drivers/gpio/gpio-bd71828.c b/drivers/gpio/gpio-bd71828.c
+index fcdcbb57c76d..c8e382b53f2f 100644
+--- a/drivers/gpio/gpio-bd71828.c
++++ b/drivers/gpio/gpio-bd71828.c
+@@ -97,15 +97,15 @@ static int bd71828_get_direction(struct gpio_chip *chip, unsigned int offset)
+ 
+ static int bd71828_probe(struct platform_device *pdev)
+ {
++	struct device *dev = &pdev->dev;
+ 	struct bd71828_gpio *bdgpio;
+ 
+-	bdgpio = devm_kzalloc(&pdev->dev, sizeof(*bdgpio),
+-			      GFP_KERNEL);
++	bdgpio = devm_kzalloc(dev, sizeof(*bdgpio), GFP_KERNEL);
+ 	if (!bdgpio)
+ 		return -ENOMEM;
+ 
+-	bdgpio->dev = &pdev->dev;
+-	bdgpio->gpio.parent = pdev->dev.parent;
++	bdgpio->dev = dev;
++	bdgpio->gpio.parent = dev->parent;
+ 	bdgpio->gpio.label = "bd71828-gpio";
+ 	bdgpio->gpio.owner = THIS_MODULE;
+ 	bdgpio->gpio.get_direction = bd71828_get_direction;
+@@ -121,13 +121,12 @@ static int bd71828_probe(struct platform_device *pdev)
+ 	 * "gpio-reserved-ranges" and exclude them from control
+ 	 */
+ 	bdgpio->gpio.ngpio = 4;
+-	bdgpio->gpio.of_node = pdev->dev.parent->of_node;
+-	bdgpio->regmap = dev_get_regmap(pdev->dev.parent, NULL);
++	bdgpio->gpio.of_node = dev->parent->of_node;
++	bdgpio->regmap = dev_get_regmap(dev->parent, NULL);
+ 	if (!bdgpio->regmap)
+ 		return -ENODEV;
+ 
+-	return devm_gpiochip_add_data(&pdev->dev, &bdgpio->gpio,
+-				     bdgpio);
++	return devm_gpiochip_add_data(dev, &bdgpio->gpio, bdgpio);
+ }
+ 
+ static struct platform_driver bd71828_gpio = {
+-- 
+2.29.1
 
-This block list is a bit overkill since some vendor names could also be
-used on bare metal. We will delay enabling the new feature for those
-cases until we have a vendor-specific way to distinguish between bare
-metal and VMM environments.
-
-Honestly speaking, I can't see any compatible issue as it's common that
-a new feature is supported in a new kernel but not in an old one.
-
-Best regards,
-baolu
