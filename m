@@ -2,85 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DADA2EC3BA
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 20:12:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D7EA42EC3BF
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 20:14:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726699AbhAFTL1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Jan 2021 14:11:27 -0500
-Received: from smtprelay0107.hostedemail.com ([216.40.44.107]:59416 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725822AbhAFTLZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Jan 2021 14:11:25 -0500
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay02.hostedemail.com (Postfix) with ESMTP id BB2925C0;
-        Wed,  6 Jan 2021 19:10:43 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:960:973:988:989:1260:1261:1277:1311:1313:1314:1345:1359:1381:1437:1515:1516:1518:1534:1538:1568:1593:1594:1711:1714:1730:1747:1777:1792:2393:2559:2562:2828:3138:3139:3140:3141:3142:3622:3872:3876:4321:5007:6737:6738:7652:10004:10400:10848:11026:11232:11473:11658:11783:11914:12048:12297:12438:12740:12895:13069:13311:13357:13439:13894:14181:14659:14721:21080:21451:21611:21627:21939:21990:30054:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:56,LUA_SUMMARY:none
-X-HE-Tag: push15_3e110e4274e4
-X-Filterd-Recvd-Size: 2304
-Received: from [192.168.1.159] (unknown [47.151.137.21])
-        (Authenticated sender: joe@perches.com)
-        by omf11.hostedemail.com (Postfix) with ESMTPA;
-        Wed,  6 Jan 2021 19:10:39 +0000 (UTC)
-Message-ID: <b84dadc2e98b1986dc800c5f6f202880ed905b38.camel@perches.com>
-Subject: Re: [PATCH 05/10] dma: tx49 removal
-From:   Joe Perches <joe@perches.com>
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Matt Mackall <mpm@selenic.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Mark Brown <broonie@kernel.org>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>, linux-mips@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org,
-        dmaengine@vger.kernel.org, linux-ide@vger.kernel.org,
-        linux-mtd@lists.infradead.org, netdev@vger.kernel.org,
-        linux-rtc@vger.kernel.org, linux-spi@vger.kernel.org,
-        linux-watchdog@vger.kernel.org, alsa-devel@alsa-project.org
-Date:   Wed, 06 Jan 2021 11:10:38 -0800
-In-Reply-To: <20210105140305.141401-6-tsbogend@alpha.franken.de>
-References: <20210105140305.141401-1-tsbogend@alpha.franken.de>
-         <20210105140305.141401-6-tsbogend@alpha.franken.de>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.38.1-1 
+        id S1726671AbhAFTOf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Jan 2021 14:14:35 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38308 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725800AbhAFTOf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 Jan 2021 14:14:35 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3EE0123123;
+        Wed,  6 Jan 2021 19:13:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1609960434;
+        bh=jBkY8hzGgEcmtW1Rvt9yrsCWvFU24pLGzn5CXQyoAbM=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=cvn9UGR7uhdIaamPoKeKE3NJUJXCqv8ieiFj/DhrW5f4xBVv3hKOrZKRQYEKQ/Nop
+         zUxUDob9+sq80L3DBOZHOsMT44c9Ha/74TuxIFwf2tMbiEP4xt5VgIjIDlM7VOGJGJ
+         gTTZGGluuXlfy4+NTZvWvY1IbrB0fdYysyOGcARlL2wymQPUckh2Nb2QVjHe4ML5JE
+         oo4CIyI8jYjgqYwqkgsbw+MltE5MiikbIvi38m4hJ34Ix80eyM71BK1aFzINc7evqh
+         F/GBAcsJl3AD0jFftip3fzD4yzcgJO2D16SrCpTmfiJIbMyuhkQkvQXiI3ztUbzxbE
+         9970pHu2alR0A==
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id CC18835225DC; Wed,  6 Jan 2021 11:13:53 -0800 (PST)
+Date:   Wed, 6 Jan 2021 11:13:53 -0800
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     linux-kernel@vger.kernel.org, x86@kernel.org,
+        linux-edac@vger.kernel.org, tony.luck@intel.com,
+        tglx@linutronix.de, mingo@redhat.com, hpa@zytor.com,
+        kernel-team@fb.com
+Subject: Re: [PATCH RFC x86/mce] Make mce_timed_out() identify holdout CPUs
+Message-ID: <20210106191353.GA2743@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <20210106174102.GA23874@paulmck-ThinkPad-P72>
+ <20210106183244.GA24607@zn.tnic>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210106183244.GA24607@zn.tnic>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 2021-01-05 at 15:02 +0100, Thomas Bogendoerfer wrote:
-> Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-[]
-> diff --git a/drivers/dma/txx9dmac.h b/drivers/dma/txx9dmac.h
-[]
-> @@ -26,11 +26,6 @@
->   * DMA channel.
->   */
->  
+On Wed, Jan 06, 2021 at 07:32:44PM +0100, Borislav Petkov wrote:
+> On Wed, Jan 06, 2021 at 09:41:02AM -0800, Paul E. McKenney wrote:
+> > The "Timeout: Not all CPUs entered broadcast exception handler" message
+> > will appear from time to time given enough systems, but this message does
+> > not identify which CPUs failed to enter the broadcast exception handler.
+> > This information would be valuable if available, for example, in order to
+> > correlated with other hardware-oriented error messages.
 > 
-> -#ifdef CONFIG_MACH_TX49XX
-> -static inline bool txx9_dma_have_SMPCHN(void)
-> -{
-> -	return true;
-> -}
->  #define TXX9_DMA_USE_SIMPLE_CHAIN
->  #else
->  static inline bool txx9_dma_have_SMPCHN(void)
+> Because you're expecting that the CPUs which have not entered the
+> exception handler might have stuck earlier and that's the correlation
+> there?
 
-This doesn't look like it compiles as there's now an #else
-without an #if
+Or that there might have been any number of other error messages that
+flagged that CPU.  For a few examples, watchdogs, hung tasks, and RCU
+CPU stall warnings.
 
+> > This commit
+> 
+> That's a tautology. :)
 
+Not yet, it isn't!  Well, except in -rcu.  ;-)
+
+> > therefore maintains a cpumask_t of CPUs that have entered this handler,
+> > and prints out which ones failed to enter in the event of a timeout.
+> > Build-tested only.
+> > 
+> > Cc: Tony Luck <tony.luck@intel.com>
+> > Cc: Borislav Petkov <bp@alien8.de>
+> > Cc: Thomas Gleixner <tglx@linutronix.de>
+> > Cc: Ingo Molnar <mingo@redhat.com>
+> > Cc: "H. Peter Anvin" <hpa@zytor.com>
+> > Cc: <x86@kernel.org>
+> > Cc: <linux-edac@vger.kernel.org>
+> > Reported-by: Jonathan Lemon <bsd@fb.com>
+> > Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+> > 
+> > diff --git a/arch/x86/kernel/cpu/mce/core.c b/arch/x86/kernel/cpu/mce/core.c
+> > index 13d3f1c..44d2b99 100644
+> > --- a/arch/x86/kernel/cpu/mce/core.c
+> > +++ b/arch/x86/kernel/cpu/mce/core.c
+> > @@ -878,6 +878,12 @@ static atomic_t mce_executing;
+> >  static atomic_t mce_callin;
+> >  
+> >  /*
+> > + * Track which CPUs entered and not in order to print holdouts.
+> > + */
+> > +static cpumask_t mce_present_cpus;
+> > +static cpumask_t mce_missing_cpus;
+> > +
+> > +/*
+> >   * Check if a timeout waiting for other CPUs happened.
+> >   */
+> >  static int mce_timed_out(u64 *t, const char *msg)
+> > @@ -894,8 +900,12 @@ static int mce_timed_out(u64 *t, const char *msg)
+> >  	if (!mca_cfg.monarch_timeout)
+> >  		goto out;
+> >  	if ((s64)*t < SPINUNIT) {
+> > -		if (mca_cfg.tolerant <= 1)
+> > +		if (mca_cfg.tolerant <= 1) {
+> > +			if (!cpumask_andnot(&mce_missing_cpus, cpu_online_mask, &mce_present_cpus))
+> > +				pr_info("%s: MCE holdout CPUs: %*pbl\n",
+> > +					__func__, cpumask_pr_args(&mce_missing_cpus));
+> >  			mce_panic(msg, NULL, NULL);
+> > +		}
+> >  		cpu_missing = 1;
+> >  		return 1;
+> >  	}
+> > @@ -1006,6 +1016,7 @@ static int mce_start(int *no_way_out)
+> >  	 * is updated before mce_callin.
+> >  	 */
+> >  	order = atomic_inc_return(&mce_callin);
+> 
+> Doesn't a single mce_callin_mask suffice?
+
+You are suggesting dropping mce_missing_cpus and just doing this?
+
+if (!cpumask_andnot(&mce_present_cpus, cpu_online_mask, &mce_present_cpus))
+
+I was worried (perhaps unnecessarily) about the possibility of CPUs
+checking in during the printout operation, which would set rather than
+clear the bit.  But perhaps the possible false positives that Tony points
+out make this race not worth worrying about.
+
+Thoughts?
+
+							Thanx, Paul
