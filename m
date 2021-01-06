@@ -2,117 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26CCF2EC528
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 21:39:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D3C552EC52E
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 21:40:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727831AbhAFUiN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Jan 2021 15:38:13 -0500
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:33084 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727649AbhAFUiM (ORCPT
+        id S1727335AbhAFUkQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Jan 2021 15:40:16 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:53225 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727056AbhAFUkP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Jan 2021 15:38:12 -0500
-Received: from pps.filterd (m0098404.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 106KWoRi099647;
-        Wed, 6 Jan 2021 15:37:26 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-transfer-encoding; s=pp1;
- bh=x31loi0UkcxiP+riaTcZKLPN0WsRuXfGo7wtYsWCY7s=;
- b=TOtlXh/G6+Nf1PeC77+Hk1F6g80HoJodH3BIJKd6bqGWhtQkEB7Mmsq878wnmq9JEg5X
- D9JN2XOLMGru/GXaY9FBpjxQWqmNWdGmcql5ZyFUrJu6ScnpJ7BasBm1nx8nz+Rpuj2h
- nTx5Ep4kpMIAFLLRIdB5xH1o+QtJi96V2X5tN+5/TPUGJ+1Db3u1ochnrtYBqtnFbp3O
- MiXNvzAr7Bf92P0n00IRpT1IIHpY7jv1D8l7fK77f5S4eaHU4ACzXIeDy95XAIvCD6ym
- DPDZGX0l1jQnux3aQNEErDeQ07nEIFQSKWHE1jI6mfqdnj8fIjY0lJ4OL3Ov9FkxWW+K QQ== 
-Received: from ppma02wdc.us.ibm.com (aa.5b.37a9.ip4.static.sl-reverse.com [169.55.91.170])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 35wm8987mx-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 06 Jan 2021 15:37:26 -0500
-Received: from pps.filterd (ppma02wdc.us.ibm.com [127.0.0.1])
-        by ppma02wdc.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 106KXrkO017703;
-        Wed, 6 Jan 2021 20:37:24 GMT
-Received: from b03cxnp07028.gho.boulder.ibm.com (b03cxnp07028.gho.boulder.ibm.com [9.17.130.15])
-        by ppma02wdc.us.ibm.com with ESMTP id 35tgf97kyg-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 06 Jan 2021 20:37:24 +0000
-Received: from b03ledav001.gho.boulder.ibm.com (b03ledav001.gho.boulder.ibm.com [9.17.130.232])
-        by b03cxnp07028.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 106KbNZK26411382
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 6 Jan 2021 20:37:23 GMT
-Received: from b03ledav001.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 892DB6E050;
-        Wed,  6 Jan 2021 20:37:23 +0000 (GMT)
-Received: from b03ledav001.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 19A046E053;
-        Wed,  6 Jan 2021 20:37:23 +0000 (GMT)
-Received: from vios4361.aus.stglabs.ibm.com (unknown [9.3.43.61])
-        by b03ledav001.gho.boulder.ibm.com (Postfix) with ESMTP;
-        Wed,  6 Jan 2021 20:37:22 +0000 (GMT)
-From:   Tyrel Datwyler <tyreld@linux.ibm.com>
-To:     james.bottomley@hansenpartnership.com
-Cc:     martin.petersen@oracle.com, linux-scsi@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        brking@linux.ibm.com, Tyrel Datwyler <tyreld@linux.ibm.com>,
-        kernel test robot <lkp@intel.com>
-Subject: [PATCH] ibmvfc: fix missing cast of ibmvfc_event pointer to u64 handle
-Date:   Wed,  6 Jan 2021 14:37:21 -0600
-Message-Id: <20210106203721.1054693-1-tyreld@linux.ibm.com>
-X-Mailer: git-send-email 2.27.0
+        Wed, 6 Jan 2021 15:40:15 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1609965529;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=WykEemMsSiBCYaO/Puc+Apjx+xtTM6cWf49K8KW8Nsw=;
+        b=diIrrW0XQFmNWInsVP2Yc1HLxFCBt+IFAfMBTnFJByZV3FMEqr1t+iFSBJNikhUyOQsYo7
+        z8/wEoeWFpqSUL8YZSVMKlsksHS6S46hlzWKpoGpBZdmLfzOa5J6uQfYiicDQPU6a/mXuO
+        mzOron3OuAOk4AYyrDCTKtpDOaZ/z6A=
+Received: from mail-pl1-f199.google.com (mail-pl1-f199.google.com
+ [209.85.214.199]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-22-kT-YywhgM4CDFWcYYg3Xcw-1; Wed, 06 Jan 2021 15:38:48 -0500
+X-MC-Unique: kT-YywhgM4CDFWcYYg3Xcw-1
+Received: by mail-pl1-f199.google.com with SMTP id x12so2333377plr.21
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Jan 2021 12:38:48 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=WykEemMsSiBCYaO/Puc+Apjx+xtTM6cWf49K8KW8Nsw=;
+        b=Rc1vaEcXxllKyYHGz5G3WZPZUfiVHXqRoX3hUJR1t/cL6oiibKtmBR1vlO6pMy3v1i
+         E44SJVU+Vbp2zZ6iv+irEKXnpRwB9xroog7Gms8l9cuHyWNjy/6eE9CEAf8+ULvX7kEH
+         Dhl9jhc7816SaSqsE4857HqWPTDeJD+B5fp5TUKM5SD+huWgzQUGWsghtkefhzPG20+y
+         SxsPGPtkNY6Xpd1CCEdhV35nbnWwETNaVctYfs2w2qe9hhmbXJ3PM0pRGNVbaLvITF5s
+         689/lZnQlqSctl1d+U4GvFVaDZeB2yRtoAd7GI68uuVRSNJfLNBlrlc8KVN+1ApazGoR
+         U7dw==
+X-Gm-Message-State: AOAM532viVLjCWn8VtkVTPz9PSFrZRvJKTozl7xuXHdCC6mHbrlbuGzy
+        LVbV4abg3zlycH+7KhruddWJnhKwg45fBmFbDoAnSL3rIR0muL3+WuyL2N1Kl/F9HJyt4Xzs38s
+        qX8dYdNs7iGatrojCl2GTJJaF
+X-Received: by 2002:a17:90b:305:: with SMTP id ay5mr6093118pjb.4.1609965527165;
+        Wed, 06 Jan 2021 12:38:47 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJxMvigwcpzJfhK+u159EzK0eYZNgQ355e+zBsR/dUdJ872UCYZ4ZRGxD85J8aMtpauw6Cpqzg==
+X-Received: by 2002:a17:90b:305:: with SMTP id ay5mr6093099pjb.4.1609965526941;
+        Wed, 06 Jan 2021 12:38:46 -0800 (PST)
+Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
+        by smtp.gmail.com with ESMTPSA id h17sm3261485pfo.220.2021.01.06.12.38.45
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 06 Jan 2021 12:38:46 -0800 (PST)
+Subject: Re: [PATCH] rxrpc: fix handling of an unsupported token type in
+ rxrpc_read()
+To:     David Howells <dhowells@redhat.com>
+Cc:     davem@davemloft.net, kuba@kernel.org, natechancellor@gmail.com,
+        ndesaulniers@google.com, linux-afs@lists.infradead.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        clang-built-linux@googlegroups.com
+References: <f02bdada-355c-97cd-bc32-f84516ddd93f@redhat.com>
+ <548097.1609952225@warthog.procyon.org.uk>
+ <c2cc898d-171a-25da-c565-48f57d407777@redhat.com>
+ <20201229173916.1459499-1-trix@redhat.com>
+ <259549.1609764646@warthog.procyon.org.uk>
+ <675150.1609954812@warthog.procyon.org.uk>
+ <697467.1609962267@warthog.procyon.org.uk>
+From:   Tom Rix <trix@redhat.com>
+Message-ID: <07564e3e-35d4-c5d4-fc1a-8a0e8659604e@redhat.com>
+Date:   Wed, 6 Jan 2021 12:38:44 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2021-01-06_11:2021-01-06,2021-01-06 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- phishscore=0 mlxlogscore=999 suspectscore=0 adultscore=0 clxscore=1011
- mlxscore=0 priorityscore=1501 impostorscore=0 malwarescore=0 spamscore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2101060117
+In-Reply-To: <697467.1609962267@warthog.procyon.org.uk>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit 2aa0102c6688 ("scsi: ibmvfc: Use correlation token to tag
-commands") sets the vfcFrame correlation token to the pointer handle of
-the associated ibmvfc_event. However, that commit failed to cast the
-pointer to an appropriate type which in this case is a u64. As such
-sparse warnings are generated for both correlation token assignments.
 
- ibmvfc.c:2375:36: sparse: incorrect type in argument 1 (different base types)
- ibmvfc.c:2375:36: sparse: expected unsigned long long [usertype] val
- ibmvfc.c:2375:36: sparse: got struct ibmvfc_event *[assigned] evt
+On 1/6/21 11:44 AM, David Howells wrote:
+> Tom Rix <trix@redhat.com> wrote:
+>
+>> These two loops iterate over the same data, i believe returning here is all
+>> that is needed.
+> But if the first loop is made to support a new type, but the second loop is
+> missed, it will then likely oops.  Besides, the compiler should optimise both
+> paths together.
 
-Add the apporpriate u64 casts when assigning an ibmvfc_event as a
-correlation token.
+You are right, I was only considering the existing cases.
 
-Fixes: Commit 2aa0102c6688 ("scsi: ibmvfc: Use correlation token to tag commands")
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Tyrel Datwyler <tyreld@linux.ibm.com>
----
- drivers/scsi/ibmvscsi/ibmvfc.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Tom
 
-diff --git a/drivers/scsi/ibmvscsi/ibmvfc.c b/drivers/scsi/ibmvscsi/ibmvfc.c
-index 42e4d35e0d35..7312f31df878 100644
---- a/drivers/scsi/ibmvscsi/ibmvfc.c
-+++ b/drivers/scsi/ibmvscsi/ibmvfc.c
-@@ -1744,7 +1744,7 @@ static int ibmvfc_queuecommand_lck(struct scsi_cmnd *cmnd,
- 		iu->pri_task_attr = IBMVFC_SIMPLE_TASK;
- 	}
- 
--	vfc_cmd->correlation = cpu_to_be64(evt);
-+	vfc_cmd->correlation = cpu_to_be64((u64)evt);
- 
- 	if (likely(!(rc = ibmvfc_map_sg_data(cmnd, evt, vfc_cmd, vhost->dev))))
- 		return ibmvfc_send_event(evt, vhost, 0);
-@@ -2418,7 +2418,7 @@ static int ibmvfc_abort_task_set(struct scsi_device *sdev)
- 		tmf->flags = cpu_to_be16((IBMVFC_NO_MEM_DESC | IBMVFC_TMF));
- 		evt->sync_iu = &rsp_iu;
- 
--		tmf->correlation = cpu_to_be64(evt);
-+		tmf->correlation = cpu_to_be64((u64)evt);
- 
- 		init_completion(&evt->comp);
- 		rsp_rc = ibmvfc_send_event(evt, vhost, default_timeout);
--- 
-2.27.0
+> David
+>
 
