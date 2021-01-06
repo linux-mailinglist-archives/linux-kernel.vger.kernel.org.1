@@ -2,187 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A889B2EB817
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 03:38:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 78AD72EB81E
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 03:40:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725868AbhAFCgx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 21:36:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58746 "EHLO
+        id S1726338AbhAFCjQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 21:39:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59122 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725792AbhAFCgw (ORCPT
+        with ESMTP id S1725730AbhAFCjP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 21:36:52 -0500
-Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 012B4C06134C
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Jan 2021 18:36:10 -0800 (PST)
-Received: by mail-ed1-x52a.google.com with SMTP id g24so2973060edw.9
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Jan 2021 18:36:09 -0800 (PST)
+        Tue, 5 Jan 2021 21:39:15 -0500
+Received: from mail-io1-xd2b.google.com (mail-io1-xd2b.google.com [IPv6:2607:f8b0:4864:20::d2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6072AC06134E
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Jan 2021 18:38:16 -0800 (PST)
+Received: by mail-io1-xd2b.google.com with SMTP id i18so1433988ioa.1
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Jan 2021 18:38:16 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=googlemail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=bsBv85TTm4bgmfYBTRiSlgurbvsoPr/alhSs5wTQ52c=;
-        b=e24RhaxnHw3+cr9cGGVan/vH+w0VN606TrjGMOxFrDO81s9DQ2DGwpb170/u+doflG
-         WmTrDT6vTHh1hjO+318B9fsTAP37fFEnQ+O6LsxeZc6rP3ub6O76EjNRiduaGUPmuynP
-         JSIAdFlLl1VUBxTq3DPAi7JAkDpuUGUQ7VO/EQaXmGtouRHsPKrSSCjp77bSZTdnhHXH
-         dgl95XbpDhL0G28w62zpb6vvyegg+bGltGeqUWuICAmzPah/L3oetBLPFe9tcXmKXrQQ
-         juE+Zdlkw/EwZQMZ4TU2BHz4OesOEggqpSC0E8QXk445mY1NUYGdkKUNeABoGEFay0Y0
-         fscA==
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=FprZVVjHWClp4VohDC7RbHGxUkIy86bNYcrNdkcWEq8=;
+        b=zueZzXDY6pjPDUB3+sujDQ5uZGOiDuLJpxMkfjcSJ/iX0tSJjxU63hioGWp+S/dcHN
+         1ZNaTrJERtbv1xFZDuKvblHoB5E2BWGntK84/VZzPvWnMTJqVRtC4+Gk7j1sEQ7pNeJR
+         kawtI8pME6V8vkjetmHSYKBaX5/5l4vw+xoSf0eaeKuEwJYAxWzmDyJsXKOUVOhMvkwt
+         nHqFuz9CazeHTFUcB1q3UmpmKMniUzimhUm1nFANP7fuARC10Ho47YiTvc1n7Qb1qkLK
+         nByXp0fv5baQIs91agseAPCEfSnkB1Qp9YJ/puLcsT3lSKSYx76RsE1qlPMdnVBUc/Gy
+         V4pg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=bsBv85TTm4bgmfYBTRiSlgurbvsoPr/alhSs5wTQ52c=;
-        b=hWD0zwBhmCB05SiklZewRNseYtgEPcmwKoHIZVRPf8OvdqqPXBmq9N8dEc8I8veWh4
-         br1LQ5JQlXVF/DHBm6xSZdYXRYBt4gGVcvw4BsQM+6CEuNWJeM0dqPq2ZoyQdJMWb229
-         neqoYeG4Jmsmed9k5TF+pj2k15Kwylq6B8ho8c+V3QSdOWsUnv6hGU14iSAOTNaSZZtV
-         ZG0wNrU8C6vl/kUabLL2OK62t0t3rGoP0fpTl5DKgp9b9KU0bgU7putYRYWtGc4SmVUO
-         zZeH0V2T/FRuYqex17oJC/gVdguT2sBRGiQ3FLKE3gV+LAxWFfwGO0drEIKFLjN/YFBs
-         ToCQ==
-X-Gm-Message-State: AOAM533zNASZbxfxKzX5+QG7XStxnE7Dy7V3ch0zBNj2Q/zsCuvk2DwH
-        0ThAw2EMeRNM0SekIX3hKIgdQe9fRod8NAP7Sv4=
-X-Google-Smtp-Source: ABdhPJwxX9TWwIJFOsXAtq6lI8P07T6o74sKnQuOfsPo8Stl+MMSuybZBfFt/7RA4thtxmuzgxJ1Yj7oink8/xFF1fQ=
-X-Received: by 2002:a50:fd18:: with SMTP id i24mr2549874eds.146.1609900568600;
- Tue, 05 Jan 2021 18:36:08 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=FprZVVjHWClp4VohDC7RbHGxUkIy86bNYcrNdkcWEq8=;
+        b=BJqpCGkiAlDs1ObAp4R+pzXLjePe9E3w6qdNAI90DfSNOYLg4dEmjTu5cPP9TPsnUP
+         lmmCq1iy6SDjpKihSRnqlrCvyRMsALS7Z1C6JwF6vamzSj1kdmWgkLheFmoICbGRfItv
+         vDkEFQYtvBjHDXFvOtUxeh9+lg2G6SNstkp9NRCVFYmFkVX8peLg4gYyscqRNxM97/qo
+         2ETs9QKp+wNchu6EIGxIXJADh+NKHS3RQKZlWgiCIeDKPV8oOfoECiba52NxmfVeY4/A
+         jB9LgQZI8IwaDYeU4AH9eb7ZqD9li0rofg7Xa0HoJ0LegVHIBFYxQyBtnvZpQi1SD++p
+         g5oA==
+X-Gm-Message-State: AOAM531lSlym2B6sCltK8FE8PG8agiwx0e7qppf5TGQctLm4xbRlXinj
+        24VnjFxBlRHGBkeuGkDkTEEtUw==
+X-Google-Smtp-Source: ABdhPJxVKl1PVA4lvMThTDUj6ztVYEAs4ympo6aqd7rVbQrKTcxfDjebXjzflktSAlazPE9RRyYOSQ==
+X-Received: by 2002:a05:6602:59e:: with SMTP id v30mr1528894iox.37.1609900695619;
+        Tue, 05 Jan 2021 18:38:15 -0800 (PST)
+Received: from beast.localdomain (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
+        by smtp.gmail.com with ESMTPSA id x2sm631755ior.42.2021.01.05.18.38.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 05 Jan 2021 18:38:14 -0800 (PST)
+From:   Alex Elder <elder@linaro.org>
+To:     davem@davemloft.net, kuba@kernel.org, bjorn.andersson@linaro.org,
+        agross@kernel.org, ohad@wizery.com
+Cc:     evgreen@chromium.org, cpratapa@codeaurora.org,
+        subashab@codeaurora.org, netdev@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-remoteproc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH net-next 0/3] net: ipa: support COMPILE_TEST
+Date:   Tue,  5 Jan 2021 20:38:09 -0600
+Message-Id: <20210106023812.2542-1-elder@linaro.org>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-References: <CAFBinCA4EnbJZ5HnWzqP-LdLJE0FD_nGqA6PxdQaR5KfETgvTQ@mail.gmail.com>
- <57a65a09-606a-8773-e1ff-4202e83779c8@baylibre.com>
-In-Reply-To: <57a65a09-606a-8773-e1ff-4202e83779c8@baylibre.com>
-From:   Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Date:   Wed, 6 Jan 2021 03:35:57 +0100
-Message-ID: <CAFBinCAxWfUjFvL8xqxPZLGcA2UeqBb-2zqYEf5TVX_yQi-hFg@mail.gmail.com>
-Subject: Re: discussion: re-structuring of the Amlogic Meson VPU DRM driver
-To:     Neil Armstrong <narmstrong@baylibre.com>
-Cc:     linux-amlogic@lists.infradead.org, dri-devel@lists.freedesktop.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        airlied@linux.ie, daniel@ffwll.ch
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Neil,
+This series adds the IPA driver as a possible target when
+the COMPILE_TEST configuration is enabled.  Two small changes to
+dependent subsystems needed to be made for this to work.
 
-On Mon, Jan 4, 2021 at 2:29 PM Neil Armstrong <narmstrong@baylibre.com> wrote:
->
-> Hi,
->
-> Sorry for the delay...
->
-> On 31/12/2020 00:24, Martin Blumenstingl wrote:
-> > Hi Neil and all interested people,
-> >
-> > in the past there were concerns about how some of the components are
-> > coupled in our Meson DRM driver(s).
-> > With this discussion I would like to achieve four things:
-> > 1. understand the current issues that we have> 2. come up with a TODO list of things that need to be tackled as well
-> > as recommendations how to solve it (for example: "driver ABC function
-> > ABC uses the recommended way - take that as reference")
-> > 3. one by one work on the items on the TODO list
-> > 4. add support for the 32-bit SoCs to the Meson VPU DRM driver
-> > (without adding more "not recommended" code)
-> >
-> > Disclaimer: I am not familiar with the DRM subsystem - so apologies if
-> > the terminology is not correct.
-> >
-> > drivers/gpu/drm/meson/meson_dw_hdmi.c currently serves four purposes:
-> > 1. manage the TOP (glue) registers for the dw-hdmi IP
-> > This is Amlogic specific and consists of things like HPD filtering,
-> > some internal resets, etc.
-> > In my opinion this part is supposed to stay in this driver
-> Yep, it's tightly coupled to the DW-HDMI core
->
-> >
-> > 2. load the driver for the dw-hdmi IP by calling dw_hdmi_probe()
-> > I read somewhere that this is not recommended anymore and should be replaced.
-> > Is my understanding correct and what is the recommended replacement?
-> Yeah in fact the dw-hdmi glue should be a pure bridge, not a component anymore.
->
-> This means it should probe by itself entirely, should not use the component stuff.
-OK, I see
+David/Jakub, it would be best to take all three of these patches
+through the same tree.  I have discussed this with Bjorn and he
+agreed to ack them, and I request that you take them through
+net-next.
 
-> This also means all the VPU related part (mainly encoder and clock) should be moved
-> out of this file as a bridge and built with the meson_drm driver,
-> then find the "next bridge" like other drivers.
-is that linkage automatically set up with the endpoint definitions
-inside the .dts?
+Thanks.
 
-> > 3. it manages the HDMI PHY registers in the HHI register area
-> > For the 32-bit SoCs I will not follow this pattern and will create a
-> > separate PHY instead.
-> > As a long-term goal I think we should also move this into a dedicated
-> > PHY driver.
->
-> I looked at it, and ... it's complex. For the 32-bit socs it's easy because
-> you only have a single PHY setup, for the new gens you have to deal with the
-> 4k modes and co. This could be handle by adding a new parameters set to the
-> phy_configure union, but what should we add in it to be super generic ?
-you are right, on the 32-bit SoCs it's pretty easy actually.
-it's only "4k" and "everything else".
+					-Alex
 
-I think using the phy_configure approach is the right way
-but to be honest: I have not thought about which parameters to add to
-that union (for the 64-bit SoCs) to make it "generic" enough
-also I think this is a TODO "for later", so no action needed now - but
-it's great to see that you had the same idea in mind :)
+Alex Elder (3):
+  remoteproc: qcom: expose types for COMPILE_TEST
+  soc: qcom: mdt_loader: define stubs for COMPILE_TEST
+  net: ipa: support COMPILE_TEST
 
-> >
-> > 4. call back into VPU/VENC functions to set up these registers
-> > This is a blocker for 32-bit SoC support as I would have to duplicate
-> > this code if we don't make any changes. This includes things like
-> > calculating (and setting) clock frequencies, calling
-> > meson_venc_hdmi_mode_set for setting up the DVI pixel encoder, etc.
-> > My understanding is that this part should not be part of the
-> > meson_dw_hdmi driver, but "some other" driver. I don't understand
-> > which driver that's supposed to be though and how things would be
-> > wired up in the end.
->
-> Yep it should be a bridge. You can chain bridges, it's designed for such use case.
->
-> We will have internal bridges for encoders, ENCL+ENCP grouped for HDMI and ENCL.
-I see. adding to my question above: would this mean that we have then
-more "endpoints" defined in our .dts - one for the ENCI+ENCP (HDMI)
-output, another one for the ENCL (DSI), ...?
+ drivers/net/ipa/Kconfig               | 10 +++++---
+ include/linux/remoteproc/qcom_rproc.h |  4 +--
+ include/linux/soc/qcom/mdt_loader.h   | 35 +++++++++++++++++++++++++++
+ 3 files changed, 43 insertions(+), 6 deletions(-)
 
-> CVBS can be handled separately without bridges.
-indeed, let's postpone CVBS for now as it's easy to adapt the current
-code for the 32-bit SoCs.
-in a perfect world I think the CVBS encoder/bridge (whatever the
-correct type is) would be it's own driver as it's part of the HHI
-registers
+-- 
+2.20.1
 
-> I can have a try to move stuff if you can review/test on your side.
-> Would it be a good start ?
-that would be awesome
-if there's any way I can help (you add FIXMEs/TODOs to your code which
-you want me to solve, testing, etc.) then please let me know!
-
-> >
-> > In addition to HDMI my understanding is that for adding MIPI DSI
-> > support you would
-> > a) either have to follow the pattern from the meson_dw_hdmi driver or
-> > b) also require some better way to achieve this
->
-> With the cut I described before, we'll need a add a simple ENCL bridge
-> in meson_drm and a standalone bridge for dw-mipi-dsi.
-that sounds like we don't need to duplicate any code which would be great
-
-> >
-> > The biggest question marks for me are #2 and #4 from the list above.
-> > Also is there anything I have missed?
-> > Any input, feedback and questions are welcome!
-> >
-> > PS: an additional topic on the TODO list will be "use the common clock
-> > framework" for clock setup. it's currently not clear to me if that's
-> > possible on the 64-bit SoCs in all cases.
->
-> It's the same issue for 4k & co, the high freqs needs special PLL settings,
-> not sure how this would be easily doable in the PLL driver.
-> We may need to add a gx/g12 HDMI specific pll driver.
-the PLL settings are unfortunately also not very easy for the 32-bit SoCs.
-but let's have this discussion at another time, I think that changing
-the drm driver structure can be separate from this.
-
-
-Best regards,
-Martin
