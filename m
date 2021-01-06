@@ -2,115 +2,283 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C77EC2EB933
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 06:07:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B6B7B2EB938
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 06:11:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726264AbhAFFGt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Jan 2021 00:06:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53876 "EHLO
+        id S1725926AbhAFFLg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Jan 2021 00:11:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54604 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726009AbhAFFGs (ORCPT
+        with ESMTP id S1725562AbhAFFLf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Jan 2021 00:06:48 -0500
-Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E9CAC06134D
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Jan 2021 21:06:08 -0800 (PST)
-Received: by mail-pj1-x102d.google.com with SMTP id lj6so970179pjb.0
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Jan 2021 21:06:08 -0800 (PST)
+        Wed, 6 Jan 2021 00:11:35 -0500
+Received: from mail-yb1-xb35.google.com (mail-yb1-xb35.google.com [IPv6:2607:f8b0:4864:20::b35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1459BC06134C;
+        Tue,  5 Jan 2021 21:10:55 -0800 (PST)
+Received: by mail-yb1-xb35.google.com with SMTP id d37so1760566ybi.4;
+        Tue, 05 Jan 2021 21:10:54 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=a+jp8aijiy58DxcPOl4wMV4A6IsbTlkbWpcRF+h39no=;
-        b=n6ErXUBc9DzTkG9itHjGJ+eQztJ4nFXJ0bEjylysEqFfyomIYNiuZEeopa9+2QrQFb
-         dgXajEXrK3vArf7eJM0inY9jm4f6O+quKZZWNf8KY7Mu4te/M+crpoedpBfQjeo0sn2j
-         W7DWx2Msdwgc239HhH7U79VtA9+bjoAJG+nBk=
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=zXdX42ua40xKPxCS3alHiWCo/OZpqmT3ZMbLUhJVIoQ=;
+        b=ScquwSv3l1zJD5Zz7N+SxbCl1vS0Ry24uNIc6MXY5OsLM9r/Yv7dwjlqA0o8jhmd7M
+         0kD4V/zkTef/juusVHqbvV6x7ZKrS19sFnBBm8SAdqWf4bc+4GcxtKQR2Uc6oBMZbpIN
+         CNTmynMWVoLj7vgb980TnUtePUsWYc+flj5iysjRCbXA/ZNHlEgVQeRe8pIrfddAAZ9y
+         LGKF+TEbRf+9+0Wg+/d53zAk83Mcng6h3N1wsrORQULhaZSE6MDn+RPrbLrI66FRzzT8
+         zsg9gbEhXdh8Pq51Vy2WMYvjWbi02gfR03AYxr7wkraNvqZ7yI2EXTG0MW84I3BJ2dLc
+         NukQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=a+jp8aijiy58DxcPOl4wMV4A6IsbTlkbWpcRF+h39no=;
-        b=oYMCgaD3RcGHxSAE/9bupePxN6iLSrGR3pcNj8xb9NYDLQ/me4lr+rWIpOl5REh39P
-         giyxKlHA5pTNK3jugwBNvq5hxA8MOJNQc9bv7B69bwG6Oz7fi36BP1ErGcK+NyBqwqOI
-         YnfUELjfuuc4oNtQCCP5iHQmIyQObmYupqwTc8Y6z8Ba0DzthxHy6yRJtZ1b/JuHqMAG
-         vHccMedJfLKr4AzqvIrJ7HKfouczRvr6vW/kcUwck1Gyx/dnup4xIKBeDBmwFidGjTIm
-         5RnxnMsO8I7Cee+efaSWOEg1NgKCAnIdVP0gH49TOYSJY08E5lJEHxTr8UhxY9b6n7sJ
-         GClg==
-X-Gm-Message-State: AOAM533fTSCwqNoTO55wsLjrbcKSdWtTD7/P0v+8Kmy4/a9Dljo/AlyU
-        yTf2lYuRPNiPLz4QiV4dKLsllJL6IJp+EsUs
-X-Google-Smtp-Source: ABdhPJyCbhXlMX97B3jAUFrMxSj9rBddxh5FIX/r5Xx2XIEuyf28wNRiNg+HEbpL3MWu6IcVctaf8w==
-X-Received: by 2002:a17:90b:1983:: with SMTP id mv3mr2580134pjb.211.1609909567741;
-        Tue, 05 Jan 2021 21:06:07 -0800 (PST)
-Received: from localhost ([2401:fa00:1:10:725a:fff:fe46:44eb])
-        by smtp.gmail.com with ESMTPSA id h16sm931002pgd.62.2021.01.05.21.06.04
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 05 Jan 2021 21:06:07 -0800 (PST)
-From:   Yu-Hsuan Hsu <yuhsuan@chromium.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Benson Leung <bleung@chromium.org>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        Guenter Roeck <groeck@chromium.org>,
-        Cheng-Yi Chiang <cychiang@chromium.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Prashant Malani <pmalani@chromium.org>,
-        Pi-Hsun Shih <pihsun@chromium.org>,
-        Yu-Hsuan Hsu <yuhsuan@chromium.org>,
-        "Gustavo A . R . Silva" <gustavoars@kernel.org>,
-        alsa-devel@alsa-project.org
-Subject: [PATCH] ASoC: cros_ec_codec: Reset I2S RX when probing
-Date:   Wed,  6 Jan 2021 13:05:59 +0800
-Message-Id: <20210106050559.1459027-1-yuhsuan@chromium.org>
-X-Mailer: git-send-email 2.29.2.729.g45daf8777d-goog
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=zXdX42ua40xKPxCS3alHiWCo/OZpqmT3ZMbLUhJVIoQ=;
+        b=EcTd+rwUthkCrGJXvsYixjH2pZiWR7RcHpKRbeysGlyVzpp6HRxs4xJaQl9DsrupUa
+         bx1CFPZCMKK8BVUHjoPTZVY5jgb0R1SikY249St1ivUN2CEc/kWFnlHfH5+2N+ALCPFU
+         Wl8wPtXGMLGB5i7fejRlSu/SFKg63TuXyKXqWkt1qkIKKvTHATkq3IBTb8SQwrGmCg0j
+         wGWjmNIL4/jqoZNv5YWNd0LXNq4KVIRzPLtznIWmTAu69sUW26acxk7c8zLzQGXZUmi7
+         ZWFKoffEVQJAY5x1mRf12nnF6+2d1CGLVkzv1h8y8vcLU0QirkdMvFIk7q+8mSO68BjP
+         O5Fw==
+X-Gm-Message-State: AOAM531/Zkvahvni3TFHIHlwSBOnn4zPeQvZPdmX2s0mqrDmNhH9AyIO
+        ZM1UrNC6g8Y6Q7FF/Hqo/UApdqbGmTN7I9/+LQc=
+X-Google-Smtp-Source: ABdhPJzibH1Jx33aQqyK0T+FEsVCOYsD6mY+Ni1wTcXokioTjSOKv22NRgxCBbGm9JXS4QgLpHZmWs8hUeoKOxBhWjQ=
+X-Received: by 2002:a25:d44:: with SMTP id 65mr3853240ybn.260.1609909853620;
+ Tue, 05 Jan 2021 21:10:53 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <cover.1609855479.git.sean@mess.org> <13cfab3593e0ea960ca732c259bfa60bf3c16b3b.1609855479.git.sean@mess.org>
+In-Reply-To: <13cfab3593e0ea960ca732c259bfa60bf3c16b3b.1609855479.git.sean@mess.org>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Tue, 5 Jan 2021 21:10:42 -0800
+Message-ID: <CAEf4BzZgPx7YZ_S6a142gu+0XqxOq5-0=iMnAr1-DDJqyNOQrg@mail.gmail.com>
+Subject: Re: [PATCH v3 1/4] btf: add support for ints larger than 128 bits
+To:     Sean Young <sean@mess.org>
+Cc:     Yonghong Song <yhs@fb.com>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Quentin Monnet <quentin@isovalent.com>,
+        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
+        linux-doc@vger.kernel.org, Networking <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It is not guaranteed that I2S RX is disabled when the kernel booting.
-For example, if the kernel crashes while it is enabled, it will keep
-enabled until the next time EC reboots. Reset I2S RX when probing to
-fix this issue.
+On Tue, Jan 5, 2021 at 6:45 AM Sean Young <sean@mess.org> wrote:
+>
+> clang supports arbitrary length ints using the _ExtInt extension. This
+> can be useful to hold very large values, e.g. 256 bit or 512 bit types.
+>
+> Larger types (e.g. 1024 bits) are possible but I am unaware of a use
+> case for these.
+>
+> This requires the _ExtInt extension enabled in clang, which is under
+> review.
+>
+> Link: https://clang.llvm.org/docs/LanguageExtensions.html#extended-integer-types
+> Link: https://reviews.llvm.org/D93103
+>
+> Signed-off-by: Sean Young <sean@mess.org>
+> ---
+>  Documentation/bpf/btf.rst      |  4 +--
+>  include/uapi/linux/btf.h       |  2 +-
+>  kernel/bpf/btf.c               | 54 ++++++++++++++++++++++++++++------
+>  tools/include/uapi/linux/btf.h |  2 +-
+>  4 files changed, 49 insertions(+), 13 deletions(-)
+>
+> diff --git a/Documentation/bpf/btf.rst b/Documentation/bpf/btf.rst
+> index 44dc789de2b4..784f1743dbc7 100644
+> --- a/Documentation/bpf/btf.rst
+> +++ b/Documentation/bpf/btf.rst
+> @@ -132,7 +132,7 @@ The following sections detail encoding of each kind.
+>
+>    #define BTF_INT_ENCODING(VAL)   (((VAL) & 0x0f000000) >> 24)
+>    #define BTF_INT_OFFSET(VAL)     (((VAL) & 0x00ff0000) >> 16)
+> -  #define BTF_INT_BITS(VAL)       ((VAL)  & 0x000000ff)
+> +  #define BTF_INT_BITS(VAL)       ((VAL)  & 0x000003ff)
+>
+>  The ``BTF_INT_ENCODING`` has the following attributes::
+>
+> @@ -147,7 +147,7 @@ pretty print. At most one encoding can be specified for the int type.
+>  The ``BTF_INT_BITS()`` specifies the number of actual bits held by this int
+>  type. For example, a 4-bit bitfield encodes ``BTF_INT_BITS()`` equals to 4.
+>  The ``btf_type.size * 8`` must be equal to or greater than ``BTF_INT_BITS()``
+> -for the type. The maximum value of ``BTF_INT_BITS()`` is 128.
+> +for the type. The maximum value of ``BTF_INT_BITS()`` is 512.
+>
+>  The ``BTF_INT_OFFSET()`` specifies the starting bit offset to calculate values
+>  for this int. For example, a bitfield struct member has:
+> diff --git a/include/uapi/linux/btf.h b/include/uapi/linux/btf.h
+> index 5a667107ad2c..1696fd02b302 100644
+> --- a/include/uapi/linux/btf.h
+> +++ b/include/uapi/linux/btf.h
+> @@ -84,7 +84,7 @@ struct btf_type {
+>   */
+>  #define BTF_INT_ENCODING(VAL)  (((VAL) & 0x0f000000) >> 24)
+>  #define BTF_INT_OFFSET(VAL)    (((VAL) & 0x00ff0000) >> 16)
+> -#define BTF_INT_BITS(VAL)      ((VAL)  & 0x000000ff)
+> +#define BTF_INT_BITS(VAL)      ((VAL)  & 0x000003ff)
+>
+>  /* Attributes stored in the BTF_INT_ENCODING */
+>  #define BTF_INT_SIGNED (1 << 0)
+> diff --git a/kernel/bpf/btf.c b/kernel/bpf/btf.c
+> index 8d6bdb4f4d61..44bc17207e9b 100644
+> --- a/kernel/bpf/btf.c
+> +++ b/kernel/bpf/btf.c
+> @@ -166,7 +166,8 @@
+>   *
+>   */
+>
+> -#define BITS_PER_U128 (sizeof(u64) * BITS_PER_BYTE * 2)
+> +#define BITS_PER_U128 128
+> +#define BITS_PER_U512 512
+>  #define BITS_PER_BYTE_MASK (BITS_PER_BYTE - 1)
+>  #define BITS_PER_BYTE_MASKED(bits) ((bits) & BITS_PER_BYTE_MASK)
+>  #define BITS_ROUNDDOWN_BYTES(bits) ((bits) >> 3)
+> @@ -1907,9 +1908,9 @@ static int btf_int_check_member(struct btf_verifier_env *env,
+>         nr_copy_bits = BTF_INT_BITS(int_data) +
+>                 BITS_PER_BYTE_MASKED(struct_bits_off);
+>
+> -       if (nr_copy_bits > BITS_PER_U128) {
+> +       if (nr_copy_bits > BITS_PER_U512) {
+>                 btf_verifier_log_member(env, struct_type, member,
+> -                                       "nr_copy_bits exceeds 128");
+> +                                       "nr_copy_bits exceeds 512");
+>                 return -EINVAL;
+>         }
+>
+> @@ -1963,9 +1964,9 @@ static int btf_int_check_kflag_member(struct btf_verifier_env *env,
+>
+>         bytes_offset = BITS_ROUNDDOWN_BYTES(struct_bits_off);
+>         nr_copy_bits = nr_bits + BITS_PER_BYTE_MASKED(struct_bits_off);
+> -       if (nr_copy_bits > BITS_PER_U128) {
+> +       if (nr_copy_bits > BITS_PER_U512) {
+>                 btf_verifier_log_member(env, struct_type, member,
+> -                                       "nr_copy_bits exceeds 128");
+> +                                       "nr_copy_bits exceeds 512");
+>                 return -EINVAL;
+>         }
+>
+> @@ -2012,9 +2013,9 @@ static s32 btf_int_check_meta(struct btf_verifier_env *env,
+>
+>         nr_bits = BTF_INT_BITS(int_data) + BTF_INT_OFFSET(int_data);
+>
+> -       if (nr_bits > BITS_PER_U128) {
+> -               btf_verifier_log_type(env, t, "nr_bits exceeds %zu",
+> -                                     BITS_PER_U128);
+> +       if (nr_bits > BITS_PER_U512) {
+> +               btf_verifier_log_type(env, t, "nr_bits exceeds %u",
+> +                                     BITS_PER_U512);
+>                 return -EINVAL;
+>         }
+>
+> @@ -2080,6 +2081,37 @@ static void btf_int128_print(struct btf_show *show, void *data)
+>                                      lower_num);
+>  }
+>
+> +static void btf_bigint_print(struct btf_show *show, void *data, u16 nr_bits)
+> +{
+> +       /* data points to 256 or 512 bit int type */
+> +       char buf[129];
+> +       int last_u64 = nr_bits / 64 - 1;
+> +       bool seen_nonzero = false;
+> +       int i;
+> +
+> +       for (i = 0; i <= last_u64; i++) {
+> +#ifdef __BIG_ENDIAN_BITFIELD
+> +               u64 v = ((u64 *)data)[i];
+> +#else
+> +               u64 v = ((u64 *)data)[last_u64 - i];
+> +#endif
+> +               if (!seen_nonzero) {
+> +                       if (!v && i != last_u64)
+> +                               continue;
+> +
+> +                       snprintf(buf, sizeof(buf), "%llx", v);
+> +
+> +                       seen_nonzero = true;
+> +               } else {
+> +                       size_t off = strlen(buf);
 
-Signed-off-by: Yu-Hsuan Hsu <yuhsuan@chromium.org>
----
- include/linux/platform_data/cros_ec_commands.h | 1 +
- sound/soc/codecs/cros_ec_codec.c               | 7 +++++++
- 2 files changed, 8 insertions(+)
+this is wasteful, snprintf() returns number of characters printed, so
+you can maintain offset properly
 
-diff --git a/include/linux/platform_data/cros_ec_commands.h b/include/linux/platform_data/cros_ec_commands.h
-index 86376779ab31..95889ada83a3 100644
---- a/include/linux/platform_data/cros_ec_commands.h
-+++ b/include/linux/platform_data/cros_ec_commands.h
-@@ -4600,6 +4600,7 @@ enum ec_codec_i2s_rx_subcmd {
- 	EC_CODEC_I2S_RX_SET_SAMPLE_DEPTH = 0x2,
- 	EC_CODEC_I2S_RX_SET_DAIFMT = 0x3,
- 	EC_CODEC_I2S_RX_SET_BCLK = 0x4,
-+	EC_CODEC_I2S_RX_RESET = 0x5,
- 	EC_CODEC_I2S_RX_SUBCMD_COUNT,
- };
- 
-diff --git a/sound/soc/codecs/cros_ec_codec.c b/sound/soc/codecs/cros_ec_codec.c
-index f33a2a9654e7..28b3e2c48c86 100644
---- a/sound/soc/codecs/cros_ec_codec.c
-+++ b/sound/soc/codecs/cros_ec_codec.c
-@@ -1011,6 +1011,13 @@ static int cros_ec_codec_platform_probe(struct platform_device *pdev)
- 	}
- 	priv->ec_capabilities = r.capabilities;
- 
-+	/* Reset EC codec i2s rx. */
-+	p.cmd = EC_CODEC_I2S_RX_RESET;
-+	ret = send_ec_host_command(priv->ec_device, EC_CMD_EC_CODEC_I2S_RX,
-+				   (uint8_t *)&p, sizeof(p), NULL, 0);
-+	if (ret)
-+		dev_warn(dev, "failed to EC_CODEC_I2S_RESET: %d\n", ret);
-+
- 	platform_set_drvdata(pdev, priv);
- 
- 	ret = devm_snd_soc_register_component(dev, &i2s_rx_component_driver,
--- 
-2.29.2.729.g45daf8777d-goog
+> +
+> +                       snprintf(buf + off, sizeof(buf) - off, "%016llx", v);
+> +               }
+> +       }
+> +
+> +       btf_show_type_value(show, "0x%s", buf);
+> +}
 
+seen_nonzero is a bit convoluted, two simple loops might be more
+straightforward:
+
+u64 v;
+int off;
+
+/* find first non-zero u64 (or stop on the last one regardless) */
+for (i = 0; i < last_u64; i++) {
+  v = ...;
+  if (!v)
+    continue;
+}
+/* print non-zero or zero, but last u64 */
+off = snprintf(buf, sizeof(buf), "%llx", v);
+/* print the rest with zero padding */
+for (i++; i <= last_u64; i++) {
+  v = ...;
+  off += snprintf(buf + off, sizeof(buf) - off, "%016llx", v);
+}
+
+> +
+>  static void btf_int128_shift(u64 *print_num, u16 left_shift_bits,
+>                              u16 right_shift_bits)
+>  {
+> @@ -2172,7 +2204,7 @@ static void btf_int_show(const struct btf *btf, const struct btf_type *t,
+>         u32 int_data = btf_type_int(t);
+>         u8 encoding = BTF_INT_ENCODING(int_data);
+>         bool sign = encoding & BTF_INT_SIGNED;
+> -       u8 nr_bits = BTF_INT_BITS(int_data);
+> +       u16 nr_bits = BTF_INT_BITS(int_data);
+>         void *safe_data;
+>
+>         safe_data = btf_show_start_type(show, t, type_id, data);
+> @@ -2186,6 +2218,10 @@ static void btf_int_show(const struct btf *btf, const struct btf_type *t,
+>         }
+>
+>         switch (nr_bits) {
+> +       case 512:
+> +       case 256:
+> +               btf_bigint_print(show, safe_data, nr_bits);
+> +               break;
+>         case 128:
+>                 btf_int128_print(show, safe_data);
+
+btf_bigint_print() supersedes btf_int128_print(), why maintain both?
+
+>                 break;
+> diff --git a/tools/include/uapi/linux/btf.h b/tools/include/uapi/linux/btf.h
+> index 5a667107ad2c..1696fd02b302 100644
+> --- a/tools/include/uapi/linux/btf.h
+> +++ b/tools/include/uapi/linux/btf.h
+> @@ -84,7 +84,7 @@ struct btf_type {
+>   */
+>  #define BTF_INT_ENCODING(VAL)  (((VAL) & 0x0f000000) >> 24)
+>  #define BTF_INT_OFFSET(VAL)    (((VAL) & 0x00ff0000) >> 16)
+> -#define BTF_INT_BITS(VAL)      ((VAL)  & 0x000000ff)
+> +#define BTF_INT_BITS(VAL)      ((VAL)  & 0x000003ff)
+>
+>  /* Attributes stored in the BTF_INT_ENCODING */
+>  #define BTF_INT_SIGNED (1 << 0)
+> --
+> 2.29.2
+>
