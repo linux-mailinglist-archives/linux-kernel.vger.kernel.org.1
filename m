@@ -2,933 +2,216 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9EF3F2EBB87
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 10:06:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A04D2EBB8D
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 10:08:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726706AbhAFJFb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Jan 2021 04:05:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34682 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726157AbhAFJF3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Jan 2021 04:05:29 -0500
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78543C06135B
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Jan 2021 01:04:24 -0800 (PST)
-Received: from dude.hi.pengutronix.de ([2001:67c:670:100:1d::7])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ore@pengutronix.de>)
-        id 1kx4jo-0007ZU-9o; Wed, 06 Jan 2021 10:04:16 +0100
-Received: from ore by dude.hi.pengutronix.de with local (Exim 4.92)
-        (envelope-from <ore@pengutronix.de>)
-        id 1kx4jn-0000dz-HE; Wed, 06 Jan 2021 10:04:15 +0100
-From:   Oleksij Rempel <o.rempel@pengutronix.de>
-To:     Mark Rutland <mark.rutland@arm.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Shawn Guo <shawnguo@kernel.org>
-Cc:     Oleksij Rempel <o.rempel@pengutronix.de>,
-        devicetree@vger.kernel.org, Fabio Estevam <festevam@gmail.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        David Jander <david@protonic.nl>
-Subject: [PATCH v3 2/2] ARM: dts: add Protonic MVT board
-Date:   Wed,  6 Jan 2021 10:04:14 +0100
-Message-Id: <20210106090414.2344-3-o.rempel@pengutronix.de>
-X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210106090414.2344-1-o.rempel@pengutronix.de>
-References: <20210106090414.2344-1-o.rempel@pengutronix.de>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::7
-X-SA-Exim-Mail-From: ore@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+        id S1726878AbhAFJHT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Jan 2021 04:07:19 -0500
+Received: from ptr.189.cn ([183.61.185.104]:11122 "EHLO 189.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726301AbhAFJHK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 Jan 2021 04:07:10 -0500
+HMM_SOURCE_IP: 10.64.10.37:53476.2129512322
+HMM_ATTACHE_NUM: 0000
+HMM_SOURCE_TYPE: SMTP
+Received: from clientip-123.150.8.42 (unknown [10.64.10.37])
+        by 189.cn (HERMES) with SMTP id 1DF7C100785;
+        Wed,  6 Jan 2021 17:04:15 +0800 (CST)
+Received: from  ([10.64.8.34])
+        by gateway-151646-dep-54888d799-th9t2 with ESMTP id 1cf8cf80e2d742e289891543a81b04e9 for greg@kroah.com;
+        Wed Jan  6 17:04:16 2021
+X-Transaction-ID: 1cf8cf80e2d742e289891543a81b04e9
+X-filter-score: 
+X-Real-From: chensong_2000@189.cn
+X-Receive-IP: 10.64.8.34
+X-MEDUSA-Status: 0
+Sender: chensong_2000@189.cn
+From:   Song Chen <chensong_2000@189.cn>
+To:     greg@kroah.com, linux-kernel@vger.kernel.org, jkc@redhat.com,
+        sparmaintainer@unisys.com
+Cc:     Song Chen <chensong_2000@189.cn>
+Subject: [PATCH] staging: unisys: visorhba: enhance visorhba to use channel_interrupt
+Date:   Wed,  6 Jan 2021 17:04:23 +0800
+Message-Id: <1609923863-6650-1-git-send-email-chensong_2000@189.cn>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-PRTMVT is the reference platform for Protonic industrial touchscreen terminals.
+visorhba uses kthread to obtain the responses from the IO
+Service Partition periodically, on the other hand, visorbus
+provides periodic work to serve such request, therefore,
+kthread should be replaced by channel_interrupt.
 
-Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
+Signed-off-by: Song Chen <chensong_2000@189.cn>
 ---
- arch/arm/boot/dts/Makefile          |   1 +
- arch/arm/boot/dts/imx6dl-prtmvt.dts | 852 ++++++++++++++++++++++++++++
- 2 files changed, 853 insertions(+)
- create mode 100644 arch/arm/boot/dts/imx6dl-prtmvt.dts
+ drivers/staging/unisys/visorhba/visorhba_main.c | 90 +++++--------------------
+ 1 file changed, 16 insertions(+), 74 deletions(-)
 
-diff --git a/arch/arm/boot/dts/Makefile b/arch/arm/boot/dts/Makefile
-index b5b2c176947a..b727542c105b 100644
---- a/arch/arm/boot/dts/Makefile
-+++ b/arch/arm/boot/dts/Makefile
-@@ -467,6 +467,7 @@ dtb-$(CONFIG_SOC_IMX6Q) += \
- 	imx6dl-pico-pi.dtb \
- 	imx6dl-plybas.dtb \
- 	imx6dl-plym2m.dtb \
-+	imx6dl-prtmvt.dtb \
- 	imx6dl-prtrvt.dtb \
- 	imx6dl-prtvt7.dtb \
- 	imx6dl-rex-basic.dtb \
-diff --git a/arch/arm/boot/dts/imx6dl-prtmvt.dts b/arch/arm/boot/dts/imx6dl-prtmvt.dts
-new file mode 100644
-index 000000000000..a35a1c66e770
---- /dev/null
-+++ b/arch/arm/boot/dts/imx6dl-prtmvt.dts
-@@ -0,0 +1,852 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later OR MIT
-+/*
-+ * Copyright (c) 2016 Protonic Holland
-+ * Copyright (c) 2020 Oleksij Rempel <kernel@pengutronix.de>, Pengutronix
-+ */
-+
-+/dts-v1/;
-+#include <dt-bindings/display/sdtv-standards.h>
-+#include <dt-bindings/gpio/gpio.h>
-+#include <dt-bindings/input/input.h>
-+#include <dt-bindings/leds/common.h>
-+#include <dt-bindings/media/tvp5150.h>
-+#include <dt-bindings/sound/fsl-imx-audmux.h>
-+#include "imx6dl.dtsi"
-+
-+/ {
-+	model = "Protonic MVT board";
-+	compatible = "prt,prtmvt", "fsl,imx6dl";
-+
-+	chosen {
-+		stdout-path = &uart4;
-+	};
-+
-+	backlight: backlight {
-+		compatible = "pwm-backlight";
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&pinctrl_backlight>;
-+		pwms = <&pwm1 0 5000000 0>;
-+		brightness-levels = <0 16 64 255>;
-+		num-interpolated-steps = <16>;
-+		default-brightness-level = <1>;
-+		power-supply = <&reg_3v3>;
-+		enable-gpios = <&gpio4 28 GPIO_ACTIVE_HIGH>;
-+	};
-+
-+	connector {
-+		compatible = "composite-video-connector";
-+		label = "Composite0";
-+		sdtv-standards = <SDTV_STD_PAL_B>;
-+
-+		port {
-+			comp0_out: endpoint {
-+				remote-endpoint = <&tvp5150_comp0_in>;
-+			};
-+		};
-+	};
-+
-+	gpio-keys {
-+		compatible = "gpio-keys";
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&pinctrl_gpiokeys>;
-+		autorepeat;
-+
-+		power {
-+			label = "Power Button";
-+			gpios = <&gpio2 23 GPIO_ACTIVE_LOW>;
-+			linux,code = <KEY_POWER>;
-+			wakeup-source;
-+		};
-+
-+		f1 {
-+			label = "GPIO Key F1";
-+			linux,code = <KEY_F1>;
-+			gpios = <&gpio_pca 0 GPIO_ACTIVE_LOW>;
-+		};
-+
-+		f2 {
-+			label = "GPIO Key F2";
-+			linux,code = <KEY_F2>;
-+			gpios = <&gpio_pca 1 GPIO_ACTIVE_LOW>;
-+		};
-+
-+		f3 {
-+			label = "GPIO Key F3";
-+			linux,code = <KEY_F3>;
-+			gpios = <&gpio_pca 2 GPIO_ACTIVE_LOW>;
-+		};
-+
-+		f4 {
-+			label = "GPIO Key F4";
-+			linux,code = <KEY_F4>;
-+			gpios = <&gpio_pca 3 GPIO_ACTIVE_LOW>;
-+		};
-+
-+		f5 {
-+			label = "GPIO Key F5";
-+			linux,code = <KEY_F5>;
-+			gpios = <&gpio_pca 4 GPIO_ACTIVE_LOW>;
-+		};
-+
-+		cycle {
-+			label = "GPIO Key CYCLE";
-+			linux,code = <KEY_CYCLEWINDOWS>;
-+			gpios = <&gpio_pca 5 GPIO_ACTIVE_LOW>;
-+		};
-+
-+		esc {
-+			label = "GPIO Key ESC";
-+			linux,code = <KEY_ESC>;
-+			gpios = <&gpio_pca 6 GPIO_ACTIVE_LOW>;
-+		};
-+
-+		up {
-+			label = "GPIO Key UP";
-+			linux,code = <KEY_UP>;
-+			gpios = <&gpio_pca 7 GPIO_ACTIVE_LOW>;
-+		};
-+
-+		down {
-+			label = "GPIO Key DOWN";
-+			linux,code = <KEY_DOWN>;
-+			gpios = <&gpio_pca 8 GPIO_ACTIVE_LOW>;
-+		};
-+
-+		ok {
-+			label = "GPIO Key OK";
-+			linux,code = <KEY_OK>;
-+			gpios = <&gpio_pca 9 GPIO_ACTIVE_LOW>;
-+		};
-+
-+		f6 {
-+			label = "GPIO Key F6";
-+			linux,code = <KEY_F6>;
-+			gpios = <&gpio_pca 10 GPIO_ACTIVE_LOW>;
-+		};
-+
-+		f7 {
-+			label = "GPIO Key F7";
-+			linux,code = <KEY_F7>;
-+			gpios = <&gpio_pca 11 GPIO_ACTIVE_LOW>;
-+		};
-+
-+		f8 {
-+			label = "GPIO Key F8";
-+			linux,code = <KEY_F8>;
-+			gpios = <&gpio_pca 12 GPIO_ACTIVE_LOW>;
-+		};
-+
-+		f9 {
-+			label = "GPIO Key F9";
-+			linux,code = <KEY_F9>;
-+			gpios = <&gpio_pca 13 GPIO_ACTIVE_LOW>;
-+		};
-+
-+		f10 {
-+			label = "GPIO Key F10";
-+			linux,code = <KEY_F10>;
-+			gpios = <&gpio_pca 14 GPIO_ACTIVE_LOW>;
-+		};
-+
-+	};
-+
-+	leds {
-+		compatible = "gpio-leds";
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&pinctrl_leds>;
-+
-+		led-0 {
-+			label = "debug0";
-+			function = LED_FUNCTION_HEARTBEAT;
-+			gpios = <&gpio1 8 GPIO_ACTIVE_HIGH>;
-+			linux,default-trigger = "heartbeat";
-+		};
-+
-+		led-1 {
-+			label = "debug1";
-+			function = LED_FUNCTION_DISK;
-+			gpios = <&gpio1 9 GPIO_ACTIVE_HIGH>;
-+			linux,default-trigger = "disk-activity";
-+		};
-+
-+		led-2 {
-+			label = "power_led";
-+			function = LED_FUNCTION_POWER;
-+			gpios = <&gpio2 24 GPIO_ACTIVE_HIGH>;
-+			default-state = "on";
-+		};
-+	};
-+
-+	panel {
-+		compatible = "kyo,tcg070wvlq", "lg,lb070wv8";
-+		backlight = <&backlight>;
-+		power-supply = <&reg_3v3>;
-+
-+		port {
-+			panel_in: endpoint {
-+				remote-endpoint = <&lvds0_out>;
-+			};
-+		};
-+	};
-+
-+	clk50m_phy: phy-clock {
-+		compatible = "fixed-clock";
-+		#clock-cells = <0>;
-+		clock-frequency = <50000000>;
-+	};
-+
-+	reg_1v8: regulator-1v8 {
-+		compatible = "regulator-fixed";
-+		regulator-name = "1v8";
-+		regulator-min-microvolt = <1800000>;
-+		regulator-max-microvolt = <1800000>;
-+	};
-+
-+	reg_3v3: regulator-3v3 {
-+		compatible = "regulator-fixed";
-+		regulator-name = "3v3";
-+		regulator-min-microvolt = <3300000>;
-+		regulator-max-microvolt = <3300000>;
-+	};
-+
-+	reg_h1_vbus: regulator-h1-vbus {
-+		compatible = "regulator-fixed";
-+		regulator-name = "h1-vbus";
-+		regulator-min-microvolt = <5000000>;
-+		regulator-max-microvolt = <5000000>;
-+		gpio = <&gpio1 0 GPIO_ACTIVE_HIGH>;
-+		enable-active-high;
-+	};
-+
-+	reg_otg_vbus: regulator-otg-vbus {
-+		compatible = "regulator-fixed";
-+		regulator-name = "otg-vbus";
-+		regulator-min-microvolt = <5000000>;
-+		regulator-max-microvolt = <5000000>;
-+		gpio = <&gpio3 22 GPIO_ACTIVE_HIGH>;
-+		enable-active-high;
-+	};
-+
-+	sound {
-+		compatible = "simple-audio-card";
-+		simple-audio-card,name = "prti6q-sgtl5000";
-+		simple-audio-card,format = "i2s";
-+		simple-audio-card,widgets =
-+			"Microphone", "Microphone Jack",
-+			"Line", "Line In Jack",
-+			"Headphone", "Headphone Jack",
-+			"Speaker", "External Speaker";
-+		simple-audio-card,routing =
-+			"MIC_IN", "Microphone Jack",
-+			"LINE_IN", "Line In Jack",
-+			"Headphone Jack", "HP_OUT",
-+			"External Speaker", "LINE_OUT";
-+
-+		simple-audio-card,cpu {
-+			sound-dai = <&ssi1>;
-+			system-clock-frequency = <0>;
-+		};
-+
-+		simple-audio-card,codec {
-+			sound-dai = <&codec>;
-+			bitclock-master;
-+			frame-master;
-+		};
-+	};
-+};
-+
-+&audmux {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_audmux>;
-+	status = "okay";
-+
-+	mux-ssi1 {
-+		fsl,audmux-port = <0>;
-+		fsl,port-config = <
-+			IMX_AUDMUX_V2_PTCR_SYN		0
-+			IMX_AUDMUX_V2_PTCR_TFSEL(2)	0
-+			IMX_AUDMUX_V2_PTCR_TCSEL(2)	0
-+			IMX_AUDMUX_V2_PTCR_TFSDIR	0
-+			IMX_AUDMUX_V2_PTCR_TCLKDIR	IMX_AUDMUX_V2_PDCR_RXDSEL(2)
-+		>;
-+	};
-+
-+	mux-pins3 {
-+		fsl,audmux-port = <2>;
-+		fsl,port-config = <
-+			IMX_AUDMUX_V2_PTCR_SYN		IMX_AUDMUX_V2_PDCR_RXDSEL(0)
-+			0				IMX_AUDMUX_V2_PDCR_TXRXEN
-+		>;
-+	};
-+};
-+
-+&can1 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_can1>;
-+	status = "okay";
-+};
-+
-+&can2 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_can2>;
-+	status = "okay";
-+};
-+
-+&clks {
-+	assigned-clocks = <&clks IMX6QDL_CLK_LDB_DI0_SEL>;
-+	assigned-clock-parents = <&clks IMX6QDL_CLK_PLL5_VIDEO_DIV>;
-+};
-+
-+&ecspi1 {
-+	cs-gpios = <&gpio3 19 GPIO_ACTIVE_LOW>;
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_ecspi1>;
-+	status = "okay";
-+
-+	flash@0 {
-+		compatible = "jedec,spi-nor";
-+		reg = <0>;
-+		spi-max-frequency = <20000000>;
-+	};
-+};
-+
-+&fec {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_enet>;
-+	phy-mode = "rmii";
-+	clocks = <&clks IMX6QDL_CLK_ENET>,
-+		 <&clks IMX6QDL_CLK_ENET>,
-+		 <&clk50m_phy>;
-+	clock-names = "ipg", "ahb", "ptp";
-+	phy-handle = <&rmii_phy>;
-+	status = "okay";
-+
-+	mdio {
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+
-+		/* Microchip KSZ8081RNA PHY */
-+		rmii_phy: ethernet-phy@0 {
-+			reg = <0>;
-+			interrupts-extended = <&gpio4 30 IRQ_TYPE_LEVEL_LOW>;
-+			reset-gpios = <&gpio4 26 GPIO_ACTIVE_LOW>;
-+			reset-assert-us = <10000>;
-+			reset-deassert-us = <3000>;
-+		};
-+	};
-+};
-+
-+&gpio1 {
-+	gpio-line-names =
-+		"CAN1_TERM", "SD1_CD", "ITU656_RESET", "CAM1_MIRROR",
-+			"CAM2_MIRROR", "", "", "SMBALERT",
-+		"DEBUG_0", "DEBUG_1", "", "", "", "", "", "",
-+		"SD1_DATA0", "SD1_DATA1", "SD1_CMD", "SD1_DATA2", "SD1_CLK",
-+			"SD1_DATA3", "", "",
-+		"", "", "", "", "", "", "", "";
-+};
-+
-+&gpio2 {
-+	gpio-line-names =
-+		"", "", "", "", "", "", "", "",
-+		"REV_ID0", "REV_ID1", "REV_ID2", "REV_ID3", "REV_ID4",
-+			"BOARD_ID0", "BOARD_ID1", "BOARD_ID2",
-+		"", "", "", "", "", "", "", "ON_SWITCH",
-+		"POWER_LED", "", "", "", "", "", "", "";
-+};
-+
-+&gpio3 {
-+	gpio-line-names =
-+		"", "", "", "", "", "", "", "",
-+		"", "", "", "", "", "", "", "",
-+		"ECSPI1_SCLK", "ECSPI1_MISO", "ECSPI1_MOSI", "ECSPI1_SS1",
-+			"CPU_ON1_FB", "USB_EXT1_OC", "USB_EXT1_PWR", "YACO_IRQ",
-+		"TSS_TXD", "TSS_RXD", "", "", "", "", "YACO_BOOT0",
-+			"YACO_RESET";
-+};
-+
-+&gpio4 {
-+	gpio-line-names =
-+		"", "", "", "", "", "", "", "",
-+		"", "", "", "", "CAN1_SR", "CAN2_SR", "CAN2_TX", "CAN2_RX",
-+		"", "", "DIP1_FB", "", "", "", "", "",
-+		"CPU_LIGHT_ON", "", "ETH_RESET", "", "BL_EN",
-+			"BL_PWM", "ETH_INTRP", "";
-+};
-+
-+&gpio5 {
-+	gpio-line-names =
-+		"", "", "", "", "", "", "", "",
-+		"", "", "", "", "", "", "", "",
-+		"", "", "", "", "", "", "", "",
-+		"I2S_LRCLK", "I2S_DIN", "I2C1_SDA", "I2C1_SCL", "YACO_AUX_RX",
-+			"YACO_AUX_TX", "ITU656_D0", "ITU656_D1";
-+};
-+
-+&i2c1 {
-+	clock-frequency = <100000>;
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_i2c1>;
-+	status = "okay";
-+
-+	codec: audio-codec@a {
-+		compatible = "fsl,sgtl5000";
-+		reg = <0xa>;
-+		#sound-dai-cells = <0>;
-+		clocks = <&clks 201>;
-+		VDDA-supply = <&reg_3v3>;
-+		VDDIO-supply = <&reg_3v3>;
-+		VDDD-supply = <&reg_1v8>;
-+	};
-+
-+	video@5c {
-+		compatible = "ti,tvp5150";
-+		reg = <0x5c>;
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+
-+		port@0 {
-+			reg = <0>;
-+
-+			tvp5150_comp0_in: endpoint {
-+				remote-endpoint = <&comp0_out>;
-+			};
-+		};
-+
-+		/* Output port 2 is video output pad */
-+		port@2 {
-+			reg = <2>;
-+			tvp5151_to_ipu1_csi0_mux: endpoint {
-+				remote-endpoint = <&ipu1_csi0_mux_from_parallel_sensor>;
-+			};
-+		};
-+	};
-+
-+	gpio_pca: gpio@74 {
-+		compatible = "nxp,pca9539";
-+		reg = <0x74>;
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&pinctrl_pca9539>;
-+		interrupt-parent = <&gpio4>;
-+		interrupts = <5 IRQ_TYPE_LEVEL_LOW>;
-+		gpio-controller;
-+		#gpio-cells = <2>;
-+	};
-+
-+	/* additional i2c devices are added automatically by the boot loader */
-+};
-+
-+&i2c3 {
-+	clock-frequency = <100000>;
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_i2c3>;
-+	status = "okay";
-+
-+	adc@49 {
-+		compatible = "ti,ads1015";
-+		reg = <0x49>;
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+
-+		channel@4 {
-+			reg = <4>;
-+			ti,gain = <3>;
-+			ti,datarate = <3>;
-+		};
-+
-+		channel@5 {
-+			reg = <5>;
-+			ti,gain = <3>;
-+			ti,datarate = <3>;
-+		};
-+
-+		channel@6 {
-+			reg = <6>;
-+			ti,gain = <3>;
-+			ti,datarate = <3>;
-+		};
-+
-+		channel@7 {
-+			reg = <7>;
-+			ti,gain = <3>;
-+			ti,datarate = <3>;
-+		};
-+	};
-+
-+	rtc@51 {
-+		compatible = "nxp,pcf8563";
-+		reg = <0x51>;
-+	};
-+
-+	temperature-sensor@70 {
-+		compatible = "ti,tmp103";
-+		reg = <0x70>;
-+	};
-+};
-+
-+&ipu1_csi0 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_ipu1_csi0>;
-+	status = "okay";
-+};
-+
-+&ipu1_csi0_mux_from_parallel_sensor {
-+	remote-endpoint = <&tvp5151_to_ipu1_csi0_mux>;
-+};
-+
-+&ldb {
-+	status = "okay";
-+
-+	lvds-channel@0 {
-+		status = "okay";
-+
-+		port@4 {
-+			reg = <4>;
-+
-+			lvds0_out: endpoint {
-+				remote-endpoint = <&panel_in>;
-+			};
-+		};
-+	};
-+};
-+
-+&pcie {
-+	status = "okay";
-+};
-+
-+&pwm1 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_pwm1>;
-+	status = "okay";
-+};
-+
-+&ssi1 {
-+	#sound-dai-cells = <0>;
-+	fsl,mode = "ac97-slave";
-+	status = "okay";
-+};
-+
-+&uart1 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_uart1>;
-+	status = "okay";
-+};
-+
-+&uart2 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_uart2>;
-+	status = "okay";
-+};
-+
-+&uart3 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_uart3>;
-+	status = "okay";
-+};
-+
-+&uart4 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_uart4>;
-+	status = "okay";
-+};
-+
-+&uart5 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_uart5>;
-+	status = "okay";
-+};
-+
-+&usbh1 {
-+	vbus-supply = <&reg_h1_vbus>;
-+	pinctrl-names = "default";
-+	phy_type = "utmi";
-+	dr_mode = "host";
-+	status = "okay";
-+};
-+
-+&usbotg {
-+	vbus-supply = <&reg_otg_vbus>;
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_usbotg>;
-+	phy_type = "utmi";
-+	dr_mode = "host";
-+	disable-over-current;
-+	status = "okay";
-+};
-+
-+&usdhc1 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_usdhc1>;
-+	cd-gpios = <&gpio1 1 GPIO_ACTIVE_LOW>;
-+	no-1-8-v;
-+	disable-wp;
-+	cap-sd-highspeed;
-+	no-mmc;
-+	no-sdio;
-+	status = "okay";
-+};
-+
-+&usdhc3 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_usdhc3>;
-+	bus-width = <8>;
-+	no-1-8-v;
-+	non-removable;
-+	no-sd;
-+	no-sdio;
-+	status = "okay";
-+};
-+
-+&iomuxc {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_hog>;
-+
-+	pinctrl_audmux: audmuxgrp {
-+		fsl,pins = <
-+			/* SGTL5000 sys_mclk */
-+			MX6QDL_PAD_CSI0_MCLK__CCM_CLKO1			0x030b0
-+			MX6QDL_PAD_CSI0_DAT7__AUD3_RXD			0x130b0
-+			MX6QDL_PAD_CSI0_DAT4__AUD3_TXC			0x130b0
-+			MX6QDL_PAD_CSI0_DAT5__AUD3_TXD			0x110b0
-+			MX6QDL_PAD_CSI0_DAT6__AUD3_TXFS			0x130b0
-+		>;
-+	};
-+
-+	pinctrl_backlight: backlightgrp {
-+		fsl,pins = <
-+			MX6QDL_PAD_DISP0_DAT7__GPIO4_IO28		0x1b0b0
-+		>;
-+	};
-+
-+	pinctrl_can1: can1grp {
-+		fsl,pins = <
-+			MX6QDL_PAD_KEY_ROW2__FLEXCAN1_RX		0x1b000
-+			MX6QDL_PAD_KEY_COL2__FLEXCAN1_TX		0x3008
-+			/* CAN1_SR */
-+			MX6QDL_PAD_KEY_COL3__GPIO4_IO12			0x13008
-+			/* CAN1_TERM */
-+			MX6QDL_PAD_GPIO_0__GPIO1_IO00			0x1b088
-+		>;
-+	};
-+
-+	pinctrl_can2: can2grp {
-+		fsl,pins = <
-+			MX6QDL_PAD_KEY_ROW4__FLEXCAN2_RX		0x1b000
-+			MX6QDL_PAD_KEY_COL4__FLEXCAN2_TX		0x3008
-+			/* CAN2_SR */
-+			MX6QDL_PAD_KEY_ROW3__GPIO4_IO13			0x13008
-+		>;
-+	};
-+
-+	pinctrl_ecspi1: ecspi1grp {
-+		fsl,pins = <
-+			MX6QDL_PAD_EIM_D17__ECSPI1_MISO			0x100b1
-+			MX6QDL_PAD_EIM_D18__ECSPI1_MOSI			0x100b1
-+			MX6QDL_PAD_EIM_D16__ECSPI1_SCLK			0x100b1
-+			/* CS */
-+			MX6QDL_PAD_EIM_D19__GPIO3_IO19			0x000b1
-+		>;
-+	};
-+
-+	pinctrl_enet: enetgrp {
-+		fsl,pins = <
-+			/* MX6QDL_ENET_PINGRP4 */
-+			MX6QDL_PAD_ENET_MDC__ENET_MDC			0x1b0b0
-+			MX6QDL_PAD_ENET_MDIO__ENET_MDIO			0x1b0b0
-+			MX6QDL_PAD_ENET_RXD0__ENET_RX_DATA0		0x1b0b0
-+			MX6QDL_PAD_ENET_RXD1__ENET_RX_DATA1		0x1b0b0
-+			MX6QDL_PAD_ENET_RX_ER__ENET_RX_ER		0x1b0b0
-+			MX6QDL_PAD_ENET_TX_EN__ENET_TX_EN		0x1b0b0
-+			MX6QDL_PAD_ENET_TXD0__ENET_TX_DATA0		0x1b0b0
-+			MX6QDL_PAD_ENET_TXD1__ENET_TX_DATA1		0x1b0b0
-+			MX6QDL_PAD_ENET_CRS_DV__ENET_RX_EN		0x1b0b0
-+			MX6QDL_PAD_GPIO_16__ENET_REF_CLK		0x1b0b0
-+			/* Phy reset */
-+			MX6QDL_PAD_DISP0_DAT5__GPIO4_IO26		0x1b0b0
-+			/* nINTRP */
-+			MX6QDL_PAD_DISP0_DAT9__GPIO4_IO30		0x1b0b0
-+		>;
-+	};
-+
-+	pinctrl_gpiokeys: gpiokeygrp {
-+		fsl,pins = <
-+			/* nON_SWITCH */
-+			MX6QDL_PAD_EIM_CS0__GPIO2_IO23			0x1b0b0
-+		>;
-+	};
-+
-+	pinctrl_hog: hoggrp {
-+		fsl,pins = <
-+			/* ITU656_nRESET */
-+			MX6QDL_PAD_GPIO_2__GPIO1_IO02			0x1b0b0
-+			/* CAM1_MIRROR */
-+			MX6QDL_PAD_GPIO_3__GPIO1_IO03			0x130b0
-+			/* CAM2_MIRROR */
-+			MX6QDL_PAD_GPIO_4__GPIO1_IO04			0x130b0
-+			/* CAM_nDETECT */
-+			MX6QDL_PAD_GPIO_17__GPIO7_IO12			0x1b0b0
-+			/* ISB_IN1 */
-+			MX6QDL_PAD_EIM_A16__GPIO2_IO22			0x130b0
-+			/* ISB_nIN2 */
-+			MX6QDL_PAD_EIM_A17__GPIO2_IO21			0x1b0b0
-+			/* WARN_LIGHT */
-+			MX6QDL_PAD_EIM_A19__GPIO2_IO19			0x100b0
-+			/* ON2_FB */
-+			MX6QDL_PAD_EIM_A25__GPIO5_IO02			0x100b0
-+			/* YACO_nIRQ */
-+			MX6QDL_PAD_EIM_D23__GPIO3_IO23			0x1b0b0
-+			/* YACO_BOOT0 */
-+			MX6QDL_PAD_EIM_D30__GPIO3_IO30			0x130b0
-+			/* YACO_nRESET */
-+			MX6QDL_PAD_EIM_D31__GPIO3_IO31			0x1b0b0
-+			/* FORCE_ON1 */
-+			MX6QDL_PAD_EIM_EB2__GPIO2_IO30			0x1b0b0
-+			/* AUDIO_nRESET */
-+			MX6QDL_PAD_CSI0_VSYNC__GPIO5_IO21		0x1f0b0
-+			/* ITU656_nPDN */
-+			MX6QDL_PAD_CSI0_DATA_EN__GPIO5_IO20		0x1b0b0
-+
-+			/* HW revision detect */
-+			/* REV_ID0 */
-+			MX6QDL_PAD_SD4_DAT0__GPIO2_IO08			0x1b0b0
-+			/* REV_ID1 */
-+			MX6QDL_PAD_SD4_DAT1__GPIO2_IO09			0x1b0b0
-+			/* REV_ID2 */
-+			MX6QDL_PAD_SD4_DAT2__GPIO2_IO10			0x1b0b0
-+			/* REV_ID3 */
-+			MX6QDL_PAD_SD4_DAT3__GPIO2_IO11			0x1b0b0
-+			/* REV_ID4 */
-+			MX6QDL_PAD_SD4_DAT4__GPIO2_IO12			0x1b0b0
-+
-+			/* New in HW revision 1 */
-+			/* ON1_FB */
-+			MX6QDL_PAD_EIM_D20__GPIO3_IO20			0x100b0
-+			/* DIP1_FB */
-+			MX6QDL_PAD_DI0_PIN2__GPIO4_IO18			0x1b0b0
-+		>;
-+	};
-+
-+	pinctrl_i2c1: i2c1grp {
-+		fsl,pins = <
-+			MX6QDL_PAD_CSI0_DAT8__I2C1_SDA		0x4001f8b1
-+			MX6QDL_PAD_CSI0_DAT9__I2C1_SCL		0x4001f8b1
-+		>;
-+	};
-+
-+	pinctrl_i2c3: i2c3grp {
-+		fsl,pins = <
-+			MX6QDL_PAD_GPIO_5__I2C3_SCL		0x4001b8b1
-+			MX6QDL_PAD_GPIO_6__I2C3_SDA		0x4001b8b1
-+		>;
-+	};
-+
-+	pinctrl_ipu1_csi0: ipu1csi0grp {
-+		fsl,pins = <
-+			MX6QDL_PAD_CSI0_DAT12__IPU1_CSI0_DATA12		0x1b0b0
-+			MX6QDL_PAD_CSI0_DAT13__IPU1_CSI0_DATA13		0x1b0b0
-+			MX6QDL_PAD_CSI0_DAT14__IPU1_CSI0_DATA14		0x1b0b0
-+			MX6QDL_PAD_CSI0_DAT15__IPU1_CSI0_DATA15		0x1b0b0
-+			MX6QDL_PAD_CSI0_DAT16__IPU1_CSI0_DATA16		0x1b0b0
-+			MX6QDL_PAD_CSI0_DAT17__IPU1_CSI0_DATA17		0x1b0b0
-+			MX6QDL_PAD_CSI0_DAT18__IPU1_CSI0_DATA18		0x1b0b0
-+			MX6QDL_PAD_CSI0_DAT19__IPU1_CSI0_DATA19		0x1b0b0
-+			MX6QDL_PAD_CSI0_PIXCLK__IPU1_CSI0_PIXCLK	0x1b0b0
-+		>;
-+	};
-+
-+	pinctrl_leds: ledsgrp {
-+		fsl,pins = <
-+			/* DEBUG0 */
-+			MX6QDL_PAD_DI0_DISP_CLK__GPIO4_IO16		0x1b0b0
-+			/* DEBUG1 */
-+			MX6QDL_PAD_DI0_PIN15__GPIO4_IO17		0x1b0b0
-+			/* POWER_LED */
-+			MX6QDL_PAD_EIM_CS1__GPIO2_IO24			0x1b0b0
-+		>;
-+	};
-+
-+	pinctrl_pca9539: pca9539 {
-+		fsl,pins = <
-+			MX6QDL_PAD_GPIO_19__GPIO4_IO05			0x1b0b0
-+		>;
-+	};
-+
-+	pinctrl_pwm1: pwm1grp {
-+		fsl,pins = <
-+			MX6QDL_PAD_DISP0_DAT8__PWM1_OUT			0x1b0b0
-+		>;
-+	};
-+
-+	/* YaCO AUX Uart */
-+	pinctrl_uart1: uart1grp {
-+		fsl,pins = <
-+			MX6QDL_PAD_CSI0_DAT10__UART1_TX_DATA		0x1b0b1
-+			MX6QDL_PAD_CSI0_DAT11__UART1_RX_DATA		0x1b0b1
-+		>;
-+	};
-+
-+	pinctrl_uart2: uart2grp {
-+		fsl,pins = <
-+			MX6QDL_PAD_EIM_D26__UART2_TX_DATA		0x1b0b1
-+			MX6QDL_PAD_EIM_D27__UART2_RX_DATA		0x1b0b1
-+		>;
-+	};
-+
-+	/* YaCO Touchscreen UART */
-+	pinctrl_uart3: uart3grp {
-+		fsl,pins = <
-+			MX6QDL_PAD_EIM_D24__UART3_TX_DATA		0x1b0b1
-+			MX6QDL_PAD_EIM_D25__UART3_RX_DATA		0x1b0b1
-+		>;
-+	};
-+
-+	pinctrl_uart4: uart4grp {
-+		fsl,pins = <
-+			MX6QDL_PAD_KEY_COL0__UART4_TX_DATA		0x1b0b1
-+			MX6QDL_PAD_KEY_ROW0__UART4_RX_DATA		0x1b0b1
-+		>;
-+	};
-+
-+	pinctrl_uart5: uart5grp {
-+		fsl,pins = <
-+			MX6QDL_PAD_KEY_COL1__UART5_TX_DATA		0x1b0b1
-+			MX6QDL_PAD_KEY_ROW1__UART5_RX_DATA		0x1b0b1
-+		>;
-+	};
-+
-+	pinctrl_usbotg: usbotggrp {
-+		fsl,pins = <
-+			MX6QDL_PAD_EIM_D21__USB_OTG_OC			0x1b0b0
-+			/* power enable, high active */
-+			MX6QDL_PAD_EIM_D22__GPIO3_IO22			0x1b0b0
-+		>;
-+	};
-+
-+	pinctrl_usdhc1: usdhc1grp {
-+		fsl,pins = <
-+			MX6QDL_PAD_SD1_CMD__SD1_CMD			0x170f9
-+			MX6QDL_PAD_SD1_CLK__SD1_CLK			0x100f9
-+			MX6QDL_PAD_SD1_DAT0__SD1_DATA0			0x170f9
-+			MX6QDL_PAD_SD1_DAT1__SD1_DATA1			0x170f9
-+			MX6QDL_PAD_SD1_DAT2__SD1_DATA2			0x170f9
-+			MX6QDL_PAD_SD1_DAT3__SD1_DATA3			0x170f9
-+			MX6QDL_PAD_GPIO_1__GPIO1_IO01			0x1b0b0
-+		>;
-+	};
-+
-+	pinctrl_usdhc3: usdhc3grp {
-+		fsl,pins = <
-+			MX6QDL_PAD_SD3_CMD__SD3_CMD			0x17099
-+			MX6QDL_PAD_SD3_CLK__SD3_CLK			0x10099
-+			MX6QDL_PAD_SD3_DAT0__SD3_DATA0			0x17099
-+			MX6QDL_PAD_SD3_DAT1__SD3_DATA1			0x17099
-+			MX6QDL_PAD_SD3_DAT2__SD3_DATA2			0x17099
-+			MX6QDL_PAD_SD3_DAT3__SD3_DATA3			0x17099
-+			MX6QDL_PAD_SD3_DAT4__SD3_DATA4			0x17099
-+			MX6QDL_PAD_SD3_DAT5__SD3_DATA5			0x17099
-+			MX6QDL_PAD_SD3_DAT6__SD3_DATA6			0x17099
-+			MX6QDL_PAD_SD3_DAT7__SD3_DATA7			0x17099
-+			MX6QDL_PAD_SD3_RST__SD3_RESET			0x1b0b1
-+		>;
-+	};
-+};
+diff --git a/drivers/staging/unisys/visorhba/visorhba_main.c b/drivers/staging/unisys/visorhba/visorhba_main.c
+index 7ae5306..4455d26 100644
+--- a/drivers/staging/unisys/visorhba/visorhba_main.c
++++ b/drivers/staging/unisys/visorhba/visorhba_main.c
+@@ -74,14 +74,10 @@ struct visorhba_devdata {
+ 	unsigned long long interrupts_notme;
+ 	unsigned long long interrupts_disabled;
+ 	u64 __iomem *flags_addr;
+-	atomic_t interrupt_rcvd;
+-	wait_queue_head_t rsp_queue;
+ 	struct visordisk_info head;
+ 	unsigned int max_buff_len;
+ 	int devnum;
+-	struct task_struct *thread;
+-	int thread_wait_ms;
+-
++	struct uiscmdrsp *cmdrsp;
+ 	/*
+ 	 * allows us to pass int handles back-and-forth between us and
+ 	 * iovm, instead of raw pointers
+@@ -97,39 +93,6 @@ struct visorhba_devices_open {
+ };
+ 
+ /*
+- * visor_thread_start - Starts a thread for the device
+- * @threadfn:   Function the thread starts
+- * @thrcontext: Context to pass to the thread, i.e. devdata
+- * @name:	String describing name of thread
+- *
+- * Starts a thread for the device.
+- *
+- * Return: The task_struct * denoting the thread on success,
+- *	   or NULL on failure
+- */
+-static struct task_struct *visor_thread_start(int (*threadfn)(void *),
+-					      void *thrcontext, char *name)
+-{
+-	struct task_struct *task;
+-
+-	task = kthread_run(threadfn, thrcontext, "%s", name);
+-	if (IS_ERR(task)) {
+-		pr_err("visorbus failed to start thread\n");
+-		return NULL;
+-	}
+-	return task;
+-}
+-
+-/*
+- * visor_thread_stop - Stops the thread if it is running
+- * @task: Description of process to stop
+- */
+-static void visor_thread_stop(struct task_struct *task)
+-{
+-	kthread_stop(task);
+-}
+-
+-/*
+  * add_scsipending_entry - Save off io command that is pending in
+  *			   Service Partition
+  * @devdata: Pointer to devdata
+@@ -730,7 +693,7 @@ static void visorhba_serverdown_complete(struct visorhba_devdata *devdata)
+ 	/* Stop using the IOVM response queue (queue should be drained
+ 	 * by the end)
+ 	 */
+-	visor_thread_stop(devdata->thread);
++	visorbus_disable_channel_interrupts(devdata->dev);
+ 
+ 	/* Fail commands that weren't completed */
+ 	spin_lock_irqsave(&devdata->privlock, flags);
+@@ -952,37 +915,18 @@ static void drain_queue(struct uiscmdrsp *cmdrsp,
+ }
+ 
+ /*
+- * process_incoming_rsps - Process responses from IOSP
+- * @v:  Void pointer to visorhba_devdata
+- *
+- * Main function for the thread that processes the responses
+- * from the IO Service Partition. When the queue is empty, wait
+- * to check to see if it is full again.
+- *
+- * Return: 0 on success, -ENOMEM on failure
++ * This is used only when this driver is active as an hba driver in the
++ * client guest partition.  It is called periodically so we can obtain
++ * and process the command respond from the IO Service Partition periodically.
+  */
+-static int process_incoming_rsps(void *v)
++static void visorhba_channel_interrupt(struct visor_device *dev)
+ {
+-	struct visorhba_devdata *devdata = v;
+-	struct uiscmdrsp *cmdrsp = NULL;
+-	const int size = sizeof(*cmdrsp);
++	struct visorhba_devdata *devdata = dev_get_drvdata(&dev->device);
+ 
+-	cmdrsp = kmalloc(size, GFP_ATOMIC);
+-	if (!cmdrsp)
+-		return -ENOMEM;
++	if (!devdata)
++		return;
+ 
+-	while (1) {
+-		if (kthread_should_stop())
+-			break;
+-		wait_event_interruptible_timeout(
+-			devdata->rsp_queue, (atomic_read(
+-					     &devdata->interrupt_rcvd) == 1),
+-				msecs_to_jiffies(devdata->thread_wait_ms));
+-		/* drain queue */
+-		drain_queue(cmdrsp, devdata);
+-	}
+-	kfree(cmdrsp);
+-	return 0;
++	drain_queue(devdata->cmdrsp, devdata);
+ }
+ 
+ /*
+@@ -1028,8 +972,7 @@ static int visorhba_resume(struct visor_device *dev,
+ 	if (devdata->serverdown && !devdata->serverchangingstate)
+ 		devdata->serverchangingstate = true;
+ 
+-	devdata->thread = visor_thread_start(process_incoming_rsps, devdata,
+-					     "vhba_incming");
++	visorbus_enable_channel_interrupts(dev);
+ 	devdata->serverdown = false;
+ 	devdata->serverchangingstate = false;
+ 
+@@ -1095,7 +1038,6 @@ static int visorhba_probe(struct visor_device *dev)
+ 		goto err_debugfs_dir;
+ 	}
+ 
+-	init_waitqueue_head(&devdata->rsp_queue);
+ 	spin_lock_init(&devdata->privlock);
+ 	devdata->serverdown = false;
+ 	devdata->serverchangingstate = false;
+@@ -1113,9 +1055,8 @@ static int visorhba_probe(struct visor_device *dev)
+ 
+ 	idr_init(&devdata->idr);
+ 
+-	devdata->thread_wait_ms = 2;
+-	devdata->thread = visor_thread_start(process_incoming_rsps, devdata,
+-					     "vhba_incoming");
++	devdata->cmdrsp = kmalloc(sizeof(*devdata->cmdrsp), GFP_ATOMIC);
++	visorbus_enable_channel_interrupts(dev);
+ 
+ 	scsi_scan_host(scsihost);
+ 
+@@ -1150,7 +1091,8 @@ static void visorhba_remove(struct visor_device *dev)
+ 		return;
+ 
+ 	scsihost = devdata->scsihost;
+-	visor_thread_stop(devdata->thread);
++	kfree(devdata->cmdrsp);
++	visorbus_disable_channel_interrupts(dev);
+ 	scsi_remove_host(scsihost);
+ 	scsi_host_put(scsihost);
+ 
+@@ -1173,7 +1115,7 @@ static struct visor_driver visorhba_driver = {
+ 	.remove = visorhba_remove,
+ 	.pause = visorhba_pause,
+ 	.resume = visorhba_resume,
+-	.channel_interrupt = NULL,
++	.channel_interrupt = visorhba_channel_interrupt,
+ };
+ 
+ /*
 -- 
-2.30.0
+2.7.4
 
