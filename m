@@ -2,90 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5039A2EC5FD
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 23:07:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 16FEF2EC603
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 23:09:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727498AbhAFWGg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Jan 2021 17:06:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43864 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726102AbhAFWGf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Jan 2021 17:06:35 -0500
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48D5BC061575;
-        Wed,  6 Jan 2021 14:05:55 -0800 (PST)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4DB3Mz23TNz9sSs;
-        Thu,  7 Jan 2021 09:05:51 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1609970752;
-        bh=vUUzf81NNkRzeMSJOm3zRfcOUmv4NcIoF/8trZU4cFM=;
-        h=Date:From:To:Cc:Subject:From;
-        b=FB9Vld3I+FyjDwEYa6U2Ocl2IeqIf/BHrDzFV7T6lgkECtXzuDic2qPm/3iYtSuv1
-         7EyKahPIPfvQxEmSFXoIJFY3j4KBTTapm/pMBLLbzfXRBnxikneMsDU/zDWHKUTSYd
-         V3p75rUtM7IuYVRlZUqwsqohflRnS8bYg1TEEEv/omsnR2w5xh79bi1iOPCxzIzouD
-         Hb/7ELUTNfny+WOp8HvGLUWPFa8SBRZmlaCVQK5AXwSwt4IIJNnZ1jG34ETPxWfkzP
-         FmrIKDdaouL0ZHJxUs/++Pw92VtlKNiNt/0EOkS0ac1Tq4V9GqZQMpb7FppaoZz2nq
-         1vC/lfHwC4j2Q==
-Date:   Thu, 7 Jan 2021 09:05:50 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Johannes Berg <johannes.berg@intel.com>,
-        linux-wireless@vger.kernel.org
-Cc:     Carl Huang <cjhuang@codeaurora.org>,
-        David Miller <davem@davemloft.net>,
-        Networking <netdev@vger.kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build warning after merge of the origin tree
-Message-ID: <20210107090550.725f9dc9@canb.auug.org.au>
+        id S1727571AbhAFWHi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Jan 2021 17:07:38 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41732 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727150AbhAFWHh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 Jan 2021 17:07:37 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BCEA123331
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Jan 2021 22:06:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1609970816;
+        bh=Ixc+goeMvYqUDQiLxNgX+122s0AjmJqZ7wbVeiF+/pw=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=s4kUfmRSy2kqOn63TsGBzxFkeYfc0040WS8cDg4sIKsvPCj4NwOvUWb5qshIv5Ovm
+         uE134PQRFTidMRFTL56+keSsVo6nIp1gmaOjXb+n0WI52VPCUCIKcInoPcL+7xvsfG
+         0D7GgiI1Xcjm6tgynUzV0YE8d6VbEUmpt4FxbDws0dE5nhLZSuX6Qyi+Xiv4ZS4G1L
+         yqJ+1W40BE2/c89kPF4CYKco9jotiOAkrnsDRtGJj79D8XeDQI7oDhuakjjnuoBWp9
+         Cw7DOEYygTMgMiCvUKyx7UBH9Uz73RjxhNHIyR0dKZq1JN/5gqqftkx5SP0QGfh9/t
+         D78LmVFMGuDxQ==
+Received: by mail-ot1-f44.google.com with SMTP id w3so4449476otp.13
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Jan 2021 14:06:56 -0800 (PST)
+X-Gm-Message-State: AOAM532VKMqTN5Oen7uk5D8THCNjAgj6yeAAEpw19wPFX99o0VKQ3sth
+        UwLpLpuG37fLkefPzPb0GaL0nJDnFbX9tg7h0Mg=
+X-Google-Smtp-Source: ABdhPJwMhLEgWEXAO74Y9bfhfPnMwjhBsUWGRjslTLeXbrQTwe54LWEAz0kWs4O5YxTTummK+isX23bC7e8RWvKcP0g=
+X-Received: by 2002:a05:6830:2413:: with SMTP id j19mr4857998ots.251.1609970816014;
+ Wed, 06 Jan 2021 14:06:56 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/hKUzPdJDCGxA0lI_vQUunC0";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+References: <20201230154749.746641-1-arnd@kernel.org> <CANpmjNNGmbgg_pFMC6X_6vZcj53jy7PsNyZAC88rOQC5zrOiFw@mail.gmail.com>
+ <20210104223336.GA2562866@ubuntu-m3-large-x86> <CAK8P3a3J1HGia3cPy+ArFQGzQWj1gy8bx7DdjnRFE=1+JmsrKw@mail.gmail.com>
+ <CAK8P3a01iSXxc+05sTtSWvxSYX=g4J1vK-nfnn5oNkR8FO_OTQ@mail.gmail.com> <20210106213853.GA3617315@ubuntu-m3-large-x86>
+In-Reply-To: <20210106213853.GA3617315@ubuntu-m3-large-x86>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Wed, 6 Jan 2021 23:06:39 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a3JHLKc=1V_6mgvQeS_oP+_Y=m_nhHzWSPrs2S+p7gvMg@mail.gmail.com>
+Message-ID: <CAK8P3a3JHLKc=1V_6mgvQeS_oP+_Y=m_nhHzWSPrs2S+p7gvMg@mail.gmail.com>
+Subject: Re: [PATCH] ubsan: disable unsigned-integer-overflow sanitizer with clang
+To:     Nathan Chancellor <natechancellor@gmail.com>
+Cc:     Marco Elver <elver@google.com>, Kees Cook <keescook@chromium.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        George Popescu <georgepope@android.com>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        LKML <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/hKUzPdJDCGxA0lI_vQUunC0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Wed, Jan 6, 2021 at 10:38 PM Nathan Chancellor
+<natechancellor@gmail.com> wrote:
+> On Wed, Jan 06, 2021 at 10:12:51AM +0100, Arnd Bergmann wrote:
+> > On Tue, Jan 5, 2021 at 10:25 AM Arnd Bergmann <arnd@kernel.org> wrote:
+> > >
+> > > On Mon, Jan 4, 2021 at 11:33 PM Nathan Chancellor
+> > > <natechancellor@gmail.com> wrote:
+> > > > On Wed, Dec 30, 2020 at 05:13:03PM +0100, Marco Elver wrote:
+> > > > > On Wed, 30 Dec 2020 at 16:47, Arnd Bergmann <arnd@kernel.org> wrote:
+> > > > > >
+> > > > > > From: Arnd Bergmann <arnd@arndb.de>
+> > > > > >
+> > > > > > Building ubsan kernels even for compile-testing introduced these
+> > > > > > warnings in my randconfig environment:
+> > > > > >
+> > > > > > crypto/blake2b_generic.c:98:13: error: stack frame size of 9636 bytes in function 'blake2b_compress' [-Werror,-Wframe-larger-than=]
+> > > > > > static void blake2b_compress(struct blake2b_state *S,
+> > > > > > crypto/sha512_generic.c:151:13: error: stack frame size of 1292 bytes in function 'sha512_generic_block_fn' [-Werror,-Wframe-larger-than=]
+> > > > > > static void sha512_generic_block_fn(struct sha512_state *sst, u8 const *src,
+> > > > > > lib/crypto/curve25519-fiat32.c:312:22: error: stack frame size of 2180 bytes in function 'fe_mul_impl' [-Werror,-Wframe-larger-than=]
+> > > > > > static noinline void fe_mul_impl(u32 out[10], const u32 in1[10], const u32 in2[10])
+> > > > > > lib/crypto/curve25519-fiat32.c:444:22: error: stack frame size of 1588 bytes in function 'fe_sqr_impl' [-Werror,-Wframe-larger-than=]
+> > > > > > static noinline void fe_sqr_impl(u32 out[10], const u32 in1[10])
+> > > > > >
+> > > > > > Further testing showed that this is caused by
+> > > > > > -fsanitize=unsigned-integer-overflow.
+> > > > > >
+> > > > > > The one in blake2b immediately overflows the 8KB stack area on 32-bit
+> > > > > > architectures, so better ensure this never happens by making this
+> > > > > > option gcc-only.
+> > > >
+> > > > This patch also fixes the failed BUILD_BUG issue in mm/mremap.c that you
+> > > > sent a patch for [1], along with a couple of other issues I see such as:
+> > >
+> > > I'm fairly sure I still saw that BUILD_BUG() even after I had applied this
+> > > patch, I would guess that one just depends on inlining decisions that
+> > > are influenced by all kinds of compiler options including
+> > > -fsanitize=unsigned-integer-overflow, so it becomes less likely.
+> > >
+> > > I'll revert my other patch in the randconfig tree to see if it comes back.
+> >
+> > The qcom/gpi.c failure still happens with this patch applied:
+> >
+> > In file included from /git/arm-soc/drivers/dma/qcom/gpi.c:8:
+> > In function 'field_multiplier',
+> >     inlined from 'gpi_update_reg' at
+> > /git/arm-soc/include/linux/bitfield.h:124:17:
+> > /git/arm-soc/include/linux/bitfield.h:119:3: error: call to
+> > '__bad_mask' declared with attribute error: bad bitfield mask
+> >   119 |   __bad_mask();
+> >       |   ^~~~~~~~~~~~
+> > In function 'field_multiplier',
+> >     inlined from 'gpi_update_reg' at
+> > /git/arm-soc/include/linux/bitfield.h:154:1:
+> > /git/arm-soc/include/linux/bitfield.h:119:3: error: call to
+> > '__bad_mask' declared with attribute error: bad bitfield mask
+> >   119 |   __bad_mask();
+> >       |   ^~~~~~~~~~~~
+> >
+> > See https://pastebin.com/8UH6x4A2 for the .config
+> >
+> >        Arnd
+>
+> That config does not build for me, am I holding it wrong?
+>
+> $ curl -LSso .config https://pastebin.com/raw/8UH6x4A2
 
-Hi all,
+Sorry about that, you ran into a bug that I have applied a
+local fix for. You could enable CONFIG_EPOLL, or apply
+this patch:
 
-Building Linus' tree, today's linux-next build (htmldocs) produced
-this warning:
+https://lore.kernel.org/linux-arm-kernel/20200429132349.1294904-1-arnd@arndb.de/
 
-include/net/mac80211.h:4200: warning: Function parameter or member 'set_sar=
-_specs' not described in 'ieee80211_ops'
-
-Introduced by commit
-
-  c534e093d865 ("mac80211: add ieee80211_set_sar_specs")
-
-Sorry, I missed this earlier.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/hKUzPdJDCGxA0lI_vQUunC0
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl/2ND4ACgkQAVBC80lX
-0GwlQwgAknn42f+D0DSILrFEmsLexZLYVggo50TMgNqZFSesMUi1RZ3inq60/WpS
-lpB2DB3Jnv45hv2TujSQZ/UJn26nt1syuE/TiWaDW3NVdGp9dvBZbLTEhQiTXUYm
-4M0a8e2lFACWfJtP9Y9G+f4NJOqMd+GeFEiVJnwPrWvfbg+LGO9rvjMRfWfuV9TR
-IzRfLYKIjCsoB/1gPF7lLBlLB4UyrltneNzY9io3Dbrl4OhSRz0iQVoyuSC0hmUt
-xq3aWXcV64y8A1O8j7OXWCRFsHl1aDQfnLN67rfWCPDELlFCECA7VJcFGSCXtgM7
-TkFalj2HyaVBkyhMI7etS/k6cXLy/g==
-=7l6C
------END PGP SIGNATURE-----
-
---Sig_/hKUzPdJDCGxA0lI_vQUunC0--
+      Arnd
