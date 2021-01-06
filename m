@@ -2,139 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B23752EC4BB
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 21:21:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D7A4E2EC4B7
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 21:21:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727944AbhAFUTh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Jan 2021 15:19:37 -0500
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:48402 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727917AbhAFUTf (ORCPT
+        id S1727909AbhAFUTa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Jan 2021 15:19:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55394 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726730AbhAFUT2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Jan 2021 15:19:35 -0500
-Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 106K8lo9062486;
-        Wed, 6 Jan 2021 15:18:49 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding; s=pp1;
- bh=lXJUBf1oxIqCJpJ6ym/qwdc9fGeVh+yzmCACo/2hwV0=;
- b=KgkfO7F1x8UdzgJipnQZAcFWvPL2QnqHY4hIeJN+Kn/iNocS4KQbeKcVoNxv/IQyzL4Z
- Kxv9mfr7KWxlhXaawn1624P3HhwvAJE2fVGwJr0HBjC7StfTD4gXO1fpB/dchvpZhjif
- xnLKaePEO3vwQfYrqY5j0KWgiH4xob5A3bIhrTGWDYcHDhqv/Ksl/NGi4UrGF+bBZjdg
- IJI+Y9xwh/1YS36hxfIa30xJVOx92r7FlfybA9qqg+vS/bLjtxZpKPPo9PZVGQQepI4h
- ubbvBDvhqffRGlL+bdFcnNcywCGYYgco8vL9hvPerVAmH79LQEqJz9mMHhtFic+Q40EF Rw== 
-Received: from ppma04dal.us.ibm.com (7a.29.35a9.ip4.static.sl-reverse.com [169.53.41.122])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 35wkc9h4kp-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 06 Jan 2021 15:18:49 -0500
-Received: from pps.filterd (ppma04dal.us.ibm.com [127.0.0.1])
-        by ppma04dal.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 106KIGhL015652;
-        Wed, 6 Jan 2021 20:18:48 GMT
-Received: from b03cxnp08025.gho.boulder.ibm.com (b03cxnp08025.gho.boulder.ibm.com [9.17.130.17])
-        by ppma04dal.us.ibm.com with ESMTP id 35tgf9ybww-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 06 Jan 2021 20:18:48 +0000
-Received: from b03ledav006.gho.boulder.ibm.com (b03ledav006.gho.boulder.ibm.com [9.17.130.237])
-        by b03cxnp08025.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 106KIkKN21955010
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 6 Jan 2021 20:18:47 GMT
-Received: from b03ledav006.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id D53B5C6057;
-        Wed,  6 Jan 2021 20:18:46 +0000 (GMT)
-Received: from b03ledav006.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 8B11AC605B;
-        Wed,  6 Jan 2021 20:18:46 +0000 (GMT)
-Received: from vios4361.aus.stglabs.ibm.com (unknown [9.3.43.61])
-        by b03ledav006.gho.boulder.ibm.com (Postfix) with ESMTP;
-        Wed,  6 Jan 2021 20:18:46 +0000 (GMT)
-From:   Tyrel Datwyler <tyreld@linux.ibm.com>
-To:     james.bottomley@hansenpartnership.com
-Cc:     martin.petersen@oracle.com, linux-scsi@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        brking@linux.ibm.com, Tyrel Datwyler <tyreld@linux.ibm.com>,
-        Brian King <brking@linux.vnet.ibm.com>
-Subject: [PATCH v2 5/5] ibmvfc: relax locking around ibmvfc_queuecommand
-Date:   Wed,  6 Jan 2021 14:18:35 -0600
-Message-Id: <20210106201835.1053593-6-tyreld@linux.ibm.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20210106201835.1053593-1-tyreld@linux.ibm.com>
-References: <20210106201835.1053593-1-tyreld@linux.ibm.com>
+        Wed, 6 Jan 2021 15:19:28 -0500
+Received: from mail-ot1-x32b.google.com (mail-ot1-x32b.google.com [IPv6:2607:f8b0:4864:20::32b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8211C061575
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Jan 2021 12:18:47 -0800 (PST)
+Received: by mail-ot1-x32b.google.com with SMTP id i6so4229578otr.2
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Jan 2021 12:18:47 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:in-reply-to:message-id:references
+         :user-agent:mime-version;
+        bh=iJJgoSbyLyAY5ybGUsqGtrthU9HgytjNnp54LxffTUQ=;
+        b=n18YKI9jp+HXb5AmIc1F8DYthoi2MZWrs68850q3/7Y1oC2mbTRPxOlZKOAueyliX7
+         1I5V8B8dipw2MlR3de+e6ly9CXjr/nMkUgI5+KEQmPS0qGpgAyWM7/kTtnpHJdkdVZrS
+         9HQeY5ROuADlcLJa7VXZC1o9PoWzHpZ8czJhuXEWT6FmoTC4ZLuGma8j0KowQGnJsgRx
+         oKHoUWktsvyUZa+6guYPI+pf0knN1C44eNG0sAXIdn7OhDq0xgRjKAJcc4vYqmVt3y6b
+         WU8dm/lEz2rKL+6FwmdiJYILhZKWEfV9Jqwim4FFwyOBhyxSN0FQYDKe0YkaqtSW8tS8
+         pm8A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
+         :references:user-agent:mime-version;
+        bh=iJJgoSbyLyAY5ybGUsqGtrthU9HgytjNnp54LxffTUQ=;
+        b=UzX/0GHa+P7dqm7Y9g15NRHNa0YgkAePpzEJ4lm6ClUh24ZNeehK08cdUT8Qpiqewz
+         /qmYhvgPwLijPMxkJoRMqflwMVrUDPzaYN2XezVV+9uGe9k8d3qvoMYFUUSDHGVhll1E
+         n00tkkKKKiEXaCx4BfKx/M7zULzEYSh7fS6phy7NO4hoOjWcqoJBI6FOOCaYAFN2Gbqi
+         Z/KBsoN9BnJGuPBlgxnFfJ/EHOTwYPiiPK4kRQRn+IzQpBr0QI9Lw7jUQbSaPso+dHiO
+         zj+LmAqCOxwSZDvhzgUjaTptb78OleH9YYUFkGVMhAf0K6zGkcxoTFSNO3QplEDpYmvo
+         AQIg==
+X-Gm-Message-State: AOAM531Dc3EyHsulUKLLydbWnCV8zpiygS1WLqNQBtw3y8T4qC/ECc9D
+        Z+KySganM4bKuTVfPFPtLPeP0A==
+X-Google-Smtp-Source: ABdhPJwDmJwX/5sniqT/j0TdQ+RiDKq/oekQVIbn0+XlvLry2PSCbGsfXnjr0wqRhpON+IiPk/nRpA==
+X-Received: by 2002:a05:6830:20c2:: with SMTP id z2mr4305329otq.322.1609964327126;
+        Wed, 06 Jan 2021 12:18:47 -0800 (PST)
+Received: from eggly.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
+        by smtp.gmail.com with ESMTPSA id y84sm820819oig.36.2021.01.06.12.18.46
+        (version=TLS1 cipher=ECDHE-ECDSA-AES128-SHA bits=128/128);
+        Wed, 06 Jan 2021 12:18:46 -0800 (PST)
+Date:   Wed, 6 Jan 2021 12:18:36 -0800 (PST)
+From:   Hugh Dickins <hughd@google.com>
+X-X-Sender: hugh@eggly.anvils
+To:     Andrea Arcangeli <aarcange@redhat.com>
+cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Hugh Dickins <hughd@google.com>,
+        Alex Shi <alex.shi@linux.alibaba.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Michal Hocko <mhocko@suse.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mm/mmap: replace if (cond) BUG() with BUG_ON()
+In-Reply-To: <X/YY+mjpq15nmryI@redhat.com>
+Message-ID: <alpine.LSU.2.11.2101061213540.2492@eggly.anvils>
+References: <1607743586-80303-1-git-send-email-alex.shi@linux.alibaba.com> <1607743586-80303-2-git-send-email-alex.shi@linux.alibaba.com> <e50574aa-87b8-8ddf-2235-ef98e22bcb7d@linux.alibaba.com> <alpine.LSU.2.11.2101051919130.1361@eggly.anvils>
+ <20210106114620.5c221690f3a9cad7afcc3077@linux-foundation.org> <X/YY+mjpq15nmryI@redhat.com>
+User-Agent: Alpine 2.11 (LSU 23 2013-08-11)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2021-01-06_11:2021-01-06,2021-01-06 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 suspectscore=0
- priorityscore=1501 lowpriorityscore=0 phishscore=0 mlxlogscore=999
- adultscore=0 bulkscore=0 impostorscore=0 malwarescore=0 clxscore=1015
- mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2101060113
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The drivers queuecommand routine is still wrapped to hold the host lock
-for the duration of the call. This will become problematic when moving
-to multiple queues due to the lock contention preventing asynchronous
-submissions to mulitple queues. There is no real legatimate reason to
-hold the host lock, and previous patches have insured proper protection
-of moving ibmvfc_event objects between free and sent lists.
+On Wed, 6 Jan 2021, Andrea Arcangeli wrote:
+> 
+> I'd be surprised if the kernel can boot with BUG_ON() defined as "do
+> {}while(0)" so I guess it doesn't make any difference.
 
-Signed-off-by: Tyrel Datwyler <tyreld@linux.ibm.com>
-Reviewed-by: Brian King <brking@linux.vnet.ibm.com>
----
- drivers/scsi/ibmvscsi/ibmvfc.c | 12 ++++--------
- 1 file changed, 4 insertions(+), 8 deletions(-)
-
-diff --git a/drivers/scsi/ibmvscsi/ibmvfc.c b/drivers/scsi/ibmvscsi/ibmvfc.c
-index f680f96d5d06..ff86c43b4b33 100644
---- a/drivers/scsi/ibmvscsi/ibmvfc.c
-+++ b/drivers/scsi/ibmvscsi/ibmvfc.c
-@@ -1793,10 +1793,9 @@ static struct ibmvfc_cmd *ibmvfc_init_vfc_cmd(struct ibmvfc_event *evt, struct s
-  * Returns:
-  *	0 on success / other on failure
-  **/
--static int ibmvfc_queuecommand_lck(struct scsi_cmnd *cmnd,
--			       void (*done) (struct scsi_cmnd *))
-+static int ibmvfc_queuecommand(struct Scsi_Host *shost, struct scsi_cmnd *cmnd)
- {
--	struct ibmvfc_host *vhost = shost_priv(cmnd->device->host);
-+	struct ibmvfc_host *vhost = shost_priv(shost);
- 	struct fc_rport *rport = starget_to_rport(scsi_target(cmnd->device));
- 	struct ibmvfc_cmd *vfc_cmd;
- 	struct ibmvfc_fcp_cmd_iu *iu;
-@@ -1806,7 +1805,7 @@ static int ibmvfc_queuecommand_lck(struct scsi_cmnd *cmnd,
- 	if (unlikely((rc = fc_remote_port_chkready(rport))) ||
- 	    unlikely((rc = ibmvfc_host_chkready(vhost)))) {
- 		cmnd->result = rc;
--		done(cmnd);
-+		cmnd->scsi_done(cmnd);
- 		return 0;
- 	}
- 
-@@ -1814,7 +1813,6 @@ static int ibmvfc_queuecommand_lck(struct scsi_cmnd *cmnd,
- 	evt = ibmvfc_get_event(&vhost->crq);
- 	ibmvfc_init_event(evt, ibmvfc_scsi_done, IBMVFC_CMD_FORMAT);
- 	evt->cmnd = cmnd;
--	cmnd->scsi_done = done;
- 
- 	vfc_cmd = ibmvfc_init_vfc_cmd(evt, cmnd->device);
- 	iu = ibmvfc_get_fcp_iu(vhost, vfc_cmd);
-@@ -1841,12 +1839,10 @@ static int ibmvfc_queuecommand_lck(struct scsi_cmnd *cmnd,
- 			    "Failed to map DMA buffer for command. rc=%d\n", rc);
- 
- 	cmnd->result = DID_ERROR << 16;
--	done(cmnd);
-+	cmnd->scsi_done(cmnd);
- 	return 0;
- }
- 
--static DEF_SCSI_QCMD(ibmvfc_queuecommand)
--
- /**
-  * ibmvfc_sync_completion - Signal that a synchronous command has completed
-  * @evt:	ibmvfc event struct
--- 
-2.27.0
-
+I had been afraid of that too, when CONFIG_BUG is not set:
+but I think it's actually "if (cond) do {} while (0)".
