@@ -2,84 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E3FB2EC163
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 17:45:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 99FC62EC161
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 17:45:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727672AbhAFQpN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Jan 2021 11:45:13 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53842 "EHLO mail.kernel.org"
+        id S1727610AbhAFQoi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Jan 2021 11:44:38 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53734 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727177AbhAFQpM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Jan 2021 11:45:12 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C92D123132;
-        Wed,  6 Jan 2021 16:44:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1609951472;
-        bh=e4tUkqNaZkqQTwm0KVYjRZbhKx3YSzLR0ZJevmpAV0o=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=d6z/k89BS9nvZrJcyTm9N72JND36l1OI6Jz0FTpmRQQtAdLpUAI/ngjPmpA7U/xyI
-         2tG1pMbeqUKndDPverX9YZqdZx1wMC5fRcQqk4fpQPLnmB3DV6oH00NRz72Yl0ROCY
-         A3F11qddQdkdSVhflI9HVtCJcqZkGsWyWFyRDFbgEbsR0ESY/KW3TMoVTmiLv5Y1Ft
-         C9F9Lpof91yF67DTv6muG+lZ35SMtonaX1jPgPVkl4zqXuiPdI5bvw8lw0Dbo3Mr2M
-         lRszP24zvhtxvpSN26MotEqH3zcjhGGsgV5jysq8QovwDVLT8jLo8AiM0KlruwzkUT
-         vGu0vhvJT8HpA==
-Date:   Wed, 6 Jan 2021 08:44:30 -0800
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     dinghao.liu@zju.edu.cn
-Cc:     "Konstantin Ryabitsev" <konstantin@linuxfoundation.org>,
-        "Florian Fainelli" <f.fainelli@gmail.com>,
-        "Andrew Lunn" <andrew@lunn.ch>, kjlu@umn.edu,
-        "David S. Miller" <davem@davemloft.net>,
-        "Jesse Brandeburg" <jesse.brandeburg@intel.com>,
-        "Arnd Bergmann" <arnd@arndb.de>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] net: ethernet: Fix memleak in ethoc_probe
-Message-ID: <20210106084430.291a90cc@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <328f073a.222d7.176d7572f29.Coremail.dinghao.liu@zju.edu.cn>
-References: <20201223153304.GD3198262@lunn.ch>
-        <20201223123218.1cf7d9cb@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-        <20201223210044.GA3253993@lunn.ch>
-        <20201223131149.15fff8d2@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-        <680850a9-8ab0-4672-498e-6dc740720da3@gmail.com>
-        <20201223174146.37e62326@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-        <20201224180631.l4zieher54ncqvwl@chatter.i7.local>
-        <fc7be127-648c-6b09-6f00-3542e0388197@gmail.com>
-        <20201228202302.afkxtco27j4ahh6d@chatter.i7.local>
-        <08e2b663-c144-d1bb-3f90-5e4ef240d14b@gmail.com>
-        <20201228211417.m5gdnqexjzgt4ix6@chatter.i7.local>
-        <20201230133618.7c242856@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-        <328f073a.222d7.176d7572f29.Coremail.dinghao.liu@zju.edu.cn>
+        id S1727205AbhAFQoh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 Jan 2021 11:44:37 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B384C23131;
+        Wed,  6 Jan 2021 16:43:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1609951437;
+        bh=IejT2lVXTH0kk/fG9dvYmRsztiEo7c6jYNhh7J5/CWc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=EdExiLF8Cw1eBt+E/4Aq9a7K2EwBHSHuBeYvvMyxZAMd9OX6kHLDiihHapRGn4yJA
+         LLeM39q+/ndQnVqNkhBsiDrkS/rjpr2S4B703ja2fYJF7NOWPonrsJBOxJFDFTPE0A
+         A8O4GWbAl++0yb4gwY22ZHI3Ctim3IG60rzteRA8=
+Date:   Wed, 6 Jan 2021 17:45:18 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Matthias Maennich <maennich@google.com>
+Cc:     linux-kernel@vger.kernel.org, kernel-team@android.com,
+        Hridya Valsaraju <hridya@google.com>,
+        Rob Herring <robh@kernel.org>, linux-media@vger.kernel.org,
+        devel@driverdev.osuosl.org
+Subject: Re: [PATCH] staging: ION: remove some references to CONFIG_ION
+Message-ID: <X/XpHo82oOBYygYX@kroah.com>
+References: <20210106155201.2845319-1-maennich@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210106155201.2845319-1-maennich@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 6 Jan 2021 18:56:23 +0800 (GMT+08:00) dinghao.liu@zju.edu.cn
-wrote:
-> > I used this one for a test:
-> > 
-> > https://patchwork.kernel.org/project/netdevbpf/patch/1609312994-121032-1-git-send-email-abaci-bugfix@linux.alibaba.com/
-> > 
-> > I'm not getting the Fixes tag when I download the mbox.  
+On Wed, Jan 06, 2021 at 03:52:01PM +0000, Matthias Maennich wrote:
+> With commit e722a295cf49 ("staging: ion: remove from the tree"), ION and
+> its corresponding config CONFIG_ION is gone. Remove stale references
+> from drivers/staging/media/atomisp/pci and from the recommended Android
+> kernel config.
 > 
-> It seems that automatically generating Fixes tags is a hard work.
-> Both patches and bugs could be complex. Sometimes even human cannot
-> determine which commit introduced a target bug.
-> 
-> Is this an already implemented functionality?
+> Fixes: e722a295cf49 ("staging: ion: remove from the tree")
+> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Cc: Hridya Valsaraju <hridya@google.com>
+> Cc: Rob Herring <robh@kernel.org>
+> Cc: linux-media@vger.kernel.org
+> Cc: devel@driverdev.osuosl.org
+> Signed-off-by: Matthias Maennich <maennich@google.com>
+> ---
+>  .../media/atomisp/pci/atomisp_subdev.c        | 20 -------------------
+>  kernel/configs/android-recommended.config     |  1 -
+>  2 files changed, 21 deletions(-)
 
-I'm not sure I understand. Indeed finding the right commit to use in 
-a Fixes tag is not always easy, and definitely not easy to automate.
-Human validation is always required.
+Thanks for finding these remnants, I'll go queue this up now.
 
-If we could easily automate finding the commit which introduced a
-problem we wouldn't need to add the explicit tag, backporters could
-just run such script locally.. That's why it's best if the author 
-does the digging and provides the right tag.
-
-The conversation with Konstantin and Florian was about automatically
-picking up Fixes tags from the mailing list by the patchwork software,
-when such tags are posted in reply to the original posting, just like
-review tags. But the tags are still generated by humans.
+greg k-h
