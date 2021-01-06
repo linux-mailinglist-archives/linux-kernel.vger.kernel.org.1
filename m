@@ -2,137 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF7AC2EB7A2
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 02:34:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 624582EB7AE
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 02:35:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726638AbhAFBd3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 20:33:29 -0500
-Received: from mailout1.samsung.com ([203.254.224.24]:39582 "EHLO
-        mailout1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725919AbhAFBd3 (ORCPT
+        id S1725914AbhAFBec (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 20:34:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48408 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725730AbhAFBec (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 20:33:29 -0500
-Received: from epcas2p4.samsung.com (unknown [182.195.41.56])
-        by mailout1.samsung.com (KnoxPortal) with ESMTP id 20210106013246epoutp01abe7458a3cedb996462c34a2187a0cd7~XgJR1OqAa2985329853epoutp016
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Jan 2021 01:32:46 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com 20210106013246epoutp01abe7458a3cedb996462c34a2187a0cd7~XgJR1OqAa2985329853epoutp016
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1609896766;
-        bh=wu5lRWGWZPfTtvp4R+y7TNZs4ntWTmDe3ujGAklWk4A=;
-        h=Subject:Reply-To:From:To:CC:Date:References:From;
-        b=uPzAlbcvXC0ELMVJRdY9tVw87rf7gOTL6K67UrtWZ5X40WFrp2IFTNZGxlXziU3cF
-         9vG9XmRv3aNIIpupECeXjDNYx8LBxw7T3ZY2p3hSSbC92w6g+rDuVVV0A/TV/EsYSZ
-         ipd8nVbdKTDXNHwAumA8wBFpXrBm2mZ4gxkk+uI4=
-Received: from epsnrtp3.localdomain (unknown [182.195.42.164]) by
-        epcas2p3.samsung.com (KnoxPortal) with ESMTP id
-        20210106013246epcas2p36a2a7a3dc0ab01d6a3e4774672938a1d~XgJRFi6ms3159331593epcas2p3X;
-        Wed,  6 Jan 2021 01:32:46 +0000 (GMT)
-Received: from epsmges2p3.samsung.com (unknown [182.195.40.191]) by
-        epsnrtp3.localdomain (Postfix) with ESMTP id 4D9X186hzmz4x9QF; Wed,  6 Jan
-        2021 01:32:44 +0000 (GMT)
-X-AuditID: b6c32a47-b97ff7000000148e-8f-5ff5133a25b1
-Received: from epcas2p4.samsung.com ( [182.195.41.56]) by
-        epsmges2p3.samsung.com (Symantec Messaging Gateway) with SMTP id
-        97.DC.05262.A3315FF5; Wed,  6 Jan 2021 10:32:42 +0900 (KST)
-Mime-Version: 1.0
-Subject: [PATCH] ext4: Remove expensive flush on fast commit
-Reply-To: daejun7.park@samsung.com
-Sender: Daejun Park <daejun7.park@samsung.com>
-From:   Daejun Park <daejun7.park@samsung.com>
-To:     "tytso@mit.edu" <tytso@mit.edu>,
-        "adilger.kernel@dilger.ca" <adilger.kernel@dilger.ca>,
-        "harshadshirwadkar@gmail.com" <harshadshirwadkar@gmail.com>
-CC:     "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-X-Priority: 3
-X-Content-Kind-Code: NORMAL
-X-CPGS-Detection: blocking_info_exchange
-X-Drm-Type: N,general
-X-Msg-Generator: Mail
-X-Msg-Type: PERSONAL
-X-Reply-Demand: N
-Message-ID: <20210106013242epcms2p5b6b4ed8ca86f29456fdf56aa580e74b4@epcms2p5>
-Date:   Wed, 06 Jan 2021 10:32:42 +0900
-X-CMS-MailID: 20210106013242epcms2p5b6b4ed8ca86f29456fdf56aa580e74b4
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: AUTO_CONFIDENTIAL
-CMS-TYPE: 102P
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrKKsWRmVeSWpSXmKPExsWy7bCmha6V8Nd4g4lfdSy+fulgsVjZ2MJk
-        MXPeHTaLy7vmsFm09vxkd2D1aNlc7rFz1l12j6YzR5k9Pm+SC2CJyrHJSE1MSS1SSM1Lzk/J
-        zEu3VfIOjneONzUzMNQ1tLQwV1LIS8xNtVVy8QnQdcvMAVqrpFCWmFMKFApILC5W0rezKcov
-        LUlVyMgvLrFVSi1IySkwNCzQK07MLS7NS9dLzs+1MjQwMDIFqkzIyWhsmshasJ2vonltbQPj
-        L+4uRk4OCQETif6GvYxdjFwcQgI7GCW+T//H1MXIwcErICjxd4cwSI2wgI3Equ5PjCC2kICS
-        xPqLs9gh4noStx6uAYuzCehITD9xnx1kjojAbEaJKxcXs4PMYRaok/h0lwViF6/EjPanULa0
-        xPblWxkhbA2JH8t6mSFsUYmbq9+yw9jvj82HqhGRaL13FqpGUOLBz91QcUmJY7s/MEHY9RJb
-        7/wC+0VCoIdR4vDOW6wQCX2Jax0bwRbzCvhKLPo+HcxmEVCV6J1wCKrGRWLzwRdgQ5kF5CW2
-        v53DDHG/psT6XfogpoSAssSRWywQFXwSHYf/ssO8tWPeE6gT1CTW/VzPBFEuI3FrHtSVHhJ9
-        m/ezQ0IwUOLDrIesExgVZiHCeRaStbMQ1i5gZF7FKJZaUJybnlpsVGCMHLObGMHpT8t9B+OM
-        tx/0DjEycTAeYpTgYFYS4bU49iVeiDclsbIqtSg/vqg0J7X4EKMp0MMTmaVEk/OBCTivJN7Q
-        1MjMzMDS1MLUzMhCSZy32OBBvJBAemJJanZqakFqEUwfEwenVAOT8rvpCfEM26smJx6vVxW4
-        vdNo3tOrJlbaPtYzhOYdyErI+mSsqfFmGucXpX9a841SdFccm82YmPot8WPXlvWplZ9r6992
-        VsRIdLl3Zs6rFSr3zZgv13OFJf9PeMe6XS+2Ct5SdXunFBHAcLoyX36qWvBLoQNrJ2y6JJS4
-        5fD7N0W5q39rWW2v2nST/6i37BHdl7On+W6ZcGj1lAKNr7tvGkbZymcfci1hclWVVduyJfGl
-        wOYLnjxWX1OvJQXk3TTtD35wze/qbTvFGWzqqVPbFO+ei2rsjrm0fLad1K1nzS+dn+vuf+mt
-        cjqgc127IWvQjM6apzpLKv+wr1bqMeo+mXJo8d680y+rvdOW8VUqsRRnJBpqMRcVJwIAjyWA
-        pggEAAA=
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20210106013242epcms2p5b6b4ed8ca86f29456fdf56aa580e74b4
-References: <CGME20210106013242epcms2p5b6b4ed8ca86f29456fdf56aa580e74b4@epcms2p5>
+        Tue, 5 Jan 2021 20:34:32 -0500
+Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E63EC061574
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Jan 2021 17:33:51 -0800 (PST)
+Received: by mail-wm1-x333.google.com with SMTP id q75so1274769wme.2
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Jan 2021 17:33:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=26LBeucSF5uhRNrksZAanCW/ezUZIUm3TZlLXiklCzQ=;
+        b=D35uthKmIt+hWBJA0RNpWyZSVptnaRRgXGf8onTupDPuTSXGRsvPDYlJjJYKLksH3T
+         Tplv3ygwmWSd4dZTDr4ydYvHOlHYdJvoRA92QXat46bWeWO1e2jrAyeJuBV1rDjupBTr
+         IXe3B3UrApwFuxch8WiAW9Ry9FgP2PDXqb7NMwxHlnT3B0f1JK69ZKD/9vHDGyTU0ZJ5
+         nJ+bY1OpD5xrcT9NUzUqaGbjs/DUoIwYzWXxU4JkrhmVT1MvB201OnJc/2H7G2Hs2sDg
+         2bdDxbLZPq814Y/lqdzaRNsTuJE9vTkEoICxaCmnNY9q2wNWQ2Z4Qk1qhsSr+3i9tq/c
+         v3Gg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=26LBeucSF5uhRNrksZAanCW/ezUZIUm3TZlLXiklCzQ=;
+        b=MgOwHw/C9lPAWjaAmdbrfh1ELMHzHAtXpn8et99BLsLXRi0Psgi36AUOfIE4eV8yD1
+         vmu/UGnRC1QadIA6/t12faOKiJ9lEc5DI5F7tSnHeUWpq3EJVgKCIOmW5N/Vq7cMNZh4
+         FKkYECSz2/uIwNveSM+qvpUHUNsPxexXfCnoXaddM+rw83ORQeMcAnXPPmq5dHf/66A3
+         B6Zdh1ru4HsGNR1FVqw7qxpMQVG6YGBBHlpR/Ze3sGMBIOHbZb2GQ8O3xOmi83RDHcgB
+         jlYsj95PW0/fttDN8cmR5/ROk7mjmQcC8D7BGlZNOpc+KnuKeIrSJ4ciJrdf2OtrYQWP
+         g+BQ==
+X-Gm-Message-State: AOAM533EkS+wGMAVYGPqklo+gxZ2fDgQQS0jfHMDewi17u/922TmrSA5
+        jwf/ZcS0jY6nR7N21CmNp26SyPokMtI8eBAGyMXk0g==
+X-Google-Smtp-Source: ABdhPJz5Pd4SkgPagnHsnTajsCSbHO6mxfAmTiMYy9BkRCyLqAP3b65PqC0xzWFAHbU4zGAP61r2IUT1ZQXHZbQaLu8=
+X-Received: by 2002:a1c:e902:: with SMTP id q2mr1437356wmc.143.1609896829631;
+ Tue, 05 Jan 2021 17:33:49 -0800 (PST)
+MIME-Version: 1.0
+References: <20201230110935.582332-1-jolsa@kernel.org>
+In-Reply-To: <20201230110935.582332-1-jolsa@kernel.org>
+From:   Stephane Eranian <eranian@google.com>
+Date:   Tue, 5 Jan 2021 17:33:38 -0800
+Message-ID: <CABPqkBTQfFWvEba-=T6ms=GTsjrZUosRQyZZK-EMZ2c_2NQvAA@mail.gmail.com>
+Subject: Re: [PATCHv2] perf tools: Detect when pipe is passed as perf data
+To:     Jiri Olsa <jolsa@kernel.org>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        Ingo Molnar <mingo@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Michael Petlan <mpetlan@redhat.com>,
+        Ian Rogers <irogers@google.com>,
+        Alexei Budankov <abudankov@huawei.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In the fast commit, it adds REQ_FUA and REQ_PREFLUSH on each fast commit
-block when barrier is enabled. However, in recovery phase, ext4 compares
-CRC value in the tail. So it is sufficient adds REQ_FUA and REQ_PREFLUSH
-on the block that has tail.
+Hi,
 
-Signed-off-by: Daejun Park <daejun7.park@samsung.com>
----
- fs/ext4/fast_commit.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+On Wed, Dec 30, 2020 at 3:09 AM Jiri Olsa <jolsa@kernel.org> wrote:
+>
+> Currently we allow pipe input/output only through '-' string
+> being passed to '-o' or '-i' options, like:
+>
+It seems to me it would be useful to auto-detect that the perf.data
+file is in pipe vs. file mode format.
+Your patch detects the type of the file which is something different
+from the format of its content.
+Thanks.
 
-diff --git a/fs/ext4/fast_commit.c b/fs/ext4/fast_commit.c
-index 4fcc21c25e79..e66507be334c 100644
---- a/fs/ext4/fast_commit.c
-+++ b/fs/ext4/fast_commit.c
-@@ -604,13 +604,13 @@ void ext4_fc_track_range(handle_t *handle, struct inode *inode, ext4_lblk_t star
- 	trace_ext4_fc_track_range(inode, start, end, ret);
- }
- 
--static void ext4_fc_submit_bh(struct super_block *sb)
-+static void ext4_fc_submit_bh(struct super_block *sb, bool is_tail)
- {
- 	int write_flags = REQ_SYNC;
- 	struct buffer_head *bh = EXT4_SB(sb)->s_fc_bh;
- 
--	/* TODO: REQ_FUA | REQ_PREFLUSH is unnecessarily expensive. */
--	if (test_opt(sb, BARRIER))
-+	/* Add REQ_FUA | REQ_PREFLUSH only its tail */
-+	if (test_opt(sb, BARRIER) && is_tail)
- 		write_flags |= REQ_FUA | REQ_PREFLUSH;
- 	lock_buffer(bh);
- 	set_buffer_dirty(bh);
-@@ -684,7 +684,7 @@ static u8 *ext4_fc_reserve_space(struct super_block *sb, int len, u32 *crc)
- 		*crc = ext4_chksum(sbi, *crc, tl, sizeof(*tl));
- 	if (pad_len > 0)
- 		ext4_fc_memzero(sb, tl + 1, pad_len, crc);
--	ext4_fc_submit_bh(sb);
-+	ext4_fc_submit_bh(sb, false);
- 
- 	ret = jbd2_fc_get_buf(EXT4_SB(sb)->s_journal, &bh);
- 	if (ret)
-@@ -741,7 +741,7 @@ static int ext4_fc_write_tail(struct super_block *sb, u32 crc)
- 	tail.fc_crc = cpu_to_le32(crc);
- 	ext4_fc_memcpy(sb, dst, &tail.fc_crc, sizeof(tail.fc_crc), NULL);
- 
--	ext4_fc_submit_bh(sb);
-+	ext4_fc_submit_bh(sb, true);
- 
- 	return 0;
- }
--- 
-2.25.1
-
+>   # mkfifo perf.pipe
+>   # perf record --no-buffering -e 'sched:sched_switch' -o - > perf.pipe &
+>   [1] 354406
+>   # cat perf.pipe | ./perf --no-pager script -i - | head -3
+>             perf 354406 [000] 168190.164921: sched:sched_switch: perf:354406..
+>      migration/0    12 [000] 168190.164928: sched:sched_switch: migration/0:..
+>             perf 354406 [001] 168190.164981: sched:sched_switch: perf:354406..
+>   ...
+>
+> This patch detects if given path is pipe and set the perf data
+> object accordingly, so it's possible now to do above with:
+>
+>   # mkfifo perf.pipe
+>   # perf record --no-buffering -e 'sched:sched_switch' -o perf.pipe &
+>   [1] 360188
+>   # perf --no-pager script -i ./perf.pipe | head -3
+>             perf 354442 [000] 168275.464895: sched:sched_switch: perf:354442..
+>      migration/0    12 [000] 168275.464902: sched:sched_switch: migration/0:..
+>             perf 354442 [001] 168275.464953: sched:sched_switch: perf:354442..
+>
+> It's of course possible to combine any of above ways.
+>
+> Signed-off-by: Jiri Olsa <jolsa@kernel.org>
+> ---
+> v2:
+>   - removed O_CREAT|O_TRUNC flags from pipe's write end
+>
+>  tools/perf/util/data.c | 27 +++++++++++++++++++++------
+>  1 file changed, 21 insertions(+), 6 deletions(-)
+>
+> diff --git a/tools/perf/util/data.c b/tools/perf/util/data.c
+> index f29af4fc3d09..4dfa9e0f2fec 100644
+> --- a/tools/perf/util/data.c
+> +++ b/tools/perf/util/data.c
+> @@ -159,7 +159,7 @@ int perf_data__update_dir(struct perf_data *data)
+>         return 0;
+>  }
+>
+> -static bool check_pipe(struct perf_data *data)
+> +static int check_pipe(struct perf_data *data)
+>  {
+>         struct stat st;
+>         bool is_pipe = false;
+> @@ -172,6 +172,15 @@ static bool check_pipe(struct perf_data *data)
+>         } else {
+>                 if (!strcmp(data->path, "-"))
+>                         is_pipe = true;
+> +               else if (!stat(data->path, &st) && S_ISFIFO(st.st_mode)) {
+> +                       int flags = perf_data__is_read(data) ?
+> +                                   O_RDONLY : O_WRONLY;
+> +
+> +                       fd = open(data->path, flags);
+> +                       if (fd < 0)
+> +                               return -EINVAL;
+> +                       is_pipe = true;
+> +               }
+>         }
+>
+>         if (is_pipe) {
+> @@ -190,7 +199,8 @@ static bool check_pipe(struct perf_data *data)
+>                 }
+>         }
+>
+> -       return data->is_pipe = is_pipe;
+> +       data->is_pipe = is_pipe;
+> +       return 0;
+>  }
+>
+>  static int check_backup(struct perf_data *data)
+> @@ -344,8 +354,11 @@ static int open_dir(struct perf_data *data)
+>
+>  int perf_data__open(struct perf_data *data)
+>  {
+> -       if (check_pipe(data))
+> -               return 0;
+> +       int err;
+> +
+> +       err = check_pipe(data);
+> +       if (err || data->is_pipe)
+> +               return err;
+>
+>         /* currently it allows stdio for pipe only */
+>         data->use_stdio = false;
+> @@ -410,8 +423,10 @@ int perf_data__switch(struct perf_data *data,
+>  {
+>         int ret;
+>
+> -       if (check_pipe(data))
+> -               return -EINVAL;
+> +       ret = check_pipe(data);
+> +       if (ret || data->is_pipe)
+> +               return ret;
+> +
+>         if (perf_data__is_read(data))
+>                 return -EINVAL;
+>
+> --
+> 2.26.2
+>
