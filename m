@@ -2,128 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF1262EB7BB
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 02:41:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7177C2EB7C3
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 02:51:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725836AbhAFBkc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 20:40:32 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35158 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725768AbhAFBkb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 20:40:31 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D0ACE22D04;
-        Wed,  6 Jan 2021 01:39:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1609897190;
-        bh=QrzztmIfEhs2ucrqovZbL/ro9SUcb+s8135r+hiRtxU=;
-        h=Date:From:To:Cc:Subject:Reply-To:From;
-        b=YInG5Qsyt4P0YqqtnPO5qB7tZSGx99j7C3hoXsaA7DBttjLV9lNd8aSNFWpJiPVS8
-         8s5RXuWn/4nS7xJoD2KX6RjYKvGFcMM2XaWSOvPBgG8IRWl+4StKzfbo+PKsEj2DJw
-         7FpFXJYXikc++gDDSDZMy2gwbFKkDcG8P84T23+CwRniRXfFecN0WHUUf6ophsZw2A
-         XWddO0BUDfvXpICCO23kYRqncGT0nScilwAMacwccT+S4kWoxW9AWtzJWFboTKuuPe
-         pIx0QP+7ThsUG3TlubUNwcMPJILUEWlP9GPIAJN7Qz03vZxdYa7/cuxea5M60uP/9Y
-         usRsPYneQ5jNA==
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 988D235228C6; Tue,  5 Jan 2021 17:39:50 -0800 (PST)
-Date:   Tue, 5 Jan 2021 17:39:50 -0800
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     rcu@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
-        jiangshanlai@gmail.com, akpm@linux-foundation.org,
-        mathieu.desnoyers@efficios.com, josh@joshtriplett.org,
-        tglx@linutronix.de, peterz@infradead.org, rostedt@goodmis.org,
-        dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
-        oleg@redhat.com, joel@joelfernandes.org
-Subject: [PATCH tip/core/rcu 0/21] Provide runtime switching of offloaded CPUs
-Message-ID: <20210106013950.GA14663@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
+        id S1725903AbhAFBu5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 20:50:57 -0500
+Received: from mail.cn.fujitsu.com ([183.91.158.132]:47475 "EHLO
+        heian.cn.fujitsu.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1725822AbhAFBu4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Jan 2021 20:50:56 -0500
+X-IronPort-AV: E=Sophos;i="5.78,478,1599494400"; 
+   d="scan'208";a="103220525"
+Received: from unknown (HELO cn.fujitsu.com) ([10.167.33.5])
+  by heian.cn.fujitsu.com with ESMTP; 06 Jan 2021 09:50:06 +0800
+Received: from G08CNEXMBPEKD04.g08.fujitsu.local (unknown [10.167.33.201])
+        by cn.fujitsu.com (Postfix) with ESMTP id 5769B4CE601C;
+        Wed,  6 Jan 2021 09:50:02 +0800 (CST)
+Received: from G08CNEXCHPEKD06.g08.fujitsu.local (10.167.33.205) by
+ G08CNEXMBPEKD04.g08.fujitsu.local (10.167.33.201) with Microsoft SMTP Server
+ (TLS) id 15.0.1497.2; Wed, 6 Jan 2021 09:50:01 +0800
+Received: from localhost.localdomain (10.167.225.206) by
+ G08CNEXCHPEKD06.g08.fujitsu.local (10.167.33.209) with Microsoft SMTP Server
+ id 15.0.1497.2 via Frontend Transport; Wed, 6 Jan 2021 09:50:02 +0800
+From:   Hao Li <lihao2018.fnst@cn.fujitsu.com>
+To:     <corbet@lwn.net>
+CC:     <davem@davemloft.net>, <gregkh@linuxfoundation.org>,
+        <alexander.deucher@amd.com>, <mchehab+huawei@kernel.org>,
+        <lee.jones@linaro.org>, <ira.weiny@intel.com>,
+        <linux-doc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <lihao2018.fnst@cn.fujitsu.com>
+Subject: [PATCH v2] Documentation/dax: Update description of DAX policy changing
+Date:   Wed, 6 Jan 2021 09:50:00 +0800
+Message-ID: <20210106015000.5263-1-lihao2018.fnst@cn.fujitsu.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-yoursite-MailScanner-ID: 5769B4CE601C.AE19D
+X-yoursite-MailScanner: Found to be clean
+X-yoursite-MailScanner-From: lihao2018.fnst@cn.fujitsu.com
+X-Spam-Status: No
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello!
+After commit 77573fa310d9 ("fs: Kill DCACHE_DONTCACHE dentry even if
+DCACHE_REFERENCED is set"), changes to DAX policy will take effect
+as soon as all references to this file are gone.
 
-Currently, it is necessary to reboot to change a given CPU between
-invoking its own RCU callbacks via softirq and offloading callback
-invocation to an rcuo kthread.  This series allows CPUs that were
-initially offloaded to be toggled back and forth at runtime, without
-requiring a reboot.
+Update the documentation accordingly.
 
-Note that you can boot with all CPUs offloaded, de-offload them
-as needed immediately after boot, and thereafter toggled back and
-forth as desired.
+Signed-off-by: Hao Li <lihao2018.fnst@cn.fujitsu.com>
+---
+Changes in v2:
+  * simplify sentences and fix style problems.
 
-1.	Turn enabled/offload states into a common flag, courtesy of
-	Frederic Weisbecker.
+ Documentation/filesystems/dax.txt | 17 +++--------------
+ 1 file changed, 3 insertions(+), 14 deletions(-)
 
-2.	Provide basic callback offloading state machine bits, courtesy
-	of Frederic Weisbecker.
+diff --git a/Documentation/filesystems/dax.txt b/Documentation/filesystems/dax.txt
+index 8fdb78f3c6c9..e03c20564f3a 100644
+--- a/Documentation/filesystems/dax.txt
++++ b/Documentation/filesystems/dax.txt
+@@ -83,20 +83,9 @@ Summary
+        directories.  This has runtime constraints and limitations that are
+        described in 6) below.
+ 
+- 6. When changing the S_DAX policy via toggling the persistent FS_XFLAG_DAX flag,
+-    the change in behaviour for existing regular files may not occur
+-    immediately.  If the change must take effect immediately, the administrator
+-    needs to:
+-
+-    a) stop the application so there are no active references to the data set
+-       the policy change will affect
+-
+-    b) evict the data set from kernel caches so it will be re-instantiated when
+-       the application is restarted. This can be achieved by:
+-
+-       i. drop-caches
+-       ii. a filesystem unmount and mount cycle
+-       iii. a system reboot
++ 6. When changing the S_DAX policy via toggling the persistent FS_XFLAG_DAX
++    flag, the change to existing regular files won't take effect until the
++    files are closed by all processes.
+ 
+ 
+ Details
+-- 
+2.29.2
 
-3.	Always init segcblist on CPU up, courtesy of Frederic Weisbecker.
 
-4.	De-offloading CB kthread, courtesy of Frederic Weisbecker.
 
-5.	Don't deoffload an offline CPU with pending work, courtesy of
-	Frederic Weisbecker.
-
-6.	De-offloading GP kthread, courtesy of Frederic Weisbecker.
-
-7.	Re-offload support, courtesy of Frederic Weisbecker.
-
-8.	Shutdown nocb timer on de-offloading, courtesy of Frederic
-	Weisbecker.
-
-9.	Flush bypass before setting SEGCBLIST_SOFTIRQ_ONLY, courtesy of
-	Frederic Weisbecker.
-
-10.	Set SEGCBLIST_SOFTIRQ_ONLY at the very last stage of
-	de-offloading, courtesy of Frederic Weisbecker.
-
-11.	Only cond_resched() from actual offloaded batch processing,
-	courtesy of Frederic Weisbecker.
-
-12.	Process batch locally as long as offloading isn't complete,
-	courtesy of Frederic Weisbecker.
-
-13.	Locally accelerate callbacks as long as offloading isn't complete,
-	courtesy of Frederic Weisbecker.
-
-14.	Add lockdep_is_cpus_held(), courtesy of Frederic Weisbecker.
-
-15.	Add timer_curr_running(), courtesy of Frederic Weisbecker.
-
-16.	Test runtime toggling of CPUs' callback offloading.
-
-17.	Support nocb toggle in TREE01, courtesy of Frederic Weisbecker.
-
-18.	Add grace period and task state to show_rcu_nocb_state() output.
-
-19.	Add nocb CB kthread list to show_rcu_nocb_state() output.
-
-20.	Code-style nits in callback-offloading toggling.
-
-21.	Do any deferred nocb wakeups at CPU offline time.
-
-						Thanx, Paul
-
-------------------------------------------------------------------------
-
- Documentation/admin-guide/kernel-parameters.txt            |    8 
- include/linux/cpu.h                                        |    2 
- include/linux/rcu_segcblist.h                              |  121 +++
- include/linux/rcupdate.h                                   |    4 
- include/linux/timer.h                                      |    2 
- kernel/cpu.c                                               |    7 
- kernel/rcu/rcu_segcblist.c                                 |   17 
- kernel/rcu/rcu_segcblist.h                                 |   79 +-
- kernel/rcu/rcutorture.c                                    |   90 ++
- kernel/rcu/tree.c                                          |   31 
- kernel/rcu/tree.h                                          |    2 
- kernel/rcu/tree_plugin.h                                   |  433 +++++++++++--
- kernel/time/timer.c                                        |   13 
- tools/testing/selftests/rcutorture/configs/rcu/TREE01.boot |    4 
- 14 files changed, 714 insertions(+), 99 deletions(-)
