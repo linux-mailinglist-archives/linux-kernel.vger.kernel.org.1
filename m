@@ -2,103 +2,300 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 31C8B2EBCD7
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 11:56:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 016FB2EBCD9
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 11:56:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726535AbhAFKyx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Jan 2021 05:54:53 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:54854 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726427AbhAFKyw (ORCPT
+        id S1726894AbhAFKzd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Jan 2021 05:55:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51886 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726661AbhAFKzb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Jan 2021 05:54:52 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1609930406;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=7De1ngoOgky9O4PV2XjGG95Ljxiw6Nzdpvpp/JwdNqE=;
-        b=MdhBlQM2Hsn2AxesZUuEjhKPpW5+1CHSJ8qg9ly87blYamPkZdZvvljf7x1GqNA2TN7+ZO
-        m8btI6s3oS7qWpLnzmGPWqwwyP51y15/ZmK6d75067RlDlV1ey6gRHBTQNIO8LrcVGS57p
-        cOv5lM1BQgIr9gvRkIyKrG1vyqL9e7o=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-316-4upRnGpaNLq2e2x1HbL4mw-1; Wed, 06 Jan 2021 05:53:23 -0500
-X-MC-Unique: 4upRnGpaNLq2e2x1HbL4mw-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 596E4107ACE3;
-        Wed,  6 Jan 2021 10:53:21 +0000 (UTC)
-Received: from localhost.localdomain (unknown [10.35.206.196])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 9269D5B4A9;
-        Wed,  6 Jan 2021 10:53:16 +0000 (UTC)
-From:   Maxim Levitsky <mlevitsk@redhat.com>
-To:     kvm@vger.kernel.org
-Cc:     Joerg Roedel <joro@8bytes.org>, Wanpeng Li <wanpengli@tencent.com>,
-        linux-kernel@vger.kernel.org (open list:X86 ARCHITECTURE (32-BIT AND
-        64-BIT)),
-        x86@kernel.org (maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)),
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Jim Mattson <jmattson@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Maxim Levitsky <mlevitsk@redhat.com>
-Subject: [PATCH 2/2] KVM: nVMX: fix for disappearing L1->L2 event injection on L1 migration
-Date:   Wed,  6 Jan 2021 12:53:06 +0200
-Message-Id: <20210106105306.450602-3-mlevitsk@redhat.com>
-In-Reply-To: <20210106105306.450602-1-mlevitsk@redhat.com>
-References: <20210106105306.450602-1-mlevitsk@redhat.com>
+        Wed, 6 Jan 2021 05:55:31 -0500
+Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3D60C06135D
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Jan 2021 02:54:46 -0800 (PST)
+Received: by mail-pj1-x102b.google.com with SMTP id m5so1384138pjv.5
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Jan 2021 02:54:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=EwM+W1oBVWAjW0INymQy6bkc7AKH9CaSUY4HLB+6Hkk=;
+        b=V2DwEFqXDnKfGoWJ+9AMz79/JkgfvK4BDAY66Dwij6+EAdiq2lqkUXLoMV1MuD35rY
+         g0HDKkw+ehw/Z22rT6lMTWdsgN/uoaykFCejbX9dRYotlx1BJBF6gjQVmRjWdxa53Ffd
+         71djOdjhcd3//9JgtwLW9MM3+WkdWGtzSiDHvc3Ze5vQPl5MqsAT8qETgYbnCsIrKgFi
+         uDDZrTXaTDOmEM/ScsCKapkmicQsAbnZKMwYtHE52QAskSEuA6Rg4ABfavtLpp00ql9o
+         WfWEfhbVJ7zucvfryDdkTj8/ED8rTYmNncFFI/ZjIAYLfg3yKOX9uJy8x2im7gULSgRX
+         cOAQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=EwM+W1oBVWAjW0INymQy6bkc7AKH9CaSUY4HLB+6Hkk=;
+        b=YriaMO5HVS+c6xP9mGMzIE4RkWJnGZPUwyxEAAGb/kFMcYOvihUBr8GVYWBDFEdJCS
+         gFeP2IwKVBPtYe8DK9Bq/L3Kiy03hU9rUc53ERjNOdsVsS1f5JAZ4zsHy9b/9iRTLhCu
+         ei8NPrlGIAbzo/+s9JByu2HWB29zFT7qovyb1KCTMrC8AvY9kyTLcMIRgo8VV8QvYyFt
+         wl8ZsT3IkhugyKWa/6JpMc5RsQbdRfA6iPEkJ5yVQBSO+nQtH+aOUsVrSYkkNta5Zt4L
+         JND1aoOW+3MwXi9y09O20dt8EDqjIUUBBMNK6lETB4au1KOasew/Leipmr27S8BQXGWt
+         LTgA==
+X-Gm-Message-State: AOAM532OyQxKveGjmiLuCDl3RgEfgjHe5CeaMKcjremMerUMcx+fw4R0
+        NPEwdgqllcD51hlSb6vCNzT7
+X-Google-Smtp-Source: ABdhPJxJpxXAvbw3WSkk0jhQ7EG1otw2lBHE7zb6U76OkPXbuBKwZdZbC8NMxB1qpNTD/WjJcZA4Tg==
+X-Received: by 2002:a17:90b:2282:: with SMTP id kx2mr3656915pjb.77.1609930486361;
+        Wed, 06 Jan 2021 02:54:46 -0800 (PST)
+Received: from thinkpad ([2409:4072:6102:e7a2:51f0:bf72:bf80:ec88])
+        by smtp.gmail.com with ESMTPSA id e29sm2279843pfj.174.2021.01.06.02.54.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 06 Jan 2021 02:54:45 -0800 (PST)
+Date:   Wed, 6 Jan 2021 16:24:40 +0530
+From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     agross@kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Vinod Koul <vkoul@kernel.org>
+Subject: Re: [PATCH v2 18/18] ARM: dts: qcom: sdx55-mtp: Add regulator nodes
+Message-ID: <20210106105440.GD3131@thinkpad>
+References: <20210105122649.13581-1-manivannan.sadhasivam@linaro.org>
+ <20210105122649.13581-19-manivannan.sadhasivam@linaro.org>
+ <X/Ss6ycyQF87cYxx@builder.lan>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <X/Ss6ycyQF87cYxx@builder.lan>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If migration happens while L2 entry with an injected event to L2 is pending,
-we weren't including the event in the migration state and it would be
-lost leading to L2 hang.
+On Tue, Jan 05, 2021 at 12:16:11PM -0600, Bjorn Andersson wrote:
+> On Tue 05 Jan 06:26 CST 2021, Manivannan Sadhasivam wrote:
+> 
+> > From: Vinod Koul <vkoul@kernel.org>
+> > 
+> > This adds the regulators found on SDX55 MTP.
+> > 
+> > Signed-off-by: Vinod Koul <vkoul@kernel.org>
+> > Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+> > ---
+> >  arch/arm/boot/dts/qcom-sdx55-mtp.dts | 179 +++++++++++++++++++++++++++
+> >  1 file changed, 179 insertions(+)
+> > 
+> > diff --git a/arch/arm/boot/dts/qcom-sdx55-mtp.dts b/arch/arm/boot/dts/qcom-sdx55-mtp.dts
+> > index 825cc7d0ba18..61e7d5d4bd48 100644
+> > --- a/arch/arm/boot/dts/qcom-sdx55-mtp.dts
+> > +++ b/arch/arm/boot/dts/qcom-sdx55-mtp.dts
+> > @@ -6,6 +6,7 @@
+> >  
+> >  /dts-v1/;
+> >  
+> > +#include <dt-bindings/regulator/qcom,rpmh-regulator.h>
+> >  #include "qcom-sdx55.dtsi"
+> >  #include <arm64/qcom/pm8150b.dtsi>
+> >  #include "qcom-pmx55.dtsi"
+> > @@ -22,6 +23,184 @@ aliases {
+> >  	chosen {
+> >  		stdout-path = "serial0:115200n8";
+> >  	};
+> > +
+> > +	vph_pwr: vph-pwr-regulator {
+> > +		compatible = "regulator-fixed";
+> > +		regulator-name = "vph_pwr";
+> > +		regulator-min-microvolt = <3700000>;
+> > +		regulator-max-microvolt = <3700000>;
+> > +	};
+> > +
+> > +	vreg_bob_3p3: pmx55-bob {
+> > +		compatible = "regulator-fixed";
+> > +		regulator-name = "vreg_bob_3p3";
+> > +		regulator-min-microvolt = <3300000>;
+> > +		regulator-max-microvolt = <3300000>;
+> > +
+> > +		regulator-always-on;
+> > +		regulator-boot-on;
+> > +
+> > +		vin-supply = <&vph_pwr>;
+> > +	};
+> > +
+> > +	vreg_s7e_mx_0p752: pmx55-s7e {
+> > +		compatible = "regulator-fixed";
+> > +		regulator-name = "vreg_s7e_mx_0p752";
+> > +		regulator-min-microvolt = <752000>;
+> > +		regulator-max-microvolt = <752000>;
+> > +
+> > +		vin-supply = <&vph_pwr>;
+> > +	};
+> > +
+> > +	vreg_vddpx_2: vddpx-2 {
+> 
+> Isn't this the name of the pad on the SoC, i.e. the consumer? Does the
+> regulator output have a more suitable name?
+>
 
-Fix this by queueing the injected event in similar manner to how we queue
-interrupted injections.
+The reference is from the downstream dts.
+ 
+> I don't see any references to this node and you got it "boot-on", what
+> happens when the regulator core tuns it off? Or this isn't an issue
+> until we actually try to support sdhci (guessing based on the voltages)?
+> 
 
-This can be reproduced by running an IO intense task in L2,
-and repeatedly migrating the L1.
+I think we can ignore this regulator since there is no SDHCI support in MTP.
 
-Suggested-by: Paolo Bonzini <pbonzini@redhat.com>
-Signed-off-by: Maxim Levitsky <mlevitsk@redhat.com>
----
- arch/x86/kvm/vmx/nested.c | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+Thanks,
+Mani
 
-diff --git a/arch/x86/kvm/vmx/nested.c b/arch/x86/kvm/vmx/nested.c
-index e2f26564a12de..2ea0bb14f385f 100644
---- a/arch/x86/kvm/vmx/nested.c
-+++ b/arch/x86/kvm/vmx/nested.c
-@@ -2355,12 +2355,12 @@ static void prepare_vmcs02_early(struct vcpu_vmx *vmx, struct vmcs12 *vmcs12)
- 	 * Interrupt/Exception Fields
- 	 */
- 	if (vmx->nested.nested_run_pending) {
--		vmcs_write32(VM_ENTRY_INTR_INFO_FIELD,
--			     vmcs12->vm_entry_intr_info_field);
--		vmcs_write32(VM_ENTRY_EXCEPTION_ERROR_CODE,
--			     vmcs12->vm_entry_exception_error_code);
--		vmcs_write32(VM_ENTRY_INSTRUCTION_LEN,
--			     vmcs12->vm_entry_instruction_len);
-+		if ((vmcs12->vm_entry_intr_info_field & VECTORING_INFO_VALID_MASK))
-+			vmx_process_injected_event(&vmx->vcpu,
-+						   vmcs12->vm_entry_intr_info_field,
-+						   vmcs12->vm_entry_instruction_len,
-+						   vmcs12->vm_entry_exception_error_code);
-+
- 		vmcs_write32(GUEST_INTERRUPTIBILITY_INFO,
- 			     vmcs12->guest_interruptibility_info);
- 		vmx->loaded_vmcs->nmi_known_unmasked =
--- 
-2.26.2
-
+> Regards,
+> Bjorn
+> 
+> > +		compatible = "regulator-gpio";
+> > +		regulator-name = "vreg_vddpx_2";
+> > +		regulator-min-microvolt = <1800000>;
+> > +		regulator-max-microvolt = <2850000>;
+> > +		enable-gpios = <&tlmm 98 GPIO_ACTIVE_HIGH>;
+> > +		gpios = <&tlmm 100 GPIO_ACTIVE_HIGH>;
+> > +		states = <1800000 0>, <2850000 1>;
+> > +		startup-delay-us = <200000>;
+> > +		enable-active-high;
+> > +		regulator-boot-on;
+> > +
+> > +		vin-supply = <&vph_pwr>;
+> > +	};
+> > +};
+> > +
+> > +&apps_rsc {
+> > +	pmx55-rpmh-regulators {
+> > +		compatible = "qcom,pmx55-rpmh-regulators";
+> > +		qcom,pmic-id = "e";
+> > +
+> > +		vdd-s1-supply = <&vph_pwr>;
+> > +		vdd-s2-supply = <&vph_pwr>;
+> > +		vdd-s3-supply = <&vph_pwr>;
+> > +		vdd-s4-supply = <&vph_pwr>;
+> > +		vdd-s5-supply = <&vph_pwr>;
+> > +		vdd-s6-supply = <&vph_pwr>;
+> > +		vdd-s7-supply = <&vph_pwr>;
+> > +		vdd-l1-l2-supply = <&vreg_s2e_1p224>;
+> > +		vdd-l3-l9-supply = <&vreg_s3e_0p824>;
+> > +		vdd-l4-l12-supply = <&vreg_s4e_1p904>;
+> > +		vdd-l5-l6-supply = <&vreg_s4e_1p904>;
+> > +		vdd-l7-l8-supply = <&vreg_s3e_0p824>;
+> > +		vdd-l10-l11-l13-supply = <&vreg_bob_3p3>;
+> > +		vdd-l14-supply = <&vreg_s7e_mx_0p752>;
+> > +		vdd-l15-supply = <&vreg_s2e_1p224>;
+> > +		vdd-l16-supply = <&vreg_s4e_1p904>;
+> > +
+> > +		vreg_s2e_1p224: smps2 {
+> > +			regulator-min-microvolt = <1280000>;
+> > +			regulator-max-microvolt = <1400000>;
+> > +		};
+> > +
+> > +		vreg_s3e_0p824: smps3 {
+> > +			regulator-min-microvolt = <800000>;
+> > +			regulator-max-microvolt = <1000000>;
+> > +		};
+> > +
+> > +		vreg_s4e_1p904: smps4 {
+> > +			regulator-min-microvolt = <1800000>;
+> > +			regulator-max-microvolt = <1960000>;
+> > +		};
+> > +
+> > +		ldo1 {
+> > +			regulator-min-microvolt = <1200000>;
+> > +			regulator-max-microvolt = <1200000>;
+> > +			regulator-initial-mode = <RPMH_REGULATOR_MODE_LPM>;
+> > +		};
+> > +
+> > +		ldo2 {
+> > +			regulator-min-microvolt = <1128000>;
+> > +			regulator-max-microvolt = <1128000>;
+> > +			regulator-initial-mode = <RPMH_REGULATOR_MODE_LPM>;
+> > +		};
+> > +
+> > +		ldo3 {
+> > +			regulator-min-microvolt = <800000>;
+> > +			regulator-max-microvolt = <800000>;
+> > +			regulator-initial-mode = <RPMH_REGULATOR_MODE_LPM>;
+> > +		};
+> > +
+> > +		ldo4 {
+> > +			regulator-min-microvolt = <872000>;
+> > +			regulator-max-microvolt = <872000>;
+> > +			regulator-initial-mode = <RPMH_REGULATOR_MODE_LPM>;
+> > +		};
+> > +
+> > +		ldo5 {
+> > +			regulator-min-microvolt = <1704000>;
+> > +			regulator-max-microvolt = <1900000>;
+> > +			regulator-initial-mode = <RPMH_REGULATOR_MODE_LPM>;
+> > +		};
+> > +
+> > +		ldo6 {
+> > +			regulator-min-microvolt = <1800000>;
+> > +			regulator-max-microvolt = <1800000>;
+> > +			regulator-initial-mode = <RPMH_REGULATOR_MODE_LPM>;
+> > +		};
+> > +
+> > +		ldo7 {
+> > +			regulator-min-microvolt = <480000>;
+> > +			regulator-max-microvolt = <900000>;
+> > +			regulator-initial-mode = <RPMH_REGULATOR_MODE_LPM>;
+> > +		};
+> > +
+> > +		ldo8 {
+> > +			regulator-min-microvolt = <480000>;
+> > +			regulator-max-microvolt = <900000>;
+> > +			regulator-initial-mode = <RPMH_REGULATOR_MODE_LPM>;
+> > +		};
+> > +
+> > +		ldo9 {
+> > +			regulator-min-microvolt = <800000>;
+> > +			regulator-max-microvolt = <800000>;
+> > +			regulator-initial-mode = <RPMH_REGULATOR_MODE_LPM>;
+> > +		};
+> > +
+> > +		ldo10 {
+> > +			regulator-min-microvolt = <3088000>;
+> > +			regulator-max-microvolt = <3088000>;
+> > +			regulator-initial-mode = <RPMH_REGULATOR_MODE_LPM>;
+> > +		};
+> > +
+> > +		ldo11 {
+> > +			regulator-min-microvolt = <1704000>;
+> > +			regulator-max-microvolt = <2928000>;
+> > +			regulator-initial-mode = <RPMH_REGULATOR_MODE_LPM>;
+> > +		};
+> > +
+> > +		ldo12 {
+> > +			regulator-min-microvolt = <1200000>;
+> > +			regulator-max-microvolt = <1200000>;
+> > +			regulator-initial-mode = <RPMH_REGULATOR_MODE_LPM>;
+> > +		};
+> > +
+> > +		ldo13 {
+> > +			regulator-min-microvolt = <1704000>;
+> > +			regulator-max-microvolt = <2928000>;
+> > +			regulator-initial-mode = <RPMH_REGULATOR_MODE_LPM>;
+> > +		};
+> > +
+> > +		ldo14 {
+> > +			regulator-min-microvolt = <600000>;
+> > +			regulator-max-microvolt = <800000>;
+> > +			regulator-initial-mode = <RPMH_REGULATOR_MODE_LPM>;
+> > +		};
+> > +
+> > +		ldo15 {
+> > +			regulator-min-microvolt = <1200000>;
+> > +			regulator-max-microvolt = <1200000>;
+> > +			regulator-initial-mode = <RPMH_REGULATOR_MODE_LPM>;
+> > +		};
+> > +
+> > +		ldo16 {
+> > +			regulator-min-microvolt = <1704000>;
+> > +			regulator-max-microvolt = <1904000>;
+> > +			regulator-initial-mode = <RPMH_REGULATOR_MODE_LPM>;
+> > +		};
+> > +	};
+> >  };
+> >  
+> >  &blsp1_uart3 {
+> > -- 
+> > 2.25.1
+> > 
