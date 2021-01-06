@@ -2,102 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B28FD2EC1D1
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 18:11:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5ED4A2EC1D5
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 18:13:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727271AbhAFRLg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Jan 2021 12:11:36 -0500
-Received: from mx2.suse.de ([195.135.220.15]:48978 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726545AbhAFRLf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Jan 2021 12:11:35 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1609953048; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=cWYYM4wHsoqQNcniGqO0vexUGEXTnF+YOVKCWdq6TxQ=;
-        b=DDaHdz4lIszPEqfj1mTAdQ9uawBb2j6rNVUbG2MR2mZcIzb/OZbLejquyf5IidXEeJWjLu
-        JT7/IoiYMHDS5wxQmPF0ZSYO4ns75nnLf8t8WeZsQlwBnrqkxazXwsFuvWrgWcWsUcTy2y
-        o6Ln0G8K+w8me5jPT6Celga5uHBEvPY=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id B8EA3ACAF;
-        Wed,  6 Jan 2021 17:10:48 +0000 (UTC)
-Date:   Wed, 6 Jan 2021 18:10:48 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     Muchun Song <songmuchun@bytedance.com>
-Cc:     mike.kravetz@oracle.com, akpm@linux-foundation.org,
-        n-horiguchi@ah.jp.nec.com, ak@linux.intel.com, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 5/6] mm: hugetlb: fix a race between isolating and
- freeing page
-Message-ID: <20210106171048.GV13207@dhcp22.suse.cz>
-References: <20210106084739.63318-1-songmuchun@bytedance.com>
- <20210106084739.63318-6-songmuchun@bytedance.com>
+        id S1727748AbhAFRMk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Jan 2021 12:12:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54188 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726791AbhAFRMj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 Jan 2021 12:12:39 -0500
+Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5203C06134D
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Jan 2021 09:11:59 -0800 (PST)
+Received: by mail-pj1-x102e.google.com with SMTP id m5so1915585pjv.5
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Jan 2021 09:11:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=YC42Sep418k/6/yhd2iwtUsqtdYGxSoNNfQdhxN7DsU=;
+        b=sAWOvCAm0vRAMKx0jb0ZbDavXsQoFVGkl/YJ0s1P2DN7JAzpDY477tQM+PneBUUDQr
+         W2l0yl2/2OrrLHCT+qj62sNl/ZbbESE8l+x7l3xbQJ0+Tb/CCiiLIrsu0mAYtScyepxz
+         RTCMWoVfYHBpfaRuZ/DPPoK1QsdMPGs+v2UPhzVFi6AO8NqQVWaZY9Fo/Z09n12hp1i7
+         On3HpQ1Gfz8fLGfdrkctvgJ+5i0jmprJloOk+t75xkrQK10UxLxHv25UBUWcwiGphXcv
+         YeFl9yJOjforR4vlVuxlgggVeeA5SE6xy6WqAd9tYaRxJScR0MXBagFWh8uqL2ym+qre
+         pEFQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=YC42Sep418k/6/yhd2iwtUsqtdYGxSoNNfQdhxN7DsU=;
+        b=DNd3L1L1K/t04zcHz3unJrEN8qNLMLuIQ7Jtr4eaKVjq+HuPPvNFPFciyX2Dzai+4S
+         8B0OcxapOovO7Y6kGo+j7xUiB6lJcrwhSp7vFNoPl+vYYKU0p2rKf3ANC4Y1t2Z4VH1e
+         kdD7S7eSPnJTfwIEYvNS8va/gGUGX41jCHN3dMTTw5Psw31md+SeYl8ww8CxU5/iF2KX
+         33PSOYcw2n154i/etnpmR6qqHr/wz8jFJT9k1QY91WR9umMpNEoEhGNTg1myMMNKOuY1
+         jagQMR1DBI5/X4yr16AcgqOYlJiB7/mpTdvHlDVBtBvTOg5F8/rSGo58EMcYFUtqi33p
+         /Acg==
+X-Gm-Message-State: AOAM53166G6eXXVUmKVeZ/do6te/6GNPsAXN8naiF2a5okYYvYKT1YQP
+        ASmWw9XxrqR4m7OIFqG2AwYfOQ==
+X-Google-Smtp-Source: ABdhPJxg4jLTo9gGw2vPKDL+V6crBpow6xJhEkCL8P4g9q4cOd95faDzeTMdbmQoAh0J9nc18B1iJA==
+X-Received: by 2002:a17:90a:193:: with SMTP id 19mr5152267pjc.45.1609953119065;
+        Wed, 06 Jan 2021 09:11:59 -0800 (PST)
+Received: from google.com ([2620:15c:f:10:1ea0:b8ff:fe73:50f5])
+        by smtp.gmail.com with ESMTPSA id 84sm3224542pfy.9.2021.01.06.09.11.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 06 Jan 2021 09:11:58 -0800 (PST)
+Date:   Wed, 6 Jan 2021 09:11:52 -0800
+From:   Sean Christopherson <seanjc@google.com>
+To:     Vitaly Kuznetsov <vkuznets@redhat.com>
+Cc:     Nitesh Narayan Lal <nitesh@redhat.com>,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        w90p710@gmail.com, pbonzini@redhat.com,
+        Thomas Gleixner <tglx@linutronix.de>
+Subject: Re: [PATCH] Revert "KVM: x86: Unconditionally enable irqs in guest
+ context"
+Message-ID: <X/XvWG18aBWocvvf@google.com>
+References: <20210105192844.296277-1-nitesh@redhat.com>
+ <874kjuidgp.fsf@vitty.brq.redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210106084739.63318-6-songmuchun@bytedance.com>
+In-Reply-To: <874kjuidgp.fsf@vitty.brq.redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 06-01-21 16:47:38, Muchun Song wrote:
-> There is a race between isolate_huge_page() and __free_huge_page().
+On Wed, Jan 06, 2021, Vitaly Kuznetsov wrote:
+> Nitesh Narayan Lal <nitesh@redhat.com> writes:
+> > diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+> > index 3f7c1fc7a3ce..3e17c9ffcad8 100644
+> > --- a/arch/x86/kvm/x86.c
+> > +++ b/arch/x86/kvm/x86.c
+> > @@ -9023,18 +9023,7 @@ static int vcpu_enter_guest(struct kvm_vcpu *vcpu)
+> >  
+> >  	kvm_x86_ops.handle_exit_irqoff(vcpu);
+> >  
+> > -	/*
+> > -	 * Consume any pending interrupts, including the possible source of
+> > -	 * VM-Exit on SVM 
 > 
-> CPU0:                                       CPU1:
+> I kind of liked this part of the comment, the new (old) one in
+> svm_handle_exit_irqoff() doesn't actually explain what's going on.
 > 
-> if (PageHuge(page))
->                                             put_page(page)
->                                               __free_huge_page(page)
->                                                   spin_lock(&hugetlb_lock)
->                                                   update_and_free_page(page)
->                                                     set_compound_page_dtor(page,
->                                                       NULL_COMPOUND_DTOR)
->                                                   spin_unlock(&hugetlb_lock)
->   isolate_huge_page(page)
->     // trigger BUG_ON
->     VM_BUG_ON_PAGE(!PageHead(page), page)
->     spin_lock(&hugetlb_lock)
->     page_huge_active(page)
->       // trigger BUG_ON
->       VM_BUG_ON_PAGE(!PageHuge(page), page)
->     spin_unlock(&hugetlb_lock)
+> > and any ticks that occur between VM-Exit and now.
 > 
-> When we isolate a HugeTLB page on CPU0. Meanwhile, we free it to the
-> buddy allocator on CPU1. Then, we can trigger a BUG_ON on CPU0. Because
-> it is already freed to the buddy allocator.
-> 
-> Fixes: c8721bbbdd36 ("mm: memory-hotplug: enable memory hotplug to handle hugepage")
-> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
-> Reviewed-by: Mike Kravetz <mike.kravetz@oracle.com>
+> Looking back, I don't quite understand why we wanted to account ticks
+> between vmexit and exiting guest context as 'guest' in the first place;
+> to my understanging 'guest time' is time spent within VMX non-root
+> operation, the rest is KVM overhead (system).
 
-Acked-by: Michal Hocko <mhocko@suse.com>
+With tick-based accounting, if the tick IRQ is received after PF_VCPU is cleared
+then that tick will be accounted to the host/system.  The motivation for opening
+an IRQ window after VM-Exit is to handle the case where the guest is constantly
+exiting for a different reason _just_ before the tick arrives, e.g. if the guest
+has its tick configured such that the guest and host ticks get synchronized
+in a bad way.
 
-Thanks!
-> ---
->  mm/hugetlb.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
+This is a non-issue when using CONFIG_VIRT_CPU_ACCOUNTING_GEN=y, at least with a
+stable TSC, as the accounting happens during guest_exit_irqoff() itself.
+Accounting might be less-than-stellar if TSC is unstable, but I don't think it
+would be as binary of a failure as tick-based accounting.
+
+> It seems to match how the accounting is done nowadays after Tglx's
+> 87fa7f3e98a1 ("x86/kvm: Move context tracking where it belongs").
 > 
-> diff --git a/mm/hugetlb.c b/mm/hugetlb.c
-> index bf02e81e3953..67200dd25b1d 100644
-> --- a/mm/hugetlb.c
-> +++ b/mm/hugetlb.c
-> @@ -5587,9 +5587,9 @@ bool isolate_huge_page(struct page *page, struct list_head *list)
->  {
->  	bool ret = true;
->  
-> -	VM_BUG_ON_PAGE(!PageHead(page), page);
->  	spin_lock(&hugetlb_lock);
-> -	if (!page_huge_active(page) || !get_page_unless_zero(page)) {
-> +	if (!PageHeadHuge(page) || !page_huge_active(page) ||
-> +	    !get_page_unless_zero(page)) {
->  		ret = false;
->  		goto unlock;
->  	}
+> > -	 * An instruction is required after local_irq_enable() to fully unblock
+> > -	 * interrupts on processors that implement an interrupt shadow, the
+> > -	 * stat.exits increment will do nicely.
+> > -	 */
+> > -	kvm_before_interrupt(vcpu);
+> > -	local_irq_enable();
+> >  	++vcpu->stat.exits;
+> > -	local_irq_disable();
+> > -	kvm_after_interrupt(vcpu);
+> >  
+> >  	if (lapic_in_kernel(vcpu)) {
+> >  		s64 delta = vcpu->arch.apic->lapic_timer.advance_expire_delta;
+> 
+> FWIW,
+> 
+> Reviewed-by: Vitaly Kuznetsov <vkuznets@redhat.com>
+> 
 > -- 
-> 2.11.0
-
--- 
-Michal Hocko
-SUSE Labs
+> Vitaly
+> 
