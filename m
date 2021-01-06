@@ -2,74 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B1BF2EBFC9
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 15:47:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 000F22EBFCC
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 15:47:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727233AbhAFOpn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Jan 2021 09:45:43 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60278 "EHLO mail.kernel.org"
+        id S1727288AbhAFOrE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Jan 2021 09:47:04 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60708 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726346AbhAFOpk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Jan 2021 09:45:40 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CDD832311D;
-        Wed,  6 Jan 2021 14:44:59 +0000 (UTC)
+        id S1726680AbhAFOrC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 Jan 2021 09:47:02 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0CA7323100;
+        Wed,  6 Jan 2021 14:46:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1609944300;
-        bh=nEGRWE5CXTsEJZBeYOlq7Qd9Zd9yOdW0iA2LtVHGf3o=;
-        h=From:To:Cc:Subject:Date:From;
-        b=bdg5qsjCAeriTT7LD/1PJlDAUcFvMcAZRjR5N+qazU4zuzHoh2VBP/8UGLXUEGTz9
-         D/lY+qFesC9j6IJt8YH+klUZp3D9jSYEEmLif7b91VSow/FrxnOnXKLRwrIaiPwwvO
-         Dr2eHV9ejPI5q92uqzN73zqjvlHK0wJlm2rSDZ/i9g+mAXFPGxUjuvn32TIi+zYFoa
-         wLbO2xFmld0MP4LgcsC3NixVW75zxAH82dyUs3f6uyI90OGMRiUjp+NNRmoojhHCUW
-         oZXvtajwYp2auI3obRfIUtCCU8YGD3dhKNY7+LJgpibyYZyRuhXJRkDMJ2e7iNzJel
-         7enxAgMm6o8uA==
-From:   Dinh Nguyen <dinguyen@kernel.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     masahiroy@kernel.org, keescook@chromium.org
-Subject: commit ("1e860048c53ee gcc-plugins: simplify GCC plugin-dev
- capability test")
-Message-ID: <2368d10b-85df-728f-675a-7a082ed0f54c@kernel.org>
-Date:   Wed, 6 Jan 2021 08:44:58 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        s=k20201202; t=1609944382;
+        bh=VDYduDZ2hYzgBR2lAzOGuFpTrOM22sbWMH0q5980R7o=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=bb2QQWnkMIfGcV6jACTTjibZJuLKMNz+CgcJhVbTadUtcbc4pUTIEyNhT7Mi7tm4v
+         LNTxWhcEbl4cPzoicZOdBf6IA5MaomPwPWRBiYdMCHf/Pm0JjABrAPljY9JYG22dNL
+         181H/DQWYOfWmRX2tvr4kDS9STTX8AYxVWVtbTD2OE6fFf/mAydUUX8W3CAor9ljZg
+         rIlzkEMOgLCxDQ4fZqyxgVx/lBS2PC2+QDxpZZmjb0jM43Vu0kPSQaGQxomSCIrVJb
+         6DVvlvfaQb2LE9mF1qcm7KEw/Ajeb61kCfyCrbl32vWWBjCcJYzWj+jFobM+J3FISm
+         x0X+YZRpusqUg==
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id B877135225EC; Wed,  6 Jan 2021 06:46:21 -0800 (PST)
+Date:   Wed, 6 Jan 2021 06:46:21 -0800
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     tglx@linutronix.de, linux-kernel@vger.kernel.org,
+        valentin.schneider@arm.com, bristot@redhat.com, frederic@kernel.org
+Subject: Re: lockdep splat in v5.11-rc1 involving console_sem and rq locks
+Message-ID: <20210106144621.GJ17086@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <20210105220115.GA27357@paulmck-ThinkPad-P72>
+ <X/WITr5JuNvuMH+p@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <X/WITr5JuNvuMH+p@hirez.programming.kicks-ass.net>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Masahiro,
+On Wed, Jan 06, 2021 at 10:52:14AM +0100, Peter Zijlstra wrote:
+> On Tue, Jan 05, 2021 at 02:01:15PM -0800, Paul E. McKenney wrote:
+> > Hello!
+> > 
+> > The RUDE01 rcutorture scenario (and less often, the TASKS01 scenario)
+> > results in occasional lockdep splats on v5.11-rc1 on x86.  This failure
+> > is probabalistic, sometimes happening as much as 30% of the time, but
+> > sometimes happening quite a bit less frequently.  (And yes, this did
+> > result in a false bisection.  Why do you ask?)  The problem seems to
+> > happen more frequently shortly after boot, so for fastest reproduction
+> > run lots of 10-minute RUDE01 runs, which did eventually result in a
+> > good bisection.  (Yes, I did hammer the last good commit for awhile.)
+> > 
+> > The first bad commit is 1cf12e08bc4d ("sched/hotplug: Consolidate task
+> > migration on CPU unplug").  An example splat is shown below.
+> > 
+> > Thoughts?
+> 
+> The splat is because you hit a WARN, we're working on that.
 
-With v5.11-rc1 and commit("1e860048c53ee gcc-plugins: simplify GCC 
-plugin-dev capability test"), I get this error for my arm 
-socfpga_defconfig build. I have been building the kernel the same way 
-for many years now. Do you know what I might be doing wrong?
+Huh.  The WARN does not always generate the lockdep complaint.  But
+fair enough.
 
-$ make ARCH=arm CROSS_COMPILE=${CROSS_COMPILE}
-   SYNC    include/config/auto.conf.cmd
-   SYSHDR  arch/arm/include/generated/uapi/asm/unistd-common.h
-   SYSHDR  arch/arm/include/generated/uapi/asm/unistd-oabi.h
-   SYSHDR  arch/arm/include/generated/uapi/asm/unistd-eabi.h
-   REMOVE  arch/arm/include/generated/asm/mm-arch-hooks.h
-   HOSTCXX scripts/gcc-plugins/arm_ssp_per_task_plugin.so
-In file included from scripts/gcc-plugins/gcc-common.h:103:0,
-                  from scripts/gcc-plugins/arm_ssp_per_task_plugin.c:3:
-/home/dinguyen/linux_dev/gcc-arm-10.2-2020.11-x86_64-arm-none-linux-gnueabihf/bin/../lib/gcc/arm-none-linux-gnueabihf/10.2.1/plugin/include/builtins.h:23:10: 
-fatal error: mpc.h: No such file or directory
-#include <mpc.h>
-           ^~~~~~~
-compilation terminated.
-scripts/gcc-plugins/Makefile:47: recipe for target 
-'scripts/gcc-plugins/arm_ssp_per_task_plugin.so' failed
-make[2]: *** [scripts/gcc-plugins/arm_ssp_per_task_plugin.so] Error 1
-scripts/Makefile.build:496: recipe for target 'scripts/gcc-plugins' failed
-make[1]: *** [scripts/gcc-plugins] Error 2
-Makefile:1190: recipe for target 'scripts' failed
-make: *** [scripts] Error 2
-make: *** Waiting for unfinished jobs....
-   UPD     include/config/kernel.release
+>   https://lkml.kernel.org/r/20201226025117.2770-1-jiangshanlai@gmail.com
 
-Thanks,
-Dinh
+Thomas pointed me at this one a couple of weeks ago.  Here is an
+additional fix for rcutorture: f67e04bb0695 ("torture: Break affinity
+of kthreads last running on outgoing CPU").  I am still getting WARNs
+and lockdep splats with both applied.
+
+What would break if I made the code dump out a few entries in the
+runqueue if the warning triggered?
+
+						Thanx, Paul
