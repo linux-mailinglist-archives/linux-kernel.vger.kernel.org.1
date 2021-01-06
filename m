@@ -2,67 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C583B2EB779
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 02:13:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 035022EB793
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 02:26:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725978AbhAFBNR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 20:13:17 -0500
-Received: from szxga07-in.huawei.com ([45.249.212.35]:10391 "EHLO
-        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725855AbhAFBNQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 20:13:16 -0500
-Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4D9WXq1gxBz7Qwl;
-        Wed,  6 Jan 2021 09:11:39 +0800 (CST)
-Received: from huawei.com (10.90.53.225) by DGGEMS413-HUB.china.huawei.com
- (10.3.19.213) with Microsoft SMTP Server id 14.3.498.0; Wed, 6 Jan 2021
- 09:11:25 +0800
-From:   Ye Bin <yebin10@huawei.com>
-To:     <rjw@rjwysocki.net>, <lenb@kernel.org>,
-        <linux-acpi@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-CC:     Ye Bin <yebin10@huawei.com>
-Subject: [PATCH] =?UTF-8?q?ACPI:=20PM:=20s2idle:=20Remove=20useless=20vari?= =?UTF-8?q?able=20=E2=80=98obj=5Fnew=E2=80=99=20in=20lpi=5Fdevice=5Fget=5F?= =?UTF-8?q?constraints=5Famd?=
-Date:   Wed, 6 Jan 2021 09:23:01 +0800
-Message-ID: <20210106012301.71260-1-yebin10@huawei.com>
-X-Mailer: git-send-email 2.16.2.dirty
+        id S1725903AbhAFB0W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 20:26:22 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33476 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725730AbhAFB0W (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Jan 2021 20:26:22 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CFCFC22CB9;
+        Wed,  6 Jan 2021 01:25:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1609896341;
+        bh=UT74fBmbCViSCvuVn+wHay+sQ7VvlXVZ8ATzd0Nm6LA=;
+        h=Date:From:To:Cc:Subject:Reply-To:From;
+        b=Ca/XyxpwrZVvSRUOQC5lGSK8JC+VZsKBa+E2V7wRhXaSIjKvxvn5F9v/aNOGYSKV5
+         7bjXZCN8IxGHyHkGzJA8UkHL0uBu1/8rHp45CDtflijWRhTESSGmhl2ha9qNQFbn8A
+         7GWlbaegyPOujvZN6/oo2Q57QkzOuWBZs/p5jNX1VdoSwN0nlwkqVIcHyANaYCRDT3
+         04ZuN6NEXjkfIJwVPrP5W73XMe5kzUWPKMMeruylD1F64TGf/vZcEdZmpGoshXGikY
+         WKl2zhhfJk9qxX/+iVb3XP6Y5Gww0QRbo4z2sKSHz074kStEYgnSa5pDP78s2d3oJ+
+         c0ZHHaSGU+Hkw==
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id 903D235228C6; Tue,  5 Jan 2021 17:25:41 -0800 (PST)
+Date:   Tue, 5 Jan 2021 17:25:41 -0800
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     rcu@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
+        jiangshanlai@gmail.com, akpm@linux-foundation.org,
+        mathieu.desnoyers@efficios.com, josh@joshtriplett.org,
+        tglx@linutronix.de, peterz@infradead.org, rostedt@goodmis.org,
+        dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
+        oleg@redhat.com, joel@joelfernandes.org
+Subject: [PATCH tip/core/rcu 0/6] Track callbacks on a per-segment basis
+Message-ID: <20210106012541.GA13972@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.90.53.225]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix warning:
-drivers/acpi/x86/s2idle.c:138:25: warning: variable ‘obj_new’ set but
-not used [-Wunused-but-set-variable]
-      union acpi_object *obj_new;
-                               ^~~~~~~
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Ye Bin <yebin10@huawei.com>
----
- drivers/acpi/x86/s2idle.c | 2 --
- 1 file changed, 2 deletions(-)
+Hello!
 
-diff --git a/drivers/acpi/x86/s2idle.c b/drivers/acpi/x86/s2idle.c
-index 25fea34b544c..e5fb17fd1020 100644
---- a/drivers/acpi/x86/s2idle.c
-+++ b/drivers/acpi/x86/s2idle.c
-@@ -135,12 +135,10 @@ static void lpi_device_get_constraints_amd(void)
- 
- 				for (k = 0; k < info_obj->package.count; ++k) {
- 					union acpi_object *obj = &info_obj->package.elements[k];
--					union acpi_object *obj_new;
- 
- 					list = &lpi_constraints_table[lpi_constraints_table_size];
- 					list->min_dstate = -1;
- 
--					obj_new = &obj[k];
- 					switch (k) {
- 					case 0:
- 						dev_info.enabled = obj->integer.value;
--- 
-2.16.2.dirty
+This series adds counts to the rcu_segcblist structure that track the
+number of callbacks in each segment, allowing RCU to distinguish between
+(for example) a need to get grace periods done or get callbacks invoked
+(or, for that matter, both).
 
+1.	Make rcu_do_batch count how many callbacks were executed,
+	courtesy of "Joel Fernandes (Google)".
+
+2.	Add additional comments to explain smp_mb(), courtesy of "Joel
+	Fernandes (Google)".
+
+3.	Add counters to segcblist datastructure, courtesy of "Joel
+	Fernandes (Google)".
+
+4.	segcblist: Remove redundant smp_mb()s, courtesy of "Joel Fernandes
+	(Google)".
+
+5.	Add tracing for how segcb list changes, courtesy of "Joel
+	Fernandes (Google)".
+
+6.	Add debug checks for segment lengths, courtesy of "Joel Fernandes
+	(Google)".
+
+						Thanx, Paul
+
+------------------------------------------------------------------------
+
+ include/linux/rcu_segcblist.h |    1 
+ include/trace/events/rcu.h    |   26 +++++
+ kernel/rcu/rcu_segcblist.c    |  203 +++++++++++++++++++++++++++++++-----------
+ kernel/rcu/rcu_segcblist.h    |    6 -
+ kernel/rcu/srcutree.c         |    5 -
+ kernel/rcu/tree.c             |   29 ++++--
+ 6 files changed, 209 insertions(+), 61 deletions(-)
