@@ -2,83 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 973862EB8CB
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 05:09:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B71F2EB8CF
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 05:13:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726092AbhAFEJO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 23:09:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44962 "EHLO
+        id S1726109AbhAFEMg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 23:12:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45484 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725808AbhAFEJN (ORCPT
+        with ESMTP id S1725730AbhAFEMf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 23:09:13 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82D65C06134C;
-        Tue,  5 Jan 2021 20:08:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:MIME-Version:
-        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
-        Content-Description:In-Reply-To:References;
-        bh=QmLa+cOqR50EfOgT1iDBdhgkPcXU0BbBKqzGFV1+yh0=; b=iqTu3tJUwi8MhGfkmMPILJ2hPK
-        G3XfewN8EVwkzzX47bOtxA6MOlq2W7b8lID2UIABuciFIIUcSiCXrIsEOpVE+9U658kTgCm1CKy74
-        qa4LHW1sOKLDJ8JK58yDDTdPVCGhVtSNDzAZcCU8/6v1ICEHeGGilG4uqfg2/Nl/gHFTVrFUBQjCY
-        QWeWD9caaa4MPsqburQ+KWkbeedNRu00fy8RrNCt8R3kczMJ5hpCZHoBL5GWrybp3os9nBu9UT48Q
-        d+7F1Kbc5nfWlxQdD22Frp40UShCaSTGZQkmSCUkLmq89BWbwrNLfA5fKq1zfSd4nxC2hiHJBtwnn
-        Rwzq/kKQ==;
-Received: from [2601:1c0:6280:3f0::64ea] (helo=smtpauth.infradead.org)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kx07Y-0006DE-GN; Wed, 06 Jan 2021 04:08:29 +0000
-From:   Randy Dunlap <rdunlap@infradead.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        kernel test robot <lkp@intel.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>, linux-scsi@vger.kernel.org
-Subject: [PATCH] scsi: ufs: ufshcd-pltfrm depends on HAS_IOMEM
-Date:   Tue,  5 Jan 2021 20:08:22 -0800
-Message-Id: <20210106040822.933-1-rdunlap@infradead.org>
-X-Mailer: git-send-email 2.26.2
+        Tue, 5 Jan 2021 23:12:35 -0500
+Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04699C06134C;
+        Tue,  5 Jan 2021 20:11:55 -0800 (PST)
+Received: by mail-lf1-x12a.google.com with SMTP id y19so3555700lfa.13;
+        Tue, 05 Jan 2021 20:11:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=BhqmsY59ya3fHfoXcrewe93ktRT6SVmBebPAVLSKui4=;
+        b=PoCO6p8GHpU7vS2aZkjww+AV3ipfyrlCb1BpTiBImi4DU+rWrJq/Vk8KAi9c5FDXQh
+         mFAJ7DraVTYj3lKzK2vDh7WDgy5NZuSaYjAwBZGaRE3LBZyKysFRlpueBSYFjuA8vw9M
+         2sLUgZwEPuLFas6XDvNrUtGkBCE6oNzTWRPrzUWB+X+b8l/OszYXJLyV3h5T7QCGt99b
+         PMQ0H6/QsFWGmZ+yxnqEP5vs3b6PpF1pNQlWWA08wUNrdp89ovM4JOiy3c7ncr1yXWAq
+         IZDACcAm6fxwT6wKJc8jH+WGRQiAzm6re1QqAGv4kJellgo+1bCVqud60acWO7BPKOha
+         9sAQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=BhqmsY59ya3fHfoXcrewe93ktRT6SVmBebPAVLSKui4=;
+        b=WhrBJjvnhT65x97+0D9CxM/CzAKISZPTPLAJphHo4wnlm5lztAfI/k87hdeY/PT6AB
+         Oko7Wyr7Vr/OGeXGUbaOgSkYCZ3ouC2RvqYRMOLlJJi9g6C6KunDh+P923jxqL3zWw/n
+         bBzS0W7wPJvy4HAqgwqKORiJtDv3BiBMLIyaC7JXNExYtIShAK74gcVtJVkaU7QTk1vi
+         YCG0Kt9+Izzk1nUUmk0Ffm+8dS5teCF+tppqfRvxAJN6l3LHBbBt0RuW/rD6FDTI/g9t
+         iUWsXluvfGPbnwI4vJzWcV3ov+7Oz3XIYzXOILcrmEnlNi9cEgRw+pFPC2VAzoyxLRoV
+         wW3w==
+X-Gm-Message-State: AOAM532Of7CrFLVl/gyZWMjsIv9/tveG6bqqB9WyWtwvFHFhmExHFra+
+        GxGoFI+875CsluvFu9xazxMd4GwcgkodGzhiRe8=
+X-Google-Smtp-Source: ABdhPJxV6bCJB+k4Ckmm5h2MhpYAhKhpy3K0U3zTSrqtm6MtY5+nLgHRmkeU2eDzFYwDZNMEdhSOATXCK0WBcWpRpq8=
+X-Received: by 2002:ac2:5547:: with SMTP id l7mr1064627lfk.313.1609906313402;
+ Tue, 05 Jan 2021 20:11:53 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210105202126.2879650-1-trix@redhat.com> <20210105222559.GA4118247@ubuntu-m3-large-x86>
+In-Reply-To: <20210105222559.GA4118247@ubuntu-m3-large-x86>
+From:   Steve French <smfrench@gmail.com>
+Date:   Tue, 5 Jan 2021 22:11:41 -0600
+Message-ID: <CAH2r5mu-C3v-Tuz5E8nAFepSiCyypvw0g4ctTt2fjx1vEb9a_A@mail.gmail.com>
+Subject: Re: [PATCH] cifs: check pointer before freeing
+To:     Nathan Chancellor <natechancellor@gmail.com>
+Cc:     trix@redhat.com, Steve French <sfrench@samba.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        =?UTF-8?Q?Aur=C3=A9lien_Aptel?= <aaptel@suse.com>,
+        Paulo Alcantara <palcantara@suse.de>,
+        CIFS <linux-cifs@vger.kernel.org>,
+        samba-technical <samba-technical@lists.samba.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        clang-built-linux@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Building ufshcd-pltfrm.c on arch/s390/ has a linker error since
-S390 does not support IOMEM, so add a dependency on HAS_IOMEM.
+merged into cifs-2.6.git for-next and added cc:stable
 
-s390-linux-ld: drivers/scsi/ufs/ufshcd-pltfrm.o: in function `ufshcd_pltfrm_init':
-ufshcd-pltfrm.c:(.text+0x38e): undefined reference to `devm_platform_ioremap_resource'
+On Tue, Jan 5, 2021 at 5:08 PM Nathan Chancellor
+<natechancellor@gmail.com> wrote:
+>
+> On Tue, Jan 05, 2021 at 12:21:26PM -0800, trix@redhat.com wrote:
+> > From: Tom Rix <trix@redhat.com>
+> >
+> > clang static analysis reports this problem
+> >
+> > dfs_cache.c:591:2: warning: Argument to kfree() is a constant address
+> >   (18446744073709551614), which is not memory allocated by malloc()
+> >         kfree(vi);
+> >         ^~~~~~~~~
+> >
+> > In dfs_cache_del_vol() the volume info pointer 'vi' being freed
+> > is the return of a call to find_vol().  The large constant address
+> > is find_vol() returning an error.
+> >
+> > Add an error check to dfs_cache_del_vol() similar to the one done
+> > in dfs_cache_update_vol().
+> >
+> > Fixes: 54be1f6c1c37 ("cifs: Add DFS cache routines")
+> > Signed-off-by: Tom Rix <trix@redhat.com>
+>
+> Reviewed-by: Nathan Chancellor <natechancellor@gmail.com>
+>
+> > ---
+> >  fs/cifs/dfs_cache.c | 3 ++-
+> >  1 file changed, 2 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/fs/cifs/dfs_cache.c b/fs/cifs/dfs_cache.c
+> > index 6ad6ba5f6ebe..0fdb0de7ff86 100644
+> > --- a/fs/cifs/dfs_cache.c
+> > +++ b/fs/cifs/dfs_cache.c
+> > @@ -1260,7 +1260,8 @@ void dfs_cache_del_vol(const char *fullpath)
+> >       vi = find_vol(fullpath);
+> >       spin_unlock(&vol_list_lock);
+> >
+> > -     kref_put(&vi->refcnt, vol_release);
+> > +     if (!IS_ERR(vi))
+> > +             kref_put(&vi->refcnt, vol_release);
+> >  }
+> >
+> >  /**
+> > --
+> > 2.27.0
+> >
 
-where that devm_ function is inside an #ifdef CONFIG_HAS_IOMEM/#endif block.
 
-Fixes: 03b1781aa978 ("[SCSI] ufs: Add Platform glue driver for ufshcd")
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Reported-by: kernel test robot <lkp@intel.com>
-Link: lore.kernel.org/r/202101031125.ZEFCUiKi-lkp@intel.com
-Cc: "James E.J. Bottomley" <jejb@linux.ibm.com>
-Cc: "Martin K. Petersen" <martin.petersen@oracle.com>
-Cc: Alim Akhtar <alim.akhtar@samsung.com>
-Cc: Avri Altman <avri.altman@wdc.com>
-Cc: linux-scsi@vger.kernel.org
----
-This not a COMPILE_TEST build. The 0day bot was reporting tons of
-S390 build errors for iomem-related function usage, so now S390 does
-not allow COMPILE_TEST, and any iomem-related build errors on S390
-should be fixed AFAIK.
 
- drivers/scsi/ufs/Kconfig |    1 +
- 1 file changed, 1 insertion(+)
+-- 
+Thanks,
 
---- lnx-511-rc2.orig/drivers/scsi/ufs/Kconfig
-+++ lnx-511-rc2/drivers/scsi/ufs/Kconfig
-@@ -72,6 +72,7 @@ config SCSI_UFS_DWC_TC_PCI
- config SCSI_UFSHCD_PLATFORM
- 	tristate "Platform bus based UFS Controller support"
- 	depends on SCSI_UFSHCD
-+	depends on HAS_IOMEM
- 	help
- 	This selects the UFS host controller support. Select this if
- 	you have an UFS controller on Platform bus.
+Steve
