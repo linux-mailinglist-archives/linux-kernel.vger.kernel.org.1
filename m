@@ -2,155 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C1812EC489
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 21:14:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B5B962EC48E
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 21:15:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727172AbhAFUNP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Jan 2021 15:13:15 -0500
-Received: from foss.arm.com ([217.140.110.172]:46618 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726988AbhAFUNO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Jan 2021 15:13:14 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id CAD2CD6E;
-        Wed,  6 Jan 2021 12:12:28 -0800 (PST)
-Received: from localhost (unknown [10.1.198.32])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 6C34F3F719;
-        Wed,  6 Jan 2021 12:12:28 -0800 (PST)
-Date:   Wed, 6 Jan 2021 20:12:27 +0000
-From:   Ionela Voinescu <ionela.voinescu@arm.com>
-To:     Al Viro <viro@zeniv.linux.org.uk>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        kernel test robot <lkp@intel.com>, kbuild-all@lists.01.org,
-        linux-kernel@vger.kernel.org, Sudeep Holla <sudeep.holla@arm.com>
-Subject: Re: arch/arm64/kernel/topology.c:367:22: sparse: sparse: dereference
- of noderef expression
-Message-ID: <20210106201226.GA25625@arm.com>
-References: <202012180512.hxAiUO00-lkp@intel.com>
- <20201218104410.GB5258@gaia>
- <20210106150724.GA16591@arm.com>
- <20210106174758.GD3579531@ZenIV.linux.org.uk>
+        id S1726932AbhAFUPK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Jan 2021 15:15:10 -0500
+Received: from mail2.protonmail.ch ([185.70.40.22]:13251 "EHLO
+        mail2.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726712AbhAFUPJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 Jan 2021 15:15:09 -0500
+X-Greylist: delayed 416 seconds by postgrey-1.27 at vger.kernel.org; Wed, 06 Jan 2021 15:15:08 EST
+Date:   Wed, 06 Jan 2021 20:14:22 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me; s=protonmail;
+        t=1609964066; bh=WJzK6tqy2kudlSwkM4O7gMAIJYEZptuNFADdyTc5dhI=;
+        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
+        b=HwpAema3qYw7H0Uk8Mw4bpCmFURtP/90veXgW/rvDH+kzWJzez0CW6Q+786ZxxOyo
+         BvvlWdgX2LfkqmpIXLlZGnXwRx+33dZ9lMdwn7WK1gvuIoF5C5bFi4o9bAvZmir+uF
+         iD2zd0xHjq4zInQxaOJtr/3QDoX0OHxq8Aa6Ld5k0lpFfW/m69oDZU7Mbo98dlEDBI
+         cWpGNjxFxlMYHasUKvfqillR87YtA4VQ/tpA2jQpjK9uyOCQWzLTFM9cRNiFp9qZif
+         bl3GGXkbwyvRMoznX092HfTqPbGau3RgaJHCAmtBS2wMQwAHCa3j6/PD1SUpJWSAL6
+         AIS0dkxUi8RGw==
+To:     Nathan Chancellor <natechancellor@gmail.com>
+From:   Alexander Lobakin <alobakin@pm.me>
+Cc:     Alexander Lobakin <alobakin@pm.me>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Kees Cook <keescook@chromium.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Fangrui Song <maskray@google.com>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Ralf Baechle <ralf@linux-mips.org>,
+        Alex Smith <alex.smith@imgtec.com>,
+        Markos Chandras <markos.chandras@imgtec.com>,
+        linux-mips@vger.kernel.org, stable@vger.kernel.org,
+        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com
+Reply-To: Alexander Lobakin <alobakin@pm.me>
+Subject: Re: [PATCH mips-next 0/4] MIPS: vmlinux.lds.S sections fix & cleanup
+Message-ID: <20210106201400.32416-1-alobakin@pm.me>
+In-Reply-To: <20210104121729.46981-1-alobakin@pm.me>
+References: <20210104121729.46981-1-alobakin@pm.me>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210106174758.GD3579531@ZenIV.linux.org.uk>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
+        autolearn=disabled version=3.4.4
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
+        mailout.protonmail.ch
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wednesday 06 Jan 2021 at 17:47:58 (+0000), Al Viro wrote:
-> On Wed, Jan 06, 2021 at 03:07:24PM +0000, Ionela Voinescu wrote:
-> 
-> > > >  > 367		switch ((u64)reg->address) {
-> > > 
-> > > That's not a dereference but I guess sparse complains of dropping the
-> > > __iomem. We could change the cast to (__force u64) to silence sparse.
-> 
-> Oh, yes, it is - that of &reg->address, to fetch the value you are
-> casting to u64.  And nonsense in declaration of struct cpc_reg says
-> that its 'address' field somehow manages to be located in iomem,
-> regardless of where the entire structure is stored.
-> 
-> Qualifiers apply to lvalues - it's "how can that object be accessed".
-> They don't say anything with the values _stored_ in that object.
-> It is possible to have them applied to individual fields of a structure;
-> for some qualifiers that might be legitimate - e.g. you could do
-> struct foo {
-> 	char *s;
-> 	volatile int x;
-> } *p;
-> telling the compiler that p->x is to be treated as volatile (make no
-> assumptions about the value not being changed behind your back, etc.),
-> while p->s is not.
-> 
-> However, for __iomem (or __user, etc.) that makes no sense whatsoever;
-> you are saying "this field lives in iomem, no matter where the entire
-> structure is located".
-> 
-> To quote C99 6.3.2.1[2]:
-> 	Except when it is the operand of the sizeof operator, the unary & operator, the ++
-> operator, the -- operator, or the left operand of the . operator or an assignment operator,
-> an lvalue that does not have array type is converted to the value stored in the designated
-> object (and is no longer an lvalue). If the lvalue has qualified type, the value has the
-> unqualified version of the type of the lvalue; otherwise, the value has the type of the
-> lvalue. If the lvalue has an incomplete type and does not have array type, the behavior is
-> undefined.
-> 
-> 	IOW, in the example above, as lvalue p->x will have "volatile int"
-> for type; using it as argument of cast operator will convert it (_before_
-> doing the cast) to whatever integer that had been found stored
-> in that field and the type of that will be "int", not "volatile int".
-> As soon as you fetch the value stored in object, qualifiers are gone.
-> 
-> 	The syntax is somewhat unfortunate - it's easy to confuse
-> qualified pointer to type with pointer to qualified type.
-> 	const int *r
-> means "r is an unqualified pointer to const int"; the value stored in r may
-> be modified, but the value stored in *r may not.
-> 	int * const r
-> means "r is a const pointer to int"; the value stored in r may not be modified,
-> but the value stored in *r may.
-> 
-> 	You often run into something like
-> struct foo {
-> 	...
-> 	u64 __iomem *some_reg;
-> 	...
-> } *p;
-> and, unlike the mess in struct cpc_reg declaration, here p->some_reg is *NOT*
-> __iomem-qualified.  It's a perfectly normal field of a structure somewhere
-> in kernel memory, it can be fetched from, stored into, etc.  The contents
-> of that field is a pointer to __iomem u64.  It can be passed to e.g.
-> readq(), but trying to directly fetch *(p->some_reg) will barf.
-> 	In such cases the limitations apply not to how we can access the
-> field itself, but to what we can do with the value we find in that
-> field.
-> 
-> 	At a guess, the intent of that (mis)annotation had been
-> "this field contains a 64bit unsigned integer that happens to contain
-> an address of something in iomem".  But qualifiers are useless for
-> that - once you've fetched that value, all you have is plain u64.
-> Nor would they be carried through the arithmetics, etc.
+From: Nathan Chancellor <natechancellor@gmail.com>
+Date: Mon, 4 Jan 2021 17:09:36 -0700
+
+> On Mon, Jan 04, 2021 at 12:18:10PM +0000, Alexander Lobakin wrote:
+>> This series hunts the problems discovered after manual enabling of
+>> ARCH_WANT_LD_ORPHAN_WARN, notably the missing PAGE_ALIGNED_DATA()
+>> section affecting VDSO placement (marked for stable).
+>>
+>> Compile and runtime tested on MIPS32R2 CPS board with no issues.
+>>
+>> Alexander Lobakin (4):
+>>   MIPS: vmlinux.lds.S: add missing PAGE_ALIGNED_DATA() section
+>>   MIPS: vmlinux.lds.S: add ".rel.dyn" to DISCARDS
+>>   MIPS: vmlinux.lds.S: add ".gnu.attributes" to DISCARDS
+>>   MIPS: select ARCH_WANT_LD_ORPHAN_WARN
+>>
+>>  arch/mips/Kconfig              | 1 +
+>>  arch/mips/kernel/vmlinux.lds.S | 5 ++++-
+>>  2 files changed, 5 insertions(+), 1 deletion(-)
+>>
+>> --
+>> 2.30.0
+>>
 >
+> Glad to see ARCH_WANT_LD_ORPHAN_WARN catching on :)
+>
+> I took this for a spin with clang with malta_kvm_guest_defconfig and I
+> only see one section unaccounted for:
+>
+> $ make -skj"$(nproc)" ARCH=3Dmips CROSS_COMPILE=3Dmipsel-linux-gnu- LLVM=
+=3D1 O=3Dout/mips distclean malta_kvm_guest_defconfig all
+> ...
+> ld.lld: warning: <internal>:(.got) is being placed in '.got'
+> ld.lld: warning: <internal>:(.got) is being placed in '.got'
+> ld.lld: warning: <internal>:(.got) is being placed in '.got'
+>
+> Looks like most architectures place it in .got (ia64, nios2, powerpc)
+> or .text (arm64).
 
-This could have been the intention, as that value is used as an offset
-in the PCC virtual space (although it does not make complete sense even
-in this case). Otherwise it's used as a pysical address offset for
-system memory, and given as pysical address argument to ioremap :).
+Addressed in v2, thanks!
 
-In any case, thank you for the detailed explanation. After your first
-email I was thinking that it does not make sense to have the __iomem
-annotation for address in cpc_reg, especially given its uses in
-cppc_acpi.c and for the code that implements the ffh functions, but I
-think only after this email it really  sunk in how wrong that
-annotation really was.
+> Cheers,
+> Nathan
 
-Initially I though it always only makes sense to have a __iomem pointer.
-That is, it only makes sense to have a pointer with a cookie attached
-specifying that it addresses a device memory space that should only be
-accessed using special functions.
+Al
 
-But then you've got something like this in drivers/input/serio/apbps2.c:
-struct apbps2_regs {
-	u32 __iomem data;	/* 0x00 */
-	u32 __iomem status;	/* 0x04 */
-	u32 __iomem ctrl;	/* 0x08 */
-	u32 __iomem reload;	/* 0x0c */
-};
-struct apbps2_priv {
-	struct serio		*io;
-	struct apbps2_regs	*regs;
-};
-[..] (followed by)
-ioread32be(&priv->regs->status)
-
-which I think is correct despite contradicting my assumption, but it's
-the only example I've found in the kernel.
-
-Many thanks,
-Ionela.
-
-> 	It might be possible to cook something more useful by a bit
-> of creative misuse of __bitwise, but I hadn't looked through the
-> places where that field is used.
