@@ -2,95 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F7E72EC575
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 22:06:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0246C2EC57E
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 22:08:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727330AbhAFVFv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Jan 2021 16:05:51 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58832 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726463AbhAFVFv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Jan 2021 16:05:51 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A4A882313F;
-        Wed,  6 Jan 2021 21:05:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1609967110;
-        bh=VWIt9mxHh+1O8YrPaZvQBjkmRhxAdVAUkyWUCugEtu4=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=umv81nRlQfkJEJgnIionOHth1kbhM1WucDJtqvaFyCHFBVQy/rK0fhpSESqcmVoa4
-         ZbIlrVfZJvU/ZxO0LOQI3i6DAW4vbqpCbpaxpSSr6ehmw4hbk9WUYPA5BJgEe4LGjA
-         +z8Qq2wPs7pj6x+af5Ov6MSVMLG8XnVit9xeaAtJ+MV7HNqNvjTILEXhJNIxkvUChQ
-         PEfXDFfGpsYDqOcwc5A3p3SIIwjQxynMN0ASIhfsjha12BYlFnBV9CXqvf9g0kcf2k
-         70co1Am8U/8wlS5/sSKRx88UB0BuU44p6H0MyfdMY3fbl3LlUL5dBDLDhdAbu5es7c
-         u8t1ntBtzkWbA==
-Received: by mail-ot1-f49.google.com with SMTP id 11so4311080oty.9;
-        Wed, 06 Jan 2021 13:05:10 -0800 (PST)
-X-Gm-Message-State: AOAM532o0SwZfVDjBFKWvkj/84S2GCAPWU4gTCj7ai1Z0tAj0vKwwUvE
-        Ida1aQDzfKQ5gQkofxfnsJ6fij1ok9dprIf6Gzc=
-X-Google-Smtp-Source: ABdhPJwEF2XLuGgrvp5IlNBbBpYgVrfgrMFZjZhVcXuUwn7FhUss+I9V2lAAPWca/5+Q7QzttNxk10KRmxUOpwwlXlc=
-X-Received: by 2002:a05:6830:1e14:: with SMTP id s20mr4598178otr.210.1609967109975;
- Wed, 06 Jan 2021 13:05:09 -0800 (PST)
+        id S1727701AbhAFVHq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Jan 2021 16:07:46 -0500
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:42506 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726234AbhAFVHp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 Jan 2021 16:07:45 -0500
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 106L5JB3039931;
+        Wed, 6 Jan 2021 15:05:19 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1609967119;
+        bh=L12PL6fV1pxKWKnarr6ev77TpWmo7Qc/1tbFWmLBank=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=b1qMYkrJQs/bY874vOcBuWO06etKG6qqMdfJbvoXaK7ldpFTPLMJJabkaVBMZOCxI
+         l2cpKS/PHrWxjcpl3i7ErI4mI7WxGRog/qnPTbZbxjAYtYgbA6xpLFJx2C5iR8Xf1T
+         tKNC8iLn8D4RNur6ciZP1Z2eToTFn8G4yxHZSup0=
+Received: from DFLE115.ent.ti.com (dfle115.ent.ti.com [10.64.6.36])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 106L5JBF027095
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 6 Jan 2021 15:05:19 -0600
+Received: from DFLE110.ent.ti.com (10.64.6.31) by DFLE115.ent.ti.com
+ (10.64.6.36) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Wed, 6 Jan
+ 2021 15:05:18 -0600
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE110.ent.ti.com
+ (10.64.6.31) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Wed, 6 Jan 2021 15:05:18 -0600
+Received: from [10.250.66.86] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 106L5Gil109040;
+        Wed, 6 Jan 2021 15:05:16 -0600
+Subject: Re: [PATCH v2 0/5] Introduce PRU remoteproc consumer API
+To:     David Lechner <david@lechnology.com>,
+        <grzegorz.jaszczyk@linaro.org>
+CC:     <bjorn.andersson@linaro.org>, <devicetree@vger.kernel.org>,
+        <lee.jones@linaro.org>, <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <linux-omap@vger.kernel.org>,
+        <linux-remoteproc@vger.kernel.org>, <mathieu.poirier@linaro.org>,
+        <ohad@wizery.com>, <praneeth@ti.com>, <robh+dt@kernel.org>,
+        <rogerq@kernel.org>, <ssantosh@kernel.org>
+References: <20201216165239.2744-1-grzegorz.jaszczyk@linaro.org>
+ <9603a894-495b-3c73-0916-aea52f98fe9f@lechnology.com>
+From:   Suman Anna <s-anna@ti.com>
+Message-ID: <3be186ef-5f1b-c3c7-f6c9-ccac6ebecaf7@ti.com>
+Date:   Wed, 6 Jan 2021 15:05:16 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20210105154726.GD1551@shell.armlinux.org.uk> <20210106115359.GB26994@C02TD0UTHF1T.local>
- <20210106135253.GJ1551@shell.armlinux.org.uk> <20210106172033.GA2165@willie-the-truck>
-In-Reply-To: <20210106172033.GA2165@willie-the-truck>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Wed, 6 Jan 2021 22:04:53 +0100
-X-Gmail-Original-Message-ID: <CAK8P3a2u=WtQ_98F2934QEZM19YaDPkfzQzHoiCgnaBYi3Qw3g@mail.gmail.com>
-Message-ID: <CAK8P3a2u=WtQ_98F2934QEZM19YaDPkfzQzHoiCgnaBYi3Qw3g@mail.gmail.com>
-Subject: Re: Aarch64 EXT4FS inode checksum failures - seems to be weak memory
- ordering issues
-To:     Will Deacon <will@kernel.org>
-Cc:     Russell King - ARM Linux admin <linux@armlinux.org.uk>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "Theodore Ts'o" <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Ext4 Developers List <linux-ext4@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <9603a894-495b-3c73-0916-aea52f98fe9f@lechnology.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 6, 2021 at 6:22 PM Will Deacon <will@kernel.org> wrote:
-> On Wed, Jan 06, 2021 at 01:52:53PM +0000, Russell King - ARM Linux admin wrote:
+Hi David,
 
->
->    and the resulting Image is here:
->
->    https://mirrors.edge.kernel.org/pub/linux/kernel/people/will/bugs/rmk/Image-5.9.0
->
-> 3. Using that kernel, I boot into a 64-bit Debian 10 filesystem and open a
->    couple of terminals over SSH.
->
-> 4. In one terminal, I run:
->
->    $ while (true); do find /var /usr /bin /sbin -type f -print0 | xargs -0
->      md5sum > /dev/null; echo 2 | sudo tee /proc/sys/vm/drop_caches; done
->
->    (note that sudo will prompt you for a password on the first iteration)
->
-> 5. In the other terminal, I run:
->
->    $ while (true); do ./hackbench ; sleep 1; done
->
->    where hackbench is built from:
->
->    https://people.redhat.com/mingo/cfs-scheduler/tools/hackbench.c
->
->    and compiled according to comment in the source code.
+On 1/4/21 2:11 PM, David Lechner wrote:
+> 
+>> Please see the individual patches for exact changes in each patch, following is
+>> the only change from v1:
+>>  - Change the 'prus' property name to 'ti,prus' as suggested by Rob Herring,
+>>  which influences patch #1 and patch #2
+> 
+> It looks like "soc: ti: pruss: Add pruss_{request, release}_mem_region() API"
+> was also dropped in v2. Was this intentional?
 
-I tried the Image-5.9.0 on a virtual machine with seven CPUs (two clusters)
-running in an M1 mac mini and ran these commands inside.
+No, it is not dropped. That patch is part of a different similarly titled
+"Introduce PRU platform consumer API" series [1], which is dependent on this
+series and is against a different folder (maintainer): drivers/soc/ti.
 
-> With that, I see the following after ten seconds or so:
->
->   EXT4-fs error (device sda2): ext4_lookup:1707: inode #674497: comm md5sum: iget: checksum invalid
->
-> Russell, Mark -- does this recipe explode reliably for you too?
+regards
+Suman
 
-Negative unfortunately -- no checksum mismatch so far, with 10 minutes
-elapsed. I'll keep it running a bit longer.
+[1] https://patchwork.kernel.org/project/linux-remoteproc/list/?series=400787
 
-        arnd
