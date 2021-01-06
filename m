@@ -2,113 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF9EF2EC723
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 00:58:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 935752EC71E
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 00:56:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727902AbhAFX52 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Jan 2021 18:57:28 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:48074 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726293AbhAFX52 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Jan 2021 18:57:28 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1609977362;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=cjDyoQgR4+M9JyvM9051ALlS1QRgqHD8UEz36SRbsyU=;
-        b=ECVEhx1pp0uyH/I3SfD4AKg1eoGXrQ2tKlB79OQaNadKu0SWk4LNT2OfTqvRCRdnVgLAo6
-        inIhSfjRKlBhMrURNEt+Zd8iYTw43CmPirXHZz+QyzH7aOkF2BL6HKznPXqATGMFgRYPXY
-        BtecQKMlXu6a60qHUydSohOAfAwR7zw=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-322-s9svPryjMkqmV43MsbksdQ-1; Wed, 06 Jan 2021 18:55:58 -0500
-X-MC-Unique: s9svPryjMkqmV43MsbksdQ-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 02E93801817;
-        Wed,  6 Jan 2021 23:55:57 +0000 (UTC)
-Received: from starship (unknown [10.35.206.22])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 1152310016FA;
-        Wed,  6 Jan 2021 23:55:49 +0000 (UTC)
-Message-ID: <747878595173b72dfa95f73f4e73c6cabb199bd8.camel@redhat.com>
-Subject: Re: [PATCH 5/6] KVM: nSVM: always leave the nested state first on
- KVM_SET_NESTED_STATE
-From:   Maxim Levitsky <mlevitsk@redhat.com>
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     kvm@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        "open list:X86 ARCHITECTURE (32-BIT AND 64-BIT)" 
-        <linux-kernel@vger.kernel.org>, Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Borislav Petkov <bp@alien8.de>
-Date:   Thu, 07 Jan 2021 01:55:48 +0200
-In-Reply-To: <X/X13wD58Oi/0XpX@google.com>
-References: <20210106105001.449974-1-mlevitsk@redhat.com>
-         <20210106105001.449974-6-mlevitsk@redhat.com> <X/X13wD58Oi/0XpX@google.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.5 (3.36.5-1.fc32) 
-MIME-Version: 1.0
+        id S1727833AbhAFX4o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Jan 2021 18:56:44 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53200 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726787AbhAFX4o (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 Jan 2021 18:56:44 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 643012333B;
+        Wed,  6 Jan 2021 23:56:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+        s=korg; t=1609977363;
+        bh=gA46bnzFjTY1FGYHxSKAixtrOZKz7AQN8HjwXSenaeM=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=xtZscw1NEOE7Vkmuk84KZMwZnYh4KD/4SlvkFsP4jqvjYi0Ccch7xTMxJ2m5i/xrh
+         gbiNwVmoSP1I9ada/BeOZLocDDQXlAzILYFC+MnscyCDV7TsR/2fBN7L2BaBFLxtDT
+         pvwHrWBozVkEO/2dYDagRk9AfJRB+UY9TW0JrSJ8=
+Date:   Wed, 6 Jan 2021 15:56:02 -0800
+From:   Andrew Morton <akpm@linux-foundation.org>
+To:     Sudarshan Rajagopalan <sudaraja@codeaurora.org>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Dave Chinner <david@fromorbit.com>
+Subject: Re: [PATCH] mm: vmscan: support complete shrinker reclaim
+Message-Id: <20210106155602.6ce48dfe88ca7b94986b329b@linux-foundation.org>
+In-Reply-To: <2d1f1dbb7e018ad02a9e7af36a8c86397a1598a7.1609892546.git.sudaraja@codeaurora.org>
+References: <2d1f1dbb7e018ad02a9e7af36a8c86397a1598a7.1609892546.git.sudaraja@codeaurora.org>
+X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2021-01-06 at 09:39 -0800, Sean Christopherson wrote:
-> On Wed, Jan 06, 2021, Maxim Levitsky wrote:
-> > This should prevent bad things from happening if the user calls the
-> > KVM_SET_NESTED_STATE twice.
+(cc's added)
+
+On Tue,  5 Jan 2021 16:43:38 -0800 Sudarshan Rajagopalan <sudaraja@codeaurora.org> wrote:
+
+> Ensure that shrinkers are given the option to completely drop
+> their caches even when their caches are smaller than the batch size.
+> This change helps improve memory headroom by ensuring that under
+> significant memory pressure shrinkers can drop all of their caches.
+> This change only attempts to more aggressively call the shrinkers
+> during background memory reclaim, inorder to avoid hurting the
+> performance of direct memory reclaim.
 > 
-> This doesn't exactly inspire confidence, nor does it provide much help to
-> readers that don't already know why KVM should "leave nested" before processing
-> the rest of kvm_state.
-> 
-> > Signed-off-by: Maxim Levitsky <mlevitsk@redhat.com>
-> > ---
-> >  arch/x86/kvm/svm/nested.c | 3 ++-
-> >  1 file changed, 2 insertions(+), 1 deletion(-)
-> > 
-> > diff --git a/arch/x86/kvm/svm/nested.c b/arch/x86/kvm/svm/nested.c
-> > index c1a3d0e996add..3aa18016832d0 100644
-> > --- a/arch/x86/kvm/svm/nested.c
-> > +++ b/arch/x86/kvm/svm/nested.c
-> > @@ -1154,8 +1154,9 @@ static int svm_set_nested_state(struct kvm_vcpu *vcpu,
-> >  	if (is_smm(vcpu) && (kvm_state->flags & KVM_STATE_NESTED_GUEST_MODE))
-> >  		return -EINVAL;
-> >  
-> > +	svm_leave_nested(svm);
-> 
-> nVMX sets a really bad example in that it does vmx_leave_nested(), and many
-> other things, long before it has vetted the incoming state.  That's not the end
-> of the word as the caller is likely going to exit if this ioctl() fails, but it
-> would be nice to avoid such behavior with nSVM, especially since it appears to
-> be trivially easy to do svm_leave_nested() iff the ioctl() will succeed.
+> ...
+>
+> --- a/mm/vmscan.c
+> +++ b/mm/vmscan.c
+> @@ -424,6 +424,10 @@ static unsigned long do_shrink_slab(struct shrink_control *shrinkctl,
+>  	long batch_size = shrinker->batch ? shrinker->batch
+>  					  : SHRINK_BATCH;
+>  	long scanned = 0, next_deferred;
+> +	long min_cache_size = batch_size;
+> +
+> +	if (current_is_kswapd())
+> +		min_cache_size = 0;
+>  
+>  	if (!(shrinker->flags & SHRINKER_NUMA_AWARE))
+>  		nid = 0;
+> @@ -503,7 +507,7 @@ static unsigned long do_shrink_slab(struct shrink_control *shrinkctl,
+>  	 * scanning at high prio and therefore should try to reclaim as much as
+>  	 * possible.
+>  	 */
+> -	while (total_scan >= batch_size ||
+> +	while (total_scan > min_cache_size ||
+>  	       total_scan >= freeable) {
+>  		unsigned long ret;
+>  		unsigned long nr_to_scan = min(batch_size, total_scan);
 
-I agree with you. So if I understand correctly I should move the unconditional 
-svm_leave_nested(svm) after all the checks are done? I 
+I don't really see the need to exclude direct reclaim from this fix.
 
-Best regards,
-	Maxim Levitsky
+And if we're leaving unscanned objects behind in this situation, the
+current code simply isn't working as intended, and 0b1fb40a3b1 ("mm:
+vmscan: shrink all slab objects if tight on memory") either failed to
+achieve its objective or was later broken?
 
-> 
-> > +
-> >  	if (!(kvm_state->flags & KVM_STATE_NESTED_GUEST_MODE)) {
-> > -		svm_leave_nested(svm);
-> >  		svm_set_gif(svm, !!(kvm_state->flags & KVM_STATE_NESTED_GIF_SET));
-> >  		return 0;
-> >  	}
-> > -- 
-> > 2.26.2
-> > 
-
-
+Vladimir, could you please take a look?
