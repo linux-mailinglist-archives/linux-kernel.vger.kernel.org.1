@@ -2,95 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 44E5E2EC155
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 17:42:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 34C872EC158
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 17:42:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727290AbhAFQmN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Jan 2021 11:42:13 -0500
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:58308 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726661AbhAFQmN (ORCPT
+        id S1727412AbhAFQmb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Jan 2021 11:42:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49510 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726661AbhAFQmb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Jan 2021 11:42:13 -0500
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: sre)
-        with ESMTPSA id 01BB61F441BB
-Received: by earth.universe (Postfix, from userid 1000)
-        id 8A49C3C0C94; Wed,  6 Jan 2021 17:41:28 +0100 (CET)
-Date:   Wed, 6 Jan 2021 17:41:28 +0100
-From:   Sebastian Reichel <sebastian.reichel@collabora.com>
-To:     Colin King <colin.king@canonical.com>
-Cc:     linux-pm@vger.kernel.org, kernel-janitors@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH][next] power: supply: max8997_charger: fix spelling
- mistake "diconnected" -> "disconnected"
-Message-ID: <20210106164128.bzgjjmwindeif5uj@earth.universe>
-References: <20210104130513.35563-1-colin.king@canonical.com>
+        Wed, 6 Jan 2021 11:42:31 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6FDEC06134D;
+        Wed,  6 Jan 2021 08:41:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description;
+        bh=qZq90mmL68TTEu2JR4PK3LFmriBAdAePndUjOjY8mwg=; b=OcZhu5sfoSwgx9xpuoqXf/ekjy
+        vsJ1bTkkDyjVLU3hznXR3X429kRne9UKKpuWQu0zzchRkhrmo94Cr2O+L+yTXVIAvxyGqfiaskFyf
+        +DrIU+/DiNEcg2q4Lht0qTfjix4wsjD9ac+kJC4Hsq9il83r2plQiHrZ88+orp/YknY7IMUiHg5Da
+        PY6Qm7/OZaZAViCLnmfgpgy8UpBAR4olNyuQ7UyFloCpcD2FitStpCghfdtyrNZ39TdLZ/xA6ju09
+        Rz8b5zIDNAtwEwsHQnFJlUkzlFftwrcwo7ltTb5RJOPm2rpgdFAJOIcq3i2ryU6B3/hduSEaQM13m
+        h3voRpPA==;
+Received: from [2601:1c0:6280:3f0::79df]
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kxBsY-0004Ia-Es; Wed, 06 Jan 2021 16:41:46 +0000
+Subject: Re: [PATCH v2] docs: octeontx2: tune rst markup
+To:     Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+        George Cherian <george.cherian@marvell.com>,
+        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org
+Cc:     Sunil Goutham <sgoutham@marvell.com>,
+        Linu Cherian <lcherian@marvell.com>,
+        Geetha Sowjanya <gakula@marvell.com>,
+        Jerin Jacob <jerinj@marvell.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210106161735.21751-1-lukas.bulwahn@gmail.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <878ae398-818a-4859-6968-e04070b34d15@infradead.org>
+Date:   Wed, 6 Jan 2021 08:41:38 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="e7yiclziilajll5w"
-Content-Disposition: inline
-In-Reply-To: <20210104130513.35563-1-colin.king@canonical.com>
+In-Reply-To: <20210106161735.21751-1-lukas.bulwahn@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
---e7yiclziilajll5w
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-Hi,
-
-On Mon, Jan 04, 2021 at 01:05:13PM +0000, Colin King wrote:
-> From: Colin Ian King <colin.king@canonical.com>
->=20
-> There is a spelling mistake in a dev_dbg message. Fix it.
->=20
-> Signed-off-by: Colin Ian King <colin.king@canonical.com>
+On 1/6/21 8:17 AM, Lukas Bulwahn wrote:
+> Commit 80b9414832a1 ("docs: octeontx2: Add Documentation for NPA health
+> reporters") added new documentation with improper formatting for rst, and
+> caused a few new warnings for make htmldocs in octeontx2.rst:169--202.
+> 
+> Tune markup and formatting for better presentation in the HTML view.
+> 
+> Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
 > ---
->  drivers/power/supply/max8997_charger.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->=20
-> diff --git a/drivers/power/supply/max8997_charger.c b/drivers/power/suppl=
-y/max8997_charger.c
-> index 23df91ed2c72..321bd6b8ee41 100644
-> --- a/drivers/power/supply/max8997_charger.c
-> +++ b/drivers/power/supply/max8997_charger.c
-> @@ -124,7 +124,7 @@ static void max8997_battery_extcon_evt_worker(struct =
-work_struct *work)
->  		dev_dbg(charger->dev, "USB CDP charger is connected\n");
->  		current_limit =3D 650000;
->  	} else {
-> -		dev_dbg(charger->dev, "USB charger is diconnected\n");
-> +		dev_dbg(charger->dev, "USB charger is disconnected\n");
->  		current_limit =3D -1;
->  	}
-> =20
+> v1 -> v2: minor stylistic tuning as suggested by Randy
+> 
+> applies cleanly on current master (v5.11-rc2) and next-20210106
+> 
+> George, please ack.
+> Jonathan, please pick this minor formatting clean-up patch.
+> 
+>  .../ethernet/marvell/octeontx2.rst            | 62 +++++++++++--------
+>  1 file changed, 36 insertions(+), 26 deletions(-)
+> 
+> diff --git a/Documentation/networking/device_drivers/ethernet/marvell/octeontx2.rst b/Documentation/networking/device_drivers/ethernet/marvell/octeontx2.rst
+> index d3fcf536d14e..61e850460e18 100644
+> --- a/Documentation/networking/device_drivers/ethernet/marvell/octeontx2.rst
+> +++ b/Documentation/networking/device_drivers/ethernet/marvell/octeontx2.rst
 
-Thanks, queued.
+Acked-by: Randy Dunlap <rdunlap@infradead.org>
 
--- Sebastian
+Thanks.
 
---e7yiclziilajll5w
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAl/16C0ACgkQ2O7X88g7
-+pqs4g//cJYftTes0OMiYJr8wVHkQ9Phzi6b+PRUKi6xs/EPB2IR0jO/XnW+E+rT
-xHTCIklbLQ/VDThj7uw2/SYsFSb/eT0KDAgZ8PJX8pz8aQ+SVSV+LPAvmVbpI46y
-+75FNaNrQM25PiJT1zC72cxZwCx2X4ZdpzEoXL9/ctoyFL2fubfK+QxrTuWiVSEY
-Vu5/RJ4Hw86hX6sXLzb0wDuBzHaEly3g/yMISByvfoJ7hO1bhvCKD1/iY9sqqWsL
-n2Pg96WYHeyAbUCtwygO715zVBtMgH/pZJUhS+di9yujI1x3oFuSXAV3zZl/Hwae
-hER5dn0vUYbCI8VVohjD8iQb548L5emdzx6FgONgltSQGGTl+CJXhtlqZfl7URAv
-QG/EJ3918exK5x5uu4BeZgQa+84IqukOC9LQUgrCHqCAX/6kIVho3ly3IdS8VJys
-e48J9+3/pppCBm3mO074cN6XAM8MIcOU4M5/Sn1sfqsg0eFzqbfwPzODqqYwbYCg
-FzMLDKeqBxLFcnOPHEMDodCQ+j/E2HZwWJhj/i+54Dj6v+zJp2fjZ5aEwqqR/LZ1
-fgX3h9bkOVsDLVBW7eV7inbNJR5LEfd03pXR3VxYi9kNFPn58AQ+tKUFeriNoeQb
-xCY2w0WEnBS+ITf6E4Uht55MGmfvzuaKbHHKVjkOeBFPNMNwQWg=
-=t64x
------END PGP SIGNATURE-----
-
---e7yiclziilajll5w--
+-- 
+~Randy
