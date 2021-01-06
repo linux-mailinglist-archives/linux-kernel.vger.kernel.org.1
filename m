@@ -2,98 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 273132EC1E5
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 18:17:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 187772EC1E7
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 18:17:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727333AbhAFRQN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Jan 2021 12:16:13 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60120 "EHLO mail.kernel.org"
+        id S1727618AbhAFRRV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Jan 2021 12:17:21 -0500
+Received: from mx2.suse.de ([195.135.220.15]:57620 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726375AbhAFRQN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Jan 2021 12:16:13 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9F3A122B2B;
-        Wed,  6 Jan 2021 17:15:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1609953332;
-        bh=hMXWI6Rtv/QIDxQnmDd4rULkZi19U/9afBZSYZQyizw=;
-        h=Date:From:To:Cc:Subject:Reply-To:From;
-        b=d/wR+E/kjlOuv97xyrSHpJTYNu0X1bpNPBdpNtiZTN2ud1n2nxcWcRX561Vp/eDLi
-         kyTbTiQINwWeNc+N6sBBgL0Vui7Ob1KCDlaf/ziAgAA9AUJztV6doNNIrmOr0ta41P
-         j9unq1QvudmrSkRRPSLWYb8Aqqxr6kY25sIp3mKvSwt6UWDw1olFt7nBCCzl98ehxX
-         9s7ZqhdXU213QkLVMtNdy4hX+VJMxjhm1VCak0Xf+RX5EE4Xhyhkmqx6wyhyP7LBP2
-         4g+hJUdTcpn8rStvYqqH4XBOl+0IQASE/8tn/ApYB/oygFzrpAfG+RPOF+f5BdHxJl
-         A82gO6uXFdskQ==
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 6713E35225EC; Wed,  6 Jan 2021 09:15:32 -0800 (PST)
-Date:   Wed, 6 Jan 2021 09:15:32 -0800
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     rcu@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
-        jiangshanlai@gmail.com, akpm@linux-foundation.org,
-        mathieu.desnoyers@efficios.com, josh@joshtriplett.org,
-        tglx@linutronix.de, peterz@infradead.org, rostedt@goodmis.org,
-        dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
-        oleg@redhat.com, joel@joelfernandes.org
-Subject: [PATCH tip/core/rcu 0/17] Torture-test updates for v5.12
-Message-ID: <20210106171532.GA20769@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
+        id S1726810AbhAFRRU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 Jan 2021 12:17:20 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1609953394; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=lukOtk5vWvi/tM4jLgHNVQUDURDlLIkiY4jfId8l/Js=;
+        b=JpsbvF6+NvVCCctrT9sAw9PNGW9lFxCWc8XQ8oTtrazcndqDgEaGWfl2O3ybX50tHclVyr
+        pVEDFOZazW0ds1qMoZEy8u2XKmd/1VJqc6UXkkbQTwbb2Rbb9a/1OtIl9aMnboMvfflr65
+        S1ihMVzZcnMxmXy+OSLZRBOZ/+qOPY8=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id C9CC6ACAF;
+        Wed,  6 Jan 2021 17:16:34 +0000 (UTC)
+Date:   Wed, 6 Jan 2021 18:16:32 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     Muchun Song <songmuchun@bytedance.com>
+Cc:     mike.kravetz@oracle.com, akpm@linux-foundation.org,
+        n-horiguchi@ah.jp.nec.com, ak@linux.intel.com, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 6/6] mm: hugetlb: remove VM_BUG_ON_PAGE from
+ page_huge_active
+Message-ID: <20210106171632.GW13207@dhcp22.suse.cz>
+References: <20210106084739.63318-1-songmuchun@bytedance.com>
+ <20210106084739.63318-7-songmuchun@bytedance.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20210106084739.63318-7-songmuchun@bytedance.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello!
+On Wed 06-01-21 16:47:39, Muchun Song wrote:
+> The page_huge_active() can be called from scan_movable_pages() which
+> do not hold a reference count to the HugeTLB page. So when we call
+> page_huge_active() from scan_movable_pages(), the HugeTLB page can
+> be freed parallel. Then we will trigger a BUG_ON which is in the
+> page_huge_active() when CONFIG_DEBUG_VM is enabled. Just remove the
+> VM_BUG_ON_PAGE.
+> 
+> Fixes: 7e1f049efb86 ("mm: hugetlb: cleanup using paeg_huge_active()")
+> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+> Reviewed-by: Mike Kravetz <mike.kravetz@oracle.com>
 
-This series provides torture-test updates, and must be applied on top
-of the SRCU series.
+Acked-by: Michal Hocko <mhocko@suse.com>
 
-1.	Add testing for RCU's global memory ordering.
+The BUG_ON looks like a wrong thing to do regardless of the memory
+hotplug use. Which is admittedly ugly as well.
 
-2.	Add debug output for wrong-CPU warning.
+> ---
+>  mm/hugetlb.c | 1 -
+>  1 file changed, 1 deletion(-)
+> 
+> diff --git a/mm/hugetlb.c b/mm/hugetlb.c
+> index 67200dd25b1d..7a24ed28ec4f 100644
+> --- a/mm/hugetlb.c
+> +++ b/mm/hugetlb.c
+> @@ -1372,7 +1372,6 @@ struct hstate *size_to_hstate(unsigned long size)
+>   */
+>  bool page_huge_active(struct page *page)
+>  {
+> -	VM_BUG_ON_PAGE(!PageHuge(page), page);
+>  	return PageHead(page) && PagePrivate(&page[1]);
+>  }
+>  
+> -- 
+> 2.11.0
 
-3.	Allow summarization of verbose output.
-
-4.	Require entire stutter period be post-boot.
-
-5.	Make synctype[] and nsynctype be static global.
-
-6.	Make rcu_torture_fakewriter() use blocking wait primitives.
-
-7.	Add fuzzed hrtimer-based sleep functions.
-
-8.	Use torture_hrtimeout_jiffies() to avoid busy-waits.
-
-9.	Make stutter use torture_hrtimeout_*() functions.
-
-10.	Use hrtimers for reader and writer delays.
-
-11.	Make refscale throttle high-rate printk()s.
-
-12.	Throttle VERBOSE_TOROUT_*() output.
-
-13.	Make object_debug also double call_rcu() heap object.
-
-14.	Clean up after torture-test CPU hotplugging.
-
-15.	Maintain torture-specific set of CPUs-online books.
-
-16.	Break affinity of kthreads last running on outgoing CPU.
-
-17.	Add rcutree.use_softirq=0 to RUDE01 and TASKS01.
-
-						Thanx, Paul
-
-------------------------------------------------------------------------
-
- Documentation/admin-guide/kernel-parameters.txt             |   14 
- include/linux/torture.h                                     |   27 +
- kernel/rcu/rcutorture.c                                     |  246 ++++++++----
- kernel/rcu/refscale.c                                       |   25 -
- kernel/scftorture.c                                         |    6 
- kernel/torture.c                                            |  184 +++++++-
- tools/testing/selftests/rcutorture/configs/rcu/RUDE01.boot  |    1 
- tools/testing/selftests/rcutorture/configs/rcu/TASKS01.boot |    1 
- 8 files changed, 400 insertions(+), 104 deletions(-)
+-- 
+Michal Hocko
+SUSE Labs
