@@ -2,66 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E87642EBB83
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 10:05:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2119A2EBB86
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 10:05:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726525AbhAFJEu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Jan 2021 04:04:50 -0500
-Received: from frasgout.his.huawei.com ([185.176.79.56]:2294 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726109AbhAFJEr (ORCPT
+        id S1726636AbhAFJFG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Jan 2021 04:05:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34608 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726478AbhAFJFD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Jan 2021 04:04:47 -0500
-Received: from fraeml711-chm.china.huawei.com (unknown [172.18.147.206])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4D9jyj53ZZz67QNd;
-        Wed,  6 Jan 2021 17:01:17 +0800 (CST)
-Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
- fraeml711-chm.china.huawei.com (10.206.15.60) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Wed, 6 Jan 2021 10:04:05 +0100
-Received: from [10.47.11.12] (10.47.11.12) by lhreml724-chm.china.huawei.com
- (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2106.2; Wed, 6 Jan 2021
- 09:04:04 +0000
-Subject: Re: [PATCH 0/2] hisi_sas: Expose hw queues for v2 hw and remove
- unused code
-To:     "Martin K. Petersen" <martin.petersen@oracle.com>
-CC:     <jejb@linux.ibm.com>, <linux-scsi@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linuxarm@openeuler.org>,
-        <maz@kernel.org>, <kashyap.desai@broadcom.com>
-References: <1609763622-34119-1-git-send-email-john.garry@huawei.com>
- <yq11reyg0uc.fsf@ca-mkp.ca.oracle.com>
-From:   John Garry <john.garry@huawei.com>
-Message-ID: <db3d73ac-f2e3-7230-00d4-68fdad10252e@huawei.com>
-Date:   Wed, 6 Jan 2021 09:03:02 +0000
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.1.2
+        Wed, 6 Jan 2021 04:05:03 -0500
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B190C061358
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Jan 2021 01:04:23 -0800 (PST)
+Received: from dude.hi.pengutronix.de ([2001:67c:670:100:1d::7])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ore@pengutronix.de>)
+        id 1kx4jo-0007ZS-9o; Wed, 06 Jan 2021 10:04:16 +0100
+Received: from ore by dude.hi.pengutronix.de with local (Exim 4.92)
+        (envelope-from <ore@pengutronix.de>)
+        id 1kx4jn-0000cr-FC; Wed, 06 Jan 2021 10:04:15 +0100
+From:   Oleksij Rempel <o.rempel@pengutronix.de>
+To:     Mark Rutland <mark.rutland@arm.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Shawn Guo <shawnguo@kernel.org>
+Cc:     Oleksij Rempel <o.rempel@pengutronix.de>,
+        devicetree@vger.kernel.org, Fabio Estevam <festevam@gmail.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        David Jander <david@protonic.nl>
+Subject: [PATCH v3 0/2] mainline Protonic MVT board 
+Date:   Wed,  6 Jan 2021 10:04:12 +0100
+Message-Id: <20210106090414.2344-1-o.rempel@pengutronix.de>
+X-Mailer: git-send-email 2.30.0
 MIME-Version: 1.0
-In-Reply-To: <yq11reyg0uc.fsf@ca-mkp.ca.oracle.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.47.11.12]
-X-ClientProxiedBy: lhreml715-chm.china.huawei.com (10.201.108.66) To
- lhreml724-chm.china.huawei.com (10.201.108.75)
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::7
+X-SA-Exim-Mail-From: ore@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 06/01/2021 04:18, Martin K. Petersen wrote:
+changes v3:
+- use defines linux,code
+- sour out some spaces
+- move compatible to the beginning of the gpio_pca node. 
 
-Hi Martin,
+changes v2:
+- fix active level of SPI CS GPIOs
 
-> 
->> Patch "scsi: hisi_sas: Expose HW queues for v2 hw" was not merged for
->> v5.11, so resending for v5.12.
-> Any changes to it? 5.11/postmerge is sitting in my fixes branch.
+Oleksij Rempel (2):
+  dt-bindings: arm: fsl: add Protonic MVT board
+  ARM: dts: add Protonic MVT board
 
-No change. I just did not see that patch in Linus' master branch or your 
-git, so assumed that I would just need to resend for 5.12. And now I see 
-it in 5.11/postmerge
+ .../devicetree/bindings/arm/fsl.yaml          |   1 +
+ arch/arm/boot/dts/Makefile                    |   1 +
+ arch/arm/boot/dts/imx6dl-prtmvt.dts           | 852 ++++++++++++++++++
+ 3 files changed, 854 insertions(+)
+ create mode 100644 arch/arm/boot/dts/imx6dl-prtmvt.dts
 
-Thanks,
-John
+-- 
+2.30.0
 
