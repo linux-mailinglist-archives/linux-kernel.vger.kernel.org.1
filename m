@@ -2,125 +2,212 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22E072EBDD5
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 13:43:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BD1B12EBDDD
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 13:52:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725800AbhAFMnO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Jan 2021 07:43:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40330 "EHLO
+        id S1726133AbhAFMui (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Jan 2021 07:50:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41482 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725788AbhAFMnN (ORCPT
+        with ESMTP id S1725788AbhAFMuh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Jan 2021 07:43:13 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78D4FC06134C;
-        Wed,  6 Jan 2021 04:42:31 -0800 (PST)
-Date:   Wed, 06 Jan 2021 12:42:23 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1609936944;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=GmgF16zcAnsqNhzVW75E/FiSXuBXNdBXTcEta/hI2Yc=;
-        b=MJwo6HhhYwUtC6jn7FKJfUTNzvVgv72pbeJariOa4Wp00ZpT4Vj3MUC6rsgZStiN1e0Lug
-        6cJnBeBaFX/v4UbUsEPh4p9TKiqOFO3pZH6BFf58JkmOVo4xAhpx5cvcarb1upCyLyjGal
-        8jx42BVADuKcr36fubpiwDySP1WatEMo1lrsS3oJa0nFwJYsONalfHXZsyWYKLhryRnCoD
-        At5NndN/w1WJSC+FyPznMfO89Su0GBzalw6C3Mx3qigiZkt/8xfD/kCTaz5AVpwUOh2tHN
-        qAbcfWJbdkuw7iSO81m5oR/xORRTIHnHKMRVz7NrFjBw3bao+fy57GuCOq6Pcg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1609936944;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=GmgF16zcAnsqNhzVW75E/FiSXuBXNdBXTcEta/hI2Yc=;
-        b=Qe71e2tonXte8Kw65MgkNIQGpUy2QCNuL9AAbXgf57c1zG+QP86JRuWKrDUqiF2/cSg4bW
-        Q4VPTKQsYsa8kqCQ==
-From:   "tip-bot2 for Ying-Tsun Huang" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/urgent] x86/mtrr: Correct the range check before performing
- MTRR type lookups
-Cc:     "Ying-Tsun Huang" <ying-tsun.huang@amd.com>,
-        Borislav Petkov <bp@suse.de>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <20201215070721.4349-1-ying-tsun.huang@amd.com>
-References: <20201215070721.4349-1-ying-tsun.huang@amd.com>
+        Wed, 6 Jan 2021 07:50:37 -0500
+Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89D9EC06134C
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Jan 2021 04:49:56 -0800 (PST)
+Received: by mail-wm1-x330.google.com with SMTP id q75so2544717wme.2
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Jan 2021 04:49:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=/TFNqMpjunBcCKiBrnJeP1y//MIqYHWIDR79kkwgfkE=;
+        b=sfyGdo3EWT8gzyt2KwZFAV2LDV/McqqryurFOfjaIbHKRCP4fQb27tRRH8M23FaAhE
+         945R71c4322OL7XhYfrbBQEZ05JUrtgPLRjK9bhbeH+MK1jFGCpMkMlqBiuVNO9r6iZo
+         Zri8qk+Z/hYPnRDL6f8me30sUXLW962btc9aBcbe2ao6+x11LVZsXRAkqmqR540gGF9N
+         RHw8emMoe+c1RLAiRGOgF/TyNaFiMeXTTAiF/2yt5vWy1NIrFd3rsdkuqSYAWaf0zs1/
+         mFWC0Ut+kYnKqdD4VdQbsX+UAAh7wwSzHOYJC8az9BMCrdTfdj/5QJOAN2bZKV9Y5z5c
+         ZsVg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=/TFNqMpjunBcCKiBrnJeP1y//MIqYHWIDR79kkwgfkE=;
+        b=QtiYIqPqCFrohimLs1MIWPIgeTwpY6qNq+BGUN+brAAhKm9uQP30ePMtYIbwMn+fb+
+         NKRWxXcWy1qHzRyqlexJLreYz57UhstnalxAw/PH8Lnbv0Muqk0PXJIWtUK4SFfZMB+b
+         vHkvNfsgXl2Z7oJAgdI6Aiba7K+GysLt/E+0xmRb3F35SXJHWR5WzSLuQ544jwoWsF1K
+         N/M4i7CldkLjUpr+Sby4bZzb2NrjPM/AbV59LSER/ZBzKviY+r/3FhJB+Kj2BWjjgIwV
+         5lSAKa85h58xPJpyyCrcmFe6RPiOlufIuwLdKtoKsbOWUZ0i9K7dbxS6LnItxkhokeU3
+         9RmA==
+X-Gm-Message-State: AOAM533R5YBtHYaNJOPpw0jdKauVWAxKuTgD49rksvsO1OMQ0Yj3wwh+
+        Tc6B8YTxisBGG9P5XiyDU3n60A==
+X-Google-Smtp-Source: ABdhPJyALikTC19hcprzApRUBK4PYCJ8dtTZah4EqhL5+ULtjNc3izsNuUYa1xkbqfRLADF5kGFFdQ==
+X-Received: by 2002:a1c:7716:: with SMTP id t22mr3526846wmi.126.1609937395097;
+        Wed, 06 Jan 2021 04:49:55 -0800 (PST)
+Received: from MacBook-Pro.local ([212.45.67.2])
+        by smtp.googlemail.com with ESMTPSA id z6sm2990551wrw.58.2021.01.06.04.49.53
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 06 Jan 2021 04:49:54 -0800 (PST)
+Subject: Re: [PATCH V6 08/13] interconnect: mediatek: Add interconnect
+ provider driver
+To:     =?UTF-8?B?SGVucnlDIENoZW4gKOmZs+W7uuixqik=?= 
+        <HenryC.Chen@mediatek.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Ryan Case <ryandcase@chromium.org>,
+        Mark Brown <broonie@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Nicolas Boichat <drinkcat@google.com>,
+        =?UTF-8?B?RmFuIENoZW4gKOmZs+WHoSk=?= <fan.chen@mediatek.com>,
+        =?UTF-8?B?SmFtZXNKSiBMaWFvICjlu5blu7rmmbop?= 
+        <jamesjj.liao@mediatek.com>,
+        =?UTF-8?B?QXJ2aW4gV2FuZyAo546L5b+X6YqYKQ==?= 
+        <Arvin.Wang@mediatek.com>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-mediatek@lists.infradead.org" 
+        <linux-mediatek@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>
+References: <1608790134-27425-1-git-send-email-henryc.chen@mediatek.com>
+ <1608790134-27425-9-git-send-email-henryc.chen@mediatek.com>
+ <c8b951b0-6412-d905-99e1-6350283b57c1@linaro.org>
+ <1609918232.23066.5.camel@mtksdaap41>
+ <a416a55c-0a7e-6505-ef53-b03f5dbc6cdc@linaro.org>
+ <c9b360dcb17e452595f45adb51dd4c31@mtkmbs02n1.mediatek.inc>
+From:   Georgi Djakov <georgi.djakov@linaro.org>
+Message-ID: <88d123cf-c69e-dc7f-ddf1-f9ade47d33fc@linaro.org>
+Date:   Wed, 6 Jan 2021 14:49:51 +0200
 MIME-Version: 1.0
-Message-ID: <160993694388.414.2374569391219500703.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <c9b360dcb17e452595f45adb51dd4c31@mtkmbs02n1.mediatek.inc>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/urgent branch of tip:
+On 6.01.21 12:44, HenryC Chen (陳建豪) wrote:
+>> -----Original Message-----
+>> From: Georgi Djakov [mailto:georgi.djakov@linaro.org]
+>> Sent: Wednesday, January 06, 2021 4:14 PM
+>> To: HenryC Chen (陳建豪)
+>> Cc: Rob Herring; Matthias Brugger; Stephen Boyd; Ryan Case; Mark Brown; Mark
+>> Rutland; Nicolas Boichat; Fan Chen (陳凡); JamesJJ Liao (廖建智); Arvin Wang
+>> (王志銘); devicetree@vger.kernel.org; linux-arm-kernel@lists.infradead.org;
+>> linux-mediatek@lists.infradead.org; linux-kernel@vger.kernel.org; linux-
+>> pm@vger.kernel.org
+>> Subject: Re: [PATCH V6 08/13] interconnect: mediatek: Add interconnect
+>> provider driver
+>> 
+>> On 1/6/21 09:30, Henry Chen wrote:
+>> > On Mon, 2021-01-04 at 20:36 +0200, Georgi Djakov wrote:
+>> >> On 12/24/20 08:08, Henry Chen wrote:
+>> >>> Introduce Mediatek MT6873/MT8183/MT8192 specific provider driver
+>> >>> using the interconnect framework.
+>> >>>
+>> >>>                ICC provider         ICC Nodes
+>> >>>                                 ----          ----
+>> >>>                ---------       |CPU |   |--- |VPU |
+>> >>>       -----   |         |-----  ----    |     ----
+>> >>>      |DRAM |--|DRAM     |       ----    |     ----
+>> >>>      |     |--|scheduler|----- |GPU |   |--- |DISP|
+>> >>>      |     |--|(EMI)    |       ----    |     ----
+>> >>>      |     |--|         |       -----   |     ----
+>> >>>       -----   |         |----- |MMSYS|--|--- |VDEC|
+>> >>>                ---------        -----   |     ----
+>> >>>                  /|\                    |     ----
+>> >>>                   |change DRAM freq     |--- |VENC|
+>> >>>                ----------               |     ----
+>> >>>               |  DVFSR   |              |
+>> >>>               |          |              |     ----
+>> >>>                ----------               |--- |IMG |
+>> >>>                                         |     ----
+>> >>>                                         |     ----
+>> >>>                                         |--- |CAM |
+>> >>>                                               ----
+>> >>>
+>> >>> Signed-off-by: Henry Chen <henryc.chen@mediatek.com>
+>> >>> ---
+>> >>>    drivers/interconnect/Kconfig            |   1 +
+>> >>>    drivers/interconnect/Makefile           |   1 +
+>> >>>    drivers/interconnect/mediatek/Kconfig   |  13 ++
+>> >>>    drivers/interconnect/mediatek/Makefile  |   3 +
+>> >>>    drivers/interconnect/mediatek/mtk-emi.c | 330
+>> ++++++++++++++++++++++++++++++++
+>> >>>    5 files changed, 348 insertions(+)
+>> >>>    create mode 100644 drivers/interconnect/mediatek/Kconfig
+>> >>>    create mode 100644 drivers/interconnect/mediatek/Makefile
+>> >>>    create mode 100644 drivers/interconnect/mediatek/mtk-emi.c
+>> >>>
+>> >>> diff --git a/drivers/interconnect/Kconfig
+>> >>> b/drivers/interconnect/Kconfig index 5b7204e..e939f5a 100644
+>> >>> --- a/drivers/interconnect/Kconfig
+>> >>> +++ b/drivers/interconnect/Kconfig
+>> >>> @@ -13,5 +13,6 @@ if INTERCONNECT
+>> >>>
+>> >>>    source "drivers/interconnect/imx/Kconfig"
+>> >>>    source "drivers/interconnect/qcom/Kconfig"
+>> >>> +source "drivers/interconnect/mediatek/Kconfig"
+>> >>
+>> >> Sort alphabetically please.
+>> > Ok
+>> >>
+>> >>>
+>> >>>    endif
+>> >>> diff --git a/drivers/interconnect/Makefile
+>> >>> b/drivers/interconnect/Makefile index d203520..0643a24 100644
+>> >>> --- a/drivers/interconnect/Makefile
+>> >>> +++ b/drivers/interconnect/Makefile
+>> >>> @@ -6,3 +6,4 @@ icc-core-objs:= core.o bulk.o
+>> >>>    obj-$(CONFIG_INTERCONNECT)+= icc-core.o
+>> >>>    obj-$(CONFIG_INTERCONNECT_IMX)+= imx/
+>> >>>    obj-$(CONFIG_INTERCONNECT_QCOM)+= qcom/
+>> >>> +obj-$(CONFIG_INTERCONNECT_MTK)+= mediatek/
+>> >>
+>> >> Ditto.
+>> > Ok
+>> >>
+>> >>> diff --git a/drivers/interconnect/mediatek/Kconfig
+>> >>> b/drivers/interconnect/mediatek/Kconfig
+>> >>> new file mode 100644
+>> >>> index 0000000..972d3bb
+>> >>> --- /dev/null
+>> >>> +++ b/drivers/interconnect/mediatek/Kconfig
+>> >>> @@ -0,0 +1,13 @@
+>> >>> +config INTERCONNECT_MTK
+>> >>> +bool "Mediatek Network-on-Chip interconnect drivers"
+>> >>> +depends on ARCH_MEDIATEK
+>> >>> +help
+>> >>> +  Support for Mediatek's Network-on-Chip interconnect hardware.
+>> >>> +
+>> >>> +config INTERCONNECT_MTK_EMI
+>> >>> +tristate "Mediatek EMI interconnect driver"
+>> >>> +depends on INTERCONNECT_MTK
+>> >>> +depends on (MTK_DVFSRC && OF)
+>> >>
+>> >> Would it be possible to enable COMPILE_TEST?
+>> > Do you means change to "depends on (MTK_DVFSRC && OF) || COMPILE_TEST" ?
+>> 
+>> Yeah, there is a stub for mtk_dvfsrc_send_request(). Maybe we could even
+>> change it for INTERCONNECT_MTK to something like:
+>> depends on ARCH_MEDIATEK || COMPILE_TEST Will this work?
+> Hi Georgi,
+> 
+> So..only change to as following?
+> 
+> config INTERCONNECT_MTK
+> bool "Mediatek Network-on-Chip interconnect drivers"
+> depends on ARCH_MEDIATEK || COMPILE_TEST
+> help
+>    Support for Mediatek's Network-on-Chip interconnect hardware.
 
-Commit-ID:     cb7f4a8b1fb426a175d1708f05581939c61329d4
-Gitweb:        https://git.kernel.org/tip/cb7f4a8b1fb426a175d1708f05581939c61329d4
-Author:        Ying-Tsun Huang <ying-tsun.huang@amd.com>
-AuthorDate:    Tue, 15 Dec 2020 15:07:20 +08:00
-Committer:     Borislav Petkov <bp@suse.de>
-CommitterDate: Wed, 06 Jan 2021 13:01:13 +01:00
+I would say to add COMPILE_TEST for both INTERCONNECT_MTK and
+INTERCONNECT_MTK_EMI, unless there is some dependency which does
+not allow us to do so.
 
-x86/mtrr: Correct the range check before performing MTRR type lookups
+Thanks,
+Georgi
 
-In mtrr_type_lookup(), if the input memory address region is not in the
-MTRR, over 4GB, and not over the top of memory, a write-back attribute
-is returned. These condition checks are for ensuring the input memory
-address region is actually mapped to the physical memory.
-
-However, if the end address is just aligned with the top of memory,
-the condition check treats the address is over the top of memory, and
-write-back attribute is not returned.
-
-And this hits in a real use case with NVDIMM: the nd_pmem module tries
-to map NVDIMMs as cacheable memories when NVDIMMs are connected. If a
-NVDIMM is the last of the DIMMs, the performance of this NVDIMM becomes
-very low since it is aligned with the top of memory and its memory type
-is uncached-minus.
-
-Move the input end address change to inclusive up into
-mtrr_type_lookup(), before checking for the top of memory in either
-mtrr_type_lookup_{variable,fixed}() helpers.
-
- [ bp: Massage commit message. ]
-
-Fixes: 0cc705f56e40 ("x86/mm/mtrr: Clean up mtrr_type_lookup()")
-Signed-off-by: Ying-Tsun Huang <ying-tsun.huang@amd.com>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Link: https://lkml.kernel.org/r/20201215070721.4349-1-ying-tsun.huang@amd.com
----
- arch/x86/kernel/cpu/mtrr/generic.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
-
-diff --git a/arch/x86/kernel/cpu/mtrr/generic.c b/arch/x86/kernel/cpu/mtrr/generic.c
-index 23ad8e9..a29997e 100644
---- a/arch/x86/kernel/cpu/mtrr/generic.c
-+++ b/arch/x86/kernel/cpu/mtrr/generic.c
-@@ -167,9 +167,6 @@ static u8 mtrr_type_lookup_variable(u64 start, u64 end, u64 *partial_end,
- 	*repeat = 0;
- 	*uniform = 1;
- 
--	/* Make end inclusive instead of exclusive */
--	end--;
--
- 	prev_match = MTRR_TYPE_INVALID;
- 	for (i = 0; i < num_var_ranges; ++i) {
- 		unsigned short start_state, end_state, inclusive;
-@@ -261,6 +258,9 @@ u8 mtrr_type_lookup(u64 start, u64 end, u8 *uniform)
- 	int repeat;
- 	u64 partial_end;
- 
-+	/* Make end inclusive instead of exclusive */
-+	end--;
-+
- 	if (!mtrr_state_set)
- 		return MTRR_TYPE_INVALID;
- 
