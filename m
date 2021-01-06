@@ -2,93 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 98FD02EB851
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 04:05:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7201E2EB858
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 04:08:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726789AbhAFDFe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 22:05:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35120 "EHLO
+        id S1726308AbhAFDHz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 22:07:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35452 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725808AbhAFDFd (ORCPT
+        with ESMTP id S1725817AbhAFDHz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 22:05:33 -0500
-Received: from mail-qt1-x834.google.com (mail-qt1-x834.google.com [IPv6:2607:f8b0:4864:20::834])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53DEAC061359;
-        Tue,  5 Jan 2021 19:05:08 -0800 (PST)
-Received: by mail-qt1-x834.google.com with SMTP id z3so1272236qtw.9;
-        Tue, 05 Jan 2021 19:05:08 -0800 (PST)
+        Tue, 5 Jan 2021 22:07:55 -0500
+Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B925C06134D
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Jan 2021 19:07:15 -0800 (PST)
+Received: by mail-pf1-x430.google.com with SMTP id m6so906716pfm.6
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Jan 2021 19:07:15 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=zHmmCBGfy4ShazVVVDUgrXKI7nP1Rs0OHaoIlOcZSyU=;
-        b=JL2en4yo9zkQGXpTev0LLdXXCf2THcuyHqiHq08UV531nMDdozzMmBTMfv4RzN8CPQ
-         lllYZNvjyJ9qgxB9+8DOs/huEduwu1lZbso+4dQ3cNlajt1gOKr51ZJvHmbYRfRhrZoE
-         3fpH0TujSELp1PrZzpt4GHK1t+fB6YHnav4W7OtJfm2Xu5LMhz5AXSxTt6SaJtzsvXzs
-         VAqhf+7S1YOfeninpvhpQO2O9LA4FZYvVjrBLAOAVKnsUVtuJc1L7TDMniIz+k2W+nGV
-         MOvJX7FiKFv7LjrYYUga8GG1L2nZHe/KcDBkp5B8zBV/mTny9ane6Ci1USHBxQX7Illn
-         cWlg==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=YoqUb6rHjvyc1tWs/2rkmXC92ndzOCiq60lMMpB44Fg=;
+        b=kG3TPIyItVDnXOEeD9DyvUY3lNR5WbE4FOsW4duAUMvGdfuBFQQvI/vcqRNN1rBoBY
+         tChS9/ObgtW2P5+jYIvm1Ij9bUsD8clsnrhZGilV3zm18t+2XnqltnwSEYvQwGnlr1th
+         POFRIFuo4xxpSfe4LGITQ8mTCntDOLJAoVK23ADFs57U9IK4q4jkIa8UncnZp/94YYgZ
+         R8XWWU2QQfMxFVQyUfHLiIqvImE58SnkCOQeI37mU34sri0O/7p7kRdqOUCYpkBawfoC
+         x/kr8qFmtQDlkwdXzIHZ29CfoE8/pDYvtzjKnRIe2FPDh/ZbAEoEQfe91/qOAQ3ZNxz1
+         WqhA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=zHmmCBGfy4ShazVVVDUgrXKI7nP1Rs0OHaoIlOcZSyU=;
-        b=rGT2v/XOAyvIixB21hnpAL0OzRTVZWXrcMzd0Ch7LqWbFEjy/Cqiojiad1lVqy4q/f
-         n88pcDscH79Xsmc5Mitp5KpPNdW9ycjCgSWblAitEv5kcxAZQ+8osT6QcP1i5vZ/wYdR
-         eEBRB3tYcb6ks0Ah1andbVrWsZpCeYsA+uU3/1ay7KkPtTt21oSeHujGcIbAQLYAswiY
-         dnAQtiNjk9UnBGgOp77hk+oZ/SriXyY2VggPK2PT69m4ArQwHU8/3GFy7WGUfauS6HQ+
-         fh7Ur2Lv/+B1b39380PP3u8+XzLMFoUdEk4O+Cb3s4dBNBbFRUydrWN2n6hVPBOe745/
-         QDfw==
-X-Gm-Message-State: AOAM533TPQS8wU/7jk/QaJdDxuEDWrfJE7WDow32fnd2x93qxpopS+Yu
-        1VV4rjWx/RuYv5ctu1YBUNk=
-X-Google-Smtp-Source: ABdhPJzHN/EkN4HNuCCqLOYv9mdakCw4XwaOJPrDyI72TQNZVr0TOgJlIqrA83OL2S9wPgHFBL117g==
-X-Received: by 2002:aed:29a5:: with SMTP id o34mr2365384qtd.379.1609902307535;
-        Tue, 05 Jan 2021 19:05:07 -0800 (PST)
-Received: from localhost.localdomain ([2804:14d:72b1:8920:77d4:6fb0:85b3:b6f7])
-        by smtp.gmail.com with ESMTPSA id n195sm730019qke.20.2021.01.05.19.05.05
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=YoqUb6rHjvyc1tWs/2rkmXC92ndzOCiq60lMMpB44Fg=;
+        b=a2V8JhwxhQ6FTRQa+HHqStbg4BYFE93qiCAAQrkuHgxSfy6d5fRkwBP0M6fkHxBOwn
+         HodWQVQP//Ib0sRRBe7ioeY84uMUVE7uJWJXdYyUksN+W/DYP5AkBXTfC/WKUm4LyCgp
+         0GVjek+/iCcYt/uTBM42IDEfOfV9Op5rf/d1DzVcLx/r4sOY61fnffAAN/3ERoj+vKqu
+         POBFKNt7wimHy8IpZ6Oo1VHZcaS5p8Ht1EgZnayEZw2DPytGG2ASwKqqYRil/+2M2LZO
+         6v2cHPyd/POugmyOBQQvk0sCQp1YGtZiGJ/hg+dWW13V/ahn5ZRwY1Ok9A/zNU9ETnRJ
+         UAiA==
+X-Gm-Message-State: AOAM531gMEa9wsJL5TK0Pyt2O/ANZ9UkPaPEkQalILLUAaHfQKxvddTO
+        pLdoShFy1m3IGLh35kmZaZfn
+X-Google-Smtp-Source: ABdhPJzHprK2jDHBk3YsbiTCFkTqLJ1GRqc3BA42Nt/fm/Qgji6jqfeKFW6XFNBrBSmNIcTLlqnJ2A==
+X-Received: by 2002:aa7:8708:0:b029:19e:924:345a with SMTP id b8-20020aa787080000b029019e0924345amr1864951pfo.54.1609902434521;
+        Tue, 05 Jan 2021 19:07:14 -0800 (PST)
+Received: from thinkpad ([103.77.37.191])
+        by smtp.gmail.com with ESMTPSA id a18sm668011pfg.107.2021.01.05.19.07.11
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 Jan 2021 19:05:07 -0800 (PST)
-From:   "Daniel W. S. Almeida" <dwlsalmeida@gmail.com>
-X-Google-Original-From: Daniel W. S. Almeida
-To:     mchehab@kernel.org, hverkuil@xs4all.nl
-Cc:     "Daniel W. S. Almeida" <dwlsalmeida@gmail.com>,
-        linux-media@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v2 4/4] media: vidtv: print message when driver is removed
-Date:   Wed,  6 Jan 2021 00:04:49 -0300
-Message-Id: <20210106030449.3223172-5-dwlsalmeida@gmail.com>
-X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210106030449.3223172-1-dwlsalmeida@gmail.com>
-References: <20210106030449.3223172-1-dwlsalmeida@gmail.com>
+        Tue, 05 Jan 2021 19:07:13 -0800 (PST)
+Date:   Wed, 6 Jan 2021 08:37:09 +0530
+From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     agross@kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Vinod Koul <vkoul@kernel.org>
+Subject: Re: [PATCH v2 02/18] ARM: dts: qcom: sdx55: Add reserved memory nodes
+Message-ID: <20210106030709.GD14794@thinkpad>
+References: <20210105122649.13581-1-manivannan.sadhasivam@linaro.org>
+ <20210105122649.13581-3-manivannan.sadhasivam@linaro.org>
+ <X/Sqfeonlthrys/O@builder.lan>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <X/Sqfeonlthrys/O@builder.lan>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Daniel W. S. Almeida" <dwlsalmeida@gmail.com>
+On Tue, Jan 05, 2021 at 12:05:49PM -0600, Bjorn Andersson wrote:
+> On Tue 05 Jan 06:26 CST 2021, Manivannan Sadhasivam wrote:
+> 
+> > From: Vinod Koul <vkoul@kernel.org>
+> > 
+> > This adds reserved memory nodes to the SDX55 dtsi as defined by v8 of
+> > the memory map
+> > 
+> > Signed-off-by: Vinod Koul <vkoul@kernel.org>
+> > Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+> > ---
+> >  arch/arm/boot/dts/qcom-sdx55.dtsi | 67 +++++++++++++++++++++++++++++++
+> >  1 file changed, 67 insertions(+)
+> > 
+> > diff --git a/arch/arm/boot/dts/qcom-sdx55.dtsi b/arch/arm/boot/dts/qcom-sdx55.dtsi
+> > index 08b4a40338fa..eeb6bf392f93 100644
+> > --- a/arch/arm/boot/dts/qcom-sdx55.dtsi
+> > +++ b/arch/arm/boot/dts/qcom-sdx55.dtsi
+> > @@ -60,6 +60,73 @@ psci {
+> >  		method = "smc";
+> >  	};
+> >  
+> > +	reserved-memory {
+> > +		#address-cells = <1>;
+> > +		#size-cells = <1>;
+> > +		ranges;
+> > +
+> > +		mpss_debug_mem: memory@8ef00000 {
+> > +			no-map;
+> > +			reg = <0x8ef00000 0x800000>;
+> > +		};
+> > +
+> > +		hyp_mem: memory@8fc00000 {
+> > +			no-map;
+> > +			reg = <0x8fc00000 0x80000>;
+> > +		};
+> > +
+> > +		ac_db_mem: memory@8fc80000 {
+> > +			no-map;
+> > +			reg = <0x8fc80000 0x40000>;
+> > +		};
+> > +
+> > +		secdata_mem: memory@8fcfd000 {
+> > +			no-map;
+> > +			reg = <0x8fcfd000 0x1000>;
+> > +		};
+> > +
+> > +		ipa_fw_mem: memory@8fced000 {
+> > +			no-map;
+> > +			reg = <0x8fced000 0x10000>;
+> > +		};
+> > +
+> > +		sbl_mem: memory@8fd00000 {
+> > +			no-map;
+> > +			reg = <0x8fd00000 0x100000>;
+> > +		};
+> > +
+> > +		aop_image: memory@8fe00000 {
+> > +			no-map;
+> > +			reg = <0x8fe00000 0x20000>;
+> > +		};
+> > +
+> > +		aop_cmd_db: memory@8fe20000 {
+> > +			compatible = "qcom,cmd-db";
+> > +			reg = <0x8fe20000 0x20000>;
+> > +			no-map;
+> > +		};
+> > +
+> > +		smem_mem: memory@8fe40000 {
+> > +			no-map;
+> > +			reg = <0x8fe40000 0xc0000>;
+> > +		};
+> > +
+> > +		tz_mem: memory@8ff00000 {
+> > +			no-map;
+> > +			reg = <0x8ff00000 0x100000>;
+> > +		};
+> > +
+> > +		tz_apps_mem: memory@0x90000000 {
+> > +			no-map;
+> > +			reg = <0x90000000 0x500000>;
+> > +		};
+> > +
+> > +		mpss_adsp_mem: memory@90800000 {
+> > +			no-map;
+> > +			reg = <0x90800000 0xf800000>;
+> 
+> Didn't you say this moved to 0x9c000000?
+> 
 
-Print a message when the driver is removed so that we get some
-visual confirmation when unbinding vidtv.
+That's for an old bootloader which is used in the MTP. But I guess we should
+always use the latest mem map for the latest bootloader.
 
-Signed-off-by: Daniel W. S. Almeida <dwlsalmeida@gmail.com>
----
- drivers/media/test-drivers/vidtv/vidtv_bridge.c | 1 +
- 1 file changed, 1 insertion(+)
+Thanks,
+Mani
 
-diff --git a/drivers/media/test-drivers/vidtv/vidtv_bridge.c b/drivers/media/test-drivers/vidtv/vidtv_bridge.c
-index 9964d1331aff..bde3785333cd 100644
---- a/drivers/media/test-drivers/vidtv/vidtv_bridge.c
-+++ b/drivers/media/test-drivers/vidtv/vidtv_bridge.c
-@@ -555,6 +555,7 @@ static int vidtv_bridge_remove(struct platform_device *pdev)
- 	dvb_dmxdev_release(&dvb->dmx_dev);
- 	dvb_dmx_release(&dvb->demux);
- 	dvb_unregister_adapter(&dvb->adapter);
-+	dev_info(&pdev->dev, "Successfully removed vidtv\n");
- 
- 	return 0;
- }
--- 
-2.30.0
-
+> Regards,
+> Bjorn
+> 
+> > +		};
+> > +	};
+> > +
+> >  	soc: soc {
+> >  		#address-cells = <1>;
+> >  		#size-cells = <1>;
+> > -- 
+> > 2.25.1
+> > 
