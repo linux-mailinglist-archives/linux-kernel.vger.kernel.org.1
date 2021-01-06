@@ -2,89 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF6E22EB931
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 06:07:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C77EC2EB933
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 06:07:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726222AbhAFFGI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Jan 2021 00:06:08 -0500
-Received: from labrats.qualcomm.com ([199.106.110.90]:12537 "EHLO
-        labrats.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725788AbhAFFGI (ORCPT
+        id S1726264AbhAFFGt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Jan 2021 00:06:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53876 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726009AbhAFFGs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Jan 2021 00:06:08 -0500
-IronPort-SDR: y8JUEaQc1rQCL3+7rCWKK9GYBHItmixqeMcATQBxIhUwWuLAWTSdijCya1VWRse3wPkoOXI/DZ
- VJod85nS+MFN7sMukTyUbNwfwM/Amm8eOyYDmsRMFx8iFzpOD1rhNm15ddT79lmOYqw52c/atF
- wnfJMlkIXECRkGqMsSIUgvzFje8ZWdc/n7pZziXCOQdRvY0kI+89/2qV0Pc8EKPoVBoxFxBWpk
- SGwHleeAfY0BR6TpQgMyN7pOl63LGhCtv3u8v7gpp6cO37lO3EhJ8LSjvpl0hWQSRCl/JAxjjJ
- +9Q=
-X-IronPort-AV: E=Sophos;i="5.78,479,1599548400"; 
-   d="scan'208";a="29494651"
-Received: from unknown (HELO ironmsg03-sd.qualcomm.com) ([10.53.140.143])
-  by labrats.qualcomm.com with ESMTP; 05 Jan 2021 21:05:08 -0800
-X-QCInternal: smtphost
-Received: from wsp769891wss.qualcomm.com (HELO stor-presley.qualcomm.com) ([192.168.140.85])
-  by ironmsg03-sd.qualcomm.com with ESMTP; 05 Jan 2021 21:05:07 -0800
-Received: by stor-presley.qualcomm.com (Postfix, from userid 359480)
-        id 2011D218E2; Tue,  5 Jan 2021 21:05:08 -0800 (PST)
-From:   Can Guo <cang@codeaurora.org>
-To:     asutoshd@codeaurora.org, nguyenb@codeaurora.org,
-        hongwus@codeaurora.org, rnayak@codeaurora.org,
-        linux-scsi@vger.kernel.org, kernel-team@android.com,
-        saravanak@google.com, salyzyn@google.com, cang@codeaurora.org
-Cc:     Alim Akhtar <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Stanley Chu <stanley.chu@mediatek.com>,
-        Bean Huo <beanhuo@micron.com>,
-        linux-kernel@vger.kernel.org (open list),
-        linux-arm-kernel@lists.infradead.org (moderated list:ARM/Mediatek SoC
-        support),
-        linux-mediatek@lists.infradead.org (moderated list:ARM/Mediatek SoC
-        support)
-Subject: [PATCH v9 3/3] scsi: ufs: Revert "Make sure clk scaling happens only when HBA is runtime ACTIVE"
-Date:   Tue,  5 Jan 2021 21:04:45 -0800
-Message-Id: <1609909486-21053-4-git-send-email-cang@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1609909486-21053-1-git-send-email-cang@codeaurora.org>
-References: <1609909486-21053-1-git-send-email-cang@codeaurora.org>
+        Wed, 6 Jan 2021 00:06:48 -0500
+Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E9CAC06134D
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Jan 2021 21:06:08 -0800 (PST)
+Received: by mail-pj1-x102d.google.com with SMTP id lj6so970179pjb.0
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Jan 2021 21:06:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=a+jp8aijiy58DxcPOl4wMV4A6IsbTlkbWpcRF+h39no=;
+        b=n6ErXUBc9DzTkG9itHjGJ+eQztJ4nFXJ0bEjylysEqFfyomIYNiuZEeopa9+2QrQFb
+         dgXajEXrK3vArf7eJM0inY9jm4f6O+quKZZWNf8KY7Mu4te/M+crpoedpBfQjeo0sn2j
+         W7DWx2Msdwgc239HhH7U79VtA9+bjoAJG+nBk=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=a+jp8aijiy58DxcPOl4wMV4A6IsbTlkbWpcRF+h39no=;
+        b=oYMCgaD3RcGHxSAE/9bupePxN6iLSrGR3pcNj8xb9NYDLQ/me4lr+rWIpOl5REh39P
+         giyxKlHA5pTNK3jugwBNvq5hxA8MOJNQc9bv7B69bwG6Oz7fi36BP1ErGcK+NyBqwqOI
+         YnfUELjfuuc4oNtQCCP5iHQmIyQObmYupqwTc8Y6z8Ba0DzthxHy6yRJtZ1b/JuHqMAG
+         vHccMedJfLKr4AzqvIrJ7HKfouczRvr6vW/kcUwck1Gyx/dnup4xIKBeDBmwFidGjTIm
+         5RnxnMsO8I7Cee+efaSWOEg1NgKCAnIdVP0gH49TOYSJY08E5lJEHxTr8UhxY9b6n7sJ
+         GClg==
+X-Gm-Message-State: AOAM533fTSCwqNoTO55wsLjrbcKSdWtTD7/P0v+8Kmy4/a9Dljo/AlyU
+        yTf2lYuRPNiPLz4QiV4dKLsllJL6IJp+EsUs
+X-Google-Smtp-Source: ABdhPJyCbhXlMX97B3jAUFrMxSj9rBddxh5FIX/r5Xx2XIEuyf28wNRiNg+HEbpL3MWu6IcVctaf8w==
+X-Received: by 2002:a17:90b:1983:: with SMTP id mv3mr2580134pjb.211.1609909567741;
+        Tue, 05 Jan 2021 21:06:07 -0800 (PST)
+Received: from localhost ([2401:fa00:1:10:725a:fff:fe46:44eb])
+        by smtp.gmail.com with ESMTPSA id h16sm931002pgd.62.2021.01.05.21.06.04
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 05 Jan 2021 21:06:07 -0800 (PST)
+From:   Yu-Hsuan Hsu <yuhsuan@chromium.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Benson Leung <bleung@chromium.org>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        Guenter Roeck <groeck@chromium.org>,
+        Cheng-Yi Chiang <cychiang@chromium.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Prashant Malani <pmalani@chromium.org>,
+        Pi-Hsun Shih <pihsun@chromium.org>,
+        Yu-Hsuan Hsu <yuhsuan@chromium.org>,
+        "Gustavo A . R . Silva" <gustavoars@kernel.org>,
+        alsa-devel@alsa-project.org
+Subject: [PATCH] ASoC: cros_ec_codec: Reset I2S RX when probing
+Date:   Wed,  6 Jan 2021 13:05:59 +0800
+Message-Id: <20210106050559.1459027-1-yuhsuan@chromium.org>
+X-Mailer: git-send-email 2.29.2.729.g45daf8777d-goog
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit 73cc291c27024 ("Make sure clk scaling happens only when HBA is
-runtime ACTIVE") is no longer needed since commit f7a42540928a8 ("scsi:
-ufs: Protect some contexts from unexpected clock scaling") is a more
-mature fix to protect UFS LLD stability from clock scaling invoked through
-sysfs nodes by users.
+It is not guaranteed that I2S RX is disabled when the kernel booting.
+For example, if the kernel crashes while it is enabled, it will keep
+enabled until the next time EC reboots. Reset I2S RX when probing to
+fix this issue.
 
-Reviewed-by: Stanley Chu <stanley.chu@mediatek.com>
-Signed-off-by: Can Guo <cang@codeaurora.org>
+Signed-off-by: Yu-Hsuan Hsu <yuhsuan@chromium.org>
 ---
- drivers/scsi/ufs/ufshcd.c | 7 -------
- 1 file changed, 7 deletions(-)
+ include/linux/platform_data/cros_ec_commands.h | 1 +
+ sound/soc/codecs/cros_ec_codec.c               | 7 +++++++
+ 2 files changed, 8 insertions(+)
 
-diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
-index d239370..c4dbeec 100644
---- a/drivers/scsi/ufs/ufshcd.c
-+++ b/drivers/scsi/ufs/ufshcd.c
-@@ -1338,15 +1338,8 @@ static int ufshcd_devfreq_target(struct device *dev,
+diff --git a/include/linux/platform_data/cros_ec_commands.h b/include/linux/platform_data/cros_ec_commands.h
+index 86376779ab31..95889ada83a3 100644
+--- a/include/linux/platform_data/cros_ec_commands.h
++++ b/include/linux/platform_data/cros_ec_commands.h
+@@ -4600,6 +4600,7 @@ enum ec_codec_i2s_rx_subcmd {
+ 	EC_CODEC_I2S_RX_SET_SAMPLE_DEPTH = 0x2,
+ 	EC_CODEC_I2S_RX_SET_DAIFMT = 0x3,
+ 	EC_CODEC_I2S_RX_SET_BCLK = 0x4,
++	EC_CODEC_I2S_RX_RESET = 0x5,
+ 	EC_CODEC_I2S_RX_SUBCMD_COUNT,
+ };
+ 
+diff --git a/sound/soc/codecs/cros_ec_codec.c b/sound/soc/codecs/cros_ec_codec.c
+index f33a2a9654e7..28b3e2c48c86 100644
+--- a/sound/soc/codecs/cros_ec_codec.c
++++ b/sound/soc/codecs/cros_ec_codec.c
+@@ -1011,6 +1011,13 @@ static int cros_ec_codec_platform_probe(struct platform_device *pdev)
  	}
- 	spin_unlock_irqrestore(hba->host->host_lock, irq_flags);
+ 	priv->ec_capabilities = r.capabilities;
  
--	pm_runtime_get_noresume(hba->dev);
--	if (!pm_runtime_active(hba->dev)) {
--		pm_runtime_put_noidle(hba->dev);
--		ret = -EAGAIN;
--		goto out;
--	}
- 	start = ktime_get();
- 	ret = ufshcd_devfreq_scale(hba, scale_up);
--	pm_runtime_put(hba->dev);
++	/* Reset EC codec i2s rx. */
++	p.cmd = EC_CODEC_I2S_RX_RESET;
++	ret = send_ec_host_command(priv->ec_device, EC_CMD_EC_CODEC_I2S_RX,
++				   (uint8_t *)&p, sizeof(p), NULL, 0);
++	if (ret)
++		dev_warn(dev, "failed to EC_CODEC_I2S_RESET: %d\n", ret);
++
+ 	platform_set_drvdata(pdev, priv);
  
- 	trace_ufshcd_profile_clk_scaling(dev_name(hba->dev),
- 		(scale_up ? "up" : "down"),
+ 	ret = devm_snd_soc_register_component(dev, &i2s_rx_component_driver,
 -- 
-Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
+2.29.2.729.g45daf8777d-goog
 
