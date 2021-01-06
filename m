@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1D022EC254
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 18:34:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0ED4D2EC250
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 18:34:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728142AbhAFRdR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Jan 2021 12:33:17 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48880 "EHLO mail.kernel.org"
+        id S1727975AbhAFRcq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Jan 2021 12:32:46 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48882 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727873AbhAFRcn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1727874AbhAFRcn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 6 Jan 2021 12:32:43 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3868123331;
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5FF9A23332;
         Wed,  6 Jan 2021 17:31:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1609954283;
-        bh=fPZWiFc5cSA6GJO1zjcKXRS/t+VjaVwkXGhJxQIXZAI=;
+        bh=UmLOWYVw+8doK7ogi+9FNrFVAv/UQBBHdWwo/gGyUDU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=rJDU1wVNR/Mp2jzXUZUobuYVqr44ZqTmP5xxfFUxyL7dZdiE9YNojET4vzwzhffc6
-         3E35iNSsj3a/LbF2wJ7uIMWkcGNqQi307diTOLbgX63kW5baMkob1q8+obK72+bwWh
-         rUR644vrd98V2MFDP7/l1v/Jawj18Dva6cUMlBrTuV61Z0CjpjjiDINSVe0wY5HaPv
-         V16UZBSQOkV8GY1TldKj+iWtV5ScfzKKVjj2immGPAJiLt3AA00tpXW0jsJ0gq17Bk
-         gg+mP5OH/JlN5CqWsx9TseExi+xkoJG+x/7JR3QKH/Y9muHBCiOugGsy94XY5zi0lq
-         ckRD7jt6pbhKQ==
+        b=qCGKKTLE8f5x5cKZp/poM7J3De6dLRlI+6LijOlRKpaUcPXlg1cgzkYcMH03o6XI0
+         su/PuuFnCAYUuzCUusMMT8FXieyApzYt+Ck3Wy5MhZZvFXpotYpiaefXrI9pz1+1tH
+         hQ58pbgu2hWFoKewSq1GiHtX/HkxVbrbfDBbCzTf3++KBQ1Oulf5JFdv+c6+C1SDPN
+         j7u6RuUGVhf4Nezr9JsQdC40K1W/VLOa0svULIzyFbBe81LHpWpiwCuYFvk9k9BtaA
+         9vFJrIv1PIuFwyk1v+Kk6n+y8P/mVtnZHevSOoVvdmtd5x1cqw3vggA/ULPgmWpc2h
+         HLSO7WqaIZsbg==
 From:   paulmck@kernel.org
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -32,9 +32,9 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
         oleg@redhat.com, joel@joelfernandes.org,
         "Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH tip/core/rcu 13/18] torture: Make torture.sh refuse to do zero-length runs
-Date:   Wed,  6 Jan 2021 09:31:14 -0800
-Message-Id: <20210106173119.23159-13-paulmck@kernel.org>
+Subject: [PATCH tip/core/rcu 14/18] torture: Drop log.long generation from torture.sh
+Date:   Wed,  6 Jan 2021 09:31:15 -0800
+Message-Id: <20210106173119.23159-14-paulmck@kernel.org>
 X-Mailer: git-send-email 2.9.5
 In-Reply-To: <20210106173056.GA23035@paulmck-ThinkPad-P72>
 References: <20210106173056.GA23035@paulmck-ThinkPad-P72>
@@ -44,55 +44,32 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: "Paul E. McKenney" <paulmck@kernel.org>
 
-This commit causes torture.sh to check for zero-length runs and to take
-the cowardly option of refusing to run them, logging its cowardice for
-later inspection.
+Now that kvm.sh puts all the relevant details in the "log" file,
+there is no need for torture.sh to generate a separate "log.long"
+file.  This commit therefore drops this from torture.sh.
 
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- tools/testing/selftests/rcutorture/bin/torture.sh | 25 +++++++++++++++++------
- 1 file changed, 19 insertions(+), 6 deletions(-)
+ tools/testing/selftests/rcutorture/bin/torture.sh | 5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
 
 diff --git a/tools/testing/selftests/rcutorture/bin/torture.sh b/tools/testing/selftests/rcutorture/bin/torture.sh
-index f2f9140..43ef2c0 100755
+index 43ef2c0..cf74123 100755
 --- a/tools/testing/selftests/rcutorture/bin/torture.sh
 +++ b/tools/testing/selftests/rcutorture/bin/torture.sh
-@@ -151,16 +151,29 @@ do
- 	shift
- done
- 
--duration_rcutorture=$((duration_base*duration_rcutorture_frac/10))
--# Need to sum remaining weights, and if duration weights to zero,
--# set do_no_rcutorture. @@@
--duration_locktorture=$((duration_base*duration_locktorture_frac/10))
--duration_scftorture=$((duration_base*duration_scftorture_frac/10))
--
- T=/tmp/torture.sh.$$
- trap 'rm -rf $T' 0 2
- mkdir $T
- 
-+duration_rcutorture=$((duration_base*duration_rcutorture_frac/10))
-+if test "$duration_rcutorture" -eq 0
-+then
-+	echo " --- Zero time for rcutorture, disabling" | tee -a $T/log
-+	do_rcutorture=no
-+fi
-+duration_locktorture=$((duration_base*duration_locktorture_frac/10))
-+if test "$duration_locktorture" -eq 0
-+then
-+	echo " --- Zero time for locktorture, disabling" | tee -a $T/log
-+	do_locktorture=no
-+fi
-+duration_scftorture=$((duration_base*duration_scftorture_frac/10))
-+if test "$duration_scftorture" -eq 0
-+then
-+	echo " --- Zero time for scftorture, disabling" | tee -a $T/log
-+	do_scftorture=no
-+fi
-+
- touch $T/failures
- touch $T/successes
- 
+@@ -203,11 +203,8 @@ function torture_one {
+ 	"$@" $boottag "$cur_bootargs" --datestamp "$ds/results-$curflavor" > $T/$curflavor.out 2>&1
+ 	retcode=$?
+ 	resdir="`grep '^Results directory: ' $T/$curflavor.out | tail -1 | sed -e 's/^Results directory: //'`"
+-	if test -n "$resdir"
++	if test -z "$resdir"
+ 	then
+-		cp $T/$curflavor.out $resdir/log.long
+-		echo retcode=$retcode >> $resdir/log.long
+-	else
+ 		cat $T/$curflavor.out | tee -a $T/log
+ 		echo retcode=$retcode | tee -a $T/log
+ 	fi
 -- 
 2.9.5
 
