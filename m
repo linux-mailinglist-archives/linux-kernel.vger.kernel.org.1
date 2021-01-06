@@ -2,124 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A3F072EBA6A
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 08:20:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7ABD42EBA76
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 08:28:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725868AbhAFHTy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Jan 2021 02:19:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46216 "EHLO
+        id S1725944AbhAFH2g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Jan 2021 02:28:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47584 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725789AbhAFHTy (ORCPT
+        with ESMTP id S1725788AbhAFH2g (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Jan 2021 02:19:54 -0500
-Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6BC4C06134C
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Jan 2021 23:18:58 -0800 (PST)
-Received: by mail-pg1-x52d.google.com with SMTP id v19so1609641pgj.12
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Jan 2021 23:18:58 -0800 (PST)
+        Wed, 6 Jan 2021 02:28:36 -0500
+Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C64DC06134C
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Jan 2021 23:27:55 -0800 (PST)
+Received: by mail-ej1-x631.google.com with SMTP id jx16so3740275ejb.10
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Jan 2021 23:27:55 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=0Uh9RboShiaGL7bsQEmHaWZYhbP/zLweA6er2Ky5XbQ=;
-        b=HRky2vtlB0iJioVDwoZmf5blWBMcNOn3NcIAgCiVX80PiUN9K4zVfhLPO6EHVR0ugR
-         A1qHMctMHwLb3NAtinLBCO1m3Oo7j19l5ubEvbFs6Xll3/XoXPAMMPOrTzX8oB0e/snt
-         EOXtYPp3u8/FhAe1r6JR9WU/ncA+7snBQ68Omrkep95AQOoT6vrcJXZGe7YAwezHLAdX
-         4B8oSK8qgoOuYzGVSM8z/0q2pLsuBuQ/Kia+baRP4L5c+ch2g3ML5Mo4Yja5hQ1j6Rcx
-         QK4aCoQiIGnLWTyNt8ZIqdBpVGjDxmn4WV45+jGR9AuJottgztwWNbs4+G7B3jilSrft
-         NLrg==
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=xGW/hKcgThQrkDmp4/Nq73y8NgwE8XDkGF7zvIldMrM=;
+        b=A2KNk3AHTmJlI18STPME1Sa6t9gc1Ftvw7b31H8Vj39YjusgeaU0c1ypsqit52yWFF
+         3eQGLVMgPfhF0tcCbEJmm3HsNCJ0zZ8NG3JRTyPKW7OXNUZNMMniS0bT/7ndVqBa7b3q
+         FNEjNtzso2oFjWRDBWdctZ8/UBVolbVcrg/o27xs67qQd0Kl0+7v6and6KXS4zT0IDGo
+         L8nHoW7UNQO5cliDlHgM3DAezmy7JMyVE7cZk2uzueStSK5Zefr34N8UH/sgVW6YOIjG
+         mkROA3nUh248uHrjhIU+cLDXpa2DbIJKN7YqY8L5/rgwpwStSYsD7b1Mvy7MEYO2VlnD
+         LaHA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=0Uh9RboShiaGL7bsQEmHaWZYhbP/zLweA6er2Ky5XbQ=;
-        b=nrMXejYmnXBxV78RINP0WOnRkVF3ZCSkwuYFiPPiFS4MF/mhcieCol+uf/EHf6UOZK
-         1hYVttwTWsqBAfcH25oyk26Y3BUVTDP9vb0Dc3fGZ9itWYUVE+qe24jj5AiRW3OdR59h
-         gwa9hyI0ckRdvuAr8BpSFbquDtCaIrnql78aQhRsHm2Q+QKsplqeGTgr3VW52QKZMNBs
-         Wf1ImSCqAxNWfXYQRWYVBfkh3KKEpBiLYysc2r/Ue8jdOp7JtWdrEArlMtRJySu6UBSE
-         Mfop3yhFvrSZ4+Zc66D0M1+xrDRnPoIIXtBgslbCJPKZQvWsSaceFqahrbBh8QsBC2oi
-         Xu0g==
-X-Gm-Message-State: AOAM531qB+efNxIV+Y10BvBL1tPbpfft3AsxmVpu7U0Mc+3zbVkrb8/D
-        vIe5bnft1+hK2quFhbbvioQL0VO7rMoF
-X-Google-Smtp-Source: ABdhPJx//cjQpFVRo/w2Vike3G4UBWptVN4SuLazwjccY1lv3gfvpQAekJSEBrjnrIKU80cizKPFuw==
-X-Received: by 2002:a65:4783:: with SMTP id e3mr3170617pgs.368.1609917538314;
-        Tue, 05 Jan 2021 23:18:58 -0800 (PST)
-Received: from thinkpad ([2409:4072:6e17:af05:51f0:bf72:bf80:ec88])
-        by smtp.gmail.com with ESMTPSA id 8sm1428505pfz.93.2021.01.05.23.18.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 Jan 2021 23:18:57 -0800 (PST)
-Date:   Wed, 6 Jan 2021 12:48:52 +0530
-From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     agross@kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Vinod Koul <vkoul@kernel.org>
-Subject: Re: [PATCH v2 02/18] ARM: dts: qcom: sdx55: Add reserved memory nodes
-Message-ID: <20210106071852.GA3131@thinkpad>
-References: <20210105122649.13581-1-manivannan.sadhasivam@linaro.org>
- <20210105122649.13581-3-manivannan.sadhasivam@linaro.org>
- <X/Sqfeonlthrys/O@builder.lan>
- <20210106030709.GD14794@thinkpad>
- <X/Uxk15iuCkizzuT@builder.lan>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=xGW/hKcgThQrkDmp4/Nq73y8NgwE8XDkGF7zvIldMrM=;
+        b=CuegIfKjg7sjWDpzUoDK8W3hdyBTD696wjKcEPz06QGQCdO3ogyxXE+ZIYuStIJV2m
+         PHVwUs+e7csg7wqDo5seZ44ynLp2lqvO+ZFjjbQVQo55UBvJ7o+tOfDprvra1oAfrSqD
+         Fap3IcQOjQFPIuce7YSS8exzv9O2T6TUpTAHCPPeWkbRI7LAjL++blLUVxzOaQQW9of4
+         t2mCdOOs4zakLbSMb0LMoJ2bRnNV4q3wGAkZbBSZlYpklxVck3KLCCB7wU5KT/mMP/FD
+         BIB5678SfUNn+BOs04NThBq+HGq+r/1VJutLrz1CO1ZuKPCO/+3RZY+TmhoLRGtsNKup
+         bb4w==
+X-Gm-Message-State: AOAM530rArRVZHuQqOo47Roy8lMDrWFCqbQOpdvFcl0NGGc2yATBDhqa
+        rMTJCHfNNIfbq3eb0X2GcRhzdEi+AFqtRwAAkbVCQQ==
+X-Google-Smtp-Source: ABdhPJwYjz8N2N+aC7hTbxtGQy//7rOVk9vuZpXjappd1ywiMkx0G+q8sv1KN8h2TqqcyRgEkKycqJpY3pGZKSJx6nY=
+X-Received: by 2002:a17:906:3a55:: with SMTP id a21mr2057000ejf.516.1609918074173;
+ Tue, 05 Jan 2021 23:27:54 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <X/Uxk15iuCkizzuT@builder.lan>
+References: <cover.1608963094.git.syednwaris@gmail.com> <CACRpkdYZwMy5faNhUyiNnvdnMOf4ac7XWqjnf3f4jCJeE=p2Lw@mail.gmail.com>
+ <CAMpxmJW46Oh2h7RrBNo5vACfYnWy63rZOO=Va=ppUDeaj5GpBg@mail.gmail.com> <20210105143921.GL4077@smile.fi.intel.com>
+In-Reply-To: <20210105143921.GL4077@smile.fi.intel.com>
+From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Date:   Wed, 6 Jan 2021 08:27:43 +0100
+Message-ID: <CAMpxmJXX5tPBvHRBkgCBK22vUc_FOo2ENUagqOF-opzakkyjrA@mail.gmail.com>
+Subject: Re: [PATCH 0/5] Introduce the for_each_set_clump macro
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Syed Nayyar Waris <syednwaris@gmail.com>,
+        William Breathitt Gray <vilhelm.gray@gmail.com>,
+        Michal Simek <michal.simek@xilinx.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Robert Richter <rrichter@marvell.com>,
+        Masahiro Yamada <yamada.masahiro@socionext.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        "(Exiting) Amit Kucheria" <amit.kucheria@verdurent.com>,
+        Linux-Arch <linux-arch@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux PM list <linux-pm@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 05, 2021 at 09:42:11PM -0600, Bjorn Andersson wrote:
-> On Tue 05 Jan 21:07 CST 2021, Manivannan Sadhasivam wrote:
-> 
-> > On Tue, Jan 05, 2021 at 12:05:49PM -0600, Bjorn Andersson wrote:
-> > > On Tue 05 Jan 06:26 CST 2021, Manivannan Sadhasivam wrote:
-> > > 
-> > > > From: Vinod Koul <vkoul@kernel.org>
-> > > > 
-> > > > This adds reserved memory nodes to the SDX55 dtsi as defined by v8 of
-> > > > the memory map
-> > > > 
-> > > > Signed-off-by: Vinod Koul <vkoul@kernel.org>
-> > > > Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-> > > > ---
-> > > >  arch/arm/boot/dts/qcom-sdx55.dtsi | 67 +++++++++++++++++++++++++++++++
-> > > >  1 file changed, 67 insertions(+)
-> > > > 
-> > > > diff --git a/arch/arm/boot/dts/qcom-sdx55.dtsi b/arch/arm/boot/dts/qcom-sdx55.dtsi
-> > > > index 08b4a40338fa..eeb6bf392f93 100644
-> > > > --- a/arch/arm/boot/dts/qcom-sdx55.dtsi
-> > > > +++ b/arch/arm/boot/dts/qcom-sdx55.dtsi
-> > > > @@ -60,6 +60,73 @@ psci {
-> > > >  		method = "smc";
-> > > >  	};
-> > > >  
+On Tue, Jan 5, 2021 at 3:38 PM Andy Shevchenko
+<andriy.shevchenko@linux.intel.com> wrote:
+>
+> On Tue, Jan 05, 2021 at 03:19:13PM +0100, Bartosz Golaszewski wrote:
+> > On Sun, Dec 27, 2020 at 10:27 PM Linus Walleij <linus.walleij@linaro.org> wrote:
+> > >
+> > > On Sat, Dec 26, 2020 at 7:41 AM Syed Nayyar Waris <syednwaris@gmail.com> wrote:
+> > >
+> > > > Since this patchset primarily affects GPIO drivers, would you like
+> > > > to pick it up through your GPIO tree?
+> > >
+> > > Actually Bartosz is handling the GPIO patches for v5.12.
+> > > I tried to merge the patch series before but failed for
+> > > various reasons.
+>
+> > My info on this is a bit outdated - didn't Linus Torvalds reject these
+> > patches from Andrew Morton's PR? Or am I confusing this series with
+> > something else?
+>
+> Linus T. told that it can be done inside GPIO realm. This version tries
+> (badly in my opinion) to achieve that.
+>
 
-[...]
+I'm seeing William and Arnd have some unaddressed issues with patch 1
+(with using __builtin_unreachable()).
 
-> > > > +		mpss_adsp_mem: memory@90800000 {
-> > > > +			no-map;
-> > > > +			reg = <0x90800000 0xf800000>;
-> > > 
-> > > Didn't you say this moved to 0x9c000000?
-> > > 
-> > 
-> > That's for an old bootloader which is used in the MTP. But I guess we should
-> > always use the latest mem map for the latest bootloader.
-> > 
-> 
-> That reminds me, a number of times we're learned that these are at least
-> related to which firmware the individual vendors are shipping on their
-> devices. So the peripheral (remoteproc) regions is better to push out to
-> the board file.
-> 
-> I.e. that would (probably) be &mpss_debug_mem, &ipa_fw_mem and
-> &mpss_adsp_mem.
-> 
+Admittedly I didn't follow the previous iterations too much so I may
+miss some history behind it. Why do the first two patches go into lib
+if this is supposed to be gpiolib-only?
 
-Okay.
-
-Thanks,
-Mani
-
-> Regards,
-> Bjorn
+Bartosz
