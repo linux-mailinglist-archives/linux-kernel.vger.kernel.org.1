@@ -2,96 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A52A42EC263
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 18:36:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CA07E2EC266
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 18:37:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727552AbhAFRga (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Jan 2021 12:36:30 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53068 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726535AbhAFRga (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Jan 2021 12:36:30 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 27EE620657;
-        Wed,  6 Jan 2021 17:35:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1609954549;
-        bh=k/pidVaDKztHR41se4lBhvy8bU+Plsc0TOzwpF2mduk=;
-        h=Date:From:To:Cc:Subject:Reply-To:From;
-        b=hnsJIqRKhC24C/Stvdg5YKGmas3ubUsxEHrnaljMTkRZZZfYugDUrOd8B04PHjptH
-         74s04YV9YWhg6RsV7VHoIbEgIKGqbO0Ft7uPuGoXUFg16s9bZ9T4mTbY02mv5+ukT9
-         B8rZDLHondps6aXX+pohT/nmRJFF115otfGe3PQZbs2AMYczh48nflSHYbJeYFgpuq
-         k2gq2X2g/U42mEKpwQFsFgRSSTp9xAPstrqxFauKu4vi+2ZJprMP08obC9hMFNIB3C
-         xZMJqdzdNgAPPOu7ErBpkHL7YCLEwS+cbwhUkRkV0EwV9VRfiKM5IY685xRviQLMxz
-         apXhNnxsJ2C8w==
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id E421735225EC; Wed,  6 Jan 2021 09:35:48 -0800 (PST)
-Date:   Wed, 6 Jan 2021 09:35:48 -0800
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
-        kernel-team@fb.com, mingo@kernel.org
-Cc:     stern@rowland.harvard.edu, parri.andrea@gmail.com, will@kernel.org,
-        peterz@infradead.org, boqun.feng@gmail.com, npiggin@gmail.com,
-        dhowells@redhat.com, j.alglave@ucl.ac.uk, luc.maranget@inria.fr,
-        akiyks@gmail.com
-Subject: [PATCH memory-model 0/3] LKMM updates for v5.12
-Message-ID: <20210106173548.GA23664@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
+        id S1727273AbhAFRg6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Jan 2021 12:36:58 -0500
+Received: from mail-bn7nam10on2131.outbound.protection.outlook.com ([40.107.92.131]:52992
+        "EHLO NAM10-BN7-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726581AbhAFRg5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 Jan 2021 12:36:57 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=lkx5LNhfc9TUfGtIAS8HdjeZL5c6Sqf2hEaTPFPW54pNO97s07LEu7Yc4A952CeG42HsqPvZugz5OtsZQKV8OW/x53IkTwqz5ZoHqK2xl2KGDZ0oZBdPyMfn2e6vXEj9rgmVXpioRWjWXOCpd/QAHFP3OnpRUP2GnvWBooVSYTDROGBaBdNSra7QVTKXxqvn0gnLQWiF0BJqTfwe0BQZAy2xg/66Ww2uDD4aL0omarRafUTCC6lcSSGhPGKrKs29/N8BZjXadpretn0/+xoPhqVc8FkoKW40BDvllZcIvS1olJA9EhCvCPVMxNkXvitLmkJkfFp4CR+kDhLi8kMDOA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=t/QpezglIvGrA0eZjsy6ri3332sHdSEST+KEv0P+WZY=;
+ b=hQSZoiYkrZDeuzwpGOUfaXK+GACVJLIp671N3nO4Y5JgWFb2rWYHlj/ciUdJ1tAt4/hCBPq63uYDCvJUN9Y5TTXb2ascrImCoC5Q1vgTOE8+/irUA39DJeg33GasOtlZNFp3WJ0oM2NcUDj+5etUSpvUjNMteEBa8jhu2BPjGPCFj+NY1RabszouusRvr37zzgGWEUumqZEl1KTjpfMHuwLD6YsNEs8ipoWNfIhj/icEPGuXrSypCk7qnoY8ZOGC/jAZ+f5veSQmSiJuYjTdS/c9n8M1tZr01Z5KgBYiVp+fSz3ENB4ZB2w0Td9DDZ13Ph0bKUTwMizr0mCanDjJYw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microsoft.com; dmarc=pass action=none
+ header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=t/QpezglIvGrA0eZjsy6ri3332sHdSEST+KEv0P+WZY=;
+ b=ZPqKHMVqczy+D3UPQ2geNOvfmiNUWtiLe4utjyC2bKDU5r7frzkXKozyr1cR43fk+z6419eCfTqNh5WpFkY810R/lF3HSHTmC1Apx6DCwYcQKKWj+oPnFV0is8u4woJHJguyZ0B8LHORihcXk9CF+5hvF1coUZWrFE7kFEis+T4=
+Received: from (2603:10b6:207:30::18) by
+ BL0PR2101MB1332.namprd21.prod.outlook.com (2603:10b6:208:92::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3763.0; Wed, 6 Jan
+ 2021 17:36:10 +0000
+Received: from BL0PR2101MB0930.namprd21.prod.outlook.com
+ ([fe80::246e:cb1c:4d14:d0eb]) by BL0PR2101MB0930.namprd21.prod.outlook.com
+ ([fe80::246e:cb1c:4d14:d0eb%7]) with mapi id 15.20.3763.002; Wed, 6 Jan 2021
+ 17:36:09 +0000
+From:   Haiyang Zhang <haiyangz@microsoft.com>
+To:     Long Li <longli@linuxonhyperv.com>,
+        KY Srinivasan <kys@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+CC:     Long Li <longli@microsoft.com>
+Subject: RE: [PATCH 1/3] hv_netvsc: Check VF datapath when sending traffic to
+ VF
+Thread-Topic: [PATCH 1/3] hv_netvsc: Check VF datapath when sending traffic to
+ VF
+Thread-Index: AQHW48mMgWlBHLToj0W1O847C80iS6oa3Sng
+Date:   Wed, 6 Jan 2021 17:36:09 +0000
+Message-ID: <BL0PR2101MB093013B5AD2A01249C91FD2FCAD09@BL0PR2101MB0930.namprd21.prod.outlook.com>
+References: <1609895753-30445-1-git-send-email-longli@linuxonhyperv.com>
+In-Reply-To: <1609895753-30445-1-git-send-email-longli@linuxonhyperv.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+msip_labels: MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=936cfab2-dd80-451e-ab44-bbdd7da62f59;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2021-01-06T17:35:47Z;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
+authentication-results: linuxonhyperv.com; dkim=none (message not signed)
+ header.d=none;linuxonhyperv.com; dmarc=none action=none
+ header.from=microsoft.com;
+x-originating-ip: [75.100.88.238]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: b18b3306-4813-468f-b3c5-08d8b2698e19
+x-ms-traffictypediagnostic: BL0PR2101MB1332:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <BL0PR2101MB1332220669912829D7D1702CCAD09@BL0PR2101MB1332.namprd21.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:2449;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: N/4vXD2LOZsxpudp+Nm/ryGgmBu0S54X2zTb02c+cMP0TVcEK+g2vcpEIbWhqtMLkHjifM6vU2HAtaUG9M1pBNE7Iqkub96etx5SrZyFlGwP0imJvhb4i/ThpJ19JnXX+T4p3C4Nt2buMhs18RcqvLLlUP/EHEK+PSTpzc59Pz3Vicq28vs6FENl8yA6ZapzlFJWwJ9n6jJxlezSXiZECCgR0UYoPnAv2w5EyPFTyXrPS5n8MkeTEbSPvsNgIWZ4pv9tpjhT7ABMX3rI6UsUltRbGuUOI+UURN5mnNUgrfDqP9XZ/AosBFv6VetiZNZbTz7SFY31hm7/C2xQrKZ0jkeUst3t+jClhBDOJOW0lq1uhmc8OkfXXHAnqvZl7oOknFVNLxJRXyVsQg+uj4OIlQ==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR2101MB0930.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(376002)(396003)(366004)(39860400002)(136003)(53546011)(66476007)(66446008)(64756008)(33656002)(6506007)(76116006)(66556008)(83380400001)(8936002)(8676002)(26005)(82960400001)(186003)(4744005)(71200400001)(66946007)(82950400001)(110136005)(316002)(4326008)(10290500003)(478600001)(52536014)(7696005)(2906002)(107886003)(9686003)(8990500004)(5660300002)(55016002)(86362001);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: =?us-ascii?Q?AYFirQRqIBIesPm5RxOEq2IZtiM3s3agbjuxEzYCukNuuzFCEFVkt/T0UbDg?=
+ =?us-ascii?Q?lyPyP/ddMT5JCN+A+K7B/xZ1yUONc1NP2V0zgLMiPo9b3LmnnFwcj2y3wFiC?=
+ =?us-ascii?Q?/EPFg/yZc2fYcNXhGIC1Axp2naGAPg4PbMyzFQ2KP25d8ub/grcnmyQUV7TZ?=
+ =?us-ascii?Q?l+G8n85wEPukp4slq2laTkRRpOqAYjvGmvWU4jB20vS3K8NtoYj9mwfGkeIh?=
+ =?us-ascii?Q?NH4RrMROeEQsnReF9Acvtpw42PErKrg1gc0RTbfhLQmGFEuolUMEdnhpBlwT?=
+ =?us-ascii?Q?ys78GzXLjbODoZKPrD0uON5iZd1ijab3BNt7zAV3jbPmgP/E6aQX2xgyg7mv?=
+ =?us-ascii?Q?d4gYiFXOnDj2KPhmYpMsoZGhwxuUSA1Dp6ua4IkiZSsaRQM3UOAUgbDNTccZ?=
+ =?us-ascii?Q?IiGMuV2hA/9Y5bx1cMdJIs+auaHbpoQrLLrO+1xVjU3HAVYTHt2FhKfJGZsR?=
+ =?us-ascii?Q?tWSEnIR3VqwW7cW7XiALT+227XA0Dl/7kIBJ7ACOzTfpSyc64jl0E6iiTHel?=
+ =?us-ascii?Q?fZIb0I8jrMArpV1yqDFuEvzcbAApsLbHtRTwumbMBmVie+BRp4YSe5FGMTok?=
+ =?us-ascii?Q?vJInZPbNnfoK5NAWJ0+Ts2vhSWAtiL/lw0rLiVmYbX1EzuspJEmFkKMifGvo?=
+ =?us-ascii?Q?BIT/yfoPZZ8c/v33sjrwTjtObfZtVTAXGP7GhiGm1TFjeYeMba+5i66DMPL5?=
+ =?us-ascii?Q?QankWbELK1T4yW4jJ8xxShrCBmDznanpJk+t808nE5LcLP2RnuBp0Veoe+R4?=
+ =?us-ascii?Q?h4MT+xq6o2YrlQhPKExEuCLuOgPYZMNyB2RbD8qiENfOxvoXQ6h5gZQO0J5o?=
+ =?us-ascii?Q?U7x1dkHbQgNuYHpJlwXi/f29dpHNzYG2NDXCwBRUcry/4Jz3lzCWO+QmT2UA?=
+ =?us-ascii?Q?QqN09bxk39EOlgP7cybKTmUuxq2Imks12k+ricMkHnWhOv+ch/StIe6ExYhO?=
+ =?us-ascii?Q?N7XKdP3zekeX20VYc8O+FQ6YRHqcOhB6in12yRDlLrc=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.9.4 (2018-02-28)
+X-OriginatorOrg: microsoft.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BL0PR2101MB0930.namprd21.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: b18b3306-4813-468f-b3c5-08d8b2698e19
+X-MS-Exchange-CrossTenant-originalarrivaltime: 06 Jan 2021 17:36:09.5685
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 9nfjrK8Cv6Sw93IX0ba5GOMybuIRc3/tfWmizepiBBDCLlytqs0j6cGOyO/6qBeLv8/1Vmh3n2ztoGGjjRVFoA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL0PR2101MB1332
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello!
 
-This series provides a few LKMM updates:
 
-1.	tools/memory-model: Tie acquire loads to reads-from.
-
-2.	tools/memory-model: Remove redundant initialization in litmus
-	tests, courtesy of Akira Yokosawa.
-
-3.	tools/memory-model: Fix typo in klitmus7 compatibility table,
-	courtesy of Akira Yokosawa.
-
-						Thanx, Paul
-
-------------------------------------------------------------------------
-
- Documentation/glossary.txt                                              |   12 +++++++---
- README                                                                  |    2 -
- litmus-tests/CoRR+poonceonce+Once.litmus                                |    4 ---
- litmus-tests/CoRW+poonceonce+Once.litmus                                |    4 ---
- litmus-tests/CoWR+poonceonce+Once.litmus                                |    4 ---
- litmus-tests/CoWW+poonceonce.litmus                                     |    4 ---
- litmus-tests/IRIW+fencembonceonces+OnceOnce.litmus                      |    5 ----
- litmus-tests/IRIW+poonceonces+OnceOnce.litmus                           |    5 ----
- litmus-tests/ISA2+pooncelock+pooncelock+pombonce.litmus                 |    7 -----
- litmus-tests/ISA2+poonceonces.litmus                                    |    6 -----
- litmus-tests/ISA2+pooncerelease+poacquirerelease+poacquireonce.litmus   |    6 -----
- litmus-tests/LB+fencembonceonce+ctrlonceonce.litmus                     |    5 ----
- litmus-tests/LB+poacquireonce+pooncerelease.litmus                      |    5 ----
- litmus-tests/LB+poonceonces.litmus                                      |    5 ----
- litmus-tests/MP+fencewmbonceonce+fencermbonceonce.litmus                |    5 ----
- litmus-tests/MP+onceassign+derefonce.litmus                             |    4 ---
- litmus-tests/MP+polockmbonce+poacquiresilsil.litmus                     |    5 ----
- litmus-tests/MP+polockonce+poacquiresilsil.litmus                       |    5 ----
- litmus-tests/MP+polocks.litmus                                          |    6 -----
- litmus-tests/MP+poonceonces.litmus                                      |    5 ----
- litmus-tests/MP+pooncerelease+poacquireonce.litmus                      |    5 ----
- litmus-tests/MP+porevlocks.litmus                                       |    6 -----
- litmus-tests/R+fencembonceonces.litmus                                  |    5 ----
- litmus-tests/R+poonceonces.litmus                                       |    5 ----
- litmus-tests/S+fencewmbonceonce+poacquireonce.litmus                    |    5 ----
- litmus-tests/S+poonceonces.litmus                                       |    5 ----
- litmus-tests/SB+fencembonceonces.litmus                                 |    5 ----
- litmus-tests/SB+poonceonces.litmus                                      |    5 ----
- litmus-tests/SB+rfionceonce-poonceonces.litmus                          |    5 ----
- litmus-tests/WRC+poonceonces+Once.litmus                                |    5 ----
- litmus-tests/WRC+pooncerelease+fencermbonceonce+Once.litmus             |    5 ----
- litmus-tests/Z6.0+pooncelock+poonceLock+pombonce.litmus                 |    7 -----
- litmus-tests/Z6.0+pooncelock+pooncelock+pombonce.litmus                 |    7 -----
- litmus-tests/Z6.0+pooncerelease+poacquirerelease+fencembonceonce.litmus |    6 -----
- 34 files changed, 42 insertions(+), 138 deletions(-)
+> -----Original Message-----
+> From: Long Li <longli@linuxonhyperv.com>
+> Sent: Tuesday, January 5, 2021 8:16 PM
+> To: KY Srinivasan <kys@microsoft.com>; Haiyang Zhang
+> <haiyangz@microsoft.com>; Stephen Hemminger
+> <sthemmin@microsoft.com>; Wei Liu <wei.liu@kernel.org>; David S. Miller
+> <davem@davemloft.net>; Jakub Kicinski <kuba@kernel.org>; linux-
+> hyperv@vger.kernel.org; netdev@vger.kernel.org; linux-
+> kernel@vger.kernel.org
+> Cc: Long Li <longli@microsoft.com>
+> Subject: [PATCH 1/3] hv_netvsc: Check VF datapath when sending traffic to
+> VF
+>=20
+> From: Long Li <longli@microsoft.com>
+>=20
+> The driver needs to check if the datapath has been switched to VF before
+> sending traffic to VF.
+>=20
+> Signed-off-by: Long Li <longli@microsoft.com>
+Reviewed-by: Haiyang Zhang <haiyangz@microsoft.com>
