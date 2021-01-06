@@ -2,85 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C72B2EBEF2
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 14:43:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A8C62EBEF8
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 14:45:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727333AbhAFNk4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Jan 2021 08:40:56 -0500
-Received: from mail-ot1-f54.google.com ([209.85.210.54]:33117 "EHLO
-        mail-ot1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726458AbhAFNkz (ORCPT
+        id S1727256AbhAFNoz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Jan 2021 08:44:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49922 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726498AbhAFNox (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Jan 2021 08:40:55 -0500
-Received: by mail-ot1-f54.google.com with SMTP id b24so3031170otj.0;
-        Wed, 06 Jan 2021 05:40:39 -0800 (PST)
+        Wed, 6 Jan 2021 08:44:53 -0500
+Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A715CC061357;
+        Wed,  6 Jan 2021 05:44:12 -0800 (PST)
+Received: by mail-wm1-x32f.google.com with SMTP id g25so3167227wmh.1;
+        Wed, 06 Jan 2021 05:44:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=googlemail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Ha0RqpxHzOQ0pvIyiJg1GgWJJZaQkrZa3GihzND5+Tc=;
+        b=gXZO9E3+Bo8/wtmOuO5hX7P/oAkL2d7vhmffJTfjNC11HxoNJlV8TmmBUhvQ+n5esf
+         +0dzxryyVtfs3AOIdWDXmT0PO+Znxl0SFd4N+uUwQOeaDzyN0AQEgPq1JXEnlGiNd4+R
+         F7fjylQG9RO67MOilxfUzfefSDvr8LaXSTODazo/IGhC0yxINqMTYc5Uv2JVD22q/ISo
+         xBfjJQBZxixiL2+ihLsJAoUz/OmU3UkUm1PsrLiQoSWRlWW8hEq/Yufs5m0R/0VL5RK/
+         hEmbdqUw/efYc3l+e/Ru4NQdPXq9WL+Fr3lmGR7rg5vh7U3h7Ppblt5o2/DZdlBkHmYU
+         WZAg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=mQj0RmesVA+Moy3dDr1aHFZDKWq7ktYXC/4kQJWYQPs=;
-        b=aeCQrU5et59rW/P6xnUHvTh9y+ZJTirpswX+H9ZLTG2Cq0lExL0JIa2Rn7X4Nr6cFa
-         02nO3+58kPNb9KMIcmubpBLJw5tIspU+oeacT9aQNYvbaLSw3A9kG5vTHKJhKDaxXpBk
-         gq/j59u6Mn/WgJlxrQqILUJMceE7dDfMdXZ5t4GtlpG/e2XxoLdffjV+SKYCZ8uYXDLf
-         3uOyKea+MA9CW5CqaShSwrBZitn+E+4k73tAbomD9Z+ie5FgJV0NK5QNduut+dR8D+sy
-         DkRFZHANS4bmOMnngLks1AUVY+uRaoQVcj3Sn5OyLuALudGIO82oHMuUY7lF2OOcF2IM
-         7csA==
-X-Gm-Message-State: AOAM532kgxRyPiv8/aWuSuHgexGf1PMm/Gwt3eItdfaZe9ZYKeJXlbr6
-        rwmiEvdfeQk6UauZOmPqziJWmP2zUdE+LFJqKok=
-X-Google-Smtp-Source: ABdhPJyoRu6s85dm8efDsG2TclWauJNGZuYsx9uJ1FrbsXRVn/0PqVQWIBZEjDRbjsXny73i5dxZdofjxhlfwuGXyBA=
-X-Received: by 2002:a9d:c01:: with SMTP id 1mr3183283otr.107.1609940413871;
- Wed, 06 Jan 2021 05:40:13 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Ha0RqpxHzOQ0pvIyiJg1GgWJJZaQkrZa3GihzND5+Tc=;
+        b=DKBZxDGc1Op6xqaCT/3ppBDPJ81kRjCqlbHs3QmHHQ+Fz0qfWoDMzIbREiL+bsHYlX
+         cgzygo8SuvACrKfHkpxtxvxKdXZs97eIVSy1SotFsmD8EYQ+mHASI0INLIlwkfAJ3yp+
+         MT3/uU2WbUJFHQGWhRhh78MyTxfI70wX/oM1QQ8/9TiiXDnskOciQGt3iLHJRB25Xw1E
+         TfPOmz2TNa7WwcCWYeGP+R+TizJ5NEVHpDXq2rCaHWiwDVSwiFFTq0+tMyLAbQLN72nQ
+         t+NQwoupkeb8gNM9BkOrtRY+iVQfpwL7X+flkToaDeTJzxBto7wkOlXr3cjneYxYqs/1
+         FagA==
+X-Gm-Message-State: AOAM530QfkBgVuDonNBbx1VYlA0e0Q+bnLYgQKb0f3bvDN0Av/WYjInE
+        cud8EMZW9pXY5Q8f5eQCtSs=
+X-Google-Smtp-Source: ABdhPJwxWUeDofAW2lIQtZGRWb6JL7E6MBExqSgbYhCt8WxoZJQvSo9h4veqeoHyk/FVnuUv8npbKw==
+X-Received: by 2002:a7b:c4d5:: with SMTP id g21mr3791629wmk.92.1609940649823;
+        Wed, 06 Jan 2021 05:44:09 -0800 (PST)
+Received: from localhost.localdomain (p200300f13711ec00428d5cfffeb99db8.dip0.t-ipconnect.de. [2003:f1:3711:ec00:428d:5cff:feb9:9db8])
+        by smtp.googlemail.com with ESMTPSA id f14sm3085351wme.14.2021.01.06.05.44.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 06 Jan 2021 05:44:09 -0800 (PST)
+From:   Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+To:     linux-amlogic@lists.infradead.org, devicetree@vger.kernel.org,
+        netdev@vger.kernel.org
+Cc:     davem@davemloft.net, kuba@kernel.org, robh+dt@kernel.org,
+        andrew@lunn.ch, f.fainelli@gmail.com, jianxin.pan@amlogic.com,
+        narmstrong@baylibre.com, khilman@baylibre.com,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        jbrunet@baylibre.com,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Subject: [PATCH v4 0/5] dwmac-meson8b: picosecond precision RX delay support
+Date:   Wed,  6 Jan 2021 14:42:46 +0100
+Message-Id: <20210106134251.45264-1-martin.blumenstingl@googlemail.com>
+X-Mailer: git-send-email 2.30.0
 MIME-Version: 1.0
-References: <20210106132006.1036-1-zhengyongjun3@huawei.com>
-In-Reply-To: <20210106132006.1036-1-zhengyongjun3@huawei.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Wed, 6 Jan 2021 14:40:02 +0100
-Message-ID: <CAMuHMdUno=8mUQ6a=v-uJq6oOmVS7VM=y5bb2o-YhFn+QE2Qyg@mail.gmail.com>
-Subject: Re: [PATCH -next] video: fbdev: pxa3xx_gcu: use resource_size
-To:     Zheng Yongjun <zhengyongjun3@huawei.com>
-Cc:     Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        Linux Fbdev development list <linux-fbdev@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Zheng,
+Hello,
 
-On Wed, Jan 6, 2021 at 2:23 PM Zheng Yongjun <zhengyongjun3@huawei.com> wrote:
-> Use resource_size rather than a verbose computation on
-> the end and start fields.
->
-> Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>
+with the help of Jianxin Pan (many thanks!) the meaning of the "new"
+PRG_ETH1[19:16] register bits on Amlogic Meson G12A, G12B and SM1 SoCs
+are finally known. These SoCs allow fine-tuning the RGMII RX delay in
+200ps steps (contrary to what I have thought in the past [0] these are
+not some "calibration" values).
 
-Thanks for your patch!
+The vendor u-boot has code to automatically detect the best RX/TX delay
+settings. For now we keep it simple and add a device-tree property with
+200ps precision to select the "right" RX delay for each board.
 
-But the one-line summary and patch description don't seem to match
-with the actual change?
+While here, deprecate the "amlogic,rx-delay-ns" property as it's not
+used on any upstream .dts (yet). The driver is backwards compatible.
 
-> --- a/drivers/video/fbdev/pxa3xx-gcu.c
-> +++ b/drivers/video/fbdev/pxa3xx-gcu.c
-> @@ -594,8 +594,8 @@ static int pxa3xx_gcu_probe(struct platform_device *pdev)
->          * container_of(). This isn't really necessary as we have a fixed minor
->          * number anyway, but this is to avoid statics. */
->
-> -       priv->misc_dev.minor    = PXA3XX_GCU_MINOR,
-> -       priv->misc_dev.name     = DRV_NAME,
-> +       priv->misc_dev.minor    = PXA3XX_GCU_MINOR;
-> +       priv->misc_dev.name     = DRV_NAME;
->         priv->misc_dev.fops     = &pxa3xx_gcu_miscdev_fops;
->
->         /* handle IO resources */
+I have tested this on an X96 Air 4GB board (not upstream yet). Testing
+with iperf3 gives 938 Mbits/sec in both directions (RX and TX). The
+following network settings were used in the .dts (2ns TX delay
+generated by the PHY, 800ps RX delay generated by the MAC as the PHY
+only supports 0ns or 2ns RX delays):
+        &ext_mdio {
+                external_phy: ethernet-phy@0 {
+                        /* Realtek RTL8211F (0x001cc916) */
+                        reg = <0>;
+                        eee-broken-1000t;
 
-Gr{oetje,eeting}s,
+                        reset-assert-us = <10000>;
+                        reset-deassert-us = <30000>;
+                        reset-gpios = <&gpio GPIOZ_15 (GPIO_ACTIVE_LOW |
+                                                GPIO_OPEN_DRAIN)>;
 
-                        Geert
+                        interrupt-parent = <&gpio_intc>;
+                        /* MAC_INTR on GPIOZ_14 */
+                        interrupts = <26 IRQ_TYPE_LEVEL_LOW>;
+                };
+        };
+
+        &ethmac {
+                status = "okay";
+
+                pinctrl-0 = <&eth_pins>, <&eth_rgmii_pins>;
+                pinctrl-names = "default";
+
+                phy-mode = "rgmii-txid";
+                phy-handle = <&external_phy>;
+
+                amlogic,rgmii-rx-delay-ps = <800>;
+        };
+
+To use the same settings from vendor u-boot (which in my case has broken
+Ethernet) the following commands can be used:
+  mw.l 0xff634540 0x1621
+  mw.l 0xff634544 0x30000
+  phyreg w 0x0 0x1040
+  phyreg w 0x1f 0xd08
+  phyreg w 0x11 0x9
+  phyreg w 0x15 0x11
+  phyreg w 0x1f 0x0
+  phyreg w 0x0 0x9200
+
+Also I have tested this on a X96 Max board without any .dts changes
+to confirm that other boards with the same IP block still work fine
+with these changes.
+
+
+Changes since v3 at [3].
+- added Florian's Reviewed-by to patch 1 (thank you!)
+- rebased on top of net-next
+
+Changes since v2 at [2]:
+- use the generic property name "rx-internal-delay-ps" as suggested by
+  Rob (thanks!). This affects patches #1 and #3. The biggest change is
+  is in patch #1 which is why I didn't add Florian's and Andrew's
+  Reviewed-by
+- added Andrew's and Florian's Reviewed-by to patches 2, 3, 4, 5 (many
+  thanks to both!). I decided to do this despite renaming the property
+  to the generic name "rx-internal-delay-ps" as it only affects the
+  patch description and one line of code
+- updated patch description of patch #3 to explain why there's not a
+  lot of validation when parsing the old device-tree property (in
+  nanosecond precision)
+- dropped RFC status
+
+Changes since v1 at [1]:
+- updated patch 1 by making it more clear when the RX delay is applied.
+  Thanks to Andrew for the suggestion!
+- added a fix to enabling the timing-adjustment clock only when really
+  needed. Found by Andrew - thanks!
+- added testing not about X96 Max
+- v1 did not go to the netdev mailing list, v2 fixes this
+
+
+[0] https://lore.kernel.org/netdev/CAFBinCATt4Hi9rigj52nMf3oygyFbnopZcsakGL=KyWnsjY3JA@mail.gmail.com/
+[1] https://patchwork.kernel.org/project/linux-amlogic/list/?series=384279&state=%2A&archive=both
+[2] https://patchwork.kernel.org/project/linux-amlogic/list/?series=384491&state=%2A&archive=both
+[3] https://patchwork.kernel.org/project/linux-amlogic/list/?series=406005&state=%2A&archive=both
+
+Martin Blumenstingl (5):
+  dt-bindings: net: dwmac-meson: use picoseconds for the RGMII RX delay
+  net: stmmac: dwmac-meson8b: fix enabling the timing-adjustment clock
+  net: stmmac: dwmac-meson8b: use picoseconds for the RGMII RX delay
+  net: stmmac: dwmac-meson8b: move RGMII delays into a separate function
+  net: stmmac: dwmac-meson8b: add support for the RGMII RX delay on G12A
+
+ .../bindings/net/amlogic,meson-dwmac.yaml     | 55 +++++++++--
+ .../ethernet/stmicro/stmmac/dwmac-meson8b.c   | 91 +++++++++++++++----
+ 2 files changed, 120 insertions(+), 26 deletions(-)
 
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+2.30.0
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
