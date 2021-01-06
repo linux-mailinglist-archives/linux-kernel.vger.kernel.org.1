@@ -2,73 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E3162EB708
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 01:48:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 53C562EB70B
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 01:50:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727051AbhAFAs1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 19:48:27 -0500
-Received: from mail.loongson.cn ([114.242.206.163]:60848 "EHLO loongson.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725906AbhAFAs0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 19:48:26 -0500
-Received: from loongson.localdomain (unknown [113.200.148.30])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dx++SuCPVf2AMAAA--.177S2;
-        Wed, 06 Jan 2021 08:47:43 +0800 (CST)
-From:   Jinyang He <hejinyang@loongson.cn>
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>
-Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] MIPS: zboot: Avoid endless loop in clear BSS.
-Date:   Wed,  6 Jan 2021 08:47:39 +0800
-Message-Id: <1609894059-6112-1-git-send-email-hejinyang@loongson.cn>
-X-Mailer: git-send-email 2.1.0
-X-CM-TRANSID: AQAAf9Dx++SuCPVf2AMAAA--.177S2
-X-Coremail-Antispam: 1UD129KBjvdXoWrtFyUtw1kAw4UCFyrJF1DKFg_yoW3KrXEg3
-        4Iqw1DWws5Gr1qgFW3urn3KFyUu34j9w15AF1kXr1ava4rZFWfXFWDJ34UZr1DWrWjk3yf
-        Krn5uw1FkFsF9jkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUb7xYjsxI4VWkKwAYFVCjjxCrM7AC8VAFwI0_Jr0_Gr1l1xkIjI8I
-        6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM2
-        8CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVWUJVWUCwA2z4x0Y4vE2Ix0
-        cI8IcVCY1x0267AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIE14v26r4j6F4UM28EF7xvwVC2z2
-        80aVCY1x0267AKxVW8JVW8Jr1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IE
-        w4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_JrI_JrylYx0Ex4A2jsIE14v26r1j6r4UMc
-        vjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwCY02Avz4vE14v_twCF04k20xvY
-        0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I
-        0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_Jw1lIxkGc2Ij64vIr41lIxAI
-        cVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcV
-        CF04k26cxKx2IYs7xG6Fyj6rWUJwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv
-        6xkF7I0E14v26r1j6r4UYxBIdaVFxhVjvjDU0xZFpf9x07brXd8UUUUU=
-X-CM-SenderInfo: pkhmx0p1dqwqxorr0wxvrqhubq/
+        id S1727535AbhAFAtb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 19:49:31 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53104 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726640AbhAFAtb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Jan 2021 19:49:31 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A4F79206C0;
+        Wed,  6 Jan 2021 00:48:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1609894130;
+        bh=cmtHQdH/BwSt/OLpSq6NGhscjkN8So2xnhuaaBLevvA=;
+        h=Date:From:To:Cc:Subject:Reply-To:From;
+        b=k4jJjcQretAfmVRlbtJStdDfHGv6cfAX8i0oVtpxcaVQdzYNGws0TwjLCMRCHy4LZ
+         LolLLWj6VraAH3mA3mnR5tZD5UEsICmBXP8wzTTm2sWrjCln86xzIrcgAb1yfKwq7A
+         aVEUL+xtlBjwy9oDvQ9rO/UauzXYJ0gsMvXX5j35niII9z1eUip+GrUhfSWXZf0/6E
+         ohNE9Cchd36NBHRj6l0j85kgGHr9pyST0SsuQgViCPk9mqp+G8LiqPp7a0bqMhuv9p
+         pTsAsrKevXJXqYiyBy5q8Mxnq49NHNGSNiM24+yyZAoxxJWczhVHvZuC1Uo5OSAdWO
+         AwkrIW+qAM7cg==
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id 80A8835228C6; Tue,  5 Jan 2021 16:48:50 -0800 (PST)
+Date:   Tue, 5 Jan 2021 16:48:50 -0800
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     peterz@infradead.org, yury.norov@gmail.com,
+        paul.gortmaker@windriver.com, kernel-team@fb.com
+Subject: [PATCH RFC cpumask] Allow "all", "none", and "last" in cpumask
+ strings
+Message-ID: <20210106004850.GA11682@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit 2ee1503e546f ("MIPS: zboot: head.S clean up").
+Hello!
 
-After .noreorder removed, clear BSS fall into endless loop. The bne
-instruction will add nop to the delay slot at compile time. So a0
-register will not increment by 4. Fix it and clear BSS from _edata
-to (_end - 1).
+This series allows "all", "none", and "last" to be used in cpumask
+strings.  This allows these strings to be less dependent on the underlying
+system.  For example, currently a string specifying all but the first
+CPU must be "1-7" on an eight-CPU system and "1-15" on a 16-CPU system.
+With this series, the single string "1-last" can be used regardless of the
+number of CPUs (at least assuming that each system has at least one CPU).
 
-Signed-off-by: Jinyang He <hejinyang@loongson.cn>
----
- arch/mips/boot/compressed/head.S | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+1.	Un-inline cpulist_parse for SMP; prepare for ascii helpers,
+	courtesy of Paul Gortmaker.
 
-diff --git a/arch/mips/boot/compressed/head.S b/arch/mips/boot/compressed/head.S
-index 070b2fb..5795d0a 100644
---- a/arch/mips/boot/compressed/head.S
-+++ b/arch/mips/boot/compressed/head.S
-@@ -26,8 +26,8 @@
- 	PTR_LA	a0, _edata
- 	PTR_LA	a2, _end
- 1:	sw	zero, 0(a0)
-+	addiu	a0, a0, 4
- 	bne	a2, a0, 1b
--	 addiu	a0, a0, 4
- 
- 	PTR_LA	a0, (.heap)	     /* heap address */
- 	PTR_LA	sp, (.stack + 8192)  /* stack address */
--- 
-2.1.0
+2.	Make "all" alias global and not just RCU, courtesy of Paul
+	Gortmaker.
 
+3.	Add a "none" alias to complement "all", courtesy of Paul
+	Gortmaker.
+
+4.	Add "last" alias for cpu list specifications, courtesy of Paul
+	Gortmaker.
+
+5.	Use "all" and "last" in "nohz_full" and "rcu_nocbs".
+
+						Thanx, Paul
+
+------------------------------------------------------------------------
+
+ Documentation/admin-guide/kernel-parameters.rst            |   20 +
+ Documentation/admin-guide/kernel-parameters.txt            |    4 
+ include/linux/cpumask.h                                    |    8 
+ kernel/rcu/tree_plugin.h                                   |   13 -
+ lib/cpumask.c                                              |  136 ++++++++++++-
+ tools/testing/selftests/rcutorture/configs/rcu/TREE04.boot |    2 
+ tools/testing/selftests/rcutorture/configs/rcu/TREE08.boot |    2 
+ 7 files changed, 169 insertions(+), 16 deletions(-)
