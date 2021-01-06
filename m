@@ -2,73 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B64F2EC6F5
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 00:40:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B2E512EC6FA
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 00:41:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727711AbhAFXj3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Jan 2021 18:39:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58338 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727192AbhAFXj3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Jan 2021 18:39:29 -0500
-Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE05DC061757
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Jan 2021 15:38:48 -0800 (PST)
-Received: by mail-pl1-x62a.google.com with SMTP id 4so2354728plk.5
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Jan 2021 15:38:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=zo+uooqajJkVIc//qGbLq5a2/tbMq8FCHMG3Hgw2MPg=;
-        b=EZN7MpBxbYHR9Lh0ewX4mZiq4ydtxnT0egjcjk7gNEwYb/IGUVMbHIxmyc7rXvP/ju
-         5YpiG66ya+lrQwzp/2X4r/USBF2Xxkn5nYTwZteODtbSYNeKDwex4LiC/CMuVeHtcui/
-         dTv7Ee789uT/X/ekZXgf2EBCsb3cXImFuV0HU=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=zo+uooqajJkVIc//qGbLq5a2/tbMq8FCHMG3Hgw2MPg=;
-        b=MxEfdPcuQLi47yrCS7MR1882CoEnzVwiQ96YiFWF1sLXRxDVPCXe7haHV9oz/bQ+LV
-         ewanrnLydcMu8Z5KvBueaG3R6+C5YyzrIEsqcrAEHxUhExnY1ycm+rQwKjaYBovCv6Qn
-         Yco7Tp4bK3RX4/KK58kpRigPyxYez4H+junFXSwyPz7BXoZ58Ag6v0ETDKpEVY/BKXvb
-         UsJKivQGW5DveDo/8thkWAjUlYqLS2mxtWZ/B6wSsigtE3lPpujhqemhDXL5fGeYxh5R
-         ID5Vjyvfa5rIk56r5IaFNhQl1jYSeegZJC1TpBIU3fcWhXW9T5QWNeKhd/qrpy5qYOqE
-         085w==
-X-Gm-Message-State: AOAM532r3gmF1SLlfbLPD4dQUKyfX1jJhPz54OC5I+wblLp4cnxNz91h
-        YmT9oBIlHgNmkAAZvwbW0DMHEg==
-X-Google-Smtp-Source: ABdhPJzFCUoLGe/zdRGGV12Za77C+HHWpBzk9SrAUn38P4fp0LVimmMsGeqXex9rQxO/w3gPNiIR5A==
-X-Received: by 2002:a17:902:be0e:b029:dc:138c:b030 with SMTP id r14-20020a170902be0eb02900dc138cb030mr6509956pls.55.1609976328463;
-        Wed, 06 Jan 2021 15:38:48 -0800 (PST)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id t25sm3851890pgv.30.2021.01.06.15.38.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 06 Jan 2021 15:38:47 -0800 (PST)
-Date:   Wed, 6 Jan 2021 15:38:46 -0800
-From:   Kees Cook <keescook@chromium.org>
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     Luis Chamberlain <mcgrof@kernel.org>,
-        Iurii Zaikin <yzaikin@google.com>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] sysctl: use min() helper for namecmp()
-Message-ID: <202101061538.AEF4E09D@keescook>
-References: <20210104083221.21184-1-masahiroy@kernel.org>
+        id S1727724AbhAFXlV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Jan 2021 18:41:21 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51246 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726918AbhAFXlU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 Jan 2021 18:41:20 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2757C2333B
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Jan 2021 23:40:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1609976440;
+        bh=XOiJj+aIAGnC0jZGbQLlZOvHWe5wTw0/+J5P7xkZwX0=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=UAMnwaB6o+JwXiwksrAmeW979rrIGuvZgv+5DUP5gzQwPWBpt8/WmlXeImtv4P/Zn
+         +wlNalsHsflksplnLfUtlC3uo2dFupvhMLuhMVVNl3byrutCcg0UyeNYb7N1PdDbm/
+         o7b2Od2QDID6R5fkpvCox+7xF6MGW/eFZrQ9GcSVs/r+9fUny0yLTkqiYNqxbZ+ABt
+         oItasfWLRftcA1wbuEhwXXinW7gOssFfRkKZf9+MmKCFb1kN/ENuDm7pSACYg6nMgq
+         fg2ejhm+VrxtAZ/wjk5x3ClI7K07KYsnQCWNgyHVk69Z7ueOkzSoOxhw3EHHvlmrJV
+         tP71J9gU69k4g==
+Received: by mail-oo1-f45.google.com with SMTP id j21so1162470oou.11
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Jan 2021 15:40:40 -0800 (PST)
+X-Gm-Message-State: AOAM531sfxOQ48t9hO8p/LQTvmL1PsEb+SYulZkAQCAKjvtQWkTlih5R
+        Eibe6GwVgTESHbkx77CRMgPbCwuLqHx3LoPBkSA=
+X-Google-Smtp-Source: ABdhPJzYP6hnb9oZ6wNpyv1Ub1x5f7idyWyyO81h4gsobHr4M5F25gNOrLSWibc5FTpJRLu/sPOeUdaeyBQi+Do+3C4=
+X-Received: by 2002:a4a:9c01:: with SMTP id y1mr4394668ooj.15.1609976439445;
+ Wed, 06 Jan 2021 15:40:39 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210104083221.21184-1-masahiroy@kernel.org>
+References: <20201230154749.746641-1-arnd@kernel.org> <202101061350.913E1FDF6@keescook>
+ <CAK8P3a1tSaUE2uzb2JbQ1f7LWmkiHQtSxzJHmfa=fqT3fNXOPA@mail.gmail.com> <202101061516.F0EA5F0@keescook>
+In-Reply-To: <202101061516.F0EA5F0@keescook>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Thu, 7 Jan 2021 00:40:23 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a1KUr-zOvxc0hN0yDC7r+HTM_FGrr5GkuSTTNchgQ0PzA@mail.gmail.com>
+Message-ID: <CAK8P3a1KUr-zOvxc0hN0yDC7r+HTM_FGrr5GkuSTTNchgQ0PzA@mail.gmail.com>
+Subject: Re: [PATCH] ubsan: disable unsigned-integer-overflow sanitizer with clang
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Marco Elver <elver@google.com>,
+        George Popescu <georgepope@android.com>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 04, 2021 at 05:32:21PM +0900, Masahiro Yamada wrote:
-> Make it slightly readable by using min().
-> 
-> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+On Thu, Jan 7, 2021 at 12:17 AM Kees Cook <keescook@chromium.org> wrote:
+>
+> On Wed, Jan 06, 2021 at 11:12:18PM +0100, Arnd Bergmann wrote:
+> > On Wed, Jan 6, 2021 at 10:57 PM Kees Cook <keescook@chromium.org> wrote:
+> > > On Wed, Dec 30, 2020 at 04:47:35PM +0100, Arnd Bergmann wrote:
+> > > > diff --git a/lib/Kconfig.ubsan b/lib/Kconfig.ubsan
+> > > > index 8b635fd75fe4..e23873282ba7 100644
+> > > > --- a/lib/Kconfig.ubsan
+> > > > +++ b/lib/Kconfig.ubsan
+> > > > @@ -122,6 +122,8 @@ config UBSAN_SIGNED_OVERFLOW
+> > > >
+> > > >  config UBSAN_UNSIGNED_OVERFLOW
+> > > >       bool "Perform checking for unsigned arithmetic overflow"
+> > > > +     # clang hugely expands stack usage with -fsanitize=object-size
+> > > > +     depends on !CC_IS_CLANG
+> > > >       depends on $(cc-option,-fsanitize=unsigned-integer-overflow)
+> > >
+> > > Because of Clang implementation issues (see commit c637693b20da), this is
+> > > already "default n" (and not supported under GCC at all). IIUC, setting
+> > > this to "depends on !COMPILE_TEST" won't work for randconfigs, yes?
+> >
+> > Ah, I had not realized this is clang specific. Adding the !COMPILE_TEST
+> > dependency would hide it for me, which may be good enough for me.
+>
+> I thought COMPILE_TEST does not get set for randconfig?
 
-Acked-by: Kees Cook <keescook@chromium.org>
+It does on my kernel, though I never submitted that patch ;-)
 
--- 
-Kees Cook
+        Arnd
