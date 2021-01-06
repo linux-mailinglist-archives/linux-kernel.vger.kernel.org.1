@@ -2,114 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4ED382EB74E
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 02:03:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DEE12EB748
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 02:01:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726545AbhAFBCN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 20:02:13 -0500
-Received: from m43-15.mailgun.net ([69.72.43.15]:44799 "EHLO
-        m43-15.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726345AbhAFBCM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 20:02:12 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1609894912; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=W4gpPPjzOwyYpAHogznNbJBBPbiS4KCPfs+WcgOjgBg=; b=JGs/WE6QcRVEULbFS38B+8qC+49PIYj9xtPbPz3WDgPbAao7DOtEyFit4PcCDfV9OnKfA3DH
- tSAx6Y3uXPW8ON+1BnXZCroDOG/xqJPZhaHHUWtULYx8nzb5uXUlh2o/kJi7MNlJApSVDPGx
- yHVarnsIRDAcUiaw3DuJ0tzDi8E=
-X-Mailgun-Sending-Ip: 69.72.43.15
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n09.prod.us-west-2.postgun.com with SMTP id
- 5ff50bccf7aeb83bf1747d97 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 06 Jan 2021 01:01:00
- GMT
-Sender: sidgup=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 24474C43462; Wed,  6 Jan 2021 01:01:00 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-3.1 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.0
-Received: from [192.168.1.10] (cpe-75-83-25-192.socal.res.rr.com [75.83.25.192])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: sidgup)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id F09CCC433CA;
-        Wed,  6 Jan 2021 01:00:58 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org F09CCC433CA
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=sidgup@codeaurora.org
-Subject: Re: PROBLEM: Firmware loader fallback mechanism no longer works with
- sendfile
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     mcgrof@kernel.org, rafael@kernel.org, viro@zeniv.linux.org.uk,
-        linux-fsdevel@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "psodagud@codeaurora.org" <psodagud@codeaurora.org>
-References: <7e6f44b1-a0d2-d1d1-9c11-dcea163f8f03@codeaurora.org>
- <X/QJCgoLPhfECEmP@kroah.com>
-From:   Siddharth Gupta <sidgup@codeaurora.org>
-Message-ID: <180bdfaf-8c84-6946-b46f-3729d4eb17cc@codeaurora.org>
-Date:   Tue, 5 Jan 2021 17:00:58 -0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        id S1725894AbhAFBBn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 20:01:43 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56916 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725769AbhAFBBn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Jan 2021 20:01:43 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 775DB22838;
+        Wed,  6 Jan 2021 01:01:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1609894862;
+        bh=7dUnuK2c+aj+qWh2RUmU4X0GHD+i34O6MDU4lnS687E=;
+        h=Date:From:To:Cc:Subject:Reply-To:From;
+        b=aIsMUxF/kCc64adVEXOopyMJSMjnhCdh6b5mzQyKfQ/ZFaqHLlwG8Zb1uZmYI8zpJ
+         eTL3SbNJKyIHGkGdic9SUJlcI71XUol3SXbJkR0r611RarGR8Fe/agqAoB3fXjQyIg
+         YHbF3JrIk1w4MHkL3kvhnqS/rv2wlBplUIk4Vqh75z1E1RiwnQ0NiyUbQe6ERbceSi
+         ykCMnDokP8EnoNAMaHh18vt07pwt8ynEXLMSMkAhmrmUhJU0lBVdmCKmE3mLs6MN+d
+         KLRAT0tdmv3wXFxEvlAMI2v/nMx3BkiXOuQySVSsPaEFRZoOOpwSHBaJhTi9KI0/qb
+         6HDCCv+LtX3Ww==
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id 41FF035228C6; Tue,  5 Jan 2021 17:01:02 -0800 (PST)
+Date:   Tue, 5 Jan 2021 17:01:02 -0800
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     rcu@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
+        jiangshanlai@gmail.com, akpm@linux-foundation.org,
+        mathieu.desnoyers@efficios.com, josh@joshtriplett.org,
+        tglx@linutronix.de, peterz@infradead.org, rostedt@goodmis.org,
+        dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
+        oleg@redhat.com, joel@joelfernandes.org
+Subject: [PATCH tip/core/rcu 0/3] kfree_rcu() updates for v5.12
+Message-ID: <20210106010102.GA12737@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
 MIME-Version: 1.0
-In-Reply-To: <X/QJCgoLPhfECEmP@kroah.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hello!
 
-On 1/4/2021 10:36 PM, Greg KH wrote:
-> On Mon, Jan 04, 2021 at 02:43:45PM -0800, Siddharth Gupta wrote:
->> Hi all,
->>
->> With the introduction of the filesystem change "fs: don't allow splice
->> read/write without explicit ops"[1] the fallback mechanism of the firmware
->> loader[2] no longer works when using sendfile[3] from the userspace.
-> What userspace program are you using to load firmware?
-The userspace program is in the android userspace which listens to a 
-uevent from the firmware loader and then loads the firmware using 
-sendfile[1].
->   Are you not using the in-kernel firmware loader for some reason?
-We have certain non-standard firmware paths that should not be added to 
-the linux kernel, and the firmware_class.path only supports a single path.
->
->> Since the binary attributes don't support splice_{read,write} functions the
->> calls to splice_{read,write} used the default kernel_{read,write} functions.
->> With the above change this results in an -EINVAL return from
->> do_splice_from[4].
->>
->> This essentially means that sendfile will not work for any binary attribute
->> in the sysfs.
-> Have you tried fixing this with a patch much like what we did for the
-> proc files that needed this?  If not, can you?
-I am not aware of this fix, could you provide me a link for reference? I 
-will try it out.
->
->> [1]: https://github.com/torvalds/linux/commit/36e2c7421f02a22f71c9283e55fdb672a9eb58e7#diff-70c49af2ed5805fc1406ed6e6532d6a029ada1abd90cca6442711b9cecd4d523
->> [2]: https://github.com/torvalds/linux/blob/master/drivers/base/firmware_loader/main.c#L831
->> [3]: https://github.com/torvalds/linux/blob/master/fs/read_write.c#L1257
->> [4]: https://github.com/torvalds/linux/blob/master/fs/splice.c#L753
-> kernel development is on git.kernel.org, not github :)
-I use it because it is easier on the eyes when looking at diffs :D
-But I'll be sure to use git.kernel.org from now on if that is what is 
-preferred!
->
-> thanks,
->
-> greg k-h
-Thanks,
-Sid
+This series provides kfree_rcu() updates:
 
-[1]: 
-https://android.googlesource.com/platform/system/core/+/refs/heads/master/init/firmware_handler.cpp#55
+1.	Record kvfree_call_rcu() call stack for KASAN, courtesy of Zqiang.
 
+2.	Introduce kfree_rcu() single-argument macro, courtesy of
+	Uladzislau Rezki.
+
+3.	Eliminate the __kvfree_rcu() macro, courtesy of Uladzislau Rezki.
+
+						Thanx, Paul
+
+------------------------------------------------------------------------
+
+ include/linux/rcupdate.h |   40 ++++++++++++++++++----------------------
+ kernel/rcu/tree.c        |    1 +
+ 2 files changed, 19 insertions(+), 22 deletions(-)
