@@ -2,68 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7462B2EC41E
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 20:46:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ED1392EC422
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 20:47:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726752AbhAFTqC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Jan 2021 14:46:02 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:20619 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726090AbhAFTqB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Jan 2021 14:46:01 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1609962275;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=1lr4fQnCHk4FF9AJMacMIxp8d7Bz3v3LWs69ph+6fLo=;
-        b=A5q3mchSpuWwkUcL+CI4S7aM3tP+1ousobJ7qGLFaBbmYhqBmyfedaM4MEzE9a+A6u0KKJ
-        FhwsyFwwDwKQE8UzH7KrtznlfNLu92D0AAqZi7ZztP5k8N5VKs0vuug23GHlJIcOQWS8cM
-        Xlm6lwiClOkaG9rcGiuCuvf65ul7B2Y=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-101-sX2NYikEPwyWBe0XD4g2og-1; Wed, 06 Jan 2021 14:44:32 -0500
-X-MC-Unique: sX2NYikEPwyWBe0XD4g2og-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4D98910054FF;
-        Wed,  6 Jan 2021 19:44:30 +0000 (UTC)
-Received: from warthog.procyon.org.uk (ovpn-112-8.rdu2.redhat.com [10.10.112.8])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 4D54860BFA;
-        Wed,  6 Jan 2021 19:44:28 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-        Kingdom.
-        Registered in England and Wales under Company Registration No. 3798903
-From:   David Howells <dhowells@redhat.com>
-In-Reply-To: <f02bdada-355c-97cd-bc32-f84516ddd93f@redhat.com>
-References: <f02bdada-355c-97cd-bc32-f84516ddd93f@redhat.com> <548097.1609952225@warthog.procyon.org.uk> <c2cc898d-171a-25da-c565-48f57d407777@redhat.com> <20201229173916.1459499-1-trix@redhat.com> <259549.1609764646@warthog.procyon.org.uk> <675150.1609954812@warthog.procyon.org.uk>
-To:     Tom Rix <trix@redhat.com>
-Cc:     dhowells@redhat.com, davem@davemloft.net, kuba@kernel.org,
-        natechancellor@gmail.com, ndesaulniers@google.com,
-        linux-afs@lists.infradead.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com
-Subject: Re: [PATCH] rxrpc: fix handling of an unsupported token type in rxrpc_read()
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <697466.1609962267.1@warthog.procyon.org.uk>
-Date:   Wed, 06 Jan 2021 19:44:27 +0000
-Message-ID: <697467.1609962267@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+        id S1726948AbhAFTrC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Jan 2021 14:47:02 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45758 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726494AbhAFTrC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 Jan 2021 14:47:02 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4B00123131;
+        Wed,  6 Jan 2021 19:46:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+        s=korg; t=1609962381;
+        bh=mTkPqvalyZGT+HNCgL8RBG8IvEJHEcO8w9JgqACOlqk=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=lOdJhUQafw8lhnLzWFVEy8xjLN97baNoa8CetSHuHg+wkKl6LbziGFBbfNl4FMqrT
+         vu5eHaNGbgR9wcM8KVJ9C+TCtUEwuJsYX5dc4fKzyXkG7bhaR92EnBWv8NUH6C8bDy
+         BjS+g2qj8JhLYGOuRb7YWqbfl48p7+SuMShXOmcg=
+Date:   Wed, 6 Jan 2021 11:46:20 -0800
+From:   Andrew Morton <akpm@linux-foundation.org>
+To:     Hugh Dickins <hughd@google.com>
+Cc:     Alex Shi <alex.shi@linux.alibaba.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Michal Hocko <mhocko@suse.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mm/mmap: replace if (cond) BUG() with BUG_ON()
+Message-Id: <20210106114620.5c221690f3a9cad7afcc3077@linux-foundation.org>
+In-Reply-To: <alpine.LSU.2.11.2101051919130.1361@eggly.anvils>
+References: <1607743586-80303-1-git-send-email-alex.shi@linux.alibaba.com>
+        <1607743586-80303-2-git-send-email-alex.shi@linux.alibaba.com>
+        <e50574aa-87b8-8ddf-2235-ef98e22bcb7d@linux.alibaba.com>
+        <alpine.LSU.2.11.2101051919130.1361@eggly.anvils>
+X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Tom Rix <trix@redhat.com> wrote:
+On Tue, 5 Jan 2021 20:28:27 -0800 (PST) Hugh Dickins <hughd@google.com> wrote:
 
-> These two loops iterate over the same data, i believe returning here is all
-> that is needed.
+> Alex, please consider why the authors of these lines (whom you
+> did not Cc) chose to write them without BUG_ON(): it has always
+> been preferred practice to use BUG_ON() on predicates, but not on
+> functionally effective statements (sorry, I've forgotten the proper
+> term: I'd say statements with side-effects, but here they are not
+> just side-effects: they are their main purpose).
+> 
+> We prefer not to hide those away inside BUG macros
 
-But if the first loop is made to support a new type, but the second loop is
-missed, it will then likely oops.  Besides, the compiler should optimise both
-paths together.
+Should we change that?  I find BUG_ON(something_which_shouldnt_fail())
+to be quite natural and readable.
 
-David
+As are things like the existing
+
+BUG_ON(mmap_read_trylock(mm));
+BUG_ON(wb_domain_init(&global_wb_domain, GFP_KERNEL));
+
+etc.
+
+
+No strong opinion here, but is current mostly-practice really
+useful?
 
