@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 876152EC251
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 18:34:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F1D022EC254
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 18:34:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728004AbhAFRcr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Jan 2021 12:32:47 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48878 "EHLO mail.kernel.org"
+        id S1728142AbhAFRdR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Jan 2021 12:33:17 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48880 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727869AbhAFRcn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1727873AbhAFRcn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 6 Jan 2021 12:32:43 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0D9B02332A;
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3868123331;
         Wed,  6 Jan 2021 17:31:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1609954283;
-        bh=QVfF3D1YZcAxjQWQdTPvzaC6hZRrOG885qV2lsTdNm0=;
+        bh=fPZWiFc5cSA6GJO1zjcKXRS/t+VjaVwkXGhJxQIXZAI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=R1uuy0qslxXctH8MdWa3YuqqpGd6R2Bno4FVmztKjdHXnei2y5AcSUVDVGzMoMPqq
-         9dqVQjwLp6TZhynHk0rtI0S2TqdGmRgPKNaQicBZNKxIf7DVOLjcs/Hsb7eFN0Ou89
-         GCDfTM10Gn2IR5UFJG2zRD9nT4ebIJLcFyEvd+SqyA3TSjzx03zKhDCbMTzXaeY/ur
-         hw9KjVl4zdDuboSbxZMyaBSE8HeAdwBCFm+tTQdAQzmhK9F1kf6EnfKaNq7mFWuV61
-         CqItcny2uZ82GjAjU5iy9pMw8pfk3cBymrR9xsFfJxldpB/bWZR7gpiL3ngESBs/pt
-         I7cvVyco8Er7A==
+        b=rJDU1wVNR/Mp2jzXUZUobuYVqr44ZqTmP5xxfFUxyL7dZdiE9YNojET4vzwzhffc6
+         3E35iNSsj3a/LbF2wJ7uIMWkcGNqQi307diTOLbgX63kW5baMkob1q8+obK72+bwWh
+         rUR644vrd98V2MFDP7/l1v/Jawj18Dva6cUMlBrTuV61Z0CjpjjiDINSVe0wY5HaPv
+         V16UZBSQOkV8GY1TldKj+iWtV5ScfzKKVjj2immGPAJiLt3AA00tpXW0jsJ0gq17Bk
+         gg+mP5OH/JlN5CqWsx9TseExi+xkoJG+x/7JR3QKH/Y9muHBCiOugGsy94XY5zi0lq
+         ckRD7jt6pbhKQ==
 From:   paulmck@kernel.org
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -32,9 +32,9 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
         oleg@redhat.com, joel@joelfernandes.org,
         "Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH tip/core/rcu 12/18] torture: Make torture.sh throttle VERBOSE_TOROUT_*() for refscale
-Date:   Wed,  6 Jan 2021 09:31:13 -0800
-Message-Id: <20210106173119.23159-12-paulmck@kernel.org>
+Subject: [PATCH tip/core/rcu 13/18] torture: Make torture.sh refuse to do zero-length runs
+Date:   Wed,  6 Jan 2021 09:31:14 -0800
+Message-Id: <20210106173119.23159-13-paulmck@kernel.org>
 X-Mailer: git-send-email 2.9.5
 In-Reply-To: <20210106173056.GA23035@paulmck-ThinkPad-P72>
 References: <20210106173056.GA23035@paulmck-ThinkPad-P72>
@@ -44,27 +44,55 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: "Paul E. McKenney" <paulmck@kernel.org>
 
-This commit causes torture.sh to use the torture.verbose_sleep_frequency
-kernel boot parameter to throttle verbose refscale output on large systems.
+This commit causes torture.sh to check for zero-length runs and to take
+the cowardly option of refusing to run them, logging its cowardice for
+later inspection.
 
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- tools/testing/selftests/rcutorture/bin/torture.sh | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ tools/testing/selftests/rcutorture/bin/torture.sh | 25 +++++++++++++++++------
+ 1 file changed, 19 insertions(+), 6 deletions(-)
 
 diff --git a/tools/testing/selftests/rcutorture/bin/torture.sh b/tools/testing/selftests/rcutorture/bin/torture.sh
-index e2c97f9..f2f9140 100755
+index f2f9140..43ef2c0 100755
 --- a/tools/testing/selftests/rcutorture/bin/torture.sh
 +++ b/tools/testing/selftests/rcutorture/bin/torture.sh
-@@ -282,7 +282,7 @@ fi
- for prim in $primlist
- do
- 	torture_bootargs="refscale.scale_type="$prim" refscale.nreaders=$HALF_ALLOTED_CPUS refscale.loops=10000 refscale.holdoff=20 torture.disable_onoff_at_boot"
--	torture_set "refscale-$prim" tools/testing/selftests/rcutorture/bin/kvm.sh --torture refscale --allcpus --duration 5 --kconfig "CONFIG_NR_CPUS=$HALF_ALLOTED_CPUS" --bootargs "verbose_batched=$VERBOSE_BATCH_CPUS" --trust-make
-+	torture_set "refscale-$prim" tools/testing/selftests/rcutorture/bin/kvm.sh --torture refscale --allcpus --duration 5 --kconfig "CONFIG_NR_CPUS=$HALF_ALLOTED_CPUS" --bootargs "verbose_batched=$VERBOSE_BATCH_CPUS torture.verbose_sleep_frequency=8 torture.verbose_sleep_duration=$VERBOSE_BATCH_CPUS" --trust-make
+@@ -151,16 +151,29 @@ do
+ 	shift
  done
  
- if test "$do_rcuscale" = yes
+-duration_rcutorture=$((duration_base*duration_rcutorture_frac/10))
+-# Need to sum remaining weights, and if duration weights to zero,
+-# set do_no_rcutorture. @@@
+-duration_locktorture=$((duration_base*duration_locktorture_frac/10))
+-duration_scftorture=$((duration_base*duration_scftorture_frac/10))
+-
+ T=/tmp/torture.sh.$$
+ trap 'rm -rf $T' 0 2
+ mkdir $T
+ 
++duration_rcutorture=$((duration_base*duration_rcutorture_frac/10))
++if test "$duration_rcutorture" -eq 0
++then
++	echo " --- Zero time for rcutorture, disabling" | tee -a $T/log
++	do_rcutorture=no
++fi
++duration_locktorture=$((duration_base*duration_locktorture_frac/10))
++if test "$duration_locktorture" -eq 0
++then
++	echo " --- Zero time for locktorture, disabling" | tee -a $T/log
++	do_locktorture=no
++fi
++duration_scftorture=$((duration_base*duration_scftorture_frac/10))
++if test "$duration_scftorture" -eq 0
++then
++	echo " --- Zero time for scftorture, disabling" | tee -a $T/log
++	do_scftorture=no
++fi
++
+ touch $T/failures
+ touch $T/successes
+ 
 -- 
 2.9.5
 
