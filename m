@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 494272EB73D
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 01:59:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B2382EB741
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 01:59:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726076AbhAFA6d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 19:58:33 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55942 "EHLO mail.kernel.org"
+        id S1726505AbhAFA6g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 19:58:36 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56034 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725966AbhAFA6T (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 19:58:19 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6EC36230FB;
+        id S1725966AbhAFA6f (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Jan 2021 19:58:35 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9CA3C230FC;
         Wed,  6 Jan 2021 00:57:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1609894658;
-        bh=c8pNqvTvHY/gLSnjtC+oe158U/JTDPDcYcVU+r3qDeM=;
+        bh=sx83u8RvEdCbrS0T2cs6kQ176hCXWXFL8UXSbCZYJec=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=hgq/eAYXS2IvaJxQ98dgxfjUxnG59RPFCM1udzuBHdMUrEj1b/NT7BSeapxHs2xSM
-         M3OVJizQTWmvd5W75YGF7q1KkTrw1WJtHrMoxVlCZ20mxdA1cPc1ZBx4zs9XwXVC9C
-         Tee1bM+5CBhqCxUx40QKckJdV0OpB+P/zZ6MH+rWjGdvtVEP44Oak8fbstgNf99Q3N
-         l9uqtvsb1O3E6ormJqlnm8I8Pf8gzPhPy86wHGlIAoNcWhS7IzxhZoFwRC2RpGQYGQ
-         TY/TFxfqw8gnmE7B96Vvg5SnWwujfbIIaZb4zymyd/pnbq7k9TI+6LoBLLLxXK0+si
-         UqYKPtlVuzycQ==
+        b=G42jUYonegEgizmP8RBkUj2NTPQzvwYOK6/uiqK5TR5lzWwE6RdsFHxJ8xHBuq8QF
+         qNoCHeHzjXpmSb5kxJuUEELEuQIG74ANVWO6V0GWX+Kbb5un9J88cNNbEsAhWsc6ej
+         yXYP1VM8y4Ggq6vygjDvk5IL+N5hPqxv/y/sTLij6MrkquMsAzsI3IeXdkv39ovaRl
+         UEEbVG3EwMqxeNfG0A+5HQYEmvE5MQCJsCzFS/wqZje8v+xziv6fIiQvhEK3JL65S5
+         1NAgWD8HsI0L9diMdNBsbHYbQ/RDpSuBXtApbFEeLvzRzImmSMVMjuwSEW1n6UC/0g
+         DuuF4fpzn8+gQ==
 From:   paulmck@kernel.org
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -31,10 +31,11 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         tglx@linutronix.de, peterz@infradead.org, rostedt@goodmis.org,
         dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
         oleg@redhat.com, joel@joelfernandes.org,
-        "Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH tip/core/rcu 4/6] rcu: Add lockdep_assert_irqs_disabled() to raw_spin_unlock_rcu_node() macros
-Date:   Tue,  5 Jan 2021 16:57:34 -0800
-Message-Id: <20210106005736.12613-4-paulmck@kernel.org>
+        "Uladzislau Rezki (Sony)" <urezki@gmail.com>,
+        "Paul E . McKenney" <paulmck@kernel.org>
+Subject: [PATCH tip/core/rcu 5/6] rcu-tasks: Add RCU-tasks self tests
+Date:   Tue,  5 Jan 2021 16:57:35 -0800
+Message-Id: <20210106005736.12613-5-paulmck@kernel.org>
 X-Mailer: git-send-email 2.9.5
 In-Reply-To: <20210106005713.GA12492@paulmck-ThinkPad-P72>
 References: <20210106005713.GA12492@paulmck-ThinkPad-P72>
@@ -42,62 +43,119 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Paul E. McKenney" <paulmck@kernel.org>
+From: "Uladzislau Rezki (Sony)" <urezki@gmail.com>
 
-This commit adds a lockdep_assert_irqs_disabled() call to the
-helper macros that release the rcu_node structure's ->lock, namely
-to raw_spin_unlock_rcu_node(), raw_spin_unlock_irq_rcu_node() and
-raw_spin_unlock_irqrestore_rcu_node().  The point of this is to help track
-down a situation where lockdep appears to be insisting that interrupts
-are enabled while holding an rcu_node structure's ->lock.
+This commit adds self tests for early-boot use of RCU-tasks grace periods.
+It tests all three variants (Rude, Tasks, and Tasks Trace) and covers
+both synchronous (e.g., synchronize_rcu_tasks()) and asynchronous (e.g.,
+call_rcu_tasks()) grace-period APIs.
 
-Link: https://lore.kernel.org/lkml/20201111133813.GA81547@elver.google.com/
+Self-tests are run only in kernels built with CONFIG_PROVE_RCU=y.
+
+Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
+[ paulmck: Handle CONFIG_PROVE_RCU=n and identify test cases' callbacks. ]
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/rcu/rcu.h | 16 +++++++++++++---
- 1 file changed, 13 insertions(+), 3 deletions(-)
+ kernel/rcu/tasks.h | 79 ++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 79 insertions(+)
 
-diff --git a/kernel/rcu/rcu.h b/kernel/rcu/rcu.h
-index e01cba5..839f5be 100644
---- a/kernel/rcu/rcu.h
-+++ b/kernel/rcu/rcu.h
-@@ -378,7 +378,11 @@ do {									\
- 	smp_mb__after_unlock_lock();					\
- } while (0)
+diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
+index 73bbe79..74767d3 100644
+--- a/kernel/rcu/tasks.h
++++ b/kernel/rcu/tasks.h
+@@ -1231,6 +1231,82 @@ void show_rcu_tasks_gp_kthreads(void)
+ }
+ #endif /* #ifndef CONFIG_TINY_RCU */
  
--#define raw_spin_unlock_rcu_node(p) raw_spin_unlock(&ACCESS_PRIVATE(p, lock))
-+#define raw_spin_unlock_rcu_node(p)					\
-+do {									\
-+	lockdep_assert_irqs_disabled();					\
-+	raw_spin_unlock(&ACCESS_PRIVATE(p, lock));			\
-+} while (0)
++#ifdef CONFIG_PROVE_RCU
++struct rcu_tasks_test_desc {
++	struct rcu_head rh;
++	const char *name;
++	bool notrun;
++};
++
++static struct rcu_tasks_test_desc tests[] = {
++	{
++		.name = "call_rcu_tasks()",
++		/* If not defined, the test is skipped. */
++		.notrun = !IS_ENABLED(CONFIG_TASKS_RCU),
++	},
++	{
++		.name = "call_rcu_tasks_rude()",
++		/* If not defined, the test is skipped. */
++		.notrun = !IS_ENABLED(CONFIG_TASKS_RUDE_RCU),
++	},
++	{
++		.name = "call_rcu_tasks_trace()",
++		/* If not defined, the test is skipped. */
++		.notrun = !IS_ENABLED(CONFIG_TASKS_TRACE_RCU)
++	}
++};
++
++static void test_rcu_tasks_callback(struct rcu_head *rhp)
++{
++	struct rcu_tasks_test_desc *rttd =
++		container_of(rhp, struct rcu_tasks_test_desc, rh);
++
++	pr_info("Callback from %s invoked.\n", rttd->name);
++
++	rttd->notrun = true;
++}
++
++static void rcu_tasks_initiate_self_tests(void)
++{
++	pr_info("Running RCU-tasks wait API self tests\n");
++#ifdef CONFIG_TASKS_RCU
++	synchronize_rcu_tasks();
++	call_rcu_tasks(&tests[0].rh, test_rcu_tasks_callback);
++#endif
++
++#ifdef CONFIG_TASKS_RUDE_RCU
++	synchronize_rcu_tasks_rude();
++	call_rcu_tasks_rude(&tests[1].rh, test_rcu_tasks_callback);
++#endif
++
++#ifdef CONFIG_TASKS_TRACE_RCU
++	synchronize_rcu_tasks_trace();
++	call_rcu_tasks_trace(&tests[2].rh, test_rcu_tasks_callback);
++#endif
++}
++
++static int rcu_tasks_verify_self_tests(void)
++{
++	int ret = 0;
++	int i;
++
++	for (i = 0; i < ARRAY_SIZE(tests); i++) {
++		if (!tests[i].notrun) {		// still hanging.
++			pr_err("%s has been failed.\n", tests[i].name);
++			ret = -1;
++		}
++	}
++
++	if (ret)
++		WARN_ON(1);
++
++	return ret;
++}
++late_initcall(rcu_tasks_verify_self_tests);
++#else /* #ifdef CONFIG_PROVE_RCU */
++static void rcu_tasks_initiate_self_tests(void) { }
++#endif /* #else #ifdef CONFIG_PROVE_RCU */
++
+ void __init rcu_init_tasks_generic(void)
+ {
+ #ifdef CONFIG_TASKS_RCU
+@@ -1244,6 +1320,9 @@ void __init rcu_init_tasks_generic(void)
+ #ifdef CONFIG_TASKS_TRACE_RCU
+ 	rcu_spawn_tasks_trace_kthread();
+ #endif
++
++	// Run the self-tests.
++	rcu_tasks_initiate_self_tests();
+ }
  
- #define raw_spin_lock_irq_rcu_node(p)					\
- do {									\
-@@ -387,7 +391,10 @@ do {									\
- } while (0)
- 
- #define raw_spin_unlock_irq_rcu_node(p)					\
--	raw_spin_unlock_irq(&ACCESS_PRIVATE(p, lock))
-+do {									\
-+	lockdep_assert_irqs_disabled();					\
-+	raw_spin_unlock_irq(&ACCESS_PRIVATE(p, lock));			\
-+} while (0)
- 
- #define raw_spin_lock_irqsave_rcu_node(p, flags)			\
- do {									\
-@@ -396,7 +403,10 @@ do {									\
- } while (0)
- 
- #define raw_spin_unlock_irqrestore_rcu_node(p, flags)			\
--	raw_spin_unlock_irqrestore(&ACCESS_PRIVATE(p, lock), flags)
-+do {									\
-+	lockdep_assert_irqs_disabled();					\
-+	raw_spin_unlock_irqrestore(&ACCESS_PRIVATE(p, lock), flags);	\
-+} while (0)
- 
- #define raw_spin_trylock_rcu_node(p)					\
- ({									\
+ #else /* #ifdef CONFIG_TASKS_RCU_GENERIC */
 -- 
 2.9.5
 
