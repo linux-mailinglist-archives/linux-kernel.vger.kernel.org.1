@@ -2,91 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A6B62EBCDD
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 11:58:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F07D2EBCDB
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 11:58:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727037AbhAFK5y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Jan 2021 05:57:54 -0500
-Received: from spam.zju.edu.cn ([61.164.42.155]:37672 "EHLO zju.edu.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726311AbhAFK5x (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Jan 2021 05:57:53 -0500
-Received: by ajax-webmail-mail-app3 (Coremail) ; Wed, 6 Jan 2021 18:56:23
- +0800 (GMT+08:00)
-X-Originating-IP: [10.192.85.18]
-Date:   Wed, 6 Jan 2021 18:56:23 +0800 (GMT+08:00)
-X-CM-HeaderCharset: UTF-8
-From:   dinghao.liu@zju.edu.cn
-To:     "Jakub Kicinski" <kuba@kernel.org>
-Cc:     "Konstantin Ryabitsev" <konstantin@linuxfoundation.org>,
-        "Florian Fainelli" <f.fainelli@gmail.com>,
-        "Andrew Lunn" <andrew@lunn.ch>, kjlu@umn.edu,
-        "David S. Miller" <davem@davemloft.net>,
-        "Jesse Brandeburg" <jesse.brandeburg@intel.com>,
-        "Arnd Bergmann" <arnd@arndb.de>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: Re: [PATCH] net: ethernet: Fix memleak in ethoc_probe
-X-Priority: 3
-X-Mailer: Coremail Webmail Server Version XT5.0.13 build 20200917(3e19599d)
- Copyright (c) 2002-2021 www.mailtech.cn zju.edu.cn
-In-Reply-To: <20201230133618.7c242856@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-References: <20201223153304.GD3198262@lunn.ch>
- <20201223123218.1cf7d9cb@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <20201223210044.GA3253993@lunn.ch>
- <20201223131149.15fff8d2@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <680850a9-8ab0-4672-498e-6dc740720da3@gmail.com>
- <20201223174146.37e62326@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <20201224180631.l4zieher54ncqvwl@chatter.i7.local>
- <fc7be127-648c-6b09-6f00-3542e0388197@gmail.com>
- <20201228202302.afkxtco27j4ahh6d@chatter.i7.local>
- <08e2b663-c144-d1bb-3f90-5e4ef240d14b@gmail.com>
- <20201228211417.m5gdnqexjzgt4ix6@chatter.i7.local>
- <20201230133618.7c242856@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset=UTF-8
+        id S1726934AbhAFK5k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Jan 2021 05:57:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52214 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726421AbhAFK5j (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 Jan 2021 05:57:39 -0500
+Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FE13C06134C
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Jan 2021 02:56:59 -0800 (PST)
+Received: by mail-pj1-x1031.google.com with SMTP id l23so1400101pjg.1
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Jan 2021 02:56:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=WPiIqyne/u2Qz7AT5xYGckeWrlA53eIMGFnUpQY9JS8=;
+        b=iLjpm8js4Re0AdUQSF0wkcd9zweF7RDqc4Xkhi+SSknrlPp3zzxJ6klxXq13VLfAyE
+         dJ3mzAle8o6bTHjvNFv/jmSRzha2tyYoQ3PFcrb/o4ZxZv94JwcrLMG9KQeLRswcWYOt
+         ISgWyKUZVBVK0XjlXkEkZzBQh9YpBQ7c3pALVo5iI8kTUq9MPZUseikFB4uxqMPYgW2u
+         l66ZxyBhgz94KiNm0QmQZJJ0e5WIiq6zQLZyo45htXepyIW6nLWpLADNr9yQTkTTa1FG
+         MShvhlrWeIMotPafAHaPUUs63Zsxx05N0g+cRzoOTJCybMKvO+UiUsUu+Oqu473GiLW4
+         kCVw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=WPiIqyne/u2Qz7AT5xYGckeWrlA53eIMGFnUpQY9JS8=;
+        b=TD3Ac0xlAUm/DQU+z3AMmhG4eEAfg+WOaq8Wy5gnbnyMj+MdN/L+2UgxD19bGk1DnI
+         KizC1BBjxqEFumhQw2wquvwP4YF9lNVlKnuF12ORZslebJBTgF1HHtKG6wXzy29NLPWx
+         DfC483/pNAC2q8wjaLK8LzTRdz1Wy5i1dybBWM9/GKnYfgkCJ9wFDZXyvjwB3vdIxRB8
+         4L+0uupcukqIS1e23yLXSY5CtmLnCJyoY14D+YbXLtPoaO4pu0Co+PdZYP8xN2dlXNqE
+         t9Ybe5qnzUAgHrW73/TZVDteVuOFemmxsqy0Fry8s4OEx+lN5MkyYnqAeGGZ3ZNW7NUE
+         dl5w==
+X-Gm-Message-State: AOAM531fmvWxoW4TA4LLf+KdnktE/PZOd526qBYRnhSDhnTNNE4BTo07
+        a3dNM+jxQTPxbMy35OgHomAc/7hgDDBVZg==
+X-Google-Smtp-Source: ABdhPJzweOgvF+qbyLNlM34M3Ns1C7KJzu6XTJ/enIHxwL14K03QnQGLNhhRbOUTC9omp3gXq6BVeg==
+X-Received: by 2002:a17:90a:46c2:: with SMTP id x2mr3791246pjg.15.1609930618898;
+        Wed, 06 Jan 2021 02:56:58 -0800 (PST)
+Received: from masabert (oki-109-236-4-100.jptransit.net. [109.236.4.100])
+        by smtp.gmail.com with ESMTPSA id 123sm2408449pgf.38.2021.01.06.02.56.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 06 Jan 2021 02:56:58 -0800 (PST)
+Received: by masabert (Postfix, from userid 1000)
+        id E79A3236036D; Wed,  6 Jan 2021 19:56:54 +0900 (JST)
+From:   Masanari Iida <standby24x7@gmail.com>
+To:     linusw@kernel.org, kaloz@openwrt.org, khalasa@piap.pl,
+        linux@armlinux.org.uk, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, rdunlap@infradead.org
+Cc:     Masanari Iida <standby24x7@gmail.com>
+Subject: [PATCH] ARM: ixp4xx: Fix typos in Kconfig
+Date:   Wed,  6 Jan 2021 19:56:52 +0900
+Message-Id: <20210106105652.240472-1-standby24x7@gmail.com>
+X-Mailer: git-send-email 2.25.0
 MIME-Version: 1.0
-Message-ID: <328f073a.222d7.176d7572f29.Coremail.dinghao.liu@zju.edu.cn>
-X-Coremail-Locale: zh_CN
-X-CM-TRANSID: cC_KCgDnHghXl_VfGccVAA--.5915W
-X-CM-SenderInfo: qrrzjiaqtzq6lmxovvfxof0/1tbiAgoRBlZdtR3nOQAAsi
-X-Coremail-Antispam: 1Ur529EdanIXcx71UUUUU7IcSsGvfJ3iIAIbVAYjsxI4VWxJw
-        CS07vEb4IE77IF4wCS07vE1I0E4x80FVAKz4kxMIAIbVAFxVCaYxvI4VCIwcAKzIAtYxBI
-        daVFxhVjvjDU=
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-PiBPbiBNb24sIDI4IERlYyAyMDIwIDE2OjE0OjE3IC0wNTAwIEtvbnN0YW50aW4gUnlhYml0c2V2
-IHdyb3RlOgo+ID4gT24gTW9uLCBEZWMgMjgsIDIwMjAgYXQgMDE6MDU6MjZQTSAtMDgwMCwgRmxv
-cmlhbiBGYWluZWxsaSB3cm90ZToKPiA+ID4gT24gMTIvMjgvMjAyMCAxMjoyMyBQTSwgS29uc3Rh
-bnRpbiBSeWFiaXRzZXYgd3JvdGU6ICAKPiA+ID4gPiBPbiBUaHUsIERlYyAyNCwgMjAyMCBhdCAw
-MTo1Nzo0MFBNIC0wODAwLCBGbG9yaWFuIEZhaW5lbGxpIHdyb3RlOiAgCj4gPiA+ID4+Pj4gS29u
-c3RhbnRpbiwgd291bGQgeW91IGJlIHdpbGxpbmcgdG8gbW9kIHRoZSBrZXJuZWwub3JnIGluc3Rh
-bmNlIG9mCj4gPiA+ID4+Pj4gcGF0Y2h3b3JrIHRvIHBvcHVsYXRlIEZpeGVzIHRhZ3MgaW4gdGhl
-IGdlbmVyYXRlZCBtYm94ZXM/ICAKPiA+ID4gPj4+Cj4gPiA+ID4+PiBJJ2QgcmVhbGx5IHJhdGhl
-ciBub3QgLS0gd2UgdHJ5IG5vdCB0byBkaXZlcmdlIGZyb20gcHJvamVjdCB1cHN0cmVhbSBpZiBh
-dCBhbGwKPiA+ID4gPj4+IHBvc3NpYmxlLCBhcyB0aGlzIGRyYW1hdGljYWxseSBjb21wbGljYXRl
-cyB1cGdyYWRlcy4gIAo+ID4gPiA+Pgo+ID4gPiA+PiBXZWxsIHRoYXQgaXMgcmVhbGx5IHVuZm9y
-dHVuYXRlIHRoZW4gYmVjYXVzZSB0aGUgTGludXggZGV2ZWxvcGVyCj4gPiA+ID4+IGNvbW11bml0
-eSBzZXR0bGVkIG9uIHVzaW5nIHRoZSBGaXhlczogdGFnIGZvciB5ZWFycyBub3cgYW5kIGhhdmlu
-Zwo+ID4gPiA+PiBwYXRjaHdvcmsgYXV0b21hdGljYWxseSBhcHBlbmQgdGhvc2UgdGFncyB3b3Vs
-ZCBncmVhdGx5IGhlbHAgbWFpbnRhaW5lcnMuICAKPiA+ID4gPiAKPiA+ID4gPiBJIGFncmVlIC0t
-IGJ1dCB0aGlzIGlzIHNvbWV0aGluZyB0aGF0IG5lZWRzIHRvIGJlIGltcGxlbWVudGVkIHVwc3Ry
-ZWFtLgo+ID4gPiA+IFBpY2tpbmcgdXAgYSBvbmUtb2ZmIHBhdGNoIGp1c3QgZm9yIHBhdGNod29y
-ay5rZXJuZWwub3JnIGlzIG5vdCB0aGUgcmlnaHQgd2F5Cj4gPiA+ID4gdG8gZ28gYWJvdXQgdGhp
-cy4gIAo+ID4gPiAKPiA+ID4gWW91IHNob3VsZCBiZSBhYmxlIHRvIHR1bmUgdGhpcyBmcm9tIHRo
-ZSBwYXRjaHdvcmsgYWRtaW5pc3RyYXRpdmUKPiA+ID4gaW50ZXJmYWNlIGFuZCBhZGQgbmV3IHRh
-Z3MgdGhlcmUsIHdvdWxkIG5vdCB0aGF0IGJlIGFjY2VwdGFibGU/ICAKPiA+IAo+ID4gT2gsIG9v
-cHMsIEkgZ290IGNvbmZ1c2VkIGJ5IHRoZSBtZW50aW9uIG9mIGEgcmVqZWN0ZWQgdXBzdHJlYW0g
-cGF0Y2ggLS0gSQo+ID4gZGlkbid0IHJlYWxpemUgdGhhdCB0aGlzIGlzIGFscmVhZHkgcG9zc2li
-bGUgd2l0aCBhIGNvbmZpZ3VyYXRpb24gc2V0dGluZy4KPiA+IAo+ID4gU3VyZSwgSSBhZGRlZCBh
-IG1hdGNoIGZvciBeRml4ZXM6IC0tIGxldCBtZSBrbm93IGlmIGl0J3Mgbm90IGRvaW5nIHRoZSBy
-aWdodAo+ID4gdGhpbmcuCj4gCj4gSSB1c2VkIHRoaXMgb25lIGZvciBhIHRlc3Q6Cj4gCj4gaHR0
-cHM6Ly9wYXRjaHdvcmsua2VybmVsLm9yZy9wcm9qZWN0L25ldGRldmJwZi9wYXRjaC8xNjA5MzEy
-OTk0LTEyMTAzMi0xLWdpdC1zZW5kLWVtYWlsLWFiYWNpLWJ1Z2ZpeEBsaW51eC5hbGliYWJhLmNv
-bS8KPiAKPiBJJ20gbm90IGdldHRpbmcgdGhlIEZpeGVzIHRhZyB3aGVuIEkgZG93bmxvYWQgdGhl
-IG1ib3guCgpJdCBzZWVtcyB0aGF0IGF1dG9tYXRpY2FsbHkgZ2VuZXJhdGluZyBGaXhlcyB0YWdz
-IGlzIGEgaGFyZCB3b3JrLgpCb3RoIHBhdGNoZXMgYW5kIGJ1Z3MgY291bGQgYmUgY29tcGxleC4g
-U29tZXRpbWVzIGV2ZW4gaHVtYW4gY2Fubm90CmRldGVybWluZSB3aGljaCBjb21taXQgaW50cm9k
-dWNlZCBhIHRhcmdldCBidWcuCgpJcyB0aGlzIGFuIGFscmVhZHkgaW1wbGVtZW50ZWQgZnVuY3Rp
-b25hbGl0eT8KClJlZ2FyZHMsCkRpbmdoYW8g
+This patch fixes some spelling typos in Kconfig.
+
+Signed-off-by: Masanari Iida <standby24x7@gmail.com>
+---
+ arch/arm/mach-ixp4xx/Kconfig | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/arch/arm/mach-ixp4xx/Kconfig b/arch/arm/mach-ixp4xx/Kconfig
+index f7211b57b1e7..c4f719993190 100644
+--- a/arch/arm/mach-ixp4xx/Kconfig
++++ b/arch/arm/mach-ixp4xx/Kconfig
+@@ -7,7 +7,7 @@ comment "IXP4xx Platforms"
+ 
+ config MACH_IXP4XX_OF
+ 	bool
+-	prompt "Devce Tree IXP4xx boards"
++	prompt "Device Tree IXP4xx boards"
+ 	default y
+ 	select ARM_APPENDED_DTB # Old Redboot bootloaders deployed
+ 	select I2C
+@@ -115,7 +115,7 @@ config ARCH_PRPMC1100
+ 	bool "PrPMC1100"
+ 	help
+ 	  Say 'Y' here if you want your kernel to support the Motorola
+-	  PrPCM1100 Processor Mezanine Module. For more information on
++	  PrPMC1100 Processor Mezanine Module. For more information on
+ 	  this platform, see <file:Documentation/arm/ixp4xx.rst>.
+ 
+ config MACH_NAS100D
+-- 
+2.25.0
+
