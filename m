@@ -2,85 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 529C82EBB92
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 10:12:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F4D82EBB95
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 10:13:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726264AbhAFJMS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Jan 2021 04:12:18 -0500
-Received: from relay1-d.mail.gandi.net ([217.70.183.193]:16177 "EHLO
-        relay1-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725836AbhAFJMP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Jan 2021 04:12:15 -0500
-X-Originating-IP: 86.202.109.140
-Received: from localhost (lfbn-lyo-1-13-140.w86-202.abo.wanadoo.fr [86.202.109.140])
-        (Authenticated sender: alexandre.belloni@bootlin.com)
-        by relay1-d.mail.gandi.net (Postfix) with ESMTPSA id 49C3E240011;
-        Wed,  6 Jan 2021 09:11:32 +0000 (UTC)
-Date:   Wed, 6 Jan 2021 10:11:31 +0100
-From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
-To:     Vinod Koul <vkoul@kernel.org>
-Cc:     Ludovic Desroches <ludovic.desroches@microchip.com>,
-        Tudor Ambarus <tudor.ambarus@microchip.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Nicolas Ferre <nicolas.ferre@microchip.com>,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        dmaengine@vger.kernel.org
-Subject: Re: [PATCH] dmaengine: at_hdmac: remove platform data header
-Message-ID: <20210106091131.GL122615@piout.net>
-References: <20201228203022.2674133-1-alexandre.belloni@bootlin.com>
- <20210106062453.GR2771@vkoul-mobl>
+        id S1726511AbhAFJNu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Jan 2021 04:13:50 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49234 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726452AbhAFJNt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 Jan 2021 04:13:49 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A16952310E
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Jan 2021 09:13:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1609924388;
+        bh=89h6d3JjXgl+2ZZ2ym/iV3agjZBNxZHYntIUZYADwas=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=qAVGSrCcZj+K7cq/UdOHdhkBY3bf5f6ubRULXHtafdGpwROSDQ0NbB6QU8/i9YANm
+         Even0WrA3wsxhlE7eWo/eAnMVKdeCX00OqkhW/prqKx2usFwgVfy5jYEBe2KLKvlZJ
+         wjKDjglnunDvX7gsqydfQgYqpYQlQ3A00d2P5fThSoVZNAM6+YQz7+FNb+9XjRZ46z
+         iwKZ2zq3pEwFfFGraQav91zXKzNxD2izBmToZdxfki3B476OCVVMZJXWwoO5EoB0Pe
+         2yfQHG+nI+pDMNXHbbqCWfIw8LRloEyAspl6GwtvpELsU0ohMu7MwYJMYdCThjUQPD
+         apKDuGSseQBGw==
+Received: by mail-oi1-f179.google.com with SMTP id l200so2744960oig.9
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Jan 2021 01:13:08 -0800 (PST)
+X-Gm-Message-State: AOAM533eOmKCCLkqOUXWK7K5hqXfXdHQ83pVf1JRt53JOACcF9AysooV
+        i4IBBc2wgOFxMHOvBFcQnmEaR98kq55wTd9NiJk=
+X-Google-Smtp-Source: ABdhPJx1BlOj5SAB0Fjd7UWfiQqbPyA/bWxmrDDOqlNFmzMgbaQ3+2XhVXTp7fJKrBBRfbHPe7oet5ohPIS7DtADFjg=
+X-Received: by 2002:aca:44d:: with SMTP id 74mr2623761oie.4.1609924387851;
+ Wed, 06 Jan 2021 01:13:07 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210106062453.GR2771@vkoul-mobl>
+References: <20201230154749.746641-1-arnd@kernel.org> <CANpmjNNGmbgg_pFMC6X_6vZcj53jy7PsNyZAC88rOQC5zrOiFw@mail.gmail.com>
+ <20210104223336.GA2562866@ubuntu-m3-large-x86> <CAK8P3a3J1HGia3cPy+ArFQGzQWj1gy8bx7DdjnRFE=1+JmsrKw@mail.gmail.com>
+In-Reply-To: <CAK8P3a3J1HGia3cPy+ArFQGzQWj1gy8bx7DdjnRFE=1+JmsrKw@mail.gmail.com>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Wed, 6 Jan 2021 10:12:51 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a01iSXxc+05sTtSWvxSYX=g4J1vK-nfnn5oNkR8FO_OTQ@mail.gmail.com>
+Message-ID: <CAK8P3a01iSXxc+05sTtSWvxSYX=g4J1vK-nfnn5oNkR8FO_OTQ@mail.gmail.com>
+Subject: Re: [PATCH] ubsan: disable unsigned-integer-overflow sanitizer with clang
+To:     Nathan Chancellor <natechancellor@gmail.com>
+Cc:     Marco Elver <elver@google.com>, Kees Cook <keescook@chromium.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        George Popescu <georgepope@android.com>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        LKML <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 06/01/2021 11:54:53+0530, Vinod Koul wrote:
-> On 28-12-20, 21:30, Alexandre Belloni wrote:
-> > linux/platform_data/dma-atmel.h is only used by the at_hdmac driver. Move
-> > the CFG bits definitions back in at_hdmac_regs.h and the remaining
-> > definitions in the driver.
-> 
-> Applied, thanks...
-> 
-> >  /* Bitfields in CFG */
-> > -/* are in at_hdmac.h */
-> > +#define ATC_PER_MSB(h)	((0x30U & (h)) >> 4)	/* Extract most significant bits of a handshaking identifier */
-> > +
-> > +#define	ATC_SRC_PER(h)		(0xFU & (h))	/* Channel src rq associated with periph handshaking ifc h */
-> > +#define	ATC_DST_PER(h)		((0xFU & (h)) <<  4)	/* Channel dst rq associated with periph handshaking ifc h */
-> > +#define	ATC_SRC_REP		(0x1 <<  8)	/* Source Replay Mod */
-> > +#define	ATC_SRC_H2SEL		(0x1 <<  9)	/* Source Handshaking Mod */
-> > +#define		ATC_SRC_H2SEL_SW	(0x0 <<  9)
-> > +#define		ATC_SRC_H2SEL_HW	(0x1 <<  9)
-> > +#define	ATC_SRC_PER_MSB(h)	(ATC_PER_MSB(h) << 10)	/* Channel src rq (most significant bits) */
-> > +#define	ATC_DST_REP		(0x1 << 12)	/* Destination Replay Mod */
-> > +#define	ATC_DST_H2SEL		(0x1 << 13)	/* Destination Handshaking Mod */
-> > +#define		ATC_DST_H2SEL_SW	(0x0 << 13)
-> > +#define		ATC_DST_H2SEL_HW	(0x1 << 13)
-> > +#define	ATC_DST_PER_MSB(h)	(ATC_PER_MSB(h) << 14)	/* Channel dst rq (most significant bits) */
-> > +#define	ATC_SOD			(0x1 << 16)	/* Stop On Done */
-> > +#define	ATC_LOCK_IF		(0x1 << 20)	/* Interface Lock */
-> > +#define	ATC_LOCK_B		(0x1 << 21)	/* AHB Bus Lock */
-> > +#define	ATC_LOCK_IF_L		(0x1 << 22)	/* Master Interface Arbiter Lock */
-> > +#define		ATC_LOCK_IF_L_CHUNK	(0x0 << 22)
-> > +#define		ATC_LOCK_IF_L_BUFFER	(0x1 << 22)
-> > +#define	ATC_AHB_PROT_MASK	(0x7 << 24)	/* AHB Protection */
-> > +#define	ATC_FIFOCFG_MASK	(0x3 << 28)	/* FIFO Request Configuration */
-> > +#define		ATC_FIFOCFG_LARGESTBURST	(0x0 << 28)
-> > +#define		ATC_FIFOCFG_HALFFIFO		(0x1 << 28)
-> > +#define		ATC_FIFOCFG_ENOUGHSPACE		(0x2 << 28)
-> 
-> Make these use BIT() or GENMASK() later..?
-> 
+On Tue, Jan 5, 2021 at 10:25 AM Arnd Bergmann <arnd@kernel.org> wrote:
+>
+> On Mon, Jan 4, 2021 at 11:33 PM Nathan Chancellor
+> <natechancellor@gmail.com> wrote:
+> > On Wed, Dec 30, 2020 at 05:13:03PM +0100, Marco Elver wrote:
+> > > On Wed, 30 Dec 2020 at 16:47, Arnd Bergmann <arnd@kernel.org> wrote:
+> > > >
+> > > > From: Arnd Bergmann <arnd@arndb.de>
+> > > >
+> > > > Building ubsan kernels even for compile-testing introduced these
+> > > > warnings in my randconfig environment:
+> > > >
+> > > > crypto/blake2b_generic.c:98:13: error: stack frame size of 9636 bytes in function 'blake2b_compress' [-Werror,-Wframe-larger-than=]
+> > > > static void blake2b_compress(struct blake2b_state *S,
+> > > > crypto/sha512_generic.c:151:13: error: stack frame size of 1292 bytes in function 'sha512_generic_block_fn' [-Werror,-Wframe-larger-than=]
+> > > > static void sha512_generic_block_fn(struct sha512_state *sst, u8 const *src,
+> > > > lib/crypto/curve25519-fiat32.c:312:22: error: stack frame size of 2180 bytes in function 'fe_mul_impl' [-Werror,-Wframe-larger-than=]
+> > > > static noinline void fe_mul_impl(u32 out[10], const u32 in1[10], const u32 in2[10])
+> > > > lib/crypto/curve25519-fiat32.c:444:22: error: stack frame size of 1588 bytes in function 'fe_sqr_impl' [-Werror,-Wframe-larger-than=]
+> > > > static noinline void fe_sqr_impl(u32 out[10], const u32 in1[10])
+> > > >
+> > > > Further testing showed that this is caused by
+> > > > -fsanitize=unsigned-integer-overflow.
+> > > >
+> > > > The one in blake2b immediately overflows the 8KB stack area on 32-bit
+> > > > architectures, so better ensure this never happens by making this
+> > > > option gcc-only.
+> >
+> > This patch also fixes the failed BUILD_BUG issue in mm/mremap.c that you
+> > sent a patch for [1], along with a couple of other issues I see such as:
+>
+> I'm fairly sure I still saw that BUILD_BUG() even after I had applied this
+> patch, I would guess that one just depends on inlining decisions that
+> are influenced by all kinds of compiler options including
+> -fsanitize=unsigned-integer-overflow, so it becomes less likely.
+>
+> I'll revert my other patch in the randconfig tree to see if it comes back.
 
-Sure but for this patch, I wanted to make it clear that this was just
-moving code around.
+The qcom/gpi.c failure still happens with this patch applied:
 
--- 
-Alexandre Belloni, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+In file included from /git/arm-soc/drivers/dma/qcom/gpi.c:8:
+In function 'field_multiplier',
+    inlined from 'gpi_update_reg' at
+/git/arm-soc/include/linux/bitfield.h:124:17:
+/git/arm-soc/include/linux/bitfield.h:119:3: error: call to
+'__bad_mask' declared with attribute error: bad bitfield mask
+  119 |   __bad_mask();
+      |   ^~~~~~~~~~~~
+In function 'field_multiplier',
+    inlined from 'gpi_update_reg' at
+/git/arm-soc/include/linux/bitfield.h:154:1:
+/git/arm-soc/include/linux/bitfield.h:119:3: error: call to
+'__bad_mask' declared with attribute error: bad bitfield mask
+  119 |   __bad_mask();
+      |   ^~~~~~~~~~~~
+
+See https://pastebin.com/8UH6x4A2 for the .config
+
+       Arnd
