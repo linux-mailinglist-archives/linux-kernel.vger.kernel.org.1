@@ -2,80 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 603712EBC62
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 11:31:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 856D42EBC85
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 11:38:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726323AbhAFKa7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Jan 2021 05:30:59 -0500
-Received: from m43-15.mailgun.net ([69.72.43.15]:52760 "EHLO
-        m43-15.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725828AbhAFKa6 (ORCPT
+        id S1726918AbhAFKgx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Jan 2021 05:36:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48948 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726862AbhAFKgx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Jan 2021 05:30:58 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1609929036; h=Message-ID: Subject: Cc: To: From: Date:
- Content-Transfer-Encoding: Content-Type: MIME-Version: Sender;
- bh=gT+dnzCZdVFmgvncotTWR/Dha+MCgIOQiBwQEAjrLoA=; b=nNCqgQn3w9VO1qNc50zZCfTgwGFtcR1XycuCz+04C9PPfQVMnOnYnAQbuXwTDnMim0DLeYBu
- xlEhDX4SCK+uaCtPEFnPgKqPxPzYG2NvywE4N66IMtRFHKckDU4RusafDCVIFbOGp+3d5azE
- Tj+BIVLJfmVgfHDXCMA5C0bi8gQ=
-X-Mailgun-Sending-Ip: 69.72.43.15
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n05.prod.us-east-1.postgun.com with SMTP id
- 5ff59123512813ac446a338b (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 06 Jan 2021 10:29:55
- GMT
-Sender: tingwei=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 5A3BAC43462; Wed,  6 Jan 2021 10:29:54 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: tingwei)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id ECF9DC433C6;
-        Wed,  6 Jan 2021 10:29:53 +0000 (UTC)
+        Wed, 6 Jan 2021 05:36:53 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C63CAC061357;
+        Wed,  6 Jan 2021 02:36:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=bVpL1mGdE1znAIBZqUAoV1hHGWEPvW8K3ojw3xc9b+M=; b=omZNe+9FXXLxjBfSEMIE4cUKb3
+        rnyZVbDU3fbqcK9qpv/Ck2jBkMrwr3aQiL//361OiVvEoUbCdEFQu18X82YROGTWUED3YQ0MyJzgM
+        h9Zaw3jVVldE335/DSoyOnvxXo+jexl+7ddRehUhOV5JaqMmuLtlcSvDPEh8L8ZAhX77gtaNDYnJP
+        hBql9d3ZRNJfxEAyuCUpFDxIvk5GCmmht89lB5rnLjmnN+YFvZLcoJDI2kX3Mp5mV/MiowQoGMXi3
+        PBaiGYGtxll9pO/IlDnllQlS7f3wCuHU0XTGFXujT4c3l6p/wvHRX0iukAPsj5JAnvCPsRMELE7/r
+        AAuiuMMA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1kx68E-002Ewa-Ib; Wed, 06 Jan 2021 10:34:05 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 99A053013E5;
+        Wed,  6 Jan 2021 11:33:33 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 88C6E2029F4C3; Wed,  6 Jan 2021 11:33:33 +0100 (CET)
+Date:   Wed, 6 Jan 2021 11:33:33 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Frederic Weisbecker <frederic@kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        Fabio Estevam <festevam@gmail.com>, stable@vger.kernel.org,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Len Brown <lenb@kernel.org>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>
+Subject: Re: [PATCH 1/4] sched/idle: Fix missing need_resched() check after
+ rcu_idle_enter()
+Message-ID: <X/WR/QSrKTdfRgGt@hirez.programming.kicks-ass.net>
+References: <20210104152058.36642-1-frederic@kernel.org>
+ <20210104152058.36642-2-frederic@kernel.org>
+ <20210105095503.GF3040@hirez.programming.kicks-ass.net>
+ <20210105125722.GA68490@lothringen>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Wed, 06 Jan 2021 18:29:53 +0800
-From:   tingwei@codeaurora.org
-To:     Will Deacon <will@kernel.org>, Mark Rutland <mark.rutland@arm.com>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Set DBGCLAIM when self-host debug is enabled
-Message-ID: <512a30e6cc6877687c10c0f9ccc3c4c5@codeaurora.org>
-X-Sender: tingwei@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210105125722.GA68490@lothringen>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Will and Mark,
+On Tue, Jan 05, 2021 at 01:57:22PM +0100, Frederic Weisbecker wrote:
 
-In recent implementation of save/restore ARM debug registers in EL2/EL3, 
-we found
-it's necessary to know whether self-host debug is enabled so EL2/EL3 can 
-avoid
-saving/restoring debug registers but no one is using debug.
+> > Something like the below, combined with a fixup for all callers (which
+> > the compiler will help us find thanks to __must_check).
+> 
+> Right, I just need to make sure that the wake up is local as the kthread
+> awaken can be queued anywhere. But a simple need_resched() check after the
+> wake up should be fine to get that.
 
-In ARM PSCI, it has one option to set DBGCLAIM[1] to 1 to indicate that 
-debug is
-in use by a self-host debugger. Do you think it's resonable to add this 
-to Kernel?
-
-For example, can we set DBGCLAIM[1] to 1 in enable_debug_monitors() and 
-clear it
-in disable_debug_monitors().
-
-Thanks,
-Tingwei
-
---
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora 
-Forum, a Linux Foundation Collaborative Project
+Duh, yes. Clearly I'm having startup problems after the holidays ;-)
