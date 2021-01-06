@@ -2,81 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 76A312EBD92
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 13:19:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BDB72EBD9A
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 13:22:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726133AbhAFMTD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Jan 2021 07:19:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36608 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725788AbhAFMTC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Jan 2021 07:19:02 -0500
-Received: from mail-yb1-xb2a.google.com (mail-yb1-xb2a.google.com [IPv6:2607:f8b0:4864:20::b2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC7A9C06134C;
-        Wed,  6 Jan 2021 04:18:21 -0800 (PST)
-Received: by mail-yb1-xb2a.google.com with SMTP id b64so2602512ybg.7;
-        Wed, 06 Jan 2021 04:18:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=sibBVeHh74LvnWJQWkr84prRZRQ5lM50m6HP/J9pKiY=;
-        b=KhztQhG4Nw7ZbO7tJMAfzwm1ExZQw469ltCblmy7LoNG4quSzF8HQWkChopnAnI2Ws
-         dbehynM1IWD2+e/aI7oytdLa6rUemkXUHsNVQ+ndCRhTkwTg258e5ZY4g6MeVchmUYjo
-         +2bWsrzeK3AOOMDIttoGqc8M5nRZG/aQrVAp8tTmcqVDt4n6AiQQRHSPMvyriOjx49H5
-         mis5Sc95K31ReV/LOkYR/eC/UhDC6zG/js1GkT/5OpMoSXDuZ+JPCtU3aul7qc/4bIrs
-         mBQOrmmliDwBzx77Zim+FuGXDt/soWS0mdru7mufQ+gVIHASC34Dqm5971QMOYRfpmp+
-         vgnQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=sibBVeHh74LvnWJQWkr84prRZRQ5lM50m6HP/J9pKiY=;
-        b=nBLuFjtV9JRQ1PXxTfNOt2jX4qRFrpRvziGwJSa9lO4qq/eQ0UBFlL3oZEyt3BCfAu
-         UOn6+al9LbQg6qKHLyFiHVwi8gDGYvjh0G8Z5N7hdEnYnYHYNKVpAyQA9Yzd7VyuW6jd
-         YPMLg1s9ntxj5baoy2M/+GA6tx3LWqzNW0WHmFUjX6ORAtzNLWf6sfJEc9azArybmOM8
-         gSjt9/pmN+eRBfvzuOdq9I1i8E1b2YLxTahCPgKZkbqs2qtuzOrfHkfMdgmMOklA3qby
-         e/e6Q8OGJjLXubOlK4MWhxpMxp6ZYm1kSzXHr8O8Q6hp1dwOLyHVs0jSuKqOq8sPaIfj
-         CL9w==
-X-Gm-Message-State: AOAM533Z1D/wzaYJlOzHHWdI+lUZLl+frGXDsdTZyghMEf2OWhSPY0Xj
-        rJVDtjYKTz3kQjIpgrxhqEwYSiXwuVdwLTgp0L0=
-X-Google-Smtp-Source: ABdhPJxohbKqIczN3BU2r1zAqdfbYZ93Wieh7wKBxVTLL8CiYv9sWV++mc9FkIMyWkLlOwiT5XgRNSN9tY2CVEQSaVk=
-X-Received: by 2002:a25:40d:: with SMTP id 13mr5919517ybe.422.1609935501381;
- Wed, 06 Jan 2021 04:18:21 -0800 (PST)
+        id S1726416AbhAFMWB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Jan 2021 07:22:01 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58544 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725800AbhAFMWA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 Jan 2021 07:22:00 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B13ED2311D;
+        Wed,  6 Jan 2021 12:21:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1609935679;
+        bh=WAm/RhnYSKI7FNej0EIyJcFG4Mw69Zq4xvi2vdKUvKY=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=EFqt/4YEevvHaPLx967fpBTZcI/+548l6LR6bBN/0B0bBWvU0bYq2N+5fblMroJL8
+         xb0u579zUG7NzKcnQQ+MKF3jaSy2g6XFIFCcvPeEj8diZK5Jw1Y5/FqQGmM4fTpIn+
+         PsheQjel/dq1hoFK5S0Cx7gcaWRRj4/qT0u/SNcSaEclNRZVU9uyACTmNPOg8WNZ7d
+         QtO7QspxuWHzd0WatLIWX9d674NKThw0WDKJX/pt372KXxGMz+2sup7FB3VMjhhds3
+         5bV0cxoJ0Egv3k3UFgFFBHXGNibprJTHCC7UK8jrSWwnjgdA1582lmM4oduTgjblRH
+         A21687mqHVHRA==
+Date:   Wed, 6 Jan 2021 13:20:50 +0100
+From:   Marek =?UTF-8?B?QmVow7pu?= <kabel@kernel.org>
+To:     Pavana Sharma <pavana.sharma@digi.com>
+Cc:     andrew@lunn.ch, ashkan.boldaji@digi.com,
+        clang-built-linux@googlegroups.com, davem@davemloft.net,
+        devicetree@vger.kernel.org, f.fainelli@gmail.com,
+        gregkh@linuxfoundation.org, kbuild-all@lists.01.org,
+        kuba@kernel.org, linux-kernel@vger.kernel.org, lkp@intel.com,
+        netdev@vger.kernel.org, robh+dt@kernel.org,
+        vivien.didelot@gmail.com
+Subject: Re: [net-next PATCH v12 4/4] net: dsa: mv88e6xxx: Add support for
+ mv88e6393x  family of Marvell
+Message-ID: <20210106132050.4f0875c7@kernel.org>
+In-Reply-To: <20210106004530.22197-1-pavana.sharma@digi.com>
+References: <20210105131343.4d0fff05@nic.cz>
+        <20210106004530.22197-1-pavana.sharma@digi.com>
+X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-References: <20210106113730.k5qveshjgcd57kgx@runtux.com> <20210106113929.fizyg6fcsmsntkiy@runtux.com>
-In-Reply-To: <20210106113929.fizyg6fcsmsntkiy@runtux.com>
-From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Date:   Wed, 6 Jan 2021 13:18:10 +0100
-Message-ID: <CANiq72=Cfv=Qo2fs+HDjUc8pV37mL326SDS5JpGotUfHLwK_rQ@mail.gmail.com>
-Subject: Re: [PATCH 1/1] auxdisplay: Add I2C gpio expander example
-To:     Ralf Schlatterbeck <rsc@runtux.com>
-Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
-        Willy Tarreau <w@1wt.eu>, Lars Poeschel <poeschel@lemonage.de>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        devicetree@vger.kernel.org, Rob Herring <robh+dt@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 6, 2021 at 12:39 PM Ralf Schlatterbeck <rsc@runtux.com> wrote:
->
-> The hd44780 displays are often used with pcf8574 based I/O expanders.
-> Add example to documentation.
->
-> Signed-off-by: Ralf Schlatterbeck <rsc@runtux.com>
+On Wed,  6 Jan 2021 10:45:30 +1000
+Pavana Sharma <pavana.sharma@digi.com> wrote:
 
-Since Geert suggested it, it is customary to write Suggested-by: Geert
-Uytterhoeven <geert@linux-m68k.org> above your signature.
+> Thanks Marek for catching this.
+> 
+> I will have a closer look and update the patchset.
 
-Rob, if you are taking this on your tree:
+I also sent a reply patch with subject
+  "patch fixing mv88e6393x SERDES IRQ for Pavana's series"
 
-    Acked-by: Miguel Ojeda <ojeda@kernel.org>
+it contains the changes necessary to your series. Please look at that.
+You can apply it to your commit via
+  patch -p1 <patch_from_marek.patch
+  git commit --amend drivers/net/dsa/mv88e6xxx/{chip.c,serdes.c,serdes.h}
 
-Otherwise, I will pick it up.
-
-Cheers,
-Miguel
+Marek
