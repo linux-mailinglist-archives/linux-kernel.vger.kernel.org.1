@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE6DD2EB917
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 05:52:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E3EB92EB911
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 05:52:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726143AbhAFEur (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 23:50:47 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33430 "EHLO mail.kernel.org"
+        id S1727056AbhAFEuT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 23:50:19 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33432 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726930AbhAFEuS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 23:50:18 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BDD3C23101;
+        id S1726934AbhAFEuT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Jan 2021 23:50:19 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EFC3B23103;
         Wed,  6 Jan 2021 04:48:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1609908537;
-        bh=jPl+1MfjWlYdlMsRVl0RfkOPROmCL3TMfTW66AWcpbk=;
+        s=k20201202; t=1609908538;
+        bh=xJqTvU6hV/6IKsNxicmVJ556aYjrYxXI9GgfdbOKU0o=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Z1QtAPnq5moEEHX8Ho7Js6W9rCMrtwRTXg3DsaG2aF4dYWGeaJl3MkdSmfmbWL1vK
-         xqO3qQ9VUtGsuxvtmN2eF7OWJVxciUBDlwGLWS5a1qruKZLg9dmc7qOSifoSZoQZa5
-         2NDv0bd2o2GcUB3ItyoOvvXpOMXKCZ5OW+l9GcI9cIYIq4fh8sJucTmXrn9dwI1fkF
-         kpI/YPjV+gL2fD2ad7tKRhN6cqXJjGBRwsIrlTn8Q1u60mD0g8XK2ZvG+2pRMPEKJC
-         EwlBOcsS+8jnmnUHOJw/2q3oCldr2/hTUjUNDhH/G77VjsiZo4K53frIv5RbBL2Ewp
-         Dk3pYGBLf6a4Q==
+        b=C1HI1VMadFQgilVCKqWMn5L8a2vnDBEeorqKkOTu4s2EHBf5H7BGZfuDy6uu34DJx
+         MOYIKgjUS193/xXLrjs0KcB2wTWFM8K8Vn27fr6Y99NgFmo9tEaIqt6ULzeEan7xCW
+         cj14Ye2ModhExGWc69mITHBjmKH/xwIZ4BIedcPRT1TRaJ8FjUKLKEx5hOPtP4+bpZ
+         r66U1E3zmiyoyNszsPkcaY5OtBMkgksYaDgPKdlLO0Xj9+LoOv0ZfUAjrZzHLln0Ss
+         4G3955I3LGpkAWxnSGZDRidaqhiu8buamvsECNlnvjAmNKyGAqd6Bv0xLAgwTPFt3P
+         BRMMYJk9uF5TQ==
 From:   paulmck@kernel.org
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -32,12 +32,11 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
         oleg@redhat.com, joel@joelfernandes.org,
         Frederic Weisbecker <frederic@kernel.org>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
         Neeraj Upadhyay <neeraju@codeaurora.org>,
-        Boqun Feng <boqun.feng@gmail.com>
-Subject: [PATCH tip/core/rcu 14/21] cpu/hotplug: Add lockdep_is_cpus_held()
-Date:   Tue,  5 Jan 2021 20:48:46 -0800
-Message-Id: <20210106044853.20812-14-paulmck@kernel.org>
+        "Paul E . McKenney" <paulmck@kernel.org>
+Subject: [PATCH tip/core/rcu 15/21] timer: Add timer_curr_running()
+Date:   Tue,  5 Jan 2021 20:48:47 -0800
+Message-Id: <20210106044853.20812-15-paulmck@kernel.org>
 X-Mailer: git-send-email 2.9.5
 In-Reply-To: <20210106013950.GA14663@paulmck-ThinkPad-P72>
 References: <20210106013950.GA14663@paulmck-ThinkPad-P72>
@@ -47,12 +46,9 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Frederic Weisbecker <frederic@kernel.org>
 
-This commit adds a lockdep_is_cpus_held() function to verify that the
-proper locks are held and that various operations are running in the
-correct context.
+This commit adds a timer_curr_running() function that verifies that the
+current code is running in the context of the specified timer's handler.
 
-Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
-Cc: Paul E. McKenney <paulmck@kernel.org>
 Cc: Josh Triplett <josh@joshtriplett.org>
 Cc: Steven Rostedt <rostedt@goodmis.org>
 Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
@@ -60,44 +56,51 @@ Cc: Lai Jiangshan <jiangshanlai@gmail.com>
 Cc: Joel Fernandes <joel@joelfernandes.org>
 Cc: Neeraj Upadhyay <neeraju@codeaurora.org>
 Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Boqun Feng <boqun.feng@gmail.com>
+Tested-by: Boqun Feng <boqun.feng@gmail.com>
+Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- include/linux/cpu.h | 2 ++
- kernel/cpu.c        | 7 +++++++
- 2 files changed, 9 insertions(+)
+ include/linux/timer.h |  2 ++
+ kernel/time/timer.c   | 13 +++++++++++++
+ 2 files changed, 15 insertions(+)
 
-diff --git a/include/linux/cpu.h b/include/linux/cpu.h
-index d6428aa..3aaa068 100644
---- a/include/linux/cpu.h
-+++ b/include/linux/cpu.h
-@@ -111,6 +111,8 @@ static inline void cpu_maps_update_done(void)
- #endif /* CONFIG_SMP */
- extern struct bus_type cpu_subsys;
+diff --git a/include/linux/timer.h b/include/linux/timer.h
+index fda13c9..4118a97 100644
+--- a/include/linux/timer.h
++++ b/include/linux/timer.h
+@@ -192,6 +192,8 @@ extern int try_to_del_timer_sync(struct timer_list *timer);
  
-+extern int lockdep_is_cpus_held(void);
+ #define del_singleshot_timer_sync(t) del_timer_sync(t)
+ 
++extern bool timer_curr_running(struct timer_list *timer);
 +
- #ifdef CONFIG_HOTPLUG_CPU
- extern void cpus_write_lock(void);
- extern void cpus_write_unlock(void);
-diff --git a/kernel/cpu.c b/kernel/cpu.c
-index 4e11e91..1b6302e 100644
---- a/kernel/cpu.c
-+++ b/kernel/cpu.c
-@@ -330,6 +330,13 @@ void lockdep_assert_cpus_held(void)
- 	percpu_rwsem_assert_held(&cpu_hotplug_lock);
+ extern void init_timers(void);
+ struct hrtimer;
+ extern enum hrtimer_restart it_real_fn(struct hrtimer *);
+diff --git a/kernel/time/timer.c b/kernel/time/timer.c
+index 8dbc008..f9b2096 100644
+--- a/kernel/time/timer.c
++++ b/kernel/time/timer.c
+@@ -1237,6 +1237,19 @@ int try_to_del_timer_sync(struct timer_list *timer)
  }
+ EXPORT_SYMBOL(try_to_del_timer_sync);
  
-+#ifdef CONFIG_LOCKDEP
-+int lockdep_is_cpus_held(void)
++bool timer_curr_running(struct timer_list *timer)
 +{
-+	return percpu_rwsem_is_held(&cpu_hotplug_lock);
-+}
-+#endif
++	int i;
 +
- static void lockdep_acquire_cpus_lock(void)
++	for (i = 0; i < NR_BASES; i++) {
++		struct timer_base *base = this_cpu_ptr(&timer_bases[i]);
++		if (base->running_timer == timer)
++			return true;
++	}
++
++	return false;
++}
++
+ #ifdef CONFIG_PREEMPT_RT
+ static __init void timer_base_init_expiry_lock(struct timer_base *base)
  {
- 	rwsem_acquire(&cpu_hotplug_lock.dep_map, 0, 0, _THIS_IP_);
 -- 
 2.9.5
 
