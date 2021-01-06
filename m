@@ -2,161 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F2F52EB892
+	by mail.lfdr.de (Postfix) with ESMTP id 3139D2EB891
 	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 04:44:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726795AbhAFDnJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 22:43:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40902 "EHLO
+        id S1726731AbhAFDnI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 22:43:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40900 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726698AbhAFDnI (ORCPT
+        with ESMTP id S1726695AbhAFDnI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 5 Jan 2021 22:43:08 -0500
-Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 322FCC061361
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Jan 2021 19:42:17 -0800 (PST)
-Received: by mail-pf1-x436.google.com with SMTP id h186so965158pfe.0
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Jan 2021 19:42:17 -0800 (PST)
+Received: from mail-ot1-x336.google.com (mail-ot1-x336.google.com [IPv6:2607:f8b0:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2FD20C06134D
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Jan 2021 19:42:14 -0800 (PST)
+Received: by mail-ot1-x336.google.com with SMTP id q25so1843794otn.10
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Jan 2021 19:42:14 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=n/86gZ2YH2sPTM8FXS5odMzg67Ac9T6AO13ElIbtDDg=;
-        b=cO8PVUda8Bx3SiBfo8qLV3f+sGuoG1tsrJdvV5+xtnmv+FltCXbPO19IOiNV2arX1e
-         MfsIwE8A6Knc0SP2qleJACUoPMyYpzQZDZm9mnnFZGjxFwvgCZj6whF/RxWqHYYM1e+/
-         wdRgR2lnWWnPiXx/LyJKGIMg1QVQFfB7OO6nA=
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=clNr85B17P/VHZbj4dl/JPQb+NJv3je0BLjWWpKEqw8=;
+        b=BB/VpaN2DQRcq516SWQRmCcwCtFSFZehuv2ZGPxZLFjLL9r1PJwvmaJTcTqYNQB6dG
+         7EOAOHJ2+WivoZkZ8/ysTBIY8YiQTjjkBmy1OVqwvFT90yCTspSU0g/FEgbNtoNnJGC8
+         X1uDm4OWK77Q2QEVuYRclQRc1FxhOgO5uN9/2TUliP36vb31MvrDQHgPSHViDZHpLZMM
+         rGKaMcgRICDeA2b30A6rC+BOgc1rlznqjmrCEnCw5u+jlfGwcPF6Y5OKFMPf/BQJFwSX
+         IjzduvHxgzu6Cz4SROLDYt6+g5iPyBKvc9vMVU6JtrdzdcVn+8luIoyrZr2SpgFoAjP2
+         BYQA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=n/86gZ2YH2sPTM8FXS5odMzg67Ac9T6AO13ElIbtDDg=;
-        b=M9Rf17StINBs0Cpd5/UEs78j7Fyu5rZ85a7k9MKeEALC8KuiUr01fCXJD1qVR0o8Ie
-         n1Bd0xT+WLBaA0AO8uIu4yxBjxgimQSacXlJnu4i+1lRUvEB0rpZt+AbWrIsu7OppPST
-         +kXXHd8RmL+6qiBN5NMajqKFX2Ruw6pi0dlHbuwS9vlpihlgK46X+QZ4MAAEq5WZD69E
-         jtbgAeRjURzjNsKS6r/HMH7UabPo6DssqNafiUSdE3ljBh0GNJ+ROKkJfIi7LJC5abs2
-         qHGoqtjCBjHe3ldxWuLrLDNdemxYBL8vXetb/J47cwKhvLEUWxZAnE+n4bOLY9w82WmQ
-         heVQ==
-X-Gm-Message-State: AOAM531U3rOVtdOlCn1uX4IoLfpXnHgTP+gGQ4m7fj+j+5SJazlxm+i+
-        M9IaI9pEcUUUl/dso80WaxrPiw==
-X-Google-Smtp-Source: ABdhPJyc8aEv7i+WmUMkW4PXzO0Jf/pJZ6vWz1r98byTGcdBBPjMldkIqPaeDl28qDIQ4NNN7+TicQ==
-X-Received: by 2002:a65:6382:: with SMTP id h2mr2332953pgv.365.1609904536826;
-        Tue, 05 Jan 2021 19:42:16 -0800 (PST)
-Received: from localhost ([2401:fa00:1:10:3e52:82ff:fe5e:cc9d])
-        by smtp.gmail.com with ESMTPSA id er23sm565730pjb.12.2021.01.05.19.42.11
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 05 Jan 2021 19:42:16 -0800 (PST)
-From:   Claire Chang <tientzu@chromium.org>
-To:     robh+dt@kernel.org, mpe@ellerman.id.au, benh@kernel.crashing.org,
-        paulus@samba.org, joro@8bytes.org, will@kernel.org,
-        frowand.list@gmail.com, konrad.wilk@oracle.com,
-        boris.ostrovsky@oracle.com, jgross@suse.com,
-        sstabellini@kernel.org, hch@lst.de, m.szyprowski@samsung.com,
-        robin.murphy@arm.com
-Cc:     grant.likely@arm.com, xypron.glpk@gmx.de, treding@nvidia.com,
-        mingo@kernel.org, bauerman@linux.ibm.com, peterz@infradead.org,
-        gregkh@linuxfoundation.org, saravanak@google.com,
-        rafael.j.wysocki@intel.com, heikki.krogerus@linux.intel.com,
-        andriy.shevchenko@linux.intel.com, rdunlap@infradead.org,
-        dan.j.williams@intel.com, bgolaszewski@baylibre.com,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, iommu@lists.linux-foundation.org,
-        xen-devel@lists.xenproject.org, tfiga@chromium.org,
-        drinkcat@chromium.org, Claire Chang <tientzu@chromium.org>
-Subject: [RFC PATCH v3 6/6] of: Add plumbing for restricted DMA pool
-Date:   Wed,  6 Jan 2021 11:41:24 +0800
-Message-Id: <20210106034124.30560-7-tientzu@chromium.org>
-X-Mailer: git-send-email 2.29.2.729.g45daf8777d-goog
-In-Reply-To: <20210106034124.30560-1-tientzu@chromium.org>
-References: <20210106034124.30560-1-tientzu@chromium.org>
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=clNr85B17P/VHZbj4dl/JPQb+NJv3je0BLjWWpKEqw8=;
+        b=NY7WhbrFdoC+lyzUyLBK8+Lp4LZRhpdzaDgCW/+lSF+o794G8WMlQh75vDRnZ39myf
+         IaDMeVdSPDm4YIvljQYqnd7XJRiGZ94Vig7Z2KXjgnyVw/a73b5EgILTlg9is8L8ajxY
+         Z/bve8Mbl24z/iYghY+n8bsKZColOTuV261Cp8LjegMP5kW6rgY+EMeADDhxozp+Xvu5
+         Pc8Loy9WsCzxepuVtZkWYhzSGroGoJ6tNRzwRlJK8H4zK4Kzvq6Zj+vEdVM4zJmwBAMg
+         FAbGZ9WoIHOrLrta3pMnjDUbq76hnbAYFhTqMPkW5aD6yC03IMou6fGw6U1L4jvoHhpy
+         5DbA==
+X-Gm-Message-State: AOAM533OyOQAFf8LpiF8zNI98PjlVZ7rH7AChDpR5L15XNwoIcgLcbAw
+        8XkYiR2AHrma6cdgeax91keQPQ==
+X-Google-Smtp-Source: ABdhPJzXJ1LVgWhlEkSml8zxn7ofneI12x53wvuhaBWs0Fy6Ec8khQor11zf2HJ+Z207i37fbnsDxQ==
+X-Received: by 2002:a9d:1720:: with SMTP id i32mr1949179ota.84.1609904533572;
+        Tue, 05 Jan 2021 19:42:13 -0800 (PST)
+Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id r204sm368597oif.0.2021.01.05.19.42.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 05 Jan 2021 19:42:12 -0800 (PST)
+Date:   Tue, 5 Jan 2021 21:42:11 -0600
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Cc:     agross@kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Vinod Koul <vkoul@kernel.org>
+Subject: Re: [PATCH v2 02/18] ARM: dts: qcom: sdx55: Add reserved memory nodes
+Message-ID: <X/Uxk15iuCkizzuT@builder.lan>
+References: <20210105122649.13581-1-manivannan.sadhasivam@linaro.org>
+ <20210105122649.13581-3-manivannan.sadhasivam@linaro.org>
+ <X/Sqfeonlthrys/O@builder.lan>
+ <20210106030709.GD14794@thinkpad>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210106030709.GD14794@thinkpad>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If a device is not behind an IOMMU, we look up the device node and set
-up the restricted DMA when the restricted-dma-pool is presented.
+On Tue 05 Jan 21:07 CST 2021, Manivannan Sadhasivam wrote:
 
-Signed-off-by: Claire Chang <tientzu@chromium.org>
----
- drivers/of/address.c    | 21 +++++++++++++++++++++
- drivers/of/device.c     |  4 ++++
- drivers/of/of_private.h |  5 +++++
- 3 files changed, 30 insertions(+)
+> On Tue, Jan 05, 2021 at 12:05:49PM -0600, Bjorn Andersson wrote:
+> > On Tue 05 Jan 06:26 CST 2021, Manivannan Sadhasivam wrote:
+> > 
+> > > From: Vinod Koul <vkoul@kernel.org>
+> > > 
+> > > This adds reserved memory nodes to the SDX55 dtsi as defined by v8 of
+> > > the memory map
+> > > 
+> > > Signed-off-by: Vinod Koul <vkoul@kernel.org>
+> > > Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+> > > ---
+> > >  arch/arm/boot/dts/qcom-sdx55.dtsi | 67 +++++++++++++++++++++++++++++++
+> > >  1 file changed, 67 insertions(+)
+> > > 
+> > > diff --git a/arch/arm/boot/dts/qcom-sdx55.dtsi b/arch/arm/boot/dts/qcom-sdx55.dtsi
+> > > index 08b4a40338fa..eeb6bf392f93 100644
+> > > --- a/arch/arm/boot/dts/qcom-sdx55.dtsi
+> > > +++ b/arch/arm/boot/dts/qcom-sdx55.dtsi
+> > > @@ -60,6 +60,73 @@ psci {
+> > >  		method = "smc";
+> > >  	};
+> > >  
+> > > +	reserved-memory {
+> > > +		#address-cells = <1>;
+> > > +		#size-cells = <1>;
+> > > +		ranges;
+> > > +
+> > > +		mpss_debug_mem: memory@8ef00000 {
+> > > +			no-map;
+> > > +			reg = <0x8ef00000 0x800000>;
+> > > +		};
+> > > +
+> > > +		hyp_mem: memory@8fc00000 {
+> > > +			no-map;
+> > > +			reg = <0x8fc00000 0x80000>;
+> > > +		};
+> > > +
+> > > +		ac_db_mem: memory@8fc80000 {
+> > > +			no-map;
+> > > +			reg = <0x8fc80000 0x40000>;
+> > > +		};
+> > > +
+> > > +		secdata_mem: memory@8fcfd000 {
+> > > +			no-map;
+> > > +			reg = <0x8fcfd000 0x1000>;
+> > > +		};
+> > > +
+> > > +		ipa_fw_mem: memory@8fced000 {
+> > > +			no-map;
+> > > +			reg = <0x8fced000 0x10000>;
+> > > +		};
+> > > +
+> > > +		sbl_mem: memory@8fd00000 {
+> > > +			no-map;
+> > > +			reg = <0x8fd00000 0x100000>;
+> > > +		};
+> > > +
+> > > +		aop_image: memory@8fe00000 {
+> > > +			no-map;
+> > > +			reg = <0x8fe00000 0x20000>;
+> > > +		};
+> > > +
+> > > +		aop_cmd_db: memory@8fe20000 {
+> > > +			compatible = "qcom,cmd-db";
+> > > +			reg = <0x8fe20000 0x20000>;
+> > > +			no-map;
+> > > +		};
+> > > +
+> > > +		smem_mem: memory@8fe40000 {
+> > > +			no-map;
+> > > +			reg = <0x8fe40000 0xc0000>;
+> > > +		};
+> > > +
+> > > +		tz_mem: memory@8ff00000 {
+> > > +			no-map;
+> > > +			reg = <0x8ff00000 0x100000>;
+> > > +		};
+> > > +
+> > > +		tz_apps_mem: memory@0x90000000 {
+> > > +			no-map;
+> > > +			reg = <0x90000000 0x500000>;
+> > > +		};
+> > > +
+> > > +		mpss_adsp_mem: memory@90800000 {
+> > > +			no-map;
+> > > +			reg = <0x90800000 0xf800000>;
+> > 
+> > Didn't you say this moved to 0x9c000000?
+> > 
+> 
+> That's for an old bootloader which is used in the MTP. But I guess we should
+> always use the latest mem map for the latest bootloader.
+> 
 
-diff --git a/drivers/of/address.c b/drivers/of/address.c
-index 73ddf2540f3f..94eca8249854 100644
---- a/drivers/of/address.c
-+++ b/drivers/of/address.c
-@@ -8,6 +8,7 @@
- #include <linux/logic_pio.h>
- #include <linux/module.h>
- #include <linux/of_address.h>
-+#include <linux/of_reserved_mem.h>
- #include <linux/pci.h>
- #include <linux/pci_regs.h>
- #include <linux/sizes.h>
-@@ -1094,3 +1095,23 @@ bool of_dma_is_coherent(struct device_node *np)
- 	return false;
- }
- EXPORT_SYMBOL_GPL(of_dma_is_coherent);
-+
-+int of_dma_set_restricted_buffer(struct device *dev)
-+{
-+	struct device_node *node;
-+	int count, i;
-+
-+	if (!dev->of_node)
-+		return 0;
-+
-+	count = of_property_count_elems_of_size(dev->of_node, "memory-region",
-+						sizeof(phandle));
-+	for (i = 0; i < count; i++) {
-+		node = of_parse_phandle(dev->of_node, "memory-region", i);
-+		if (of_device_is_compatible(node, "restricted-dma-pool"))
-+			return of_reserved_mem_device_init_by_idx(
-+				dev, dev->of_node, i);
-+	}
-+
-+	return 0;
-+}
-diff --git a/drivers/of/device.c b/drivers/of/device.c
-index aedfaaafd3e7..e2c7409956ab 100644
---- a/drivers/of/device.c
-+++ b/drivers/of/device.c
-@@ -182,6 +182,10 @@ int of_dma_configure_id(struct device *dev, struct device_node *np,
- 	arch_setup_dma_ops(dev, dma_start, size, iommu, coherent);
- 
- 	dev->dma_range_map = map;
-+
-+	if (!iommu)
-+		return of_dma_set_restricted_buffer(dev);
-+
- 	return 0;
- }
- EXPORT_SYMBOL_GPL(of_dma_configure_id);
-diff --git a/drivers/of/of_private.h b/drivers/of/of_private.h
-index d9e6a324de0a..28a2dfa197ba 100644
---- a/drivers/of/of_private.h
-+++ b/drivers/of/of_private.h
-@@ -161,12 +161,17 @@ struct bus_dma_region;
- #if defined(CONFIG_OF_ADDRESS) && defined(CONFIG_HAS_DMA)
- int of_dma_get_range(struct device_node *np,
- 		const struct bus_dma_region **map);
-+int of_dma_set_restricted_buffer(struct device *dev);
- #else
- static inline int of_dma_get_range(struct device_node *np,
- 		const struct bus_dma_region **map)
- {
- 	return -ENODEV;
- }
-+static inline int of_dma_get_restricted_buffer(struct device *dev)
-+{
-+	return -ENODEV;
-+}
- #endif
- 
- #endif /* _LINUX_OF_PRIVATE_H */
--- 
-2.29.2.729.g45daf8777d-goog
+That reminds me, a number of times we're learned that these are at least
+related to which firmware the individual vendors are shipping on their
+devices. So the peripheral (remoteproc) regions is better to push out to
+the board file.
 
+I.e. that would (probably) be &mpss_debug_mem, &ipa_fw_mem and
+&mpss_adsp_mem.
+
+Regards,
+Bjorn
