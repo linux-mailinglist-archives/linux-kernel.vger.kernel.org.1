@@ -2,107 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D43D2EBF40
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 14:57:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 736202EBF48
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 15:06:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726498AbhAFN4v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Jan 2021 08:56:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51872 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726362AbhAFN4u (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Jan 2021 08:56:50 -0500
-Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6656C06134D;
-        Wed,  6 Jan 2021 05:56:09 -0800 (PST)
-Received: by mail-ej1-x634.google.com with SMTP id 6so5140111ejz.5;
-        Wed, 06 Jan 2021 05:56:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=googlemail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=L8x/QpDCOUcMRuqo00P8LxlArLustwPLlO30ZOy3cg0=;
-        b=HrsqvrMkSiNlal5pnhXdSHTDUyklbYpc96+CDKtUTuxGtALOkaGFkcaL569bP/4IZX
-         7TJEckWk8JvkWrFjbFW6QryzGSJyzFOynxHuzpOklkS6J4Ml4YkYMYOFBGzHUjT6w5Ab
-         Fd/j1eOkAKwDBBUKl08n3Ml+WhqSHcr142PQA4nPvTpHuOGNvf2Ls2eWPlaXR/cVM0cl
-         pE9TJC4HiEfeHvI8db7MAXONW7hGc5hRUN72dv919vtfGAX83CzVKcoC6qL6oYyeX9hs
-         /m9Xb4dpmYO+ThCqGAkZ8ft6fCRlf076VhbcAWmUfKbliaYis+UeWl7WaJOZJhzO8MB7
-         5qQA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=L8x/QpDCOUcMRuqo00P8LxlArLustwPLlO30ZOy3cg0=;
-        b=HdBrXsDYwtJRe07iW6hSh7ai8rT68bMomWBKBufVGGwNf4ESSaucl0lr/pTBVQh66p
-         Fl7uDTCCe7qOhpfqBHph142gb+6iPg07P4pRx3y0z2EoGaJ54ZvehBrD00WeXigxXQAW
-         RfJxMzybwk9PybpHxEyS0x9eLbNW0WKYOwlX2znriH1tE1TY5WeyXbDMM9oK4PdjxCA3
-         vgf8hsb/0w6MzENqdNy6B637R09qyNDo/FSYcvZDgv2hkkq2yNYG3ksNL4MYPghXs9tr
-         vps8tM7QPcMdOzWt6dOig4AYPmCFZ9fT+XXbctrrmrYGSEwju//manZZm6buBxJO/d4M
-         IJJw==
-X-Gm-Message-State: AOAM533yhDvdQfhyhkZwaVryH2EQq/brEckpt5dAnCwbJxaK00TxsM+e
-        nBbdClnDaykUk38QmcpkCTo=
-X-Google-Smtp-Source: ABdhPJzAguu+fAPoftCt0iGkrQ7CsjxmqlmnyPNRllt6NGxY3xB/MWJfDtyYRzkuM1M8IcgGpNr5eQ==
-X-Received: by 2002:a17:906:1796:: with SMTP id t22mr2815872eje.372.1609941368582;
-        Wed, 06 Jan 2021 05:56:08 -0800 (PST)
-Received: from localhost.localdomain (p200300f13711ec00428d5cfffeb99db8.dip0.t-ipconnect.de. [2003:f1:3711:ec00:428d:5cff:feb9:9db8])
-        by smtp.googlemail.com with ESMTPSA id pg9sm1282862ejb.102.2021.01.06.05.56.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 06 Jan 2021 05:56:08 -0800 (PST)
-From:   Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-To:     lorenzo.pieralisi@arm.com, robh@kernel.org,
-        linux-pci@vger.kernel.org
-Cc:     bhelgaas@google.com, linux-kernel@vger.kernel.org,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Subject: [PATCH] PCI: dwc/intel-gw: Fix enabling the legacy PCI interrupt lines
-Date:   Wed,  6 Jan 2021 14:55:40 +0100
-Message-Id: <20210106135540.48420-1-martin.blumenstingl@googlemail.com>
-X-Mailer: git-send-email 2.30.0
+        id S1726498AbhAFOGI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Jan 2021 09:06:08 -0500
+Received: from smtp-out.xnet.cz ([178.217.244.18]:34645 "EHLO smtp-out.xnet.cz"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725803AbhAFOGI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 Jan 2021 09:06:08 -0500
+X-Greylist: delayed 436 seconds by postgrey-1.27 at vger.kernel.org; Wed, 06 Jan 2021 09:06:03 EST
+Received: from meh.true.cz (meh.true.cz [108.61.167.218])
+        (Authenticated sender: petr@true.cz)
+        by smtp-out.xnet.cz (Postfix) with ESMTPSA id 0812A18C68;
+        Wed,  6 Jan 2021 14:58:04 +0100 (CET)
+Received: by meh.true.cz (OpenSMTPD) with ESMTP id 0dfe3687;
+        Wed, 6 Jan 2021 14:57:46 +0100 (CET)
+Date:   Wed, 6 Jan 2021 14:58:01 +0100
+From:   Petr =?utf-8?Q?=C5=A0tetiar?= <ynezz@true.cz>
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Felix Fietkau <nbd@nbd.name>,
+        Lorenzo Bianconi <lorenzo.bianconi83@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Ryder Lee <ryder.lee@mediatek.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Shayne Chen <shayne.chen@mediatek.com>,
+        Yiwei Chung <yiwei.chung@mediatek.com>,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mt76: mt7915: fix misplaced #ifdef
+Message-ID: <20210106135801.GA27377@meh.true.cz>
+Reply-To: Petr =?utf-8?Q?=C5=A0tetiar?= <ynezz@true.cz>
+References: <20210103135811.3749775-1-arnd@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210103135811.3749775-1-arnd@kernel.org>
+X-PGP-Key: https://gist.githubusercontent.com/ynezz/477f6d7a1623a591b0806699f9fc8a27/raw/a0878b8ed17e56f36ebf9e06a6b888a2cd66281b/pgp-key.pub
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The legacy PCI interrupt lines need to be enabled using PCIE_APP_IRNEN
-bits 13 (INTA), 14 (INTB), 15 (INTC) and 16 (INTD). The old code however
-was taking (for example) "13" as raw value instead of taking BIT(13).
-Define the legacy PCI interrupt bits using the BIT() macro and then use
-these in PCIE_APP_IRN_INT.
+Arnd Bergmann <arnd@kernel.org> [2021-01-03 14:57:55]:
 
-Fixes: ed22aaaede44 ("PCI: dwc: intel: PCIe RC controller driver")
-Signed-off-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
----
- drivers/pci/controller/dwc/pcie-intel-gw.c | 10 ++++++----
- 1 file changed, 6 insertions(+), 4 deletions(-)
+Hi,
 
-diff --git a/drivers/pci/controller/dwc/pcie-intel-gw.c b/drivers/pci/controller/dwc/pcie-intel-gw.c
-index 0cedd1f95f37..ae96bfbb6c83 100644
---- a/drivers/pci/controller/dwc/pcie-intel-gw.c
-+++ b/drivers/pci/controller/dwc/pcie-intel-gw.c
-@@ -39,6 +39,10 @@
- #define PCIE_APP_IRN_PM_TO_ACK		BIT(9)
- #define PCIE_APP_IRN_LINK_AUTO_BW_STAT	BIT(11)
- #define PCIE_APP_IRN_BW_MGT		BIT(12)
-+#define PCIE_APP_IRN_INTA		BIT(13)
-+#define PCIE_APP_IRN_INTB		BIT(14)
-+#define PCIE_APP_IRN_INTC		BIT(15)
-+#define PCIE_APP_IRN_INTD		BIT(16)
- #define PCIE_APP_IRN_MSG_LTR		BIT(18)
- #define PCIE_APP_IRN_SYS_ERR_RC		BIT(29)
- #define PCIE_APP_INTX_OFST		12
-@@ -48,10 +52,8 @@
- 	PCIE_APP_IRN_RX_VDM_MSG | PCIE_APP_IRN_SYS_ERR_RC | \
- 	PCIE_APP_IRN_PM_TO_ACK | PCIE_APP_IRN_MSG_LTR | \
- 	PCIE_APP_IRN_BW_MGT | PCIE_APP_IRN_LINK_AUTO_BW_STAT | \
--	(PCIE_APP_INTX_OFST + PCI_INTERRUPT_INTA) | \
--	(PCIE_APP_INTX_OFST + PCI_INTERRUPT_INTB) | \
--	(PCIE_APP_INTX_OFST + PCI_INTERRUPT_INTC) | \
--	(PCIE_APP_INTX_OFST + PCI_INTERRUPT_INTD))
-+	PCIE_APP_IRN_INTA | PCIE_APP_IRN_INTB | \
-+	PCIE_APP_IRN_INTC | PCIE_APP_IRN_INTD)
- 
- #define BUS_IATU_OFFSET			SZ_256M
- #define RESET_INTERVAL_MS		100
--- 
-2.30.0
+just a small nitpick,
 
+> From: Arnd Bergmann <arnd@arndb.de>
+> 
+> The lone '|' at the end of a line causes a build failure:
+> 
+> drivers/net/wireless/mediatek/mt76/mt7915/init.c:47:2: error: expected expression before '}' token
+> 
+> Replace the #ifdef with an equivalent IS_ENABLED() check.
+> 
+> Fixes: af901eb4ab80 ("mt76: mt7915: get rid of dbdc debugfs knob")
+
+I think, that the correct fixes tag is following:
+
+ Fixes: 8aa2c6f4714e ("mt76: mt7915: support 32 station interfaces")
+
+I've used the af901eb4ab80 as well first in
+https://github.com/openwrt/mt76/pull/490 but then looked at it once more and
+actually found the probably correct 8aa2c6f4714e.
+
+Cheers,
+
+Petr
