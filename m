@@ -2,194 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 815D62EC45F
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 21:01:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 324492EC466
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 21:04:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727094AbhAFUAc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Jan 2021 15:00:32 -0500
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:57336 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726398AbhAFUAc (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Jan 2021 15:00:32 -0500
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 106JwsGX017998;
-        Wed, 6 Jan 2021 13:58:54 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1609963134;
-        bh=XgtpbLhV0AFYHHO3bXyXcXKJWBeBc+4sMOwO3+zTCHg=;
-        h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=E9X2ZoKlM14xJ8Tes29P0n0ZdZMhhZxhmBnAyUNZl0voqF3bNuDyaArNrb+FjRFA3
-         RZyiJjjxI58/jSGmbJHPO5/bVoUAlyx1rhoIUf7Nw3SIwKQ16A4R1N167ASjMPXbwS
-         kXnndNhAM1YqCESnAt7kxKagsjgjA8fZoBYMe37Y=
-Received: from DLEE109.ent.ti.com (dlee109.ent.ti.com [157.170.170.41])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 106JwsbK059234
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 6 Jan 2021 13:58:54 -0600
-Received: from DLEE100.ent.ti.com (157.170.170.30) by DLEE109.ent.ti.com
- (157.170.170.41) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Wed, 6 Jan
- 2021 13:58:54 -0600
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE100.ent.ti.com
- (157.170.170.30) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Wed, 6 Jan 2021 13:58:54 -0600
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 106JwrDj097096;
-        Wed, 6 Jan 2021 13:58:53 -0600
-From:   Ricardo Rivera-Matos <r-rivera-matos@ti.com>
-To:     <sre@kernel.org>, <robh+dt@kernel.org>, <linux-pm@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-CC:     <dmurphy@ti.com>, Ricardo Rivera-Matos <r-rivera-matos@ti.com>,
-        Rob Herring <robh@kernel.org>
-Subject: [PATCH v10 1/2] dt-bindings: power: Add the bq256xx dt bindings
-Date:   Wed, 6 Jan 2021 13:58:48 -0600
-Message-ID: <20210106195849.9489-2-r-rivera-matos@ti.com>
-X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210106195849.9489-1-r-rivera-matos@ti.com>
-References: <20210106195849.9489-1-r-rivera-matos@ti.com>
+        id S1726777AbhAFUDd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Jan 2021 15:03:33 -0500
+Received: from mx2.suse.de ([195.135.220.15]:50830 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726329AbhAFUDd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 Jan 2021 15:03:33 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1609963366; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=3a7tR4LgdJfkyWZreyLqQVWOCOwyEHlZH8mnUnYD8UA=;
+        b=D/9nnc2fF/eBACYFkwK3QCiOazVFoNukSqxqaUHcxBaOUCpnk7H6cUl4B8HhgLcuJQBn6H
+        Y6MiIEpjztvIXckPrriG118c6OWc/VuDMHVi3AjXyRfVK/mjE2ms0hfBZvmOnAdYqu7IbQ
+        Kl2HfTFhH/MSP/gJ4eV/g384mqOgfsw=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id A2F3BAD19;
+        Wed,  6 Jan 2021 20:02:46 +0000 (UTC)
+Date:   Wed, 6 Jan 2021 21:02:42 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     Mike Kravetz <mike.kravetz@oracle.com>
+Cc:     Muchun Song <songmuchun@bytedance.com>, akpm@linux-foundation.org,
+        n-horiguchi@ah.jp.nec.com, ak@linux.intel.com, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 2/6] mm: hugetlbfs: fix cannot migrate the fallocated
+ HugeTLB page
+Message-ID: <20210106200242.GY13207@dhcp22.suse.cz>
+References: <20210106084739.63318-1-songmuchun@bytedance.com>
+ <20210106084739.63318-3-songmuchun@bytedance.com>
+ <20210106163513.GS13207@dhcp22.suse.cz>
+ <7e69a55c-d501-6b42-8225-a677f09fb829@oracle.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <7e69a55c-d501-6b42-8225-a677f09fb829@oracle.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add the bindings for the bq256xx series of battery charging ICs.
+On Wed 06-01-21 11:30:25, Mike Kravetz wrote:
+> On 1/6/21 8:35 AM, Michal Hocko wrote:
+> > On Wed 06-01-21 16:47:35, Muchun Song wrote:
+> >> Because we only can isolate a active page via isolate_huge_page()
+> >> and hugetlbfs_fallocate() forget to mark it as active, we cannot
+> >> isolate and migrate those pages.
+> > 
+> > I've little bit hard time to understand this initially and had to dive
+> > into the code to make sense of it. I would consider the following
+> > wording easier to grasp. Feel free to reuse if you like.
+> > "
+> > If a new hugetlb page is allocated during fallocate it will not be
+> > marked as active (set_page_huge_active) which will result in a later
+> > isolate_huge_page failure when the page migration code would like to
+> > move that page. Such a failure would be unexpected and wrong.
+> > "
+> > 
+> > Now to the fix. I believe that this patch shows that the
+> > set_page_huge_active is just too subtle. Is there any reason why we
+> > cannot make all freshly allocated huge pages active by default?
+> 
+> I looked into that yesterday.  The primary issue is in page fault code,
+> hugetlb_no_page is an example.  If page_huge_active is set, then it can
+> be isolated for migration.  So, migration could race with the page fault
+> and the page could be migrated before being added to the page table of
+> the faulting task.  This was an issue when hugetlb_no_page set_page_huge_active
+> right after allocating and clearing the huge page.  Commit cb6acd01e2e4
+> moved the set_page_huge_active after adding the page to the page table
+> to address this issue.
 
-Datasheets:
-- https://www.ti.com/lit/ds/symlink/bq25600.pdf
-- https://www.ti.com/lit/ds/symlink/bq25601.pdf
-- https://www.ti.com/lit/ds/symlink/bq25600d.pdf
-- https://www.ti.com/lit/ds/symlink/bq25601d.pdf
-- https://www.ti.com/lit/ds/symlink/bq25611d.pdf
-- https://www.ti.com/lit/ds/symlink/bq25618.pdf
-- https://www.ti.com/lit/ds/symlink/bq25619.pdf
+Thanks for the clarification. I was not aware of this subtlety. The
+existing comment is not helping much TBH. I am still digesting the
+suggested race. The page is new and exclusive and not visible via page
+tables yet, so the only source of the migration would be pfn based
+(hotplug, poisoning), right?
 
-Reviewed-by: Rob Herring <robh@kernel.org>
-Signed-off-by: Ricardo Rivera-Matos <r-rivera-matos@ti.com>
----
- .../bindings/power/supply/bq256xx.yaml        | 110 ++++++++++++++++++
- 1 file changed, 110 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/power/supply/bq256xx.yaml
-
-diff --git a/Documentation/devicetree/bindings/power/supply/bq256xx.yaml b/Documentation/devicetree/bindings/power/supply/bq256xx.yaml
-new file mode 100644
-index 000000000000..18b54783e11a
---- /dev/null
-+++ b/Documentation/devicetree/bindings/power/supply/bq256xx.yaml
-@@ -0,0 +1,110 @@
-+# SPDX-License-Identifier: (GPL-2.0-only or BSD-2-Clause)
-+# Copyright (C) 2020 Texas Instruments Incorporated
-+%YAML 1.2
-+---
-+$id: "http://devicetree.org/schemas/power/supply/bq256xx.yaml#"
-+$schema: "http://devicetree.org/meta-schemas/core.yaml#"
-+
-+title: TI bq256xx Switch Mode Buck Charger
-+
-+maintainers:
-+  - Ricardo Rivera-Matos <r-rivera-matos@ti.com>
-+
-+description: |
-+  The bq256xx devices are a family of highly-integrated battery charge
-+  management and system power management ICs for single cell Li-ion and Li-
-+  polymer batteries.
-+
-+  Datasheets:
-+    - https://www.ti.com/lit/ds/symlink/bq25600.pdf
-+    - https://www.ti.com/lit/ds/symlink/bq25601.pdf
-+    - https://www.ti.com/lit/ds/symlink/bq25600d.pdf
-+    - https://www.ti.com/lit/ds/symlink/bq25601d.pdf
-+    - https://www.ti.com/lit/ds/symlink/bq25611d.pdf
-+    - https://www.ti.com/lit/ds/symlink/bq25618.pdf
-+    - https://www.ti.com/lit/ds/symlink/bq25619.pdf
-+
-+properties:
-+  compatible:
-+    enum:
-+      - ti,bq25600
-+      - ti,bq25601
-+      - ti,bq25600d
-+      - ti,bq25601d
-+      - ti,bq25611d
-+      - ti,bq25618
-+      - ti,bq25619
-+
-+  reg:
-+    maxItems: 1
-+
-+  ti,watchdog-timeout-ms:
-+    $ref: /schemas/types.yaml#/definitions/uint32
-+    default: 0
-+    description: |
-+      Watchdog timer in ms. 0 (default) disables the watchdog
-+    minimum: 0
-+    maximum: 160000
-+    enum: [ 0, 40000, 80000, 160000]
-+
-+  input-voltage-limit-microvolt:
-+    description: |
-+       Minimum input voltage limit in µV with a 100000 µV step
-+    minimum: 3900000
-+    maximum: 5400000
-+
-+  input-current-limit-microamp:
-+    description: |
-+       Maximum input current limit in µA with a 100000 µA step
-+    minimum: 100000
-+    maximum: 3200000
-+
-+  monitored-battery:
-+    $ref: /schemas/types.yaml#/definitions/phandle
-+    description: phandle to the battery node being monitored
-+
-+  interrupts:
-+    maxItems: 1
-+    description: |
-+      Interrupt sends an active low, 256 μs pulse to host to report the charger
-+      device status and faults.
-+
-+required:
-+  - compatible
-+  - reg
-+  - monitored-battery
-+
-+additionalProperties: false
-+
-+examples:
-+  - |
-+    bat: battery {
-+      compatible = "simple-battery";
-+      constant-charge-current-max-microamp = <2040000>;
-+      constant-charge-voltage-max-microvolt = <4352000>;
-+      precharge-current-microamp = <180000>;
-+      charge-term-current-microamp = <180000>;
-+    };
-+    #include <dt-bindings/gpio/gpio.h>
-+    #include <dt-bindings/interrupt-controller/irq.h>
-+    i2c {
-+
-+      clock-frequency = <400000>;
-+
-+      #address-cells = <1>;
-+      #size-cells = <0>;
-+
-+      charger@6b {
-+        compatible = "ti,bq25601";
-+        reg = <0x6b>;
-+        monitored-battery = <&bat>;
-+
-+        interrupt-parent = <&gpio1>;
-+        interrupts = <16 IRQ_TYPE_EDGE_FALLING>;
-+        ti,watchdog-timeout-ms = <40000>;
-+
-+        input-voltage-limit-microvolt = <4500000>;
-+        input-current-limit-microamp = <2400000>;
-+       };
-+    };
-+...
+Btw. s@set_page_huge_active@set_page_huge_migrateable@ would help
+readability IMHO. With a comment explaining that this _has_ to be called
+after the page is fully initialized.
 -- 
-2.30.0
-
+Michal Hocko
+SUSE Labs
