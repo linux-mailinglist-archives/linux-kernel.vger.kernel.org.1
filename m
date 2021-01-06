@@ -2,206 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E17402EB900
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 05:43:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 68CFD2EB904
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 05:47:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726092AbhAFElQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 23:41:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49908 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725730AbhAFElQ (ORCPT
+        id S1726050AbhAFEpy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 23:45:54 -0500
+Received: from aserp2120.oracle.com ([141.146.126.78]:40092 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725800AbhAFEpx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 23:41:16 -0500
-Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A61BEC06134C;
-        Tue,  5 Jan 2021 20:40:35 -0800 (PST)
-Received: by mail-pj1-x1036.google.com with SMTP id w1so2001750pjc.0;
-        Tue, 05 Jan 2021 20:40:35 -0800 (PST)
+        Tue, 5 Jan 2021 23:45:53 -0500
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 1064is2a137013;
+        Wed, 6 Jan 2021 04:44:54 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
+ from : message-id : references : date : in-reply-to : content-type :
+ mime-version; s=corp-2020-01-29;
+ bh=60HBqjPUA06EEirgsW5W4vJWbdWSvnl2yblUaxfFlzM=;
+ b=MbsoL5ne4SSnck28U+H9kqf6c0cyVpx1B5DnarzNSyHpEjzsp6JoBX31ioiLa66+jepW
+ MbETLDOMmiOwKG/DLMX3JR84ofONJgyXfmW3itGZTmjwPtV5mHcjOyQFPAOFeRPqwbrI
+ rTRIas+iFHdiWtaA1+TAjNxssaqkk1hZ38TGwgfh2fTl4yql/lPsijQdPm5sSisvQWj6
+ Vb/Bq1ZDzb4mX7wj1Qz0O24SZ5Whx4EY7gjxqsj4KgPao0l7Tnxg/1iHP59d8mmXlnTu
+ zSM4/gX2zjPehxkr90tgrwtp6gUf//rOM8H68KJhhcfPoVxitUeGWd9th0aWsyY5bnd7 mw== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by aserp2120.oracle.com with ESMTP id 35w542050t-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 06 Jan 2021 04:44:54 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 1064gfZU022470;
+        Wed, 6 Jan 2021 04:42:52 GMT
+Received: from nam10-bn7-obe.outbound.protection.outlook.com (mail-bn7nam10lp2106.outbound.protection.outlook.com [104.47.70.106])
+        by userp3030.oracle.com with ESMTP id 35w3g0dyrw-2
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 06 Jan 2021 04:42:52 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=nL4UVfafT2yyCrP53pW2/s7MbVYuQxKoRsfdcMjU02QJXzPOfBIc92GyOn1B1iJ0HZVWCImbG9BV8NcmnKp2A1Wrg4gh0u4KHPDEiT5Xv+YNgQg1yPWkF5+aGPPY5+yT4jGlMe1D4JahIAieLgN1fBW8UW2nZT/qGRSmSFd9cLC8Z5ypmZeXArYCdzaZBmjVFHf6vmJbQ2/C/im2aV5ogE1LwHTgHZNtkv+3JTY7LHJXVL11JLEwHDsHDh6gnMO0PAG0c6Td7ND1666QPQqWwSy3M61tVJfv9vXgk1nkHbnTPgUCAtcXQUI818F+2P3EnNFxbmtW595G3gCpJh6/tQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=60HBqjPUA06EEirgsW5W4vJWbdWSvnl2yblUaxfFlzM=;
+ b=HpJ07xMvpjWg2KQ6wSyANUW4YuqOBqexPA/5v/pFzugfV1izsk+WDMqQQ3mBATGshoGkviLWUsgXlFmXvFt8xk8iOMWXLKlrpnxxOIx+sE+eIjRDbczm7fvqjkyiOsiINZ2onXEOIN2Nu0QDLvCFK07EMPqCvj1NPsrAMyJgspzIPqnZr1/1WhBrB27DmBifyBHguxDc7Y9Hm/cVfL4Kgnc0SsmRsgN4cehCJ3kRm3osIuAEBU6ZCP9owAzauAd1kMHl9LVN4f8EE8E74nd3yCF2xDltR/Y0BIJ8fRwgshXJ4kHBPP8+wBcv2OWCPVRZYnXvrpCZmAYrFi3IbO1VBw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=DuXcLJPBV6qEiukzGu9D3PVWj2HReH+4NSpmOpTZWs8=;
-        b=O+3n6Celd8/USAo5TyXwgI3na8lAhkc2E3TDUTtuhbv78TaSB+0LkJF+pZ97cd+X8I
-         8UUMM6yYfag2CI/OYtJ7amlWgtsDNfhcInvuQSjVe5/ixqQiiXATDFb6L55W1CarCn4M
-         Wt1hYb6MZiUWQJ6TBnZdMq1qA3QE+h4PBy2CayaUKg+HRrQb+zwb2dtmgzipYbrSfB62
-         siC1hdhEctNOxV0zKaoUmjZF/l3FKTFvkIpttJRdIq5VBHDR6ZUOnE7Y9hCSrNfFUsZi
-         trFN9ZSUqHC0hoQ9qUWp+wivQ1TEqspsEn5T/U3AcTDdWKjpgicy9casfTRYvDD3TZpc
-         s4Vw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=DuXcLJPBV6qEiukzGu9D3PVWj2HReH+4NSpmOpTZWs8=;
-        b=qJGQQ9oy9YJ1DFaQqBS7LemkKyA63f+msF3yxvfZkGkIQRjAXDIVLHMwc+h7Xa43OE
-         k6XfJN7lia6I117ggTAQS5WfvIPapUId3FNt/76RC8JDpk1IYGtoRMujF/JdfjGFT63K
-         r1pLOrgadgZNikB0AOgmHZLzzFEsJm2X34/cITWBMVwH3wPvmQOMZlDDbKG8rZMMCdoJ
-         ubZZeQJOfMdOffUsGcVoUQpDts9rTZPiuYamTljqMtrIHLp6CRp/55nL1A9bXc0RBYal
-         TM7b1FNVyeGHRpxECF45MbhIAT5iXxv66O7Hgcdv7Xq4lKBlDqGu3lIZcLXGMMnezxVy
-         ZxRw==
-X-Gm-Message-State: AOAM530Z7wM978KxPAOh1nmqSSEvk1drKvjf289FwoZOeq1QVktAbs+S
-        cafZTQMBzfRjPgX5QY22hineoytGF7gkpw==
-X-Google-Smtp-Source: ABdhPJz4p5bEF+D/m0lR22SCRMLJcabEYUEEY3iItjEx9TJM7OcDSQXzFyC12Q3NAc2WI+48XDyXOQ==
-X-Received: by 2002:a17:90b:3d3:: with SMTP id go19mr2350224pjb.201.1609908035150;
-        Tue, 05 Jan 2021 20:40:35 -0800 (PST)
-Received: from localhost.localdomain ([27.122.242.75])
-        by smtp.gmail.com with ESMTPSA id a13sm837791pfr.59.2021.01.05.20.40.31
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 05 Jan 2021 20:40:34 -0800 (PST)
-From:   Hyeongseok Kim <hyeongseok@gmail.com>
-To:     namjae.jeon@samsung.com, sj1557.seo@samsung.com
-Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Hyeongseok Kim <hyeongseok@gmail.com>
-Subject: [PATCH] exfat: improve performance of exfat_free_cluster when using dirsync mount option
-Date:   Wed,  6 Jan 2021 13:39:45 +0900
-Message-Id: <20210106043945.36546-1-hyeongseok@gmail.com>
-X-Mailer: git-send-email 2.27.0.83.g0313f36
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=60HBqjPUA06EEirgsW5W4vJWbdWSvnl2yblUaxfFlzM=;
+ b=dRtnMlZUjFS6v9VnLZiZpJUjfTUSxvty+RY9s9/4xgJsFoGQ13wGElqSAmgw1t4j+ImZU1zsLgxb/y7np9hzdWwSm/q+VcmjK0807zuA7P6Ig/OFjPxD+ixi99VEg3Wn3u4gIoEwSv38adQvBpYKqbNE/zu/kOotezzeIDeKZXo=
+Authentication-Results: linux.ibm.com; dkim=none (message not signed)
+ header.d=none;linux.ibm.com; dmarc=none action=none header.from=oracle.com;
+Received: from PH0PR10MB4759.namprd10.prod.outlook.com (2603:10b6:510:3d::12)
+ by PH0PR10MB4438.namprd10.prod.outlook.com (2603:10b6:510:36::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3742.6; Wed, 6 Jan
+ 2021 04:42:48 +0000
+Received: from PH0PR10MB4759.namprd10.prod.outlook.com
+ ([fe80::54f3:a8aa:a2cd:a3a4]) by PH0PR10MB4759.namprd10.prod.outlook.com
+ ([fe80::54f3:a8aa:a2cd:a3a4%5]) with mapi id 15.20.3742.006; Wed, 6 Jan 2021
+ 04:42:48 +0000
+To:     Tyrel Datwyler <tyreld@linux.ibm.com>
+Cc:     james.bottomley@hansenpartnership.com, martin.petersen@oracle.com,
+        linux-scsi@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-kernel@vger.kernel.org, brking@linux.ibm.com,
+        Brian King <brking@linux.vnet.ibm.com>
+Subject: Re: [PATCH v2 4/5] ibmvfc: complete commands outside the host/queue
+ lock
+From:   "Martin K. Petersen" <martin.petersen@oracle.com>
+Organization: Oracle Corporation
+Message-ID: <yq1v9caekxl.fsf@ca-mkp.ca.oracle.com>
+References: <20201218231916.279833-5-tyreld@linux.ibm.com>
+        <20210104222422.981457-1-tyreld@linux.ibm.com>
+Date:   Tue, 05 Jan 2021 23:42:46 -0500
+In-Reply-To: <20210104222422.981457-1-tyreld@linux.ibm.com> (Tyrel Datwyler's
+        message of "Mon, 4 Jan 2021 16:24:22 -0600")
+Content-Type: text/plain
+X-Originating-IP: [138.3.200.58]
+X-ClientProxiedBy: SJ0PR13CA0219.namprd13.prod.outlook.com
+ (2603:10b6:a03:2c1::14) To PH0PR10MB4759.namprd10.prod.outlook.com
+ (2603:10b6:510:3d::12)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from ca-mkp.ca.oracle.com (138.3.200.58) by SJ0PR13CA0219.namprd13.prod.outlook.com (2603:10b6:a03:2c1::14) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3742.4 via Frontend Transport; Wed, 6 Jan 2021 04:42:47 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 75c0d038-bd96-4ede-c994-08d8b1fd84b1
+X-MS-TrafficTypeDiagnostic: PH0PR10MB4438:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <PH0PR10MB4438C7892111E6C903FC47018ED00@PH0PR10MB4438.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:5236;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: dnzBCC3di4oRNwB/Ik2o1LZC0qO/lSv18mgA2RkOxMHa1LwXo2tqmhmLp2k75nyxZQGX/qJRtfsttHe1sHigh+nmsde4adofU79HSQX3cLmoOeqgdYLzeoOKgOcYtVuMTHYUp11V02z2mg2fiEqtqP69VzIHj8rL9KN2V6dvCD/FzmQMPs4slEKXdBCnl1YEsjKbkcf8ed1CHlnhpw3eF2dEo3d3glbps4yB+J5Z5gxPe86+VBQ0cSNd9OpDAxGFcGunFuya02+35Xd51UrfaASfC6Q4jkNWW9jdBJ6P4987viWAXl0vYXX7OG190fb1bJN9bYBHXpLhqzbdCc24oJogZQYd7JFCG/bkWRPHinXlLTIYwdRozzpvV/BjslqnK70gnG4hSpHPcNf87pzidg==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR10MB4759.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(396003)(39830400003)(346002)(366004)(136003)(376002)(86362001)(66946007)(55016002)(6916009)(5660300002)(956004)(66476007)(66556008)(26005)(186003)(4326008)(16526019)(8676002)(52116002)(36916002)(2906002)(7696005)(316002)(83380400001)(478600001)(4744005)(8936002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?Es2WLdqvOb/cwA/1wg55XrlsSFQ18p7gCUmC81uty23h4SDL4arrvjSsf70K?=
+ =?us-ascii?Q?aqrtRcO7c0uoU121b1xOSXZO9IyKA2zAt2ILQCdbpteS5b+sg1PwfhoRuFlX?=
+ =?us-ascii?Q?draoHCYlcHJQCj5tJ7kUvy7/DemYt4XSvSzxxqPV2Afmdzmgu+fMVu7tF8O7?=
+ =?us-ascii?Q?uqdosHUfnaxydAkVpCs4b47jI8HSzyX1+O+04AR3fBWGvkUt+NrfPniDzNbb?=
+ =?us-ascii?Q?jrzlTodKxTyu/0BJkjElSf0tulD3vZGHyCYSe0JLL36o/ZI4ST2gmUaaYDPu?=
+ =?us-ascii?Q?E2WsbcQd7YPlpX2pmdoD6BpImSlhYJ3dKaKI9ftG6cPVMMlY1C81Pq+s3+0T?=
+ =?us-ascii?Q?+/3WNIR6rZbo5UvAk3xi4sjnVwhym7yNjncYI2aw4U6dV8PUJhFUBB+eZqey?=
+ =?us-ascii?Q?+PEroUDzNd9879/vlHXv6rUKX/2/1hK/+YMl6nOf7QT28+ODty+Mcb7hT2C1?=
+ =?us-ascii?Q?S4pZWrm3OZG2e2IytPxw02CLddI61hiNhxpLmqib04R02OcYlDoae+1xsp0D?=
+ =?us-ascii?Q?tW18lZIeyIyCPvehaZxg7LSwAolg3aiApwc6lmsaDAcajXlN54M7k6RywjQA?=
+ =?us-ascii?Q?LmeSoGDn9oNzGkAuhCSZSgCigXqCYM7A1AoAl91MR4NpgRZC0lSVCWeKGrrY?=
+ =?us-ascii?Q?BeBw4NXZfZJ8ikIh4yxNKaZ1uj21qARNnU81Y6tDW+S+dZB6mCQbQv6c4puW?=
+ =?us-ascii?Q?kJ2gPRNJv84RxEue53pKmMSWD+gu3DRUNDphNUqW+HDjIikioYKQU4E9ewuC?=
+ =?us-ascii?Q?q4O7ZwT6az2VaVYVDEimeeQehsFhvgUoKhhQ/cZW8zZ/H9qnaXllbMyVUL24?=
+ =?us-ascii?Q?GGLB8qtdwH270F47mcuhhxf8GyBvywEJe+vfJXYF5a6vVDzYFyTVRdgr0jcI?=
+ =?us-ascii?Q?8LxJMAamMsokZEUvhth5FPxgA80txufHjS/jU2FUY+Rd0mIiurKX/VkQYKkg?=
+ =?us-ascii?Q?y4HB1VdH4hvcqANN1qBurGeeOu0T+QT1sMsTyV6AyRM=3D?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR10MB4759.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Jan 2021 04:42:48.2985
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-Network-Message-Id: 75c0d038-bd96-4ede-c994-08d8b1fd84b1
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: r4Agh16uzVf/Wpcgs8Ok5j4fbvu/eGFyb7Uniuzz8s/mL1EyVenFL8mW0pHDv5SYRG7vyI8EJyk30uS7GsuSjr1hZeOS9y13Z/pr1bO3kHQ=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR10MB4438
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9855 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 malwarescore=0 adultscore=0
+ phishscore=0 spamscore=0 mlxlogscore=999 suspectscore=0 bulkscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2101060027
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9855 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 phishscore=0 adultscore=0
+ malwarescore=0 suspectscore=0 bulkscore=0 clxscore=1011 impostorscore=0
+ spamscore=0 mlxlogscore=999 lowpriorityscore=0 priorityscore=1501
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2101060028
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There are stressful update of cluster allocation bitmap when using
-dirsync mount option which is doing sync buffer on every cluster bit
-clearing. This could result in performance degradation when deleting
-big size file.
-Fix to update only when the bitmap buffer index is changed would make
-less disk access, improving performance especially for truncate operation.
 
-Testing with Samsung 256GB sdcard, mounted with dirsync option
-(mount -t exfat /dev/block/mmcblk0p1 /temp/mount -o dirsync)
+Tyrel,
 
-Remove 4GB file, blktrace result.
-[Before] : 39 secs.
-Total (blktrace):
- Reads Queued:      0,        0KiB	 Writes Queued:      32775,    16387KiB
- Read Dispatches:   0,        0KiB	 Write Dispatches:   32775,    16387KiB
- Reads Requeued:    0		         Writes Requeued:        0
- Reads Completed:   0,        0KiB	 Writes Completed:   32775,    16387KiB
- Read Merges:       0,        0KiB	 Write Merges:           0,        0KiB
- IO unplugs:        2        	     Timer unplugs:          0
+> Drain the command queue and place all commands on a completion list.
+> Perform command completion on that list outside the host/queue locks.
+> Further, move purged command compeletions outside the host_lock as well.
 
-[After] : 1 sec.
-Total (blktrace):
- Reads Queued:      0,        0KiB	 Writes Queued:         13,        6KiB
- Read Dispatches:   0,        0KiB	 Write Dispatches:      13,        6KiB
- Reads Requeued:    0		         Writes Requeued:        0
- Reads Completed:   0,        0KiB	 Writes Completed:      13,        6KiB
- Read Merges:       0,        0KiB	 Write Merges:           0,        0KiB
- IO unplugs:        1        	     Timer unplugs:          0
+Please resubmit entire series instead of amending individual patches.
 
-Signed-off-by: Hyeongseok Kim <hyeongseok@gmail.com>
----
- fs/exfat/balloc.c   |  4 ++--
- fs/exfat/exfat_fs.h |  2 +-
- fs/exfat/fatent.c   | 42 ++++++++++++++++++++++++++++++++++++------
- 3 files changed, 39 insertions(+), 9 deletions(-)
+thanks!
 
-diff --git a/fs/exfat/balloc.c b/fs/exfat/balloc.c
-index a987919686c0..761c79c3a4ba 100644
---- a/fs/exfat/balloc.c
-+++ b/fs/exfat/balloc.c
-@@ -166,7 +166,7 @@ int exfat_set_bitmap(struct inode *inode, unsigned int clu)
-  * If the value of "clu" is 0, it means cluster 2 which is the first cluster of
-  * the cluster heap.
-  */
--void exfat_clear_bitmap(struct inode *inode, unsigned int clu)
-+void exfat_clear_bitmap(struct inode *inode, unsigned int clu, bool sync)
- {
- 	int i, b;
- 	unsigned int ent_idx;
-@@ -180,7 +180,7 @@ void exfat_clear_bitmap(struct inode *inode, unsigned int clu)
- 	b = BITMAP_OFFSET_BIT_IN_SECTOR(sb, ent_idx);
- 
- 	clear_bit_le(b, sbi->vol_amap[i]->b_data);
--	exfat_update_bh(sbi->vol_amap[i], IS_DIRSYNC(inode));
-+	exfat_update_bh(sbi->vol_amap[i], sync);
- 
- 	if (opts->discard) {
- 		int ret_discard;
-diff --git a/fs/exfat/exfat_fs.h b/fs/exfat/exfat_fs.h
-index b8f0e829ecbd..764bc645241e 100644
---- a/fs/exfat/exfat_fs.h
-+++ b/fs/exfat/exfat_fs.h
-@@ -408,7 +408,7 @@ int exfat_count_num_clusters(struct super_block *sb,
- int exfat_load_bitmap(struct super_block *sb);
- void exfat_free_bitmap(struct exfat_sb_info *sbi);
- int exfat_set_bitmap(struct inode *inode, unsigned int clu);
--void exfat_clear_bitmap(struct inode *inode, unsigned int clu);
-+void exfat_clear_bitmap(struct inode *inode, unsigned int clu, bool sync);
- unsigned int exfat_find_free_bitmap(struct super_block *sb, unsigned int clu);
- int exfat_count_used_clusters(struct super_block *sb, unsigned int *ret_count);
- 
-diff --git a/fs/exfat/fatent.c b/fs/exfat/fatent.c
-index c3c9afee7418..b0118ad53845 100644
---- a/fs/exfat/fatent.c
-+++ b/fs/exfat/fatent.c
-@@ -157,6 +157,7 @@ int exfat_free_cluster(struct inode *inode, struct exfat_chain *p_chain)
- 	unsigned int clu;
- 	struct super_block *sb = inode->i_sb;
- 	struct exfat_sb_info *sbi = EXFAT_SB(sb);
-+	int cur_cmap_i, next_cmap_i;
- 
- 	/* invalid cluster number */
- 	if (p_chain->dir == EXFAT_FREE_CLUSTER ||
-@@ -176,21 +177,50 @@ int exfat_free_cluster(struct inode *inode, struct exfat_chain *p_chain)
- 
- 	clu = p_chain->dir;
- 
-+	cur_cmap_i = BITMAP_OFFSET_SECTOR_INDEX(sb, CLUSTER_TO_BITMAP_ENT(clu));
-+
- 	if (p_chain->flags == ALLOC_NO_FAT_CHAIN) {
-+		unsigned int last_cluster = p_chain->dir + p_chain->size - 1;
- 		do {
--			exfat_clear_bitmap(inode, clu);
--			clu++;
-+			bool sync = false;
-+
-+			if (clu < last_cluster)
-+				next_cmap_i =
-+				  BITMAP_OFFSET_SECTOR_INDEX(sb, CLUSTER_TO_BITMAP_ENT(clu+1));
- 
-+			/* flush bitmap only if index would be changed or for last cluster */
-+			if (clu == last_cluster || cur_cmap_i != next_cmap_i) {
-+				sync = true;
-+				cur_cmap_i = next_cmap_i;
-+			}
-+
-+			exfat_clear_bitmap(inode, clu, (sync && IS_DIRSYNC(inode)));
-+			clu++;
- 			num_clusters++;
- 		} while (num_clusters < p_chain->size);
- 	} else {
- 		do {
--			exfat_clear_bitmap(inode, clu);
--
--			if (exfat_get_next_cluster(sb, &clu))
--				goto dec_used_clus;
-+			bool sync = false;
-+			unsigned int n_clu = clu;
-+			int err = exfat_get_next_cluster(sb, &n_clu);
-+
-+			if (err || n_clu == EXFAT_EOF_CLUSTER)
-+				sync = true;
-+			else
-+				next_cmap_i =
-+				  BITMAP_OFFSET_SECTOR_INDEX(sb, CLUSTER_TO_BITMAP_ENT(n_clu));
-+
-+			if (cur_cmap_i != next_cmap_i) {
-+				sync = true;
-+				cur_cmap_i = next_cmap_i;
-+			}
- 
-+			exfat_clear_bitmap(inode, clu, (sync && IS_DIRSYNC(inode)));
-+			clu = n_clu;
- 			num_clusters++;
-+
-+			if (err)
-+				goto dec_used_clus;
- 		} while (clu != EXFAT_EOF_CLUSTER);
- 	}
- 
 -- 
-2.27.0.83.g0313f36
-
+Martin K. Petersen	Oracle Linux Engineering
