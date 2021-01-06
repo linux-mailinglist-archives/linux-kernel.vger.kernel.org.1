@@ -2,139 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CBCBC2EBB45
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 09:47:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D29622EBB4B
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 09:51:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726712AbhAFIrR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Jan 2021 03:47:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60064 "EHLO
+        id S1726692AbhAFIuU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Jan 2021 03:50:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60528 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726620AbhAFIrR (ORCPT
+        with ESMTP id S1726157AbhAFIuT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Jan 2021 03:47:17 -0500
-Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07693C061357
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Jan 2021 00:46:37 -0800 (PST)
-Received: by mail-pg1-x534.google.com with SMTP id e2so1779782pgi.5
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Jan 2021 00:46:37 -0800 (PST)
+        Wed, 6 Jan 2021 03:50:19 -0500
+Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A50C9C06134C
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Jan 2021 00:49:39 -0800 (PST)
+Received: by mail-pj1-x1031.google.com with SMTP id hk16so1241796pjb.4
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Jan 2021 00:49:39 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=XfqO1B4CXfAktEO4OP7WVNtR8GYAt8b6FfkGFkAlye8=;
-        b=JCMGXnw4hpCIMuCmzITNql8JVCFDO4s3SzbgoCqBvoN7yj3DnBQ3D0meZuqxG2QwOZ
-         wZFU1mUN+DVDRxMvYYSscFVup0s3LwEYoukPjusvi4x9mUxcFhh4XyAEvm6ZzZCBEti2
-         WzVgT2NXayAk80vQaQrdTUwP0qB2NHq9I1qd0=
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=MJ7EXnrnjhy7+uYeV34kijGi9OXt4E2hNZBzDKNjCfU=;
+        b=asObGoSIMPvAwU5SHqpDMotcGC0UjYsXRcsgmrKMTgKJ1dNK/O5ouxREgMZDHIDIyE
+         TctjLAYpcLcS/+PctbvaJv5wJGj2ajWaEH9r5896EeRNTvdv68aT23SBy0yXSxvS/vVW
+         HLgWpwELnYK0FnYyLMZ71ET0u0m5UiqcWNeITKd5BeqLfOuJTm4HZ2HyxVl7NQkNSXeT
+         PqZ7opAzPZiFmjvsXW4nRxQdsiajL5Q5A0jiy2W53M3laLFVyvzUR4b3XJHgGrPrZHhb
+         qDr5HL+X8TZd8PDjmsng90OzUQ6bX9cNEM7x/vwQ/nblg/dJqFtgrI33Az7Ou36+3lWM
+         R+HQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=XfqO1B4CXfAktEO4OP7WVNtR8GYAt8b6FfkGFkAlye8=;
-        b=EOrdoCXmqwce5C8GHOHtToloWEVZjy/uMcTPUJa9FT35XXurvh9Ov7YuPJmGzpTT0+
-         g3I3/SYwxi8o8VKcXuIE2pNF0smAo04HtRP64ta837C+hQDGB8oz4JPa7eW9rjc9h0bL
-         dEcjATPBfR9MN/FsrZjNGy1dYYXwy8yz8Gxfb49JGSX2a1x3/OYXWa693PSQ1OoUDTEB
-         5yVtS/g7KfJEdfsgMCIVliPSAE4XhlXdCJIGYyYdvQu6w8QkoiVw5JdK/Y7a4o73F3xn
-         hLn/MFg/eYsc+yJCJw0NxaljhaESCV+mGY7QuiXvV+A+ZHOeQ1pNk+/wK/zP4PoRS0PJ
-         tA7w==
-X-Gm-Message-State: AOAM531OqOLvCOcs16YnLMy55uzmWqVbZv1S/+Df23/XaJcELihnQe92
-        pUGjRfVrjcXuGeu71hptVH3apQ==
-X-Google-Smtp-Source: ABdhPJw1OmoRcuh/NoSGaMxrAs1NAtbcRxJlotuwUZxrxa1f3/MMKUQpUnglVc6EVoPR9IDfvNeYYQ==
-X-Received: by 2002:a63:105e:: with SMTP id 30mr3407174pgq.24.1609922796547;
-        Wed, 06 Jan 2021 00:46:36 -0800 (PST)
-Received: from hsinyi-z840.tpe.corp.google.com ([2401:fa00:1:10:1a60:24ff:fe89:3e93])
-        by smtp.gmail.com with ESMTPSA id a31sm1913401pgb.93.2021.01.06.00.46.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 06 Jan 2021 00:46:36 -0800 (PST)
-From:   Hsin-Yi Wang <hsinyi@chromium.org>
-To:     linux-arm-kernel@lists.infradead.org,
-        Matthias Brugger <matthias.bgg@gmail.com>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        Nicolas Boichat <drinkcat@chromium.org>,
-        devicetree@vger.kernel.org, linux-mediatek@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 2/2] arm64: dts: mt8183: Add krane-sku0 board.
-Date:   Wed,  6 Jan 2021 16:46:26 +0800
-Message-Id: <20210106084626.2181286-2-hsinyi@chromium.org>
-X-Mailer: git-send-email 2.29.2.729.g45daf8777d-goog
-In-Reply-To: <20210106084626.2181286-1-hsinyi@chromium.org>
-References: <20210106084626.2181286-1-hsinyi@chromium.org>
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=MJ7EXnrnjhy7+uYeV34kijGi9OXt4E2hNZBzDKNjCfU=;
+        b=PwET+m/rdbR2BdntZB8ex0FiXRYnOgfAVfCAlF6l1+jGUsGjxAkMaT3fchaB76FIoa
+         q+tpU0nvTuf6jypu34eDVN5+2zqNOIAsn8R36KKXbw9k5GeuIoWCZrhOSuHQ2N9MSpuL
+         w8IoIpjl2iGOd0DTjqh5in0aUatOktvplmRr7FPopNR1OM+DjHBoFM+rJxv04icHejvN
+         /6xxxJvjNlZTuKPxUTNrIoIbcQP30meWNip1S9EPnpK6jF2YW7xCmkMN59OonBddyZI4
+         RCQLqFMiQt+fs+4W2ZG/wI3ioZY/4bgW3YBPsY/Wh/wVXUMkiq0ZETgG2l3hcx560xDq
+         Kf4A==
+X-Gm-Message-State: AOAM531n0a+539oCEZxexOBo7fKcKr5UdcJgaDcyuZOWI2oG/SW8vbsz
+        CF0ZVSE88RAaxss67ns7y5zWQ29J/pZh2VyeRhg=
+X-Google-Smtp-Source: ABdhPJyPVD0EI/kuz45CeSBqtJJ2E0++1zedCl9qsb+hROtQBU2JorcSzunxBILZ7c4GNzUPeDM9Fg==
+X-Received: by 2002:a17:902:b943:b029:dc:6bd:5562 with SMTP id h3-20020a170902b943b02900dc06bd5562mr3563335pls.59.1609922979261;
+        Wed, 06 Jan 2021 00:49:39 -0800 (PST)
+Received: from localhost.localdomain ([139.177.225.232])
+        by smtp.gmail.com with ESMTPSA id h8sm1851806pjc.2.2021.01.06.00.49.35
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 06 Jan 2021 00:49:38 -0800 (PST)
+From:   Muchun Song <songmuchun@bytedance.com>
+To:     mike.kravetz@oracle.com, akpm@linux-foundation.org
+Cc:     n-horiguchi@ah.jp.nec.com, ak@linux.intel.com, mhocko@suse.cz,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Muchun Song <songmuchun@bytedance.com>
+Subject: [PATCH v2 0/6] Fix some bugs about HugeTLB code
+Date:   Wed,  6 Jan 2021 16:47:33 +0800
+Message-Id: <20210106084739.63318-1-songmuchun@bytedance.com>
+X-Mailer: git-send-email 2.21.0 (Apple Git-122)
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Similar to krane-sku176 but using a different panel source.
+This patch series aims to fix some bugs and add some improvements.
 
-Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
----
- .../devicetree/bindings/arm/mediatek.yaml     |  1 +
- arch/arm64/boot/dts/mediatek/Makefile         |  1 +
- .../dts/mediatek/mt8183-kukui-krane-sku0.dts  | 30 +++++++++++++++++++
- 3 files changed, 32 insertions(+)
- create mode 100644 arch/arm64/boot/dts/mediatek/mt8183-kukui-krane-sku0.dts
+Changelog since v1 -> v2:
+  - Export set_page_huge_active() in patch #2 to fix.
+  - Using head[3].mapping to indicate the page is freed in patch #3.
+  - Flush @free_hpage_work in patch #4.
 
-diff --git a/Documentation/devicetree/bindings/arm/mediatek.yaml b/Documentation/devicetree/bindings/arm/mediatek.yaml
-index 53f0d4e3ea982..3276f7a2ce672 100644
---- a/Documentation/devicetree/bindings/arm/mediatek.yaml
-+++ b/Documentation/devicetree/bindings/arm/mediatek.yaml
-@@ -120,6 +120,7 @@ properties:
-           - const: mediatek,mt8183
-       - description: Google Krane (Lenovo IdeaPad Duet, 10e,...)
-         items:
-+          - const: google,krane-sku0
-           - const: google,krane-sku176
-           - const: google,krane
-           - const: mediatek,mt8183
-diff --git a/arch/arm64/boot/dts/mediatek/Makefile b/arch/arm64/boot/dts/mediatek/Makefile
-index 18f7b46c4095b..deba27ab76574 100644
---- a/arch/arm64/boot/dts/mediatek/Makefile
-+++ b/arch/arm64/boot/dts/mediatek/Makefile
-@@ -13,6 +13,7 @@ dtb-$(CONFIG_ARCH_MEDIATEK) += mt8173-elm-hana.dtb
- dtb-$(CONFIG_ARCH_MEDIATEK) += mt8173-elm-hana-rev7.dtb
- dtb-$(CONFIG_ARCH_MEDIATEK) += mt8173-evb.dtb
- dtb-$(CONFIG_ARCH_MEDIATEK) += mt8183-evb.dtb
-+dtb-$(CONFIG_ARCH_MEDIATEK) += mt8183-kukui-krane-sku0.dtb
- dtb-$(CONFIG_ARCH_MEDIATEK) += mt8183-kukui-krane-sku176.dtb
- dtb-$(CONFIG_ARCH_MEDIATEK) += mt8192-evb.dtb
- dtb-$(CONFIG_ARCH_MEDIATEK) += mt8516-pumpkin.dtb
-diff --git a/arch/arm64/boot/dts/mediatek/mt8183-kukui-krane-sku0.dts b/arch/arm64/boot/dts/mediatek/mt8183-kukui-krane-sku0.dts
-new file mode 100644
-index 0000000000000..4497291889506
---- /dev/null
-+++ b/arch/arm64/boot/dts/mediatek/mt8183-kukui-krane-sku0.dts
-@@ -0,0 +1,30 @@
-+// SPDX-License-Identifier: (GPL-2.0 OR MIT)
-+/*
-+ * Copyright 2019 Google LLC
-+ *
-+ * Device-tree for Krane sku0.
-+ *
-+ * SKU is a 8-bit value (0x00 == 0):
-+ *  - Bits 7..4: Panel ID: 0x0 (AUO)
-+ *  - Bits 3..0: SKU ID:   0x0 (default)
-+ */
-+
-+/dts-v1/;
-+#include "mt8183-kukui-krane.dtsi"
-+
-+/ {
-+	model = "MediaTek krane sku0 board";
-+	compatible = "google,krane-sku0", "google,krane", "mediatek,mt8183";
-+};
-+
-+&panel {
-+	status = "okay";
-+	compatible = "auo,kd101n80-45na";
-+	reg = <0>;
-+	enable-gpios = <&pio 45 0>;
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&panel_pins_default>;
-+	avdd-supply = <&ppvarn_lcd>;
-+	avee-supply = <&ppvarp_lcd>;
-+	pp1800-supply = <&pp1800_lcd>;
-+};
+Muchun Song (6):
+  mm: migrate: do not migrate HugeTLB page whose refcount is one
+  mm: hugetlbfs: fix cannot migrate the fallocated HugeTLB page
+  mm: hugetlb: fix a race between freeing and dissolving the page
+  mm: hugetlb: add return -EAGAIN for dissolve_free_huge_page
+  mm: hugetlb: fix a race between isolating and freeing page
+  mm: hugetlb: remove VM_BUG_ON_PAGE from page_huge_active
+
+ fs/hugetlbfs/inode.c    |  3 ++-
+ include/linux/hugetlb.h |  2 ++
+ mm/hugetlb.c            | 69 +++++++++++++++++++++++++++++++++++++++++++------
+ mm/migrate.c            |  6 +++++
+ 4 files changed, 71 insertions(+), 9 deletions(-)
+
 -- 
-2.29.2.729.g45daf8777d-goog
+2.11.0
 
