@@ -2,178 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A04F52EC467
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 21:04:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 910F92EC46D
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 21:07:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727016AbhAFUDn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Jan 2021 15:03:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52962 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726329AbhAFUDm (ORCPT
+        id S1727048AbhAFUFk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Jan 2021 15:05:40 -0500
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:44230 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726329AbhAFUFj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Jan 2021 15:03:42 -0500
-Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BB2FC061575
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Jan 2021 12:03:02 -0800 (PST)
-Received: by mail-ej1-x631.google.com with SMTP id ga15so6732937ejb.4
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Jan 2021 12:03:02 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intel-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Qo74SNxBRzE7jEcHLiGlvWl2XU+3/X3BlAwXU5Tlukc=;
-        b=v6wWef2R9dxJyWPfJ27SmbgkvLAgJTLJrR8TGAZY0TVKm5mjjrpyGwFC1+p+wEjk3K
-         bx80Q1irXT/aw/6p0iFQGF9LdAzwGpc+WHZ/uV+oFrVOOpPxImw8wSy0gCakoYhmLYRj
-         vu+uiZW2GjsF2XsB09pGc9nHgVUd/9aHwAEw42JaGyF7p1TAAXFCmp9rx0epW1387AaS
-         0bo2Zldk52ppJRBpy2IUeDFr3DPE6XOEkrOFrJzP60LqeffanhcYIvWtE7PdKyR0rd3b
-         AGJGT8viZOu6JQOD4r/7UtXTooi48AHGT6o2SzubUEIuRh+Ma7hyk71x3dktuEQHol6t
-         rUHQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Qo74SNxBRzE7jEcHLiGlvWl2XU+3/X3BlAwXU5Tlukc=;
-        b=jL57ErbfitWZb6Bk+RGcl6LLPDNjYxcMXyievZUtLxTGCmCFnPARp9i8FuRv1n4yr7
-         DMPCG/BBUdTQQv59g0iG5fwspIkanKXQqMVF67/FKRYFhafwjDSEZPJNp8VAze8bQmDf
-         1rXqV5WRj5WH7/2xUL9lrhN9fCvbb5YUDHq/rtGNxS4VzBawPWHnyX25Sv7Rgj/zbX7G
-         sJ0GhDgaSmz6yXTb2KQFK5SBEDUX4GVvAHegM0F5hd8H0M4iq+z9vEi2cnILHlrW+AlL
-         3pB/6rDB62LDD+4C4JwoOv7Zg+f/cPUzBnEG57htAQSuJRN08/Niqg8mcnXRcLGRGLrU
-         QrUQ==
-X-Gm-Message-State: AOAM5303wY8LsDz6bhJenP27dAUEzmaieET+cPqURGZ58d7tJ9MNI9fU
-        rxg4+YxDyAm6nYhkXLL37o4mBuxVToSLVtbII5lkWA==
-X-Google-Smtp-Source: ABdhPJz/eZOahwvUGIhOCo6IyZBDGJON3yP3sTwT45bJBjf/sI20Gv0PBTTRmCDg9BekHP/oVX9aYsXHKIcRN7kQ5wE=
-X-Received: by 2002:a17:906:2707:: with SMTP id z7mr4030704ejc.418.1609963381149;
- Wed, 06 Jan 2021 12:03:01 -0800 (PST)
+        Wed, 6 Jan 2021 15:05:39 -0500
+Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 106K1SXq020097;
+        Wed, 6 Jan 2021 12:04:49 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
+ subject : message-id : references : content-type : in-reply-to :
+ mime-version; s=facebook; bh=byyWW5EjJ5JP8YAPUP7I3603V15sHg9WrQ0YJy3sn4U=;
+ b=ee6f5eYivxyCp+zi0tvro1sQ0XI1pIhHL39+nAPXYES6SpCsUd3S4mqzz8kc/+w2CBra
+ w9oPUpobNxiYDjMUCW727BBR3Oql1WA0HdtXb3OQm5hi6x/kz4cpcTUYzUyERFy7bP1d
+ txq6SY/GovsK3IdRt7Ei62ue5MmhX6n+SHc= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com with ESMTP id 35wjb0rjke-4
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Wed, 06 Jan 2021 12:04:49 -0800
+Received: from NAM11-BN8-obe.outbound.protection.outlook.com (100.104.98.9) by
+ o365-in.thefacebook.com (100.104.94.230) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Wed, 6 Jan 2021 12:04:46 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=KSgz3PcV1Ym7PIcbUK++81reisbBymE7rcUg5xMNleOMrHF1c7kaQ2fKvI8VPnYIgRclii9IMJdOFlFg7IMY+Lchf7Qg/jdh3W5svJ6aV/o6o7mhMVT+/HeiwHa4LMFzbaQi+yidbsYU82ki1+EZNQt1kIOyIaBV5QG1QwvSsypBZ6r9mqg/3kt5ZygtV4Dj5KV+NkZ+cTFun2OqkjPxrp6gFfxDpF96y9VMPuon5RstcgciBEL3wPA/hD+L0RuJb3mTR7K5USCRz4KLMzz+baXqJWcPO1ol8c4JPeuIl/qMq1FRBJMDgpLzTTvQ2omy8KhpQRzeIWtdXVYJoMNhlw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=byyWW5EjJ5JP8YAPUP7I3603V15sHg9WrQ0YJy3sn4U=;
+ b=IiSSPAWB48+TmXIjo2U9oFrbftg8O2jlkI9vV8NXWb/kdOhYu3TCRrTvTnx3AO+uUPQviFG08J/uogjQCKinkxpQm0UQIP6jm04VSZWuzf4RIlEYqqmlWueyoCQkpMriJXDumNNGhLR/4nzTL/q764OCLKYqsD6H2aV3qL3uEyEsk7OUgMAxwLzj17KjyjNhTGZ0LGgUIeo0p6+BenxG1fnAGBITiDxHCxFvCVHyjWd/VKu2IXA4f0gjLuYKYZYnyxQly8vPJjUelPiNNDOKxxAM1MyDgPtdDuu5evWQQ+oTIEIkR/RCrgmhvJwoyrtloRUqKakRL4TjX5MPhKmxdQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
+ s=selector2-fb-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=byyWW5EjJ5JP8YAPUP7I3603V15sHg9WrQ0YJy3sn4U=;
+ b=EEQkoRcooeQLD+UfLwJtZcLdgGKaVuiDJK+Sq74qnxWO8DDRDSY//RJ16Lih12Uqp0iuurKxGIp6QBcYgsK2irlefJ6/G7ab48QWZFnzZLBrPyrIgFbxQ/MTrrOpVkry9lcQ70VW+qujyVvIwvs0rrQG7dEsIFoCMc1/S7/9Nqw=
+Authentication-Results: linux-foundation.org; dkim=none (message not signed)
+ header.d=none;linux-foundation.org; dmarc=none action=none
+ header.from=fb.com;
+Received: from BYAPR15MB4136.namprd15.prod.outlook.com (2603:10b6:a03:96::24)
+ by BYAPR15MB3159.namprd15.prod.outlook.com (2603:10b6:a03:101::28) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3721.21; Wed, 6 Jan
+ 2021 20:04:45 +0000
+Received: from BYAPR15MB4136.namprd15.prod.outlook.com
+ ([fe80::780c:8570:cb1d:dd8c]) by BYAPR15MB4136.namprd15.prod.outlook.com
+ ([fe80::780c:8570:cb1d:dd8c%6]) with mapi id 15.20.3721.024; Wed, 6 Jan 2021
+ 20:04:45 +0000
+Date:   Wed, 6 Jan 2021 12:04:40 -0800
+From:   Roman Gushchin <guro@fb.com>
+To:     Andrew Morton <akpm@linux-foundation.org>
+CC:     <linux-mm@kvack.org>, Michal Hocko <mhocko@kernel.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Shakeel Butt <shakeelb@google.com>,
+        <linux-kernel@vger.kernel.org>, <kernel-team@fb.com>,
+        Imran Khan <imran.f.khan@oracle.com>
+Subject: Re: [PATCH] mm: memcg/slab: optimize objcg stock draining
+Message-ID: <20210106200440.GC1110904@carbon.dhcp.thefacebook.com>
+References: <20210106042239.2860107-1-guro@fb.com>
+ <20210106115044.c4393afa1ad61ef3f8db1d94@linux-foundation.org>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210106115044.c4393afa1ad61ef3f8db1d94@linux-foundation.org>
+X-Originating-IP: [2620:10d:c090:400::5:e8fe]
+X-ClientProxiedBy: CO1PR15CA0068.namprd15.prod.outlook.com
+ (2603:10b6:101:20::12) To BYAPR15MB4136.namprd15.prod.outlook.com
+ (2603:10b6:a03:96::24)
 MIME-Version: 1.0
-References: <160990599013.2430134.11556277600719835946.stgit@dwillia2-desk3.amr.corp.intel.com>
- <785b9095-eca4-8100-33ea-6ae84e02a92e@redhat.com> <20210106104255.GK13207@dhcp22.suse.cz>
- <7d7c5dc4-7784-5dcc-fc00-4fe99f0a4a90@redhat.com>
-In-Reply-To: <7d7c5dc4-7784-5dcc-fc00-4fe99f0a4a90@redhat.com>
-From:   Dan Williams <dan.j.williams@intel.com>
-Date:   Wed, 6 Jan 2021 12:02:49 -0800
-Message-ID: <CAPcyv4iN4t2P_rQS23E7Bb-eLUAt389Y5t4X-yoRQrxvsN3DWQ@mail.gmail.com>
-Subject: Re: [PATCH] mm: Teach pfn_to_online_page() about ZONE_DEVICE section collisions
-To:     David Hildenbrand <david@redhat.com>
-Cc:     Michal Hocko <mhocko@suse.com>, Linux MM <linux-mm@kvack.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from carbon.dhcp.thefacebook.com (2620:10d:c090:400::5:e8fe) by CO1PR15CA0068.namprd15.prod.outlook.com (2603:10b6:101:20::12) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3742.6 via Frontend Transport; Wed, 6 Jan 2021 20:04:43 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 0b353ebb-6dd2-4033-32bb-08d8b27e5005
+X-MS-TrafficTypeDiagnostic: BYAPR15MB3159:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <BYAPR15MB3159DEEDDF05C19B047E90C2BED00@BYAPR15MB3159.namprd15.prod.outlook.com>
+X-FB-Source: Internal
+X-MS-Oob-TLC-OOBClassifiers: OLM:883;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: IWdeu2NXWL9zgGduuTe+NX7x3Uo0bsGVGqLYqmtsyMaTk0CED8pjxfOH+EinCHtedXkVeEyyTie4pbIg6MmBFsurDrPYTUx+F1P57Q8Np519fUOa/iRY+EqDLnPRArUPLUwMYeoxF+k+v31HtxwPRo7U8TvIqk9VV4DfSg5qvYyc8Mm9+Y69cNEkSV3IpXmPwGMpE+NkgJ9Pyjsk9+4GVKrfPKPy0RKI+PQwMLVdgxEHGHsWoZWGQ6Btsmj351n7pP21Pv4JMJ9CYvfr12GkcslRLOQNP1TDjyiJOhQfXgPe7zgKAa2OAI0pFwUqXDgwF2HCEU2zaQWG6YRzLpYvHOufgm7W9UYcDsG/wxFyWW86Ji3r6GqK8A8ay9TKMn7Tk3erDi1ucMMd4B7pAdtfNA==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4136.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(39860400002)(376002)(396003)(136003)(366004)(346002)(54906003)(9686003)(4744005)(52116002)(4326008)(8936002)(7696005)(316002)(55016002)(478600001)(33656002)(5660300002)(1076003)(83380400001)(6916009)(6506007)(66946007)(186003)(16526019)(66476007)(66556008)(8676002)(2906002)(86362001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?PSGrpqEPIukLAyo357U0F9aX0wTlpQiQBT3hiQimIA1KQYFKrYNHWllbQ9nd?=
+ =?us-ascii?Q?tSQsd6dNlMbq+8AHeEMdvhlDRJHL/yuXZUxwHcfB0ojDiLdqrHhaUBW9oBBb?=
+ =?us-ascii?Q?+Nr+Pd/R6wjG3hxxgGmWSfXkSURCd6niotYUHpaG4eMmBsJ7A4o9/nUYAVHe?=
+ =?us-ascii?Q?UCOYZmq7+Q9dSSVlSKiBMVrO0DFIfcxiTGpoKpPVKE3XCPMKzjL2BJ6X3igY?=
+ =?us-ascii?Q?NZW+5mMfpLr9idYp3t1pvW826Ye3aJ0tt9iW0o0Fut60iIkIXD1bLGHve1qW?=
+ =?us-ascii?Q?HPJGx5I7jxJDL/aOvI2DtacXB04OAat701rAMTvSzqokZUVWB0WMnw3uTCj0?=
+ =?us-ascii?Q?ioMxyN2g1pUhkBa7umhKyAx5T9rzbHGr4vTVcY1F/uZzV1zqSMPLJvSNOVyG?=
+ =?us-ascii?Q?quwkJUyuYn4ZPGqfIHmMEkDFnUFBkD+eFe3oeUZY0lYXLwJNbCAHx4Z64G+e?=
+ =?us-ascii?Q?EgPunzaB+OBxCwt4relyltpuJzWIAnhhysBhy9KySs2koNzns7a+1BMJhzNb?=
+ =?us-ascii?Q?S5OW+lvTX1w8eMNWrzTali5idaKqLF/GzLszzUPaU3QLhzQYmQELEC2ZnFmG?=
+ =?us-ascii?Q?5ftVscYNaREVA2u3tD9jSVDm8YJmHwmmUNIfXxu/iPALRoxgNA0Vfe3PgVMc?=
+ =?us-ascii?Q?2dkpaiToT9G8PvRqJJdhPVMw8x63bGksxgpezCtk2Gqr6l+CFF6h8noNPdFy?=
+ =?us-ascii?Q?O7ku1C4Xf/mlD0+YrrHRhVrctxP1Vx/7pTcdJiMHNVuSzuMSIcXJvPqHmlI5?=
+ =?us-ascii?Q?jZ9yO68DYloLGPsfj5doMXu9xs1sSNvlfgnh0aRl7A9Wz2wpKPFGEKEtkgNo?=
+ =?us-ascii?Q?8fI4/LYsSGhYLDOCnXCHHOz4PY9ytSkkFz6dJws2lKt71HpECU5L+wsxBsav?=
+ =?us-ascii?Q?UviHLtBhIYAggUopC/SJE6lKNEK/IAp1mUpplu00ztQ/zYVx5zsnzsqqHbE1?=
+ =?us-ascii?Q?EYkYWD9KArGzTyhAAjfm7s2bpfyjdSbWBEgJbkv57y+7ULPWC8tovQb+TEV1?=
+ =?us-ascii?Q?amwnGRp6/dEXM5+qpX/QjFAbcw=3D=3D?=
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB4136.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Jan 2021 20:04:45.0326
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-Network-Message-Id: 0b353ebb-6dd2-4033-32bb-08d8b27e5005
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: KpKvpiifjS7kEjdznvmG6uXEZKLqZJ9pTUKYbv4sjao7zo+rB8hj1AJyAcGR88su
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB3159
+X-OriginatorOrg: fb.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
+ definitions=2021-01-06_11:2021-01-06,2021-01-06 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 suspectscore=0
+ impostorscore=0 clxscore=1015 priorityscore=1501 phishscore=0 spamscore=0
+ mlxlogscore=639 malwarescore=0 adultscore=0 lowpriorityscore=0 mlxscore=0
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2101060113
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 6, 2021 at 3:23 AM David Hildenbrand <david@redhat.com> wrote:
->
-> On 06.01.21 11:42, Michal Hocko wrote:
-> > On Wed 06-01-21 10:56:19, David Hildenbrand wrote:
-> > [...]
-> >> Note that this is not sufficient in the general case. I already
-> >> mentioned that we effectively override an already initialized memmap.
-> >>
-> >> ---
-> >>
-> >> [        SECTION             ]
-> >> Before:
-> >> [ ZONE_NORMAL ][    Hole     ]
-> >>
-> >> The hole has some node/zone (currently 0/0, discussions ongoing on how
-> >> to optimize that to e.g., ZONE_NORMAL in this example) and is
-> >> PG_reserved - looks like an ordinary memory hole.
-> >>
-> >> After memremap:
-> >> [ ZONE_NORMAL ][ ZONE_DEVICE ]
-> >>
-> >> The already initialized memmap was converted to ZONE_DEVICE. Your
-> >> slowpath will work.
-> >>
-> >> After memunmap (no poisioning):
-> >> [ ZONE_NORMAL ][ ZONE_DEVICE ]
-> >>
-> >> The slow path is no longer working. pfn_to_online_page() might return
-> >> something that is ZONE_DEVICE.
-> >>
-> >> After memunmap (poisioning):
-> >> [ ZONE_NORMAL ][ POISONED    ]
-> >>
-> >> The slow path is no longer working. pfn_to_online_page() might return
-> >> something that will BUG_ON via page_to_nid() etc.
-> >>
-> >> ---
-> >>
-> >> Reason is that pfn_to_online_page() does no care about sub-sections. And
-> >> for now, it didn't had to. If there was an online section, it either was
-> >>
-> >> a) Completely present. The whole memmap is initialized to sane values.
-> >> b) Partially present. The whole memmap is initialized to sane values.
-> >>
-> >> memremap/memunmap messes with case b)
-> >
-> > I do not see we ever clear the newly added flag and my understanding is
-> > that the subsection removed would lead to get_dev_pagemap returning a
-> > NULL. Which would obviously need to be checked for pfn_to_online_page.
-> > Or do I miss anything and the above is not the case and we could still
-> > get false positives?
->
-> See my example above ("After memunmap").
->
-> We're still in the slow pathg. pfn_to_online_page() will return a struct
-> page as get_dev_pagemap() is now  NULL.
->
-> Yet page_zone(page) will either
-> - BUG_ON (memmap was poisoned)
-> - return ZONE_DEVICE zone (memmap not poisoned when memunmapping)
->
-> As I said, can be tackled by checking for pfn_section_valid() at least
-> on the slow path. Ideally also on the fast path.
+On Wed, Jan 06, 2021 at 11:50:44AM -0800, Andrew Morton wrote:
+> On Tue, 5 Jan 2021 20:22:39 -0800 Roman Gushchin <guro@fb.com> wrote:
+> 
+> > Imran Khan reported a regression in hackbench results caused by the
+> > commit f2fe7b09a52b ("mm: memcg/slab: charge individual slab objects
+> > instead of pages").
+> 
+> How large was the regression?
 
-Good eye, I glazed over that the existing pfn_section_valid() check in
-pfn_valid() is obviated by early_section(). I'll respin with a
-standalone pfn_section_valid() gate in pfn_to_online_page().
+~16% according to Imran's data.
 
->
-> >
-> >> Well have to further tweak pfn_to_online_page(). You'll have to also
-> >> check pfn_section_valid() *at least* on the slow path. Less-hacky would
-> >> be checking it also in the "somehwat-faster" path - that would cover
-> >> silently overriding a memmap that's visible via pfn_to_online_page().
-> >> Might slow down things a bit.
-> >>
-> >>
-> >> Not completely opposed to this, but I would certainly still prefer just
-> >> avoiding this corner case completely instead of patching around it. Thanks!
-> >
-> > Well, I would love to have no surprises either. So far there was not
-> > actual argument why the pmem reserved space cannot be fully initialized.
->
-> Yes, I'm still hoping Dan can clarify that.
+> 
+> > --- a/mm/memcontrol.c
+> > +++ b/mm/memcontrol.c
+> > @@ -3122,9 +3122,7 @@ void __memcg_kmem_uncharge(struct mem_cgroup *memcg, unsigned int nr_pages)
+> >  	if (!cgroup_subsys_on_dfl(memory_cgrp_subsys))
+> >  		page_counter_uncharge(&memcg->kmem, nr_pages);
+> >  
+> > -	page_counter_uncharge(&memcg->memory, nr_pages);
+> > -	if (do_memsw_account())
+> > -		page_counter_uncharge(&memcg->memsw, nr_pages);
+> > +	refill_stock(memcg, nr_pages);
+> >  }
+> 
+> IOW, which kernel version(s) should we be patching?
 
-Complexity and effective utility (once pfn_to_online_page() is fixed)
-are the roadblocks in my mind. The altmap is there to allow for PMEM
-capacity to be used as memmap space, so there would need to be code to
-break that circular dependency and allocate a memmap for the metadata
-space from DRAM and the rest of the memmap space for the data capacity
-from pmem itself. That memmap-for-pmem-metadata will still represent
-offline pages. So once pfn_to_online_page() is fixed, what pfn-walker
-is going to be doing pfn_to_page() on PMEM metadata? Secondly, there
-is a PMEM namespace mode called "raw" that eschews DAX and 'struct
-page' for pmem and just behaves like a memory-backed block device. The
-end result is still that pfn walkers need to discover if a PMEM pfn
-has a page, so I don't see what "sometimes there's an
-memmap-for-pmem-metadata" buys us?
+5.9+
 
->
-> > On the other hand making sure that pfn_to_online_page sounds like the
-> > right thing to do. And having an explicit check for zone device there in
-> > a slow path makes sense to me.
->
-> As I said, I'd favor to simplify and just get rid of the special case,
-> instead of coming up with increasingly complex ways to deal with it.
-> pfn_to_online_page() used to be simple, essentially checking a single
-> flag was sufficient in most setups.
-
-I think the logic to throw away System RAM that might collide with
-PMEM and soft-reserved memory within a section is on the order of the
-same code complexity as the patch proposed here, no? Certainly the
-throw-away concept itself is easier to grasp, but I don't think that
-would be reflected in the code patch to achieve it... willing to be
-proved wrong with a patch.
+Thanks!
