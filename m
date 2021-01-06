@@ -2,235 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4AE422EB865
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 04:20:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CADC22EB866
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 04:24:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726076AbhAFDTL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 22:19:11 -0500
-Received: from audible.transient.net ([24.143.126.66]:60276 "HELO
-        audible.transient.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with SMTP id S1725730AbhAFDTL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 22:19:11 -0500
-Received: (qmail 18976 invoked from network); 6 Jan 2021 03:18:30 -0000
-Received: from cucamonga.audible.transient.net (192.168.2.5)
-  by canarsie.audible.transient.net with QMQP; 6 Jan 2021 03:18:30 -0000
-Received: (nullmailer pid 4867 invoked by uid 1000);
-        Wed, 06 Jan 2021 03:18:30 -0000
-Date:   Wed, 6 Jan 2021 03:18:29 +0000
-From:   Jamie Heilman <jamie@audible.transient.net>
-To:     Karol Herbst <kherbst@redhat.com>, Ben Skeggs <bskeggs@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        nouveau <nouveau@lists.freedesktop.org>
-Subject: Re: [Nouveau] nouveau regression post v5.8, still present in v5.10
-Message-ID: <X/UsBWwFR+V0hIOS@audible.transient.net>
-Mail-Followup-To: Karol Herbst <kherbst@redhat.com>,
-        Ben Skeggs <bskeggs@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        nouveau <nouveau@lists.freedesktop.org>
-References: <X+WV8OiQzTIfLdgW@audible.transient.net>
- <CACO55tt9GbwBU6igAJ_8RjwzSZcDbu+_1wGWKiye3TosgoiHyw@mail.gmail.com>
- <X/NO9kAlCd/k8Di2@audible.transient.net>
- <X/NT0iN9KlSXQJJ7@audible.transient.net>
+        id S1726345AbhAFDVY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 22:21:24 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43352 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725948AbhAFDVY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Jan 2021 22:21:24 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7B3E422D01;
+        Wed,  6 Jan 2021 03:20:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1609903243;
+        bh=5d5qUEyCc2AGrp6ZcUYBmbmTN9GQRSG6k9HOKJrjqUQ=;
+        h=From:To:Cc:Subject:Date:From;
+        b=OcwATME0AodyAX8uJNQGgPZdaQ7aovS4ULW4QPBAzxJS8n3E9UYnYPCOZTXGrApW+
+         eutihtP+23XQtTYXySGi6NjfnJUeFMbVWmApPerUMpyhcs8KYeWkLFPxsTjtAoC9Fr
+         yKaTw1QBQMdHq0twjypbIPn75djOR/aaRGDlmU3sE1mn6U/ZOFoDA/yeTd69k1mEon
+         uVt5mSZyYeARMgPN2L2E60bQ5k3ekNTd+OUGoJuWxrSJL0plsmFerNCDz1ZJTEIQff
+         FCcRrGAyMUjYVeT6JVJZuJmb+LkIWz+eYcbnuDI3rtjAQCbiGFlF+XfIos0S/rjhLg
+         kAXSLjszit/bQ==
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     "Naveen N . Rao" <naveen.n.rao@linux.vnet.ibm.com>,
+        linux-kernel@vger.kernel.org, mhiramat@kernel.org
+Subject: [PATCH] tracing/kprobes: Do the notrace functions check without kprobes on ftrace
+Date:   Wed,  6 Jan 2021 12:20:40 +0900
+Message-Id: <160990323982.16047.9136060149082849917.stgit@devnote2>
+X-Mailer: git-send-email 2.25.1
+User-Agent: StGit/0.19
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <X/NT0iN9KlSXQJJ7@audible.transient.net>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Jamie Heilman wrote:
-> Jamie Heilman wrote:
-> > Karol Herbst wrote:
-> > > do you think you'd be able to do a kernel bisect in order to pinpoint
-> > > the actual commit causing it? Thanks
-> > 
-> > No.  I can't reproduce it reliably.  I if I could, bisection wouldn't
-> > be a problem but as I can't and as it can take weeks for the problem
-> > to occur there's essentially no chance.  I know it regressed roughly
-> > in 5.8-rc1 only because that's what I was running when the first event
-> > occured.
-> 
-> er, 5.9.0-rc1 rather
+Enable the notrace function check on the architecture which doesn't
+support kprobes on ftrace. This notrace function check is not only
+for the kprobes on ftrace but also sw-breakpoint based kprobes.
+Thus there is no reason to limit this check for the arch which
+supports kprobes on ftrace.
 
-Actually ... I've found a way to reproduce this in hours intead of
-weeks, so I think I may be able to bisect it after all, it's something
-of a brute force approach and its probably doing horrible things to
-the backlight in my poor old monitor, but just running this:
+This also changes the dependency of Kconfig. Because kprobe event
+uses the function tracer's address list for identifying notrace
+function, if the CONFIG_FUNCTION_TRACER=n, it can not check whether
+the target function is notrace or not.
 
-#!/bin/sh
-sleep 5
-while ! dmesg | tail | grep -q nouveau
-do
-    xset dpms force off
-    sleep 65
-    xdotool mousemove 1024 1024 mousemove restore
-    sleep 10
-done
+Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
+Acked-by: Naveen N. Rao <naveen.n.rao@linux.vnet.ibm.com>
+---
+ kernel/trace/Kconfig        |    2 +-
+ kernel/trace/trace_kprobe.c |    2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-Does manage to trip the issue sooner than it would otherwise happen
-with natural usage.  Given that this is my primary workstation and I
-sort of need it functional during waking hours, it'll take me a bit,
-but I'll update folks when I have the error more dialed in.
+diff --git a/kernel/trace/Kconfig b/kernel/trace/Kconfig
+index fe60f9d7a0e6..d19cf2070033 100644
+--- a/kernel/trace/Kconfig
++++ b/kernel/trace/Kconfig
+@@ -540,7 +540,7 @@ config KPROBE_EVENTS
+ config KPROBE_EVENTS_ON_NOTRACE
+ 	bool "Do NOT protect notrace function from kprobe events"
+ 	depends on KPROBE_EVENTS
+-	depends on KPROBES_ON_FTRACE
++	depends on FUNCTION_TRACER
+ 	default n
+ 	help
+ 	  This is only for the developers who want to debug ftrace itself
+diff --git a/kernel/trace/trace_kprobe.c b/kernel/trace/trace_kprobe.c
+index b29f92c51b1a..280b7e318f18 100644
+--- a/kernel/trace/trace_kprobe.c
++++ b/kernel/trace/trace_kprobe.c
+@@ -434,7 +434,7 @@ static int disable_trace_kprobe(struct trace_event_call *call,
+ 	return 0;
+ }
+ 
+-#if defined(CONFIG_KPROBES_ON_FTRACE) && \
++#if defined(CONFIG_FUNCTION_TRACER) && \
+ 	!defined(CONFIG_KPROBE_EVENTS_ON_NOTRACE)
+ static bool __within_notrace_func(unsigned long addr)
+ {
 
-I'm using git bisect start -- drivers/gpu/drm include/drm include/video
-in an effort to make this go a bit quicker, let me know if you think
-that's a bad idea or I should add other paths.
-
-> > > On Sun, Dec 27, 2020 at 8:16 PM Jamie Heilman
-> > > <jamie@audible.transient.net> wrote:
-> > > >
-> > > > Something between v5.8 and v5.9 has resulted in periodically losing video.
-> > > > Unfortunately, I can't reliably reproduce it, it seems to happen every
-> > > > once in a long while---I can go weeks without an occurance, but it
-> > > > always seems to happen after my workstation has been idle long enough
-> > > > to screen blank and put the monitor to sleep.  I'm using a single
-> > > > display (Dell 2405FPW) connected via DVI, running X (Xorg 1.20.x from
-> > > > Debian sid).  I don't really do anything fancy, xterms, a browser or
-> > > > two, play the occasional video, but like I said, I can't reliably
-> > > > reproduce this.  I've had it happen about 11 times since August.
-> > > >
-> > > > lspci -vv output is:
-> > > >
-> > > > 01:00.0 VGA compatible controller: NVIDIA Corporation G86 [Quadro NVS 290] (rev a1) (prog-if 00 [VGA controller])
-> > > >         Subsystem: NVIDIA Corporation G86 [Quadro NVS 290]
-> > > >         Control: I/O+ Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop- ParErr- Stepping- SERR- FastB2B- DisINTx+
-> > > >         Status: Cap+ 66MHz- UDF- FastB2B- ParErr- DEVSEL=fast >TAbort- <TAbort- <MAbort- >SERR- <PERR- INTx-
-> > > >         Latency: 0, Cache Line Size: 64 bytes
-> > > >         Interrupt: pin A routed to IRQ 28
-> > > >         Region 0: Memory at fc000000 (32-bit, non-prefetchable) [size=16M]
-> > > >         Region 1: Memory at d0000000 (64-bit, prefetchable) [size=256M]
-> > > >         Region 3: Memory at fa000000 (64-bit, non-prefetchable) [size=32M]
-> > > >         Region 5: I/O ports at dc80 [size=128]
-> > > >         Expansion ROM at 000c0000 [disabled] [size=128K]
-> > > >         Capabilities: [60] Power Management version 2
-> > > >                 Flags: PMEClk- DSI- D1- D2- AuxCurrent=0mA PME(D0-,D1-,D2-,D3hot-,D3cold-)
-> > > >                 Status: D0 NoSoftRst- PME-Enable- DSel=0 DScale=0 PME-
-> > > >         Capabilities: [68] MSI: Enable+ Count=1/1 Maskable- 64bit+
-> > > >                 Address: 00000000fee01004  Data: 4023
-> > > >         Capabilities: [78] Express (v1) Endpoint, MSI 00
-> > > >                 DevCap: MaxPayload 128 bytes, PhantFunc 0, Latency L0s <512ns, L1 <4us
-> > > >                         ExtTag+ AttnBtn- AttnInd- PwrInd- RBE+ FLReset- SlotPowerLimit 25.000W
-> > > >                 DevCtl: CorrErr- NonFatalErr+ FatalErr+ UnsupReq-
-> > > >                         RlxdOrd+ ExtTag+ PhantFunc- AuxPwr- NoSnoop+
-> > > >                         MaxPayload 128 bytes, MaxReadReq 512 bytes
-> > > >                 DevSta: CorrErr- NonFatalErr- FatalErr- UnsupReq- AuxPwr- TransPend-
-> > > >                 LnkCap: Port #0, Speed 2.5GT/s, Width x16, ASPM L0s L1, Exit Latency L0s <512ns, L1 <4us
-> > > >                         ClockPM- Surprise- LLActRep- BwNot- ASPMOptComp-
-> > > >                 LnkCtl: ASPM Disabled; RCB 64 bytes, Disabled- CommClk+
-> > > >                         ExtSynch- ClockPM- AutWidDis- BWInt- AutBWInt-
-> > > >                 LnkSta: Speed 2.5GT/s (ok), Width x16 (ok)
-> > > >                         TrErr- Train- SlotClk+ DLActive- BWMgmt- ABWMgmt-
-> > > >         Capabilities: [100 v1] Virtual Channel
-> > > >                 Caps:   LPEVC=0 RefClk=100ns PATEntryBits=1
-> > > >                 Arb:    Fixed- WRR32- WRR64- WRR128-
-> > > >                 Ctrl:   ArbSelect=Fixed
-> > > >                 Status: InProgress-
-> > > >                 VC0:    Caps:   PATOffset=00 MaxTimeSlots=1 RejSnoopTrans-
-> > > >                         Arb:    Fixed- WRR32- WRR64- WRR128- TWRR128- WRR256-
-> > > >                         Ctrl:   Enable+ ID=0 ArbSelect=Fixed TC/VC=01
-> > > >                         Status: NegoPending- InProgress-
-> > > >         Capabilities: [128 v1] Power Budgeting <?>
-> > > >         Capabilities: [600 v1] Vendor Specific Information: ID=0001 Rev=1 Len=024 <?>
-> > > >         Kernel driver in use: nouveau
-> > > >
-> > > > The last time this happened, this is what got logged:
-> > > >
-> > > > nouveau 0000:01:00.0: disp: ERROR 5 [INVALID_STATE] 06 [] chid 1 mthd 0080 data 00000001
-> > > > nouveau 0000:01:00.0: disp: Base 1:
-> > > > nouveau 0000:01:00.0: disp:        0084: 00000000
-> > > > nouveau 0000:01:00.0: disp:        0088: 00000000
-> > > > nouveau 0000:01:00.0: disp:        008c: 00000000
-> > > > nouveau 0000:01:00.0: disp:        0090: 00000000
-> > > > nouveau 0000:01:00.0: disp:        0094: 00000000
-> > > > nouveau 0000:01:00.0: disp:        00a0: 00000060 -> 00000070
-> > > > nouveau 0000:01:00.0: disp:        00a4: 00000000 -> f0000000
-> > > > nouveau 0000:01:00.0: disp:        00c0: 00000000
-> > > > nouveau 0000:01:00.0: disp:        00c4: 00000000
-> > > > nouveau 0000:01:00.0: disp:        00c8: 00000000
-> > > > nouveau 0000:01:00.0: disp:        00cc: 00000000
-> > > > nouveau 0000:01:00.0: disp:        00e0: 40000000
-> > > > nouveau 0000:01:00.0: disp:        00e4: 00000000
-> > > > nouveau 0000:01:00.0: disp:        00e8: 00000000
-> > > > nouveau 0000:01:00.0: disp:        00ec: 00000000
-> > > > nouveau 0000:01:00.0: disp:        00fc: 00000000
-> > > > nouveau 0000:01:00.0: disp:        0100: fffe0000
-> > > > nouveau 0000:01:00.0: disp:        0104: 00000000
-> > > > nouveau 0000:01:00.0: disp:        0110: 00000000
-> > > > nouveau 0000:01:00.0: disp:        0114: 00000000
-> > > > nouveau 0000:01:00.0: disp: Base 1 - Image 0:
-> > > > nouveau 0000:01:00.0: disp:        0800: 00009500
-> > > > nouveau 0000:01:00.0: disp:        0804: 00000000
-> > > > nouveau 0000:01:00.0: disp:        0808: 04b00780
-> > > > nouveau 0000:01:00.0: disp:        080c: 00007804
-> > > > nouveau 0000:01:00.0: disp:        0810: 0000cf00
-> > > > nouveau 0000:01:00.0: disp: Base 1 - Image 1:
-> > > > nouveau 0000:01:00.0: disp:        0c00: 00009500
-> > > > nouveau 0000:01:00.0: disp:        0c04: 00000000
-> > > > nouveau 0000:01:00.0: disp:        0c08: 04b00780
-> > > > nouveau 0000:01:00.0: disp:        0c0c: 00007804
-> > > > nouveau 0000:01:00.0: disp:        0c10: 0000cf00
-> > > > nouveau 0000:01:00.0: disp: ERROR 5 [INVALID_STATE] 06 [] chid 1 mthd 0080 data 00000001
-> > > > nouveau 0000:01:00.0: disp: Base 1:
-> > > > nouveau 0000:01:00.0: disp:        0084: 00000000
-> > > > nouveau 0000:01:00.0: disp:        0088: 00000000
-> > > > nouveau 0000:01:00.0: disp:        008c: 00000000
-> > > > nouveau 0000:01:00.0: disp:        0090: 00000000
-> > > > nouveau 0000:01:00.0: disp:        0094: 00000000
-> > > > nouveau 0000:01:00.0: disp:        00a0: 00000060 -> 00000070
-> > > > nouveau 0000:01:00.0: disp:        00a4: 00000000 -> f0000000
-> > > > nouveau 0000:01:00.0: disp:        00c0: 00000000
-> > > > nouveau 0000:01:00.0: disp:        00c4: 00000000
-> > > > nouveau 0000:01:00.0: disp:        00c8: 00000000
-> > > > nouveau 0000:01:00.0: disp:        00cc: 00000000
-> > > > nouveau 0000:01:00.0: disp:        00e0: 40000000
-> > > > nouveau 0000:01:00.0: disp:        00e4: 00000000
-> > > > nouveau 0000:01:00.0: disp:        00e8: 00000000
-> > > > nouveau 0000:01:00.0: disp:        00ec: 00000000
-> > > > nouveau 0000:01:00.0: disp:        00fc: 00000000
-> > > > nouveau 0000:01:00.0: disp:        0100: fffe0000
-> > > > nouveau 0000:01:00.0: disp:        0104: 00000000
-> > > > nouveau 0000:01:00.0: disp:        0110: 00000000
-> > > > nouveau 0000:01:00.0: disp:        0114: 00000000
-> > > > nouveau 0000:01:00.0: disp: Base 1 - Image 0:
-> > > > nouveau 0000:01:00.0: disp:        0800: 00009500
-> > > > nouveau 0000:01:00.0: disp:        0804: 00000000
-> > > > nouveau 0000:01:00.0: disp:        0808: 04b00780
-> > > > nouveau 0000:01:00.0: disp:        080c: 00007804
-> > > > nouveau 0000:01:00.0: disp:        0810: 0000cf00
-> > > > nouveau 0000:01:00.0: disp: Base 1 - Image 1:
-> > > > nouveau 0000:01:00.0: disp:        0c00: 00009500
-> > > > nouveau 0000:01:00.0: disp:        0c04: 00000000
-> > > > nouveau 0000:01:00.0: disp:        0c08: 04b00780
-> > > > nouveau 0000:01:00.0: disp:        0c0c: 00007804
-> > > > nouveau 0000:01:00.0: disp:        0c10: 0000cf00
-> > > > nouveau 0000:01:00.0: DRM: core notifier timeout
-> > > > nouveau 0000:01:00.0: DRM: base-0: timeout
-> > > >
-> > > > I've got logs of all of this, if they help I can collect them.  The
-> > > > timeout message are consistent the error messages a little less so.
-> > > >
-> > > > If there's more debugging I can do when this happens, I'd love to know
-> > > > what it is.
-> > > >
-> > > > kernel config: http://audible.transient.net/~jamie/k/nouveau.config-5.10.0
-> > > > dmesg at boot: http://audible.transient.net/~jamie/k/nouveau.dmesg
-> > > >
-> > > > --
-> > > > Jamie Heilman                     http://audible.transient.net/~jamie/
-> > > > _______________________________________________
-> > > > Nouveau mailing list
-> > > > Nouveau@lists.freedesktop.org
-> > > > https://lists.freedesktop.org/mailman/listinfo/nouveau
-> > > >
-> > > 
-> > 
-> > -- 
-> > Jamie Heilman                     http://audible.transient.net/~jamie/
-> 
-> -- 
-> Jamie Heilman                     http://audible.transient.net/~jamie/
-
--- 
-Jamie Heilman                     http://audible.transient.net/~jamie/
