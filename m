@@ -2,78 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A00C72EC53D
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 21:42:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1EAB92EC542
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 21:42:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727584AbhAFUkv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Jan 2021 15:40:51 -0500
-Received: from mga07.intel.com ([134.134.136.100]:47800 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727433AbhAFUkv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Jan 2021 15:40:51 -0500
-IronPort-SDR: Nb4FSlTcK+Hcm1TZz3pqJ+bx5xTmnzuvldO/MfjZVsmHpP17eUAGAtsah6IusgSFawznViWWfA
- ZVoawAK6os4g==
-X-IronPort-AV: E=McAfee;i="6000,8403,9856"; a="241410936"
-X-IronPort-AV: E=Sophos;i="5.79,328,1602572400"; 
-   d="scan'208";a="241410936"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Jan 2021 12:40:09 -0800
-IronPort-SDR: ULqD7HGo7WhNapSfgJHyJjBQ4PT9e8F+5ITO1sXJDhZB4Cv1CqH4/FsoN/X+2D64T52uNPsRJ2
- Xy/E+vJ9pMCg==
-X-IronPort-AV: E=Sophos;i="5.79,328,1602572400"; 
-   d="scan'208";a="567534706"
-Received: from djiang5-desk3.ch.intel.com ([143.182.136.137])
-  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Jan 2021 12:40:08 -0800
-Subject: [PATCH] x86: fix enqcmds() sparse warning
-From:   Dave Jiang <dave.jiang@intel.com>
-To:     bp@alien8.de, x86@kernel.org
-Cc:     kernel test robot <lkp@intel.com>,
-        Ben Widawsky <ben.widawsky@intel.com>,
-        dan.j.williams@intel.com, ben.widawsky@intel.com,
-        tglx@linutronix.de, mingo@redhat.com, hpa@zytor.com,
+        id S1727684AbhAFUlX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Jan 2021 15:41:23 -0500
+Received: from mail-40131.protonmail.ch ([185.70.40.131]:15838 "EHLO
+        mail-40131.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727403AbhAFUlU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 Jan 2021 15:41:20 -0500
+Date:   Wed, 06 Jan 2021 20:40:28 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me; s=protonmail;
+        t=1609965638; bh=VeALibfQe4iazgZFIJD/vfdV5BE9bJBaSBq4Sr4e3Ss=;
+        h=Date:To:From:Cc:Reply-To:Subject:From;
+        b=NZDOUYJFmgCYadtfcfwenuX+FyotOLU7RXjXD7lCNsEilqrCWaGBL2HlF2Tz8V6Fo
+         GKi+nVoQ+pmGnJcRcdnRcawVZlzJTecaJWD4fj31o1BKfymN/Zsm3z/F6WHMHjoSpb
+         XFlZF2fvpmnjei6G0CSMUsCe6ZlIydaITvVSg9lChWxZCZ5+t+wy+YLHVXTprefgF6
+         d2ydKsQMpesC77Z5k7SfAmpKY7eBik7jQXaCyBruiL/LFE4wbtYvK1uU+qcSXBErC2
+         DlbPpAoek0MH2jNaF86lBXcUxUz+Zr2K4pOch9VsN6drXVAWwXU6JN+OgCDxl61Thq
+         M8XBUHEgrlgRA==
+To:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+From:   Alexander Lobakin <alobakin@pm.me>
+Cc:     Alexander Lobakin <alobakin@pm.me>, netdev@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Date:   Wed, 06 Jan 2021 13:40:08 -0700
-Message-ID: <160996560856.3973505.10433205523993096439.stgit@djiang5-desk3.ch.intel.com>
-User-Agent: StGit/0.23-29-ga622f1
+Reply-To: Alexander Lobakin <alobakin@pm.me>
+Subject: [PATCH net-next] net: sysctl: cleanup net_sysctl_init()
+Message-ID: <20210106204014.34730-1-alobakin@pm.me>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
+        autolearn=disabled version=3.4.4
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
+        mailout.protonmail.ch
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add missing __iomem anotation to address sparse warning.
+'net_header' is not used outside of this function, so can be moved
+from BSS onto the stack.
+Declarations of one-element arrays are discouraged, and there's no
+need to store 'empty' in BSS. Simply allocate it from heap at init.
 
-"sparse warnings: (new ones prefixed by >>)"
-   drivers/dma/idxd/submit.c: note: in included file (through include/linux/io.h, include/linux/pci.h):
-   arch/x86/include/asm/io.h:422:27: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *dst @@     got void [noderef] __iomem *dst @@
-   arch/x86/include/asm/io.h:422:27: sparse:     expected void *dst
-   arch/x86/include/asm/io.h:422:27: sparse:     got void [noderef] __iomem *dst
-   drivers/dma/idxd/submit.c: note: in included file (through arch/x86/include/asm/processor.h, arch/x86/include/asm/timex.h, include/linux/timex.h, ...):
->> arch/x86/include/asm/special_insns.h:289:41: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected struct <noident> *__dst @@     got void [noderef] __iomem *dst @@
-   arch/x86/include/asm/special_insns.h:289:41: sparse:     expected struct <noident> *__dst
-   arch/x86/include/asm/special_insns.h:289:41: sparse:     got void [noderef] __iomem *dst
-
-Fixes: 7f5933f81bd8 ("x86/asm: Add an enqcmds() wrapper for the ENQCMDS instruction")
-Reported-by: kernel test robot <lkp@intel.com>
-Reviewed-by: Ben Widawsky <ben.widawsky@intel.com>
-Signed-off-by: Dave Jiang <dave.jiang@intel.com>
+Signed-off-by: Alexander Lobakin <alobakin@pm.me>
 ---
- arch/x86/include/asm/special_insns.h |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ net/sysctl_net.c | 27 +++++++++++++++++----------
+ 1 file changed, 17 insertions(+), 10 deletions(-)
 
-diff --git a/arch/x86/include/asm/special_insns.h b/arch/x86/include/asm/special_insns.h
-index 4e234645f0c6..1d3cbaef4bb7 100644
---- a/arch/x86/include/asm/special_insns.h
-+++ b/arch/x86/include/asm/special_insns.h
-@@ -286,7 +286,7 @@ static inline void movdir64b(void __iomem *dst, const void *src)
- static inline int enqcmds(void __iomem *dst, const void *src)
+diff --git a/net/sysctl_net.c b/net/sysctl_net.c
+index d14dab8b6774..4cf81800a907 100644
+--- a/net/sysctl_net.c
++++ b/net/sysctl_net.c
+@@ -92,27 +92,34 @@ static struct pernet_operations sysctl_pernet_ops =3D {
+ =09.exit =3D sysctl_net_exit,
+ };
+=20
+-static struct ctl_table_header *net_header;
+ __init int net_sysctl_init(void)
  {
- 	const struct { char _[64]; } *__src = src;
--	struct { char _[64]; } *__dst = dst;
-+	struct { char _[64]; } __iomem *__dst = dst;
- 	int zf;
- 
- 	/*
+-=09static struct ctl_table empty[1];
++=09struct ctl_table_header *net_header;
++=09struct ctl_table *empty;
+ =09int ret =3D -ENOMEM;
++
+ =09/* Avoid limitations in the sysctl implementation by
+ =09 * registering "/proc/sys/net" as an empty directory not in a
+ =09 * network namespace.
+ =09 */
++
++=09empty =3D kzalloc(sizeof(*empty), GFP_KERNEL);
++=09if (!empty)
++=09=09return ret;
++
+ =09net_header =3D register_sysctl("net", empty);
+ =09if (!net_header)
+-=09=09goto out;
++=09=09goto err_free;
++
+ =09ret =3D register_pernet_subsys(&sysctl_pernet_ops);
+-=09if (ret)
+-=09=09goto out1;
+-out:
+-=09return ret;
+-out1:
++=09if (!ret)
++=09=09return 0;
++
+ =09unregister_sysctl_table(net_header);
+-=09net_header =3D NULL;
+-=09goto out;
++err_free:
++=09kfree(empty);
++
++=09return ret;
+ }
+=20
+ struct ctl_table_header *register_net_sysctl(struct net *net,
+--=20
+2.30.0
 
 
