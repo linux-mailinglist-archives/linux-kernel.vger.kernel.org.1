@@ -2,301 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 358EC2EBD41
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 12:40:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B66312EBD3E
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 12:40:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726490AbhAFLkK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Jan 2021 06:40:10 -0500
-Received: from relay.sw.ru ([185.231.240.75]:57296 "EHLO relay3.sw.ru"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726073AbhAFLkJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Jan 2021 06:40:09 -0500
-Received: from [192.168.15.143]
-        by relay3.sw.ru with esmtp (Exim 4.94)
-        (envelope-from <ktkhai@virtuozzo.com>)
-        id 1kx78v-00FdBi-4Z; Wed, 06 Jan 2021 14:38:21 +0300
-Subject: Re: [v3 PATCH 06/11] mm: memcontrol: rename shrinker_map to
- shrinker_info
-To:     Yang Shi <shy828301@gmail.com>, guro@fb.com, shakeelb@google.com,
-        david@fromorbit.com, hannes@cmpxchg.org, mhocko@suse.com,
-        akpm@linux-foundation.org
-Cc:     linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210105225817.1036378-1-shy828301@gmail.com>
- <20210105225817.1036378-7-shy828301@gmail.com>
-From:   Kirill Tkhai <ktkhai@virtuozzo.com>
-Message-ID: <ce786c09-64bd-b7fc-4fe8-c4862440c129@virtuozzo.com>
-Date:   Wed, 6 Jan 2021 14:38:31 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        id S1726442AbhAFLji convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 6 Jan 2021 06:39:38 -0500
+Received: from mail-lf1-f47.google.com ([209.85.167.47]:37135 "EHLO
+        mail-lf1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726395AbhAFLji (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 Jan 2021 06:39:38 -0500
+Received: by mail-lf1-f47.google.com with SMTP id o17so5869423lfg.4;
+        Wed, 06 Jan 2021 03:39:20 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=9NAogX/r0yPOocWypmpLSORnJfFTmk75hbuYknPac4o=;
+        b=Y/1eh1j29BMjk1qCXEHx619Hj8AcbdQBW6B2bNMotTdZvaaUheOynvDKresa9TOn2X
+         hw/BgAWCjZnGzMYUxTjmhygnBIrziuvffaMXRYPQue2nnpOAo17ZcqEHcThnf4hzqXwl
+         CNkwxlVuFnqObR5O99pIa4vnzjXGr6OM0UqehRlWw1TfOo/n7JKx5lC8l9/TngrrxCUK
+         61WetHWFeVRpTIw66oG7JXWhKQSBDaMXsyjqFnbPaScE9sbvBe+C3JlDuStduNoLongh
+         hJpyIrJUScXDL1vLhlDMTnrKtODmh2gMtzXc2upVtv3VmsUV9UxCc/YdTCO16vsoMylQ
+         ykdQ==
+X-Gm-Message-State: AOAM531cqHIwgjViL0Tq7Q31d4wPD1zRQszwJ/42F69jO5W17uxSEJQa
+        5qd2gsH1sXeFtoeKTpFAARAvOKt9aNS5Fw==
+X-Google-Smtp-Source: ABdhPJxjKEV8Q2sKm9aALXRuigiseAO3GYM/HOt/BA5XgTvnzeZH1PIifoo6Hm/PhYBo5vVIvvvA5w==
+X-Received: by 2002:a05:6512:3047:: with SMTP id b7mr1685168lfb.210.1609933134626;
+        Wed, 06 Jan 2021 03:38:54 -0800 (PST)
+Received: from mail-lf1-f53.google.com (mail-lf1-f53.google.com. [209.85.167.53])
+        by smtp.gmail.com with ESMTPSA id g2sm297977lfb.255.2021.01.06.03.38.53
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 06 Jan 2021 03:38:54 -0800 (PST)
+Received: by mail-lf1-f53.google.com with SMTP id b26so5791069lff.9;
+        Wed, 06 Jan 2021 03:38:53 -0800 (PST)
+X-Received: by 2002:a2e:8852:: with SMTP id z18mr2089818ljj.94.1609933133706;
+ Wed, 06 Jan 2021 03:38:53 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20210105225817.1036378-7-shy828301@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210103100007.32867-1-samuel@sholland.org> <20210103100007.32867-5-samuel@sholland.org>
+ <a6c2eac4-7e98-ecb4-ee8a-d67a7f1b6871@arm.com> <20210106110643.agq3mjyhgvg3w4i6@gilmour>
+In-Reply-To: <20210106110643.agq3mjyhgvg3w4i6@gilmour>
+From:   Chen-Yu Tsai <wens@csie.org>
+Date:   Wed, 6 Jan 2021 19:38:43 +0800
+X-Gmail-Original-Message-ID: <CAGb2v64mcLogZax8vVJJxG9feBzmGc8VyazTvp7XkBAoLXw9JA@mail.gmail.com>
+Message-ID: <CAGb2v64mcLogZax8vVJJxG9feBzmGc8VyazTvp7XkBAoLXw9JA@mail.gmail.com>
+Subject: Re: [PATCH v2 4/4] arm64: dts: allwinner: h6: Use RSB for AXP805 PMIC connection
+To:     Maxime Ripard <maxime@cerno.tech>
+Cc:     =?UTF-8?Q?Andr=C3=A9_Przywara?= <andre.przywara@arm.com>,
+        Samuel Holland <samuel@sholland.org>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Rob Herring <robh+dt@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        devicetree <devicetree@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-sunxi <linux-sunxi@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 06.01.2021 01:58, Yang Shi wrote:
-> The following patch is going to add nr_deferred into shrinker_map, the change will
-> make shrinker_map not only include map anymore, so rename it to a more general
-> name.  And this should make the patch adding nr_deferred cleaner and readable and make
-> review easier.
-> 
-> Signed-off-by: Yang Shi <shy828301@gmail.com>
-> ---
->  include/linux/memcontrol.h |  8 ++---
->  mm/memcontrol.c            |  6 ++--
->  mm/vmscan.c                | 66 +++++++++++++++++++-------------------
->  3 files changed, 40 insertions(+), 40 deletions(-)
-> 
-> diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
-> index d128d2842f22..e05bbe8277cc 100644
-> --- a/include/linux/memcontrol.h
-> +++ b/include/linux/memcontrol.h
-> @@ -96,7 +96,7 @@ struct lruvec_stat {
->   * Bitmap of shrinker::id corresponding to memcg-aware shrinkers,
->   * which have elements charged to this memcg.
->   */
-> -struct memcg_shrinker_map {
-> +struct memcg_shrinker_info {
+On Wed, Jan 6, 2021 at 7:06 PM Maxime Ripard <maxime@cerno.tech> wrote:
+>
+> On Mon, Jan 04, 2021 at 10:54:19AM +0000, André Przywara wrote:
+> > On 03/01/2021 10:00, Samuel Holland wrote:
+> > > On boards where the only peripheral connected to PL0/PL1 is an X-Powers
+> > > PMIC, configure the connection to use the RSB bus rather than the I2C
+> > > bus. Compared to the I2C controller that shares the pins, the RSB
+> > > controller allows a higher bus frequency, and it is more CPU-efficient.
+> >
+> > But is it really necessary to change the DTs for those boards in this
+> > way? It means those newer DTs now become incompatible with older
+> > kernels, and I don't know if those reasons above really justify this.
+> >
+> > I understand that we officially don't care about "newer DTs on older
+> > kernels", but do we really need to break this deliberately, for no
+> > pressing reasons?
+> >
+> > P.S. I am fine with supporting RSB on H6, and even using it on new DTs,
+> > just want to avoid breaking existing ones.
+>
+> Doing so would also introduce some inconsistencies, one more thing to
+> consider during reviews, and would require more testing effort.
+>
+> I'm not sure that stretching our - already fairly sparse - resources
+> thin would be very wise here, especially for something that we don't
+> have to do and for a setup that isn't really used that much.
 
-Reviewing your next patch actively using new fields in this structure,
-I strongly insist on renaming it in "struct shrinker_info" instead of that.
+As soon as some software component starts running RSB, (which I assume
+is what Samuel is planning to do in Crust?), there's a chance that it
+doesn't switch the chip back to I2C. And then Linux won't be able to
+access it.
 
-Otherwise, lines of function declarations become too long.
+So I'm for keeping things consistent and converting all users to RSB.
 
->  	struct rcu_head rcu;
->  	unsigned long map[];
->  };
-> @@ -118,7 +118,7 @@ struct mem_cgroup_per_node {
->  
->  	struct mem_cgroup_reclaim_iter	iter;
->  
-> -	struct memcg_shrinker_map __rcu	*shrinker_map;
-> +	struct memcg_shrinker_info __rcu	*shrinker_info;
->  
->  	struct rb_node		tree_node;	/* RB tree node */
->  	unsigned long		usage_in_excess;/* Set to the value by which */
-> @@ -1581,8 +1581,8 @@ static inline bool mem_cgroup_under_socket_pressure(struct mem_cgroup *memcg)
->  	return false;
->  }
->  
-> -extern int memcg_alloc_shrinker_maps(struct mem_cgroup *memcg);
-> -extern void memcg_free_shrinker_maps(struct mem_cgroup *memcg);
-> +extern int memcg_alloc_shrinker_info(struct mem_cgroup *memcg);
-> +extern void memcg_free_shrinker_info(struct mem_cgroup *memcg);
->  extern void memcg_set_shrinker_bit(struct mem_cgroup *memcg,
->  				   int nid, int shrinker_id);
->  #else
-> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> index 817dde366258..126f1fd550c8 100644
-> --- a/mm/memcontrol.c
-> +++ b/mm/memcontrol.c
-> @@ -5248,11 +5248,11 @@ static int mem_cgroup_css_online(struct cgroup_subsys_state *css)
->  	struct mem_cgroup *memcg = mem_cgroup_from_css(css);
->  
->  	/*
-> -	 * A memcg must be visible for memcg_expand_shrinker_maps()
-> +	 * A memcg must be visible for memcg_expand_shrinker_info()
->  	 * by the time the maps are allocated. So, we allocate maps
->  	 * here, when for_each_mem_cgroup() can't skip it.
->  	 */
-> -	if (memcg_alloc_shrinker_maps(memcg)) {
-> +	if (memcg_alloc_shrinker_info(memcg)) {
->  		mem_cgroup_id_remove(memcg);
->  		return -ENOMEM;
->  	}
-> @@ -5316,7 +5316,7 @@ static void mem_cgroup_css_free(struct cgroup_subsys_state *css)
->  	vmpressure_cleanup(&memcg->vmpressure);
->  	cancel_work_sync(&memcg->high_work);
->  	mem_cgroup_remove_from_trees(memcg);
-> -	memcg_free_shrinker_maps(memcg);
-> +	memcg_free_shrinker_info(memcg);
->  	memcg_free_kmem(memcg);
->  	mem_cgroup_free(memcg);
->  }
-> diff --git a/mm/vmscan.c b/mm/vmscan.c
-> index 9761c7c27412..0033659abf9e 100644
-> --- a/mm/vmscan.c
-> +++ b/mm/vmscan.c
-> @@ -187,20 +187,20 @@ static DECLARE_RWSEM(shrinker_rwsem);
->  #ifdef CONFIG_MEMCG
->  static int shrinker_nr_max;
->  
-> -static void memcg_free_shrinker_map_rcu(struct rcu_head *head)
-> +static void memcg_free_shrinker_info_rcu(struct rcu_head *head)
->  {
-> -	kvfree(container_of(head, struct memcg_shrinker_map, rcu));
-> +	kvfree(container_of(head, struct memcg_shrinker_info, rcu));
->  }
->  
-> -static int memcg_expand_one_shrinker_map(struct mem_cgroup *memcg,
-> -					 int size, int old_size)
-> +static int memcg_expand_one_shrinker_info(struct mem_cgroup *memcg,
-> +					  int size, int old_size)
->  {
-> -	struct memcg_shrinker_map *new, *old;
-> +	struct memcg_shrinker_info *new, *old;
->  	int nid;
->  
->  	for_each_node(nid) {
->  		old = rcu_dereference_protected(
-> -			mem_cgroup_nodeinfo(memcg, nid)->shrinker_map, true);
-> +			mem_cgroup_nodeinfo(memcg, nid)->shrinker_info, true);
->  		/* Not yet online memcg */
->  		if (!old)
->  			return 0;
-> @@ -213,17 +213,17 @@ static int memcg_expand_one_shrinker_map(struct mem_cgroup *memcg,
->  		memset(new->map, (int)0xff, old_size);
->  		memset((void *)new->map + old_size, 0, size - old_size);
->  
-> -		rcu_assign_pointer(memcg->nodeinfo[nid]->shrinker_map, new);
-> -		call_rcu(&old->rcu, memcg_free_shrinker_map_rcu);
-> +		rcu_assign_pointer(memcg->nodeinfo[nid]->shrinker_info, new);
-> +		call_rcu(&old->rcu, memcg_free_shrinker_info_rcu);
->  	}
->  
->  	return 0;
->  }
->  
-> -void memcg_free_shrinker_maps(struct mem_cgroup *memcg)
-> +void memcg_free_shrinker_info(struct mem_cgroup *memcg)
->  {
->  	struct mem_cgroup_per_node *pn;
-> -	struct memcg_shrinker_map *map;
-> +	struct memcg_shrinker_info *info;
->  	int nid;
->  
->  	if (mem_cgroup_is_root(memcg))
-> @@ -231,16 +231,16 @@ void memcg_free_shrinker_maps(struct mem_cgroup *memcg)
->  
->  	for_each_node(nid) {
->  		pn = mem_cgroup_nodeinfo(memcg, nid);
-> -		map = rcu_dereference_protected(pn->shrinker_map, true);
-> -		if (map)
-> -			kvfree(map);
-> -		rcu_assign_pointer(pn->shrinker_map, NULL);
-> +		info = rcu_dereference_protected(pn->shrinker_info, true);
-> +		if (info)
-> +			kvfree(info);
-> +		rcu_assign_pointer(pn->shrinker_info, NULL);
->  	}
->  }
->  
-> -int memcg_alloc_shrinker_maps(struct mem_cgroup *memcg)
-> +int memcg_alloc_shrinker_info(struct mem_cgroup *memcg)
->  {
-> -	struct memcg_shrinker_map *map;
-> +	struct memcg_shrinker_info *info;
->  	int nid, size, ret = 0;
->  
->  	if (mem_cgroup_is_root(memcg))
-> @@ -249,20 +249,20 @@ int memcg_alloc_shrinker_maps(struct mem_cgroup *memcg)
->  	down_read(&shrinker_rwsem);
->  	size = DIV_ROUND_UP(shrinker_nr_max, BITS_PER_LONG) * sizeof(unsigned long);
->  	for_each_node(nid) {
-> -		map = kvzalloc(sizeof(*map) + size, GFP_KERNEL);
-> -		if (!map) {
-> -			memcg_free_shrinker_maps(memcg);
-> +		info = kvzalloc(sizeof(*info) + size, GFP_KERNEL);
-> +		if (!info) {
-> +			memcg_free_shrinker_info(memcg);
->  			ret = -ENOMEM;
->  			break;
->  		}
-> -		rcu_assign_pointer(memcg->nodeinfo[nid]->shrinker_map, map);
-> +		rcu_assign_pointer(memcg->nodeinfo[nid]->shrinker_info, info);
->  	}
->  	up_read(&shrinker_rwsem);
->  
->  	return ret;
->  }
->  
-> -static int memcg_expand_shrinker_maps(int new_id)
-> +static int memcg_expand_shrinker_info(int new_id)
->  {
->  	int size, old_size, ret = 0;
->  	struct mem_cgroup *memcg;
-> @@ -279,7 +279,7 @@ static int memcg_expand_shrinker_maps(int new_id)
->  	do {
->  		if (mem_cgroup_is_root(memcg))
->  			continue;
-> -		ret = memcg_expand_one_shrinker_map(memcg, size, old_size);
-> +		ret = memcg_expand_one_shrinker_info(memcg, size, old_size);
->  		if (ret) {
->  			mem_cgroup_iter_break(NULL, memcg);
->  			goto out;
-> @@ -293,13 +293,13 @@ static int memcg_expand_shrinker_maps(int new_id)
->  void memcg_set_shrinker_bit(struct mem_cgroup *memcg, int nid, int shrinker_id)
->  {
->  	if (shrinker_id >= 0 && memcg && !mem_cgroup_is_root(memcg)) {
-> -		struct memcg_shrinker_map *map;
-> +		struct memcg_shrinker_info *info;
->  
->  		rcu_read_lock();
-> -		map = rcu_dereference(memcg->nodeinfo[nid]->shrinker_map);
-> +		info = rcu_dereference(memcg->nodeinfo[nid]->shrinker_info);
->  		/* Pairs with smp mb in shrink_slab() */
->  		smp_mb__before_atomic();
-> -		set_bit(shrinker_id, map->map);
-> +		set_bit(shrinker_id, info->map);
->  		rcu_read_unlock();
->  	}
->  }
-> @@ -330,7 +330,7 @@ static int prealloc_memcg_shrinker(struct shrinker *shrinker)
->  		goto unlock;
->  
->  	if (id >= shrinker_nr_max) {
-> -		if (memcg_expand_shrinker_maps(id)) {
-> +		if (memcg_expand_shrinker_info(id)) {
->  			idr_remove(&shrinker_idr, id);
->  			goto unlock;
->  		}
-> @@ -666,7 +666,7 @@ static unsigned long do_shrink_slab(struct shrink_control *shrinkctl,
->  static unsigned long shrink_slab_memcg(gfp_t gfp_mask, int nid,
->  			struct mem_cgroup *memcg, int priority)
->  {
-> -	struct memcg_shrinker_map *map;
-> +	struct memcg_shrinker_info *info;
->  	unsigned long ret, freed = 0;
->  	int i;
->  
-> @@ -676,12 +676,12 @@ static unsigned long shrink_slab_memcg(gfp_t gfp_mask, int nid,
->  	if (!down_read_trylock(&shrinker_rwsem))
->  		return 0;
->  
-> -	map = rcu_dereference_protected(memcg->nodeinfo[nid]->shrinker_map,
-> -					true);
-> -	if (unlikely(!map))
-> +	info = rcu_dereference_protected(memcg->nodeinfo[nid]->shrinker_info,
-> +					 true);
-> +	if (unlikely(!info))
->  		goto unlock;
->  
-> -	for_each_set_bit(i, map->map, shrinker_nr_max) {
-> +	for_each_set_bit(i, info->map, shrinker_nr_max) {
->  		struct shrink_control sc = {
->  			.gfp_mask = gfp_mask,
->  			.nid = nid,
-> @@ -692,7 +692,7 @@ static unsigned long shrink_slab_memcg(gfp_t gfp_mask, int nid,
->  		shrinker = idr_find(&shrinker_idr, i);
->  		if (unlikely(!shrinker || shrinker == SHRINKER_REGISTERING)) {
->  			if (!shrinker)
-> -				clear_bit(i, map->map);
-> +				clear_bit(i, info->map);
->  			continue;
->  		}
->  
-> @@ -703,7 +703,7 @@ static unsigned long shrink_slab_memcg(gfp_t gfp_mask, int nid,
->  
->  		ret = do_shrink_slab(&sc, shrinker, priority);
->  		if (ret == SHRINK_EMPTY) {
-> -			clear_bit(i, map->map);
-> +			clear_bit(i, info->map);
->  			/*
->  			 * After the shrinker reported that it had no objects to
->  			 * free, but before we cleared the corresponding bit in
-> 
 
+ChenYu
