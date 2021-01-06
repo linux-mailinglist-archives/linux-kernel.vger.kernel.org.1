@@ -2,206 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 181372EBD15
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 12:22:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F2D4B2EBD14
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 12:22:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726289AbhAFLWV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Jan 2021 06:22:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56018 "EHLO
+        id S1726143AbhAFLVq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Jan 2021 06:21:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55928 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725941AbhAFLWU (ORCPT
+        with ESMTP id S1725789AbhAFLVq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Jan 2021 06:22:20 -0500
-Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00F03C061357;
-        Wed,  6 Jan 2021 03:21:40 -0800 (PST)
-Received: by mail-pl1-x629.google.com with SMTP id be12so1399444plb.4;
-        Wed, 06 Jan 2021 03:21:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=sBzg1tgz32alZ9aHN5cWbJFQtT8AE3oR3feRMm8uqb4=;
-        b=rjUpIwXgwYBgFL6Td5HV5IAazmyCdHJboKVsfEUitilMhFN/NXj7J/s95LuzqsPxzg
-         mKUU+dZLeQ20rfLAsjmiykuWQgDLoSAGMF0hegflMVAZb969oU3wGQq4enI58Q/0kHjS
-         onJsKaCajoacR2bHituttW/WT1g9UdQtPkTBg5AnwMoOrtFFu8PhZhcXBFogvNH9DFQ1
-         km6i2zArd0HdC2fbLZKb66fZwDDVc/7qA24G9JG9yKY7qBuhUyzdz0cVo0yDULb3/hXV
-         uzWLNqtOHTUqj2phpaVYzOorPg/t/zjllZlKvyEy25YEROsyB1QI1xVX2TsVmyXSwL4U
-         s6jA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=sBzg1tgz32alZ9aHN5cWbJFQtT8AE3oR3feRMm8uqb4=;
-        b=jimJYDaqHzrkt+Uqqn13uUSjqMtInl3fNTzEEr1hNHhnQAh9patZg1y+rIslj3RR27
-         UBA1h91LVf/eE5hu07Bmo7ko0yg/znrMk2vmwfy49gcztN+2ov97YwoAasfnYXP/DKQf
-         Lzdclxdr0VpMLE8aNGH3ZBn3oui3lYQLQnRdmIakDYbZToktxYoFncOJdYfxTD6tTdLw
-         95dZVAr5U62R1vZbUy2+ssmb61zeF8lMxA7xqd01T9OkIoQ2KtDXI1K09FtqKf6zXtS7
-         whiaghe5ljDGXVDnUpVwmjZ4j20jbbb/XPAicJJUeo+/vPEUAh5koN3IMNagET0KZ9Gu
-         y+6Q==
-X-Gm-Message-State: AOAM53011H+KKmzUYUucM8jvBHEG1sXe8UJ5buC78peA1esi9vlNMaqw
-        FBzcx8RgiT09mtPemmxTSaL9y9I/psk=
-X-Google-Smtp-Source: ABdhPJw4ST2D9x6/ZeVz3GrOo9MUhYRwl/+5EAAwFeZdBDP66B9tfiu4w6gyGPcQWDtm7VkldWw7YA==
-X-Received: by 2002:a17:902:b588:b029:db:e1d8:1492 with SMTP id a8-20020a170902b588b02900dbe1d81492mr3983485pls.80.1609932099576;
-        Wed, 06 Jan 2021 03:21:39 -0800 (PST)
-Received: from VM-0-6-centos.localdomain ([119.28.90.140])
-        by smtp.gmail.com with ESMTPSA id p9sm2373767pfq.109.2021.01.06.03.21.38
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 06 Jan 2021 03:21:39 -0800 (PST)
-From:   Chunguang Xu <brookxu.cn@gmail.com>
-X-Google-Original-From: Chunguang Xu <brookxu@tencent.com>
-To:     axboe@kernel.dk
-Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] block: introduce for_each_rq_qos macro
-Date:   Wed,  6 Jan 2021 19:20:56 +0800
-Message-Id: <1609932056-26990-1-git-send-email-brookxu@tencent.com>
-X-Mailer: git-send-email 1.8.3.1
+        Wed, 6 Jan 2021 06:21:46 -0500
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CE95C06134C
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Jan 2021 03:21:05 -0800 (PST)
+Received: from zn.tnic (p200300ec2f096900a40cd61b64ba6652.dip0.t-ipconnect.de [IPv6:2003:ec:2f09:6900:a40c:d61b:64ba:6652])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 205AE1EC04A6;
+        Wed,  6 Jan 2021 12:21:04 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1609932064;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=UvD3Eph1wrWeDWE0TLul7NAvzuEshpM5KPsy2KUjQcY=;
+        b=aVqNVTZYK8fcRRO2Zh4xCuWUMd894cBBAhk1+xFLhFQ7cEiBKFmCFkMMKoVeEyLYbfRXZD
+        Uhw50w0XAJ2Jl76aoQ3sVVbnGNY5EM2hf7/WLFKsttp2NJuRnHSCGDt8psLSxSc2Yr+dWC
+        ruvY39FiW5tBdWMweMaufjTZVBhAsiE=
+Date:   Wed, 6 Jan 2021 12:21:06 +0100
+From:   Borislav Petkov <bp@alien8.de>
+To:     Rafael Kitover <rkitover@gmail.com>,
+        Johnathan Smithinovic <johnathan.smithinovic@gmx.at>
+Cc:     X86 ML <x86@kernel.org>, Yazen Ghannam <Yazen.Ghannam@amd.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Kim Phillips <kim.phillips@amd.com>
+Subject: Re: [RFC PATCH] x86/cpu: Do not check c->initialized in
+ topology_phys_to_logical_die()
+Message-ID: <20210106112106.GE5729@zn.tnic>
+References: <20210105113414.3277-1-bp@alien8.de>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210105113414.3277-1-bp@alien8.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chunguang Xu <brookxu@tencent.com>
+On Tue, Jan 05, 2021 at 12:34:14PM +0100, Borislav Petkov wrote:
+> From: Borislav Petkov <bp@suse.de>
+> 
+> During boot, identify_secondary_cpu() calls at some point
+> validate_apic_and_package_id() which calls topology_update_die_map() to
+> update/verify the physical to logical DIE map of the CPUs on the system.
 
-Compared to direct pointer traversal, introducing a macro
-will make the code more concise. But the introduction of
-macros will make rq_qos_xxx() produce a redundant judgment,
-usually this may not be a big problem.
+Ok, I believe Yazen has a better solution for the issue.
 
-Signed-off-by: Chunguang Xu <brookxu@tencent.com>
+Johnathan, Rafael, can you guys run the below patch on your systems, try
+offlining cores, etc. After that please send full dmesg, offlist is fine
+too, to check.
+
+Thx.
+
 ---
- block/blk-rq-qos.c | 45 ++++++++++++++++++---------------------------
- block/blk-rq-qos.h | 11 +++++++++--
- 2 files changed, 27 insertions(+), 29 deletions(-)
-
-diff --git a/block/blk-rq-qos.c b/block/blk-rq-qos.c
-index 6564606..2c21a49 100644
---- a/block/blk-rq-qos.c
-+++ b/block/blk-rq-qos.c
-@@ -31,83 +31,74 @@ bool rq_wait_inc_below(struct rq_wait *rq_wait, unsigned int limit)
+diff --git a/arch/x86/events/rapl.c b/arch/x86/events/rapl.c
+index 7dbbeaacd995..19563faa58ae 100644
+--- a/arch/x86/events/rapl.c
++++ b/arch/x86/events/rapl.c
+@@ -139,10 +139,13 @@ static unsigned int rapl_cntr_mask;
+ static u64 rapl_timer_ms;
+ static struct perf_msr *rapl_msrs;
  
- void __rq_qos_cleanup(struct rq_qos *rqos, struct bio *bio)
+-static inline struct rapl_pmu *cpu_to_rapl_pmu(unsigned int cpu)
++static inline struct rapl_pmu *cpu_to_rapl_pmu(unsigned int cpu, bool dbg)
  {
--	do {
-+	for_each_rq_qos(rqos) {
- 		if (rqos->ops->cleanup)
- 			rqos->ops->cleanup(rqos, bio);
--		rqos = rqos->next;
--	} while (rqos);
-+	}
- }
+ 	unsigned int dieid = topology_logical_die_id(cpu);
  
- void __rq_qos_done(struct rq_qos *rqos, struct request *rq)
- {
--	do {
-+	for_each_rq_qos(rqos) {
- 		if (rqos->ops->done)
- 			rqos->ops->done(rqos, rq);
--		rqos = rqos->next;
--	} while (rqos);
-+	}
- }
- 
- void __rq_qos_issue(struct rq_qos *rqos, struct request *rq)
- {
--	do {
-+	for_each_rq_qos(rqos) {
- 		if (rqos->ops->issue)
- 			rqos->ops->issue(rqos, rq);
--		rqos = rqos->next;
--	} while (rqos);
-+	}
- }
- 
- void __rq_qos_requeue(struct rq_qos *rqos, struct request *rq)
- {
--	do {
-+	for_each_rq_qos(rqos) {
- 		if (rqos->ops->requeue)
- 			rqos->ops->requeue(rqos, rq);
--		rqos = rqos->next;
--	} while (rqos);
-+	}
- }
- 
- void __rq_qos_throttle(struct rq_qos *rqos, struct bio *bio)
- {
--	do {
-+	for_each_rq_qos(rqos) {
- 		if (rqos->ops->throttle)
- 			rqos->ops->throttle(rqos, bio);
--		rqos = rqos->next;
--	} while (rqos);
-+	}
- }
- 
- void __rq_qos_track(struct rq_qos *rqos, struct request *rq, struct bio *bio)
- {
--	do {
-+	for_each_rq_qos(rqos) {
- 		if (rqos->ops->track)
- 			rqos->ops->track(rqos, rq, bio);
--		rqos = rqos->next;
--	} while (rqos);
-+	}
- }
- 
- void __rq_qos_merge(struct rq_qos *rqos, struct request *rq, struct bio *bio)
- {
--	do {
-+	for_each_rq_qos(rqos) {
- 		if (rqos->ops->merge)
- 			rqos->ops->merge(rqos, rq, bio);
--		rqos = rqos->next;
--	} while (rqos);
-+	}
- }
- 
- void __rq_qos_done_bio(struct rq_qos *rqos, struct bio *bio)
- {
--	do {
-+	for_each_rq_qos(rqos) {
- 		if (rqos->ops->done_bio)
- 			rqos->ops->done_bio(rqos, bio);
--		rqos = rqos->next;
--	} while (rqos);
-+	}
- }
- 
- void __rq_qos_queue_depth_changed(struct rq_qos *rqos)
- {
--	do {
-+	for_each_rq_qos(rqos) {
- 		if (rqos->ops->queue_depth_changed)
- 			rqos->ops->queue_depth_changed(rqos);
--		rqos = rqos->next;
--	} while (rqos);
-+	}
- }
- 
- /*
-diff --git a/block/blk-rq-qos.h b/block/blk-rq-qos.h
-index 2bc43e9..bfa72a5 100644
---- a/block/blk-rq-qos.h
-+++ b/block/blk-rq-qos.h
-@@ -57,11 +57,18 @@ struct rq_depth {
- 	unsigned int default_depth;
- };
- 
-+/*
-+ * for_each_rq_qos() allows you to iterate on each rqos
-+ */
-+#define for_each_rq_qos(rqos) \
-+	for (; rqos; rqos = rqos->next)
++	if (dbg)
++		pr_info("%s: CPU%d, dieid: %d\n", __func__, cpu, dieid);
 +
- static inline struct rq_qos *rq_qos_id(struct request_queue *q,
- 				       enum rq_qos_id id)
+ 	/*
+ 	 * The unsigned check also catches the '-1' return value for non
+ 	 * existent mappings in the topology map.
+@@ -360,7 +363,7 @@ static int rapl_pmu_event_init(struct perf_event *event)
+ 		return -EINVAL;
+ 
+ 	/* must be done before validate_group */
+-	pmu = cpu_to_rapl_pmu(event->cpu);
++	pmu = cpu_to_rapl_pmu(event->cpu, false);
+ 	if (!pmu)
+ 		return -EINVAL;
+ 	event->cpu = pmu->cpu;
+@@ -543,13 +546,16 @@ static struct perf_msr amd_rapl_msrs[PERF_RAPL_MAX] = {
+ 
+ static int rapl_cpu_offline(unsigned int cpu)
  {
--	struct rq_qos *rqos;
--	for (rqos = q->rq_qos; rqos; rqos = rqos->next) {
-+	struct rq_qos *rqos = q->rq_qos;
+-	struct rapl_pmu *pmu = cpu_to_rapl_pmu(cpu);
++	struct rapl_pmu *pmu = cpu_to_rapl_pmu(cpu, true);
+ 	int target;
+ 
+ 	/* Check if exiting cpu is used for collecting rapl events */
+ 	if (!cpumask_test_and_clear_cpu(cpu, &rapl_cpu_mask))
+ 		return 0;
+ 
++	if (WARN_ON(!pmu))
++		return -1;
 +
-+	for_each_rq_qos(rqos) {
- 		if (rqos->id == id)
- 			break;
+ 	pmu->cpu = -1;
+ 	/* Find a new cpu to collect rapl events */
+ 	target = cpumask_any_but(topology_die_cpumask(cpu), cpu);
+@@ -565,7 +571,7 @@ static int rapl_cpu_offline(unsigned int cpu)
+ 
+ static int rapl_cpu_online(unsigned int cpu)
+ {
+-	struct rapl_pmu *pmu = cpu_to_rapl_pmu(cpu);
++	struct rapl_pmu *pmu = cpu_to_rapl_pmu(cpu, true);
+ 	int target;
+ 
+ 	if (!pmu) {
+@@ -682,6 +688,8 @@ static int __init init_rapl_pmus(void)
+ 	int maxdie = topology_max_packages() * topology_max_die_per_package();
+ 	size_t size;
+ 
++	pr_info("%s: maxdie: %d\n", __func__, maxdie);
++
+ 	size = sizeof(*rapl_pmus) + maxdie * sizeof(struct rapl_pmu *);
+ 	rapl_pmus = kzalloc(size, GFP_KERNEL);
+ 	if (!rapl_pmus)
+diff --git a/arch/x86/kernel/cpu/amd.c b/arch/x86/kernel/cpu/amd.c
+index f8ca66f3d861..347a956f71ca 100644
+--- a/arch/x86/kernel/cpu/amd.c
++++ b/arch/x86/kernel/cpu/amd.c
+@@ -542,12 +542,12 @@ static void bsp_init_amd(struct cpuinfo_x86 *c)
+ 		u32 ecx;
+ 
+ 		ecx = cpuid_ecx(0x8000001e);
+-		nodes_per_socket = ((ecx >> 8) & 7) + 1;
++		__max_die_per_package = nodes_per_socket = ((ecx >> 8) & 7) + 1;
+ 	} else if (boot_cpu_has(X86_FEATURE_NODEID_MSR)) {
+ 		u64 value;
+ 
+ 		rdmsrl(MSR_FAM10H_NODE_ID, value);
+-		nodes_per_socket = ((value >> 3) & 7) + 1;
++		__max_die_per_package = nodes_per_socket = ((value >> 3) & 7) + 1;
  	}
--- 
-1.8.3.1
+ 
+ 	if (!boot_cpu_has(X86_FEATURE_AMD_SSBD) &&
+diff --git a/arch/x86/kernel/smpboot.c b/arch/x86/kernel/smpboot.c
+index 8ca66af96a54..20343682aace 100644
+--- a/arch/x86/kernel/smpboot.c
++++ b/arch/x86/kernel/smpboot.c
+@@ -319,6 +319,11 @@ int topology_phys_to_logical_die(unsigned int die_id, unsigned int cur_cpu)
+ 	for_each_possible_cpu(cpu) {
+ 		struct cpuinfo_x86 *c = &cpu_data(cpu);
+ 
++		pr_info("%s: init: %d, cpu %d, cur_cpu: %d, cpu_die_id: %d, die_id: %d, "
++			"phys_proc_id: %d, proc_id: %d, logical_die_id: %d\n",
++			__func__, c->initialized, cpu, cur_cpu, c->cpu_die_id, die_id,
++			c->phys_proc_id, proc_id, c->logical_die_id);
++
+ 		if (c->initialized && c->cpu_die_id == die_id &&
+ 		    c->phys_proc_id == proc_id)
+ 			return c->logical_die_id;
 
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
