@@ -2,94 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 08E0F2EBCAF
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 11:49:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CEC8F2EBCB8
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 11:53:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726466AbhAFKtc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Jan 2021 05:49:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50886 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725906AbhAFKtb (ORCPT
+        id S1726580AbhAFKvk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Jan 2021 05:51:40 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:49465 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725879AbhAFKvj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Jan 2021 05:49:31 -0500
-Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1B70C061357
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Jan 2021 02:49:16 -0800 (PST)
-Received: by mail-wm1-x32b.google.com with SMTP id y23so2236942wmi.1
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Jan 2021 02:49:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=7BgdPlyabJOHA2iddd/tRY6lBkargL+ou/K0j1Targg=;
-        b=MIV3/Y6BnLIx/9BjLqh+9PeknY1k8RcOh14MODBFl5oBOEep+I+ub04YpRltcG3HPM
-         McBPg8CIXimIhtDrKu0jPceIN+gXyyPGzqriFdhmvTU8F9N2MWNzr9mQmmuaYWkhbSJa
-         /0cg1rNQVNUegt90/xyFlkLhupWsCi3CwNXYFuJPYDpbphNox5HIKYXgQeomjNFM2EeF
-         mZwDPZ3nPenMk+u2Z3DhJbrJCeuoFbtWvpRhqPUhtU4luCr/ZINNWd3H2EU4PPUruO6H
-         HIdwlZLtClOiTFSBuRGNV5OnAiQIamUwV/tv+3YfN7MEzYrcDoRlnzuWZUnb3s74XbaD
-         O6uw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=7BgdPlyabJOHA2iddd/tRY6lBkargL+ou/K0j1Targg=;
-        b=grIqj7bOeknb28UKoMW5oIWjnZsw8CazFach3wfX3IUjEiCYoi9M66lLC6OFz4vMR3
-         /gqCgKhTYT1HTosDcphFgCH8CtHEanDfK5z7x49s6ZGn/uZIADQCg8LeToBI7RYKwF34
-         A69NKUk/FRKYnVl9tfOnxfQxApTfcj3oq8c9jLPFiEdAy5eFYPu6ZDSSo9nHBDY22haF
-         Ots/MQMUPJx14vpLbcIAhuFbUTApcb4SGw/z88xl6PNv1q+5HPagR7TwnCo49BMl11bK
-         V9U8qlUWDn7UlGn2eQfIzJnbYfVtnRQg/YtfJO4/QKhBL3AR8q/kiPCQ3HjEFUV2OC6X
-         /zMA==
-X-Gm-Message-State: AOAM530oQvlWOz25kSYktC0FdgtEVaoml35NW1hgh/1QTx7/IQmXyoHG
-        0qmN3EHs23dvNdMkFm43fRXeiAfvwjsqyHfx
-X-Google-Smtp-Source: ABdhPJxixDY4BCWrLZMAzpZx1eltJSMRKmmYljJPAGn+SwxhFd7ViY1xMp0IB3OIu8r5frvCfnED/A==
-X-Received: by 2002:a7b:c24d:: with SMTP id b13mr3089446wmj.151.1609930155127;
-        Wed, 06 Jan 2021 02:49:15 -0800 (PST)
-Received: from dell ([91.110.221.182])
-        by smtp.gmail.com with ESMTPSA id i11sm2237484wmq.10.2021.01.06.02.49.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 06 Jan 2021 02:49:14 -0800 (PST)
-Date:   Wed, 6 Jan 2021 10:49:12 +0000
-From:   Lee Jones <lee.jones@linaro.org>
-To:     linux-kernel@vger.kernel.org,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Gene Chen <gene_chen@richtek.com>,
-        linux-mediatek@lists.infradead.org
-Subject: Re: [PATCH 1/1] mfd: Standardise MFD_CELL_* helper names
-Message-ID: <20210106104912.GC1592923@dell>
-References: <20201217083420.411569-1-lee.jones@linaro.org>
+        Wed, 6 Jan 2021 05:51:39 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1609930213;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=kLT4c0oVgoGQ28S7o/zFiab9Iekvo6wVtsgLAAzAA9w=;
+        b=dROA8l8vbpcPP/ENQxmQgn2VsNnDehOiutNsk5BC9B/aP95Gh4MPJ2iAkKP4gdk01hqskd
+        9MeF0jXJaJsgG1eEVrYvIfzSMhNIH7o3hicFrh08IQY03hcjxmn3iCmJXD7W8r/Z1rxx4/
+        gKHehC6biapXkEj/8N80vwnoY3RrC1s=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-382-ViKoHO4uNXW5l6wig8wqkg-1; Wed, 06 Jan 2021 05:50:11 -0500
+X-MC-Unique: ViKoHO4uNXW5l6wig8wqkg-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 2220D800D55;
+        Wed,  6 Jan 2021 10:50:09 +0000 (UTC)
+Received: from localhost.localdomain (unknown [10.35.206.196])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id C2805669FC;
+        Wed,  6 Jan 2021 10:50:03 +0000 (UTC)
+From:   Maxim Levitsky <mlevitsk@redhat.com>
+To:     kvm@vger.kernel.org
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        linux-kernel@vger.kernel.org (open list:X86 ARCHITECTURE (32-BIT AND
+        64-BIT)), Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        x86@kernel.org (maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)),
+        Wanpeng Li <wanpengli@tencent.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Maxim Levitsky <mlevitsk@redhat.com>
+Subject: [PATCH 0/6] KVM: nSVM: few random fixes
+Date:   Wed,  6 Jan 2021 12:49:55 +0200
+Message-Id: <20210106105001.449974-1-mlevitsk@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201217083420.411569-1-lee.jones@linaro.org>
+Content-Transfer-Encoding: quoted-printable
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 17 Dec 2020, Lee Jones wrote:
+This is a series of fixes to nested SVM, that finally makes my kvm on kvm=0D
+stress test pass, and fix various other issues/regressions.=0D
+=0D
+Patches 1-2 are a fix for disappearing interrupts in L2 on migration which=
+=0D
+usually make the L2 hang.=0D
+Same issue happens on VMX and WIP, patches for this will be sent in a separ=
+ate=0D
+series.=0D
+Paulo helped me to find the root cause of this issue.=0D
+=0D
+Note that this patch likely breaks a nested guest that uses software interr=
+upt=0D
+injections (SVM_EXITINTINFO_TYPE_SOFT) because currently kvm ignores these=
+=0D
+on SVM.=0D
+=0D
+Patch 3 is a fix for recent regression related to code that delayed the nes=
+ted=0D
+msr bitmap processing to the next vm entry, and started to crash the L1 aft=
+er=0D
+my on demand nested state allocation patches.=0D
+=0D
+The problem was that the code assumed that we will still be in the nested=0D
+guest mode on next vmentry after setting the nested state, but a pending ev=
+ent=0D
+can cause a nested vmexit prior to that.=0D
+=0D
+Patches 4,5,6 are few things I found while reviewing the nested migration c=
+ode.=0D
+I don't have a reproducer for them.=0D
+=0D
+Best regards,=0D
+	Maxim Levitsky=0D
+=0D
+Maxim Levitsky (6):=0D
+  KVM: SVM: create svm_process_injected_event=0D
+  KVM: nSVM: fix for disappearing L1->L2 event injection on L1 migration=0D
+  KVM: nSVM: cancel KVM_REQ_GET_NESTED_STATE_PAGES on nested vmexit=0D
+  KVM: nSVM: correctly restore nested_run_pending on migration=0D
+  KVM: nSVM: always leave the nested state first on KVM_SET_NESTED_STATE=0D
+  KVM: nSVM: mark vmcb as dirty when forcingly leaving the guest mode=0D
+=0D
+ arch/x86/kvm/svm/nested.c | 21 ++++++++++++--=0D
+ arch/x86/kvm/svm/svm.c    | 58 ++++++++++++++++++++++-----------------=0D
+ arch/x86/kvm/svm/svm.h    |  4 +++=0D
+ 3 files changed, 55 insertions(+), 28 deletions(-)=0D
+=0D
+-- =0D
+2.26.2=0D
+=0D
 
-> Start all helpers with "MFD_CELL_".
-> 
-> Cc: Linus Walleij <linus.walleij@linaro.org>
-> Cc: Matthias Brugger <matthias.bgg@gmail.com>
-> Cc: Gene Chen <gene_chen@richtek.com>
-> Cc: linux-mediatek@lists.infradead.org
-> Signed-off-by: Lee Jones <lee.jones@linaro.org>
-> ---
->  drivers/mfd/ab8500-core.c  | 42 +++++++++++++++++++-------------------
->  drivers/mfd/db8500-prcmu.c |  6 +++---
->  drivers/mfd/mt6360-core.c  | 12 +++++------
->  include/linux/mfd/core.h   |  6 +++---
->  4 files changed, 33 insertions(+), 33 deletions(-)
-
-What a great patch! ;)
-
-Applied, thanks.
-
--- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
