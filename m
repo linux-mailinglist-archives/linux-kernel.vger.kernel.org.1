@@ -2,191 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD78C2EBA53
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 08:12:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A3E762EBA57
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 08:14:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725903AbhAFHLg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Jan 2021 02:11:36 -0500
-Received: from atl4mhfb01.myregisteredsite.com ([209.17.115.55]:39822 "EHLO
-        atl4mhfb01.myregisteredsite.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725601AbhAFHLf (ORCPT
+        id S1726051AbhAFHOV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Jan 2021 02:14:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45288 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725789AbhAFHOU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Jan 2021 02:11:35 -0500
-X-Greylist: delayed 309 seconds by postgrey-1.27 at vger.kernel.org; Wed, 06 Jan 2021 02:11:34 EST
-Received: from jax4mhob04.registeresite.com (jax4mhob04.myregisteredsite.com [64.69.218.84])
-        by atl4mhfb01.myregisteredsite.com (8.14.4/8.14.4) with ESMTP id 10675c6M021167
-        for <linux-kernel@vger.kernel.org>; Wed, 6 Jan 2021 02:05:39 -0500
-Received: from mailpod.hostingplatform.com ([10.30.71.206])
-        by jax4mhob04.registeresite.com (8.14.4/8.14.4) with ESMTP id 10674fHR016558
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL)
-        for <linux-kernel@vger.kernel.org>; Wed, 6 Jan 2021 02:04:42 -0500
-Received: (qmail 25187 invoked by uid 0); 6 Jan 2021 07:04:41 -0000
-X-TCPREMOTEIP: 83.128.90.119
-X-Authenticated-UID: mike@milosoftware.com
-Received: from unknown (HELO phenom.domain?not?set.invalid) (mike@milosoftware.com@83.128.90.119)
-  by 0 with ESMTPA; 6 Jan 2021 07:04:41 -0000
-From:   Mike Looijmans <mike.looijmans@topic.nl>
-To:     linux-clk@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, sboyd@kernel.org,
-        mturquette@baylibre.com, Mike Looijmans <mike.looijmans@topic.nl>
-Subject: [PATCH v2] clk-si5341: Support NVM programming through sysfs
-Date:   Wed,  6 Jan 2021 08:04:36 +0100
-Message-Id: <20210106070436.14870-1-mike.looijmans@topic.nl>
-X-Mailer: git-send-email 2.17.1
+        Wed, 6 Jan 2021 02:14:20 -0500
+Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88920C06134C
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Jan 2021 23:13:39 -0800 (PST)
+Received: by mail-ej1-x634.google.com with SMTP id g20so3855279ejb.1
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Jan 2021 23:13:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=rT4Dc8swlK31/4OXAMfRD8Dy9QIvv8YpGOiKzBJjVS0=;
+        b=kW/FIQ9UMgiQ4U+TkdADVoEYk5gZPV3uhWmFEaBISm60k6X7HKncaLJMcm7Te12ixW
+         DmozTsbCxinSR4kw60jnPkTRpJcI2yoqWEX3PsYD1Gobe1MgtRCRsAYMvDuT6a2OmRZe
+         JA5aIaNzC2Qz1QI2pjKK7hj+qAEnukuAv07b9W7M8pBoGmUjZmXbHaL5522RR1fvjBcC
+         aUOByaCkN/CFtegf2L0lfAhcsuMiZ+e/Z0kGD0hJrq1CBcozlTfyZi2pX2qyg5tLtp5K
+         qfoj7U94CqKy1yfDXJToNFtVkn5zEBI7/9XBDJd/bwiyCn1gMrTQ4lsyGmJDatnR3P5D
+         m6RA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=rT4Dc8swlK31/4OXAMfRD8Dy9QIvv8YpGOiKzBJjVS0=;
+        b=SJ9y8lSvsW4ftE7MF6zHghrtTxc8IaSPylbhM2jmyDWCShD+ecp46a/xqeKhDnoofX
+         I7/ElKY/fO7sqCc1stcnM3Kp3Qa2zTnLhgc66COI8d279krcbVHM8n6WjA4i0zL8jdav
+         1LSZIIA/P1W5Urq3phspuwF7iKwfQw2hiFyrgYBRhUIKgLjztwwFpcIMDhXkXwSXS6fr
+         5nxGVbWKEUVaSRlCjbWt8w1Pf94Azgo/fmYgrSGdeGBbnYxQiebjdzk9fdqyp03ccGCY
+         8QrB0aN1pxYSFM5+8voCt54nX5qGpNVMuZzV/QlX4qdiut5PuvFuTWic18qv8XFuK4y6
+         d/MA==
+X-Gm-Message-State: AOAM531njKPL2HMSqCQqJAFDu0XocjHyoAJP0bHh/lrP79kLR/RoCo3A
+        Fg+cAXB1PLghzgQnhrMw8OH9lKUX3C2CCfCbNZxMrg==
+X-Google-Smtp-Source: ABdhPJz7NZsjb4UgOGiErAdqwk42sh/yXenAjVlhxnzAVaOFNfM5U6i5Q3E7GI/VvU/IA448wOjGCY/95IeDdC3rxz4=
+X-Received: by 2002:a17:906:8594:: with SMTP id v20mr1986708ejx.470.1609917218321;
+ Tue, 05 Jan 2021 23:13:38 -0800 (PST)
+MIME-Version: 1.0
+References: <20210104230253.2805217-1-robh@kernel.org>
+In-Reply-To: <20210104230253.2805217-1-robh@kernel.org>
+From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Date:   Wed, 6 Jan 2021 08:13:27 +0100
+Message-ID: <CAMpxmJVFFu6q53-O_iWCyhY3M3up2Hg1TMY_DpmOvED4eN8bJQ@mail.gmail.com>
+Subject: Re: [PATCH] dt-bindings: Add missing array size constraints
+To:     Rob Herring <robh@kernel.org>
+Cc:     linux-devicetree <devicetree@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Jens Axboe <axboe@kernel.dk>, Stephen Boyd <sboyd@kernel.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        MyungJoo Ham <myungjoo.ham@samsung.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Marc Zyngier <maz@kernel.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Sebastian Reichel <sre@kernel.org>,
+        Ohad Ben-Cohen <ohad@wizery.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        arm-soc <linux-arm-kernel@lists.infradead.org>,
+        linux-ide@vger.kernel.org, linux-clk <linux-clk@vger.kernel.org>,
+        linux-drm <dri-devel@lists.freedesktop.org>,
+        linux-gpio <linux-gpio@vger.kernel.org>,
+        linux-iio <linux-iio@vger.kernel.org>,
+        Linux Input <linux-input@vger.kernel.org>,
+        linux-media <linux-media@vger.kernel.org>,
+        linux-mmc@vger.kernel.org, netdev <netdev@vger.kernel.org>,
+        linux-pm <linux-pm@vger.kernel.org>,
+        linux-remoteproc@vger.kernel.org, linux-riscv@lists.infradead.org,
+        linux-serial@vger.kernel.org,
+        Linux-ALSA <alsa-devel@alsa-project.org>,
+        linux-spi@vger.kernel.org, USB list <linux-usb@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Export an attribute program_nvm_bank that when read reports the current
-bank value. To program the chip's current state into NVM, write the
-magic value 0xC7 into this attribute.
+On Tue, Jan 5, 2021 at 12:03 AM Rob Herring <robh@kernel.org> wrote:
+>
+> DT properties which can have multiple entries need to specify what the
+> entries are and define how many entries there can be. In the case of
+> only a single entry, just 'maxItems: 1' is sufficient.
+>
+> Add the missing entry constraints. These were found with a modified
+> meta-schema. Unfortunately, there are a few cases where the size
+> constraints are not defined such as common bindings, so the meta-schema
+> can't be part of the normal checks.
+>
 
-This allows the clock chip to be programmed "in system" to reduce boot
-time by 300ms and allows the clock to be up and running before the
-kernel boots (e.g. for bootloader usage). Some vendors initialize PLLs
-only in their bootloader and thus need the clock running at boot.
+[snip!]
 
-Signed-off-by: Mike Looijmans <mike.looijmans@topic.nl>
----
-v2: Add description in Documentation/ABI/
-    Use regmap_read_poll_timeout()
-    Abort on sysfs_create_group error
+>  .../bindings/gpio/gpio-pca95xx.yaml           |  1 +
 
- .../ABI/testing/sysfs-devices-clk-si5341      | 24 +++++++
- drivers/clk/clk-si5341.c                      | 68 +++++++++++++++++++
- 2 files changed, 92 insertions(+)
- create mode 100644 Documentation/ABI/testing/sysfs-devices-clk-si5341
+[snip!]
 
-diff --git a/Documentation/ABI/testing/sysfs-devices-clk-si5341 b/Documentation/ABI/testing/sysfs-devices-clk-si5341
-new file mode 100644
-index 000000000000..7243b82a3729
---- /dev/null
-+++ b/Documentation/ABI/testing/sysfs-devices-clk-si5341
-@@ -0,0 +1,24 @@
-+What:		/sys/bus/i2c/devices/.../clk-si534*/program_nvm_bank
-+Date:		Jan 2021
-+KernelVersion:	5.12
-+Contact:	Mike Looijmans <mike.looijmans@topic.nl>
-+Description:	Allows programming the NVM memory of the clock chip, so it boots
-+		up in the current configuration. This saves boot time (300ms
-+		clock initialization) and allows the clock to be available
-+		before the kernel boots (e.g. u-boot ethernet clock).
-+
-+		Write the magic value 0xc7 to this attribute to program the
-+		chip's current settings into its NVM storage. This magic value
-+		is taken from the datasheet, it's the same value that must be
-+		written to the hardware to program it. Programming can only be
-+		done twice in the lifetime of the chip.
-+
-+		Read the value to check the state of the chip. This returns the
-+		raw value as read from the hardware. Possible values:
-+		0x03: Not programmed
-+		0x0f: Programmed once
-+		0x3f: Programmed twice, can no longer be programmed
-+
-+Users:		User space applications for embedded boards equipped with one
-+		or more Si534x programmable clock devices. Would typically be
-+		used at the end of production stages.
-diff --git a/drivers/clk/clk-si5341.c b/drivers/clk/clk-si5341.c
-index e0446e66fa64..836af718eed0 100644
---- a/drivers/clk/clk-si5341.c
-+++ b/drivers/clk/clk-si5341.c
-@@ -92,6 +92,9 @@ struct clk_si5341_output_config {
- #define SI5341_PN_BASE		0x0002
- #define SI5341_DEVICE_REV	0x0005
- #define SI5341_STATUS		0x000C
-+#define SI5341_ACTIVE_NVM_BANK	0x00E2
-+#define SI5341_NVM_WRITE	0x00E3
-+#define SI5341_DEVICE_READY	0x00FE
- #define SI5341_SOFT_RST		0x001C
- #define SI5341_IN_SEL		0x0021
- #define SI5341_XAXB_CFG		0x090E
-@@ -144,6 +147,9 @@ struct clk_si5341_output_config {
- #define SI5341_OUT_CFG_OE		BIT(1)
- #define SI5341_OUT_CFG_RDIV_FORCE2	BIT(2)
- 
-+/* Programming NVM, magic value to write to program the NVM */
-+#define SI5341_SI5341_NVM_WRITE_COOKIE	0xC7
-+
- /* Static configuration (to be moved to firmware) */
- struct si5341_reg_default {
- 	u16 address;
-@@ -1199,6 +1205,64 @@ static const struct regmap_config si5341_regmap_config = {
- 	.volatile_table = &si5341_regmap_volatile,
- };
- 
-+static ssize_t program_nvm_bank_show(struct device *dev,
-+				struct device_attribute *attr, char *buf)
-+{
-+	struct i2c_client *client = to_i2c_client(dev);
-+	struct clk_si5341 *data = i2c_get_clientdata(client);
-+	unsigned int regval;
-+	int ret;
-+
-+	ret = regmap_read(data->regmap, SI5341_ACTIVE_NVM_BANK, &regval);
-+	if (ret)
-+		return ret;
-+
-+	return sprintf(buf, "%#x\n", regval);
-+}
-+
-+static ssize_t program_nvm_bank_store(struct device *dev,
-+	struct device_attribute *attr,
-+	const char *buf,
-+	size_t count)
-+{
-+	struct clk_si5341 *data = i2c_get_clientdata(to_i2c_client(dev));
-+	int ret;
-+	unsigned int value;
-+
-+	ret = kstrtouint(buf, 0, &value);
-+	if (ret < 0)
-+		return ret;
-+
-+	/* Write the magic value to this attribute to program the NVM */
-+	if (value != SI5341_SI5341_NVM_WRITE_COOKIE)
-+		return -EINVAL;
-+
-+	ret = regmap_write(data->regmap, SI5341_NVM_WRITE,
-+			SI5341_SI5341_NVM_WRITE_COOKIE);
-+	if (ret)
-+		return ret;
-+
-+	/* Wait for SI5341_DEVICE_READY register to become 0x0f */
-+	ret = regmap_read_poll_timeout(data->regmap, SI5341_DEVICE_READY, value,
-+				       value == 0x0f, 0, 300000);
-+	if (ret)
-+		return ret;
-+
-+	return count;
-+}
-+
-+static DEVICE_ATTR_RW(program_nvm_bank);
-+
-+static struct attribute *si5341_sysfs_entries[] = {
-+	&dev_attr_program_nvm_bank.attr,
-+	NULL,
-+};
-+
-+static struct attribute_group si5341_attr_group = {
-+	.name	= NULL,	/* put in device directory */
-+	.attrs	= si5341_sysfs_entries,
-+};
-+
- static int si5341_dt_parse_dt(struct i2c_client *client,
- 	struct clk_si5341_output_config *config)
- {
-@@ -1544,6 +1608,10 @@ static int si5341_probe(struct i2c_client *client,
- 	for (i = 0; i < data->num_synth; ++i)
- 		 devm_kfree(&client->dev, (void *)synth_clock_names[i]);
- 
-+	err = sysfs_create_group(&client->dev.kobj, &si5341_attr_group);
-+	if (err)
-+		return err;
-+
- 	return 0;
- }
- 
--- 
-2.17.1
+> diff --git a/Documentation/devicetree/bindings/gpio/gpio-pca95xx.yaml b/Documentation/devicetree/bindings/gpio/gpio-pca95xx.yaml
+> index f5ee23c2df60..57cdcfd4ff3c 100644
+> --- a/Documentation/devicetree/bindings/gpio/gpio-pca95xx.yaml
+> +++ b/Documentation/devicetree/bindings/gpio/gpio-pca95xx.yaml
+> @@ -81,6 +81,7 @@ properties:
+>      const: 2
+>
+>    reset-gpios:
+> +    maxItems: 1
+>      description:
+>        GPIO specification for the RESET input. This is an active low signal to
+>        the PCA953x.  Not valid for Maxim MAX732x devices.
 
+Acked-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
