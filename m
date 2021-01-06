@@ -2,72 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ADD1E2EB745
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 02:01:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4ED382EB74E
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 02:03:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726734AbhAFBAt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 20:00:49 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56752 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726551AbhAFBAt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 20:00:49 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPS id 69B85229EF;
-        Wed,  6 Jan 2021 01:00:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1609894808;
-        bh=sYYPTmzA415ubGj4VX/B1hFMXo+AKCAIKo7GhA4hO3s=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=kqxHTKxOWxE9zs1mf3uEUl6hNuN5iHPa0O8Q2vnae/OWVumyIVHR9e4Gq7fvOTJBY
-         sZVfMd7/taWji4ZoBi6GFPzcRfYsnjjml8JizMOB+Bxwm8fZu9ea9Yv5YfGXxYbLYI
-         4XEsAV98m6bHRpbklrPPR3tzOENbgBiBVE/XEwPhWNA3tv0OlXaOfbHCraztH0CASx
-         sx5RaYrBGuy+j+UTi0HBk/RGOWAVG5PxKBMphrbYY6P/aixy8jot9ZG3eHz+mmRLge
-         ksX0Kik9uMGMh77LCMU9TxxsA3DlocbjS+DqM80NokE1wTX9p1TgNYLpAEPnQldzn7
-         O87r7naA58Tng==
-Received: from pdx-korg-docbuild-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-1.ci.codeaurora.org (Postfix) with ESMTP id 5778A604FC;
-        Wed,  6 Jan 2021 01:00:08 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S1726545AbhAFBCN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 20:02:13 -0500
+Received: from m43-15.mailgun.net ([69.72.43.15]:44799 "EHLO
+        m43-15.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726345AbhAFBCM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Jan 2021 20:02:12 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1609894912; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=W4gpPPjzOwyYpAHogznNbJBBPbiS4KCPfs+WcgOjgBg=; b=JGs/WE6QcRVEULbFS38B+8qC+49PIYj9xtPbPz3WDgPbAao7DOtEyFit4PcCDfV9OnKfA3DH
+ tSAx6Y3uXPW8ON+1BnXZCroDOG/xqJPZhaHHUWtULYx8nzb5uXUlh2o/kJi7MNlJApSVDPGx
+ yHVarnsIRDAcUiaw3DuJ0tzDi8E=
+X-Mailgun-Sending-Ip: 69.72.43.15
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n09.prod.us-west-2.postgun.com with SMTP id
+ 5ff50bccf7aeb83bf1747d97 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 06 Jan 2021 01:01:00
+ GMT
+Sender: sidgup=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 24474C43462; Wed,  6 Jan 2021 01:01:00 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-3.1 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.0
+Received: from [192.168.1.10] (cpe-75-83-25-192.socal.res.rr.com [75.83.25.192])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: sidgup)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id F09CCC433CA;
+        Wed,  6 Jan 2021 01:00:58 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org F09CCC433CA
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=sidgup@codeaurora.org
+Subject: Re: PROBLEM: Firmware loader fallback mechanism no longer works with
+ sendfile
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     mcgrof@kernel.org, rafael@kernel.org, viro@zeniv.linux.org.uk,
+        linux-fsdevel@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "psodagud@codeaurora.org" <psodagud@codeaurora.org>
+References: <7e6f44b1-a0d2-d1d1-9c11-dcea163f8f03@codeaurora.org>
+ <X/QJCgoLPhfECEmP@kroah.com>
+From:   Siddharth Gupta <sidgup@codeaurora.org>
+Message-ID: <180bdfaf-8c84-6946-b46f-3729d4eb17cc@codeaurora.org>
+Date:   Tue, 5 Jan 2021 17:00:58 -0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH] selftests: fix the return value for UDP GRO test
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <160989480835.15297.3332305981136366306.git-patchwork-notify@kernel.org>
-Date:   Wed, 06 Jan 2021 01:00:08 +0000
-References: <20210105101740.11816-1-po-hsu.lin@canonical.com>
-In-Reply-To: <20210105101740.11816-1-po-hsu.lin@canonical.com>
-To:     Po-Hsu Lin <po-hsu.lin@canonical.com>
-Cc:     netdev@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
-        davem@davemloft.net, kuba@kernel.org, shuah@kernel.org,
-        ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org
+In-Reply-To: <X/QJCgoLPhfECEmP@kroah.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
 
-This patch was applied to netdev/net.git (refs/heads/master):
+On 1/4/2021 10:36 PM, Greg KH wrote:
+> On Mon, Jan 04, 2021 at 02:43:45PM -0800, Siddharth Gupta wrote:
+>> Hi all,
+>>
+>> With the introduction of the filesystem change "fs: don't allow splice
+>> read/write without explicit ops"[1] the fallback mechanism of the firmware
+>> loader[2] no longer works when using sendfile[3] from the userspace.
+> What userspace program are you using to load firmware?
+The userspace program is in the android userspace which listens to a 
+uevent from the firmware loader and then loads the firmware using 
+sendfile[1].
+>   Are you not using the in-kernel firmware loader for some reason?
+We have certain non-standard firmware paths that should not be added to 
+the linux kernel, and the firmware_class.path only supports a single path.
+>
+>> Since the binary attributes don't support splice_{read,write} functions the
+>> calls to splice_{read,write} used the default kernel_{read,write} functions.
+>> With the above change this results in an -EINVAL return from
+>> do_splice_from[4].
+>>
+>> This essentially means that sendfile will not work for any binary attribute
+>> in the sysfs.
+> Have you tried fixing this with a patch much like what we did for the
+> proc files that needed this?  If not, can you?
+I am not aware of this fix, could you provide me a link for reference? I 
+will try it out.
+>
+>> [1]: https://github.com/torvalds/linux/commit/36e2c7421f02a22f71c9283e55fdb672a9eb58e7#diff-70c49af2ed5805fc1406ed6e6532d6a029ada1abd90cca6442711b9cecd4d523
+>> [2]: https://github.com/torvalds/linux/blob/master/drivers/base/firmware_loader/main.c#L831
+>> [3]: https://github.com/torvalds/linux/blob/master/fs/read_write.c#L1257
+>> [4]: https://github.com/torvalds/linux/blob/master/fs/splice.c#L753
+> kernel development is on git.kernel.org, not github :)
+I use it because it is easier on the eyes when looking at diffs :D
+But I'll be sure to use git.kernel.org from now on if that is what is 
+preferred!
+>
+> thanks,
+>
+> greg k-h
+Thanks,
+Sid
 
-On Tue,  5 Jan 2021 18:17:40 +0800 you wrote:
-> The udpgro.sh will always return 0 (unless the bpf selftest was not
-> build first) even if there are some failed sub test-cases.
-> 
-> Therefore the kselftest framework will report this case is OK.
-> 
-> Check and return the exit status of each test to make it easier to
-> spot real failures.
-> 
-> [...]
-
-Here is the summary with links:
-  - selftests: fix the return value for UDP GRO test
-    https://git.kernel.org/netdev/net/c/3503ee6c0bec
-
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
+[1]: 
+https://android.googlesource.com/platform/system/core/+/refs/heads/master/init/firmware_handler.cpp#55
 
