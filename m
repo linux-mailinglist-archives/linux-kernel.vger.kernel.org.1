@@ -2,213 +2,454 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BE132EB97B
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 06:28:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DC9692EB982
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 06:30:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725944AbhAFF1S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Jan 2021 00:27:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57026 "EHLO
+        id S1726059AbhAFFaQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Jan 2021 00:30:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57488 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725562AbhAFF1R (ORCPT
+        with ESMTP id S1725813AbhAFFaP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Jan 2021 00:27:17 -0500
-Received: from mail-yb1-xb33.google.com (mail-yb1-xb33.google.com [IPv6:2607:f8b0:4864:20::b33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADF1EC06134C;
-        Tue,  5 Jan 2021 21:26:37 -0800 (PST)
-Received: by mail-yb1-xb33.google.com with SMTP id y128so1741960ybf.10;
-        Tue, 05 Jan 2021 21:26:37 -0800 (PST)
+        Wed, 6 Jan 2021 00:30:15 -0500
+Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15B89C06134C;
+        Tue,  5 Jan 2021 21:29:35 -0800 (PST)
+Received: by mail-pl1-x62c.google.com with SMTP id s15so981426plr.9;
+        Tue, 05 Jan 2021 21:29:35 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=UknX9QmHip+tndRmYcnv02sGjXL/6i8uFjVy4S3Vt/Q=;
-        b=UCqx7khl9md1WnUTUb7YlN78GS0MsCd0mzo/BVqnUQtr2UsI9ZRjYRzBgoehkg22R9
-         /IWD53nu5L+j/BqZNXkU22MBN5k+DU2EpmPBnxoD5tlHG6+ckRYp+blgGNktePOHVRJz
-         7DTUVb+2iLoKxijxEqSDi6RldMhKyOJH6hM/rkJgGbQ7OPHbdaVWd5ibNdxFA7BMQf5M
-         bd3svGVmYFunWx727frVHFI2tf7u65hxMMgrNaoMxYsU3mn5ntsZbjv34HdL8CXM0qwl
-         1lTLfQomb36JqhKEdmboQWozdEFvL5gJI973hMmbbrwHZRzSpeg8o2qRk0QX6NNMPzVy
-         iV4Q==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=hOGze9DgXpm0gt+vBnhQVhta/mGdE6h/HGR0vUoYLzc=;
+        b=OHUCL11vF4yJqF64mxEIhfOQvKfdNwwAwJ/aCx+33nhEqrfzg9jMeYeaHMH2xuTLAG
+         esVUtQtrOWI84nm6dBn6WhdXD+Ii69/WoV65dN7hYF6dGYW/S4ZtCJGFWVbUytKO7ExN
+         pziyWfvjvVGFa9Iu4hP+x4JoZvT+30SmFMyngUtnhM9gn3UifsJKxUExYjMCnl8JZJ4e
+         gI+MZfLzb3nAlHIQuIooylomnU8G65qHg+BsiMaZO8t7S4yheZ1EqcuB/GJRQrqBderm
+         yzdi88ZDfcl1YznHrt7J2RlawO1K3k13aqKUibh+mQ1Yj/rL0NnGaRcd9XIEuWuCcS/y
+         x3Rg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=UknX9QmHip+tndRmYcnv02sGjXL/6i8uFjVy4S3Vt/Q=;
-        b=H4cadZUfSa4/2IxNKqHK5nnCJeG6q0SukL3LEymijZD+2opScbL5ITbeRF/NjSRY0l
-         k1jo7HzzSbdeuY9lidwx7oBzyeQb/ycRFqql5u6+S2bOL579xIrtE6CLKE7fpE4XfNu9
-         kbW7VheGw8sMN3Rg4P3e0OLM5WuwjkkRBUruM6JBvtX4lwjEViQGRB6p2hkGEXUIjkhr
-         qRtrVp+sBKR5zPcIVz1/HDYLfBXVwYtSCJS6IsexxteKfg5P9KFik7LPPNPZ+7U7qbjS
-         Ye4IYpEt1jA6fdMqJU2BiHW/pPu10SuxHmCPXLjFoY0ZEA4+VylvZOWlSrOElPXT0J8v
-         TCLw==
-X-Gm-Message-State: AOAM532G7/B4XJaRIrMVuoU5XaztrSkHQr2jIFuVr19XVafyOnIav7Dq
-        aVc4FG9bCa8bXcH1pVO23AtRbayIB+S96mKCGMA=
-X-Google-Smtp-Source: ABdhPJzwaP4vbBtfhgJ0/2XhRCDqHdkub1FRWUHNWILKxZRFis779cP0s0aUseN5F4krORUSrTDk5/+Vl/6naN0a6AE=
-X-Received: by 2002:a25:aea8:: with SMTP id b40mr4044517ybj.347.1609910796865;
- Tue, 05 Jan 2021 21:26:36 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=hOGze9DgXpm0gt+vBnhQVhta/mGdE6h/HGR0vUoYLzc=;
+        b=jmS4ecU4rjpBWY+ja9zB8P0TdmEg7Oi9aWGsWZTUc5jt95mzNGHEJPx6rXuRlrzYUq
+         BIr/AVDLeN+quBRJji2UOYpELYgsYkinzFZGk3SGEx9YqUm178JBNYAJHUQYVkOojtQi
+         zJiq8gr4kn/ptV8ZSXDG5RTz+GY34PDRFjUAV1GsvSZEyiTmaib/ZbrVjY7lx0xRfeJm
+         b8c+7ueH7mNtEtvLHomRIQOoLfwCzehTv4251G+5RFHqLuCEW/EsPMxs8GWXg6Jz4ofM
+         LJ15iFO1kzQT+5lOBI1DT9PpIJ8WwKcSdMew148nA1G7XQCY7JXJDDVz7bwkODfCJeLJ
+         7VjA==
+X-Gm-Message-State: AOAM530h3VtQWpXKuc9BpLo6T2RygvVSbDH9lc0eC5OfNrS5eVoCpWRM
+        TUlNLZefP2BEnChhgPvYNA4=
+X-Google-Smtp-Source: ABdhPJyTza6OFX58O1ZtxKbuFduSV3nk0HA/uLR752GboGjO7C9zQWW2xXABJQa8YI+aD7xHDPH8Lg==
+X-Received: by 2002:a17:90b:4b06:: with SMTP id lx6mr2579783pjb.224.1609910974430;
+        Tue, 05 Jan 2021 21:29:34 -0800 (PST)
+Received: from shinobu ([156.146.35.76])
+        by smtp.gmail.com with ESMTPSA id t1sm908329pfg.212.2021.01.05.21.29.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 05 Jan 2021 21:29:33 -0800 (PST)
+Date:   Wed, 6 Jan 2021 14:29:23 +0900
+From:   William Breathitt Gray <vilhelm.gray@gmail.com>
+To:     Jonathan Cameron <jic23@kernel.org>
+Cc:     kernel@pengutronix.de, linux-stm32@st-md-mailman.stormreply.com,
+        a.fatoum@pengutronix.de, kamel.bouhara@bootlin.com,
+        gwendal@chromium.org, alexandre.belloni@bootlin.com,
+        david@lechnology.com, linux-iio@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        syednwaris@gmail.com, patrick.havelange@essensium.com,
+        fabrice.gasnier@st.com, mcoquelin.stm32@gmail.com,
+        alexandre.torgue@st.com, Dan Carpenter <dan.carpenter@oracle.com>
+Subject: Re: [PATCH v7 1/5] counter: Internalize sysfs interface code
+Message-ID: <X/VKsxuYGkgMhx80@shinobu>
+References: <cover.1608935587.git.vilhelm.gray@gmail.com>
+ <fc40ab7f4a38e80d86715daa5eaf744dd645a75b.1608935587.git.vilhelm.gray@gmail.com>
+ <20201230143719.28a90914@archlinux>
 MIME-Version: 1.0
-References: <cover.1609855479.git.sean@mess.org> <a9334d4ecb66d58d326c19b78e18b44a180967d1.1609855479.git.sean@mess.org>
-In-Reply-To: <a9334d4ecb66d58d326c19b78e18b44a180967d1.1609855479.git.sean@mess.org>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 5 Jan 2021 21:26:26 -0800
-Message-ID: <CAEf4BzY2nDzT4FjfARiPJdu=G-0uwhxrUHpNrdAEB9NRxu4RqQ@mail.gmail.com>
-Subject: Re: [PATCH v3 4/4] bpf: add tests for ints larger than 128 bits
-To:     Sean Young <sean@mess.org>
-Cc:     Yonghong Song <yhs@fb.com>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Quentin Monnet <quentin@isovalent.com>,
-        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
-        linux-doc@vger.kernel.org, Networking <netdev@vger.kernel.org>,
-        bpf <bpf@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="sk+7ExK6E/6TxWPH"
+Content-Disposition: inline
+In-Reply-To: <20201230143719.28a90914@archlinux>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 5, 2021 at 6:45 AM Sean Young <sean@mess.org> wrote:
->
-> clang supports arbitrary length ints using the _ExtInt extension. This
-> can be useful to hold very large values, e.g. 256 bit or 512 bit types.
->
-> Larger types (e.g. 1024 bits) are possible but I am unaware of a use
-> case for these.
->
-> This requires the _ExtInt extension enabled in clang, which is under
-> review.
->
-> Link: https://clang.llvm.org/docs/LanguageExtensions.html#extended-integer-types
-> Link: https://reviews.llvm.org/D93103
->
-> Signed-off-by: Sean Young <sean@mess.org>
-> ---
->  tools/testing/selftests/bpf/Makefile          |   3 +-
->  tools/testing/selftests/bpf/prog_tests/btf.c  |   3 +-
->  .../selftests/bpf/progs/test_btf_extint.c     |  50 ++
->  tools/testing/selftests/bpf/test_extint.py    | 535 ++++++++++++++++++
->  4 files changed, 589 insertions(+), 2 deletions(-)
->  create mode 100644 tools/testing/selftests/bpf/progs/test_btf_extint.c
->  create mode 100755 tools/testing/selftests/bpf/test_extint.py
->
-> diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
-> index 8c33e999319a..436ad1aed3d9 100644
-> --- a/tools/testing/selftests/bpf/Makefile
-> +++ b/tools/testing/selftests/bpf/Makefile
-> @@ -70,7 +70,8 @@ TEST_PROGS := test_kmod.sh \
->         test_bpftool_build.sh \
->         test_bpftool.sh \
->         test_bpftool_metadata.sh \
-> -       test_xsk.sh
-> +       test_xsk.sh \
-> +       test_extint.py
->
->  TEST_PROGS_EXTENDED := with_addr.sh \
->         with_tunnels.sh \
-> diff --git a/tools/testing/selftests/bpf/prog_tests/btf.c b/tools/testing/selftests/bpf/prog_tests/btf.c
-> index 8ae97e2a4b9d..96a93502cf27 100644
-> --- a/tools/testing/selftests/bpf/prog_tests/btf.c
-> +++ b/tools/testing/selftests/bpf/prog_tests/btf.c
-> @@ -4073,6 +4073,7 @@ struct btf_file_test {
->  static struct btf_file_test file_tests[] = {
->         { .file = "test_btf_haskv.o", },
->         { .file = "test_btf_newkv.o", },
-> +       { .file = "test_btf_extint.o", },
->         { .file = "test_btf_nokv.o", .btf_kv_notfound = true, },
->  };
->
-> @@ -4414,7 +4415,7 @@ static struct btf_raw_test pprint_test_template[] = {
->          * will have both int and enum types.
->          */
->         .raw_types = {
-> -               /* unsighed char */                     /* [1] */
-> +               /* unsigned char */                     /* [1] */
 
-unintentional whitespaces change?
+--sk+7ExK6E/6TxWPH
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
->                 BTF_TYPE_INT_ENC(NAME_TBD, 0, 0, 8, 1),
->                 /* unsigned short */                    /* [2] */
->                 BTF_TYPE_INT_ENC(NAME_TBD, 0, 0, 16, 2),
-> diff --git a/tools/testing/selftests/bpf/progs/test_btf_extint.c b/tools/testing/selftests/bpf/progs/test_btf_extint.c
-> new file mode 100644
-> index 000000000000..b0fa9f130dda
-> --- /dev/null
-> +++ b/tools/testing/selftests/bpf/progs/test_btf_extint.c
-> @@ -0,0 +1,50 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +#include <linux/bpf.h>
-> +#include <bpf/bpf_helpers.h>
-> +#include "bpf_legacy.h"
-> +
-> +struct extint {
-> +       _ExtInt(256) v256;
-> +       _ExtInt(512) v512;
-> +};
-> +
-> +struct bpf_map_def SEC("maps") btf_map = {
-> +       .type = BPF_MAP_TYPE_ARRAY,
-> +       .key_size = sizeof(int),
-> +       .value_size = sizeof(struct extint),
-> +       .max_entries = 1,
-> +};
-> +
-> +BPF_ANNOTATE_KV_PAIR(btf_map, int, struct extint);
+On Wed, Dec 30, 2020 at 02:37:19PM +0000, Jonathan Cameron wrote:
+> On Fri, 25 Dec 2020 19:15:34 -0500
+> William Breathitt Gray <vilhelm.gray@gmail.com> wrote:
+>=20
+> > This is a reimplementation of the Generic Counter driver interface.
+> > There are no modifications to the Counter subsystem userspace interface,
+> > so existing userspace applications should continue to run seamlessly.
+> Hi William
+>=20
+> Been a while since I looked at this series.  Its rather big and I'm lazy
+> (or busy depending on who I'm talking to :)
+>=20
+> Hmm. I'm a bit in two minds about how you should handle the huge amount of
+> description here.  Some of it clearly belongs in the kernel docs (and some
+> is I think put there in a later patch).  Other parts are specific to
+> this series, but I'm not 100% sure this much detail is really useful in t=
+he
+> git log.   Note that we now have links to the threads for all patches app=
+lied
+> using b4 (which this will be) so it's fine to have really detailed stuff
+> in cover letters rather than the individual patches.
 
-this is deprecated, don't add new tests using it. Please use BTF-based
-map definition instead (see any other selftests).
+I'll simplify the description here to something more succinct.
 
-> +
-> +__attribute__((noinline))
-> +int test_long_fname_2(void)
-> +{
-> +       struct extint *bi;
-> +       int key = 0;
-> +
-> +       bi = bpf_map_lookup_elem(&btf_map, &key);
-> +       if (!bi)
-> +               return 0;
-> +
-> +       bi->v256 <<= 64;
-> +       bi->v256 += (_ExtInt(256))0xcafedead;
-> +       bi->v512 <<= 128;
-> +       bi->v512 += (_ExtInt(512))0xff00ff00ff00ffull;
-> +
-> +       return 0;
-> +}
-> +
-> +__attribute__((noinline))
-> +int test_long_fname_1(void)
-> +{
-> +       return test_long_fname_2();
-> +}
-> +
-> +SEC("dummy_tracepoint")
-> +int _dummy_tracepoint(void *arg)
-> +{
-> +       return test_long_fname_1();
-> +}
+> One thing that would be handy for review, might be if you put up a tree
+> somewhere with this applied and included a link.
 
-why the chain of test_long_fname functions? Please minimize the test
-to only test the essential logic - _ExtInt handling.
+This is such a large set of changes that having a tree to checkout for
+review would be convenient. I typically push to my personal tree, so you
+can check out the changes there in the counter_chrdev_v* branches:
+https://gitlab.com/vilhelmgray/iio
 
-> +
-> +char _license[] SEC("license") = "GPL";
-> diff --git a/tools/testing/selftests/bpf/test_extint.py b/tools/testing/selftests/bpf/test_extint.py
-> new file mode 100755
-> index 000000000000..86af815a0cf6
-> --- /dev/null
-> +++ b/tools/testing/selftests/bpf/test_extint.py
+I'll include a link to it again in the cover letter for v8 when it's
+ready.
 
-this looks like a total overkill (with a lot of unrelated code) for a
-pretty simple test you need to perform. you can run bpftool and get
-its output from test_progs with popen().
+> Mind you I don't feel that strongly about it if it you do want to maintain
+> it in the individual patch descriptions.
+>=20
+> I've been a bit lazy and not cropped this down as much as I ideally should
+> have done (to include only bits I'm commenting on).
+>=20
+> Anyhow, various minor things inline but this fundamentally looks fine to =
+me.
+>=20
+> Jonathan
+>=20
+>=20
+> >=20
+> > Overview
+> > =3D=3D=3D=3D=3D=3D=3D=3D
+> >=20
+> > The purpose of this patch is to internalize the sysfs interface code
+> > among the various counter drivers into a shared module. Counter drivers
+> > pass and take data natively (i.e. u8, u64, etc.) and the shared counter
+> > module handles the translation between the sysfs interface.
+>=20
+> Confusing statement.  Between the sysfs interface and what?
+> Perhaps "handles the translation to/from the sysfs interface."
 
-> @@ -0,0 +1,535 @@
-> +#!/usr/bin/python3
+Looks like I cut that line short by accident; it should read: "between
+the sysfs interface and the device drivers". I'll fix this up.
 
-[...]
+> > This
+> > guarantees a standard userspace interface for all counter drivers, and
+> > helps generalize the Generic Counter driver ABI in order to support the
+> > Generic Counter chrdev interface (introduced in a subsequent patch)
+> > without significant changes to the existing counter drivers.
+> >=20
+> > A high-level view of how a count value is passed down from a counter
+> > driver is exemplified by the following. The driver callbacks are first
+> > registered to the Counter core component for use by the Counter
+> > userspace interface components:
+> >=20
+> >                         +----------------------------+
+> > 	                | Counter device driver      |
+>=20
+> Looks like something snuck a tab in amongst your spaces.
+
+Ack.
+
+> >  static int quad8_signal_read(struct counter_device *counter,
+> > -	struct counter_signal *signal, enum counter_signal_value *val)
+> > +			     struct counter_signal *signal,
+> > +			     enum counter_signal_level *level)
+> >  {
+> >  	const struct quad8_iio *const priv =3D counter->priv;
+> >  	unsigned int state;
+> > @@ -633,13 +634,13 @@ static int quad8_signal_read(struct counter_devic=
+e *counter,
+> >  	state =3D inb(priv->base + QUAD8_REG_INDEX_INPUT_LEVELS)
+> >  		& BIT(signal->id - 16);
+> > =20
+> > -	*val =3D (state) ? COUNTER_SIGNAL_HIGH : COUNTER_SIGNAL_LOW;
+> > +	*level =3D (state) ? COUNTER_SIGNAL_LEVEL_HIGH : COUNTER_SIGNAL_LEVEL=
+_LOW;
+>=20
+> This bit of refactoring / renaming could have been split out as a precurs=
+or patch
+> I think.  There may be other opportunities.=20
+
+Ack. I'll look around for additional changes I can pull out as precursor
+patches too.
+
+> > =20
+> >  	return 0;
+> >  }
+> > =20
+> >  static int quad8_count_read(struct counter_device *counter,
+> > -	struct counter_count *count, unsigned long *val)
+> > +			    struct counter_count *count, u64 *val)
+>=20
+> Could the type change for val have been done as a precursor?
+
+I don't think we can pull this one out as a precursor unfortunately.
+Since unsigned long is passed in as pointer, we could get a type
+mismatch if we're on a 32-bit system. For this to work, it requires the
+u64 change in struct counter_ops and subsequent dependent code, so we'll
+have to keep it as part of this patch for now.
+
+> > @@ -785,18 +782,21 @@ static int quad8_function_set(struct counter_devi=
+ce *counter,
+> >  		*quadrature_mode =3D 1;
+> > =20
+> >  		switch (function) {
+> > -		case QUAD8_COUNT_FUNCTION_QUADRATURE_X1:
+> > +		case COUNTER_FUNCTION_QUADRATURE_X1_A:
+> >  			*scale =3D 0;
+> >  			mode_cfg |=3D QUAD8_CMR_QUADRATURE_X1;
+> >  			break;
+> > -		case QUAD8_COUNT_FUNCTION_QUADRATURE_X2:
+> > +		case COUNTER_FUNCTION_QUADRATURE_X2_A:
+> >  			*scale =3D 1;
+> >  			mode_cfg |=3D QUAD8_CMR_QUADRATURE_X2;
+> >  			break;
+> > -		case QUAD8_COUNT_FUNCTION_QUADRATURE_X4:
+> > +		case COUNTER_FUNCTION_QUADRATURE_X4:
+> >  			*scale =3D 2;
+> >  			mode_cfg |=3D QUAD8_CMR_QUADRATURE_X4;
+> >  			break;
+> > +		default:
+> > +			mutex_unlock(&priv->lock);
+> > +			return -EINVAL;
+>=20
+> This looks like a sensible precaution / cleanup but could have been
+> done separately to the rest of the patch I think?
+
+Ack.
+
+> > @@ -1229,30 +1194,28 @@ static ssize_t quad8_count_ceiling_write(struct=
+ counter_device *counter,
+> > =20
+> >  	mutex_unlock(&priv->lock);
+> > =20
+> > -	return len;
+> > +	return -EINVAL;
+>=20
+> ?  That looks like the good exit path to me.
+
+You're right, this should be a return 0.
+
+> > +/**
+> > + * counter_register - register Counter to the system
+> > + * @counter:	pointer to Counter to register
+> > + *
+> > + * This function registers a Counter to the system. A sysfs "counter" =
+directory
+> > + * will be created and populated with sysfs attributes correlating wit=
+h the
+> > + * Counter Signals, Synapses, and Counts respectively.
+>=20
+> Where easy to do it's worth documenting return values.
+
+Ack.
+
+> > +static void devm_counter_unregister(struct device *dev, void *res)
+> > +{
+> > +	counter_unregister(*(struct counter_device **)res);
+>=20
+> Rename this. It looks like it's a generic way of unwinding
+> devm_counter_register which it is definitely not...
+
+Ack.
+
+> > +/**
+> > + * struct counter_attribute - Counter sysfs attribute
+> > + * @dev_attr:	device attribute for sysfs
+> > + * @l:		node to add Counter attribute to attribute group list
+> > + * @comp:	Counter component callbacks and data
+> > + * @scope:	Counter scope of the attribute
+> > + * @parent:	pointer to the parent component
+> > + */
+> > +struct counter_attribute {
+> > +	struct device_attribute dev_attr;
+> > +	struct list_head l;
+> > +
+> > +	struct counter_comp comp;
+> > +	__u8 scope;
+>=20
+> Why not an enum?
+
+This should be enum; I missed it from the previous revision.
+
+> > +	switch (a->comp.type) {
+> > +	case COUNTER_COMP_FUNCTION:
+> > +		return sprintf(buf, "%s\n", counter_function_str[data]);
+> > +	case COUNTER_COMP_SIGNAL_LEVEL:
+> > +		return sprintf(buf, "%s\n", counter_signal_value_str[data]);
+> > +	case COUNTER_COMP_SYNAPSE_ACTION:
+> > +		return sprintf(buf, "%s\n", counter_synapse_action_str[data]);
+> > +	case COUNTER_COMP_ENUM:
+> > +		return sprintf(buf, "%s\n", avail->strs[data]);
+> > +	case COUNTER_COMP_COUNT_DIRECTION:
+> > +		return sprintf(buf, "%s\n", counter_count_direction_str[data]);
+> > +	case COUNTER_COMP_COUNT_MODE:
+> > +		return sprintf(buf, "%s\n", counter_count_mode_str[data]);
+> > +	default:
+>=20
+> Perhaps move the below return sprintf() up here?
+
+Ack.
+
+> > +		break;
+> > +	}
+> > +
+> > +	return sprintf(buf, "%u\n", (unsigned int)data);
+> > +}
+> > +
+> > +static int find_in_string_array(u32 *const enum_item, const u32 *const=
+ enums,
+> > +				const size_t num_enums, const char *const buf,
+> > +				const char *const string_array[])
+>=20
+> Please avoid defining such generically named functions.  High chance of a=
+ clash
+> with something that turns up in generic headers sometime in the future.
+
+Ack.
+
+> > +static ssize_t enums_available_show(const u32 *const enums,
+> > +				    const size_t num_enums,
+> > +				    const char *const strs[], char *buf)
+> > +{
+> > +	size_t len =3D 0;
+> > +	size_t index;
+> > +
+> > +	for (index =3D 0; index < num_enums; index++)
+> > +		len +=3D sprintf(buf + len, "%s\n", strs[enums[index]]);
+>=20
+> Probably better to add protections on overrunning the buffer to this.
+> Sure it won't actually happen but that may not be obvious to someone read=
+ing
+> this code in future.
+>=20
+> Look at new sysfs_emit * family for this.
+>=20
+> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit=
+/?id=3D2efc459d06f1630001e3984854848a5647086232
+
+Ack.
+
+> > +static ssize_t counter_comp_available_show(struct device *dev,
+> > +					   struct device_attribute *attr,
+> > +					   char *buf)
+> > +{
+> > +	const struct counter_attribute *const a =3D to_counter_attribute(attr=
+);
+> > +	const struct counter_count *const count =3D a->parent;
+> > +	const struct counter_synapse *const synapse =3D a->comp.priv;
+> > +	const struct counter_available *const avail =3D a->comp.priv;
+> > +
+> > +	switch (a->comp.type) {
+> > +	case COUNTER_COMP_FUNCTION:
+> > +		return enums_available_show(count->functions_list,
+> > +					    count->num_functions,
+> > +					    counter_function_str, buf);
+> > +	case COUNTER_COMP_SYNAPSE_ACTION:
+> > +		return enums_available_show(synapse->actions_list,
+> > +					    synapse->num_actions,
+> > +					    counter_synapse_action_str, buf);
+> > +	case COUNTER_COMP_ENUM:
+> > +		return strs_available_show(avail, buf);
+> > +	case COUNTER_COMP_COUNT_MODE:
+> > +		return enums_available_show(avail->enums, avail->num_items,
+> > +					    counter_count_mode_str, buf);
+> > +	default:
+> > +		break;
+>=20
+> Might as well return -EINVAL; here
+
+Ack.
+
+> > +	/* Store list node */
+> > +	list_add(&counter_attr->l, &group->attr_list);
+> > +	group->num_attr++;
+> > +
+> > +	switch (comp->type) {
+> > +	case COUNTER_COMP_FUNCTION:
+> > +	case COUNTER_COMP_SYNAPSE_ACTION:
+> > +	case COUNTER_COMP_ENUM:
+> > +	case COUNTER_COMP_COUNT_MODE:
+> > +		return counter_avail_attr_create(dev, group, comp, parent);
+> > +	default:
+> > +		break;
+>=20
+> return 0 in here.  Also add a comment on why it isn't an error.
+
+Ack.
+
+> > +static int counter_sysfs_synapses_add(struct counter_device *const cou=
+nter,
+> > +	struct counter_attribute_group *const group,
+> > +	struct counter_count *const count)
+> > +{
+> > +	const __u8 scope =3D COUNTER_SCOPE_COUNT;
+> > +	struct device *const dev =3D &counter->dev;
+> > +	size_t i;
+> > +	struct counter_synapse *synapse;
+> > +	size_t id;
+> > +	struct counter_comp comp;
+> > +	int err;
+> > +
+> > +	/* Add each Synapse */
+> > +	for (i =3D 0; i < count->num_synapses; i++) {
+> Could reduce scope and make code a bit more readable by
+> pulling
+>=20
+> struct counter_synapse *synapse;
+> struct counter_comp comp;
+> size_t id;
+>=20
+> and maybe other things in here.  Makes it clear their scope
+> is just within this loop.
+
+Ack.
+
+> >  /**
+> >   * struct counter_synapse - Counter Synapse node
+> > - * @action:		index of current action mode
+> >   * @actions_list:	array of available action modes
+> >   * @num_actions:	number of action modes specified in @actions_list
+> > - * @signal:		pointer to associated signal
+> > + * @signal:		pointer to the associated Signal
+>=20
+> Might have been nice to pull the cases that were purely capitalization ou=
+t as
+> a separate patch immediately following this one. There aren't
+> a huge number, but from a review point of view it's a noop patch
+> so doesn't need the reviewer to be awake :)
+
+Ack.
+
+William Breathitt Gray
+
+--sk+7ExK6E/6TxWPH
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEk5I4PDJ2w1cDf/bghvpINdm7VJIFAl/1SqAACgkQhvpINdm7
+VJIndQ/6Am6yxb8q8CFpvW0tp1/UlZUCwDYZEagvSmRXDQboQa8NZr0LAP3DzOKW
+ZT8y6PI7XvI9foabuqf5JZsFsDh2ITOM0GSzfekRHkLWZ5Q9fsRrUH2Actt4IVns
+itwKRzqYDAstn9rS8e+DizXgG53xMkgw/vArIKRCkTe61ww3zMxhvdqC1DGfqNfp
+VbqlteY/xB1/zA06qSY76O34L5Qqe9mrzB7wepA/IegMrTCg1Tw8WhtpH5XnlW3o
+jULZzLOaEOLWOwtruKDmBcB8QgWzyBv/mGfOjqjVN30v6+QTtAl+IcrKj/Ignf4f
+qWD2ad5lHHUPYpiIEVgf+y0jDLxCV6n2qFJkXLk33YdvTrfZ2fNxVoZABRYhyqUG
+Q4LEv5Eupq2mD8blZZ6MJKd1KGvkSYxNOgDKexTBCuOgVWoksVjGLtXazZTBs0UT
+J0G+dxMNE7t594rbVXenOcFk10fsRw6b5jfWq4ZpJNNAKh5IxYMl5KPODNArdziO
+mF9kfvCunFal5A6nG3EwnssGMVeQ76IZXBG32px7Yx+Sq7C05Bgn/+Qk+ordyJB4
+hToilC5Djks+JzwHKKcveQGymUBcUbT3FfW8SIParMzxu9btlE9xrZLG1bxyOZwH
+XMJROKVwkZtW9Dwpto8glpZ7Kci5d+OF0+bRDBVGJhTuED0jDws=
+=AN0Y
+-----END PGP SIGNATURE-----
+
+--sk+7ExK6E/6TxWPH--
