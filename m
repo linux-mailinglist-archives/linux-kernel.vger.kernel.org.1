@@ -2,28 +2,28 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D986C2EBAC6
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 08:52:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AD67B2EBACC
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 08:56:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726786AbhAFHwH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Jan 2021 02:52:07 -0500
-Received: from mga07.intel.com ([134.134.136.100]:33897 "EHLO mga07.intel.com"
+        id S1725951AbhAFHwS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Jan 2021 02:52:18 -0500
+Received: from mga17.intel.com ([192.55.52.151]:3827 "EHLO mga17.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725971AbhAFHwH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Jan 2021 02:52:07 -0500
-IronPort-SDR: 4KnUQWxUwVkAuNjlHkjsma0A8Bn2iGjaN2hxtrkCu6sm+UwsiD6NzPQuvN7U+gfYL7/54tHH2B
- 3w/F4KM+bXuQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9855"; a="241322471"
+        id S1725828AbhAFHwP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 Jan 2021 02:52:15 -0500
+IronPort-SDR: Ma3453biWJfYSj2DcsJAUmnctd9U14VWRftT+Sb5oJq8wttksLgwdJlMMg242+SIQBmYkyZDz5
+ l6LsOxwOyamQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9855"; a="157028126"
 X-IronPort-AV: E=Sophos;i="5.78,479,1599548400"; 
-   d="scan'208";a="241322471"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Jan 2021 23:51:26 -0800
-IronPort-SDR: XmkzYezGZPy2Z6KE01OiusJP2BbTYrr2+BSPjDeKHcdPH00/f3hRUH7kAyEr5LQwUGywtdRyct
- WCnn2iD6OfZg==
+   d="scan'208";a="157028126"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Jan 2021 23:51:33 -0800
+IronPort-SDR: HXk5cShn1NSR7rlZgG9FgRwmCWhR+6tAfNlpfb7pZlx2LZB4SDW9RSBFNDtEmICdtI9QOYAxjA
+ F8xA7EwQqSHQ==
 X-IronPort-AV: E=Sophos;i="5.78,479,1599548400"; 
-   d="scan'208";a="398132235"
+   d="scan'208";a="346565497"
 Received: from shsi6026.sh.intel.com (HELO localhost) ([10.239.147.88])
-  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Jan 2021 23:51:20 -0800
+  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Jan 2021 23:51:28 -0800
 From:   shuo.a.liu@intel.com
 To:     linux-kernel@vger.kernel.org, x86@kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -32,16 +32,22 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
         Yu Wang <yu1.wang@intel.com>,
         Reinette Chatre <reinette.chatre@intel.com>,
-        Yin Fengwei <fengwei.yin@intel.com>,
-        Shuo Liu <shuo.a.liu@intel.com>, Borislav Petkov <bp@suse.de>,
+        Shuo Liu <shuo.a.liu@intel.com>,
+        Yakui Zhao <yakui.zhao@intel.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Borislav Petkov <bp@suse.de>,
         Dave Hansen <dave.hansen@intel.com>,
         Sean Christopherson <sean.j.christopherson@intel.com>,
         Dan Williams <dan.j.williams@intel.com>,
+        Fengwei Yin <fengwei.yin@intel.com>,
         Zhi Wang <zhi.a.wang@intel.com>,
-        Zhenyu Wang <zhenyuw@linux.intel.com>
-Subject: [PATCH v7 03/18] x86/acrn: Introduce acrn_cpuid_base() and hypervisor feature bits
-Date:   Wed,  6 Jan 2021 15:50:40 +0800
-Message-Id: <20210106075055.47226-4-shuo.a.liu@intel.com>
+        Zhenyu Wang <zhenyuw@linux.intel.com>,
+        Arvind Sankar <nivedita@alum.mit.edu>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Segher Boessenkool <segher@kernel.crashing.org>
+Subject: [PATCH v7 04/18] x86/acrn: Introduce hypercall interfaces
+Date:   Wed,  6 Jan 2021 15:50:41 +0800
+Message-Id: <20210106075055.47226-5-shuo.a.liu@intel.com>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20210106075055.47226-1-shuo.a.liu@intel.com>
 References: <20210106075055.47226-1-shuo.a.liu@intel.com>
@@ -51,15 +57,24 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yin Fengwei <fengwei.yin@intel.com>
+From: Shuo Liu <shuo.a.liu@intel.com>
 
-ACRN Hypervisor reports hypervisor features via CPUID leaf 0x40000001
-which is similar to KVM. A VM can check if it's the privileged VM using
-the feature bits. The Service VM is the only privileged VM by design.
+The Service VM communicates with the hypervisor via conventional
+hypercalls. VMCALL instruction is used to make the hypercalls.
 
-Signed-off-by: Yin Fengwei <fengwei.yin@intel.com>
+ACRN hypercall ABI:
+  * Hypercall number is in R8 register.
+  * Up to 2 parameters are in RDI and RSI registers.
+  * Return value is in RAX register.
+
+Introduce the ACRN hypercall interfaces. Because GCC doesn't support R8
+register as direct register constraints, use supported constraint as
+input with a explicit MOV to R8 in beginning of asm.
+
+Originally-by: Yakui Zhao <yakui.zhao@intel.com>
 Signed-off-by: Shuo Liu <shuo.a.liu@intel.com>
 Reviewed-by: Reinette Chatre <reinette.chatre@intel.com>
+Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
 Acked-by: Borislav Petkov <bp@suse.de>
 Cc: Dave Hansen <dave.hansen@intel.com>
 Cc: Sean Christopherson <sean.j.christopherson@intel.com>
@@ -70,52 +85,78 @@ Cc: Zhenyu Wang <zhenyuw@linux.intel.com>
 Cc: Yu Wang <yu1.wang@intel.com>
 Cc: Reinette Chatre <reinette.chatre@intel.com>
 Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: Borislav Petkov <bp@alien8.de>
+Cc: Arvind Sankar <nivedita@alum.mit.edu>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Nick Desaulniers <ndesaulniers@google.com>
+Cc: Segher Boessenkool <segher@kernel.crashing.org>
 ---
- arch/x86/include/asm/acrn.h | 16 ++++++++++++++++
- arch/x86/kernel/cpu/acrn.c  |  2 +-
- 2 files changed, 17 insertions(+), 1 deletion(-)
+ arch/x86/include/asm/acrn.h | 54 +++++++++++++++++++++++++++++++++++++
+ 1 file changed, 54 insertions(+)
 
 diff --git a/arch/x86/include/asm/acrn.h b/arch/x86/include/asm/acrn.h
-index ff259b69cde7..127f20672c5d 100644
+index 127f20672c5d..e003a01b7c67 100644
 --- a/arch/x86/include/asm/acrn.h
 +++ b/arch/x86/include/asm/acrn.h
-@@ -2,7 +2,23 @@
- #ifndef _ASM_X86_ACRN_H
- #define _ASM_X86_ACRN_H
+@@ -21,4 +21,58 @@ static inline u32 acrn_cpuid_base(void)
+ 	return 0;
+ }
  
 +/*
-+ * This CPUID returns feature bitmaps in EAX.
-+ * Guest VM uses this to detect the appropriate feature bit.
++ * Hypercalls for ACRN
++ *
++ * - VMCALL instruction is used to implement ACRN hypercalls.
++ * - ACRN hypercall ABI:
++ *   - Hypercall number is passed in R8 register.
++ *   - Up to 2 arguments are passed in RDI, RSI.
++ *   - Return value will be placed in RAX.
++ *
++ * Because GCC doesn't support R8 register as direct register constraints, use
++ * supported constraint as input with a explicit MOV to R8 in beginning of asm.
 + */
-+#define	ACRN_CPUID_FEATURES		0x40000001
-+/* Bit 0 indicates whether guest VM is privileged */
-+#define	ACRN_FEATURE_PRIVILEGED_VM	BIT(0)
-+
- void acrn_setup_intr_handler(void (*handler)(void));
- void acrn_remove_intr_handler(void);
- 
-+static inline u32 acrn_cpuid_base(void)
++static inline long acrn_hypercall0(unsigned long hcall_id)
 +{
-+	if (boot_cpu_has(X86_FEATURE_HYPERVISOR))
-+		return hypervisor_cpuid_base("ACRNACRNACRN", 0);
++	long result;
 +
-+	return 0;
++	asm volatile("movl %1, %%r8d\n\t"
++		     "vmcall\n\t"
++		     : "=a" (result)
++		     : "g" (hcall_id)
++		     : "r8", "memory");
++
++	return result;
++}
++
++static inline long acrn_hypercall1(unsigned long hcall_id,
++				   unsigned long param1)
++{
++	long result;
++
++	asm volatile("movl %1, %%r8d\n\t"
++		     "vmcall\n\t"
++		     : "=a" (result)
++		     : "g" (hcall_id), "D" (param1)
++		     : "r8", "memory");
++
++	return result;
++}
++
++static inline long acrn_hypercall2(unsigned long hcall_id,
++				   unsigned long param1,
++				   unsigned long param2)
++{
++	long result;
++
++	asm volatile("movl %1, %%r8d\n\t"
++		     "vmcall\n\t"
++		     : "=a" (result)
++		     : "g" (hcall_id), "D" (param1), "S" (param2)
++		     : "r8", "memory");
++
++	return result;
 +}
 +
  #endif /* _ASM_X86_ACRN_H */
-diff --git a/arch/x86/kernel/cpu/acrn.c b/arch/x86/kernel/cpu/acrn.c
-index e0c181781905..23f5f27b5a02 100644
---- a/arch/x86/kernel/cpu/acrn.c
-+++ b/arch/x86/kernel/cpu/acrn.c
-@@ -21,7 +21,7 @@
- 
- static u32 __init acrn_detect(void)
- {
--	return hypervisor_cpuid_base("ACRNACRNACRN", 0);
-+	return acrn_cpuid_base();
- }
- 
- static void __init acrn_init_platform(void)
 -- 
 2.28.0
 
