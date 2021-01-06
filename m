@@ -2,149 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5246E2EB6EA
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 01:31:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B675D2EB6E8
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 01:31:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726979AbhAFAb3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 19:31:29 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:20766 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726877AbhAFAb2 (ORCPT
+        id S1726890AbhAFAbF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 19:31:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38412 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726594AbhAFAbE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 19:31:28 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1609893001;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=lCbjpgDmnTMB324ACAGwgrr0FLk5GHKNaJCMbIN6Iis=;
-        b=ddueGisfsbi4oVDMHMmp9/1IyTsuNeseF/XHhFethlBUMsvJx30zUnUxR2DI0yYmefh7H3
-        qikQl2gxj2uaAcV8HatKeOS5aOihIz2Y3hyLrO59hsvBVMEf5bTIY1eOx5/MPRERlbKKGZ
-        uZr/7htg8iLkTQGmf6t4WlEMz9yLZ2g=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-39-ickF_wgCNsCRvbalVRc8Jg-1; Tue, 05 Jan 2021 19:29:58 -0500
-X-MC-Unique: ickF_wgCNsCRvbalVRc8Jg-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 66871107ACE3;
-        Wed,  6 Jan 2021 00:29:56 +0000 (UTC)
-Received: from mail (ovpn-112-76.rdu2.redhat.com [10.10.112.76])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id D5FCA50DD5;
-        Wed,  6 Jan 2021 00:29:52 +0000 (UTC)
-Date:   Tue, 5 Jan 2021 19:29:52 -0500
-From:   Andrea Arcangeli <aarcange@redhat.com>
-To:     Will Deacon <will@kernel.org>
-Cc:     Nadav Amit <namit@vmware.com>, linux-mm <linux-mm@kvack.org>,
-        lkml <linux-kernel@vger.kernel.org>, Yu Zhao <yuzhao@google.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Xu <peterx@redhat.com>,
-        Pavel Emelyanov <xemul@openvz.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Mike Rapoport <rppt@linux.vnet.ibm.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>
-Subject: Re: [RFC PATCH v2 2/2] fs/task_mmu: acquire mmap_lock for write on
- soft-dirty cleanup
-Message-ID: <X/UEgCkJLtYwORov@redhat.com>
-References: <20201225092529.3228466-1-namit@vmware.com>
- <20201225092529.3228466-3-namit@vmware.com>
- <X/SuBxFfR+bncRhU@redhat.com>
- <15758743-B8E3-48C4-A13B-DFFEBF8AF435@vmware.com>
- <X/TOhyzggcBL64N2@redhat.com>
- <B1B85771-B211-4FCC-AEEF-BDFD37332C25@vmware.com>
- <20210105221628.GA12854@willie-the-truck>
+        Tue, 5 Jan 2021 19:31:04 -0500
+Received: from ZenIV.linux.org.uk (zeniv.linux.org.uk [IPv6:2002:c35c:fd02::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5EE2EC061793
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Jan 2021 16:30:24 -0800 (PST)
+Received: from viro by ZenIV.linux.org.uk with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kwwiO-007DEZ-VN; Wed, 06 Jan 2021 00:30:17 +0000
+Date:   Wed, 6 Jan 2021 00:30:16 +0000
+From:   Al Viro <viro@zeniv.linux.org.uk>
+To:     "Eric W. Biederman" <ebiederm@xmission.com>
+Cc:     Andy Lutomirski <luto@amacapital.net>,
+        David Laight <David.Laight@aculab.com>,
+        Christoph Hellwig <hch@lst.de>, linux-kernel@vger.kernel.org,
+        X86 ML <x86@kernel.org>
+Subject: Re: in_compat_syscall() on x86
+Message-ID: <20210106003016.GZ3579531@ZenIV.linux.org.uk>
+References: <fe2629460b4e4b44a120a8b56efe0ac1@AcuMS.aculab.com>
+ <091174F9-F6E4-468E-83F5-93706D83F9D2@amacapital.net>
+ <87mtxodxat.fsf@x220.int.ebiederm.org>
+ <20210105005700.GR3579531@ZenIV.linux.org.uk>
+ <878s97aq4c.fsf@x220.int.ebiederm.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210105221628.GA12854@willie-the-truck>
-User-Agent: Mutt/2.0.4 (2020-12-30)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+In-Reply-To: <878s97aq4c.fsf@x220.int.ebiederm.org>
+Sender: Al Viro <viro@ftp.linux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 05, 2021 at 10:16:29PM +0000, Will Deacon wrote:
-> On Tue, Jan 05, 2021 at 09:22:51PM +0000, Nadav Amit wrote:
-> > > On Jan 5, 2021, at 12:39 PM, Andrea Arcangeli <aarcange@redhat.com> wrote:
-> > > 
-> > > On Tue, Jan 05, 2021 at 07:26:43PM +0000, Nadav Amit wrote:
-> > >>> On Jan 5, 2021, at 10:20 AM, Andrea Arcangeli <aarcange@redhat.com> wrote:
-> > >>> 
-> > >>> On Fri, Dec 25, 2020 at 01:25:29AM -0800, Nadav Amit wrote:
-> > >>>> Fixes: 0f8975ec4db2 ("mm: soft-dirty bits for user memory changes tracking")
-> > >>> 
-> > >>> Targeting a backport down to 2013 when nothing could wrong in practice
-> > >>> with page_mapcount sounds backwards and unnecessarily risky.
-> > >>> 
-> > >>> In theory it was already broken and in theory
-> > >>> 09854ba94c6aad7886996bfbee2530b3d8a7f4f4 is absolutely perfect and the
-> > >>> previous code of 2013 is completely wrong, but in practice the code
-> > >>> from 2013 worked perfectly until Aug 21 2020.
-> > >> 
-> > >> Well… If you consider the bug that Will recently fixed [1], then soft-dirty
-> > >> was broken (for a different, yet related reason) since 0758cd830494
-> > >> ("asm-generic/tlb: avoid potential double flush”).
-> > >> 
-> > >> This is not to say that I argue that the patch should be backported to 2013,
-> > >> just to say that memory corruption bugs can be unnoticed.
-> > >> 
-> > >> [1] https://patchwork.kernel.org/project/linux-mm/patch/20201210121110.10094-2-will@kernel.org/
-> > > 
-> > > Is this a fix or a cleanup?
-> > > 
-> > > The above is precisely what I said earlier that tlb_gather had no
-> > > reason to stay in clear_refs and it had to use inc_tlb_flush_pending
-> > > as mprotect, but it's not a fix? Is it? I suggested it as a pure
-> > > cleanup. So again no backport required. The commit says fix this but
-> > > it means "clean this up".
-> > 
-> > It is actually a fix. I think the commit log is not entirely correct and
-> > should include:
-> > 
-> >   Fixes: 0758cd830494 ("asm-generic/tlb: avoid potential double flush”).
-
-Agreed.
-
-> > 
-> > Since 0758cd830494, calling tlb_finish_mmu() without any previous call to
-> > pte_free_tlb() and friends does not flush the TLB. The soft-dirty bug
-> > producer that I sent fails without this patch of Will.
+On Tue, Jan 05, 2021 at 06:03:15PM -0600, Eric W. Biederman wrote:
+> > Yes, the current mainline is bloody awful in that area (PRSTATUS_SIZE and
+> > SET_PR_FPVALID are not for weak stomach), but that's really not hard to
+> > get into sane shape - -next had that done in last cycle and I'm currently
+> > testing (well, building the test kernel) of port of that to 5.11-rc1.
 > 
-> Yes, it's a fix, but I didn't rush it for 5.10 because I don't think rushing
-> this sort of thing does anybody any favours. I agree that the commit log
-> should be updated; I mentioned this report in the cover letter:
-> 
-> https://lore.kernel.org/linux-mm/CA+32v5zzFYJQ7eHfJP-2OHeR+6p5PZsX=RDJNU6vGF3hLO+j-g@mail.gmail.com/
-> 
-> demonstrating that somebody has independently stumbled over the missing TLB
-> invalidation in userspace, but it's not as bad as the other issues we've been
-> discussing in this thread.
+> That does sound interesting.  Anytime we can clean up arch specific
+> weirdness so that it simply becomes generic weirdness and it can be
+> tested and maintained by more people is always nice.
 
-Thanks for the explanation Nadav and Will.
+vfs.git #work.elf-compat, and AFAICS it works.
 
-The fact the code was a 100% match to the cleanup I independently
-suggested a few weeks ago to reduce the confusion in clear_refs, made
-me overlook the difference 0758cd830494 made. I didn't realize the
-flush got optimized away if no gathering happened.
-
-Backporting this sort of thing with Fixes I guess tends to give the
-same kind of favors as rushing it for 5.10, but then in general the
-Fixes is accurate here.
-
-Overall it looks obviously safe cleanup and it is also a fix starting
-in v5.6, so I don't think this can cause more issues than what it
-sure fixes at least.
-
-The cleanup was needed anyway, even before it become a fix, since if
-it was mandatory to use tlb_gather when you purely need
-inc_tlb_flush_pending, then mprotect couldn't get away with it.
-
-I guess the the optimization in 0758cd830494 just made it more
-explicit that no code should use tlb_gather if it doesn't need to
-gather any page. Maybe adding some commentary in the comment on top of
-tlb_gather_mmu about the new behavior wouldn't hurt.
+ arch/Kconfig                               |   3 ++
+ arch/arm64/Kconfig                         |   1 -
+ arch/ia64/kernel/crash.c                   |   2 +-
+ arch/mips/Kconfig                          |   8 ++----
+ arch/mips/include/asm/elf.h                |  56 +++++++++++++-----------------------
+ arch/mips/include/asm/elfcore-compat.h     |  29 +++++++++++++++++++
+ arch/mips/kernel/Makefile                  |   4 +--
+ arch/mips/kernel/binfmt_elfn32.c           | 106 --------------------------------------------------------------------
+ arch/mips/kernel/binfmt_elfo32.c           | 109 ----------------------------------------------------------------------
+ arch/mips/kernel/scall64-n64.S             |   2 +-
+ arch/parisc/Kconfig                        |   1 -
+ arch/powerpc/Kconfig                       |   1 -
+ arch/powerpc/platforms/powernv/opal-core.c |   6 ++--
+ arch/s390/Kconfig                          |   1 -
+ arch/s390/kernel/crash_dump.c              |   2 +-
+ arch/sparc/Kconfig                         |   1 -
+ arch/x86/Kconfig                           |   2 +-
+ arch/x86/include/asm/compat.h              |  11 -------
+ arch/x86/include/asm/elf.h                 |   2 +-
+ arch/x86/include/asm/elfcore-compat.h      |  31 ++++++++++++++++++++
+ fs/Kconfig.binfmt                          |   2 +-
+ fs/binfmt_elf.c                            |  19 ++++++-------
+ fs/binfmt_elf_fdpic.c                      |  22 ++++----------
+ fs/compat_binfmt_elf.c                     |   7 +----
+ include/linux/elfcore-compat.h             |  15 ++++++++--
+ include/linux/elfcore.h                    |   7 ++++-
+ kernel/kexec_core.c                        |   2 +-
+ 28 files changed, 128 insertions(+), 324 deletions(-)
+ create mode 100644 arch/mips/include/asm/elfcore-compat.h
+ delete mode 100644 arch/mips/kernel/binfmt_elfn32.c
+ delete mode 100644 arch/mips/kernel/binfmt_elfo32.c
+ create mode 100644 arch/x86/include/asm/elfcore-compat.h
 
