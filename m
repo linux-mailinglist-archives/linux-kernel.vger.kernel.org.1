@@ -2,105 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 72BBC2EC143
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 17:35:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A62652EC148
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 17:37:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727328AbhAFQfe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Jan 2021 11:35:34 -0500
-Received: from out5-smtp.messagingengine.com ([66.111.4.29]:50319 "EHLO
-        out5-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726951AbhAFQfd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Jan 2021 11:35:33 -0500
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
-        by mailout.nyi.internal (Postfix) with ESMTP id 085B85C0108;
-        Wed,  6 Jan 2021 11:34:47 -0500 (EST)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute6.internal (MEProxy); Wed, 06 Jan 2021 11:34:47 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm1; bh=jwxdfBd4r0R7S3adYq5aZIV8eKf
-        9z7YATrKKIRT1GQs=; b=K52Cn5CBA5Um+6xbYc/uT49s7f1YUOLAebEi+82tR5C
-        r5Bdtldlt3dnYGAygCQ4/Vjqr2UOM5fp1Gt5/eEs6cjws636N8myN/2lFv/xqj9v
-        bOmwq4ESD3dNGf9c1aOeUZa7wVymstIQPGgZ8hPSagom13d5F7ODLY9kUfOsMqdp
-        edq1O04pqd+/K/hvcLlR6okMHt7AkHK4DJzI/GLESiAh6T6glwJJeb4A06fqNn2m
-        VVGTEQ33iADoJrx/vauhWFcQ7wj8agqlZImVJBk8LF5P7oxjxDTEiPEh6u3NNWJD
-        9HDtuZr2Qko4KrnlJeq5dKY8oQfEHep82vnwg5gNqaA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=jwxdfB
-        d4r0R7S3adYq5aZIV8eKf9z7YATrKKIRT1GQs=; b=LWHjF0SR06GpS9MPsVAfG9
-        cHpr0wtVGxXoc6tJ8c2OuwRqSMpvCnncwQt9018ok4PDj+mxknqeSMKVQy/1W2Hg
-        A/E1UoO1WkB+UqlghDppy57ZZdtNOj/PYWqRT43mewGnvJ9wT5WMkD3bY0erjBz/
-        m2vYWgZuy+/GB+M+B5a2K57M+pjOcSAezJJnV67OWq++QingbEtoetUhT8uNFgrC
-        vqEEruDJSMSUkmQ0YCQEBjk7qKuQBWEW8/YjlkdXrLeCGv6/NBGC4+rW+4eThO27
-        o7wT69Uo750WU3RPudDR/Z2TLBui5v9IKzO4V95+Sm+NQVWC4ieWVC+u7Ep/rhbg
-        ==
-X-ME-Sender: <xms:peb1Xw69ldxBNYIKaw5OGSOvDCHCZQD5xoDin0pAA_IujTX1cmpHNQ>
-    <xme:peb1Xx4veigeMBnJA6Dq1gOX6yxCH50MTFk7IIILu8jA-shQDVRn_E-x0fnZrqZ1O
-    GAK3fK5GDWA8t9L9vk>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrvdegtdcutefuodetggdotefrodftvfcurf
-    hrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecuuegr
-    ihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenucfjug
-    hrpeffhffvuffkfhggtggujgesghdtreertddtvdenucfhrhhomhepofgrgihimhgvucft
-    ihhprghrugcuoehmrgigihhmvgestggvrhhnohdrthgvtghhqeenucggtffrrghtthgvrh
-    hnpeelkeeghefhuddtleejgfeljeffheffgfeijefhgfeufefhtdevteegheeiheeguden
-    ucfkphepledtrdekledrieekrdejieenucevlhhushhtvghrufhiiigvpedtnecurfgrrh
-    grmhepmhgrihhlfhhrohhmpehmrgigihhmvgestggvrhhnohdrthgvtghh
-X-ME-Proxy: <xmx:pub1X_dbY23ytTWT2m8xYpnmAAsmU066PE2RZ2h58LwUilD37RKrAA>
-    <xmx:pub1X1J-hRbzRTAj-wqKKkvgWoh19qxqUJORizTyVlUoa3ZOjcjgrQ>
-    <xmx:pub1X0I5MFKv9N3Ws1nkhYrJ4kX0B06cqUvgRJJ-8dMWJmehpxCpdQ>
-    <xmx:pub1X-g-t1FgAdQcpCfHLKEwiCu0s_o7OdjaO_3p-NLJlnsVMeyk3w>
-Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
-        by mail.messagingengine.com (Postfix) with ESMTPA id B5913108005C;
-        Wed,  6 Jan 2021 11:34:45 -0500 (EST)
-Date:   Wed, 6 Jan 2021 17:34:43 +0100
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     Icenowy Zheng <icenowy@aosc.io>
-Cc:     Rob Herring <robh+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-sunxi@googlegroups.com
-Subject: Re: [PATCH v2 3/3] dt-bindings: arm: sunxi: document orig PineTab DT
- as sample
-Message-ID: <20210106163443.5xdotu7b5l6rwyld@gilmour>
-References: <20201224024001.19248-1-icenowy@aosc.io>
- <20201224024138.19422-1-icenowy@aosc.io>
+        id S1727385AbhAFQgC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Jan 2021 11:36:02 -0500
+Received: from mx2.suse.de ([195.135.220.15]:58786 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727337AbhAFQgC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 Jan 2021 11:36:02 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1609950915; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=FgGZYJS8/C9BpPdNbVJXFi+dt4Fe+ip4PfCbQjiJ3jM=;
+        b=cMXCwiDj7Gcj0G21bVXmk/GsCBvs7OO60y/oALlK4dXwuDUfMEaPtNYN6Ux084qRLo0md4
+        lICTKIJkdfCsdsPR2+O5pQXs12JSbEYsHOE6tLru3elVz2BS8tIlHFILd28BLTOl8jdbVR
+        8RpMZWRaXJ4skdMhrlbXlQ9Dfm+Q6u4=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 17843ACAF;
+        Wed,  6 Jan 2021 16:35:15 +0000 (UTC)
+Date:   Wed, 6 Jan 2021 17:35:13 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     Muchun Song <songmuchun@bytedance.com>
+Cc:     mike.kravetz@oracle.com, akpm@linux-foundation.org,
+        n-horiguchi@ah.jp.nec.com, ak@linux.intel.com, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 2/6] mm: hugetlbfs: fix cannot migrate the fallocated
+ HugeTLB page
+Message-ID: <20210106163513.GS13207@dhcp22.suse.cz>
+References: <20210106084739.63318-1-songmuchun@bytedance.com>
+ <20210106084739.63318-3-songmuchun@bytedance.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="qjnx6kq65a5tdxsd"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201224024138.19422-1-icenowy@aosc.io>
+In-Reply-To: <20210106084739.63318-3-songmuchun@bytedance.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed 06-01-21 16:47:35, Muchun Song wrote:
+> Because we only can isolate a active page via isolate_huge_page()
+> and hugetlbfs_fallocate() forget to mark it as active, we cannot
+> isolate and migrate those pages.
 
---qjnx6kq65a5tdxsd
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+I've little bit hard time to understand this initially and had to dive
+into the code to make sense of it. I would consider the following
+wording easier to grasp. Feel free to reuse if you like.
+"
+If a new hugetlb page is allocated during fallocate it will not be
+marked as active (set_page_huge_active) which will result in a later
+isolate_huge_page failure when the page migration code would like to
+move that page. Such a failure would be unexpected and wrong.
+"
 
-On Thu, Dec 24, 2020 at 10:41:38AM +0800, Icenowy Zheng wrote:
-> As the original PineTab DT (which uses sun50i-a64-pinetab name) is only
-> for development samples, document this.
->=20
-> Signed-off-by: Icenowy Zheng <icenowy@aosc.io>
+Now to the fix. I believe that this patch shows that the
+set_page_huge_active is just too subtle. Is there any reason why we
+cannot make all freshly allocated huge pages active by default?
+ 
+> Only export set_page_huge_active, just leave clear_page_huge_active
+> as static. Because there are no external users.
+> 
+> Fixes: 70c3547e36f5 (hugetlbfs: add hugetlbfs_fallocate())
+> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+> ---
+>  fs/hugetlbfs/inode.c    | 3 ++-
+>  include/linux/hugetlb.h | 2 ++
+>  mm/hugetlb.c            | 2 +-
+>  3 files changed, 5 insertions(+), 2 deletions(-)
+> 
+> diff --git a/fs/hugetlbfs/inode.c b/fs/hugetlbfs/inode.c
+> index b5c109703daa..21c20fd5f9ee 100644
+> --- a/fs/hugetlbfs/inode.c
+> +++ b/fs/hugetlbfs/inode.c
+> @@ -735,9 +735,10 @@ static long hugetlbfs_fallocate(struct file *file, int mode, loff_t offset,
+>  
+>  		mutex_unlock(&hugetlb_fault_mutex_table[hash]);
+>  
+> +		set_page_huge_active(page);
+>  		/*
+>  		 * unlock_page because locked by add_to_page_cache()
+> -		 * page_put due to reference from alloc_huge_page()
+> +		 * put_page() due to reference from alloc_huge_page()
+>  		 */
+>  		unlock_page(page);
+>  		put_page(page);
+> diff --git a/include/linux/hugetlb.h b/include/linux/hugetlb.h
+> index ebca2ef02212..b5807f23caf8 100644
+> --- a/include/linux/hugetlb.h
+> +++ b/include/linux/hugetlb.h
+> @@ -770,6 +770,8 @@ static inline void huge_ptep_modify_prot_commit(struct vm_area_struct *vma,
+>  }
+>  #endif
+>  
+> +void set_page_huge_active(struct page *page);
+> +
+>  #else	/* CONFIG_HUGETLB_PAGE */
+>  struct hstate {};
+>  
+> diff --git a/mm/hugetlb.c b/mm/hugetlb.c
+> index 1f3bf1710b66..4741d60f8955 100644
+> --- a/mm/hugetlb.c
+> +++ b/mm/hugetlb.c
+> @@ -1348,7 +1348,7 @@ bool page_huge_active(struct page *page)
+>  }
+>  
+>  /* never called for tail page */
+> -static void set_page_huge_active(struct page *page)
+> +void set_page_huge_active(struct page *page)
+>  {
+>  	VM_BUG_ON_PAGE(!PageHeadHuge(page), page);
+>  	SetPagePrivate(&page[1]);
+> -- 
+> 2.11.0
 
-Applied all three patches, thanks for your persistence on this
-
-Maxime
-
---qjnx6kq65a5tdxsd
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCX/XmowAKCRDj7w1vZxhR
-xfrBAQCWOf2ul8xz1sv4iFWIk6xr+FOt/HhTHtSw6nzcbZ2dcgD6AhdRd5lz1O51
-EgK0nfjyVFxpBs1erzjwp1AiXy64sAY=
-=kJx2
------END PGP SIGNATURE-----
-
---qjnx6kq65a5tdxsd--
+-- 
+Michal Hocko
+SUSE Labs
