@@ -2,155 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2344E2EC63A
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 23:30:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B75492EC641
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 23:33:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726999AbhAFW3f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Jan 2021 17:29:35 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44012 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726379AbhAFW3e (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Jan 2021 17:29:34 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2454422CE3;
-        Wed,  6 Jan 2021 22:28:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1609972134;
-        bh=9kO3TfbkRg07D293QME5ftnHAMoedTFfNXUSMyghj7w=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ZFlNqrlln71UIiLGiWzkFXkwRHZvgkyQckOyt5d3Bc/ST8DZTbFULoaeCe5GPGPX0
-         1+rKTNC9IAKJs3txMr7ce/sPL2z1MGIMs2NjNivQ7hEkwSBuW99nBvbtBfoBHePNmz
-         yryb1HbvmKnC9x9/8GHewXCDetdfz9XttBVlNPGhFfZmBxapXvyWy2cmbSBp+PRl8L
-         tMMnPDbMmedmLCqdIB+AXWgjLypLdA85nnyNwhOQ3eQZyGEWOiFCMUacfkD/yGlqW/
-         T/A9FeGWEYsKExK3vDMZYfwR+pYMrSkLW3aLQG++3VNma9ApN3r5cPb+DXCeyJKAMT
-         U/xMW280P3c8w==
-Date:   Wed, 6 Jan 2021 14:28:52 -0800
-From:   Jaegeuk Kim <jaegeuk@kernel.org>
-To:     Chao Yu <yuchao0@huawei.com>
-Cc:     linux-f2fs-devel@lists.sourceforge.net,
-        linux-kernel@vger.kernel.org, chao@kernel.org
-Subject: Re: [PATCH v2] f2fs: fix to keep isolation of atomic write
-Message-ID: <X/Y5pJr4Aaf0bBqj@google.com>
-References: <20201230075557.108818-1-yuchao0@huawei.com>
+        id S1727187AbhAFWdL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Jan 2021 17:33:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47974 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726379AbhAFWdK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 Jan 2021 17:33:10 -0500
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED2E8C061575;
+        Wed,  6 Jan 2021 14:32:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=MjlhtoRBOMfzhUVUmG0+iEXQeodWN4HZDACnarZYnck=; b=ZZLyhOf+J7x/zOv8hnmFBHtzL
+        cc+/rJuG25s7LdDmso8Z8h+Q+mPmAcc8ZHV6rUYJFsNiGAP3CJ9Xp5UhN1+reaQVG1Ch5G3lNxSP6
+        h3JDDVYJvVW2JsSN28nHyYxSZ8/sgfKEp6huQp6LuSeUo/WUzXOFW3ZTolC6CukOeytjRBxMJi2P4
+        LMn551n6fQf3qf6mPugviEo3NfHOo19UMmkgUlxPLoPz5yKLfN3AqS0jrDwZGTpNdZIBhakAxSj8X
+        DjSI/G+63j1Tytvk11nD8CwfkTLc7lJ35k30hpPtE2SKMbKynKGXoOhLn8Do0Bpv1rjjttwn5rCyl
+        BaEmMG/ig==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:45198)
+        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1kxHLs-00025V-VB; Wed, 06 Jan 2021 22:32:24 +0000
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1kxHLr-0000aV-Px; Wed, 06 Jan 2021 22:32:23 +0000
+Date:   Wed, 6 Jan 2021 22:32:23 +0000
+From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
+To:     Will Deacon <will@kernel.org>
+Cc:     Mark Rutland <mark.rutland@arm.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Theodore Ts'o <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        linux-ext4@vger.kernel.org
+Subject: Re: Aarch64 EXT4FS inode checksum failures - seems to be weak memory
+ ordering issues
+Message-ID: <20210106223223.GM1551@shell.armlinux.org.uk>
+References: <20210105154726.GD1551@shell.armlinux.org.uk>
+ <20210106115359.GB26994@C02TD0UTHF1T.local>
+ <20210106135253.GJ1551@shell.armlinux.org.uk>
+ <20210106172033.GA2165@willie-the-truck>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201230075557.108818-1-yuchao0@huawei.com>
+In-Reply-To: <20210106172033.GA2165@willie-the-truck>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Sender: Russell King - ARM Linux admin <linux@armlinux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Chao,
+On Wed, Jan 06, 2021 at 05:20:34PM +0000, Will Deacon wrote:
+> With that, I see the following after ten seconds or so:
+> 
+>   EXT4-fs error (device sda2): ext4_lookup:1707: inode #674497: comm md5sum: iget: checksum invalid
+> 
+> Russell, Mark -- does this recipe explode reliably for you too?
 
-With a quick test, this patch causes down_write failure resulting in blocking
-process. I didn't dig in the bug so, please check the code again. :P
+I've been working this evening on tracking down what change in the
+Kconfig file between your working 5.10 kernel binary you supplied me,
+and my failing 5.9 kernel.
 
-On 12/30, Chao Yu wrote:
-> ThreadA					ThreadB
-> - f2fs_ioc_start_atomic_write
-> - write
-> - f2fs_ioc_commit_atomic_write
->  - f2fs_commit_inmem_pages
->  - f2fs_drop_inmem_pages
->  - f2fs_drop_inmem_pages
->   - __revoke_inmem_pages
-> 					- f2fs_vm_page_mkwrite
-> 					 - set_page_dirty
-> 					  - tag ATOMIC_WRITTEN_PAGE and add page
-> 					    to inmem_pages list
->   - clear_inode_flag(FI_ATOMIC_FILE)
-> 					- f2fs_vm_page_mkwrite
-> 					  - set_page_dirty
-> 					   - f2fs_update_dirty_page
-> 					    - f2fs_trace_pid
-> 					     - tag inmem page private to pid
-> 					- truncate
-> 					 - f2fs_invalidate_page
-> 					 - set page->mapping to NULL
-> 					  then it will cause panic once we
-> 					  access page->mapping
-> 
-> The root cause is we missed to keep isolation of atomic write in the case
-> of commit_atomic_write vs mkwrite, let commit_atomic_write helds i_mmap_sem
-> lock to avoid this issue.
-> 
-> Signed-off-by: Chao Yu <yuchao0@huawei.com>
-> ---
-> v2:
-> - use i_mmap_sem to avoid mkwrite racing with below flows:
->  * f2fs_ioc_start_atomic_write
->  * f2fs_drop_inmem_pages
->  * f2fs_commit_inmem_pages
-> 
->  fs/f2fs/file.c    | 3 +++
->  fs/f2fs/segment.c | 7 +++++++
->  2 files changed, 10 insertions(+)
-> 
-> diff --git a/fs/f2fs/file.c b/fs/f2fs/file.c
-> index 4e6d4b9120a8..a48ec650d691 100644
-> --- a/fs/f2fs/file.c
-> +++ b/fs/f2fs/file.c
-> @@ -2050,6 +2050,7 @@ static int f2fs_ioc_start_atomic_write(struct file *filp)
->  		goto out;
->  
->  	down_write(&F2FS_I(inode)->i_gc_rwsem[WRITE]);
-> +	down_write(&F2FS_I(inode)->i_mmap_sem);
->  
->  	/*
->  	 * Should wait end_io to count F2FS_WB_CP_DATA correctly by
-> @@ -2060,6 +2061,7 @@ static int f2fs_ioc_start_atomic_write(struct file *filp)
->  			  inode->i_ino, get_dirty_pages(inode));
->  	ret = filemap_write_and_wait_range(inode->i_mapping, 0, LLONG_MAX);
->  	if (ret) {
-> +		up_write(&F2FS_I(inode)->i_mmap_sem);
->  		up_write(&F2FS_I(inode)->i_gc_rwsem[WRITE]);
->  		goto out;
->  	}
-> @@ -2073,6 +2075,7 @@ static int f2fs_ioc_start_atomic_write(struct file *filp)
->  	/* add inode in inmem_list first and set atomic_file */
->  	set_inode_flag(inode, FI_ATOMIC_FILE);
->  	clear_inode_flag(inode, FI_ATOMIC_REVOKE_REQUEST);
-> +	up_write(&F2FS_I(inode)->i_mmap_sem);
->  	up_write(&F2FS_I(inode)->i_gc_rwsem[WRITE]);
->  
->  	f2fs_update_time(F2FS_I_SB(inode), REQ_TIME);
-> diff --git a/fs/f2fs/segment.c b/fs/f2fs/segment.c
-> index d8570b0359f5..dab870d9faf6 100644
-> --- a/fs/f2fs/segment.c
-> +++ b/fs/f2fs/segment.c
-> @@ -327,6 +327,8 @@ void f2fs_drop_inmem_pages(struct inode *inode)
->  	struct f2fs_sb_info *sbi = F2FS_I_SB(inode);
->  	struct f2fs_inode_info *fi = F2FS_I(inode);
->  
-> +	down_write(&F2FS_I(inode)->i_mmap_sem);
-> +
->  	while (!list_empty(&fi->inmem_pages)) {
->  		mutex_lock(&fi->inmem_lock);
->  		__revoke_inmem_pages(inode, &fi->inmem_pages,
-> @@ -344,6 +346,8 @@ void f2fs_drop_inmem_pages(struct inode *inode)
->  		sbi->atomic_files--;
->  	}
->  	spin_unlock(&sbi->inode_lock[ATOMIC_FILE]);
-> +
-> +	up_write(&F2FS_I(inode)->i_mmap_sem);
->  }
->  
->  void f2fs_drop_inmem_page(struct inode *inode, struct page *page)
-> @@ -467,6 +471,7 @@ int f2fs_commit_inmem_pages(struct inode *inode)
->  	f2fs_balance_fs(sbi, true);
->  
->  	down_write(&fi->i_gc_rwsem[WRITE]);
-> +	down_write(&F2FS_I(inode)->i_mmap_sem);
->  
->  	f2fs_lock_op(sbi);
->  	set_inode_flag(inode, FI_ATOMIC_COMMIT);
-> @@ -478,6 +483,8 @@ int f2fs_commit_inmem_pages(struct inode *inode)
->  	clear_inode_flag(inode, FI_ATOMIC_COMMIT);
->  
->  	f2fs_unlock_op(sbi);
-> +
-> +	up_write(&F2FS_I(inode)->i_mmap_sem);
->  	up_write(&fi->i_gc_rwsem[WRITE]);
->  
->  	return err;
-> -- 
-> 2.29.2
+I've found that _enabling_ CONFIG_STACKPROTECTOR appears to mask the
+inode checksum failure problem, at least from a short test.) I'm going
+to re-enable CONFIG_STACKPROTECTOR and leave it running for longer.
+
+That is:
+
+CONFIG_STACKPROTECTOR=y
+CONFIG_STACKPROTECTOR_STRONG=y
+
+appears to mask the problem
+
+# CONFIG_STACKPROTECTOR is not set
+
+appears to unmask the problem.
+
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
