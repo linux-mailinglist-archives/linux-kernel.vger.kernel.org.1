@@ -2,117 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 997072EB7F4
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 02:59:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6891B2EB7F9
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 03:06:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726826AbhAFB7r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 20:59:47 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:31805 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726092AbhAFB7r (ORCPT
+        id S1725971AbhAFCFy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 21:05:54 -0500
+Received: from new2-smtp.messagingengine.com ([66.111.4.224]:51561 "EHLO
+        new2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725824AbhAFCFx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 20:59:47 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1609898300;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=soD85oBuoFoOYel/RvfxRXBHF3St3W2ynqAXS24SPmw=;
-        b=fZQbRu4/AHhbLZKN7TiGHUaXP03iL4I/iJd436AqXuKHtH3JvsubU6nO6x8VxH1fxPaXHv
-        lADtLHLNxnTIGRRfrlVkFTpxqLQaNYcrY3M42VstEDNEAF5wRqHxrRfxoKqCvSLwpsTt2R
-        cb+iAdjYvjzHgH25hOw77f9rCqRurIQ=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-338-JHBlh4rAP6e4dfOFx3YvyQ-1; Tue, 05 Jan 2021 20:58:16 -0500
-X-MC-Unique: JHBlh4rAP6e4dfOFx3YvyQ-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 97EE4180A089;
-        Wed,  6 Jan 2021 01:58:14 +0000 (UTC)
-Received: from treble (ovpn-113-48.rdu2.redhat.com [10.10.113.48])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id D323B5D735;
-        Wed,  6 Jan 2021 01:58:12 +0000 (UTC)
-Date:   Tue, 5 Jan 2021 19:58:10 -0600
-From:   Josh Poimboeuf <jpoimboe@redhat.com>
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Andy Lutomirski <luto@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Fangrui Song <maskray@google.com>,
-        Arnd Bergmann <arnd@arndb.de>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com
-Subject: Re: [PATCH v2] x86/entry: use STB_GLOBAL for register restoring thunk
-Message-ID: <20210106015810.5p6crnh7jqtmjtv4@treble>
-References: <20201224045502.zkm34cc5srdgpddb@treble>
- <20210106004351.79130-1-ndesaulniers@google.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210106004351.79130-1-ndesaulniers@google.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+        Tue, 5 Jan 2021 21:05:53 -0500
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+        by mailnew.nyi.internal (Postfix) with ESMTP id 06BB1580519;
+        Tue,  5 Jan 2021 21:04:48 -0500 (EST)
+Received: from imap1 ([10.202.2.51])
+  by compute6.internal (MEProxy); Tue, 05 Jan 2021 21:04:48 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=flygoat.com; h=
+        mime-version:message-id:in-reply-to:references:date:from:to:cc
+        :subject:content-type; s=fm1; bh=EIM6GS5ja8jI10tIrcoiehRXu46Eoja
+        p54gHcK8nO5E=; b=RSLpXl1c8Rr0TxRHMJwzmnRPvasVcTbaVkVlf0cqtdpLs7d
+        tAXAGnmefbMpW6/yojzrVk8UtzQDdToEUuoFfeu/Bm6+QKD+9AXovOlDiWPRHbVH
+        jzS9sqyuRA2fPnySiYt47HVQ54qggTiVeyuvLFMA2x0S2s+X3p7bte84fy2ylSIG
+        8hFFqW4Ea529oZYNkWI8xuBQzFuLsU9Qy9HE9FQGfvdNyRrn4Jzhv2++ON6opQ2a
+        6VJGPBvBvXEdmZXNsMvemrq6T/Y6Rf245fDZSAQpzJIVbVfmKet6+ViY0vCrj3as
+        BkTXUwsTMaa22olN4ffOJbJEJb0R0hZsnoNAqng==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=EIM6GS
+        5ja8jI10tIrcoiehRXu46Eojap54gHcK8nO5E=; b=M0fA7XXiYCqEDVIQZ1UQQN
+        y9nhOUuWwvRTa9EBWVn+apsqe6fiHdKbA0QvaIyojD91KD4RmS3WpdupfwqsQKwJ
+        A27U6H5MCAB/6OEy/1hvY7ob8zLvTOJ5kgzjA5jqwQHbj4NM9EC37uXPuOOtxVvq
+        s/5VF9brFBseEXRXd/+8wnZkyD6lHpjQ2I48EPquG5FOKFrEUQi1m350qSFhQ88V
+        iBYCgwLnxhlAYKDUl5MkhSf0KIMzY/G7KVOqv2yS8HGPOwgi1kvY1s/QnQfBHlDG
+        TUfMk9i7JapXPuC7WC6w8hI6GAvHmyL7RT+ZZqQznnbiG36WWfDnsQYfRa7Uh/TQ
+        ==
+X-ME-Sender: <xms:vRr1Xx1oGQ0xdQ3fQNaTBQ9HIQ0pVTeuJk4sjVyCpsr3d7H8Q6vHEA>
+    <xme:vRr1X4F-DdAqAFx5GYtbSmi44pT4h7LOcoo-ZDX2ikHU7gSHhfY1Ljh9CDV-HMTgY
+    WyMmEALE-OhLZNwF9I>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrvdefkedggeduucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepofgfggfkjghffffhvffutgesthdtredtreertdenucfhrhhomhepfdflihgr
+    gihunhcujggrnhhgfdcuoehjihgrgihunhdrhigrnhhgsehflhihghhorghtrdgtohhmqe
+    enucggtffrrghtthgvrhhnpeeiieffuddvfeeihfefjeelkedvtdeugfekkefghefhhfef
+    teeltdeuueefhfetheenucffohhmrghinhephhgvrggurdhssgenucevlhhushhtvghruf
+    hiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehjihgrgihunhdrhigrnhhgsehf
+    lhihghhorghtrdgtohhm
+X-ME-Proxy: <xmx:vRr1Xx4bsylSvhkdopQfLoUK8Db8uVhOuQNZeCEfBkDcwSJ1ttRPfw>
+    <xmx:vRr1X-3rKvRSYWjoHGGsWwW7NFmTx4zrYvn_rI3z_SsWqvnmKADrbA>
+    <xmx:vRr1X0Em_cYw-lqK2dqCNwuS3APCV7swLPqTSgtrwYCzkPHgbwo0lQ>
+    <xmx:vxr1X_M9kVMYGYpcMfV10PqC4aUaLygxfpHl5yxwWURrxRzkU8VpXg>
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id 6F0D1C200A5; Tue,  5 Jan 2021 21:04:46 -0500 (EST)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.3.1-61-gb52c239-fm-20201210.001-gb52c2396
+Mime-Version: 1.0
+Message-Id: <79a48288-509a-40e3-ba89-24b6f713117e@www.fastmail.com>
+In-Reply-To: <1609894059-6112-1-git-send-email-hejinyang@loongson.cn>
+References: <1609894059-6112-1-git-send-email-hejinyang@loongson.cn>
+Date:   Wed, 06 Jan 2021 10:04:24 +0800
+From:   "Jiaxun Yang" <jiaxun.yang@flygoat.com>
+To:     "Jinyang He" <hejinyang@loongson.cn>,
+        "Thomas Bogendoerfer" <tsbogend@alpha.franken.de>
+Cc:     "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] MIPS: zboot: Avoid endless loop in clear BSS.
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 05, 2021 at 04:43:51PM -0800, Nick Desaulniers wrote:
-> Arnd found a randconfig that produces the warning:
-> 
-> arch/x86/entry/thunk_64.o: warning: objtool: missing symbol for insn at
-> offset 0x3e
-> 
-> when building with LLVM_IAS=1 (use Clang's integrated assembler). Josh
-> notes:
-> 
->   With the LLVM assembler stripping the .text section symbol, objtool
->   has no way to reference this code when it generates ORC unwinder
->   entries, because this code is outside of any ELF function.
-> 
-> Fangrui notes that this is helpful for reducing images size when
-> compiling with -ffunction-sections and -fdata-sections. I have observerd
-> on the order of tens of thousands of symbols for the kernel images built
-> with those flags. A patch has been authored against GNU binutils to
-> match this behavior, with a new flag
-> --generate-unused-section-symbols=[yes|no].
-> 
-> Use a global symbol for the thunk that way
-> objtool can generate proper unwind info here with LLVM_IAS=1.
 
-On second thought, there's no need to make the symbol global.  Just
-getting rid of the '.L' local label symbol prefix should be enough to
-make an ELF symbol:
 
-diff --git a/arch/x86/entry/thunk_64.S b/arch/x86/entry/thunk_64.S
-index ccd32877a3c4..c9a9fbf1655f 100644
---- a/arch/x86/entry/thunk_64.S
-+++ b/arch/x86/entry/thunk_64.S
-@@ -31,7 +31,7 @@ SYM_FUNC_START_NOALIGN(\name)
- 	.endif
- 
- 	call \func
--	jmp  .L_restore
-+	jmp  __thunk_restore
- SYM_FUNC_END(\name)
- 	_ASM_NOKPROBE(\name)
- 	.endm
-@@ -44,7 +44,7 @@ SYM_FUNC_END(\name)
- #endif
- 
- #ifdef CONFIG_PREEMPTION
--SYM_CODE_START_LOCAL_NOALIGN(.L_restore)
-+SYM_CODE_START_LOCAL_NOALIGN(__thunk_restore)
- 	popq %r11
- 	popq %r10
- 	popq %r9
-@@ -56,6 +56,6 @@ SYM_CODE_START_LOCAL_NOALIGN(.L_restore)
- 	popq %rdi
- 	popq %rbp
- 	ret
--	_ASM_NOKPROBE(.L_restore)
--SYM_CODE_END(.L_restore)
-+	_ASM_NOKPROBE(__thunk_restore)
-+SYM_CODE_END(__thunk_restore)
- #endif
+On Wed, Jan 6, 2021, at 8:47 AM, Jinyang He wrote:
+> Commit 2ee1503e546f ("MIPS: zboot: head.S clean up").
+> 
+> After .noreorder removed, clear BSS fall into endless loop. The bne
+> instruction will add nop to the delay slot at compile time. So a0
+> register will not increment by 4. Fix it and clear BSS from _edata
+> to (_end - 1).
 
+Oops, my fault.
+My QEMU based local test setup somehow never really tested zboot.
+
+Reviewed-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
+
+Thanks!
+
+- Jiaxun
+
+> 
+> Signed-off-by: Jinyang He <hejinyang@loongson.cn>
+> ---
+>  arch/mips/boot/compressed/head.S | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/arch/mips/boot/compressed/head.S b/arch/mips/boot/compressed/head.S
+> index 070b2fb..5795d0a 100644
+> --- a/arch/mips/boot/compressed/head.S
+> +++ b/arch/mips/boot/compressed/head.S
+> @@ -26,8 +26,8 @@
+>  	PTR_LA	a0, _edata
+>  	PTR_LA	a2, _end
+>  1:	sw	zero, 0(a0)
+> +	addiu	a0, a0, 4
+>  	bne	a2, a0, 1b
+> -	 addiu	a0, a0, 4
+>  
+>  	PTR_LA	a0, (.heap)	     /* heap address */
+>  	PTR_LA	sp, (.stack + 8192)  /* stack address */
+> -- 
+> 2.1.0
+> 
+>
+
+-- 
+- Jiaxun
