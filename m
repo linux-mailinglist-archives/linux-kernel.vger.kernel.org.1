@@ -2,131 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 152972EB9C3
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 07:02:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2ECD02EB9BC
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 07:01:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726421AbhAFGB5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Jan 2021 01:01:57 -0500
-Received: from twspam01.aspeedtech.com ([211.20.114.71]:29790 "EHLO
-        twspam01.aspeedtech.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725803AbhAFGBg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Jan 2021 01:01:36 -0500
-Received: from mail.aspeedtech.com ([192.168.0.24])
-        by twspam01.aspeedtech.com with ESMTP id 1065sFlt004601;
-        Wed, 6 Jan 2021 13:54:16 +0800 (GMT-8)
-        (envelope-from chiawei_wang@aspeedtech.com)
-Received: from ChiaWeiWang-PC.aspeed.com (192.168.2.66) by TWMBX02.aspeed.com
- (192.168.0.24) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 6 Jan
- 2021 13:58:50 +0800
-From:   "Chia-Wei, Wang" <chiawei_wang@aspeedtech.com>
-To:     <robh+dt@kernel.org>, <joel@jms.id.au>, <andrew@aj.id.au>,
-        <tglx@linutronix.de>, <maz@kernel.org>, <p.zabel@pengutronix.de>,
-        <linux-aspeed@lists.ozlabs.org>, <openbmc@lists.ozlabs.org>,
-        <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     <BMC-SW@aspeedtech.com>
-Subject: [PATCH 6/6] ARM: dts: aspeed: Add AST2600 eSPI nodes
-Date:   Wed, 6 Jan 2021 13:59:39 +0800
-Message-ID: <20210106055939.19386-7-chiawei_wang@aspeedtech.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210106055939.19386-1-chiawei_wang@aspeedtech.com>
-References: <20210106055939.19386-1-chiawei_wang@aspeedtech.com>
+        id S1726165AbhAFGA6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Jan 2021 01:00:58 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45916 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725803AbhAFGA5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 Jan 2021 01:00:57 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 21CCE22C9F;
+        Wed,  6 Jan 2021 06:00:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1609912817;
+        bh=fObodAHzwrfdYZJUy7CZgmuObr2ATtvdMz6LejNX7hM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=atPYTl72rFHiFlYk0ddBoauPNAC0EOVeIUi2LdhtDl+qV9QlgR6b1GRiDgvxJYs6a
+         NjtjdSwTlW0JZh24CLakCgah+l9hH3ihhAnkYXiGKf3bgA4X4rj8+kBtPwV9PBJetC
+         8pGo6mHR6VG/XVBTZ3kRApx+Ko+8cQs/bG/UYbWfANUEZ9IAGlMi1a5TAMuEQUT8U8
+         lsX/+vhuOFLGqYhZ6TKBlfdOHHY/tYk3ebaKgQt8meUd2yRPwXPPATYZiSdKNx423n
+         T8O5JLVp9jm0SxoRVWRirN6nonLUfyKiAF/9wFeISPoAqTL23zUhsmHJM8RfyqVUJ5
+         jcOzNm2b+b/jg==
+Date:   Wed, 6 Jan 2021 11:30:13 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Zheng Yongjun <zhengyongjun3@huawei.com>
+Cc:     linux-kernel@vger.kernel.org, yung-chuan.liao@linux.intel.com,
+        pierre-louis.bossart@linux.intel.com, sanyog.r.kale@intel.com
+Subject: Re: [PATCH -next] soundwire: intel: Use kzalloc for allocating only
+ one thing
+Message-ID: <20210106060013.GM2771@vkoul-mobl>
+References: <20201229135012.23472-1-zhengyongjun3@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [192.168.2.66]
-X-ClientProxiedBy: TWMBX02.aspeed.com (192.168.0.24) To TWMBX02.aspeed.com
- (192.168.0.24)
-X-DNSRBL: 
-X-MAIL: twspam01.aspeedtech.com 1065sFlt004601
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201229135012.23472-1-zhengyongjun3@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add eSPI nodes for the device tree of Aspeed 6th generation SoCs.
+On 29-12-20, 21:50, Zheng Yongjun wrote:
+> Use kzalloc rather than kcalloc(1,...)
+> 
+> The semantic patch that makes this change is as follows:
+> (http://coccinelle.lip6.fr/)
+> 
+> // <smpl>
+> @@
+> @@
+> 
+> - kcalloc(1,
+> + kzalloc(
+>           ...)
+> // </smpl>
 
-Signed-off-by: Chia-Wei, Wang <chiawei_wang@aspeedtech.com>
----
- arch/arm/boot/dts/aspeed-g6.dtsi | 57 ++++++++++++++++++++++++++++++++
- 1 file changed, 57 insertions(+)
+Applied, thanks
 
-diff --git a/arch/arm/boot/dts/aspeed-g6.dtsi b/arch/arm/boot/dts/aspeed-g6.dtsi
-index 810b0676ab03..d457baf11e37 100644
---- a/arch/arm/boot/dts/aspeed-g6.dtsi
-+++ b/arch/arm/boot/dts/aspeed-g6.dtsi
-@@ -3,7 +3,9 @@
- 
- #include <dt-bindings/interrupt-controller/arm-gic.h>
- #include <dt-bindings/interrupt-controller/aspeed-scu-ic.h>
-+#include <dt-bindings/interrupt-controller/aspeed-espi-ic.h>
- #include <dt-bindings/clock/ast2600-clock.h>
-+#include <dt-bindings/gpio/aspeed-gpio.h>
- 
- / {
- 	model = "Aspeed BMC";
-@@ -75,6 +77,61 @@
- 		interrupts = <GIC_SPI 0 IRQ_TYPE_LEVEL_HIGH>;
- 	};
- 
-+	espi: espi@1e6ee000 {
-+		compatible = "aspeed,ast2600-espi", "simple-mfd", "syscon";
-+		reg = <0x1e6ee000 0x1000>;
-+
-+		#address-cells = <1>;
-+		#size-cells = <1>;
-+		ranges = <0x0 0x1e6ee000 0x1000>;
-+
-+		espi_ic: espi-ic {
-+			#interrupt-cells = <1>;
-+			compatible = "aspeed,ast2600-espi-ic";
-+			interrupts-extended = <&gic GIC_SPI 42 IRQ_TYPE_LEVEL_HIGH>,
-+					      <&gpio0 ASPEED_GPIO(W, 7) IRQ_TYPE_EDGE_FALLING>;
-+			interrupt-controller;
-+			status = "disabled";
-+		};
-+
-+		espi_ctrl: espi-ctrl {
-+			compatible = "aspeed,ast2600-espi-ctrl";
-+			interrupts-extended = <&espi_ic ASPEED_ESPI_IC_CTRL_EVENT>,
-+					      <&espi_ic ASPEED_ESPI_IC_CTRL_RESET>;
-+			clocks = <&syscon ASPEED_CLK_GATE_ESPICLK>;
-+			resets = <&syscon ASPEED_RESET_ESPI>;
-+			status = "disabled";
-+		};
-+
-+		espi_peripheral: espi-peripheral-channel {
-+			compatible = "aspeed,ast2600-espi-peripheral";
-+			interrupts-extended = <&espi_ic ASPEED_ESPI_IC_PERIF_EVENT>,
-+					      <&espi_ic ASPEED_ESPI_IC_CHAN_RESET>;
-+			status = "disabled";
-+		};
-+
-+		espi_vw: espi-vw-channel {
-+			compatible = "aspeed,ast2600-espi-vw";
-+			interrupts-extended = <&espi_ic ASPEED_ESPI_IC_VW_EVENT>,
-+					      <&espi_ic ASPEED_ESPI_IC_CHAN_RESET>;
-+			status = "disabled";
-+		};
-+
-+		espi_oob: espi-oob-channel {
-+			compatible = "aspeed,ast2600-espi-oob";
-+			interrupts-extended = <&espi_ic ASPEED_ESPI_IC_OOB_EVENT>,
-+					      <&espi_ic ASPEED_ESPI_IC_CHAN_RESET>;
-+			status = "disabled";
-+		};
-+
-+		espi_flash: espi-flash-channel {
-+			compatible = "aspeed,ast2600-espi-flash";
-+			interrupts-extended = <&espi_ic ASPEED_ESPI_IC_FLASH_EVENT>,
-+					      <&espi_ic ASPEED_ESPI_IC_CHAN_RESET>;
-+			status = "disabled";
-+		};
-+	};
-+
- 	ahb {
- 		compatible = "simple-bus";
- 		#address-cells = <1>;
 -- 
-2.17.1
-
+~Vinod
