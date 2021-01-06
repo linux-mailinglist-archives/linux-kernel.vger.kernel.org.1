@@ -2,129 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DF1D2EBCF5
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 12:05:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F3BA72EBCF8
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 12:06:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726216AbhAFLEv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Jan 2021 06:04:51 -0500
-Received: from new4-smtp.messagingengine.com ([66.111.4.230]:50679 "EHLO
-        new4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725822AbhAFLEv (ORCPT
+        id S1726407AbhAFLFV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Jan 2021 06:05:21 -0500
+Received: from mail-wr1-f49.google.com ([209.85.221.49]:46202 "EHLO
+        mail-wr1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725822AbhAFLFU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Jan 2021 06:04:51 -0500
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
-        by mailnew.nyi.internal (Postfix) with ESMTP id 87F0A580055;
-        Wed,  6 Jan 2021 06:04:04 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute6.internal (MEProxy); Wed, 06 Jan 2021 06:04:04 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm1; bh=SG0jngfQb86fRNUTTrwZ6PDjCut
-        dxkonMnVRfFVhezw=; b=pIHOT/0WmC9nD1USAxUNB7b1LMUjHaOcQt1j1aPM78X
-        +as8WpDs8IP30nbAqM4Y37TmkxYl/E4EV1vIdyhFmN5wrWsqjAEDP+xRCVGSPz12
-        d7K+BqHKO1hsWKaWxDCmdQIQ/Rw4y/IVzLu14g1K4Scze6Xgy2M60HC/ICADj+dx
-        JFWZW8yW+c7bCBS5Rr+P2fSWgc0wGEsUl/S+Yu2VSf86HYJgNUrw/nsf0e96PAlS
-        hTJvLHs+jFEgDz7cLZ6eeJrm9m7Kyov2AV1OtC0xXw8QjOevf6CSY11PKKlqbDH8
-        /0whRrslw51+Cc4zBxGxmtS4hBMctSkIMCP+hYlKu/g==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=SG0jng
-        fQb86fRNUTTrwZ6PDjCutdxkonMnVRfFVhezw=; b=UQC2yPXQw+pTC+6NnJF9Y3
-        XlRT2wfF6j+eQbuVE6KWJHvok/u/DUQmNGIII/qLNvXNy3RpoW3l8K5x7t9SGvxf
-        R61GGGE6FnX3g1evbqfYcF46JDrtD+3w1qAZvmlTjWq5qYsoIiP991Jr7B9K86W7
-        znmK0P6Qm3hDtlW2AeI3HDy7ZyQ9AfAWBSLEfwTpbbT7wqgIiROlC8nNT5kTfzAr
-        P35sitIxILptqsy7pDgaay/bZjOCqEpHigraLBUjQ0w6VhlwFPlg4vYWI6QfLq1O
-        Iow2J9AOG3aRh0ydSYhLi0p63b4gRJnoGNqjZ4LFPVPtG3j0KtgjRJ7W+K152/EQ
-        ==
-X-ME-Sender: <xms:Ipn1XwZ70NTBxx38-HZ7wTlqwgfix_y-vkP-9RwO8Y8iSN6sVTa6gA>
-    <xme:Ipn1X7bhydC36R-7bNyjuCb9AoAaKBJTfoHTt8u386SfVB8YLv3BwRE5fGfLmsYad
-    FkVRQbq4ej3f0WD2_c>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrvdefledgvdehucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddvnecuhfhrohhmpeforgigihhm
-    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
-    htvghrnhepleekgeehhfdutdeljefgleejffehfffgieejhffgueefhfdtveetgeehieeh
-    gedunecukfhppeeltddrkeelrdeikedrjeeinecuvehluhhsthgvrhfuihiivgeptdenuc
-    frrghrrghmpehmrghilhhfrhhomhepmhgrgihimhgvsegtvghrnhhordhtvggthh
-X-ME-Proxy: <xmx:Ipn1X6_25iVF8WOEMgP5uyUzkntj1w0LHwIS5Sxi4r4VCS6C6sNzqQ>
-    <xmx:Ipn1X6quLxXu_B7DyE1XN7m-r_R1P_r7_L4SlbWgwRSGUsqPEuUsYg>
-    <xmx:Ipn1X7reNYk5c8tB38NY8jO6QSbUAqOvnepAfVrcOPkcdBxViCLO2g>
-    <xmx:JJn1X5iNBw9Lxke0lHuRVQXaq5f5U00IEwwP5-FKlc6s9_fguwxIfA>
-Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 2E6E924005A;
-        Wed,  6 Jan 2021 06:04:02 -0500 (EST)
-Date:   Wed, 6 Jan 2021 12:04:00 +0100
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     Samuel Holland <samuel@sholland.org>
-Cc:     Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        Rob Herring <robh+dt@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Andre Przywara <andre.przywara@arm.com>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-clk@vger.kernel.org, linux-gpio@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-sunxi@googlegroups.com
-Subject: Re: [PATCH v2 0/4] Allwinner H6 RSB support
-Message-ID: <20210106110400.kjy2zjxgakpgya7z@gilmour>
-References: <20210103100007.32867-1-samuel@sholland.org>
+        Wed, 6 Jan 2021 06:05:20 -0500
+Received: by mail-wr1-f49.google.com with SMTP id d13so1993898wrc.13;
+        Wed, 06 Jan 2021 03:05:03 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=ERKXqQidLzskfZDszvErSOtk7AjjY2xYUr+92HjKwIk=;
+        b=aC3gbCwm+A8U7a1vITiDwHxhTFVQFjJxC1MWNGVegBAkU40oLzsbO8G5a1G9vnS71X
+         +AH51Zbg5HeGh16LemqGywLA2YfpSFKWV3DTwykbR0KtT8buaFpRVWNVfz46H5lT5Jag
+         NsND9KFQmCi7NPmi7Grw/mCbOQZiYyZsaybPdXv4gt2P5ZaDsEQaXoonLu3E7FNsiM/1
+         PTMry+0shYMurTp5qtQm0nKI1IsIdUbR9E9G6XurPm+QtpVGCpwSq5QwyBSe+wuaQgnY
+         aMe9TubDglTlKymLVrleHtKVke2z4406a9et+X7pKjU//ZTBX0GxHlAEsAZ4ej49HjRM
+         qkcw==
+X-Gm-Message-State: AOAM531466CDt0pmfEtuAbqV/YhAzBmsn939YSuW/JqlecYnTo/3iSgW
+        Ot3C6oubLziqM9Ng3hmRSIr2Yt8MmnM=
+X-Google-Smtp-Source: ABdhPJzJ8hJ0ilfKd0qWXBunlDpf5M0T0xeks8VGNhrH4/T16tRn2NKwFDdBIjTEj2xoam/pJNnhgA==
+X-Received: by 2002:a05:6000:1188:: with SMTP id g8mr3889805wrx.111.1609931077934;
+        Wed, 06 Jan 2021 03:04:37 -0800 (PST)
+Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
+        by smtp.gmail.com with ESMTPSA id k6sm2711898wmf.25.2021.01.06.03.04.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 06 Jan 2021 03:04:37 -0800 (PST)
+Date:   Wed, 6 Jan 2021 11:04:35 +0000
+From:   Wei Liu <wei.liu@kernel.org>
+To:     Michael Kelley <mikelley@microsoft.com>
+Cc:     Wei Liu <wei.liu@kernel.org>,
+        Linux on Hyper-V List <linux-hyperv@vger.kernel.org>,
+        "stable@kernel.org" <stable@kernel.org>,
+        KY Srinivasan <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        "open list:X86 ARCHITECTURE (32-BIT AND 64-BIT)" 
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] x86/hyperv: check cpu mask after interrupt has been
+ disabled
+Message-ID: <20210106110435.cajpxwbew4t5afye@liuwe-devbox-debian-v2>
+References: <20210105175043.28325-1-wei.liu@kernel.org>
+ <MWHPR21MB15935E00EAEFD70E49A22667D7D19@MWHPR21MB1593.namprd21.prod.outlook.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="la7j4ywkx3wucev4"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210103100007.32867-1-samuel@sholland.org>
+In-Reply-To: <MWHPR21MB15935E00EAEFD70E49A22667D7D19@MWHPR21MB1593.namprd21.prod.outlook.com>
+User-Agent: NeoMutt/20180716
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Jan 05, 2021 at 06:20:05PM +0000, Michael Kelley wrote:
+> From: Wei Liu <wei.liu@kernel.org> Sent: Tuesday, January 5, 2021 9:51 AM
+> > 
+> > We've observed crashes due to an empty cpu mask in
+> > hyperv_flush_tlb_others.  Obviously the cpu mask in question is changed
+> > between the cpumask_empty call at the beginning of the function and when
+> > it is actually used later.
+> > 
+> > One theory is that an interrupt comes in between and a code path ends up
+> > changing the mask. Move the check after interrupt has been disabled to
+> > see if it fixes the issue.
+> > 
+> > Signed-off-by: Wei Liu <wei.liu@kernel.org>
+> > Cc: stable@kernel.org
+> > ---
+> >  arch/x86/hyperv/mmu.c | 12 +++++++++---
+> >  1 file changed, 9 insertions(+), 3 deletions(-)
+> > 
+> > diff --git a/arch/x86/hyperv/mmu.c b/arch/x86/hyperv/mmu.c
+> > index 5208ba49c89a..2c87350c1fb0 100644
+> > --- a/arch/x86/hyperv/mmu.c
+> > +++ b/arch/x86/hyperv/mmu.c
+> > @@ -66,11 +66,17 @@ static void hyperv_flush_tlb_others(const struct cpumask *cpus,
+> >  	if (!hv_hypercall_pg)
+> >  		goto do_native;
+> > 
+> > -	if (cpumask_empty(cpus))
+> > -		return;
+> > -
+> >  	local_irq_save(flags);
+> > 
+> > +	/*
+> > +	 * Only check the mask _after_ interrupt has been disabled to avoid the
+> > +	 * mask changing under our feet.
+> > +	 */
+> > +	if (cpumask_empty(cpus)) {
+> > +		local_irq_restore(flags);
+> > +		return;
+> > +	}
+> > +
+> >  	flush_pcpu = (struct hv_tlb_flush **)
+> >  		     this_cpu_ptr(hyperv_pcpu_input_arg);
+> > 
+> > --
+> > 2.20.1
+> 
+> Reviewed-by:  Michael Kelley <mikelley@microsoft.com>
+> 
 
---la7j4ywkx3wucev4
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Applied to hyperv-fixes.
 
-On Sun, Jan 03, 2021 at 04:00:03AM -0600, Samuel Holland wrote:
-> The Allwinner H6 SoC contains an RSB controller. It is almost completely
-> undocumented, so it was missed when doing the initial SoC bringup.
->=20
-> This series adds the clock/reset, pin configuration, and device tree
-> node needed to use the RSB controller. Since RSB is faster, simpler, and
-> generally more reliable than the I2C controller IP in the SoC, switch to
-> using it where possible.
->=20
-> This was tested on an Orange Pi 3 and a Pine H64 model B. This series
-> does not switch the Pine H64 to use RSB, as doing so would prevent
-> accessing the external RTC that shares the I2C bus.
->=20
-> Changes v1->v2:
->   - Put the new values at the end of the DT binding headers
->=20
-> Samuel Holland (4):
->   clk: sunxi-ng: h6-r: Add R_APB2_RSB clock and reset
->   pinctrl: sunxi: h6-r: Add s_rsb pin functions
->   arm64: dts: allwinner: h6: Add RSB controller node
->   arm64: dts: allwinner: h6: Use RSB for AXP805 PMIC connection
-
-For the whole series,
-
-Acked-by: Maxime Ripard <mripard@kernel.org>
-
-Thanks!
-Maxime
-
---la7j4ywkx3wucev4
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCX/WZIAAKCRDj7w1vZxhR
-xYQfAP0d0eZgjSBWZRWwRpGm3npd9OZT4IBHcLq5qGPlR+h4WwEAjcQnNk4svGm7
-TgMNdaPKl4FKMqLUEGlbQ2VA7vMmCQw=
-=ENtI
------END PGP SIGNATURE-----
-
---la7j4ywkx3wucev4--
+Wei.
