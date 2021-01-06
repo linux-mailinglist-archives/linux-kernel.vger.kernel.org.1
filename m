@@ -2,75 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8081A2EBC0C
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 11:03:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A28022EBC14
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 11:04:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726875AbhAFKC0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Jan 2021 05:02:26 -0500
-Received: from mail-vk1-f173.google.com ([209.85.221.173]:43330 "EHLO
-        mail-vk1-f173.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726405AbhAFKCZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Jan 2021 05:02:25 -0500
-Received: by mail-vk1-f173.google.com with SMTP id t16so648893vkl.10;
-        Wed, 06 Jan 2021 02:02:09 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=v2GPyCfexmLEiZ+8ddHhwuP5Idb606RB8tnSnxFsK/o=;
-        b=PYIy8tru6yNAQYw2jlbPFPmrp1oSXdLGb/3p62+HvCz55Jfp4N3pqh9fhVu/UqajZa
-         wIxuGaej+br67rwexv2E/5DsLfo+GSKcIdnZMCZPDfGBkGNx5F/Yee1GYa4KsAdC4lHW
-         TJ1r01leWSsAPd4jw4BNJIUjizD0sWEvnXTEpN9alffibc7EMLTYpDhfTWkYAkdkNteL
-         hNWuksWM40Dp1ovn8KXweeEpzkML5COArA99YSB/I3Ym/9MU0SoU1+0StGhrZXaf//kq
-         452i1sbhN4saXPGtfo1eG6D7IDCbE87oYrl5Uc4gxtqKSseLCF3hzaaPfTHlbMaTbz3n
-         oJDA==
-X-Gm-Message-State: AOAM532fzJc+4cdUdV8vHT9p3QRDANIBIqZIYxbqnVK2PN35GylCUP1i
-        pG/z4SyohFUoDWmFWZfd/VMduLbcQTxyDQ==
-X-Google-Smtp-Source: ABdhPJy7bwh/KRwKoQ3B0Wxcd+68LqIvCtm98/cYwie+LbL1PPa4JthKdL+zHOC27xNDvPSUXZyYLQ==
-X-Received: by 2002:a1f:4393:: with SMTP id q141mr2871445vka.12.1609927303260;
-        Wed, 06 Jan 2021 02:01:43 -0800 (PST)
-Received: from mail-ua1-f51.google.com (mail-ua1-f51.google.com. [209.85.222.51])
-        by smtp.gmail.com with ESMTPSA id z10sm291164vsf.26.2021.01.06.02.01.42
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 06 Jan 2021 02:01:42 -0800 (PST)
-Received: by mail-ua1-f51.google.com with SMTP id t15so889355ual.6;
-        Wed, 06 Jan 2021 02:01:42 -0800 (PST)
-X-Received: by 2002:ab0:7654:: with SMTP id s20mr2794287uaq.23.1609927302342;
- Wed, 06 Jan 2021 02:01:42 -0800 (PST)
+        id S1727028AbhAFKD7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Jan 2021 05:03:59 -0500
+Received: from mail.skyhub.de ([5.9.137.197]:60010 "EHLO mail.skyhub.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726464AbhAFKD6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 Jan 2021 05:03:58 -0500
+Received: from zn.tnic (p200300ec2f09690020b9eee96d74c6dd.dip0.t-ipconnect.de [IPv6:2003:ec:2f09:6900:20b9:eee9:6d74:c6dd])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id CE4281EC04F0;
+        Wed,  6 Jan 2021 11:03:15 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1609927395;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=iAfpaZseU8rtBfSQH6eBi47GvS0K9Dab1MU6EmvLzI4=;
+        b=czQrmcoO22O7xdC9bFE4W9lPaNRZpf1Z2jpKUXdHJyQbbVDKBJGpJS1to4FH6VjI/6Qy6+
+        56XCeScS3+yGMxXTpDcmKoGK4EgczE77stbxqRnJWO446dmnV5ONxt9cP+fdM67fBlkYrQ
+        aVVK2zT/Xvgpdhch6r6/CPCc140lQtU=
+Date:   Wed, 6 Jan 2021 11:03:13 +0100
+From:   Borislav Petkov <bp@alien8.de>
+To:     Juergen Gross <jgross@suse.com>
+Cc:     xen-devel@lists.xenproject.org, x86@kernel.org,
+        linux-kernel@vger.kernel.org, linux-hyperv@vger.kernel.org,
+        virtualization@lists.linux-foundation.org, kvm@vger.kernel.org,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        "K. Y. Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>, Deep Shah <sdeep@vmware.com>,
+        "VMware, Inc." <pv-drivers@vmware.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>
+Subject: Re: [PATCH v3 06/15] x86/paravirt: switch time pvops functions to
+ use static_call()
+Message-ID: <20210106100313.GB5729@zn.tnic>
+References: <20201217093133.1507-1-jgross@suse.com>
+ <20201217093133.1507-7-jgross@suse.com>
 MIME-Version: 1.0
-References: <20210103112542.35149-1-samuel@sholland.org> <20210103112542.35149-5-samuel@sholland.org>
-In-Reply-To: <20210103112542.35149-5-samuel@sholland.org>
-From:   Chen-Yu Tsai <wens@csie.org>
-Date:   Wed, 6 Jan 2021 18:01:30 +0800
-X-Gmail-Original-Message-ID: <CAGb2v64xwyXS7rK2L8Y7qGiOXfa1uj1wTJMnki+xs9g_NHzLcQ@mail.gmail.com>
-Message-ID: <CAGb2v64xwyXS7rK2L8Y7qGiOXfa1uj1wTJMnki+xs9g_NHzLcQ@mail.gmail.com>
-Subject: Re: [PATCH net-next 4/5] net: stmmac: dwmac-sun8i: Minor probe
- function cleanup
-To:     Samuel Holland <samuel@sholland.org>
-Cc:     Giuseppe Cavallaro <peppe.cavallaro@st.com>,
-        Alexandre Torgue <alexandre.torgue@st.com>,
-        Jose Abreu <joabreu@synopsys.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Maxime Ripard <mripard@kernel.org>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        Corentin Labbe <clabbe@baylibre.com>,
-        Ondrej Jirman <megous@megous.com>,
-        netdev <netdev@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-sunxi <linux-sunxi@googlegroups.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20201217093133.1507-7-jgross@suse.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jan 3, 2021 at 7:25 PM Samuel Holland <samuel@sholland.org> wrote:
->
-> Adjust the spacing and use an explicit "return 0" in the success path
-> to make the function easier to parse.
->
-> Signed-off-by: Samuel Holland <samuel@sholland.org>
+On Thu, Dec 17, 2020 at 10:31:24AM +0100, Juergen Gross wrote:
+> The time pvops functions are the only ones left which might be
+> used in 32-bit mode and which return a 64-bit value.
+> 
+> Switch them to use the static_call() mechanism instead of pvops, as
+> this allows quite some simplification of the pvops implementation.
+> 
+> Due to include hell this requires to split out the time interfaces
+> into a new header file.
 
-Reviewed-by: Chen-Yu Tsai <wens@csie.org>
+I guess you can add Peter's patch to your set, no?
+
+https://lkml.kernel.org/r/20201110005609.40989-3-frederic@kernel.org
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
