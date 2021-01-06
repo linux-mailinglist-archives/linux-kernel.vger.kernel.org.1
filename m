@@ -2,203 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B099D2EB819
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 03:38:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A889B2EB817
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 03:38:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726149AbhAFCho (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 21:37:44 -0500
-Received: from mga18.intel.com ([134.134.136.126]:55722 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725730AbhAFCho (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 21:37:44 -0500
-IronPort-SDR: kjHKXhCRDBTJ6MEhdNrU8lgMsg5I8RiCtrMzPMId+nWQx4mD5VCSXUzv3k/bH/eOkNm66IZXzT
- geCa9kY+rvIQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9855"; a="164916478"
-X-IronPort-AV: E=Sophos;i="5.78,478,1599548400"; 
-   d="scan'208";a="164916478"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Jan 2021 18:35:58 -0800
-IronPort-SDR: l8eZWSbUu3gwxGLlJVi+r6FoPsncy+NcV1PA5yxUi50xwIoJFgzmBu5gPx8BBeNYoGWRq8fPym
- bAJELIHMJ4RQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.78,478,1599548400"; 
-   d="scan'208";a="398061314"
-Received: from allen-box.sh.intel.com ([10.239.159.28])
-  by fmsmga002.fm.intel.com with ESMTP; 05 Jan 2021 18:35:51 -0800
-From:   Lu Baolu <baolu.lu@linux.intel.com>
-To:     tglx@linutronix.de, ashok.raj@intel.com, kevin.tian@intel.com,
-        dave.jiang@intel.com, megha.dey@intel.com, dwmw2@infradead.org
-Cc:     alex.williamson@redhat.com, bhelgaas@google.com,
-        dan.j.williams@intel.com, dmaengine@vger.kernel.org,
-        eric.auger@redhat.com, jacob.jun.pan@intel.com, jgg@mellanox.com,
-        kvm@vger.kernel.org, kwankhede@nvidia.com,
-        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
-        maz@kernel.org, mona.hossain@intel.com, netanelg@mellanox.com,
-        parav@mellanox.com, pbonzini@redhat.com, rafael@kernel.org,
-        samuel.ortiz@intel.com, sanjay.k.kumar@intel.com,
-        shahafs@mellanox.com, tony.luck@intel.com, vkoul@kernel.org,
-        yan.y.zhao@linux.intel.com, yi.l.liu@intel.com,
-        Lu Baolu <baolu.lu@linux.intel.com>
-Subject: [RFC PATCH v2 1/1] platform-msi: Add platform check for subdevice irq domain
-Date:   Wed,  6 Jan 2021 10:27:49 +0800
-Message-Id: <20210106022749.2769057-1-baolu.lu@linux.intel.com>
-X-Mailer: git-send-email 2.25.1
+        id S1725868AbhAFCgx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 21:36:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58746 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725792AbhAFCgw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Jan 2021 21:36:52 -0500
+Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 012B4C06134C
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Jan 2021 18:36:10 -0800 (PST)
+Received: by mail-ed1-x52a.google.com with SMTP id g24so2973060edw.9
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Jan 2021 18:36:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=googlemail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=bsBv85TTm4bgmfYBTRiSlgurbvsoPr/alhSs5wTQ52c=;
+        b=e24RhaxnHw3+cr9cGGVan/vH+w0VN606TrjGMOxFrDO81s9DQ2DGwpb170/u+doflG
+         WmTrDT6vTHh1hjO+318B9fsTAP37fFEnQ+O6LsxeZc6rP3ub6O76EjNRiduaGUPmuynP
+         JSIAdFlLl1VUBxTq3DPAi7JAkDpuUGUQ7VO/EQaXmGtouRHsPKrSSCjp77bSZTdnhHXH
+         dgl95XbpDhL0G28w62zpb6vvyegg+bGltGeqUWuICAmzPah/L3oetBLPFe9tcXmKXrQQ
+         juE+Zdlkw/EwZQMZ4TU2BHz4OesOEggqpSC0E8QXk445mY1NUYGdkKUNeABoGEFay0Y0
+         fscA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=bsBv85TTm4bgmfYBTRiSlgurbvsoPr/alhSs5wTQ52c=;
+        b=hWD0zwBhmCB05SiklZewRNseYtgEPcmwKoHIZVRPf8OvdqqPXBmq9N8dEc8I8veWh4
+         br1LQ5JQlXVF/DHBm6xSZdYXRYBt4gGVcvw4BsQM+6CEuNWJeM0dqPq2ZoyQdJMWb229
+         neqoYeG4Jmsmed9k5TF+pj2k15Kwylq6B8ho8c+V3QSdOWsUnv6hGU14iSAOTNaSZZtV
+         ZG0wNrU8C6vl/kUabLL2OK62t0t3rGoP0fpTl5DKgp9b9KU0bgU7putYRYWtGc4SmVUO
+         zZeH0V2T/FRuYqex17oJC/gVdguT2sBRGiQ3FLKE3gV+LAxWFfwGO0drEIKFLjN/YFBs
+         ToCQ==
+X-Gm-Message-State: AOAM533zNASZbxfxKzX5+QG7XStxnE7Dy7V3ch0zBNj2Q/zsCuvk2DwH
+        0ThAw2EMeRNM0SekIX3hKIgdQe9fRod8NAP7Sv4=
+X-Google-Smtp-Source: ABdhPJwxX9TWwIJFOsXAtq6lI8P07T6o74sKnQuOfsPo8Stl+MMSuybZBfFt/7RA4thtxmuzgxJ1Yj7oink8/xFF1fQ=
+X-Received: by 2002:a50:fd18:: with SMTP id i24mr2549874eds.146.1609900568600;
+ Tue, 05 Jan 2021 18:36:08 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <CAFBinCA4EnbJZ5HnWzqP-LdLJE0FD_nGqA6PxdQaR5KfETgvTQ@mail.gmail.com>
+ <57a65a09-606a-8773-e1ff-4202e83779c8@baylibre.com>
+In-Reply-To: <57a65a09-606a-8773-e1ff-4202e83779c8@baylibre.com>
+From:   Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Date:   Wed, 6 Jan 2021 03:35:57 +0100
+Message-ID: <CAFBinCAxWfUjFvL8xqxPZLGcA2UeqBb-2zqYEf5TVX_yQi-hFg@mail.gmail.com>
+Subject: Re: discussion: re-structuring of the Amlogic Meson VPU DRM driver
+To:     Neil Armstrong <narmstrong@baylibre.com>
+Cc:     linux-amlogic@lists.infradead.org, dri-devel@lists.freedesktop.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        airlied@linux.ie, daniel@ffwll.ch
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pci_subdevice_msi_create_irq_domain() should fail if the underlying
-platform is not able to support IMS (Interrupt Message Storage). Otherwise,
-the isolation of interrupt is not guaranteed.
+Hi Neil,
 
-For x86, IMS is only supported on bare metal for now. We could enable it
-in the virtualization environments in the future if interrupt HYPERCALL
-domain is supported or the hardware has the capability of interrupt
-isolation for subdevices.
+On Mon, Jan 4, 2021 at 2:29 PM Neil Armstrong <narmstrong@baylibre.com> wrote:
+>
+> Hi,
+>
+> Sorry for the delay...
+>
+> On 31/12/2020 00:24, Martin Blumenstingl wrote:
+> > Hi Neil and all interested people,
+> >
+> > in the past there were concerns about how some of the components are
+> > coupled in our Meson DRM driver(s).
+> > With this discussion I would like to achieve four things:
+> > 1. understand the current issues that we have> 2. come up with a TODO list of things that need to be tackled as well
+> > as recommendations how to solve it (for example: "driver ABC function
+> > ABC uses the recommended way - take that as reference")
+> > 3. one by one work on the items on the TODO list
+> > 4. add support for the 32-bit SoCs to the Meson VPU DRM driver
+> > (without adding more "not recommended" code)
+> >
+> > Disclaimer: I am not familiar with the DRM subsystem - so apologies if
+> > the terminology is not correct.
+> >
+> > drivers/gpu/drm/meson/meson_dw_hdmi.c currently serves four purposes:
+> > 1. manage the TOP (glue) registers for the dw-hdmi IP
+> > This is Amlogic specific and consists of things like HPD filtering,
+> > some internal resets, etc.
+> > In my opinion this part is supposed to stay in this driver
+> Yep, it's tightly coupled to the DW-HDMI core
+>
+> >
+> > 2. load the driver for the dw-hdmi IP by calling dw_hdmi_probe()
+> > I read somewhere that this is not recommended anymore and should be replaced.
+> > Is my understanding correct and what is the recommended replacement?
+> Yeah in fact the dw-hdmi glue should be a pure bridge, not a component anymore.
+>
+> This means it should probe by itself entirely, should not use the component stuff.
+OK, I see
 
-Suggested-by: Thomas Gleixner <tglx@linutronix.de>
-Link: https://lore.kernel.org/linux-pci/87pn4nk7nn.fsf@nanos.tec.linutronix.de/
-Link: https://lore.kernel.org/linux-pci/877dqrnzr3.fsf@nanos.tec.linutronix.de/
-Link: https://lore.kernel.org/linux-pci/877dqqmc2h.fsf@nanos.tec.linutronix.de/
-Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
----
- arch/x86/pci/common.c       | 47 +++++++++++++++++++++++++++++++++++++
- drivers/base/platform-msi.c |  8 +++++++
- include/linux/msi.h         |  1 +
- 3 files changed, 56 insertions(+)
+> This also means all the VPU related part (mainly encoder and clock) should be moved
+> out of this file as a bridge and built with the meson_drm driver,
+> then find the "next bridge" like other drivers.
+is that linkage automatically set up with the endpoint definitions
+inside the .dts?
 
+> > 3. it manages the HDMI PHY registers in the HHI register area
+> > For the 32-bit SoCs I will not follow this pattern and will create a
+> > separate PHY instead.
+> > As a long-term goal I think we should also move this into a dedicated
+> > PHY driver.
+>
+> I looked at it, and ... it's complex. For the 32-bit socs it's easy because
+> you only have a single PHY setup, for the new gens you have to deal with the
+> 4k modes and co. This could be handle by adding a new parameters set to the
+> phy_configure union, but what should we add in it to be super generic ?
+you are right, on the 32-bit SoCs it's pretty easy actually.
+it's only "4k" and "everything else".
 
-Background:
-Learnt from the discussions in this thread:
+I think using the phy_configure approach is the right way
+but to be honest: I have not thought about which parameters to add to
+that union (for the 64-bit SoCs) to make it "generic" enough
+also I think this is a TODO "for later", so no action needed now - but
+it's great to see that you had the same idea in mind :)
 
-https://lore.kernel.org/linux-pci/160408357912.912050.17005584526266191420.stgit@djiang5-desk3.ch.intel.com/
+> >
+> > 4. call back into VPU/VENC functions to set up these registers
+> > This is a blocker for 32-bit SoC support as I would have to duplicate
+> > this code if we don't make any changes. This includes things like
+> > calculating (and setting) clock frequencies, calling
+> > meson_venc_hdmi_mode_set for setting up the DVI pixel encoder, etc.
+> > My understanding is that this part should not be part of the
+> > meson_dw_hdmi driver, but "some other" driver. I don't understand
+> > which driver that's supposed to be though and how things would be
+> > wired up in the end.
+>
+> Yep it should be a bridge. You can chain bridges, it's designed for such use case.
+>
+> We will have internal bridges for encoders, ENCL+ENCP grouped for HDMI and ENCL.
+I see. adding to my question above: would this mean that we have then
+more "endpoints" defined in our .dts - one for the ENCI+ENCP (HDMI)
+output, another one for the ENCL (DSI), ...?
 
-The device IMS (Interrupt Message Storage) should not be enabled in any
-virtualization environments unless there is a HYPERCALL domain which
-makes the changes in the message store managed by the hypervisor.
+> CVBS can be handled separately without bridges.
+indeed, let's postpone CVBS for now as it's easy to adapt the current
+code for the 32-bit SoCs.
+in a perfect world I think the CVBS encoder/bridge (whatever the
+correct type is) would be it's own driver as it's part of the HHI
+registers
 
-As the initial step, we allow the IMS to be enabled only if we are
-running on the bare metal. It's easy to enable IMS in the virtualization
-environments if above preconditions are met in the future.
+> I can have a try to move stuff if you can review/test on your side.
+> Would it be a good start ?
+that would be awesome
+if there's any way I can help (you add FIXMEs/TODOs to your code which
+you want me to solve, testing, etc.) then please let me know!
 
-We ever thought about moving on_bare_metal() to a generic file so that
-it could be well maintained and used. But we need some suggestions about
-where to put it. Your comments are very appreciated.
+> >
+> > In addition to HDMI my understanding is that for adding MIPI DSI
+> > support you would
+> > a) either have to follow the pattern from the meson_dw_hdmi driver or
+> > b) also require some better way to achieve this
+>
+> With the cut I described before, we'll need a add a simple ENCL bridge
+> in meson_drm and a standalone bridge for dw-mipi-dsi.
+that sounds like we don't need to duplicate any code which would be great
 
-This patch is only for comments purpose. Please don't merge it. We will
-include it in the Intel IMS implementation later once we reach a
-consensus.
+> >
+> > The biggest question marks for me are #2 and #4 from the list above.
+> > Also is there anything I have missed?
+> > Any input, feedback and questions are welcome!
+> >
+> > PS: an additional topic on the TODO list will be "use the common clock
+> > framework" for clock setup. it's currently not clear to me if that's
+> > possible on the 64-bit SoCs in all cases.
+>
+> It's the same issue for 4k & co, the high freqs needs special PLL settings,
+> not sure how this would be easily doable in the PLL driver.
+> We may need to add a gx/g12 HDMI specific pll driver.
+the PLL settings are unfortunately also not very easy for the 32-bit SoCs.
+but let's have this discussion at another time, I think that changing
+the drm driver structure can be separate from this.
 
-Change log:
-v1->v2:
- - v1:
-   https://lore.kernel.org/linux-pci/20201210004624.345282-1-baolu.lu@linux.intel.com/
- - Rename probably_on_bare_metal() with on_bare_metal();
- - Some vendors might use the same name for both bare metal and virtual
-   environment. Before we add vendor specific code to distinguish
-   between them, let's return false in on_bare_metal(). This won't
-   introduce any regression. The only impact is that the coming new
-   platform msi feature won't be supported until the vendor specific code
-   is provided.
 
 Best regards,
-baolu
-
-diff --git a/arch/x86/pci/common.c b/arch/x86/pci/common.c
-index 3507f456fcd0..963e0401f2b2 100644
---- a/arch/x86/pci/common.c
-+++ b/arch/x86/pci/common.c
-@@ -724,3 +724,50 @@ struct pci_dev *pci_real_dma_dev(struct pci_dev *dev)
- 	return dev;
- }
- #endif
-+
-+/*
-+ * We want to figure out which context we are running in. But the hardware
-+ * does not introduce a reliable way (instruction, CPUID leaf, MSR, whatever)
-+ * which can be manipulated by the VMM to let the OS figure out where it runs.
-+ * So we go with the below probably on_bare_metal() function as a replacement
-+ * for definitely on_bare_metal() to go forward only for the very simple reason
-+ * that this is the only option we have.
-+ *
-+ * People might use the same vendor name for both bare metal and virtual
-+ * environment. We can remove those names once we have vendor specific code to
-+ * distinguish between them.
-+ */
-+static const char * const vmm_vendor_name[] = {
-+	"QEMU", "Bochs", "KVM", "Xen", "VMware", "VMW", "VMware Inc.",
-+	"innotek GmbH", "Oracle Corporation", "Parallels", "BHYVE",
-+	"Microsoft Corporation", "Amazon EC2"
-+};
-+
-+static bool on_bare_metal(void)
-+{
-+	int i;
-+
-+	if (boot_cpu_has(X86_FEATURE_HYPERVISOR))
-+		return false;
-+
-+	for (i = 0; i < ARRAY_SIZE(vmm_vendor_name); i++)
-+		if (dmi_match(DMI_SYS_VENDOR, vmm_vendor_name[i]))
-+			return false;
-+
-+	pr_info("System running on bare metal, report to bugzilla.kernel.org if not the case.");
-+
-+	return true;
-+}
-+
-+bool arch_support_pci_device_ims(struct pci_dev *pdev)
-+{
-+	/*
-+	 * When we are running in a VMM context, the device IMS could only be
-+	 * enabled when the underlying hardware supports interrupt isolation
-+	 * of the subdevice, or any mechanism (trap, hypercall) is added so
-+	 * that changes in the interrupt message store could be managed by the
-+	 * VMM. For now, we only support the device IMS when we are running on
-+	 * the bare metal.
-+	 */
-+	return on_bare_metal();
-+}
-diff --git a/drivers/base/platform-msi.c b/drivers/base/platform-msi.c
-index 8432a1bf4e28..88e5fe4dae67 100644
---- a/drivers/base/platform-msi.c
-+++ b/drivers/base/platform-msi.c
-@@ -512,6 +512,11 @@ struct irq_domain *device_msi_create_irq_domain(struct fwnode_handle *fn,
- #ifdef CONFIG_PCI
- #include <linux/pci.h>
- 
-+bool __weak arch_support_pci_device_ims(struct pci_dev *pdev)
-+{
-+	return false;
-+}
-+
- /**
-  * pci_subdevice_msi_create_irq_domain - Create an irq domain for subdevices
-  * @pdev:	Pointer to PCI device for which the subdevice domain is created
-@@ -523,6 +528,9 @@ struct irq_domain *pci_subdevice_msi_create_irq_domain(struct pci_dev *pdev,
- 	struct irq_domain *domain, *pdev_msi;
- 	struct fwnode_handle *fn;
- 
-+	if (!arch_support_pci_device_ims(pdev))
-+		return NULL;
-+
- 	/*
- 	 * Retrieve the MSI domain of the underlying PCI device's MSI
- 	 * domain. The PCI device domain's parent domain is also the parent
-diff --git a/include/linux/msi.h b/include/linux/msi.h
-index f319d7c6a4ef..6fda81c4b859 100644
---- a/include/linux/msi.h
-+++ b/include/linux/msi.h
-@@ -478,6 +478,7 @@ struct irq_domain *device_msi_create_irq_domain(struct fwnode_handle *fn,
- 						struct irq_domain *parent);
- 
- # ifdef CONFIG_PCI
-+bool arch_support_pci_device_ims(struct pci_dev *pdev);
- struct irq_domain *pci_subdevice_msi_create_irq_domain(struct pci_dev *pdev,
- 						       struct msi_domain_info *info);
- # endif
--- 
-2.25.1
-
+Martin
