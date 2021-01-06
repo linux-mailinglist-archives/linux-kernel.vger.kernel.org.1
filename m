@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CD8B2EB78D
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 02:19:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B095B2EB78B
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 02:19:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726855AbhAFBSr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 20:18:47 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60172 "EHLO mail.kernel.org"
+        id S1726683AbhAFBSe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 20:18:34 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60192 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726603AbhAFBSc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1726606AbhAFBSc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 5 Jan 2021 20:18:32 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0581722E03;
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2E007230F9;
         Wed,  6 Jan 2021 01:17:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1609895872;
-        bh=89la9VIbgxJoAiOtZh6vDNKFvb9uJilRSBqp+fBr5wE=;
+        bh=GMkUWi1HSMx6tCW3EpjcA1+Pgb7uUPIJLE5afoazVfo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=MRutX3aiqUpvAG+88HkSzREaDWr0CvykHbJfeThw+zQEdcM6Ss+dif4kKlLCo5WxK
-         F47Jx4OTqjDc3pBiOxKtiwGPQx4/x+anciT0ZhIbIkC7UpyWyC1+56wD6rt/FUEbt4
-         AeRQTXwgZWea4Dk905NoqbyDbDR5DWWhBuzhVO2pYhRQHr1xhVcnyB3mdYH8gqblrG
-         SZA6Wq7Q781/xiqCinhEIGFP5vIlds4jgSaAdtVPmKuFw2aNDT869L6YtfqX44RMa2
-         IcdtRhxeAUnvtkJ0rc/YFoBg0ZB7m5njlcPli1OSsGAxNPsJSfnjNSwtxo3gTvwLMd
-         o3J1vRr2mazag==
+        b=t6NMudKKD76xBb8X/tG4J62mW7lW6/cnBXETpELbjaddU2tbIooynS/8EhUVUognJ
+         ETTH7J1c8lmqUJqnPOiFbFzcls7G4axaDBMCjOxFNr1HX03Qn4sy+XFExMWnxCEGdp
+         veRcTc8vDr+sXuqZxo2eU/nVABRVzMINnycM94xAEkV+hK65sf/bN730Hpt7SjH1xo
+         uH3IIHTyawZ2W64PVsSNbTY95DqYYVIS0UmR1NZrwIoCrACxslxDK3ZUkg/qtR59fF
+         NQ26zJHgwEiffejk48QZVC5q49fYze+Txg+OhDUersc5yPtgkcckTc+L4Lz8irZ6sQ
+         Ch5ggT7TMu7LA==
 From:   paulmck@kernel.org
 To:     linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
         linux-mm@kvack.org
@@ -30,9 +30,9 @@ Cc:     cl@linux.com, penberg@kernel.org, rientjes@google.com,
         iamjoonsoo.kim@lge.com, akpm@linux-foundation.org,
         ming.lei@redhat.com, axboe@kernel.dk, kernel-team@fb.com,
         "Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH mm,percpu_ref,rcu 3/6] mm: Make mem_dump_obj() handle vmalloc() memory
-Date:   Tue,  5 Jan 2021 17:17:47 -0800
-Message-Id: <20210106011750.13709-3-paulmck@kernel.org>
+Subject: [PATCH mm,percpu_ref,rcu 4/6] mm: Make mem_obj_dump() vmalloc() dumps include start and length
+Date:   Tue,  5 Jan 2021 17:17:48 -0800
+Message-Id: <20210106011750.13709-4-paulmck@kernel.org>
 X-Mailer: git-send-email 2.9.5
 In-Reply-To: <20210106011603.GA13180@paulmck-ThinkPad-P72>
 References: <20210106011603.GA13180@paulmck-ThinkPad-P72>
@@ -42,98 +42,33 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: "Paul E. McKenney" <paulmck@kernel.org>
 
-This commit adds vmalloc() support to mem_dump_obj().  Note that the
-vmalloc_dump_obj() function combines the checking and dumping, in
-contrast with the split between kmem_valid_obj() and kmem_dump_obj().
-The reason for the difference is that the checking in the vmalloc()
-case involves acquiring a global lock, and redundant acquisitions of
-global locks should be avoided, even on not-so-fast paths.
-
-Note that this change causes on-stack variables to be reported as
-vmalloc() storage from kernel_clone() or similar, depending on the degree
-of inlining that your compiler does.  This is likely more helpful than
-the earlier "non-paged (local) memory".
+This commit adds the starting address and number of pages to the vmalloc()
+information dumped by way of vmalloc_dump_obj().
 
 Cc: Andrew Morton <akpm@linux-foundation.org>
 Cc: Joonsoo Kim <iamjoonsoo.kim@lge.com>
 Cc: <linux-mm@kvack.org>
 Reported-by: Andrii Nakryiko <andrii@kernel.org>
+Suggested-by: Vlastimil Babka <vbabka@suse.cz>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- include/linux/vmalloc.h |  6 ++++++
- mm/util.c               | 14 ++++++++------
- mm/vmalloc.c            | 12 ++++++++++++
- 3 files changed, 26 insertions(+), 6 deletions(-)
+ mm/vmalloc.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/include/linux/vmalloc.h b/include/linux/vmalloc.h
-index 80c0181..c18f475 100644
---- a/include/linux/vmalloc.h
-+++ b/include/linux/vmalloc.h
-@@ -246,4 +246,10 @@ pcpu_free_vm_areas(struct vm_struct **vms, int nr_vms)
- int register_vmap_purge_notifier(struct notifier_block *nb);
- int unregister_vmap_purge_notifier(struct notifier_block *nb);
- 
-+#ifdef CONFIG_MMU
-+bool vmalloc_dump_obj(void *object);
-+#else
-+static inline bool vmalloc_dump_obj(void *object) { return false; }
-+#endif
-+
- #endif /* _LINUX_VMALLOC_H */
-diff --git a/mm/util.c b/mm/util.c
-index 92f23d2..5487022 100644
---- a/mm/util.c
-+++ b/mm/util.c
-@@ -996,18 +996,20 @@ int __weak memcmp_pages(struct page *page1, struct page *page2)
-  */
- void mem_dump_obj(void *object)
- {
-+	if (kmem_valid_obj(object)) {
-+		kmem_dump_obj(object);
-+		return;
-+	}
-+	if (vmalloc_dump_obj(object))
-+		return;
- 	if (!virt_addr_valid(object)) {
- 		if (object == NULL)
- 			pr_cont(" NULL pointer.\n");
- 		else if (object == ZERO_SIZE_PTR)
- 			pr_cont(" zero-size pointer.\n");
- 		else
--			pr_cont(" non-paged (local) memory.\n");
--		return;
--	}
--	if (kmem_valid_obj(object)) {
--		kmem_dump_obj(object);
-+			pr_cont(" non-paged memory.\n");
- 		return;
- 	}
--	pr_cont(" non-slab memory.\n");
-+	pr_cont(" non-slab/vmalloc memory.\n");
- }
 diff --git a/mm/vmalloc.c b/mm/vmalloc.c
-index 4d88fe5..c274ea4 100644
+index c274ea4..e3229ff 100644
 --- a/mm/vmalloc.c
 +++ b/mm/vmalloc.c
-@@ -3448,6 +3448,18 @@ void pcpu_free_vm_areas(struct vm_struct **vms, int nr_vms)
+@@ -3456,7 +3456,8 @@ bool vmalloc_dump_obj(void *object)
+ 	vm = find_vm_area(objp);
+ 	if (!vm)
+ 		return false;
+-	pr_cont(" vmalloc allocated at %pS\n", vm->caller);
++	pr_cont(" %u-page vmalloc region starting at %#lx allocated at %pS\n",
++		vm->nr_pages, (unsigned long)vm->addr, vm->caller);
+ 	return true;
  }
- #endif	/* CONFIG_SMP */
  
-+bool vmalloc_dump_obj(void *object)
-+{
-+	struct vm_struct *vm;
-+	void *objp = (void *)PAGE_ALIGN((unsigned long)object);
-+
-+	vm = find_vm_area(objp);
-+	if (!vm)
-+		return false;
-+	pr_cont(" vmalloc allocated at %pS\n", vm->caller);
-+	return true;
-+}
-+
- #ifdef CONFIG_PROC_FS
- static void *s_start(struct seq_file *m, loff_t *pos)
- 	__acquires(&vmap_purge_lock)
 -- 
 2.9.5
 
