@@ -2,151 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 68CFD2EB904
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 05:47:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 723292EB906
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 05:47:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726050AbhAFEpy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 23:45:54 -0500
-Received: from aserp2120.oracle.com ([141.146.126.78]:40092 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725800AbhAFEpx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 23:45:53 -0500
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 1064is2a137013;
-        Wed, 6 Jan 2021 04:44:54 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
- from : message-id : references : date : in-reply-to : content-type :
- mime-version; s=corp-2020-01-29;
- bh=60HBqjPUA06EEirgsW5W4vJWbdWSvnl2yblUaxfFlzM=;
- b=MbsoL5ne4SSnck28U+H9kqf6c0cyVpx1B5DnarzNSyHpEjzsp6JoBX31ioiLa66+jepW
- MbETLDOMmiOwKG/DLMX3JR84ofONJgyXfmW3itGZTmjwPtV5mHcjOyQFPAOFeRPqwbrI
- rTRIas+iFHdiWtaA1+TAjNxssaqkk1hZ38TGwgfh2fTl4yql/lPsijQdPm5sSisvQWj6
- Vb/Bq1ZDzb4mX7wj1Qz0O24SZ5Whx4EY7gjxqsj4KgPao0l7Tnxg/1iHP59d8mmXlnTu
- zSM4/gX2zjPehxkr90tgrwtp6gUf//rOM8H68KJhhcfPoVxitUeGWd9th0aWsyY5bnd7 mw== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by aserp2120.oracle.com with ESMTP id 35w542050t-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 06 Jan 2021 04:44:54 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 1064gfZU022470;
-        Wed, 6 Jan 2021 04:42:52 GMT
-Received: from nam10-bn7-obe.outbound.protection.outlook.com (mail-bn7nam10lp2106.outbound.protection.outlook.com [104.47.70.106])
-        by userp3030.oracle.com with ESMTP id 35w3g0dyrw-2
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 06 Jan 2021 04:42:52 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=nL4UVfafT2yyCrP53pW2/s7MbVYuQxKoRsfdcMjU02QJXzPOfBIc92GyOn1B1iJ0HZVWCImbG9BV8NcmnKp2A1Wrg4gh0u4KHPDEiT5Xv+YNgQg1yPWkF5+aGPPY5+yT4jGlMe1D4JahIAieLgN1fBW8UW2nZT/qGRSmSFd9cLC8Z5ypmZeXArYCdzaZBmjVFHf6vmJbQ2/C/im2aV5ogE1LwHTgHZNtkv+3JTY7LHJXVL11JLEwHDsHDh6gnMO0PAG0c6Td7ND1666QPQqWwSy3M61tVJfv9vXgk1nkHbnTPgUCAtcXQUI818F+2P3EnNFxbmtW595G3gCpJh6/tQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=60HBqjPUA06EEirgsW5W4vJWbdWSvnl2yblUaxfFlzM=;
- b=HpJ07xMvpjWg2KQ6wSyANUW4YuqOBqexPA/5v/pFzugfV1izsk+WDMqQQ3mBATGshoGkviLWUsgXlFmXvFt8xk8iOMWXLKlrpnxxOIx+sE+eIjRDbczm7fvqjkyiOsiINZ2onXEOIN2Nu0QDLvCFK07EMPqCvj1NPsrAMyJgspzIPqnZr1/1WhBrB27DmBifyBHguxDc7Y9Hm/cVfL4Kgnc0SsmRsgN4cehCJ3kRm3osIuAEBU6ZCP9owAzauAd1kMHl9LVN4f8EE8E74nd3yCF2xDltR/Y0BIJ8fRwgshXJ4kHBPP8+wBcv2OWCPVRZYnXvrpCZmAYrFi3IbO1VBw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=60HBqjPUA06EEirgsW5W4vJWbdWSvnl2yblUaxfFlzM=;
- b=dRtnMlZUjFS6v9VnLZiZpJUjfTUSxvty+RY9s9/4xgJsFoGQ13wGElqSAmgw1t4j+ImZU1zsLgxb/y7np9hzdWwSm/q+VcmjK0807zuA7P6Ig/OFjPxD+ixi99VEg3Wn3u4gIoEwSv38adQvBpYKqbNE/zu/kOotezzeIDeKZXo=
-Authentication-Results: linux.ibm.com; dkim=none (message not signed)
- header.d=none;linux.ibm.com; dmarc=none action=none header.from=oracle.com;
-Received: from PH0PR10MB4759.namprd10.prod.outlook.com (2603:10b6:510:3d::12)
- by PH0PR10MB4438.namprd10.prod.outlook.com (2603:10b6:510:36::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3742.6; Wed, 6 Jan
- 2021 04:42:48 +0000
-Received: from PH0PR10MB4759.namprd10.prod.outlook.com
- ([fe80::54f3:a8aa:a2cd:a3a4]) by PH0PR10MB4759.namprd10.prod.outlook.com
- ([fe80::54f3:a8aa:a2cd:a3a4%5]) with mapi id 15.20.3742.006; Wed, 6 Jan 2021
- 04:42:48 +0000
-To:     Tyrel Datwyler <tyreld@linux.ibm.com>
-Cc:     james.bottomley@hansenpartnership.com, martin.petersen@oracle.com,
-        linux-scsi@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-kernel@vger.kernel.org, brking@linux.ibm.com,
-        Brian King <brking@linux.vnet.ibm.com>
-Subject: Re: [PATCH v2 4/5] ibmvfc: complete commands outside the host/queue
- lock
-From:   "Martin K. Petersen" <martin.petersen@oracle.com>
-Organization: Oracle Corporation
-Message-ID: <yq1v9caekxl.fsf@ca-mkp.ca.oracle.com>
-References: <20201218231916.279833-5-tyreld@linux.ibm.com>
-        <20210104222422.981457-1-tyreld@linux.ibm.com>
-Date:   Tue, 05 Jan 2021 23:42:46 -0500
-In-Reply-To: <20210104222422.981457-1-tyreld@linux.ibm.com> (Tyrel Datwyler's
-        message of "Mon, 4 Jan 2021 16:24:22 -0600")
-Content-Type: text/plain
-X-Originating-IP: [138.3.200.58]
-X-ClientProxiedBy: SJ0PR13CA0219.namprd13.prod.outlook.com
- (2603:10b6:a03:2c1::14) To PH0PR10MB4759.namprd10.prod.outlook.com
- (2603:10b6:510:3d::12)
+        id S1726324AbhAFEqf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 23:46:35 -0500
+Received: from mga06.intel.com ([134.134.136.31]:11318 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726195AbhAFEqe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Jan 2021 23:46:34 -0500
+IronPort-SDR: QgGR8L3RTTc1FTb+8TZtKZeAZLq+f//Py4kK/eTFjcBMekEdalUaxsVRUcEIFS+kZXt8k7gK8M
+ IR4D0+FdQeyg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9855"; a="238777854"
+X-IronPort-AV: E=Sophos;i="5.78,479,1599548400"; 
+   d="scan'208";a="238777854"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Jan 2021 20:45:53 -0800
+IronPort-SDR: 1dFXjE8Uz9vBuNBcfiNT3fvqJvx8WsbzyCNMuMOHgCYhpf3S32eKLMrH0nyGVu2Kq14rlNSyk0
+ +hn6t/PQBBDg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.78,479,1599548400"; 
+   d="scan'208";a="398088495"
+Received: from shbuild999.sh.intel.com (HELO localhost) ([10.239.147.98])
+  by fmsmga002.fm.intel.com with ESMTP; 05 Jan 2021 20:45:50 -0800
+Date:   Wed, 6 Jan 2021 12:45:50 +0800
+From:   Feng Tang <feng.tang@intel.com>
+To:     Chris Down <chris@chrisdown.name>, Roman Gushchin <guro@fb.com>
+Cc:     Shakeel Butt <shakeelb@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Linux MM <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>, andi.kleen@intel.com,
+        "Chen, Tim C" <tim.c.chen@intel.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Huang Ying <ying.huang@intel.com>
+Subject: Re: [PATCH 2/2] mm: memcg: add a new MEMCG_UPDATE_BATCH
+Message-ID: <20210106044550.GA3184@shbuild999.sh.intel.com>
+References: <1609252514-27795-1-git-send-email-feng.tang@intel.com>
+ <1609252514-27795-2-git-send-email-feng.tang@intel.com>
+ <CALvZod5ir6F6BkJiVoXztNu6CancqJ2sNusg_hwTPcEssYkDdQ@mail.gmail.com>
+ <20210106021213.GD101866@shbuild999.sh.intel.com>
+ <X/Ux6CT6EsP+QQ8S@chrisdown.name>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from ca-mkp.ca.oracle.com (138.3.200.58) by SJ0PR13CA0219.namprd13.prod.outlook.com (2603:10b6:a03:2c1::14) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3742.4 via Frontend Transport; Wed, 6 Jan 2021 04:42:47 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 75c0d038-bd96-4ede-c994-08d8b1fd84b1
-X-MS-TrafficTypeDiagnostic: PH0PR10MB4438:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <PH0PR10MB4438C7892111E6C903FC47018ED00@PH0PR10MB4438.namprd10.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:5236;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: dnzBCC3di4oRNwB/Ik2o1LZC0qO/lSv18mgA2RkOxMHa1LwXo2tqmhmLp2k75nyxZQGX/qJRtfsttHe1sHigh+nmsde4adofU79HSQX3cLmoOeqgdYLzeoOKgOcYtVuMTHYUp11V02z2mg2fiEqtqP69VzIHj8rL9KN2V6dvCD/FzmQMPs4slEKXdBCnl1YEsjKbkcf8ed1CHlnhpw3eF2dEo3d3glbps4yB+J5Z5gxPe86+VBQ0cSNd9OpDAxGFcGunFuya02+35Xd51UrfaASfC6Q4jkNWW9jdBJ6P4987viWAXl0vYXX7OG190fb1bJN9bYBHXpLhqzbdCc24oJogZQYd7JFCG/bkWRPHinXlLTIYwdRozzpvV/BjslqnK70gnG4hSpHPcNf87pzidg==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR10MB4759.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(396003)(39830400003)(346002)(366004)(136003)(376002)(86362001)(66946007)(55016002)(6916009)(5660300002)(956004)(66476007)(66556008)(26005)(186003)(4326008)(16526019)(8676002)(52116002)(36916002)(2906002)(7696005)(316002)(83380400001)(478600001)(4744005)(8936002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?Es2WLdqvOb/cwA/1wg55XrlsSFQ18p7gCUmC81uty23h4SDL4arrvjSsf70K?=
- =?us-ascii?Q?aqrtRcO7c0uoU121b1xOSXZO9IyKA2zAt2ILQCdbpteS5b+sg1PwfhoRuFlX?=
- =?us-ascii?Q?draoHCYlcHJQCj5tJ7kUvy7/DemYt4XSvSzxxqPV2Afmdzmgu+fMVu7tF8O7?=
- =?us-ascii?Q?uqdosHUfnaxydAkVpCs4b47jI8HSzyX1+O+04AR3fBWGvkUt+NrfPniDzNbb?=
- =?us-ascii?Q?jrzlTodKxTyu/0BJkjElSf0tulD3vZGHyCYSe0JLL36o/ZI4ST2gmUaaYDPu?=
- =?us-ascii?Q?E2WsbcQd7YPlpX2pmdoD6BpImSlhYJ3dKaKI9ftG6cPVMMlY1C81Pq+s3+0T?=
- =?us-ascii?Q?+/3WNIR6rZbo5UvAk3xi4sjnVwhym7yNjncYI2aw4U6dV8PUJhFUBB+eZqey?=
- =?us-ascii?Q?+PEroUDzNd9879/vlHXv6rUKX/2/1hK/+YMl6nOf7QT28+ODty+Mcb7hT2C1?=
- =?us-ascii?Q?S4pZWrm3OZG2e2IytPxw02CLddI61hiNhxpLmqib04R02OcYlDoae+1xsp0D?=
- =?us-ascii?Q?tW18lZIeyIyCPvehaZxg7LSwAolg3aiApwc6lmsaDAcajXlN54M7k6RywjQA?=
- =?us-ascii?Q?LmeSoGDn9oNzGkAuhCSZSgCigXqCYM7A1AoAl91MR4NpgRZC0lSVCWeKGrrY?=
- =?us-ascii?Q?BeBw4NXZfZJ8ikIh4yxNKaZ1uj21qARNnU81Y6tDW+S+dZB6mCQbQv6c4puW?=
- =?us-ascii?Q?kJ2gPRNJv84RxEue53pKmMSWD+gu3DRUNDphNUqW+HDjIikioYKQU4E9ewuC?=
- =?us-ascii?Q?q4O7ZwT6az2VaVYVDEimeeQehsFhvgUoKhhQ/cZW8zZ/H9qnaXllbMyVUL24?=
- =?us-ascii?Q?GGLB8qtdwH270F47mcuhhxf8GyBvywEJe+vfJXYF5a6vVDzYFyTVRdgr0jcI?=
- =?us-ascii?Q?8LxJMAamMsokZEUvhth5FPxgA80txufHjS/jU2FUY+Rd0mIiurKX/VkQYKkg?=
- =?us-ascii?Q?y4HB1VdH4hvcqANN1qBurGeeOu0T+QT1sMsTyV6AyRM=3D?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR10MB4759.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Jan 2021 04:42:48.2985
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-Network-Message-Id: 75c0d038-bd96-4ede-c994-08d8b1fd84b1
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: r4Agh16uzVf/Wpcgs8Ok5j4fbvu/eGFyb7Uniuzz8s/mL1EyVenFL8mW0pHDv5SYRG7vyI8EJyk30uS7GsuSjr1hZeOS9y13Z/pr1bO3kHQ=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR10MB4438
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9855 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 malwarescore=0 adultscore=0
- phishscore=0 spamscore=0 mlxlogscore=999 suspectscore=0 bulkscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2101060027
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9855 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 phishscore=0 adultscore=0
- malwarescore=0 suspectscore=0 bulkscore=0 clxscore=1011 impostorscore=0
- spamscore=0 mlxlogscore=999 lowpriorityscore=0 priorityscore=1501
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2101060028
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <X/Ux6CT6EsP+QQ8S@chrisdown.name>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Chris,
 
-Tyrel,
+On Wed, Jan 06, 2021 at 03:43:36AM +0000, Chris Down wrote:
+> Feng Tang writes:
+> >One further thought is, there are quite some "BATCH" number in
+> >kernel for perf-cpu/global data updating, maybe we can add a
+> >global flag 'sysctl_need_accurate_stats' for
+> >	if (sysctl_need_accurate_stats)
+> >		batch = SMALLER_BATCH
+> >	else
+> >		batch = BIGGER_BATCH
+> 
+> Moving decisions like this to the system administrator is not really a
+> solution to the problem -- inclusion should at least be contingent on either
+> having "correct-ish" stats exported to userspace. Displaying broken stats to
+> the user -- even with a configuration knob -- is less than ideal and is
+> likely to confuse and confound issues in future.
+> 
+> I would also like to see numbers from more real-world workloads.
 
-> Drain the command queue and place all commands on a completion list.
-> Perform command completion on that list outside the host/queue locks.
-> Further, move purged command compeletions outside the host_lock as well.
+Sure. Roman also mentioned this. Do you have some suggestions for the
+workload or benchmarks? I don't have much knowledge on this, and have
+only leveraged some of 0day's benchmarking systems.
 
-Please resubmit entire series instead of amending individual patches.
+Thanks,
+Feng
 
-thanks!
-
--- 
-Martin K. Petersen	Oracle Linux Engineering
+> MEMCG_CHARGE_BATCH is certainly fairly arbitrary as-is, but if it is going
+> to be changed, the reason for that change and its implications (positive and
+> negative) for real-world workloads must be well understood, and I'm not sure
+> we're there yet.
