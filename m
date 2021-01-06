@@ -2,108 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83FAB2EC383
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 19:50:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CEE22EC38B
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 19:54:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726791AbhAFStq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Jan 2021 13:49:46 -0500
-Received: from elvis.franken.de ([193.175.24.41]:33363 "EHLO elvis.franken.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726249AbhAFSto (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Jan 2021 13:49:44 -0500
-Received: from uucp (helo=alpha)
-        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1kxDra-0005fm-00; Wed, 06 Jan 2021 19:48:54 +0100
-Received: by alpha.franken.de (Postfix, from userid 1000)
-        id 4B798C0808; Wed,  6 Jan 2021 19:48:39 +0100 (CET)
-Date:   Wed, 6 Jan 2021 19:48:39 +0100
-From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Matt Mackall <mpm@selenic.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Mark Brown <broonie@kernel.org>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        "open list:BROADCOM NVRAM DRIVER" <linux-mips@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
-        dmaengine <dmaengine@vger.kernel.org>, linux-ide@vger.kernel.org,
-        MTD Maling List <linux-mtd@lists.infradead.org>,
-        netdev <netdev@vger.kernel.org>, linux-rtc@vger.kernel.org,
-        linux-spi <linux-spi@vger.kernel.org>,
-        Linux Watchdog Mailing List <linux-watchdog@vger.kernel.org>,
-        ALSA Development Mailing List <alsa-devel@alsa-project.org>,
-        Atsushi Nemoto <anemo@mba.ocn.ne.jp>
-Subject: Re: [PATCH 00/10] Remove support for TX49xx
-Message-ID: <20210106184839.GA7773@alpha.franken.de>
-References: <20210105140305.141401-1-tsbogend@alpha.franken.de>
- <CAMuHMdX=trGqj8RzV7r1iTneqDjWOc4e1T-X+R_B34rxxhJpbg@mail.gmail.com>
+        id S1726438AbhAFSxr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Jan 2021 13:53:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42062 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726143AbhAFSxr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 Jan 2021 13:53:47 -0500
+Received: from mail-yb1-xb2f.google.com (mail-yb1-xb2f.google.com [IPv6:2607:f8b0:4864:20::b2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BD6FC061357
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Jan 2021 10:53:07 -0800 (PST)
+Received: by mail-yb1-xb2f.google.com with SMTP id x2so3710495ybt.11
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Jan 2021 10:53:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=w2l9qh9pEx3tDqkeXpfiJtf+59pHlf0HYS1sRLL/nNY=;
+        b=cGVzfXZ1PY8zcKXJcAYsHz5SGGkLtmpRi78cWZaof73NU70oKKzx6tgiLL8mI5B6+b
+         Gp+w5qK+zGzD8NLQi15UaFqG9srsNH6mXDsiCgUC53eG3g9CNKJMr8bM8ju/Ig+twNJC
+         eK8BJ1uibWiYXmn87YZbZ4tTQoajIPEVX5ND6oISKjeN4yuh74GhdISJtJDJI3ado3fz
+         wKqf5q79ovC8Ns8p9NDEFipC0ePC6zaPvwBvebay8hs2jxqvpgS3BUcxvJuClf+zpm7W
+         17SRMZU2uKl4zIYcvpJt+K3gq6hcu3kxQC9EMKViOUAK6v9xkwflt0vXNdD+HKCmlNVH
+         0vPA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=w2l9qh9pEx3tDqkeXpfiJtf+59pHlf0HYS1sRLL/nNY=;
+        b=eIYb8KosSwbEE3sl1lOFnEqMFifhFzyCVFMEt1IvydBogQwYCQXiKJyAT5crb07SOX
+         jB+u91oWjEH0pbxqSwu9uQJife2BVevrBvK4epw1asBpQp7Yp7Am6toIhCfgLPYGq7p2
+         bIgHtfg8T2LkT2AxvJPwH+3/b9YCLTIhSoQCUnY2XmhDDmqceRJOzaZci6vm4oS9ISH6
+         S8HbaE5midgLM5dpeGyy/zVoxPF2EnZPbLVEB+wq8Mp85MvmtF45D2CqF0PsZPl9gOXb
+         qgyVyjtBvP52n6EAFv5nBmrbZKDXYXVyYeur2YHGfPaHEpCk0NMzd9X0KGU3dJmOdQVL
+         RL1A==
+X-Gm-Message-State: AOAM531RPHdedjJwKDlZ/xac76WnAkMSQ1wsI3RSt3an8+3j/lLwgGUt
+        rNJr1+JrWU1yKrdtvo5l7yZhYRGesg+VJJLjmd1s6w==
+X-Google-Smtp-Source: ABdhPJy5U09WopUYakbG/SJlhE6YbEf9niULhY+a5LhlxayWH71C1E4faS1u4Hb1efL1+/iqPNXcViwntubk3djHIl8=
+X-Received: by 2002:a25:d7d7:: with SMTP id o206mr8081358ybg.228.1609959186065;
+ Wed, 06 Jan 2021 10:53:06 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAMuHMdX=trGqj8RzV7r1iTneqDjWOc4e1T-X+R_B34rxxhJpbg@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20201218210750.3455872-1-saravanak@google.com>
+ <2a6dbcc83d5aca7a3340e0cf4d751cdc@kernel.org> <20201231211240.GA2333246@robh.at.kernel.org>
+ <877dovlgdl.wl-maz@kernel.org>
+In-Reply-To: <877dovlgdl.wl-maz@kernel.org>
+From:   Saravana Kannan <saravanak@google.com>
+Date:   Wed, 6 Jan 2021 10:52:30 -0800
+Message-ID: <CAGETcx9WJdYkQcwJLTF4j9jR4kyrDpXG8ZMuCecK2Hv-HXFgBg@mail.gmail.com>
+Subject: Re: [PATCH] of: property: Add device link support for interrupts
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     Rob Herring <robh@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Kevin Hilman <khilman@baylibre.com>,
+        Android Kernel Team <kernel-team@android.com>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 06, 2021 at 09:37:11AM +0100, Geert Uytterhoeven wrote:
-> Hi Thomas,
-> 
-> CC Nemoto-san (de-facto TX49XX maintainer)
-> 
-> On Tue, Jan 5, 2021 at 3:03 PM Thomas Bogendoerfer
-> <tsbogend@alpha.franken.de> wrote:
-> > I couldn't find any buyable product other than reference boards using
-> > TX49xx CPUs. And since nobody showed interest in keeping support for
-> > it, it's time to remove it.
-> 
-> I have an RBTX4927 development board in my board farm, boot-test every
-> bi-weekly renesas-drivers release on it, and fix kernel issues when they
-> appear.
-> 
-> Is that sufficient to keep it?
+On Sat, Jan 2, 2021 at 3:37 AM Marc Zyngier <maz@kernel.org> wrote:
+>
+> On Thu, 31 Dec 2020 21:12:40 +0000,
+> Rob Herring <robh@kernel.org> wrote:
+> >
+> > On Mon, Dec 21, 2020 at 09:30:45AM +0000, Marc Zyngier wrote:
+> > > On 2020-12-18 21:07, Saravana Kannan wrote:
+> > > > Add support for creating device links out of interrupts property.
+> > > >
+> > > > Cc: Marc Zyngier <maz@kernel.org>
+> > > > Cc: Kevin Hilman <khilman@baylibre.com>
+> > > > Signed-off-by: Saravana Kannan <saravanak@google.com>
+> > > > ---
+> > > > Rob/Greg,
+> > > >
+> > > > This might need to go into driver-core to avoid conflict
+> > > > due to fw_devlink refactor series that merged there.
+> > > >
+> > > > Thanks,
+> > > > Saravana
+> > > >
+> > > >
+> > > >  drivers/of/property.c | 17 +++++++++++++++++
+> > > >  1 file changed, 17 insertions(+)
+> > > >
+> > > > diff --git a/drivers/of/property.c b/drivers/of/property.c
+> > > > index 5f9eed79a8aa..e56a5eae0a0b 100644
+> > > > --- a/drivers/of/property.c
+> > > > +++ b/drivers/of/property.c
+> > > > @@ -1271,6 +1271,22 @@ static struct device_node
+> > > > *parse_iommu_maps(struct device_node *np,
+> > > >   return of_parse_phandle(np, prop_name, (index * 4) + 1);
+> > > >  }
+> > > >
+> > > > +static struct device_node *parse_interrupts(struct device_node *np,
+> > > > +                                     const char *prop_name, int index)
+> > > > +{
+> > > > + struct device_node *sup;
+> > > > +
+> > > > + if (strcmp(prop_name, "interrupts") || index)
+> > > > +         return NULL;
+> > > > +
+> > > > + of_node_get(np);
+> > > > + while (np && !(sup = of_parse_phandle(np, "interrupt-parent", 0)))
+> > > > +         np = of_get_next_parent(np);
+> > > > + of_node_put(np);
+> > > > +
+> > > > + return sup;
+> > > > +}
+> > > > +
+> > > >  static const struct supplier_bindings of_supplier_bindings[] = {
+> > > >   { .parse_prop = parse_clocks, },
+> > > >   { .parse_prop = parse_interconnects, },
+> > > > @@ -1296,6 +1312,7 @@ static const struct supplier_bindings
+> > > > of_supplier_bindings[] = {
+> > > >   { .parse_prop = parse_pinctrl6, },
+> > > >   { .parse_prop = parse_pinctrl7, },
+> > > >   { .parse_prop = parse_pinctrl8, },
+> > > > + { .parse_prop = parse_interrupts, },
+> > > >   { .parse_prop = parse_regulators, },
+> > > >   { .parse_prop = parse_gpio, },
+> > > >   { .parse_prop = parse_gpios, },
+> > >
+> > > You don't really describe what this is for so I'm only guessing
+> > > from the context. If you want to follow the interrupt hierarchy,
+> > > "interrupt-parent" isn't enough. You also need to track
+> > > things like interrupt-map, or anything that carries a phandle
+> > > to an interrupt controller.
+> >
+> > We don't need to follow the hierarchy, we just need the immediate
+> > dependencies.
+>
+> Indeed. I also wonder why this isn't just a irq_find_parent() call, TBH.
 
-for me it is. But now we probaly need some reverts then...
+Thanks Rob for explaining it.
 
-I wonder whether you have seen my mail about the removal
+Marc, I wasn't sure if Rob would be okay with including of_irq.h here.
+Also, I'm trying to keep of/property.c independent of the framework
+code for now. The long term goal is to see if I can move out most of
+this into the frameworks. But I want to do that after I sort of some
+of the larger problems (like getting fw_devlink=on to work on all
+devices  first). Let me know if you have a strong preference for right
+now, if not, I'd rather keep property.c independent for now.
 
-https://lore.kernel.org/linux-mips/20201207105627.GA15866@alpha.franken.de
+I wasn't aware of interrupt-map until a few weeks ago and didn't know
+it carried phandles. I can add support for that too. There's no reason
+for all of them to go in one patch though.
 
-and my call for people owning MIPS machines
+>
+> > But you are right that 'interrupt-map' also needs to be tracked.
+>
+> And 'interrupts-extended', while we're at it.
 
-https://lore.kernel.org/linux-mips/20200227144910.GA25011@alpha.franken.de/
+This is already handled.
 
-Still "unclaimed" machines are
+> >
+> > I also noticed that we define 'interrupt-parent' as a dependency to
+> > parse, but that's wrong. The dependency is where 'interrupts' appears
+> > and where 'interrupt-parent' appears is irrelevant.
 
-IMG Pistachio SoC based boards (MACH_PISTACHIO(
-Toshiba TX39 series based machines (MACH_TX39XX)
-NEC VR4100 series based machines (MACH_VR41XX)
-Netlogic XLR/XLS based systems (NLM_XLR_BOARD)
-Netlogic XLP based systems (NLM_XLP_BOARD)
-Sibyte BCM91120C-CRhine (SIBYTE_CRHINE)
-Sibyte BCM91120x-Carmel (SIBYTE_CARMEL)
-Sibyte BCM91125C-CRhone (SIBYTE_CRHONE)
-Sibyte BCM91125E-Rhone (SIBYTE_RHONE)
-Sibyte BCM91250C2-LittleSur (SIBYTE_LITTLESUR)
-Sibyte BCM91250E-Sentosa (SIBYTE_SENTOSA)
+No, the interrupt-parent parsing is correct and it's needed for
+interrupt controllers to probe in the right order. But
+interrupt-parent is also needs to be looked at for parsing
+"interrupts".
 
-Is there something on this list you also regulary use ?
+-Saravana
 
-Thomas.
-
--- 
-Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
-good idea.                                                [ RFC1925, 2.3 ]
+> Agreed. Though you need the object the dependency is on, I guess, if
+> you want to be able to have the dependency edge between the device and
+> the interrupt controller. But since the commit message doesn't say
+> much about what this is trying to achieve, I'm only guessing the
+> purpose of this patch.
+>
+>         M.
+>
+> --
+> Without deviation from the norm, progress is not possible.
