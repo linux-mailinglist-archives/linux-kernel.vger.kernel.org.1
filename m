@@ -2,77 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 134162EC09D
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 16:45:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D6C082EC09E
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 16:47:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727192AbhAFPpJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Jan 2021 10:45:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40606 "EHLO
+        id S1726638AbhAFPqd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Jan 2021 10:46:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40820 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727115AbhAFPpI (ORCPT
+        with ESMTP id S1725800AbhAFPqd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Jan 2021 10:45:08 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58231C061357
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Jan 2021 07:44:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=gtC4c3Ej8bBFZ9FcoprvJDs27X+S4qSFCKOgvJeaiHM=; b=VLYD91MY/OSoQtdL9IqCVn5DlF
-        XFRILKWh6jpGCxrycvhxLiQxbYYgN4zeSMSkYsa/2mcx4b+kuqZ+XCQ6sMBEJh0AfhPkoXH+e81N/
-        6yUxRmU0VnsmtL4Dqf1jUBSvFiR+NatVuEkPvfLWyJC1DFknjET/KtlLkDncIG3kzGCIii92aB9Vi
-        WnHlh4eblDRL9uXglZ+D/+MCyseodVhJirB81YNVZYJOfBobzqRpB+Fvvgm2spI3+DYHkEoEmnMmO
-        f9n8P5VI+xf27h1hJE2IiqvlJGIvHpZJP+Y4JKKh1qJcstnCSdxj3DS8mrsvB6TLHwjCnkreLX+ub
-        rfiuxm0Q==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kxAz1-0002U2-CA; Wed, 06 Jan 2021 15:44:23 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id DDA69305C10;
-        Wed,  6 Jan 2021 16:44:21 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id A41A42029C723; Wed,  6 Jan 2021 16:44:21 +0100 (CET)
-Date:   Wed, 6 Jan 2021 16:44:21 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     tglx@linutronix.de, linux-kernel@vger.kernel.org,
-        valentin.schneider@arm.com, bristot@redhat.com, frederic@kernel.org
-Subject: Re: lockdep splat in v5.11-rc1 involving console_sem and rq locks
-Message-ID: <X/Xa1fwplnZIOm+U@hirez.programming.kicks-ass.net>
-References: <20210105220115.GA27357@paulmck-ThinkPad-P72>
- <X/WITr5JuNvuMH+p@hirez.programming.kicks-ass.net>
- <20210106144621.GJ17086@paulmck-ThinkPad-P72>
+        Wed, 6 Jan 2021 10:46:33 -0500
+Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98A2EC06134C
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Jan 2021 07:45:52 -0800 (PST)
+Received: by mail-lf1-x130.google.com with SMTP id x20so7417231lfe.12
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Jan 2021 07:45:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=9FLdjT3qpvgs+ARQgDcCR59/xZGNey7AbW0WtCFjj5M=;
+        b=ObrmMR3xSJOLxQI2zkDI/seXDUFv7mKldN0Bx+lyeaezeDzJvkWtegrcItOvT+NieP
+         WYM/EuddizUFJL1tvPU+50qFC52uhhWyrEpjgfKAjq6vsQ21q0poOamLfj9Wo7I2Qt72
+         DcdoXmtEZX1HKYOWtzuzrXDBC3kY0A4MEXfLbLBwYhpNb0f768wpYnFgQKh1FaI6FcyP
+         2lgYxZBxOAwHAIqbmhaUeP5Jy++yCE9q4PhVof5XgMVHgOJ/aEe2u+CPh7Rp25KH2uF0
+         dFhOFfLIKUWQWFBTFNGaZh2fGoVuPtUARutmMm2Z7Qp1mYXl1C11SvARw+hYG6STlR4l
+         PK/Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=9FLdjT3qpvgs+ARQgDcCR59/xZGNey7AbW0WtCFjj5M=;
+        b=AGk7Uv9kuWMS4pd1zghijn7ypj/AG2vlBz6pKgOHKWQ7Z4hb/1cXn14rk1pZNUtseT
+         orLMTAQG8j6dOuT2q5F4+tnJFbAuARkKRGwUpZY5Ve4I7cobORN4Zizm/FlrNrJNiNp/
+         lD6ShsIZF8lQErEZZDyGKbQNxLvnpLpHU4Hw8mJgMNMuyNrAXBB/3wlqWdaXGhw4qEoC
+         TC6VjoXpYKSkkbMQeT3xcuVHsCVEEr7GGXg6OR5zn/pwDNAgVIQ6MC8yBDUTEvyz2RIS
+         XvZ9LYeuFapm+iNBkJOJiAq7bcvA4KOt51yqj2v68Xvjm7EIFhMRTxdiD7GpsTyPfIl/
+         ToyA==
+X-Gm-Message-State: AOAM530X8y00M+aI/LgkzL5jmvGeHDqN+Sndz0ClhXLEr5Skpzm04Ra6
+        e0VMDeX8seKWcArPw4SU45nltCnMs+CwIWK4P9UfcA==
+X-Google-Smtp-Source: ABdhPJx7fj09yrfG6xdeQ3fTny0Lx0V6kd+1bTIz+wkkbU668wA9q9qvM/NNif736oxVUr+zExFNlOEtscWcB3CSDc8=
+X-Received: by 2002:a05:651c:20b:: with SMTP id y11mr2132317ljn.176.1609947951068;
+ Wed, 06 Jan 2021 07:45:51 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210106144621.GJ17086@paulmck-ThinkPad-P72>
+References: <20210106133419.2971-1-vincent.guittot@linaro.org>
+ <20210106133419.2971-3-vincent.guittot@linaro.org> <X/XSH7Qv58pSpi95@hirez.programming.kicks-ass.net>
+ <CAKfTPtB+Nrk6ST9c-OacdW3zh07VC6M8GqvgNXzQ=KqucBrqQQ@mail.gmail.com> <X/XYHxPtGFhJe+bu@hirez.programming.kicks-ass.net>
+In-Reply-To: <X/XYHxPtGFhJe+bu@hirez.programming.kicks-ass.net>
+From:   Vincent Guittot <vincent.guittot@linaro.org>
+Date:   Wed, 6 Jan 2021 16:45:39 +0100
+Message-ID: <CAKfTPtDuTcP0MnW2YVDWy88ms=aWPbk1-0vFqdkvRU4PVi9qBA@mail.gmail.com>
+Subject: Re: [PATCH 2/3] sched/fair: don't set LBF_ALL_PINNED unnecessarily
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Ingo Molnar <mingo@redhat.com>, Juri Lelli <juri.lelli@redhat.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 06, 2021 at 06:46:21AM -0800, Paul E. McKenney wrote:
-> Huh.  The WARN does not always generate the lockdep complaint.  But
-> fair enough.
+On Wed, 6 Jan 2021 at 16:32, Peter Zijlstra <peterz@infradead.org> wrote:
+>
+> On Wed, Jan 06, 2021 at 04:20:55PM +0100, Vincent Guittot wrote:
+>
+> > This case here is :
+> > we have 2 tasks TA and TB on the rq.
+> > The waiting one TB can't migrate for a reason other than the pinned case.
+> > We decide to start the active migration on the running  TA task but TA
+> > is pinned.
+> > In this case we are not in the all pinned case.
+>
+> But then can_migrate_task(TB) should clear ALL_PINNED, no?
 
-Any printk()/WARN/BUG with rq lock held ought to generate that splat,
-sometimes we die before we splat. The printk rewrite should eventually
-fix that.
-
-> >   https://lkml.kernel.org/r/20201226025117.2770-1-jiangshanlai@gmail.com
-> 
-> Thomas pointed me at this one a couple of weeks ago.  Here is an
-> additional fix for rcutorture: f67e04bb0695 ("torture: Break affinity
-> of kthreads last running on outgoing CPU").  I am still getting WARNs
-> and lockdep splats with both applied.
-
-That patch looks racy, what avoids the task being shuffled right back
-before the CPU goes offline?
-
-> What would break if I made the code dump out a few entries in the
-> runqueue if the warning triggered?
-
-There was a patch around that did that, Valentin might remember where
-that was.
+Yes but current code sets ALL_PINNED when the active migration failed
+because the running task is pinned whatever there is not pinned
+waiting tasks that has not been selected
