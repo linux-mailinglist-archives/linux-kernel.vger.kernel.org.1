@@ -2,87 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4AEA12EC3C7
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 20:18:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CB6352EC3D3
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 20:21:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726915AbhAFTSK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Jan 2021 14:18:10 -0500
-Received: from relay6-d.mail.gandi.net ([217.70.183.198]:34179 "EHLO
-        relay6-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726840AbhAFTSJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Jan 2021 14:18:09 -0500
-X-Greylist: delayed 34965 seconds by postgrey-1.27 at vger.kernel.org; Wed, 06 Jan 2021 14:18:09 EST
-X-Originating-IP: 82.255.60.242
-Received: from [192.168.1.150] (lns-bzn-39-82-255-60-242.adsl.proxad.net [82.255.60.242])
-        (Authenticated sender: hadess@hadess.net)
-        by relay6-d.mail.gandi.net (Postfix) with ESMTPSA id 05C27C0006;
-        Wed,  6 Jan 2021 19:17:26 +0000 (UTC)
-Message-ID: <6b33f956dfffc8edcff72f66a29ccf5d86682a53.camel@hadess.net>
-Subject: Re: [PATCH] HID: logitech-hidpp: add support for Unified Battery
- (1004) feature
-From:   Bastien Nocera <hadess@hadess.net>
-To:     Filipe =?ISO-8859-1?Q?La=EDns?= <lains@archlinux.org>,
-        Jiri Kosina <jikos@kernel.org>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
-Date:   Wed, 06 Jan 2021 20:17:26 +0100
-In-Reply-To: <bc65667903652a67f17b6b51a37a03f73309fe39.camel@archlinux.org>
-References: <20210104182937.1472673-1-lains@archlinux.org>
-         <0de99cc89a3cc0cc5b3818e10aefdd2eaddd8032.camel@hadess.net>
-         <bc65667903652a67f17b6b51a37a03f73309fe39.camel@archlinux.org>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.2 (3.38.2-1.fc33) 
+        id S1727060AbhAFTUc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Jan 2021 14:20:32 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39008 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726438AbhAFTUb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 Jan 2021 14:20:31 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B221C2311B;
+        Wed,  6 Jan 2021 19:19:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1609960791;
+        bh=U+g+SuPIZ3hN3vmlC/G3kLSsF0KrlCHBBpEFAdw5Ufc=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=DONdN+za2JdOMS2tkNX8Udx10Mgoz1zTTX4/LKKwowRFEzME2OtA9A7gmmeMPWWqo
+         ViCopXvbUuS9KNaQHGfPb2KNJUv2pQY+2eSXaKusAxA1jHrDa7Aw3OVlSSdCjf2F7b
+         LUiof3UhPYIzqo04pYAHvwWWdU1jbFg50riZk1G1XuGS38/rFuqksebfc6jnNU84vT
+         0QIqwREaJTIxPCw/n2g7XnsER++6GD/SsPJtmOIpPcnX5eGZ0CybB0GsIYWsLc9/Zn
+         Jw5P9CuYgde/UB1DwI5gwNDrz8BP+06XjI+7xckZG4jU1Ri2ar71uDh3FYw7LGlzt9
+         h2rtn0rv1WNfg==
+Date:   Wed, 6 Jan 2021 13:19:49 -0600
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Jim Quinlan <james.quinlan@broadcom.com>
+Cc:     linux-pci@vger.kernel.org,
+        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        broonie@kernel.org, bcm-kernel-feedback-list@broadcom.com,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Rob Herring <robh@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
+        <linux-rpi-kernel@lists.infradead.org>,
+        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2 5/6] PCI: brcmstb: Add panic/die handler to RC driver
+Message-ID: <20210106191949.GA1328757@bjorn-Precision-5520>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201130211145.3012-6-james.quinlan@broadcom.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2021-01-06 at 18:48 +0000, Filipe Laíns wrote:
-> On Wed, 2021-01-06 at 10:34 +0100, Bastien Nocera wrote:
-> > On Mon, 2021-01-04 at 18:29 +0000, lains@archlinux.org wrote:
-> > > From: Filipe Laíns <lains@archlinux.org>
-> > > 
-> > > This new feature present in new devices replaces the old Battery
-> > > Level
-> > > Status (0x1000) feature. It keeps essentially the same
-> > > information
-> > > for
-> > > levels (reporting critical, low, good and full) but makes these
-> > > levels
-> > > optional, the device exports a capability setting which describes
-> > > which
-> > > levels it supports. In addition to this, there is an optional
-> > > state_of_charge paramenter that exports the battery percentage.
-> > > 
-> > > This patch adds support for this new feature. There were some
-> > > implementation choices, as described below and in the code.
-> > > 
-> > > If the device supports the state_of_charge parameter, we will
-> > > just
-> > > export the battery percentage and not the levels, which the
-> > > device
-> > > might
-> > > still support.
-> > 
-> > I'm guessing that means no changes needed on the upower side?
-> > 
-> > Cheers
-> > 
+On Mon, Nov 30, 2020 at 04:11:42PM -0500, Jim Quinlan wrote:
+> Whereas most PCIe HW returns 0xffffffff on illegal accesses and the like,
+> by default Broadcom's STB PCIe controller effects an abort.  This simple
+> handler determines if the PCIe controller was the cause of the abort and if
+> so, prints out diagnostic info.
 > 
-> Yes :)
-> I tested upower and all works as expected.
-> 
-> There will still be devices that only support battery voltage, so I
-> might
-> implement the battery voltage to charge percentage in a future patch.
+> Example output:
+>   brcm-pcie 8b20000.pcie: Error: Mem Acc: 32bit, Read, @0x38000000
+>   brcm-pcie 8b20000.pcie:  Type: TO=0 Abt=0 UnspReq=1 AccDsble=0 BadAddr=0
 
-I sent a WIP patch at the end of November for that, it wasn't even
-compile-tested, but might be a good base to start from.
+What does this mean for all the other PCI core code that expects
+0xffffffff data returns?  Does it work?  Does it break differently on
+STB than on other platforms?
 
-I don't think that I have any hardware that supports that feature in
-any case.
+> +/*
+> + * Dump out pcie errors on die or panic.
 
-Cheers
+s/pcie/PCIe/
+This could be a single-line comment.
 
+> + */
