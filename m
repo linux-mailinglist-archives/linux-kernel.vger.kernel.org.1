@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 62BA32EB73B
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 01:59:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 494272EB73D
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 01:59:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727030AbhAFA6W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 19:58:22 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55912 "EHLO mail.kernel.org"
+        id S1726076AbhAFA6d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 19:58:33 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55942 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725925AbhAFA6T (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1725966AbhAFA6T (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 5 Jan 2021 19:58:19 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 44D7622E03;
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6EC36230FB;
         Wed,  6 Jan 2021 00:57:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1609894658;
-        bh=7Lpg3JpvCyhFmK3955GjHbz3mWVxQeMM9a2XxyDeSik=;
+        bh=c8pNqvTvHY/gLSnjtC+oe158U/JTDPDcYcVU+r3qDeM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=l8guUJy78crW8ihMo2D0KzOV8nxIWDkqrYd9YCa8nxGBo5f36mqilxn1Hunovpxt4
-         WLIbX/QK3i6c75US+SS+vfSsVOrJwu2TGd6fiHnixXUMHpAlhFXUGpZmn7Qnf4oqXy
-         5lMSMEaeWGOdPHxJfX9jDWpmhq2zL9yEMNJVbvi7R/2/8+hqqX6lU1JyQeRhWr9IZO
-         XzclKNrCIa3ARmHfEyapEXoLTLbndB3lNqMp/iN6wj9yEhOMNtig4aMVKXd+oU6yOj
-         69+AA1Myq9ANDBXG8ZbdXGLvBT9RQp8PevgIcuj/ZwXfG83g4C6TbNCSiUcwpms//D
-         w2/OpZFre+hSQ==
+        b=hgq/eAYXS2IvaJxQ98dgxfjUxnG59RPFCM1udzuBHdMUrEj1b/NT7BSeapxHs2xSM
+         M3OVJizQTWmvd5W75YGF7q1KkTrw1WJtHrMoxVlCZ20mxdA1cPc1ZBx4zs9XwXVC9C
+         Tee1bM+5CBhqCxUx40QKckJdV0OpB+P/zZ6MH+rWjGdvtVEP44Oak8fbstgNf99Q3N
+         l9uqtvsb1O3E6ormJqlnm8I8Pf8gzPhPy86wHGlIAoNcWhS7IzxhZoFwRC2RpGQYGQ
+         TY/TFxfqw8gnmE7B96Vvg5SnWwujfbIIaZb4zymyd/pnbq7k9TI+6LoBLLLxXK0+si
+         UqYKPtlVuzycQ==
 From:   paulmck@kernel.org
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -32,9 +32,9 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
         oleg@redhat.com, joel@joelfernandes.org,
         "Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH tip/core/rcu 3/6] rcu: Add lockdep_assert_irqs_disabled() to rcu_sched_clock_irq() and callees
-Date:   Tue,  5 Jan 2021 16:57:33 -0800
-Message-Id: <20210106005736.12613-3-paulmck@kernel.org>
+Subject: [PATCH tip/core/rcu 4/6] rcu: Add lockdep_assert_irqs_disabled() to raw_spin_unlock_rcu_node() macros
+Date:   Tue,  5 Jan 2021 16:57:34 -0800
+Message-Id: <20210106005736.12613-4-paulmck@kernel.org>
 X-Mailer: git-send-email 2.9.5
 In-Reply-To: <20210106005713.GA12492@paulmck-ThinkPad-P72>
 References: <20210106005713.GA12492@paulmck-ThinkPad-P72>
@@ -44,115 +44,60 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: "Paul E. McKenney" <paulmck@kernel.org>
 
-This commit adds a number of lockdep_assert_irqs_disabled() calls
-to rcu_sched_clock_irq() and a number of the functions that it calls.
-The point of this is to help track down a situation where lockdep appears
-to be insisting that interrupts are enabled within these functions, which
-should only ever be invoked from the scheduling-clock interrupt handler.
+This commit adds a lockdep_assert_irqs_disabled() call to the
+helper macros that release the rcu_node structure's ->lock, namely
+to raw_spin_unlock_rcu_node(), raw_spin_unlock_irq_rcu_node() and
+raw_spin_unlock_irqrestore_rcu_node().  The point of this is to help track
+down a situation where lockdep appears to be insisting that interrupts
+are enabled while holding an rcu_node structure's ->lock.
 
 Link: https://lore.kernel.org/lkml/20201111133813.GA81547@elver.google.com/
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/rcu/tree.c        | 4 ++++
- kernel/rcu/tree_plugin.h | 1 +
- kernel/rcu/tree_stall.h  | 8 ++++++++
- 3 files changed, 13 insertions(+)
+ kernel/rcu/rcu.h | 16 +++++++++++++---
+ 1 file changed, 13 insertions(+), 3 deletions(-)
 
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index bd04b09..f70634f 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -2553,6 +2553,7 @@ static void rcu_do_batch(struct rcu_data *rdp)
- void rcu_sched_clock_irq(int user)
- {
- 	trace_rcu_utilization(TPS("Start scheduler-tick"));
-+	lockdep_assert_irqs_disabled();
- 	raw_cpu_inc(rcu_data.ticks_this_gp);
- 	/* The load-acquire pairs with the store-release setting to true. */
- 	if (smp_load_acquire(this_cpu_ptr(&rcu_data.rcu_urgent_qs))) {
-@@ -2566,6 +2567,7 @@ void rcu_sched_clock_irq(int user)
- 	rcu_flavor_sched_clock_irq(user);
- 	if (rcu_pending(user))
- 		invoke_rcu_core();
-+	lockdep_assert_irqs_disabled();
+diff --git a/kernel/rcu/rcu.h b/kernel/rcu/rcu.h
+index e01cba5..839f5be 100644
+--- a/kernel/rcu/rcu.h
++++ b/kernel/rcu/rcu.h
+@@ -378,7 +378,11 @@ do {									\
+ 	smp_mb__after_unlock_lock();					\
+ } while (0)
  
- 	trace_rcu_utilization(TPS("End scheduler-tick"));
- }
-@@ -3690,6 +3692,8 @@ static int rcu_pending(int user)
- 	struct rcu_data *rdp = this_cpu_ptr(&rcu_data);
- 	struct rcu_node *rnp = rdp->mynode;
+-#define raw_spin_unlock_rcu_node(p) raw_spin_unlock(&ACCESS_PRIVATE(p, lock))
++#define raw_spin_unlock_rcu_node(p)					\
++do {									\
++	lockdep_assert_irqs_disabled();					\
++	raw_spin_unlock(&ACCESS_PRIVATE(p, lock));			\
++} while (0)
  
-+	lockdep_assert_irqs_disabled();
-+
- 	/* Check for CPU stalls, if enabled. */
- 	check_cpu_stall(rdp);
+ #define raw_spin_lock_irq_rcu_node(p)					\
+ do {									\
+@@ -387,7 +391,10 @@ do {									\
+ } while (0)
  
-diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
-index fd8a52e..cb76e70 100644
---- a/kernel/rcu/tree_plugin.h
-+++ b/kernel/rcu/tree_plugin.h
-@@ -682,6 +682,7 @@ static void rcu_flavor_sched_clock_irq(int user)
- {
- 	struct task_struct *t = current;
+ #define raw_spin_unlock_irq_rcu_node(p)					\
+-	raw_spin_unlock_irq(&ACCESS_PRIVATE(p, lock))
++do {									\
++	lockdep_assert_irqs_disabled();					\
++	raw_spin_unlock_irq(&ACCESS_PRIVATE(p, lock));			\
++} while (0)
  
-+	lockdep_assert_irqs_disabled();
- 	if (user || rcu_is_cpu_rrupt_from_idle()) {
- 		rcu_note_voluntary_context_switch(current);
- 	}
-diff --git a/kernel/rcu/tree_stall.h b/kernel/rcu/tree_stall.h
-index ca21d28..4024dcc 100644
---- a/kernel/rcu/tree_stall.h
-+++ b/kernel/rcu/tree_stall.h
-@@ -260,6 +260,7 @@ static int rcu_print_task_stall(struct rcu_node *rnp, unsigned long flags)
- 	struct task_struct *t;
- 	struct task_struct *ts[8];
+ #define raw_spin_lock_irqsave_rcu_node(p, flags)			\
+ do {									\
+@@ -396,7 +403,10 @@ do {									\
+ } while (0)
  
-+	lockdep_assert_irqs_disabled();
- 	if (!rcu_preempt_blocked_readers_cgp(rnp))
- 		return 0;
- 	pr_err("\tTasks blocked on level-%d rcu_node (CPUs %d-%d):",
-@@ -284,6 +285,7 @@ static int rcu_print_task_stall(struct rcu_node *rnp, unsigned long flags)
- 				".q"[rscr.rs.b.need_qs],
- 				".e"[rscr.rs.b.exp_hint],
- 				".l"[rscr.on_blkd_list]);
-+		lockdep_assert_irqs_disabled();
- 		put_task_struct(t);
- 		ndetected++;
- 	}
-@@ -472,6 +474,8 @@ static void print_other_cpu_stall(unsigned long gp_seq, unsigned long gps)
- 	struct rcu_node *rnp;
- 	long totqlen = 0;
+ #define raw_spin_unlock_irqrestore_rcu_node(p, flags)			\
+-	raw_spin_unlock_irqrestore(&ACCESS_PRIVATE(p, lock), flags)
++do {									\
++	lockdep_assert_irqs_disabled();					\
++	raw_spin_unlock_irqrestore(&ACCESS_PRIVATE(p, lock), flags);	\
++} while (0)
  
-+	lockdep_assert_irqs_disabled();
-+
- 	/* Kick and suppress, if so configured. */
- 	rcu_stall_kick_kthreads();
- 	if (rcu_stall_is_suppressed())
-@@ -493,6 +497,7 @@ static void print_other_cpu_stall(unsigned long gp_seq, unsigned long gps)
- 				}
- 		}
- 		ndetected += rcu_print_task_stall(rnp, flags); // Releases rnp->lock.
-+		lockdep_assert_irqs_disabled();
- 	}
- 
- 	for_each_possible_cpu(cpu)
-@@ -538,6 +543,8 @@ static void print_cpu_stall(unsigned long gps)
- 	struct rcu_node *rnp = rcu_get_root();
- 	long totqlen = 0;
- 
-+	lockdep_assert_irqs_disabled();
-+
- 	/* Kick and suppress, if so configured. */
- 	rcu_stall_kick_kthreads();
- 	if (rcu_stall_is_suppressed())
-@@ -592,6 +599,7 @@ static void check_cpu_stall(struct rcu_data *rdp)
- 	unsigned long js;
- 	struct rcu_node *rnp;
- 
-+	lockdep_assert_irqs_disabled();
- 	if ((rcu_stall_is_suppressed() && !READ_ONCE(rcu_kick_kthreads)) ||
- 	    !rcu_gp_in_progress())
- 		return;
+ #define raw_spin_trylock_rcu_node(p)					\
+ ({									\
 -- 
 2.9.5
 
