@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C4FF72EB72B
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 01:55:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DBF6C2EB726
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 01:55:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726149AbhAFAzM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 19:55:12 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54690 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727100AbhAFAyu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1727148AbhAFAyu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Tue, 5 Jan 2021 19:54:50 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6E08222E00;
+Received: from mail.kernel.org ([198.145.29.99]:54724 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727106AbhAFAyu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Jan 2021 19:54:50 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9564322EBF;
         Wed,  6 Jan 2021 00:54:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1609894449;
-        bh=Xe/hxDp+RtJJZTYrEMf5QL77n6FHCyQ2RwhKnyNyl2k=;
+        bh=kRpZWm5PgDMmZLtf+kkcLLcT/9so+o68wCUaaW0QNj4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=NPrBxjCr6Rtwx3JKxbmNTs/DgxllWY9c3fEitbHw9kBMjZgV529b9QNEboC8st+Ye
-         XbZmbTt58qQc7FAtGYgw3zj0p49iyNqWoOWV8z0iOBCaPj0ZuZjErJfTmjho9woXC9
-         JJr+hOu82C33WeBvUFxaUs37mjYoY2F9PGmjeWadIggf2Rh9fuAV9dUm0XOtwz0Yuq
-         81ErRYGfQTAhb+IoRHNlvX00ZKoNZjZtsc2g8taA0bGgYxPuHOElCKIw3wEVL33GcO
-         oDCcJJpnxWDvbj9PlGnwhzNXZxo0c0iF8+7APAHepnswBpOrwOPj2+iyi9+5bL4S7o
-         +KJ2iaatUFgfQ==
+        b=mr7ZYdmPAlXlfx1llukiGbkCUhIaTwkuiPwePltEVspBeLNdx3FJraMymTU/dzWvS
+         oYy8yJ52OClNiURrlWGik+noDIU0DFkCX2nOCT9Zm5hVvKgDKTMk7yhfGDELRts8Y7
+         GK+31f+QSHws1rp3XGMYjuL1bvaA6w7giTL791v4fcO/+25682cyW46i87QsbARQ3Q
+         gz2aHt3VJ6pH19vFfys+YbVXDALXYSeY32UflrfLg+mtsGWAQF26tjEfKpj733+YX1
+         7X9UJ9iBgaA99v4s3wF8ltILuim6mSoO0j74AayRFex37rBlsZ/efED+5y9A1MUqhd
+         aacP99iJueb5w==
 From:   paulmck@kernel.org
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -31,10 +31,11 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         tglx@linutronix.de, peterz@infradead.org, rostedt@goodmis.org,
         dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
         oleg@redhat.com, joel@joelfernandes.org,
-        "Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH tip/core/rcu 2/8] doc: Remove obsolete RCU-bh and RCU-sched update-side API members
-Date:   Tue,  5 Jan 2021 16:54:01 -0800
-Message-Id: <20210106005407.12295-2-paulmck@kernel.org>
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        "Paul E . McKenney" <paulmck@kernel.org>
+Subject: [PATCH tip/core/rcu 3/8] list: Fix a typo at the kernel-doc markup
+Date:   Tue,  5 Jan 2021 16:54:02 -0800
+Message-Id: <20210106005407.12295-3-paulmck@kernel.org>
 X-Mailer: git-send-email 2.9.5
 In-Reply-To: <20210106005334.GA12159@paulmck-ThinkPad-P72>
 References: <20210106005334.GA12159@paulmck-ThinkPad-P72>
@@ -42,65 +43,29 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Paul E. McKenney" <paulmck@kernel.org>
+From: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 
-synchronize_rcu_bh(), synchronize_rcu_bh_expedited(), call_rcu_bh(),
-rcu_barrier_bh(), synchronize_sched(), synchronize_rcu_sched_expedited(),
-call_rcu_sched(), and rcu_barrier_sched() no longer exist, so this
-commit removes mention of them.
+hlist_add_behing -> hlist_add_behind
 
-Reported-by: Joel Fernandes <joel@joelfernandes.org>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- .../RCU/Design/Requirements/Requirements.rst       | 28 +++++++++++-----------
- 1 file changed, 14 insertions(+), 14 deletions(-)
+ include/linux/list.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/Documentation/RCU/Design/Requirements/Requirements.rst b/Documentation/RCU/Design/Requirements/Requirements.rst
-index 9b23be6..1e3df77 100644
---- a/Documentation/RCU/Design/Requirements/Requirements.rst
-+++ b/Documentation/RCU/Design/Requirements/Requirements.rst
-@@ -2438,13 +2438,13 @@ glance as if rcu_read_unlock_bh() was executing very slowly.
+diff --git a/include/linux/list.h b/include/linux/list.h
+index 89bdc92..f2af4b4 100644
+--- a/include/linux/list.h
++++ b/include/linux/list.h
+@@ -901,7 +901,7 @@ static inline void hlist_add_before(struct hlist_node *n,
+ }
  
- The `RCU-bh
- API <https://lwn.net/Articles/609973/#RCU%20Per-Flavor%20API%20Table>`__
--includes rcu_read_lock_bh(), rcu_read_unlock_bh(),
--rcu_dereference_bh(), rcu_dereference_bh_check(),
--synchronize_rcu_bh(), synchronize_rcu_bh_expedited(),
--call_rcu_bh(), rcu_barrier_bh(), and
--rcu_read_lock_bh_held(). However, the update-side APIs are now
--simple wrappers for other RCU flavors, namely RCU-sched in
--CONFIG_PREEMPT=n kernels and RCU-preempt otherwise.
-+includes rcu_read_lock_bh(), rcu_read_unlock_bh(), rcu_dereference_bh(),
-+rcu_dereference_bh_check(), and rcu_read_lock_bh_held(). However, the
-+old RCU-bh update-side APIs are now gone, replaced by synchronize_rcu(),
-+synchronize_rcu_expedited(), call_rcu(), and rcu_barrier().  In addition,
-+anything that disables bottom halves also marks an RCU-bh read-side
-+critical section, including local_bh_disable() and local_bh_enable(),
-+local_irq_save() and local_irq_restore(), and so on.
- 
- Sched Flavor (Historical)
- ~~~~~~~~~~~~~~~~~~~~~~~~~
-@@ -2481,13 +2481,13 @@ The `RCU-sched
- API <https://lwn.net/Articles/609973/#RCU%20Per-Flavor%20API%20Table>`__
- includes rcu_read_lock_sched(), rcu_read_unlock_sched(),
- rcu_read_lock_sched_notrace(), rcu_read_unlock_sched_notrace(),
--rcu_dereference_sched(), rcu_dereference_sched_check(),
--synchronize_sched(), synchronize_rcu_sched_expedited(),
--call_rcu_sched(), rcu_barrier_sched(), and
--rcu_read_lock_sched_held(). However, anything that disables
--preemption also marks an RCU-sched read-side critical section, including
--preempt_disable() and preempt_enable(), local_irq_save() and
--local_irq_restore(), and so on.
-+rcu_dereference_sched(), rcu_dereference_sched_check(), and
-+rcu_read_lock_sched_held().  However, the old RCU-sched update-side APIs
-+are now gone, replaced by synchronize_rcu(), synchronize_rcu_expedited(),
-+call_rcu(), and rcu_barrier().  In addition, anything that disables
-+preemption also marks an RCU-sched read-side critical section,
-+including preempt_disable() and preempt_enable(), local_irq_save()
-+and local_irq_restore(), and so on.
- 
- Sleepable RCU
- ~~~~~~~~~~~~~
+ /**
+- * hlist_add_behing - add a new entry after the one specified
++ * hlist_add_behind - add a new entry after the one specified
+  * @n: new entry to be added
+  * @prev: hlist node to add it after, which must be non-NULL
+  */
 -- 
 2.9.5
 
