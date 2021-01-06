@@ -2,189 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 212C92EC5BB
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 22:31:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C201E2EC5DA
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 22:43:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726367AbhAFVaj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Jan 2021 16:30:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38194 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726050AbhAFVai (ORCPT
+        id S1726923AbhAFVlr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Jan 2021 16:41:47 -0500
+Received: from p-impout008aa.msg.pkvw.co.charter.net ([47.43.26.139]:37348
+        "EHLO p-impout008.msg.pkvw.co.charter.net" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726812AbhAFVlq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Jan 2021 16:30:38 -0500
-Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8EEF0C061757
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Jan 2021 13:29:58 -0800 (PST)
-Received: by mail-pf1-x435.google.com with SMTP id q22so2447341pfk.12
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Jan 2021 13:29:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=oKwFg1foqPPQlWIN0jba7AoqjGdlRQ7YxJt5702//gk=;
-        b=PcvabGtplXxFEbb1VDcktLNut0BuCBy11Zvvm7QukHEVYX+bb+s0yuezHzIcRNtnqh
-         rxVzRacRBE2oI5N2Ubz/cmIRYLFqmanuelgEievD5t6qZyaZM5GrABwf05O8jMsuAWNm
-         AIg8wR5opjJ99sDxl/Gw5LDwDeLGN+dWdO05KHUwHjvb3lhVP+ihzwtx4KkdADvXazPd
-         Er3u3zRoI55W0ai5MT6LZg9tD8KsZO+N3FTBaVKFtn0a5Uw0vT+t2b9Q5pM79CCKSarL
-         HEOtQwA8nuQpoMIHbTBmspTQ2RlfHxS5jGAZz5XrcGlI5fYLFFaPtTqHszHZtdrTcmCR
-         IGkQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=oKwFg1foqPPQlWIN0jba7AoqjGdlRQ7YxJt5702//gk=;
-        b=ehYkND7i7uEGunSw5MH4Nm5jqNhKTPbkbDEX/oY/feCnu9kXveAjdCaMEQEQ335MnT
-         dt2MH1ETCKEQAfON7PoKZsAU9MPjuUm7ZcGKkPet+8US+pnmkjAc4HABCbRgcmSKJG4X
-         V4tTeCqU6YEnNpsfB8Tan8DzhiM6CB+7kQCb8touXY+nx1FH7WwvQ8wtca4TpxV6TGCD
-         AGsvD66hSgRyahzaQEndkE1UxaEEt3lXn5pcT7/Ooo+yeXhtlcm/aj41CA6DWV0UGK/x
-         P/OGCSdXB8AEevOSiioY/XXJu2aPKZ+uo5WVB9IAQzyl/gwB5IA+StmdO+eDHou9nMOu
-         cScQ==
-X-Gm-Message-State: AOAM5306D0hImKCJMuQUrh3/lXhVF3WTsttoGS5AxDL1b/m5zA2mbgid
-        3PvIHWrjqAPeqMo5T+vxBqS6Zw==
-X-Google-Smtp-Source: ABdhPJxSvFR4x+2YGtqxVR32iAzT2P3QhwiWaRIoUe6V6gqzwuHr/UgO3aZEEVp6KjFUPwX61NZLmg==
-X-Received: by 2002:a63:1f47:: with SMTP id q7mr6515888pgm.10.1609968597827;
-        Wed, 06 Jan 2021 13:29:57 -0800 (PST)
-Received: from google.com ([2620:15c:f:10:1ea0:b8ff:fe73:50f5])
-        by smtp.gmail.com with ESMTPSA id t6sm2900646pjg.49.2021.01.06.13.29.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 06 Jan 2021 13:29:57 -0800 (PST)
-Date:   Wed, 6 Jan 2021 13:29:50 -0800
-From:   Sean Christopherson <seanjc@google.com>
-To:     Ben Gardon <bgardon@google.com>
-Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Peter Shier <pshier@google.com>,
-        "Maciej S . Szmigiero" <maciej.szmigiero@oracle.com>,
-        Leo Hou <leohou1402@gmail.com>
-Subject: Re: [PATCH v2 1/2] KVM: x86/mmu: Ensure TDP MMU roots are freed
- after yield
-Message-ID: <X/Yrzgli82BOBgiJ@google.com>
-References: <20210106185951.2966575-1-bgardon@google.com>
+        Wed, 6 Jan 2021 16:41:46 -0500
+X-Greylist: delayed 305 seconds by postgrey-1.27 at vger.kernel.org; Wed, 06 Jan 2021 16:41:46 EST
+Received: from localhost.localdomain ([24.28.70.126])
+        by cmsmtp with ESMTP
+        id xGTIkOFACWkb1xGTIkCSO5; Wed, 06 Jan 2021 21:36:00 +0000
+X-Authority-Analysis: v=2.3 cv=X+cs11be c=1 sm=1 tr=0
+ a=BTY82x8O7hZCLddHJN7Ugw==:117 a=BTY82x8O7hZCLddHJN7Ugw==:17 a=2KX_Yc5PAAAA:8
+ a=HSaPApW-AAAA:8 a=gu1jZnlCE3DicGtal5UA:9 a=K5qBII3WhM4c2FDM:21
+ a=kWzZxb7PhO8AiBGg:21 a=7-jybhonH9vmnwHyecmn:22 a=90ZouZG-ZxWRzw--LAzy:22
+From:   Timur Tabi <timur@tabi.org>
+To:     torvalds@linux-foundation.org, linux-kernel@vger.kernel.org,
+        Petr Mladek <pmladek@suse.com>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
+Cc:     Timur Tabi <timur@tabi.org>, Roman Fietze <roman.fietze@magna.com>
+Subject: [PATCH] lib/hexdump: introduce DUMP_PREFIX_UNHASHED for unhashed addresses
+Date:   Wed,  6 Jan 2021 15:35:47 -0600
+Message-Id: <20210106213547.1077789-1-timur@tabi.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210106185951.2966575-1-bgardon@google.com>
+Content-Transfer-Encoding: 8bit
+X-CMAE-Envelope: MS4wfHldxUivVd5oAu0gIzJ6ktzpWYCFgS8JP8uejz/5UT7l5/tSMRjb2+JZEMCPPEcKH4G7vLiKl/30jnGPfQd0wBne+v0j/h7qU460oM5xAEyYjjOn3lAz
+ //P34o/0KKe3OC55pZnlZb21swYimFMk8tdDxSgEJQEcLKBScZf2y01jVhoRriwcEtiKyU+8SXVviohzDG6fD4q33DaaJh5mhFTIiOUxsTy+Cxa4ud2bgKiq
+ GZ+CceFz2unwCjrBQGalEb2KjE8drrtre8cJHj4dRKeRgTsHvntYcb+fMaTHbPqhBAbII64SiSVcVVViY51onUopDXJwTn1ZflJ1F2oOVxsBHKdLR+B5DmNN
+ okDp0uhH
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 06, 2021, Ben Gardon wrote:
-> Many TDP MMU functions which need to perform some action on all TDP MMU
-> roots hold a reference on that root so that they can safely drop the MMU
-> lock in order to yield to other threads. However, when releasing the
-> reference on the root, there is a bug: the root will not be freed even
-> if its reference count (root_count) is reduced to 0.
-> 
-> To simplify acquiring and releasing references on TDP MMU root pages, and
-> to ensure that these roots are properly freed, move the get/put operations
-> into the TDP MMU root iterator macro. Not all functions which use the macro
-> currently get and put a reference to the root, but adding this behavior is
-> harmless.
+Hashed addresses are useless in hexdumps unless you're comparing
+with other hashed addresses, which is unlikely.  However, there's
+no need to break existing code, so introduce a new prefix type
+that prints unhashed addresses.
 
-I wouldn't say it's harmless, it creates the potential for refcount leaks where
-they otherwise wouldn't be possible (the early loop exit scenario).  Not saying
-this is the wrong approach, just that it's not without downsides.
+Signed-off-by: Timur Tabi <timur@tabi.org>
+Cc: Roman Fietze <roman.fietze@magna.com>
+---
+ include/linux/printk.h | 3 ++-
+ lib/hexdump.c          | 9 +++++++--
+ 2 files changed, 9 insertions(+), 3 deletions(-)
 
-Maybe preemptively add tdp_mmu_root_iter_break(), which would just be a wrapper
-around kvm_mmu_put_root(), but might help readability (if it's ever needed)?
-Not sure that's a good idea, someone will probably just remove the dead code in
-the future :-)
+diff --git a/include/linux/printk.h b/include/linux/printk.h
+index fe7eb2351610..5d833bad785c 100644
+--- a/include/linux/printk.h
++++ b/include/linux/printk.h
+@@ -567,7 +567,8 @@ extern const struct file_operations kmsg_fops;
+ enum {
+ 	DUMP_PREFIX_NONE,
+ 	DUMP_PREFIX_ADDRESS,
+-	DUMP_PREFIX_OFFSET
++	DUMP_PREFIX_OFFSET,
++	DUMP_PREFIX_UNHASHED,
+ };
+ extern int hex_dump_to_buffer(const void *buf, size_t len, int rowsize,
+ 			      int groupsize, char *linebuf, size_t linebuflen,
+diff --git a/lib/hexdump.c b/lib/hexdump.c
+index 9301578f98e8..b5acfc4168a8 100644
+--- a/lib/hexdump.c
++++ b/lib/hexdump.c
+@@ -211,8 +211,9 @@ EXPORT_SYMBOL(hex_dump_to_buffer);
+  * @level: kernel log level (e.g. KERN_DEBUG)
+  * @prefix_str: string to prefix each line with;
+  *  caller supplies trailing spaces for alignment if desired
+- * @prefix_type: controls whether prefix of an offset, address, or none
+- *  is printed (%DUMP_PREFIX_OFFSET, %DUMP_PREFIX_ADDRESS, %DUMP_PREFIX_NONE)
++ * @prefix_type: controls whether prefix of an offset, hashed address,
++ *  unhashed address, or none is printed (%DUMP_PREFIX_OFFSET,
++ *  %DUMP_PREFIX_ADDRESS, %DUMP_PREFIX_UNHASHED, %DUMP_PREFIX_NONE)
+  * @rowsize: number of bytes to print per line; must be 16 or 32
+  * @groupsize: number of bytes to print at a time (1, 2, 4, 8; default = 1)
+  * @buf: data blob to dump
+@@ -256,6 +257,10 @@ void print_hex_dump(const char *level, const char *prefix_str, int prefix_type,
+ 				   linebuf, sizeof(linebuf), ascii);
+ 
+ 		switch (prefix_type) {
++		case DUMP_PREFIX_UNHASHED:
++			printk("%s%s%px: %s\n",
++			       level, prefix_str, ptr + i, linebuf);
++			break;
+ 		case DUMP_PREFIX_ADDRESS:
+ 			printk("%s%s%p: %s\n",
+ 			       level, prefix_str, ptr + i, linebuf);
+-- 
+2.25.1
 
-> Moving the get/put operations into the iterator macro also helps
-> simplify control flow when a root does need to be freed. Note that using
-> the list_for_each_entry_unsafe macro would not have been appropriate in
-
-s/list_for_each_entry_unsafe/list_for_each_entry_safe
-
-> this situation because it could keep a reference to the next root across
-> an MMU lock release + reacquire.
-
-Use of "reference" is a confusing; above it means refcounts, here it means a
-pointer _without_ an elevated refcount.  Something like this?
-
-  ... would not have been apprporiate in this situation because it could keep
-  a pointer to the next root across an MMU lock release + reacquire without
-  pinning the next root.
-
-> Reported-by: Maciej S. Szmigiero <maciej.szmigiero@oracle.com>
-> Suggested-by: Paolo Bonzini <pbonzini@redhat.com>
-> Fixes: faaf05b00aec ("kvm: x86/mmu: Support zapping SPTEs in the TDP MMU")
-> Fixes: 063afacd8730 ("kvm: x86/mmu: Support invalidate range MMU notifier for TDP MMU")
-> Fixes: a6a0b05da9f3 ("kvm: x86/mmu: Support dirty logging for the TDP MMU")
-> Fixes: 14881998566d ("kvm: x86/mmu: Support disabling dirty logging for the tdp MMU")
-> Signed-off-by: Ben Gardon <bgardon@google.com>
-> ---
->  arch/x86/kvm/mmu/tdp_mmu.c | 97 +++++++++++++++++---------------------
->  1 file changed, 44 insertions(+), 53 deletions(-)
-> 
-> diff --git a/arch/x86/kvm/mmu/tdp_mmu.c b/arch/x86/kvm/mmu/tdp_mmu.c
-> index 75db27fda8f3..6e076b66973c 100644
-> --- a/arch/x86/kvm/mmu/tdp_mmu.c
-> +++ b/arch/x86/kvm/mmu/tdp_mmu.c
-> @@ -44,8 +44,44 @@ void kvm_mmu_uninit_tdp_mmu(struct kvm *kvm)
->  	WARN_ON(!list_empty(&kvm->arch.tdp_mmu_roots));
->  }
->  
-> -#define for_each_tdp_mmu_root(_kvm, _root)			    \
-> -	list_for_each_entry(_root, &_kvm->arch.tdp_mmu_roots, link)
-> +static void tdp_mmu_put_root(struct kvm *kvm, struct kvm_mmu_page *root)
-> +{
-> +	if (kvm_mmu_put_root(kvm, root))
-> +		kvm_tdp_mmu_free_root(kvm, root);
-> +}
-> +
-> +static inline bool tdp_mmu_next_root_valid(struct kvm *kvm,
-> +					   struct kvm_mmu_page *root)
-> +{
-
-Maybe add lockdep annotations here?  A couple callers already have 'em.
-
-> +	if (list_entry_is_head(root, &kvm->arch.tdp_mmu_roots, link))
-> +		return false;
-> +
-> +	kvm_mmu_get_root(kvm, root);
-> +	return true;
-> +
-> +}
-> +
-> +static inline struct kvm_mmu_page *tdp_mmu_next_root(struct kvm *kvm,
-> +						     struct kvm_mmu_page *root)
-> +{
-> +	struct kvm_mmu_page *next_root;
-> +
-> +	next_root = list_next_entry(root, link);
-> +	tdp_mmu_put_root(kvm, root);
-> +	return next_root;
-> +}
-> +
-> +/*
-> + * Note: this iterator gets and puts references to the roots it iterates over.
-> + * This makes it safe to release the MMU lock and yield within the loop, but
-> + * if exiting the loop early, the caller must drop the reference to the most
-> + * recent root. (Unless keeping a live reference is desirable.)
-> + */
-> +#define for_each_tdp_mmu_root(_kvm, _root)				\
-> +	for (_root = list_first_entry(&_kvm->arch.tdp_mmu_roots,	\
-> +				      typeof(*_root), link);		\
-> +	     tdp_mmu_next_root_valid(_kvm, _root);			\
-> +	     _root = tdp_mmu_next_root(_kvm, _root))
->  
->  bool is_tdp_mmu_root(struct kvm *kvm, hpa_t hpa)
->  {
-> @@ -128,7 +164,11 @@ static struct kvm_mmu_page *get_tdp_mmu_vcpu_root(struct kvm_vcpu *vcpu)
->  	/* Check for an existing root before allocating a new one. */
->  	for_each_tdp_mmu_root(kvm, root) {
->  		if (root->role.word == role.word) {
-> -			kvm_mmu_get_root(kvm, root);
-> +			/*
-> +			 * The iterator already acquired a reference to this
-> +			 * root, so simply return early without dropping the
-> +			 * reference.
-> +			 */
->  			spin_unlock(&kvm->mmu_lock);
-
-I vote to open code use of list_for_each_entry() for this one specific case,
-it's very much a one-off flow (relative to the other iteration scenarios).
-
->  			return root;
->  		}
