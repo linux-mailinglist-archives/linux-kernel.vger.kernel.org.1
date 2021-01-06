@@ -2,152 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E6EFE2EBD1F
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 12:25:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 67F892EBD28
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 12:28:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726395AbhAFLYc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Jan 2021 06:24:32 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:26053 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725941AbhAFLYb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Jan 2021 06:24:31 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1609932184;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=usdz30vfvmLeBQ3gUZ4ei47Vuh3vKt72mif3hNqCSdM=;
-        b=HoQj7jDl3jGFaZJA+npOEryC7rfQRG9guac5y3AQ2OuvrqVpL+rcUl9HLdbNtaZK87w8sk
-        j3FpECNjjfxYArVoCCZ6qh9Q6pqp0jHIGW3RAinox4ROYAQTFGbmqtLwc2hoBq+Udc9Y3Z
-        TR45MgPxxFrPso96z9e1E/iyCbNCeSg=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-341-9c0jFVblNaSSeEaoDE7DiA-1; Wed, 06 Jan 2021 06:23:00 -0500
-X-MC-Unique: 9c0jFVblNaSSeEaoDE7DiA-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 75382801AC0;
-        Wed,  6 Jan 2021 11:22:59 +0000 (UTC)
-Received: from [10.36.112.46] (ovpn-112-46.ams2.redhat.com [10.36.112.46])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id D834960BE2;
-        Wed,  6 Jan 2021 11:22:57 +0000 (UTC)
-Subject: Re: [PATCH] mm: Teach pfn_to_online_page() about ZONE_DEVICE section
- collisions
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Dan Williams <dan.j.williams@intel.com>, linux-mm@kvack.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org
-References: <160990599013.2430134.11556277600719835946.stgit@dwillia2-desk3.amr.corp.intel.com>
- <785b9095-eca4-8100-33ea-6ae84e02a92e@redhat.com>
- <20210106104255.GK13207@dhcp22.suse.cz>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat GmbH
-Message-ID: <7d7c5dc4-7784-5dcc-fc00-4fe99f0a4a90@redhat.com>
-Date:   Wed, 6 Jan 2021 12:22:57 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+        id S1726211AbhAFL1v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Jan 2021 06:27:51 -0500
+Received: from foss.arm.com ([217.140.110.172]:39588 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725877AbhAFL1v (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 Jan 2021 06:27:51 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 26B88D6E;
+        Wed,  6 Jan 2021 03:27:05 -0800 (PST)
+Received: from e120937-lin (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 7E2E03F719;
+        Wed,  6 Jan 2021 03:27:02 -0800 (PST)
+Date:   Wed, 6 Jan 2021 11:26:59 +0000
+From:   Cristian Marussi <cristian.marussi@arm.com>
+To:     Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+Cc:     Jyoti Bhayana <jbhayana@google.com>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Hartmut Knaack <knaack.h@gmx.de>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Rob Herring <robh@kernel.org>,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+        linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org,
+        sudeep.holla@arm.com, egranata@google.com,
+        mikhail.golubev@opensynergy.com, Igor.Skalkin@opensynergy.com,
+        Peter.hilber@opensynergy.com, ankitarora@google.com
+Subject: Re: Reply to [RFC PATCH v2 0/1] Adding support for IIO SCMI based
+ sensors
+Message-ID: <20210106112659.GA9138@e120937-lin>
+References: <20201230123748.4e969f82@archlinux>
+ <20210105230920.769144-1-jbhayana@google.com>
+ <20210106102917.0000332c@Huawei.com>
 MIME-Version: 1.0
-In-Reply-To: <20210106104255.GK13207@dhcp22.suse.cz>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210106102917.0000332c@Huawei.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 06.01.21 11:42, Michal Hocko wrote:
-> On Wed 06-01-21 10:56:19, David Hildenbrand wrote:
-> [...]
->> Note that this is not sufficient in the general case. I already
->> mentioned that we effectively override an already initialized memmap.
->>
->> ---
->>
->> [        SECTION             ]
->> Before:
->> [ ZONE_NORMAL ][    Hole     ]
->>
->> The hole has some node/zone (currently 0/0, discussions ongoing on how
->> to optimize that to e.g., ZONE_NORMAL in this example) and is
->> PG_reserved - looks like an ordinary memory hole.
->>
->> After memremap:
->> [ ZONE_NORMAL ][ ZONE_DEVICE ]
->>
->> The already initialized memmap was converted to ZONE_DEVICE. Your
->> slowpath will work.
->>
->> After memunmap (no poisioning):
->> [ ZONE_NORMAL ][ ZONE_DEVICE ]
->>
->> The slow path is no longer working. pfn_to_online_page() might return
->> something that is ZONE_DEVICE.
->>
->> After memunmap (poisioning):
->> [ ZONE_NORMAL ][ POISONED    ]
->>
->> The slow path is no longer working. pfn_to_online_page() might return
->> something that will BUG_ON via page_to_nid() etc.
->>
->> ---
->>
->> Reason is that pfn_to_online_page() does no care about sub-sections. And
->> for now, it didn't had to. If there was an online section, it either was
->>
->> a) Completely present. The whole memmap is initialized to sane values.
->> b) Partially present. The whole memmap is initialized to sane values.
->>
->> memremap/memunmap messes with case b)
+Hi
+
+On Wed, Jan 06, 2021 at 10:29:17AM +0000, Jonathan Cameron wrote:
+> On Tue, 5 Jan 2021 23:09:20 +0000
+> Jyoti Bhayana <jbhayana@google.com> wrote:
 > 
-> I do not see we ever clear the newly added flag and my understanding is
-> that the subsection removed would lead to get_dev_pagemap returning a
-> NULL. Which would obviously need to be checked for pfn_to_online_page.
-> Or do I miss anything and the above is not the case and we could still
-> get false positives?
-
-See my example above ("After memunmap").
-
-We're still in the slow pathg. pfn_to_online_page() will return a struct
-page as get_dev_pagemap() is now  NULL.
-
-Yet page_zone(page) will either
-- BUG_ON (memmap was poisoned)
-- return ZONE_DEVICE zone (memmap not poisoned when memunmapping)
-
-As I said, can be tackled by checking for pfn_section_valid() at least
-on the slow path. Ideally also on the fast path.
-
+> > Hi Jonathan,
+> > 
+> > > So, sensor_max_range can effectively be exposed as a combination of
+> > > scale and the *_raw_avail for a raw read (via the read_avail callback in IIO).
+> > > We'll ignore the fact the interface assumes a single value (so I assume symmetric?)  
+> > 
+> > Based on the SCMI specification the sensor min range and max range are 64 bits signed number.
+> > 
+> > looks like IIO_AVAIL_RANGE can only take the following
+> > types of data which all looks like 32 bit. IIO_VAL_FRACTIONAL
+> > also takes two int type numbers.
+> > How can I send 64 bit sensor range using this and read_avail callback?
+> > 
+> > #define IIO_VAL_INT 1
+> > #define IIO_VAL_INT_PLUS_MICRO 2
+> > #define IIO_VAL_INT_PLUS_NANO 3
+> > #define IIO_VAL_INT_PLUS_MICRO_DB 4
+> > #define IIO_VAL_INT_MULTIPLE 5
+> > #define IIO_VAL_FRACTIONAL 10
+> > #define IIO_VAL_FRACTIONAL_LOG2 11
+> > #define IIO_VAL_CHAR 12
 > 
->> Well have to further tweak pfn_to_online_page(). You'll have to also
->> check pfn_section_valid() *at least* on the slow path. Less-hacky would
->> be checking it also in the "somehwat-faster" path - that would cover
->> silently overriding a memmap that's visible via pfn_to_online_page().
->> Might slow down things a bit.
->>
->>
->> Not completely opposed to this, but I would certainly still prefer just
->> avoiding this corner case completely instead of patching around it. Thanks!
+> Hmm It is a bit unfortunate that SCMI decided to pretend that real sensor resolutions were
+> greater than 32 bits. I doubt they will ever actually be any (as such accurate measurements
+> are completely pointless) and they aren't anywhere near that today.  Only way it might end
+> up looking a bit like that would be result of a highly non linear sensor being shoved through
+> an interface that pretends it isn't (goody).
 > 
-> Well, I would love to have no surprises either. So far there was not
-> actual argument why the pmem reserved space cannot be fully initialized.
 
-Yes, I'm still hoping Dan can clarify that.
+We shared this info internally to involve our architects about this.
 
-> On the other hand making sure that pfn_to_online_page sounds like the
-> right thing to do. And having an explicit check for zone device there in
-> a slow path makes sense to me.
+> Having said that, specifications are what they are and we have to cope with that.
+> 
+> There is no real problem with defining a new value type except for the fact that any
+> legacy userspace won't necessarily expect to see values that large. Given we need the full
+> 64 bits it would have to be something like
+> IIO_VAL_INT_H32_L32 with the 64 bit values split up appropriately and put back together
+> at time of formatting.   Not particularly pretty but I'm not keep to put that much effort
+> in to support something like this for one driver (so not interesting in changing that
+> the read_raw_* interfaces)
+> 
 
-As I said, I'd favor to simplify and just get rid of the special case,
-instead of coming up with increasingly complex ways to deal with it.
-pfn_to_online_page() used to be simple, essentially checking a single
-flag was sufficient in most setups.
+Regarding the current spec and this IIODEV limit to 32bit, I was thinking about
+the following horrid thing (:D) as a solution: given that as of now no sensor
+exist in real life reporting bigger than 32bits values, instead of adding new
+defines in IIODEV framework to support 64bit that no userspace is expecting and
+no sensor will really emit ever in the foreseable future, couldn't this SCMI
+IIODEV driver simply:
 
--- 
-Thanks,
+- truncate silently straight away 64bit vals into 32bit when detects
+  that he upper MSB 32bit are unused (zeros or sign-extension) and in
+  fact the values fits into 32bits
 
-David / dhildenb
+- WARN and do not truncate if the upper MSB 32bit are in fact valid because
+  such a 64bit capable sensor was indeed used finally (at that point in time
+  IIODEV driver and framework will need a 64bit update)
 
+Or I am missing something ?
+
+Feel free to insult me about this hack ... :D 
+
+Thanks
+
+Cristian
+
+> Jonathan
+>  
+> 
+> > 
+> > 
+> > 
+> > Thanks,
+> > Jyoti
+> > 
+> 
