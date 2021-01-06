@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 455652EB90A
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 05:52:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F8912EB90E
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 05:52:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726603AbhAFEth (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 23:49:37 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60624 "EHLO mail.kernel.org"
+        id S1726871AbhAFEuR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 23:50:17 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33348 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726313AbhAFEtg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 23:49:36 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B3251230FA;
+        id S1726171AbhAFEuR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Jan 2021 23:50:17 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F25DA22D6F;
         Wed,  6 Jan 2021 04:48:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1609908535;
-        bh=5YiD2+QmyC4o+qsFxRl04nuqdIL2UYzlQdzk90xpocA=;
+        s=k20201202; t=1609908536;
+        bh=KQhfJeTv14yGPdiTx8LR1XhyQO9nScXoOGtvs+u34OE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=bS55uBKiir5CRl2qxbCJiMUVRYMuADTFHAdKVxOqUX1ER29ZDagXaNDZhirC0GsJS
-         EYUtVsPCcLSKgZCxxyhxx3/pXJP8etkeOiMUfwKq0T4UaI1SXXKV3toIYBorFUnqlE
-         ZxSxS1jrY+F10n0S8NrEjm+i2wtoyY+CtCFLEcBmW/VLOkhvuAcEk2IpBktGDgTxcG
-         RZ06ql642Zx5mC2ssR9aFJRSTYY3oBhGNuytm6RaQhpj959jMRh32njaBHVz8MVAdJ
-         BGHIOyW30NIZ04Sq1qS4MU8pgLvoLuH+vmsi72+BvMJIw5lcyALQylVrkL0C/w87QN
-         iRLH3Ok420DMA==
+        b=tsvGdPKm8TEzBVH4bQFDfhig4oiPeTAEhw/enN7sihmPdClVDfJI74bqttYpohXJG
+         H2s2Rh8efZeSttCpWYZJ+PJyJa/FAV2g5C4bLpVJYQ18oS2Od1wwsYA5Kxd0MudDqe
+         tUoHVfMhMX0eTZhBlMAlv8ANHUpXb0pMz6hoKU3FKBzEG18Ni9sztUZvgGjFQEkCik
+         wTWr0o3VX+45tXdXDfNbvPXXBaUtqAoNcpOpY53m86x3phjd5ftonRrWUjgV8u9HQz
+         3PgrvQNqH7MiM7gvayHPXChfBmdUDrf3pvfzTazqtKX+YYqFRntrb0TRxnfJA5E688
+         L5PEODUdYMJFw==
 From:   paulmck@kernel.org
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -34,9 +34,9 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         Frederic Weisbecker <frederic@kernel.org>,
         Neeraj Upadhyay <neeraju@codeaurora.org>,
         "Paul E . McKenney" <paulmck@kernel.org>
-Subject: [PATCH tip/core/rcu 05/21] rcu/nocb: Don't deoffload an offline CPU with pending work
-Date:   Tue,  5 Jan 2021 20:48:37 -0800
-Message-Id: <20210106044853.20812-5-paulmck@kernel.org>
+Subject: [PATCH tip/core/rcu 06/21] rcu/nocb: De-offloading GP kthread
+Date:   Tue,  5 Jan 2021 20:48:38 -0800
+Message-Id: <20210106044853.20812-6-paulmck@kernel.org>
 X-Mailer: git-send-email 2.9.5
 In-Reply-To: <20210106013950.GA14663@paulmck-ThinkPad-P72>
 References: <20210106013950.GA14663@paulmck-ThinkPad-P72>
@@ -46,12 +46,15 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Frederic Weisbecker <frederic@kernel.org>
 
-Offloaded CPUs do not migrate their callbacks, instead relying on
-their rcuo kthread to invoke them.  But if the CPU is offline, it
-will be running neither its RCU_SOFTIRQ handler nor its rcuc kthread.
-This means that de-offloading an offline CPU that still has pending
-callbacks will strand those callbacks.  This commit therefore refuses
-to toggle offline CPUs having pending callbacks.
+To de-offload callback processing back onto a CPU, it is necessary
+to clear SEGCBLIST_OFFLOAD and notify the nocb GP kthread, which will
+then clear its own bit flag and ignore this CPU until further notice.
+Whichever of the nocb CB and nocb GP kthreads is last to clear its own
+bit notifies the de-offloading worker kthread.  Once notified, this
+worker kthread can proceed safe in the knowledge that the nocb CB and
+GP kthreads will no longer be manipulating this CPU's RCU callback list.
+
+This commit makes this change.
 
 Cc: Josh Triplett <josh@joshtriplett.org>
 Cc: Steven Rostedt <rostedt@goodmis.org>
@@ -60,34 +63,110 @@ Cc: Lai Jiangshan <jiangshanlai@gmail.com>
 Cc: Joel Fernandes <joel@joelfernandes.org>
 Cc: Neeraj Upadhyay <neeraju@codeaurora.org>
 Cc: Thomas Gleixner <tglx@linutronix.de>
-Suggested-by: Paul E. McKenney <paulmck@kernel.org>
+Inspired-by: Paul E. McKenney <paulmck@kernel.org>
 Tested-by: Boqun Feng <boqun.feng@gmail.com>
 Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/rcu/tree_plugin.h | 9 +++++++++
- 1 file changed, 9 insertions(+)
+ kernel/rcu/tree_plugin.h | 54 +++++++++++++++++++++++++++++++++++++++++++++---
+ 1 file changed, 51 insertions(+), 3 deletions(-)
 
 diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
-index 1b870d0..b70cc91 100644
+index b70cc91..fe46e70 100644
 --- a/kernel/rcu/tree_plugin.h
 +++ b/kernel/rcu/tree_plugin.h
-@@ -2227,6 +2227,15 @@ static int __rcu_nocb_rdp_deoffload(struct rcu_data *rdp)
- 	printk("De-offloading %d\n", rdp->cpu);
+@@ -1928,6 +1928,33 @@ static void do_nocb_bypass_wakeup_timer(struct timer_list *t)
+ 	__call_rcu_nocb_wake(rdp, true, flags);
+ }
  
- 	rcu_nocb_lock_irqsave(rdp, flags);
-+	/*
-+	 * If there are still pending work offloaded, the offline
-+	 * CPU won't help much handling them.
-+	 */
-+	if (cpu_is_offline(rdp->cpu) && !rcu_segcblist_empty(&rdp->cblist)) {
-+		rcu_nocb_unlock_irqrestore(rdp, flags);
-+		return -EBUSY;
-+	}
++static inline bool nocb_gp_enabled_cb(struct rcu_data *rdp)
++{
++	u8 flags = SEGCBLIST_OFFLOADED | SEGCBLIST_KTHREAD_GP;
 +
- 	rcu_segcblist_offload(cblist, false);
++	return rcu_segcblist_test_flags(&rdp->cblist, flags);
++}
++
++static inline bool nocb_gp_update_state(struct rcu_data *rdp, bool *needwake_state)
++{
++	struct rcu_segcblist *cblist = &rdp->cblist;
++
++	if (rcu_segcblist_test_flags(cblist, SEGCBLIST_OFFLOADED)) {
++		return true;
++	} else {
++		/*
++		 * De-offloading. Clear our flag and notify the de-offload worker.
++		 * We will ignore this rdp until it ever gets re-offloaded.
++		 */
++		WARN_ON_ONCE(!rcu_segcblist_test_flags(cblist, SEGCBLIST_KTHREAD_GP));
++		rcu_segcblist_clear_flags(cblist, SEGCBLIST_KTHREAD_GP);
++		if (!rcu_segcblist_test_flags(cblist, SEGCBLIST_KTHREAD_CB))
++			*needwake_state = true;
++		return false;
++	}
++}
++
++
+ /*
+  * No-CBs GP kthreads come here to wait for additional callbacks to show up
+  * or for grace periods to end.
+@@ -1956,8 +1983,17 @@ static void nocb_gp_wait(struct rcu_data *my_rdp)
+ 	 */
+ 	WARN_ON_ONCE(my_rdp->nocb_gp_rdp != my_rdp);
+ 	for (rdp = my_rdp; rdp; rdp = rdp->nocb_next_cb_rdp) {
++		bool needwake_state = false;
++		if (!nocb_gp_enabled_cb(rdp))
++			continue;
+ 		trace_rcu_nocb_wake(rcu_state.name, rdp->cpu, TPS("Check"));
+ 		rcu_nocb_lock_irqsave(rdp, flags);
++		if (!nocb_gp_update_state(rdp, &needwake_state)) {
++			rcu_nocb_unlock_irqrestore(rdp, flags);
++			if (needwake_state)
++				swake_up_one(&rdp->nocb_state_wq);
++			continue;
++		}
+ 		bypass_ncbs = rcu_cblist_n_cbs(&rdp->nocb_bypass);
+ 		if (bypass_ncbs &&
+ 		    (time_after(j, READ_ONCE(rdp->nocb_bypass_first) + 1) ||
+@@ -2221,7 +2257,8 @@ static void do_nocb_deferred_wakeup(struct rcu_data *rdp)
+ static int __rcu_nocb_rdp_deoffload(struct rcu_data *rdp)
+ {
+ 	struct rcu_segcblist *cblist = &rdp->cblist;
+-	bool wake_cb = false;
++	struct rcu_data *rdp_gp = rdp->nocb_gp_rdp;
++	bool wake_cb = false, wake_gp = false;
+ 	unsigned long flags;
  
- 	if (rdp->nocb_cb_sleep) {
+ 	printk("De-offloading %d\n", rdp->cpu);
+@@ -2247,9 +2284,19 @@ static int __rcu_nocb_rdp_deoffload(struct rcu_data *rdp)
+ 	if (wake_cb)
+ 		swake_up_one(&rdp->nocb_cb_wq);
+ 
+-	swait_event_exclusive(rdp->nocb_state_wq,
+-			      !rcu_segcblist_test_flags(cblist, SEGCBLIST_KTHREAD_CB));
++	raw_spin_lock_irqsave(&rdp_gp->nocb_gp_lock, flags);
++	if (rdp_gp->nocb_gp_sleep) {
++		rdp_gp->nocb_gp_sleep = false;
++		wake_gp = true;
++	}
++	raw_spin_unlock_irqrestore(&rdp_gp->nocb_gp_lock, flags);
+ 
++	if (wake_gp)
++		wake_up_process(rdp_gp->nocb_gp_kthread);
++
++	swait_event_exclusive(rdp->nocb_state_wq,
++			      !rcu_segcblist_test_flags(cblist, SEGCBLIST_KTHREAD_CB |
++							SEGCBLIST_KTHREAD_GP));
+ 	return 0;
+ }
+ 
+@@ -2332,6 +2379,7 @@ void __init rcu_init_nohz(void)
+ 			rcu_segcblist_init(&rdp->cblist);
+ 		rcu_segcblist_offload(&rdp->cblist, true);
+ 		rcu_segcblist_set_flags(&rdp->cblist, SEGCBLIST_KTHREAD_CB);
++		rcu_segcblist_set_flags(&rdp->cblist, SEGCBLIST_KTHREAD_GP);
+ 	}
+ 	rcu_organize_nocb_kthreads();
+ }
 -- 
 2.9.5
 
