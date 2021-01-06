@@ -2,29 +2,30 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D7502EBE81
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 14:23:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2157A2EBE83
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 14:23:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726807AbhAFNTf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Jan 2021 08:19:35 -0500
-Received: from szxga05-in.huawei.com ([45.249.212.191]:10553 "EHLO
+        id S1727208AbhAFNTm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Jan 2021 08:19:42 -0500
+Received: from szxga05-in.huawei.com ([45.249.212.191]:10554 "EHLO
         szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726143AbhAFNTd (ORCPT
+        with ESMTP id S1726810AbhAFNTj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Jan 2021 08:19:33 -0500
-Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4D9qfW4kwZzMF7P;
-        Wed,  6 Jan 2021 21:17:39 +0800 (CST)
+        Wed, 6 Jan 2021 08:19:39 -0500
+Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4D9qfg06khzMFTr;
+        Wed,  6 Jan 2021 21:17:47 +0800 (CST)
 Received: from ubuntu.network (10.175.138.68) by
- DGGEMS408-HUB.china.huawei.com (10.3.19.208) with Microsoft SMTP Server id
- 14.3.498.0; Wed, 6 Jan 2021 21:18:41 +0800
+ DGGEMS405-HUB.china.huawei.com (10.3.19.205) with Microsoft SMTP Server id
+ 14.3.498.0; Wed, 6 Jan 2021 21:18:48 +0800
 From:   Zheng Yongjun <zhengyongjun3@huawei.com>
-To:     <linus.walleij@linaro.org>, <bgolaszewski@baylibre.com>,
+To:     <andy@kernel.org>, <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        <linus.walleij@linaro.org>, <bgolaszewski@baylibre.com>,
         <linux-gpio@vger.kernel.org>, <linux-kernel@vger.kernel.org>
 CC:     Zheng Yongjun <zhengyongjun3@huawei.com>
-Subject: [PATCH -next] gpio: max77620: use resource_size
-Date:   Wed, 6 Jan 2021 21:19:24 +0800
-Message-ID: <20210106131924.711-1-zhengyongjun3@huawei.com>
+Subject: [PATCH -next] gpio: wcove: use resource_size
+Date:   Wed, 6 Jan 2021 21:19:32 +0800
+Message-ID: <20210106131932.774-1-zhengyongjun3@huawei.com>
 X-Mailer: git-send-email 2.22.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7BIT
@@ -40,22 +41,22 @@ the end and start fields.
 
 Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>
 ---
- drivers/gpio/gpio-max77620.c | 2 +-
+ drivers/gpio/gpio-wcove.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/gpio/gpio-max77620.c b/drivers/gpio/gpio-max77620.c
-index 7c0a9ef0b500..82b3a913005d 100644
---- a/drivers/gpio/gpio-max77620.c
-+++ b/drivers/gpio/gpio-max77620.c
-@@ -325,7 +325,7 @@ static int max77620_gpio_probe(struct platform_device *pdev)
- 	girq->parents = NULL;
- 	girq->default_type = IRQ_TYPE_NONE;
- 	girq->handler = handle_edge_irq;
--	girq->init_hw = max77620_gpio_irq_init_hw,
-+	girq->init_hw = max77620_gpio_irq_init_hw;
- 	girq->threaded = true;
- 
- 	platform_set_drvdata(pdev, mgpio);
+diff --git a/drivers/gpio/gpio-wcove.c b/drivers/gpio/gpio-wcove.c
+index b5fbba5a783a..97c5f1d01b62 100644
+--- a/drivers/gpio/gpio-wcove.c
++++ b/drivers/gpio/gpio-wcove.c
+@@ -434,7 +434,7 @@ static int wcove_gpio_probe(struct platform_device *pdev)
+ 	wg->chip.get_direction = wcove_gpio_get_direction;
+ 	wg->chip.get = wcove_gpio_get;
+ 	wg->chip.set = wcove_gpio_set;
+-	wg->chip.set_config = wcove_gpio_set_config,
++	wg->chip.set_config = wcove_gpio_set_config;
+ 	wg->chip.base = -1;
+ 	wg->chip.ngpio = WCOVE_VGPIO_NUM;
+ 	wg->chip.can_sleep = true;
 -- 
 2.22.0
 
