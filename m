@@ -2,87 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B1BA12EC030
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 16:13:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 32B482EC023
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 16:08:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726362AbhAFPMm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Jan 2021 10:12:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35566 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726109AbhAFPMl (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Jan 2021 10:12:41 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71A99C061357
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Jan 2021 07:12:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=uPchyfz0vGTehwlQ5FJoJgmvWuNaFk36qEcIJqQkrpk=; b=WNrzZfqY7aXN+HSMk1jrgUeNni
-        W5FraVNVujXxWtP0oUJTOenAs+HMY2XfCRI/QFxzbiFCZtNCAz2UcEY8Qt1HkugTr2YIn1uPDh6AB
-        20NgjHxFAXXH3p/u/fabK6sJxZ6whFxXIZeFmonPgX7Dc+rzqPcX1Zrh5keD9YfbGiTLI1nCMrsxX
-        o7EqVk4mutcESOlhOLEQaLq6+etAJhGJHvffeAzEStlYade7woPJV1wKtbOwmFHS2W0J71zcFBFQf
-        MUe7P5Wc59RV9/FGth82Sonu4IDbLYeCiBcnjYII3j/02sBLdiuGqmukU0Mx9gCfjQokW5jG9HvNU
-        XlcW6FJg==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1kxAP2-002RhU-Ao; Wed, 06 Jan 2021 15:07:49 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id E2D423013E5;
-        Wed,  6 Jan 2021 16:07:11 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id CB41E202A3CED; Wed,  6 Jan 2021 16:07:11 +0100 (CET)
-Date:   Wed, 6 Jan 2021 16:07:11 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Vincent Guittot <vincent.guittot@linaro.org>
-Cc:     mingo@redhat.com, juri.lelli@redhat.com, dietmar.eggemann@arm.com,
-        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
-        bristot@redhat.com, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/3] sched/fair: don't set LBF_ALL_PINNED unnecessarily
-Message-ID: <X/XSH7Qv58pSpi95@hirez.programming.kicks-ass.net>
-References: <20210106133419.2971-1-vincent.guittot@linaro.org>
- <20210106133419.2971-3-vincent.guittot@linaro.org>
+        id S1726581AbhAFPIM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Jan 2021 10:08:12 -0500
+Received: from foss.arm.com ([217.140.110.172]:42342 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726298AbhAFPIM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 Jan 2021 10:08:12 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id AB469D6E;
+        Wed,  6 Jan 2021 07:07:26 -0800 (PST)
+Received: from localhost (e108754-lin.cambridge.arm.com [10.1.198.32])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 4D2423F719;
+        Wed,  6 Jan 2021 07:07:26 -0800 (PST)
+Date:   Wed, 6 Jan 2021 15:07:24 +0000
+From:   Ionela Voinescu <ionela.voinescu@arm.com>
+To:     Catalin Marinas <catalin.marinas@arm.com>
+Cc:     kernel test robot <lkp@intel.com>, kbuild-all@lists.01.org,
+        linux-kernel@vger.kernel.org, Sudeep Holla <sudeep.holla@arm.com>
+Subject: Re: arch/arm64/kernel/topology.c:367:22: sparse: sparse: dereference
+ of noderef expression
+Message-ID: <20210106150724.GA16591@arm.com>
+References: <202012180512.hxAiUO00-lkp@intel.com>
+ <20201218104410.GB5258@gaia>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210106133419.2971-3-vincent.guittot@linaro.org>
+In-Reply-To: <20201218104410.GB5258@gaia>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 06, 2021 at 02:34:18PM +0100, Vincent Guittot wrote:
-> Setting LBF_ALL_PINNED during active load balance is only valid when there
-> is only 1 running task on the rq otherwise this ends up increasing the
-> balance interval whereas other tasks could migrate after the next interval
-> once they become cache-cold as an example.
+Hi,
+
+On Friday 18 Dec 2020 at 10:44:10 (+0000), Catalin Marinas wrote:
+> On Fri, Dec 18, 2020 at 05:00:16AM +0800, kernel test robot wrote:
+> > tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+> > head:   74f602dc96dd854c7b2034947798c1e2a6b84066
+> > commit: 68c5debcc06d6d24f15dbf978780fc5efc147d5e arm64: implement CPPC FFH support using AMUs
+> > date:   5 weeks ago
+> > config: arm64-randconfig-s032-20201217 (attached as .config)
+> > compiler: aarch64-linux-gcc (GCC) 9.3.0
+> > reproduce:
+> >         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+> >         chmod +x ~/bin/make.cross
+> >         # apt-get install sparse
+> >         # sparse version: v0.6.3-184-g1b896707-dirty
+> >         # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=68c5debcc06d6d24f15dbf978780fc5efc147d5e
+> >         git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+> >         git fetch --no-tags linus master
+> >         git checkout 68c5debcc06d6d24f15dbf978780fc5efc147d5e
+> >         # save the attached .config to linux build tree
+> >         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 make.cross C=1 CF='-fdiagnostic-prefix -D__CHECK_ENDIAN__' ARCH=arm64 
+> > 
+> > If you fix the issue, kindly add following tag as appropriate
+> > Reported-by: kernel test robot <lkp@intel.com>
+> > 
+> > 
+> > "sparse warnings: (new ones prefixed by >>)"
+> > >> arch/arm64/kernel/topology.c:367:22: sparse: sparse: dereference of noderef expression
+> > 
+> > vim +367 arch/arm64/kernel/topology.c
+> > 
+> >    362	
+> >    363	int cpc_read_ffh(int cpu, struct cpc_reg *reg, u64 *val)
+> >    364	{
+> >    365		int ret = -EOPNOTSUPP;
+> >    366	
+> >  > 367		switch ((u64)reg->address) {
 > 
-> Signed-off-by: Vincent Guittot <vincent.guittot@linaro.org>
-> ---
->  kernel/sched/fair.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
+> That's not a dereference but I guess sparse complains of dropping the
+> __iomem. We could change the cast to (__force u64) to silence sparse.
 > 
-> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> index 5428b8723e61..69a455113b10 100644
-> --- a/kernel/sched/fair.c
-> +++ b/kernel/sched/fair.c
-> @@ -9759,7 +9759,8 @@ static int load_balance(int this_cpu, struct rq *this_rq,
->  			if (!cpumask_test_cpu(this_cpu, busiest->curr->cpus_ptr)) {
->  				raw_spin_unlock_irqrestore(&busiest->lock,
->  							    flags);
-> -				env.flags |= LBF_ALL_PINNED;
-> +				if (busiest->nr_running == 1)
-> +					env.flags |= LBF_ALL_PINNED;
->  				goto out_one_pinned;
->  			}
+> Thanks for the report.
+> 
 
-Hmm.. that wasn't the intention. It's entirely possible to have multiple
-tasks pinned.
+Nothing I've tried seemed to silence sparse here, including casting to
+(__force u64). I think all error checks in the kernel for __iomem
+addresses result in the same warning, or at least the ones in
+cppc_acpi.c, which I've checked at the time. I'm not sure if this is
+something that should be improved in sparse or that can be made better
+in the kernel. I'll take another look.
 
-ISTR we set all-pinned and then clear it in can_migrate_task() when we
-actually find a task that can be moved to the destination CPU. That's a
-construct that works perfectly fine with multiple tasks.
+Thank you,
+Ionela.
 
-
+> -- 
+> Catalin
