@@ -2,98 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 19C142EB995
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 06:46:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 29EA12EB9A1
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 06:51:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725905AbhAFFqW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Jan 2021 00:46:22 -0500
-Received: from mga07.intel.com ([134.134.136.100]:64079 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725562AbhAFFqW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Jan 2021 00:46:22 -0500
-IronPort-SDR: u90VQLtF0Oh64b8NjT8YUbhE5gjh+LLdytZOfMubw0C857IDSqyhipwKvsYtd+mrJfTRqh5/Wx
- z/kSG/+t17cg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9855"; a="241311437"
-X-IronPort-AV: E=Sophos;i="5.78,479,1599548400"; 
-   d="scan'208";a="241311437"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Jan 2021 21:45:40 -0800
-IronPort-SDR: rgoReUgBBvCvxYUE8vN1aDRaoWCHJmtfXAc4NHgmtgqwTytax4xNeBGxb3/E7R/mZSGEnkDyzt
- Hh9YH81PQLxw==
-X-IronPort-AV: E=Sophos;i="5.78,479,1599548400"; 
-   d="scan'208";a="379160484"
-Received: from iweiny-desk2.sc.intel.com (HELO localhost) ([10.3.52.147])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Jan 2021 21:45:41 -0800
-Date:   Tue, 5 Jan 2021 21:45:41 -0800
-From:   Ira Weiny <ira.weiny@intel.com>
-To:     Hao Li <lihao2018.fnst@cn.fujitsu.com>
-Cc:     corbet@lwn.net, davem@davemloft.net, gregkh@linuxfoundation.org,
-        alexander.deucher@amd.com, mchehab+huawei@kernel.org,
-        lee.jones@linaro.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] Documentation/dax: Update description of DAX policy
- changing
-Message-ID: <20210106054541.GR3097896@iweiny-DESK2.sc.intel.com>
-References: <20210106015000.5263-1-lihao2018.fnst@cn.fujitsu.com>
+        id S1726102AbhAFFtS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Jan 2021 00:49:18 -0500
+Received: from szxga07-in.huawei.com ([45.249.212.35]:10392 "EHLO
+        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725562AbhAFFtR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 Jan 2021 00:49:17 -0500
+Received: from DGGEMS403-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4D9dgF5BZGz7Prp;
+        Wed,  6 Jan 2021 13:47:37 +0800 (CST)
+Received: from [10.174.184.196] (10.174.184.196) by
+ DGGEMS403-HUB.china.huawei.com (10.3.19.203) with Microsoft SMTP Server id
+ 14.3.498.0; Wed, 6 Jan 2021 13:48:22 +0800
+Subject: Re: [RFC PATCH v2 2/4] KVM: arm64: GICv4.1: Try to save hw pending
+ state in save_pending_tables
+To:     Marc Zyngier <maz@kernel.org>
+CC:     Eric Auger <eric.auger@redhat.com>, Will Deacon <will@kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <kvmarm@lists.cs.columbia.edu>, <kvm@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Cornelia Huck <cohuck@redhat.com>,
+        "Lorenzo Pieralisi" <lorenzo.pieralisi@arm.com>,
+        <wanghaibin.wang@huawei.com>, <yuzenghui@huawei.com>
+References: <20210104081613.100-1-lushenming@huawei.com>
+ <20210104081613.100-3-lushenming@huawei.com>
+ <b0f0b2544f8e231ebb5b5545be226164@kernel.org>
+ <6f09084b32e239176b3f9b4b00874a51@kernel.org>
+From:   Shenming Lu <lushenming@huawei.com>
+Message-ID: <b837b832-7085-c74d-3f9b-08335081f702@huawei.com>
+Date:   Wed, 6 Jan 2021 13:48:22 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.2.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210106015000.5263-1-lihao2018.fnst@cn.fujitsu.com>
-User-Agent: Mutt/1.11.1 (2018-12-01)
+In-Reply-To: <6f09084b32e239176b3f9b4b00874a51@kernel.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.184.196]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 06, 2021 at 09:50:00AM +0800, Hao Li wrote:
-> After commit 77573fa310d9 ("fs: Kill DCACHE_DONTCACHE dentry even if
-> DCACHE_REFERENCED is set"), changes to DAX policy will take effect
-> as soon as all references to this file are gone.
+On 2021/1/5 19:40, Marc Zyngier wrote:
+> On 2021-01-05 09:13, Marc Zyngier wrote:
+>> On 2021-01-04 08:16, Shenming Lu wrote:
+>>> After pausing all vCPUs and devices capable of interrupting, in order
+>>> to save the information of all interrupts, besides flushing the pending
+>>> states in kvm’s vgic, we also try to flush the states of VLPIs in the
+>>> virtual pending tables into guest RAM, but we need to have GICv4.1 and
+>>> safely unmap the vPEs first.
+>>>
+>>> Signed-off-by: Shenming Lu <lushenming@huawei.com>
+>>> ---
+>>>  arch/arm64/kvm/vgic/vgic-v3.c | 58 +++++++++++++++++++++++++++++++----
+>>>  1 file changed, 52 insertions(+), 6 deletions(-)
+>>>
+>>> diff --git a/arch/arm64/kvm/vgic/vgic-v3.c b/arch/arm64/kvm/vgic/vgic-v3.c
+>>> index 9cdf39a94a63..a58c94127cb0 100644
+>>> --- a/arch/arm64/kvm/vgic/vgic-v3.c
+>>> +++ b/arch/arm64/kvm/vgic/vgic-v3.c
+>>> @@ -1,6 +1,8 @@
+>>>  // SPDX-License-Identifier: GPL-2.0-only
+>>>
+>>>  #include <linux/irqchip/arm-gic-v3.h>
+>>> +#include <linux/irq.h>
+>>> +#include <linux/irqdomain.h>
+>>>  #include <linux/kvm.h>
+>>>  #include <linux/kvm_host.h>
+>>>  #include <kvm/arm_vgic.h>
+>>> @@ -356,6 +358,38 @@ int vgic_v3_lpi_sync_pending_status(struct kvm
+>>> *kvm, struct vgic_irq *irq)
+>>>      return 0;
+>>>  }
+>>>
+>>> +/*
+>>> + * The deactivation of the doorbell interrupt will trigger the
+>>> + * unmapping of the associated vPE.
+>>> + */
+>>> +static void unmap_all_vpes(struct vgic_dist *dist)
+>>> +{
+>>> +    struct irq_desc *desc;
+>>> +    int i;
+>>> +
+>>> +    if (!kvm_vgic_global_state.has_gicv4_1)
+>>> +        return;
+>>> +
+>>> +    for (i = 0; i < dist->its_vm.nr_vpes; i++) {
+>>> +        desc = irq_to_desc(dist->its_vm.vpes[i]->irq);
+>>> +        irq_domain_deactivate_irq(irq_desc_get_irq_data(desc));
+>>> +    }
+>>> +}
+>>> +
+>>> +static void map_all_vpes(struct vgic_dist *dist)
+>>> +{
+>>> +    struct irq_desc *desc;
+>>> +    int i;
+>>> +
+>>> +    if (!kvm_vgic_global_state.has_gicv4_1)
+>>> +        return;
+>>> +
+>>> +    for (i = 0; i < dist->its_vm.nr_vpes; i++) {
+>>> +        desc = irq_to_desc(dist->its_vm.vpes[i]->irq);
+>>> +        irq_domain_activate_irq(irq_desc_get_irq_data(desc), false);
+>>> +    }
+>>> +}
+>>> +
+>>>  /**
+>>>   * vgic_v3_save_pending_tables - Save the pending tables into guest RAM
+>>>   * kvm lock and all vcpu lock must be held
+>>> @@ -365,14 +399,18 @@ int vgic_v3_save_pending_tables(struct kvm *kvm)
+>>>      struct vgic_dist *dist = &kvm->arch.vgic;
+>>>      struct vgic_irq *irq;
+>>>      gpa_t last_ptr = ~(gpa_t)0;
+>>> -    int ret;
+>>> +    int ret = 0;
+>>>      u8 val;
+>>>
+>>> +    /* As a preparation for getting any VLPI states. */
+>>> +    unmap_all_vpes(dist);
+>>
+>> What if the VPEs are not mapped yet? Is it possible to snapshot a VM
+>> that has not run at all?
 > 
-> Update the documentation accordingly.
-> 
-> Signed-off-by: Hao Li <lihao2018.fnst@cn.fujitsu.com>
+> More questions: what happens to vSGIs that were mapped to the VPEs?
+> Can they safely be restarted? The spec is not saying much on the subject.
 
-LGTM
+Since we have already paused all vCPUs, there would be no more vSGIs generated,
+and also no vSGI would be delivered to the vPE. And the unmapping of the
+vPE would not affect the (already) stored vSGI states... I think they could
+be safely restarted.
 
-Reviewed-by: Ira Weiny <ira.weiny@intel.com>
+> 
+> Once the unmap has taken place, it won't be possible to read their state
+> via GICR_VSGIRPEND, and only the memory state can be used. This probably
+> needs to be tracked as well.
 
-> ---
-> Changes in v2:
->   * simplify sentences and fix style problems.
+Yes, since we will map the vPEs back, could we assume that the saving of the
+vLPI and vSGI states happen serially? In fact that's what QEMU does.
+
 > 
->  Documentation/filesystems/dax.txt | 17 +++--------------
->  1 file changed, 3 insertions(+), 14 deletions(-)
+> Thanks,
 > 
-> diff --git a/Documentation/filesystems/dax.txt b/Documentation/filesystems/dax.txt
-> index 8fdb78f3c6c9..e03c20564f3a 100644
-> --- a/Documentation/filesystems/dax.txt
-> +++ b/Documentation/filesystems/dax.txt
-> @@ -83,20 +83,9 @@ Summary
->         directories.  This has runtime constraints and limitations that are
->         described in 6) below.
->  
-> - 6. When changing the S_DAX policy via toggling the persistent FS_XFLAG_DAX flag,
-> -    the change in behaviour for existing regular files may not occur
-> -    immediately.  If the change must take effect immediately, the administrator
-> -    needs to:
-> -
-> -    a) stop the application so there are no active references to the data set
-> -       the policy change will affect
-> -
-> -    b) evict the data set from kernel caches so it will be re-instantiated when
-> -       the application is restarted. This can be achieved by:
-> -
-> -       i. drop-caches
-> -       ii. a filesystem unmount and mount cycle
-> -       iii. a system reboot
-> + 6. When changing the S_DAX policy via toggling the persistent FS_XFLAG_DAX
-> +    flag, the change to existing regular files won't take effect until the
-> +    files are closed by all processes.
->  
->  
->  Details
-> -- 
-> 2.29.2
-> 
-> 
-> 
+>         M.
