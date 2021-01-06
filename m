@@ -2,144 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DD132EC086
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 16:40:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D3E6D2EC093
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 16:42:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727243AbhAFPja (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Jan 2021 10:39:30 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41924 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726165AbhAFPj1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Jan 2021 10:39:27 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9A43F23121;
-        Wed,  6 Jan 2021 15:38:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1609947526;
-        bh=17tJUBRoR9N7Dis3fpYvNsowe4Tvb8Y31WB2QigVwX4=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=sae8kcBYdz5xHk5oYcoSeIjsRjHA8Y26R+y8w66wJ+TqFvOABh1Yq/bdNojzyrek3
-         kSNv5fb2CiwyjOpHxNw0tqlRdUaA4AAiVmn+fxVbqoHd9ruj5a4sdJzE4jVLpcyCQ7
-         NBOH/yCZB0GVN/HbhmvYqeuD8W1HwTMJLTTUUK5DQbAPn7+q0QRzyq1lhOUEmCNsW1
-         2PiFbH2U7MwYz8VqPab3Xbe4viB1N5KVFCg32m6elk7SZmj6kBkRuXfYVlHnpLcspN
-         RgvnkEs9nBkA/XX10AqaDblke4WP0WOqxCgVfd3dipm2nRZPy2Rh1LmtYVUJMH5Gvv
-         rClYmJ35Uddjw==
-Received: by pali.im (Postfix)
-        id E50FB44E; Wed,  6 Jan 2021 16:38:44 +0100 (CET)
-From:   =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>
-To:     Russell King - ARM Linux admin <linux@armlinux.org.uk>,
-        Andrew Lunn <andrew@lunn.ch>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     Thomas Schreiber <tschreibe@gmail.com>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        =?UTF-8?q?Marek=20Beh=C3=BAn?= <kabel@kernel.org>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2 3/3] net: sfp: add mode quirk for GPON module Ubiquiti U-Fiber Instant
-Date:   Wed,  6 Jan 2021 16:37:49 +0100
-Message-Id: <20210106153749.6748-4-pali@kernel.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210106153749.6748-1-pali@kernel.org>
-References: <20201230154755.14746-1-pali@kernel.org>
- <20210106153749.6748-1-pali@kernel.org>
+        id S1727261AbhAFPl6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Jan 2021 10:41:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40110 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726251AbhAFPl5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 Jan 2021 10:41:57 -0500
+Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A5F6C06134C
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Jan 2021 07:41:17 -0800 (PST)
+Received: by mail-lf1-x129.google.com with SMTP id m25so7379491lfc.11
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Jan 2021 07:41:17 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=QnsZVMNNWqyoVgF4tUbGmmkENHhENYQondkwh2lusPc=;
+        b=efvi54/wi5hfPe2INnC+GViZusEotLSPaOUbdfe36KnDEhpaNfF8CWvtW9CeigLeb4
+         FSNXlqRrbcYzdhN+ZgiouWQguOp5lTmSR3dGqEbLdPyBc4+fKDZbATy71kz+42BpSXL6
+         LB9js5kYDQCT0IdLSeil1HSP+4DKmeQV2rTGx6CMX83WN/osMJNHJ59UyqUeiiHKmWDR
+         GTN1xAFy/VVWKQ1A8mwKFAkLEprUv4A5g5Thsp/3WnRMiOIQ4nxn6Pxb+KZj/lVYFwYF
+         eBckLIUFdHJUBbqf2LuM3QmJ+C9qaRb6LfUdk3hdNW5pheFdWwsZxpW9Y/kweIEXZq7g
+         i0yw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=QnsZVMNNWqyoVgF4tUbGmmkENHhENYQondkwh2lusPc=;
+        b=ckZAFIw5hZk9JTPz6lgx/DnNeuFThChDkSuriJGdGMW3PmPJFl+O+Y5stYxSuu1Quq
+         d1oJW0ppj5KlXiAxMV+PuyLe9soUlaAQsVdW7drAiq/Azr3Csmhekk54u4RLPRq74iSi
+         2K7e7F2IlzFKkPwjKgYlLOHBIEht9ok9DRtzoXZkovoNjAdJHc9sE6shxuaAN1mO5WX4
+         Gqw7WPCHljsQf7+LUfGgMhpKRa3Td2ScZdcwJxyXeWhqf9Qlk93096dCJJDewIF+XBmx
+         29vO9krHfTizBDvacCC+ZGD/B5yiRqQPA3JK63zrDVIWjGe2YbUxO+aUZVMh1jBawbiJ
+         i6QA==
+X-Gm-Message-State: AOAM530siG7pXysBNvf4MGn3x4rKuwVWJ4bA8Pw1VlbHkaMhsY9tggKR
+        za+sI4xVIU7HTOpb+LcNIuLbjMtWO1dsrdYzvukEYg==
+X-Google-Smtp-Source: ABdhPJx0Vr8kotlPC2HaFczchGsQMQHErclYzYUxX/91yqmB3xhQddvI7OGsk3RNhEaD+gygMz3+QnH6qJrBb4gCHT8=
+X-Received: by 2002:a2e:9246:: with SMTP id v6mr2234434ljg.221.1609947675565;
+ Wed, 06 Jan 2021 07:41:15 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <20210106133419.2971-1-vincent.guittot@linaro.org>
+ <20210106133419.2971-4-vincent.guittot@linaro.org> <X/XTlRMiOVs7L28B@hirez.programming.kicks-ass.net>
+In-Reply-To: <X/XTlRMiOVs7L28B@hirez.programming.kicks-ass.net>
+From:   Vincent Guittot <vincent.guittot@linaro.org>
+Date:   Wed, 6 Jan 2021 16:41:04 +0100
+Message-ID: <CAKfTPtCEV5zzXLM3RNf2-6XhVcDsstHdzh9OKX_j6WviRUVeYw@mail.gmail.com>
+Subject: Re: [PATCH 3/3] sched/fair: reduce cases for active balance
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Ingo Molnar <mingo@redhat.com>, Juri Lelli <juri.lelli@redhat.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SFP GPON module Ubiquiti U-Fiber Instant has in its EEPROM stored nonsense
-information. It claims that support all transceiver types including 10G
-Ethernet which is not truth. So clear all claimed modes and set only one
-mode which module supports: 1000baseX_Full.
+On Wed, 6 Jan 2021 at 16:13, Peter Zijlstra <peterz@infradead.org> wrote:
+>
+> On Wed, Jan 06, 2021 at 02:34:19PM +0100, Vincent Guittot wrote:
+> > Active balance is triggered for a number of voluntary case like misfit or
+>                                                         cases
+> > pinned tasks cases but also after that a number of load balance failed to
+>                                                                  ^attempts
+> > migrate a task. Remove the active load balance case for overloaded group
+>                                                          ^an ?
+> > as an overloaded state means that there is at least one waiting tasks. The
+>                                                                   task
+> > threshold on the upper limit of the task's load will decrease with the
+> > number of failed LB until the task has migrated.
+>
+> And I'm not sure I follow that last part, irrespective of spelling nits,
+> help?
 
-Also this module have set SFF phys_id in its EEPROM. Kernel SFP subsustem
-currently does not allow to use SFP modules detected as SFF. Therefore add
-and exception for this module so it can be detected as supported.
+Argh, come back to work is difficult for me
 
-This change finally allows to detect and use SFP GPON module Ubiquiti
-U-Fiber Instant on Linux system.
+Let me try again:
 
-EEPROM content of this SFP module is (where XX is serial number):
+Active balance is triggered for a number of voluntary cases like
+misfit or pinned tasks cases but also after that a number of load
+balance attempts failed to migrate a task. There is no need to use
+active load balance when the group is overloaded because an overloaded
+state means that there is at least one waiting task. Nevertheless, the
+waiting task is not selected and detached until the threshold becomes
+higher than its load. This threshold increases with the number of
+failed lb (see the condition if ((load >> env->sd->nr_balance_failed)
+> env->imbalance) in detach_tasks()) and the waiting task will end up
+to be selected after a number of attempts.
 
-00: 02 04 0b ff ff ff ff ff ff ff ff 03 0c 00 14 c8    ???........??.??
-10: 00 00 00 00 55 42 4e 54 20 20 20 20 20 20 20 20    ....UBNT
-20: 20 20 20 20 00 18 e8 29 55 46 2d 49 4e 53 54 41        .??)UF-INSTA
-30: 4e 54 20 20 20 20 20 20 34 20 20 20 05 1e 00 36    NT      4   ??.6
-40: 00 06 00 00 55 42 4e 54 XX XX XX XX XX XX XX XX    .?..UBNTXXXXXXXX
-50: 20 20 20 20 31 34 30 31 32 33 20 20 60 80 02 41        140123  `??A
-
-Signed-off-by: Pali Rohár <pali@kernel.org>
-
----
-Changes in v2:
-* add this module also into sfp_module_supported() function
----
- drivers/net/phy/sfp-bus.c | 15 +++++++++++++++
- drivers/net/phy/sfp.c     | 17 +++++++++++++++--
- 2 files changed, 30 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/net/phy/sfp-bus.c b/drivers/net/phy/sfp-bus.c
-index 20b91f5dfc6e..4cf874fb5c5b 100644
---- a/drivers/net/phy/sfp-bus.c
-+++ b/drivers/net/phy/sfp-bus.c
-@@ -44,6 +44,17 @@ static void sfp_quirk_2500basex(const struct sfp_eeprom_id *id,
- 	phylink_set(modes, 2500baseX_Full);
- }
- 
-+static void sfp_quirk_ubnt_uf_instant(const struct sfp_eeprom_id *id,
-+				      unsigned long *modes)
-+{
-+	/* Ubiquiti U-Fiber Instant module claims that support all transceiver
-+	 * types including 10G Ethernet which is not truth. So clear all claimed
-+	 * modes and set only one mode which module supports: 1000baseX_Full.
-+	 */
-+	phylink_zero(modes);
-+	phylink_set(modes, 1000baseX_Full);
-+}
-+
- static const struct sfp_quirk sfp_quirks[] = {
- 	{
- 		// Alcatel Lucent G-010S-P can operate at 2500base-X, but
-@@ -63,6 +74,10 @@ static const struct sfp_quirk sfp_quirks[] = {
- 		.vendor = "HUAWEI",
- 		.part = "MA5671A",
- 		.modes = sfp_quirk_2500basex,
-+	}, {
-+		.vendor = "UBNT",
-+		.part = "UF-INSTANT",
-+		.modes = sfp_quirk_ubnt_uf_instant,
- 	},
- };
- 
-diff --git a/drivers/net/phy/sfp.c b/drivers/net/phy/sfp.c
-index 15fb8f7dfe5b..c3a0dcc737fd 100644
---- a/drivers/net/phy/sfp.c
-+++ b/drivers/net/phy/sfp.c
-@@ -273,8 +273,21 @@ static const struct sff_data sff_data = {
- 
- static bool sfp_module_supported(const struct sfp_eeprom_id *id)
- {
--	return id->base.phys_id == SFF8024_ID_SFP &&
--	       id->base.phys_ext_id == SFP_PHYS_EXT_ID_SFP;
-+	if (id->base.phys_id == SFF8024_ID_SFP &&
-+	    id->base.phys_ext_id == SFP_PHYS_EXT_ID_SFP)
-+		return true;
-+
-+	/* SFP GPON module Ubiquiti U-Fiber Instant has in its EEPROM stored
-+	 * phys id SFF instead of SFP. Therefore mark this module explicitly
-+	 * as supported based on vendor name and pn match.
-+	 */
-+	if (id->base.phys_id == SFF8024_ID_SFF_8472 &&
-+	    id->base.phys_ext_id == SFP_PHYS_EXT_ID_SFP &&
-+	    !memcmp(id->base.vendor_name, "UBNT            ", 16) &&
-+	    !memcmp(id->base.vendor_pn, "UF-INSTANT      ", 16))
-+		return true;
-+
-+	return false;
- }
- 
- static const struct sff_data sfp_data = {
--- 
-2.20.1
-
+>
+> > Signed-off-by: Vincent Guittot <vincent.guittot@linaro.org>
+> > ---
+> >  kernel/sched/fair.c | 43 +++++++++++++++++++++----------------------
+> >  1 file changed, 21 insertions(+), 22 deletions(-)
+> >
+> > diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> > index 69a455113b10..ee87fd6f7359 100644
+> > --- a/kernel/sched/fair.c
+> > +++ b/kernel/sched/fair.c
+> > @@ -9499,13 +9499,30 @@ asym_active_balance(struct lb_env *env)
+> >  }
+> >
+> >  static inline bool
+> > -voluntary_active_balance(struct lb_env *env)
+> > +imbalanced_active_balance(struct lb_env *env)
+> > +{
+> > +     struct sched_domain *sd = env->sd;
+> > +
+> > +     /* The imbalanced case includes the case of pinned tasks preventing a fair
+> > +      * distribution of the load on the system but also the even distribution of the
+> > +      * threads on a system with spare capacity
+> > +      */
+>
+> comment style fail
+>
+> > +     if ((env->migration_type == migrate_task) &&
+> > +             (sd->nr_balance_failed > sd->cache_nice_tries+2))
+>
+> indent fail; try: set cino=(0:0
+>
+> > +             return 1;
+> > +
+> > +     return 0;
+> > +}
+> > +
+> > +static int need_active_balance(struct lb_env *env)
+> >  {
+> >       struct sched_domain *sd = env->sd;
+> >
+> >       if (asym_active_balance(env))
+> >               return 1;
+> >
+> > +     if (imbalanced_active_balance(env))
+> > +             return 1;
+>
+> + whitespace
+>
+> >       /*
+> >        * The dst_cpu is idle and the src_cpu CPU has only 1 CFS task.
+> >        * It's worth migrating the task if the src_cpu's capacity is reduced
