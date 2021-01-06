@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 049AE2EC18A
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 17:56:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F91E2EC189
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 17:56:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727765AbhAFQ4R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Jan 2021 11:56:17 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56382 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727618AbhAFQ4N (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1727754AbhAFQ4N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Wed, 6 Jan 2021 11:56:13 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8B0DD23131;
+Received: from mail.kernel.org ([198.145.29.99]:56412 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727667AbhAFQ4N (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 Jan 2021 11:56:13 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B65EA23135;
         Wed,  6 Jan 2021 16:55:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1609952132;
-        bh=ON+PXvvASQe6LEBvelS1pa78+3hw2E2zllQlQEFRths=;
+        bh=PeB1pkBYXrt2BgHO69ieVhW/gbMfxEe9BOFQd3aOSf8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=STNGRKUEIv6p9eL/zifItAiECNI0qomEzXwlOsl/VMyyUHn59hQ/H2GDHNKu6Op41
-         bPcAshWwL+ydr8s5DDFMPu9pvDHLkuWf+rWaZSogo88NBawyfTAP8pXTLyMHZIP6ez
-         HXPez5IGnC56vAn3G93Ajnm12BrPH++VwDEzPi+KdPLCPF6hNCIiHZH/CevKMnrgh0
-         fBDvEJPcbJ5yfI6vSlzd8G/e6qhSwi02tjXieszWkxGAb8ZpyY58+THD5Wnk0G4kyL
-         BtZJbBZdXPUPKNrp0od54YJKuws8fU03lhTGgpTLAqoh/WeKEOGoL+LydVeybryDZK
-         5jpyZE6ohcHdw==
+        b=jxwQnTpOoqOi+WpN+5c3Hde9pSlBYTUTvVdwlCAOO+nK2QslpzrJLjNNsVZDBjiUz
+         KH+G68cRwVxfyDlCTTkayCQwvltzKRrqNMil9CJe0wTkaNvRS1tsgyQhNpzX4uqQoe
+         RikxN6WLvJ9tBK4mhIJ8zpFmxo2FV+LULgE0x1VOEzVqH3bNtDcZD6ED/uZLkHAqvx
+         jzeu3y0g8PmMe+46xeWRTMPtdNLuon+PqwmD1vPEU6UJ4KUuBzwsxl3DmUX1GyIAwo
+         XAW1cWMqjC53k+qrRiCZlvcB9+jTgsl/nyDOwLiJ1Clvo0RJsbiCwpJph7cNqOVzJL
+         tLp21GyfNgC1w==
 From:   paulmck@kernel.org
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -32,9 +32,9 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
         oleg@redhat.com, joel@joelfernandes.org,
         "Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH tip/core/rcu 01/10] srcu: Make Tiny SRCU use multi-bit grace-period counter
-Date:   Wed,  6 Jan 2021 08:55:22 -0800
-Message-Id: <20210106165531.20697-1-paulmck@kernel.org>
+Subject: [PATCH tip/core/rcu 02/10] srcu: Provide internal interface to start a Tiny SRCU grace period
+Date:   Wed,  6 Jan 2021 08:55:23 -0800
+Message-Id: <20210106165531.20697-2-paulmck@kernel.org>
 X-Mailer: git-send-email 2.9.5
 In-Reply-To: <20210106165511.GA20555@paulmck-ThinkPad-P72>
 References: <20210106165511.GA20555@paulmck-ThinkPad-P72>
@@ -44,74 +44,56 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: "Paul E. McKenney" <paulmck@kernel.org>
 
-There is a need for a polling interface for SRCU grace periods.  This
-polling needs to distinguish between an SRCU instance being idle on the
-one hand or in the middle of a grace period on the other.  This commit
-therefore converts the Tiny SRCU srcu_struct structure's srcu_idx from
-a defacto boolean to a free-running counter, using the bottom bit to
-indicate that a grace period is in progress.  The second-from-bottom
-bit is thus used as the index returned by srcu_read_lock().
+There is a need for a polling interface for SRCU grace periods.
+This polling needs to initiate an SRCU grace period without
+having to queue (and manage) a callback.  This commit therefore
+splits the Tiny SRCU call_srcu() function into callback-queuing and
+start-grace-period portions, with the latter in a new function named
+srcu_gp_start_if_needed().
 
 Link: https://lore.kernel.org/rcu/20201112201547.GF3365678@moria.home.lan/
 Reported-by: Kent Overstreet <kent.overstreet@gmail.com>
-[ paulmck: Fix ->srcu_lock_nesting[] indexing per Neeraj Upadhyay. ]
 Reviewed-by: Neeraj Upadhyay <neeraju@codeaurora.org>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- include/linux/srcutiny.h | 6 +++---
- kernel/rcu/srcutiny.c    | 5 +++--
- 2 files changed, 6 insertions(+), 5 deletions(-)
+ kernel/rcu/srcutiny.c | 17 +++++++++++------
+ 1 file changed, 11 insertions(+), 6 deletions(-)
 
-diff --git a/include/linux/srcutiny.h b/include/linux/srcutiny.h
-index 5a5a194..b8b42d0 100644
---- a/include/linux/srcutiny.h
-+++ b/include/linux/srcutiny.h
-@@ -15,7 +15,7 @@
- 
- struct srcu_struct {
- 	short srcu_lock_nesting[2];	/* srcu_read_lock() nesting depth. */
--	short srcu_idx;			/* Current reader array element. */
-+	unsigned short srcu_idx;	/* Current reader array element in bit 0x2. */
- 	u8 srcu_gp_running;		/* GP workqueue running? */
- 	u8 srcu_gp_waiting;		/* GP waiting for readers? */
- 	struct swait_queue_head srcu_wq;
-@@ -59,7 +59,7 @@ static inline int __srcu_read_lock(struct srcu_struct *ssp)
- {
- 	int idx;
- 
--	idx = READ_ONCE(ssp->srcu_idx);
-+	idx = ((READ_ONCE(ssp->srcu_idx) + 1) & 0x2) >> 1;
- 	WRITE_ONCE(ssp->srcu_lock_nesting[idx], ssp->srcu_lock_nesting[idx] + 1);
- 	return idx;
- }
-@@ -80,7 +80,7 @@ static inline void srcu_torture_stats_print(struct srcu_struct *ssp,
- {
- 	int idx;
- 
--	idx = READ_ONCE(ssp->srcu_idx) & 0x1;
-+	idx = ((READ_ONCE(ssp->srcu_idx) + 1) & 0x2) >> 1;
- 	pr_alert("%s%s Tiny SRCU per-CPU(idx=%d): (%hd,%hd)\n",
- 		 tt, tf, idx,
- 		 READ_ONCE(ssp->srcu_lock_nesting[!idx]),
 diff --git a/kernel/rcu/srcutiny.c b/kernel/rcu/srcutiny.c
-index 6208c1d..5598cf6 100644
+index 5598cf6..3bac1db 100644
 --- a/kernel/rcu/srcutiny.c
 +++ b/kernel/rcu/srcutiny.c
-@@ -124,11 +124,12 @@ void srcu_drive_gp(struct work_struct *wp)
- 	ssp->srcu_cb_head = NULL;
- 	ssp->srcu_cb_tail = &ssp->srcu_cb_head;
- 	local_irq_enable();
--	idx = ssp->srcu_idx;
--	WRITE_ONCE(ssp->srcu_idx, !ssp->srcu_idx);
-+	idx = (ssp->srcu_idx & 0x2) / 2;
-+	WRITE_ONCE(ssp->srcu_idx, ssp->srcu_idx + 1);
- 	WRITE_ONCE(ssp->srcu_gp_waiting, true);  /* srcu_read_unlock() wakes! */
- 	swait_event_exclusive(ssp->srcu_wq, !READ_ONCE(ssp->srcu_lock_nesting[idx]));
- 	WRITE_ONCE(ssp->srcu_gp_waiting, false); /* srcu_read_unlock() cheap. */
-+	WRITE_ONCE(ssp->srcu_idx, ssp->srcu_idx + 1);
+@@ -152,6 +152,16 @@ void srcu_drive_gp(struct work_struct *wp)
+ }
+ EXPORT_SYMBOL_GPL(srcu_drive_gp);
  
- 	/* Invoke the callbacks we removed above. */
- 	while (lh) {
++static void srcu_gp_start_if_needed(struct srcu_struct *ssp)
++{
++	if (!READ_ONCE(ssp->srcu_gp_running)) {
++		if (likely(srcu_init_done))
++			schedule_work(&ssp->srcu_work);
++		else if (list_empty(&ssp->srcu_work.entry))
++			list_add(&ssp->srcu_work.entry, &srcu_boot_list);
++	}
++}
++
+ /*
+  * Enqueue an SRCU callback on the specified srcu_struct structure,
+  * initiating grace-period processing if it is not already running.
+@@ -167,12 +177,7 @@ void call_srcu(struct srcu_struct *ssp, struct rcu_head *rhp,
+ 	*ssp->srcu_cb_tail = rhp;
+ 	ssp->srcu_cb_tail = &rhp->next;
+ 	local_irq_restore(flags);
+-	if (!READ_ONCE(ssp->srcu_gp_running)) {
+-		if (likely(srcu_init_done))
+-			schedule_work(&ssp->srcu_work);
+-		else if (list_empty(&ssp->srcu_work.entry))
+-			list_add(&ssp->srcu_work.entry, &srcu_boot_list);
+-	}
++	srcu_gp_start_if_needed(ssp);
+ }
+ EXPORT_SYMBOL_GPL(call_srcu);
+ 
 -- 
 2.9.5
 
