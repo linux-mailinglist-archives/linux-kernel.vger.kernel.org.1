@@ -2,120 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6891B2EB7F9
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 03:06:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FE582EB7FB
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 03:13:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725971AbhAFCFy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 21:05:54 -0500
-Received: from new2-smtp.messagingengine.com ([66.111.4.224]:51561 "EHLO
-        new2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725824AbhAFCFx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 21:05:53 -0500
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
-        by mailnew.nyi.internal (Postfix) with ESMTP id 06BB1580519;
-        Tue,  5 Jan 2021 21:04:48 -0500 (EST)
-Received: from imap1 ([10.202.2.51])
-  by compute6.internal (MEProxy); Tue, 05 Jan 2021 21:04:48 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=flygoat.com; h=
-        mime-version:message-id:in-reply-to:references:date:from:to:cc
-        :subject:content-type; s=fm1; bh=EIM6GS5ja8jI10tIrcoiehRXu46Eoja
-        p54gHcK8nO5E=; b=RSLpXl1c8Rr0TxRHMJwzmnRPvasVcTbaVkVlf0cqtdpLs7d
-        tAXAGnmefbMpW6/yojzrVk8UtzQDdToEUuoFfeu/Bm6+QKD+9AXovOlDiWPRHbVH
-        jzS9sqyuRA2fPnySiYt47HVQ54qggTiVeyuvLFMA2x0S2s+X3p7bte84fy2ylSIG
-        8hFFqW4Ea529oZYNkWI8xuBQzFuLsU9Qy9HE9FQGfvdNyRrn4Jzhv2++ON6opQ2a
-        6VJGPBvBvXEdmZXNsMvemrq6T/Y6Rf245fDZSAQpzJIVbVfmKet6+ViY0vCrj3as
-        BkTXUwsTMaa22olN4ffOJbJEJb0R0hZsnoNAqng==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=EIM6GS
-        5ja8jI10tIrcoiehRXu46Eojap54gHcK8nO5E=; b=M0fA7XXiYCqEDVIQZ1UQQN
-        y9nhOUuWwvRTa9EBWVn+apsqe6fiHdKbA0QvaIyojD91KD4RmS3WpdupfwqsQKwJ
-        A27U6H5MCAB/6OEy/1hvY7ob8zLvTOJ5kgzjA5jqwQHbj4NM9EC37uXPuOOtxVvq
-        s/5VF9brFBseEXRXd/+8wnZkyD6lHpjQ2I48EPquG5FOKFrEUQi1m350qSFhQ88V
-        iBYCgwLnxhlAYKDUl5MkhSf0KIMzY/G7KVOqv2yS8HGPOwgi1kvY1s/QnQfBHlDG
-        TUfMk9i7JapXPuC7WC6w8hI6GAvHmyL7RT+ZZqQznnbiG36WWfDnsQYfRa7Uh/TQ
-        ==
-X-ME-Sender: <xms:vRr1Xx1oGQ0xdQ3fQNaTBQ9HIQ0pVTeuJk4sjVyCpsr3d7H8Q6vHEA>
-    <xme:vRr1X4F-DdAqAFx5GYtbSmi44pT4h7LOcoo-ZDX2ikHU7gSHhfY1Ljh9CDV-HMTgY
-    WyMmEALE-OhLZNwF9I>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrvdefkedggeduucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepofgfggfkjghffffhvffutgesthdtredtreertdenucfhrhhomhepfdflihgr
-    gihunhcujggrnhhgfdcuoehjihgrgihunhdrhigrnhhgsehflhihghhorghtrdgtohhmqe
-    enucggtffrrghtthgvrhhnpeeiieffuddvfeeihfefjeelkedvtdeugfekkefghefhhfef
-    teeltdeuueefhfetheenucffohhmrghinhephhgvrggurdhssgenucevlhhushhtvghruf
-    hiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehjihgrgihunhdrhigrnhhgsehf
-    lhihghhorghtrdgtohhm
-X-ME-Proxy: <xmx:vRr1Xx4bsylSvhkdopQfLoUK8Db8uVhOuQNZeCEfBkDcwSJ1ttRPfw>
-    <xmx:vRr1X-3rKvRSYWjoHGGsWwW7NFmTx4zrYvn_rI3z_SsWqvnmKADrbA>
-    <xmx:vRr1X0Em_cYw-lqK2dqCNwuS3APCV7swLPqTSgtrwYCzkPHgbwo0lQ>
-    <xmx:vxr1X_M9kVMYGYpcMfV10PqC4aUaLygxfpHl5yxwWURrxRzkU8VpXg>
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id 6F0D1C200A5; Tue,  5 Jan 2021 21:04:46 -0500 (EST)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.3.1-61-gb52c239-fm-20201210.001-gb52c2396
-Mime-Version: 1.0
-Message-Id: <79a48288-509a-40e3-ba89-24b6f713117e@www.fastmail.com>
-In-Reply-To: <1609894059-6112-1-git-send-email-hejinyang@loongson.cn>
-References: <1609894059-6112-1-git-send-email-hejinyang@loongson.cn>
-Date:   Wed, 06 Jan 2021 10:04:24 +0800
-From:   "Jiaxun Yang" <jiaxun.yang@flygoat.com>
-To:     "Jinyang He" <hejinyang@loongson.cn>,
-        "Thomas Bogendoerfer" <tsbogend@alpha.franken.de>
-Cc:     "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] MIPS: zboot: Avoid endless loop in clear BSS.
-Content-Type: text/plain
+        id S1725884AbhAFCM7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 21:12:59 -0500
+Received: from mga03.intel.com ([134.134.136.65]:3721 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725730AbhAFCM7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Jan 2021 21:12:59 -0500
+IronPort-SDR: X6Yiu3MDyITW6aCy1tH/PIbE+66IdGQYWiFEYajVEug+IEgH5Rkqpg2Cww+GrlOHHblkNCXaA7
+ ma5A71Gi8LmQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9855"; a="177314920"
+X-IronPort-AV: E=Sophos;i="5.78,478,1599548400"; 
+   d="scan'208";a="177314920"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Jan 2021 18:12:17 -0800
+IronPort-SDR: i6BjHQCTGiTSbmJTLNZuZdyY3yWoZJj4nMQ3V/KInbUW0o6BZgXm9/5F+amNJieJDlhGsQHt0x
+ xp5mYDTGjwiw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.78,478,1599548400"; 
+   d="scan'208";a="402536536"
+Received: from shbuild999.sh.intel.com (HELO localhost) ([10.239.147.98])
+  by FMSMGA003.fm.intel.com with ESMTP; 05 Jan 2021 18:12:14 -0800
+Date:   Wed, 6 Jan 2021 10:12:13 +0800
+From:   Feng Tang <feng.tang@intel.com>
+To:     Shakeel Butt <shakeelb@google.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Linux MM <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>, andi.kleen@intel.com,
+        "Chen, Tim C" <tim.c.chen@intel.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Huang Ying <ying.huang@intel.com>, Roman Gushchin <guro@fb.com>
+Subject: Re: [PATCH 2/2] mm: memcg: add a new MEMCG_UPDATE_BATCH
+Message-ID: <20210106021213.GD101866@shbuild999.sh.intel.com>
+References: <1609252514-27795-1-git-send-email-feng.tang@intel.com>
+ <1609252514-27795-2-git-send-email-feng.tang@intel.com>
+ <CALvZod5ir6F6BkJiVoXztNu6CancqJ2sNusg_hwTPcEssYkDdQ@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CALvZod5ir6F6BkJiVoXztNu6CancqJ2sNusg_hwTPcEssYkDdQ@mail.gmail.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Shakeel,
 
-
-On Wed, Jan 6, 2021, at 8:47 AM, Jinyang He wrote:
-> Commit 2ee1503e546f ("MIPS: zboot: head.S clean up").
+On Tue, Jan 05, 2021 at 04:47:33PM -0800, Shakeel Butt wrote:
+> On Tue, Dec 29, 2020 at 6:35 AM Feng Tang <feng.tang@intel.com> wrote:
+> >
+> > When profiling memory cgroup involved benchmarking, status update
+> > sometimes take quite some CPU cycles. Current MEMCG_CHARGE_BATCH
+> > is used for both charging and statistics/events updating, and is
+> > set to 32, which may be good for accuracy of memcg charging, but
+> > too small for stats update which causes concurrent access to global
+> > stats data instead of per-cpu ones.
+> >
+> > So handle them differently, by adding a new bigger batch number
+> > for stats updating, while keeping the value for charging (though
+> > comments in memcontrol.h suggests to consider a bigger value too)
+> >
+> > The new batch is set to 512, which considers 2MB huge pages (512
+> > pages), as the check logic mostly is:
+> >
+> >     if (x > BATCH), then skip updating global data
+> >
+> > so it will save 50% global data updating for 2MB pages
+> >
+> > Following are some performance data with the patch, against
+> > v5.11-rc1, on several generations of Xeon platforms. Each category
+> > below has several subcases run on different platform, and only the
+> > worst and best scores are listed:
+> >
+> > fio:                             +2.0% ~  +6.8%
+> > will-it-scale/malloc:            -0.9% ~  +6.2%
+> > will-it-scale/page_fault1:       no change
+> > will-it-scale/page_fault2:      +13.7% ~ +26.2%
+> >
+> > One thought is it could be dynamically calculated according to
+> > memcg limit and number of CPUs, and another is to add a periodic
+> > syncing of the data for accuracy reason similar to vmstat, as
+> > suggested by Ying.
+> >
 > 
-> After .noreorder removed, clear BSS fall into endless loop. The bne
-> instruction will add nop to the delay slot at compile time. So a0
-> register will not increment by 4. Fix it and clear BSS from _edata
-> to (_end - 1).
+> I am going to push back on this change. On a large system where jobs
+> can run on any available cpu, this will totally mess up the stats
+> (which is actually what happens on our production servers). These
+> stats are used for multiple purposes like debugging or understanding
+> the memory usage of the job or doing data analysis.
 
-Oops, my fault.
-My QEMU based local test setup somehow never really tested zboot.
+Thanks for sharing the usage case, and I agree  it will bring more
+trouble for debugging and analyzing.
 
-Reviewed-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
+Though we lack real world load, but the micro benchmarks do show
+obvious benefits, 0day rebot reported a 43.4% improvement for
+vm-scalability lru-shm case, and it is up to +60% against 5.11-rc1.
 
-Thanks!
+The memory cgroup stats updating hotspots has been on our radar
+for a long time, which could be seen in the perf profile data.
 
-- Jiaxun
+So I am wondering if we could make the batch a configurable knob,
+so that it can benefit workload without need for accurate stats.
 
-> 
-> Signed-off-by: Jinyang He <hejinyang@loongson.cn>
-> ---
->  arch/mips/boot/compressed/head.S | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/arch/mips/boot/compressed/head.S b/arch/mips/boot/compressed/head.S
-> index 070b2fb..5795d0a 100644
-> --- a/arch/mips/boot/compressed/head.S
-> +++ b/arch/mips/boot/compressed/head.S
-> @@ -26,8 +26,8 @@
->  	PTR_LA	a0, _edata
->  	PTR_LA	a2, _end
->  1:	sw	zero, 0(a0)
-> +	addiu	a0, a0, 4
->  	bne	a2, a0, 1b
-> -	 addiu	a0, a0, 4
->  
->  	PTR_LA	a0, (.heap)	     /* heap address */
->  	PTR_LA	sp, (.stack + 8192)  /* stack address */
-> -- 
-> 2.1.0
-> 
->
+One further thought is, there are quite some "BATCH" number in
+kernel for perf-cpu/global data updating, maybe we can add a
+global flag 'sysctl_need_accurate_stats' for
+	if (sysctl_need_accurate_stats)
+		batch = SMALLER_BATCH
+	else
+		batch = BIGGER_BATCH
 
--- 
-- Jiaxun
+
+Thanks,
+Feng
+
+
