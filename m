@@ -2,74 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A0842EBBFA
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 10:57:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DFF872EBBF9
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 10:57:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727178AbhAFJ4C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Jan 2021 04:56:02 -0500
-Received: from foss.arm.com ([217.140.110.172]:38140 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726824AbhAFJ4A (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1726831AbhAFJ4A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Wed, 6 Jan 2021 04:56:00 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id DFD711FB;
-        Wed,  6 Jan 2021 01:55:14 -0800 (PST)
-Received: from slackpad.fritz.box (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 044EE3F719;
-        Wed,  6 Jan 2021 01:55:12 -0800 (PST)
-Date:   Wed, 6 Jan 2021 09:54:32 +0000
-From:   Andre Przywara <andre.przywara@arm.com>
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Will Deacon <will@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Marc Zyngier <maz@kernel.org>, Theodore Ts'o <tytso@mit.edu>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v5 4/5] arm64: Add support for SMCCC TRNG entropy source
-Message-ID: <20210106095432.26e5b86d@slackpad.fritz.box>
-In-Reply-To: <20210105170014.GG4487@sirena.org.uk>
-References: <20210105163652.23646-1-andre.przywara@arm.com>
-        <20210105163652.23646-5-andre.przywara@arm.com>
-        <20210105170014.GG4487@sirena.org.uk>
-Organization: Arm Ltd.
-X-Mailer: Claws Mail 3.17.1 (GTK+ 2.24.31; x86_64-slackware-linux-gnu)
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42534 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726073AbhAFJz7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 Jan 2021 04:55:59 -0500
+Received: from yawp.biot.com (yawp.biot.com [IPv6:2a01:4f8:10a:8e::fce2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94141C06134C
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Jan 2021 01:55:18 -0800 (PST)
+Received: from debian-spamd by yawp.biot.com with sa-checked (Exim 4.93)
+        (envelope-from <bert@biot.com>)
+        id 1kx5X9-00Bvk3-Ip
+        for linux-kernel@vger.kernel.org; Wed, 06 Jan 2021 10:55:15 +0100
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on yawp
+X-Spam-Level: 
+X-Spam-Status: No, score=-0.1 required=5.0 tests=BAYES_00,HELO_MISC_IP,
+        RDNS_NONE,SPF_PASS autolearn=no autolearn_force=no version=3.4.4
+Received: from [85.234.217.28] (helo=[10.0.1.5])
+        by yawp.biot.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <bert@biot.com>)
+        id 1kx5Wp-00BvjI-AB; Wed, 06 Jan 2021 10:54:55 +0100
+Subject: Re: [PATCH v2 1/2] dt-bindings: interrupt-controller: Add Realtek
+ RTL838x/RTL839x support
+To:     Rob Herring <robh@kernel.org>
+Cc:     devicetree@vger.kernel.org, John Crispin <john@phrozen.org>,
+        Marc Zyngier <maz@kernel.org>, linux-kernel@vger.kernel.org,
+        Birger Koblitz <mail@birger-koblitz.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Rob Herring <robh+dt@kernel.org>
+References: <20210104131755.2979203-1-bert@biot.com>
+ <20210104131755.2979203-2-bert@biot.com>
+ <1609866288.019144.372417.nullmailer@robh.at.kernel.org>
+From:   Bert Vermeulen <bert@biot.com>
+Message-ID: <f5333394-8141-64ed-de30-d3b095ef579e@biot.com>
+Date:   Wed, 6 Jan 2021 10:54:54 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <1609866288.019144.372417.nullmailer@robh.at.kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 5 Jan 2021 17:00:14 +0000
-Mark Brown <broonie@kernel.org> wrote:
-
-> On Tue, Jan 05, 2021 at 04:36:51PM +0000, Andre Przywara wrote:
+On 1/5/21 6:04 PM, Rob Herring wrote:
+> On Mon, 04 Jan 2021 14:17:54 +0100, Bert Vermeulen wrote:
+>> Signed-off-by: Bert Vermeulen <bert@biot.com>
+>> ---
+>>  .../realtek,rtl-intc.yaml                     | 57 +++++++++++++++++++
+>>  1 file changed, 57 insertions(+)
+>>  create mode 100644 Documentation/devicetree/bindings/interrupt-controller/realtek,rtl-intc.yaml
+>> 
 > 
-> > @@ -77,10 +117,20 @@ arch_get_random_seed_long_early(unsigned long
-> > *v) {
-> >  	WARN_ON(system_state != SYSTEM_BOOTING);
-> >  
-> > -	if (!__early_cpu_has_rndr())
-> > -		return false;
-> > +	if (__early_cpu_has_rndr())
-> > +		return __arm64_rndr(v);
-> > +
-> > +	if (smccc_trng_available) {
-> > +		struct arm_smccc_res res;  
-> 
-> This still seems to be preferring RNDR over SMCCC for the early seed
-> unless I'm misreading the diff?
+> My bot found errors running 'make dt_binding_check' on your patch:
 
-Argh, my apologies for that blunder. I *did* change it, but must have
-lost it when rebasing against my debug patches.
-Will send a fixed version in a jiffy.
+I fixed the syntax error that caused this to fail. But running the test now 
+produces some errors that are not so obvious:
 
-Cheers,
-Andre.
+   interrupt-controller@3000: interrupt-map: [[31, 4294967295, 2], [30, 
+4294967295, 1], [29, 4294967295, 5]] is too short
 
+Not sure where this comes from, but running dt-validate -v gives this:
+
+   Failed validating 'minItems' in schema['properties']['interrupt-map']:
+     {'maxItems': 24, 'minItems': 24}
+
+Where did that 24 come from? I don't even have 24 initerrupts to map :-)
+
+Another error is this:
+
+   interrupt-controller@3000: 'interrupt-map-mask' is a dependency of 
+'interrupt-map'
+
+I can see this in your dtschema package's schemas/interrupt-controller.yaml 
+where it's defined as a dependency, but why? I don't need that property.
+
+
+-- 
+Bert Vermeulen
+bert@biot.com
