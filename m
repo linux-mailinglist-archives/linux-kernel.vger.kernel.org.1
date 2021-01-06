@@ -2,71 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1CEB2EB70C
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 01:50:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 672092EB717
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 01:52:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727757AbhAFAum (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 19:50:42 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53380 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726999AbhAFAuj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 19:50:39 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2188322EBD;
-        Wed,  6 Jan 2021 00:49:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1609894199;
-        bh=TNd3++/Pj1tsqCZAGrSaGWlfOB+AGyPnFt+VGHbZkYA=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=paof0JiiKEEyxXtS0XoqzQt3jHJXn1zzfW4JOxhPz8QBKKy0VGZ34woRS4RbFWbsK
-         MbH2ra4FGjffXZ8wNpWeCyivR8hTomxf2OEUaDIOs4Zfpm2vnvQ9aoSLj69HAz5dJJ
-         V8deGzvXn/pW5Y0djiWPzutax5hY6K664UXJC5VB3u/ed1pFnxK1xN6iocQD5pR8nr
-         FOCoi0hxrXIYKxSHpb31kmUQTkj1PB9X8sDAnd+yi+045L2KUk+QUvyiDR/MBGSXr/
-         bQxNKcBVaDrM+jlxfAWaPMPJtAWyJkHXkWCByk40Y9txaneQ9524KDIENsauVmQS6s
-         T2wNM4tsM42/g==
-From:   paulmck@kernel.org
-To:     linux-kernel@vger.kernel.org
-Cc:     peterz@infradead.org, yury.norov@gmail.com, kernel-team@fb.com,
-        "Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH RFC cpumask 5/5] rcutorture: Use "all" and "last" in "nohz_full" and "rcu_nocbs"
-Date:   Tue,  5 Jan 2021 16:49:56 -0800
-Message-Id: <20210106004956.11961-5-paulmck@kernel.org>
-X-Mailer: git-send-email 2.9.5
-In-Reply-To: <20210106004850.GA11682@paulmck-ThinkPad-P72>
-References: <20210106004850.GA11682@paulmck-ThinkPad-P72>
+        id S1727779AbhAFAvA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 19:51:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41492 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725835AbhAFAu6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Jan 2021 19:50:58 -0500
+Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5583FC061798;
+        Tue,  5 Jan 2021 16:50:18 -0800 (PST)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4D9W48100Cz9sVk;
+        Wed,  6 Jan 2021 11:50:15 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1609894216;
+        bh=ZHqcfIHyx37hc6pokPiTH2NSvWKQKsdRwbvzEu4LyE4=;
+        h=Date:From:To:Cc:Subject:From;
+        b=mDC+HLTHkxyntsV7o/P+4JildYgx64ahqdLaDw8q0IkJcat5Ne4tpkYx/Creojvho
+         dhHHbHb0YMOBCZMXTwXGRM8Ys14k6wc9Bwz9jsePyTM4L41o+ku1VTC6cxN0JatcCb
+         b7mN6bwx/IAAX1nLk8Zin4RwUmgKz4kzSExSuQvaRtxFHagBOcKBhskucn2ulS3Q2Z
+         3fz2mcg6RII6nClq+vY5zLtRAaqCb1LiSYOddF1VDjKvQJ+LDhiRSp0H3wQ58WIsFA
+         5XSfwhYV+q6OzaKW2T4DHcBaT40SoG9UYqLQHHw0KQdcxcEfROulmsk5KVEXR0ppfE
+         RqY8NtNtn3GXA==
+Date:   Wed, 6 Jan 2021 11:50:14 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Greg KH <greg@kroah.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Wesley Cheng <wcheng@codeaurora.org>
+Subject: linux-next: manual merge of the usb tree with the usb.current tree
+Message-ID: <20210106115014.28009565@canb.auug.org.au>
+MIME-Version: 1.0
+Content-Type: multipart/signed; boundary="Sig_/sMGKAeMBI4PpbVfHyvqzYlO";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Paul E. McKenney" <paulmck@kernel.org>
+--Sig_/sMGKAeMBI4PpbVfHyvqzYlO
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-This commit uses the shiny new "all" and "last" cpumask options to
-decouple the "nohz_full" and "rcu_nocbs" kernel boot parameters in the
-TREE04.boot and TREE08.boot files from the CONFIG_NR_CPUS options in
-the TREE04 and TREE08 files.
+Hi all,
 
-Reported-by: Paul Gortmaker <paul.gortmaker@windriver.com>
-Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
----
- tools/testing/selftests/rcutorture/configs/rcu/TREE04.boot | 2 +-
- tools/testing/selftests/rcutorture/configs/rcu/TREE08.boot | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+Today's linux-next merge of the usb tree got a conflict in:
 
-diff --git a/tools/testing/selftests/rcutorture/configs/rcu/TREE04.boot b/tools/testing/selftests/rcutorture/configs/rcu/TREE04.boot
-index 5adc675..25a765d 100644
---- a/tools/testing/selftests/rcutorture/configs/rcu/TREE04.boot
-+++ b/tools/testing/selftests/rcutorture/configs/rcu/TREE04.boot
-@@ -1 +1 @@
--rcutree.rcu_fanout_leaf=4 nohz_full=1-7
-+rcutree.rcu_fanout_leaf=4 nohz_full=1-last
-diff --git a/tools/testing/selftests/rcutorture/configs/rcu/TREE08.boot b/tools/testing/selftests/rcutorture/configs/rcu/TREE08.boot
-index 22478fd..94d3844 100644
---- a/tools/testing/selftests/rcutorture/configs/rcu/TREE08.boot
-+++ b/tools/testing/selftests/rcutorture/configs/rcu/TREE08.boot
-@@ -1,3 +1,3 @@
- rcupdate.rcu_self_test=1
- rcutree.rcu_fanout_exact=1
--rcu_nocbs=0-7
-+rcu_nocbs=all
--- 
-2.9.5
+  drivers/usb/dwc3/gadget.c
 
+between commit:
+
+  a1383b3537a7 ("usb: dwc3: gadget: Restart DWC3 gadget when enabling pullu=
+p")
+
+from the usb.current tree and commit:
+
+  77adb8bdf422 ("usb: dwc3: gadget: Allow runtime suspend if UDC unbinded")
+
+from the usb tree.
+
+I fixed it up (see below) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+diff --cc drivers/usb/dwc3/gadget.c
+index 25f654b79e48,85736dd6673b..000000000000
+--- a/drivers/usb/dwc3/gadget.c
++++ b/drivers/usb/dwc3/gadget.c
+@@@ -2146,8 -2212,7 +2213,9 @@@ static int dwc3_gadget_pullup(struct us
+  			dwc->ev_buf->lpos =3D (dwc->ev_buf->lpos + count) %
+  						dwc->ev_buf->length;
+  		}
++ 		dwc->connected =3D false;
+ +	} else {
+ +		__dwc3_gadget_start(dwc);
+  	}
+ =20
+  	ret =3D dwc3_gadget_run_stop(dwc, is_on, false);
+
+--Sig_/sMGKAeMBI4PpbVfHyvqzYlO
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl/1CUYACgkQAVBC80lX
+0GxYkAf+MGHIk9/DHFfknZyzAb+3/f1mNz0Qx4QuqNLF8T0Z9134MZPbtF70WD10
+WBHjgyJtqYC2ZyhPgtvtst60kngYOEp1NLOSMu9qHVivno9JX121cTdfR/+KiYty
+2HiRdD9vakP4OYOQfN4Hm8IWmOG3xFXP+mT4ZmOXcQTVpTJ8UbwD6kK4hAQ7qgTO
+cYnRkY+N/9FTQikICH96uYNzJlRAqjlrsal+M3KdWJptCRT/Ad/mVx39kw+qRYLv
+FL6miiNI8CWg2b2+w09F8ogma3pP8EzXnMfLEvw5tIqbkPe71NEzNZ5xQegxl3O7
+04tkx/qaMKU0oJhkcbrsiyuaqEuoEw==
+=f4qH
+-----END PGP SIGNATURE-----
+
+--Sig_/sMGKAeMBI4PpbVfHyvqzYlO--
