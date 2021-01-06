@@ -2,85 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D98B2EBD55
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 12:55:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7801E2EBD64
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 12:59:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726362AbhAFLyu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Jan 2021 06:54:50 -0500
-Received: from foss.arm.com ([217.140.110.172]:39960 "EHLO foss.arm.com"
+        id S1726436AbhAFL51 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Jan 2021 06:57:27 -0500
+Received: from foss.arm.com ([217.140.110.172]:39990 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725803AbhAFLyu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Jan 2021 06:54:50 -0500
+        id S1726212AbhAFL5Y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 Jan 2021 06:57:24 -0500
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5546BD6E;
-        Wed,  6 Jan 2021 03:54:04 -0800 (PST)
-Received: from C02TD0UTHF1T.local (unknown [10.57.36.216])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 75E0C3F70D;
-        Wed,  6 Jan 2021 03:54:02 -0800 (PST)
-Date:   Wed, 6 Jan 2021 11:53:59 +0000
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     Russell King - ARM Linux admin <linux@armlinux.org.uk>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Theodore Ts'o <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        linux-ext4@vger.kernel.org, Will Deacon <will@kernel.org>
-Subject: Re: Aarch64 EXT4FS inode checksum failures - seems to be weak memory
- ordering issues
-Message-ID: <20210106115359.GB26994@C02TD0UTHF1T.local>
-References: <20210105154726.GD1551@shell.armlinux.org.uk>
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D0D26D6E;
+        Wed,  6 Jan 2021 03:56:38 -0800 (PST)
+Received: from e119884-lin.cambridge.arm.com (e119884-lin.cambridge.arm.com [10.1.196.72])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 2F3E53F70D;
+        Wed,  6 Jan 2021 03:56:37 -0800 (PST)
+From:   Vincenzo Frascino <vincenzo.frascino@arm.com>
+To:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kasan-dev@googlegroups.com
+Cc:     Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will.deacon@arm.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Alexander Potapenko <glider@google.com>,
+        Marco Elver <elver@google.com>,
+        Evgenii Stepanov <eugenis@google.com>,
+        Branislav Rankov <Branislav.Rankov@arm.com>,
+        Andrey Konovalov <andreyknvl@google.com>
+Subject: [PATCH 0/4] arm64: ARMv8.5-A: MTE: Add async mode support
+Date:   Wed,  6 Jan 2021 11:55:15 +0000
+Message-Id: <20210106115519.32222-1-vincenzo.frascino@arm.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210105154726.GD1551@shell.armlinux.org.uk>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 05, 2021 at 03:47:26PM +0000, Russell King - ARM Linux admin wrote:
-> Hi,
+This patchset implements the asynchronous mode support for ARMv8.5-A
+Memory Tagging Extension (MTE), which is a debugging feature that allows
+to detect with the help of the architecture the C and C++ programmatic
+memory errors like buffer overflow, use-after-free, use-after-return, etc.
 
-Hi Russell,
+MTE is built on top of the AArch64 v8.0 virtual address tagging TBI
+(Top Byte Ignore) feature and allows a task to set a 4 bit tag on any
+subset of its address space that is multiple of a 16 bytes granule. MTE
+is based on a lock-key mechanism where the lock is the tag associated to
+the physical memory and the key is the tag associated to the virtual
+address.
+When MTE is enabled and tags are set for ranges of address space of a task,
+the PE will compare the tag related to the physical memory with the tag
+related to the virtual address (tag check operation). Access to the memory
+is granted only if the two tags match. In case of mismatch the PE will raise
+an exception.
 
-> This is an update on where I am with this long standing issue at the
-> current time.
-> 
-> Since 5.4, I have been struggling with several of my ARM64 systems, of
-> different SoC vendors and differing filesystem media, were sporadically
-> reporting inode checksum failures on their root filesystems.  The time
-> taken to report this has been anything between a few hours and three
-> months of uptime, making the problem unrealistic to bisect.
+The exception can be handled synchronously or asynchronously. When the
+asynchronous mode is enabled:
+  - Upon fault the PE updates the TFSR_EL1 register.
+  - The kernel detects the change during one of the following:
+    - Context switching
+    - Return to user/EL0
+    - Kernel entry from EL1
+    - Kernel exit to EL1
+  - If the register has been updated by the PE the kernel clears it and
+    reports the error.
 
-> However, over the last couple of days, a way to reproduce it has been
-> found, at least for the LX2160A based system.  Power down, leave the
-> machine powered off for some time. Power up, log in and run:
-> 
-> while :; do sleep 5; find /var /usr /bin /sbin -type f -print0 | \
-> 	xargs -0 md5sum >/dev/null; done
+The series contains as well an optimization to mte_assign_mem_tag_range().
 
-I've just set this off on an Raspberry Pi 4 running a locally-built
-arm64 v5.10 defconfig. I'm using a SATA SSD mounted via a USB-SATA
-adapter. I'll try to give that a few reboots see if I can reproduce the
-issue.
+The series is based on linux 5.11-rc2.
 
-Just to check -- how is your ext4 fs mounted? Mine is mounted as:
+To simplify the testing a tree with the new patches on top has been made
+available at [1].
 
- /dev/sda2 on / type ext4 (rw,relatime,errors=remount-ro)
+[1] https://git.gitlab.arm.com/linux-arm/linux-vf.git mte/v10.async
 
-... and are you using defconfig or something else?
+Cc: Catalin Marinas <catalin.marinas@arm.com>
+Cc: Will Deacon <will.deacon@arm.com>
+Cc: Dmitry Vyukov <dvyukov@google.com>
+Cc: Andrey Ryabinin <aryabinin@virtuozzo.com>
+Cc: Alexander Potapenko <glider@google.com>
+Cc: Marco Elver <elver@google.com>
+Cc: Evgenii Stepanov <eugenis@google.com>
+Cc: Branislav Rankov <Branislav.Rankov@arm.com>
+Cc: Andrey Konovalov <andreyknvl@google.com>
+Signed-off-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
 
-[...]
+Vincenzo Frascino (4):
+  kasan, arm64: Add KASAN light mode
+  arm64: mte: Add asynchronous mode support
+  arm64: mte: Enable async tag check fault
+  arm64: mte: Optimize mte_assign_mem_tag_range()
 
-> It is possible that it could be compiler related, but I don't see that;
-> if the "dmb oshld" were strong enough, then it should mean that the
-> subsequent reads to checksum the inode data after the inode data has
-> been DMA'd into memory should be reading the correct values from memory
-> already - but they aren't. And if changing "dmb oshld" to "dsb ld" means
-> that the code can then read the right values, that to me points fairly
-> definitively to a hardware problem.
+ arch/arm64/include/asm/memory.h    |  2 +-
+ arch/arm64/include/asm/mte-kasan.h |  5 ++-
+ arch/arm64/include/asm/mte.h       | 27 +++++++++++-
+ arch/arm64/kernel/entry-common.c   |  6 +++
+ arch/arm64/kernel/mte.c            | 67 ++++++++++++++++++++++++++++--
+ arch/arm64/lib/mte.S               | 15 -------
+ include/linux/kasan.h              |  1 +
+ include/linux/kasan_def.h          | 39 +++++++++++++++++
+ mm/kasan/hw_tags.c                 | 24 ++---------
+ mm/kasan/kasan.h                   |  2 +-
+ 10 files changed, 145 insertions(+), 43 deletions(-)
+ create mode 100644 include/linux/kasan_def.h
 
-Just in case the compiler has some impact, can you way which compilers
-you've been using? On the rpi4 I'm using GCC 8.3.0 as packaged by Debian
-Buster (10.7).
+-- 
+2.29.2
 
-Thanks,
-Mark.
