@@ -2,59 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 976CF2EC3DC
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 20:23:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DFE02EC3DE
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 20:26:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726774AbhAFTXc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Jan 2021 14:23:32 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39418 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726375AbhAFTXb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Jan 2021 14:23:31 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPS id AF4E223123;
-        Wed,  6 Jan 2021 19:22:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1609960970;
-        bh=+P/7jLrGNl81j6sOwVgCopo8xsY5C89pS4E4HvIw2Wk=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=lOpnp+XRfREPXHL7nE+09OuOFzarDV0ofAzxqPK3Fu1MgYIXaNp3OaQCnKMYUvpp/
-         AChXs1s2/z2eqcFDLR1/yPWZg9tntl/AgrdFHJAL0Vm0nTdP7/ZCpB1IHOfMtzQ3xr
-         iQpqZ1mo9ffRU31FNVfwMVrMIlhmPmzBzXFL6clNRjYauRMQ/Mv1t33+RAY9I8nGD7
-         jnTsZHsEvSIUa6QBn/mqsVm/UZdHsdV3jFiv7PdMfwyA+MnmLPN9OaEqVHJQ2sbeMU
-         fSO71mX8jS+L4ikL+Zfbp5PyJOaORyyr3wi7yVz9u1hQ+Sqqbn+ci2jNMBmMplVQAg
-         3IF2oQ2dUlgDw==
-Received: from pdx-korg-docbuild-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-1.ci.codeaurora.org (Postfix) with ESMTP id 9AED760385;
-        Wed,  6 Jan 2021 19:22:50 +0000 (UTC)
-Subject: Re: [GIT PULL] Btrfs fixes for 5.11-rc3
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <cover.1609855176.git.dsterba@suse.com>
-References: <cover.1609855176.git.dsterba@suse.com>
-X-PR-Tracked-List-Id: <linux-btrfs.vger.kernel.org>
-X-PR-Tracked-Message-Id: <cover.1609855176.git.dsterba@suse.com>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-5.11-rc2-tag
-X-PR-Tracked-Commit-Id: a8cc263eb58ca133617662a5a5e07131d0ebf299
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 71c061d2443814de15e177489d5cc00a4a253ef3
-Message-Id: <160996097056.25393.11030152966145479938.pr-tracker-bot@kernel.org>
-Date:   Wed, 06 Jan 2021 19:22:50 +0000
-To:     David Sterba <dsterba@suse.com>
-Cc:     torvalds@linux-foundation.org, David Sterba <dsterba@suse.com>,
-        linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
+        id S1727050AbhAFTZM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Jan 2021 14:25:12 -0500
+Received: from mx12.kaspersky-labs.com ([91.103.66.155]:26641 "EHLO
+        mx12.kaspersky-labs.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726662AbhAFTZJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 Jan 2021 14:25:09 -0500
+Received: from relay12.kaspersky-labs.com (unknown [127.0.0.10])
+        by relay12.kaspersky-labs.com (Postfix) with ESMTP id 4A38178B57;
+        Wed,  6 Jan 2021 22:24:25 +0300 (MSK)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kaspersky.com;
+        s=mail; t=1609961065;
+        bh=x595Db5O/MSS4l4gdpgq+prE4rsfDZ9RcSXgGF9ARMw=;
+        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type;
+        b=VQlHRhwvG0A30MkGI7svObnYYwkslmXrzvV1cUJIPEwwSAIWMyzsMhOf/58ky17rP
+         G8o8rqojo+SLHj45kE/GfIdVTGVvIqdCrFUqLKeU+KysftO82sTsAG+f+asZcMmBrF
+         zvUOJZOjlX1IV2w0twLfAdJ2GsNeGhTVcHYTJhSI=
+Received: from mail-hq2.kaspersky.com (unknown [91.103.66.206])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (Client CN "mail-hq2.kaspersky.com", Issuer "Kaspersky MailRelays CA G3" (verified OK))
+        by mailhub12.kaspersky-labs.com (Postfix) with ESMTPS id 7906F78B45;
+        Wed,  6 Jan 2021 22:24:24 +0300 (MSK)
+Received: from [10.16.171.77] (10.64.68.128) by hqmailmbx3.avp.ru
+ (10.64.67.243) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2044.4; Wed, 6 Jan
+ 2021 22:24:23 +0300
+Subject: Re: [PATCH 1/5] vsock/virtio: support for SOCK_SEQPACKET socket.
+To:     stsp <stsp2@yandex.ru>, Stefan Hajnoczi <stefanha@redhat.com>,
+        Stefano Garzarella <sgarzare@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jorgen Hansen <jhansen@vmware.com>,
+        Colin Ian King <colin.king@canonical.com>,
+        Arseniy Krasnov <oxffffaa@gmail.com>,
+        Andra Paraschiv <andraprs@amazon.com>,
+        Jeff Vander Stoep <jeffv@google.com>
+CC:     "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "virtualization@lists.linux-foundation.org" 
+        <virtualization@lists.linux-foundation.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20210103195454.1954169-1-arseny.krasnov@kaspersky.com>
+ <20210103195752.1954958-1-arseny.krasnov@kaspersky.com>
+ <4ef8fa37-df76-e3bc-3f5c-ed4392f509ad@yandex.ru>
+From:   Arseny Krasnov <arseny.krasnov@kaspersky.com>
+Message-ID: <bd1bf1b0-e014-3e58-fbb2-8ada854dd2c1@kaspersky.com>
+Date:   Wed, 6 Jan 2021 22:24:23 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+MIME-Version: 1.0
+In-Reply-To: <4ef8fa37-df76-e3bc-3f5c-ed4392f509ad@yandex.ru>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Originating-IP: [10.64.68.128]
+X-ClientProxiedBy: hqmailmbx2.avp.ru (10.64.67.242) To hqmailmbx3.avp.ru
+ (10.64.67.243)
+X-KSE-ServerInfo: hqmailmbx3.avp.ru, 9
+X-KSE-AntiSpam-Interceptor-Info: scan successful
+X-KSE-AntiSpam-Version: 5.9.16, Database issued on: 01/06/2021 19:07:02
+X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
+X-KSE-AntiSpam-Method: none
+X-KSE-AntiSpam-Rate: 0
+X-KSE-AntiSpam-Info: Lua profiles 160996 [Jan 06 2021]
+X-KSE-AntiSpam-Info: LuaCore: 419 419 70b0c720f8ddd656e5f4eb4a4449cf8ce400df94
+X-KSE-AntiSpam-Info: Version: 5.9.16.0
+X-KSE-AntiSpam-Info: Envelope from: arseny.krasnov@kaspersky.com
+X-KSE-AntiSpam-Info: {Tracking_content_type, plain}
+X-KSE-AntiSpam-Info: {Tracking_date, moscow}
+X-KSE-AntiSpam-Info: {Tracking_c_tr_enc, eight_bit}
+X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
+X-KSE-AntiSpam-Info: 127.0.0.199:7.1.2;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;kaspersky.com:7.1.1
+X-KSE-AntiSpam-Info: Rate: 0
+X-KSE-AntiSpam-Info: Status: not_detected
+X-KSE-AntiSpam-Info: Method: none
+X-KSE-Antiphishing-Info: Clean
+X-KSE-Antiphishing-ScanningType: Deterministic
+X-KSE-Antiphishing-Method: None
+X-KSE-Antiphishing-Bases: 01/06/2021 19:10:00
+X-KSE-AttachmentFiltering-Interceptor-Info: no applicable attachment filtering
+ rules found
+X-KSE-Antivirus-Interceptor-Info: scan successful
+X-KSE-Antivirus-Info: Clean, bases: 06.01.2021 15:19:00
+X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
+X-KSE-AttachmentFiltering-Interceptor-Info: no applicable attachment filtering
+ rules found
+X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
+X-KLMS-Rule-ID: 52
+X-KLMS-Message-Action: clean
+X-KLMS-AntiSpam-Status: not scanned, disabled by settings
+X-KLMS-AntiSpam-Interceptor-Info: not scanned
+X-KLMS-AntiPhishing: Clean, bases: 2021/01/06 17:58:00
+X-KLMS-AntiVirus: Kaspersky Security for Linux Mail Server, version 8.0.3.30, bases: 2021/01/06 15:19:00 #16022888
+X-KLMS-AntiVirus-Status: Clean, skipped
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Wed,  6 Jan 2021 12:48:12 +0100:
+> IMHO you can avoid this special-casing
+> by introducing yet another outer loop just
+> for draining the extra data from buffer.
+> Admittedly that may also require an extra
+> transport op.
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-5.11-rc2-tag
+I'm not sure that extra tranport op is needed, may be i'll
+try to put drain code inside copy loop, because only
+difference is that copy length is 0.
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/71c061d2443814de15e177489d5cc00a4a253ef3
+> Why do you need this change?
+> (maybe its ok, just wondering)
 
-Thank you!
+> No need to reset here, like a few lines
+> above in a seemingly similar condition?
 
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+
+Yes, i think you are right. 
+
