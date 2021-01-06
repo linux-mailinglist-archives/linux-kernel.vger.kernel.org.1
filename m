@@ -2,84 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EFC622EC2C2
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 18:52:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EF2532EC2CE
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 18:53:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727371AbhAFRv7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Jan 2021 12:51:59 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55804 "EHLO mail.kernel.org"
+        id S1727103AbhAFRxl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Jan 2021 12:53:41 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56052 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727176AbhAFRv6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Jan 2021 12:51:58 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B044A2311B;
-        Wed,  6 Jan 2021 17:51:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609955478;
-        bh=AQpKhsAGsqhFg0SXDC3NmRpXTX27a/Y5tEj0l9Oqrfs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=MOm/PHzou5OnLA39Woslo2/GbRyZixIxWIQdAos9BNeA/tw3KQPLkSOfjG/wJBwnI
-         qpeFqDBfJsJiMe2T7cVadDGjtiJuBLVHYKNJnhoi3EMCbwk2Yl64N5e8O4ttXC2O6q
-         s4qH0oqg2lGPYwVfxNioX6jSFr6Aml4M1hzB6PLs=
-Date:   Wed, 6 Jan 2021 18:52:39 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Filip Kolev <fil.kolev@gmail.com>
-Cc:     devel@driverdev.osuosl.org,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-kernel@vger.kernel.org,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        linux-media@vger.kernel.org
-Subject: Re: [PATCH] media: atomisp: ov2722: replace hardcoded function name
-Message-ID: <X/X45909l1Tk7Bni@kroah.com>
-References: <20210105202945.26913-1-fil.kolev@gmail.com>
- <X/VsF364jpGz6oze@kroah.com>
- <dcdda829-89d6-badd-4f22-72d95d24e9e3@gmail.com>
+        id S1725822AbhAFRxk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 Jan 2021 12:53:40 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D12722312A;
+        Wed,  6 Jan 2021 17:52:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1609955579;
+        bh=ogK6EhDts7KKPTEN1wdoBtfrIejUxcfZxSEvAnZq7g0=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=q1MRsKEBA08ucUjVtNSd/DAqD2y+Sa/ro0iwGC0Emf3ICFl93zu6nTvFu0Gj3QZyJ
+         BZQ4cu1Y8paxSfRM/w5PzEEVlyZvvj6pw3CRxHpNzEWGml6+KBwKxMz75XubWj6yFL
+         BJzwwjyifMLfj0CjJ1VO8757VcIZcRisDU/4wotNmZvGlzpfaMGfZJ4YO9//6XiWFL
+         dT1urlHmyb3oHOzBpbY0kWAKX1oC+jcvJ5eB2g6hxqnwj+Xr9F+cRtmuvMnfpMvaTp
+         taQK6yHq2bImuu56GK66TFyf9WkU4cJ6dq3a2xpDtLDvR6M8jm4TVjwubRDYYwviGo
+         rNslWNAeTU2Qg==
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id 7E9F835225EC; Wed,  6 Jan 2021 09:52:59 -0800 (PST)
+Date:   Wed, 6 Jan 2021 09:52:59 -0800
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Valentin Schneider <valentin.schneider@arm.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>, tglx@linutronix.de,
+        linux-kernel@vger.kernel.org, bristot@redhat.com,
+        frederic@kernel.org
+Subject: Re: lockdep splat in v5.11-rc1 involving console_sem and rq locks
+Message-ID: <20210106175259.GM17086@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <20210105220115.GA27357@paulmck-ThinkPad-P72>
+ <X/WITr5JuNvuMH+p@hirez.programming.kicks-ass.net>
+ <20210106144621.GJ17086@paulmck-ThinkPad-P72>
+ <X/Xa1fwplnZIOm+U@hirez.programming.kicks-ass.net>
+ <jhj1reyawv9.mognet@arm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <dcdda829-89d6-badd-4f22-72d95d24e9e3@gmail.com>
+In-Reply-To: <jhj1reyawv9.mognet@arm.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 06, 2021 at 07:43:42PM +0200, Filip Kolev wrote:
+On Wed, Jan 06, 2021 at 03:49:46PM +0000, Valentin Schneider wrote:
+> On 06/01/21 16:44, Peter Zijlstra wrote:
+> > On Wed, Jan 06, 2021 at 06:46:21AM -0800, Paul E. McKenney wrote:
+> >> What would break if I made the code dump out a few entries in the
+> >> runqueue if the warning triggered?
+> >
+> > There was a patch around that did that, Valentin might remember where
+> > that was.
 > 
-> 
-> On 06-Jan-21 09:51, Greg Kroah-Hartman wrote:
-> > On Tue, Jan 05, 2021 at 10:29:18PM +0200, Filip Kolev wrote:
-> > > There is a debug message using hardcoded function name instead of the
-> > > __func__ macro. Replace it.
-> > > 
-> > > Report from checkpatch.pl on the file:
-> > > 
-> > > WARNING: Prefer using '"%s...", __func__' to using 'ov2722_remove', this function's name, in a string
-> > > +	dev_dbg(&client->dev, "ov2722_remove...\n");
-> > > 
-> > > Signed-off-by: Filip Kolev <fil.kolev@gmail.com>
-> > > ---
-> > >   drivers/staging/media/atomisp/i2c/atomisp-ov2722.c | 2 +-
-> > >   1 file changed, 1 insertion(+), 1 deletion(-)
-> > > 
-> > > diff --git a/drivers/staging/media/atomisp/i2c/atomisp-ov2722.c b/drivers/staging/media/atomisp/i2c/atomisp-ov2722.c
-> > > index eecefcd734d0e..21d6bc62d452a 100644
-> > > --- a/drivers/staging/media/atomisp/i2c/atomisp-ov2722.c
-> > > +++ b/drivers/staging/media/atomisp/i2c/atomisp-ov2722.c
-> > > @@ -1175,7 +1175,7 @@ static int ov2722_remove(struct i2c_client *client)
-> > >   	struct v4l2_subdev *sd = i2c_get_clientdata(client);
-> > >   	struct ov2722_device *dev = to_ov2722_sensor(sd);
-> > > -	dev_dbg(&client->dev, "ov2722_remove...\n");
-> > > +	dev_dbg(&client->dev, "%s...\n", __func__);
-> > 
-> > dev_dbg() provides the function name already, and this is just a "trace"
-> > call, and ftrace should be used instead, so the whole line should be
-> > removed entirely.
-> 
-> Thank you for the review!
-> 
-> How do I go about this? Do I amend the patch and re-send as v2 or create a
-> new patch entirely?
+> There is http://lore.kernel.org/r/jhjpn4bwznx.mognet@arm.com which is a
+> dumb inline of print_rq() / print_task().
 
-New patch entirely please.
+Thank you both!  I will add this to the next round of testing.
 
-thanks,
-
-greg k-h
+							Thanx, Paul
