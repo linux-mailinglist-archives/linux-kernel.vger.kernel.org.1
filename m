@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CAE82EBE90
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 14:23:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A9702EBE92
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 14:23:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727197AbhAFNXV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Jan 2021 08:23:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46568 "EHLO
+        id S1727313AbhAFNX0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Jan 2021 08:23:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46580 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727157AbhAFNXU (ORCPT
+        with ESMTP id S1727220AbhAFNXY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Jan 2021 08:23:20 -0500
-Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 767ECC06134C;
-        Wed,  6 Jan 2021 05:22:39 -0800 (PST)
-Received: by mail-lf1-x12e.google.com with SMTP id b26so6414680lff.9;
-        Wed, 06 Jan 2021 05:22:39 -0800 (PST)
+        Wed, 6 Jan 2021 08:23:24 -0500
+Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7105DC061357;
+        Wed,  6 Jan 2021 05:22:43 -0800 (PST)
+Received: by mail-lf1-x135.google.com with SMTP id o13so6509511lfr.3;
+        Wed, 06 Jan 2021 05:22:43 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=Z26q/nioE2A163icDc1AkzZzT7ydJbu5sFfNkAQMY/E=;
-        b=suqYCaFXtZQq2ezZP9DvNo6uvIwPNP2LrRXTju7FieKSwH4ixH6d3IAFfH5xcCM8Gy
-         FMm/e3b7nihtK5LGLE3t4zCqJw8gchczQNe0effcXvuld9h5YxfKKZwMrkUOcXIkxpUs
-         ZmvKBde3F+OTKPz+imKeCaSffobjvlQ6kEhCaXM1/8StA5xIGMHTgvyn99os59d1R3M6
-         IFgXcMmR2cPgBkyprK6C90nNckKRMCmhn1ZD8LXHB4+gyxf1jMWnRmlRW5DEx0wqY2GU
-         9pUl+n9GqploD4647RcEqkRVsk/jNLRamNhbGpvimLXSEt9T3b15erK8TrebQuSnVcIL
-         SnXg==
+        bh=1kQKlYjkEsXTqfe1rTtXK6ODUo/QOHx815FNAJpR+HA=;
+        b=CWBkig62PfZI4rnc4SEiLV9zMROmn+DFZ8GmGinkuRf8fTPBKSmJjmsM9KDfe5Fj7B
+         Q2NSeHVxUtU+AKWE6FE06nWbHqU1urnPvAcIquo1G9IgJ1Q+Hk8UmMAVXjZxAtxOgC5W
+         G7RgxfF7V0Fi11gIw50ywSF8hoXljij+7HP3DGW7uEx27MO0bar1tJXFw0pj7UmsdcK7
+         3vP31/jh74G7NvUwFbE+bYFsSxvmnmmrmorxlwl36FCbNbawCl8Oxyst+kg+xz9epDsz
+         T6bbi+RH0R0xs8SeBe4c9KtamN06mB72XE5Ixeh2laSk2vRCOoegpkXbeGkrO0Vpm4B9
+         38GQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=Z26q/nioE2A163icDc1AkzZzT7ydJbu5sFfNkAQMY/E=;
-        b=Q/lAKXEekT2W+eWkrYBQhg8cAtVZ9xj94j3yYashmj7oDYVhq5gyyi6a0h3eE7MR64
-         Sn7iD6rC9uev/5NQ0iap1GBabPLl53CdjOnd7AGjFE74o3YUz18qDudNxlRI75ANwdDU
-         tibguy5fuYkuj7x6tJLVFDwCoB5Ghys7qU5SFJLVYx1Vl9Sy46Z5Gsxege5zZdiU4Qwp
-         RMM0XMhCmm0KdKyJrD+ykrgdbrhNChWx3l0V6buNpQpqIr1n6qPSdgaobuL6CB1A7YEE
-         fCt8Afzcr4wLfqspr5dxIillDnjdqZcFBEk/iOcxypujNNkm2ah/hoMnljLyf2EvjT2u
-         biWQ==
-X-Gm-Message-State: AOAM531+b5wN9AGTH15hE0sPSLqXeSPe3ez8bghh+QctnUu2MgHm/9c+
-        XQg2JOMzZjzIvzjU2j4G5jk=
-X-Google-Smtp-Source: ABdhPJxZd0YawpwUNAfXz0oJurV9v0LrHLqwNANWHrMjTMU549BNekXy4pn7uLiBli5UUJ6rCmVsIQ==
-X-Received: by 2002:ac2:5442:: with SMTP id d2mr1828931lfn.154.1609939357974;
-        Wed, 06 Jan 2021 05:22:37 -0800 (PST)
+        bh=1kQKlYjkEsXTqfe1rTtXK6ODUo/QOHx815FNAJpR+HA=;
+        b=NE3ulo9fj+U/OoQx3YZRbhr0AL7gHCYEiKziG5mfcIEgzimfePp3i4tbVYAh9Gbcvd
+         Os2WTXfQgFHXr9qHAsqZZ2s+4TQR/RurVCP0nuPNnV9IOq0Vea1dFhbBmeDP/++oVW7U
+         aL9olXoR9nSXWM4yte167BMmU0fZbClqVh0RynKv1rlB0n0Jh1KizBm/DtkjS/VRG0Qn
+         sWtj2VCrDijzVF2WP/uUxyajoveqAdvIeI3QogCe8Jj+dDPI411vfquq4f5B4X5lxb2t
+         HiVUz+gehpWG8PIiFhtSEUhDlQmM5K2rnbIgs6iLyYvMlB4CSVN6vMN/SZtJj2BGPUzf
+         MO7g==
+X-Gm-Message-State: AOAM530yozEZOE5iaCmPP79bJYM7UQDLPC4HqE93LgvLXVHFwQTHtXKv
+        cMJEEr6B5o9HLUEOlVzLeiM=
+X-Google-Smtp-Source: ABdhPJygA16yJH4CB8TGW2vKBapSc7buDn/Xh4hf37PvVIUQ1akyW4JZjWmzi4+kGYxLmSIf2gUing==
+X-Received: by 2002:a05:651c:30f:: with SMTP id a15mr1923152ljp.503.1609939361196;
+        Wed, 06 Jan 2021 05:22:41 -0800 (PST)
 Received: from localhost.lan (ip-194-187-74-233.konfederacka.maverick.com.pl. [194.187.74.233])
-        by smtp.gmail.com with ESMTPSA id j12sm361118lfc.99.2021.01.06.05.22.36
+        by smtp.gmail.com with ESMTPSA id j12sm361118lfc.99.2021.01.06.05.22.40
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 06 Jan 2021 05:22:37 -0800 (PST)
+        Wed, 06 Jan 2021 05:22:40 -0800 (PST)
 From:   =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
 To:     Kishon Vijay Abraham I <kishon@ti.com>,
         Vinod Koul <vkoul@kernel.org>, Rob Herring <robh+dt@kernel.org>
@@ -55,11 +55,10 @@ Cc:     Florian Fainelli <f.fainelli@gmail.com>,
         bcm-kernel-feedback-list@broadcom.com,
         Al Cooper <alcooperx@gmail.com>, devicetree@vger.kernel.org,
         linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <rafal@milecki.pl>,
-        Rob Herring <robh@kernel.org>
-Subject: [PATCH V3 2/3] dt-bindings: phy: brcm,brcmstb-usb-phy: add BCM4908 binding
-Date:   Wed,  6 Jan 2021 14:22:24 +0100
-Message-Id: <20210106132225.21215-2-zajec5@gmail.com>
+        =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <rafal@milecki.pl>
+Subject: [PATCH V3 3/3] phy: phy-brcm-usb: support PHY on the BCM4908
+Date:   Wed,  6 Jan 2021 14:22:25 +0100
+Message-Id: <20210106132225.21215-3-zajec5@gmail.com>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20210106132225.21215-1-zajec5@gmail.com>
 References: <20210106132225.21215-1-zajec5@gmail.com>
@@ -72,39 +71,49 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Rafał Miłecki <rafal@milecki.pl>
 
-BCM4908 uses the same PHY and may require just a slightly different
-programming.
+BCM4908 seems to have slightly different registers but works when
+programmed just like the STB one.
 
 Signed-off-by: Rafał Miłecki <rafal@milecki.pl>
-Acked-by: Florian Fainelli <f.fainelli@gmail.com>
-Acked-by: Rob Herring <robh@kernel.org>
 ---
- .../devicetree/bindings/phy/brcm,brcmstb-usb-phy.yaml        | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+V2: Update Kconfig as well
+---
+ drivers/phy/broadcom/Kconfig        | 3 ++-
+ drivers/phy/broadcom/phy-brcm-usb.c | 4 ++++
+ 2 files changed, 6 insertions(+), 1 deletion(-)
 
-diff --git a/Documentation/devicetree/bindings/phy/brcm,brcmstb-usb-phy.yaml b/Documentation/devicetree/bindings/phy/brcm,brcmstb-usb-phy.yaml
-index 4b8958d8c119..2d9ae83250ab 100644
---- a/Documentation/devicetree/bindings/phy/brcm,brcmstb-usb-phy.yaml
-+++ b/Documentation/devicetree/bindings/phy/brcm,brcmstb-usb-phy.yaml
-@@ -15,6 +15,7 @@ maintainers:
- properties:
-   compatible:
-     enum:
-+      - brcm,bcm4908-usb-phy
-       - brcm,bcm7211-usb-phy
-       - brcm,bcm7216-usb-phy
-       - brcm,brcmstb-usb-phy
-@@ -113,7 +114,9 @@ allOf:
-       properties:
-         compatible:
-           contains:
--            const: brcm,brcmstb-usb-phy
-+            enum:
-+              - const: brcm,bcm4908-usb-phy
-+              - const: brcm,brcmstb-usb-phy
-     then:
-       properties:
-         reg:
+diff --git a/drivers/phy/broadcom/Kconfig b/drivers/phy/broadcom/Kconfig
+index a1f1a9c90d0d..09256339bd04 100644
+--- a/drivers/phy/broadcom/Kconfig
++++ b/drivers/phy/broadcom/Kconfig
+@@ -91,10 +91,11 @@ config PHY_BRCM_SATA
+ 
+ config PHY_BRCM_USB
+ 	tristate "Broadcom STB USB PHY driver"
+-	depends on ARCH_BRCMSTB || COMPILE_TEST
++	depends on ARCH_BCM4908 || ARCH_BRCMSTB || COMPILE_TEST
+ 	depends on OF
+ 	select GENERIC_PHY
+ 	select SOC_BRCMSTB
++	default ARCH_BCM4908
+ 	default ARCH_BRCMSTB
+ 	help
+ 	  Enable this to support the Broadcom STB USB PHY.
+diff --git a/drivers/phy/broadcom/phy-brcm-usb.c b/drivers/phy/broadcom/phy-brcm-usb.c
+index 99fbc7e4138b..63f922a5f29b 100644
+--- a/drivers/phy/broadcom/phy-brcm-usb.c
++++ b/drivers/phy/broadcom/phy-brcm-usb.c
+@@ -285,6 +285,10 @@ static const struct match_chip_info chip_info_7445 = {
+ };
+ 
+ static const struct of_device_id brcm_usb_dt_ids[] = {
++	{
++		.compatible = "brcm,bcm4908-usb-phy",
++		.data = &chip_info_7445,
++	},
+ 	{
+ 		.compatible = "brcm,bcm7216-usb-phy",
+ 		.data = &chip_info_7216,
 -- 
 2.26.2
 
