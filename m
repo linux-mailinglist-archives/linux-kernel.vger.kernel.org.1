@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 59E462EC221
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 18:27:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 362D32EC227
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 18:28:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727741AbhAFR1L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Jan 2021 12:27:11 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37048 "EHLO mail.kernel.org"
+        id S1727861AbhAFR1d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Jan 2021 12:27:33 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37856 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727673AbhAFR1J (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Jan 2021 12:27:09 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 55CE22313B;
+        id S1726458AbhAFR1a (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 Jan 2021 12:27:30 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 80B7123125;
         Wed,  6 Jan 2021 17:26:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1609953970;
-        bh=OEfY3xiIt0gW1Vu5topX4y2S9ZQ4hVjPlvIpFKlKX/s=;
+        bh=QzYVEe2w9m6ajQtBPj6Eqq7V5BDvpziS9qabL6ZqwuA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nbcMT+Bnj0mELdy2cr3sCqurDMLU7J/NKqHNHJ4teZG8cf2zjHWuT90xZ2lSbi4a/
-         i9qBzGJmoAuU1xQhwxSf0mrQfIQw7TIM0OWclLUP3D0mvzAFj8XESKtX2tySpKao6Y
-         3E5nC8y2T/qOc3nHeo42sYWu79bWD6hm4B1yMSyJsl4UDaNSBRd7gJCPn2e6Q3x5qx
-         IaDPtWs7cAI843y2rp0FUWGfPfxaZMnnD1RWmsSxi87FKjacZh7ViOSXwcGKrczaJZ
-         6C8pYWRXmybJW3FWYfnOQIAXhzT35ddOQ9Jbs4hF/ldPHyQZ57hSzrE7QzbUiEb8uU
-         gQwO76EwHebvw==
+        b=Kom8LIBynpL5tWXFHebr4srWH5dgOqJOrjtyGhBHhQjmEglxo3Hs6f5viMkdeE/lL
+         rNBuMWPvqijzBSHcd8GUWCYU5SQEqPaJ3hf7kNzea2YecPRi+DH+6ydqV3xVme7kl5
+         vJ22Fi198qXus5HTHluWmk0jF1QDEpf1HRFsXBVnr1GoznuhwC0RxkOzxy4CKVV4Uv
+         iLPVW7rkcalmWbSVkHXLtr0OjbAogGWtpPvKjKgmpaWjpxk5AF86+h+i3SiRT+NW+j
+         llqZ3utEnd/tOCZWZ8py/mbgRVzLk/KrYVzDNriMyc6WxOY+Hcyw+CohlDZ+wQUVo2
+         FuUbleBsfq3Vw==
 From:   paulmck@kernel.org
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -31,103 +31,64 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         tglx@linutronix.de, peterz@infradead.org, rostedt@goodmis.org,
         dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
         oleg@redhat.com, joel@joelfernandes.org,
-        "Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH tip/core/rcu 06/20] torture: Add config2csv.sh script to compare torture scenarios
-Date:   Wed,  6 Jan 2021 09:25:53 -0800
-Message-Id: <20210106172607.22816-6-paulmck@kernel.org>
+        Frederic Weisbecker <frederic@kernel.org>,
+        "Paul E . McKenney" <paulmck@kernel.org>
+Subject: [PATCH tip/core/rcu 07/20] tools/rcutorture: Make identify_qemu_vcpus() independent of local language
+Date:   Wed,  6 Jan 2021 09:25:54 -0800
+Message-Id: <20210106172607.22816-7-paulmck@kernel.org>
 X-Mailer: git-send-email 2.9.5
 In-Reply-To: <20210106172547.GA22404@paulmck-ThinkPad-P72>
 References: <20210106172547.GA22404@paulmck-ThinkPad-P72>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Paul E. McKenney" <paulmck@kernel.org>
+From: Frederic Weisbecker <frederic@kernel.org>
 
-This commit adds a config2csv.sh script that converts the specified
-torture-test scenarios' Kconfig options and kernel-boot parameters to
-.csv format.  This allows easier comparison of scenarios when one fails
-and another does not.
+The rcutorture scripts' identify_qemu_vcpus() function expects `lscpu`
+to have a "CPU: " line, for example:
 
+	CPU(s):		8
+
+But different local language settings can give different results:
+
+	Processeur(s) :		8
+
+As a result, identify_qemu_vcpus() may return an empty string, resulting
+in the following warning (with the same local language settings):
+
+	kvm-test-1-run.sh: ligne 138 : test:  : nombre entier attendu comme expression
+
+This commit therefore changes identify_qemu_vcpus() to use getconf,
+which produces local-language-independend output.
+
+Cc: Josh Triplett <josh@joshtriplett.org>
+Cc: Steven Rostedt <rostedt@goodmis.org>
+Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Cc: Lai Jiangshan <jiangshanlai@gmail.com>
+Cc: rcu@vger.kernel.org
+Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- .../testing/selftests/rcutorture/bin/config2csv.sh | 67 ++++++++++++++++++++++
- 1 file changed, 67 insertions(+)
- create mode 100755 tools/testing/selftests/rcutorture/bin/config2csv.sh
+ tools/testing/selftests/rcutorture/bin/functions.sh | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/tools/testing/selftests/rcutorture/bin/config2csv.sh b/tools/testing/selftests/rcutorture/bin/config2csv.sh
-new file mode 100755
-index 0000000..d5a1663
---- /dev/null
-+++ b/tools/testing/selftests/rcutorture/bin/config2csv.sh
-@@ -0,0 +1,67 @@
-+#!/bin/sh
-+# SPDX-License-Identifier: GPL-2.0+
-+#
-+# Create a spreadsheet from torture-test Kconfig options and kernel boot
-+# parameters.  Run this in the directory containing the scenario files.
-+#
-+# Usage: config2csv path.csv [ "scenario1 scenario2 ..." ]
-+#
-+# By default, this script will take the list of scenarios from the CFLIST
-+# file in that directory, otherwise it will consider only the scenarios
-+# specified on the command line.  It will examine each scenario's file
-+# and also its .boot file, if present, and create a column in the .csv
-+# output file.  Note that "CFLIST" is a synonym for all the scenarios in the
-+# CFLIST file, which allows easy comparison of those scenarios with selected
-+# scenarios such as BUSTED that are normally omitted from CFLIST files.
-+
-+csvout=${1}
-+if test -z "$csvout"
-+then
-+	echo "Need .csv output file as first argument."
-+	exit 1
-+fi
-+shift
-+defaultconfigs="`tr '\012' ' ' < CFLIST`"
-+if test "$#" -eq 0
-+then
-+	scenariosarg=$defaultconfigs
-+else
-+	scenariosarg=$*
-+fi
-+scenarios="`echo $scenariosarg | sed -e "s/\<CFLIST\>/$defaultconfigs/g"`"
-+
-+T=/tmp/config2latex.sh.$$
-+trap 'rm -rf $T' 0
-+mkdir $T
-+
-+cat << '---EOF---' >> $T/p.awk
-+END	{
-+---EOF---
-+for i in $scenarios
-+do
-+	echo '	s["'$i'"] = 1;' >> $T/p.awk
-+	grep -v '^#' < $i | grep -v '^ *$' > $T/p
-+	if test -r $i.boot
-+	then
-+		tr -s ' ' '\012' < $i.boot | grep -v '^#' >> $T/p
-+	fi
-+	sed -e 's/^[^=]*$/&=?/' < $T/p |
-+	sed -e 's/^\([^=]*\)=\(.*\)$/\tp["\1:'"$i"'"] = "\2";\n\tc["\1"] = 1;/' >> $T/p.awk
-+done
-+cat << '---EOF---' >> $T/p.awk
-+	ns = asorti(s, ss);
-+	nc = asorti(c, cs);
-+	for (j = 1; j <= ns; j++)
-+		printf ",\"%s\"", ss[j];
-+	printf "\n";
-+	for (i = 1; i <= nc; i++) {
-+		printf "\"%s\"", cs[i];
-+		for (j = 1; j <= ns; j++) {
-+			printf ",\"%s\"", p[cs[i] ":" ss[j]];
-+		}
-+		printf "\n";
-+	}
-+}
-+---EOF---
-+awk -f $T/p.awk < /dev/null > $T/p.csv
-+cp $T/p.csv $csvout
+diff --git a/tools/testing/selftests/rcutorture/bin/functions.sh b/tools/testing/selftests/rcutorture/bin/functions.sh
+index 8266349..fef8b4b 100644
+--- a/tools/testing/selftests/rcutorture/bin/functions.sh
++++ b/tools/testing/selftests/rcutorture/bin/functions.sh
+@@ -232,7 +232,7 @@ identify_qemu_args () {
+ # Returns the number of virtual CPUs available to the aggregate of the
+ # guest OSes.
+ identify_qemu_vcpus () {
+-	lscpu | grep '^CPU(s):' | sed -e 's/CPU(s)://' -e 's/[ 	]*//g'
++	getconf _NPROCESSORS_ONLN
+ }
+ 
+ # print_bug
 -- 
 2.9.5
 
