@@ -2,139 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 391D12EBD0F
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 12:17:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 93E0A2EBD12
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 12:21:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725941AbhAFLQp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Jan 2021 06:16:45 -0500
-Received: from relay.sw.ru ([185.231.240.75]:49728 "EHLO relay3.sw.ru"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725788AbhAFLQo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Jan 2021 06:16:44 -0500
-Received: from [192.168.15.143]
-        by relay3.sw.ru with esmtp (Exim 4.94)
-        (envelope-from <ktkhai@virtuozzo.com>)
-        id 1kx6mG-00Fd6I-Ge; Wed, 06 Jan 2021 14:14:56 +0300
-Subject: Re: [v3 PATCH 09/11] mm: vmscan: don't need allocate
- shrinker->nr_deferred for memcg aware shrinkers
-To:     Yang Shi <shy828301@gmail.com>, guro@fb.com, shakeelb@google.com,
-        david@fromorbit.com, hannes@cmpxchg.org, mhocko@suse.com,
-        akpm@linux-foundation.org
-Cc:     linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210105225817.1036378-1-shy828301@gmail.com>
- <20210105225817.1036378-10-shy828301@gmail.com>
-From:   Kirill Tkhai <ktkhai@virtuozzo.com>
-Message-ID: <7c591313-08fd-4f98-6021-6dfa59f01aff@virtuozzo.com>
-Date:   Wed, 6 Jan 2021 14:15:07 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        id S1726011AbhAFLUq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Jan 2021 06:20:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55770 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725788AbhAFLUp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 Jan 2021 06:20:45 -0500
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 742CCC06134C;
+        Wed,  6 Jan 2021 03:20:05 -0800 (PST)
+Received: from zn.tnic (p200300ec2f096900a40cd61b64ba6652.dip0.t-ipconnect.de [IPv6:2003:ec:2f09:6900:a40c:d61b:64ba:6652])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id D668D1EC04A6;
+        Wed,  6 Jan 2021 12:20:02 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1609932003;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=GkbOGO3ttAQssPFItWpFkdwfZXTITZYEyMkEOic6szc=;
+        b=cXt344jMP5rmWn+UIdx3p+HWpGLCDOgbIkFDc7LG1jnLEbcTjm8T3k3cDkg0+F0RqhBClV
+        bELDXZG/XkIUtiZydY4K+xgXNs3S6D+zmAOo9iz5ZehWoBGBsduDIxBf0qG1m2AWZW3Bq2
+        Q3+kmIFcdpe4bwURYReTN9gsDk70zQk=
+Date:   Wed, 6 Jan 2021 12:19:58 +0100
+From:   Borislav Petkov <bp@alien8.de>
+To:     Reinette Chatre <reinette.chatre@intel.com>
+Cc:     tglx@linutronix.de, fenghua.yu@intel.com, tony.luck@intel.com,
+        kuo-lang.tseng@intel.com, shakeelb@google.com,
+        valentin.schneider@arm.com, mingo@redhat.com, babu.moger@amd.com,
+        james.morse@arm.com, hpa@zytor.com, x86@kernel.org,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Subject: Re: [PATCH V2 1/4] x86/resctrl: Use IPI instead of task_work_add()
+ to update PQR_ASSOC MSR
+Message-ID: <20210106111958.GD5729@zn.tnic>
+References: <cover.1608243147.git.reinette.chatre@intel.com>
+ <17aa2fb38fc12ce7bb710106b3e7c7b45acb9e94.1608243147.git.reinette.chatre@intel.com>
 MIME-Version: 1.0
-In-Reply-To: <20210105225817.1036378-10-shy828301@gmail.com>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+In-Reply-To: <17aa2fb38fc12ce7bb710106b3e7c7b45acb9e94.1608243147.git.reinette.chatre@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 06.01.2021 01:58, Yang Shi wrote:
-> Now nr_deferred is available on per memcg level for memcg aware shrinkers, so don't need
-> allocate shrinker->nr_deferred for such shrinkers anymore.
-> 
-> The prealloc_memcg_shrinker() would return -ENOSYS if !CONFIG_MEMCG or memcg is disabled
-> by kernel command line, then shrinker's SHRINKER_MEMCG_AWARE flag would be cleared.
-> This makes the implementation of this patch simpler.
-> 
-> Signed-off-by: Yang Shi <shy828301@gmail.com>
-> ---
->  mm/vmscan.c | 33 ++++++++++++++++++---------------
->  1 file changed, 18 insertions(+), 15 deletions(-)
-> 
-> diff --git a/mm/vmscan.c b/mm/vmscan.c
-> index f20ed8e928c2..d9795fb0f1c5 100644
-> --- a/mm/vmscan.c
-> +++ b/mm/vmscan.c
-> @@ -340,6 +340,9 @@ static int prealloc_memcg_shrinker(struct shrinker *shrinker)
->  {
->  	int id, ret = -ENOMEM;
->  
-> +	if (mem_cgroup_disabled())
-> +		return -ENOSYS;
-> +
->  	down_write(&shrinker_rwsem);
->  	/* This may call shrinker, so it must use down_read_trylock() */
->  	id = idr_alloc(&shrinker_idr, SHRINKER_REGISTERING, 0, 0, GFP_KERNEL);
-> @@ -424,7 +427,7 @@ static bool writeback_throttling_sane(struct scan_control *sc)
->  #else
->  static int prealloc_memcg_shrinker(struct shrinker *shrinker)
->  {
-> -	return 0;
-> +	return -ENOSYS;
+On Thu, Dec 17, 2020 at 02:31:18PM -0800, Reinette Chatre wrote:
+> +#ifdef CONFIG_SMP
+> +static void update_task_closid_rmid(struct task_struct *t)
+> +{
+> +	if (task_curr(t))
+> +		smp_call_function_single(task_cpu(t), _update_task_closid_rmid,
+> +					 t, 1);
 >  }
->  
->  static void unregister_memcg_shrinker(struct shrinker *shrinker)
-> @@ -535,8 +538,20 @@ unsigned long lruvec_lru_size(struct lruvec *lruvec, enum lru_list lru, int zone
->   */
->  int prealloc_shrinker(struct shrinker *shrinker)
->  {
-> -	unsigned int size = sizeof(*shrinker->nr_deferred);
-> +	unsigned int size;
-> +	int err;
-> +
-> +	if (shrinker->flags & SHRINKER_MEMCG_AWARE) {
-> +		err = prealloc_memcg_shrinker(shrinker);
-> +		if (!err)
-> +			return 0;
-> +		if (err != -ENOSYS)
-> +			return err;
-> +
-> +		shrinker->flags &= ~SHRINKER_MEMCG_AWARE;
+> +#else
+> +static void update_task_closid_rmid(struct task_struct *t)
+> +{
+> +	_update_task_closid_rmid(t);
+> +}
+> +#endif
 
-This looks very confusing.
+Why the ifdeffery? Why not simply:
 
-In case of you want to disable preallocation branch for !MEMCG case,
-you should firstly consider something like the below:
+static void update_task_closid_rmid(struct task_struct *t)
+{
+        if (IS_ENABLED(CONFIG_SMP) && task_curr(t))
+                smp_call_function_single(task_cpu(t), _update_task_closid_rmid, t, 1);
+        else
+                _update_task_closid_rmid(t);
+}
 
-#ifdef CONFIG_MEMCG
-#define SHRINKER_MEMCG_AWARE    (1 << 2)
-#else
-#define SHRINKER_MEMCG_AWARE    0
-#endif
+?
 
-> +	}
->  
-> +	size = sizeof(*shrinker->nr_deferred);
->  	if (shrinker->flags & SHRINKER_NUMA_AWARE)
->  		size *= nr_node_ids;
->  
-> @@ -544,26 +559,14 @@ int prealloc_shrinker(struct shrinker *shrinker)
->  	if (!shrinker->nr_deferred)
->  		return -ENOMEM;
->  
-> -	if (shrinker->flags & SHRINKER_MEMCG_AWARE) {
-> -		if (prealloc_memcg_shrinker(shrinker))
-> -			goto free_deferred;
-> -	}
->  
->  	return 0;
-> -
-> -free_deferred:
-> -	kfree(shrinker->nr_deferred);
-> -	shrinker->nr_deferred = NULL;
-> -	return -ENOMEM;
->  }
->  
->  void free_prealloced_shrinker(struct shrinker *shrinker)
->  {
-> -	if (!shrinker->nr_deferred)
-> -		return;
-> -
->  	if (shrinker->flags & SHRINKER_MEMCG_AWARE)
-> -		unregister_memcg_shrinker(shrinker);
-> +		return unregister_memcg_shrinker(shrinker);
->  
->  	kfree(shrinker->nr_deferred);
->  	shrinker->nr_deferred = NULL;
-> 
+If no particular reason, I'll change it before committing.
 
+Thx.
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
