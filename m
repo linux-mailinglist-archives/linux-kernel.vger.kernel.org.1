@@ -2,147 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CBFC2EB8D6
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 05:24:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C4082EB8D4
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 05:20:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726195AbhAFEVR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 23:21:17 -0500
-Received: from userp2130.oracle.com ([156.151.31.86]:43580 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726019AbhAFEVQ (ORCPT
+        id S1725922AbhAFEUD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 23:20:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46626 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725803AbhAFEUC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 23:21:16 -0500
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 1064DSFa160206;
-        Wed, 6 Jan 2021 04:18:15 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
- from : message-id : references : date : in-reply-to : content-type :
- mime-version; s=corp-2020-01-29;
- bh=un0epo6bN0em3f/UE7dpIGLGveDgyB0omRQVZI/u0EY=;
- b=D3KHwAe2nCa5r3zTWyAFeSSRersq5XS29/rCPMVvfMqtLHy8PNtIDxvslCMpCjdZJZFO
- +0xL0hAaflrhqWzBL0Je0Fv/grDiMcPDNjR4mm/q+cQaJOVMpvOCXnHECMZGoN3/YbN7
- 6RzpgbKre3hkQB+IONYbI8+QuD4f5fmSNskMej/ogRISnb6uzHHAOsSqNCDAbXOGPAv8
- z5igHR8Mk+SuPVnts2rsql7dsGsfwT5FDoKoFEFwOtysl65GKiAcvzSSpLhxRGH4dp3M
- UAdPv4frhWu3PofpjYd/P5hNNzmKJDzqyP31SzSvKbIk/TvRfDin7etnJUG7hT8xsI+h Rw== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by userp2130.oracle.com with ESMTP id 35w53b03qc-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 06 Jan 2021 04:18:15 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 1064Eod9057556;
-        Wed, 6 Jan 2021 04:18:14 GMT
-Received: from nam02-sn1-obe.outbound.protection.outlook.com (mail-sn1nam02lp2050.outbound.protection.outlook.com [104.47.36.50])
-        by aserp3020.oracle.com with ESMTP id 35v1f9exxw-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 06 Jan 2021 04:18:14 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=DKABHQ2jHtfl2+yuiliTS83Ft24YyUUiguimyQVO99VNrCftUjep0Ba09P/8zDuxktUT8E9C2pwSziMQT7b76Ik+jzu5YkbKkE0p5WDQ/9d2ea/hMC42EWxkVSpbVLDLQ/kZ2ddHT3XdSoKX+vU+01i/b+b7SCVhn/Yw6WOqbdrOSV8VZrRg8RBFZDU1RWdjZgkb+9yJvIZtUs1o0OsAhsvvdiVL6sEi81HCcQ9rhuIUcDgqsr+t+NiXb4MfaG/LWv+ZLQHJMRGOlIWZJFr3/NT919FHcDnzHaRfS1LRJmROtIRpGTTT/A7VQYrywam7+ByHR38HvkFQKixdAgHTHw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=un0epo6bN0em3f/UE7dpIGLGveDgyB0omRQVZI/u0EY=;
- b=cqlBNXTQphCrmgCVy1gyvMfQrsrqTUzINSC8V9X6Pf7McA6wTuVaFsfCX/XVKpVEnLbwBUXsxPhSI3kuuDG6ENOUJI9Dq0b4CasJL7cORLUFbe0JvPDlTyMCJgGr1A4QP3qtp8wrF7+XfqHGkYZbWPmSNUKAbfZdPvD96OXRvLFBemU2PEj6DwhBXXKaM70gEkSk7dQFdkm0xJ2ER7z3vjINTllQ+obnrFMZG7x1QuIALKBlsKZO3VUQpAHfn1KLdO9i+e+vEah9f7LhhkEg7+jiiVpbDnKIlv0PVCVZj8yQv55sKaGznhYUN1wGRo6lVA8PR+Z0Pi8uQK/2w4Meng==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
+        Tue, 5 Jan 2021 23:20:02 -0500
+Received: from mail-qk1-x72d.google.com (mail-qk1-x72d.google.com [IPv6:2607:f8b0:4864:20::72d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 955E4C061357
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Jan 2021 20:19:22 -0800 (PST)
+Received: by mail-qk1-x72d.google.com with SMTP id v126so1507395qkd.11
+        for <linux-kernel@vger.kernel.org>; Tue, 05 Jan 2021 20:19:22 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=un0epo6bN0em3f/UE7dpIGLGveDgyB0omRQVZI/u0EY=;
- b=bqdAMM2UauTqZmsog5crCx7/Yd1IczgcwjQ15Gh5hQQuPAf8Bq+FzL6wj59IW0unrlro/P6OEC9gxCRCPxNB+EbJFdWKhDm5vigUuZeuljB5WRgJdEwOjPvstJ2UH2TcMZgOpL4o6o0dfv714etBJTzxeWE42urF6qodnKC7tPA=
-Authentication-Results: huawei.com; dkim=none (message not signed)
- header.d=none;huawei.com; dmarc=none action=none header.from=oracle.com;
-Received: from PH0PR10MB4759.namprd10.prod.outlook.com (2603:10b6:510:3d::12)
- by PH0PR10MB4661.namprd10.prod.outlook.com (2603:10b6:510:42::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3742.6; Wed, 6 Jan
- 2021 04:18:12 +0000
-Received: from PH0PR10MB4759.namprd10.prod.outlook.com
- ([fe80::54f3:a8aa:a2cd:a3a4]) by PH0PR10MB4759.namprd10.prod.outlook.com
- ([fe80::54f3:a8aa:a2cd:a3a4%5]) with mapi id 15.20.3742.006; Wed, 6 Jan 2021
- 04:18:12 +0000
-To:     John Garry <john.garry@huawei.com>
-Cc:     <jejb@linux.ibm.com>, <martin.petersen@oracle.com>,
-        <linux-scsi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linuxarm@openeuler.org>, <maz@kernel.org>,
-        <kashyap.desai@broadcom.com>
-Subject: Re: [PATCH 0/2] hisi_sas: Expose hw queues for v2 hw and remove
- unused code
-From:   "Martin K. Petersen" <martin.petersen@oracle.com>
-Organization: Oracle Corporation
-Message-ID: <yq11reyg0uc.fsf@ca-mkp.ca.oracle.com>
-References: <1609763622-34119-1-git-send-email-john.garry@huawei.com>
-Date:   Tue, 05 Jan 2021 23:18:08 -0500
-In-Reply-To: <1609763622-34119-1-git-send-email-john.garry@huawei.com> (John
-        Garry's message of "Mon, 4 Jan 2021 20:33:40 +0800")
-Content-Type: text/plain
-X-Originating-IP: [138.3.200.58]
-X-ClientProxiedBy: DM5PR1401CA0014.namprd14.prod.outlook.com
- (2603:10b6:4:4a::24) To PH0PR10MB4759.namprd10.prod.outlook.com
- (2603:10b6:510:3d::12)
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=u+rZTgPQ/0tYd3Q31a5yndOfQlqM+ffAw2M2RQLrP9Q=;
+        b=yrawTDvHsjFvSCz1+bQA79KljxWL4RkQREP8vqoQRrSudyNjL5fvJ+fvKe+8rtM0h6
+         iexQ5282IhJyo/AJA4Vkss2w+huVTU25wQu0Z9hhA8zPCQhDa7GLg1tbq5Ad3vOF3KY2
+         tOFmI8+lizcZuiVHMWBv8Gvjo86caYhDU1c4MOOh/W47oV6OMEbx3NHutFYqiPNoat+j
+         d0vcv84v+g1B24EhOq8XSeNAczGCoCjWHy3IutJpdz3yaEa3Ewu/af7W2qMn42yc88uW
+         3xKgU4JtddiepxaeVRab4r6gWgdYxTm11S0Bg5UDi76a6OlE5Uksv5v91bxCKn9GH8HB
+         2UPA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=u+rZTgPQ/0tYd3Q31a5yndOfQlqM+ffAw2M2RQLrP9Q=;
+        b=bQtyq4lffHFe9eqtAgttHItKrUtU2lYZ8KEJ4zLwcg9xfijyISH9GH0L54RQHeYOGu
+         HE4gg97ujLOxjeXRp4IgPlErnhf6Oci8JLc5hR6cPkObIkNPSSeJ5c9J8W0GtvtjT3Uo
+         DgR9wAlobdytop8QvUDYbo8ZeXETkW3TwWAsy97KnL769OWBjpVnBtPNrrKpvgpT5ci3
+         sIb/1fL/mApj/adt3TNfBxgWuKtsz0TYFDpoXA496VXkclVs9f5v194hQeBXSwfn8IRM
+         kx8UYAt+kdkUFSIsBBgEPoRCbY+2OcO7gtHcRERyfZHbjhNW15zrHclDWaSgxZs1/U2L
+         twAw==
+X-Gm-Message-State: AOAM533or5mh2jv90nxd2DuJXrmt+d7aV7BiUqoFUk4ZI9CQUtfBQXIg
+        ad0wSamksicdgNmilLFsJ7VRcJ+IEAEV1Q==
+X-Google-Smtp-Source: ABdhPJxbIickrC2TsmgL5GUzwX9jnmOjni5nZnGWx8E2KzrC15rbaZoNRbshNcXAhQK23LuRgEzCZw==
+X-Received: by 2002:a37:b204:: with SMTP id b4mr2789502qkf.72.1609906761519;
+        Tue, 05 Jan 2021 20:19:21 -0800 (PST)
+Received: from [172.22.22.4] (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
+        by smtp.googlemail.com with ESMTPSA id 1sm796693qki.50.2021.01.05.20.19.20
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 05 Jan 2021 20:19:20 -0800 (PST)
+Subject: Re: [PATCH] rpmsg: glink: add a header file
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        kernel test robot <lkp@intel.com>
+Cc:     agross@kernel.org, ohad@wizery.com, kbuild-all@lists.01.org,
+        linux-arm-msm@vger.kernel.org, linux-remoteproc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210105235528.32538-1-elder@linaro.org>
+ <202101061021.f4FjA3GK-lkp@intel.com> <X/U2MmdpU96WdUGw@builder.lan>
+From:   Alex Elder <elder@linaro.org>
+Message-ID: <f2325ccf-3d59-0c26-9371-20734cc61376@linaro.org>
+Date:   Tue, 5 Jan 2021 22:19:19 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from ca-mkp.ca.oracle.com (138.3.200.58) by DM5PR1401CA0014.namprd14.prod.outlook.com (2603:10b6:4:4a::24) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3742.6 via Frontend Transport; Wed, 6 Jan 2021 04:18:11 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: b09d5b6f-12ae-468e-dd4a-08d8b1fa14fc
-X-MS-TrafficTypeDiagnostic: PH0PR10MB4661:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <PH0PR10MB4661DC26F0722E82077B380B8ED00@PH0PR10MB4661.namprd10.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:4714;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: PhU0lYfoolgiOYS82vI0jOeaKXDaO7zZJ/zYXCZrcUMH4u5LLicRk11Qqd47oqSlUmbR9Q0JPrbg74yMpAf0kklSxSAlSJrRZoA4LHeRJDGu+ktErvzSkfr8cVYPbNYk5TTeqDuPdPiCXDtCayTAkVvIdbPHkGdljpKFoyTB+UMHBBqUbTNSfR87tg6RRVqaU0DaX5RoHSIw/kSNsQ2GbbJbmGrQnQRMxJkJ+jUcukZoIlCjhKXYqPmzdUd38eOAESm3c2HEZ/CSTepVm/mVx2HLGacv4E0TMNFsMVjGElWMa/UQVu/0Aj0NAnXutP9r29xdgOzNjvKG4GzlBJ4BYDBvZNyTM8qR8ID/xwTnNG9SPPHFuO9z5eq/5frErUXdbxlGJNYCKiuwG1hpkpyZDA==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR10MB4759.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(346002)(396003)(136003)(39830400003)(376002)(366004)(558084003)(2906002)(316002)(6916009)(66476007)(4326008)(66556008)(54906003)(52116002)(36916002)(7696005)(478600001)(5660300002)(6666004)(8676002)(8936002)(16526019)(26005)(186003)(55016002)(956004)(86362001)(66946007);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?cAKaiwdmYz8ve6xbWj7j8S3y9ad2yx2HH4E3Jzl3ErwIzHMBNRhX9Xgcz/ga?=
- =?us-ascii?Q?pwPdOhbhWPUGt5eNjMBoRq4mY4r7dx741wa134bsWM2MHoOXpjR2zzdNLRKP?=
- =?us-ascii?Q?DZNy9kooBqFJYhNLuX7ddse2NBG1D4MX/HJdyWgBu3Dy5ikBdvxqTDsykz/z?=
- =?us-ascii?Q?9ZmCMTNYza9Drmpk+noFUOpbwJZxp7iqKcqrQfkN4hfclYtFeqOG2ToZqlPg?=
- =?us-ascii?Q?jP+yEj9aBx9dVRS9dfF1Lc1OtMYz1BYOXrlxN80FOusKqKruQfb9qVDKch3j?=
- =?us-ascii?Q?riU6HumTNCwl08cuH7E/U3YbNRfzDwJjuTkafcSlS6idF7crCfp8To9BXOyd?=
- =?us-ascii?Q?YtNnUhEWlhzT+2XHeA1Jn9Y3cbN1qYrOOoEIpg74FiGygF/IzxBwY/4YfMLl?=
- =?us-ascii?Q?a7CroX+jFXhjPdjD5mi5B+lnuXU2zCmyTF4qjn4xNC9h7FncpZ4xlGVqSj3a?=
- =?us-ascii?Q?D6Jhk4eMKFoqSSs1O1coy5T2nCSe+tUoKgampcneKmunZGOjB1QhY/Nv0Xfq?=
- =?us-ascii?Q?/nButcJkmrxqfjO3k9IIR1ccRyd1RWYdAM5/+31d4DtLhivfgWdfFQCi6Z1w?=
- =?us-ascii?Q?1miFl8ST0mNnnsoWkYNP34YzMeBtUIkalUW6u72YBV2zXxuJ8Y/PFYtLhB41?=
- =?us-ascii?Q?yYkKQCBUFxC/6wJE922cpgM2OPNh+hC8O8LrPzvgnJP+4DqG4KUAf4qdYmYO?=
- =?us-ascii?Q?UBBW2L33eRiDDE6TkYsa5KnCLWouwIwxf3CEmwaikpw/V1G8VGtG47dKs7Eg?=
- =?us-ascii?Q?jsNyvGefYPOmTN7Azbo7SmZUetiFb0w+jELvaUYmvl3RaGdI4KpLqEwpUl2v?=
- =?us-ascii?Q?AiNXYvlEgjjm/3wsebhHCMQxEt2lc7TFX3s5ENa4wk6nCYNCFc//qKP07pO+?=
- =?us-ascii?Q?cZ7Pn2979kyE8vGTQ+P5lrHZfj3RKwhr/SNLFJG2NjuFOZ4CVVJzfCJyyJYv?=
- =?us-ascii?Q?/emo6Ml2QYAv51/5IOw3irwW0uYvcY9PtNsfR44ik3c=3D?=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR10MB4759.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Jan 2021 04:18:12.3438
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-Network-Message-Id: b09d5b6f-12ae-468e-dd4a-08d8b1fa14fc
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: dCzuuAy5wBvXj+hNcyzLvUSM42K/t2iYbY4ksZXIoPwWqwBtpYjuNosuyTO61dotli7JfAodgQsS6plfXoyigAJ8PDWadSzx55P2afYvQBU=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR10MB4661
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9855 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=819 phishscore=0
- suspectscore=0 spamscore=0 bulkscore=0 adultscore=0 mlxscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2101060024
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9855 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 clxscore=1011 adultscore=0
- priorityscore=1501 lowpriorityscore=0 phishscore=0 malwarescore=0
- mlxlogscore=994 bulkscore=0 impostorscore=0 spamscore=0 suspectscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2101060024
+In-Reply-To: <X/U2MmdpU96WdUGw@builder.lan>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 1/5/21 10:01 PM, Bjorn Andersson wrote:
+> On Tue 05 Jan 20:42 CST 2021, kernel test robot wrote:
+> 
+>> Hi Alex,
+>>
+>> I love your patch! Yet something to improve:
+>>
+> 
+> Alex, this turns out to be an existing problem. Please have a look at my
+> proposal for a fix here:
+> 
+> https://lore.kernel.org/linux-remoteproc/20210106035905.4153692-1-bjorn.andersson@linaro.org/T/#u
+> 
+> If you like it I can merge it and then apply this patch on top.
 
-John,
+Go ahead and merge your patch.  If you are sure mine will
+work afterward (I think it will) I would be happy to have
+you accept that as well.  Thanks.
 
-> Patch "scsi: hisi_sas: Expose HW queues for v2 hw" was not merged for
-> v5.11, so resending for v5.12.
+					-Alex
 
-Any changes to it? 5.11/postmerge is sitting in my fixes branch.
+> 
+> Thanks,
+> Bjorn
+> 
+>> [auto build test ERROR on linus/master]
+>> [also build test ERROR on v5.11-rc2 next-20210104]
+>> [If your patch is applied to the wrong git tree, kindly drop us a note.
+>> And when submitting patch, we suggest to use '--base' as documented in
+>> https://git-scm.com/docs/git-format-patch]
+>>
+>> url:    https://github.com/0day-ci/linux/commits/Alex-Elder/rpmsg-glink-add-a-header-file/20210106-080024
+>> base:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git e71ba9452f0b5b2e8dc8aa5445198cd9214a6a62
+>> config: x86_64-randconfig-s021-20210106 (attached as .config)
+>> compiler: gcc-9 (Debian 9.3.0-15) 9.3.0
+>> reproduce:
+>>          # apt-get install sparse
+>>          # sparse version: v0.6.3-208-g46a52ca4-dirty
+>>          # https://github.com/0day-ci/linux/commit/333b19e6f90b89d18b94be972c0823959373dad8
+>>          git remote add linux-review https://github.com/0day-ci/linux
+>>          git fetch --no-tags linux-review Alex-Elder/rpmsg-glink-add-a-header-file/20210106-080024
+>>          git checkout 333b19e6f90b89d18b94be972c0823959373dad8
+>>          # save the attached .config to linux build tree
+>>          make W=1 C=1 CF='-fdiagnostic-prefix -D__CHECK_ENDIAN__' ARCH=x86_64
+>>
+>> If you fix the issue, kindly add following tag as appropriate
+>> Reported-by: kernel test robot <lkp@intel.com>
+>>
+>> All errors (new ones prefixed by >>):
+>>
+>>>> drivers/rpmsg/qcom_glink_ssr.c:65:6: error: redefinition of 'qcom_glink_ssr_notify'
+>>        65 | void qcom_glink_ssr_notify(const char *ssr_name)
+>>           |      ^~~~~~~~~~~~~~~~~~~~~
+>>     In file included from drivers/rpmsg/qcom_glink_ssr.c:11:
+>>     include/linux/rpmsg/qcom_glink.h:27:20: note: previous definition of 'qcom_glink_ssr_notify' was here
+>>        27 | static inline void qcom_glink_ssr_notify(const char *ssr_name) {}
+>>           |                    ^~~~~~~~~~~~~~~~~~~~~
+>>
+>>
+>> vim +/qcom_glink_ssr_notify +65 drivers/rpmsg/qcom_glink_ssr.c
+>>
+>> 5d1f2e3c8090c07 drivers/soc/qcom/glink_ssr.c Bjorn Andersson 2020-04-22  60
+>> 5d1f2e3c8090c07 drivers/soc/qcom/glink_ssr.c Bjorn Andersson 2020-04-22  61  /**
+>> 5d1f2e3c8090c07 drivers/soc/qcom/glink_ssr.c Bjorn Andersson 2020-04-22  62   * qcom_glink_ssr_notify() - notify GLINK SSR about stopped remoteproc
+>> 5d1f2e3c8090c07 drivers/soc/qcom/glink_ssr.c Bjorn Andersson 2020-04-22  63   * @ssr_name:	name of the remoteproc that has been stopped
+>> 5d1f2e3c8090c07 drivers/soc/qcom/glink_ssr.c Bjorn Andersson 2020-04-22  64   */
+>> 5d1f2e3c8090c07 drivers/soc/qcom/glink_ssr.c Bjorn Andersson 2020-04-22 @65  void qcom_glink_ssr_notify(const char *ssr_name)
+>> 5d1f2e3c8090c07 drivers/soc/qcom/glink_ssr.c Bjorn Andersson 2020-04-22  66  {
+>> 5d1f2e3c8090c07 drivers/soc/qcom/glink_ssr.c Bjorn Andersson 2020-04-22  67  	blocking_notifier_call_chain(&ssr_notifiers, 0, (void *)ssr_name);
+>> 5d1f2e3c8090c07 drivers/soc/qcom/glink_ssr.c Bjorn Andersson 2020-04-22  68  }
+>> 5d1f2e3c8090c07 drivers/soc/qcom/glink_ssr.c Bjorn Andersson 2020-04-22  69  EXPORT_SYMBOL_GPL(qcom_glink_ssr_notify);
+>> 5d1f2e3c8090c07 drivers/soc/qcom/glink_ssr.c Bjorn Andersson 2020-04-22  70
+>>
+>> ---
+>> 0-DAY CI Kernel Test Service, Intel Corporation
+>> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+> 
+> 
 
--- 
-Martin K. Petersen	Oracle Linux Engineering
