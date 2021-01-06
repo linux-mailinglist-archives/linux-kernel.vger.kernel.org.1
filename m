@@ -2,116 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1DDF2EC3EB
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 20:32:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A4722EC3EC
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 20:32:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726890AbhAFTad (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Jan 2021 14:30:33 -0500
-Received: from mx12.kaspersky-labs.com ([91.103.66.155]:29384 "EHLO
-        mx12.kaspersky-labs.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726366AbhAFTac (ORCPT
+        id S1727100AbhAFTbX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Jan 2021 14:31:23 -0500
+Received: from aserp2130.oracle.com ([141.146.126.79]:52030 "EHLO
+        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726490AbhAFTbX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Jan 2021 14:30:32 -0500
-Received: from relay12.kaspersky-labs.com (unknown [127.0.0.10])
-        by relay12.kaspersky-labs.com (Postfix) with ESMTP id 7595078C48;
-        Wed,  6 Jan 2021 22:29:48 +0300 (MSK)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kaspersky.com;
-        s=mail; t=1609961388;
-        bh=uPbj9POde78FdvKvzqkCOR6EdnAvoxjENfLChHuiiPY=;
-        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type;
-        b=M5sskh+UWznmJZ7jcWeqPaGVx4xlQ2mvd1ykKwx6Q6uWG9DxHHcl/oAlhNcVdKa3U
-         8DIDyvdb825x+Lrfq0sG76f4tobjCfufAI60kXSRDp2eluv+3DhEXGGYn5S9e8i8Yh
-         CCpc7W1ljH3eILTQFIoeInjmXkA4PNN00prFMB24=
-Received: from mail-hq2.kaspersky.com (unknown [91.103.66.206])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (Client CN "mail-hq2.kaspersky.com", Issuer "Kaspersky MailRelays CA G3" (verified OK))
-        by mailhub12.kaspersky-labs.com (Postfix) with ESMTPS id 3532B78C0E;
-        Wed,  6 Jan 2021 22:29:48 +0300 (MSK)
-Received: from [10.16.171.77] (10.64.68.128) by hqmailmbx3.avp.ru
- (10.64.67.243) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2044.4; Wed, 6 Jan
- 2021 22:29:46 +0300
-Subject: Re: [PATCH 4/5] af_vsock: add socket ops for SOCK_SEQPACKET.
-To:     stsp <stsp2@yandex.ru>, Stefan Hajnoczi <stefanha@redhat.com>,
-        Stefano Garzarella <sgarzare@redhat.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Andra Paraschiv <andraprs@amazon.com>,
-        Jorgen Hansen <jhansen@vmware.com>,
-        Arseniy Krasnov <oxffffaa@gmail.com>,
-        Colin Ian King <colin.king@canonical.com>,
-        Jeff Vander Stoep <jeffv@google.com>
-CC:     "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "virtualization@lists.linux-foundation.org" 
-        <virtualization@lists.linux-foundation.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <20210103195454.1954169-1-arseny.krasnov@kaspersky.com>
- <20210103200421.1956545-1-arseny.krasnov@kaspersky.com>
- <f790ca57-cec9-4884-c8e5-bf8806364dd7@yandex.ru>
-From:   Arseny Krasnov <arseny.krasnov@kaspersky.com>
-Message-ID: <2420227d-67b5-46df-e10e-e7822253ce94@kaspersky.com>
-Date:   Wed, 6 Jan 2021 22:29:45 +0300
+        Wed, 6 Jan 2021 14:31:23 -0500
+Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
+        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 106JSl8n085070;
+        Wed, 6 Jan 2021 19:30:30 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=lYqY4R4rCGt7CcD1/khqbNBn6sz24a509rvrObgWS+A=;
+ b=Dg4Iin60anhc9VgLpxCM4XDI+eucaWctPxKpeR6xHqbLwlI4digrKKbQk5HGM2+iS0iX
+ f6x/gCi6VofvrXnuqBcNTvJKz4vp4W17k59ir0oORtuc6uWHFnC0ZtepOXhFalZO6v1X
+ 6bu6w0sDPzZ71z9oZxtUfFZOuagwVLp6pvNrPSAL0AT+WpJI0cy9R40XdT8fvRvYQa2V
+ iiFR6Sd34E1APZvYCfWvzp2B0z9xkgDFFIP3LQYhdFDtcp1ujlkkGAzAZUDnEl7FbDVE
+ VlGnhBMw9taCFaHhtBEhxHJrJqUANpaWCp6PDzbhfOygBLWG8dHQphMYbwNyL2H7nuxk HA== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by aserp2130.oracle.com with ESMTP id 35wcuxsvwu-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 06 Jan 2021 19:30:30 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 106JKtBg148451;
+        Wed, 6 Jan 2021 19:30:29 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by aserp3020.oracle.com with ESMTP id 35v1fa8af9-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 06 Jan 2021 19:30:29 +0000
+Received: from abhmp0010.oracle.com (abhmp0010.oracle.com [141.146.116.16])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 106JUQHR020391;
+        Wed, 6 Jan 2021 19:30:27 GMT
+Received: from [192.168.2.112] (/50.38.35.18)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Wed, 06 Jan 2021 11:30:26 -0800
+Subject: Re: [PATCH v2 2/6] mm: hugetlbfs: fix cannot migrate the fallocated
+ HugeTLB page
+To:     Michal Hocko <mhocko@suse.com>,
+        Muchun Song <songmuchun@bytedance.com>
+Cc:     akpm@linux-foundation.org, n-horiguchi@ah.jp.nec.com,
+        ak@linux.intel.com, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+References: <20210106084739.63318-1-songmuchun@bytedance.com>
+ <20210106084739.63318-3-songmuchun@bytedance.com>
+ <20210106163513.GS13207@dhcp22.suse.cz>
+From:   Mike Kravetz <mike.kravetz@oracle.com>
+Message-ID: <7e69a55c-d501-6b42-8225-a677f09fb829@oracle.com>
+Date:   Wed, 6 Jan 2021 11:30:25 -0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+ Thunderbird/68.1.1
 MIME-Version: 1.0
-In-Reply-To: <f790ca57-cec9-4884-c8e5-bf8806364dd7@yandex.ru>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <20210106163513.GS13207@dhcp22.suse.cz>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-X-Originating-IP: [10.64.68.128]
-X-ClientProxiedBy: hqmailmbx3.avp.ru (10.64.67.243) To hqmailmbx3.avp.ru
- (10.64.67.243)
-X-KSE-ServerInfo: hqmailmbx3.avp.ru, 9
-X-KSE-AntiSpam-Interceptor-Info: scan successful
-X-KSE-AntiSpam-Version: 5.9.16, Database issued on: 01/06/2021 19:07:02
-X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
-X-KSE-AntiSpam-Method: none
-X-KSE-AntiSpam-Rate: 0
-X-KSE-AntiSpam-Info: Lua profiles 160996 [Jan 06 2021]
-X-KSE-AntiSpam-Info: LuaCore: 419 419 70b0c720f8ddd656e5f4eb4a4449cf8ce400df94
-X-KSE-AntiSpam-Info: Version: 5.9.16.0
-X-KSE-AntiSpam-Info: Envelope from: arseny.krasnov@kaspersky.com
-X-KSE-AntiSpam-Info: {Tracking_content_type, plain}
-X-KSE-AntiSpam-Info: {Tracking_date, moscow}
-X-KSE-AntiSpam-Info: {Tracking_c_tr_enc, eight_bit}
-X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
-X-KSE-AntiSpam-Info: d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;127.0.0.199:7.1.2;kaspersky.com:7.1.1
-X-KSE-AntiSpam-Info: Rate: 0
-X-KSE-AntiSpam-Info: Status: not_detected
-X-KSE-AntiSpam-Info: Method: none
-X-KSE-Antiphishing-Info: Clean
-X-KSE-Antiphishing-ScanningType: Deterministic
-X-KSE-Antiphishing-Method: None
-X-KSE-Antiphishing-Bases: 01/06/2021 19:10:00
-X-KSE-AttachmentFiltering-Interceptor-Info: no applicable attachment filtering
- rules found
-X-KSE-Antivirus-Interceptor-Info: scan successful
-X-KSE-Antivirus-Info: Clean, bases: 06.01.2021 15:19:00
-X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
-X-KSE-AttachmentFiltering-Interceptor-Info: no applicable attachment filtering
- rules found
-X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
-X-KLMS-Rule-ID: 52
-X-KLMS-Message-Action: clean
-X-KLMS-AntiSpam-Status: not scanned, disabled by settings
-X-KLMS-AntiSpam-Interceptor-Info: not scanned
-X-KLMS-AntiPhishing: Clean, bases: 2021/01/06 17:58:00
-X-KLMS-AntiVirus: Kaspersky Security for Linux Mail Server, version 8.0.3.30, bases: 2021/01/06 15:19:00 #16022888
-X-KLMS-AntiVirus-Status: Clean, skipped
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9856 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 phishscore=0
+ suspectscore=0 spamscore=0 bulkscore=0 adultscore=0 mlxscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2101060108
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9856 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 bulkscore=0
+ clxscore=1015 spamscore=0 impostorscore=0 priorityscore=1501 mlxscore=0
+ adultscore=0 mlxlogscore=999 lowpriorityscore=0 phishscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2101060109
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> Is ENODEV the right error here?
-> Just a quick look at a man page, and
-> I am under impression something like
-> EPROTONOSUPPORT or ESOCKNOSUPPORT
-> may suit?
+On 1/6/21 8:35 AM, Michal Hocko wrote:
+> On Wed 06-01-21 16:47:35, Muchun Song wrote:
+>> Because we only can isolate a active page via isolate_huge_page()
+>> and hugetlbfs_fallocate() forget to mark it as active, we cannot
+>> isolate and migrate those pages.
+> 
+> I've little bit hard time to understand this initially and had to dive
+> into the code to make sense of it. I would consider the following
+> wording easier to grasp. Feel free to reuse if you like.
+> "
+> If a new hugetlb page is allocated during fallocate it will not be
+> marked as active (set_page_huge_active) which will result in a later
+> isolate_huge_page failure when the page migration code would like to
+> move that page. Such a failure would be unexpected and wrong.
+> "
+> 
+> Now to the fix. I believe that this patch shows that the
+> set_page_huge_active is just too subtle. Is there any reason why we
+> cannot make all freshly allocated huge pages active by default?
 
-I used ENODEV because this code is returned some
-lines below when !new_transport(e.g. valid transport
-not found). But i think you codes will be also ok.
-
+I looked into that yesterday.  The primary issue is in page fault code,
+hugetlb_no_page is an example.  If page_huge_active is set, then it can
+be isolated for migration.  So, migration could race with the page fault
+and the page could be migrated before being added to the page table of
+the faulting task.  This was an issue when hugetlb_no_page set_page_huge_active
+right after allocating and clearing the huge page.  Commit cb6acd01e2e4
+moved the set_page_huge_active after adding the page to the page table
+to address this issue.
+-- 
+Mike Kravetz
