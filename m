@@ -2,175 +2,263 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7201E2EB858
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 04:08:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E2BFA2EB85A
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 04:10:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726308AbhAFDHz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 22:07:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35452 "EHLO
+        id S1726837AbhAFDIj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 22:08:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35564 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725817AbhAFDHz (ORCPT
+        with ESMTP id S1726239AbhAFDIj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 22:07:55 -0500
-Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B925C06134D
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Jan 2021 19:07:15 -0800 (PST)
-Received: by mail-pf1-x430.google.com with SMTP id m6so906716pfm.6
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Jan 2021 19:07:15 -0800 (PST)
+        Tue, 5 Jan 2021 22:08:39 -0500
+Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94A52C06134C;
+        Tue,  5 Jan 2021 19:07:58 -0800 (PST)
+Received: by mail-ej1-x62b.google.com with SMTP id ga15so3279196ejb.4;
+        Tue, 05 Jan 2021 19:07:58 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=YoqUb6rHjvyc1tWs/2rkmXC92ndzOCiq60lMMpB44Fg=;
-        b=kG3TPIyItVDnXOEeD9DyvUY3lNR5WbE4FOsW4duAUMvGdfuBFQQvI/vcqRNN1rBoBY
-         tChS9/ObgtW2P5+jYIvm1Ij9bUsD8clsnrhZGilV3zm18t+2XnqltnwSEYvQwGnlr1th
-         POFRIFuo4xxpSfe4LGITQ8mTCntDOLJAoVK23ADFs57U9IK4q4jkIa8UncnZp/94YYgZ
-         R8XWWU2QQfMxFVQyUfHLiIqvImE58SnkCOQeI37mU34sri0O/7p7kRdqOUCYpkBawfoC
-         x/kr8qFmtQDlkwdXzIHZ29CfoE8/pDYvtzjKnRIe2FPDh/ZbAEoEQfe91/qOAQ3ZNxz1
-         WqhA==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Zg2coLqP9nU4JTLHR8kEQ7+2/BPytE7hyghpbsYNA8Q=;
+        b=QAkHOBIABmqEMm4vQ28qot1k2Ngb50RUWs8s/0617cyS9lvR+qjpm/bLFBeSg1txo3
+         ymi7qJxAB6KfToui61+put7CZ95SFKfsXtgjx4bgghJT3HzQc7rxqBTO8Rya7R6cTVZM
+         dCnU/bttAdy/Yiwi9mBV6NP1iX1DG9V+TEXVub1vgeJxU8AeBdFsELqJJ8akSgDIfQUX
+         ENi7g+NYkcmLJVq9SqZG9MfGFfAjhf2eKwlQZOqt8ai8RHJ2GD7KqcAqJR4k/QaQuGRo
+         k/74CKkO+Xo/kNwG5UbR7JZc8pL0f7ocLAmlJ+Q27vXb25uf/73Np8OJjOqk+6/QN0vh
+         SxZQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=YoqUb6rHjvyc1tWs/2rkmXC92ndzOCiq60lMMpB44Fg=;
-        b=a2V8JhwxhQ6FTRQa+HHqStbg4BYFE93qiCAAQrkuHgxSfy6d5fRkwBP0M6fkHxBOwn
-         HodWQVQP//Ib0sRRBe7ioeY84uMUVE7uJWJXdYyUksN+W/DYP5AkBXTfC/WKUm4LyCgp
-         0GVjek+/iCcYt/uTBM42IDEfOfV9Op5rf/d1DzVcLx/r4sOY61fnffAAN/3ERoj+vKqu
-         POBFKNt7wimHy8IpZ6Oo1VHZcaS5p8Ht1EgZnayEZw2DPytGG2ASwKqqYRil/+2M2LZO
-         6v2cHPyd/POugmyOBQQvk0sCQp1YGtZiGJ/hg+dWW13V/ahn5ZRwY1Ok9A/zNU9ETnRJ
-         UAiA==
-X-Gm-Message-State: AOAM531gMEa9wsJL5TK0Pyt2O/ANZ9UkPaPEkQalILLUAaHfQKxvddTO
-        pLdoShFy1m3IGLh35kmZaZfn
-X-Google-Smtp-Source: ABdhPJzHprK2jDHBk3YsbiTCFkTqLJ1GRqc3BA42Nt/fm/Qgji6jqfeKFW6XFNBrBSmNIcTLlqnJ2A==
-X-Received: by 2002:aa7:8708:0:b029:19e:924:345a with SMTP id b8-20020aa787080000b029019e0924345amr1864951pfo.54.1609902434521;
-        Tue, 05 Jan 2021 19:07:14 -0800 (PST)
-Received: from thinkpad ([103.77.37.191])
-        by smtp.gmail.com with ESMTPSA id a18sm668011pfg.107.2021.01.05.19.07.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 Jan 2021 19:07:13 -0800 (PST)
-Date:   Wed, 6 Jan 2021 08:37:09 +0530
-From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     agross@kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Vinod Koul <vkoul@kernel.org>
-Subject: Re: [PATCH v2 02/18] ARM: dts: qcom: sdx55: Add reserved memory nodes
-Message-ID: <20210106030709.GD14794@thinkpad>
-References: <20210105122649.13581-1-manivannan.sadhasivam@linaro.org>
- <20210105122649.13581-3-manivannan.sadhasivam@linaro.org>
- <X/Sqfeonlthrys/O@builder.lan>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Zg2coLqP9nU4JTLHR8kEQ7+2/BPytE7hyghpbsYNA8Q=;
+        b=d3+J0VmELYo/ncYaR4h/yNRTbzG0knFOiGR64qTLpZjCXHUQeEUA0C4MIxGzCp9nyO
+         xW+RRKnQJmljGKvWGIAU1zKxwfSl4ha2QLtRdShhlucHwB+NXpf4TzxVM8o8PqcBolFt
+         OXCT5nZiNKHhua/VcYchvTb2trjxSOb4la1tfRzIxp484/yUtZYIVmVpjW0vtn3rmN2K
+         esmEBxxsutkKY3rLT8G9fj27FAjndfCmSEt/iVi0FRZ2MUhdOcdxJpv6MePTYa5X8FXU
+         iBblvT48yUnKZ7TrSwpcPcH6monQ1iQsd4F+AOlBIZF519GB1DY2ujVgX1mA04Cg4mwB
+         0i5w==
+X-Gm-Message-State: AOAM5317UhB+XXPW6XP3QnWrPaV95K76G7xJUcIhJtaf//TAGvsjQ4an
+        ASI6VMDytU9RMwsnUnVQSQwaV+opKuQ6mQB9iQI=
+X-Google-Smtp-Source: ABdhPJwOPQkdrn2LjjxlF2BA0tEJor9O1FFa1oV8vPiPoJZtb7K7A04MS7jEGIa+iN1hxuLroJckYXHPQHIAktx2RnU=
+X-Received: by 2002:a17:906:52d9:: with SMTP id w25mr1510008ejn.504.1609902477257;
+ Tue, 05 Jan 2021 19:07:57 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <X/Sqfeonlthrys/O@builder.lan>
+References: <CGME20210104085750epcas2p1a5b22559d87df61ef3c8215ae0b470b5@epcas2p1.samsung.com>
+ <1609750005-115609-1-git-send-email-dseok.yi@samsung.com> <CAF=yD-+bDdYg7X+WpP14w3fbv+JewySpdCbjdwWXB-syCwQ9uQ@mail.gmail.com>
+ <017f01d6e3cb$698246a0$3c86d3e0$@samsung.com>
+In-Reply-To: <017f01d6e3cb$698246a0$3c86d3e0$@samsung.com>
+From:   Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+Date:   Tue, 5 Jan 2021 22:07:21 -0500
+Message-ID: <CAF=yD-Lg92JdpCU8CEQnutzi4VyS67_VNfAniRU=RxDvfYMruw@mail.gmail.com>
+Subject: Re: [PATCH net] net: fix use-after-free when UDP GRO with shared fraglist
+To:     Dongseok Yi <dseok.yi@samsung.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Willem de Bruijn <willemb@google.com>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Florian Westphal <fw@strlen.de>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Guillaume Nault <gnault@redhat.com>,
+        Yunsheng Lin <linyunsheng@huawei.com>,
+        Steffen Klassert <steffen.klassert@secunet.com>,
+        Yadu Kishore <kyk.segfault@gmail.com>,
+        Marco Elver <elver@google.com>,
+        Network Development <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, namkyu78.kim@samsung.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 05, 2021 at 12:05:49PM -0600, Bjorn Andersson wrote:
-> On Tue 05 Jan 06:26 CST 2021, Manivannan Sadhasivam wrote:
-> 
-> > From: Vinod Koul <vkoul@kernel.org>
-> > 
-> > This adds reserved memory nodes to the SDX55 dtsi as defined by v8 of
-> > the memory map
-> > 
-> > Signed-off-by: Vinod Koul <vkoul@kernel.org>
-> > Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-> > ---
-> >  arch/arm/boot/dts/qcom-sdx55.dtsi | 67 +++++++++++++++++++++++++++++++
-> >  1 file changed, 67 insertions(+)
-> > 
-> > diff --git a/arch/arm/boot/dts/qcom-sdx55.dtsi b/arch/arm/boot/dts/qcom-sdx55.dtsi
-> > index 08b4a40338fa..eeb6bf392f93 100644
-> > --- a/arch/arm/boot/dts/qcom-sdx55.dtsi
-> > +++ b/arch/arm/boot/dts/qcom-sdx55.dtsi
-> > @@ -60,6 +60,73 @@ psci {
-> >  		method = "smc";
-> >  	};
-> >  
-> > +	reserved-memory {
-> > +		#address-cells = <1>;
-> > +		#size-cells = <1>;
-> > +		ranges;
-> > +
-> > +		mpss_debug_mem: memory@8ef00000 {
-> > +			no-map;
-> > +			reg = <0x8ef00000 0x800000>;
-> > +		};
-> > +
-> > +		hyp_mem: memory@8fc00000 {
-> > +			no-map;
-> > +			reg = <0x8fc00000 0x80000>;
-> > +		};
-> > +
-> > +		ac_db_mem: memory@8fc80000 {
-> > +			no-map;
-> > +			reg = <0x8fc80000 0x40000>;
-> > +		};
-> > +
-> > +		secdata_mem: memory@8fcfd000 {
-> > +			no-map;
-> > +			reg = <0x8fcfd000 0x1000>;
-> > +		};
-> > +
-> > +		ipa_fw_mem: memory@8fced000 {
-> > +			no-map;
-> > +			reg = <0x8fced000 0x10000>;
-> > +		};
-> > +
-> > +		sbl_mem: memory@8fd00000 {
-> > +			no-map;
-> > +			reg = <0x8fd00000 0x100000>;
-> > +		};
-> > +
-> > +		aop_image: memory@8fe00000 {
-> > +			no-map;
-> > +			reg = <0x8fe00000 0x20000>;
-> > +		};
-> > +
-> > +		aop_cmd_db: memory@8fe20000 {
-> > +			compatible = "qcom,cmd-db";
-> > +			reg = <0x8fe20000 0x20000>;
-> > +			no-map;
-> > +		};
-> > +
-> > +		smem_mem: memory@8fe40000 {
-> > +			no-map;
-> > +			reg = <0x8fe40000 0xc0000>;
-> > +		};
-> > +
-> > +		tz_mem: memory@8ff00000 {
-> > +			no-map;
-> > +			reg = <0x8ff00000 0x100000>;
-> > +		};
-> > +
-> > +		tz_apps_mem: memory@0x90000000 {
-> > +			no-map;
-> > +			reg = <0x90000000 0x500000>;
-> > +		};
-> > +
-> > +		mpss_adsp_mem: memory@90800000 {
-> > +			no-map;
-> > +			reg = <0x90800000 0xf800000>;
-> 
-> Didn't you say this moved to 0x9c000000?
-> 
+On Tue, Jan 5, 2021 at 8:29 PM Dongseok Yi <dseok.yi@samsung.com> wrote:
+>
+> On 2021-01-05 06:03, Willem de Bruijn wrote:
+> >
+> > On Mon, Jan 4, 2021 at 4:00 AM Dongseok Yi <dseok.yi@samsung.com> wrote:
+> > >
+> > > skbs in frag_list could be shared by pskb_expand_head() from BPF.
+> >
+> > Can you elaborate on the BPF connection?
+>
+> With the following registered ptypes,
+>
+> /proc/net # cat ptype
+> Type Device      Function
+> ALL           tpacket_rcv
+> 0800          ip_rcv.cfi_jt
+> 0011          llc_rcv.cfi_jt
+> 0004          llc_rcv.cfi_jt
+> 0806          arp_rcv
+> 86dd          ipv6_rcv.cfi_jt
+>
+> BPF checks skb_ensure_writable between tpacket_rcv and ip_rcv
+> (or ipv6_rcv). And it calls pskb_expand_head.
+>
+> [  132.051228] pskb_expand_head+0x360/0x378
+> [  132.051237] skb_ensure_writable+0xa0/0xc4
+> [  132.051249] bpf_skb_pull_data+0x28/0x60
+> [  132.051262] bpf_prog_331d69c77ea5e964_schedcls_ingres+0x5f4/0x1000
+> [  132.051273] cls_bpf_classify+0x254/0x348
+> [  132.051284] tcf_classify+0xa4/0x180
 
-That's for an old bootloader which is used in the MTP. But I guess we should
-always use the latest mem map for the latest bootloader.
+Ah, you have a BPF program loaded at TC. That was not entirely obvious.
 
-Thanks,
-Mani
+This program gets called after packet sockets with ptype_all, before
+those with a specific protocol.
 
-> Regards,
-> Bjorn
-> 
-> > +		};
-> > +	};
-> > +
-> >  	soc: soc {
-> >  		#address-cells = <1>;
-> >  		#size-cells = <1>;
-> > -- 
-> > 2.25.1
-> > 
+Tcpdump will have inserted a program with ptype_all, which cloned the
+skb. This triggers skb_ensure_writable -> pskb_expand_head ->
+skb_clone_fraglist -> skb_get.
+
+> [  132.051294] __netif_receive_skb_core+0x590/0xd28
+> [  132.051303] __netif_receive_skb+0x50/0x17c
+> [  132.051312] process_backlog+0x15c/0x1b8
+>
+> >
+> > > While tcpdump, sk_receive_queue of PF_PACKET has the original frag_list.
+> > > But the same frag_list is queued to PF_INET (or PF_INET6) as the fraglist
+> > > chain made by skb_segment_list().
+> > >
+> > > If the new skb (not frag_list) is queued to one of the sk_receive_queue,
+> > > multiple ptypes can see this. The skb could be released by ptypes and
+> > > it causes use-after-free.
+> >
+> > If I understand correctly, a udp-gro-list skb makes it up the receive
+> > path with one or more active packet sockets.
+> >
+> > The packet socket will call skb_clone after accepting the filter. This
+> > replaces the head_skb, but shares the skb_shinfo and thus frag_list.
+> >
+> > udp_rcv_segment later converts the udp-gro-list skb to a list of
+> > regular packets to pass these one-by-one to udp_queue_rcv_one_skb.
+> > Now all the frags are fully fledged packets, with headers pushed
+> > before the payload. This does not change their refcount anymore than
+> > the skb_clone in pf_packet did. This should be 1.
+> >
+> > Eventually udp_recvmsg will call skb_consume_udp on each packet.
+> >
+> > The packet socket eventually also frees its cloned head_skb, which triggers
+> >
+> >   kfree_skb_list(shinfo->frag_list)
+> >     kfree_skb
+> >       skb_unref
+> >         refcount_dec_and_test(&skb->users)
+>
+> Every your understanding is right, but
+>
+> >
+> > >
+> > > [ 4443.426215] ------------[ cut here ]------------
+> > > [ 4443.426222] refcount_t: underflow; use-after-free.
+> > > [ 4443.426291] WARNING: CPU: 7 PID: 28161 at lib/refcount.c:190
+> > > refcount_dec_and_test_checked+0xa4/0xc8
+> > > [ 4443.426726] pstate: 60400005 (nZCv daif +PAN -UAO)
+> > > [ 4443.426732] pc : refcount_dec_and_test_checked+0xa4/0xc8
+> > > [ 4443.426737] lr : refcount_dec_and_test_checked+0xa0/0xc8
+> > > [ 4443.426808] Call trace:
+> > > [ 4443.426813]  refcount_dec_and_test_checked+0xa4/0xc8
+> > > [ 4443.426823]  skb_release_data+0x144/0x264
+> > > [ 4443.426828]  kfree_skb+0x58/0xc4
+> > > [ 4443.426832]  skb_queue_purge+0x64/0x9c
+> > > [ 4443.426844]  packet_set_ring+0x5f0/0x820
+> > > [ 4443.426849]  packet_setsockopt+0x5a4/0xcd0
+> > > [ 4443.426853]  __sys_setsockopt+0x188/0x278
+> > > [ 4443.426858]  __arm64_sys_setsockopt+0x28/0x38
+> > > [ 4443.426869]  el0_svc_common+0xf0/0x1d0
+> > > [ 4443.426873]  el0_svc_handler+0x74/0x98
+> > > [ 4443.426880]  el0_svc+0x8/0xc
+> > >
+> > > Fixes: 3a1296a38d0c (net: Support GRO/GSO fraglist chaining.)
+> > > Signed-off-by: Dongseok Yi <dseok.yi@samsung.com>
+> > > ---
+> > >  net/core/skbuff.c | 20 +++++++++++++++++++-
+> > >  1 file changed, 19 insertions(+), 1 deletion(-)
+> > >
+> > > diff --git a/net/core/skbuff.c b/net/core/skbuff.c
+> > > index f62cae3..1dcbda8 100644
+> > > --- a/net/core/skbuff.c
+> > > +++ b/net/core/skbuff.c
+> > > @@ -3655,7 +3655,8 @@ struct sk_buff *skb_segment_list(struct sk_buff *skb,
+> > >         unsigned int delta_truesize = 0;
+> > >         unsigned int delta_len = 0;
+> > >         struct sk_buff *tail = NULL;
+> > > -       struct sk_buff *nskb;
+> > > +       struct sk_buff *nskb, *tmp;
+> > > +       int err;
+> > >
+> > >         skb_push(skb, -skb_network_offset(skb) + offset);
+> > >
+> > > @@ -3665,11 +3666,28 @@ struct sk_buff *skb_segment_list(struct sk_buff *skb,
+> > >                 nskb = list_skb;
+> > >                 list_skb = list_skb->next;
+> > >
+> > > +               err = 0;
+> > > +               if (skb_shared(nskb)) {
+> >
+> > I must be missing something still. This does not square with my
+> > understanding that the two sockets are operating on clones, with each
+> > frag_list skb having skb->users == 1.
+> >
+> > Unless the packet socket patch previously also triggered an
+> > skb_unclone/pskb_expand_head, as that call skb_clone_fraglist, which
+> > calls skb_get on each frag_list skb.
+>
+> A cloned skb after tpacket_rcv cannot go through skb_ensure_writable
+> with the original shinfo. pskb_expand_head reallocates the shinfo of
+> the skb and call skb_clone_fraglist. skb_release_data in
+> pskb_expand_head could not reduce skb->users of the each frag_list skb
+> if skb_shinfo(skb)->dataref == 2.
+>
+> After the reallocation, skb_shinfo(skb)->dataref == 1 but each frag_list
+> skb could have skb->users == 2.
+
+Yes, that makes sense. skb_clone_fraglist just increments the
+frag_list skb's refcounts.
+
+skb_segment_list must create an unshared struct sk_buff before it
+changes skb data to insert the protocol headers.
+
+> >
+> >
+> > > +                       tmp = skb_clone(nskb, GFP_ATOMIC);
+> > > +                       if (tmp) {
+> > > +                               kfree_skb(nskb);
+> > > +                               nskb = tmp;
+> > > +                               err = skb_unclone(nskb, GFP_ATOMIC);
+
+Calling clone and unclone in quick succession looks odd.
+
+But you need the first to create a private skb and to trigger the
+second to create a private copy of the linear data (as well as frags,
+if any, but these are not touched). So this looks okay.
+
+> > > +                       } else {
+> > > +                               err = -ENOMEM;
+> > > +                       }
+> > > +               }
+> > > +
+> > >                 if (!tail)
+> > >                         skb->next = nskb;
+> > >                 else
+> > >                         tail->next = nskb;
+> > >
+> > > +               if (unlikely(err)) {
+> > > +                       nskb->next = list_skb;
+
+To avoid leaking these skbs when calling kfree_skb_list(skb->next). Is
+that concern new with this patch, or also needed for the existing
+error case?
+
+> > > +                       goto err_linearize;
+> > > +               }
+> > > +
+> > >                 tail = nskb;
+> > >
+> > >                 delta_len += nskb->len;
+> > > --
+> > > 2.7.4
+> > >
+>
