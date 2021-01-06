@@ -2,129 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 89AF92EBD00
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 12:07:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6016C2EBD08
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 12:10:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726558AbhAFLHe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Jan 2021 06:07:34 -0500
-Received: from new4-smtp.messagingengine.com ([66.111.4.230]:43431 "EHLO
-        new4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726098AbhAFLHd (ORCPT
+        id S1726118AbhAFLJk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Jan 2021 06:09:40 -0500
+Received: from mail-wm1-f43.google.com ([209.85.128.43]:39940 "EHLO
+        mail-wm1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725813AbhAFLJk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Jan 2021 06:07:33 -0500
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
-        by mailnew.nyi.internal (Postfix) with ESMTP id B5B995812B2;
-        Wed,  6 Jan 2021 06:06:46 -0500 (EST)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute6.internal (MEProxy); Wed, 06 Jan 2021 06:06:46 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm1; bh=pKsVdMArbxuwwiMUH/SwaIc1g1Q
-        g7FH/nG0HUKbrznA=; b=jscJijtSsOzPb964OVCl9N7lQ90TfXpDTLUjmE/dONb
-        GqJJW9/mW0wQ1/gw/VgMH8+hNRq1AkRR/37mdBMKcYawX7tnWl34cchoLkWpnpVg
-        aZ2yy9iYAldGC2XKxg2yEhnMOa+It24zZ+bztZifXjqnyPU7Agiudf+NntcqVdaa
-        syI48334WbSofOidM2Dku2tDGgH6EX3wCUSTnXFlMDsU46nrSCcLP80jbemAZ4W/
-        xDTHiKPgmwySISq7gVbqsCaFdIHkRBKrs1CdDGPFQOzQVRXNGlxPADo36zUU953u
-        EvKdHmOqN+fRPxd/QSpzo/EZrNC384bEgAC4qU0RLEw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=pKsVdM
-        ArbxuwwiMUH/SwaIc1g1Qg7FH/nG0HUKbrznA=; b=ROJ2Iw57s6rFnp4ratvReo
-        EqsTahyop2RTg7SQMq2pH2HBBOmNLi8M3lkh9ARNhbcC6sTbY4TzdIbl5VVi8Agq
-        8g4xf7lO54H9HtyyJzpNDqc2DTdT3aBqJbEik6tyHmKLNEVOob3WTTrvhKm7Sp88
-        65JP2BNPreSnUgMKxcYtToZUeDjI5ot2xxCy7eJX9ccbhAlYe5NHvrFnUK6QIPb5
-        qQKSJSDzcGOugmSK/KQEi6jbi3d9eMBWysDFv9xh2z/Tg2k0GswGhFXfrBN2QHUR
-        yAZ53mj/Go+/ODOQV9U3VV4scplefOETZl0CF29jc7eL0PN3eHeCdXLGAfWhRfeA
-        ==
-X-ME-Sender: <xms:xJn1XwvWwTowIblVuTmnbpE2kK4fJT8CkJ9UKXF22VdSc3wE67z11w>
-    <xme:xJn1X9cg8E7lhxTl1VLt8qP9KZYavx_4_oP_vMFSklFBklLhz7qwdYbhcpkellDLD
-    VGv7r2MfXG3gVKAVtA>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrvdefledgvdehucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddunecuhfhrohhmpeforgigihhm
-    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
-    htvghrnhepuddvudfhkeekhefgffetffelgffftdehffduffegveetffehueeivddvjedv
-    gfevnecukfhppeeltddrkeelrdeikedrjeeinecuvehluhhsthgvrhfuihiivgeptdenuc
-    frrghrrghmpehmrghilhhfrhhomhepmhgrgihimhgvsegtvghrnhhordhtvggthh
-X-ME-Proxy: <xmx:xJn1X7x9Uwmd1QE-1kujQeU57fGHymTm6t85qEkunEEIQo6BO4eVaw>
-    <xmx:xJn1XzPdtjFZ3hK_Pd1ft98y7V9nmdczUMMGeMmzX5l_tqZnv-zJKw>
-    <xmx:xJn1Xw_F39bPmhWJxc8A2SXxyLhfqGsMn7TDF54ETkhEgxegC3PXqA>
-    <xmx:xpn1X7XJAv4Q9Q8ZakD7K334YG2CQ2F1pLW9SxHk8V8qWTyHBwek6A>
-Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
-        by mail.messagingengine.com (Postfix) with ESMTPA id A5F901080068;
-        Wed,  6 Jan 2021 06:06:44 -0500 (EST)
-Date:   Wed, 6 Jan 2021 12:06:43 +0100
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     =?utf-8?B?QW5kcsOp?= Przywara <andre.przywara@arm.com>
-Cc:     Samuel Holland <samuel@sholland.org>, Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        Rob Herring <robh+dt@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-clk@vger.kernel.org, linux-gpio@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-sunxi@googlegroups.com
-Subject: Re: [PATCH v2 4/4] arm64: dts: allwinner: h6: Use RSB for AXP805
- PMIC connection
-Message-ID: <20210106110643.agq3mjyhgvg3w4i6@gilmour>
-References: <20210103100007.32867-1-samuel@sholland.org>
- <20210103100007.32867-5-samuel@sholland.org>
- <a6c2eac4-7e98-ecb4-ee8a-d67a7f1b6871@arm.com>
+        Wed, 6 Jan 2021 06:09:40 -0500
+Received: by mail-wm1-f43.google.com with SMTP id r4so2261422wmh.5;
+        Wed, 06 Jan 2021 03:09:23 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=zj0igQMTTRlNLhn2KPaioiFIoqyaeGRUUPgqEDNtlgk=;
+        b=E4xWUV7PjrfOQkocsrIGOg+4KDM4QIsc8UvMa+KiSM+fxWU58xmxLaSRcRIFSjuFO1
+         I/22xki1ttbqy7mUIHOAjjYtSaSftdtLNru3UrrhflQ5s2RmReo7kVttEnGfKIc4Bkum
+         UrHkC0/xETXf472X2g0z1BEd1ytEfdhdZzH0Vx41T4dzj39bvK8zBe/FN4tm1uD3Whx7
+         Znzir+hsmrf8lJXz/4ldpgf2IaL0YsLCSmRmY8biuI+oxRvQ1eGYSyiMwjgvWdLBUDhH
+         Ju2nUF3D+/EWx6gqbmmDhx5BXxDPKyrbM14hYlGPNeTMCiWkgjE+iAsn8IAtCePucj3h
+         MG1g==
+X-Gm-Message-State: AOAM533OGfk8dhycwfwX4JtWq+hULD6BLaNrFpMb8RcmXLGU6iZb3R+4
+        DBDml/e/I873DXieIm/xRrU=
+X-Google-Smtp-Source: ABdhPJyb5jWLwAmy6e8/9MtS/gwbr+foCTC9yXXutVnqwUuA1+QsP+kQW4F6P2PUWR4I7zV7cl7mZw==
+X-Received: by 2002:a1c:1d85:: with SMTP id d127mr3137421wmd.39.1609931337769;
+        Wed, 06 Jan 2021 03:08:57 -0800 (PST)
+Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
+        by smtp.gmail.com with ESMTPSA id g78sm2527918wme.33.2021.01.06.03.08.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 06 Jan 2021 03:08:57 -0800 (PST)
+Date:   Wed, 6 Jan 2021 11:08:56 +0000
+From:   Wei Liu <wei.liu@kernel.org>
+To:     Dexuan Cui <decui@microsoft.com>
+Cc:     wei.liu@kernel.org, kys@microsoft.com, haiyangz@microsoft.com,
+        sthemmin@microsoft.com, linux-hyperv@vger.kernel.org,
+        linux-kernel@vger.kernel.org, mikelley@microsoft.com,
+        vkuznets@redhat.com, marcelo.cerri@canonical.com
+Subject: Re: [PATCH v2] Drivers: hv: vmbus: Add
+ /sys/bus/vmbus/supported_features
+Message-ID: <20210106110856.i23e7alpf2biirsu@liuwe-devbox-debian-v2>
+References: <20210106000434.5551-1-decui@microsoft.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="zcdfvxiqryncz7fp"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <a6c2eac4-7e98-ecb4-ee8a-d67a7f1b6871@arm.com>
+In-Reply-To: <20210106000434.5551-1-decui@microsoft.com>
+User-Agent: NeoMutt/20180716
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, Jan 05, 2021 at 04:04:34PM -0800, Dexuan Cui wrote:
+> When a Linux VM runs on Hyper-V, if the host toolstack doesn't support
+> hibernation for the VM (this happens on old Hyper-V hosts like Windows
+> Server 2016, or new Hyper-V hosts if the admin or user doesn't declare
+> the hibernation intent for the VM), the VM is discouraged from trying
+> hibernation (because the host doesn't guarantee that the VM's virtual
+> hardware configuration will remain exactly the same across hibernation),
+> i.e. the VM should not try to set up the swap partition/file for
+> hibernation, etc.
+> 
+> x86 Hyper-V uses the presence of the virtual ACPI S4 state as the
+> indication of the host toolstack support for a VM. Currently there is
+> no easy and reliable way for the userspace to detect the presence of
+> the state (see https://lkml.org/lkml/2020/12/11/1097).  Add
+> /sys/bus/vmbus/supported_features for this purpose.
+> 
+> Signed-off-by: Dexuan Cui <decui@microsoft.com>
 
---zcdfvxiqryncz7fp
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+LGTM. I will wait a bit for others to comment.
 
-On Mon, Jan 04, 2021 at 10:54:19AM +0000, Andr=E9 Przywara wrote:
-> On 03/01/2021 10:00, Samuel Holland wrote:
-> > On boards where the only peripheral connected to PL0/PL1 is an X-Powers
-> > PMIC, configure the connection to use the RSB bus rather than the I2C
-> > bus. Compared to the I2C controller that shares the pins, the RSB
-> > controller allows a higher bus frequency, and it is more CPU-efficient.
->=20
-> But is it really necessary to change the DTs for those boards in this
-> way? It means those newer DTs now become incompatible with older
-> kernels, and I don't know if those reasons above really justify this.
->=20
-> I understand that we officially don't care about "newer DTs on older
-> kernels", but do we really need to break this deliberately, for no
-> pressing reasons?
->=20
-> P.S. I am fine with supporting RSB on H6, and even using it on new DTs,
-> just want to avoid breaking existing ones.
-
-Doing so would also introduce some inconsistencies, one more thing to
-consider during reviews, and would require more testing effort.
-
-I'm not sure that stretching our - already fairly sparse - resources
-thin would be very wise here, especially for something that we don't
-have to do and for a setup that isn't really used that much.
-
-Maxime
-
---zcdfvxiqryncz7fp
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCX/WZwwAKCRDj7w1vZxhR
-xZXjAQDukCQUSLlAvITRHzLuUWbe+mCBztGFHfTNBxJtobY2DQEA6uy0PngjoW4c
-SBgn/rWM7lobJgaKVBuQMIemlcNbFwM=
-=jmY+
------END PGP SIGNATURE-----
-
---zcdfvxiqryncz7fp--
+> ---
+> 
+> Change in v2:
+> 	Added a "Values:" section
+> 	Updated "Date:"
+> 
+>  Documentation/ABI/stable/sysfs-bus-vmbus |  9 +++++++++
+>  drivers/hv/vmbus_drv.c                   | 20 ++++++++++++++++++++
+>  2 files changed, 29 insertions(+)
+> 
+> diff --git a/Documentation/ABI/stable/sysfs-bus-vmbus b/Documentation/ABI/stable/sysfs-bus-vmbus
+> index c27b7b89477c..c8d56389b7be 100644
+> --- a/Documentation/ABI/stable/sysfs-bus-vmbus
+> +++ b/Documentation/ABI/stable/sysfs-bus-vmbus
+> @@ -1,3 +1,12 @@
+> +What:		/sys/bus/vmbus/supported_features
+> +Date:		Jan 2021
+> +KernelVersion:	5.11
+> +Contact:	Dexuan Cui <decui@microsoft.com>
+> +Description:	Features specific to VMs running on Hyper-V
+> +Values:		A list of strings.
+> +		hibernation: the host toolstack supports hibernation for the VM.
+> +Users:		Daemon that sets up swap partition/file for hibernation
+> +
+>  What:		/sys/bus/vmbus/devices/<UUID>/id
+>  Date:		Jul 2009
+>  KernelVersion:	2.6.31
+> diff --git a/drivers/hv/vmbus_drv.c b/drivers/hv/vmbus_drv.c
+> index d491fdcee61f..958487a40a18 100644
+> --- a/drivers/hv/vmbus_drv.c
+> +++ b/drivers/hv/vmbus_drv.c
+> @@ -678,6 +678,25 @@ static const struct attribute_group vmbus_dev_group = {
+>  };
+>  __ATTRIBUTE_GROUPS(vmbus_dev);
+>  
+> +/* Set up bus attribute(s) for /sys/bus/vmbus/supported_features */
+> +static ssize_t supported_features_show(struct bus_type *bus, char *buf)
+> +{
+> +	bool hb = hv_is_hibernation_supported();
+> +
+> +	return sprintf(buf, "%s\n", hb ? "hibernation" : "");
+> +}
+> +
+> +static BUS_ATTR_RO(supported_features);
+> +
+> +static struct attribute *vmbus_bus_attrs[] = {
+> +	&bus_attr_supported_features.attr,
+> +	NULL,
+> +};
+> +static const struct attribute_group vmbus_bus_group = {
+> +	.attrs = vmbus_bus_attrs,
+> +};
+> +__ATTRIBUTE_GROUPS(vmbus_bus);
+> +
+>  /*
+>   * vmbus_uevent - add uevent for our device
+>   *
+> @@ -1024,6 +1043,7 @@ static struct bus_type  hv_bus = {
+>  	.uevent =		vmbus_uevent,
+>  	.dev_groups =		vmbus_dev_groups,
+>  	.drv_groups =		vmbus_drv_groups,
+> +	.bus_groups =		vmbus_bus_groups,
+>  	.pm =			&vmbus_pm,
+>  };
+>  
+> -- 
+> 2.19.1
+> 
