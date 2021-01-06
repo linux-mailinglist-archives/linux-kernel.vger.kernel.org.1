@@ -2,126 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2372F2EBDAF
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 13:28:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 22E072EBDD5
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 13:43:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726698AbhAFM2Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Jan 2021 07:28:16 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59678 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726576AbhAFM2O (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Jan 2021 07:28:14 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2492D205F4;
-        Wed,  6 Jan 2021 12:27:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609936053;
-        bh=AjV2Q+OVfwxiH3Qul0Uz3pdpDvwVndFsEygdUMtHOrc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=OOIbYKqBKvqAgpSiY7GUsT+eqakMKfgcB8gZrBM5k8x5s0x7QG5xfVEPVyo+DIgSp
-         ZHC4gojAc28aVah7jj21EulkowmVKrWoP+e+jvwKMnOSiJPMGogjf3+2tPoy5zi8JQ
-         102NkmpBz6d/lOZeIAS7H4j4q8fqdBUkzM9H93Ag=
-Date:   Wed, 6 Jan 2021 13:28:54 +0100
-From:   "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>
-To:     =?utf-8?B?5p2O5o23?= <jie6.li@samsung.com>
-Cc:     "mst@redhat.com" <mst@redhat.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        =?utf-8?B?5L2V5YW0?= <xing84.he@samsung.com>,
-        =?utf-8?B?5ZCV6auY6aOe?= <gaofei.lv@samsung.com>
-Subject: Re: [PATCH] uio: uio_pci_generic: don't fail probe if pdev->irq
- equals to IRQ_NOTCONNECTED
-Message-ID: <X/WtBj9bLp+kr+jE@kroah.com>
-References: <CGME20210106114851epcms5p81f6ba47c45047d28fda8f201b54d3ae6@epcms5p8>
- <1269705030.4191784.1609933731961@mail-kr5-0>
+        id S1725800AbhAFMnO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Jan 2021 07:43:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40330 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725788AbhAFMnN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 Jan 2021 07:43:13 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78D4FC06134C;
+        Wed,  6 Jan 2021 04:42:31 -0800 (PST)
+Date:   Wed, 06 Jan 2021 12:42:23 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1609936944;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=GmgF16zcAnsqNhzVW75E/FiSXuBXNdBXTcEta/hI2Yc=;
+        b=MJwo6HhhYwUtC6jn7FKJfUTNzvVgv72pbeJariOa4Wp00ZpT4Vj3MUC6rsgZStiN1e0Lug
+        6cJnBeBaFX/v4UbUsEPh4p9TKiqOFO3pZH6BFf58JkmOVo4xAhpx5cvcarb1upCyLyjGal
+        8jx42BVADuKcr36fubpiwDySP1WatEMo1lrsS3oJa0nFwJYsONalfHXZsyWYKLhryRnCoD
+        At5NndN/w1WJSC+FyPznMfO89Su0GBzalw6C3Mx3qigiZkt/8xfD/kCTaz5AVpwUOh2tHN
+        qAbcfWJbdkuw7iSO81m5oR/xORRTIHnHKMRVz7NrFjBw3bao+fy57GuCOq6Pcg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1609936944;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=GmgF16zcAnsqNhzVW75E/FiSXuBXNdBXTcEta/hI2Yc=;
+        b=Qe71e2tonXte8Kw65MgkNIQGpUy2QCNuL9AAbXgf57c1zG+QP86JRuWKrDUqiF2/cSg4bW
+        Q4VPTKQsYsa8kqCQ==
+From:   "tip-bot2 for Ying-Tsun Huang" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/urgent] x86/mtrr: Correct the range check before performing
+ MTRR type lookups
+Cc:     "Ying-Tsun Huang" <ying-tsun.huang@amd.com>,
+        Borislav Petkov <bp@suse.de>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <20201215070721.4349-1-ying-tsun.huang@amd.com>
+References: <20201215070721.4349-1-ying-tsun.huang@amd.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1269705030.4191784.1609933731961@mail-kr5-0>
+Message-ID: <160993694388.414.2374569391219500703.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 06, 2021 at 07:48:51PM +0800, 李捷 wrote:
-> From 0fbcd7e386898d829d3000d094358a91e626ee4a Mon Sep 17 00:00:00 2001
-> From: Jie Li <jie6.li@samsung.com>
-> Date: Mon, 7 Dec 2020 08:05:07 +0800
-> Subject: [PATCH] uio: uio_pci_generic: don't fail probe if pdev->irq equals to
->  IRQ_NOTCONNECTED
-> 
-> Some devices use 255 as default value of Interrupt Line register, and this
-> maybe causes pdev->irq is set as IRQ_NOTCONNECTED in some scenarios. For
-> example, NVMe controller connects to Intel Volume Management Device (VMD).
-> In this situation, IRQ_NOTCONNECTED means INTx line is not connected, not
-> fault. If bind uio_pci_generic to these devices, uio frame will return
-> -ENOTCONN through request_irq.
-> 
-> This patch allows binding uio_pci_generic to device with dev->irq of
-> IRQ_NOTCONNECTED.
-> 
-> Signed-off-by: Jie Li <jie6.li@samsung.com>
-> Acked-by: Kyungsan Kim <ks0204.kim@samsung.com>
-> ---
->  drivers/uio/uio_pci_generic.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/uio/uio_pci_generic.c b/drivers/uio/uio_pci_generic.c
-> index b8e44d16279f..c7d681fef198 100644
-> --- a/drivers/uio/uio_pci_generic.c
-> +++ b/drivers/uio/uio_pci_generic.c
-> @@ -92,7 +92,7 @@ static int probe(struct pci_dev *pdev,
->   gdev->info.version = DRIVER_VERSION;
->   gdev->info.release = release;
->   gdev->pdev = pdev;
-> - if (pdev->irq) {
-> + if (pdev->irq && (pdev->irq != IRQ_NOTCONNECTED)) {
->    gdev->info.irq = pdev->irq;
->    gdev->info.irq_flags = IRQF_SHARED;
->    gdev->info.handler = irqhandler;
-> --
-> 2.17.1
-> 
->  
-> 
->  
-> 
-> Best regards, 
-> 
-> Jie Li
-> 
-> [cid]
-> 
-> *
-> 
+The following commit has been merged into the x86/urgent branch of tip:
 
+Commit-ID:     cb7f4a8b1fb426a175d1708f05581939c61329d4
+Gitweb:        https://git.kernel.org/tip/cb7f4a8b1fb426a175d1708f05581939c61329d4
+Author:        Ying-Tsun Huang <ying-tsun.huang@amd.com>
+AuthorDate:    Tue, 15 Dec 2020 15:07:20 +08:00
+Committer:     Borislav Petkov <bp@suse.de>
+CommitterDate: Wed, 06 Jan 2021 13:01:13 +01:00
 
+x86/mtrr: Correct the range check before performing MTRR type lookups
 
+In mtrr_type_lookup(), if the input memory address region is not in the
+MTRR, over 4GB, and not over the top of memory, a write-back attribute
+is returned. These condition checks are for ensuring the input memory
+address region is actually mapped to the physical memory.
 
-Hi,
+However, if the end address is just aligned with the top of memory,
+the condition check treats the address is over the top of memory, and
+write-back attribute is not returned.
 
-This is the friendly patch-bot of Greg Kroah-Hartman.  You have sent him
-a patch that has triggered this response.  He used to manually respond
-to these common problems, but in order to save his sanity (he kept
-writing the same thing over and over, yet to different people), I was
-created.  Hopefully you will not take offence and will fix the problem
-in your patch and resubmit it so that it can be accepted into the Linux
-kernel tree.
+And this hits in a real use case with NVDIMM: the nd_pmem module tries
+to map NVDIMMs as cacheable memories when NVDIMMs are connected. If a
+NVDIMM is the last of the DIMMs, the performance of this NVDIMM becomes
+very low since it is aligned with the top of memory and its memory type
+is uncached-minus.
 
-You are receiving this message because of the following common error(s)
-as indicated below:
+Move the input end address change to inclusive up into
+mtrr_type_lookup(), before checking for the top of memory in either
+mtrr_type_lookup_{variable,fixed}() helpers.
 
-- Your patch is malformed (tabs converted to spaces, linewrapped, etc.)
-  and can not be applied.  Please read the file,
-  Documentation/email-clients.txt in order to fix this.
+ [ bp: Massage commit message. ]
 
-- Your patch was attached, please place it inline so that it can be
-  applied directly from the email message itself.
+Fixes: 0cc705f56e40 ("x86/mm/mtrr: Clean up mtrr_type_lookup()")
+Signed-off-by: Ying-Tsun Huang <ying-tsun.huang@amd.com>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Link: https://lkml.kernel.org/r/20201215070721.4349-1-ying-tsun.huang@amd.com
+---
+ arch/x86/kernel/cpu/mtrr/generic.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-If you wish to discuss this problem further, or you have questions about
-how to resolve this issue, please feel free to respond to this email and
-Greg will reply once he has dug out from the pending patches received
-from other developers.
-
-thanks,
-
-greg k-h's patch email bot
+diff --git a/arch/x86/kernel/cpu/mtrr/generic.c b/arch/x86/kernel/cpu/mtrr/generic.c
+index 23ad8e9..a29997e 100644
+--- a/arch/x86/kernel/cpu/mtrr/generic.c
++++ b/arch/x86/kernel/cpu/mtrr/generic.c
+@@ -167,9 +167,6 @@ static u8 mtrr_type_lookup_variable(u64 start, u64 end, u64 *partial_end,
+ 	*repeat = 0;
+ 	*uniform = 1;
+ 
+-	/* Make end inclusive instead of exclusive */
+-	end--;
+-
+ 	prev_match = MTRR_TYPE_INVALID;
+ 	for (i = 0; i < num_var_ranges; ++i) {
+ 		unsigned short start_state, end_state, inclusive;
+@@ -261,6 +258,9 @@ u8 mtrr_type_lookup(u64 start, u64 end, u8 *uniform)
+ 	int repeat;
+ 	u64 partial_end;
+ 
++	/* Make end inclusive instead of exclusive */
++	end--;
++
+ 	if (!mtrr_state_set)
+ 		return MTRR_TYPE_INVALID;
+ 
