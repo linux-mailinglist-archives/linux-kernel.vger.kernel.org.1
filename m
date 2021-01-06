@@ -2,121 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1B932EBAAA
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 08:50:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D75662EBAAC
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 08:50:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726375AbhAFHso (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Jan 2021 02:48:44 -0500
-Received: from mail-lf1-f46.google.com ([209.85.167.46]:45447 "EHLO
-        mail-lf1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725792AbhAFHsn (ORCPT
+        id S1726238AbhAFHuE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Jan 2021 02:50:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50960 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725951AbhAFHuD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Jan 2021 02:48:43 -0500
-Received: by mail-lf1-f46.google.com with SMTP id x20so4484537lfe.12
-        for <linux-kernel@vger.kernel.org>; Tue, 05 Jan 2021 23:48:26 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=gY8rQMdkez82SvmQKDstko0q63KXZmXlI+Jjtgb+LpU=;
-        b=GssgNY6lMQS8QvIbSn6GH0i3WSwg4JgdVi8IqGqLSmPG+2DLyTL5DC3//9K0wsvVrb
-         1P1/R2VsaAaKDZf08BJFugyKF/CCPPdqVw+qZX5nvherOywavCqbPXH6tSJnGzGpLgnL
-         ZuO0GTz+X5ztH07utDaKy0mQy0lsM5LpdhAWr1QYqfUrH7lZ2boVT/m6kCw0g9PhhKnw
-         Rp/jHPIYIJDPS9xklHJWRZWeGS7mo2meFC2PmWrRYoEqR+9UzCs905XV9V/yEIqrl1Ra
-         Am2oKmlvBWgmqrDQbojnHzp+OK+7CWbdw4ODTdvgUwFjPeZKOLKKwZv6f5AsMZrCyFIr
-         Xi9A==
-X-Gm-Message-State: AOAM530jMRxwntTRH+1PWVa1sNRZKakWTvv9FDF7qIo78D7jUqVQ7tez
-        DiAkWiUo0aQTVWUIcj7XwgwWvHgdu7vxnzjT+XU=
-X-Google-Smtp-Source: ABdhPJyd4B3ex8ITA65izmoN4uUWfoFVK+/mbD85dIRf0nZL6ldTPZV0dpwXb7uucRJ/6Slc9kVgnbqSvnoVOVQkqp8=
-X-Received: by 2002:a19:3f47:: with SMTP id m68mr1409903lfa.494.1609919281088;
- Tue, 05 Jan 2021 23:48:01 -0800 (PST)
+        Wed, 6 Jan 2021 02:50:03 -0500
+Received: from xavier.telenet-ops.be (xavier.telenet-ops.be [IPv6:2a02:1800:120:4::f00:14])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B0CEC06134C
+        for <linux-kernel@vger.kernel.org>; Tue,  5 Jan 2021 23:49:22 -0800 (PST)
+Received: from ramsan.of.borg ([84.195.186.194])
+        by xavier.telenet-ops.be with bizsmtp
+        id DKpL2401D4C55Sk01KpLW7; Wed, 06 Jan 2021 08:49:20 +0100
+Received: from rox.of.borg ([192.168.97.57])
+        by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1kx3ZI-001Vb6-0o; Wed, 06 Jan 2021 08:49:20 +0100
+Received: from geert by rox.of.borg with local (Exim 4.93)
+        (envelope-from <geert@linux-m68k.org>)
+        id 1kx3ZH-006gMf-HS; Wed, 06 Jan 2021 08:49:19 +0100
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+To:     Alexander Viro <viro@zeniv.linux.org.uk>
+Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] binfmt_elf: Fix fill_prstatus() call in fill_note_info()
+Date:   Wed,  6 Jan 2021 08:49:17 +0100
+Message-Id: <20210106074919.1592772-1-geert@linux-m68k.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20201213133850.10070-1-leo.yan@linaro.org> <20201213133850.10070-8-leo.yan@linaro.org>
-In-Reply-To: <20201213133850.10070-8-leo.yan@linaro.org>
-From:   Namhyung Kim <namhyung@kernel.org>
-Date:   Wed, 6 Jan 2021 16:47:49 +0900
-Message-ID: <CAM9d7cj4z6KxYLS1Envcsir9wBJgHujXq3-86PEGk-7zAbyvsQ@mail.gmail.com>
-Subject: Re: [PATCH v2 07/11] perf c2c: Refactor node display macro
-To:     Leo Yan <leo.yan@linaro.org>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Ian Rogers <irogers@google.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Joe Mario <jmario@redhat.com>, David Ahern <dsahern@gmail.com>,
-        Don Zickus <dzickus@redhat.com>, Al Grant <Al.Grant@arm.com>,
-        James Clark <james.clark@arm.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Dec 13, 2020 at 10:39 PM Leo Yan <leo.yan@linaro.org> wrote:
->
-> The macro DISPLAY_HITM() is used to calculate HITM percentage introduced
-> by every node and it's shown for the node info.
->
-> This patch refactors the macro, it is renamed it as DISPLAY_METRICS().
-> And the parameters is changed for passing the metric's statistic value
-> and the sum value, this is flexsible for later's extension, e.g. it's
-> easier to be used for metrics which combines multiple fields from
-> structure c2c_stats.
+On m68k, which does not define CORE_DUMP_USE_REGSET:
 
-Same as the previous one.
+    fs/binfmt_elf.c: In function ‘fill_note_info’:
+    fs/binfmt_elf.c:2040:20: error: passing argument 1 of ‘fill_prstatus’ from incompatible pointer type [-Werror=incompatible-pointer-types]
+     2040 |  fill_prstatus(info->prstatus, current, siginfo->si_signo);
+	  |                ~~~~^~~~~~~~~~
+	  |                    |
+	  |                    struct elf_prstatus *
+    fs/binfmt_elf.c:1498:55: note: expected ‘struct elf_prstatus_common *’ but argument is of type ‘struct elf_prstatus *’
+     1498 | static void fill_prstatus(struct elf_prstatus_common *prstatus,
+	  |                           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~
 
-Thanks,
-Namhyung
+The fill_prstatus() signature was changed, but one caller was not
+updated.
 
+Reported-by: noreply@ellerman.id.au
+Fixes: 147d88b334cd5416 ("elf_prstatus: collect the common part (everything before pr_reg) into a struct")
+Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+---
+Compile-tested only.  Feel free to fold into the original commit.
+---
+ fs/binfmt_elf.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
->
-> Signed-off-by: Leo Yan <leo.yan@linaro.org>
-> ---
->  tools/perf/builtin-c2c.c | 17 ++++++++++-------
->  1 file changed, 10 insertions(+), 7 deletions(-)
->
-> diff --git a/tools/perf/builtin-c2c.c b/tools/perf/builtin-c2c.c
-> index f11c3c84bb2b..50018bfb1089 100644
-> --- a/tools/perf/builtin-c2c.c
-> +++ b/tools/perf/builtin-c2c.c
-> @@ -1324,23 +1324,26 @@ node_entry(struct perf_hpp_fmt *fmt __maybe_unused, struct perf_hpp *hpp,
->                         ret = scnprintf(hpp->buf, hpp->size, "%2d{%2d ", node, num);
->                         advance_hpp(hpp, ret);
->
-> -               #define DISPLAY_HITM(__h)                                               \
-> -                       if (c2c_he->stats.__h> 0) {                                     \
-> +               #define DISPLAY_METRICS(val, sum)                                       \
-> +               {                                                                       \
-> +                       if ((sum) > 0) {                                                \
->                                 ret = scnprintf(hpp->buf, hpp->size, "%5.1f%% ",        \
-> -                                               percent(stats->__h, c2c_he->stats.__h));\
-> +                                               percent((val), (sum)));                 \
->                         } else {                                                        \
->                                 ret = scnprintf(hpp->buf, hpp->size, "%6s ", "n/a");    \
-> -                       }
-> +                       }                                                               \
-> +               }
->
->                         switch (c2c.display) {
->                         case DISPLAY_RMT:
-> -                               DISPLAY_HITM(rmt_hitm);
-> +                               DISPLAY_METRICS(stats->rmt_hitm, c2c_he->stats.rmt_hitm);
->                                 break;
->                         case DISPLAY_LCL:
-> -                               DISPLAY_HITM(lcl_hitm);
-> +                               DISPLAY_METRICS(stats->lcl_hitm, c2c_he->stats.lcl_hitm);
->                                 break;
->                         case DISPLAY_TOT:
-> -                               DISPLAY_HITM(tot_hitm);
-> +                               DISPLAY_METRICS(stats->tot_hitm, c2c_he->stats.tot_hitm);
-> +                               break;
->                         default:
->                                 break;
->                         }
-> --
-> 2.17.1
->
+diff --git a/fs/binfmt_elf.c b/fs/binfmt_elf.c
+index 1b678aff3bac93eb..4c1550b13899efd7 100644
+--- a/fs/binfmt_elf.c
++++ b/fs/binfmt_elf.c
+@@ -2037,7 +2037,7 @@ static int fill_note_info(struct elfhdr *elf, int phdrs,
+ 	}
+ 	/* now collect the dump for the current */
+ 	memset(info->prstatus, 0, sizeof(*info->prstatus));
+-	fill_prstatus(info->prstatus, current, siginfo->si_signo);
++	fill_prstatus(&info->prstatus->common, current, siginfo->si_signo);
+ 	elf_core_copy_regs(&info->prstatus->pr_reg, regs);
+ 
+ 	/* Set up header */
+-- 
+2.25.1
+
