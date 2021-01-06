@@ -2,100 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BC552EBD44
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 12:40:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A22872EBD4A
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 12:42:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726558AbhAFLkO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Jan 2021 06:40:14 -0500
-Received: from tux.runtux.com ([176.9.82.136]:56838 "EHLO tux.runtux.com"
+        id S1726683AbhAFLkk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Jan 2021 06:40:40 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53540 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726073AbhAFLkN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Jan 2021 06:40:13 -0500
-Received: from localhost (localhost [127.0.0.1])
-        by tux.runtux.com (Postfix) with ESMTP id C36A66EFD2;
-        Wed,  6 Jan 2021 12:39:30 +0100 (CET)
-X-Virus-Scanned: Debian amavisd-new at tux.runtux.com
-Received: from tux.runtux.com ([127.0.0.1])
-        by localhost (tux2.runtux.com [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id ztHTl1_m2aKa; Wed,  6 Jan 2021 12:39:30 +0100 (CET)
-Received: from bee.priv.zoo (62-99-217-90.static.upcbusiness.at [62.99.217.90])
-        (Authenticated sender: postmaster@runtux.com)
-        by tux.runtux.com (Postfix) with ESMTPSA id C9C376EF93;
-        Wed,  6 Jan 2021 12:39:29 +0100 (CET)
-Received: by bee.priv.zoo (Postfix, from userid 1002)
-        id 5BB5346C; Wed,  6 Jan 2021 12:39:29 +0100 (CET)
-Date:   Wed, 6 Jan 2021 12:39:29 +0100
-From:   Ralf Schlatterbeck <rsc@runtux.com>
-To:     linux-kernel <linux-kernel@vger.kernel.org>,
-        Willy Tarreau <w@1wt.eu>, Lars Poeschel <poeschel@lemonage.de>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Subject: [PATCH 1/1] auxdisplay: Add I2C gpio expander example
-Message-ID: <20210106113929.fizyg6fcsmsntkiy@runtux.com>
-References: <20210106113730.k5qveshjgcd57kgx@runtux.com>
+        id S1725789AbhAFLkj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 Jan 2021 06:40:39 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4B2F923100;
+        Wed,  6 Jan 2021 11:39:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1609933199;
+        bh=oVQy0WCzmrrM0N7SmWHba1flnwvWAZk0QOZxQDNRFeY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=p9P2ZBPUp/btO/65Rs74MhMBR0vz9xgr5BeOKTOxIedNJpUE/jN8pGoUQr7xaWfRT
+         FpgRPgYGnnUEh3nqB9N3xI6685F9kGvz9a0GEM30GMiDhAiEcccA0Wu9Ny3TVWoYe/
+         f9xUD1H66EUj1/gRlh17WIT3uN1TeWDRN1Q4VZ0TtKMSMpQWZyLTcxk8oEfNKQ54V/
+         BVGjLUWvnPpo1sV25vUhxEELP3yOrg72DxRyE+TutKs5elgpqdx6Mrb0BCXCyQosLP
+         wmrTiPBmHesIARF6gRZ1wHpowjPh3+Cesfeh3FLEtGEtb4v9QWKB3LfnTbSpB41B2P
+         SPWhLALexbjzg==
+Date:   Wed, 6 Jan 2021 13:39:51 +0200
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Shradha Todi <shradha.t@samsung.com>
+Cc:     linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
+        bhelgaas@google.com, kishon@ti.com, lorenzo.pieralisi@arm.com,
+        pankaj.dubey@samsung.com, sriram.dash@samsung.com,
+        niyas.ahmed@samsung.com, p.rajanbabu@samsung.com,
+        l.mehra@samsung.com, hari.tv@samsung.com
+Subject: Re: [PATCH v3] PCI: endpoint: Fix NULL pointer dereference for
+ ->get_features()
+Message-ID: <20210106113951.GW31158@unreal>
+References: <CGME20210106103829epcas5p20a5c8aa2ae8bd6d8d555dad1aa265a1c@epcas5p2.samsung.com>
+ <1609929490-18921-1-git-send-email-shradha.t@samsung.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210106113730.k5qveshjgcd57kgx@runtux.com>
-X-ray:  beware
-User-Agent: NeoMutt/20180716
+In-Reply-To: <1609929490-18921-1-git-send-email-shradha.t@samsung.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The hd44780 displays are often used with pcf8574 based I/O expanders.
-Add example to documentation.
+On Wed, Jan 06, 2021 at 04:08:10PM +0530, Shradha Todi wrote:
+> get_features ops of pci_epc_ops may return NULL, causing NULL pointer
+> dereference in pci_epf_test_bind function. Let us add a check for
+> pci_epc_feature pointer in pci_epf_test_bind before we access it to avoid
+> any such NULL pointer dereference and return -ENOTSUPP in case
+> pci_epc_feature is not found.
+>
+> When the patch is not applied and EPC features is not implemented in the
+> platform driver, we see the following dump due to kernel NULL pointer
+> dereference.
+>
+> [  105.135936] Call trace:
+> [  105.138363]  pci_epf_test_bind+0xf4/0x388
+> [  105.142354]  pci_epf_bind+0x3c/0x80
+> [  105.145817]  pci_epc_epf_link+0xa8/0xcc
+> [  105.149632]  configfs_symlink+0x1a4/0x48c
+> [  105.153616]  vfs_symlink+0x104/0x184
+> [  105.157169]  do_symlinkat+0x80/0xd4
+> [  105.160636]  __arm64_sys_symlinkat+0x1c/0x24
+> [  105.164885]  el0_svc_common.constprop.3+0xb8/0x170
+> [  105.169649]  el0_svc_handler+0x70/0x88
+> [  105.173377]  el0_svc+0x8/0x640
+> [  105.176411] Code: d2800581 b9403ab9 f9404ebb 8b394f60 (f9400400)
+> [  105.182478] ---[ end trace a438e3c5a24f9df0 ]---
+>
+> Fixes: 2c04c5b8eef79 ("PCI: pci-epf-test: Use pci_epc_get_features() to get
+> EPC features")
+>
+> Reviewed-by: Pankaj Dubey <pankaj.dubey@samsung.com>
 
-Signed-off-by: Ralf Schlatterbeck <rsc@runtux.com>
----
- .../bindings/auxdisplay/hit,hd44780.yaml      | 31 ++++++++++++++++++-
- 1 file changed, 30 insertions(+), 1 deletion(-)
+Please no space between Fixes line and SOB.
+Also please don't break Fixes lines.
 
-diff --git a/Documentation/devicetree/bindings/auxdisplay/hit,hd44780.yaml b/Documentation/devicetree/bindings/auxdisplay/hit,hd44780.yaml
-index 9222b06e93a0..0ec2ce7b1df1 100644
---- a/Documentation/devicetree/bindings/auxdisplay/hit,hd44780.yaml
-+++ b/Documentation/devicetree/bindings/auxdisplay/hit,hd44780.yaml
-@@ -12,7 +12,10 @@ maintainers:
- description:
-   The Hitachi HD44780 Character LCD Controller is commonly used on character
-   LCDs that can display one or more lines of text. It exposes an M6800 bus
--  interface, which can be used in either 4-bit or 8-bit mode.
-+  interface, which can be used in either 4-bit or 8-bit mode. By using a
-+  GPIO expander it is possible to use the driver with one of the popular I2C
-+  expander boards based on the PCF8574 available for these displays. For
-+  an example see below.
- 
- properties:
-   compatible:
-@@ -94,3 +97,29 @@ examples:
-             display-height-chars = <2>;
-             display-width-chars = <16>;
-     };
-+  - |
-+    #include <dt-bindings/gpio/gpio.h>
-+    i2c@2000 {
-+            #address-cells = <1>;
-+            #size-cells = <0>;
-+
-+            pcf8574: pcf8574@27 {
-+                    compatible = "nxp,pcf8574";
-+                    reg = <0x27>;
-+                    gpio-controller;
-+                    #gpio-cells = <2>;
-+            };
-+    };
-+    hd44780 {
-+            compatible = "hit,hd44780";
-+            display-height-chars = <2>;
-+            display-width-chars  = <16>;
-+            data-gpios = <&pcf8574 4 0>,
-+                         <&pcf8574 5 0>,
-+                         <&pcf8574 6 0>,
-+                         <&pcf8574 7 0>;
-+            enable-gpios = <&pcf8574 2 0>;
-+            rs-gpios = <&pcf8574 0 0>;
-+            rw-gpios = <&pcf8574 1 0>;
-+            backlight-gpios = <&pcf8574 3 0>;
-+    };
--- 
-2.20.1
+Thanks
