@@ -2,102 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3AFF52EC4CB
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 21:21:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 66B4C2EC4D5
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 21:23:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728083AbhAFUUq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Jan 2021 15:20:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55588 "EHLO
+        id S1727200AbhAFUWq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Jan 2021 15:22:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55898 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728062AbhAFUUo (ORCPT
+        with ESMTP id S1726697AbhAFUWp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Jan 2021 15:20:44 -0500
-Received: from mail-wm1-x330.google.com (mail-wm1-x330.google.com [IPv6:2a00:1450:4864:20::330])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 482E0C06134C
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Jan 2021 12:20:03 -0800 (PST)
-Received: by mail-wm1-x330.google.com with SMTP id q75so3698466wme.2
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Jan 2021 12:20:03 -0800 (PST)
+        Wed, 6 Jan 2021 15:22:45 -0500
+Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8CC82C06134C
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Jan 2021 12:22:05 -0800 (PST)
+Received: by mail-pf1-x42b.google.com with SMTP id c12so2349439pfo.10
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Jan 2021 12:22:05 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=w3vu7Q77s3pJWhDM2ZQklqoYrnX9v2imWoObUc3E/RA=;
-        b=ctIAJZXn1n8n6ErtdFx+i0m//hYktYCyTIp+fkL2LcY4Jfm0wKjplw4EPnBOWExPAF
-         tm1apLDsKQTMmoQJulDnTwruR9Hsv/yMpbPSwvB33Dn0xO8hHEGo06j0Mq+sinPqwyZs
-         kWZVEpQfTT0gtFMj0arQ6YCHOg8raZObUVbJLy3IpkYwflXc322j700Bc561ZRWT68Qr
-         WImc4bVeS/KdcVxYAC3M6Lh5048xfOZ+mJi3bkLkEPN0k184n8amf7w7eb1X+DXPr41W
-         BYDH63AMZUvCTtDjclrX3JOjBQH+bUaDAXZVik31j8KCdfx49K2tkomwviBCLVObiuL0
-         DAOg==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=qC3v3aPiZ/ZR6mkFft0a1FWQbrfzrwyrP+icxRFO0Uo=;
+        b=lWjK0DjcEVyiNi3dbH0Ml9RlkyjbL9K9DYj+2SjNJeYX2iwhpEZe9jwXg6jN3AhtcU
+         ubhV0ojfjqKfh53UClDjH1ihMibOhcUncz1GYyggB5/JWVc4LlYVRbZX3ph69BvrkgH/
+         XiWZEB8k3EWGbIajMb+M0D64GI5pLLImOIOKG8Lq09dqPsASsAsNPxBAhLMKK4+WUkYA
+         ugUBdV6yNcdSZOoXT/ZXUJ8JaOmsHRkStyS8UUdENfP6BjKSgGlAbJY2DGwRxJ3C61cb
+         rO3kV4Up6mGKlqqgKjRAwjpRrVnSsEtqiZyp/yax8u/7ZeMSu8HSn01U/5qiW6mvklld
+         I9eA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=w3vu7Q77s3pJWhDM2ZQklqoYrnX9v2imWoObUc3E/RA=;
-        b=JsVm6xw4sYS2n09XX3ZLpx/cb+rdM2Qcn0l5Nm3YVxoI4aeO47Q/Kp4318nf1Cdfrp
-         UdGB3uRkbEQyvKVjD39wwnbIE1P7FtRLkWxanZFsdVtRskdrsb0bj957J1mxSh6No258
-         pAQS+RAPddVVOiVF7/EvyExjVE49puYt1uNnshpNm8M8UU2DA+9M/9LIhLIsDvYK2nuY
-         5e0YoR5mv9zxEjY/A4l11HeeN6rw0PYAsmOv7kDAbWEEMfjAfmb7va4WblD/nvgjE38N
-         cys3Y5XTJLrvzG+VyCYe67hlBCb5bVrM7OdZn4ocSYZqkYedvR+qN7hGi+MjLX+x+Ezg
-         Ip2A==
-X-Gm-Message-State: AOAM533hFQto4Amfy4emcLP87y/6XGYVCDLsxOIcW7bIq7QOyBbPiMBH
-        YPSzQFqPioo9t8+3bsz/DNYXvA==
-X-Google-Smtp-Source: ABdhPJyBV1GURnIjVGPvwWRfM4Ufh3xwem8TBRk7I5b9Hoc2Gd8ZantU2ae2Sew+89YLsf+t89oB0A==
-X-Received: by 2002:a7b:c1d7:: with SMTP id a23mr5101496wmj.62.1609964401954;
-        Wed, 06 Jan 2021 12:20:01 -0800 (PST)
-Received: from Red ([2a01:cb1d:3d5:a100:264b:feff:fe03:2806])
-        by smtp.googlemail.com with ESMTPSA id n16sm4435939wrj.26.2021.01.06.12.20.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 06 Jan 2021 12:20:01 -0800 (PST)
-Date:   Wed, 6 Jan 2021 21:19:58 +0100
-From:   LABBE Corentin <clabbe@baylibre.com>
-To:     Dan Carpenter <dan.carpenter@oracle.com>
-Cc:     Zheng Yongjun <zhengyongjun3@huawei.com>, mchehab@kernel.org,
-        mjpeg-users@lists.sourceforge.net, linux-media@vger.kernel.org,
-        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
-        gregkh@linuxfoundation.org
-Subject: Re: [PATCH -next] media: zoran: use resource_size
-Message-ID: <X/Ybbj6gN2xrhIwP@Red>
-References: <20210106131702.32507-1-zhengyongjun3@huawei.com>
- <20210106145100.GJ2809@kadam>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=qC3v3aPiZ/ZR6mkFft0a1FWQbrfzrwyrP+icxRFO0Uo=;
+        b=Di1wDHIym5AnkIMv4jKIpquVJ4T34VCYaoMGaZmp0r/Z2JtKqsSNOaMvHjx55ErmaH
+         bCxkYCAxzPTYqT1oSyY3sWgFhmz+51+A6moKaKvymg2XSRAzV0yB1LNa6vivm332rbWs
+         cl7QW6qLPitPBvV2CDhpszJvwWwSIwt3ZeFBcXHLHgAoNgOUb6J0hDq2Ej6hE7G52Md/
+         yrD5WOf1776yJ6WiTGA4zyjzD2XMNQr/R+ZsDAJF5nljbYtlhbDVl6e4OGvuns96E2Nv
+         rm5GUVb0jBH57jVOh5GDE7MmUrVAhwUhagft4hpRNHfs8TubQ/kU9vpTXW+7jyMB0Mtk
+         agiQ==
+X-Gm-Message-State: AOAM530Gwgsd68T1h5ePABe+j1kVfOySG+ilg+Tl8OwgbPRPBINDyl+T
+        4DO6imu9aiCgO2AmEX7j9Zwsxcr962X8wHAUHaDZjQ==
+X-Google-Smtp-Source: ABdhPJyFbigeLaivyfiV1zLifSuBl9eD/ojGZps0lq3cOaW+XuQZJ/DAzjJWxZIA/k4i8Syck+AMEJiramMh2jC9dnA=
+X-Received: by 2002:a63:5a08:: with SMTP id o8mr6253893pgb.118.1609964524946;
+ Wed, 06 Jan 2021 12:22:04 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210106145100.GJ2809@kadam>
+References: <20210106200713.31840-1-alobakin@pm.me> <20210106200801.31993-1-alobakin@pm.me>
+ <20210106200801.31993-3-alobakin@pm.me>
+In-Reply-To: <20210106200801.31993-3-alobakin@pm.me>
+From:   =?UTF-8?B?RsSBbmctcnXDrCBTw7JuZw==?= <maskray@google.com>
+Date:   Wed, 6 Jan 2021 12:21:53 -0800
+Message-ID: <CAFP8O3LBM-qSaM0ij7cEoP-s-zDaEG_VApbKonenCTrSxmJw+w@mail.gmail.com>
+Subject: Re: [PATCH v2 mips-next 3/4] MIPS: vmlinux.lds.S: catch bad .got,
+ .plt and .rel.dyn at link time
+To:     Alexander Lobakin <alobakin@pm.me>
+Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Kees Cook <keescook@chromium.org>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Alex Smith <alex.smith@imgtec.com>,
+        Ralf Baechle <ralf@linux-mips.org>,
+        Markos Chandras <markos.chandras@imgtec.com>,
+        linux-mips <linux-mips@vger.kernel.org>,
+        "# 3.4.x" <stable@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Le Wed, Jan 06, 2021 at 05:51:00PM +0300, Dan Carpenter a écrit :
-> On Wed, Jan 06, 2021 at 09:17:02PM +0800, Zheng Yongjun wrote:
-> > Use resource_size rather than a verbose computation on
-> > the end and start fields.
-> > 
-> > Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>
-> > ---
-> >  drivers/staging/media/zoran/zoran_driver.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > 
-> > diff --git a/drivers/staging/media/zoran/zoran_driver.c b/drivers/staging/media/zoran/zoran_driver.c
-> > index 808196ea5b81..d60b4c73ea80 100644
-> > --- a/drivers/staging/media/zoran/zoran_driver.c
-> > +++ b/drivers/staging/media/zoran/zoran_driver.c
-> > @@ -1020,7 +1020,7 @@ int zoran_queue_init(struct zoran *zr, struct vb2_queue *vq)
-> >  	vq->buf_struct_size = sizeof(struct zr_buffer);
-> >  	vq->ops = &zr_video_qops;
-> >  	vq->mem_ops = &vb2_dma_contig_memops;
-> > -	vq->gfp_flags = GFP_DMA32,
-> > +	vq->gfp_flags = GFP_DMA32;
-> 
-> The commit doesn't match the patch.  Also this driver is in
-> staging because it's going to be deleted soon so there probably isn't
-> much point doing cleanups.
-> 
+On Wed, Jan 6, 2021 at 12:08 PM Alexander Lobakin <alobakin@pm.me> wrote:
+>
+> Catch any symbols placed in .got, .got.plt, .plt, .rel.dyn
+> or .rela.dyn and check for these sections to be zero-sized
+> at link time.
+>
+> At least two of them were noticed in real builds:
+>
+> mips-alpine-linux-musl-ld: warning: orphan section `.rel.dyn'
+> from `init/main.o' being placed in section `.rel.dyn'
+>
+> ld.lld: warning: <internal>:(.got) is being placed in '.got'
+>
+> Adopted from x86/kernel/vmlinux.lds.S.
+>
+> Reported-by: Nathan Chancellor <natechancellor@gmail.com> # .got
+> Suggested-by: Fangrui Song <maskray@google.com> # .rel.dyn
+> Signed-off-by: Alexander Lobakin <alobakin@pm.me>
+> ---
+>  arch/mips/kernel/vmlinux.lds.S | 35 ++++++++++++++++++++++++++++++++++
+>  1 file changed, 35 insertions(+)
+>
+> diff --git a/arch/mips/kernel/vmlinux.lds.S b/arch/mips/kernel/vmlinux.lds.S
+> index 5d6563970ab2..05eda9d9a7d5 100644
+> --- a/arch/mips/kernel/vmlinux.lds.S
+> +++ b/arch/mips/kernel/vmlinux.lds.S
+> @@ -227,4 +227,39 @@ SECTIONS
+>                 *(.pdr)
+>                 *(.reginfo)
+>         }
+> +
+> +       /*
+> +        * Sections that should stay zero sized, which is safer to
+> +        * explicitly check instead of blindly discarding.
+> +        */
+> +
+> +       .got : {
+> +               *(.got)
+> +               *(.igot.*)
+> +       }
+> +       ASSERT(SIZEOF(.got) == 0, "Unexpected GOT entries detected!")
+> +
+> +       .got.plt (INFO) : {
+> +               *(.got.plt)
+> +       }
+> +       ASSERT(SIZEOF(.got.plt) == 0, "Unexpected GOT/PLT entries detected!")
 
-No, the driver just came back in staging since I fixed the videobuf2 conversion.
-One of the reason it is kept in staging is that media maintainer want to test it with its own zoran card but covid19 delayed the physical recovery of it.
+(INFO) drops the SHF_ALLOC flag from the output section (It does not
+mean "informational"). INFO is not need here.
+The diff from 815d680771ae09080d2da83dac2647c08cdf99ce "x86/build:
+Enforce an empty .got.plt section" is not needed.
 
-So the patch need to be resent, please.
+> +       .plt : {
+> +               *(.plt)
+> +               *(.plt.*)
+> +               *(.iplt)
+> +       }
+> +       ASSERT(SIZEOF(.plt) == 0, "Unexpected run-time procedure linkages detected!")
+> +
+> +       .rel.dyn : {
+> +               *(.rel.*)
+> +               *(.rel_*)
+> +       }
+> +       ASSERT(SIZEOF(.rel.dyn) == 0, "Unexpected run-time relocations (.rel) detected!")
+> +
+> +       .rela.dyn : {
+> +               *(.rela.*)
+> +               *(.rela_*)
+> +       }
+> +       ASSERT(SIZEOF(.rela.dyn) == 0, "Unexpected run-time relocations (.rela) detected!")
+>  }
 
-Regards
+x86 has both .rel.dyn and .rela.dyn because i386 psABI uses REL while
+x86-64 psABI uses RELA, but mips does not need .rela.dyn
+
+> --
+> 2.30.0
+>
+>
