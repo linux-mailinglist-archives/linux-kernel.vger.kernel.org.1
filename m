@@ -2,82 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 337D92EBB43
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 09:47:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BC9152EBB40
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 09:47:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726777AbhAFIre (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Jan 2021 03:47:34 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:44935 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726742AbhAFIre (ORCPT
+        id S1726684AbhAFIrN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Jan 2021 03:47:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60052 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726510AbhAFIrN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Jan 2021 03:47:34 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1609922768;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=h4B8kH6ze+E5PoMixXcia7NZlNRqi70d7MWvzMT8C7I=;
-        b=f/tbG2y6RLzBLZVEdVwVLRDSQ+sDuzfxW5oo7V5ap3NsL/laMJ4jAt8riPBqkGHzyY7DJJ
-        gewBf9CxChIF2JVyzdpSZ6SNuKoaXP8pedAeUkOtrC/vbCzM+Pqtu4Y6rll1vzCof/CcRb
-        pJatIWu8N8mlQwie8B8t6/T9X4O7dTQ=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-524-S-sSwl_sMvybwBrg6vzwUQ-1; Wed, 06 Jan 2021 03:46:04 -0500
-X-MC-Unique: S-sSwl_sMvybwBrg6vzwUQ-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B0E6D10054FF;
-        Wed,  6 Jan 2021 08:46:02 +0000 (UTC)
-Received: from T590 (ovpn-12-163.pek2.redhat.com [10.72.12.163])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 8022D6A8FB;
-        Wed,  6 Jan 2021 08:45:53 +0000 (UTC)
-Date:   Wed, 6 Jan 2021 16:45:48 +0800
-From:   Ming Lei <ming.lei@redhat.com>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Jens Axboe <axboe@kernel.dk>, linux-kernel@vger.kernel.org,
-        linux-block@vger.kernel.org,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        "Darrick J . Wong" <darrick.wong@oracle.com>,
-        linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Subject: Re: [RFC PATCH] fs: block_dev: compute nr_vecs hint for improving
- writeback bvecs allocation
-Message-ID: <20210106084548.GA3845805@T590>
-References: <20210105132647.3818503-1-ming.lei@redhat.com>
- <20210105183938.GA3878@lst.de>
+        Wed, 6 Jan 2021 03:47:13 -0500
+Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6D8EC06134D
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Jan 2021 00:46:32 -0800 (PST)
+Received: by mail-pj1-x1030.google.com with SMTP id l23so1247322pjg.1
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Jan 2021 00:46:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=53HmeNCId56TyprTPiCTxLLId7kfWvnwGYjjv2jFeKo=;
+        b=AdVNFfI6g/+Peyo3N6YUcwALG9C/6Lg12CpHr1ce54Xw8HxwCQXNqc3DVReRHnmnV4
+         Z9HmRiOLTAOiAHowNoy6ri4ooZZwaHOOfig7ryMSQNUOt+5CMMUCfOUyVWfWfGIlUf62
+         3Ave4W3jFHywlocQErtqPoiDtzCzi1JS1NYB4=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=53HmeNCId56TyprTPiCTxLLId7kfWvnwGYjjv2jFeKo=;
+        b=YzuGuG1j9mg/q0brStRKfkx3y4uOX30rfCrsuNXm9ibf7UYjBGjIuWuJNiLH48wbu1
+         LvpH9K2x7ttqx7q5gCwdEL9s0r7vPnJZFAghnIZD6qUiH25mAZXkeFcghSiPHKD7qeOK
+         JYMRfA/G0Lzn/iNFakDeZfOUPAKQjIgxsT2wh7TLhMUykVm9yvIduzfsxXKEG5rWl3zn
+         AQZV3LtJ+ouNnGix6chZUuHdBmAxmRC3QtvKEiC+h2tO/ucVDOpDcqrkOF4tYM8RiJBt
+         lw5hjN+hHIRU4S3bfO3ZtCFxCZCspK3D1TST6AsjF3Y41Dnb4TYANYDuMsdL/YQbwCYq
+         7dMA==
+X-Gm-Message-State: AOAM531M2DRnzjn9iN3jCN4jjoPIPUOyAuI20Schly7vFgaHewBumqMb
+        3boKCsC7A4fwgO48PbjWrmKOoQ==
+X-Google-Smtp-Source: ABdhPJziHVDPeUCi5Utppw8W+tY+4u1RlOrf2iChI9GgDLMJYKK8sUvnaovvgCjgcxX6igQIICAzlg==
+X-Received: by 2002:a17:90a:6d62:: with SMTP id z89mr3337414pjj.71.1609922792324;
+        Wed, 06 Jan 2021 00:46:32 -0800 (PST)
+Received: from hsinyi-z840.tpe.corp.google.com ([2401:fa00:1:10:1a60:24ff:fe89:3e93])
+        by smtp.gmail.com with ESMTPSA id a31sm1913401pgb.93.2021.01.06.00.46.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 06 Jan 2021 00:46:31 -0800 (PST)
+From:   Hsin-Yi Wang <hsinyi@chromium.org>
+To:     linux-arm-kernel@lists.infradead.org,
+        Matthias Brugger <matthias.bgg@gmail.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        Nicolas Boichat <drinkcat@chromium.org>,
+        devicetree@vger.kernel.org, linux-mediatek@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 1/2] arm64: dts: mt8183: config dsi node
+Date:   Wed,  6 Jan 2021 16:46:25 +0800
+Message-Id: <20210106084626.2181286-1-hsinyi@chromium.org>
+X-Mailer: git-send-email 2.29.2.729.g45daf8777d-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210105183938.GA3878@lst.de>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 05, 2021 at 07:39:38PM +0100, Christoph Hellwig wrote:
-> At least for iomap I think this is the wrong approach.  Between the
-> iomap and writeback_control we know the maximum size of the writeback
-> request and can just use that.
+Config dsi node for mt8183 kukui. Set panel and ports.
 
-I think writeback_control can tell us nothing about max pages in single
-bio:
+Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
+---
+ .../arm64/boot/dts/mediatek/mt8183-kukui.dtsi | 38 +++++++++++++++++++
+ 1 file changed, 38 insertions(+)
 
-- wbc->nr_to_write controls how many pages to writeback, this pages
-  usually don't belong to same bio. Also this number is often much
-  bigger than BIO_MAX_PAGES.
-
-- wbc->range_start/range_end is similar too, which is often much more
-  bigger than BIO_MAX_PAGES.
-
-Also page/blocks_in_page can be mapped to different extent too, which is
-only available when wpc->ops->map_blocks() is returned, which looks not
-different with mpage_writepages(), in which bio is allocated with
-BIO_MAX_PAGES vecs too.
-
-Or you mean we can use iomap->length for this purpose? But iomap->length
-still is still too big in case of xfs.
-
+diff --git a/arch/arm64/boot/dts/mediatek/mt8183-kukui.dtsi b/arch/arm64/boot/dts/mediatek/mt8183-kukui.dtsi
+index bf2ad1294dd30..4cfb3560e5d11 100644
+--- a/arch/arm64/boot/dts/mediatek/mt8183-kukui.dtsi
++++ b/arch/arm64/boot/dts/mediatek/mt8183-kukui.dtsi
+@@ -249,6 +249,36 @@ &cpu7 {
+ 	proc-supply = <&mt6358_vproc11_reg>;
+ };
+ 
++&dsi0 {
++	status = "okay";
++	#address-cells = <1>;
++	#size-cells = <0>;
++	panel: panel@0 {
++		compatible = "boe,tv101wum-nl6";
++		reg = <0>;
++		enable-gpios = <&pio 45 0>;
++		pinctrl-names = "default";
++		pinctrl-0 = <&panel_pins_default>;
++		avdd-supply = <&ppvarn_lcd>;
++		avee-supply = <&ppvarp_lcd>;
++		pp1800-supply = <&pp1800_lcd>;
++		status = "okay";
++		port {
++			panel_in: endpoint {
++				remote-endpoint = <&dsi_out>;
++			};
++		};
++	};
++
++	ports {
++		port {
++			dsi_out: endpoint {
++				remote-endpoint = <&panel_in>;
++			};
++		};
++	};
++};
++
+ &i2c0 {
+ 	pinctrl-names = "default";
+ 	pinctrl-0 = <&i2c0_pins>;
+@@ -547,6 +577,14 @@ pins_clk {
+ 		};
+ 	};
+ 
++	panel_pins_default: panel_pins_default {
++		panel_reset {
++			pinmux = <PINMUX_GPIO45__FUNC_GPIO45>;
++			output-low;
++			bias-pull-up;
++		};
++	};
++
+ 	pwm0_pin_default: pwm0_pin_default {
+ 		pins1 {
+ 			pinmux = <PINMUX_GPIO176__FUNC_GPIO176>;
 -- 
-Ming
+2.29.2.729.g45daf8777d-goog
 
