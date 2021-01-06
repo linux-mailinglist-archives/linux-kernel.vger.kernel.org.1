@@ -2,84 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F7052EB7FD
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 03:13:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C86322EB7FF
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 03:15:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726098AbhAFCNN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 21:13:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54822 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725948AbhAFCNN (ORCPT
+        id S1726264AbhAFCNj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 21:13:39 -0500
+Received: from szxga05-in.huawei.com ([45.249.212.191]:10024 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725948AbhAFCNi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 21:13:13 -0500
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35A5AC061387;
-        Tue,  5 Jan 2021 18:12:32 -0800 (PST)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4D9Xv059kdz9sVs;
-        Wed,  6 Jan 2021 13:12:28 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1609899148;
-        bh=vFEIujuVqfrRP3UOX60pSDIsJIHaEcdfg1j+cDC90po=;
-        h=Date:From:To:Cc:Subject:From;
-        b=t5bEx2z8ZFvBvHHcswErrKBIrfHKberKFFweWLXLnvG+S1Y40G4Z2ZIM8ZyMPBs2Q
-         OiByuUx84vmj1AucIJAFs6xs5zmmz7qAZOqD1a0VHknYppzx7dc73LkdyqB7saRZyz
-         RSbKqv9PSSPKF6fDL0kMvT+XneQNsBINEQ4/QuGc/cYzq9Al3dYxXqfiYxXAdWjmx1
-         8I642UuuZykcguiab2yWcNlXA5TcohIeUzpiQeggIyURPeXShNCTA30vLtFQpZwRUX
-         NZGXwoteWSfqKZtzr+rIxefWTfxVJZTJr1eln3Aj+7QrvhHmY6+HdOXRgNVuh8tD7T
-         ahpfWCJn1Y2aw==
-Date:   Wed, 6 Jan 2021 13:12:25 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Greg KH <greg@kroah.com>
-Cc:     Wesley Cheng <wcheng@codeaurora.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build warning after merge of the usb tree
-Message-ID: <20210106131225.66e82b5c@canb.auug.org.au>
+        Tue, 5 Jan 2021 21:13:38 -0500
+Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4D9XtT5Hf1zj3Vx;
+        Wed,  6 Jan 2021 10:12:01 +0800 (CST)
+Received: from [10.174.184.196] (10.174.184.196) by
+ DGGEMS408-HUB.china.huawei.com (10.3.19.208) with Microsoft SMTP Server id
+ 14.3.498.0; Wed, 6 Jan 2021 10:12:50 +0800
+Subject: Re: [RFC PATCH v2 3/4] KVM: arm64: GICv4.1: Restore VLPI's pending
+ state to physical side
+To:     Marc Zyngier <maz@kernel.org>
+CC:     Eric Auger <eric.auger@redhat.com>, Will Deacon <will@kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <kvmarm@lists.cs.columbia.edu>, <kvm@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Cornelia Huck <cohuck@redhat.com>,
+        "Lorenzo Pieralisi" <lorenzo.pieralisi@arm.com>,
+        <wanghaibin.wang@huawei.com>, <yuzenghui@huawei.com>
+References: <20210104081613.100-1-lushenming@huawei.com>
+ <20210104081613.100-4-lushenming@huawei.com>
+ <76a7b9cca485dc8157d3be53189eac69@kernel.org>
+From:   Shenming Lu <lushenming@huawei.com>
+Message-ID: <6b815f0e-d042-2ec6-369a-41a19cd1b9f9@huawei.com>
+Date:   Wed, 6 Jan 2021 10:12:50 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.2.2
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/UUtXkT6vDTJyjiYRgYHukH0";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+In-Reply-To: <76a7b9cca485dc8157d3be53189eac69@kernel.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.184.196]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/UUtXkT6vDTJyjiYRgYHukH0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On 2021/1/5 17:25, Marc Zyngier wrote:
+> On 2021-01-04 08:16, Shenming Lu wrote:
+>> From: Zenghui Yu <yuzenghui@huawei.com>
+>>
+>> When setting the forwarding path of a VLPI (switch to the HW mode),
+>> we could also transfer the pending state from irq->pending_latch to
+>> VPT (especially in migration, the pending states of VLPIs are restored
+>> into kvm’s vgic first). And we currently send "INT+VSYNC" to trigger
+>> a VLPI to pending.
+>>
+>> Signed-off-by: Zenghui Yu <yuzenghui@huawei.com>
+>> Signed-off-by: Shenming Lu <lushenming@huawei.com>
+>> ---
+>>  arch/arm64/kvm/vgic/vgic-v4.c | 12 ++++++++++++
+>>  1 file changed, 12 insertions(+)
+>>
+>> diff --git a/arch/arm64/kvm/vgic/vgic-v4.c b/arch/arm64/kvm/vgic/vgic-v4.c
+>> index f211a7c32704..7945d6d09cdd 100644
+>> --- a/arch/arm64/kvm/vgic/vgic-v4.c
+>> +++ b/arch/arm64/kvm/vgic/vgic-v4.c
+>> @@ -454,6 +454,18 @@ int kvm_vgic_v4_set_forwarding(struct kvm *kvm, int virq,
+>>      irq->host_irq    = virq;
+>>      atomic_inc(&map.vpe->vlpi_count);
+>>
+>> +    /* Transfer pending state */
+>> +    ret = irq_set_irqchip_state(irq->host_irq,
+>> +                    IRQCHIP_STATE_PENDING,
+>> +                    irq->pending_latch);
+>> +    WARN_RATELIMIT(ret, "IRQ %d", irq->host_irq);
+> 
+> Why do this if pending_latch is 0, which is likely to be
+> the overwhelming case?
 
-Hi all,
+Yes, there is no need to do this if pending_latch is 0.
 
-After merging the usb tree, today's linux-next build (htmldocs) produced
-this warning:
+> 
+>> +
+>> +    /*
+>> +     * Let it be pruned from ap_list later and don't bother
+>> +     * the List Register.
+>> +     */
+>> +    irq->pending_latch = false;
+> 
+> What guarantees the pruning? Pruning only happens on vcpu exit,
+> which means we may have the same interrupt via both the LR and
+> the stream interface, which I don't believe is legal (it is
+> like having two LRs holding the same interrupt).
 
-drivers/usb/dwc3/core.h:1259: warning: Function parameter or member 'gadget=
-_max_speed' not described in 'dwc3'
+Since the irq's pending_latch is set to false here, it will not be
+populated to the LR in vgic_flush_lr_state() (vgic_target_oracle()
+will return NULL).
 
-Introduced by commit
-
-  7c9a2598463a ("usb: dwc3: gadget: Preserve UDC max speed setting")
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/UUtXkT6vDTJyjiYRgYHukH0
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl/1HIkACgkQAVBC80lX
-0GzY/ggAgBzmOnOCVJTBKxPCbXfz/rzE8xP0d5wndDXFXR/XrEDwDM3JC6nA3Lv2
-ZXVePZphv39bl+pASNdp3eyxVpygcFD+CTjMhaBJCsUxcSBHqhyjd5d++/TiDQ0k
-uoU5+LTAoKJ9EAInL4V7BGJWjriNruS9IXdO7mQCePv73UgWP1DLQHCbMvNpa8mI
-Qkzfs+CTcr48v7wQ5XfE25gsZkqJY6a1JM6Ty/x5CgMUDxhiSRvq3s+sUTRJ/go1
-TfHZnPpYTfP8iQxgMqdroLQcDLlNBQ3XyN6g7KPTwHMaykY0SPuTPy9qQo2cQ4o3
-qIy6HV4Q8xZs2Qa5Bam7kDCHl9oXLA==
-=walZ
------END PGP SIGNATURE-----
-
---Sig_/UUtXkT6vDTJyjiYRgYHukH0--
+> 
+>> +
+>>  out:
+>>      mutex_unlock(&its->its_lock);
+>>      return ret;
+> 
+> Thanks,
+> 
+>         M.
