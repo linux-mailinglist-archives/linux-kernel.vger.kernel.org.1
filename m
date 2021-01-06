@@ -2,136 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A2E462EB7CB
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 02:54:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CF7AC2EB7A2
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 02:34:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726330AbhAFBxN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 20:53:13 -0500
-Received: from mga12.intel.com ([192.55.52.136]:48791 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725778AbhAFBxM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 20:53:12 -0500
-IronPort-SDR: NqNqMocYRQmSTUh0fOaa6H8JObvy4fsFQ7/J2rlPsF61aPEc627SpqYo3P9kiFa73tin/I38bI
- /Je9ou57vFFA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9855"; a="156402500"
-X-IronPort-AV: E=Sophos;i="5.78,478,1599548400"; 
-   d="scan'208";a="156402500"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Jan 2021 17:51:50 -0800
-IronPort-SDR: 2lawWk8DpPmKtAWGguAXMAC3Doh3n2EuNPhkgE/S7w1j6ABgFeqoHj8QqCgP7fIQ7/idfo5QPs
- PO+vC4bsoyFA==
-X-IronPort-AV: E=Sophos;i="5.78,478,1599548400"; 
-   d="scan'208";a="361387914"
-Received: from km-skylake-client-platform.sc.intel.com ([10.3.52.146])
-  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Jan 2021 17:51:50 -0800
-From:   Kyung Min Park <kyung.min.park@intel.com>
-To:     linux-kernel@vger.kernel.org, iommu@lists.linux-foundation.org
-Cc:     dwmw2@infradead.org, baolu.lu@linux.intel.com, joro@8bytes.org,
-        will@kernel.org, ricardo.neri@intel.com, ravi.v.shankar@intel.com,
-        kevin.tian@intel.com, ashok.raj@intel.com, sohil.mehta@intel.com,
-        kyung.min.park@intel.com
-Subject: [PATCH v4 3/3] iommu/vt-d: Disable SVM in the platform when IOMMUs have inconsistencies
-Date:   Tue,  5 Jan 2021 17:30:35 -0800
-Message-Id: <20210106013035.6476-4-kyung.min.park@intel.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210106013035.6476-1-kyung.min.park@intel.com>
-References: <20210106013035.6476-1-kyung.min.park@intel.com>
+        id S1726638AbhAFBd3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 20:33:29 -0500
+Received: from mailout1.samsung.com ([203.254.224.24]:39582 "EHLO
+        mailout1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725919AbhAFBd3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Jan 2021 20:33:29 -0500
+Received: from epcas2p4.samsung.com (unknown [182.195.41.56])
+        by mailout1.samsung.com (KnoxPortal) with ESMTP id 20210106013246epoutp01abe7458a3cedb996462c34a2187a0cd7~XgJR1OqAa2985329853epoutp016
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Jan 2021 01:32:46 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com 20210106013246epoutp01abe7458a3cedb996462c34a2187a0cd7~XgJR1OqAa2985329853epoutp016
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1609896766;
+        bh=wu5lRWGWZPfTtvp4R+y7TNZs4ntWTmDe3ujGAklWk4A=;
+        h=Subject:Reply-To:From:To:CC:Date:References:From;
+        b=uPzAlbcvXC0ELMVJRdY9tVw87rf7gOTL6K67UrtWZ5X40WFrp2IFTNZGxlXziU3cF
+         9vG9XmRv3aNIIpupECeXjDNYx8LBxw7T3ZY2p3hSSbC92w6g+rDuVVV0A/TV/EsYSZ
+         ipd8nVbdKTDXNHwAumA8wBFpXrBm2mZ4gxkk+uI4=
+Received: from epsnrtp3.localdomain (unknown [182.195.42.164]) by
+        epcas2p3.samsung.com (KnoxPortal) with ESMTP id
+        20210106013246epcas2p36a2a7a3dc0ab01d6a3e4774672938a1d~XgJRFi6ms3159331593epcas2p3X;
+        Wed,  6 Jan 2021 01:32:46 +0000 (GMT)
+Received: from epsmges2p3.samsung.com (unknown [182.195.40.191]) by
+        epsnrtp3.localdomain (Postfix) with ESMTP id 4D9X186hzmz4x9QF; Wed,  6 Jan
+        2021 01:32:44 +0000 (GMT)
+X-AuditID: b6c32a47-b97ff7000000148e-8f-5ff5133a25b1
+Received: from epcas2p4.samsung.com ( [182.195.41.56]) by
+        epsmges2p3.samsung.com (Symantec Messaging Gateway) with SMTP id
+        97.DC.05262.A3315FF5; Wed,  6 Jan 2021 10:32:42 +0900 (KST)
+Mime-Version: 1.0
+Subject: [PATCH] ext4: Remove expensive flush on fast commit
+Reply-To: daejun7.park@samsung.com
+Sender: Daejun Park <daejun7.park@samsung.com>
+From:   Daejun Park <daejun7.park@samsung.com>
+To:     "tytso@mit.edu" <tytso@mit.edu>,
+        "adilger.kernel@dilger.ca" <adilger.kernel@dilger.ca>,
+        "harshadshirwadkar@gmail.com" <harshadshirwadkar@gmail.com>
+CC:     "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+X-Priority: 3
+X-Content-Kind-Code: NORMAL
+X-CPGS-Detection: blocking_info_exchange
+X-Drm-Type: N,general
+X-Msg-Generator: Mail
+X-Msg-Type: PERSONAL
+X-Reply-Demand: N
+Message-ID: <20210106013242epcms2p5b6b4ed8ca86f29456fdf56aa580e74b4@epcms2p5>
+Date:   Wed, 06 Jan 2021 10:32:42 +0900
+X-CMS-MailID: 20210106013242epcms2p5b6b4ed8ca86f29456fdf56aa580e74b4
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: AUTO_CONFIDENTIAL
+CMS-TYPE: 102P
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrKKsWRmVeSWpSXmKPExsWy7bCmha6V8Nd4g4lfdSy+fulgsVjZ2MJk
+        MXPeHTaLy7vmsFm09vxkd2D1aNlc7rFz1l12j6YzR5k9Pm+SC2CJyrHJSE1MSS1SSM1Lzk/J
+        zEu3VfIOjneONzUzMNQ1tLQwV1LIS8xNtVVy8QnQdcvMAVqrpFCWmFMKFApILC5W0rezKcov
+        LUlVyMgvLrFVSi1IySkwNCzQK07MLS7NS9dLzs+1MjQwMDIFqkzIyWhsmshasJ2vonltbQPj
+        L+4uRk4OCQETif6GvYxdjFwcQgI7GCW+T//H1MXIwcErICjxd4cwSI2wgI3Equ5PjCC2kICS
+        xPqLs9gh4noStx6uAYuzCehITD9xnx1kjojAbEaJKxcXs4PMYRaok/h0lwViF6/EjPanULa0
+        xPblWxkhbA2JH8t6mSFsUYmbq9+yw9jvj82HqhGRaL13FqpGUOLBz91QcUmJY7s/MEHY9RJb
+        7/wC+0VCoIdR4vDOW6wQCX2Jax0bwRbzCvhKLPo+HcxmEVCV6J1wCKrGRWLzwRdgQ5kF5CW2
+        v53DDHG/psT6XfogpoSAssSRWywQFXwSHYf/ssO8tWPeE6gT1CTW/VzPBFEuI3FrHtSVHhJ9
+        m/ezQ0IwUOLDrIesExgVZiHCeRaStbMQ1i5gZF7FKJZaUJybnlpsVGCMHLObGMHpT8t9B+OM
+        tx/0DjEycTAeYpTgYFYS4bU49iVeiDclsbIqtSg/vqg0J7X4EKMp0MMTmaVEk/OBCTivJN7Q
+        1MjMzMDS1MLUzMhCSZy32OBBvJBAemJJanZqakFqEUwfEwenVAOT8rvpCfEM26smJx6vVxW4
+        vdNo3tOrJlbaPtYzhOYdyErI+mSsqfFmGucXpX9a841SdFccm82YmPot8WPXlvWplZ9r6992
+        VsRIdLl3Zs6rFSr3zZgv13OFJf9PeMe6XS+2Ct5SdXunFBHAcLoyX36qWvBLoQNrJ2y6JJS4
+        5fD7N0W5q39rWW2v2nST/6i37BHdl7On+W6ZcGj1lAKNr7tvGkbZymcfci1hclWVVduyJfGl
+        wOYLnjxWX1OvJQXk3TTtD35wze/qbTvFGWzqqVPbFO+ei2rsjrm0fLad1K1nzS+dn+vuf+mt
+        cjqgc127IWvQjM6apzpLKv+wr1bqMeo+mXJo8d680y+rvdOW8VUqsRRnJBpqMRcVJwIAjyWA
+        pggEAAA=
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20210106013242epcms2p5b6b4ed8ca86f29456fdf56aa580e74b4
+References: <CGME20210106013242epcms2p5b6b4ed8ca86f29456fdf56aa580e74b4@epcms2p5>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Some IOMMU Capabilities must be consistent for Shared Virtual Memory (SVM).
-Audit IOMMU Capability/Extended Capabilities and check if IOMMUs have
-the consistent value for features as below. When the features are not
-matched among IOMMUs, disable SVMs in the platform during DMAR
-initialization. Audit IOMMUs again when a device is hot plugged.
+In the fast commit, it adds REQ_FUA and REQ_PREFLUSH on each fast commit
+block when barrier is enabled. However, in recovery phase, ext4 compares
+CRC value in the tail. So it is sufficient adds REQ_FUA and REQ_PREFLUSH
+on the block that has tail.
 
-Disable Shared Virtual Memory when below features are mistmatched:
-  - First Level Translation Support (FLTS)
-  - Process Address Space ID Support (PASID)
-  - Extended Accessed Flag Support (EAFS)
-  - Supervisor Support (SRS)
-  - Execute Request Support (ERS)
-  - Page Request Support (PRS)
-
-Signed-off-by: Kyung Min Park <kyung.min.park@intel.com>
+Signed-off-by: Daejun Park <daejun7.park@samsung.com>
 ---
- drivers/iommu/intel/cap_audit.c | 11 +++++++++++
- drivers/iommu/intel/cap_audit.h |  6 ++++++
- drivers/iommu/intel/svm.c       |  3 ++-
- 3 files changed, 19 insertions(+), 1 deletion(-)
+ fs/ext4/fast_commit.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/iommu/intel/cap_audit.c b/drivers/iommu/intel/cap_audit.c
-index cf5326eb1d72..e6f8616edc3d 100644
---- a/drivers/iommu/intel/cap_audit.c
-+++ b/drivers/iommu/intel/cap_audit.c
-@@ -130,6 +130,12 @@ static int cap_audit_hotplug(struct intel_iommu *iommu, enum cap_audit_type type
- 	MINIMAL_FEATURE_HOTPLUG(iommu, ecap, max_handle_mask, ECAP_MHMV_MASK, mismatch);
- 	MINIMAL_FEATURE_HOTPLUG(iommu, ecap, iotlb_offset, ECAP_IRO_MASK, mismatch);
- 
-+	if (IS_ENABLED(CONFIG_INTEL_IOMMU_SVM) &&
-+	    intel_cap_svm_santiy() && !ecap_svm_sanity(iommu->ecap)) {
-+		pr_warn("Abort Hot Plug IOMMU: SVM inconsistent\n");
-+		mismatch = true;
-+	}
-+
- out:
- 	if (mismatch) {
- 		intel_iommu_cap_sanity = old_cap;
-@@ -206,3 +212,8 @@ bool intel_cap_flts_sanity(void)
- {
- 	return ecap_flts(intel_iommu_ecap_sanity);
+diff --git a/fs/ext4/fast_commit.c b/fs/ext4/fast_commit.c
+index 4fcc21c25e79..e66507be334c 100644
+--- a/fs/ext4/fast_commit.c
++++ b/fs/ext4/fast_commit.c
+@@ -604,13 +604,13 @@ void ext4_fc_track_range(handle_t *handle, struct inode *inode, ext4_lblk_t star
+ 	trace_ext4_fc_track_range(inode, start, end, ret);
  }
-+
-+bool intel_cap_svm_santiy(void)
-+{
-+	return ecap_svm_sanity(intel_iommu_ecap_sanity);
-+}
-diff --git a/drivers/iommu/intel/cap_audit.h b/drivers/iommu/intel/cap_audit.h
-index 1ce1dc314950..beb2589e97e0 100644
---- a/drivers/iommu/intel/cap_audit.h
-+++ b/drivers/iommu/intel/cap_audit.h
-@@ -60,6 +60,11 @@
- #define ECAP_QI_MASK		BIT_ULL(1)
- #define ECAP_C_MASK		BIT_ULL(0)
  
-+#define MINIMAL_SVM_ECAP (ECAP_FLTS_MASK | ECAP_PASID_MASK | ECAP_EAFS_MASK | \
-+			  ECAP_SRS_MASK | ECAP_ERS_MASK | ECAP_PRS_MASK)
-+
-+#define ecap_svm_sanity(e)	(!(((e) & MINIMAL_SVM_ECAP) ^ MINIMAL_SVM_ECAP))
-+
- #define DO_CHECK_FEATURE_MISMATCH(a, b, cap, feature, MASK) \
- do { \
- 	if (cap##_##feature(a) != cap##_##feature(b)) { \
-@@ -107,6 +112,7 @@ bool intel_cap_smts_sanity(void);
- bool intel_cap_pasid_sanity(void);
- bool intel_cap_nest_sanity(void);
- bool intel_cap_flts_sanity(void);
-+bool intel_cap_svm_santiy(void);
- 
- static inline bool scalable_mode_support(void)
+-static void ext4_fc_submit_bh(struct super_block *sb)
++static void ext4_fc_submit_bh(struct super_block *sb, bool is_tail)
  {
-diff --git a/drivers/iommu/intel/svm.c b/drivers/iommu/intel/svm.c
-index 3242ebd0bca3..7761e40a2d5a 100644
---- a/drivers/iommu/intel/svm.c
-+++ b/drivers/iommu/intel/svm.c
-@@ -22,6 +22,7 @@
- #include <asm/fpu/api.h>
+ 	int write_flags = REQ_SYNC;
+ 	struct buffer_head *bh = EXT4_SB(sb)->s_fc_bh;
  
- #include "pasid.h"
-+#include "cap_audit.h"
+-	/* TODO: REQ_FUA | REQ_PREFLUSH is unnecessarily expensive. */
+-	if (test_opt(sb, BARRIER))
++	/* Add REQ_FUA | REQ_PREFLUSH only its tail */
++	if (test_opt(sb, BARRIER) && is_tail)
+ 		write_flags |= REQ_FUA | REQ_PREFLUSH;
+ 	lock_buffer(bh);
+ 	set_buffer_dirty(bh);
+@@ -684,7 +684,7 @@ static u8 *ext4_fc_reserve_space(struct super_block *sb, int len, u32 *crc)
+ 		*crc = ext4_chksum(sbi, *crc, tl, sizeof(*tl));
+ 	if (pad_len > 0)
+ 		ext4_fc_memzero(sb, tl + 1, pad_len, crc);
+-	ext4_fc_submit_bh(sb);
++	ext4_fc_submit_bh(sb, false);
  
- static irqreturn_t prq_event_thread(int irq, void *d);
- static void intel_svm_drain_prq(struct device *dev, u32 pasid);
-@@ -98,7 +99,7 @@ static inline bool intel_svm_capable(struct intel_iommu *iommu)
+ 	ret = jbd2_fc_get_buf(EXT4_SB(sb)->s_journal, &bh);
+ 	if (ret)
+@@ -741,7 +741,7 @@ static int ext4_fc_write_tail(struct super_block *sb, u32 crc)
+ 	tail.fc_crc = cpu_to_le32(crc);
+ 	ext4_fc_memcpy(sb, dst, &tail.fc_crc, sizeof(tail.fc_crc), NULL);
  
- void intel_svm_check(struct intel_iommu *iommu)
- {
--	if (!pasid_supported(iommu))
-+	if (!intel_cap_svm_santiy())
- 		return;
+-	ext4_fc_submit_bh(sb);
++	ext4_fc_submit_bh(sb, true);
  
- 	if (cpu_feature_enabled(X86_FEATURE_GBPAGES) &&
+ 	return 0;
+ }
 -- 
-2.17.1
+2.25.1
 
