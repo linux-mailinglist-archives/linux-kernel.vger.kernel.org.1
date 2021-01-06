@@ -2,136 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22F932EC3B8
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 20:10:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D39382EC3B4
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 20:09:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726735AbhAFTIH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Jan 2021 14:08:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44290 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726074AbhAFTIG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Jan 2021 14:08:06 -0500
-Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78676C06134C;
-        Wed,  6 Jan 2021 11:07:26 -0800 (PST)
-Received: by mail-wm1-x32f.google.com with SMTP id c133so3259226wme.4;
-        Wed, 06 Jan 2021 11:07:26 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=message-id:subject:from:to:organization:date:mime-version
-         :user-agent;
-        bh=XBal+Xukp7KCTv+7UxmSLerYgxNS5P3PSaBNU0JG2MA=;
-        b=RQx5e48vrZKOsL8cVa8y1CEB8cjo0OyuIFNVQGmLpyPZIIAgsq3Vr67vzIKI9SXHZt
-         vCvN7ioWT4DFsX+BzMdt8REpZVj5Uk/Edc/3ioxSr+SjHPEI6Dh8/f/z1XvSUHwT2NOu
-         v5o75kxRl0IeSsreJ+blHIYxfbIaW6VPAz9NvwSH7ImsSzqTH7j8D+O2SxzCkCwwSm26
-         kYDkBZAbOPZPcTurDK4T213RFoqpBPFJToWnJhcekz7/qb4Nc+6Of3jmDvGi+bkhPQTb
-         GPNIsmz0LTwhgHfGtpGZNmVy/01n6nZQ4FlZULUGb+2w+X3I/UsJ2jaDeZOCfjkx0iQc
-         E2gw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:organization:date
-         :mime-version:user-agent;
-        bh=XBal+Xukp7KCTv+7UxmSLerYgxNS5P3PSaBNU0JG2MA=;
-        b=LOUE68qH0/d0Qn3GlLhtFJksPU8m5UpFRHRoElGO2uzURML5AW8/h7bdg8RQPwguVZ
-         uwX5wYHFA77F45zGRA/WpkzzHvrQ+okR2GG7dnuvdf2OIQ9fJqbwdvIsz5c656P9VDhk
-         vK9VzPHlmCGEezi9MUyogleayiko7cHS5bnEOlFPZv0OkcQ0UkjBb9IIFzdN161MZdkr
-         WcI08vS8RocVrutZ+nKPy/IMejb2SbsYi2PinGex/TT8FQnL4DZnlvlqdLUBHBlBHGiA
-         PnVwXtDN4XttViTJ+wHyBrVkaNxm3QIspM6gqx7GFa4V1iiXTxbq7piRRwxwi7rCuupF
-         hcrw==
-X-Gm-Message-State: AOAM532RpBLUVLpYU7LjUF0ClC9ITyYBlj7vDnIxtUyx5izauJ6CiHQ3
-        w1xtUonUXy5ln5Mky7yZ6YA=
-X-Google-Smtp-Source: ABdhPJzFXbYRuak26hsGc39RZTtXP9bzN6fjB8dZZo1HoFNObGEou9HCo3NRd6UHpYv8KM+jIdtQbw==
-X-Received: by 2002:a1c:a583:: with SMTP id o125mr4860966wme.91.1609960045236;
-        Wed, 06 Jan 2021 11:07:25 -0800 (PST)
-Received: from ?IPv6:2001:8a0:f268:e600:5751:e3e4:7880:ec9c? ([2001:8a0:f268:e600:5751:e3e4:7880:ec9c])
-        by smtp.gmail.com with ESMTPSA id c6sm4459009wrh.7.2021.01.06.11.07.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 06 Jan 2021 11:07:24 -0800 (PST)
-Message-ID: <4990836470c5fb01babcf416ca6ccf9e5e21d152.camel@gmail.com>
-Subject: (hid-logitech) Support for non-DJ receivers
-From:   Filipe =?ISO-8859-1?Q?La=EDns?= <filipe.lains@gmail.com>
-To:     Jiri Kosina <jikos@kernel.org>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        "linux-input@vger.kernel.org" <linux-input@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Hans de Goede <hdegoede@redhat.com>
-Organization: Archlinux
-Content-Type: multipart/signed; micalg="pgp-sha256";
-        protocol="application/pgp-signature"; boundary="=-Sb2VxpNhcE4yprkW9xz9"
-Date:   Wed, 06 Jan 2021 19:07:22 +0000
+        id S1726602AbhAFTIt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Jan 2021 14:08:49 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37522 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725822AbhAFTIs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 Jan 2021 14:08:48 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E3C0D2311B;
+        Wed,  6 Jan 2021 19:08:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1609960088;
+        bh=zgEf98l2WxjGcgd+9qDl49RJQUpN8/npwqJ4hE++1oA=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=gxJ4uM1ePzDHX6/+tNDNtFwkUGdg1+pNia9VRrZP9o+CqfZljT4dOquhyepKxoumX
+         C+MB/L/CDQIA98TREq+f0OdbavD/LAntGneAgs/e4y2IRERUZUAr5GdXJaSZUDjLc6
+         JFHsV7LcPQr0oYfgtXkU/DrHMIG/5neu35cN+f2PJ7Hufx/QdI4etBvqdIt1nDyAmc
+         3FeGbbcMCBqdF9EuwjaaSUD06N9jYkLhXr9+pLAbFzaQDDjJe4lU4snTTglixftsPu
+         ZouNvBYU18jd/dxSIUHu6gzlglO+S9l4KhjzUKG9mY7z6vR8/7cE7PBjKMow8uBi3E
+         mESKPtb6YkrEw==
+Date:   Wed, 6 Jan 2021 13:08:06 -0600
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Zheng Yongjun <zhengyongjun3@huawei.com>
+Cc:     linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        bhelgaas@google.com
+Subject: Re: [PATCH -next] pci: hotplug: Use DEFINE_SPINLOCK() for spinlock
+Message-ID: <20210106190806.GA1327819@bjorn-Precision-5520>
 MIME-Version: 1.0
-User-Agent: Evolution 3.38.2 
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201228135038.28401-1-zhengyongjun3@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Dec 28, 2020 at 09:50:38PM +0800, Zheng Yongjun wrote:
+> spinlock can be initialized automatically with DEFINE_SPINLOCK()
+> rather than explicitly calling spin_lock_init().
 
---=-Sb2VxpNhcE4yprkW9xz9
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+See this again:
 
-Hey,
+https://lore.kernel.org/r/20171026223701.GA25649@bhelgaas-glaptop.roam.corp.google.com
 
-Some of the new Logitech receivers do not have the DJ interface, this creat=
-es an
-issue userspace applications like libratbag, as seen in [1], because we can=
-'t
-identify the device based on the hidraw PID.
-
-There are two solutions for this:
-
-1) Implement device discovery via the internal Logitech ID in libratbag and=
- all
-other userspace apps.
-
-2) Make hid-logitech-dj export a duplicated hidraw node with internal Logit=
-ech
-ID as PID, just like it does for the DJ interface.
-
-In case you aren't aware of what the DJ interface is, it is essentially a
-multiplexing protocol that receivers support. 6 devices could be connected =
-to
-the same receiver, hid-logitech-dj enables the DJ mode and the receiver wil=
-l
-essentially perpend the device ID to each HID report. hid-logitech-dj then
-creates a HID device for each connected device and routes the HID reports t=
-o the
-correspondent HID device.
-
-Option 2) would be the easier on userspace, as it keeps the same interface =
-we
-use for DJ receivers for other Logitech HID++ receivers and avoids all user=
-space
-apps to have to reimplement the same discovery logic.
-
-Any thoughts?
-
-[1] https://github.com/libratbag/libratbag/pull/1071
-
-Cheers,
-Filipe La=C3=ADns
-
---=-Sb2VxpNhcE4yprkW9xz9
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEE0jW0leqs33gyftiw+JPGdIFqqV0FAl/2CmMACgkQ+JPGdIFq
-qV0R/xAAsXGO3xETXDPavns+/fb/pxG50F/rnbxmAEmJpnaW/Qje/KXzpClOMCfT
-LjnG52B3jEHnCfYeydM21k6togGyScVi9SXJqYLw9S+MeUUyLQ4aiseDBpmfN6qs
-kr3ibrbUc+YQ4i/oCQ3k7KtPSJVN99WdTa733UDHK22F2foJAEPl9FtUiFE4LrK2
-stP0Qt9nijAgz9BS+F5qd4it+sov5HvcKt3TEX3B19XlLoB+v5vskkT+jDQH/z42
-e/CdOQ1cCdboS7tEg5hcDtRvCJJdxmL9EWLgBN2Svg2UKSic5q6fnUSL7oHDDFaK
-AuMyZ77Ht186KudQC2OOP+ZZoe1DLN2Sl5LTK5oyevppAnCOuylU2rWejUTKMlCH
-zwd2sy2WU51oAESKHuUp+5JD6GW87vijeXt3Ks5dp7duhHK5NFktl1zpsJ0RCRiE
-Uriy6sPuS+F8RGWdBRFoiJps37QL+0czzlZDpZj4kUvL2cKcuXtCUA7fkkwWm/Tw
-K6ZTUinZ+tsPk8t9aOBZpUIPAj/CYhlNcFeQvd3Mku9s41ZwrGyg2K/ezlPnygb1
-YiQzNrPLZV3PwGLAsQmaIJ62oMJkWMW9ASUZi6GrSZcQc9eWQH5Ao2hX9hJqKwmR
-q8idYajivDmJuwNZtorg6N6T2qHEmTikd1FdwmohfbsK24CfnAA=
-=Lk20
------END PGP SIGNATURE-----
-
---=-Sb2VxpNhcE4yprkW9xz9--
-
+> Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>
+> ---
+>  drivers/pci/hotplug/cpqphp_nvram.c | 5 +----
+>  1 file changed, 1 insertion(+), 4 deletions(-)
+> 
+> diff --git a/drivers/pci/hotplug/cpqphp_nvram.c b/drivers/pci/hotplug/cpqphp_nvram.c
+> index 00cd2b43364f..7a65d427ac11 100644
+> --- a/drivers/pci/hotplug/cpqphp_nvram.c
+> +++ b/drivers/pci/hotplug/cpqphp_nvram.c
+> @@ -80,7 +80,7 @@ static u8 evbuffer[1024];
+>  static void __iomem *compaq_int15_entry_point;
+>  
+>  /* lock for ordering int15_bios_call() */
+> -static spinlock_t int15_lock;
+> +static DEFINE_SPINLOCK(int15_lock);
+>  
+>  
+>  /* This is a series of function that deals with
+> @@ -415,9 +415,6 @@ void compaq_nvram_init(void __iomem *rom_start)
+>  		compaq_int15_entry_point = (rom_start + ROM_INT15_PHY_ADDR - ROM_PHY_ADDR);
+>  
+>  	dbg("int15 entry  = %p\n", compaq_int15_entry_point);
+> -
+> -	/* initialize our int15 lock */
+> -	spin_lock_init(&int15_lock);
+>  }
+>  
+>  
+> -- 
+> 2.22.0
+> 
