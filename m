@@ -2,67 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 28A762EC102
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 17:21:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 487582EC114
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 17:23:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727513AbhAFQV1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Jan 2021 11:21:27 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49344 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727290AbhAFQV1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Jan 2021 11:21:27 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 658082312E;
-        Wed,  6 Jan 2021 16:20:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1609950046;
-        bh=h8eyk7nd0obMPs3jtUBDSaJ6fJKDS8vcQ9Sx4FZowu0=;
-        h=Date:From:To:cc:Subject:In-Reply-To:References:From;
-        b=SJ/R0jgs7ujKw7Sj3zC3X+/4/8/ZPibWFsnAVujXKcoynDNOPy45Ii2b+s1mP7nsM
-         9r30kJGEibvT/b0wtWNc0CGfLGR59gIOMoBZb8VHizzQAlRJHHuCD0XvwtstPlGSe2
-         x9SGN4inSMCZrBo/RO3Irr1mH9JaM0Lt0v/0fzx16sfPQI5Waze5mKi3KaJyIzCHZf
-         dzMdz3TxyxjubTFJiY+yyDv2a22lDOj7Kl0IG1SN94kMHzrM8ELWBp0cCH1NFV6QQF
-         7dbOnsEHl7cs+1XgkjthM14uBLQGpT/zyQdUREwBVyaR+NnaTq0/Wgt+F6g71mrOvU
-         id9dkrDZU+new==
-Date:   Wed, 6 Jan 2021 17:20:43 +0100 (CET)
-From:   Jiri Kosina <jikos@kernel.org>
-To:     Zhang Lixu <lixu.zhang@intel.com>
-cc:     linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
-        srinivas.pandruvada@linux.intel.com, benjamin.tissoires@redhat.com
-Subject: Re: [PATCH 0/2] hid: intel-ish-hid: ipc: enable OOB support for
- EHL
-In-Reply-To: <20201216063640.4086068-1-lixu.zhang@intel.com>
-Message-ID: <nycvar.YFH.7.76.2101061720310.13752@cbobk.fhfr.pm>
-References: <20201216063640.4086068-1-lixu.zhang@intel.com>
-User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
+        id S1727543AbhAFQXS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Jan 2021 11:23:18 -0500
+Received: from mx08-00178001.pphosted.com ([91.207.212.93]:14782 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1727022AbhAFQXQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 Jan 2021 11:23:16 -0500
+Received: from pps.filterd (m0046660.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 106GI4Bs000344;
+        Wed, 6 Jan 2021 17:22:22 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type; s=selector1;
+ bh=ikH5iN8ZWitS2tO4VWYFgymi3kis4h647LOv4FmivAo=;
+ b=Q1ri9XLMxaNR0Alo7XVZQgEPHxsMC43NPOgImNiSihk7ckeebKE7GKknu23FA0sq4MyS
+ vkkTSgWPYWCuUgKnyI7wXMr3dMni1d8NTDVwd+01pxEdInUwwffLJgjv63ZUCbZH7bLb
+ jo3lu0eocTA5kbknI0zXvD9BVCe6xf9/oPK+14aanHRZ/mB52x2/aZl9PIHDPrIQW7pd
+ Friaymsk3f9RQ7+x7Z7V4vUv6q9dkdwEN5JFYUH8l2YTnJO9fFAWG4peRvk55EQLjKLh
+ LySAYfq89LIK7bLLGdnAdBQwvAW7sHsl1/RW4U+NFdhD9UYgoeGikCQif4MdjNEZkGYq Xg== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 35teuv8mvv-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 06 Jan 2021 17:22:22 +0100
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id AF1F9100034;
+        Wed,  6 Jan 2021 17:22:19 +0100 (CET)
+Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 9CAF12A4D83;
+        Wed,  6 Jan 2021 17:22:19 +0100 (CET)
+Received: from localhost (10.75.127.50) by SFHDAG2NODE3.st.com (10.75.127.6)
+ with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 6 Jan 2021 17:22:19
+ +0100
+From:   Erwan Le Ray <erwan.leray@foss.st.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jslaby@suse.com>, Rob Herring <robh+dt@kernel.org>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>
+CC:     <linux-serial@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>,
+        Erwan Le Ray <erwan.leray@foss.st.com>,
+        Fabrice Gasnier <fabrice.gasnier@foss.st.com>,
+        Valentin Caron <valentin.caron@foss.st.com>
+Subject: [PATCH 0/7] STM32 uart cleanup and improvements
+Date:   Wed, 6 Jan 2021 17:21:55 +0100
+Message-ID: <20210106162203.28854-1-erwan.leray@foss.st.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain
+X-Originating-IP: [10.75.127.50]
+X-ClientProxiedBy: SFHDAG4NODE3.st.com (10.75.127.12) To SFHDAG2NODE3.st.com
+ (10.75.127.6)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
+ definitions=2021-01-06_09:2021-01-06,2021-01-06 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 16 Dec 2020, Zhang Lixu wrote:
+This series brings various fixes, cleanups and improvements to stm32-usart
+driver.
 
-> The EHL (Elkhart Lake) based platforms provide a OOB (Out of band)
-> service, which allows wakup device when the system is in S5 (Soft-Off
-> state). This OOB service can be enabled/disabled from BIOS settings.
-> 
-> These two patches is to enable this feature for EHL platform.
-> 
-> We have tested these patches on both ISH platforms and EHL platforms,
-> it works fine.
-> 
-> Zhang Lixu (2):
->   hid: intel-ish-hid: ipc: finish power flow for EHL OOB
->   hid: intel-ish-hid: ipc: Address EHL Sx resume issues
-> 
->  drivers/hid/intel-ish-hid/ipc/hw-ish.h  |  1 +
->  drivers/hid/intel-ish-hid/ipc/ipc.c     | 27 +++++++++++++
->  drivers/hid/intel-ish-hid/ipc/pci-ish.c | 54 ++++++++++++++++++++++++-
->  3 files changed, 81 insertions(+), 1 deletion(-)
+Changes in v2:
+- delete DMA cookie variables removal from V1 patch as already done by a
+previous patch
+- update commit message as DMA cookie variables removal is no more
+included in this patch
 
-Applied to hid.git#for-5.12/intel-ish.
+Erwan Le Ray (8):
+  serial: stm32: fix DMA initialization error handling
+  serial: stm32: fix code cleaning warnings and checks
+  serial: stm32: add "_usart" prefix in functions name
+  serial: stm32: add author
+  dt-bindings: serial: stm32: update rts-gpios and cts-gpios
+  serial: stm32: update conflicting RTS/CTS config comment
+  serial: stm32: clean probe and remove port deinit
+  serial: stm32: update transmission complete error message in shutdown
+
+ .../bindings/serial/st,stm32-uart.yaml        |  13 +-
+ drivers/tty/serial/stm32-usart.c              | 415 +++++++++---------
+ 2 files changed, 227 insertions(+), 201 deletions(-)
 
 -- 
-Jiri Kosina
-SUSE Labs
+2.17.1
 
