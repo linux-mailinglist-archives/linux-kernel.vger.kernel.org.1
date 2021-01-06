@@ -2,126 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 94E832EC587
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 22:10:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 105DD2EC58A
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 22:12:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726149AbhAFVJf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Jan 2021 16:09:35 -0500
-Received: from aserp2130.oracle.com ([141.146.126.79]:53376 "EHLO
-        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725951AbhAFVJe (ORCPT
+        id S1726432AbhAFVLD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Jan 2021 16:11:03 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:37965 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726195AbhAFVLC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Jan 2021 16:09:34 -0500
-Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
-        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 106L4miC100728;
-        Wed, 6 Jan 2021 21:07:44 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=W6W0gJfOIiS/xI8E4K2OEUfCxl6zQ9m2UdSjovBPjRc=;
- b=hChs4iZNT6WJlzEukQaa10Jor2WBU+1DGrqP/MK15J5eTgiJlkspQhPH+iq31emYCQlq
- 7Ct+UgCdbAl52xXQ8EiXZCWlJ1tmITUZkiNfsOXOPj+pkP7k5IjtT36M8tXGoLWxalDJ
- H9nfxM984yiFIZ3kl3RqTgjtaPFv5U/E1CiB5BRXSjCiDsAJ0d9hEyepyHssvftLj8l9
- Uz3wJxYNLjhlvq12O71J0RK3TX2qMjdt3T8M3j86hZLdIWNm6gqzETJt5SBRyuw0IS/0
- 6Gusq9Odpmc2rPwCsN1dSd+ymlwGd795oWluC1an8HoungdSY47OFrUZtpq296gH5sAf LQ== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by aserp2130.oracle.com with ESMTP id 35wcuxt8ug-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 06 Jan 2021 21:07:44 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 106L5Pjt023332;
-        Wed, 6 Jan 2021 21:07:43 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by userp3030.oracle.com with ESMTP id 35w3g1k52p-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 06 Jan 2021 21:07:43 +0000
-Received: from abhmp0010.oracle.com (abhmp0010.oracle.com [141.146.116.16])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 106L7fJg011347;
-        Wed, 6 Jan 2021 21:07:41 GMT
-Received: from [192.168.2.112] (/50.38.35.18)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Wed, 06 Jan 2021 13:07:41 -0800
-Subject: Re: [PATCH v2 2/6] mm: hugetlbfs: fix cannot migrate the fallocated
- HugeTLB page
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Muchun Song <songmuchun@bytedance.com>, akpm@linux-foundation.org,
-        n-horiguchi@ah.jp.nec.com, ak@linux.intel.com, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-References: <20210106084739.63318-1-songmuchun@bytedance.com>
- <20210106084739.63318-3-songmuchun@bytedance.com>
- <20210106163513.GS13207@dhcp22.suse.cz>
- <7e69a55c-d501-6b42-8225-a677f09fb829@oracle.com>
- <20210106200242.GY13207@dhcp22.suse.cz>
-From:   Mike Kravetz <mike.kravetz@oracle.com>
-Message-ID: <b9dcdeb8-6994-55f9-1780-794e17589129@oracle.com>
-Date:   Wed, 6 Jan 2021 13:07:40 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.1.1
+        Wed, 6 Jan 2021 16:11:02 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1609967376;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=VKVUOawYF30jYDz4k0cRErL4TxXYOHoXtZs0psgjgU8=;
+        b=KFJHUUzklD6BJJwXfBuHvwclSeGeHYYRp5c9J3rCs/CNNrHlP+Tc5e1FPCQ1cHdkinIVO0
+        GBchcPljdxO1udg7AzH63tc7Q14aE82tlcybisfkwkGGza2KrGzXLm6Kt9hBFHTf03SwKf
+        3hAc1gp5wAfGvV76YLc0SX9K8IzHjQA=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-187--sLbtU6GPVWn4laxrJ3vSQ-1; Wed, 06 Jan 2021 16:09:33 -0500
+X-MC-Unique: -sLbtU6GPVWn4laxrJ3vSQ-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 286DA195D560;
+        Wed,  6 Jan 2021 21:09:31 +0000 (UTC)
+Received: from warthog.procyon.org.uk (ovpn-112-8.rdu2.redhat.com [10.10.112.8])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 4CA6A5C26D;
+        Wed,  6 Jan 2021 21:09:29 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+From:   David Howells <dhowells@redhat.com>
+In-Reply-To: <07564e3e-35d4-c5d4-fc1a-8a0e8659604e@redhat.com>
+References: <07564e3e-35d4-c5d4-fc1a-8a0e8659604e@redhat.com> <f02bdada-355c-97cd-bc32-f84516ddd93f@redhat.com> <548097.1609952225@warthog.procyon.org.uk> <c2cc898d-171a-25da-c565-48f57d407777@redhat.com> <20201229173916.1459499-1-trix@redhat.com> <259549.1609764646@warthog.procyon.org.uk> <675150.1609954812@warthog.procyon.org.uk> <697467.1609962267@warthog.procyon.org.uk>
+To:     Tom Rix <trix@redhat.com>
+Cc:     dhowells@redhat.com, davem@davemloft.net, kuba@kernel.org,
+        natechancellor@gmail.com, ndesaulniers@google.com,
+        linux-afs@lists.infradead.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com
+Subject: Re: [PATCH] rxrpc: fix handling of an unsupported token type in rxrpc_read()
 MIME-Version: 1.0
-In-Reply-To: <20210106200242.GY13207@dhcp22.suse.cz>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9856 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 malwarescore=0 adultscore=0
- phishscore=0 spamscore=0 mlxlogscore=999 suspectscore=0 bulkscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2101060121
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9856 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 bulkscore=0
- clxscore=1015 spamscore=0 impostorscore=0 priorityscore=1501 mlxscore=0
- adultscore=0 mlxlogscore=999 lowpriorityscore=0 phishscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2101060121
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <706520.1609967368.1@warthog.procyon.org.uk>
+Content-Transfer-Encoding: quoted-printable
+Date:   Wed, 06 Jan 2021 21:09:28 +0000
+Message-ID: <706521.1609967368@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 1/6/21 12:02 PM, Michal Hocko wrote:
-> On Wed 06-01-21 11:30:25, Mike Kravetz wrote:
->> On 1/6/21 8:35 AM, Michal Hocko wrote:
->>> On Wed 06-01-21 16:47:35, Muchun Song wrote:
->>>> Because we only can isolate a active page via isolate_huge_page()
->>>> and hugetlbfs_fallocate() forget to mark it as active, we cannot
->>>> isolate and migrate those pages.
->>>
->>> I've little bit hard time to understand this initially and had to dive
->>> into the code to make sense of it. I would consider the following
->>> wording easier to grasp. Feel free to reuse if you like.
->>> "
->>> If a new hugetlb page is allocated during fallocate it will not be
->>> marked as active (set_page_huge_active) which will result in a later
->>> isolate_huge_page failure when the page migration code would like to
->>> move that page. Such a failure would be unexpected and wrong.
->>> "
->>>
->>> Now to the fix. I believe that this patch shows that the
->>> set_page_huge_active is just too subtle. Is there any reason why we
->>> cannot make all freshly allocated huge pages active by default?
->>
->> I looked into that yesterday.  The primary issue is in page fault code,
->> hugetlb_no_page is an example.  If page_huge_active is set, then it can
->> be isolated for migration.  So, migration could race with the page fault
->> and the page could be migrated before being added to the page table of
->> the faulting task.  This was an issue when hugetlb_no_page set_page_huge_active
->> right after allocating and clearing the huge page.  Commit cb6acd01e2e4
->> moved the set_page_huge_active after adding the page to the page table
->> to address this issue.
-> 
-> Thanks for the clarification. I was not aware of this subtlety. The
-> existing comment is not helping much TBH. I am still digesting the
-> suggested race. The page is new and exclusive and not visible via page
-> tables yet, so the only source of the migration would be pfn based
-> (hotplug, poisoning), right?
+Tom Rix <trix@redhat.com> wrote:
 
-That is correct.
+> On 1/6/21 11:44 AM, David Howells wrote:
+> > Tom Rix <trix@redhat.com> wrote:
+> >
+> >> These two loops iterate over the same data, i believe returning here =
+is all
+> >> that is needed.
+> > But if the first loop is made to support a new type, but the second lo=
+op is
+> > missed, it will then likely oops.  Besides, the compiler should optimi=
+se both
+> > paths together.
+> =
 
+> You are right, I was only considering the existing cases.
 
-> Btw. s@set_page_huge_active@set_page_huge_migrateable@ would help
-> readability IMHO. With a comment explaining that this _has_ to be called
-> after the page is fully initialized.
+Thanks.  Can I put that down as a Reviewed-by?
 
-Agree, I will add that as a future enhancement.
+David
 
--- 
-Mike Kravetz
