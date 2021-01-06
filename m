@@ -2,79 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A22872EBD4A
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 12:42:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EB6852EBD50
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 12:51:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726683AbhAFLkk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Jan 2021 06:40:40 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53540 "EHLO mail.kernel.org"
+        id S1726073AbhAFLuq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Jan 2021 06:50:46 -0500
+Received: from mx2.suse.de ([195.135.220.15]:42608 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725789AbhAFLkj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Jan 2021 06:40:39 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4B2F923100;
-        Wed,  6 Jan 2021 11:39:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1609933199;
-        bh=oVQy0WCzmrrM0N7SmWHba1flnwvWAZk0QOZxQDNRFeY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=p9P2ZBPUp/btO/65Rs74MhMBR0vz9xgr5BeOKTOxIedNJpUE/jN8pGoUQr7xaWfRT
-         FpgRPgYGnnUEh3nqB9N3xI6685F9kGvz9a0GEM30GMiDhAiEcccA0Wu9Ny3TVWoYe/
-         f9xUD1H66EUj1/gRlh17WIT3uN1TeWDRN1Q4VZ0TtKMSMpQWZyLTcxk8oEfNKQ54V/
-         BVGjLUWvnPpo1sV25vUhxEELP3yOrg72DxRyE+TutKs5elgpqdx6Mrb0BCXCyQosLP
-         wmrTiPBmHesIARF6gRZ1wHpowjPh3+Cesfeh3FLEtGEtb4v9QWKB3LfnTbSpB41B2P
-         SPWhLALexbjzg==
-Date:   Wed, 6 Jan 2021 13:39:51 +0200
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Shradha Todi <shradha.t@samsung.com>
-Cc:     linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
-        bhelgaas@google.com, kishon@ti.com, lorenzo.pieralisi@arm.com,
-        pankaj.dubey@samsung.com, sriram.dash@samsung.com,
-        niyas.ahmed@samsung.com, p.rajanbabu@samsung.com,
-        l.mehra@samsung.com, hari.tv@samsung.com
-Subject: Re: [PATCH v3] PCI: endpoint: Fix NULL pointer dereference for
- ->get_features()
-Message-ID: <20210106113951.GW31158@unreal>
-References: <CGME20210106103829epcas5p20a5c8aa2ae8bd6d8d555dad1aa265a1c@epcas5p2.samsung.com>
- <1609929490-18921-1-git-send-email-shradha.t@samsung.com>
+        id S1725788AbhAFLup (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 Jan 2021 06:50:45 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1609933803; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=U0fXng+c84ua+0GSFcF+SPPfc+58H4aOX56G4MdyPS0=;
+        b=r+ku0bhZ5ww4o7ZI9fx6GXpmQVTGnZ0H+kTxpZHuFwXmE0NemaFJ5c3WlUFj5UemJOz0Cp
+        T4Sg8IFapTeru+r6sEIuVTSQRw3ly6IgvkGF7F6c7vpBlpEYIa9h3MNru03QlC+I+tccCY
+        qk7T9CJR07skiMNMk+B8rQUdMEpZSM0=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 782B5AD1E;
+        Wed,  6 Jan 2021 11:50:03 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 1B744DA6E9; Wed,  6 Jan 2021 12:48:14 +0100 (CET)
+From:   David Sterba <dsterba@suse.com>
+To:     torvalds@linux-foundation.org
+Cc:     David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [GIT PULL] Btrfs fixes for 5.11-rc3
+Date:   Wed,  6 Jan 2021 12:48:12 +0100
+Message-Id: <cover.1609855176.git.dsterba@suse.com>
+X-Mailer: git-send-email 2.25.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1609929490-18921-1-git-send-email-shradha.t@samsung.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 06, 2021 at 04:08:10PM +0530, Shradha Todi wrote:
-> get_features ops of pci_epc_ops may return NULL, causing NULL pointer
-> dereference in pci_epf_test_bind function. Let us add a check for
-> pci_epc_feature pointer in pci_epf_test_bind before we access it to avoid
-> any such NULL pointer dereference and return -ENOTSUPP in case
-> pci_epc_feature is not found.
->
-> When the patch is not applied and EPC features is not implemented in the
-> platform driver, we see the following dump due to kernel NULL pointer
-> dereference.
->
-> [  105.135936] Call trace:
-> [  105.138363]  pci_epf_test_bind+0xf4/0x388
-> [  105.142354]  pci_epf_bind+0x3c/0x80
-> [  105.145817]  pci_epc_epf_link+0xa8/0xcc
-> [  105.149632]  configfs_symlink+0x1a4/0x48c
-> [  105.153616]  vfs_symlink+0x104/0x184
-> [  105.157169]  do_symlinkat+0x80/0xd4
-> [  105.160636]  __arm64_sys_symlinkat+0x1c/0x24
-> [  105.164885]  el0_svc_common.constprop.3+0xb8/0x170
-> [  105.169649]  el0_svc_handler+0x70/0x88
-> [  105.173377]  el0_svc+0x8/0x640
-> [  105.176411] Code: d2800581 b9403ab9 f9404ebb 8b394f60 (f9400400)
-> [  105.182478] ---[ end trace a438e3c5a24f9df0 ]---
->
-> Fixes: 2c04c5b8eef79 ("PCI: pci-epf-test: Use pci_epc_get_features() to get
-> EPC features")
->
-> Reviewed-by: Pankaj Dubey <pankaj.dubey@samsung.com>
+Hi,
 
-Please no space between Fixes line and SOB.
-Also please don't break Fixes lines.
+a few more fixes that arrived before the end of the year.  Please pull,
+thanks.
 
-Thanks
+- a bunch of fixes related to transaction handle lifetime wrt various
+  operations (umount, remount, qgroup scan, orphan cleanup)
+
+- async discard scheduling fixes
+
+- fix item size calculation when item keys collide for extend refs
+  (hardlinks)
+
+- fix qgroup flushing from running transaction
+
+- fix send, wrong file path when there is an inode with a pending rmdir
+
+- fix deadlock when cloning inline extent and low on free metadata space
+
+----------------------------------------------------------------
+The following changes since commit b42fe98c92698d2a10094997e5f4d2dd968fd44f:
+
+  btrfs: scrub: allow scrub to work with subpage sectorsize (2020-12-09 19:16:11 +0100)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-5.11-rc2-tag
+
+for you to fetch changes up to a8cc263eb58ca133617662a5a5e07131d0ebf299:
+
+  btrfs: run delayed iputs when remounting RO to avoid leaking them (2020-12-18 15:00:08 +0100)
+
+----------------------------------------------------------------
+Filipe Manana (7):
+      btrfs: fix deadlock when cloning inline extent and low on free metadata space
+      btrfs: send: fix wrong file path when there is an inode with a pending rmdir
+      btrfs: fix transaction leak and crash after RO remount caused by qgroup rescan
+      btrfs: fix transaction leak and crash after cleaning up orphans on RO mount
+      btrfs: fix race between RO remount and the cleaner task
+      btrfs: add assertion for empty list of transactions at late stage of umount
+      btrfs: run delayed iputs when remounting RO to avoid leaking them
+
+Josef Bacik (1):
+      btrfs: tests: initialize test inodes location
+
+Pavel Begunkov (3):
+      btrfs: fix async discard stall
+      btrfs: fix racy access to discard_ctl data
+      btrfs: merge critical sections of discard lock in workfn
+
+Qu Wenruo (1):
+      btrfs: qgroup: don't try to wait flushing if we're already holding a transaction
+
+ethanwu (1):
+      btrfs: correctly calculate item size used when item key collision happens
+
+ fs/btrfs/btrfs_inode.h       |  9 ++++++
+ fs/btrfs/ctree.c             | 24 +++++++++++++--
+ fs/btrfs/ctree.h             | 29 ++++++++++++++++--
+ fs/btrfs/dev-replace.c       |  2 +-
+ fs/btrfs/discard.c           | 70 +++++++++++++++++++++++---------------------
+ fs/btrfs/disk-io.c           | 13 ++++----
+ fs/btrfs/extent-tree.c       |  2 ++
+ fs/btrfs/file-item.c         |  2 ++
+ fs/btrfs/inode.c             | 15 +++++++---
+ fs/btrfs/ioctl.c             |  2 +-
+ fs/btrfs/qgroup.c            | 43 +++++++++++++++++++--------
+ fs/btrfs/reflink.c           | 15 ++++++++++
+ fs/btrfs/send.c              | 49 +++++++++++++++++++------------
+ fs/btrfs/space-info.c        |  2 +-
+ fs/btrfs/super.c             | 40 +++++++++++++++++++++++--
+ fs/btrfs/tests/btrfs-tests.c | 10 +++++--
+ fs/btrfs/tests/inode-tests.c |  9 ------
+ fs/btrfs/volumes.c           |  4 +--
+ 18 files changed, 243 insertions(+), 97 deletions(-)
