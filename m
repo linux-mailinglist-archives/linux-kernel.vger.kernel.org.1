@@ -2,69 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED1392EC422
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 20:47:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C6962EC42C
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 20:50:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726948AbhAFTrC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Jan 2021 14:47:02 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45758 "EHLO mail.kernel.org"
+        id S1726792AbhAFTuC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Jan 2021 14:50:02 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46004 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726494AbhAFTrC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Jan 2021 14:47:02 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4B00123131;
-        Wed,  6 Jan 2021 19:46:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-        s=korg; t=1609962381;
-        bh=mTkPqvalyZGT+HNCgL8RBG8IvEJHEcO8w9JgqACOlqk=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=lOdJhUQafw8lhnLzWFVEy8xjLN97baNoa8CetSHuHg+wkKl6LbziGFBbfNl4FMqrT
-         vu5eHaNGbgR9wcM8KVJ9C+TCtUEwuJsYX5dc4fKzyXkG7bhaR92EnBWv8NUH6C8bDy
-         BjS+g2qj8JhLYGOuRb7YWqbfl48p7+SuMShXOmcg=
-Date:   Wed, 6 Jan 2021 11:46:20 -0800
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     Hugh Dickins <hughd@google.com>
-Cc:     Alex Shi <alex.shi@linux.alibaba.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Michal Hocko <mhocko@suse.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mm/mmap: replace if (cond) BUG() with BUG_ON()
-Message-Id: <20210106114620.5c221690f3a9cad7afcc3077@linux-foundation.org>
-In-Reply-To: <alpine.LSU.2.11.2101051919130.1361@eggly.anvils>
-References: <1607743586-80303-1-git-send-email-alex.shi@linux.alibaba.com>
-        <1607743586-80303-2-git-send-email-alex.shi@linux.alibaba.com>
-        <e50574aa-87b8-8ddf-2235-ef98e22bcb7d@linux.alibaba.com>
-        <alpine.LSU.2.11.2101051919130.1361@eggly.anvils>
-X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S1725890AbhAFTuC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 Jan 2021 14:50:02 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A3D3E23131;
+        Wed,  6 Jan 2021 19:49:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1609962561;
+        bh=kM24bsppauFnjJnUImJYst1OIlqQn9Xu2W/aakTxCu4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=v5kYDGXYnjAMFiWpPLeR5qmLspa3d8BpI6veEx4VlEb2CS6uxhNlZMW8HGuSDxnBn
+         7Fljn1JZg2gP0io1SZ2Bu92f0MYuIWdH+99cEcKHe6zgt0LRVrkOKyKlhUgzy01KEE
+         YWN+AHkqk4QnVAUHmzdA7ZK+GZ4NE5z2OKzsDD9Y=
+Date:   Wed, 6 Jan 2021 20:49:18 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Jeffrin Jose T <jeffrin@rajagiritech.edu.in>
+Cc:     Guenter Roeck <linux@roeck-us.net>, Pavel Machek <pavel@denx.de>,
+        linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, stable@vger.kernel.org
+Subject: Re: [PATCH 5.10 00/40] 5.10.3-rc1 review
+Message-ID: <X/YUPr5fmVDKcSAK@kroah.com>
+References: <1b12b1311e5f0ff7e96d444bf258facc6b0c6ae4.camel@rajagiritech.edu.in>
+ <X+dRkTq+T+A6nWPz@kroah.com>
+ <58d01e9ee69b4fe51d75bcecdf12db219d261ff1.camel@rajagiritech.edu.in>
+ <X+iwvG2d0QfPl+mc@kroah.com>
+ <c7688d9a00a510975f115305a9e8d245a4403773.camel@rajagiritech.edu.in>
+ <20201228095040.GA11960@amd>
+ <356ddc03-038e-71b6-8134-5b41f090d448@roeck-us.net>
+ <aa62485a757305b46df190e6f90dfbd6bc31a144.camel@rajagiritech.edu.in>
+ <X/Kz4KHxoU/YYEvu@kroah.com>
+ <4474633bf649e93f3292d8d248b352066c063a20.camel@rajagiritech.edu.in>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <4474633bf649e93f3292d8d248b352066c063a20.camel@rajagiritech.edu.in>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 5 Jan 2021 20:28:27 -0800 (PST) Hugh Dickins <hughd@google.com> wrote:
-
-> Alex, please consider why the authors of these lines (whom you
-> did not Cc) chose to write them without BUG_ON(): it has always
-> been preferred practice to use BUG_ON() on predicates, but not on
-> functionally effective statements (sorry, I've forgotten the proper
-> term: I'd say statements with side-effects, but here they are not
-> just side-effects: they are their main purpose).
+On Thu, Jan 07, 2021 at 01:08:01AM +0530, Jeffrin Jose T wrote:
+> On Mon, 2021-01-04 at 07:21 +0100, Greg Kroah-Hartman wrote:
+> > On Sun, Jan 03, 2021 at 06:37:51PM +0530, Jeffrin Jose T wrote:
+> > > On Mon, 2020-12-28 at 12:41 -0800, Guenter Roeck wrote:
+> > > > On 12/28/20 1:50 AM, Pavel Machek wrote:
+> > > > > Hi!
+> > > > > 
+> > > > > > > > > > > https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.3-rc1.gz
+> > > > > > > > > > > or in the git tree and branch at:
+> > > > > > > > > > >         git://git.kernel.org/pub/scm/linux/kernel/g
+> > > > > > > > > > > it/s
+> > > > > > > > > > > table/
+> > > > > > > > > > > linu
+> > > > > > > > > > > x-
+> > > > > > > > > > > stable-rc.git linux-5.10.y
+> > > > > > > > > > > and the diffstat can be found below.
+> > > > > > > > > > > 
+> > > > > > > > > > > thanks,
+> > > > > > > > > > > 
+> > > > > > > > > > > greg k-h
+> > > > > > > > > > 
+> > > > > > > > > > hello ,
+> > > > > > > > > > Compiled and booted 5.10.3-rc1+.
+> > > > > > > > > > 
+> > > > > > > > > > dmesg -l err gives...
+> > > > > > > > > > --------------x-------------x------------------->
+> > > > > > > > > >    43.190922] Bluetooth: hci0: don't support firmware
+> > > > > > > > > > rome
+> > > > > > > > > > 0x31010100
+> > > > > > > > > > --------------x---------------x----------------->
+> > > > > > > > > > 
+> > > > > > > > > > My Bluetooth is Off.
+> > > > > > > > > 
+> > > > > > > > > Is this a new warning?  Does it show up on 5.10.2?
+> > > > > > > > > 
+> > > > > > > > > > Tested-by: Jeffrin Jose T <
+> > > > > > > > > > jeffrin@rajagiritech.edu.in>
+> > > > > > > > > 
+> > > > > > > > > thanks for testing?
+> > > > > > > > > 
+> > > > > > > > > greg k-h
+> > > > > > > > 
+> > > > > > > > this does not show up in 5.10.2-rc1+
+> > > > > > > 
+> > > > > > > Odd.  Can you run 'git bisect' to find the offending
+> > > > > > > commit?
+> > > > > > > 
+> > > > > > > Does this same error message show up in Linus's git tree?
+> > > > > 
+> > > > > > i will try to do "git bisect" .  i saw this error in linus's 
+> > > > > > tree.
+> > > > > 
+> > > > > The bug is in -stable, too, so it is probably easiest to do
+> > > > > bisect
+> > > > > on
+> > > > > -stable tree. IIRC there's less then few hundred commits, so it
+> > > > > should
+> > > > > be feasible to do bisection by hand if you are not familiar
+> > > > > with
+> > > > > git
+> > > > > bisect.
+> > > > > 
+> > > > 
+> > > > My wild guess would be commit b260e4a68853 ("Bluetooth: Fix slab-
+> > > > out-
+> > > > of-bounds
+> > > > read in hci_le_direct_adv_report_evt()"), but I don't see what
+> > > > might
+> > > > be wrong
+> > > > with it unless some BT device sends a bad report which used to be
+> > > > accepted
+> > > > but is now silently ignored.
+> > > > 
+> > > > Guenter
+> > > > 
+> > > hello,
+> > > 
+> > > Did  "git bisect" in  a typically ok fashion and found that 5.9.0
+> > > is
+> > > working for bluetooth related. But 5.10.0-rc1  related is not
+> > > working.
+> > > 
+> > > some related information in bisect.txt  attached.
+> > > 
+> > > -- 
+> > > software engineer
+> > > rajagiri school of engineering and technology - autonomous
+> > > 
+> > 
+> > > $sudo git bisect bad
+> > > Bisecting: 0 revisions left to test after this (roughly 1 step)
+> > > [194810f78402128fe07676646cf9027fd3ed431c] dt-bindings: leds:
+> > > Update devicetree documents for ID_RGB
+> > > 
+> > > $sudo git bisect bad
+> > > Bisecting: 0 revisions left to test after this (roughly 0 steps)
+> > > [3650b228f83adda7e5ee532e2b90429c03f7b9ec] Linux 5.10-rc1
+> > 
+> > That's really odd, as that commit only has a Makefile change.
 > 
-> We prefer not to hide those away inside BUG macros
+> i will try to work on it again
+> 
+> > Also, why run this as root?
+> > 
+> there may be some problem in my sudo configurtion or the way in run
+> sudo.\
+> when i run "make modules_install" and "make install" using sudo typical
+> files 
+> ownership changes to root.
 
-Should we change that?  I find BUG_ON(something_which_shouldnt_fail())
-to be quite natural and readable.
-
-As are things like the existing
-
-BUG_ON(mmap_read_trylock(mm));
-BUG_ON(wb_domain_init(&global_wb_domain, GFP_KERNEL));
-
-etc.
-
-
-No strong opinion here, but is current mostly-practice really
-useful?
-
+That's fine when installing the kernel, but not when building or running
+git, please don't do that.
