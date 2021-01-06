@@ -2,158 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B76512EC71A
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 00:54:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F8502EC71B
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 00:56:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727686AbhAFXym (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Jan 2021 18:54:42 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52794 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726293AbhAFXyl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Jan 2021 18:54:41 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 438EE2333C;
-        Wed,  6 Jan 2021 23:54:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1609977240;
-        bh=KccsynjnFEJcrmwhf1b16TrZXgLFZesL4NPRSueUY1Y=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=O2Ctx+s/gNPzfxDa6pUH5emHrwTQaey2rpG/bApQcfaeCZglbryJfn/DohlvW0nUP
-         ks+CvxCNnJRnQfy1QICe+Y/6UfBNdT7Fie4mU6hkxCc/qY6KmEvsjE/egeqs4GV+y1
-         TW4FPA4nNMCMblnS6eOGf3yVexLzvV+1VHE+P/5WESFRYSwOPYyEdD4j3tBfw5xqxA
-         7vQXvaCaynNadGEw+FJn10Dl6UTHcWFFh0UYHsJ4LKoK6EOh3BwO8FAbRzaSr9OFo3
-         q+w0B08DB3B2O57YrN4skC7MHmVbtwCkc0B0Hqwa7sjwiFudRDfmnjHa2/qSUl0KdQ
-         8u/WZFhIkL+DQ==
-Received: by mail-qv1-f50.google.com with SMTP id et9so2051251qvb.10;
-        Wed, 06 Jan 2021 15:54:00 -0800 (PST)
-X-Gm-Message-State: AOAM5338/GZ24IlaWuV3bwXs7xC2q/Ww61cWqD1yqUjQiVA2TahcCtGK
-        iCNIfgQO3xyRoNRoFT2rPD781bqyhkbR0jdRUw==
-X-Google-Smtp-Source: ABdhPJzZl3aU05D6dlvbXZTfnBuEeO/OPJggOMbq92bGAhrV+nuJsZ/bCmxU3BveNk7VWisYeznWdqpE7BUkNfpW7nU=
-X-Received: by 2002:ad4:4a72:: with SMTP id cn18mr6116796qvb.50.1609977239399;
- Wed, 06 Jan 2021 15:53:59 -0800 (PST)
-MIME-Version: 1.0
-References: <1608715847-28956-1-git-send-email-EastL.Lee@mediatek.com>
- <1608715847-28956-2-git-send-email-EastL.Lee@mediatek.com>
- <20210103165842.GA4024251@robh.at.kernel.org> <1609925140.5373.5.camel@mtkswgap22>
-In-Reply-To: <1609925140.5373.5.camel@mtkswgap22>
-From:   Rob Herring <robh@kernel.org>
-Date:   Wed, 6 Jan 2021 16:53:46 -0700
-X-Gmail-Original-Message-ID: <CAL_JsqLjgJUNJiE8uri9MKqTdik=7BBGP9bZSkD1mF+Sk3YfmQ@mail.gmail.com>
-Message-ID: <CAL_JsqLjgJUNJiE8uri9MKqTdik=7BBGP9bZSkD1mF+Sk3YfmQ@mail.gmail.com>
-Subject: Re: [PATCH v8 1/4] dt-bindings: dmaengine: Add MediaTek Command-Queue
- DMA controller bindings
-To:     EastL <EastL.Lee@mediatek.com>
-Cc:     Sean Wang <sean.wang@mediatek.com>, Vinod <vkoul@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        "open list:DMA GENERIC OFFLOAD ENGINE SUBSYSTEM" 
-        <dmaengine@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>, devicetree@vger.kernel.org,
-        wsd_upstream <wsd_upstream@mediatek.com>,
-        CC Hwang <cc.hwang@mediatek.com>
+        id S1727799AbhAFXzi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Jan 2021 18:55:38 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:40502 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727700AbhAFXzi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 Jan 2021 18:55:38 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1609977251;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=+xDcXzm9y5pEimgXpveqhDSEufujttVDu3XNu82fIqU=;
+        b=hQsyo3DrqU4rbzihNQUPx75c3LPV/ttMwCiBYUvLrmYrGysJkdIgGQ8emYrwjUMGxfqiCC
+        kRwQJ87IOtIOJ8AOw1qpwBelj8Indwf8Y9PpoXQcHMaqyMTcAcOBcCyqCjFkcKNnhYARwq
+        nnkyJIhXoQQWX6b9sb74kVKv9R0NSpI=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-172-pkYhRmgnPpG7XgXQqMc6Vg-1; Wed, 06 Jan 2021 18:54:08 -0500
+X-MC-Unique: pkYhRmgnPpG7XgXQqMc6Vg-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0288410054FF;
+        Wed,  6 Jan 2021 23:54:06 +0000 (UTC)
+Received: from starship (unknown [10.35.206.22])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 25A625D9CD;
+        Wed,  6 Jan 2021 23:54:01 +0000 (UTC)
+Message-ID: <d4dd81b7bfd4c977ff4b4e1fa6da98e0f06c5fc0.camel@redhat.com>
+Subject: Re: [PATCH 4/6] KVM: nSVM: correctly restore nested_run_pending on
+ migration
+From:   Maxim Levitsky <mlevitsk@redhat.com>
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     kvm@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        "open list:X86 ARCHITECTURE (32-BIT AND 64-BIT)" 
+        <linux-kernel@vger.kernel.org>, Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Borislav Petkov <bp@alien8.de>
+Date:   Thu, 07 Jan 2021 01:54:00 +0200
+In-Reply-To: <X/XzBUTPRhwVPCGx@google.com>
+References: <20210106105001.449974-1-mlevitsk@redhat.com>
+         <20210106105001.449974-5-mlevitsk@redhat.com> <X/XzBUTPRhwVPCGx@google.com>
 Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.5 (3.36.5-1.fc32) 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 6, 2021 at 2:25 AM EastL <EastL.Lee@mediatek.com> wrote:
->
-> On Sun, 2021-01-03 at 09:58 -0700, Rob Herring wrote:
-> > On Wed, Dec 23, 2020 at 05:30:44PM +0800, EastL Lee wrote:
-> > > Document the devicetree bindings for MediaTek Command-Queue DMA controller
-> > > which could be found on MT6779 SoC or other similar Mediatek SoCs.
-> > >
-> > > Signed-off-by: EastL Lee <EastL.Lee@mediatek.com>
-> > > ---
-> > >  .../devicetree/bindings/dma/mtk-cqdma.yaml         | 104 +++++++++++++++++++++
-> >
-> > Use compatible string for filename:
-> OK
-> >
-> > mediatek,cqdma.yaml
-> >
-> > >  1 file changed, 104 insertions(+)
-> > >  create mode 100644 Documentation/devicetree/bindings/dma/mtk-cqdma.yaml
-> > >
-> > > diff --git a/Documentation/devicetree/bindings/dma/mtk-cqdma.yaml b/Documentation/devicetree/bindings/dma/mtk-cqdma.yaml
-> > > new file mode 100644
-> > > index 0000000..a76a263
-> > > --- /dev/null
-> > > +++ b/Documentation/devicetree/bindings/dma/mtk-cqdma.yaml
-> > > @@ -0,0 +1,104 @@
-> > > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> > > +%YAML 1.2
-> > > +---
-> > > +$id: http://devicetree.org/schemas/dma/mtk-cqdma.yaml#
-> >
-> > Don't forget to update this.
-> OK
-> >
-> > > +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> > > +
-> > > +title: MediaTek Command-Queue DMA controller Device Tree Binding
-> > > +
-> > > +maintainers:
-> > > +  - EastL Lee <EastL.Lee@mediatek.com>
-> > > +
-> > > +description:
-> > > +  MediaTek Command-Queue DMA controller (CQDMA) on Mediatek SoC
-> > > +  is dedicated to memory-to-memory transfer through queue based
-> > > +  descriptor management.
-> > > +
-> > > +allOf:
-> > > +  - $ref: "dma-controller.yaml#"
-> > > +
-> > > +properties:
-> > > +  compatible:
-> > > +    items:
-> > > +      - enum:
-> > > +          - mediatek,mt6765-cqdma
-> > > +          - mediatek,mt6779-cqdma
-> > > +      - const: mediatek,cqdma
-> > > +
-> > > +  reg:
-> > > +    minItems: 1
-> > > +    maxItems: 5
-> > > +    description:
-> > > +        A base address of MediaTek Command-Queue DMA controller,
-> > > +        a channel will have a set of base address.
-> > > +
-> > > +  interrupts:
-> > > +    minItems: 1
-> > > +    maxItems: 5
-> > > +    description:
-> > > +        A interrupt number of MediaTek Command-Queue DMA controller,
-> > > +        one interrupt number per dma-channels.
-> > > +
-> > > +  clocks:
-> > > +    maxItems: 1
-> > > +
-> > > +  clock-names:
-> > > +    const: cqdma
-> > > +
-> > > +  dma-channel-mask:
-> > > +    description:
-> > > +       For DMA capability, We will know the addressing capability of
-> > > +       MediaTek Command-Queue DMA controller through dma-channel-mask.
-> > > +      minimum: 1
-> > > +      maximum: 63
-> >
-> > Indentation is wrong here so this has no effect.
-> I'll fix it
-> >
-> > A mask of 63 is 6 channels...
-> In my opinion, kernel dma mask if for 32/64 bit capability...
-> If I don't set dma mask I will get fail on DMATEST.
+On Wed, 2021-01-06 at 09:27 -0800, Sean Christopherson wrote:
+> On Wed, Jan 06, 2021, Maxim Levitsky wrote:
+> > The code to store it on the migration exists, but no code was restoring it.
+> > 
+> > Signed-off-by: Maxim Levitsky <mlevitsk@redhat.com>
+> > ---
+> >  arch/x86/kvm/svm/nested.c | 4 ++++
+> >  1 file changed, 4 insertions(+)
+> > 
+> > diff --git a/arch/x86/kvm/svm/nested.c b/arch/x86/kvm/svm/nested.c
+> > index 6208d3a5a3fdb..c1a3d0e996add 100644
+> > --- a/arch/x86/kvm/svm/nested.c
+> > +++ b/arch/x86/kvm/svm/nested.c
+> > @@ -1203,6 +1203,10 @@ static int svm_set_nested_state(struct kvm_vcpu *vcpu,
+> >  	 * in the registers, the save area of the nested state instead
+> >  	 * contains saved L1 state.
+> >  	 */
+> > +
+> > +	if (kvm_state->flags & KVM_STATE_NESTED_RUN_PENDING)
+> > +		svm->nested.nested_run_pending = true;
+> 
+> This should be:
 
-As in the kernel's 'dma_mask'? That's something entirely different.
-The driver should set the mask to the max the device supports.
-Typically this is a 32-bit or 64-bit mask. The default is 32-bit. If
-the SoC has limitations in its buses, then you need to use
-'dma-ranges' in DT which will in turn set the bus_dma_limit.
+Yes, if someone already set the nested state before, but
+I also sent a patch that forces nesteded mode exit in this
+case.
 
-For the above, the purpose is if you have sparsely allocated DMA channels.
+Still 100% agree, that this would be better.
+Thanks for the review,
 
-Rob
+Best regards,
+	Maxim Levitsky
+
+> 
+> 	svm->nested.nested_run_pending =
+> 		!!(kvm_state->flags & KVM_STATE_NESTED_RUN_PENDING);
+> 
+> > +
+> >  	copy_vmcb_control_area(&hsave->control, &svm->vmcb->control);
+> >  	hsave->save = *save;
+> >  
+> > -- 
+> > 2.26.2
+> > 
+
+
