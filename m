@@ -2,426 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A5742EC556
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 21:44:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 243522EC55C
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 21:50:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727857AbhAFUn2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Jan 2021 15:43:28 -0500
-Received: from mailoutvs47.siol.net ([185.57.226.238]:52293 "EHLO
-        mail.siol.net" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1727306AbhAFUn1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Jan 2021 15:43:27 -0500
-Received: from localhost (localhost [127.0.0.1])
-        by mail.siol.net (Zimbra) with ESMTP id 5BAAE523BB9;
-        Wed,  6 Jan 2021 21:42:43 +0100 (CET)
-X-Virus-Scanned: amavisd-new at psrvmta12.zcs-production.pri
-Received: from mail.siol.net ([127.0.0.1])
-        by localhost (psrvmta12.zcs-production.pri [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id QPManbey_WZd; Wed,  6 Jan 2021 21:42:42 +0100 (CET)
-Received: from mail.siol.net (localhost [127.0.0.1])
-        by mail.siol.net (Zimbra) with ESMTPS id B0439523BD7;
-        Wed,  6 Jan 2021 21:42:42 +0100 (CET)
-Received: from kista.localnet (cpe-86-58-58-53.static.triera.net [86.58.58.53])
-        (Authenticated sender: jernej.skrabec@siol.net)
-        by mail.siol.net (Zimbra) with ESMTPA id 5A712523BB9;
-        Wed,  6 Jan 2021 21:42:42 +0100 (CET)
-From:   Jernej =?utf-8?B?xaBrcmFiZWM=?= <jernej.skrabec@siol.net>
-To:     mripard@kernel.org, wens@csie.org
-Cc:     airlied@linux.ie, daniel@ffwll.ch, paul.kocialkowski@bootlin.com,
-        dri-devel@lists.freedesktop.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-sunxi@googlegroups.com,
-        Roman Stratiienko <roman.stratiienko@globallogic.com>
-Subject: Re: [PATCH v3] drm/sun4i: de2: Reimplement plane z position setting logic
-Date:   Wed, 06 Jan 2021 21:49:20 +0100
-Message-ID: <3139334.ZeC8MmLAEr@kista>
-In-Reply-To: <20210106204630.1800284-1-jernej.skrabec@siol.net>
-References: <20210106204630.1800284-1-jernej.skrabec@siol.net>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
+        id S1727063AbhAFUuW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Jan 2021 15:50:22 -0500
+Received: from mail-dm6nam11on2108.outbound.protection.outlook.com ([40.107.223.108]:9889
+        "EHLO NAM11-DM6-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726195AbhAFUuV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 Jan 2021 15:50:21 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=DFM2XUIzUq0O2+e+KdjeR1yWLnS3P+2WVEG/HGPJkAdSxkGwZsvT1C2EAabypiBnKmF44o8l/CFO1N7VCtq8VzVYNHOktiT+aPvQ+kuJbdwrmdYnx75fWre8/VsA3kd9CYrsa9Tlkwpr4EeTJuNaGUpxbbKU8saooZJFijETVppycfe0BZ/E57RSjpy/MpIGf6UinseqNTOjNlPtEWM8LkI4DvWJCqP74vYDxmnc9XY4HJnvnAMcjkMgjXcv9dXmRuaSZ++UA0cVSVQkZwB1bt0E7jkT4TyV9CCxhd1RHWAzjzHIdDw80wTp5+ij2QBoTtjIOU/NYtEVLg/20pRkQg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=lV8ozOu0ZG/OiY6dNjipripMd7Wqh6K0RWUErRh0bNs=;
+ b=lbpV3rDhKSw84yCRB4uQLj0X9secfRPd+0NPi5oXBIKGDdeP8Q7ppIla6V1+00RCGK8IBRWOX8pD21PyRceyFh3bu7tUFTs40Yk7P5HheYND7eaaYnP1H1GE85V6kjoiL20bmXQaSMuWJ/Ghh/MZVwF4vrOsAbR8R2kCV51RdJMCz6/VREjoeyKYzgdWlMKgNlghi23Aw/qoEZ8/QtxWv/CE74PzgJ4IvvupqQ4VSIj9ZYxc7sUdvepW4rRk5YciCPOuEYIrASe+qfE7gUIGMuXz1D9SZ9mDv/yT/sRsyequxKqhkql+FC56cXZAcJl9jSYnps097VV0zEeHSKyLUQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=microsoft.com; dmarc=pass action=none
+ header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=lV8ozOu0ZG/OiY6dNjipripMd7Wqh6K0RWUErRh0bNs=;
+ b=em+smtXnY7571kYxo7qL5rc6TSvcLvcubsOxBjxBgnvzXFEyktKlcmhVsOmqmZfcPviZYGC1dB5ay7ukQRzoy2vtLpWPCZmsjveqV/fF3jizTibTQRg9nUbuS6GSPLA1YEfDvk6lJheklLxEgzN82zuZ8FBaqGD5XlPm/wtGqlg=
+Received: from (2603:10b6:302:8::19) by
+ MW2PR2101MB0938.namprd21.prod.outlook.com (2603:10b6:302:4::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3763.0; Wed, 6 Jan
+ 2021 20:49:33 +0000
+Received: from MW2PR2101MB1819.namprd21.prod.outlook.com
+ ([fe80::5868:f11c:ae6e:8a31]) by MW2PR2101MB1819.namprd21.prod.outlook.com
+ ([fe80::5868:f11c:ae6e:8a31%8]) with mapi id 15.20.3763.002; Wed, 6 Jan 2021
+ 20:49:33 +0000
+From:   Dexuan Cui <decui@microsoft.com>
+To:     Michael Kelley <mikelley@microsoft.com>,
+        "wei.liu@kernel.org" <wei.liu@kernel.org>,
+        KY Srinivasan <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        vkuznets <vkuznets@redhat.com>,
+        "marcelo.cerri@canonical.com" <marcelo.cerri@canonical.com>,
+        Boqun Feng <Boqun.Feng@microsoft.com>
+Subject: RE: [PATCH] Drivers: hv: vmbus: Add /sys/bus/vmbus/supported_features
+Thread-Topic: [PATCH] Drivers: hv: vmbus: Add
+ /sys/bus/vmbus/supported_features
+Thread-Index: AQHW5FKgMmd2hzIYf0moXWkZCcjfFaobC9nQ
+Date:   Wed, 6 Jan 2021 20:49:32 +0000
+Message-ID: <MW2PR2101MB18199B8BB434D67363658E72BFD09@MW2PR2101MB1819.namprd21.prod.outlook.com>
+References: <20201223001222.30242-1-decui@microsoft.com>
+ <MWHPR21MB15934AF3CA6C91DB036F7970D7D09@MWHPR21MB1593.namprd21.prod.outlook.com>
+In-Reply-To: <MWHPR21MB15934AF3CA6C91DB036F7970D7D09@MWHPR21MB1593.namprd21.prod.outlook.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+msip_labels: MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2021-01-06T17:37:36Z;
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=04bfd94e-a225-4221-b930-4028344b7560;
+ MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0
+authentication-results: microsoft.com; dkim=none (message not signed)
+ header.d=none;microsoft.com; dmarc=none action=none
+ header.from=microsoft.com;
+x-originating-ip: [73.140.237.219]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: 2dc62aab-fb26-4d1d-c690-08d8b2849236
+x-ms-traffictypediagnostic: MW2PR2101MB0938:
+x-ms-exchange-transport-forked: True
+x-ld-processed: 72f988bf-86f1-41af-91ab-2d7cd011db47,ExtAddr
+x-microsoft-antispam-prvs: <MW2PR2101MB093864DC1E5AF3916513457FBFD09@MW2PR2101MB0938.namprd21.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:9508;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: JUPpR0XIZW7tJ+vBgD6T7zQpL47nZhER9Sw1UYFmqdYq8hpJfWQjOMqh1lp0h7jzLAfKunTmbU9r480ziEYcFJzqwbQk4X/7huoombUxqStaQnlaYUO48DJEEL+bf4kjxzqto3GF3QwSqLUP9TQwEqjh5gCIqYGD9quMZaoDBDOJdfVnoWaeazkh5zx0LUZ81WCTiriIPG2a+bSQTSmS6RGUCGf9wrRf3hJaPqZMDlOefjcQgOUzuRR/FTTF7U9nSwBLuPf3YRtV+9WMEMPIPmP2hL4ouZhEZk0FSBkeGNVxwZ5/ft/oxbSiX1pOG5JH/xGVSdu5bycNYiJF5lKckS+Iez8tOjQW2PP4dg+cQEap8Uq1eegJRUCpcb9g/X3P5Ui1sk09QmbhuWp4WcBBG3zf5sFeRjGXbFX824H2aJTg85OXS7ceSpNoUk6TvXO9
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW2PR2101MB1819.namprd21.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(346002)(136003)(376002)(366004)(39860400002)(6506007)(8990500004)(66556008)(10290500003)(66446008)(64756008)(66476007)(316002)(186003)(82950400001)(76116006)(86362001)(82960400001)(33656002)(9686003)(66946007)(7696005)(110136005)(478600001)(83380400001)(55016002)(8676002)(2906002)(6636002)(921005)(8936002)(71200400001)(5660300002)(26005)(52536014);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: =?us-ascii?Q?sBUCXkVqmHI/PIamHUE6w6SyCZxxY75luMBgUZ1G3+burn8mY2WAO8S3E6k9?=
+ =?us-ascii?Q?mWofXlWEoc0KdAGRm9j9zm4khUd95M3Ez3r9dgGsSId7DL+vNPZWYc1N4or6?=
+ =?us-ascii?Q?7t7SNKnrdnF8oXFh0f3wfFNYAA+z4uqPGNIzOZowXE0m2NSBVL6nhwSY7Bkv?=
+ =?us-ascii?Q?GoJZkGt12UpLVMK2VB32pes2HR9Fcgwc33FaHz+NHW5lEX9xWGPhHxjrYZeQ?=
+ =?us-ascii?Q?pQm6pkiz4UAIfW5XmJPBF/8uicr5wk6u+GkVgjIDrE6hpKadspplziguq4vg?=
+ =?us-ascii?Q?wG7ey60+bemJIrd9yNGiqcrFljrvOwMwwlWRLoFlHdFGryVj1xvywQ2QO34y?=
+ =?us-ascii?Q?LUK8xTsew/MDDhiqkJWqISCoxYgttfHC7QDJZze2uBiQh2i46GenLPOAdWAM?=
+ =?us-ascii?Q?6LAyGNBMDPk/WklnKUnq3rZE0O7fyGXAGAJF0oWN9dWOxA2/QZOytoBbTt1A?=
+ =?us-ascii?Q?viuQ2/xvm6li3lkbKYB7Wta1ryNLfOCF49w5ZxN5erMZ9shauUz/swrklYkU?=
+ =?us-ascii?Q?1dGzcStc9SLrPMxTCmSFqg/ApOswkpj/ANhNEnEDHe95tZKWlR3qT4/K66Dd?=
+ =?us-ascii?Q?iebbfEg7MBJXDrmYB8n2m622gl55Ipsvh5Wh2DWHUahRBBdve1xjcNCRWj4C?=
+ =?us-ascii?Q?cHDP9PDnoSfNGtEEUEIhZVd+C21XW+xsDD3kqPkJ/m8QkNsNmAppnwq2JBqf?=
+ =?us-ascii?Q?/obcHJ9AZdVOQyHJ06TfHW0bQE2dn3HOziOjeQsYjCmkretwqlylQb2FLseL?=
+ =?us-ascii?Q?qPl4fIjpsWWSFyPkYXwmrm5ZRgNuU37XCkrgFBIdA6y+7P/dIIFMZuCmHdKC?=
+ =?us-ascii?Q?lORHhqS/ab5bIWwOlQArwD0jUtHa022WYkA2W3o+H/NjT5f8OyiuJHFc9sjt?=
+ =?us-ascii?Q?2RoU32t31O7kygbHounp1CbQNNXLICRBO4iglUIX1+SqcFLKCzMAoKJVukyP?=
+ =?us-ascii?Q?8/WMZexUQCs64dzE6kR5NQSnZwS7J7xfrT5GRPTwAx0=3D?=
 Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-OriginatorOrg: microsoft.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: MW2PR2101MB1819.namprd21.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2dc62aab-fb26-4d1d-c690-08d8b2849236
+X-MS-Exchange-CrossTenant-originalarrivaltime: 06 Jan 2021 20:49:33.0596
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: dV8ShGWxRZRUuZd1hTGk0HJv4A+9VBqLJlcubaW9EHFMA7aSH39ffbBqaN0BElW5bkzMwB46O3iBJLA8y/FgxA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW2PR2101MB0938
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dne sreda, 06. januar 2021 ob 21:46:30 CET je Jernej Skrabec napisal(a):
-> From: Roman Stratiienko <roman.stratiienko@globallogic.com>
-> 
-> To set blending channel order register software needs to know state and
-> position of each channel, which impossible at plane commit stage.
-> 
-> Move this procedure to atomic_flush stage, where all necessary information
-> is available.
-> 
-> Fixes: f88c5ee77496 ("drm/sun4i: Implement zpos for DE2")
-> Fixes: d8b3f454dab4 ("drm/sun4i: sun8i: Avoid clearing blending order at 
-each atomic commit")
-> Signed-off-by: Roman Stratiienko <roman.stratiienko@globallogic.com>
-> [rebased, addressed comments]
-> Signed-off-by: Jernej Skrabec <jernej.skrabec@siol.net>
-> ---
+> From: Michael Kelley <mikelley@microsoft.com>
+> Sent: Wednesday, January 6, 2021 9:38 AM
+> From: Dexuan Cui <decui@microsoft.com>
+> Sent: Tuesday, December 22, 2020 4:12 PM
+> >
+> > When a Linux VM runs on Hyper-V, if the host toolstack doesn't support
+> > hibernation for the VM (this happens on old Hyper-V hosts like Windows
+> > Server 2016, or new Hyper-V hosts if the admin or user doesn't declare
+> > the hibernation intent for the VM), the VM is discouraged from trying
+> > hibernation (because the host doesn't guarantee that the VM's virtual
+> > hardware configuration will remain exactly the same across hibernation)=
+,
+> > i.e. the VM should not try to set up the swap partition/file for
+> > hibernation, etc.
+> >
+> > x86 Hyper-V uses the presence of the virtual ACPI S4 state as the
+> > indication of the host toolstack support for a VM. Currently there is
+> > no easy and reliable way for the userspace to detect the presence of
+> > the state (see ...).  Add
+> > /sys/bus/vmbus/supported_features for this purpose.
+>
+> I'm OK with surfacing the hibernation capability via an entry in
+> /sys/bus/vmbus.  Correct me if I'm wrong, but I think the concept
+> being surfaced is not "ACPI S4 state" precisely, but slightly more
+> generally whether hibernation is supported for the VM.  While
+> those two concepts may be 1:1 for the moment, there might be
+> future configurations where "hibernation is supported" depends
+> on other factors as well.
 
-Forgot to include changelog:
+For x86, I believe the virtual ACPI S4 state exists only when the
+admin/user declares the intent of "enable hibernation for the VM" via
+some PowwerShell/WMI command. On Azure, if a VM size is not suitable
+for hibernation (e.g. an existing VM has an ephemeral local disk),
+the toolstack on the host should not enable the ACPI S4 state for the
+VM. That's why we implemented hv_is_hibernation_supported() for x86 by
+checking the ACPI S4 state, and we have used the function
+hv_is_hibernation_supported() in hv_utils and hv_balloon for quite a
+while.
 
-This is update of:
-https://patchwork.kernel.org/project/dri-devel/patch/20191229162828.3326-1-roman.stratiienko@globallogic.com/
+For ARM, IIRC there is no concept of ACPI S4 state, so currently
+hv_is_hibernation_supported() is actually not implemented. Not sure
+why hv_utils and hv_balloon can build successfully... :-) Probably
+Boqun can help to take a look.
 
-with addressed comments.
+>
+> The guidance for things in /sys is that they generally should
+> be single valued (see Documentation/filesystems/sysfs.rst).  So my
+> recommendation is to create a "hibernation" entry that has a value
+> of 0 or 1.
+>
+> Michael
 
-Changes from v2:
-- renamed SUN8I_MIXER_MAX_LAYERS to SUN8I_MIXER_MAX_CHANNELS
-- removed unused variable in sun8i_vi_layer_enable()
-- renamed and reordered variables in sun8i_mixer_commit()
-- removed route allocation for disabled channels
-- write SUN8I_MIXER_BLEND_PIPE_CTL reg only in commit hook
-- added fixed tags
+Got it. Then let's use /sys/bus/vmbus/hibernation.
 
-Best regards,
-Jernej
+Will post v3.
 
->  drivers/gpu/drm/sun4i/sun8i_mixer.c    | 57 +++++++++++++++++++++-----
->  drivers/gpu/drm/sun4i/sun8i_mixer.h    |  5 +++
->  drivers/gpu/drm/sun4i/sun8i_ui_layer.c | 42 +++----------------
->  drivers/gpu/drm/sun4i/sun8i_vi_layer.c | 42 +++----------------
->  4 files changed, 64 insertions(+), 82 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/sun4i/sun8i_mixer.c b/drivers/gpu/drm/sun4i/
-sun8i_mixer.c
-> index 5b42cf25cc86..d2153b10b08d 100644
-> --- a/drivers/gpu/drm/sun4i/sun8i_mixer.c
-> +++ b/drivers/gpu/drm/sun4i/sun8i_mixer.c
-> @@ -250,6 +250,50 @@ int sun8i_mixer_drm_format_to_hw(u32 format, u32 
-*hw_format)
->  
->  static void sun8i_mixer_commit(struct sunxi_engine *engine)
->  {
-> +	struct sun8i_mixer *mixer = engine_to_sun8i_mixer(engine);
-> +	int channel_by_zpos[SUN8I_MIXER_MAX_CHANNELS];
-> +	u32 base = sun8i_blender_base(mixer);
-> +	u32 route = 0, pipe_ctl = 0;
-> +	unsigned int channel_count;
-> +	int i, j;
-> +
-> +	channel_count = mixer->cfg->vi_num + mixer->cfg->ui_num;
-> +
-> +	DRM_DEBUG_DRIVER("Update blender routing\n");
-> +
-> +	for (i = 0; i < SUN8I_MIXER_MAX_CHANNELS; i++)
-> +		channel_by_zpos[i] = -1;
-> +
-> +	for (i = 0; i < channel_count; i++)	{
-> +		int zpos = mixer->channel_zpos[i];
-> +
-> +		if (zpos >= 0 && zpos < channel_count)
-> +			channel_by_zpos[zpos] = i;
-> +	}
-> +
-> +	j = 0;
-> +	for (i = 0; i < channel_count; i++) {
-> +		int ch = channel_by_zpos[i];
-> +
-> +		if (ch >= 0) {
-> +			pipe_ctl |= SUN8I_MIXER_BLEND_PIPE_CTL_EN(j);
-> +			route |= ch << 
-SUN8I_MIXER_BLEND_ROUTE_PIPE_SHIFT(j);
-> +			j++;
-> +		}
-> +	}
-> +
-> +	/*
-> +	 * Set fill color of bottom plane to black. Generally not needed
-> +	 * except when VI plane is at bottom (zpos = 0) and enabled.
-> +	 */
-> +	pipe_ctl |= SUN8I_MIXER_BLEND_PIPE_CTL_FC_EN(0);
-> +
-> +	regmap_write(mixer->engine.regs,
-> +		     SUN8I_MIXER_BLEND_PIPE_CTL(base), pipe_ctl);
-> +
-> +	regmap_write(mixer->engine.regs,
-> +		     SUN8I_MIXER_BLEND_ROUTE(base), route);
-> +
->  	DRM_DEBUG_DRIVER("Committing changes\n");
->  
->  	regmap_write(engine->regs, SUN8I_MIXER_GLOBAL_DBUFF,
-> @@ -479,23 +523,16 @@ static int sun8i_mixer_bind(struct device *dev, struct 
-device *master,
->  	regmap_write(mixer->engine.regs, SUN8I_MIXER_BLEND_BKCOLOR(base),
->  		     SUN8I_MIXER_BLEND_COLOR_BLACK);
->  
-> -	/*
-> -	 * Set fill color of bottom plane to black. Generally not needed
-> -	 * except when VI plane is at bottom (zpos = 0) and enabled.
-> -	 */
-> -	regmap_write(mixer->engine.regs, SUN8I_MIXER_BLEND_PIPE_CTL(base),
-> -		     SUN8I_MIXER_BLEND_PIPE_CTL_FC_EN(0));
->  	regmap_write(mixer->engine.regs, 
-SUN8I_MIXER_BLEND_ATTR_FCOLOR(base, 0),
->  		     SUN8I_MIXER_BLEND_COLOR_BLACK);
->  
->  	plane_cnt = mixer->cfg->vi_num + mixer->cfg->ui_num;
-> -	for (i = 0; i < plane_cnt; i++)
-> +	for (i = 0; i < plane_cnt; i++) {
-> +		mixer->channel_zpos[i] = -1;
->  		regmap_write(mixer->engine.regs,
->  			     SUN8I_MIXER_BLEND_MODE(base, i),
->  			     SUN8I_MIXER_BLEND_MODE_DEF);
-> -
-> -	regmap_update_bits(mixer->engine.regs, 
-SUN8I_MIXER_BLEND_PIPE_CTL(base),
-> -			   SUN8I_MIXER_BLEND_PIPE_CTL_EN_MSK, 0);
-> +	}
->  
->  	return 0;
->  
-> diff --git a/drivers/gpu/drm/sun4i/sun8i_mixer.h b/drivers/gpu/drm/sun4i/
-sun8i_mixer.h
-> index 7576b523fdbb..7b378d6e4dd9 100644
-> --- a/drivers/gpu/drm/sun4i/sun8i_mixer.h
-> +++ b/drivers/gpu/drm/sun4i/sun8i_mixer.h
-> @@ -12,6 +12,8 @@
->  
->  #include "sunxi_engine.h"
->  
-> +#define SUN8I_MIXER_MAX_CHANNELS		5
-> +
->  #define SUN8I_MIXER_SIZE(w, h)			(((h) - 1) << 16 | 
-((w) - 1))
->  #define SUN8I_MIXER_COORD(x, y)			((y) << 16 | (x))
->  
-> @@ -179,6 +181,9 @@ struct sun8i_mixer {
->  
->  	struct clk			*bus_clk;
->  	struct clk			*mod_clk;
-> +
-> +	/* -1 means that layer is disabled */
-> +	int channel_zpos[SUN8I_MIXER_MAX_CHANNELS];
->  };
->  
->  static inline struct sun8i_mixer *
-> diff --git a/drivers/gpu/drm/sun4i/sun8i_ui_layer.c b/drivers/gpu/drm/sun4i/
-sun8i_ui_layer.c
-> index 816ad4ce8996..9f82e7c33e90 100644
-> --- a/drivers/gpu/drm/sun4i/sun8i_ui_layer.c
-> +++ b/drivers/gpu/drm/sun4i/sun8i_ui_layer.c
-> @@ -24,12 +24,10 @@
->  #include "sun8i_ui_scaler.h"
->  
->  static void sun8i_ui_layer_enable(struct sun8i_mixer *mixer, int channel,
-> -				  int overlay, bool enable, 
-unsigned int zpos,
-> -				  unsigned int old_zpos)
-> +				  int overlay, bool enable, 
-unsigned int zpos)
->  {
-> -	u32 val, bld_base, ch_base;
-> +	u32 val, ch_base;
->  
-> -	bld_base = sun8i_blender_base(mixer);
->  	ch_base = sun8i_channel_base(mixer, channel);
->  
->  	DRM_DEBUG_DRIVER("%sabling channel %d overlay %d\n",
-> @@ -44,32 +42,7 @@ static void sun8i_ui_layer_enable(struct sun8i_mixer 
-*mixer, int channel,
->  			   SUN8I_MIXER_CHAN_UI_LAYER_ATTR(ch_base, 
-overlay),
->  			   SUN8I_MIXER_CHAN_UI_LAYER_ATTR_EN, val);
->  
-> -	if (!enable || zpos != old_zpos) {
-> -		regmap_update_bits(mixer->engine.regs,
-> -				   
-SUN8I_MIXER_BLEND_PIPE_CTL(bld_base),
-> -				   
-SUN8I_MIXER_BLEND_PIPE_CTL_EN(old_zpos),
-> -				   0);
-> -
-> -		regmap_update_bits(mixer->engine.regs,
-> -				   
-SUN8I_MIXER_BLEND_ROUTE(bld_base),
-> -				   
-SUN8I_MIXER_BLEND_ROUTE_PIPE_MSK(old_zpos),
-> -				   0);
-> -	}
-> -
-> -	if (enable) {
-> -		val = SUN8I_MIXER_BLEND_PIPE_CTL_EN(zpos);
-> -
-> -		regmap_update_bits(mixer->engine.regs,
-> -				   
-SUN8I_MIXER_BLEND_PIPE_CTL(bld_base),
-> -				   val, val);
-> -
-> -		val = channel << 
-SUN8I_MIXER_BLEND_ROUTE_PIPE_SHIFT(zpos);
-> -
-> -		regmap_update_bits(mixer->engine.regs,
-> -				   
-SUN8I_MIXER_BLEND_ROUTE(bld_base),
-> -				   
-SUN8I_MIXER_BLEND_ROUTE_PIPE_MSK(zpos),
-> -				   val);
-> -	}
-> +	mixer->channel_zpos[channel] = enable ? zpos : -1;
->  }
->  
->  static int sun8i_ui_layer_update_coord(struct sun8i_mixer *mixer, int 
-channel,
-> @@ -267,11 +240,9 @@ static void sun8i_ui_layer_atomic_disable(struct 
-drm_plane *plane,
->  					  struct 
-drm_plane_state *old_state)
->  {
->  	struct sun8i_ui_layer *layer = plane_to_sun8i_ui_layer(plane);
-> -	unsigned int old_zpos = old_state->normalized_zpos;
->  	struct sun8i_mixer *mixer = layer->mixer;
->  
-> -	sun8i_ui_layer_enable(mixer, layer->channel, layer->overlay, 
-false, 0,
-> -			      old_zpos);
-> +	sun8i_ui_layer_enable(mixer, layer->channel, layer->overlay, false, 
-0);
->  }
->  
->  static void sun8i_ui_layer_atomic_update(struct drm_plane *plane,
-> @@ -279,12 +250,11 @@ static void sun8i_ui_layer_atomic_update(struct 
-drm_plane *plane,
->  {
->  	struct sun8i_ui_layer *layer = plane_to_sun8i_ui_layer(plane);
->  	unsigned int zpos = plane->state->normalized_zpos;
-> -	unsigned int old_zpos = old_state->normalized_zpos;
->  	struct sun8i_mixer *mixer = layer->mixer;
->  
->  	if (!plane->state->visible) {
->  		sun8i_ui_layer_enable(mixer, layer->channel,
-> -				      layer->overlay, false, 0, 
-old_zpos);
-> +				      layer->overlay, false, 0);
->  		return;
->  	}
->  
-> @@ -295,7 +265,7 @@ static void sun8i_ui_layer_atomic_update(struct 
-drm_plane *plane,
->  	sun8i_ui_layer_update_buffer(mixer, layer->channel,
->  				     layer->overlay, plane);
->  	sun8i_ui_layer_enable(mixer, layer->channel, layer->overlay,
-> -			      true, zpos, old_zpos);
-> +			      true, zpos);
->  }
->  
->  static const struct drm_plane_helper_funcs sun8i_ui_layer_helper_funcs = {
-> diff --git a/drivers/gpu/drm/sun4i/sun8i_vi_layer.c b/drivers/gpu/drm/sun4i/
-sun8i_vi_layer.c
-> index 76393fc976fe..c8c418fb906b 100644
-> --- a/drivers/gpu/drm/sun4i/sun8i_vi_layer.c
-> +++ b/drivers/gpu/drm/sun4i/sun8i_vi_layer.c
-> @@ -18,12 +18,10 @@
->  #include "sun8i_vi_scaler.h"
->  
->  static void sun8i_vi_layer_enable(struct sun8i_mixer *mixer, int channel,
-> -				  int overlay, bool enable, 
-unsigned int zpos,
-> -				  unsigned int old_zpos)
-> +				  int overlay, bool enable, 
-unsigned int zpos)
->  {
-> -	u32 val, bld_base, ch_base;
-> +	u32 val, ch_base;
->  
-> -	bld_base = sun8i_blender_base(mixer);
->  	ch_base = sun8i_channel_base(mixer, channel);
->  
->  	DRM_DEBUG_DRIVER("%sabling VI channel %d overlay %d\n",
-> @@ -38,32 +36,7 @@ static void sun8i_vi_layer_enable(struct sun8i_mixer 
-*mixer, int channel,
->  			   SUN8I_MIXER_CHAN_VI_LAYER_ATTR(ch_base, 
-overlay),
->  			   SUN8I_MIXER_CHAN_VI_LAYER_ATTR_EN, val);
->  
-> -	if (!enable || zpos != old_zpos) {
-> -		regmap_update_bits(mixer->engine.regs,
-> -				   
-SUN8I_MIXER_BLEND_PIPE_CTL(bld_base),
-> -				   
-SUN8I_MIXER_BLEND_PIPE_CTL_EN(old_zpos),
-> -				   0);
-> -
-> -		regmap_update_bits(mixer->engine.regs,
-> -				   
-SUN8I_MIXER_BLEND_ROUTE(bld_base),
-> -				   
-SUN8I_MIXER_BLEND_ROUTE_PIPE_MSK(old_zpos),
-> -				   0);
-> -	}
-> -
-> -	if (enable) {
-> -		val = SUN8I_MIXER_BLEND_PIPE_CTL_EN(zpos);
-> -
-> -		regmap_update_bits(mixer->engine.regs,
-> -				   
-SUN8I_MIXER_BLEND_PIPE_CTL(bld_base),
-> -				   val, val);
-> -
-> -		val = channel << 
-SUN8I_MIXER_BLEND_ROUTE_PIPE_SHIFT(zpos);
-> -
-> -		regmap_update_bits(mixer->engine.regs,
-> -				   
-SUN8I_MIXER_BLEND_ROUTE(bld_base),
-> -				   
-SUN8I_MIXER_BLEND_ROUTE_PIPE_MSK(zpos),
-> -				   val);
-> -	}
-> +	mixer->channel_zpos[channel] = enable ? zpos : -1;
->  }
->  
->  static int sun8i_vi_layer_update_coord(struct sun8i_mixer *mixer, int 
-channel,
-> @@ -370,11 +343,9 @@ static void sun8i_vi_layer_atomic_disable(struct 
-drm_plane *plane,
->  					  struct 
-drm_plane_state *old_state)
->  {
->  	struct sun8i_vi_layer *layer = plane_to_sun8i_vi_layer(plane);
-> -	unsigned int old_zpos = old_state->normalized_zpos;
->  	struct sun8i_mixer *mixer = layer->mixer;
->  
-> -	sun8i_vi_layer_enable(mixer, layer->channel, layer->overlay, 
-false, 0,
-> -			      old_zpos);
-> +	sun8i_vi_layer_enable(mixer, layer->channel, layer->overlay, false, 
-0);
->  }
->  
->  static void sun8i_vi_layer_atomic_update(struct drm_plane *plane,
-> @@ -382,12 +353,11 @@ static void sun8i_vi_layer_atomic_update(struct 
-drm_plane *plane,
->  {
->  	struct sun8i_vi_layer *layer = plane_to_sun8i_vi_layer(plane);
->  	unsigned int zpos = plane->state->normalized_zpos;
-> -	unsigned int old_zpos = old_state->normalized_zpos;
->  	struct sun8i_mixer *mixer = layer->mixer;
->  
->  	if (!plane->state->visible) {
->  		sun8i_vi_layer_enable(mixer, layer->channel,
-> -				      layer->overlay, false, 0, 
-old_zpos);
-> +				      layer->overlay, false, 0);
->  		return;
->  	}
->  
-> @@ -398,7 +368,7 @@ static void sun8i_vi_layer_atomic_update(struct 
-drm_plane *plane,
->  	sun8i_vi_layer_update_buffer(mixer, layer->channel,
->  				     layer->overlay, plane);
->  	sun8i_vi_layer_enable(mixer, layer->channel, layer->overlay,
-> -			      true, zpos, old_zpos);
-> +			      true, zpos);
->  }
->  
->  static const struct drm_plane_helper_funcs sun8i_vi_layer_helper_funcs = {
-> -- 
-> 2.30.0
-> 
-> 
-
+Thanks,
+-- Dexuan
 
