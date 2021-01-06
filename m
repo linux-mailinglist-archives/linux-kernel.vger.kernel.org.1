@@ -2,123 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C92CB2EC646
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 23:37:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AA38C2EC64D
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 23:42:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727475AbhAFWha (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Jan 2021 17:37:30 -0500
-Received: from mail-40136.protonmail.ch ([185.70.40.136]:50017 "EHLO
-        mail-40136.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726684AbhAFWh3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Jan 2021 17:37:29 -0500
-Date:   Wed, 06 Jan 2021 22:36:38 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me; s=protonmail;
-        t=1609972601; bh=k6M2q3UgsdjUwB9RMkadILtzv8IamufG6KQUruldxKM=;
-        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
-        b=L6maY/yDbZ8Li0Yu7ap8dAql+A6dhNs6Z/myf6kVJ/LEMEKRzBpHeJB3K6Caxqpxw
-         7Ix4vt5L6jfkFK6++/PLRVjeBWD0AObdMR3t1vk4ZA7I/8WgkaHP/vk/9XayK3XZXW
-         H5r44Sb+JNddFSO3fmmLEtCN4qYiMYaMg/g0O+Ynmt03JLdONAWsVGXE3qwt3n74Z3
-         wEmU3UZr5coSYU/YIg1FAszTV5Qt+LwQ6bvuXD0XJpCXNUCQmEoqzMPhkL/6bVDfHv
-         1ga1Y22mEmL1T5yHnN+XgV0IGQ4R6l2hLDfOzNPhyHUAwrbE6/PrSOv8BAIGyq9NVU
-         syUCww5on34kw==
-To:     Kees Cook <keescook@chromium.org>
-From:   Alexander Lobakin <alobakin@pm.me>
-Cc:     Alexander Lobakin <alobakin@pm.me>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Fangrui Song <maskray@google.com>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        Alex Smith <alex.smith@imgtec.com>,
-        Ralf Baechle <ralf@linux-mips.org>,
-        Markos Chandras <markos.chandras@imgtec.com>,
-        linux-mips@vger.kernel.org, stable@vger.kernel.org,
+        id S1727623AbhAFWlI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Jan 2021 17:41:08 -0500
+Received: from mga02.intel.com ([134.134.136.20]:18044 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726379AbhAFWlH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 Jan 2021 17:41:07 -0500
+IronPort-SDR: PonkR88dP2z8Pt5cMlR5FsD1wdIitf0fz0OOsWoIC3z7y+dvpmq3ggjdu48T/s6FBV9SOQF4uV
+ bBL/yx2vDJxg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9856"; a="164415791"
+X-IronPort-AV: E=Sophos;i="5.79,328,1602572400"; 
+   d="scan'208";a="164415791"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Jan 2021 14:40:26 -0800
+IronPort-SDR: MwfVsqpTUU2Ka4Y9ynwm0Xr4ycrF3k/NMWtq/U88cTx66PE5PkG1xI9nHKDYt+O2VA5yxWClwh
+ dwLxtRCACX9Q==
+X-IronPort-AV: E=Sophos;i="5.79,328,1602572400"; 
+   d="scan'208";a="351027219"
+Received: from djiang5-desk3.ch.intel.com ([143.182.136.137])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Jan 2021 14:40:25 -0800
+Subject: [PATCH v2] x86: fix movdir64b() sparse warning
+From:   Dave Jiang <dave.jiang@intel.com>
+To:     bp@alien8.de, x86@kernel.org
+Cc:     kernel test robot <lkp@intel.com>,
+        Ben Widawsky <ben.widawsky@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        dan.j.williams@intel.com, ben.widawsky@intel.com,
+        tglx@linutronix.de, mingo@redhat.com, hpa@zytor.com,
         linux-kernel@vger.kernel.org
-Reply-To: Alexander Lobakin <alobakin@pm.me>
-Subject: Re: [PATCH v2 mips-next 2/4] MIPS: vmlinux.lds.S: add ".gnu.attributes" to DISCARDS
-Message-ID: <20210106223606.267756-1-alobakin@pm.me>
-In-Reply-To: <202101061400.8F83981AE@keescook>
-References: <20210106200713.31840-1-alobakin@pm.me> <20210106200801.31993-1-alobakin@pm.me> <20210106200801.31993-2-alobakin@pm.me> <202101061400.8F83981AE@keescook>
+Date:   Wed, 06 Jan 2021 15:40:25 -0700
+Message-ID: <160997278817.3976343.969979053457914470.stgit@djiang5-desk3.ch.intel.com>
+User-Agent: StGit/0.23-29-ga622f1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
-        autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
-        mailout.protonmail.ch
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kees Cook <keescook@chromium.org>
-Date: Wed, 6 Jan 2021 14:07:07 -0800
+Add missing __iomem annotation to address sparse warning. Caller is expected
+to pass an __iomem annotated pointer to this function. The current usages
+send a 64bytes command descriptor to an MMIO location (portal) on a
+device for consumption. When future usages for MOVDIR64B instruction show
+up in kernel for memory to memory operation is needed, we can revisit.
 
-> On Wed, Jan 06, 2021 at 08:08:19PM +0000, Alexander Lobakin wrote:
->> Discard GNU attributes at link time as kernel doesn't use it at all.
->> Solves a dozen of the following ld warnings (one per every file):
->>
->> mips-alpine-linux-musl-ld: warning: orphan section `.gnu.attributes'
->> from `arch/mips/kernel/head.o' being placed in section
->> `.gnu.attributes'
->> mips-alpine-linux-musl-ld: warning: orphan section `.gnu.attributes'
->> from `init/main.o' being placed in section `.gnu.attributes'
->>
->> Misc: sort DISCARDS section entries alphabetically.
->
-> Hmm, I wonder what is causing the appearance of .eh_frame? With help I
-> tracked down all the causes of this on x86, arm, and arm64, so that's
-> why it's not in the asm-generic DISCARDS section. I suspect this could
-> be cleaned up for mips too?
+Also, from the comment in movdir64b() @__dst must be supplied as an
+lvalue because this tells the compiler what the object is (its size)
+the instruction accesses. I.e., not the pointers but what they point
+to, thus the deref'ing '*'."
 
-I could take a look and hunt it down. Could you please give some refs on
-what were the causes and solutions for the mentioned architectures?
+"sparse warnings: (new ones prefixed by >>)"
+   drivers/dma/idxd/submit.c: note: in included file (through include/linux/io.h, include/linux/pci.h):
+>> arch/x86/include/asm/io.h:422:27: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *dst @@     got void [noderef] __iomem *dst @@
+   arch/x86/include/asm/io.h:422:27: sparse:     expected void *dst
+   arch/x86/include/asm/io.h:422:27: sparse:     got void [noderef] __iomem *dst
 
-> Similarly for .gnu.attributes. What is generating that? (Or, more
-> specifically, why is it both being generated AND discarded?)
+Fixes: 0888e1030d3e ("x86/asm: Carve out a generic movdir64b() helper for general usage")
+Reported-by: kernel test robot <lkp@intel.com>
+Reviewed-by: Ben Widawsky <ben.widawsky@intel.com>
+Reviewed-by: Dan Williams <dan.j.williams@intel.com>
+Signed-off-by: Dave Jiang <dave.jiang@intel.com>
+---
 
-On my setup, GNU Attributes consist of MIPS FP type (soft) and
-(if I'm correct) MIPS GNU Hash tables.
+v2:
+- Update commit log with comments from Dan.
 
-> -Kees
+ arch/x86/include/asm/special_insns.h |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-By the way. I've built the kernel with LLVM stack (and found several
-subjects for more patches) and, besides '.got', also got a fistful
-of '.data..compoundliteral*' symbols (drivers/mtd/nand/spi/,
-net/ipv6/ etc). Where should they be placed (rodata, rwdata, ...)
-or they are anomalies of some kind and should be fixed somehow?
+diff --git a/arch/x86/include/asm/special_insns.h b/arch/x86/include/asm/special_insns.h
+index cc177b4431ae..4e234645f0c6 100644
+--- a/arch/x86/include/asm/special_insns.h
++++ b/arch/x86/include/asm/special_insns.h
+@@ -243,10 +243,10 @@ static inline void serialize(void)
+ }
+ 
+ /* The dst parameter must be 64-bytes aligned */
+-static inline void movdir64b(void *dst, const void *src)
++static inline void movdir64b(void __iomem *dst, const void *src)
+ {
+ 	const struct { char _[64]; } *__src = src;
+-	struct { char _[64]; } *__dst = dst;
++	struct { char _[64]; } __iomem *__dst = dst;
+ 
+ 	/*
+ 	 * MOVDIR64B %(rdx), rax.
 
->>
->> Signed-off-by: Alexander Lobakin <alobakin@pm.me>
->> ---
->>  arch/mips/kernel/vmlinux.lds.S | 3 ++-
->>  1 file changed, 2 insertions(+), 1 deletion(-)
->>
->> diff --git a/arch/mips/kernel/vmlinux.lds.S b/arch/mips/kernel/vmlinux.l=
-ds.S
->> index 83e27a181206..5d6563970ab2 100644
->> --- a/arch/mips/kernel/vmlinux.lds.S
->> +++ b/arch/mips/kernel/vmlinux.lds.S
->> @@ -221,9 +221,10 @@ SECTIONS
->>  =09=09/* ABI crap starts here */
->>  =09=09*(.MIPS.abiflags)
->>  =09=09*(.MIPS.options)
->> +=09=09*(.eh_frame)
->> +=09=09*(.gnu.attributes)
->>  =09=09*(.options)
->>  =09=09*(.pdr)
->>  =09=09*(.reginfo)
->> -=09=09*(.eh_frame)
->>  =09}
->>  }
->> --
->> 2.30.0
->>
->>
->
-> --
-> Kees Cook
-
-Thanks,
-Al
 
