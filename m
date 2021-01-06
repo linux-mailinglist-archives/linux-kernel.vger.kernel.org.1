@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7220B2EC21F
+	by mail.lfdr.de (Postfix) with ESMTP id E01112EC220
 	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 18:27:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727665AbhAFR1A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Jan 2021 12:27:00 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36138 "EHLO mail.kernel.org"
+        id S1727713AbhAFR1J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Jan 2021 12:27:09 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37046 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727192AbhAFR0u (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Jan 2021 12:26:50 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EA84223136;
-        Wed,  6 Jan 2021 17:26:09 +0000 (UTC)
+        id S1726834AbhAFR1I (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 Jan 2021 12:27:08 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2D34C23139;
+        Wed,  6 Jan 2021 17:26:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1609953970;
-        bh=NYBaTTovHcgJwtB96ur1N2LJBLR8KSPZ/3VA85S4Kjg=;
+        bh=ubUzOi0XP9VmEKsmFjHM+O62jWvi+29MTxhncRfTNcc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=HxNtS+RhFk0JFoHMIzlLHRD16jGRx21dR6FL+rNiAtqgb1wqat+4l1STj5IQqQ0eS
-         5ueJPxiIIjk5BdMKXKKGCrecsDWHWR99TctaNDDxF6i0OvVkI/DQ7MDeg5kB+ACxkR
-         E3muxN6aujV7Bp5MtwWFok71t3HYf6fNuoxbygyCITwuKCNVr7dfcoeSGrVFbleCwj
-         fywRjicVBZFvkRbf2U7hOS7nF2kSTe5d/Kr1JZ+wOZRmIgnPusv+1dU4X8oZtN94E6
-         t/CvBOCpPOo/VKXW/Y16auRVtievt2/NJ03wDnAPlZNMng/g61kHEtQYXkU4Un65za
-         upuUdCHwIQY9Q==
+        b=EIMVe4m0wPmesFRi6uUQpoVjdnHnHggiLPz+FKWWE9oS2v5iMl1JhU+Ve7w1ju4ev
+         aS7vdMduARNuV3Eh1yYMhezocGtuyXVfyJLqRTQCSqSW+xdnojJ+xw76mDvJkKGll3
+         FJ4rKI1NGS+/jWMpGBsbKglvdZ2OU6T+1dyK3SqVisja/9VL15UlxF3q65ROHptXtl
+         IY7mGmMJAgilfMjoIA/WAZ/nD3yLpcL4KGb0M2WJ6J+qZPZ9AA7H6zus9NzLSS48ll
+         RHHv+VyCElYyFiDF3/7EzJB0M4viA8KcMJIIVohFyzgcwmf8egu6rUzVxFSWIUZXC+
+         FosKW2gPUiD4A==
 From:   paulmck@kernel.org
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -32,9 +32,9 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
         oleg@redhat.com, joel@joelfernandes.org,
         "Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH tip/core/rcu 04/20] torture: Allow kvm.sh --datestamp to specify subdirectories
-Date:   Wed,  6 Jan 2021 09:25:51 -0800
-Message-Id: <20210106172607.22816-4-paulmck@kernel.org>
+Subject: [PATCH tip/core/rcu 05/20] torture: Prepare for splitting qemu execution from kvm-test-1-run.sh
+Date:   Wed,  6 Jan 2021 09:25:52 -0800
+Message-Id: <20210106172607.22816-5-paulmck@kernel.org>
 X-Mailer: git-send-email 2.9.5
 In-Reply-To: <20210106172547.GA22404@paulmck-ThinkPad-P72>
 References: <20210106172547.GA22404@paulmck-ThinkPad-P72>
@@ -44,40 +44,49 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: "Paul E. McKenney" <paulmck@kernel.org>
 
-Scripts like kvm-check-branches.sh group runs under a single directory
-in resdir in order to allow easier retrospective analysis.  However, they
-do this by letting kvm.sh create a directory as usual and then moving it
-after the run.  This can be very confusing when looking at the results
-while kvm-check-branches.sh is running.  This commit therefore enables
---datestamp to hand subdirectories to kvm.sh.
+Distributed execution of rcutorture is eased if the qemu execution can
+be split from the building of the kernel, as this allows target systems
+to be used that are not set up to build kernels.  It also avoids issues
+with toolchain version skew across the cluster, aside of course from
+qemu and KVM version skew.
+
+This commit therefore records needed data as comments in the qemu-cmd file
+and moves recording of the starting time to just before qemu is launched.
 
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- tools/testing/selftests/rcutorture/bin/kvm.sh | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ tools/testing/selftests/rcutorture/bin/kvm-test-1-run.sh | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/tools/testing/selftests/rcutorture/bin/kvm.sh b/tools/testing/selftests/rcutorture/bin/kvm.sh
-index 55a18a9..0a9211a 100755
---- a/tools/testing/selftests/rcutorture/bin/kvm.sh
-+++ b/tools/testing/selftests/rcutorture/bin/kvm.sh
-@@ -113,7 +113,7 @@ do
- 		shift
- 		;;
- 	--datestamp)
--		checkarg --datestamp "(relative pathname)" "$#" "$2" '^[^/]*$' '^--'
-+		checkarg --datestamp "(relative pathname)" "$#" "$2" '^[a-zA-Z0-9._-/]*$' '^--'
- 		ds=$2
- 		shift
- 		;;
-@@ -375,7 +375,7 @@ if ! test -e $resdir
+diff --git a/tools/testing/selftests/rcutorture/bin/kvm-test-1-run.sh b/tools/testing/selftests/rcutorture/bin/kvm-test-1-run.sh
+index 3cd03d0..4bc0e62 100755
+--- a/tools/testing/selftests/rcutorture/bin/kvm-test-1-run.sh
++++ b/tools/testing/selftests/rcutorture/bin/kvm-test-1-run.sh
+@@ -125,7 +125,6 @@ seconds=$4
+ qemu_args=$5
+ boot_args=$6
+ 
+-kstarttime=`gawk 'BEGIN { print systime() }' < /dev/null`
+ if test -z "$TORTURE_BUILDONLY"
  then
- 	mkdir -p "$resdir" || :
+ 	echo ' ---' `date`: Starting kernel
+@@ -158,6 +157,8 @@ then
+ 	boot_args="$boot_args $TORTURE_BOOT_GDB_ARG"
  fi
--mkdir $resdir/$ds
-+mkdir -p $resdir/$ds
- TORTURE_RESDIR="$resdir/$ds"; export TORTURE_RESDIR
- TORTURE_STOPFILE="$resdir/$ds/STOP"; export TORTURE_STOPFILE
- echo Results directory: $resdir/$ds
+ echo $QEMU $qemu_args -m $TORTURE_QEMU_MEM -kernel $KERNEL -append \"$qemu_append $boot_args\" $TORTURE_QEMU_GDB_ARG > $resdir/qemu-cmd
++echo "# TORTURE_SHUTDOWN_GRACE=$TORTURE_SHUTDOWN_GRACE" >> $resdir/qemu-cmd
++echo "# seconds=$seconds" >> $resdir/qemu-cmd
+ 
+ if test -n "$TORTURE_BUILDONLY"
+ then
+@@ -174,6 +175,7 @@ echo 'echo $! > $resdir/qemu_pid' >> $T/qemu-cmd
+ echo "NOTE: $QEMU either did not run or was interactive" > $resdir/console.log
+ 
+ # Attempt to run qemu
++kstarttime=`gawk 'BEGIN { print systime() }' < /dev/null`
+ ( . $T/qemu-cmd; wait `cat  $resdir/qemu_pid`; echo $? > $resdir/qemu-retval ) &
+ commandcompleted=0
+ if test -z "$TORTURE_KCONFIG_GDB_ARG"
 -- 
 2.9.5
 
