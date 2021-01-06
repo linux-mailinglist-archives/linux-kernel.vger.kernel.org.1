@@ -2,89 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 95E5C2EC33D
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 19:30:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C5F12EC340
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 19:34:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726638AbhAFSaF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Jan 2021 13:30:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38234 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726118AbhAFSaE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Jan 2021 13:30:04 -0500
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01BC7C06134D
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Jan 2021 10:29:24 -0800 (PST)
-Received: by mail-yb1-xb4a.google.com with SMTP id d187so5573214ybc.6
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Jan 2021 10:29:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:reply-to:date:message-id:mime-version:subject:from:to:cc;
-        bh=vqdOFJEXH8f+fWCwR3dVWB92iRCynRAkA1NtJxXRz/A=;
-        b=YLTV+pfKZtX4PnvgyYfIm7AKkd+zJg6rQm0hn3UsJKVjIVUqVkobDIO4IiP3t3uAD3
-         kZncdvXLNjVrvLkj9sin8sPSyAzP3XzgergppzkoKUIlymdw1zHGmWNCrF7qFJJ33ut7
-         PBma0K+U9lS/Q6lVYkJBpgFKEBHPoJBLFVJsptKWGFw7r3Arac0hlvZvA9jgUZC7lg+c
-         quaw6kejs2qmJhrvGePvuta/IjVaKQd2Z5f5/9fFEWCj1Xusvp+aVQkty6wC1f2iWUfB
-         OMMbyazcLEzq6hHKPTYdBmdbQC7ImUf6URxaNyjNguX5oNwrzx1b6sJdB8ZFZ7hOdMnO
-         gUkw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:reply-to:date:message-id:mime-version
-         :subject:from:to:cc;
-        bh=vqdOFJEXH8f+fWCwR3dVWB92iRCynRAkA1NtJxXRz/A=;
-        b=Yg5k1EMEhugQ5YZS+87Y2+oP557wi6ObCPTEW1534OlBz6LEAQpbVKrmUT8huKqbTH
-         2uC48PU2y4902PKHcC7sMb8fUoRvq7xcyBRTEb012s0pPd56xXxi24zvgMURq5j8+01/
-         +vF84v6Qx23XyR3zoX/PCLB7vNFXLBUULRTf+2a1T+oa1FVBjC6oJcOLMENuX6TC4N9x
-         i8Fh4NaCAZKhrlCqeBUHoLQ/SmHjvAOAR1LhZ5f1c7p7Im/ww+6QWjf+SQshBFskePDU
-         GOMcDVlHgMWPfvbGQV8cG1OcLDtxA0l/9Zu0v57Aetf8xbOH3JE3ed1WEM+aq9pBd6+W
-         4Yow==
-X-Gm-Message-State: AOAM532tWvEhHPo3uV153QSf4ZQkHsqbBZ3l8nMnmNelX5yTevqEXiSG
-        fmaYjje1UyRRlc9N4ij0+SuJoIsi+VY=
-X-Google-Smtp-Source: ABdhPJy5Nk7Cr77AbZRfg3A9DCxnmvwiVFW2DlCrmtDO9UTWOO6MrKn3bHVaX4hQ2C/j3ZhAmWVRREMR2ac=
-Sender: "seanjc via sendgmr" <seanjc@seanjc798194.pdx.corp.google.com>
-X-Received: from seanjc798194.pdx.corp.google.com ([2620:15c:f:10:1ea0:b8ff:fe73:50f5])
- (user=seanjc job=sendgmr) by 2002:a25:6981:: with SMTP id e123mr8170015ybc.194.1609957763232;
- Wed, 06 Jan 2021 10:29:23 -0800 (PST)
-Reply-To: Sean Christopherson <seanjc@google.com>
-Date:   Wed,  6 Jan 2021 10:29:16 -0800
-Message-Id: <20210106182916.331743-1-seanjc@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.29.2.729.g45daf8777d-goog
-Subject: [PATCH] MAINTAINERS: Really update email address for Sean Christopherson
-From:   Sean Christopherson <seanjc@google.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Sean Christopherson <seanjc@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        id S1726666AbhAFSd3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Jan 2021 13:33:29 -0500
+Received: from mail.skyhub.de ([5.9.137.197]:59494 "EHLO mail.skyhub.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725890AbhAFSd2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 Jan 2021 13:33:28 -0500
+Received: from zn.tnic (p200300ec2f096900fa39b7692df2441c.dip0.t-ipconnect.de [IPv6:2003:ec:2f09:6900:fa39:b769:2df2:441c])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 5550D1EC04EF;
+        Wed,  6 Jan 2021 19:32:47 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1609957967;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=ivwHOniwz5qGdYhs1Yn9GcbjBz+NdsKmDIMr40UYDcg=;
+        b=CmfSIcfachhNklFKKiI/2js7DmC7mtHOkJmvcz4G2Rh3SDKEP2ATVd1AiipTBgnXc8Lism
+        8kAry/NOoOFwEqrwNnE+YPN6lRqfTl1hxZG6DGP+UfX8HwxvUElb47/B6zzzTbm3bQN9WG
+        rXlutzz821hNpT14cZ1WMHJO1MtIRPw=
+Date:   Wed, 6 Jan 2021 19:32:44 +0100
+From:   Borislav Petkov <bp@alien8.de>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, x86@kernel.org,
+        linux-edac@vger.kernel.org, tony.luck@intel.com,
+        tglx@linutronix.de, mingo@redhat.com, hpa@zytor.com,
+        kernel-team@fb.com
+Subject: Re: [PATCH RFC x86/mce] Make mce_timed_out() identify holdout CPUs
+Message-ID: <20210106183244.GA24607@zn.tnic>
+References: <20210106174102.GA23874@paulmck-ThinkPad-P72>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210106174102.GA23874@paulmck-ThinkPad-P72>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use my @google.com address in MAINTAINERS, somehow only the .mailmap
-entry was added when the original update patch was applied.
+On Wed, Jan 06, 2021 at 09:41:02AM -0800, Paul E. McKenney wrote:
+> The "Timeout: Not all CPUs entered broadcast exception handler" message
+> will appear from time to time given enough systems, but this message does
+> not identify which CPUs failed to enter the broadcast exception handler.
+> This information would be valuable if available, for example, in order to
+> correlated with other hardware-oriented error messages.
 
-Fixes: c2b1209d852f ("MAINTAINERS: Update email address for Sean Christopherson")
-Cc: kvm@vger.kernel.org
-Reported-by: Nathan Chancellor <natechancellor@gmail.com>
-Signed-off-by: Sean Christopherson <seanjc@google.com>
----
- MAINTAINERS | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Because you're expecting that the CPUs which have not entered the
+exception handler might have stuck earlier and that's the correlation
+there?
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 7c1e45c416b1..9201e6147cba 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -9776,7 +9776,7 @@ F:	tools/testing/selftests/kvm/s390x/
- 
- KERNEL VIRTUAL MACHINE FOR X86 (KVM/x86)
- M:	Paolo Bonzini <pbonzini@redhat.com>
--R:	Sean Christopherson <sean.j.christopherson@intel.com>
-+R:	Sean Christopherson <seanjc@google.com>
- R:	Vitaly Kuznetsov <vkuznets@redhat.com>
- R:	Wanpeng Li <wanpengli@tencent.com>
- R:	Jim Mattson <jmattson@google.com>
+> This commit
+
+That's a tautology. :)
+
+> therefore maintains a cpumask_t of CPUs that have entered this handler,
+> and prints out which ones failed to enter in the event of a timeout.
+> Build-tested only.
+> 
+> Cc: Tony Luck <tony.luck@intel.com>
+> Cc: Borislav Petkov <bp@alien8.de>
+> Cc: Thomas Gleixner <tglx@linutronix.de>
+> Cc: Ingo Molnar <mingo@redhat.com>
+> Cc: "H. Peter Anvin" <hpa@zytor.com>
+> Cc: <x86@kernel.org>
+> Cc: <linux-edac@vger.kernel.org>
+> Reported-by: Jonathan Lemon <bsd@fb.com>
+> Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+> 
+> diff --git a/arch/x86/kernel/cpu/mce/core.c b/arch/x86/kernel/cpu/mce/core.c
+> index 13d3f1c..44d2b99 100644
+> --- a/arch/x86/kernel/cpu/mce/core.c
+> +++ b/arch/x86/kernel/cpu/mce/core.c
+> @@ -878,6 +878,12 @@ static atomic_t mce_executing;
+>  static atomic_t mce_callin;
+>  
+>  /*
+> + * Track which CPUs entered and not in order to print holdouts.
+> + */
+> +static cpumask_t mce_present_cpus;
+> +static cpumask_t mce_missing_cpus;
+> +
+> +/*
+>   * Check if a timeout waiting for other CPUs happened.
+>   */
+>  static int mce_timed_out(u64 *t, const char *msg)
+> @@ -894,8 +900,12 @@ static int mce_timed_out(u64 *t, const char *msg)
+>  	if (!mca_cfg.monarch_timeout)
+>  		goto out;
+>  	if ((s64)*t < SPINUNIT) {
+> -		if (mca_cfg.tolerant <= 1)
+> +		if (mca_cfg.tolerant <= 1) {
+> +			if (!cpumask_andnot(&mce_missing_cpus, cpu_online_mask, &mce_present_cpus))
+> +				pr_info("%s: MCE holdout CPUs: %*pbl\n",
+> +					__func__, cpumask_pr_args(&mce_missing_cpus));
+>  			mce_panic(msg, NULL, NULL);
+> +		}
+>  		cpu_missing = 1;
+>  		return 1;
+>  	}
+> @@ -1006,6 +1016,7 @@ static int mce_start(int *no_way_out)
+>  	 * is updated before mce_callin.
+>  	 */
+>  	order = atomic_inc_return(&mce_callin);
+
+Doesn't a single mce_callin_mask suffice?
+
 -- 
-2.29.2.729.g45daf8777d-goog
+Regards/Gruss,
+    Boris.
 
+https://people.kernel.org/tglx/notes-about-netiquette
