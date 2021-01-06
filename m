@@ -2,110 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C86322EB7FF
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 03:15:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E30622EB806
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 03:20:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726264AbhAFCNj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 21:13:39 -0500
-Received: from szxga05-in.huawei.com ([45.249.212.191]:10024 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725948AbhAFCNi (ORCPT
+        id S1726059AbhAFCTV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 21:19:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55896 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725730AbhAFCTV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 21:13:38 -0500
-Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4D9XtT5Hf1zj3Vx;
-        Wed,  6 Jan 2021 10:12:01 +0800 (CST)
-Received: from [10.174.184.196] (10.174.184.196) by
- DGGEMS408-HUB.china.huawei.com (10.3.19.208) with Microsoft SMTP Server id
- 14.3.498.0; Wed, 6 Jan 2021 10:12:50 +0800
-Subject: Re: [RFC PATCH v2 3/4] KVM: arm64: GICv4.1: Restore VLPI's pending
- state to physical side
-To:     Marc Zyngier <maz@kernel.org>
-CC:     Eric Auger <eric.auger@redhat.com>, Will Deacon <will@kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <kvmarm@lists.cs.columbia.edu>, <kvm@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Cornelia Huck <cohuck@redhat.com>,
-        "Lorenzo Pieralisi" <lorenzo.pieralisi@arm.com>,
-        <wanghaibin.wang@huawei.com>, <yuzenghui@huawei.com>
-References: <20210104081613.100-1-lushenming@huawei.com>
- <20210104081613.100-4-lushenming@huawei.com>
- <76a7b9cca485dc8157d3be53189eac69@kernel.org>
-From:   Shenming Lu <lushenming@huawei.com>
-Message-ID: <6b815f0e-d042-2ec6-369a-41a19cd1b9f9@huawei.com>
-Date:   Wed, 6 Jan 2021 10:12:50 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.2.2
+        Tue, 5 Jan 2021 21:19:21 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2528C061387;
+        Tue,  5 Jan 2021 18:18:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
+        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+        Content-Description:In-Reply-To:References;
+        bh=LIaWes6GL5/coUIDfM1TqdIbbzbCTmUwH4VD0Q/gdoE=; b=LI5OpgDBafj/vEhcm8ebq9I1zd
+        wX+ikXiec+Q7WQKbnbvd9EzVvxVZI49mL1gDwS7FU7NJbkYd1V/j+NpBaTjI9/zEufqenxYYsacpk
+        f1CIZVECMVDBRC1rRO4F1+xDGk23AxqP5d6XrNYHidj8fW0SzsAzS4QiyA/dsSv/fjHBEj2/A18Qs
+        F/XjF+Y2fpOZ8J5Pj7pYt/UWp0JrzwJUFji4evPIyEDK7lkjImeBaAxG0YsdE/9g6e+e2dS5hrKIP
+        y0iOtcVcUUTxtPxkBR7hra3qcRv2y7AS1DMWT3CiYIvVI1Ztn20h/X3/ivK2wnhWnR4Tx5IkWNYuR
+        3gpB1atw==;
+Received: from [2601:1c0:6280:3f0::64ea] (helo=smtpauth.infradead.org)
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1kwyOz-001uSQ-9h; Wed, 06 Jan 2021 02:18:25 +0000
+From:   Randy Dunlap <rdunlap@infradead.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        kernel test robot <lkp@intel.com>,
+        Kurt Kanzenbach <kurt@linutronix.de>, netdev@vger.kernel.org,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Subject: [PATCH] net: dsa: fix led_classdev build errors
+Date:   Tue,  5 Jan 2021 18:18:15 -0800
+Message-Id: <20210106021815.31796-1-rdunlap@infradead.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-In-Reply-To: <76a7b9cca485dc8157d3be53189eac69@kernel.org>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.184.196]
-X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/1/5 17:25, Marc Zyngier wrote:
-> On 2021-01-04 08:16, Shenming Lu wrote:
->> From: Zenghui Yu <yuzenghui@huawei.com>
->>
->> When setting the forwarding path of a VLPI (switch to the HW mode),
->> we could also transfer the pending state from irq->pending_latch to
->> VPT (especially in migration, the pending states of VLPIs are restored
->> into kvm’s vgic first). And we currently send "INT+VSYNC" to trigger
->> a VLPI to pending.
->>
->> Signed-off-by: Zenghui Yu <yuzenghui@huawei.com>
->> Signed-off-by: Shenming Lu <lushenming@huawei.com>
->> ---
->>  arch/arm64/kvm/vgic/vgic-v4.c | 12 ++++++++++++
->>  1 file changed, 12 insertions(+)
->>
->> diff --git a/arch/arm64/kvm/vgic/vgic-v4.c b/arch/arm64/kvm/vgic/vgic-v4.c
->> index f211a7c32704..7945d6d09cdd 100644
->> --- a/arch/arm64/kvm/vgic/vgic-v4.c
->> +++ b/arch/arm64/kvm/vgic/vgic-v4.c
->> @@ -454,6 +454,18 @@ int kvm_vgic_v4_set_forwarding(struct kvm *kvm, int virq,
->>      irq->host_irq    = virq;
->>      atomic_inc(&map.vpe->vlpi_count);
->>
->> +    /* Transfer pending state */
->> +    ret = irq_set_irqchip_state(irq->host_irq,
->> +                    IRQCHIP_STATE_PENDING,
->> +                    irq->pending_latch);
->> +    WARN_RATELIMIT(ret, "IRQ %d", irq->host_irq);
-> 
-> Why do this if pending_latch is 0, which is likely to be
-> the overwhelming case?
+Fix build errors when LEDS_CLASS=m and NET_DSA_HIRSCHMANN_HELLCREEK=y.
+This limits the latter to =m when LEDS_CLASS=m.
 
-Yes, there is no need to do this if pending_latch is 0.
+microblaze-linux-ld: drivers/net/dsa/hirschmann/hellcreek_ptp.o: in function `hellcreek_ptp_setup':
+(.text+0xf80): undefined reference to `led_classdev_register_ext'
+microblaze-linux-ld: (.text+0xf94): undefined reference to `led_classdev_register_ext'
+microblaze-linux-ld: drivers/net/dsa/hirschmann/hellcreek_ptp.o: in function `hellcreek_ptp_free':
+(.text+0x1018): undefined reference to `led_classdev_unregister'
+microblaze-linux-ld: (.text+0x1024): undefined reference to `led_classdev_unregister'
 
-> 
->> +
->> +    /*
->> +     * Let it be pruned from ap_list later and don't bother
->> +     * the List Register.
->> +     */
->> +    irq->pending_latch = false;
-> 
-> What guarantees the pruning? Pruning only happens on vcpu exit,
-> which means we may have the same interrupt via both the LR and
-> the stream interface, which I don't believe is legal (it is
-> like having two LRs holding the same interrupt).
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Reported-by: kernel test robot <lkp@intel.com>
+Link: lore.kernel.org/r/202101060655.iUvMJqS2-lkp@intel.com
+Cc: Kurt Kanzenbach <kurt@linutronix.de>
+Cc: netdev@vger.kernel.org
+Cc: "David S. Miller" <davem@davemloft.net>
+Cc: Jakub Kicinski <kuba@kernel.org>
+---
+ drivers/net/dsa/hirschmann/Kconfig |    1 +
+ 1 file changed, 1 insertion(+)
 
-Since the irq's pending_latch is set to false here, it will not be
-populated to the LR in vgic_flush_lr_state() (vgic_target_oracle()
-will return NULL).
-
-> 
->> +
->>  out:
->>      mutex_unlock(&its->its_lock);
->>      return ret;
-> 
-> Thanks,
-> 
->         M.
+--- lnx-511-rc2.orig/drivers/net/dsa/hirschmann/Kconfig
++++ lnx-511-rc2/drivers/net/dsa/hirschmann/Kconfig
+@@ -4,6 +4,7 @@ config NET_DSA_HIRSCHMANN_HELLCREEK
+ 	depends on HAS_IOMEM
+ 	depends on NET_DSA
+ 	depends on PTP_1588_CLOCK
++	depends on LEDS_CLASS
+ 	select NET_DSA_TAG_HELLCREEK
+ 	help
+ 	  This driver adds support for Hirschmann Hellcreek TSN switches.
