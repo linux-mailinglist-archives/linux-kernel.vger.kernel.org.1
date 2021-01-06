@@ -2,123 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 470102EBD63
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 12:59:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 733412EBD5F
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 12:57:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726660AbhAFL5c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Jan 2021 06:57:32 -0500
-Received: from foss.arm.com ([217.140.110.172]:40042 "EHLO foss.arm.com"
+        id S1726216AbhAFL5F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Jan 2021 06:57:05 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55266 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726590AbhAFL5c (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Jan 2021 06:57:32 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 514EF12FC;
-        Wed,  6 Jan 2021 03:56:46 -0800 (PST)
-Received: from e119884-lin.cambridge.arm.com (e119884-lin.cambridge.arm.com [10.1.196.72])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id A66AA3F70D;
-        Wed,  6 Jan 2021 03:56:44 -0800 (PST)
-From:   Vincenzo Frascino <vincenzo.frascino@arm.com>
-To:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kasan-dev@googlegroups.com
-Cc:     Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will.deacon@arm.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Alexander Potapenko <glider@google.com>,
-        Marco Elver <elver@google.com>,
-        Evgenii Stepanov <eugenis@google.com>,
-        Branislav Rankov <Branislav.Rankov@arm.com>,
-        Andrey Konovalov <andreyknvl@google.com>
-Subject: [PATCH 4/4] arm64: mte: Optimize mte_assign_mem_tag_range()
-Date:   Wed,  6 Jan 2021 11:55:19 +0000
-Message-Id: <20210106115519.32222-5-vincenzo.frascino@arm.com>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210106115519.32222-1-vincenzo.frascino@arm.com>
-References: <20210106115519.32222-1-vincenzo.frascino@arm.com>
+        id S1725788AbhAFL5F (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 Jan 2021 06:57:05 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E2EA323110;
+        Wed,  6 Jan 2021 11:56:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1609934184;
+        bh=HZYnJAIuD9MMbAMSmu3ejZVLAS6WiLfiiShHiiBv4YU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ZRA5wz6FMI5xfUbwYHZUwrrupsOg72i/wc8QiogubLx3JKzJGP+x4AsDTPYMRWZm9
+         woKVVXY4n/oWYpj8n7NKPHpTUxnlXvkLQLUuRoRi52QQ1FLkYRj3IoRieZqvEDtAGy
+         OPYJeQIPGPrcb4y+QFkbiBkvBPr4xyckxiic5aBMz3Dd3f1Uv6JSRX2iMbVDS9KXS3
+         kqoWF/ZGIdVVu1X3nl+gk6qqKYSHvYcOYJixCW1leh3g4Sch3qFhbSuIgcQ7nKjd1r
+         m48UxmDVDgIXhwMksWwKlLA+eudExTiJYZs7wTkcBUSfCE09RRZQ2g79ipJ1gGsLWi
+         JdBBXRm8J1S4g==
+Date:   Wed, 6 Jan 2021 11:56:16 +0000
+From:   Will Deacon <will@kernel.org>
+To:     Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+Cc:     Robin Murphy <robin.murphy@arm.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        iommu@lists.linux-foundation.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org,
+        Jordan Crouse <jcrouse@codeaurora.org>,
+        Rob Clark <robdclark@gmail.com>,
+        Akhil P Oommen <akhilpo@codeaurora.org>
+Subject: Re: [PATCH] iommu/io-pgtable-arm: Allow non-coherent masters to use
+ system cache
+Message-ID: <20210106115615.GA1763@willie-the-truck>
+References: <20201224064007.2339-1-saiprakash.ranjan@codeaurora.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201224064007.2339-1-saiprakash.ranjan@codeaurora.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-mte_assign_mem_tag_range() is called on production KASAN HW hot
-paths. It makes sense to optimize it in an attempt to reduce the
-overhead.
+On Thu, Dec 24, 2020 at 12:10:07PM +0530, Sai Prakash Ranjan wrote:
+> commit ecd7274fb4cd ("iommu: Remove unused IOMMU_SYS_CACHE_ONLY flag")
+> removed unused IOMMU_SYS_CACHE_ONLY prot flag and along with it went
+> the memory type setting required for the non-coherent masters to use
+> system cache. Now that system cache support for GPU is added, we will
+> need to mark the memory as normal sys-cached for GPU to use system cache.
+> Without this, the system cache lines are not allocated for GPU. We use
+> the IO_PGTABLE_QUIRK_ARM_OUTER_WBWA quirk instead of a page protection
+> flag as the flag cannot be exposed via DMA api because of no in-tree
+> users.
+> 
+> Signed-off-by: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+> ---
+>  drivers/iommu/io-pgtable-arm.c | 3 +++
+>  1 file changed, 3 insertions(+)
+> 
+> diff --git a/drivers/iommu/io-pgtable-arm.c b/drivers/iommu/io-pgtable-arm.c
+> index 7c9ea9d7874a..3fb7de8304a2 100644
+> --- a/drivers/iommu/io-pgtable-arm.c
+> +++ b/drivers/iommu/io-pgtable-arm.c
+> @@ -415,6 +415,9 @@ static arm_lpae_iopte arm_lpae_prot_to_pte(struct arm_lpae_io_pgtable *data,
+>  		else if (prot & IOMMU_CACHE)
+>  			pte |= (ARM_LPAE_MAIR_ATTR_IDX_CACHE
+>  				<< ARM_LPAE_PTE_ATTRINDX_SHIFT);
+> +		else if (data->iop.cfg.quirks & IO_PGTABLE_QUIRK_ARM_OUTER_WBWA)
+> +			pte |= (ARM_LPAE_MAIR_ATTR_IDX_INC_OCACHE
+> +				<< ARM_LPAE_PTE_ATTRINDX_SHIFT);
+>  	}
 
-Optimize mte_assign_mem_tag_range() based on the indications provided at
-[1].
+drivers/iommu/io-pgtable.c currently documents this quirk as applying only
+to the page-table walker. Given that we only have one user at the moment,
+I think it's ok to change that, but please update the comment.
 
-[1] https://lore.kernel.org/r/CAAeHK+wCO+J7D1_T89DG+jJrPLk3X9RsGFKxJGd0ZcUFjQT-9Q@mail.gmail.com/
+We also need to decide on whether we want to allow the quirk to be passed
+if the coherency of the page-table walker differs from the DMA device, since
+we have these combinations:
 
-Cc: Catalin Marinas <catalin.marinas@arm.com>
-Cc: Will Deacon <will.deacon@arm.com>
-Signed-off-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
----
- arch/arm64/include/asm/mte.h | 26 +++++++++++++++++++++++++-
- arch/arm64/lib/mte.S         | 15 ---------------
- 2 files changed, 25 insertions(+), 16 deletions(-)
+	Coherent walker?	IOMMU_CACHE	IO_PGTABLE_QUIRK_ARM_OUTER_WBWA
+0:	N			0		0
+1:	N			0		1
+2:	N			1		0
+3:	N			1		1
+4:	Y			0		0
+5:	Y			0		1
+6:	Y			1		0
+7:	Y			1		1
 
-diff --git a/arch/arm64/include/asm/mte.h b/arch/arm64/include/asm/mte.h
-index c757ff756e09..ac134a74e1a1 100644
---- a/arch/arm64/include/asm/mte.h
-+++ b/arch/arm64/include/asm/mte.h
-@@ -50,7 +50,31 @@ long get_mte_ctrl(struct task_struct *task);
- int mte_ptrace_copy_tags(struct task_struct *child, long request,
- 			 unsigned long addr, unsigned long data);
- 
--void mte_assign_mem_tag_range(void *addr, size_t size);
-+static inline void mte_assign_mem_tag_range(void *addr, size_t size)
-+{
-+	u64 _addr = (u64)addr;
-+	u64 _end = _addr + size;
-+
-+	/*
-+	 * This function must be invoked from an MTE enabled context.
-+	 *
-+	 * Note: The address must be non-NULL and MTE_GRANULE_SIZE aligned and
-+	 * size must be non-zero and MTE_GRANULE_SIZE aligned.
-+	 */
-+	do {
-+		/*
-+		 * 'asm volatile' is required to prevent the compiler to move
-+		 * the statement outside of the loop.
-+		 */
-+		asm volatile(__MTE_PREAMBLE "stg %0, [%0]"
-+			     :
-+			     : "r" (_addr)
-+			     : "memory");
-+
-+		_addr += MTE_GRANULE_SIZE;
-+	} while (_addr < _end);
-+}
-+
- 
- #else /* CONFIG_ARM64_MTE */
- 
-diff --git a/arch/arm64/lib/mte.S b/arch/arm64/lib/mte.S
-index 9e1a12e10053..a0a650451510 100644
---- a/arch/arm64/lib/mte.S
-+++ b/arch/arm64/lib/mte.S
-@@ -150,18 +150,3 @@ SYM_FUNC_START(mte_restore_page_tags)
- 	ret
- SYM_FUNC_END(mte_restore_page_tags)
- 
--/*
-- * Assign allocation tags for a region of memory based on the pointer tag
-- *   x0 - source pointer
-- *   x1 - size
-- *
-- * Note: The address must be non-NULL and MTE_GRANULE_SIZE aligned and
-- * size must be non-zero and MTE_GRANULE_SIZE aligned.
-- */
--SYM_FUNC_START(mte_assign_mem_tag_range)
--1:	stg	x0, [x0]
--	add	x0, x0, #MTE_GRANULE_SIZE
--	subs	x1, x1, #MTE_GRANULE_SIZE
--	b.gt	1b
--	ret
--SYM_FUNC_END(mte_assign_mem_tag_range)
--- 
-2.29.2
+Some of them are obviously bogus, such as (7), but I don't know what to
+do about cases such as (3) and (5).
 
+Will
