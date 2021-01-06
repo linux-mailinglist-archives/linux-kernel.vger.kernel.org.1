@@ -2,95 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7177C2EB7C3
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 02:51:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B6F02EB7D2
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 02:56:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725903AbhAFBu5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 20:50:57 -0500
-Received: from mail.cn.fujitsu.com ([183.91.158.132]:47475 "EHLO
-        heian.cn.fujitsu.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1725822AbhAFBu4 (ORCPT
+        id S1726536AbhAFB4T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 20:56:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51952 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725860AbhAFB4R (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 20:50:56 -0500
-X-IronPort-AV: E=Sophos;i="5.78,478,1599494400"; 
-   d="scan'208";a="103220525"
-Received: from unknown (HELO cn.fujitsu.com) ([10.167.33.5])
-  by heian.cn.fujitsu.com with ESMTP; 06 Jan 2021 09:50:06 +0800
-Received: from G08CNEXMBPEKD04.g08.fujitsu.local (unknown [10.167.33.201])
-        by cn.fujitsu.com (Postfix) with ESMTP id 5769B4CE601C;
-        Wed,  6 Jan 2021 09:50:02 +0800 (CST)
-Received: from G08CNEXCHPEKD06.g08.fujitsu.local (10.167.33.205) by
- G08CNEXMBPEKD04.g08.fujitsu.local (10.167.33.201) with Microsoft SMTP Server
- (TLS) id 15.0.1497.2; Wed, 6 Jan 2021 09:50:01 +0800
-Received: from localhost.localdomain (10.167.225.206) by
- G08CNEXCHPEKD06.g08.fujitsu.local (10.167.33.209) with Microsoft SMTP Server
- id 15.0.1497.2 via Frontend Transport; Wed, 6 Jan 2021 09:50:02 +0800
-From:   Hao Li <lihao2018.fnst@cn.fujitsu.com>
-To:     <corbet@lwn.net>
-CC:     <davem@davemloft.net>, <gregkh@linuxfoundation.org>,
-        <alexander.deucher@amd.com>, <mchehab+huawei@kernel.org>,
-        <lee.jones@linaro.org>, <ira.weiny@intel.com>,
-        <linux-doc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <lihao2018.fnst@cn.fujitsu.com>
-Subject: [PATCH v2] Documentation/dax: Update description of DAX policy changing
-Date:   Wed, 6 Jan 2021 09:50:00 +0800
-Message-ID: <20210106015000.5263-1-lihao2018.fnst@cn.fujitsu.com>
-X-Mailer: git-send-email 2.28.0
+        Tue, 5 Jan 2021 20:56:17 -0500
+Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 227A9C061382;
+        Tue,  5 Jan 2021 17:55:37 -0800 (PST)
+Received: by mail-pj1-x102a.google.com with SMTP id b5so770884pjk.2;
+        Tue, 05 Jan 2021 17:55:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=M2SnuavxPcXUJasCexKnjXWwhRBi46twzYFZCFVtxIA=;
+        b=jaDmkjxUvv933vnXaE4le+w+4C0Bd4foHxhGcP6dcW/tNQyBdvdC1uMwWxXqUJtanL
+         h/JnWWeoprKpQ5HR8NxHvwUySBVL7w0jELn2jUrKjC7FlK89tbyez+y1IiScIIvPhxc8
+         AiXvSOYqXH3Np15o8MSmUnThKxABfQxLT4vZq83I3lWVJISw1kh2vfPKoNvJc1xvaOJB
+         fEPXTm6XgOztjw7QJS08uxTdw6zqn8T3nnquHMHqFjI5ukqv+HRTwSJmCpQOx1bV3Xkd
+         NG2cHtrZOP+7buEgNt6n5rNGFG8hzxitWbJV1V3FRmCJPCs/DS99SJmJmqTU06qHid4e
+         DJsw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=M2SnuavxPcXUJasCexKnjXWwhRBi46twzYFZCFVtxIA=;
+        b=Gm4NK1HjAkIyZFrndQ4RKI0zXoUbRudM6Lpluk6pub1t8h/Vq6MjsNUKWhXzdb/k4i
+         fgUDbhR12HmfZB5qdgRnEIf8lqAV3+m3ywDb1jda2G5wuo2jRUQTG3dgUuhUitJsm2h7
+         O2wTqqrcizMbELImebwFqAWTn8qL052zC0zIgnvMpyXc01XRGyTpvbj7Wtzm23AXqVjq
+         rBqHMChSQlG4zwzoz/V8QfhwLUN8cz32BmLUOhXFbKcJerrajq8PHPd3qbwHO+P3Fmbj
+         gpIAySaZ8EUdr5+qKPYV1vXxSAxuJqE897Rt9papNXkiuWTUCUinzqu8UwH9rSbeFbZl
+         j2jQ==
+X-Gm-Message-State: AOAM5335hddFYcwt693gwDcgKmDbd9S+lEdw6CiNR0Y3lo5vJe4R8b/+
+        Sf/5sOuuL5PjHb5t9X2s9JfibKu+uNA=
+X-Google-Smtp-Source: ABdhPJyBKCiWl8KqpA3d/9qhuLzYJM2/8URZ+PH/AyWme2ojcsE4nRsA6SZa1w/6+Y6vqjUiBP87Hg==
+X-Received: by 2002:a17:902:6e02:b029:dc:8e14:a928 with SMTP id u2-20020a1709026e02b02900dc8e14a928mr1938073plk.24.1609898136435;
+        Tue, 05 Jan 2021 17:55:36 -0800 (PST)
+Received: from google.com ([2620:15c:202:201:a6ae:11ff:fe11:fcc3])
+        by smtp.gmail.com with ESMTPSA id gm18sm425052pjb.55.2021.01.05.17.55.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 05 Jan 2021 17:55:35 -0800 (PST)
+Date:   Tue, 5 Jan 2021 17:55:31 -0800
+From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
+To:     Rob Herring <robh@kernel.org>
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jens Axboe <axboe@kernel.dk>, Stephen Boyd <sboyd@kernel.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        MyungJoo Ham <myungjoo.ham@samsung.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Marc Zyngier <maz@kernel.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Sebastian Reichel <sre@kernel.org>,
+        Ohad Ben-Cohen <ohad@wizery.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-arm-kernel@lists.infradead.org, linux-ide@vger.kernel.org,
+        linux-clk@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-gpio@vger.kernel.org, linux-iio@vger.kernel.org,
+        linux-input@vger.kernel.org, linux-media@vger.kernel.org,
+        linux-mmc@vger.kernel.org, netdev@vger.kernel.org,
+        linux-pm@vger.kernel.org, linux-remoteproc@vger.kernel.org,
+        linux-riscv@lists.infradead.org, linux-serial@vger.kernel.org,
+        alsa-devel@alsa-project.org, linux-spi@vger.kernel.org,
+        linux-usb@vger.kernel.org
+Subject: Re: [PATCH] dt-bindings: Add missing array size constraints
+Message-ID: <X/UYk4RESSfjCIPI@google.com>
+References: <20210104230253.2805217-1-robh@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-yoursite-MailScanner-ID: 5769B4CE601C.AE19D
-X-yoursite-MailScanner: Found to be clean
-X-yoursite-MailScanner-From: lihao2018.fnst@cn.fujitsu.com
-X-Spam-Status: No
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210104230253.2805217-1-robh@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-After commit 77573fa310d9 ("fs: Kill DCACHE_DONTCACHE dentry even if
-DCACHE_REFERENCED is set"), changes to DAX policy will take effect
-as soon as all references to this file are gone.
+On Mon, Jan 04, 2021 at 04:02:53PM -0700, Rob Herring wrote:
+>  .../input/touchscreen/elan,elants_i2c.yaml    |  1 +
 
-Update the documentation accordingly.
+Acked-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
 
-Signed-off-by: Hao Li <lihao2018.fnst@cn.fujitsu.com>
----
-Changes in v2:
-  * simplify sentences and fix style problems.
-
- Documentation/filesystems/dax.txt | 17 +++--------------
- 1 file changed, 3 insertions(+), 14 deletions(-)
-
-diff --git a/Documentation/filesystems/dax.txt b/Documentation/filesystems/dax.txt
-index 8fdb78f3c6c9..e03c20564f3a 100644
---- a/Documentation/filesystems/dax.txt
-+++ b/Documentation/filesystems/dax.txt
-@@ -83,20 +83,9 @@ Summary
-        directories.  This has runtime constraints and limitations that are
-        described in 6) below.
- 
-- 6. When changing the S_DAX policy via toggling the persistent FS_XFLAG_DAX flag,
--    the change in behaviour for existing regular files may not occur
--    immediately.  If the change must take effect immediately, the administrator
--    needs to:
--
--    a) stop the application so there are no active references to the data set
--       the policy change will affect
--
--    b) evict the data set from kernel caches so it will be re-instantiated when
--       the application is restarted. This can be achieved by:
--
--       i. drop-caches
--       ii. a filesystem unmount and mount cycle
--       iii. a system reboot
-+ 6. When changing the S_DAX policy via toggling the persistent FS_XFLAG_DAX
-+    flag, the change to existing regular files won't take effect until the
-+    files are closed by all processes.
- 
- 
- Details
 -- 
-2.29.2
-
-
-
+Dmitry
