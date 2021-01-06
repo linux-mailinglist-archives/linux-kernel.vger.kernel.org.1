@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 900E02EC24D
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 18:34:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B3E52EC24F
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 18:34:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727932AbhAFRco (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Jan 2021 12:32:44 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48842 "EHLO mail.kernel.org"
+        id S1727957AbhAFRcp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Jan 2021 12:32:45 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48844 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727372AbhAFRcm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1727267AbhAFRcm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 6 Jan 2021 12:32:42 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 563B323142;
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 811CF23158;
         Wed,  6 Jan 2021 17:31:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1609954282;
-        bh=znbMpQSZm97v9n8HNzzS39xBCUPz10kcVkJ2FZrtp18=;
+        bh=pcE5RZNr7iI0Mg2o0dARbyoj958xj5NC9xj8ycv1oYQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=fWILQ13JsIzqG4+x6zJ9KOo50+nXHHVLf+96dHVkr8eXhY0AFL/M0Jjd1o+Hbu0VP
-         Ria/BJoDbrbPNndgfnE0P828jllxdgxFdhaNOheFIZ/dFoKnH9Qdh9oh9uAOpIfR09
-         Cq5bk0HW5a14lixVSVTQeo5+LSQR+nS997hD0kTLsIyltzlnt7Tml8AI1huqTA2CWu
-         V0eyjwcGjmZ5cqDn1YZ9W/izaUX+LxO+U7D+B/eVME8yhnrCH3wptx04EdNtHfRM3M
-         r6rmQPQGTIOUsI7UBh/X6LTrMXsUlW9H3SfkFjMuDrBoPS/4Ol4Nvmlz32hauDy9Nd
-         EPR57oY2DhNgg==
+        b=QgvcH9x7XChwfZklHL+wxnQbItdTEjVCddACvhH+1slwkxKFj8m0jHup/6/IoWo4O
+         n34MXFmtph5gtFqMSQrcxSrtVEpJAw7f6F+5EIF2+ZhijnnSseBK7IWfDwLgEBTuiH
+         wax3G6LisH6RvWpQFXR+90stEqD39sDhFyDCSOjXPRGyfNtc7177hFTAqOypDoq/vF
+         LtSFVO9xAzKJ5plT3lNXDMXkXN7hmBPuuvSQFXFqo57gbBrvKnlHPJa9yvhTWws/tR
+         uEp0V+FLy8QpFP2OCTNZFWOQsVnxQyFqpK7SpxhtlVDkcJMT1cy23YElbqcAFViLHu
+         JlTDhsBNwE+Uw==
 From:   paulmck@kernel.org
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -32,9 +32,9 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
         oleg@redhat.com, joel@joelfernandes.org,
         "Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH tip/core/rcu 08/18] torture: Make torture.sh rcuscale and refscale deal with allmodconfig
-Date:   Wed,  6 Jan 2021 09:31:09 -0800
-Message-Id: <20210106173119.23159-8-paulmck@kernel.org>
+Subject: [PATCH tip/core/rcu 09/18] torture: Make torture.sh refscale runs use verbose_batched module parameter
+Date:   Wed,  6 Jan 2021 09:31:10 -0800
+Message-Id: <20210106173119.23159-9-paulmck@kernel.org>
 X-Mailer: git-send-email 2.9.5
 In-Reply-To: <20210106173056.GA23035@paulmck-ThinkPad-P72>
 References: <20210106173056.GA23035@paulmck-ThinkPad-P72>
@@ -44,37 +44,41 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: "Paul E. McKenney" <paulmck@kernel.org>
 
-The .mod.c files created by allmodconfig builds interfers with the approach
-torture.sh uses to enumerate types of rcuscale and refscale runs.  This
-commit therefore tightens the pattern matching to avoid this interference.
+On large systems, the refscale printk() rate can overrun the file system's
+ability to accept console log messages.  This commit therefore uses the
+new verbose_batched module parameter to rate-limit some of the higher-rate
+printk() calls.
 
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- tools/testing/selftests/rcutorture/bin/torture.sh | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ tools/testing/selftests/rcutorture/bin/torture.sh | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
 
 diff --git a/tools/testing/selftests/rcutorture/bin/torture.sh b/tools/testing/selftests/rcutorture/bin/torture.sh
-index 8e66797..a89b521 100755
+index a89b521..a3c3c25 100755
 --- a/tools/testing/selftests/rcutorture/bin/torture.sh
 +++ b/tools/testing/selftests/rcutorture/bin/torture.sh
-@@ -302,7 +302,7 @@ fi
- 
- if test "$do_refscale" = yes
+@@ -24,6 +24,11 @@ if test "$HALF_ALLOTED_CPUS" -lt 1
  then
--	primlist="`grep '\.name[ 	]*=' kernel/rcu/refscale*.c | sed -e 's/^[^"]*"//' -e 's/".*$//'`"
-+	primlist="`grep '\.name[ 	]*=' kernel/rcu/refscale.c | sed -e 's/^[^"]*"//' -e 's/".*$//'`"
- else
- 	primlist=
+ 	HALF_ALLOTED_CPUS=1
  fi
-@@ -314,7 +314,7 @@ done
++VERBOSE_BATCH_CPUS=$((TORTURE_ALLOTED_CPUS/16))
++if test "$VERBOSE_BATCH_CPUS" -lt 2
++then
++	VERBOSE_BATCH_CPUS=0
++fi
+ 
+ # Default duration and apportionment.
+ duration_base=10
+@@ -309,7 +314,7 @@ fi
+ for prim in $primlist
+ do
+ 	torture_bootargs="refscale.scale_type="$prim" refscale.nreaders=$HALF_ALLOTED_CPUS refscale.loops=10000 refscale.holdoff=20 torture.disable_onoff_at_boot"
+-	torture_set "refscale-$prim" tools/testing/selftests/rcutorture/bin/kvm.sh --torture refscale --allcpus --duration 5 --kconfig "CONFIG_NR_CPUS=$HALF_ALLOTED_CPUS" --trust-make
++	torture_set "refscale-$prim" tools/testing/selftests/rcutorture/bin/kvm.sh --torture refscale --allcpus --duration 5 --kconfig "CONFIG_NR_CPUS=$HALF_ALLOTED_CPUS" --bootargs "verbose_batched=$VERBOSE_BATCH_CPUS" --trust-make
+ done
  
  if test "$do_rcuscale" = yes
- then
--	primlist="`grep '\.name[ 	]*=' kernel/rcu/rcuscale*.c | sed -e 's/^[^"]*"//' -e 's/".*$//'`"
-+	primlist="`grep '\.name[ 	]*=' kernel/rcu/rcuscale.c | sed -e 's/^[^"]*"//' -e 's/".*$//'`"
- else
- 	primlist=
- fi
 -- 
 2.9.5
 
