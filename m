@@ -2,79 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C3DA52EB767
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 02:05:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C11012EB777
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 02:12:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727107AbhAFBDz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 20:03:55 -0500
-Received: from szxga05-in.huawei.com ([45.249.212.191]:10548 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725879AbhAFBDx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 20:03:53 -0500
-Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4D9WKh0WRbzMFxr;
-        Wed,  6 Jan 2021 09:02:00 +0800 (CST)
-Received: from [10.136.114.67] (10.136.114.67) by smtp.huawei.com
- (10.3.19.205) with Microsoft SMTP Server (TLS) id 14.3.498.0; Wed, 6 Jan 2021
- 09:03:08 +0800
-Subject: Re: [f2fs-dev] [PATCH v2] f2fs: fix null page reference in
- redirty_blocks
-To:     Daeho Jeong <daehojeong@google.com>
-CC:     Markus Elfring <Markus.Elfring@web.de>,
-        <linux-f2fs-devel@lists.sourceforge.net>,
-        <kernel-janitors@vger.kernel.org>,
-        Colin Ian King <colin.king@canonical.com>,
-        <kernel-team@android.com>, <linux-kernel@vger.kernel.org>
-References: <20210105041630.1393157-1-daeho43@gmail.com>
- <dba4be04-70dd-d48b-391c-1f2355591097@web.de>
-From:   Chao Yu <yuchao0@huawei.com>
-Message-ID: <6c8e6561-8a5d-010f-3d7c-8c051b4027e6@huawei.com>
-Date:   Wed, 6 Jan 2021 09:03:08 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.9.1
+        id S1725880AbhAFBLq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 20:11:46 -0500
+Received: from mga12.intel.com ([192.55.52.136]:46219 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725800AbhAFBLp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Jan 2021 20:11:45 -0500
+IronPort-SDR: 5rMKfbeSSXyc8HrdA0gE7Ae+cQe/FaNOTtLJWucfYPOQL1SL38w9gLHc5S0ClIp/e0bxrnHe+X
+ Txmrog51P3RQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9855"; a="156398934"
+X-IronPort-AV: E=Sophos;i="5.78,478,1599548400"; 
+   d="scan'208";a="156398934"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Jan 2021 17:09:54 -0800
+IronPort-SDR: D/qMZFJukaMzB+stYT74FeGsqKJB+iPFp9uDBBnxdJbYW5Oxhg2NVsAvegkfGHUzp3lC149Uk0
+ iv49fvYJPVDA==
+X-IronPort-AV: E=Sophos;i="5.78,478,1599548400"; 
+   d="scan'208";a="379089659"
+Received: from jan-mobl.ccr.corp.intel.com (HELO [10.255.29.66]) ([10.255.29.66])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Jan 2021 17:09:52 -0800
+Cc:     baolu.lu@linux.intel.com, Joerg Roedel <joro@8bytes.org>,
+        Ashok Raj <ashok.raj@intel.com>,
+        Jacob Pan <jacob.jun.pan@linux.intel.com>,
+        Guo Kaijie <Kaijie.Guo@intel.com>,
+        Liu Yi L <yi.l.liu@intel.com>,
+        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org
+To:     Will Deacon <will@kernel.org>
+References: <20201231005323.2178523-1-baolu.lu@linux.intel.com>
+ <20201231005323.2178523-2-baolu.lu@linux.intel.com>
+ <20210105190357.GA12182@willie-the-truck>
+From:   Lu Baolu <baolu.lu@linux.intel.com>
+Subject: Re: [PATCH 2/5] iommu/vt-d: Fix unaligned addresses for
+ intel_flush_svm_range_dev()
+Message-ID: <f8c7f124-48ab-f74f-a5cb-51b0ca4785ac@linux.intel.com>
+Date:   Wed, 6 Jan 2021 09:09:50 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-In-Reply-To: <dba4be04-70dd-d48b-391c-1f2355591097@web.de>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
+In-Reply-To: <20210105190357.GA12182@willie-the-truck>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.136.114.67]
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Daeho,
+Hi Will,
 
-FYI
+Happy New Year!
 
-https://www.spinics.net/lists/kernel/msg3595944.html
+On 2021/1/6 3:03, Will Deacon wrote:
+> On Thu, Dec 31, 2020 at 08:53:20AM +0800, Lu Baolu wrote:
+>> The VT-d hardware will ignore those Addr bits which have been masked by
+>> the AM field in the PASID-based-IOTLB invalidation descriptor. As the
+>> result, if the starting address in the descriptor is not aligned with
+>> the address mask, some IOTLB caches might not invalidate. Hence people
+>> will see below errors.
+>>
+>> [ 1093.704661] dmar_fault: 29 callbacks suppressed
+>> [ 1093.704664] DMAR: DRHD: handling fault status reg 3
+>> [ 1093.712738] DMAR: [DMA Read] Request device [7a:02.0] PASID 2
+>>                 fault addr 7f81c968d000 [fault reason 113]
+>>                 SM: Present bit in first-level paging entry is clear
+>>
+>> Fix this by using aligned address for PASID-based-IOTLB invalidation.
+>>
+>> Fixes: 1c4f88b7f1f92 ("iommu/vt-d: Shared virtual address in scalable mode")
+>> Reported-and-tested-by: Guo Kaijie <Kaijie.Guo@intel.com>
+>> Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
+>> ---
+>>   drivers/iommu/intel/svm.c | 22 ++++++++++++++++++++--
+>>   1 file changed, 20 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/drivers/iommu/intel/svm.c b/drivers/iommu/intel/svm.c
+>> index 69566695d032..b16a4791acfb 100644
+>> --- a/drivers/iommu/intel/svm.c
+>> +++ b/drivers/iommu/intel/svm.c
+>> @@ -118,8 +118,10 @@ void intel_svm_check(struct intel_iommu *iommu)
+>>   	iommu->flags |= VTD_FLAG_SVM_CAPABLE;
+>>   }
+>>   
+>> -static void intel_flush_svm_range_dev (struct intel_svm *svm, struct intel_svm_dev *sdev,
+>> -				unsigned long address, unsigned long pages, int ih)
+>> +static void __flush_svm_range_dev(struct intel_svm *svm,
+>> +				  struct intel_svm_dev *sdev,
+>> +				  unsigned long address,
+>> +				  unsigned long pages, int ih)
+>>   {
+>>   	struct qi_desc desc;
+>>   
+>> @@ -170,6 +172,22 @@ static void intel_flush_svm_range_dev (struct intel_svm *svm, struct intel_svm_d
+>>   	}
+>>   }
+>>   
+>> +static void intel_flush_svm_range_dev(struct intel_svm *svm,
+>> +				      struct intel_svm_dev *sdev,
+>> +				      unsigned long address,
+>> +				      unsigned long pages, int ih)
+>> +{
+>> +	unsigned long shift = ilog2(__roundup_pow_of_two(pages));
+>> +	unsigned long align = (1ULL << (VTD_PAGE_SHIFT + shift));
+>> +	unsigned long start = ALIGN_DOWN(address, align);
+>> +	unsigned long end = ALIGN(address + (pages << VTD_PAGE_SHIFT), align);
+>> +
+>> +	while (start < end) {
+>> +		__flush_svm_range_dev(svm, sdev, start, align >> VTD_PAGE_SHIFT, ih);
+>> +		start += align;
+>> +	}
+>> +}
+> 
+> Given that this only seems to be called from intel_invalidate_range(), which
+> has to compute 'pages' only to have it pulled apart again here, perhaps it
+> would be cleaner for intel_flush_svm_range() to take something like an
+> 'order' argument instead?
+> 
+> What do you think?
 
-On 2021/1/5 20:04, Markus Elfring wrote:
->> Fixed null page reference when find_lock_page() fails in
->> redirty_blocks().
+We need to clean up here. It's duplicate with the qi_flush_piotlb()
+helper. I have a patch under testing for this. I will post it for review
+later.
+
 > 
-> I suggest to choose an other imperative wording for this change description.
+> Will
 > 
-> See also:
-> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Documentation/process/submitting-patches.rst?id=36bbbd0e234d817938bdc52121a0f5473b3e58f5#n89
-> 
-> 
->> v2: changed error value and break the loop when error occurs
-> 
-> I propose to use a return statement instead of a break in the second if branch
-> for this function implementation.
-> 
-> See also:
-> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Documentation/process/coding-style.rst?id=36bbbd0e234d817938bdc52121a0f5473b3e58f5#n481
-> 
-> Regards,
-> Markus
-> 
-> 
-> _______________________________________________
-> Linux-f2fs-devel mailing list
-> Linux-f2fs-devel@lists.sourceforge.net
-> https://lists.sourceforge.net/lists/listinfo/linux-f2fs-devel
-> .
-> 
+
+Best regards,
+baolu
