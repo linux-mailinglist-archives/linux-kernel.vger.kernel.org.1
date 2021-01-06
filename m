@@ -2,258 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E5F22EC095
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 16:42:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 134162EC09D
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 16:45:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727294AbhAFPmQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Jan 2021 10:42:16 -0500
-Received: from mx2.suse.de ([195.135.220.15]:55002 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726251AbhAFPmP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Jan 2021 10:42:15 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id ECD4AAA35;
-        Wed,  6 Jan 2021 15:41:32 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id 8FA231E0812; Wed,  6 Jan 2021 16:41:32 +0100 (CET)
-Date:   Wed, 6 Jan 2021 16:41:32 +0100
-From:   Jan Kara <jack@suse.cz>
-To:     Shiyang Ruan <ruansy.fnst@cn.fujitsu.com>
-Cc:     linux-kernel@vger.kernel.org, linux-xfs@vger.kernel.org,
-        linux-nvdimm@lists.01.org, linux-mm@kvack.org,
-        linux-fsdevel@vger.kernel.org, linux-raid@vger.kernel.org,
-        darrick.wong@oracle.com, dan.j.williams@intel.com,
-        david@fromorbit.com, hch@lst.de, song@kernel.org, rgoldwyn@suse.de,
-        qi.fuli@fujitsu.com, y-goto@fujitsu.com
-Subject: Re: [PATCH 04/10] mm, fsdax: Refactor memory-failure handler for dax
- mapping
-Message-ID: <20210106154132.GC29271@quack2.suse.cz>
-References: <20201230165601.845024-1-ruansy.fnst@cn.fujitsu.com>
- <20201230165601.845024-5-ruansy.fnst@cn.fujitsu.com>
+        id S1727192AbhAFPpJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Jan 2021 10:45:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40606 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727115AbhAFPpI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 Jan 2021 10:45:08 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58231C061357
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Jan 2021 07:44:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=gtC4c3Ej8bBFZ9FcoprvJDs27X+S4qSFCKOgvJeaiHM=; b=VLYD91MY/OSoQtdL9IqCVn5DlF
+        XFRILKWh6jpGCxrycvhxLiQxbYYgN4zeSMSkYsa/2mcx4b+kuqZ+XCQ6sMBEJh0AfhPkoXH+e81N/
+        6yUxRmU0VnsmtL4Dqf1jUBSvFiR+NatVuEkPvfLWyJC1DFknjET/KtlLkDncIG3kzGCIii92aB9Vi
+        WnHlh4eblDRL9uXglZ+D/+MCyseodVhJirB81YNVZYJOfBobzqRpB+Fvvgm2spI3+DYHkEoEmnMmO
+        f9n8P5VI+xf27h1hJE2IiqvlJGIvHpZJP+Y4JKKh1qJcstnCSdxj3DS8mrsvB6TLHwjCnkreLX+ub
+        rfiuxm0Q==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kxAz1-0002U2-CA; Wed, 06 Jan 2021 15:44:23 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id DDA69305C10;
+        Wed,  6 Jan 2021 16:44:21 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id A41A42029C723; Wed,  6 Jan 2021 16:44:21 +0100 (CET)
+Date:   Wed, 6 Jan 2021 16:44:21 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     tglx@linutronix.de, linux-kernel@vger.kernel.org,
+        valentin.schneider@arm.com, bristot@redhat.com, frederic@kernel.org
+Subject: Re: lockdep splat in v5.11-rc1 involving console_sem and rq locks
+Message-ID: <X/Xa1fwplnZIOm+U@hirez.programming.kicks-ass.net>
+References: <20210105220115.GA27357@paulmck-ThinkPad-P72>
+ <X/WITr5JuNvuMH+p@hirez.programming.kicks-ass.net>
+ <20210106144621.GJ17086@paulmck-ThinkPad-P72>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201230165601.845024-5-ruansy.fnst@cn.fujitsu.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210106144621.GJ17086@paulmck-ThinkPad-P72>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu 31-12-20 00:55:55, Shiyang Ruan wrote:
-> The current memory_failure_dev_pagemap() can only handle single-mapped
-> dax page for fsdax mode.  The dax page could be mapped by multiple files
-> and offsets if we let reflink feature & fsdax mode work together.  So,
-> we refactor current implementation to support handle memory failure on
-> each file and offset.
+On Wed, Jan 06, 2021 at 06:46:21AM -0800, Paul E. McKenney wrote:
+> Huh.  The WARN does not always generate the lockdep complaint.  But
+> fair enough.
+
+Any printk()/WARN/BUG with rq lock held ought to generate that splat,
+sometimes we die before we splat. The printk rewrite should eventually
+fix that.
+
+> >   https://lkml.kernel.org/r/20201226025117.2770-1-jiangshanlai@gmail.com
 > 
-> Signed-off-by: Shiyang Ruan <ruansy.fnst@cn.fujitsu.com>
+> Thomas pointed me at this one a couple of weeks ago.  Here is an
+> additional fix for rcutorture: f67e04bb0695 ("torture: Break affinity
+> of kthreads last running on outgoing CPU").  I am still getting WARNs
+> and lockdep splats with both applied.
 
-Overall this looks OK to me, a few comments below.
+That patch looks racy, what avoids the task being shuffled right back
+before the CPU goes offline?
 
-> ---
->  fs/dax.c            | 21 +++++++++++
->  include/linux/dax.h |  1 +
->  include/linux/mm.h  |  9 +++++
->  mm/memory-failure.c | 91 ++++++++++++++++++++++++++++++++++-----------
->  4 files changed, 100 insertions(+), 22 deletions(-)
-> 
-> diff --git a/fs/dax.c b/fs/dax.c
-> index 5b47834f2e1b..799210cfa687 100644
-> --- a/fs/dax.c
-> +++ b/fs/dax.c
-> @@ -378,6 +378,27 @@ static struct page *dax_busy_page(void *entry)
->  	return NULL;
->  }
->  
-> +/*
-> + * dax_load_pfn - Load pfn of the DAX entry corresponding to a page
-> + * @mapping: The file whose entry we want to load
-> + * @index:   The offset where the DAX entry located in
-> + *
-> + * Return:   pfn of the DAX entry
-> + */
-> +unsigned long dax_load_pfn(struct address_space *mapping, unsigned long index)
-> +{
-> +	XA_STATE(xas, &mapping->i_pages, index);
-> +	void *entry;
-> +	unsigned long pfn;
-> +
-> +	xas_lock_irq(&xas);
-> +	entry = xas_load(&xas);
-> +	pfn = dax_to_pfn(entry);
-> +	xas_unlock_irq(&xas);
-> +
-> +	return pfn;
-> +}
-> +
->  /*
->   * dax_lock_mapping_entry - Lock the DAX entry corresponding to a page
->   * @page: The page whose entry we want to lock
-> diff --git a/include/linux/dax.h b/include/linux/dax.h
-> index b52f084aa643..89e56ceeffc7 100644
-> --- a/include/linux/dax.h
-> +++ b/include/linux/dax.h
-> @@ -150,6 +150,7 @@ int dax_writeback_mapping_range(struct address_space *mapping,
->  
->  struct page *dax_layout_busy_page(struct address_space *mapping);
->  struct page *dax_layout_busy_page_range(struct address_space *mapping, loff_t start, loff_t end);
-> +unsigned long dax_load_pfn(struct address_space *mapping, unsigned long index);
->  dax_entry_t dax_lock_page(struct page *page);
->  void dax_unlock_page(struct page *page, dax_entry_t cookie);
->  #else
-> diff --git a/include/linux/mm.h b/include/linux/mm.h
-> index db6ae4d3fb4e..db3059a1853e 100644
-> --- a/include/linux/mm.h
-> +++ b/include/linux/mm.h
-> @@ -1141,6 +1141,14 @@ static inline bool is_device_private_page(const struct page *page)
->  		page->pgmap->type == MEMORY_DEVICE_PRIVATE;
->  }
->  
-> +static inline bool is_device_fsdax_page(const struct page *page)
-> +{
-> +	return IS_ENABLED(CONFIG_DEV_PAGEMAP_OPS) &&
-> +		IS_ENABLED(CONFIG_DEVICE_PRIVATE) &&
-> +		is_zone_device_page(page) &&
-> +		page->pgmap->type == MEMORY_DEVICE_FS_DAX;
-> +}
-> +
->  static inline bool is_pci_p2pdma_page(const struct page *page)
->  {
->  	return IS_ENABLED(CONFIG_DEV_PAGEMAP_OPS) &&
-> @@ -3030,6 +3038,7 @@ enum mf_flags {
->  	MF_MUST_KILL = 1 << 2,
->  	MF_SOFT_OFFLINE = 1 << 3,
->  };
-> +extern int mf_dax_mapping_kill_procs(struct address_space *mapping, pgoff_t index, int flags);
->  extern int memory_failure(unsigned long pfn, int flags);
->  extern void memory_failure_queue(unsigned long pfn, int flags);
->  extern void memory_failure_queue_kick(int cpu);
-> diff --git a/mm/memory-failure.c b/mm/memory-failure.c
-> index 5d880d4eb9a2..37bc6e2a9564 100644
-> --- a/mm/memory-failure.c
-> +++ b/mm/memory-failure.c
-> @@ -56,6 +56,7 @@
->  #include <linux/kfifo.h>
->  #include <linux/ratelimit.h>
->  #include <linux/page-isolation.h>
-> +#include <linux/dax.h>
->  #include "internal.h"
->  #include "ras/ras_event.h"
->  
-> @@ -120,6 +121,9 @@ static int hwpoison_filter_dev(struct page *p)
->  	if (PageSlab(p))
->  		return -EINVAL;
->  
-> +	if (is_device_fsdax_page(p))
-> +		return 0;
-> +
->  	mapping = page_mapping(p);
->  	if (mapping == NULL || mapping->host == NULL)
->  		return -EINVAL;
-> @@ -290,9 +294,8 @@ void shake_page(struct page *p, int access)
->  EXPORT_SYMBOL_GPL(shake_page);
->  
->  static unsigned long dev_pagemap_mapping_shift(struct page *page,
-> -		struct vm_area_struct *vma)
-> +		struct vm_area_struct *vma, unsigned long address)
+> What would break if I made the code dump out a few entries in the
+> runqueue if the warning triggered?
 
-The 'page' argument is now unused. Drop it?
-
->  {
-> -	unsigned long address = vma_address(page, vma);
->  	pgd_t *pgd;
->  	p4d_t *p4d;
->  	pud_t *pud;
-> @@ -333,8 +336,8 @@ static unsigned long dev_pagemap_mapping_shift(struct page *page,
->   * Uses GFP_ATOMIC allocations to avoid potential recursions in the VM.
->   */
->  static void add_to_kill(struct task_struct *tsk, struct page *p,
-> -		       struct vm_area_struct *vma,
-> -		       struct list_head *to_kill)
-> +			struct address_space *mapping, pgoff_t pgoff,
-> +			struct vm_area_struct *vma, struct list_head *to_kill)
->  {
->  	struct to_kill *tk;
->  
-> @@ -345,9 +348,12 @@ static void add_to_kill(struct task_struct *tsk, struct page *p,
->  	}
->  
->  	tk->addr = page_address_in_vma(p, vma);
-> -	if (is_zone_device_page(p))
-> -		tk->size_shift = dev_pagemap_mapping_shift(p, vma);
-> -	else
-> +	if (is_zone_device_page(p)) {
-> +		if (is_device_fsdax_page(p))
-> +			tk->addr = vma->vm_start +
-> +					((pgoff - vma->vm_pgoff) << PAGE_SHIFT);
-
-It seems strange to use 'pgoff' for dax pages and not for any other page.
-Why? I'd rather pass correct pgoff from all callers of add_to_kill() and
-avoid this special casing...
-
-> +		tk->size_shift = dev_pagemap_mapping_shift(p, vma, tk->addr);
-> +	} else
->  		tk->size_shift = page_shift(compound_head(p));
->  
->  	/*
-> @@ -495,7 +501,7 @@ static void collect_procs_anon(struct page *page, struct list_head *to_kill,
->  			if (!page_mapped_in_vma(page, vma))
->  				continue;
->  			if (vma->vm_mm == t->mm)
-> -				add_to_kill(t, page, vma, to_kill);
-> +				add_to_kill(t, page, NULL, 0, vma, to_kill);
->  		}
->  	}
->  	read_unlock(&tasklist_lock);
-> @@ -505,24 +511,19 @@ static void collect_procs_anon(struct page *page, struct list_head *to_kill,
->  /*
->   * Collect processes when the error hit a file mapped page.
->   */
-> -static void collect_procs_file(struct page *page, struct list_head *to_kill,
-> -				int force_early)
-> +static void collect_procs_file(struct page *page, struct address_space *mapping,
-> +		pgoff_t pgoff, struct list_head *to_kill, int force_early)
->  {
->  	struct vm_area_struct *vma;
->  	struct task_struct *tsk;
-> -	struct address_space *mapping = page->mapping;
-> -	pgoff_t pgoff;
->  
->  	i_mmap_lock_read(mapping);
->  	read_lock(&tasklist_lock);
-> -	pgoff = page_to_pgoff(page);
->  	for_each_process(tsk) {
->  		struct task_struct *t = task_early_kill(tsk, force_early);
-> -
->  		if (!t)
->  			continue;
-> -		vma_interval_tree_foreach(vma, &mapping->i_mmap, pgoff,
-> -				      pgoff) {
-> +		vma_interval_tree_foreach(vma, &mapping->i_mmap, pgoff, pgoff) {
->  			/*
->  			 * Send early kill signal to tasks where a vma covers
->  			 * the page but the corrupted page is not necessarily
-> @@ -531,7 +532,7 @@ static void collect_procs_file(struct page *page, struct list_head *to_kill,
->  			 * to be informed of all such data corruptions.
->  			 */
->  			if (vma->vm_mm == t->mm)
-> -				add_to_kill(t, page, vma, to_kill);
-> +				add_to_kill(t, page, mapping, pgoff, vma, to_kill);
->  		}
->  	}
->  	read_unlock(&tasklist_lock);
-> @@ -550,7 +551,8 @@ static void collect_procs(struct page *page, struct list_head *tokill,
->  	if (PageAnon(page))
->  		collect_procs_anon(page, tokill, force_early);
->  	else
-> -		collect_procs_file(page, tokill, force_early);
-> +		collect_procs_file(page, page->mapping, page_to_pgoff(page),
-
-Why not use page_mapping() helper here? It would be safer for THPs if they
-ever get here...
-
-								Honza
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+There was a patch around that did that, Valentin might remember where
+that was.
