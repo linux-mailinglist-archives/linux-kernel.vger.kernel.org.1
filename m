@@ -2,83 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DD2F2EC187
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 17:56:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 049AE2EC18A
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 17:56:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727593AbhAFQzx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Jan 2021 11:55:53 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56292 "EHLO mail.kernel.org"
+        id S1727765AbhAFQ4R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Jan 2021 11:56:17 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56382 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727226AbhAFQzw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Jan 2021 11:55:52 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 97BAD2311E;
-        Wed,  6 Jan 2021 16:55:11 +0000 (UTC)
+        id S1727618AbhAFQ4N (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 Jan 2021 11:56:13 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8B0DD23131;
+        Wed,  6 Jan 2021 16:55:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1609952111;
-        bh=DFmHfyulUmxhonXXKvMvOP+F4WZqp9EGqnjhA9cKHFY=;
-        h=Date:From:To:Cc:Subject:Reply-To:From;
-        b=noAaDJeI/J3gKQIIwsVgVl1QYZcJLQRF2ccyn5NcMLV/U44nJ2fGeqqfhfLjxgWw7
-         tPwM+OO0I+hqQw4m8DS/+8w6Tc1hSYD7M1Xk0ytWEhlBScVwb6HEjxOV6cAaIsphzJ
-         wHykoDYua1WHbWA1UvPoqqOMg0qa/Tof/DfG1WT2ma/7jKQJd4+ewJ2NSUXsE9+/w4
-         0oHd0iRwUQlwwjqbW60WeLudJ4r+AWjfHyT3MLR20t2Oeeqe4zy2JOpUH7JXDVN3LU
-         AU/Hpt7Z2947y65uy7ahTT/qmN5L7wQdwPWlygWSrj+JMfICXqdF4uxmesY+B8ijG3
-         aU1aixrObqfng==
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 4FE7235225EC; Wed,  6 Jan 2021 08:55:11 -0800 (PST)
-Date:   Wed, 6 Jan 2021 08:55:11 -0800
-From:   "Paul E. McKenney" <paulmck@kernel.org>
+        s=k20201202; t=1609952132;
+        bh=ON+PXvvASQe6LEBvelS1pa78+3hw2E2zllQlQEFRths=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=STNGRKUEIv6p9eL/zifItAiECNI0qomEzXwlOsl/VMyyUHn59hQ/H2GDHNKu6Op41
+         bPcAshWwL+ydr8s5DDFMPu9pvDHLkuWf+rWaZSogo88NBawyfTAP8pXTLyMHZIP6ez
+         HXPez5IGnC56vAn3G93Ajnm12BrPH++VwDEzPi+KdPLCPF6hNCIiHZH/CevKMnrgh0
+         fBDvEJPcbJ5yfI6vSlzd8G/e6qhSwi02tjXieszWkxGAb8ZpyY58+THD5Wnk0G4kyL
+         BtZJbBZdXPUPKNrp0od54YJKuws8fU03lhTGgpTLAqoh/WeKEOGoL+LydVeybryDZK
+         5jpyZE6ohcHdw==
+From:   paulmck@kernel.org
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         jiangshanlai@gmail.com, akpm@linux-foundation.org,
         mathieu.desnoyers@efficios.com, josh@joshtriplett.org,
         tglx@linutronix.de, peterz@infradead.org, rostedt@goodmis.org,
         dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
-        oleg@redhat.com, joel@joelfernandes.org, kent.overstreet@gmail.com
-Subject: [PATCH tip/core/rcu 0/10] SRCU updates for v5.12
-Message-ID: <20210106165511.GA20555@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.9.4 (2018-02-28)
+        oleg@redhat.com, joel@joelfernandes.org,
+        "Paul E. McKenney" <paulmck@kernel.org>
+Subject: [PATCH tip/core/rcu 01/10] srcu: Make Tiny SRCU use multi-bit grace-period counter
+Date:   Wed,  6 Jan 2021 08:55:22 -0800
+Message-Id: <20210106165531.20697-1-paulmck@kernel.org>
+X-Mailer: git-send-email 2.9.5
+In-Reply-To: <20210106165511.GA20555@paulmck-ThinkPad-P72>
+References: <20210106165511.GA20555@paulmck-ThinkPad-P72>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello!
+From: "Paul E. McKenney" <paulmck@kernel.org>
 
-This series contains SRCU updates, most notably the polling grace-period
-API requested by Kent Overstreet.
+There is a need for a polling interface for SRCU grace periods.  This
+polling needs to distinguish between an SRCU instance being idle on the
+one hand or in the middle of a grace period on the other.  This commit
+therefore converts the Tiny SRCU srcu_struct structure's srcu_idx from
+a defacto boolean to a free-running counter, using the bottom bit to
+indicate that a grace period is in progress.  The second-from-bottom
+bit is thus used as the index returned by srcu_read_lock().
 
-1.	Make Tiny SRCU use multi-bit grace-period counter.
+Link: https://lore.kernel.org/rcu/20201112201547.GF3365678@moria.home.lan/
+Reported-by: Kent Overstreet <kent.overstreet@gmail.com>
+[ paulmck: Fix ->srcu_lock_nesting[] indexing per Neeraj Upadhyay. ]
+Reviewed-by: Neeraj Upadhyay <neeraju@codeaurora.org>
+Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+---
+ include/linux/srcutiny.h | 6 +++---
+ kernel/rcu/srcutiny.c    | 5 +++--
+ 2 files changed, 6 insertions(+), 5 deletions(-)
 
-2.	Provide internal interface to start a Tiny SRCU grace period.
+diff --git a/include/linux/srcutiny.h b/include/linux/srcutiny.h
+index 5a5a194..b8b42d0 100644
+--- a/include/linux/srcutiny.h
++++ b/include/linux/srcutiny.h
+@@ -15,7 +15,7 @@
+ 
+ struct srcu_struct {
+ 	short srcu_lock_nesting[2];	/* srcu_read_lock() nesting depth. */
+-	short srcu_idx;			/* Current reader array element. */
++	unsigned short srcu_idx;	/* Current reader array element in bit 0x2. */
+ 	u8 srcu_gp_running;		/* GP workqueue running? */
+ 	u8 srcu_gp_waiting;		/* GP waiting for readers? */
+ 	struct swait_queue_head srcu_wq;
+@@ -59,7 +59,7 @@ static inline int __srcu_read_lock(struct srcu_struct *ssp)
+ {
+ 	int idx;
+ 
+-	idx = READ_ONCE(ssp->srcu_idx);
++	idx = ((READ_ONCE(ssp->srcu_idx) + 1) & 0x2) >> 1;
+ 	WRITE_ONCE(ssp->srcu_lock_nesting[idx], ssp->srcu_lock_nesting[idx] + 1);
+ 	return idx;
+ }
+@@ -80,7 +80,7 @@ static inline void srcu_torture_stats_print(struct srcu_struct *ssp,
+ {
+ 	int idx;
+ 
+-	idx = READ_ONCE(ssp->srcu_idx) & 0x1;
++	idx = ((READ_ONCE(ssp->srcu_idx) + 1) & 0x2) >> 1;
+ 	pr_alert("%s%s Tiny SRCU per-CPU(idx=%d): (%hd,%hd)\n",
+ 		 tt, tf, idx,
+ 		 READ_ONCE(ssp->srcu_lock_nesting[!idx]),
+diff --git a/kernel/rcu/srcutiny.c b/kernel/rcu/srcutiny.c
+index 6208c1d..5598cf6 100644
+--- a/kernel/rcu/srcutiny.c
++++ b/kernel/rcu/srcutiny.c
+@@ -124,11 +124,12 @@ void srcu_drive_gp(struct work_struct *wp)
+ 	ssp->srcu_cb_head = NULL;
+ 	ssp->srcu_cb_tail = &ssp->srcu_cb_head;
+ 	local_irq_enable();
+-	idx = ssp->srcu_idx;
+-	WRITE_ONCE(ssp->srcu_idx, !ssp->srcu_idx);
++	idx = (ssp->srcu_idx & 0x2) / 2;
++	WRITE_ONCE(ssp->srcu_idx, ssp->srcu_idx + 1);
+ 	WRITE_ONCE(ssp->srcu_gp_waiting, true);  /* srcu_read_unlock() wakes! */
+ 	swait_event_exclusive(ssp->srcu_wq, !READ_ONCE(ssp->srcu_lock_nesting[idx]));
+ 	WRITE_ONCE(ssp->srcu_gp_waiting, false); /* srcu_read_unlock() cheap. */
++	WRITE_ONCE(ssp->srcu_idx, ssp->srcu_idx + 1);
+ 
+ 	/* Invoke the callbacks we removed above. */
+ 	while (lh) {
+-- 
+2.9.5
 
-3.	Provide internal interface to start a Tree SRCU grace period.
-
-4.	Provide polling interfaces for Tiny SRCU grace periods.
-
-5.	Provide polling interfaces for Tree SRCU grace periods.
-
-6.	Document polling interfaces for Tree SRCU grace periods.
-
-7.	Add comment explaining cookie overflow/wrap.
-
-8.	Prepare for ->start_gp_poll and ->poll_gp_state.
-
-9.	Add writer-side tests of polling grace-period API.
-
-10.	Add reader-side tests of polling grace-period API.
-
-						Thanx, Paul
-
-------------------------------------------------------------------------
-
- Documentation/RCU/Design/Requirements/Requirements.rst |   18 ++
- include/linux/rcupdate.h                               |    2 
- include/linux/srcu.h                                   |    3 
- include/linux/srcutiny.h                               |    7 
- kernel/rcu/rcutorture.c                                |   99 +++++++++--
- kernel/rcu/srcutiny.c                                  |   77 +++++++-
- kernel/rcu/srcutree.c                                  |  148 +++++++++++++----
- 7 files changed, 296 insertions(+), 58 deletions(-)
