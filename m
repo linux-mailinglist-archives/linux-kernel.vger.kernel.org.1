@@ -2,132 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DCE22EBCD1
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 11:53:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 701452EBCD2
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 11:56:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727209AbhAFKxh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Jan 2021 05:53:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51566 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726422AbhAFKxg (ORCPT
+        id S1726932AbhAFKym (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Jan 2021 05:54:42 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:40556 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726125AbhAFKyl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Jan 2021 05:53:36 -0500
-Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 548ADC06134C
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Jan 2021 02:52:56 -0800 (PST)
-Received: by mail-pg1-x52e.google.com with SMTP id q7so68698pgm.5
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Jan 2021 02:52:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=RdSuS4O3pgsSJDubp0Sdbb5PmZnWqekG9GBR9kGQ6Ms=;
-        b=Kkk0SFcPdHzsvopRV3ywd32zskF+b41A2+GSBLD4vIOcmgLkZq+LhQnas7D7pNccPA
-         /1e13dclIvT7koa2EYcOwCp3M+2hoQ/Ip+uJEvlMJVRGMZXDiR6BZk1aKoyVtqLb/TD9
-         2TBQlUSZzI3D8atLNOZsK6C/cs0dXMUwF2pDI=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=RdSuS4O3pgsSJDubp0Sdbb5PmZnWqekG9GBR9kGQ6Ms=;
-        b=K4pwCwkh7fuO14/e6gdRYUKIGQ7rgqdhIJZAS8hNI8lrUlayw/Z9BZFx8Z6XAPVm1Z
-         oGcaAoi17vAz1nIRN+v7SXsehEJT2Y8MoJUNwbU5rcbvMI4gWA0fSwjmyysTDqYMj3mB
-         yAKkWn5pp3CfSSx32WHtkpSv3zXwv9kK01XUDyJNXpa/yt5b60ctI3jAx3R2k4kwwCpA
-         8FlT2VUKoy4w83ktqbeQT7Z06mwXirFP8L/ZYv+Mr0WrhvbEOC5dV1twI2v91K2yvLCo
-         fQX8tjBJwqTG8amBWyyutKH6rSvkBJxXXOXVo5YUg9oDMNXU6jPcjvtFcc+aT7adL7Dg
-         N67A==
-X-Gm-Message-State: AOAM5329m2qUxP6vIzuPl6p+qBSq0mPQg7BdrMRkLg4NeoPLJRjpHxRy
-        y250sWcsITUK3a4kBhrGHrNJCNIGsB964PyP8tpeQQ==
-X-Google-Smtp-Source: ABdhPJxV68VpE5c0N4JWMEzUiOtNfP5BS+xplG/O+2joyxL835C9qEqKNNOFQejs7OTi68aJybpnHBGk4DGiAN9ODWo=
-X-Received: by 2002:a63:1a10:: with SMTP id a16mr3806685pga.317.1609930375833;
- Wed, 06 Jan 2021 02:52:55 -0800 (PST)
+        Wed, 6 Jan 2021 05:54:41 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1609930395;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=QaEUzQ6yh8rdW3dVNi86zCFUfCiUJ9L8dDbZnEnAkcY=;
+        b=R25v4GjfsMzXg3n9yySBs1Zy8OUDsAj00HIUj7jDcEqqViNOcrp9JV5HeaJrlPAirXAHzB
+        hVQ1l3Np95Cg+8CKCfbT9ceiPoQtfdWoGYPC+Zqv5E8Zm9Zmg3MIn/gAKfhj0QM79hGrkc
+        VuaMVujT8pLnG0Twpaeg375cIdTEV0U=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-442-lyyoWnXsNmOTb6hm22CjDg-1; Wed, 06 Jan 2021 05:53:13 -0500
+X-MC-Unique: lyyoWnXsNmOTb6hm22CjDg-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 32F0810054FF;
+        Wed,  6 Jan 2021 10:53:12 +0000 (UTC)
+Received: from localhost.localdomain (unknown [10.35.206.196])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 858EC5B4A9;
+        Wed,  6 Jan 2021 10:53:08 +0000 (UTC)
+From:   Maxim Levitsky <mlevitsk@redhat.com>
+To:     kvm@vger.kernel.org
+Cc:     Joerg Roedel <joro@8bytes.org>, Wanpeng Li <wanpengli@tencent.com>,
+        linux-kernel@vger.kernel.org (open list:X86 ARCHITECTURE (32-BIT AND
+        64-BIT)),
+        x86@kernel.org (maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)),
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Jim Mattson <jmattson@google.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Maxim Levitsky <mlevitsk@redhat.com>
+Subject: [PATCH 0/2] RFC: VMX: fix for disappearing L1->L2 event injection on
+ L1 migration
+Date:   Wed,  6 Jan 2021 12:53:04 +0200
+Message-Id: <20210106105306.450602-1-mlevitsk@redhat.com>
 MIME-Version: 1.0
-References: <1608642587-15634-1-git-send-email-weiyi.lu@mediatek.com>
- <1608642587-15634-11-git-send-email-weiyi.lu@mediatek.com>
- <CAATdQgC_BnZywDxaZgmF72VRoAZ-1vFGrPD9GL4uEBhsKQTxnQ@mail.gmail.com> <1609929721.7491.3.camel@mtksdaap41>
-In-Reply-To: <1609929721.7491.3.camel@mtksdaap41>
-From:   Ikjoon Jang <ikjn@chromium.org>
-Date:   Wed, 6 Jan 2021 18:52:45 +0800
-Message-ID: <CAATdQgBJ7EVRJW7iJG63yW89fh5skpe9-UCd4pdZystV_JrvCg@mail.gmail.com>
-Subject: Re: [PATCH v6 10/22] clk: mediatek: Add MT8192 basic clocks support
-To:     Weiyi Lu <weiyi.lu@mediatek.com>
-Cc:     Rob Herring <robh@kernel.org>,
-        Nicolas Boichat <drinkcat@chromium.org>,
-        srv_heupstream <srv_heupstream@mediatek.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Project_Global_Chrome_Upstream_Group@mediatek.com,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        linux-clk@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 6, 2021 at 6:42 PM Weiyi Lu <weiyi.lu@mediatek.com> wrote:
->
-> On Wed, 2021-01-06 at 18:25 +0800, Ikjoon Jang wrote:
-> > On Tue, Dec 22, 2020 at 9:14 PM Weiyi Lu <weiyi.lu@mediatek.com> wrote:
-> > >
-> > > Add MT8192 basic clock providers, include topckgen, apmixedsys,
-> > > infracfg and pericfg.
-> > >
-> > > Signed-off-by: Weiyi Lu <weiyi.lu@mediatek.com>
-> > > ---
-> > >  drivers/clk/mediatek/Kconfig      |    8 +
-> > >  drivers/clk/mediatek/Makefile     |    1 +
-> > >  drivers/clk/mediatek/clk-mt8192.c | 1326 +++++++++++++++++++++++++++++++++++++
-> > >  drivers/clk/mediatek/clk-mux.h    |   15 +
-> > >  4 files changed, 1350 insertions(+)
-> > >  create mode 100644 drivers/clk/mediatek/clk-mt8192.c
-> > >
-> >
-> > <snip>
-> >
-> > > diff --git a/drivers/clk/mediatek/clk-mux.h b/drivers/clk/mediatek/clk-mux.h
-> > > index f5625f4..afbc7df 100644
-> > > --- a/drivers/clk/mediatek/clk-mux.h
-> > > +++ b/drivers/clk/mediatek/clk-mux.h
-> > > @@ -77,6 +77,21 @@ struct mtk_mux {
-> > >                         _width, _gate, _upd_ofs, _upd,                  \
-> > >                         CLK_SET_RATE_PARENT)
-> > >
-> > > +#define MUX_CLR_SET_UPD_FLAGS(_id, _name, _parents, _mux_ofs,          \
-> > > +                       _mux_set_ofs, _mux_clr_ofs, _shift, _width,     \
-> > > +                       _upd_ofs, _upd, _flags)                         \
-> > > +               GATE_CLR_SET_UPD_FLAGS(_id, _name, _parents, _mux_ofs,  \
-> > > +                       _mux_set_ofs, _mux_clr_ofs, _shift, _width,     \
-> > > +                       0, _upd_ofs, _upd, _flags,                      \
-> > > +                       mtk_mux_clr_set_upd_ops)
-> > > +
-> > > +#define MUX_CLR_SET_UPD(_id, _name, _parents, _mux_ofs,                        \
-> > > +                       _mux_set_ofs, _mux_clr_ofs, _shift, _width,     \
-> > > +                       _upd_ofs, _upd)                                 \
-> > > +               MUX_CLR_SET_UPD_FLAGS(_id, _name, _parents,             \
-> > > +                       _mux_ofs, _mux_set_ofs, _mux_clr_ofs, _shift,   \
-> > > +                       _width, _upd_ofs, _upd, CLK_SET_RATE_PARENT)
-> > > +
-> >
-> > conflicts, these macros are already existed in upstream.
->
-> really? These two macros don't show up in 5.11-rc1 yet.
+This is VMX version of the same issue as I reproduced on SVM.=0D
+=0D
+Unlike SVM, this version has 2 pending issues to resolve.=0D
+=0D
+1. This seems to break 'vmx' kvm-unit-test in=0D
+'error code <-> (!URG || prot_mode) [+]' case.=0D
+=0D
+The test basically tries to do nested vm entry with unrestricted guest disa=
+bled,=0D
+real mode, and for some reason that works without patch 2 of this series an=
+d it=0D
+doesn't cause the #GP to be injected, but with this patch the test complain=
+s=0D
+about unexpected #GP.=0D
+I suspect that this test case is broken, but this has to be investigated.=0D
+=0D
+2. L1 MTF injections are lost since kvm has no notion of them, this is TBD =
+to=0D
+be fixed.=0D
+=0D
+This was lightly tested on my nested migration test which no VMX sadly stil=
+l=0D
+crashes and burns on an (likely) unrelated issue.=0D
+=0D
+Best regards,=0D
+	Maxim Levitsky=0D
+=0D
+Maxim Levitsky (2):=0D
+  KVM: VMX: create vmx_process_injected_event=0D
+  KVM: nVMX: fix for disappearing L1->L2 event injection on L1 migration=0D
+=0D
+ arch/x86/kvm/vmx/nested.c | 12 ++++----=0D
+ arch/x86/kvm/vmx/vmx.c    | 60 ++++++++++++++++++++++++---------------=0D
+ arch/x86/kvm/vmx/vmx.h    |  4 +++=0D
+ 3 files changed, 47 insertions(+), 29 deletions(-)=0D
+=0D
+-- =0D
+2.26.2=0D
+=0D
 
-yep, maybe this one: a3ae549917f1 "clk: mediatek: Add new clkmux register API"
-
->
-> > >  struct clk *mtk_clk_register_mux(const struct mtk_mux *mux,
-> > >                                  struct regmap *regmap,
-> > >                                  spinlock_t *lock);
-> > > --
-> > > 1.8.1.1.dirty
-> > > _______________________________________________
-> > > Linux-mediatek mailing list
-> > > Linux-mediatek@lists.infradead.org
-> > > http://lists.infradead.org/mailman/listinfo/linux-mediatek
->
-> _______________________________________________
-> Linux-mediatek mailing list
-> Linux-mediatek@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-mediatek
