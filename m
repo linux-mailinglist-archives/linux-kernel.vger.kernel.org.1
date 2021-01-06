@@ -2,116 +2,222 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3BA72EBCF8
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 12:06:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 438312EBD04
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 12:07:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726407AbhAFLFV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Jan 2021 06:05:21 -0500
-Received: from mail-wr1-f49.google.com ([209.85.221.49]:46202 "EHLO
-        mail-wr1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725822AbhAFLFU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Jan 2021 06:05:20 -0500
-Received: by mail-wr1-f49.google.com with SMTP id d13so1993898wrc.13;
-        Wed, 06 Jan 2021 03:05:03 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=ERKXqQidLzskfZDszvErSOtk7AjjY2xYUr+92HjKwIk=;
-        b=aC3gbCwm+A8U7a1vITiDwHxhTFVQFjJxC1MWNGVegBAkU40oLzsbO8G5a1G9vnS71X
-         +AH51Zbg5HeGh16LemqGywLA2YfpSFKWV3DTwykbR0KtT8buaFpRVWNVfz46H5lT5Jag
-         NsND9KFQmCi7NPmi7Grw/mCbOQZiYyZsaybPdXv4gt2P5ZaDsEQaXoonLu3E7FNsiM/1
-         PTMry+0shYMurTp5qtQm0nKI1IsIdUbR9E9G6XurPm+QtpVGCpwSq5QwyBSe+wuaQgnY
-         aMe9TubDglTlKymLVrleHtKVke2z4406a9et+X7pKjU//ZTBX0GxHlAEsAZ4ej49HjRM
-         qkcw==
-X-Gm-Message-State: AOAM531466CDt0pmfEtuAbqV/YhAzBmsn939YSuW/JqlecYnTo/3iSgW
-        Ot3C6oubLziqM9Ng3hmRSIr2Yt8MmnM=
-X-Google-Smtp-Source: ABdhPJzJ8hJ0ilfKd0qWXBunlDpf5M0T0xeks8VGNhrH4/T16tRn2NKwFDdBIjTEj2xoam/pJNnhgA==
-X-Received: by 2002:a05:6000:1188:: with SMTP id g8mr3889805wrx.111.1609931077934;
-        Wed, 06 Jan 2021 03:04:37 -0800 (PST)
-Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
-        by smtp.gmail.com with ESMTPSA id k6sm2711898wmf.25.2021.01.06.03.04.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 06 Jan 2021 03:04:37 -0800 (PST)
-Date:   Wed, 6 Jan 2021 11:04:35 +0000
-From:   Wei Liu <wei.liu@kernel.org>
-To:     Michael Kelley <mikelley@microsoft.com>
-Cc:     Wei Liu <wei.liu@kernel.org>,
-        Linux on Hyper-V List <linux-hyperv@vger.kernel.org>,
-        "stable@kernel.org" <stable@kernel.org>,
-        KY Srinivasan <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        "open list:X86 ARCHITECTURE (32-BIT AND 64-BIT)" 
-        <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] x86/hyperv: check cpu mask after interrupt has been
- disabled
-Message-ID: <20210106110435.cajpxwbew4t5afye@liuwe-devbox-debian-v2>
-References: <20210105175043.28325-1-wei.liu@kernel.org>
- <MWHPR21MB15935E00EAEFD70E49A22667D7D19@MWHPR21MB1593.namprd21.prod.outlook.com>
+        id S1726636AbhAFLHs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Jan 2021 06:07:48 -0500
+Received: from relay.sw.ru ([185.231.240.75]:45968 "EHLO relay3.sw.ru"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726211AbhAFLHr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 Jan 2021 06:07:47 -0500
+Received: from [192.168.15.143]
+        by relay3.sw.ru with esmtp (Exim 4.94)
+        (envelope-from <ktkhai@virtuozzo.com>)
+        id 1kx6dY-00Fd3a-PP; Wed, 06 Jan 2021 14:05:56 +0300
+Subject: Re: [v3 PATCH 07/11] mm: vmscan: add per memcg shrinker nr_deferred
+To:     Yang Shi <shy828301@gmail.com>, guro@fb.com, shakeelb@google.com,
+        david@fromorbit.com, hannes@cmpxchg.org, mhocko@suse.com,
+        akpm@linux-foundation.org
+Cc:     linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210105225817.1036378-1-shy828301@gmail.com>
+ <20210105225817.1036378-8-shy828301@gmail.com>
+From:   Kirill Tkhai <ktkhai@virtuozzo.com>
+Message-ID: <a3452140-9f88-3cb9-0359-ca374f9e9d9d@virtuozzo.com>
+Date:   Wed, 6 Jan 2021 14:06:06 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <MWHPR21MB15935E00EAEFD70E49A22667D7D19@MWHPR21MB1593.namprd21.prod.outlook.com>
-User-Agent: NeoMutt/20180716
+In-Reply-To: <20210105225817.1036378-8-shy828301@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 05, 2021 at 06:20:05PM +0000, Michael Kelley wrote:
-> From: Wei Liu <wei.liu@kernel.org> Sent: Tuesday, January 5, 2021 9:51 AM
-> > 
-> > We've observed crashes due to an empty cpu mask in
-> > hyperv_flush_tlb_others.  Obviously the cpu mask in question is changed
-> > between the cpumask_empty call at the beginning of the function and when
-> > it is actually used later.
-> > 
-> > One theory is that an interrupt comes in between and a code path ends up
-> > changing the mask. Move the check after interrupt has been disabled to
-> > see if it fixes the issue.
-> > 
-> > Signed-off-by: Wei Liu <wei.liu@kernel.org>
-> > Cc: stable@kernel.org
-> > ---
-> >  arch/x86/hyperv/mmu.c | 12 +++++++++---
-> >  1 file changed, 9 insertions(+), 3 deletions(-)
-> > 
-> > diff --git a/arch/x86/hyperv/mmu.c b/arch/x86/hyperv/mmu.c
-> > index 5208ba49c89a..2c87350c1fb0 100644
-> > --- a/arch/x86/hyperv/mmu.c
-> > +++ b/arch/x86/hyperv/mmu.c
-> > @@ -66,11 +66,17 @@ static void hyperv_flush_tlb_others(const struct cpumask *cpus,
-> >  	if (!hv_hypercall_pg)
-> >  		goto do_native;
-> > 
-> > -	if (cpumask_empty(cpus))
-> > -		return;
-> > -
-> >  	local_irq_save(flags);
-> > 
-> > +	/*
-> > +	 * Only check the mask _after_ interrupt has been disabled to avoid the
-> > +	 * mask changing under our feet.
-> > +	 */
-> > +	if (cpumask_empty(cpus)) {
-> > +		local_irq_restore(flags);
-> > +		return;
-> > +	}
-> > +
-> >  	flush_pcpu = (struct hv_tlb_flush **)
-> >  		     this_cpu_ptr(hyperv_pcpu_input_arg);
-> > 
-> > --
-> > 2.20.1
+On 06.01.2021 01:58, Yang Shi wrote:
+> Currently the number of deferred objects are per shrinker, but some slabs, for example,
+> vfs inode/dentry cache are per memcg, this would result in poor isolation among memcgs.
 > 
-> Reviewed-by:  Michael Kelley <mikelley@microsoft.com>
+> The deferred objects typically are generated by __GFP_NOFS allocations, one memcg with
+> excessive __GFP_NOFS allocations may blow up deferred objects, then other innocent memcgs
+> may suffer from over shrink, excessive reclaim latency, etc.
+> 
+> For example, two workloads run in memcgA and memcgB respectively, workload in B is vfs
+> heavy workload.  Workload in A generates excessive deferred objects, then B's vfs cache
+> might be hit heavily (drop half of caches) by B's limit reclaim or global reclaim.
+> 
+> We observed this hit in our production environment which was running vfs heavy workload
+> shown as the below tracing log:
+> 
+> <...>-409454 [016] .... 28286961.747146: mm_shrink_slab_start: super_cache_scan+0x0/0x1a0 ffff9a83046f3458:
+> nid: 1 objects to shrink 3641681686040 gfp_flags GFP_HIGHUSER_MOVABLE|__GFP_ZERO pgs_scanned 1 lru_pgs 15721
+> cache items 246404277 delta 31345 total_scan 123202138
+> <...>-409454 [022] .... 28287105.928018: mm_shrink_slab_end: super_cache_scan+0x0/0x1a0 ffff9a83046f3458:
+> nid: 1 unused scan count 3641681686040 new scan count 3641798379189 total_scan 602
+> last shrinker return val 123186855
+> 
+> The vfs cache and page cache ration was 10:1 on this machine, and half of caches were dropped.
+> This also resulted in significant amount of page caches were dropped due to inodes eviction.
+> 
+> Make nr_deferred per memcg for memcg aware shrinkers would solve the unfairness and bring
+> better isolation.
+> 
+> When memcg is not enabled (!CONFIG_MEMCG or memcg disabled), the shrinker's nr_deferred
+> would be used.  And non memcg aware shrinkers use shrinker's nr_deferred all the time.
+> 
+> Signed-off-by: Yang Shi <shy828301@gmail.com>
+> ---
+>  include/linux/memcontrol.h |  7 +++---
+>  mm/vmscan.c                | 49 +++++++++++++++++++++++++-------------
+>  2 files changed, 37 insertions(+), 19 deletions(-)
+> 
+> diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
+> index e05bbe8277cc..5599082df623 100644
+> --- a/include/linux/memcontrol.h
+> +++ b/include/linux/memcontrol.h
+> @@ -93,12 +93,13 @@ struct lruvec_stat {
+>  };
+>  
+>  /*
+> - * Bitmap of shrinker::id corresponding to memcg-aware shrinkers,
+> - * which have elements charged to this memcg.
+> + * Bitmap and deferred work of shrinker::id corresponding to memcg-aware
+> + * shrinkers, which have elements charged to this memcg.
+>   */
+>  struct memcg_shrinker_info {
+>  	struct rcu_head rcu;
+> -	unsigned long map[];
+> +	unsigned long *map;
+> +	atomic_long_t *nr_deferred;
+>  };
+>  
+>  /*
+> diff --git a/mm/vmscan.c b/mm/vmscan.c
+> index 0033659abf9e..72259253e414 100644
+> --- a/mm/vmscan.c
+> +++ b/mm/vmscan.c
+> @@ -193,10 +193,12 @@ static void memcg_free_shrinker_info_rcu(struct rcu_head *head)
+>  }
+>  
+>  static int memcg_expand_one_shrinker_info(struct mem_cgroup *memcg,
+> -					  int size, int old_size)
+> +					  int m_size, int d_size,
+> +					  int old_m_size, int old_d_size)
+>  {
+>  	struct memcg_shrinker_info *new, *old;
+>  	int nid;
+> +	int size = m_size + d_size;
+>  
+>  	for_each_node(nid) {
+>  		old = rcu_dereference_protected(
+> @@ -209,9 +211,18 @@ static int memcg_expand_one_shrinker_info(struct mem_cgroup *memcg,
+>  		if (!new)
+>  			return -ENOMEM;
+>  
+> -		/* Set all old bits, clear all new bits */
+> -		memset(new->map, (int)0xff, old_size);
+> -		memset((void *)new->map + old_size, 0, size - old_size);
+> +		new->map = (unsigned long *)((unsigned long)new + sizeof(*new));
+> +		new->nr_deferred = (atomic_long_t *)((unsigned long)new +
+> +					sizeof(*new) + m_size);
+
+Can't we write this more compact?
+
+		new->map = (unsigned long *)(new + 1);
+		new->nr_deferred = (atomic_long_t)(new->map + 1);
+
+> +
+> +		/* map: set all old bits, clear all new bits */
+> +		memset(new->map, (int)0xff, old_m_size);
+> +		memset((void *)new->map + old_m_size, 0, m_size - old_m_size);
+> +		/* nr_deferred: copy old values, clear all new values */
+> +		memcpy((void *)new->nr_deferred, (void *)old->nr_deferred,
+> +		       old_d_size);
+
+Why not
+	 	memcpy(new->nr_deferred, old->nr_deferred, old_d_size);
+?
+
+> +		memset((void *)new->nr_deferred + old_d_size, 0,
+> +		       d_size - old_d_size);
+>  
+>  		rcu_assign_pointer(memcg->nodeinfo[nid]->shrinker_info, new);
+>  		call_rcu(&old->rcu, memcg_free_shrinker_info_rcu);
+> @@ -226,9 +237,6 @@ void memcg_free_shrinker_info(struct mem_cgroup *memcg)
+>  	struct memcg_shrinker_info *info;
+>  	int nid;
+>  
+> -	if (mem_cgroup_is_root(memcg))
+> -		return;
+> -
+>  	for_each_node(nid) {
+>  		pn = mem_cgroup_nodeinfo(memcg, nid);
+>  		info = rcu_dereference_protected(pn->shrinker_info, true);
+> @@ -242,12 +250,13 @@ int memcg_alloc_shrinker_info(struct mem_cgroup *memcg)
+>  {
+>  	struct memcg_shrinker_info *info;
+>  	int nid, size, ret = 0;
+> -
+> -	if (mem_cgroup_is_root(memcg))
+> -		return 0;
+> +	int m_size, d_size = 0;
+>  
+>  	down_read(&shrinker_rwsem);
+> -	size = DIV_ROUND_UP(shrinker_nr_max, BITS_PER_LONG) * sizeof(unsigned long);
+> +	m_size = DIV_ROUND_UP(shrinker_nr_max, BITS_PER_LONG) * sizeof(unsigned long);
+> +	d_size = shrinker_nr_max * sizeof(atomic_long_t);
+> +	size = m_size + d_size;
+> +
+>  	for_each_node(nid) {
+>  		info = kvzalloc(sizeof(*info) + size, GFP_KERNEL);
+>  		if (!info) {
+> @@ -255,6 +264,9 @@ int memcg_alloc_shrinker_info(struct mem_cgroup *memcg)
+>  			ret = -ENOMEM;
+>  			break;
+>  		}
+> +		info->map = (unsigned long *)((unsigned long)info + sizeof(*info));
+> +		info->nr_deferred = (atomic_long_t *)((unsigned long)info +
+> +					sizeof(*info) + m_size);
+>  		rcu_assign_pointer(memcg->nodeinfo[nid]->shrinker_info, info);
+>  	}
+>  	up_read(&shrinker_rwsem);
+> @@ -265,10 +277,16 @@ int memcg_alloc_shrinker_info(struct mem_cgroup *memcg)
+>  static int memcg_expand_shrinker_info(int new_id)
+>  {
+>  	int size, old_size, ret = 0;
+> +	int m_size, d_size = 0;
+> +	int old_m_size, old_d_size = 0;
+>  	struct mem_cgroup *memcg;
+>  
+> -	size = DIV_ROUND_UP(new_id + 1, BITS_PER_LONG) * sizeof(unsigned long);
+> -	old_size = DIV_ROUND_UP(shrinker_nr_max, BITS_PER_LONG) * sizeof(unsigned long);
+> +	m_size = DIV_ROUND_UP(new_id + 1, BITS_PER_LONG) * sizeof(unsigned long);
+> +	d_size = (new_id + 1) * sizeof(atomic_long_t);
+> +	size = m_size + d_size;
+> +	old_m_size = DIV_ROUND_UP(shrinker_nr_max, BITS_PER_LONG) * sizeof(unsigned long);
+> +	old_d_size = shrinker_nr_max * sizeof(atomic_long_t);
+> +	old_size = old_m_size + old_d_size;
+>  	if (size <= old_size)
+>  		return 0;
+
+This replication of patch [4/11] looks awkwardly. Please, try to incorporate
+the same changes to nr_deferred as I requested for shrinker_map in [4/11].
+
+>  
+> @@ -277,9 +295,8 @@ static int memcg_expand_shrinker_info(int new_id)
+>  
+>  	memcg = mem_cgroup_iter(NULL, NULL, NULL);
+>  	do {
+> -		if (mem_cgroup_is_root(memcg))
+> -			continue;
+> -		ret = memcg_expand_one_shrinker_info(memcg, size, old_size);
+> +		ret = memcg_expand_one_shrinker_info(memcg, m_size, d_size,
+> +						     old_m_size, old_d_size);
+>  		if (ret) {
+>  			mem_cgroup_iter_break(NULL, memcg);
+>  			goto out;
 > 
 
-Applied to hyperv-fixes.
-
-Wei.
