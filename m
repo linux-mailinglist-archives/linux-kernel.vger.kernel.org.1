@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 683722EB91D
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 05:52:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E7F062EB90F
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 05:52:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727308AbhAFEvW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 23:51:22 -0500
-Received: from mail.kernel.org ([198.145.29.99]:33376 "EHLO mail.kernel.org"
+        id S1726974AbhAFEuS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 23:50:18 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33378 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726791AbhAFEuR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1726794AbhAFEuR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 5 Jan 2021 23:50:17 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DD862230FE;
-        Wed,  6 Jan 2021 04:48:56 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1B02822D01;
+        Wed,  6 Jan 2021 04:48:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1609908537;
-        bh=4N/ttNNejpsHl6sFyhRfALMQ7Vl3QKfj945XUGPFMaA=;
+        bh=UnD48NmW6BOlX27GwWs89YVapaipnYJPMncaS2Q2YQE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=W9QpSS64Ko5SeN3Ta8jJtsoDq0TvmLq5pJddrrB8+jikQ42e2L94cxm4fGVsUBx3+
-         +FUzJsx69+LUs5R+WyIHjy7FGFotEV5nLmiTPb7vyBRSZ6zN3KSh8fZQUcOGPINjEh
-         jI4sIMRYmbRasDQayPzGWzxSU0hbzZtCB01NSu8cw1yNm+OBUldN7HiwT61hOJHXRm
-         sxxgvlbOFaaZkfqIKqUEIRQ318UX4vSsdqaIVibrCcrqpt3u1mNzWjOZLBHp2Wnm6d
-         ggep5H1EduyAzGCbjaQyF0O34Mk0Ity3rOM6CzwjkLOsQjOr9MrEQMqdcGvqzR2Ijc
-         yO5pyo1phHC3Q==
+        b=OKzuZcQUV1iO1g+wQ1OOt91QT7LyxrNdR2suqblkc9yLEBsrp9CRuoXdtm9XmZL3F
+         TidAqF0dCkXhcE0qIQq3FnuajjJHHGs9cpz5sFfp13mRt7KVQ0roKxIASUfmkIVhrM
+         VEBTqgaooK1TzjCpN83vw+WOItZ2v2EpU0s4PLujehB97iNddRbwdY6y7v7gkvj9mn
+         q2aPtdxkA1tMg47rj0P8yujyWihXIFurDw9BBO3Cl8fOqnYaz+twsuxABktezIYJ9l
+         msLuIRkUxTTNP8jvghMSRj7sJlwnWYb3bvdmYo9U+LRuDdOi+wEal8sBorfm8uYe0w
+         d746bjL/RRKpw==
 From:   paulmck@kernel.org
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -34,9 +34,9 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         Frederic Weisbecker <frederic@kernel.org>,
         Neeraj Upadhyay <neeraju@codeaurora.org>,
         "Paul E . McKenney" <paulmck@kernel.org>
-Subject: [PATCH tip/core/rcu 10/21] rcu/nocb: Set SEGCBLIST_SOFTIRQ_ONLY at the very last stage of de-offloading
-Date:   Tue,  5 Jan 2021 20:48:42 -0800
-Message-Id: <20210106044853.20812-10-paulmck@kernel.org>
+Subject: [PATCH tip/core/rcu 11/21] rcu/nocb: Only cond_resched() from actual offloaded batch processing
+Date:   Tue,  5 Jan 2021 20:48:43 -0800
+Message-Id: <20210106044853.20812-11-paulmck@kernel.org>
 X-Mailer: git-send-email 2.9.5
 In-Reply-To: <20210106013950.GA14663@paulmck-ThinkPad-P72>
 References: <20210106013950.GA14663@paulmck-ThinkPad-P72>
@@ -46,9 +46,10 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Frederic Weisbecker <frederic@kernel.org>
 
-This commit sets SEGCBLIST_SOFTIRQ_ONLY once toggling is otherwise fully
-complete, allowing further RCU callback manipulation to be carried out
-locklessly and locally.
+During a toggle operations, rcu_do_batch() may be invoked concurrently
+by softirqs and offloaded processing for a given CPU's callbacks.
+This commit therefore makes sure cond_resched() is invoked only from
+the offloaded context.
 
 Cc: Josh Triplett <josh@joshtriplett.org>
 Cc: Steven Rostedt <rostedt@goodmis.org>
@@ -62,29 +63,23 @@ Tested-by: Boqun Feng <boqun.feng@gmail.com>
 Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/rcu/tree_plugin.h | 9 ++++++++-
- 1 file changed, 8 insertions(+), 1 deletion(-)
+ kernel/rcu/tree.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/kernel/rcu/tree_plugin.h b/kernel/rcu/tree_plugin.h
-index 35dc9b3..8641b72 100644
---- a/kernel/rcu/tree_plugin.h
-+++ b/kernel/rcu/tree_plugin.h
-@@ -2352,7 +2352,14 @@ static int __rcu_nocb_rdp_deoffload(struct rcu_data *rdp)
- 	 */
- 	rcu_nocb_lock_irqsave(rdp, flags);
- 	rcu_nocb_flush_bypass(rdp, NULL, jiffies);
--	rcu_nocb_unlock_irqrestore(rdp, flags);
-+	rcu_segcblist_set_flags(cblist, SEGCBLIST_SOFTIRQ_ONLY);
-+	/*
-+	 * With SEGCBLIST_SOFTIRQ_ONLY, we can't use
-+	 * rcu_nocb_unlock_irqrestore() anymore. Theoretically we
-+	 * could set SEGCBLIST_SOFTIRQ_ONLY with cb unlocked and IRQs
-+	 * disabled now, but let's be paranoid.
-+	 */
-+	raw_spin_unlock_irqrestore(&rdp->nocb_lock, flags);
- 
- 	return ret;
- }
+diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+index 83362f6..4ef59a5 100644
+--- a/kernel/rcu/tree.c
++++ b/kernel/rcu/tree.c
+@@ -2516,8 +2516,7 @@ static void rcu_do_batch(struct rcu_data *rdp)
+ 			/* Exceeded the time limit, so leave. */
+ 			break;
+ 		}
+-		if (offloaded) {
+-			WARN_ON_ONCE(in_serving_softirq());
++		if (!in_serving_softirq()) {
+ 			local_bh_enable();
+ 			lockdep_assert_irqs_enabled();
+ 			cond_resched_tasks_rcu_qs();
 -- 
 2.9.5
 
