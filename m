@@ -2,161 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 716A72EBBFC
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 10:57:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 62AB42EBBFF
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 10:57:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727200AbhAFJ4I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Jan 2021 04:56:08 -0500
-Received: from mx2.suse.de ([195.135.220.15]:34810 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727183AbhAFJ4H (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Jan 2021 04:56:07 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1609926920; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=AyhuOFryeJUwIu0CJ6EAPjrR45s4g3oEm7P1mBVda9Y=;
-        b=V4znQ33PtuoQSebKcH/T9BBg2BulSvISub/eOka4m9ye1jOQxtwpqbgeGAo17I8/m7ta0d
-        HByYX8Nsb4kPXIWsNVFB1nVkDIlsaczb9CVXor7VEDSg6jy/5+Iq0B6PX+tNv8uV30yR+J
-        aBl6pac+4QobMUMA8Dw2Q9wncTDE75E=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id CE951ACAF;
-        Wed,  6 Jan 2021 09:55:20 +0000 (UTC)
-Date:   Wed, 6 Jan 2021 10:55:20 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     Dan Williams <dan.j.williams@intel.com>
-Cc:     linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
-        David Hildenbrand <david@redhat.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mm: Teach pfn_to_online_page() about ZONE_DEVICE section
- collisions
-Message-ID: <20210106095520.GJ13207@dhcp22.suse.cz>
-References: <160990599013.2430134.11556277600719835946.stgit@dwillia2-desk3.amr.corp.intel.com>
+        id S1726787AbhAFJ4y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Jan 2021 04:56:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42674 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726303AbhAFJ4w (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 Jan 2021 04:56:52 -0500
+Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4E4FC06134C
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Jan 2021 01:56:12 -0800 (PST)
+Received: by mail-pg1-x532.google.com with SMTP id 30so1887932pgr.6
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Jan 2021 01:56:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=rDsopHKKF607Xe9UdumCtEOjuD6D8IDJARDfhwx961A=;
+        b=UjuHEcbWMscc6ZSzJ7TDd9JJCm9n4VnkUlStwKAOguAfU/sdlDko1X3O+Il4eCep64
+         FNMBnXnaqWF67HUYimnCpXImAWJEkzwV+MWbkc17EMYL/ea/G0B7hQKxtdi0sFF/Tj9z
+         x1s3BUdje4Kfc+9MTTJJ78IS/4DaKLqeElEJmfF7jxQl0iH1ydnzMOtNc5BcXAx/Jh93
+         6LbgWt66T3Y4Rhhp7pHYyArPqqYNwV8Dnqo+HhnJR2q01PGJt0ODj9fZl6aY/jhAOHy+
+         ndgOm1QUNwCgNMmYCzipR+WychdTi4aVTigrqsMZlXe77hrmyz0iwJUgvV99SwM9m2gb
+         OSsA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=rDsopHKKF607Xe9UdumCtEOjuD6D8IDJARDfhwx961A=;
+        b=abYtioZrGm/Qmdh8arKMzzS4I5jgOXlONbkYt6P3yFz4mN6xaBLtfNtKZU4txK61uv
+         DvZEHBNYYQUmthIzXoy4bCImVz67h97aF/PoOStifIYfFyCl8l4iKPUV+pVArffcXl43
+         vtS9thMlM6+JmaKP4/wr0rjCpLEjbtoZN879ouy6gJIiLS8uqP4o7015eFe+Hse1835G
+         XqYCcFIXY2VHLDjom/hv/bWoO1+Z0txe149C02GM3AxKqr7u8kkpF6HpkNDI19T6Sre0
+         wGwc5iffAQ09HbTd6FKC6XpGwlUSig8lNOo8khezG40yRnkk3BegnlLbwb/5DFpMZsSH
+         sq7w==
+X-Gm-Message-State: AOAM5313hdDEREUrQYBrXHHD1FmYSkoJaok5jn7YFxkojocz8KBJCoFv
+        nFktUST+Wtyyv+AYMD22EAFhcA==
+X-Google-Smtp-Source: ABdhPJyhjklbZ9D8h8V3INNROw/UDmBeF+8wOE+aDWhFonc1dFAFl0LbkZMRp9mJfjLysXE0UYyqiw==
+X-Received: by 2002:a65:5244:: with SMTP id q4mr3762581pgp.50.1609926972231;
+        Wed, 06 Jan 2021 01:56:12 -0800 (PST)
+Received: from localhost ([122.172.20.109])
+        by smtp.gmail.com with ESMTPSA id e5sm1963171pfc.76.2021.01.06.01.56.11
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 06 Jan 2021 01:56:11 -0800 (PST)
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     devicetree-compiler@vger.kernel.org,
+        David Gibson <david@gibson.dropbear.id.au>
+Cc:     Viresh Kumar <viresh.kumar@linaro.org>,
+        Pantelis Antoniou <pantelis.antoniou@konsulko.com>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Bill Mills <bill.mills@linaro.org>, anmar.oueja@linaro.org
+Subject: [PATCH] dtc: Allow overlays to have .dtbo extension
+Date:   Wed,  6 Jan 2021 15:26:08 +0530
+Message-Id: <30fd0e5f2156665c713cf191c5fea9a5548360c0.1609926856.git.viresh.kumar@linaro.org>
+X-Mailer: git-send-email 2.25.0.rc1.19.g042ed3e048af
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <160990599013.2430134.11556277600719835946.stgit@dwillia2-desk3.amr.corp.intel.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 05-01-21 20:07:18, Dan Williams wrote:
-> While pfn_to_online_page() is able to determine pfn_valid() at
-> subsection granularity it is not able to reliably determine if a given
-> pfn is also online if the section is mixed with ZONE_DEVICE pfns.
+Allow the overlays to have .dtbo extension instead of just .dtb. This
+allows them to be identified easily by tools as well as humans.
 
-I would call out the problem more explicitly. E.g. something like
-"
-This means that pfn_to_online_page can lead to false positives and allow
-to return a struct page which is not fully initialized because it
-belongs to ZONE_DEVICE (PUT AN EXAMPLE OF SUCH AN UNITIALIZED PAGE
-HERE). That can lead to either crash on PagePoisoned assertion or a
-silently broken page state with debugging disabled.
-"
+Allow the dtbo outform in dtc.c for the same.
 
-I would also appreciate a more specific note about how the existing HW
-can trigger this. You have mentioned 64MB subsection examples in the
-other email. It would be great to mention it here as well.
+Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
 
-> Update move_pfn_range_to_zone() to flag (SECTION_TAINT_ZONE_DEVICE) a
-> section that mixes ZONE_DEVICE pfns with other online pfns. With
-> SECTION_TAINT_ZONE_DEVICE to delineate, pfn_to_online_page() can fall
-> back to a slow-path check for ZONE_DEVICE pfns in an online section.
-> 
-> With this implementation of pfn_to_online_page() pfn-walkers mostly only
-> need to check section metadata to determine pfn validity. In the
-> rare case of mixed-zone sections the pfn-walker will skip offline
-> ZONE_DEVICE pfns as expected.
+---
+Hello,
 
-The above paragraph is slightly confusing. You do not require
-pfn-walkers to check anything right? Section metadata is something that
-is and should be hidden from them. They are asking for an online page
-and get it or NULL. Nothing more nothing less.
+This was earlier posted for the Linux Kernel and here is the thread
+where Rob gave his feedback:
 
- 
-> Other notes:
-> 
-> Because the collision case is rare, and for simplicity, the
-> SECTION_TAINT_ZONE_DEVICE flag is never cleared once set.
+https://lore.kernel.org/lkml/CAL_Jsq+0dL=LHo8r9mY_weBP_bQ97UOBnt596J3JoVHwGNinHA@mail.gmail.com/
+---
+ dtc.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-I do not see a problem with that.
- 
-> pfn_to_online_page() was already borderline too large to be a macro /
-> inline function, but the additional logic certainly pushed it over that
-> threshold, and so it is moved to an out-of-line helper.
-
-Worth a separate patch.
-
-The approach is sensible. Thanks!
-
-I was worried that we do not have sufficient space for a new flag but
-the comment explains we have 6 bits available.  I haven't double checked
-that for the current state of the code. The comment is quite recent and
-I do not remember any substantial changes in this area. Still something
-that is rather fragile because an unexpected alignment would be a
-runtime failure which is good to stop random corruptions but not ideal.
-
-Is there any way to explicitly test for this? E.g. enforce a shared
-section by qemu and then trigger a pfn walk?
-
-> Fixes: ba72b4c8cf60 ("mm/sparsemem: support sub-section hotplug")
-> Cc: Andrew Morton <akpm@linux-foundation.org>
-> Reported-by: Michal Hocko <mhocko@suse.com>
-> Reported-by: David Hildenbrand <david@redhat.com>
-> Signed-off-by: Dan Williams <dan.j.williams@intel.com>
-
-[...]
-
-> +static int zone_id(const struct zone *zone)
-> +{
-> +	struct pglist_data *pgdat = zone->zone_pgdat;
-> +
-> +	return zone - pgdat->node_zones;
-> +}
-
-We already have zone_idx()
-
-> +
-> +static void section_taint_zone_device(struct zone *zone, unsigned long pfn)
-> +{
-> +	struct mem_section *ms = __nr_to_section(pfn_to_section_nr(pfn));
-> +
-> +	if (zone_id(zone) != ZONE_DEVICE)
-> +		return;
-> +
-> +	if (IS_ALIGNED(pfn, PAGES_PER_SECTION))
-> +		return;
-> +
-> +	ms->section_mem_map |= SECTION_TAINT_ZONE_DEVICE;
-> +}
-> +
->  /*
->   * Associate the pfn range with the given zone, initializing the memmaps
->   * and resizing the pgdat/zone data to span the added pages. After this
-> @@ -707,6 +769,15 @@ void __ref move_pfn_range_to_zone(struct zone *zone, unsigned long start_pfn,
->  	resize_pgdat_range(pgdat, start_pfn, nr_pages);
->  	pgdat_resize_unlock(pgdat, &flags);
->  
-> +	/*
-> +	 * Subsection population requires care in pfn_to_online_page().
-> +	 * Set the taint to enable the slow path detection of
-> +	 * ZONE_DEVICE pages in an otherwise  ZONE_{NORMAL,MOVABLE}
-> +	 * section.
-> +	 */
-> +	section_taint_zone_device(zone, start_pfn);
-> +	section_taint_zone_device(zone, start_pfn + nr_pages);
-
-I think it would be better to add the checks here and only set the flag
-in the called function. SECTION_TAINT_ZONE_DEVICE should go to where we
-define helpers for ther flags.
-
-> +
->  	/*
->  	 * TODO now we have a visible range of pages which are not associated
->  	 * with their zone properly. Not nice but set_pfnblock_flags_mask
-> 
-
+diff --git a/dtc.c b/dtc.c
+index bdb3f5945699..838c5df96c00 100644
+--- a/dtc.c
++++ b/dtc.c
+@@ -122,6 +122,8 @@ static const char *guess_type_by_name(const char *fname, const char *fallback)
+ 		return "dts";
+ 	if (!strcasecmp(s, ".yaml"))
+ 		return "yaml";
++	if (!strcasecmp(s, ".dtbo"))
++		return "dtb";
+ 	if (!strcasecmp(s, ".dtb"))
+ 		return "dtb";
+ 	return fallback;
+@@ -357,6 +359,8 @@ int main(int argc, char *argv[])
+ #endif
+ 	} else if (streq(outform, "dtb")) {
+ 		dt_to_blob(outf, dti, outversion);
++	} else if (streq(outform, "dtbo")) {
++		dt_to_blob(outf, dti, outversion);
+ 	} else if (streq(outform, "asm")) {
+ 		dt_to_asm(outf, dti, outversion);
+ 	} else if (streq(outform, "null")) {
 -- 
-Michal Hocko
-SUSE Labs
+2.25.0.rc1.19.g042ed3e048af
+
