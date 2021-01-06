@@ -2,103 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1E732EBAE9
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 08:57:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6AFED2EBAEA
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 08:57:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727094AbhAFH5K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Jan 2021 02:57:10 -0500
-Received: from mga01.intel.com ([192.55.52.88]:39976 "EHLO mga01.intel.com"
+        id S1727100AbhAFH50 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Jan 2021 02:57:26 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36464 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727009AbhAFH5J (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Jan 2021 02:57:09 -0500
-IronPort-SDR: 0skZls0VoMwnWwKjdj9ShdZWs0dcrg7yELjV3M1xaLAvVnls6s4QHu3HRtzvLnitTO9qi8opIE
- wm1kV3xx7PLw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9855"; a="195789238"
-X-IronPort-AV: E=Sophos;i="5.78,479,1599548400"; 
-   d="scan'208";a="195789238"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Jan 2021 23:56:29 -0800
-IronPort-SDR: yDHut+n4aefPf78hOogS3Kr6jN0wwWICSct9fIcfEgfZcHpiEKn39qIlyzhyr5UE/2EZQvVCvB
- IdHDY6xOU/rQ==
-X-IronPort-AV: E=Sophos;i="5.78,479,1599548400"; 
-   d="scan'208";a="395535554"
-Received: from shuo-intel.sh.intel.com (HELO localhost) ([10.239.154.30])
-  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Jan 2021 23:56:25 -0800
-Date:   Wed, 6 Jan 2021 15:56:23 +0800
-From:   Shuo A Liu <shuo.a.liu@intel.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, x86@kernel.org,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Yu Wang <yu1.wang@intel.com>,
-        Reinette Chatre <reinette.chatre@intel.com>,
-        Zhi Wang <zhi.a.wang@intel.com>,
-        Zhenyu Wang <zhenyuw@linux.intel.com>
-Subject: Re: [PATCH v6 06/18] virt: acrn: Introduce VM management interfaces
-Message-ID: <20210106075623.GB22447@shuo-intel.sh.intel.com>
-References: <20201201093853.12070-1-shuo.a.liu@intel.com>
- <20201201093853.12070-7-shuo.a.liu@intel.com>
- <X8YWa8IUCgOARYMS@kroah.com>
- <20201202021429.GL17702@shuo-intel.sh.intel.com>
- <20201215095259.GN17702@shuo-intel.sh.intel.com>
- <X9iJWXaIUpUq2qia@kroah.com>
- <20201215100251.GO17702@shuo-intel.sh.intel.com>
- <X/RxmiUYnhoQvdwz@kroah.com>
+        id S1726810AbhAFH50 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 Jan 2021 02:57:26 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 50BE722CB9;
+        Wed,  6 Jan 2021 07:56:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1609919805;
+        bh=GSzbqvWRTLYFX9ZnUGd+7eXsQVWIMeMM10OJZwxQlqE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=TJdToCYC7P1NxW1mJzoR5CdrL1XpNPWdZ2q6tvkvMoTshcajqRdy3NYJ9At0ojX1c
+         on3bh4DFGXoJLfwnL0aOyNfjmFsXC9I3S28Lb9rYlstMiTt2RtLHNSlqsd2izNQAeJ
+         FamPj32NIuCnfdvBVzx31VDYHFZjNeGK+loPRzto=
+Date:   Wed, 6 Jan 2021 08:56:42 +0100
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Xu Yilun <yilun.xu@intel.com>
+Cc:     arnd@arndb.de, lee.jones@linaro.org, linux-kernel@vger.kernel.org,
+        trix@redhat.com, lgoncalv@redhat.com, hao.wu@intel.com,
+        matthew.gerlach@intel.com, russell.h.weight@intel.com
+Subject: Re: [PATCH 2/2] misc: add support for retimers interfaces on Intel
+ MAX 10 BMC
+Message-ID: <X/VtOvRyoKJ9wCkH@kroah.com>
+References: <1609918567-13339-1-git-send-email-yilun.xu@intel.com>
+ <1609918567-13339-3-git-send-email-yilun.xu@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <X/RxmiUYnhoQvdwz@kroah.com>
-User-Agent: Mutt/1.8.3 (2017-05-23)
+In-Reply-To: <1609918567-13339-3-git-send-email-yilun.xu@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue  5.Jan'21 at 15:03:06 +0100, Greg Kroah-Hartman wrote:
->On Tue, Dec 15, 2020 at 06:02:51PM +0800, Shuo A Liu wrote:
->> On Tue 15.Dec'20 at 11:00:57 +0100, Greg Kroah-Hartman wrote:
->> > On Tue, Dec 15, 2020 at 05:52:59PM +0800, Shuo A Liu wrote:
->> > > On Wed  2.Dec'20 at 10:14:29 +0800, Shuo A Liu wrote:
->> > > > On Tue  1.Dec'20 at 11:09:47 +0100, Greg Kroah-Hartman wrote:
->> > > > > On Tue, Dec 01, 2020 at 05:38:41PM +0800, shuo.a.liu@intel.com wrote:
->> > > > > > +		vm_param->reserved0 = 0;
->> > > > > > +		vm_param->reserved1 = 0;
->> > > > >
->> > > > > NO!
->> > > > >
->> > > > > This means that userspace can put whatever crud they want in those
->> > > > > fields, and you will happily zero it out.  Then, when those reserved
->> > > > > fields are wanted to be used in the future, you will take those values
->> > > > > from userspace and accept them as a valid value.  But, since userspace
->> > > > > was sending crud before, now you will take that crud and do something
->> > > > > with it.
->> > > > >
->> > > > > TEST IT to verify that it is zero, that way userspace gets it right the
->> > > > > first time, and you don't get it wrong later, as you can not change it
->> > > > > later.
->> > > >
->> > > > OK. Thanks for the elaboration. I will test it and return -EINVAL if
->> > > > it is not zero.
->> > > >
->> > >
->> > > Hi Greg,
->> > >
->> > > Would you like to review other patches in this series on this version?
->> >
->> > Nope, it's the middle of the merge window, I can't do anything with any
->> > new patches until after 5.11-rc1 is out.  So I suggest you fix up the
->> > current issues and send a new patch series once 5.11-rc1 is released.
->>
->> Got it, thanks!
->
->Did this ever happen?  I don't see a new series anywhere, do you have a
->lore.kernel.org link?
+On Wed, Jan 06, 2021 at 03:36:07PM +0800, Xu Yilun wrote:
+> This driver supports the ethernet retimers (C827) for the Intel PAC
+> (Programmable Acceleration Card) N3000, which is a FPGA based Smart NIC.
+> 
+> C827 is an Intel(R) Ethernet serdes transceiver chip that supports
+> up to 100G transfer. On Intel PAC N3000 there are 2 C827 chips
+> managed by the Intel MAX 10 BMC firmware. They are configured in 4 ports
+> 10G/25G retimer mode. Host could query their link states and firmware
+> version information via retimer interfaces (Shared registers) on Intel
+> MAX 10 BMC. The driver creates sysfs interfaces for users to query these
+> information.
+> 
+> Signed-off-by: Xu Yilun <yilun.xu@intel.com>
+> ---
+>  .../ABI/testing/sysfs-driver-intel-m10-bmc-retimer |  32 +++++
+>  drivers/misc/Kconfig                               |  10 ++
+>  drivers/misc/Makefile                              |   1 +
+>  drivers/misc/intel-m10-bmc-retimer.c               | 158 +++++++++++++++++++++
+>  4 files changed, 201 insertions(+)
+>  create mode 100644 Documentation/ABI/testing/sysfs-driver-intel-m10-bmc-retimer
+>  create mode 100644 drivers/misc/intel-m10-bmc-retimer.c
+> 
+> diff --git a/Documentation/ABI/testing/sysfs-driver-intel-m10-bmc-retimer b/Documentation/ABI/testing/sysfs-driver-intel-m10-bmc-retimer
+> new file mode 100644
+> index 0000000..528712a
+> --- /dev/null
+> +++ b/Documentation/ABI/testing/sysfs-driver-intel-m10-bmc-retimer
+> @@ -0,0 +1,32 @@
+> +What:		/sys/bus/platform/devices/n3000bmc-retimer.*.auto/tag
+> +Date:		Jan 2021
+> +KernelVersion:	5.12
+> +Contact:	Xu Yilun <yilun.xu@intel.com>
+> +Description:	Read only. Returns the tag of the retimer chip. Now there are 2
+> +		retimer chips on Intel PAC N3000, they are tagged as
+> +		'retimer_A' and 'retimer_B'.
+> +		Format: "retimer_%c".
+> +
+> +What:		/sys/bus/platform/devices/n3000bmc-retimer.*.auto/sbus_version
+> +Date:		Jan 2021
+> +KernelVersion:	5.12
+> +Contact:	Xu Yilun <yilun.xu@intel.com>
+> +Description:	Read only. Returns the Transceiver bus firmware version of
+> +		the retimer chip.
+> +		Format: "0x%04x".
+> +
+> +What:		/sys/bus/platform/devices/n3000bmc-retimer.*.auto/serdes_version
+> +Date:		Jan 2021
+> +KernelVersion:	5.12
+> +Contact:	Xu Yilun <yilun.xu@intel.com>
+> +Description:	Read only. Returns the SERDES firmware version of the retimer
+> +		chip.
+> +		Format: "0x%04x".
+> +
+> +What:		/sys/bus/platform/devices/n3000bmc-retimer.*.auto/link_statusX
+> +Date:		Jan 2021
+> +KernelVersion:	5.12
+> +Contact:	Xu Yilun <yilun.xu@intel.com>
+> +Description:	Read only. Returns the status of each line side link. "1" for
+> +		link up, "0" for link down.
+> +		Format: "%u".
 
-Just back to work. :)
+Who is going to use all of these read-only attributes?
 
-Sent new series already. The link is
-https://lore.kernel.org/lkml/20210106075055.47226-1-shuo.a.liu@intel.com/
+And why isn't this information exported in the "normal" way for network
+devices?  Having them as custom sysfs attributes ensures that no
+existing tools will work with these at all, right?  Why not do the
+standard thing here isntead?
 
-Thanks
-shuo
+thanks,
+
+greg k-h
