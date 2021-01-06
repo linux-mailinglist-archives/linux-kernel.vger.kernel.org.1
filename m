@@ -2,68 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CDC5C2EBF18
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 14:50:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B0B62EBF1F
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 14:50:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727530AbhAFNpz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Jan 2021 08:45:55 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49912 "EHLO mail.kernel.org"
+        id S1725789AbhAFNql (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Jan 2021 08:46:41 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50446 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727306AbhAFNpy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Jan 2021 08:45:54 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7CD1C22B40;
-        Wed,  6 Jan 2021 13:45:13 +0000 (UTC)
+        id S1725836AbhAFNqk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 Jan 2021 08:46:40 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BE4DA2311A;
+        Wed,  6 Jan 2021 13:45:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609940714;
-        bh=dzveg0rL9XKUMaosUdzq5ZPSRie1W3jtdMWmi/+hiZ8=;
+        s=korg; t=1609940754;
+        bh=dCoF2O50cFUHjCxcKBfGbJ4M0gpxaJLAvMtc+XoF27U=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=pyfG6+RfMCFB39KoB8xKmp8vD9zh0nDfYmWpOYj7LCdVBpQK8hG0vq/vN/nkHYfBr
-         DJCU2jAdJKODN8xDm0q4I4+m843AibGk8CBktIuQdVeT35U0dvvSktGs9JfHWQ9UQo
-         o3EEj0i1kb05gbwhy9XZ5br02Dai+gG+fAbwpCz8=
-Date:   Wed, 6 Jan 2021 14:46:32 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Shuah Khan <skhan@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
-        stable@vger.kernel.org
-Subject: Re: [PATCH 4.19 00/35] 4.19.165-rc1 review
-Message-ID: <X/W/OBYOyPB7jrRz@kroah.com>
-References: <20210104155703.375788488@linuxfoundation.org>
- <46249e9b-218f-0a7f-24fc-23854e8ab7df@linuxfoundation.org>
+        b=saP0e/tkb9fUsADhfZ8zphsUzXLH5nHr03v0X18DRG4nTOOm5iF8uwxftDnxfirRn
+         t2AZbtNgRRWmOA7lPQb4FmNpvQVQvirHznbPK80l/iBodfuCjPfsoZtOOdtJOaHleX
+         LYGldEnecXvSTNm3P7+lBNC3P5e2HezXgqzfyA5c=
+Date:   Wed, 6 Jan 2021 14:47:14 +0100
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Zheng Yongjun <zhengyongjun3@huawei.com>
+Cc:     ezequiel@collabora.com, mchehab@kernel.org,
+        linux-media@vger.kernel.org, linux-rockchip@lists.infradead.org,
+        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH -next] media: rkvdec: use resource_size
+Message-ID: <X/W/YnBwP5q9sxkI@kroah.com>
+References: <20210106131820.32706-1-zhengyongjun3@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <46249e9b-218f-0a7f-24fc-23854e8ab7df@linuxfoundation.org>
+In-Reply-To: <20210106131820.32706-1-zhengyongjun3@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 05, 2021 at 09:44:26AM -0700, Shuah Khan wrote:
-> On 1/4/21 8:57 AM, Greg Kroah-Hartman wrote:
-> > This is the start of the stable review cycle for the 4.19.165 release.
-> > There are 35 patches in this series, all will be posted as a response
-> > to this one.  If anyone has any issues with these being applied, please
-> > let me know.
-> > 
-> > Responses should be made by Wed, 06 Jan 2021 15:56:52 +0000.
-> > Anything received after that time might be too late.
-> > 
-> > The whole patch series can be found in one patch at:
-> > 	https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.19.165-rc1.gz
-> > or in the git tree and branch at:
-> > 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.19.y
-> > and the diffstat can be found below.
-> > 
-> > thanks,
-> > 
-> > greg k-h
-> > 
+On Wed, Jan 06, 2021 at 09:18:20PM +0800, Zheng Yongjun wrote:
+> Use resource_size rather than a verbose computation on
+> the end and start fields.
 > 
-> Compiled and booted on my test system. No dmesg regressions.
+> Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>
+> ---
+>  drivers/staging/media/rkvdec/rkvdec.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> Tested-by: Shuah Khan <skhan@linuxfoundation.org>
+> diff --git a/drivers/staging/media/rkvdec/rkvdec.c b/drivers/staging/media/rkvdec/rkvdec.c
+> index d25c4a37e2af..66572066e7a0 100644
+> --- a/drivers/staging/media/rkvdec/rkvdec.c
+> +++ b/drivers/staging/media/rkvdec/rkvdec.c
+> @@ -130,7 +130,7 @@ static void rkvdec_reset_fmt(struct rkvdec_ctx *ctx, struct v4l2_format *f,
+>  	memset(f, 0, sizeof(*f));
+>  	f->fmt.pix_mp.pixelformat = fourcc;
+>  	f->fmt.pix_mp.field = V4L2_FIELD_NONE;
+> -	f->fmt.pix_mp.colorspace = V4L2_COLORSPACE_REC709,
+> +	f->fmt.pix_mp.colorspace = V4L2_COLORSPACE_REC709;
+>  	f->fmt.pix_mp.ycbcr_enc = V4L2_YCBCR_ENC_DEFAULT;
+>  	f->fmt.pix_mp.quantization = V4L2_QUANTIZATION_DEFAULT;
+>  	f->fmt.pix_mp.xfer_func = V4L2_XFER_FUNC_DEFAULT;
+> -- 
+> 2.22.0
+> 
 
-Thanks for testing them all and letting me know.
-
-greg k-h
+That is not what this patch does at all :(
