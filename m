@@ -2,130 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DAAA52EBB89
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 10:06:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 529C82EBB92
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 10:12:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726810AbhAFJFk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Jan 2021 04:05:40 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48290 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726731AbhAFJFe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Jan 2021 04:05:34 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 04FC92310A;
-        Wed,  6 Jan 2021 09:04:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609923892;
-        bh=sZvoIahKG/sNJMkgiygvNzXeRBts4zBsF7PhddKvqTI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=HJ89Y8AE5++IfGOfpBPNtBXbQewUf+JuSwWtoG9d4Z5SL4shLMM1b8NAKMmVaSY5+
-         M+7ic3upkbcKXa716wzZqHwLgCRtBRf6sHWaMY424/z06p4xZAvxtpAjmKts1tVpBO
-         RRsB2/g6DNoheHFwz5B9+riBOnF83K8BSi7lXWfI=
-Date:   Wed, 6 Jan 2021 10:06:14 +0100
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Xu Yilun <yilun.xu@intel.com>
-Cc:     arnd@arndb.de, lee.jones@linaro.org, linux-kernel@vger.kernel.org,
-        trix@redhat.com, lgoncalv@redhat.com, hao.wu@intel.com,
-        matthew.gerlach@intel.com, russell.h.weight@intel.com
-Subject: Re: [PATCH 2/2] misc: add support for retimers interfaces on Intel
- MAX 10 BMC
-Message-ID: <X/V9hvXYlUOT9U2n@kroah.com>
-References: <1609918567-13339-1-git-send-email-yilun.xu@intel.com>
- <1609918567-13339-3-git-send-email-yilun.xu@intel.com>
- <X/VtOvRyoKJ9wCkH@kroah.com>
- <20210106085329.GA13860@yilunxu-OptiPlex-7050>
+        id S1726264AbhAFJMS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Jan 2021 04:12:18 -0500
+Received: from relay1-d.mail.gandi.net ([217.70.183.193]:16177 "EHLO
+        relay1-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725836AbhAFJMP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 Jan 2021 04:12:15 -0500
+X-Originating-IP: 86.202.109.140
+Received: from localhost (lfbn-lyo-1-13-140.w86-202.abo.wanadoo.fr [86.202.109.140])
+        (Authenticated sender: alexandre.belloni@bootlin.com)
+        by relay1-d.mail.gandi.net (Postfix) with ESMTPSA id 49C3E240011;
+        Wed,  6 Jan 2021 09:11:32 +0000 (UTC)
+Date:   Wed, 6 Jan 2021 10:11:31 +0100
+From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
+To:     Vinod Koul <vkoul@kernel.org>
+Cc:     Ludovic Desroches <ludovic.desroches@microchip.com>,
+        Tudor Ambarus <tudor.ambarus@microchip.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        dmaengine@vger.kernel.org
+Subject: Re: [PATCH] dmaengine: at_hdmac: remove platform data header
+Message-ID: <20210106091131.GL122615@piout.net>
+References: <20201228203022.2674133-1-alexandre.belloni@bootlin.com>
+ <20210106062453.GR2771@vkoul-mobl>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210106085329.GA13860@yilunxu-OptiPlex-7050>
+In-Reply-To: <20210106062453.GR2771@vkoul-mobl>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 06, 2021 at 04:53:29PM +0800, Xu Yilun wrote:
-> On Wed, Jan 06, 2021 at 08:56:42AM +0100, Greg KH wrote:
-> > On Wed, Jan 06, 2021 at 03:36:07PM +0800, Xu Yilun wrote:
-> > > This driver supports the ethernet retimers (C827) for the Intel PAC
-> > > (Programmable Acceleration Card) N3000, which is a FPGA based Smart NIC.
-> > > 
-> > > C827 is an Intel(R) Ethernet serdes transceiver chip that supports
-> > > up to 100G transfer. On Intel PAC N3000 there are 2 C827 chips
-> > > managed by the Intel MAX 10 BMC firmware. They are configured in 4 ports
-> > > 10G/25G retimer mode. Host could query their link states and firmware
-> > > version information via retimer interfaces (Shared registers) on Intel
-> > > MAX 10 BMC. The driver creates sysfs interfaces for users to query these
-> > > information.
-> > > 
-> > > Signed-off-by: Xu Yilun <yilun.xu@intel.com>
-> > > ---
-> > >  .../ABI/testing/sysfs-driver-intel-m10-bmc-retimer |  32 +++++
-> > >  drivers/misc/Kconfig                               |  10 ++
-> > >  drivers/misc/Makefile                              |   1 +
-> > >  drivers/misc/intel-m10-bmc-retimer.c               | 158 +++++++++++++++++++++
-> > >  4 files changed, 201 insertions(+)
-> > >  create mode 100644 Documentation/ABI/testing/sysfs-driver-intel-m10-bmc-retimer
-> > >  create mode 100644 drivers/misc/intel-m10-bmc-retimer.c
-> > > 
-> > > diff --git a/Documentation/ABI/testing/sysfs-driver-intel-m10-bmc-retimer b/Documentation/ABI/testing/sysfs-driver-intel-m10-bmc-retimer
-> > > new file mode 100644
-> > > index 0000000..528712a
-> > > --- /dev/null
-> > > +++ b/Documentation/ABI/testing/sysfs-driver-intel-m10-bmc-retimer
-> > > @@ -0,0 +1,32 @@
-> > > +What:		/sys/bus/platform/devices/n3000bmc-retimer.*.auto/tag
-> > > +Date:		Jan 2021
-> > > +KernelVersion:	5.12
-> > > +Contact:	Xu Yilun <yilun.xu@intel.com>
-> > > +Description:	Read only. Returns the tag of the retimer chip. Now there are 2
-> > > +		retimer chips on Intel PAC N3000, they are tagged as
-> > > +		'retimer_A' and 'retimer_B'.
-> > > +		Format: "retimer_%c".
-> > > +
-> > > +What:		/sys/bus/platform/devices/n3000bmc-retimer.*.auto/sbus_version
-> > > +Date:		Jan 2021
-> > > +KernelVersion:	5.12
-> > > +Contact:	Xu Yilun <yilun.xu@intel.com>
-> > > +Description:	Read only. Returns the Transceiver bus firmware version of
-> > > +		the retimer chip.
-> > > +		Format: "0x%04x".
-> > > +
-> > > +What:		/sys/bus/platform/devices/n3000bmc-retimer.*.auto/serdes_version
-> > > +Date:		Jan 2021
-> > > +KernelVersion:	5.12
-> > > +Contact:	Xu Yilun <yilun.xu@intel.com>
-> > > +Description:	Read only. Returns the SERDES firmware version of the retimer
-> > > +		chip.
-> > > +		Format: "0x%04x".
-> > > +
-> > > +What:		/sys/bus/platform/devices/n3000bmc-retimer.*.auto/link_statusX
-> > > +Date:		Jan 2021
-> > > +KernelVersion:	5.12
-> > > +Contact:	Xu Yilun <yilun.xu@intel.com>
-> > > +Description:	Read only. Returns the status of each line side link. "1" for
-> > > +		link up, "0" for link down.
-> > > +		Format: "%u".
-> > 
-> > Who is going to use all of these read-only attributes?
+On 06/01/2021 11:54:53+0530, Vinod Koul wrote:
+> On 28-12-20, 21:30, Alexandre Belloni wrote:
+> > linux/platform_data/dma-atmel.h is only used by the at_hdmac driver. Move
+> > the CFG bits definitions back in at_hdmac_regs.h and the remaining
+> > definitions in the driver.
 > 
-> The Intel OPAE (Open Programmable Acceleration Engine) lib handles these
-> attrs.
+> Applied, thanks...
+> 
+> >  /* Bitfields in CFG */
+> > -/* are in at_hdmac.h */
+> > +#define ATC_PER_MSB(h)	((0x30U & (h)) >> 4)	/* Extract most significant bits of a handshaking identifier */
+> > +
+> > +#define	ATC_SRC_PER(h)		(0xFU & (h))	/* Channel src rq associated with periph handshaking ifc h */
+> > +#define	ATC_DST_PER(h)		((0xFU & (h)) <<  4)	/* Channel dst rq associated with periph handshaking ifc h */
+> > +#define	ATC_SRC_REP		(0x1 <<  8)	/* Source Replay Mod */
+> > +#define	ATC_SRC_H2SEL		(0x1 <<  9)	/* Source Handshaking Mod */
+> > +#define		ATC_SRC_H2SEL_SW	(0x0 <<  9)
+> > +#define		ATC_SRC_H2SEL_HW	(0x1 <<  9)
+> > +#define	ATC_SRC_PER_MSB(h)	(ATC_PER_MSB(h) << 10)	/* Channel src rq (most significant bits) */
+> > +#define	ATC_DST_REP		(0x1 << 12)	/* Destination Replay Mod */
+> > +#define	ATC_DST_H2SEL		(0x1 << 13)	/* Destination Handshaking Mod */
+> > +#define		ATC_DST_H2SEL_SW	(0x0 << 13)
+> > +#define		ATC_DST_H2SEL_HW	(0x1 << 13)
+> > +#define	ATC_DST_PER_MSB(h)	(ATC_PER_MSB(h) << 14)	/* Channel dst rq (most significant bits) */
+> > +#define	ATC_SOD			(0x1 << 16)	/* Stop On Done */
+> > +#define	ATC_LOCK_IF		(0x1 << 20)	/* Interface Lock */
+> > +#define	ATC_LOCK_B		(0x1 << 21)	/* AHB Bus Lock */
+> > +#define	ATC_LOCK_IF_L		(0x1 << 22)	/* Master Interface Arbiter Lock */
+> > +#define		ATC_LOCK_IF_L_CHUNK	(0x0 << 22)
+> > +#define		ATC_LOCK_IF_L_BUFFER	(0x1 << 22)
+> > +#define	ATC_AHB_PROT_MASK	(0x7 << 24)	/* AHB Protection */
+> > +#define	ATC_FIFOCFG_MASK	(0x3 << 28)	/* FIFO Request Configuration */
+> > +#define		ATC_FIFOCFG_LARGESTBURST	(0x0 << 28)
+> > +#define		ATC_FIFOCFG_HALFFIFO		(0x1 << 28)
+> > +#define		ATC_FIFOCFG_ENOUGHSPACE		(0x2 << 28)
+> 
+> Make these use BIT() or GENMASK() later..?
+> 
 
-I have no idea what that is, you should put a pointer to the source for
-this in either the changelog comment, or here in the sysfs entries to
-show who is using this.
+Sure but for this patch, I wanted to make it clear that this was just
+moving code around.
 
-> For the version attrs, the OPAE retimer firmware update tool will query
-> them to make sure the update is succeed.
-
-Why does anyone care about that?  The firmware download logic should
-handle that properly, right?
-
-> For the link_status attrs, the OPAE net tools handles it.
-
-So not the normal userspace networking tools?
-
-If not, we need to get an ack from the networking developers as to why
-you are not following their existing user/kernel apis.
-
-thanks,
-
-greg k-h
+-- 
+Alexandre Belloni, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
