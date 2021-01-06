@@ -2,125 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2805F2EBC3C
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 11:17:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DA3AD2EBC42
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 11:21:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726883AbhAFKQv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Jan 2021 05:16:51 -0500
-Received: from wout1-smtp.messagingengine.com ([64.147.123.24]:50947 "EHLO
-        wout1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726468AbhAFKQu (ORCPT
+        id S1726719AbhAFKUG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Jan 2021 05:20:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46316 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726386AbhAFKUF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Jan 2021 05:16:50 -0500
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
-        by mailout.west.internal (Postfix) with ESMTP id 9E7C4F83;
-        Wed,  6 Jan 2021 05:15:44 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute6.internal (MEProxy); Wed, 06 Jan 2021 05:15:45 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm1; bh=myqDyFHEH+iHmGhF+arkhLZIvpo
-        yTTjFTgIeO/Smd8Y=; b=hKTiTjrqGjRlhbd1pzB8kwBmEOX3IWRlJiQDO59VROE
-        bnxgdaemSwa6uUaxcAlGVyFrpvuboMb8KgyUqr+624iaIa5RL9pwZs64wioemp0e
-        bAWqsovml3cVAPEVxYteg2ggMq1HgGKsHPBaG7OLeai3UUaPd43IpAz2NJ9qyySO
-        gxjPIc8713GPTOvarjRronI2ngWwOeNJgz0wT61QvRPGl+5ZmZ6zXyregXxRxxSs
-        VLTnsiUhlRUMaX2k/LNWv9/feUUIEDRW6HwmWr5SqU+0D2jIfQH9M8rb/FQZMaaO
-        iQ4uTD0ZK0h037kuzlcEnARbYUDJ7Pa3+nUU372xzrA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=myqDyF
-        HEH+iHmGhF+arkhLZIvpoyTTjFTgIeO/Smd8Y=; b=FYbDgJUi8nOpK9zgFZsNu2
-        X8VSnTL3L+0m0howma5SOdvFVOKjkzcWdTY8e7Bkrl5Pp30oUM0I3qn79Ur1vZ73
-        DQusEdqbp08b7MaUK9Wsc+zSHlxx7sqs20OrO1+RUzNr6V7T96cW/Xpw7GnHp8rR
-        TJXwUFkifjeBideC7rCpSnJing2im2YHJUpdv8UP5W1PCiYLT4EyzpCOY6Jw0VqX
-        gVafeZa2FsoBfOXLnaB5zIZ0FMsoCBgzwiEgtYZuQ8zmJhbqbidbHr5q1Xqbp/6q
-        bm9HX1kQ1dVUKuFKDog8WOs1raCAa+UN5DL8xlYs5+FNG+2lsZ+aW/e6q22QVrfA
-        ==
-X-ME-Sender: <xms:0I31X-iMCfE6bE4tatiMX_uGX1TewFSMhjlPrnB29Flb3llZwQ01sg>
-    <xme:0I31X_CKf5OWMkbyD8dTJkKC5GanejFACRxq4ES-KUJ5lq-R0x_zJVamVysrSthBw
-    lRfWxLf5sO66oprR0g>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrvdefledgudegucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddvnecuhfhrohhmpeforgigihhm
-    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
-    htvghrnhepleekgeehhfdutdeljefgleejffehfffgieejhffgueefhfdtveetgeehieeh
-    gedunecukfhppeeltddrkeelrdeikedrjeeinecuvehluhhsthgvrhfuihiivgeptdenuc
-    frrghrrghmpehmrghilhhfrhhomhepmhgrgihimhgvsegtvghrnhhordhtvggthh
-X-ME-Proxy: <xmx:0I31X2EgwpBLCd690Vr3VbevIqZTqc9NHhNxSdVelROlEXJ5ewEfTQ>
-    <xmx:0I31X3RbDkinrsrFWVsmd477z1jxHFtXjXYyowIl27KNsLqC3zGqQQ>
-    <xmx:0I31X7zsercNzSMP3hcP7h_0EqUKYPuNio7qSXIonFzn8xzLGNgjdg>
-    <xmx:0I31X2oyBdA2GJRlm1PvA76tVTc7WZKFPoENyO1UudUt3VRUy49-Tg>
-Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
-        by mail.messagingengine.com (Postfix) with ESMTPA id D421E24005D;
-        Wed,  6 Jan 2021 05:15:43 -0500 (EST)
-Date:   Wed, 6 Jan 2021 11:15:42 +0100
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     Wilken Gottwalt <wilken.gottwalt@posteo.net>
-Cc:     linux-kernel@vger.kernel.org, Ohad Ben-Cohen <ohad@wizery.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Baolin Wang <baolin.wang7@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@siol.net>
-Subject: Re: [PATCH v5 2/2] hwspinlock: add sun6i hardware spinlock support
-Message-ID: <20210106101542.zziwdyhq7arysrsj@gilmour>
-References: <cover.1608721968.git.wilken.gottwalt@posteo.net>
- <0deae76aec31586da45c316546b12bcc316442ee.1608721968.git.wilken.gottwalt@posteo.net>
+        Wed, 6 Jan 2021 05:20:05 -0500
+Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1AC39C06134C
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Jan 2021 02:19:25 -0800 (PST)
+Received: by mail-ej1-x631.google.com with SMTP id 6so4337163ejz.5
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Jan 2021 02:19:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=RfZtGQOi+5ktSfM/61J9fTw+YXtvZLAc0qQROTziMcg=;
+        b=KGcqmOxid4eoEJ+pZnFPmnA4x82JGwICQnalxD1np2003L3BY1Fv6DEOfsx5LlJ2WW
+         A05W3e8TzJu00JCsmnF1i7hfrBxSNdzhL810cP+7XGSGXmIWuzWGHJGPOB0zVf8uWOEx
+         CnGn93JrTkN+qjLtGe+t7Se5h29RYirTKVXT0IN7nljlxesacJx0mKl0VTGZNJD1Mqpo
+         Lp35sDNY7FmRX6uOidtzCiUNcD0ZicbcEacQkiaGosNFAdoplq8NRTq4gSMKJaFifYv7
+         twzAJJ7EpkchymQY/ksgakKTiNnH5+y/+vnttzwOkgomI8F8SGggCi0PkNpizW1EBJ60
+         5RbQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=RfZtGQOi+5ktSfM/61J9fTw+YXtvZLAc0qQROTziMcg=;
+        b=mX4RWdeWCCqWo0OE5MsHu9NL2HTVLBbFtgEY7JZStQ2JSZoQroEIjsV7Dbtaudl3dD
+         4By/nTxBhFnWYphMQn/ToGtLtHGitW5pisDjluE7tV2Il66++/X3jhxMVQt0pS2cKWlt
+         51lfiOqt5rd/VPrtUcm7vC/SfPjgl+LjLQVTCjq8DV7I2tRkxcS3wOTSJqAS9GV8al56
+         4W/ThWcNCI33UGOacOagYGdKqF82GOfUTyDL4PzLdYpf9bz29eOmhxLMYPPHL5VvYQOV
+         2MeOko24yd8YDVSjU3aYws8Gvz6AuNhGpC9SyhwKfW3MGvHSkJMqdoqLHn5rn8unDX2R
+         77vg==
+X-Gm-Message-State: AOAM530JBPHMDZFTiy7De9MzhZoGHVWNyi+O2VpEcz5FDY8R7rcnCBzG
+        CIoT6D/mTRcpaf5+ryJ/hQoL/tlXPi3CWXjvNaySkg==
+X-Google-Smtp-Source: ABdhPJzFL62QFK60+hdZhAbcob4Oy0iqPN0jL/7rw1dMuYWKmsX2ysMroEHDd8HZ8dnKB/aM7ZHeLBjaxG9IzDmF7HI=
+X-Received: by 2002:a17:906:d8dc:: with SMTP id re28mr2413800ejb.168.1609928363766;
+ Wed, 06 Jan 2021 02:19:23 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="4dpzakz5ltrecyhc"
-Content-Disposition: inline
-In-Reply-To: <0deae76aec31586da45c316546b12bcc316442ee.1608721968.git.wilken.gottwalt@posteo.net>
+References: <20201209165733.8204-1-a-govindraju@ti.com>
+In-Reply-To: <20201209165733.8204-1-a-govindraju@ti.com>
+From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Date:   Wed, 6 Jan 2021 11:19:13 +0100
+Message-ID: <CAMpxmJWKzd4DLjp54PN0Wojc+twyMfnKMhmnxf+hT_xuiLDaYA@mail.gmail.com>
+Subject: Re: [PATCH] dt-bindings: gpio: Add compatible string for AM64 SoC
+To:     Aswath Govindraju <a-govindraju@ti.com>
+Cc:     Sekhar Nori <nsekhar@ti.com>, Keerthy <j-keerthy@ti.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-gpio <linux-gpio@vger.kernel.org>,
+        linux-devicetree <devicetree@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Dec 9, 2020 at 5:57 PM Aswath Govindraju <a-govindraju@ti.com> wrote:
+>
+> Add compatible string for AM64 SoC in device tree binding of davinci GPIO
+> modules as the same IP is used.
+>
+> Signed-off-by: Aswath Govindraju <a-govindraju@ti.com>
+> ---
+>  Documentation/devicetree/bindings/gpio/gpio-davinci.txt | 1 +
+>  1 file changed, 1 insertion(+)
+>
+> diff --git a/Documentation/devicetree/bindings/gpio/gpio-davinci.txt b/Documentation/devicetree/bindings/gpio/gpio-davinci.txt
+> index cd91d61eac31..696ea46227d1 100644
+> --- a/Documentation/devicetree/bindings/gpio/gpio-davinci.txt
+> +++ b/Documentation/devicetree/bindings/gpio/gpio-davinci.txt
+> @@ -7,6 +7,7 @@ Required Properties:
+>                         "ti,k2g-gpio", "ti,keystone-gpio": for 66AK2G
+>                         "ti,am654-gpio", "ti,keystone-gpio": for TI K3 AM654
+>                         "ti,j721e-gpio", "ti,keystone-gpio": for J721E SoCs
+> +                       "ti,am64-gpio", "ti,keystone-gpio": for AM64 SoCs
+>
+>  - reg: Physical base address of the controller and the size of memory mapped
+>         registers.
+> --
+> 2.17.1
+>
 
---4dpzakz5ltrecyhc
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Wed, Dec 23, 2020 at 12:35:10PM +0100, Wilken Gottwalt wrote:
-> Adds the sun6i_hwspinlock driver for the hardware spinlock unit found in
-> most of the sun6i compatible SoCs.
->=20
-> This unit provides at least 32 spinlocks in hardware. The implementation
-> supports 32, 64, 128 or 256 32bit registers. A lock can be taken by
-> reading a register and released by writing a 0 to it. This driver
-> supports all 4 spinlock setups, but for now only the first setup (32
-> locks) seem to exist in available devices. This spinlock unit is shared
-> between all ARM cores and the embedded companion core. All of them can
-> take/release a lock with a single cycle operation. It can be used to
-> sync access to devices shared by the ARM cores and the companion core.
->=20
-> There are two ways to check if a lock is taken. The first way is to read
-> a lock. If a 0 is returned, the lock was free and is taken now. If an 1
-> is returned, the caller has to try again. Which means the lock is taken.
-> The second way is to read a 32bit wide status register where every bit
-> represents one of the 32 first locks. According to the datasheets this
-> status register supports only the 32 first locks. This is the reason the
-> first way (lock read/write) approach is used to be able to cover all 256
-> locks in future devices. The driver also reports the amount of supported
-> locks via debugfs.
->=20
-> Signed-off-by: Wilken Gottwalt <wilken.gottwalt@posteo.net>
-
-Reviewed-by: Maxime Ripard <mripard@kernel.org>
+Patch applied with Rob's Ack.
 
 Thanks!
-Maxime
-
---4dpzakz5ltrecyhc
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCX/WNzgAKCRDj7w1vZxhR
-xVSRAQDE6lse+M9BP0DGGYDJTyjLqYum3Yd32j++s3uJJRfMuwD/eoSufCjQUaSg
-JGRx332nSsJmPX1/W4d8jDedJ+gBTwA=
-=GvoN
------END PGP SIGNATURE-----
-
---4dpzakz5ltrecyhc--
+Bartosz
