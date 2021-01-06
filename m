@@ -2,152 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 522892EBAC7
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 08:52:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F4A32EBAD1
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 08:56:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726808AbhAFHwK convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 6 Jan 2021 02:52:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51316 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725971AbhAFHwI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Jan 2021 02:52:08 -0500
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E25BC061358
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Jan 2021 23:51:28 -0800 (PST)
-Received: from pty.hi.pengutronix.de ([2001:67c:670:100:1d::c5])
-        by metis.ext.pengutronix.de with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ore@pengutronix.de>)
-        id 1kx3bJ-0008WM-Ld; Wed, 06 Jan 2021 08:51:25 +0100
-Received: from ore by pty.hi.pengutronix.de with local (Exim 4.89)
-        (envelope-from <ore@pengutronix.de>)
-        id 1kx3bI-0006db-0A; Wed, 06 Jan 2021 08:51:24 +0100
-Date:   Wed, 6 Jan 2021 08:51:23 +0100
-From:   Oleksij Rempel <o.rempel@pengutronix.de>
-To:     Shawn Guo <shawnguo@kernel.org>
-Cc:     Mark Rutland <mark.rutland@arm.com>, devicetree@vger.kernel.org,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        David Jander <david@protonic.nl>,
-        Fabio Estevam <festevam@gmail.com>,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v2 2/2] ARM: dts: add Protonic MVT board
-Message-ID: <20210106075123.dkutuzcycokox2xr@pengutronix.de>
-References: <20201201074125.11806-1-o.rempel@pengutronix.de>
- <20201201074125.11806-3-o.rempel@pengutronix.de>
- <20210105023515.GH4142@dragon>
+        id S1726924AbhAFHwi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Jan 2021 02:52:38 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34938 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726865AbhAFHwf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 Jan 2021 02:52:35 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 454AB23105;
+        Wed,  6 Jan 2021 07:51:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1609919515;
+        bh=4JXitH33eK20H9myx5ahI1Du6BNVYTwd0CLgniYCOFw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=oS8PMRIUkhhBzt9eg3vfogjdMHz3Ab7isTDPrCaGpqhrTkM/vTitwqQ8otCTgAhzP
+         7/dz1lJcNGgvzLJEgDctZ1aBPxBaAsofd+px9jk87MG6mOMEmCNdLuYPPWPrE5M5ox
+         TgGHFGTVckewefSVeaMBA73B2cwH9HI4fOe6BlCU=
+Date:   Wed, 6 Jan 2021 08:51:51 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Filip Kolev <fil.kolev@gmail.com>
+Cc:     devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org
+Subject: Re: [PATCH] media: atomisp: ov2722: replace hardcoded function name
+Message-ID: <X/VsF364jpGz6oze@kroah.com>
+References: <20210105202945.26913-1-fil.kolev@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8BIT
-In-Reply-To: <20210105023515.GH4142@dragon>
-X-Sent-From: Pengutronix Hildesheim
-X-URL:  http://www.pengutronix.de/
-X-IRC:  #ptxdist @freenode
-X-Accept-Language: de,en
-X-Accept-Content-Type: text/plain
-X-Uptime: 08:32:25 up 34 days, 21:38, 28 users,  load average: 0.07, 0.02,
- 0.00
-User-Agent: NeoMutt/20170113 (1.7.2)
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c5
-X-SA-Exim-Mail-From: ore@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+In-Reply-To: <20210105202945.26913-1-fil.kolev@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Shawn,
-
-On Tue, Jan 05, 2021 at 10:35:17AM +0800, Shawn Guo wrote:
-> On Tue, Dec 01, 2020 at 08:41:25AM +0100, Oleksij Rempel wrote:
-> > PRTMVT is the reference platform for Protonic industrial touchscreen terminals.
-> > 
-> > Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
-
-> > ---
-> > +	gpio-keys {
-> > +		compatible = "gpio-keys";
-> > +		pinctrl-names = "default";
-> > +		pinctrl-0 = <&pinctrl_gpiokeys>;
-> > +		autorepeat;
-> > +
-> > +		power {
-> > +			label = "Power Button";
-> > +			gpios = <&gpio2 23 GPIO_ACTIVE_LOW>;
-> > +			linux,code = <116>; /* KEY_POWER */
+On Tue, Jan 05, 2021 at 10:29:18PM +0200, Filip Kolev wrote:
+> There is a debug message using hardcoded function name instead of the
+> __func__ macro. Replace it.
 > 
-> Why not just using defines?
-
-Uff, I didn't noticed there are existing defines. Thx, done.
-
-> > +			wakeup-source;
-> > +		};
-> > +
-
-> > +	panel {
-> > +		compatible = "kyo,tcg070wvlq", "lg,lb070wv8";
+> Report from checkpatch.pl on the file:
 > 
-> Why do you need two compatibles for a panel?  The first one seems
-> undocumented.
-
-kyo,tcg070wvlq seems to be compatible with lg,lb070wv8. Currently there
-is no need for driver modification.
-The kyo,tcg070wvlq documentation should be added with the patch:
-"dt-bindings: display: simple: Add Kyocera tcg070wvlq panel"
-https://lkml.org/lkml/2020/12/7/591
-
-> > +		backlight = <&backlight>;
-> > +		power-supply = <&reg_3v3>;
-> > +	video@5c {
-> > +		compatible = "ti,tvp5150";
-> > +		reg = <0x5c>;
-> > +
+> WARNING: Prefer using '"%s...", __func__' to using 'ov2722_remove', this function's name, in a string
+> +	dev_dbg(&client->dev, "ov2722_remove...\n");
 > 
-> Unnecessary newline.
-
-done
-
-> > +		#address-cells = <1>;
-> > +		#size-cells = <0>;
-> > +
-> > +		port@0 {
-> > +			reg = <0>;
+> Signed-off-by: Filip Kolev <fil.kolev@gmail.com>
+> ---
+>  drivers/staging/media/atomisp/i2c/atomisp-ov2722.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> Have a newline between properties and child node.
+> diff --git a/drivers/staging/media/atomisp/i2c/atomisp-ov2722.c b/drivers/staging/media/atomisp/i2c/atomisp-ov2722.c
+> index eecefcd734d0e..21d6bc62d452a 100644
+> --- a/drivers/staging/media/atomisp/i2c/atomisp-ov2722.c
+> +++ b/drivers/staging/media/atomisp/i2c/atomisp-ov2722.c
+> @@ -1175,7 +1175,7 @@ static int ov2722_remove(struct i2c_client *client)
+>  	struct v4l2_subdev *sd = i2c_get_clientdata(client);
+>  	struct ov2722_device *dev = to_ov2722_sensor(sd);
+>  
+> -	dev_dbg(&client->dev, "ov2722_remove...\n");
+> +	dev_dbg(&client->dev, "%s...\n", __func__);
 
-done
+dev_dbg() provides the function name already, and this is just a "trace"
+call, and ftrace should be used instead, so the whole line should be
+removed entirely.
 
-> > +			tvp5150_comp0_in: endpoint {
-> > +				remote-endpoint = <&comp0_out>;
-> > +			};
-> > +		};
-> > +
-> > +		/* Output port 2 is video output pad */
-> > +		port@2 {
-> > +			reg = <2>;
-> > +			tvp5151_to_ipu1_csi0_mux: endpoint {
-> > +				remote-endpoint = <&ipu1_csi0_mux_from_parallel_sensor>;
-> > +			};
-> > +		};
-> > +	};
-> > +
-> > +	gpio_pca: gpio@74 {
-> > +		#gpio-cells = <2>;
-> 
-> We usually begin with 'compatible'.  Can you move this line after
-> 'gpio-controller' maybe?
+thanks,
 
-done
-
-Regards,
-Oleksij
-
--- 
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+greg k-h
