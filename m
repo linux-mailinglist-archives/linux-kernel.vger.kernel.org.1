@@ -2,322 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 953CB2EBA35
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 07:50:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6EA982EBA38
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 07:53:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726443AbhAFGt4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Jan 2021 01:49:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41522 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726102AbhAFGtz (ORCPT
+        id S1726415AbhAFGvN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Jan 2021 01:51:13 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:43354 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725788AbhAFGvM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Jan 2021 01:49:55 -0500
-Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97C26C06134C;
-        Tue,  5 Jan 2021 22:49:14 -0800 (PST)
-Received: by mail-pj1-x1029.google.com with SMTP id w1so2139693pjc.0;
-        Tue, 05 Jan 2021 22:49:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=+GYObx0wjjwUWLIy7GEy/eJDGKDZbtuBy10CjqHKFqk=;
-        b=m0OYNPVJHfbXRG2jq+shiXmE/rFZ4hEB65jYMOy5Bqwzc6+3vr7XghWS5OPFnl4FPw
-         FPh5rgzGF6P+WYE/FmuCVB2qUYRWFMluN/dfVSpFTluZWBO7Bjr1DpIFUObvcJpRGFUy
-         s8ThH6j/DdTy7E8LLidflPhkyt3P0zw6CBTj/DKzPXtSwDmSaNFmnLKJJHobQdTRNvV7
-         Sm7H8CTHYx8HcR64rpIGFxDHe6O6OrTNXVRIoe7UWWBn1ARBHCRtgY/77X1Tg2wvUxfH
-         bcoarExnHFwa2MfztAxfp/bgG819qgC2wBH56RCPaFeeKTubCVy+8IAFBob4lQykMqH4
-         h3Xw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=+GYObx0wjjwUWLIy7GEy/eJDGKDZbtuBy10CjqHKFqk=;
-        b=oh76+vHgXauBVVY7/lbtpfmwEOxIueLD9Lvbuuoik+BFn+sYZXi/C69yteTgzCnGDO
-         LBBukr1E32eM3hYeBL+NI7xctIHtqGsrI1pnVatKWqVGoSRYHh5qi5uiLNQ41MtXLfzr
-         BIN98tmGgdZFUym8hwDuPiPn6VVnsogBIDS2DFBfLQUMnE3M6cb6Lt6KgQlMFh2PVNS/
-         bfuNd/bVTEizZOH9DkNvaU+k8fti/WqWkyInETaOtxRmoZzeg801FAVrvlfqGMT3K4em
-         eWuoQd/7HD673ouO+vW+UaEZIVBos9XBMY2sXSc8X+Gt7p0fI/stdoH1clWrnAEH1K0Q
-         d5TA==
-X-Gm-Message-State: AOAM530ZuVtYUZvWZFW5rgpGvPW0cFgbrPKaPcNelsJyo0c+If52B5D5
-        76tqUkDe/urV8AXiYtLjC6k=
-X-Google-Smtp-Source: ABdhPJxkyS1OX2lmhMZjtgr2Avildbdz6Otn/iKsCcoNd1l34Csm2WPAfgKMbWFz5kBltaU3kllGJQ==
-X-Received: by 2002:a17:90a:fb92:: with SMTP id cp18mr2792637pjb.203.1609915754030;
-        Tue, 05 Jan 2021 22:49:14 -0800 (PST)
-Received: from localhost.localdomain (76-242-91-105.lightspeed.sntcca.sbcglobal.net. [76.242.91.105])
-        by smtp.gmail.com with ESMTPSA id u12sm1314451pgi.91.2021.01.05.22.49.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 Jan 2021 22:49:13 -0800 (PST)
-From:   sonicadvance1@gmail.com
-X-Google-Original-From: Sonicadvance1@gmail.com
-Cc:     Sonicadvance1@gmail.com, Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Minchan Kim <minchan@kernel.org>,
-        Aleksa Sarai <cyphar@cyphar.com>,
-        Sargun Dhillon <sargun@sargun.me>,
-        Miklos Szeredi <mszeredi@redhat.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        "Amanieu d'Antras" <amanieu@gmail.com>,
-        Willem de Bruijn <willemb@google.com>,
-        YueHaibing <yuehaibing@huawei.com>,
-        Xiaoming Ni <nixiaoming@huawei.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Joe Perches <joe@perches.com>, Jan Kara <jack@suse.cz>,
-        David Rientjes <rientjes@google.com>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-api@vger.kernel.org,
-        linux-arch@vger.kernel.org
-Subject: [PATCH] Adds a new ioctl32 syscall for backwards compatibility layers
-Date:   Tue,  5 Jan 2021 22:48:00 -0800
-Message-Id: <20210106064807.253112-1-Sonicadvance1@gmail.com>
-X-Mailer: git-send-email 2.27.0
+        Wed, 6 Jan 2021 01:51:12 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1609915786;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=mpnSCXynfZDg9JxezxrI3YVJuV9OmtsTh1Ys0ZNSFcs=;
+        b=GHTiqaFdu19lIuNdyyGZZXf5wmHZvRSMEQR1gqx7ri/5Q/iowHLbf0R1gaEQuT09zbBm4F
+        UwgrPgdWuvIvvn0vsp2/MtJFL82CvkBRqi6B9ZOTwbh4GzqqF2UK363gEIQ3MbGP7FIRIc
+        sw3AqU9syOJ5i9hLEfTLQWAczhQ1KaM=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-212-zZL9C3A1ND6CFuicSxuRDQ-1; Wed, 06 Jan 2021 01:49:40 -0500
+X-MC-Unique: zZL9C3A1ND6CFuicSxuRDQ-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id DC6798015C3;
+        Wed,  6 Jan 2021 06:49:38 +0000 (UTC)
+Received: from localhost (ovpn-12-186.pek2.redhat.com [10.72.12.186])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id E46805D9CD;
+        Wed,  6 Jan 2021 06:49:37 +0000 (UTC)
+Date:   Wed, 6 Jan 2021 14:49:35 +0800
+From:   Baoquan He <bhe@redhat.com>
+To:     Hugh Dickins <hughd@google.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>, Hui Su <sh_def@163.com>,
+        Alex Shi <alex.shi@linux.alibaba.com>,
+        Lorenzo Stoakes <lstoakes@gmail.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Shakeel Butt <shakeelb@google.com>,
+        Roman Gushchin <guro@fb.org>, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org
+Subject: Re: [PATCH] mm/memcontrol: fix warning in mem_cgroup_page_lruvec()
+Message-ID: <20210106064935.GA3338@MiWiFi-R3L-srv>
+References: <alpine.LSU.2.11.2101032056260.1093@eggly.anvils>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-To:     unlisted-recipients:; (no To-header on input)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <alpine.LSU.2.11.2101032056260.1093@eggly.anvils>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ryan Houdek <Sonicadvance1@gmail.com>
+On 01/03/21 at 09:03pm, Hugh Dickins wrote:
+> Boot a CONFIG_MEMCG=y kernel with "cgroup_disabled=memory" and you are
+> met by a series of warnings from the VM_WARN_ON_ONCE_PAGE(!memcg, page)
+> recently added to the inline mem_cgroup_page_lruvec().
+> 
+> An earlier attempt to place that warning, in mem_cgroup_lruvec(), had
+> been careful to do so after weeding out the mem_cgroup_disabled() case;
+> but was itself invalid because of the mem_cgroup_lruvec(NULL, pgdat) in
+> clear_pgdat_congested() and age_active_anon().
+> 
+> Warning in mem_cgroup_page_lruvec() was once useful in detecting a KSM
+> charge bug, so may be worth keeping: but skip if mem_cgroup_disabled().
+> 
+> Fixes: 9a1ac2288cf1 ("mm/memcontrol:rewrite mem_cgroup_page_lruvec()")
+> Signed-off-by: Hugh Dickins <hughd@google.com>
+> ---
+> 
+>  include/linux/memcontrol.h |    2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> --- 5.11-rc2/include/linux/memcontrol.h	2020-12-27 20:39:36.751923135 -0800
+> +++ linux/include/linux/memcontrol.h	2021-01-03 19:38:24.822978559 -0800
+> @@ -665,7 +665,7 @@ static inline struct lruvec *mem_cgroup_
+>  {
+>  	struct mem_cgroup *memcg = page_memcg(page);
+>  
+> -	VM_WARN_ON_ONCE_PAGE(!memcg, page);
+> +	VM_WARN_ON_ONCE_PAGE(!memcg && !mem_cgroup_disabled(), page);
+>  	return mem_cgroup_lruvec(memcg, pgdat);
 
-Problem presented:
-A backwards compatibility layer that allows running x86-64 and x86
-processes inside of an AArch64 process.
-  - CPU is emulated
-  - Syscall interface is mostly passthrough
-  - Some syscalls require patching or emulation depending on behaviour
-  - Not viable from the emulator design to use an AArch32 host process
+Thanks for fixing this. We also encountered this issue in kdump kernel
+with the mainline 5.10 kernel since 'cgroup_disable=memory' is added.
 
-x86-64 and x86 userspace emulator source:
-https://github.com/FEX-Emu/FEX
-Usage of ioctl32 is currently in a downstream fork. This will be the
-first user of the syscall.
-
-Cross documentation:
-https://github.com/FEX-Emu/FEX/wiki/32Bit-x86-Woes#ioctl---54
-
-ioctls are opaque from the emulator perspective and the data wants to be
-passed through a syscall as unimpeded as possible.
-Sadly due to ioctl struct differences between x86 and x86-64, we need a
-syscall that exposes the compatibility ioctl handler to userspace in a
-64bit process.
-
-This is necessary behaves of the behaviour differences that occur
-between an x86 process doing an ioctl and an x86-64 process doing an
-ioctl.
-
-Both of which are captured and passed through the AArch64 ioctl space.
-This is implementing a new ioctl32 syscall that allows us to pass 32bit
-x86 ioctls through to the kernel with zero or minimal manipulation.
-
-The only supported hosts where we care about this currently is AArch64
-and x86-64 (For testing purposes).
-PPC64LE, MIPS64LE, and RISC-V64 might be interesting to support in the
-future; But I don't have any platforms that get anywhere near Cortex-A77
-performance in those architectures. Nor do I have the time to bring up
-the emulator on them.
-x86-64 can get to the compatibility ioctl through the int $0x80 handler.
-
-This does not solve the following problems:
-1) compat_alloc_user_space inside ioctl
-2) ioctls that check task mode instead of entry point for behaviour
-3) ioctls allocating memory
-4) struct packing problems between architectures
-
-Workarounds for the problems presented:
-1a) Do a stack pivot to the lower 32bits from userspace
-  - Forces host 64bit process to have its thread stacks to live in 32bit
-  space. Not ideal.
-  - Only do a stack pivot on ioctl to save previous 32bit VA space
-1b) Teach kernel that compat_alloc_userspace can return a 64bit pointer
-  - x86-64 truncates stack from this function
-  - AArch64 returns the full stack pointer
-  - Only ~29 users. Validating all of them support a 64bit stack is
-  trivial?
-
-2a) Any application using these can be checked for compatibility in
-userspace and put on a block list.
-2b) Fix any ioctls doing broken behaviour based on task mode rather than
-ioctl entry point
-
-3a) Userspace consumes all VA space above 32bit. Forcing allocations to
-occur in lower 32bits
-  - This is the current implementation
-3b) Ensure any allocation in the ioctl handles ioctl entrypoint rather
-than just allow generic memory allocations in full VA space
-  - This is hard to guarantee
-
-4a) Blocklist any application using ioctls that have different struct
-packing across the boundary
-  - Can happen when struct packing of 32bit x86 application goes down
-  the aarch64 compat_ioctl path
-  - Userspace is a AArch64 process passing 32bit x86 ioctl structures
-  through the compat_ioctl path which is typically for AArch32 processes
-  - None currently identified
-4b) Work with upstream kernel and userspace projects to evaluate and fix
-  - Identify the problem ioctls
-  - Implement a new ioctl with more sane struct packing that matches
-  cross-arch
-  - Implement new ioctl while maintaining backwards compatibility with
-  previous ioctl handler
-  - Change upstream project to use the new compatibility ioctl
-  - ioctl deprecation will be case by case per device and project
-4b) Userspace implements a full ioctl emulation layer
-  - Parses the full ioctl tree
-  - Either passes through ioctls that it doesn't understand or
-  transforms ioctls that it knows are trouble
-  - Has the downside that it can still run in to edge cases that will
-  fail
-  - Performance of additional tracking is a concern
-  - Prone to failure keeping the kernel ioctl and userspace ioctl
-  handling in sync
-  - Really want to have it in the kernel space as much as possible
-
-Signed-off-by: Ryan Houdek <Sonicadvance1@gmail.com>
----
- arch/arm64/include/asm/unistd.h         |  2 +-
- arch/arm64/include/asm/unistd32.h       |  2 ++
- fs/ioctl.c                              | 16 ++++++++++++++--
- include/linux/syscalls.h                |  2 ++
- include/uapi/asm-generic/unistd.h       |  9 ++++++++-
- kernel/sys_ni.c                         |  3 +++
- tools/include/uapi/asm-generic/unistd.h |  9 ++++++++-
- 7 files changed, 38 insertions(+), 5 deletions(-)
-
-diff --git a/arch/arm64/include/asm/unistd.h b/arch/arm64/include/asm/unistd.h
-index 86a9d7b3eabe..949788f5ba40 100644
---- a/arch/arm64/include/asm/unistd.h
-+++ b/arch/arm64/include/asm/unistd.h
-@@ -38,7 +38,7 @@
- #define __ARM_NR_compat_set_tls		(__ARM_NR_COMPAT_BASE + 5)
- #define __ARM_NR_COMPAT_END		(__ARM_NR_COMPAT_BASE + 0x800)
- 
--#define __NR_compat_syscalls		442
-+#define __NR_compat_syscalls		443
- #endif
- 
- #define __ARCH_WANT_SYS_CLONE
-diff --git a/arch/arm64/include/asm/unistd32.h b/arch/arm64/include/asm/unistd32.h
-index cccfbbefbf95..35e3bc83dbdc 100644
---- a/arch/arm64/include/asm/unistd32.h
-+++ b/arch/arm64/include/asm/unistd32.h
-@@ -891,6 +891,8 @@ __SYSCALL(__NR_faccessat2, sys_faccessat2)
- __SYSCALL(__NR_process_madvise, sys_process_madvise)
- #define __NR_epoll_pwait2 441
- __SYSCALL(__NR_epoll_pwait2, compat_sys_epoll_pwait2)
-+#define __NR_ioctl32 442
-+__SYSCALL(__NR_ioctl32, compat_sys_ioctl)
- 
- /*
-  * Please add new compat syscalls above this comment and update
-diff --git a/fs/ioctl.c b/fs/ioctl.c
-index 4e6cc0a7d69c..116b9bca8c07 100644
---- a/fs/ioctl.c
-+++ b/fs/ioctl.c
-@@ -790,8 +790,8 @@ long compat_ptr_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
- }
- EXPORT_SYMBOL(compat_ptr_ioctl);
- 
--COMPAT_SYSCALL_DEFINE3(ioctl, unsigned int, fd, unsigned int, cmd,
--		       compat_ulong_t, arg)
-+long do_ioctl32(unsigned int fd, unsigned int cmd,
-+			compat_ulong_t arg)
- {
- 	struct fd f = fdget(fd);
- 	int error;
-@@ -850,4 +850,16 @@ COMPAT_SYSCALL_DEFINE3(ioctl, unsigned int, fd, unsigned int, cmd,
- 
- 	return error;
- }
-+
-+COMPAT_SYSCALL_DEFINE3(ioctl, unsigned int, fd, unsigned int, cmd,
-+			compat_ulong_t, arg)
-+{
-+	return do_ioctl32(fd, cmd, arg);
-+}
-+
-+SYSCALL_DEFINE3(ioctl32, unsigned int, fd, unsigned int, cmd,
-+			compat_ulong_t, arg)
-+{
-+	return do_ioctl32(fd, cmd, arg);
-+}
- #endif
-diff --git a/include/linux/syscalls.h b/include/linux/syscalls.h
-index f3929aff39cf..470f928831eb 100644
---- a/include/linux/syscalls.h
-+++ b/include/linux/syscalls.h
-@@ -386,6 +386,8 @@ asmlinkage long sys_inotify_rm_watch(int fd, __s32 wd);
- /* fs/ioctl.c */
- asmlinkage long sys_ioctl(unsigned int fd, unsigned int cmd,
- 				unsigned long arg);
-+asmlinkage long sys_ioctl32(unsigned int fd, unsigned int cmd,
-+				compat_ulong_t arg);
- 
- /* fs/ioprio.c */
- asmlinkage long sys_ioprio_set(int which, int who, int ioprio);
-diff --git a/include/uapi/asm-generic/unistd.h b/include/uapi/asm-generic/unistd.h
-index 728752917785..18279e5b7b4f 100644
---- a/include/uapi/asm-generic/unistd.h
-+++ b/include/uapi/asm-generic/unistd.h
-@@ -862,8 +862,15 @@ __SYSCALL(__NR_process_madvise, sys_process_madvise)
- #define __NR_epoll_pwait2 441
- __SC_COMP(__NR_epoll_pwait2, sys_epoll_pwait2, compat_sys_epoll_pwait2)
- 
-+#define __NR_ioctl32 442
-+#ifdef CONFIG_COMPAT
-+__SC_COMP(__NR_ioctl32, sys_ioctl32, compat_sys_ioctl)
-+#else
-+__SC_COMP(__NR_ioctl32, sys_ni_syscall, sys_ni_syscall)
-+#endif
-+
- #undef __NR_syscalls
--#define __NR_syscalls 442
-+#define __NR_syscalls 443
- 
- /*
-  * 32 bit systems traditionally used different
-diff --git a/kernel/sys_ni.c b/kernel/sys_ni.c
-index 19aa806890d5..5a2f25eb341c 100644
---- a/kernel/sys_ni.c
-+++ b/kernel/sys_ni.c
-@@ -302,6 +302,9 @@ COND_SYSCALL(recvmmsg_time32);
- COND_SYSCALL_COMPAT(recvmmsg_time32);
- COND_SYSCALL_COMPAT(recvmmsg_time64);
- 
-+COND_SYSCALL(ioctl32);
-+COND_SYSCALL_COMPAT(ioctl32);
-+
- /*
-  * Architecture specific syscalls: see further below
-  */
-diff --git a/tools/include/uapi/asm-generic/unistd.h b/tools/include/uapi/asm-generic/unistd.h
-index 728752917785..18279e5b7b4f 100644
---- a/tools/include/uapi/asm-generic/unistd.h
-+++ b/tools/include/uapi/asm-generic/unistd.h
-@@ -862,8 +862,15 @@ __SYSCALL(__NR_process_madvise, sys_process_madvise)
- #define __NR_epoll_pwait2 441
- __SC_COMP(__NR_epoll_pwait2, sys_epoll_pwait2, compat_sys_epoll_pwait2)
- 
-+#define __NR_ioctl32 442
-+#ifdef CONFIG_COMPAT
-+__SC_COMP(__NR_ioctl32, sys_ioctl32, compat_sys_ioctl)
-+#else
-+__SC_COMP(__NR_ioctl32, sys_ni_syscall, sys_ni_syscall)
-+#endif
-+
- #undef __NR_syscalls
--#define __NR_syscalls 442
-+#define __NR_syscalls 443
- 
- /*
-  * 32 bit systems traditionally used different
--- 
-2.27.0
+Reviewed-by: Baoquan He <bhe@redhat.com>
 
