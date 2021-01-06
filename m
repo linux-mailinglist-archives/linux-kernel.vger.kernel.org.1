@@ -2,164 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30DD22EC6DC
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 00:27:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 90CE42EC6E0
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 00:29:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727641AbhAFX1d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Jan 2021 18:27:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56462 "EHLO
+        id S1727729AbhAFX1s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Jan 2021 18:27:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56504 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727241AbhAFX1c (ORCPT
+        with ESMTP id S1727670AbhAFX1r (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Jan 2021 18:27:32 -0500
-Received: from mail-qt1-x84a.google.com (mail-qt1-x84a.google.com [IPv6:2607:f8b0:4864:20::84a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 621C4C061786
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Jan 2021 15:26:52 -0800 (PST)
-Received: by mail-qt1-x84a.google.com with SMTP id v9so3503895qtw.12
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Jan 2021 15:26:52 -0800 (PST)
+        Wed, 6 Jan 2021 18:27:47 -0500
+Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93D24C061757
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Jan 2021 15:27:07 -0800 (PST)
+Received: by mail-pl1-x630.google.com with SMTP id g3so2354461plp.2
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Jan 2021 15:27:07 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:message-id:mime-version:subject:from:to:cc;
-        bh=5AAGWLCZrSWvHnZ2GmyTLtHlPAjis9UMQ895Y6HPUqA=;
-        b=Djpx0oshoX4oLiACX7q7hPy7kR9ONIyXwQyjja6p8ZVrXtGFAtq9fxBTdTA+Imw6Q0
-         KCIuYpXjlBH1t5BjTTE3WzYZ1PcxGdrOu3HTtcl5O/9Ne5zlDBDtYeY1CpqYZxpKt5IR
-         T//ThYeYwsry6qGPnCAShU8UQ1VNleL6PmJUIKwNbOcMg7dnp/qdCY0XNpChMTG1kQJv
-         fXjW5abJJBi5wqCpEkuqr9z4NJtvZqqQinHPWRhswAWZJsZzrSa4OwCXd8c1ouDQEYC2
-         BlKuN8mI5NnNl45Bx2B7U+bwJBh7+HRTsa2lpZBYFT6dqzBg3/HrI0LiLT9T5e8O4rsp
-         c3xA==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=RX6WvXc9AdwHUQos8gbpGpnxsoO0I2OI1Qb4Cxsnhfs=;
+        b=C1JjlS48c7PMuu0up5KPTWHWKkwWM3CxSUzlsARcAX2zwRrUOl3NXWPug0XayiG3TN
+         HkTywr/VNukyH/ept/yAe8PdTcCgbHjF1pQhWvwufWFGi9oIiTVb6MgbKMqwDI0pQwzJ
+         F0qO/yFgvPeFiksqYo9VtqY43WoIFaotDxLvpSMDF666JAHsoZJbWXen2kK81xya1RQe
+         7mLTw9rW4afFqCXYIPsB1gk8hmOyZ+eJQCeI6qxzHh2LDhSALeZbh8a8jI2pPKXvGNdY
+         3XHMoOmN4x43gNucpmR0cBDt0fAZnNuZhSPplsZUvSzbi+AzBJPfydCybTkSbZKzJaQR
+         3Wlw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
-         :to:cc;
-        bh=5AAGWLCZrSWvHnZ2GmyTLtHlPAjis9UMQ895Y6HPUqA=;
-        b=QYfYBKx4uN7Q9mqkQW09eFtbodqRJNKFsl5mvuygt7v6hFPr7g45qNqjEBy+M3WGn9
-         Gi3i9ozrgs5vku6kWbVFjiAHH1Ly93OWTvT1JmY3i4+7q4oGN6SZrpyFsqf/T10y15ug
-         VPL3CZbqPXUW9odzC9Qy9r4o7cENuUi052ReTOPet06OKEfp5ZXFxytIRazrh7H/TOUT
-         91cMlzouNnD7kMZAggElRFykNhU/ZNWnlDg30GHfrOXAWNjsF/i9y6OR28wUUJs+Wkl+
-         DKa8EXCnFc90zTTJQcJkuNKTiphupkdIKEhXLc8c8nR8iplr/o3BCN5DfOsCn5Jv9/9X
-         a0ig==
-X-Gm-Message-State: AOAM532EOAzWyC95r5Sok8IrEYi/PsoA4WceERIlN0C0Vbj6hdDApQ20
-        r/ecGzX8bvHb+mRJmKpmLlg6akvoUjsRmPQ=
-X-Google-Smtp-Source: ABdhPJw7tDyQxcWGY4CnMXy1oEX2SUSE9M+POrw2V6FklCxEjl2mQIEyMtO4o3kAkV7A3Sakix5MQ1i38Pka3G0=
-Sender: "saravanak via sendgmr" <saravanak@saravanak.san.corp.google.com>
-X-Received: from saravanak.san.corp.google.com ([2620:15c:2d:3:7220:84ff:fe09:fedc])
- (user=saravanak job=sendgmr) by 2002:a05:6214:20a1:: with SMTP id
- 1mr5970150qvd.61.1609975611540; Wed, 06 Jan 2021 15:26:51 -0800 (PST)
-Date:   Wed,  6 Jan 2021 15:26:41 -0800
-Message-Id: <20210106232641.459081-1-saravanak@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.29.2.729.g45daf8777d-goog
-Subject: [PATCH v1] driver core: Fix device link device name collision
-From:   Saravana Kannan <saravanak@google.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>
-Cc:     Saravana Kannan <saravanak@google.com>,
-        Michael Walle <michael@walle.cc>, kernel-team@android.com,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=RX6WvXc9AdwHUQos8gbpGpnxsoO0I2OI1Qb4Cxsnhfs=;
+        b=qnVCnmDToUA/chr9SC1kUSaed/Xer7Xnro+5yijjvyelWn34roHUqI8sdoFpbFtUqY
+         jzET5w7Jh0e9c5c0T2MX9J1YrvOvcS3RFiZwHbnCcJ+eW5MJOyDh5Ju5bkiNL6PHTz23
+         R/tIRVRxu7QTFTjqjISETnDKIweNOyHU59QCmL1RLYd/knWEW+44BEiyh+liQsnnNwpu
+         RrMTQKqIKiyqtKwk6XI6GsZLfXuBTLENoAqNMHY2j1JXNg9RwE9TVUQkvjsBKvNvgzSs
+         A8x8Zgf6bzEMapGyhQBo7CD1oCR078bo6RnAJ8MZtafcoVTiWco0hJ20fg6Y44SrKDFA
+         CpBw==
+X-Gm-Message-State: AOAM5327V0fuYZJvkwiAhXVV3QFN163JNliPAI6rabki9jgJKq9queNl
+        5BSoVX91fbW8wcRPSVwy6YGU2g==
+X-Google-Smtp-Source: ABdhPJw1ywKCDyITNA3oNlsUFCtMTlY9Q9nKPwJYsOoi8XO0B46laGMkGJXfHAd11wYXgIiGTpVq9Q==
+X-Received: by 2002:a17:90a:ec0e:: with SMTP id l14mr6563400pjy.123.1609975627034;
+        Wed, 06 Jan 2021 15:27:07 -0800 (PST)
+Received: from xps15 (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
+        by smtp.gmail.com with ESMTPSA id i67sm3790692pfc.153.2021.01.06.15.27.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 06 Jan 2021 15:27:06 -0800 (PST)
+Date:   Wed, 6 Jan 2021 16:27:04 -0700
+From:   Mathieu Poirier <mathieu.poirier@linaro.org>
+To:     Grzegorz Jaszczyk <grzegorz.jaszczyk@linaro.org>
+Cc:     ohad@wizery.com, bjorn.andersson@linaro.org, robh+dt@kernel.org,
+        s-anna@ti.com, ssantosh@kernel.org,
+        linux-remoteproc@vger.kernel.org, lee.jones@linaro.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-omap@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        praneeth@ti.com, rogerq@ti.com, t-kristo@ti.com
+Subject: Re: [PATCH v2 0/5] Introduce PRU remoteproc consumer API
+Message-ID: <20210106232704.GE9149@xps15>
+References: <20201216165239.2744-1-grzegorz.jaszczyk@linaro.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201216165239.2744-1-grzegorz.jaszczyk@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The device link device's name was of the form:
-<supplier-dev-name>--<consumer-dev-name>
+On Wed, Dec 16, 2020 at 05:52:34PM +0100, Grzegorz Jaszczyk wrote:
+> Hi All,
+> 
+> The Programmable Real-Time Unit and Industrial Communication Subsystem
+> (PRU-ICSS or simply PRUSS) on various TI SoCs consists of dual 32-bit
+> RISC cores (Programmable Real-Time Units, or PRUs) for program execution.
+> 
+> There are 3 foundation components for PRUSS subsystem: the PRUSS platform
+> driver, the PRUSS INTC driver and the PRUSS remoteproc driver. All were
+> already merged and can be found under:
+> 1) drivers/soc/ti/pruss.c
+>    Documentation/devicetree/bindings/soc/ti/ti,pruss.yaml
+> 2) drivers/irqchip/irq-pruss-intc.c
+>    Documentation/devicetree/bindings/interrupt-controller/ti,pruss-intc.yaml
+> 3) drivers/remoteproc/pru_rproc.c
+>    Documentation/devicetree/bindings/remoteproc/ti,pru-rproc.yaml
+> 
+> The programmable nature of the PRUs provide flexibility to implement custom
+> peripheral interfaces, fast real-time responses, or specialized data handling.
+> Example of a PRU consumer drivers will be:
+>   - Software UART over PRUSS
+>   - PRU-ICSS Ethernet EMAC
+> 
+> In order to make usage of common PRU resources and allow the consumer drivers to
+> configure the PRU hardware for specific usage the PRU API is introduced.
+> 
+> Patch #3 of this series depends on one not merged remteproc related patch [1].
+> 
+> Please see the individual patches for exact changes in each patch, following is
+> the only change from v1:
+>  - Change the 'prus' property name to 'ti,prus' as suggested by Rob Herring,
+>  which influences patch #1 and patch #2
+> 
+> [1] https://patchwork.kernel.org/project/linux-remoteproc/patch/20201121030156.22857-3-s-anna@ti.com/
+> 
+> Best regards,
+> Grzegorz
+> 
+> Roger Quadros (1):
+>   remoteproc: pru: Add pru_rproc_set_ctable() function
+> 
+> Suman Anna (2):
+>   dt-bindings: remoteproc: Add PRU consumer bindings
+>   remoteproc: pru: Deny rproc sysfs ops for PRU client driven boots
+> 
+> Tero Kristo (2):
+>   remoteproc: pru: Add APIs to get and put the PRU cores
+>   remoteproc: pru: Configure firmware based on client setup
+> 
+>  .../bindings/remoteproc/ti,pru-consumer.yaml  |  64 +++++
+>  drivers/remoteproc/pru_rproc.c                | 221 +++++++++++++++++-
+>  include/linux/pruss.h                         |  78 +++++++
 
-This can cause name collision as reported here [1] as device names are
-not globally unique. Since device names have to be unique within the
-bus/class, add the bus/class name as a prefix to the device names used to
-construct the device link device name.
+This patchset is giving checkpatch.pl errors and as such will not go further
+with this revision.
 
-So the devuce link device's name will be of the form:
-<supplier-bus-name>:<supplier-dev-name>--<consumer-bus-name><consumer-dev-name>
-
-[1] - https://lore.kernel.org/lkml/20201229033440.32142-1-michael@walle.cc/
-Reported-by: Michael Walle <michael@walle.cc>
-Signed-off-by: Saravana Kannan <saravanak@google.com>
----
-
-Michael,
-
-Can you please test this? This should fix your issue.
-
-Having said that, do you have some local DT changes when you are testing
-this? Because it's not obvious from the DT in upstream what dependency
-is even being derived from the firmware. I don't see any dependency in
-upstream DT files between mdio_bus/0000:00:00.1 and
-pci0000:00/0000:00:00.1
-
-Thanks,
-Saravana
-
- Documentation/ABI/testing/sysfs-class-devlink |  4 ++--
- drivers/base/core.c                           |  9 ++++-----
- include/linux/device.h                        | 12 ++++++++++++
- 3 files changed, 18 insertions(+), 7 deletions(-)
-
-diff --git a/Documentation/ABI/testing/sysfs-class-devlink b/Documentation/ABI/testing/sysfs-class-devlink
-index b662f747c83e..8a21ce515f61 100644
---- a/Documentation/ABI/testing/sysfs-class-devlink
-+++ b/Documentation/ABI/testing/sysfs-class-devlink
-@@ -5,8 +5,8 @@ Description:
- 		Provide a place in sysfs for the device link objects in the
- 		kernel at any given time.  The name of a device link directory,
- 		denoted as ... above, is of the form <supplier>--<consumer>
--		where <supplier> is the supplier device name and <consumer> is
--		the consumer device name.
-+		where <supplier> is the supplier bus:device name and <consumer>
-+		is the consumer bus:device name.
- 
- What:		/sys/class/devlink/.../auto_remove_on
- Date:		May 2020
-diff --git a/drivers/base/core.c b/drivers/base/core.c
-index 25e08e5f40bd..e54c51926250 100644
---- a/drivers/base/core.c
-+++ b/drivers/base/core.c
-@@ -737,8 +737,9 @@ struct device_link *device_link_add(struct device *consumer,
- 
- 	link->link_dev.class = &devlink_class;
- 	device_set_pm_not_required(&link->link_dev);
--	dev_set_name(&link->link_dev, "%s--%s",
--		     dev_name(supplier), dev_name(consumer));
-+	dev_set_name(&link->link_dev, "%s:%s--%s:%s",
-+		     dev_bus_name(supplier), dev_name(supplier),
-+		     dev_bus_name(consumer), dev_name(consumer));
- 	if (device_register(&link->link_dev)) {
- 		put_device(consumer);
- 		put_device(supplier);
-@@ -1808,9 +1809,7 @@ const char *dev_driver_string(const struct device *dev)
- 	 * never change once they are set, so they don't need special care.
- 	 */
- 	drv = READ_ONCE(dev->driver);
--	return drv ? drv->name :
--			(dev->bus ? dev->bus->name :
--			(dev->class ? dev->class->name : ""));
-+	return drv ? drv->name : dev_bus_name(dev);
- }
- EXPORT_SYMBOL(dev_driver_string);
- 
-diff --git a/include/linux/device.h b/include/linux/device.h
-index 89bb8b84173e..1779f90eeb4c 100644
---- a/include/linux/device.h
-+++ b/include/linux/device.h
-@@ -609,6 +609,18 @@ static inline const char *dev_name(const struct device *dev)
- 	return kobject_name(&dev->kobj);
- }
- 
-+/**
-+ * dev_bus_name - Return a device's bus/class name, if at all possible
-+ * @dev: struct device to get the bus/class name of
-+ *
-+ * Will return the name of the bus/class the device is attached to.  If it is
-+ * not attached to a bus/class, an empty string will be returned.
-+ */
-+static inline const char *dev_bus_name(const struct device *dev)
-+{
-+	return dev->bus ? dev->bus->name : (dev->class ? dev->class->name : "");
-+}
-+
- __printf(2, 3) int dev_set_name(struct device *dev, const char *name, ...);
- 
- #ifdef CONFIG_NUMA
--- 
-2.29.2.729.g45daf8777d-goog
-
+>  3 files changed, 360 insertions(+), 3 deletions(-)
+>  create mode 100644 Documentation/devicetree/bindings/remoteproc/ti,pru-consumer.yaml
+>  create mode 100644 include/linux/pruss.h
+> 
+> -- 
+> 2.29.0
+> 
