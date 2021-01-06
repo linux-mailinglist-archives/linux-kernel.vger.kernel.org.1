@@ -2,21 +2,21 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E6592EBD62
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 12:59:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 470102EBD63
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 12:59:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726600AbhAFL5b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Jan 2021 06:57:31 -0500
-Received: from foss.arm.com ([217.140.110.172]:40026 "EHLO foss.arm.com"
+        id S1726660AbhAFL5c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Jan 2021 06:57:32 -0500
+Received: from foss.arm.com ([217.140.110.172]:40042 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726504AbhAFL5a (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Jan 2021 06:57:30 -0500
+        id S1726590AbhAFL5c (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 Jan 2021 06:57:32 -0500
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 7116011D4;
-        Wed,  6 Jan 2021 03:56:44 -0800 (PST)
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 514EF12FC;
+        Wed,  6 Jan 2021 03:56:46 -0800 (PST)
 Received: from e119884-lin.cambridge.arm.com (e119884-lin.cambridge.arm.com [10.1.196.72])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C62B43F70D;
-        Wed,  6 Jan 2021 03:56:42 -0800 (PST)
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id A66AA3F70D;
+        Wed,  6 Jan 2021 03:56:44 -0800 (PST)
 From:   Vincenzo Frascino <vincenzo.frascino@arm.com>
 To:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         kasan-dev@googlegroups.com
@@ -30,9 +30,9 @@ Cc:     Vincenzo Frascino <vincenzo.frascino@arm.com>,
         Evgenii Stepanov <eugenis@google.com>,
         Branislav Rankov <Branislav.Rankov@arm.com>,
         Andrey Konovalov <andreyknvl@google.com>
-Subject: [PATCH 3/4] arm64: mte: Enable async tag check fault
-Date:   Wed,  6 Jan 2021 11:55:18 +0000
-Message-Id: <20210106115519.32222-4-vincenzo.frascino@arm.com>
+Subject: [PATCH 4/4] arm64: mte: Optimize mte_assign_mem_tag_range()
+Date:   Wed,  6 Jan 2021 11:55:19 +0000
+Message-Id: <20210106115519.32222-5-vincenzo.frascino@arm.com>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20210106115519.32222-1-vincenzo.frascino@arm.com>
 References: <20210106115519.32222-1-vincenzo.frascino@arm.com>
@@ -42,130 +42,83 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-MTE provides a mode that asynchronously updates the TFSR_EL1 register
-when a tag check exception is detected.
+mte_assign_mem_tag_range() is called on production KASAN HW hot
+paths. It makes sense to optimize it in an attempt to reduce the
+overhead.
 
-To take advantage of this mode the kernel has to verify the status of
-the register at:
-  1. Context switching
-  2. Return to user/EL0 (Not required in entry from EL0 since the kernel
-  did not run)
-  3. Kernel entry from EL1
-  4. Kernel exit to EL1
+Optimize mte_assign_mem_tag_range() based on the indications provided at
+[1].
 
-If the register is non-zero a trace is reported.
-
-Add the required features for EL1 detection and reporting.
-
-Note: ITFSB bit is set in the SCTLR_EL1 register hence it guaranties that
-the indirect writes to TFSR_EL1 are synchronized at exception entry to
-EL1. On the context switch path the synchronization is guarantied by the
-dsb() in __switch_to().
+[1] https://lore.kernel.org/r/CAAeHK+wCO+J7D1_T89DG+jJrPLk3X9RsGFKxJGd0ZcUFjQT-9Q@mail.gmail.com/
 
 Cc: Catalin Marinas <catalin.marinas@arm.com>
 Cc: Will Deacon <will.deacon@arm.com>
 Signed-off-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
 ---
- arch/arm64/include/asm/mte.h     |  1 +
- arch/arm64/kernel/entry-common.c |  6 ++++++
- arch/arm64/kernel/mte.c          | 34 ++++++++++++++++++++++++++++++++
- 3 files changed, 41 insertions(+)
+ arch/arm64/include/asm/mte.h | 26 +++++++++++++++++++++++++-
+ arch/arm64/lib/mte.S         | 15 ---------------
+ 2 files changed, 25 insertions(+), 16 deletions(-)
 
 diff --git a/arch/arm64/include/asm/mte.h b/arch/arm64/include/asm/mte.h
-index d02aff9f493d..c757ff756e09 100644
+index c757ff756e09..ac134a74e1a1 100644
 --- a/arch/arm64/include/asm/mte.h
 +++ b/arch/arm64/include/asm/mte.h
-@@ -33,6 +33,7 @@ void mte_invalidate_tags(int type, pgoff_t offset);
- void mte_invalidate_tags_area(int type);
- void *mte_allocate_tag_storage(void);
- void mte_free_tag_storage(char *storage);
-+void mte_check_tfsr_el1(void);
+@@ -50,7 +50,31 @@ long get_mte_ctrl(struct task_struct *task);
+ int mte_ptrace_copy_tags(struct task_struct *child, long request,
+ 			 unsigned long addr, unsigned long data);
  
- #ifdef CONFIG_ARM64_MTE
- 
-diff --git a/arch/arm64/kernel/entry-common.c b/arch/arm64/kernel/entry-common.c
-index 5346953e4382..74b020ce72d7 100644
---- a/arch/arm64/kernel/entry-common.c
-+++ b/arch/arm64/kernel/entry-common.c
-@@ -37,6 +37,8 @@ static void noinstr enter_from_kernel_mode(struct pt_regs *regs)
- 	lockdep_hardirqs_off(CALLER_ADDR0);
- 	rcu_irq_enter_check_tick();
- 	trace_hardirqs_off_finish();
-+
-+	mte_check_tfsr_el1();
- }
- 
- /*
-@@ -47,6 +49,8 @@ static void noinstr exit_to_kernel_mode(struct pt_regs *regs)
- {
- 	lockdep_assert_irqs_disabled();
- 
-+	mte_check_tfsr_el1();
-+
- 	if (interrupts_enabled(regs)) {
- 		if (regs->exit_rcu) {
- 			trace_hardirqs_on_prepare();
-@@ -243,6 +247,8 @@ asmlinkage void noinstr enter_from_user_mode(void)
- 
- asmlinkage void noinstr exit_to_user_mode(void)
- {
-+	mte_check_tfsr_el1();
-+
- 	trace_hardirqs_on_prepare();
- 	lockdep_hardirqs_on_prepare(CALLER_ADDR0);
- 	user_enter_irqoff();
-diff --git a/arch/arm64/kernel/mte.c b/arch/arm64/kernel/mte.c
-index 5d992e16b420..7082fc287635 100644
---- a/arch/arm64/kernel/mte.c
-+++ b/arch/arm64/kernel/mte.c
-@@ -185,6 +185,31 @@ void mte_enable_kernel(enum kasan_arg_mode mode)
- 	isb();
- }
- 
-+void mte_check_tfsr_el1(void)
+-void mte_assign_mem_tag_range(void *addr, size_t size);
++static inline void mte_assign_mem_tag_range(void *addr, size_t size)
 +{
-+	u64 tfsr_el1;
-+
-+	if (!system_supports_mte())
-+		return;
-+
-+	tfsr_el1 = read_sysreg_s(SYS_TFSR_EL1);
++	u64 _addr = (u64)addr;
++	u64 _end = _addr + size;
 +
 +	/*
-+	 * The kernel should never hit the condition TF0 == 1
-+	 * at this point because for the futex code we set
-+	 * PSTATE.TCO.
-+	 */
-+	WARN_ON(tfsr_el1 & SYS_TFSR_EL1_TF0);
-+
-+	if (tfsr_el1 & SYS_TFSR_EL1_TF1) {
-+		write_sysreg_s(0, SYS_TFSR_EL1);
-+		isb();
-+
-+		pr_err("MTE: Asynchronous tag exception detected!");
-+	}
-+}
-+NOKPROBE_SYMBOL(mte_check_tfsr_el1);
-+
- static void update_sctlr_el1_tcf0(u64 tcf0)
- {
- 	/* ISB required for the kernel uaccess routines */
-@@ -250,6 +275,15 @@ void mte_thread_switch(struct task_struct *next)
- 	/* avoid expensive SCTLR_EL1 accesses if no change */
- 	if (current->thread.sctlr_tcf0 != next->thread.sctlr_tcf0)
- 		update_sctlr_el1_tcf0(next->thread.sctlr_tcf0);
-+
-+	/*
-+	 * Check if an async tag exception occurred at EL1.
++	 * This function must be invoked from an MTE enabled context.
 +	 *
-+	 * Note: On the context switch patch we rely on the dsb() present
-+	 * in __switch_to() to guaranty that the indirect writes to TFSR_EL1
-+	 * are synchronized before this point.
++	 * Note: The address must be non-NULL and MTE_GRANULE_SIZE aligned and
++	 * size must be non-zero and MTE_GRANULE_SIZE aligned.
 +	 */
-+	mte_check_tfsr_el1();
- }
++	do {
++		/*
++		 * 'asm volatile' is required to prevent the compiler to move
++		 * the statement outside of the loop.
++		 */
++		asm volatile(__MTE_PREAMBLE "stg %0, [%0]"
++			     :
++			     : "r" (_addr)
++			     : "memory");
++
++		_addr += MTE_GRANULE_SIZE;
++	} while (_addr < _end);
++}
++
  
- void mte_suspend_exit(void)
+ #else /* CONFIG_ARM64_MTE */
+ 
+diff --git a/arch/arm64/lib/mte.S b/arch/arm64/lib/mte.S
+index 9e1a12e10053..a0a650451510 100644
+--- a/arch/arm64/lib/mte.S
++++ b/arch/arm64/lib/mte.S
+@@ -150,18 +150,3 @@ SYM_FUNC_START(mte_restore_page_tags)
+ 	ret
+ SYM_FUNC_END(mte_restore_page_tags)
+ 
+-/*
+- * Assign allocation tags for a region of memory based on the pointer tag
+- *   x0 - source pointer
+- *   x1 - size
+- *
+- * Note: The address must be non-NULL and MTE_GRANULE_SIZE aligned and
+- * size must be non-zero and MTE_GRANULE_SIZE aligned.
+- */
+-SYM_FUNC_START(mte_assign_mem_tag_range)
+-1:	stg	x0, [x0]
+-	add	x0, x0, #MTE_GRANULE_SIZE
+-	subs	x1, x1, #MTE_GRANULE_SIZE
+-	b.gt	1b
+-	ret
+-SYM_FUNC_END(mte_assign_mem_tag_range)
 -- 
 2.29.2
 
