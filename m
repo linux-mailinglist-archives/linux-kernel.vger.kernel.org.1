@@ -2,216 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C0542EB8E8
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 05:29:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 049402EB8E9
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 05:29:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726711AbhAFE1m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 23:27:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47816 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726019AbhAFE1m (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 23:27:42 -0500
-Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF637C06134C;
-        Tue,  5 Jan 2021 20:27:01 -0800 (PST)
-Received: by mail-lf1-x134.google.com with SMTP id m25so3649686lfc.11;
-        Tue, 05 Jan 2021 20:27:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=zTK2J54FnZffWvRbx4mbZpAaWIjHl2sQ8iSg0f7XF+o=;
-        b=Thrp8TYeerkOhatWx2pTbUQWDkB+b/OayEfDfd4RqZVjKKA8MsPe00P8b3GTFp2tLB
-         UToj/RwSlhESyXzhvIf/kuXdSg21I4gUlatImkBV4t0ttr9b4LyoMi3d2tTYOeTdD1lo
-         jnIzgNjI41LO5fumdhphLqlSqYQ6p3kgDlEoxWzLBlvYUUemsehtBxuJWL6u7SLdpdxZ
-         Zt0fRiv6nmIiK9z6XqCWCkZsJZJgT0ihS61ca36HpGKxE0lRbyJSP5zl8SCq0BdNoj0c
-         ydc6TLSVC0U4PtftTpptTf8vdz9W6JqkyM3DmBocGx+QRHY90WpB0fuvAvXRC1D3gTkP
-         jqnQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=zTK2J54FnZffWvRbx4mbZpAaWIjHl2sQ8iSg0f7XF+o=;
-        b=gwC+L+RuhB93nJC3hS92w7gUfs9Oovn4EnPpERlNsMXVAxlJkNH3BXGT9/fXRLVHa9
-         JPP88aQtGhfELqjUwgxZ4aLQYO/71C3bVDzOcbq7ESfnmiM12KFBY9gqkAnAaDQhldxG
-         KFOmJDfBifqijAbdWZjUOyRs6AQAwjzlSLPx5C+KZnSa7EdrlRhQn8sMVFRpso32CQPz
-         jyVzpIVaviOTWVV1AfFdlOaQjczduxA2LRQjWG8cmTi/ZQ1nHWR0ivy0vKUS2mvj5JLd
-         UPRgWzgeugSa0qYfoXqOsmrMFFNXffRfss+TJS3FOWrZ3i4Gtoc1TYSy897j36QN3wlS
-         7WXw==
-X-Gm-Message-State: AOAM533h3DUXVv3QaKFXGaBlVYWO71ywosQgD0jI4qw/6gRwbchjbQFm
-        9/U+gGuI148Re6fLsfJiY8NPZVWP3zuiIvjPwqg=
-X-Google-Smtp-Source: ABdhPJzfvnJd83idri3vFQ6Tjs+H8EGFErJQg39O8UJZkp2i/xMks3zwAmzoVR0cjlGEXvT7Kkf+9qF8a8133eWm7eY=
-X-Received: by 2002:a19:6a11:: with SMTP id u17mr1107677lfu.184.1609907220071;
- Tue, 05 Jan 2021 20:27:00 -0800 (PST)
+        id S1726807AbhAFE2L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 23:28:11 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55780 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726386AbhAFE2L (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 5 Jan 2021 23:28:11 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1636222D74;
+        Wed,  6 Jan 2021 04:27:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1609907250;
+        bh=lTLkWDqzRE7QAZvFkrbEaKvOGJYFiXKoiKyzBrtl9FE=;
+        h=From:To:Cc:Subject:Date:From;
+        b=nmm+xb4JxgstgYPZDd74jlhkCwzSVX0sLCEdxXy7NoiU5PZl8jAXFFssm43t0zeIx
+         vL9tyBP6Z1D/zoEJcMygN999YS36DBOokBIXNJ9k+oqjugGcMcYf+KwLM1eYRqLLvR
+         JVT7KOlP6r9ggcIlOa2PE/gC8dxZpyXzwxfcTvN0gkr2JYXrdWT/Nh9Z5z/an+lkQW
+         DJ+MVATFqTPYBlbtA3V2Vt5GlnHbk2N66GU5uiTxtlYmc36VnGPlbrRn+llRRXgX3S
+         l9ro6f+ZCVnv7uUzS/ajrNKXjrDGajwFCaCKC6xBxSNs9JIJ4CNBC6D+A+0oFaROhw
+         c3WVTk+mzul0g==
+From:   Jaegeuk Kim <jaegeuk@kernel.org>
+To:     linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org,
+        kernel-team@android.com
+Cc:     Jaegeuk Kim <jaegeuk@kernel.org>
+Subject: [PATCH] scsi: ufs: fix livelock of ufshcd_clear_ua_wluns
+Date:   Tue,  5 Jan 2021 20:27:21 -0800
+Message-Id: <20210106042721.392494-1-jaegeuk@kernel.org>
+X-Mailer: git-send-email 2.29.2.729.g45daf8777d-goog
 MIME-Version: 1.0
-References: <1607591258-13865-1-git-send-email-yejune.deng@gmail.com>
-In-Reply-To: <1607591258-13865-1-git-send-email-yejune.deng@gmail.com>
-From:   Steve French <smfrench@gmail.com>
-Date:   Tue, 5 Jan 2021 22:26:47 -0600
-Message-ID: <CAH2r5mvgjFWwEcqt8nfiU_1GJQUU7jN=eNT-t6SBEK8jke0Msg@mail.gmail.com>
-Subject: Re: [PATCH] cifs: fix msleep() is imprecise
-To:     Yejune Deng <yejune.deng@gmail.com>
-Cc:     Steve French <sfrench@samba.org>,
-        CIFS <linux-cifs@vger.kernel.org>,
-        samba-technical <samba-technical@lists.samba.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch seems reasonable at first glance, but I was a little
-concerned that we don't see many users yet of fsleep.  Has there been
-pushback on converting "yield" situations from using msleep to fsleep?
+When gate_work/ungate_work gets an error during hibern8_enter or exit,
+ ufshcd_err_handler()
+   ufshcd_scsi_block_requests()
+   ufshcd_reset_and_restore()
+     ufshcd_clear_ua_wluns() -> stuck
+   ufshcd_scsi_unblock_requests()
 
-On Thu, Dec 10, 2020 at 3:09 AM Yejune Deng <yejune.deng@gmail.com> wrote:
->
-> See Documentation/timers/timers-howto.rst, msleep() is not
-> for (1ms - 20ms), There is a more advanced API is used.
->
-> Signed-off-by: Yejune Deng <yejune.deng@gmail.com>
-> ---
->  fs/cifs/cifsfs.c    |  4 ++--
->  fs/cifs/connect.c   | 14 +++++++-------
->  fs/cifs/file.c      |  6 +++---
->  fs/cifs/smbdirect.c |  2 +-
->  4 files changed, 13 insertions(+), 13 deletions(-)
->
-> diff --git a/fs/cifs/cifsfs.c b/fs/cifs/cifsfs.c
-> index 472cb77..d35ce52 100644
-> --- a/fs/cifs/cifsfs.c
-> +++ b/fs/cifs/cifsfs.c
-> @@ -664,10 +664,10 @@ static void cifs_umount_begin(struct super_block *sb)
->                 cifs_dbg(FYI, "wake up tasks now - umount begin not complete\n");
->                 wake_up_all(&tcon->ses->server->request_q);
->                 wake_up_all(&tcon->ses->server->response_q);
-> -               msleep(1); /* yield */
-> +               fsleep(1000); /* yield */
->                 /* we have to kick the requests once more */
->                 wake_up_all(&tcon->ses->server->response_q);
-> -               msleep(1);
-> +               fsleep(1000);
->         }
->
->         return;
-> diff --git a/fs/cifs/connect.c b/fs/cifs/connect.c
-> index 44f9cce..62a9c64 100644
-> --- a/fs/cifs/connect.c
-> +++ b/fs/cifs/connect.c
-> @@ -538,7 +538,7 @@ static inline int reconn_setup_dfs_targets(struct cifs_sb_info *cifs_sb,
->                 if (rc) {
->                         cifs_dbg(FYI, "reconnect error %d\n", rc);
->                         mutex_unlock(&server->srv_mutex);
-> -                       msleep(3000);
-> +                       ssleep(3);
->                 } else {
->                         atomic_inc(&tcpSesReconnectCount);
->                         set_credits(server, 1);
-> @@ -621,7 +621,7 @@ static inline int reconn_setup_dfs_targets(struct cifs_sb_info *cifs_sb,
->                 server->bigbuf = (char *)cifs_buf_get();
->                 if (!server->bigbuf) {
->                         cifs_server_dbg(VFS, "No memory for large SMB response\n");
-> -                       msleep(3000);
-> +                       ssleep(3);
->                         /* retry will check if exiting */
->                         return false;
->                 }
-> @@ -634,7 +634,7 @@ static inline int reconn_setup_dfs_targets(struct cifs_sb_info *cifs_sb,
->                 server->smallbuf = (char *)cifs_small_buf_get();
->                 if (!server->smallbuf) {
->                         cifs_server_dbg(VFS, "No memory for SMB response\n");
-> -                       msleep(1000);
-> +                       ssleep(1);
->                         /* retry will check if exiting */
->                         return false;
->                 }
-> @@ -729,7 +729,7 @@ static inline int reconn_setup_dfs_targets(struct cifs_sb_info *cifs_sb,
->                          * to clear and app threads to set tcpStatus
->                          * CifsNeedReconnect if server hung.
->                          */
-> -                       usleep_range(1000, 2000);
-> +                       fsleep(1000);
->                         length = 0;
->                         continue;
->                 }
-> @@ -790,7 +790,7 @@ static inline int reconn_setup_dfs_targets(struct cifs_sb_info *cifs_sb,
->                  */
->                 cifs_dbg(FYI, "RFC 1002 negative session response\n");
->                 /* give server a second to clean up */
-> -               msleep(1000);
-> +               ssleep(1);
->                 /*
->                  * Always try 445 first on reconnect since we get NACK
->                  * on some if we ever connected to port 139 (the NACK
-> @@ -944,7 +944,7 @@ static void clean_demultiplex_info(struct TCP_Server_Info *server)
->                  * response and going ahead and killing cifsd.
->                  */
->                 cifs_dbg(FYI, "Wait for exit from demultiplex thread\n");
-> -               msleep(46000);
-> +               ssleep(46);
->                 /*
->                  * If threads still have not exited they are probably never
->                  * coming home not much else we can do but free the memory.
-> @@ -3655,7 +3655,7 @@ static void rfc1002mangle(char *target, char *source, unsigned int length)
->                  * significant slowing down on mount
->                  * for everyone else
->                  */
-> -               usleep_range(1000, 2000);
-> +               fsleep(1000);
->         }
->         /*
->          * else the negprot may still work without this
-> diff --git a/fs/cifs/file.c b/fs/cifs/file.c
-> index be46fab..75538a8 100644
-> --- a/fs/cifs/file.c
-> +++ b/fs/cifs/file.c
-> @@ -283,7 +283,7 @@ int cifs_posix_open(char *full_path, struct inode **pinode,
->  cifs_down_write(struct rw_semaphore *sem)
->  {
->         while (!down_write_trylock(sem))
-> -               msleep(10);
-> +               fsleep(10000);
->  }
->
->  static void cifsFileInfo_put_work(struct work_struct *work);
-> @@ -2828,7 +2828,7 @@ size_t get_numpages(const size_t wsize, const size_t len, size_t *cur_len)
->
->                         if (wsize < wdata->bytes) {
->                                 add_credits_and_wake_if(server, &credits, 0);
-> -                               msleep(1000);
-> +                               ssleep(1);
->                         }
->                 } while (wsize < wdata->bytes);
->                 wdata->credits = credits;
-> @@ -3563,7 +3563,7 @@ static int cifs_resend_rdata(struct cifs_readdata *rdata,
->
->                         if (rsize < rdata->bytes) {
->                                 add_credits_and_wake_if(server, &credits, 0);
-> -                               msleep(1000);
-> +                               ssleep(1);
->                         }
->                 } while (rsize < rdata->bytes);
->                 rdata->credits = credits;
-> diff --git a/fs/cifs/smbdirect.c b/fs/cifs/smbdirect.c
-> index b029ed3..84f97f8 100644
-> --- a/fs/cifs/smbdirect.c
-> +++ b/fs/cifs/smbdirect.c
-> @@ -1372,7 +1372,7 @@ void smbd_destroy(struct TCP_Server_Info *server)
->         wake_up_interruptible_all(&info->wait_mr);
->         while (atomic_read(&info->mr_used_count)) {
->                 mutex_unlock(&server->srv_mutex);
-> -               msleep(1000);
-> +               ssleep(1);
->                 mutex_lock(&server->srv_mutex);
->         }
->         destroy_mr_list(info);
-> --
-> 1.9.1
->
+In order to avoid it, ufshcd_clear_ua_wluns() can be called per recovery flows
+such as suspend/resume, link_recovery, and error_handler.
 
+Fixes: 1918651f2d7e ("scsi: ufs: Clear UAC for RPMB after ufshcd resets")
+Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
+---
+ drivers/scsi/ufs/ufshcd.c | 15 ++++++++++-----
+ 1 file changed, 10 insertions(+), 5 deletions(-)
 
+diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
+index e221add25a7e..29a62552f6f1 100644
+--- a/drivers/scsi/ufs/ufshcd.c
++++ b/drivers/scsi/ufs/ufshcd.c
+@@ -3963,6 +3963,8 @@ int ufshcd_link_recovery(struct ufs_hba *hba)
+ 	if (ret)
+ 		dev_err(hba->dev, "%s: link recovery failed, err %d",
+ 			__func__, ret);
++	else
++		ufshcd_clear_ua_wluns(hba);
+ 
+ 	return ret;
+ }
+@@ -5968,6 +5970,9 @@ static void ufshcd_err_handler(struct work_struct *work)
+ 	ufshcd_scsi_unblock_requests(hba);
+ 	ufshcd_err_handling_unprepare(hba);
+ 	up(&hba->eh_sem);
++
++	if (!err && needs_reset)
++		ufshcd_clear_ua_wluns(hba);
+ }
+ 
+ /**
+@@ -6908,14 +6913,11 @@ static int ufshcd_host_reset_and_restore(struct ufs_hba *hba)
+ 	ufshcd_set_clk_freq(hba, true);
+ 
+ 	err = ufshcd_hba_enable(hba);
+-	if (err)
+-		goto out;
+ 
+ 	/* Establish the link again and restore the device */
+-	err = ufshcd_probe_hba(hba, false);
+ 	if (!err)
+-		ufshcd_clear_ua_wluns(hba);
+-out:
++		err = ufshcd_probe_hba(hba, false);
++
+ 	if (err)
+ 		dev_err(hba->dev, "%s: Host init failed %d\n", __func__, err);
+ 	ufshcd_update_evt_hist(hba, UFS_EVT_HOST_RESET, (u32)err);
+@@ -8745,6 +8747,7 @@ static int ufshcd_suspend(struct ufs_hba *hba, enum ufs_pm_op pm_op)
+ 		ufshcd_resume_clkscaling(hba);
+ 	hba->clk_gating.is_suspended = false;
+ 	hba->dev_info.b_rpm_dev_flush_capable = false;
++	ufshcd_clear_ua_wluns(hba);
+ 	ufshcd_release(hba);
+ out:
+ 	if (hba->dev_info.b_rpm_dev_flush_capable) {
+@@ -8855,6 +8858,8 @@ static int ufshcd_resume(struct ufs_hba *hba, enum ufs_pm_op pm_op)
+ 		cancel_delayed_work(&hba->rpm_dev_flush_recheck_work);
+ 	}
+ 
++	ufshcd_clear_ua_wluns(hba);
++
+ 	/* Schedule clock gating in case of no access to UFS device yet */
+ 	ufshcd_release(hba);
+ 
 -- 
-Thanks,
+2.29.2.729.g45daf8777d-goog
 
-Steve
