@@ -2,148 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 88C6B2EBCAE
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 11:49:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 08E0F2EBCAF
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 11:49:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726338AbhAFKt2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Jan 2021 05:49:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50888 "EHLO
+        id S1726466AbhAFKtc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Jan 2021 05:49:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50886 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725789AbhAFKt0 (ORCPT
+        with ESMTP id S1725906AbhAFKtb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Jan 2021 05:49:26 -0500
-Received: from mail-vs1-xe2a.google.com (mail-vs1-xe2a.google.com [IPv6:2607:f8b0:4864:20::e2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A1DFC06134C
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Jan 2021 02:48:57 -0800 (PST)
-Received: by mail-vs1-xe2a.google.com with SMTP id e15so1575834vsa.0
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Jan 2021 02:48:57 -0800 (PST)
+        Wed, 6 Jan 2021 05:49:31 -0500
+Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1B70C061357
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Jan 2021 02:49:16 -0800 (PST)
+Received: by mail-wm1-x32b.google.com with SMTP id y23so2236942wmi.1
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Jan 2021 02:49:16 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=65bthvYlj9KKIS5KK6JhxNYJMD8s4MDQLZpfgKqd4vM=;
-        b=X7GGMa423pBbYfE4+HR39/XGdoDcfr3nbm8+IarZvID4Pf5pRICqedHoV1eEljrqvh
-         1wjAGleOvGRLUtM2TA6SjwweF91aOSKSAHJQ+VWXnmcAOjDSGBetJbOtEXmvkzoISqnO
-         gun7Yry+f4793b7Iq7Mmya8p7nFGc8lI/3GsE=
+        d=linaro.org; s=google;
+        h=date:from:to:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=7BgdPlyabJOHA2iddd/tRY6lBkargL+ou/K0j1Targg=;
+        b=MIV3/Y6BnLIx/9BjLqh+9PeknY1k8RcOh14MODBFl5oBOEep+I+ub04YpRltcG3HPM
+         McBPg8CIXimIhtDrKu0jPceIN+gXyyPGzqriFdhmvTU8F9N2MWNzr9mQmmuaYWkhbSJa
+         /0cg1rNQVNUegt90/xyFlkLhupWsCi3CwNXYFuJPYDpbphNox5HIKYXgQeomjNFM2EeF
+         mZwDPZ3nPenMk+u2Z3DhJbrJCeuoFbtWvpRhqPUhtU4luCr/ZINNWd3H2EU4PPUruO6H
+         HIdwlZLtClOiTFSBuRGNV5OnAiQIamUwV/tv+3YfN7MEzYrcDoRlnzuWZUnb3s74XbaD
+         O6uw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=65bthvYlj9KKIS5KK6JhxNYJMD8s4MDQLZpfgKqd4vM=;
-        b=bRQFJfGwXDY46SUDZ117fVA1UXr9Zg1gxs+Mz01DCQYtHf+xBEDAGWOxrhPxLYZtYe
-         3Xm/vluCFA6Zp9BoPV/4YgX7u89so+KYLBT/QJXT7RGryrHANKmsRqp7ehyT7g4IeLjj
-         WGC1SRmjqAvaI8JW+otHOTVIwexQWyoGqsoWuNmeFOpZRK6CAT//rMwWB3cI6Rmd43AZ
-         SCiKtCtzN62kfyvhw6KSa7fcW8Iwt1a9gV2GXaJPZ4FOJ04Kcs5UDl6ZECDG2/KmOaXr
-         g8cgny3R5zXkodaKlOag347pwsyvIWz+hLChereZlNPnzDPRjjyB0hd6ZaPLVJVcl7Jg
-         Bepw==
-X-Gm-Message-State: AOAM532W6fNIv7fH6YTCd3rXwK6YqznfQ7dQxI12XPLHB6zl5sV1KhMS
-        F7qHjDuR6qxbVgD/FxKznhXJnl5R01nAs/xgSi7HTg==
-X-Google-Smtp-Source: ABdhPJz9ON8BwWq+VaecVefOOUeLpjkYUuNp9NU/OAWS/f/jzOReQa42tBRohJ5XkaU0WXUWBPttXpWvspWnaIv70xQ=
-X-Received: by 2002:a67:5c03:: with SMTP id q3mr2560878vsb.47.1609930136255;
- Wed, 06 Jan 2021 02:48:56 -0800 (PST)
-MIME-Version: 1.0
-References: <20210106084626.2181286-1-hsinyi@chromium.org> <CANMq1KAoboK45uOhKMYZ-=TvBBQRZhEeij=ha6MqSKZiYx64eQ@mail.gmail.com>
-In-Reply-To: <CANMq1KAoboK45uOhKMYZ-=TvBBQRZhEeij=ha6MqSKZiYx64eQ@mail.gmail.com>
-From:   Nicolas Boichat <drinkcat@chromium.org>
-Date:   Wed, 6 Jan 2021 18:48:45 +0800
-Message-ID: <CANMq1KDGUSGE5Vb3WQMhgECkBL_PTMHnS+8wTP6W0Uhhv9RJJQ@mail.gmail.com>
-Subject: Re: [PATCH 1/2] arm64: dts: mt8183: config dsi node
-To:     Hsin-Yi Wang <hsinyi@chromium.org>
-Cc:     linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
+        h=x-gm-message-state:date:from:to:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=7BgdPlyabJOHA2iddd/tRY6lBkargL+ou/K0j1Targg=;
+        b=grIqj7bOeknb28UKoMW5oIWjnZsw8CazFach3wfX3IUjEiCYoi9M66lLC6OFz4vMR3
+         /gqCgKhTYT1HTosDcphFgCH8CtHEanDfK5z7x49s6ZGn/uZIADQCg8LeToBI7RYKwF34
+         A69NKUk/FRKYnVl9tfOnxfQxApTfcj3oq8c9jLPFiEdAy5eFYPu6ZDSSo9nHBDY22haF
+         Ots/MQMUPJx14vpLbcIAhuFbUTApcb4SGw/z88xl6PNv1q+5HPagR7TwnCo49BMl11bK
+         V9U8qlUWDn7UlGn2eQfIzJnbYfVtnRQg/YtfJO4/QKhBL3AR8q/kiPCQ3HjEFUV2OC6X
+         /zMA==
+X-Gm-Message-State: AOAM530oQvlWOz25kSYktC0FdgtEVaoml35NW1hgh/1QTx7/IQmXyoHG
+        0qmN3EHs23dvNdMkFm43fRXeiAfvwjsqyHfx
+X-Google-Smtp-Source: ABdhPJxixDY4BCWrLZMAzpZx1eltJSMRKmmYljJPAGn+SwxhFd7ViY1xMp0IB3OIu8r5frvCfnED/A==
+X-Received: by 2002:a7b:c24d:: with SMTP id b13mr3089446wmj.151.1609930155127;
+        Wed, 06 Jan 2021 02:49:15 -0800 (PST)
+Received: from dell ([91.110.221.182])
+        by smtp.gmail.com with ESMTPSA id i11sm2237484wmq.10.2021.01.06.02.49.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 06 Jan 2021 02:49:14 -0800 (PST)
+Date:   Wed, 6 Jan 2021 10:49:12 +0000
+From:   Lee Jones <lee.jones@linaro.org>
+To:     linux-kernel@vger.kernel.org,
+        Linus Walleij <linus.walleij@linaro.org>,
         Matthias Brugger <matthias.bgg@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        Devicetree List <devicetree@vger.kernel.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        lkml <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Gene Chen <gene_chen@richtek.com>,
+        linux-mediatek@lists.infradead.org
+Subject: Re: [PATCH 1/1] mfd: Standardise MFD_CELL_* helper names
+Message-ID: <20210106104912.GC1592923@dell>
+References: <20201217083420.411569-1-lee.jones@linaro.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201217083420.411569-1-lee.jones@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 6, 2021 at 6:47 PM Nicolas Boichat <drinkcat@chromium.org> wrote:
->
-> On Wed, Jan 6, 2021 at 4:46 PM Hsin-Yi Wang <hsinyi@chromium.org> wrote:
-> >
-> > Config dsi node for mt8183 kukui. Set panel and ports.
-> >
-> > Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
-> > ---
-> >  .../arm64/boot/dts/mediatek/mt8183-kukui.dtsi | 38 +++++++++++++++++++
-> >  1 file changed, 38 insertions(+)
-> >
-> > diff --git a/arch/arm64/boot/dts/mediatek/mt8183-kukui.dtsi b/arch/arm64/boot/dts/mediatek/mt8183-kukui.dtsi
-> > index bf2ad1294dd30..4cfb3560e5d11 100644
-> > --- a/arch/arm64/boot/dts/mediatek/mt8183-kukui.dtsi
-> > +++ b/arch/arm64/boot/dts/mediatek/mt8183-kukui.dtsi
-> > @@ -249,6 +249,36 @@ &cpu7 {
-> >         proc-supply = <&mt6358_vproc11_reg>;
-> >  };
-> >
-> > +&dsi0 {
-> > +       status = "okay";
-> > +       #address-cells = <1>;
-> > +       #size-cells = <0>;
-> > +       panel: panel@0 {
-> > +               compatible = "boe,tv101wum-nl6";
->
-> We're going to have many panels in the kukui family, so I think I'd
-> prefer it if you moved the compatible string to krane-sku0 dts: it
-> makes it easier to figure out what's different with sku0.
+On Thu, 17 Dec 2020, Lee Jones wrote:
 
-I meant sku176 (since you are adding sku0 with a different panel
-compatible later).
+> Start all helpers with "MFD_CELL_".
+> 
+> Cc: Linus Walleij <linus.walleij@linaro.org>
+> Cc: Matthias Brugger <matthias.bgg@gmail.com>
+> Cc: Gene Chen <gene_chen@richtek.com>
+> Cc: linux-mediatek@lists.infradead.org
+> Signed-off-by: Lee Jones <lee.jones@linaro.org>
+> ---
+>  drivers/mfd/ab8500-core.c  | 42 +++++++++++++++++++-------------------
+>  drivers/mfd/db8500-prcmu.c |  6 +++---
+>  drivers/mfd/mt6360-core.c  | 12 +++++------
+>  include/linux/mfd/core.h   |  6 +++---
+>  4 files changed, 33 insertions(+), 33 deletions(-)
 
->
-> Then maybe leave all the other properties in this file, as it seems
-> like all MIPI panels use the exact same pin/supplies?
->
-> (And add a comment here saying that the compatible needs to be set in
-> board dts?)
->
-> > +               reg = <0>;
-> > +               enable-gpios = <&pio 45 0>;
-> > +               pinctrl-names = "default";
-> > +               pinctrl-0 = <&panel_pins_default>;
-> > +               avdd-supply = <&ppvarn_lcd>;
-> > +               avee-supply = <&ppvarp_lcd>;
-> > +               pp1800-supply = <&pp1800_lcd>;
-> > +               status = "okay";
-> > +               port {
-> > +                       panel_in: endpoint {
-> > +                               remote-endpoint = <&dsi_out>;
-> > +                       };
-> > +               };
-> > +       };
-> > +
-> > +       ports {
-> > +               port {
-> > +                       dsi_out: endpoint {
-> > +                               remote-endpoint = <&panel_in>;
-> > +                       };
-> > +               };
-> > +       };
-> > +};
-> > +
-> >  &i2c0 {
-> >         pinctrl-names = "default";
-> >         pinctrl-0 = <&i2c0_pins>;
-> > @@ -547,6 +577,14 @@ pins_clk {
-> >                 };
-> >         };
-> >
-> > +       panel_pins_default: panel_pins_default {
-> > +               panel_reset {
-> > +                       pinmux = <PINMUX_GPIO45__FUNC_GPIO45>;
-> > +                       output-low;
-> > +                       bias-pull-up;
-> > +               };
-> > +       };
-> > +
-> >         pwm0_pin_default: pwm0_pin_default {
-> >                 pins1 {
-> >                         pinmux = <PINMUX_GPIO176__FUNC_GPIO176>;
-> > --
-> > 2.29.2.729.g45daf8777d-goog
-> >
+What a great patch! ;)
+
+Applied, thanks.
+
+-- 
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
