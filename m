@@ -2,87 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A5B52EBA88
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 08:36:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A46332EBA8E
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 08:38:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726273AbhAFHe4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Jan 2021 02:34:56 -0500
-Received: from mxout70.expurgate.net ([91.198.224.70]:46357 "EHLO
+        id S1726303AbhAFHh0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Jan 2021 02:37:26 -0500
+Received: from mxout70.expurgate.net ([194.37.255.70]:45659 "EHLO
         mxout70.expurgate.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725855AbhAFHez (ORCPT
+        with ESMTP id S1725792AbhAFHh0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Jan 2021 02:34:55 -0500
+        Wed, 6 Jan 2021 02:37:26 -0500
 Received: from [127.0.0.1] (helo=localhost)
-        by relay.expurgate.net with smtp (Exim 4.92)
+        by relay.expurgate.net with smtp (Exim 4.90)
         (envelope-from <ms@dev.tdt.de>)
-        id 1kx3Jb-000Abi-8Q; Wed, 06 Jan 2021 08:33:07 +0100
+        id 1kx3Ly-0003xQ-Vq; Wed, 06 Jan 2021 08:35:35 +0100
 Received: from [195.243.126.94] (helo=securemail.tdt.de)
         by relay.expurgate.net with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
+        (Exim 4.90)
         (envelope-from <ms@dev.tdt.de>)
-        id 1kx3Ja-000AbP-KA; Wed, 06 Jan 2021 08:33:06 +0100
+        id 1kx3Ly-0001dX-0y; Wed, 06 Jan 2021 08:35:34 +0100
 Received: from securemail.tdt.de (localhost [127.0.0.1])
-        by securemail.tdt.de (Postfix) with ESMTP id B03F8240041;
-        Wed,  6 Jan 2021 08:33:05 +0100 (CET)
+        by securemail.tdt.de (Postfix) with ESMTP id 5DCB3240041;
+        Wed,  6 Jan 2021 08:35:33 +0100 (CET)
 Received: from mail.dev.tdt.de (unknown [10.2.4.42])
-        by securemail.tdt.de (Postfix) with ESMTP id 2B578240040;
-        Wed,  6 Jan 2021 08:33:05 +0100 (CET)
+        by securemail.tdt.de (Postfix) with ESMTP id DCBB2240040;
+        Wed,  6 Jan 2021 08:35:32 +0100 (CET)
 Received: from mail.dev.tdt.de (localhost [IPv6:::1])
-        by mail.dev.tdt.de (Postfix) with ESMTP id A498C20046;
-        Wed,  6 Jan 2021 08:33:04 +0100 (CET)
+        by mail.dev.tdt.de (Postfix) with ESMTP id 68AAC20046;
+        Wed,  6 Jan 2021 08:35:32 +0100 (CET)
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII;
  format=flowed
 Content-Transfer-Encoding: 7bit
-Date:   Wed, 06 Jan 2021 08:33:04 +0100
+Date:   Wed, 06 Jan 2021 08:35:32 +0100
 From:   Martin Schiller <ms@dev.tdt.de>
 To:     Xie He <xie.he.0141@gmail.com>
-Cc:     Sasha Levin <sashal@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, stable@vger.kernel.org,
-        Jakub Kicinski <kuba@kernel.org>,
-        Linux X25 <linux-x25@vger.kernel.org>,
-        Linux Kernel Network Developers <netdev@vger.kernel.org>
-Subject: Re: [PATCH AUTOSEL 5.4 075/130] net/lapb: fix t1 timer handling for
- LAPB_STATE_0
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, linux-x25@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net] net: lapb: Decrease the refcount of "struct lapb_cb"
+ in lapb_device_event
 Organization: TDT AG
-In-Reply-To: <CAJht_EOXf4Z3G-rq92hb_YvJEsHtDy15FE7WuthqDQsPY039QQ@mail.gmail.com>
-References: <20201223021813.2791612-75-sashal@kernel.org>
- <20201223170124.5963-1-xie.he.0141@gmail.com>
- <CAJht_EOXf4Z3G-rq92hb_YvJEsHtDy15FE7WuthqDQsPY039QQ@mail.gmail.com>
-Message-ID: <70be903f2be49e243b5a28cf565c07a8@dev.tdt.de>
+In-Reply-To: <20201231174331.64539-1-xie.he.0141@gmail.com>
+References: <20201231174331.64539-1-xie.he.0141@gmail.com>
+Message-ID: <4bba668b619e32e87e713b5b9d0876a7@dev.tdt.de>
 X-Sender: ms@dev.tdt.de
 User-Agent: Roundcube Webmail/1.3.15
 X-Spam-Status: No, score=-1.0 required=5.0 tests=ALL_TRUSTED autolearn=ham
         autolearn_force=no version=3.4.2
 X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on mail.dev.tdt.de
-X-purgate-ID: 151534::1609918387-0001A85E-4872F59B/0/0
-X-purgate: clean
+X-purgate-ID: 151534::1609918534-0000A9C4-9CA950EE/0/0
 X-purgate-type: clean
+X-purgate: clean
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-12-24 10:49, Xie He wrote:
-> On Wed, Dec 23, 2020 at 9:01 AM Xie He <xie.he.0141@gmail.com> wrote:
->> 
->> I don't think this patch is suitable for stable branches. This patch 
->> is
->> part of a patch series that changes the lapb module from "establishing 
->> the
->> L2 connection only when needed by L3", to "establishing the L2 
->> connection
->> automatically whenever we are able to". This is a behavioral change. 
->> It
->> should be seen as a new feature. It is not a bug fix.
+On 2020-12-31 18:43, Xie He wrote:
+> In lapb_device_event, lapb_devtostruct is called to get a reference to
+> an object of "struct lapb_cb". lapb_devtostruct increases the refcount
+> of the object and returns a pointer to it. However, we didn't decrease
+> the refcount after we finished using the pointer. This patch fixes this
+> problem.
 > 
-> Applying this patch without other patches in the same series will also
-> introduce problems, because this patch relies on part of the changes
-> in the subsequent patch in the same series to be correct.
+> Fixes: a4989fa91110 ("net/lapb: support netdev events")
+> Cc: Martin Schiller <ms@dev.tdt.de>
+> Signed-off-by: Xie He <xie.he.0141@gmail.com>
+> ---
+>  net/lapb/lapb_iface.c | 1 +
+>  1 file changed, 1 insertion(+)
 > 
-> Hi Martin,
+> diff --git a/net/lapb/lapb_iface.c b/net/lapb/lapb_iface.c
+> index 213ea7abc9ab..40961889e9c0 100644
+> --- a/net/lapb/lapb_iface.c
+> +++ b/net/lapb/lapb_iface.c
+> @@ -489,6 +489,7 @@ static int lapb_device_event(struct notifier_block
+> *this, unsigned long event,
+>  		break;
+>  	}
 > 
-> It's better that we avoid using words like "fix" in non-bug-fix
-> patches, and make every patch work on its own without subsequent
-> patches. Otherwise we'll make people confused.
+> +	lapb_put(lapb);
+>  	return NOTIFY_DONE;
+>  }
 
-Yes, you are right.
+Well, I guess I missed that one. Thank you!
+
+Acked-by: Martin Schiller <ms@dev.tdt.de>
