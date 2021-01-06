@@ -2,59 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 23A9F2EBFE0
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 15:54:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A8C172EBFE2
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 15:55:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727289AbhAFOxs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Jan 2021 09:53:48 -0500
-Received: from foss.arm.com ([217.140.110.172]:42048 "EHLO foss.arm.com"
+        id S1727314AbhAFOyi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Jan 2021 09:54:38 -0500
+Received: from mx2.suse.de ([195.135.220.15]:47766 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726220AbhAFOxr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Jan 2021 09:53:47 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D06DCD6E;
-        Wed,  6 Jan 2021 06:53:01 -0800 (PST)
-Received: from [10.57.37.195] (unknown [10.57.37.195])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 0F6913F719;
-        Wed,  6 Jan 2021 06:52:59 -0800 (PST)
-Subject: Re: [PATCH v5 00/25] coresight: etm4x: Support for system
- instructions
-To:     Mike Leach <mike.leach@linaro.org>
-Cc:     linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Leo Yan <leo.yan@linaro.org>,
-        Jonathan Zhou <jonathan.zhouwen@huawei.com>
-References: <20201214173731.302520-1-suzuki.poulose@arm.com>
- <CAJ9a7Vgx10RD-8UCaDR1UgGqsOAEjiu2RoxOTcToWkcr6HvT5A@mail.gmail.com>
-From:   Suzuki K Poulose <suzuki.poulose@arm.com>
-Message-ID: <daea65cc-2447-2996-528c-a4dfe790c67b@arm.com>
-Date:   Wed, 6 Jan 2021 14:52:52 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        id S1726754AbhAFOyh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 Jan 2021 09:54:37 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1609944830; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=56aSTfmSA+spfUL4tlM8C1HuU4wDxeDMZKVuz0ExlJs=;
+        b=rChqb3nnYyFTkjdLoJj6UCubjOGNjlXPq/sjyGZCn+pxXCN6AhYlepfsW7oVghGBNypjL9
+        GMrwKriJc2T1WF1AnIqnzLpgv4u+vpzUcIz58ugyMbYhrdfszF3AzNBHt4fQChqA0Ngt1S
+        Thn/hj37EUxJjYaig+hOahL/OHluoX0=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id B9E1FADC4;
+        Wed,  6 Jan 2021 14:53:50 +0000 (UTC)
+Date:   Wed, 6 Jan 2021 15:53:49 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     Shakeel Butt <shakeelb@google.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>, Roman Gushchin <guro@fb.com>,
+        Yang Shi <shy828301@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mm: memcg: add swapcache stat for memcg v2
+Message-ID: <20210106145349.GN13207@dhcp22.suse.cz>
+References: <20210101023955.250965-1-shakeelb@google.com>
 MIME-Version: 1.0
-In-Reply-To: <CAJ9a7Vgx10RD-8UCaDR1UgGqsOAEjiu2RoxOTcToWkcr6HvT5A@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210101023955.250965-1-shakeelb@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mike,
-
-On 1/6/21 2:48 PM, Mike Leach wrote:
-> Hi Suzuki,
+On Thu 31-12-20 18:39:55, Shakeel Butt wrote:
+> This patch adds swapcache stat for the cgroup v2. The swapcache
+> represents the memory that is accounted against both the memory and the
+> swap limit of the cgroup. The main motivation behind exposing the
+> swapcache stat is for enabling users to gracefully migrate from cgroup
+> v1's memsw counter to cgroup v2's memory and swap counters.
 > 
-> In addition to altering patch 18, to put the newly accessible
-> TRCDEVARCH register into the more appropriate 'mgmt' subdir for
-> CoreSight management registers, an update is needed to
-> ./Documentation/ABI/testing/sysfs-bus-coresight-devices-etm4x to add a
-> reference for this new sysfs file to reflect the location and purpose
-> of the register.
+> Cgroup v1's memsw limit allows users to limit the memory+swap usage of a
+> workload but without control on the exact proportion of memory and swap.
+> Cgroup v2 provides separate limits for memory and swap which enables
+> more control on the exact usage of memory and swap individually for the
+> workload.
+> 
+> With some little subtleties, the v1's memsw limit can be switched with
+> the sum of the v2's memory and swap limits. However the alternative for
+> memsw usage is not yet available in cgroup v2. Exposing per-cgroup
+> swapcache stat enables that alternative. Adding the memory usage and
+> swap usage and subtracting the swapcache will approximate the memsw
+> usage. This will help in the transparent migration of the workloads
+> depending on memsw usage and limit to v2' memory and swap counters.
 
-Ack. I will do this for the next version.
+Could you expand a bit more on why memsw usage is important even in
+cgroup v2 land? How are you going to use the approximated value?
 
-Cheers
-Suzuki
+I am not really objecting to adding this counter. We do export it for
+the global case and having a memcg view sounds useful for analysis.
+-- 
+Michal Hocko
+SUSE Labs
