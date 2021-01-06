@@ -2,132 +2,213 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CDCCD2EB946
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 06:22:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BE132EB97B
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 06:28:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725896AbhAFFWA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Jan 2021 00:22:00 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40426 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725562AbhAFFV7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Jan 2021 00:21:59 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 110DF22CB9;
-        Wed,  6 Jan 2021 05:21:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1609910478;
-        bh=boxdZNrCes9phB/H6KelJrXD4jwDAkI2Od6BcLKPhD0=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=aT0KDthGB3PXY1hrTcQvMM4tEqpTcsN2AVS8fv6ZQC9lUKG/OX7N/MkL+Xrim2f0v
-         AQ+rHzRP8uNGE02iQHg4ZNFX03N8bnr7RVufFI259hi65Gd4bdP6+YoxrAhpOdEMDk
-         /qH/dNnLNigs0SgzA6YuPXOSc7joKR0j5sD7vJ4woKx5RSjq8zffspqfXJi36f7xlE
-         5iSwSHFmEpcg1kMxkWmgebIUB4AAeLTRmZjnk5cmCLkz4qPs+aEmz7M6RlqQFkXXoI
-         B19F43O/4XNYNxW+2QABSOJVj3Xy6hcP3Eb3xy3J8jLPYZCceu4ND+Ch/AVNeBYc72
-         2aqiIP9SCvIYQ==
-Date:   Wed, 6 Jan 2021 14:21:14 +0900
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     Andy Lutomirski <luto@amacapital.net>, X86 ML <x86@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>
-Subject: Re: [PATCH v1 03/19] x86/insn: Add an insn_decode() API
-Message-Id: <20210106142114.5e9ce2cc107f6386e36b4ff4@kernel.org>
-In-Reply-To: <20201230092833.GE22022@zn.tnic>
-References: <20201223174233.28638-1-bp@alien8.de>
-        <20201223174233.28638-4-bp@alien8.de>
-        <20201228101510.49082d470ed328d81486ef04@kernel.org>
-        <20201229200654.GF29947@zn.tnic>
-        <20201230180052.7e1931b4e1b17079023b65b7@kernel.org>
-        <20201230092833.GE22022@zn.tnic>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S1725944AbhAFF1S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Jan 2021 00:27:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57026 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725562AbhAFF1R (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 Jan 2021 00:27:17 -0500
+Received: from mail-yb1-xb33.google.com (mail-yb1-xb33.google.com [IPv6:2607:f8b0:4864:20::b33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADF1EC06134C;
+        Tue,  5 Jan 2021 21:26:37 -0800 (PST)
+Received: by mail-yb1-xb33.google.com with SMTP id y128so1741960ybf.10;
+        Tue, 05 Jan 2021 21:26:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=UknX9QmHip+tndRmYcnv02sGjXL/6i8uFjVy4S3Vt/Q=;
+        b=UCqx7khl9md1WnUTUb7YlN78GS0MsCd0mzo/BVqnUQtr2UsI9ZRjYRzBgoehkg22R9
+         /IWD53nu5L+j/BqZNXkU22MBN5k+DU2EpmPBnxoD5tlHG6+ckRYp+blgGNktePOHVRJz
+         7DTUVb+2iLoKxijxEqSDi6RldMhKyOJH6hM/rkJgGbQ7OPHbdaVWd5ibNdxFA7BMQf5M
+         bd3svGVmYFunWx727frVHFI2tf7u65hxMMgrNaoMxYsU3mn5ntsZbjv34HdL8CXM0qwl
+         1lTLfQomb36JqhKEdmboQWozdEFvL5gJI973hMmbbrwHZRzSpeg8o2qRk0QX6NNMPzVy
+         iV4Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=UknX9QmHip+tndRmYcnv02sGjXL/6i8uFjVy4S3Vt/Q=;
+        b=H4cadZUfSa4/2IxNKqHK5nnCJeG6q0SukL3LEymijZD+2opScbL5ITbeRF/NjSRY0l
+         k1jo7HzzSbdeuY9lidwx7oBzyeQb/ycRFqql5u6+S2bOL579xIrtE6CLKE7fpE4XfNu9
+         kbW7VheGw8sMN3Rg4P3e0OLM5WuwjkkRBUruM6JBvtX4lwjEViQGRB6p2hkGEXUIjkhr
+         qRtrVp+sBKR5zPcIVz1/HDYLfBXVwYtSCJS6IsexxteKfg5P9KFik7LPPNPZ+7U7qbjS
+         Ye4IYpEt1jA6fdMqJU2BiHW/pPu10SuxHmCPXLjFoY0ZEA4+VylvZOWlSrOElPXT0J8v
+         TCLw==
+X-Gm-Message-State: AOAM532G7/B4XJaRIrMVuoU5XaztrSkHQr2jIFuVr19XVafyOnIav7Dq
+        aVc4FG9bCa8bXcH1pVO23AtRbayIB+S96mKCGMA=
+X-Google-Smtp-Source: ABdhPJzwaP4vbBtfhgJ0/2XhRCDqHdkub1FRWUHNWILKxZRFis779cP0s0aUseN5F4krORUSrTDk5/+Vl/6naN0a6AE=
+X-Received: by 2002:a25:aea8:: with SMTP id b40mr4044517ybj.347.1609910796865;
+ Tue, 05 Jan 2021 21:26:36 -0800 (PST)
+MIME-Version: 1.0
+References: <cover.1609855479.git.sean@mess.org> <a9334d4ecb66d58d326c19b78e18b44a180967d1.1609855479.git.sean@mess.org>
+In-Reply-To: <a9334d4ecb66d58d326c19b78e18b44a180967d1.1609855479.git.sean@mess.org>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Tue, 5 Jan 2021 21:26:26 -0800
+Message-ID: <CAEf4BzY2nDzT4FjfARiPJdu=G-0uwhxrUHpNrdAEB9NRxu4RqQ@mail.gmail.com>
+Subject: Re: [PATCH v3 4/4] bpf: add tests for ints larger than 128 bits
+To:     Sean Young <sean@mess.org>
+Cc:     Yonghong Song <yhs@fb.com>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Quentin Monnet <quentin@isovalent.com>,
+        =?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>,
+        linux-doc@vger.kernel.org, Networking <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 30 Dec 2020 10:28:33 +0100
-Borislav Petkov <bp@alien8.de> wrote:
+On Tue, Jan 5, 2021 at 6:45 AM Sean Young <sean@mess.org> wrote:
+>
+> clang supports arbitrary length ints using the _ExtInt extension. This
+> can be useful to hold very large values, e.g. 256 bit or 512 bit types.
+>
+> Larger types (e.g. 1024 bits) are possible but I am unaware of a use
+> case for these.
+>
+> This requires the _ExtInt extension enabled in clang, which is under
+> review.
+>
+> Link: https://clang.llvm.org/docs/LanguageExtensions.html#extended-integer-types
+> Link: https://reviews.llvm.org/D93103
+>
+> Signed-off-by: Sean Young <sean@mess.org>
+> ---
+>  tools/testing/selftests/bpf/Makefile          |   3 +-
+>  tools/testing/selftests/bpf/prog_tests/btf.c  |   3 +-
+>  .../selftests/bpf/progs/test_btf_extint.c     |  50 ++
+>  tools/testing/selftests/bpf/test_extint.py    | 535 ++++++++++++++++++
+>  4 files changed, 589 insertions(+), 2 deletions(-)
+>  create mode 100644 tools/testing/selftests/bpf/progs/test_btf_extint.c
+>  create mode 100755 tools/testing/selftests/bpf/test_extint.py
+>
+> diff --git a/tools/testing/selftests/bpf/Makefile b/tools/testing/selftests/bpf/Makefile
+> index 8c33e999319a..436ad1aed3d9 100644
+> --- a/tools/testing/selftests/bpf/Makefile
+> +++ b/tools/testing/selftests/bpf/Makefile
+> @@ -70,7 +70,8 @@ TEST_PROGS := test_kmod.sh \
+>         test_bpftool_build.sh \
+>         test_bpftool.sh \
+>         test_bpftool_metadata.sh \
+> -       test_xsk.sh
+> +       test_xsk.sh \
+> +       test_extint.py
+>
+>  TEST_PROGS_EXTENDED := with_addr.sh \
+>         with_tunnels.sh \
+> diff --git a/tools/testing/selftests/bpf/prog_tests/btf.c b/tools/testing/selftests/bpf/prog_tests/btf.c
+> index 8ae97e2a4b9d..96a93502cf27 100644
+> --- a/tools/testing/selftests/bpf/prog_tests/btf.c
+> +++ b/tools/testing/selftests/bpf/prog_tests/btf.c
+> @@ -4073,6 +4073,7 @@ struct btf_file_test {
+>  static struct btf_file_test file_tests[] = {
+>         { .file = "test_btf_haskv.o", },
+>         { .file = "test_btf_newkv.o", },
+> +       { .file = "test_btf_extint.o", },
+>         { .file = "test_btf_nokv.o", .btf_kv_notfound = true, },
+>  };
+>
+> @@ -4414,7 +4415,7 @@ static struct btf_raw_test pprint_test_template[] = {
+>          * will have both int and enum types.
+>          */
+>         .raw_types = {
+> -               /* unsighed char */                     /* [1] */
+> +               /* unsigned char */                     /* [1] */
 
-> I still haven't thought about what do to exactly there wrt making
-> sync-check.sh happy but the aspect of failing the build is a nice one.
+unintentional whitespaces change?
 
-So I think it is possible to introduce a keyword in a comment
-for ignoring sync check something like below. This will allow us
-a generic pattern matching.
+>                 BTF_TYPE_INT_ENC(NAME_TBD, 0, 0, 8, 1),
+>                 /* unsigned short */                    /* [2] */
+>                 BTF_TYPE_INT_ENC(NAME_TBD, 0, 0, 16, 2),
+> diff --git a/tools/testing/selftests/bpf/progs/test_btf_extint.c b/tools/testing/selftests/bpf/progs/test_btf_extint.c
+> new file mode 100644
+> index 000000000000..b0fa9f130dda
+> --- /dev/null
+> +++ b/tools/testing/selftests/bpf/progs/test_btf_extint.c
+> @@ -0,0 +1,50 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +#include <linux/bpf.h>
+> +#include <bpf/bpf_helpers.h>
+> +#include "bpf_legacy.h"
+> +
+> +struct extint {
+> +       _ExtInt(256) v256;
+> +       _ExtInt(512) v512;
+> +};
+> +
+> +struct bpf_map_def SEC("maps") btf_map = {
+> +       .type = BPF_MAP_TYPE_ARRAY,
+> +       .key_size = sizeof(int),
+> +       .value_size = sizeof(struct extint),
+> +       .max_entries = 1,
+> +};
+> +
+> +BPF_ANNOTATE_KV_PAIR(btf_map, int, struct extint);
 
-The keyword is just an example, "no-sync-check" etc. is OK.
+this is deprecated, don't add new tests using it. Please use BTF-based
+map definition instead (see any other selftests).
 
-What would you think about it?
+> +
+> +__attribute__((noinline))
+> +int test_long_fname_2(void)
+> +{
+> +       struct extint *bi;
+> +       int key = 0;
+> +
+> +       bi = bpf_map_lookup_elem(&btf_map, &key);
+> +       if (!bi)
+> +               return 0;
+> +
+> +       bi->v256 <<= 64;
+> +       bi->v256 += (_ExtInt(256))0xcafedead;
+> +       bi->v512 <<= 128;
+> +       bi->v512 += (_ExtInt(512))0xff00ff00ff00ffull;
+> +
+> +       return 0;
+> +}
+> +
+> +__attribute__((noinline))
+> +int test_long_fname_1(void)
+> +{
+> +       return test_long_fname_2();
+> +}
+> +
+> +SEC("dummy_tracepoint")
+> +int _dummy_tracepoint(void *arg)
+> +{
+> +       return test_long_fname_1();
+> +}
 
-Thank you,
+why the chain of test_long_fname functions? Please minimize the test
+to only test the essential logic - _ExtInt handling.
 
-diff --git a/arch/x86/include/asm/inat.h b/arch/x86/include/asm/inat.h
-index 4cf2ad521f65..ff3d119610f5 100644
---- a/arch/x86/include/asm/inat.h
-+++ b/arch/x86/include/asm/inat.h
-@@ -6,7 +6,7 @@
-  *
-  * Written by Masami Hiramatsu <mhiramat@redhat.com>
-  */
--#include <asm/inat_types.h>
-+#include <asm/inat_types.h>	/* Different from tools */
- 
- /*
-  * Internal bits. Don't use bitmasks directly, because these bits are
-diff --git a/arch/x86/include/asm/insn.h b/arch/x86/include/asm/insn.h
-index a8c3d284fa46..dda4fe208659 100644
---- a/arch/x86/include/asm/insn.h
-+++ b/arch/x86/include/asm/insn.h
-@@ -8,7 +8,7 @@
-  */
- 
- /* insn_attr_t is defined in inat.h */
--#include <asm/inat.h>
-+#include <asm/inat.h>	/* Different from tools */
- 
- struct insn_field {
- 	union {
-diff --git a/tools/arch/x86/include/asm/inat.h b/tools/arch/x86/include/asm/inat.h
-index 877827b7c2c3..1fcfb4efb5f4 100644
---- a/tools/arch/x86/include/asm/inat.h
-+++ b/tools/arch/x86/include/asm/inat.h
-@@ -6,7 +6,7 @@
-  *
-  * Written by Masami Hiramatsu <mhiramat@redhat.com>
-  */
--#include "inat_types.h"
-+#include "inat_types.h"	/* Different from kernel */
- 
- /*
-  * Internal bits. Don't use bitmasks directly, because these bits are
-diff --git a/tools/arch/x86/include/asm/insn.h b/tools/arch/x86/include/asm/insn.h
-index 52c6262e6bfd..702135ddb4fd 100644
---- a/tools/arch/x86/include/asm/insn.h
-+++ b/tools/arch/x86/include/asm/insn.h
-@@ -8,7 +8,7 @@
-  */
- 
- /* insn_attr_t is defined in inat.h */
--#include "inat.h"
-+#include "inat.h"	/* Different from kernel */
- 
- struct insn_field {
- 	union {
-diff --git a/tools/perf/check-headers.sh b/tools/perf/check-headers.sh
-index dded93a2bc89..b112d68c5513 100755
---- a/tools/perf/check-headers.sh
-+++ b/tools/perf/check-headers.sh
-@@ -137,8 +137,8 @@ check include/uapi/linux/mman.h       '-I "^#include <\(uapi/\)*asm/mman.h>"'
- check include/linux/build_bug.h       '-I "^#\(ifndef\|endif\)\( \/\/\)* static_assert$"'
- check include/linux/ctype.h	      '-I "isdigit("'
- check lib/ctype.c		      '-I "^EXPORT_SYMBOL" -I "^#include <linux/export.h>" -B'
--check arch/x86/include/asm/inat.h     '-I "^#include [\"<]\(asm/\)*inat_types.h[\">]"'
--check arch/x86/include/asm/insn.h     '-I "^#include [\"<]\(asm/\)*inat.h[\">]"'
-+check arch/x86/include/asm/inat.h     '-I "^.*/\* Different from \(tools\|kernel\) \*/"'
-+check arch/x86/include/asm/insn.h     '-I "^.*/\* Different from \(tools\|kernel\) \*/"'
- check arch/x86/lib/inat.c	      '-I "^#include [\"<]\(../include/\)*asm/insn.h[\">]"'
- check arch/x86/lib/insn.c             '-I "^#include [\"<]\(../include/\)*asm/in\(at\|sn\).h[\">]" -I "^#include [\"<]\(../include/\)*asm/emulate_prefix.h[\">]"'
- 
--- 
-Masami Hiramatsu <mhiramat@kernel.org>
+> +
+> +char _license[] SEC("license") = "GPL";
+> diff --git a/tools/testing/selftests/bpf/test_extint.py b/tools/testing/selftests/bpf/test_extint.py
+> new file mode 100755
+> index 000000000000..86af815a0cf6
+> --- /dev/null
+> +++ b/tools/testing/selftests/bpf/test_extint.py
+
+this looks like a total overkill (with a lot of unrelated code) for a
+pretty simple test you need to perform. you can run bpftool and get
+its output from test_progs with popen().
+
+> @@ -0,0 +1,535 @@
+> +#!/usr/bin/python3
+
+[...]
