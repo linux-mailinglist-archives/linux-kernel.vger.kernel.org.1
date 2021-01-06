@@ -2,91 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 44FD52EB787
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 02:18:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BD372EB77F
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 02:18:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726589AbhAFBRP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 5 Jan 2021 20:17:15 -0500
-Received: from linux.microsoft.com ([13.77.154.182]:54228 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725939AbhAFBRO (ORCPT
+        id S1726176AbhAFBQv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 5 Jan 2021 20:16:51 -0500
+Received: from mail.cn.fujitsu.com ([183.91.158.132]:9310 "EHLO
+        heian.cn.fujitsu.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1725843AbhAFBQu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 5 Jan 2021 20:17:14 -0500
-Received: by linux.microsoft.com (Postfix, from userid 1004)
-        id 12D2020B6C41; Tue,  5 Jan 2021 17:16:34 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 12D2020B6C41
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linuxonhyperv.com;
-        s=default; t=1609895794;
-        bh=6uYxUHD4Z7x3YMSdm1i0QR0mOUtF7X5D7R/TvzuWerI=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=JxkC+HNw4RPkG8kp5yvnN94bnDEYrw+30esnytBk88A4oRdmUrBWowWQhWX2Jd/UG
-         FdeQ7xojk6XlqvbIBT4T54GKQx/zBRx1I1a0cFqx9iu6XlZDaFMxf/rZPQTNjjlavK
-         nz9PKEjoSsvuOVPztdH35pzhpaTHxWuEAy+htk+M=
-From:   Long Li <longli@linuxonhyperv.com>
-To:     "K. Y. Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, linux-hyperv@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Long Li <longli@microsoft.com>
-Subject: [PATCH 3/3] hv_netvsc: Process NETDEV_GOING_DOWN on VF hot remove
-Date:   Tue,  5 Jan 2021 17:15:53 -0800
-Message-Id: <1609895753-30445-3-git-send-email-longli@linuxonhyperv.com>
-X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <1609895753-30445-1-git-send-email-longli@linuxonhyperv.com>
-References: <1609895753-30445-1-git-send-email-longli@linuxonhyperv.com>
+        Tue, 5 Jan 2021 20:16:50 -0500
+X-IronPort-AV: E=Sophos;i="5.78,478,1599494400"; 
+   d="scan'208";a="103219147"
+Received: from unknown (HELO cn.fujitsu.com) ([10.167.33.5])
+  by heian.cn.fujitsu.com with ESMTP; 06 Jan 2021 09:16:01 +0800
+Received: from G08CNEXMBPEKD04.g08.fujitsu.local (unknown [10.167.33.201])
+        by cn.fujitsu.com (Postfix) with ESMTP id 71F5B4CE6D6F;
+        Wed,  6 Jan 2021 09:15:55 +0800 (CST)
+Received: from [10.167.225.206] (10.167.225.206) by
+ G08CNEXMBPEKD04.g08.fujitsu.local (10.167.33.201) with Microsoft SMTP Server
+ (TLS) id 15.0.1497.2; Wed, 6 Jan 2021 09:15:54 +0800
+Subject: Re: [PATCH] Documentation/dax: Update description of DAX policy
+ changing
+To:     Ira Weiny <ira.weiny@intel.com>
+CC:     <corbet@lwn.net>, <davem@davemloft.net>,
+        <gregkh@linuxfoundation.org>, <alexander.deucher@amd.com>,
+        <mchehab+huawei@kernel.org>, <lee.jones@linaro.org>,
+        <linux-doc@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <20210104024040.5381-1-lihao2018.fnst@cn.fujitsu.com>
+ <20210104163653.GG3097896@iweiny-DESK2.sc.intel.com>
+From:   "Li, Hao" <lihao2018.fnst@cn.fujitsu.com>
+Message-ID: <1a4dc84b-56ee-bf77-cf0d-dd9e0637b90c@cn.fujitsu.com>
+Date:   Wed, 6 Jan 2021 09:15:53 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
+MIME-Version: 1.0
+In-Reply-To: <20210104163653.GG3097896@iweiny-DESK2.sc.intel.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Originating-IP: [10.167.225.206]
+X-ClientProxiedBy: G08CNEXCHPEKD06.g08.fujitsu.local (10.167.33.205) To
+ G08CNEXMBPEKD04.g08.fujitsu.local (10.167.33.201)
+X-yoursite-MailScanner-ID: 71F5B4CE6D6F.AFE1B
+X-yoursite-MailScanner: Found to be clean
+X-yoursite-MailScanner-From: lihao2018.fnst@cn.fujitsu.com
+X-Spam-Status: No
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Long Li <longli@microsoft.com>
+On 2021/1/5 0:36, Ira Weiny wrote:
+> On Mon, Jan 04, 2021 at 10:40:40AM +0800, Hao Li wrote:
+>> After commit 77573fa310d9 ("fs: Kill DCACHE_DONTCACHE dentry even if
+>> DCACHE_REFERENCED is set"), changes to DAX policy will take effect
+>> as soon as all references to this file are gone.
+>>
+>> Update the documentation accordingly.
+>>
+>> Signed-off-by: Hao Li <lihao2018.fnst@cn.fujitsu.com>
+>> ---
+>>  Documentation/filesystems/dax.txt | 15 ++-------------
+>>  1 file changed, 2 insertions(+), 13 deletions(-)
+>>
+>> diff --git a/Documentation/filesystems/dax.txt b/Documentation/filesystems/dax.txt
+>> index 8fdb78f3c6c9..a5af22831087 100644
+>> --- a/Documentation/filesystems/dax.txt
+>> +++ b/Documentation/filesystems/dax.txt
+>> @@ -84,19 +84,8 @@ Summary
+>>         described in 6) below.
+>>  
+>>   6. When changing the S_DAX policy via toggling the persistent FS_XFLAG_DAX flag,
+>                                                                                   ^^
+>                                                   I would delete this '.' as well.
+>
+>> -    the change in behaviour for existing regular files may not occur
+>> -    immediately.  If the change must take effect immediately, the administrator
+>> -    needs to:
+>> -
+>> -    a) stop the application so there are no active references to the data set
+>> -       the policy change will affect
+>> -
+>> -    b) evict the data set from kernel caches so it will be re-instantiated when
+>> -       the application is restarted. This can be achieved by:
+>> -
+>> -       i. drop-caches
+>> -       ii. a filesystem unmount and mount cycle
+>> -       iii. a system reboot
+>> +    the change to existing regular file won't take effect until the file is closed
+>                                                                       ^^^^^
+>                                                                       files
+>
+>> +    by all processes or all processes referencing the file are stopped.
+>
+> So how about:
+>
+>    6. When changing the S_DAX policy via toggling the persistent FS_XFLAG_DAX
+>       flag the change to existing regular files won't take effect until the file
+>       is closed by all processes or all processes referencing the file are
+>       stopped.
+>
+> I also feel like mentioning the stoppage of process' is redundant as users
+> should know that will result in the closing of those FDs but I'm ok leaving it
+> if others like it.
 
-On VF hot remove, NETDEV_GOING_DOWN is sent to notify the VF is about to
-go down. At this time, the VF is still sending/receiving traffic and we
-request the VSP to switch datapath.
+Thanks, it's much better than before.
 
-On completion, the datapath is switched to synthetic and we can proceed
-with VF hot remove.
+Regards,
+Hao Li
 
-Signed-off-by: Long Li <longli@microsoft.com>
----
- drivers/net/hyperv/netvsc_drv.c | 10 +++++++---
- 1 file changed, 7 insertions(+), 3 deletions(-)
+>
+>
+> Ira
+>
+>>  
+>>  
+>>  Details
+>> --
+>> 2.29.2
+>>
+>>
+>>
+>
+>
 
-diff --git a/drivers/net/hyperv/netvsc_drv.c b/drivers/net/hyperv/netvsc_drv.c
-index 64ae5f4e974e..75b4d6703cf1 100644
---- a/drivers/net/hyperv/netvsc_drv.c
-+++ b/drivers/net/hyperv/netvsc_drv.c
-@@ -2382,12 +2382,15 @@ static int netvsc_register_vf(struct net_device *vf_netdev)
-  * During hibernation, if a VF NIC driver (e.g. mlx5) preserves the network
-  * interface, there is only the CHANGE event and no UP or DOWN event.
-  */
--static int netvsc_vf_changed(struct net_device *vf_netdev)
-+static int netvsc_vf_changed(struct net_device *vf_netdev, unsigned long event)
- {
- 	struct net_device_context *net_device_ctx;
- 	struct netvsc_device *netvsc_dev;
- 	struct net_device *ndev;
--	bool vf_is_up = netif_running(vf_netdev);
-+	bool vf_is_up = false;
-+
-+	if (event != NETDEV_GOING_DOWN)
-+		vf_is_up = netif_running(vf_netdev);
- 
- 	ndev = get_netvsc_byref(vf_netdev);
- 	if (!ndev)
-@@ -2716,7 +2719,8 @@ static int netvsc_netdev_event(struct notifier_block *this,
- 	case NETDEV_UP:
- 	case NETDEV_DOWN:
- 	case NETDEV_CHANGE:
--		return netvsc_vf_changed(event_dev);
-+	case NETDEV_GOING_DOWN:
-+		return netvsc_vf_changed(event_dev, event);
- 	default:
- 		return NOTIFY_DONE;
- 	}
--- 
-2.27.0
+
 
