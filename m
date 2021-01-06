@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 424CC2EC6B3
+	by mail.lfdr.de (Postfix) with ESMTP id B9ECD2EC6B4
 	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 00:19:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727483AbhAFXST (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Jan 2021 18:18:19 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48236 "EHLO mail.kernel.org"
+        id S1727555AbhAFXSV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Jan 2021 18:18:21 -0500
+Received: from mail.kernel.org ([198.145.29.99]:48268 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726119AbhAFXSS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Jan 2021 18:18:18 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AC14023332;
-        Wed,  6 Jan 2021 23:17:36 +0000 (UTC)
+        id S1726119AbhAFXSV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 Jan 2021 18:18:21 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DF82923339;
+        Wed,  6 Jan 2021 23:17:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1609975058;
-        bh=vKhyMmIuw4dVwfOPSyfNwOpSYaEo7Zn9XZymkFCSHQU=;
-        h=From:To:Cc:Subject:Date:From;
-        b=h41X+2ABQGKohRVdjEt2dYr3etneeWKi9iNfXaPDBQFjBuflnIYSmANx9OQf+8t87
-         RbI1Jr+VAtYTytEu92EVPbgRebX5SuoygMEHw8sZGDMpYWA6ICzTE7PK7vYEr9c6bP
-         zj00b4vPMiJ2ovmsYqYgoE1Yl8b90qULYrS8P+7LyBb2ll1d+SKBprgDTL0NfYx5jO
-         tPGb5MLJV7kxIVinQ4gCfB8RJAPcMmSTpVLsaqXWDj6K+28me7F+qVnlOqO+mEqhGo
-         Xg86qtucp1LJ0lxKC+rgcI+j3a03+tWjU+4zh6/lTJrZRpPfBM+UyFx6RKftdgkZ6V
-         FcfTAfLpHzxIg==
+        s=k20201202; t=1609975060;
+        bh=RuKbU26yuLZJAE82ECbyxWKAfxQoGE+1gpGy1pi6ErU=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=i+oQrZOhV8uWRogTMJD4O/ez9I/Wy0nAK4BwCY8iCpKgMinLRhX3BWKsNpJbBRDfV
+         LRaF/jWeIs4tCLU2E5cSej0rqMsI4gvUZjkmVsgnH8D0/LrQK40LEBiWJT159nAJad
+         08nwmtoYqX3DUkZWV9/NkzjG4UJd6Qzh3WajQf/lTWxhNdURiKpCapMBQPmzpxPtdY
+         Qz1FBI0m95m/q7lcb3oHdnE6STL8DsOYiAv66xD5VYH/iRNtZAc6dErwxJ4LFSroYL
+         1VswneUBbwbZBmIKgypo9sIzUnX/N7wczp/LfA0lJYriybigoQPs5+6VV6Cdh/M3Xt
+         VHauJxrZ4J3lw==
 From:   Chun-Kuang Hu <chunkuang.hu@kernel.org>
 To:     Matthias Brugger <matthias.bgg@gmail.com>,
         Philipp Zabel <p.zabel@pengutronix.de>,
@@ -30,48 +30,62 @@ To:     Matthias Brugger <matthias.bgg@gmail.com>,
         Daniel Vetter <daniel@ffwll.ch>
 Cc:     linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
         linux-mediatek@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, CK Hu <ck.hu@mediatek.com>,
         Chun-Kuang Hu <chunkuang.hu@kernel.org>
-Subject: [PATCH v2 0/5] Share mtk mutex driver for both DRM and MDP
-Date:   Thu,  7 Jan 2021 07:17:24 +0800
-Message-Id: <20210106231729.17173-1-chunkuang.hu@kernel.org>
+Subject: [PATCH v2 1/5] drm/mediatek: Remove redundant file including
+Date:   Thu,  7 Jan 2021 07:17:25 +0800
+Message-Id: <20210106231729.17173-2-chunkuang.hu@kernel.org>
 X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20210106231729.17173-1-chunkuang.hu@kernel.org>
+References: <20210106231729.17173-1-chunkuang.hu@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-mtk mutex is a driver used by DRM and MDP [1], so this series move
-mtk mutex driver from DRM folder to soc folder, so it could be used
-by DRM and MDP.
+From: CK Hu <ck.hu@mediatek.com>
 
-Changes in v2:
-1. Rebase onto mediatek-drm-next [2].
-2. Export symbol for mtk-mutex API.
+Those file includings are useless, so remove them.
 
-[1] https://patchwork.kernel.org/patch/11140751/
-[2] https://git.kernel.org/pub/scm/linux/kernel/git/chunkuang.hu/linux.git/log/?h=mediatek-drm-next
+Signed-off-by: CK Hu <ck.hu@mediatek.com>
+Signed-off-by: Chun-Kuang Hu <chunkuang.hu@kernel.org>
+---
+ drivers/gpu/drm/mediatek/mtk_drm_ddp.h | 2 --
+ drivers/gpu/drm/mediatek/mtk_drm_drv.c | 2 --
+ 2 files changed, 4 deletions(-)
 
-CK Hu (5):
-  drm/mediatek: Remove redundant file including
-  drm/mediatek: Rename file mtk_drm_ddp to mtk_mutex
-  drm/mediatek: Change disp/ddp term to mutex in mtk mutex driver
-  drm/mediatek: Automatically search unclaimed mtk mutex in
-    mtk_mutex_get()
-  soc / drm: mediatek: Move mtk mutex driver to soc folder
-
- drivers/gpu/drm/mediatek/Makefile             |   1 -
- drivers/gpu/drm/mediatek/mtk_drm_crtc.c       |  32 +-
- drivers/gpu/drm/mediatek/mtk_drm_ddp.h        |  28 --
- drivers/gpu/drm/mediatek/mtk_drm_drv.c        |   3 -
- drivers/gpu/drm/mediatek/mtk_drm_drv.h        |   1 -
- drivers/soc/mediatek/Makefile                 |   1 +
- .../mediatek/mtk-mutex.c}                     | 328 +++++++++---------
- include/linux/soc/mediatek/mtk-mutex.h        |  26 ++
- 8 files changed, 212 insertions(+), 208 deletions(-)
- delete mode 100644 drivers/gpu/drm/mediatek/mtk_drm_ddp.h
- rename drivers/{gpu/drm/mediatek/mtk_drm_ddp.c => soc/mediatek/mtk-mutex.c} (53%)
- create mode 100644 include/linux/soc/mediatek/mtk-mutex.h
-
+diff --git a/drivers/gpu/drm/mediatek/mtk_drm_ddp.h b/drivers/gpu/drm/mediatek/mtk_drm_ddp.h
+index 6b691a57be4a..a1ee21d15334 100644
+--- a/drivers/gpu/drm/mediatek/mtk_drm_ddp.h
++++ b/drivers/gpu/drm/mediatek/mtk_drm_ddp.h
+@@ -6,8 +6,6 @@
+ #ifndef MTK_DRM_DDP_H
+ #define MTK_DRM_DDP_H
+ 
+-#include "mtk_drm_ddp_comp.h"
+-
+ struct regmap;
+ struct device;
+ struct mtk_disp_mutex;
+diff --git a/drivers/gpu/drm/mediatek/mtk_drm_drv.c b/drivers/gpu/drm/mediatek/mtk_drm_drv.c
+index 8514d68bde32..25a24f69b986 100644
+--- a/drivers/gpu/drm/mediatek/mtk_drm_drv.c
++++ b/drivers/gpu/drm/mediatek/mtk_drm_drv.c
+@@ -10,7 +10,6 @@
+ #include <linux/of_address.h>
+ #include <linux/of_platform.h>
+ #include <linux/pm_runtime.h>
+-#include <linux/soc/mediatek/mtk-mmsys.h>
+ #include <linux/dma-mapping.h>
+ 
+ #include <drm/drm_atomic.h>
+@@ -26,7 +25,6 @@
+ #include <drm/drm_vblank.h>
+ 
+ #include "mtk_drm_crtc.h"
+-#include "mtk_drm_ddp.h"
+ #include "mtk_drm_ddp_comp.h"
+ #include "mtk_drm_drv.h"
+ #include "mtk_drm_gem.h"
 -- 
 2.17.1
 
