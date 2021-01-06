@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 337402EC18D
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 17:57:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A7C242EC190
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 17:58:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727779AbhAFQ4c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Jan 2021 11:56:32 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56676 "EHLO mail.kernel.org"
+        id S1727810AbhAFQ4i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Jan 2021 11:56:38 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56678 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727349AbhAFQ4b (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Jan 2021 11:56:31 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 17C802313F;
+        id S1727349AbhAFQ4d (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 Jan 2021 11:56:33 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 43D8423142;
         Wed,  6 Jan 2021 16:55:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1609952133;
-        bh=dmQ+HPaq8GRSIcYzSAd3B9XshsedU2BnyOqML7/0Vqg=;
+        bh=sGQVtLy7KzVVVr2Y/cRxuREyHSjHXhCs2fInoXvjJQg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Em8IPFJ6332dJ25Sziq6/P/4ILUB6GI+6tGL0OGVBGtGjy0KNW4zsu4nQ3pgNkEOS
-         Qq8CWN8RKNWdArs4KBiQ0H3taGw15olQ8gskqyFtxgjBsS5mUHb6YhCohIuhDQeWvk
-         d9+MROYC8t4FbwqPKM670Sed8/vmscitVcoixdCNUzGkW1wtqb0dJ9/cSQIHwXqu7F
-         08+78SVhyksmHZZukhlhUniR7KZ0GTkyF5oTcSLKjxsL2TaicD4a0Fn/rFcHC0+0+l
-         SbyC5AnOIH2yqX2p0utDLhqPKDDeCSBizq7/uUMtvhvvsDmfDY1ShgY+1ZpLyLd7yL
-         0H1bQKetvTEDA==
+        b=jkFP3De6MqMzkADnwgY4cUDVyBcJUurakfH++CrxS40Qm4H8RPlm4HVlq5Hj4hLCQ
+         qboA/X1y1ueJ75M05c4gn3fyBmpMoQBL6s5AUgX4DskAJb3Qi6lr3tqikbixXhiGkN
+         dOoDxswnINNq46pf9hvqe2MUeA0ZVnFvnYzHQ2omeIq8tSb2ZD/cdEgQ1tkM/fiEGN
+         0Zs5LH6AcV78SsITwFjVkvg3MTdyIFYgdxayObMKazIEu8AxZZLH0EIBC+L1e0DMcJ
+         A/upMkfPuCB2zfeqqsZuhK2O66eqkcQbls6bOWxJWcNMk2Xzo1UxdGlu6fmaeYWGNr
+         sqRChIxqdtFPg==
 From:   paulmck@kernel.org
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -32,9 +32,9 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
         oleg@redhat.com, joel@joelfernandes.org,
         "Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH tip/core/rcu 04/10] srcu: Provide polling interfaces for Tiny SRCU grace periods
-Date:   Wed,  6 Jan 2021 08:55:25 -0800
-Message-Id: <20210106165531.20697-4-paulmck@kernel.org>
+Subject: [PATCH tip/core/rcu 05/10] srcu: Provide polling interfaces for Tree SRCU grace periods
+Date:   Wed,  6 Jan 2021 08:55:26 -0800
+Message-Id: <20210106165531.20697-5-paulmck@kernel.org>
 X-Mailer: git-send-email 2.9.5
 In-Reply-To: <20210106165511.GA20555@paulmck-ThinkPad-P72>
 References: <20210106165511.GA20555@paulmck-ThinkPad-P72>
@@ -66,151 +66,125 @@ Link: https://lore.kernel.org/lkml/20201117004017.GA7444@paulmck-ThinkPad-P72/
 Reviewed-by: Neeraj Upadhyay <neeraju@codeaurora.org>
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- include/linux/rcupdate.h |  2 ++
- include/linux/srcu.h     |  3 +++
- include/linux/srcutiny.h |  1 +
- kernel/rcu/srcutiny.c    | 55 ++++++++++++++++++++++++++++++++++++++++++++++--
- 4 files changed, 59 insertions(+), 2 deletions(-)
+ kernel/rcu/srcutree.c | 67 ++++++++++++++++++++++++++++++++++++++++++++++++---
+ 1 file changed, 63 insertions(+), 4 deletions(-)
 
-diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
-index de08264..e09c0d8 100644
---- a/include/linux/rcupdate.h
-+++ b/include/linux/rcupdate.h
-@@ -33,6 +33,8 @@
- #define ULONG_CMP_GE(a, b)	(ULONG_MAX / 2 >= (a) - (b))
- #define ULONG_CMP_LT(a, b)	(ULONG_MAX / 2 < (a) - (b))
- #define ulong2long(a)		(*(long *)(&(a)))
-+#define USHORT_CMP_GE(a, b)	(USHRT_MAX / 2 >= (unsigned short)((a) - (b)))
-+#define USHORT_CMP_LT(a, b)	(USHRT_MAX / 2 < (unsigned short)((a) - (b)))
- 
- /* Exported common interfaces */
- void call_rcu(struct rcu_head *head, rcu_callback_t func);
-diff --git a/include/linux/srcu.h b/include/linux/srcu.h
-index e432cc9..a0895bb 100644
---- a/include/linux/srcu.h
-+++ b/include/linux/srcu.h
-@@ -60,6 +60,9 @@ void cleanup_srcu_struct(struct srcu_struct *ssp);
- int __srcu_read_lock(struct srcu_struct *ssp) __acquires(ssp);
- void __srcu_read_unlock(struct srcu_struct *ssp, int idx) __releases(ssp);
- void synchronize_srcu(struct srcu_struct *ssp);
-+unsigned long get_state_synchronize_srcu(struct srcu_struct *ssp);
-+unsigned long start_poll_synchronize_srcu(struct srcu_struct *ssp);
-+bool poll_state_synchronize_srcu(struct srcu_struct *ssp, unsigned long cookie);
- 
- #ifdef CONFIG_DEBUG_LOCK_ALLOC
- 
-diff --git a/include/linux/srcutiny.h b/include/linux/srcutiny.h
-index b8b42d0..0e0cf4d 100644
---- a/include/linux/srcutiny.h
-+++ b/include/linux/srcutiny.h
-@@ -16,6 +16,7 @@
- struct srcu_struct {
- 	short srcu_lock_nesting[2];	/* srcu_read_lock() nesting depth. */
- 	unsigned short srcu_idx;	/* Current reader array element in bit 0x2. */
-+	unsigned short srcu_idx_max;	/* Furthest future srcu_idx request. */
- 	u8 srcu_gp_running;		/* GP workqueue running? */
- 	u8 srcu_gp_waiting;		/* GP waiting for readers? */
- 	struct swait_queue_head srcu_wq;
-diff --git a/kernel/rcu/srcutiny.c b/kernel/rcu/srcutiny.c
-index 3bac1db..26344dc 100644
---- a/kernel/rcu/srcutiny.c
-+++ b/kernel/rcu/srcutiny.c
-@@ -34,6 +34,7 @@ static int init_srcu_struct_fields(struct srcu_struct *ssp)
- 	ssp->srcu_gp_running = false;
- 	ssp->srcu_gp_waiting = false;
- 	ssp->srcu_idx = 0;
-+	ssp->srcu_idx_max = 0;
- 	INIT_WORK(&ssp->srcu_work, srcu_drive_gp);
- 	INIT_LIST_HEAD(&ssp->srcu_work.entry);
- 	return 0;
-@@ -84,6 +85,8 @@ void cleanup_srcu_struct(struct srcu_struct *ssp)
- 	WARN_ON(ssp->srcu_gp_waiting);
- 	WARN_ON(ssp->srcu_cb_head);
- 	WARN_ON(&ssp->srcu_cb_head != ssp->srcu_cb_tail);
-+	WARN_ON(ssp->srcu_idx != ssp->srcu_idx_max);
-+	WARN_ON(ssp->srcu_idx & 0x1);
- }
- EXPORT_SYMBOL_GPL(cleanup_srcu_struct);
- 
-@@ -114,7 +117,7 @@ void srcu_drive_gp(struct work_struct *wp)
- 	struct srcu_struct *ssp;
- 
- 	ssp = container_of(wp, struct srcu_struct, srcu_work);
--	if (ssp->srcu_gp_running || !READ_ONCE(ssp->srcu_cb_head))
-+	if (ssp->srcu_gp_running || USHORT_CMP_GE(ssp->srcu_idx, READ_ONCE(ssp->srcu_idx_max)))
- 		return; /* Already running or nothing to do. */
- 
- 	/* Remove recently arrived callbacks and wait for readers. */
-@@ -147,13 +150,19 @@ void srcu_drive_gp(struct work_struct *wp)
- 	 * straighten that out.
- 	 */
- 	WRITE_ONCE(ssp->srcu_gp_running, false);
--	if (READ_ONCE(ssp->srcu_cb_head))
-+	if (USHORT_CMP_LT(ssp->srcu_idx, READ_ONCE(ssp->srcu_idx_max)))
- 		schedule_work(&ssp->srcu_work);
- }
- EXPORT_SYMBOL_GPL(srcu_drive_gp);
- 
- static void srcu_gp_start_if_needed(struct srcu_struct *ssp)
+diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
+index 9a7b650..c5d0c03 100644
+--- a/kernel/rcu/srcutree.c
++++ b/kernel/rcu/srcutree.c
+@@ -810,7 +810,8 @@ static void srcu_leak_callback(struct rcu_head *rhp)
+ /*
+  * Start an SRCU grace period, and also queue the callback if non-NULL.
+  */
+-static void srcu_gp_start_if_needed(struct srcu_struct *ssp, struct rcu_head *rhp, bool do_norm)
++static unsigned long srcu_gp_start_if_needed(struct srcu_struct *ssp,
++					     struct rcu_head *rhp, bool do_norm)
  {
-+	unsigned short cookie;
-+
-+	cookie = get_state_synchronize_srcu(ssp);
-+	if (USHORT_CMP_GE(READ_ONCE(ssp->srcu_idx_max), cookie))
-+		return;
-+	WRITE_ONCE(ssp->srcu_idx_max, cookie);
- 	if (!READ_ONCE(ssp->srcu_gp_running)) {
- 		if (likely(srcu_init_done))
- 			schedule_work(&ssp->srcu_work);
-@@ -196,6 +205,48 @@ void synchronize_srcu(struct srcu_struct *ssp)
+ 	unsigned long flags;
+ 	int idx;
+@@ -819,10 +820,12 @@ static void srcu_gp_start_if_needed(struct srcu_struct *ssp, struct rcu_head *rh
+ 	unsigned long s;
+ 	struct srcu_data *sdp;
+ 
++	check_init_srcu_struct(ssp);
+ 	idx = srcu_read_lock(ssp);
+ 	sdp = raw_cpu_ptr(ssp->sda);
+ 	spin_lock_irqsave_rcu_node(sdp, flags);
+-	rcu_segcblist_enqueue(&sdp->srcu_cblist, rhp);
++	if (rhp)
++		rcu_segcblist_enqueue(&sdp->srcu_cblist, rhp);
+ 	rcu_segcblist_advance(&sdp->srcu_cblist,
+ 			      rcu_seq_current(&ssp->srcu_gp_seq));
+ 	s = rcu_seq_snap(&ssp->srcu_gp_seq);
+@@ -841,6 +844,7 @@ static void srcu_gp_start_if_needed(struct srcu_struct *ssp, struct rcu_head *rh
+ 	else if (needexp)
+ 		srcu_funnel_exp_start(ssp, sdp->mynode, s);
+ 	srcu_read_unlock(ssp, idx);
++	return s;
+ }
+ 
+ /*
+@@ -874,7 +878,6 @@ static void srcu_gp_start_if_needed(struct srcu_struct *ssp, struct rcu_head *rh
+ static void __call_srcu(struct srcu_struct *ssp, struct rcu_head *rhp,
+ 			rcu_callback_t func, bool do_norm)
+ {
+-	check_init_srcu_struct(ssp);
+ 	if (debug_rcu_head_queue(rhp)) {
+ 		/* Probable double call_srcu(), so leak the callback. */
+ 		WRITE_ONCE(rhp->func, srcu_leak_callback);
+@@ -882,7 +885,7 @@ static void __call_srcu(struct srcu_struct *ssp, struct rcu_head *rhp,
+ 		return;
+ 	}
+ 	rhp->func = func;
+-	srcu_gp_start_if_needed(ssp, rhp, do_norm);
++	(void)srcu_gp_start_if_needed(ssp, rhp, do_norm);
+ }
+ 
+ /**
+@@ -1011,6 +1014,62 @@ void synchronize_srcu(struct srcu_struct *ssp)
  }
  EXPORT_SYMBOL_GPL(synchronize_srcu);
  
-+/*
++/**
 + * get_state_synchronize_srcu - Provide an end-of-grace-period cookie
++ * @ssp: srcu_struct to provide cookie for.
++ *
++ * This function returns a cookie that can be passed to
++ * poll_state_synchronize_srcu(), which will return true if a full grace
++ * period has elapsed in the meantime.  It is the caller's responsibility
++ * to make sure that grace period happens, for example, by invoking
++ * call_srcu() after return from get_state_synchronize_srcu().
 + */
 +unsigned long get_state_synchronize_srcu(struct srcu_struct *ssp)
 +{
-+	unsigned long ret;
-+
-+	barrier();
-+	ret = (READ_ONCE(ssp->srcu_idx) + 3) & ~0x1;
-+	barrier();
-+	return ret & USHRT_MAX;
++	// Any prior manipulation of SRCU-protected data must happen
++	// before the load from ->srcu_gp_seq.
++	smp_mb();
++	return rcu_seq_snap(&ssp->srcu_gp_seq);
 +}
 +EXPORT_SYMBOL_GPL(get_state_synchronize_srcu);
 +
-+/*
++/**
 + * start_poll_synchronize_srcu - Provide cookie and start grace period
++ * @ssp: srcu_struct to provide cookie for.
 + *
-+ * The difference between this and get_state_synchronize_srcu() is that
-+ * this function ensures that the poll_state_synchronize_srcu() will
-+ * eventually return the value true.
++ * This function returns a cookie that can be passed to
++ * poll_state_synchronize_srcu(), which will return true if a full grace
++ * period has elapsed in the meantime.  Unlike get_state_synchronize_srcu(),
++ * this function also ensures that any needed SRCU grace period will be
++ * started.  This convenience does come at a cost in terms of CPU overhead.
 + */
 +unsigned long start_poll_synchronize_srcu(struct srcu_struct *ssp)
 +{
-+	unsigned long ret = get_state_synchronize_srcu(ssp);
-+
-+	srcu_gp_start_if_needed(ssp);
-+	return ret;
++	return srcu_gp_start_if_needed(ssp, NULL, true);
 +}
 +EXPORT_SYMBOL_GPL(start_poll_synchronize_srcu);
 +
-+/*
++/**
 + * poll_state_synchronize_srcu - Has cookie's grace period ended?
++ * @ssp: srcu_struct to provide cookie for.
++ * @cookie: Return value from get_state_synchronize_srcu() or start_poll_synchronize_srcu().
++ *
++ * This function takes the cookie that was returned from either
++ * get_state_synchronize_srcu() or start_poll_synchronize_srcu(), and
++ * returns @true if an SRCU grace period elapsed since the time that the
++ * cookie was created.
 + */
 +bool poll_state_synchronize_srcu(struct srcu_struct *ssp, unsigned long cookie)
 +{
-+	bool ret = USHORT_CMP_GE(READ_ONCE(ssp->srcu_idx), cookie);
-+
-+	barrier();
-+	return ret;
++	if (!rcu_seq_done(&ssp->srcu_gp_seq, cookie))
++		return false;
++	// Ensure that the end of the SRCU grace period happens before
++	// any subsequent code that the caller might execute.
++	smp_mb(); // ^^^
++	return true;
 +}
 +EXPORT_SYMBOL_GPL(poll_state_synchronize_srcu);
 +
- /* Lockdep diagnostics.  */
- void __init rcu_scheduler_starting(void)
- {
+ /*
+  * Callback function for srcu_barrier() use.
+  */
 -- 
 2.9.5
 
