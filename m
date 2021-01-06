@@ -2,62 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B8702EBF0D
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 14:49:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1416C2EBF30
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 14:50:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727423AbhAFNpT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Jan 2021 08:45:19 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49456 "EHLO mail.kernel.org"
+        id S1726983AbhAFNrP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Jan 2021 08:47:15 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50834 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726287AbhAFNpT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Jan 2021 08:45:19 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2D19A2311A;
-        Wed,  6 Jan 2021 13:44:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1609940678;
-        bh=xmjBSwRkN92iVuAoCcEXoCFTOQpFpIROo2jsrZmXejI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=0RVtKEilAHgErec2a53LfTMSr32THCBrqWZoWJ1C0onApYPM57Ao6KbKgmIrYxTCD
-         pkAvw9YTBCDX75E+aZyEWG44VLD8oAf5dtL1isucEiJjHwG6ILyAL4FdhFRLsXdfjO
-         /O5CkvZFfBmUQ6cnc+z1gGC7YQODKxRgRufJ350E=
-Date:   Wed, 6 Jan 2021 14:45:59 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, stable@vger.kernel.org
-Subject: Re: [PATCH 4.19 00/29] 4.19.165-rc2 review
-Message-ID: <X/W/Fwvcyp0BB9nL@kroah.com>
-References: <20210105090818.518271884@linuxfoundation.org>
- <20210105181637.GA220537@roeck-us.net>
+        id S1726074AbhAFNrH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 Jan 2021 08:47:07 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7D26F22B40;
+        Wed,  6 Jan 2021 13:46:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1609940786;
+        bh=dk8pXxau3B7w7pPUwA0RrhUn2p0NPeGc5CfgVN0DmzQ=;
+        h=From:To:Cc:Subject:Date:From;
+        b=ZGMA2yuUlk3EsCi/TmoRfktBveZSgR6AWjg6xDPQXlUij7RfCRgx9e8sx58aHDA+3
+         kbiSLI4QrOEWdxlQY8yXgjziLtc1avxml8f5Nmdyh5AgmuxgCc+wm6iDw8B4CYGeqa
+         HAacO9ZaH7lHyEIEbJ5e+PblRveWDce0x7EGc9fiYbgwLR2a9exe6UJDs43ZdZ6XOp
+         +6T1M8agU/E85gddh1oArPrKBEUjtID41uWBOmNQ6j9zgjBolzgmqwTgAMJLRQe1c/
+         yevsMgzuU4EADGqOEUp45n48k6Y3HyTFqgETNjfc9EGEZBY7Of4cHPT6xsb/1IWKN9
+         xuSSRWQNhci/w==
+Received: by wens.tw (Postfix, from userid 1000)
+        id 5155F5FB6B; Wed,  6 Jan 2021 21:46:24 +0800 (CST)
+From:   Chen-Yu Tsai <wens@kernel.org>
+To:     Shawn Lin <shawn.lin@rock-chips.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Rob Herring <robh@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Heiko Stuebner <heiko@sntech.de>
+Cc:     Chen-Yu Tsai <wens@csie.org>, Robin Murphy <robin.murphy@arm.com>,
+        Johan Jonker <jbx6244@gmail.com>, linux-pci@vger.kernel.org,
+        linux-rockchip@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org
+Subject: [PATCH v3 0/4] arm64: rockchip: Fix PCIe ep-gpios requirement and Add Nanopi M4B
+Date:   Wed,  6 Jan 2021 21:46:13 +0800
+Message-Id: <20210106134617.391-1-wens@kernel.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210105181637.GA220537@roeck-us.net>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 05, 2021 at 10:16:37AM -0800, Guenter Roeck wrote:
-> On Tue, Jan 05, 2021 at 10:28:46AM +0100, Greg Kroah-Hartman wrote:
-> > This is the start of the stable review cycle for the 4.19.165 release.
-> > There are 29 patches in this series, all will be posted as a response
-> > to this one.  If anyone has any issues with these being applied, please
-> > let me know.
-> > 
-> > Responses should be made by Thu, 07 Jan 2021 09:08:03 +0000.
-> > Anything received after that time might be too late.
-> > 
-> 
-> For v4.19.164-30-g40a2b34effd3:
-> 
-> Build results:
-> 	total: 155 pass: 155 fail: 0
-> Qemu test results:
-> 	total: 418 pass: 418 fail: 0
-> 
-> Tested-by: Guenter Roeck <linux@roeck-us.net>
+From: Chen-Yu Tsai <wens@csie.org>
 
-Glad it now all works, thanks for testing!
+Hi everyone,
 
-greg k-h
+This is v3 of my Nanopi M4B series. Changes since v2 include:
+
+  - Replaced dev_err() with dev_err_probe() for gpiod_get_optional() error
+  - Added Reviewed-by tag from Robin Murphy for patch 3
+
+Changes since v1 include:
+
+  - Rewrite subject of patch 1 to match existing convention and reference
+    'ep-gpios' DT property instead of the 'ep_gpio' field
+ 
+This series mainly adds support for the new Nanopi M4B, which is a newer
+variant of the Nanopi M4.
+
+The differences against the original Nanopi M4 that are common with the
+other M4V2 revision include:
+
+  - microphone header removed
+  - power button added
+  - recovery button added
+
+Additional changes specific to the M4B:
+
+  - USB 3.0 hub removed; board now has 2x USB 3.0 type-A ports and 2x
+    USB 2.0 ports
+  - ADB toggle switch added; this changes the top USB 3.0 host port to
+    a peripheral port
+  - Type-C port no longer supports data or PD
+  - WiFi/Bluetooth combo chip switched to AP6256, which supports BT 5.0
+    but only 1T1R (down from 2T2R) for WiFi
+
+While working on this, I found that for the M4 family, the PCIe reset
+pin (from the M.2 expansion board) was not wired to the SoC. Only the
+NanoPC T4 has this wired. This ended up in patches 1 and 3.
+
+Patch 1 makes ep_gpio in the Rockchip PCIe driver optional. This property
+is optional in the DT binding, so this just makes the driver adhere to
+the binding.
+
+Patch 2 adds a new compatible string for the new board.
+
+Patch 3 moves the ep-gpios property of the pcie controller from the
+common nanopi4.dtsi file to the nanopc-t4.dts file.
+
+Patch 4 adds a new device tree file for the new board. It includes the
+original device tree for the M4, and then lists the differences.
+
+Given that patch 3 would make PCIe unusable without patch 1, I suggest
+merging patch 1 through the PCI tree as a fix for 5.10, and the rest
+for 5.11 through the Rockchip tree.
+
+Please have a look. The changes are mostly trivial.
+
+
+Regards
+ChenYu
+
+Chen-Yu Tsai (4):
+  PCI: rockchip: Make 'ep-gpios' DT property optional
+  dt-bindings: arm: rockchip: Add FriendlyARM NanoPi M4B
+  arm64: dts: rockchip: nanopi4: Move ep-gpios property to nanopc-t4
+  arm64: dts: rockchip: rk3399: Add NanoPi M4B
+
+ .../devicetree/bindings/arm/rockchip.yaml     |  1 +
+ arch/arm64/boot/dts/rockchip/Makefile         |  1 +
+ .../boot/dts/rockchip/rk3399-nanopc-t4.dts    |  1 +
+ .../boot/dts/rockchip/rk3399-nanopi-m4b.dts   | 52 +++++++++++++++++++
+ .../boot/dts/rockchip/rk3399-nanopi4.dtsi     |  1 -
+ drivers/pci/controller/pcie-rockchip.c        |  5 +-
+ 6 files changed, 58 insertions(+), 3 deletions(-)
+ create mode 100644 arch/arm64/boot/dts/rockchip/rk3399-nanopi-m4b.dts
+
+-- 
+2.29.2
+
