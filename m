@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 47A0A2EC1F5
+	by mail.lfdr.de (Postfix) with ESMTP id B64502EC1F6
 	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 18:20:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727997AbhAFRTG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Jan 2021 12:19:06 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60796 "EHLO mail.kernel.org"
+        id S1728011AbhAFRTM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Jan 2021 12:19:12 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60798 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726687AbhAFRSe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1726698AbhAFRSe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 6 Jan 2021 12:18:34 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A65DF2313E;
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CCE8223139;
         Wed,  6 Jan 2021 17:17:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1609953433;
-        bh=PIpVwN3DLimIEne8pHFvgPYMDGBqCA5suiik04gf54o=;
+        bh=0D0Yhy+THf9JOikUASKDeRni4EE+Laj92RDUxVdFfCk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Y4oA5Cf5P/Fo+eEaqmpTSx43wA0Ey/FRAQ3dp5X5siXbFrmUEdCBWnLyYRX759ogW
-         S7Be7tENKWe1IqjAvtPBiFB1r+y+/ed89tLhkQu+U1t+upE8X+mzAUvNBNhOPYgLCx
-         NlLcpGbViXuQqP6z7OPeEAWUPqwmEihTh4FBxsQDn9VAe5bMRLcv7DuFGkqFgcu/tu
-         6dNoXT80kkyMd7OztnaPlehbFA9x675rfjbED1Y23jxpst49P0WLY2+ARqMDmqEQKW
-         TP+yHnT6V0HBcNsFJzOMZ+lGXGxZYR0o8Vg153GNxUqXfL3GfrisckOHjO0RD7JfIP
-         hJ5x0VhU6bMuw==
+        b=NcQlcH1nMpGOGwo7KH8z3iM5DfNY60yV08aVHqhBamkJeVTMEozpIrWipQHII+dbg
+         YD7+K/m82OURb3s4RDPNBAq9wWoj0Nqoo7SDFPubq9cLkdGBbf/nCy8xM8XdsIe4z6
+         W9Mu6XXG1nfXc8kntgkM1QlFJNGsedklstFiLsAnKKUjRjOAx8+QCUI1SOKdF4Ejyf
+         rAnSKIrnOF94WJK+sXeWZ23j5+Nc6k19rPZZa/Y/HLu3KmYLWTVpaLNpdWCW7Yrcf5
+         LQGi7/+m8CxxiYN73uybQwSHPZhgRnl5qw0R2O78DeV8nwvDqFPS/eq5eVYWkfv5lO
+         f4Sc4MNbOoz3Q==
 From:   paulmck@kernel.org
 To:     rcu@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
@@ -32,9 +32,9 @@ Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com, mingo@kernel.org,
         dhowells@redhat.com, edumazet@google.com, fweisbec@gmail.com,
         oleg@redhat.com, joel@joelfernandes.org,
         "Paul E. McKenney" <paulmck@kernel.org>
-Subject: [PATCH tip/core/rcu 09/17] torture: Make stutter use torture_hrtimeout_*() functions
-Date:   Wed,  6 Jan 2021 09:17:02 -0800
-Message-Id: <20210106171710.22239-9-paulmck@kernel.org>
+Subject: [PATCH tip/core/rcu 10/17] rcutorture: Use hrtimers for reader and writer delays
+Date:   Wed,  6 Jan 2021 09:17:03 -0800
+Message-Id: <20210106171710.22239-10-paulmck@kernel.org>
 X-Mailer: git-send-email 2.9.5
 In-Reply-To: <20210106171532.GA20769@paulmck-ThinkPad-P72>
 References: <20210106171532.GA20769@paulmck-ThinkPad-P72>
@@ -44,73 +44,47 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: "Paul E. McKenney" <paulmck@kernel.org>
 
-This commit saves a few lines of code by making the stutter_wait()
-and torture_stutter() functions use torture_hrtimeout_jiffies() and
-torture_hrtimeout_us().
+This commit replaces schedule_timeout_uninterruptible() and
+schedule_timeout_interruptible() with torture_hrtimeout_us() and
+torture_hrtimeout_jiffies() to avoid timer-wheel synchronization.
 
 Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
 ---
- kernel/torture.c | 20 +++++---------------
- 1 file changed, 5 insertions(+), 15 deletions(-)
+ kernel/rcu/rcutorture.c | 7 +++----
+ 1 file changed, 3 insertions(+), 4 deletions(-)
 
-diff --git a/kernel/torture.c b/kernel/torture.c
-index 7548634..7ad5c96 100644
---- a/kernel/torture.c
-+++ b/kernel/torture.c
-@@ -677,7 +677,6 @@ static int stutter_gap;
-  */
- bool stutter_wait(const char *title)
- {
--	ktime_t delay;
- 	unsigned int i = 0;
- 	bool ret = false;
- 	int spt;
-@@ -693,11 +692,8 @@ bool stutter_wait(const char *title)
- 			schedule_timeout_interruptible(1);
- 		} else if (spt == 2) {
- 			while (READ_ONCE(stutter_pause_test)) {
--				if (!(i++ & 0xffff)) {
--					set_current_state(TASK_INTERRUPTIBLE);
--					delay = 10 * NSEC_PER_USEC;
--					schedule_hrtimeout(&delay, HRTIMER_MODE_REL);
--				}
-+				if (!(i++ & 0xffff))
-+					torture_hrtimeout_us(10, 0, NULL);
- 				cond_resched();
- 			}
- 		} else {
-@@ -715,7 +711,6 @@ EXPORT_SYMBOL_GPL(stutter_wait);
-  */
- static int torture_stutter(void *arg)
- {
--	ktime_t delay;
- 	DEFINE_TORTURE_RANDOM(rand);
- 	int wtime;
+diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
+index 7b61086..4a0c6e6 100644
+--- a/kernel/rcu/rcutorture.c
++++ b/kernel/rcu/rcutorture.c
+@@ -1149,7 +1149,7 @@ rcu_torture_writer(void *arg)
  
-@@ -726,20 +721,15 @@ static int torture_stutter(void *arg)
- 			if (stutter > 2) {
- 				WRITE_ONCE(stutter_pause_test, 1);
- 				wtime = stutter - 3;
--				delay = ktime_divns(NSEC_PER_SEC * wtime, HZ);
--				delay += (torture_random(&rand) >> 3) % NSEC_PER_MSEC;
--				set_current_state(TASK_INTERRUPTIBLE);
--				schedule_hrtimeout(&delay, HRTIMER_MODE_REL);
-+				torture_hrtimeout_jiffies(wtime, &rand);
- 				wtime = 2;
- 			}
- 			WRITE_ONCE(stutter_pause_test, 2);
--			delay = ktime_divns(NSEC_PER_SEC * wtime, HZ);
--			set_current_state(TASK_INTERRUPTIBLE);
--			schedule_hrtimeout(&delay, HRTIMER_MODE_REL);
-+			torture_hrtimeout_jiffies(wtime, NULL);
+ 	do {
+ 		rcu_torture_writer_state = RTWS_FIXED_DELAY;
+-		schedule_timeout_uninterruptible(1);
++		torture_hrtimeout_us(500, 1000, &rand);
+ 		rp = rcu_torture_alloc();
+ 		if (rp == NULL)
+ 			continue;
+@@ -1290,8 +1290,7 @@ rcu_torture_fakewriter(void *arg)
+ 	set_user_nice(current, MAX_NICE);
+ 
+ 	do {
+-		schedule_timeout_uninterruptible(1 + torture_random(&rand)%10);
+-		udelay(torture_random(&rand) & 0x3ff);
++		torture_hrtimeout_jiffies(torture_random(&rand) % 10, &rand);
+ 		if (cur_ops->cb_barrier != NULL &&
+ 		    torture_random(&rand) % (nfakewriters * 8) == 0) {
+ 			cur_ops->cb_barrier();
+@@ -1656,7 +1655,7 @@ rcu_torture_reader(void *arg)
+ 		if (!rcu_torture_one_read(&rand, myid) && !torture_must_stop())
+ 			schedule_timeout_interruptible(HZ);
+ 		if (time_after(jiffies, lastsleep) && !torture_must_stop()) {
+-			schedule_timeout_interruptible(1);
++			torture_hrtimeout_us(500, 1000, &rand);
+ 			lastsleep = jiffies + 10;
  		}
- 		WRITE_ONCE(stutter_pause_test, 0);
- 		if (!torture_must_stop())
--			schedule_timeout_interruptible(stutter_gap);
-+			torture_hrtimeout_jiffies(stutter_gap, NULL);
- 		torture_shutdown_absorb("torture_stutter");
- 	} while (!torture_must_stop());
- 	torture_kthread_stopping("torture_stutter");
+ 		while (num_online_cpus() < mynumonline && !torture_must_stop())
 -- 
 2.9.5
 
