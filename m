@@ -2,159 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0A832EC2AB
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 18:47:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B84642EC2B0
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 18:48:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727715AbhAFRoq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Jan 2021 12:44:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59192 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727468AbhAFRop (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Jan 2021 12:44:45 -0500
-Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D18BC06134D;
-        Wed,  6 Jan 2021 09:44:05 -0800 (PST)
-Received: by mail-pj1-x1036.google.com with SMTP id z12so1912917pjn.1;
-        Wed, 06 Jan 2021 09:44:05 -0800 (PST)
+        id S1727748AbhAFRrJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Jan 2021 12:47:09 -0500
+Received: from mail-bn8nam11on2065.outbound.protection.outlook.com ([40.107.236.65]:10401
+        "EHLO NAM11-BN8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727471AbhAFRrI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 Jan 2021 12:47:08 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=HOdFabvqNO3DCkWHNybp1vWf4kQqBRIMh9I/45bxiZtI5cdIPYQcfZOSL1XzyymjKztN+/8PT8jhuEKE35ssTL6NYiNiJ4C8wffoBMrgHSZFcwAL8pCyH6zMXF/QS/dN4X8YTnZqEZOoNm/2TUTNfkpVMftfstgT7+jpc4WV/OqYk1F8FwJE4R8HYXg3IJ6ujj0uYfReIroDuxC/MoIHgXtfdGdmeNKAKRIOIJkyojWTSWMimirngy42EqEbaWkpVA8uErQ2C4pX0ANli4K5NdmYHGyowHTv36izM08pTAxmayFE014ijrNyqk5KTPIbCo8tA3wb1O4DFDoiosXwtA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=VSGf1dpD6p1WoW9a8pZJuwbVhusdUupk9wRvkg0NJ2U=;
+ b=nnsPle0ILdSCZYzRo2f4mE/Hjeyhwatmy0EWSwKvKneRLMj93xfp+uIjArm9qJkrqq+V8ZzaMidhJr9hlDoDLAsLzMW057mex+aGMGM3Lwb6VxNj9b0xHCgk3PzdsibnNp+rECtrOWrHQp4CVyS+wQNQUTt2o6dBgjL9wgknCNfzt6RMr+mV8Y1VUVgOOFxTlRS5thzqxnlx+mJyJD8I+e1lcIWVJ4LsRkFl4IBnI/TtMAQf4HNiRa/utGJf15LciT031/16cZ1rk1sAdcjJCpCJR0wTh2gtrMI8KQEgCQ0tjiTrhbggDgPCFwawMT4F9Nb/qszgEflAxCZCT/3ulA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=windriver.com; dmarc=pass action=none
+ header.from=windriver.com; dkim=pass header.d=windriver.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:autocrypt:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=McrtQ8obU5Om5cXyFjqgKkVkgEBA+mbnsrN4F43Q2fs=;
-        b=jzK6m5S0ncmUTayTpfPfajH1g/vkb6m6uIM5t+CYi3+GDEJ2E5MSJje4olEJucmKjK
-         6MTAAaWiSueQ7f9bQgO/0Y6kJqewl35WcT75d2xq4ay91THc24lEIJWdBJ1/K+Gn4zZu
-         kq9UjT92OrKuu22umvEMcXClJqYV16mfe5NkgVa/KNWx5MKi3oumZfhRTOEpx4snyZaj
-         lBhg7PhL0BiBIOABeMHdl4IaEfrokt3/72F/hNIkQVpb8oPD6vd2l3Ix1q6vjLito+RX
-         Lb6Swc2ViJqzIOD/955ONw19MXOLO8UZXE8O5MmdA/vT+98p0bjgD8/UDvQSJSeEl/8V
-         AElg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:autocrypt
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=McrtQ8obU5Om5cXyFjqgKkVkgEBA+mbnsrN4F43Q2fs=;
-        b=UmdDuxnM3KEduKrcjC4mGqoD5gjkve+fR/dEkjz8pmdWwrG/L0/lWL65uUoMF6JzHI
-         arudgQEMx4DKQ1kkFwT2RbsOL6avdsjZnmPPcSJNLuJjbgRvSdEMiCVmNKrzupvowziQ
-         i89JUAgYXm1i988aKdvY9orBPi8EL67IMm5lII3jZSsnhF7vGzbS+/WFUwEShq/86PAU
-         fIbkAiXPDHtushK8iGL7BAHfBRFORUpgegt5NOS8mpMsLn/imFkDEs/xlQpa3YY0xBp5
-         XOf1jbboFWmMKYpZIx2yZn9JnN5oOoJZd5OA73rEwUv6EOkVAwlu99W4ZTYyt2POxOau
-         0U/Q==
-X-Gm-Message-State: AOAM532oJBwF2aTdBT/FQJRM3Hc8EezmWh2NthXIb+GdbOH4l4K1ba82
-        DPzEbnZe6mhFfNenXCrA4Pc=
-X-Google-Smtp-Source: ABdhPJwffqim+La4l7NUgmMO/6MoCPT/CWtzVipZM4GgGayUyBWUCfpRE+Rf3IUwDVZSi4LDQPVVxA==
-X-Received: by 2002:a17:902:ee0b:b029:dc:1aa4:1123 with SMTP id z11-20020a170902ee0bb02900dc1aa41123mr5449635plb.18.1609955044864;
-        Wed, 06 Jan 2021 09:44:04 -0800 (PST)
-Received: from [10.67.48.230] ([192.19.223.252])
-        by smtp.googlemail.com with ESMTPSA id l7sm2725092pjy.29.2021.01.06.09.44.02
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 06 Jan 2021 09:44:04 -0800 (PST)
-Subject: Re: [PATCH v4 net-next 2/7] net: dsa: be louder when a non-legacy FDB
- operation fails
-To:     Vladimir Oltean <olteanv@gmail.com>, Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, bridge@lists.linux-foundation.org,
-        Roopa Prabhu <roopa@nvidia.com>,
-        Nikolay Aleksandrov <nikolay@nvidia.com>,
-        "David S. Miller" <davem@davemloft.net>
-Cc:     DENG Qingfang <dqfext@gmail.com>,
-        Tobias Waldekranz <tobias@waldekranz.com>,
-        Marek Behun <marek.behun@nic.cz>,
-        Russell King - ARM Linux admin <linux@armlinux.org.uk>,
-        Alexandra Winter <wintera@linux.ibm.com>,
-        Jiri Pirko <jiri@resnulli.us>,
-        Ido Schimmel <idosch@idosch.org>,
-        Claudiu Manoil <claudiu.manoil@nxp.com>,
-        UNGLinuxDriver@microchip.com
-References: <20210106095136.224739-1-olteanv@gmail.com>
- <20210106095136.224739-3-olteanv@gmail.com>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Autocrypt: addr=f.fainelli@gmail.com; prefer-encrypt=mutual; keydata=
- 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
- M5kY0ACeNhCZJvZ5g4C2Lc9fcTHu8jxmEkI=
-Message-ID: <96cdb139-fdcd-521f-4c19-f24a994afed5@gmail.com>
-Date:   Wed, 6 Jan 2021 09:44:02 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+ d=windriversystems.onmicrosoft.com;
+ s=selector2-windriversystems-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=VSGf1dpD6p1WoW9a8pZJuwbVhusdUupk9wRvkg0NJ2U=;
+ b=eHRcrtWc8T10/LQnBIQJyAbAinHK+BYw4pvv2TEmZ2RhbCD9RJ+Cq2DbH/WD1g0nrP5i5snES3wAarGV/3ChCK6BHUwDx3b/AY/o+WRSY3G1bCcFVH99j/eaU12GUZuho6Cp+uXlP17on1w2qq3I85q4VqljsDxtB+AOQZdVzck=
+Authentication-Results: infradead.org; dkim=none (message not signed)
+ header.d=none;infradead.org; dmarc=none action=none
+ header.from=windriver.com;
+Received: from DM6PR11MB4545.namprd11.prod.outlook.com (2603:10b6:5:2ae::14)
+ by DM6PR11MB3898.namprd11.prod.outlook.com (2603:10b6:5:19f::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3721.19; Wed, 6 Jan
+ 2021 17:45:54 +0000
+Received: from DM6PR11MB4545.namprd11.prod.outlook.com
+ ([fe80::87:8baa:7135:501d]) by DM6PR11MB4545.namprd11.prod.outlook.com
+ ([fe80::87:8baa:7135:501d%6]) with mapi id 15.20.3742.006; Wed, 6 Jan 2021
+ 17:45:54 +0000
+Date:   Wed, 6 Jan 2021 12:45:51 -0500
+From:   Paul Gortmaker <paul.gortmaker@windriver.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     paulmck@kernel.org, linux-kernel@vger.kernel.org,
+        yury.norov@gmail.com, kernel-team@fb.com
+Subject: Re: [PATCH RFC cpumask 4/5] cpumask: Add "last" alias for cpu list
+ specifications
+Message-ID: <20210106174551.GB16838@windriver.com>
+References: <20210106004850.GA11682@paulmck-ThinkPad-P72>
+ <20210106004956.11961-4-paulmck@kernel.org>
+ <X/WHk1hY3cmMAXQz@hirez.programming.kicks-ass.net>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <X/WHk1hY3cmMAXQz@hirez.programming.kicks-ass.net>
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-Originating-IP: [128.224.252.2]
+X-ClientProxiedBy: YTOPR0101CA0011.CANPRD01.PROD.OUTLOOK.COM
+ (2603:10b6:b00:15::24) To DM6PR11MB4545.namprd11.prod.outlook.com
+ (2603:10b6:5:2ae::14)
 MIME-Version: 1.0
-In-Reply-To: <20210106095136.224739-3-olteanv@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from windriver.com (128.224.252.2) by YTOPR0101CA0011.CANPRD01.PROD.OUTLOOK.COM (2603:10b6:b00:15::24) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3742.6 via Frontend Transport; Wed, 6 Jan 2021 17:45:54 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 3ba86ea3-0389-40ac-9dd9-08d8b26aead5
+X-MS-TrafficTypeDiagnostic: DM6PR11MB3898:
+X-Microsoft-Antispam-PRVS: <DM6PR11MB38987F4B22AFD06C97A998F683D00@DM6PR11MB3898.namprd11.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: cq7R+SoLq2H5AMiS9PrU+o0WcJULQdYCWKpZbXUeOxnqEbgyzOQ2rBLRp2CP4wsfW5eEX/LvEUQW81artkGCBGX0iTiDx17nhtpmY79wtsH9gMePzIgaAwS7A1rJ4KnAdvbXKt/IGBLVC/UINlnMQFWcyeAXsHcj9hMgfAWVK0o2H+pj4LmKhidOBa5FnA34xVIE/VR2txTID3Km6+okj/WbIlRP57dUNypxJ166TaHVkTlNOlwSyaVdH6pYjczS6Z9YOLDMyLhPCIE2tsf3wNIfF0bbG8MXVdWNNlHAjxvOFwA/7CSmGs49lmafSS6l7i4HwKX7QPR/+QnwFrYaZc1LtKWBkYJlDDDyjGmYzm3BDrtsuqz1KiLrWunXtAHL1UV/un39XOW8mc1mLshUOQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR11MB4545.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39850400004)(396003)(376002)(366004)(346002)(136003)(7696005)(66476007)(8676002)(44832011)(8886007)(4326008)(8936002)(1076003)(6916009)(478600001)(52116002)(66946007)(36756003)(55016002)(86362001)(16526019)(316002)(66556008)(2906002)(5660300002)(6666004)(956004)(2616005)(33656002)(186003)(26005);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?i1AXFFzl3H/B5ggf/z2mFhFC2+/bnzSaIb6VzybZat3APFjccmefnpPFHgUE?=
+ =?us-ascii?Q?o2mKHpYvwGGBw3C4+03drGkG9FHhigKiKEF4dXbr00S4u/5817IHk+91KFkE?=
+ =?us-ascii?Q?u2mbnPzbDRMgh++MzhMFC+hdwM9emkqvIoKodJqY7B/m0zzM9jprQdbG90VR?=
+ =?us-ascii?Q?Xpx/IkDUSx5zc4KZZqv/ELmRy0URth2X1X9qErpKzngddfti4U6oDKbUhcFl?=
+ =?us-ascii?Q?kw5ZaoA0Ajt3xrOUjpfgwUN8E8Z6nA2wOJgPdNktIwXW9AzNYV97tGxCxZUl?=
+ =?us-ascii?Q?1ib1KYq0dtvbnK/KLicaHCtIHkpIjTaJMXjnYiJoY5fmbHiBvyUiH2Gpqifv?=
+ =?us-ascii?Q?qCJZkWyzWbjdQReOwYjiQ0a5gVkv8idPAMK1g75Ck6+piVvF7trWOiHe3VKZ?=
+ =?us-ascii?Q?rJyyxb1u+ZL7Xxpzj5eyI85KT3PklMCY2bem/sclOWAQP7yZF4WrijwWx/Hz?=
+ =?us-ascii?Q?oRdHxfV5szRrK+zGTx1Dwlk2D+5FOKSL3rmOYUQXkDNDtQTtLarA6P+ihgZW?=
+ =?us-ascii?Q?K5p+7mOQU3qz9gzrTsZQx7cSUvdK0dSk07x7mehgShUDerrbZ2xtl41wBe9O?=
+ =?us-ascii?Q?Y9VLf27dQ5j6JniOhT9lfIRtzhc/6RGC6YR/734waqBGS7M3dPETUYmhEuTN?=
+ =?us-ascii?Q?KI7egW4hoAcFIV4rjVDOENZQe4rmrI2R/cfqeVLoOtIdXDXDRAgrGC8uqU+M?=
+ =?us-ascii?Q?nnbWonMjliJCV2DTPCM2lO30FRtlByEhI+aQ3PmCrIrf5yM+M71woskPg+RC?=
+ =?us-ascii?Q?vKFIEYhiQdXVJbmx5dXjCjoHbECgY6JbBuUhU1Nm2xAuouG1ybkT3TIBttp8?=
+ =?us-ascii?Q?2dkrZltqnt5Sc/chCa7lYQCxEHasrhoT3NR7xIZw3W9Mmz5PqoZIiM0guq/o?=
+ =?us-ascii?Q?sNp2l054XVYI9ZjUXeAMEu/2A4yTmuAkCDw2lZJZ0Ano1idq4el3Gatikvaa?=
+ =?us-ascii?Q?vwDIBcNTeM/c7rZ8729C7yTK7T7Dm6+DvoZxYwIgUSrMLFFszZ05J2C2Weh9?=
+ =?us-ascii?Q?DjeE?=
+X-OriginatorOrg: windriver.com
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR11MB4545.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Jan 2021 17:45:54.8582
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ddb2873-a1ad-4a18-ae4e-4644631433be
+X-MS-Exchange-CrossTenant-Network-Message-Id: 3ba86ea3-0389-40ac-9dd9-08d8b26aead5
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: j84zfLKUzt4DdBYNGZ30O/1cFDzq7sgQdoPBgNVXNwinIhByKigZKa/c4CvD9jtMUccXSxX38Oexr5KY+FrcOPOEjbxfbaulbOeQxcN7Mnw=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR11MB3898
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 1/6/21 1:51 AM, Vladimir Oltean wrote:
-> From: Vladimir Oltean <vladimir.oltean@nxp.com>
-> 
-> The dev_close() call was added in commit c9eb3e0f8701 ("net: dsa: Add
-> support for learning FDB through notification") "to indicate inconsistent
-> situation" when we could not delete an FDB entry from the port.
-> 
-> bridge fdb del d8:58:d7:00:ca:6d dev swp0 self master
-> 
-> It is a bit drastic and at the same time not helpful if the above fails
-> to only print with netdev_dbg log level, but on the other hand to bring
-> the interface down.
-> 
-> So increase the verbosity of the error message, and drop dev_close().
-> 
-> Signed-off-by: Vladimir Oltean <vladimir.oltean@nxp.com>
-> Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+[Re: [PATCH RFC cpumask 4/5] cpumask: Add "last" alias for cpu list specifications] On 06/01/2021 (Wed 10:49) Peter Zijlstra wrote:
 
-Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
--- 
-Florian
+> On Tue, Jan 05, 2021 at 04:49:55PM -0800, paulmck@kernel.org wrote:
+> > From: Paul Gortmaker <paul.gortmaker@windriver.com>
+> > 
+> > It seems that a common configuration is to use the 1st couple cores
+> > for housekeeping tasks, and or driving a busy peripheral that generates
+> > a lot of interrupts, or something similar.
+
+[...]
+
+> > A generic token replacement is used to substitute "last" with the
+> > number of CPUs present before handing off to bitmap processing.  But
+> > it could just as easily be used to replace any placeholder token with
+> > any other token or value only known at/after boot.
+> 
+> Aside from the comments Yury made, on how all this is better in
+> bitmap_parselist(), how about doing s/last/N/ here? For me something
+> like: "4-N" reads much saner than "4-last".
+
+OK, I can see N used as per university math classes... to indicate the
+end point of a fixed set of numbers, but I confess to having had to
+think about it for a bit (university was a long time ago).  I don't have
+any strong opinion one way or another -- "last" vs. "N"...
+
+> Also, it might make sense to teach all this about core/node topology,
+> but that's going to be messy. Imagine something like "Core1-CoreN" or
+> "Nore1-NodeN" to mean the mask all/{Core,Node}0.
+> 
+> And that is another feature that seems to be missing from parselist,
+> all/except.
+
+Seems reasonable, but I'm going to look at fixing up what I've got as
+per Yury's comments before volunteering to muck around with more string
+parsing code to add more features...
+
+Thanks,
+Paul.
+--
