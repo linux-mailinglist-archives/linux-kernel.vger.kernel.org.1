@@ -2,76 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CB652EBEC2
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 14:37:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D6B42EBED9
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 14:40:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726437AbhAFNgp convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 6 Jan 2021 08:36:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48646 "EHLO
+        id S1726810AbhAFNht (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Jan 2021 08:37:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48818 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725890AbhAFNgo (ORCPT
+        with ESMTP id S1726666AbhAFNhr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Jan 2021 08:36:44 -0500
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28A6EC061359
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Jan 2021 05:36:04 -0800 (PST)
-Received: from lupine.hi.pengutronix.de ([2001:67c:670:100:3ad5:47ff:feaf:1a17] helo=lupine)
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <p.zabel@pengutronix.de>)
-        id 1kx8yc-0001l3-0x; Wed, 06 Jan 2021 14:35:50 +0100
-Received: from pza by lupine with local (Exim 4.92)
-        (envelope-from <p.zabel@pengutronix.de>)
-        id 1kx8yY-0005CD-Rt; Wed, 06 Jan 2021 14:35:46 +0100
-Message-ID: <b5c5cf7360a0bc297e5753ed1b4d40476ccd7923.camel@pengutronix.de>
-Subject: Re: [PATCH -next] media: hantro: use resource_size
-From:   Philipp Zabel <p.zabel@pengutronix.de>
-To:     Zheng Yongjun <zhengyongjun3@huawei.com>, ezequiel@collabora.com,
-        mchehab@kernel.org, linux-media@vger.kernel.org,
-        linux-rockchip@lists.infradead.org, devel@driverdev.osuosl.org,
+        Wed, 6 Jan 2021 08:37:47 -0500
+Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 08681C06134C
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Jan 2021 05:37:07 -0800 (PST)
+Received: by mail-ed1-x52f.google.com with SMTP id b73so4322895edf.13
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Jan 2021 05:37:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=XPEliyiRuzwI93toBkXa4QPlg8YPJqkoRZuOdRubluk=;
+        b=yl0HYIR5s9MenDeT4XsNXJ9fEA/1e3mGH9GPClXe8s2vo04U6NlIXSOCBCfOh1cW1W
+         KPILVUkOENIhmUci0DdSV25ZVvsVn5DnCMh7VPqGfvSljwjsw2N9dIDkUQlqNH+wG3Cj
+         uvrpx7FGpg2RIp5k9hV3iugDKPnMU6NdIwu9Z7H/lOnXkHLuNhIq7loNcr5rz0NGoKTz
+         w5y8JAW1bWwx0fsu2V949p6iaGFy3eOwH8egolkKXcxjQA+XvKq3Fvs5Hywu8Z31+QqS
+         jDzg5rQSbGW242l4/jerjAtwm86dePEp0XitJltd4Lr+0Kc+6XEVB5QuNu7pUHtHvhu2
+         Rx4w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=XPEliyiRuzwI93toBkXa4QPlg8YPJqkoRZuOdRubluk=;
+        b=iFxr7POvGgsee3xmI1tEQVVsl2AVtUoc7DRlrObbUoQN5PypheLa/a7+m8bQdEAG7f
+         Ozanj4HNNUa5CHUP3ppwctYlWw8sfEp8ywHxqFMBo+srLp7mK14KNmXiq+Z9H4G08Y+1
+         42uJyJl04pbBwrdz2Y1Z5Tff9x6nYu/V57Uu5DY9TXHheEVpXtzL+EXW7pr/MmRptSLf
+         g9yuvcautF3jzUO43frMKbJ69KkoPAdrCatMOV52wQraz0FrymRWy/jvP8NIsIakzfOz
+         vW3/erxUX+CGp6WhECjTNqdsz0RgeshmM/mn8HSmO50E3DbewdUl2CAao/I3LTb8+G0X
+         lR0w==
+X-Gm-Message-State: AOAM533PH71cAW5iwu7F8m2N87Idtx5pp3EYU7ujVD7A+CuLpEQ+6EXQ
+        1kDQ2OT5tFUbrEB9KoG8IgfZLQ==
+X-Google-Smtp-Source: ABdhPJx/1vvfuOLzmxE15pjnnC4c5wWRe3M9KBn0bmPu64n8eazDenjWMbbMPBHgvZ65ryOHyM5aWA==
+X-Received: by 2002:a05:6402:ca2:: with SMTP id cn2mr3987735edb.137.1609940225772;
+        Wed, 06 Jan 2021 05:37:05 -0800 (PST)
+Received: from localhost.localdomain (82-65-169-74.subs.proxad.net. [82.65.169.74])
+        by smtp.googlemail.com with ESMTPSA id n20sm1259275ejo.83.2021.01.06.05.37.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 06 Jan 2021 05:37:05 -0800 (PST)
+From:   Jerome Brunet <jbrunet@baylibre.com>
+To:     Felipe Balbi <balbi@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Jerome Brunet <jbrunet@baylibre.com>,
+        Ruslan Bilovol <ruslan.bilovol@gmail.com>,
+        Jack Pham <jackp@codeaurora.org>, linux-usb@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Cc:     gregkh@linuxfoundation.org
-Date:   Wed, 06 Jan 2021 14:35:46 +0100
-In-Reply-To: <20210106131813.32644-1-zhengyongjun3@huawei.com>
-References: <20210106131813.32644-1-zhengyongjun3@huawei.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-User-Agent: Evolution 3.30.5-1.1 
+Subject: [PATCH v2 0/5] usb: gadget: audio fixes and clean ups
+Date:   Wed,  6 Jan 2021 14:36:47 +0100
+Message-Id: <20210106133652.512178-1-jbrunet@baylibre.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-X-SA-Exim-Connect-IP: 2001:67c:670:100:3ad5:47ff:feaf:1a17
-X-SA-Exim-Mail-From: p.zabel@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+X-Patchwork-Bot: notify
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Zheng,
+This patchset is a collection of fixes and clean ups found while
+working on the uac2 gadget. Details are provided in each change.
 
-On Wed, 2021-01-06 at 21:18 +0800, Zheng Yongjun wrote:
-> Use resource_size rather than a verbose computation on
-> the end and start fields.
-> 
-> Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>
-> ---
->  drivers/staging/media/hantro/hantro_v4l2.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/staging/media/hantro/hantro_v4l2.c b/drivers/staging/media/hantro/hantro_v4l2.c
-> index b668a82d40ad..e1081c16f56a 100644
-> --- a/drivers/staging/media/hantro/hantro_v4l2.c
-> +++ b/drivers/staging/media/hantro/hantro_v4l2.c
-> @@ -316,7 +316,7 @@ hantro_reset_fmt(struct v4l2_pix_format_mplane *fmt,
->  
->  	fmt->pixelformat = vpu_fmt->fourcc;
->  	fmt->field = V4L2_FIELD_NONE;
-> -	fmt->colorspace = V4L2_COLORSPACE_JPEG,
-> +	fmt->colorspace = V4L2_COLORSPACE_JPEG;
->  	fmt->ycbcr_enc = V4L2_YCBCR_ENC_DEFAULT;
->  	fmt->quantization = V4L2_QUANTIZATION_DEFAULT;
->  	fmt->xfer_func = V4L2_XFER_FUNC_DEFAULT;
+Changes since v1: [1]
+ * Jack's patch added to the series (no more deps)
+ * Warning [2] on Patch 3 fixed
 
-Subject and commit message do not describe the patch.
+[1]: https://lore.kernel.org/r/20201221173531.215169-1-jbrunet@baylibre.com
+[2]: https://lore.kernel.org/r/202012291638.QiDQi3Gs-lkp@intel.com
 
-regards
-Philipp
+Jack Pham (1):
+  usb: gadget: u_audio: Free requests only after callback
+
+Jerome Brunet (4):
+  usb: gadget: f_uac2: reset wMaxPacketSize
+  usb: gadget: u_audio: factorize ssize to alsa fmt conversion
+  usb: gadget: u_audio: remove struct uac_req
+  usb: gadget: u_audio: clean up locking
+
+ drivers/usb/gadget/function/f_uac2.c  |  69 +++++++++++---
+ drivers/usb/gadget/function/u_audio.c | 130 +++++++++++---------------
+ 2 files changed, 112 insertions(+), 87 deletions(-)
+
+-- 
+2.29.2
+
