@@ -2,81 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D75662EBAAC
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 08:50:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 82A842EBAAF
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 08:52:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726238AbhAFHuE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Jan 2021 02:50:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50960 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725951AbhAFHuD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Jan 2021 02:50:03 -0500
-Received: from xavier.telenet-ops.be (xavier.telenet-ops.be [IPv6:2a02:1800:120:4::f00:14])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B0CEC06134C
-        for <linux-kernel@vger.kernel.org>; Tue,  5 Jan 2021 23:49:22 -0800 (PST)
-Received: from ramsan.of.borg ([84.195.186.194])
-        by xavier.telenet-ops.be with bizsmtp
-        id DKpL2401D4C55Sk01KpLW7; Wed, 06 Jan 2021 08:49:20 +0100
-Received: from rox.of.borg ([192.168.97.57])
-        by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1kx3ZI-001Vb6-0o; Wed, 06 Jan 2021 08:49:20 +0100
-Received: from geert by rox.of.borg with local (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1kx3ZH-006gMf-HS; Wed, 06 Jan 2021 08:49:19 +0100
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-To:     Alexander Viro <viro@zeniv.linux.org.uk>
-Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] binfmt_elf: Fix fill_prstatus() call in fill_note_info()
-Date:   Wed,  6 Jan 2021 08:49:17 +0100
-Message-Id: <20210106074919.1592772-1-geert@linux-m68k.org>
-X-Mailer: git-send-email 2.25.1
+        id S1726381AbhAFHut (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Jan 2021 02:50:49 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33948 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725788AbhAFHus (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 Jan 2021 02:50:48 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7129D2070C;
+        Wed,  6 Jan 2021 07:50:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1609919407;
+        bh=Piu5gusr/UGLicaCqANy6GNdwM1M9LXLgq30KLvh2D4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=STtQBirTvMJHJfy3BDpBJr1nF4y3j9P09tA52QukFa2+zVDJOvZxlpH0YuQb1dKaI
+         tkZ/1YHajtxpOZBb2tYYK9x5sW39V1FMN5v9MY2fd4frFWPosjKHysaj5P3pqOj5H4
+         cLt1ndn2T4gOT+l7NViKlEBYi94u2sh/OTHke2vk=
+Date:   Wed, 6 Jan 2021 08:50:03 +0100
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Claire Chang <tientzu@chromium.org>
+Cc:     robh+dt@kernel.org, mpe@ellerman.id.au, benh@kernel.crashing.org,
+        paulus@samba.org, joro@8bytes.org, will@kernel.org,
+        frowand.list@gmail.com, konrad.wilk@oracle.com,
+        boris.ostrovsky@oracle.com, jgross@suse.com,
+        sstabellini@kernel.org, hch@lst.de, m.szyprowski@samsung.com,
+        robin.murphy@arm.com, grant.likely@arm.com, xypron.glpk@gmx.de,
+        treding@nvidia.com, mingo@kernel.org, bauerman@linux.ibm.com,
+        peterz@infradead.org, saravanak@google.com,
+        rafael.j.wysocki@intel.com, heikki.krogerus@linux.intel.com,
+        andriy.shevchenko@linux.intel.com, rdunlap@infradead.org,
+        dan.j.williams@intel.com, bgolaszewski@baylibre.com,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, iommu@lists.linux-foundation.org,
+        xen-devel@lists.xenproject.org, tfiga@chromium.org,
+        drinkcat@chromium.org
+Subject: Re: [RFC PATCH v3 2/6] swiotlb: Add restricted DMA pool
+Message-ID: <X/VrqxcaAMi65CF0@kroah.com>
+References: <20210106034124.30560-1-tientzu@chromium.org>
+ <20210106034124.30560-3-tientzu@chromium.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210106034124.30560-3-tientzu@chromium.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On m68k, which does not define CORE_DUMP_USE_REGSET:
+On Wed, Jan 06, 2021 at 11:41:20AM +0800, Claire Chang wrote:
+> Add the initialization function to create restricted DMA pools from
+> matching reserved-memory nodes in the device tree.
+> 
+> Signed-off-by: Claire Chang <tientzu@chromium.org>
+> ---
+>  include/linux/device.h  |   4 ++
+>  include/linux/swiotlb.h |   7 +-
+>  kernel/dma/Kconfig      |   1 +
+>  kernel/dma/swiotlb.c    | 144 ++++++++++++++++++++++++++++++++++------
+>  4 files changed, 131 insertions(+), 25 deletions(-)
+> 
+> diff --git a/include/linux/device.h b/include/linux/device.h
+> index 89bb8b84173e..ca6f71ec8871 100644
+> --- a/include/linux/device.h
+> +++ b/include/linux/device.h
+> @@ -413,6 +413,7 @@ struct dev_links_info {
+>   * @dma_pools:	Dma pools (if dma'ble device).
+>   * @dma_mem:	Internal for coherent mem override.
+>   * @cma_area:	Contiguous memory area for dma allocations
+> + * @dma_io_tlb_mem: Internal for swiotlb io_tlb_mem override.
 
-    fs/binfmt_elf.c: In function ‘fill_note_info’:
-    fs/binfmt_elf.c:2040:20: error: passing argument 1 of ‘fill_prstatus’ from incompatible pointer type [-Werror=incompatible-pointer-types]
-     2040 |  fill_prstatus(info->prstatus, current, siginfo->si_signo);
-	  |                ~~~~^~~~~~~~~~
-	  |                    |
-	  |                    struct elf_prstatus *
-    fs/binfmt_elf.c:1498:55: note: expected ‘struct elf_prstatus_common *’ but argument is of type ‘struct elf_prstatus *’
-     1498 | static void fill_prstatus(struct elf_prstatus_common *prstatus,
-	  |                           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~
+Why does this have to be added here?  Shouldn't the platform-specific
+code handle it instead?
 
-The fill_prstatus() signature was changed, but one caller was not
-updated.
+thanks,
 
-Reported-by: noreply@ellerman.id.au
-Fixes: 147d88b334cd5416 ("elf_prstatus: collect the common part (everything before pr_reg) into a struct")
-Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
----
-Compile-tested only.  Feel free to fold into the original commit.
----
- fs/binfmt_elf.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/fs/binfmt_elf.c b/fs/binfmt_elf.c
-index 1b678aff3bac93eb..4c1550b13899efd7 100644
---- a/fs/binfmt_elf.c
-+++ b/fs/binfmt_elf.c
-@@ -2037,7 +2037,7 @@ static int fill_note_info(struct elfhdr *elf, int phdrs,
- 	}
- 	/* now collect the dump for the current */
- 	memset(info->prstatus, 0, sizeof(*info->prstatus));
--	fill_prstatus(info->prstatus, current, siginfo->si_signo);
-+	fill_prstatus(&info->prstatus->common, current, siginfo->si_signo);
- 	elf_core_copy_regs(&info->prstatus->pr_reg, regs);
- 
- 	/* Set up header */
--- 
-2.25.1
-
+greg k-h
