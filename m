@@ -2,142 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ADA6D2EB984
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 06:32:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 19C142EB995
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 06:46:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726098AbhAFFbv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Jan 2021 00:31:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57728 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725792AbhAFFbu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Jan 2021 00:31:50 -0500
-Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86BB6C06134C;
-        Tue,  5 Jan 2021 21:31:10 -0800 (PST)
-Received: by mail-pl1-x62b.google.com with SMTP id t6so1006172plq.1;
-        Tue, 05 Jan 2021 21:31:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=rjwtCC4s5qF5toeFU9GqGpGwIgLC0h9CcPJ0B42v4CQ=;
-        b=RccYso2/RvfnZPsOPln1soDDi57lHypQ9ziIwjDaB1mI1AtFwVwLmUpLhmiCyQ8SY5
-         XLT1LEBooSNcVA/pX9ZggD/PtJZABE7GjlpTMzgfrii4pVTQgdFWVGnXUUcHDC1olw7w
-         xrKu6zO8tWzeWJHbNvBOowUQubckFC0G/ax3ER44SmtxJ2tKZY20yInAzCjdM1nq7zWW
-         gQKZeIYTVfPq6/4mLomEL0VSXyNfKs2l8EjJugp8NBcHcBP+hZndk7IeZWxsxQcXi0f4
-         RWFL6eZmWdYlUEz6WIbEWf5rg5ez52VptftTN4H/TYBYop0Hl2jgRiiPP18DemXCRyt5
-         rTHQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=rjwtCC4s5qF5toeFU9GqGpGwIgLC0h9CcPJ0B42v4CQ=;
-        b=jTGkHccYb4XIgHxnuqOCT6twD6Gq0zuwOEEshaO4fy556IFFRwiZ4E7/h4SMohAoya
-         mRIJBKnktDrbrb+Dd6GevZqLk4mOXh5EnUkCij2Bgjr3YBwpv0p1xBloQ6TOF1yimcAw
-         U8IQ23h82Z6thkfLgAHEso6/eG4wCGe6CbdLbG/PNdgSEMkP7TyRuQf9ECPbJ1S6H6iW
-         0jxpR8oEgGZyziT1I+JWUgBaY6MfltAsPKmbmrb0eVvR6Ogvq8YJuvdEa/+XVBUOcNy/
-         xmTjAIdqQd2ZYL2Ch8G0m4StVDUXG3TLJwynrZp30Zhf5n2dCZCugoOLFcLqePrERXen
-         O/Pw==
-X-Gm-Message-State: AOAM531yxhR31nDGUJL6tUt9y7fjD/bNYS6TH+6A5uwTpxskOTyDI/cQ
-        z4lraBfMZRO//eLQlaXe+Vk=
-X-Google-Smtp-Source: ABdhPJzePowiEcDtoDOO8mVrej19Pwo3YcDLae7GCXSALEteC7xAeNRoG2w+P4XOe/IgaZlQxsHmNQ==
-X-Received: by 2002:a17:902:cb95:b029:dc:3a38:c7df with SMTP id d21-20020a170902cb95b02900dc3a38c7dfmr2906008ply.49.1609911069942;
-        Tue, 05 Jan 2021 21:31:09 -0800 (PST)
-Received: from shinobu ([156.146.35.76])
-        by smtp.gmail.com with ESMTPSA id u12sm978052pgi.91.2021.01.05.21.31.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 Jan 2021 21:31:09 -0800 (PST)
-Date:   Wed, 6 Jan 2021 14:30:59 +0900
-From:   William Breathitt Gray <vilhelm.gray@gmail.com>
-To:     David Lechner <david@lechnology.com>
-Cc:     jic23@kernel.org, kernel@pengutronix.de,
-        linux-stm32@st-md-mailman.stormreply.com, a.fatoum@pengutronix.de,
-        kamel.bouhara@bootlin.com, gwendal@chromium.org,
-        alexandre.belloni@bootlin.com, linux-iio@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        syednwaris@gmail.com, patrick.havelange@essensium.com,
-        fabrice.gasnier@st.com, mcoquelin.stm32@gmail.com,
-        alexandre.torgue@st.com, Dan Carpenter <dan.carpenter@oracle.com>
-Subject: Re: [PATCH v7 1/5] counter: Internalize sysfs interface code
-Message-ID: <X/VLE0wPPifNZFhT@shinobu>
-References: <cover.1608935587.git.vilhelm.gray@gmail.com>
- <fc40ab7f4a38e80d86715daa5eaf744dd645a75b.1608935587.git.vilhelm.gray@gmail.com>
- <2f950b79-fb83-9800-2690-ec81c6be6348@lechnology.com>
+        id S1725905AbhAFFqW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Jan 2021 00:46:22 -0500
+Received: from mga07.intel.com ([134.134.136.100]:64079 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725562AbhAFFqW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 Jan 2021 00:46:22 -0500
+IronPort-SDR: u90VQLtF0Oh64b8NjT8YUbhE5gjh+LLdytZOfMubw0C857IDSqyhipwKvsYtd+mrJfTRqh5/Wx
+ z/kSG/+t17cg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9855"; a="241311437"
+X-IronPort-AV: E=Sophos;i="5.78,479,1599548400"; 
+   d="scan'208";a="241311437"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Jan 2021 21:45:40 -0800
+IronPort-SDR: rgoReUgBBvCvxYUE8vN1aDRaoWCHJmtfXAc4NHgmtgqwTytax4xNeBGxb3/E7R/mZSGEnkDyzt
+ Hh9YH81PQLxw==
+X-IronPort-AV: E=Sophos;i="5.78,479,1599548400"; 
+   d="scan'208";a="379160484"
+Received: from iweiny-desk2.sc.intel.com (HELO localhost) ([10.3.52.147])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Jan 2021 21:45:41 -0800
+Date:   Tue, 5 Jan 2021 21:45:41 -0800
+From:   Ira Weiny <ira.weiny@intel.com>
+To:     Hao Li <lihao2018.fnst@cn.fujitsu.com>
+Cc:     corbet@lwn.net, davem@davemloft.net, gregkh@linuxfoundation.org,
+        alexander.deucher@amd.com, mchehab+huawei@kernel.org,
+        lee.jones@linaro.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] Documentation/dax: Update description of DAX policy
+ changing
+Message-ID: <20210106054541.GR3097896@iweiny-DESK2.sc.intel.com>
+References: <20210106015000.5263-1-lihao2018.fnst@cn.fujitsu.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="TS0nwI4oX3M9MM/u"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <2f950b79-fb83-9800-2690-ec81c6be6348@lechnology.com>
+In-Reply-To: <20210106015000.5263-1-lihao2018.fnst@cn.fujitsu.com>
+User-Agent: Mutt/1.11.1 (2018-12-01)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Jan 06, 2021 at 09:50:00AM +0800, Hao Li wrote:
+> After commit 77573fa310d9 ("fs: Kill DCACHE_DONTCACHE dentry even if
+> DCACHE_REFERENCED is set"), changes to DAX policy will take effect
+> as soon as all references to this file are gone.
+> 
+> Update the documentation accordingly.
+> 
+> Signed-off-by: Hao Li <lihao2018.fnst@cn.fujitsu.com>
 
---TS0nwI4oX3M9MM/u
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+LGTM
 
-On Wed, Dec 30, 2020 at 05:24:34PM -0600, David Lechner wrote:
-> On 12/25/20 6:15 PM, William Breathitt Gray wrote:
->=20
-> > diff --git a/drivers/counter/ti-eqep.c b/drivers/counter/ti-eqep.c
-> > index a60aee1a1a29..6c058b93dc98 100644
-> > --- a/drivers/counter/ti-eqep.c
-> > +++ b/drivers/counter/ti-eqep.c
->=20
->=20
-> > -static ssize_t ti_eqep_position_floor_write(struct counter_device *cou=
-nter,
-> > -					    struct counter_count *count,
-> > -					    void *ext_priv, const char *buf,
-> > -					    size_t len)
-> > +static int ti_eqep_position_floor_write(struct counter_device *counter,
-> > +					struct counter_count *count, u64 floor)
-> >   {
-> >   	struct ti_eqep_cnt *priv =3D counter->priv;
-> > -	int err;
-> > -	u32 res;
-> >  =20
-> > -	err =3D kstrtouint(buf, 0, &res);
-> > -	if (err < 0)
-> > -		return err;
-> > +	if (floor !=3D (u32)floor)
-> > +		return -ERANGE;
-> >  =20
-> > -	regmap_write(priv->regmap32, QPOSINIT, res);
-> > +	regmap_write(priv->regmap32, QPOSINIT, floor);
-> >  =20
-> > -	return len;
-> > +	return 0;
-> >   }
->=20
-> This will conflict with 2ba7b50893de "counter:ti-eqep: remove floor"
-> (in Jonathan's fixes-togreg branch) which removes these functions.
+Reviewed-by: Ira Weiny <ira.weiny@intel.com>
 
-Ack, I'll rebase and remove these changes.
-
-William Breathitt Gray
-
---TS0nwI4oX3M9MM/u
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEk5I4PDJ2w1cDf/bghvpINdm7VJIFAl/1SxMACgkQhvpINdm7
-VJKIcw/+LDra2XrlrRaFeux8tWBB93EDHYQEEzd7WeMlC09xQ0aZwEeUojZtJ5/E
-IV1ZeWHxVRikgxL9GMBjwLO+IAg2fsiko74ruXbmylQad1AOuI/MDCLfN7Z6vSXW
-BMYXiXq5bH/cKGRLf0bqRWJNRCUPvd7wrh4G3l8Q91BsKWeUNAxypwVjmfFtpspJ
-7Y0EqvmDD890fNFPZOajKU8EbGEBzfUt+mDuFNXkkhM38bhGT+8PQ6APoaA1OQ3W
-xhpjtzW4mEg0V8DnMFdpmeI0MHsV6yYM8tnK+NvY/EbbGRQbfy5x1tqnjSR+KKZm
-TIlYCJnI/95mdjEmNL0qvC7K8gypB6F1ScmNZ2LiaNqT4ztoJebFXIpqVhiWl9X1
-j7pGX+0xGHiLBKJ+1cubpuyoqoYWLWKzZuxv5GAAQ7BYP4b02iaUqmahKciQlrGX
-cieLke92Mhi6YOQf3/FA+kw1wOGtIOTBbHc3Ng4fL7JYztKSg7FQ48H1jnLKhlNe
-QOHBVz7tXasa2GxtDAYKa1fPLXv9Hz8pADP105UJEDaLDoSggWwnrItGvXT5CBjM
-1+VTNc9PR5kqyo5yDRe3fIBHn1+GOCwNBDZcF85RQcccwYce6s3WmHe77IK24Kgy
-TIeVZYUz5l7HWnI3eM4hl0PCL2yHFj4lLPkiVnQ8Qg3MoPm+JSE=
-=iNKk
------END PGP SIGNATURE-----
-
---TS0nwI4oX3M9MM/u--
+> ---
+> Changes in v2:
+>   * simplify sentences and fix style problems.
+> 
+>  Documentation/filesystems/dax.txt | 17 +++--------------
+>  1 file changed, 3 insertions(+), 14 deletions(-)
+> 
+> diff --git a/Documentation/filesystems/dax.txt b/Documentation/filesystems/dax.txt
+> index 8fdb78f3c6c9..e03c20564f3a 100644
+> --- a/Documentation/filesystems/dax.txt
+> +++ b/Documentation/filesystems/dax.txt
+> @@ -83,20 +83,9 @@ Summary
+>         directories.  This has runtime constraints and limitations that are
+>         described in 6) below.
+>  
+> - 6. When changing the S_DAX policy via toggling the persistent FS_XFLAG_DAX flag,
+> -    the change in behaviour for existing regular files may not occur
+> -    immediately.  If the change must take effect immediately, the administrator
+> -    needs to:
+> -
+> -    a) stop the application so there are no active references to the data set
+> -       the policy change will affect
+> -
+> -    b) evict the data set from kernel caches so it will be re-instantiated when
+> -       the application is restarted. This can be achieved by:
+> -
+> -       i. drop-caches
+> -       ii. a filesystem unmount and mount cycle
+> -       iii. a system reboot
+> + 6. When changing the S_DAX policy via toggling the persistent FS_XFLAG_DAX
+> +    flag, the change to existing regular files won't take effect until the
+> +    files are closed by all processes.
+>  
+>  
+>  Details
+> -- 
+> 2.29.2
+> 
+> 
+> 
