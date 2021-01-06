@@ -2,208 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC30D2EC58F
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 22:17:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7937F2EC591
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 22:17:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726132AbhAFVQd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Jan 2021 16:16:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35990 "EHLO
+        id S1726294AbhAFVRm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Jan 2021 16:17:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36172 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725788AbhAFVQd (ORCPT
+        with ESMTP id S1725788AbhAFVRm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Jan 2021 16:16:33 -0500
-Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7365C061575;
-        Wed,  6 Jan 2021 13:15:52 -0800 (PST)
-Received: by mail-ej1-x62f.google.com with SMTP id b9so7050260ejy.0;
-        Wed, 06 Jan 2021 13:15:52 -0800 (PST)
+        Wed, 6 Jan 2021 16:17:42 -0500
+Received: from mail-io1-xd30.google.com (mail-io1-xd30.google.com [IPv6:2607:f8b0:4864:20::d30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06736C061757
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Jan 2021 13:17:02 -0800 (PST)
+Received: by mail-io1-xd30.google.com with SMTP id u26so4098189iof.3
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Jan 2021 13:17:01 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=QRheIFhD7wkffZBzA+D0IWmMPq8XWePLdFJFeZNmTTE=;
-        b=bRHWVrv+1LB6kz+uWchiHR1g44HJll0bbdUxQMPuSCRZEe21+dSyEzE2xavl84dkM/
-         1JM0bR94HwZ7TdSFqkD7psrYb8Nr75S33ipPfDK10JpvVo9A/VrAh3FNYTzKFOmHe52z
-         eDJx0KqcHFFKxq2CU20RZXqLvn4aEVAbtfI+vOVqDnuY1JyS1Fr5tmW/BVj1wM9dgOCs
-         n+PdwuUEQGNJGBErw9DcjW4Z0E6p+657fM4CoIt0s2Hkm7OUeAidoC+AGViIi1BDPhHS
-         rhzqNmrWTeGgT9j92KkxdDGIY8aVXYAc8SDGtPimo0edibIrhXoiBJ9iLJWX4ACzOuxS
-         zt3A==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=LqnpZZaOgAY4yAAIC3yU2hn9Amq6TciTL0LFzqShfbA=;
+        b=Y8ijcEeM5nuL9Ru39V/RIYZZ4SaD/88k8WrESfGFmXotkW+FeGGCnO7pvS2rwOFYl/
+         kkuLIztOSX1jI99KJ3SdPBSJ01D0w4JrijmB60Xilq44KvOb2h+gOHgMHHldS2l3uB6Y
+         xSvSiV4UQ3La73/i6aECnPj4Myp2haPjPjzXgRWzDAISBOsP+6t12MIOz3o1VktYQUOE
+         kaD5w67T+2ethvyzIEAMmK1Tt7ROvcjzMAqO8VyhkU1d8kyoLqVUkglRwEomm7bBBsx8
+         6xYNwU/c8mZ2etEsVtvyaz4IBeGSX0vZ3zJxKolgO0mZtS1lOUDSOkfgC9map+50E5ZP
+         42Kg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=QRheIFhD7wkffZBzA+D0IWmMPq8XWePLdFJFeZNmTTE=;
-        b=dHMSYpcClc3rYIsGMPsXRy/YhZ3wM5M37SchcLnlClJgNLRb9hwTDv0s51iAtgJB5s
-         8rauMAxavwnilyTWmy5sj6XRQ7bCvYj9qwr/SKVbsi08hXTV5l2y4N78M4MspTTco+aK
-         Y3kKQmEuwCaisocbMi0DV6/SFJLFF6FUDuVZvdyJUJSp1VMH1s+eDRLiLTSefeEYu4p+
-         +6F3AW/z0X8HlnchxR69rbslBihaDUn+RhYEDyJr4OjAG+0JUyxTJNrZncN4t2NoXrJA
-         ER+4owvy566qux52kSnAa5O1iq13yE6Zq03xRe4WZgf2R2HKRnvW+x1fwWNdZpEJQMzz
-         Thjw==
-X-Gm-Message-State: AOAM530220rG0TbuZ+Cv+nLZFSye2uFSiBu3cEJpAl42dA4uMI+eTrJA
-        HADQ1UNxYL8Ij+Pme/A6ah4=
-X-Google-Smtp-Source: ABdhPJxiwbnXnmwJ4cYIJokJa0IPQstspls+eHItyVciliOguLSsSmydbHVKe54DFPXQ+mdWMJfKJA==
-X-Received: by 2002:a17:906:eb5b:: with SMTP id mc27mr4114502ejb.163.1609967751428;
-        Wed, 06 Jan 2021 13:15:51 -0800 (PST)
-Received: from localhost.localdomain ([95.91.252.255])
-        by smtp.gmail.com with ESMTPSA id n8sm1708742eju.33.2021.01.06.13.15.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 06 Jan 2021 13:15:50 -0800 (PST)
-From:   Bean Huo <huobean@gmail.com>
-To:     alim.akhtar@samsung.com, avri.altman@wdc.com,
-        asutoshd@codeaurora.org, jejb@linux.ibm.com,
-        martin.petersen@oracle.com, stanley.chu@mediatek.com,
-        beanhuo@micron.com, bvanassche@acm.org, tomas.winkler@intel.com,
-        cang@codeaurora.org
-Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v3] scsi: ufs: Replace sprintf and snprintf with sysfs_emit
-Date:   Wed,  6 Jan 2021 22:15:41 +0100
-Message-Id: <20210106211541.23039-1-huobean@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=LqnpZZaOgAY4yAAIC3yU2hn9Amq6TciTL0LFzqShfbA=;
+        b=Ql+a5t2wT2ep4AU8eUxGt2dZ9+jH3vVfR/nZEyfZTV8DaXiSXvU90Dc8NMNvCjb5T5
+         WonfVFuGkoSKh4f8SkzWtDxoaow8SPc+9WXPhQbIpywvi3rgCRa5AIRjtftv7UGsgoIU
+         pzBw4dkfR0TITB8elWNq45P+oycbrFt9/Gw+lRKEX4xElUcwh2lJACmv12gbfKX59315
+         57qBruUO4lDTMbqklTmzkHsPIZJzYyp1O6QJYjoFxlx5ntJmapZN0O0QCWvoBcOP+0YN
+         9lOUFQGQS/8nrNDkThJSssd4ranffbR4wjXDHa1bw2Ie+s59DXWqh8COvGLaUMKOgg0W
+         c0IA==
+X-Gm-Message-State: AOAM530ys+HXw0da6FT23Mk0oKoie8sMyIMEzCCU6ac9XWEK23Al6twr
+        T8Tcz/Q91n61xxp/prCUw+olRhLQniaOAZeZEFGrk5PD5xHaqg==
+X-Google-Smtp-Source: ABdhPJxghafYjyj+Y8W59tnCmzWx9h+dy/If4GHa7ylzA6pbBezUs4wlNQDsCnuopPCFzShrV42SAdJNKeGIGw9fwHY=
+X-Received: by 2002:a02:b042:: with SMTP id q2mr5237158jah.29.1609967821243;
+ Wed, 06 Jan 2021 13:17:01 -0800 (PST)
+MIME-Version: 1.0
+References: <20210106004850.GA11682@paulmck-ThinkPad-P72> <20210106004956.11961-4-paulmck@kernel.org>
+ <X/WHk1hY3cmMAXQz@hirez.programming.kicks-ass.net>
+In-Reply-To: <X/WHk1hY3cmMAXQz@hirez.programming.kicks-ass.net>
+From:   Yury Norov <yury.norov@gmail.com>
+Date:   Wed, 6 Jan 2021 13:16:50 -0800
+Message-ID: <CAAH8bW9jfSeYe+d6feQUTKuqwKr_U0aCGPZEiBh6Hp=KT2iPrA@mail.gmail.com>
+Subject: Re: [PATCH RFC cpumask 4/5] cpumask: Add "last" alias for cpu list specifications
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     paulmck@kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        kernel-team@fb.com, Paul Gortmaker <paul.gortmaker@windriver.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bean Huo <beanhuo@micron.com>
+On Wed, Jan 6, 2021 at 1:50 AM Peter Zijlstra <peterz@infradead.org> wrote:
+>
+> On Tue, Jan 05, 2021 at 04:49:55PM -0800, paulmck@kernel.org wrote:
+> > From: Paul Gortmaker <paul.gortmaker@windriver.com>
+> >
+> > It seems that a common configuration is to use the 1st couple cores
+> > for housekeeping tasks, and or driving a busy peripheral that generates
+> > a lot of interrupts, or something similar.
+> >
+> > This tends to leave the remaining ones to form a pool of similarly
+> > configured cores to take on the real workload of interest to the user.
+> >
+> > So on machine A - with 32 cores, it could be 0-3 for "system" and then
+> > 4-31 being used in boot args like nohz_full=, or rcu_nocbs= as part of
+> > setting up the worker pool of CPUs.
+> >
+> > But then newer machine B is added, and it has 48 cores, and so while
+> > the 0-3 part remains unchanged, the pool setup cpu list becomes 4-47.
+> >
+> > Deployment would be easier if we could just simply replace 31 and 47
+> > with "last" and let the system substitute in the actual number at boot;
+> > a number that it knows better than we do.
+> >
+> > No need to have custom boot args per node, no need to do a trial boot
+> > in order to snoop /proc/cpuinfo and/or /sys/devices/system/cpu - no
+> > more fencepost errors of using 32 and 48 instead of 31 and 47.
+> >
+> > A generic token replacement is used to substitute "last" with the
+> > number of CPUs present before handing off to bitmap processing.  But
+> > it could just as easily be used to replace any placeholder token with
+> > any other token or value only known at/after boot.
+>
+> Aside from the comments Yury made, on how all this is better in
+> bitmap_parselist(), how about doing s/last/N/ here? For me something
+> like: "4-N" reads much saner than "4-last".
+>
+> Also, it might make sense to teach all this about core/node topology,
+> but that's going to be messy. Imagine something like "Core1-CoreN" or
+> "Nore1-NodeN" to mean the mask all/{Core,Node}0.
 
-sprintf and snprintf may cause output defect in sysfs content, it is
-better to use new added sysfs_emit function which knows the size of the
-temporary buffer.
+If you just want to teach bitmap_parselist() to "s/Core0/0-4",  I think
+it's doable if we add a hook to a proper subsystem in bitmap_parselist().
 
-Reviewed-by: Avri Altman <avri.altman@wdc.com>
-Suggested-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Signed-off-by: Bean Huo <beanhuo@micron.com>
----
-Nothing changed in this patch, just take it out from patchset:
-https://patchwork.kernel.org/project/linux-scsi/cover/20201224172010.10701-1-huobean@gmail.com/
+> And that is another feature that seems to be missing from parselist,
+> all/except.
 
----
- drivers/scsi/ufs/ufs-sysfs.c | 30 +++++++++++++++---------------
- 1 file changed, 15 insertions(+), 15 deletions(-)
+We already support groups in a range. I think it partially covers the
+proposed all/except.
 
-diff --git a/drivers/scsi/ufs/ufs-sysfs.c b/drivers/scsi/ufs/ufs-sysfs.c
-index 08e72b7eef6a..0e1438485133 100644
---- a/drivers/scsi/ufs/ufs-sysfs.c
-+++ b/drivers/scsi/ufs/ufs-sysfs.c
-@@ -67,7 +67,7 @@ static ssize_t rpm_lvl_show(struct device *dev,
- {
- 	struct ufs_hba *hba = dev_get_drvdata(dev);
- 
--	return sprintf(buf, "%d\n", hba->rpm_lvl);
-+	return sysfs_emit(buf, "%d\n", hba->rpm_lvl);
- }
- 
- static ssize_t rpm_lvl_store(struct device *dev,
-@@ -81,7 +81,7 @@ static ssize_t rpm_target_dev_state_show(struct device *dev,
- {
- 	struct ufs_hba *hba = dev_get_drvdata(dev);
- 
--	return sprintf(buf, "%s\n", ufschd_ufs_dev_pwr_mode_to_string(
-+	return sysfs_emit(buf, "%s\n", ufschd_ufs_dev_pwr_mode_to_string(
- 			ufs_pm_lvl_states[hba->rpm_lvl].dev_state));
- }
- 
-@@ -90,7 +90,7 @@ static ssize_t rpm_target_link_state_show(struct device *dev,
- {
- 	struct ufs_hba *hba = dev_get_drvdata(dev);
- 
--	return sprintf(buf, "%s\n", ufschd_uic_link_state_to_string(
-+	return sysfs_emit(buf, "%s\n", ufschd_uic_link_state_to_string(
- 			ufs_pm_lvl_states[hba->rpm_lvl].link_state));
- }
- 
-@@ -99,7 +99,7 @@ static ssize_t spm_lvl_show(struct device *dev,
- {
- 	struct ufs_hba *hba = dev_get_drvdata(dev);
- 
--	return sprintf(buf, "%d\n", hba->spm_lvl);
-+	return sysfs_emit(buf, "%d\n", hba->spm_lvl);
- }
- 
- static ssize_t spm_lvl_store(struct device *dev,
-@@ -113,7 +113,7 @@ static ssize_t spm_target_dev_state_show(struct device *dev,
- {
- 	struct ufs_hba *hba = dev_get_drvdata(dev);
- 
--	return sprintf(buf, "%s\n", ufschd_ufs_dev_pwr_mode_to_string(
-+	return sysfs_emit(buf, "%s\n", ufschd_ufs_dev_pwr_mode_to_string(
- 				ufs_pm_lvl_states[hba->spm_lvl].dev_state));
- }
- 
-@@ -122,7 +122,7 @@ static ssize_t spm_target_link_state_show(struct device *dev,
- {
- 	struct ufs_hba *hba = dev_get_drvdata(dev);
- 
--	return sprintf(buf, "%s\n", ufschd_uic_link_state_to_string(
-+	return sysfs_emit(buf, "%s\n", ufschd_uic_link_state_to_string(
- 				ufs_pm_lvl_states[hba->spm_lvl].link_state));
- }
- 
-@@ -165,7 +165,7 @@ static ssize_t auto_hibern8_show(struct device *dev,
- 	ufshcd_release(hba);
- 	pm_runtime_put_sync(hba->dev);
- 
--	return scnprintf(buf, PAGE_SIZE, "%d\n", ufshcd_ahit_to_us(ahit));
-+	return sysfs_emit(buf, "%d\n", ufshcd_ahit_to_us(ahit));
- }
- 
- static ssize_t auto_hibern8_store(struct device *dev,
-@@ -233,18 +233,18 @@ static ssize_t ufs_sysfs_read_desc_param(struct ufs_hba *hba,
- 		return -EINVAL;
- 	switch (param_size) {
- 	case 1:
--		ret = sprintf(sysfs_buf, "0x%02X\n", *desc_buf);
-+		ret = sysfs_emit(sysfs_buf, "0x%02X\n", *desc_buf);
- 		break;
- 	case 2:
--		ret = sprintf(sysfs_buf, "0x%04X\n",
-+		ret = sysfs_emit(sysfs_buf, "0x%04X\n",
- 			get_unaligned_be16(desc_buf));
- 		break;
- 	case 4:
--		ret = sprintf(sysfs_buf, "0x%08X\n",
-+		ret = sysfs_emit(sysfs_buf, "0x%08X\n",
- 			get_unaligned_be32(desc_buf));
- 		break;
- 	case 8:
--		ret = sprintf(sysfs_buf, "0x%016llX\n",
-+		ret = sysfs_emit(sysfs_buf, "0x%016llX\n",
- 			get_unaligned_be64(desc_buf));
- 		break;
- 	}
-@@ -609,7 +609,7 @@ static ssize_t _name##_show(struct device *dev,				\
- 				      SD_ASCII_STD);			\
- 	if (ret < 0)							\
- 		goto out;						\
--	ret = snprintf(buf, PAGE_SIZE, "%s\n", desc_buf);		\
-+	ret = sysfs_emit(buf, "%s\n", desc_buf);		\
- out:									\
- 	pm_runtime_put_sync(hba->dev);					\
- 	kfree(desc_buf);						\
-@@ -659,7 +659,7 @@ static ssize_t _name##_show(struct device *dev,				\
- 	pm_runtime_put_sync(hba->dev);					\
- 	if (ret)							\
- 		return -EINVAL;						\
--	return sprintf(buf, "%s\n", flag ? "true" : "false"); \
-+	return sysfs_emit(buf, "%s\n", flag ? "true" : "false");	\
- }									\
- static DEVICE_ATTR_RO(_name)
- 
-@@ -717,7 +717,7 @@ static ssize_t _name##_show(struct device *dev,				\
- 	pm_runtime_put_sync(hba->dev);					\
- 	if (ret)							\
- 		return -EINVAL;						\
--	return sprintf(buf, "0x%08X\n", value);				\
-+	return sysfs_emit(buf, "0x%08X\n", value);			\
- }									\
- static DEVICE_ATTR_RO(_name)
- 
-@@ -856,7 +856,7 @@ static ssize_t dyn_cap_needed_attribute_show(struct device *dev,
- 	pm_runtime_put_sync(hba->dev);
- 	if (ret)
- 		return -EINVAL;
--	return sprintf(buf, "0x%08X\n", value);
-+	return sysfs_emit(buf, "0x%08X\n", value);
- }
- static DEVICE_ATTR_RO(dyn_cap_needed_attribute);
- 
--- 
-2.17.1
-
+Can you share examples on what you miss?
