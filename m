@@ -2,121 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BFF12EC31E
-	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 19:18:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 26E992EC321
+	for <lists+linux-kernel@lfdr.de>; Wed,  6 Jan 2021 19:18:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727158AbhAFSSa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Jan 2021 13:18:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36192 "EHLO
+        id S1727329AbhAFSSr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Jan 2021 13:18:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36238 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725789AbhAFSS2 (ORCPT
+        with ESMTP id S1725789AbhAFSSq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Jan 2021 13:18:28 -0500
-Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2EDC1C061575;
-        Wed,  6 Jan 2021 10:17:48 -0800 (PST)
-Received: by mail-lf1-x136.google.com with SMTP id b26so8604119lff.9;
-        Wed, 06 Jan 2021 10:17:48 -0800 (PST)
+        Wed, 6 Jan 2021 13:18:46 -0500
+Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C66AC06134C
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Jan 2021 10:18:06 -0800 (PST)
+Received: by mail-pg1-x52d.google.com with SMTP id v19so2757360pgj.12
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Jan 2021 10:18:06 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=HYWLWTmJNILkmHihZoZqMnAVOHO5Z+JPD1TRn5rR9L8=;
-        b=GYiaiaGEtT4BPqTlK0KXvA/lu341yArrXOfwIqhkoVUJgJS2obaAQT2iqcnRMLlEj2
-         86dYKLxag/6o7FFGTh1Vt5TIkPdSdG+zPtevOxa7j54gud87De0pnPPNNbmeyzFcKIe1
-         4YIh5yiiCYo2x6drTLogG5BS1FtgZ7nId5Q/AwMgojxtj5XPEyq3STR1fkLiu+XesnUc
-         QU5ia5w8dG/71l1Z55HnJQmRQInADBb1sNl7x6aeuUT/y6q1BPYSDCvgpmBhWeM+Z+mh
-         AXVxDGWhMUV9j3VOAFcsUFiIntWY+dOOFoXQpYyyfUUEdyjbQguMaGGbtpj5p1vrw984
-         ODXA==
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=NEQ1MYnzF7TcdKZy8VrpaLMbduBeyVlT2e+TUjGJNaY=;
+        b=iu2xU/sL+lzjuV36ffQZ0YAqQWFpHHC6727dMgaSbthN5GmXYmsL6Rr3HpwPZhlGLt
+         w20l0v+maGbJ9s561bYl2QYluVVRXvGQ9dQUEmf/8XRWgWGemBW72rqWKTHN09Sx5KA5
+         e+5TQ2d3021Ppbj4J3B721FFIKQcA1uU+fhSLwGxItiFH2nh9m7Hur2jHLLiapdyKz8j
+         0G1yl8O/VdIW+uF9HS33A+Nwtx3pHTvD5C0bEPQFDQHj6HYtzWW3kkfUp2ZdIYlpwHY6
+         5xXyKJR7m1XXYWM9gpDJKv09wSVwrsAh++gVXHjzY65wYLLPI0gHlh4hue8WDbLOe1Zt
+         mY4Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=HYWLWTmJNILkmHihZoZqMnAVOHO5Z+JPD1TRn5rR9L8=;
-        b=gUHBZ8U2efQmGA2O1aY6esLBhZl22SEnXW8Fg6IvFjlC6YPcI6t4svX7qrsllTpKY2
-         qnqBhZHo9dzi7Ik0Na8bh5zb9ngAq7jr9blVbuTAFs/XjqypBbdvPyMehnhMrUvuYjc2
-         7w+AKcDQhk69mFYiwD7Eixso8A68MAROJ4XwUC99aO7jA1eApLZOGYODtcvsU6grjkUX
-         H5gfZmIvNCgFu7rq9TL2ay0hnjzMQ+M/idp4lEwYrYwlpAuUe6Y1zpD312uSDwdQWg2p
-         VZnSUJUCEgj+QJCly0ojIyZeywW5CFSp29LVpDN6Rg6fKmmHf3tSGqcRl0ePd8BhhuQ6
-         eiyg==
-X-Gm-Message-State: AOAM531UAHmQL5aOHOBQbGkx5C0zo0uWUwMB5HTWi2i0fvlFY/fbiVkB
-        NqZO05oBgz0pc6OV8rZGinuEvNvNm+A=
-X-Google-Smtp-Source: ABdhPJyPxFIsokqex0tU1bZCyssoNhQcXmbMg7xmBfVSnpJHRzc1xaOuhg1qqDeBQDzHj7VlWoc+4Q==
-X-Received: by 2002:a19:2358:: with SMTP id j85mr2490159lfj.264.1609957066448;
-        Wed, 06 Jan 2021 10:17:46 -0800 (PST)
-Received: from [192.168.2.145] (109-252-192-57.dynamic.spd-mgts.ru. [109.252.192.57])
-        by smtp.googlemail.com with ESMTPSA id q7sm556364ljp.77.2021.01.06.10.17.43
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 06 Jan 2021 10:17:45 -0800 (PST)
-Subject: Re: [PATCH 26/31] PM / devfreq: tegra30: convert to use devm_pm_opp_*
- API
-To:     cwchoi00@gmail.com, Yangtao Li <tiny.windzz@gmail.com>
-Cc:     MyungJoo Ham <myungjoo.ham@samsung.com>,
-        Kyungmin Park <kyungmin.park@samsung.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>, s.hauer@pengutronix.de,
-        kernel@pengutronix.de, festevam@gmail.com,
-        dl-linux-imx <linux-imx@nxp.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>, yuq825@gmail.com,
-        David Airlie <airlied@linux.ie>, daniel@ffwll.ch,
-        robdclark@gmail.com, sean@poorly.run,
-        Rob Herring <robh@kernel.org>, tomeu.vizoso@collabora.com,
-        steven.price@arm.com, alyssa.rosenzweig@collabora.com,
-        stanimir.varbanov@linaro.org, agross@kernel.org,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        mchehab@kernel.org, Lukasz Luba <lukasz.luba@arm.com>,
-        adrian.hunter@intel.com, Ulf Hansson <ulf.hansson@linaro.org>,
-        Viresh Kumar <vireshk@kernel.org>, Nishanth Menon <nm@ti.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Mark Brown <broonie@kernel.org>,
-        Greg KH <gregkh@linuxfoundation.org>, jirislaby@kernel.org,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>, jcrouse@codeaurora.org,
-        hoegsberg@google.com, eric@anholt.net, tzimmermann@suse.de,
-        marijn.suijten@somainline.org, gustavoars@kernel.org,
-        emil.velikov@collabora.com, jonathan@marek.ca,
-        akhilpo@codeaurora.org, smasetty@codeaurora.org,
-        airlied@redhat.com, masneyb@onstation.org, kalyan_t@codeaurora.org,
-        tanmay@codeaurora.org, ddavenport@chromium.org,
-        jsanka@codeaurora.org, rnayak@codeaurora.org,
-        tongtiangen@huawei.com, miaoqinglang@huawei.com,
-        khsieh@codeaurora.org, abhinavk@codeaurora.org,
-        chandanu@codeaurora.org, Guenter Roeck <groeck@chromium.org>,
-        varar@codeaurora.org, Matthias Kaehlcke <mka@chromium.org>,
-        harigovi@codeaurora.org, rikard.falkeborn@gmail.com,
-        natechancellor@gmail.com, Georgi Djakov <georgi.djakov@linaro.org>,
-        akashast@codeaurora.org, parashar@codeaurora.org,
-        Doug Anderson <dianders@chromium.org>,
-        Linux PM list <linux-pm@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        linux-tegra@vger.kernel.org,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        lima@lists.freedesktop.org, linux-arm-msm@vger.kernel.org,
-        freedreno@lists.freedesktop.org, linux-media@vger.kernel.org,
-        linux-mmc@vger.kernel.org, linux-spi@vger.kernel.org,
-        linux-serial@vger.kernel.org
-References: <20210103035445.23696-1-tiny.windzz@gmail.com>
- <CAGTfZH0sLh=8XhBVOzUr9qO2w_=jp-OuWoh5vgNpnmXq6EzYHA@mail.gmail.com>
-From:   Dmitry Osipenko <digetx@gmail.com>
-Message-ID: <e49d60f3-f753-6679-7148-f7ea72973197@gmail.com>
-Date:   Wed, 6 Jan 2021 21:17:42 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.2
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=NEQ1MYnzF7TcdKZy8VrpaLMbduBeyVlT2e+TUjGJNaY=;
+        b=ZWw4TBegO2/aV9uKMwWKIstn4LL9sbyXSkFJguiYx7PtVL++LRyv4JyDwMCEG3zaGg
+         TVADBWxTmsSzV6GFbzvh6/3zOPrSw7VE0h9x1GCklKjM1KMuWbWFDq+B5U6+djk5RJdL
+         cfG6CxV2v+X28vbgrjh4MGwQA/BUFvzFR0hNgn0Q6YoYuIFNHbbRDKDiHFj7+c1InUtY
+         zu5egzbQl3FM5ZOQ5sX6nw8aHhGwP1D1ktVah5aZ/UGTfjqaXXLkzWgJf2+iNo25QUnC
+         S+9DMsSMr2k0r2iIDllT1mT9G0iblx9sJ7TGJtc3dRGSBacQiTwN/ux5NnH3clvokF4a
+         m5Gg==
+X-Gm-Message-State: AOAM5322RnphutGTrIwZ2XEMYDeRKc2myc3woqd/W3l78xlUEUhQZWyy
+        ROIU/wqPkP66QUbIHAVM0UwzuA==
+X-Google-Smtp-Source: ABdhPJzWxEaJoeIdiAMVUQ6wh2XJjam5RTKI+/OrWwshNKclDY1a5VsU6KFumG3nQky5srpujj9LlQ==
+X-Received: by 2002:aa7:8f0e:0:b029:19e:5a34:8c85 with SMTP id x14-20020aa78f0e0000b029019e5a348c85mr5037655pfr.22.1609957085794;
+        Wed, 06 Jan 2021 10:18:05 -0800 (PST)
+Received: from google.com ([2620:15c:f:10:1ea0:b8ff:fe73:50f5])
+        by smtp.gmail.com with ESMTPSA id b5sm4011415pga.54.2021.01.06.10.18.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 06 Jan 2021 10:18:05 -0800 (PST)
+Date:   Wed, 6 Jan 2021 10:17:58 -0800
+From:   Sean Christopherson <seanjc@google.com>
+To:     Maxim Levitsky <mlevitsk@redhat.com>
+Cc:     kvm@vger.kernel.org, Joerg Roedel <joro@8bytes.org>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        "open list:X86 ARCHITECTURE (32-BIT AND 64-BIT)" 
+        <linux-kernel@vger.kernel.org>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Jim Mattson <jmattson@google.com>,
+        Thomas Gleixner <tglx@linutronix.de>
+Subject: Re: [PATCH 2/2] KVM: nVMX: fix for disappearing L1->L2 event
+ injection on L1 migration
+Message-ID: <X/X+1q6H/q1Ez6zE@google.com>
+References: <20210106105306.450602-1-mlevitsk@redhat.com>
+ <20210106105306.450602-3-mlevitsk@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <CAGTfZH0sLh=8XhBVOzUr9qO2w_=jp-OuWoh5vgNpnmXq6EzYHA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210106105306.450602-3-mlevitsk@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-05.01.2021 06:47, Chanwoo Choi пишет:
-> You might remove the 'devm_pm_opp_remove_all_dynamic(&pdev->dev)
-> under ' remove_opp' goto statement.kkkk
+On Wed, Jan 06, 2021, Maxim Levitsky wrote:
+> If migration happens while L2 entry with an injected event to L2 is pending,
+> we weren't including the event in the migration state and it would be
+> lost leading to L2 hang.
 
-Good catch, thank you.
+But the injected event should still be in vmcs12 and KVM_STATE_NESTED_RUN_PENDING
+should be set in the migration state, i.e. it should naturally be copied to
+vmcs02 and thus (re)injected by vmx_set_nested_state().  Is nested_run_pending
+not set?  Is the info in vmcs12 somehow lost?  Or am I off in left field...
+ 
+> Fix this by queueing the injected event in similar manner to how we queue
+> interrupted injections.
+> 
+> This can be reproduced by running an IO intense task in L2,
+> and repeatedly migrating the L1.
+> 
+> Suggested-by: Paolo Bonzini <pbonzini@redhat.com>
+> Signed-off-by: Maxim Levitsky <mlevitsk@redhat.com>
+> ---
+>  arch/x86/kvm/vmx/nested.c | 12 ++++++------
+>  1 file changed, 6 insertions(+), 6 deletions(-)
+> 
+> diff --git a/arch/x86/kvm/vmx/nested.c b/arch/x86/kvm/vmx/nested.c
+> index e2f26564a12de..2ea0bb14f385f 100644
+> --- a/arch/x86/kvm/vmx/nested.c
+> +++ b/arch/x86/kvm/vmx/nested.c
+> @@ -2355,12 +2355,12 @@ static void prepare_vmcs02_early(struct vcpu_vmx *vmx, struct vmcs12 *vmcs12)
+>  	 * Interrupt/Exception Fields
+>  	 */
+>  	if (vmx->nested.nested_run_pending) {
+> -		vmcs_write32(VM_ENTRY_INTR_INFO_FIELD,
+> -			     vmcs12->vm_entry_intr_info_field);
+> -		vmcs_write32(VM_ENTRY_EXCEPTION_ERROR_CODE,
+> -			     vmcs12->vm_entry_exception_error_code);
+> -		vmcs_write32(VM_ENTRY_INSTRUCTION_LEN,
+> -			     vmcs12->vm_entry_instruction_len);
+> +		if ((vmcs12->vm_entry_intr_info_field & VECTORING_INFO_VALID_MASK))
+> +			vmx_process_injected_event(&vmx->vcpu,
+> +						   vmcs12->vm_entry_intr_info_field,
+> +						   vmcs12->vm_entry_instruction_len,
+> +						   vmcs12->vm_entry_exception_error_code);
+> +
+>  		vmcs_write32(GUEST_INTERRUPTIBILITY_INFO,
+>  			     vmcs12->guest_interruptibility_info);
+>  		vmx->loaded_vmcs->nmi_known_unmasked =
+> -- 
+> 2.26.2
+> 
