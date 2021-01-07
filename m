@@ -2,127 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 465042EE94A
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 23:53:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F010B2EE961
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 23:59:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729262AbhAGWxk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 17:53:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50788 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728997AbhAGWx2 (ORCPT
+        id S1728585AbhAGW60 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 17:58:26 -0500
+Received: from www262.sakura.ne.jp ([202.181.97.72]:62565 "EHLO
+        www262.sakura.ne.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727738AbhAGW6Z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 17:53:28 -0500
-Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4836C0612F9;
-        Thu,  7 Jan 2021 14:52:47 -0800 (PST)
-Received: by mail-pf1-x42c.google.com with SMTP id c12so4973971pfo.10;
-        Thu, 07 Jan 2021 14:52:47 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=fLaUUyKZV1n5I1oaAK7wF0mjKoazvM828WYSvM0xN9U=;
-        b=SrpDw5ZL20CJZu2dUwe8XoGxa8GIvJGIQ58RqydQMTU1f/39JUSEcZH59Avzzhr0hw
-         u4OjgOG7Jtu2JOvBtgOe/ryAD9ly94Advoxj8BgXDON7dT/jVzLBlei7310PCPbfxXjf
-         z1RtU3G9tUoz/jPSIvN1w1FXFzdGtQz5jdYzOlLvumk6JKxT8QZ43/m/5/uZ5wsjC0md
-         BL0+pqB26Z4qb/EaMWgIsSFtEXRd2BirdmpGNEztvm1B1Cs0iCWJ+TJcOpj8FlKQVava
-         CxZbDGR4YwqjcXRskkLu2v0UEo13kXAIK3oiuZgzuA6uuNQ5dDml6D0iJnV2nKVtK7Rn
-         4ZVw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=fLaUUyKZV1n5I1oaAK7wF0mjKoazvM828WYSvM0xN9U=;
-        b=r2px37+R5G4BTwF/JS7HQYrgzGkX8UcbYDqs28ZEZL9/Rk/e6HjSNbaAWjsVH52LGQ
-         lfhBjhHkekJM/HVGAHwrt06DJYw55+zciSvj+IrHOlfGkugGXEktBsm7EURAkWjYNwd3
-         rQ/q6Fz7Uzjs29N34eNwchCSmQKJG5ewEjLojBJdvSK00hr1uxWJy/UQWt2C9n0wPzjV
-         ez/UNwMtPW7zfG3GQ6BrwpzflNDD0I+XHG6pYtxEY4gtlNUo7X7zYitGq3NhdJzkPhkz
-         C7EddKB6yg6PQs6aSCaiSJSCub1pTn4qf1uANceAJheeyMfMbm5jNJQvi873MzkAxYAW
-         umFA==
-X-Gm-Message-State: AOAM530W0RN/wvPesO4Uy897mIouRRh9Cg0bZJShe7F8rZ8WgNOjoB3R
-        nGVslop3Cb1UB1Mv5Rfe8/mpdLFgarM=
-X-Google-Smtp-Source: ABdhPJwWe0iclf9Bfkbmx4pOC1sWmREK06Dw6UmzdkgvyEB8jD36VH1Z7UB5GxPuQyfdJbrV+MGjAA==
-X-Received: by 2002:a62:b60c:0:b029:1ae:6d91:4eb6 with SMTP id j12-20020a62b60c0000b02901ae6d914eb6mr2150198pff.33.1610059966794;
-        Thu, 07 Jan 2021 14:52:46 -0800 (PST)
-Received: from fainelli-desktop.igp.broadcom.net ([192.19.223.252])
-        by smtp.gmail.com with ESMTPSA id a10sm6510603pfi.168.2021.01.07.14.52.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 Jan 2021 14:52:45 -0800 (PST)
-From:   Florian Fainelli <f.fainelli@gmail.com>
-To:     stable@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Du Changbin <changbin.du@gmail.com>,
-        Kieran Bingham <kbingham@kernel.org>,
-        Jan Kiszka <jan.kiszka@siemens.com>,
-        Jason Wessel <jason.wessel@windriver.com>,
-        Daniel Thompson <daniel.thompson@linaro.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Kieran Bingham <kieran@ksquared.org.uk>,
-        Leonard Crestez <leonard.crestez@nxp.com>,
-        =?UTF-8?q?Andr=C3=A9=20Draszik?= <git@andred.net>
-Subject: [stable 4.9.y 4/4] scripts/gdb: fix lx-version string output
-Date:   Thu,  7 Jan 2021 14:52:29 -0800
-Message-Id: <20210107225229.1502459-5-f.fainelli@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210107225229.1502459-1-f.fainelli@gmail.com>
-References: <20210107225229.1502459-1-f.fainelli@gmail.com>
+        Thu, 7 Jan 2021 17:58:25 -0500
+Received: from fsav303.sakura.ne.jp (fsav303.sakura.ne.jp [153.120.85.134])
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 107Mumtu091038;
+        Fri, 8 Jan 2021 07:56:48 +0900 (JST)
+        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
+Received: from www262.sakura.ne.jp (202.181.97.72)
+ by fsav303.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav303.sakura.ne.jp);
+ Fri, 08 Jan 2021 07:56:48 +0900 (JST)
+X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav303.sakura.ne.jp)
+Received: from [192.168.1.9] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
+        (authenticated bits=0)
+        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 107MumS6091031
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NO);
+        Fri, 8 Jan 2021 07:56:48 +0900 (JST)
+        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
+Subject: Re: [Patch] fbcon: i want fbcon soft scrollback feature come back
+To:     xuhuijie <huijiexu295@gmail.com>, gregkh@linuxfoundation.org,
+        daniel.vetter@ffwll.ch, jirislaby@kernel.org,
+        yepeilin.cs@gmail.com, b.zolnierkie@samsung.com,
+        george.kennedy@oracle.com, natechancellor@gmail.com
+Cc:     dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210107154801.1997-1-huijiexu295@gmail.com>
+From:   Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
+Message-ID: <0994b84e-4370-1065-c0ed-87c8b946a741@i-love.sakura.ne.jp>
+Date:   Fri, 8 Jan 2021 07:56:45 +0900
+User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210107154801.1997-1-huijiexu295@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Du Changbin <changbin.du@gmail.com>
+On 2021/01/08 0:48, xuhuijie wrote:
+> This commit 50145474f6ef(fbcon: remove soft scrollback code) remove soft scrollback in
+> fbcon. So the shift+PageDown and shift+PageUp is missing. But PageUp is a vary important
+> feature when system panic or reset. I can get log by PageUp before, but now there is no
+> way to get. Especially on the server system, we always use bmc to control computer.
+> So I hope the community can add this feature back.
+> 
 
-commit b058809bfc8faeb7b7cae047666e23375a060059 upstream
-
-A bug is present in GDB which causes early string termination when
-parsing variables.  This has been reported [0], but we should ensure
-that we can support at least basic printing of the core kernel strings.
-
-For current gdb version (has been tested with 7.3 and 8.1), 'lx-version'
-only prints one character.
-
-  (gdb) lx-version
-  L(gdb)
-
-This can be fixed by casting 'linux_banner' as (char *).
-
-  (gdb) lx-version
-  Linux version 4.19.0-rc1+ (changbin@acer) (gcc version 7.3.0 (Ubuntu 7.3.0-16ubuntu3)) #21 SMP Sat Sep 1 21:43:30 CST 2018
-
-[0] https://sourceware.org/bugzilla/show_bug.cgi?id=20077
-
-[kbingham@kernel.org: add detail to commit message]
-Link: http://lkml.kernel.org/r/20181111162035.8356-1-kieran.bingham@ideasonboard.com
-Fixes: 2d061d999424 ("scripts/gdb: add version command")
-Signed-off-by: Du Changbin <changbin.du@gmail.com>
-Signed-off-by: Kieran Bingham <kbingham@kernel.org>
-Acked-by: Jan Kiszka <jan.kiszka@siemens.com>
-Cc: Jan Kiszka <jan.kiszka@siemens.com>
-Cc: Jason Wessel <jason.wessel@windriver.com>
-Cc: Daniel Thompson <daniel.thompson@linaro.org>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
-Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
----
- scripts/gdb/linux/proc.py | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/scripts/gdb/linux/proc.py b/scripts/gdb/linux/proc.py
-index 38b1f09d1cd9..822e3767bc05 100644
---- a/scripts/gdb/linux/proc.py
-+++ b/scripts/gdb/linux/proc.py
-@@ -40,7 +40,7 @@ class LxVersion(gdb.Command):
- 
-     def invoke(self, arg, from_tty):
-         # linux_banner should contain a newline
--        gdb.write(gdb.parse_and_eval("linux_banner").string())
-+        gdb.write(gdb.parse_and_eval("(char *)linux_banner").string())
- 
- LxVersion()
- 
--- 
-2.25.1
-
+You can configure kdump for panic, and netconsole for reset.
+(I don't know whether PageUp key works after panic...)
