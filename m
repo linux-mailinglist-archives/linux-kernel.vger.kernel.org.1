@@ -2,138 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DC432EE753
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 22:01:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D88C2EE755
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 22:01:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726908AbhAGVAj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S1727159AbhAGVAl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 16:00:41 -0500
+Received: from mx2.suse.de ([195.135.220.15]:36660 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726541AbhAGVAj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 7 Jan 2021 16:00:39 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:23028 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726073AbhAGVAj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 16:00:39 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1610053152;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1610053193; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=SU9fkbj5UxsB6lrJGFLGhzRsIq9fOkWtazZU8CPZUgA=;
-        b=NtQeBJglVM8g1H3AI9EOWr47/gpICdf3bgOMPjGYjigJ27u5MsqCVs2jq+Ejhfd32Q9fxo
-        ogsfO0ukEwo4WxK5FyrTcnsl5PYxt1LMK343AA9680fjB8A+55TMCBHnNxXtvIY8hXyinV
-        lJJYrs11O+LjClxhMnm8nkYxIgZT568=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-238-KFHJWfvZNkebwPPYguja2Q-1; Thu, 07 Jan 2021 15:59:06 -0500
-X-MC-Unique: KFHJWfvZNkebwPPYguja2Q-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 95088801B14;
-        Thu,  7 Jan 2021 20:59:02 +0000 (UTC)
-Received: from mail (ovpn-112-222.rdu2.redhat.com [10.10.112.222])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 4F5D110013BD;
-        Thu,  7 Jan 2021 20:58:56 +0000 (UTC)
-Date:   Thu, 7 Jan 2021 15:58:55 -0500
-From:   Andrea Arcangeli <aarcange@redhat.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Linux-MM <linux-mm@kvack.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Yu Zhao <yuzhao@google.com>, Andy Lutomirski <luto@kernel.org>,
-        Peter Xu <peterx@redhat.com>,
-        Pavel Emelyanov <xemul@openvz.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Mike Rapoport <rppt@linux.vnet.ibm.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Will Deacon <will@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Hugh Dickins <hughd@google.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Oleg Nesterov <oleg@redhat.com>, Jann Horn <jannh@google.com>,
-        Kees Cook <keescook@chromium.org>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>, Jan Kara <jack@suse.cz>,
-        Kirill Tkhai <ktkhai@virtuozzo.com>
-Subject: Re: [PATCH 2/2] mm: soft_dirty: userfaultfd: introduce
- wrprotect_tlb_flush_pending
-Message-ID: <X/d2DyLfXZmBIreY@redhat.com>
-References: <B1B85771-B211-4FCC-AEEF-BDFD37332C25@vmware.com>
- <20210107200402.31095-1-aarcange@redhat.com>
- <20210107200402.31095-3-aarcange@redhat.com>
- <CAHk-=whg-91=EF=8=ayyDQGx_3iuWKp3aHUkDCDkgUb15Yh8AQ@mail.gmail.com>
+        bh=8J94mEYDJ9t7cE82ktpH+FoNOTHk/H6HpofiDUP5IZA=;
+        b=FwIDkeE5hZIIT2JLvgKIReJ9rJH+7K6iznOQbBIUyvE/is7Dl+20UNHRsOY6u1LQcL8EJJ
+        ka231/nxIYZBaAV9JXa4c+Wu7y5D4UrF6BjAY6QPm8fgH+Yzg1UUd6C0kBd324wonXz7lM
+        rNTIiXJh7NUJBlpqU10pf/URBff86HA=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 006D5ABC4;
+        Thu,  7 Jan 2021 20:59:52 +0000 (UTC)
+From:   Thomas Renninger <trenn@suse.com>
+To:     Ivan Babrou <ivan@cloudflare.com>
+Cc:     linux-pm@vger.kernel.org,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        kernel-team <kernel-team@cloudflare.com>,
+        Shuah Khan <shuah@kernel.org>
+Subject: Re: [PATCH] cpupower: add Makefile dependencies for install targets
+Date:   Thu, 07 Jan 2021 21:59:51 +0100
+Message-ID: <3977966.bfq5YHlNPR@c100>
+In-Reply-To: <CABWYdi0sne=6reP5oZMFbYk9Nctws=FLoYkjdmnBwXu0bVFozA@mail.gmail.com>
+References: <20210104235719.13525-1-ivan@cloudflare.com> <2100533.HVZEckHxcR@c100> <CABWYdi0sne=6reP5oZMFbYk9Nctws=FLoYkjdmnBwXu0bVFozA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHk-=whg-91=EF=8=ayyDQGx_3iuWKp3aHUkDCDkgUb15Yh8AQ@mail.gmail.com>
-User-Agent: Mutt/2.0.4 (2020-12-30)
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
-
-On Thu, Jan 07, 2021 at 12:17:40PM -0800, Linus Torvalds wrote:
-> On Thu, Jan 7, 2021 at 12:04 PM Andrea Arcangeli <aarcange@redhat.com> wrote:
-> >
-> > However there are two cases that could wrprotecting exclusive anon
-> > pages with only the mmap_read_lock:
+Am Donnerstag, 7. Januar 2021, 18:42:25 CET schrieb Ivan Babrou:
+> On Thu, Jan 7, 2021 at 2:07 AM Thomas Renninger <trenn@suse.com> wrote:
+> > Am Dienstag, 5. Januar 2021, 00:57:18 CET schrieb Ivan Babrou:
+> > > This allows building cpupower in parallel rather than serially.
+> > 
+> > cpupower is built serially:
+> > 
+> > [ make clean ]
+> > 
+> > time make
+> > real    0m3,742s
+> > user    0m3,330s
+> > sys     0m1,105s
+> > 
+> > [ make clean ]
+> > 
+> > time make -j10
+> > real    0m1,045s
+> > user    0m3,153s
+> > sys     0m1,037s
+> > 
+> > Only advantage I see is that you can call
+> > make install-xy
+> > targets without calling the corresponding build target
+> > make xy
+> > similar to the general install target:
+> > install: all install-lib ...
+> > 
+> > Not sure anyone needs this and whether all targets
+> > successfully work this way.
+> > If you'd show a useful usecase example...
 > 
-> I still think the real fix is "Don't do that then", and just take the
-> write lock.
-> 
-> The UFFDIO_WRITEPROTECT case simply isn't that critical. It's not a
-> normal operation. Same goes for softdirty.
-> 
-> Why have those become _so_ magical that they can break the VM for
-> everybody else?
+> We build a bunch of kernel related tools (perf, cpupower, bpftool,
+> etc.) from our own top level Makefile, propagating parallelism
+> downwards like one should.
+I still do not understand why you do not simply build:
+Also if I call this from /tools directory I get a quick build:
+make -j20 cpupower
 
-I see what you mean above and I agree. Like said below:
+Can you please show the make calls, ideally with a timing to better understand
+and also to reproduce the advantages this patch introduces.
+From what I can see, it only helps if one calls "sub-install" targets 
+directly?
+And I still do not understand why things should be more parallel now.
 
-==
-In simple terms: the page_count check in do_wp_page makes it
-impossible to wrprotect memory, if such memory is under a !FOLL_WRITE
-GUP pin.
-==
+> Without this patch we have to remove parallelism for cpupower,
+Why?
 
-So to simplify let's ignore UFFDIO_WRITEPROTECT here, which is new and
-adds no dependency on top of clear_refs in this respect.
+> which doesn't seem like a very clean thing
+> to do, especially if you consider that it's 3x faster with parallelism
+> enabled in wall clock terms.
+Sure, you want to build in parallel. I still do not understand how this
+patch helps in this regard.
 
-So yes, if we drop any code that has to wrprotect memory in place in
-the kernel (since all userland memory can be under GUP pin in read
-mode) and we make such an operation illegal, then it's fine, but that
-means clear_refs has to go or it has to fail if there's a GUP pin
-during the wrprotection.
+BTW, I recently had a bunch of userspace tools Makefile patches.
+I'd like to add you to CC for a review if they are not submitted already.
 
-The problem is it's not even possible to detect reliably if there's
-really a long term GUP pin because of speculative pagecache lookups.
+    Thomas
 
-We would need to declare that any secondary MMU which is supposed to
-be VM-neutral using mmu notifier like a GPU or a RDMA device, cannot
-be used in combination on clear_refs and it would need to be enforced
-fully in userland. Most mmu notifier users drop the GUP pin during the
-invalidate for extra safety in case an invalidate goes missing: they
-would all need to drop FOLL_GET to be compliant and stop causing
-memory corruption if clear_refs shall be still allowed to happen on
-mmu notifier capable secondary MMUs. Even then how does userland know
-which devices attaches to the memory with mmu notifer and never using
-FOLL_GET and which aren't? It doesn't sound reliable to enforce this
-in userland. So I don't see how clear_refs can be saved.
-
-Now let's make another example that still shows at least some
-fundamental inefficiency that has nothing to do with clear_refs.
-
-Let's suppose a GUP pin is taken on a subpageA by a RDMA device by
-process A (parent). Let's now assume subpageB is mapped in process B
-(child of process A). Both subpageA and subpageB are exclusive
-(mapcount == 1) and read-write but they share the same page_count
-atomic counter (only the page_mapcounts are subpage granular). To
-still tame the zygote concern with the page_count in do_wp_page, then
-process B when it forks a child (processC) would forever have to do an
-extra superflous COW even after process C exits. Is that what we want
-on top of the fundamental unsafety added to clear_refs?
-
-Thanks,
-Andrea
 
