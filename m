@@ -2,161 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 94A5F2ECA8A
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 07:36:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D1AFA2ECA8C
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 07:38:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726110AbhAGGgK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 01:36:10 -0500
-Received: from m43-15.mailgun.net ([69.72.43.15]:10731 "EHLO
-        m43-15.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725763AbhAGGgJ (ORCPT
+        id S1726484AbhAGGhx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 01:37:53 -0500
+Received: from mail-lf1-f49.google.com ([209.85.167.49]:34237 "EHLO
+        mail-lf1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725763AbhAGGhx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 01:36:09 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1610001344; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=zaE4+TJQvH3SFoKXVDoAMLGGx6TuByIHlqy6fvPhicY=;
- b=b2JKhaTVOoxe/JkgZe44wlPESIckT3clBXamHz/JZrXfIG0sDXpQhKfCZ6CjqqKZYoqmab3t
- Uj8/xpK4NjpjXjHZBawGiJJLWGmdAj1GLGQGmsCkux3bfBlVjrL/5QLnC4s8mydLL0g85qUM
- 8VKc1rF4hZpUYvhzx+rrIp0IPnQ=
-X-Mailgun-Sending-Ip: 69.72.43.15
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n05.prod.us-west-2.postgun.com with SMTP id
- 5ff6aba5fc3778927efec519 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 07 Jan 2021 06:35:17
- GMT
-Sender: saiprakash.ranjan=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id D0492C43464; Thu,  7 Jan 2021 06:35:16 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: saiprakash.ranjan)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id CEEB5C433C6;
-        Thu,  7 Jan 2021 06:35:15 +0000 (UTC)
+        Thu, 7 Jan 2021 01:37:53 -0500
+Received: by mail-lf1-f49.google.com with SMTP id o19so12223966lfo.1;
+        Wed, 06 Jan 2021 22:37:36 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=eugQ6sBmsnErNR+lYgl7iFDp5HtAPo4b3aA9DfPqt+s=;
+        b=mNwtFTMCl1xizO5O+RPx7fM5ZXVtXkS1reTXwpxUprep7JY7aqLoviT2bTUyslhap5
+         zy+9lLYGmJ9vxYBJp8KgSx13E6XrMvu2SYxCCUka8ZZDZHTEmWHSstYHvmpD7Qj3uUro
+         iOstd1o0VE8Bzay2owFIDNSq27LrJ/iWLnkZN0WdyrtKkvAZ3vdGOWIqn8CIflaRVz3p
+         /E9+MaA05Cbo1WyAPAuCxSumyr2hO9uykcCWrU7VSSPM9rvzm6dGcR6wieyGLHzfeyJM
+         y1LCDNrFfZ4ryJci6pF4CHP7h14R7G4/szfFihCitTkE6i4NBd0+LfueXbYMC7VvSzfJ
+         vZhw==
+X-Gm-Message-State: AOAM531wkp5m3x3Jkj3zW9FjcdaWnWpHrC5iHLEzj9cUW4Fsk+B7t+UU
+        qbdsgz+NB5aYKi6lm2/x8+c=
+X-Google-Smtp-Source: ABdhPJyXrX4vEvOHyQMS2ciT6sAzN1vrJY7FdCRzKtCqvSzFgr4W4E8Qk2+BjmzQ4SmtbyKSq/5zFA==
+X-Received: by 2002:a19:c7cb:: with SMTP id x194mr3375847lff.426.1610001430714;
+        Wed, 06 Jan 2021 22:37:10 -0800 (PST)
+Received: from localhost.localdomain (62-78-225-252.bb.dnainternet.fi. [62.78.225.252])
+        by smtp.gmail.com with ESMTPSA id v14sm924248lfe.270.2021.01.06.22.37.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 06 Jan 2021 22:37:09 -0800 (PST)
+Date:   Thu, 7 Jan 2021 08:37:03 +0200
+From:   Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
+To:     matti.vaittinen@fi.rohmeurope.com, mazziesaccount@gmail.com
+Cc:     Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        linux-power@fi.rohmeurope.com, linux-watchdog@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 1/2] watchdog: bd70528: don't crash if WDG is confiured with
+ BD71828
+Message-ID: <671ac57ad53ab1614da7fe9a3d0f78bdb5b51fda.1610001365.git.matti.vaittinen@fi.rohmeurope.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Thu, 07 Jan 2021 12:05:15 +0530
-From:   Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-To:     Will Deacon <will@kernel.org>
-Cc:     Robin Murphy <robin.murphy@arm.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        iommu@lists.linux-foundation.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org,
-        Jordan Crouse <jcrouse@codeaurora.org>,
-        Rob Clark <robdclark@gmail.com>,
-        Akhil P Oommen <akhilpo@codeaurora.org>
-Subject: Re: [PATCH] iommu/io-pgtable-arm: Allow non-coherent masters to use
- system cache
-In-Reply-To: <20210106115615.GA1763@willie-the-truck>
-References: <20201224064007.2339-1-saiprakash.ranjan@codeaurora.org>
- <20210106115615.GA1763@willie-the-truck>
-Message-ID: <ce8981988c84ccb015ea04fc439e8949@codeaurora.org>
-X-Sender: saiprakash.ranjan@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Will,
+If config for BD70528 watchdog is enabled when BD71828 or BD71815
+are used the RTC module will issue call to BD70528 watchdog with
+NULL data. Ignore this call and don't crash.
 
-On 2021-01-06 17:26, Will Deacon wrote:
-> On Thu, Dec 24, 2020 at 12:10:07PM +0530, Sai Prakash Ranjan wrote:
->> commit ecd7274fb4cd ("iommu: Remove unused IOMMU_SYS_CACHE_ONLY flag")
->> removed unused IOMMU_SYS_CACHE_ONLY prot flag and along with it went
->> the memory type setting required for the non-coherent masters to use
->> system cache. Now that system cache support for GPU is added, we will
->> need to mark the memory as normal sys-cached for GPU to use system 
->> cache.
->> Without this, the system cache lines are not allocated for GPU. We use
->> the IO_PGTABLE_QUIRK_ARM_OUTER_WBWA quirk instead of a page protection
->> flag as the flag cannot be exposed via DMA api because of no in-tree
->> users.
->> 
->> Signed-off-by: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
->> ---
->>  drivers/iommu/io-pgtable-arm.c | 3 +++
->>  1 file changed, 3 insertions(+)
->> 
->> diff --git a/drivers/iommu/io-pgtable-arm.c 
->> b/drivers/iommu/io-pgtable-arm.c
->> index 7c9ea9d7874a..3fb7de8304a2 100644
->> --- a/drivers/iommu/io-pgtable-arm.c
->> +++ b/drivers/iommu/io-pgtable-arm.c
->> @@ -415,6 +415,9 @@ static arm_lpae_iopte arm_lpae_prot_to_pte(struct 
->> arm_lpae_io_pgtable *data,
->>  		else if (prot & IOMMU_CACHE)
->>  			pte |= (ARM_LPAE_MAIR_ATTR_IDX_CACHE
->>  				<< ARM_LPAE_PTE_ATTRINDX_SHIFT);
->> +		else if (data->iop.cfg.quirks & IO_PGTABLE_QUIRK_ARM_OUTER_WBWA)
->> +			pte |= (ARM_LPAE_MAIR_ATTR_IDX_INC_OCACHE
->> +				<< ARM_LPAE_PTE_ATTRINDX_SHIFT);
->>  	}
-> 
-> drivers/iommu/io-pgtable.c currently documents this quirk as applying 
-> only
-> to the page-table walker. Given that we only have one user at the 
-> moment,
-> I think it's ok to change that, but please update the comment.
-> 
+Signed-off-by: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
+---
+ drivers/watchdog/bd70528_wdt.c | 15 +++++++++++++++
+ 1 file changed, 15 insertions(+)
 
-Sure, how about this change in comment:
+diff --git a/drivers/watchdog/bd70528_wdt.c b/drivers/watchdog/bd70528_wdt.c
+index 0170b37e6674..fde242b8a4a6 100644
+--- a/drivers/watchdog/bd70528_wdt.c
++++ b/drivers/watchdog/bd70528_wdt.c
+@@ -49,6 +49,21 @@ int bd70528_wdt_set(struct rohm_regmap_dev *data, int enable, int *old_state)
+ 	u8 wd_ctrl_arr[3] = { WD_CTRL_MAGIC1, WD_CTRL_MAGIC2, 0 };
+ 	u8 *wd_ctrl = &wd_ctrl_arr[2];
+ 
++	/*
++	 * BD71828 and BD71815 use same RTC driver as BD70528.
++	 * BD71815 and BD71828 do not need MFD data as they do not share
++	 * RTC counter with watchdog. The BD70528 watchdog should not be
++	 * compiled in with BD71815 or BD71828 and the stub implementation
++	 * for the bd70528_wdt_set should be provided instead.
++	 *
++	 * If one compiles this watchdog with BD71828 or BD71815 - the call
++	 * from RTC may get here and the data pointer is NULL. In that case,
++	 * warn and go out.
++	 */
++	if (!data) {
++		pr_warn("BD70528_WATCHDOG misconfigured\n");
++		return 0;
++	}
+ 	ret = regmap_read(bd70528->chip.regmap, BD70528_REG_WDT_CTRL, &tmp);
+ 	if (ret)
+ 		return ret;
 
-          * IO_PGTABLE_QUIRK_ARM_OUTER_WBWA: Override the 
-outer-cacheability
--        *      attributes set in the TCR for a non-coherent page-table 
-walker.
-+        *      attributes set in the TCR for a non-coherent page-table 
-walker
-+        *      and also to set the correct cacheability attributes to 
-use an
-+        *      outer level of cache for non-coherent masters.
+base-commit: 2c85ebc57b3e1817b6ce1a6b703928e113a90442
+-- 
+2.25.4
 
-> We also need to decide on whether we want to allow the quirk to be 
-> passed
-> if the coherency of the page-table walker differs from the DMA device, 
-> since
-> we have these combinations:
-> 
-> 	Coherent walker?	IOMMU_CACHE	IO_PGTABLE_QUIRK_ARM_OUTER_WBWA
-> 0:	N			0		0
-> 1:	N			0		1
-> 2:	N			1		0
-> 3:	N			1		1
-> 4:	Y			0		0
-> 5:	Y			0		1
-> 6:	Y			1		0
-> 7:	Y			1		1
-> 
-> Some of them are obviously bogus, such as (7), but I don't know what to
-> do about cases such as (3) and (5).
-> 
-
-I thought this was already decided when IOMMU_SYS_CACHE_ONLY prot flag 
-was
-added in this same location [1]. dma-coherent masters can use the normal
-cached memory type to use the system cache and non dma-coherent masters
-willing to use system cache should use normal sys-cached memory type 
-with
-this quirk.
-
-[1] 
-https://lore.kernel.org/linux-arm-msm/20190516093020.18028-1-vivek.gautam@codeaurora.org/
-
-Thanks,
-Sai
 
 -- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a 
-member
-of Code Aurora Forum, hosted by The Linux Foundation
+Matti Vaittinen, Linux device drivers
+ROHM Semiconductors, Finland SWDC
+Kiviharjunlenkki 1E
+90220 OULU
+FINLAND
+
+~~~ "I don't think so," said Rene Descartes. Just then he vanished ~~~
+Simon says - in Latin please.
+~~~ "non cogito me" dixit Rene Descarte, deinde evanescavit ~~~
+Thanks to Simon Glass for the translation =] 
