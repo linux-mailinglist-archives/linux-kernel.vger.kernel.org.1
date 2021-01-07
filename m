@@ -2,96 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 62BD22ECA92
+	by mail.lfdr.de (Postfix) with ESMTP id D05F52ECA93
 	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 07:40:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726805AbhAGGik (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 01:38:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39128 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726751AbhAGGij (ORCPT
+        id S1726862AbhAGGji (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 01:39:38 -0500
+Received: from youngberry.canonical.com ([91.189.89.112]:60108 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725900AbhAGGjh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 01:38:39 -0500
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16E6BC0612F4;
-        Wed,  6 Jan 2021 22:37:58 -0800 (PST)
-Received: from zn.tnic (p200300ec2f0e340040aa7c2c4e2416a1.dip0.t-ipconnect.de [IPv6:2003:ec:2f0e:3400:40aa:7c2c:4e24:16a1])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id EDEBE1EC0505;
-        Thu,  7 Jan 2021 07:37:54 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1610001475;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=v+qMAxqqt8nszXdetCtccYLnMdXSV0ny4ReqXtPVORw=;
-        b=aP7NQt5Lz7pIHzFTeA7T5LrK0qu5eRPssQukqAt5INooLBcAfxyHQf77Goom81Ycr/gTDO
-        0SoLv3gF7o3MWnxjCFkj0ZQA8KTvKtaky2CsGIXktMzoEz22dFJOv/4eEQZiZpZn5nOlAX
-        CY1lWo6OC0anBoE6SQZRNyL9M8peaTk=
-Date:   Thu, 7 Jan 2021 07:37:50 +0100
-From:   Borislav Petkov <bp@alien8.de>
-To:     Tony W Wang-oc <TonyWWang-oc@zhaoxin.com>
-Cc:     herbert@gondor.apana.org.au, davem@davemloft.net,
-        tglx@linutronix.de, mingo@redhat.com, x86@kernel.org,
-        hpa@zytor.com, tony.luck@intel.com, dave.hansen@intel.com,
-        seanjc@google.com, fenghua.yu@intel.com, thomas.lendacky@amd.com,
-        kyung.min.park@intel.com, kim.phillips@amd.com,
-        mgross@linux.intel.com, peterz@infradead.org,
-        krish.sadhukhan@oracle.com, liam.merwick@oracle.com,
-        mlevitsk@redhat.com, reinette.chatre@intel.com, babu.moger@amd.com,
-        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
-        TimGuo-oc@zhaoxin.com, CooperYan@zhaoxin.com,
-        QiyuanWang@zhaoxin.com, HerryYang@zhaoxin.com,
-        CobeChen@zhaoxin.com, SilviaZhao@zhaoxin.com
-Subject: Re: [PATCH v1 1/3] x86/cpufeatures: Add low performance CRC32C
- instruction CPU feature
-Message-ID: <20210107063750.GA14697@zn.tnic>
-References: <1610000348-17316-1-git-send-email-TonyWWang-oc@zhaoxin.com>
- <1610000348-17316-2-git-send-email-TonyWWang-oc@zhaoxin.com>
+        Thu, 7 Jan 2021 01:39:37 -0500
+Received: from mail-oo1-f72.google.com ([209.85.161.72])
+        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <kai.heng.feng@canonical.com>)
+        id 1kxOwh-0000uq-6b
+        for linux-kernel@vger.kernel.org; Thu, 07 Jan 2021 06:38:55 +0000
+Received: by mail-oo1-f72.google.com with SMTP id z20so3581659ooe.13
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Jan 2021 22:38:55 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Gc+fC2uzrPTIv/OjMkzLquFL5H8Wh/2Rm6W4yaQ752c=;
+        b=J1xtTu9KcPv+8iYvAMHZd4wW56n1P2tmWm7d56wUSZtnYiE2WdtlaKWTrbKF5DDtk/
+         xfDzhzJ5wWvW4ik30lIez/EpgruQfhD7wxmTohbXrH2hMGyP8wDyPX4uIYFlwFD0p6HF
+         C/hBIXVaW+jraxbaAfCHENUjzByTjAkMlC8+UXS4bEFU/aZsfcHn57MNcUQYp9J4812c
+         VNc1xu90kXluu137Rvc1R5CSjdEDAMyKLkmkJXRjf1NBxZKA4qAc0Kz0wiytesIRHu+Y
+         j2Qm33DOgnAaXlPvzU2xNlyWDV9rbsBhbknXRV3KSr+RyWiwOndyUtwLBbgjMa+D6pLA
+         Wr5A==
+X-Gm-Message-State: AOAM531Qw/arr3FVqQDZudCS/VGRQHNST/SBwBZMmuZmw1gPA2MBIlW+
+        re3idujhLR+cnPYK42NrNSbECk5dmmZjtmMF5/CcWPLjD0musu7qzIkfzhdg8tgs4PqCGrbTjsR
+        +Svwuq9OUI73oKjC9D0oEDzZbCNM+MnPKWqlrmu9AMUXnxyI0kwx8w4tqCA==
+X-Received: by 2002:a9d:4816:: with SMTP id c22mr5539018otf.358.1610001534167;
+        Wed, 06 Jan 2021 22:38:54 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJxIfDhiYPhS3S5PaeEdW+dFoXwmfFeAUrAJeItJZ9WP8HUWgmpU0R8GvY6EhnjGOtDrahFqtDToLumrSeZxMyQ=
+X-Received: by 2002:a9d:4816:: with SMTP id c22mr5539001otf.358.1610001533893;
+ Wed, 06 Jan 2021 22:38:53 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <1610000348-17316-2-git-send-email-TonyWWang-oc@zhaoxin.com>
+References: <20200805084559.30092-1-kai.heng.feng@canonical.com>
+ <c0c336d806584361992d4b52665fbb82@realtek.com> <9330BBA5-158B-49F1-8B7C-C2733F358AC1@canonical.com>
+In-Reply-To: <9330BBA5-158B-49F1-8B7C-C2733F358AC1@canonical.com>
+From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
+Date:   Thu, 7 Jan 2021 14:38:42 +0800
+Message-ID: <CAAd53p6SA5gG8V27eD1Kh1ik932Kt8KzmYjLy33pOkw=QPKgpA@mail.gmail.com>
+Subject: Re: [PATCH] rtw88: 8821c: Add RFE 2 support
+To:     Tony Chuang <yhchuang@realtek.com>
+Cc:     "kvalo@codeaurora.org" <kvalo@codeaurora.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "open list:REALTEK WIRELESS DRIVER (rtw88)" 
+        <linux-wireless@vger.kernel.org>,
+        "open list:NETWORKING DRIVERS" <netdev@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Andy Huang <tehuang@realtek.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 07, 2021 at 02:19:06PM +0800, Tony W Wang-oc wrote:
-> SSE4.2 on Zhaoxin CPUs are compatible with Intel. The presence of
-> CRC32C instruction is enumerated by CPUID.01H:ECX.SSE4_2[bit 20] = 1.
-> Some Zhaoxin CPUs declare support SSE4.2 instruction sets but their
-> CRC32C instruction are working with low performance.
-> 
-> Add a synthetic CPU flag to indicates that the CRC32C instruction is
-> not working as intended. This low performance CRC32C instruction flag
-> is depend on X86_FEATURE_XMM4_2.
-> 
-> Signed-off-by: Tony W Wang-oc <TonyWWang-oc@zhaoxin.com>
-> ---
->  arch/x86/include/asm/cpufeatures.h | 1 +
->  arch/x86/kernel/cpu/cpuid-deps.c   | 1 +
->  2 files changed, 2 insertions(+)
-> 
-> diff --git a/arch/x86/include/asm/cpufeatures.h b/arch/x86/include/asm/cpufeatures.h
-> index 84b8878..9e8151b 100644
-> --- a/arch/x86/include/asm/cpufeatures.h
-> +++ b/arch/x86/include/asm/cpufeatures.h
-> @@ -292,6 +292,7 @@
->  #define X86_FEATURE_FENCE_SWAPGS_KERNEL	(11*32+ 5) /* "" LFENCE in kernel entry SWAPGS path */
->  #define X86_FEATURE_SPLIT_LOCK_DETECT	(11*32+ 6) /* #AC for split lock */
->  #define X86_FEATURE_PER_THREAD_MBA	(11*32+ 7) /* "" Per-thread Memory Bandwidth Allocation */
-> +#define X86_FEATURE_CRC32C		(11*32+ 8) /* "" Low performance CRC32C instruction */
+On Wed, Aug 5, 2020 at 7:24 PM Kai-Heng Feng
+<kai.heng.feng@canonical.com> wrote:
+>
+> Hi Tony,
+>
+> > On Aug 5, 2020, at 19:18, Tony Chuang <yhchuang@realtek.com> wrote:
+> >
+> >> 8821CE with RFE 2 isn't supported:
+> >> [   12.404834] rtw_8821ce 0000:02:00.0: rfe 2 isn't supported
+> >> [   12.404937] rtw_8821ce 0000:02:00.0: failed to setup chip efuse info
+> >> [   12.404939] rtw_8821ce 0000:02:00.0: failed to setup chip information
+> >>
+> >
+> > NACK
+> >
+> > The RFE type 2 should be working with some additional fixes.
+> > Did you tested connecting to AP with BT paired?
+>
+> No, I only tested WiFi.
+>
+> > The antenna configuration is different with RFE type 0.
+> > I will ask someone else to fix them.
+> > Then the RFE type 2 modules can be supported.
+>
+> Good to know that, I'll be patient and wait for a real fix.
 
-Didn't hpa say to create a BUG flag for it - X86_BUG...? Low performance
-insn sounds like a bug and not a feature to me.
+It's been quite some time, is support for RFE type 2 ready now?
 
-And call it X86_BUG_CRC32C_SLOW or ..._UNUSABLE to denote what it means.
+Kai-Heng
 
-Thx.
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+>
+> Kai-Heng
+>
+> >
+> > Yen-Hsuan
+>
