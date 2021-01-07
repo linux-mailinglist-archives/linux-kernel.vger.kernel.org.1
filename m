@@ -2,114 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58C7E2EC82B
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 03:41:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 352402EC81C
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 03:33:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726989AbhAGCli (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Jan 2021 21:41:38 -0500
-Received: from smtpcmd11116.aruba.it ([62.149.156.116]:48351 "EHLO
-        smtpcmd11116.aruba.it" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726723AbhAGClf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Jan 2021 21:41:35 -0500
-Received: from ubuntu.localdomain ([146.241.198.163])
-        by Aruba Outgoing Smtp  with ESMTPSA
-        id xL4LkiX9OkRIKxL4PkeM1d; Thu, 07 Jan 2021 03:30:37 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=aruba.it; s=a1;
-        t=1609986637; bh=TsdBOWdkASmq0ug4ZNOIO/B3vCFbiRe6dDUb+k/UQ4E=;
-        h=From:To:Subject:Date:MIME-Version:Content-Type;
-        b=mBzxjfQ2sku8+pC+vRYFNCnlDuKEX6L0W8ywr4Je/g3x17XR0tttSskK7ZBp1kCq6
-         CgjVsGHs4SLLXdgjxRuBpLvVF7mQAGCyryzuH4HZ1QCMi3obxbiiAkd36l0sWSF+Hr
-         Ulc3WfKZv1/xz+aNru8Oa7ttmBievwGle9YdsVDAQhIW3fE+AQVG4spJ5cxAGYnxpJ
-         dq48yBq9Zb4ywoaZiMqbxSEdBDyErbK2HPxMu1IW2NHchjNH/POyZt/o0+hE6Kiwr1
-         YcKLSUpAWZMoPTevdbimvG13iDbR9j/995Gl1n9L05sGRoBWCGY3ny1WKqgEUR7fvk
-         ETHLZFan0AGxg==
-From:   Giulio Benetti <giulio.benetti@benettiengineering.com>
-To:     Maxime Ripard <maxime@cerno.tech>
-Cc:     Marjan Pascolo <marjan.pascolo@trexom.it>, wens@csie.org,
-        daniel@ffwll.ch, airlied@linux.ie, treding@nvidia.com,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        dri-devel@lists.freedesktop.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Giulio Benetti <giulio.benetti@micronovasrl.com>
-Subject: [PATCH v2 2/2] drm/sun4i: tcon: improve DCLK polarity handling
-Date:   Thu,  7 Jan 2021 03:30:32 +0100
-Message-Id: <20210107023032.560182-3-giulio.benetti@benettiengineering.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210107023032.560182-1-giulio.benetti@benettiengineering.com>
-References: <3685133.SLcexNTYsu@kista>
- <20210107023032.560182-1-giulio.benetti@benettiengineering.com>
+        id S1726830AbhAGCcy convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 6 Jan 2021 21:32:54 -0500
+Received: from mail-eopbgr1310135.outbound.protection.outlook.com ([40.107.131.135]:60861
+        "EHLO APC01-SG2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726260AbhAGCcy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 Jan 2021 21:32:54 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=PzZwCWBVkaFhO9nRxzE954jCPU/3xDnUhAGD8+GpeSd7h9ZoDM1vEAgm96pSPnoQgdxdFOOQFH+1YRo9bLsWrrfjD6BA9f169a+eKNL4ow339Ce+1+GKUby16sSRVm5CwVsKca0t1koxG6D1jBSbbNPoyaXnH6u7scvJjz7UjYU26EJX8U2lL2bssS/Rn5SRhtwV+2Q5AU6I/v23zpFk+x5eBw6fFU3XVXuSMOQvjLkDxpuCbR4HV6ZlVVkvhCsJyqA1cdxb22qYKvC8kp9z1gHX6zJS9ysnnM2Bj/cQH0wxgPWYBV49+TzIMQVlVEy0EkEv0FIzT25DjSznIceozQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=popcx/L3N3Lqy94ry5M5eaMEyt07bWPZPcGMvs2IcGk=;
+ b=nS21AYzBEqrA3HV38evgl6syt0H4DcIKRuona3NZt+EmQfhFNNV1Dn4rUonHzUhyg7oIpeDeR4wKILFgHo+LRIIIkiBzA6NkpBHTlVEWrVAC6oMXYvVbCyGhiy268oPNTcg6yN2YwPqYZB2VGjSIvYSmYgRjazWZcMq/6PRiwchGReCAslw7dCRMNzVtMqb16ExBa5CFBEhfchKolOxqzqUG8eboV3DymK2J9gP6h2EVLPrdQP0mVvCamV9FG1cVK1xYgVE8ZU0gCngwh8QJddFDMJZ9HJtBcrD4DuXDo+ivldiPDcbHHTzxFmhY/Zb5hZ0f01tqxjox9PnpYy5I6g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=aspeedtech.com; dmarc=pass action=none
+ header.from=aspeedtech.com; dkim=pass header.d=aspeedtech.com; arc=none
+Received: from HK0PR06MB3779.apcprd06.prod.outlook.com (2603:1096:203:b8::10)
+ by HK2PR0601MB2002.apcprd06.prod.outlook.com (2603:1096:202:3::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3742.6; Thu, 7 Jan
+ 2021 02:31:16 +0000
+Received: from HK0PR06MB3779.apcprd06.prod.outlook.com
+ ([fe80::7061:73d9:50ae:b35e]) by HK0PR06MB3779.apcprd06.prod.outlook.com
+ ([fe80::7061:73d9:50ae:b35e%7]) with mapi id 15.20.3721.024; Thu, 7 Jan 2021
+ 02:31:16 +0000
+From:   ChiaWei Wang <chiawei_wang@aspeedtech.com>
+To:     Rob Herring <robh@kernel.org>
+CC:     "linux-aspeed@lists.ozlabs.org" <linux-aspeed@lists.ozlabs.org>,
+        "p.zabel@pengutronix.de" <p.zabel@pengutronix.de>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "joel@jms.id.au" <joel@jms.id.au>,
+        "openbmc@lists.ozlabs.org" <openbmc@lists.ozlabs.org>,
+        "maz@kernel.org" <maz@kernel.org>,
+        "andrew@aj.id.au" <andrew@aj.id.au>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        BMC-SW <BMC-SW@aspeedtech.com>
+Subject: RE: [PATCH 1/6] dt-bindings: aspeed: Add eSPI controller
+Thread-Topic: [PATCH 1/6] dt-bindings: aspeed: Add eSPI controller
+Thread-Index: AQHW4/EDqNrLvWbVbUeeQVqbvsj31aoas4mAgAC+QuA=
+Date:   Thu, 7 Jan 2021 02:31:16 +0000
+Message-ID: <HK0PR06MB37793C49F562E169393AB0A491AF0@HK0PR06MB3779.apcprd06.prod.outlook.com>
+References: <20210106055939.19386-1-chiawei_wang@aspeedtech.com>
+ <20210106055939.19386-2-chiawei_wang@aspeedtech.com>
+ <1609945675.315536.2229518.nullmailer@robh.at.kernel.org>
+In-Reply-To: <1609945675.315536.2229518.nullmailer@robh.at.kernel.org>
+Accept-Language: zh-TW, en-US
+Content-Language: zh-TW
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=aspeedtech.com;
+x-originating-ip: [211.20.114.70]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 44bf247c-424e-4ee4-2a0c-08d8b2b44ef3
+x-ms-traffictypediagnostic: HK2PR0601MB2002:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <HK2PR0601MB20028069FF87BE3A3303ABA591AF0@HK2PR0601MB2002.apcprd06.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:9508;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: U3zaLJ8cEEAjkACYsqnnzvmg2kk1b2djVjiaB5vlbM6hMDGTE/qRfNxkSKySE1bzC5tNkAcngyC8glLUczuZL78RCTrhRxssuf1vvxdWoGpBCT+DGg/F4bJtKErm0PAvap24QqIA5il4GJ9lJ3/+SjcSxmeZI5Hx4EODwoMrpZJQjIUKKaV+gC7qxqW+1w8fJV9YQXSAzYDmGMp/hUH3+FH+X924cGQz2B+Ld6fos4AG4gWEMoRc8XYdtGJ07f69noLsNlZ4BXxAux4Tt/X/Ic7InebmIEXjZ/PnmqUiAkd4ZIMmawJAsY8PQsymv0wbMCy6A/dQUj5xOBoChROUnhAZYgo0gu6MRFoSp9CvuDEgU94/wXRO0CildtcLp2mQItgqkRqKy7eXi0S/pzNVncC7bVNL2PH5SXLWsbke6VQAJ4Zv09wNE0OthYeehT51PI/sctabb8kW20N2OEJhkQ==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:HK0PR06MB3779.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(39840400004)(396003)(346002)(366004)(376002)(136003)(8936002)(54906003)(8676002)(6916009)(7696005)(316002)(66556008)(66946007)(64756008)(66446008)(52536014)(66476007)(76116006)(71200400001)(478600001)(966005)(5660300002)(33656002)(2906002)(83380400001)(55016002)(186003)(4326008)(107886003)(7416002)(9686003)(26005)(86362001)(53546011)(55236004)(6506007);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: =?us-ascii?Q?BZoeBJTMIw4PEPK06qNAURl1nHjRmMSdFi81V8Y7w3qoH1FLCgjqcFltLYAt?=
+ =?us-ascii?Q?kHzEkaHBHQgyFPEB3cWlHUK5J8/yPoLr3my8Hj95fNlXvDs237NLC0wCyIRl?=
+ =?us-ascii?Q?9zHf+WS2hqG0M0f5Wx9WuAUlW+clvJ7jgD2fp0mEqS2REkpZPRhZXAZHt0B5?=
+ =?us-ascii?Q?M2BZbpmL9Cw/3GQ2GiKsbeD3si6bhTe3QfWVBQXZN6DpGeSm4bGS1pSObou3?=
+ =?us-ascii?Q?iOR9Q5zpCyYozaVAnZu8SK8ABYtZiNGQrwlMRi03TcjD40yQ/xrbPMtPTAX1?=
+ =?us-ascii?Q?61Jd/zXG4Qmsf93knezTIfpvKzamHY1av1CaYDqtBBDho9W/meTePjn2u64+?=
+ =?us-ascii?Q?N8zXp2sfYgPlu+5gAd/BDPBYebVTQE8AET9A5ffbULV5iVpS3+kfghaxhY4a?=
+ =?us-ascii?Q?JM/ibUzfVDlYv2F1mXkboWJhpruDKqETqvAlc2qfjrUF4HBaz2wX6s7vmWZw?=
+ =?us-ascii?Q?wnP7YO+lhcdxIdzV2k2jmfdJXYLIioFyD3rX8DK208Ccsa783ZLCyLmX2K3v?=
+ =?us-ascii?Q?GvvHbNQxfTLE+BuvUMk7ZCLfpbYCoSekZHEMSRlxed5a5lVMEd92/TTxUYwa?=
+ =?us-ascii?Q?mkeP8d9DdLAnb6d06FAWtxRI6l2W0kHeSqk0hNOZRsBQ9zWqwLkPFvTP+ags?=
+ =?us-ascii?Q?Uh+MD5kcT25L8RjTZQfUQ9InvSOHvT+SZH8aqKb+kuMsT+Lh7CmmpSfb6hW7?=
+ =?us-ascii?Q?pQ9xalYZkDd0pewTxu+91PgEf2TY7iGH82i41N6nB1AC9GyZn5RXkIJKYipF?=
+ =?us-ascii?Q?EG/Uyh7f4zhBsck7M4Bun41re1/85eEzY3pSDl/PGjeDRaP8fAzk4Q+IuOWO?=
+ =?us-ascii?Q?EIewQf4bcykHL90EB5TOqMwFA3SRyE0CSy8X9eNnjA1T/jbGWECCICkIslkG?=
+ =?us-ascii?Q?vwy28lpVCPeQvILbEICYCxAzdJ6DGMRfLkLvMo+vChfkpPrFqpaqQ9z1gWVP?=
+ =?us-ascii?Q?rNRK4rpfeS8/OspQxyGMQyiYGwAApsJXmYFnMbzIR84=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-CMAE-Envelope: MS4wfAiJ3v+tQqxZQm2L6MNuPUOmMXkyJgh41Q4J9f+nBGG2LDgpAgSXBGMzr/p67u+hk99UQ0KVAMFRmU2+lQK+F9LAuUjNqX725Tk2dJvTsix5pYBTFRFf
- To80IhdgB2N9FkcNVVTJiuJdzT/hTMScgbVaJkXY2NKXERyqzRDy6Q/7s+tfpVlPiZOflTVlnGJlgiCK19eBHsV7aIUw/zEk+/ICmSx3lkxE6cWUKawo/4Eo
- NhkbfK39gAjs8kyxhc5HwkiK06fXqu6j6mHV2qCJNwosXad3+/qscyiSh3xk7XC6zQjNRJ0591VK6S9YZWwVZ0dq4D7mW2zgNmXdcthqwuTUey8/r7sreux1
- +hvCRL3YyrM7bGGve480+86qMVPZe1s0aYQnUwuN7ySo9jbYUgZTsJESRn5qREVS66SxM4En5p/xyIrUE3pxhcQw5J+Hvo3ebH6HyPcptyH/Jew+xeq+BT/C
- yFhYF0nIqMkxO1xi2V4rVadpJFMN/h44qf+mPpPo97B6dE5+TX7r4RL/MewgeSCRgSxQSou+pPzr7EY8nRMgq0MNERn+qoUFsd6BEQ==
+X-OriginatorOrg: aspeedtech.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: HK0PR06MB3779.apcprd06.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 44bf247c-424e-4ee4-2a0c-08d8b2b44ef3
+X-MS-Exchange-CrossTenant-originalarrivaltime: 07 Jan 2021 02:31:16.0232
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 43d4aa98-e35b-4575-8939-080e90d5a249
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: +63IKmGXEyjG9BMW0aHhuIaGmgu4dSp9s86cdRtyT5Ij/gRznkn2eSkBjIBOzhpHQqZl43VemKI5wc7BUgSqWnN2eRJezVJQIKunqlCw/tc=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: HK2PR0601MB2002
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Giulio Benetti <giulio.benetti@micronovasrl.com>
+Hi Rob,
 
-It turned out(Maxime suggestion) that bit 26 of SUN4I_TCON0_IO_POL_REG is
-dedicated to invert DCLK polarity and this makes thing really easier than
-before. So let's handle DCLK polarity by adding
-SUN4I_TCON0_IO_POL_DCLK_POSITIVE as bit 26 and activating according to
-bus_flags the same way is done for all the other signals.
+> -----Original Message-----
+> From: Rob Herring <robh@kernel.org>
+> Sent: Wednesday, January 6, 2021 11:08 PM
+> To: ChiaWei Wang <chiawei_wang@aspeedtech.com>
+> Subject: Re: [PATCH 1/6] dt-bindings: aspeed: Add eSPI controller
+> 
+> On Wed, 06 Jan 2021 13:59:34 +0800, Chia-Wei, Wang wrote:
+> > Add dt-bindings and the inclusion header for Aspeed eSPI controller.
+> >
+> > Signed-off-by: Chia-Wei, Wang <chiawei_wang@aspeedtech.com>
+> > ---
+> >  .../devicetree/bindings/soc/aspeed/espi.yaml  | 252
+> ++++++++++++++++++
+> >  .../interrupt-controller/aspeed-espi-ic.h     |  15 ++
+> >  2 files changed, 267 insertions(+)
+> >  create mode 100644
+> > Documentation/devicetree/bindings/soc/aspeed/espi.yaml
+> >  create mode 100644
+> > include/dt-bindings/interrupt-controller/aspeed-espi-ic.h
+> >
+> 
+> My bot found errors running 'make dt_binding_check' on your patch:
+> 
+> yamllint warnings/errors:
+> 
+> dtschema/dtc warnings/errors:
+> Error:
+> Documentation/devicetree/bindings/soc/aspeed/espi.example.dts:45.35-36
+> syntax error FATAL ERROR: Unable to parse input tree
+> make[1]: *** [scripts/Makefile.lib:344:
+> Documentation/devicetree/bindings/soc/aspeed/espi.example.dt.yaml] Error 1
+> make: *** [Makefile:1370: dt_binding_check] Error 2
+> 
+> See https://patchwork.ozlabs.org/patch/1422809
+> 
+> This check can fail if there are any dependencies. The base for a patch series is
+> generally the most recent rc1.
+> 
+> If you already ran 'make dt_binding_check' and didn't see the above error(s),
+> then make sure 'yamllint' is installed and dt-schema is up to
+> date:
+> 
+> pip3 install dtschema --upgrade
+> 
+> Please check and re-submit.
 
-Cc: Maxime Ripard <maxime@cerno.tech>
-Signed-off-by: Giulio Benetti <giulio.benetti@micronovasrl.com>
----
- drivers/gpu/drm/sun4i/sun4i_tcon.c | 20 +-------------------
- drivers/gpu/drm/sun4i/sun4i_tcon.h |  1 +
- 2 files changed, 2 insertions(+), 19 deletions(-)
-
-diff --git a/drivers/gpu/drm/sun4i/sun4i_tcon.c b/drivers/gpu/drm/sun4i/sun4i_tcon.c
-index 52598bb0fb0b..30171ccd87e5 100644
---- a/drivers/gpu/drm/sun4i/sun4i_tcon.c
-+++ b/drivers/gpu/drm/sun4i/sun4i_tcon.c
-@@ -569,26 +569,8 @@ static void sun4i_tcon0_mode_set_rgb(struct sun4i_tcon *tcon,
- 	if (info->bus_flags & DRM_BUS_FLAG_DE_LOW)
- 		val |= SUN4I_TCON0_IO_POL_DE_NEGATIVE;
- 
--	/*
--	 * On A20 and similar SoCs, the only way to achieve Positive Edge
--	 * (Rising Edge), is setting dclk clock phase to 2/3(240°).
--	 * By default TCON works in Negative Edge(Falling Edge),
--	 * this is why phase is set to 0 in that case.
--	 * Unfortunately there's no way to logically invert dclk through
--	 * IO_POL register.
--	 * The only acceptable way to work, triple checked with scope,
--	 * is using clock phase set to 0° for Negative Edge and set to 240°
--	 * for Positive Edge.
--	 * On A33 and similar SoCs there would be a 90° phase option,
--	 * but it divides also dclk by 2.
--	 * Following code is a way to avoid quirks all around TCON
--	 * and DOTCLOCK drivers.
--	 */
- 	if (info->bus_flags & DRM_BUS_FLAG_PIXDATA_DRIVE_POSEDGE)
--		clk_set_phase(tcon->dclk, 0);
--
--	if (info->bus_flags & DRM_BUS_FLAG_PIXDATA_DRIVE_NEGEDGE)
--		clk_set_phase(tcon->dclk, 240);
-+		val |= SUN4I_TCON0_IO_POL_DCLK_POSITIVE;
- 
- 	regmap_update_bits(tcon->regs, SUN4I_TCON0_IO_POL_REG,
- 			   SUN4I_TCON0_IO_POL_HSYNC_POSITIVE |
-diff --git a/drivers/gpu/drm/sun4i/sun4i_tcon.h b/drivers/gpu/drm/sun4i/sun4i_tcon.h
-index cfbf4e6c1679..0ce71d10a31b 100644
---- a/drivers/gpu/drm/sun4i/sun4i_tcon.h
-+++ b/drivers/gpu/drm/sun4i/sun4i_tcon.h
-@@ -113,6 +113,7 @@
- #define SUN4I_TCON0_IO_POL_REG			0x88
- #define SUN4I_TCON0_IO_POL_DCLK_PHASE(phase)		((phase & 3) << 28)
- #define SUN4I_TCON0_IO_POL_DE_NEGATIVE			BIT(27)
-+#define SUN4I_TCON0_IO_POL_DCLK_POSITIVE		BIT(26)
- #define SUN4I_TCON0_IO_POL_HSYNC_POSITIVE		BIT(25)
- #define SUN4I_TCON0_IO_POL_VSYNC_POSITIVE		BIT(24)
- 
--- 
-2.25.1
+My 'make dt_binding_check' did not show the error.
+I will update the tool as suggested to fix the error. Thanks.
 
