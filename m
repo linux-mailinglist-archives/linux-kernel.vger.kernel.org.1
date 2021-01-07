@@ -2,107 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FCA42ED39C
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 16:37:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E261C2ED3A3
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 16:40:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728165AbhAGPhW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 10:37:22 -0500
-Received: from aserp2120.oracle.com ([141.146.126.78]:58226 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727590AbhAGPhW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 10:37:22 -0500
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 107FTDbj021361;
-        Thu, 7 Jan 2021 15:36:37 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=l9RG+gvVGB2hCgh8oTBAUqTBGVrHNMBo5LYVurD8bJE=;
- b=s2/aEDvIQfj6xL7TSH0S3pk8/6MbFy55k/yODb/xvJwr6qPa1aq2iRzmgGxzETEUNiiI
- Mgv6PD1X9TrAFoZcNm9QKsTKVMtVsH+EJiDq9ABJETa392jkm5u5gHys0/VeA1ZCMKoj
- TLSl13CsSB38SuJvva6b5Y80+PT5cr2X5IuPYkkGeLPnkMaHS9Yo44ZJo3/37U7Lg9oB
- M6q5wZCJJAZB77YElsFOl2YGHS7eeLyHlFlHK+37lTQM8jhJ6yjNqGmv6SkN4D8RYybu
- X/ZkqzbpnJVa0El15ZwXX5C9biPBKjggh9r/g99E6sl6HmCy1J7H047ka6bTWdHSt0iZ 8w== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by aserp2120.oracle.com with ESMTP id 35wepmcvt4-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 07 Jan 2021 15:36:37 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 107FV8Ed045570;
-        Thu, 7 Jan 2021 15:36:37 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by aserp3020.oracle.com with ESMTP id 35v1fbd2pk-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 07 Jan 2021 15:36:36 +0000
-Received: from abhmp0019.oracle.com (abhmp0019.oracle.com [141.146.116.25])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 107FaZHL024209;
-        Thu, 7 Jan 2021 15:36:35 GMT
-Received: from [192.168.1.3] (/89.66.140.113)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Thu, 07 Jan 2021 15:36:35 +0000
-Subject: Re: [PATCH v3 1/2] KVM: x86/mmu: Ensure TDP MMU roots are freed after
- yield
-To:     Ben Gardon <bgardon@google.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Peter Shier <pshier@google.com>,
-        Leo Hou <leohou1402@gmail.com>, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org
-References: <20210107001935.3732070-1-bgardon@google.com>
-From:   "Maciej S. Szmigiero" <maciej.szmigiero@oracle.com>
-Message-ID: <2288be2a-b485-408d-b63c-85e00dbc5964@oracle.com>
-Date:   Thu, 7 Jan 2021 16:36:32 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        id S1728480AbhAGPic (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 10:38:32 -0500
+Received: from mx2.suse.de ([195.135.220.15]:56780 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728282AbhAGPic (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Jan 2021 10:38:32 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id D1C9CAD5C;
+        Thu,  7 Jan 2021 15:37:49 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id 8289A1E0872; Thu,  7 Jan 2021 16:37:49 +0100 (CET)
+Date:   Thu, 7 Jan 2021 16:37:49 +0100
+From:   Jan Kara <jack@suse.cz>
+To:     Maxim Levitsky <mlevitsk@redhat.com>
+Cc:     linux-kernel@vger.kernel.org,
+        "Darrick J . Wong" <darrick.wong@oracle.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        "open list:FILESYSTEMS (VFS and infrastructure)" 
+        <linux-fsdevel@vger.kernel.org>, Jan Kara <jack@suse.cz>
+Subject: Re: [PATCH] block: fallocate: avoid false positive on collision
+ detection
+Message-ID: <20210107153749.GH12990@quack2.suse.cz>
+References: <45420b24124b5b91bc0a80a4abad2e06acb8c2b3.camel@redhat.com>
+ <20210107124022.900172-1-mlevitsk@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <20210107001935.3732070-1-bgardon@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9856 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 phishscore=0
- suspectscore=0 spamscore=0 bulkscore=0 adultscore=0 mlxscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2101070097
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9856 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 bulkscore=0 spamscore=0
- impostorscore=0 phishscore=0 lowpriorityscore=0 suspectscore=0
- priorityscore=1501 mlxscore=0 malwarescore=0 clxscore=1015 mlxlogscore=999
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2101070097
+Content-Type: multipart/mixed; boundary="O5XBE6gyVG5Rl6Rj"
+Content-Disposition: inline
+In-Reply-To: <20210107124022.900172-1-mlevitsk@redhat.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 07.01.2021 01:19, Ben Gardon wrote:
-> Many TDP MMU functions which need to perform some action on all TDP MMU
-> roots hold a reference on that root so that they can safely drop the MMU
-> lock in order to yield to other threads. However, when releasing the
-> reference on the root, there is a bug: the root will not be freed even
-> if its reference count (root_count) is reduced to 0.
-> 
-> To simplify acquiring and releasing references on TDP MMU root pages, and
-> to ensure that these roots are properly freed, move the get/put operations
-> into another TDP MMU root iterator macro.
-> 
-> Moving the get/put operations into an iterator macro also helps
-> simplify control flow when a root does need to be freed. Note that using
-> the list_for_each_entry_safe macro would not have been appropriate in
-> this situation because it could keep a pointer to the next root across
-> an MMU lock release + reacquire, during which time that root could be
-> freed.
-> 
-> Reported-by: Maciej S. Szmigiero <maciej.szmigiero@oracle.com>
-> Suggested-by: Paolo Bonzini <pbonzini@redhat.com>
-> Fixes: faaf05b00aec ("kvm: x86/mmu: Support zapping SPTEs in the TDP MMU")
-> Fixes: 063afacd8730 ("kvm: x86/mmu: Support invalidate range MMU notifier for TDP MMU")
-> Fixes: a6a0b05da9f3 ("kvm: x86/mmu: Support dirty logging for the TDP MMU")
-> Fixes: 14881998566d ("kvm: x86/mmu: Support disabling dirty logging for the tdp MMU")
-> Signed-off-by: Ben Gardon <bgardon@google.com>
 
-Tested this version, too, and it works fine, so:
-Tested-by: Maciej S. Szmigiero <maciej.szmigiero@oracle.com>
+--O5XBE6gyVG5Rl6Rj
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Thanks,
-Maciej
+On Thu 07-01-21 14:40:22, Maxim Levitsky wrote:
+> Align start and end on page boundaries before calling
+> invalidate_inode_pages2_range.
+> 
+> This might allow us to miss a collision if the write and the discard were done
+> to the same page and do overlap but it is still better than returning -EBUSY
+> if those writes didn't overlap.
+> 
+> Signed-off-by: Maxim Levitsky <mlevitsk@redhat.com>
+
+Thanks for getting back to this and I'm sorry I didn't get to this earlier
+myself! I actually think the fix should be different as we discussed with
+Darrick. Attached patch should fix the issue for you (I'll also post it
+formally for inclusion).
+
+								Honza
+
+> ---
+>  fs/block_dev.c | 20 ++++++++++++++++----
+>  1 file changed, 16 insertions(+), 4 deletions(-)
+> 
+> diff --git a/fs/block_dev.c b/fs/block_dev.c
+> index 9e84b1928b94..97f0d16661b5 100644
+> --- a/fs/block_dev.c
+> +++ b/fs/block_dev.c
+> @@ -1970,6 +1970,7 @@ static long blkdev_fallocate(struct file *file, int mode, loff_t start,
+>  	loff_t end = start + len - 1;
+>  	loff_t isize;
+>  	int error;
+> +	pgoff_t invalidate_first_page, invalidate_last_page;
+>  
+>  	/* Fail if we don't recognize the flags. */
+>  	if (mode & ~BLKDEV_FALLOC_FL_SUPPORTED)
+> @@ -2020,12 +2021,23 @@ static long blkdev_fallocate(struct file *file, int mode, loff_t start,
+>  
+>  	/*
+>  	 * Invalidate again; if someone wandered in and dirtied a page,
+> -	 * the caller will be given -EBUSY.  The third argument is
+> -	 * inclusive, so the rounding here is safe.
+> +	 * the caller will be given -EBUSY.
+> +	 *
+> +	 * If the start/end of the range is not page aligned, exclude the
+> +	 * non aligned regions to avoid false positives.
+>  	 */
+> +	invalidate_first_page = DIV_ROUND_UP(start, PAGE_SIZE);
+> +	invalidate_last_page = end >> PAGE_SHIFT;
+> +
+> +	if ((end + 1) & PAGE_MASK)
+> +		invalidate_last_page--;
+> +
+> +	if (invalidate_last_page < invalidate_first_page)
+> +		return 0;
+> +
+>  	return invalidate_inode_pages2_range(bdev->bd_inode->i_mapping,
+> -					     start >> PAGE_SHIFT,
+> -					     end >> PAGE_SHIFT);
+> +					     invalidate_first_page,
+> +					     invalidate_last_page);
+>  }
+>  
+>  const struct file_operations def_blk_fops = {
+> -- 
+> 2.26.2
+> 
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
+
+--O5XBE6gyVG5Rl6Rj
+Content-Type: text/x-patch; charset=us-ascii
+Content-Disposition: attachment; filename="0001-bdev-Do-not-return-EBUSY-if-bdev-discard-races-with-.patch"
+
+From 36f751ac88420a6bda8a3c161986455629dc80d4 Mon Sep 17 00:00:00 2001
+From: Jan Kara <jack@suse.cz>
+Date: Thu, 7 Jan 2021 16:26:52 +0100
+Subject: [PATCH] bdev: Do not return EBUSY if bdev discard races with write
+
+blkdev_fallocate() tries to detect whether a discard raced with an
+overlapping write by calling invalidate_inode_pages2_range(). However
+this check can give both false negatives (when writing using direct IO
+or when writeback already writes out the written pagecache range) and
+false positives (when write is not actually overlapping but ends in the
+same page when blocksize < pagesize). This actually causes issues for
+qemu which is getting confused by EBUSY errors.
+
+Fix the problem by removing this conflicting write detection since it is
+inherently racy and thus of little use anyway.
+
+Reported-by: Maxim Levitsky <mlevitsk@redhat.com>
+CC: "Darrick J. Wong" <darrick.wong@oracle.com>
+Signed-off-by: Jan Kara <jack@suse.cz>
+---
+ fs/block_dev.c | 10 ++++------
+ 1 file changed, 4 insertions(+), 6 deletions(-)
+
+diff --git a/fs/block_dev.c b/fs/block_dev.c
+index 3e5b02f6606c..a97f43b49839 100644
+--- a/fs/block_dev.c
++++ b/fs/block_dev.c
+@@ -1797,13 +1797,11 @@ static long blkdev_fallocate(struct file *file, int mode, loff_t start,
+ 		return error;
+ 
+ 	/*
+-	 * Invalidate again; if someone wandered in and dirtied a page,
+-	 * the caller will be given -EBUSY.  The third argument is
+-	 * inclusive, so the rounding here is safe.
++	 * Invalidate the page cache again; if someone wandered in and dirtied
++	 * a page, we just discard it - userspace has no way of knowing whether
++	 * the write happened before or after discard completing...
+ 	 */
+-	return invalidate_inode_pages2_range(bdev->bd_inode->i_mapping,
+-					     start >> PAGE_SHIFT,
+-					     end >> PAGE_SHIFT);
++	return truncate_bdev_range(bdev, file->f_mode, start, end);
+ }
+ 
+ const struct file_operations def_blk_fops = {
+-- 
+2.26.2
+
+
+--O5XBE6gyVG5Rl6Rj--
