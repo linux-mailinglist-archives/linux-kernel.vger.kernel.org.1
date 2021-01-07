@@ -2,89 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E95BD2ED485
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 17:42:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 279A92ED47F
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 17:42:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728821AbhAGQmL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 11:42:11 -0500
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:53260 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728678AbhAGQmK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 11:42:10 -0500
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 107GeN9k070895;
-        Thu, 7 Jan 2021 10:40:23 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1610037623;
-        bh=QyiLUlhhWyqM2wiTQgiqAWHCA3bcXD1C6teh46c2weo=;
-        h=From:To:CC:Subject:Date:In-Reply-To:References;
-        b=qMyHiHJIyqL/uN5BkFztaeSVDbQoBLdJjv5ApQGWbHATuF/Te2IWvWQ86gtmd8kiK
-         xQyp11xz310yfS98eix+EmSrzW1eLfBq5d6IadEzhx9sCnlLzUlXJUW87WK59kNo/I
-         LbrzOQpbRe+9co7LWfOe9d1G/MXgz39duXOd4iJo=
-Received: from DFLE102.ent.ti.com (dfle102.ent.ti.com [10.64.6.23])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 107GeNM0087923
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 7 Jan 2021 10:40:23 -0600
-Received: from DFLE109.ent.ti.com (10.64.6.30) by DFLE102.ent.ti.com
- (10.64.6.23) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 7 Jan
- 2021 10:40:22 -0600
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE109.ent.ti.com
- (10.64.6.30) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Thu, 7 Jan 2021 10:40:22 -0600
-Received: from gsaswath-HP-ProBook-640-G5.dal.design.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 107GdxbO005468;
-        Thu, 7 Jan 2021 10:40:18 -0600
-From:   Aswath Govindraju <a-govindraju@ti.com>
-CC:     Vignesh Raghavendra <vigneshr@ti.com>,
-        Sekhar Nori <nsekhar@ti.com>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Pratyush Yadav <p.yadav@ti.com>,
-        Aswath Govindraju <a-govindraju@ti.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Vadym Kochan <vadym.kochan@plvision.eu>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Anatolij Gustschin <agust@denx.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: [PATCH 2/2] misc: eeprom_93xx46: Enable module autoprobe for microchip 93LC46B eeprom
-Date:   Thu, 7 Jan 2021 22:09:54 +0530
-Message-ID: <20210107163957.28664-3-a-govindraju@ti.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210107163957.28664-1-a-govindraju@ti.com>
-References: <20210107163957.28664-1-a-govindraju@ti.com>
+        id S1728545AbhAGQle (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 11:41:34 -0500
+Received: from elvis.franken.de ([193.175.24.41]:34782 "EHLO elvis.franken.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727874AbhAGQld (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Jan 2021 11:41:33 -0500
+Received: from uucp (helo=alpha)
+        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
+        id 1kxYL4-0000Tv-00; Thu, 07 Jan 2021 17:40:42 +0100
+Received: by alpha.franken.de (Postfix, from userid 1000)
+        id 98E5BC080E; Thu,  7 Jan 2021 17:40:15 +0100 (CET)
+Date:   Thu, 7 Jan 2021 17:40:15 +0100
+From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To:     Joe Perches <joe@perches.com>
+Cc:     Matt Mackall <mpm@selenic.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Mark Brown <broonie@kernel.org>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>, linux-mips@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org,
+        dmaengine@vger.kernel.org, linux-ide@vger.kernel.org,
+        linux-mtd@lists.infradead.org, netdev@vger.kernel.org,
+        linux-rtc@vger.kernel.org, linux-spi@vger.kernel.org,
+        linux-watchdog@vger.kernel.org, alsa-devel@alsa-project.org
+Subject: Re: [PATCH 05/10] dma: tx49 removal
+Message-ID: <20210107164015.GA12533@alpha.franken.de>
+References: <20210105140305.141401-1-tsbogend@alpha.franken.de>
+ <20210105140305.141401-6-tsbogend@alpha.franken.de>
+ <b84dadc2e98b1986dc800c5f6f202880ed905b38.camel@perches.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-To:     unlisted-recipients:; (no To-header on input)
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <b84dadc2e98b1986dc800c5f6f202880ed905b38.camel@perches.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add module alias to enable autoprobe for microchip 93LC46B eeprom by using
-/sys/class/.../spi1.0/modalias content.
+On Wed, Jan 06, 2021 at 11:10:38AM -0800, Joe Perches wrote:
+> On Tue, 2021-01-05 at 15:02 +0100, Thomas Bogendoerfer wrote:
+> > Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+> []
+> > diff --git a/drivers/dma/txx9dmac.h b/drivers/dma/txx9dmac.h
+> []
+> > @@ -26,11 +26,6 @@
+> >   * DMA channel.
+> >   */
+> >  
+> > 
+> > -#ifdef CONFIG_MACH_TX49XX
+> > -static inline bool txx9_dma_have_SMPCHN(void)
+> > -{
+> > -	return true;
+> > -}
+> >  #define TXX9_DMA_USE_SIMPLE_CHAIN
+> >  #else
+> >  static inline bool txx9_dma_have_SMPCHN(void)
+> 
+> This doesn't look like it compiles as there's now an #else
+> without an #if
 
-Signed-off-by: Aswath Govindraju <a-govindraju@ti.com>
----
+you are right, no idea what I had in mind while doing that.
 
-This patch is dependent on,
-https://lore.kernel.org/patchwork/patch/1360658/
+Vinod,
 
- drivers/misc/eeprom/eeprom_93xx46.c | 1 +
- 1 file changed, 1 insertion(+)
+as this patch series found a still active user of the platform,
+could you drop the patch from your tree, or do you want a revert
+from me ?
 
-diff --git a/drivers/misc/eeprom/eeprom_93xx46.c b/drivers/misc/eeprom/eeprom_93xx46.c
-index 890624d97774..9ca2571cab17 100644
---- a/drivers/misc/eeprom/eeprom_93xx46.c
-+++ b/drivers/misc/eeprom/eeprom_93xx46.c
-@@ -527,3 +527,4 @@ MODULE_LICENSE("GPL");
- MODULE_DESCRIPTION("Driver for 93xx46 EEPROMs");
- MODULE_AUTHOR("Anatolij Gustschin <agust@denx.de>");
- MODULE_ALIAS("spi:eeprom-93xx46");
-+MODULE_ALIAS("spi:93lc46b");
+Thomas.
+
 -- 
-2.17.1
-
+Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+good idea.                                                [ RFC1925, 2.3 ]
