@@ -2,126 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 704592ED769
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 20:22:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 456DD2ED76D
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 20:24:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729092AbhAGTWd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 14:22:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45684 "EHLO
+        id S1729290AbhAGTXl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 14:23:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45862 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728105AbhAGTWc (ORCPT
+        with ESMTP id S1728997AbhAGTXl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 14:22:32 -0500
-Received: from mail-il1-x131.google.com (mail-il1-x131.google.com [IPv6:2607:f8b0:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CE33C0612F5
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Jan 2021 11:21:52 -0800 (PST)
-Received: by mail-il1-x131.google.com with SMTP id q5so7793043ilc.10
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Jan 2021 11:21:52 -0800 (PST)
+        Thu, 7 Jan 2021 14:23:41 -0500
+Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F00B9C0612F4
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Jan 2021 11:23:00 -0800 (PST)
+Received: by mail-pg1-x52c.google.com with SMTP id i7so5626390pgc.8
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Jan 2021 11:23:00 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=atishpatra.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=LMmtmUjaLK/oDzSRX4xY8K8bKTjtoJFYEpkuZNYnKbQ=;
-        b=ksz//DOqHNryrTsAi7EMMvOGgDzeULjdCyZ3SbRAeA5SnTu43DmAClxdZ0xV1w7zds
-         4XFVyrrtuIukc7yMVDFBiT0AKZVYbOTic5nPP3aYhkvgjW1itYFXu84cYQOGhjLZHPTL
-         oOzl5wk9VTu27v/FCPJEjnAMkqEENPk9YWJps=
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=3wrW8bC9EnSUFScXbr/v1leWj3QIh7CSNlwlnFbie1M=;
+        b=AYXeBLs8Mp9jAufPJAEkHwPbo7oWnP4zD/TmgHizl0fFC1aR1DR1uOY4xIpsjCgi0A
+         m4OwMr0Cx4k5s8Wv8ucVMFYiLTW/bBQiPoJAL7RufPo38Jnj1I//ZRX9CfCdEqsPPHPC
+         nty1ovjql/WZnFde6JR8JD6pEtSxh7V1CDFKjSOiXugNDVTpe7NvVYXPEOFZgWJWIDgT
+         p63EmFMRQvVHWdPaCLRlKR8tKzvPqokZTVyatBjJJCH167Uc/8ONofml8vm3H0yj/kre
+         ztFCwCRHZ73ulC1cqIINOu0ASrUAXHAA/qbBq1SNHxCp4tRiJ6UgMadtfggbvNkcHBmV
+         DCHA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=LMmtmUjaLK/oDzSRX4xY8K8bKTjtoJFYEpkuZNYnKbQ=;
-        b=Apriya9gSj+Zg6sIX4XEcXZIssynoWHseAmLgzv5V3n048+BnYX6YGWf3AuH4BvnWp
-         7az/fSjL1iW4lkJszZbEk0GYFaLJkTqsB0Tmsd0z+335Qyh5ECLTfB+chVfCfbn5oxyI
-         IbDYPbqeYQs+qh9mYsNXWq1u9bCLVS9kA8F7idQpQ7gXvsv6plHMwjfbEeeZnZLoyVgN
-         jvLGcHSd2Q2h0q22ZD1z6xyE2eWo6xQ37FzA1G22sVLfI1z1x/AIq5EIgZUy7qL3klx7
-         YDuCvCK68u3MIFLokVyNnKb6yrgmpYRd7MspsEH6Yg4o9QxYXgtgYmTiBj9svNdk/pk8
-         zDCg==
-X-Gm-Message-State: AOAM530bTl3tOaBKAJnoXEz73zlbJFSQxaIrAsweU4EAZ5U1XRr+dt4y
-        iTgQQ8LALcAgpP93XfYPPoWFynfsWcpdZzSOG0wp
-X-Google-Smtp-Source: ABdhPJwOVkAYu414Omcy7kfayKuKewrcr2YcJxv0GFvSThHdqUxeL+ide93PZe552keZuBX+rkRMgj7/mT1PeJLzyAY=
-X-Received: by 2002:a92:204:: with SMTP id 4mr381598ilc.79.1610047311610; Thu,
- 07 Jan 2021 11:21:51 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=3wrW8bC9EnSUFScXbr/v1leWj3QIh7CSNlwlnFbie1M=;
+        b=eAoVzqS7quJ2gUDhF8UB3ChN0GmZCPYLLx35kUt7YdBk6d+1y3OUZdpbXmgW4jHDgo
+         B5+rTqxCyH/TzGROOOOQERIAXLCL1Zcvk+MCFKJk1R8JiG2GuGN5nWBDAVys+y1DE3Of
+         pHK+Y9elcDJtCVraNq2SLjWlQJlSBCGDpMDptxs9XLBAZ3nB7KARv+CzeNkzMAbgIrdq
+         XTht5G2S0+XMziDZmTWAMr1yjfI2IHXSwPUlzqjtw0/lD1BR20F/EoyysM1jr1l0XGg6
+         VFbcBjktQlx+ZHxCJLbBEDMlmRILP4gF8Yod29xdL+CIi8ZQBIX4KmfpPB8Lqb1tWSse
+         1ymw==
+X-Gm-Message-State: AOAM531rey7cZ+/RQYzMU877B8cwi1LbWEXi8zUatg5610TsIaD+IERi
+        eFIkHH5maU2WS2UYWaYZlAsr3w==
+X-Google-Smtp-Source: ABdhPJwdkbpZp9YH3Tf5cchCh0a7A1tc5kRjDb7subKVPJG/66CrcN6nDTfNCUbuJ1HyKW6taotgCA==
+X-Received: by 2002:aa7:8b51:0:b029:1ae:687f:d39b with SMTP id i17-20020aa78b510000b02901ae687fd39bmr275421pfd.50.1610047380296;
+        Thu, 07 Jan 2021 11:23:00 -0800 (PST)
+Received: from google.com ([2620:15c:f:10:1ea0:b8ff:fe73:50f5])
+        by smtp.gmail.com with ESMTPSA id a141sm6378449pfa.189.2021.01.07.11.22.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 07 Jan 2021 11:22:59 -0800 (PST)
+Date:   Thu, 7 Jan 2021 11:22:52 -0800
+From:   Sean Christopherson <seanjc@google.com>
+To:     Ashish Kalra <ashish.kalra@amd.com>
+Cc:     Steve Rutherford <srutherford@google.com>,
+        "Dr. David Alan Gilbert" <dgilbert@redhat.com>,
+        "Singh, Brijesh" <brijesh.singh@amd.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Joerg Roedel <joro@8bytes.org>,
+        Borislav Petkov <bp@suse.de>,
+        "Lendacky, Thomas" <Thomas.Lendacky@amd.com>,
+        X86 ML <x86@kernel.org>, KVM list <kvm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "dovmurik@linux.vnet.ibm.com" <dovmurik@linux.vnet.ibm.com>,
+        "tobin@ibm.com" <tobin@ibm.com>,
+        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
+        "frankeh@us.ibm.com" <frankeh@us.ibm.com>, jon.grimm@amd.com
+Subject: Re: [PATCH v2 1/9] KVM: x86: Add AMD SEV specific Hypercall3
+Message-ID: <X/dfjElmMpiEvr9B@google.com>
+References: <20201211225542.GA30409@ashkalra_ubuntu_server>
+ <20201212045603.GA27415@ashkalra_ubuntu_server>
+ <20201218193956.GJ2956@work-vm>
+ <E79E09A2-F314-4B59-B7AE-07B1D422DF2B@amd.com>
+ <20201218195641.GL2956@work-vm>
+ <20210106230555.GA13999@ashkalra_ubuntu_server>
+ <CABayD+dQwaeCnr5_+DUpvbQ42O6cZBMO79pEEzi5WXPO=NH3iA@mail.gmail.com>
+ <20210107170728.GA16965@ashkalra_ubuntu_server>
+ <X/dEQRZpSb+oQloX@google.com>
+ <20210107184125.GA17388@ashkalra_ubuntu_server>
 MIME-Version: 1.0
-References: <20201204085835.2406541-1-atish.patra@wdc.com> <20201204085835.2406541-2-atish.patra@wdc.com>
- <4655c810-e406-f807-d2dc-1b2e0198d945@microchip.com>
-In-Reply-To: <4655c810-e406-f807-d2dc-1b2e0198d945@microchip.com>
-From:   Atish Patra <atishp@atishpatra.org>
-Date:   Thu, 7 Jan 2021 11:21:40 -0800
-Message-ID: <CAOnJCUKMNzzk-RxxGJQCqS_9HjdZnOFSDu1FG_oWeKh6Jzq+sA@mail.gmail.com>
-Subject: Re: [PATCH v3 1/5] RISC-V: Add Microchip PolarFire SoC kconfig option
-To:     Cyril.Jean@microchip.com
-Cc:     Atish Patra <atish.patra@wdc.com>,
-        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        Bin Meng <bin.meng@windriver.com>,
-        Daire McNamara <Daire.McNamara@microchip.com>,
-        Anup Patel <anup@brainfault.org>,
-        Anup Patel <anup.patel@wdc.com>, Conor.Dooley@microchip.com,
-        Rob Herring <robh+dt@kernel.org>, Ivan.Griffin@microchip.com,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Alistair Francis <alistair.francis@wdc.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        linux-riscv <linux-riscv@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210107184125.GA17388@ashkalra_ubuntu_server>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 7, 2021 at 3:40 AM <Cyril.Jean@microchip.com> wrote:
->
-> Hi Atish,
->
-> On 12/4/20 8:58 AM, Atish Patra wrote:
-> > EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
-> >
-> > Add Microchip PolarFire kconfig option which selects SoC specific
-> > and common drivers that is required for this SoC.
-> >
-> > Signed-off-by: Atish Patra <atish.patra@wdc.com>
-> > Reviewed-by: Bin Meng <bin.meng@windriver.com>
-> > Reviewed-by: Anup Patel <anup@brainfault.org>
-> > ---
-> >   arch/riscv/Kconfig.socs | 7 +++++++
-> >   1 file changed, 7 insertions(+)
-> >
-> > diff --git a/arch/riscv/Kconfig.socs b/arch/riscv/Kconfig.socs
-> > index 8a55f6156661..148ab095966b 100644
-> > --- a/arch/riscv/Kconfig.socs
-> > +++ b/arch/riscv/Kconfig.socs
-> > @@ -1,5 +1,12 @@
-> >   menu "SoC selection"
-> >
-> > +config SOC_MICROCHIP_POLARFIRE
-> > +       bool "Microchip PolarFire SoCs"
-> > +       select MCHP_CLK_PFSOC
-> Can you change MCHP_CLK_PFSOC to MCHP_CLK_MPFS to align with the v2
-> clock driver?
+On Thu, Jan 07, 2021, Ashish Kalra wrote:
+> On Thu, Jan 07, 2021 at 09:26:25AM -0800, Sean Christopherson wrote:
+> > On Thu, Jan 07, 2021, Ashish Kalra wrote:
+> > > Hello Steve,
+> > > 
+> > > On Wed, Jan 06, 2021 at 05:01:33PM -0800, Steve Rutherford wrote:
+> > > > Avoiding an rbtree for such a small (but unstable) list seems correct.
+> > > > 
+> > > > For the unencrypted region list strategy, the only questions that I
+> > > > have are fairly secondary.
+> > > > - How should the kernel upper bound the size of the list in the face
+> > > > of malicious guests, but still support large guests? (Something
+> > > > similar to the size provided in the bitmap API would work).
+> > > 
+> > > I am thinking of another scenario, where a malicious guest can make
+> > > infinite/repetetive hypercalls and DOS attack the host. 
+> > > 
+> > > But probably this is a more generic issue, this can be done by any guest
+> > > and under any hypervisor, i don't know what kind of mitigations exist
+> > > for such a scenario ?
+> > > 
+> > > Potentially, the guest memory donation model can handle such an attack,
+> > > because in this model, the hypervisor will expect only one hypercall,
+> > > any repetetive hypercalls can make the hypervisor disable the guest ?
+> > 
+> > KVM doesn't need to explicitly bound its tracking structures, it just needs to
+> > use GFP_KERNEL_ACCOUNT when allocating kernel memory for the structures so that
+> > the memory will be accounted to the task/process/VM.  Shadow MMU pages are the
+> > only exception that comes to mind; they're still accounted properly, but KVM
+> > also explicitly limits them for a variety of reasons.
+> > 
+> > The size of the list will naturally be bounded by the size of the guest; and
+> > assuming KVM proactively merges adjancent regions, that upper bound is probably
+> > reasonably low compared to other allocations, e.g. the aforementioned MMU pages.
+> > 
+> > And, using a list means a malicious guest will get automatically throttled as
+> > the latency of walking the list (to merge/delete existing entries) will increase
+> > with the size of the list.
+> 
+> Just to add here, potentially there won't be any proactive
+> merging/deletion of existing entries, as the only static entries will be
+> initial guest MMIO regions, which are contigious guest PA ranges but not
+> necessarily adjacent. 
 
-Sure. Will do that.
-
-> > +       select SIFIVE_PLIC
-> > +       help
-> > +         This enables support for Microchip PolarFire SoC platforms.
-> > +
-> >   config SOC_SIFIVE
-> >          bool "SiFive SoCs"
-> >          select SERIAL_SIFIVE if TTY
-> > --
-> > 2.25.1
-> >
-> Regards,
->
-> Cyril.
->
->
-> _______________________________________________
-> linux-riscv mailing list
-> linux-riscv@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-riscv
-
-
-
--- 
-Regards,
-Atish
+My point was that, if the guest is malicious, eventually there will be adjacent
+entries, e.g. the worst case scenario is that the encrypted status changes on
+every 4k page.  Anyways, not really all that important, I mostly thinking out
+loud :-)
