@@ -2,84 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 61B972EC8F6
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 04:13:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EECB32EC909
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 04:20:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727265AbhAGDMo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Jan 2021 22:12:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35364 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726699AbhAGDMn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Jan 2021 22:12:43 -0500
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E810C0612F0;
-        Wed,  6 Jan 2021 19:12:03 -0800 (PST)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4DBB9B72cDz9sVm;
-        Thu,  7 Jan 2021 14:11:58 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1609989119;
-        bh=NMjDZB9wk71fhpOuOoK/J1FolRmyMWXXHuZyIVhIXGk=;
-        h=Date:From:To:Cc:Subject:From;
-        b=mt6tfmHLWiOJM5LitPA59itiAnTyGF+f2qhpwDZcs6dEjVX26hyxjVSTvtGnH4vYR
-         IqVqN1lT3ydGWNhr9I03JQVGG4P0OuBJW5m5q8fFJ0cb/C/vztHBpmImTKtbx+9ano
-         vlJIblWKP/FBu9Q2qQbIgy2an9S0AUGpOrZBXslanMIEQlA7dV9nfRulB7dT/Nin78
-         FDR7ca8HYtxKu1KtmCQNhopYwvC6dDMVjNECMUCns8aCM6uXlSW/vWX6n1oIJ9E0kD
-         65JOk1OZ9/m5ySO6OIE+Bl+CV+wmbJeLVdOor3N0VCs6J1P23hSbetZlI9QaomVYhv
-         kIfjpYvNTUg6w==
-Date:   Thu, 7 Jan 2021 14:11:58 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Jaegeuk Kim <jaegeuk@kernel.org>
-Cc:     Chao Yu <chao@kernel.org>, Chao Yu <yuchao0@huawei.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build warning after merge of the f2fs tree
-Message-ID: <20210107141158.312835d8@canb.auug.org.au>
+        id S1726528AbhAGDUR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Jan 2021 22:20:17 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49114 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725803AbhAGDUQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 Jan 2021 22:20:16 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 480D822BEA;
+        Thu,  7 Jan 2021 03:19:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1609989575;
+        bh=l6Wn9Rs2IWSTtUm8c7IW6SPvlrUk79/vwe/pvPbmstU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=rmd5/I8pwnF4RnmyAmTzpQ21qzL1fXSeebeU3vM3mhyn8Jq0tvzLN1yUm0BDCKO4Y
+         kYTFkxKlgPFCIsMsdTFnIHrIN/QQcaXyNvqQX7uafXBOXE6NTWP0bPXWvs3jog0FR9
+         Hg4F8qQNnzICa6RoM6y1vk1AlJpmwUOPqrU4fmuYFzKUzSH3sg4ArBMbELmpdj+K51
+         It6afItoG9BLz7SLz7JydxsevcxDbioUWXxWAE9ZaP5rtSqvqmhsH/CZ+43yX42WCN
+         07FtVPAYaR+uKCnjMow11EzVRC7Yw3UUqHsudpAdTCv0euLhjqJLu7qWEHBmsBkmIo
+         UJ93kl4YVyZfg==
+Date:   Thu, 7 Jan 2021 11:19:29 +0800
+From:   Shawn Guo <shawnguo@kernel.org>
+To:     Oleksij Rempel <o.rempel@pengutronix.de>
+Cc:     Sascha Hauer <s.hauer@pengutronix.de>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Heiner Kallweit <hkallweit1@gmail.com>, kernel@pengutronix.de,
+        netdev@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-imx@nxp.com,
+        Fabio Estevam <festevam@gmail.com>,
+        David Jander <david@protonic.nl>,
+        Russell King <linux@armlinux.org.uk>,
+        Philippe Schenker <philippe.schenker@toradex.com>
+Subject: Re: [PATCH v1] ARM: imx: mach-imx6ul: remove 14x14 EVK specific PHY
+ fixup
+Message-ID: <20210107031928.GS4142@dragon>
+References: <20201209122051.26151-1-o.rempel@pengutronix.de>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/7c5jyQcv_X740EElX35uM/3";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201209122051.26151-1-o.rempel@pengutronix.de>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/7c5jyQcv_X740EElX35uM/3
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Wed, Dec 09, 2020 at 01:20:51PM +0100, Oleksij Rempel wrote:
+> Remove board specific PHY fixup introduced by commit:
+> 
+> | 709bc0657fe6f9f5 ("ARM: imx6ul: add fec MAC refrence clock and phy fixup init")
+> 
+> This fixup addresses boards with a specific configuration: a KSZ8081RNA
+> PHY with attached clock source to XI (Pin 8) of the PHY equal to 50MHz.
+> 
+> For the KSZ8081RND PHY, the meaning of the reg 0x1F bit 7 is different
+> (compared to the KSZ8081RNA). A set bit means:
+> 
+> - KSZ8081RNA: clock input to XI (Pin 8) is 50MHz for RMII
+> - KSZ8081RND: clock input to XI (Pin 8) is 25MHz for RMII
+> 
+> In other configurations, for example a KSZ8081RND PHY or a KSZ8081RNA
+> with 25Mhz clock source, the PHY will glitch and stay in not recoverable
+> state.
+> 
+> It is not possible to detect the clock source frequency of the PHY. And
+> it is not possible to automatically detect KSZ8081 PHY variant - both
+> have same PHY ID. It is not possible to overwrite the fixup
+> configuration by providing proper device tree description. The only way
+> is to remove this fixup.
+> 
+> If this patch breaks network functionality on your board, fix it by
+> adding PHY node with following properties:
+> 
+> 	ethernet-phy@x {
+> 		...
+> 		micrel,led-mode = <1>;
+> 		clocks = <&clks IMX6UL_CLK_ENET_REF>;
+> 		clock-names = "rmii-ref";
+> 		...
+> 	};
+> 
+> The board which was referred in the initial patch is already fixed.
+> See: arch/arm/boot/dts/imx6ul-14x14-evk.dtsi
+> 
+> Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
 
-Hi all,
-
-After merging the f2fs tree, today's linux-next build (htmldocs) produced
-this warning:
-
-Documentation/ABI/testing/sysfs-fs-f2fs:382: WARNING: Inline emphasis start=
--string without end-string.
-
-Introduced by commit
-
-  f23307575903 ("f2fs: introduce sb_status sysfs node")
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/7c5jyQcv_X740EElX35uM/3
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl/2e/4ACgkQAVBC80lX
-0GwAJggAnf9yQfT8d+RyJAKCZuYbBPR6dUya3+0/USQWCu/Zygx424VI0W8UPFLF
-qDWMLm1w9VkFnHKdqIQ8J3j22CKtgQIcFVdJqMFtGgirCvB5H1IasgFJWXcXCVcP
-67Nzs6sLT4Ulv3AWwFC2oFcgk/rmpnK6iPU8F7wywhQsRmQ/nPzDJbShC7B/OBPU
-uZSJ/C06PZCRXQyOgDyn3ecRF9vBpa6+GOIp0Ojh9my9o8r5D+FMSKiGzeUvQvgQ
-4gV8HRB2Z19SMbXGxpamWLlOVuwlJvnHX+w0n+8pun/7fnlxTp1vXuN6ogN84ud3
-9pdkY+DqzkAQNbxcvjoT0fT1hH8BLg==
-=RudV
------END PGP SIGNATURE-----
-
---Sig_/7c5jyQcv_X740EElX35uM/3--
+Applied, thanks.
