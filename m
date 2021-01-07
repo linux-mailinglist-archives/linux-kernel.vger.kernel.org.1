@@ -2,94 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CA802ED4B1
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 17:47:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5EA2B2ED4B4
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 17:47:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728983AbhAGQpv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 11:45:51 -0500
-Received: from mga02.intel.com ([134.134.136.20]:47738 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728210AbhAGQpt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 11:45:49 -0500
-IronPort-SDR: EIG6c2EpIiS4srB3fDR/dPzul0ErpcNLM1RldPCFaCdL8UnmuVMhBnWMtvlxgUa+1safFlLYWt
- iuXrYMO/26NQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9857"; a="164524615"
-X-IronPort-AV: E=Sophos;i="5.79,329,1602572400"; 
-   d="scan'208";a="164524615"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Jan 2021 08:45:22 -0800
-IronPort-SDR: teG6szFSg8FXQwpak2aOHdYrr7/o8Q1/7nR8bW2u+EA+sWVhYwt9WHl82ZJyRpjguSRXRHrr2s
- tUj554Dbco0Q==
-X-IronPort-AV: E=Sophos;i="5.79,329,1602572400"; 
-   d="scan'208";a="567818451"
-Received: from djiang5-desk3.ch.intel.com ([143.182.136.137])
-  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Jan 2021 08:45:21 -0800
-Subject: [PATCH v3] x86: fix enqcmds() with missing __iomem annotation
-From:   Dave Jiang <dave.jiang@intel.com>
-To:     bp@alien8.de, x86@kernel.org
-Cc:     kernel test robot <lkp@intel.com>,
-        Ben Widawsky <ben.widawsky@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        dan.j.williams@intel.com, ben.widawsky@intel.com,
-        tglx@linutronix.de, mingo@redhat.com, hpa@zytor.com,
-        linux-kernel@vger.kernel.org
-Date:   Thu, 07 Jan 2021 09:45:21 -0700
-Message-ID: <161003789741.4062451.14362269365703761223.stgit@djiang5-desk3.ch.intel.com>
-User-Agent: StGit/0.23-29-ga622f1
+        id S1728586AbhAGQqu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 11:46:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49502 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726073AbhAGQqt (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Jan 2021 11:46:49 -0500
+Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9177C0612F4
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Jan 2021 08:46:08 -0800 (PST)
+Received: by mail-wm1-x329.google.com with SMTP id r4so6087339wmh.5
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Jan 2021 08:46:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=NtKZ9TQkml6Lz7+hOPcIIWjt0mc1TgS4RME7awVcoUI=;
+        b=pAKb7F2epYX+2fWfSSnlCutGRT89eo+e7/vLUaho+Na3wwaVB2uqRVbt/wSVvFZGaT
+         mJiNuTHm6yQ7bhKv57MZa0IdM7dVO7CwI/RVV7iZDPHiy5tMcglm4z+Z+pNp6UdoO6Sm
+         H6wq2uKqD7Xol9PgYz//vNers9MsFE+JOKOqOFomK2ZQLMNFQ4zfLGavmT9etDoMJF8f
+         vsjy6M13/eYDPZUTNoDvha+KExikH+K5WKMfrfFKF//wmFGa+gnIwbGKz6FrCg+hpva1
+         TDtrm+aMA7BpF5dkKyu5BSJbOxBoz4nQ2yt8kPyYuxrdA0wDUGDc47qRYwulqFXoma09
+         2Qtw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=NtKZ9TQkml6Lz7+hOPcIIWjt0mc1TgS4RME7awVcoUI=;
+        b=RwqDoEnGswXf6dsoxKK+WcYu9PNCTutFDYm8jtonQK8YdOoEfioui/8OhcnxoDPJPV
+         d8OLk6E3PIgC+rl+32zJueDLCKBv9GLpj4lqdTFJ6gLc/W/7An34DTM888eX2phpamYc
+         PUmXUpc5nzfcAPd3j+BDu8BCpWdfpRDUeUpUh2bd+Fp9qCNELv/Pc+3Zz5hBTruTWQSA
+         YGBjQmRTR/TL4sQeCaxPzzf38bEAp6EEeC2gcM4OC8Gug+FJaMFAGMxPiL4IifJpqIFe
+         iDs8LLaZj7IE/so8jwXfS1LhITRxa3t6Wdf3+qHrY5/+Px4BDgEkbllvzLuNv12ndOp3
+         DIXA==
+X-Gm-Message-State: AOAM532SKgBF2JT5lozZOS+EHw1SpP2vAqQuf2Go+wFGqt1sm4VSdZnS
+        72b2yYPHDABoqHe590Duuw6eTg==
+X-Google-Smtp-Source: ABdhPJzrd2xngVKWYGStgfLM787mlgYrvi1phj2XWmYfICSkBsmlVyljWKhO8ZM3wAurS9c00hiBUw==
+X-Received: by 2002:a7b:cf30:: with SMTP id m16mr8604081wmg.145.1610037967332;
+        Thu, 07 Jan 2021 08:46:07 -0800 (PST)
+Received: from [192.168.0.41] (lns-bzn-59-82-252-152-224.adsl.proxad.net. [82.252.152.224])
+        by smtp.googlemail.com with ESMTPSA id m8sm8870434wmc.27.2021.01.07.08.46.05
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 07 Jan 2021 08:46:06 -0800 (PST)
+Subject: Re: [PATCH 4/6] acpi/drivers/thermal: Remove TRIPS_NONE cooling
+ device binding
+To:     "Zhang, Rui" <rui.zhang@intel.com>
+Cc:     "mjg59@codon.org.uk" <mjg59@codon.org.uk>,
+        "linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "amitk@kernel.org" <amitk@kernel.org>,
+        "thara.gopinath@linaro.org" <thara.gopinath@linaro.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>,
+        "open list:ACPI THERMAL DRIVER" <linux-acpi@vger.kernel.org>
+References: <20201214233811.485669-1-daniel.lezcano@linaro.org>
+ <20201214233811.485669-4-daniel.lezcano@linaro.org>
+ <1de4868e-6229-ed33-f45a-7cd82d3ee48a@linaro.org>
+ <cb755a9f2b314dcda0392fd5c08f7fb9@intel.com>
+From:   Daniel Lezcano <daniel.lezcano@linaro.org>
+Message-ID: <493103a1-df95-515d-9d4d-1508685aac0e@linaro.org>
+Date:   Thu, 7 Jan 2021 17:46:04 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <cb755a9f2b314dcda0392fd5c08f7fb9@intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add missing __iomem annotation to address sparse warning. Caller is expected
-to pass an __iomem annotated pointer to this function. The current usages
-send a 64bytes command descriptor to an MMIO location (portal) on a
-device for consumption.
+On 07/01/2021 06:10, Zhang, Rui wrote:
+> ACPI thermal driver binds the devices listed in _TZD method with THERMAL_TRIPS_NONE.
+> Now given that
+> 1. THERMAL_TRIPS_NONE is removed from thermal framework
+> 2. _TZP is rarely supported. I searched ~500 acpidumps from different platforms reported by end users in kernel Bugzilla, there is only one platform with _TZP implemented, and it was almost 10 years ago.
+> 
+> So, I think it is safe to remove this piece of code.
 
-Also, from the comment in movdir64b(), which also applies to enqcmds(),
-@__dst must be supplied as an lvalue because this tells the compiler what
-the object is (its size) the instruction accesses. I.e., not the pointers
-but what they point to, thus the deref'ing '*'."
-
-"sparse warnings: (new ones prefixed by >>)"
-   drivers/dma/idxd/submit.c: note: in included file (through include/linux/io.h, include/linux/pci.h):
-   arch/x86/include/asm/io.h:422:27: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *dst @@     got void [noderef] __iomem *dst @@
-   arch/x86/include/asm/io.h:422:27: sparse:     expected void *dst
-   arch/x86/include/asm/io.h:422:27: sparse:     got void [noderef] __iomem *dst
-   drivers/dma/idxd/submit.c: note: in included file (through arch/x86/include/asm/processor.h, arch/x86/include/asm/timex.h, include/linux/timex.h, ...):
->> arch/x86/include/asm/special_insns.h:289:41: sparse: sparse: incorrect type in initializer (different address spaces) @@     expected struct <noident> *__dst @@     got void [noderef] __iomem *dst @@
-   arch/x86/include/asm/special_insns.h:289:41: sparse:     expected struct <noident> *__dst
-   arch/x86/include/asm/special_insns.h:289:41: sparse:     got void [noderef] __iomem *dst
-
-Fixes: 7f5933f81bd8 ("x86/asm: Add an enqcmds() wrapper for the ENQCMDS instruction")
-Reported-by: kernel test robot <lkp@intel.com>
-Reviewed-by: Ben Widawsky <ben.widawsky@intel.com>
-Reviewed-by: Dan Williams <dan.j.williams@intel.com>
-Signed-off-by: Dave Jiang <dave.jiang@intel.com>
----
-
-v3:
-- Update subject with comments from Boris.
-v2:
-- Update commit log with comments from Dan.
-
- arch/x86/include/asm/special_insns.h |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/arch/x86/include/asm/special_insns.h b/arch/x86/include/asm/special_insns.h
-index 4e234645f0c6..1d3cbaef4bb7 100644
---- a/arch/x86/include/asm/special_insns.h
-+++ b/arch/x86/include/asm/special_insns.h
-@@ -286,7 +286,7 @@ static inline void movdir64b(void __iomem *dst, const void *src)
- static inline int enqcmds(void __iomem *dst, const void *src)
- {
- 	const struct { char _[64]; } *__src = src;
--	struct { char _[64]; } *__dst = dst;
-+	struct { char _[64]; } __iomem *__dst = dst;
- 	int zf;
- 
- 	/*
+Thanks Rui for digging into
 
 
+
+-- 
+<http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
+
+Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
+<http://twitter.com/#!/linaroorg> Twitter |
+<http://www.linaro.org/linaro-blog/> Blog
