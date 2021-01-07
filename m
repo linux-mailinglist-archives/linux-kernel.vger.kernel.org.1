@@ -2,145 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B4AFA2EEA03
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 00:55:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A7D12EEA05
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 00:55:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729354AbhAGXyj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 18:54:39 -0500
-Received: from mga04.intel.com ([192.55.52.120]:43624 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727858AbhAGXyi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 18:54:38 -0500
-IronPort-SDR: KPzm0TVKueA9LWdFGJxyGzMjkvMTqNn5DmFxjj6o+pJajpsH/tRRrX18t9YtXkh6Ww4648RTmL
- vyNLgHeM8UcQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9857"; a="174935433"
-X-IronPort-AV: E=Sophos;i="5.79,330,1602572400"; 
-   d="scan'208";a="174935433"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Jan 2021 15:52:52 -0800
-IronPort-SDR: STUYzP1dmLk5rXkzTQFfUHnw4R0sK1nl2mGZ8Xx/VvgmNgfthmWjQSqGTB1GPv3B9u0R6fZTvR
- qJkph4PCMZ3g==
-X-IronPort-AV: E=Sophos;i="5.79,330,1602572400"; 
-   d="scan'208";a="379907722"
-Received: from blu2-mobl3.ccr.corp.intel.com (HELO [10.255.31.120]) ([10.255.31.120])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Jan 2021 15:52:49 -0800
-Cc:     baolu.lu@linux.intel.com, Joerg Roedel <joro@8bytes.org>,
-        Ashok Raj <ashok.raj@intel.com>,
-        Jacob Pan <jacob.jun.pan@linux.intel.com>,
-        Guo Kaijie <Kaijie.Guo@intel.com>,
-        Liu Yi L <yi.l.liu@intel.com>,
-        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org
-To:     Will Deacon <will@kernel.org>
-References: <20201231005323.2178523-1-baolu.lu@linux.intel.com>
- <20201231005323.2178523-2-baolu.lu@linux.intel.com>
- <20210105190357.GA12182@willie-the-truck>
- <f8c7f124-48ab-f74f-a5cb-51b0ca4785ac@linux.intel.com>
-From:   Lu Baolu <baolu.lu@linux.intel.com>
-Subject: Re: [PATCH 2/5] iommu/vt-d: Fix unaligned addresses for
- intel_flush_svm_range_dev()
-Message-ID: <9b26b7ac-b5c7-f38a-a078-b53a6b6bf375@linux.intel.com>
-Date:   Fri, 8 Jan 2021 07:52:47 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        id S1729438AbhAGXyw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 18:54:52 -0500
+Received: from userp2130.oracle.com ([156.151.31.86]:32906 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727858AbhAGXyv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Jan 2021 18:54:51 -0500
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 107NrfIo142252;
+        Thu, 7 Jan 2021 23:53:41 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=XmsIp9Zfga5rvuoJrqoBPasGOnyJ8zj0Web421dIPCw=;
+ b=Bfq+C6lyaVF40FuIrCCO1zwWV+lWbh9cH9DbPqcm+elzaJ4M6/24+9I1/f8L6Ll4YbYb
+ 9jBnpv1cqVikgPrEUALeI3gwbkMLQGCgy/i5y7m17vwizSAK2tvC5MMDeE04cAPqkAXC
+ NPFkZAoZdhVhN6GSiu3zSTDNlfiRwpk4Oigf80GyS17H2tcb4x6GfR14bazuEgtSfPjT
+ U9lby2T1KDcMMxDC3Uv+639IMaQf7daHnKROqR43dONIMZ1F30Z9xWeOO3zGsJO8h/f/
+ gZU+GDmPJQ8oHQqKeHtC0793SWcWOzHYTQZdghxURdkpwODzmQV5P5gczPbCtruTTiTr Gg== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by userp2130.oracle.com with ESMTP id 35wftxegs2-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 07 Jan 2021 23:53:41 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 107NaUEB129484;
+        Thu, 7 Jan 2021 23:53:32 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by userp3020.oracle.com with ESMTP id 35w3quga70-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 07 Jan 2021 23:53:32 +0000
+Received: from abhmp0014.oracle.com (abhmp0014.oracle.com [141.146.116.20])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 107NrUWe004278;
+        Thu, 7 Jan 2021 23:53:30 GMT
+Received: from localhost (/10.159.138.126)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Thu, 07 Jan 2021 23:53:30 +0000
+Date:   Thu, 7 Jan 2021 15:53:28 -0800
+From:   "Darrick J. Wong" <darrick.wong@oracle.com>
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     Arnd Bergmann <arnd@kernel.org>, "Theodore Ts'o" <tytso@mit.edu>,
+        Russell King - ARM Linux admin <linux@armlinux.org.uk>,
+        Will Deacon <will@kernel.org>,
+        linux-toolchains@vger.kernel.org,
+        Mark Rutland <mark.rutland@arm.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Ext4 Developers List <linux-ext4@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>
+Subject: Re: Aarch64 EXT4FS inode checksum failures - seems to be weak memory
+ ordering issues
+Message-ID: <20210107235328.GI6908@magnolia>
+References: <20210106135253.GJ1551@shell.armlinux.org.uk>
+ <20210106172033.GA2165@willie-the-truck>
+ <20210106223223.GM1551@shell.armlinux.org.uk>
+ <20210107111841.GN1551@shell.armlinux.org.uk>
+ <20210107124506.GO1551@shell.armlinux.org.uk>
+ <CAK8P3a2TXPfFpgy+XjpDzOqt1qpDxufwiD-BLNbn4W_jpGp98g@mail.gmail.com>
+ <20210107133747.GP1551@shell.armlinux.org.uk>
+ <X/c2aqSvYCaB9sR6@mit.edu>
+ <CAK8P3a2svyz1KXSqSUMVeDqdag4f1VcERH9jpECSLsn-FWvZbw@mail.gmail.com>
+ <X/eK5xIMK5yZ2/tl@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <f8c7f124-48ab-f74f-a5cb-51b0ca4785ac@linux.intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <X/eK5xIMK5yZ2/tl@gmail.com>
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9857 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 malwarescore=0 mlxscore=0
+ spamscore=0 mlxlogscore=999 phishscore=0 bulkscore=0 suspectscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2101070132
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9857 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 suspectscore=0 mlxscore=0
+ bulkscore=0 priorityscore=1501 impostorscore=0 clxscore=1011
+ lowpriorityscore=0 mlxlogscore=999 malwarescore=0 spamscore=0 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2101070133
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Will,
-
-On 2021/1/6 9:09, Lu Baolu wrote:
-> Hi Will,
+On Thu, Jan 07, 2021 at 02:27:51PM -0800, Eric Biggers wrote:
+> On Thu, Jan 07, 2021 at 10:48:05PM +0100, Arnd Bergmann wrote:
+> > On Thu, Jan 7, 2021 at 5:27 PM Theodore Ts'o <tytso@mit.edu> wrote:
+> > >
+> > > On Thu, Jan 07, 2021 at 01:37:47PM +0000, Russell King - ARM Linux admin wrote:
+> > > > > The gcc bugzilla mentions backports into gcc-linaro, but I do not see
+> > > > > them in my git history.
+> > > >
+> > > > So, do we raise the minimum gcc version for the kernel as a whole to 5.1
+> > > > or just for aarch64?
+> > >
+> > > Russell, Arnd, thanks so much for tracking down the root cause of the
+> > > bug!
+> > 
+> > There is one more thing that I wondered about when looking through
+> > the ext4 code: Should it just call the crc32c_le() function directly
+> > instead of going through the crypto layer? It seems that with Ard's
+> > rework from 2018, that can just call the underlying architecture specific
+> > implementation anyway.
+> > 
 > 
-> Happy New Year!
+> It looks like that would work, although note that crc32c_le() uses the shash API
+> too, so it isn't any more "direct" than what ext4 does now.
+
+Yes.
+
+> Also, a potential issue is that the implementation of crc32c that crc32c_le()
+> uses might be chosen too early if the architecture-specific implementation of
+> crc32c is compiled as a module (e.g. crc32c-intel.ko).
+
+This was the primary reason I chose to do it this way for ext4.
+
+The other is that ext4 didn't use crc32c before metadata_csum, so
+there's no point in pulling in the crypto layer if you're only going to
+use older ext2 or ext3 filesystems.  That was 2010, maybe people have
+stopped doing that?
+
+> There are two ways this
+> could be fixed -- either by making it a proper library API like blake2s() that
+> can call the architecture-specific code directly, or by reconfiguring things
+> when a new crypto module is loaded (like what lib/crc-t10dif.c does).
+
+Though I would like to see the library functions gain the ability to use
+whatever is the fastest mechanism available once we can be reasonably
+certain that all the platform-specific drivers have been loaded.
+
+That said, IIRC most distros compile all of them into their
+(increasingly large) vmlinuz files so maybe this isn't much of practical
+concern?
+
+--D
 > 
-> On 2021/1/6 3:03, Will Deacon wrote:
->> On Thu, Dec 31, 2020 at 08:53:20AM +0800, Lu Baolu wrote:
->>> The VT-d hardware will ignore those Addr bits which have been masked by
->>> the AM field in the PASID-based-IOTLB invalidation descriptor. As the
->>> result, if the starting address in the descriptor is not aligned with
->>> the address mask, some IOTLB caches might not invalidate. Hence people
->>> will see below errors.
->>>
->>> [ 1093.704661] dmar_fault: 29 callbacks suppressed
->>> [ 1093.704664] DMAR: DRHD: handling fault status reg 3
->>> [ 1093.712738] DMAR: [DMA Read] Request device [7a:02.0] PASID 2
->>>                 fault addr 7f81c968d000 [fault reason 113]
->>>                 SM: Present bit in first-level paging entry is clear
->>>
->>> Fix this by using aligned address for PASID-based-IOTLB invalidation.
->>>
->>> Fixes: 1c4f88b7f1f92 ("iommu/vt-d: Shared virtual address in scalable 
->>> mode")
->>> Reported-and-tested-by: Guo Kaijie <Kaijie.Guo@intel.com>
->>> Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
->>> ---
->>>   drivers/iommu/intel/svm.c | 22 ++++++++++++++++++++--
->>>   1 file changed, 20 insertions(+), 2 deletions(-)
->>>
->>> diff --git a/drivers/iommu/intel/svm.c b/drivers/iommu/intel/svm.c
->>> index 69566695d032..b16a4791acfb 100644
->>> --- a/drivers/iommu/intel/svm.c
->>> +++ b/drivers/iommu/intel/svm.c
->>> @@ -118,8 +118,10 @@ void intel_svm_check(struct intel_iommu *iommu)
->>>       iommu->flags |= VTD_FLAG_SVM_CAPABLE;
->>>   }
->>> -static void intel_flush_svm_range_dev (struct intel_svm *svm, struct 
->>> intel_svm_dev *sdev,
->>> -                unsigned long address, unsigned long pages, int ih)
->>> +static void __flush_svm_range_dev(struct intel_svm *svm,
->>> +                  struct intel_svm_dev *sdev,
->>> +                  unsigned long address,
->>> +                  unsigned long pages, int ih)
->>>   {
->>>       struct qi_desc desc;
->>> @@ -170,6 +172,22 @@ static void intel_flush_svm_range_dev (struct 
->>> intel_svm *svm, struct intel_svm_d
->>>       }
->>>   }
->>> +static void intel_flush_svm_range_dev(struct intel_svm *svm,
->>> +                      struct intel_svm_dev *sdev,
->>> +                      unsigned long address,
->>> +                      unsigned long pages, int ih)
->>> +{
->>> +    unsigned long shift = ilog2(__roundup_pow_of_two(pages));
->>> +    unsigned long align = (1ULL << (VTD_PAGE_SHIFT + shift));
->>> +    unsigned long start = ALIGN_DOWN(address, align);
->>> +    unsigned long end = ALIGN(address + (pages << VTD_PAGE_SHIFT), 
->>> align);
->>> +
->>> +    while (start < end) {
->>> +        __flush_svm_range_dev(svm, sdev, start, align >> 
->>> VTD_PAGE_SHIFT, ih);
->>> +        start += align;
->>> +    }
->>> +}
->>
->> Given that this only seems to be called from intel_invalidate_range(), 
->> which
->> has to compute 'pages' only to have it pulled apart again here, 
->> perhaps it
->> would be cleaner for intel_flush_svm_range() to take something like an
->> 'order' argument instead?
->>
->> What do you think?
+> Until one of those is done, switching to crc32c_le() might cause performance
+> regressions.
 > 
-> We need to clean up here. It's duplicate with the qi_flush_piotlb()
-> helper. I have a patch under testing for this. I will post it for review
-> later.
-
-I'm sorry, above reply is a little vague.
-
-I meant to say, let's take 'pages' as the argument. We are going to use
-qi_flush_piotlb() here to avoid duplicate QI interactions. The
-qi_flush_piotlb() helper also takes 'pages', so keep 'pages' here will
-make things easier.
-
-My cleanup patch is for v5.12. Can you please take this for v5.11?
-
-Best regards,
-baolu
+> - Eric
