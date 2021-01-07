@@ -2,142 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BB502ECCD8
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 10:31:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 481232ECCDE
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 10:33:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727854AbhAGJaa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 04:30:30 -0500
-Received: from szxga05-in.huawei.com ([45.249.212.191]:10034 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727816AbhAGJa2 (ORCPT
+        id S1727460AbhAGJcX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 04:32:23 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:30163 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726948AbhAGJcU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 04:30:28 -0500
-Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4DBLX02xl0zj491;
-        Thu,  7 Jan 2021 17:28:48 +0800 (CST)
-Received: from DESKTOP-5IS4806.china.huawei.com (10.174.184.42) by
- DGGEMS404-HUB.china.huawei.com (10.3.19.204) with Microsoft SMTP Server id
- 14.3.498.0; Thu, 7 Jan 2021 17:29:34 +0800
-From:   Keqian Zhu <zhukeqian1@huawei.com>
-To:     <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <iommu@lists.linux-foundation.org>, <kvm@vger.kernel.org>,
-        <kvmarm@lists.cs.columbia.edu>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Kirti Wankhede <kwankhede@nvidia.com>,
-        Cornelia Huck <cohuck@redhat.com>,
-        Will Deacon <will@kernel.org>, Marc Zyngier <maz@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>
-CC:     Mark Rutland <mark.rutland@arm.com>,
-        James Morse <james.morse@arm.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        "Daniel Lezcano" <daniel.lezcano@linaro.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alexios Zavras <alexios.zavras@intel.com>,
-        <wanghaibin.wang@huawei.com>, <jiangkunkun@huawei.com>
-Subject: [PATCH 5/5] vfio/iommu_type1: Move sanity_check_pfn_list to unmap_unpin_all
-Date:   Thu, 7 Jan 2021 17:29:01 +0800
-Message-ID: <20210107092901.19712-6-zhukeqian1@huawei.com>
-X-Mailer: git-send-email 2.8.4.windows.1
-In-Reply-To: <20210107092901.19712-1-zhukeqian1@huawei.com>
-References: <20210107092901.19712-1-zhukeqian1@huawei.com>
+        Thu, 7 Jan 2021 04:32:20 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1610011854;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=40x5DFNSq8yzK9zk7bYZVYunBOu/SmJ58y8StrIX3Nk=;
+        b=bVQcF5oCHpagf8QXFu2u8Ph8QNzdmymQUMkZbG5rT1Y0+/S245DwIGr4r1RZUH53I0MPgZ
+        MXndCAvopOLQ+3guaR0UvpzE29s6GjnDu/7ICVkOzeqp86fhj/P4ePEM8DWYhTj3lM19hN
+        HPnzNM8qvvng0i4j1548qLZ0rgLriME=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-19-4hITyjgKM-uHyW8tK1XIsw-1; Thu, 07 Jan 2021 04:30:52 -0500
+X-MC-Unique: 4hITyjgKM-uHyW8tK1XIsw-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 2D887180A08A;
+        Thu,  7 Jan 2021 09:30:51 +0000 (UTC)
+Received: from [10.36.114.161] (ovpn-114-161.ams2.redhat.com [10.36.114.161])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 4B1D171CB3;
+        Thu,  7 Jan 2021 09:30:49 +0000 (UTC)
+Subject: Re: [PATCH v2 0/6] Fix some bugs about HugeTLB code
+To:     Muchun Song <songmuchun@bytedance.com>, mike.kravetz@oracle.com,
+        akpm@linux-foundation.org
+Cc:     n-horiguchi@ah.jp.nec.com, ak@linux.intel.com, mhocko@suse.cz,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+References: <20210106084739.63318-1-songmuchun@bytedance.com>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat GmbH
+Message-ID: <7b44eddc-cbae-92b6-5ac7-765cad2a6326@redhat.com>
+Date:   Thu, 7 Jan 2021 10:30:48 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.174.184.42]
-X-CFilter-Loop: Reflected
+In-Reply-To: <20210106084739.63318-1-songmuchun@bytedance.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Both external domain and iommu backend domain can use pinning
-interface, thus both can add pfn to dma pfn_list. By moving
-the sanity_check_pfn_list to unmap_unpin_all can apply it to
-all types of domain.
+On 06.01.21 09:47, Muchun Song wrote:
+> This patch series aims to fix some bugs and add some improvements.
+> 
+> Changelog since v1 -> v2:
+>   - Export set_page_huge_active() in patch #2 to fix.
+>   - Using head[3].mapping to indicate the page is freed in patch #3.
+>   - Flush @free_hpage_work in patch #4.
+> 
+> Muchun Song (6):
+>   mm: migrate: do not migrate HugeTLB page whose refcount is one
+>   mm: hugetlbfs: fix cannot migrate the fallocated HugeTLB page
+>   mm: hugetlb: fix a race between freeing and dissolving the page
+>   mm: hugetlb: add return -EAGAIN for dissolve_free_huge_page
+>   mm: hugetlb: fix a race between isolating and freeing page
+>   mm: hugetlb: remove VM_BUG_ON_PAGE from page_huge_active
+> 
+>  fs/hugetlbfs/inode.c    |  3 ++-
+>  include/linux/hugetlb.h |  2 ++
+>  mm/hugetlb.c            | 69 +++++++++++++++++++++++++++++++++++++++++++------
+>  mm/migrate.c            |  6 +++++
+>  4 files changed, 71 insertions(+), 9 deletions(-)
+> 
 
-Fixes: a54eb55045ae ("vfio iommu type1: Add support for mediated devices")
-Signed-off-by: Keqian Zhu <zhukeqian1@huawei.com>
----
- drivers/vfio/vfio_iommu_type1.c | 38 ++++++++++++++++-----------------
- 1 file changed, 18 insertions(+), 20 deletions(-)
+Repeating my question regarding ccing stable on selected fixes.
 
-diff --git a/drivers/vfio/vfio_iommu_type1.c b/drivers/vfio/vfio_iommu_type1.c
-index 9776a059904d..d796be8bcbc5 100644
---- a/drivers/vfio/vfio_iommu_type1.c
-+++ b/drivers/vfio/vfio_iommu_type1.c
-@@ -2225,10 +2225,28 @@ static int vfio_iommu_type1_attach_group(void *iommu_data,
- 	return ret;
- }
- 
-+static void vfio_sanity_check_pfn_list(struct vfio_iommu *iommu)
-+{
-+	struct rb_node *n;
-+
-+	n = rb_first(&iommu->dma_list);
-+	for (; n; n = rb_next(n)) {
-+		struct vfio_dma *dma;
-+
-+		dma = rb_entry(n, struct vfio_dma, node);
-+
-+		if (WARN_ON(!RB_EMPTY_ROOT(&dma->pfn_list)))
-+			break;
-+	}
-+	/* mdev vendor driver must unregister notifier */
-+	WARN_ON(iommu->notifier.head);
-+}
-+
- static void vfio_iommu_unmap_unpin_all(struct vfio_iommu *iommu)
- {
- 	struct rb_node *node;
- 
-+	vfio_sanity_check_pfn_list(iommu);
- 	while ((node = rb_first(&iommu->dma_list)))
- 		vfio_remove_dma(iommu, rb_entry(node, struct vfio_dma, node));
- }
-@@ -2256,23 +2274,6 @@ static void vfio_iommu_unmap_unpin_reaccount(struct vfio_iommu *iommu)
- 	}
- }
- 
--static void vfio_sanity_check_pfn_list(struct vfio_iommu *iommu)
--{
--	struct rb_node *n;
--
--	n = rb_first(&iommu->dma_list);
--	for (; n; n = rb_next(n)) {
--		struct vfio_dma *dma;
--
--		dma = rb_entry(n, struct vfio_dma, node);
--
--		if (WARN_ON(!RB_EMPTY_ROOT(&dma->pfn_list)))
--			break;
--	}
--	/* mdev vendor driver must unregister notifier */
--	WARN_ON(iommu->notifier.head);
--}
--
- /*
-  * Called when a domain is removed in detach. It is possible that
-  * the removed domain decided the iova aperture window. Modify the
-@@ -2371,8 +2372,6 @@ static void vfio_iommu_type1_detach_group(void *iommu_data,
- 			kfree(group);
- 
- 			if (list_empty(&iommu->external_domain->group_list)) {
--				vfio_sanity_check_pfn_list(iommu);
--
- 				/*
- 				 * During dirty page tracking, we can't remove
- 				 * vfio_dma because dirty log will lose.
-@@ -2503,7 +2502,6 @@ static void vfio_iommu_type1_release(void *iommu_data)
- 
- 	if (iommu->external_domain) {
- 		vfio_release_domain(iommu->external_domain, true);
--		vfio_sanity_check_pfn_list(iommu);
- 		kfree(iommu->external_domain);
- 	}
- 
 -- 
-2.19.1
+Thanks,
+
+David / dhildenb
 
