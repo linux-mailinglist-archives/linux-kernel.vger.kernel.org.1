@@ -2,82 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 760942ED763
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 20:20:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D448A2ED766
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 20:20:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729342AbhAGTTS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 14:19:18 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43082 "EHLO mail.kernel.org"
+        id S1729369AbhAGTTg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 14:19:36 -0500
+Received: from foss.arm.com ([217.140.110.172]:38138 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727177AbhAGTTR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 14:19:17 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1C6232343E;
-        Thu,  7 Jan 2021 19:18:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610047117;
-        bh=UCctLD+NI8TifQ33SAD5X6VpKMo4qNarVgUMTBLJDDs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=eAv4ca6xplkrk3liN62dEyjhmQK1yhRcXtQqMYRCg4fclZuLMFrKTGbQSBwAC/HDF
-         WCCev/6rzL7v9jLil4dRkUmHFPHjBHbEOKYb8Lp+edblXqR3f/O8bzZ2XIuqCeKuiL
-         F8GHQDB+xI5YpiHl2GIVonh7yLu4qpT6FhVopUN446gzAR35rkNOQ7ZY7/x8hKzeYc
-         W9p7XuxgXadieG61O9nJZXvuZZ5shj0RcSrgJCk+4G9YmVzjOi9EVy8ybKw4eZOO41
-         9k47BD8cFm6lDjIbaMghe/Vz30R/59igwcJo7HzmfKKT7B+UehxdSiEpYGfTPX3giQ
-         cwsTSvX6yH2BA==
-Received: by pali.im (Postfix)
-        id A88CD77B; Thu,  7 Jan 2021 20:18:34 +0100 (CET)
-Date:   Thu, 7 Jan 2021 20:18:34 +0100
-From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
-To:     Russell King - ARM Linux admin <linux@armlinux.org.uk>
-Cc:     Andrew Lunn <andrew@lunn.ch>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Thomas Schreiber <tschreibe@gmail.com>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Marek =?utf-8?B?QmVow7pu?= <kabel@kernel.org>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 1/3] net: sfp: add workaround for Realtek RTL8672 and
- RTL9601C chips
-Message-ID: <20210107191834.bsvwen2rgpozer7o@pali>
-References: <20201230154755.14746-1-pali@kernel.org>
- <20210106153749.6748-1-pali@kernel.org>
- <20210106153749.6748-2-pali@kernel.org>
- <X/dCm1fK9jcjs4XT@lunn.ch>
- <20210107174006.GQ1551@shell.armlinux.org.uk>
+        id S1726600AbhAGTTg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Jan 2021 14:19:36 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 864DAD6E;
+        Thu,  7 Jan 2021 11:18:50 -0800 (PST)
+Received: from [192.168.122.166] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 117443F66E;
+        Thu,  7 Jan 2021 11:18:50 -0800 (PST)
+Subject: Re: [PATCH] arm64: PCI: Enable SMC conduit
+To:     Will Deacon <will@kernel.org>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-pci@vger.kernel.org,
+        lorenzo.pieralisi@arm.com, bhelgaas@google.com,
+        catalin.marinas@arm.com, robh@kernel.org, sudeep.holla@arm.com,
+        mark.rutland@arm.com, linux-kernel@vger.kernel.org
+References: <20210105045735.1709825-1-jeremy.linton@arm.com>
+ <20210107181416.GA3536@willie-the-truck>
+From:   Jeremy Linton <jeremy.linton@arm.com>
+Message-ID: <61558f73-9ac8-69fe-34c1-2074dec5f18a@arm.com>
+Date:   Thu, 7 Jan 2021 13:18:49 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210107174006.GQ1551@shell.armlinux.org.uk>
-User-Agent: NeoMutt/20180716
+In-Reply-To: <20210107181416.GA3536@willie-the-truck>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thursday 07 January 2021 17:40:06 Russell King - ARM Linux admin wrote:
-> On Thu, Jan 07, 2021 at 06:19:23PM +0100, Andrew Lunn wrote:
-> > Did we loose the comment:
-> > 
-> > /* Some modules (Nokia 3FE46541AA) lock up if byte 0x51 is read as a
-> >  * single read. Switch back to reading 16 byte blocks ...
-> > 
-> > That explains why 16 is used. Given how broken stuff is and the number
-> > of workaround we need, we should try to document as much as we cam, so
-> > we don't break stuff when adding more workarounds.
-> 
-> It is _not_ why 16 is used at all.
-> 
-> We used to read the whole lot in one go. However, some modules could
-> not cope with a full read - also some Linux I2C drivers struggled with
-> it.
-> 
-> So, we reduced it down to 16 bytes. See commit 28e74a7cfd64 ("net: sfp:
-> read eeprom in maximum 16 byte increments"). That had nothing to do
-> with the 3FE46541AA, which came along later. It has been discovered
-> that 3FE46541AA reacts badly to a single byte read to address 0x51 -
-> it locks the I2C bus. Hence why we can't just go to single byte reads
-> for every module.
-> 
-> So, the comment needs to be kept to explain why we are unable to go
-> to single byte reads for all modules.  The choice of 16 remains
-> relatively arbitary.
+Hi,
 
-Do you have an idea where to put a comment?
+On 1/7/21 12:14 PM, Will Deacon wrote:
+> On Mon, Jan 04, 2021 at 10:57:35PM -0600, Jeremy Linton wrote:
+>> Given that most arm64 platform's PCI implementations needs quirks
+>> to deal with problematic config accesses, this is a good place to
+>> apply a firmware abstraction. The ARM PCI SMMCCC spec details a
+>> standard SMC conduit designed to provide a simple PCI config
+>> accessor. This specification enhances the existing ACPI/PCI
+>> abstraction and expects power, config, etc functionality is handled
+>> by the platform. It also is very explicit that the resulting config
+>> space registers must behave as is specified by the pci specification.
+>>
+>> Lets hook the normal ACPI/PCI config path, and when we detect
+>> missing MADT data, attempt to probe the SMC conduit. If the conduit
+>> exists and responds for the requested segment number (provided by the
+>> ACPI namespace) attach a custom pci_ecam_ops which redirects
+>> all config read/write requests to the firmware.
+>>
+>> This patch is based on the Arm PCI Config space access document @
+>> https://developer.arm.com/documentation/den0115/latest
+> 
+> Why does firmware need to be involved with this at all? Can't we just
+> quirk Linux when these broken designs show up in production? We'll need
+> to modify Linux _anyway_ when the firmware interface isn't implemented
+> correctly...
+
+
+IMHO, The short answer is that having the quirk in the firmware keeps it 
+centralized over multiple OSs and linux distro versions and avoids a lot 
+of costly kernel->distro churning to backport/maintain quirks over a 
+dozen distro versions.
+
+There is also a long-term maintenance advantage since its hard for the 
+kernel community as a  whole to have a good view of how long a 
+particular model of machine is actually in use. For example, today we 
+could ask are any of those xgene1's still in use and remove their 
+quirks, but no one really has a clear view.
+
+As far as working around the firmware, that is of course potentially 
+problematic, but I think it is easier to say "fix the firmware if you 
+want/need linux support" than it is to get people to fix their ECAM 
+implementations. Hypothetically, if at some point there is a broken 
+version of this interface in firmware, the kernel could choose to bypass 
+it entirely and talk to whatever broken config space method the hardware 
+implements. At which point we aren't any worse off than the situation 
+today.
+
+The flip side of this is that a fair number of these platforms have open 
+source firmware as well, so it may be trivial to fix the firmware.
+
+Thanks for looking a this!
+
