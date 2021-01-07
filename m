@@ -2,95 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 375322EE813
+	by mail.lfdr.de (Postfix) with ESMTP id A4B1B2EE814
 	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 23:05:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727678AbhAGWEc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 17:04:32 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:27148 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726477AbhAGWEb (ORCPT
+        id S1727726AbhAGWEn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 17:04:43 -0500
+Received: from m43-15.mailgun.net ([69.72.43.15]:56049 "EHLO
+        m43-15.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727344AbhAGWEm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 17:04:31 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1610056985;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=JrnpLFfBtiXLpDV0Rk0B5DNVndwdwJuqAhmGaVVEq5M=;
-        b=SC5JuOcPWBLKD10fx0XZnpjUcJ2KJaWr/GDS2iEHPC6lzeRPnVX1F7r3G1hpShDKnq7TMf
-        xWNRT61n/7uZ7wftoAfxl7W0ewbWNV2rvoBqKj8ZBFdpoZ4mZ8fxv/PxEU9LOMJzNqGKkz
-        W2nKK3eLbBWMHch2a9Hy6DfyxkFUgjg=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-233-KF08uPqtPfmCwAVyIqqE-g-1; Thu, 07 Jan 2021 17:03:01 -0500
-X-MC-Unique: KF08uPqtPfmCwAVyIqqE-g-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        Thu, 7 Jan 2021 17:04:42 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1610057063; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=og7Iog2EeRDPDZsuuFHbYx6v2VbDmhb2mwPl51ar7Dg=; b=xkDSp8/rzh5BF7fcshau1q7Ly/hsPzfGIO2LMbx9lfRxQLKX4TGnTv7hEHFz3bKjixLA1+vD
+ oG1A7dvfACcPSfAu/utCBV2wvNc9JLHY/Tt4n3KizDPD7p9hKZU2CpLlXAsTLLD6g7F08Hso
+ pSzTf5fQpaw6MzGZfPFAMuc4Qzw=
+X-Mailgun-Sending-Ip: 69.72.43.15
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n02.prod.us-west-2.postgun.com with SMTP id
+ 5ff78546c732bc96210df30f (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 07 Jan 2021 22:03:50
+ GMT
+Sender: sidgup=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 0CB16C43462; Thu,  7 Jan 2021 22:03:50 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-3.2 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL autolearn=no autolearn_force=no version=3.4.0
+Received: from [192.168.1.10] (cpe-75-83-25-192.socal.res.rr.com [75.83.25.192])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A57351842140;
-        Thu,  7 Jan 2021 22:02:57 +0000 (UTC)
-Received: from mail (ovpn-112-222.rdu2.redhat.com [10.10.112.222])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 74BCB6090F;
-        Thu,  7 Jan 2021 22:02:51 +0000 (UTC)
-Date:   Thu, 7 Jan 2021 17:02:50 -0500
-From:   Andrea Arcangeli <aarcange@redhat.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Jason Gunthorpe <jgg@ziepe.ca>, Linux-MM <linux-mm@kvack.org>,
+        (Authenticated sender: sidgup)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id CFD49C433CA;
+        Thu,  7 Jan 2021 22:03:48 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org CFD49C433CA
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=sidgup@codeaurora.org
+Subject: Re: PROBLEM: Firmware loader fallback mechanism no longer works with
+ sendfile
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     mcgrof@kernel.org, rafael@kernel.org, viro@zeniv.linux.org.uk,
+        linux-fsdevel@vger.kernel.org,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Yu Zhao <yuzhao@google.com>, Andy Lutomirski <luto@kernel.org>,
-        Peter Xu <peterx@redhat.com>,
-        Pavel Emelyanov <xemul@openvz.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Mike Rapoport <rppt@linux.vnet.ibm.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Will Deacon <will@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Hugh Dickins <hughd@google.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Oleg Nesterov <oleg@redhat.com>, Jann Horn <jannh@google.com>,
-        Kees Cook <keescook@chromium.org>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Leon Romanovsky <leonro@nvidia.com>, Jan Kara <jack@suse.cz>,
-        Kirill Tkhai <ktkhai@virtuozzo.com>
-Subject: Re: [PATCH 0/2] page_count can't be used to decide when wp_page_copy
-Message-ID: <X/eFCt/lxRKgoPXu@redhat.com>
-References: <B1B85771-B211-4FCC-AEEF-BDFD37332C25@vmware.com>
- <20210107200402.31095-1-aarcange@redhat.com>
- <20210107202525.GD504133@ziepe.ca>
- <CAHk-=wjTuS9JB=Ms4WAMaOkGuLmvYwaf2W0JhXxNPdcv4NWZUA@mail.gmail.com>
- <CAHk-=wjDkyom4haQu6OU_yykkCFqMi98qO2gUPgZBF-11krRAA@mail.gmail.com>
+        "psodagud@codeaurora.org" <psodagud@codeaurora.org>
+References: <7e6f44b1-a0d2-d1d1-9c11-dcea163f8f03@codeaurora.org>
+ <X/QJCgoLPhfECEmP@kroah.com>
+ <180bdfaf-8c84-6946-b46f-3729d4eb17cc@codeaurora.org>
+ <X/WSA7nmsUSrpsfr@kroah.com>
+From:   Siddharth Gupta <sidgup@codeaurora.org>
+Message-ID: <62583aaa-d557-8c9a-5959-52c9efad1fe3@codeaurora.org>
+Date:   Thu, 7 Jan 2021 14:03:47 -0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHk-=wjDkyom4haQu6OU_yykkCFqMi98qO2gUPgZBF-11krRAA@mail.gmail.com>
-User-Agent: Mutt/2.0.4 (2020-12-30)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+In-Reply-To: <X/WSA7nmsUSrpsfr@kroah.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 07, 2021 at 01:05:19PM -0800, Linus Torvalds wrote:
-> I think those would very much be worth fixing, so that if
-> UFFDIO_WRITEPROTECT taking the mmapo_sem for writing causes problems,
-> we can _fix_ those problems.
-> 
-> But I think it's entirely wrong to treat UFFDIO_WRITEPROTECT as
-> specially as Andrea seems to want to treat it. Particularly with
-> absolutely zero use cases to back it up.
 
-Again for the record: there's nothing at all special in
-UFFDIO_WRITEPROTECT in this respect.
+On 1/6/2021 2:33 AM, Greg KH wrote:
+> On Tue, Jan 05, 2021 at 05:00:58PM -0800, Siddharth Gupta wrote:
+>> On 1/4/2021 10:36 PM, Greg KH wrote:
+>>> On Mon, Jan 04, 2021 at 02:43:45PM -0800, Siddharth Gupta wrote:
+>>>> Hi all,
+>>>>
+>>>> With the introduction of the filesystem change "fs: don't allow splice
+>>>> read/write without explicit ops"[1] the fallback mechanism of the firmware
+>>>> loader[2] no longer works when using sendfile[3] from the userspace.
+>>> What userspace program are you using to load firmware?
+>> The userspace program is in the android userspace which listens to a uevent
+>> from the firmware loader and then loads the firmware using sendfile[1].
+>>>    Are you not using the in-kernel firmware loader for some reason?
+>> We have certain non-standard firmware paths that should not be added to the
+>> linux kernel, and the firmware_class.path only supports a single path.
+> That option is just for a single override, which should be all that you
+> need if the other paths that are built into the kernel do not work.
+> Surely one of the 5 different paths here are acceptable?
+Unfortunately they are not, and we understand that such changes 
+shouldn't make it to upstream hence it was not a part of the request. If 
+the firmware loader fallback mechanism was being deprecated then we 
+would have to look into our options. As of now the series of changes 
+breaking the sysfs bin attributes is the only bug that affects us.
+>
+> If not, how many more do you need?
+We need 2 paths.
+>
+> And last I looked, Android wants you to use the built-in kernel firmware
+> loader, and NOT an external firmware binary anymore.  So this shouldn't
+> be an issue for your newer systems anyway :)
+In our discussion with the Android team that is not the case currently. 
+In the future yes, but not now :)
 
-If you could stop mentioning UFFDIO_WRITEPROTECT and only focus on
-softdirty/clear_refs, maybe you wouldn't think my judgment is biased
-towards clear_refs/softdirty too.
-
-You can imagine the side effects of page_count doing a COW
-erroneously, as corollary of the fact that KSM won't ever allow to
-merge two pages if one of them is under GUP pin. Why is that?
+Regardless this bug is in the kernel and not Android. If the firmware 
+loader fallback mechanism is used on the current kernel we would see the 
+issue with sendfile in the userspace whether Android is running or not.
+>
+>>>> Since the binary attributes don't support splice_{read,write} functions the
+>>>> calls to splice_{read,write} used the default kernel_{read,write} functions.
+>>>> With the above change this results in an -EINVAL return from
+>>>> do_splice_from[4].
+>>>>
+>>>> This essentially means that sendfile will not work for any binary attribute
+>>>> in the sysfs.
+>>> Have you tried fixing this with a patch much like what we did for the
+>>> proc files that needed this?  If not, can you?
+>> I am not aware of this fix, could you provide me a link for reference? I
+>> will try it out.
+> Look at the series of commits starting at fe33850ff798 ("proc: wire up
+> generic_file_splice_read for iter ops") for how this was fixed in procfs
+> as an example of what also needs to be done for binary sysfs files.
+I tried to follow these fixes, but I am unfamiliar with fs code. I don't 
+see the generic_file_splice_write function anymore on newer kernels, 
+also AFAICT kernfs_ops does not define {read,write}_iter operations. If 
+the solution is simple and someone could provide the patches I would be 
+happy to test them out. If not, some more information about how to 
+proceed would be nice.
 
 Thanks,
-Andrea
-
+Sid
+>
+> thanks,
+>
+> greg k-h
