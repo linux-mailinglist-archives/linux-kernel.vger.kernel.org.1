@@ -2,106 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B0FE2EE92B
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 23:50:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D36262EE92F
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 23:51:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728476AbhAGWtu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 17:49:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50210 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727722AbhAGWtu (ORCPT
+        id S1728588AbhAGWvN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 17:51:13 -0500
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:50948 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727722AbhAGWvM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 17:49:50 -0500
-Received: from mail-wm1-x329.google.com (mail-wm1-x329.google.com [IPv6:2a00:1450:4864:20::329])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DC6BC0612F6
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Jan 2021 14:49:09 -0800 (PST)
-Received: by mail-wm1-x329.google.com with SMTP id r4so6839630wmh.5
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Jan 2021 14:49:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kresin-me.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=UBbspZi0InzCAWqAKuWUmxiQ/lqXZTt+DFXtkh8nSVk=;
-        b=ohx3twNXChMl+YcJFXiovLick++1jveuCJflQo9dGZq9DzXQePIsVtIsLhwwnNtU04
-         +mbA6iQmcjKayfYjb1jNYGllsGdfbfWihoGVuRByySMuRiTLNrSllOZX5kPQc3vS36e3
-         VBXm9CxFnAqC89HrsAiRXeekX4UvsQe6miq2Yq/W49ZArkoZANaNIZu2YYVMaVNa/Fy8
-         z/pSaQcQeIQ67kF6EBsTJ7esIwdaoEw7ICw3CacZfNaqHMYrkmJEMKIJlIABsLNrNXFC
-         d79NW1jVjIGT4QpP0QTE5XM68boiTcfIy2nOkBK4AJzLmXKLOVt9l3ADrqq+urocaFuK
-         B1lQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=UBbspZi0InzCAWqAKuWUmxiQ/lqXZTt+DFXtkh8nSVk=;
-        b=Dwmp6sIEuHin0lOW1KMYRlKZcRUTZF9KSTgiOhresnfPJOTOdHPP+d2kX2qVH3A7gB
-         feivDxzAWX0sdDsoHMzhXRBCIAAfvEXlH71qKXxv7di7Lh3JOtHdtKMFEj6FvBvnfQN5
-         3Px2hlA0o5gtqmKxzUVh9y1qseZNtULJKA18zGRBNBaHjn/gt9c/SzYyQI7t3zl5SpxP
-         d2BwDhVxczU3wVXb5ze4qabHyh9L5bHitGUOYbXnfQgOp+fDSLjc6gZzWGDaGGPuqFCP
-         6KeSEnsJ3SPp1zzlu9zHN+g2fW3uKquFEGfRt6EYHyHj+WsHYuox3IaN0LLCU4J3g2K0
-         hu7w==
-X-Gm-Message-State: AOAM533Glpc+qPOnf9Ql83Q2HGaupbRZV45r3C3t8MUIgHl6MDl9Gd9P
-        ZBoD+j+mTmXfbVLZpD6wt9qBqA==
-X-Google-Smtp-Source: ABdhPJyxEV6t0gp5gqr4zSc7sxWoUJ+O5X5/phvLSNp25Zafv6G3ZdjOlSPZSx2H/3OYbgnrHrjcFg==
-X-Received: by 2002:a05:600c:1483:: with SMTP id c3mr553547wmh.87.1610059748145;
-        Thu, 07 Jan 2021 14:49:08 -0800 (PST)
-Received: from desktop.wvd.kresin.me (p200300ec2f1543005c3547d24e99751a.dip0.t-ipconnect.de. [2003:ec:2f15:4300:5c35:47d2:4e99:751a])
-        by smtp.gmail.com with ESMTPSA id u10sm9392800wmd.43.2021.01.07.14.49.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 Jan 2021 14:49:07 -0800 (PST)
-From:   Mathias Kresin <dev@kresin.me>
-To:     Kishon Vijay Abraham I <kishon@ti.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        linux-kernel@vger.kernel.org
-Cc:     Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-        Hauke Mehrtens <hauke@hauke-m.de>, stable@vger.kernel.org
-Subject: [PATCH] phy: lantiq: rcu-usb2: wait after clock enable
-Date:   Thu,  7 Jan 2021 23:49:01 +0100
-Message-Id: <20210107224901.2102479-1-dev@kresin.me>
-X-Mailer: git-send-email 2.25.1
+        Thu, 7 Jan 2021 17:51:12 -0500
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 107MnUtN023753;
+        Thu, 7 Jan 2021 16:49:30 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1610059770;
+        bh=51yABxhCeAmEePY6q8Lluk9jwTGYnWzQRyoK2i9Ziv8=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=d/fCjMt0G30a1P6t/yUjo+j0I6KfhUGU3eixrTlkiNrNIdgH8rWlFHP4ir01EDSsM
+         6GJeb2hVM4fw61KS4pSpGcgIM0a1BOWb0v+vZtbbYshESRrq8z99p9TvABzRj5myGQ
+         wQUZ+2R2EB5LGsUPUoVIO3TLbTGUDOBVcoaCj4nQ=
+Received: from DFLE110.ent.ti.com (dfle110.ent.ti.com [10.64.6.31])
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 107MnUDK083642
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 7 Jan 2021 16:49:30 -0600
+Received: from DFLE106.ent.ti.com (10.64.6.27) by DFLE110.ent.ti.com
+ (10.64.6.31) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 7 Jan
+ 2021 16:49:29 -0600
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DFLE106.ent.ti.com
+ (10.64.6.27) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Thu, 7 Jan 2021 16:49:29 -0600
+Received: from [10.250.33.36] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 107MnTKk110118;
+        Thu, 7 Jan 2021 16:49:29 -0600
+Subject: Re: [PATCH v2 0/5] Introduce PRU remoteproc consumer API
+To:     Mathieu Poirier <mathieu.poirier@linaro.org>
+CC:     Grzegorz Jaszczyk <grzegorz.jaszczyk@linaro.org>,
+        <ohad@wizery.com>, <bjorn.andersson@linaro.org>,
+        <robh+dt@kernel.org>, <ssantosh@kernel.org>,
+        <linux-remoteproc@vger.kernel.org>, <lee.jones@linaro.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-omap@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, <praneeth@ti.com>,
+        <rogerq@kernel.org>
+References: <20201216165239.2744-1-grzegorz.jaszczyk@linaro.org>
+ <20210106232704.GE9149@xps15> <11303a1b-5ab4-def5-77b1-c500894c9c87@ti.com>
+ <20210107224448.GB43045@xps15>
+From:   Suman Anna <s-anna@ti.com>
+Message-ID: <75365443-57e3-e2e0-5865-f78af9d5890b@ti.com>
+Date:   Thu, 7 Jan 2021 16:49:29 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210107224448.GB43045@xps15>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit 65dc2e725286 ("usb: dwc2: Update Core Reset programming flow.")
-revealed that the phy isn't ready immediately after enabling it's
-clocks. The dwc2_check_core_version() fails and the dwc2 usb driver
-errors out.
+On 1/7/21 4:44 PM, Mathieu Poirier wrote:
+> On Wed, Jan 06, 2021 at 06:03:25PM -0600, Suman Anna wrote:
+>> Hi Mathieu,
+>>
+>> On 1/6/21 5:27 PM, Mathieu Poirier wrote:
+>>> On Wed, Dec 16, 2020 at 05:52:34PM +0100, Grzegorz Jaszczyk wrote:
+>>>> Hi All,
+>>>>
+>>>> The Programmable Real-Time Unit and Industrial Communication Subsystem
+>>>> (PRU-ICSS or simply PRUSS) on various TI SoCs consists of dual 32-bit
+>>>> RISC cores (Programmable Real-Time Units, or PRUs) for program execution.
+>>>>
+>>>> There are 3 foundation components for PRUSS subsystem: the PRUSS platform
+>>>> driver, the PRUSS INTC driver and the PRUSS remoteproc driver. All were
+>>>> already merged and can be found under:
+>>>> 1) drivers/soc/ti/pruss.c
+>>>>    Documentation/devicetree/bindings/soc/ti/ti,pruss.yaml
+>>>> 2) drivers/irqchip/irq-pruss-intc.c
+>>>>    Documentation/devicetree/bindings/interrupt-controller/ti,pruss-intc.yaml
+>>>> 3) drivers/remoteproc/pru_rproc.c
+>>>>    Documentation/devicetree/bindings/remoteproc/ti,pru-rproc.yaml
+>>>>
+>>>> The programmable nature of the PRUs provide flexibility to implement custom
+>>>> peripheral interfaces, fast real-time responses, or specialized data handling.
+>>>> Example of a PRU consumer drivers will be:
+>>>>   - Software UART over PRUSS
+>>>>   - PRU-ICSS Ethernet EMAC
+>>>>
+>>>> In order to make usage of common PRU resources and allow the consumer drivers to
+>>>> configure the PRU hardware for specific usage the PRU API is introduced.
+>>>>
+>>>> Patch #3 of this series depends on one not merged remteproc related patch [1].
+>>>>
+>>>> Please see the individual patches for exact changes in each patch, following is
+>>>> the only change from v1:
+>>>>  - Change the 'prus' property name to 'ti,prus' as suggested by Rob Herring,
+>>>>  which influences patch #1 and patch #2
+>>>>
+>>>> [1] https://patchwork.kernel.org/project/linux-remoteproc/patch/20201121030156.22857-3-s-anna@ti.com/
+>>>>
+>>>> Best regards,
+>>>> Grzegorz
+>>>>
+>>>> Roger Quadros (1):
+>>>>   remoteproc: pru: Add pru_rproc_set_ctable() function
+>>>>
+>>>> Suman Anna (2):
+>>>>   dt-bindings: remoteproc: Add PRU consumer bindings
+>>>>   remoteproc: pru: Deny rproc sysfs ops for PRU client driven boots
+>>>>
+>>>> Tero Kristo (2):
+>>>>   remoteproc: pru: Add APIs to get and put the PRU cores
+>>>>   remoteproc: pru: Configure firmware based on client setup
+>>>>
+>>>>  .../bindings/remoteproc/ti,pru-consumer.yaml  |  64 +++++
+>>>>  drivers/remoteproc/pru_rproc.c                | 221 +++++++++++++++++-
+>>>>  include/linux/pruss.h                         |  78 +++++++
+>>>
+>>> This patchset is giving checkpatch.pl errors and as such will not go further
+>>> with this revision.
+>>
+>> Yeah, I am aware of those. Greg has intentionally skipped the checkpatch
+>> warnings around ENOTSUPP, based on some similar discussion on a different patch,
+>> https://lkml.org/lkml/2020/11/10/764.
+> 
+> I only see input from Andy and Lars in the thread you point out, nothing from
+> Greg.  I have also taken a look at the patch [1] that made checkpatch complain
+> about ENOTSUPP.  From what I see in that commit log the goal is to prevent new
+> additions of ENOTSUPP to the kernel.
+> 
+> Please modify and resend, otherwise I'm sure someone will send another patch to
+> fix it before the end of the cycle.
 
-Add a short delay to let the phy get up and running. There isn't any
-documentation how much time is required, the value was chosen based on
-tests.
+Yeah ok. I will send out a v3.
 
-Cc: <stable@vger.kernel.org> # v5.7+
-Signed-off-by: Mathias Kresin <dev@kresin.me>
----
- drivers/phy/lantiq/phy-lantiq-rcu-usb2.c | 10 +++++++++-
- 1 file changed, 9 insertions(+), 1 deletion(-)
+regards
+Suman
 
-diff --git a/drivers/phy/lantiq/phy-lantiq-rcu-usb2.c b/drivers/phy/lantiq/phy-lantiq-rcu-usb2.c
-index a7d126192cf1..29d246ea24b4 100644
---- a/drivers/phy/lantiq/phy-lantiq-rcu-usb2.c
-+++ b/drivers/phy/lantiq/phy-lantiq-rcu-usb2.c
-@@ -124,8 +124,16 @@ static int ltq_rcu_usb2_phy_power_on(struct phy *phy)
- 	reset_control_deassert(priv->phy_reset);
- 
- 	ret = clk_prepare_enable(priv->phy_gate_clk);
--	if (ret)
-+	if (ret) {
- 		dev_err(dev, "failed to enable PHY gate\n");
-+		return ret;
-+	}
-+
-+	/*
-+	 * at least the xrx200 usb2 phy requires some extra time to be
-+	 * operational after enabling the clock
-+	 */
-+	usleep_range(100, 200);
- 
- 	return ret;
- }
--- 
-2.25.1
+> 
+> Thanks,
+> Mathieu
+> 
+> [1]. 6b9ea5ff5abd checkpatch: warn about uses of ENOTSUPP
+>>
+>> Let me know if you prefer that we change these to EOPNOTSUPP.
+>>
+>> regards
+>> Suman
+>>
+>>>
+>>>>  3 files changed, 360 insertions(+), 3 deletions(-)
+>>>>  create mode 100644 Documentation/devicetree/bindings/remoteproc/ti,pru-consumer.yaml
+>>>>  create mode 100644 include/linux/pruss.h
+>>>>
+>>>> -- 
+>>>> 2.29.0
+>>>>
+>>
 
