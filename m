@@ -2,78 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 35CA52ECC1E
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 10:01:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7999A2ECC2B
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 10:03:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726925AbhAGJAN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 04:00:13 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40448 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725974AbhAGJAM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 04:00:12 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8E7462313B;
-        Thu,  7 Jan 2021 08:59:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610009972;
-        bh=EwIKCvsMKChhHcgTuEGb2I6wpIWvY8o7DoF8pXj3NTI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=cA+GBz+rlEYSgGiJl/tW4YzY0cOxd5EbvO0G/D+ARvchcc2rIBh+RMFWklH2kYZbA
-         4F/wu4v7gB9uLTsFl98MPhrezf1i25ar4XUainY7rlzadhZ9fDdppemJa3FqtE4xqY
-         SWtcCCtg8Z9mF56eXk/YAyvIQi6T/S+FtJg4KTMg=
-Date:   Thu, 7 Jan 2021 10:00:52 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Saravana Kannan <saravanak@google.com>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Michael Walle <michael@walle.cc>, kernel-team@android.com,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1] driver core: Fix device link device name collision
-Message-ID: <X/bNxMPWKq2nbqS4@kroah.com>
-References: <20210106232641.459081-1-saravanak@google.com>
+        id S1727396AbhAGJCj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 04:02:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33318 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726110AbhAGJCh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Jan 2021 04:02:37 -0500
+Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8EAB3C0612F4
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Jan 2021 01:01:57 -0800 (PST)
+Received: by mail-pl1-x636.google.com with SMTP id q4so3153262plr.7
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Jan 2021 01:01:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=7IFTVMzZ+aecicXR0s8XBfFgUlitNACcIOq23fQzejY=;
+        b=WuAdrPbD88PrGbyE3Tl9KLmQ5F2OP1aIHh+gkjDtptyrjJcEgtFkUEYH/YUKPQmINI
+         V1Jao6+pUYML7SgHjgD1l/79KOR+NjPZyD42AcdmSxkQQkSVfUeJcXgElaBPQX81lE8C
+         LGlKbWattF/+LUCULuAn/mJroCVzzRWlDtBwrD1B6GT8MFv8KS4CcsxUshxLhUEvtVts
+         UgujmbAFRmoSmkdzv2+gBrhopz8J8qXaWw4ym1Bc4Yi1CQDOkzLbXQrB/gZRIjLij5wQ
+         QAJ0x15bQZ+6FqtRoqrv+fjC5igdWocWxEJv23eDqjDuBpvDqk9kBa8kAiPJZSrNMiby
+         zb6g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=7IFTVMzZ+aecicXR0s8XBfFgUlitNACcIOq23fQzejY=;
+        b=APgaYvznMUx7I77KIsOu83eG7SQgcDZwGqtCX8wICZTePbZBcqgXjUhZ2Mrh3Tjbdg
+         IyiX0oc2JzuD4M5RH6T0ZoRuAovr9qrmc2dGMMQqNxzJqIwch/GoCCN2hYQEyCT6f59C
+         S9yBwzigpwu9W6+KHTErctneeV4fvHXM2Meu2No+eEMU7lg+oeLBPgKtcIx57ACj8cyU
+         SXpkt8Oqe9ElljL/0lWmD3btwU3iB3Uo7viieujCUSzPIanEtSCczz0amRP2izfAdGdw
+         9mGeCvim2exgGX2gy+tF26FygPFbt1gOeFRO8ycWXMDSGaqDQLweXo0nqnHcGFTA2qzH
+         dSvg==
+X-Gm-Message-State: AOAM530BhFa/tXZd1TB6Kq+haXaxbwAoMbGGh+4+lCQ3gZW5GJWFUQIv
+        Qc7csh2CC3jWbTVF6bJYfstWJmjalmxriF0LPiLiyA==
+X-Google-Smtp-Source: ABdhPJyKrW23ttJk7n2Ob5ozrUR8dhuf/eEW558orMpos4uiFr8Pred9DHJB6CePKRgjqFCH1SDrrc1qVpL4OxtFjps=
+X-Received: by 2002:a17:90a:ba88:: with SMTP id t8mr8307085pjr.229.1610010117074;
+ Thu, 07 Jan 2021 01:01:57 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210106232641.459081-1-saravanak@google.com>
+References: <20210106084739.63318-1-songmuchun@bytedance.com>
+ <20210106084739.63318-5-songmuchun@bytedance.com> <20210106170754.GU13207@dhcp22.suse.cz>
+ <CAMZfGtWg0J5syATXMpP8RYOz=w0gJNYz_=UrT3ueMspQjNY7BQ@mail.gmail.com> <20210107083902.GB13207@dhcp22.suse.cz>
+In-Reply-To: <20210107083902.GB13207@dhcp22.suse.cz>
+From:   Muchun Song <songmuchun@bytedance.com>
+Date:   Thu, 7 Jan 2021 17:01:16 +0800
+Message-ID: <CAMZfGtWwHOVCvFUvm-r74k1GEEujW_HniLFOMKbykny7Cu09eA@mail.gmail.com>
+Subject: Re: [External] Re: [PATCH v2 4/6] mm: hugetlb: add return -EAGAIN for dissolve_free_huge_page
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Mike Kravetz <mike.kravetz@oracle.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Naoya Horiguchi <n-horiguchi@ah.jp.nec.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 06, 2021 at 03:26:41PM -0800, Saravana Kannan wrote:
-> The device link device's name was of the form:
-> <supplier-dev-name>--<consumer-dev-name>
-> 
-> This can cause name collision as reported here [1] as device names are
-> not globally unique. Since device names have to be unique within the
-> bus/class, add the bus/class name as a prefix to the device names used to
-> construct the device link device name.
-> 
-> So the devuce link device's name will be of the form:
-> <supplier-bus-name>:<supplier-dev-name>--<consumer-bus-name><consumer-dev-name>
+On Thu, Jan 7, 2021 at 4:39 PM Michal Hocko <mhocko@suse.com> wrote:
+>
+> On Thu 07-01-21 11:11:41, Muchun Song wrote:
+> > On Thu, Jan 7, 2021 at 1:07 AM Michal Hocko <mhocko@suse.com> wrote:
+> > >
+> > > On Wed 06-01-21 16:47:37, Muchun Song wrote:
+> > > > When dissolve_free_huge_page() races with __free_huge_page(), we ca=
+n
+> > > > do a retry. Because the race window is small.
+> > >
+> > > Is this a bug fix or mere optimization. I have hard time to tell from
+> > > the description.
+> >
+> > It is optimization. Thanks.
+> >
+> > >
+> > > > Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+> > > > ---
+> > > >  mm/hugetlb.c | 26 +++++++++++++++++++++-----
+> > > >  1 file changed, 21 insertions(+), 5 deletions(-)
+> > > >
+> > > > diff --git a/mm/hugetlb.c b/mm/hugetlb.c
+> > > [...]
+> > > > @@ -1825,6 +1828,14 @@ int dissolve_free_huge_page(struct page *pag=
+e)
+> > > >       }
+> > > >  out:
+> > > >       spin_unlock(&hugetlb_lock);
+> > > > +
+> > > > +     /*
+> > > > +      * If the freeing of the HugeTLB page is put on a work queue,=
+ we should
+> > > > +      * flush the work before retrying.
+> > > > +      */
+> > > > +     if (unlikely(rc =3D=3D -EAGAIN))
+> > > > +             flush_work(&free_hpage_work);
+> > >
+> > > Is it safe to wait for the work to finish from this context?
+> >
+> > Yes. It is safe.
+>
+> Please expand on why in the changelog. Same for the optimization
+> including some numbers showing it really helps.
 
-Minor nit, you forgot a ':' in the consumer side of the link here.  The
-code is correct.
+OK. Changelog should be updated. Do you agree the race window
+is quite small? If so, why is it not an optimization? Don=E2=80=99t we diss=
+olve
+the page as successfully as possible when we call
+dissolve_free_huge_page()? I am confused about numbers showing.
+Because this is not a performance optimization, but an increase in
+the success rate of dissolving.
 
-> 
-> [1] - https://lore.kernel.org/lkml/20201229033440.32142-1-michael@walle.cc/
-> Reported-by: Michael Walle <michael@walle.cc>
-> Signed-off-by: Saravana Kannan <saravanak@google.com>
-> ---
-> 
-> Michael,
-> 
-> Can you please test this? This should fix your issue.
-> 
-> Having said that, do you have some local DT changes when you are testing
-> this? Because it's not obvious from the DT in upstream what dependency
-> is even being derived from the firmware. I don't see any dependency in
-> upstream DT files between mdio_bus/0000:00:00.1 and
-> pci0000:00/0000:00:00.1
+Thanks.
 
-That looks really odd, why is the mdio bus using the same names as the
-pci bus?
-
-But anyway, your dev_bus_name() change here looks good, I'll take that
-as a separate patch no matter what happens here :)
-
-thanks,
-
-greg k-h
+>
+> --
+> Michal Hocko
+> SUSE Labs
