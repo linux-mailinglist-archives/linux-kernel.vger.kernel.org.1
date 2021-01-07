@@ -2,68 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 69CE52ED313
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 15:55:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2324C2ED317
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 15:57:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728114AbhAGOzJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 09:55:09 -0500
-Received: from relmlor1.renesas.com ([210.160.252.171]:34261 "EHLO
-        relmlie5.idc.renesas.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726151AbhAGOzH (ORCPT
+        id S1728168AbhAGO4d convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 7 Jan 2021 09:56:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60550 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725894AbhAGO4c (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 09:55:07 -0500
-X-IronPort-AV: E=Sophos;i="5.79,329,1602514800"; 
-   d="scan'208";a="68320324"
-Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
-  by relmlie5.idc.renesas.com with ESMTP; 07 Jan 2021 23:54:15 +0900
-Received: from localhost.localdomain (unknown [10.226.36.204])
-        by relmlir5.idc.renesas.com (Postfix) with ESMTP id B8DF54010916;
-        Thu,  7 Jan 2021 23:54:13 +0900 (JST)
-From:   Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-To:     Geert Uytterhoeven <geert+renesas@glider.be>,
-        Pavel Machek <pavel@denx.de>, Mark Brown <broonie@kernel.org>
-Cc:     linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-renesas-soc@vger.kernel.org,
-        Prabhakar <prabhakar.csengg@gmail.com>,
-        Biju Das <biju.das.jz@bp.renesas.com>,
-        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Subject: [PATCH] spi: rpc-if: Gaurd .pm assignment with CONFIG_PM_SLEEP #ifdef check
-Date:   Thu,  7 Jan 2021 14:53:29 +0000
-Message-Id: <20210107145329.27966-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
-X-Mailer: git-send-email 2.17.1
+        Thu, 7 Jan 2021 09:56:32 -0500
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 371F1C0612F6
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Jan 2021 06:55:52 -0800 (PST)
+Received: from lupine.hi.pengutronix.de ([2001:67c:670:100:3ad5:47ff:feaf:1a17] helo=lupine)
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <p.zabel@pengutronix.de>)
+        id 1kxWhV-0006TA-EU; Thu, 07 Jan 2021 15:55:45 +0100
+Received: from pza by lupine with local (Exim 4.92)
+        (envelope-from <p.zabel@pengutronix.de>)
+        id 1kxWhP-0003zw-Fm; Thu, 07 Jan 2021 15:55:39 +0100
+Message-ID: <a23ab40e50a761bd2127df6bc8b2a91e99a1617c.camel@pengutronix.de>
+Subject: Re: [PATCH 3/5] dt-bindings: media: rockchip-vpu: Add PX30
+ compatible
+From:   Philipp Zabel <p.zabel@pengutronix.de>
+To:     Paul Kocialkowski <paul.kocialkowski@bootlin.com>,
+        linux-media@vger.kernel.org, linux-rockchip@lists.infradead.org,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Cc:     Jacob Chen <jacob-chen@iotwrt.com>,
+        Ezequiel Garcia <ezequiel@collabora.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>
+Date:   Thu, 07 Jan 2021 15:55:39 +0100
+In-Reply-To: <20210107134101.195426-4-paul.kocialkowski@bootlin.com>
+References: <20210107134101.195426-1-paul.kocialkowski@bootlin.com>
+         <20210107134101.195426-4-paul.kocialkowski@bootlin.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+User-Agent: Evolution 3.30.5-1.1 
+MIME-Version: 1.0
+X-SA-Exim-Connect-IP: 2001:67c:670:100:3ad5:47ff:feaf:1a17
+X-SA-Exim-Mail-From: p.zabel@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-With CONFIG_PM_SLEEP disabled the rpcif_spi_pm_ops variable is still
-referenced and thus increasing the size of kernel.
+Hi Paul,
 
-Fix this issue by adding CONFIG_PM_SLEEP #ifdef check around the .pm
-assignment (image size is critical on RZ/A SoC's where the SRAM sizes
-range 4~5 MiB).
+On Thu, 2021-01-07 at 14:40 +0100, Paul Kocialkowski wrote:
+> The Rockchip PX30 SoC has a Hantro VPU that features a decoder (VDPU2)
+> and an encoder (VEPU2). It is similar to the RK3399's VPU but takes an
+> extra clock (SCLK).
+> 
+> Signed-off-by: Paul Kocialkowski <paul.kocialkowski@bootlin.com>
+> ---
+>  .../bindings/media/rockchip-vpu.yaml          | 25 +++++++++++++------
+>  1 file changed, 17 insertions(+), 8 deletions(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/media/rockchip-vpu.yaml b/Documentation/devicetree/bindings/media/rockchip-vpu.yaml
+> index c81dbc3e8960..c446b9ead21b 100644
+> --- a/Documentation/devicetree/bindings/media/rockchip-vpu.yaml
+> +++ b/Documentation/devicetree/bindings/media/rockchip-vpu.yaml
+> @@ -15,10 +15,13 @@ description:
+>  
+>  properties:
+>    compatible:
+> -    enum:
+> -      - rockchip,rk3288-vpu
+> -      - rockchip,rk3328-vpu
+> -      - rockchip,rk3399-vpu
+> +    oneOf:
+> +      - const: rockchip,rk3288-vpu
+> +      - const: rockchip,rk3328-vpu
+> +      - const: rockchip,rk3399-vpu
+> +      - items:
+> +        - const: rockchip,px30-vpu
+> +        - const: rockchip,rk3399-vpu
+>  
+>    reg:
+>      maxItems: 1
+> @@ -35,12 +38,18 @@ properties:
+>            - const: vdpu
+>  
+>    clocks:
+> -    maxItems: 2
+> +    minItems: 2
+> +    maxItems: 3
+>  
+>    clock-names:
+> -    items:
+> -      - const: aclk
+> -      - const: hclk
+> +    oneOf:
+> +      - items:
+> +        - const: aclk
+> +        - const: hclk
+> +      - items:
+> +        - const: aclk
+> +        - const: hclk
+> +        - const: sclk
 
-Fixes: 9584fc95cadc0 ("spi: rpc-if: Remove CONFIG_PM_SLEEP ifdefery")
-Reported-by: Geert Uytterhoeven <geert+renesas@glider.be>
-Suggested-by: Pavel Machek <pavel@denx.de>
-Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
----
- drivers/spi/spi-rpc-if.c | 2 ++
- 1 file changed, 2 insertions(+)
+You could make this:
 
-diff --git a/drivers/spi/spi-rpc-if.c b/drivers/spi/spi-rpc-if.c
-index c313dbe6185c..c53138ce0030 100644
---- a/drivers/spi/spi-rpc-if.c
-+++ b/drivers/spi/spi-rpc-if.c
-@@ -197,7 +197,9 @@ static struct platform_driver rpcif_spi_driver = {
- 	.remove	= rpcif_spi_remove,
- 	.driver = {
- 		.name	= "rpc-if-spi",
-+#ifdef CONFIG_PM_SLEEP
- 		.pm	= &rpcif_spi_pm_ops,
-+#endif
- 	},
- };
- module_platform_driver(rpcif_spi_driver);
--- 
-2.17.1
+    clock-names:
+      minItems: 2
+      items:
+        - const: aclk
+        - const: hclk
+        - const: sclk
 
+And then:
+
+allOf:
+  - if:
+      properties:
+        compatible:
+          contains:
+            const: rockchip,px30-vpu
+    then:
+      properties:
+        clock-names:
+          minItems: 3
+
+to make sure each variant has the correct clocks set.
+
+regards
+Philipp
