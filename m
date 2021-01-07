@@ -2,136 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A5FD2EE819
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 23:06:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 67C172EE81D
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 23:06:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727822AbhAGWFo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 17:05:44 -0500
-Received: from aserp2120.oracle.com ([141.146.126.78]:33940 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725944AbhAGWFn (ORCPT
+        id S1727903AbhAGWFt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 17:05:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43160 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725944AbhAGWFs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 17:05:43 -0500
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 107LtEAY072323;
-        Thu, 7 Jan 2021 22:04:43 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=GrCH6Lvgz6ROdInHx6NZ168A/eibRwVUHX6+Q+x+Klo=;
- b=TjNWXU3TFXfgk2NKU1qHsa4QdtDyqjVbachZvz19rhi4omCzfTf6WaGpfQOGCwmcA3aN
- MbWrVDjHxtg3W/4OpNnFM12uz76lQe67hpRTOjdUxZeVN/MX7DfrwZq0LgWwHcRU/A1v
- yYz3yXSL+s10QKjpnj+64tIbme+VsyJHFVLBYHkhRW1T9OLq2dVSuXpz8BTSKlDz5Fqh
- aJRczosiUmSO3wMxLyf9Keddoq1z7bgRiW80pBA6tJbIFCz9paAb9LACo5dJUlmeLTAT
- EYMDgiG7mJgsC41UN2McRQWKfBogo+5X2dTi5XyqIAeTyfYFvmqOr1toVhw3b1izfyAZ EA== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by aserp2120.oracle.com with ESMTP id 35wepmekqn-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 07 Jan 2021 22:04:43 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 107Lt9Ni126833;
-        Thu, 7 Jan 2021 22:04:43 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by aserp3020.oracle.com with ESMTP id 35v1fbs63t-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 07 Jan 2021 22:04:43 +0000
-Received: from abhmp0018.oracle.com (abhmp0018.oracle.com [141.146.116.24])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 107M4cdH010716;
-        Thu, 7 Jan 2021 22:04:39 GMT
-Received: from [192.168.2.112] (/50.38.35.18)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Thu, 07 Jan 2021 22:04:38 +0000
-Subject: Re: [PATCH 3/6] hugetlb: add free page reporting support
-To:     Alexander Duyck <alexander.h.duyck@linux.intel.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        David Hildenbrand <david@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Liang Li <liliangleo@didiglobal.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org,
-        virtualization@lists.linux-foundation.org
-References: <20210106034918.GA1154@open-light-1.localdomain>
-From:   Mike Kravetz <mike.kravetz@oracle.com>
-Message-ID: <3bfdbe48-5818-7470-4c3b-96e62d387fb4@oracle.com>
-Date:   Thu, 7 Jan 2021 14:04:37 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.1.1
+        Thu, 7 Jan 2021 17:05:48 -0500
+Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5A2BC0612F5;
+        Thu,  7 Jan 2021 14:05:07 -0800 (PST)
+Received: by mail-lf1-x12b.google.com with SMTP id o17so18272717lfg.4;
+        Thu, 07 Jan 2021 14:05:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:from:to:cc:references:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=JQNiO2Mnj6QxwX1KOBemH+gofG2EOUwTUr4JeDXvjvk=;
+        b=jgw+CU1Q5PZmru7wKEP4suIgDUIZgoXFY6oAGUeETSt3z6gUwm9UKspKZpb1nO8/Ag
+         tPGxXtiV9S/qr0zbBLdE5X23OjABwUyrDRCzhFE5gIW3H8/pnCYGVJJ7TGwIIxx2kmjp
+         J8UOvbmVaHdhStxm/2Looa/gR4Wx0Yfzy+0C5JqTd0v5aAPV4B8bYDrHCtVzXMtqaojd
+         O74nNncQCLwjvxpr2UbkEeyVFlJ69fCRz8KSTPXMqxgqQzJnWEvKKfiG0yj+8Ne/wcgd
+         IYOdgGItsHSB5pOVN9N2rxUDvl0qEFuvstdsVLkKWfL9zJaU78K7leiRzC+4waChx+j8
+         rFuw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=JQNiO2Mnj6QxwX1KOBemH+gofG2EOUwTUr4JeDXvjvk=;
+        b=HME2otYDn28QTZs1BbXj+SGWYqO0iUamisocPIzDVWHbNS29gTLpxG2RM5SnsI/hs4
+         O1iTqB1h3gxcBg9yZJKl9rBU1pwFZfVBzjcXldU4L+KKKpvsXcJp+VYg9leUtixoGPi0
+         ziqm2I9vTaRU0DcZopZMhCsSxkwhFGBDceXBI2RYWSW073kwEpxI8dnL8+iP6puDmw4S
+         gh7c/RSXpAdVi7Qb635Sl0iaMdGztNy3u4azZVtrFX2OhtW0lg5udKyl/Z8SW4DXn7XS
+         ekfa0Mv1pbMnRNBf0YZ21uBsyEg/YNE+nRy9WiGS7LIPbcxPAYY2zMvaT2bibY7n92K4
+         v8Ig==
+X-Gm-Message-State: AOAM530pHlPOUiGfR66Uw79fGixZ13hzYLbo0Z3rhbfCOKVnnCnLvBxc
+        k2ze4tjNPbz0ojIM9hE9qV9CF5ZdMdQ=
+X-Google-Smtp-Source: ABdhPJyKqM9KoMtCnGj//sZ+f2Zm5WBIE6fUHYwgGxtsGuMPhEBZqVCWR5E9Tbuml69jadxCYBYxLA==
+X-Received: by 2002:a2e:93d6:: with SMTP id p22mr225896ljh.169.1610057105955;
+        Thu, 07 Jan 2021 14:05:05 -0800 (PST)
+Received: from [192.168.2.145] (109-252-192-57.dynamic.spd-mgts.ru. [109.252.192.57])
+        by smtp.googlemail.com with ESMTPSA id f27sm1433917lfk.293.2021.01.07.14.05.04
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 07 Jan 2021 14:05:05 -0800 (PST)
+Subject: Re: [PATCH v3 0/3] Support wakeup methods of Atmel maXTouch
+ controllers
+From:   Dmitry Osipenko <digetx@gmail.com>
+To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Cc:     Nick Dyer <nick@shmanahar.org>, Rob Herring <robh+dt@kernel.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Jiada Wang <jiada_wang@mentor.com>,
+        linux-input@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20201206212217.6857-1-digetx@gmail.com>
+ <X9QuTuGEicUnlaJp@google.com>
+ <3577ed5b-feff-5915-7d70-5fa8fe4a0a82@gmail.com>
+ <X9WblR19HZPZ5XtY@google.com>
+ <6b515373-e7b3-4700-7d34-4413a630c461@gmail.com>
+Message-ID: <508585f7-6c2b-3b33-ada8-91cc15ed683e@gmail.com>
+Date:   Fri, 8 Jan 2021 01:05:04 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.2
 MIME-Version: 1.0
-In-Reply-To: <20210106034918.GA1154@open-light-1.localdomain>
+In-Reply-To: <6b515373-e7b3-4700-7d34-4413a630c461@gmail.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9857 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 phishscore=0
- suspectscore=0 spamscore=0 bulkscore=0 adultscore=0 mlxscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2101070125
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9857 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 bulkscore=0 spamscore=0
- impostorscore=0 phishscore=0 lowpriorityscore=0 suspectscore=0
- priorityscore=1501 mlxscore=0 malwarescore=0 clxscore=1015 mlxlogscore=999
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2101070125
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 1/5/21 7:49 PM, Liang Li wrote:
-> hugetlb manages its page in hstate's free page list, not in buddy
-> system, this patch try to make it works for hugetlbfs. It canbe
-> used for memory overcommit in virtualization and hugetlb pre zero
-> out.
-
-I am not looking closely at the hugetlb changes yet.  There seem to be
-higher level questions about page reporting/etc.  Once those are sorted,
-I will be happy to take a closer look.  One quick question below.
-
-> --- a/mm/hugetlb.c
-> +++ b/mm/hugetlb.c
-> @@ -41,6 +41,7 @@
->  #include <linux/node.h>
->  #include <linux/userfaultfd_k.h>
->  #include <linux/page_owner.h>
-> +#include "page_reporting.h"
->  #include "internal.h"
->  
->  int hugetlb_max_hstate __read_mostly;
-> @@ -1028,6 +1029,9 @@ static void enqueue_huge_page(struct hstate *h, struct page *page)
->  	list_move(&page->lru, &h->hugepage_freelists[nid]);
->  	h->free_huge_pages++;
->  	h->free_huge_pages_node[nid]++;
-> +	if (hugepage_reported(page))
-> +		__ClearPageReported(page);
-> +	hugepage_reporting_notify_free(h->order);
+13.12.2020 12:26, Dmitry Osipenko пишет:
+> 13.12.2020 07:41, Dmitry Torokhov пишет:
+>> Thank you for the logs. I am confused where these calls to put the
+>> controller into deep sleep are coming from. Does something constantly
+>> open and close input device?
+> 
+> Input devices are re-opened multiple times during Linux distro boot-up,
+> a regular Ubuntu 20.10 in this case.
+> 
+>> Do you have any additional patches?
+> 
+> No, I'm using next-20201211 + this "wakeup methods" patchset.
+> 
+>> We definitely do not issue deep sleep request in mxt_start(). Do you mind
+>> putting dump_stack() into mxt_set_t7_power_cfg() to see where the calls
+>> are coming from?
+> 
+> Please see the log below, I added it like this:
+> 
+> diff --git a/drivers/input/touchscreen/atmel_mxt_ts.c
+> b/drivers/input/touchscreen/atmel_mxt_ts.c
+> index e3342fdfe9f3..bbc5a5ee158a 100644
+> --- a/drivers/input/touchscreen/atmel_mxt_ts.c
+> +++ b/drivers/input/touchscreen/atmel_mxt_ts.c
+> @@ -2271,6 +2271,8 @@ static int mxt_set_t7_power_cfg(struct mxt_data
+> *data, u8 sleep)
+>  	dev_dbg(dev, "Set T7 ACTV:%d IDLE:%d\n",
+>  		new_config->active, new_config->idle);
+> 
+> +	dump_stack();
+> +
+>  	return 0;
 >  }
->  
->  static struct page *dequeue_huge_page_node_exact(struct hstate *h, int nid)
-> @@ -5531,6 +5535,21 @@ follow_huge_pgd(struct mm_struct *mm, unsigned long address, pgd_t *pgd, int fla
->  	return pte_page(*(pte_t *)pgd) + ((address & ~PGDIR_MASK) >> PAGE_SHIFT);
->  }
->  
-> +void isolate_free_huge_page(struct page *page, struct hstate *h, int nid)
-> +{
-> +	VM_BUG_ON_PAGE(!PageHead(page), page);
-> +
-> +	list_move(&page->lru, &h->hugepage_activelist);
-> +	set_page_refcounted(page);
-> +}
-> +
-> +void putback_isolate_huge_page(struct hstate *h, struct page *page)
-> +{
-> +	int nid = page_to_nid(page);
-> +
-> +	list_move(&page->lru, &h->hugepage_freelists[nid]);
-> +}
-
-The above routines move pages between the free and active lists without any
-update to free page counts.  How does that work?  Will the number of entries
-on the free list get out of sync with the free_huge_pages counters?
--- 
-Mike Kravetz
+> 
+>> I also do not see additional "waking up controller" messages after
+>> requesting the chip via T7 to be configured to be active, which I'd
+>> expected to see if we indeed needed to wake it up again for T6 to
+>> succeed.
+> 
+> I'm not familiar with what controller does internally, hence no clue.
+> 
+> 
+> [ 1.195295] Family: 160 Variant: 0 Firmware V1.0.AA Objects: 18
+> [ 1.195468] T37 Start:118 Size:130 Instances:1 Report IDs:0-0
+...
+Dmitry Torokhov, do you have any more comments? Are you okay with v3? If
+yes, could you please pick up patches into -next?
