@@ -2,113 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FD0F2ED1FF
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 15:22:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A4B22ED207
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 15:25:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729041AbhAGOV2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 09:21:28 -0500
-Received: from mga09.intel.com ([134.134.136.24]:4351 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728803AbhAGOVW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 09:21:22 -0500
-IronPort-SDR: wPTAZYM+dwrpEDle/8SEgdSClQuZjItfMNctDuXvsnkI7WZ5663BwnOVXiyPuiJKfXAe5rILKA
- cDZFaIIrNiOA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9856"; a="177580001"
-X-IronPort-AV: E=Sophos;i="5.79,329,1602572400"; 
-   d="scan'208";a="177580001"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Jan 2021 06:19:36 -0800
-IronPort-SDR: YfixWJrWgNYv8tr761IPsUQCwe+V6bkXofZSRYPG1yOiH8/5dqXajnm1QoN2lrPZvJ+HjfJDN4
- 6SrV3pu6uZAg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.79,329,1602572400"; 
-   d="scan'208";a="463047740"
-Received: from kuha.fi.intel.com ([10.237.72.162])
-  by fmsmga001.fm.intel.com with SMTP; 07 Jan 2021 06:19:33 -0800
-Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Thu, 07 Jan 2021 16:19:32 +0200
-Date:   Thu, 7 Jan 2021 16:19:32 +0200
-From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
-To:     Daniel Scally <djrscally@gmail.com>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        linux-kernel@vger.kernel.org, rafael@kernel.org,
-        gregkh@linuxfoundation.org, sakari.ailus@linux.intel.com
-Subject: Re: [PATCH] software_node: Add kernel-doc comments to exported
- symbols
-Message-ID: <20210107141932.GJ940479@kuha.fi.intel.com>
-References: <20210104234736.419493-1-djrscally@gmail.com>
- <20210105145329.GO4077@smile.fi.intel.com>
- <3d92e535-c955-502a-24ac-0655752796fc@gmail.com>
+        id S1728966AbhAGOW1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 09:22:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55250 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726436AbhAGOWZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Jan 2021 09:22:25 -0500
+Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D277EC0612F5
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Jan 2021 06:21:44 -0800 (PST)
+Received: by mail-ej1-x632.google.com with SMTP id ga15so9942810ejb.4
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Jan 2021 06:21:44 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=9XphW4qRvsvPkDpcKFQBM3ZMGk3H03d/R4eSCmWd/3I=;
+        b=xO8iNhuBKIX4hsI2v/zY7BHU7bJx8icJXoZ/Vhr3PwDP94WtktHjZjrzj127Wl7JyQ
+         b0Mj4s6MzC526rXro8ZOXNF+0T7IHNNJ8km7cNLY8WadedNFgin36fEaHIaUvB5glPBs
+         IM6oGdTqkMFGkqSTu3Mhda6RH6ti5ee8cE/UXqI6Vse8G4bRomSJ8CuQ59YpLlbgAPc+
+         P9bOvisnlz3+rSAhts+GdQzjOoWrq4/nvufoL3SmZrCJkvgs41yO8rP+1KRq16ggAdCY
+         lBNaycH6OfEC0YN2qnwgV9V+y/Yk/Zn8TSsSi2ML9SVmfD+0qCHZiwIYtW+cS5W52dt9
+         4XDg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=9XphW4qRvsvPkDpcKFQBM3ZMGk3H03d/R4eSCmWd/3I=;
+        b=McKjTlhwb125cl/vi6le70SIiqXPiBPSGMMeDq4nTICUkNEuo7Nx3uvW4acZtjm1+t
+         chRH+ksdzUHT69z5u0S1T652uU9BRg3zdw9ewJKRMTZA/H8eRvEu8T4IjXeeBEyAYYc6
+         sv5BRASdfQBrUKfeuFMvXofJE09hZwyA7e9Z0vzeuLHRt8hyKSY9svHv56IvdHMvBIBJ
+         4p1V86rn4s+hKw7KPuah6UQTpGpL97mV3BYk38y7JYhpOVHpmjuvcYoShdRvE3QjcobD
+         2LK0lHuODNSiV35wdn2kjalUtM4pOwVBWYt/quZFcqA4QwRqiJFqJYkFilGqNdePiIuX
+         NYkQ==
+X-Gm-Message-State: AOAM5334BxCW3lm4eVDg0OXmouMVNo2VfsssIPMAa+q+U2ZzIKcK575g
+        wqLXPwoLXo1eLexdxA1jrZ+2Gw==
+X-Google-Smtp-Source: ABdhPJygBz1SpT4Q0wFwMTmvFz3T1BZuqYVJ3MJGw+K9ePNmvj0yFA8aIlbR8AxHnBs3YyQhB/CiUg==
+X-Received: by 2002:a17:906:e247:: with SMTP id gq7mr6745586ejb.27.1610029303591;
+        Thu, 07 Jan 2021 06:21:43 -0800 (PST)
+Received: from localhost.localdomain ([2a02:2450:102f:d6a:a3f6:c728:8a3d:e3e4])
+        by smtp.gmail.com with ESMTPSA id gl23sm2498177ejb.87.2021.01.07.06.21.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 07 Jan 2021 06:21:42 -0800 (PST)
+From:   Robert Foss <robert.foss@linaro.org>
+To:     dongchun.zhu@mediatek.com, mchehab@kernel.org,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Dongchun Zhu <Dongchun.Zhu@mediatek.com>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Bingbu Cao <bingbu.cao@linux.intel.com>
+Cc:     Tomasz Figa <tfiga@google.com>,
+        Robert Foss <robert.foss@linaro.org>
+Subject: [PATCH v2] media: ov8856: Fix Bayer format dependance on mode
+Date:   Thu,  7 Jan 2021 15:21:23 +0100
+Message-Id: <20210107142123.639477-1-robert.foss@linaro.org>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <3d92e535-c955-502a-24ac-0655752796fc@gmail.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 05, 2021 at 03:39:42PM +0000, Daniel Scally wrote:
-> Hi Andy
-> 
-> On 05/01/2021 14:53, Andy Shevchenko wrote:
-> > On Mon, Jan 04, 2021 at 11:47:36PM +0000, Daniel Scally wrote:
-> >> A number of functions which are exported via EXPORT_SYMBOL_GPL() lack any
-> >> kernel-doc comments; add those in so all exported symbols are documented.
-> > Thanks, it's helpful!
-> > Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> > after addressing few nitpicks
-> Thanks for reviewing
-> >> Signed-off-by: Daniel Scally <djrscally@gmail.com>
-> >> ---
-> >> With a view to maybe writing some documentation once the fwnode_graph_*()
-> >> functions are also added.
-> > FWIW, Heikki used to have a draft patch of swnode documentation, not sure
-> > what's the current status of it.
-> Oh cool ok; I'll defer to him then.
+The Bayer GRBG10 mode used for earlier modes 3280x2460 and
+1640x1232 isn't the mode output by the sensor for the
+3264x2448 and 1632x1224 modes.
 
-I actually had a similar patch prepared as part of the series adding
-the documentation for software nodes, but your comments are better
-than mine. So, after you have addressed Andy's comments:
+Switch from MEDIA_BUS_FMT_SGRBG10_1X10 to MEDIA_BUS_FMT_SBGGR10_1X10
+for 3264x2448 & 1632x1224 modes.
 
-Reviewed-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+Signed-off-by: Robert Foss <robert.foss@linaro.org>
+---
 
-> >> + * copy of the given array of properties and registers it as a new fwnode_handle.
-> >> + * Freeing of the allocated memory when the fwnode_handle is no longer needed is
-> >> + * handled via software_node_release() and does not need to be done separately.
-> >> + *
-> >> + * Returns:
-> >> + * * fwnode_handle *	- On success
-> >> + * * -EINVAL		- When @parent is not associated with a software_node
-> >> + * * -ENOMEM		- When memory allocation fails
-> >> + * * -Other		- Propagated errors from sub-functions
-> >> + */
-> >>  struct fwnode_handle *
-> >>  fwnode_create_software_node(const struct property_entry *properties,
-> >>  			    const struct fwnode_handle *parent)
-> >> @@ -832,6 +875,15 @@ fwnode_create_software_node(const struct property_entry *properties,
-> >>  }
-> >>  EXPORT_SYMBOL_GPL(fwnode_create_software_node);
-> >>  
-> >> +/**
-> >> + * fwnode_remove_software_node() - Put a reference to a registered software_node
-> >> + * @fwnode: The pointer to the &struct fwnode_handle you want to release
-> >> + *
-> >> + * Release a reference to a registered &struct software_node. This function
-> >> + * differs from software_node_put() in that it takes no action if the
-> >> + * fwnode_handle passed to @fwnode turns out not to have been created by
-> >> + * registering a software_node
-> > Period at the end.
-> >
-> > I'm a bit confused by amount of fwnode_handle in the comments, can you replace
-> > them with better approach depending on the case:
-> > - &struct fwnode_handle
-> > - a parameter as @fwnode or so
-> > - a general mention (better to use plain English here, something like firmware
-> >   node handle or so)
-> Yeah ok, I was trying to do &struct fwnode_handle on the first reference
-> (or at least earliest that it would fit) and then fwnode_handle
-> thereafter, but I think I like the suggestion to drop to plain English
-> at that point instead, so I'll do that (and ditto for software_node /
-> software node)
+Changes since v1:
+ - Sakari: Added mode information to ov8856_mode struct
+ - Sakari: enum_mbus_code updated
 
+ drivers/media/i2c/ov8856.c | 24 ++++++++++++++++++------
+ 1 file changed, 18 insertions(+), 6 deletions(-)
+
+diff --git a/drivers/media/i2c/ov8856.c b/drivers/media/i2c/ov8856.c
+index 2f4ceaa80593..7cd83564585c 100644
+--- a/drivers/media/i2c/ov8856.c
++++ b/drivers/media/i2c/ov8856.c
+@@ -126,6 +126,9 @@ struct ov8856_mode {
+ 
+ 	/* Sensor register settings for this resolution */
+ 	const struct ov8856_reg_list reg_list;
++
++	/* MEDIA_BUS_FMT for this mode */
++	u32 code;
+ };
+ 
+ static const struct ov8856_reg mipi_data_rate_720mbps[] = {
+@@ -942,6 +945,11 @@ static const char * const ov8856_test_pattern_menu[] = {
+ 	"Bottom-Top Darker Color Bar"
+ };
+ 
++static const u32 ov8856_formats[] = {
++	MEDIA_BUS_FMT_SBGGR10_1X10,
++	MEDIA_BUS_FMT_SGRBG10_1X10,
++};
++
+ static const s64 link_freq_menu_items[] = {
+ 	OV8856_LINK_FREQ_360MHZ,
+ 	OV8856_LINK_FREQ_180MHZ
+@@ -974,6 +982,7 @@ static const struct ov8856_mode supported_modes[] = {
+ 			.regs = mode_3280x2464_regs,
+ 		},
+ 		.link_freq_index = OV8856_LINK_FREQ_720MBPS,
++		.code = MEDIA_BUS_FMT_SGRBG10_1X10,
+ 	},
+ 	{
+ 		.width = 3264,
+@@ -986,6 +995,7 @@ static const struct ov8856_mode supported_modes[] = {
+ 			.regs = mode_3264x2448_regs,
+ 		},
+ 		.link_freq_index = OV8856_LINK_FREQ_720MBPS,
++		.code = MEDIA_BUS_FMT_SBGGR10_1X10,
+ 	},
+ 	{
+ 		.width = 1640,
+@@ -998,6 +1008,7 @@ static const struct ov8856_mode supported_modes[] = {
+ 			.regs = mode_1640x1232_regs,
+ 		},
+ 		.link_freq_index = OV8856_LINK_FREQ_360MBPS,
++		.code = MEDIA_BUS_FMT_SGRBG10_1X10,
+ 	},
+ 	{
+ 		.width = 1632,
+@@ -1010,6 +1021,7 @@ static const struct ov8856_mode supported_modes[] = {
+ 			.regs = mode_1632x1224_regs,
+ 		},
+ 		.link_freq_index = OV8856_LINK_FREQ_360MBPS,
++		.code = MEDIA_BUS_FMT_SBGGR10_1X10,
+ 	}
+ };
+ 
+@@ -1281,8 +1293,8 @@ static void ov8856_update_pad_format(const struct ov8856_mode *mode,
+ {
+ 	fmt->width = mode->width;
+ 	fmt->height = mode->height;
+-	fmt->code = MEDIA_BUS_FMT_SGRBG10_1X10;
+ 	fmt->field = V4L2_FIELD_NONE;
++	fmt->code = mode->code;
+ }
+ 
+ static int ov8856_start_streaming(struct ov8856 *ov8856)
+@@ -1519,11 +1531,10 @@ static int ov8856_enum_mbus_code(struct v4l2_subdev *sd,
+ 				 struct v4l2_subdev_pad_config *cfg,
+ 				 struct v4l2_subdev_mbus_code_enum *code)
+ {
+-	/* Only one bayer order GRBG is supported */
+-	if (code->index > 0)
++	if (code->index >= ARRAY_SIZE(ov8856_formats))
+ 		return -EINVAL;
+ 
+-	code->code = MEDIA_BUS_FMT_SGRBG10_1X10;
++	code->code = ov8856_formats[code->index];
+ 
+ 	return 0;
+ }
+@@ -1532,10 +1543,11 @@ static int ov8856_enum_frame_size(struct v4l2_subdev *sd,
+ 				  struct v4l2_subdev_pad_config *cfg,
+ 				  struct v4l2_subdev_frame_size_enum *fse)
+ {
+-	if (fse->index >= ARRAY_SIZE(supported_modes))
++	if ((fse->code != ov8856_formats[0]) &&
++	    (fse->code != ov8856_formats[1]))
+ 		return -EINVAL;
+ 
+-	if (fse->code != MEDIA_BUS_FMT_SGRBG10_1X10)
++	if (fse->index >= ARRAY_SIZE(supported_modes))
+ 		return -EINVAL;
+ 
+ 	fse->min_width = supported_modes[fse->index].width;
 -- 
-heikki
+2.27.0
+
