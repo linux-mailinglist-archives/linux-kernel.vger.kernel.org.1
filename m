@@ -2,134 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 81B392ECFB3
+	by mail.lfdr.de (Postfix) with ESMTP id 0AEAB2ECFB2
 	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 13:31:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728251AbhAGMbA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 07:31:00 -0500
-Received: from mailgw02.mediatek.com ([210.61.82.184]:57299 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1728223AbhAGMa5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S1728231AbhAGMa5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Thu, 7 Jan 2021 07:30:57 -0500
-X-UUID: 553a4b6a982248ce9fd2525244d4dcc4-20210107
-X-UUID: 553a4b6a982248ce9fd2525244d4dcc4-20210107
-Received: from mtkcas07.mediatek.inc [(172.21.101.84)] by mailgw02.mediatek.com
-        (envelope-from <yong.wu@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 285571440; Thu, 07 Jan 2021 20:30:35 +0800
-Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
- mtkmbs07n1.mediatek.inc (172.21.101.16) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Thu, 7 Jan 2021 20:30:33 +0800
-Received: from localhost.localdomain (10.17.3.153) by MTKCAS06.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Thu, 7 Jan 2021 20:30:32 +0800
-From:   Yong Wu <yong.wu@mediatek.com>
-To:     Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
-        Robin Murphy <robin.murphy@arm.com>
-CC:     Matthias Brugger <matthias.bgg@gmail.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Tomasz Figa <tfiga@google.com>,
-        <linux-mediatek@lists.infradead.org>,
-        <srv_heupstream@mediatek.com>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <iommu@lists.linux-foundation.org>, <yong.wu@mediatek.com>,
-        <youlin.pei@mediatek.com>, Nicolas Boichat <drinkcat@chromium.org>,
-        <anan.sun@mediatek.com>, <chao.hao@mediatek.com>,
-        Greg Kroah-Hartman <gregkh@google.com>,
-        <kernel-team@android.com>, Christoph Hellwig <hch@infradead.org>,
-        David Laight <David.Laight@ACULAB.COM>
-Subject: [PATCH v4 7/7] iommu/mediatek: Remove the tlb-ops for v7s
-Date:   Thu, 7 Jan 2021 20:29:09 +0800
-Message-ID: <20210107122909.16317-8-yong.wu@mediatek.com>
-X-Mailer: git-send-email 2.18.0
-In-Reply-To: <20210107122909.16317-1-yong.wu@mediatek.com>
-References: <20210107122909.16317-1-yong.wu@mediatek.com>
+Received: from mail-40131.protonmail.ch ([185.70.40.131]:50897 "EHLO
+        mail-40131.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728187AbhAGMay (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Jan 2021 07:30:54 -0500
+Date:   Thu, 07 Jan 2021 12:30:08 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me; s=protonmail;
+        t=1610022611; bh=e3bnSwSnCE4VZ3KFWoriT36YdZpDmKtvitn1N44EPZE=;
+        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
+        b=XCLeYds6RzSh90AdJ1CaF4KFV3CHWPyxMwMhTa83qQc7MJ+JXPWLc+/UvPMcxndVL
+         UiIFs1v1aKyG7f+cHiMq0XOWCY5IprIKS53oJ8y2+6AGa6QfX0PBurvT/8qz+F9HHz
+         bLFgEVtQ8WvHyC+JvYTUjZwDYrrr5WIa6smG/oVCwR3QsHqwrxRa26XWHEqYUStDnV
+         vaImFwahpngARKQ2Tzzgva60b/NBSfy4khM8l8epRK6+VyShEk6i/Okcwx/sn8Ochk
+         26aHQbFY5oF817lW77n3OgIvBrlf5MlXKDJd3khCX9vwmc5yS697cb+qX+xCRtr3Vs
+         RQaI2SRl9GiOQ==
+To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+From:   Alexander Lobakin <alobakin@pm.me>
+Cc:     Alexander Lobakin <alobakin@pm.me>, Arnd Bergmann <arnd@arndb.de>,
+        Kees Cook <keescook@chromium.org>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Fangrui Song <maskray@google.com>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Pei Huang <huangpei@loongson.cn>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        Ralf Baechle <ralf@linux-mips.org>,
+        Corey Minyard <cminyard@mvista.com>,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arch@vger.kernel.org, stable@vger.kernel.org,
+        clang-built-linux@googlegroups.com
+Reply-To: Alexander Lobakin <alobakin@pm.me>
+Subject: Re: [PATCH v3 mips-next 0/7] MIPS: vmlinux.lds.S sections fixes & cleanup
+Message-ID: <20210107122944.353565-1-alobakin@pm.me>
+In-Reply-To: <20210107115120.281008-1-alobakin@pm.me>
+References: <20210107115120.281008-1-alobakin@pm.me>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
+        autolearn=disabled version=3.4.4
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
+        mailout.protonmail.ch
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Until now, we have already used the tlb operations from iommu framework,
-then the tlb operations for v7s can be removed.
+> This series hunts the problems discovered after manual enabling of
+> ARCH_WANT_LD_ORPHAN_WARN. Notably:
+>  - adds the missing PAGE_ALIGNED_DATA() section affecting VDSO
+>    placement (marked for stable);
+>  - properly stops .eh_frame section generation.
+>=20
+> Compile and runtime tested on MIPS32R2 CPS board with no issues
+> using two different toolkits:
+>  - Binutils 2.35.1, GCC 10.2.0;
+>  - LLVM stack 11.0.0.
+>=20
+> Since v2 [1]:
+>  - stop discarding .eh_frame and just prevent it from generating
+>    (Kees);
+>  - drop redundant sections assertions (Fangrui);
+>  - place GOT table in .text instead of asserting as it's not empty
+>    when building with LLVM (Nathan);
+>  - catch compound literals in generic definitions when building with
+>    LD_DEAD_CODE_DATA_ELIMINATION (Kees);
+>  - collect two Reviewed-bys (Kees).
+>=20
+> Since v1 [0]:
+>  - catch .got entries too as LLD may produce it (Nathan);
+>  - check for unwanted sections to be zero-sized instead of
+>    discarding (Fangrui).
+>=20
+> [0] https://lore.kernel.org/linux-mips/20210104121729.46981-1-alobakin@pm=
+.me
+> [1] https://lore.kernel.org/linux-mips/20210106200713.31840-1-alobakin@pm=
+.me
+>=20
+> Alexander Lobakin (7):
+>   MIPS: vmlinux.lds.S: add missing PAGE_ALIGNED_DATA() section
+>   MIPS: vmlinux.lds.S: add ".gnu.attributes" to DISCARDS
+>   MIPS: properly stop .eh_frame generation
 
-Correspondingly, Switch the paramenter "cookie" to the internal structure.
+Well, GNU fails to build VDSO with this patch... Sorry, sending
+v4 now.
 
-Signed-off-by: Yong Wu <yong.wu@mediatek.com>
----
- drivers/iommu/mtk_iommu.c | 27 ++++-----------------------
- 1 file changed, 4 insertions(+), 23 deletions(-)
+>   MIPS: vmlinux.lds.S: catch bad .rel.dyn at link time
+>   MIPS: vmlinux.lds.S: explicitly declare .got table
+>   vmlinux.lds.h: catch compound literals into data and BSS
+>   MIPS: select ARCH_WANT_LD_ORPHAN_WARN
+>=20
+>  arch/mips/Kconfig                 |  1 +
+>  arch/mips/include/asm/asm.h       | 18 ++++++++++++++++++
+>  arch/mips/kernel/vmlinux.lds.S    | 15 ++++++++++++++-
+>  include/asm-generic/vmlinux.lds.h |  6 +++---
+>  4 files changed, 36 insertions(+), 4 deletions(-)
+>=20
+> --
+> 2.30.0
 
-diff --git a/drivers/iommu/mtk_iommu.c b/drivers/iommu/mtk_iommu.c
-index d3b8a1649093..86ab577c9520 100644
---- a/drivers/iommu/mtk_iommu.c
-+++ b/drivers/iommu/mtk_iommu.c
-@@ -182,10 +182,8 @@ static struct mtk_iommu_domain *to_mtk_domain(struct iommu_domain *dom)
- 	return container_of(dom, struct mtk_iommu_domain, domain);
- }
- 
--static void mtk_iommu_tlb_flush_all(void *cookie)
-+static void mtk_iommu_tlb_flush_all(struct mtk_iommu_data *data)
- {
--	struct mtk_iommu_data *data = cookie;
--
- 	for_each_m4u(data) {
- 		writel_relaxed(F_INVLD_EN1 | F_INVLD_EN0,
- 			       data->base + data->plat_data->inv_sel_reg);
-@@ -195,9 +193,9 @@ static void mtk_iommu_tlb_flush_all(void *cookie)
- }
- 
- static void mtk_iommu_tlb_flush_range_sync(unsigned long iova, size_t size,
--					   size_t granule, void *cookie)
-+					   size_t granule,
-+					   struct mtk_iommu_data *data)
- {
--	struct mtk_iommu_data *data = cookie;
- 	unsigned long flags;
- 	int ret;
- 	u32 tmp;
-@@ -219,7 +217,7 @@ static void mtk_iommu_tlb_flush_range_sync(unsigned long iova, size_t size,
- 		if (ret) {
- 			dev_warn(data->dev,
- 				 "Partial TLB flush timed out, falling back to full flush\n");
--			mtk_iommu_tlb_flush_all(cookie);
-+			mtk_iommu_tlb_flush_all(data);
- 		}
- 		/* Clear the CPE status */
- 		writel_relaxed(0, data->base + REG_MMU_CPE_DONE);
-@@ -227,22 +225,6 @@ static void mtk_iommu_tlb_flush_range_sync(unsigned long iova, size_t size,
- 	}
- }
- 
--static void mtk_iommu_tlb_flush_page_nosync(struct iommu_iotlb_gather *gather,
--					    unsigned long iova, size_t granule,
--					    void *cookie)
--{
--	struct mtk_iommu_data *data = cookie;
--	struct iommu_domain *domain = &data->m4u_dom->domain;
--
--	iommu_iotlb_gather_add_page(domain, gather, iova, granule);
--}
--
--static const struct iommu_flush_ops mtk_iommu_flush_ops = {
--	.tlb_flush_all = mtk_iommu_tlb_flush_all,
--	.tlb_flush_walk = mtk_iommu_tlb_flush_range_sync,
--	.tlb_add_page = mtk_iommu_tlb_flush_page_nosync,
--};
--
- static irqreturn_t mtk_iommu_isr(int irq, void *dev_id)
- {
- 	struct mtk_iommu_data *data = dev_id;
-@@ -326,7 +308,6 @@ static int mtk_iommu_domain_finalise(struct mtk_iommu_domain *dom)
- 		.pgsize_bitmap = mtk_iommu_ops.pgsize_bitmap,
- 		.ias = 32,
- 		.oas = 34,
--		.tlb = &mtk_iommu_flush_ops,
- 		.iommu_dev = data->dev,
- 	};
- 
--- 
-2.18.0
+Al
 
