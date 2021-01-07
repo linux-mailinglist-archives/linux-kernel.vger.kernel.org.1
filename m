@@ -2,82 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CF102ECC4B
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 10:08:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 434432ECC4C
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 10:08:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727252AbhAGJHV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 04:07:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34108 "EHLO
+        id S1727346AbhAGJHZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 04:07:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34118 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726326AbhAGJHT (ORCPT
+        with ESMTP id S1726326AbhAGJHX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 04:07:19 -0500
-Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81FB9C0612F6
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Jan 2021 01:06:39 -0800 (PST)
-Received: by mail-pj1-x102d.google.com with SMTP id v1so1095160pjr.2
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Jan 2021 01:06:39 -0800 (PST)
+        Thu, 7 Jan 2021 04:07:23 -0500
+Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8630DC0612F8
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Jan 2021 01:06:42 -0800 (PST)
+Received: by mail-pl1-x62b.google.com with SMTP id g3so3174201plp.2
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Jan 2021 01:06:42 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=endlessos.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=8DoPhwpxVpcCeNa7xRylUEVANyqRa0budKloP0YXXbk=;
-        b=Ny4WfLB5f/tyTudlrLm+sC0kTXjRmuKvXnRfUVfCkRy7KJL72UFlIw+uLDqA+1ft+p
-         0bidtRs3/bwRkD+5CECBcoZaG7JO9Zatu2mTUWFrysiOZfy2BZoGu0AkusnaP1rSQz3V
-         uTB49MJhiKZ/HS6y3rYl/vJZmlNWJ/MwlD7bmBsUcjOqFhaBuBm9gRcHu592QoEG/sN1
-         Pv+VO3UWGU0ePTSPmdQWOHX9bt2UeqSDw05g9NtQFPDx2jHyqw1DZGgcnISdL0RJlBIa
-         0Lc+oZrMrW36cOtwKCG6qR7A89ErN3U6Y6vYQNBLRlzM24Cn1L5WTmeVHMjA8KxDZuNv
-         auTQ==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=/v7jmcVWhLsLyT6srKRYF+HsEWNOg2R2HWvMNn5cQRg=;
+        b=thzLh1N9XQZBb6ehatjpl3RV1IrUsTvfalJ8qkKkCfvmuLZmIamyMWPsW55blLBoTm
+         gAF10Du7MYQzHb49+SECwk3LYEzTegp1MV2IHUMzQ42MNqiALmnduXx2hkzgueb4l+86
+         hC4RRfjEGmHg8erprT66SX7aH6QzvirlZwO8nkFgaM/BK+FleonRX6MUN21Y+Bstnlq4
+         nmIF5YQUwrTAkqDpnnpNYGa4ZllHsNtV8P5pnIlWx07N6mPnDxnmb43vnazJGze8K4LN
+         /Z5rMY8hog+An2FfKZmeMnC+AGfe5giwSnr/QflijlcuPkijB2ALnG8a8hgXJP450l4E
+         5g7A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=8DoPhwpxVpcCeNa7xRylUEVANyqRa0budKloP0YXXbk=;
-        b=ttXoj/pGwTB7VdgEm6Tqh3+6Y16qK7RPPkUXCSQTkG2+y7w9rkvv/Xy4DrK/OW3ifG
-         vmL2Ah3KA7vcLgBruu89ftYh2y+XXs+IHxCWxw1sbozNepsQEoWc9b6Lc73ey2nup14x
-         yiYqTc0qWiI0pr7TQ9KyWcytCnOPkw94aYiKwojkEBRdMRXYY7MA3EXVonznqitL7qhU
-         wj5cEKUwRwDuH1sGSEQVYxdrUE2xfHxbN023g8dcbE2p99qVkMMtieISErnvXzIufuG0
-         Ah9UqUfRYhkTo2Y8eNOyW3PnDUtUnj/xAjfAKqZ2et5L2JlVNM3nhbxb81/9N1q0OVJg
-         sd9g==
-X-Gm-Message-State: AOAM533Unz4KCWfTSaIbYxERBi0CBg7k4vmEgDnmI2srxmIylwNqW5Rh
-        TwjaNAnnY0o4ygP1UcEnLjPHyw==
-X-Google-Smtp-Source: ABdhPJz8cAvssJCyCm+bYYDR9GUQ7MmaQlcbn+bpw/86jcMpufKrAup3HXnGKUy1j8gkLaveTjhJsg==
-X-Received: by 2002:a17:902:59d0:b029:da:69a8:11a8 with SMTP id d16-20020a17090259d0b02900da69a811a8mr8185541plj.63.1610010399008;
-        Thu, 07 Jan 2021 01:06:39 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=/v7jmcVWhLsLyT6srKRYF+HsEWNOg2R2HWvMNn5cQRg=;
+        b=X/3930zKi2RS75VywhPUxDwnrj8RTcaX2is2CxCm81FIAUwsQ5JqnbD8cKaB/B1KtD
+         +Iu9hdq8iR9wdZDyOFh9V6mkO/a8/GAEG2p63NYZnu2IgCyXigPTZctk59V4Wa4kXkZt
+         uxzLu45cyt0YcTyWqWi2RClPS5Vazv0ZhFveryY6btc0LnBCJPPLKIKtXVcg64ILSmbz
+         DFbkZY4qrL8b0cYFbT9tNAUyn6FlEAbKhBFSHDa7jHCDeBY7HUm9hNovQLAZDn3X9xAV
+         yrB4w3URgjYIAyLZWNbW/od3w7DJhJdGLBkNUz9XYKAh2IiFuDEkahx97nUKhOjeLdnb
+         YuFA==
+X-Gm-Message-State: AOAM5334vKwGUp6ZMZtIvdivjEvmLp52CI38sXIX6PAaxcUaNm6ULm5F
+        v2wDwmG4qr9x//TuxfwSyIVWMg==
+X-Google-Smtp-Source: ABdhPJySebxs1m5St5fhhjLE4vYi0pG/2f2WyTXIaNm/Vx7xOnk8LVyFMk5gka4dCbStVDkx5On6Hw==
+X-Received: by 2002:a17:90a:f40e:: with SMTP id ch14mr8326062pjb.172.1610010401941;
+        Thu, 07 Jan 2021 01:06:41 -0800 (PST)
 Received: from endless.endlessm-sf.com (ec2-34-209-191-27.us-west-2.compute.amazonaws.com. [34.209.191.27])
-        by smtp.googlemail.com with ESMTPSA id b2sm5006394pfo.164.2021.01.07.01.06.36
+        by smtp.googlemail.com with ESMTPSA id b2sm5006394pfo.164.2021.01.07.01.06.39
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 Jan 2021 01:06:38 -0800 (PST)
+        Thu, 07 Jan 2021 01:06:41 -0800 (PST)
 From:   Chris Chiu <chiu@endlessos.org>
 To:     oder_chiou@realtek.com, lgirdwood@gmail.com, broonie@kernel.org,
         perex@perex.cz, tiwai@suse.com
 Cc:     alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
         linux@endlessos.org, Chris Chiu <chiu@endlessos.org>
-Subject: [PATCH 0/4] ASoC: rt5645: Enable internal mic and headset on ECS EF20
-Date:   Thu,  7 Jan 2021 17:06:21 +0800
-Message-Id: <20210107090625.107078-1-chiu@endlessos.org>
+Subject: [PATCH 1/4] ASoC: rt5645: Introduce mapping for ACPI-defined GPIO
+Date:   Thu,  7 Jan 2021 17:06:22 +0800
+Message-Id: <20210107090625.107078-2-chiu@endlessos.org>
 X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20210107090625.107078-1-chiu@endlessos.org>
+References: <20210107090625.107078-1-chiu@endlessos.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-These patches are trying to fix the jack detection and internal
-microphone problems on ECS EF20 series laptops which are empowered
-by Intel Atom x5-Z8350 CPU (CherryTrail) with Realtek rt5645 audio
-codec.
+On at least one laptop (ECS EF20EA) the 'hp-detect' GPIO is defined in
+the DSDT table by the ACPI GpioIo resources in _CRS. The GPIO related
+information should be mapped to the rt5645 driver to enable the jack
+detection also on non-DT platforms.
 
-Chris Chiu (4):
-  ASoC: rt5645: Introduce mapping for ACPI-defined GPIO
-  ASoC: rt5645: Add ACPI-defined GPIO for ECS EF20 series
-  ASoC: rt5645: add inv_hp_det flag
-  ASoC: rt5645: Enable internal microphone and JD on ECS EF20
+Signed-off-by: Chris Chiu <chiu@endlessos.org>
+---
+ sound/soc/codecs/rt5645.c | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
 
- include/sound/rt5645.h    |  2 ++
- sound/soc/codecs/rt5645.c | 46 ++++++++++++++++++++++++++++++++++++++-
- 2 files changed, 47 insertions(+), 1 deletion(-)
-
+diff --git a/sound/soc/codecs/rt5645.c b/sound/soc/codecs/rt5645.c
+index 420003d062c7..78f0ab0a008e 100644
+--- a/sound/soc/codecs/rt5645.c
++++ b/sound/soc/codecs/rt5645.c
+@@ -42,6 +42,8 @@ static unsigned int quirk = -1;
+ module_param(quirk, uint, 0444);
+ MODULE_PARM_DESC(quirk, "RT5645 pdata quirk override");
+ 
++static const struct acpi_gpio_mapping *cht_rt5645_gpios;
++
+ #define RT5645_DEVICE_ID 0x6308
+ #define RT5650_DEVICE_ID 0x6419
+ 
+@@ -3780,7 +3782,6 @@ static const struct dmi_system_id dmi_platform_data[] = {
+ 		},
+ 		.driver_data = (void *)&intel_braswell_platform_data,
+ 	},
+-	{ }
+ };
+ 
+ static bool rt5645_check_dp(struct device *dev)
+@@ -3848,6 +3849,10 @@ static int rt5645_i2c_probe(struct i2c_client *i2c,
+ 		rt5645->pdata.dmic2_data_pin = QUIRK_DMIC2_DATA_PIN(quirk);
+ 	}
+ 
++	if (cht_rt5645_gpios && has_acpi_companion(&i2c->dev))
++		if (devm_acpi_dev_add_driver_gpios(&i2c->dev, cht_rt5645_gpios))
++			dev_dbg(&i2c->dev, "Failed to add driver gpios\n");
++
+ 	rt5645->gpiod_hp_det = devm_gpiod_get_optional(&i2c->dev, "hp-detect",
+ 						       GPIOD_IN);
+ 
 -- 
 2.20.1
 
