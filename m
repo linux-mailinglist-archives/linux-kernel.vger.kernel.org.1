@@ -2,90 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 055572EC752
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 01:27:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 36CD02EC754
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 01:28:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726495AbhAGA1B convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 6 Jan 2021 19:27:01 -0500
-Received: from mga17.intel.com ([192.55.52.151]:40160 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726352AbhAGA1B (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Jan 2021 19:27:01 -0500
-IronPort-SDR: o8/vI1hVCFNJVpqoMEpkuL/ZlV/rNRmMEpQVTd9EPz0alT1NmgIr3mafNPFChQ/gSuljDsxgpg
- ZUxfbVn+Tj4A==
-X-IronPort-AV: E=McAfee;i="6000,8403,9856"; a="157137153"
-X-IronPort-AV: E=Sophos;i="5.79,328,1602572400"; 
-   d="scan'208";a="157137153"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Jan 2021 16:26:20 -0800
-IronPort-SDR: A/MsPr8dcoH6OiLuLFYlQsyMVjjZvEZfZ2pHdoVvC2tHn4w0pDZuChVAn7DaOmH9/LHLKQJ2Ja
- 4QXybMlDycXQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.79,328,1602572400"; 
-   d="scan'208";a="346823662"
-Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
-  by orsmga003.jf.intel.com with ESMTP; 06 Jan 2021 16:26:20 -0800
-Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
- fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Wed, 6 Jan 2021 16:26:19 -0800
-Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
- fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Wed, 6 Jan 2021 16:26:19 -0800
-Received: from fmsmsx610.amr.corp.intel.com ([10.18.126.90]) by
- fmsmsx610.amr.corp.intel.com ([10.18.126.90]) with mapi id 15.01.1713.004;
- Wed, 6 Jan 2021 16:26:19 -0800
-From:   "Luck, Tony" <tony.luck@intel.com>
-To:     "paulmck@kernel.org" <paulmck@kernel.org>
-CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "linux-edac@vger.kernel.org" <linux-edac@vger.kernel.org>,
-        "bp@alien8.de" <bp@alien8.de>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "hpa@zytor.com" <hpa@zytor.com>,
-        "kernel-team@fb.com" <kernel-team@fb.com>
-Subject: RE: [PATCH RFC x86/mce] Make mce_timed_out() identify holdout CPUs
-Thread-Topic: [PATCH RFC x86/mce] Make mce_timed_out() identify holdout CPUs
-Thread-Index: AQHW5FMjkT1VpnYtUUqf+lhaTJjRmaoa6vEAgACTkgD//7UugIAAj7uA//+Jw9A=
-Date:   Thu, 7 Jan 2021 00:26:19 +0000
-Message-ID: <366fc78e7b8c4474958b289eec31ed25@intel.com>
-References: <20210106174102.GA23874@paulmck-ThinkPad-P72>
- <3513b04e2bb543d2871ca8c152dcf5ae@intel.com>
- <20210106191708.GB2743@paulmck-ThinkPad-P72>
- <20210106224918.GA7914@agluck-desk2.amr.corp.intel.com>
- <20210106232347.GG2743@paulmck-ThinkPad-P72>
-In-Reply-To: <20210106232347.GG2743@paulmck-ThinkPad-P72>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-dlp-product: dlpe-windows
-dlp-reaction: no-action
-dlp-version: 11.5.1.3
-x-originating-ip: [10.1.200.100]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        id S1726636AbhAGA2V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Jan 2021 19:28:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37820 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725789AbhAGA2U (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 Jan 2021 19:28:20 -0500
+Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 029CCC06136F
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Jan 2021 16:27:40 -0800 (PST)
+Received: by mail-pl1-x634.google.com with SMTP id x18so2434520pln.6
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Jan 2021 16:27:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=d1HllX+KtQtz6uyvQIwE/awff9RMW4+mqkr5aW+j+Tw=;
+        b=p/vwm3Duik4bQdTDjz2xqCA+BDXh7KK0s4g7fauuXwfGXdylB08Y60QI54BETKY0yb
+         zqoHglDuFnhIMplW1r8cSYFrH06rSRRui+9COIrLsM/X6r4tZxrmUMz+64InAew90dIr
+         MRDzwCoFEr8uM3oPIEsghaV2scpdgyusYzfG8bO+5iPx7Tfx5L1Mbq0K6WJnMkm2e02i
+         RjeAfQSzEnFWMR4OtHDXcwZcQjOGjIx2+1mSIqmY0S51gPSZMDE1MO3NxjceahMkS9RI
+         2vsRMYh7rNlIc9Tj/uadgWQmoQojNGWviI/WSOhonBRqmtjfoxAwQDCFtK2QGPY/tJ1D
+         HhXg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=d1HllX+KtQtz6uyvQIwE/awff9RMW4+mqkr5aW+j+Tw=;
+        b=t//ahUSGI+cGhZZxgosfqsvjpqRBaQfWSnoLV3xTs96djuM2LponsAnGixhyDFbf8F
+         tzoqs3NGJezbnWDLh9zPOhDHOHGuhmwQtRytT2Es6KPdBb0XV6Vx9qHeLi1jJZ3Rkv5F
+         YaFKjGZKb63ZC3xkmTQxGtOIAagl7YjUBtx/X4ezzM+GnNxHwc0P759mtGca07m/HC7I
+         BzogzrWqFXJYv/JVqk+Ir5FP5TQz5gAB1sWELLMymI6KsnCAaQx5ycMkUIp+xFpjFY7s
+         /5HEtsVIbm2Kz1NoMNq1bedfOpRjZ0IcqbDJj5EujCrkBRUc42VRqT1+3i/RJtElP0Xy
+         J+YQ==
+X-Gm-Message-State: AOAM532L8xFvgA3xMOxlPAwhyVuTDAu1Iiq83cVRe7A4mbnswmxU6yht
+        0KIAfY8/Ns82HwVnDh0nLfT4lg==
+X-Google-Smtp-Source: ABdhPJyYd1hpcq1ueeESiQ2frIkYJ43FoqoMQNRDlDef/HiQfTVGN6SsaSPDhQLmjUVsHCewWlTAlA==
+X-Received: by 2002:a17:902:7d94:b029:da:f673:18b9 with SMTP id a20-20020a1709027d94b02900daf67318b9mr6692465plm.37.1609979259406;
+        Wed, 06 Jan 2021 16:27:39 -0800 (PST)
+Received: from google.com ([2620:15c:2ce:0:a6ae:11ff:fe11:4abb])
+        by smtp.gmail.com with ESMTPSA id z28sm3748257pfr.140.2021.01.06.16.27.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 06 Jan 2021 16:27:38 -0800 (PST)
+Date:   Wed, 6 Jan 2021 16:27:34 -0800
+From:   Fangrui Song <maskray@google.com>
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Michal Marek <michal.lkml@markovi.net>,
+        linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Kees Cook <keescook@chromium.org>,
+        Tony Luck <tony.luck@intel.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Joe Perches <joe@perches.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Daniel Axtens <dja@axtens.net>,
+        Arvind Sankar <nivedita@alum.mit.edu>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Alexandru Ardelean <alexandru.ardelean@analog.com>,
+        Yury Norov <yury.norov@gmail.com>, x86@kernel.org,
+        "H . Peter Anvin" <hpa@zytor.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Daniel Kiper <daniel.kiper@oracle.com>,
+        Bruce Ashfield <bruce.ashfield@gmail.com>,
+        Marco Elver <elver@google.com>,
+        Vamshi K Sthambamkadi <vamshi.k.sthambamkadi@gmail.com>,
+        Andi Kleen <ak@suse.de>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        =?utf-8?B?RMOhdmlkIEJvbHZhbnNrw70=?= <david.bolvansky@gmail.com>,
+        Eli Friedman <efriedma@quicinc.com>
+Subject: Re: [PATCH 4/4] x86: don't build CONFIG_X86_32 as -ffreestanding
+Message-ID: <20210107002734.p62fsyhuo75psta4@google.com>
+References: <20200817220212.338670-1-ndesaulniers@google.com>
+ <20200817220212.338670-5-ndesaulniers@google.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <20200817220212.338670-5-ndesaulniers@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> Please see below for an updated patch.
+On 2020-08-17, Nick Desaulniers wrote:
+>-ffreestanding typically inhibits "libcall optimizations" where calls to
+>certain library functions can be replaced by the compiler in certain
+>cases to calls to other library functions that may be more efficient.
+>This can be problematic for embedded targets that don't provide full
+>libc implementations.
+>
+>-ffreestanding inhibits all such optimizations, which is the safe
+>choice, but generally we want the optimizations that are performed. The
+>Linux kernel does implement a fair amount of libc routines. Instead of
+>-ffreestanding (which makes more sense in smaller images like kexec's
+>purgatory image), prefer -fno-builtin-* flags to disable the compiler
+>from emitting calls to functions which may not be defined.
+>
+>If you see a linkage failure due to a missing symbol that's typically
+>defined in a libc, and not explicitly called from the source code, then
+>the compiler may have done such a transform.  You can either implement
+>such a function (ie. in lib/string.c) or disable the transform outright
+>via -fno-builtin-* flag (where * is the name of the library routine, ie.
+>-fno-builtin-bcmp).
+>
+>i386_defconfig build+boot tested with GCC and Clang. Removes a pretty
+>old TODO from the codebase.
+>
+>Fixes: 6edfba1b33c7 ("x86_64: Don't define string functions to builtin")
+>Suggested-by: Arvind Sankar <nivedita@alum.mit.edu>
+>Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
+>Reviewed-by: Kees Cook <keescook@chromium.org>
+>---
+> arch/x86/Makefile | 3 ---
+> 1 file changed, 3 deletions(-)
+>
+>diff --git a/arch/x86/Makefile b/arch/x86/Makefile
+>index 4346ffb2e39f..2383a96cf4fd 100644
+>--- a/arch/x86/Makefile
+>+++ b/arch/x86/Makefile
+>@@ -80,9 +80,6 @@ ifeq ($(CONFIG_X86_32),y)
+>         # CPU-specific tuning. Anything which can be shared with UML should go here.
+>         include arch/x86/Makefile_32.cpu
+>         KBUILD_CFLAGS += $(cflags-y)
+>-
+>-        # temporary until string.h is fixed
+>-        KBUILD_CFLAGS += -ffreestanding
+> else
+>         BITS := 64
+>         UTS_MACHINE := x86_64
+>-- 
+>2.28.0.220.ged08abb693-goog
 
-Yes. That worked:
+Reviewed-by: Fangrui Song <maskray@google.com>
 
-[   78.946069] mce: mce_timed_out: MCE holdout CPUs (may include false positives): 24-47,120-143
-[   78.946151] mce: mce_timed_out: MCE holdout CPUs (may include false positives): 24-47,120-143
-[   78.946153] Kernel panic - not syncing: Timeout: Not all CPUs entered broadcast exception handler
+But dropping -ffreestanding causes compiler produced declarations which
+require
+https://lore.kernel.org/lkml/20210107001739.1321725-1-maskray@google.com/
+"x86: Treat R_386_PLT32 as R_386_PC32" as a prerequisite
+to build with trunk Clang https://github.com/ClangBuiltLinux/linux/issues/1210
 
-I guess that more than one CPU hit the timeout and so your new message was printed twice
-before the panic code took over?
-
-Once again, the whole of socket 1 is MIA rather than just the pair of threads on one of the cores there.
-But that's a useful improvement (eliminating the other three sockets on this system).
-
-Tested-by: Tony Luck <tony.luck@intel.com>
-
--Tony
+Since there have been more than 4 months, it seems that something else
+regressed the non -ffreestanding build. Maybe another -fno-builtin-* is
+needed somewhere.
