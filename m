@@ -2,73 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9EA1E2ECB54
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 08:59:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 250552ECB58
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 09:00:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727653AbhAGH4S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 02:56:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51216 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725970AbhAGH4R (ORCPT
+        id S1726507AbhAGH7h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 02:59:37 -0500
+Received: from so254-31.mailgun.net ([198.61.254.31]:27024 "EHLO
+        so254-31.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725900AbhAGH7h (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 02:56:17 -0500
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 693F8C0612F4
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Jan 2021 23:55:37 -0800 (PST)
-Received: from zn.tnic (p200300ec2f0e340040aa7c2c4e2416a1.dip0.t-ipconnect.de [IPv6:2003:ec:2f0e:3400:40aa:7c2c:4e24:16a1])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        Thu, 7 Jan 2021 02:59:37 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1610006358; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=eh6lfW3uqL1HP4IpqRvI2Eu6DOlhF/emSRVcj3uzQpU=;
+ b=aLRUgeazeZGLlPqNJsDWrTsU+p8B6SB0KVHQ84JZ8Q/Jc5ATj7Pber4GPDpKa5Zkea6aeTl3
+ T6lWcLLh924D81lXShsjmphRWvG7h+hECI5LoYrN/c3ovkx4YA9390N9+7i8CGUPEV7IveRN
+ Z/GCmjC17rSZVUwHEoa72dvJAFM=
+X-Mailgun-Sending-Ip: 198.61.254.31
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n01.prod.us-west-2.postgun.com with SMTP id
+ 5ff6bf3bb95fc593269b1f1b (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 07 Jan 2021 07:58:51
+ GMT
+Sender: cang=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 2D90FC43463; Thu,  7 Jan 2021 07:58:51 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id BF93F1EC04CC;
-        Thu,  7 Jan 2021 08:55:35 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1610006135;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=sW6hm87b5oW8k6oqUpJtDBoftUKMU0GFZ/lyl9nnYg0=;
-        b=Xvz8Mk7TMSXQ5jHVk6boN4KyigI0SHRsxRFbAgke/csYJM+WstZm4pEne89dq1bE0/9XMx
-        wNggDlpIFGobMEn3KvFW3jVoQwFntMrUdAECPwCaO0neSCSnBgwuVgCZqXtD+Ld/PE64fz
-        b47VHgWWtiqlG0SJ10fzvnya2rEIV8c=
-Date:   Thu, 7 Jan 2021 08:55:33 +0100
-From:   Borislav Petkov <bp@alien8.de>
-To:     Dave Jiang <dave.jiang@intel.com>
-Cc:     x86@kernel.org, kernel test robot <lkp@intel.com>,
-        Ben Widawsky <ben.widawsky@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>, tglx@linutronix.de,
-        mingo@redhat.com, hpa@zytor.com, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] x86: fix movdir64b() sparse warning
-Message-ID: <20210107075533.GD14697@zn.tnic>
-References: <160997278817.3976343.969979053457914470.stgit@djiang5-desk3.ch.intel.com>
+        (Authenticated sender: cang)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 42940C433C6;
+        Thu,  7 Jan 2021 07:58:50 +0000 (UTC)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <160997278817.3976343.969979053457914470.stgit@djiang5-desk3.ch.intel.com>
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Thu, 07 Jan 2021 15:58:50 +0800
+From:   Can Guo <cang@codeaurora.org>
+To:     Jaegeuk Kim <jaegeuk@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org,
+        kernel-team@android.com, alim.akhtar@samsung.com,
+        avri.altman@wdc.com, bvanassche@acm.org,
+        martin.petersen@oracle.com, stanley.chu@mediatek.com
+Subject: Re: [PATCH v4 1/2] scsi: ufs: fix livelock of ufshcd_clear_ua_wluns
+In-Reply-To: <20210107074710.549309-2-jaegeuk@kernel.org>
+References: <20210107074710.549309-1-jaegeuk@kernel.org>
+ <20210107074710.549309-2-jaegeuk@kernel.org>
+Message-ID: <123c250afa715fb100ee7a482f6a15d8@codeaurora.org>
+X-Sender: cang@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 06, 2021 at 03:40:25PM -0700, Dave Jiang wrote:
+On 2021-01-07 15:47, Jaegeuk Kim wrote:
+> When gate_work/ungate_work gets an error during hibern8_enter or exit,
+>  ufshcd_err_handler()
+>    ufshcd_scsi_block_requests()
+>    ufshcd_reset_and_restore()
+>      ufshcd_clear_ua_wluns() -> stuck
+>    ufshcd_scsi_unblock_requests()
+> 
+> In order to avoid it, ufshcd_clear_ua_wluns() can be called per 
+> recovery flows
+> such as suspend/resume, link_recovery, and error_handler.
+> 
+> Fixes: 1918651f2d7e ("scsi: ufs: Clear UAC for RPMB after ufshcd 
+> resets")
+> Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
+> ---
+>  drivers/scsi/ufs/ufshcd.c | 19 ++++++++++++-------
+>  1 file changed, 12 insertions(+), 7 deletions(-)
+> 
+> diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
+> index bedb822a40a3..e6e7bdf99cd7 100644
+> --- a/drivers/scsi/ufs/ufshcd.c
+> +++ b/drivers/scsi/ufs/ufshcd.c
+> @@ -3996,6 +3996,8 @@ int ufshcd_link_recovery(struct ufs_hba *hba)
+>  	if (ret)
+>  		dev_err(hba->dev, "%s: link recovery failed, err %d",
+>  			__func__, ret);
+> +	else
+> +		ufshcd_clear_ua_wluns(hba);
+> 
+>  	return ret;
+>  }
+> @@ -6003,6 +6005,9 @@ static void ufshcd_err_handler(struct work_struct 
+> *work)
+>  	ufshcd_scsi_unblock_requests(hba);
+>  	ufshcd_err_handling_unprepare(hba);
+>  	up(&hba->eh_sem);
+> +
+> +	if (!err && needs_reset)
+> +		ufshcd_clear_ua_wluns(hba);
+>  }
+> 
+>  /**
+> @@ -6940,14 +6945,11 @@ static int
+> ufshcd_host_reset_and_restore(struct ufs_hba *hba)
+>  	ufshcd_set_clk_freq(hba, true);
+> 
+>  	err = ufshcd_hba_enable(hba);
+> -	if (err)
+> -		goto out;
+> 
+>  	/* Establish the link again and restore the device */
+> -	err = ufshcd_probe_hba(hba, false);
+>  	if (!err)
+> -		ufshcd_clear_ua_wluns(hba);
+> -out:
+> +		err = ufshcd_probe_hba(hba, false);
+> +
+>  	if (err)
+>  		dev_err(hba->dev, "%s: Host init failed %d\n", __func__, err);
+>  	ufshcd_update_evt_hist(hba, UFS_EVT_HOST_RESET, (u32)err);
+> @@ -7718,6 +7720,8 @@ static int ufshcd_add_lus(struct ufs_hba *hba)
+>  	if (ret)
+>  		goto out;
+> 
+> +	ufshcd_clear_ua_wluns(hba);
+> +
+>  	/* Initialize devfreq after UFS device is detected */
+>  	if (ufshcd_is_clkscaling_supported(hba)) {
+>  		memcpy(&hba->clk_scaling.saved_pwr_info.info,
+> @@ -7919,8 +7923,6 @@ static void ufshcd_async_scan(void *data,
+> async_cookie_t cookie)
+>  		pm_runtime_put_sync(hba->dev);
+>  		ufshcd_exit_clk_scaling(hba);
+>  		ufshcd_hba_exit(hba);
+> -	} else {
+> -		ufshcd_clear_ua_wluns(hba);
+>  	}
+>  }
+> 
+> @@ -8777,6 +8779,7 @@ static int ufshcd_suspend(struct ufs_hba *hba,
+> enum ufs_pm_op pm_op)
+>  		ufshcd_resume_clkscaling(hba);
+>  	hba->clk_gating.is_suspended = false;
+>  	hba->dev_info.b_rpm_dev_flush_capable = false;
+> +	ufshcd_clear_ua_wluns(hba);
+>  	ufshcd_release(hba);
+>  out:
+>  	if (hba->dev_info.b_rpm_dev_flush_capable) {
+> @@ -8887,6 +8890,8 @@ static int ufshcd_resume(struct ufs_hba *hba,
+> enum ufs_pm_op pm_op)
+>  		cancel_delayed_work(&hba->rpm_dev_flush_recheck_work);
+>  	}
+> 
+> +	ufshcd_clear_ua_wluns(hba);
+> +
+>  	/* Schedule clock gating in case of no access to UFS device yet */
+>  	ufshcd_release(hba);
 
-> Subject: Re: [PATCH v2] x86: fix movdir64b() sparse warning
-
-There are a lot of times I don't agree with checkpatch but this time I do:
-
-WARNING: A patch subject line should describe the change not the tool that found it
-#2: 
-Subject: [PATCH v2] x86: fix movdir64b() sparse warning
-
-Pls fix your other patch subject too.
-
-> Add missing __iomem annotation to address sparse warning. Caller is expected
-> to pass an __iomem annotated pointer to this function. The current usages
-> send a 64bytes command descriptor to an MMIO location (portal) on a
-> device for consumption. When future usages for MOVDIR64B instruction show
-> up in kernel for memory to memory operation is needed, we can revisit.
-
-Who's "we"?
-
--- 
-Regards/Gruss,
-    Boris.
-
-https://people.kernel.org/tglx/notes-about-netiquette
+Reviewed-by: Can Guo <cang@codeaurora.org>
