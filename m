@@ -2,118 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 29AA82ECA82
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 07:26:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 775012ECA84
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 07:28:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726699AbhAGG0Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 01:26:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37208 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725970AbhAGG0Q (ORCPT
+        id S1726371AbhAGG1t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 01:27:49 -0500
+Received: from ZXSHCAS2.zhaoxin.com ([203.148.12.82]:46886 "EHLO
+        ZXSHCAS2.zhaoxin.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725929AbhAGG1s (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 01:26:16 -0500
-Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFA94C0612F6
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Jan 2021 22:25:35 -0800 (PST)
-Received: by mail-pf1-x432.google.com with SMTP id x126so3248393pfc.7
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Jan 2021 22:25:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=v2Yn25XHl+ymzY6Sqqp8UyYBl8VsyNvH90saFA5KVqE=;
-        b=CFWiH0vHlQlCWzZ6uoudGfqkjTG6FuRGE+oehRL8JLVPg5kEFaayNmKPJDaKYSepwx
-         asWdl+k4sLZZUf40Llz/JCQQbEIZVILztGZmUoEPJRvHLGIYlulJg3hv1GdYzibEYH3+
-         OL8cdUaVgPMbhN/hBw+MDKfIgOPdsVzbOCeuuPMPpxRCcyqr3hAGRsVesIs1HYQ8gP8p
-         dZz7FsHBlYNDXRuARxZNoRr4lznWhNGrTPuhbBAHugkyY4IwOPZO+LJh8qzCFusu39eD
-         XcDUUvVWe2uiJ52FRDUv8/T0Hurmx+uAHKsQU3s5RMbVBpCP3vOUQGtxMNFrDRf9yCXL
-         dBVA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=v2Yn25XHl+ymzY6Sqqp8UyYBl8VsyNvH90saFA5KVqE=;
-        b=WWY7iW1DeQA4tfkiyqgqhbM5Uer8FlcoDQt7nbEyIo/LBW4NA9LkeviyPCXQNHvG9u
-         3qhHXC7wPdmxRKtIuRFNC2SaBT7EWcq4IZJkoAJRmthQGgHU0ANNXnr7rc7pcQ388mpV
-         oXyOyN3VLvE8U6zGzAfcto84W8AmKDadK/PjyBZnYxitU2ljra7nuKMB/BQRXEB4TCny
-         dev7h5ttUofzYky7sOa29l6ZLT2UiRFP+5lpKskahzCiP7iculKw2kMkUI4I479OYYb4
-         nIwqCKXMYLgIlvQGsfdnuSbXTv6Q2uwuZFEXLgZaztwiX/AUkh35Fd43GX93JeQCjkpp
-         o4Nw==
-X-Gm-Message-State: AOAM532wjjpDDL47AFacEol1Le+yLguZnUpZYw7iBv58r3dVivgPOtJ6
-        pLioNe9cLfJFsbmngrJJfvuqJg==
-X-Google-Smtp-Source: ABdhPJx+9DCdLWEGE2j0i/7q95jblzmahtAd7GMBvwYIilUL0Sl5xhOn5xANSXK9MFPrau1CKWxiUA==
-X-Received: by 2002:a63:8c15:: with SMTP id m21mr355344pgd.396.1610000735086;
-        Wed, 06 Jan 2021 22:25:35 -0800 (PST)
-Received: from localhost ([122.172.20.109])
-        by smtp.gmail.com with ESMTPSA id n4sm4326020pfu.150.2021.01.06.22.25.33
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 06 Jan 2021 22:25:34 -0800 (PST)
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Pantelis Antoniou <pantelis.antoniou@konsulko.com>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     Viresh Kumar <viresh.kumar@linaro.org>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-kbuild@vger.kernel.org,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Bill Mills <bill.mills@linaro.org>, anmar.oueja@linaro.org,
-        Masahiro Yamada <masahiroy@kernel.org>
-Subject: [PATCH V3 2/2] scripts: dtc: Build fdtoverlay and fdtdump tools
-Date:   Thu,  7 Jan 2021 11:55:10 +0530
-Message-Id: <72c3a4f63dde3c172c11153e9a5b19fb6cdb4498.1610000585.git.viresh.kumar@linaro.org>
-X-Mailer: git-send-email 2.25.0.rc1.19.g042ed3e048af
-In-Reply-To: <CAK7LNAQT5nVHGAZDhj4dct0v8UMzQ+-mdfBXJsfedR-7mZTnyA@mail.gmail.com>
-References: <CAK7LNAQT5nVHGAZDhj4dct0v8UMzQ+-mdfBXJsfedR-7mZTnyA@mail.gmail.com>
+        Thu, 7 Jan 2021 01:27:48 -0500
+Received: from zxbjmbx1.zhaoxin.com (10.29.252.163) by ZXSHCAS2.zhaoxin.com
+ (10.28.252.162) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1979.3; Thu, 7 Jan 2021
+ 14:27:06 +0800
+Received: from [10.32.56.37] (10.32.56.37) by zxbjmbx1.zhaoxin.com
+ (10.29.252.163) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1979.3; Thu, 7 Jan 2021
+ 14:27:04 +0800
+Subject: Re: [PATCH] crypto: x86/crc32c-intel - Don't match some Zhaoxin CPUs
+To:     Herbert Xu <herbert@gondor.apana.org.au>
+CC:     <davem@davemloft.net>, <tglx@linutronix.de>, <mingo@redhat.com>,
+        <bp@alien8.de>, <x86@kernel.org>, <hpa@zytor.com>,
+        <linux-crypto@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <TimGuo-oc@zhaoxin.com>, <CooperYan@zhaoxin.com>,
+        <QiyuanWang@zhaoxin.com>, <HerryYang@zhaoxin.com>,
+        <CobeChen@zhaoxin.com>, <SilviaZhao@zhaoxin.com>
+References: <1608028091-29439-1-git-send-email-TonyWWang-oc@zhaoxin.com>
+ <20210102211200.GA1750@gondor.apana.org.au>
+From:   Tony W Wang-oc <TonyWWang-oc@zhaoxin.com>
+Message-ID: <464482ed-bce6-7e55-bd34-b3be736a6e8b@zhaoxin.com>
+Date:   Thu, 7 Jan 2021 14:27:00 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210102211200.GA1750@gondor.apana.org.au>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.32.56.37]
+X-ClientProxiedBy: ZXSHCAS1.zhaoxin.com (10.28.252.161) To
+ zxbjmbx1.zhaoxin.com (10.29.252.163)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We will start building overlays for platforms soon in the kernel and
-would need these tools going forward. Lets start building them.
+On 03/01/2021 05:12, Herbert Xu wrote:
+> On Tue, Dec 15, 2020 at 06:28:11PM +0800, Tony W Wang-oc wrote:
+>> The driver crc32c-intel match CPUs supporting X86_FEATURE_XMM4_2.
+>> On platforms with Zhaoxin CPUs supporting this X86 feature, when
+>> crc32c-intel and crc32c-generic are both registered, system will
+>> use crc32c-intel because its .cra_priority is greater than
+>> crc32c-generic.
+>>
+>> When doing lmbench3 Create and Delete file test on partitions with
+>> ext4 enabling metadata checksum, found using crc32c-generic driver
+>> could get about 20% performance gain than using the driver crc32c-intel
+>> on some Zhaoxin CPUs.
+>>
+>> This case expect to use crc32c-generic driver for these Zhaoxin CPUs
+>> to get performance gain, so remove these Zhaoxin CPUs support from
+>> crc32c-intel.
+>>
+>> Signed-off-by: Tony W Wang-oc <TonyWWang-oc@zhaoxin.com>
+>> ---
+>>  arch/x86/crypto/crc32c-intel_glue.c | 21 +++++++++++++++++++--
+>>  1 file changed, 19 insertions(+), 2 deletions(-)
+> 
+> This does not seem to address the latest comment from hpa.
+> 
 
-The fdtoverlay program applies (or merges) one ore more overlay dtb
-blobs to a base dtb blob. The kernel build system would later use
-fdtoverlay to generate the overlaid blobs based on platform specific
-configurations.
+Yes, please ignore this patch. Have send new patch set per Hpa's suggestion.
 
-The fdtdump program prints a readable version of a flat device-tree
-file. This is a very useful tool to analyze the details of the overlay's
-dtb and the final dtb produced by fdtoverlay after applying the
-overlay's dtb to a base dtb.
+Sincerely
+Tonyw
 
-Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
----
-V3:
-- Updated log
-- Remove libfdt_dir
-
- scripts/dtc/Makefile | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
-
-diff --git a/scripts/dtc/Makefile b/scripts/dtc/Makefile
-index 4852bf44e913..472ab8cd590c 100644
---- a/scripts/dtc/Makefile
-+++ b/scripts/dtc/Makefile
-@@ -1,12 +1,17 @@
- # SPDX-License-Identifier: GPL-2.0
- # scripts/dtc makefile
- 
--hostprogs-always-$(CONFIG_DTC)		+= dtc
-+hostprogs-always-$(CONFIG_DTC)		+= dtc fdtdump fdtoverlay
- hostprogs-always-$(CHECK_DT_BINDING)	+= dtc
- 
- dtc-objs	:= dtc.o flattree.o fstree.o data.o livetree.o treesource.o \
- 		   srcpos.o checks.o util.o
- dtc-objs	+= dtc-lexer.lex.o dtc-parser.tab.o
-+fdtdump-objs	:= fdtdump.o util.o
-+
-+libfdt-objs	:= fdt.o fdt_ro.o fdt_wip.o fdt_sw.o fdt_rw.o fdt_strerror.o fdt_empty_tree.o fdt_addresses.o fdt_overlay.o
-+libfdt		= $(addprefix libfdt/,$(libfdt-objs))
-+fdtoverlay-objs	:= $(libfdt) fdtoverlay.o util.o
- 
- # Source files need to get at the userspace version of libfdt_env.h to compile
- HOST_EXTRACFLAGS += -I $(srctree)/$(src)/libfdt
--- 
-2.25.0.rc1.19.g042ed3e048af
-
+> Thanks,
+> 
