@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4739D2ED1AA
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 15:17:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 625952ED1FB
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 15:22:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729210AbhAGORi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 09:17:38 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39658 "EHLO mail.kernel.org"
+        id S1729451AbhAGOUv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 09:20:51 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39090 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729182AbhAGORg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 09:17:36 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 33C3C2339E;
-        Thu,  7 Jan 2021 14:16:30 +0000 (UTC)
+        id S1728878AbhAGOQ6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Jan 2021 09:16:58 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1319F2336D;
+        Thu,  7 Jan 2021 14:15:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610028990;
-        bh=/x8r4q8rKHNhaPV5LmyQWx5/4U6PxXWewkdbIVe3qj8=;
+        s=korg; t=1610028957;
+        bh=+RLk9lYdvNLpt7zKTg3A8hOOqntSWyG7/83Cwg2Nzus=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=xxpostp0yArvuwpcg4P/uUDB9q/qlZjMeGt0eEuDVXR6y5UdG4RGA348yOmMHYv6/
-         4fqMCFY/Wx7OLQuFQbR7vVg0OxuYwRgUUuaeEAf+KDYizRhySTS3UgotcQ0XJOnr1v
-         zQqN1Q0U0CJB24Nl4VQUGM2JtdAiqcX2OK6/rKj0=
+        b=BhPhLwhYINNxESmkxExMn+5rhgPKGvoRa8kkIJ8E7DlHulSTgD6lg5h/ZNeYFiy5C
+         yWpCDAT8sXcIbOWmnkTTosOL8N12PJClL/s+z1tilzxNQmEA0UIbHuzBJKJbNK6SRd
+         q/aIEYtwsosQ84y+imvFCQeklN8uhbnd5bKRAMnA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, syzbot <syzkaller@googlegroups.com>,
         Willem de Bruijn <willemb@google.com>,
         Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Subject: [PATCH 4.9 17/32] media: gp8psk: initialize stats at power control logic
-Date:   Thu,  7 Jan 2021 15:16:37 +0100
-Message-Id: <20210107140828.654149572@linuxfoundation.org>
+Subject: [PATCH 4.4 13/19] media: gp8psk: initialize stats at power control logic
+Date:   Thu,  7 Jan 2021 15:16:38 +0100
+Message-Id: <20210107140828.204165377@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210107140827.866214702@linuxfoundation.org>
-References: <20210107140827.866214702@linuxfoundation.org>
+In-Reply-To: <20210107140827.584658199@linuxfoundation.org>
+References: <20210107140827.584658199@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -71,7 +71,7 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 --- a/drivers/media/usb/dvb-usb/gp8psk.c
 +++ b/drivers/media/usb/dvb-usb/gp8psk.c
-@@ -186,7 +186,7 @@ out_rel_fw:
+@@ -163,7 +163,7 @@ out_rel_fw:
  
  static int gp8psk_power_ctrl(struct dvb_usb_device *d, int onoff)
  {
