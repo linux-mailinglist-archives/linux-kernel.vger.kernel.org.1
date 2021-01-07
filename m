@@ -2,96 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C1CD2ED4A3
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 17:45:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 89A862ED4B0
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 17:46:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728928AbhAGQpd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 11:45:33 -0500
-Received: from mga17.intel.com ([192.55.52.151]:57335 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728284AbhAGQpd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 11:45:33 -0500
-IronPort-SDR: 51edUx96bFXD1UYpg0Wli/P1CgxMdtlLrtpD9JBblLNYMBZw4FRUJTFzwGyNBMjJ1fkk9WDbRV
- H62HHB9N7s9Q==
-X-IronPort-AV: E=McAfee;i="6000,8403,9857"; a="157235188"
-X-IronPort-AV: E=Sophos;i="5.79,329,1602572400"; 
-   d="scan'208";a="157235188"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Jan 2021 08:44:52 -0800
-IronPort-SDR: JAajxnCuspdWJfSeWdeb0AZsdwH5B5VYb3x1J+b5PQBb+AuB5sQgC/2ekaKG65hZ40X0ucApnI
- maIMOLzq3qNg==
-X-IronPort-AV: E=Sophos;i="5.79,329,1602572400"; 
-   d="scan'208";a="343952780"
-Received: from djiang5-desk3.ch.intel.com ([143.182.136.137])
-  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Jan 2021 08:44:51 -0800
-Subject: [PATCH v3] x86: fix movdir64b() with missing __iomem annotation
-From:   Dave Jiang <dave.jiang@intel.com>
-To:     bp@alien8.de, x86@kernel.org
-Cc:     kernel test robot <lkp@intel.com>,
-        Ben Widawsky <ben.widawsky@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        dan.j.williams@intel.com, ben.widawsky@intel.com,
-        tglx@linutronix.de, mingo@redhat.com, hpa@zytor.com,
-        linux-kernel@vger.kernel.org
-Date:   Thu, 07 Jan 2021 09:44:51 -0700
-Message-ID: <161003787823.4062451.6564503265464317197.stgit@djiang5-desk3.ch.intel.com>
-User-Agent: StGit/0.23-29-ga622f1
+        id S1728955AbhAGQpp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 11:45:45 -0500
+Received: from mail-ot1-f41.google.com ([209.85.210.41]:32991 "EHLO
+        mail-ot1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728210AbhAGQpo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Jan 2021 11:45:44 -0500
+Received: by mail-ot1-f41.google.com with SMTP id b24so6911431otj.0;
+        Thu, 07 Jan 2021 08:45:28 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=+uZsJqi945rkcVNm9VG7/abNUIugtrjhQzGRoQZbwj0=;
+        b=G5IUr/2Oz6alok1/TZVASPO1i6upYScuhg0iNATiAZPWe+707Z1U6VM5ywSY8CmpP5
+         hzYxuN3qor3pK2Hr9cVwfC0+3GAvZnlBUthAbMu5am30aRUqomJ8tMs1bUUGPYsYGaoL
+         nFX59X1mUydAXcBbrUnoHo3arIDWIqsFQyFaraUtGQ0wk2uaw78wbR3GMbATn4bbhHgl
+         hCkhz7TygmqAA+0KgBsHBFtSjaTuEelrgjZvdeGOelOb1kDc23xg+Cfb+0aviqCV5t3K
+         WWRiDUPs+50/ZcMAAaQgxsRTrZEn64ZdfE/ouSqSW/DpyuVpJmcGcBDrvB+RolCoXga/
+         6E+Q==
+X-Gm-Message-State: AOAM532Ea6MSaKmrAsd6iYyo/leB4Suymd7h3IYYQ7jU4bC2jkHcT7G4
+        bLIbiO0gJilJ9lX7Uu53TFwpUCvbb29sYMkqnss=
+X-Google-Smtp-Source: ABdhPJxORZr4iS7jVPnM0soLaho3P2ZecdCv4gYOBLb4qCBf7E7fX1+pc+5Rtn1IbZzbvl38VpjX2o3v9LwTxxe5Fpo=
+X-Received: by 2002:a9d:208a:: with SMTP id x10mr7080650ota.260.1610037903337;
+ Thu, 07 Jan 2021 08:45:03 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+References: <20201231113525.19614-1-shawn.guo@linaro.org>
+In-Reply-To: <20201231113525.19614-1-shawn.guo@linaro.org>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Thu, 7 Jan 2021 17:44:52 +0100
+Message-ID: <CAJZ5v0hWsGNxbDgOVV-1_BbreX1+vD6hJ1Mu+_G8cEAq2RH_-g@mail.gmail.com>
+Subject: Re: [PATCH] ACPI: add stub acpi_create_platform_device() for !CONFIG_ACPI
+To:     Shawn Guo <shawn.guo@linaro.org>
+Cc:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add missing __iomem annotation to address sparse warning. Caller is expected
-to pass an __iomem annotated pointer to this function. The current usages
-send a 64bytes command descriptor to an MMIO location (portal) on a
-device for consumption. When future usages for MOVDIR64B instruction show
-up in kernel for memory to memory operation is needed, the code can be
-revisited.
+On Thu, Dec 31, 2020 at 12:36 PM Shawn Guo <shawn.guo@linaro.org> wrote:
+>
+> It adds a stub acpi_create_platform_device() for !CONFIG_ACPI build, so
+> that caller doesn't have to deal with !CONFIG_ACPI build issue.
+>
+> Reported-by: kernel test robot <lkp@intel.com>
+> Signed-off-by: Shawn Guo <shawn.guo@linaro.org>
+> ---
+> This fixes an build issue reported by kernel test robot as below.
+>
+> https://lore.kernel.org/linux-arm-msm/20201230124925.19260-1-shawn.guo@linaro.org/T/#u
+>
+>  include/linux/acpi.h | 7 +++++++
+>  1 file changed, 7 insertions(+)
+>
+> diff --git a/include/linux/acpi.h b/include/linux/acpi.h
+> index 2630c2e953f7..053bf05fb1f7 100644
+> --- a/include/linux/acpi.h
+> +++ b/include/linux/acpi.h
+> @@ -885,6 +885,13 @@ static inline int acpi_device_modalias(struct device *dev,
+>         return -ENODEV;
+>  }
+>
+> +static inline struct platform_device *
+> +acpi_create_platform_device(struct acpi_device *adev,
+> +                           struct property_entry *properties)
+> +{
+> +       return NULL;
+> +}
+> +
+>  static inline bool acpi_dma_supported(struct acpi_device *adev)
+>  {
+>         return false;
+> --
 
-Also, from the comment in movdir64b() @__dst must be supplied as an
-lvalue because this tells the compiler what the object is (its size)
-the instruction accesses. I.e., not the pointers but what they point
-to, thus the deref'ing '*'."
-
-"sparse warnings: (new ones prefixed by >>)"
-   drivers/dma/idxd/submit.c: note: in included file (through include/linux/io.h, include/linux/pci.h):
->> arch/x86/include/asm/io.h:422:27: sparse: sparse: incorrect type in argument 1 (different address spaces) @@     expected void *dst @@     got void [noderef] __iomem *dst @@
-   arch/x86/include/asm/io.h:422:27: sparse:     expected void *dst
-   arch/x86/include/asm/io.h:422:27: sparse:     got void [noderef] __iomem *dst
-
-Fixes: 0888e1030d3e ("x86/asm: Carve out a generic movdir64b() helper for general usage")
-Reported-by: kernel test robot <lkp@intel.com>
-Reviewed-by: Ben Widawsky <ben.widawsky@intel.com>
-Reviewed-by: Dan Williams <dan.j.williams@intel.com>
-Signed-off-by: Dave Jiang <dave.jiang@intel.com>
----
-
-v3:
-- Update subject and commit log with comments from Boris.
-v2:
-- Update commit log with comments from Dan.
-
- arch/x86/include/asm/special_insns.h |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/arch/x86/include/asm/special_insns.h b/arch/x86/include/asm/special_insns.h
-index cc177b4431ae..4e234645f0c6 100644
---- a/arch/x86/include/asm/special_insns.h
-+++ b/arch/x86/include/asm/special_insns.h
-@@ -243,10 +243,10 @@ static inline void serialize(void)
- }
- 
- /* The dst parameter must be 64-bytes aligned */
--static inline void movdir64b(void *dst, const void *src)
-+static inline void movdir64b(void __iomem *dst, const void *src)
- {
- 	const struct { char _[64]; } *__src = src;
--	struct { char _[64]; } *__dst = dst;
-+	struct { char _[64]; } __iomem *__dst = dst;
- 
- 	/*
- 	 * MOVDIR64B %(rdx), rax.
-
-
+Applied as 5.11-rc material, thanks!
