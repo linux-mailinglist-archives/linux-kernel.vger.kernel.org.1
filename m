@@ -2,149 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D1E422ECA60
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 07:11:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F231A2ECA69
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 07:16:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726635AbhAGGLT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 01:11:19 -0500
-Received: from so254-31.mailgun.net ([198.61.254.31]:56554 "EHLO
-        so254-31.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725763AbhAGGLS (ORCPT
+        id S1726338AbhAGGPZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 01:15:25 -0500
+Received: from szxga05-in.huawei.com ([45.249.212.191]:10555 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725821AbhAGGPZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 01:11:18 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1609999854; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=dFQegvrRvGd0eGFxd2nAZpJcWozq9olKCdVXlGOTAMM=;
- b=bDAy8dwiOOb0DLKd7Qn3RLGipA+ppFw6UzTraXKljxQhBe9r6kEIHJI213SV+trdul9cstPt
- GB4B26DuoZkz6QTlmR+bDdofi1vtWSde92VGqjnV1z/BOYgQ36nPSp82sKdYY/HP7SXk6jVH
- PWDlwFkzHzzlhlirkoStkVUelps=
-X-Mailgun-Sending-Ip: 198.61.254.31
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n10.prod.us-east-1.postgun.com with SMTP id
- 5ff6a5cde2332e083a312e6d (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 07 Jan 2021 06:10:21
- GMT
-Sender: cang=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id A6727C43465; Thu,  7 Jan 2021 06:10:20 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: cang)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 01A81C433CA;
-        Thu,  7 Jan 2021 06:10:19 +0000 (UTC)
+        Thu, 7 Jan 2021 01:15:25 -0500
+Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4DBGBV0kb3zMF8D;
+        Thu,  7 Jan 2021 14:13:22 +0800 (CST)
+Received: from [10.67.102.197] (10.67.102.197) by
+ DGGEMS412-HUB.china.huawei.com (10.3.19.212) with Microsoft SMTP Server id
+ 14.3.498.0; Thu, 7 Jan 2021 14:14:25 +0800
+Subject: Re: [PATCH] proc_sysclt: fix oops caused by incorrect command
+ parameters.
+To:     Kees Cook <keescook@chromium.org>
+CC:     <linux-kernel@vger.kernel.org>, <mcgrof@kernel.org>,
+        <yzaikin@google.com>, <adobriyan@gmail.com>, <vbabka@suse.cz>,
+        <linux-fsdevel@vger.kernel.org>, <mhocko@suse.com>,
+        <mhiramat@kernel.org>, <wangle6@huawei.com>
+References: <20201224074256.117413-1-nixiaoming@huawei.com>
+ <202101061539.966EBB293@keescook>
+From:   Xiaoming Ni <nixiaoming@huawei.com>
+Message-ID: <5ad6d160-3a4e-28bd-4e89-cb01a1815861@huawei.com>
+Date:   Thu, 7 Jan 2021 14:14:18 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.0.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
+In-Reply-To: <202101061539.966EBB293@keescook>
+Content-Type: text/plain; charset="gbk"; format=flowed
 Content-Transfer-Encoding: 7bit
-Date:   Thu, 07 Jan 2021 14:10:19 +0800
-From:   Can Guo <cang@codeaurora.org>
-To:     Jaegeuk Kim <jaegeuk@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org,
-        kernel-team@android.com, alim.akhtar@samsung.com,
-        avri.altman@wdc.com, bvanassche@acm.org,
-        martin.petersen@oracle.com, stanley.chu@mediatek.com
-Subject: Re: [PATCH v3 1/2] scsi: ufs: fix livelock of ufshcd_clear_ua_wluns
-In-Reply-To: <20210106214109.44041-2-jaegeuk@kernel.org>
-References: <20210106214109.44041-1-jaegeuk@kernel.org>
- <20210106214109.44041-2-jaegeuk@kernel.org>
-Message-ID: <fc4cb27df8bd6b2c1037d82e4b5d3860@codeaurora.org>
-X-Sender: cang@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+X-Originating-IP: [10.67.102.197]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-01-07 05:41, Jaegeuk Kim wrote:
-> When gate_work/ungate_work gets an error during hibern8_enter or exit,
->  ufshcd_err_handler()
->    ufshcd_scsi_block_requests()
->    ufshcd_reset_and_restore()
->      ufshcd_clear_ua_wluns() -> stuck
->    ufshcd_scsi_unblock_requests()
+On 2021/1/7 7:46, Kees Cook wrote:
+> subject typo: "sysclt" -> "sysctl"
 > 
-> In order to avoid it, ufshcd_clear_ua_wluns() can be called per 
-> recovery flows
-> such as suspend/resume, link_recovery, and error_handler.
+> On Thu, Dec 24, 2020 at 03:42:56PM +0800, Xiaoming Ni wrote:
+>> The process_sysctl_arg() does not check whether val is empty before
+>>   invoking strlen(val). If the command line parameter () is incorrectly
+>>   configured and val is empty, oops is triggered.
+>>
+>> For example, "hung_task_panic=1" is incorrectly written as "hung_task_panic".
+>>
+>> log:
+>> 	Kernel command line: .... hung_task_panic
+>> 	....
+>> 	[000000000000000n] user address but active_mm is swapper
+>> 	Internal error: Oops: 96000005 [#1] SMP
+>> 	Modules linked in:
+>> 	CPU: 0 PID: 1 Comm: swapper/0 Not tainted 5.10.1 #1
+>> 	Hardware name: linux,dummy-virt (DT)
+>> 	pstate: 40000005 (nZcv daif -PAN -UAO -TCO BTYPE=--)
+>> 	pc : __pi_strlen+0x10/0x98
+>> 	lr : process_sysctl_arg+0x1e4/0x2ac
+>> 	sp : ffffffc01104bd40
+>> 	x29: ffffffc01104bd40 x28: 0000000000000000
+>> 	x27: ffffff80c0a4691e x26: ffffffc0102a7c8c
+>> 	x25: 0000000000000000 x24: ffffffc01104be80
+>> 	x23: ffffff80c22f0b00 x22: ffffff80c02e28c0
+>> 	x21: ffffffc0109f9000 x20: 0000000000000000
+>> 	x19: ffffffc0107c08de x18: 0000000000000003
+>> 	x17: ffffffc01105d000 x16: 0000000000000054
+>> 	x15: ffffffffffffffff x14: 3030253078413830
+>> 	x13: 000000000000ffff x12: 0000000000000000
+>> 	x11: 0101010101010101 x10: 0000000000000005
+>> 	x9 : 0000000000000003 x8 : ffffff80c0980c08
+>> 	x7 : 0000000000000000 x6 : 0000000000000002
+>> 	x5 : ffffff80c0235000 x4 : ffffff810f7c7ee0
+>> 	x3 : 000000000000043a x2 : 00bdcc4ebacf1a54
+>> 	x1 : 0000000000000000 x0 : 0000000000000000
+>> 	Call trace:
+>> 	 __pi_strlen+0x10/0x98
+>> 	 parse_args+0x278/0x344
+>> 	 do_sysctl_args+0x8c/0xfc
+>> 	 kernel_init+0x5c/0xf4
+>> 	 ret_from_fork+0x10/0x30
+>> 	Code: b200c3eb 927cec01 f2400c07 54000301 (a8c10c22)
+>>
+>> Fixes: 3db978d480e2843 ("kernel/sysctl: support setting sysctl parameters
+>>   from kernel command line")
+>> Signed-off-by: Xiaoming Ni <nixiaoming@huawei.com>
+>> ---
+>>   fs/proc/proc_sysctl.c | 3 +++
+>>   1 file changed, 3 insertions(+)
+>>
+>> diff --git a/fs/proc/proc_sysctl.c b/fs/proc/proc_sysctl.c
+>> index 317899222d7f..4516411a2b44 100644
+>> --- a/fs/proc/proc_sysctl.c
+>> +++ b/fs/proc/proc_sysctl.c
+>> @@ -1757,6 +1757,9 @@ static int process_sysctl_arg(char *param, char *val,
+>>   	loff_t pos = 0;
+>>   	ssize_t wret;
+>>   
+>> +	if (!val)
+>> +		return 0;
+>> +
+>>   	if (strncmp(param, "sysctl", sizeof("sysctl") - 1) == 0) {
+>>   		param += sizeof("sysctl") - 1;
 > 
-> Fixes: 1918651f2d7e ("scsi: ufs: Clear UAC for RPMB after ufshcd 
-> resets")
-> Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
-> ---
->  drivers/scsi/ufs/ufshcd.c | 15 ++++++++++-----
->  1 file changed, 10 insertions(+), 5 deletions(-)
+> Otherwise, yeah, this is a good test to add. I would make it more
+> verbose, though:
 > 
-> diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
-> index bedb822a40a3..1678cec08b51 100644
-> --- a/drivers/scsi/ufs/ufshcd.c
-> +++ b/drivers/scsi/ufs/ufshcd.c
-> @@ -3996,6 +3996,8 @@ int ufshcd_link_recovery(struct ufs_hba *hba)
->  	if (ret)
->  		dev_err(hba->dev, "%s: link recovery failed, err %d",
->  			__func__, ret);
-> +	else
-> +		ufshcd_clear_ua_wluns(hba);
+> 	if (!val) {
+> 		pr_err("Missing param value! Expected '%s=...value...'\n", param);
+> 		return 0;
+> 	}
+> 
+Yes, it's better to add log output.
+Thank you for your review.
+Do I need to send V2 patch based on review comments?
 
-Can we put it right after ufshcd_scsi_add_wlus() in ufshcd_add_lus()?
+Thanks
+Xiaoming Ni
 
-Thanks,
-Can Guo.
-
-> 
->  	return ret;
->  }
-> @@ -6003,6 +6005,9 @@ static void ufshcd_err_handler(struct work_struct 
-> *work)
->  	ufshcd_scsi_unblock_requests(hba);
->  	ufshcd_err_handling_unprepare(hba);
->  	up(&hba->eh_sem);
-> +
-> +	if (!err && needs_reset)
-> +		ufshcd_clear_ua_wluns(hba);
->  }
-> 
->  /**
-> @@ -6940,14 +6945,11 @@ static int
-> ufshcd_host_reset_and_restore(struct ufs_hba *hba)
->  	ufshcd_set_clk_freq(hba, true);
-> 
->  	err = ufshcd_hba_enable(hba);
-> -	if (err)
-> -		goto out;
-> 
->  	/* Establish the link again and restore the device */
-> -	err = ufshcd_probe_hba(hba, false);
->  	if (!err)
-> -		ufshcd_clear_ua_wluns(hba);
-> -out:
-> +		err = ufshcd_probe_hba(hba, false);
-> +
->  	if (err)
->  		dev_err(hba->dev, "%s: Host init failed %d\n", __func__, err);
->  	ufshcd_update_evt_hist(hba, UFS_EVT_HOST_RESET, (u32)err);
-> @@ -8777,6 +8779,7 @@ static int ufshcd_suspend(struct ufs_hba *hba,
-> enum ufs_pm_op pm_op)
->  		ufshcd_resume_clkscaling(hba);
->  	hba->clk_gating.is_suspended = false;
->  	hba->dev_info.b_rpm_dev_flush_capable = false;
-> +	ufshcd_clear_ua_wluns(hba);
->  	ufshcd_release(hba);
->  out:
->  	if (hba->dev_info.b_rpm_dev_flush_capable) {
-> @@ -8887,6 +8890,8 @@ static int ufshcd_resume(struct ufs_hba *hba,
-> enum ufs_pm_op pm_op)
->  		cancel_delayed_work(&hba->rpm_dev_flush_recheck_work);
->  	}
-> 
-> +	ufshcd_clear_ua_wluns(hba);
-> +
->  	/* Schedule clock gating in case of no access to UFS device yet */
->  	ufshcd_release(hba);
