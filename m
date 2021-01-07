@@ -2,111 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BC132ECC4F
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 10:08:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 42ED22ECC56
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 10:10:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727485AbhAGJHq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 04:07:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34164 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727278AbhAGJHh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 04:07:37 -0500
-Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05084C0612FB
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Jan 2021 01:06:51 -0800 (PST)
-Received: by mail-pf1-x42e.google.com with SMTP id h10so3464250pfo.9
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Jan 2021 01:06:51 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=endlessos.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=b1YfOOLyujNTY31P6K35Sp25DPEHUg4Lk9EfBksnDDw=;
-        b=JJbofJ5iaDY1Ke5i+MdO64iHHnfm2sdSOVZV8Kvl65CB1vsDp/jy28hqENRiPeH14D
-         RuvuYmlOIz9y+kreEVjFcj1+HDm/ybOTny5lTciL0t/pmEKi/fx6HJntB4LmcIDqWpKE
-         qklfGNr0eWpe5KP0N1NeWE9JS1NaLywFxEL+geofN83NiSdNlCPmhsHjFqn/nyQLD7ZU
-         BEmcypKu38EBBHEE4GMgSwu3zDNW+rFgI9EqIaOsQw2+Iyh0IWGmZZPlA6rqXA7AbL6I
-         Rnx/oK6cmTKtW4bb4yxudSvrX+JU5rSPyGbNIryUT71fPqXzdsNQlNvUr47X3gQSe8rD
-         +XsA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=b1YfOOLyujNTY31P6K35Sp25DPEHUg4Lk9EfBksnDDw=;
-        b=LV5elHc1u+zWUTMXz327ZWfL0HzT/97+6grcuqY/yrQ86Is50SxSBT83TTJQ5p1GqR
-         xY9YY23FH9ji0pTj8/6N4PUsW+vXA8imgRbwa0wA25yPpMSqg6bWyr5b6ZuEj6w14IA7
-         MkiYz4f2pJulOHKo3x1ReMWes46H+5tOI2iVd08dhQF/aNROeTmNqyCEeA4UrlYgi03W
-         BzGdDSV68N9ULK2wt5b1NGN03YJE0f2Ddcmgi53rlINt6l+4QRzbA9Fi3EQbpRh+nZlS
-         CV65g41gGnvFfD3gwBqD6W6IXrk7M3aoHmfqJ5lDlgVzSdOOHXBuVFil095YEJM1THHE
-         Hnjg==
-X-Gm-Message-State: AOAM531IrXRqVxXgm0uXOyxNDHOW1x9rSK/yeBrFRdF8j/WfX5l7ZI8N
-        3mQ9tscd33zmLG69T699vFcCtw==
-X-Google-Smtp-Source: ABdhPJwzjJy9uBXJ+42hsdSQ5rfbYd7OPl02I3+RutmkSExPxKFat6sdQO5dBWnNSFzYSFYJkPZKFg==
-X-Received: by 2002:aa7:8749:0:b029:1a5:63e6:56fe with SMTP id g9-20020aa787490000b02901a563e656femr1357149pfo.32.1610010410515;
-        Thu, 07 Jan 2021 01:06:50 -0800 (PST)
-Received: from endless.endlessm-sf.com (ec2-34-209-191-27.us-west-2.compute.amazonaws.com. [34.209.191.27])
-        by smtp.googlemail.com with ESMTPSA id b2sm5006394pfo.164.2021.01.07.01.06.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 Jan 2021 01:06:50 -0800 (PST)
-From:   Chris Chiu <chiu@endlessos.org>
-To:     oder_chiou@realtek.com, lgirdwood@gmail.com, broonie@kernel.org,
-        perex@perex.cz, tiwai@suse.com
-Cc:     alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
-        linux@endlessos.org, Chris Chiu <chiu@endlessos.org>
-Subject: [PATCH 4/4] ASoC: rt5645: Enable internal microphone and JD on ECS EF20
-Date:   Thu,  7 Jan 2021 17:06:25 +0800
-Message-Id: <20210107090625.107078-5-chiu@endlessos.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210107090625.107078-1-chiu@endlessos.org>
-References: <20210107090625.107078-1-chiu@endlessos.org>
+        id S1727344AbhAGJJb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 04:09:31 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42728 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726366AbhAGJJa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Jan 2021 04:09:30 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 94D3C22CF8;
+        Thu,  7 Jan 2021 09:08:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1610010529;
+        bh=hT97XartlDHHyLDpDxHrJy2mQbx9clbET9d1rFFIMnU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=fuuzM7bXlJTmuYJcYr1oP1ARilEgGsLARTCFhVWMMcojccFClLi8TuPqErlVqDWGE
+         HYj68efsVVsbwCs5baQYUSA2mylVbUkVcxUCAutz08UpSuaPQvm/GIj5cTte7EriAx
+         FMA7OP74b1NVFQUAiVMPR+00jotp7Fg5SJv+sj0MLH7SCtr5oIBdcRJRJDIx1DPhiX
+         D3EaHLRaRNwkuNTtLR19pRUFp33qONSRGd8sBhkqfM1+ESbIco00JjZ5SdYYGHTAQU
+         b3aqT5y0OoHZOC+emOBHWxlc55w4ciFRrxpxkWwAMhx50zQ2SCN2m3ZXWjXHQgD+Ni
+         t1cCNcYpxf3Mw==
+Received: by pali.im (Postfix)
+        id 2F60E77B; Thu,  7 Jan 2021 10:08:47 +0100 (CET)
+Date:   Thu, 7 Jan 2021 10:08:46 +0100
+From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
+To:     Andrew Lunn <andrew@lunn.ch>
+Cc:     Russell King - ARM Linux admin <linux@armlinux.org.uk>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Thomas Schreiber <tschreibe@gmail.com>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Marek =?utf-8?B?QmVow7pu?= <kabel@kernel.org>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 1/3] net: sfp: add workaround for Realtek RTL8672 and
+ RTL9601C chips
+Message-ID: <20210107090846.rxi7yo7adxumjmi3@pali>
+References: <20201230154755.14746-1-pali@kernel.org>
+ <20210106153749.6748-1-pali@kernel.org>
+ <20210106153749.6748-2-pali@kernel.org>
+ <X/ZrvOwsyrfmh3B2@lunn.ch>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <X/ZrvOwsyrfmh3B2@lunn.ch>
+User-Agent: NeoMutt/20180716
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On ECS EF20 series laptops, the internal mic is on DMIC2/IN2P.
-And they need the inv_hp_det to make jack detection to work as
-exoected.
+On Thursday 07 January 2021 03:02:36 Andrew Lunn wrote:
+> > +	/* hwmon interface needs to access 16bit registers in atomic way to
+> > +	 * guarantee coherency of the diagnostic monitoring data. If it is not
+> > +	 * possible to guarantee coherency because EEPROM is broken in such way
+> > +	 * that does not support atomic 16bit read operation then we have to
+> > +	 * skip registration of hwmon device.
+> > +	 */
+> > +	if (sfp->i2c_block_size < 2) {
+> > +		dev_info(sfp->dev, "skipping hwmon device registration "
+> > +				   "due to broken EEPROM\n");
+> > +		dev_info(sfp->dev, "diagnostic EEPROM area cannot be read "
+> > +				   "atomically to guarantee data coherency\n");
+> > +		return;
+> > +	}
+> 
+> This solves hwmon. But we still return the broken data to ethtool -m.
+> I wonder if we should prevent that?
 
-Signed-off-by: Chris Chiu <chiu@endlessos.org>
----
- sound/soc/codecs/rt5645.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
+Looks like that it is not too simple for now.
 
-diff --git a/sound/soc/codecs/rt5645.c b/sound/soc/codecs/rt5645.c
-index 530145cf8c5b..154d9db9ceb3 100644
---- a/sound/soc/codecs/rt5645.c
-+++ b/sound/soc/codecs/rt5645.c
-@@ -3656,6 +3656,12 @@ static const struct rt5645_platform_data kahlee_platform_data = {
- 	.jd_mode = 3,
- };
- 
-+static const struct rt5645_platform_data ecs_ef20_platform_data = {
-+	.dmic1_data_pin = RT5645_DMIC1_DISABLE,
-+	.dmic2_data_pin = RT5645_DMIC_DATA_IN2P,
-+	.inv_hp_pol = 1,
-+};
-+
- static const struct acpi_gpio_params ef20_hp_detect = { 1, 0, false };
- 
- static const struct acpi_gpio_mapping cht_rt5645_ef20_gpios[] = {
-@@ -3804,6 +3810,7 @@ static const struct dmi_system_id dmi_platform_data[] = {
- 		.matches = {
- 			DMI_MATCH(DMI_PRODUCT_NAME, "EF20"),
- 		},
-+		.driver_data = (void *)&ecs_ef20_platform_data,
- 	},
- 	{
- 		.ident = "EF20EA",
-@@ -3811,6 +3818,7 @@ static const struct dmi_system_id dmi_platform_data[] = {
- 		.matches = {
- 			DMI_MATCH(DMI_PRODUCT_NAME, "EF20EA"),
- 		},
-+		.driver_data = (void *)&ecs_ef20_platform_data,
- 	},
- };
- 
--- 
-2.20.1
-
+And because we already export these data for these broken chips in
+current mainline kernel, I would propose to postpone fix for ethtool and
+let it for future patches. This patch series does not change (nor make
+it worse) behavior.
