@@ -2,97 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B52C2ED2EC
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 15:43:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 502842ED2EE
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 15:43:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728892AbhAGOlg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 09:41:36 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51872 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728053AbhAGOlf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 09:41:35 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CBB6C22EBF;
-        Thu,  7 Jan 2021 14:40:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610030455;
-        bh=7xoap/F3JQH2zdQsxbhjQZFUy8PtJsSlYU5ujJ5re/g=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=V4wQO1s3j6VY3fYuP2lfIcRxjVy/Hq9nglrO4dstJOWHliufituRvbOMyEKC3VKOO
-         FALFeX2v3Uq8zhORbR+tXXwLi2UAruT572SCKW9i7MwstPDqCKLe2WEAz3JbWMl9f0
-         81xVdHhntoR2cpbtLNMlstavXdbCkzf7vZCFAOI+d+TBKsf32RQkja0DVJyTbXPWqJ
-         EJh8kwMpsXZNDdoOunw+kZoKKY3KL7+ZoAyvKqiBoHdmmX78/WEQq+16f2jXaahOJZ
-         NwPEKY5T5BZSkk04Z3mCVlUUWSZHJMgYtYv0T6OkwC38sUHIEm5ESf2clVEtR/JRHJ
-         jtdX2Eo6X9fXA==
-Date:   Thu, 7 Jan 2021 14:40:50 +0000
-From:   Will Deacon <will@kernel.org>
-To:     Lu Baolu <baolu.lu@linux.intel.com>
-Cc:     Joerg Roedel <joro@8bytes.org>, Ashok Raj <ashok.raj@intel.com>,
-        Jacob Pan <jacob.jun.pan@linux.intel.com>,
-        Guo Kaijie <Kaijie.Guo@intel.com>,
-        Liu Yi L <yi.l.liu@intel.com>,
-        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 3/5] iommu/vt-d: Remove unused dma map/unmap trace events
-Message-ID: <20210107144049.GB3413@willie-the-truck>
-References: <20201231005323.2178523-1-baolu.lu@linux.intel.com>
- <20201231005323.2178523-3-baolu.lu@linux.intel.com>
- <20210105190443.GB12182@willie-the-truck>
- <8bf33c93-3154-e832-1197-891c684d6ded@linux.intel.com>
+        id S1728571AbhAGOmj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 09:42:39 -0500
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:27090 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728045AbhAGOmi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Jan 2021 09:42:38 -0500
+Received: from pps.filterd (m0187473.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 107Ed6kZ012335;
+        Thu, 7 Jan 2021 09:41:55 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : in-reply-to : references : mime-version :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=pIF6MoeiCRHQube+DvMM2GDP9Jc5BQLMZ+2G0Qyfm1w=;
+ b=f37kJF2k38UcvyuXJDCVr0ccVredk8qnfc7oHNFRW6+/N+AcEt0Mr+75+wiX+eH1mh2E
+ LGOrhw99fyqUeg+0ZSnbzxbU6zb7trNMyLEpFBWD9Nnq590DtehaNtueekssVR3scQbI
+ gh8qzrhMypKBo/5S0Rsp0mYYoJneq4S/iv17YquSdsyrefY7+ttwLyzxUo3K8ndGeCG9
+ nJkJBm9kFAnHNf3M7pY6imoJrIB7U1HRHd0oDUltaAEic1WeeL00Mwo91LqeHaxAAmcM
+ 92lduTS1EPFE9NRviO6DYUvIj/EUYeHRd+yznq0ub+GDELrd5zJX/sM8cicWY7qmvdac yw== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 35x2mwae8u-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 07 Jan 2021 09:41:55 -0500
+Received: from m0187473.ppops.net (m0187473.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 107EdY1L013311;
+        Thu, 7 Jan 2021 09:41:54 -0500
+Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 35x2mwae83-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 07 Jan 2021 09:41:54 -0500
+Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
+        by ppma03ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 107EdC3V011272;
+        Thu, 7 Jan 2021 14:41:51 GMT
+Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
+        by ppma03ams.nl.ibm.com with ESMTP id 35tgf8cxcd-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 07 Jan 2021 14:41:51 +0000
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
+        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 107Efm0F35651960
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 7 Jan 2021 14:41:48 GMT
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id AA241A4054;
+        Thu,  7 Jan 2021 14:41:48 +0000 (GMT)
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id DEA8DA4062;
+        Thu,  7 Jan 2021 14:41:47 +0000 (GMT)
+Received: from li-e979b1cc-23ba-11b2-a85c-dfd230f6cf82 (unknown [9.171.48.187])
+        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with SMTP;
+        Thu,  7 Jan 2021 14:41:47 +0000 (GMT)
+Date:   Thu, 7 Jan 2021 15:41:46 +0100
+From:   Halil Pasic <pasic@linux.ibm.com>
+To:     Tony Krowiak <akrowiak@linux.ibm.com>
+Cc:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org, freude@linux.ibm.com, borntraeger@de.ibm.com,
+        cohuck@redhat.com, mjrosato@linux.ibm.com,
+        alex.williamson@redhat.com, kwankhede@nvidia.com,
+        fiuczy@linux.ibm.com, frankja@linux.ibm.com, david@redhat.com,
+        hca@linux.ibm.com, gor@linux.ibm.com
+Subject: Re: [PATCH v13 00/15] s390/vfio-ap: dynamic configuration support
+Message-ID: <20210107154146.2f071c5e.pasic@linux.ibm.com>
+In-Reply-To: <3c350e32-3206-25cb-1b1e-6577e8c15ae2@linux.ibm.com>
+References: <20201223011606.5265-1-akrowiak@linux.ibm.com>
+        <3c350e32-3206-25cb-1b1e-6577e8c15ae2@linux.ibm.com>
+Organization: IBM
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <8bf33c93-3154-e832-1197-891c684d6ded@linux.intel.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
+ definitions=2021-01-07_07:2021-01-07,2021-01-07 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 clxscore=1015
+ adultscore=0 suspectscore=0 phishscore=0 priorityscore=1501
+ lowpriorityscore=0 impostorscore=0 bulkscore=0 mlxlogscore=999 mlxscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2101070091
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 06, 2021 at 09:14:22AM +0800, Lu Baolu wrote:
-> On 2021/1/6 3:04, Will Deacon wrote:
-> > On Thu, Dec 31, 2020 at 08:53:21AM +0800, Lu Baolu wrote:
-> > > With commit c588072bba6b5 ("iommu/vt-d: Convert intel iommu driver to
-> > > the iommu ops"), the trace events for dma map/unmap have no users any
-> > > more. Remove them so that they don't show up under
-> > > /sys/kernel/debug/tracing/events/intel_iommu. The users should use the
-> > > map/unmap traces defined in the iommu core from now on.
-> > > 
-> > > Fixes: c588072bba6b5 ("iommu/vt-d: Convert intel iommu driver to the iommu ops")
-> > > Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
-> > > ---
-> > >   include/trace/events/intel_iommu.h | 119 -----------------------------
-> > >   1 file changed, 119 deletions(-)
-> > 
-> > Is this needed in 5.11, or can it wait until 5.12?
+On Wed, 6 Jan 2021 10:16:24 -0500
+Tony Krowiak <akrowiak@linux.ibm.com> wrote:
+
+> Ping
 > 
-> It's necessary for 5.11 as far as I can see. Without this, users still
-> see the events under /sys/kernel/debug/tracing/events/intel_iommu, but
-> they will get nothing traced even they enable the events.
 
-I'm just a bit wary about breaking userspace by removing them altogether,
-although I see that there's plenty of precedent for removing events from
-the include/trace/events directory, so it's probably fine.
+pong
 
-However, the patch as-is results in this warning for me:
-
- | In file included from include/trace/define_trace.h:102,
- |                  from include/trace/events/intel_iommu.h:22,
- |                  from drivers/iommu/intel/trace.c:14:
- | include/trace/trace_events.h:27:23: warning: ‘str__intel_iommu__trace_system_name’ defined but not used [-Wunused-const-variable=]
- |    27 | #define __app__(x, y) str__##x##y
- |       |                       ^~~~~
- | include/trace/trace_events.h:28:21: note: in expansion of macro ‘__app__’
- |    28 | #define __app(x, y) __app__(x, y)
- |       |                     ^~~~~~~
- | include/trace/trace_events.h:30:29: note: in expansion of macro ‘__app’
- |    30 | #define TRACE_SYSTEM_STRING __app(TRACE_SYSTEM_VAR,__trace_system_name)
- |       |                             ^~~~~
- | include/trace/trace_events.h:33:20: note: in expansion of macro ‘TRACE_SYSTEM_STRING’
- |    33 |  static const char TRACE_SYSTEM_STRING[] = \
- |       |                    ^~~~~~~~~~~~~~~~~~~
- | include/trace/trace_events.h:36:1: note: in expansion of macro ‘TRACE_MAKE_SYSTEM_STR’
- |    36 | TRACE_MAKE_SYSTEM_STR();
- |       | ^~~~~~~~~~~~~~~~~~~~~
-
-so I'll drop this for now.
-
-Will
+Will try have a look these days...
