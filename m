@@ -2,135 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B66B02ECC64
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 10:13:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E000B2ECC32
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 10:04:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727476AbhAGJLa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 04:11:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34770 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727279AbhAGJL3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 04:11:29 -0500
-Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 662BAC0612FB
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Jan 2021 01:10:20 -0800 (PST)
-Received: by mail-lf1-x135.google.com with SMTP id h22so13024004lfu.2
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Jan 2021 01:10:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=T+iZKNW1gmpT+HQqIiqmRRpQMcaG8pgogUVWa/pKYOM=;
-        b=cyz7QwbTfHcC+qnorIFVkv7DnbL/oyA5L+VJJAN8XWkNMg42oKdig8X5tU4xa7X7pN
-         01zspKzmEcVvu5fY2nzlSr3geA/q2812tr8Wz0sUieGMHhvg1aGrsz+m0J4b8Wmr2jr4
-         Bxuqd5E5gXQb8ARkFssKYAOK0W62M412pmNUBd9NwRQD04zf23syAxjzcLmFBod8VeLt
-         Wkczn2W4OJkxg0o6mQ3tRUOpKTABRCCUpHtxAiPQFjxJEJCf/WQ1QzYZHEZTgGgMtnu2
-         jNC0bNdR63+2S3cfHE4fDoxHLsYIWb3l6Ja+q5Vt8aM4kBs1TbyhYMIEDY91gB4GZfH3
-         2CvQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=T+iZKNW1gmpT+HQqIiqmRRpQMcaG8pgogUVWa/pKYOM=;
-        b=WEk1n9SbrJ938gLqX5Lzn0yXzvNN+Z2bzzWv44aN926h1hzvcfQhSC2ZoSheuI7M1R
-         JdqxO+tQBweBeaN49bVlg1Tvawg3GfJg0uxazb8o+CruRaBKKlu98pJ1nqhoPY8tpv4F
-         uet4010hAsFsvoncHZB0tJ5qkS/oZtecXPcHbYA7Q3M/0cDlr0ucrTUErOGELajCJK6m
-         sX/89QbY3UCgs56UgjuYZ/pS4vFzk02zGg54g8MA5Du0PZobb9uNw73JV27hxr4q+V7X
-         wuapX85syKnoKH2+oj4vp5PF/dJ5zHVK7hrFr7JjsD7ATCg7qifa9qPGiTc8R4ficXiG
-         PytQ==
-X-Gm-Message-State: AOAM533ssE5soVZOb2B5D2sMQ/IbKEO/JTQmYBTAWHN/L/EYaxVhEO+B
-        3WBisgBrnXIvnLCnUEXbFOsAuLtPtyE07BmQiAc/iA==
-X-Google-Smtp-Source: ABdhPJz6FNuZKYGADUxlk9Tv8Rh/lJVu/2CmZBJO3UIrMaB/edLmB9ZlsVBcuBoQ7GbjgHsRrGXCE/gOnIldpK4OwK0=
-X-Received: by 2002:a19:495d:: with SMTP id l29mr3392190lfj.465.1610010618615;
- Thu, 07 Jan 2021 01:10:18 -0800 (PST)
+        id S1727444AbhAGJDb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 04:03:31 -0500
+Received: from mail-eopbgr60045.outbound.protection.outlook.com ([40.107.6.45]:21197
+        "EHLO EUR04-DB3-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725900AbhAGJD3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Jan 2021 04:03:29 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=DVO4srd/TVQaRFDLAE9+Lx6FlYluU6eamnfK3Y4W07bZQoEOSjxksincufyEAGGGALA4dxbjctARycaS3yDcT35jWbTv2N32na0wyDmpDEprI+PIQ/yNkOyi57SChjE2aCbaStWyuaNus55u1rl84C55z3lMMlEhdNu4n9afhd6VRTb0THwtxxgpf5VeLf/hCxBXC2LHKVyfEh5x1ctQ14xudthwx0jij55xih2JRpv6XMWL2w2K4l5IxO9l+R3kWDuaCKbSqXvDtmwcUqjPyRcuLzYLyXUu6Nby3I60yju58brIi0X3nf748J3riFtOpbZeWCJAorGO+DjN2PfN5Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=NZSDK6CDrtWxVcnSPNlCMPqROCftudZh1zvB/4l8Uk8=;
+ b=Iykl2U7TJJlTCGKbOAndMCH3WYeyY6PIAU8Ag1fa0diRjp6rR1Pbv6f0+uIUX6fwD/YkiUvKwO9RzCWpex+lgHsbAzWVyF2Hk7a67lSpb6nR1z1dppklJd2m0OFnMDK4/zBM1R8MXqUTvrGFwUa0X/QCEy9s1GmGikh4kVOzShEoKMCypsMOWYBbM0c44jNFM0h/CnOyzR8w0gjf8i+oBI9qKpMjftN0oEOI2+qWljcT7xxcZxvVGxsDncy7++UI7kaEn3gOtES6L4s/xKFI/ykJuDyWP4XTdL9ShqgzhWIQzZYesXRHpWGLJlrjpLRvtX/vicDNldzEZqwOIMHjIw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=NZSDK6CDrtWxVcnSPNlCMPqROCftudZh1zvB/4l8Uk8=;
+ b=q5FCkEc9Toudj5SrB3XLn/JKzbEHaRV3g4pdjfPwZXhzRq+cD6zu7GlRYLsgP+N+WzUkWVrUwjq80RWkVgPA93z5MC02W0Z1qozn2qgTUDeCOF/NySSnNxUMc8wK5r/g6xTCbQjDRaF14+waI2xiQNtiMRFaJH9jtU/nFzHV400=
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none header.from=nxp.com;
+Received: from HE1PR0402MB3371.eurprd04.prod.outlook.com (2603:10a6:7:85::27)
+ by HE1PR0401MB2297.eurprd04.prod.outlook.com (2603:10a6:3:23::25) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3721.22; Thu, 7 Jan
+ 2021 09:02:37 +0000
+Received: from HE1PR0402MB3371.eurprd04.prod.outlook.com
+ ([fe80::3194:64d6:5a70:a91d]) by HE1PR0402MB3371.eurprd04.prod.outlook.com
+ ([fe80::3194:64d6:5a70:a91d%4]) with mapi id 15.20.3721.024; Thu, 7 Jan 2021
+ 09:02:37 +0000
+From:   Zhiqiang Hou <Zhiqiang.Hou@nxp.com>
+To:     linux-pci@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-omap@vger.kernel.org,
+        linux-arm-kernel@axis.com, lorenzo.pieralisi@arm.com,
+        robh@kernel.org, bhelgaas@google.com
+Cc:     kishon@ti.com, minghuan.Lian@nxp.com, jesper.nilsson@axis.com,
+        jingoohan1@gmail.com, gustavo.pimentel@synopsys.com,
+        hayashi.kunihiko@socionext.com, Hou Zhiqiang <Zhiqiang.Hou@nxp.com>
+Subject: [PATCH 0/4] PCI: dwc: Refine the EP code no functionality change
+Date:   Thu,  7 Jan 2021 17:11:19 +0800
+Message-Id: <20210107091123.8616-1-Zhiqiang.Hou@nxp.com>
+X-Mailer: git-send-email 2.17.1
+Content-Type: text/plain
+X-Originating-IP: [119.31.174.73]
+X-ClientProxiedBy: SG2PR06CA0085.apcprd06.prod.outlook.com
+ (2603:1096:3:14::11) To HE1PR0402MB3371.eurprd04.prod.outlook.com
+ (2603:10a6:7:85::27)
 MIME-Version: 1.0
-References: <20210104230253.2805217-1-robh@kernel.org>
-In-Reply-To: <20210104230253.2805217-1-robh@kernel.org>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Thu, 7 Jan 2021 10:10:07 +0100
-Message-ID: <CACRpkdZVC8RE-DTes+p6g-1EAHxQWpu2u+sBCX2ei32cvaCrDA@mail.gmail.com>
-Subject: Re: [PATCH] dt-bindings: Add missing array size constraints
-To:     Rob Herring <robh@kernel.org>
-Cc:     "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Jens Axboe <axboe@kernel.dk>, Stephen Boyd <sboyd@kernel.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        MyungJoo Ham <myungjoo.ham@samsung.com>,
-        Chanwoo Choi <cw00.choi@samsung.com>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Marc Zyngier <maz@kernel.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Sebastian Reichel <sre@kernel.org>,
-        Ohad Ben-Cohen <ohad@wizery.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "open list:LIBATA SUBSYSTEM (Serial and Parallel ATA drivers)" 
-        <linux-ide@vger.kernel.org>, linux-clk <linux-clk@vger.kernel.org>,
-        "open list:DRM PANEL DRIVERS" <dri-devel@lists.freedesktop.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        linux-iio <linux-iio@vger.kernel.org>,
-        Linux Input <linux-input@vger.kernel.org>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        linux-mmc <linux-mmc@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>,
-        Linux PM list <linux-pm@vger.kernel.org>,
-        linux-remoteproc@vger.kernel.org,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
-        "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..." 
-        <alsa-devel@alsa-project.org>,
-        linux-spi <linux-spi@vger.kernel.org>,
-        linux-usb <linux-usb@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from localhost.localdomain (119.31.174.73) by SG2PR06CA0085.apcprd06.prod.outlook.com (2603:1096:3:14::11) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3742.6 via Frontend Transport; Thu, 7 Jan 2021 09:02:31 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: 44fa73d0-ba10-4b07-cfe4-08d8b2eafaca
+X-MS-TrafficTypeDiagnostic: HE1PR0401MB2297:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <HE1PR0401MB22977C4A12C92181DC38E24084AF0@HE1PR0401MB2297.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:5236;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: U+Dd7cNN7VkHOMhs8A2aBtzJ9mRlqMifKY3u0jmcLSQpH0KKuDhH2TEOQjhvprkO1x7866zR9ZTRi3lywie++zzqAio3a7+eha4jiwPHVnsG2x3h/t9lSlfvstObYYK6Xqd8Ht3lU86BPwB1+BbE2n95M42LayKs3nWTAJbpaH23hy4zyIu3Ypi1twyoXnXGvUE+dhOhpMCoRgbFb0P0oesoPTRNxJffqzHbYbZNrh+1hNTbkQIjjE0lXiDiMNmc/9ceW091S5w1U0N83YI3x4Ep5dkEpW90FOrsiUtlnl5Ejfc00KuTsOUFNj2kWOAwVRwghKlndqRZ5/43eX2c82FYI4x2+4l7fD1GVHDKKniNS9BlrWOrlShQ8bZVPNGQsTV1YlKZAeMws8nUZBwOY1zoKO+uVqC7uPYQYcJvxz82Bt6NdTTUea3r47hAK065hWQAzNjyRtPO9VxM0QfFIg==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:HE1PR0402MB3371.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(346002)(39860400002)(366004)(376002)(396003)(52116002)(5660300002)(7416002)(66556008)(1076003)(26005)(6486002)(66476007)(4744005)(83380400001)(186003)(6506007)(16526019)(69590400011)(8936002)(66946007)(316002)(86362001)(2616005)(2906002)(36756003)(956004)(8676002)(6666004)(478600001)(4326008)(6512007);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?IjZ0zfyb4cawJ/yrCtF3d4+jqn+VIM/1NurvIyvVkLwDXfsy0e/nPgst9XCk?=
+ =?us-ascii?Q?hQza/vInISU4CiG4ZNn9LaoNaq2jB39ZRhKQK1nbJBl5k9YrWvrmA4c0qcRC?=
+ =?us-ascii?Q?lYI5anYYmMj3USQ84bJh2JL0pd9Tv/8cXdfonWVXtVQzkidXw9Fwvjh7R+KB?=
+ =?us-ascii?Q?CFUua4m/0guXtHUHZsngODT50fL7JdQuKKWAhdGn7eGAZdpHB8dWS9/r3TAc?=
+ =?us-ascii?Q?SWwPhjLaNVVzxRlPg1ZSbwv9mRHu87mfWg+YJk8a8WuSnbiz7+GQEwXLivEZ?=
+ =?us-ascii?Q?obOLKYQF021/7jPWxDmtudrNImxgAp6d6p4q6us1bI9sSUNSVebi52QzYIsx?=
+ =?us-ascii?Q?uWXHjQ+l2EpGpOJ9caExEIrBhifzlUChZ19rQ05mwAJCsW5DdPbYt7TslvPb?=
+ =?us-ascii?Q?aQsCgxcc2DJeF3l5u9RCgbnTpM8bX76tKFELse8b9agaciSwegUb58oIXM7S?=
+ =?us-ascii?Q?nbjBgqclFBbvmLr8iK6MIkBfBUf3SjwskWFaj3YP+OxzRbYbjwgPz/m8rXwo?=
+ =?us-ascii?Q?+u1D2N4He+a/UxOJDjSjp2mS4RuJdbhjJlLPWfZ4xP5GP4/cHMhj/TFT3Jl4?=
+ =?us-ascii?Q?7KT+Gd8EyQc6KgWgbkZ/RD7E67M7b/QSYMsmhqp+qI5tspTrof31O2UZ2sCv?=
+ =?us-ascii?Q?lmDXfVk3efGIxDvaqsCLJcaJK8zXEBRxpsalxwWN1GoP53DPgdkQb3Ira7i6?=
+ =?us-ascii?Q?dN7/0mZh4niIg4jyz0ZV5aOUwXjFJ0bnbkz+oZ7bCXtfuR69g9dwyf4LfwvB?=
+ =?us-ascii?Q?HJNLB3GdsDW7V+cGZypJACzIOqvq9VwBjt6sx/dl3ZqlSV8h/GewNjtwrEIe?=
+ =?us-ascii?Q?OWljdNn6T+c0XY9KqvK4StRtDzvBnlAsu12x/M403OmgMhW7MUMa4HlDWDyJ?=
+ =?us-ascii?Q?YeKQmOQAMaDqYwdQ+MSkUAQjW3t36bPZdsif6o6QNCyGeAz9BBbWDqEiw4d8?=
+ =?us-ascii?Q?+Vg606Ew1jjYN4JVjQV9w/6xhParv14vgn6Xxai+XAAsOndfX8tzGEB9GKb7?=
+ =?us-ascii?Q?8ZDR?=
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-AuthSource: HE1PR0402MB3371.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Jan 2021 09:02:37.0992
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-Network-Message-Id: 44fa73d0-ba10-4b07-cfe4-08d8b2eafaca
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: npoDiaF8O3aIO2HAeN2mvKBJ5xRNk4z15f4Q4ftulJ0LbyofiwxthsR5X7HHvhIeLu92T1uB3ACU332iXddKHA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: HE1PR0401MB2297
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 5, 2021 at 12:03 AM Rob Herring <robh@kernel.org> wrote:
+From: Hou Zhiqiang <Zhiqiang.Hou@nxp.com>
 
-> DT properties which can have multiple entries need to specify what the
-> entries are and define how many entries there can be. In the case of
-> only a single entry, just 'maxItems: 1' is sufficient.
->
-> Add the missing entry constraints. These were found with a modified
-> meta-schema. Unfortunately, there are a few cases where the size
-> constraints are not defined such as common bindings, so the meta-schema
-> can't be part of the normal checks.
->
-> Cc: Jens Axboe <axboe@kernel.dk>
-> Cc: Stephen Boyd <sboyd@kernel.org>
-> Cc: Thierry Reding <thierry.reding@gmail.com>
-> Cc: MyungJoo Ham <myungjoo.ham@samsung.com>
-> Cc: Chanwoo Choi <cw00.choi@samsung.com>
-> Cc: Linus Walleij <linus.walleij@linaro.org>
-> Cc: Bartosz Golaszewski <bgolaszewski@baylibre.com>
-> Cc: Jonathan Cameron <jic23@kernel.org>
-> Cc: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-> Cc: Thomas Gleixner <tglx@linutronix.de>
-> Cc: Marc Zyngier <maz@kernel.org>
-> Cc: Mauro Carvalho Chehab <mchehab@kernel.org>
-> Cc: Chen-Yu Tsai <wens@csie.org>
-> Cc: Ulf Hansson <ulf.hansson@linaro.org>
-> Cc: "David S. Miller" <davem@davemloft.net>
-> Cc: Jakub Kicinski <kuba@kernel.org>
-> Cc: Sebastian Reichel <sre@kernel.org>
-> Cc: Ohad Ben-Cohen <ohad@wizery.com>
-> Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
-> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> Signed-off-by: Rob Herring <robh@kernel.org>
+Tune the EP mode code slightly to make it more readable.
 
-This is good. The stricter the better.
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+Hou Zhiqiang (4):
+  PCI: dwc: Change to use an array to store the structure of functions
+  PCI: dwc: Add CFG offset info into function's represented structure
+  PCI: dwc: Rename callback function func_conf_select and its instance
+  PCI: dwc: Change the parameter of function dw_pcie_ep_reset_bar()
 
-Yours,
-Linus Walleij
+ drivers/pci/controller/dwc/pci-dra7xx.c       |   2 +-
+ .../pci/controller/dwc/pci-layerscape-ep.c    |   8 +-
+ drivers/pci/controller/dwc/pcie-artpec6.c     |   2 +-
+ .../pci/controller/dwc/pcie-designware-ep.c   | 192 ++++++++----------
+ .../pci/controller/dwc/pcie-designware-plat.c |   3 +-
+ drivers/pci/controller/dwc/pcie-designware.h  |  11 +-
+ drivers/pci/controller/dwc/pcie-uniphier-ep.c |   3 +-
+ 7 files changed, 96 insertions(+), 125 deletions(-)
+
+-- 
+2.17.1
+
