@@ -2,101 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FA3D2EE7BA
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 22:43:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D27CE2EE7AF
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 22:37:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727790AbhAGVnb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 16:43:31 -0500
-Received: from mo4-p00-ob.smtp.rzone.de ([85.215.255.20]:30855 "EHLO
-        mo4-p00-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727655AbhAGVna (ORCPT
+        id S1726646AbhAGVg6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 16:36:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38592 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725944AbhAGVg5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 16:43:30 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1610055577;
-        s=strato-dkim-0002; d=hypervisor.org;
-        h=Message-ID:Subject:To:From:Date:From:Subject:Sender;
-        bh=A86rKVckePq/Tp1JC9QmcGhKMBeceNIQ3Z3HXyDS7r0=;
-        b=m/1zsXLT/82lLWQ10wqReSYUvpOwe2j5DXeK+woW3dZKiONDpWZGQkmtUQyRa8mTV3
-        jSgUa4rt0Qg6t/WsV/YOpeIgWJPRHn7S8XmCUOxrrXiPUGpRO7T8kHO7XfjGCvKWBfbf
-        UrJ3lr4+OaaLnz5z+Ot+PxSeJmf2NxGsRcBm6Q78wazVhI6puoKH5K3ljq9JKV8LGsKm
-        +siPtHHPrM883d+owOKg5UqdSBQ/I29RJueQv+MOuZ6cMdZ5AiNfyW2X0FISE20vmH9H
-        iyIVW2mmRx5Qy6YMBsH9W3nhFZ7HIBPA1Flx02LsApCtM6M0Es0vp5QuCrekx27l0w4s
-        IqjA==
-X-RZG-AUTH: ":OWgLVUixa/orYEjgByCmMbha6U0z53RZBchi0p8VsT1fAA5ylDfDuy2BlqsdF5Rpv7WUuLw="
-X-RZG-CLASS-ID: mo00
-Received: from X220.hypervisor.org
-        by smtp.strato.de (RZmta 47.12.1 DYNA|AUTH)
-        with ESMTPSA id L0973bx07LZg8vi
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-        (Client did not present a certificate)
-        for <linux-kernel@vger.kernel.org>;
-        Thu, 7 Jan 2021 22:35:42 +0100 (CET)
-Date:   Thu, 7 Jan 2021 22:35:41 +0100
-From:   Udo Steinberg <udo@hypervisor.org>
-To:     LKML <linux-kernel@vger.kernel.org>
-Subject: Linux 5.10.5 hung task
-Message-ID: <20210107223541.2d03619c@X220.hypervisor.org>
-X-Mailer: X-Mailer 5.0 Gold
+        Thu, 7 Jan 2021 16:36:57 -0500
+Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F52FC0612F6
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Jan 2021 13:36:11 -0800 (PST)
+Received: by mail-wm1-x32f.google.com with SMTP id q75so6759813wme.2
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Jan 2021 13:36:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kresin-me.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=VvOCmj+9eKTgcp69Yq+M+KAzZiZk937sl5Sjur3l8dk=;
+        b=QX0fey78f2iupaSHbloW8o5y1t2hIfEeZ+ljJkz1jr8MfuoQzk0vUe/DX22GK8Ik6P
+         jGrDLOoKVHTj5qM5kCoMnEGLspWFyxsThr3BAjEhfDa02WUWRz3F2d+60LPZCZQBmLiJ
+         tIFA6Fu6ks3Lc+Y1Dq11VLV5PcFd+QcO4vnb9uFJOT2reqrurAXggd+g+e1I/VcEJsvR
+         kEQGmogH4p2ZuoQdrRgk3XJnNGG035Q5dTlZJsgnoOfySXNw6yQMEk0mQrKliWto1Ask
+         kMyrVm79LCni8s/hyy1QVhDm9T/MyrFaYBiATfYkba5KqvAskOkYZdnCZ4HD0sE8R5aF
+         S0pQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=VvOCmj+9eKTgcp69Yq+M+KAzZiZk937sl5Sjur3l8dk=;
+        b=LkguAOSXsq5YLVY1ODvFa1520NLsYBZX7xJaatXTPhe59vrI2XORjMenkAbRdwQcrL
+         t96b4joELAXInoVX4BF49EV+hyj533N/ZTkiInC1/EiWQpMNd2TvCpytutQEOw9iwE9A
+         FUQ4VpePaXCbbfXkvh1wbb6x7rsEK+j347b4DD8PWOjfKlQPsN6KddoqL2LotoGmHukC
+         T/G5kK1ZiKr4haqq4hoqwdTOfvwSwx/gyRoOSOMVtHthhE1j+uifUGw8wIu2PAa8PZ4G
+         WkmY9gxBKySIaIFeFLAMblYS42FQoFZaDX04ce8hj1T+7xfOpohjlaTMAhUbbif55kNY
+         AJfA==
+X-Gm-Message-State: AOAM5310gxyvK2EXwJk8foq8jG8RDh2oq6Jk4XD2L9ru3VqcChki+OJF
+        Z5/jhBZpUkpJQ9oCQOtQttNC8A==
+X-Google-Smtp-Source: ABdhPJzonrcK+TRLtg6V6Hw1Cuq1ymKGIgjegQsieAocQ6k0Tl+1tM6tQIh9TN3pB+I2vzl29IbsTQ==
+X-Received: by 2002:a1c:3d86:: with SMTP id k128mr401927wma.66.1610055370266;
+        Thu, 07 Jan 2021 13:36:10 -0800 (PST)
+Received: from desktop.wvd.kresin.me (p200300ec2f1543005c3547d24e99751a.dip0.t-ipconnect.de. [2003:ec:2f15:4300:5c35:47d2:4e99:751a])
+        by smtp.gmail.com with ESMTPSA id 138sm10291098wma.41.2021.01.07.13.36.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 07 Jan 2021 13:36:09 -0800 (PST)
+From:   Mathias Kresin <dev@kresin.me>
+To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Serge Semin <fancer.lancer@gmail.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Marc Zyngier <maz@kernel.org>, linux-mips@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        Hauke Mehrtens <hauke@hauke-m.de>, stable@vger.kernel.org
+Subject: [PATCH] irqchip: mips-cpu: set IPI domain parent chip
+Date:   Thu,  7 Jan 2021 22:36:03 +0100
+Message-Id: <20210107213603.1637781-1-dev@kresin.me>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi all,
+Since commit 55567976629e ("genirq/irqdomain: Allow partial trimming of
+irq_data hierarchy") the irq_data chain is valided.
 
-(Please CC: me as I'm not subscribed to LKML)
+The irq_domain_trim_hierarchy() function doesn't consider the irq + ipi
+domain hierarchy as valid, since the ipi domain has the irq domain set
+as parent, but the parent domain has no chip set. Hence the boot ends in
+a kernel panic.
 
-I'm getting frequent hangs under X11 with Linux 5.10.5 on a Lenovo X1 Carbon
-6th Gen laptop with Intel KBL graphics.
+Set the chip for the parent domain as it is done in the mips gic irq
+driver, to have a valid irq_data chain.
 
-Below is a trace of what hangs.
+Fixes: 3838a547fda2 ("irqchip: mips-cpu: Introduce IPI IRQ domain support")
+Cc: <stable@vger.kernel.org> # v5.10+
+Signed-off-by: Mathias Kresin <dev@kresin.me>
+---
+ drivers/irqchip/irq-mips-cpu.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-Any pointers for how to debug this further or any patches are appreciated.
+diff --git a/drivers/irqchip/irq-mips-cpu.c b/drivers/irqchip/irq-mips-cpu.c
+index 95d4fd8f7a96..0bbb0b2d0dd5 100644
+--- a/drivers/irqchip/irq-mips-cpu.c
++++ b/drivers/irqchip/irq-mips-cpu.c
+@@ -197,6 +197,13 @@ static int mips_cpu_ipi_alloc(struct irq_domain *domain, unsigned int virq,
+ 		if (ret)
+ 			return ret;
+ 
++		ret = irq_domain_set_hwirq_and_chip(domain->parent, virq + i, hwirq,
++						    &mips_mt_cpu_irq_controller,
++						    NULL);
++
++		if (ret)
++			return ret;
++
+ 		ret = irq_set_irq_type(virq + i, IRQ_TYPE_LEVEL_HIGH);
+ 		if (ret)
+ 			return ret;
+-- 
+2.25.1
 
-Thanks,
-Udo
-
-[ 2602.016651] INFO: task kworker/3:1H:373 blocked for more than 20 seconds.
-[ 2602.016653]       Not tainted 5.10.5 #1
-[ 2602.016653] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-[ 2602.016654] task:kworker/3:1H    state:D stack:    0 pid:  373 ppid:     2 flags:0x00004000
-[ 2602.016659] Workqueue: events_highpri intel_atomic_cleanup_work
-[ 2602.016660] Call Trace:
-[ 2602.016663]  __schedule+0x1d7/0x520
-[ 2602.016665]  schedule+0x40/0xe0
-[ 2602.016666]  schedule_preempt_disabled+0xf/0x20
-[ 2602.016667]  __ww_mutex_lock.constprop.0+0x4a3/0x830
-[ 2602.016668]  ? acpi_idle_do_entry+0x50/0x50
-[ 2602.016669]  intel_unpin_fb_vma+0x20/0xa0
-[ 2602.016672]  drm_atomic_helper_cleanup_planes+0x4a/0x60
-[ 2602.016673]  intel_atomic_cleanup_work+0x54/0x100
-[ 2602.016675]  process_one_work+0x1a8/0x2f0
-[ 2602.016676]  ? rescuer_thread+0x410/0x410
-[ 2602.016677]  worker_thread+0x48/0x3d0
-[ 2602.016678]  ? rescuer_thread+0x410/0x410
-[ 2602.016679]  kthread+0x136/0x160
-[ 2602.016681]  ? __kthread_bind_mask+0x60/0x60
-[ 2602.016682]  ret_from_fork+0x1f/0x30
-[ 2622.496742] INFO: task kworker/3:1H:373 blocked for more than 40 seconds.
-[ 2622.496744]       Not tainted 5.10.5 #1
-[ 2622.496744] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-[ 2622.496745] task:kworker/3:1H    state:D stack:    0 pid:  373 ppid:     2 flags:0x00004000
-[ 2622.496750] Workqueue: events_highpri intel_atomic_cleanup_work
-[ 2622.496751] Call Trace:
-[ 2622.496754]  __schedule+0x1d7/0x520
-[ 2622.496756]  schedule+0x40/0xe0
-[ 2622.496757]  schedule_preempt_disabled+0xf/0x20
-[ 2622.496758]  __ww_mutex_lock.constprop.0+0x4a3/0x830
-[ 2622.496759]  ? acpi_idle_do_entry+0x50/0x50
-[ 2622.496760]  intel_unpin_fb_vma+0x20/0xa0
-[ 2622.496763]  drm_atomic_helper_cleanup_planes+0x4a/0x60
-[ 2622.496764]  intel_atomic_cleanup_work+0x54/0x100
-[ 2622.496766]  process_one_work+0x1a8/0x2f0
-[ 2622.496767]  ? rescuer_thread+0x410/0x410
-[ 2622.496768]  worker_thread+0x48/0x3d0
-[ 2622.496769]  ? rescuer_thread+0x410/0x410
-[ 2622.496771]  kthread+0x136/0x160
-[ 2622.496772]  ? __kthread_bind_mask+0x60/0x60
-[ 2622.496773]  ret_from_fork+0x1f/0x30
