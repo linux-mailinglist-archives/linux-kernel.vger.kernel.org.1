@@ -2,74 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 60A832ECE92
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 12:20:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A202A2ECE83
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 12:19:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727991AbhAGLTR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 06:19:17 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34864 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727949AbhAGLTO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 06:19:14 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 45A63221E9;
-        Thu,  7 Jan 2021 11:18:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610018313;
-        bh=CePN95XLwXDP+83fIST32f96djP/fsYDPjd7ZQQqssE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=CvcbyZghY1IZ0LMMm4/G0bzhADIvVPiSVZV5KPz7ymJR9nh21WnJfhS8ZiEkiKHzh
-         ThOq6gaB3jUxM0bZNjGA/gBalhLpkEevIRh34dOhKBHD0Anvs5Z3IJt3vwaxzuZJr1
-         E70cv6nLVBA4US15UPVZVFIEuT44YmR52B8WHQaw=
-Date:   Thu, 7 Jan 2021 12:19:53 +0100
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Georgi Djakov <georgi.djakov@linaro.org>
-Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [GIT PULL] interconnect fixes for 5.11-rc
-Message-ID: <X/buWeMxnoIs8ck4@kroah.com>
-References: <20210106094723.563-1-georgi.djakov@linaro.org>
- <X/X5euQ0xgzVv/0R@kroah.com>
- <16762fad-e814-6f74-333e-71676aa4b90d@linaro.org>
+        id S1727673AbhAGLSN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 06:18:13 -0500
+Received: from mx0a-00128a01.pphosted.com ([148.163.135.77]:51396 "EHLO
+        mx0a-00128a01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727252AbhAGLSL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Jan 2021 06:18:11 -0500
+Received: from pps.filterd (m0167088.ppops.net [127.0.0.1])
+        by mx0a-00128a01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 107BEgnW009880;
+        Thu, 7 Jan 2021 06:17:17 -0500
+Received: from nwd2mta4.analog.com ([137.71.173.58])
+        by mx0a-00128a01.pphosted.com with ESMTP id 35wsv6h0ym-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 07 Jan 2021 06:17:17 -0500
+Received: from ASHBMBX9.ad.analog.com (ASHBMBX9.ad.analog.com [10.64.17.10])
+        by nwd2mta4.analog.com (8.14.7/8.14.7) with ESMTP id 107BHGWq024814
+        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=FAIL);
+        Thu, 7 Jan 2021 06:17:16 -0500
+Received: from ASHBCASHYB5.ad.analog.com (10.64.17.133) by
+ ASHBMBX9.ad.analog.com (10.64.17.10) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1779.2; Thu, 7 Jan 2021 06:17:15 -0500
+Received: from ASHBMBX9.ad.analog.com (10.64.17.10) by
+ ASHBCASHYB5.ad.analog.com (10.64.17.133) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.2.721.2;
+ Thu, 7 Jan 2021 06:17:15 -0500
+Received: from zeus.spd.analog.com (10.66.68.11) by ASHBMBX9.ad.analog.com
+ (10.64.17.10) with Microsoft SMTP Server id 15.1.1779.2 via Frontend
+ Transport; Thu, 7 Jan 2021 06:17:15 -0500
+Received: from localhost.localdomain ([10.48.65.12])
+        by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 107BHDpq015369;
+        Thu, 7 Jan 2021 06:17:13 -0500
+From:   Alexandru Ardelean <alexandru.ardelean@analog.com>
+To:     <linux-iio@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC:     <jic23@kernel.org>, <lars@metafoo.de>, <andy.shevchenko@gmail.com>,
+        Alexandru Ardelean <alexandru.ardelean@analog.com>
+Subject: [PATCH v8] iio: Handle enumerated properties with gaps
+Date:   Thu, 7 Jan 2021 13:20:49 +0200
+Message-ID: <20210107112049.10815-1-alexandru.ardelean@analog.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <16762fad-e814-6f74-333e-71676aa4b90d@linaro.org>
+Content-Type: text/plain
+X-ADIRuleOP-NewSCL: Rule Triggered
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
+ definitions=2021-01-07_05:2021-01-07,2021-01-07 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 phishscore=0
+ impostorscore=0 malwarescore=0 mlxlogscore=965 mlxscore=0 adultscore=0
+ suspectscore=0 bulkscore=0 spamscore=0 priorityscore=1501
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2101070069
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 07, 2021 at 01:12:14PM +0200, Georgi Djakov wrote:
-> On 1/6/21 19:55, Greg KH wrote:
-> > On Wed, Jan 06, 2021 at 11:47:23AM +0200, Georgi Djakov wrote:
-> > > Hello Greg,
-> > > 
-> > > Here is a pull request with a few interconnect fixes for 5.11-rc.
-> > > More details are available in the signed tag. Please take them into
-> > > char-misc-linus when possible. The patches have been in linux-next
-> > > during the last few days.
-> > > 
-> > > Thanks,
-> > > Georgi
-> > > 
-> > > The following changes since commit 5c8fe583cce542aa0b84adc939ce85293de36e5e:
-> > > 
-> > >    Linux 5.11-rc1 (2020-12-27 15:30:22 -0800)
-> > > 
-> > > are available in the Git repository at:
-> > > 
-> > >    git://git.kernel.org/pub/scm/linux/kernel/git/djakov/icc.git tags/icc-5.11-rc3
-> > 
-> > Pulled and pushed out, thanks.
-> > 
-> Hi Greg,
-> 
-> I still don't see this in your tree, so just checking whether i need to fix
-> something or some script is stuck? Or maybe I just need to be more patient,
-> since you haven't had a chance to push yet.
+From: Lars-Peter Clausen <lars@metafoo.de>
 
-{sigh}
+Some enums might have gaps or reserved values in the middle of their value
+range. E.g. consider a 2-bit enum where the values 0, 1 and 3 have a
+meaning, but 2 is a reserved value and can not be used.
 
-I forgot the "push" part of the above statement :)
+Add support for such enums to the IIO enum helper functions. A reserved
+values is marked by setting its entry in the items array to NULL rather
+than the normal descriptive string value.
 
-Should now be there, sorry about that.
+Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
+Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
+---
 
-greg k-h
+Changelog v7 -> v8:
+* https://lore.kernel.org/linux-iio/20210107084434.35283-1-alexandru.ardelean@analog.com/
+* dropped patch 'lib/string.c: add __sysfs_match_string_with_gaps() helper'
+* merged __sysfs_match_string_with_gaps into  drivers/iio/industrial-core.c 
+  as iio_sysfs_match_string_with_gaps()
+
+ drivers/iio/industrialio-core.c | 39 ++++++++++++++++++++++++++++++---
+ 1 file changed, 36 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/iio/industrialio-core.c b/drivers/iio/industrialio-core.c
+index e9ee9363fed0..db20e2ab437d 100644
+--- a/drivers/iio/industrialio-core.c
++++ b/drivers/iio/industrialio-core.c
+@@ -169,6 +169,36 @@ static const char * const iio_chan_info_postfix[] = {
+ 	[IIO_CHAN_INFO_CALIBAMBIENT] = "calibambient",
+ };
+ 
++/**
++ * iio_sysfs_match_string_with_gaps - matches given string in an array with gaps
++ * @array: array of strings
++ * @n: number of strings in the array
++ * @str: string to match with
++ *
++ * Returns index of @str in the @array or -EINVAL, similar to match_string().
++ * Uses sysfs_streq instead of strcmp for matching.
++ *
++ * This routine will look for a string in an array of strings.
++ * The search will continue until the element is found or the n-th element
++ * is reached, regardless of any NULL elements in the array.
++ */
++static int iio_sysfs_match_string_with_gaps(const char * const *array, size_t n,
++					    const char *str)
++{
++	const char *item;
++	int index;
++
++	for (index = 0; index < n; index++) {
++		item = array[index];
++		if (!item)
++			continue;
++		if (sysfs_streq(item, str))
++			return index;
++	}
++
++	return -EINVAL;
++}
++
+ #if defined(CONFIG_DEBUG_FS)
+ /*
+  * There's also a CONFIG_DEBUG_FS guard in include/linux/iio/iio.h for
+@@ -470,8 +500,11 @@ ssize_t iio_enum_available_read(struct iio_dev *indio_dev,
+ 	if (!e->num_items)
+ 		return 0;
+ 
+-	for (i = 0; i < e->num_items; ++i)
++	for (i = 0; i < e->num_items; ++i) {
++		if (!e->items[i])
++			continue;
+ 		len += scnprintf(buf + len, PAGE_SIZE - len, "%s ", e->items[i]);
++	}
+ 
+ 	/* replace last space with a newline */
+ 	buf[len - 1] = '\n';
+@@ -492,7 +525,7 @@ ssize_t iio_enum_read(struct iio_dev *indio_dev,
+ 	i = e->get(indio_dev, chan);
+ 	if (i < 0)
+ 		return i;
+-	else if (i >= e->num_items)
++	else if (i >= e->num_items || !e->items[i])
+ 		return -EINVAL;
+ 
+ 	return snprintf(buf, PAGE_SIZE, "%s\n", e->items[i]);
+@@ -509,7 +542,7 @@ ssize_t iio_enum_write(struct iio_dev *indio_dev,
+ 	if (!e->set)
+ 		return -EINVAL;
+ 
+-	ret = __sysfs_match_string(e->items, e->num_items, buf);
++	ret = iio_sysfs_match_string_with_gaps(e->items, e->num_items, buf);
+ 	if (ret < 0)
+ 		return ret;
+ 
+-- 
+2.17.1
+
