@@ -2,135 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 775202ED5F8
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 18:47:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 580B12ED5FC
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 18:47:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729082AbhAGRrM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 12:47:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58944 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727215AbhAGRrL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 12:47:11 -0500
-Received: from mail-qk1-x730.google.com (mail-qk1-x730.google.com [IPv6:2607:f8b0:4864:20::730])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6792BC0612F4
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Jan 2021 09:46:31 -0800 (PST)
-Received: by mail-qk1-x730.google.com with SMTP id z11so6152459qkj.7
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Jan 2021 09:46:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=CNK3GvEL4U8HNz+MK8A+YotA76v+OyTJ7DMDgcIh4hA=;
-        b=K845TS0CJJvuvFjUj0/sOIf8ijCuVcy9Rrl8aFb3820OKBUWOcx+gm8R4Go8dLn4k7
-         10usGfYNKrO3Dn7k10RIjdXiBYhbGLFYuuVaxFPvW44RQCk+hmBONOLVCwN3ooyzcxnZ
-         TjTxetXJakVoUOQ5iFjr608k+SiM4Xf4dr968ZRG+nJn2CNhIn0g0LTo64NQVlhO5VC1
-         xBJ4FqAtnsca75tRq3wez0V3QiAhd/j17TM8ryuO3S8hnxU1iWvGtYnFOFQuMeMzOZ3H
-         sJ17/FpXL5LIIG8fydoHgoWmOhNvAfw/urnEq+3WwWrKeoO3vlTfqI/PNdKtRWhff3BO
-         a4OQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=CNK3GvEL4U8HNz+MK8A+YotA76v+OyTJ7DMDgcIh4hA=;
-        b=rAD0vyPciu01mIpOv1gQhTJiDE1kz1hNd+wyl46N1aDRVYk6O12eri9NQHbsDUQi4n
-         txVI3LGP2eqinPqGxFqqPJP5BpG1xfqJyiJ4MwvAqxUFsac0G7CFlo0N/Fxuxhq3KIce
-         mWHQ/iWSFZQD5KneN5NhsnOOXnQB1grV4XVaz3DqFyRErztsf9rZt6rnq7w2PlpB4oyQ
-         iM/1jibSgpliLtiKOnev8+OERX5xo4s5yC5pMYdzMhCFe0E83aTwKEJzuTdkuN4BM4NC
-         s1sTRQN3mjq6T27ibI/c5oKdwGKz6KE1ABieD5Hzeo0aMyo5ZVxSmUW67XKDy6LQvwnB
-         CBgA==
-X-Gm-Message-State: AOAM531t5+gaygx0La7uRx3S1azR+IakBqnv21YM6kwXK9JAu7hfT/WY
-        p5gMMeTE6Y1Pcm0qhEaPERhgYg==
-X-Google-Smtp-Source: ABdhPJz9vaq8bg7IjIElCsf54gkPa23NreE78PAjXOcXgIgk1qq0jaVgdhKg55lZfp/2GgHu7fk7og==
-X-Received: by 2002:a37:584:: with SMTP id 126mr5587qkf.332.1610041590660;
-        Thu, 07 Jan 2021 09:46:30 -0800 (PST)
-Received: from ziepe.ca (hlfxns017vw-142-162-115-133.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.115.133])
-        by smtp.gmail.com with ESMTPSA id j142sm3555681qke.117.2021.01.07.09.46.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 Jan 2021 09:46:30 -0800 (PST)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1kxZMj-003lto-I9; Thu, 07 Jan 2021 13:46:29 -0400
-Date:   Thu, 7 Jan 2021 13:46:29 -0400
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Douglas Gilbert <dgilbert@interlog.com>
-Cc:     linux-scsi@vger.kernel.org, linux-block@vger.kernel.org,
-        target-devel@vger.kernel.org, linux-rdma@vger.kernel.org,
-        linux-kernel@vger.kernel.org, martin.petersen@oracle.com,
-        jejb@linux.vnet.ibm.com, bostroesser@gmail.com, bvanassche@acm.org,
-        ddiss@suse.de
-Subject: Re: [PATCH v5 4/4] scatterlist: add sgl_memset()
-Message-ID: <20210107174629.GC504133@ziepe.ca>
-References: <20201228234955.190858-1-dgilbert@interlog.com>
- <20201228234955.190858-5-dgilbert@interlog.com>
+        id S1728798AbhAGRr1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 12:47:27 -0500
+Received: from mga02.intel.com ([134.134.136.20]:53102 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726073AbhAGRr1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Jan 2021 12:47:27 -0500
+IronPort-SDR: rYwECGs3wX7dkg6Usi0/QnLZeWbeozH5uikpMeWiUGoZdj718wySGLi5Hq+ywQmOrazp8d44sa
+ DgWx7VLjt1tw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9857"; a="164535496"
+X-IronPort-AV: E=Sophos;i="5.79,329,1602572400"; 
+   d="scan'208";a="164535496"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Jan 2021 09:45:39 -0800
+IronPort-SDR: ZcrPIhtEdY5p2Oa7/7GfEhGWJ2eNA+sB1RalhfQ6IWja9h5VvV91BcXFyTymJXxCSMK+YryGeR
+ T1IFXZtJvJYw==
+X-IronPort-AV: E=Sophos;i="5.79,329,1602572400"; 
+   d="scan'208";a="396032066"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Jan 2021 09:45:36 -0800
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1kxZMs-0050uv-6C; Thu, 07 Jan 2021 19:46:38 +0200
+Date:   Thu, 7 Jan 2021 19:46:38 +0200
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Petr Mladek <pmladek@suse.com>
+Cc:     Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        John Ogness <john.ogness@linutronix.de>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Shreyas Joshi <shreyas.joshi@biamp.com>,
+        shreyasjoshi15@gmail.com,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
+        Greg Ungerer <gerg@linux-m68k.org>,
+        Vineet Gupta <vgupta@synopsys.com>,
+        Thomas Meyer <thomas@m3y3r.de>,
+        David Gow <davidgow@google.com>,
+        Brendan Higgins <brendanhiggins@google.com>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/1] Revert "init/console: Use ttynull as a fallback when
+ there is no console"
+Message-ID: <20210107174638.GH4077@smile.fi.intel.com>
+References: <20210107164400.17904-1-pmladek@suse.com>
+ <20210107164400.17904-2-pmladek@suse.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201228234955.190858-5-dgilbert@interlog.com>
+In-Reply-To: <20210107164400.17904-2-pmladek@suse.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 28, 2020 at 06:49:55PM -0500, Douglas Gilbert wrote:
-> The existing sg_zero_buffer() function is a bit restrictive. For
-> example protection information (PI) blocks are usually initialized
-> to 0xff bytes. As its name suggests sgl_memset() is modelled on
-> memset(). One difference is the type of the val argument which is
-> u8 rather than int. Plus it returns the number of bytes (over)written.
+On Thu, Jan 07, 2021 at 05:44:00PM +0100, Petr Mladek wrote:
+> This reverts commit 757055ae8dedf5333af17b3b5b4b70ba9bc9da4e.
 > 
-> Change implementation of sg_zero_buffer() to call this new function.
+> The commit caused that ttynull was used as the default console
+> on many systems. It happened when there was no console configured
+> on the command line and ttynull_init() was the first initcall
+> calling register_console().
 > 
-> Reviewed-by: Bodo Stroesser <bostroesser@gmail.com>
-> Signed-off-by: Douglas Gilbert <dgilbert@interlog.com>
->  include/linux/scatterlist.h |  3 ++
->  lib/scatterlist.c           | 65 +++++++++++++++++++++++++------------
->  2 files changed, 48 insertions(+), 20 deletions(-)
+> The commit fixed a historical problem that have been there for ages.
+> The primary motivation was the commit 3cffa06aeef7ece30f6
+> ("printk/console: Allow to disable console output by using console=""
+> or console=null"). It provided a clean solution
+> for a workaround that was widely used and worked only by chance.
 > 
-> diff --git a/include/linux/scatterlist.h b/include/linux/scatterlist.h
-> index 71be65f9ebb5..70d3f1f73df1 100644
-> +++ b/include/linux/scatterlist.h
-> @@ -333,6 +333,9 @@ bool sgl_compare_sgl_idx(struct scatterlist *x_sgl, unsigned int x_nents, off_t
->  			 struct scatterlist *y_sgl, unsigned int y_nents, off_t y_skip,
->  			 size_t n_bytes, size_t *miscompare_idx);
->  
-> +size_t sgl_memset(struct scatterlist *sgl, unsigned int nents, off_t skip,
-> +		  u8 val, size_t n_bytes);
-> +
->  /*
->   * Maximum number of entries that will be allocated in one piece, if
->   * a list larger than this is required then chaining will be utilized.
-> diff --git a/lib/scatterlist.c b/lib/scatterlist.c
-> index 9332365e7eb6..f06614a880c8 100644
-> +++ b/lib/scatterlist.c
-> @@ -1038,26 +1038,7 @@ EXPORT_SYMBOL(sg_pcopy_to_buffer);
->  size_t sg_zero_buffer(struct scatterlist *sgl, unsigned int nents,
->  		       size_t buflen, off_t skip)
->  {
-> -	unsigned int offset = 0;
-> -	struct sg_mapping_iter miter;
-> -	unsigned int sg_flags = SG_MITER_ATOMIC | SG_MITER_TO_SG;
-> -
-> -	sg_miter_start(&miter, sgl, nents, sg_flags);
-> -
-> -	if (!sg_miter_skip(&miter, skip))
-> -		return false;
-> -
-> -	while (offset < buflen && sg_miter_next(&miter)) {
-> -		unsigned int len;
-> -
-> -		len = min(miter.length, buflen - offset);
-> -		memset(miter.addr, 0, len);
-> -
-> -		offset += len;
-> -	}
-> -
-> -	sg_miter_stop(&miter);
-> -	return offset;
-> +	return sgl_memset(sgl, nents, skip, 0, buflen);
->  }
->  EXPORT_SYMBOL(sg_zero_buffer);
+> This revert causes that the console="" or console=null command line
+> options will again work only by chance. These options will cause that
+> a particular console will be preferred and the default (tty) ones
+> will not get enabled. There will be no console registered at
+> all. As a result there won't be stdin, stdout, and stderr for
+> the init process. But it worked exactly this way even before.
+> 
+> The proper solution has to fulfill many conditions:
+> 
+>   + Register ttynull only when explicitly required or as
+>     the ultimate fallback.
+> 
+>   + ttynull must get associated with /dev/console but it must
+>     not become preferred console when used as a fallback.
+>     Especially, it must still be possible to replace it
+>     by a better console later.
+> 
+> Such a change requires clean up of the register_console() code.
+> Otherwise, it would be even harder to follow. Especially, the use
+> of has_preferred_console and CON_CONSDEV flag is tricky. The clean
+> up is risky. The ordering of consoles is not well defined. And
+> any changes tend to break existing user settings.
+> 
+> Do the revert at the least risky solution for now.
 
-May as well make this one liner a static inline in the header. Just
-rename this function to sgl_memset so the diff is clearer
+Shouldn't it have Fixes tag along with Reported-by ones and explanation what
+was the actual problem reported?
 
-Jason
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
