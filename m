@@ -2,107 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F56E2ED166
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 15:09:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4447A2ED168
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 15:09:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728763AbhAGOGn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 09:06:43 -0500
-Received: from foss.arm.com ([217.140.110.172]:33306 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727711AbhAGOGn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 09:06:43 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id DD7F1D6E;
-        Thu,  7 Jan 2021 06:05:57 -0800 (PST)
-Received: from [10.57.37.195] (unknown [10.57.37.195])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 2EE9C3F70D;
-        Thu,  7 Jan 2021 06:05:54 -0800 (PST)
-Subject: Re: [PATCH 11/11] dts: bindings: Document device tree binding for Arm
- TRBE
-To:     Anshuman Khandual <anshuman.khandual@arm.com>,
-        Rob Herring <robh@kernel.org>
-Cc:     linux-arm-kernel@lists.infradead.org, coresight@lists.linaro.org,
-        linux-kernel@vger.kernel.org,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Mike Leach <mike.leach@linaro.org>,
-        Linu Cherian <lcherian@marvell.com>, devicetree@vger.kernel.org
-References: <1608717823-18387-1-git-send-email-anshuman.khandual@arm.com>
- <1608717823-18387-12-git-send-email-anshuman.khandual@arm.com>
- <20210103170540.GA4055084@robh.at.kernel.org>
- <21536a1c-0878-a390-aff3-fc2300be6941@arm.com>
-From:   Suzuki K Poulose <suzuki.poulose@arm.com>
-Message-ID: <d384e24f-f218-a207-ef8d-0857393277fc@arm.com>
-Date:   Thu, 7 Jan 2021 14:05:48 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        id S1728790AbhAGOG5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 09:06:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52830 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728519AbhAGOG4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Jan 2021 09:06:56 -0500
+Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F4AAC0612F4;
+        Thu,  7 Jan 2021 06:06:16 -0800 (PST)
+Received: by mail-pj1-x1032.google.com with SMTP id u4so2099682pjn.4;
+        Thu, 07 Jan 2021 06:06:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=o+UyASBdKjlwmry0POVJ2KZ2OqhSGLuefGxoigUsixA=;
+        b=LPfFcI5Ru7M7DFFw38G/2AYoGtXDNlRPEWj8FRcJ+UlK1zNH1VjXeAfzL93AY1bDgv
+         48kh6QI8/+4MVFVe8c6LG8hYopwDcoAhQXeRSa5bLWZbinQgUjwRdcDUoV7z5XZ7liBl
+         xJMmnDgd8I+i9KE1asgFOmNb47EBu7h/l9YbseYqM8gA7XEW3HQXTcTPbvtN0IoHeGsR
+         GtBwUOM7/QHzW78jTdaHEzSrglwYcLnH8MCk0fIDWW+UrePsXD86Yact4Fcz2d9/ZJnL
+         Y8OAMAZR7mnbvcIcXpSS1tN6Idhf6YBWJk08VkMjsy2IjRETgQ0CsgOq+X6PEOL9q+fa
+         YelQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=o+UyASBdKjlwmry0POVJ2KZ2OqhSGLuefGxoigUsixA=;
+        b=j4gQvwzIXWwiQCbhbIZrU0CxeEiWNRcNiE7Vp6fKy6+aksHvUwZIn16qN1khl9Uiap
+         gE8MZ2KgtkiJ97ppufppRj563+ky3FkoX+mMEe5Dlrp6x8fS7sXViO2O47XKxpdxM3FX
+         GgJnz0zqZredEcV186Z1PWfDzlkWi66t3Fbwm+aw6pk908IN1qYhA3/+vECjTEuenFLY
+         64fIeqqDvl2SUB2OUMuSlYB8T4wZyUuF0xyjKGmFwOLAiEgoPdsBT1gW2tFF5Yvje1ve
+         GF82R08dP7SWP093Vc1W2kotz6xTldgn0zQORjReXTEEZpvUCuTne9hVIS8ijf1/LSJ7
+         AwKA==
+X-Gm-Message-State: AOAM533XIF0LT0hZ8lYP1asrs6m5WFz7J4NbebvZaL6ugD0XIPH6cvyF
+        NONQiRIb1xRiNHqu8gJhYmBZkPXHDRcNlV2a
+X-Google-Smtp-Source: ABdhPJxD/PX517nLX/q1hyo8Yf+YFXLvFcnWgHRj3RvQB28mHCDoRktmKkeOlgkUNtn8HFEnYHEIeg==
+X-Received: by 2002:a17:902:6b89:b029:da:fc41:baec with SMTP id p9-20020a1709026b89b02900dafc41baecmr9327841plk.39.1610028375208;
+        Thu, 07 Jan 2021 06:06:15 -0800 (PST)
+Received: from [192.168.0.104] ([49.207.197.164])
+        by smtp.gmail.com with ESMTPSA id z16sm6746840pgj.51.2021.01.07.06.06.11
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 07 Jan 2021 06:06:14 -0800 (PST)
+Subject: Re: [PATCH v2 08/15] usb: misc: idmouse: update to use
+ usb_control_msg_send()
+To:     Johan Hovold <johan@kernel.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20201130011819.2576481-1-anant.thazhemadam@gmail.com>
+ <20201130013031.2580265-1-anant.thazhemadam@gmail.com>
+ <X8pL1bRUTyq2re7Z@localhost>
+From:   Anant Thazhemadam <anant.thazhemadam@gmail.com>
+Message-ID: <1dd2bfc0-5190-1841-e04b-4a864dfd0be4@gmail.com>
+Date:   Thu, 7 Jan 2021 19:36:10 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <21536a1c-0878-a390-aff3-fc2300be6941@arm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
+In-Reply-To: <X8pL1bRUTyq2re7Z@localhost>
+Content-Type: text/plain; charset=windows-1252
 Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 1/4/21 3:44 AM, Anshuman Khandual wrote:
-> 
-> On 1/3/21 10:35 PM, Rob Herring wrote:
->> On Wed, Dec 23, 2020 at 03:33:43PM +0530, Anshuman Khandual wrote:
->>> This patch documents the device tree binding in use for Arm TRBE.
->>>
->>> Cc: devicetree@vger.kernel.org
->>> Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
->>> Cc: Mike Leach <mike.leach@linaro.org>
->>> Cc: Suzuki K Poulose <suzuki.poulose@arm.com>
->>> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
->>> ---
->>> Changes in V1:
->>>
->>> - TRBE DT entry has been renamed as 'arm, trace-buffer-extension'
->>>
->>>   Documentation/devicetree/bindings/arm/trbe.txt | 20 ++++++++++++++++++++
->>>   1 file changed, 20 insertions(+)
->>>   create mode 100644 Documentation/devicetree/bindings/arm/trbe.txt
->>>
->>> diff --git a/Documentation/devicetree/bindings/arm/trbe.txt b/Documentation/devicetree/bindings/arm/trbe.txt
->>> new file mode 100644
->>> index 0000000..001945d
->>> --- /dev/null
->>> +++ b/Documentation/devicetree/bindings/arm/trbe.txt
->>> @@ -0,0 +1,20 @@
->>> +* Trace Buffer Extension (TRBE)
->>> +
->>> +Trace Buffer Extension (TRBE) is used for collecting trace data generated
->>> +from a corresponding trace unit (ETE) using an in memory trace buffer.
->>> +
->>> +** TRBE Required properties:
->>> +
->>> +- compatible : should be one of:
->>> +	       "arm,trace-buffer-extension"
->>> +
->>> +- interrupts : Exactly 1 PPI must be listed. For heterogeneous systems where
->>> +	       TRBE is only supported on a subset of the CPUs, please consult
->>> +	       the arm,gic-v3 binding for details on describing a PPI partition.
->>> +
->>> +** Example:
->>> +
->>> +trbe {
->>> +	compatible = "arm,trace-buffer-extension";
->>> +	interrupts = <GIC_PPI 15 IRQ_TYPE_LEVEL_HIGH>;
+
+On 04/12/20 8:16 pm, Johan Hovold wrote:
+> On Mon, Nov 30, 2020 at 07:00:31AM +0530, Anant Thazhemadam wrote:
+>> The newer usb_control_msg_{send|recv}() API are an improvement on the
+>> existing usb_control_msg() as it ensures that a short read/write is treated
+>> as an error, data can be used off the stack, and raw usb pipes need not be
+>> created in the calling functions.
+>> For this reason, the instance of usb_control_msg() has been replaced with
+>> usb_control_msg_send() appropriately.
 >>
->> If only an interrupt, then could just be part of ETE? If not, how is
->> this hardware block accessed? An interrupt alone is not enough unless
->> there's some architected way to access.
-> 
-> TRBE hardware block is accessed via respective new system registers but the
-> PPI number where the IRQ will be triggered for various buffer events, would
-> depend on the platform as defined in the SBSA.
+>> Signed-off-by: Anant Thazhemadam <anant.thazhemadam@gmail.com>
+>> ---
+>>  drivers/usb/misc/idmouse.c | 5 +++--
+>>  1 file changed, 3 insertions(+), 2 deletions(-)
+> Especially for control transfers without a data stage there isn't
+> really any benefit of the new helper.
+>
+> I'd just leave this one unchanged.
+>
+>> diff --git a/drivers/usb/misc/idmouse.c b/drivers/usb/misc/idmouse.c
+>> index e9437a176518..52126441a633 100644
+>> --- a/drivers/usb/misc/idmouse.c
+>> +++ b/drivers/usb/misc/idmouse.c
+>> @@ -56,8 +56,9 @@ static const struct usb_device_id idmouse_table[] = {
+>>  #define FTIP_SCROLL  0x24
+>>  
+>>  #define ftip_command(dev, command, value, index) \
+>> -	usb_control_msg(dev->udev, usb_sndctrlpipe(dev->udev, 0), command, \
+>> -	USB_TYPE_VENDOR | USB_RECIP_ENDPOINT | USB_DIR_OUT, value, index, NULL, 0, 1000)
+>> +	usb_control_msg_send(dev->udev, 0, command, \
+>> +	USB_TYPE_VENDOR | USB_RECIP_ENDPOINT | USB_DIR_OUT, \
+>> +	value, index, NULL, 0, 1000, GFP_KERNEL)
+>>  
+>>  MODULE_DEVICE_TABLE(usb, idmouse_table);
+> Johan
 
-That is correct. TRBE is accessed via CPU system registers. The IRQ is specifically
-for the TRBE unit to handle buffer overflow situations and other errors in the
-buffer handling. Please include this information in the description section of
-the bindings.
+Understood. I'll make sure this is left out in the v3.
 
-Also, it may be worth switching this to yaml format.
+Thanks,
+Anant
 
-Suzuki
