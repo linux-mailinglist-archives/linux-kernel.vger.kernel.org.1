@@ -2,273 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CB822EE849
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 23:21:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DAC0C2EE84C
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 23:22:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728033AbhAGWUn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 17:20:43 -0500
-Received: from mail110.syd.optusnet.com.au ([211.29.132.97]:55600 "EHLO
-        mail110.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725944AbhAGWUn (ORCPT
+        id S1728064AbhAGWV2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 17:21:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45570 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727009AbhAGWV2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 17:20:43 -0500
-Received: from dread.disaster.area (pa49-179-167-107.pa.nsw.optusnet.com.au [49.179.167.107])
-        by mail110.syd.optusnet.com.au (Postfix) with ESMTPS id 65437107BDA;
-        Fri,  8 Jan 2021 09:19:58 +1100 (AEDT)
-Received: from dave by dread.disaster.area with local (Exim 4.92.3)
-        (envelope-from <david@fromorbit.com>)
-        id 1kxddO-0047Iv-05; Fri, 08 Jan 2021 09:19:58 +1100
-Date:   Fri, 8 Jan 2021 09:19:57 +1100
-From:   Dave Chinner <david@fromorbit.com>
-To:     Donald Buczek <buczek@molgen.mpg.de>
-Cc:     linux-xfs@vger.kernel.org, Brian Foster <bfoster@redhat.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        it+linux-xfs@molgen.mpg.de
-Subject: Re: [PATCH] xfs: Wake CIL push waiters more reliably
-Message-ID: <20210107221957.GH331610@dread.disaster.area>
-References: <1705b481-16db-391e-48a8-a932d1f137e7@molgen.mpg.de>
- <20201229235627.33289-1-buczek@molgen.mpg.de>
- <20201230221611.GC164134@dread.disaster.area>
- <7bd30426-11dc-e482-dcc8-55d279bc75bd@molgen.mpg.de>
- <20201231215919.GA331610@dread.disaster.area>
- <def7bbfc-c57e-bcec-f81b-b5ccb0e562e8@molgen.mpg.de>
- <20210102224421.GC331610@dread.disaster.area>
- <f74bfdf9-d6ae-67eb-2dbd-559c6d58f45d@molgen.mpg.de>
+        Thu, 7 Jan 2021 17:21:28 -0500
+Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B9BBC0612F4
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Jan 2021 14:20:47 -0800 (PST)
+Received: by mail-lf1-x131.google.com with SMTP id o17so18357212lfg.4
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Jan 2021 14:20:47 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=nAgfkZhcrAks9RZRQhvUnvRhpbslwsQmGvtE6phjwK4=;
+        b=A8Hn0j0FJ8IaJQH8qBrHNnWzpEb9kM8BnkFyt86RwsF8yyVx7zMtKbXf4Ug73aNZRr
+         sI7ZJMA0ZawY9FhE/lyt9R9Y3MEzu2oUk34hECGMZTqiYsQbxyoRsLXwY3DgmRiy9vqk
+         QdxkCUU71W3HYl4BL0TliKICGXymIfHyzeCLo=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=nAgfkZhcrAks9RZRQhvUnvRhpbslwsQmGvtE6phjwK4=;
+        b=eTS+x3Fd1uXkaNLbEF/aAZfRZtFfdQnn9OF30mZfLnLOW4+YNEY5AzZxtAsjQa5xZH
+         NLCNnuVExFpg1vaWERow8+tmaziQbdTOnVhFBcKiU0JM+SrBM7jhNQCUmfAP8jo1xNm4
+         9xCF1mTFfTg/hfm+WYkHQ3kTZDbqijDdN+tABCsToaMZ5dlKyvPeCxXGMh5ZSKcYEEQk
+         8S++5jYKjQw/C6Ll13sfnTGa76LIb3ELf5MMGQGERIum8sZLZ5txFFQqZWnpUOuRbKGH
+         sqVlyiUJMyHtFR8jziHxwEwFWQZDDOMpMRZ1BlbJMbkzYyRvDhFTBw9YUZmRLiyMxEud
+         5TXw==
+X-Gm-Message-State: AOAM533VSBfix9V8idE0NxDf4ziAOHrUC2XFMJYv53BO2WdNraeoAeS4
+        Hs+ibc88DRkCt3SAujS66wvM2oOEZTDlEQ==
+X-Google-Smtp-Source: ABdhPJwI+U8GlcRDROZgtm71KLqh5kxAm0hQ3kvtEvh2zdiSpgNxE+Er92hKkM605SkE8GCXSHDFnA==
+X-Received: by 2002:a2e:93d6:: with SMTP id p22mr248767ljh.169.1610058045642;
+        Thu, 07 Jan 2021 14:20:45 -0800 (PST)
+Received: from mail-lf1-f43.google.com (mail-lf1-f43.google.com. [209.85.167.43])
+        by smtp.gmail.com with ESMTPSA id u5sm1439326lfr.154.2021.01.07.14.20.43
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 07 Jan 2021 14:20:44 -0800 (PST)
+Received: by mail-lf1-f43.google.com with SMTP id o19so18378841lfo.1
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Jan 2021 14:20:43 -0800 (PST)
+X-Received: by 2002:ac2:4987:: with SMTP id f7mr329288lfl.41.1610058043577;
+ Thu, 07 Jan 2021 14:20:43 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <f74bfdf9-d6ae-67eb-2dbd-559c6d58f45d@molgen.mpg.de>
-X-Optus-CM-Score: 0
-X-Optus-CM-Analysis: v=2.3 cv=F8MpiZpN c=1 sm=1 tr=0 cx=a_idp_d
-        a=+wqVUQIkAh0lLYI+QRsciw==:117 a=+wqVUQIkAh0lLYI+QRsciw==:17
-        a=kj9zAlcOel0A:10 a=EmqxpYm9HcoA:10 a=7-415B0cAAAA:8
-        a=DL90HputOuFUeDB1QXYA:9 a=CjuIK1q_8ugA:10 a=biEYGPWJfzWAr4FL6Ov7:22
+References: <B1B85771-B211-4FCC-AEEF-BDFD37332C25@vmware.com>
+ <20210107200402.31095-1-aarcange@redhat.com> <20210107200402.31095-3-aarcange@redhat.com>
+ <CAHk-=whg-91=EF=8=ayyDQGx_3iuWKp3aHUkDCDkgUb15Yh8AQ@mail.gmail.com>
+ <X/d2DyLfXZmBIreY@redhat.com> <CAHk-=wjs9v-hp_7HV_TrTmisu7pNX=MwZ62ZV82i0evLhPwS1Q@mail.gmail.com>
+ <4100a6f5-ab0b-f7e5-962f-ea1dbcb1e47e@nvidia.com> <CAHk-=wjde11Wz+GiVeuttdAPaNBrNydkvUcVm3xBmVWjwA-kNQ@mail.gmail.com>
+ <394e17bc-8bed-4d17-5dba-9ab8052c8bea@nvidia.com>
+In-Reply-To: <394e17bc-8bed-4d17-5dba-9ab8052c8bea@nvidia.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Thu, 7 Jan 2021 14:20:27 -0800
+X-Gmail-Original-Message-ID: <CAHk-=wi691+mXC4NCXZ_f1+kf_YAB9WBM-LqhrX8=eSmYM=WFw@mail.gmail.com>
+Message-ID: <CAHk-=wi691+mXC4NCXZ_f1+kf_YAB9WBM-LqhrX8=eSmYM=WFw@mail.gmail.com>
+Subject: Re: [PATCH 2/2] mm: soft_dirty: userfaultfd: introduce wrprotect_tlb_flush_pending
+To:     John Hubbard <jhubbard@nvidia.com>
+Cc:     Andrea Arcangeli <aarcange@redhat.com>,
+        Linux-MM <linux-mm@kvack.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Yu Zhao <yuzhao@google.com>, Andy Lutomirski <luto@kernel.org>,
+        Peter Xu <peterx@redhat.com>,
+        Pavel Emelyanov <xemul@openvz.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Will Deacon <will@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Hugh Dickins <hughd@google.com>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Oleg Nesterov <oleg@redhat.com>, Jann Horn <jannh@google.com>,
+        Kees Cook <keescook@chromium.org>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>, Jan Kara <jack@suse.cz>,
+        Kirill Tkhai <ktkhai@virtuozzo.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jan 03, 2021 at 05:03:33PM +0100, Donald Buczek wrote:
-> On 02.01.21 23:44, Dave Chinner wrote:
-> > On Sat, Jan 02, 2021 at 08:12:56PM +0100, Donald Buczek wrote:
-> > > On 31.12.20 22:59, Dave Chinner wrote:
-> > > > On Thu, Dec 31, 2020 at 12:48:56PM +0100, Donald Buczek wrote:
-> > > > > On 30.12.20 23:16, Dave Chinner wrote:
-> > 
-> > > > One could argue that, but one should also understand the design
-> > > > constraints for a particular algorithm are before suggesting
-> > > > that their solution is "robust". :)
-> > > 
-> > > Yes, but an understanding to the extend required by the
-> > > argument should be sufficient :-)
-> > 
-> > And that's the fundamental conceit described by Dunning-Kruger.
-> > 
-> > I.e. someone thinks they know enough to understand the argument,
-> > when in fact they don't understand enough about the subject matter
-> > to realise they don't understand what the expert at the other end is
-> > saying at all....
-> > 
-> > > > > # seq 29
-> > > > > 
-> > > > > 2020-12-29T20:08:15.652167+01:00 deadbird kernel: [ 1053.860637] XXX trigger cil 00000000e374c6f1 ctx 000000004967d650  ctx->space_used=33554656      , push_seq=29, ctx->sequence=29
-> > > > 
-> > > > So, at 20:08:15 we get a push trigger and the work is queued. But...
-> > > > 
-> > > > .....
-> > > > > 2020-12-29T20:09:04.961088+01:00 deadbird kernel: [ 1103.168964] XXX wake    cil 00000000e374c6f1 ctx 000000004967d650  ctx->space_used=67109136 >= 67108864, push_seq=29, ctx->sequence=29
-> > > > 
-> > > > It takes the best part of *50 seconds* before the push work actually
-> > > > runs?
-> > > > 
-> > > > That's .... well and truly screwed up - the work should run on that
-> > > > CPU on the very next time it yeilds the CPU. If we're holding the
-> > > > CPU without yeilding it for that long, hangcheck and RCU warnings
-> > > > should be going off...
-> > > 
-> > > No such warnings.
-> > > 
-> > > But the load is probably I/O bound to the log:
-> > > 
-> > > - creates `cp -a` copies of a directory tree with small files (linux source repository)
-> > > - source tree probably completely cached.
-> > > - two copies in parallel
-> > > - slow log (on software raid6)
-> > > 
-> > > Isn't it to be expected that sooner or later you need to wait for
-> > > log writes when you write as fast as possible with lots of
-> > > metadata updates and not so much data?
-> > 
-> > No, incoming transactions waits for transaction reservation space,
-> > not log writes. Reservation space is freed up by metadata writeback.
-> > So if you have new transactions blocking in xfs_trans_reserve(),
-> > then we are blocking on metadata writeback.
-> > 
-> > The CIL worker thread may be waiting for log IO completion before it
-> > issues more log IO, and in that case it is waiting on iclog buffer
-> > space (i.e. only waiting on internal log state, not metadata
-> > writeback).  Can you find that kworker thread stack and paste it? If
-> > bound on log IO, it will be blocked in xlog_get_iclog_space().
-> > 
-> > Please paste the entire stack output, too, not just the bits you
-> > think are relevant or understand....
-> 
-> That would be a kworker on the "xfs-cil/%s" workqueue, correct?
-> And you mean before the lockup, when the I/O is still active, correct?
-> 
-> This is the usual stack output from that thread:
-> 
-> # # /proc/2080/task/2080: kworker/u82:3+xfs-cil/md0 :
-> # cat /proc/2080/task/2080/stack
-> 
-> [<0>] md_flush_request+0x87/0x190
-> [<0>] raid5_make_request+0x61b/0xb30
-> [<0>] md_handle_request+0x127/0x1a0
-> [<0>] md_submit_bio+0xbd/0x100
-> [<0>] submit_bio_noacct+0x151/0x410
-> [<0>] submit_bio+0x4b/0x1a0
-> [<0>] xlog_state_release_iclog+0x87/0xb0
-> [<0>] xlog_write+0x452/0x6d0
-> [<0>] xlog_cil_push_work+0x2e0/0x4d0
-> [<0>] process_one_work+0x1dd/0x3e0
-> [<0>] worker_thread+0x23f/0x3b0
-> [<0>] kthread+0x118/0x130
-> [<0>] ret_from_fork+0x22/0x30
-> 
-> sampled three times with a few seconds in between, stack identical.
+On Thu, Jan 7, 2021 at 2:14 PM John Hubbard <jhubbard@nvidia.com> wrote:
+> >
+> > Literally just adding a " && page_mapcount(page) == 1" in there
+> > (probably best done inside page_maybe_dma_pinned() itself)
+>
+> Well, that means that pages that are used for pinned DMA like this, can
+> not be shared with other processes. Is that an acceptable limitation
+> for the RDMA users? It seems a bit constraining, at first glance anyway.
 
-Yeah, so that is MD blocking waiting for a running device cache
-flush to finish before submitting the iclog IO. IOWs, it's waiting
-for hardware to flush volatile caches to stable storage. Every log
-IO has a cache flush preceding it, and if the device doesn't support
-FUA, then there is a post-IO cache flush as well. These flushes are
-necessary for correct IO ordering between the log and metadata/data
-writeback.
+Hmm, add a check for the page being PageAnon(), perhaps?
 
-Essentially, you're waiting for MD to flush all it's dirty stripe
-cache to the backing devices and then flush the backing device
-caches as well. Nothing can be done at the filesystem level to make
-this faster....
+If it's a shared vma, then the page can be pinned shared with multiple
+mappings, I agree.
 
-> > Also, cp -a of a linux source tree is just as data intensive as it
-> > is metadata intensive. There's probably more data IO than metadata
-> > IO, so that's more likely to be what is slowing the disks down as
-> > metadata writeback is...
-> > 
-> > > I'm a bit concerned, though, that there seem to be a rather
-> > > unlimited (~ 1000) number of kernel worker threads waiting for the
-> > > cil push and indirectly for log writes.
-> > 
-> > That's normal - XFS is highly asynchronous and defers a lot of work
-> > to completion threads.
-> > 
-> > > > So it dropped by 16 bytes (seems to be common) which is
-> > > > unexpected.  I wonder if it filled a hole in a buffer and so
-> > > > needed one less xlog_op_header()? But then the size would have
-> > > > gone up by at least 128 bytes for the hole that was filled, so
-> > > > it still shouldn't go down in size.
-> > > > 
-> > > > I think you need to instrument xlog_cil_insert_items() and catch
-> > > > a negative length here:
-> > > > 
-> > > > 	/* account for space used by new iovec headers  */
-> > > > 	iovhdr_res = diff_iovecs * sizeof(xlog_op_header_t); len +=
-> > > > 	iovhdr_res; ctx->nvecs += diff_iovecs;
-> > > > 
-> > > > (diff_iovecs will be negative if the number of xlog_op_header
-> > > > structures goes down)
-> > > > 
-> > > > And if this happens, then dump the transaction ticket via
-> > > > xlog_print_trans(tp) so we can see all the log items types and
-> > > > vectors that the transaction has formatted...
-> > > 
-> > > I tried that, but the output was difficult to understand, because
-> > > at that point you can only log the complete transaction with the
-> > > items already updated.  And a shrinking item is not switched to the
-> > > shadow vector, so the formatted content is already overwritten and
-> > > not available for analysis.
-> > 
-> > Yes, that's exactly the information I need to see.
-> > 
-> > But the fact you think this is something I don't need to know about
-> > is classic Dunning-Kruger in action. You don't understand why I
-> > asked for this information, and found the information "difficult to
-> > understand", so you decided I didn't need it either, despite the
-> > fact I asked explicitly for it.
-> > 
-> > What I first need to know is what operations are being performed by
-> > the transaciton that shrunk and what all the items in it are, not
-> > which specific items shrunk and by how much. There can be tens to
-> > hundreds of items in a single transaction, and it's the combination
-> > of the transaction state, the reservation, the amount of the
-> > reservation that has been consumed, what items are consuming that
-> > reservation, etc. that I need to first see and analyse.
-> > 
-> > I don't ask for specific information just for fun - I ask for
-> > specific information because it is *necessary*. If you want the
-> > problem triaged and fixed, then please supply the information you
-> > are asked for, even if you don't understand why or what it means.
-> 
-> I see. I hope, you can make use of the following.
+So yeah, I didn't think it through entirely.. And maybe I'm still
+missing something else..
 
-....
-> Last two events before the lockup:
-> 
-> 2021-01-03T14:48:43.098887+01:00 deadbird kernel: [ 3194.831260] XFS (md0): XXX diff_iovecs 0 diff_len -16
-> 2021-01-03T14:48:43.109363+01:00 deadbird kernel: [ 3194.837364] XFS (md0): transaction summary:
-> 2021-01-03T14:48:43.109367+01:00 deadbird kernel: [ 3194.842544] XFS (md0):   log res   = 212728
-> 2021-01-03T14:48:43.118996+01:00 deadbird kernel: [ 3194.847617] XFS (md0):   log count = 8
-> 2021-01-03T14:48:43.119010+01:00 deadbird kernel: [ 3194.852193] XFS (md0):   flags     = 0x25
-> 2021-01-03T14:48:43.129701+01:00 deadbird kernel: [ 3194.857156] XFS (md0): ticket reservation summary:
-> 2021-01-03T14:48:43.129714+01:00 deadbird kernel: [ 3194.862890] XFS (md0):   unit res    = 225140 bytes
-> 2021-01-03T14:48:43.135515+01:00 deadbird kernel: [ 3194.868710] XFS (md0):   current res = 225140 bytes
-> 2021-01-03T14:48:43.148684+01:00 deadbird kernel: [ 3194.874702] XFS (md0):   total reg   = 0 bytes (o/flow = 0 bytes)
-> 2021-01-03T14:48:43.148700+01:00 deadbird kernel: [ 3194.881885] XFS (md0):   ophdrs      = 0 (ophdr space = 0 bytes)
-> 2021-01-03T14:48:43.155781+01:00 deadbird kernel: [ 3194.888975] XFS (md0):   ophdr + reg = 0 bytes
-> 2021-01-03T14:48:43.161210+01:00 deadbird kernel: [ 3194.894404] XFS (md0):   num regions = 0
-> 2021-01-03T14:48:43.165948+01:00 deadbird kernel: [ 3194.899141] XFS (md0): log item:
-> 2021-01-03T14:48:43.169996+01:00 deadbird kernel: [ 3194.903203] XFS (md0):   type      = 0x123b
-> 2021-01-03T14:48:43.174544+01:00 deadbird kernel: [ 3194.907741] XFS (md0):   flags     = 0x8
-> 2021-01-03T14:48:43.178996+01:00 deadbird kernel: [ 3194.912191] XFS (md0):   niovecs   = 3
-> 2021-01-03T14:48:43.183347+01:00 deadbird kernel: [ 3194.916546] XFS (md0):   size      = 696
-> 2021-01-03T14:48:43.187598+01:00 deadbird kernel: [ 3194.920791] XFS (md0):   bytes     = 248
-> 2021-01-03T14:48:43.191932+01:00 deadbird kernel: [ 3194.925131] XFS (md0):   buf len   = 248
-> 2021-01-03T14:48:43.196581+01:00 deadbird kernel: [ 3194.929776] XFS (md0):   iovec[0]
-> 2021-01-03T14:48:43.200633+01:00 deadbird kernel: [ 3194.933832] XFS (md0):     type    = 0x5
-> 2021-01-03T14:48:43.205069+01:00 deadbird kernel: [ 3194.938264] XFS (md0):     len     = 56
-> 2021-01-03T14:48:43.209293+01:00 deadbird kernel: [ 3194.942497] XFS (md0):     first 32 bytes of iovec[0]:
-> 2021-01-03T14:48:43.215494+01:00 deadbird kernel: [ 3194.948690] 00000000: 3b 12 03 00 05 00 00 00 00 00 10 00 00 00 00 00  ;...............
-> 2021-01-03T14:48:43.224801+01:00 deadbird kernel: [ 3194.957997] 00000010: 35 e3 ba 80 2e 00 00 00 00 00 00 00 00 00 00 00  5...............
-> 2021-01-03T14:48:43.234100+01:00 deadbird kernel: [ 3194.967297] XFS (md0):   iovec[1]
-> 2021-01-03T14:48:43.238293+01:00 deadbird kernel: [ 3194.971484] XFS (md0):     type    = 0x6
-> 2021-01-03T14:48:43.242744+01:00 deadbird kernel: [ 3194.975942] XFS (md0):     len     = 176
-> 2021-01-03T14:48:43.247108+01:00 deadbird kernel: [ 3194.980295] XFS (md0):     first 32 bytes of iovec[1]:
-> 2021-01-03T14:48:43.253304+01:00 deadbird kernel: [ 3194.986506] 00000000: 4e 49 b0 81 03 02 00 00 7d 00 00 00 7d 00 00 00  NI......}...}...
-> 2021-01-03T14:48:43.262648+01:00 deadbird kernel: [ 3194.995835] 00000010: 01 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-> 2021-01-03T14:48:43.272064+01:00 deadbird kernel: [ 3195.005267] XFS (md0):   iovec[2]
-> 2021-01-03T14:48:43.276174+01:00 deadbird kernel: [ 3195.009366] XFS (md0):     type    = 0x7
-> 2021-01-03T14:48:43.280649+01:00 deadbird kernel: [ 3195.013848] XFS (md0):     len     = 16
-> 2021-01-03T14:48:43.285042+01:00 deadbird kernel: [ 3195.018243] XFS (md0):     first 16 bytes of iovec[2]:
-> 2021-01-03T14:48:43.291166+01:00 deadbird kernel: [ 3195.024364] 00000000: 00 00 00 00 00 00 00 00 00 ba 02 ef e0 01 23 ef  ..............#.
-
-Ok, they are all of this type - same transaction type/size, same
-form, all a reduction in the size of the inode data fork in extent
-format. I suspect this is trimming speculative block preallocation
-beyond EOF on final close of a written file.
-
-Ok, that matches the case from the root directory you gave earlier,
-where the inode data fork was reducing in size from unlinks in a
-shortform directory.  Different vector, different inode fork format,
-but it appears to result in the same thing where just an inode with
-a reducing inode fork size is relogged.
-
-I'll think about this over the weekend and look at it more closely
-next week when I'm back from PTO...
-
-Thanks for following up and providing this information, Donald!
-
-Cheers,
-
-Dave.
--- 
-Dave Chinner
-david@fromorbit.com
+          Linus
