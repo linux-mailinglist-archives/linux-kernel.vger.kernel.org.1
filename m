@@ -2,88 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A21D12EE7DA
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 22:50:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DE7CE2EE7DF
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 22:50:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727652AbhAGVtE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 16:49:04 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37198 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726477AbhAGVtD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 16:49:03 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DE3E923406;
-        Thu,  7 Jan 2021 21:48:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610056103;
-        bh=TQDWjh3f5pNnQ2t5MjxQ5TqLIEAU1dudzHdK0zBk+Ns=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=iD+ZK/lfojmMkxhXnyH/1v8Tb0AwiXwyMFfxZhtAIZgz0HAke5gQ1BQxg7lVHp9TI
-         gAdpITwTpkBqqsroyiceqy/xOW06ifTk4RCD4LdxhCin8jH5ninfACplB869eaWj56
-         hQbubbiixp2WEM1jJcIFTIxzmxmotz+Xke8JTSV3jPycIBMLSjfEpuCozaSEv3HzqT
-         WXwiw2vKOAwe2NN3ljw0hT5F4Qabo2Tnj8NBEzzeD5M6JuHuxYSDQcbwR3uBtpvQNK
-         lpnVGmcDiM5jsCTzQvTuYSIiA9zg5G4dIY1dyOQifQm8BXopQbA4xcakFyzcS8PVXg
-         05/ozQdCD06ug==
-Received: by mail-ot1-f50.google.com with SMTP id i6so7806129otr.2;
-        Thu, 07 Jan 2021 13:48:22 -0800 (PST)
-X-Gm-Message-State: AOAM532JjXRaFQ1Y3e7ztIpKwAtdyXWYq3eg4k0OEMdRvlvLPjb4QKAm
-        g3pR9+m5bzEO5YZ3m8y9/cKRS7st18LWfUVHApU=
-X-Google-Smtp-Source: ABdhPJxnaJA141e20BKd4OL7t+qWGvU0o8rWnel2LS/2PmbZGYBn/q94i+4iN0Vo1bv8tzTS+O8U0EFHizJ+9FdNAio=
-X-Received: by 2002:a9d:7a4b:: with SMTP id z11mr421259otm.305.1610056102295;
- Thu, 07 Jan 2021 13:48:22 -0800 (PST)
+        id S1727917AbhAGVtT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 16:49:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40588 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727738AbhAGVtT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Jan 2021 16:49:19 -0500
+Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE3D2C0612F9
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Jan 2021 13:48:38 -0800 (PST)
+Received: by mail-pj1-x102a.google.com with SMTP id m5so4865258pjv.5
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Jan 2021 13:48:38 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=yHhv4+EFycAJKUbgSa0RmVqcL52Ac+/27NW7fknIfX4=;
+        b=Y2XXqeUfIvCYmqg67Ss2+YD/MWpHgJN4MY7+G6OuW/4sue+bH4MWRaJ0E36qiS8ijc
+         0/apWKEJxEca/cjsZm1eMoICPpvm/Eqc4AXKntBwdI2PSIwybKFH0eVgmo32/uOFBo2X
+         HgAskdMD+eDV45lLAa1jifLARZRCxy31lvzsU=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=yHhv4+EFycAJKUbgSa0RmVqcL52Ac+/27NW7fknIfX4=;
+        b=rjbgXecvCEFfOiB0Fy66XBKfIT0Y2alGxOITkkksRBKC1QesyWegzIouJ0Elwz9tSN
+         tEp7wtg57tRSIIo1gGqRw8WYV3Qlm2ADQ+yIQqTMcm7Kpt/f4OcE+Mgf6Evt5WsD6Cm8
+         2NaXUIHbak8Pi98bCT8fmGYSLprEtRMYNv3MbfOsvFciJ0W9QVhtcM7ZYlNXhFrRiLEL
+         YApJh8R5dKtsR3yf1SKbJ6rEZLr2w6vzaBxgaofeaw1DaG4H1uq8LzNaXDyoMpALvw84
+         JUlm/Os0Y6QepzIqeZ+bAMaiRjSYPqyBQUsXmy9+d3kP1aZeIN1urAe6DPbCYPt4Un6p
+         n91A==
+X-Gm-Message-State: AOAM531cwnnOg8lhBXvCBqoMLx75UelSPsotyNsGzK+adSp0o3E86qMW
+        84/BGKtwEjaEnQNLcUonHDBIIA==
+X-Google-Smtp-Source: ABdhPJzola3C8GYotrpR1OGMaMxBsLjWee/CuHpJkLo5FojtqN0IU9/zlGL8DjOrxeeu3BzHO28Zpg==
+X-Received: by 2002:a17:90b:78d:: with SMTP id l13mr466183pjz.51.1610056118201;
+        Thu, 07 Jan 2021 13:48:38 -0800 (PST)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id gk4sm2974766pjb.57.2021.01.07.13.48.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 07 Jan 2021 13:48:37 -0800 (PST)
+Date:   Thu, 7 Jan 2021 13:48:36 -0800
+From:   Kees Cook <keescook@chromium.org>
+To:     Alexander Lobakin <alobakin@pm.me>
+Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Fangrui Song <maskray@google.com>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Pei Huang <huangpei@loongson.cn>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        Ralf Baechle <ralf@linux-mips.org>,
+        Corey Minyard <cminyard@mvista.com>,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arch@vger.kernel.org, stable@vger.kernel.org,
+        clang-built-linux@googlegroups.com
+Subject: Re: [PATCH v4 mips-next 3/7] MIPS: properly stop .eh_frame generation
+Message-ID: <202101071348.4BA775344@keescook>
+References: <20210107123331.354075-1-alobakin@pm.me>
+ <20210107123428.354231-1-alobakin@pm.me>
+ <20210107123428.354231-3-alobakin@pm.me>
 MIME-Version: 1.0
-References: <20210105154726.GD1551@shell.armlinux.org.uk> <20210106115359.GB26994@C02TD0UTHF1T.local>
- <20210106135253.GJ1551@shell.armlinux.org.uk> <20210106172033.GA2165@willie-the-truck>
- <20210106223223.GM1551@shell.armlinux.org.uk> <20210107111841.GN1551@shell.armlinux.org.uk>
- <20210107124506.GO1551@shell.armlinux.org.uk> <CAK8P3a2TXPfFpgy+XjpDzOqt1qpDxufwiD-BLNbn4W_jpGp98g@mail.gmail.com>
- <20210107133747.GP1551@shell.armlinux.org.uk> <X/c2aqSvYCaB9sR6@mit.edu>
-In-Reply-To: <X/c2aqSvYCaB9sR6@mit.edu>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Thu, 7 Jan 2021 22:48:05 +0100
-X-Gmail-Original-Message-ID: <CAK8P3a2svyz1KXSqSUMVeDqdag4f1VcERH9jpECSLsn-FWvZbw@mail.gmail.com>
-Message-ID: <CAK8P3a2svyz1KXSqSUMVeDqdag4f1VcERH9jpECSLsn-FWvZbw@mail.gmail.com>
-Subject: Re: Aarch64 EXT4FS inode checksum failures - seems to be weak memory
- ordering issues
-To:     "Theodore Ts'o" <tytso@mit.edu>
-Cc:     Russell King - ARM Linux admin <linux@armlinux.org.uk>,
-        Will Deacon <will@kernel.org>,
-        linux-toolchains@vger.kernel.org,
-        Mark Rutland <mark.rutland@arm.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Ext4 Developers List <linux-ext4@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210107123428.354231-3-alobakin@pm.me>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 7, 2021 at 5:27 PM Theodore Ts'o <tytso@mit.edu> wrote:
->
-> On Thu, Jan 07, 2021 at 01:37:47PM +0000, Russell King - ARM Linux admin wrote:
-> > > The gcc bugzilla mentions backports into gcc-linaro, but I do not see
-> > > them in my git history.
-> >
-> > So, do we raise the minimum gcc version for the kernel as a whole to 5.1
-> > or just for aarch64?
->
-> Russell, Arnd, thanks so much for tracking down the root cause of the
-> bug!
+On Thu, Jan 07, 2021 at 12:35:01PM +0000, Alexander Lobakin wrote:
+> Commit 866b6a89c6d1 ("MIPS: Add DWARF unwinding to assembly") added
+> -fno-asynchronous-unwind-tables to KBUILD_CFLAGS to prevent compiler
+> from emitting .eh_frame symbols.
+> However, as MIPS heavily uses CFI, that's not enough. Use the
+> approach taken for x86 (as it also uses CFI) and explicitly put CFI
+> symbols into the .debug_frame section (except for VDSO).
+> This allows us to drop .eh_frame from DISCARDS as it's no longer
+> being generated.
+> 
+> Fixes: 866b6a89c6d1 ("MIPS: Add DWARF unwinding to assembly")
+> Suggested-by: Kees Cook <keescook@chromium.org>
+> Signed-off-by: Alexander Lobakin <alobakin@pm.me>
 
-There is one more thing that I wondered about when looking through
-the ext4 code: Should it just call the crc32c_le() function directly
-instead of going through the crypto layer? It seems that with Ard's
-rework from 2018, that can just call the underlying architecture specific
-implementation anyway.
+Reviewed-by: Kees Cook <keescook@chromium.org>
 
-> I will note that RHEL 7 uses gcc 4.8.  I personally don't have an
-> objections to requiring developers using RHEL 7 to have to install a
-> more modern gcc (since I use Debian Testing and gcc 10.2.1, myself,
-> and gcc 5.1 is so five years ago :-), but I could imagine that being
-> considered inconvenient for some.
-
-The main users of gcc-4.9 that I recall from previous discussions
-were Android and Debian 8, but both of them are done now: Debian 8
-has reached its end of life last summer, and Android uses clang
-for building new kernels.
-
-       Arnd
+-- 
+Kees Cook
