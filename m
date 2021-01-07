@@ -2,77 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 94DB72ED30F
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 15:53:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 69CE52ED313
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 15:55:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728219AbhAGOwY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 09:52:24 -0500
-Received: from vps0.lunn.ch ([185.16.172.187]:55214 "EHLO vps0.lunn.ch"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726165AbhAGOwX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 09:52:23 -0500
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
-        (envelope-from <andrew@lunn.ch>)
-        id 1kxWdW-00Ggmn-JW; Thu, 07 Jan 2021 15:51:38 +0100
-Date:   Thu, 7 Jan 2021 15:51:38 +0100
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     Xu Yilun <yilun.xu@intel.com>, arnd@arndb.de, lee.jones@linaro.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        trix@redhat.com, lgoncalv@redhat.com, hao.wu@intel.com,
-        matthew.gerlach@intel.com, russell.h.weight@intel.com
-Subject: Re: [RESEND PATCH 2/2] misc: add support for retimers interfaces on
- Intel MAX 10 BMC
-Message-ID: <X/cf+o1tuYre1JzU@lunn.ch>
-References: <1609999628-12748-1-git-send-email-yilun.xu@intel.com>
- <1609999628-12748-3-git-send-email-yilun.xu@intel.com>
- <X/bTtBUevX5IBPUl@kroah.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <X/bTtBUevX5IBPUl@kroah.com>
+        id S1728114AbhAGOzJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 09:55:09 -0500
+Received: from relmlor1.renesas.com ([210.160.252.171]:34261 "EHLO
+        relmlie5.idc.renesas.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726151AbhAGOzH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Jan 2021 09:55:07 -0500
+X-IronPort-AV: E=Sophos;i="5.79,329,1602514800"; 
+   d="scan'208";a="68320324"
+Received: from unknown (HELO relmlir5.idc.renesas.com) ([10.200.68.151])
+  by relmlie5.idc.renesas.com with ESMTP; 07 Jan 2021 23:54:15 +0900
+Received: from localhost.localdomain (unknown [10.226.36.204])
+        by relmlir5.idc.renesas.com (Postfix) with ESMTP id B8DF54010916;
+        Thu,  7 Jan 2021 23:54:13 +0900 (JST)
+From:   Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+To:     Geert Uytterhoeven <geert+renesas@glider.be>,
+        Pavel Machek <pavel@denx.de>, Mark Brown <broonie@kernel.org>
+Cc:     linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-renesas-soc@vger.kernel.org,
+        Prabhakar <prabhakar.csengg@gmail.com>,
+        Biju Das <biju.das.jz@bp.renesas.com>,
+        Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Subject: [PATCH] spi: rpc-if: Gaurd .pm assignment with CONFIG_PM_SLEEP #ifdef check
+Date:   Thu,  7 Jan 2021 14:53:29 +0000
+Message-Id: <20210107145329.27966-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 07, 2021 at 10:26:12AM +0100, Greg KH wrote:
-> On Thu, Jan 07, 2021 at 02:07:08PM +0800, Xu Yilun wrote:
-> > This driver supports the ethernet retimers (C827) for the Intel PAC
-> > (Programmable Acceleration Card) N3000, which is a FPGA based Smart NIC.
-> > 
-> > C827 is an Intel(R) Ethernet serdes transceiver chip that supports
-> > up to 100G transfer. On Intel PAC N3000 there are 2 C827 chips
-> > managed by the Intel MAX 10 BMC firmware. They are configured in 4 ports
-> > 10G/25G retimer mode. Host could query their link states and firmware
-> > version information via retimer interfaces (Shared registers) on Intel
-> > MAX 10 BMC. The driver creates sysfs interfaces for users to query these
-> > information.
-> 
-> Networking people, please look at this sysfs file:
-> 
-> > +What:		/sys/bus/platform/devices/n3000bmc-retimer.*.auto/link_statusX
-> > +Date:		Jan 2021
-> > +KernelVersion:	5.12
-> > +Contact:	Xu Yilun <yilun.xu@intel.com>
-> > +Description:	Read only. Returns the status of each line side link. "1" for
-> > +		link up, "0" for link down.
-> > +		Format: "%u".
-> 
-> as I need your approval to add it because it is not the "normal" way for
-> link status to be exported to userspace.
+With CONFIG_PM_SLEEP disabled the rpcif_spi_pm_ops variable is still
+referenced and thus increasing the size of kernel.
 
-Hi Greg
+Fix this issue by adding CONFIG_PM_SLEEP #ifdef check around the .pm
+assignment (image size is critical on RZ/A SoC's where the SRAM sizes
+range 4~5 MiB).
 
-Correct, this is not going to be acceptable.
+Fixes: 9584fc95cadc0 ("spi: rpc-if: Remove CONFIG_PM_SLEEP ifdefery")
+Reported-by: Geert Uytterhoeven <geert+renesas@glider.be>
+Suggested-by: Pavel Machek <pavel@denx.de>
+Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+---
+ drivers/spi/spi-rpc-if.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-The whole architecture needs to cleanly fit into the phylink model for
-controlling the SFP and the retimer.
+diff --git a/drivers/spi/spi-rpc-if.c b/drivers/spi/spi-rpc-if.c
+index c313dbe6185c..c53138ce0030 100644
+--- a/drivers/spi/spi-rpc-if.c
++++ b/drivers/spi/spi-rpc-if.c
+@@ -197,7 +197,9 @@ static struct platform_driver rpcif_spi_driver = {
+ 	.remove	= rpcif_spi_remove,
+ 	.driver = {
+ 		.name	= "rpc-if-spi",
++#ifdef CONFIG_PM_SLEEP
+ 		.pm	= &rpcif_spi_pm_ops,
++#endif
+ 	},
+ };
+ module_platform_driver(rpcif_spi_driver);
+-- 
+2.17.1
 
-I'm guessing Intel needs to rewrite portions of the BMC firmware to
-either transparently pass through access to the SFP socket and the
-retimer for phylink and a C827 specific driver, or add a high level
-API which a MAC driver can use, and completely hide away these PHY
-details from Linux, which is what many of the Intel Ethernet drivers
-do.
-
-       Andrew
