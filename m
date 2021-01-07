@@ -2,93 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D448A2ED766
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 20:20:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 704592ED769
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 20:22:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729369AbhAGTTg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 14:19:36 -0500
-Received: from foss.arm.com ([217.140.110.172]:38138 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726600AbhAGTTg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 14:19:36 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 864DAD6E;
-        Thu,  7 Jan 2021 11:18:50 -0800 (PST)
-Received: from [192.168.122.166] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 117443F66E;
-        Thu,  7 Jan 2021 11:18:50 -0800 (PST)
-Subject: Re: [PATCH] arm64: PCI: Enable SMC conduit
-To:     Will Deacon <will@kernel.org>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-pci@vger.kernel.org,
-        lorenzo.pieralisi@arm.com, bhelgaas@google.com,
-        catalin.marinas@arm.com, robh@kernel.org, sudeep.holla@arm.com,
-        mark.rutland@arm.com, linux-kernel@vger.kernel.org
-References: <20210105045735.1709825-1-jeremy.linton@arm.com>
- <20210107181416.GA3536@willie-the-truck>
-From:   Jeremy Linton <jeremy.linton@arm.com>
-Message-ID: <61558f73-9ac8-69fe-34c1-2074dec5f18a@arm.com>
-Date:   Thu, 7 Jan 2021 13:18:49 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.3.1
+        id S1729092AbhAGTWd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 14:22:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45684 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728105AbhAGTWc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Jan 2021 14:22:32 -0500
+Received: from mail-il1-x131.google.com (mail-il1-x131.google.com [IPv6:2607:f8b0:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CE33C0612F5
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Jan 2021 11:21:52 -0800 (PST)
+Received: by mail-il1-x131.google.com with SMTP id q5so7793043ilc.10
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Jan 2021 11:21:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=atishpatra.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=LMmtmUjaLK/oDzSRX4xY8K8bKTjtoJFYEpkuZNYnKbQ=;
+        b=ksz//DOqHNryrTsAi7EMMvOGgDzeULjdCyZ3SbRAeA5SnTu43DmAClxdZ0xV1w7zds
+         4XFVyrrtuIukc7yMVDFBiT0AKZVYbOTic5nPP3aYhkvgjW1itYFXu84cYQOGhjLZHPTL
+         oOzl5wk9VTu27v/FCPJEjnAMkqEENPk9YWJps=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=LMmtmUjaLK/oDzSRX4xY8K8bKTjtoJFYEpkuZNYnKbQ=;
+        b=Apriya9gSj+Zg6sIX4XEcXZIssynoWHseAmLgzv5V3n048+BnYX6YGWf3AuH4BvnWp
+         7az/fSjL1iW4lkJszZbEk0GYFaLJkTqsB0Tmsd0z+335Qyh5ECLTfB+chVfCfbn5oxyI
+         IbDYPbqeYQs+qh9mYsNXWq1u9bCLVS9kA8F7idQpQ7gXvsv6plHMwjfbEeeZnZLoyVgN
+         jvLGcHSd2Q2h0q22ZD1z6xyE2eWo6xQ37FzA1G22sVLfI1z1x/AIq5EIgZUy7qL3klx7
+         YDuCvCK68u3MIFLokVyNnKb6yrgmpYRd7MspsEH6Yg4o9QxYXgtgYmTiBj9svNdk/pk8
+         zDCg==
+X-Gm-Message-State: AOAM530bTl3tOaBKAJnoXEz73zlbJFSQxaIrAsweU4EAZ5U1XRr+dt4y
+        iTgQQ8LALcAgpP93XfYPPoWFynfsWcpdZzSOG0wp
+X-Google-Smtp-Source: ABdhPJwOVkAYu414Omcy7kfayKuKewrcr2YcJxv0GFvSThHdqUxeL+ide93PZe552keZuBX+rkRMgj7/mT1PeJLzyAY=
+X-Received: by 2002:a92:204:: with SMTP id 4mr381598ilc.79.1610047311610; Thu,
+ 07 Jan 2021 11:21:51 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20210107181416.GA3536@willie-the-truck>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20201204085835.2406541-1-atish.patra@wdc.com> <20201204085835.2406541-2-atish.patra@wdc.com>
+ <4655c810-e406-f807-d2dc-1b2e0198d945@microchip.com>
+In-Reply-To: <4655c810-e406-f807-d2dc-1b2e0198d945@microchip.com>
+From:   Atish Patra <atishp@atishpatra.org>
+Date:   Thu, 7 Jan 2021 11:21:40 -0800
+Message-ID: <CAOnJCUKMNzzk-RxxGJQCqS_9HjdZnOFSDu1FG_oWeKh6Jzq+sA@mail.gmail.com>
+Subject: Re: [PATCH v3 1/5] RISC-V: Add Microchip PolarFire SoC kconfig option
+To:     Cyril.Jean@microchip.com
+Cc:     Atish Patra <atish.patra@wdc.com>,
+        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        Bin Meng <bin.meng@windriver.com>,
+        Daire McNamara <Daire.McNamara@microchip.com>,
+        Anup Patel <anup@brainfault.org>,
+        Anup Patel <anup.patel@wdc.com>, Conor.Dooley@microchip.com,
+        Rob Herring <robh+dt@kernel.org>, Ivan.Griffin@microchip.com,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Alistair Francis <alistair.francis@wdc.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        linux-riscv <linux-riscv@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Thu, Jan 7, 2021 at 3:40 AM <Cyril.Jean@microchip.com> wrote:
+>
+> Hi Atish,
+>
+> On 12/4/20 8:58 AM, Atish Patra wrote:
+> > EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
+> >
+> > Add Microchip PolarFire kconfig option which selects SoC specific
+> > and common drivers that is required for this SoC.
+> >
+> > Signed-off-by: Atish Patra <atish.patra@wdc.com>
+> > Reviewed-by: Bin Meng <bin.meng@windriver.com>
+> > Reviewed-by: Anup Patel <anup@brainfault.org>
+> > ---
+> >   arch/riscv/Kconfig.socs | 7 +++++++
+> >   1 file changed, 7 insertions(+)
+> >
+> > diff --git a/arch/riscv/Kconfig.socs b/arch/riscv/Kconfig.socs
+> > index 8a55f6156661..148ab095966b 100644
+> > --- a/arch/riscv/Kconfig.socs
+> > +++ b/arch/riscv/Kconfig.socs
+> > @@ -1,5 +1,12 @@
+> >   menu "SoC selection"
+> >
+> > +config SOC_MICROCHIP_POLARFIRE
+> > +       bool "Microchip PolarFire SoCs"
+> > +       select MCHP_CLK_PFSOC
+> Can you change MCHP_CLK_PFSOC to MCHP_CLK_MPFS to align with the v2
+> clock driver?
 
-On 1/7/21 12:14 PM, Will Deacon wrote:
-> On Mon, Jan 04, 2021 at 10:57:35PM -0600, Jeremy Linton wrote:
->> Given that most arm64 platform's PCI implementations needs quirks
->> to deal with problematic config accesses, this is a good place to
->> apply a firmware abstraction. The ARM PCI SMMCCC spec details a
->> standard SMC conduit designed to provide a simple PCI config
->> accessor. This specification enhances the existing ACPI/PCI
->> abstraction and expects power, config, etc functionality is handled
->> by the platform. It also is very explicit that the resulting config
->> space registers must behave as is specified by the pci specification.
->>
->> Lets hook the normal ACPI/PCI config path, and when we detect
->> missing MADT data, attempt to probe the SMC conduit. If the conduit
->> exists and responds for the requested segment number (provided by the
->> ACPI namespace) attach a custom pci_ecam_ops which redirects
->> all config read/write requests to the firmware.
->>
->> This patch is based on the Arm PCI Config space access document @
->> https://developer.arm.com/documentation/den0115/latest
-> 
-> Why does firmware need to be involved with this at all? Can't we just
-> quirk Linux when these broken designs show up in production? We'll need
-> to modify Linux _anyway_ when the firmware interface isn't implemented
-> correctly...
+Sure. Will do that.
+
+> > +       select SIFIVE_PLIC
+> > +       help
+> > +         This enables support for Microchip PolarFire SoC platforms.
+> > +
+> >   config SOC_SIFIVE
+> >          bool "SiFive SoCs"
+> >          select SERIAL_SIFIVE if TTY
+> > --
+> > 2.25.1
+> >
+> Regards,
+>
+> Cyril.
+>
+>
+> _______________________________________________
+> linux-riscv mailing list
+> linux-riscv@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-riscv
 
 
-IMHO, The short answer is that having the quirk in the firmware keeps it 
-centralized over multiple OSs and linux distro versions and avoids a lot 
-of costly kernel->distro churning to backport/maintain quirks over a 
-dozen distro versions.
 
-There is also a long-term maintenance advantage since its hard for the 
-kernel community as a  whole to have a good view of how long a 
-particular model of machine is actually in use. For example, today we 
-could ask are any of those xgene1's still in use and remove their 
-quirks, but no one really has a clear view.
-
-As far as working around the firmware, that is of course potentially 
-problematic, but I think it is easier to say "fix the firmware if you 
-want/need linux support" than it is to get people to fix their ECAM 
-implementations. Hypothetically, if at some point there is a broken 
-version of this interface in firmware, the kernel could choose to bypass 
-it entirely and talk to whatever broken config space method the hardware 
-implements. At which point we aren't any worse off than the situation 
-today.
-
-The flip side of this is that a fair number of these platforms have open 
-source firmware as well, so it may be trivial to fix the firmware.
-
-Thanks for looking a this!
-
+-- 
+Regards,
+Atish
