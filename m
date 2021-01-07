@@ -2,100 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B3232ED4EE
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 18:02:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D50A62ED4F5
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 18:03:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728674AbhAGRB4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 12:01:56 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:31993 "EHLO
+        id S1728898AbhAGRCi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 12:02:38 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:60231 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726650AbhAGRB4 (ORCPT
+        by vger.kernel.org with ESMTP id S1728118AbhAGRCg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 12:01:56 -0500
+        Thu, 7 Jan 2021 12:02:36 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1610038829;
+        s=mimecast20190719; t=1610038870;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=uHtLQ82irY0zw9G0AL7ymoS/HHVkiUCAdKjz4xIDFCA=;
-        b=XXFHgC33NOxSV0tGfCSs4d+naQRzz8XHSNcVgEfCZZd9P8c3adOqfCNYZfPZay3jQTaac2
-        xDYVf3b8/qkGsIsieTEu5zsXUG56SFsYb3oBoY9jGuOfBCEiyveOw1une7GkK9B9tbl81E
-        ZlfUULIWgyq5G9m+i7ed3kt0mRa6/us=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-172-tA9k7NiUM0q06iIHy0qyAg-1; Thu, 07 Jan 2021 12:00:27 -0500
-X-MC-Unique: tA9k7NiUM0q06iIHy0qyAg-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E9084107ACE3;
-        Thu,  7 Jan 2021 17:00:25 +0000 (UTC)
-Received: from oldenburg2.str.redhat.com (ovpn-114-198.ams2.redhat.com [10.36.114.198])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 57E6C19C81;
-        Thu,  7 Jan 2021 17:00:23 +0000 (UTC)
-From:   Florian Weimer <fweimer@redhat.com>
-To:     "Theodore Ts'o" <tytso@mit.edu>
-Cc:     Russell King - ARM Linux admin <linux@armlinux.org.uk>,
-        Arnd Bergmann <arnd@kernel.org>, Will Deacon <will@kernel.org>,
-        linux-toolchains@vger.kernel.org,
-        Mark Rutland <mark.rutland@arm.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Ext4 Developers List <linux-ext4@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
-Subject: Re: Aarch64 EXT4FS inode checksum failures - seems to be weak
- memory ordering issues
-References: <20210105154726.GD1551@shell.armlinux.org.uk>
-        <20210106115359.GB26994@C02TD0UTHF1T.local>
-        <20210106135253.GJ1551@shell.armlinux.org.uk>
-        <20210106172033.GA2165@willie-the-truck>
-        <20210106223223.GM1551@shell.armlinux.org.uk>
-        <20210107111841.GN1551@shell.armlinux.org.uk>
-        <20210107124506.GO1551@shell.armlinux.org.uk>
-        <CAK8P3a2TXPfFpgy+XjpDzOqt1qpDxufwiD-BLNbn4W_jpGp98g@mail.gmail.com>
-        <20210107133747.GP1551@shell.armlinux.org.uk>
-        <X/c2aqSvYCaB9sR6@mit.edu>
-Date:   Thu, 07 Jan 2021 18:00:21 +0100
-In-Reply-To: <X/c2aqSvYCaB9sR6@mit.edu> (Theodore Ts'o's message of "Thu, 7
-        Jan 2021 11:27:22 -0500")
-Message-ID: <87r1mwy95m.fsf@oldenburg2.str.redhat.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
+        bh=tYC79LNk2nzU1Q3GB47wy9Gu7cJ3IMZGWrzODwHrOJw=;
+        b=FqXECTG5A6gri8+PGIzC/elVBefzx+3dzSJ0V5KHHCH9ao/NofS0eoR793bG8XuhXsajja
+        vv5zqaamPCSO2KAPNfnKRQLXoFyyL4tvn5mX/PKjRnUdbfEzpqVrgThnX9OFd5GvWWx5ve
+        2g0Q18Ta8Gd/vRJV92lIrZCfN+v6uHI=
+Received: from mail-pg1-f200.google.com (mail-pg1-f200.google.com
+ [209.85.215.200]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-481-KSowEJYuMrmsg3QS3XCVfQ-1; Thu, 07 Jan 2021 12:01:08 -0500
+X-MC-Unique: KSowEJYuMrmsg3QS3XCVfQ-1
+Received: by mail-pg1-f200.google.com with SMTP id 24so5184822pgt.4
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Jan 2021 09:01:08 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=tYC79LNk2nzU1Q3GB47wy9Gu7cJ3IMZGWrzODwHrOJw=;
+        b=fu8EZd7NcO4E4d/PyjKDA8adznYlygCZdE073ycewKa/17QUFVQbIySGmFQi2JmZgG
+         +S79tZsaV4zPvar3vRqKOQmw7nZygL4OyjvHLqFdgoSgPdcri9nge1z42TAjwvvfenOk
+         xfHb3NRzPxtHxZQJykYBeoYL38eOGpKFA8t68g+o3hFfR2hVvwoVu19ANtJKs0w0CZ6L
+         91tBKG/Jsw38/ZNjmZdL2sSlT8WhlgPnjo7j32w0eCnfe4HO/O77fMe5bY9M15tzi0kk
+         6MUBQ9aXnJSs5G4UZF186yCv9wvPi1yAPDAcsG+1qPtfFNGJz/PR19EWhW8jjJpYqBSZ
+         ariA==
+X-Gm-Message-State: AOAM530AgU7Lv9xaajToZzNS9mwf/5y+KyqdzwZLM/Fh+TNj4tuk6SGB
+        mT3tpHjX1mpRRE5V+5UxMC3FW8dmtdYAfA/HJ6GHRH5S12pRnKZoWZPkj/kUmintVslAKtIOPm+
+        HwBYAOV6zf5uKqnYv2FcHbDal
+X-Received: by 2002:a17:902:fe87:b029:da:5d3b:4a84 with SMTP id x7-20020a170902fe87b02900da5d3b4a84mr9876759plm.51.1610038867260;
+        Thu, 07 Jan 2021 09:01:07 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJysL4EldspCf6rNFwrd0bAyeFEK4JxLwg2+MTt3NtFgM2enXGtOwOvfdPwi2PbRwBbnrn5iAQ==
+X-Received: by 2002:a17:902:fe87:b029:da:5d3b:4a84 with SMTP id x7-20020a170902fe87b02900da5d3b4a84mr9876736plm.51.1610038867052;
+        Thu, 07 Jan 2021 09:01:07 -0800 (PST)
+Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
+        by smtp.gmail.com with ESMTPSA id b18sm6517233pfi.173.2021.01.07.09.01.06
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 07 Jan 2021 09:01:06 -0800 (PST)
+Subject: Re: [PATCH 0/8] FPGA DFL Changes for 5.12
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     Moritz Fischer <mdf@kernel.org>, linux-fpga@vger.kernel.org,
+        linux-kernel@vger.kernel.org, moritzf@google.com
+References: <20210107043714.991646-1-mdf@kernel.org>
+ <80b29715-aa0a-b2ac-03af-904fc8f8be98@redhat.com>
+ <X/czarr9bXr849p5@kroah.com>
+From:   Tom Rix <trix@redhat.com>
+Message-ID: <51e3350c-00d3-b2fe-cdc5-be64b661c224@redhat.com>
+Date:   Thu, 7 Jan 2021 09:01:05 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+In-Reply-To: <X/czarr9bXr849p5@kroah.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-* Theodore Ts'o:
 
-> On Thu, Jan 07, 2021 at 01:37:47PM +0000, Russell King - ARM Linux admin wrote:
->> > The gcc bugzilla mentions backports into gcc-linaro, but I do not see
->> > them in my git history.
->> 
->> So, do we raise the minimum gcc version for the kernel as a whole to 5.1
->> or just for aarch64?
+On 1/7/21 8:14 AM, Greg KH wrote:
+> On Thu, Jan 07, 2021 at 08:09:12AM -0800, Tom Rix wrote:
+>> On 1/6/21 8:37 PM, Moritz Fischer wrote:
+>>> This is a resend of the previous (unfortunately late) patchset of
+>>> changes for FPGA DFL.
+>> Is there something I can do to help ?
+> This is all now merged in my tree, so there's not much left to do here
+> :)
+
+Yes this patchset is done now.
+
+I am offering to help in an ongoing manner, something like 10hr/week would be easy as i already spend about 30hr/week doing stuff in the kernel in addition to reviewing linux-fpga.
+
+Tom
+
+> thanks,
 >
-> Russell, Arnd, thanks so much for tracking down the root cause of the
-> bug!
+> greg k-h
 >
-> I will note that RHEL 7 uses gcc 4.8.  I personally don't have an
-> objections to requiring developers using RHEL 7 to have to install a
-> more modern gcc (since I use Debian Testing and gcc 10.2.1, myself,
-> and gcc 5.1 is so five years ago :-), but I could imagine that being
-> considered inconvenient for some.
-
-Actually, RHEL 7 should have the fix (internal bug #1362635, curiously
-we encountered it in the *XFS* CRC calculation code back then).
-
-My understanding is that RHEL 7 aarch64 support ceased completely about
-a month ago, so that shouldn't be an argument against bumping the
-minimum version requirement to 5.1.
-
-Thanks,
-Florian
--- 
-Red Hat GmbH, https://de.redhat.com/ , Registered seat: Grasbrunn,
-Commercial register: Amtsgericht Muenchen, HRB 153243,
-Managing Directors: Charles Cachera, Brian Klemm, Laurie Krebs, Michael O'Neill
 
