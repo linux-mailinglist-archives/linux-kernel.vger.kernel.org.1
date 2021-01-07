@@ -2,71 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9403E2EC762
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 01:41:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 36A292EC764
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 01:42:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726369AbhAGAk4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Jan 2021 19:40:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39754 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725978AbhAGAkz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Jan 2021 19:40:55 -0500
-Received: from ZenIV.linux.org.uk (zeniv.linux.org.uk [IPv6:2002:c35c:fd02::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1CC33C061370;
-        Wed,  6 Jan 2021 16:40:15 -0800 (PST)
-Received: from viro by ZenIV.linux.org.uk with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kxJLS-007arZ-RK; Thu, 07 Jan 2021 00:40:06 +0000
-Date:   Thu, 7 Jan 2021 00:40:06 +0000
-From:   Al Viro <viro@zeniv.linux.org.uk>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: build warning after merge of the vfs tree
-Message-ID: <20210107004006.GF3579531@ZenIV.linux.org.uk>
-References: <20210107101544.68bdd395@canb.auug.org.au>
+        id S1726394AbhAGAmb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Jan 2021 19:42:31 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57014 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725803AbhAGAm3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 Jan 2021 19:42:29 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3452D230FE;
+        Thu,  7 Jan 2021 00:41:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1609980109;
+        bh=jNo9PcDXkeFNFA14h4Cp0ur5/ltuGI30OyysC0hEDA4=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=iRtsT/dr9eo+NdEV/TzX9U4w8966UorirhMo/pweAkSAJIgZyM3EwiHWlcu7xgku6
+         1v09Bxh/6LE14n4bvL4S00QDh/OmVHX102Hrt8JuNJvnxZJziTma3RZdgkEFWWKFOY
+         3iDcFSzmxuBALFIPQ2VPvuFQ4t1tj3k3668lGchVno2I5ZFQYNeysoJWHM/oDguIn2
+         DC8wemuui9SQJWs6caK5OAs7pODCskrANrFUt5cFmyvlcRmFQGpbVETBhfxOuK2gEx
+         lPIMDajQQR9/2flat1bWM2piovAutS3UYgbHnridc+tYLGIJ+9JQmJR5Vqua5JHjPi
+         gTlQ4NVkH1p9A==
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id D92FE35225DC; Wed,  6 Jan 2021 16:41:48 -0800 (PST)
+Date:   Wed, 6 Jan 2021 16:41:48 -0800
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     "Luck, Tony" <tony.luck@intel.com>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "linux-edac@vger.kernel.org" <linux-edac@vger.kernel.org>,
+        "bp@alien8.de" <bp@alien8.de>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "hpa@zytor.com" <hpa@zytor.com>,
+        "kernel-team@fb.com" <kernel-team@fb.com>
+Subject: Re: [PATCH RFC x86/mce] Make mce_timed_out() identify holdout CPUs
+Message-ID: <20210107004148.GJ2743@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <20210106174102.GA23874@paulmck-ThinkPad-P72>
+ <3513b04e2bb543d2871ca8c152dcf5ae@intel.com>
+ <20210106191708.GB2743@paulmck-ThinkPad-P72>
+ <20210106224918.GA7914@agluck-desk2.amr.corp.intel.com>
+ <20210106232347.GG2743@paulmck-ThinkPad-P72>
+ <366fc78e7b8c4474958b289eec31ed25@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210107101544.68bdd395@canb.auug.org.au>
-Sender: Al Viro <viro@ftp.linux.org.uk>
+In-Reply-To: <366fc78e7b8c4474958b289eec31ed25@intel.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 07, 2021 at 10:15:44AM +1100, Stephen Rothwell wrote:
-> Hi all,
+On Thu, Jan 07, 2021 at 12:26:19AM +0000, Luck, Tony wrote:
+> > Please see below for an updated patch.
 > 
-> After merging the vfs tree, today's linux-next build (x86_64 allmodconfig)
-> produced this warning:
+> Yes. That worked:
 > 
-> In file included from fs/erofs/xattr.h:10,
->                  from fs/erofs/namei.c:7:
-> fs/erofs/namei.c: In function 'erofs_lookup':
-> fs/erofs/internal.h:23:21: warning: format '%s' expects argument of type 'char *', but argument 4 has type 'struct dentry *' [-Wformat=]
->    23 | #define pr_fmt(fmt) "erofs: " fmt
->       |                     ^~~~~~~~~
-> include/linux/dynamic_debug.h:129:15: note: in expansion of macro 'pr_fmt'
->   129 |   func(&id, ##__VA_ARGS__);  \
->       |               ^~~~~~~~~~~
-> include/linux/dynamic_debug.h:147:2: note: in expansion of macro '__dynamic_func_call'
->   147 |  __dynamic_func_call(__UNIQUE_ID(ddebug), fmt, func, ##__VA_ARGS__)
->       |  ^~~~~~~~~~~~~~~~~~~
-> include/linux/dynamic_debug.h:157:2: note: in expansion of macro '_dynamic_func_call'
->   157 |  _dynamic_func_call(fmt, __dynamic_pr_debug,  \
->       |  ^~~~~~~~~~~~~~~~~~
-> include/linux/printk.h:424:2: note: in expansion of macro 'dynamic_pr_debug'
->   424 |  dynamic_pr_debug(fmt, ##__VA_ARGS__)
->       |  ^~~~~~~~~~~~~~~~
-> fs/erofs/internal.h:34:33: note: in expansion of macro 'pr_debug'
->    34 | #define erofs_dbg(x, ...)       pr_debug(x "\n", ##__VA_ARGS__)
->       |                                 ^~~~~~~~
-> fs/erofs/namei.c:237:3: note: in expansion of macro 'erofs_dbg'
->   237 |   erofs_dbg("%pd, %s (nid %llu) found, d_type %u", __func__,
->       |   ^~~~~~~~~
+> [   78.946069] mce: mce_timed_out: MCE holdout CPUs (may include false positives): 24-47,120-143
+> [   78.946151] mce: mce_timed_out: MCE holdout CPUs (may include false positives): 24-47,120-143
+> [   78.946153] Kernel panic - not syncing: Timeout: Not all CPUs entered broadcast exception handler
 > 
-> Introduced by commit
-> 
->   879d4376533c ("erofs: use %pd instead of messing with ->d_name")
+> I guess that more than one CPU hit the timeout and so your new message was printed twice
+> before the panic code took over?
 
-Gyah...  "%s, %pd", not "%pd, %s".  Sorry, fixed and pushed.
+Could well be.
+
+It would be easy to add a flag that allowed only one CPU to print the
+message.  Does that make sense?  (See off-the-cuff probably-broken
+delta patch below for one approach.)
+
+> Once again, the whole of socket 1 is MIA rather than just the pair of threads on one of the cores there.
+> But that's a useful improvement (eliminating the other three sockets on this system).
+> 
+> Tested-by: Tony Luck <tony.luck@intel.com>
+
+Thank you very much!  I will apply this.
+
+							Thanx, Paul
+
+------------------------------------------------------------------------
+
+diff --git a/arch/x86/kernel/cpu/mce/core.c b/arch/x86/kernel/cpu/mce/core.c
+index 7a6e1f3..b46ac56 100644
+--- a/arch/x86/kernel/cpu/mce/core.c
++++ b/arch/x86/kernel/cpu/mce/core.c
+@@ -882,6 +882,7 @@ static atomic_t mce_callin;
+  */
+ static cpumask_t mce_present_cpus;
+ static cpumask_t mce_missing_cpus;
++static atomic_t mce_missing_cpus_gate;
+ 
+ /*
+  * Check if a timeout waiting for other CPUs happened.
+@@ -900,7 +901,7 @@ static int mce_timed_out(u64 *t, const char *msg)
+ 	if (!mca_cfg.monarch_timeout)
+ 		goto out;
+ 	if ((s64)*t < SPINUNIT) {
+-		if (mca_cfg.tolerant <= 1) {
++		if (mca_cfg.tolerant <= 1 && !atomic_xchg(&mce_missing_cpus_gate, 1)) {
+ 			if (cpumask_andnot(&mce_missing_cpus, cpu_online_mask, &mce_present_cpus))
+ 				pr_info("%s: MCE holdout CPUs (may include false positives): %*pbl\n",
+ 					__func__, cpumask_pr_args(&mce_missing_cpus));
+@@ -1017,6 +1018,7 @@ static int mce_start(int *no_way_out)
+ 	 */
+ 	order = atomic_inc_return(&mce_callin);
+ 	cpumask_set_cpu(smp_processor_id(), &mce_present_cpus);
++	atomic_set(&mce_missing_cpus_gate, 0);
+ 
+ 	/*
+ 	 * Wait for everyone.
+@@ -1126,6 +1128,7 @@ static int mce_end(int order)
+ 	atomic_set(&global_nwo, 0);
+ 	atomic_set(&mce_callin, 0);
+ 	cpumask_clear(&mce_present_cpus);
++	atomic_set(&mce_missing_cpus_gate, 0);
+ 	barrier();
+ 
+ 	/*
+@@ -2725,6 +2728,7 @@ static void mce_reset(void)
+ 	atomic_set(&mce_callin, 0);
+ 	atomic_set(&global_nwo, 0);
+ 	cpumask_clear(&mce_present_cpus);
++	atomic_set(&mce_missing_cpus_gate, 0);
+ }
+ 
+ static int fake_panic_get(void *data, u64 *val)
