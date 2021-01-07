@@ -2,152 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E3212EE7CF
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 22:48:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A21D12EE7DA
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 22:50:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727833AbhAGVrQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 16:47:16 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:22971 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726646AbhAGVrQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 16:47:16 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1610055949;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=fcJL8OlxSjz4TBCig/UyiENXqAQ6EHQn1x2f94cS2Zg=;
-        b=LSYElK3J4AYGgPTNW0d+HKXe0LlhDojE6fKPiqbaUrRHFgKHBmj98AKp2cFt9ixQDgyq0Y
-        1Eq7QLHWvorEDWVFlkeFYzWZl+FkjSPLyfZE6khyn0pIcUNmM4rjo+m+wRtKxSku/AJP+Z
-        BZBTdGVAraxxfUegTOJj7Ze3q/4dNzA=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-505-IMtl4d1nMGaGfPYUkVRjOA-1; Thu, 07 Jan 2021 16:45:47 -0500
-X-MC-Unique: IMtl4d1nMGaGfPYUkVRjOA-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C4405190A7A0;
-        Thu,  7 Jan 2021 21:45:44 +0000 (UTC)
-Received: from mail (ovpn-112-222.rdu2.redhat.com [10.10.112.222])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id DA0CD60CC4;
-        Thu,  7 Jan 2021 21:45:33 +0000 (UTC)
-Date:   Thu, 7 Jan 2021 16:45:33 -0500
-From:   Andrea Arcangeli <aarcange@redhat.com>
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Yu Zhao <yuzhao@google.com>, Andy Lutomirski <luto@kernel.org>,
-        Peter Xu <peterx@redhat.com>,
-        Pavel Emelyanov <xemul@openvz.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Mike Rapoport <rppt@linux.vnet.ibm.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Will Deacon <will@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Hugh Dickins <hughd@google.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Oleg Nesterov <oleg@redhat.com>, Jann Horn <jannh@google.com>,
-        Kees Cook <keescook@chromium.org>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Leon Romanovsky <leonro@nvidia.com>, Jan Kara <jack@suse.cz>,
-        Kirill Tkhai <ktkhai@virtuozzo.com>
-Subject: Re: [PATCH 0/2] page_count can't be used to decide when wp_page_copy
-Message-ID: <X/eA/f1r5GXvcRWH@redhat.com>
-References: <B1B85771-B211-4FCC-AEEF-BDFD37332C25@vmware.com>
- <20210107200402.31095-1-aarcange@redhat.com>
- <20210107202525.GD504133@ziepe.ca>
+        id S1727652AbhAGVtE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 16:49:04 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37198 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726477AbhAGVtD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Jan 2021 16:49:03 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DE3E923406;
+        Thu,  7 Jan 2021 21:48:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1610056103;
+        bh=TQDWjh3f5pNnQ2t5MjxQ5TqLIEAU1dudzHdK0zBk+Ns=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=iD+ZK/lfojmMkxhXnyH/1v8Tb0AwiXwyMFfxZhtAIZgz0HAke5gQ1BQxg7lVHp9TI
+         gAdpITwTpkBqqsroyiceqy/xOW06ifTk4RCD4LdxhCin8jH5ninfACplB869eaWj56
+         hQbubbiixp2WEM1jJcIFTIxzmxmotz+Xke8JTSV3jPycIBMLSjfEpuCozaSEv3HzqT
+         WXwiw2vKOAwe2NN3ljw0hT5F4Qabo2Tnj8NBEzzeD5M6JuHuxYSDQcbwR3uBtpvQNK
+         lpnVGmcDiM5jsCTzQvTuYSIiA9zg5G4dIY1dyOQifQm8BXopQbA4xcakFyzcS8PVXg
+         05/ozQdCD06ug==
+Received: by mail-ot1-f50.google.com with SMTP id i6so7806129otr.2;
+        Thu, 07 Jan 2021 13:48:22 -0800 (PST)
+X-Gm-Message-State: AOAM532JjXRaFQ1Y3e7ztIpKwAtdyXWYq3eg4k0OEMdRvlvLPjb4QKAm
+        g3pR9+m5bzEO5YZ3m8y9/cKRS7st18LWfUVHApU=
+X-Google-Smtp-Source: ABdhPJxnaJA141e20BKd4OL7t+qWGvU0o8rWnel2LS/2PmbZGYBn/q94i+4iN0Vo1bv8tzTS+O8U0EFHizJ+9FdNAio=
+X-Received: by 2002:a9d:7a4b:: with SMTP id z11mr421259otm.305.1610056102295;
+ Thu, 07 Jan 2021 13:48:22 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210107202525.GD504133@ziepe.ca>
-User-Agent: Mutt/2.0.4 (2020-12-30)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+References: <20210105154726.GD1551@shell.armlinux.org.uk> <20210106115359.GB26994@C02TD0UTHF1T.local>
+ <20210106135253.GJ1551@shell.armlinux.org.uk> <20210106172033.GA2165@willie-the-truck>
+ <20210106223223.GM1551@shell.armlinux.org.uk> <20210107111841.GN1551@shell.armlinux.org.uk>
+ <20210107124506.GO1551@shell.armlinux.org.uk> <CAK8P3a2TXPfFpgy+XjpDzOqt1qpDxufwiD-BLNbn4W_jpGp98g@mail.gmail.com>
+ <20210107133747.GP1551@shell.armlinux.org.uk> <X/c2aqSvYCaB9sR6@mit.edu>
+In-Reply-To: <X/c2aqSvYCaB9sR6@mit.edu>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Thu, 7 Jan 2021 22:48:05 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a2svyz1KXSqSUMVeDqdag4f1VcERH9jpECSLsn-FWvZbw@mail.gmail.com>
+Message-ID: <CAK8P3a2svyz1KXSqSUMVeDqdag4f1VcERH9jpECSLsn-FWvZbw@mail.gmail.com>
+Subject: Re: Aarch64 EXT4FS inode checksum failures - seems to be weak memory
+ ordering issues
+To:     "Theodore Ts'o" <tytso@mit.edu>
+Cc:     Russell King - ARM Linux admin <linux@armlinux.org.uk>,
+        Will Deacon <will@kernel.org>,
+        linux-toolchains@vger.kernel.org,
+        Mark Rutland <mark.rutland@arm.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Ext4 Developers List <linux-ext4@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 07, 2021 at 04:25:25PM -0400, Jason Gunthorpe wrote:
-> On Thu, Jan 07, 2021 at 03:04:00PM -0500, Andrea Arcangeli wrote:
-> 
-> > vmsplice syscall API is insecure allowing long term GUP PINs without
-> > privilege.
-> 
-> Lots of places are relying on pin_user_pages long term pins of memory,
-> and cannot be converted to notifiers.
-> 
-> I don't think it is reasonable to just declare that insecure and
-> requires privileges, it is a huge ABI break.
+On Thu, Jan 7, 2021 at 5:27 PM Theodore Ts'o <tytso@mit.edu> wrote:
+>
+> On Thu, Jan 07, 2021 at 01:37:47PM +0000, Russell King - ARM Linux admin wrote:
+> > > The gcc bugzilla mentions backports into gcc-linaro, but I do not see
+> > > them in my git history.
+> >
+> > So, do we raise the minimum gcc version for the kernel as a whole to 5.1
+> > or just for aarch64?
+>
+> Russell, Arnd, thanks so much for tracking down the root cause of the
+> bug!
 
-Where's that ABI? Are there specs or a code example in kernel besides
-vmsplice itself?
+There is one more thing that I wondered about when looking through
+the ext4 code: Should it just call the crc32c_le() function directly
+instead of going through the crypto layer? It seems that with Ard's
+rework from 2018, that can just call the underlying architecture specific
+implementation anyway.
 
-I don't see how it's possible to consider long term GUP pins
-completely unprivileged if not using mmu notifier. vmsplice doesn't
-even account them in rlimit (it cannot because it cannot identify all
-put_pages either).
+> I will note that RHEL 7 uses gcc 4.8.  I personally don't have an
+> objections to requiring developers using RHEL 7 to have to install a
+> more modern gcc (since I use Debian Testing and gcc 10.2.1, myself,
+> and gcc 5.1 is so five years ago :-), but I could imagine that being
+> considered inconvenient for some.
 
-Long term GUP pins not using mmu notifier and not accounted in rlimit
-are an order of magnitude more VM-intrusive than mlock.
+The main users of gcc-4.9 that I recall from previous discussions
+were Android and Debian 8, but both of them are done now: Debian 8
+has reached its end of life last summer, and Android uses clang
+for building new kernels.
 
-The reason it's worse than mlock, even if ignore all performance
-feature that they break including numa bindings and that mlock doesn't
-risk to break, come because you can unmap the memory after taking
-those rlimit unaccounted GUP pins. So the OOM killer won't even have a
-chance to see the GUP pins coming.
-
-So it can't be that mlock has to be privileged but unconstrainted
-unaccounted long term GUP pins as in vmsplice are ok to stay
-unprivileged.
-
-Now io_uring does account the GPU pins in the mlock rlimit, but after
-the vma is unmapped it'd still cause the same confusion to OOM killer
-and in addition the assumption that each GUP pin cost 4k is also
-flawed. However io_uring model can use the mmu notifier without
-slowdown to the fast paths, so it's not going to cause any ABI break
-to fix it.
-
-Or to see it another way, it'd be fine to declare all mlock rlimits
-are obsolete and memcg is the only way to constrain RAM usage, but
-then mlock should stop being privileged, because mlock is a lesser
-concern and it won't risk to confuse the OOM killer at least.
-
-The good thing is the GUP pins won't escape memcg accounting but that
-accounting also doesn't come entirely free.
-
-> FWIW, vhost tries to use notifiers as a replacement for GUP, and I
-> think it ended up quite strange and complicated. It is hard to
-> maintain performance when every access to the pages needs to hold some
-> protection against parallel invalidation.
-
-And that's fine, this is all about if it should require a one liner
-change to add the username in the realtime group in /etc/group or not.
-
-You're focusing on your use case, but we've to put things in
-prospective of all these changes started.
-
-The whole zygote issue wouldn't even register if the child had the
-exact same credentials of the parent. Problem is the child dropped
-privileges and went with a luser id, that clearly cannot ptrace the
-parent, and so if long term unprivileged GUP pins are gone from the
-equation, what remains that the child can do is purely theoretical
-even before commit 17839856fd588f4ab6b789f482ed3ffd7c403e1f.
-
-NOTE: I'm all for fixing the COW for good, but vmsplice or any long
-term GUP pin that is absolutely required to make such attack
-practical, looks the real low hanging fruit here to fix.
-
-However fixing it so clear_refs becomes fundamentally incompatible
-with mmu notifier users unless they all convert to pure !FOLL_GET
-GUPs, let alone long term GUP pins not using mmu notifier, doesn't
-look great. For vmsplice that new break-COW is the fix because it
-happens in the other process.
-
-For every legit long term GUP, where the break-COW happens in the
-single and only process, it's silent MM corruption.
-
-Thanks,
-Andrea
-
+       Arnd
