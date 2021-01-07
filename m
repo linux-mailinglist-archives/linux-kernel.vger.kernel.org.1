@@ -2,92 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 313922EC7DD
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 02:59:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F420B2EC7E9
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 03:06:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726498AbhAGB6k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Jan 2021 20:58:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51988 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725789AbhAGB6k (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Jan 2021 20:58:40 -0500
-Received: from mail-io1-xd34.google.com (mail-io1-xd34.google.com [IPv6:2607:f8b0:4864:20::d34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C21ADC0612F0
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Jan 2021 17:57:59 -0800 (PST)
-Received: by mail-io1-xd34.google.com with SMTP id e22so4157813iom.5
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Jan 2021 17:57:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=EBhbyGC0ghDa64442+yUIBNNWv+lX69CZj1Vh/83Nbg=;
-        b=vWu0kv5D8PyFflOwXPBKmGJk9Am5CzepUCGqUsLYHKt3JeNvPbrTLmqdnw7VwDl8cp
-         6SUfqlfS8xs1iiU/XdNOOMRlK1EjD3qNZej7xdsyDCYD6Hl7G2ZDwE5mGjewC4eRNSRI
-         qJGn4JmAa6smhzSUGRt3o73JOnZciSNgeIabP5n27sYHG/NGy4z1TDLO1oIGAV0ErR2J
-         kO5LR1VvSnTb1tehv/hAB9ssEYR+C1fIqQZWImt2nM68eshfwQls8UMRNm+GOOptn2m5
-         8oukm8yR/JUg7dWnUfqsTOWpoJCg7rII/LRaeC0NAkAsoSfgCdDvjZveyRkYhTJd3nte
-         djzg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=EBhbyGC0ghDa64442+yUIBNNWv+lX69CZj1Vh/83Nbg=;
-        b=S3QF2QSkVUBUXJ7L5gfE9/BZYved1dLR7V/4DymD3Gj2dmi/JR8q1JNWpA6Gh+EqyG
-         0SfmymrRyupIfuU5KEMR1XBNccLhhymuxU39VyEg65QI9flkhV/o60zPHZzTWbvjvchS
-         wteYUNYvyUZPZXXbIpk0uP023ANJSmPD92ryiHe8mqRkd8quVYRkzSZ+XrkQAzI9GMfM
-         RVwIUXzb5+ZDZVp30X/ZYDn44OkYaqIDtYLNSI8B5Ly+FNfP5k2rDKUTcVOP4AZvksb2
-         +xZHY3sk9rHT37WJaEe9JXR9KxbESAQaqL8zLuVmzojrFrJOnSJ0/JkXPt+7BMeY26Y9
-         Rzhg==
-X-Gm-Message-State: AOAM531e7otkTGxM5iPStpOeN5S+MgASEnSi/kG1a6JS7MVmXioGLou1
-        xsuYqQL8536PXc2d/gthYkk5T2c7z2kMQ0H9
-X-Google-Smtp-Source: ABdhPJzZV02BW+zfLWrkqm4fUYdzndVazMIZ7B4PzvGMPBJ4hrsMBuPonqZejV+mn4kBR/VnoiYRSQ==
-X-Received: by 2002:a6b:b7c4:: with SMTP id h187mr5067966iof.76.1609984679249;
-        Wed, 06 Jan 2021 17:57:59 -0800 (PST)
-Received: from localhost.localdomain ([50.236.19.102])
-        by smtp.gmail.com with ESMTPSA id x2sm2427177ior.42.2021.01.06.17.57.53
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 06 Jan 2021 17:57:58 -0800 (PST)
-From:   qianjun.kernel@gmail.com
-To:     mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, linux-kernel@vger.kernel.org
-Cc:     jun qian <qianjun.kernel@gmail.com>
-Subject: [PATCH 1/1] sched/fair:Avoid unnecessary assignment to cfs_rq->on_list
-Date:   Thu,  7 Jan 2021 09:57:26 +0800
-Message-Id: <20210107015726.54362-1-qianjun.kernel@gmail.com>
-X-Mailer: git-send-email 2.20.1 (Apple Git-117)
+        id S1726763AbhAGCEz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Jan 2021 21:04:55 -0500
+Received: from mga17.intel.com ([192.55.52.151]:49782 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726681AbhAGCEz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 Jan 2021 21:04:55 -0500
+IronPort-SDR: RDo+Mx/OtYC2dFG17EqGT7QI7R1c4bWYUYTxgr0x6Jc/xke1b3spqHZIG8wmC7rBr+w39UwOzQ
+ DOg4Si9B24Rw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9856"; a="157144509"
+X-IronPort-AV: E=Sophos;i="5.79,328,1602572400"; 
+   d="scan'208";a="157144509"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Jan 2021 18:03:09 -0800
+IronPort-SDR: n7P5Mq/oH8n/P6xpdUTkl4TlvjA9soP50rLbD+bSq6KWCK64WUnr40vtcFN1TADUSIK2rTRo5I
+ A3impTlyBmRQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.79,328,1602572400"; 
+   d="scan'208";a="462867708"
+Received: from allen-box.sh.intel.com (HELO [10.239.159.28]) ([10.239.159.28])
+  by fmsmga001.fm.intel.com with ESMTP; 06 Jan 2021 18:03:02 -0800
+Cc:     baolu.lu@linux.intel.com, tglx@linutronix.de, ashok.raj@intel.com,
+        kevin.tian@intel.com, dave.jiang@intel.com, megha.dey@intel.com,
+        dwmw2@infradead.org, alex.williamson@redhat.com,
+        bhelgaas@google.com, dan.j.williams@intel.com,
+        dmaengine@vger.kernel.org, eric.auger@redhat.com,
+        jacob.jun.pan@intel.com, kvm@vger.kernel.org, kwankhede@nvidia.com,
+        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
+        maz@kernel.org, mona.hossain@intel.com, netanelg@mellanox.com,
+        parav@mellanox.com, pbonzini@redhat.com, rafael@kernel.org,
+        samuel.ortiz@intel.com, sanjay.k.kumar@intel.com,
+        shahafs@mellanox.com, tony.luck@intel.com, vkoul@kernel.org,
+        yan.y.zhao@linux.intel.com, yi.l.liu@intel.com
+Subject: Re: [RFC PATCH v2 1/1] platform-msi: Add platform check for subdevice
+ irq domain
+To:     Leon Romanovsky <leon@kernel.org>, Jason Gunthorpe <jgg@nvidia.com>
+References: <20210106022749.2769057-1-baolu.lu@linux.intel.com>
+ <20210106060613.GU31158@unreal>
+ <3d2620f9-bbd4-3dd0-8e29-0cfe492a109f@linux.intel.com>
+ <20210106104017.GV31158@unreal> <20210106152339.GA552508@nvidia.com>
+ <20210106160158.GX31158@unreal>
+From:   Lu Baolu <baolu.lu@linux.intel.com>
+Message-ID: <e2881bb1-4690-c665-923f-ff711432cc85@linux.intel.com>
+Date:   Thu, 7 Jan 2021 09:55:02 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210106160158.GX31158@unreal>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: jun qian <qianjun.kernel@gmail.com>
+On 1/7/21 12:01 AM, Leon Romanovsky wrote:
+> On Wed, Jan 06, 2021 at 11:23:39AM -0400, Jason Gunthorpe wrote:
+>> On Wed, Jan 06, 2021 at 12:40:17PM +0200, Leon Romanovsky wrote:
+>>
+>>> I asked what will you do when QEMU will gain needed functionality?
+>>> Will you remove QEMU from this list? If yes, how such "new" kernel will
+>>> work on old QEMU versions?
+>>
+>> The needed functionality is some VMM hypercall, so presumably new
+>> kernels that support calling this hypercall will be able to discover
+>> if the VMM hypercall exists and if so superceed this entire check.
+> 
+> Let's not speculate, do we have well-known path?
 
-Obviously, cfs_rq->on_list is already equal to 1 when cfs_rq->on_list
-is assigned a value of 1, so an else branch is needed to avoid unnecessary
-assignment operations.
+All these (hypercall detect and invoke) will be done in
+pci_subdevice_msi_create_irq_domain(). It will be transparent to the
+callers.
 
-Signed-off-by: jun qian <qianjun.kernel@gmail.com>
----
- kernel/sched/fair.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+> Will such patch be taken to stable@/distros?
 
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index 04a3ce20da67..ef6ebd95443d 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -305,8 +305,8 @@ static inline bool list_add_leaf_cfs_rq(struct cfs_rq *cfs_rq)
- 
- 	if (cfs_rq->on_list)
- 		return rq->tmp_alone_branch == &rq->leaf_cfs_rq_list;
--
--	cfs_rq->on_list = 1;
-+	else
-+		cfs_rq->on_list = 1;
- 
- 	/*
- 	 * Ensure we either appear before our parent (if already
--- 
-2.18.2
+It will not be taken to stable. For distros, it depends. They can
+backport if they want to support the feature.
 
+Best regards,
+baolu
