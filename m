@@ -2,214 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF6922EE8EB
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 23:41:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D76F62EE8EE
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 23:42:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728775AbhAGWlN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 17:41:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48838 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728588AbhAGWlM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 17:41:12 -0500
-Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 147D7C0612F9
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Jan 2021 14:40:32 -0800 (PST)
-Received: by mail-ej1-x62b.google.com with SMTP id ce23so11927610ejb.8
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Jan 2021 14:40:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=+XqVUgVy1pNqlxwWd84db3LuiaUvuAHDBIZX+64W06k=;
-        b=NWv01/zlyr6q4YPTCOMw9UY+da1CE8yvE6GZIprVi4hP1rB4m6+X4xE6B6p+eM1shE
-         0zE5jIDed7UafJJVgMB6ps4K6ZZL2xhShkgG9G/NzeQO5b+qfNC3chpr/tt4pjl5byp/
-         CIqStP6l1L3/IcWbmD/46AOc7BYuxJMUuzBYdv8+5r4+HKT+rE6PtzqhBvBDDAAYYAM8
-         GpKBoLMnXaSmCjt5fHi0T0v1cbvIMuA0WHOmV9Ax+b5Q1knQxE73WaUPRiyKdQV9E5d0
-         1jeQGsSOsRWOasPp3Y1z4wtnXrVsjdPt9zIppPGahZV1grkOPXoOm2q058gj8KL1AspE
-         oKxw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=+XqVUgVy1pNqlxwWd84db3LuiaUvuAHDBIZX+64W06k=;
-        b=gW3pVwesEr3Dft51Ehw9gfOakNT8VeOHUKLpnWXvq5eFTsAcHZjN5BBZnM9dFsfCdC
-         8mABk/0A6CsCa2KXn66jtqBAK1osGoAdFEuC2QfjVr6ee3p6HXcNfRZmw5kLHn1u+YGS
-         XYq2Bvo4uAwkDkcfYLbTjcXTn4f/0E7hVZKvGmUgCMYULFEtuv8/ruR0rIES8i9ZEcBz
-         scDxOz0+4nTCeFQ3C5KrbfwwiDVi8ZDMH5fU7v4mm65ltpEY/WLQF9tNod16CrV/SdaX
-         1VMpgqn9BkfWl99N2zArRSeWYlXe0OMDDSrZpDrUsxOK16USokeiiek37Prgzl+JhXCX
-         kD0A==
-X-Gm-Message-State: AOAM533h8i6fiya1xg5bnH1cq31QbOwc5hHuSh+M5ZbfB/rJt4b2hsjz
-        5f7WWNRp/AgcHQfxQCbD+eUSsllDvIfEdE1BpURQWA==
-X-Google-Smtp-Source: ABdhPJwZ7WP+sgJ8+ZyhYXNdwlC3xgvuyXpzmUt/hdDxhpxuuYpYzodvyLVmvEcLcEqe1d518K6Uml2VPwoViudSN5w=
-X-Received: by 2002:a17:906:351a:: with SMTP id r26mr657411eja.409.1610059230459;
- Thu, 07 Jan 2021 14:40:30 -0800 (PST)
+        id S1728686AbhAGWl7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 17:41:59 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44628 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727669AbhAGWl6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Jan 2021 17:41:58 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5026A235FA;
+        Thu,  7 Jan 2021 22:41:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1610059277;
+        bh=RrltNzlgbjw2VTWo8+4kW5qEZ5zQwk2osOimDdL5Xqs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=S06AW/ZQGGF/S0ua6x1I1Z3SMBRubGARQ/uGd3YxWOM8sNL40EFlKcTKCZ0RD3xhh
+         h6O4AQTFSrzL6vZkTpF/Ed5H3dyPItHx6iFDJmZJMD4Zgoi5VAXVtz+c5IQo7Tj4WW
+         1SA+iB9R3UB5TqNijdFovW3Y5jz9crmZvCkBfQFx9u5dNvqbhjWrrhi0+hCQDX/AZd
+         SgcplrkGkj6Goa914r6XKMbhvA5O1cbEUl1YT4ua8GklmBWX4BFs6XvNIbuIgMOZEy
+         1PTvPJmJwJy1auTuBNV3QV10vRHtvtmXwFwuY08l7cr8lgDBypF8uQp7sAc9jw8+KI
+         MLg3Aco6nNgQw==
+Date:   Thu, 7 Jan 2021 14:41:15 -0800
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Russell King - ARM Linux admin <linux@armlinux.org.uk>
+Cc:     Arnd Bergmann <arnd@kernel.org>, Theodore Ts'o <tytso@mit.edu>,
+        Will Deacon <will@kernel.org>,
+        linux-toolchains@vger.kernel.org,
+        Mark Rutland <mark.rutland@arm.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Ext4 Developers List <linux-ext4@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>
+Subject: Re: Aarch64 EXT4FS inode checksum failures - seems to be weak memory
+ ordering issues
+Message-ID: <X/eOC/tj3966kBRH@gmail.com>
+References: <20210106135253.GJ1551@shell.armlinux.org.uk>
+ <20210106172033.GA2165@willie-the-truck>
+ <20210106223223.GM1551@shell.armlinux.org.uk>
+ <20210107111841.GN1551@shell.armlinux.org.uk>
+ <20210107124506.GO1551@shell.armlinux.org.uk>
+ <CAK8P3a2TXPfFpgy+XjpDzOqt1qpDxufwiD-BLNbn4W_jpGp98g@mail.gmail.com>
+ <20210107133747.GP1551@shell.armlinux.org.uk>
+ <X/c2aqSvYCaB9sR6@mit.edu>
+ <CAK8P3a2svyz1KXSqSUMVeDqdag4f1VcERH9jpECSLsn-FWvZbw@mail.gmail.com>
+ <20210107221446.GS1551@shell.armlinux.org.uk>
 MIME-Version: 1.0
-References: <20201112015359.1103333-1-lokeshgidra@google.com>
- <20201112015359.1103333-4-lokeshgidra@google.com> <CAHC9VhS2WNXn2cVAUcAY5AmmBv+=XsthCevofNNuEOU3=jtLrg@mail.gmail.com>
- <CA+EESO5wXubeutVOdbp_LamfP5TyG0r7BO-qnWV=wkd9zWqJ4w@mail.gmail.com> <CAHC9VhSPOHr+ayFK2RADh6u8Dsmp5GYPTWs3HLPtjwbFTgVrfQ@mail.gmail.com>
-In-Reply-To: <CAHC9VhSPOHr+ayFK2RADh6u8Dsmp5GYPTWs3HLPtjwbFTgVrfQ@mail.gmail.com>
-From:   Lokesh Gidra <lokeshgidra@google.com>
-Date:   Thu, 7 Jan 2021 14:40:19 -0800
-Message-ID: <CA+EESO4YOJe6V6R_gng++gYH9BOGjGJQ9nqXyymTkJOWSaOUYg@mail.gmail.com>
-Subject: Re: [PATCH v13 3/4] selinux: teach SELinux about anonymous inodes
-To:     Paul Moore <paul@paul-moore.com>
-Cc:     Andrea Arcangeli <aarcange@redhat.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        James Morris <jmorris@namei.org>,
-        Stephen Smalley <stephen.smalley.work@gmail.com>,
-        Casey Schaufler <casey@schaufler-ca.com>,
-        Eric Biggers <ebiggers@kernel.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        Eric Paris <eparis@parisplace.org>,
-        Daniel Colascione <dancol@dancol.org>,
-        Kees Cook <keescook@chromium.org>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        KP Singh <kpsingh@google.com>,
-        David Howells <dhowells@redhat.com>,
-        Anders Roxell <anders.roxell@linaro.org>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Matthew Garrett <matthewgarrett@google.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        "Joel Fernandes (Google)" <joel@joelfernandes.org>,
-        YueHaibing <yuehaibing@huawei.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Adrian Reber <areber@redhat.com>,
-        Aleksa Sarai <cyphar@cyphar.com>,
-        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        LSM List <linux-security-module@vger.kernel.org>,
-        SElinux list <selinux@vger.kernel.org>,
-        Kalesh Singh <kaleshsingh@google.com>,
-        Calin Juravle <calin@google.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Jeffrey Vander Stoep <jeffv@google.com>,
-        "Cc: Android Kernel" <kernel-team@android.com>,
-        "open list:MEMORY MANAGEMENT" <linux-mm@kvack.org>,
-        Andrew Morton <akpm@linux-foundation.org>, hch@infradead.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210107221446.GS1551@shell.armlinux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 7, 2021 at 2:30 PM Paul Moore <paul@paul-moore.com> wrote:
->
-> On Wed, Jan 6, 2021 at 10:55 PM Lokesh Gidra <lokeshgidra@google.com> wrote:
-> > On Wed, Jan 6, 2021 at 7:03 PM Paul Moore <paul@paul-moore.com> wrote:
-> > > On Wed, Nov 11, 2020 at 8:54 PM Lokesh Gidra <lokeshgidra@google.com> wrote:
-> > > > From: Daniel Colascione <dancol@google.com>
-> > > >
-> > > > This change uses the anon_inodes and LSM infrastructure introduced in
-> > > > the previous patches to give SELinux the ability to control
-> > > > anonymous-inode files that are created using the new
-> > > > anon_inode_getfd_secure() function.
-> > > >
-> > > > A SELinux policy author detects and controls these anonymous inodes by
-> > > > adding a name-based type_transition rule that assigns a new security
-> > > > type to anonymous-inode files created in some domain. The name used
-> > > > for the name-based transition is the name associated with the
-> > > > anonymous inode for file listings --- e.g., "[userfaultfd]" or
-> > > > "[perf_event]".
-> > > >
-> > > > Example:
-> > > >
-> > > > type uffd_t;
-> > > > type_transition sysadm_t sysadm_t : anon_inode uffd_t "[userfaultfd]";
-> > > > allow sysadm_t uffd_t:anon_inode { create };
-> > > >
-> > > > (The next patch in this series is necessary for making userfaultfd
-> > > > support this new interface.  The example above is just
-> > > > for exposition.)
-> > > >
-> > > > Signed-off-by: Daniel Colascione <dancol@google.com>
-> > > > Signed-off-by: Lokesh Gidra <lokeshgidra@google.com>
-> > > > ---
-> > > >  security/selinux/hooks.c            | 56 +++++++++++++++++++++++++++++
-> > > >  security/selinux/include/classmap.h |  2 ++
-> > > >  2 files changed, 58 insertions(+)
-> > > >
-> > > > diff --git a/security/selinux/hooks.c b/security/selinux/hooks.c
-> > > > index 6b1826fc3658..d092aa512868 100644
-> > > > --- a/security/selinux/hooks.c
-> > > > +++ b/security/selinux/hooks.c
-> > > > @@ -2927,6 +2927,61 @@ static int selinux_inode_init_security(struct inode *inode, struct inode *dir,
-> > > >         return 0;
-> > > >  }
-> > > >
-> > > > +static int selinux_inode_init_security_anon(struct inode *inode,
-> > > > +                                           const struct qstr *name,
-> > > > +                                           const struct inode *context_inode)
-> > > > +{
-> > > > +       const struct task_security_struct *tsec = selinux_cred(current_cred());
-> > > > +       struct common_audit_data ad;
-> > > > +       struct inode_security_struct *isec;
-> > > > +       int rc;
-> > > > +
-> > > > +       if (unlikely(!selinux_initialized(&selinux_state)))
-> > > > +               return 0;
-> > > > +
-> > > > +       isec = selinux_inode(inode);
-> > > > +
-> > > > +       /*
-> > > > +        * We only get here once per ephemeral inode.  The inode has
-> > > > +        * been initialized via inode_alloc_security but is otherwise
-> > > > +        * untouched.
-> > > > +        */
-> > > > +
-> > > > +       if (context_inode) {
-> > > > +               struct inode_security_struct *context_isec =
-> > > > +                       selinux_inode(context_inode);
-> > > > +               if (context_isec->initialized != LABEL_INITIALIZED)
-> > > > +                       return -EACCES;
-> > > > +
-> > > > +               isec->sclass = context_isec->sclass;
+On Thu, Jan 07, 2021 at 10:14:46PM +0000, Russell King - ARM Linux admin wrote:
+> On Thu, Jan 07, 2021 at 10:48:05PM +0100, Arnd Bergmann wrote:
+> > On Thu, Jan 7, 2021 at 5:27 PM Theodore Ts'o <tytso@mit.edu> wrote:
 > > >
-> > > Taking the object class directly from the context_inode is
-> > > interesting, and I suspect problematic.  In the case below where no
-> > > context_inode is supplied the object class is set to
-> > > SECCLASS_ANON_INODE, which is correct, but when a context_inode is
-> > > supplied there is no guarantee that the object class will be set to
-> > > SECCLASS_ANON_INODE.  This could both pose a problem for policy
-> > > writers (how do you distinguish the anon inode from other normal file
-> > > inodes in this case?) as well as an outright fault later in this
-> > > function when we try to check the ANON_INODE__CREATE on an object
-> > > other than a SECCLASS_ANON_INODE object.
+> > > On Thu, Jan 07, 2021 at 01:37:47PM +0000, Russell King - ARM Linux admin wrote:
+> > > > > The gcc bugzilla mentions backports into gcc-linaro, but I do not see
+> > > > > them in my git history.
+> > > >
+> > > > So, do we raise the minimum gcc version for the kernel as a whole to 5.1
+> > > > or just for aarch64?
 > > >
-> > Thanks for catching this. I'll initialize 'sclass' unconditionally to
-> > SECCLASS_ANON_INODE in the next version. Also, do you think I should
-> > add a check that context_inode's sclass must be SECCLASS_ANON_INODE to
-> > confirm that we never receive a regular inode as context_inode?
->
-> This is one of the reasons why I was asking if you ever saw the need
-> to use a regular inode here.  It seems much safer to me to add a check
-> to ensure that context_inode is SECCLASS_ANON_INODE and return an
-> error otherwise; I would also suggest emitting an error using pr_err()
-> with something along the lines of "SELinux:  initializing anonymous
-> inode with inappropriate inode" (or something similar).
->
-Thanks. I'll do that.
+> > > Russell, Arnd, thanks so much for tracking down the root cause of the
+> > > bug!
+> > 
+> > There is one more thing that I wondered about when looking through
+> > the ext4 code: Should it just call the crc32c_le() function directly
+> > instead of going through the crypto layer? It seems that with Ard's
+> > rework from 2018, that can just call the underlying architecture specific
+> > implementation anyway.
+> 
+> Yes, I've been wondering about that too. To me, it looks like the
+> ext4 code performs a layering violation by going "under the covers"
+> - there are accessor functions to set the CRC and retrieve it. ext4
+> instead just makes the assumption that the CRC value is stored after
+> struct shash_desc. Especially as the crypto/crc32c code references
+> the value using:
+> 
+> 	struct chksum_desc_ctx *ctx = shash_desc_ctx(desc);
+> 
+> Not even crypto drivers are allowed to assume that desc+1 is where
+> the CRC is stored.
 
-> If something changes in the future we can always reconsider this restriction.
->
-> > > It works in the userfaultfd case because the context_inode is
-> > > originally created with this function so the object class is correctly
-> > > set to SECCLASS_ANON_INODE, but can we always guarantee that to be the
-> > > case?  Do we ever need or want to support using a context_inode that
-> > > is not SECCLASS_ANON_INODE?
-> >
-> > I don't think there is any requirement of supporting context_inode
-> > which isn't anon-inode. And even if there is, as you described
-> > earlier, for ANON_INODE__CREATE to work the sclass has to be
-> > SECCLASS_ANON_INODE. I'll appreciate comments on this from others,
-> > particularly Daniel and Stephen who originally discussed and
-> > implemented this patch.
->
-> I would encourage you not to wait too long for additional feedback
-> before sending the next revision.
+It violates how the shash API is meant to be used in general, but there is a
+test that enforces that the shash_desc_ctx for crc32c must be just the single
+u32 crc value.  See alg_test_crc32c() in crypto/testmgr.c.  So it's apparently
+intended to work.
 
-Certainly. I'll send next version in a day or two.
->
-> --
-> paul moore
-> www.paul-moore.com
+> 
+> However, struct shash_desc is already 128 bytes in size on aarch64,
+
+Ard Biesheuvel recently sent a patch to reduce the alignment of struct
+shash_desc to ARCH_SLAB_MINALIGN
+(https://lkml.kernel.org/linux-crypto/20210107124128.19791-1-ardb@kernel.org/),
+since apparently most of the bloat is from alignment for DMA, which isn't
+necessary.  I think that reduces the size by a lot on arm64.
+
+> and the proper way of doing it via SHASH_DESC_ON_STACK() is overkill,
+> being strangely 2 * sizeof(struct shash_desc) + 360 (which looks like
+> another bug to me!)
+
+Are you referring to the '2 * sizeof(struct shash_desc)' rather than just
+'sizeof(struct shash_desc)'?  As mentioned in the comment above
+HASH_MAX_DESCSIZE, there can be a nested shash_desc due to HMAC.
+So I believe the value is correct.
+
+> So, I agree with you wrt crc32c_le(), especially as it would be more
+> efficient, and as the use of crc32c is already hard coded in the ext4
+> code - not only with crypto_alloc_shash("crc32c", 0, 0) but also with
+> the fixed-size structure in ext4_chksum().
+> 
+> However, it's ultimately up to the ext4 maintainers to decide.
+
+As I mentioned in my other response, crc32c_le() isn't a proper library API
+(like some of the newer lib/crypto/ stuff) but rather just a wrapper for the
+shash API, and it doesn't handle modules being dynamically loaded/unloaded.
+So switching to it may cause a performance regression.
+
+What I'd recommend is making crc32c_le() able to call architecture-speccific
+implementations directly, similar to blake2s() and chacha20() in lib/crypto/.
+Then there would be no concern about when modules get loaded, etc...
+
+- Eric
