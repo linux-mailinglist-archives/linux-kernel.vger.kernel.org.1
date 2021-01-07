@@ -2,146 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9261C2ED68B
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 19:17:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E95F2ED696
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 19:17:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729158AbhAGSQ3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 13:16:29 -0500
-Received: from mail-eopbgr60043.outbound.protection.outlook.com ([40.107.6.43]:65411
-        "EHLO EUR04-DB3-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728066AbhAGSQ1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 13:16:27 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=fzBvD2NYMQSoaFRw4c78TJv0SFqsbxTNopLlATdNfwTCJy6c/et8t73AN9I1cfGqW5VFYm3szNLMNKzFE0coBzF31gpx6j6uv0DQCufwBHI9Bkg/ilHj178TZ+cFADKTtIbJjGNdrrt7lQG/5GqwJo+bNOCfI6TuUEuxqfByfoiQw0TF7eyd+DFB1s/Zq4VlMf5u28XmMwD9MAOfPan0PPeMsXvBwe0KBJbXpzns4/TrvJAyJIB5Kium1+lgFdnX5QVifL3fJsVgnxNOkFct+iMs69ASebnbVyXYq92iofy0HOcdfzd8bNYoPsQxlyZuliVfnaEftgG3CvBakBGUXA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=y6eIMptboYMkuJlav0LNVSMSeZvj8HyjYi7WhiFsFHg=;
- b=azJzrxBxx/1Q8m6Pgr5Yflq/TbSprtwvTTy+mtp/XPY2i7CywZexIZbLpw4muyb0eo9MhLg/fpkHhDNAClRtwq4XqCMUTt1KL12jYp7G5kEPHjvLpZ34GpATBSE24oIIzAzxxhuHCWKCcaA9UCnyt0oIvHD1OfiFb5EnF+5qIkoWxZ3jNe9yiWfzSKBKIRdXRt6Raf24KqQWT0/ItnjSlTWaxEH7eyOyhEd+O20rfyea7Tp+EYGWhqg6WsJ0Aw4UYzOB6u/zEEezGFVLN9nz9lOuWSf3tZ3IxyGNaB8qjxa4Vsp0von2HPzwPK3x7d06mEf9P+JH/TasAkZiBXSIyQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fi.rohmeurope.com; dmarc=pass action=none
- header.from=fi.rohmeurope.com; dkim=pass header.d=fi.rohmeurope.com; arc=none
+        id S1729275AbhAGSQ4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 13:16:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35456 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729191AbhAGSQx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Jan 2021 13:16:53 -0500
+Received: from mail-qk1-x735.google.com (mail-qk1-x735.google.com [IPv6:2607:f8b0:4864:20::735])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5111BC0612F4
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Jan 2021 10:15:51 -0800 (PST)
+Received: by mail-qk1-x735.google.com with SMTP id h4so6278264qkk.4
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Jan 2021 10:15:51 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=rohmsemiconductoreurope.onmicrosoft.com;
- s=selector1-rohmsemiconductoreurope-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=y6eIMptboYMkuJlav0LNVSMSeZvj8HyjYi7WhiFsFHg=;
- b=eB8kpOngi/UkpZV6nptHwDwopm0SDmxmStu4ohrrb7N4KvLZh8X7BcVts2pQpHk/T5fFTBgH/pxctmZRthgQAdCNFHBvozZZ1YKAnSHL2fprCgNcdry94RVT8wWzbCAQS6yPkxDfE9rY/XogOc+xmXuPH3GGrqicWz19dBWGUMg=
-Received: from HE1PR03MB3162.eurprd03.prod.outlook.com (2603:10a6:7:55::20) by
- HE1PR0301MB2395.eurprd03.prod.outlook.com (2603:10a6:3:6d::9) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.3742.6; Thu, 7 Jan 2021 18:15:37 +0000
-Received: from HE1PR03MB3162.eurprd03.prod.outlook.com
- ([fe80::6558:57bb:5293:f3d3]) by HE1PR03MB3162.eurprd03.prod.outlook.com
- ([fe80::6558:57bb:5293:f3d3%3]) with mapi id 15.20.3721.024; Thu, 7 Jan 2021
- 18:15:37 +0000
-From:   "Vaittinen, Matti" <Matti.Vaittinen@fi.rohmeurope.com>
-To:     "linux@roeck-us.net" <linux@roeck-us.net>
-CC:     "mazziesaccount@gmail.com" <mazziesaccount@gmail.com>,
-        "wim@linux-watchdog.org" <wim@linux-watchdog.org>,
-        linux-power <linux-power@fi.rohmeurope.com>,
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=zCUTQdUYpO0tY47nQGR+de13NblMR1isFgT9hPZoZsI=;
+        b=b2Rmr3j/f8TOLxV77mP1z1XLBype01Z1NnhXUEesT4uJPtIRztQfbpTJoKL93+XwPT
+         ol9e3syC1+AgeNyJSYAB7trlZhysBxOv3H7e9HWOUO8KulDQhk8sz1TntkeMJanOxT3Y
+         qW8xfv+C8CRCa+OO1tR4s1PEzjGnltM0zTYikHdjCMlW8yT0c/JAO5mlyCue8xda7iXh
+         wiysXaGKfE2dfR69e9r4e93f6tRJOoZTSr5V4jlGWf/m0etcWbPaUNPI8iWVb4MPgXEf
+         yptZIVYTDtIURwsycFBLKQPzeHcMRnVmdzcgq7oKGbd3ojl6BuGfTxVk6grl6JHDJ/OU
+         FQOA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=zCUTQdUYpO0tY47nQGR+de13NblMR1isFgT9hPZoZsI=;
+        b=mof63RG/GW78/pqLB2pff46mKrQIGFJ6gXcialF4nxSzsszrZ1wxMBcrkc5diLVgZa
+         6HkxFXpA00WsZYPIvVsP0W7BRnmpFUIUr/nLMOCO4rqKIbLoGISB4vZpkBq0YGYM//P+
+         724u5ng0rBVFmpmey1cv+vClMATy6ctNuP0zQWBzwwINaz5IjucgCbUxJOc+QHmvL+25
+         /pbK/32uJgqNbkEdmwFZYm31tIDpFzc/wUEN9k4vC2sgFUA4VB0EPO2q1Mk5CEdEjfU1
+         Arl5MQDmE59MMEYLXnoJK1RYZ01IWEO/Hbad0LeDtDmJs5B6giNpNMwinAwbCiXHmmDs
+         ztAw==
+X-Gm-Message-State: AOAM533F1KsqKg7NJVkItEr10z/3/n7O+8TWBCQa/4d989ff6QVrAnYO
+        K0aW0sEg7si0gGgpL0J0z9w=
+X-Google-Smtp-Source: ABdhPJzH/UZAVVfgYedC4hwAjqn5V40VwlBxaqvPoYmybbIi2K1pVEl57sdnRjWh9Cb0//ARpB3+cA==
+X-Received: by 2002:ae9:e909:: with SMTP id x9mr144197qkf.166.1610043350345;
+        Thu, 07 Jan 2021 10:15:50 -0800 (PST)
+Received: from ubuntu-m3-large-x86 ([2604:1380:45f1:1d00::1])
+        by smtp.gmail.com with ESMTPSA id q20sm3513268qkj.49.2021.01.07.10.15.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 07 Jan 2021 10:15:49 -0800 (PST)
+Date:   Thu, 7 Jan 2021 11:15:47 -0700
+From:   Nathan Chancellor <natechancellor@gmail.com>
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Arnd Bergmann <arnd@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Marco Elver <elver@google.com>,
+        George Popescu <georgepope@android.com>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
         "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-watchdog@vger.kernel.org" <linux-watchdog@vger.kernel.org>
-Subject: Re: [PATCH 1/2] watchdog: bd70528: don't crash if WDG is confiured
- with BD71828
-Thread-Topic: [PATCH 1/2] watchdog: bd70528: don't crash if WDG is confiured
- with BD71828
-Thread-Index: AQHW5L+IrHihOUehfkywMzhn459XW6ocRXKAgAAzOAA=
-Date:   Thu, 7 Jan 2021 18:15:36 +0000
-Message-ID: <35ba5bcd48d4e027c0e5c839a856751519ee4dd1.camel@fi.rohmeurope.com>
-References: <671ac57ad53ab1614da7fe9a3d0f78bdb5b51fda.1610001365.git.matti.vaittinen@fi.rohmeurope.com>
-         <20210107151211.GA13040@roeck-us.net>
-In-Reply-To: <20210107151211.GA13040@roeck-us.net>
-Reply-To: "Vaittinen, Matti" <Matti.Vaittinen@fi.rohmeurope.com>
-Accept-Language: fi-FI, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-user-agent: Evolution 3.34.4 (3.34.4-1.fc31) 
-authentication-results: roeck-us.net; dkim=none (message not signed)
- header.d=none;roeck-us.net; dmarc=none action=none
- header.from=fi.rohmeurope.com;
-x-originating-ip: [62.78.225.252]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 56dc1166-da1a-4fc1-c181-08d8b3383b77
-x-ms-traffictypediagnostic: HE1PR0301MB2395:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <HE1PR0301MB23954F6ADB6E9F74A602D8ACADAF0@HE1PR0301MB2395.eurprd03.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:8273;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 9ilifDqrZYeDyo50AmtfY1TEp3wNzpWfeDRgVmNDFwJqZKp5rjGBXXYSf2b9f4eakCtm0wFZ+MgM4AdE5YX8fnlG3FXl/HgvvEyTlJVSfeLy+1NY/kgHtUkZJ3JZYb+sIZwks3Gs4iKx/Lik+zEEcbQrxq5wCNIqF45FbKT9WAg9GAEgliBpnsD6MtXoxeVwbKKgEnJ79XWjibe+pwdV8kv4pd1DbFD+QF2TVpY9zrC0Jlsw6kbL6ug1WLFR8eY+p711P+4U6xz/nppExDEzGM+murcxydfxK+vg1xVkPgfZF2BjfLVHrLzuwXzY982YuzkFNHY4ASvI279qdQyJqGeyE6JoaHrBpyUro7iQ4nGFtgZbn14qgQUxevG9T2gzbFzogAm7IVpzHWuxbV0eyQ==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:HE1PR03MB3162.eurprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(376002)(136003)(39840400004)(396003)(366004)(8936002)(3450700001)(2906002)(2616005)(71200400001)(186003)(6506007)(5660300002)(26005)(316002)(66946007)(76116006)(64756008)(66556008)(4326008)(66476007)(66446008)(478600001)(6916009)(6486002)(6512007)(54906003)(8676002)(83380400001)(86362001);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: =?utf-8?B?SkRQcndEa3RIcjBaVWhvWE04d2ptWHRTaVZ1b1lxSWlCV0xmdnU2OWg0emxo?=
- =?utf-8?B?bjc2eStLems2WU1hZktOVVhBVXdKYThKaTNVaTNhakhEaVRDK1ZHdkZGbDNU?=
- =?utf-8?B?UVFzKzdKbXNBbFlLQ00yTTIvMUk4eVZIbGRTZ0Z6MUpkRVFRUmpxOU1Jcmw2?=
- =?utf-8?B?cGQ4c2xHZVBnUnpWbmo0YVhoc1lCR3UxbFpDVnd0VU41TU5tdDhrL2djc1kx?=
- =?utf-8?B?cGRPeU5Mb1pWMUJLRjRNdktMQ1QrM1h3NVVUaU5ZQnBkUC9UbHJNQVRKOFVL?=
- =?utf-8?B?b1dHaHIxZ1JhOTg1WHZ3R2p0T0VPaFhrOWpaeFowSHBOTVBEcjdNdC9WK3hX?=
- =?utf-8?B?VXU3V3BpNTZ6SHl3dDFyR2k4TjJEYlZUZmYvZkFuZ2JDZDk0d2FJTzIwUXQ2?=
- =?utf-8?B?WXVWUy9renNYNUo0OS9zRVQwTE4yVHB4bDlqVTlNNldOWGJtTkpPakphRVZw?=
- =?utf-8?B?WTdwQVNrWmV6MXhsRlBlQkZsRk5aZWtPNjMwOVF3M1ZVWnp5TWZUVWNMdEJK?=
- =?utf-8?B?Z3FEdzZzMW9XaHBVT3l4T29PTzdvbWtjNFVHTm4zRnhCWU9MajF2Y1g0c2li?=
- =?utf-8?B?RnFKRDJoUnF0dDdYZGl3ZDEyc0ltQnJENVFQdnhUZlZKR3B2TFdLWGZ5OU5F?=
- =?utf-8?B?VnZTTVhWanpKS04vQVRTOUhCVTVkdE1ITm9UUEVsN1JyTkRsbTQwUEZDWWRX?=
- =?utf-8?B?MzV3NlVPZDYzQXBCY294bUFnZytRMlFXaU4zQktmTU9lMmtmQTVhTzF3TTBW?=
- =?utf-8?B?K0Uwa2puZ2c4aVZ1QVlRTmtlN2FCak9XeDRPeTIzdlBUTFVjeWljZXhpUU1i?=
- =?utf-8?B?aVI2QnZadXo0bXVxZGRyQ1BQbS8vSy9JQWl4cE1WU1JNcVdvd21UU2pqb0tS?=
- =?utf-8?B?VEsrTUFtOUFwQnpTY0pCUUJlY2pLNTBCV29hVnVhSFFPVDVjZ24vdjdLeEJW?=
- =?utf-8?B?clVPSHZDYTREZEplVEFSZ1pRbTZCeHNZU0JJTjdnZ1FkcU01ZGFlTG8veU5N?=
- =?utf-8?B?S2VycnptWVViOUdaVTRaYXRodTVVdHpVNHNZekNKbUxOcmhyVWdpNzVVd1oy?=
- =?utf-8?B?c0ltL0UxWm1xeE5oOGp2K0hudW1nbTFNVW02elhLc2dyanRMeDRLM3hZM21K?=
- =?utf-8?B?RFRSOE83UzJDWUxiY2F1UVNYUkJ4NTQ3VmxwdkUvZWIzNi9mOXJjRTlxRFhr?=
- =?utf-8?B?TTdqOEpoaE9MSDJnR2t2K2gwWG1Vc1J2VS8wTUN1OFBIcmpzVjVkVGNmbmND?=
- =?utf-8?B?UUlQaDZZRjNHdDFPM3N2a2trM2U4amFyQWFSR0lJU2FTZ2xRVzlWMmVmTEd2?=
- =?utf-8?Q?ON8f61N7yFTyoCpAQGkEjgXMTVS5/KQj3d?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <7CC0E0B626242D40B06F15A3024F4697@eurprd03.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        clang-built-linux <clang-built-linux@googlegroups.com>
+Subject: Re: [PATCH] ubsan: disable unsigned-integer-overflow sanitizer with
+ clang
+Message-ID: <20210107181547.GA436377@ubuntu-m3-large-x86>
+References: <20201230154749.746641-1-arnd@kernel.org>
+ <202101061350.913E1FDF6@keescook>
+ <CAK8P3a1tSaUE2uzb2JbQ1f7LWmkiHQtSxzJHmfa=fqT3fNXOPA@mail.gmail.com>
+ <CAK8P3a220+yeN8_PjS-jzA85m7QPbqn0oxEqjCzVR9S7p4LaZg@mail.gmail.com>
+ <202101070919.2E20432140@keescook>
 MIME-Version: 1.0
-X-OriginatorOrg: fi.rohmeurope.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: HE1PR03MB3162.eurprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 56dc1166-da1a-4fc1-c181-08d8b3383b77
-X-MS-Exchange-CrossTenant-originalarrivaltime: 07 Jan 2021 18:15:36.8590
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 94f2c475-a538-4112-b5dd-63f17273d67a
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 740mi8KaJ8bv+nMPSnA3rutS6EwV50h4lvZZ3cCQYbXbMZqSEBYvKPVZhJc9JxqHX9BKMeD5WAyuBIao5w89eMFK3zgFDCBfDo3stgjrQnG3FLjBsWgcn2UyR0Ip7FUd
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: HE1PR0301MB2395
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <202101070919.2E20432140@keescook>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-VGhhbmtzIGEgbG90IGZvciB0YWtpbmcgYSBjYXJlZnVsIGxvb2sgYXQgdGhpcyBHdWVudGVyIQ0K
-DQpPbiBUaHUsIDIwMjEtMDEtMDcgYXQgMDc6MTIgLTA4MDAsIEd1ZW50ZXIgUm9lY2sgd3JvdGU6
-DQo+IE9uIFRodSwgSmFuIDA3LCAyMDIxIGF0IDA4OjM3OjAzQU0gKzAyMDAsIE1hdHRpIFZhaXR0
-aW5lbiB3cm90ZToNCj4gPiBJZiBjb25maWcgZm9yIEJENzA1Mjggd2F0Y2hkb2cgaXMgZW5hYmxl
-ZCB3aGVuIEJENzE4Mjggb3IgQkQ3MTgxNQ0KPiA+IGFyZSB1c2VkIHRoZSBSVEMgbW9kdWxlIHdp
-bGwgaXNzdWUgY2FsbCB0byBCRDcwNTI4IHdhdGNoZG9nIHdpdGgNCj4gPiBOVUxMIGRhdGEuIEln
-bm9yZSB0aGlzIGNhbGwgYW5kIGRvbid0IGNyYXNoLg0KPiA+IA0KPiA+IFNpZ25lZC1vZmYtYnk6
-IE1hdHRpIFZhaXR0aW5lbiA8bWF0dGkudmFpdHRpbmVuQGZpLnJvaG1ldXJvcGUuY29tPg0KPiAN
-Cj4gSSByZWFsbHkgdGhpbmsgdGhpcyBzaG91bGQgYmUgaGFuZGxlZCBpbiB0aGUgY2FsbGluZyBj
-b2RlLg0KPiBBbHNvLCBJIGFtIGN1cmlvdXMgaG93IHRoaXMgaXMgc3VwcG9zZWQgdG8gd29yay4N
-Cj4gDQo+IFRoZSBjb2RlIGlzIGNhbGxlZCB3aXRoDQo+IA0KPiAJcmV0ID0gYmQ3MDUyOF93ZHRf
-c2V0KHItPnBhcmVudCwgbmV3X3N0YXRlICYNCj4gQkQ3MDUyOF9XRFRfU1RBVEVfQklULA0KPiAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICBvbGRfc3RhdGUpOw0KDQpNeSBicmFpbmZhcnQu
-DQpUaGUgYmQ3MDUyOF93ZHRfc2V0IGlzIG5vdCBjYWxsZWQgYXMgaXQgaXMgcHJvdGVjdGVkIGlu
-IFJUQyBieQ0KaGFzX3J0Y190aW1lcnMgZmxhZy4NCg0KSSBpbnNlcnRlZCB0aGlzIGNoZWNrIGlu
-IHdyb25nIGZ1bmN0aW9uLiBUaGUgYmQ3MDUyOF93ZHRfbG9jaygpDQppcyB3aGVyZSB3ZSBtYXkg
-aGl0IHRoZSBwcm9ibGVtIGFzIGl0IGlzIG5vdCBwcm90ZWN0ZWQuDQo+IA0KPiBmcm9tIGJkNzA1
-Mjhfc2V0X3J0Y19iYXNlZF90aW1lcnMoKS4gVGhhdCBzYW1lIGZ1bmN0aW9uIHN1YnNlcXVlbnRs
-eQ0KPiBjYWxscyBiZDcwNTI4X3NldF9lbGFwc2VkX3RtcigpIHdpdGggdGhlIHNhbWUgcGFyYW1l
-dGVyLCBhbmQgdGhhdA0KPiBwYXJhbWV0ZXIgaXMgZGVyZWZlcmVuY2VkIGluIGJkNzA1Mjhfc2V0
-X2VsYXBzZWRfdG1yKCkgd2l0aG91dA0KPiBjaGVja2luZy4NCj4gDQo+IENvbmNlcHR1YWxseSwg
-aXQgc2hvdWxkIG5vdCBiZSBuZWNlc3NhcnkgdG8gZGV0ZXJtaW5lIGF0IGNvbXBpbGUtdGltZQ0K
-PiB3aGljaCBvZiB0aGUgY2hpcHMgaXMgaW4gdGhlIHN5c3RlbS4gSXQgc2hvdWxkIGJlIHBvc2li
-bGUgdG8gY29tcGlsZQ0KPiBhIHNpbmdsZSBrZXJuZWwgd2hpY2ggc3VwcG9ydHMgYWxsIGNoaXBz
-Lg0KDQpJIGFncmVlLiBUaGUgaW5mb3JtYXRpb24gd2hldGhlciBXRFQgc2hvdWxkIGJlIGFjY2Vz
-c2VkIHNob3VsZCBiZQ0KanVkZ2VkIGJ5IGR0LWNvbXBhdGlibGUuIE1GRCBoYXMgdGhpcyBrbm93
-bGVkZ2UgYW5kIHBhc3NlcyBpdCB0byBSVEMuDQpTbyB5ZXMsIFJUQyBzaG91bGQgb21pdCB0aGUg
-Y2FsbCBpZiBCRDcwNTI4IGlzIG5vdCB1c2VkLiBQbGVhc2UgaWdub3JlDQp0aGVzZSBwYXRjaGVz
-LCBJJ2xsIGRvIGNoYW5nZXMgdG8gUlRDIGRyaXZlciA6KQ0KDQoNCkJlc3QgUmVnYXJkcw0KTWF0
-dGkNCg0KDQo=
+On Thu, Jan 07, 2021 at 09:22:00AM -0800, Kees Cook wrote:
+> On Thu, Jan 07, 2021 at 05:09:59PM +0100, Arnd Bergmann wrote:
+> > On Wed, Jan 6, 2021 at 11:12 PM Arnd Bergmann <arnd@kernel.org> wrote:
+> > >
+> > > On Wed, Jan 6, 2021 at 10:57 PM Kees Cook <keescook@chromium.org> wrote:
+> > > > On Wed, Dec 30, 2020 at 04:47:35PM +0100, Arnd Bergmann wrote:
+> > > > > diff --git a/lib/Kconfig.ubsan b/lib/Kconfig.ubsan
+> > > > > index 8b635fd75fe4..e23873282ba7 100644
+> > > > > --- a/lib/Kconfig.ubsan
+> > > > > +++ b/lib/Kconfig.ubsan
+> > > > > @@ -122,6 +122,8 @@ config UBSAN_SIGNED_OVERFLOW
+> > > > >
+> > > > >  config UBSAN_UNSIGNED_OVERFLOW
+> > > > >       bool "Perform checking for unsigned arithmetic overflow"
+> > > > > +     # clang hugely expands stack usage with -fsanitize=object-size
+> > > > > +     depends on !CC_IS_CLANG
+> > > > >       depends on $(cc-option,-fsanitize=unsigned-integer-overflow)
+> > > >
+> > > > Because of Clang implementation issues (see commit c637693b20da), this is
+> > > > already "default n" (and not supported under GCC at all). IIUC, setting
+> > > > this to "depends on !COMPILE_TEST" won't work for randconfigs, yes?
+> > >
+> > > Ah, I had not realized this is clang specific. Adding the !COMPILE_TEST
+> > > dependency would hide it for me, which may be good enough for me.
+> > >
+> > > > Is there some better way to mark this as "known to have issues, please
+> > > > don't include in randconfig?"
+> > > >
+> > > > I'd like to keep it around so people can continue to work out the
+> > > > problems with it, but not have unexpecting folks trip over it. ;)
+> > >
+> > > I've reverted that patch locally now and default-enabled for randconfigs.
+> > > Now that I have an otherwise clean build, this should provide me
+> > > with a full set of files that produce the warning. If the number is
+> > > small enough, I could try opening individual github issues.
+> > 
+> > A day's worth of randconfig builds with clang-11 or clang-12 shows these
+> > instances that exceeded the warning limit:
+> > 
+> > crypto/blake2b_generic.c:98:13: error: stack frame size of 9636 bytes
+> > in function 'blake2b_compress' [-Werror,-Wframe-larger-than=]
+> > crypto/sha512_generic.c:151:13: error: stack frame size of 1292 bytes
+> > in function 'sha512_generic_block_fn' [-Werror,-Wframe-larger-than=]
+> > lib/crypto/curve25519-fiat32.c:312:22: error: stack frame size of 2180
+> > bytes in function 'fe_mul_impl' [-Werror,-Wframe-larger-than=]
+> > lib/crypto/curve25519-fiat32.c:444:22: error: stack frame size of 1588
+> > bytes in function 'fe_sqr_impl' [-Werror,-Wframe-larger-than=]
+> > fs/btrfs/scrub.c:3028:31: error: stack frame size of 1132 bytes in
+> > function 'scrub_stripe' [-Werror,-Wframe-larger-than=]
+> > drivers/net/ethernet/intel/e1000/e1000_main.c:3590:6: warning: stack
+> > frame size of 1100 bytes in function 'e1000_update_stats'
+> > [-Wframe-larger-than=]
+> > drivers/net/ethernet/broadcom/tg3.c:11829:13: warning: stack frame
+> > size of 1188 bytes in function 'tg3_get_estats' [-Wframe-larger-than=]
+> > drivers/net/ethernet/intel/igb/igb_main.c:6551:6: warning: stack frame
+> > size of 1348 bytes in function 'igb_update_stats'
+> > [-Wframe-larger-than=]
+> > drivers/net/ethernet/intel/igc/igc_main.c:3608:6: warning: stack frame
+> > size of 1124 bytes in function 'igc_update_stats'
+> > [-Wframe-larger-than=]
+> > drivers/net/ethernet/qlogic/qed/qed_l2.c:1759:1: warning: stack frame
+> > size of 1300 bytes in function '__qed_get_vport_port_stats'
+> > [-Wframe-larger-than=]
+> > drivers/net/ethernet/intel/ixgbe/ixgbe_main.c:7022:6: warning: stack
+> > frame size of 1564 bytes in function 'ixgbe_update_stats'
+> > [-Wframe-larger-than=]
+> > drivers/net/ethernet/intel/ixgb/ixgb_main.c:1590:1: warning: stack
+> > frame size of 1140 bytes in function 'ixgb_update_stats'
+> > [-Wframe-larger-than=]
+> > drivers/net/ethernet/mellanox/mlx5/core/ipoib/ipoib.c:145:6: warning:
+> > stack frame size of 1068 bytes in function 'mlx5i_get_stats'
+> > [-Wframe-larger-than=]
+> > drivers/staging/media/atomisp/pci/atomisp_cmd.c:5600:5: warning: stack
+> > frame size of 1052 bytes in function 'atomisp_set_fmt'
+> > [-Wframe-larger-than=]
+> > 
+> > All of these *only* happen on 32-bit x86, and can be reproduced in a
+> > i386_defconfig, with the corresponding drivers (btrfs, sha512, blake2b,
+> > curve25519, and the ethernet ones) and UBSAN_UNSIGNED_OVERFLOW
+> > manually enabled. Given that few people still care about i386, maybe
+> > we could just make the option depend on !CONFIG_X86_32
+> 
+> I'm fine with that -- or maybe any 32-bit architecture, if the problem
+> is poor stack space optimization on 32-bit archs?
+> 
+> > 
+> > That config also runs into two more BUILD_BUG_ON() that I had not
+> > seen in randconfig tests:
+> > 
+> > (i386 defconfig plus ubsan)
+> > ld.lld: error: undefined symbol: __compiletime_assert_207
+> > >>> referenced by cpu_entry_area.c
+> > >>>               mm/cpu_entry_area.o:(setup_cpu_entry_area_ptes) in archive arch/x86/built-in.a
+> 
+> That one I don't think I've seen before.
+> 
+> > 
+> > (x86-64 defconfig plus ubsan)
+> > ld.lld: error: undefined symbol: __compiletime_assert_362
+> > >>> referenced by efi_64.c
+> > >>>               platform/efi/efi_64.o:(efi_sync_low_kernel_mappings) in archive arch/x86/built-in.a
+> 
+> I think this is:
+> https://github.com/ClangBuiltLinux/linux/issues/256
+> and that bug needs re-opening? Or maybe there's a new bug I can't find?
+
+The problem is that applying the fix for that issue does not work, nor
+does converting p4d_index to a macro like mips and s390. I am not sure
+what exactly is going on there, it appears that clang cannot reason
+about ptrs_per_p4d because it is an extern variable with no assigned
+value in its translation unit?
+
+Cheers,
+Nathan
