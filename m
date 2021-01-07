@@ -2,147 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8948F2ECCE3
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 10:34:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 814362ECCE8
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 10:34:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727626AbhAGJdc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 04:33:32 -0500
-Received: from szxga04-in.huawei.com ([45.249.212.190]:10115 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727444AbhAGJdb (ORCPT
+        id S1727279AbhAGJeu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 04:34:50 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:47755 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726254AbhAGJet (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 04:33:31 -0500
-Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4DBLbY2NRRz15q3p;
-        Thu,  7 Jan 2021 17:31:53 +0800 (CST)
-Received: from szvp000203569.huawei.com (10.120.216.130) by
- DGGEMS412-HUB.china.huawei.com (10.3.19.212) with Microsoft SMTP Server id
- 14.3.498.0; Thu, 7 Jan 2021 17:32:41 +0800
-From:   Chao Yu <yuchao0@huawei.com>
-To:     <jaegeuk@kernel.org>
-CC:     <linux-f2fs-devel@lists.sourceforge.net>,
-        <linux-kernel@vger.kernel.org>, <chao@kernel.org>,
-        Chao Yu <yuchao0@huawei.com>
-Subject: [PATCH] f2fs: compress: fix potential deadlock
-Date:   Thu, 7 Jan 2021 17:32:37 +0800
-Message-ID: <20210107093237.117526-1-yuchao0@huawei.com>
-X-Mailer: git-send-email 2.29.2
+        Thu, 7 Jan 2021 04:34:49 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1610012002;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=bexx/1QAEmvajYjTmjllbo8myiCOlF8Qg+6LqEVDzgw=;
+        b=VD67IWbA6cA3IY42PDJiRb6acekHeBaXfHIpgSsPUO7dF15iLZ999tMdQ6SAelW7RTmOfy
+        6nNKRuIyP30BC9ZRbmZDAPLhyqhxsaMLvwEbykpvNUA3SAm3fJL+/O8yH9nE+wm9WU5/Nj
+        TjdsMoeUZeZXfJ9acYvslUGM9bO6bOU=
+Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
+ [209.85.218.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-350-G8G0slHPOCab9N3nMsAY7w-1; Thu, 07 Jan 2021 04:33:21 -0500
+X-MC-Unique: G8G0slHPOCab9N3nMsAY7w-1
+Received: by mail-ej1-f69.google.com with SMTP id ov1so2204796ejb.1
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Jan 2021 01:33:21 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=bexx/1QAEmvajYjTmjllbo8myiCOlF8Qg+6LqEVDzgw=;
+        b=bESneGLnvm+sJg5BYim6bIxJc6DivjGVVPNYtCiMu+5bQG8OwqhQsYE43LPNc+teOs
+         agLhfXDklm9RK5UvlQEpt09LU+8TJYLzD5Z0M8TxIKeERhNww2OCj1liT0kXliyEdNzA
+         sKaJaf5PThYnPPbxV14x4GY3zMhAnYb8NwE4jTkU4K9o7VB2lxEXLLmQ8K6dveXVuvIC
+         wpOTjl3RJWakTIyopBYi5B9Xmfkf+aH4pfLPIBlkN1hinWQQvfCMd3pCJkl6raxh0rqi
+         E3tmp+mCagzNtW+PuRX545idyI1MtBlMIUMJZPAjkEH6h+XshzWtOe1TWwWg//8HYb3g
+         +otw==
+X-Gm-Message-State: AOAM530mdvx10RD03ulNcnkSZklkGX9B9yTewzGHf+g5SDDWq31rtvuN
+        07MzztE8nQ/zLWZIjvz/2dvN5HMjtxluQl9Y0e8Et8NOmua5qQNLHNUaagR7F6/E6yu3T7VC/Ti
+        z7Ww0KF0LuTLlw930aFL4HWGV
+X-Received: by 2002:a50:c053:: with SMTP id u19mr1023383edd.109.1610012000018;
+        Thu, 07 Jan 2021 01:33:20 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJw3yvR6FyOsCpgbBreuEaI9dX1NxPrbN7EUgqcItzd7OZXT9hMVqAEOdYvD/nUozuoSQtmL0Q==
+X-Received: by 2002:a50:c053:: with SMTP id u19mr1023371edd.109.1610011999816;
+        Thu, 07 Jan 2021 01:33:19 -0800 (PST)
+Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
+        by smtp.gmail.com with ESMTPSA id p3sm2459530edh.50.2021.01.07.01.33.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 07 Jan 2021 01:33:19 -0800 (PST)
+From:   Vitaly Kuznetsov <vkuznets@redhat.com>
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Nitesh Narayan Lal <nitesh@redhat.com>,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        w90p710@gmail.com, pbonzini@redhat.com,
+        Thomas Gleixner <tglx@linutronix.de>
+Subject: Re: [PATCH] Revert "KVM: x86: Unconditionally enable irqs in guest
+ context"
+In-Reply-To: <X/XvWG18aBWocvvf@google.com>
+References: <20210105192844.296277-1-nitesh@redhat.com>
+ <874kjuidgp.fsf@vitty.brq.redhat.com> <X/XvWG18aBWocvvf@google.com>
+Date:   Thu, 07 Jan 2021 10:33:18 +0100
+Message-ID: <87ble1gkgx.fsf@vitty.brq.redhat.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.120.216.130]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-generic/269 reports a hangtask issue, the root cause is ABBA deadlock
-described as below:
+Sean Christopherson <seanjc@google.com> writes:
 
-Thread A			Thread B
-- down_write(&sbi->gc_lock) -- A
-				- f2fs_write_data_pages
-				 - lock all pages in cluster -- B
-				 - f2fs_write_multi_pages
-				  - f2fs_write_raw_pages
-				   - f2fs_write_single_data_page
-				    - f2fs_balance_fs
-				     - down_write(&sbi->gc_lock) -- A
-- f2fs_gc
- - do_garbage_collect
-  - ra_data_block
-   - pagecache_get_page -- B
+> On Wed, Jan 06, 2021, Vitaly Kuznetsov wrote:
+>> 
+>> Looking back, I don't quite understand why we wanted to account ticks
+>> between vmexit and exiting guest context as 'guest' in the first place;
+>> to my understanging 'guest time' is time spent within VMX non-root
+>> operation, the rest is KVM overhead (system).
+>
+> With tick-based accounting, if the tick IRQ is received after PF_VCPU is cleared
+> then that tick will be accounted to the host/system.  The motivation for opening
+> an IRQ window after VM-Exit is to handle the case where the guest is constantly
+> exiting for a different reason _just_ before the tick arrives, e.g. if the guest
+> has its tick configured such that the guest and host ticks get synchronized
+> in a bad way.
+>
+> This is a non-issue when using CONFIG_VIRT_CPU_ACCOUNTING_GEN=y, at least with a
+> stable TSC, as the accounting happens during guest_exit_irqoff() itself.
+> Accounting might be less-than-stellar if TSC is unstable, but I don't think it
+> would be as binary of a failure as tick-based accounting.
+>
 
-To fix this, it needs to avoid calling f2fs_balance_fs() if there is
-still cluster pages been locked in context of cluster writeback, so
-instead, let's call f2fs_balance_fs() in the end of
-f2fs_write_raw_pages() when all cluster pages were unlocked.
+Oh, yea, I vaguely remember we had to deal with a very similar problem
+but for userspace/kernel accounting. It was possible to observe e.g. a
+userspace task going 100% kernel while in reality it was just perfectly
+synchronized with the tick and doing a syscall just before it arrives
+(or something like that, I may be misremembering the details).
 
-Fixes: 4c8ff7095bef ("f2fs: support data compression")
-Signed-off-by: Chao Yu <yuchao0@huawei.com>
----
- fs/f2fs/compress.c |  4 +++-
- fs/f2fs/data.c     | 10 ++++++----
- fs/f2fs/f2fs.h     |  2 +-
- 3 files changed, 10 insertions(+), 6 deletions(-)
+So depending on the frequency, it is probably possible to e.g observe
+'100% host' with tick based accounting, the guest just has to
+synchronize exiting to KVM in a way that the tick will always arrive
+past guest_exit_irqoff().
 
-diff --git a/fs/f2fs/compress.c b/fs/f2fs/compress.c
-index cb16b0437bd4..fc3d67055ce5 100644
---- a/fs/f2fs/compress.c
-+++ b/fs/f2fs/compress.c
-@@ -1461,7 +1461,7 @@ static int f2fs_write_raw_pages(struct compress_ctx *cc,
- 
- 		ret = f2fs_write_single_data_page(cc->rpages[i], &_submitted,
- 						NULL, NULL, wbc, io_type,
--						compr_blocks);
-+						compr_blocks, false);
- 		if (ret) {
- 			if (ret == AOP_WRITEPAGE_ACTIVATE) {
- 				unlock_page(cc->rpages[i]);
-@@ -1495,6 +1495,8 @@ static int f2fs_write_raw_pages(struct compress_ctx *cc,
- 		}
- 
- 		*submitted += _submitted;
-+
-+		f2fs_balance_fs(F2FS_M_SB(mapping), true);
- 	}
- 	return 0;
- out_err:
-diff --git a/fs/f2fs/data.c b/fs/f2fs/data.c
-index 427a527eb17e..f8578fad7cd1 100644
---- a/fs/f2fs/data.c
-+++ b/fs/f2fs/data.c
-@@ -2684,7 +2684,8 @@ int f2fs_write_single_data_page(struct page *page, int *submitted,
- 				sector_t *last_block,
- 				struct writeback_control *wbc,
- 				enum iostat_type io_type,
--				int compr_blocks)
-+				int compr_blocks,
-+				bool allow_balance)
- {
- 	struct inode *inode = page->mapping->host;
- 	struct f2fs_sb_info *sbi = F2FS_I_SB(inode);
-@@ -2822,7 +2823,7 @@ int f2fs_write_single_data_page(struct page *page, int *submitted,
- 	}
- 	unlock_page(page);
- 	if (!S_ISDIR(inode->i_mode) && !IS_NOQUOTA(inode) &&
--					!F2FS_I(inode)->cp_task)
-+			!F2FS_I(inode)->cp_task && allow_balance)
- 		f2fs_balance_fs(sbi, need_balance_fs);
- 
- 	if (unlikely(f2fs_cp_error(sbi))) {
-@@ -2869,7 +2870,7 @@ static int f2fs_write_data_page(struct page *page,
- #endif
- 
- 	return f2fs_write_single_data_page(page, NULL, NULL, NULL,
--						wbc, FS_DATA_IO, 0);
-+						wbc, FS_DATA_IO, 0, true);
- }
- 
- /*
-@@ -3037,7 +3038,8 @@ static int f2fs_write_cache_pages(struct address_space *mapping,
- 			}
- #endif
- 			ret = f2fs_write_single_data_page(page, &submitted,
--					&bio, &last_block, wbc, io_type, 0);
-+					&bio, &last_block, wbc, io_type,
-+					0, true);
- 			if (ret == AOP_WRITEPAGE_ACTIVATE)
- 				unlock_page(page);
- #ifdef CONFIG_F2FS_FS_COMPRESSION
-diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
-index 67086c6072ad..5cc1486f0b9f 100644
---- a/fs/f2fs/f2fs.h
-+++ b/fs/f2fs/f2fs.h
-@@ -3511,7 +3511,7 @@ int f2fs_write_single_data_page(struct page *page, int *submitted,
- 				struct bio **bio, sector_t *last_block,
- 				struct writeback_control *wbc,
- 				enum iostat_type io_type,
--				int compr_blocks);
-+				int compr_blocks, bool allow_balance);
- void f2fs_invalidate_page(struct page *page, unsigned int offset,
- 			unsigned int length);
- int f2fs_release_page(struct page *page, gfp_t wait);
+It seems to me this is a fundamental problem in case the frequency of
+guest exits can match the frequency of the time accounting tick.
+
 -- 
-2.29.2
+Vitaly
 
