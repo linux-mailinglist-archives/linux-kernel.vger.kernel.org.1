@@ -2,80 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1252D2EE76B
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 22:08:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E9FC32EE765
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 22:06:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727455AbhAGVHC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 16:07:02 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:54754 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727297AbhAGVHB (ORCPT
+        id S1727222AbhAGVGi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 16:06:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33872 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725944AbhAGVGi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 16:07:01 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1610053534;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=dIdzS01a8gJ0BSbSt0S8IGEZ5+kBms8lbRwvPKGFMig=;
-        b=YF8A+N6yXBgPHiD4Qd1tQfp2+gLjIg8loHIZaueoZqFg7laaTq5B4oto9KosbTzq2NR2tF
-        KCruuskp5V1vA2JZcJX1LcGtRAah/S+DJ6blv8RQ1nbeLuHH9zBbTCpsHeXXXZqU2R9d6n
-        AqM64o0Et8HTtQyIxi4jFdJ4JDIesBM=
-Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
- [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-472-PybCJrK2M5K_uDrHvapI_Q-1; Thu, 07 Jan 2021 16:05:32 -0500
-X-MC-Unique: PybCJrK2M5K_uDrHvapI_Q-1
-Received: by mail-ed1-f71.google.com with SMTP id bf13so3755912edb.10
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Jan 2021 13:05:32 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+        Thu, 7 Jan 2021 16:06:38 -0500
+Received: from mail-qt1-x829.google.com (mail-qt1-x829.google.com [IPv6:2607:f8b0:4864:20::829])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0A53C0612F6
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Jan 2021 13:05:57 -0800 (PST)
+Received: by mail-qt1-x829.google.com with SMTP id v5so5241345qtv.7
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Jan 2021 13:05:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=jonmasters-org.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:organization:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=dIdzS01a8gJ0BSbSt0S8IGEZ5+kBms8lbRwvPKGFMig=;
-        b=qrNGvrGwUkZx+9ifd5SaGTDkNtKjK6iU6Rw5VofQIxt/WuwF53dXe/r3Ke/EYBtgQA
-         r1bUvhPMQ5K9HLq9RFxb9SMl8xK4yd9t7vx1ZWJBPcU3fzP5Y5Rj4VFYQ0sWtWA1V9pJ
-         djHMxy62/PdODY6TbsG62FLFTZ6S7e0iUMit3cdOccCFep+9hwxMUcTuTVEumIFZBYaN
-         xvaHuAZPoYkxk4WCC68BpJJidVVVGsT+jrItQjbkpvBACdB5lYT70Xu+ukt4EvmV1vPL
-         W4aClCG2/mUUGEUoCKzOniBtuEQJdNQLOhyzYIU3HR/+4nO2BKUGqhnGX29MAdXybfuP
-         mTdA==
-X-Gm-Message-State: AOAM5309tThZQLHmJuVuxp/MQqX5IgW/sHXnY20enNeCc8ztK+cQ2aJm
-        QETjt9PVAnn1rduGnCkA8HKdIAazfR6Hsy5ppU5aHP/q5X9932bhgJ6PbcvwKdRTMw95rxkdw45
-        3C6a8KyIs6w5FCt4UCgcmKIxF
-X-Received: by 2002:a05:6402:366:: with SMTP id s6mr2968577edw.44.1610053531552;
-        Thu, 07 Jan 2021 13:05:31 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJxD6r7qM/y/nJixYthNZKTD1TNM3xO9CPOLbUoLYL0SZ0n9WyQfrM+H7t/SdIyQf4XnL2cLTw==
-X-Received: by 2002:a05:6402:366:: with SMTP id s6mr2968544edw.44.1610053531240;
-        Thu, 07 Jan 2021 13:05:31 -0800 (PST)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id f11sm2840573ejd.40.2021.01.07.13.05.29
+        bh=FadgRMCjqSfK1p2dGVB6UAyZWKTELanycTILncMf0V4=;
+        b=sGo2d1y0YMj5ISVaYjlg8g3gbdADAkFDo37t100vvlXkZ7fFkSjTKQlrRrDsWKrCUM
+         B9fjXz6qkpzTNKXFbHd55FTLqcolca7TUsDvwQ7Qw1p07zeCbweNnbTQPGLqeJC4qfLk
+         pfsdgzeSMhVkyGhAvRqERvfnbdNMRB62RIUJlS2xH18378mAiB/Lihu8zG8NQhZs0PSb
+         M1dVPiSWzEk+H73tJds4x3i+3rBdMB8kyna/2wZju6dAE98GHRyraV9Ep1HAVl7e/LJB
+         BoWdt9dOB9e8LsAFNOmGTiNscYDBr5FnTi232BdHBrW3cbyDUb9qEdhBSddIfGWn7Vtu
+         R27g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:organization
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=FadgRMCjqSfK1p2dGVB6UAyZWKTELanycTILncMf0V4=;
+        b=EVHjIvPSzrKHdDPo00BuOy0n3CK+1KdcFXdm9UhbUcCLXsyJ5xtzI/jWDNQ4OWNuAb
+         fGXFpgpE64j2dWKtijqA5wCtTavH7JX7VA6cwA7pyYo3QONMO0w+wB4/GxUlA9uybNLt
+         3/BtJi0H0BtZQnNd0kRDSOk02L8E0jHmbJQR5cEc6h1hC+FiJ/zZgxu8vZxHz7m1rYoe
+         gr/R2bda/IvFK2W4ivWnJ9HdkDFPZK358lBrENk2RCrr3WiCykVK6L+ONVF1zw7NOBD6
+         Bql4lWGZA65Ux35B9SLgtzOUP/3Au3hp1hjUyBWwWQJ05wltxLb55T16wRem51FyI4FC
+         7fcA==
+X-Gm-Message-State: AOAM530KRZvHkpKBuwtb3qZzOZS2EH+kaN0zww280rXxKU2Vz0L3DLlo
+        4qye9SWrDzzBafQEAFpJ5MpaCA==
+X-Google-Smtp-Source: ABdhPJxzXggeoNZjF84y+uAKodjui60LUjdVr31/hQwxp5mzN5dQTNGemD+VGIcUnS8c9gEW3/0GGA==
+X-Received: by 2002:ac8:5514:: with SMTP id j20mr479421qtq.387.1610053556805;
+        Thu, 07 Jan 2021 13:05:56 -0800 (PST)
+Received: from independence.bos.jonmasters.org (Boston.jonmasters.org. [50.195.43.97])
+        by smtp.gmail.com with ESMTPSA id z20sm3873243qkz.37.2021.01.07.13.05.54
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 07 Jan 2021 13:05:30 -0800 (PST)
-Subject: Re: [PATCH v2 2/4] KVM: nSVM: correctly restore nested_run_pending on
- migration
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Maxim Levitsky <mlevitsk@redhat.com>, kvm@vger.kernel.org,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Borislav Petkov <bp@alien8.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel@vger.kernel.org,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Jim Mattson <jmattson@google.com>
-References: <20210107093854.882483-1-mlevitsk@redhat.com>
- <20210107093854.882483-3-mlevitsk@redhat.com>
- <98f35e0a-d82b-cac0-b267-00fcba00c185@redhat.com>
- <X/ds0sUw/me4e/g1@google.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <2885afd8-7f1f-f797-ce05-a85550039dc5@redhat.com>
-Date:   Thu, 7 Jan 2021 22:05:29 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+        Thu, 07 Jan 2021 13:05:56 -0800 (PST)
+Subject: Re: [PATCH] arm64: PCI: Enable SMC conduit
+To:     Will Deacon <will@kernel.org>,
+        Jeremy Linton <jeremy.linton@arm.com>
+Cc:     mark.rutland@arm.com, lorenzo.pieralisi@arm.com,
+        linux-pci@vger.kernel.org, sudeep.holla@arm.com,
+        linux-kernel@vger.kernel.org, catalin.marinas@arm.com,
+        bhelgaas@google.com, linux-arm-kernel@lists.infradead.org
+References: <20210105045735.1709825-1-jeremy.linton@arm.com>
+ <20210107181416.GA3536@willie-the-truck>
+From:   Jon Masters <jcm@jonmasters.org>
+Organization: World Organi{s,z}ation of Broken Dreams
+Message-ID: <56375cd8-8e11-aba6-9e11-1e0ec546e423@jonmasters.org>
+Date:   Thu, 7 Jan 2021 16:05:48 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.2.2
 MIME-Version: 1.0
-In-Reply-To: <X/ds0sUw/me4e/g1@google.com>
+In-Reply-To: <20210107181416.GA3536@willie-the-truck>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -83,23 +74,92 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 07/01/21 21:19, Sean Christopherson wrote:
->> That said, the v1 change had some appeal to it.
+Hi will, everyone,
+
+On 1/7/21 1:14 PM, Will Deacon wrote:
+
+> On Mon, Jan 04, 2021 at 10:57:35PM -0600, Jeremy Linton wrote:
+>> Given that most arm64 platform's PCI implementations needs quirks
+>> to deal with problematic config accesses, this is a good place to
+>> apply a firmware abstraction. The ARM PCI SMMCCC spec details a
+>> standard SMC conduit designed to provide a simple PCI config
+>> accessor. This specification enhances the existing ACPI/PCI
+>> abstraction and expects power, config, etc functionality is handled
+>> by the platform. It also is very explicit that the resulting config
+>> space registers must behave as is specified by the pci specification.
+>>
+>> Lets hook the normal ACPI/PCI config path, and when we detect
+>> missing MADT data, attempt to probe the SMC conduit. If the conduit
+>> exists and responds for the requested segment number (provided by the
+>> ACPI namespace) attach a custom pci_ecam_ops which redirects
+>> all config read/write requests to the firmware.
+>>
+>> This patch is based on the Arm PCI Config space access document @
+>> https://developer.arm.com/documentation/den0115/latest
 > 
-> Which v1 change are you referring to?
+> Why does firmware need to be involved with this at all? Can't we just
+> quirk Linux when these broken designs show up in production? We'll need
+> to modify Linux _anyway_ when the firmware interface isn't implemented
+> correctly...
 
-Moving the to-be-injected event from eventinj to vcpu->arch, and from 
-there to vmcb02 on the next vmentry's inject_pending_event.
+I agree with Will on this. I think we want to find a way to address some 
+of the non-compliance concerns through quirks in Linux. However...
 
->> In the VMX case (if properly implemented) it would allow removing the weird
->> nested_run_pending case from prepare_vmcs02_early.  I think it's a valuable
->> invariant that there are no events in the VMCS after each KVM_RUN iteration,
->> and this special case is breaking the invariant.
->
-> Hmm, as weird as that code is, I think it's actually the most architecturally
-> correct behavior.
+Several folks here (particularly Lorenzo) have diligently worked hard 
+over the past few years - and pushed their patience - to accommodate 
+hardware vendors with early "not quite compliant" systems. They've taken 
+lots of quirks that frankly shouldn't continue to be necessary were it 
+even remotely a priority in the vendor ecosystem to get a handle on 
+addressing PCIe compliance once and for all. But, again frankly, it 
+hasn't been enough of a priority to get this fixed. The third party IP 
+vendors *need* to address this, and their customers *need* to push back.
 
-I was referring to the "then" branch therein. :)
+We can't keep having a situation in which kinda-sorta compliant stuff 
+comes to market that would work out of the box but for whatever the 
+quirk is this time around. There have been multiple OS releases for the 
+past quite a few years on which this stuff could be tested prior to ever 
+taping out a chip, and so it ought not to be possible to come to market 
+now with an excuse that it wasn't tested. And yet here we still are. All 
+these years and still the message isn't quite being received properly. I 
+do know it takes time to make hardware, and some of it was designed 
+years before and is still trickling down into these threads. But I also 
+think there are cases where much more could have been done earlier.
 
-Paolo
+None of these vendors can possibly want this deep down. Their engineers 
+almost certainly realize that just having compliant ECAM would mean that 
+the hardware was infinitely more valuable being able to run out of the 
+box software that much more easily. And it's not just ECAM. Inevitably, 
+that is just the observable syndrome for worse issues, often with the 
+ITS and forcing quirked systems to have lousy legacy interrupts, etc. 
+Alas, this level of nuance is likely lost by the time it reaches upper 
+management, where "Linux" is all the same to them. I would hope that can 
+change. I would also remind them that if they want to run non-Linux 
+OSes, they will also want to be actually compliant. The willingness of 
+kind folks like Lorenzo and others here to entertain quirks is not 
+necessarily something you will find in every part of the industry.
 
+But that all said, we have a situation in which there are still 
+platforms out there that aren't fully compliant and something has to be 
+done to support them because otherwise it's going to be even more ugly 
+with vendor trees, distro hacks, and other stuff.
+
+Some of you in recent weeks have asked what I and others can do to help 
+from the distro and standardization side of things. To do my part, I'm 
+going to commit to reach out to assorted vendors and have a heart to 
+heart with them about really, truly fully addressing their compliance 
+issues. That includes Cadence, Synopsys, and others who need to stop 
+shipping IP that requires quirks, as well as SoC vendors who need to do 
+more to test their silicon with stock kernels prior to taping out. And I 
+would like to involve the good folks here who are trying to navigate.
+
+I would also politely suggest that we collectively consider how much 
+wiggle room there can be to use quirks for what we are stuck with rather 
+than an SMC-based solution. We all know that quirks can't be a free ride 
+forever. Those who need them should offer something strong in return. A 
+firm commitment that they will never come asking for the same stuff in 
+the future. Is there a way we can do something like that?
+
+Jon.
+
+-- 
+Computer Architect
