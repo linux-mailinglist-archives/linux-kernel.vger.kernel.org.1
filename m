@@ -2,132 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5664F2ED630
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 18:59:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 578502ED638
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 19:00:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729040AbhAGR65 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 12:58:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60872 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728201AbhAGR65 (ORCPT
+        id S1729053AbhAGR7x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 12:59:53 -0500
+Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:5092 "EHLO
+        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726326AbhAGR7w (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 12:58:57 -0500
-Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBD30C0612F5;
-        Thu,  7 Jan 2021 09:58:16 -0800 (PST)
-Received: by mail-pf1-x42f.google.com with SMTP id h10so4322184pfo.9;
-        Thu, 07 Jan 2021 09:58:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:subject:to:cc:newsgroups:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=hTkzqrCNdP0r0M/fUFV1DV/mK3Fh5BcFABP+peFArds=;
-        b=qCvkVAW7GzxhEniptCfQUtsKyYzGgk5rW8/4bIz9sHBwE2Isgyhd8KBe6UAyM8Om/T
-         sfbjGnIEXiGsEvsYfifeQBcslPMSQgo6d1CzPtsRE7jQhLkUSGNCqpkyK0T7/33ToOyP
-         ZdNl89k8ISaTpcBjDLOPgP4J10ovwyXlIGNSdTQXUz3eJvZQiRU8j1snMV0JeOaVl/GZ
-         ZTuoKvnaoyjtKBz4tMOaJL95TCMnBGbeUGrU35UnBUAVP0VNdzWfh0n6fFrtPbIbw4UJ
-         yrXT19r8VLm8dP4Y+Pzr+xrDiew06eQvAElhECUmGZVZTfCgyx/AdVANdd6y5c8kJc8D
-         zAIw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:subject:to:cc:newsgroups:references:from
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=hTkzqrCNdP0r0M/fUFV1DV/mK3Fh5BcFABP+peFArds=;
-        b=nnKQGFsYci/EdRNH7/zYH4/StZCEyRrsBDXm6+aNhX5mqTOcvkSq/A0Cme2ZnTGDv6
-         rDb/yFnRQ2KRs816pLkpdxYS61qKCo1DArj9NceYRrH5XpAXItNrTFIohABFNSqnLKRg
-         OEGSaDhEW7Dzz0mNEXOZRGRk+jvLLWKBJL1139tyqC2NKVWiLd4EzohQdK338JTmrRlv
-         Xpn6Yt19C/wbDfajgHWwOqciqmHb5k+VJ3bfM5nbnbAbjFdZmfxY4HkRy4ajpIFTbq63
-         PfNb0owkUyJqnem9oNdzei0r9A87WADAyj3Zm7OYWM6AGSmR9VMR654JC3spEGg9xHTX
-         7B6Q==
-X-Gm-Message-State: AOAM532JoNI0rqANNYMLdpRIaNT/0YNbzVAO5Ia1+JNr13RKBGbZKT9m
-        a/Sev61kWyn1hE1O5bjSHjY=
-X-Google-Smtp-Source: ABdhPJzR/BNW8sCHTSftdbijHuVAAOcy+X7BgxMPUvq3C6Xv33E/J822bkKqzWyqjeNNDD3G1v/Ozw==
-X-Received: by 2002:aa7:93cf:0:b029:19d:e287:b02b with SMTP id y15-20020aa793cf0000b029019de287b02bmr9856835pff.66.1610042296286;
-        Thu, 07 Jan 2021 09:58:16 -0800 (PST)
-Received: from [192.168.50.50] (c-24-4-73-83.hsd1.ca.comcast.net. [24.4.73.83])
-        by smtp.gmail.com with ESMTPSA id o193sm6623174pfg.27.2021.01.07.09.58.08
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 07 Jan 2021 09:58:09 -0800 (PST)
-Sender: Vineet Gupta <vineetg76@gmail.com>
-Subject: Re: ARC no console output (was Re: [PATCH 1/2] init/console: Use
- ttynull as a fallback when there is no console)
-To:     Petr Mladek <pmladek@suse.com>
-Cc:     John Ogness <john.ogness@linutronix.de>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Shreyas Joshi <shreyas.joshi@biamp.com>,
-        shreyasjoshi15@gmail.com,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
-        linux-kernel@vger.kernel.org, buildroot@busybox.net,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        linux-arch@vger.kernel.org,
-        arcml <linux-snps-arc@lists.infradead.org>
-Newsgroups: gmane.linux.kernel.cross-arch,gmane.linux.kernel,gmane.linux.kernel.arc
-References: <20201111135450.11214-1-pmladek@suse.com>
- <20201111135450.11214-2-pmladek@suse.com>
- <d2a3b3c0-e548-7dd1-730f-59bc5c04e191@synopsys.com>
- <8735zdm86m.fsf@jogness.linutronix.de>
- <50ade852-c598-6476-1f4b-9a3f8d11d143@synopsys.com> <X/c/ONCYz2QQdvOP@alley>
-From:   Vineet Gupta <vgupta@synopsys.com>
-Message-ID: <466644f5-bed7-caef-9fcd-e66208f65545@synopsys.com>
-Date:   Thu, 7 Jan 2021 09:58:05 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+        Thu, 7 Jan 2021 12:59:52 -0500
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5ff74bf00000>; Thu, 07 Jan 2021 09:59:12 -0800
+Received: from HQMAIL101.nvidia.com (172.20.187.10) by HQMAIL105.nvidia.com
+ (172.20.187.12) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 7 Jan
+ 2021 17:59:08 +0000
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com (104.47.59.168)
+ by HQMAIL101.nvidia.com (172.20.187.10) with Microsoft SMTP Server (TLS) id
+ 15.0.1473.3 via Frontend Transport; Thu, 7 Jan 2021 17:59:08 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=HOwgnLQL/S6SUmpV5acThmczkdwV1aDEjglyv6UEzcdNSy2iCQjY3Ja82C81sJR3R7BsXLFZQ0++msBvYSorX9DpNw68I6mRivhZVHF2YuVlxKlI9sj1WPsqfzhGDtsBj0Z3sYvqh1VhJncD8metIIXaO13SKNuya9WamInfKonCpF44CsAhWaPLdfXHAm9ZYGkKSrjjIcDB2kmtNw3jlGiHmWnZTsKyL8+fVBHRoz/d+X3fmTRv9vg5IQE15k9gauJxbGlo0n6cIQWsmnos6e4Zp6Z4w6tkueukqCGCRpdfUrKCZ2UbNJDtqDaeeNu/CmT1Ga9lP6ZI3gYBqXYeQA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=9KjAM85x+piAZ6or0m1j29JhijHwFOZzBh4cwyUxNmw=;
+ b=i2jGQDpDWO4P+ldNRmGNBTjru5atZwZ6Vc6B4nZBoX9i+pzzOGA4OyN+pG/Wk76vZxzCZTrkcPnaWyAXqs/BrtvDnetUAQS4lQ99aPB1b2yUOsxdROtmaWe2zZTk+52w8Q68JKfMCZRjBZYTIXf36i2HxCHa1HOP8TRc24qT4H9CvzOSHUrWJi/nmhU/ndIHVx7rDMnE8MDtKDAojiEj9TluhmbecwaHkVeSwU7lrocUBKQrVk04KiwR6NvBEVQ3vpoPKYOY2CTueXLDQ++O2o9JFrNpCCw6329a5NJLoM2CYYoNasmDrRTS9mqY7K87gewmdp+ySSQYhV6dzSiiYg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
+ by DM6PR12MB4265.namprd12.prod.outlook.com (2603:10b6:5:211::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3742.6; Thu, 7 Jan
+ 2021 17:59:07 +0000
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::546d:512c:72fa:4727]) by DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::546d:512c:72fa:4727%7]) with mapi id 15.20.3742.008; Thu, 7 Jan 2021
+ 17:59:07 +0000
+Date:   Thu, 7 Jan 2021 13:59:05 -0400
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Zheng Yongjun <zhengyongjun3@huawei.com>
+CC:     <linux-rdma@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH -next] sw/siw/siw_main: convert comma to semicolon
+Message-ID: <20210107175905.GA903712@nvidia.com>
+References: <20201214134118.4349-1-zhengyongjun3@huawei.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20201214134118.4349-1-zhengyongjun3@huawei.com>
+X-ClientProxiedBy: MN2PR02CA0023.namprd02.prod.outlook.com
+ (2603:10b6:208:fc::36) To DM6PR12MB3834.namprd12.prod.outlook.com
+ (2603:10b6:5:14a::12)
 MIME-Version: 1.0
-In-Reply-To: <X/c/ONCYz2QQdvOP@alley>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (142.162.115.133) by MN2PR02CA0023.namprd02.prod.outlook.com (2603:10b6:208:fc::36) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3742.6 via Frontend Transport; Thu, 7 Jan 2021 17:59:07 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1kxZYv-003n7M-I7; Thu, 07 Jan 2021 13:59:05 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1610042352; bh=9KjAM85x+piAZ6or0m1j29JhijHwFOZzBh4cwyUxNmw=;
+        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
+         From:To:CC:Subject:Message-ID:References:Content-Type:
+         Content-Disposition:In-Reply-To:X-ClientProxiedBy:MIME-Version:
+         X-MS-Exchange-MessageSentRepresentingType;
+        b=MtrVVgylBM2ft0nIcxRjpi8nzSIEjRLhlPsbaCbjXp0EqfwSdxMUoWr1Ys2zl2mO1
+         ChffuVLBw9Z84Xz4LyBxBG2yBSIlicobcE3TiJAhA0xTIkNvbnM2KNTiORCOrTzW4P
+         Qtz/Rioso3atg0Zlalb+LSLzPpCdbC+dXrA5xc+Vi/R27ANyKq3FGUum1EAvFjj1OY
+         DhjjVyaBzTsEkoDpVSK933K9eLUdf7AcoCFc7R9jyGU4MrUM4QOnVVNkZ2zOiIbi2D
+         nOeAVgOii7A6pEObdhMKBvQinJMvwkcDEgLYpxq3ysFlHgVuQl3dZv4R1sVPkYtO6N
+         BDe1nV90XJBRQ==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 1/7/21 9:04 AM, Petr Mladek wrote:
-> On Thu 2021-01-07 08:43:16, Vineet Gupta wrote:
->> Hi John,
->>
->> On 1/7/21 1:02 AM, John Ogness wrote:
->>> Hi Vineet,
->>>
->>> On 2021-01-06, Vineet Gupta <vgupta@synopsys.com> wrote:
->>>> This breaks ARC booting (no output on console).
->>>
->>> Could you provide the kernel boot arguments that you use? This series is
->>> partly about addressing users that have used boot arguments that are
->>> technically incorrect (even if had worked). Seeing the boot arguments of
->>> users that are not experiencing problems may help to reveal some of the
->>> unusual console usages until now.
->>
->>
->> Kernel command line: earlycon=uart8250,mmio32,0xf0005000,115200n8
->> console=ttyS0,115200n8 debug print-fatal-signals=1
+On Mon, Dec 14, 2020 at 09:41:18PM +0800, Zheng Yongjun wrote:
+> Replace a comma between expression statements by a semicolon.
 > 
-> This is strange, the problematic patch should use ttynull
-> only as a fallback. It should not be used when a particular console
-> is defined on the command line.
+> Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>
+> ---
+>  drivers/infiniband/sw/siw/siw_main.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 
-What happens in my case is console_on_rootfs() doesn't find /dev/console 
-and switching to ttynull. /dev is not present because devtmpfs doesn't 
-automount for initramfs.
+I squashed these all together, applied to for-next, thanks
 
-> The only explanation would be that ttyS0 gets registered too late
-> and ttynull is added as a fallback in the meantime.
-
-I don't know if ttyS0 console should have registered already but even if 
-it did - the /dev node missing would not have helped ?
-
-> 
-> Anyway, I propose the revert the problematic patch for 5.11-rc3,
-> see
-> https://lore.kernel.org/lkml/20210107164400.17904-2-pmladek@suse.com/
-> This mystery is a good reason to avoid bigger changes at this stage.
-> 
-> Best Regards,
-> Petr
-> 
-
+Jason
