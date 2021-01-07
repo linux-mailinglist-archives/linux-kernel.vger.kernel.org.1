@@ -2,195 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4305A2ECA96
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 07:40:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5766C2ECA9E
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 07:43:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726884AbhAGGjo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 01:39:44 -0500
-Received: from m43-15.mailgun.net ([69.72.43.15]:21941 "EHLO
-        m43-15.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725900AbhAGGjn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 01:39:43 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1610001563; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=eR2BA7ahLtdq8P6A3Z0TLenLeHiqJ6K9ONAaTza5lBI=;
- b=wnk7Qbc02eVqmGivTGPfkgv2hUko9tXMzpHcuzd+y/OJCiLfPXzhpL7EhUTc1clTTCS8p30u
- h0Xal6CTVfSWvdBDfKD+9HXtrxmMwY5nr3dVqL3SJHhFivjQwHZerkEg3aGyzO3Rh39zVXqk
- zxQOr2V/NULQ9AVfqeofz05Xga0=
-X-Mailgun-Sending-Ip: 69.72.43.15
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n05.prod.us-east-1.postgun.com with SMTP id
- 5ff6ac7f512813ac4451e667 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 07 Jan 2021 06:38:55
- GMT
-Sender: cang=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 6E233C43461; Thu,  7 Jan 2021 06:38:54 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: cang)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 7BC40C433CA;
-        Thu,  7 Jan 2021 06:38:53 +0000 (UTC)
+        id S1726589AbhAGGld (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 01:41:33 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51588 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725763AbhAGGld (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Jan 2021 01:41:33 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D6DC222E00;
+        Thu,  7 Jan 2021 06:40:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1610001652;
+        bh=EXQtTGtOrAJ6507/SRQiTHdd0MLo4maxbEmNq6/kO2w=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=r0Eegwt1Xsz5OpjUZBOUJAUD+ftFK3B6IigZ64H1HJAEhLXdVADQFPNQImjXsV1kB
+         tlNgwMlQ/VRutKJF5YGnObtI0FgtMfCPsXHr3mxZXGzX8sb3aKCn70s68js680atrI
+         impL9SefkOBqEmr1Sus+YTOydo0K9OJJC0Y+a46rlJGKNXCxKmEMX34pr8fhSmaTEQ
+         /OJBXSW4coXq5IOpN5gG+06XiU1yzn6yCpaYxvKuk5wFhXMYIVS9mPaQ+l+u1zpOsZ
+         re7VrjXMMK9DBEs7Ab2xHi6WdHI2iBQOgjpMcd6VntNtrdLCozOcn7aLiFUHt9hdOh
+         eOt0v6XsUU9rw==
+Date:   Thu, 7 Jan 2021 14:40:47 +0800
+From:   Shawn Guo <shawnguo@kernel.org>
+To:     Michael Walle <michael@walle.cc>
+Cc:     linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Li Yang <leoyang.li@nxp.com>,
+        Sudhanshu Gupta <sudhanshu.gupta@nxp.com>,
+        Bhaskar Upadhaya <bhaskar.upadhaya@nxp.com>,
+        Rai Harninder <harninder.rai@nxp.com>
+Subject: Re: [PATCH] arm64: dts: ls1028a: fix the offset of the reset register
+Message-ID: <20210107064046.GF28365@dragon>
+References: <20201215212622.717-1-michael@walle.cc>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Thu, 07 Jan 2021 14:38:53 +0800
-From:   Can Guo <cang@codeaurora.org>
-To:     Jaegeuk Kim <jaegeuk@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org,
-        kernel-team@android.com, alim.akhtar@samsung.com,
-        avri.altman@wdc.com, bvanassche@acm.org,
-        martin.petersen@oracle.com, stanley.chu@mediatek.com,
-        Jaegeuk Kim <jaegeuk@google.com>
-Subject: Re: [PATCH v3 2/2] scsi: ufs: handle LINERESET with correct tm_cmd
-In-Reply-To: <20210106214109.44041-3-jaegeuk@kernel.org>
-References: <20210106214109.44041-1-jaegeuk@kernel.org>
- <20210106214109.44041-3-jaegeuk@kernel.org>
-Message-ID: <163fae07a94933230e0432e2ca584040@codeaurora.org>
-X-Sender: cang@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201215212622.717-1-michael@walle.cc>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-01-07 05:41, Jaegeuk Kim wrote:
-> From: Jaegeuk Kim <jaegeuk@google.com>
+On Tue, Dec 15, 2020 at 10:26:22PM +0100, Michael Walle wrote:
+> The offset of the reset request register is 0, the absolute address is
+> 0x1e60000. Boards without PSCI support will fail to perform a reset:
 > 
-> This fixes a warning caused by wrong reserve tag usage in 
-> __ufshcd_issue_tm_cmd.
+> [   26.734700] reboot: Restarting system
+> [   27.743259] Unable to restart system
+> [   27.746845] Reboot failed -- System halted
 > 
-> WARNING: CPU: 7 PID: 7 at block/blk-core.c:630 
-> blk_get_request+0x68/0x70
-> WARNING: CPU: 4 PID: 157 at block/blk-mq-tag.c:82 
-> blk_mq_get_tag+0x438/0x46c
-> 
-> And, in ufshcd_err_handler(), we can avoid to send tm_cmd before 
-> aborting
-> outstanding commands by waiting a bit for IO completion like this.
-> 
-> __ufshcd_issue_tm_cmd: task management cmd 0x80 timed-out
-> 
+> Fixes: 8897f3255c9c ("arm64: dts: Add support for NXP LS1028A SoC")
+> Signed-off-by: Michael Walle <michael@walle.cc>
 
-Would you mind add a Fixes tag?
+Out of curiosity, how did you get it fixed with your commit 3f0fb37b22b4
+("arm64: dts: ls1028a: fix reboot node") in the first place?
 
-> Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
+Shawn
+
 > ---
->  drivers/scsi/ufs/ufshcd.c | 36 ++++++++++++++++++++++++++++++++----
->  1 file changed, 32 insertions(+), 4 deletions(-)
+>  arch/arm64/boot/dts/freescale/fsl-ls1028a.dtsi | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
-> index 1678cec08b51..47fc8da3cbf9 100644
-> --- a/drivers/scsi/ufs/ufshcd.c
-> +++ b/drivers/scsi/ufs/ufshcd.c
-> @@ -44,6 +44,9 @@
->  /* Query request timeout */
->  #define QUERY_REQ_TIMEOUT 1500 /* 1.5 seconds */
+> diff --git a/arch/arm64/boot/dts/freescale/fsl-ls1028a.dtsi b/arch/arm64/boot/dts/freescale/fsl-ls1028a.dtsi
+> index 045739dbcb17..0a5923e96d7f 100644
+> --- a/arch/arm64/boot/dts/freescale/fsl-ls1028a.dtsi
+> +++ b/arch/arm64/boot/dts/freescale/fsl-ls1028a.dtsi
+> @@ -102,7 +102,7 @@
+>  	reboot {
+>  		compatible ="syscon-reboot";
+>  		regmap = <&rst>;
+> -		offset = <0xb0>;
+> +		offset = <0>;
+>  		mask = <0x02>;
+>  	};
+>  
+> -- 
+> 2.20.1
 > 
-> +/* LINERESET TIME OUT */
-> +#define LINERESET_IO_TIMEOUT_MS			(30000) /* 30 sec */
-> +
->  /* Task management command timeout */
->  #define TM_CMD_TIMEOUT	100 /* msecs */
-> 
-> @@ -5899,6 +5902,8 @@ static void ufshcd_err_handler(struct work_struct 
-> *work)
->  	 * check if power mode restore is needed.
->  	 */
->  	if (hba->saved_uic_err & UFSHCD_UIC_PA_GENERIC_ERROR) {
-> +		ktime_t start = ktime_get();
-> +
->  		hba->saved_uic_err &= ~UFSHCD_UIC_PA_GENERIC_ERROR;
->  		if (!hba->saved_uic_err)
->  			hba->saved_err &= ~UIC_ERROR;
-> @@ -5906,6 +5911,20 @@ static void ufshcd_err_handler(struct 
-> work_struct *work)
->  		if (ufshcd_is_pwr_mode_restore_needed(hba))
->  			needs_restore = true;
->  		spin_lock_irqsave(hba->host->host_lock, flags);
-> +		/* Wait for IO completion to avoid aborting IOs */
-> +		while (hba->outstanding_reqs) {
-> +			ufshcd_complete_requests(hba);
-> +			spin_unlock_irqrestore(hba->host->host_lock, flags);
-> +			schedule();
-> +			spin_lock_irqsave(hba->host->host_lock, flags);
-> +			if (ktime_to_ms(ktime_sub(ktime_get(), start)) >
-> +						LINERESET_IO_TIMEOUT_MS) {
-> +				dev_err(hba->dev, "%s: timeout, outstanding=0x%lx\n",
-> +					__func__, hba->outstanding_reqs);
-> +				break;
-> +			}
-> +		}
-> +
->  		if (!hba->saved_err && !needs_restore)
->  			goto skip_err_handling;
->  	}
-> @@ -6302,9 +6321,13 @@ static irqreturn_t ufshcd_intr(int irq, void 
-> *__hba)
->  		intr_status = ufshcd_readl(hba, REG_INTERRUPT_STATUS);
->  	}
-> 
-> -	if (enabled_intr_status && retval == IRQ_NONE) {
-> -		dev_err(hba->dev, "%s: Unhandled interrupt 0x%08x\n",
-> -					__func__, intr_status);
-> +	if (enabled_intr_status && retval == IRQ_NONE &&
-> +				!ufshcd_eh_in_progress(hba)) {
-> +		dev_err(hba->dev, "%s: Unhandled interrupt 0x%08x (0x%08x, 
-> 0x%08x)\n",
-> +					__func__,
-> +					intr_status,
-> +					hba->ufs_stats.last_intr_status,
-> +					enabled_intr_status);
->  		ufshcd_dump_regs(hba, 0, UFSHCI_REG_SPACE_SIZE, "host_regs: ");
->  	}
-> 
-> @@ -6348,7 +6371,11 @@ static int __ufshcd_issue_tm_cmd(struct ufs_hba 
-> *hba,
->  	 * Even though we use wait_event() which sleeps indefinitely,
->  	 * the maximum wait time is bounded by %TM_CMD_TIMEOUT.
->  	 */
-> -	req = blk_get_request(q, REQ_OP_DRV_OUT, BLK_MQ_REQ_RESERVED);
-> +	req = blk_get_request(q, REQ_OP_DRV_OUT, BLK_MQ_REQ_RESERVED |
-> +						BLK_MQ_REQ_NOWAIT);
-
-Sorry that I didn't pay much attention to this part of code before.
-May I know why must we use the BLK_MQ_REQ_RESERVED flag?
-
-Thanks,
-Can Guo.
-
-> +	if (IS_ERR(req))
-> +		return PTR_ERR(req);
-> +
->  	req->end_io_data = &wait;
->  	free_slot = req->tag;
->  	WARN_ON_ONCE(free_slot < 0 || free_slot >= hba->nutmrs);
-> @@ -9355,6 +9382,7 @@ int ufshcd_init(struct ufs_hba *hba, void
-> __iomem *mmio_base, unsigned int irq)
-> 
->  	hba->tmf_tag_set = (struct blk_mq_tag_set) {
->  		.nr_hw_queues	= 1,
-> +		.reserved_tags	= 1,
-
-If we give reserved_tags as 1 and always ask for a tm requst with
-BLK_MQ_REQ_RESERVED flag set, then the tag shall only be allocated
-from the reserved sbitmap_queue, whose depth is set to 1 here.
-UFS supports tm queue depth as 8, but here is allowing only one tm
-req at a time. Why? Please correct me if my understanding is wrong.
-
-Thanks,
-Can Guo.
-
->  		.queue_depth	= hba->nutmrs,
->  		.ops		= &ufshcd_tmf_ops,
->  		.flags		= BLK_MQ_F_NO_SCHED,
