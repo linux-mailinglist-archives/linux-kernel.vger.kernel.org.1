@@ -2,74 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A2782EC750
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 01:25:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 055572EC752
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 01:27:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726367AbhAGAZU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Jan 2021 19:25:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37360 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725803AbhAGAZT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Jan 2021 19:25:19 -0500
-Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 677C2C06136F
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Jan 2021 16:24:39 -0800 (PST)
-Received: by mail-lf1-x12e.google.com with SMTP id o13so10744160lfr.3
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Jan 2021 16:24:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=y2JDLTfqOpjQxN8FILQClzf9FmSPwRHg0vB82buu7nE=;
-        b=inAS7K5t7adUK26GrcC2htux/ANDgLVum0YBEXPqfJkCbBgVNpow5XIcZbgx2rps5c
-         S7fh2UIOEowFv4GLK6bJquuhDUzISPL4KUHqWIdyyEdR1Scag7APmNCN5niYl1bBh0uo
-         3DP5EMyEqNnzd/cmlCIMcIYfQm4HqSnXor7wNGqubQpoCfP1G0+3ewE/QHpWQjox0JFi
-         Aak/cBv6OF63BXXC5TGUK0SYyxp4OXIQglaEYYhDW4Burfb5zqELqcG9LoeOkF2giOlP
-         5UdR/3ln0f7p96O/HwtOotFXBuvZRXDgjJ5bw+22onLM5NcdUaaIwim1gQ9TnYa45dGd
-         PJaQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=y2JDLTfqOpjQxN8FILQClzf9FmSPwRHg0vB82buu7nE=;
-        b=WDT8T6JrnCISNOyt7Eh3Ovq0TEMBtJUAWNtqXmpYM0UpQMDjXWJuBMfcOvRlP/91JD
-         nYprKax9Z8rh5RZ0P6XyGTZjb8YZw4jP8r/9/OpeuK6QpJfsizgRNogzd9u3Ts2qH6HQ
-         eS6Q1UUlofcYTXA4m6+02ODoenHoI6BaVawOnQ98ke6x+jsxewFKHM265KNk1Jxag7Qt
-         pQAqUgjxGT7MIDkeKGJE68ardhY7qga442aiuTtqEXVu23SUt0ODrqUhGxCnyovd8AQ3
-         8VOvXzSGEy6g7GP+OypomlXKYzvdVHdKslBkPKkKy/2JAbKn3DVcOqP9ysGD7iw338T1
-         SB/g==
-X-Gm-Message-State: AOAM533Hi/+wYgGZpxKuNREQg+jcsAqnZXaPRazwKmr3biztRFdlNmFU
-        4y1b1e1qa9uL7MAa3n+8FcU/L8XO7L/krdFk0m880DWLO3RdjA==
-X-Google-Smtp-Source: ABdhPJwSrbvBZizwUDwD9EsBcL8ZrzHv8Wff2CJqlkBuAlD67nLTGHkuPWke/DnrHU1JwLLrhbZfRnqaA86N5RzHlyk=
-X-Received: by 2002:a2e:9896:: with SMTP id b22mr2905956ljj.9.1609979077706;
- Wed, 06 Jan 2021 16:24:37 -0800 (PST)
+        id S1726495AbhAGA1B convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 6 Jan 2021 19:27:01 -0500
+Received: from mga17.intel.com ([192.55.52.151]:40160 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726352AbhAGA1B (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 Jan 2021 19:27:01 -0500
+IronPort-SDR: o8/vI1hVCFNJVpqoMEpkuL/ZlV/rNRmMEpQVTd9EPz0alT1NmgIr3mafNPFChQ/gSuljDsxgpg
+ ZUxfbVn+Tj4A==
+X-IronPort-AV: E=McAfee;i="6000,8403,9856"; a="157137153"
+X-IronPort-AV: E=Sophos;i="5.79,328,1602572400"; 
+   d="scan'208";a="157137153"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Jan 2021 16:26:20 -0800
+IronPort-SDR: A/MsPr8dcoH6OiLuLFYlQsyMVjjZvEZfZ2pHdoVvC2tHn4w0pDZuChVAn7DaOmH9/LHLKQJ2Ja
+ 4QXybMlDycXQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.79,328,1602572400"; 
+   d="scan'208";a="346823662"
+Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
+  by orsmga003.jf.intel.com with ESMTP; 06 Jan 2021 16:26:20 -0800
+Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
+ fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Wed, 6 Jan 2021 16:26:19 -0800
+Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
+ fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Wed, 6 Jan 2021 16:26:19 -0800
+Received: from fmsmsx610.amr.corp.intel.com ([10.18.126.90]) by
+ fmsmsx610.amr.corp.intel.com ([10.18.126.90]) with mapi id 15.01.1713.004;
+ Wed, 6 Jan 2021 16:26:19 -0800
+From:   "Luck, Tony" <tony.luck@intel.com>
+To:     "paulmck@kernel.org" <paulmck@kernel.org>
+CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "linux-edac@vger.kernel.org" <linux-edac@vger.kernel.org>,
+        "bp@alien8.de" <bp@alien8.de>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "hpa@zytor.com" <hpa@zytor.com>,
+        "kernel-team@fb.com" <kernel-team@fb.com>
+Subject: RE: [PATCH RFC x86/mce] Make mce_timed_out() identify holdout CPUs
+Thread-Topic: [PATCH RFC x86/mce] Make mce_timed_out() identify holdout CPUs
+Thread-Index: AQHW5FMjkT1VpnYtUUqf+lhaTJjRmaoa6vEAgACTkgD//7UugIAAj7uA//+Jw9A=
+Date:   Thu, 7 Jan 2021 00:26:19 +0000
+Message-ID: <366fc78e7b8c4474958b289eec31ed25@intel.com>
+References: <20210106174102.GA23874@paulmck-ThinkPad-P72>
+ <3513b04e2bb543d2871ca8c152dcf5ae@intel.com>
+ <20210106191708.GB2743@paulmck-ThinkPad-P72>
+ <20210106224918.GA7914@agluck-desk2.amr.corp.intel.com>
+ <20210106232347.GG2743@paulmck-ThinkPad-P72>
+In-Reply-To: <20210106232347.GG2743@paulmck-ThinkPad-P72>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+dlp-product: dlpe-windows
+dlp-reaction: no-action
+dlp-version: 11.5.1.3
+x-originating-ip: [10.1.200.100]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-References: <20201117025522.1874864-1-rkir@google.com> <CAOGAQerMMg5+WgfebtFO3nut47QKa9QtpWxg3Eb3cR2ri3pRTQ@mail.gmail.com>
-In-Reply-To: <CAOGAQerMMg5+WgfebtFO3nut47QKa9QtpWxg3Eb3cR2ri3pRTQ@mail.gmail.com>
-From:   Roman Kiryanov <rkir@google.com>
-Date:   Wed, 6 Jan 2021 16:24:26 -0800
-Message-ID: <CAOGAQeqMUj0MCbTfetAX54iN40UCYqxqQ48UPtntYQKOTK6N3w@mail.gmail.com>
-Subject: Re: [PATCH] arch: x86: platform: retire arch/x86/platform/goldfish
-To:     Thomas Gleixner <tglx@linutronix.de>, mingo@redhat.com,
-        Borislav Petkov <bp@alien8.de>
-Cc:     LKML <linux-kernel@vger.kernel.org>, Lingfeng Yang <lfy@google.com>
-Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-+Thoman, +Ingo, +Borislav
+> Please see below for an updated patch.
 
-On Mon, Dec 14, 2020 at 1:20 PM Roman Kiryanov <rkir@google.com> wrote:
->
-> On Mon, Nov 16, 2020 at 6:55 PM <rkir@google.com> wrote:
-> >
-> > From: Roman Kiryanov <rkir@google.com>
-> >
-> > The Android Studio Emulator (aka goldfish) does not
-> > use arch/x86/platform/goldfish since 5.4 kernel.
-> >
-> > Signed-off-by: Roman Kiryanov <rkir@google.com>
->
-> Gentle ping.
+Yes. That worked:
+
+[   78.946069] mce: mce_timed_out: MCE holdout CPUs (may include false positives): 24-47,120-143
+[   78.946151] mce: mce_timed_out: MCE holdout CPUs (may include false positives): 24-47,120-143
+[   78.946153] Kernel panic - not syncing: Timeout: Not all CPUs entered broadcast exception handler
+
+I guess that more than one CPU hit the timeout and so your new message was printed twice
+before the panic code took over?
+
+Once again, the whole of socket 1 is MIA rather than just the pair of threads on one of the cores there.
+But that's a useful improvement (eliminating the other three sockets on this system).
+
+Tested-by: Tony Luck <tony.luck@intel.com>
+
+-Tony
