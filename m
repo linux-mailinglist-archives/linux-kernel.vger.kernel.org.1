@@ -2,91 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 27B352ECBD4
+	by mail.lfdr.de (Postfix) with ESMTP id 93D582ECBD5
 	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 09:41:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727112AbhAGIlF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 03:41:05 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:28423 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725959AbhAGIlE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 03:41:04 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1610008778;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+        id S1727130AbhAGIl0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 03:41:26 -0500
+Received: from mx2.suse.de ([195.135.220.15]:44060 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725959AbhAGIl0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Jan 2021 03:41:26 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1610008839; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=b/gjdBCSmSXKkH6UZrD67rlhCNa+Qh7NKibomcVRCXg=;
-        b=GFScFeuiP0gYrwf89SQxpVvkN7S/XrYZeWaNuctCUhlzZJ+/mXobrRkvBx8ZLGeJ2LjUE1
-        o8NCxu2SxB0siULJjJcvRpLvPqKmFDekYvvR/aQ7TGghoMG8YJwSnRG3gmgmKXTU4/xWiP
-        SHXjJp5FcjJdGbwU/KVjm0uk6kOUJ0Y=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-464-aD2Rgw5POiCoEGaBgL1UvA-1; Thu, 07 Jan 2021 03:39:37 -0500
-X-MC-Unique: aD2Rgw5POiCoEGaBgL1UvA-1
-Received: by mail-wr1-f72.google.com with SMTP id g17so2337371wrr.11
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Jan 2021 00:39:36 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=b/gjdBCSmSXKkH6UZrD67rlhCNa+Qh7NKibomcVRCXg=;
-        b=lVgYkLQr4e94E+fmB+hCNrlyHJ7yHgikRVtNMrHX49WOwfHxLzR/IxW2Bgr7TjNI0f
-         fut1sjNtET3Y7FpHWOlamCGvD3hWZNfQfgvUSGFsO0FHpDv19NjFzKtpJjvGE5wfCptz
-         v6vU9o8zMLe2YkdgmXByVsZxieZXS69qsw4fUsYvQdbsOuFSdHIqUoBOvwYwIytxsb+G
-         4s0FPO+QTQXqzGDtiPMWpecGTkVOByxw6IbxG7NBGCndtGBhQhGre6U9hRm50vooPpg1
-         q4KvghOepzD4q27lFRm/Uzg5FLq8+VolsICfGjFhei2nLthLl91lTUo2G7vNDmNbzYZQ
-         DvGQ==
-X-Gm-Message-State: AOAM531yCqUNXrHj+A21maUVyehwVcw8XJcKXZ1xUDX4GD9+TigWc3FC
-        /hkgK2G5leEqe7J6gEr3j8fZoqDWWWaBc6+UmQHjO8c5EoB7bzO6Q38ua5Jlg0Psa4lQLKwvVMD
-        owdMHunaKgxHkT7ME+qPUdda5
-X-Received: by 2002:a5d:554e:: with SMTP id g14mr7962488wrw.264.1610008775833;
-        Thu, 07 Jan 2021 00:39:35 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJz7UTbth5UPeghaUf4Y/9GWuz3fDS27vvZLBin1zacQw3Tp5n2al3IsoTK+x69AxDSZwlgDNg==
-X-Received: by 2002:a5d:554e:: with SMTP id g14mr7962459wrw.264.1610008775620;
-        Thu, 07 Jan 2021 00:39:35 -0800 (PST)
-Received: from steredhat (host-79-34-249-199.business.telecomitalia.it. [79.34.249.199])
-        by smtp.gmail.com with ESMTPSA id h83sm6923737wmf.9.2021.01.07.00.39.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 Jan 2021 00:39:34 -0800 (PST)
-Date:   Thu, 7 Jan 2021 09:39:32 +0100
-From:   Stefano Garzarella <sgarzare@redhat.com>
-To:     Daurnimator <quae@daurnimator.com>
-Cc:     Jens Axboe <axboe@kernel.dk>,
-        Kernel Hardening <kernel-hardening@lists.openwall.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        io-uring <io-uring@vger.kernel.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        Jann Horn <jannh@google.com>, Jeff Moyer <jmoyer@redhat.com>,
-        Aleksa Sarai <asarai@suse.de>,
-        Sargun Dhillon <sargun@sargun.me>,
-        linux-kernel@vger.kernel.org, Kees Cook <keescook@chromium.org>
-Subject: Re: [PATCH v6 2/3] io_uring: add IOURING_REGISTER_RESTRICTIONS opcode
-Message-ID: <20210107083932.ho6vo5g5hmdohwqt@steredhat>
-References: <20200827145831.95189-1-sgarzare@redhat.com>
- <20200827145831.95189-3-sgarzare@redhat.com>
- <CAEnbY+fS8FXVeouOxN3uohTvo7fBi5r7TQCGBZUmG3MGJhBrYg@mail.gmail.com>
+        bh=rA1JsYgR7mqTecaQqhjhjqY5ZginjyT17VTN7HxEStk=;
+        b=M2bHQmlgnooblrrxEI/FKrePrSmryUZo3N5353sQqF38Y3Jy2pTyPHEII4/pHZjEuMR19+
+        osbVdLOjozPAmSC+HNi9s6mled/WRbnZNV+Zuugraf18NjEs1XifCmVyzoIqNTYK0Pq+0S
+        ANQ/aViJ3taGrlIWceX4pS+gl1B+uPk=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 1FD2BACAF;
+        Thu,  7 Jan 2021 08:40:39 +0000 (UTC)
+Date:   Thu, 7 Jan 2021 09:40:38 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     Mike Kravetz <mike.kravetz@oracle.com>
+Cc:     Muchun Song <songmuchun@bytedance.com>, akpm@linux-foundation.org,
+        n-horiguchi@ah.jp.nec.com, ak@linux.intel.com, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 3/6] mm: hugetlb: fix a race between freeing and
+ dissolving the page
+Message-ID: <20210107084038.GC13207@dhcp22.suse.cz>
+References: <20210106084739.63318-1-songmuchun@bytedance.com>
+ <20210106084739.63318-4-songmuchun@bytedance.com>
+ <20210106165632.GT13207@dhcp22.suse.cz>
+ <a9c59b0e-9a9d-c568-5503-5df6fe8db908@oracle.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAEnbY+fS8FXVeouOxN3uohTvo7fBi5r7TQCGBZUmG3MGJhBrYg@mail.gmail.com>
+In-Reply-To: <a9c59b0e-9a9d-c568-5503-5df6fe8db908@oracle.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 04, 2021 at 01:26:41AM +1100, Daurnimator wrote:
->On Fri, 28 Aug 2020 at 00:59, Stefano Garzarella <sgarzare@redhat.com> wrote:
->> +               __u8 register_op; /* IORING_RESTRICTION_REGISTER_OP */
->
->Can you confirm that this intentionally limited the future range of
->IORING_REGISTER opcodes to 0-255?
->
+On Wed 06-01-21 12:58:29, Mike Kravetz wrote:
+> On 1/6/21 8:56 AM, Michal Hocko wrote:
+> > On Wed 06-01-21 16:47:36, Muchun Song wrote:
+> >> There is a race condition between __free_huge_page()
+> >> and dissolve_free_huge_page().
+> >>
+> >> CPU0:                         CPU1:
+> >>
+> >> // page_count(page) == 1
+> >> put_page(page)
+> >>   __free_huge_page(page)
+> >>                               dissolve_free_huge_page(page)
+> >>                                 spin_lock(&hugetlb_lock)
+> >>                                 // PageHuge(page) && !page_count(page)
+> >>                                 update_and_free_page(page)
+> >>                                 // page is freed to the buddy
+> >>                                 spin_unlock(&hugetlb_lock)
+> >>     spin_lock(&hugetlb_lock)
+> >>     clear_page_huge_active(page)
+> >>     enqueue_huge_page(page)
+> >>     // It is wrong, the page is already freed
+> >>     spin_unlock(&hugetlb_lock)
+> >>
+> >> The race windows is between put_page() and spin_lock() which
+> >> is in the __free_huge_page().
+> > 
+> > The race window reall is between put_page and dissolve_free_huge_page.
+> > And the result is that the put_page path would clobber an unrelated page
+> > (either free or already reused page) which is quite serious.
+> > Fortunatelly pages are dissolved very rarely. I believe that user would
+> > require to be privileged to hit this by intention.
+> > 
+> >> We should make sure that the page is already on the free list
+> >> when it is dissolved.
+> > 
+> > Another option would be to check for PageHuge in __free_huge_page. Have
+> > you considered that rather than add yet another state? The scope of the
+> > spinlock would have to be extended. If that sounds more tricky then can
+> > we check the page->lru in the dissolve path? If the page is still
+> > PageHuge and reference count 0 then there shouldn't be many options
+> > where it can be queued, right?
+> 
+> The tricky part with expanding lock scope will be the potential call to
+> hugepage_subpool_put_pages as it may also try to acquire the hugetlb_lock.
 
-It was based on io_uring_probe, so we used u8 for opcodes, but we have 
-room to extend it in the future.
+Can we rearrange the code and move hugepage_subpool_put_pages after all
+this is done? Or is there any strong reason for the particular ordering?
 
-So, for now, this allow to register restrictions up to 255 
-IORING_REGISTER opcode.
+> I am not sure what you mean by 'check the page->lru'?  If we knew the page
+> was on the free list, then we could dissolve.  But, I do not think there
+> is an easy way to determine that from page->lru.  A hugetlb page is either
+> going to be on the active list or free list.
 
+Can it be on the active list with ref count = 0?
+-- 
+Michal Hocko
+SUSE Labs
