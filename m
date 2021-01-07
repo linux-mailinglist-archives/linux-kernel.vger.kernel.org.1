@@ -2,104 +2,258 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D1AFA2ECA8C
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 07:38:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 796F02ECA9B
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 07:40:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726484AbhAGGhx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 01:37:53 -0500
-Received: from mail-lf1-f49.google.com ([209.85.167.49]:34237 "EHLO
-        mail-lf1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725763AbhAGGhx (ORCPT
+        id S1726934AbhAGGkG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 01:40:06 -0500
+Received: from mo4-p01-ob.smtp.rzone.de ([85.215.255.51]:30997 "EHLO
+        mo4-p01-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725959AbhAGGkE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 01:37:53 -0500
-Received: by mail-lf1-f49.google.com with SMTP id o19so12223966lfo.1;
-        Wed, 06 Jan 2021 22:37:36 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=eugQ6sBmsnErNR+lYgl7iFDp5HtAPo4b3aA9DfPqt+s=;
-        b=mNwtFTMCl1xizO5O+RPx7fM5ZXVtXkS1reTXwpxUprep7JY7aqLoviT2bTUyslhap5
-         zy+9lLYGmJ9vxYBJp8KgSx13E6XrMvu2SYxCCUka8ZZDZHTEmWHSstYHvmpD7Qj3uUro
-         iOstd1o0VE8Bzay2owFIDNSq27LrJ/iWLnkZN0WdyrtKkvAZ3vdGOWIqn8CIflaRVz3p
-         /E9+MaA05Cbo1WyAPAuCxSumyr2hO9uykcCWrU7VSSPM9rvzm6dGcR6wieyGLHzfeyJM
-         y1LCDNrFfZ4ryJci6pF4CHP7h14R7G4/szfFihCitTkE6i4NBd0+LfueXbYMC7VvSzfJ
-         vZhw==
-X-Gm-Message-State: AOAM531wkp5m3x3Jkj3zW9FjcdaWnWpHrC5iHLEzj9cUW4Fsk+B7t+UU
-        qbdsgz+NB5aYKi6lm2/x8+c=
-X-Google-Smtp-Source: ABdhPJyXrX4vEvOHyQMS2ciT6sAzN1vrJY7FdCRzKtCqvSzFgr4W4E8Qk2+BjmzQ4SmtbyKSq/5zFA==
-X-Received: by 2002:a19:c7cb:: with SMTP id x194mr3375847lff.426.1610001430714;
-        Wed, 06 Jan 2021 22:37:10 -0800 (PST)
-Received: from localhost.localdomain (62-78-225-252.bb.dnainternet.fi. [62.78.225.252])
-        by smtp.gmail.com with ESMTPSA id v14sm924248lfe.270.2021.01.06.22.37.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 06 Jan 2021 22:37:09 -0800 (PST)
-Date:   Thu, 7 Jan 2021 08:37:03 +0200
-From:   Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
-To:     matti.vaittinen@fi.rohmeurope.com, mazziesaccount@gmail.com
-Cc:     Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        linux-power@fi.rohmeurope.com, linux-watchdog@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 1/2] watchdog: bd70528: don't crash if WDG is confiured with
- BD71828
-Message-ID: <671ac57ad53ab1614da7fe9a3d0f78bdb5b51fda.1610001365.git.matti.vaittinen@fi.rohmeurope.com>
+        Thu, 7 Jan 2021 01:40:04 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1610001429;
+        s=strato-dkim-0002; d=chronox.de;
+        h=References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:From:
+        Subject:Sender;
+        bh=11Gv/TiV/9ELIGwBkPM9E2AjpWsPmNDRhpUtDmGJV98=;
+        b=X/pNNzyhB73wi9LsySYUUjLPGjnTrWdPQS+0f1lQyPwtASBN22dJ9ExDLUTd/KzYzr
+        11zfch9P/VQpz4ADU8uN7+2Nb+LCgBIG3hMLC+gyNem1eF4DEoZoMvmXpBW0n5PqxpZh
+        M1BNO/bCluL0HGhBmxrrW/Jz6OnsVPHCFUXqvuEzMs+NnN8hOaXOxxZuul5g4ARFvJZC
+        fpp1O2ra/u5OGXcHG2Ei62/wzWGjQpJRcBGZSg2yjG96RimM8MNo7PCiYyY3dcDxeQ77
+        jkyCpXezoSudqZr3P/cN4TBUFkWnWeG4ud3o+M8WWMJQCeRuNgdXSh3YuWBB8BipZRE6
+        V3BA==
+X-RZG-AUTH: ":P2ERcEykfu11Y98lp/T7+hdri+uKZK8TKWEqNzyCzy1Sfr67uExK884EC0GFGHavJShPkMRYMkE="
+X-RZG-CLASS-ID: mo00
+Received: from tauon.chronox.de
+        by smtp.strato.de (RZmta 47.12.1 DYNA|AUTH)
+        with ESMTPSA id Z04c46x076b6C3b
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+        (Client did not present a certificate);
+        Thu, 7 Jan 2021 07:37:06 +0100 (CET)
+Message-ID: <3f8cda66411d4e82074808657df7f1bbbcff37a9.camel@chronox.de>
+Subject: Re: [PATCH 0/5] Add KDF implementations to crypto API
+From:   Stephan Mueller <smueller@chronox.de>
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     herbert@gondor.apana.org.au, mathew.j.martineau@linux.intel.com,
+        dhowells@redhat.com, linux-crypto@vger.kernel.org,
+        linux-fscrypt@vger.kernel.org, linux-kernel@vger.kernel.org,
+        keyrings@vger.kernel.org
+Date:   Thu, 07 Jan 2021 07:37:05 +0100
+In-Reply-To: <X/OUt7+wGGEPkWh8@sol.localdomain>
+References: <4616980.31r3eYUQgx@positron.chronox.de>
+         <X/OUt7+wGGEPkWh8@sol.localdomain>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.2 (3.38.2-1.fc33) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If config for BD70528 watchdog is enabled when BD71828 or BD71815
-are used the RTC module will issue call to BD70528 watchdog with
-NULL data. Ignore this call and don't crash.
+Am Montag, dem 04.01.2021 um 14:20 -0800 schrieb Eric Biggers:
+> On Mon, Jan 04, 2021 at 10:45:57PM +0100, Stephan Müller wrote:
+> > The HKDF addition is used to replace the implementation in the filesystem
+> > crypto extension. This code was tested by using an EXT4 encrypted file
+> > system that was created and contains files written to by the current
+> > implementation. Using the new implementation a successful read of the
+> > existing files was possible and new files / directories were created
+> > and read successfully. These newly added file system objects could be
+> > successfully read using the current code. Yet if there is a test suite
+> > to validate whether the invokcation of the HKDF calculates the same
+> > result as the existing implementation, I would be happy to validate
+> > the implementation accordingly.
+> 
+> See https://www.kernel.org/doc/html/latest/filesystems/fscrypt.html#tests
+> for how to run the fscrypt tests.  'kvm-xfstests -c ext4 generic/582' should
+> be
+> enough for this, though you could run all the tests if you want.
 
-Signed-off-by: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
----
- drivers/watchdog/bd70528_wdt.c | 15 +++++++++++++++
- 1 file changed, 15 insertions(+)
+I ran the $(kvm-xfstests -c encrypt -g auto) on 5.11-rc2 with and without my
+HKDF changes. I.e. the testing shows the same results for both kernels which
+seems to imply that my HKDF changes do not change the behavior.
 
-diff --git a/drivers/watchdog/bd70528_wdt.c b/drivers/watchdog/bd70528_wdt.c
-index 0170b37e6674..fde242b8a4a6 100644
---- a/drivers/watchdog/bd70528_wdt.c
-+++ b/drivers/watchdog/bd70528_wdt.c
-@@ -49,6 +49,21 @@ int bd70528_wdt_set(struct rohm_regmap_dev *data, int enable, int *old_state)
- 	u8 wd_ctrl_arr[3] = { WD_CTRL_MAGIC1, WD_CTRL_MAGIC2, 0 };
- 	u8 *wd_ctrl = &wd_ctrl_arr[2];
- 
-+	/*
-+	 * BD71828 and BD71815 use same RTC driver as BD70528.
-+	 * BD71815 and BD71828 do not need MFD data as they do not share
-+	 * RTC counter with watchdog. The BD70528 watchdog should not be
-+	 * compiled in with BD71815 or BD71828 and the stub implementation
-+	 * for the bd70528_wdt_set should be provided instead.
-+	 *
-+	 * If one compiles this watchdog with BD71828 or BD71815 - the call
-+	 * from RTC may get here and the data pointer is NULL. In that case,
-+	 * warn and go out.
-+	 */
-+	if (!data) {
-+		pr_warn("BD70528_WATCHDOG misconfigured\n");
-+		return 0;
-+	}
- 	ret = regmap_read(bd70528->chip.regmap, BD70528_REG_WDT_CTRL, &tmp);
- 	if (ret)
- 		return ret;
-
-base-commit: 2c85ebc57b3e1817b6ce1a6b703928e113a90442
--- 
-2.25.4
+I get the following errors in both occasions - let me know if I should dig a
+bit more.
 
 
--- 
-Matti Vaittinen, Linux device drivers
-ROHM Semiconductors, Finland SWDC
-Kiviharjunlenkki 1E
-90220 OULU
-FINLAND
+[failed, exit status 1] [06:19:21]- output mismatch (see
+/results/ext4/results-encrypt/ext4/023.out.bad)
+    --- tests/ext4/023.out      2020-03-20 02:31:32.000000000 +0000
+    +++ /results/ext4/results-encrypt/ext4/023.out.bad  2021-01-07
+06:19:21.292339438 +0000
+    @@ -1,3 +1,2 @@
+     QA output created by 023
+     Format and populate
+    -Mount
+    ...
+    (Run 'diff -u /root/xfstests/tests/ext4/023.out /results/ext4/results-
+encrypt/ext4/023.out.bad'  to see the entire )
 
-~~~ "I don't think so," said Rene Descartes. Just then he vanished ~~~
-Simon says - in Latin please.
-~~~ "non cogito me" dixit Rene Descarte, deinde evanescavit ~~~
-Thanks to Simon Glass for the translation =] 
+[failed, exit status 1] [06:19:28]- output mismatch (see
+/results/ext4/results-encrypt/ext4/028.out.bad)
+    --- tests/ext4/028.out      2020-03-20 02:31:32.000000000 +0000
+    +++ /results/ext4/results-encrypt/ext4/028.out.bad  2021-01-07
+06:19:28.762339424 +0000
+    @@ -1,3 +1,2 @@
+     QA output created by 028
+     Format and mount
+    -Compare fsmap
+    ...
+    (Run 'diff -u /root/xfstests/tests/ext4/028.out /results/ext4/results-
+encrypt/ext4/028.out.bad'  to see the entire )
+
+[failed, exit status 1] [06:21:02]- output mismatch (see
+/results/ext4/results-encrypt/ext4/044.out.bad)
+    --- tests/ext4/044.out      2020-03-20 02:31:32.000000000 +0000
+    +++ /results/ext4/results-encrypt/ext4/044.out.bad  2021-01-07
+06:21:02.215672727 +0000
+    @@ -1,2 +1,5 @@
+     QA output created by 044
+     Silence is golden
+    +mount: /vdc: wrong fs type, bad option, bad superblock on /dev/vdc,
+missing codepage or helper program, or other e.
+    +ext3 mount failed
+    +(see /results/ext4/results-encrypt/ext4/044.full for details)
+    ...
+    (Run 'diff -u /root/xfstests/tests/ext4/044.out /results/ext4/results-
+encrypt/ext4/044.out.bad'  to see the entire )
+
+
+generic/085             [06:32:40][  849.654788] run fstests generic/085 at
+2021-01-07 06:32:40
+[  849.903286] EXT4-fs (vdd): Test dummy encryption mode enabled
+[  849.915355] EXT4-fs (vdd): mounted filesystem with ordered data mode. Opts:
+acl,user_xattr,block_validity,test_dummy.
+[  850.267282] dm-0: detected capacity change from 524288 to 0
+[  850.369101] EXT4-fs (dm-0): mounted filesystem with ordered data mode.
+Opts: (null). Quota mode: none.
+[  850.370106] ext4 filesystem being mounted at /vdc supports timestamps until
+2038 (0x7fffffff)
+[  850.479981] EXT4-fs (dm-0): mounted filesystem with ordered data mode.
+Opts: (null). Quota mode: none.
+[  850.480782] ext4 filesystem being mounted at /vdc supports timestamps until
+2038 (0x7fffffff)
+[  850.530734] BUG: kernel NULL pointer dereference, address: 0000000000000058
+[  850.531241] #PF: supervisor read access in kernel mode
+[  850.531613] #PF: error_code(0x0000) - not-present page
+[  850.532020] PGD 2a496067 P4D 2a496067 PUD 0 
+[  850.532336] Oops: 0000 [#1] SMP NOPTI
+[  850.532604] CPU: 1 PID: 19542 Comm: dmsetup Not tainted 5.11.0-rc2-xfstests
+#8
+[  850.533156] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS
+1.14.0-1.fc33 04/01/2014
+[  850.533780] RIP: 0010:thaw_bdev+0x47/0x90
+[  850.534106] Code: 8b 83 d8 04 00 00 85 c0 74 57 83 e8 01 45 31 e4 85 c0 89
+83 d8 04 00 00 7f 2d 48 8b bb 80 05 00 007
+[  850.535447] RSP: 0018:ffffb97586c2bcd8 EFLAGS: 00010286
+[  850.535822] RAX: 0000000000000000 RBX: ffff9df4a2e74240 RCX:
+ffffb97586c2bbdc
+[  850.536361] RDX: ffff9df4fdc17e80 RSI: ffff9df4a2e74790 RDI:
+ffff9df48b0bf000
+[  850.536864] RBP: ffff9df4a2e74720 R08: 0000000000000000 R09:
+0000000000040216
+[  850.537410] R10: 0000000000000000 R11: 0000000000000000 R12:
+0000000000000000
+[  850.537950] R13: 0000000000000000 R14: 0000000000000006 R15:
+0000000000000001
+[  850.538455] FS:  0000000000000000(0000) GS:ffff9df4fdc00000(0063)
+knlGS:00000000f7a487c0
+[  850.539063] CS:  0010 DS: 002b ES: 002b CR0: 0000000080050033
+[  850.539474] CR2: 0000000000000058 CR3: 00000000072ec002 CR4:
+0000000000770ee0
+[  850.540017] PKRU: 55555554
+[  850.540215] Call Trace:
+[  850.540395]  __dm_resume+0x70/0x90
+[  850.540649]  dm_resume+0x10d/0x120
+[  850.540934]  do_resume+0x17b/0x210
+[  850.541182]  ctl_ioctl+0x163/0x260
+[  850.541428]  ? dev_set_geometry+0x180/0x180
+[  850.541730]  dm_compat_ctl_ioctl+0xc/0x10
+[  850.542056]  __do_compat_sys_ioctl+0x137/0x160
+[  850.542375]  __do_fast_syscall_32+0x5c/0x90
+[  850.542682]  do_fast_syscall_32+0x2f/0x70
+[  850.543007]  entry_SYSENTER_compat_after_hwframe+0x4d/0x5f
+[  850.543404] RIP: 0023:0xf7f05549
+[  850.543640] Code: b8 01 10 06 03 74 b4 01 10 07 03 74 b0 01 10 08 03 74 d8
+01 00 00 00 00 00 00 00 00 00 00 00 00 000
+[  850.545029] RSP: 002b:00000000ffaed778 EFLAGS: 00000296 ORIG_RAX:
+0000000000000036
+[  850.545566] RAX: ffffffffffffffda RBX: 0000000000000003 RCX:
+00000000c138fd06
+[  850.546107] RDX: 00000000573ca4f0 RSI: 00000000f7eea266 RDI:
+00000000f7eea266
+[  850.546613] RBP: 00000000ffaed828 R08: 0000000000000000 R09:
+0000000000000000
+[  850.547154] R10: 0000000000000000 R11: 0000000000000000 R12:
+0000000000000000
+[  850.547651] R13: 0000000000000000 R14: 0000000000000000 R15:
+0000000000000000
+[  850.548191] CR2: 0000000000000058
+[  850.548431] ---[ end trace ec81eda86d2573e7 ]---
+[  850.548761] RIP: 0010:thaw_bdev+0x47/0x90
+[  850.549089] Code: 8b 83 d8 04 00 00 85 c0 74 57 83 e8 01 45 31 e4 85 c0 89
+83 d8 04 00 00 7f 2d 48 8b bb 80 05 00 007
+[  850.550444] RSP: 0018:ffffb97586c2bcd8 EFLAGS: 00010286
+[  850.550816] RAX: 0000000000000000 RBX: ffff9df4a2e74240 RCX:
+ffffb97586c2bbdc
+[  850.551359] RDX: ffff9df4fdc17e80 RSI: ffff9df4a2e74790 RDI:
+ffff9df48b0bf000
+[  850.551863] RBP: ffff9df4a2e74720 R08: 0000000000000000 R09:
+0000000000040216
+[  850.552405] R10: 0000000000000000 R11: 0000000000000000 R12:
+0000000000000000
+[  850.552944] R13: 0000000000000000 R14: 0000000000000006 R15:
+0000000000000001
+[  850.553450] FS:  0000000000000000(0000) GS:ffff9df4fdc00000(0063)
+knlGS:00000000f7a487c0
+[  850.554060] CS:  0010 DS: 002b ES: 002b CR0: 0000000080050033
+[  850.554466] CR2: 0000000000000058 CR3: 00000000072ec002 CR4:
+0000000000770ee0
+[  850.555008] PKRU: 55555554
+[  850.555206] BUG: sleeping function called from invalid context at
+include/linux/percpu-rwsem.h:49
+[  850.555833] in_atomic(): 0, irqs_disabled(): 1, non_block: 0, pid: 19542,
+name: dmsetup
+[  850.556436] INFO: lockdep is turned off.
+[  850.556718] irq event stamp: 8602
+[  850.556997] hardirqs last  enabled at (8601): [<ffffffff95cd4ed6>]
+queue_work_on+0x56/0x70
+[  850.557588] hardirqs last disabled at (8602): [<ffffffff969453c5>]
+exc_page_fault+0x35/0x240
+[  850.558220] softirqs last  enabled at (8568): [<ffffffff964a651a>]
+__rhashtable_insert_fast.constprop.0+0x2ca/0x540
+[  850.558997] softirqs last disabled at (8566): [<ffffffff964a6317>]
+__rhashtable_insert_fast.constprop.0+0xc7/0x540
+[  850.559729] CPU: 1 PID: 19542 Comm: dmsetup Tainted: G      D          
+5.11.0-rc2-xfstests #8
+[  850.560373] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS
+1.14.0-1.fc33 04/01/2014
+[  850.561030] Call Trace:
+[  850.561211]  dump_stack+0x77/0x97
+[  850.561454]  ___might_sleep.cold+0xa6/0xb6
+[  850.561753]  exit_signals+0x1c/0x2c0
+[  850.562048]  do_exit+0xb4/0x3d0
+[  850.562278]  rewind_stack_do_exit+0x17/0x20
+[  850.562578] RIP: 0023:0xf7f05549
+[  850.562818] Code: b8 01 10 06 03 74 b4 01 10 07 03 74 b0 01 10 08 03 74 d8
+01 00 00 00 00 00 00 00 00 00 00 00 00 000
+[  850.564185] RSP: 002b:00000000ffaed778 EFLAGS: 00000296 ORIG_RAX:
+0000000000000036
+[  850.564716] RAX: ffffffffffffffda RBX: 0000000000000003 RCX:
+00000000c138fd06
+[  850.565248] RDX: 00000000573ca4f0 RSI: 00000000f7eea266 RDI:
+00000000f7eea266
+[  850.565747] RBP: 00000000ffaed828 R08: 0000000000000000 R09:
+0000000000000000
+[  850.566280] R10: 0000000000000000 R11: 0000000000000000 R12:
+0000000000000000
+[  850.566779] R13: 0000000000000000 R14: 0000000000000000 R15:
+0000000000000000
+
+Ciao
+Stephan
+> 
+> - Eric
+
+
