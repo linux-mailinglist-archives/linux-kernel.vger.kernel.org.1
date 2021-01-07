@@ -2,68 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4553E2ED446
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 17:28:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C3DA2ED44D
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 17:29:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728773AbhAGQ2X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 11:28:23 -0500
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:34255 "EHLO
-        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1728060AbhAGQ2W (ORCPT
+        id S1728783AbhAGQ3J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 11:29:09 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:56916 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728142AbhAGQ3I (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 11:28:22 -0500
-Received: from cwcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 107GRMMv023672
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 7 Jan 2021 11:27:23 -0500
-Received: by cwcc.thunk.org (Postfix, from userid 15806)
-        id 3176915C356A; Thu,  7 Jan 2021 11:27:22 -0500 (EST)
-Date:   Thu, 7 Jan 2021 11:27:22 -0500
-From:   "Theodore Ts'o" <tytso@mit.edu>
-To:     Russell King - ARM Linux admin <linux@armlinux.org.uk>
-Cc:     Arnd Bergmann <arnd@kernel.org>, Will Deacon <will@kernel.org>,
-        linux-toolchains@vger.kernel.org,
-        Mark Rutland <mark.rutland@arm.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Ext4 Developers List <linux-ext4@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
-Subject: Re: Aarch64 EXT4FS inode checksum failures - seems to be weak memory
- ordering issues
-Message-ID: <X/c2aqSvYCaB9sR6@mit.edu>
-References: <20210105154726.GD1551@shell.armlinux.org.uk>
- <20210106115359.GB26994@C02TD0UTHF1T.local>
- <20210106135253.GJ1551@shell.armlinux.org.uk>
- <20210106172033.GA2165@willie-the-truck>
- <20210106223223.GM1551@shell.armlinux.org.uk>
- <20210107111841.GN1551@shell.armlinux.org.uk>
- <20210107124506.GO1551@shell.armlinux.org.uk>
- <CAK8P3a2TXPfFpgy+XjpDzOqt1qpDxufwiD-BLNbn4W_jpGp98g@mail.gmail.com>
- <20210107133747.GP1551@shell.armlinux.org.uk>
+        Thu, 7 Jan 2021 11:29:08 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1610036862;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=evTJ7AFQPfUxejqqtojISb8a+9bd3UvWgNTJWUIOHxU=;
+        b=OYCfGewEuajBtjWURDe0EKM4PsXRMZSIbja0OFrN4+gIwonl3A9pQ6MpuaPE3XU+/n6MLf
+        /vQV/1Koj1Q6MkkjcqOHHQHdQ6RxDy4mGvSqUgey99GyUSGMxJo1kWTN00CVnf5zJeVo0O
+        qbxWMFAs1FV3Qmp5rynQBn2j0oImDp4=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-239-WT0BpxCQPbyHZqm3CKllRg-1; Thu, 07 Jan 2021 11:27:38 -0500
+X-MC-Unique: WT0BpxCQPbyHZqm3CKllRg-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 66911180E46D;
+        Thu,  7 Jan 2021 16:27:37 +0000 (UTC)
+Received: from colo-mx.corp.redhat.com (colo-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.21])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 5B2D410013BD;
+        Thu,  7 Jan 2021 16:27:37 +0000 (UTC)
+Received: from zmail21.collab.prod.int.phx2.redhat.com (zmail21.collab.prod.int.phx2.redhat.com [10.5.83.24])
+        by colo-mx.corp.redhat.com (Postfix) with ESMTP id 4F32F4BB7B;
+        Thu,  7 Jan 2021 16:27:37 +0000 (UTC)
+Date:   Thu, 7 Jan 2021 11:27:37 -0500 (EST)
+From:   Bob Peterson <rpeterso@redhat.com>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Satya Tangirala <satyat@google.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jens Axboe <axboe@kernel.dk>
+Message-ID: <1137375419.42956970.1610036857271.JavaMail.zimbra@redhat.com>
+In-Reply-To: <20210107162000.GA2693@lst.de>
+References: <20201224044954.1349459-1-satyat@google.com> <20210107162000.GA2693@lst.de>
+Subject: Re: [PATCH] fs: Fix freeze_bdev()/thaw_bdev() accounting of
+ bd_fsfreeze_sb
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210107133747.GP1551@shell.armlinux.org.uk>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.3.112.201, 10.4.195.23]
+Thread-Topic: Fix freeze_bdev()/thaw_bdev() accounting of bd_fsfreeze_sb
+Thread-Index: QLSEzKoRlbffxOodTzmv1w/O4NuJkg==
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 07, 2021 at 01:37:47PM +0000, Russell King - ARM Linux admin wrote:
-> > The gcc bugzilla mentions backports into gcc-linaro, but I do not see
-> > them in my git history.
-> 
-> So, do we raise the minimum gcc version for the kernel as a whole to 5.1
-> or just for aarch64?
+----- Original Message -----
+> Can someone pick this up?  Maybe through Jens' block tree as that is
+> where my commit this is fixing up came from.
+Christoph and Al,
 
-Russell, Arnd, thanks so much for tracking down the root cause of the
-bug!
+Here is my version:
 
-I will note that RHEL 7 uses gcc 4.8.  I personally don't have an
-objections to requiring developers using RHEL 7 to have to install a
-more modern gcc (since I use Debian Testing and gcc 10.2.1, myself,
-and gcc 5.1 is so five years ago :-), but I could imagine that being
-considered inconvenient for some.
+Bob Peterson
 
-						- Ted
+fs: fix freeze count problem in freeze_bdev
+
+Before this patch, if you tried to freeze a device (function freeze_bdev)
+while it was being unmounted, it would get NULL back from get_active_super
+and correctly bypass the freeze calls. Unfortunately, it forgot to decrement
+its bd_fsfreeze_count. Subsequent calls to device thaw (thaw_bdev) would
+see the non-zero bd_fsfreeze_count and assume the bd_fsfreeze_sb value was
+still valid. That's not a safe assumption and resulted in use-after-free,
+which often caused fatal kernel errors like: "unable to handle page fault
+for address."
+
+This patch adds the necessary decrement of bd_fsfreeze_count for that
+error path. It also adds code to set the bd_fsfreeze_sb to NULL when the
+last reference is reached in thaw_bdev.
+
+Reviewed-by: Bob Peterson <rpeterso@redhat.com>
+---
+ fs/block_dev.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
+
+diff --git a/fs/block_dev.c b/fs/block_dev.c
+index 9e56ee1f2652..c6daf7d12546 100644
+--- a/fs/block_dev.c
++++ b/fs/block_dev.c
+@@ -555,8 +555,10 @@ int freeze_bdev(struct block_device *bdev)
+ 		goto done;
+ 
+ 	sb = get_active_super(bdev);
+-	if (!sb)
++	if (!sb) {
++		bdev->bd_fsfreeze_count--;
+ 		goto sync;
++	}
+ 	if (sb->s_op->freeze_super)
+ 		error = sb->s_op->freeze_super(sb);
+ 	else
+@@ -600,6 +602,7 @@ int thaw_bdev(struct block_device *bdev)
+ 	if (!sb)
+ 		goto out;
+ 
++	bdev->bd_fsfreeze_sb = NULL;
+ 	if (sb->s_op->thaw_super)
+ 		error = sb->s_op->thaw_super(sb);
+ 	else
+
