@@ -2,265 +2,277 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2AE832ECC37
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 10:04:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CAD632ECC79
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 10:14:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727495AbhAGJD5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 04:03:57 -0500
-Received: from mail-eopbgr60045.outbound.protection.outlook.com ([40.107.6.45]:21197
-        "EHLO EUR04-DB3-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725974AbhAGJDz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 04:03:55 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=btUTveu2aB2KcacHYIHToP5IevIQWh1cl1Q0mQeNjB/Ga4VK9Vl8qAqN4e3zdypXs4zLRuoZWJ4uFXuJUTLfV47x1veaQzGn/gyNpkZocrihF4PSTr8bvYVDv/fI1nsjWidRBL84NI1QiQVT8DCDulKytzYjVqFI58aS3/kRBhATz920YF+YLXsXbppUFW2Jba0pjihPsx8FHuRdUwiRWhgxGSQxgFRAYjNZC9elOFWJ7gOVbkv0Z+VEo2HTqj9acOvoUnZf9TR3iAhwGWQHOxnoghb8h5aEITzjPSaxn2XdyoxSwKpfcpHxeccK86ltBxt7kc8J8tQ78hjY017sbA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=3xiPIgsBGQsk1PW8W4Xz5jofW0uyIXaYgyx8QZ1CJKg=;
- b=E8+1Rw+MLS2DCwTdNpS1Cqu8x4pG7vTIIt+ew6ZYlVirKTACWENynH+kUidioXA2WUPe3oDFD6l+bd1ngdqkQwqlTTXiWH9ww575/yje6aRWDWgaFb4EzIcKCbnTxi811hxUUfh/DDfSZ2Gcyikdc4y+iLPha/xDTpz8+5uX+he1LEjns7E8cvbKDhkEe1TC/GrOPYZpXw3fZBzdvxC/8/Qmb3lS/INlg6hhCkSK3y5NYUyOMV56NaOa8LSCAtLIKlDim94GNnVSA9r4+M3Y691hp2tsjbCIsaN4qbzO+R9kiyXScWASoiVtz/Jrcu0r5n9INO7FEUnJ6rspgoGE9Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=3xiPIgsBGQsk1PW8W4Xz5jofW0uyIXaYgyx8QZ1CJKg=;
- b=fyP9qisPLhKtdCDZjYW0BwmygQcXALX+dynvDwYyJ/xCKEeRB1DsNwgcvKhiq3tjUu9+GW1OYo+JmHYm6jULLzhsVwmlAjaTuT/Y+KAzCMOz2wXxRqZDv4AdplF9I63yEIW7fiSvLzhVm67CgBP2EvDpz0qzrUmmINBATN1vh8U=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none header.from=nxp.com;
-Received: from HE1PR0402MB3371.eurprd04.prod.outlook.com (2603:10a6:7:85::27)
- by HE1PR0401MB2297.eurprd04.prod.outlook.com (2603:10a6:3:23::25) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3721.22; Thu, 7 Jan
- 2021 09:02:59 +0000
-Received: from HE1PR0402MB3371.eurprd04.prod.outlook.com
- ([fe80::3194:64d6:5a70:a91d]) by HE1PR0402MB3371.eurprd04.prod.outlook.com
- ([fe80::3194:64d6:5a70:a91d%4]) with mapi id 15.20.3721.024; Thu, 7 Jan 2021
- 09:02:59 +0000
-From:   Zhiqiang Hou <Zhiqiang.Hou@nxp.com>
-To:     linux-pci@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-omap@vger.kernel.org,
-        linux-arm-kernel@axis.com, lorenzo.pieralisi@arm.com,
-        robh@kernel.org, bhelgaas@google.com
-Cc:     kishon@ti.com, minghuan.Lian@nxp.com, jesper.nilsson@axis.com,
-        jingoohan1@gmail.com, gustavo.pimentel@synopsys.com,
-        hayashi.kunihiko@socionext.com, Hou Zhiqiang <Zhiqiang.Hou@nxp.com>
-Subject: [PATCH 4/4] PCI: dwc: Change the parameter of function dw_pcie_ep_reset_bar()
-Date:   Thu,  7 Jan 2021 17:11:23 +0800
-Message-Id: <20210107091123.8616-5-Zhiqiang.Hou@nxp.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210107091123.8616-1-Zhiqiang.Hou@nxp.com>
-References: <20210107091123.8616-1-Zhiqiang.Hou@nxp.com>
-Content-Type: text/plain
-X-Originating-IP: [119.31.174.73]
-X-ClientProxiedBy: SG2PR06CA0085.apcprd06.prod.outlook.com
- (2603:1096:3:14::11) To HE1PR0402MB3371.eurprd04.prod.outlook.com
- (2603:10a6:7:85::27)
+        id S1726793AbhAGJOR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 04:14:17 -0500
+Received: from m43-15.mailgun.net ([69.72.43.15]:29939 "EHLO
+        m43-15.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725974AbhAGJOQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Jan 2021 04:14:16 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1610010835; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Type: MIME-Version: Sender;
+ bh=vEj8TCuHMl77DS6RWqh/LNf7is3V1rb3kBT3DpY+1gc=; b=AlXp0uWXoisHvqQ7qBQtUGJQTy69XFkbIfhy0yPvad4XAETwsxe7fJ+BHN2TsSC/K4OyBeXw
+ 8p1TaoPIXTSxcopjhJZ6Fhq6Zk76xpBZw4LDzEiBkaJ6kOww1GFlmlS04uWZb1Xxt2SH2YJN
+ eB2TmatmcbAfb+MK6rBW5SIzsnw=
+X-Mailgun-Sending-Ip: 69.72.43.15
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n05.prod.us-east-1.postgun.com with SMTP id
+ 5ff6d0b2512813ac4494ea50 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 07 Jan 2021 09:13:22
+ GMT
+Sender: cang=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 26478C43465; Thu,  7 Jan 2021 09:13:22 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: cang)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 9016BC433C6;
+        Thu,  7 Jan 2021 09:13:20 +0000 (UTC)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from localhost.localdomain (119.31.174.73) by SG2PR06CA0085.apcprd06.prod.outlook.com (2603:1096:3:14::11) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3742.6 via Frontend Transport; Thu, 7 Jan 2021 09:02:54 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: cbc4fba3-675b-48e1-458b-08d8b2eb0815
-X-MS-TrafficTypeDiagnostic: HE1PR0401MB2297:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <HE1PR0401MB2297F2EE23F4E25F21C4445884AF0@HE1PR0401MB2297.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:369;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: BBwmz8AuVOjhAmdtnvw9184nLvypVFtYDiNNfViIw3jU2dgo3IwkIGkyl4jyKkJg2ja2JrAIpWC3+KuYla0aECRO9+0yJxq3nh502L3I1Jd6YBL+ARuGEzNt4KC98kB5oJ/YVs766vIoj+LbENgLpHFHp4aMhl6bsaehN2oa4yGYjECqLXXwuEyvdsX75g+K1/y6IpRS7kEPjuaww5z/Ad6kJM61mmzhVo+usD4AO2gmYQU/3tT3zSe67zO/uznGWu61AvCC7gS0BniAE4cwrY9gSbUJQGil84L/wHIvq7t/y7d06B6tH7vchGpGtNYs6hmGNcQQyzBlKBkNiIBkB8tzm5BuM1vLHND5t9bsn1gy0ktgm+xQEAK3pRKx4XNBAIkr5e5ymk2krX8tzoM/a3YRVX+JsPdlalGEIh8Hjskmyp0zPBuJBrK7+MkdO1o03y2NM6zcMEZ0wsiTDoFptg==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:HE1PR0402MB3371.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(376002)(39860400002)(366004)(136003)(346002)(36756003)(956004)(8676002)(86362001)(2616005)(2906002)(6512007)(478600001)(6666004)(4326008)(66556008)(1076003)(26005)(83380400001)(6486002)(66476007)(52116002)(5660300002)(7416002)(316002)(69590400011)(186003)(6506007)(16526019)(66946007)(8936002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?UZ/egG3x5lQlHrJW4+1CDqt8OsE6TnN5zw6LV2CEAh8zmnj1I7LW1OxmjD0m?=
- =?us-ascii?Q?O7u3VVBchEeMFlLy85qdyeZ0IvFI8SKlJzejBei367k51uLEZc1q0q62XQcZ?=
- =?us-ascii?Q?KVkJllO/VuSWuhxnEHAasRCsEz3efF/MDN3zkWDCB4NBDmZSfkNKVtFuQQxm?=
- =?us-ascii?Q?Bgi1UWsUuzz5bxiHEXn0iYvy7jze0/S+PYU35BJeYURBFbBT+4vt+zV8n1SU?=
- =?us-ascii?Q?ktSHGvXGLkc3oEUyWNsqWpR3swwWUw1xeXpcUL3Lciii9F3NdiSufegZw5TX?=
- =?us-ascii?Q?MZvbbyv3NrVsDQhJL7+nZoe/CJObk7ojreR+WnKftEiMToj7Z6Z5NlMPq171?=
- =?us-ascii?Q?RbxPQMkUjK2+2BAmwyQbMnLbi6DXRNKB5zvgcPx/RBWC1hYZ7bAFwXiz0O7+?=
- =?us-ascii?Q?tK97KbRgYYb1dfLLnTvLdJoPMqEGaqftFe2eyDOPcOf42o3RQ2SmUnqQ/Qv8?=
- =?us-ascii?Q?KhdP4zd/ppr1ueQvKaJr+3/uPAoASMsFnFeooBBUSIAfpUGxeijYk1ellhVb?=
- =?us-ascii?Q?1KIAYq3GgP3TuSXJxmnqn6tim1XO4xLHVSPf/1tfqbcJ+fWofyQMz1FuY0t9?=
- =?us-ascii?Q?/GggbGr7i4nvuL/WTEvjlYFfNsrGEi+OcTzSoC9AoWRUvi/v7H2aV9vh+HKb?=
- =?us-ascii?Q?33xcYehBCUBRzpFOxmzOdZeps1/0mpyTNBV0psHIhJJ6wxclA/dC6Xrarbm8?=
- =?us-ascii?Q?CQnxVRHnA3Qm5lzJGUk0ODJHczT9Ft5aWYJslTV9C8M05+AqUjI66iwMa4rY?=
- =?us-ascii?Q?9jKckZudeLrF6d5HXIVprgndDByt/Kg3lxx0IHuXN+n/Q13sZeXr+XjZ4P3j?=
- =?us-ascii?Q?2hwyrgnJsfkQrQ3TTlLacHjYJym/RN8bi4R78aMBxM/ZjvlIA5sqPYm1zr19?=
- =?us-ascii?Q?cm2xSe0O0Q33u+4xT4IxjsJCMN21Hm6cIWA+2iAADkb70cpHsDrE3RlxAEmR?=
- =?us-ascii?Q?2I0P4Y4WzDQqZGkgQOmdGiFJ6QIkz4HrLryNK2912sbuQgorSRzYOiS8+pJO?=
- =?us-ascii?Q?F0S/?=
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-AuthSource: HE1PR0402MB3371.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 Jan 2021 09:02:59.3336
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-Network-Message-Id: cbc4fba3-675b-48e1-458b-08d8b2eb0815
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 3xO0LTLwCU3pOgqw07eButTHF+zYgTdnIau1LCj7dYWvHWKCMu8m+pfAFexDAad45pn5AvAQ88B2ffhvrp0yUQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: HE1PR0401MB2297
+Content-Type: multipart/mixed;
+ boundary="=_4b0a96c36df2564c807f79a899bae30d"
+Date:   Thu, 07 Jan 2021 17:13:20 +0800
+From:   Can Guo <cang@codeaurora.org>
+To:     Jaegeuk Kim <jaegeuk@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org,
+        kernel-team@android.com, alim.akhtar@samsung.com,
+        avri.altman@wdc.com, bvanassche@acm.org,
+        martin.petersen@oracle.com, stanley.chu@mediatek.com
+Subject: Re: [PATCH v4 2/2] scsi: ufs: handle LINERESET with correct tm_cmd
+In-Reply-To: <3e2245953c143b55d512d46a16ed8a2c@codeaurora.org>
+References: <20210107074710.549309-1-jaegeuk@kernel.org>
+ <20210107074710.549309-3-jaegeuk@kernel.org>
+ <03a47a3f49914230653bea777e2ee550@codeaurora.org>
+ <X/bBX6t31BOfRG/i@google.com>
+ <abce95b0eb219fb6dee50f925e8fdb36@codeaurora.org>
+ <X/bKZDxl1HeelB1a@google.com>
+ <3e2245953c143b55d512d46a16ed8a2c@codeaurora.org>
+Message-ID: <c0f337128c5274a551c5664c7e1ab6ea@codeaurora.org>
+X-Sender: cang@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hou Zhiqiang <Zhiqiang.Hou@nxp.com>
+--=_4b0a96c36df2564c807f79a899bae30d
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
 
-This helper is endpoint mode specific, so change to use a pointer of
-'struct dw_pcie_ep' as the parameter.
+On 2021-01-07 16:58, Can Guo wrote:
+> On 2021-01-07 16:46, Jaegeuk Kim wrote:
+>> On 01/07, Can Guo wrote:
+>>> On 2021-01-07 16:07, Jaegeuk Kim wrote:
+>>> > On 01/07, Can Guo wrote:
+>>> > > On 2021-01-07 15:47, Jaegeuk Kim wrote:
+>>> > > > From: Jaegeuk Kim <jaegeuk@google.com>
+>>> > > >
+>>> > > > This fixes a warning caused by wrong reserve tag usage in
+>>> > > > __ufshcd_issue_tm_cmd.
+>>> > > >
+>>> > > > WARNING: CPU: 7 PID: 7 at block/blk-core.c:630 blk_get_request+0x68/0x70
+>>> > > > WARNING: CPU: 4 PID: 157 at block/blk-mq-tag.c:82
+>>> > > > blk_mq_get_tag+0x438/0x46c
+>>> > > >
+>>> > > > And, in ufshcd_err_handler(), we can avoid to send tm_cmd before
+>>> > > > aborting
+>>> > > > outstanding commands by waiting a bit for IO completion like this.
+>>> > > >
+>>> > > > __ufshcd_issue_tm_cmd: task management cmd 0x80 timed-out
+>>> > > >
+>>> > > > Fixes: 69a6c269c097 ("scsi: ufs: Use blk_{get,put}_request() to
+>>> > > > allocate and free TMFs")
+>>> > > > Fixes: 2355b66ed20c ("scsi: ufs: Handle LINERESET indication in err
+>>> > > > handler")
+>>> > >
+>>> > > Hi Jaegeuk,
+>>> > >
+>>> > > Sorry, what is wrong with commit 2355b66ed20c? Clearing pending I/O
+>>> > > reqs is a general procedure for handling all non-fatal errors.
+>>> >
+>>> > Without waiting IOs, I hit the below timeout all the time from
+>>> > LINERESET, which
+>>> > causes UFS stuck permanently, as mentioned in the description.
+>>> >
+>>> > "__ufshcd_issue_tm_cmd: task management cmd 0x80 timed-out"
+>>> 
+>>> In that case, ufshcd_try_to_abort_task(), the caller of
+>>> __ufshcd_issue_tm_cmd(),
+>>> should return -ETIMEOUT, then err_handler would jump to do a full 
+>>> reset,
+>>> then bail.
+>>> I am not sure what gets UFS stuck permanently. Could you please share 
+>>> the
+>>> callstack
+>>> if possible? I really want to know what is happening. Thanks.
+>> 
+>> I can't share all the log tho, it entered full reset. While printing 
+>> out
+>> whole registers, the device was hard reset. Thanks,
+> 
+> Hi Jaegeuk,
+> 
+> Entering full reset is expected in this case, which is why I am saying
+> line-reset handling logic should not be penalized. I think we need to
+> find out what caused the hard reset but not just adding a delay before
+> clearing pending reqs, because let's say 3 sec expires and you hit the
+> same tm req timeout (maybe with a lower possibility), you may still end
+> up same at the hard reset. You don't need to share all the log, just 
+> the
+> last call stacks before hard reset. Is it a QCOM's platform used in 
+> your
+> case? Can you check the log/dump if NoC error happened?
+> 
+> Thanks.
+> Can Guo.
+> 
 
-Signed-off-by: Hou Zhiqiang <Zhiqiang.Hou@nxp.com>
----
- drivers/pci/controller/dwc/pci-dra7xx.c          |  2 +-
- drivers/pci/controller/dwc/pci-layerscape-ep.c   |  2 +-
- drivers/pci/controller/dwc/pcie-artpec6.c        |  2 +-
- drivers/pci/controller/dwc/pcie-designware-ep.c  | 16 +++++++---------
- .../pci/controller/dwc/pcie-designware-plat.c    |  3 +--
- drivers/pci/controller/dwc/pcie-designware.h     |  5 +++--
- drivers/pci/controller/dwc/pcie-uniphier-ep.c    |  3 +--
- 7 files changed, 15 insertions(+), 18 deletions(-)
+Hi Jaegeuk,
 
-diff --git a/drivers/pci/controller/dwc/pci-dra7xx.c b/drivers/pci/controller/dwc/pci-dra7xx.c
-index b105af63854a..12726c63366f 100644
---- a/drivers/pci/controller/dwc/pci-dra7xx.c
-+++ b/drivers/pci/controller/dwc/pci-dra7xx.c
-@@ -383,7 +383,7 @@ static void dra7xx_pcie_ep_init(struct dw_pcie_ep *ep)
- 	enum pci_barno bar;
- 
- 	for (bar = 0; bar < PCI_STD_NUM_BARS; bar++)
--		dw_pcie_ep_reset_bar(pci, bar);
-+		dw_pcie_ep_reset_bar(ep, bar);
- 
- 	dra7xx_pcie_enable_wrapper_interrupts(dra7xx);
- }
-diff --git a/drivers/pci/controller/dwc/pci-layerscape-ep.c b/drivers/pci/controller/dwc/pci-layerscape-ep.c
-index 0f5e4104c06c..dcee95e16139 100644
---- a/drivers/pci/controller/dwc/pci-layerscape-ep.c
-+++ b/drivers/pci/controller/dwc/pci-layerscape-ep.c
-@@ -62,7 +62,7 @@ static void ls_pcie_ep_init(struct dw_pcie_ep *ep)
- 		return;
- 
- 	for (bar = 0; bar < PCI_STD_NUM_BARS; bar++)
--		dw_pcie_ep_reset_bar(pci, bar);
-+		dw_pcie_ep_reset_bar(ep, bar);
- 
- 	pcie->ls_epc->msi_capable = ep_func->msi_cap ? true : false;
- 	pcie->ls_epc->msix_capable = ep_func->msix_cap ? true : false;
-diff --git a/drivers/pci/controller/dwc/pcie-artpec6.c b/drivers/pci/controller/dwc/pcie-artpec6.c
-index 597c282f586c..f833daf6d422 100644
---- a/drivers/pci/controller/dwc/pcie-artpec6.c
-+++ b/drivers/pci/controller/dwc/pcie-artpec6.c
-@@ -348,7 +348,7 @@ static void artpec6_pcie_ep_init(struct dw_pcie_ep *ep)
- 	artpec6_pcie_wait_for_phy(artpec6_pcie);
- 
- 	for (bar = 0; bar < PCI_STD_NUM_BARS; bar++)
--		dw_pcie_ep_reset_bar(pci, bar);
-+		dw_pcie_ep_reset_bar(ep, bar);
- }
- 
- static int artpec6_pcie_raise_irq(struct dw_pcie_ep *ep, u8 func_no,
-diff --git a/drivers/pci/controller/dwc/pcie-designware-ep.c b/drivers/pci/controller/dwc/pcie-designware-ep.c
-index d8eb9a984547..2dc960e74fd0 100644
---- a/drivers/pci/controller/dwc/pcie-designware-ep.c
-+++ b/drivers/pci/controller/dwc/pcie-designware-ep.c
-@@ -49,11 +49,11 @@ static unsigned int dw_pcie_ep_get_func_cfg_addr(struct dw_pcie_ep *ep,
- 	return 0;
- }
- 
--static void __dw_pcie_ep_reset_bar(struct dw_pcie *pci, u8 func_no,
-+static void __dw_pcie_ep_reset_bar(struct dw_pcie_ep *ep, u8 func_no,
- 				   enum pci_barno bar, int flags)
- {
- 	u32 reg;
--	struct dw_pcie_ep *ep = &pci->ep;
-+	struct dw_pcie *pci = to_dw_pcie_from_ep(ep);
- 	struct dw_pcie_ep_func *func = dw_pcie_ep_get_func_from_ep(ep, func_no);
- 
- 	if (!func)
-@@ -70,14 +70,12 @@ static void __dw_pcie_ep_reset_bar(struct dw_pcie *pci, u8 func_no,
- 	dw_pcie_dbi_ro_wr_dis(pci);
- }
- 
--void dw_pcie_ep_reset_bar(struct dw_pcie *pci, enum pci_barno bar)
-+void dw_pcie_ep_reset_bar(struct dw_pcie_ep *ep, enum pci_barno bar)
- {
--	u8 func_no, funcs;
--
--	funcs = pci->ep.epc->max_functions;
-+	u8 func_no;
- 
--	for (func_no = 0; func_no < funcs; func_no++)
--		__dw_pcie_ep_reset_bar(pci, func_no, bar, 0);
-+	for (func_no = 0; func_no < ep->epc->max_functions; func_no++)
-+		__dw_pcie_ep_reset_bar(ep, func_no, bar, 0);
- }
- 
- static u8 __dw_pcie_ep_find_next_cap(struct dw_pcie_ep *ep, u8 func_no,
-@@ -208,7 +206,7 @@ static void dw_pcie_ep_clear_bar(struct pci_epc *epc, u8 func_no,
- 	enum pci_barno bar = epf_bar->barno;
- 	u32 atu_index = ep->bar_to_atu[bar];
- 
--	__dw_pcie_ep_reset_bar(pci, func_no, bar, epf_bar->flags);
-+	__dw_pcie_ep_reset_bar(ep, func_no, bar, epf_bar->flags);
- 
- 	dw_pcie_disable_atu(pci, atu_index, DW_PCIE_REGION_INBOUND);
- 	clear_bit(atu_index, ep->ib_window_map);
-diff --git a/drivers/pci/controller/dwc/pcie-designware-plat.c b/drivers/pci/controller/dwc/pcie-designware-plat.c
-index 9b397c807261..49d51584a547 100644
---- a/drivers/pci/controller/dwc/pcie-designware-plat.c
-+++ b/drivers/pci/controller/dwc/pcie-designware-plat.c
-@@ -47,11 +47,10 @@ static const struct dw_pcie_ops dw_pcie_ops = {
- 
- static void dw_plat_pcie_ep_init(struct dw_pcie_ep *ep)
- {
--	struct dw_pcie *pci = to_dw_pcie_from_ep(ep);
- 	enum pci_barno bar;
- 
- 	for (bar = 0; bar < PCI_STD_NUM_BARS; bar++)
--		dw_pcie_ep_reset_bar(pci, bar);
-+		dw_pcie_ep_reset_bar(ep, bar);
- }
- 
- static int dw_plat_pcie_ep_raise_irq(struct dw_pcie_ep *ep, u8 func_no,
-diff --git a/drivers/pci/controller/dwc/pcie-designware.h b/drivers/pci/controller/dwc/pcie-designware.h
-index b8cbe266e01c..10ba09237def 100644
---- a/drivers/pci/controller/dwc/pcie-designware.h
-+++ b/drivers/pci/controller/dwc/pcie-designware.h
-@@ -415,7 +415,7 @@ int dw_pcie_ep_raise_msix_irq(struct dw_pcie_ep *ep, u8 func_no,
- 			     u16 interrupt_num);
- int dw_pcie_ep_raise_msix_irq_doorbell(struct dw_pcie_ep *ep, u8 func_no,
- 				       u16 interrupt_num);
--void dw_pcie_ep_reset_bar(struct dw_pcie *pci, enum pci_barno bar);
-+void dw_pcie_ep_reset_bar(struct dw_pcie_ep *ep, enum pci_barno bar);
- struct dw_pcie_ep_func *
- dw_pcie_ep_get_func_from_ep(struct dw_pcie_ep *ep, u8 func_no);
- #else
-@@ -465,7 +465,8 @@ static inline int dw_pcie_ep_raise_msix_irq_doorbell(struct dw_pcie_ep *ep,
- 	return 0;
- }
- 
--static inline void dw_pcie_ep_reset_bar(struct dw_pcie *pci, enum pci_barno bar)
-+static inline void dw_pcie_ep_reset_bar(struct dw_pcie_ep *ep,
-+					enum pci_barno bar)
- {
- }
- 
-diff --git a/drivers/pci/controller/dwc/pcie-uniphier-ep.c b/drivers/pci/controller/dwc/pcie-uniphier-ep.c
-index 69810c6b0d58..21e185bf90d6 100644
---- a/drivers/pci/controller/dwc/pcie-uniphier-ep.c
-+++ b/drivers/pci/controller/dwc/pcie-uniphier-ep.c
-@@ -134,11 +134,10 @@ static void uniphier_pcie_stop_link(struct dw_pcie *pci)
- 
- static void uniphier_pcie_ep_init(struct dw_pcie_ep *ep)
- {
--	struct dw_pcie *pci = to_dw_pcie_from_ep(ep);
- 	enum pci_barno bar;
- 
- 	for (bar = BAR_0; bar <= BAR_5; bar++)
--		dw_pcie_ep_reset_bar(pci, bar);
-+		dw_pcie_ep_reset_bar(ep, bar);
- }
- 
- static int uniphier_pcie_ep_raise_legacy_irq(struct dw_pcie_ep *ep)
--- 
-2.17.1
+If it is QCOM's platform, what you described looks like a known issue
+which we have already fixed in downstream. Please try attached patch.
+If not, please ignore it.
 
+Thanks,
+Can Guo.
+
+>> 
+>>> 
+>>> Regards,
+>>> Can Guo.
+>>> 
+>>> >
+>>> > >
+>>> > > Thanks,
+>>> > > Can Guo.
+>>> > >
+>>> > > > Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
+>>> > > > ---
+>>> > > >  drivers/scsi/ufs/ufshcd.c | 35 +++++++++++++++++++++++++++++++----
+>>> > > >  1 file changed, 31 insertions(+), 4 deletions(-)
+>>> > > >
+>>> > > > diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
+>>> > > > index e6e7bdf99cd7..340dd5e515dd 100644
+>>> > > > --- a/drivers/scsi/ufs/ufshcd.c
+>>> > > > +++ b/drivers/scsi/ufs/ufshcd.c
+>>> > > > @@ -44,6 +44,9 @@
+>>> > > >  /* Query request timeout */
+>>> > > >  #define QUERY_REQ_TIMEOUT 1500 /* 1.5 seconds */
+>>> > > >
+>>> > > > +/* LINERESET TIME OUT */
+>>> > > > +#define LINERESET_IO_TIMEOUT_MS			(30000) /* 30 sec */
+>>> > > > +
+>>> > > >  /* Task management command timeout */
+>>> > > >  #define TM_CMD_TIMEOUT	100 /* msecs */
+>>> > > >
+>>> > > > @@ -5826,6 +5829,7 @@ static void ufshcd_err_handler(struct work_struct
+>>> > > > *work)
+>>> > > >  	int err = 0, pmc_err;
+>>> > > >  	int tag;
+>>> > > >  	bool needs_reset = false, needs_restore = false;
+>>> > > > +	ktime_t start;
+>>> > > >
+>>> > > >  	hba = container_of(work, struct ufs_hba, eh_work);
+>>> > > >
+>>> > > > @@ -5911,6 +5915,22 @@ static void ufshcd_err_handler(struct work_struct
+>>> > > > *work)
+>>> > > >  	}
+>>> > > >
+>>> > > >  	hba->silence_err_logs = true;
+>>> > > > +
+>>> > > > +	/* Wait for IO completion for non-fatal errors to avoid aborting IOs
+>>> > > > */
+>>> > > > +	start = ktime_get();
+>>> > > > +	while (hba->outstanding_reqs) {
+>>> > > > +		ufshcd_complete_requests(hba);
+>>> > > > +		spin_unlock_irqrestore(hba->host->host_lock, flags);
+>>> > > > +		schedule();
+>>> > > > +		spin_lock_irqsave(hba->host->host_lock, flags);
+>>> > > > +		if (ktime_to_ms(ktime_sub(ktime_get(), start)) >
+>>> > > > +						LINERESET_IO_TIMEOUT_MS) {
+>>> > > > +			dev_err(hba->dev, "%s: timeout, outstanding=0x%lx\n",
+>>> > > > +					__func__, hba->outstanding_reqs);
+>>> > > > +			break;
+>>> > > > +		}
+>>> > > > +	}
+>>> > > > +
+>>> > > >  	/* release lock as clear command might sleep */
+>>> > > >  	spin_unlock_irqrestore(hba->host->host_lock, flags);
+>>> > > >  	/* Clear pending transfer requests */
+>>> > > > @@ -6302,9 +6322,13 @@ static irqreturn_t ufshcd_intr(int irq, void
+>>> > > > *__hba)
+>>> > > >  		intr_status = ufshcd_readl(hba, REG_INTERRUPT_STATUS);
+>>> > > >  	}
+>>> > > >
+>>> > > > -	if (enabled_intr_status && retval == IRQ_NONE) {
+>>> > > > -		dev_err(hba->dev, "%s: Unhandled interrupt 0x%08x\n",
+>>> > > > -					__func__, intr_status);
+>>> > > > +	if (enabled_intr_status && retval == IRQ_NONE &&
+>>> > > > +				!ufshcd_eh_in_progress(hba)) {
+>>> > > > +		dev_err(hba->dev, "%s: Unhandled interrupt 0x%08x (0x%08x,
+>>> > > > 0x%08x)\n",
+>>> > > > +					__func__,
+>>> > > > +					intr_status,
+>>> > > > +					hba->ufs_stats.last_intr_status,
+>>> > > > +					enabled_intr_status);
+>>> > > >  		ufshcd_dump_regs(hba, 0, UFSHCI_REG_SPACE_SIZE, "host_regs: ");
+>>> > > >  	}
+>>> > > >
+>>> > > > @@ -6348,7 +6372,10 @@ static int __ufshcd_issue_tm_cmd(struct ufs_hba
+>>> > > > *hba,
+>>> > > >  	 * Even though we use wait_event() which sleeps indefinitely,
+>>> > > >  	 * the maximum wait time is bounded by %TM_CMD_TIMEOUT.
+>>> > > >  	 */
+>>> > > > -	req = blk_get_request(q, REQ_OP_DRV_OUT, BLK_MQ_REQ_RESERVED);
+>>> > > > +	req = blk_get_request(q, REQ_OP_DRV_OUT, 0);
+>>> > > > +	if (IS_ERR(req))
+>>> > > > +		return PTR_ERR(req);
+>>> > > > +
+>>> > > >  	req->end_io_data = &wait;
+>>> > > >  	free_slot = req->tag;
+>>> > > >  	WARN_ON_ONCE(free_slot < 0 || free_slot >= hba->nutmrs);
+
+--=_4b0a96c36df2564c807f79a899bae30d
+Content-Transfer-Encoding: base64
+Content-Type: text/x-diff;
+ name=0001-scsi-ufs-qcom-Disable-interrupt-in-reset-path.patch
+Content-Disposition: attachment;
+ filename=0001-scsi-ufs-qcom-Disable-interrupt-in-reset-path.patch;
+ size=1298
+
+RnJvbSBiNTBlNTk1YTgwZTllMzFjMmY5NzQ0NDM5YjNiZGQ5ODZlOTQzM2VhIE1vbiBTZXAgMTcg
+MDA6MDA6MDAgMjAwMQpGcm9tOiBDYW4gR3VvIDxjYW5nQGNvZGVhdXJvcmEub3JnPgpEYXRlOiBU
+aHUsIDcgSmFuIDIwMjEgMDE6MDc6MTIgLTA4MDAKU3ViamVjdDogW1BBVENIXSBzY3NpOiB1ZnMt
+cWNvbTogRGlzYWJsZSBpbnRlcnJ1cHQgaW4gcmVzZXQgcGF0aAoKRGlzYWJsZSBpbnRlcnJ1cHQg
+aW4gcmVzZXQgcGF0aAoKU2lnbmVkLW9mZi1ieTogQ2FuIEd1byA8Y2FuZ0Bjb2RlYXVyb3JhLm9y
+Zz4KCmRpZmYgLS1naXQgYS9kcml2ZXJzL3Njc2kvdWZzL3Vmcy1xY29tLmMgYi9kcml2ZXJzL3Nj
+c2kvdWZzL3Vmcy1xY29tLmMKaW5kZXggMjIwNmIxZS4uZTU1MjAxZiAxMDA2NDQKLS0tIGEvZHJp
+dmVycy9zY3NpL3Vmcy91ZnMtcWNvbS5jCisrKyBiL2RyaXZlcnMvc2NzaS91ZnMvdWZzLXFjb20u
+YwpAQCAtMjUzLDEyICsyNTMsMTcgQEAgc3RhdGljIGludCB1ZnNfcWNvbV9ob3N0X3Jlc2V0KHN0
+cnVjdCB1ZnNfaGJhICpoYmEpCiB7CiAJaW50IHJldCA9IDA7CiAJc3RydWN0IHVmc19xY29tX2hv
+c3QgKmhvc3QgPSB1ZnNoY2RfZ2V0X3ZhcmlhbnQoaGJhKTsKKwlib29sIHJlZW5hYmxlX2ludHIg
+PSBmYWxzZTsKIAogCWlmICghaG9zdC0+Y29yZV9yZXNldCkgewogCQlkZXZfd2FybihoYmEtPmRl
+diwgIiVzOiByZXNldCBjb250cm9sIG5vdCBzZXRcbiIsIF9fZnVuY19fKTsKIAkJZ290byBvdXQ7
+CiAJfQogCisJcmVlbmFibGVfaW50ciA9IGhiYS0+aXNfaXJxX2VuYWJsZWQ7CisJZGlzYWJsZV9p
+cnEoaGJhLT5pcnEpOworCWhiYS0+aXNfaXJxX2VuYWJsZWQgPSBmYWxzZTsKKwogCXJldCA9IHJl
+c2V0X2NvbnRyb2xfYXNzZXJ0KGhvc3QtPmNvcmVfcmVzZXQpOwogCWlmIChyZXQpIHsKIAkJZGV2
+X2VycihoYmEtPmRldiwgIiVzOiBjb3JlX3Jlc2V0IGFzc2VydCBmYWlsZWQsIGVyciA9ICVkXG4i
+LApAQCAtMjgwLDYgKzI4NSwxMSBAQCBzdGF0aWMgaW50IHVmc19xY29tX2hvc3RfcmVzZXQoc3Ry
+dWN0IHVmc19oYmEgKmhiYSkKIAogCXVzbGVlcF9yYW5nZSgxMDAwLCAxMTAwKTsKIAorCWlmIChy
+ZWVuYWJsZV9pbnRyKSB7CisJCWVuYWJsZV9pcnEoaGJhLT5pcnEpOworCQloYmEtPmlzX2lycV9l
+bmFibGVkID0gdHJ1ZTsKKwl9CisKIG91dDoKIAlyZXR1cm4gcmV0OwogfQotLSAKUXVhbGNvbW0g
+SW5ub3ZhdGlvbiBDZW50ZXIsIEluYy4gaXMgYSBtZW1iZXIgb2YgQ29kZSBBdXJvcmEgRm9ydW0s
+IGEgTGludXggRm91bmRhdGlvbiBDb2xsYWJvcmF0aXZlIFByb2plY3QuCgo=
+--=_4b0a96c36df2564c807f79a899bae30d--
