@@ -2,146 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D4762EE65D
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 20:48:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FE2E2EE65E
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 20:48:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729312AbhAGTrd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 14:47:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49552 "EHLO
+        id S1729388AbhAGTsE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 14:48:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49632 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729210AbhAGTrc (ORCPT
+        with ESMTP id S1729323AbhAGTsD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 14:47:32 -0500
-Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF7CCC0612F5;
-        Thu,  7 Jan 2021 11:46:51 -0800 (PST)
-Received: by mail-pf1-x42e.google.com with SMTP id c12so4497988pfo.10;
-        Thu, 07 Jan 2021 11:46:51 -0800 (PST)
+        Thu, 7 Jan 2021 14:48:03 -0500
+Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E0668C0612F4
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Jan 2021 11:47:22 -0800 (PST)
+Received: by mail-lf1-x135.google.com with SMTP id l11so17493951lfg.0
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Jan 2021 11:47:22 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=FNyC6Er0Vf4MXtGvepy8MWknjFic90Vra4nSpDA+ySM=;
-        b=cYlKdSRxDfqNct6chKWDD4JxtLM74AW1ToY48zAt16UVfHQf73dIX1f3+2U6YFXRXX
-         90v6CbqliO9389WSX9lUHcA6y3T015uMf7IantNUUtiDAxFuTYWahyxrbsGhTueJ8oKF
-         xLFU9VvXSe37zYL0+KG2kit+H3Co/+nGaso/C3Bf06LPrWE4vTQW2JALqisi5uVKBrqN
-         odCNycPhtaUloXE6b7oTMd/g4M0RiFnhbVw8BCzxA7RHjVEWBwootQIagxXu8Bp3ince
-         INCUofq/f0oewqv/kPcb7wB83Qi22GH0FNBJ1/wM9IUwJVq5vSKPAlAKOVaa71FVPNVQ
-         nolw==
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=8ruY7+Hc6DwjfUtsIGmEMt3x9fL7QwNpww7Qmh8m5ao=;
+        b=FqnqVnVRhdZ06qPkVepbc2d6YqyFCx6doQkSftj/eLt2k4QnSPYtgEpD3IcxBsg6Sc
+         58CHR7Y5cSwWtGBBFbBHUOAu+DGUplKWy0JWSPQvWkeuwNRpNRO/Tp6sndPafmhBl9Wq
+         iOWAlxJfkbmFP6NX+zwC7HF8T1R8D9wozuP5Y=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=FNyC6Er0Vf4MXtGvepy8MWknjFic90Vra4nSpDA+ySM=;
-        b=d0xNkEuBjUNP5RV7zq5a16f5qnxmTArqAHqZBS85aN2i/Qx26k9tC9BLb2fplh6lBh
-         8Zm86H8l2NBtXB1TDVhut8CvJaO1PqYUTXFsEeN1iRe4Ocwforc2sWhuw95t330+Sf3z
-         ZmPmP4lh1oVGZxUhgFaS3DG32I6QaRAosjbkhlMMYFkC+cGVZkjgJ09ySFKmx3dM12oe
-         J4Zi7ADVhlLcAKmNj3oJ3i0arug83xrKc0Nl1pR4N62IKAKw3oF627bcgCqvME99w+7d
-         WOxRXbkeWGCoS+L9QGBDNbQhrUQuA9DIlcTJ1Z0WR6yBtiuaCLiXi6CVhC5eloisxMne
-         gWOQ==
-X-Gm-Message-State: AOAM532zQ5Qqsj2Ce8cimRHrq1dwno0Lllonm1JdwSMXbHatzlgnr+Of
-        5UUmFc6KO0k/OxTglQPJI9o=
-X-Google-Smtp-Source: ABdhPJxb1V7TISf3W0nWDSfzyUGQWMB3x3UDgN92bCoR9Furw8Vxe9ggYQvwGbQ/DmpnQ6ykodB4ag==
-X-Received: by 2002:a65:6659:: with SMTP id z25mr3434957pgv.427.1610048811180;
-        Thu, 07 Jan 2021 11:46:51 -0800 (PST)
-Received: from google.com ([2620:15c:202:201:a6ae:11ff:fe11:fcc3])
-        by smtp.gmail.com with ESMTPSA id s21sm6888579pga.12.2021.01.07.11.46.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 Jan 2021 11:46:50 -0800 (PST)
-Date:   Thu, 7 Jan 2021 11:46:48 -0800
-From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
-To:     Doug Anderson <dianders@chromium.org>
-Cc:     Stephen Boyd <swboyd@chromium.org>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        Benson Leung <bleung@chromium.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "open list:HID CORE LAYER" <linux-input@vger.kernel.org>,
-        Guenter Roeck <groeck@chromium.org>
-Subject: Re: [PATCH] Input: cros_ec_keyb: Add support for a front proximity
- switch
-Message-ID: <X/dlKKeAHU/Ab+VD@google.com>
-References: <20201205004709.3126266-1-swboyd@chromium.org>
- <CAD=FV=XjzBLTPMqOf1NK0pjXiZWrLT227nksxhMqaFG6GxAqjQ@mail.gmail.com>
- <X/ZwRqJFJ9BY4Z3z@google.com>
- <CAD=FV=VmNQDSZFT3vaJ64DYyGqoE39uig581ZmaX0s-Y1U_CTw@mail.gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=8ruY7+Hc6DwjfUtsIGmEMt3x9fL7QwNpww7Qmh8m5ao=;
+        b=t9lc6IWUVusulgmGqyreFnr/+qKY44qmZI+Nai6IJG5csayYWbrq9Ob2RI8b2zIcqA
+         bnvzVmc+7MjHpHEjUoBwOF+j77/x5e2mZHhythImm6OD9U8KNwyF/ZBZiFED2DY0KHuP
+         eE8fvcWVm1QPVhAEX5ikkvCdBn262a5gyQ9nvynCegqVH7gCQm1H6CMw977P2MwGJvQT
+         bFiJOTYoc5tGiOD7qdKb0a4MOVUKCzdOQxU7i58IC3KAY8UVKffLhCrtKIdVCm39mZ81
+         BrJHD9cQ9xjMAkRV8TFNRkWWAmly8XEfGGOBSpP3Elp68u7Sn85+URSopjxwIIx3AGo4
+         bZUw==
+X-Gm-Message-State: AOAM532/URNnNps3TRleyFLxkBrfprcQYQR3lBwWtrvMSdrUBtbGs/pI
+        Lx4qfOmRDErpxNYdTDWYlrMuk5vP2P6EpA==
+X-Google-Smtp-Source: ABdhPJycKdMbNcWlRH8VncUoXqfcf6zaLhQlhMnjYXPdq8R/KUV0Dpa7al6KU/mI3dEcgAD07Bfvjg==
+X-Received: by 2002:a2e:97ce:: with SMTP id m14mr35471ljj.380.1610048840927;
+        Thu, 07 Jan 2021 11:47:20 -0800 (PST)
+Received: from mail-lf1-f46.google.com (mail-lf1-f46.google.com. [209.85.167.46])
+        by smtp.gmail.com with ESMTPSA id p17sm1348915lfc.273.2021.01.07.11.47.19
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 07 Jan 2021 11:47:19 -0800 (PST)
+Received: by mail-lf1-f46.google.com with SMTP id b26so17375882lff.9
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Jan 2021 11:47:19 -0800 (PST)
+X-Received: by 2002:a2e:3211:: with SMTP id y17mr27794ljy.61.1610048838877;
+ Thu, 07 Jan 2021 11:47:18 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAD=FV=VmNQDSZFT3vaJ64DYyGqoE39uig581ZmaX0s-Y1U_CTw@mail.gmail.com>
+References: <20201118194838.753436396@linutronix.de> <20201118204007.169209557@linutronix.de>
+ <20210106180132.41dc249d@gandalf.local.home> <CAHk-=wh2895wXEXYtb70CTgW+UR7jfh6VFhJB_bOrF0L7UKoEg@mail.gmail.com>
+ <20210106174917.3f8ad0d8@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <CA+FuTSevLSxZkNLdJPHqRRksxZmnPc1qFBYJeBx26WsA4A1M7A@mail.gmail.com> <CA+FuTScQ9afdnQ3E1mqdeyJ-sOq=2Dm9c1XDN8mnzbEig8iMXA@mail.gmail.com>
+In-Reply-To: <CA+FuTScQ9afdnQ3E1mqdeyJ-sOq=2Dm9c1XDN8mnzbEig8iMXA@mail.gmail.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Thu, 7 Jan 2021 11:47:02 -0800
+X-Gmail-Original-Message-ID: <CAHk-=wh+KfbJ4Wrz4A+hFRRj7ZYWysz9L8s-BosC3bhV6vN-nQ@mail.gmail.com>
+Message-ID: <CAHk-=wh+KfbJ4Wrz4A+hFRRj7ZYWysz9L8s-BosC3bhV6vN-nQ@mail.gmail.com>
+Subject: Re: [BUG] from x86: Support kmap_local() forced debugging
+To:     Willem de Bruijn <willemb@google.com>
+Cc:     Jakub Kicinski <kuba@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        David Miller <davem@davemloft.net>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        Christoph Hellwig <hch@lst.de>,
+        Matthew Wilcox <willy@infradead.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Netdev <netdev@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 07, 2021 at 06:57:10AM -0800, Doug Anderson wrote:
-> Hi,
-> 
-> On Wed, Jan 6, 2021 at 6:22 PM Dmitry Torokhov
-> <dmitry.torokhov@gmail.com> wrote:
-> >
-> > Hi Doug, Stephen,
-> >
-> > On Wed, Jan 06, 2021 at 05:16:10PM -0800, Doug Anderson wrote:
-> > > Hi,
-> > >
-> > > On Fri, Dec 4, 2020 at 4:48 PM Stephen Boyd <swboyd@chromium.org> wrote:
-> > > >
-> > > > Some cros ECs support a front proximity MKBP event via
-> > > > 'EC_MKBP_FRONT_PROXIMITY'. Map this to the 'SW_FRONT_PROXIMITY' input
-> > > > event code so it can be reported up to userspace.
-> > > >
-> > > > Cc: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-> > > > Cc: Benson Leung <bleung@chromium.org>
-> > > > Cc: Guenter Roeck <groeck@chromium.org>
-> > > > Signed-off-by: Stephen Boyd <swboyd@chromium.org>
-> > > > ---
-> > > >  drivers/input/keyboard/cros_ec_keyb.c          | 5 +++++
-> > > >  include/linux/platform_data/cros_ec_commands.h | 1 +
-> > > >  2 files changed, 6 insertions(+)
-> > >
-> > > This seems really straightforward.
-> > >
-> > > Reviewed-by: Douglas Anderson <dianders@chromium.org>
-> > >
-> > > Given that it touches a header file owned by the Chrome OS maintainers
-> > > and a driver owned by input, how should it land?  One maintainer Acks
-> > > and the other lands?
-> >
-> > Sorry about missing this one, however the "front proximity" switch has
-> > been introduced for the benefit of phone devices, to be emitted when a
-> > device is raised to user's ear, and I do not think we should be using
-> > this here.
-> >
-> > We have just recently had similar discussion with regard to palm- and
-> > lap-mode sensors and whether they should be reported over input or IIO
-> > as true proximity sensors:
-> >
-> > https://lore.kernel.org/linux-iio/9f9b0ff6-3bf1-63c4-eb36-901cecd7c4d9@redhat.com/
-> >
-> > Based on what we are doing for other Chrome OS devices that expose
-> > proximity sensors (for example trogdor) we have decided that we all
-> > should be using IIO as it will allow not only on/off, but true proximity
-> > reporting with potential of implementing smarter policies by userspace.
-> >
-> > Because of that we should do the same here and export this as IIO
-> > proximity sensor as well.
-> 
-> For devices with a true proximity sensor that's exactly what we're
-> doing.  I've only been involved in the periphery of the discussion,
-> but as I understand it there are some models of laptop for which we
-> don't have a true proximity sensor.  On these devices, the EC is in
-> charge of deciding about proximity based on a number of factors.
-
-Yes, I understand that on some devices the proximity sensors are not
-true sensors but rather on/off signals, potentially derived from a
-multitude of sources. However there is still a benefit in exposing them
-as IIO proximity devices with limited reporting representing
-[near, infinity] range/values. This will mean that userspace needs to
-monitor only one set of devices (IIO) instead of both IIO and input, and
-will not require constantly expanding EV_SW set to account for
-ever-growing number of proximity sensors (lap, palm, general presence,
-etc).
+On Wed, Jan 6, 2021 at 8:45 PM Willem de Bruijn <willemb@google.com> wrote:
+>
+> But there are three other kmap_atomic callers under net/ that do not
+> loop at all, so assume non-compound pages. In esp_output_head,
+> esp6_output_head and skb_seq_read. The first two directly use
+> skb_page_frag_refill, which can allocate compound (but not
+> __GFP_HIGHMEM) pages, and the third can be inserted with
+> netfilter xt_string in the path of tcp transmit skbs, which can also
+> have compound pages. I think that these could similarly access
+> data beyond the end of the kmap_atomic mapped page. I'll take
+> a closer look.
 
 Thanks.
 
--- 
-Dmitry
+Note that I have flushed my random one-liner patch from my system, and
+expect to get a proper fix through the normal networking pulls.
+
+And _if_ the networking people feel that my one-liner was the proper
+fix, you can use it and add my sign-off if you want to, but it really
+was more of a "this is the quick ugly fix for testing" rather than
+anything else.
+
+          Linus
