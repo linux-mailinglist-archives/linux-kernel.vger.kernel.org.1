@@ -2,59 +2,199 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 711E12ED724
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 20:05:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 97EFA2ED727
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 20:07:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729061AbhAGTFh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 14:05:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43072 "EHLO
+        id S1729195AbhAGTFq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 14:05:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43102 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726600AbhAGTFg (ORCPT
+        with ESMTP id S1729081AbhAGTFq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 14:05:36 -0500
-Received: from ZenIV.linux.org.uk (zeniv.linux.org.uk [IPv6:2002:c35c:fd02::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47F50C0612F4
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Jan 2021 11:04:56 -0800 (PST)
-Received: from viro by ZenIV.linux.org.uk with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kxaaT-0086YQ-5e; Thu, 07 Jan 2021 19:04:45 +0000
-Date:   Thu, 7 Jan 2021 19:04:45 +0000
-From:   Al Viro <viro@zeniv.linux.org.uk>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     kernel test robot <oliver.sang@intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@kernel.org>, Borislav Petkov <bp@alien8.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
-        kernel test robot <lkp@intel.com>,
-        "Huang, Ying" <ying.huang@intel.com>,
-        Feng Tang <feng.tang@intel.com>, zhengjun.xing@intel.com
-Subject: Re: [x86] d55564cfc2: will-it-scale.per_thread_ops -5.8% regression
-Message-ID: <20210107190445.GK3579531@ZenIV.linux.org.uk>
-References: <20210107134723.GA28532@xsang-OptiPlex-9020>
- <CAHk-=wgQ5EEH3-GTK9KDB5mBmWjP25YHXC6_-V_KfWd0UTDTDQ@mail.gmail.com>
- <20210107183358.GG3579531@ZenIV.linux.org.uk>
- <CAHk-=wiZaFRt9hGen9=eOr7LA+Q8o5f980eGEvtxBD6+os7nqA@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHk-=wiZaFRt9hGen9=eOr7LA+Q8o5f980eGEvtxBD6+os7nqA@mail.gmail.com>
-Sender: Al Viro <viro@ftp.linux.org.uk>
+        Thu, 7 Jan 2021 14:05:46 -0500
+Received: from mail-pf1-x449.google.com (mail-pf1-x449.google.com [IPv6:2607:f8b0:4864:20::449])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF2AFC0612F6
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Jan 2021 11:05:05 -0800 (PST)
+Received: by mail-pf1-x449.google.com with SMTP id x21so4776295pff.14
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Jan 2021 11:05:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=sender:date:message-id:mime-version:subject:from:to:cc;
+        bh=1Ks8/3nZJCYS90R8JKk2puoyafhaeYHGuGPtcF6mxek=;
+        b=s33gwiE6wEj4kJwKpZ+JBEnAPq2Iul6GLks8POMY9MgZc9LBZEzjlEFhyqZYiwx4id
+         dMUAawf6ZO1RuNGq6qWn7XiCwJZaExLSJ/x0qIdCrZcZ5lvZbgLpOXACTZgO7pmlu87x
+         Zv/9mH/Oxu+THRCrCKk23deOoYVx+kIKAa5hSJt7UI49J1EJO2RC9KiHnXTjT/vb1SAb
+         yhuOQHXkHuckcPE1Q+qkGIReZWdZZ1KhdiTyGY799YowVmEqWHJf722bg2qLRozEV0Kd
+         vZm4JkDx7ZwLeiNeB2q5xb7tZVq7cjBJEKYOlzBvaCQRi8AAGDzniY+am3PWed00CrYr
+         UxpQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :to:cc;
+        bh=1Ks8/3nZJCYS90R8JKk2puoyafhaeYHGuGPtcF6mxek=;
+        b=kh2EISQpqpgbPecVq61qo6bjh/xFnMCgDv09UPec9g8bThcJSRWNu8aI2D8IQbmEf7
+         IsiBSwiAOyrF/BSzIuhOmW8q9ESLD6QCL3ZQd4WGHN6dw4R2I2ckFB/g8vqCcHV+xxhM
+         oTyYY0f6E200DaeBqo0dTp+7ufyrj5+Zn2FnvDWcU8zArbSXKblCVsyv3ip0XsWWox1T
+         oQrr75eO4dbkbJiPgOz0dV8LpIBTmcM1gzupm0UF+9YWbZ5gQEx5cxU9OyR/zquQuU+J
+         Lr6RAomEoXrEjTfEN01uOSbOPlU+F9F2hgmw6c1z/hlgkl9u45cn/QVhX50ZhDTerFYd
+         137A==
+X-Gm-Message-State: AOAM530BvvRygYCauAohq0gs/hxUTjMHXMEKoK8kFO4fqffsiJ3i4kzL
+        WtfWA/bazYIP1Y4FBiVo1dOuEurNTSvsaCy3PEu7
+X-Google-Smtp-Source: ABdhPJxFND2XY3Pg2WyGKBNLXJEiCRrx4CwvkyILubCDSqYj/vz535k983RPVy3w45oJ8bmaDS3h0zHA99/3XyZBAkZh
+Sender: "axelrasmussen via sendgmr" <axelrasmussen@ajr0.svl.corp.google.com>
+X-Received: from ajr0.svl.corp.google.com ([2620:15c:2cd:203:f693:9fff:feef:c8f8])
+ (user=axelrasmussen job=sendgmr) by 2002:a17:90a:c085:: with SMTP id
+ o5mr10737346pjs.210.1610046305274; Thu, 07 Jan 2021 11:05:05 -0800 (PST)
+Date:   Thu,  7 Jan 2021 11:04:51 -0800
+Message-Id: <20210107190453.3051110-1-axelrasmussen@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.29.2.729.g45daf8777d-goog
+Subject: [RFC PATCH 0/2] userfaultfd: handle minor faults, add UFFDIO_CONTINUE
+From:   Axel Rasmussen <axelrasmussen@google.com>
+To:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Chinwen Chang <chinwen.chang@mediatek.com>,
+        Huang Ying <ying.huang@intel.com>,
+        Ingo Molnar <mingo@redhat.com>, Jann Horn <jannh@google.com>,
+        Jerome Glisse <jglisse@redhat.com>,
+        Lokesh Gidra <lokeshgidra@google.com>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        "=?UTF-8?q?Michal=20Koutn=C3=BD?=" <mkoutny@suse.com>,
+        Michel Lespinasse <walken@google.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Peter Xu <peterx@redhat.com>, Shaohua Li <shli@fb.com>,
+        Shawn Anastasio <shawn@anastas.io>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Steven Price <steven.price@arm.com>,
+        Vlastimil Babka <vbabka@suse.cz>
+Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-mm@kvack.org, Adam Ruprecht <ruprecht@google.com>,
+        Axel Rasmussen <axelrasmussen@google.com>,
+        Cannon Matthews <cannonmatthews@google.com>,
+        "Dr . David Alan Gilbert" <dgilbert@redhat.com>,
+        David Rientjes <rientjes@google.com>,
+        Oliver Upton <oupton@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 07, 2021 at 10:47:07AM -0800, Linus Torvalds wrote:
+Overview
+========
 
-> Now, the "whole entry" is just 8 bytes, so it's possible that it would
-> actually be faster to do a copy of the whole thing rather than write
-> just the 16 bits. But I got very nervous about it, because I could
-> easily see some threaded app actually changing the 'fd' (or the
-> 'event' field) in place (ie writing -1 to it as they close and re-use
-> it)
+This series adds a new userfaultfd registration mode,
+UFFDIO_REGISTER_MODE_MINOR. This allows userspace to intercept "minor" faults.
+By "minor" fault, I mean the following situation:
 
-BTW, changing 'event' field in place from another thread is going to
-be interesting - you have two 16bit values next to each other and
-two CPUs modifying those with no exclusion.  Sounds like a recipe
-for massive trouble...
+Let there exist two mappings (i.e., VMAs) to the same page(s) (shared memory).
+One of the mappings is registered with userfaultfd (in minor mode), and the
+other is not. Via the non-UFFD mapping, the underlying pages have already been
+allocated & filled with some contents. The UFFD mapping has not yet been
+faulted in; when it is touched for the first time, this results in what I'm
+calling a "minor" fault. As a concrete example, when working with hugetlbfs, we
+have huge_pte_none(), but find_lock_page() finds an existing page.
 
-Or am I missing something here?
+We also add a new ioctl to resolve such faults: UFFDIO_CONTINUE. The idea is,
+userspace resolves the fault by either a) doing nothing if the contents are
+already correct, or b) updating the underlying contents using the second,
+non-UFFD mapping (via memcpy/memset or similar, or something fancier like RDMA,
+or etc...). In either case, userspace issues UFFDIO_CONTINUE to tell the kernel
+"I have ensured the page contents are correct, carry on setting up the mapping".
+
+Use Case
+========
+
+Consider the use case of VM live migration (e.g. under QEMU/KVM):
+
+1. While a VM is still running, we copy the contents of its memory to a
+   target machine. The pages are populated on the target by writing to the
+   non-UFFD mapping, using the setup described above. The VM is still running
+   (and therefore its memory is likely changing), so this may be repeated
+   several times, until we decide the target is "up to date enough".
+
+2. We pause the VM on the source, and start executing on the target machine.
+   During this gap, the VM's user(s) will *see* a pause, so it is desirable to
+   minimize this window.
+
+3. Between the last time any page was copied from the source to the target, and
+   when the VM was paused, the contents of that page may have changed - and
+   therefore the copy we have on the target machine is out of date. Although we
+   can keep track of which pages are out of date, for VMs with large amounts of
+   memory, it is "slow" to transfer this information to the target machine. We
+   want to resume execution before such a transfer would complete.
+
+4. So, the guest begins executing on the target machine. The first time it
+   touches its memory (via the UFFD-registered mapping), userspace wants to
+   intercept this fault. Userspace checks whether or not the page is up to date,
+   and if not, copies the updated page from the source machine, via the non-UFFD
+   mapping. Finally, whether a copy was performed or not, userspace issues a
+   UFFDIO_CONTINUE ioctl to tell the kernel "I have ensured the page contents
+   are correct, carry on setting up the mapping".
+
+We don't have to do all of the final updates on-demand. The userfaultfd manager
+can, in the background, also copy over updated pages once it receives the map of
+which pages are up-to-date or not.
+
+Interaction with Existing APIs
+==============================
+
+Because it's possible to combine registration modes (e.g. a single VMA can be
+userfaultfd-registered MINOR | MISSING), and because it's up to userspace how to
+resolve faults once they are received, I spent some time thinking through how
+the existing API interacts with the new feature.
+
+UFFDIO_CONTINUE cannot be used to resolve non-minor faults, as it does not
+allocate a new page. If UFFDIO_CONTINUE is used on a non-minor fault:
+
+- For non-shared memory or shmem, -EINVAL is returned.
+- For hugetlb, -EFAULT is returned.
+
+UFFDIO_COPY and UFFDIO_ZEROPAGE cannot be used to resolve minor faults. Without
+modifications, the existing codepath assumes a new page needs to be allocated.
+This is okay, since userspace must have a second non-UFFD-registered mapping
+anyway, thus there isn't much reason to want to use these in any case (just
+memcpy or memset or similar).
+
+- If UFFDIO_COPY is used on a minor fault, -EEXIST is returned.
+- If UFFDIO_ZEROPAGE is used on a minor fault, -EEXIST is returned (or -EINVAL
+  in the case of hugetlb, as UFFDIO_ZEROPAGE is unsupported in any case).
+- UFFDIO_WRITEPROTECT simply doesn't work with shared memory, and returns
+  -ENOENT in that case (regardless of the kind of fault).
+
+Remaining Work
+==============
+
+This patchset doesn't include updates to userfaultfd's documentation or
+selftests. This will be added before I send a non-RFC version of this series
+(I want to find out if there are strong objections to the API surface before
+spending the time to document it.)
+
+Currently the patchset only supports hugetlbfs. There is no reason it can't work
+with shmem, but I expect hugetlbfs to be much more commonly used since we're
+talking about backing guest memory for VMs. I plan to implement shmem support in
+a follow-up patch series.
+
+Axel Rasmussen (2):
+  userfaultfd: add minor fault registration mode
+  userfaultfd: add UFFDIO_CONTINUE ioctl
+
+ fs/proc/task_mmu.c               |   1 +
+ fs/userfaultfd.c                 | 143 ++++++++++++++++++++++++-------
+ include/linux/mm.h               |   1 +
+ include/linux/userfaultfd_k.h    |  14 ++-
+ include/trace/events/mmflags.h   |   1 +
+ include/uapi/linux/userfaultfd.h |  36 +++++++-
+ mm/hugetlb.c                     |  42 +++++++--
+ mm/userfaultfd.c                 |  86 ++++++++++++++-----
+ 8 files changed, 261 insertions(+), 63 deletions(-)
+
+--
+2.29.2.729.g45daf8777d-goog
+
