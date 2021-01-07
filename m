@@ -2,79 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 786E72ECE70
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 12:08:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 42F392ECE6B
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 12:07:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727881AbhAGLIP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 06:08:15 -0500
-Received: from server.20disenoweb.com ([185.195.98.159]:55268 "EHLO
-        server.20disenoweb.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727733AbhAGLIO (ORCPT
+        id S1727590AbhAGLGl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 06:06:41 -0500
+Received: from www62.your-server.de ([213.133.104.62]:43364 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726151AbhAGLGk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 06:08:14 -0500
-X-Greylist: delayed 454 seconds by postgrey-1.27 at vger.kernel.org; Thu, 07 Jan 2021 06:08:13 EST
-Received: from localhost (localhost [127.0.0.1])
-        by server.20disenoweb.com (Postfix) with ESMTP id 013B9F6F;
-        Thu,  7 Jan 2021 12:01:04 +0100 (CET)
-X-Virus-Scanned: amavisd-new at server.20disenoweb.com
-Received: from server.20disenoweb.com ([127.0.0.1])
-        by localhost (server.20disenoweb.com [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id AL4KJhjOHyIg; Thu,  7 Jan 2021 12:01:02 +0100 (CET)
-Received: from localhost.localdomain (105.red-95-125-237.dynamicip.rima-tde.net [95.125.237.105])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: sergiosota@fanamoel.com)
-        by server.20disenoweb.com (Postfix) with ESMTPSA id C3092F61;
-        Thu,  7 Jan 2021 12:00:45 +0100 (CET)
-From:   Sergio Sota <sergiosota@fanamoel.com>
-To:     robh+dt@kernel.org
-Cc:     mripard@kernel.org, wens@csie.org, jernej.skrabec@siol.net,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, Sergio Sota <sergiosota@fanamoel.com>
-Subject: [PATCH] ARM: dts: sun5i: add A10s/A13 mali gpu support fallback
-Date:   Thu,  7 Jan 2021 12:00:35 +0100
-Message-Id: <20210107110035.2815260-1-sergiosota@fanamoel.com>
-X-Mailer: git-send-email 2.25.1
+        Thu, 7 Jan 2021 06:06:40 -0500
+Received: from sslproxy02.your-server.de ([78.47.166.47])
+        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92.3)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1kxT6o-0009mh-Vb; Thu, 07 Jan 2021 12:05:39 +0100
+Received: from [85.7.101.30] (helo=pc-9.home)
+        by sslproxy02.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1kxT6o-000QhI-Ia; Thu, 07 Jan 2021 12:05:38 +0100
+Subject: Re: [PATCH net v2] net: fix use-after-free when UDP GRO with shared
+ fraglist
+To:     Dongseok Yi <dseok.yi@samsung.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Willem de Bruijn <willemb@google.com>
+Cc:     Jakub Kicinski <kuba@kernel.org>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Florian Westphal <fw@strlen.de>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Guillaume Nault <gnault@redhat.com>,
+        Yunsheng Lin <linyunsheng@huawei.com>,
+        Steffen Klassert <steffen.klassert@secunet.com>,
+        Yadu Kishore <kyk.segfault@gmail.com>,
+        Marco Elver <elver@google.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, namkyu78.kim@samsung.com
+References: <1609750005-115609-1-git-send-email-dseok.yi@samsung.com>
+ <CGME20210107005028epcas2p35dfa745fd92e31400024874f54243556@epcas2p3.samsung.com>
+ <1609979953-181868-1-git-send-email-dseok.yi@samsung.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <83a2b288-c0b2-ed98-9479-61e1cbe25519@iogearbox.net>
+Date:   Thu, 7 Jan 2021 12:05:36 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <1609979953-181868-1-git-send-email-dseok.yi@samsung.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.102.4/26041/Wed Jan  6 13:36:32 2021)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The A10s/A13 mali gpu was not defined in device tree
-Add A10 mali gpu as a fallback for A10s/A13
-Tested with Olimex-A13-SOM / Olimex-A13-OlinuXino-MICRO
-"kmscube" 3d cube on screen (60fps / 10%cpu)
+On 1/7/21 1:39 AM, Dongseok Yi wrote:
+> skbs in fraglist could be shared by a BPF filter loaded at TC. It
+> triggers skb_ensure_writable -> pskb_expand_head ->
+> skb_clone_fraglist -> skb_get on each skb in the fraglist.
+> 
+> While tcpdump, sk_receive_queue of PF_PACKET has the original fraglist.
+> But the same fraglist is queued to PF_INET (or PF_INET6) as the fraglist
+> chain made by skb_segment_list.
+> 
+> If the new skb (not fraglist) is queued to one of the sk_receive_queue,
+> multiple ptypes can see this. The skb could be released by ptypes and
+> it causes use-after-free.
+> 
+> [ 4443.426215] ------------[ cut here ]------------
+> [ 4443.426222] refcount_t: underflow; use-after-free.
+> [ 4443.426291] WARNING: CPU: 7 PID: 28161 at lib/refcount.c:190
+> refcount_dec_and_test_checked+0xa4/0xc8
+> [ 4443.426726] pstate: 60400005 (nZCv daif +PAN -UAO)
+> [ 4443.426732] pc : refcount_dec_and_test_checked+0xa4/0xc8
+> [ 4443.426737] lr : refcount_dec_and_test_checked+0xa0/0xc8
+> [ 4443.426808] Call trace:
+> [ 4443.426813]  refcount_dec_and_test_checked+0xa4/0xc8
+> [ 4443.426823]  skb_release_data+0x144/0x264
+> [ 4443.426828]  kfree_skb+0x58/0xc4
+> [ 4443.426832]  skb_queue_purge+0x64/0x9c
+> [ 4443.426844]  packet_set_ring+0x5f0/0x820
+> [ 4443.426849]  packet_setsockopt+0x5a4/0xcd0
+> [ 4443.426853]  __sys_setsockopt+0x188/0x278
+> [ 4443.426858]  __arm64_sys_setsockopt+0x28/0x38
+> [ 4443.426869]  el0_svc_common+0xf0/0x1d0
+> [ 4443.426873]  el0_svc_handler+0x74/0x98
+> [ 4443.426880]  el0_svc+0x8/0xc
+> 
+> Fixes: 3a1296a38d0c (net: Support GRO/GSO fraglist chaining.)
+> Signed-off-by: Dongseok Yi <dseok.yi@samsung.com>
+> Acked-by: Willem de Bruijn <willemb@google.com>
+> ---
+>   net/core/skbuff.c | 20 +++++++++++++++++++-
+>   1 file changed, 19 insertions(+), 1 deletion(-)
+> 
+> v2: Expand the commit message to clarify a BPF filter loaded
+> 
+> diff --git a/net/core/skbuff.c b/net/core/skbuff.c
+> index f62cae3..1dcbda8 100644
+> --- a/net/core/skbuff.c
+> +++ b/net/core/skbuff.c
+> @@ -3655,7 +3655,8 @@ struct sk_buff *skb_segment_list(struct sk_buff *skb,
+>   	unsigned int delta_truesize = 0;
+>   	unsigned int delta_len = 0;
+>   	struct sk_buff *tail = NULL;
+> -	struct sk_buff *nskb;
+> +	struct sk_buff *nskb, *tmp;
+> +	int err;
+>   
+>   	skb_push(skb, -skb_network_offset(skb) + offset);
+>   
+> @@ -3665,11 +3666,28 @@ struct sk_buff *skb_segment_list(struct sk_buff *skb,
+>   		nskb = list_skb;
+>   		list_skb = list_skb->next;
+>   
+> +		err = 0;
+> +		if (skb_shared(nskb)) {
+> +			tmp = skb_clone(nskb, GFP_ATOMIC);
+> +			if (tmp) {
+> +				kfree_skb(nskb);
 
-Signed-off-by: Sergio Sota <sergiosota@fanamoel.com>
----
- arch/arm/boot/dts/sun5i.dtsi | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
+Should use consume_skb() to not trigger skb:kfree_skb tracepoint when looking
+for drops in the stack.
 
-diff --git a/arch/arm/boot/dts/sun5i.dtsi b/arch/arm/boot/dts/sun5i.dtsi
-index 4ef14a8695ef..b4d46ecdf7ad 100644
---- a/arch/arm/boot/dts/sun5i.dtsi
-+++ b/arch/arm/boot/dts/sun5i.dtsi
-@@ -726,6 +726,18 @@ i2c2: i2c@1c2b400 {
- 			#size-cells = <0>;
- 		};
- 
-+		mali: gpu@1c40000 {
-+			compatible = "allwinner,sun4i-a10-mali", "arm,mali-400";
-+			reg = <0x01c40000 0x10000>;
-+			interrupts = <69>, <70>, <71>, <72>,  <73>;
-+			interrupt-names = "gp", "gpmmu", "pp0", "ppmmu0", "pmu";
-+			clocks = <&ccu CLK_AHB_GPU>, <&ccu CLK_GPU>;
-+			clock-names = "bus", "core";
-+			resets = <&ccu RST_GPU>;
-+			assigned-clocks = <&ccu CLK_GPU>;
-+			assigned-clock-rates = <320000000>;
-+		};
-+
- 		timer@1c60000 {
- 			compatible = "allwinner,sun5i-a13-hstimer";
- 			reg = <0x01c60000 0x1000>;
--- 
-2.25.1
+> +				nskb = tmp;
+> +				err = skb_unclone(nskb, GFP_ATOMIC);
+
+Could you elaborate why you also need to unclone? This looks odd here. tc layer
+(independent of BPF) from ingress & egress side generally assumes unshared skb,
+so above clone + dropping ref of nskb looks okay to make the main skb struct private
+for mangling attributes (e.g. mark) & should suffice. What is the exact purpose of
+the additional skb_unclone() in this context?
+
+> +			} else {
+> +				err = -ENOMEM;
+> +			}
+> +		}
+> +
+>   		if (!tail)
+>   			skb->next = nskb;
+>   		else
+>   			tail->next = nskb;
+>   
+> +		if (unlikely(err)) {
+> +			nskb->next = list_skb;
+> +			goto err_linearize;
+> +		}
+> +
+>   		tail = nskb;
+>   
+>   		delta_len += nskb->len;
+> 
 
