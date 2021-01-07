@@ -2,217 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 873D72ED228
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 15:32:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B85CD2ED23F
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 15:32:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728346AbhAGOa4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 09:30:56 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45052 "EHLO mail.kernel.org"
+        id S1729136AbhAGOb5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 09:31:57 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45974 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726319AbhAGOaz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 09:30:55 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CFA8B23356;
-        Thu,  7 Jan 2021 14:30:13 +0000 (UTC)
+        id S1729099AbhAGObz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Jan 2021 09:31:55 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 79ED523383;
+        Thu,  7 Jan 2021 14:30:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610029814;
-        bh=XaBYBttM0VJQWHxHXYEg4YYfEORWXajR1gLL+nwwtbk=;
-        h=From:To:Cc:Subject:Date:From;
-        b=tJVdqhcPiFuQdB0Ldykgmapw8FG0WCtTzRsNlFoDzHbxPprMPmdaDCpbpyar6aIja
-         KHOPPtW2LGoBc7vZlWii4CVZRDePZfBLdv93wvjNg6Zc0I+0rIdPqrkbhDF6OUQaa5
-         RoJNnN1WH6BZy3PBD1NwuYhs9LL/8vXCBQFTrNog=
+        s=korg; t=1610029853;
+        bh=pzRhHs59aiMH3Yt9MNi2DX7MUHYsbgwMmFKqAuHKQ34=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=2OrhXSfUWPKfUhuYTK/fUFcKcOeuDrhS2j/avK8Y1ec9KNoIit/4BscTx8Hxx/bSD
+         E806V/STD7f333vfHJaeqDBg/+hjnkYq8UlG7sxDms9EVIXejvUJAerB+m66DyyO/0
+         uufR5Ie5t60kVloKBY4TmzBkKFsD2rN22NBoWI1w=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, stable@vger.kernel.org
-Subject: [PATCH 4.9 00/33] 4.9.250-rc2 review
-Date:   Thu,  7 Jan 2021 15:31:33 +0100
-Message-Id: <20210107143053.692614974@linuxfoundation.org>
+        stable@vger.kernel.org, Dinghao Liu <dinghao.liu@zju.edu.cn>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.14 19/29] rtc: sun6i: Fix memleak in sun6i_rtc_clk_init
+Date:   Thu,  7 Jan 2021 15:31:34 +0100
+Message-Id: <20210107143055.669299315@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-MIME-Version: 1.0
+In-Reply-To: <20210107143052.973437064@linuxfoundation.org>
+References: <20210107143052.973437064@linuxfoundation.org>
 User-Agent: quilt/0.66
-X-stable: review
-X-Patchwork-Hint: ignore
-X-KernelTest-Patch: http://kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.9.250-rc2.gz
-X-KernelTest-Tree: git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
-X-KernelTest-Branch: linux-4.9.y
-X-KernelTest-Patches: git://git.kernel.org/pub/scm/linux/kernel/git/stable/stable-queue.git
-X-KernelTest-Version: 4.9.250-rc2
-X-KernelTest-Deadline: 2021-01-09T14:30+00:00
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is the start of the stable review cycle for the 4.9.250 release.
-There are 33 patches in this series, all will be posted as a response
-to this one.  If anyone has any issues with these being applied, please
-let me know.
+From: Dinghao Liu <dinghao.liu@zju.edu.cn>
 
-Responses should be made by Sat, 09 Jan 2021 14:30:35 +0000.
-Anything received after that time might be too late.
+[ Upstream commit 28d211919e422f58c1e6c900e5810eee4f1ce4c8 ]
 
-The whole patch series can be found in one patch at:
-	https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.9.250-rc2.gz
-or in the git tree and branch at:
-	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.9.y
-and the diffstat can be found below.
+When clk_hw_register_fixed_rate_with_accuracy() fails,
+clk_data should be freed. It's the same for the subsequent
+two error paths, but we should also unregister the already
+registered clocks in them.
 
-thanks,
+Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
+Signed-off-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
+Link: https://lore.kernel.org/r/20201020061226.6572-1-dinghao.liu@zju.edu.cn
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ drivers/rtc/rtc-sun6i.c | 8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
 
-greg k-h
+diff --git a/drivers/rtc/rtc-sun6i.c b/drivers/rtc/rtc-sun6i.c
+index 8eb2b6dd36fea..1d0d9c8d0085d 100644
+--- a/drivers/rtc/rtc-sun6i.c
++++ b/drivers/rtc/rtc-sun6i.c
+@@ -230,7 +230,7 @@ static void __init sun6i_rtc_clk_init(struct device_node *node)
+ 								300000000);
+ 	if (IS_ERR(rtc->int_osc)) {
+ 		pr_crit("Couldn't register the internal oscillator\n");
+-		return;
++		goto err;
+ 	}
+ 
+ 	parents[0] = clk_hw_get_name(rtc->int_osc);
+@@ -246,7 +246,7 @@ static void __init sun6i_rtc_clk_init(struct device_node *node)
+ 	rtc->losc = clk_register(NULL, &rtc->hw);
+ 	if (IS_ERR(rtc->losc)) {
+ 		pr_crit("Couldn't register the LOSC clock\n");
+-		return;
++		goto err_register;
+ 	}
+ 
+ 	of_property_read_string_index(node, "clock-output-names", 1,
+@@ -257,7 +257,7 @@ static void __init sun6i_rtc_clk_init(struct device_node *node)
+ 					  &rtc->lock);
+ 	if (IS_ERR(rtc->ext_losc)) {
+ 		pr_crit("Couldn't register the LOSC external gate\n");
+-		return;
++		goto err_register;
+ 	}
+ 
+ 	clk_data->num = 2;
+@@ -266,6 +266,8 @@ static void __init sun6i_rtc_clk_init(struct device_node *node)
+ 	of_clk_add_hw_provider(node, of_clk_hw_onecell_get, clk_data);
+ 	return;
+ 
++err_register:
++	clk_hw_unregister_fixed_rate(rtc->int_osc);
+ err:
+ 	kfree(clk_data);
+ }
+-- 
+2.27.0
 
--------------
-Pseudo-Shortlog of commits:
-
-Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-    Linux 4.9.250-rc2
-
-Zhang Xiaohui <ruc_zhangxiaohui@163.com>
-    mwifiex: Fix possible buffer overflows in mwifiex_cmd_802_11_ad_hoc_start
-
-Jonathan Cameron <Jonathan.Cameron@huawei.com>
-    iio:magnetometer:mag3110: Fix alignment and data leak issues.
-
-Jonathan Cameron <Jonathan.Cameron@huawei.com>
-    iio:imu:bmi160: Fix alignment and data leak issues
-
-Jonathan Cameron <Jonathan.Cameron@huawei.com>
-    iio:imu:bmi160: Fix too large a buffer.
-
-sayli karnik <karniksayli1995@gmail.com>
-    iio: bmi160_core: Fix sparse warning due to incorrect type in assignment
-
-SeongJae Park <sjpark@amazon.de>
-    xenbus/xenbus_backend: Disallow pending watch messages
-
-SeongJae Park <sjpark@amazon.de>
-    xen/xenbus: Count pending messages for each watch
-
-SeongJae Park <sjpark@amazon.de>
-    xen/xenbus/xen_bus_type: Support will_handle watch callback
-
-SeongJae Park <sjpark@amazon.de>
-    xen/xenbus: Add 'will_handle' callback support in xenbus_watch_path()
-
-SeongJae Park <sjpark@amazon.de>
-    xen/xenbus: Allow watches discard events before queueing
-
-Josh Poimboeuf <jpoimboe@redhat.com>
-    kdev_t: always inline major/minor helper functions
-
-Jessica Yu <jeyu@kernel.org>
-    module: delay kobject uevent until after module init call
-
-Qinglang Miao <miaoqinglang@huawei.com>
-    powerpc: sysdev: add missing iounmap() on error in mpic_msgr_probe()
-
-Jan Kara <jack@suse.cz>
-    quota: Don't overflow quota file offsets
-
-Miroslav Benes <mbenes@suse.cz>
-    module: set MODULE_STATE_GOING state when a module fails to load
-
-Takashi Iwai <tiwai@suse.de>
-    ALSA: seq: Use bool for snd_seq_queue internal flags
-
-Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-    media: gp8psk: initialize stats at power control logic
-
-Anant Thazhemadam <anant.thazhemadam@gmail.com>
-    misc: vmw_vmci: fix kernel info-leak by initializing dbells in vmci_ctx_get_chkpt_doorbells()
-
-Rustam Kovhaev <rkovhaev@gmail.com>
-    reiserfs: add check for an invalid ih_entry_count
-
-Johan Hovold <johan@kernel.org>
-    of: fix linker-section match-table corruption
-
-Petr Vorel <petr.vorel@gmail.com>
-    uapi: move constants from <linux/kernel.h> to <linux/const.h>
-
-Paolo Abeni <pabeni@redhat.com>
-    l2tp: fix races with ipv4-mapped ipv6 addresses
-
-Paolo Abeni <pabeni@redhat.com>
-    net: ipv6: keep sk status consistent after datagram connect failure
-
-Johan Hovold <johan@kernel.org>
-    USB: serial: digi_acceleport: fix write-wakeup deadlocks
-
-Stefan Haberland <sth@linux.ibm.com>
-    s390/dasd: fix hanging device offline processing
-
-Eric Auger <eric.auger@redhat.com>
-    vfio/pci: Move dummy_resources_list init in vfio_pci_probe()
-
-Kailang Yang <kailang@realtek.com>
-    ALSA: hda/realtek - Dell headphone has noise on unmute for ALC236
-
-Hui Wang <hui.wang@canonical.com>
-    ALSA: hda - Fix a wrong FIXUP for alc289 on Dell machines
-
-Kailang Yang <kailang@realtek.com>
-    ALSA: hda/realtek - Support Dell headset mode for ALC3271
-
-Johan Hovold <johan@kernel.org>
-    ALSA: usb-audio: fix sync-ep altsetting sanity check
-
-Alberto Aguirre <albaguirre@gmail.com>
-    ALSA: usb-audio: simplify set_sync_ep_implicit_fb_quirk
-
-Takashi Iwai <tiwai@suse.de>
-    ALSA: hda/ca0132 - Fix work handling in delayed HP detection
-
-Jan Beulich <JBeulich@suse.com>
-    x86/entry/64: Add instruction suffix
-
-
--------------
-
-Diffstat:
-
- Makefile                                    |  4 +--
- arch/powerpc/sysdev/mpic_msgr.c             |  2 +-
- arch/x86/entry/entry_64.S                   |  2 +-
- drivers/block/xen-blkback/xenbus.c          |  3 +-
- drivers/iio/imu/bmi160/bmi160_core.c        | 12 +++++--
- drivers/iio/magnetometer/mag3110.c          | 13 +++++---
- drivers/media/usb/dvb-usb/gp8psk.c          |  2 +-
- drivers/misc/vmw_vmci/vmci_context.c        |  2 +-
- drivers/net/wireless/marvell/mwifiex/join.c |  2 ++
- drivers/net/xen-netback/xenbus.c            |  4 ++-
- drivers/s390/block/dasd_alias.c             | 10 +++++-
- drivers/usb/serial/digi_acceleport.c        | 45 ++++++++-----------------
- drivers/vfio/pci/vfio_pci.c                 |  4 +--
- drivers/xen/xen-pciback/xenbus.c            |  2 +-
- drivers/xen/xenbus/xenbus_client.c          |  8 ++++-
- drivers/xen/xenbus/xenbus_probe.c           |  1 +
- drivers/xen/xenbus/xenbus_probe.h           |  2 ++
- drivers/xen/xenbus/xenbus_probe_backend.c   |  7 ++++
- drivers/xen/xenbus/xenbus_xs.c              | 38 +++++++++++++--------
- fs/quota/quota_tree.c                       |  8 ++---
- fs/reiserfs/stree.c                         |  6 ++++
- include/linux/kdev_t.h                      | 22 ++++++------
- include/linux/of.h                          |  1 +
- include/uapi/linux/const.h                  |  5 +++
- include/uapi/linux/ethtool.h                |  2 +-
- include/uapi/linux/kernel.h                 |  9 +----
- include/uapi/linux/lightnvm.h               |  2 +-
- include/uapi/linux/mroute6.h                |  2 +-
- include/uapi/linux/netfilter/x_tables.h     |  2 +-
- include/uapi/linux/netlink.h                |  2 +-
- include/uapi/linux/sysctl.h                 |  2 +-
- include/xen/xenbus.h                        | 15 ++++++++-
- kernel/module.c                             |  6 ++--
- net/ipv6/datagram.c                         | 21 +++++++++---
- net/l2tp/l2tp_core.c                        | 38 ++++++++++-----------
- net/l2tp/l2tp_core.h                        |  3 --
- sound/core/seq/seq_queue.h                  |  8 ++---
- sound/pci/hda/patch_ca0132.c                | 16 +++++++--
- sound/pci/hda/patch_realtek.c               | 25 ++++++++++++--
- sound/usb/pcm.c                             | 52 +++++++++++------------------
- 40 files changed, 244 insertions(+), 166 deletions(-)
 
 
