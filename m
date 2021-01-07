@@ -2,125 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52C042ED5E4
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 18:45:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 620662ED5ED
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 18:46:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728842AbhAGRoy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 12:44:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58570 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728184AbhAGRox (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 12:44:53 -0500
-Received: from mail-qk1-x729.google.com (mail-qk1-x729.google.com [IPv6:2607:f8b0:4864:20::729])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C857C0612F5
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Jan 2021 09:44:13 -0800 (PST)
-Received: by mail-qk1-x729.google.com with SMTP id d14so6101874qkc.13
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Jan 2021 09:44:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=lHNm8uDmPy3iG7VP+rZSrjxlKRFNIPZy9iz2Yh/Sa+s=;
-        b=DilJRgOjUGCkNxVbxqaEZR1cwZNNstBr627PIcTB9nAkNhFIAEdj2KP9O/SRdV1mTy
-         fwsNq4eEp0F+MGgRKtNUHxsis3IsLDldIIGRF9oAp4kxNykVi2lUkquJNA3T8hZ8Y0S5
-         BKEOlaehVFxfM/tqZ4q+TczmHy6izyRHS5wE/oLZtnlcdKbSvT5M8372+4oNafqS+J0c
-         VbyMm00QdGgQ9hCdLJqY2hsPbrzaX+gJDeCGl6JjEHQE3ivIvZX2YeuEZjhb55hhBsEw
-         O4EbR0zCO3kQRe/EiyZJNsaQLjfohF5vzinPCUFyJHNbCPwwG/MbuMJNcQcpI4/Yia9h
-         tn2g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=lHNm8uDmPy3iG7VP+rZSrjxlKRFNIPZy9iz2Yh/Sa+s=;
-        b=XVpjIjKzAjR1BXvG6Yc3o2law602b5Vq1FqBOlqGsB7LlzTSSBP5Zjf0pMuoDX/PhT
-         nwzCkDJZpyA6ipqgYMpUVaLxlJsRp5ZpWq4oewOAXHRNWKoOeP0RGLZ5spkb5LzsJeNu
-         XGQ+cXWQIIHfzre9QbYo0cLwJGt+vwJwdvc+3cIhb5e7Bvp4PJ3DudAPDPzUiBceA5JE
-         TvsPG9T+Eij3KZJuDgkzn+AWShA4WvN1B4oPJbNg5NVGxqFF6tnbvzoymQWyk8tbe+fu
-         gv9Etd5jr0EXzYvSDf29/vp+h/ogsyUM88jthEmXAW8FgqdVDaf+H2iXYepNpPWUlrpw
-         +p/w==
-X-Gm-Message-State: AOAM5307BE20p+gcSzBdF7df6IQAQFIKBGUCuvxmSiDle23cPzORVimS
-        i487xRhB9xkvoz1cF908+X/7Og==
-X-Google-Smtp-Source: ABdhPJwTdp1mFNmZjd/uTThSUu3tREo6Dtb4VkwqpGpv7ZYVPfWDxnJ3YoPDIOWbz+jR2KjGnUR+yw==
-X-Received: by 2002:a05:620a:9d7:: with SMTP id y23mr10176247qky.181.1610041452516;
-        Thu, 07 Jan 2021 09:44:12 -0800 (PST)
-Received: from ziepe.ca (hlfxns017vw-142-162-115-133.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.115.133])
-        by smtp.gmail.com with ESMTPSA id b12sm3053989qtj.12.2021.01.07.09.44.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 Jan 2021 09:44:11 -0800 (PST)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1kxZKU-003lqO-Rg; Thu, 07 Jan 2021 13:44:10 -0400
-Date:   Thu, 7 Jan 2021 13:44:10 -0400
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Douglas Gilbert <dgilbert@interlog.com>
-Cc:     linux-scsi@vger.kernel.org, linux-block@vger.kernel.org,
-        target-devel@vger.kernel.org, linux-rdma@vger.kernel.org,
-        linux-kernel@vger.kernel.org, martin.petersen@oracle.com,
-        jejb@linux.vnet.ibm.com, bostroesser@gmail.com, bvanassche@acm.org,
-        ddiss@suse.de
-Subject: Re: [PATCH v5 1/4] sgl_alloc_order: remove 4 GiB limit, sgl_free()
- warning
-Message-ID: <20210107174410.GB504133@ziepe.ca>
-References: <20201228234955.190858-1-dgilbert@interlog.com>
- <20201228234955.190858-2-dgilbert@interlog.com>
+        id S1728783AbhAGRpz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 12:45:55 -0500
+Received: from mx2.suse.de ([195.135.220.15]:39698 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727061AbhAGRpy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Jan 2021 12:45:54 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 3E703AD78;
+        Thu,  7 Jan 2021 17:45:13 +0000 (UTC)
+To:     Andrea Arcangeli <aarcange@redhat.com>
+Cc:     Hugh Dickins <hughd@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alex Shi <alex.shi@linux.alibaba.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Michal Hocko <mhocko@suse.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+References: <1607743586-80303-1-git-send-email-alex.shi@linux.alibaba.com>
+ <1607743586-80303-2-git-send-email-alex.shi@linux.alibaba.com>
+ <e50574aa-87b8-8ddf-2235-ef98e22bcb7d@linux.alibaba.com>
+ <alpine.LSU.2.11.2101051919130.1361@eggly.anvils>
+ <20210106114620.5c221690f3a9cad7afcc3077@linux-foundation.org>
+ <X/YY+mjpq15nmryI@redhat.com>
+ <alpine.LSU.2.11.2101061213540.2492@eggly.anvils>
+ <bd10e2dc-7a5e-835d-9a1f-9fff36cc22b5@suse.cz> <X/dGhD/R8r5yeElq@redhat.com>
+From:   Vlastimil Babka <vbabka@suse.cz>
+Subject: Re: [PATCH] mm/mmap: replace if (cond) BUG() with BUG_ON()
+Message-ID: <e59e109d-0f46-c789-8e2c-52fc6d023a82@suse.cz>
+Date:   Thu, 7 Jan 2021 18:45:12 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201228234955.190858-2-dgilbert@interlog.com>
+In-Reply-To: <X/dGhD/R8r5yeElq@redhat.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 28, 2020 at 06:49:52PM -0500, Douglas Gilbert wrote:
-> diff --git a/lib/scatterlist.c b/lib/scatterlist.c
-> index a59778946404..4986545beef9 100644
-> +++ b/lib/scatterlist.c
-> @@ -554,13 +554,15 @@ EXPORT_SYMBOL(sg_alloc_table_from_pages);
->  #ifdef CONFIG_SGL_ALLOC
->  
->  /**
-> - * sgl_alloc_order - allocate a scatterlist and its pages
-> + * sgl_alloc_order - allocate a scatterlist with equally sized elements
->   * @length: Length in bytes of the scatterlist. Must be at least one
-> - * @order: Second argument for alloc_pages()
-> + * @order: Second argument for alloc_pages(). Each sgl element size will
-> + *	   be (PAGE_SIZE*2^order) bytes
->   * @chainable: Whether or not to allocate an extra element in the scatterlist
-> - *	for scatterlist chaining purposes
-> + *	       for scatterlist chaining purposes
->   * @gfp: Memory allocation flags
-> - * @nent_p: [out] Number of entries in the scatterlist that have pages
-> + * @nent_p: [out] Number of entries in the scatterlist that have pages.
-> + *		  Ignored if NULL is given.
->   *
->   * Returns: A pointer to an initialized scatterlist or %NULL upon failure.
->   */
-> @@ -574,8 +576,8 @@ struct scatterlist *sgl_alloc_order(unsigned long long length,
->  	u32 elem_len;
->  
->  	nent = round_up(length, PAGE_SIZE << order) >> (PAGE_SHIFT + order);
-> -	/* Check for integer overflow */
-> -	if (length > (nent << (PAGE_SHIFT + order)))
-> +	/* Integer overflow if:  length > nent*2^(PAGE_SHIFT+order) */
-> +	if (ilog2(length) > ilog2(nent) + PAGE_SHIFT + order)
->  		return NULL;
->  	nalloc = nent;
->  	if (chainable) {
+On 1/7/21 6:36 PM, Andrea Arcangeli wrote:
+> On Thu, Jan 07, 2021 at 06:28:29PM +0100, Vlastimil Babka wrote:
+>> On 1/6/21 9:18 PM, Hugh Dickins wrote:
+>> > On Wed, 6 Jan 2021, Andrea Arcangeli wrote:
+>> >> 
+>> >> I'd be surprised if the kernel can boot with BUG_ON() defined as "do
+>> >> {}while(0)" so I guess it doesn't make any difference.
+>> > 
+>> > I had been afraid of that too, when CONFIG_BUG is not set:
+>> > but I think it's actually "if (cond) do {} while (0)".
+>> 
+>> It's a maze of configs and arch-specific vs generic headers, but I do see this
+>> in include/asm-generic/bug.h:
+>> 
+>> #else /* !CONFIG_BUG */
+>> #ifndef HAVE_ARCH_BUG
+>> #define BUG() do {} while (1)
+>> #endif
+>> 
+>> So seems to me there *are* configurations possible where side-effects are indeed
+>> thrown away, right?
+> 
+> But this not BUG_ON, 
 
-This is a little bit too tortured now, how about this:
+Oh, you're right, I got lost in the maze.
 
-	if (length >> (PAGE_SHIFT + order) >= UINT_MAX)
-		return NULL;
-	nent = length >> (PAGE_SHIFT + order);
-	if (length & ((1ULL << (PAGE_SHIFT + order)) - 1))
-		nent++;
+> and that is an infinite loop while(1), not an
 
-	if (chainable) {
-		if (check_add_overflow(nent, 1, &nalloc))
-			return NULL;
-	}
-	else
-		nalloc = nent;
+And I overlooked that "1" too.
 
-Jason
+So that AFAICS means *both* VM_BUG_ON and VM_WARN_ON behave differently wrt
+side-effects when disabled than BUG_ON and WARN_ON.
+
+> optimization away as in while (0) that I was suggesting to just throw
+> away cond and make it a noop. BUG() is actually the thing to use to
+> move functional stuff out of BUG_ON so it's not going to be causing
+> issues if it just loops.
+> 
+> This overall feels mostly an aesthetically issue.
+> 
+> Thanks,
+> Andrea
+> 
+
