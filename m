@@ -2,167 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 710BD2ECA53
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 07:09:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C5BAE2ECA56
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 07:09:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726154AbhAGGH5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 01:07:57 -0500
-Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:3452 "EHLO
-        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725306AbhAGGH5 (ORCPT
+        id S1726329AbhAGGII (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 01:08:08 -0500
+Received: from so254-31.mailgun.net ([198.61.254.31]:19405 "EHLO
+        so254-31.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726231AbhAGGIH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 01:07:57 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5ff6a5140000>; Wed, 06 Jan 2021 22:07:16 -0800
-Received: from mtl-vdi-166.wap.labs.mlnx (172.20.145.6) by
- HQMAIL107.nvidia.com (172.20.187.13) with Microsoft SMTP Server (TLS) id
- 15.0.1473.3; Thu, 7 Jan 2021 06:07:14 +0000
-Date:   Thu, 7 Jan 2021 08:07:10 +0200
-From:   Eli Cohen <elic@nvidia.com>
-To:     Jason Wang <jasowang@redhat.com>
-CC:     <mst@redhat.com>, <virtualization@lists.linux-foundation.org>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <lulu@redhat.com>
-Subject: Re: [PATCH] vdpa/mlx5: Fix memory key MTT population
-Message-ID: <20210107060710.GA222154@mtl-vdi-166.wap.labs.mlnx>
-References: <20210106090557.GA170338@mtl-vdi-166.wap.labs.mlnx>
- <2d16b2af-f25a-d786-7d24-da45c0dcefaa@redhat.com>
+        Thu, 7 Jan 2021 01:08:07 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1609999662; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=7fshkn7pRC+xQGJefTHPAx+Ob/QQACNkxHyRcSYC2wQ=;
+ b=w2eunPIPKugLDTGkLGj2qrx1tA5F+nVxpj34TrnWPg0ZO/4onxMQ1JyFmq0LdSTcKm3BGwJd
+ NEF8cJE57/NzHQbsErSAyyIW31IY5FqjPhLlBIqsPYwxFynexcEiySV9M/2Uh3we3KsGqNAw
+ Vi8EXpBxDK7LMGmcxPtZLiFtuEM=
+X-Mailgun-Sending-Ip: 198.61.254.31
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n06.prod.us-west-2.postgun.com with SMTP id
+ 5ff6a513661021aa28fadf98 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 07 Jan 2021 06:07:15
+ GMT
+Sender: cang=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 0C950C433ED; Thu,  7 Jan 2021 06:07:15 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: cang)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 30FF4C433CA;
+        Thu,  7 Jan 2021 06:07:14 +0000 (UTC)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <2d16b2af-f25a-d786-7d24-da45c0dcefaa@redhat.com>
-User-Agent: Mutt/1.9.5 (bf161cf53efb) (2018-04-13)
-X-Originating-IP: [172.20.145.6]
-X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
- HQMAIL107.nvidia.com (172.20.187.13)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1609999636; bh=AfzezDcZPx0F0UhbBHRyh/t71tgrlkqywFR9ZTgRWVs=;
-        h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
-         Content-Type:Content-Disposition:Content-Transfer-Encoding:
-         In-Reply-To:User-Agent:X-Originating-IP:X-ClientProxiedBy;
-        b=ZgRR/RGq/RkPMsPHhoMvClKshFDaCiABiu9YJ7g4VU7+3qeyMAyrUA1N+kGj81lYw
-         A+5I9AuXcZhibVhbfkdDSnKVGhvKEPjZqMLDDgyj6RfD1J79eNtq4XxA678PxUoViq
-         7hG8EPa+2D2z0WX8QSrjRJrHp99GoJS5DWBOAaAicAFa+9leDXiXbFsyzy3hPmTbt4
-         Tk7zAuo3Dh0/HGGMevlI9ouD/bid5+zFw/f25c7WSw7/GW1bdXiEsZMMGds6TyXSW8
-         BTl3JpRWWattQBMggEE3cCdvSOgOsan3jsMfN5Wq5Fg/bEDkLsI0zL/mlFhGYdE3q2
-         LVnS4MVB969KQ==
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Thu, 07 Jan 2021 14:07:14 +0800
+From:   Can Guo <cang@codeaurora.org>
+To:     Jaegeuk Kim <jaegeuk@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org,
+        kernel-team@android.com, alim.akhtar@samsung.com,
+        avri.altman@wdc.com, bvanassche@acm.org,
+        martin.petersen@oracle.com, stanley.chu@mediatek.com,
+        Jaegeuk Kim <jaegeuk@google.com>
+Subject: Re: [PATCH v3 2/2] scsi: ufs: handle LINERESET with correct tm_cmd
+In-Reply-To: <20210106214109.44041-3-jaegeuk@kernel.org>
+References: <20210106214109.44041-1-jaegeuk@kernel.org>
+ <20210106214109.44041-3-jaegeuk@kernel.org>
+Message-ID: <96a159d6b64fce18ee63a12a6acde2a2@codeaurora.org>
+X-Sender: cang@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 07, 2021 at 12:15:53PM +0800, Jason Wang wrote:
->=20
-> On 2021/1/6 =E4=B8=8B=E5=8D=885:05, Eli Cohen wrote:
-> > map_direct_mr() assumed that the number of scatter/gather entries
-> > returned by dma_map_sg_attrs() was equal to the number of segments in
-> > the sgl list. This led to wrong population of the mkey object. Fix this
-> > by properly referring to the returned value.
-> >=20
-> > In addition, get rid of fill_sg() whjich effect is overwritten bu
-> > populate_mtts().
->=20
->=20
-> Typo.
->=20
-Will fix, thanks.
->=20
-> >=20
-> > Fixes: 94abbccdf291 ("vdpa/mlx5: Add shared memory registration code")
-> > Signed-off-by: Eli Cohen <elic@nvidia.com>
-> > ---
-> >   drivers/vdpa/mlx5/core/mlx5_vdpa.h |  1 +
-> >   drivers/vdpa/mlx5/core/mr.c        | 28 ++++++++++++----------------
-> >   2 files changed, 13 insertions(+), 16 deletions(-)
-> >=20
-> > diff --git a/drivers/vdpa/mlx5/core/mlx5_vdpa.h b/drivers/vdpa/mlx5/cor=
-e/mlx5_vdpa.h
-> > index 5c92a576edae..08f742fd2409 100644
-> > --- a/drivers/vdpa/mlx5/core/mlx5_vdpa.h
-> > +++ b/drivers/vdpa/mlx5/core/mlx5_vdpa.h
-> > @@ -15,6 +15,7 @@ struct mlx5_vdpa_direct_mr {
-> >   	struct sg_table sg_head;
-> >   	int log_size;
-> >   	int nsg;
-> > +	int nent;
-> >   	struct list_head list;
-> >   	u64 offset;
-> >   };
-> > diff --git a/drivers/vdpa/mlx5/core/mr.c b/drivers/vdpa/mlx5/core/mr.c
-> > index 4b6195666c58..d300f799efcd 100644
-> > --- a/drivers/vdpa/mlx5/core/mr.c
-> > +++ b/drivers/vdpa/mlx5/core/mr.c
-> > @@ -25,17 +25,6 @@ static int get_octo_len(u64 len, int page_shift)
-> >   	return (npages + 1) / 2;
-> >   }
-> > -static void fill_sg(struct mlx5_vdpa_direct_mr *mr, void *in)
-> > -{
-> > -	struct scatterlist *sg;
-> > -	__be64 *pas;
-> > -	int i;
-> > -
-> > -	pas =3D MLX5_ADDR_OF(create_mkey_in, in, klm_pas_mtt);
-> > -	for_each_sg(mr->sg_head.sgl, sg, mr->nsg, i)
-> > -		(*pas) =3D cpu_to_be64(sg_dma_address(sg));
-> > -}
-> > -
-> >   static void mlx5_set_access_mode(void *mkc, int mode)
-> >   {
-> >   	MLX5_SET(mkc, mkc, access_mode_1_0, mode & 0x3);
-> > @@ -45,10 +34,18 @@ static void mlx5_set_access_mode(void *mkc, int mod=
-e)
-> >   static void populate_mtts(struct mlx5_vdpa_direct_mr *mr, __be64 *mtt=
-)
-> >   {
-> >   	struct scatterlist *sg;
-> > +	int nsg =3D mr->nsg;
-> > +	u64 dma_addr;
-> > +	u64 dma_len;
-> > +	int j =3D 0;
-> >   	int i;
-> > -	for_each_sg(mr->sg_head.sgl, sg, mr->nsg, i)
-> > -		mtt[i] =3D cpu_to_be64(sg_dma_address(sg));
-> > +	for_each_sg(mr->sg_head.sgl, sg, mr->nent, i) {
-> > +		for (dma_addr =3D sg_dma_address(sg), dma_len =3D sg_dma_len(sg);
-> > +		     nsg && dma_len;
-> > +		     nsg--, dma_addr +=3D BIT(mr->log_size), dma_len -=3D BIT(mr->lo=
-g_size))
-> > +			mtt[j++] =3D cpu_to_be64(dma_addr);
->=20
->=20
-> It looks to me the mtt entry is also limited by log_size. It's better to
-> explain this a little bit in the commit log.
+Hi Jaegeuk,
 
-Actually, each MTT entry covers (1 << mr->log_size) contiguous memory.
-I will add an explanation.
+On 2021-01-07 05:41, Jaegeuk Kim wrote:
+> From: Jaegeuk Kim <jaegeuk@google.com>
+> 
+> This fixes a warning caused by wrong reserve tag usage in 
+> __ufshcd_issue_tm_cmd.
+> 
+> WARNING: CPU: 7 PID: 7 at block/blk-core.c:630 
+> blk_get_request+0x68/0x70
+> WARNING: CPU: 4 PID: 157 at block/blk-mq-tag.c:82 
+> blk_mq_get_tag+0x438/0x46c
+> 
+> And, in ufshcd_err_handler(), we can avoid to send tm_cmd before 
+> aborting
+> outstanding commands by waiting a bit for IO completion like this.
+> 
+> __ufshcd_issue_tm_cmd: task management cmd 0x80 timed-out
+> 
+> Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
+> ---
+>  drivers/scsi/ufs/ufshcd.c | 36 ++++++++++++++++++++++++++++++++----
+>  1 file changed, 32 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
+> index 1678cec08b51..47fc8da3cbf9 100644
+> --- a/drivers/scsi/ufs/ufshcd.c
+> +++ b/drivers/scsi/ufs/ufshcd.c
+> @@ -44,6 +44,9 @@
+>  /* Query request timeout */
+>  #define QUERY_REQ_TIMEOUT 1500 /* 1.5 seconds */
+> 
+> +/* LINERESET TIME OUT */
+> +#define LINERESET_IO_TIMEOUT_MS			(30000) /* 30 sec */
+> +
+>  /* Task management command timeout */
+>  #define TM_CMD_TIMEOUT	100 /* msecs */
+> 
+> @@ -5899,6 +5902,8 @@ static void ufshcd_err_handler(struct work_struct 
+> *work)
+>  	 * check if power mode restore is needed.
+>  	 */
+>  	if (hba->saved_uic_err & UFSHCD_UIC_PA_GENERIC_ERROR) {
+> +		ktime_t start = ktime_get();
 
->=20
-> Thanks
->=20
->=20
-> > +	}
-> >   }
-> >   static int create_direct_mr(struct mlx5_vdpa_dev *mvdev, struct mlx5_=
-vdpa_direct_mr *mr)
-> > @@ -64,7 +61,6 @@ static int create_direct_mr(struct mlx5_vdpa_dev *mvd=
-ev, struct mlx5_vdpa_direct
-> >   		return -ENOMEM;
-> >   	MLX5_SET(create_mkey_in, in, uid, mvdev->res.uid);
-> > -	fill_sg(mr, in);
-> >   	mkc =3D MLX5_ADDR_OF(create_mkey_in, in, memory_key_mkey_entry);
-> >   	MLX5_SET(mkc, mkc, lw, !!(mr->perm & VHOST_MAP_WO));
-> >   	MLX5_SET(mkc, mkc, lr, !!(mr->perm & VHOST_MAP_RO));
-> > @@ -276,8 +272,8 @@ static int map_direct_mr(struct mlx5_vdpa_dev *mvde=
-v, struct mlx5_vdpa_direct_mr
-> >   done:
-> >   	mr->log_size =3D log_entity_size;
-> >   	mr->nsg =3D nsg;
-> > -	err =3D dma_map_sg_attrs(dma, mr->sg_head.sgl, mr->nsg, DMA_BIDIRECTI=
-ONAL, 0);
-> > -	if (!err)
-> > +	mr->nent =3D dma_map_sg_attrs(dma, mr->sg_head.sgl, mr->nsg, DMA_BIDI=
-RECTIONAL, 0);
-> > +	if (!mr->nent)
-> >   		goto err_map;
-> >   	err =3D create_direct_mr(mvdev, mr);
->=20
+I don't see the connection btw line-reset and following tmf cmd.
+My point is that line-reset is not the only non-fatal error which
+leads us to the following tmf cmd. So the wait should be outside
+of this check - just put it right before clearing outstanding reqs.
+
+Thanks,
+Can Guo.
+
+> +
+>  		hba->saved_uic_err &= ~UFSHCD_UIC_PA_GENERIC_ERROR;
+>  		if (!hba->saved_uic_err)
+>  			hba->saved_err &= ~UIC_ERROR;
+> @@ -5906,6 +5911,20 @@ static void ufshcd_err_handler(struct 
+> work_struct *work)
+>  		if (ufshcd_is_pwr_mode_restore_needed(hba))
+>  			needs_restore = true;
+>  		spin_lock_irqsave(hba->host->host_lock, flags);
+> +		/* Wait for IO completion to avoid aborting IOs */
+> +		while (hba->outstanding_reqs) {
+> +			ufshcd_complete_requests(hba);
+> +			spin_unlock_irqrestore(hba->host->host_lock, flags);
+> +			schedule();
+> +			spin_lock_irqsave(hba->host->host_lock, flags);
+> +			if (ktime_to_ms(ktime_sub(ktime_get(), start)) >
+> +						LINERESET_IO_TIMEOUT_MS) {
+> +				dev_err(hba->dev, "%s: timeout, outstanding=0x%lx\n",
+> +					__func__, hba->outstanding_reqs);
+> +				break;
+> +			}
+> +		}
+> +
+>  		if (!hba->saved_err && !needs_restore)
+>  			goto skip_err_handling;
+>  	}
+> @@ -6302,9 +6321,13 @@ static irqreturn_t ufshcd_intr(int irq, void 
+> *__hba)
+>  		intr_status = ufshcd_readl(hba, REG_INTERRUPT_STATUS);
+>  	}
+> 
+> -	if (enabled_intr_status && retval == IRQ_NONE) {
+> -		dev_err(hba->dev, "%s: Unhandled interrupt 0x%08x\n",
+> -					__func__, intr_status);
+> +	if (enabled_intr_status && retval == IRQ_NONE &&
+> +				!ufshcd_eh_in_progress(hba)) {
+> +		dev_err(hba->dev, "%s: Unhandled interrupt 0x%08x (0x%08x, 
+> 0x%08x)\n",
+> +					__func__,
+> +					intr_status,
+> +					hba->ufs_stats.last_intr_status,
+> +					enabled_intr_status);
+>  		ufshcd_dump_regs(hba, 0, UFSHCI_REG_SPACE_SIZE, "host_regs: ");
+>  	}
+> 
+> @@ -6348,7 +6371,11 @@ static int __ufshcd_issue_tm_cmd(struct ufs_hba 
+> *hba,
+>  	 * Even though we use wait_event() which sleeps indefinitely,
+>  	 * the maximum wait time is bounded by %TM_CMD_TIMEOUT.
+>  	 */
+> -	req = blk_get_request(q, REQ_OP_DRV_OUT, BLK_MQ_REQ_RESERVED);
+> +	req = blk_get_request(q, REQ_OP_DRV_OUT, BLK_MQ_REQ_RESERVED |
+> +						BLK_MQ_REQ_NOWAIT);
+> +	if (IS_ERR(req))
+> +		return PTR_ERR(req);
+> +
+>  	req->end_io_data = &wait;
+>  	free_slot = req->tag;
+>  	WARN_ON_ONCE(free_slot < 0 || free_slot >= hba->nutmrs);
+> @@ -9355,6 +9382,7 @@ int ufshcd_init(struct ufs_hba *hba, void
+> __iomem *mmio_base, unsigned int irq)
+> 
+>  	hba->tmf_tag_set = (struct blk_mq_tag_set) {
+>  		.nr_hw_queues	= 1,
+> +		.reserved_tags	= 1,
+>  		.queue_depth	= hba->nutmrs,
+>  		.ops		= &ufshcd_tmf_ops,
+>  		.flags		= BLK_MQ_F_NO_SCHED,
