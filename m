@@ -2,100 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C15B82EE6A1
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 21:18:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F5EC2EE6A7
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 21:20:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727037AbhAGUSl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 15:18:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54542 "EHLO
+        id S1727091AbhAGUUT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 15:20:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54792 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726894AbhAGUSk (ORCPT
+        with ESMTP id S1726507AbhAGUUS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 15:18:40 -0500
-Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0BCA4C0612F4
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Jan 2021 12:18:00 -0800 (PST)
-Received: by mail-lf1-x133.google.com with SMTP id o17so17626431lfg.4
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Jan 2021 12:17:59 -0800 (PST)
+        Thu, 7 Jan 2021 15:20:18 -0500
+Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 568A8C0612F5
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Jan 2021 12:19:38 -0800 (PST)
+Received: by mail-pg1-x533.google.com with SMTP id p18so5730335pgm.11
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Jan 2021 12:19:38 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=dGs5SC/WgPGPwKJAjM4eEmzVICBqZQ76JG19WsL7/rQ=;
-        b=FQSGvmK+Xq6jpxFayh+QAC+i2+ruwFl+7GQruzMXs4TpJg88gnkX97b2mPGKPlgJGX
-         AMrAJMDLYYA+DHS2uYLi42G+367WhqwDgya7y4vMNHXqZ4lSr2ADFnbQw8rUyv/G3+vo
-         vp9ggy2xaeUofO3SQxirTt7eGCncCcRZZ9eJM=
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=SZlEimO4YAkWtxdva4bxnoHuQClhYtsS69UscPllb+A=;
+        b=RlsMFs4KjBCB+f5yJHtNjT/wxOFZnRr78VAoWkzR4IJ1Dj2eqR3aR83EL+qvwINVB1
+         XJiEfd0TL9UnhCwf3m1jzELfhlAkSg61IDLcdV6qJqOVMh4Kbemd3a1XhXqvVHDqTy++
+         LHoH15TTy/QucjUfuwxrjsxVJCEuCgYq0rCTIR5LDD6Ut8tI1dTdUIt+XSWIAHD6R9rB
+         yCI9vqOkAuonQ9mTuxjGg0vIClJeSol9ppwr2CtaGx6WapBoNyKBFxm35NlX+ljoTeXb
+         NvSwUoTqQVO3vTe8A2bNkoCSoefP19CNsrhAgNdBf7xz0zSAA1W81tqK/vXF0d9MIiKn
+         4WEQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=dGs5SC/WgPGPwKJAjM4eEmzVICBqZQ76JG19WsL7/rQ=;
-        b=ljHqk8AZZK8g5YFCrO8fdurd8MVLclEyrAwKFWAVe1CH6IVW3Cdp2ErV71w3OOjqpG
-         8qlh+wWKC2hloZPddtMaqTn1A3bBQWvnQhqIhNoffpgYyVD2FiL90bS1GWj23nfT2UgT
-         OLn1wNR0urfdQuCFDdYrTGTjKjMsqZtpiq5sZ5oMaCBuTWU9bAw5fOSSn/aUiPoamb31
-         TeNMxdC0RTiovA1+7jswZu5yH9Sks+u7k9aT/BVoLQQqRhvOwZvgKTxiskx7q2dGC+yl
-         jMaXO1Jlk9aczjJTdc2Fpz525XewhKrONo+VnUaiuYF1vowODpRKIlEtDM1pwOuchGKo
-         JwbA==
-X-Gm-Message-State: AOAM530rbWou25O+LP4ceCOKyX3TuF8q5GZkrHU4lB/kp/940CIqzzVw
-        Om860ZIGFFPwMwsoY4Kn7j5jUNK4iO8QEA==
-X-Google-Smtp-Source: ABdhPJysUHnMvX/bXtG3zWq+kWHeBaGz7aoEiS81Jd7HevI620hjrNG7uovd53v5X1B+g4Q64SQ/lQ==
-X-Received: by 2002:ac2:4249:: with SMTP id m9mr212201lfl.594.1610050678025;
-        Thu, 07 Jan 2021 12:17:58 -0800 (PST)
-Received: from mail-lf1-f47.google.com (mail-lf1-f47.google.com. [209.85.167.47])
-        by smtp.gmail.com with ESMTPSA id b5sm1391219lfo.126.2021.01.07.12.17.56
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 07 Jan 2021 12:17:56 -0800 (PST)
-Received: by mail-lf1-f47.google.com with SMTP id m25so17482756lfc.11
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Jan 2021 12:17:56 -0800 (PST)
-X-Received: by 2002:a05:6512:338f:: with SMTP id h15mr189659lfg.40.1610050676088;
- Thu, 07 Jan 2021 12:17:56 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=SZlEimO4YAkWtxdva4bxnoHuQClhYtsS69UscPllb+A=;
+        b=jmhzFuLgquIQ9PX23Q3bx9Kpsb8nfiRO0ZAKHKiHR4Z0ImU/nOTe6Uxffz7QO5ZOb4
+         vV06P2tKcX8bTpFyNjGeejIP37XGW4p/t5pnRS891MQBPQczZUfbeEUFp9e5YnUiGYae
+         HX69Stgkjbv5kmkR04mqP6BEauTW1BAtdSpCENk/oWB9fd/ZbYOo2Ymw4SbKIH8wbGJ+
+         69o8qZzA7d8y4GWI7CLM4UcxZiaMhMTrYZRf9+SXatlkLW7iNTaXQ0XfeccqOf8Y3EmM
+         oo7Qgln5IvfezEtzhTF7U/NsPOCjnTqqZDQEIJgO26sLKQJYOvpNyIOXDi1501WEyH53
+         pvvg==
+X-Gm-Message-State: AOAM531NUuk1amRwpYuwOZ22EEfe1I1IUwi2iPxSQh39lE3TluDYTdae
+        dTneTwYK+MRyyBrQ572hUMvpZw==
+X-Google-Smtp-Source: ABdhPJxLNOJQnNDN+uN3rSRlA/QRDy9/dvVA3bNQP0tNQeLZb5+4qbAqAGCw8IwhLuvotH6+buWh9g==
+X-Received: by 2002:a63:3ec9:: with SMTP id l192mr3528736pga.104.1610050777651;
+        Thu, 07 Jan 2021 12:19:37 -0800 (PST)
+Received: from google.com ([2620:15c:f:10:1ea0:b8ff:fe73:50f5])
+        by smtp.gmail.com with ESMTPSA id w27sm6547964pfq.104.2021.01.07.12.19.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 07 Jan 2021 12:19:37 -0800 (PST)
+Date:   Thu, 7 Jan 2021 12:19:30 -0800
+From:   Sean Christopherson <seanjc@google.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Maxim Levitsky <mlevitsk@redhat.com>, kvm@vger.kernel.org,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Borislav Petkov <bp@alien8.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel@vger.kernel.org,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Jim Mattson <jmattson@google.com>
+Subject: Re: [PATCH v2 2/4] KVM: nSVM: correctly restore nested_run_pending
+ on migration
+Message-ID: <X/ds0sUw/me4e/g1@google.com>
+References: <20210107093854.882483-1-mlevitsk@redhat.com>
+ <20210107093854.882483-3-mlevitsk@redhat.com>
+ <98f35e0a-d82b-cac0-b267-00fcba00c185@redhat.com>
 MIME-Version: 1.0
-References: <B1B85771-B211-4FCC-AEEF-BDFD37332C25@vmware.com>
- <20210107200402.31095-1-aarcange@redhat.com> <20210107200402.31095-3-aarcange@redhat.com>
-In-Reply-To: <20210107200402.31095-3-aarcange@redhat.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Thu, 7 Jan 2021 12:17:40 -0800
-X-Gmail-Original-Message-ID: <CAHk-=whg-91=EF=8=ayyDQGx_3iuWKp3aHUkDCDkgUb15Yh8AQ@mail.gmail.com>
-Message-ID: <CAHk-=whg-91=EF=8=ayyDQGx_3iuWKp3aHUkDCDkgUb15Yh8AQ@mail.gmail.com>
-Subject: Re: [PATCH 2/2] mm: soft_dirty: userfaultfd: introduce wrprotect_tlb_flush_pending
-To:     Andrea Arcangeli <aarcange@redhat.com>
-Cc:     Linux-MM <linux-mm@kvack.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Yu Zhao <yuzhao@google.com>, Andy Lutomirski <luto@kernel.org>,
-        Peter Xu <peterx@redhat.com>,
-        Pavel Emelyanov <xemul@openvz.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Mike Rapoport <rppt@linux.vnet.ibm.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Will Deacon <will@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Hugh Dickins <hughd@google.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Oleg Nesterov <oleg@redhat.com>, Jann Horn <jannh@google.com>,
-        Kees Cook <keescook@chromium.org>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>, Jan Kara <jack@suse.cz>,
-        Kirill Tkhai <ktkhai@virtuozzo.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <98f35e0a-d82b-cac0-b267-00fcba00c185@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 7, 2021 at 12:04 PM Andrea Arcangeli <aarcange@redhat.com> wrote:
->
-> However there are two cases that could wrprotecting exclusive anon
-> pages with only the mmap_read_lock:
+On Thu, Jan 07, 2021, Paolo Bonzini wrote:
+> On 07/01/21 10:38, Maxim Levitsky wrote:
+> > The code to store it on the migration exists, but no code was restoring it.
+> > 
+> > One of the side effects of fixing this is that L1->L2 injected events
+> > are no longer lost when migration happens with nested run pending.
+> > 
+> > Signed-off-by: Maxim Levitsky <mlevitsk@redhat.com>
+> > ---
+> >   arch/x86/kvm/svm/nested.c | 4 ++++
+> >   1 file changed, 4 insertions(+)
+> > 
+> > diff --git a/arch/x86/kvm/svm/nested.c b/arch/x86/kvm/svm/nested.c
+> > index ee4f2082ad1bd..cc3130ab612e5 100644
+> > --- a/arch/x86/kvm/svm/nested.c
+> > +++ b/arch/x86/kvm/svm/nested.c
+> > @@ -1200,6 +1200,10 @@ static int svm_set_nested_state(struct kvm_vcpu *vcpu,
+> >   	 * in the registers, the save area of the nested state instead
+> >   	 * contains saved L1 state.
+> >   	 */
+> > +
+> > +	svm->nested.nested_run_pending =
+> > +		!!(kvm_state->flags & KVM_STATE_NESTED_RUN_PENDING);
+> > +
+> >   	copy_vmcb_control_area(&hsave->control, &svm->vmcb->control);
+> >   	hsave->save = *save;
+> > 
+> 
+> Nice fix and we need to do it anyway.
+> 
+> That said, the v1 change had some appeal to it.
 
-I still think the real fix is "Don't do that then", and just take the
-write lock.
+Which v1 change are you referring to?
 
-The UFFDIO_WRITEPROTECT case simply isn't that critical. It's not a
-normal operation. Same goes for softdirty.
+> In the VMX case (if properly implemented) it would allow removing the weird
+> nested_run_pending case from prepare_vmcs02_early.  I think it's a valuable
+> invariant that there are no events in the VMCS after each KVM_RUN iteration,
+> and this special case is breaking the invariant.
 
-Why have those become _so_ magical that they can break the VM for
-everybody else?
-
-         Linus
+Hmm, as weird as that code is, I think it's actually the most architecturally
+correct behavior.  Technically, the clearing of VM_ENTRY_INTR_INFO.VALID
+shouldn't be visible in vmcs12 until a nested VM-Exit occurs, e.g. copying the
+vmcs02 value to vmcs12 in vmx_get_nested_state() would work, but it's wrong at
+the same time.  Ditto for L1 (or L2) writing vmcs12.VM_ENTRY_INTR_INFO while L2
+is running (ignoring the SDM's very clear warning that doing so is bad); from
+L1/L2's perspective, there is no VM-Entry so writing vmcs12.VM_ENTRY_INTR_INFO
+should never generate an event in L2, even on CPUs without VMCS caching.
