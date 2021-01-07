@@ -2,227 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 535432ECC19
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 10:00:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A40802ECC1F
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 10:01:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726832AbhAGI7Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 03:59:16 -0500
-Received: from m43-15.mailgun.net ([69.72.43.15]:57431 "EHLO
-        m43-15.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725974AbhAGI7P (ORCPT
+        id S1727077AbhAGJAe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 04:00:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32978 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725974AbhAGJAd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 03:59:15 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1610009936; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=whRujcjTurebZi/pBUQzZmMs7hTplG1cKRDyBGZXkPU=;
- b=EEJAfE4eDAbnpMbBCDHKkcmV2vAdcfNk+IGdf2BKyE/fZ9tYgGXKF5prdLUR17QEq7jM67TP
- SDXbgVW2T1hQFYyUT5mhPNXzdMl4h4CuN/OYbyRPk4BeRioMW7qCI/o7fnDxa2hlWDjC6Rt5
- lPp7q8TG/mXlXpn6u/b5xipZAok=
-X-Mailgun-Sending-Ip: 69.72.43.15
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n02.prod.us-east-1.postgun.com with SMTP id
- 5ff6cd31a1d2634b3f19e7d0 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 07 Jan 2021 08:58:25
- GMT
-Sender: cang=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 30F6FC43466; Thu,  7 Jan 2021 08:58:24 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: cang)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 12348C433CA;
-        Thu,  7 Jan 2021 08:58:23 +0000 (UTC)
+        Thu, 7 Jan 2021 04:00:33 -0500
+Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B42DCC0612F4
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Jan 2021 00:59:53 -0800 (PST)
+Received: by mail-pl1-x62c.google.com with SMTP id s15so3141339plr.9
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Jan 2021 00:59:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=D3NaOaWtyXj/T2ptk32bEzgFjNq4o/HFyZv3dYGEEcI=;
+        b=jGRRdH14K3aDVKXx595sg3CNZEVnLXEVL1uW7eWgv1MRfv8HAV1dEwfaGK6nTYzmZ7
+         hD+JvAI//dEdPwfLoZ7SYh/MX5PAACUktO8REpO4hicl77QqW4BfOWvNQX8rQxvI6A2x
+         /3+RKZhj3uWUAo1Qb5C35FS77lRTIRH9O52IE=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=D3NaOaWtyXj/T2ptk32bEzgFjNq4o/HFyZv3dYGEEcI=;
+        b=qzppmKGTD5QBPdHpg2w4mwhQbDjXZ7gOrt31mHF7CDmPYlgHOZDF9A/73spxcLHbtg
+         zYJo8MEtgtLa4f2V+ktyBFgIimuVpuzBDGbeP+0RIlVlejakNAgeQzV0BjVlAnjo9/bo
+         fEK9bHzM98bdskFKKPg8QBP/rhngF068anyg8dcNZhawnt01+/x3MknyVfBmJfwP06ft
+         KOj75fokUeuxzo6kn9G50s1buBOHU//i2eezjVloTlmdDYzPppOavLcvUHSc6/e/Qq2a
+         N9Do0EpxD3x4xFmBoMF8s5Gi/+fXaU8p7RAV0IoMrzHSjHkvwZdj3RqMGONQA19COpFr
+         dUZQ==
+X-Gm-Message-State: AOAM5326Q8zgB8Kpr52As74KCfhHlHZpgtnNd41xP5mDqgoSuJyZFyqD
+        If8zk7Be0Y9QmUCMphIrNrRp0mTbQXaDUbcb
+X-Google-Smtp-Source: ABdhPJyA0M2EA1aG9AE/yZzNcyq5SDQXjyuMgt6bdQxEssG6sOZsHJQebAGRuxERBk3E6lTOdfHkaA==
+X-Received: by 2002:a17:902:7d94:b029:da:f673:18b9 with SMTP id a20-20020a1709027d94b02900daf67318b9mr8264217plm.37.1610009992592;
+        Thu, 07 Jan 2021 00:59:52 -0800 (PST)
+Received: from localhost ([2401:fa00:1:10:725a:fff:fe46:44eb])
+        by smtp.gmail.com with ESMTPSA id w19sm5335474pgf.23.2021.01.07.00.59.49
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 07 Jan 2021 00:59:51 -0800 (PST)
+From:   Yu-Hsuan Hsu <yuhsuan@chromium.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Benson Leung <bleung@chromium.org>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        Guenter Roeck <groeck@chromium.org>,
+        Cheng-Yi Chiang <cychiang@chromium.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Prashant Malani <pmalani@chromium.org>,
+        Pi-Hsun Shih <pihsun@chromium.org>,
+        Yu-Hsuan Hsu <yuhsuan@chromium.org>,
+        "Gustavo A . R . Silva" <gustavoars@kernel.org>,
+        alsa-devel@alsa-project.org
+Subject: [PATCH 1/2] cros_ec_commands: Add EC_CODEC_I2S_RX_RESET
+Date:   Thu,  7 Jan 2021 16:59:41 +0800
+Message-Id: <20210107085942.2891525-1-yuhsuan@chromium.org>
+X-Mailer: git-send-email 2.29.2.729.g45daf8777d-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Thu, 07 Jan 2021 16:58:23 +0800
-From:   Can Guo <cang@codeaurora.org>
-To:     Jaegeuk Kim <jaegeuk@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org,
-        kernel-team@android.com, alim.akhtar@samsung.com,
-        avri.altman@wdc.com, bvanassche@acm.org,
-        martin.petersen@oracle.com, stanley.chu@mediatek.com
-Subject: Re: [PATCH v4 2/2] scsi: ufs: handle LINERESET with correct tm_cmd
-In-Reply-To: <X/bKZDxl1HeelB1a@google.com>
-References: <20210107074710.549309-1-jaegeuk@kernel.org>
- <20210107074710.549309-3-jaegeuk@kernel.org>
- <03a47a3f49914230653bea777e2ee550@codeaurora.org>
- <X/bBX6t31BOfRG/i@google.com>
- <abce95b0eb219fb6dee50f925e8fdb36@codeaurora.org>
- <X/bKZDxl1HeelB1a@google.com>
-Message-ID: <3e2245953c143b55d512d46a16ed8a2c@codeaurora.org>
-X-Sender: cang@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-01-07 16:46, Jaegeuk Kim wrote:
-> On 01/07, Can Guo wrote:
->> On 2021-01-07 16:07, Jaegeuk Kim wrote:
->> > On 01/07, Can Guo wrote:
->> > > On 2021-01-07 15:47, Jaegeuk Kim wrote:
->> > > > From: Jaegeuk Kim <jaegeuk@google.com>
->> > > >
->> > > > This fixes a warning caused by wrong reserve tag usage in
->> > > > __ufshcd_issue_tm_cmd.
->> > > >
->> > > > WARNING: CPU: 7 PID: 7 at block/blk-core.c:630 blk_get_request+0x68/0x70
->> > > > WARNING: CPU: 4 PID: 157 at block/blk-mq-tag.c:82
->> > > > blk_mq_get_tag+0x438/0x46c
->> > > >
->> > > > And, in ufshcd_err_handler(), we can avoid to send tm_cmd before
->> > > > aborting
->> > > > outstanding commands by waiting a bit for IO completion like this.
->> > > >
->> > > > __ufshcd_issue_tm_cmd: task management cmd 0x80 timed-out
->> > > >
->> > > > Fixes: 69a6c269c097 ("scsi: ufs: Use blk_{get,put}_request() to
->> > > > allocate and free TMFs")
->> > > > Fixes: 2355b66ed20c ("scsi: ufs: Handle LINERESET indication in err
->> > > > handler")
->> > >
->> > > Hi Jaegeuk,
->> > >
->> > > Sorry, what is wrong with commit 2355b66ed20c? Clearing pending I/O
->> > > reqs is a general procedure for handling all non-fatal errors.
->> >
->> > Without waiting IOs, I hit the below timeout all the time from
->> > LINERESET, which
->> > causes UFS stuck permanently, as mentioned in the description.
->> >
->> > "__ufshcd_issue_tm_cmd: task management cmd 0x80 timed-out"
->> 
->> In that case, ufshcd_try_to_abort_task(), the caller of
->> __ufshcd_issue_tm_cmd(),
->> should return -ETIMEOUT, then err_handler would jump to do a full 
->> reset,
->> then bail.
->> I am not sure what gets UFS stuck permanently. Could you please share 
->> the
->> callstack
->> if possible? I really want to know what is happening. Thanks.
-> 
-> I can't share all the log tho, it entered full reset. While printing 
-> out
-> whole registers, the device was hard reset. Thanks,
+Add the new command EC_CODEC_I2S_RX_RESET in ec_codec_i2s_rx_subcmd,
+which is used for resetting the EC codec.
 
-Hi Jaegeuk,
+Signed-off-by: Yu-Hsuan Hsu <yuhsuan@chromium.org>
+---
+ include/linux/platform_data/cros_ec_commands.h | 1 +
+ 1 file changed, 1 insertion(+)
 
-Entering full reset is expected in this case, which is why I am saying
-line-reset handling logic should not be penalized. I think we need to
-find out what caused the hard reset but not just adding a delay before
-clearing pending reqs, because let's say 3 sec expires and you hit the
-same tm req timeout (maybe with a lower possibility), you may still end
-up same at the hard reset. You don't need to share all the log, just the
-last call stacks before hard reset. Is it a QCOM's platform used in your
-case? Can you check the log/dump if NoC error happened?
+diff --git a/include/linux/platform_data/cros_ec_commands.h b/include/linux/platform_data/cros_ec_commands.h
+index 86376779ab31..95889ada83a3 100644
+--- a/include/linux/platform_data/cros_ec_commands.h
++++ b/include/linux/platform_data/cros_ec_commands.h
+@@ -4600,6 +4600,7 @@ enum ec_codec_i2s_rx_subcmd {
+ 	EC_CODEC_I2S_RX_SET_SAMPLE_DEPTH = 0x2,
+ 	EC_CODEC_I2S_RX_SET_DAIFMT = 0x3,
+ 	EC_CODEC_I2S_RX_SET_BCLK = 0x4,
++	EC_CODEC_I2S_RX_RESET = 0x5,
+ 	EC_CODEC_I2S_RX_SUBCMD_COUNT,
+ };
+ 
+-- 
+2.29.2.729.g45daf8777d-goog
 
-Thanks.
-Can Guo.
-
-> 
->> 
->> Regards,
->> Can Guo.
->> 
->> >
->> > >
->> > > Thanks,
->> > > Can Guo.
->> > >
->> > > > Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
->> > > > ---
->> > > >  drivers/scsi/ufs/ufshcd.c | 35 +++++++++++++++++++++++++++++++----
->> > > >  1 file changed, 31 insertions(+), 4 deletions(-)
->> > > >
->> > > > diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
->> > > > index e6e7bdf99cd7..340dd5e515dd 100644
->> > > > --- a/drivers/scsi/ufs/ufshcd.c
->> > > > +++ b/drivers/scsi/ufs/ufshcd.c
->> > > > @@ -44,6 +44,9 @@
->> > > >  /* Query request timeout */
->> > > >  #define QUERY_REQ_TIMEOUT 1500 /* 1.5 seconds */
->> > > >
->> > > > +/* LINERESET TIME OUT */
->> > > > +#define LINERESET_IO_TIMEOUT_MS			(30000) /* 30 sec */
->> > > > +
->> > > >  /* Task management command timeout */
->> > > >  #define TM_CMD_TIMEOUT	100 /* msecs */
->> > > >
->> > > > @@ -5826,6 +5829,7 @@ static void ufshcd_err_handler(struct work_struct
->> > > > *work)
->> > > >  	int err = 0, pmc_err;
->> > > >  	int tag;
->> > > >  	bool needs_reset = false, needs_restore = false;
->> > > > +	ktime_t start;
->> > > >
->> > > >  	hba = container_of(work, struct ufs_hba, eh_work);
->> > > >
->> > > > @@ -5911,6 +5915,22 @@ static void ufshcd_err_handler(struct work_struct
->> > > > *work)
->> > > >  	}
->> > > >
->> > > >  	hba->silence_err_logs = true;
->> > > > +
->> > > > +	/* Wait for IO completion for non-fatal errors to avoid aborting IOs
->> > > > */
->> > > > +	start = ktime_get();
->> > > > +	while (hba->outstanding_reqs) {
->> > > > +		ufshcd_complete_requests(hba);
->> > > > +		spin_unlock_irqrestore(hba->host->host_lock, flags);
->> > > > +		schedule();
->> > > > +		spin_lock_irqsave(hba->host->host_lock, flags);
->> > > > +		if (ktime_to_ms(ktime_sub(ktime_get(), start)) >
->> > > > +						LINERESET_IO_TIMEOUT_MS) {
->> > > > +			dev_err(hba->dev, "%s: timeout, outstanding=0x%lx\n",
->> > > > +					__func__, hba->outstanding_reqs);
->> > > > +			break;
->> > > > +		}
->> > > > +	}
->> > > > +
->> > > >  	/* release lock as clear command might sleep */
->> > > >  	spin_unlock_irqrestore(hba->host->host_lock, flags);
->> > > >  	/* Clear pending transfer requests */
->> > > > @@ -6302,9 +6322,13 @@ static irqreturn_t ufshcd_intr(int irq, void
->> > > > *__hba)
->> > > >  		intr_status = ufshcd_readl(hba, REG_INTERRUPT_STATUS);
->> > > >  	}
->> > > >
->> > > > -	if (enabled_intr_status && retval == IRQ_NONE) {
->> > > > -		dev_err(hba->dev, "%s: Unhandled interrupt 0x%08x\n",
->> > > > -					__func__, intr_status);
->> > > > +	if (enabled_intr_status && retval == IRQ_NONE &&
->> > > > +				!ufshcd_eh_in_progress(hba)) {
->> > > > +		dev_err(hba->dev, "%s: Unhandled interrupt 0x%08x (0x%08x,
->> > > > 0x%08x)\n",
->> > > > +					__func__,
->> > > > +					intr_status,
->> > > > +					hba->ufs_stats.last_intr_status,
->> > > > +					enabled_intr_status);
->> > > >  		ufshcd_dump_regs(hba, 0, UFSHCI_REG_SPACE_SIZE, "host_regs: ");
->> > > >  	}
->> > > >
->> > > > @@ -6348,7 +6372,10 @@ static int __ufshcd_issue_tm_cmd(struct ufs_hba
->> > > > *hba,
->> > > >  	 * Even though we use wait_event() which sleeps indefinitely,
->> > > >  	 * the maximum wait time is bounded by %TM_CMD_TIMEOUT.
->> > > >  	 */
->> > > > -	req = blk_get_request(q, REQ_OP_DRV_OUT, BLK_MQ_REQ_RESERVED);
->> > > > +	req = blk_get_request(q, REQ_OP_DRV_OUT, 0);
->> > > > +	if (IS_ERR(req))
->> > > > +		return PTR_ERR(req);
->> > > > +
->> > > >  	req->end_io_data = &wait;
->> > > >  	free_slot = req->tag;
->> > > >  	WARN_ON_ONCE(free_slot < 0 || free_slot >= hba->nutmrs);
