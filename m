@@ -2,98 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0098E2EE838
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 23:17:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D0ED22EE843
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 23:18:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728183AbhAGWQI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 17:16:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44732 "EHLO
+        id S1727884AbhAGWSW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 17:18:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45094 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725944AbhAGWQI (ORCPT
+        with ESMTP id S1727494AbhAGWSW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 17:16:08 -0500
-Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0085CC0612F5;
-        Thu,  7 Jan 2021 14:15:27 -0800 (PST)
-Received: by mail-pj1-x1030.google.com with SMTP id b5so4994375pjl.0;
-        Thu, 07 Jan 2021 14:15:27 -0800 (PST)
+        Thu, 7 Jan 2021 17:18:22 -0500
+Received: from mail-ua1-x92b.google.com (mail-ua1-x92b.google.com [IPv6:2607:f8b0:4864:20::92b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 174F8C0612F5
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Jan 2021 14:17:42 -0800 (PST)
+Received: by mail-ua1-x92b.google.com with SMTP id f16so2781224uav.12
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Jan 2021 14:17:42 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=WZ0XBPw5rLkEDXHtBQzLvxXTmDU6S/SHITAFiBYK730=;
-        b=jIHeiI1kVrjG+DCsMVsO1xFF9i3dWyRGCrWqXgK8nOdaIlVJdMOhl0Ks9tOp6CS73N
-         zA07EaKb9XdM72SaymmJxFhJQzd/b0Lo3U5nO/RxjrJkELr4v7BX9LAQDjDb72EQuVOM
-         tKMynD66ISR97gNCU9fC1ibpizz50EsjKLhPZR0HTn6YPYpFbUgVKmEV1C8W7f5V2Y2u
-         8/NLW1CnG+MS8i9fZzzRyp8I2b7glhILN8de0jl9ORkErQfDAOhTzy0X4gZgyEkY+LX0
-         eMpvrIjt/DQuNytAsDiJpIRfa00yDZQCI9pa6ub+5LsyHDiiI+w1Fe5w+K0bBBWmoC/5
-         wQYA==
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=zukoG2VXJaNRfxhzLYk106FjkbVbP7JOan5CINR4Tf8=;
+        b=ddEW+bDtgL7Rl9tMgvT0mCAtOuvS7fZLjlKQKvMdZG9293lQ3FR2CRSRPIdUCVyBC7
+         yZqP3L5DQKvONGNnrD2ipB7pz/q9ocg43Fb+jmF84+bSNpQGdnkUdeNDabSdVw9g6b6E
+         wCRIuBS57NHzquv37U5k0a6DA86TVvVGl3nRM=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=WZ0XBPw5rLkEDXHtBQzLvxXTmDU6S/SHITAFiBYK730=;
-        b=GccVGb+zx4cfKOLBAwREzLTVVK+pIz67qoSi0qWT3g2s0rzjogfDXcDXTBmT14Fc+l
-         dek6jdvM2c1HMDJXMHSiXh0nBX5i0Wx+SMkPUJnJuo3/M5oaxp5knsqIS6STGtYnlfaS
-         Jg3H+CBHZYF2SoccwhgzjAVal7/L71FV3yk2B48XDuKENrCd8dqKxfu+afM2ctwap6kA
-         PeIHpc8D6kKtsE7d55voWwzeu6atGQgF0AQcOZBcNZSxQgi3whVx+9z7jwBiDCYxqjBZ
-         1vQGviQ9bqCYnO4clK8LQnJozAU6Whoe42f8OF/MXgSHUzpj38V7y7IpThiCjddEsq1a
-         S5ow==
-X-Gm-Message-State: AOAM5336V5T8zHUll7xKEuG6GAyBRL7b+6+rVpdL1taKo1KQvBUSRnch
-        uA7nDa7LgL9HlJ+FhtHjnYg1LQC/HYk=
-X-Google-Smtp-Source: ABdhPJw8j8kSHJ4xSxiB6bT1YL4sk7XN/GCNYzKFBjTUx2mSteKc+Y1JZb6r2nLm7KIFw3Bd8FoWyA==
-X-Received: by 2002:a17:90a:de03:: with SMTP id m3mr606664pjv.20.1610057727336;
-        Thu, 07 Jan 2021 14:15:27 -0800 (PST)
-Received: from stbsrv-and-01.and.broadcom.net ([192.19.231.250])
-        by smtp.gmail.com with ESMTPSA id nm6sm5958542pjb.25.2021.01.07.14.15.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 Jan 2021 14:15:26 -0800 (PST)
-From:   Al Cooper <alcooperx@gmail.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Al Cooper <alcooperx@gmail.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        bcm-kernel-feedback-list@broadcom.com,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        linux-arm-kernel@lists.infradead.org, linux-mmc@vger.kernel.org,
-        Ulf Hansson <ulf.hansson@linaro.org>
-Subject: [PATCH] mmc: sdhci-brcmstb: Fix mmc timeout errors on S5 suspend
-Date:   Thu,  7 Jan 2021 17:15:09 -0500
-Message-Id: <20210107221509.6597-1-alcooperx@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=zukoG2VXJaNRfxhzLYk106FjkbVbP7JOan5CINR4Tf8=;
+        b=ZbUXhsQ999YIdFRhJNAnPwtr0JmBcDeQ4sIfhBeEgXXGpDN5+yYsNF5JqMGVBAt9tv
+         qLq7yggZbwQAEGJYAX9eSj7EUycJWWNANIbWe97qsmGxTVLFZioBLN57aGIVjGE8GbpT
+         FnAyyr7eY2zCJH0jSMfyMsAc/0qswlE3T0T33Hy3Ohms4GMLK5CA/yxdiZtkDAn0RZdV
+         1e1KdPj3alot9plpAi/2I9SmTBpDyjg7kL7thuP7NAJNZcIr2ttaJm4gVBdDusRdzkLY
+         0c9+HMREztXHqG7v2pf3wjaHKTTMDx4wUKDIsOdFt+IEObNF25xDvXeCP/+eKUV8gk3o
+         E39w==
+X-Gm-Message-State: AOAM531FCSGMpOlKZXWNpI1ifEKIeaUf0fiv/m4je/ccTBwt1AuNKa4F
+        gTu+mJRcNZfAmQ6EgKvcmJbaXBjiDGeIug==
+X-Google-Smtp-Source: ABdhPJxfwPcAabbBq5cIr5xkFhf/K3Wrbbw63ne/oyZ35WRIFP+CVYakpCpkQVju8mLy8CLckAbcHQ==
+X-Received: by 2002:ab0:53dd:: with SMTP id l29mr838762uaa.81.1610057860682;
+        Thu, 07 Jan 2021 14:17:40 -0800 (PST)
+Received: from mail-vs1-f44.google.com (mail-vs1-f44.google.com. [209.85.217.44])
+        by smtp.gmail.com with ESMTPSA id w15sm1027909uam.6.2021.01.07.14.17.39
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 07 Jan 2021 14:17:39 -0800 (PST)
+Received: by mail-vs1-f44.google.com with SMTP id h18so4438425vsg.8
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Jan 2021 14:17:39 -0800 (PST)
+X-Received: by 2002:a67:bd01:: with SMTP id y1mr504210vsq.49.1610057858833;
+ Thu, 07 Jan 2021 14:17:38 -0800 (PST)
+MIME-Version: 1.0
+References: <d6ddf6c2-3789-2e10-ba71-668cba03eb35@kernel.dk>
+In-Reply-To: <d6ddf6c2-3789-2e10-ba71-668cba03eb35@kernel.dk>
+From:   Doug Anderson <dianders@chromium.org>
+Date:   Thu, 7 Jan 2021 14:17:27 -0800
+X-Gmail-Original-Message-ID: <CAD=FV=WJzNEf+=H2_Eyz3HRnv+0hW5swikg=hFMkHxGb569Bpw@mail.gmail.com>
+Message-ID: <CAD=FV=WJzNEf+=H2_Eyz3HRnv+0hW5swikg=hFMkHxGb569Bpw@mail.gmail.com>
+Subject: Re: [PATCH] fs: process fput task_work with TWA_SIGNAL
+To:     Jens Axboe <axboe@kernel.dk>
+Cc:     linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Song Liu <songliubraving@fb.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit e7b5d63a82fe ("mmc: sdhci-brcmstb: Add shutdown callback")
-that added a shutdown callback to the diver, is causing "mmc timeout"
-errors on S5 suspend. The problem was that the "remove" was queuing
-additional MMC commands after the "shutdown" and these caused
-timeouts as the MMC queues were cleaned up for "remove". The
-shutdown callback will be changed to calling sdhci-pltfm_suspend
-which should get better power savings because the clocks will be
-shutdown.
+Hi,
 
-Fixes: e7b5d63a82fe ("mmc: sdhci-brcmstb: Add shutdown callback")
-Signed-off-by: Al Cooper <alcooperx@gmail.com>
----
- drivers/mmc/host/sdhci-brcmstb.c | 6 +-----
- 1 file changed, 1 insertion(+), 5 deletions(-)
+On Tue, Jan 5, 2021 at 10:30 AM Jens Axboe <axboe@kernel.dk> wrote:
+>
+> Song reported a boot regression in a kvm image with 5.11-rc, and bisected
+> it down to the below patch. Debugging this issue, turns out that the boot
+> stalled when a task is waiting on a pipe being released. As we no longer
+> run task_work from get_signal() unless it's queued with TWA_SIGNAL, the
+> task goes idle without running the task_work. This prevents ->release()
+> from being called on the pipe, which another boot task is waiting on.
+>
+> Use TWA_SIGNAL for the file fput work to ensure it's run before the task
+> goes idle.
+>
+> Fixes: 98b89b649fce ("signal: kill JOBCTL_TASK_WORK")
+> Reported-by: Song Liu <songliubraving@fb.com>
+> Signed-off-by: Jens Axboe <axboe@kernel.dk>
 
-diff --git a/drivers/mmc/host/sdhci-brcmstb.c b/drivers/mmc/host/sdhci-brcmstb.c
-index bbf3496f4495..f9780c65ebe9 100644
---- a/drivers/mmc/host/sdhci-brcmstb.c
-+++ b/drivers/mmc/host/sdhci-brcmstb.c
-@@ -314,11 +314,7 @@ static int sdhci_brcmstb_probe(struct platform_device *pdev)
- 
- static void sdhci_brcmstb_shutdown(struct platform_device *pdev)
- {
--	int ret;
--
--	ret = sdhci_pltfm_unregister(pdev);
--	if (ret)
--		dev_err(&pdev->dev, "failed to shutdown\n");
-+	sdhci_pltfm_suspend(&pdev->dev);
- }
- 
- MODULE_DEVICE_TABLE(of, sdhci_brcm_of_match);
--- 
-2.17.1
+I just spend a bit of time bisecting and landed on commit 98b89b649fce
+("signal: kill JOBCTL_TASK_WORK") causing my failure to bootup
+mainline.  Your patch fixes my problem.  I haven't done any analysis
+of the code--just testing, thus:
 
+Tested-by: Douglas Anderson <dianders@chromium.org>
