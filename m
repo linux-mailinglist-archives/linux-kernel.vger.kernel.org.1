@@ -2,164 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE7AA2ECE03
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 11:38:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E3A3C2ECE0D
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 11:42:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727858AbhAGKhf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 05:37:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48380 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727757AbhAGKhe (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 05:37:34 -0500
-Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 672CCC0612F8
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Jan 2021 02:36:53 -0800 (PST)
-Received: by mail-lf1-x131.google.com with SMTP id m25so13363972lfc.11
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Jan 2021 02:36:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=nFfGlH5hXwbuaYUBsZBOfb6uPO2NVxjByxMtfTjhGZ4=;
-        b=OvqgYG5GfLnUWMDVt7fwGeXDObUORXSH+iOnzildwroxSkzsO/YzNGjGRmbA7SYLPV
-         x8nxD4BNfcPV6O2VQ+H2sXHcBagqd3oT5/cSajzlk/tGpxe5DIt7+J21on5fSDkjwPBE
-         je997Wma6HpOQpxEn74aFuJskTFroRdqupPPP1RoadoStwgVfKrRXLnEMJg0nXKpjFb+
-         thRNzVOAUQJk/fJDOvb08chmTAZOJx1FawgClXTTJ56ubJsL96r4ruCXLe076I2FlDey
-         l3Uyye8Vb8lv6IQvas953SreICCTijWTJEp7H8IMUn+A6U4qpQbflPXJ5xuWSeugoT+N
-         nk3A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=nFfGlH5hXwbuaYUBsZBOfb6uPO2NVxjByxMtfTjhGZ4=;
-        b=r7k5dHR3XVVLuQDmSpsvrS8pqmj9FFP1QRwMMRDYaogQi/vq75/PnJgD9n74W7PskA
-         uSLTJytp7XOMgeaVN4NLAjzAH4sqPySt4SXkbCNtf3ZTX1wzMOPQeCL5Qftq3kQoQzIB
-         yYtqLVuBo/sxGAo4riqd5jjdo5yiprfi1YZEOSrlcTGk/NN3kGcwQCvqGu++ahMOgClF
-         bz+jY6tvfchpKV+L0iOQ3SKK/KOO/lxDM29j9wZOFXJRsIyhCzEBSiCmDg9HnmKFLOQA
-         rCmSbUXN7YzTKF8i6AKd/m1chwsnaCtbwqgoXXFTs+HYCqVMbRESzezEbcS0FG2oum5U
-         ejZA==
-X-Gm-Message-State: AOAM5333mwCYlsrwcDjy7zsRnZKtnNVWCvsgxeH1u1xJB+Z89L1ON4rc
-        LrfBAzMKfkrvwFIzJSuwIjDw/wFDOhYOgBNFGpj2Eg==
-X-Google-Smtp-Source: ABdhPJyfAnEcXOXLY4xTmk1dpmDhjGS0UtzXooi8t4a+PiMBAIP9rKiFMYgT/OAB+huqAHSbFRl1FEjWiqnjm8x/c0g=
-X-Received: by 2002:a05:6512:74e:: with SMTP id c14mr4116363lfs.529.1610015811936;
- Thu, 07 Jan 2021 02:36:51 -0800 (PST)
-MIME-Version: 1.0
-References: <20201004162908.3216898-1-martin.blumenstingl@googlemail.com>
- <20201004162908.3216898-4-martin.blumenstingl@googlemail.com>
- <CACRpkdZo-U_cAhbKb4E+d+p+5FenXkGYW0RXxyk4M5uyEPCpzw@mail.gmail.com>
- <CAFBinCCLubmDvxfabQHx2-ucgAsm1NArMUrtPx-UA2nX5xoFFA@mail.gmail.com>
- <CAFBinCAZXJ2=fTQuAUyW1hNeJDHY3_pxo4UhxUaOZC=i1bpFxw@mail.gmail.com>
- <CACRpkdbKQaT61w6r9Hx40Qvy+7qyLNm-fx-BpL_wdGcB=tmcqQ@mail.gmail.com> <CAFBinCBCYZ3bzvvn==CFZyVh8E7TiGvW9PnqmK-Qd=y4X2HgNw@mail.gmail.com>
-In-Reply-To: <CAFBinCBCYZ3bzvvn==CFZyVh8E7TiGvW9PnqmK-Qd=y4X2HgNw@mail.gmail.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Thu, 7 Jan 2021 11:36:40 +0100
-Message-ID: <CACRpkdbs_ddxrGWeDrj9MOZXuuTT-DPYibaiTcCKjfFyL9tDww@mail.gmail.com>
-Subject: Re: [RFC PATCH 3/3] gpio: ej1x8: Add GPIO driver for Etron Tech Inc. EJ168/EJ188/EJ198
-To:     Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Cc:     Bjorn Helgaas <bhelgaas@google.com>,
-        linux-usb <linux-usb@vger.kernel.org>,
-        linux-pci <linux-pci@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        id S1727016AbhAGKll (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 05:41:41 -0500
+Received: from mx2.suse.de ([195.135.220.15]:49248 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725974AbhAGKlk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Jan 2021 05:41:40 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 5606BACAF;
+        Thu,  7 Jan 2021 10:40:59 +0000 (UTC)
+Date:   Thu, 07 Jan 2021 11:40:59 +0100
+Message-ID: <s5hr1mx1138.wl-tiwai@suse.de>
+From:   Takashi Iwai <tiwai@suse.de>
+To:     Jeremy Szu <jeremy.szu@canonical.com>
+Cc:     tiwai@suse.com, Jaroslav Kysela <perex@perex.cz>,
+        Kailang Yang <kailang@realtek.com>,
+        Jian-Hong Pan <jhp@endlessos.org>,
+        Kai-Heng Feng <kai.heng.feng@canonical.com>,
+        Hui Wang <hui.wang@canonical.com>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Thomas Hebb <tommyhebb@gmail.com>,
+        alsa-devel@alsa-project.org (moderated list:SOUND),
+        linux-kernel@vger.kernel.org (open list)
+Subject: Re: [PATCH] ALSA: hda/realtek: fix right sounds and mute/micmute LEDs for HP machines
+In-Reply-To: <20210106130549.100532-1-jeremy.szu@canonical.com>
+References: <20210106130549.100532-1-jeremy.szu@canonical.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 6, 2021 at 4:17 PM Martin Blumenstingl
-<martin.blumenstingl@googlemail.com> wrote:
+On Wed, 06 Jan 2021 14:05:46 +0100,
+Jeremy Szu wrote:
+> 
+>  * The HP ZBook Fury 15/17 G7 Mobile Workstation are using ALC285 codec
+>    which is using 0x04 to control mute LED and 0x01 to control micmute LED.
+> 
+>  * The right channel speaker is no sound and it needs to expose GPIO1 for
+>    initialing AMP.
+> 
+> Add quirks to support them.
+> 
+> Signed-off-by: Jeremy Szu <jeremy.szu@canonical.com>
 
-> > > unfortunately this means that xhci-pci now depends on xhci-pci-etron.
-> > > for xhci-pci-renesas this is fine (I think) because that part of the
-> > > code is needed to get the xHCI controller going
-> > > but for xhci-pci-etron this is a different story: the GPIO controller
-> > > is entirely optional and only used on few devices
-> >
-> > I might be naive but should it not be the other way around?
-> > That xhci-pci-etron is dependent on xhci-pci? I imagine
-> > it would be an optional add-on.
->
-> the only way to achieve this that I can think of is to basically have
-> xhci-pci-etron implement it's own pci_driver and then call
-> xhci_pci_probe, xhci_pci_remove, etc.
-> but then it depends on the driver load order if the GPIO controller is exposed
->
-> what structure did you have in mind to achieve this?
-
-Something that is compiled and called conditionally with
-stubs in the local .h file.
+Thanks, applied now.
 
 
-Kconfig:
-
-config FOO
-   tristate "Main matter"
-
-config FOO_ADD_ON
-    tristate "Optional on"
-    depends on FOO
-
-
-Makefile:
-
-obj-$(CONFIG_FOO) += foo.o
-obj-$(CONFIG_FOO_ADD_ON) += foo-add-on.o
-
-
-foo.h:
-
-struct foo {
-...
-};
-
-#if IS_ENABLED(CONFIG_FOO_ADD_ON)
-int foo_add_on_init(struct foo *);
-#else /* No CONFIG_FOO_ADD_ON */
-static int foo_add_on_init(struct foo *)
-{
-    return 0;
-}
-#endif
-
-
-foo.c:
-
-#include "foo.h"
-
-ret = foo_add_on_init(foo);
-(...)
-
-
-foo-add-on.c:
-
-int foo_add_on_init(struct foo *)
-{
-(...)
-}
-EXPORT_SYMBOL_GPL(foo_add_on_init);
-
-> > Make sure the etron part is an additional module that can be
-> > loaded after xhci-pci.
->
-> my approach from above unfortunately would not achieve this
-> so if you have an idea how to achieve this (or have any other driver
-> in mind that I can use as reference, even if not related to
-> GPIO/USB/PCI then please let me know)
-
-See per above. I don't see any problem with this, it will be an additional
-module that does not feature a probe() call and device driver bind.
-
-I think it is also possible to link both files into the same object if
-the optional add on is enabled, so it is part of the main module
-when modprobing. The foo.h stubs are still needed, then the
-binary will just be smaller if the add-on is not enabled. There are
-solutions like this in the kernel, I just don't remember one right
-now so grep around.
-
-Yours,
-Linus Walleij
+Takashi
