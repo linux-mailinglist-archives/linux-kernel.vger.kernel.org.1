@@ -2,173 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C25AE2ED110
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 14:43:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 40FD52ED120
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 14:47:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728776AbhAGNmw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 08:42:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49106 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728757AbhAGNmu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 08:42:50 -0500
-Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 344A6C0612F9
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Jan 2021 05:42:10 -0800 (PST)
-Received: by mail-wr1-x42a.google.com with SMTP id t30so5708978wrb.0
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Jan 2021 05:42:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=IJJO5LSRqwbf8XDwJHkWx390vk3Q5Ggb8kvvqef+rMI=;
-        b=dX+vbyPKWR8RNhLFFIbBiSru05sQDU+e9a57ZFF6LiDoL81FlcFXLa8NJit1Qm6KKA
-         Qosp5wnMKtuQJoUpZYVTV9GHDsMiMbcRRmflRBtL2OcHvqfTMYeXcPLK6Md0dCne8BKw
-         4h44t7upRd9VwgoB2JEO6fC+EnG+KXbngas15z5mwtju21qbzsW18SaGlkcFZ6eJnsT+
-         na0AomIjCGE/3V4zbNbA7vwW8GxFENeK8aFWy0LztiKLROLSJ9HXtJHdVDHjcVcTeCqq
-         TGIx2P7EHO9BtlE2xlSlVPW5rXqbYFJTaRzMsdFsCYXdbMKfq7ps07OYm3pDCtacWJab
-         Kx2w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=IJJO5LSRqwbf8XDwJHkWx390vk3Q5Ggb8kvvqef+rMI=;
-        b=qNN6H8FfB+rZJb0TVqXIkNiiYyJrL16zhABLj43dwrLFeJK6lyVoQsGUV6gO7O5sFU
-         ircMHZR8KE9r2DlurnXUEJSsN3Xx1vCU4wPANHZ+71akF8fpZZBmBk8pJ1C42Hy7lryo
-         fctM/oM3mie5/Wb33uNo410HjrXvrf83kCto9c/RuhxP0QDPXZC49VTSl7p7b+cNYBZw
-         AZqiy1mKYZOr178zZom1Lva21N09svCBSMmmhAV4sP8CFCbtX1MSlpWgmnuc/JYozpTN
-         1zkRuVZZr81XOHrbeVyBNabwbpPss+QZwfeRcpwGh+OLp3AIhhjXGryPzh8PJ8zEtzMS
-         a68A==
-X-Gm-Message-State: AOAM5336VrkRG/kDWXF3bUH5luwGTtk/YENVzo8AMeWh1P9WWW0cic99
-        QRHeRdiAg0Cs5sdehOr7/5BZSg==
-X-Google-Smtp-Source: ABdhPJwuAyQKURaBKiPXvoLrzSLaHsIXX9sVzhwQ4s04puXoUHiDAw70gHHWZ2k4zQTW1P8s+ChtvA==
-X-Received: by 2002:a5d:6852:: with SMTP id o18mr8808119wrw.371.1610026928953;
-        Thu, 07 Jan 2021 05:42:08 -0800 (PST)
-Received: from debian-brgl.home (amarseille-656-1-4-167.w90-8.abo.wanadoo.fr. [90.8.158.167])
-        by smtp.gmail.com with ESMTPSA id g184sm7852710wma.16.2021.01.07.05.42.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 Jan 2021 05:42:08 -0800 (PST)
-From:   Bartosz Golaszewski <brgl@bgdev.pl>
-To:     Krzysztof Kozlowski <krzk@kernel.org>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>
-Cc:     linux-kernel@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
-        linux-rtc@vger.kernel.org,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Subject: [PATCH v3 2/2] rtc: s5m: use devm_i2c_new_dummy_device()
-Date:   Thu,  7 Jan 2021 14:42:03 +0100
-Message-Id: <20210107134203.9388-2-brgl@bgdev.pl>
-X-Mailer: git-send-email 2.29.1
-In-Reply-To: <20210107134203.9388-1-brgl@bgdev.pl>
-References: <20210107134203.9388-1-brgl@bgdev.pl>
+        id S1728421AbhAGNqx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 08:46:53 -0500
+Received: from mga01.intel.com ([192.55.52.88]:46375 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728026AbhAGNqx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Jan 2021 08:46:53 -0500
+IronPort-SDR: FEcQSqFVlH49vunK22pYRJG7TcS5NhDjo1u+a2X/KMkBainBQFciUDYaUc15T42b8UG3ks/MGR
+ n8xr+V8B/6dA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9856"; a="195982123"
+X-IronPort-AV: E=Sophos;i="5.79,329,1602572400"; 
+   d="scan'208";a="195982123"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Jan 2021 05:45:07 -0800
+IronPort-SDR: Vw/7mPcxthNUBixNycZeCdAZ22z5w/+uDM+0bZhDdJfdHRQjBq94unP9jU4rl0YaQhlIEFRVa4
+ NQ3Bm8l2x4NQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.79,329,1602572400"; 
+   d="scan'208";a="463040716"
+Received: from kuha.fi.intel.com ([10.237.72.162])
+  by fmsmga001.fm.intel.com with SMTP; 07 Jan 2021 05:45:00 -0800
+Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Thu, 07 Jan 2021 15:45:00 +0200
+Date:   Thu, 7 Jan 2021 15:45:00 +0200
+From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
+To:     Daniel Scally <djrscally@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org,
+        linux-media@vger.kernel.org, devel@acpica.org, rjw@rjwysocki.net,
+        lenb@kernel.org, gregkh@linuxfoundation.org, mchehab@kernel.org,
+        sergey.senozhatsky@gmail.com, yong.zhi@intel.com,
+        sakari.ailus@linux.intel.com, bingbu.cao@intel.com,
+        tian.shu.qiu@intel.com, robert.moore@intel.com,
+        erik.kaneda@intel.com, pmladek@suse.com, rostedt@goodmis.org,
+        andriy.shevchenko@linux.intel.com, linux@rasmusvillemoes.dk,
+        laurent.pinchart+renesas@ideasonboard.com,
+        jacopo+renesas@jmondi.org, kieran.bingham+renesas@ideasonboard.com,
+        hverkuil-cisco@xs4all.nl, m.felsch@pengutronix.de,
+        niklas.soderlund+renesas@ragnatech.se,
+        prabhakar.mahadev-lad.rj@bp.renesas.com, slongerbeam@gmail.com,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Subject: Re: [PATCH v5 01/15] software_node: Fix refcounts in
+ software_node_get_next_child()
+Message-ID: <20210107134500.GC940479@kuha.fi.intel.com>
+References: <20210107132838.396641-1-djrscally@gmail.com>
+ <20210107132838.396641-2-djrscally@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210107132838.396641-2-djrscally@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+On Thu, Jan 07, 2021 at 01:28:24PM +0000, Daniel Scally wrote:
+> The software_node_get_next_child() function currently does not hold
+> references to the child software_node that it finds or put the ref that
+> is held against the old child - fix that.
+> 
+> Fixes: 59abd83672f7 ("drivers: base: Introducing software nodes to the firmware node framework")
+> Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+> Reviewed-by: Sakari Ailus <sakari.ailus@linux.intel.com>
+> Signed-off-by: Daniel Scally <djrscally@gmail.com>
 
-Use the managed variant of i2c_new_dummy_device() to shrink code and
-remove the goto label. We can drop the remove callback now too.
+Reviewed-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
 
-Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
----
-v1 -> v2:
-- remove the remove() callback
+> ---
+> Changes in v5:
+> 
+> 	- None
+> 
+>  drivers/base/swnode.c | 8 ++++++--
+>  1 file changed, 6 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/base/swnode.c b/drivers/base/swnode.c
+> index 4a4b2008fbc2..4fcc1a6fb724 100644
+> --- a/drivers/base/swnode.c
+> +++ b/drivers/base/swnode.c
+> @@ -443,14 +443,18 @@ software_node_get_next_child(const struct fwnode_handle *fwnode,
+>  	struct swnode *c = to_swnode(child);
+>  
+>  	if (!p || list_empty(&p->children) ||
+> -	    (c && list_is_last(&c->entry, &p->children)))
+> +	    (c && list_is_last(&c->entry, &p->children))) {
+> +		fwnode_handle_put(child);
+>  		return NULL;
+> +	}
+>  
+>  	if (c)
+>  		c = list_next_entry(c, entry);
+>  	else
+>  		c = list_first_entry(&p->children, struct swnode, entry);
+> -	return &c->fwnode;
+> +
+> +	fwnode_handle_put(child);
+> +	return fwnode_handle_get(&c->fwnode);
+>  }
+>  
+>  static struct fwnode_handle *
+> -- 
+> 2.25.1
 
-v2 -> v3:
-- fix an error pointed out by the build robot
+thanks,
 
- drivers/rtc/rtc-s5m.c | 34 ++++++++--------------------------
- 1 file changed, 8 insertions(+), 26 deletions(-)
-
-diff --git a/drivers/rtc/rtc-s5m.c b/drivers/rtc/rtc-s5m.c
-index e0011d3cf61b..b492070afe6a 100644
---- a/drivers/rtc/rtc-s5m.c
-+++ b/drivers/rtc/rtc-s5m.c
-@@ -760,7 +760,8 @@ static int s5m_rtc_probe(struct platform_device *pdev)
- 		return -ENODEV;
- 	}
- 
--	info->i2c = i2c_new_dummy_device(s5m87xx->i2c->adapter, RTC_I2C_ADDR);
-+	info->i2c = devm_i2c_new_dummy_device(&pdev->dev, s5m87xx->i2c->adapter,
-+					      RTC_I2C_ADDR);
- 	if (IS_ERR(info->i2c)) {
- 		dev_err(&pdev->dev, "Failed to allocate I2C for RTC\n");
- 		return PTR_ERR(info->i2c);
-@@ -768,10 +769,9 @@ static int s5m_rtc_probe(struct platform_device *pdev)
- 
- 	info->regmap = devm_regmap_init_i2c(info->i2c, regmap_cfg);
- 	if (IS_ERR(info->regmap)) {
--		ret = PTR_ERR(info->regmap);
- 		dev_err(&pdev->dev, "Failed to allocate RTC register map: %d\n",
--				ret);
--		goto err;
-+			PTR_ERR(info->regmap));
-+		return PTR_ERR(info->regmap);
- 	}
- 
- 	info->dev = &pdev->dev;
-@@ -781,10 +781,9 @@ static int s5m_rtc_probe(struct platform_device *pdev)
- 	if (s5m87xx->irq_data) {
- 		info->irq = regmap_irq_get_virq(s5m87xx->irq_data, alarm_irq);
- 		if (info->irq <= 0) {
--			ret = -EINVAL;
- 			dev_err(&pdev->dev, "Failed to get virtual IRQ %d\n",
- 				alarm_irq);
--			goto err;
-+			return -EINVAL;
- 		}
- 	}
- 
-@@ -799,10 +798,8 @@ static int s5m_rtc_probe(struct platform_device *pdev)
- 	info->rtc_dev = devm_rtc_device_register(&pdev->dev, "s5m-rtc",
- 						 &s5m_rtc_ops, THIS_MODULE);
- 
--	if (IS_ERR(info->rtc_dev)) {
--		ret = PTR_ERR(info->rtc_dev);
--		goto err;
--	}
-+	if (IS_ERR(info->rtc_dev))
-+		return PTR_ERR(info->rtc_dev);
- 
- 	if (!info->irq) {
- 		dev_info(&pdev->dev, "Alarm IRQ not available\n");
-@@ -815,23 +812,9 @@ static int s5m_rtc_probe(struct platform_device *pdev)
- 	if (ret < 0) {
- 		dev_err(&pdev->dev, "Failed to request alarm IRQ: %d: %d\n",
- 			info->irq, ret);
--		goto err;
-+		return ret;
- 	}
- 
--	return 0;
--
--err:
--	i2c_unregister_device(info->i2c);
--
--	return ret;
--}
--
--static int s5m_rtc_remove(struct platform_device *pdev)
--{
--	struct s5m_rtc_info *info = platform_get_drvdata(pdev);
--
--	i2c_unregister_device(info->i2c);
--
- 	return 0;
- }
- 
-@@ -876,7 +859,6 @@ static struct platform_driver s5m_rtc_driver = {
- 		.pm	= &s5m_rtc_pm_ops,
- 	},
- 	.probe		= s5m_rtc_probe,
--	.remove		= s5m_rtc_remove,
- 	.id_table	= s5m_rtc_id,
- };
- 
 -- 
-2.29.1
-
+heikki
