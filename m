@@ -2,74 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A1B002ED49B
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 17:45:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D46EF2ED49F
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 17:45:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728589AbhAGQod (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 11:44:33 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47584 "EHLO mail.kernel.org"
+        id S1728401AbhAGQpH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 11:45:07 -0500
+Received: from mx2.suse.de ([195.135.220.15]:35346 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725835AbhAGQod (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 11:44:33 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 06DA923403;
-        Thu,  7 Jan 2021 16:43:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610037832;
-        bh=vuM9vAjQJkgCU4xBUoFmKddeaCN97wvKiCrb9wFq5Rs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=D3c+nbeK0+kwJq39ghmw5I0A2Sw54HCgrv/tFM+DIHWYNS3ROj+9a3hGG/ymGzI+U
-         Pu/rXvAE/ZQSwa0q//9N/EPrkdjLh0vVY7DxaJ2Dl397bBnVDmJKFh9D/VwUypQUdp
-         Koza40wb43KKwHbactJTZwJb6+Lfd4gI28RLFuDEu4ytqWPOykodoaP3uyYKRp6H49
-         IqdKD5U5ReSi/UR6ny56E3jUPVg35RtPdVfWOd7PdDhiZ5cDQsI/at36xOfyfq17CN
-         A9Y2/u0XWCDapFMk+HKm9WPeJuUFo5n6Ahsnik1mLa3Q2JgipctO2/gyBqRrmfOu5f
-         yF6y3JnRGKLFA==
-Date:   Thu, 7 Jan 2021 16:43:22 +0000
-From:   Mark Brown <broonie@kernel.org>
-To:     Takashi Iwai <tiwai@suse.de>
-Cc:     Joe Perches <joe@perches.com>, Jaroslav Kysela <perex@perex.cz>,
-        LKML <linux-kernel@vger.kernel.org>,
-        kernel-janitors <kernel-janitors@vger.kernel.org>,
-        Julia Lawall <Julia.Lawall@inria.fr>,
-        alsa-devel <alsa-devel@alsa-project.org>
-Subject: Re: [PATCH resend] sound: Convert strlcpy to strscpy when return
- value is unused
-Message-ID: <20210107164322.GF4726@sirena.org.uk>
-References: <22b393d1790bb268769d0bab7bacf0866dcb0c14.camel@perches.com>
- <s5hpn2j2rr3.wl-tiwai@suse.de>
+        id S1726294AbhAGQpG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Jan 2021 11:45:06 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1610037859; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+        bh=wSvk/N4VsMaZmRt/5EtC0lSsod9zly1e3L1YQgG9tsU=;
+        b=CHWH7qAy13X86IPtbS3dAIJCL0GjcydL626E4T0HnkuK4vD19rHyhc5LHWICFUKdpV5sp9
+        mxoO3UPtyRo4Le2VDlVE8TwZW+wIPi/bD2Z3qvhtzEHVHEWbhsDmG6sL3WOWSH8zPzrOwi
+        /u3LZKf2l9BI3IJpZKtUhDMgiAl4BgI=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 4D4C6B771;
+        Thu,  7 Jan 2021 16:44:19 +0000 (UTC)
+From:   Petr Mladek <pmladek@suse.com>
+To:     Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        John Ogness <john.ogness@linutronix.de>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Shreyas Joshi <shreyas.joshi@biamp.com>,
+        shreyasjoshi15@gmail.com,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
+        Greg Ungerer <gerg@linux-m68k.org>,
+        Vineet Gupta <vgupta@synopsys.com>,
+        Thomas Meyer <thomas@m3y3r.de>,
+        David Gow <davidgow@google.com>,
+        Brendan Higgins <brendanhiggins@google.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org, Petr Mladek <pmladek@suse.com>
+Subject: [PATCH 0/1] console: Blank console - userspace regression
+Date:   Thu,  7 Jan 2021 17:43:59 +0100
+Message-Id: <20210107164400.17904-1-pmladek@suse.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="uTRFFR9qmiCqR05s"
-Content-Disposition: inline
-In-Reply-To: <s5hpn2j2rr3.wl-tiwai@suse.de>
-X-Cookie: See store for details.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The commit 757055ae8dedf5333af17b3b ("init/console: Use ttynull as a fallback when
+there is no console") caused several regressions. The ttynull console has been
+selected by default when no console was configured on the command line and
+ttynull_init() was the first initcall calling register_console().
 
---uTRFFR9qmiCqR05s
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+There were few possible workarounds but I was not happy with them.
+I worked on a proper solution but it became too complicated to
+be used at this stage.
 
-On Tue, Jan 05, 2021 at 06:55:12PM +0100, Takashi Iwai wrote:
-> Mark, could you check the ASoC part?
+The console registration code is a sad story. There are many hidden catches.
+The ordering of registered consoles is not well defined. Any change
+in the code tends to break some particular system.
 
-Acked-by: Mark Brown <broonie@kernel.org>
+The good news is that I become more and more familiar with it.
+I hope that I will be able to clean it up step by step in
+the future. But it is definitely not a good idea to do any big
+refactoring in rc phase.
 
---uTRFFR9qmiCqR05s
-Content-Type: application/pgp-signature; name="signature.asc"
+Hence I propose to revert the problematic commit as the least
+risky solution.
 
------BEGIN PGP SIGNATURE-----
+Petr Mladek (1):
+  Revert "init/console: Use ttynull as a fallback when there is no
+    console"
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl/3OikACgkQJNaLcl1U
-h9CliQf/fWBovJb9ILFKC38hv8wOmoZfK1W6JdCZ51RizmOwpB+ucVe7GG03haN1
-hrh54Tj0NzpYo3cuAEWPMRIXiWisE77mm2MOGuf005H8oB58ETQ1B6GM/odbNEuA
-MiHC0MdNL87krLHKIKQLKfx0FZ8K1T3VjvmJminiHTKtP90SPWWh+m260M7rFaMN
-IreAoGI0QSZd2QYlX4/rcLgcAWhQdGBBSmn5L0bzHD41sobO5Cy74nJfIUovvtMQ
-HZsgPZH/VmGJm931ztYmln9NuI9vhi76GYVeWlXvo8NNa+1zzGqpyQMjp9I8vUob
-Nc1ec/s5nRsTNcrfpEiiUwOd5EMVCg==
-=u4EK
------END PGP SIGNATURE-----
+ drivers/tty/Kconfig     | 14 ++++++++++++++
+ drivers/tty/Makefile    |  3 ++-
+ drivers/tty/ttynull.c   | 18 ------------------
+ include/linux/console.h |  3 ---
+ init/main.c             | 10 ++--------
+ 5 files changed, 18 insertions(+), 30 deletions(-)
 
---uTRFFR9qmiCqR05s--
+-- 
+2.26.2
+
