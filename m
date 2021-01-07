@@ -2,108 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 580B12ED5FC
+	by mail.lfdr.de (Postfix) with ESMTP id C4FB92ED5FD
 	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 18:47:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728798AbhAGRr1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 12:47:27 -0500
-Received: from mga02.intel.com ([134.134.136.20]:53102 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726073AbhAGRr1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 12:47:27 -0500
-IronPort-SDR: rYwECGs3wX7dkg6Usi0/QnLZeWbeozH5uikpMeWiUGoZdj718wySGLi5Hq+ywQmOrazp8d44sa
- DgWx7VLjt1tw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9857"; a="164535496"
-X-IronPort-AV: E=Sophos;i="5.79,329,1602572400"; 
-   d="scan'208";a="164535496"
-Received: from fmsmga004.fm.intel.com ([10.253.24.48])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Jan 2021 09:45:39 -0800
-IronPort-SDR: ZcrPIhtEdY5p2Oa7/7GfEhGWJ2eNA+sB1RalhfQ6IWja9h5VvV91BcXFyTymJXxCSMK+YryGeR
- T1IFXZtJvJYw==
-X-IronPort-AV: E=Sophos;i="5.79,329,1602572400"; 
-   d="scan'208";a="396032066"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Jan 2021 09:45:36 -0800
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1kxZMs-0050uv-6C; Thu, 07 Jan 2021 19:46:38 +0200
-Date:   Thu, 7 Jan 2021 19:46:38 +0200
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Petr Mladek <pmladek@suse.com>
-Cc:     Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        John Ogness <john.ogness@linutronix.de>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Shreyas Joshi <shreyas.joshi@biamp.com>,
-        shreyasjoshi15@gmail.com,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
-        Greg Ungerer <gerg@linux-m68k.org>,
-        Vineet Gupta <vgupta@synopsys.com>,
-        Thomas Meyer <thomas@m3y3r.de>,
-        David Gow <davidgow@google.com>,
-        Brendan Higgins <brendanhiggins@google.com>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/1] Revert "init/console: Use ttynull as a fallback when
- there is no console"
-Message-ID: <20210107174638.GH4077@smile.fi.intel.com>
-References: <20210107164400.17904-1-pmladek@suse.com>
- <20210107164400.17904-2-pmladek@suse.com>
+        id S1729115AbhAGRrs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 12:47:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59052 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728889AbhAGRrs (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Jan 2021 12:47:48 -0500
+Received: from mail-wm1-x32d.google.com (mail-wm1-x32d.google.com [IPv6:2a00:1450:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D54C6C0612FB
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Jan 2021 09:47:07 -0800 (PST)
+Received: by mail-wm1-x32d.google.com with SMTP id g185so6278172wmf.3
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Jan 2021 09:47:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=FVkiNKl785rRHfkhT0jkIlxfyJmaCj+j7D8f/PwIPwo=;
+        b=OCW93FBGDdlW1IO8YOTTOZvpz/xhQubaFj/5ogv9RP2Nx7Y0uGqnVF4q8AWtOeAR7O
+         7N1mIeMLEGw9AHisb4KENC7FyrWeJ96lVQLVN1HQLsW05amJNePPz1V8rpB25ujEyxUh
+         FIJsHSAQGaWJjVmSVC9JWqR0JsgL8JpKJARS4=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :content-transfer-encoding:in-reply-to;
+        bh=FVkiNKl785rRHfkhT0jkIlxfyJmaCj+j7D8f/PwIPwo=;
+        b=RKKZxjbxbtzpPoXARTWas6wpbOyvez0ytG1bHKb/DdSquR2cggexOb5wN8lDf45GJw
+         mE+cFEkoS31eH4Y6VXfWg4pS9230m3cFEVstm0ZWzgM6ATl1vTCy+1wAKSQYkwAnbE6W
+         UqVqcZS1eBaLxI7MZRhT+42xrjpXHbwnTibxINTLxu8720qZkyhTi0bNrGz2sDNibowT
+         w9t4UbDZoSB2WDIHqDA6qoiqsUKiFOPtgFLJ0mUSkM9Yi0LJwcX8U8d8dKHnass8BwZv
+         lXHjbtFOkOPL8Nv0p2ZVbaIXADSyF3DGKCNYjBqjOZNLB2VXhtYiDKml1DAgxsRKAWUI
+         77Og==
+X-Gm-Message-State: AOAM533DeAM+g7gWXvo3hGCkT+BuppgbV0+Zs/K2ftxp1R73IEgrPBvR
+        FcwwsQd8PKvUiCFRGVbg+KH+XA==
+X-Google-Smtp-Source: ABdhPJxCXJdiaSbPhtROxkoiYK0Ot/i0W4Y+zklyQv/Ov1KMlh/j29f2tZQs0FvUnDLFsEzHDc3lWw==
+X-Received: by 2002:a1c:4e17:: with SMTP id g23mr8998813wmh.101.1610041626648;
+        Thu, 07 Jan 2021 09:47:06 -0800 (PST)
+Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
+        by smtp.gmail.com with ESMTPSA id q73sm9165220wme.44.2021.01.07.09.47.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 07 Jan 2021 09:47:05 -0800 (PST)
+Date:   Thu, 7 Jan 2021 18:47:04 +0100
+From:   Daniel Vetter <daniel@ffwll.ch>
+To:     Jonathan =?iso-8859-1?Q?Neusch=E4fer?= <j.neuschaefer@gmx.net>
+Cc:     dri-devel@lists.freedesktop.org,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] drm/mipi-dbi: Switch to new kerneldoc syntax for named
+ variable macro argument
+Message-ID: <X/dJGPDCDjmu1jx/@phenom.ffwll.local>
+Mail-Followup-To: Jonathan =?iso-8859-1?Q?Neusch=E4fer?= <j.neuschaefer@gmx.net>,
+        dri-devel@lists.freedesktop.org,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@linux.ie>, linux-kernel@vger.kernel.org
+References: <20210101211818.1023919-1-j.neuschaefer@gmx.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20210107164400.17904-2-pmladek@suse.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210101211818.1023919-1-j.neuschaefer@gmx.net>
+X-Operating-System: Linux phenom 5.7.0-1-amd64 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 07, 2021 at 05:44:00PM +0100, Petr Mladek wrote:
-> This reverts commit 757055ae8dedf5333af17b3b5b4b70ba9bc9da4e.
+On Fri, Jan 01, 2021 at 10:18:17PM +0100, Jonathan Neuschäfer wrote:
+> The syntax without dots is available since commit 43756e347f21
+> ("scripts/kernel-doc: Add support for named variable macro arguments").
 > 
-> The commit caused that ttynull was used as the default console
-> on many systems. It happened when there was no console configured
-> on the command line and ttynull_init() was the first initcall
-> calling register_console().
+> The same HTML output is produced with and without this patch.
 > 
-> The commit fixed a historical problem that have been there for ages.
-> The primary motivation was the commit 3cffa06aeef7ece30f6
-> ("printk/console: Allow to disable console output by using console=""
-> or console=null"). It provided a clean solution
-> for a workaround that was widely used and worked only by chance.
-> 
-> This revert causes that the console="" or console=null command line
-> options will again work only by chance. These options will cause that
-> a particular console will be preferred and the default (tty) ones
-> will not get enabled. There will be no console registered at
-> all. As a result there won't be stdin, stdout, and stderr for
-> the init process. But it worked exactly this way even before.
-> 
-> The proper solution has to fulfill many conditions:
-> 
->   + Register ttynull only when explicitly required or as
->     the ultimate fallback.
-> 
->   + ttynull must get associated with /dev/console but it must
->     not become preferred console when used as a fallback.
->     Especially, it must still be possible to replace it
->     by a better console later.
-> 
-> Such a change requires clean up of the register_console() code.
-> Otherwise, it would be even harder to follow. Especially, the use
-> of has_preferred_console and CON_CONSDEV flag is tricky. The clean
-> up is risky. The ordering of consoles is not well defined. And
-> any changes tend to break existing user settings.
-> 
-> Do the revert at the least risky solution for now.
+> Signed-off-by: Jonathan Neuschäfer <j.neuschaefer@gmx.net>
 
-Shouldn't it have Fixes tag along with Reported-by ones and explanation what
-was the actual problem reported?
+Applied to drm-misc-next, thanks for your patch.
+-Daniel
+
+> ---
+>  include/drm/drm_mipi_dbi.h | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/include/drm/drm_mipi_dbi.h b/include/drm/drm_mipi_dbi.h
+> index c2827ceaba0d2..f543d6e3e822c 100644
+> --- a/include/drm/drm_mipi_dbi.h
+> +++ b/include/drm/drm_mipi_dbi.h
+> @@ -172,7 +172,7 @@ int mipi_dbi_buf_copy(void *dst, struct drm_framebuffer *fb,
+>   * mipi_dbi_command - MIPI DCS command with optional parameter(s)
+>   * @dbi: MIPI DBI structure
+>   * @cmd: Command
+> - * @seq...: Optional parameter(s)
+> + * @seq: Optional parameter(s)
+>   *
+>   * Send MIPI DCS command to the controller. Use mipi_dbi_command_read() for
+>   * get/read.
+> --
+> 2.29.2
+> 
 
 -- 
-With Best Regards,
-Andy Shevchenko
-
-
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
