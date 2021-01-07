@@ -2,183 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A4B22ED207
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 15:25:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 512F32ED209
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 15:25:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728966AbhAGOW1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 09:22:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55250 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726436AbhAGOWZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 09:22:25 -0500
-Received: from mail-ej1-x632.google.com (mail-ej1-x632.google.com [IPv6:2a00:1450:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D277EC0612F5
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Jan 2021 06:21:44 -0800 (PST)
-Received: by mail-ej1-x632.google.com with SMTP id ga15so9942810ejb.4
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Jan 2021 06:21:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=9XphW4qRvsvPkDpcKFQBM3ZMGk3H03d/R4eSCmWd/3I=;
-        b=xO8iNhuBKIX4hsI2v/zY7BHU7bJx8icJXoZ/Vhr3PwDP94WtktHjZjrzj127Wl7JyQ
-         b0Mj4s6MzC526rXro8ZOXNF+0T7IHNNJ8km7cNLY8WadedNFgin36fEaHIaUvB5glPBs
-         IM6oGdTqkMFGkqSTu3Mhda6RH6ti5ee8cE/UXqI6Vse8G4bRomSJ8CuQ59YpLlbgAPc+
-         P9bOvisnlz3+rSAhts+GdQzjOoWrq4/nvufoL3SmZrCJkvgs41yO8rP+1KRq16ggAdCY
-         lBNaycH6OfEC0YN2qnwgV9V+y/Yk/Zn8TSsSi2ML9SVmfD+0qCHZiwIYtW+cS5W52dt9
-         4XDg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=9XphW4qRvsvPkDpcKFQBM3ZMGk3H03d/R4eSCmWd/3I=;
-        b=McKjTlhwb125cl/vi6le70SIiqXPiBPSGMMeDq4nTICUkNEuo7Nx3uvW4acZtjm1+t
-         chRH+ksdzUHT69z5u0S1T652uU9BRg3zdw9ewJKRMTZA/H8eRvEu8T4IjXeeBEyAYYc6
-         sv5BRASdfQBrUKfeuFMvXofJE09hZwyA7e9Z0vzeuLHRt8hyKSY9svHv56IvdHMvBIBJ
-         4p1V86rn4s+hKw7KPuah6UQTpGpL97mV3BYk38y7JYhpOVHpmjuvcYoShdRvE3QjcobD
-         2LK0lHuODNSiV35wdn2kjalUtM4pOwVBWYt/quZFcqA4QwRqiJFqJYkFilGqNdePiIuX
-         NYkQ==
-X-Gm-Message-State: AOAM5334BxCW3lm4eVDg0OXmouMVNo2VfsssIPMAa+q+U2ZzIKcK575g
-        wqLXPwoLXo1eLexdxA1jrZ+2Gw==
-X-Google-Smtp-Source: ABdhPJygBz1SpT4Q0wFwMTmvFz3T1BZuqYVJ3MJGw+K9ePNmvj0yFA8aIlbR8AxHnBs3YyQhB/CiUg==
-X-Received: by 2002:a17:906:e247:: with SMTP id gq7mr6745586ejb.27.1610029303591;
-        Thu, 07 Jan 2021 06:21:43 -0800 (PST)
-Received: from localhost.localdomain ([2a02:2450:102f:d6a:a3f6:c728:8a3d:e3e4])
-        by smtp.gmail.com with ESMTPSA id gl23sm2498177ejb.87.2021.01.07.06.21.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 Jan 2021 06:21:42 -0800 (PST)
-From:   Robert Foss <robert.foss@linaro.org>
-To:     dongchun.zhu@mediatek.com, mchehab@kernel.org,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Dongchun Zhu <Dongchun.Zhu@mediatek.com>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Bingbu Cao <bingbu.cao@linux.intel.com>
-Cc:     Tomasz Figa <tfiga@google.com>,
-        Robert Foss <robert.foss@linaro.org>
-Subject: [PATCH v2] media: ov8856: Fix Bayer format dependance on mode
-Date:   Thu,  7 Jan 2021 15:21:23 +0100
-Message-Id: <20210107142123.639477-1-robert.foss@linaro.org>
-X-Mailer: git-send-email 2.27.0
+        id S1728674AbhAGOXk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 09:23:40 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42996 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725894AbhAGOXj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Jan 2021 09:23:39 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EB78723340;
+        Thu,  7 Jan 2021 14:22:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1610029372;
+        bh=QwOHtluI5QjPAV+iXFS1yvi49MqVAvgoQ2rboBEBOpU=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=PNabRhPE10cp2uCbeRIIlWuNVwROfR7d1Jc8lv57+sBchnd9xm2/6paMrq6akzVjK
+         iNAjoK2H75lpmOuav5qpv9FP/ICRMeeHZEuQfgtBLGyFg654hX80PXYa0ra5WtO5tY
+         FZA1L5NVwnGtxKQKwk/LCO9FV/7S1tlEN36rY03NiiFBdCF4CGFVvMxAFDuRmzxLrI
+         BP2uiFPG6YrInkO+Rjp+BNJsXcfXLGoV2zuSzn9AzbPWVzZ4jEXiH+EixoG5aKsbib
+         DpPPHBfkh162vI9wlenvAj1Df58lqm0CndcltXf+GVwWmSWHLFD1qvFtji/bFSbc5q
+         TIDX+aRQtmkgw==
+From:   Will Deacon <will@kernel.org>
+To:     Joerg Roedel <joro@8bytes.org>, Lu Baolu <baolu.lu@linux.intel.com>
+Cc:     catalin.marinas@arm.com, kernel-team@android.com,
+        Will Deacon <will@kernel.org>,
+        iommu@lists.linux-foundation.org, Ashok Raj <ashok.raj@intel.com>,
+        Guo Kaijie <Kaijie.Guo@intel.com>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/5] iommu/vt-d: Fix misuse of ALIGN in qi_flush_piotlb()
+Date:   Thu,  7 Jan 2021 14:22:46 +0000
+Message-Id: <161002603532.2363893.7669085161472435807.b4-ty@kernel.org>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20201231005323.2178523-1-baolu.lu@linux.intel.com>
+References: <20201231005323.2178523-1-baolu.lu@linux.intel.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The Bayer GRBG10 mode used for earlier modes 3280x2460 and
-1640x1232 isn't the mode output by the sensor for the
-3264x2448 and 1632x1224 modes.
+On Thu, 31 Dec 2020 08:53:19 +0800, Lu Baolu wrote:
+> Use IS_ALIGNED() instead. Otherwise, an unaligned address will be ignored.
 
-Switch from MEDIA_BUS_FMT_SGRBG10_1X10 to MEDIA_BUS_FMT_SBGGR10_1X10
-for 3264x2448 & 1632x1224 modes.
+Applied patches 1, 4 and 5 to arm64 (for-next/iommu/fixes), thanks!
 
-Signed-off-by: Robert Foss <robert.foss@linaro.org>
----
+[1/5] iommu/vt-d: Fix misuse of ALIGN in qi_flush_piotlb()
+      https://git.kernel.org/arm64/c/1efd17e7acb6
+[4/5] Revert "iommu: Add quirk for Intel graphic devices in map_sg"
+      https://git.kernel.org/arm64/c/4df7b2268ad8
+[5/5] iommu/vt-d: Fix lockdep splat in sva bind()/unbind()
+      https://git.kernel.org/arm64/c/420d42f6f9db
 
-Changes since v1:
- - Sakari: Added mode information to ov8856_mode struct
- - Sakari: enum_mbus_code updated
-
- drivers/media/i2c/ov8856.c | 24 ++++++++++++++++++------
- 1 file changed, 18 insertions(+), 6 deletions(-)
-
-diff --git a/drivers/media/i2c/ov8856.c b/drivers/media/i2c/ov8856.c
-index 2f4ceaa80593..7cd83564585c 100644
---- a/drivers/media/i2c/ov8856.c
-+++ b/drivers/media/i2c/ov8856.c
-@@ -126,6 +126,9 @@ struct ov8856_mode {
- 
- 	/* Sensor register settings for this resolution */
- 	const struct ov8856_reg_list reg_list;
-+
-+	/* MEDIA_BUS_FMT for this mode */
-+	u32 code;
- };
- 
- static const struct ov8856_reg mipi_data_rate_720mbps[] = {
-@@ -942,6 +945,11 @@ static const char * const ov8856_test_pattern_menu[] = {
- 	"Bottom-Top Darker Color Bar"
- };
- 
-+static const u32 ov8856_formats[] = {
-+	MEDIA_BUS_FMT_SBGGR10_1X10,
-+	MEDIA_BUS_FMT_SGRBG10_1X10,
-+};
-+
- static const s64 link_freq_menu_items[] = {
- 	OV8856_LINK_FREQ_360MHZ,
- 	OV8856_LINK_FREQ_180MHZ
-@@ -974,6 +982,7 @@ static const struct ov8856_mode supported_modes[] = {
- 			.regs = mode_3280x2464_regs,
- 		},
- 		.link_freq_index = OV8856_LINK_FREQ_720MBPS,
-+		.code = MEDIA_BUS_FMT_SGRBG10_1X10,
- 	},
- 	{
- 		.width = 3264,
-@@ -986,6 +995,7 @@ static const struct ov8856_mode supported_modes[] = {
- 			.regs = mode_3264x2448_regs,
- 		},
- 		.link_freq_index = OV8856_LINK_FREQ_720MBPS,
-+		.code = MEDIA_BUS_FMT_SBGGR10_1X10,
- 	},
- 	{
- 		.width = 1640,
-@@ -998,6 +1008,7 @@ static const struct ov8856_mode supported_modes[] = {
- 			.regs = mode_1640x1232_regs,
- 		},
- 		.link_freq_index = OV8856_LINK_FREQ_360MBPS,
-+		.code = MEDIA_BUS_FMT_SGRBG10_1X10,
- 	},
- 	{
- 		.width = 1632,
-@@ -1010,6 +1021,7 @@ static const struct ov8856_mode supported_modes[] = {
- 			.regs = mode_1632x1224_regs,
- 		},
- 		.link_freq_index = OV8856_LINK_FREQ_360MBPS,
-+		.code = MEDIA_BUS_FMT_SBGGR10_1X10,
- 	}
- };
- 
-@@ -1281,8 +1293,8 @@ static void ov8856_update_pad_format(const struct ov8856_mode *mode,
- {
- 	fmt->width = mode->width;
- 	fmt->height = mode->height;
--	fmt->code = MEDIA_BUS_FMT_SGRBG10_1X10;
- 	fmt->field = V4L2_FIELD_NONE;
-+	fmt->code = mode->code;
- }
- 
- static int ov8856_start_streaming(struct ov8856 *ov8856)
-@@ -1519,11 +1531,10 @@ static int ov8856_enum_mbus_code(struct v4l2_subdev *sd,
- 				 struct v4l2_subdev_pad_config *cfg,
- 				 struct v4l2_subdev_mbus_code_enum *code)
- {
--	/* Only one bayer order GRBG is supported */
--	if (code->index > 0)
-+	if (code->index >= ARRAY_SIZE(ov8856_formats))
- 		return -EINVAL;
- 
--	code->code = MEDIA_BUS_FMT_SGRBG10_1X10;
-+	code->code = ov8856_formats[code->index];
- 
- 	return 0;
- }
-@@ -1532,10 +1543,11 @@ static int ov8856_enum_frame_size(struct v4l2_subdev *sd,
- 				  struct v4l2_subdev_pad_config *cfg,
- 				  struct v4l2_subdev_frame_size_enum *fse)
- {
--	if (fse->index >= ARRAY_SIZE(supported_modes))
-+	if ((fse->code != ov8856_formats[0]) &&
-+	    (fse->code != ov8856_formats[1]))
- 		return -EINVAL;
- 
--	if (fse->code != MEDIA_BUS_FMT_SGRBG10_1X10)
-+	if (fse->index >= ARRAY_SIZE(supported_modes))
- 		return -EINVAL;
- 
- 	fse->min_width = supported_modes[fse->index].width;
+Cheers,
 -- 
-2.27.0
+Will
 
+https://fixes.arm64.dev
+https://next.arm64.dev
+https://will.arm64.dev
