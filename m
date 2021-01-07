@@ -2,98 +2,240 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 62D282ED3E6
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 17:05:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 298682ED3E0
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 17:04:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728532AbhAGQEb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 11:04:31 -0500
-Received: from mail-40131.protonmail.ch ([185.70.40.131]:30878 "EHLO
-        mail-40131.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726780AbhAGQEa (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 11:04:30 -0500
-Date:   Thu, 07 Jan 2021 16:03:46 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
-        s=protonmail; t=1610035427;
-        bh=NjLJYtrwGi8fl20fDTPPgaGJm/yzsWtQLjMz/qlJmLk=;
-        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
-        b=lJFxtxag81erccYTjlMGJWfmCu/2PURzR6TdJ4oSGuwrv48rv+4ZCfybs62jPISY+
-         h1bj48txohaisl7Mi9NJnA8O1jvKX2M0+/jB9Fh6jbGgX/wVejN5PmIH/OMzV3CV8u
-         SiHxLtOIZu1ZMn9L2OdHhkyMsHYEXgvRlX0nyZ8s=
-To:     Hans de Goede <hdegoede@redhat.com>
-From:   =?utf-8?Q?Barnab=C3=A1s_P=C5=91cze?= <pobrn@protonmail.com>
-Cc:     Perry Yuan <Perry.Yuan@dell.com>,
-        "mgross@linux.intel.com" <mgross@linux.intel.com>,
-        "platform-driver-x86@vger.kernel.org" 
-        <platform-driver-x86@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Limonciello Mario <Mario.Limonciello@dell.com>
-Reply-To: =?utf-8?Q?Barnab=C3=A1s_P=C5=91cze?= <pobrn@protonmail.com>
-Subject: Re: [PATCH v2 1/2] platform/x86: dell-privacy: Add support for Dell hardware privacy
-Message-ID: <kt8PP3Pj3sI0-gL28bw5rPCvcv3S8STD0pMFoQUrixarFRv_36In5dPDtrOtSSJk2WhEo4FN9duHO_pNG8kDDPng06mDOX9UvmXeaPNI6sE=@protonmail.com>
-In-Reply-To: <d1d31281-d5c8-ea09-9e2d-1c5acb35deef@redhat.com>
-References: <20201228132855.17544-1-Perry_Yuan@Dell.com> <d1d31281-d5c8-ea09-9e2d-1c5acb35deef@redhat.com>
+        id S1728452AbhAGQDd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 11:03:33 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38472 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728372AbhAGQDc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Jan 2021 11:03:32 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4ACD523118;
+        Thu,  7 Jan 2021 16:02:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1610035371;
+        bh=sq1hZodw++8sOiYwpRpFRWnOK/gGWirm92MZoS+MlSc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=q8T3ZkD0iERIVRyeAFdIrqI+Gjhoy31JlG63lJ7goxQwX8pkZedu7zB4RBgByen3Z
+         38o/dnRgTpztmtPu7K9O7o8p88AMcQZwiXWOk+K+DEcuHEJsU0A+n3bqMwKeQYRpk/
+         hfXv+RATx5uYyMlTEHbwhLBKqSD0lvbqZ8f+1M04=
+Date:   Thu, 7 Jan 2021 17:04:11 +0100
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Cristian Marussi <cristian.marussi@arm.com>
+Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        sudeep.holla@arm.com, lukasz.luba@arm.com,
+        Jonathan.Cameron@huawei.com, arnd@arndb.de, robh@kernel.org
+Subject: Re: [PATCH v4 2/2] firmware: arm_scmi: Add SCMI System Power Control
+ driver
+Message-ID: <X/cw+7Uq+Slg45fe@kroah.com>
+References: <20210105130945.8192-1-cristian.marussi@arm.com>
+ <20210105130945.8192-2-cristian.marussi@arm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM shortcircuit=no
-        autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
-        mailout.protonmail.ch
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210105130945.8192-2-cristian.marussi@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi
+On Tue, Jan 05, 2021 at 01:09:45PM +0000, Cristian Marussi wrote:
+> diff --git a/drivers/firmware/Kconfig b/drivers/firmware/Kconfig
+> index 3f14dffb9669..2b39453e9dd1 100644
+> --- a/drivers/firmware/Kconfig
+> +++ b/drivers/firmware/Kconfig
+> @@ -40,6 +40,18 @@ config ARM_SCMI_POWER_DOMAIN
+>  	  will be called scmi_pm_domain. Note this may needed early in boot
+>  	  before rootfs may be available.
+>  
+> +config ARM_SCMI_POWER_CONTROL
+> +	bool "SCMI system power control driver"
+> +	depends on ARM_SCMI_PROTOCOL || (COMPILE_TEST && OF)
+> +	default n
 
+n is always the default, no need to list it here.
 
-2021. janu=C3=A1r 7., cs=C3=BCt=C3=B6rt=C3=B6k 0:43 keltez=C3=A9ssel, Hans =
-de Goede =C3=ADrta:
+> +	help
+> +	  This enables System Power control logic which binds system shutdown or
+> +	  reboot actions to SCMI System Power notifications generated by SCP
+> +	  firmware.
+> +
+> +	  Graceful requests' methods and timeout and can be configured using
+> +	  a few available module parameters.
+> +
+>  config ARM_SCPI_PROTOCOL
+>  	tristate "ARM System Control and Power Interface (SCPI) Message Protocol"
+>  	depends on ARM || ARM64 || COMPILE_TEST
+> diff --git a/drivers/firmware/arm_scmi/Makefile b/drivers/firmware/arm_scmi/Makefile
+> index 6a2ef63306d6..ddddb4636ebd 100644
+> --- a/drivers/firmware/arm_scmi/Makefile
+> +++ b/drivers/firmware/arm_scmi/Makefile
+> @@ -9,3 +9,4 @@ scmi-module-objs := $(scmi-bus-y) $(scmi-driver-y) $(scmi-protocols-y) \
+>  		    $(scmi-transport-y)
+>  obj-$(CONFIG_ARM_SCMI_PROTOCOL) += scmi-module.o
+>  obj-$(CONFIG_ARM_SCMI_POWER_DOMAIN) += scmi_pm_domain.o
+> +obj-$(CONFIG_ARM_SCMI_POWER_CONTROL) += scmi_power_control.o
+> diff --git a/drivers/firmware/arm_scmi/scmi_power_control.c b/drivers/firmware/arm_scmi/scmi_power_control.c
+> new file mode 100644
+> index 000000000000..216c2f031111
+> --- /dev/null
+> +++ b/drivers/firmware/arm_scmi/scmi_power_control.c
+> @@ -0,0 +1,359 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * SCMI Generic SystemPower Control driver.
+> + *
+> + * Copyright (C) 2020-2021 ARM Ltd.
+> + */
+> +/**
+> + * DOC: Theory of operation
 
-> Hi Perry,
->
-> On 12/28/20 2:28 PM, Perry Yuan wrote:
->
-> > From: Perry Yuan perry_yuan@dell.com
-> > add support for dell privacy driver for the dell units equipped
-> > hardware privacy design, which protect users privacy
-> > of audio and camera from hardware level. once the audio or camera
-> > privacy mode enabled, any applications will not get any audio or
-> > video stream.
-> > when user pressed ctrl+F4 hotkey, audio privacy mode will be
-> > enabled,Micmute led will be also changed accordingly.
-> > The micmute led is fully controlled by hardware & EC.
-> > and camera mute hotkey is ctrl+F9.currently design only emmit
-> > SW_CAMERA_LENS_COVER event while the camera LENS shutter will be
-> > changed by EC & HW control.
-> > *The flow is like this:
-> >
-> > 1.  User presses key. HW does stuff with this key (timeout is started)
-> > 2.  Event is emitted from FW
-> > 3.  Event received by dell-privacy
-> > 4.  KEY_MICMUTE emitted from dell-privacy
-> > 5.  Userland picks up key and modifies kcontrol for SW mute
-> > 6.  Codec kernel driver catches and calls ledtrig_audio_set, like this:
-> >     ledtrig_audio_set(LED_AUDIO_MICMUTE,
-> >     rt715->micmute_led ? LED_ON :LED_OFF);
-> >
-> > 7.  If "LED" is set to on dell-privacy notifies ec,
-> >     and timeout is cancelled,HW mic mute activated.
-> >
-> >
-> > Signed-off-by: Perry Yuan perry_yuan@dell.com
-> > Signed-off-by: Limonciello Mario mario_limonciello@dell.com
->
-> Thank you for your patch, please send a new version addressing
-> Barnab=C3=A1s' review comment and including the second patch of the
-> series.
-> [...]
+What does "DOC:" provide?  Did you tie this into the kernel doc build
+system?  If not, then what is this tag for?
 
-I think first something needs to be figured out regarding
-the integration with the rest of the Dell modules. I feel
-that list is not a desirable way to do it.
+> + *
+> + * In order to handle platform originated SCMI SystemPower requests (like
+> + * shutdowns or cold/warm resets) we register an SCMI Notification notifier
+> + * block to react when such SCMI SystemPower events are emitted.
+> + *
+> + * Once such a notification is received we act accordingly to perform the
+> + * required system transition depending on the kind of request.
+> + *
+> + * By default graceful requests are routed to userspace through the same
+> + * API methods (orderly_poweroff/reboot()) used by ACPI when handling ACPI
+> + * Shutdown bus events: alternatively, by properly setting a couple of module
+> + * parameters (scmi_graceful_*_signum), it is possible to choose to use signals
+> + * to CAD pid as a mean to communicate such graceful requests to userspace.
+> + *
+> + * Forceful requests, instead, will simply cause an immediate emergency_sync()
+> + * and subsequent Kernel-only shutdown/reboot.
+> + *
+> + * Additionally, setting scmi_graceful_request_tmo_ms to a non-zero value, it
+> + * is possible to convert a timed-out graceful request to a forceful one.
+> + *
+> + * The assumption here is that even graceful requests can be upper-bound by a
+> + * maximum final timeout strictly enforced by the platform itself which can
+> + * ultimately cut the power off at will anytime: in order to avoid such extreme
+> + * scenario, when scmi_graceful_request_tmo_ms is non-zero, we track progress of
+> + * graceful requests through the means of a reboot notifier converting timed-out
+> + * graceful requests to forceful ones: in such a way at least we perform a
+> + * clean sync and shutdown/restart before the power is cut.
+> + *
+> + * Given that such platform hard-timeout, if present, is anyway highly platform
+> + * and event specific and not exposed at run-time by the SCMI SytemPower
+> + * protocol, the parameter scmi_graceful_request_tmo_ms defaults to zero.
+> + */
+> +
+> +#define pr_fmt(fmt) "SCMI SystemPower - " fmt
 
+drivers should not need this, and even if they do, that's a HUGE prefix,
+be more terse please.  Always use dev_*() calls instead of pr_() as you
+have access to a device at all times, right?  If not, then this isn't a
+driver :)
 
-Regards,
-Barnab=C3=A1s P=C5=91cze
+> +enum scmi_syspower_state {
+> +	SCMI_SYSPOWER_IDLE,
+> +	SCMI_SYSPOWER_IN_PROGRESS,
+> +	SCMI_SYSPOWER_REBOOTING
+> +};
+> +
+> +static enum scmi_syspower_state scmi_state;
+> +/* Protect access to scmi_state */
+> +static DEFINE_MUTEX(scmi_state_mtx);
+
+Why does this only handle "one" state and device?  Shouldn't this all be
+per-device?
+
+> +
+> +static enum scmi_system_events scmi_required_transition = SCMI_SYSTEM_MAX;
+> +
+> +static unsigned int scmi_graceful_poweroff_signum;
+> +static unsigned int scmi_graceful_reboot_signum;
+> +static unsigned int scmi_graceful_request_tmo_ms;
+
+why "unsigned int"?
+
+> +
+> +static struct timer_list scmi_request_timer;
+> +static struct work_struct scmi_forceful_work;
+> +
+> +/**
+> + * scmi_reboot_notifier  - A reboot notifier to catch an ongoing successful
+> + * system transition
+> + * @nb: Reference to the related notifier block
+> + * @reason: The reason for the ongoing reboot
+> + * @__unused: The cmd being executed on a restart request (unused)
+> + *
+> + * When an ongoing system transition is detected, compatible with the one
+> + * requested by SCMI, cancel the timer work.
+> + * This is registered only when a valid SCMI SystemPower transition has been
+> + * received and scmi_graceful_request_tmo_ms was non-zero.
+> + *
+> + * Return: NOTIFY_OK in any case
+> + */
+> +static int scmi_reboot_notifier(struct notifier_block *nb,
+> +				unsigned long reason, void *__unused)
+> +{
+> +	mutex_lock(&scmi_state_mtx);
+> +	switch (reason) {
+> +	case SYS_HALT:
+> +	case SYS_POWER_OFF:
+> +		if (scmi_required_transition == SCMI_SYSTEM_SHUTDOWN)
+> +			scmi_state = SCMI_SYSPOWER_REBOOTING;
+> +		break;
+> +	case SYS_RESTART:
+> +		if (scmi_required_transition == SCMI_SYSTEM_COLDRESET ||
+> +		    scmi_required_transition == SCMI_SYSTEM_WARMRESET)
+> +			scmi_state = SCMI_SYSPOWER_REBOOTING;
+> +		break;
+> +	default:
+> +		break;
+> +	}
+> +
+> +	if (scmi_state == SCMI_SYSPOWER_REBOOTING) {
+> +		pr_debug("Reboot in progress...cancel timer.\n");
+
+use dev_dbg() and pass it your device pointer please.
+
+Same for all usages of pr_*() in the driver.
+
+> +static int scmi_syspower_probe(struct scmi_device *sdev)
+> +{
+> +	int ret;
+> +	struct scmi_handle *handle = sdev->handle;
+> +	struct notifier_block *userspace_nb;
+> +
+> +	if (!handle)
+> +		return -ENODEV;
+> +
+> +	userspace_nb = devm_kzalloc(&sdev->dev, sizeof(*userspace_nb),
+> +				    GFP_KERNEL);
+> +	if (!userspace_nb)
+> +		return -ENOMEM;
+> +
+> +	userspace_nb->notifier_call = &scmi_userspace_notifier;
+> +	ret = handle->notify_ops->register_event_notifier(handle,
+> +						SCMI_PROTOCOL_SYSTEM,
+> +					SCMI_EVENT_SYSTEM_POWER_STATE_NOTIFIER,
+> +					    NULL, userspace_nb);
+
+Crazy indentation, checkpatch was ok with this?
+
+> +module_param(scmi_graceful_request_tmo_ms, uint, 0644);
+> +MODULE_PARM_DESC(scmi_graceful_request_tmo_ms,
+> +		 "Maximum time(ms) allowed to userspace for complying to the request. Unlimited if zero.");
+> +
+> +module_param(scmi_graceful_poweroff_signum, uint, 0644);
+> +MODULE_PARM_DESC(scmi_graceful_poweroff_signum,
+> +		 "Signal to request graceful poweroff to CAD process. Ignored if zero.");
+> +
+> +module_param(scmi_graceful_reboot_signum, uint, 0644);
+> +MODULE_PARM_DESC(scmi_graceful_reboot_signum,
+> +		 "Signal to request graceful reboot to CAD process. Ignored if zero.");
+
+This is not the 1990's, please do not add module parameters.  Make this
+"just work", or worst case, sysfs attributes.
+
+thanks,
+
+greg k-h
