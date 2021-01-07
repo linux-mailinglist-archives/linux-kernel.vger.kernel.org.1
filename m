@@ -2,98 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B763D2EE642
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 20:40:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 13BA02EE645
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 20:40:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728443AbhAGTjg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 14:39:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48328 "EHLO
+        id S1729263AbhAGTjx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 14:39:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48374 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725903AbhAGTjf (ORCPT
+        with ESMTP id S1725903AbhAGTjw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 14:39:35 -0500
-Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DC42C0612F4
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Jan 2021 11:38:55 -0800 (PST)
-Received: by mail-lf1-x130.google.com with SMTP id o13so17394296lfr.3
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Jan 2021 11:38:55 -0800 (PST)
+        Thu, 7 Jan 2021 14:39:52 -0500
+Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B20FC0612F5;
+        Thu,  7 Jan 2021 11:39:12 -0800 (PST)
+Received: by mail-lf1-x12f.google.com with SMTP id a12so17349519lfl.6;
+        Thu, 07 Jan 2021 11:39:12 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=dgTyS1NQ2UzjKoMzADBXjDVj+VbxzQgHopw6iDs7tkA=;
-        b=DBpOtA1VUWMUKMvUYSZL1Rtw2oCnY7kRjiP38Qb86yzJghjeCZA4URMxOB+vUm9V5w
-         ws4+O5Iv67QUEOkqkw/HNV17BUWg+ivR+KJhAHhs2PhTYzAZW4ML0JiFxvGX1dtsOl3K
-         cEVf8kDbjZV4fStbf+4q58+pg88jkFIn/WrR0=
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=ffFy7U5GHTO2EDTarXBfsvng3yi/U0HlVmDD4XbAyvk=;
+        b=Wyed8+zva/LYFJ10gJQ7x+ViNyXTsElCtmMUOpgTb/1YDegkPcwMsRWfb6bnPT+iKb
+         yyIaGP48HD/upBYUEQjlmhnaGmrTDy9me1CdAxCQI1Rt9cCh1vfk83W55UpQWTrfx4fq
+         on3q+XX+gRqs1lF4J6Dzk0wEr9tXNiH+ySbd07plWndwWUiv4F0ykGda/gBwJEg5vYOK
+         ATsgATXXNyU6xMDyYcnyAnQ213ZoX/ZXl6yf3ac43tSt0qdPngmmF29bG1+eUDSwgUw1
+         AzFECZcWDk9At66ZrGB8CFVrd2+qabP6np+CVOMLQJhpLToWrA6wWVQzNGJpmAyDhR53
+         AsKw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=dgTyS1NQ2UzjKoMzADBXjDVj+VbxzQgHopw6iDs7tkA=;
-        b=eqYPrytAtKRaBsc3gs4Zh+/OkCyweV8OQDKsawUvVfJ/2Bul1pBUfSgHUJB5P4O+39
-         Uy+N9QmfIIjHEtueOOje8PpVjRAv54PPz/iAJ9cXGTRqKVZnHTBaBrkUy+2li4tOGFYA
-         LEPtvuROSNzGVOsH11rPA3Ze0ECGMiNhO95+LnZoz5YMmwjT+NphxCk2jca0/rSvl4zE
-         ZgwZkw4REhPn0iZ3Ap+PCrlCVSQKWh6ept+LmXcaOxluPUTPhAjoQkX2y/+Fy+mRAtgw
-         qhAvGvnU1rObT9wlNA72Bj0AvR+ZUecsw1XTPtpkym+0BTAXpMrVevvQTIKd/NZlE1yl
-         yQCQ==
-X-Gm-Message-State: AOAM533JbRhhJT7K9CAepwL2mSXlJufUhxLB7BLdOOxATjY5e2sIWjVo
-        2tLbzFOpSAh7n+a8VJSqv8B0PlNlPPd04w==
-X-Google-Smtp-Source: ABdhPJz10VmtufQBWihaYisW2seIJvwi7U+DhgDDcGPfPDZ2XXgOL6OIcIwVO2b5XnPAZWCWwo4NIA==
-X-Received: by 2002:a2e:b5cb:: with SMTP id g11mr19433ljn.502.1610048333482;
-        Thu, 07 Jan 2021 11:38:53 -0800 (PST)
-Received: from mail-lf1-f50.google.com (mail-lf1-f50.google.com. [209.85.167.50])
-        by smtp.gmail.com with ESMTPSA id 68sm1474167ljj.23.2021.01.07.11.38.52
-        for <linux-kernel@vger.kernel.org>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=ffFy7U5GHTO2EDTarXBfsvng3yi/U0HlVmDD4XbAyvk=;
+        b=nnkPIL+qmU7Pn9VV85Gqtyn9aDzojv5jm4mgl6ANhcy2fERHVf6LQo8NHnwL1lfCbD
+         dMs8CrczlWd7oi5j8NB4zKMhVUdIIKzOVtfQ0ETx7WItg++NOOQAwDosj4qkKziOaRkv
+         wpNWmJ0ObPp4xf3BNE/m1+vcxZQpIZho0kERmhuzSQSuue50e0Y4jq1AoikyqDD48JfM
+         Krb/Sl5qB9gIeHDV3iAOFWkt7tt7Pq/n1148mz6J3N6jpmbuigGv6QsVB9b/HsBBQIvU
+         kPJLRwi9T59wJL0ZJAOUaXfbEh+wGJruL16ePbzxcUnV7IUJ1nhaXEAejgTKncLruCZx
+         7SNg==
+X-Gm-Message-State: AOAM532uG5IfBPQJvyjteKNSU+30/4nF46zgIxRQMZs5dkQconHHP2PZ
+        o3fbMMZj3rWyOZMNuGcDwFDn91MM8Og=
+X-Google-Smtp-Source: ABdhPJwcjsVwi672lMyB3VRDqyLku+RskEcHu3FcswkJW1KB+hkV/1FIv9p7umOsoz2IRKSWh6yzhA==
+X-Received: by 2002:a19:230d:: with SMTP id j13mr148331lfj.378.1610048350619;
+        Thu, 07 Jan 2021 11:39:10 -0800 (PST)
+Received: from [192.168.2.145] (109-252-192-57.dynamic.spd-mgts.ru. [109.252.192.57])
+        by smtp.googlemail.com with ESMTPSA id q21sm1369032lff.280.2021.01.07.11.39.09
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 07 Jan 2021 11:38:52 -0800 (PST)
-Received: by mail-lf1-f50.google.com with SMTP id x20so17249337lfe.12
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Jan 2021 11:38:52 -0800 (PST)
-X-Received: by 2002:ac2:41d9:: with SMTP id d25mr110163lfi.377.1610048331953;
- Thu, 07 Jan 2021 11:38:51 -0800 (PST)
+        Thu, 07 Jan 2021 11:39:09 -0800 (PST)
+Subject: Re: [PATCH v2 00/48] Introduce core voltage scaling for NVIDIA
+ Tegra20/30 SoCs
+To:     Krzysztof Kozlowski <krzk@kernel.org>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Mark Brown <broonie@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Peter Geis <pgwipeout@gmail.com>,
+        Nicolas Chauvet <kwizart@gmail.com>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Kevin Hilman <khilman@kernel.org>,
+        Peter De Schrijver <pdeschrijver@nvidia.com>,
+        Viresh Kumar <vireshk@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-media@vger.kernel.org, linux-tegra@vger.kernel.org,
+        linux-clk@vger.kernel.org
+References: <20201217180638.22748-1-digetx@gmail.com>
+ <20210105171111.GC26301@kozik-lap>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <988cf951-ff81-4b48-6baf-b393bd1613d2@gmail.com>
+Date:   Thu, 7 Jan 2021 22:39:09 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.2
 MIME-Version: 1.0
-References: <20210107164400.17904-1-pmladek@suse.com> <20210107164400.17904-2-pmladek@suse.com>
- <X/deF3U+LK5YCQT3@kroah.com>
-In-Reply-To: <X/deF3U+LK5YCQT3@kroah.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Thu, 7 Jan 2021 11:38:36 -0800
-X-Gmail-Original-Message-ID: <CAHk-=wjSz8tS=QqvnMDk4qHe5t5FS-Nk-SQMPAHJo5SJYp_t6w@mail.gmail.com>
-Message-ID: <CAHk-=wjSz8tS=QqvnMDk4qHe5t5FS-Nk-SQMPAHJo5SJYp_t6w@mail.gmail.com>
-Subject: Re: [PATCH 1/1] Revert "init/console: Use ttynull as a fallback when
- there is no console"
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Petr Mladek <pmladek@suse.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        John Ogness <john.ogness@linutronix.de>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Shreyas Joshi <shreyas.joshi@biamp.com>,
-        shreyasjoshi15@gmail.com,
-        Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
-        Greg Ungerer <gerg@linux-m68k.org>,
-        Vineet Gupta <vgupta@synopsys.com>,
-        Thomas Meyer <thomas@m3y3r.de>,
-        David Gow <davidgow@google.com>,
-        Brendan Higgins <brendanhiggins@google.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210105171111.GC26301@kozik-lap>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 7, 2021 at 11:15 AM Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> Linus, can you take this directly, or is this going through some other
-> tree?
+05.01.2021 20:11, Krzysztof Kozlowski пишет:
+> On Thu, Dec 17, 2020 at 09:05:50PM +0300, Dmitry Osipenko wrote:
+>> Introduce core voltage scaling for NVIDIA Tegra20/30 SoCs, which reduces
+>> power consumption and heating of the Tegra chips. Tegra SoC has multiple
+>> hardware units which belong to a core power domain of the SoC and share
+>> the core voltage. The voltage must be selected in accordance to a minimum
+>> requirement of every core hardware unit.
+>>
+>> The minimum core voltage requirement depends on:
+>>
+>>   1. Clock enable state of a hardware unit.
+>>   2. Clock frequency.
+>>   3. Unit's internal idling/active state.
+>>
+>> This series is tested on Acer A500 (T20), AC100 (T20), Nexus 7 (T30),
+>> Ouya (T30), TK1 (T124) and some others. I also added voltage scaling to
+>> the Ventana (T20) and Cardhu (T30) boards which are tested by NVIDIA's CI
+>> farm. Tegra30 is now couple degrees cooler on Nexus 7 and stays cool on
+>> Ouya (instead of becoming burning hot) while system is idling. It should
+>> be possible to improve this further by implementing a more advanced power
+>> management features for the kernel drivers.
+>>
+>> The DVFS support is opt-in for all boards, meaning that older DTBs will
+>> continue to work like they did it before this series. It should be possible
+>> to easily add the core voltage scaling support for Tegra114+ SoCs based on
+>> this grounding work later on, if anyone will want to implement it.
+> 
+> The same comment as for your interconnect work: for sets touching
+> multiple systems please mention the dependencies between patches in the
+> cover letter. Not as a reply to such remark like I make here, but as a
+> separate entry in the cover letter.
 
-I was _assuming_ that I'd get it through the normal printk pull
-request, it doesn't seem to be that timing-critical.
-
-But if there is nothing else pending, I can certainly take it directly
-as that patch too.
-
-Petr?
-
-            Linus
+I'll describe all the dependencies in the next revision, thanks.
