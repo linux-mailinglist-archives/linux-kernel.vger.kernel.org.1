@@ -2,78 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 980FF2EC7D3
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 02:50:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E779A2EC7DA
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 02:52:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726712AbhAGBuA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Jan 2021 20:50:00 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34840 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726641AbhAGBuA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Jan 2021 20:50:00 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B30CF22EBF;
-        Thu,  7 Jan 2021 01:49:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1609984159;
-        bh=doqZnSsLCdDqGPlvrZj/h0iAnNN1drlPUlLMSBzsonk=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=hGbJmoFDZMv+INHH05XMsJw9v6I3OfRL2/dXi+RTnL+VwKu5wLcV6VxSD0ikLT8Y2
-         Z52dYK3l4pf5142GRL4W7Rt8RrDRp2nY2JUY5cdNVuFgwGDqT/NsTErCN5j58Ra36k
-         1daBb1Iz7ZEwkqcrvats/lQkKF65NJNfEutcikPJqu4an2fOrpe8z+3nhkHzRJDH0T
-         JFjtMTHTfDqSFVJtl67HhhXVG/zVX2UXdAi+NWppphyJxnpBeHBp4jJ1ApXvewKSo7
-         l4ZHXInUhEbXuYLUr1WGmVhw/9sra2XwPIfRxGOqUBjW+lQTciJZzvNBABYKJJ+FCn
-         fFQlGzH2sJ6Hw==
-Date:   Wed, 6 Jan 2021 17:49:17 -0800
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        Willem de Bruijn <willemb@google.com>,
-        David Miller <davem@davemloft.net>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "the arch/x86 maintainers" <x86@kernel.org>,
-        Christoph Hellwig <hch@lst.de>,
-        Matthew Wilcox <willy@infradead.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Netdev <netdev@vger.kernel.org>
-Subject: Re: [BUG] from x86: Support kmap_local() forced debugging
-Message-ID: <20210106174917.3f8ad0d8@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <CAHk-=wh2895wXEXYtb70CTgW+UR7jfh6VFhJB_bOrF0L7UKoEg@mail.gmail.com>
-References: <20201118194838.753436396@linutronix.de>
-        <20201118204007.169209557@linutronix.de>
-        <20210106180132.41dc249d@gandalf.local.home>
-        <CAHk-=wh2895wXEXYtb70CTgW+UR7jfh6VFhJB_bOrF0L7UKoEg@mail.gmail.com>
+        id S1726779AbhAGBvb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Jan 2021 20:51:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50882 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725789AbhAGBvb (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 Jan 2021 20:51:31 -0500
+Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC47FC0612F3
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Jan 2021 17:50:50 -0800 (PST)
+Received: by mail-lf1-x12f.google.com with SMTP id o17so11075655lfg.4
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Jan 2021 17:50:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=PuS9RFtdF0FSUG+Qus6FJ7bGLYFqsL5wnuYCJEt6Kb0=;
+        b=gBnrY7alv2bsniRlpXrslYlz5zCHsPCg9HVAyMrrsYsO6fa8Fx/JJI2i+Ed2CKM9Hq
+         kwaVRdiWZ6hZerEm7PFP+F3557eBswhDr4tNVlYYBgQVOmTPz6+VXmhmwqrGtJeY3bZn
+         2zpF1kqD7GFLG7SMhUiMt6e6a47tCVE4G2auXbPYSpzxA15UZDGWHaxubl4cgwl0inpW
+         Mtl0hXyHwAt1yW+4WvA10IDkzf9TzSTQwELoPod/730gf7U/GthD0Jr5TW0Arwufx37v
+         5iUPS4jb9+FnNz6FmoYduw2j2tuHQRwBRTQg4snwPCLYe5j6rEVHRSPky14EH2EHk8Fz
+         ZNvQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=PuS9RFtdF0FSUG+Qus6FJ7bGLYFqsL5wnuYCJEt6Kb0=;
+        b=qcwl5gCVNWYCm4xo7Knyzy46OKndO6QFIG+X8yaRDmsx8yhVOfu2Q9fhcsfHsq7ZkK
+         hD1ptsZrxUOkneEEuC1nMOem0ZiaX9vdOy48aBy0hd1C4MvZ4MhzTo0w0wSDNxNNckk/
+         H+fNgZtZIP+U/JjHTGPFWnhErWdL9pC/Z1PA11WWKGGWPUGhsLampX6pwZOzC/aoC2Jg
+         ltoFeyaw38V/RkCtG3hntWcAiLlr/OZTRTHdxj+pPP0u4O/OqE1L0Z4eKbMXLZrZG+KT
+         uaYtPKno4XMI8LOgCzvtj/ZLMDhpRBSa4bzPyxsoXVplmbKxoicqLy52nDP1sWNIP9sK
+         HfPQ==
+X-Gm-Message-State: AOAM531QyV7esCBhUWmxNxcKkSA+NyRta3RY/8GnIKV1PfbZhgHQaBA1
+        Xacf8wbOlD+a+6ZsywCdgoNl0baiNicu9iXu7lU=
+X-Google-Smtp-Source: ABdhPJw4/jZgVZBc8G/tHe60zJSX2H/7Py1HFEDuWXFYjlClXEGFpq354dcg+/dyXm4CWpJ1P5VMPsd2wXBUjngAhu0=
+X-Received: by 2002:a19:848f:: with SMTP id g137mr3061829lfd.622.1609984249325;
+ Wed, 06 Jan 2021 17:50:49 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20210106034623.GA1128@open-light-1.localdomain> <effc0673-0452-08d8-819b-70aee14643c5@redhat.com>
+In-Reply-To: <effc0673-0452-08d8-819b-70aee14643c5@redhat.com>
+From:   Liang Li <liliang324@gmail.com>
+Date:   Thu, 7 Jan 2021 09:50:35 +0800
+Message-ID: <CA+2MQi9=4p8Xzqa7JAseQW8iFv+hKBNvdsm7c3o4_y5wr4mN-Q@mail.gmail.com>
+Subject: Re: [PATCH 0/6] hugetlbfs: support free page reporting
+To:     David Hildenbrand <david@redhat.com>
+Cc:     Alexander Duyck <alexander.h.duyck@linux.intel.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Liang Li <liliangleo@didiglobal.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        linux-mm <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        virtualization@lists.linux-foundation.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 6 Jan 2021 17:03:48 -0800 Linus Torvalds wrote:
-> I wonder whether there is other code that "knows" about kmap() only
-> affecting PageHighmem() pages thing that is no longer true.
-> 
-> Looking at some other code, skb_gro_reset_offset() looks suspiciously
-> like it also thinks highmem pages are special.
-> 
-> Adding the networking people involved in this area to the cc too.
+On Wed, Jan 6, 2021 at 5:41 PM David Hildenbrand <david@redhat.com> wrote:
+>
+> On 06.01.21 04:46, Liang Li wrote:
+> > A typical usage of hugetlbfs it's to reserve amount of memory
+> > during the kernel booting stage, and the reserved pages are
+> > unlikely to return to the buddy system. When application need
+> > hugepages, kernel will allocate them from the reserved pool.
+> > when application terminates, huge pages will return to the
+> > reserved pool and are kept in the free list for hugetlbfs,
+> > these free pages will not return to buddy freelist unless the
+> > size of reserved pool is changed.
+> > Free page reporting only supports buddy pages, it can't report
+> > the free pages reserved for hugetlbfs. On the other hand,
+> > hugetlbfs is a good choice for system with a huge amount of RAM,
+> > because it can help to reduce the memory management overhead and
+> > improve system performance.
+> > This patch add the support for reporting hugepages in the free
+> > list of hugetlbfs, it can be used by virtio_balloon driver for
+> > memory overcommit and pre zero out free pages for speeding up
+> > memory population and page fault handling.
+>
+> You should lay out the use case + measurements. Further you should
+> describe what this patch set actually does, how behavior can be tuned,
+> pros and cons, etc... And you should most probably keep this RFC.
+>
+> >
+> > Most of the code are 'copied' from free page reporting because
+> > they are working in the same way. So the code can be refined to
+> > remove duplication. It can be done later.
+>
+> Nothing speaks about getting it right from the beginning. Otherwise it
+> will most likely never happen.
+>
+> >
+> > Since some guys have some concern about side effect of the 'buddy
+> > free page pre zero out' feature brings, I remove it from this
+> > serier.
+>
+> You should really point out what changed size the last version. I
+> remember Alex and Mike had some pretty solid points of what they don't
+> want to see (especially: don't use free page reporting infrastructure
+> and don't temporarily allocate huge pages for processing them).
+>
+> I am not convinced that we want to use the free page reporting
+> infrastructure for this (pre-zeroing huge pages). What speaks about a
+> thread simply iterating over huge pages one at a time, zeroing them? The
+> whole free page reporting infrastructure was invented because we have to
+> do expensive coordination (+ locking) when going via the hypervisor. For
+> the main use case of zeroing huge pages in the background, I don't see a
+> real need for that. If you believe this is the right thing to do, please
+> add a discussion regarding this.
+>
+> --
+> Thanks,
+>
+> David / dhildenb
+>
+>
+I will take all your advice and give more detail in the next revision,
+Thanks for your comments!
 
-Thanks for the detailed analysis! skb_gro_reset_offset() checks if
-kernel can read data in the fragments directly as an optimization, 
-in case the entire header is in a fragment. 
-
-IIUC DEBUG_KMAP_LOCAL_FORCE_MAP only affects the mappings from
-explicit kmap calls, which GRO won't make - it will fall back to
-pulling the header out of the fragment and end up in skb_copy_bits(),
-i.e. the loop you fixed. So GRO should be good. I think..
+Liang
