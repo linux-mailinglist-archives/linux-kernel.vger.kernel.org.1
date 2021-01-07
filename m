@@ -2,85 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B62A2ECCFE
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 10:42:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5969A2ECCF8
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 10:42:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727753AbhAGJkz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 04:40:55 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:43564 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727610AbhAGJky (ORCPT
+        id S1727679AbhAGJks (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 04:40:48 -0500
+Received: from wout5-smtp.messagingengine.com ([64.147.123.21]:51943 "EHLO
+        wout5-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727468AbhAGJkr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 04:40:54 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1610012368;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=/rUDn4iUvZuPv1RG4V69vuqnelYUdquiGujPqeCfAnA=;
-        b=e/SHM2O84etmBU1V+SgEGdD2gen6GC8yTeLbpb9adnLFvC6PwGXFxeA7VZRrJylIZo2/Hy
-        E24ftcDwbbTjGmEoIHKU8+TWytjzvbIHI8fl0bd0EYWhwJ6nLDtJWHqIbzTeR6b6ePA+Ik
-        wE5UmK7ef9yUmu9DVX4+RGRVfbScfRE=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-231-m098VikkMHCG-6o0mpOXiA-1; Thu, 07 Jan 2021 04:39:24 -0500
-X-MC-Unique: m098VikkMHCG-6o0mpOXiA-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C1BDA10054FF;
-        Thu,  7 Jan 2021 09:39:22 +0000 (UTC)
-Received: from localhost.localdomain (unknown [10.35.206.22])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 2375E19D7D;
-        Thu,  7 Jan 2021 09:39:18 +0000 (UTC)
-From:   Maxim Levitsky <mlevitsk@redhat.com>
-To:     kvm@vger.kernel.org
-Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel@vger.kernel.org,
-        x86@kernel.org (maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)),
-        Ingo Molnar <mingo@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Jim Mattson <jmattson@google.com>,
-        Maxim Levitsky <mlevitsk@redhat.com>
-Subject: [PATCH v2 4/4] KVM: nSVM: mark vmcb as dirty when forcingly leaving the guest mode
-Date:   Thu,  7 Jan 2021 11:38:54 +0200
-Message-Id: <20210107093854.882483-5-mlevitsk@redhat.com>
-In-Reply-To: <20210107093854.882483-1-mlevitsk@redhat.com>
-References: <20210107093854.882483-1-mlevitsk@redhat.com>
+        Thu, 7 Jan 2021 04:40:47 -0500
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+        by mailout.west.internal (Postfix) with ESMTP id 889791685;
+        Thu,  7 Jan 2021 04:40:00 -0500 (EST)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute6.internal (MEProxy); Thu, 07 Jan 2021 04:40:01 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm1; bh=TDfFs75GCV9rsOA8VdhLLpMC1Ru
+        4xH2eNakwbrWXaHc=; b=UxuVzqG58eMv1PiqarFY9vxoQMNxAfIXvakN+R/Fc/9
+        TUJ1MKlSJN1gRMaiO3VC/sPCAeseYw5/IYDsT0NmyS5OHdqcLct0MmMzQVUlFMBx
+        hcSWIweZiRQhv6Hk69zsBmjjn64BIGxY+j90ZMSBZ0T+mWbBqEstzHanxlqXlR5/
+        Ggne19hjapju3pzG/6kqq56XRryu2DS19gYIfMdMlVR9uW4b3j8Lw4kLuIF91HQV
+        vO5eqSTg/+Lboojyly3HMCZcTkEdzcUw9VEqTJCMVW2rUYzgQ9UtRH0LojX0HReq
+        ezZAx9P0KzNcdaC86Q5KubraJCrZeceO/TWSGybBD1w==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=TDfFs7
+        5GCV9rsOA8VdhLLpMC1Ru4xH2eNakwbrWXaHc=; b=VK7XB6CZ9PGrm0Y6XqXpLe
+        6hYv79ZLOdIs8ab3vxzsu8gEXy4s7NFYFzd6V26pop5GxRu8N/dB7AanSAJMxHl5
+        VzsJrI/IuYSRs9aW75fWT+f/ce7/AGuiDVHf4LL2olBcAwX9stsHRCcRsiAwbQKF
+        L8xmECcGGcjdwW/CgJN3gBJRyjpDk4M/2La63VDXTmENwp+QTre4otnY+IgfqnOU
+        v4bh3sR5Xp7Golo6jLxAH7wp2WUmCcBZYADKv8tP5w7LAgpZKegNTDlWlfgrEPf3
+        UlPxPoC4mmpAlAMtpej7gj0ltB19Cxa4j3j91gRny40/feEF/NMx1yWm+npqd8Lw
+        ==
+X-ME-Sender: <xms:79b2X_GKhO4IsUnzPPBUpCAfHSCR1PD2lRRalJ7MzBtWjYz-AcOTDw>
+    <xme:79b2X8XKZf_xvJ_pjTn-E-XPmZ6sAhavqDZropJM8D69zuumQvOb_Th8wez3t_kFq
+    VAmb9CFJq7uiJm7jlY>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrvdegvddgtdeiucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddvnecuhfhrohhmpeforgigihhm
+    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
+    htvghrnhepleekgeehhfdutdeljefgleejffehfffgieejhffgueefhfdtveetgeehieeh
+    gedunecukfhppeeltddrkeelrdeikedrjeeinecuvehluhhsthgvrhfuihiivgeptdenuc
+    frrghrrghmpehmrghilhhfrhhomhepmhgrgihimhgvsegtvghrnhhordhtvggthh
+X-ME-Proxy: <xmx:79b2XxKsgO2c1Z_JjC_0rZUlzqIciVHx8h02iQVylTU1TJSDhyN6jg>
+    <xmx:79b2X9Hb3DvcYlh9-G6mO9aXe4WiNt0vwjmaPYR-6J-liDlERk1g6g>
+    <xmx:79b2X1UidwnEgQ4xXBXzL_7z3OzjuVv71761XXyguFfVQtOXqzb4IA>
+    <xmx:8Nb2X3KOXplmUCe9WX37SUwwJsQXoXM_wAD6DvMabXVhJ2L58hItaA>
+Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
+        by mail.messagingengine.com (Postfix) with ESMTPA id C835A108005B;
+        Thu,  7 Jan 2021 04:39:58 -0500 (EST)
+Date:   Thu, 7 Jan 2021 10:39:57 +0100
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     Jernej Skrabec <jernej.skrabec@siol.net>
+Cc:     robh+dt@kernel.org, wens@csie.org, mchehab@kernel.org,
+        linux-media@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-sunxi@googlegroups.com
+Subject: Re: [PATCH 0/2] ARM: dts: sun8i: r40: Add deinterlace node
+Message-ID: <20210107093957.aobpuvkdn5nyezjm@gilmour>
+References: <20210106181901.1324075-1-jernej.skrabec@siol.net>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="2i64phdagcysgebp"
+Content-Disposition: inline
+In-Reply-To: <20210106181901.1324075-1-jernej.skrabec@siol.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We overwrite most of vmcb fields while doing so, so we must
-mark it as dirty.
 
-Signed-off-by: Maxim Levitsky <mlevitsk@redhat.com>
----
- arch/x86/kvm/svm/nested.c | 1 +
- 1 file changed, 1 insertion(+)
+--2i64phdagcysgebp
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/arch/x86/kvm/svm/nested.c b/arch/x86/kvm/svm/nested.c
-index e91d40c8d8c91..c340fbad88566 100644
---- a/arch/x86/kvm/svm/nested.c
-+++ b/arch/x86/kvm/svm/nested.c
-@@ -760,6 +760,7 @@ void svm_leave_nested(struct vcpu_svm *svm)
- 		leave_guest_mode(&svm->vcpu);
- 		copy_vmcb_control_area(&vmcb->control, &hsave->control);
- 		nested_svm_uninit_mmu_context(&svm->vcpu);
-+		vmcb_mark_all_dirty(svm->vmcb);
- 	}
- 
- 	kvm_clear_request(KVM_REQ_GET_NESTED_STATE_PAGES, &svm->vcpu);
--- 
-2.26.2
+On Wed, Jan 06, 2021 at 07:18:59PM +0100, Jernej Skrabec wrote:
+> These two patches add support for deinterlace core found on R40. It's
+> compatible to H3 one, so only DT node is needed.
+>=20
+> Please take a look.
 
+Applied, thanks
+
+Maxime
+
+--2i64phdagcysgebp
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCX/bW7AAKCRDj7w1vZxhR
+xfu9AP9OhXzDLr7U+vO/3JNjStesOkAPGR0ZkQngpLexGdBz3QEAoB8odap6dc6z
+J8O6E58CmgdwzEKyLLkGtry5tPvi/gU=
+=5rRQ
+-----END PGP SIGNATURE-----
+
+--2i64phdagcysgebp--
