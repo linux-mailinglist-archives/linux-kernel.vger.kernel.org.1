@@ -2,99 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C7A32ED17D
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 15:13:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C6932ED17F
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 15:13:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728298AbhAGOMZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 09:12:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53656 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728047AbhAGOMV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 09:12:21 -0500
-Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F39AFC0612F4;
-        Thu,  7 Jan 2021 06:11:39 -0800 (PST)
-Received: by mail-pg1-x530.google.com with SMTP id q7so3080170pgm.5;
-        Thu, 07 Jan 2021 06:11:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=G+/yW7D6tgLkfN73HRcn97T4dV2Qj+zmTeZIf737PxQ=;
-        b=Qgbt7mCZ/t2lHcdTBmIgFYZN4t4oWy0AeqUjnjy23hkhVF+p9+Gat10t3UuhooBE5z
-         h73ZrSzcfENRWBuNBlC7OjGJOVC/5EoHwlT4efFOqV3UgGokjW3iJ7UnE4XjBZ70c+A0
-         yRyhNpfEKSyxLBE+3FfcCMq50v1v7xlWifXb1iuchM40Glv70zSixRf6fRT2i3xpw8y6
-         0wlXYCXfFUEuSWargxi9VqLhPKp8164+CIVWaPzRcZSjUlhnI3nI+ClgJPL/tB3fu2dF
-         EH6oGATMR84Yg7iXW9xR1kudfkcAivYbOm5/hOdfHHcxxoYrhx3xVafQdS3HVF54tC9p
-         6jnA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=G+/yW7D6tgLkfN73HRcn97T4dV2Qj+zmTeZIf737PxQ=;
-        b=lQNG4rzyExCEqaSvWM1HFJZDron5BWdIF9edXQIY92f0T3E6yjUg4WGhxKgSkBrDom
-         7tedFLw6JLYTwd5HPw8G+36w9JeddZ8n+j6nl5QfUxZjqTQYtryTzTcWojtFrVI336h9
-         3OE4PZZb2DCB8VTAJmUucfsUXhYyuVA+xpuJTDhBMZ+aalgkSycXAJrmirrNmSEbpzhT
-         mEI1Z3vGoq31WEd1jDHLMy4iqq8m6PDyoaUuHg4IjBGnTgdfTR+EAFpQcO9+1phs0rmI
-         9BRyQhmjWcHMZoP6TZgvM3Y5z9iz5Axese/uFKO9Weoryki4dtSO4WyQ7hX2lZlj2efB
-         lGZQ==
-X-Gm-Message-State: AOAM531zL6J5yiKNzzP1IupJcJVKx3RfHkQ04F3PMuYy/KV6sZ19m72F
-        upbLix09veuu8kPt1mk9Ogc=
-X-Google-Smtp-Source: ABdhPJxCLlJNDCcKBg8oPw4WOYrexH5xZzBFchkKHbH8r5c526FZG0yMXTWOtJPqk3a1aorfCpI1fQ==
-X-Received: by 2002:a63:cf56:: with SMTP id b22mr2056725pgj.16.1610028699523;
-        Thu, 07 Jan 2021 06:11:39 -0800 (PST)
-Received: from localhost.localdomain ([203.205.141.53])
-        by smtp.gmail.com with ESMTPSA id g16sm5857947pfh.187.2021.01.07.06.11.30
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 07 Jan 2021 06:11:39 -0800 (PST)
-From:   Jiang Biao <benbjiang@gmail.com>
-X-Google-Original-From: Jiang Biao <benbjiang@tencent.com>
-To:     tj@kernel.org, lizefan@huawei.com, corbet@lwn.net,
-        hannes@cmpxchg.org
-Cc:     linux-doc@vger.kernel.org, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Jiang Biao <benbjiang@tencent.com>
-Subject: [PATCH] Documentation: Fix typos found in cgroup-v2.rst
-Date:   Thu,  7 Jan 2021 22:11:18 +0800
-Message-Id: <20210107141118.9530-1-benbjiang@tencent.com>
-X-Mailer: git-send-email 2.21.0
+        id S1728519AbhAGONX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 09:13:23 -0500
+Received: from mga05.intel.com ([192.55.52.43]:3997 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728458AbhAGONV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Jan 2021 09:13:21 -0500
+IronPort-SDR: UwsH1x60SKyq4n0jBWw7J80qkJA4ziuKEdWQXWzMILNoq8vkHWLD3R3GxflxMoo85bAfkW5Gj+
+ guFr1MrBD7NA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9856"; a="262198860"
+X-IronPort-AV: E=Sophos;i="5.79,329,1602572400"; 
+   d="scan'208";a="262198860"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Jan 2021 06:11:27 -0800
+IronPort-SDR: hVZyhe5iC0dPVUEVIwinYLdVV7dZRGwMlg2rK9AgsUtSQDwavyivHZj3HsRWpSZs4+XSkZJmf/
+ 1B2Zjrq7krtg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.79,329,1602572400"; 
+   d="scan'208";a="463046195"
+Received: from kuha.fi.intel.com ([10.237.72.162])
+  by fmsmga001.fm.intel.com with SMTP; 07 Jan 2021 06:11:24 -0800
+Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Thu, 07 Jan 2021 16:11:24 +0200
+Date:   Thu, 7 Jan 2021 16:11:23 +0200
+From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
+To:     Bard Liao <yung-chuan.liao@linux.intel.com>
+Cc:     gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
+        andriy.shevchenko@linux.intel.com, linux-acpi@vger.kernel.org,
+        rafael@kernel.org, bard.liao@intel.com
+Subject: Re: [PATCH 2/2] device property: add description of fwnode cases
+Message-ID: <20210107141123.GI940479@kuha.fi.intel.com>
+References: <20210105091146.25422-1-yung-chuan.liao@linux.intel.com>
+ <20210105091146.25422-3-yung-chuan.liao@linux.intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210105091146.25422-3-yung-chuan.liao@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jiang Biao <benbjiang@tencent.com>
+On Tue, Jan 05, 2021 at 05:11:46PM +0800, Bard Liao wrote:
+> There are only four valid fwnode cases which are
+> - primary --> secondary --> -ENODEV
+> - primary --> NULL
+> - secondary --> -ENODEV
+> - NULL
+> 
+> dev->fwnode should be converted between the 4 cases above no matter
+> how/when set_primary_fwnode() and set_secondary_fwnode() are called.
+> Describe it in the code so people will keep it in mind.
+> 
+> Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
 
-Fix typos found in Documentation/admin-guide/cgroup-v2.rst.
+Reviewed-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
 
-Signed-off-by: Jiang Biao <benbjiang@tencent.com>
----
- Documentation/admin-guide/cgroup-v2.rst | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+> ---
+>  drivers/base/core.c | 7 +++++++
+>  1 file changed, 7 insertions(+)
+> 
+> diff --git a/drivers/base/core.c b/drivers/base/core.c
+> index 51b9545a050b..17eb14607074 100644
+> --- a/drivers/base/core.c
+> +++ b/drivers/base/core.c
+> @@ -4414,6 +4414,12 @@ static inline bool fwnode_is_primary(struct fwnode_handle *fwnode)
+>   *
+>   * Set the device's firmware node pointer to @fwnode, but if a secondary
+>   * firmware node of the device is present, preserve it.
+> + *
+> + * Valid fwnode cases are:
+> + *  - primary --> secondary --> -ENODEV
+> + *  - primary --> NULL
+> + *  - secondary --> -ENODEV
+> + *  - NULL
+>   */
+>  void set_primary_fwnode(struct device *dev, struct fwnode_handle *fwnode)
+>  {
+> @@ -4432,6 +4438,7 @@ void set_primary_fwnode(struct device *dev, struct fwnode_handle *fwnode)
+>  	} else {
+>  		if (fwnode_is_primary(fn)) {
+>  			dev->fwnode = fn->secondary;
+> +			/* Set fn->secondary = NULL to keep fn as a primary fwnode */
+>  			if (!(parent && fn == parent->fwnode))
+>  				fn->secondary = NULL;
+>  		} else {
+> -- 
+> 2.17.1
 
-diff --git a/Documentation/admin-guide/cgroup-v2.rst b/Documentation/admin-guide/cgroup-v2.rst
-index 63521cd36ce5..e0f6ff7cfa93 100644
---- a/Documentation/admin-guide/cgroup-v2.rst
-+++ b/Documentation/admin-guide/cgroup-v2.rst
-@@ -1558,7 +1558,7 @@ IO Interface Files
- 	  8:0 rbytes=90430464 wbytes=299008000 rios=8950 wios=1252 dbytes=50331648 dios=3021
- 
-   io.cost.qos
--	A read-write nested-keyed file with exists only on the root
-+	A read-write nested-keyed file which exists only on the root
- 	cgroup.
- 
- 	This file configures the Quality of Service of the IO cost
-@@ -1613,7 +1613,7 @@ IO Interface Files
- 	automatic mode can be restored by setting "ctrl" to "auto".
- 
-   io.cost.model
--	A read-write nested-keyed file with exists only on the root
-+	A read-write nested-keyed file which exists only on the root
- 	cgroup.
- 
- 	This file configures the cost model of the IO cost model based
+thanks,
+
 -- 
-2.21.0
-
+heikki
