@@ -2,85 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F43F2ECAD4
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 08:13:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CA2622ECADA
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 08:17:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726682AbhAGHMv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 02:12:51 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53974 "EHLO mail.kernel.org"
+        id S1726866AbhAGHRE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 02:17:04 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54342 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725763AbhAGHMu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 02:12:50 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7D4C8230FC;
-        Thu,  7 Jan 2021 07:12:09 +0000 (UTC)
+        id S1726404AbhAGHRE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Jan 2021 02:17:04 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4614F23100;
+        Thu,  7 Jan 2021 07:16:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610003529;
-        bh=tit6+iYfhOPvBLWpW1yajKmN6zgvtE2sN3jMGdZQ7Fk=;
+        s=k20201202; t=1610003783;
+        bh=6DRAYZOS6gedkI9l2X6RhRYD8BpNTokHC71/7sv/k+Y=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=DL2cU4YRLCojCqJo4Liy7B60cPapsBb3wY1eYvZlueUdgWqQrPvq83MiqxQWD5s5T
-         35eneD2tIuiJoRBvmD6JxrSSA4+nKOVDBbhJQZWYM2WnoAkenEx4ajJN2zW8DePY0e
-         EnDrsb66OTSRlkVwbOKG8sRDOQNXnf40P6Z153cXY7qiHfnTJb7b3F43CmbWBnhNrq
-         qgnn8ObKb1o9LNiKVdwJG3HmWUgaj6eNa6wMXP+JmMK0Xqc211NpGPR0NNyR/bZYGx
-         JhlhwIRMeAlRP+Zb2oODJ0/ULifYp3iYXnHdiSFhfmeJJ3tofKFpdRAgze5YFraHVi
-         WNzJGV6HUlA4g==
-Date:   Wed, 6 Jan 2021 23:12:07 -0800
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Stephan Mueller <smueller@chronox.de>
-Cc:     herbert@gondor.apana.org.au, mathew.j.martineau@linux.intel.com,
-        dhowells@redhat.com, linux-crypto@vger.kernel.org,
-        linux-fscrypt@vger.kernel.org, linux-kernel@vger.kernel.org,
-        keyrings@vger.kernel.org
-Subject: Re: [PATCH 0/5] Add KDF implementations to crypto API
-Message-ID: <X/a0R7ttkuO2Bi5p@sol.localdomain>
-References: <4616980.31r3eYUQgx@positron.chronox.de>
- <X/OUt7+wGGEPkWh8@sol.localdomain>
- <3f8cda66411d4e82074808657df7f1bbbcff37a9.camel@chronox.de>
- <X/axTBTMGpJ07tft@sol.localdomain>
+        b=KuLaTnOuheFSIiPLd7HLtIzrphB47EH3xvlSl3fBRiY5mVn8OSbzz8nMM+83UJ/0z
+         2S4w2pHMLW7M627zuuDCY5znhvyWUHdeI1sCyhi9N6+zQk+ra2VD7hOX3qxPfRRmCj
+         7L0Djsuxi0i5zPIMOsCYsCOdL9H7ZTx/s4wm+xJX6K0GeOoxaswS7+Duk57DAVKd2A
+         Je3/vJu7tBY8HWDhjSS7dBHXKaeP4s/ThfGOrHb60ripAw+IfW0yvf1wCP9a6N7Dpy
+         qsgR92+P464KJESLPsolYgGuZ96yIiLss/+zTxksOOVc9gpc23aeWzHn2cDMAJk9st
+         8K+jIrhR+f+FQ==
+Date:   Thu, 7 Jan 2021 09:16:16 +0200
+From:   Leon Romanovsky <leon@kernel.org>
+To:     "Tian, Kevin" <kevin.tian@intel.com>
+Cc:     Lu Baolu <baolu.lu@linux.intel.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "Raj, Ashok" <ashok.raj@intel.com>,
+        "Jiang, Dave" <dave.jiang@intel.com>,
+        "Dey, Megha" <megha.dey@intel.com>,
+        "dwmw2@infradead.org" <dwmw2@infradead.org>,
+        "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
+        "bhelgaas@google.com" <bhelgaas@google.com>,
+        "Williams, Dan J" <dan.j.williams@intel.com>,
+        "dmaengine@vger.kernel.org" <dmaengine@vger.kernel.org>,
+        "eric.auger@redhat.com" <eric.auger@redhat.com>,
+        "Pan, Jacob jun" <jacob.jun.pan@intel.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "kwankhede@nvidia.com" <kwankhede@nvidia.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
+        "maz@kernel.org" <maz@kernel.org>,
+        "Hossain, Mona" <mona.hossain@intel.com>,
+        "netanelg@mellanox.com" <netanelg@mellanox.com>,
+        "parav@mellanox.com" <parav@mellanox.com>,
+        "pbonzini@redhat.com" <pbonzini@redhat.com>,
+        "rafael@kernel.org" <rafael@kernel.org>,
+        "Ortiz, Samuel" <samuel.ortiz@intel.com>,
+        "Kumar, Sanjay K" <sanjay.k.kumar@intel.com>,
+        "shahafs@mellanox.com" <shahafs@mellanox.com>,
+        "Luck, Tony" <tony.luck@intel.com>,
+        "vkoul@kernel.org" <vkoul@kernel.org>,
+        "yan.y.zhao@linux.intel.com" <yan.y.zhao@linux.intel.com>,
+        "Liu, Yi L" <yi.l.liu@intel.com>
+Subject: Re: [RFC PATCH v2 1/1] platform-msi: Add platform check for
+ subdevice irq domain
+Message-ID: <20210107071616.GA31158@unreal>
+References: <20210106022749.2769057-1-baolu.lu@linux.intel.com>
+ <20210106060613.GU31158@unreal>
+ <3d2620f9-bbd4-3dd0-8e29-0cfe492a109f@linux.intel.com>
+ <20210106104017.GV31158@unreal>
+ <20210106152339.GA552508@nvidia.com>
+ <20210106160158.GX31158@unreal>
+ <MWHPR11MB18867EE2F4FA0382DCFEEE2B8CAF0@MWHPR11MB1886.namprd11.prod.outlook.com>
+ <20210107060916.GY31158@unreal>
+ <MWHPR11MB188629E36439F80AD60900788CAF0@MWHPR11MB1886.namprd11.prod.outlook.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <X/axTBTMGpJ07tft@sol.localdomain>
+In-Reply-To: <MWHPR11MB188629E36439F80AD60900788CAF0@MWHPR11MB1886.namprd11.prod.outlook.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 06, 2021 at 10:59:24PM -0800, Eric Biggers wrote:
-> On Thu, Jan 07, 2021 at 07:37:05AM +0100, Stephan Mueller wrote:
-> > Am Montag, dem 04.01.2021 um 14:20 -0800 schrieb Eric Biggers:
-> > > On Mon, Jan 04, 2021 at 10:45:57PM +0100, Stephan Müller wrote:
-> > > > The HKDF addition is used to replace the implementation in the filesystem
-> > > > crypto extension. This code was tested by using an EXT4 encrypted file
-> > > > system that was created and contains files written to by the current
-> > > > implementation. Using the new implementation a successful read of the
-> > > > existing files was possible and new files / directories were created
-> > > > and read successfully. These newly added file system objects could be
-> > > > successfully read using the current code. Yet if there is a test suite
-> > > > to validate whether the invokcation of the HKDF calculates the same
-> > > > result as the existing implementation, I would be happy to validate
-> > > > the implementation accordingly.
-> > > 
-> > > See https://www.kernel.org/doc/html/latest/filesystems/fscrypt.html#tests
-> > > for how to run the fscrypt tests.  'kvm-xfstests -c ext4 generic/582' should
-> > > be
-> > > enough for this, though you could run all the tests if you want.
-> > 
-> > I ran the $(kvm-xfstests -c encrypt -g auto) on 5.11-rc2 with and without my
-> > HKDF changes. I.e. the testing shows the same results for both kernels which
-> > seems to imply that my HKDF changes do not change the behavior.
-> > 
-> > I get the following errors in both occasions - let me know if I should dig a
-> > bit more.
-> 
-> The command you ran runs almost all xfstests with the test_dummy_encryption
-> mount option enabled, which is different from running the encryption tests --
-> and in fact it skips the real encryption tests, so it doesn't test the
-> correctness of HKDF at all.  It looks like you saw some unrelated test failures.
-> Sorry if I wasn't clear -- by "all tests" I meant all encryption tests, i.e.
-> 'kvm-xfstests -c ext4 -g encrypt'.  Also, even the single test generic/582
-> should be sufficient to test HKDF, as I mentioned.
-> 
+On Thu, Jan 07, 2021 at 06:55:16AM +0000, Tian, Kevin wrote:
+> > From: Leon Romanovsky <leon@kernel.org>
+> > Sent: Thursday, January 7, 2021 2:09 PM
+> >
+> > On Thu, Jan 07, 2021 at 02:04:29AM +0000, Tian, Kevin wrote:
+> > > > From: Leon Romanovsky <leon@kernel.org>
+> > > > Sent: Thursday, January 7, 2021 12:02 AM
+> > > >
+> > > > On Wed, Jan 06, 2021 at 11:23:39AM -0400, Jason Gunthorpe wrote:
+> > > > > On Wed, Jan 06, 2021 at 12:40:17PM +0200, Leon Romanovsky wrote:
+> > > > >
+> > > > > > I asked what will you do when QEMU will gain needed functionality?
+> > > > > > Will you remove QEMU from this list? If yes, how such "new" kernel
+> > will
+> > > > > > work on old QEMU versions?
+> > > > >
+> > > > > The needed functionality is some VMM hypercall, so presumably new
+> > > > > kernels that support calling this hypercall will be able to discover
+> > > > > if the VMM hypercall exists and if so superceed this entire check.
+> > > >
+> > > > Let's not speculate, do we have well-known path?
+> > > > Will such patch be taken to stable@/distros?
+> > > >
+> > >
+> > > There are two functions introduced in this patch. One is to detect whether
+> > > running on bare metal or in a virtual machine. The other is for deciding
+> > > whether the platform supports ims. Currently the two are identical because
+> > > ims is supported only on bare metal at current stage. In the future it will
+> > look
+> > > like below when ims can be enabled in a VM:
+> > >
+> > > bool arch_support_pci_device_ims(struct pci_dev *pdev)
+> > > {
+> > > 	return on_bare_metal() || hypercall_irq_domain_supported();
+> > > }
+> > >
+> > > The VMM vendor list is for on_bare_metal, and suppose a vendor will
+> > > never be removed once being added to the list since the fact of running
+> > > in a VM never changes, regardless of whether this hypervisor supports
+> > > extra VMM hypercalls.
+> >
+> > This is what I imagined, this list will be forever, and this worries me.
+> >
+> > I don't know if it is true or not, but guess that at least Oracle and
+> > Microsoft bare metal devices and VMs will have same DMI_SYS_VENDOR.
+>
+> It's true. David Woodhouse also said it's the case for Amazon EC2 instances.
+>
+> >
+> > It means that this on_bare_metal() function won't work reliably in many
+> > cases. Also being part of include/linux/msi.h, at some point of time,
+> > this function will be picked by the users outside for the non-IMS cases.
+> >
+> > I didn't even mention custom forks of QEMU which are prohibited to change
+> > DMI_SYS_VENDOR and private clouds with custom solutions.
+>
+> In this case the private QEMU forks are encouraged to set CPUID (X86_
+> FEATURE_HYPERVISOR) if they do plan to adopt a different vendor name.
 
-I just did it myself and the tests pass.
+Does QEMU set this bit when it runs in host-passthrough CPU model?
 
-- Eric
+>
+> >
+> > The current array makes DMI_SYS_VENDOR interface as some sort of ABI. If
+> > in the future,
+> > the QEMU will decide to use more hipster name, for example "qEmU", this
+> > function
+> > won't work.
+> >
+> > I'm aware that DMI_SYS_VENDOR is used heavily in the kernel code and
+> > various names for the same company are good example how not reliable it.
+> >
+> > The most hilarious example is "Dell/Dell Inc./Dell Inc/Dell Computer
+> > Corporation/Dell Computer",
+> > but other companies are not far from them.
+> >
+> > Luckily enough, this identification is used for hardware product that
+> > was released to the market and their name will be stable for that
+> > specific model. It is not the case here where we need to ensure future
+> > compatibility too (old kernel on new VM emulator).
+> >
+> > I'm not in position to say yes or no to this patch and don't have plans to do it.
+> > Just expressing my feeling that this solution is too hacky for my taste.
+> >
+>
+> I agree with your worries and solely relying on DMI_SYS_VENDOR is
+> definitely too hacky. In previous discussions with Thomas there is no
+> elegant way to handle this situation. It has to be a heuristic approach.
+> First we hope the CPUID bit is set properly in most cases thus is checked
+> first. Then other heuristics can be made for the remaining cases. DMI_
+> SYS_VENDOR is the first hint and more can be added later. For example,
+> when IOMMU is present there is vendor specific way to detect whether
+> it's real or virtual. Dave also mentioned some BIOS flag to indicate a
+> virtual machine. Now probably the real question here is whether people
+> are OK with CPUID+DMI_SYS_VENDOR combo check for now (and grow
+> it later) or prefer to having all identified heuristics so far in-place together...
+
+IMHO, it should be as much as possible close to the end result.
+
+Thanks
+
+>
+> Thanks
+> Kevin
