@@ -2,166 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 37A2B2ECAD0
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 08:11:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F43F2ECAD4
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 08:13:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726676AbhAGHK1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 02:10:27 -0500
-Received: from m43-15.mailgun.net ([69.72.43.15]:30085 "EHLO
-        m43-15.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725763AbhAGHK0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 02:10:26 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1610003400; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=R5FLE0C1xaHvMDrrRHhn1hpU9DGmeYbNnIgLWMFdoFQ=;
- b=V+iCw47RYSzFW1giKDZj3lBUoYXsZOL0noK296A2pkITZ2f/WHSfqb/3LwyImCBJedQdyclJ
- 5SjQZHnaRP3FOUkVDzJo93+0yKndG44Ex8ycfF/81sGNh0FXlgNkGOEfAcsL+ejEXLLGbr63
- 8ZqfZxv00mktdp7KwBn4ptgqAjI=
-X-Mailgun-Sending-Ip: 69.72.43.15
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n07.prod.us-west-2.postgun.com with SMTP id
- 5ff6b3a259b491b9d8404a7d (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 07 Jan 2021 07:09:22
- GMT
-Sender: cang=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 45A0CC43464; Thu,  7 Jan 2021 07:09:22 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: cang)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 4C842C433CA;
-        Thu,  7 Jan 2021 07:09:21 +0000 (UTC)
+        id S1726682AbhAGHMv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 02:12:51 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53974 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725763AbhAGHMu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Jan 2021 02:12:50 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7D4C8230FC;
+        Thu,  7 Jan 2021 07:12:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1610003529;
+        bh=tit6+iYfhOPvBLWpW1yajKmN6zgvtE2sN3jMGdZQ7Fk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=DL2cU4YRLCojCqJo4Liy7B60cPapsBb3wY1eYvZlueUdgWqQrPvq83MiqxQWD5s5T
+         35eneD2tIuiJoRBvmD6JxrSSA4+nKOVDBbhJQZWYM2WnoAkenEx4ajJN2zW8DePY0e
+         EnDrsb66OTSRlkVwbOKG8sRDOQNXnf40P6Z153cXY7qiHfnTJb7b3F43CmbWBnhNrq
+         qgnn8ObKb1o9LNiKVdwJG3HmWUgaj6eNa6wMXP+JmMK0Xqc211NpGPR0NNyR/bZYGx
+         JhlhwIRMeAlRP+Zb2oODJ0/ULifYp3iYXnHdiSFhfmeJJ3tofKFpdRAgze5YFraHVi
+         WNzJGV6HUlA4g==
+Date:   Wed, 6 Jan 2021 23:12:07 -0800
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Stephan Mueller <smueller@chronox.de>
+Cc:     herbert@gondor.apana.org.au, mathew.j.martineau@linux.intel.com,
+        dhowells@redhat.com, linux-crypto@vger.kernel.org,
+        linux-fscrypt@vger.kernel.org, linux-kernel@vger.kernel.org,
+        keyrings@vger.kernel.org
+Subject: Re: [PATCH 0/5] Add KDF implementations to crypto API
+Message-ID: <X/a0R7ttkuO2Bi5p@sol.localdomain>
+References: <4616980.31r3eYUQgx@positron.chronox.de>
+ <X/OUt7+wGGEPkWh8@sol.localdomain>
+ <3f8cda66411d4e82074808657df7f1bbbcff37a9.camel@chronox.de>
+ <X/axTBTMGpJ07tft@sol.localdomain>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Thu, 07 Jan 2021 15:09:21 +0800
-From:   Can Guo <cang@codeaurora.org>
-To:     Jaegeuk Kim <jaegeuk@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org,
-        kernel-team@android.com, alim.akhtar@samsung.com,
-        avri.altman@wdc.com, bvanassche@acm.org,
-        martin.petersen@oracle.com, stanley.chu@mediatek.com
-Subject: Re: [PATCH v3 1/2] scsi: ufs: fix livelock of ufshcd_clear_ua_wluns
-In-Reply-To: <X/awxP3m1VG3b+bX@google.com>
-References: <20210106214109.44041-1-jaegeuk@kernel.org>
- <20210106214109.44041-2-jaegeuk@kernel.org>
- <fc4cb27df8bd6b2c1037d82e4b5d3860@codeaurora.org>
- <X/awxP3m1VG3b+bX@google.com>
-Message-ID: <c47ca5307e67de386aa3e99256b837e4@codeaurora.org>
-X-Sender: cang@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <X/axTBTMGpJ07tft@sol.localdomain>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-01-07 14:57, Jaegeuk Kim wrote:
-> On 01/07, Can Guo wrote:
->> On 2021-01-07 05:41, Jaegeuk Kim wrote:
->> > When gate_work/ungate_work gets an error during hibern8_enter or exit,
->> >  ufshcd_err_handler()
->> >    ufshcd_scsi_block_requests()
->> >    ufshcd_reset_and_restore()
->> >      ufshcd_clear_ua_wluns() -> stuck
->> >    ufshcd_scsi_unblock_requests()
->> >
->> > In order to avoid it, ufshcd_clear_ua_wluns() can be called per recovery
->> > flows
->> > such as suspend/resume, link_recovery, and error_handler.
->> >
->> > Fixes: 1918651f2d7e ("scsi: ufs: Clear UAC for RPMB after ufshcd
->> > resets")
->> > Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
->> > ---
->> >  drivers/scsi/ufs/ufshcd.c | 15 ++++++++++-----
->> >  1 file changed, 10 insertions(+), 5 deletions(-)
->> >
->> > diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
->> > index bedb822a40a3..1678cec08b51 100644
->> > --- a/drivers/scsi/ufs/ufshcd.c
->> > +++ b/drivers/scsi/ufs/ufshcd.c
->> > @@ -3996,6 +3996,8 @@ int ufshcd_link_recovery(struct ufs_hba *hba)
->> >  	if (ret)
->> >  		dev_err(hba->dev, "%s: link recovery failed, err %d",
->> >  			__func__, ret);
->> > +	else
->> > +		ufshcd_clear_ua_wluns(hba);
->> 
->> Can we put it right after ufshcd_scsi_add_wlus() in ufshcd_add_lus()?
+On Wed, Jan 06, 2021 at 10:59:24PM -0800, Eric Biggers wrote:
+> On Thu, Jan 07, 2021 at 07:37:05AM +0100, Stephan Mueller wrote:
+> > Am Montag, dem 04.01.2021 um 14:20 -0800 schrieb Eric Biggers:
+> > > On Mon, Jan 04, 2021 at 10:45:57PM +0100, Stephan Müller wrote:
+> > > > The HKDF addition is used to replace the implementation in the filesystem
+> > > > crypto extension. This code was tested by using an EXT4 encrypted file
+> > > > system that was created and contains files written to by the current
+> > > > implementation. Using the new implementation a successful read of the
+> > > > existing files was possible and new files / directories were created
+> > > > and read successfully. These newly added file system objects could be
+> > > > successfully read using the current code. Yet if there is a test suite
+> > > > to validate whether the invokcation of the HKDF calculates the same
+> > > > result as the existing implementation, I would be happy to validate
+> > > > the implementation accordingly.
+> > > 
+> > > See https://www.kernel.org/doc/html/latest/filesystems/fscrypt.html#tests
+> > > for how to run the fscrypt tests.  'kvm-xfstests -c ext4 generic/582' should
+> > > be
+> > > enough for this, though you could run all the tests if you want.
+> > 
+> > I ran the $(kvm-xfstests -c encrypt -g auto) on 5.11-rc2 with and without my
+> > HKDF changes. I.e. the testing shows the same results for both kernels which
+> > seems to imply that my HKDF changes do not change the behavior.
+> > 
+> > I get the following errors in both occasions - let me know if I should dig a
+> > bit more.
 > 
-> May I ask the reason? We'll call it after ufshcd_add_lus() later tho.
+> The command you ran runs almost all xfstests with the test_dummy_encryption
+> mount option enabled, which is different from running the encryption tests --
+> and in fact it skips the real encryption tests, so it doesn't test the
+> correctness of HKDF at all.  It looks like you saw some unrelated test failures.
+> Sorry if I wasn't clear -- by "all tests" I meant all encryption tests, i.e.
+> 'kvm-xfstests -c ext4 -g encrypt'.  Also, even the single test generic/582
+> should be sufficient to test HKDF, as I mentioned.
 > 
 
-I think the code will be more readable - we do all the LU related
-stuffs in one func, just nit-picking though. I found this because
-I am planning to move the devfreq init codes out of ufshcd_add_lus()
-due to it is inappropriate to init devfreq in there by its naming,
-but it might be a good place for ufshcd_clear_ua_wluns().
+I just did it myself and the tests pass.
 
-Thanks,
-Can Guo.
-
->> 
->> Thanks,
->> Can Guo.
->> 
->> >
->> >  	return ret;
->> >  }
->> > @@ -6003,6 +6005,9 @@ static void ufshcd_err_handler(struct work_struct
->> > *work)
->> >  	ufshcd_scsi_unblock_requests(hba);
->> >  	ufshcd_err_handling_unprepare(hba);
->> >  	up(&hba->eh_sem);
->> > +
->> > +	if (!err && needs_reset)
->> > +		ufshcd_clear_ua_wluns(hba);
->> >  }
->> >
->> >  /**
->> > @@ -6940,14 +6945,11 @@ static int
->> > ufshcd_host_reset_and_restore(struct ufs_hba *hba)
->> >  	ufshcd_set_clk_freq(hba, true);
->> >
->> >  	err = ufshcd_hba_enable(hba);
->> > -	if (err)
->> > -		goto out;
->> >
->> >  	/* Establish the link again and restore the device */
->> > -	err = ufshcd_probe_hba(hba, false);
->> >  	if (!err)
->> > -		ufshcd_clear_ua_wluns(hba);
->> > -out:
->> > +		err = ufshcd_probe_hba(hba, false);
->> > +
->> >  	if (err)
->> >  		dev_err(hba->dev, "%s: Host init failed %d\n", __func__, err);
->> >  	ufshcd_update_evt_hist(hba, UFS_EVT_HOST_RESET, (u32)err);
->> > @@ -8777,6 +8779,7 @@ static int ufshcd_suspend(struct ufs_hba *hba,
->> > enum ufs_pm_op pm_op)
->> >  		ufshcd_resume_clkscaling(hba);
->> >  	hba->clk_gating.is_suspended = false;
->> >  	hba->dev_info.b_rpm_dev_flush_capable = false;
->> > +	ufshcd_clear_ua_wluns(hba);
->> >  	ufshcd_release(hba);
->> >  out:
->> >  	if (hba->dev_info.b_rpm_dev_flush_capable) {
->> > @@ -8887,6 +8890,8 @@ static int ufshcd_resume(struct ufs_hba *hba,
->> > enum ufs_pm_op pm_op)
->> >  		cancel_delayed_work(&hba->rpm_dev_flush_recheck_work);
->> >  	}
->> >
->> > +	ufshcd_clear_ua_wluns(hba);
->> > +
->> >  	/* Schedule clock gating in case of no access to UFS device yet */
->> >  	ufshcd_release(hba);
+- Eric
