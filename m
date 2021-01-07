@@ -2,195 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 324852ECF5E
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 13:11:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D0C682ECF60
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 13:15:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727944AbhAGMJv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 07:09:51 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41830 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725835AbhAGMJv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 07:09:51 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D357123371;
-        Thu,  7 Jan 2021 12:09:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610021350;
-        bh=Bax/TD9n3UeF4RLUUYlRxx9HMo70f3ud0l2YLRw3aJY=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=tpCL7OQlHjsN4r7T3Mo2j2HPzP4X0bQVq2Wi4iYFY4q9KzPdReZfolrMuln/P4bIg
-         dDlctOUFIa3l4ncVGx2P+H0K6JIykMplib0B+uwY1a88eP3KtsuDj3jVrTJYpIy/up
-         1w0KoP81u3P/iU5j2dEufUwbyyqbBz9xuQfonz7+tz4lqV0XtIvL87J+4hDn4/t7zh
-         QQ4jmsf6olG2RZ4e6PmNDPnkxdcQBnepXnry/cXkwhotYBDtcaMyWXa0FAIjPyHEo7
-         FK8ZURfkgYnOs5+IVVj/byCkveyw3Owey8kctMopuWkMtM5AXQQQWeLjEgBGFkWkcN
-         B8JJSO5h5WrNg==
-Received: by mail-ej1-f45.google.com with SMTP id lt17so9405016ejb.3;
-        Thu, 07 Jan 2021 04:09:09 -0800 (PST)
-X-Gm-Message-State: AOAM5339bPziR+uEzwxn9Fkx9LZYdK78Hyaug6FyysaEIxeDXVLI8FoJ
-        JAuyoePhvo+jkBwu7Z1F8WHrUFEtpxa02xBvYQ==
-X-Google-Smtp-Source: ABdhPJwLWYyQXSkeJmJYkDh2Wp/HMnw+iryfBXBAZeGMzi476416Ju5zo44dK3b7l2wd0kclwctstGJHZkRWEc8NWXM=
-X-Received: by 2002:a17:907:414c:: with SMTP id od20mr6066221ejb.75.1610021348232;
- Thu, 07 Jan 2021 04:09:08 -0800 (PST)
-MIME-Version: 1.0
-References: <1609989081-29353-1-git-send-email-yongqiang.niu@mediatek.com> <1609989081-29353-11-git-send-email-yongqiang.niu@mediatek.com>
-In-Reply-To: <1609989081-29353-11-git-send-email-yongqiang.niu@mediatek.com>
-From:   Chun-Kuang Hu <chunkuang.hu@kernel.org>
-Date:   Thu, 7 Jan 2021 20:08:56 +0800
-X-Gmail-Original-Message-ID: <CAAOTY_-xZyFXTROVStte_-X0aNGLa0qZDe5AtC7M2RigOB1c3Q@mail.gmail.com>
-Message-ID: <CAAOTY_-xZyFXTROVStte_-X0aNGLa0qZDe5AtC7M2RigOB1c3Q@mail.gmail.com>
-Subject: Re: [PATCH v9, 10/11] drm/mediatek: add DDP support for MT8183
-To:     Yongqiang Niu <yongqiang.niu@mediatek.com>
-Cc:     CK Hu <ck.hu@mediatek.com>, Philipp Zabel <p.zabel@pengutronix.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
+        id S1726467AbhAGMOS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 07:14:18 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:24971 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725835AbhAGMOR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Jan 2021 07:14:17 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1610021570;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=w+Qhkxk/Uv91dwi/kOmRndgNe4yDhOMBToriQzlJFT8=;
+        b=dOWBsoA0fkDg0hy6Rb7pNQiHuYjTT4bioo2YfBtu9GQAu7O3MsMoR/Rc0nd99/jJEuzJg0
+        Ngw9SoxYgVZmbxZVnZd5kX+vJdiVIKrFaiA43m+uYeW0s/4NEWfkIDsrd4+PQDzH9uaCIy
+        06acZQPLu69ErhO+tU6AYlk6EdYRTrY=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-245-pf5bByIHNuuh1dDfOYeIJQ-1; Thu, 07 Jan 2021 07:12:46 -0500
+X-MC-Unique: pf5bByIHNuuh1dDfOYeIJQ-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id AADE1107ACE3;
+        Thu,  7 Jan 2021 12:12:44 +0000 (UTC)
+Received: from krava (unknown [10.40.194.125])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 7C29519C66;
+        Thu,  7 Jan 2021 12:12:41 +0000 (UTC)
+Date:   Thu, 7 Jan 2021 13:12:40 +0100
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Jiri Olsa <jolsa@kernel.org>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        Ingo Molnar <mingo@kernel.org>,
         Mark Rutland <mark.rutland@arm.com>,
-        DTML <devicetree@vger.kernel.org>,
-        David Airlie <airlied@linux.ie>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        Project_Global_Chrome_Upstream_Group@mediatek.com,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Hsin-Yi Wang <hsinyi@chromium.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        Namhyung Kim <namhyung@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Michael Petlan <mpetlan@redhat.com>,
+        Ian Rogers <irogers@google.com>,
+        Stephane Eranian <eranian@google.com>,
+        Alexei Budankov <abudankov@huawei.com>
+Subject: Re: [PATCHv4 0/4] perf tools: Allow to enable/disable events via
+ control pipe
+Message-ID: <20210107121240.GA1019522@krava>
+References: <20201226232038.390883-1-jolsa@kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201226232038.390883-1-jolsa@kernel.org>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Yongqiang:
+On Sun, Dec 27, 2020 at 12:20:34AM +0100, Jiri Olsa wrote:
+> hi,
+> adding support to enable/disable specific events via control
+> file via following commands:
+> 
+>     # echo 'enable sched:sched_process_fork' > control
+>     # echo 'disabled sched:sched_process_fork' > control
+> 
+> v4 changes:
+>   - some of the patches got merged
+>   - rebased to latest perf/core
+>   - fixed changelogs
+>   - added 'ping' command
 
-Yongqiang Niu <yongqiang.niu@mediatek.com> =E6=96=BC 2021=E5=B9=B41=E6=9C=
-=887=E6=97=A5 =E9=80=B1=E5=9B=9B =E4=B8=8A=E5=8D=8811:12=E5=AF=AB=E9=81=93=
-=EF=BC=9A
->
-> Add DDP support for MT8167 SoC.
->
-> Signed-off-by: Yongqiang Niu <yongqiang.niu@mediatek.com>
+any reviews?
+
+thanks,
+jirka
+
+> 
+> v3 changes:
+>   - use ' ' instead of '-' in syntax and add command argument
+>     processing [Arnaldo]
+>   - add options to evlist [Arnaldo]
+>   - add man page changes
+> 
+> v2 changes:
+>   - added acks
+>   - change list to evlist [Arnaldo]
+>   - add evlist-verbose command [Arnaldo]
+>   - add '' to enale-/disable- error message
+> 
+> The code is available in here:
+>   git://git.kernel.org/pub/scm/linux/kernel/git/jolsa/perf.git
+>   perf/control
+> 
+> thanks,
+> jirka
+> 
+> 
 > ---
->  drivers/gpu/drm/mediatek/mtk_drm_ddp.c | 48 ++++++++++++++++++++++++++++=
-++++++
->  1 file changed, 48 insertions(+)
->
-> diff --git a/drivers/gpu/drm/mediatek/mtk_drm_ddp.c b/drivers/gpu/drm/med=
-iatek/mtk_drm_ddp.c
-> index 1f99db6..1308046 100644
-> --- a/drivers/gpu/drm/mediatek/mtk_drm_ddp.c
-> +++ b/drivers/gpu/drm/mediatek/mtk_drm_ddp.c
-> @@ -15,6 +15,8 @@
->
->  #define MT2701_DISP_MUTEX0_MOD0                        0x2c
->  #define MT2701_DISP_MUTEX0_SOF0                        0x30
-> +#define MT8183_DISP_MUTEX0_MOD0                        0x30
-> +#define MT8183_DISP_MUTEX0_SOF0                        0x2c
->
->  #define DISP_REG_MUTEX_EN(n)                   (0x20 + 0x20 * (n))
->  #define DISP_REG_MUTEX(n)                      (0x24 + 0x20 * (n))
-> @@ -38,6 +40,18 @@
->  #define MT8167_MUTEX_MOD_DISP_DITHER           15
->  #define MT8167_MUTEX_MOD_DISP_UFOE             16
->
-> +#define MT8183_MUTEX_MOD_DISP_RDMA0            0
-> +#define MT8183_MUTEX_MOD_DISP_RDMA1            1
-> +#define MT8183_MUTEX_MOD_DISP_OVL0             9
-> +#define MT8183_MUTEX_MOD_DISP_OVL0_2L          10
-> +#define MT8183_MUTEX_MOD_DISP_OVL1_2L          11
-> +#define MT8183_MUTEX_MOD_DISP_WDMA0            12
-> +#define MT8183_MUTEX_MOD_DISP_COLOR0           13
-> +#define MT8183_MUTEX_MOD_DISP_CCORR0           14
-> +#define MT8183_MUTEX_MOD_DISP_AAL0             15
-> +#define MT8183_MUTEX_MOD_DISP_GAMMA0           16
-> +#define MT8183_MUTEX_MOD_DISP_DITHER0          17
-> +
->  #define MT8173_MUTEX_MOD_DISP_OVL0             11
->  #define MT8173_MUTEX_MOD_DISP_OVL1             12
->  #define MT8173_MUTEX_MOD_DISP_RDMA0            13
-> @@ -89,6 +103,10 @@
->  #define MT8167_MUTEX_SOF_DPI0          2
->  #define MT8167_MUTEX_SOF_DPI1          3
->
-> +#define MT8183_MUTEX_SOF_DPI0                  2
-> +#define MT8183_MUTEX_EOF_DSI0                  (MUTEX_SOF_DSI0 << 6)
-> +#define MT8183_MUTEX_EOF_DPI0                  (MT8183_MUTEX_SOF_DPI0 <<=
- 6)
-> +
->
->  struct mtk_disp_mutex {
->         int id;
-> @@ -183,6 +201,20 @@ struct mtk_ddp {
->         [DDP_COMPONENT_WDMA1] =3D MT8173_MUTEX_MOD_DISP_WDMA1,
->  };
->
-> +static const unsigned int mt8183_mutex_mod[DDP_COMPONENT_ID_MAX] =3D {
-> +       [DDP_COMPONENT_AAL0] =3D MT8183_MUTEX_MOD_DISP_AAL0,
-> +       [DDP_COMPONENT_CCORR] =3D MT8183_MUTEX_MOD_DISP_CCORR0,
-> +       [DDP_COMPONENT_COLOR0] =3D MT8183_MUTEX_MOD_DISP_COLOR0,
-> +       [DDP_COMPONENT_DITHER] =3D MT8183_MUTEX_MOD_DISP_DITHER0,
-> +       [DDP_COMPONENT_GAMMA] =3D MT8183_MUTEX_MOD_DISP_GAMMA0,
-> +       [DDP_COMPONENT_OVL0] =3D MT8183_MUTEX_MOD_DISP_OVL0,
-> +       [DDP_COMPONENT_OVL_2L0] =3D MT8183_MUTEX_MOD_DISP_OVL0_2L,
-> +       [DDP_COMPONENT_OVL_2L1] =3D MT8183_MUTEX_MOD_DISP_OVL1_2L,
-> +       [DDP_COMPONENT_RDMA0] =3D MT8183_MUTEX_MOD_DISP_RDMA0,
-> +       [DDP_COMPONENT_RDMA1] =3D MT8183_MUTEX_MOD_DISP_RDMA1,
-> +       [DDP_COMPONENT_WDMA0] =3D MT8183_MUTEX_MOD_DISP_WDMA0,
-> +};
-> +
->  static const unsigned int mt2712_mutex_sof[DDP_MUTEX_SOF_DSI3 + 1] =3D {
->         [DDP_MUTEX_SOF_SINGLE_MODE] =3D MUTEX_SOF_SINGLE_MODE,
->         [DDP_MUTEX_SOF_DSI0] =3D MUTEX_SOF_DSI0,
-> @@ -200,6 +232,12 @@ struct mtk_ddp {
->         [DDP_MUTEX_SOF_DPI1] =3D MT8167_MUTEX_SOF_DPI1,
->  };
->
-> +static const unsigned int mt8183_mutex_sof[DDP_MUTEX_SOF_DSI3 + 1] =3D {
-> +       [DDP_MUTEX_SOF_SINGLE_MODE] =3D MUTEX_SOF_SINGLE_MODE,
-> +       [DDP_MUTEX_SOF_DSI0] =3D MUTEX_SOF_DSI0 | MT8183_MUTEX_EOF_DSI0,
-> +       [DDP_MUTEX_SOF_DPI0] =3D MT8183_MUTEX_SOF_DPI0 | MT8183_MUTEX_EOF=
-_DPI0,
+> Jiri Olsa (4):
+>       perf tools: Allow to enable/disable events via control file
+>       perf tools: Add evlist control command
+>       perf tools: Add stop control command
+>       perf tools: Add ping control command
+> 
+>  tools/perf/Documentation/perf-record.txt |  15 ++++++++++++---
+>  tools/perf/builtin-record.c              |  13 +++++++------
+>  tools/perf/builtin-stat.c                |   5 +++--
+>  tools/perf/util/evlist.c                 | 112 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++---
+>  tools/perf/util/evlist.h                 |   6 ++++++
+>  tools/perf/util/evsel_fprintf.c          |   2 ++
+>  tools/perf/util/python-ext-sources       |   1 +
+>  tools/perf/util/setup.py                 |   2 +-
+>  8 files changed, 141 insertions(+), 15 deletions(-)
+> 
 
-According to discussion in [1], add comment for the odd EOF setting.
-
-[1] https://patchwork.kernel.org/project/linux-mediatek/patch/1595469798-38=
-24-8-git-send-email-yongqiang.niu@mediatek.com/
-
-Regards,
-Chun-Kuang.
-
-> +};
-> +
->  static const struct mtk_ddp_data mt2701_ddp_driver_data =3D {
->         .mutex_mod =3D mt2701_mutex_mod,
->         .mutex_sof =3D mt2712_mutex_sof,
-> @@ -229,6 +267,14 @@ struct mtk_ddp {
->         .mutex_sof_reg =3D MT2701_DISP_MUTEX0_SOF0,
->  };
->
-> +static const struct mtk_ddp_data mt8183_ddp_driver_data =3D {
-> +       .mutex_mod =3D mt8183_mutex_mod,
-> +       .mutex_sof =3D mt8183_mutex_sof,
-> +       .mutex_mod_reg =3D MT8183_DISP_MUTEX0_MOD0,
-> +       .mutex_sof_reg =3D MT8183_DISP_MUTEX0_SOF0,
-> +       .no_clk =3D true,
-> +};
-> +
->  struct mtk_disp_mutex *mtk_disp_mutex_get(struct device *dev, unsigned i=
-nt id)
->  {
->         struct mtk_ddp *ddp =3D dev_get_drvdata(dev);
-> @@ -449,6 +495,8 @@ static int mtk_ddp_remove(struct platform_device *pde=
-v)
->           .data =3D &mt8167_ddp_driver_data},
->         { .compatible =3D "mediatek,mt8173-disp-mutex",
->           .data =3D &mt8173_ddp_driver_data},
-> +       { .compatible =3D "mediatek,mt8183-disp-mutex",
-> +         .data =3D &mt8183_ddp_driver_data},
->         {},
->  };
->  MODULE_DEVICE_TABLE(of, ddp_driver_dt_match);
-> --
-> 1.8.1.1.dirty
-> _______________________________________________
-> Linux-mediatek mailing list
-> Linux-mediatek@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-mediatek
