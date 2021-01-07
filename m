@@ -2,133 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FC632EE962
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 23:59:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D7B92EE999
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 00:10:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728837AbhAGW6a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 17:58:30 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:32866 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727738AbhAGW6a (ORCPT
+        id S1728249AbhAGXJZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 18:09:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53280 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725944AbhAGXJZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 17:58:30 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1610060223;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=aPUZOdAgAnopTQ0zbSHS4o/BBc0ukOCx70tRQ8Xa+7Q=;
-        b=YKNz7XOExzhTobSj/MBHhdorz8rN8imz/mmCTFM1Q8qtB3O5sZ9Kd2cVi92qasCofsWtis
-        uZeLltbhSiWp+CSG7L29MaUZRlv3ANXuHFR1FVDUOCi0MDL9p+E41VTzVa/4BnhFUz0l0a
-        9xf9X8YhB49c/mzWLOTBbjeD5/ruF8M=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-306-Gqqj4m45NqWg1gGSD8Q3Nw-1; Thu, 07 Jan 2021 17:57:00 -0500
-X-MC-Unique: Gqqj4m45NqWg1gGSD8Q3Nw-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C5568800D53;
-        Thu,  7 Jan 2021 22:56:57 +0000 (UTC)
-Received: from mail (ovpn-112-222.rdu2.redhat.com [10.10.112.222])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id B22F36062F;
-        Thu,  7 Jan 2021 22:56:49 +0000 (UTC)
-Date:   Thu, 7 Jan 2021 17:56:49 -0500
-From:   Andrea Arcangeli <aarcange@redhat.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Jason Gunthorpe <jgg@ziepe.ca>, Linux-MM <linux-mm@kvack.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Yu Zhao <yuzhao@google.com>, Andy Lutomirski <luto@kernel.org>,
-        Peter Xu <peterx@redhat.com>,
-        Pavel Emelyanov <xemul@openvz.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Mike Rapoport <rppt@linux.vnet.ibm.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Will Deacon <will@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Hugh Dickins <hughd@google.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Oleg Nesterov <oleg@redhat.com>, Jann Horn <jannh@google.com>,
-        Kees Cook <keescook@chromium.org>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Leon Romanovsky <leonro@nvidia.com>, Jan Kara <jack@suse.cz>,
-        Kirill Tkhai <ktkhai@virtuozzo.com>
-Subject: Re: [PATCH 0/2] page_count can't be used to decide when wp_page_copy
-Message-ID: <X/eRsbAU7bt9nvFD@redhat.com>
-References: <B1B85771-B211-4FCC-AEEF-BDFD37332C25@vmware.com>
- <20210107200402.31095-1-aarcange@redhat.com>
- <20210107202525.GD504133@ziepe.ca>
- <CAHk-=wjTuS9JB=Ms4WAMaOkGuLmvYwaf2W0JhXxNPdcv4NWZUA@mail.gmail.com>
- <CAHk-=wjDkyom4haQu6OU_yykkCFqMi98qO2gUPgZBF-11krRAA@mail.gmail.com>
- <X/eFCt/lxRKgoPXu@redhat.com>
- <CAHk-=wjhpTa616YdTfincMV1LqqRWqokKtd1ARdMOPd1Wra8Pg@mail.gmail.com>
+        Thu, 7 Jan 2021 18:09:25 -0500
+Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E4A4C0612F4
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Jan 2021 15:08:44 -0800 (PST)
+Received: by mail-pl1-x630.google.com with SMTP id b8so4674207plx.0
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Jan 2021 15:08:44 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=3iyas93Xd3n71dYLej+fNpSNMU2nnrmKXbg8DDh2m6I=;
+        b=MuqTzTgO8erYRwjZdS8746g8JXjtOqAXaegqafRnww/2qDkdrh5R6PdFhNwMWvrcEV
+         IFBCbTe8sWpUsWoc109YTf95HgR92mg8ajHAChZ0ZyTy66KRFrpQc+gALbQ5ZOvH3LFx
+         ZWhGrhw2eZyuFi3Jq/MYGejc+KWaHIXYXLTVCC1+pa0pdAc/B+k3j506PN1zvjxUQwMe
+         zMt9wBoV+dsMcUjvtMa5DUpF8Jpdv3L+sScJKnY0vbf9DT32d9hFcdUo+TMeu5Xc/7FD
+         rCE3VmrTFhCZg+pRWfXztHpYviu0XfD37WGVNjOh57m6CO+5JPNO/ZWANmrI3gJT7qlC
+         /Zog==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=3iyas93Xd3n71dYLej+fNpSNMU2nnrmKXbg8DDh2m6I=;
+        b=NrSRyEg8S2y+IJSjtMVUmp0+kwlWWlepj7/gFPOKlISpsian9P0XJRThScT4OdtN3u
+         77LdaD1tVzrQUjf7iUddg+90HxBz0a6+8s+rV43YNE1Xu/3bRlvHfIjS49LtC4f+0iBH
+         aI28tkgWpL8aV/zaQHTAxZS/0yZp/t/Y5XQuNALotZoHVK5wmdyTNrqeP4j+SDemnssh
+         2HAADjt68JTdvErAo2yYaFdb/5MiHp4/2g26K2+kBm3wTN1xUWEeR40U+VQR0K7u5trC
+         8mTW0yo8aJ903bFkid1y6hJKDOudixtepJPa3gsu4qDk2a3WUyNcF88LMI9oQt1t/iS0
+         uRvg==
+X-Gm-Message-State: AOAM5305EqvIrN0vApA22QzvIT6Vblo0scBBLNLNkj3JJ9C445SFJt/X
+        9KmPWwq3pmLlVpMCvC92GdKlZw==
+X-Google-Smtp-Source: ABdhPJxLf0Zskg8/tIDC+zofRN5Y5UXl0HGvKfDv7mJbtuMomwEGSZE/BJd2ls8u/kCopsLKxCmaWg==
+X-Received: by 2002:a17:902:67:b029:dc:3cdb:6e50 with SMTP id 94-20020a1709020067b02900dc3cdb6e50mr1028679pla.61.1610060924147;
+        Thu, 07 Jan 2021 15:08:44 -0800 (PST)
+Received: from google.com (139.60.82.34.bc.googleusercontent.com. [34.82.60.139])
+        by smtp.gmail.com with ESMTPSA id y5sm7176228pfp.45.2021.01.07.15.08.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 07 Jan 2021 15:08:43 -0800 (PST)
+Date:   Thu, 7 Jan 2021 23:08:39 +0000
+From:   Satya Tangirala <satyat@google.com>
+To:     Bob Peterson <rpeterso@redhat.com>
+Cc:     Christoph Hellwig <hch@lst.de>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jens Axboe <axboe@kernel.dk>
+Subject: Re: [PATCH] fs: Fix freeze_bdev()/thaw_bdev() accounting of
+ bd_fsfreeze_sb
+Message-ID: <X/eUd4iLxnl2nYRF@google.com>
+References: <20201224044954.1349459-1-satyat@google.com>
+ <20210107162000.GA2693@lst.de>
+ <1137375419.42956970.1610036857271.JavaMail.zimbra@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAHk-=wjhpTa616YdTfincMV1LqqRWqokKtd1ARdMOPd1Wra8Pg@mail.gmail.com>
-User-Agent: Mutt/2.0.4 (2020-12-30)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+In-Reply-To: <1137375419.42956970.1610036857271.JavaMail.zimbra@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 07, 2021 at 02:17:50PM -0800, Linus Torvalds wrote:
-> So I think we can agree that even that softdirty case we can just
-> handle by "don't do that then".
-
-Absolutely. The question is if somebody was happily running clear_refs
-with a RDMA attached to the process, by the time they update and
-reboot they'll find it the hard way with silent mm corruption
-currently.
-
-So I was obliged to report this issue and the fact there was very
-strong reason why page_count was not used there and it's even
-documented explicitly in the source:
-
- * [..] however we only use
- * page_trans_huge_mapcount() in the copy-on-write faults where we
- * need full accuracy to avoid breaking page pinning, [..]
-
-I didn't entirely forget the comment when I reiterated it in fact also
-in Message-ID: <20200527212005.GC31990@redhat.com> on May 27 2020
-since I recalled there was a very explicit reason why we had to use
-page_mapcount in do_wp_page and deliver full accuracy.
-
-Now I cannot proof there's any such user that will break, but we'll
-find those with a 1 year or more of delay.
-
-Even the tlb flushing deferral that caused clear_refs_write to also
-corrupt userland memory and literally lose userland writes even
-without any special secondary MMU hardware being attached to the
-memory, took 6 months to find.
-
-> if a page is pinned, the dirty bit of it makes no sense, because it
-> might be dirtied complately asynchronously by the pinner.
->
-> So I think none of the softdirty stuff should touch pinned pages. I
-> think it falls solidly under that "don't do it then".
+On Thu, Jan 07, 2021 at 11:27:37AM -0500, Bob Peterson wrote:
+> ----- Original Message -----
+> > Can someone pick this up?  Maybe through Jens' block tree as that is
+> > where my commit this is fixing up came from.
+> Christoph and Al,
 > 
-> Just skipping over them in clear_soft_dirty[_pmd]() doesn't look that
-> hard, does it?
+> Here is my version:
+> 
+> Bob Peterson
+> 
+> fs: fix freeze count problem in freeze_bdev
+> 
+> Before this patch, if you tried to freeze a device (function freeze_bdev)
+> while it was being unmounted, it would get NULL back from get_active_super
+> and correctly bypass the freeze calls. Unfortunately, it forgot to decrement
+> its bd_fsfreeze_count. Subsequent calls to device thaw (thaw_bdev) would
+> see the non-zero bd_fsfreeze_count and assume the bd_fsfreeze_sb value was
+> still valid. That's not a safe assumption and resulted in use-after-free,
+> which often caused fatal kernel errors like: "unable to handle page fault
+> for address."
+> 
+> This patch adds the necessary decrement of bd_fsfreeze_count for that
+> error path. It also adds code to set the bd_fsfreeze_sb to NULL when the
+> last reference is reached in thaw_bdev.
+> 
+> Reviewed-by: Bob Peterson <rpeterso@redhat.com>
+> ---
+>  fs/block_dev.c | 5 ++++-
+>  1 file changed, 4 insertions(+), 1 deletion(-)
+> 
+> diff --git a/fs/block_dev.c b/fs/block_dev.c
+> index 9e56ee1f2652..c6daf7d12546 100644
+> --- a/fs/block_dev.c
+> +++ b/fs/block_dev.c
+> @@ -555,8 +555,10 @@ int freeze_bdev(struct block_device *bdev)
+>  		goto done;
+>  
+>  	sb = get_active_super(bdev);
+> -	if (!sb)
+> +	if (!sb) {
+> +		bdev->bd_fsfreeze_count--;
+>  		goto sync;
+> +	}
+>  	if (sb->s_op->freeze_super)
+>  		error = sb->s_op->freeze_super(sb);
+>  	else
+> @@ -600,6 +602,7 @@ int thaw_bdev(struct block_device *bdev)
+>  	if (!sb)
+>  		goto out;
+>  
+> +	bdev->bd_fsfreeze_sb = NULL;
+This causes bdev->bd_fsfreeze_sb to be set to NULL even if the call to
+thaw_super right after this line fail. So if a caller tries to call
+thaw_bdev() again after receiving such an error, that next call won't even
+try to call thaw_super(). Is that what we want here?  (I don't know much
+about this code, but from a cursory glance I think this difference is
+visible to emergency_thaw_bdev() in fs/buffer.c)
 
-1) How do you know again if it's not speculative lookup or an O_DIRECT
-   that made them look pinned?
+In my version of the patch, I set bdev->bd_fsfreeze_sb to NULL only
+*after* we check that the call to thaw_super() succeeded to avoid this.
+>  	if (sb->s_op->thaw_super)
+>  		error = sb->s_op->thaw_super(sb);
+>  	else
+>
+In another mail, you mentioned
+> I wrote this patch to fix the freeze/thaw device problem before I saw
+> the patch "fs: Fix freeze_bdev()/thaw_bdev() accounting of bd_fsfreeze_sb"
+> from Satya Tangirala. That one, however, does not fix the bd_freeze_count
+> problem and this patch does.
+Thanks a lot for investigating the bug and the patch I sent :)
+Was there actually an issue with that patch I sent? As you said, the bug
+is very reproduceable on master with generic/085. But with my patch, I
+don't see any issues even after having run the test many, many times
+(admittedly, I tested it on f2fs and ext4 rather than gfs2, but I don't
+think that should cause much differences). Did you have a test case that
+actually causes a failure with my patch?
 
-2) it's a hugepage 1, a 4k pin will make soft dirty then skip 511
-   dirty bits by mistake including those pages that weren't pinned and
-   that userland is still writing through the transhuge pmd.
+The only two differences between the patch I sent and this patch are
 
-   Until v4.x we had a page pin counter for each subpage so the above
-   wouldn't have happened, but not anymore since it was simplified and
-   improved but now the page_count is pretty inefficient there, even
-   if it'd be possible to make safe.
+1) The point at which the bd_fsfreeze_bd is set to NULL in thaw_bdev(), as
+I mentioned above already.
 
-3) the GUP(write=0) may be just reading from RAM and sending to the
-   other end so clear_refs may have currently very much tracked CPU
-   writes fine, with no interference whatsoever from the secondary MMU
-   working in readonly on the memory.
+2) Whether or not to decrement bd_fsfreeze_count when we get a NULL from
+get_active_super() in freeze_bdev() - I don't do this in my patch.
 
-Thanks,
-Andrea
+I think setting bd_fsfreeze_sb to NULL in thaw_bdev (in either the place
+your patch does it or my patch does it) is enough to fix the bug w.r.t the
+use-after-free. Fwiw, I do think it should be set to NULL after we check for
+all the errors though.
 
+I think the second difference (decrementing bd_fsfreeze_count when
+get_active_super() returns NULL) doesn't change anything w.r.t the
+use-after-free. It does however, change the behaviour of the function
+slightly, and it might be caller visible (because from a cursory glance, it
+looks like we're reading the bd_fsfreeze_count from some other places like
+fs/super.c). Even before 040f04bd2e82, the code wouldn't decrement
+bd_fsfreeze_count when get_active_super() returned NULL - so is this change
+in behaviour intentional? And if so, maybe it should go in a separate
+patch?
