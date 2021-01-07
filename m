@@ -2,203 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DC522ECF2C
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 12:55:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 206932ECF34
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 12:55:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727984AbhAGLyg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 06:54:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60542 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726437AbhAGLyg (ORCPT
+        id S1728085AbhAGLyq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 06:54:46 -0500
+Received: from mail1.protonmail.ch ([185.70.40.18]:45734 "EHLO
+        mail1.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726229AbhAGLyp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 06:54:36 -0500
-Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 132EEC0612F4
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Jan 2021 03:53:55 -0800 (PST)
-Received: by mail-ej1-x62e.google.com with SMTP id g20so9389054ejb.1
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Jan 2021 03:53:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:in-reply-to:references:from:date:message-id:subject:to
-         :cc;
-        bh=rsynHIghsKQJZD4h8BVfrHuvAqsY9Wy0HaJluKpfM9g=;
-        b=bk5+OqxV8PFErwByGFZcsM+4WQ8PA4hU1T7M0DvmIOY6tQ6Yu/dYBiBu+g2XPZE74j
-         mbuuMFRSDYFQr/bjOQbYMsGxRvV9DqnkWUe8k242FYYZFjjG021m3hBTCIV3uBwxZI7t
-         Y60aUvy9pWH4WomNPps2CR54rvJaYpNMflzERYp9fVkwLGRv+CmSG2JJWUzCsvQf30jQ
-         av31jTEXZF+n7Mgu/G9e6lRAfwGiovCb2DeqbD5INHqhQTH9LQvHOmt8HW/PQefDvUpl
-         XulYdrnpPrkPkck8BDH7brrvB37yFauigaP4Bfkl2nwY8WTiUevMVdnefZ/dNi77X/dC
-         fQ8Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:in-reply-to:references:from:date
-         :message-id:subject:to:cc;
-        bh=rsynHIghsKQJZD4h8BVfrHuvAqsY9Wy0HaJluKpfM9g=;
-        b=HInvHcHqkFJadJOkg/xLdDEQPjV1umehTZ9kvOHhfDuFRmBApcEZhpP5kOfpIYP2Aj
-         33HwLjnrY7q/cGIaSPT3ubTnRxLVIyII12lCAJ53pcnPs5xCh4cYLGKm9LMVe8GXZddO
-         E/fXTkbKim6Hdoo7DwF7tlIBIwU642ibRJV2WEELNsMKXTYaTYkymm1BmxSxEAA/VE6p
-         GNUyujE9ovVfZQp0WVUREfv0d/+0DVnuEy2GYzKOCzWWReFBsmIzf5/yomcXjhTAe9KW
-         VTqFHd1U3SgoSWkzJHmUJRE8exzZlpvQJ0NjtxV2+9XjUo9R8w13BEd5aORFDDAnfJMJ
-         KuAA==
-X-Gm-Message-State: AOAM531MejDfg/t8NagF8b91/GbUQ/qJsx9bxxFohffm0EqCKte1Cnmu
-        zuEiQ2Vlf8LHPawyom5AUbnzskt/F1eB2Rllx9M=
-X-Google-Smtp-Source: ABdhPJxygP96R8lHa0QaoZm28a6WxZv4bKPRA3JoNfBQjrt5Kybsf8eVehaXJhcm4oSYgkko648JS1uTPnGk5M4CvmI=
-X-Received: by 2002:a17:906:52d9:: with SMTP id w25mr5874188ejn.504.1610020433833;
- Thu, 07 Jan 2021 03:53:53 -0800 (PST)
+        Thu, 7 Jan 2021 06:54:45 -0500
+Date:   Thu, 07 Jan 2021 11:53:55 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me; s=protonmail;
+        t=1610020441; bh=Yi9X+eUEsj/PoAs0Ktl/IbvqOd3Iq8nO46nm6Q1y7o8=;
+        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
+        b=olch6uOdeXf81zieTiFd4h4w+2qI8kBFfpV4nb4jEmg59GwerED1uRcSnqoiEcKbA
+         iXvjaXQT+e30EtH1gsdlB7UaDFzaD9NHI3qiMe+49kIbnrh2H9dJsGF/EhIfGAvPiB
+         omBDZJ88L9owcLFIxIfOh87KHx4xxDMyGTjjapllxvzh2oDfjgy1hZd76e254FeH5y
+         YLw61PJDRn1uAE+zqNPjGkBvk7Dmi/gQYNpw4cLdBml/l2ND8WEVrkagb5T4SCIJAN
+         rYN7xCt3aNCOZhxqsi2b6MPUR2+V0nWPnLyDZJv8vEd9jrSH3SzvMkdBDf/iSE8WEn
+         G+VPjAMK7R/IQ==
+To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+From:   Alexander Lobakin <alobakin@pm.me>
+Cc:     Arnd Bergmann <arnd@arndb.de>, Kees Cook <keescook@chromium.org>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Fangrui Song <maskray@google.com>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Pei Huang <huangpei@loongson.cn>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Alexander Lobakin <alobakin@pm.me>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        Ralf Baechle <ralf@linux-mips.org>,
+        Corey Minyard <cminyard@mvista.com>,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arch@vger.kernel.org, stable@vger.kernel.org,
+        clang-built-linux@googlegroups.com
+Reply-To: Alexander Lobakin <alobakin@pm.me>
+Subject: [PATCH v3 mips-next 3/7] MIPS: properly stop .eh_frame generation
+Message-ID: <20210107115329.281266-3-alobakin@pm.me>
+In-Reply-To: <20210107115329.281266-1-alobakin@pm.me>
+References: <20210107115120.281008-1-alobakin@pm.me> <20210107115329.281266-1-alobakin@pm.me>
 MIME-Version: 1.0
-Received: by 2002:a17:906:f858:0:0:0:0 with HTTP; Thu, 7 Jan 2021 03:53:52
- -0800 (PST)
-In-Reply-To: <1608022118-29993-1-git-send-email-yaohaidong369@gmail.com>
-References: <1608022118-29993-1-git-send-email-yaohaidong369@gmail.com>
-From:   haidong yao <yaohaidong369@gmail.com>
-Date:   Thu, 7 Jan 2021 19:53:52 +0800
-Message-ID: <CA+kUaCeebDNXi12-nNpw4i_auZbM+JQUC5uNhEzXxqa7=W4LnQ@mail.gmail.com>
-Subject: Re: [PATCH] add chan->cl check in mbox_chan_received_data()
-To:     jassisinghbrar@gmail.com, natechancellor@gmail.com,
-        ndesaulniers@google.com, linux-kernel@vger.kernel.org,
-        clang-built-linux@googlegroups.com, orsonzhai@gmail.com
-Cc:     zhang.lyra@gmail.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
+        autolearn=disabled version=3.4.4
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
+        mailout.protonmail.ch
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jassi Brar
+Commit 866b6a89c6d1 ("MIPS: Add DWARF unwinding to assembly") added
+-fno-asynchronous-unwind-tables to KBUILD_CFLAGS to prevent compiler
+from emitting .eh_frame symbols.
+However, as MIPS heavily uses CFI, that's not enough. Use the
+approach taken for x86 (as it also uses CFI) and explicitly put CFI
+symbols into the .debug_frame section (except for VDSO).
+This allows us to drop .eh_frame from DISCARDS as it's no longer
+being generated.
 
-Thank you very much for your reply.
+Fixes: 866b6a89c6d1 ("MIPS: Add DWARF unwinding to assembly")
+Suggested-by: Kees Cook <keescook@chromium.org>
+Signed-off-by: Alexander Lobakin <alobakin@pm.me>
+---
+ arch/mips/include/asm/asm.h    | 18 ++++++++++++++++++
+ arch/mips/kernel/vmlinux.lds.S |  1 -
+ 2 files changed, 18 insertions(+), 1 deletion(-)
 
-Look at the function sprd_mbox_outbox_isr .
-
-Chan is !NULL.
-
-chan->cl is NULL when the client driver not loaded, the controller
-driver don't know the client driver loaded successfully, so, I do not
-use mbox_free_channel.
-
-Here,How do you know chan->cl is ok?
-
-chan = &priv->chan[id];
-mbox_chan_received_data(chan, (void *)msg);
-
-static irqreturn_t sprd_mbox_outbox_isr(int irq, void *data)
-{
-        struct sprd_mbox_priv *priv = data;
-        struct mbox_chan *chan;
-        u32 fifo_sts, fifo_len, msg[2];
-        int i, id;
-
-        fifo_sts = readl(priv->outbox_base + SPRD_MBOX_FIFO_STS);
-
-        fifo_len = sprd_mbox_get_fifo_len(priv, fifo_sts);
-        if (!fifo_len) {
-                dev_warn_ratelimited(priv->dev, "spurious outbox interrupt\n");
-                return IRQ_NONE;
-        }
-
-        for (i = 0; i < fifo_len; i++) {
-                msg[0] = readl(priv->outbox_base + SPRD_MBOX_MSG_LOW);
-                msg[1] = readl(priv->outbox_base + SPRD_MBOX_MSG_HIGH);
-                id = readl(priv->outbox_base + SPRD_MBOX_ID);
-
-                chan = &priv->chan[id];
-                mbox_chan_received_data(chan, (void *)msg);
-
-                /* Trigger to update outbox FIFO pointer */
-                writel(0x1, priv->outbox_base + SPRD_MBOX_TRIGGER);
-        }
-
-        /* Clear irq status after reading all message. */
-        writel(SPRD_MBOX_IRQ_CLR, priv->outbox_base + SPRD_MBOX_IRQ_STS);
-
-        return IRQ_HANDLED;
-}
-
-
-On Tue, Dec 15, 2020 at 2:48 AM Haidong Yao <yaohaidong369@gmail.com> wrote:
-
-> --- a/drivers/mailbox/mailbox.c
-> +++ b/drivers/mailbox/mailbox.c
-> @@ -152,7 +152,7 @@ static enum hrtimer_restart txdone_hrtimer(struct hrtimer *hrtimer)
->  void mbox_chan_received_data(struct mbox_chan *chan, void *mssg)
->  {
->         /* No buffering the received data */
-> -       if (chan->cl->rx_callback)
-> +       if (chan->cl && chan->cl->rx_callback)
->                 chan->cl->rx_callback(chan->cl, mssg);
->  }
-The proper fix is in the controller driver. Which should stop tx/rx
-when the channel is freed.
-
-thnx.
+diff --git a/arch/mips/include/asm/asm.h b/arch/mips/include/asm/asm.h
+index 3682d1a0bb80..908f6d6ae24b 100644
+--- a/arch/mips/include/asm/asm.h
++++ b/arch/mips/include/asm/asm.h
+@@ -20,10 +20,27 @@
+ #include <asm/sgidefs.h>
+ #include <asm/asm-eva.h>
+=20
++#ifndef __VDSO__
++/*
++ * Emit CFI data in .debug_frame sections, not .eh_frame sections.
++ * We don't do DWARF unwinding at runtime, so only the offline DWARF
++ * information is useful to anyone. Note we should change this if we
++ * ever decide to enable DWARF unwinding at runtime.
++ */
++#define CFI_SECTIONS=09.cfi_sections .debug_frame
++#else
++ /*
++  * For the vDSO, emit both runtime unwind information and debug
++  * symbols for the .dbg file.
++  */
++#define CFI_SECTIONS=09.cfi_sections .debug_frame, .eh_frame
++#endif
++
+ /*
+  * LEAF - declare leaf routine
+  */
+ #define LEAF(symbol)=09=09=09=09=09\
++=09=09CFI_SECTIONS;=09=09=09=09\
+ =09=09.globl=09symbol;=09=09=09=09\
+ =09=09.align=092;=09=09=09=09\
+ =09=09.type=09symbol, @function;=09=09\
+@@ -36,6 +53,7 @@ symbol:=09=09.frame=09sp, 0, ra;=09=09=09\
+  * NESTED - declare nested routine entry point
+  */
+ #define NESTED(symbol, framesize, rpc)=09=09=09\
++=09=09CFI_SECTIONS;=09=09=09=09\
+ =09=09.globl=09symbol;=09=09=09=09\
+ =09=09.align=092;=09=09=09=09\
+ =09=09.type=09symbol, @function;=09=09\
+diff --git a/arch/mips/kernel/vmlinux.lds.S b/arch/mips/kernel/vmlinux.lds.=
+S
+index 16468957cba2..0f4e46ea4458 100644
+--- a/arch/mips/kernel/vmlinux.lds.S
++++ b/arch/mips/kernel/vmlinux.lds.S
+@@ -225,6 +225,5 @@ SECTIONS
+ =09=09*(.options)
+ =09=09*(.pdr)
+ =09=09*(.reginfo)
+-=09=09*(.eh_frame)
+ =09}
+ }
+--=20
+2.30.0
 
 
-
-2020-12-15 16:48 GMT+08:00, Haidong Yao <yaohaidong369@gmail.com>:
-> From: Haidong Yao <haidong.yao@unisoc.com>
->
-> mailbox outbox irq is coming, but mbox_request_channel
-> is not be registered, so cl->rx_callback is NULL.
->
-> panic log:
-> [    9.852090]c0  Unable to handle kernel NULL pointer dereference at
-> virtual address 0000000000000020
-> [    9.954634]c0  pstate: 60400089 (nZCv daIf +PAN -UAO)
-> [    9.954651]c0  pc : mbox_chan_received_data+0x1c/0x88
-> [    9.954666]c0  lr : sprd_mbox_outbox_isr+0x1d0/0x204 [sprd_mailbox]
-> [    9.967439]c0  sp : ffffffc010003e10
-> [    9.967443]c0  x29: ffffffc010003e20 x28: ffffffc011c2f6c0-
-> [    9.984918]c0  x27: ffffffc010e92e08 x26: 0000000000000001-
-> [   10.140344]c0  x25: 0000000000000378 x24: ffffff80f4064130-
-> [   10.145880]c0  x23: 0000000000000001 x22: ffffffc0091072c7-
-> [   10.151418]c0  x21: ffffffc009107212 x20: 0000000000000005-
-> [   10.156957]c0  x19: ffffff80f4064080 x18: ffffffc010005038-
-> [   10.162494]c0  x17: 0000000000000000 x16: ffffffc010e6f844-
-> [   10.168033]c0  x15: ffffffc0117abac7 x14: 000000000000003f-
-> [   10.173571]c0  x13: ffff0000ffffff00 x12: ffff0a01ffffff10-
-> [   10.179110]c0  x11: 0000000000000001 x10: 00000000ffffffff-
-> [   10.184649]c0  x9 : ffffff80f40644a8 x8 : c366877097809900-
-> [   10.190187]c0  x7 : 207273695f786f62 x6 : ffffffc011d62231-
-> [   10.195726]c0  x5 : 0000000000000034 x4 : 000000000000000c-
-> [   10.201265]c0  x3 : ffffffc010e9842c x2 : 0000000000000001-
-> [   10.206803]c0  x1 : ffffffc010003e40 x0 : 0000000000000000-
-> [   10.212343]c0  Call trace:
-> [   10.215029]c0   mbox_chan_received_data+0x1c/0x88
-> [   10.219705]c0   sprd_mbox_outbox_isr+0x1d0/0x204 [sprd_mailbox]
-> [   10.225590]c0   __handle_irq_event_percpu+0x164/0x358
-> [   10.230604]c0   handle_irq_event+0x60/0xd8
-> [   10.234675]c0   handle_fasteoi_irq+0x128/0x32c
-> [   10.239086]c0   __handle_domain_irq+0xa0/0x100
-> [   10.243502]c0   efi_header_end+0xb8/0x15c
-> [   10.247478]c0   el1_irq+0x104/0x200
-> [   10.250945]c0   cpuidle_enter_state+0x158/0x2d8
-> [   10.255440]c0   cpuidle_enter+0x38/0x50
-> [   10.259253]c0   do_idle.llvm.10091284334483161164+0x1a4/0x294
-> [   10.264963]c0   cpu_startup_entry+0x24/0x28
-> [   10.269120]c0   kernel_init+0x0/0x29c
-> [   10.272752]c0   start_kernel+0x0/0x418
-> [   10.276468]c0   start_kernel+0x3a0/0x418
-> [   10.280371]c0  Code: f90013f3 910043fd aa0003e9 f9400800 (f9401008)-
-> [   10.286684]c0  ---[ end trace b868997a960c667a ]---
->
-> Signed-off-by: Haidong Yao <haidong.yao@unisoc.com>
-> ---
->  drivers/mailbox/mailbox.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/mailbox/mailbox.c b/drivers/mailbox/mailbox.c
-> index 3e7d4b20ab34..58697298a95f 100644
-> --- a/drivers/mailbox/mailbox.c
-> +++ b/drivers/mailbox/mailbox.c
-> @@ -152,7 +152,7 @@ static enum hrtimer_restart txdone_hrtimer(struct
-> hrtimer *hrtimer)
->  void mbox_chan_received_data(struct mbox_chan *chan, void *mssg)
->  {
->  	/* No buffering the received data */
-> -	if (chan->cl->rx_callback)
-> +	if (chan->cl && chan->cl->rx_callback)
->  		chan->cl->rx_callback(chan->cl, mssg);
->  }
->  EXPORT_SYMBOL_GPL(mbox_chan_received_data);
-> --
-> 2.28.0
->
->
