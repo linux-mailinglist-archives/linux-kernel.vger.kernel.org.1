@@ -2,111 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 182EB2EC748
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 01:20:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F6862EC74D
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 01:22:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727771AbhAGAUW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Jan 2021 19:20:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36556 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727464AbhAGAUV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Jan 2021 19:20:21 -0500
-Received: from mail-pf1-x44a.google.com (mail-pf1-x44a.google.com [IPv6:2607:f8b0:4864:20::44a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81F75C061372
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Jan 2021 16:19:41 -0800 (PST)
-Received: by mail-pf1-x44a.google.com with SMTP id t16so2711619pfh.22
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Jan 2021 16:19:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:in-reply-to:message-id:mime-version:references:subject
-         :from:to:cc;
-        bh=dDiuE/L+TEOVkofWeADZyQOWx+prBVUG+hG/zE7qjqw=;
-        b=VkjczQkDv6uSysLxiEUHoxuQ+DbKhDcWrtgG8nIXiIk9txn9MKBRgvUvoRfyoTVdn6
-         F+V3rRcP5bSzLl0Zu2tc03tpgWRRfCP4476e7Wx8ki01QtG8Xw8UXuqfuOhiZu0eN0ZC
-         l/uisVbTdVRibbAkrN0eGjVTnXuoFxvf1hrzN5daVrnwrtoP4/J1J9JohxHNaT7tC9Ow
-         uG2mCdoqC/rM8zsbXCyc6qyz2PlYSiuysFaaeyb0/w7ZOc2rOCCg3I06N6+aQQbIP+uj
-         7pz7Q9VyJCQkD9MoX/bKjNxU+fJmeL8vziSQGhhuxkVn+XmeRjM/p31kv+pKd4Ygxk5A
-         +iRQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=dDiuE/L+TEOVkofWeADZyQOWx+prBVUG+hG/zE7qjqw=;
-        b=EtH9ykKTKieVru/7KmXaRTw/UD1LGQ6lpx54krWqYZjYhd/wWq77PGX5/68E9y3WVf
-         F3GSivVeCo2d2VeuA5StSPtGnt0oIReBuSJ1gtmx9mqyr6Wcmvw+tX+WWrT4dDzD6Rhi
-         uG2JRqy30e4sbzYpCloqB1kO2mLtjS/6lrMtF8UC7IiAJ0v8l3nnQhWdQR+MuTVwMoQq
-         McztzWh+Z8Zm0GrSD+QKyAQvvsBzUEENP/QV5e6aerYXbi7tr60yGK/NvQuaO6yxUS4b
-         QTr/nViaXZnm0ByHG5My4HV4druwWqqEjYT/MGLPvOjgIF9DY8MwKiWlq/5ZSi1zvQcI
-         af9A==
-X-Gm-Message-State: AOAM533bczsmDYxiOGgW1W9o2Vzq81fHu5MSkQIemMaIQswfvskrgC5U
-        bEP3MImAoR/KUnbGH+bikrU1B3KDDoQRXmQLLBWBB94BI7OYsroJByie8PrTAusqWW9Dxh2UUEg
-        DPoLQa+YfVK0M3XPByIsn8/51wPmOkkl9MWgs3Q4OedkqJS3D0bUxwuBw6BhmxI9EK6tmEt6D
-X-Google-Smtp-Source: ABdhPJyhjygi1mTx9UYbhuGSK2TiCC2wcA1NRyh1XTwbhkzoE5419S5iHE7Co7FcCeF3rCchoB5qhqOg9ACU
-Sender: "bgardon via sendgmr" <bgardon@bgardon.sea.corp.google.com>
-X-Received: from bgardon.sea.corp.google.com ([2620:15c:100:202:f693:9fff:fef4:a293])
- (user=bgardon job=sendgmr) by 2002:a17:90b:14d3:: with SMTP id
- jz19mr6654541pjb.196.1609978780963; Wed, 06 Jan 2021 16:19:40 -0800 (PST)
-Date:   Wed,  6 Jan 2021 16:19:35 -0800
-In-Reply-To: <20210107001935.3732070-1-bgardon@google.com>
-Message-Id: <20210107001935.3732070-2-bgardon@google.com>
-Mime-Version: 1.0
-References: <20210107001935.3732070-1-bgardon@google.com>
-X-Mailer: git-send-email 2.29.2.729.g45daf8777d-goog
-Subject: [PATCH v3 2/2] KVM: x86/mmu: Clarify TDP MMU page list invariants
-From:   Ben Gardon <bgardon@google.com>
-To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Peter Shier <pshier@google.com>,
-        "Maciej S . Szmigiero" <maciej.szmigiero@oracle.com>,
-        Leo Hou <leohou1402@gmail.com>, Ben Gardon <bgardon@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        id S1727865AbhAGAUu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Jan 2021 19:20:50 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55348 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726432AbhAGAUs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 Jan 2021 19:20:48 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPS id 0AEC222D75;
+        Thu,  7 Jan 2021 00:20:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1609978808;
+        bh=rEzIii5u44+A02/wCSbFAxSHnj8It6iZx/2Ip8dSeV8=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=pHq0HIgJX+rK3YWn2+ksaZBOPLYwqVhUjOWE3leJJu9wB9um2j3fYz4N2SPKl6kAO
+         q7YHSE/sQYk8me1dejKiJIYEaY5g3bPuPryHaYNKE/0VrzbJIl1qpgsoIPf/4mdIcS
+         jKBsqSUgw9izt1CBnXyH3EREUrc28nsEd3JgLOU6VSvtwfHHksNrSvqvFdpOwBm/aY
+         ejoSMq+/F7PC00XqwUnKLAxiEl9vkXko1BInhOidyHvsx9CnOGcFLzeZb7r5OJzioo
+         y6M/Gf3kkg5cr4mkWaOgl5RBZwRffaU1Npd2b/1frTqGmS04OcmBTkF5dbS5xgOBnN
+         qTZHoGtR0IEGw==
+Received: from pdx-korg-docbuild-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-1.ci.codeaurora.org (Postfix) with ESMTP id EFE78600DA;
+        Thu,  7 Jan 2021 00:20:07 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH] ptp: ptp_ines: prevent build when HAS_IOMEM is not set
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <160997880797.16542.16792817975972555671.git-patchwork-notify@kernel.org>
+Date:   Thu, 07 Jan 2021 00:20:07 +0000
+References: <20210106042531.1351-1-rdunlap@infradead.org>
+In-Reply-To: <20210106042531.1351-1-rdunlap@infradead.org>
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     linux-kernel@vger.kernel.org, lkp@intel.com,
+        richardcochran@gmail.com, netdev@vger.kernel.org,
+        davem@davemloft.net, kuba@kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The tdp_mmu_roots and tdp_mmu_pages in struct kvm_arch should only contain
-pages with tdp_mmu_page set to true. tdp_mmu_pages should not contain any
-pages with a non-zero root_count and tdp_mmu_roots should only contain
-pages with a positive root_count, unless a thread holds the MMU lock and
-is in the process of modifying the list. Various functions expect these
-invariants to be maintained, but they are not explictily documented. Add
-to the comments on both fields to document the above invariants.
+Hello:
 
-Signed-off-by: Ben Gardon <bgardon@google.com>
----
- arch/x86/include/asm/kvm_host.h | 16 ++++++++++++++--
- 1 file changed, 14 insertions(+), 2 deletions(-)
+This patch was applied to netdev/net.git (refs/heads/master):
 
-diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
-index 39707e72b062..2389735a29f3 100644
---- a/arch/x86/include/asm/kvm_host.h
-+++ b/arch/x86/include/asm/kvm_host.h
-@@ -1010,9 +1010,21 @@ struct kvm_arch {
- 	 */
- 	bool tdp_mmu_enabled;
- 
--	/* List of struct tdp_mmu_pages being used as roots */
-+	/*
-+	 * List of struct tdp_mmu_pages being used as roots.
-+	 * All struct kvm_mmu_pages in the list should have
-+	 * tdp_mmu_page set.
-+	 * All struct kvm_mmu_pages in the list should have a positive
-+	 * root_count except when a thread holds the MMU lock and is removing
-+	 * an entry from the list.
-+	 */
- 	struct list_head tdp_mmu_roots;
--	/* List of struct tdp_mmu_pages not being used as roots */
-+
-+	/*
-+	 * List of struct tdp_mmu_pages not being used as roots.
-+	 * All struct kvm_mmu_pages in the list should have
-+	 * tdp_mmu_page set and a root_count of 0.
-+	 */
- 	struct list_head tdp_mmu_pages;
- };
- 
--- 
-2.29.2.729.g45daf8777d-goog
+On Tue,  5 Jan 2021 20:25:31 -0800 you wrote:
+> ptp_ines.c uses devm_platform_ioremap_resource(), which is only
+> built/available when CONFIG_HAS_IOMEM is enabled.
+> CONFIG_HAS_IOMEM is not enabled for arch/s390/, so builds on S390
+> have a build error:
+> 
+> s390-linux-ld: drivers/ptp/ptp_ines.o: in function `ines_ptp_ctrl_probe':
+> ptp_ines.c:(.text+0x17e6): undefined reference to `devm_platform_ioremap_resource'
+> 
+> [...]
+
+Here is the summary with links:
+  - ptp: ptp_ines: prevent build when HAS_IOMEM is not set
+    https://git.kernel.org/netdev/net/c/1f685e6adbbe
+
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
 
