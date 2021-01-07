@@ -2,227 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 717DB2ED14B
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 15:03:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C605D2ED152
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 15:03:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728509AbhAGOCH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 09:02:07 -0500
-Received: from foss.arm.com ([217.140.110.172]:33244 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728396AbhAGOCH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 09:02:07 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A99AED6E;
-        Thu,  7 Jan 2021 06:01:21 -0800 (PST)
-Received: from [10.57.37.195] (unknown [10.57.37.195])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E99843F70D;
-        Thu,  7 Jan 2021 06:01:19 -0800 (PST)
-Subject: Re: [PATCH 10/11] coresight: sink: Add TRBE driver
-To:     Anshuman Khandual <anshuman.khandual@arm.com>,
-        linux-arm-kernel@lists.infradead.org, coresight@lists.linaro.org
-Cc:     linux-kernel@vger.kernel.org,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Mike Leach <mike.leach@linaro.org>,
-        Linu Cherian <lcherian@marvell.com>
-References: <1608717823-18387-1-git-send-email-anshuman.khandual@arm.com>
- <1608717823-18387-11-git-send-email-anshuman.khandual@arm.com>
- <92b5ae56-df5d-3772-0206-b50ea4080c4f@arm.com>
- <f5ab26f4-8cf2-b7cf-ad3a-53c98d488407@arm.com>
- <d909717f-c3e2-37cf-63e8-cdf2ac3bf069@arm.com>
- <88a4d889-242a-2951-9c6e-e8712d013f46@arm.com>
-From:   Suzuki K Poulose <suzuki.poulose@arm.com>
-Message-ID: <5b6d10a3-d16e-ba2c-ef72-cc00d90e6240@arm.com>
-Date:   Thu, 7 Jan 2021 14:01:12 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        id S1728604AbhAGODS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 09:03:18 -0500
+Received: from esa.microchip.iphmx.com ([68.232.154.123]:55270 "EHLO
+        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728567AbhAGODR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Jan 2021 09:03:17 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1610028197; x=1641564197;
+  h=subject:to:cc:references:from:message-id:date:
+   mime-version:in-reply-to:content-transfer-encoding;
+  bh=mcRMdEN1K8IoLzsHqYPEqDBiMpf//jkQglwwKYdNyCE=;
+  b=aVA5y10JERRZ2iJDY60+tqigcFPDK5s0WlAfDG36kdaQ/RQvpGfPu1RV
+   qHL3Uz3P7/Oc3elKeLVaZFoP0zjm/4XgVpAI6U/CEFOEEbylnTbMJo1Mz
+   8A55qQrz9ZzOhjKuoWkjn1LYJOqVEHG0XkR6WWARbB0slTZ22AHPHaFn8
+   XvpVzjX873fpf5WceyUoxj5iaq7fCkJ8Xl0dpN4BIldpxsfn5aDrq3uJ0
+   cgKWlpzNZe+k/vz/dutQM4kw2h55qWu5sjZBg6D6m4AdzdNM7TBdjXgHM
+   Gc7R16LGjm8ziiAjFN2lk1mz6D0hZHQUxfOrT4rNSeUBEUht/h4517X//
+   g==;
+IronPort-SDR: SbVy0+20I7CmmDQRGpzefrnDe36TK8h+u7wnLqqfyi3k32SBCrt5pO3y79EGNq39jIR7p7j0o9
+ E67tayNnI/ctlZqZMKlZC90EuD8suyTc1kIa+vbtU7kPA4xXRg0eM+ysrDXSBXh+t70Vwhm2Ci
+ ifcQ28LoOCk4oDksR9VA1aoqg5UuIshs5HEYuadbdpfYY/tS0LN51dUT1X0QRxLtJIsZgEUCHH
+ VEM1GxDXgYfVtzR2MGfvjkiTGsxRPbP0GOHhTWsZNLifu7sixPiN/waN9ifNqtnxAT6iJkyKGq
+ ss4=
+X-IronPort-AV: E=Sophos;i="5.79,329,1602572400"; 
+   d="scan'208";a="102090366"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa2.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 07 Jan 2021 07:02:01 -0700
+Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
+ chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Thu, 7 Jan 2021 07:02:01 -0700
+Received: from [10.205.29.52] (10.10.115.15) by chn-vm-ex04.mchp-main.com
+ (10.10.85.152) with Microsoft SMTP Server id 15.1.1979.3 via Frontend
+ Transport; Thu, 7 Jan 2021 07:01:57 -0700
+Subject: Re: [PATCH] dt-bindings: rtc: at91rm9200: add sama7g5 compatible
+To:     Claudiu Beznea <claudiu.beznea@microchip.com>,
+        <a.zummo@towertech.it>, <alexandre.belloni@bootlin.com>,
+        <robh+dt@kernel.org>, <mark.rutland@arm.com>,
+        <ludovic.desroches@microchip.com>
+CC:     <linux-rtc@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+References: <1610016372-31784-1-git-send-email-claudiu.beznea@microchip.com>
+From:   Nicolas Ferre <nicolas.ferre@microchip.com>
+Organization: microchip
+Message-ID: <9ed4f784-8b7a-ec7e-fba6-63329631f703@microchip.com>
+Date:   Thu, 7 Jan 2021 15:01:56 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <88a4d889-242a-2951-9c6e-e8712d013f46@arm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <1610016372-31784-1-git-send-email-claudiu.beznea@microchip.com>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 1/6/21 11:50 AM, Anshuman Khandual wrote:
+On 07/01/2021 at 11:46, Claudiu Beznea wrote:
+> Add compatible for SAMA7G5 RTC. At the moment the driver is falling
+> back on SAM9X60's compatible but SAMA7G5 doesn't have the tamper mode
+> register and tamper debounce period register thus the need for a new
+> compatible to differentiate b/w these two in case tamper feature will
+> be implemented in future.
 > 
-> 
-> On 1/5/21 5:07 PM, Suzuki K Poulose wrote:
->> On 1/5/21 9:29 AM, Anshuman Khandual wrote:
+> Signed-off-by: Claudiu Beznea <claudiu.beznea@microchip.com>
 
-...
+Acked-by: Nicolas Ferre <nicolas.ferre@microchip.com>
 
->>>>> +{
->>>>> +    struct trbe_buf *buf = etm_perf_sink_config(handle);
->>>>> +    unsigned long offset;
->>>>> +
->>>>> +    if (buf->snapshot)
->>>>> +        offset = trbe_snapshot_offset(handle);
->>>>> +    else
->>>>> +        offset = trbe_normal_offset(handle);
->>>>> +    return buf->trbe_base + offset;
->>>>> +}
->>>>> +
->>>>> +static void clear_trbe_state(void)
->>>>
->>>> nit: The name doesn't give much clue about what it is doing, especially, given
->>>> the following "set_trbe_state()" which does completely different from this "clear"
->>>> operation.
->>>
->>> I agree that these names could have been better.
->>>
->>> s/clear_trbe_state/trbe_reset_perf_state  - Clears TRBE from current perf config
->>> s/set_trbe_state/trbe_prepare_perf_state  - Prepares TRBE for the next perf config
->>
->> Please don't tie them to "perf". This is pure hardware configuration, not perf.
+> ---
+>   Documentation/devicetree/bindings/rtc/atmel,at91rm9200-rtc.yaml | 1 +
+>   1 file changed, 1 insertion(+)
 > 
-> Okay.
-> 
->>
->> Also, I wonder if we need a separate "set_trbe_state". Could we not initialize the LIMITR
->> at one go ?
-> 
-> There are some limitations which could prevent that.
-> 
->>
->> i.e, do something like :
->>
->> set_trbe_limit_pointer(limit, mode) ?
->>
->> where it sets all the fields of limit pointer. Also, you may want to document the mode we
->> choose for TRBE. i.e, FILL STOP mode for us to collect the trace.
-> 
-> Sure, will document the TRBE mode being choosen here.
-> 
->>
->>>
->>>
->>>>
->>>> I would rather open code this with a write of 0 to trbsr in the caller.
->>>>
->>>>> +{
->>>>> +    u64 trbsr = read_sysreg_s(SYS_TRBSR_EL1);
->>>>> +
->>>>> +    WARN_ON(is_trbe_enabled());
->>>>> +    trbsr &= ~TRBSR_IRQ;
->>>>> +    trbsr &= ~TRBSR_TRG;
->>>>> +    trbsr &= ~TRBSR_WRAP;
->>>>> +    trbsr &= ~(TRBSR_EC_MASK << TRBSR_EC_SHIFT);
->>>>> +    trbsr &= ~(TRBSR_BSC_MASK << TRBSR_BSC_SHIFT);
->>>>> +    trbsr &= ~(TRBSR_FSC_MASK << TRBSR_FSC_SHIFT);
->>>>
->>>> BSC and FSC are the same fields under MSS, with their meanings determined by the EC field.
->>>
->>> Could just drop the FSC part if required.
->>>
->>>>
->>>> Could we simply write 0 to the register ?
->>>
->>> I would really like to avoid that. This function clearly enumerates all
->>> individual bit fields being cleared for resetting as well as preparing
->>> the TRBE for the next perf session. Converting this into a 0 write for
->>> SYS_TRBSR_EL1 sounds excessive and the only thing it would save is the
->>> register read.
->>
->>>
->>>>
->>>>> +    write_sysreg_s(trbsr, SYS_TRBSR_EL1);
->>>>> +}
->>>>> +
->>>>> +static void set_trbe_state(void)
->>>>> +{
->>>>> +    u64 trblimitr = read_sysreg_s(SYS_TRBLIMITR_EL1);
->>>>> +
->>>>> +    trblimitr &= ~TRBLIMITR_NVM;
->>>>> +    trblimitr &= ~(TRBLIMITR_FILL_MODE_MASK << TRBLIMITR_FILL_MODE_SHIFT);
->>>>> +    trblimitr &= ~(TRBLIMITR_TRIG_MODE_MASK << TRBLIMITR_TRIG_MODE_SHIFT);
->>>>> +    trblimitr |= (TRBE_FILL_STOP & TRBLIMITR_FILL_MODE_MASK) << TRBLIMITR_FILL_MODE_SHIFT;
->>>>> +    trblimitr |= (TRBE_TRIGGER_IGNORE & TRBLIMITR_TRIG_MODE_MASK) << TRBLIMITR_TRIG_MODE_SHIFT;
->>>>> +    write_sysreg_s(trblimitr, SYS_TRBLIMITR_EL1);
->>>>
->>>> Do we need to read-copy-update here ? Could we simply write 0 ?
->>>> Same as above comment, could we not simply opencode it at the caller ?
->>>> Clearly the names don't help.
->>>
->>> Will change the names as proposed or something better. But lets leave
->>> these functions as is. Besides TRBE_TRIGGER_IGNORE also has a positive
->>> value (i.e 3), writing all 0s into SYS_TRBLIMITR_EL1 will not be ideal.
->>>
->>
->> The point is, we don't need to preserve the values for LIMITR. Also see my comment
->> above, for folding this to set_trbe_limit_pointer(). In any case, I don't think
->> we should rely on the values of fields we change. So it is safer and cleaner to
->> set set all the bits for LIMITR, including the LIMIT address in one go, without
->> ready-copy-update.
-> 
-> TRBE needs to be disabled (which is also in the LIMIT register) before we can update
-> any other fields in the LIMIT register. So there is already an order dependency here.
-> Looking at the function trbe_enable_hw(), it follows something like
-> 
-> 1. Clear and set the TRBE mode	- followed by an isb()
-> 2. Update the TRBE pointers	- followed by an isb()
-> 3. Set it rolling		- followed by TSB_CSYNC
-> 
-> static void trbe_enable_hw(struct trbe_buf *buf)
-> {
-> 
-> 	[Software checks]
->          WARN_ON(buf->trbe_write < buf->trbe_base);
->          WARN_ON(buf->trbe_write >= buf->trbe_limit);
-> 
-> 	[Disable TRBE in the limit register]
->          set_trbe_disabled();
+> diff --git a/Documentation/devicetree/bindings/rtc/atmel,at91rm9200-rtc.yaml b/Documentation/devicetree/bindings/rtc/atmel,at91rm9200-rtc.yaml
+> index 02bbfe726c62..994de43d17fa 100644
+> --- a/Documentation/devicetree/bindings/rtc/atmel,at91rm9200-rtc.yaml
+> +++ b/Documentation/devicetree/bindings/rtc/atmel,at91rm9200-rtc.yaml
+> @@ -20,6 +20,7 @@ properties:
+>         - atmel,sama5d4-rtc
+>         - atmel,sama5d2-rtc
+>         - microchip,sam9x60-rtc
+> +      - microchip,sama7g5-rtc
+>   
+>     reg:
+>       maxItems: 1
 > 
 
-We need an isb() here.
 
-> 	[Clears TRBE status register]
->          trbe_reset_perf_state();
-
-Please be explicit here. Make the function name reflect the fact that
-we are simply clearing the status register and nothing related to perf.
-
-> 
-> 	[Configures TRBE mode in the limit register]
->          trbe_prepare_perf_state();
-
-This is unnecessarily introducing a dependency not enforced by the HW.
-You could program the LIMIT register with all the setting, mode, limit
-and *enable TBRE* once we have programmed base and write pointer at one
-shot.
-
-> 
->          isb();
-
-Drop the ISB
-
-> 
-> 	[Update all required pointers]
->          set_trbe_base_pointer(buf->trbe_base);
->          set_trbe_limit_pointer(buf->trbe_limit);
-
-As mentioned above, this could be done in set_trbe_enabled()
-
->          set_trbe_write_pointer(buf->trbe_write);
->          isb();
-> 
-> 	[Set it rolling]
-> 
-> 	[Update TRBE status register stop bit]
->          set_trbe_running();
-
-This doesn't have any significance with Hardware. It is a status bit
-from the HW, which is writable only for "state" save/restore, when
-switching between contexts. Otherwise, this write doesn't do anything.
-So, please combine this with the clear_status operation above.
-
-
-> 
-> 	[Update TRBE limit register enable bit]
->          set_trbe_enabled();
-
-Here we could set all the fileds of the LIMIT register, followed by
-an isb()
-
-Kind regards
-Suzuki
+-- 
+Nicolas Ferre
