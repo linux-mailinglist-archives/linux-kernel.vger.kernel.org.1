@@ -2,89 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4AF032EC8E3
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 04:13:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E3D82EC8E6
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 04:13:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726608AbhAGDLE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Jan 2021 22:11:04 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47500 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726009AbhAGDLE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Jan 2021 22:11:04 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 823AE2229C;
-        Thu,  7 Jan 2021 03:10:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1609989023;
-        bh=+qd4peApsQU6SUTyExxo2EJrZVjRPpbAM3e3LuXtF3U=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=lxZwARMtCcOzSdmzSNzDI0HodQQjBd2JZvpJ3jGchCtWjXpXdxRTHo53XKrqSB6Il
-         9P8u++irxbJ1MBPX7IHVOjyAaXZP0KPz+53Oc1J63gfi7WXXcqXVoJUZrREL/hSULe
-         FpfVwfrxURU+TZVYkSQ9OyhabixGHEZ7oBMibko1KjFhURatmoJLwrzQselZNW0i+o
-         puybmj6NVolDFDgAacmG5h/kx4WuXkm0ZQnr+0tYitdysLJLQR7PWOAuaGtgdIVrfx
-         1MEcD/uKyMQ+PWbFpZ7a8JP15zvVzJ992V4jabdS0aHh8p4ZkslCVLV6je5t6auwb2
-         YeEy/9of/qUAw==
-Date:   Thu, 7 Jan 2021 11:10:16 +0800
-From:   Shawn Guo <shawnguo@kernel.org>
-To:     Oleksij Rempel <o.rempel@pengutronix.de>
-Cc:     Mark Rutland <mark.rutland@arm.com>,
+        id S1726794AbhAGDML (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Jan 2021 22:12:11 -0500
+Received: from mailgw02.mediatek.com ([210.61.82.184]:44828 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726009AbhAGDMK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 Jan 2021 22:12:10 -0500
+X-UUID: 771d5a973aaf4a4096b8b39418b25130-20210107
+X-UUID: 771d5a973aaf4a4096b8b39418b25130-20210107
+Received: from mtkcas06.mediatek.inc [(172.21.101.30)] by mailgw02.mediatek.com
+        (envelope-from <yongqiang.niu@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 799338514; Thu, 07 Jan 2021 11:11:25 +0800
+Received: from mtkcas11.mediatek.inc (172.21.101.40) by
+ mtkmbs05n2.mediatek.inc (172.21.101.140) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Thu, 7 Jan 2021 11:11:24 +0800
+Received: from localhost.localdomain (10.17.3.153) by mtkcas11.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Thu, 7 Jan 2021 11:11:24 +0800
+From:   Yongqiang Niu <yongqiang.niu@mediatek.com>
+To:     CK Hu <ck.hu@mediatek.com>, Philipp Zabel <p.zabel@pengutronix.de>,
         Rob Herring <robh+dt@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>, devicetree@vger.kernel.org,
-        Fabio Estevam <festevam@gmail.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        David Jander <david@protonic.nl>,
-        dri-devel@lists.freedesktop.org
-Subject: Re: [PATCH v7 0/8] mainline Plymovent M2M and BAS board
-Message-ID: <20210107031015.GR4142@dragon>
-References: <20201207140939.31297-1-o.rempel@pengutronix.de>
+        Matthias Brugger <matthias.bgg@gmail.com>
+CC:     David Airlie <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
+        Mark Rutland <mark.rutland@arm.com>,
+        <dri-devel@lists.freedesktop.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <Project_Global_Chrome_Upstream_Group@mediatek.com>,
+        Hsin-Yi Wang <hsinyi@chromium.org>,
+        Yongqiang Niu <yongqiang.niu@mediatek.com>
+Subject: [PATCH v9, 00/11] drm/mediatek: add support for mediatek SOC MT8183
+Date:   Thu, 7 Jan 2021 11:11:10 +0800
+Message-ID: <1609989081-29353-1-git-send-email-yongqiang.niu@mediatek.com>
+X-Mailer: git-send-email 1.8.1.1.dirty
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201207140939.31297-1-o.rempel@pengutronix.de>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: text/plain
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 07, 2020 at 03:09:31PM +0100, Oleksij Rempel wrote:
-> changes v7:
-> - panel-simple.yaml: fix comments and part order
-> - panel-simple.yaml: invent a product description for the Kyocera tcg070wvlq panel
-> 
-> changes v6:
-> - do more panel-simple.yaml related cleanups
-> 
-> changes v5:
-> - rebase against latest shawngup/for-next
-> - add patch to fix checkpatch warning on PLYM2M dts
-> 
-> changes v4:
-> - add PLYBAS board
-> - PLYM2M: add touchscreen node
-> - PLYM2M: add rename led nodes to led-x
-> 
-> changes v3:
-> - use old style copyright text
-> 
-> changes v2:
-> - fsl.yaml: reorder ply,plym2m
-> - imx6dl-plym2m.dts: use hyphen instead of underscore in phy-clock
-> 
-> Oleksij Rempel (8):
->   dt-bindings: display: simple: fix alphabetical order for EDT
->     compatibles
->   dt-bindings: display: simple: add EDT compatibles already supported by
->     the driver
->   dt-bindings: display: simple: Add Kyocera tcg070wvlq panel
->   dt-bindings: vendor-prefixes: Add an entry for Plymovent
->   dt-bindings: arm: fsl: add Plymovent M2M board
->   ARM: dts: add Plymovent M2M board
->   dt-bindings: arm: fsl: add Plymovent BAS board
->   ARM: dts: add Plymovent BAS board
+This series are based on 5.11-rc1 and provide 11 patch
+to support mediatek SOC MT8183
 
-Applied all, thanks.
+Change since v8
+- fix some review comment in v8
+- separate gamma module for mt8183 has no dither function in gamma
+- enable dither function for 5 or 6 bpc panel display
+- separate ddp mutex patch from the whole Soc patch
+
+Change since v7
+- add dt-binding for mt8183 display
+- base mmsys patch
+https://patchwork.kernel.org/project/linux-mediatek/cover/1607506379-10998-1-git-send-email-yongqiang.niu@mediatek.com/
+- base dts patch
+https://patchwork.kernel.org/project/linux-mediatek/cover/20201127104930.1981497-1-enric.balletbo@collabora.com/
+- add mt8183 function call for setting the routing registers
+- add RDMA fifo size error handle
+
+Change since v6
+- move ddp component define into mtk_mmsys.h
+- add mmsys private data to support different ic path connection
+- add mt8183-mmsys.c to support 8183 path connection
+- fix reviewed issue in v6
+
+Change since v5
+- fix reviewed issue in v5
+base https://patchwork.kernel.org/project/linux-mediatek/list/?series=213219
+
+Change since v4
+- fix reviewed issue in v4
+
+Change since v3
+- fix reviewed issue in v3
+- fix type error in v3
+- fix conflict with iommu patch
+
+Change since v2
+- fix reviewed issue in v2
+- add mutex node into dts file
+
+Changes since v1:
+- fix reviewed issue in v1
+- add dts for mt8183 display nodes
+- adjust display clock control flow in patch 22
+- add vmap support for mediatek drm in patch 23
+- fix page offset issue for mmap function in patch 24
+- enable allow_fb_modifiers for mediatek drm in patch 25
+
+Yongqiang Niu (11):
+  dt-bindings: mediatek: add rdma-fifo-size description for mt8183
+    display
+  dt-bindings: mediatek: add description for mt8183 display
+  arm64: dts: mt8183: rename rdma fifo size
+  arm64: dts: mt8183: refine gamma compatible name
+  drm/mediatek: add fifo_size into rdma private data
+  drm/mediatek: add RDMA fifo size error handle
+  drm/mediatek: separate gamma module
+  drm/mediatek: add has_dither private data for gamma
+  drm/mediatek: enable dither function
+  drm/mediatek: add DDP support for MT8183
+  This patch add support for mediatek SOC MT8183
+
+ .../bindings/display/mediatek/mediatek,disp.txt    |  11 +-
+ arch/arm64/boot/dts/mediatek/mt8183.dtsi           |   7 +-
+ drivers/gpu/drm/mediatek/Makefile                  |   1 +
+ drivers/gpu/drm/mediatek/mtk_disp_gamma.c          | 192 +++++++++++++++++++++
+ drivers/gpu/drm/mediatek/mtk_disp_ovl.c            |  18 ++
+ drivers/gpu/drm/mediatek/mtk_disp_rdma.c           |  29 +++-
+ drivers/gpu/drm/mediatek/mtk_drm_ddp.c             |  48 ++++++
+ drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.c        |  96 ++++-------
+ drivers/gpu/drm/mediatek/mtk_drm_ddp_comp.h        |   1 +
+ drivers/gpu/drm/mediatek/mtk_drm_drv.c             |  49 +++++-
+ drivers/gpu/drm/mediatek/mtk_drm_drv.h             |   1 +
+ 11 files changed, 388 insertions(+), 65 deletions(-)
+ create mode 100644 drivers/gpu/drm/mediatek/mtk_disp_gamma.c
+
+-- 
+1.8.1.1.dirty
+
