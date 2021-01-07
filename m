@@ -2,113 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A1922ECEB1
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 12:23:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CA3632ECEB3
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 12:24:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727919AbhAGLXN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 06:23:13 -0500
-Received: from mx2.suse.de ([195.135.220.15]:53592 "EHLO mx2.suse.de"
+        id S1727327AbhAGLYe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 06:24:34 -0500
+Received: from foss.arm.com ([217.140.110.172]:58242 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727213AbhAGLXM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 06:23:12 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1610018546; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=OAd8Wyoha+vx0tCBHkie2vjkD2eVnSYMKMJBxqvQqE0=;
-        b=uc0I5x+uw23D5YAqdAg4JJY79wNjdbOqRM8WnydNYuYB8uez/SRmf5QV9XH1E3QgNBHiLM
-        /Q+fyDXp8LjewOx3BpFDDOr49Ap1xxl6bcfZuU4+y8LKExv/OVfsOUhrFg+VTSU8hvXnFK
-        qahJ9BOUQD4AFkSNUG8b9aNIbZoXF9g=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 086A4AFB4;
-        Thu,  7 Jan 2021 11:22:26 +0000 (UTC)
-Date:   Thu, 7 Jan 2021 12:22:19 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     Muchun Song <songmuchun@bytedance.com>
-Cc:     Mike Kravetz <mike.kravetz@oracle.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Naoya Horiguchi <n-horiguchi@ah.jp.nec.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [External] Re: [PATCH v2 4/6] mm: hugetlb: add return -EAGAIN
- for dissolve_free_huge_page
-Message-ID: <20210107112219.GH13207@dhcp22.suse.cz>
-References: <20210106084739.63318-1-songmuchun@bytedance.com>
- <20210106084739.63318-5-songmuchun@bytedance.com>
- <20210106170754.GU13207@dhcp22.suse.cz>
- <CAMZfGtWg0J5syATXMpP8RYOz=w0gJNYz_=UrT3ueMspQjNY7BQ@mail.gmail.com>
- <20210107083902.GB13207@dhcp22.suse.cz>
- <CAMZfGtWwHOVCvFUvm-r74k1GEEujW_HniLFOMKbykny7Cu09eA@mail.gmail.com>
+        id S1726229AbhAGLYe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Jan 2021 06:24:34 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 2F3131FB;
+        Thu,  7 Jan 2021 03:23:48 -0800 (PST)
+Received: from e107158-lin (unknown [10.1.194.78])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 81F4A3F719;
+        Thu,  7 Jan 2021 03:23:46 -0800 (PST)
+Date:   Thu, 7 Jan 2021 11:23:44 +0000
+From:   Qais Yousef <qais.yousef@arm.com>
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        bpf <bpf@vger.kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Phil Auld <pauld@redhat.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        vincent.donnefort@arm.com, Ingo Molnar <mingo@redhat.com>,
+        vincent.guittot@linaro.org, LKML <linux-kernel@vger.kernel.org>,
+        Valentin Schneider <valentin.schneider@arm.com>
+Subject: Re: [PATCH v2] sched/debug: Add new tracepoint to track cpu_capacity
+Message-ID: <20210107112344.y73hmx3bg7cjkp53@e107158-lin>
+References: <58f5d2e8-493b-7ce1-6abd-57705e5ab437@arm.com>
+ <20200902135423.GB93959@lorien.usersys.redhat.com>
+ <20200907110223.gtdgqod2iv2w7xmg@e107158-lin.cambridge.arm.com>
+ <20200908131954.GA147026@lorien.usersys.redhat.com>
+ <20210104182642.xglderapsfrop6pi@e107158-lin>
+ <CAADnVQ+1BNO577iz+05M4nNk+DB2n9ffwr4KrktWxO+2mP1b-Q@mail.gmail.com>
+ <20210105113857.gzqaiuhxsxdtu474@e107158-lin>
+ <CAADnVQ+GH9DfaRJ3CCDYL8o9UUH-eAuBq6EhjVLbicY_XWbySw@mail.gmail.com>
+ <20210106112712.6ec7yejhidauo432@e107158-lin>
+ <CAEf4BzaL8788pNdk4A9_EGTZF52MikCPJX1-fh3JO2uca6x9FQ@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAMZfGtWwHOVCvFUvm-r74k1GEEujW_HniLFOMKbykny7Cu09eA@mail.gmail.com>
+In-Reply-To: <CAEf4BzaL8788pNdk4A9_EGTZF52MikCPJX1-fh3JO2uca6x9FQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu 07-01-21 17:01:16, Muchun Song wrote:
-> On Thu, Jan 7, 2021 at 4:39 PM Michal Hocko <mhocko@suse.com> wrote:
+On 01/06/21 15:42, Andrii Nakryiko wrote:
+> On Wed, Jan 6, 2021 at 3:27 AM Qais Yousef <qais.yousef@arm.com> wrote:
 > >
-> > On Thu 07-01-21 11:11:41, Muchun Song wrote:
-> > > On Thu, Jan 7, 2021 at 1:07 AM Michal Hocko <mhocko@suse.com> wrote:
-> > > >
-> > > > On Wed 06-01-21 16:47:37, Muchun Song wrote:
-> > > > > When dissolve_free_huge_page() races with __free_huge_page(), we can
-> > > > > do a retry. Because the race window is small.
-> > > >
-> > > > Is this a bug fix or mere optimization. I have hard time to tell from
-> > > > the description.
+> > On 01/05/21 08:44, Alexei Starovoitov wrote:
+> > > > Any pointer to an example test I could base this on?
 > > >
-> > > It is optimization. Thanks.
-> > >
-> > > >
-> > > > > Signed-off-by: Muchun Song <songmuchun@bytedance.com>
-> > > > > ---
-> > > > >  mm/hugetlb.c | 26 +++++++++++++++++++++-----
-> > > > >  1 file changed, 21 insertions(+), 5 deletions(-)
-> > > > >
-> > > > > diff --git a/mm/hugetlb.c b/mm/hugetlb.c
-> > > > [...]
-> > > > > @@ -1825,6 +1828,14 @@ int dissolve_free_huge_page(struct page *page)
-> > > > >       }
-> > > > >  out:
-> > > > >       spin_unlock(&hugetlb_lock);
-> > > > > +
-> > > > > +     /*
-> > > > > +      * If the freeing of the HugeTLB page is put on a work queue, we should
-> > > > > +      * flush the work before retrying.
-> > > > > +      */
-> > > > > +     if (unlikely(rc == -EAGAIN))
-> > > > > +             flush_work(&free_hpage_work);
-> > > >
-> > > > Is it safe to wait for the work to finish from this context?
-> > >
-> > > Yes. It is safe.
+> > > selftests/bpf/
 > >
-> > Please expand on why in the changelog. Same for the optimization
-> > including some numbers showing it really helps.
+> > I was hoping for something more elaborate. I thought there's something already
+> > there that do some verification for raw tracepoint that I could either extend
+> > or replicate. Otherwise this could end up being a time sink for me and I'm not
+> > keen on jumping down this rabbit hole.
 > 
-> OK. Changelog should be updated. Do you agree the race window
-> is quite small?
+> One way would be to add either another custom tracepoint definition to
+> a test module or modify the existing one to be a bare tracepoint. See
+> links below.
+> 
+> If it's easy to trigger those tracepoints from user-space on demand,
+> writing a similar (to module_attach) selftest for in-kernel tracepoint
+> is trivial.
+> 
+>   [0] https://github.com/torvalds/linux/blob/master/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod-events.h
+>   [1] https://github.com/torvalds/linux/blob/master/tools/testing/selftests/bpf/progs/test_module_attach.c#L12-L18
+>   [2] https://github.com/torvalds/linux/blob/master/tools/testing/selftests/bpf/prog_tests/module_attach.c
 
-Yes, the race is very rare and the window itself should be relatively
-small. This doesn't really answer the question about blocking though.
+Thanks a lot Andrii. That will make it much easier to figure out something.
 
-> If so, why is it not an optimization? Don’t we dissolve
-> the page as successfully as possible when we call
-> dissolve_free_huge_page()? I am confused about numbers showing.
-> Because this is not a performance optimization, but an increase in
-> the success rate of dissolving.
+Cheers
 
-And it is a very theoretical one, right? Can you even trigger it? What
-would happen if the race is lost? Is it serious? This all would be part
-of the changelog ideally. This is a tricky area that spans hugetlb,
-memory hotplug and hwpoisoning. All of them tricky. 
--- 
-Michal Hocko
-SUSE Labs
+--
+Qais Yousef
