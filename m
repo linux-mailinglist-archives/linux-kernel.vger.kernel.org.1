@@ -2,85 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ADADA2EC9D5
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 06:08:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A4282EC9DE
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 06:11:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726731AbhAGFHI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 00:07:08 -0500
-Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:13366 "EHLO
-        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726051AbhAGFHH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 00:07:07 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5ff696d30000>; Wed, 06 Jan 2021 21:06:27 -0800
-Received: from HQMAIL109.nvidia.com (172.20.187.15) by HQMAIL105.nvidia.com
- (172.20.187.12) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 7 Jan
- 2021 05:06:26 +0000
-Received: from audio.nvidia.com (172.20.145.6) by mail.nvidia.com
- (172.20.187.15) with Microsoft SMTP Server id 15.0.1473.3 via Frontend
- Transport; Thu, 7 Jan 2021 05:06:24 +0000
-From:   Sameer Pujar <spujar@nvidia.com>
-To:     <thierry.reding@gmail.com>, <robh+dt@kernel.org>
-CC:     <jonathanh@nvidia.com>, <devicetree@vger.kernel.org>,
-        <linux-tegra@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        Sameer Pujar <spujar@nvidia.com>, <stable@vger.kernel.org>
-Subject: [PATCH] arm64: tegra: Add power-domain for Tegra210 HDA
-Date:   Thu, 7 Jan 2021 10:36:10 +0530
-Message-ID: <1609995970-12256-1-git-send-email-spujar@nvidia.com>
-X-Mailer: git-send-email 2.7.4
+        id S1726410AbhAGFLU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 00:11:20 -0500
+Received: from mga11.intel.com ([192.55.52.93]:47387 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725821AbhAGFLU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Jan 2021 00:11:20 -0500
+IronPort-SDR: 7lR9+5Ynkb9jx4gdHEpbnHSphewj2xUOzpUI3gUaP34+S3Rg/MjBCX1VWUJ0aMS9syD/hPP6EZ
+ SElrXWCxeAeA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9856"; a="173866034"
+X-IronPort-AV: E=Sophos;i="5.79,329,1602572400"; 
+   d="scan'208";a="173866034"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Jan 2021 21:10:39 -0800
+IronPort-SDR: cUAcMg9nHOIGQ69XSsqShzzb45m/z4GWkwCEVrdwm6V7gGH8stO8OT8/oAn1zXzDEc9F9js6Rn
+ FB/xGkyMmoSQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.79,329,1602572400"; 
+   d="scan'208";a="566042941"
+Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
+  by orsmga005.jf.intel.com with ESMTP; 06 Jan 2021 21:10:38 -0800
+Received: from shsmsx601.ccr.corp.intel.com (10.109.6.141) by
+ fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Wed, 6 Jan 2021 21:10:37 -0800
+Received: from shsmsx603.ccr.corp.intel.com (10.109.6.143) by
+ SHSMSX601.ccr.corp.intel.com (10.109.6.141) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Thu, 7 Jan 2021 13:10:36 +0800
+Received: from shsmsx603.ccr.corp.intel.com ([10.109.6.143]) by
+ SHSMSX603.ccr.corp.intel.com ([10.109.6.143]) with mapi id 15.01.1713.004;
+ Thu, 7 Jan 2021 13:10:36 +0800
+From:   "Zhang, Rui" <rui.zhang@intel.com>
+To:     Daniel Lezcano <daniel.lezcano@linaro.org>
+CC:     "mjg59@codon.org.uk" <mjg59@codon.org.uk>,
+        "linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "amitk@kernel.org" <amitk@kernel.org>,
+        "thara.gopinath@linaro.org" <thara.gopinath@linaro.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>,
+        "open list:ACPI THERMAL DRIVER" <linux-acpi@vger.kernel.org>
+Subject: RE: [PATCH 4/6] acpi/drivers/thermal: Remove TRIPS_NONE cooling
+ device binding
+Thread-Topic: [PATCH 4/6] acpi/drivers/thermal: Remove TRIPS_NONE cooling
+ device binding
+Thread-Index: AQHW0nJ0H4IIUd4InUWm3OU4yKraraoYyEkAgALdnGA=
+Date:   Thu, 7 Jan 2021 05:10:35 +0000
+Message-ID: <cb755a9f2b314dcda0392fd5c08f7fb9@intel.com>
+References: <20201214233811.485669-1-daniel.lezcano@linaro.org>
+ <20201214233811.485669-4-daniel.lezcano@linaro.org>
+ <1de4868e-6229-ed33-f45a-7cd82d3ee48a@linaro.org>
+In-Reply-To: <1de4868e-6229-ed33-f45a-7cd82d3ee48a@linaro.org>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+dlp-product: dlpe-windows
+dlp-reaction: no-action
+dlp-version: 11.5.1.3
+x-originating-ip: [10.239.127.36]
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1609995987; bh=t8ctQ0xfU/UJdQS/7XQux5m6y8DB4xnSoWfObOddjrM=;
-        h=From:To:CC:Subject:Date:Message-ID:X-Mailer:MIME-Version:
-         Content-Type;
-        b=Xgt2NewP12LlsMekKGON5NTmYOsNnFgHBatUDhVlwPiCgL3/Ch7GOX8MylhRBNJ5E
-         nkZozKvJsx4R0VDtMhrYwD2aXHGB0plClg43e5DX5c8amhaufXuU7iASBmqTLEWmdk
-         MgCdrchSjmYJseZQXWoQPTOQ30TmFJFzajW5uJsCcVC0BCc162CVrITWFrheI2atsN
-         kTKVRbQPLIFLjzfKD9ZUqxErBw2h6go2qMj/6HXuAaXrqai5a1adQyy8vvgC1yQjIC
-         rJMUNHGLcN2ogLB8WfxDL4gmKbZrtpBkguv+EffFYm9MM99GsWhzrzE/JGJBTkSdnE
-         mfOexJmjuCSMA==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-HDA initialization is failing occasionally on Tegra210 and following
-print is observed in the boot log. Because of this probe() fails and
-no sound card is registered.
-
-  [16.800802] tegra-hda 70030000.hda: no codecs found!
-
-Codecs request a state change and enumeration by the controller. In
-failure cases this does not seem to happen as STATETS register reads 0.
-
-The problem seems to be related to the HDA codec dependency on SOR
-power domain. If it is gated during HDA probe then the failure is
-observed. Building Tegra HDA driver into kernel image avoids this
-failure but does not completely address the dependency part. Fix this
-problem by adding 'power-domains' DT property for Tegra210 HDA. Note
-that Tegra186 and Tegra194 HDA do this already.
-
-Fixes: 742af7e7a0a1 ("arm64: tegra: Add Tegra210 support")
-Depends-on: 96d1f078ff0 ("arm64: tegra: Add SOR power-domain for Tegra210")
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Sameer Pujar <spujar@nvidia.com>
----
- arch/arm64/boot/dts/nvidia/tegra210.dtsi | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/arch/arm64/boot/dts/nvidia/tegra210.dtsi b/arch/arm64/boot/dts/nvidia/tegra210.dtsi
-index 4fbf8c1..fd33b4d 100644
---- a/arch/arm64/boot/dts/nvidia/tegra210.dtsi
-+++ b/arch/arm64/boot/dts/nvidia/tegra210.dtsi
-@@ -997,6 +997,7 @@
- 			 <&tegra_car 128>, /* hda2hdmi */
- 			 <&tegra_car 111>; /* hda2codec_2x */
- 		reset-names = "hda", "hda2hdmi", "hda2codec_2x";
-+		power-domains = <&pd_sor>;
- 		status = "disabled";
- 	};
- 
--- 
-2.7.4
-
+QUNQSSB0aGVybWFsIGRyaXZlciBiaW5kcyB0aGUgZGV2aWNlcyBsaXN0ZWQgaW4gX1RaRCBtZXRo
+b2Qgd2l0aCBUSEVSTUFMX1RSSVBTX05PTkUuDQpOb3cgZ2l2ZW4gdGhhdA0KMS4gVEhFUk1BTF9U
+UklQU19OT05FIGlzIHJlbW92ZWQgZnJvbSB0aGVybWFsIGZyYW1ld29yaw0KMi4gX1RaUCBpcyBy
+YXJlbHkgc3VwcG9ydGVkLiBJIHNlYXJjaGVkIH41MDAgYWNwaWR1bXBzIGZyb20gZGlmZmVyZW50
+IHBsYXRmb3JtcyByZXBvcnRlZCBieSBlbmQgdXNlcnMgaW4ga2VybmVsIEJ1Z3ppbGxhLCB0aGVy
+ZSBpcyBvbmx5IG9uZSBwbGF0Zm9ybSB3aXRoIF9UWlAgaW1wbGVtZW50ZWQsIGFuZCBpdCB3YXMg
+YWxtb3N0IDEwIHllYXJzIGFnby4NCg0KU28sIEkgdGhpbmsgaXQgaXMgc2FmZSB0byByZW1vdmUg
+dGhpcyBwaWVjZSBvZiBjb2RlLg0KDQo+IC0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQo+IEZy
+b206IERhbmllbCBMZXpjYW5vIDxkYW5pZWwubGV6Y2Fub0BsaW5hcm8ub3JnPg0KPiBTZW50OiBU
+dWVzZGF5LCBKYW51YXJ5IDA1LCAyMDIxIDExOjQ0IFBNDQo+IFRvOiBaaGFuZywgUnVpIDxydWku
+emhhbmdAaW50ZWwuY29tPg0KPiBDYzogbWpnNTlAY29kb24ub3JnLnVrOyBsaW51eC1wbUB2Z2Vy
+Lmtlcm5lbC5vcmc7IGxpbnV4LQ0KPiBrZXJuZWxAdmdlci5rZXJuZWwub3JnOyBhbWl0a0BrZXJu
+ZWwub3JnOyB0aGFyYS5nb3BpbmF0aEBsaW5hcm8ub3JnOw0KPiBSYWZhZWwgSi4gV3lzb2NraSA8
+cmp3QHJqd3lzb2NraS5uZXQ+OyBMZW4gQnJvd24gPGxlbmJAa2VybmVsLm9yZz47IG9wZW4NCj4g
+bGlzdDpBQ1BJIFRIRVJNQUwgRFJJVkVSIDxsaW51eC1hY3BpQHZnZXIua2VybmVsLm9yZz4NCj4g
+U3ViamVjdDogUmU6IFtQQVRDSCA0LzZdIGFjcGkvZHJpdmVycy90aGVybWFsOiBSZW1vdmUgVFJJ
+UFNfTk9ORSBjb29saW5nDQo+IGRldmljZSBiaW5kaW5nDQo+IEltcG9ydGFuY2U6IEhpZ2gNCj4g
+DQo+IEhpIFJ1aSwNCj4gDQo+IA0KPiBPbiAxNS8xMi8yMDIwIDAwOjM4LCBEYW5pZWwgTGV6Y2Fu
+byB3cm90ZToNCj4gPiBUaGUgbG9vcCBpcyBoZXJlIHRvIGNyZWF0ZSBkZWZhdWx0IGNvb2xpbmcg
+ZGV2aWNlIGJpbmRpbmcgb24gdGhlDQo+ID4gVEhFUk1BTF9UUklQU19OT05FIG51bWJlciB3aGlj
+aCBpcyB1c2VkIHRvIGJlIHRoZSAnZm9yY2VkX3Bhc3NpdmUnDQo+ID4gZmVhdHVyZS4gSG93ZXZl
+ciwgd2UgcmVtb3ZlZCBhbGwgY29kZSBkZWFsaW5nIHdpdGggdGhhdCBpbiB0aGUgdGhlcm1hbA0K
+PiA+IGNvcmUsIHRodXMgdGhpcyBiaW5kaW5nIGRvZXMgbm8gbG9uZ2VyIG1ha2Ugc2Vuc2UuDQo+
+ID4NCj4gPiBSZW1vdmUgaXQuDQo+ID4NCj4gPiBTaWduZWQtb2ZmLWJ5OiBEYW5pZWwgTGV6Y2Fu
+byA8ZGFuaWVsLmxlemNhbm9AbGluYXJvLm9yZz4NCg0KQWNrZWQtYnk6IFpoYW5nIFJ1aSA8cnVp
+LnpoYW5nQGludGVsLmNvbT4NCg0KVGhhbmtzLA0KcnVpDQo+IA0KPiBBcmUgeW91IGZpbmUgd2l0
+aCB0aGlzIGNoYW5nZT8NCj4gDQo+IFRoYW5rcw0KPiANCj4gICAtLSBEYW5pZWwNCj4gDQo+ID4g
+LS0tDQo+ID4gIGRyaXZlcnMvYWNwaS90aGVybWFsLmMgfCAxOSAtLS0tLS0tLS0tLS0tLS0tLS0t
+DQo+ID4gIDEgZmlsZSBjaGFuZ2VkLCAxOSBkZWxldGlvbnMoLSkNCj4gPg0KPiA+IGRpZmYgLS1n
+aXQgYS9kcml2ZXJzL2FjcGkvdGhlcm1hbC5jIGIvZHJpdmVycy9hY3BpL3RoZXJtYWwuYyBpbmRl
+eA0KPiA+IGI1ZTRiYzllMzI4Mi4uMjZhODlmZjgwYTBlIDEwMDY0NA0KPiA+IC0tLSBhL2RyaXZl
+cnMvYWNwaS90aGVybWFsLmMNCj4gPiArKysgYi9kcml2ZXJzL2FjcGkvdGhlcm1hbC5jDQo+ID4g
+QEAgLTc2NCwyNSArNzY0LDYgQEAgc3RhdGljIGludCBhY3BpX3RoZXJtYWxfY29vbGluZ19kZXZp
+Y2VfY2Ioc3RydWN0DQo+IHRoZXJtYWxfem9uZV9kZXZpY2UgKnRoZXJtYWwsDQo+ID4gIAkJfQ0K
+PiA+ICAJfQ0KPiA+DQo+ID4gLQlmb3IgKGkgPSAwOyBpIDwgdHotPmRldmljZXMuY291bnQ7IGkr
+Kykgew0KPiA+IC0JCWhhbmRsZSA9IHR6LT5kZXZpY2VzLmhhbmRsZXNbaV07DQo+ID4gLQkJc3Rh
+dHVzID0gYWNwaV9idXNfZ2V0X2RldmljZShoYW5kbGUsICZkZXYpOw0KPiA+IC0JCWlmIChBQ1BJ
+X1NVQ0NFU1Moc3RhdHVzKSAmJiAoZGV2ID09IGRldmljZSkpIHsNCj4gPiAtCQkJaWYgKGJpbmQp
+DQo+ID4gLQkJCQlyZXN1bHQgPSB0aGVybWFsX3pvbmVfYmluZF9jb29saW5nX2RldmljZQ0KPiA+
+IC0JCQkJCQkodGhlcm1hbCwNCj4gVEhFUk1BTF9UUklQU19OT05FLA0KPiA+IC0JCQkJCQkgY2Rl
+diwgVEhFUk1BTF9OT19MSU1JVCwNCj4gPiAtCQkJCQkJIFRIRVJNQUxfTk9fTElNSVQsDQo+ID4g
+LQ0KPiBUSEVSTUFMX1dFSUdIVF9ERUZBVUxUKTsNCj4gPiAtCQkJZWxzZQ0KPiA+IC0JCQkJcmVz
+dWx0ID0NCj4gdGhlcm1hbF96b25lX3VuYmluZF9jb29saW5nX2RldmljZQ0KPiA+IC0JCQkJCQko
+dGhlcm1hbCwNCj4gVEhFUk1BTF9UUklQU19OT05FLA0KPiA+IC0JCQkJCQkgY2Rldik7DQo+ID4g
+LQkJCWlmIChyZXN1bHQpDQo+ID4gLQkJCQlnb3RvIGZhaWxlZDsNCj4gPiAtCQl9DQo+ID4gLQl9
+DQo+ID4gLQ0KPiA+ICBmYWlsZWQ6DQo+ID4gIAlyZXR1cm4gcmVzdWx0Ow0KPiA+ICB9DQo+ID4N
+Cj4gDQo+IA0KPiAtLQ0KPiA8aHR0cDovL3d3dy5saW5hcm8ub3JnLz4gTGluYXJvLm9yZyDilIIg
+T3BlbiBzb3VyY2Ugc29mdHdhcmUgZm9yIEFSTSBTb0NzDQo+IA0KPiBGb2xsb3cgTGluYXJvOiAg
+PGh0dHA6Ly93d3cuZmFjZWJvb2suY29tL3BhZ2VzL0xpbmFybz4gRmFjZWJvb2sgfA0KPiA8aHR0
+cDovL3R3aXR0ZXIuY29tLyMhL2xpbmFyb29yZz4gVHdpdHRlciB8IDxodHRwOi8vd3d3LmxpbmFy
+by5vcmcvbGluYXJvLQ0KPiBibG9nLz4gQmxvZw0K
