@@ -2,135 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 65F802ECDA4
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 11:18:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B6DD2ECDA9
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 11:19:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726830AbhAGKRg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 05:17:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45266 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725974AbhAGKRg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 05:17:36 -0500
-Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7C6DC0612F4
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Jan 2021 02:16:54 -0800 (PST)
-Received: by mail-pg1-x52f.google.com with SMTP id n25so4544786pgb.0
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Jan 2021 02:16:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=fMg+Efsr+R+6AgYEdihpBKpjToT/4HtI9c2KzJ9otZ8=;
-        b=le0WsLpP4bBFfsvpr8snBYSl8L9P6PHp9BhUUJbbVp1HQi4TnNUNXk4eQlZdVtMPim
-         I6Qta6BUS8FRAjiVX9cSWi0QG7vEDthBZN1bh9zEpkgpZH4O6SubCMnEwZVu6H6y2MqW
-         r75pJEf8v/zqpQxUsQqSKYlWI6VUtM67NC1y8L66spAFTqyAs4Q84EqkkW64yQ63IM7Y
-         VCPcOzKCe+ykQXpoxqBugIV8OmH4CD/B1cmY8xilxzzvXhEAdiLnbLkx1YqODqoZPnEe
-         LVkNENmNJ2xBkWWP7ZdzQEeznD57MjZEZLM561xNZrOV9q+ADk+KZArSce9kn9NzGnoh
-         6DVg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=fMg+Efsr+R+6AgYEdihpBKpjToT/4HtI9c2KzJ9otZ8=;
-        b=U3SlXHebkIMDWWVVMSIMWE9oYg0dfbx+vi3Fd/s9GESIDGghbX+hXcLe2XpK1KEdvz
-         SWypa2IqhWdJ5p8bdEY7n7ZisANPJMWpXIBewBnLFquCZ2MaBGUIDTxBmWxjsN0pJPNr
-         42xGS53VVC9gvioOr+kk5DjxxTONmuh8JbOLOLuHlHE+5S07Ci7cW+pCSOiEiDMk+Nw5
-         BNbnDIydBeTOx/xSHOJm0Z8452rSqRIr4sryViykBuaC7swkJXREwLZngTlJnlc2sMk9
-         Oxc73u8kEsCFCCdyZgQZwyjLbzZsCgAtRK50knx/JsJrqCwKCEQHxbMM8J/YFUNWI3AA
-         J8Wg==
-X-Gm-Message-State: AOAM530XXveUKCGf4f2s54534xi0yPQ5KIkhlJz7mERsrBSvR+aqD1gI
-        trfPXOoeBHOhD5mP7EOW8YZU/AoyqqxaPzmzbGEi2w==
-X-Google-Smtp-Source: ABdhPJwTPnAi13cnwMFKWWpRhZjrz70it7/2/lJzwgmkROoSS+yYxtKi9u9XSoYPLbVM8BWQpZvb3ZsAB7p4l72x1OY=
-X-Received: by 2002:aa7:979d:0:b029:1a4:3b76:a559 with SMTP id
- o29-20020aa7979d0000b02901a43b76a559mr7945860pfp.49.1610014614360; Thu, 07
- Jan 2021 02:16:54 -0800 (PST)
+        id S1727666AbhAGKS3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 05:18:29 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54416 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725974AbhAGKS2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Jan 2021 05:18:28 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AFE2923341;
+        Thu,  7 Jan 2021 10:17:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1610014668;
+        bh=6sb108ac5UVxYYGp+wjKpmn1DM3i6z83ytBYRl9cEg0=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=hH6B8lh70ZD1mRAhDD95qQrPQi2eJCkyxPUKdRaHXGFWvk5kWwkOpr8JGcMmr4J9g
+         tu2A3ECZvMyoWTbpWGwp5BHqUdchbi6Q8GBZRvQ+0trW3ZhHIs1eYG4zlYmkXC5KeE
+         I344mDb8l3ZW5ICrBovpiJY73YrVHCsP9U4pmfCyvSS6uI3S3mgYxOphgWLsTeu4+d
+         CM42hJyJ7xFqID70fcHXWW4UYMb3L5Xqwq2aiQgj91ICb0b+4oYHRXa178czbrZy99
+         RIXe8jg0ozfDjyn/YJtnFll+VCC8dHpma9ZlgM0xLu4JMBp+meDvvoawSCOZQb4Ypa
+         1/yiKd1F/Q0ag==
+Received: by mail-ed1-f45.google.com with SMTP id c7so7227855edv.6;
+        Thu, 07 Jan 2021 02:17:47 -0800 (PST)
+X-Gm-Message-State: AOAM533wcOX5i1xP2motWBCUpiANf/gO5tuhWOKVeUtpCDe7qD0Fttqk
+        ycS3tY8+WgNhNcdgQbDlx5U9wyR6FCP/RT1avQ==
+X-Google-Smtp-Source: ABdhPJwFY76DPb4xZJOUEweB/1qZGG9xebnYuDZQduz4K7shnS7SUrqlKleXXx7W6MP7D9rlLuURfDRF0VERLMbkyZY=
+X-Received: by 2002:a50:c3c5:: with SMTP id i5mr1159187edf.166.1610014666156;
+ Thu, 07 Jan 2021 02:17:46 -0800 (PST)
 MIME-Version: 1.0
-References: <20210106084739.63318-1-songmuchun@bytedance.com>
- <7b44eddc-cbae-92b6-5ac7-765cad2a6326@redhat.com> <CAMZfGtUcGLZjesq4ztqHXG2PekmJ2q60s3ymjBRmiJ141syK3A@mail.gmail.com>
- <7971c96c-6b96-2dca-b9d9-d3828b117e66@redhat.com>
-In-Reply-To: <7971c96c-6b96-2dca-b9d9-d3828b117e66@redhat.com>
-From:   Muchun Song <songmuchun@bytedance.com>
-Date:   Thu, 7 Jan 2021 18:16:14 +0800
-Message-ID: <CAMZfGtXS8V8FgPmHWGtDbd=opkCMzMPsmd5n=1gLH6LpcSaA7w@mail.gmail.com>
-Subject: Re: [External] Re: [PATCH v2 0/6] Fix some bugs about HugeTLB code
-To:     David Hildenbrand <david@redhat.com>
-Cc:     Mike Kravetz <mike.kravetz@oracle.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Naoya Horiguchi <n-horiguchi@ah.jp.nec.com>,
-        Andi Kleen <ak@linux.intel.com>, mhocko@suse.cz,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>
+References: <1609989081-29353-1-git-send-email-yongqiang.niu@mediatek.com> <1609989081-29353-3-git-send-email-yongqiang.niu@mediatek.com>
+In-Reply-To: <1609989081-29353-3-git-send-email-yongqiang.niu@mediatek.com>
+From:   Chun-Kuang Hu <chunkuang.hu@kernel.org>
+Date:   Thu, 7 Jan 2021 18:17:34 +0800
+X-Gmail-Original-Message-ID: <CAAOTY_85Ks5pa244K_G2Lp-XwmMFvK74X6M4vdM-M5Et_9Y9sQ@mail.gmail.com>
+Message-ID: <CAAOTY_85Ks5pa244K_G2Lp-XwmMFvK74X6M4vdM-M5Et_9Y9sQ@mail.gmail.com>
+Subject: Re: [PATCH v9, 02/11] dt-bindings: mediatek: add description for
+ mt8183 display
+To:     Yongqiang Niu <yongqiang.niu@mediatek.com>
+Cc:     CK Hu <ck.hu@mediatek.com>, Philipp Zabel <p.zabel@pengutronix.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        DTML <devicetree@vger.kernel.org>,
+        David Airlie <airlied@linux.ie>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        DRI Development <dri-devel@lists.freedesktop.org>,
+        Project_Global_Chrome_Upstream_Group@mediatek.com,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Hsin-Yi Wang <hsinyi@chromium.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 7, 2021 at 6:10 PM David Hildenbrand <david@redhat.com> wrote:
->
-> On 07.01.21 10:40, Muchun Song wrote:
-> > On Thu, Jan 7, 2021 at 5:30 PM David Hildenbrand <david@redhat.com> wrote:
-> >>
-> >> On 06.01.21 09:47, Muchun Song wrote:
-> >>> This patch series aims to fix some bugs and add some improvements.
-> >>>
-> >>> Changelog since v1 -> v2:
-> >>>   - Export set_page_huge_active() in patch #2 to fix.
-> >>>   - Using head[3].mapping to indicate the page is freed in patch #3.
-> >>>   - Flush @free_hpage_work in patch #4.
-> >>>
-> >>> Muchun Song (6):
-> >>>   mm: migrate: do not migrate HugeTLB page whose refcount is one
-> >>>   mm: hugetlbfs: fix cannot migrate the fallocated HugeTLB page
-> >>>   mm: hugetlb: fix a race between freeing and dissolving the page
-> >>>   mm: hugetlb: add return -EAGAIN for dissolve_free_huge_page
-> >>>   mm: hugetlb: fix a race between isolating and freeing page
-> >>>   mm: hugetlb: remove VM_BUG_ON_PAGE from page_huge_active
-> >>>
-> >>>  fs/hugetlbfs/inode.c    |  3 ++-
-> >>>  include/linux/hugetlb.h |  2 ++
-> >>>  mm/hugetlb.c            | 69 +++++++++++++++++++++++++++++++++++++++++++------
-> >>>  mm/migrate.c            |  6 +++++
-> >>>  4 files changed, 71 insertions(+), 9 deletions(-)
-> >>>
-> >>
-> >> Repeating my question regarding ccing stable on selected fixes.
-> >>
-> >
-> > Just add a CC tag in the commit log of the fix patches? Right?
-> > Sorry, I'm a novice about this. Thanks.
->
-> Sure, here is some information:
->
-> https://www.kernel.org/doc/html/v4.10/process/stable-kernel-rules.html
->
-> Applicable patches should be moved to the beginning of the series.
->
-> Add "Cc: stable@vger.kernel.org" similar to "Fixes:" to the respective
-> patches. In the ideal case, indicate the applicable earliest stable
-> release where it applies.
->
-> E.g., take a look at (random commit)
->
-> commit 20b329129009caf1c646152abe09b697227e1c37
-> Author: Bob Peterson <rpeterso@redhat.com>
-> Date:   Wed Nov 18 08:54:31 2020 -0500
->
->     gfs2: Fix regression in freeze_go_sync
-> ...
->     Fixes: 541656d3a513 ("gfs2: freeze should work on read-only mounts")
->     Cc: stable@vger.kernel.org # v5.8+
-> ...
->
->
-> Consequently, actually cc when sending out these patches (e.g., let "git
-> send-email" do it automatically).
+Hi, Yongqiang:
 
-Great! Very thanks.
+Yongqiang Niu <yongqiang.niu@mediatek.com> =E6=96=BC 2021=E5=B9=B41=E6=9C=
+=887=E6=97=A5 =E9=80=B1=E5=9B=9B =E4=B8=8A=E5=8D=8811:11=E5=AF=AB=E9=81=93=
+=EF=BC=9A
+>
+> add description for mt8183 display
+
+Applied to mediatek-drm-next [1], thanks.
+
+[1] https://git.kernel.org/pub/scm/linux/kernel/git/chunkuang.hu/linux.git/=
+log/?h=3Dmediatek-drm-next
+
+Regards,
+Chun-Kuang.
 
 >
+> Signed-off-by: Yongqiang Niu <yongqiang.niu@mediatek.com>
+> Reviewed-by: Chun-Kuang Hu <chunkuang.hu@kernel.org>
+> Acked-by: Rob Herring <robh@kernel.org>
+> ---
+>  Documentation/devicetree/bindings/display/mediatek/mediatek,disp.txt | 2=
+ +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/Documentation/devicetree/bindings/display/mediatek/mediatek,=
+disp.txt b/Documentation/devicetree/bindings/display/mediatek/mediatek,disp=
+.txt
+> index b07881e..c562cda 100644
+> --- a/Documentation/devicetree/bindings/display/mediatek/mediatek,disp.tx=
+t
+> +++ b/Documentation/devicetree/bindings/display/mediatek/mediatek,disp.tx=
+t
+> @@ -43,7 +43,7 @@ Required properties (all function blocks):
+>         "mediatek,<chip>-dpi"                   - DPI controller, see med=
+iatek,dpi.txt
+>         "mediatek,<chip>-disp-mutex"            - display mutex
+>         "mediatek,<chip>-disp-od"               - overdrive
+> -  the supported chips are mt2701, mt7623, mt2712, mt8167 and mt8173.
+> +  the supported chips are mt2701, mt7623, mt2712, mt8167, mt8173 and mt8=
+183.
+>  - reg: Physical base address and length of the function block register s=
+pace
+>  - interrupts: The interrupt signal from the function block (required, ex=
+cept for
+>    merge and split function blocks).
 > --
-> Thanks,
->
-> David / dhildenb
->
+> 1.8.1.1.dirty
+> _______________________________________________
+> Linux-mediatek mailing list
+> Linux-mediatek@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-mediatek
