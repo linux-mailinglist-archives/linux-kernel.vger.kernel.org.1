@@ -2,110 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE40B2ED597
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 18:29:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 291E92ED5A1
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 18:30:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729145AbhAGR2a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 12:28:30 -0500
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:9034 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727959AbhAGR23 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 12:28:29 -0500
-Received: from pps.filterd (m0098404.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 107H8PxE069192;
-        Thu, 7 Jan 2021 12:27:38 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=SFJ0drAgUkEw+VFOj0hRumM7RsaV232r2ZUNTrGEgnQ=;
- b=cnz+hdVABrM4TbTaaJl+oxp2ArIk+MilWUVC7SV9KAUHvzl75KrNQYRt3owBfO8BBkGu
- ynWdafyeqG5lQ68QaDDwZIAjGXTYd+CQK5V4lDViYFAGtLxkNtFI/QjX6id00EbFW1DD
- DDf7u2yX3/xdTyn53EntvN/ShqJI8NH+QkHw9Lq28u3MSeeyI9iZ0/I1PE0BWx7VUFoH
- B17ypHOdt4hnw+k5/sgyRHK3bqFn8QsefuC3VY76LeiUbXy4LclK4Dd1mfKnz8wZWdNr
- cjsWP6B+BQ62mOjWW2F6MJ4/5bOYIwLfJHA/f2+zFXnTNy5tdj2jL7kE6KrIIl7qmS/l Gg== 
-Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 35x5juj0fr-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 07 Jan 2021 12:27:37 -0500
-Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
-        by ppma04ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 107HBtHI025311;
-        Thu, 7 Jan 2021 17:27:35 GMT
-Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
-        by ppma04ams.nl.ibm.com with ESMTP id 35wd379724-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 07 Jan 2021 17:27:35 +0000
-Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
-        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 107HRXrf32637436
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 7 Jan 2021 17:27:33 GMT
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 861DF11C052;
-        Thu,  7 Jan 2021 17:27:33 +0000 (GMT)
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 5F57111C050;
-        Thu,  7 Jan 2021 17:27:33 +0000 (GMT)
-Received: from [9.145.66.183] (unknown [9.145.66.183])
-        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Thu,  7 Jan 2021 17:27:33 +0000 (GMT)
-Subject: Re: [PATCH -next] s390: cio: Use DEFINE_SPINLOCK() for spinlock
-To:     Zheng Yongjun <zhengyongjun3@huawei.com>,
-        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20201223141512.1178-1-zhengyongjun3@huawei.com>
-From:   Julian Wiedmann <jwi@linux.ibm.com>
-Message-ID: <3aed4509-a903-5b26-3667-ad420b1bbb7b@linux.ibm.com>
-Date:   Thu, 7 Jan 2021 18:27:33 +0100
+        id S1729189AbhAGR3P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 12:29:15 -0500
+Received: from mx2.suse.de ([195.135.220.15]:60010 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726073AbhAGR3M (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Jan 2021 12:29:12 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 37078AD26;
+        Thu,  7 Jan 2021 17:28:30 +0000 (UTC)
+To:     Hugh Dickins <hughd@google.com>,
+        Andrea Arcangeli <aarcange@redhat.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Alex Shi <alex.shi@linux.alibaba.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Michal Hocko <mhocko@suse.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+References: <1607743586-80303-1-git-send-email-alex.shi@linux.alibaba.com>
+ <1607743586-80303-2-git-send-email-alex.shi@linux.alibaba.com>
+ <e50574aa-87b8-8ddf-2235-ef98e22bcb7d@linux.alibaba.com>
+ <alpine.LSU.2.11.2101051919130.1361@eggly.anvils>
+ <20210106114620.5c221690f3a9cad7afcc3077@linux-foundation.org>
+ <X/YY+mjpq15nmryI@redhat.com>
+ <alpine.LSU.2.11.2101061213540.2492@eggly.anvils>
+From:   Vlastimil Babka <vbabka@suse.cz>
+Subject: Re: [PATCH] mm/mmap: replace if (cond) BUG() with BUG_ON()
+Message-ID: <bd10e2dc-7a5e-835d-9a1f-9fff36cc22b5@suse.cz>
+Date:   Thu, 7 Jan 2021 18:28:29 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-In-Reply-To: <20201223141512.1178-1-zhengyongjun3@huawei.com>
+In-Reply-To: <alpine.LSU.2.11.2101061213540.2492@eggly.anvils>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2021-01-07_07:2021-01-07,2021-01-07 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 mlxlogscore=999
- malwarescore=0 impostorscore=0 spamscore=0 adultscore=0 phishscore=0
- suspectscore=0 bulkscore=0 lowpriorityscore=0 clxscore=1011
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2101070100
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 23.12.20 15:15, Zheng Yongjun wrote:
-> spinlock can be initialized automatically with DEFINE_SPINLOCK()
-> rather than explicitly calling spin_lock_init().
+On 1/6/21 9:18 PM, Hugh Dickins wrote:
+> On Wed, 6 Jan 2021, Andrea Arcangeli wrote:
+>> 
+>> I'd be surprised if the kernel can boot with BUG_ON() defined as "do
+>> {}while(0)" so I guess it doesn't make any difference.
 > 
-> Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>
-> ---
->  drivers/s390/cio/css.c | 3 +--
->  1 file changed, 1 insertion(+), 2 deletions(-)
-> 
-> diff --git a/drivers/s390/cio/css.c b/drivers/s390/cio/css.c
-> index cca1a7c4bb33..022f573f0bcc 100644
-> --- a/drivers/s390/cio/css.c
-> +++ b/drivers/s390/cio/css.c
-> @@ -647,13 +647,12 @@ static void css_sch_todo(struct work_struct *work)
->  }
->  
->  static struct idset *slow_subchannel_set;
-> -static spinlock_t slow_subchannel_lock;
-> +static DEFINE_SPINLOCK(slow_subchannel_lock);
->  static wait_queue_head_t css_eval_wq;
->  static atomic_t css_eval_scheduled;
->  
->  static int __init slow_subchannel_init(void)
->  {
-> -	spin_lock_init(&slow_subchannel_lock);
+> I had been afraid of that too, when CONFIG_BUG is not set:
+> but I think it's actually "if (cond) do {} while (0)".
 
+It's a maze of configs and arch-specific vs generic headers, but I do see this
+in include/asm-generic/bug.h:
 
->  	atomic_set(&css_eval_scheduled, 0);
->  	init_waitqueue_head(&css_eval_wq);
+#else /* !CONFIG_BUG */
+#ifndef HAVE_ARCH_BUG
+#define BUG() do {} while (1)
+#endif
 
-Mind turning these two into static initializations as well? Thanks.
+So seems to me there *are* configurations possible where side-effects are indeed
+thrown away, right?
 
+WARN_ON is different as the result of the "inner" condition should be further
+usable for constructing "outer" conditions:
 
->  	slow_subchannel_set = idset_sch_new();
-> 
+(still in !CONFIG_BUG section)
+#ifndef HAVE_ARCH_WARN_ON
+#define WARN_ON(condition) ({
+        int __ret_warn_on = !!(condition);
+        unlikely(__ret_warn_on);
+})
+#endif
+
+For completeness let's look at our own extensions when VM_DEBUG is disabled,
+which is quite analogical to disabling CONFIG_BUG and thus it should better be
+consistent with the generic stuff.
+
+#define VM_BUG_ON(cond) BUILD_BUG_ON_INVALID(cond)
+
+where BUILD_BUG_ON_INVALID generates no code, so it's consistent with BUG_ON()
+and !CONFIG_BUG.
+
+#define VM_WARN_ON(cond) BUILD_BUG_ON_INVALID(cond)
+
+... well that's not consistent with WARN_ON. Hmm if you have asked me before I
+checked, I would have said that it is, that I checked it already in the past
+and/or there was some discussion already about it. Memory is failing me it
+seems. We should better fix this?
