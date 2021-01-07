@@ -2,165 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EFF3E2ED5D4
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 18:41:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9478D2ED5DA
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 18:43:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728950AbhAGRll (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 12:41:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58058 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726165AbhAGRll (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 12:41:41 -0500
-Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7C08C0612F6
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Jan 2021 09:41:00 -0800 (PST)
-Received: by mail-pf1-x436.google.com with SMTP id s21so4280312pfu.13
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Jan 2021 09:41:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=ILMPwCwZrBJ1HMfYPpc9UDsKQwFZc17yoGrjxBe8NiI=;
-        b=K9lAta31bHz+XI4lQJtLUqRu5RcufMnNjXJo+/bdjD0p9WrHHbUYeZQGmSZ1fAZz8B
-         nvWIKhZnKvYhNujvKH6UslFurON7uXp5dU1M+l/QmGFyYlOMpjTpGytFXN9P2fKMgRel
-         uyyjS7Y5Km6xgNzEZqqtIREQyVXfHGbVBOhODyO+Ym9Xq2hHXNci9WYpUShSWI1LyW0D
-         u0AcR1XmNrj+xNIyE2rMUf8/SJ+L+LhHGCIRxqHpI++IQ3f0WjeIK/dQK1YkXfWIBT0q
-         /gAU/0jlm+S+wsX0KeTdTxAWlRSOhVK/4n+2zvx2Ja62VUURI69aPsMrTTNB28VgV4aD
-         luQw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ILMPwCwZrBJ1HMfYPpc9UDsKQwFZc17yoGrjxBe8NiI=;
-        b=YYp9WGtvTQQsMeovnotyxaMPjCYPlWnvVc0bejw+86TPF4Lf0Z9OwFsEqqb4HjB3sM
-         /lqj3Bel4SoLFzh8B4TSbAREQH1n/H8zSBXgc6QS3zSAGkqwOhr3lcZz+bUdpxd5rF1D
-         WfdwFB0ewhflLuv4iwJbBiu4VK0XDHDgksZKs8IUJ0s8RIg+V+qqUT3Qv+q146sq16yD
-         j31vYHxzrHIeOHKufjtPNjEFwub1l2KFRT/VUdKlFkw4vTAxH8zZYtZ3/3+BflXM8g0s
-         SRipPLkqHE/A7R0WWtST1+ZUc1yjYjZ8jWa8Yq69JOjCFZniJY1XskyGHZmvwEHvngAd
-         LTqQ==
-X-Gm-Message-State: AOAM532Jskom8eqlKXf6T7Rq2W13nEmIS1uY3YcwHzuRx2rstocEs3kd
-        1elHS2iXjI1bzDQAEf1BFz331Q==
-X-Google-Smtp-Source: ABdhPJzeg8rKSRJuruFkRQ8suzf3GzFrW7d4yz50DhxnuoFnh3A9BYIV8IfaypxEpes87r4wapgiYw==
-X-Received: by 2002:a65:5209:: with SMTP id o9mr2934295pgp.34.1610041260269;
-        Thu, 07 Jan 2021 09:41:00 -0800 (PST)
-Received: from google.com ([2620:15c:f:10:1ea0:b8ff:fe73:50f5])
-        by smtp.gmail.com with ESMTPSA id a12sm7145470pgq.5.2021.01.07.09.40.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 Jan 2021 09:40:59 -0800 (PST)
-Date:   Thu, 7 Jan 2021 09:40:53 -0800
-From:   Sean Christopherson <seanjc@google.com>
-To:     Ben Gardon <bgardon@google.com>
-Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Peter Shier <pshier@google.com>,
-        "Maciej S . Szmigiero" <maciej.szmigiero@oracle.com>,
-        Leo Hou <leohou1402@gmail.com>
-Subject: Re: [PATCH v3 1/2] KVM: x86/mmu: Ensure TDP MMU roots are freed
- after yield
-Message-ID: <X/dHpSoi5AkPIrfc@google.com>
-References: <20210107001935.3732070-1-bgardon@google.com>
+        id S1729032AbhAGRm2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 12:42:28 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59284 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726165AbhAGRm1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Jan 2021 12:42:27 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E1CC2233FD;
+        Thu,  7 Jan 2021 17:41:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1610041307;
+        bh=2Y93tEVQ+bLJJTLclrFjB1a6L6zWPOSqbe/DcLT3KdU=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=G9fffMHkznCZTdTkz+4dbp6BjFT1N/dEb/XrCK6KcOoIz2GSlkSovHYXrw9XDCizK
+         lfk/fZC0AY2Hii2M9WgYqPZiEGfdF5b2t/BetPpfJNpw+JnSrg8o1kobYwMyRufQnr
+         PF5eBSd2tcDEbd5zGSZLlM2giPlnNUAYBbnH1qrr9oooOSnGHcBJZ4/UXuEECSfN++
+         1ADvAiuBjeEUQHHrXbz0uOM6lN0OAUP1kr91EESMKae9Db689QOR97cZx8pcCTxNtY
+         vL8XdzCloRAm1C2O5r97F3dxvkXS4Yr0v/VBYt5K1WK+8Vtms7lz7dNpZQZyDhJqp1
+         BkibhSoslzngA==
+Date:   Thu, 7 Jan 2021 09:41:46 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Alexander Lobakin <alobakin@pm.me>
+Cc:     "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next] net: sysctl: cleanup net_sysctl_init()
+Message-ID: <20210107094146.37f20e69@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20210107091318.2184-1-alobakin@pm.me>
+References: <20210106204014.34730-1-alobakin@pm.me>
+        <20210106163056.79d75ffa@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        <20210107091318.2184-1-alobakin@pm.me>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210107001935.3732070-1-bgardon@google.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In the future, please document the changes in each revision, e.g. in a cover
-letter or in the ignored part of the diff.
-
-On Wed, Jan 06, 2021, Ben Gardon wrote:
-> Many TDP MMU functions which need to perform some action on all TDP MMU
-> roots hold a reference on that root so that they can safely drop the MMU
-> lock in order to yield to other threads. However, when releasing the
-> reference on the root, there is a bug: the root will not be freed even
-> if its reference count (root_count) is reduced to 0.
+On Thu, 07 Jan 2021 09:13:40 +0000 Alexander Lobakin wrote:
+> From: Jakub Kicinski <kuba@kernel.org>
+> Date: Wed, 6 Jan 2021 16:30:56 -0800
 > 
-> To simplify acquiring and releasing references on TDP MMU root pages, and
-> to ensure that these roots are properly freed, move the get/put operations
-> into another TDP MMU root iterator macro.
+> > On Wed, 06 Jan 2021 20:40:28 +0000 Alexander Lobakin wrote:  
+> >> 'net_header' is not used outside of this function, so can be moved
+> >> from BSS onto the stack.
+> >> Declarations of one-element arrays are discouraged, and there's no
+> >> need to store 'empty' in BSS. Simply allocate it from heap at init.  
+> >
+> > Are you sure? It's passed as an argument to register_sysctl()
+> > so it may well need to be valid for the lifetime of net_header.  
 > 
-> Moving the get/put operations into an iterator macro also helps
-> simplify control flow when a root does need to be freed. Note that using
-> the list_for_each_entry_safe macro would not have been appropriate in
-> this situation because it could keep a pointer to the next root across
-> an MMU lock release + reacquire, during which time that root could be
-> freed.
-> 
-> Reported-by: Maciej S. Szmigiero <maciej.szmigiero@oracle.com>
-> Suggested-by: Paolo Bonzini <pbonzini@redhat.com>
-> Fixes: faaf05b00aec ("kvm: x86/mmu: Support zapping SPTEs in the TDP MMU")
-> Fixes: 063afacd8730 ("kvm: x86/mmu: Support invalidate range MMU notifier for TDP MMU")
-> Fixes: a6a0b05da9f3 ("kvm: x86/mmu: Support dirty logging for the TDP MMU")
-> Fixes: 14881998566d ("kvm: x86/mmu: Support disabling dirty logging for the tdp MMU")
-> Signed-off-by: Ben Gardon <bgardon@google.com>
+> I just moved it from BSS to the heap and allocate it using kzalloc(),
+> it's still valid through the lifetime of the kernel.
 
-Reviewed-by: Sean Christopherson <seanjc@google.com> 
+I see it now, please don't break the normal flow of error handling.
 
-> ---
->  arch/x86/kvm/mmu/tdp_mmu.c | 104 +++++++++++++++++--------------------
->  1 file changed, 48 insertions(+), 56 deletions(-)
-> 
-> diff --git a/arch/x86/kvm/mmu/tdp_mmu.c b/arch/x86/kvm/mmu/tdp_mmu.c
-> index 75db27fda8f3..d4191ed193cd 100644
-> --- a/arch/x86/kvm/mmu/tdp_mmu.c
-> +++ b/arch/x86/kvm/mmu/tdp_mmu.c
-> @@ -44,7 +44,48 @@ void kvm_mmu_uninit_tdp_mmu(struct kvm *kvm)
->  	WARN_ON(!list_empty(&kvm->arch.tdp_mmu_roots));
->  }
->  
-> -#define for_each_tdp_mmu_root(_kvm, _root)			    \
-> +static void tdp_mmu_put_root(struct kvm *kvm, struct kvm_mmu_page *root)
-> +{
-> +	if (kvm_mmu_put_root(kvm, root))
-> +		kvm_tdp_mmu_free_root(kvm, root);
-> +}
-> +
-> +static inline bool tdp_mmu_next_root_valid(struct kvm *kvm,
-> +					   struct kvm_mmu_page *root)
-> +{
-> +	lockdep_assert_held(&kvm->mmu_lock);
-> +
-> +	if (list_entry_is_head(root, &kvm->arch.tdp_mmu_roots, link))
-> +		return false;
-> +
-> +	kvm_mmu_get_root(kvm, root);
-> +	return true;
-> +
-> +}
-> +
-> +static inline struct kvm_mmu_page *tdp_mmu_next_root(struct kvm *kvm,
-> +						     struct kvm_mmu_page *root)
-> +{
-> +	struct kvm_mmu_page *next_root;
-> +
-> +	next_root = list_next_entry(root, link);
-> +	tdp_mmu_put_root(kvm, root);
-> +	return next_root;
-> +}
-> +
-> +/*
-> + * Note: this iterator gets and puts references to the roots it iterates over.
+What's the point of moving objects allocated in __init from BSS to 
+the heap? If anything I'd think it'll take up more space when allocated
+in the heap because of the metadata that needs to be tracked for
+dynamic allocations.
 
-Maybe refer to it as "the yield_safe() variant" instead of "this" so that the
-comment makes sense with minimal context?
-
-> + * This makes it safe to release the MMU lock and yield within the loop, but
-> + * if exiting the loop early, the caller must drop the reference to the most
-> + * recent root. (Unless keeping a live reference is desirable.)
-> + */
-
-Rather than encourage manually dropping the reference, what adding about a scary
-warning about not exiting the loop early?  At this point, it seems unlikely that
-we'll end up with a legitimate use case for exiting yield_safe() early.  And if
-we do, I think it'd be better to provide a macro to do the bookeeping instead of
-open coding it in the caller.  And maybe throw a blurb into the changelog about
-that so future developers understand that that scary warning isn't set in stone?
-
-/*
- * The yield_safe() variant of the TDP root iterator gets and puts references to
- * the roots it iterates over.  This makes it safe to release the MMU lock and
- * yield within the loop, but the caller MUST NOT exit the loop early.
- */
+The move of net_header makes sense AFAICT, but we may have to annotate
+it somehow so kmemleak doesn't complain.
