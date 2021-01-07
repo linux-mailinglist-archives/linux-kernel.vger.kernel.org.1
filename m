@@ -2,123 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DE122ED5AF
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 18:31:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E78242ED5A9
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 18:31:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729226AbhAGRbQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 12:31:16 -0500
-Received: from foss.arm.com ([217.140.110.172]:36632 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729214AbhAGRbN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 12:31:13 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3544911FB;
-        Thu,  7 Jan 2021 09:30:28 -0800 (PST)
-Received: from e119884-lin.cambridge.arm.com (e119884-lin.cambridge.arm.com [10.1.196.72])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 8A4E63F719;
-        Thu,  7 Jan 2021 09:30:26 -0800 (PST)
-From:   Vincenzo Frascino <vincenzo.frascino@arm.com>
-To:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kasan-dev@googlegroups.com
-Cc:     Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Alexander Potapenko <glider@google.com>,
-        Marco Elver <elver@google.com>,
-        Evgenii Stepanov <eugenis@google.com>,
-        Branislav Rankov <Branislav.Rankov@arm.com>,
-        Andrey Konovalov <andreyknvl@google.com>
-Subject: [PATCH v2 4/4] arm64: mte: Optimize mte_assign_mem_tag_range()
-Date:   Thu,  7 Jan 2021 17:29:08 +0000
-Message-Id: <20210107172908.42686-5-vincenzo.frascino@arm.com>
-X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210107172908.42686-1-vincenzo.frascino@arm.com>
-References: <20210107172908.42686-1-vincenzo.frascino@arm.com>
+        id S1728862AbhAGRaw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 12:30:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56350 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728033AbhAGRav (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Jan 2021 12:30:51 -0500
+Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0FF43C0612F6;
+        Thu,  7 Jan 2021 09:30:11 -0800 (PST)
+Received: by mail-ed1-x52c.google.com with SMTP id g24so8481456edw.9;
+        Thu, 07 Jan 2021 09:30:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=axN4GaDeR+MEVgZRaEXZ0ZXIu1myM+jajV0ll7329Nc=;
+        b=SdXQ5erLN+VPMwfnwaeY1r+OMQL6P7Q4W0zpfnGUfxiS1mifK8NmOQb7MdNFSETRxb
+         mdDsYA79HeJMVjUPNKiTQv84ococrgAwemyevpeeiEKjMR6S+2fjXnVCfZpfx3FAp7f0
+         IZMn9m0haK8J/vmnXabBW12BPzu+NTQzipQHITG1TJ8INpNrhRtiUMrFTcfzID0m+SS1
+         Ks7gD89pqGVhbFPQtPJ8PwPvtm00jSZPQXGeipKKIkZ/O1vFM5bHBpsa5SaMLE2s98Zf
+         QJbtOLMWP3Rl//GqySLYG38tYqyIpnDxDLsC8q2b7b2mrPFuTkjeKmR+cYT+XescK8R+
+         UZmg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=axN4GaDeR+MEVgZRaEXZ0ZXIu1myM+jajV0ll7329Nc=;
+        b=F6NAMo8Z9lNMYZAktfRMgM4Fu64LUJUQlWtyEbSos2ftnJN9GgEqDQq9zJlqvxAv03
+         TYlxfBDz/JnssdnltnWeIhhDQ9HlPegkaFI0G1Eg9B5X1mm7ZOqRaQemHQ65IWB0qerh
+         ZMSophjpKL2X9P54/LA3ErNyqji+DWWGVsB+snpKCzNLVdSsdai8vL2mkKBLgb7XG8y2
+         kuOpfDuLzT4wNHAZ1rngW4kD+zEnFjUQZaXFPGKDIcR0bAccvzY6N5tqDFN43KMh0PpO
+         BglY5IkBk63ZmaQsIWPRibSUMD/6rmCh+RVDeRDGd+IL0YBG4IokmTJ1XIX454a+IPPJ
+         /ESQ==
+X-Gm-Message-State: AOAM531HDq06hW70uhHCHPB/EuU1d8AzrhEGlb/O+WqUp2PLHzH4sts/
+        CZrQLkOHcbre6zYnYRpSSDWnUfjGG2vHFlPztVsx4RMOETBkOw==
+X-Google-Smtp-Source: ABdhPJygpCklThqcXVk9N8gboz9hlyQL1rXmDc4Xa/4U+ytfmNsb/qt+nLY7mzm1lkA3K2vV65dW67esM3tOLGMyP70=
+X-Received: by 2002:a05:6402:1c8a:: with SMTP id cy10mr2430738edb.151.1610040609737;
+ Thu, 07 Jan 2021 09:30:09 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210105225817.1036378-1-shy828301@gmail.com> <20210105225817.1036378-3-shy828301@gmail.com>
+ <20210107001351.GD1110904@carbon.dhcp.thefacebook.com>
+In-Reply-To: <20210107001351.GD1110904@carbon.dhcp.thefacebook.com>
+From:   Yang Shi <shy828301@gmail.com>
+Date:   Thu, 7 Jan 2021 09:29:55 -0800
+Message-ID: <CAHbLzkrQ4zL6qw5OvXXQhSQBLG3B3ncpwrNVWuormRWvcmTa7w@mail.gmail.com>
+Subject: Re: [v3 PATCH 02/11] mm: vmscan: consolidate shrinker_maps handling code
+To:     Roman Gushchin <guro@fb.com>
+Cc:     Kirill Tkhai <ktkhai@virtuozzo.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Dave Chinner <david@fromorbit.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux MM <linux-mm@kvack.org>,
+        Linux FS-devel Mailing List <linux-fsdevel@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-mte_assign_mem_tag_range() is called on production KASAN HW hot
-paths. It makes sense to optimize it in an attempt to reduce the
-overhead.
+On Wed, Jan 6, 2021 at 4:14 PM Roman Gushchin <guro@fb.com> wrote:
+>
+> On Tue, Jan 05, 2021 at 02:58:08PM -0800, Yang Shi wrote:
+> > The shrinker map management is not really memcg specific, it's just allocation
+>
+> In the current form it doesn't look so, especially because each name
+> has a memcg_ prefix and each function takes a memcg argument.
 
-Optimize mte_assign_mem_tag_range() based on the indications provided at
-[1].
+That statement from commit log might be ambiguous and confusing. "Not
+really memcg specific" doesn't mean it has nothing to do with memcg.
+It is the intersection between memcg and shrinker. So, I don't think
+of why it can't take a memcg argument. There are plenty of functions
+from vmscan.c that take memcg as argument.
 
-[1] https://lore.kernel.org/r/CAAeHK+wCO+J7D1_T89DG+jJrPLk3X9RsGFKxJGd0ZcUFjQT-9Q@mail.gmail.com/
+The direct reason for this consolidation is actually the following
+patch which uses shrinker_rwsem to protect shrinker_maps allocation.
+With this code consolidation we could keep the use of shrinker_rwsem
+in one single file. And it also makes some sense to have shrinker
+related code in vmscan.c, just like lruvec.
 
-Cc: Catalin Marinas <catalin.marinas@arm.com>
-Cc: Will Deacon <will@kernel.org>
-Signed-off-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
----
- arch/arm64/include/asm/mte.h | 26 +++++++++++++++++++++++++-
- arch/arm64/lib/mte.S         | 15 ---------------
- 2 files changed, 25 insertions(+), 16 deletions(-)
+>
+> It begs for some refactorings (Kirill suggested some) and renamings.
 
-diff --git a/arch/arm64/include/asm/mte.h b/arch/arm64/include/asm/mte.h
-index a60d3718baae..c341ce6b9779 100644
---- a/arch/arm64/include/asm/mte.h
-+++ b/arch/arm64/include/asm/mte.h
-@@ -50,7 +50,31 @@ long get_mte_ctrl(struct task_struct *task);
- int mte_ptrace_copy_tags(struct task_struct *child, long request,
- 			 unsigned long addr, unsigned long data);
- 
--void mte_assign_mem_tag_range(void *addr, size_t size);
-+static inline void mte_assign_mem_tag_range(void *addr, size_t size)
-+{
-+	u64 _addr = (u64)addr;
-+	u64 _end = _addr + size;
-+
-+	/*
-+	 * This function must be invoked from an MTE enabled context.
-+	 *
-+	 * Note: The address must be non-NULL and MTE_GRANULE_SIZE aligned and
-+	 * size must be non-zero and MTE_GRANULE_SIZE aligned.
-+	 */
-+	do {
-+		/*
-+		 * 'asm volatile' is required to prevent the compiler to move
-+		 * the statement outside of the loop.
-+		 */
-+		asm volatile(__MTE_PREAMBLE "stg %0, [%0]"
-+			     :
-+			     : "r" (_addr)
-+			     : "memory");
-+
-+		_addr += MTE_GRANULE_SIZE;
-+	} while (_addr < _end);
-+}
-+
- 
- #else /* CONFIG_ARM64_MTE */
- 
-diff --git a/arch/arm64/lib/mte.S b/arch/arm64/lib/mte.S
-index 9e1a12e10053..a0a650451510 100644
---- a/arch/arm64/lib/mte.S
-+++ b/arch/arm64/lib/mte.S
-@@ -150,18 +150,3 @@ SYM_FUNC_START(mte_restore_page_tags)
- 	ret
- SYM_FUNC_END(mte_restore_page_tags)
- 
--/*
-- * Assign allocation tags for a region of memory based on the pointer tag
-- *   x0 - source pointer
-- *   x1 - size
-- *
-- * Note: The address must be non-NULL and MTE_GRANULE_SIZE aligned and
-- * size must be non-zero and MTE_GRANULE_SIZE aligned.
-- */
--SYM_FUNC_START(mte_assign_mem_tag_range)
--1:	stg	x0, [x0]
--	add	x0, x0, #MTE_GRANULE_SIZE
--	subs	x1, x1, #MTE_GRANULE_SIZE
--	b.gt	1b
--	ret
--SYM_FUNC_END(mte_assign_mem_tag_range)
--- 
-2.30.0
+I apologize that I can't remember what specific suggestions from
+Kirill you mean. Removing the "memcg_" prefix makes some sense to me,
+we don't have "memcg_" prefix for lruvec either.
 
+>
+> Thanks!
