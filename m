@@ -2,115 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9080E2ED278
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 15:37:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 87E912ED226
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 15:32:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728336AbhAGOd3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 09:33:29 -0500
-Received: from mslow2.mail.gandi.net ([217.70.178.242]:43222 "EHLO
-        mslow2.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729567AbhAGOdX (ORCPT
+        id S1728205AbhAGOay (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 09:30:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56564 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725965AbhAGOay (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 09:33:23 -0500
-Received: from relay13.mail.gandi.net (unknown [217.70.178.233])
-        by mslow2.mail.gandi.net (Postfix) with ESMTP id AD20E3B1D00;
-        Thu,  7 Jan 2021 14:25:26 +0000 (UTC)
-Received: from aptenodytes (196.109.29.93.rev.sfr.net [93.29.109.196])
-        (Authenticated sender: paul.kocialkowski@bootlin.com)
-        by relay13.mail.gandi.net (Postfix) with ESMTPSA id A88428000D;
-        Thu,  7 Jan 2021 14:24:23 +0000 (UTC)
-Date:   Thu, 7 Jan 2021 15:24:23 +0100
-From:   Paul Kocialkowski <paul.kocialkowski@bootlin.com>
-To:     linux-media@vger.kernel.org, linux-rockchip@lists.infradead.org,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Cc:     Jacob Chen <jacob-chen@iotwrt.com>,
-        Ezequiel Garcia <ezequiel@collabora.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-Subject: Re: [PATCH 2/5] arm64: dts: rockchip: Add RGA support to the PX30
-Message-ID: <X/cZlxkQUKRY4Hf+@aptenodytes>
-References: <20210107134101.195426-1-paul.kocialkowski@bootlin.com>
- <20210107134101.195426-3-paul.kocialkowski@bootlin.com>
+        Thu, 7 Jan 2021 09:30:54 -0500
+Received: from mail-il1-x131.google.com (mail-il1-x131.google.com [IPv6:2607:f8b0:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F285AC0612F4
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Jan 2021 06:30:13 -0800 (PST)
+Received: by mail-il1-x131.google.com with SMTP id x15so6925305ilq.1
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Jan 2021 06:30:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=lZ360d7dY3x4Jmcj9v1OSvGTbH537K+ABkcsuSU72C8=;
+        b=rcvZNaCpiXJk5A0gg5iqqkJ8wwepUifSO4ZxnGjp+xbhpY4yvG0P0RAtM6v68zgFOG
+         botTIOkAFdn7V0zMOYz145VF5DUKbky4pJeobP8BUDcQND/V744pvmDeoFuHjy6PtLfO
+         A2icfEv0QkCuvv59EhNmnXNwxwjZBr8aiNdrNdc/A4mhDUk08WvbBr8L3Cz0XWujnI1A
+         KnoKHhMEvzvqgyoEfzcLlpH3Mg2WGBRapFJV7yA85fmNSHEnLSKcT0ghauwoOEmS4x02
+         7wMzU0eSo/WyciehLKr+OsZi/mjn2/506eEcDtEZMsJO+DFH/Ozp8+UVei8CEjabJQ98
+         zd+w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=lZ360d7dY3x4Jmcj9v1OSvGTbH537K+ABkcsuSU72C8=;
+        b=S8YutVUXOzS0TZa7lZqs+J1Cc8lwkrFUXuMMmewmx1fiDSOZmay/9AMrh31sUfYOT2
+         D5vL18YaO+mzUWLz3eyOGjILxIODGUw3KQA6D7XDyip0l9T4fOc1ShLh0gbtq4kkFSuX
+         iukEoqxatFAvuVKCsos/esNikbpquSx78GBHHdksv/90HYod4WzpnzBGIgFRs+laKdyc
+         Oy5xX2/rtGKyhHQwGIjxIsf0r2WFX4dejKoua8EYpV0omDswhy4pMhS3Of/uWgzRdQsJ
+         TLh4VIVC1ez4qXnTBMUqDO57x6Hk1YGCZhvFp9UoVvMhptngDqEMIGiQnmdra49fgm7o
+         nvvw==
+X-Gm-Message-State: AOAM530i55okdy3EJiNqAKZ9CVpUIj23ERrYqtDk4PFgrECI/CcxLOlj
+        pqL/YgPUKZxilqwt5RIl/fNO8Q==
+X-Google-Smtp-Source: ABdhPJwm3VK3HntHK43XEXoAPkYpbM5dOSeaU4Wlzzh7ajTQcVlU6zolWFBvGElXenJm+wfSEkhO1w==
+X-Received: by 2002:a92:bbc1:: with SMTP id x62mr7112810ilk.73.1610029813451;
+        Thu, 07 Jan 2021 06:30:13 -0800 (PST)
+Received: from [192.168.1.93] (pool-71-163-245-5.washdc.fios.verizon.net. [71.163.245.5])
+        by smtp.gmail.com with ESMTPSA id f3sm4527282ilu.74.2021.01.07.06.30.12
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 07 Jan 2021 06:30:12 -0800 (PST)
+Subject: Re: [PATCH v4 04/37] [RFC] firmware: arm_scmi: introduce bare get/put
+ protocols ops
+To:     Cristian Marussi <cristian.marussi@arm.com>,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Cc:     sudeep.holla@arm.com, lukasz.luba@arm.com,
+        james.quinlan@broadcom.com, Jonathan.Cameron@Huawei.com,
+        f.fainelli@gmail.com, etienne.carriere@linaro.org,
+        vincent.guittot@linaro.org, souvik.chakravarty@arm.com
+References: <20210106201610.26538-1-cristian.marussi@arm.com>
+ <20210106201610.26538-5-cristian.marussi@arm.com>
+From:   Thara Gopinath <thara.gopinath@linaro.org>
+Message-ID: <25d2e1ca-52dc-69a2-636e-211a21884f92@linaro.org>
+Date:   Thu, 7 Jan 2021 09:30:11 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="IppPXotpNrpDAaCR"
-Content-Disposition: inline
-In-Reply-To: <20210107134101.195426-3-paul.kocialkowski@bootlin.com>
+In-Reply-To: <20210106201610.26538-5-cristian.marussi@arm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---IppPXotpNrpDAaCR
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Thu 07 Jan 21, 14:40, Paul Kocialkowski wrote:
-> The PX30 features a RGA block: add the necessary node to support it.
->=20
-> Signed-off-by: Paul Kocialkowski <paul.kocialkowski@bootlin.com>
+On 1/6/21 3:15 PM, Cristian Marussi wrote:
+> Expose to the SCMI drivers a non managed version of a common protocols API
+> based on generic get/put methods and protocol handles.
+> 
+> All drivers still keep using the old API, no functional change.
+> 
+> Signed-off-by: Cristian Marussi <cristian.marussi@arm.com>
 > ---
->  arch/arm64/boot/dts/rockchip/px30.dtsi | 11 +++++++++++
->  1 file changed, 11 insertions(+)
->=20
-> diff --git a/arch/arm64/boot/dts/rockchip/px30.dtsi b/arch/arm64/boot/dts=
-/rockchip/px30.dtsi
-> index 2695ea8cda14..e056d1c32cc8 100644
-> --- a/arch/arm64/boot/dts/rockchip/px30.dtsi
-> +++ b/arch/arm64/boot/dts/rockchip/px30.dtsi
-> @@ -1106,6 +1106,17 @@ vopl_mmu: iommu@ff470f00 {
->  		status =3D "disabled";
->  	};
-> =20
-> +	rga: rga@ff480000 {
-> +		compatible =3D "rockchip,px30-rga", "rockchip,rk3288-rga";
-> +		reg =3D <0x0 0xff480000 0x0 0x10000>;
-> +		interrupts =3D <GIC_SPI 76 IRQ_TYPE_LEVEL_HIGH 0>;
+> These non devres methods are probably not needed, given the devm_ ones are
+> already provided and any SCMI driver (user of the API) has surely available
+> an scmi_device reference to use in the devm_ flavour...so the RFC
 
-Looks like this trailing 0 shouldn't be here. Will fix in v2.
+I agree. The protocol devices can use the devm_ flavor.
 
-Cheers,
 
-Paul
-
-> +		clocks =3D <&cru ACLK_RGA>, <&cru HCLK_RGA>, <&cru SCLK_RGA_CORE>;
-> +		clock-names =3D "aclk", "hclk", "sclk";
-> +		power-domains =3D <&power PX30_PD_VO>;
-> +		resets =3D <&cru SRST_RGA>, <&cru SRST_RGA_A>, <&cru SRST_RGA_H>;
-> +		reset-names =3D "core", "axi", "ahb";
-> +	};
-> +
->  	qos_gmac: qos@ff518000 {
->  		compatible =3D "syscon";
->  		reg =3D <0x0 0xff518000 0x0 0x20>;
-> --=20
-> 2.30.0
->=20
-
---=20
-Paul Kocialkowski, Bootlin
-Embedded Linux and kernel engineering
-https://bootlin.com
-
---IppPXotpNrpDAaCR
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEEJZpWjZeIetVBefti3cLmz3+fv9EFAl/3GZcACgkQ3cLmz3+f
-v9Gt2gf/arpDpZLEP4HaikNA893L8x+KyyjlaREZnnG5cbWbSWcvqi7dA/EpQPr1
-PzVNIOV0cGyeW7niPdksrjZ6TW6ZrbjzjsujtBg4Pk/o06AAnXvJavNSXJRwlxy3
-ges/kOzUgpIaDow+4TVMUFZaF5OfvrPI4fldt4kTEhgdWWAmi+JqkMusHt4PY8/s
-O92fjtV/VbPQKsTdXz/wUvw4u9dbWCiCLmN+2VQmWAgXrkh4QwZ43P3iRtUCmwBB
-F59EiFpXhCw2z0s/uedGkDp5M2SY+ENEXGCwFLSIv/FkS28kMmSjmO7D2QtnCDsE
-MDisahYUzr1e9YvbPgmCDn0i7GyyUg==
-=+GZK
------END PGP SIGNATURE-----
-
---IppPXotpNrpDAaCR--
+-- 
+Warm Regards
+Thara
