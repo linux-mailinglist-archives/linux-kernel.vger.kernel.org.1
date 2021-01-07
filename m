@@ -2,127 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4AFF92ED53A
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 18:12:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AC2A22ED545
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 18:17:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728943AbhAGRMA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 12:12:00 -0500
-Received: from mail-oi1-f170.google.com ([209.85.167.170]:36194 "EHLO
-        mail-oi1-f170.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728131AbhAGRL7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 12:11:59 -0500
-Received: by mail-oi1-f170.google.com with SMTP id 9so8133215oiq.3;
-        Thu, 07 Jan 2021 09:11:43 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=1PbEYJF/MvWbGrN60pFdKWGcw422aT1Ml4Xjt2II+jk=;
-        b=pjrcQ8HIDqRPH8mr1fYsOYySO3QPQbMefiPXc0F1DgM5O9yYrWrXWpqWrKc46H1oJV
-         2C7YbsVKZIu27UBMzNPWEI5Yj0YWBfZUp3HQZjM75tmOnCNe673/CYH4zLdejFCqlLUe
-         Y9OjHgDR0rBgs0BxUoyGgpn9GvMsB8twdzT9hW4Q0vWGfxre6/9licxs/X89iidgzhnZ
-         ZGF1rLgUkwQadPz1udTxS/qobsqih7U4chiQzF1GcbrHy4RgzNF3MW+qWCqrmG/jViG+
-         xd/FTrYQcJJYmNA7UK9jUt6Ih4yI1JpzZnX0oiiRAt11a4Wtj42mDTHOuwlzYqBx+vTw
-         f65Q==
-X-Gm-Message-State: AOAM532Cyzkb4VJyRBWq2zJRUH+POUle67WcpTCKz/35uf4ty2Ukt8cT
-        DKx6XTQI4qzmxWutmDlcWkS/wGF9LY5/4gArS60=
-X-Google-Smtp-Source: ABdhPJwvt9RljOaJcwc//OOXu96K4s2vVFASiWCVYzOY7QE13L5vHON4PHIPfkcAKUzSL6SijcimmyHoyMuJHe8Vo8M=
-X-Received: by 2002:aca:4892:: with SMTP id v140mr1981608oia.71.1610039478172;
- Thu, 07 Jan 2021 09:11:18 -0800 (PST)
+        id S1728452AbhAGRQV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 12:16:21 -0500
+Received: from mga14.intel.com ([192.55.52.115]:54640 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726073AbhAGRQV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Jan 2021 12:16:21 -0500
+IronPort-SDR: RJDtVfWOD2blekj20qclO6jBeVTO+ezNq0WCg9hoXSzCvi4Jm9EonrDlqoJQqN0V2kKGHyoqbp
+ apaFPaC+cf7w==
+X-IronPort-AV: E=McAfee;i="6000,8403,9857"; a="176682586"
+X-IronPort-AV: E=Sophos;i="5.79,329,1602572400"; 
+   d="scan'208";a="176682586"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Jan 2021 09:15:39 -0800
+IronPort-SDR: tjNLgNlYhW8IhFXn6o1pqzN9UJfr5wKFra1o377BEM/elVgQ1Tzx6TU82nbGa7oKVEJLCPoeaN
+ AXcw2igPCxog==
+X-IronPort-AV: E=Sophos;i="5.79,329,1602572400"; 
+   d="scan'208";a="422647515"
+Received: from agluck-desk2.sc.intel.com ([10.3.52.68])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Jan 2021 09:15:39 -0800
+From:   Tony Luck <tony.luck@intel.com>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     linux-kernel@vger.kernel.org, Borislav Petkov <bp@alien8.de>,
+        Tony Luck <tony.luck@intel.com>
+Subject: [RFC PATCH] x86/mce: Add ppin and microcode to mce trace
+Date:   Thu,  7 Jan 2021 09:12:25 -0800
+Message-Id: <20210107171225.21903-1-tony.luck@intel.com>
+X-Mailer: git-send-email 2.21.1
 MIME-Version: 1.0
-References: <20210105131447.38036-1-jiaxun.yang@flygoat.com>
- <20210105131447.38036-2-jiaxun.yang@flygoat.com> <683c8358-fd71-cd27-8e39-19fdf3e1f71f@redhat.com>
-In-Reply-To: <683c8358-fd71-cd27-8e39-19fdf3e1f71f@redhat.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Thu, 7 Jan 2021 18:11:07 +0100
-Message-ID: <CAJZ5v0jHFqGu1hmFwkfWsvP37hQnhBiG4M_Pa7TTHYL4C1VgMA@mail.gmail.com>
-Subject: Re: [PATCH v2 1/2] ACPI: platform-profile: Introduce object pointers
- to callbacks
-To:     Hans de Goede <hdegoede@redhat.com>
-Cc:     Platform Driver <platform-driver-x86@vger.kernel.org>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <lenb@kernel.org>,
-        Mark Gross <mgross@linux.intel.com>,
-        Ike Panhc <ike.pan@canonical.com>,
-        Mark Pearson <markpearson@lenovo.com>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 5, 2021 at 2:18 PM Hans de Goede <hdegoede@redhat.com> wrote:
->
-> Hi,
->
-> On 1/5/21 2:14 PM, Jiaxun Yang wrote:
-> > Add a object pointer to handler callbacks to avoid having
-> > global variables everywhere.
-> >
-> > Signed-off-by: Jiaxun Yang <jiaxun.yang@flygoat.com>
-> > Suggested-by: Hans de Goede <hdegoede@redhat.com>
->
-> Thanks, patch looks good to me:
->
-> Reviewed-by: Hans de Goede <hdegoede@redhat.com>
->
-> Regards,
->
-> Hans
->
->
->
-> > ---
-> >  drivers/acpi/platform_profile.c  | 4 ++--
-> >  include/linux/platform_profile.h | 6 ++++--
-> >  2 files changed, 6 insertions(+), 4 deletions(-)
-> >
-> > diff --git a/drivers/acpi/platform_profile.c b/drivers/acpi/platform_profile.c
-> > index 91be50a32cc8..bb4d7b0fe2ac 100644
-> > --- a/drivers/acpi/platform_profile.c
-> > +++ b/drivers/acpi/platform_profile.c
-> > @@ -64,7 +64,7 @@ static ssize_t platform_profile_show(struct device *dev,
-> >               return -ENODEV;
-> >       }
-> >
-> > -     err = cur_profile->profile_get(&profile);
-> > +     err = cur_profile->profile_get(cur_profile, &profile);
-> >       mutex_unlock(&profile_lock);
-> >       if (err)
-> >               return err;
-> > @@ -104,7 +104,7 @@ static ssize_t platform_profile_store(struct device *dev,
-> >               return -EOPNOTSUPP;
-> >       }
-> >
-> > -     err = cur_profile->profile_set(i);
-> > +     err = cur_profile->profile_set(cur_profile, i);
-> >       mutex_unlock(&profile_lock);
-> >       if (err)
-> >               return err;
-> > diff --git a/include/linux/platform_profile.h b/include/linux/platform_profile.h
-> > index 3623d7108421..43f4583b5259 100644
-> > --- a/include/linux/platform_profile.h
-> > +++ b/include/linux/platform_profile.h
-> > @@ -28,8 +28,10 @@ enum platform_profile_option {
-> >
-> >  struct platform_profile_handler {
-> >       unsigned long choices[BITS_TO_LONGS(PLATFORM_PROFILE_LAST)];
-> > -     int (*profile_get)(enum platform_profile_option *profile);
-> > -     int (*profile_set)(enum platform_profile_option profile);
-> > +     int (*profile_get)(struct platform_profile_handler *pprof,
-> > +                             enum platform_profile_option *profile);
-> > +     int (*profile_set)(struct platform_profile_handler *pprof,
-> > +                             enum platform_profile_option profile);
-> >  };
-> >
-> >  int platform_profile_register(const struct platform_profile_handler *pprof);
-> >
->
+Steven,
 
-Applied with a modified subject and some edits in the changelog as
-5.12 material, and I'm leaving the [2/2] to you.
+I've been remiss about updating the mce_record trace as new fields
+have been added to "struct mce". What are the ABI implications of a
+patch like the one below (sample only ... there are a couple more fields
+that may need to be added)?
 
-Thanks!
+Are there any size limitations that I might hit adding more items to
+this record?
+
+Thanks
+
+-Tony
+
+---
+ include/trace/events/mce.h | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
+
+diff --git a/include/trace/events/mce.h b/include/trace/events/mce.h
+index 1391ada0da3b..cf0e8b9920b7 100644
+--- a/include/trace/events/mce.h
++++ b/include/trace/events/mce.h
+@@ -33,6 +33,8 @@ TRACE_EVENT(mce_record,
+ 		__field(	u8,		cs		)
+ 		__field(	u8,		bank		)
+ 		__field(	u8,		cpuvendor	)
++		__field(	u64,		ppin		)
++		__field(	u32,		microcode	)
+ 	),
+ 
+ 	TP_fast_assign(
+@@ -53,9 +55,11 @@ TRACE_EVENT(mce_record,
+ 		__entry->cs		= m->cs;
+ 		__entry->bank		= m->bank;
+ 		__entry->cpuvendor	= m->cpuvendor;
++		__entry->ppin		= m->ppin;
++		__entry->microcode	= m->microcode;
+ 	),
+ 
+-	TP_printk("CPU: %d, MCGc/s: %llx/%llx, MC%d: %016Lx, IPID: %016Lx, ADDR/MISC/SYND: %016Lx/%016Lx/%016Lx, RIP: %02x:<%016Lx>, TSC: %llx, PROCESSOR: %u:%x, TIME: %llu, SOCKET: %u, APIC: %x",
++	TP_printk("CPU: %d, MCGc/s: %llx/%llx, MC%d: %016Lx, IPID: %016Lx, ADDR/MISC/SYND: %016Lx/%016Lx/%016Lx, RIP: %02x:<%016Lx>, TSC: %llx, PROCESSOR: %u:%x, TIME: %llu, SOCKET: %u, APIC: %x, PPIN: %llx, MICROCODE: %x",
+ 		__entry->cpu,
+ 		__entry->mcgcap, __entry->mcgstatus,
+ 		__entry->bank, __entry->status,
+@@ -66,7 +70,7 @@ TRACE_EVENT(mce_record,
+ 		__entry->cpuvendor, __entry->cpuid,
+ 		__entry->walltime,
+ 		__entry->socketid,
+-		__entry->apicid)
++		__entry->apicid, __entry->ppin, __entry->microcode)
+ );
+ 
+ #endif /* _TRACE_MCE_H */
+-- 
+2.21.1
+
