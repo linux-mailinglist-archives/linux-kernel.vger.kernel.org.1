@@ -2,106 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1872E2ECB00
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 08:37:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 061C22ECB04
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 08:41:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726635AbhAGHfp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 02:35:45 -0500
-Received: from out30-133.freemail.mail.aliyun.com ([115.124.30.133]:47012 "EHLO
-        out30-133.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726013AbhAGHfp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 02:35:45 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R771e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04420;MF=wenyang@linux.alibaba.com;NM=1;PH=DS;RN=5;SR=0;TI=SMTPD_---0UKyro0-_1610004896;
-Received: from localhost(mailfrom:wenyang@linux.alibaba.com fp:SMTPD_---0UKyro0-_1610004896)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Thu, 07 Jan 2021 15:35:02 +0800
-From:   Wen Yang <wenyang@linux.alibaba.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Sasha Levin <sashal@kernel.org>
-Cc:     Xunlei Pang <xlpang@linux.alibaba.com>,
-        linux-kernel@vger.kernel.org, Wen Yang <wenyang@linux.alibaba.com>
-Subject: [PATCH v2 4.9 00/10] fix a race in release_task when flushing the dentry
-Date:   Thu,  7 Jan 2021 15:34:44 +0800
-Message-Id: <20210107073454.62026-1-wenyang@linux.alibaba.com>
-X-Mailer: git-send-email 2.23.0
+        id S1726482AbhAGHlM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 02:41:12 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56216 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725306AbhAGHlM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Jan 2021 02:41:12 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3F3042311A;
+        Thu,  7 Jan 2021 07:40:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1610005231;
+        bh=sdq6syVaDrNYq3YLoMTwQn2crIXyKwGokuzzAZriVNE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Penxc7aXySvgQKe1F0THm1NffrsT3AOmVDktRMhiSG2OjZeMycVNT0qWD7IYHZC5g
+         m3uEe0raFphJ8Ie+vbcu5PTq2K0/5KTnhEVNiLiDk7v8KWVq/fQ66NZYDhKwCCoMc0
+         BRNfBy0wDjz+TJfu94ygCz4L6zhV6X9SoTqnRM6RvWubwb8GNl7ZSx/rVNvZsrK50l
+         72J8t9Nen0nqbmeTFByBA+keeGiP4mKTyoe3fhCz1RWFrQ0jzqj3WSPYO5QRKJFtMR
+         E5EcwKyb80AnHV4HdF28iq96Fa2UF31ND2fZnf0vq50I/TEKb12dZqM0BVXn/3Jyuq
+         IQ6yutJZBt/Iw==
+Date:   Wed, 6 Jan 2021 23:40:29 -0800
+From:   Jaegeuk Kim <jaegeuk@kernel.org>
+To:     Can Guo <cang@codeaurora.org>
+Cc:     linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org,
+        kernel-team@android.com, alim.akhtar@samsung.com,
+        avri.altman@wdc.com, bvanassche@acm.org,
+        martin.petersen@oracle.com, stanley.chu@mediatek.com
+Subject: Re: [PATCH v3 1/2] scsi: ufs: fix livelock of ufshcd_clear_ua_wluns
+Message-ID: <X/a67YjcNgfJAGcc@google.com>
+References: <20210106214109.44041-1-jaegeuk@kernel.org>
+ <20210106214109.44041-2-jaegeuk@kernel.org>
+ <fc4cb27df8bd6b2c1037d82e4b5d3860@codeaurora.org>
+ <X/awxP3m1VG3b+bX@google.com>
+ <c47ca5307e67de386aa3e99256b837e4@codeaurora.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <c47ca5307e67de386aa3e99256b837e4@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The dentries such as /proc/<pid>/ns/ have the DCACHE_OP_DELETE flag, they 
-should be deleted when the process exits. 
+On 01/07, Can Guo wrote:
+> On 2021-01-07 14:57, Jaegeuk Kim wrote:
+> > On 01/07, Can Guo wrote:
+> > > On 2021-01-07 05:41, Jaegeuk Kim wrote:
+> > > > When gate_work/ungate_work gets an error during hibern8_enter or exit,
+> > > >  ufshcd_err_handler()
+> > > >    ufshcd_scsi_block_requests()
+> > > >    ufshcd_reset_and_restore()
+> > > >      ufshcd_clear_ua_wluns() -> stuck
+> > > >    ufshcd_scsi_unblock_requests()
+> > > >
+> > > > In order to avoid it, ufshcd_clear_ua_wluns() can be called per recovery
+> > > > flows
+> > > > such as suspend/resume, link_recovery, and error_handler.
+> > > >
+> > > > Fixes: 1918651f2d7e ("scsi: ufs: Clear UAC for RPMB after ufshcd
+> > > > resets")
+> > > > Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
+> > > > ---
+> > > >  drivers/scsi/ufs/ufshcd.c | 15 ++++++++++-----
+> > > >  1 file changed, 10 insertions(+), 5 deletions(-)
+> > > >
+> > > > diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
+> > > > index bedb822a40a3..1678cec08b51 100644
+> > > > --- a/drivers/scsi/ufs/ufshcd.c
+> > > > +++ b/drivers/scsi/ufs/ufshcd.c
+> > > > @@ -3996,6 +3996,8 @@ int ufshcd_link_recovery(struct ufs_hba *hba)
+> > > >  	if (ret)
+> > > >  		dev_err(hba->dev, "%s: link recovery failed, err %d",
+> > > >  			__func__, ret);
+> > > > +	else
+> > > > +		ufshcd_clear_ua_wluns(hba);
+> > > 
+> > > Can we put it right after ufshcd_scsi_add_wlus() in ufshcd_add_lus()?
+> > 
+> > May I ask the reason? We'll call it after ufshcd_add_lus() later tho.
+> > 
+> 
+> I think the code will be more readable - we do all the LU related
+> stuffs in one func, just nit-picking though. I found this because
+> I am planning to move the devfreq init codes out of ufshcd_add_lus()
+> due to it is inappropriate to init devfreq in there by its naming,
+> but it might be a good place for ufshcd_clear_ua_wluns().
 
-Suppose the following race appears： 
+Ok, that looks good to me. Thanks.
 
-release_task                 dput 
--> proc_flush_task 
-                             -> dentry->d_op->d_delete(dentry) 
--> __exit_signal 
-                             -> dentry->d_lockref.count--  and return. 
-
-In the proc_flush_task(), if another process is using this dentry, it will
-not be deleted. At the same time, in dput(), d_op->d_delete() can be executed
-before __exit_signal(pid has not been hashed), d_delete returns false, so
-this dentry still cannot be deleted.
-
-This dentry will always be cached (although its count is 0 and the
-DCACHE_OP_DELETE flag is set), its parent denry will also be cached too, and
-these dentries can only be deleted when drop_caches is manually triggered.
-
-This will result in wasted memory. What's more troublesome is that these
-dentries reference pid, according to the commit f333c700c610 ("pidns: Add a
-limit on the number of pid namespaces"), if the pid cannot be released, it
-may result in the inability to create a new pid_ns.
-
-This issue was introduced by 60347f6716aa ("pid namespaces: prepare
-proc_flust_task() to flush entries from multiple proc trees"), exposed by
-f333c700c610 ("pidns: Add a limit on the number of pid namespaces"), and then
-fixed by 7bc3e6e55acf ("proc: Use a list of inodes to flush from proc").
-
-
-Alexey Dobriyan (1):
-  proc: use %u for pid printing and slightly less stack
-
-Andreas Gruenbacher (1):
-  proc: Pass file mode to proc_pid_make_inode
-
-Christian Brauner (1):
-  clone: add CLONE_PIDFD
-
-Eric W. Biederman (6):
-  proc: Better ownership of files for non-dumpable tasks in user
-    namespaces
-  proc: Rename in proc_inode rename sysctl_inodes sibling_inodes
-  proc: Generalize proc_sys_prune_dcache into proc_prune_siblings_dcache
-  proc: Clear the pieces of proc_inode that proc_evict_inode cares about
-  proc: Use d_invalidate in proc_prune_siblings_dcache
-  proc: Use a list of inodes to flush from proc
-
-Joel Fernandes (Google) (1):
-  pidfd: add polling support
-
- fs/proc/base.c             | 242 ++++++++++++++++++++-------------------------
- fs/proc/fd.c               |  20 +---
- fs/proc/inode.c            |  67 ++++++++++++-
- fs/proc/internal.h         |  22 ++---
- fs/proc/namespaces.c       |   3 +-
- fs/proc/proc_sysctl.c      |  45 ++-------
- fs/proc/self.c             |   6 +-
- fs/proc/thread_self.c      |   5 +-
- include/linux/pid.h        |   5 +
- include/linux/proc_fs.h    |   4 +-
- include/uapi/linux/sched.h |   1 +
- kernel/exit.c              |   5 +-
- kernel/fork.c              | 131 +++++++++++++++++++++++-
- kernel/pid.c               |   3 +
- kernel/signal.c            |  11 +++
- security/selinux/hooks.c   |   1 +
- 16 files changed, 343 insertions(+), 228 deletions(-)
-
--- 
-1.8.3.1
-
+> 
+> Thanks,
+> Can Guo.
+> 
+> > > 
+> > > Thanks,
+> > > Can Guo.
+> > > 
+> > > >
+> > > >  	return ret;
+> > > >  }
+> > > > @@ -6003,6 +6005,9 @@ static void ufshcd_err_handler(struct work_struct
+> > > > *work)
+> > > >  	ufshcd_scsi_unblock_requests(hba);
+> > > >  	ufshcd_err_handling_unprepare(hba);
+> > > >  	up(&hba->eh_sem);
+> > > > +
+> > > > +	if (!err && needs_reset)
+> > > > +		ufshcd_clear_ua_wluns(hba);
+> > > >  }
+> > > >
+> > > >  /**
+> > > > @@ -6940,14 +6945,11 @@ static int
+> > > > ufshcd_host_reset_and_restore(struct ufs_hba *hba)
+> > > >  	ufshcd_set_clk_freq(hba, true);
+> > > >
+> > > >  	err = ufshcd_hba_enable(hba);
+> > > > -	if (err)
+> > > > -		goto out;
+> > > >
+> > > >  	/* Establish the link again and restore the device */
+> > > > -	err = ufshcd_probe_hba(hba, false);
+> > > >  	if (!err)
+> > > > -		ufshcd_clear_ua_wluns(hba);
+> > > > -out:
+> > > > +		err = ufshcd_probe_hba(hba, false);
+> > > > +
+> > > >  	if (err)
+> > > >  		dev_err(hba->dev, "%s: Host init failed %d\n", __func__, err);
+> > > >  	ufshcd_update_evt_hist(hba, UFS_EVT_HOST_RESET, (u32)err);
+> > > > @@ -8777,6 +8779,7 @@ static int ufshcd_suspend(struct ufs_hba *hba,
+> > > > enum ufs_pm_op pm_op)
+> > > >  		ufshcd_resume_clkscaling(hba);
+> > > >  	hba->clk_gating.is_suspended = false;
+> > > >  	hba->dev_info.b_rpm_dev_flush_capable = false;
+> > > > +	ufshcd_clear_ua_wluns(hba);
+> > > >  	ufshcd_release(hba);
+> > > >  out:
+> > > >  	if (hba->dev_info.b_rpm_dev_flush_capable) {
+> > > > @@ -8887,6 +8890,8 @@ static int ufshcd_resume(struct ufs_hba *hba,
+> > > > enum ufs_pm_op pm_op)
+> > > >  		cancel_delayed_work(&hba->rpm_dev_flush_recheck_work);
+> > > >  	}
+> > > >
+> > > > +	ufshcd_clear_ua_wluns(hba);
+> > > > +
+> > > >  	/* Schedule clock gating in case of no access to UFS device yet */
+> > > >  	ufshcd_release(hba);
