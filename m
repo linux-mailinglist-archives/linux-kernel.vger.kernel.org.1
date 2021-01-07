@@ -2,57 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15DD62EE6C6
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 21:25:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2CB272EE6C8
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 21:25:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727001AbhAGUYe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 15:24:34 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54212 "EHLO mail.kernel.org"
+        id S1727091AbhAGUYm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 15:24:42 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54262 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726064AbhAGUYd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 15:24:33 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPS id F2A4023406;
-        Thu,  7 Jan 2021 20:23:52 +0000 (UTC)
+        id S1726386AbhAGUYl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Jan 2021 15:24:41 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPS id 11DC323435;
+        Thu,  7 Jan 2021 20:24:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610051033;
-        bh=Dj2QWyo30J8bbFxXEj7TdXQ0PjuLFuwxYQ/Sb74QLys=;
+        s=k20201202; t=1610051041;
+        bh=k39S9iplC0PEs6vOo2DHLdjGB+HsT3Df5GfFOdRxYbQ=;
         h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=aiMDgi914zjhpm8EoL/EdZd7zfUh2c/ryz5483VU/Rpe0ppqF3rLcWDFzEKHKK/jL
-         1BYRHgRZ4uBR3gVFfuAot77XT+uo4LUIRY/WlrbkaAldJL7H683PQEVghzCdKunwtT
-         hsHkz7WQSmaLu/cv5BdwsScv91ZdTVSVIM5dMcXhDlQ463PhdYXPO34520NKqqxDxM
-         mYEdxo+jFDBCZ4D74WyMK9d0YC+1mai6gvLJjSTfENptsvl64gcd/GJxo2E4awAWSo
-         jdbXoiSS+feM5P0lwVKwpS02UfxasC5tut6aunsnlg0jc1vjG2w6LAcfN4SbK6TNyx
-         QBNSg+Do0oN1g==
+        b=M3v0sOmkATsMuIQWjFpOiCu6G86HiMo+uAm0N1JGJVRN3Mbm/jgw9vu//hWE7hIom
+         gKhZ4lxvBR4luUwjC+Iwt2SA0qZioJFmJf79MRHMu/IBjzSUMBuUZdiAsx455AJsFf
+         PhBtx1S84JWrIYvFdDJrrGKF6z7eRs161rTs7o41nXFUmlLURfJu3527GOsf3HzSSY
+         0/6X4juaHGBQjcB5P/sYJ9bN7kc3ToNfi/hjiORdnygbeCc+OrayKCgdIX9dommbXC
+         xxwH+Xk0CwpO1gt26uZhHSquttit1KGjaJ6KPjUGBvgItSZHoeJ6UJCUqR4hb9XdtJ
+         SdYFRtDtN6DGg==
 Received: from pdx-korg-docbuild-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-1.ci.codeaurora.org (Postfix) with ESMTP id DAFFA60508;
-        Thu,  7 Jan 2021 20:23:52 +0000 (UTC)
-Subject: Re: [GIT PULL] SPI fixes for v5.11-rc2
+        by pdx-korg-docbuild-1.ci.codeaurora.org (Postfix) with ESMTP id 0C07760508;
+        Thu,  7 Jan 2021 20:24:01 +0000 (UTC)
+Subject: Re: [GIT PULL] regmap fixes for v5.11-rc2
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20210107171103.EE51F2342C@mail.kernel.org>
-References: <20210107171103.EE51F2342C@mail.kernel.org>
-X-PR-Tracked-List-Id: <linux-spi.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20210107171103.EE51F2342C@mail.kernel.org>
-X-PR-Tracked-Remote: https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git tags/spi-fix-v5.11-rc2
-X-PR-Tracked-Commit-Id: 6170d077bf92c5b3dfbe1021688d3c0404f7c9e9
+In-Reply-To: <20210107171015.38E792311E@mail.kernel.org>
+References: <20210107171015.38E792311E@mail.kernel.org>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20210107171015.38E792311E@mail.kernel.org>
+X-PR-Tracked-Remote: https://git.kernel.org/pub/scm/linux/kernel/git/broonie/regmap.git tags/regmap-fix-v5.11-rc2
+X-PR-Tracked-Commit-Id: f6bcb4c7f366905b66ce8ffca7190118244bb642
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: f5e6c330254ae691f6d7befe61c786eb5056007e
-Message-Id: <161005103282.19187.5682766892624812410.pr-tracker-bot@kernel.org>
-Date:   Thu, 07 Jan 2021 20:23:52 +0000
+X-PR-Merge-Commit-Id: fc37784dc71bc9dd3a00a2f01906b3966e4034f2
+Message-Id: <161005104104.19187.9428475469000513153.pr-tracker-bot@kernel.org>
+Date:   Thu, 07 Jan 2021 20:24:01 +0000
 To:     Mark Brown <broonie@kernel.org>
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Mark Brown <broonie@kernel.org>
+        linux-kernel@vger.kernel.org, Mark Brown <broonie@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Thu, 07 Jan 2021 17:10:22 +0000:
+The pull request you sent on Thu, 07 Jan 2021 17:09:30 +0000:
 
-> https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git tags/spi-fix-v5.11-rc2
+> https://git.kernel.org/pub/scm/linux/kernel/git/broonie/regmap.git tags/regmap-fix-v5.11-rc2
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/f5e6c330254ae691f6d7befe61c786eb5056007e
+https://git.kernel.org/torvalds/c/fc37784dc71bc9dd3a00a2f01906b3966e4034f2
 
 Thank you!
 
