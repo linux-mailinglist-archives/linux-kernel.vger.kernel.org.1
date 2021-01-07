@@ -2,98 +2,165 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 27CE32ED5D9
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 18:43:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EFF3E2ED5D4
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 18:41:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728979AbhAGRmD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 12:42:03 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59144 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726165AbhAGRmD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 12:42:03 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EBEF6233FB;
-        Thu,  7 Jan 2021 17:41:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610041282;
-        bh=ka0nkpDU2h1gSL1xu+E2qHPvU660nT51WYpv2eqNhKM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=d7YgNieZmdHd/yNCSNq6pfizmmYQGoiTBFTO+ZGX7Ergwh+Nqa2HSPxOltj89nSl8
-         5nO8HB5p6C+M0gur5IXieEdVhBIqquYVj57QFKTcSL7PeGdxuTB02DVaPK2csyW3j3
-         xBnr08hX97l807PdmImJ4tbkZBxbP70SxBeooc+ZOC9NTx4PEUypJdSYqg/VUicXTR
-         Bqdamr49wObgud5b8HlZ0Cd6AbYs4d0Iz6B1U6QhLyUoyw4n1nacREhUMhWuSFup5e
-         5RTreYoyVj9aQSQQs7aYhlyd7hpC+mkDW7RKBLKjWzgko4vYszbLjMVPRy/qf6SvzP
-         nvggNd3hoYt7g==
-Date:   Thu, 7 Jan 2021 17:40:52 +0000
-From:   Mark Brown <broonie@kernel.org>
-To:     Gustav Wiklander <gustavwi@axis.com>
-Cc:     Gustav Wiklander <gustav.wiklander@axis.com>, kernel@axis.com,
-        linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] spi: spidev: Fix so the module is autoloaded when built
- as external
-Message-ID: <20210107174052.GH4726@sirena.org.uk>
-References: <20210104153436.20083-1-gustav.wiklander@axis.com>
- <20210104213437.GM5645@sirena.org.uk>
- <124e3214-37b9-524b-7888-a31e8cb455da@axis.com>
+        id S1728950AbhAGRll (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 12:41:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58058 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726165AbhAGRll (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Jan 2021 12:41:41 -0500
+Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7C08C0612F6
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Jan 2021 09:41:00 -0800 (PST)
+Received: by mail-pf1-x436.google.com with SMTP id s21so4280312pfu.13
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Jan 2021 09:41:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=ILMPwCwZrBJ1HMfYPpc9UDsKQwFZc17yoGrjxBe8NiI=;
+        b=K9lAta31bHz+XI4lQJtLUqRu5RcufMnNjXJo+/bdjD0p9WrHHbUYeZQGmSZ1fAZz8B
+         nvWIKhZnKvYhNujvKH6UslFurON7uXp5dU1M+l/QmGFyYlOMpjTpGytFXN9P2fKMgRel
+         uyyjS7Y5Km6xgNzEZqqtIREQyVXfHGbVBOhODyO+Ym9Xq2hHXNci9WYpUShSWI1LyW0D
+         u0AcR1XmNrj+xNIyE2rMUf8/SJ+L+LhHGCIRxqHpI++IQ3f0WjeIK/dQK1YkXfWIBT0q
+         /gAU/0jlm+S+wsX0KeTdTxAWlRSOhVK/4n+2zvx2Ja62VUURI69aPsMrTTNB28VgV4aD
+         luQw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=ILMPwCwZrBJ1HMfYPpc9UDsKQwFZc17yoGrjxBe8NiI=;
+        b=YYp9WGtvTQQsMeovnotyxaMPjCYPlWnvVc0bejw+86TPF4Lf0Z9OwFsEqqb4HjB3sM
+         /lqj3Bel4SoLFzh8B4TSbAREQH1n/H8zSBXgc6QS3zSAGkqwOhr3lcZz+bUdpxd5rF1D
+         WfdwFB0ewhflLuv4iwJbBiu4VK0XDHDgksZKs8IUJ0s8RIg+V+qqUT3Qv+q146sq16yD
+         j31vYHxzrHIeOHKufjtPNjEFwub1l2KFRT/VUdKlFkw4vTAxH8zZYtZ3/3+BflXM8g0s
+         SRipPLkqHE/A7R0WWtST1+ZUc1yjYjZ8jWa8Yq69JOjCFZniJY1XskyGHZmvwEHvngAd
+         LTqQ==
+X-Gm-Message-State: AOAM532Jskom8eqlKXf6T7Rq2W13nEmIS1uY3YcwHzuRx2rstocEs3kd
+        1elHS2iXjI1bzDQAEf1BFz331Q==
+X-Google-Smtp-Source: ABdhPJzeg8rKSRJuruFkRQ8suzf3GzFrW7d4yz50DhxnuoFnh3A9BYIV8IfaypxEpes87r4wapgiYw==
+X-Received: by 2002:a65:5209:: with SMTP id o9mr2934295pgp.34.1610041260269;
+        Thu, 07 Jan 2021 09:41:00 -0800 (PST)
+Received: from google.com ([2620:15c:f:10:1ea0:b8ff:fe73:50f5])
+        by smtp.gmail.com with ESMTPSA id a12sm7145470pgq.5.2021.01.07.09.40.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 07 Jan 2021 09:40:59 -0800 (PST)
+Date:   Thu, 7 Jan 2021 09:40:53 -0800
+From:   Sean Christopherson <seanjc@google.com>
+To:     Ben Gardon <bgardon@google.com>
+Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Peter Shier <pshier@google.com>,
+        "Maciej S . Szmigiero" <maciej.szmigiero@oracle.com>,
+        Leo Hou <leohou1402@gmail.com>
+Subject: Re: [PATCH v3 1/2] KVM: x86/mmu: Ensure TDP MMU roots are freed
+ after yield
+Message-ID: <X/dHpSoi5AkPIrfc@google.com>
+References: <20210107001935.3732070-1-bgardon@google.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="wayzTnRSUXKNfBqd"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <124e3214-37b9-524b-7888-a31e8cb455da@axis.com>
-X-Cookie: See store for details.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210107001935.3732070-1-bgardon@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+In the future, please document the changes in each revision, e.g. in a cover
+letter or in the ignored part of the diff.
 
---wayzTnRSUXKNfBqd
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+On Wed, Jan 06, 2021, Ben Gardon wrote:
+> Many TDP MMU functions which need to perform some action on all TDP MMU
+> roots hold a reference on that root so that they can safely drop the MMU
+> lock in order to yield to other threads. However, when releasing the
+> reference on the root, there is a bug: the root will not be freed even
+> if its reference count (root_count) is reduced to 0.
+> 
+> To simplify acquiring and releasing references on TDP MMU root pages, and
+> to ensure that these roots are properly freed, move the get/put operations
+> into another TDP MMU root iterator macro.
+> 
+> Moving the get/put operations into an iterator macro also helps
+> simplify control flow when a root does need to be freed. Note that using
+> the list_for_each_entry_safe macro would not have been appropriate in
+> this situation because it could keep a pointer to the next root across
+> an MMU lock release + reacquire, during which time that root could be
+> freed.
+> 
+> Reported-by: Maciej S. Szmigiero <maciej.szmigiero@oracle.com>
+> Suggested-by: Paolo Bonzini <pbonzini@redhat.com>
+> Fixes: faaf05b00aec ("kvm: x86/mmu: Support zapping SPTEs in the TDP MMU")
+> Fixes: 063afacd8730 ("kvm: x86/mmu: Support invalidate range MMU notifier for TDP MMU")
+> Fixes: a6a0b05da9f3 ("kvm: x86/mmu: Support dirty logging for the TDP MMU")
+> Fixes: 14881998566d ("kvm: x86/mmu: Support disabling dirty logging for the tdp MMU")
+> Signed-off-by: Ben Gardon <bgardon@google.com>
 
-On Tue, Jan 05, 2021 at 10:44:21AM +0100, Gustav Wiklander wrote:
-> On 1/4/21 10:34 PM, Mark Brown wrote:
-> > On Mon, Jan 04, 2021 at 04:34:35PM +0100, Gustav Wiklander wrote:
+Reviewed-by: Sean Christopherson <seanjc@google.com> 
 
-> > > The spi framework sets the modalias for the spi device to belong in
-> > > either the acpi device table or the SPI device table. It can never
-> > > be in the OF table. Therefore the spidev driver should populate the
-> > > spi device table rather than the OF table.
+> ---
+>  arch/x86/kvm/mmu/tdp_mmu.c | 104 +++++++++++++++++--------------------
+>  1 file changed, 48 insertions(+), 56 deletions(-)
+> 
+> diff --git a/arch/x86/kvm/mmu/tdp_mmu.c b/arch/x86/kvm/mmu/tdp_mmu.c
+> index 75db27fda8f3..d4191ed193cd 100644
+> --- a/arch/x86/kvm/mmu/tdp_mmu.c
+> +++ b/arch/x86/kvm/mmu/tdp_mmu.c
+> @@ -44,7 +44,48 @@ void kvm_mmu_uninit_tdp_mmu(struct kvm *kvm)
+>  	WARN_ON(!list_empty(&kvm->arch.tdp_mmu_roots));
+>  }
+>  
+> -#define for_each_tdp_mmu_root(_kvm, _root)			    \
+> +static void tdp_mmu_put_root(struct kvm *kvm, struct kvm_mmu_page *root)
+> +{
+> +	if (kvm_mmu_put_root(kvm, root))
+> +		kvm_tdp_mmu_free_root(kvm, root);
+> +}
+> +
+> +static inline bool tdp_mmu_next_root_valid(struct kvm *kvm,
+> +					   struct kvm_mmu_page *root)
+> +{
+> +	lockdep_assert_held(&kvm->mmu_lock);
+> +
+> +	if (list_entry_is_head(root, &kvm->arch.tdp_mmu_roots, link))
+> +		return false;
+> +
+> +	kvm_mmu_get_root(kvm, root);
+> +	return true;
+> +
+> +}
+> +
+> +static inline struct kvm_mmu_page *tdp_mmu_next_root(struct kvm *kvm,
+> +						     struct kvm_mmu_page *root)
+> +{
+> +	struct kvm_mmu_page *next_root;
+> +
+> +	next_root = list_next_entry(root, link);
+> +	tdp_mmu_put_root(kvm, root);
+> +	return next_root;
+> +}
+> +
+> +/*
+> + * Note: this iterator gets and puts references to the roots it iterates over.
 
-> > Why is this a good solution rather than ensuring the the OF IDs can be
-> > used directly?
+Maybe refer to it as "the yield_safe() variant" instead of "this" so that the
+comment makes sense with minimal context?
 
-> You suggestion is of course a solid alternative forward. However, the
-> downside with supporting the OF device table for automatic module loading is
-> that a lot of spi device drivers must be updated. Also
+> + * This makes it safe to release the MMU lock and yield within the loop, but
+> + * if exiting the loop early, the caller must drop the reference to the most
+> + * recent root. (Unless keeping a live reference is desirable.)
+> + */
 
-Is the module code too limited to cope with more than one table?
+Rather than encourage manually dropping the reference, what adding about a scary
+warning about not exiting the loop early?  At this point, it seems unlikely that
+we'll end up with a legitimate use case for exiting yield_safe() early.  And if
+we do, I think it'd be better to provide a macro to do the bookeeping instead of
+open coding it in the caller.  And maybe throw a blurb into the changelog about
+that so future developers understand that that scary warning isn't set in stone?
 
-> If adding support of OF device table the spi device drivers must now include
-> a MODULE_DEVICE_TABLE(of,...) as the spi device alias will no longer match
-> the alias in the module.
-
-> This command gives 186 spi device drivers.
-
-How about SPI drivers that already have an OF table and expect it to
-work, I rather suspect we have a lot of cases where people are adding
-SPI IDs to DT that don't appear in the module tables and frankly I think
-that's a reasonable expectation.  If there's an issue here beyond
-missing MODULE_DEVICE_TABLEs in drivers I'd expect it to be fixed in the
-core, otherwise we're just leaving sharp edges for everyone.
-
---wayzTnRSUXKNfBqd
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl/3R6QACgkQJNaLcl1U
-h9Bu5Qf/dzgvPJikJ4h7m5GFppKSZKhqXVVxbUCHh4ZllWu7bO3Sn2IK4Ut/tPh5
-FhkILkesGWvBuMZf39eORvreabn6xgYMfb2ki+luJOaWDQ5bkr91hy69+djJEa72
-8Aj4XOHqAAeYpoW6RcC+CxE5ZP5+3X9uBh6TVfQMGAOZZw17irSkh62ERLWSHz1+
-GmjiYEHJvMvWYSV32tWootBNpQX8logz/HheuL0gr4BP6ddyZoruZPrMJB1GhQ2t
-S+cUOcOheeSTfWEJtjw6Mq6ylO5d1eNAmAUgHt/WOP0SJDQdXIFEO5SxEbiRHX6A
-4sLLrqWLIP7bY8qitkuBwd1vJw7+8w==
-=K5nM
------END PGP SIGNATURE-----
-
---wayzTnRSUXKNfBqd--
+/*
+ * The yield_safe() variant of the TDP root iterator gets and puts references to
+ * the roots it iterates over.  This makes it safe to release the MMU lock and
+ * yield within the loop, but the caller MUST NOT exit the loop early.
+ */
