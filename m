@@ -2,215 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 289F02ECDA7
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 11:19:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 76BC72ECDAA
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 11:19:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727514AbhAGKSW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 05:18:22 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54198 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725974AbhAGKSV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 05:18:21 -0500
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 36E2023138;
-        Thu,  7 Jan 2021 10:17:40 +0000 (UTC)
-Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
-        by disco-boy.misterjones.org with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.94)
-        (envelope-from <maz@kernel.org>)
-        id 1kxSML-005oKv-V9; Thu, 07 Jan 2021 10:17:38 +0000
+        id S1727701AbhAGKSr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 05:18:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45448 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725974AbhAGKSq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Jan 2021 05:18:46 -0500
+Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 554E0C0612F5
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Jan 2021 02:18:06 -0800 (PST)
+Received: by mail-lf1-x12c.google.com with SMTP id h22so13429557lfu.2
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Jan 2021 02:18:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=eXcgrTzV8O4Ehzt2/ByOy2kk+5XppIuE21Qv6gqnryQ=;
+        b=hoB48T2IASUXAGX3I8lrFPPnJPJgJn9nnnHJpQFa6ebJTZWaM/lqO64OhdwLrlVY2a
+         BnN1YYTeiB97fv1elLtKnHLmp7DFH1xcoFsYRdqfs+S9+icbmfn1sMIpB6qcXetNxK6j
+         yNCRixyOykuayWhR+fsprXZ3qqhrb0Jbetp+dT07/PCeoxwO008PGy2WlNCznin6dI+T
+         aNVM8zLsgRsCEQweJZevibCbmmxaWsEOxiYhl045OPOhwTqkdrYDIL73PGrkTDFBcwif
+         pGZ/XTsRULu7/5qysMfUOmddEStkm+AZA0Nck0OqQGDKTslwNbpungB0SNXszA6ILTt8
+         Zldw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=eXcgrTzV8O4Ehzt2/ByOy2kk+5XppIuE21Qv6gqnryQ=;
+        b=nC/GHTlRGxa6Wo1rlEPKZtFiyF+Ee+yS1HvD6HrZflVP5NMOTlt1rIUYRtgbkYdrV5
+         ajjNnAnVA0yPa6kLi7XtGo0sX20bT86T6cMTNvkR4pZZ4Ir4qaoNZGla685003iQE2qK
+         9+g3wH5rzPxp3l9OYoJMTm81g4EwQCfI7/ZHGeCTOrhWA+huUG7faKXwpBzvlI+8SuLA
+         o1xNsffAUkrUbTCj1vx/xhopJX6B7x51QW/JHoTtT2IewOU5bTMHHwSdpizm4y4RJl3h
+         O4X2KOnsUeoEGVlwMTseLeWSQ822e7M2uAz6n6xbf1pXdLUp36q+wfooJqA7dyl+Tftv
+         VX4Q==
+X-Gm-Message-State: AOAM533uTi0b9PLebYTQV59utpDJZDtYwSUu7481YlME99mP9VA6BFuJ
+        sopHFE5GKHbaY7j+f/rKIcPivjHhSxrsBAeB0WGe4w==
+X-Google-Smtp-Source: ABdhPJxKSrsH31vUM7VoBUuDtA/gc5xAHMMhG3aPfJREu2Ua3Wylwf/2VVsRrTPMakc6kYPKN52BlJejNkZZabaVZzU=
+X-Received: by 2002:a19:495d:: with SMTP id l29mr3491631lfj.465.1610014684689;
+ Thu, 07 Jan 2021 02:18:04 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Thu, 07 Jan 2021 10:17:37 +0000
-From:   Marc Zyngier <maz@kernel.org>
-To:     ChiaWei Wang <chiawei_wang@aspeedtech.com>
-Cc:     robh+dt@kernel.org, joel@jms.id.au, andrew@aj.id.au,
-        tglx@linutronix.de, p.zabel@pengutronix.de,
-        linux-aspeed@lists.ozlabs.org, openbmc@lists.ozlabs.org,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, BMC-SW <BMC-SW@aspeedtech.com>
-Subject: Re: [PATCH 4/6] irqchip/aspeed: Add Aspeed eSPI interrupt controller
-In-Reply-To: <HK0PR06MB377957C33FDD43C5A7F5EA1691AF0@HK0PR06MB3779.apcprd06.prod.outlook.com>
-References: <20210106055939.19386-1-chiawei_wang@aspeedtech.com>
- <20210106055939.19386-5-chiawei_wang@aspeedtech.com>
- <123bc25c72b3b17c0c4154d8bd8ce3b0@kernel.org>
- <HK0PR06MB377957C33FDD43C5A7F5EA1691AF0@HK0PR06MB3779.apcprd06.prod.outlook.com>
-User-Agent: Roundcube Webmail/1.4.9
-Message-ID: <beae3a8ba0a89ac6dff638df4e8b3211@kernel.org>
-X-Sender: maz@kernel.org
-X-SA-Exim-Connect-IP: 51.254.78.96
-X-SA-Exim-Rcpt-To: chiawei_wang@aspeedtech.com, robh+dt@kernel.org, joel@jms.id.au, andrew@aj.id.au, tglx@linutronix.de, p.zabel@pengutronix.de, linux-aspeed@lists.ozlabs.org, openbmc@lists.ozlabs.org, devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, BMC-SW@aspeedtech.com
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+References: <1609936000-28378-1-git-send-email-srinivas.neeli@xilinx.com> <1609936000-28378-6-git-send-email-srinivas.neeli@xilinx.com>
+In-Reply-To: <1609936000-28378-6-git-send-email-srinivas.neeli@xilinx.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Thu, 7 Jan 2021 11:17:54 +0100
+Message-ID: <CACRpkdZrBXJSo_kicWKQ_wtFTZvkOUNyjP6UHZfY7xwRSNZBRw@mail.gmail.com>
+Subject: Re: [PATCH V4 5/5] gpio: gpio-xilinx: Add check if width exceeds 32
+To:     Srinivas Neeli <srinivas.neeli@xilinx.com>
+Cc:     Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Michal Simek <michal.simek@xilinx.com>,
+        Shubhrajyoti Datta <shubhrajyoti.datta@xilinx.com>,
+        sgoud@xilinx.com, Robert Hancock <hancock@sedsystems.ca>,
+        William Breathitt Gray <vilhelm.gray@gmail.com>,
+        Syed Nayyar Waris <syednwaris@gmail.com>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        git@xilinx.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-01-07 02:59, ChiaWei Wang wrote:
-> Hi Marc,
-> 
->> -----Original Message-----
->> From: Marc Zyngier <maz@kernel.org>
->> Sent: Wednesday, January 6, 2021 6:59 PM
->> To: ChiaWei Wang <chiawei_wang@aspeedtech.com>
->> Subject: Re: [PATCH 4/6] irqchip/aspeed: Add Aspeed eSPI interrupt 
->> controller
->> 
->> On 2021-01-06 05:59, Chia-Wei, Wang wrote:
->> > The eSPI interrupt controller acts as a SW IRQ number decoder to
->> > correctly control/dispatch interrupts of the eSPI peripheral, virtual
->> > wire, out-of-band, and flash channels.
->> >
->> > Signed-off-by: Chia-Wei, Wang <chiawei_wang@aspeedtech.com>
->> > ---
->> >  drivers/irqchip/Makefile             |   2 +-
->> >  drivers/irqchip/irq-aspeed-espi-ic.c | 251 ++++++++++++++++++++++++
->> >  include/soc/aspeed/espi.h            | 279
->> +++++++++++++++++++++++++++
->> >  3 files changed, 531 insertions(+), 1 deletion(-)  create mode 100644
->> > drivers/irqchip/irq-aspeed-espi-ic.c
->> >  create mode 100644 include/soc/aspeed/espi.h
->> >
->> > diff --git a/drivers/irqchip/Makefile b/drivers/irqchip/Makefile index
->> > 0ac93bfaec61..56da4a3123f8 100644
->> > --- a/drivers/irqchip/Makefile
->> > +++ b/drivers/irqchip/Makefile
->> > @@ -86,7 +86,7 @@ obj-$(CONFIG_MVEBU_PIC)			+=
->> irq-mvebu-pic.o
->> >  obj-$(CONFIG_MVEBU_SEI)			+= irq-mvebu-sei.o
->> >  obj-$(CONFIG_LS_EXTIRQ)			+= irq-ls-extirq.o
->> >  obj-$(CONFIG_LS_SCFG_MSI)		+= irq-ls-scfg-msi.o
->> > -obj-$(CONFIG_ARCH_ASPEED)		+= irq-aspeed-vic.o irq-aspeed-i2c-ic.o
->> > irq-aspeed-scu-ic.o
->> > +obj-$(CONFIG_ARCH_ASPEED)		+= irq-aspeed-vic.o irq-aspeed-i2c-ic.o
->> > irq-aspeed-scu-ic.o irq-aspeed-espi-ic.o
->> >  obj-$(CONFIG_STM32_EXTI) 		+= irq-stm32-exti.o
->> >  obj-$(CONFIG_QCOM_IRQ_COMBINER)		+= qcom-irq-combiner.o
->> >  obj-$(CONFIG_IRQ_UNIPHIER_AIDET)	+= irq-uniphier-aidet.o
->> > diff --git a/drivers/irqchip/irq-aspeed-espi-ic.c
->> > b/drivers/irqchip/irq-aspeed-espi-ic.c
->> > new file mode 100644
->> > index 000000000000..8a5cc8fe3f0c
->> > --- /dev/null
->> > +++ b/drivers/irqchip/irq-aspeed-espi-ic.c
->> > @@ -0,0 +1,251 @@
->> > +// SPDX-License-Identifier: GPL-2.0-or-later
->> > +/*
->> > + * Copyright (c) 2020 Aspeed Technology Inc.
->> > + */
->> > +#include <linux/bitops.h>
->> > +#include <linux/module.h>
->> > +#include <linux/irq.h>
->> > +#include <linux/irqchip.h>
->> > +#include <linux/irqchip/chained_irq.h> #include <linux/irqdomain.h>
->> > +#include <linux/interrupt.h> #include <linux/mfd/syscon.h> #include
->> > +<linux/regmap.h> #include <linux/of.h> #include <linux/of_platform.h>
->> > +
->> > +#include <soc/aspeed/espi.h>
->> > +#include <dt-bindings/interrupt-controller/aspeed-espi-ic.h>
->> > +
->> > +#define DEVICE_NAME	"aspeed-espi-ic"
->> > +#define IRQCHIP_NAME	"eSPI-IC"
->> > +
->> > +#define ESPI_IC_IRQ_NUM	7
->> > +
->> > +struct aspeed_espi_ic {
->> > +	struct regmap *map;
->> > +	int irq;
->> > +	int gpio_irq;
->> > +	struct irq_domain *irq_domain;
->> > +};
->> > +
->> > +static void aspeed_espi_ic_gpio_isr(struct irq_desc *desc) {
->> > +	unsigned int irq;
->> > +	struct aspeed_espi_ic *espi_ic = irq_desc_get_handler_data(desc);
->> > +	struct irq_chip *chip = irq_desc_get_chip(desc);
->> > +
->> > +	chained_irq_enter(chip, desc);
->> > +
->> > +	irq = irq_find_mapping(espi_ic->irq_domain,
->> > +				   ASPEED_ESPI_IC_CTRL_RESET);
->> > +	generic_handle_irq(irq);
->> > +
->> > +	irq = irq_find_mapping(espi_ic->irq_domain,
->> > +				   ASPEED_ESPI_IC_CHAN_RESET);
->> > +	generic_handle_irq(irq);
->> 
->> So for each mux interrupt, you generate two endpoints interrupt, 
->> without even
->> checking whether they are pending? That's no good.
-> 
-> As the eSPI IC driver is chained to Aspeed GPIO IC, the pending is
-> checked in the gpio-aspeed.c
+On Wed, Jan 6, 2021 at 1:27 PM Srinivas Neeli <srinivas.neeli@xilinx.com> wrote:
 
-That's not the place to do that.
+> Add check to see if gpio-width property does not exceed 32.
+> If it exceeds then return -EINVAL.
+>
+> Signed-off-by: Srinivas Neeli <srinivas.neeli@xilinx.com>
 
-> 
->> > +
->> > +	chained_irq_exit(chip, desc);
->> > +}
->> > +
->> > +static void aspeed_espi_ic_isr(struct irq_desc *desc) {
->> > +	unsigned int sts;
->> > +	unsigned int irq;
->> > +	struct aspeed_espi_ic *espi_ic = irq_desc_get_handler_data(desc);
->> > +	struct irq_chip *chip = irq_desc_get_chip(desc);
->> > +
->> > +	chained_irq_enter(chip, desc);
->> > +
->> > +	regmap_read(espi_ic->map, ESPI_INT_STS, &sts);
->> > +
->> > +	if (sts & ESPI_INT_STS_PERIF_BITS) {
->> > +		irq = irq_find_mapping(espi_ic->irq_domain,
->> > +				       ASPEED_ESPI_IC_PERIF_EVENT);
->> > +		generic_handle_irq(irq);
->> > +	}
->> > +
->> > +	if (sts & ESPI_INT_STS_VW_BITS) {
->> > +		irq = irq_find_mapping(espi_ic->irq_domain,
->> > +				       ASPEED_ESPI_IC_VW_EVENT);
->> > +		generic_handle_irq(irq);
->> > +	}
->> > +
->> > +	if (sts & ESPI_INT_STS_OOB_BITS) {
->> > +		irq = irq_find_mapping(espi_ic->irq_domain,
->> > +				       ASPEED_ESPI_IC_OOB_EVENT);
->> > +		generic_handle_irq(irq);
->> > +	}
->> > +
->> > +	if (sts & ESPI_INT_STS_FLASH_BITS) {
->> > +		irq = irq_find_mapping(espi_ic->irq_domain,
->> > +				       ASPEED_ESPI_IC_FLASH_EVENT);
->> > +		generic_handle_irq(irq);
->> > +	}
->> > +
->> > +	if (sts & ESPI_INT_STS_HW_RST_DEASSERT) {
->> > +		irq = irq_find_mapping(espi_ic->irq_domain,
->> > +				       ASPEED_ESPI_IC_CTRL_EVENT);
->> > +		generic_handle_irq(irq);
->> > +	}
->> 
->> This is horrible. Why can't you just use fls() in a loop?
-> 
-> The bits in the interrupt status register for a eSPI channel are not
-> sequentially arranged.
-> Using fls() may invoke an eSPI channel ISR multiple times.
-> So I collected the bitmap for each channel, respectively, and call the
-> ISR at once.
+Aha
 
-And that's equally wrong. You need to handle interrupts individually,
-as they are different signal. If you are to implement an interrupt
-controller, please do it properly.
+> @@ -591,6 +591,9 @@ static int xgpio_probe(struct platform_device *pdev)
+>         if (of_property_read_u32(np, "xlnx,gpio-width", &chip->gpio_width[0]))
+>                 chip->gpio_width[0] = 32;
 
-Otherwise, get rid of it and move everything into your pet driver.
-There is no need to do a half-baked job.
+This xlnx,gpio-width seems very much like the standard ngpios property
+from Documentation/devicetree/bindings/gpio/gpio.txt
+but I guess not much to do about that now. :/
 
-As it is, there is no way this code can be merged.
+Do you think you can add support for both?
 
-         M.
--- 
-Jazz is not dead. It just smells funny...
+> +       if (chip->gpio_width[0] > 32)
+> +               return -EINVAL;
+
+This looks OK.
+
+Yours,
+Linus Walleij
