@@ -2,110 +2,226 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 321962ECB53
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 08:59:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 597D82ECB4C
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 08:55:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727639AbhAGH4J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 02:56:09 -0500
-Received: from mo4-p01-ob.smtp.rzone.de ([85.215.255.52]:23466 "EHLO
-        mo4-p01-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725970AbhAGH4I (ORCPT
+        id S1727048AbhAGHyr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 02:54:47 -0500
+Received: from mailgw01.mediatek.com ([210.61.82.183]:56282 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726110AbhAGHyq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 02:56:08 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1610005995;
-        s=strato-dkim-0002; d=chronox.de;
-        h=References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:From:
-        Subject:Sender;
-        bh=KeYZOhheY0c+6YwZ/Ytl1iRm8ID+YfLlMyMcKez+UfA=;
-        b=l5xUZ+JK8oIyy+KMdfjWHfEazaQAwGhpjZq3zAhn7o0OvAd6dQh2hmItMN59R6zeQV
-        ZOgmg/HuP6BzanUkI58/EE66+Z6S6XthfpqielTkQhm8q6n6J2lzyiMnf2SZCDkI11JA
-        z/bOAasrBznNcE1mUtTSd3ohdr9F2U2cY7YxqYcAgSXjPxT5/5HXRzgn7YfzmDenJKw4
-        4o2kgzSshSNbH1yVUrdi5U/czXB+Mloy+zHOUCs/OAMwnNsmR/H0j41TSHz7buYjj2Bh
-        Wmfp5HtY+VywBWlNYvaiKYJYMzYlvnlf4p88bx63BueVKVypR40NAmRgxWsWzcYYa4HA
-        osww==
-X-RZG-AUTH: ":P2ERcEykfu11Y98lp/T7+hdri+uKZK8TKWEqNzyCzy1Sfr67uExK884EC0GFGHavJShPkMRYMkE="
-X-RZG-CLASS-ID: mo00
-Received: from tauon.chronox.de
-        by smtp.strato.de (RZmta 47.12.1 DYNA|AUTH)
-        with ESMTPSA id Z04c46x077rFCYk
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-        (Client did not present a certificate);
-        Thu, 7 Jan 2021 08:53:15 +0100 (CET)
-Message-ID: <a5c50afa7e11329ea301e64bc03951b38f4e1eda.camel@chronox.de>
-Subject: Re: [PATCH 3/5] crypto: add RFC5869 HKDF
-From:   Stephan Mueller <smueller@chronox.de>
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     herbert@gondor.apana.org.au, mathew.j.martineau@linux.intel.com,
-        dhowells@redhat.com, linux-crypto@vger.kernel.org,
-        linux-fscrypt@vger.kernel.org, linux-kernel@vger.kernel.org,
-        keyrings@vger.kernel.org
-Date:   Thu, 07 Jan 2021 08:53:15 +0100
-In-Reply-To: <X/a4qt9Oiw4WgoRY@sol.localdomain>
-References: <4616980.31r3eYUQgx@positron.chronox.de>
-         <12679948.uLZWGnKmhe@positron.chronox.de>
-         <X/a4qt9Oiw4WgoRY@sol.localdomain>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.2 (3.38.2-1.fc33) 
+        Thu, 7 Jan 2021 02:54:46 -0500
+X-UUID: c245be9b5cf54722835efab911669774-20210107
+X-UUID: c245be9b5cf54722835efab911669774-20210107
+Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw01.mediatek.com
+        (envelope-from <walter-zh.wu@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1427673813; Thu, 07 Jan 2021 15:53:18 +0800
+Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
+ mtkmbs01n2.mediatek.inc (172.21.101.79) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Thu, 7 Jan 2021 15:53:16 +0800
+Received: from mtksdccf07.mediatek.inc (172.21.84.99) by MTKCAS06.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Thu, 7 Jan 2021 15:53:16 +0800
+From:   Walter Wu <walter-zh.wu@mediatek.com>
+To:     Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Alexander Potapenko <glider@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Andrey Konovalov <andreyknvl@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+CC:     <kasan-dev@googlegroups.com>, <linux-mm@kvack.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        wsd_upstream <wsd_upstream@mediatek.com>,
+        <linux-mediatek@lists.infradead.org>,
+        Walter Wu <walter-zh.wu@mediatek.com>
+Subject: [PATCH v2] kasan: remove redundant config option
+Date:   Thu, 7 Jan 2021 15:53:15 +0800
+Message-ID: <20210107075315.3482-1-walter-zh.wu@mediatek.com>
+X-Mailer: git-send-email 2.18.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-TM-SNTS-SMTP: E78C0B405E861FCE6BCE4616FBB772D33CB9E246196C4D61EC7F1C80699ACF402000:8
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am Mittwoch, dem 06.01.2021 um 23:30 -0800 schrieb Eric Biggers:
-> On Mon, Jan 04, 2021 at 10:49:13PM +0100, Stephan Müller wrote:
-> > RFC5869 specifies an extract and expand two-step key derivation
-> > function. The HKDF implementation is provided as a service function that
-> > operates on a caller-provided HMAC cipher handle.
-> 
-> HMAC isn't a "cipher".
-> 
-> > The extract function is invoked via the crypto_hkdf_setkey call.
-> 
-> Any reason not to call this crypto_hkdf_extract(), to match the
-> specification?
+CONFIG_KASAN_STACK and CONFIG_KASAN_STACK_ENABLE both enable KASAN stack
+instrumentation, but we should only need one config, so that we remove
+CONFIG_KASAN_STACK_ENABLE and make CONFIG_KASAN_STACK workable. see [1].
 
-I named it to match the other KDF implementation. But you are right, I will
-name it accordingly.
+When enable KASAN stack instrumentation, then for gcc we could do no
+prompt and default value y, and for clang prompt and default value n.
 
-> 
-> > RFC5869
-> > allows two optional parameters to be provided to the extract operation:
-> > the salt and additional information. Both are to be provided with the
-> > seed parameter where the salt is the first entry of the seed parameter
-> > and all subsequent entries are handled as additional information. If
-> > the caller intends to invoke the HKDF without salt, it has to provide a
-> > NULL/0 entry as first entry in seed.
-> 
-> Where does "additional information" for extract come from?  RFC 5869 has:
-> 
->         HKDF-Extract(salt, IKM) -> PRK
-> 
->         Inputs:
->               salt     optional salt value (a non-secret random value);
->                        if not provided, it is set to a string of HashLen
-> zeros.
->               IKM      input keying material
-> 
-> There's no "additional information".
+[1]: https://bugzilla.kernel.org/show_bug.cgi?id=210221
 
-I used the terminology from SP800-108. I will update the description
-accordingly. 
-> 
-> > 
-> > The expand function is invoked via the crypto_hkdf_generate and can be
-> > invoked multiple times. This function allows the caller to provide a
-> > context for the key derivation operation. As specified in RFC5869, it is
-> > optional. In case such context is not provided, the caller must provide
-> > NULL / 0 for the info / info_nvec parameters.
-> 
-> Any reason not to call this crypto_hkdf_expand() to match the specification?
+Signed-off-by: Walter Wu <walter-zh.wu@mediatek.com>
+Suggested-by: Dmitry Vyukov <dvyukov@google.com>
+Cc: Andrey Ryabinin <aryabinin@virtuozzo.com>
+Cc: Dmitry Vyukov <dvyukov@google.com>
+Cc: Andrey Konovalov <andreyknvl@google.com>
+Cc: Alexander Potapenko <glider@google.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+---
 
-I will update the function name.
+v2: make commit log to be more readable.
 
-Thanks
-Stephan
-> 
-> - Eric
+---
+ arch/arm64/kernel/sleep.S        |  2 +-
+ arch/x86/kernel/acpi/wakeup_64.S |  2 +-
+ include/linux/kasan.h            |  2 +-
+ lib/Kconfig.kasan                | 11 ++++-------
+ mm/kasan/common.c                |  2 +-
+ mm/kasan/kasan.h                 |  2 +-
+ mm/kasan/report_generic.c        |  2 +-
+ scripts/Makefile.kasan           | 10 ++++++++--
+ 8 files changed, 18 insertions(+), 15 deletions(-)
 
+diff --git a/arch/arm64/kernel/sleep.S b/arch/arm64/kernel/sleep.S
+index 6bdef7362c0e..7c44ede122a9 100644
+--- a/arch/arm64/kernel/sleep.S
++++ b/arch/arm64/kernel/sleep.S
+@@ -133,7 +133,7 @@ SYM_FUNC_START(_cpu_resume)
+ 	 */
+ 	bl	cpu_do_resume
+ 
+-#if defined(CONFIG_KASAN) && CONFIG_KASAN_STACK
++#if defined(CONFIG_KASAN) && defined(CONFIG_KASAN_STACK)
+ 	mov	x0, sp
+ 	bl	kasan_unpoison_task_stack_below
+ #endif
+diff --git a/arch/x86/kernel/acpi/wakeup_64.S b/arch/x86/kernel/acpi/wakeup_64.S
+index 5d3a0b8fd379..c7f412f4e07d 100644
+--- a/arch/x86/kernel/acpi/wakeup_64.S
++++ b/arch/x86/kernel/acpi/wakeup_64.S
+@@ -112,7 +112,7 @@ SYM_FUNC_START(do_suspend_lowlevel)
+ 	movq	pt_regs_r14(%rax), %r14
+ 	movq	pt_regs_r15(%rax), %r15
+ 
+-#if defined(CONFIG_KASAN) && CONFIG_KASAN_STACK
++#if defined(CONFIG_KASAN) && defined(CONFIG_KASAN_STACK)
+ 	/*
+ 	 * The suspend path may have poisoned some areas deeper in the stack,
+ 	 * which we now need to unpoison.
+diff --git a/include/linux/kasan.h b/include/linux/kasan.h
+index 5e0655fb2a6f..35d1e9b2cbfa 100644
+--- a/include/linux/kasan.h
++++ b/include/linux/kasan.h
+@@ -302,7 +302,7 @@ static inline void kasan_kfree_large(void *ptr, unsigned long ip) {}
+ 
+ #endif /* CONFIG_KASAN */
+ 
+-#if defined(CONFIG_KASAN) && CONFIG_KASAN_STACK
++#if defined(CONFIG_KASAN) && defined(CONFIG_KASAN_STACK)
+ void kasan_unpoison_task_stack(struct task_struct *task);
+ #else
+ static inline void kasan_unpoison_task_stack(struct task_struct *task) {}
+diff --git a/lib/Kconfig.kasan b/lib/Kconfig.kasan
+index f5fa4ba126bf..59de74293454 100644
+--- a/lib/Kconfig.kasan
++++ b/lib/Kconfig.kasan
+@@ -138,9 +138,11 @@ config KASAN_INLINE
+ 
+ endchoice
+ 
+-config KASAN_STACK_ENABLE
+-	bool "Enable stack instrumentation (unsafe)" if CC_IS_CLANG && !COMPILE_TEST
++config KASAN_STACK
++	bool "Enable stack instrumentation (unsafe)"
+ 	depends on KASAN_GENERIC || KASAN_SW_TAGS
++	default y if CC_IS_GCC
++	default n if CC_IS_CLANG
+ 	help
+ 	  The LLVM stack address sanitizer has a know problem that
+ 	  causes excessive stack usage in a lot of functions, see
+@@ -154,11 +156,6 @@ config KASAN_STACK_ENABLE
+ 	  CONFIG_COMPILE_TEST.	On gcc it is assumed to always be safe
+ 	  to use and enabled by default.
+ 
+-config KASAN_STACK
+-	int
+-	default 1 if KASAN_STACK_ENABLE || CC_IS_GCC
+-	default 0
+-
+ config KASAN_SW_TAGS_IDENTIFY
+ 	bool "Enable memory corruption identification"
+ 	depends on KASAN_SW_TAGS
+diff --git a/mm/kasan/common.c b/mm/kasan/common.c
+index 38ba2aecd8f4..02ec7f81dc16 100644
+--- a/mm/kasan/common.c
++++ b/mm/kasan/common.c
+@@ -63,7 +63,7 @@ void __kasan_unpoison_range(const void *address, size_t size)
+ 	unpoison_range(address, size);
+ }
+ 
+-#if CONFIG_KASAN_STACK
++#if defined(CONFIG_KASAN_STACK)
+ /* Unpoison the entire stack for a task. */
+ void kasan_unpoison_task_stack(struct task_struct *task)
+ {
+diff --git a/mm/kasan/kasan.h b/mm/kasan/kasan.h
+index cc4d9e1d49b1..bdfdb1cff653 100644
+--- a/mm/kasan/kasan.h
++++ b/mm/kasan/kasan.h
+@@ -224,7 +224,7 @@ void *find_first_bad_addr(void *addr, size_t size);
+ const char *get_bug_type(struct kasan_access_info *info);
+ void metadata_fetch_row(char *buffer, void *row);
+ 
+-#if defined(CONFIG_KASAN_GENERIC) && CONFIG_KASAN_STACK
++#if defined(CONFIG_KASAN_GENERIC) && defined(CONFIG_KASAN_STACK)
+ void print_address_stack_frame(const void *addr);
+ #else
+ static inline void print_address_stack_frame(const void *addr) { }
+diff --git a/mm/kasan/report_generic.c b/mm/kasan/report_generic.c
+index 8a9c889872da..137a1dba1978 100644
+--- a/mm/kasan/report_generic.c
++++ b/mm/kasan/report_generic.c
+@@ -128,7 +128,7 @@ void metadata_fetch_row(char *buffer, void *row)
+ 	memcpy(buffer, kasan_mem_to_shadow(row), META_BYTES_PER_ROW);
+ }
+ 
+-#if CONFIG_KASAN_STACK
++#if defined(CONFIG_KASAN_STACK)
+ static bool __must_check tokenize_frame_descr(const char **frame_descr,
+ 					      char *token, size_t max_tok_len,
+ 					      unsigned long *value)
+diff --git a/scripts/Makefile.kasan b/scripts/Makefile.kasan
+index 1e000cc2e7b4..abf231d209b1 100644
+--- a/scripts/Makefile.kasan
++++ b/scripts/Makefile.kasan
+@@ -2,6 +2,12 @@
+ CFLAGS_KASAN_NOSANITIZE := -fno-builtin
+ KASAN_SHADOW_OFFSET ?= $(CONFIG_KASAN_SHADOW_OFFSET)
+ 
++ifdef CONFIG_KASAN_STACK
++	stack_enable := 1
++else
++	stack_enable := 0
++endif
++
+ ifdef CONFIG_KASAN_GENERIC
+ 
+ ifdef CONFIG_KASAN_INLINE
+@@ -27,7 +33,7 @@ else
+ 	CFLAGS_KASAN := $(CFLAGS_KASAN_SHADOW) \
+ 	 $(call cc-param,asan-globals=1) \
+ 	 $(call cc-param,asan-instrumentation-with-call-threshold=$(call_threshold)) \
+-	 $(call cc-param,asan-stack=$(CONFIG_KASAN_STACK)) \
++	 $(call cc-param,asan-stack=$(stack_enable)) \
+ 	 $(call cc-param,asan-instrument-allocas=1)
+ endif
+ 
+@@ -42,7 +48,7 @@ else
+ endif
+ 
+ CFLAGS_KASAN := -fsanitize=kernel-hwaddress \
+-		-mllvm -hwasan-instrument-stack=$(CONFIG_KASAN_STACK) \
++		-mllvm -hwasan-instrument-stack=$(stack_enable) \
+ 		-mllvm -hwasan-use-short-granules=0 \
+ 		$(instrumentation_flags)
+ 
+-- 
+2.18.0
 
