@@ -2,122 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05E042EC944
+	by mail.lfdr.de (Postfix) with ESMTP id F1B7E2EC946
 	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 05:02:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726878AbhAGEBN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Jan 2021 23:01:13 -0500
-Received: from youngberry.canonical.com ([91.189.89.112]:55671 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726482AbhAGEBM (ORCPT
+        id S1727035AbhAGEBU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Jan 2021 23:01:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42940 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726482AbhAGEBU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Jan 2021 23:01:12 -0500
-Received: from mail-oo1-f71.google.com ([209.85.161.71])
-        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <kai.heng.feng@canonical.com>)
-        id 1kxMTN-00050Q-AQ
-        for linux-kernel@vger.kernel.org; Thu, 07 Jan 2021 04:00:29 +0000
-Received: by mail-oo1-f71.google.com with SMTP id p66so3321986ooa.17
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Jan 2021 20:00:29 -0800 (PST)
+        Wed, 6 Jan 2021 23:01:20 -0500
+Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0B3AC0612F1;
+        Wed,  6 Jan 2021 20:00:39 -0800 (PST)
+Received: by mail-pl1-x629.google.com with SMTP id e2so2798987plt.12;
+        Wed, 06 Jan 2021 20:00:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=5rV8vN//TYfz6ZIuGXF4C30ejEAQwTsAf8voldl2Zyg=;
+        b=aIaU0o5hgRIKm046FdkdB6J82XYLvNeKQPhLDpIV2gTzyKRNQoJ67qJongtaMvORcl
+         opkYRb50Pk2EeC+e/C7F3hzThNtiuI4czjOfDsj3/aODCZsoK3oMAUVohVrO+Bw693Wd
+         03zTJ+cjdupz7s+uOhTMI2FVEZmWQeBeIxidpVsJLnZRCzMUA7vSaF9qtya2OmkKAixy
+         IKiTWV3yPahr1D8U3P6Fov6S7rFpPHkYDUfhVNY0LOWXdF02hDe1tvn72OUzCIoxWs4/
+         b7oxu3gpuJcRGDri7BegC9oAvigxRyriF+lLkObEKBirf/mvAfd5Rn16WuOxP8hpS9Gw
+         YqTQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=oB+VPXmJ5ngbLdpq6YE49ucI1D/rfct5S9a9aSXZ/SU=;
-        b=t7NGhyNIDhs5PY6DcqZCRE82q8BcT3D/XFhwNdZTWsQhg5l2DM/HB/zlEmXzjcQ947
-         diSHIN91fT9T7/WmqTa8BmwAKFYxZTVExxaUyPukwVAStzncyICa8QRsyTYZGvQYP76V
-         lIO6RrCahI2DfkaNPsoY94ospPT+orkEeGebR14Uj3z6ScsvBxNNNjphRxjoC6f45LRo
-         x3tgddgLet9/iXBKwvUPEyuOl3qLkybkmkuO/6DC99ZttMQdWVkOtZqvDu29zw+sykDX
-         PaIdSPQcoGyjQSvlcxBZu5qYKhmV6ZO6FU+aLcJV19PrVjRm4f4BV/tIekZJXY41QeF0
-         nGQQ==
-X-Gm-Message-State: AOAM531veZ5sQ+5H7sQLW/l1wYqoSnEImIVvN/WUgYOVY1k2aW52DlqS
-        uOS+C/czSNx3e/j+ajkyRcJQKX2/CdKaov5qGdDz6/dy0pc1NixwdQeSS6dGbSyS+CPULHNfkAj
-        5tFlQ+nsTU8b6Insxs1euVd4fZwJwev9Y0AzaDis74jdMS0WtBp1PuOMy2g==
-X-Received: by 2002:a9d:7411:: with SMTP id n17mr5313059otk.262.1609992028240;
-        Wed, 06 Jan 2021 20:00:28 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJzA1vf7fyf7N42CsYG20iYZFQxxNLgectNoTSl3eoacAhaho85G7ft/GlA6rdZHyKPtEYClOYBSz+JaDCGZyhU=
-X-Received: by 2002:a9d:7411:: with SMTP id n17mr5313050otk.262.1609992027962;
- Wed, 06 Jan 2021 20:00:27 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=5rV8vN//TYfz6ZIuGXF4C30ejEAQwTsAf8voldl2Zyg=;
+        b=brbF7wwolxCcR4DGuqzHEDnhc1JBVBrWOoAhdSHKAAduYrPHb/ET9Ys2oJxtxxvlUO
+         EUeBHYhr7EFuEZuKO+O5zXCqz8BawMTagkBTxsdT4tTNIW1tIRjZWN+vJZ0VcK+pL5uk
+         1t6e8uMGj3ctnBPaBbgjbtgERjDVIBs4Jq1vHIrpBfCiylUQf0N3nhYLHwn3hZS5GNsx
+         4STUyj1tDmGQpv2bw5AFw5RhHqnR+9B7952v+iO/d6rSovWIdkkMXQ2q3KFebOs7SmoJ
+         qd6hA3G0kcilti3bKVv67q7D1ngIAkAHWyc6S0iaaQR8wBTgtcfppsFPrLYLkf4blxIX
+         lajQ==
+X-Gm-Message-State: AOAM533RnUJqcHmA0dKcANUWpAJGAHpu+BEwEBhvqYyataTEt9PhL2y4
+        hJrqm9hvQdf3KtahtGH0XtAJELtBfTBk0g==
+X-Google-Smtp-Source: ABdhPJwd64KYSfx42xZMEb3zGwDKheLthtH8dQZw+Kw2aR7ZDodwVqkQG8Uwplkp9SNG8amq0xrj/Q==
+X-Received: by 2002:a17:90a:cc0a:: with SMTP id b10mr7286415pju.59.1609992038876;
+        Wed, 06 Jan 2021 20:00:38 -0800 (PST)
+Received: from sol.lan (106-69-181-20.dyn.iinet.net.au. [106.69.181.20])
+        by smtp.gmail.com with ESMTPSA id gk8sm3513551pjb.52.2021.01.06.20.00.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 06 Jan 2021 20:00:38 -0800 (PST)
+From:   Kent Gibson <warthog618@gmail.com>
+To:     linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
+        bgolaszewski@baylibre.com, linus.walleij@linaro.org
+Cc:     Kent Gibson <warthog618@gmail.com>
+Subject: [PATCH 0/2] tools: gpio: fix %llu warnings
+Date:   Thu,  7 Jan 2021 12:00:18 +0800
+Message-Id: <20210107040020.257671-1-warthog618@gmail.com>
+X-Mailer: git-send-email 2.30.0
 MIME-Version: 1.0
-References: <20210104140853.228448-1-kai.heng.feng@canonical.com> <alpine.DEB.2.22.394.2101051425560.864696@eliteleevi.tm.intel.com>
-In-Reply-To: <alpine.DEB.2.22.394.2101051425560.864696@eliteleevi.tm.intel.com>
-From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
-Date:   Thu, 7 Jan 2021 12:00:16 +0800
-Message-ID: <CAAd53p7==ttVR+XQchOLDwreK-4qov4FZQ8Q55HVx5egWDd7BA@mail.gmail.com>
-Subject: Re: [PATCH v2 1/3] ASoC: SOF: Intel: hda: Resume codec to do jack detection
-To:     Kai Vehmanen <kai.vehmanen@linux.intel.com>
-Cc:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
-        daniel.baluta@nxp.com, Mark Brown <broonie@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
-        Rander Wang <rander.wang@intel.com>,
-        Payal Kshirsagar <payalskshirsagar1234@gmail.com>,
-        "moderated list:SOUND - SOUND OPEN FIRMWARE (SOF) DRIVERS" 
-        <sound-open-firmware@alsa-project.org>,
-        "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..." 
-        <alsa-devel@alsa-project.org>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 5, 2021 at 9:00 PM Kai Vehmanen
-<kai.vehmanen@linux.intel.com> wrote:
->
-> Hi,
->
-> On Mon, 4 Jan 2021, Kai-Heng Feng wrote:
->
-> > Instead of queueing jackpoll_work, runtime resume the codec to let it
-> > use different jack detection methods based on jackpoll_interval.
->
-> hmm, but jackpoll_work() does the same thing, right? So end result should
-> be the same.
+Fix a couple of warnings that I ran across while testing selftest changes.
 
-It depends on the jackpoll_interval value. But yes the end result
-should be the same.
+Sorry about the repetition in the checkin comments, but as the problem was
+introduced to the two files separately it seemed more appropriate than
+tying their history together.
 
->
-> > This matches SOF driver's behavior with commit a6e7d0a4bdb0 ("ALSA: hda:
-> > fix jack detection with Realtek codecs when in D3"). Since SOF only uses
-> > Realtek codec, we don't need any additional check for the resume.
->
-> This is not quite correct. First, SOF does support any HDA codec, not just
-> Realteks (see e.g. https://github.com/thesofproject/linux/issues/1807),
-> and second, this doesn't really match the hda_intel.c patch you mention.
-> SOF implements a more conservative approach where we basicly assume
-> codec->forced_resume=1 to always apply, and do not implement support for
-> codec->relaxed_resume. So the above patch doesn't fully apply to SOF as
-> the design is not same.
+Cheers,
+Kent.
 
-OK, I assumed SOF always use Realtek codec, so codec->forced_resume=1
-is always applied like the other patch.
-I'll remove this section.
+Kent Gibson (2):
+  tools: gpio: fix %llu warning in gpio-event-mon.c
+  tools: gpio: fix %llu warning in gpio-watch.c
 
->
-> > diff --git a/sound/soc/sof/intel/hda-codec.c b/sound/soc/sof/intel/hda-codec.c
-> > index 6875fa570c2c..df59c79cfdfc 100644
-> > --- a/sound/soc/sof/intel/hda-codec.c
-> > +++ b/sound/soc/sof/intel/hda-codec.c
-> > @@ -93,8 +93,7 @@ void hda_codec_jack_check(struct snd_sof_dev *sdev)
-> >                * has been recorded in STATESTS
-> >                */
-> >               if (codec->jacktbl.used)
-> > -                     schedule_delayed_work(&codec->jackpoll_work,
-> > -                                           codec->jackpoll_interval);
-> > +                     pm_request_resume(&codec->core.dev);
->
-> I think this change is still good. Just drop the but about Realtek
-> codecs from commit message and maybe s/matches/aligns/.
+ tools/gpio/gpio-event-mon.c | 4 ++--
+ tools/gpio/gpio-watch.c     | 5 +++--
+ 2 files changed, 5 insertions(+), 4 deletions(-)
 
-OK, will do.
+-- 
+2.30.0
 
-Kai-Heng
-
->
-> Br, Kai
