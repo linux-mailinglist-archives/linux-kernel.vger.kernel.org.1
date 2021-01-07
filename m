@@ -2,108 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FD3A2ED74E
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 20:13:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C0A42ED751
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 20:14:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729381AbhAGTNE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 14:13:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44236 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729130AbhAGTNC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 14:13:02 -0500
-Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A40C1C0612F4
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Jan 2021 11:12:22 -0800 (PST)
-Received: by mail-pf1-x42e.google.com with SMTP id m6so4447576pfm.6
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Jan 2021 11:12:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=zVzGJsdQVqDpHLWB0LlEUJh4H0AoOF8yrCl+fLtuTlw=;
-        b=GWpjd66dYwwBJeB6IzgoL2wBiojB2Rn9bWYlB6Gg70BnkJmd/gdq6My1oEkvLkwLn6
-         sQt6hZpr+gm9aqBkJXLmJeFGdh3Tw0WmzoZ5PTocMfXVC2n+v4hqT4Exq41GgcCIJW4O
-         6KOPbGDYPmOvwG8TAjrscT1tJ8yz2C8gfAULls/nF3MYmthj4CDR9jj57f1ti6zaJmIe
-         7l0+C4V4K6BCBZ3gYxAtg+eMFLWFMLn7RW6OnRP/8BuvdMjVwT7+hObm2hUdw3ZlKuYM
-         aDjzmm1W2qPZzHywdqcVz4NHpAhXtx7gEazlQO7b/g9AhSCUurRB2PLu0sveASjDNX/n
-         d7tw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=zVzGJsdQVqDpHLWB0LlEUJh4H0AoOF8yrCl+fLtuTlw=;
-        b=LgirNSwqzLX/AjEpiRbypWAgESuK+tGuQDpW7IjZD+J7s06jkFhXKv78I1FBlon/KX
-         2TJcYQcQ7lNz9/EzqJsupmVkykOo0Z+GeQPz9AoZWtcFnGdQWav9fktssMliCmut/TbD
-         J08AOn3fYIVrDz5+8wFaL2SbZatP4L55nsQrYU5b28due0xtE2fKwgtgarB9OUW0tHnL
-         OPOSgT8HOylhT+I2Ag8wFBRUmjQoSY8HQD8j3YCpH8CnOYDdVdAL/iG0cRDrzNnNZdeG
-         ZrTN4j+xlxGXzEAr+OKoOwwfi8iMXT+4U6IFvJZx/kbH8MwYFUIxR364ApCvgrh17+yR
-         FHbw==
-X-Gm-Message-State: AOAM532u0wgVVmkoDXHildamATa1nseE0BC4YAM1w+FW28j1wjbS5zfY
-        zUNP58syn0vmbC9B7gK7IZspWA==
-X-Google-Smtp-Source: ABdhPJwY4s3CnplioBJ5tQsqCDh/uml54mMwojBSfAu4mQMnp0fH0SQtPUforHn4d+qTRBMsfimeQQ==
-X-Received: by 2002:aa7:9357:0:b029:1a5:43da:b90d with SMTP id 23-20020aa793570000b02901a543dab90dmr236269pfn.54.1610046742056;
-        Thu, 07 Jan 2021 11:12:22 -0800 (PST)
-Received: from google.com ([2620:15c:f:10:1ea0:b8ff:fe73:50f5])
-        by smtp.gmail.com with ESMTPSA id a2sm7110822pgi.8.2021.01.07.11.12.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 Jan 2021 11:12:21 -0800 (PST)
-Date:   Thu, 7 Jan 2021 11:12:14 -0800
-From:   Sean Christopherson <seanjc@google.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Maxim Levitsky <mlevitsk@redhat.com>, kvm@vger.kernel.org,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel@vger.kernel.org,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Jim Mattson <jmattson@google.com>
-Subject: Re: [PATCH v2 1/4] KVM: nSVM: cancel KVM_REQ_GET_NESTED_STATE_PAGES
- on nested vmexit
-Message-ID: <X/ddDofjpBVO07/P@google.com>
-References: <20210107093854.882483-1-mlevitsk@redhat.com>
- <20210107093854.882483-2-mlevitsk@redhat.com>
- <X/c+FzXGfk/3LUC2@google.com>
- <6d7bac03-2270-e908-2e66-1cc4f9425294@redhat.com>
+        id S1729219AbhAGTOZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 14:14:25 -0500
+Received: from mga09.intel.com ([134.134.136.24]:27200 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725835AbhAGTOX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Jan 2021 14:14:23 -0500
+IronPort-SDR: wrLd4Yj5sSc8+IhRhyM3LsIsY6D8RvG04FQokXVXcyO8pyuGkLfElPxKIc2sTx4nuxjmsWAqjA
+ /tr/03F+VdEQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9857"; a="177629730"
+X-IronPort-AV: E=Sophos;i="5.79,329,1602572400"; 
+   d="scan'208";a="177629730"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Jan 2021 11:13:43 -0800
+IronPort-SDR: sI0Jz1gA4ZqfvIujgScgjB2F1JedPYA2u78iDokR8Go984wlBacjd8O7nSyHCI12Om+4bIJHAm
+ AQ1RqefVSTfg==
+X-IronPort-AV: E=Sophos;i="5.79,329,1602572400"; 
+   d="scan'208";a="403128977"
+Received: from arunasun-mobl.amr.corp.intel.com (HELO ldmartin-desk1) ([10.209.67.8])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Jan 2021 11:13:39 -0800
+Date:   Thu, 7 Jan 2021 11:13:35 -0800
+From:   Lucas De Marchi <lucas.demarchi@intel.com>
+To:     linux-modules <linux-modules@vger.kernel.org>
+Cc:     Jessica Yu <jeyu@kernel.org>, lkml <linux-kernel@vger.kernel.org>
+Subject: [ANNOUNCE] kmod 28
+Message-ID: <20210107191335.722q7im4lvporq3n@ldmartin-desk1>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Disposition: inline
-In-Reply-To: <6d7bac03-2270-e908-2e66-1cc4f9425294@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 07, 2021, Paolo Bonzini wrote:
-> On 07/01/21 18:00, Sean Christopherson wrote:
-> > Ugh, I assume this is due to one of the "premature" nested_ops->check_events()
-> > calls that are necessitated by the event mess?  I'm guessing kvm_vcpu_running()
-> > is the culprit?
-> > 
-> > If my assumption is correct, this bug affects nVMX as well.
-> 
-> Yes, though it may be latent.  For SVM it was until we started allocating
-> svm->nested on demand.
-> 
-> > Rather than clear the request blindly on any nested VM-Exit, what
-> > about something like the following?
-> 
-> I think your patch is overkill, KVM_REQ_GET_NESTED_STATE_PAGES is only set
-> from KVM_SET_NESTED_STATE so it cannot happen while the VM runs.
+kmod 28 is out:
 
-Yeah, which is why I was hoping we could avoid clearing the request on every
-nested exit.
+         https://www.kernel.org/pub/linux/utils/kernel/kmod/kmod-28.tar.xz
+         https://www.kernel.org/pub/linux/utils/kernel/kmod/kmod-28.tar.sign
 
-> Something like this is small enough and works well.
+- Improvements
+	- Add Zstandard to the supported compression formats using libzstd
+	  (pass --with-zstd to configure)
 
-I've no argument against it working, rather that I dislike clearing the request
-on every exit.  Except for the ->check_events() case, hitting the scenario where
-there's a pending request at the time of nested VM-Exit would ideally be treated
-as a KVM bug.
+- Bug fixes
+	- Ignore ill-formed kernel command line, e.g. with "ivrs_acpihid[00:14.5]=AMD0020:0"
+	  option in it
+	- Fix some memory leaks
+	- Fix 0-length builtin.alias.bin: it needs at least the index header
 
-On the other hand, clearing nested-specific request on nested VM-Exit is
-logically sound, so I guess I'm ok with the minimal patch.
+Shortlog is below:
+
+Lucas De Marchi (17):
+       gitignore: ignore release files
+       gitignore: ignore .cache.mk when building modules
+       libkmod: ignore kcmdline option if we fail to parse modname
+       testsuite: check for ill-formed kcmdline
+       depmod: do not output .bin to stdout
+       libkmod: simplify lookup when builtin.modinfo.bin file is missing
+       libkmod: fix return error when opening index
+       libkmod: allow modules.alias.builtin to be optional
+       testsuite: add check for kmod_load_resources
+       ci: update travis distro
+       ci: remove semaphoreci
+       depmod: unconditionally write builtin.alias.bin
+       shared: fix UNIQ definition
+       testsuite: add test for empty modules.builtin.aliases.bin
+       build: fix distcheck due to missing zstd
+       build: add comment with rules for libtool version update
+       kmod 28
+
+Samanta Navarro (1):
+       man: fix typo
+
+Shuo Wang (1):
+       NEWS: fix typo
+
+Torge Matthies (2):
+       add Zstandard compression support
+       testsuite: add test for zstd-compressed module
+
+Yauheni Kaliuta (3):
+       libkmod: kmod_builtin_get_modinfo: free modinfo on error
+       depmod: output_builtin_alias_bin: free idx on error path
+       libkmod: kmod_log_null: qualify ctx argument as const
+
+
+Thank you all for the contributions.
+
+
+Lucas De Marchi
