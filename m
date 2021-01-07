@@ -2,99 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C6982EE76C
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 22:08:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CD702EE773
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 22:09:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727535AbhAGVIE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 16:08:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34094 "EHLO
+        id S1727699AbhAGVJN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 16:09:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34276 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727128AbhAGVID (ORCPT
+        with ESMTP id S1726477AbhAGVJL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 16:08:03 -0500
-Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8EF97C0612F4
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Jan 2021 13:07:23 -0800 (PST)
-Received: by mail-pj1-x102b.google.com with SMTP id f14so2279391pju.4
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Jan 2021 13:07:23 -0800 (PST)
+        Thu, 7 Jan 2021 16:09:11 -0500
+Received: from mail-ua1-x934.google.com (mail-ua1-x934.google.com [IPv6:2607:f8b0:4864:20::934])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 615C9C0612F9
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Jan 2021 13:08:31 -0800 (PST)
+Received: by mail-ua1-x934.google.com with SMTP id y21so2746184uag.2
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Jan 2021 13:08:31 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=AycS9z5H5EArYSxCaTn3F0nB+eORScUBujc0QAwlLzw=;
-        b=Jqk7mULK+iMpB4jFuRtzuf1CrwqB6iEZd188K1psKIbbPNJG2x47K7Dz2mYD9AGzNj
-         Dm4LwZ/+eG0GLcZuZMj1CqssDHCnsSYgDlF4ShZ5bQ7/eLXF9y06u9s/y8Ty4APMBj1g
-         7+bWiu/o02cuUh8emjrYQzeNZjQ6DR+D1vG8A=
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=9fYan1yzqxVguL0ZQY0BTwdyUMx5dFzjZBmr/vD5tRY=;
+        b=k7t5Q/9M+TUvwdmswWS/rvtjs9qDhmvTiyszvvNXDsiTTlK7iB6M75IDdY0nIKnm6o
+         GYgVSYkz+jKHpbNAvuoI2PnlSbdVKN9N8tYY9oDVdPAJLz3Qh0r961/AZyx9ijfzjpgJ
+         ukj0XTlvL+oBbgW9V7gFwDCroxhJAPHYplQxxdUck0GFKbevY5xd6LlUDYmLfrh2CZFG
+         t9e7IoqPMQ1m2bAiehuDjT3IJJ/WVoT2VKCRUFvLh2ff4ikDY85hN1+fFyduNyKX2Lwq
+         1IADMWi+19HunLHNAHcaQpdX6aEEOEuWryDSKQhxLwPtwfBTH2uENWi3N2YKSrHla3YG
+         w4Qw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=AycS9z5H5EArYSxCaTn3F0nB+eORScUBujc0QAwlLzw=;
-        b=unt0Wq+ULNCTUU6Cx7csb0XnnndqMEMVwqo/Dd5qrEqlS9rYXc0iBp8mh26gMwnuV2
-         0NxQpe2wt10gojMADEa5ULe9Il5dv12surFmUyblrBmKx74uVPocxkZMlTsjiK105DT+
-         9Q2vKv2U066L4RZWLmpfnBTzxVZS5XRMpMYPVE7xtZ4oIrfn7plCJAk35a4hMu+eWrDh
-         nsn9u4AXxJjIGDNSk1TY8rFqA+JMZZGqk/TpFEB+OgtMikz8D440fLeStIhSTbRRoiMf
-         Fs7dxgueNd7NQ/eOHX++hVWufcv2M3wxvinG3XkSRs0M3gTpjQU5nJLT7w0thejzVMln
-         vSyA==
-X-Gm-Message-State: AOAM5301/Qlcyw/Him9w0GWalICQJW+gwtYnG6CbcPCVRSNzoiKIrW5G
-        tmImivUQZOHe4hApfLSlKZ+D6A==
-X-Google-Smtp-Source: ABdhPJx3/TFeN/AstWxBEfrnwhATMveAU7tRlhBMrs2seRKjvwVq1MCf2BbOASd0c2+qyJ1X5kKakQ==
-X-Received: by 2002:a17:902:d38b:b029:db:e003:3ff0 with SMTP id e11-20020a170902d38bb02900dbe0033ff0mr635386pld.7.1610053643172;
-        Thu, 07 Jan 2021 13:07:23 -0800 (PST)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id d1sm7103672pgb.13.2021.01.07.13.07.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 Jan 2021 13:07:22 -0800 (PST)
-Date:   Thu, 7 Jan 2021 13:07:21 -0800
-From:   Kees Cook <keescook@chromium.org>
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        linux-kernel@vger.kernel.org, aryabinin@virtuozzo.com,
-        dvyukov@google.com
-Subject: Re: [PATCH] mm/uaccess: Use 'unsigned long' to placate UBSAN
- warnings, again
-Message-ID: <202101071306.5A39AAC3A7@keescook>
-References: <590998aa9cc50f431343f76cae72b2abf8ac1fdd.1608699683.git.jpoimboe@redhat.com>
- <20210104151317.GR3021@hirez.programming.kicks-ass.net>
- <202101061536.C4A93132@keescook>
- <d5b192b2-b216-57d1-4505-06233ae2b882@infradead.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=9fYan1yzqxVguL0ZQY0BTwdyUMx5dFzjZBmr/vD5tRY=;
+        b=f+exncM21JJFyfbvFz7hkKNmPFsrxnAPKKqW9xtwDjTzFEI1qE8Vw5hanXcupJEQYY
+         8KvMHgjMr9cFUFM0w5cKc+dh882Vrc96d0p/3SUGZvo8Ae5YepuqJdjA3F5qspWp5HSn
+         hpkqK0PPrGfyu4xbVA7Y4Qhz4ucuyEir9MOPIGSFzc1YKsmPKj67CiNjJTiOcLbMoKGr
+         EkTaDdoVBXawHowhtLvXiYIzLlaOIPgyj9VZJE4n6wCKhagL434fo60BKi9SYuvZfMMW
+         2XSqz8MqzEUs/C4D2Q4UaaWScmveNK3qFzDuslr7r+uITYaQW2opCEWCAZfs+MIr+F5x
+         4vwA==
+X-Gm-Message-State: AOAM5326lL3QM6khwCmoSdrk2Wlz7TdztlbHm/m0aYzoq041Xij5liW7
+        zzPLu6fuofl3ZiTJIaBHInwfql1gD15R0sFyN1W7Vg==
+X-Google-Smtp-Source: ABdhPJxHnJvsbDwyF4bx6K6BhV313BR8eONthkFk/er2XbRI7zrOtNCXhB8Pf0IMiO7/77tD+fvpJVhr9OCB4d8PTk0=
+X-Received: by 2002:ab0:7386:: with SMTP id l6mr642880uap.141.1610053710484;
+ Thu, 07 Jan 2021 13:08:30 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <d5b192b2-b216-57d1-4505-06233ae2b882@infradead.org>
+References: <20201118194838.753436396@linutronix.de> <20201118204007.169209557@linutronix.de>
+ <20210106180132.41dc249d@gandalf.local.home> <CAHk-=wh2895wXEXYtb70CTgW+UR7jfh6VFhJB_bOrF0L7UKoEg@mail.gmail.com>
+ <20210106174917.3f8ad0d8@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <CA+FuTSevLSxZkNLdJPHqRRksxZmnPc1qFBYJeBx26WsA4A1M7A@mail.gmail.com>
+ <CA+FuTScQ9afdnQ3E1mqdeyJ-sOq=2Dm9c1XDN8mnzbEig8iMXA@mail.gmail.com>
+ <CAHk-=wh+KfbJ4Wrz4A+hFRRj7ZYWysz9L8s-BosC3bhV6vN-nQ@mail.gmail.com> <20210107155256.7af2505e@gandalf.local.home>
+In-Reply-To: <20210107155256.7af2505e@gandalf.local.home>
+From:   Willem de Bruijn <willemb@google.com>
+Date:   Thu, 7 Jan 2021 16:07:54 -0500
+Message-ID: <CA+FuTSdsTFHY5Yx8y5UHGYqsz=FGevjYn_Kzy-p3kwx-vUxdDw@mail.gmail.com>
+Subject: Re: [BUG] from x86: Support kmap_local() forced debugging
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        David Miller <davem@davemloft.net>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        Christoph Hellwig <hch@lst.de>,
+        Matthew Wilcox <willy@infradead.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Netdev <netdev@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 06, 2021 at 04:06:57PM -0800, Randy Dunlap wrote:
-> On 1/6/21 3:37 PM, Kees Cook wrote:
-> > On Mon, Jan 04, 2021 at 04:13:17PM +0100, Peter Zijlstra wrote:
-> >> On Tue, Dec 22, 2020 at 11:04:54PM -0600, Josh Poimboeuf wrote:
-> >>> GCC 7 has a known bug where UBSAN ignores '-fwrapv' and generates false
-> >>> signed-overflow-UB warnings.  The type mismatch between 'i' and
-> >>> 'nr_segs' in copy_compat_iovec_from_user() is causing such a warning,
-> >>> which also happens to violate uaccess rules:
-> >>>
-> >>>   lib/iov_iter.o: warning: objtool: iovec_from_user()+0x22d: call to __ubsan_handle_add_overflow() with UACCESS enabled
-> >>>
-> >>> Fix it by making the variable types match.
-> >>>
-> >>> This is similar to a previous commit:
-> >>>
-> >>>   29da93fea3ea ("mm/uaccess: Use 'unsigned long' to placate UBSAN warnings on older GCC versions")
-> >>
-> >> Maybe it's time we make UBSAN builds depend on GCC-8+ ?
-> > 
-> > I would be totally fine with that. The only thing I can think of that
-> > might care is syzbot. Dmitry, does syzbot use anything older than gcc 8?
-> 
-> I use UBSAN successfully with GCC 7.5.0.
-> However, I can revert whatever future patch someone adds for this...
+On Thu, Jan 7, 2021 at 3:53 PM Steven Rostedt <rostedt@goodmis.org> wrote:
+>
+> On Thu, 7 Jan 2021 11:47:02 -0800
+> Linus Torvalds <torvalds@linux-foundation.org> wrote:
+>
+> > On Wed, Jan 6, 2021 at 8:45 PM Willem de Bruijn <willemb@google.com> wrote:
+> > >
+> > > But there are three other kmap_atomic callers under net/ that do not
+> > > loop at all, so assume non-compound pages. In esp_output_head,
+> > > esp6_output_head and skb_seq_read. The first two directly use
+> > > skb_page_frag_refill, which can allocate compound (but not
+> > > __GFP_HIGHMEM) pages, and the third can be inserted with
+> > > netfilter xt_string in the path of tcp transmit skbs, which can also
+> > > have compound pages. I think that these could similarly access
+> > > data beyond the end of the kmap_atomic mapped page. I'll take
+> > > a closer look.
+> >
+> > Thanks.
+> >
+> > Note that I have flushed my random one-liner patch from my system, and
+> > expect to get a proper fix through the normal networking pulls.
+> >
+> > And _if_ the networking people feel that my one-liner was the proper
+> > fix, you can use it and add my sign-off if you want to, but it really
+> > was more of a "this is the quick ugly fix for testing" rather than
+> > anything else.
 
-Peter, which GCC version specifically are you seeing this on? (i.e. can
-I just make in 7.5+ instead of 8+ to make Randy's life easier?)
+I do think it is the proper fix as is. If no one else has comments, I
+can submit it through the net tree.
 
--- 
-Kees Cook
+It won't address the other issues that became apparent only as a
+result of this. I'm preparing separate patches for those.
+
+> Please add:
+>
+>   Link: https://lore.kernel.org/linux-mm/20210106180132.41dc249d@gandalf.local.home/
+>   Reported-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+>
+> And if you take Linus's patch, please add my:
+>
+>   Tested-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+>
+> and if you come up with another patch, please send it to me for testing.
+>
+> Thanks!
+
+Will do, thanks.
