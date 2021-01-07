@@ -2,161 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EAA72EC957
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 05:18:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0496B2EC95F
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 05:23:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726799AbhAGERd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Jan 2021 23:17:33 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:21215 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726051AbhAGERc (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Jan 2021 23:17:32 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1609992965;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Dos1Q591nOCwG8WlJAPmJhU7Mm8ZerxmXOCBcJyNvs4=;
-        b=AfRxYiopwWSKsQVcv9NJxFhtdnrPXDkojo9RXzeyaiCrsR/euSTq2uToDbUGmkEkpOvFGK
-        cHDbjgGpBxYhWQZl11SfL2uugOeqPU9TicyQyfGAfMo5+iZnxZtggYap8XkBb/rVIYKCzL
-        I77pSCGgOjFEqWgSBePq6ciG+lxMHXo=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-510-jcuqMUzmPi2B4NMTwRptXg-1; Wed, 06 Jan 2021 23:16:04 -0500
-X-MC-Unique: jcuqMUzmPi2B4NMTwRptXg-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id ABA8C10054FF;
-        Thu,  7 Jan 2021 04:16:02 +0000 (UTC)
-Received: from [10.72.13.171] (ovpn-13-171.pek2.redhat.com [10.72.13.171])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 0B3C55C1D1;
-        Thu,  7 Jan 2021 04:15:54 +0000 (UTC)
-Subject: Re: [PATCH] vdpa/mlx5: Fix memory key MTT population
-To:     Eli Cohen <elic@nvidia.com>, mst@redhat.com,
-        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     lulu@redhat.com
-References: <20210106090557.GA170338@mtl-vdi-166.wap.labs.mlnx>
-From:   Jason Wang <jasowang@redhat.com>
-Message-ID: <2d16b2af-f25a-d786-7d24-da45c0dcefaa@redhat.com>
-Date:   Thu, 7 Jan 2021 12:15:53 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1727009AbhAGEWU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Jan 2021 23:22:20 -0500
+Received: from mga04.intel.com ([192.55.52.120]:1526 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725803AbhAGEWU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 Jan 2021 23:22:20 -0500
+IronPort-SDR: oqWu0TDuBhrexe+OXET9NFmOnQTCIL28pE+fdKe7ST4cnGfCQGtP8MDnojhA+J7I0XvXi2UK7B
+ 3JARg2SYL1zg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9856"; a="174796277"
+X-IronPort-AV: E=Sophos;i="5.79,328,1602572400"; 
+   d="scan'208";a="174796277"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Jan 2021 20:21:39 -0800
+IronPort-SDR: OhsxQADpyZdRHuOTZ3za8ozh7y5Q/N2zIkRWXcAJGgfpnxRYafN2r+7cSn34Og7mwIbNxiinsN
+ WRjiScdkviLA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.79,328,1602572400"; 
+   d="scan'208";a="422430265"
+Received: from yilunxu-optiplex-7050.sh.intel.com (HELO localhost) ([10.239.159.141])
+  by orsmga001.jf.intel.com with ESMTP; 06 Jan 2021 20:21:37 -0800
+Date:   Thu, 7 Jan 2021 12:16:53 +0800
+From:   Xu Yilun <yilun.xu@intel.com>
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     arnd@arndb.de, gregkh@linuxfoundation.org,
+        linux-kernel@vger.kernel.org, trix@redhat.com, lgoncalv@redhat.com,
+        hao.wu@intel.com, matthew.gerlach@intel.com,
+        russell.h.weight@intel.com
+Subject: Re: [PATCH 1/2] mfd: intel-m10-bmc: specify the retimer sub devices
+Message-ID: <20210107041652.GB7750@yilunxu-OptiPlex-7050>
+References: <1609918567-13339-1-git-send-email-yilun.xu@intel.com>
+ <1609918567-13339-2-git-send-email-yilun.xu@intel.com>
+ <20210106082330.GB1592923@dell>
 MIME-Version: 1.0
-In-Reply-To: <20210106090557.GA170338@mtl-vdi-166.wap.labs.mlnx>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210106082330.GB1592923@dell>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Jan 06, 2021 at 08:23:30AM +0000, Lee Jones wrote:
+> On Wed, 06 Jan 2021, Xu Yilun wrote:
+> 
+> > The patch specifies the 2 retimer sub devices and their resources in the
+> > parent driver's mfd_cell. It also adds the register definition of the
+> > retimer sub devices.
+> > 
+> > There are 2 ethernet retimer chips (C827) connected to the Intel MAX 10
+> > BMC. They are managed by the BMC firmware, and host could query them via
+> > retimer interfaces (shared registers) on the BMC. The 2 retimers have
+> > identical register interfaces in different register addresses or fields,
+> > so it is better we define 2 retimer devices and handle them with the same
+> > driver.
+> > 
+> > Signed-off-by: Xu Yilun <yilun.xu@intel.com>
+> > ---
+> >  drivers/mfd/intel-m10-bmc.c       | 19 ++++++++++++++++++-
+> >  include/linux/mfd/intel-m10-bmc.h |  7 +++++++
+> >  2 files changed, 25 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/drivers/mfd/intel-m10-bmc.c b/drivers/mfd/intel-m10-bmc.c
+> > index b84579b..e0a99a0 100644
+> > --- a/drivers/mfd/intel-m10-bmc.c
+> > +++ b/drivers/mfd/intel-m10-bmc.c
+> > @@ -17,9 +17,26 @@ enum m10bmc_type {
+> >  	M10_N3000,
+> >  };
+> >  
+> > +static struct resource retimer0_resources[] = {
+> > +	{M10BMC_PKVL_A_VER, M10BMC_PKVL_A_VER, "version", IORESOURCE_REG, },
+> > +};
+> > +
+> > +static struct resource retimer1_resources[] = {
+> > +	{M10BMC_PKVL_B_VER, M10BMC_PKVL_B_VER, "version", IORESOURCE_REG, },
+> > +};
+> 
+> Please use the DEFINE_RES_*() helpers for this.
 
-On 2021/1/6 下午5:05, Eli Cohen wrote:
-> map_direct_mr() assumed that the number of scatter/gather entries
-> returned by dma_map_sg_attrs() was equal to the number of segments in
-> the sgl list. This led to wrong population of the mkey object. Fix this
-> by properly referring to the returned value.
->
-> In addition, get rid of fill_sg() whjich effect is overwritten bu
-> populate_mtts().
+Yes, will change it.
 
-
-Typo.
-
-
->
-> Fixes: 94abbccdf291 ("vdpa/mlx5: Add shared memory registration code")
-> Signed-off-by: Eli Cohen <elic@nvidia.com>
-> ---
->   drivers/vdpa/mlx5/core/mlx5_vdpa.h |  1 +
->   drivers/vdpa/mlx5/core/mr.c        | 28 ++++++++++++----------------
->   2 files changed, 13 insertions(+), 16 deletions(-)
->
-> diff --git a/drivers/vdpa/mlx5/core/mlx5_vdpa.h b/drivers/vdpa/mlx5/core/mlx5_vdpa.h
-> index 5c92a576edae..08f742fd2409 100644
-> --- a/drivers/vdpa/mlx5/core/mlx5_vdpa.h
-> +++ b/drivers/vdpa/mlx5/core/mlx5_vdpa.h
-> @@ -15,6 +15,7 @@ struct mlx5_vdpa_direct_mr {
->   	struct sg_table sg_head;
->   	int log_size;
->   	int nsg;
-> +	int nent;
->   	struct list_head list;
->   	u64 offset;
->   };
-> diff --git a/drivers/vdpa/mlx5/core/mr.c b/drivers/vdpa/mlx5/core/mr.c
-> index 4b6195666c58..d300f799efcd 100644
-> --- a/drivers/vdpa/mlx5/core/mr.c
-> +++ b/drivers/vdpa/mlx5/core/mr.c
-> @@ -25,17 +25,6 @@ static int get_octo_len(u64 len, int page_shift)
->   	return (npages + 1) / 2;
->   }
->   
-> -static void fill_sg(struct mlx5_vdpa_direct_mr *mr, void *in)
-> -{
-> -	struct scatterlist *sg;
-> -	__be64 *pas;
-> -	int i;
-> -
-> -	pas = MLX5_ADDR_OF(create_mkey_in, in, klm_pas_mtt);
-> -	for_each_sg(mr->sg_head.sgl, sg, mr->nsg, i)
-> -		(*pas) = cpu_to_be64(sg_dma_address(sg));
-> -}
-> -
->   static void mlx5_set_access_mode(void *mkc, int mode)
->   {
->   	MLX5_SET(mkc, mkc, access_mode_1_0, mode & 0x3);
-> @@ -45,10 +34,18 @@ static void mlx5_set_access_mode(void *mkc, int mode)
->   static void populate_mtts(struct mlx5_vdpa_direct_mr *mr, __be64 *mtt)
->   {
->   	struct scatterlist *sg;
-> +	int nsg = mr->nsg;
-> +	u64 dma_addr;
-> +	u64 dma_len;
-> +	int j = 0;
->   	int i;
->   
-> -	for_each_sg(mr->sg_head.sgl, sg, mr->nsg, i)
-> -		mtt[i] = cpu_to_be64(sg_dma_address(sg));
-> +	for_each_sg(mr->sg_head.sgl, sg, mr->nent, i) {
-> +		for (dma_addr = sg_dma_address(sg), dma_len = sg_dma_len(sg);
-> +		     nsg && dma_len;
-> +		     nsg--, dma_addr += BIT(mr->log_size), dma_len -= BIT(mr->log_size))
-> +			mtt[j++] = cpu_to_be64(dma_addr);
-
-
-It looks to me the mtt entry is also limited by log_size. It's better to 
-explain this a little bit in the commit log.
-
-Thanks
-
-
-> +	}
->   }
->   
->   static int create_direct_mr(struct mlx5_vdpa_dev *mvdev, struct mlx5_vdpa_direct_mr *mr)
-> @@ -64,7 +61,6 @@ static int create_direct_mr(struct mlx5_vdpa_dev *mvdev, struct mlx5_vdpa_direct
->   		return -ENOMEM;
->   
->   	MLX5_SET(create_mkey_in, in, uid, mvdev->res.uid);
-> -	fill_sg(mr, in);
->   	mkc = MLX5_ADDR_OF(create_mkey_in, in, memory_key_mkey_entry);
->   	MLX5_SET(mkc, mkc, lw, !!(mr->perm & VHOST_MAP_WO));
->   	MLX5_SET(mkc, mkc, lr, !!(mr->perm & VHOST_MAP_RO));
-> @@ -276,8 +272,8 @@ static int map_direct_mr(struct mlx5_vdpa_dev *mvdev, struct mlx5_vdpa_direct_mr
->   done:
->   	mr->log_size = log_entity_size;
->   	mr->nsg = nsg;
-> -	err = dma_map_sg_attrs(dma, mr->sg_head.sgl, mr->nsg, DMA_BIDIRECTIONAL, 0);
-> -	if (!err)
-> +	mr->nent = dma_map_sg_attrs(dma, mr->sg_head.sgl, mr->nsg, DMA_BIDIRECTIONAL, 0);
-> +	if (!mr->nent)
->   		goto err_map;
->   
->   	err = create_direct_mr(mvdev, mr);
-
+Thanks,
+Yilun
