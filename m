@@ -2,105 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 509542ED126
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 14:49:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C6CB82ED12C
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 14:51:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728638AbhAGNsw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 08:48:52 -0500
-Received: from mail-ot1-f50.google.com ([209.85.210.50]:34719 "EHLO
-        mail-ot1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728167AbhAGNsw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 08:48:52 -0500
-Received: by mail-ot1-f50.google.com with SMTP id a109so6314199otc.1;
-        Thu, 07 Jan 2021 05:48:36 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=FxOc7uHglOoDfD1fFSW1c40P0G5PgpxQwefSb6uXKX0=;
-        b=UGg5UZQVM3Gi3eSa+RqFiRAjA0wgmqpMLEiRDydpJ1RDflXwLZTe41E2UkIeTwCi8e
-         xTrZ9uLl0rb+hJGJGiyyDurN1MJuVrfDxKVeUMgL1i2y63VoPCg4PE4ef1LBFnxSSF3U
-         KEgWVHF5BhQUtFEJuM5qqtUFjhdH3KIx84gCt8fprQEoXB3UY5Vs8FSHjSb06rhjDYoh
-         b9Wy02YPn/wLDG7kB5WCaNITGOdyQPEd11LC4vqys5+cxrk7RHKLLlOhDJhqqWiy8OW5
-         tyuCh0Py8IC0wcd08cPbp/JXQY2drkeYFwYYb3aKFHHgsR6DSq3j9rbEnGIIESoUj0XL
-         UiAQ==
-X-Gm-Message-State: AOAM530XbL94yaYQbqD8Hy3dTrXjXu+SYS5llrkPc7EzL2Sm39GPoQof
-        4WSSDUOU+wtyARYkZxWZEPHXm6Pe/ppBf6kV5xE=
-X-Google-Smtp-Source: ABdhPJyeJqQC2tPO8m/QCgSqmxuUOkbOdB4YBKAgAsShfPvmNBRfDYkobds4iz78u9E8W5YARno4ZTrC0ocfJuWSqzs=
-X-Received: by 2002:a9d:208a:: with SMTP id x10mr6538983ota.260.1610027290930;
- Thu, 07 Jan 2021 05:48:10 -0800 (PST)
+        id S1728713AbhAGNtx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 08:49:53 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35412 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728145AbhAGNtw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Jan 2021 08:49:52 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2318D22B45;
+        Thu,  7 Jan 2021 13:49:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1610027351;
+        bh=CyJHEpw/9U0bkeevqTLF1zdpKDkC8mWFj1rIo9sBJeQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=jElZUmrqemAzi6DOfsP5zcN765QpO7PdinJTImuhgJHzKYSrRaQs+Lk7rKeyaiou9
+         V7W3ZndWJXxsbd2jJZTptzZnZvZ+jpgSN8PD8eGYmxfkVRg43NDdwO4Bot4DELij4u
+         khjOMZ+ma5PGbcmFq9QCGLUb1eSwVdbwquqRbZaMAyflaeA8gJZdqF98bN1YHO8S4k
+         pvX6JSYzsERHBVrPKk8qRsOdQN/+dK8CQ/TFp5ZItdjQ3AqN32bcKsYXPIEC/krK8z
+         yU8mxr/9CIuIrO34LsnaRofknuztgLRcml2SVG+IU7BGYT7EW8LoSQ5LQYBsxEBKoq
+         qEavsmGZKjOAg==
+Date:   Thu, 7 Jan 2021 13:49:07 +0000
+From:   Will Deacon <will@kernel.org>
+To:     Liu Yi L <yi.l.liu@intel.com>
+Cc:     baolu.lu@linux.intel.com, joro@8bytes.org, kevin.tian@intel.com,
+        ashok.raj@intel.com, jun.j.tian@intel.com,
+        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
+        yi.y.sun@intel.com, dan.carpenter@oracle.com,
+        Xin Zeng <xin.zeng@intel.com>
+Subject: Re: [PATCH v4 2/3] iommu/vt-d: Track device aux-attach with
+ subdevice_domain_info
+Message-ID: <20210107134906.GA3043@willie-the-truck>
+References: <1609949037-25291-1-git-send-email-yi.l.liu@intel.com>
+ <1609949037-25291-3-git-send-email-yi.l.liu@intel.com>
 MIME-Version: 1.0
-References: <20201218040826.57203-1-decui@microsoft.com> <MW2PR2101MB1052E61BEB80F14896EEFA79D7DF9@MW2PR2101MB1052.namprd21.prod.outlook.com>
- <MW2PR2101MB181943C255A86A11E5402E50BFD19@MW2PR2101MB1819.namprd21.prod.outlook.com>
-In-Reply-To: <MW2PR2101MB181943C255A86A11E5402E50BFD19@MW2PR2101MB1819.namprd21.prod.outlook.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Thu, 7 Jan 2021 14:47:34 +0100
-Message-ID: <CAJZ5v0gXW0oEmduxZEc0BZWxfQd=+jh_r88OZAHmwCW=GFNBGg@mail.gmail.com>
-Subject: Re: [PATCH] ACPI: scan: Fix a Hyper-V Linux VM panic caused by buffer overflow
-To:     Dexuan Cui <decui@microsoft.com>
-Cc:     Michael Kelley <mikelley@microsoft.com>,
-        "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
-        "rjw@rjwysocki.net" <rjw@rjwysocki.net>,
-        "len.brown@intel.com" <len.brown@intel.com>,
-        "wei.liu@kernel.org" <wei.liu@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        KY Srinivasan <kys@microsoft.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1609949037-25291-3-git-send-email-yi.l.liu@intel.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 5, 2021 at 11:02 PM Dexuan Cui <decui@microsoft.com> wrote:
->
-> > From: Michael Kelley <mikelley@microsoft.com>
-> > Sent: Tuesday, December 22, 2020 5:56 AM
-> > From: Dexuan Cui
-> > Sent: Thursday, December 17, 2020
-> > 8:08 PM
-> > >
-> > > Linux VM on Hyper-V crashes with the latest mainline:
-> > > ...
-> > > --- a/drivers/acpi/scan.c
-> > > +++ b/drivers/acpi/scan.c
-> > > @@ -674,7 +674,8 @@ int acpi_device_add(struct acpi_device *device,
-> > >     }
-> > >     if (!found) {
-> > >             acpi_device_bus_id = new_bus_id;
-> > > -           strcpy(acpi_device_bus_id->bus_id, acpi_device_hid(device));
-> > > +           strlcpy(acpi_device_bus_id->bus_id, acpi_device_hid(device),
-> > > +                   sizeof(acpi_device_bus_id->bus_id));
-> > >             acpi_device_bus_id->instance_no = 0;
-> > >             list_add_tail(&acpi_device_bus_id->node, &acpi_bus_id_list);
-> > >     }
-> >
-> > Reviewed-by: Michael Kelley <mikelley@microsoft.com>
->
-> Hi, ACPI maintainers,
-> Would you please take a look at the small fix? Currently the mainline Linux
-> kernel, running in a VM on Hyper-V, has been broken for almost 3 weeks,
-> i.e. the VM always panics when it boots.
+On Thu, Jan 07, 2021 at 12:03:56AM +0800, Liu Yi L wrote:
+> In the existing code, loop all devices attached to a domain does not
+> include sub-devices attached via iommu_aux_attach_device().
+> 
+> This was found by when I'm working on the below patch, There is no
+> device in the domain->devices list, thus unable to get the cap and
+> ecap of iommu unit. But this domain actually has subdevice which is
+> attached via aux-manner. But it is tracked by domain. This patch is
+> going to fix it.
+> 
+> https://lore.kernel.org/kvm/1599734733-6431-17-git-send-email-yi.l.liu@intel.com/
+> 
+> And this fix goes beyond the patch above, such sub-device tracking is
+> necessary for other cases. For example, flushing device_iotlb for a
+> domain which has sub-devices attached by auxiliary manner.
 
-The root cause is a VM issue AFAICS, though.
+Sorry, but I'm having a really hard time understanding what this patch is
+doing based on this commit message. Baolu -- do you think you could reword
+it for me please? No need to resend the patch.
 
-> The patch has already had Michael's Reviewed-by.
->
-> BTW, the patch should have a stable tag:
-> Cc: <stable@vger.kernel.org>
->
-> Or, do you want the patch to go through the Hyper-V tree?
-> https://git.kernel.org/pub/scm/linux/kernel/git/hyperv/linux.git/log/?h=hyperv-fixes
->
-> The small patch is unlikely to cause a merge conflict, and it only affects
-> Linux VMs on Hyper-V so far.
+Thanks,
 
-It doesn't look like the right fix to me, though.
-
-The problem appears to be that the string coming from _HID is too long
-(which is a spec violation).  The patch truncates it to match the
-length of the target buffer, but that is not particularly useful.
-
-It would be better to use something like kstrdup_const() to initialize
-acpi_device_bus_id->bus_id IMV.
+Will
