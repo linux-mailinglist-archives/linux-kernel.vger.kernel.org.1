@@ -2,92 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D982C2EE715
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 21:42:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CBC632EE718
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 21:42:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727159AbhAGUmC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 15:42:02 -0500
-Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:12723 "EHLO
-        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726073AbhAGUmC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 15:42:02 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5ff771f10001>; Thu, 07 Jan 2021 12:41:21 -0800
-Received: from HQMAIL101.nvidia.com (172.20.187.10) by HQMAIL101.nvidia.com
- (172.20.187.10) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 7 Jan
- 2021 20:41:18 +0000
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (104.47.57.170)
- by HQMAIL101.nvidia.com (172.20.187.10) with Microsoft SMTP Server (TLS) id
- 15.0.1473.3 via Frontend Transport; Thu, 7 Jan 2021 20:41:18 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ZhNue5W0/dO4M3NfQqGrPEhdbjdEd/OGOZiV5aQg5rJavLrfwlQOzUNE3GepwzJ3gh0RgW8j43ysYD+BXdeR+2fkRWBjnlDNWeTJAJqXaeNKKs/tTimhPwHmAk3ylq69k1VpRckE+OF3tiXn6zhd8Y4GlFgWPWEYC3wD6PaJxXfje28KD9Net7jhZ5ghsqDw/rL5uLfIPKZfhgfIVUN6lHSaIMHLRyTY9cAIYzel7fKcqShYVVVdk68WVc5fAywHAGfp7my1RXpU61oai4p9Gg0vdQwvTLwdckrMwmjK0NPWpFwjQJPbSa7uOAWiA1cLS8WdDft9xJfmWDzN/ZVJSg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=FufXpCFnDOPIGllVzNFFnacXfmXf2vniF97au/WFNi0=;
- b=gf46UR1mAM6O5Wf3JWrMpfIgTKC6Gpawvmr9kmSMlUa7doMhl6tGCaixbM+YODihj0ACkTWbNIwZSA/n3s6nD0IHjOhT49gi9JM5KEVs8kMvOpmEQwfW8q1bRduUOxs80Y/svpD2QHEybWI1bvLQ4WU1XZ7ydZHHrQYaozXgw+DF3/BACLjDzHA4yq3y8STgJwUWs0Ls8J46tD6hhTAVbbSgB/GtB9n23QKY6+Ye2mUunEtXa4omuFv1gnMOdxXFU355TfXgZgYQOOtAxkwAzodtoy78FB40bljibmA+n7QDl6HQi0xHPv5+dDszLuUig464Y76evpLn3TlCBB0ppQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
- by DM6PR12MB4633.namprd12.prod.outlook.com (2603:10b6:5:16f::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3742.6; Thu, 7 Jan
- 2021 20:41:17 +0000
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::546d:512c:72fa:4727]) by DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::546d:512c:72fa:4727%7]) with mapi id 15.20.3742.008; Thu, 7 Jan 2021
- 20:41:17 +0000
-Date:   Thu, 7 Jan 2021 16:41:15 -0400
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Dinghao Liu <dinghao.liu@zju.edu.cn>
-CC:     <kjlu@umn.edu>, Christian Benvenuti <benve@cisco.com>,
-        Nelson Escobar <neescoba@cisco.com>,
-        Doug Ledford <dledford@redhat.com>,
-        <linux-rdma@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] RDMA/usnic: Fix memleak in find_free_vf_and_create_qp_grp
-Message-ID: <20210107204115.GA933040@nvidia.com>
-References: <20201226074248.2893-1-dinghao.liu@zju.edu.cn>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20201226074248.2893-1-dinghao.liu@zju.edu.cn>
-X-ClientProxiedBy: MN2PR13CA0023.namprd13.prod.outlook.com
- (2603:10b6:208:160::36) To DM6PR12MB3834.namprd12.prod.outlook.com
- (2603:10b6:5:14a::12)
+        id S1727388AbhAGUmK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 15:42:10 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57178 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726073AbhAGUmK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Jan 2021 15:42:10 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7C70023443;
+        Thu,  7 Jan 2021 20:41:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1610052089;
+        bh=a6CUG8PRsVym6Q5Cgj1W5JcGRb/ssqxZKkE6n5tl+t0=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=WQx4nJrW5FOPbpnb7BjCYYsUnOJlB5LAsbwi6vHWWf2P6+vbaAJSIaf6ttkHcqEfJ
+         yu7oXaeI/HoPfhAdSrqD6juYi2l4dlb7rCs4oRjhMl23UNKDhMEzQLzSsnf++SH56g
+         rRLYOuGtSnCtIGX05v7D6rsbmZKAOMoSQnwfXXACXuPn859ddWShzujjRDzJ3Zq4mH
+         UJ8mqjeBNdY9qIxHJFHIDmuvaY3FSKUf5ynNG+z4y5dtilScU7PoQIU1WwReM7PwGh
+         HCnyRO8HP1nXxxhyqhcNTLzxR53uBqEU13B2dhR1foLsweXZ+59VEpZuX5NzjCDQTL
+         vXgmXDFe+pdKA==
+Date:   Thu, 7 Jan 2021 12:41:28 -0800
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Sieng Piaw Liew <liew.s.piaw@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>
+Cc:     bcm-kernel-feedback-list@broadcom.com, netdev@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net-next v3 0/7] bcm63xx_enet: major makeover of driver
+Message-ID: <20210107124128.3d989c45@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20210106144208.1935-1-liew.s.piaw@gmail.com>
+References: <20210106144208.1935-1-liew.s.piaw@gmail.com>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (142.162.115.133) by MN2PR13CA0023.namprd13.prod.outlook.com (2603:10b6:208:160::36) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3763.2 via Frontend Transport; Thu, 7 Jan 2021 20:41:16 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1kxc5r-003uzM-4e; Thu, 07 Jan 2021 16:41:15 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1610052081; bh=FufXpCFnDOPIGllVzNFFnacXfmXf2vniF97au/WFNi0=;
-        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
-         From:To:CC:Subject:Message-ID:References:Content-Type:
-         Content-Disposition:In-Reply-To:X-ClientProxiedBy:MIME-Version:
-         X-MS-Exchange-MessageSentRepresentingType;
-        b=EljinzklUx4QdUGZtDMblRWOvva6jq/ihdSWR45gxbouWddlnvEib5ojO3AT4zJwX
-         Hu4y8o0SfBlgAtZRTVu8qOMgJrNVEWZAaFM+rdB8oLV+xd2+SV7MMG0TqCJMwU0JuJ
-         /XCmmXQXsLwbTQqKWj3dtbWTQUm2R7anjfwkwa+LhgOe/eUzmjAtBQlDhvCqjhKe2Z
-         8PeBMS7dhhuTLarXWA9Y9ND8YlMlhhpoRJyMa6XDjVsN6bD/eNjnjU26p6BW6ssUgZ
-         g/yiEgAkPm4TmTmZrmfrRS69bxLGbyGcqQveemJ4ySpKELJPgt2oGEv9aMOTyPvRmx
-         lmlU0Esq1ZzqA==
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Dec 26, 2020 at 03:42:48PM +0800, Dinghao Liu wrote:
-> If usnic_ib_qp_grp_create() fails at the first call, dev_list
-> will not be freed on error, which leads to memleak.
+On Wed,  6 Jan 2021 22:42:01 +0800 Sieng Piaw Liew wrote:
+> This patch series aim to improve the bcm63xx_enet driver by integrating the
+> latest networking features, i.e. batched rx processing, BQL, build_skb,
+> etc.
 > 
-> Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
-> Reviewed-by: Leon Romanovsky <leonro@nvidia.com>
-> ---
->  drivers/infiniband/hw/usnic/usnic_ib_verbs.c | 3 +++
->  1 file changed, 3 insertions(+)
+> The newer enetsw SoCs are found to be able to do unaligned rx DMA by adding
+> NET_IP_ALIGN padding which, combined with these patches, improved packet
+> processing performance by ~50% on BCM6328.
+> 
+> Older non-enetsw SoCs still benefit mainly from rx batching. Performance
+> improvement of ~30% is observed on BCM6333.
+> 
+> The BCM63xx SoCs are designed for routers. As such, having BQL is
+> beneficial as well as trivial to add.
+> 
+> v3:
+> * Simplify xmit_more patch by not moving around the code needlessly.
+> * Fix indentation in xmit_more patch.
+> * Fix indentation in build_skb patch.
+> * Split rx ring cleanup patch from build_skb patch and precede build_skb
+>   patch for better understanding, as suggested by Florian Fainelli.
+> 
+> v2:
+> * Add xmit_more support and rx loop improvisation patches.
+> * Moved BQL netdev_reset_queue() to bcm_enet_stop()/bcm_enetsw_stop()
+>   functions as suggested by Florian Fainelli.
+> * Improved commit messages.
 
-Applied to for-rc with
-
-Fixes: e3cf00d0a87f ("IB/usnic: Add Cisco VIC low-level hardware driver")
-
-Thanks,
-Jason
+Applied, thanks!
