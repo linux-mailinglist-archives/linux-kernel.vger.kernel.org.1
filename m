@@ -2,225 +2,257 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F71B2ECAE2
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 08:21:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D8D32ECAE7
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 08:21:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726949AbhAGHT7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 02:19:59 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54540 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726013AbhAGHT6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 02:19:58 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 53EE023100;
-        Thu,  7 Jan 2021 07:19:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610003957;
-        bh=guVgHVTP3Gev8lgSGqIAoa1rHgyY3KDR+7Zxa0APlGo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=F70azlfau1NVNnHzTMaGDTQ3TrMVyfyOcKjATGlspkmCue1orQ4DtuvA3MaLIu3TB
-         A8TtdY1SyMQjmz7nwTUcqM7vORwOyNkr0PaglhnouYxFC8mgJ4qO8SHh2aG2xIh71L
-         dNiOKZGU3iI4eQD2FzKrNwCHQRFjiO0hWZulCpg9qoyhRg62W066ozQjaV84Hhks+P
-         XlS1VEsQJ9E+W9GdWIamUpkB/7KLHjF8nfvLj6awFlN+hjKphomWJpW0xeaVgi50sD
-         1OIeoCVCK+mIx/pG/hp9YL1n2GmST2rrHa+rUcJJ7pSvWDBWIIk6MnG+rTtH/ClALu
-         zSlRc37l4Zr1w==
-Date:   Wed, 6 Jan 2021 23:19:15 -0800
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Stephan =?iso-8859-1?Q?M=FCller?= <smueller@chronox.de>
-Cc:     herbert@gondor.apana.org.au, mathew.j.martineau@linux.intel.com,
-        dhowells@redhat.com, linux-crypto@vger.kernel.org,
-        linux-fscrypt@vger.kernel.org, linux-kernel@vger.kernel.org,
-        keyrings@vger.kernel.org
-Subject: Re: [PATCH 5/5] fs: use HKDF implementation from kernel crypto API
-Message-ID: <X/a18yALjUcrvXDC@sol.localdomain>
-References: <4616980.31r3eYUQgx@positron.chronox.de>
- <7857050.T7Z3S40VBb@positron.chronox.de>
+        id S1727001AbhAGHVY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 02:21:24 -0500
+Received: from m43-15.mailgun.net ([69.72.43.15]:16793 "EHLO
+        m43-15.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725763AbhAGHVX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Jan 2021 02:21:23 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1610004064; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=qVQgnBvjBqjLq8iP2HV4ld7PVZ9iO/EhHi9QxROaVkA=;
+ b=PrazzvhXhdPWv1gINnWlIBbxvY9xqNMKrCy7wDwydOSPDdJLi/RB0TjOfI6HMr1iC1uOAf8w
+ dAMpcGaGcGjrVMFU8g7ZIDFCB7Vkhgq6bYtgeATACCNNIdUwQrS+cCVthfMciPInlDJxRZcM
+ G36KA1WZFWzgbOvFdBElJuBOsxc=
+X-Mailgun-Sending-Ip: 69.72.43.15
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
+ 5ff6b638f69bd8af0978bcf7 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 07 Jan 2021 07:20:24
+ GMT
+Sender: cang=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id A4E78C43467; Thu,  7 Jan 2021 07:20:23 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: cang)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 6B4FDC433C6;
+        Thu,  7 Jan 2021 07:20:22 +0000 (UTC)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <7857050.T7Z3S40VBb@positron.chronox.de>
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Thu, 07 Jan 2021 15:20:22 +0800
+From:   Can Guo <cang@codeaurora.org>
+To:     Jaegeuk Kim <jaegeuk@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org,
+        kernel-team@android.com, alim.akhtar@samsung.com,
+        avri.altman@wdc.com, bvanassche@acm.org,
+        martin.petersen@oracle.com, stanley.chu@mediatek.com
+Subject: Re: [PATCH v3 2/2] scsi: ufs: handle LINERESET with correct tm_cmd
+In-Reply-To: <7261bef7d8aa003d7f8fc984e37390bb@codeaurora.org>
+References: <20210106214109.44041-1-jaegeuk@kernel.org>
+ <20210106214109.44041-3-jaegeuk@kernel.org>
+ <163fae07a94933230e0432e2ca584040@codeaurora.org>
+ <X/avWNrpOzWMj6xY@google.com>
+ <7261bef7d8aa003d7f8fc984e37390bb@codeaurora.org>
+Message-ID: <f5368558de17940efea8a393605fbc2a@codeaurora.org>
+X-Sender: cang@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 04, 2021 at 10:50:49PM +0100, Stephan Müller wrote:
-> As the kernel crypto API implements HKDF, replace the
-> file-system-specific HKDF implementation with the generic HKDF
-> implementation.
+On 2021-01-07 15:03, Can Guo wrote:
+> On 2021-01-07 14:51, Jaegeuk Kim wrote:
+>> On 01/07, Can Guo wrote:
+>>> On 2021-01-07 05:41, Jaegeuk Kim wrote:
+>>> > From: Jaegeuk Kim <jaegeuk@google.com>
+>>> >
+>>> > This fixes a warning caused by wrong reserve tag usage in
+>>> > __ufshcd_issue_tm_cmd.
+>>> >
+>>> > WARNING: CPU: 7 PID: 7 at block/blk-core.c:630 blk_get_request+0x68/0x70
+>>> > WARNING: CPU: 4 PID: 157 at block/blk-mq-tag.c:82
+>>> > blk_mq_get_tag+0x438/0x46c
+>>> >
+>>> > And, in ufshcd_err_handler(), we can avoid to send tm_cmd before
+>>> > aborting
+>>> > outstanding commands by waiting a bit for IO completion like this.
+>>> >
+>>> > __ufshcd_issue_tm_cmd: task management cmd 0x80 timed-out
+>>> >
+>>> 
+>>> Would you mind add a Fixes tag?
+>> 
+>> Ok.
+>> 
+>>> 
+>>> > Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
+>>> > ---
+>>> >  drivers/scsi/ufs/ufshcd.c | 36 ++++++++++++++++++++++++++++++++----
+>>> >  1 file changed, 32 insertions(+), 4 deletions(-)
+>>> >
+>>> > diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
+>>> > index 1678cec08b51..47fc8da3cbf9 100644
+>>> > --- a/drivers/scsi/ufs/ufshcd.c
+>>> > +++ b/drivers/scsi/ufs/ufshcd.c
+>>> > @@ -44,6 +44,9 @@
+>>> >  /* Query request timeout */
+>>> >  #define QUERY_REQ_TIMEOUT 1500 /* 1.5 seconds */
+>>> >
+>>> > +/* LINERESET TIME OUT */
+>>> > +#define LINERESET_IO_TIMEOUT_MS			(30000) /* 30 sec */
+>>> > +
+>>> >  /* Task management command timeout */
+>>> >  #define TM_CMD_TIMEOUT	100 /* msecs */
+>>> >
+>>> > @@ -5899,6 +5902,8 @@ static void ufshcd_err_handler(struct work_struct
+>>> > *work)
+>>> >  	 * check if power mode restore is needed.
+>>> >  	 */
+>>> >  	if (hba->saved_uic_err & UFSHCD_UIC_PA_GENERIC_ERROR) {
+>>> > +		ktime_t start = ktime_get();
+>>> > +
+>>> >  		hba->saved_uic_err &= ~UFSHCD_UIC_PA_GENERIC_ERROR;
+>>> >  		if (!hba->saved_uic_err)
+>>> >  			hba->saved_err &= ~UIC_ERROR;
+>>> > @@ -5906,6 +5911,20 @@ static void ufshcd_err_handler(struct work_struct
+>>> > *work)
+>>> >  		if (ufshcd_is_pwr_mode_restore_needed(hba))
+>>> >  			needs_restore = true;
+>>> >  		spin_lock_irqsave(hba->host->host_lock, flags);
+>>> > +		/* Wait for IO completion to avoid aborting IOs */
+>>> > +		while (hba->outstanding_reqs) {
+>>> > +			ufshcd_complete_requests(hba);
+>>> > +			spin_unlock_irqrestore(hba->host->host_lock, flags);
+>>> > +			schedule();
+>>> > +			spin_lock_irqsave(hba->host->host_lock, flags);
+>>> > +			if (ktime_to_ms(ktime_sub(ktime_get(), start)) >
+>>> > +						LINERESET_IO_TIMEOUT_MS) {
+>>> > +				dev_err(hba->dev, "%s: timeout, outstanding=0x%lx\n",
+>>> > +					__func__, hba->outstanding_reqs);
+>>> > +				break;
+>>> > +			}
+>>> > +		}
+>>> > +
+>>> >  		if (!hba->saved_err && !needs_restore)
+>>> >  			goto skip_err_handling;
+>>> >  	}
+>>> > @@ -6302,9 +6321,13 @@ static irqreturn_t ufshcd_intr(int irq, void
+>>> > *__hba)
+>>> >  		intr_status = ufshcd_readl(hba, REG_INTERRUPT_STATUS);
+>>> >  	}
+>>> >
+>>> > -	if (enabled_intr_status && retval == IRQ_NONE) {
+>>> > -		dev_err(hba->dev, "%s: Unhandled interrupt 0x%08x\n",
+>>> > -					__func__, intr_status);
+>>> > +	if (enabled_intr_status && retval == IRQ_NONE &&
+>>> > +				!ufshcd_eh_in_progress(hba)) {
+>>> > +		dev_err(hba->dev, "%s: Unhandled interrupt 0x%08x (0x%08x,
+>>> > 0x%08x)\n",
+>>> > +					__func__,
+>>> > +					intr_status,
+>>> > +					hba->ufs_stats.last_intr_status,
+>>> > +					enabled_intr_status);
+>>> >  		ufshcd_dump_regs(hba, 0, UFSHCI_REG_SPACE_SIZE, "host_regs: ");
+>>> >  	}
+>>> >
+>>> > @@ -6348,7 +6371,11 @@ static int __ufshcd_issue_tm_cmd(struct ufs_hba
+>>> > *hba,
+>>> >  	 * Even though we use wait_event() which sleeps indefinitely,
+>>> >  	 * the maximum wait time is bounded by %TM_CMD_TIMEOUT.
+>>> >  	 */
+>>> > -	req = blk_get_request(q, REQ_OP_DRV_OUT, BLK_MQ_REQ_RESERVED);
+>>> > +	req = blk_get_request(q, REQ_OP_DRV_OUT, BLK_MQ_REQ_RESERVED |
+>>> > +						BLK_MQ_REQ_NOWAIT);
+>>> 
+>>> Sorry that I didn't pay much attention to this part of code before.
+>>> May I know why must we use the BLK_MQ_REQ_RESERVED flag?
+>> 
+>> What I understood is the reserved tag is used when aborting 
+>> outstanding
+>> IOs when all the 32 tags were used.
+>> 
 > 
-> Signed-off-by: Stephan Mueller <smueller@chronox.de>
-> ---
->  fs/crypto/Kconfig           |   2 +-
->  fs/crypto/fscrypt_private.h |   4 +-
->  fs/crypto/hkdf.c            | 108 +++++++++---------------------------
->  3 files changed, 30 insertions(+), 84 deletions(-)
+> No, the tm requests and I/O requests are on two different tag sets:
+> tm requests come from hba->tmf_tag_set, while I/O requests come from
+> hba->shost->tag_set. Meaning they don't share tags with each other.
+
+Add they are issued on two different HW queues - one for tm reqs,
+one for I/O reqs, which is why two different tag sets are created.
+
 > 
-> diff --git a/fs/crypto/Kconfig b/fs/crypto/Kconfig
-> index a5f5c30368a2..9450e958f1d1 100644
-> --- a/fs/crypto/Kconfig
-> +++ b/fs/crypto/Kconfig
-> @@ -2,7 +2,7 @@
->  config FS_ENCRYPTION
->  	bool "FS Encryption (Per-file encryption)"
->  	select CRYPTO
-> -	select CRYPTO_HASH
-> +	select CRYPTO_HKDF
->  	select CRYPTO_SKCIPHER
->  	select CRYPTO_LIB_SHA256
->  	select KEYS
-> diff --git a/fs/crypto/fscrypt_private.h b/fs/crypto/fscrypt_private.h
-> index 3fa965eb3336..0d6871838099 100644
-> --- a/fs/crypto/fscrypt_private.h
-> +++ b/fs/crypto/fscrypt_private.h
-> @@ -304,7 +304,7 @@ struct fscrypt_hkdf {
->  	struct crypto_shash *hmac_tfm;
->  };
->  
-> -int fscrypt_init_hkdf(struct fscrypt_hkdf *hkdf, const u8 *master_key,
-> +int fscrypt_init_hkdf(struct fscrypt_hkdf *hkdf, u8 *master_key,
->  		      unsigned int master_key_size);
-
-It shouldn't be necessary to remove const here.
-
->  
->  /*
-> @@ -323,7 +323,7 @@ int fscrypt_init_hkdf(struct fscrypt_hkdf *hkdf, const u8 *master_key,
->  #define HKDF_CONTEXT_INODE_HASH_KEY	7 /* info=<empty>		*/
->  
->  int fscrypt_hkdf_expand(const struct fscrypt_hkdf *hkdf, u8 context,
-> -			const u8 *info, unsigned int infolen,
-> +			u8 *info, unsigned int infolen,
->  			u8 *okm, unsigned int okmlen);
-
-Likewise.  In fact some callers rely on 'info' not being modified.
-
-> -/*
-> + *
->   * Compute HKDF-Extract using the given master key as the input keying material,
->   * and prepare an HMAC transform object keyed by the resulting pseudorandom key.
->   *
->   * Afterwards, the keyed HMAC transform object can be used for HKDF-Expand many
->   * times without having to recompute HKDF-Extract each time.
->   */
-> -int fscrypt_init_hkdf(struct fscrypt_hkdf *hkdf, const u8 *master_key,
-> +int fscrypt_init_hkdf(struct fscrypt_hkdf *hkdf, u8 *master_key,
->  		      unsigned int master_key_size)
->  {
-> +	/* HKDF-Extract (RFC 5869 section 2.2), unsalted */
-> +	const struct kvec seed[] = { {
-> +		.iov_base = NULL,
-> +		.iov_len = 0
-> +	}, {
-> +		.iov_base = master_key,
-> +		.iov_len = master_key_size
-> +	} };
->  	struct crypto_shash *hmac_tfm;
-> -	u8 prk[HKDF_HASHLEN];
->  	int err;
->  
->  	hmac_tfm = crypto_alloc_shash(HKDF_HMAC_ALG, 0, 0);
-> @@ -74,16 +65,12 @@ int fscrypt_init_hkdf(struct fscrypt_hkdf *hkdf, const u8 *master_key,
->  		return PTR_ERR(hmac_tfm);
->  	}
->  
-> -	if (WARN_ON(crypto_shash_digestsize(hmac_tfm) != sizeof(prk))) {
-> +	if (WARN_ON(crypto_shash_digestsize(hmac_tfm) != HKDF_HASHLEN)) {
->  		err = -EINVAL;
->  		goto err_free_tfm;
->  	}
->  
-> -	err = hkdf_extract(hmac_tfm, master_key, master_key_size, prk);
-> -	if (err)
-> -		goto err_free_tfm;
+>>> 
+>>> Thanks,
+>>> Can Guo.
+>>> 
+>>> > +	if (IS_ERR(req))
+>>> > +		return PTR_ERR(req);
+>>> > +
+>>> >  	req->end_io_data = &wait;
+>>> >  	free_slot = req->tag;
+>>> >  	WARN_ON_ONCE(free_slot < 0 || free_slot >= hba->nutmrs);
+>>> > @@ -9355,6 +9382,7 @@ int ufshcd_init(struct ufs_hba *hba, void
+>>> > __iomem *mmio_base, unsigned int irq)
+>>> >
+>>> >  	hba->tmf_tag_set = (struct blk_mq_tag_set) {
+>>> >  		.nr_hw_queues	= 1,
+>>> > +		.reserved_tags	= 1,
+>>> 
+>>> If we give reserved_tags as 1 and always ask for a tm requst with
+>>> BLK_MQ_REQ_RESERVED flag set, then the tag shall only be allocated
+>>> from the reserved sbitmap_queue, whose depth is set to 1 here.
+>>> UFS supports tm queue depth as 8, but here is allowing only one tm
+>>> req at a time. Why? Please correct me if my understanding is wrong.
+>> 
+>> I couldn't find tm can be issued in parallel, so thought it was issued
+>> one at a time. If we set 8, then we can use 24 for IOs, IIUC.
+>> 
+>> Please correct me as well. I'm still trying to understand the flow.
+>> 
+> 
+> UFS allows a queue depth as 8, which means it support sending multiple
+> tm requests at the same time. You can check commit 69a6c269c097d780a2 -
+> before this change, we used to use below func to allocate tags for
+> tm reqs, which can tell you the true story.
+> 
+> So I am thinking why don't we just we remove the BLK_MQ_REQ_RESERVED 
+> flag?
+> Removing it can also fix the warning I suppose. What do you think?
+> 
+> -static bool ufshcd_get_tm_free_slot(struct ufs_hba *hba, int 
+> *free_slot)
+> -{
+> -       int tag;
+> -       bool ret = false;
 > -
-> -	err = crypto_shash_setkey(hmac_tfm, prk, sizeof(prk));
-> +	err = crypto_hkdf_setkey(hmac_tfm, seed, ARRAY_SIZE(seed));
->  	if (err)
->  		goto err_free_tfm;
-
-It's weird that the salt and key have to be passed in a kvec.
-Why not just have normal function parameters like:
-
-	int crypto_hkdf_setkey(struct crypto_shash *hmac_tfm,
-			       const u8 *key, size_t keysize,
-			       const u8 *salt, size_t saltsize);
-
->  int fscrypt_hkdf_expand(const struct fscrypt_hkdf *hkdf, u8 context,
-> -			const u8 *info, unsigned int infolen,
-> +			u8 *info, unsigned int infolen,
->  			u8 *okm, unsigned int okmlen)
->  {
-> -	SHASH_DESC_ON_STACK(desc, hkdf->hmac_tfm);
-> -	u8 prefix[9];
-> -	unsigned int i;
-> -	int err;
-> -	const u8 *prev = NULL;
-> -	u8 counter = 1;
-> -	u8 tmp[HKDF_HASHLEN];
+> -       if (!free_slot)
+> -               goto out;
 > -
-> -	if (WARN_ON(okmlen > 255 * HKDF_HASHLEN))
-> -		return -EINVAL;
+> -       do {
+> -               tag = find_first_zero_bit(&hba->tm_slots_in_use, 
+> hba->nutmrs);
+> -               if (tag >= hba->nutmrs)
+> -                       goto out;
+> -       } while (test_and_set_bit_lock(tag, &hba->tm_slots_in_use));
 > -
-> -	desc->tfm = hkdf->hmac_tfm;
-> -
-> -	memcpy(prefix, "fscrypt\0", 8);
-> -	prefix[8] = context;
-> -
-> -	for (i = 0; i < okmlen; i += HKDF_HASHLEN) {
-> +	const struct kvec info_iov[] = { {
-> +		.iov_base = "fscrypt\0",
-> +		.iov_len = 8,
-> +	}, {
-> +		.iov_base = &context,
-> +		.iov_len = 1,
-> +	}, {
-> +		.iov_base = info,
-> +		.iov_len = infolen,
-> +	} };
-> +	int err = crypto_hkdf_generate(hkdf->hmac_tfm,
-> +				       info_iov, ARRAY_SIZE(info_iov),
-> +				       okm, okmlen);
->  
-> -		err = crypto_shash_init(desc);
-> -		if (err)
-> -			goto out;
-> -
-> -		if (prev) {
-> -			err = crypto_shash_update(desc, prev, HKDF_HASHLEN);
-> -			if (err)
-> -				goto out;
-> -		}
-> -
-> -		err = crypto_shash_update(desc, prefix, sizeof(prefix));
-> -		if (err)
-> -			goto out;
-> -
-> -		err = crypto_shash_update(desc, info, infolen);
-> -		if (err)
-> -			goto out;
-> -
-> -		BUILD_BUG_ON(sizeof(counter) != 1);
-> -		if (okmlen - i < HKDF_HASHLEN) {
-> -			err = crypto_shash_finup(desc, &counter, 1, tmp);
-> -			if (err)
-> -				goto out;
-> -			memcpy(&okm[i], tmp, okmlen - i);
-> -			memzero_explicit(tmp, sizeof(tmp));
-> -		} else {
-> -			err = crypto_shash_finup(desc, &counter, 1, &okm[i]);
-> -			if (err)
-> -				goto out;
-> -		}
-> -		counter++;
-> -		prev = &okm[i];
-> -	}
-> -	err = 0;
+> -       *free_slot = tag;
+> -       ret = true;
 > -out:
->  	if (unlikely(err))
->  		memzero_explicit(okm, okmlen); /* so caller doesn't need to */
-> -	shash_desc_zero(desc);
-
-Shouldn't crypto_hkdf_generate() handle the above memzero_explicit() of the
-output buffer on error, so that all callers don't need to do it?
-
-- Eric
+> -       return ret;
+> -}
+> 
+> Thanks,
+> Can Guo.
+> 
+>>> 
+>>> Thanks,
+>>> Can Guo.
+>>> 
+>>> >  		.queue_depth	= hba->nutmrs,
+>>> >  		.ops		= &ufshcd_tmf_ops,
+>>> >  		.flags		= BLK_MQ_F_NO_SCHED,
