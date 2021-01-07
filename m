@@ -2,93 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C9092ED43B
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 17:26:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CD08A2ED445
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 17:28:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728678AbhAGQZa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 11:25:30 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43588 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726326AbhAGQZa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 11:25:30 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 35A13224D3;
-        Thu,  7 Jan 2021 16:24:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610036689;
-        bh=LXyHjXJQXFpphlsfzHKNJClU7qoI2uIq8c0hjWF5md0=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=AKdQQVU3ncSGA8q6ZqQZO9CxYZ8rxjM9R5Sj4IcOfIiEbSFEO9auLoadcbmlLh+mA
-         cY68ovTGqfd1Iw68yYSs6Yj3gq5rlSUjIUtIy5QB2K7FJcCEtybvtZxv/fHS1KEOLg
-         jYSoNSz6WRqk1/lf1TaW3y7zL2NvR9MPuq0MfuaShHt8lUVKLlh5ozPP5dEoNyRkxV
-         bllf6wn29n9YpAuIhJYCBjVxuUS3lEY6otk2vaJd5u1hTBe5U44tXyxRFAHh976KFe
-         6WjH1twatE3RmQgl17oDD9r0ZiHmDPLI9wfR1Z9SSbe/+n+JyoOQi6mxp665YNeVba
-         IThNL8i96WedQ==
-Received: by mail-lf1-f46.google.com with SMTP id o19so15968478lfo.1;
-        Thu, 07 Jan 2021 08:24:49 -0800 (PST)
-X-Gm-Message-State: AOAM5312zCuOe64ocZZKbWmtuqSqlT0TOSJTI8tpmPMUTZsGuz9y4Lpc
-        gZuGdchd6Fsvw5TYCrG07hSct1jTcnLuQ8GFz0w=
-X-Google-Smtp-Source: ABdhPJwBSy8wbYbmWqtAQq2EbbZ/Rlr/HwjJEF3jtIc7VmU55T++xsgfMq1glkhbMSK4HbObvoEBTMmbyVSixqmj4yA=
-X-Received: by 2002:a2e:8118:: with SMTP id d24mr4169763ljg.105.1610036687551;
- Thu, 07 Jan 2021 08:24:47 -0800 (PST)
+        id S1728586AbhAGQ1i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 11:27:38 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:37562 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726441AbhAGQ1h (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Jan 2021 11:27:37 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1610036771;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=cQV/x5GtXZ0B2hPRvGG0KO7F8c4S3HMWgh/cKMsSZQg=;
+        b=g/HP2Eo5ZrFo1xx9bNR/2B2FfGMELyj9yPNqo+deKNx5+A0Qx/PS18J7JltFrdH/L/yV6v
+        +y0cY7Y5CYHyBq28tT/qA9841a1GYU0DM1CuxIa0+CrMe69cZqQOs0TvgLEdnICJ9vHwOx
+        FsuzSBguApaU56yeu8Is3vrmaV8yrvU=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-361-0oCKIdzxMBy12Zv7lVr-Rg-1; Thu, 07 Jan 2021 11:26:07 -0500
+X-MC-Unique: 0oCKIdzxMBy12Zv7lVr-Rg-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C10F4800D55;
+        Thu,  7 Jan 2021 16:26:04 +0000 (UTC)
+Received: from colo-mx.corp.redhat.com (colo-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.21])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id B77ED3A47;
+        Thu,  7 Jan 2021 16:26:04 +0000 (UTC)
+Received: from zmail21.collab.prod.int.phx2.redhat.com (zmail21.collab.prod.int.phx2.redhat.com [10.5.83.24])
+        by colo-mx.corp.redhat.com (Postfix) with ESMTP id AAF684BB7B;
+        Thu,  7 Jan 2021 16:26:04 +0000 (UTC)
+Date:   Thu, 7 Jan 2021 11:26:02 -0500 (EST)
+From:   Bob Peterson <rpeterso@redhat.com>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Satya Tangirala <satyat@google.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jens Axboe <axboe@kernel.dk>
+Message-ID: <1880595671.42956897.1610036762534.JavaMail.zimbra@redhat.com>
+In-Reply-To: <20210107162000.GA2693@lst.de>
+References: <20201224044954.1349459-1-satyat@google.com> <20210107162000.GA2693@lst.de>
+Subject: Re: [PATCH] fs: Fix freeze_bdev()/thaw_bdev() accounting of
+ bd_fsfreeze_sb
 MIME-Version: 1.0
-References: <ae3672c0-84d1-7ee5-1858-33d119544906@infradead.org>
- <20210106100449.237875-1-standby24x7@gmail.com> <9de77ea7-c7cd-6235-30f3-50e12fa2d8fe@infradead.org>
-In-Reply-To: <9de77ea7-c7cd-6235-30f3-50e12fa2d8fe@infradead.org>
-From:   Guo Ren <guoren@kernel.org>
-Date:   Fri, 8 Jan 2021 00:24:36 +0800
-X-Gmail-Original-Message-ID: <CAJF2gTQp6EuodAfFjtZZCdBT-nq87RJtuVjco9PkvF1PyimWGQ@mail.gmail.com>
-Message-ID: <CAJF2gTQp6EuodAfFjtZZCdBT-nq87RJtuVjco9PkvF1PyimWGQ@mail.gmail.com>
-Subject: Re: [PATCH/v2] csky: Fix typos in Kconfig
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     Masanari Iida <standby24x7@gmail.com>, linux-csky@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.3.112.201, 10.4.195.23]
+Thread-Topic: Fix freeze_bdev()/thaw_bdev() accounting of bd_fsfreeze_sb
+Thread-Index: wReIBcuiVcLsNfvvUAISHBXneDQ8yg==
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thx, looks good to me.
-
-
-On Thu, Jan 7, 2021 at 12:23 AM Randy Dunlap <rdunlap@infradead.org> wrote:
->
-> On 1/6/21 2:04 AM, Masanari Iida wrote:
-> > This patch fixes some spelling typos in Kconfig.
-> >
-> > Signed-off-by: Masanari Iida <standby24x7@gmail.com>
+----- Original Message -----
+> Can someone pick this up?  Maybe through Jens' block tree as that is
+> where my commit this is fixing up came from.
+> 
+> For reference:
+> 
+> 
+> Reviewed-by: Christoph Hellwig <hch@lst.de>
+> 
+> On Thu, Dec 24, 2020 at 04:49:54AM +0000, Satya Tangirala wrote:
+> > freeze/thaw_bdev() currently use bdev->bd_fsfreeze_count to infer
+> > whether or not bdev->bd_fsfreeze_sb is valid (it's valid iff
+> > bd_fsfreeze_count is non-zero). thaw_bdev() doesn't nullify
+> > bd_fsfreeze_sb.
+> > 
+> > But this means a freeze_bdev() call followed by a thaw_bdev() call can
+> > leave bd_fsfreeze_sb with a non-null value, while bd_fsfreeze_count is
+> > zero. If freeze_bdev() is called again, and this time
+> > get_active_super() returns NULL (e.g. because the FS is unmounted),
+> > we'll end up with bd_fsfreeze_count > 0, but bd_fsfreeze_sb is
+> > *untouched* - it stays the same (now garbage) value. A subsequent
+> > thaw_bdev() will decide that the bd_fsfreeze_sb value is legitimate
+> > (since bd_fsfreeze_count > 0), and attempt to use it.
+> > 
+> > Fix this by always setting bd_fsfreeze_sb to NULL when
+> > bd_fsfreeze_count is successfully decremented to 0 in thaw_sb().
+> > Alternatively, we could set bd_fsfreeze_sb to whatever
+> > get_active_super() returns in freeze_bdev() whenever bd_fsfreeze_count
+> > is successfully incremented to 1 from 0 (which can be achieved cleanly
+> > by moving the line currently setting bd_fsfreeze_sb to immediately
+> > after the "sync:" label, but it might be a little too subtle/easily
+> > overlooked in future).
+> > 
+> > This fixes the currently panicking xfstests generic/085.
+> > 
+> > Fixes: 040f04bd2e82 ("fs: simplify freeze_bdev/thaw_bdev")
+> > Signed-off-by: Satya Tangirala <satyat@google.com>
 > > ---
-> >  arch/csky/Kconfig | 6 +++---
-> >  1 file changed, 3 insertions(+), 3 deletions(-)
-> >
-> > diff --git a/arch/csky/Kconfig b/arch/csky/Kconfig
-> > index 7f1721101ea0..e6ddca10e3ee 100644
-> > --- a/arch/csky/Kconfig
-> > +++ b/arch/csky/Kconfig
-> > @@ -243,9 +243,9 @@ menuconfig HAVE_TCM
-> >       bool "Tightly-Coupled/Sram Memory"
-> >       select GENERIC_ALLOCATOR
-> >       help
-> > -       The implementation are not only used by TCM (Tightly-Coupled Meory)
-> > -       but also used by sram on SOC bus. It follow existed linux tcm
-> > -       software interface, so that old tcm application codes could be
-> > +       The implementation is not only used by TCM (Tightly-Coupled Memory)
-> > +       but also used by SRAM on SOC bus. It follows the existing Linux TCM
-> > +       software interface, so that old TCM application codes could be
-> >         re-used directly.
-> >
-> >  if HAVE_TCM
-> >
->
-> LGTM. Thanks.
-> Reviewed-by: Randy Dunlap <rdunlap@infradead.org>
->
-> --
-> ~Randy
+> >  fs/block_dev.c | 2 ++
+> >  1 file changed, 2 insertions(+)
+> > 
+> > diff --git a/fs/block_dev.c b/fs/block_dev.c
+> > index 9e56ee1f2652..12a811a9ae4b 100644
+> > --- a/fs/block_dev.c
+> > +++ b/fs/block_dev.c
+> > @@ -606,6 +606,8 @@ int thaw_bdev(struct block_device *bdev)
+> >  		error = thaw_super(sb);
+> >  	if (error)
+> >  		bdev->bd_fsfreeze_count++;
+> > +	else
+> > +		bdev->bd_fsfreeze_sb = NULL;
+> >  out:
+> >  	mutex_unlock(&bdev->bd_fsfreeze_mutex);
+> >  	return error;
+> > --
+> > 2.29.2.729.g45daf8777d-goog
+> ---end quoted text---
+> 
+> 
+Funny you should ask. I came across this bug in my testing of gfs2
+and my patch is slightly different. I was wondering who to send it to.
+Perhaps Viro?
 
+Regards,
 
+Bob Peterson
 
---
-Best Regards
- Guo Ren
-
-ML: https://lore.kernel.org/linux-csky/
