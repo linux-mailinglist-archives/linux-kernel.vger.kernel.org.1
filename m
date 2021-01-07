@@ -2,109 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD86C2ED556
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 18:19:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DF3B2ED568
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 18:22:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728885AbhAGRSx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 12:18:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54462 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726073AbhAGRSw (ORCPT
+        id S1728761AbhAGRVe convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 7 Jan 2021 12:21:34 -0500
+Received: from mail-ot1-f47.google.com ([209.85.210.47]:35148 "EHLO
+        mail-ot1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727673AbhAGRVd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 12:18:52 -0500
-Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A69FC0612F4;
-        Thu,  7 Jan 2021 09:18:12 -0800 (PST)
-Received: by mail-wr1-x430.google.com with SMTP id r7so6390085wrc.5;
-        Thu, 07 Jan 2021 09:18:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=xFzg996wZghRDMljRiUDGgbxiUKBLaZNfvfWsKyW/2c=;
-        b=O/R+YVTkjwuKfy5YWvgsyEfgiPoH29vHtCLfdXluhXXDQMecR7hA02HYW+phgP5FYf
-         +rsTzDsrfDY8eQYb8LyKk+xV1LNc0tuVEWT3KNzaBp/CW3BTRimzApYGGgUuzM6BGc9h
-         xKdBo+utOMeFzYJ5tSOuZBPdMvi52ufJHp/ZThMp8s4n6yF2Qd6kwtUIgbP+z6lX3nrD
-         1/zvka84oezzVer77cNZY8C4+JnWxPovPfjxWvghOMBGpNAEvKplFCuuX0sScDxFtIAo
-         jeTOwCiMe/CJ+56CMrh121XfXrV76LIggms0SkQS4SvrdJdJnqkgo6oydFaT5d0H19o5
-         BJCQ==
+        Thu, 7 Jan 2021 12:21:33 -0500
+Received: by mail-ot1-f47.google.com with SMTP id i6so7000060otr.2;
+        Thu, 07 Jan 2021 09:21:18 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=xFzg996wZghRDMljRiUDGgbxiUKBLaZNfvfWsKyW/2c=;
-        b=gG8P3dmV5nsbBtixHf/TZ7PKRxFYVJqcfojF3CuFqnpkA3p1dWmEmPHhZ2GL8HlXru
-         XFlajpItfbQYt6KyZAjkaurjbTHOJ4tnsiNfRbGQAza0Gfhy+aVFldvCGm8EwV9qSK4f
-         l9Rl4EY4OkUvIGOpGbywVoPl7kgiAjdJRpk1ITUVwOGeSyWqoJbmwSihqcGTPACDFR81
-         2OLnNJlCKwlI9xLGomQMzWBgwsQdOnkQTvUkPSzWeJ3RCE9TKzyEBLapoQm04veoORoT
-         Uatj44vfMvhe9y8P9SlLhyPxfxeWEMlf5re9jDGm2o/unLeSDOE9gW4E8g6kIspEWukn
-         2VWQ==
-X-Gm-Message-State: AOAM5312gKSiQUZHkhyAJf42ZpVv6qsRef8uudlTvZK/LdXBQrs8crUR
-        MPCUdfdJiVAWJH7SV/urncetTB4h5zzpVJazRHw=
-X-Google-Smtp-Source: ABdhPJz/iMez31ElhUqyL+2r7iU5UeEAm0l66rJM1+cGzIhU1tpyYXo3Hi1iqH1RN+pFBNtJxM9eBcIe2Kge97Aq9S0=
-X-Received: by 2002:a5d:54cc:: with SMTP id x12mr10040275wrv.132.1610039890761;
- Thu, 07 Jan 2021 09:18:10 -0800 (PST)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=aDD1oeOdt6WCsRMuQrT0XIoTvjcM6CZh8EOY1iIY8P0=;
+        b=K9UkUHp4SvH17A/FOsvjStS/ofKIrzjfsDw81RSCqO58tMT2WxpolvN/llViH0SEaL
+         9ma5HgwlgtJMiXTV0GlxWIQkOTLsLvZLjk1cyYQXnycAVlp4dvKJCEIWoLSIDpEklibl
+         05lHBWqklW+tn6uMsgEkSG/y6cicwGN2rmxESjwgiPQSHkSIoth9pphM1397sPNIfL9f
+         IrwdwIK+VtPMISR4Xqa7TSarKIZ775mY6VkbscMlG0Un9OmGaJS1a1dqMnnj9UqOCwi3
+         PO4Q+I2EIWJXS4Pu7ZmgOy62Ptxz3oD02XH0XFPFcUqVyAJj90PN7+AaJodQ1vp9pjj+
+         PBOQ==
+X-Gm-Message-State: AOAM531zzdvJHWv0TVUiIP8EyJvVsGTgBplVPzAZT+UHfXwH1VotgR6T
+        GPMIyChs3RlHnodn4GzFzqzA+nAKsszWdjm2iho=
+X-Google-Smtp-Source: ABdhPJxY4A1eCcaxBjc0Hi1rvDXrQ6/yfWwTbppasrHAdg6eA6RNNH3yie3HKybYRQCxp7DlJiurGRDpW2XRKArv9Ag=
+X-Received: by 2002:a9d:745a:: with SMTP id p26mr7561072otk.206.1610040052964;
+ Thu, 07 Jan 2021 09:20:52 -0800 (PST)
 MIME-Version: 1.0
-References: <20210102202437.1630365-1-iskren.chernev@gmail.com>
-In-Reply-To: <20210102202437.1630365-1-iskren.chernev@gmail.com>
-From:   Rob Clark <robdclark@gmail.com>
-Date:   Thu, 7 Jan 2021 09:20:29 -0800
-Message-ID: <CAF6AEGt868msEPdZwJTB3YQppwNLaavSsDm1mGznCu1jsSPxCQ@mail.gmail.com>
-Subject: Re: [PATCH] drm/msm: Fix MSM_INFO_GET_IOVA with carveout
-To:     Iskren Chernev <iskren.chernev@gmail.com>
-Cc:     ~postmarketos/upstreaming@lists.sr.ht, Sean Paul <sean@poorly.run>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Jordan Crouse <jcrouse@codeaurora.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        freedreno <freedreno@lists.freedesktop.org>,
+References: <20210104121053.33210-1-colin.king@canonical.com> <ea95f420-2a2e-d0f9-9b34-e329d80bbd9d@linaro.org>
+In-Reply-To: <ea95f420-2a2e-d0f9-9b34-e329d80bbd9d@linaro.org>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Thu, 7 Jan 2021 18:20:41 +0100
+Message-ID: <CAJZ5v0j8ysg35Tq3GZO+Eb1jH4wKjMEGaQeGA=qADTMU59y4wA@mail.gmail.com>
+Subject: Re: [PATCH][next] powercap/drivers/dtpm: Fix size of object being allocated
+To:     Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Colin King <colin.king@canonical.com>
+Cc:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Lukasz Luba <lukasz.luba@arm.com>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        kernel-janitors@vger.kernel.org,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jan 2, 2021 at 12:26 PM Iskren Chernev <iskren.chernev@gmail.com> wrote:
+On Mon, Jan 4, 2021 at 3:24 PM Daniel Lezcano <daniel.lezcano@linaro.org> wrote:
 >
-> The msm_gem_get_iova should be guarded with gpu != NULL and not aspace
-> != NULL, because aspace is NULL when using vram carveout.
+> On 04/01/2021 13:10, Colin King wrote:
+> > From: Colin Ian King <colin.king@canonical.com>
+> >
+> > The kzalloc allocation for dtpm_cpu is currently allocating the size
+> > of the pointer and not the size of the structure. Fix this by using
+> > the correct sizeof argument.
+> >
+> > Addresses-Coverity: ("Wrong sizeof argument")
+> > Fixes: 0e8f68d7f048 ("powercap/drivers/dtpm: Add CPU energy model based support")
+> > Signed-off-by: Colin Ian King <colin.king@canonical.com>
 >
-> Fixes: 933415e24bd0d ("drm/msm: Add support for private address space instances")
+> Good catch, thanks for fixing this
 >
-> Signed-off-by: Iskren Chernev <iskren.chernev@gmail.com>
-> ---
->  drivers/gpu/drm/msm/msm_drv.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
+> Acked-by: Daniel Lezcano <daniel.lezcano@linaro.org>
+
+Applied as 5.12 material, thanks!
+
+> > ---
+> >  drivers/powercap/dtpm_cpu.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> >
+> > diff --git a/drivers/powercap/dtpm_cpu.c b/drivers/powercap/dtpm_cpu.c
+> > index 6933c783c6b4..51c366938acd 100644
+> > --- a/drivers/powercap/dtpm_cpu.c
+> > +++ b/drivers/powercap/dtpm_cpu.c
+> > @@ -200,7 +200,7 @@ static int cpuhp_dtpm_cpu_online(unsigned int cpu)
+> >       if (!dtpm)
+> >               return -EINVAL;
+> >
+> > -     dtpm_cpu = kzalloc(sizeof(dtpm_cpu), GFP_KERNEL);
+> > +     dtpm_cpu = kzalloc(sizeof(*dtpm_cpu), GFP_KERNEL);
+> >       if (!dtpm_cpu)
+> >               goto out_kfree_dtpm;
+> >
+> >
 >
-> diff --git a/drivers/gpu/drm/msm/msm_drv.c b/drivers/gpu/drm/msm/msm_drv.c
-> index c5e61cb3356df..c1953fb079133 100644
-> --- a/drivers/gpu/drm/msm/msm_drv.c
-> +++ b/drivers/gpu/drm/msm/msm_drv.c
-> @@ -775,9 +775,10 @@ static int msm_ioctl_gem_info_iova(struct drm_device *dev,
->                 struct drm_file *file, struct drm_gem_object *obj,
->                 uint64_t *iova)
->  {
-> +       struct msm_drm_private *priv = dev->dev_private;
->         struct msm_file_private *ctx = file->driver_priv;
 >
-> -       if (!ctx->aspace)
-> +       if (!priv->gpu)
->                 return -EINVAL;
-
-Does this actually work?  It seems like you would hit a null ptr deref
-in msm_gem_init_vma().. and in general I think a lot of code paths
-would be surprised by a null address space, so this seems like a risky
-idea.
-
-Maybe instead we should be creating an address space for the vram carveout?
-
-BR,
--R
-
-
->         /*
 > --
-> 2.29.2
+> <http://www.linaro.org/> Linaro.org │ Open source software for ARM SoCs
 >
+> Follow Linaro:  <http://www.facebook.com/pages/Linaro> Facebook |
+> <http://twitter.com/#!/linaroorg> Twitter |
+> <http://www.linaro.org/linaro-blog/> Blog
