@@ -2,113 +2,215 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B6DD2ECDA9
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 11:19:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 289F02ECDA7
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 11:19:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727666AbhAGKS3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 05:18:29 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54416 "EHLO mail.kernel.org"
+        id S1727514AbhAGKSW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 05:18:22 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54198 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725974AbhAGKS2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 05:18:28 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AFE2923341;
-        Thu,  7 Jan 2021 10:17:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610014668;
-        bh=6sb108ac5UVxYYGp+wjKpmn1DM3i6z83ytBYRl9cEg0=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=hH6B8lh70ZD1mRAhDD95qQrPQi2eJCkyxPUKdRaHXGFWvk5kWwkOpr8JGcMmr4J9g
-         tu2A3ECZvMyoWTbpWGwp5BHqUdchbi6Q8GBZRvQ+0trW3ZhHIs1eYG4zlYmkXC5KeE
-         I344mDb8l3ZW5ICrBovpiJY73YrVHCsP9U4pmfCyvSS6uI3S3mgYxOphgWLsTeu4+d
-         CM42hJyJ7xFqID70fcHXWW4UYMb3L5Xqwq2aiQgj91ICb0b+4oYHRXa178czbrZy99
-         RIXe8jg0ozfDjyn/YJtnFll+VCC8dHpma9ZlgM0xLu4JMBp+meDvvoawSCOZQb4Ypa
-         1/yiKd1F/Q0ag==
-Received: by mail-ed1-f45.google.com with SMTP id c7so7227855edv.6;
-        Thu, 07 Jan 2021 02:17:47 -0800 (PST)
-X-Gm-Message-State: AOAM533wcOX5i1xP2motWBCUpiANf/gO5tuhWOKVeUtpCDe7qD0Fttqk
-        ycS3tY8+WgNhNcdgQbDlx5U9wyR6FCP/RT1avQ==
-X-Google-Smtp-Source: ABdhPJwFY76DPb4xZJOUEweB/1qZGG9xebnYuDZQduz4K7shnS7SUrqlKleXXx7W6MP7D9rlLuURfDRF0VERLMbkyZY=
-X-Received: by 2002:a50:c3c5:: with SMTP id i5mr1159187edf.166.1610014666156;
- Thu, 07 Jan 2021 02:17:46 -0800 (PST)
+        id S1725974AbhAGKSV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Jan 2021 05:18:21 -0500
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 36E2023138;
+        Thu,  7 Jan 2021 10:17:40 +0000 (UTC)
+Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.94)
+        (envelope-from <maz@kernel.org>)
+        id 1kxSML-005oKv-V9; Thu, 07 Jan 2021 10:17:38 +0000
 MIME-Version: 1.0
-References: <1609989081-29353-1-git-send-email-yongqiang.niu@mediatek.com> <1609989081-29353-3-git-send-email-yongqiang.niu@mediatek.com>
-In-Reply-To: <1609989081-29353-3-git-send-email-yongqiang.niu@mediatek.com>
-From:   Chun-Kuang Hu <chunkuang.hu@kernel.org>
-Date:   Thu, 7 Jan 2021 18:17:34 +0800
-X-Gmail-Original-Message-ID: <CAAOTY_85Ks5pa244K_G2Lp-XwmMFvK74X6M4vdM-M5Et_9Y9sQ@mail.gmail.com>
-Message-ID: <CAAOTY_85Ks5pa244K_G2Lp-XwmMFvK74X6M4vdM-M5Et_9Y9sQ@mail.gmail.com>
-Subject: Re: [PATCH v9, 02/11] dt-bindings: mediatek: add description for
- mt8183 display
-To:     Yongqiang Niu <yongqiang.niu@mediatek.com>
-Cc:     CK Hu <ck.hu@mediatek.com>, Philipp Zabel <p.zabel@pengutronix.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        DTML <devicetree@vger.kernel.org>,
-        David Airlie <airlied@linux.ie>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        Project_Global_Chrome_Upstream_Group@mediatek.com,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Hsin-Yi Wang <hsinyi@chromium.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Thu, 07 Jan 2021 10:17:37 +0000
+From:   Marc Zyngier <maz@kernel.org>
+To:     ChiaWei Wang <chiawei_wang@aspeedtech.com>
+Cc:     robh+dt@kernel.org, joel@jms.id.au, andrew@aj.id.au,
+        tglx@linutronix.de, p.zabel@pengutronix.de,
+        linux-aspeed@lists.ozlabs.org, openbmc@lists.ozlabs.org,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, BMC-SW <BMC-SW@aspeedtech.com>
+Subject: Re: [PATCH 4/6] irqchip/aspeed: Add Aspeed eSPI interrupt controller
+In-Reply-To: <HK0PR06MB377957C33FDD43C5A7F5EA1691AF0@HK0PR06MB3779.apcprd06.prod.outlook.com>
+References: <20210106055939.19386-1-chiawei_wang@aspeedtech.com>
+ <20210106055939.19386-5-chiawei_wang@aspeedtech.com>
+ <123bc25c72b3b17c0c4154d8bd8ce3b0@kernel.org>
+ <HK0PR06MB377957C33FDD43C5A7F5EA1691AF0@HK0PR06MB3779.apcprd06.prod.outlook.com>
+User-Agent: Roundcube Webmail/1.4.9
+Message-ID: <beae3a8ba0a89ac6dff638df4e8b3211@kernel.org>
+X-Sender: maz@kernel.org
+X-SA-Exim-Connect-IP: 51.254.78.96
+X-SA-Exim-Rcpt-To: chiawei_wang@aspeedtech.com, robh+dt@kernel.org, joel@jms.id.au, andrew@aj.id.au, tglx@linutronix.de, p.zabel@pengutronix.de, linux-aspeed@lists.ozlabs.org, openbmc@lists.ozlabs.org, devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, BMC-SW@aspeedtech.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Yongqiang:
+On 2021-01-07 02:59, ChiaWei Wang wrote:
+> Hi Marc,
+> 
+>> -----Original Message-----
+>> From: Marc Zyngier <maz@kernel.org>
+>> Sent: Wednesday, January 6, 2021 6:59 PM
+>> To: ChiaWei Wang <chiawei_wang@aspeedtech.com>
+>> Subject: Re: [PATCH 4/6] irqchip/aspeed: Add Aspeed eSPI interrupt 
+>> controller
+>> 
+>> On 2021-01-06 05:59, Chia-Wei, Wang wrote:
+>> > The eSPI interrupt controller acts as a SW IRQ number decoder to
+>> > correctly control/dispatch interrupts of the eSPI peripheral, virtual
+>> > wire, out-of-band, and flash channels.
+>> >
+>> > Signed-off-by: Chia-Wei, Wang <chiawei_wang@aspeedtech.com>
+>> > ---
+>> >  drivers/irqchip/Makefile             |   2 +-
+>> >  drivers/irqchip/irq-aspeed-espi-ic.c | 251 ++++++++++++++++++++++++
+>> >  include/soc/aspeed/espi.h            | 279
+>> +++++++++++++++++++++++++++
+>> >  3 files changed, 531 insertions(+), 1 deletion(-)  create mode 100644
+>> > drivers/irqchip/irq-aspeed-espi-ic.c
+>> >  create mode 100644 include/soc/aspeed/espi.h
+>> >
+>> > diff --git a/drivers/irqchip/Makefile b/drivers/irqchip/Makefile index
+>> > 0ac93bfaec61..56da4a3123f8 100644
+>> > --- a/drivers/irqchip/Makefile
+>> > +++ b/drivers/irqchip/Makefile
+>> > @@ -86,7 +86,7 @@ obj-$(CONFIG_MVEBU_PIC)			+=
+>> irq-mvebu-pic.o
+>> >  obj-$(CONFIG_MVEBU_SEI)			+= irq-mvebu-sei.o
+>> >  obj-$(CONFIG_LS_EXTIRQ)			+= irq-ls-extirq.o
+>> >  obj-$(CONFIG_LS_SCFG_MSI)		+= irq-ls-scfg-msi.o
+>> > -obj-$(CONFIG_ARCH_ASPEED)		+= irq-aspeed-vic.o irq-aspeed-i2c-ic.o
+>> > irq-aspeed-scu-ic.o
+>> > +obj-$(CONFIG_ARCH_ASPEED)		+= irq-aspeed-vic.o irq-aspeed-i2c-ic.o
+>> > irq-aspeed-scu-ic.o irq-aspeed-espi-ic.o
+>> >  obj-$(CONFIG_STM32_EXTI) 		+= irq-stm32-exti.o
+>> >  obj-$(CONFIG_QCOM_IRQ_COMBINER)		+= qcom-irq-combiner.o
+>> >  obj-$(CONFIG_IRQ_UNIPHIER_AIDET)	+= irq-uniphier-aidet.o
+>> > diff --git a/drivers/irqchip/irq-aspeed-espi-ic.c
+>> > b/drivers/irqchip/irq-aspeed-espi-ic.c
+>> > new file mode 100644
+>> > index 000000000000..8a5cc8fe3f0c
+>> > --- /dev/null
+>> > +++ b/drivers/irqchip/irq-aspeed-espi-ic.c
+>> > @@ -0,0 +1,251 @@
+>> > +// SPDX-License-Identifier: GPL-2.0-or-later
+>> > +/*
+>> > + * Copyright (c) 2020 Aspeed Technology Inc.
+>> > + */
+>> > +#include <linux/bitops.h>
+>> > +#include <linux/module.h>
+>> > +#include <linux/irq.h>
+>> > +#include <linux/irqchip.h>
+>> > +#include <linux/irqchip/chained_irq.h> #include <linux/irqdomain.h>
+>> > +#include <linux/interrupt.h> #include <linux/mfd/syscon.h> #include
+>> > +<linux/regmap.h> #include <linux/of.h> #include <linux/of_platform.h>
+>> > +
+>> > +#include <soc/aspeed/espi.h>
+>> > +#include <dt-bindings/interrupt-controller/aspeed-espi-ic.h>
+>> > +
+>> > +#define DEVICE_NAME	"aspeed-espi-ic"
+>> > +#define IRQCHIP_NAME	"eSPI-IC"
+>> > +
+>> > +#define ESPI_IC_IRQ_NUM	7
+>> > +
+>> > +struct aspeed_espi_ic {
+>> > +	struct regmap *map;
+>> > +	int irq;
+>> > +	int gpio_irq;
+>> > +	struct irq_domain *irq_domain;
+>> > +};
+>> > +
+>> > +static void aspeed_espi_ic_gpio_isr(struct irq_desc *desc) {
+>> > +	unsigned int irq;
+>> > +	struct aspeed_espi_ic *espi_ic = irq_desc_get_handler_data(desc);
+>> > +	struct irq_chip *chip = irq_desc_get_chip(desc);
+>> > +
+>> > +	chained_irq_enter(chip, desc);
+>> > +
+>> > +	irq = irq_find_mapping(espi_ic->irq_domain,
+>> > +				   ASPEED_ESPI_IC_CTRL_RESET);
+>> > +	generic_handle_irq(irq);
+>> > +
+>> > +	irq = irq_find_mapping(espi_ic->irq_domain,
+>> > +				   ASPEED_ESPI_IC_CHAN_RESET);
+>> > +	generic_handle_irq(irq);
+>> 
+>> So for each mux interrupt, you generate two endpoints interrupt, 
+>> without even
+>> checking whether they are pending? That's no good.
+> 
+> As the eSPI IC driver is chained to Aspeed GPIO IC, the pending is
+> checked in the gpio-aspeed.c
 
-Yongqiang Niu <yongqiang.niu@mediatek.com> =E6=96=BC 2021=E5=B9=B41=E6=9C=
-=887=E6=97=A5 =E9=80=B1=E5=9B=9B =E4=B8=8A=E5=8D=8811:11=E5=AF=AB=E9=81=93=
-=EF=BC=9A
->
-> add description for mt8183 display
+That's not the place to do that.
 
-Applied to mediatek-drm-next [1], thanks.
+> 
+>> > +
+>> > +	chained_irq_exit(chip, desc);
+>> > +}
+>> > +
+>> > +static void aspeed_espi_ic_isr(struct irq_desc *desc) {
+>> > +	unsigned int sts;
+>> > +	unsigned int irq;
+>> > +	struct aspeed_espi_ic *espi_ic = irq_desc_get_handler_data(desc);
+>> > +	struct irq_chip *chip = irq_desc_get_chip(desc);
+>> > +
+>> > +	chained_irq_enter(chip, desc);
+>> > +
+>> > +	regmap_read(espi_ic->map, ESPI_INT_STS, &sts);
+>> > +
+>> > +	if (sts & ESPI_INT_STS_PERIF_BITS) {
+>> > +		irq = irq_find_mapping(espi_ic->irq_domain,
+>> > +				       ASPEED_ESPI_IC_PERIF_EVENT);
+>> > +		generic_handle_irq(irq);
+>> > +	}
+>> > +
+>> > +	if (sts & ESPI_INT_STS_VW_BITS) {
+>> > +		irq = irq_find_mapping(espi_ic->irq_domain,
+>> > +				       ASPEED_ESPI_IC_VW_EVENT);
+>> > +		generic_handle_irq(irq);
+>> > +	}
+>> > +
+>> > +	if (sts & ESPI_INT_STS_OOB_BITS) {
+>> > +		irq = irq_find_mapping(espi_ic->irq_domain,
+>> > +				       ASPEED_ESPI_IC_OOB_EVENT);
+>> > +		generic_handle_irq(irq);
+>> > +	}
+>> > +
+>> > +	if (sts & ESPI_INT_STS_FLASH_BITS) {
+>> > +		irq = irq_find_mapping(espi_ic->irq_domain,
+>> > +				       ASPEED_ESPI_IC_FLASH_EVENT);
+>> > +		generic_handle_irq(irq);
+>> > +	}
+>> > +
+>> > +	if (sts & ESPI_INT_STS_HW_RST_DEASSERT) {
+>> > +		irq = irq_find_mapping(espi_ic->irq_domain,
+>> > +				       ASPEED_ESPI_IC_CTRL_EVENT);
+>> > +		generic_handle_irq(irq);
+>> > +	}
+>> 
+>> This is horrible. Why can't you just use fls() in a loop?
+> 
+> The bits in the interrupt status register for a eSPI channel are not
+> sequentially arranged.
+> Using fls() may invoke an eSPI channel ISR multiple times.
+> So I collected the bitmap for each channel, respectively, and call the
+> ISR at once.
 
-[1] https://git.kernel.org/pub/scm/linux/kernel/git/chunkuang.hu/linux.git/=
-log/?h=3Dmediatek-drm-next
+And that's equally wrong. You need to handle interrupts individually,
+as they are different signal. If you are to implement an interrupt
+controller, please do it properly.
 
-Regards,
-Chun-Kuang.
+Otherwise, get rid of it and move everything into your pet driver.
+There is no need to do a half-baked job.
 
->
-> Signed-off-by: Yongqiang Niu <yongqiang.niu@mediatek.com>
-> Reviewed-by: Chun-Kuang Hu <chunkuang.hu@kernel.org>
-> Acked-by: Rob Herring <robh@kernel.org>
-> ---
->  Documentation/devicetree/bindings/display/mediatek/mediatek,disp.txt | 2=
- +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/Documentation/devicetree/bindings/display/mediatek/mediatek,=
-disp.txt b/Documentation/devicetree/bindings/display/mediatek/mediatek,disp=
-.txt
-> index b07881e..c562cda 100644
-> --- a/Documentation/devicetree/bindings/display/mediatek/mediatek,disp.tx=
-t
-> +++ b/Documentation/devicetree/bindings/display/mediatek/mediatek,disp.tx=
-t
-> @@ -43,7 +43,7 @@ Required properties (all function blocks):
->         "mediatek,<chip>-dpi"                   - DPI controller, see med=
-iatek,dpi.txt
->         "mediatek,<chip>-disp-mutex"            - display mutex
->         "mediatek,<chip>-disp-od"               - overdrive
-> -  the supported chips are mt2701, mt7623, mt2712, mt8167 and mt8173.
-> +  the supported chips are mt2701, mt7623, mt2712, mt8167, mt8173 and mt8=
-183.
->  - reg: Physical base address and length of the function block register s=
-pace
->  - interrupts: The interrupt signal from the function block (required, ex=
-cept for
->    merge and split function blocks).
-> --
-> 1.8.1.1.dirty
-> _______________________________________________
-> Linux-mediatek mailing list
-> Linux-mediatek@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-mediatek
+As it is, there is no way this code can be merged.
+
+         M.
+-- 
+Jazz is not dead. It just smells funny...
