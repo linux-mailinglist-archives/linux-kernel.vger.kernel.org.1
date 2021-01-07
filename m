@@ -2,38 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C3012ED198
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 15:17:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 864C62ED1A4
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 15:17:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728896AbhAGOQz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 09:16:55 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39050 "EHLO mail.kernel.org"
+        id S1729092AbhAGOR0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 09:17:26 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38992 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728817AbhAGOQy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 09:16:54 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 47E9E23358;
-        Thu,  7 Jan 2021 14:15:50 +0000 (UTC)
+        id S1727973AbhAGORU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Jan 2021 09:17:20 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1A7BC23142;
+        Thu,  7 Jan 2021 14:16:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610028950;
-        bh=CmBtylNqzT62dUOb5GXnCh+v4oVfy5Rsr1/aDUhSRLw=;
+        s=korg; t=1610029010;
+        bh=F0+gHWc8CXcmz+Yv2gMZyPJMN1qIbnTW06W1PPA6YVg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=f8zUTJ/U1uSeGE35seBSHu9Xn65EP+CQIvhzK+0t1hqy2skeyjHRCmGzobsvg5DOe
-         haxEgooxPzyFje31Ao3dqf4KjT2UcwcbIbkhMVmDZxRwt1W5vekUlnU0D4kkmigO/k
-         aYOEL65JwJoAeg2ElArAZGYF45umjLhDM573Kyf0=
+        b=W80aPhJAgoYmlJt5gNUE+tBEMigqFjfwfEXfHOyM3fA/jeBE2ujuDK06O+TJA+slV
+         5w4MDshragPEIYDrmMhW4N3ut9Vb53s+N7r8R41KldoiV/haR9ynIbDL5A4D1wvXZ+
+         Ne+YTXtNBSruIwK0rnaYsz+ubOOSTXoPR18RUZ0g=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Lars-Peter Clausen <lars@metafoo.de>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Alexandru Ardelean <alexandru.ardelean@analog.com>,
-        Stable@vger.kernel.org,
-        Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-Subject: [PATCH 4.4 19/19] iio:magnetometer:mag3110: Fix alignment and data leak issues.
-Date:   Thu,  7 Jan 2021 15:16:44 +0100
-Message-Id: <20210107140828.467869494@linuxfoundation.org>
+        stable@vger.kernel.org, SeongJae Park <sjpark@amazon.de>,
+        Michael Kurth <mku@amazon.de>,
+        Pawel Wieczorkiewicz <wipawel@amazon.de>,
+        Juergen Gross <jgross@suse.com>
+Subject: [PATCH 4.9 25/32] xen/xenbus: Add will_handle callback support in xenbus_watch_path()
+Date:   Thu,  7 Jan 2021 15:16:45 +0100
+Message-Id: <20210107140829.058443262@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210107140827.584658199@linuxfoundation.org>
-References: <20210107140827.584658199@linuxfoundation.org>
+In-Reply-To: <20210107140827.866214702@linuxfoundation.org>
+References: <20210107140827.866214702@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -42,75 +41,141 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+From: SeongJae Park <sjpark@amazon.de>
 
-commit 89deb1334252ea4a8491d47654811e28b0790364 upstream
+commit 2e85d32b1c865bec703ce0c962221a5e955c52c2 upstream.
 
-One of a class of bugs pointed out by Lars in a recent review.
-iio_push_to_buffers_with_timestamp() assumes the buffer used is aligned
-to the size of the timestamp (8 bytes).  This is not guaranteed in
-this driver which uses an array of smaller elements on the stack.
-As Lars also noted this anti pattern can involve a leak of data to
-userspace and that indeed can happen here.  We close both issues by
-moving to a suitable structure in the iio_priv() data.
-This data is allocated with kzalloc() so no data can leak apart from
-previous readings.
+Some code does not directly make 'xenbus_watch' object and call
+'register_xenbus_watch()' but use 'xenbus_watch_path()' instead.  This
+commit adds support of 'will_handle' callback in the
+'xenbus_watch_path()' and it's wrapper, 'xenbus_watch_pathfmt()'.
 
-The explicit alignment of ts is not necessary in this case but
-does make the code slightly less fragile so I have included it.
+This is part of XSA-349
 
-Fixes: 39631b5f9584 ("iio: Add Freescale mag3110 magnetometer driver")
-Reported-by: Lars-Peter Clausen <lars@metafoo.de>
-Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Reviewed-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
-Cc: <Stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/20200920112742.170751-4-jic23@kernel.org
-[sudip: adjust context]
-Signed-off-by: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+Cc: stable@vger.kernel.org
+Signed-off-by: SeongJae Park <sjpark@amazon.de>
+Reported-by: Michael Kurth <mku@amazon.de>
+Reported-by: Pawel Wieczorkiewicz <wipawel@amazon.de>
+Reviewed-by: Juergen Gross <jgross@suse.com>
+Signed-off-by: Juergen Gross <jgross@suse.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- drivers/iio/magnetometer/mag3110.c |   13 +++++++++----
- 1 file changed, 9 insertions(+), 4 deletions(-)
 
---- a/drivers/iio/magnetometer/mag3110.c
-+++ b/drivers/iio/magnetometer/mag3110.c
-@@ -52,6 +52,12 @@ struct mag3110_data {
- 	struct i2c_client *client;
- 	struct mutex lock;
- 	u8 ctrl_reg1;
-+	/* Ensure natural alignment of timestamp */
-+	struct {
-+		__be16 channels[3];
-+		u8 temperature;
-+		s64 ts __aligned(8);
-+	} scan;
- };
+
+---
+ drivers/block/xen-blkback/xenbus.c |    3 ++-
+ drivers/net/xen-netback/xenbus.c   |    2 +-
+ drivers/xen/xen-pciback/xenbus.c   |    2 +-
+ drivers/xen/xenbus/xenbus_client.c |    9 +++++++--
+ drivers/xen/xenbus/xenbus_probe.c  |    2 +-
+ include/xen/xenbus.h               |    6 +++++-
+ 6 files changed, 17 insertions(+), 7 deletions(-)
+
+--- a/drivers/block/xen-blkback/xenbus.c
++++ b/drivers/block/xen-blkback/xenbus.c
+@@ -646,7 +646,8 @@ static int xen_blkbk_probe(struct xenbus
+ 	/* setup back pointer */
+ 	be->blkif->be = be;
  
- static int mag3110_request(struct mag3110_data *data)
-@@ -245,10 +251,9 @@ static irqreturn_t mag3110_trigger_handl
- 	struct iio_poll_func *pf = p;
- 	struct iio_dev *indio_dev = pf->indio_dev;
- 	struct mag3110_data *data = iio_priv(indio_dev);
--	u8 buffer[16]; /* 3 16-bit channels + 1 byte temp + padding + ts */
- 	int ret;
+-	err = xenbus_watch_pathfmt(dev, &be->backend_watch, backend_changed,
++	err = xenbus_watch_pathfmt(dev, &be->backend_watch, NULL,
++				   backend_changed,
+ 				   "%s/%s", dev->nodename, "physical-device");
+ 	if (err)
+ 		goto fail;
+--- a/drivers/net/xen-netback/xenbus.c
++++ b/drivers/net/xen-netback/xenbus.c
+@@ -1040,7 +1040,7 @@ static void connect(struct backend_info
+ 	xenvif_carrier_on(be->vif);
  
--	ret = mag3110_read(data, (__be16 *) buffer);
-+	ret = mag3110_read(data, data->scan.channels);
- 	if (ret < 0)
- 		goto done;
+ 	unregister_hotplug_status_watch(be);
+-	err = xenbus_watch_pathfmt(dev, &be->hotplug_status_watch,
++	err = xenbus_watch_pathfmt(dev, &be->hotplug_status_watch, NULL,
+ 				   hotplug_status_changed,
+ 				   "%s/%s", dev->nodename, "hotplug-status");
+ 	if (!err)
+--- a/drivers/xen/xen-pciback/xenbus.c
++++ b/drivers/xen/xen-pciback/xenbus.c
+@@ -689,7 +689,7 @@ static int xen_pcibk_xenbus_probe(struct
  
-@@ -257,10 +262,10 @@ static irqreturn_t mag3110_trigger_handl
- 			MAG3110_DIE_TEMP);
- 		if (ret < 0)
- 			goto done;
--		buffer[6] = ret;
-+		data->scan.temperature = ret;
+ 	/* watch the backend node for backend configuration information */
+ 	err = xenbus_watch_path(dev, dev->nodename, &pdev->be_watch,
+-				xen_pcibk_be_watch);
++				NULL, xen_pcibk_be_watch);
+ 	if (err)
+ 		goto out;
+ 
+--- a/drivers/xen/xenbus/xenbus_client.c
++++ b/drivers/xen/xenbus/xenbus_client.c
+@@ -114,19 +114,22 @@ EXPORT_SYMBOL_GPL(xenbus_strstate);
+  */
+ int xenbus_watch_path(struct xenbus_device *dev, const char *path,
+ 		      struct xenbus_watch *watch,
++		      bool (*will_handle)(struct xenbus_watch *,
++					  const char **, unsigned int),
+ 		      void (*callback)(struct xenbus_watch *,
+ 				       const char **, unsigned int))
+ {
+ 	int err;
+ 
+ 	watch->node = path;
+-	watch->will_handle = NULL;
++	watch->will_handle = will_handle;
+ 	watch->callback = callback;
+ 
+ 	err = register_xenbus_watch(watch);
+ 
+ 	if (err) {
+ 		watch->node = NULL;
++		watch->will_handle = NULL;
+ 		watch->callback = NULL;
+ 		xenbus_dev_fatal(dev, err, "adding watch on %s", path);
  	}
+@@ -153,6 +156,8 @@ EXPORT_SYMBOL_GPL(xenbus_watch_path);
+  */
+ int xenbus_watch_pathfmt(struct xenbus_device *dev,
+ 			 struct xenbus_watch *watch,
++			 bool (*will_handle)(struct xenbus_watch *,
++					     const char **, unsigned int),
+ 			 void (*callback)(struct xenbus_watch *,
+ 					const char **, unsigned int),
+ 			 const char *pathfmt, ...)
+@@ -169,7 +174,7 @@ int xenbus_watch_pathfmt(struct xenbus_d
+ 		xenbus_dev_fatal(dev, -ENOMEM, "allocating path for watch");
+ 		return -ENOMEM;
+ 	}
+-	err = xenbus_watch_path(dev, path, watch, callback);
++	err = xenbus_watch_path(dev, path, watch, will_handle, callback);
  
--	iio_push_to_buffers_with_timestamp(indio_dev, buffer,
-+	iio_push_to_buffers_with_timestamp(indio_dev, &data->scan,
- 		iio_get_time_ns());
+ 	if (err)
+ 		kfree(path);
+--- a/drivers/xen/xenbus/xenbus_probe.c
++++ b/drivers/xen/xenbus/xenbus_probe.c
+@@ -137,7 +137,7 @@ static int watch_otherend(struct xenbus_
+ 		container_of(dev->dev.bus, struct xen_bus_type, bus);
  
- done:
+ 	return xenbus_watch_pathfmt(dev, &dev->otherend_watch,
+-				    bus->otherend_changed,
++				    NULL, bus->otherend_changed,
+ 				    "%s/%s", dev->otherend, "state");
+ }
+ 
+--- a/include/xen/xenbus.h
++++ b/include/xen/xenbus.h
+@@ -201,10 +201,14 @@ void xenbus_suspend_cancel(void);
+ 
+ int xenbus_watch_path(struct xenbus_device *dev, const char *path,
+ 		      struct xenbus_watch *watch,
++		      bool (*will_handle)(struct xenbus_watch *,
++					  const char **, unsigned int),
+ 		      void (*callback)(struct xenbus_watch *,
+ 				       const char **, unsigned int));
+-__printf(4, 5)
++__printf(5, 6)
+ int xenbus_watch_pathfmt(struct xenbus_device *dev, struct xenbus_watch *watch,
++			 bool (*will_handle)(struct xenbus_watch *,
++					     const char **, unsigned int),
+ 			 void (*callback)(struct xenbus_watch *,
+ 					  const char **, unsigned int),
+ 			 const char *pathfmt, ...);
 
 
