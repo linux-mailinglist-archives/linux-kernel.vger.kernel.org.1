@@ -2,160 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E8DFD2ED052
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 14:02:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8823D2ED053
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 14:02:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728255AbhAGNA4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 08:00:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42620 "EHLO
+        id S1728351AbhAGNBN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 08:01:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42668 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727360AbhAGNAz (ORCPT
+        with ESMTP id S1727562AbhAGNBM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 08:00:55 -0500
-Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C988C0612F6
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Jan 2021 05:00:15 -0800 (PST)
-Received: by mail-pg1-x534.google.com with SMTP id c22so4744050pgg.13
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Jan 2021 05:00:15 -0800 (PST)
+        Thu, 7 Jan 2021 08:01:12 -0500
+Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16ECEC0612F4;
+        Thu,  7 Jan 2021 05:00:32 -0800 (PST)
+Received: by mail-lf1-x134.google.com with SMTP id o13so14391379lfr.3;
+        Thu, 07 Jan 2021 05:00:32 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=biffWNQNFNPnAS5OxXR8C0hU95gWZz4zkiv6kH4IfyQ=;
-        b=uW+09LknRIdDJjyGSlFutTR0R9O4IAwK5KjLGsgUX8fUoQJL859v8FhYDo+zjPV0IK
-         Xil6LouHgN74ca7YygLa5VIKQRV1qt4O+PDfCJryKOaIR7yy2LfMRjetcro1reZlIAQI
-         GxnaWMug/kpXyB8pyatoBNZzNVo1MNdiUwtdO+P2ty/nCNLRZNMxXlT3WF5rQlB6RqYw
-         TVKc5IFdb8A5gW3GJiq2RCPQmj03eATzDqBuaOj5RDQOAIscLNn1XsziSI2w5/qbAIrh
-         NnXCVPH+Gfv3fuHCU99+/ewKBj9O/obtAj9NxjZ8pW5UF8Xx/ZFDliYwqvrSbq+3yfj5
-         7JOg==
+        d=gmail.com; s=20161025;
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=TkASo//sn8i/yW+hfEBNYyiHN5qe/cjtYlxBSTVQkd4=;
+        b=nAYEvj9xsyoM+/zGhAyeNbgVtKbKe6QYggwtTcD8l6ZDhOclHyd4qFoiqXnv1cxiJl
+         AVf+WqSJkth0BXs5Tq/ViKOeDFewMaZCFDHsnDNWMaK8qfdWpdm/mx88ScZa/RxBNcnQ
+         /e7eMAVfN3MqtKa8rebK9PNs5ghqndoefx4D0TP/q0oxrncFRX8rnsAZFdEX6ICpjv0q
+         K0T/3IgkMeDhUTeC1q8pl3dfMd8owCu7Pbi55g/MLyjx9XQdaumuBbYr1lBpBLXOEFmN
+         dMIyWvmbYXWTWuhRFA7dQk2jGkrDvdZ8u2C1vZTsZ50NAplGPVQnlXPbJzWg8r8GOUUy
+         r60w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=biffWNQNFNPnAS5OxXR8C0hU95gWZz4zkiv6kH4IfyQ=;
-        b=J+2VEOY2FqUFCZAMebsS1CWRybaiFQGb9ZrLzmzwOJWSC0agbd4lR+rWrDnqvn85T+
-         un+Ue4q1nLPZpd7roMfIQNA91uyvD/KxKYFh02Ou2sRyEuEXMsA17ZO5CNNTBg2zbrMI
-         vHy+LSv6mAk3VsXDQMRuOl4ScvOjUGc0c/iuOPYsC8/Rc2dQ+bR1D9gKc25AtQqBGKVS
-         1qhtg7GsH90m1pbcR1hTxecexZ5OG32mZY2IonHoUjv+MEaP5a21hMsrQJfbsuKeM+aJ
-         zpGAZUL3Pg7IX/G5t2bXTwpjvY2yXPiRieAjE2inO70/YSr8OLoTvNWPndvonCeRVrrb
-         P8lw==
-X-Gm-Message-State: AOAM531NztGQ+SefRrInu8KhU4TDusKyv9RscXcqtrZ++HnYE/nraNhE
-        krP71EdUD2lw20qx1MkYeGixYWWqB7c7TPCaPOC6fCUjxUhckVYnGT4=
-X-Google-Smtp-Source: ABdhPJyNGK0J3U+p1T20Uw5syrzrHoJSEk1Qvpuz9DO5hxpZYN98Loq7WdSf63/hBT+jougnLzTt6qXg8LGzcHW/508=
-X-Received: by 2002:a62:4e4e:0:b029:19e:aaab:8be with SMTP id
- c75-20020a624e4e0000b029019eaaab08bemr8762101pfb.59.1610024415015; Thu, 07
- Jan 2021 05:00:15 -0800 (PST)
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=TkASo//sn8i/yW+hfEBNYyiHN5qe/cjtYlxBSTVQkd4=;
+        b=PynYM4/RehY+6YghEuM9OcVSIGCStcSXa6kTIRrhQCwQUpAhCr3Z9nFtCIl3b+KR6U
+         CArb26goKt7wA7KE2ZgQAA4fM4OnPutkmosZjwsD8C2D/UggRsFwnj5jDMtGE2fJZkdf
+         oGDRj/HaCZ2qIELHEZ5m8K2n9NvQehsdeIvkFea0PnkfJkzprO1xkIfV47330q0R7HM8
+         ij33XA71ZuiWGRmiYMWBnl5JLNuQY2ThAgWRlBsoP3Maudox35BtcDYgRiGVDMza/Phu
+         Helv7l1U92UGRIFLQmFr0IYeg/Fb2HEtw9LShSrm+fqfvFenJHtuSWYmEaTAR7DmQBHf
+         gGKw==
+X-Gm-Message-State: AOAM532MBL5jSg5AaSxeKEg4GygSfUNM8r8xCiB8qF6R1tipnxQX/RTp
+        ebEbULwMx4Mf3mExcQ+ehcw=
+X-Google-Smtp-Source: ABdhPJwOT9CXhrkxhoUs6YE1a7Zt7DFxjgk6IVzpGCZWQkhic0Gin0Hker1vWT4VlMnxh50M4QxRqg==
+X-Received: by 2002:a05:651c:1047:: with SMTP id x7mr4384446ljm.114.1610024430533;
+        Thu, 07 Jan 2021 05:00:30 -0800 (PST)
+Received: from pc638.lan (h5ef52e3d.seluork.dyn.perspektivbredband.net. [94.245.46.61])
+        by smtp.gmail.com with ESMTPSA id t4sm1132328lff.260.2021.01.07.05.00.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 07 Jan 2021 05:00:29 -0800 (PST)
+From:   Uladzislau Rezki <urezki@gmail.com>
+X-Google-Original-From: Uladzislau Rezki <urezki@pc638.lan>
+Date:   Thu, 7 Jan 2021 14:00:28 +0100
+To:     Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Cc:     Uladzislau Rezki <urezki@gmail.com>,
+        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+        Josh Triplett <josh@joshtriplett.org>, rcu@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>
+Subject: Re: kerneldoc warnings since commit 538fc2ee870a3 ("rcu: Introduce
+ kfree_rcu() single-argument macro")
+Message-ID: <20210107130028.GA1874@pc638.lan>
+References: <CAKXUXMygqbupE_6CK92=PwLw4DjnSuo9-+6iHs_DrZeZ55iRKg@mail.gmail.com>
+ <20210105131441.GA2457@pc638.lan>
+ <20210105145659.GD17086@paulmck-ThinkPad-P72>
+ <20210105162919.GA1800@pc638.lan>
+ <CAKXUXMx6mjMz=RejEpL-VZQYp8MTkpU=9qMgvKAVsnpqGqkFkw@mail.gmail.com>
 MIME-Version: 1.0
-References: <20210106084739.63318-1-songmuchun@bytedance.com>
- <20210106084739.63318-4-songmuchun@bytedance.com> <20210106165632.GT13207@dhcp22.suse.cz>
- <CAMZfGtWML+PUnK=jJJ1XFmv=VdKOZYmKjyYU=nhpq-1sSGKMqg@mail.gmail.com>
- <20210107084146.GD13207@dhcp22.suse.cz> <CAMZfGtVr83yb30EHp5i+f90nn5gnNfGH31Q2ebdV-5nnQXCsAQ@mail.gmail.com>
- <20210107111827.GG13207@dhcp22.suse.cz> <CAMZfGtV_k=FxcWfazpuT=3ByXSqK-CH-E3yRQUE_dG6JMnAZeg@mail.gmail.com>
- <20210107123854.GJ13207@dhcp22.suse.cz>
-In-Reply-To: <20210107123854.GJ13207@dhcp22.suse.cz>
-From:   Muchun Song <songmuchun@bytedance.com>
-Date:   Thu, 7 Jan 2021 20:59:33 +0800
-Message-ID: <CAMZfGtWUP1H47ZGcczsmqsQvxYP=FK9vYVr8WbOY_9UG2SCv0A@mail.gmail.com>
-Subject: Re: [External] Re: [PATCH v2 3/6] mm: hugetlb: fix a race between
- freeing and dissolving the page
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Mike Kravetz <mike.kravetz@oracle.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Naoya Horiguchi <n-horiguchi@ah.jp.nec.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAKXUXMx6mjMz=RejEpL-VZQYp8MTkpU=9qMgvKAVsnpqGqkFkw@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 7, 2021 at 8:38 PM Michal Hocko <mhocko@suse.com> wrote:
->
-> On Thu 07-01-21 19:38:00, Muchun Song wrote:
-> > On Thu, Jan 7, 2021 at 7:18 PM Michal Hocko <mhocko@suse.com> wrote:
-> > >
-> > > On Thu 07-01-21 16:53:13, Muchun Song wrote:
-> > > > On Thu, Jan 7, 2021 at 4:41 PM Michal Hocko <mhocko@suse.com> wrote:
-> > > > >
-> > > > > On Thu 07-01-21 13:39:38, Muchun Song wrote:
-> > > > > > On Thu, Jan 7, 2021 at 12:56 AM Michal Hocko <mhocko@suse.com> wrote:
-> > > > > > >
-> > > > > > > On Wed 06-01-21 16:47:36, Muchun Song wrote:
-> > > > > > > > There is a race condition between __free_huge_page()
-> > > > > > > > and dissolve_free_huge_page().
-> > > > > > > >
-> > > > > > > > CPU0:                         CPU1:
-> > > > > > > >
-> > > > > > > > // page_count(page) == 1
-> > > > > > > > put_page(page)
-> > > > > > > >   __free_huge_page(page)
-> > > > > > > >                               dissolve_free_huge_page(page)
-> > > > > > > >                                 spin_lock(&hugetlb_lock)
-> > > > > > > >                                 // PageHuge(page) && !page_count(page)
-> > > > > > > >                                 update_and_free_page(page)
-> > > > > > > >                                 // page is freed to the buddy
-> > > > > > > >                                 spin_unlock(&hugetlb_lock)
-> > > > > > > >     spin_lock(&hugetlb_lock)
-> > > > > > > >     clear_page_huge_active(page)
-> > > > > > > >     enqueue_huge_page(page)
-> > > > > > > >     // It is wrong, the page is already freed
-> > > > > > > >     spin_unlock(&hugetlb_lock)
-> > > > > > > >
-> > > > > > > > The race windows is between put_page() and spin_lock() which
-> > > > > > > > is in the __free_huge_page().
-> > > > > > >
-> > > > > > > The race window reall is between put_page and dissolve_free_huge_page.
-> > > > > > > And the result is that the put_page path would clobber an unrelated page
-> > > > > > > (either free or already reused page) which is quite serious.
-> > > > > > > Fortunatelly pages are dissolved very rarely. I believe that user would
-> > > > > > > require to be privileged to hit this by intention.
-> > > > > > >
-> > > > > > > > We should make sure that the page is already on the free list
-> > > > > > > > when it is dissolved.
-> > > > > > >
-> > > > > > > Another option would be to check for PageHuge in __free_huge_page. Have
-> > > > > > > you considered that rather than add yet another state? The scope of the
-> > > > > > > spinlock would have to be extended. If that sounds more tricky then can
-> > > > > > > we check the page->lru in the dissolve path? If the page is still
-> > > > > > > PageHuge and reference count 0 then there shouldn't be many options
-> > > > > > > where it can be queued, right?
-> > > > > >
-> > > > > > Did you mean that we iterate over the free list to check whether
-> > > > > > the page is on the free list?
-> > > > >
-> > > > > No I meant to check that the page is enqueued which along with ref count
-> > > > > = 0 should mean it has been released to the pool unless I am missing
-> > > > > something.
-> > > >
-> > > > The page can be on the free list or active list or empty when it
-> > > > is freed to the pool. How to check whether it is on the free list?
-> > >
-> > > As I've said, I might be missing something here. But if the page is
-> > > freed why does it matter whether it is on a active list or free list
-> > > from the dissolve operation POV?
+> On Tue, Jan 5, 2021 at 5:29 PM Uladzislau Rezki <urezki@gmail.com> wrote:
 > >
-> > As you said "check the page->lru". I have a question.
-> > How to check the page->lru in the dissolve path?
->
-> list_empty?
+> > On Tue, Jan 05, 2021 at 06:56:59AM -0800, Paul E. McKenney wrote:
+> > > On Tue, Jan 05, 2021 at 02:14:41PM +0100, Uladzislau Rezki wrote:
+> > > > Dear, Lukas.
+> > > >
+> > > > > Dear Uladzislau,
+> > > > >
+> > > > > in commit 538fc2ee870a3 ("rcu: Introduce kfree_rcu() single-argument
+> > > > > macro"), you have refactored the kfree_rcu macro.
+> > > > >
+> > > > > Since then, make htmldocs warns:
+> > > > >
+> > > > > ./include/linux/rcupdate.h:882: warning: Excess function parameter
+> > > > > 'ptr' description in 'kfree_rcu'
+> > > > > ./include/linux/rcupdate.h:882: warning: Excess function parameter
+> > > > > 'rhf' description in 'kfree_rcu'
+> > > > >
+> > > > > As you deleted the two arguments in the macro definition, kerneldoc
+> > > > > cannot resolve the argument names in the macro's kerneldoc
+> > > > > documentation anymore and warns about that.
+> > > > >
+> > > > > Probably, it is best to just turn the formal kerneldoc references to
+> > > > > the two arguments, which are not used in the macro definition anymore,
+> > > > > simply into two informal references in the documentation.
+> > > > >
+> > > > Thanks for your suggestion. I am not sure if htmldocs supports something
+> > > > like "__maybe_unused", but tend to say that it does not. See below the
+> > > > patch:
+> > > >
+> > > > <snip>
+> > > > >From 65ecc7c58810c963c02e0596ce2e5758c54ef55d Mon Sep 17 00:00:00 2001
+> > > > From: "Uladzislau Rezki (Sony)" <urezki@gmail.com>
+> > > > Date: Tue, 5 Jan 2021 13:23:30 +0100
+> > > > Subject: [PATCH] rcu: fix kerneldoc warnings
+> > > >
+> > > > After refactoring of the kfree_rcu(), it becomes possible to use
+> > > > the macro with one or two arguments. From the other hand, in the
+> > > > description there are two arguments in the macro definition expected.
+> > > > That is why the "htmldocs" emits a warning about it:
+> > > >
+> > > > <snip>
+> > > > ./include/linux/rcupdate.h:882: warning: Excess function parameter
+> > > > 'ptr' description in 'kfree_rcu'
+> > > > ./include/linux/rcupdate.h:882: warning: Excess function parameter
+> > > > 'rhf' description in 'kfree_rcu'
+> > > > <snip>
+> > > >
+> > > > Fix it by converting two parameters into informal references in the
+> > > > macro description.
+> > > >
+> > > > Fixes: 3d3d9ff077a9 ("rcu: Introduce kfree_rcu() single-argument macro")
+> > > > Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
+> > > > ---
+> > > >  include/linux/rcupdate.h | 4 ++--
+> > > >  1 file changed, 2 insertions(+), 2 deletions(-)
+> > > >
+> > > > diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
+> > > > index ebd8dcca4997..e678ce7f5ca2 100644
+> > > > --- a/include/linux/rcupdate.h
+> > > > +++ b/include/linux/rcupdate.h
+> > > > @@ -854,8 +854,8 @@ static inline notrace void rcu_read_unlock_sched_notrace(void)
+> > > >
+> > > >  /**
+> > > >   * kfree_rcu() - kfree an object after a grace period.
+> > > > - * @ptr: pointer to kfree for both single- and double-argument invocations.
+> > > > - * @rhf: the name of the struct rcu_head within the type of @ptr,
+> > > > + * ptr: pointer to kfree for both single- and double-argument invocations.
+> > > > + * rhf: the name of the struct rcu_head within the type of ptr,
+> > > >   *       but only for double-argument invocations.
+> > > >   *
+> > > >   * Many rcu callbacks functions just call kfree() on the base structure.
+> > > > --
+> > > > 2.20.1
+> > > > <snip>
+> > > >
+> > > > Paul, does it work for you?
+> > >
+> > > If it works for the documentation generation, then it works for me.  ;-)
+> > >
+> > OK. Then we need the patch to be reviewed by the documentation generation :)
+> >
+> > Dear, linux-doc folk!
+> >
+> > Could you please review the patch that is in question?
+> >
+> 
+> I think you can shorten the feedback loop.
+> IMHO, the documentation is as comprehensible as before and it makes a
+> warning go away (getting us back to the zero-documentation-warnings
+> state).
+> 
+> Just send out your patch with linux-doc as CC and if there is no
+> complaint within a few days, Paul will pick it up and it is all good.
+> 
+Yep, this is what i was going to do it if no any feedback.
 
-No.
+Thanks.
 
->
-> > BTW, dissolve_free_huge_page aims to free the page
-> > to buddy allocator. put_page (for HugeTLB page) aims
-> > to free the page to the hugepage pool.
->
-> Right. Can we simply back off in the dissolving path when ref count is
-> 0 && PageHuge() if list_empty(page->lru)? Is there any other scenario
-> when the all above is true and the page is not being freed?
-
-The list_empty(&page->lru) may always return false.
-The page before freeing is on the active list
-(hstate->hugepage_activelist).Then it is on the free list
-after freeing. So list_empty(&page->lru) is always false.
-
-> --
-> Michal Hocko
-> SUSE Labs
+--
+Vlad Rezki
