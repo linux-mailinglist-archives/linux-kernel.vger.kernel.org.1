@@ -2,141 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DF602ECA5D
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 07:11:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D1E422ECA60
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 07:11:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726528AbhAGGKC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 01:10:02 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49042 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726231AbhAGGKB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 01:10:01 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A85C122E00;
-        Thu,  7 Jan 2021 06:09:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1609999760;
-        bh=azMCNDuhleHdkWuj5ghRek+hs2L4YJMzasQokmJS3f4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=g8XG4po+R+2ujO3Y3ib4/2LENKfD9oBEAxhEM99mJwydTyIvNu/NZVVdq5A2A+h2W
-         k+pr+erNProR3XWHKdM50a26SA5otfCx2Ats+WEps8m41eqxp+rkTKbR/H7GmKR2Ko
-         oGweSuLabtC9JzF6W5IRHnelrMDeM5JRZGgxKaOERTnyaQusdakAJpEkdwwVvm49JN
-         6voYxPoDFOKK0XPTvN6Sha/PYhzXV/sfamKmjl6VZ+EUGbKl8YwzgRrimbq+jHdNS6
-         P1PJROd9CdC5SVojxjMmosd/mMs2yGs3ac6Hr1jOVzbzN0Cy8JuSl7BG7gt/4sniq4
-         0NvWPUJkOpo6A==
-Date:   Thu, 7 Jan 2021 08:09:16 +0200
-From:   Leon Romanovsky <leon@kernel.org>
-To:     "Tian, Kevin" <kevin.tian@intel.com>,
-        Lu Baolu <baolu.lu@linux.intel.com>
-Cc:     Jason Gunthorpe <jgg@nvidia.com>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "Raj, Ashok" <ashok.raj@intel.com>,
-        "Jiang, Dave" <dave.jiang@intel.com>,
-        "Dey, Megha" <megha.dey@intel.com>,
-        "dwmw2@infradead.org" <dwmw2@infradead.org>,
-        "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
-        "bhelgaas@google.com" <bhelgaas@google.com>,
-        "Williams, Dan J" <dan.j.williams@intel.com>,
-        "dmaengine@vger.kernel.org" <dmaengine@vger.kernel.org>,
-        "eric.auger@redhat.com" <eric.auger@redhat.com>,
-        "Pan, Jacob jun" <jacob.jun.pan@intel.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "kwankhede@nvidia.com" <kwankhede@nvidia.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
-        "maz@kernel.org" <maz@kernel.org>,
-        "Hossain, Mona" <mona.hossain@intel.com>,
-        "netanelg@mellanox.com" <netanelg@mellanox.com>,
-        "parav@mellanox.com" <parav@mellanox.com>,
-        "pbonzini@redhat.com" <pbonzini@redhat.com>,
-        "rafael@kernel.org" <rafael@kernel.org>,
-        "Ortiz, Samuel" <samuel.ortiz@intel.com>,
-        "Kumar, Sanjay K" <sanjay.k.kumar@intel.com>,
-        "shahafs@mellanox.com" <shahafs@mellanox.com>,
-        "Luck, Tony" <tony.luck@intel.com>,
-        "vkoul@kernel.org" <vkoul@kernel.org>,
-        "yan.y.zhao@linux.intel.com" <yan.y.zhao@linux.intel.com>,
-        "Liu, Yi L" <yi.l.liu@intel.com>
-Subject: Re: [RFC PATCH v2 1/1] platform-msi: Add platform check for
- subdevice irq domain
-Message-ID: <20210107060916.GY31158@unreal>
-References: <20210106022749.2769057-1-baolu.lu@linux.intel.com>
- <20210106060613.GU31158@unreal>
- <3d2620f9-bbd4-3dd0-8e29-0cfe492a109f@linux.intel.com>
- <20210106104017.GV31158@unreal>
- <20210106152339.GA552508@nvidia.com>
- <20210106160158.GX31158@unreal>
- <MWHPR11MB18867EE2F4FA0382DCFEEE2B8CAF0@MWHPR11MB1886.namprd11.prod.outlook.com>
+        id S1726635AbhAGGLT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 01:11:19 -0500
+Received: from so254-31.mailgun.net ([198.61.254.31]:56554 "EHLO
+        so254-31.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725763AbhAGGLS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Jan 2021 01:11:18 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1609999854; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=dFQegvrRvGd0eGFxd2nAZpJcWozq9olKCdVXlGOTAMM=;
+ b=bDAy8dwiOOb0DLKd7Qn3RLGipA+ppFw6UzTraXKljxQhBe9r6kEIHJI213SV+trdul9cstPt
+ GB4B26DuoZkz6QTlmR+bDdofi1vtWSde92VGqjnV1z/BOYgQ36nPSp82sKdYY/HP7SXk6jVH
+ PWDlwFkzHzzlhlirkoStkVUelps=
+X-Mailgun-Sending-Ip: 198.61.254.31
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n10.prod.us-east-1.postgun.com with SMTP id
+ 5ff6a5cde2332e083a312e6d (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 07 Jan 2021 06:10:21
+ GMT
+Sender: cang=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id A6727C43465; Thu,  7 Jan 2021 06:10:20 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: cang)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 01A81C433CA;
+        Thu,  7 Jan 2021 06:10:19 +0000 (UTC)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <MWHPR11MB18867EE2F4FA0382DCFEEE2B8CAF0@MWHPR11MB1886.namprd11.prod.outlook.com>
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Thu, 07 Jan 2021 14:10:19 +0800
+From:   Can Guo <cang@codeaurora.org>
+To:     Jaegeuk Kim <jaegeuk@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org,
+        kernel-team@android.com, alim.akhtar@samsung.com,
+        avri.altman@wdc.com, bvanassche@acm.org,
+        martin.petersen@oracle.com, stanley.chu@mediatek.com
+Subject: Re: [PATCH v3 1/2] scsi: ufs: fix livelock of ufshcd_clear_ua_wluns
+In-Reply-To: <20210106214109.44041-2-jaegeuk@kernel.org>
+References: <20210106214109.44041-1-jaegeuk@kernel.org>
+ <20210106214109.44041-2-jaegeuk@kernel.org>
+Message-ID: <fc4cb27df8bd6b2c1037d82e4b5d3860@codeaurora.org>
+X-Sender: cang@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 07, 2021 at 02:04:29AM +0000, Tian, Kevin wrote:
-> > From: Leon Romanovsky <leon@kernel.org>
-> > Sent: Thursday, January 7, 2021 12:02 AM
-> >
-> > On Wed, Jan 06, 2021 at 11:23:39AM -0400, Jason Gunthorpe wrote:
-> > > On Wed, Jan 06, 2021 at 12:40:17PM +0200, Leon Romanovsky wrote:
-> > >
-> > > > I asked what will you do when QEMU will gain needed functionality?
-> > > > Will you remove QEMU from this list? If yes, how such "new" kernel will
-> > > > work on old QEMU versions?
-> > >
-> > > The needed functionality is some VMM hypercall, so presumably new
-> > > kernels that support calling this hypercall will be able to discover
-> > > if the VMM hypercall exists and if so superceed this entire check.
-> >
-> > Let's not speculate, do we have well-known path?
-> > Will such patch be taken to stable@/distros?
-> >
->
-> There are two functions introduced in this patch. One is to detect whether
-> running on bare metal or in a virtual machine. The other is for deciding
-> whether the platform supports ims. Currently the two are identical because
-> ims is supported only on bare metal at current stage. In the future it will look
-> like below when ims can be enabled in a VM:
->
-> bool arch_support_pci_device_ims(struct pci_dev *pdev)
-> {
-> 	return on_bare_metal() || hypercall_irq_domain_supported();
-> }
->
-> The VMM vendor list is for on_bare_metal, and suppose a vendor will
-> never be removed once being added to the list since the fact of running
-> in a VM never changes, regardless of whether this hypervisor supports
-> extra VMM hypercalls.
+On 2021-01-07 05:41, Jaegeuk Kim wrote:
+> When gate_work/ungate_work gets an error during hibern8_enter or exit,
+>  ufshcd_err_handler()
+>    ufshcd_scsi_block_requests()
+>    ufshcd_reset_and_restore()
+>      ufshcd_clear_ua_wluns() -> stuck
+>    ufshcd_scsi_unblock_requests()
+> 
+> In order to avoid it, ufshcd_clear_ua_wluns() can be called per 
+> recovery flows
+> such as suspend/resume, link_recovery, and error_handler.
+> 
+> Fixes: 1918651f2d7e ("scsi: ufs: Clear UAC for RPMB after ufshcd 
+> resets")
+> Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
+> ---
+>  drivers/scsi/ufs/ufshcd.c | 15 ++++++++++-----
+>  1 file changed, 10 insertions(+), 5 deletions(-)
+> 
+> diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
+> index bedb822a40a3..1678cec08b51 100644
+> --- a/drivers/scsi/ufs/ufshcd.c
+> +++ b/drivers/scsi/ufs/ufshcd.c
+> @@ -3996,6 +3996,8 @@ int ufshcd_link_recovery(struct ufs_hba *hba)
+>  	if (ret)
+>  		dev_err(hba->dev, "%s: link recovery failed, err %d",
+>  			__func__, ret);
+> +	else
+> +		ufshcd_clear_ua_wluns(hba);
 
-This is what I imagined, this list will be forever, and this worries me.
+Can we put it right after ufshcd_scsi_add_wlus() in ufshcd_add_lus()?
 
-I don't know if it is true or not, but guess that at least Oracle and
-Microsoft bare metal devices and VMs will have same DMI_SYS_VENDOR.
+Thanks,
+Can Guo.
 
-It means that this on_bare_metal() function won't work reliably in many
-cases. Also being part of include/linux/msi.h, at some point of time,
-this function will be picked by the users outside for the non-IMS cases.
-
-I didn't even mention custom forks of QEMU which are prohibited to change
-DMI_SYS_VENDOR and private clouds with custom solutions.
-
-The current array makes DMI_SYS_VENDOR interface as some sort of ABI. If in the future,
-the QEMU will decide to use more hipster name, for example "qEmU", this function
-won't work.
-
-I'm aware that DMI_SYS_VENDOR is used heavily in the kernel code and
-various names for the same company are good example how not reliable it.
-
-The most hilarious example is "Dell/Dell Inc./Dell Inc/Dell Computer Corporation/Dell Computer",
-but other companies are not far from them.
-
-Luckily enough, this identification is used for hardware product that
-was released to the market and their name will be stable for that
-specific model. It is not the case here where we need to ensure future
-compatibility too (old kernel on new VM emulator).
-
-I'm not in position to say yes or no to this patch and don't have plans to do it.
-Just expressing my feeling that this solution is too hacky for my taste.
-
-Thanks
+> 
+>  	return ret;
+>  }
+> @@ -6003,6 +6005,9 @@ static void ufshcd_err_handler(struct work_struct 
+> *work)
+>  	ufshcd_scsi_unblock_requests(hba);
+>  	ufshcd_err_handling_unprepare(hba);
+>  	up(&hba->eh_sem);
+> +
+> +	if (!err && needs_reset)
+> +		ufshcd_clear_ua_wluns(hba);
+>  }
+> 
+>  /**
+> @@ -6940,14 +6945,11 @@ static int
+> ufshcd_host_reset_and_restore(struct ufs_hba *hba)
+>  	ufshcd_set_clk_freq(hba, true);
+> 
+>  	err = ufshcd_hba_enable(hba);
+> -	if (err)
+> -		goto out;
+> 
+>  	/* Establish the link again and restore the device */
+> -	err = ufshcd_probe_hba(hba, false);
+>  	if (!err)
+> -		ufshcd_clear_ua_wluns(hba);
+> -out:
+> +		err = ufshcd_probe_hba(hba, false);
+> +
+>  	if (err)
+>  		dev_err(hba->dev, "%s: Host init failed %d\n", __func__, err);
+>  	ufshcd_update_evt_hist(hba, UFS_EVT_HOST_RESET, (u32)err);
+> @@ -8777,6 +8779,7 @@ static int ufshcd_suspend(struct ufs_hba *hba,
+> enum ufs_pm_op pm_op)
+>  		ufshcd_resume_clkscaling(hba);
+>  	hba->clk_gating.is_suspended = false;
+>  	hba->dev_info.b_rpm_dev_flush_capable = false;
+> +	ufshcd_clear_ua_wluns(hba);
+>  	ufshcd_release(hba);
+>  out:
+>  	if (hba->dev_info.b_rpm_dev_flush_capable) {
+> @@ -8887,6 +8890,8 @@ static int ufshcd_resume(struct ufs_hba *hba,
+> enum ufs_pm_op pm_op)
+>  		cancel_delayed_work(&hba->rpm_dev_flush_recheck_work);
+>  	}
+> 
+> +	ufshcd_clear_ua_wluns(hba);
+> +
+>  	/* Schedule clock gating in case of no access to UFS device yet */
+>  	ufshcd_release(hba);
