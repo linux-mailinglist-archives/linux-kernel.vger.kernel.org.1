@@ -2,69 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 60B2B2ECAC4
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 08:04:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E47892ECACE
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 08:08:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726763AbhAGHDu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 02:03:50 -0500
-Received: from mail-il1-f199.google.com ([209.85.166.199]:37330 "EHLO
-        mail-il1-f199.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726436AbhAGHDt (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 02:03:49 -0500
-Received: by mail-il1-f199.google.com with SMTP id g10so5495021ile.4
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Jan 2021 23:03:34 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=Ucf7AyuSHfh9bNDOrZnScHCuoM7E4jcmLmsdWXty8X4=;
-        b=a2kK0cfPVLK/rAEmiZ3Qem9OWwr9JrqEUXzRDKiL5Nr2W9Z/Gld/chSur6fJuWCOKx
-         ub1OUBjEkJXPwz8OWXW/OY91MwLVnVk+kYLaSYR/e+TSpvLbC1KILmuCAhdS04WfvHLg
-         Axyf1aiVZs22twRPCE/vWdL4xkRecafQUGt9Uh8NMpkCVTMAWqkRmYo5HIa3tkloeOKa
-         hhVWTJuUVjNSO0GCysjbDwK6XwSbZiXYirS9TPUqJ92vnTV65b8J9jWJYoxtCnu5oQGD
-         R1VV+arc6PnbY4fIRyraIgSH16omCFr4KH7G6MpllFxl48SRXkF3n4imtmIfyguxbFWB
-         5/gw==
-X-Gm-Message-State: AOAM533cvQs2CSWWkDetg9/dV5er6q//qFzZEgu277pWuY7qGnAeM/NO
-        8WCH70SFVSzjbnbysP98PYgLDxNWNeYSVqv0au0RSUdg26NA
-X-Google-Smtp-Source: ABdhPJzgOkTOlqWPD2AGLe7feZpqc5+9HIgYLKJhdyUMDa2mEIf5pnZwLJ95GDYSTEs+PSnnMgoCQgILv3fejmAGALojWIbaQ1VK
+        id S1726779AbhAGHII (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 02:08:08 -0500
+Received: from mail.skyhub.de ([5.9.137.197]:59320 "EHLO mail.skyhub.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725862AbhAGHIH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Jan 2021 02:08:07 -0500
+Received: from zn.tnic (p200300ec2f0e340040aa7c2c4e2416a1.dip0.t-ipconnect.de [IPv6:2003:ec:2f0e:3400:40aa:7c2c:4e24:16a1])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 4AC701EC0249;
+        Thu,  7 Jan 2021 08:07:26 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1610003246;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=KGFgHoScXK7gB6fZQoDz8zCs6uUeA+Ptsmqs8FOCUSM=;
+        b=XAlB6YxFl3hMIWbrMLDgTPBh+P8vAOdOBCQL6FPsxbviydKlnstDQ5ZuT8GD1/I/QrP5sy
+        E39IkG2lhmx+5hqJV+g6UktV6JJ0RzYwfKHFDX+iEI+NtJtOZK9HIuh0m30bitnm02r8+5
+        d36WzkMrMLJWGohHXGwwSeEs7r1Ve4g=
+Date:   Thu, 7 Jan 2021 08:07:24 +0100
+From:   Borislav Petkov <bp@alien8.de>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, x86@kernel.org,
+        linux-edac@vger.kernel.org, tony.luck@intel.com,
+        tglx@linutronix.de, mingo@redhat.com, hpa@zytor.com,
+        kernel-team@fb.com
+Subject: Re: [PATCH RFC x86/mce] Make mce_timed_out() identify holdout CPUs
+Message-ID: <20210107070724.GC14697@zn.tnic>
+References: <20210106174102.GA23874@paulmck-ThinkPad-P72>
+ <20210106183244.GA24607@zn.tnic>
+ <20210106191353.GA2743@paulmck-ThinkPad-P72>
 MIME-Version: 1.0
-X-Received: by 2002:a6b:3b92:: with SMTP id i140mr300092ioa.49.1610002989029;
- Wed, 06 Jan 2021 23:03:09 -0800 (PST)
-Date:   Wed, 06 Jan 2021 23:03:09 -0800
-In-Reply-To: <000000000000209d7205a7c7ab09@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000003fa24b05b84a0886@google.com>
-Subject: Re: INFO: task hung in do_truncate (2)
-From:   syzbot <syzbot+18b2ab4c697021ee8369@syzkaller.appspotmail.com>
-To:     adobriyan@gmail.com, akpm@linux-foundation.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com, torvalds@linux-foundation.org,
-        viro@zeniv.linux.org.uk
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210106191353.GA2743@paulmck-ThinkPad-P72>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot suspects this issue was fixed by commit:
+On Wed, Jan 06, 2021 at 11:13:53AM -0800, Paul E. McKenney wrote:
+> Not yet, it isn't!  Well, except in -rcu.  ;-)
 
-commit dfefd226b0bf7c435a58d75a0ce2f9273b9825f6
-Author: Alexey Dobriyan <adobriyan@gmail.com>
-Date:   Tue Dec 15 03:15:03 2020 +0000
+Of course it is - saying "This commit" in this commit's commit message
+is very much a tautology. :-)
 
-    mm: cleanup kstrto*() usage
+> You are suggesting dropping mce_missing_cpus and just doing this?
+> 
+> if (!cpumask_andnot(&mce_present_cpus, cpu_online_mask, &mce_present_cpus))
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=111aa0cf500000
-start commit:   7ae77150 Merge tag 'powerpc-5.8-1' of git://git.kernel.org..
-git tree:       upstream
-kernel config:  https://syzkaller.appspot.com/x/.config?x=d195fe572fb15312
-dashboard link: https://syzkaller.appspot.com/bug?extid=18b2ab4c697021ee8369
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=15cec296100000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=153a741e100000
+Yes.
 
-If the result looks correct, please mark the issue as fixed by replying with:
+And pls don't call it "holdout CPUs" and change the order so that it is
+more user-friendly (yap, you don't need __func__ either):
 
-#syz fix: mm: cleanup kstrto*() usage
+[   78.946153] mce: Not all CPUs (24-47,120-143) entered the broadcast exception handler.
+[   78.946153] Kernel panic - not syncing: Timeout: MCA synchronization.
 
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+or so.
+
+And that's fine if it appears twice as long as it is the same info - the
+MCA code is one complex mess so you can probably guess why I'd like to
+have new stuff added to it be as simplistic as possible.
+
+> I was worried (perhaps unnecessarily) about the possibility of CPUs
+> checking in during the printout operation, which would set rather than
+> clear the bit.  But perhaps the possible false positives that Tony points
+> out make this race not worth worrying about.
+> 
+> Thoughts?
+
+Yah, apparently, it is not going to be a precise report as you wanted it
+to be but at least it'll tell you which *sockets* you can rule out, if
+not cores.
+
+:-)
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
