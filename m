@@ -2,90 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 770552ECEBF
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 12:30:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B37EF2ECEC1
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 12:33:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727213AbhAGL3z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 06:29:55 -0500
-Received: from foss.arm.com ([217.140.110.172]:58462 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726151AbhAGL3y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 06:29:54 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 2EC8D31B;
-        Thu,  7 Jan 2021 03:29:09 -0800 (PST)
-Received: from C02TD0UTHF1T.local (unknown [10.57.34.174])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 656C73F719;
-        Thu,  7 Jan 2021 03:29:06 -0800 (PST)
-Date:   Thu, 7 Jan 2021 11:29:03 +0000
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     Maninder Singh <maninder1.s@samsung.com>
-Cc:     catalin.marinas@arm.com, will@kernel.org, broonie@kernel.org,
-        vincenzo.frascino@arm.com, samitolvanen@google.com,
-        ardb@kernel.org, maz@kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        v.narang@samsung.com, a.sahrawat@samsung.com
-Subject: Re: [PATCH 1/1] arm64/entry.S: check for stack overflow in el1 case
- only
-Message-ID: <20210107112903.GB7523@C02TD0UTHF1T.local>
-References: <CGME20201211091546epcas5p24511325afff612d57306d733a3307648@epcas5p2.samsung.com>
- <1607678131-20347-1-git-send-email-maninder1.s@samsung.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1607678131-20347-1-git-send-email-maninder1.s@samsung.com>
+        id S1727360AbhAGLcy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 06:32:54 -0500
+Received: from mailout1.samsung.com ([203.254.224.24]:26035 "EHLO
+        mailout1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726313AbhAGLcx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Jan 2021 06:32:53 -0500
+Received: from epcas5p4.samsung.com (unknown [182.195.41.42])
+        by mailout1.samsung.com (KnoxPortal) with ESMTP id 20210107113211epoutp01fda1f69a67991a2fd7769c4c8555d734~X796bsP0c2594525945epoutp01l
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Jan 2021 11:32:11 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com 20210107113211epoutp01fda1f69a67991a2fd7769c4c8555d734~X796bsP0c2594525945epoutp01l
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1610019131;
+        bh=Y5ImB5VQtfD9pDutmko4zwevF00ehKGnHWp7AUBRc0E=;
+        h=Subject:Reply-To:From:To:CC:Date:References:From;
+        b=KV/2C/46bco6D8hPTNk5DldzyUlIv5ALKlF+OKrZ2JdKToIwJO8EMoTV4EB24FF9x
+         WjayU8Wc0hgglu+zU7wDN9038YwO45MHmqVdIiNZP8CWhvkpN+OxRsVWW/aK7Nbw+g
+         6iWERtM49OsFCYR5dJYzCmPiJIWAI9z46r9xIFuw=
+Received: from epsnrtp3.localdomain (unknown [182.195.42.164]) by
+        epcas5p1.samsung.com (KnoxPortal) with ESMTP id
+        20210107113210epcas5p19d377f7b6ba3de7aa3e69ecc1e6cd169~X795eAF2u2849628496epcas5p1M;
+        Thu,  7 Jan 2021 11:32:10 +0000 (GMT)
+Received: from epsmges5p1new.samsung.com (unknown [182.195.40.193]) by
+        epsnrtp3.localdomain (Postfix) with ESMTP id 4DBPGJ1nlRz4x9Pw; Thu,  7 Jan
+        2021 11:32:08 +0000 (GMT)
+X-AuditID: b6c32a49-8bfff70000013d42-af-5ff6f1385c4f
+Received: from epcas5p1.samsung.com ( [182.195.41.39]) by
+        epsmges5p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        D0.CD.15682.831F6FF5; Thu,  7 Jan 2021 20:32:08 +0900 (KST)
+Mime-Version: 1.0
+Subject: [PATCH] uio: uio_pci_generic: don't fail probe if pdev->irq equals
+ to IRQ_NOTCONNECTED
+Reply-To: jie6.li@samsung.com
+Sender: =?UTF-8?B?5p2O5o23?= <jie6.li@samsung.com>
+From:   =?UTF-8?B?5p2O5o23?= <jie6.li@samsung.com>
+To:     "mst@redhat.com" <mst@redhat.com>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+CC:     =?UTF-8?B?6rmA6rK97IKw?= <ks0204.kim@samsung.com>,
+        =?UTF-8?B?5L2V5YW0?= <xing84.he@samsung.com>,
+        =?UTF-8?B?5ZCV6auY6aOe?= <gaofei.lv@samsung.com>
+X-Priority: 3
+X-Content-Kind-Code: NORMAL
+X-Drm-Type: N,general
+X-Msg-Generator: Mail
+X-Msg-Type: PERSONAL
+X-Reply-Demand: N
+Message-ID: <20210107113207epcms5p268119bdd826f36a0e5e488a5476f82ca@epcms5p2>
+Date:   Thu, 07 Jan 2021 19:32:07 +0800
+X-CMS-MailID: 20210107113207epcms5p268119bdd826f36a0e5e488a5476f82ca
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+CMS-TYPE: 105P
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrCKsWRmVeSWpSXmKPExsWy7bCmuq7Fx2/xBi/buSx2Ld7IYtG8eD2b
+        xexprewWR/dwWMyZWmhxedccNov/v16xWpyd8IHVYm+fjwOnx/65a9g93u+7yubRt2UVo8fn
+        TXIBLFE5NhmpiSmpRQqpecn5KZl56bZK3sHxzvGmZgaGuoaWFuZKCnmJuam2Si4+AbpumTlA
+        hygplCXmlAKFAhKLi5X07WyK8ktLUhUy8otLbJVSC1JyCgyNCvSKE3OLS/PS9ZLzc60MDQyM
+        TIEqE3Iy+rbtYCs4wl3x/v8NpgbGW5xdjJwcEgImEn+OtzOC2EICuxkl/l606mLk4OAVEJT4
+        u0MYJCwskCixtOszC0SJrMSth9eZIOJGEmfaesHibAIGEt0rr7J2MXJxiAhcYJR4fPc0M4jD
+        LDCdUWLfjPtsEMt4JWa0P2WBsKUlti/fyghhi0rcXP2WHcZ+f2w+VFxEovXeWWYIW1Diwc/d
+        UHEZid62m6wgh0oI1EvMOy8EsktCoINRYsrU81C7zCUu7moAu5RXwFei7f8FFpB6FgFVibUt
+        6hAlLhJ7zraArWUWkJfY/nYOM0gJs4CmxPpd+hBhPone30+YYK7fMQ/GVpSYfW4X1CfiEi/f
+        PYK6zENiz7pp0OAMlDi3YgrrBEa5WYgQnYVk2SyEZQsYmVcxSqYWFOempxabFhjmpZYjR+Mm
+        RnDy0/LcwXj3wQe9Q4xMHIyHGCU4mJVEeC2OfYkX4k1JrKxKLcqPLyrNSS0+xGgK9OhEZinR
+        5Hxg+s0riTc0NTIzM7A0MDW2MDNUEufdYfAgXkggPbEkNTs1tSC1CKaPiYNTqoEp2/uyWnuW
+        1v2OeSm/T0/tkdxUV/t5w+8FEoeaF/c811u/RHeWsvifU80rAisKL7yfMW/Gos5jAi6/eutU
+        zdSaA2MOLt1f+PH/6Ya/ujayplPmpknYqp85OvH/uSaF36+eLXylplmx5YHf6o7gD5OktOse
+        BB3x4rt14P/2UwLKnhNTXvqEzJByMtogLXO/bLvxPIHy9Qy17wP5Lni1O2TwTK5gaPG29GU4
+        cyBmsvpHz4Xtoj5hvOlChlc/Jr86fLJabsNRW+ls+0NmCapMgi6Vu7jaVnBamxn9yJ9xT6Ru
+        hsfV031RN7U+7W9se8q5Oi3Ga0pFZPcKATOXFp9tSu+4H13hXnMw7lTekYpTG+8osRRnJBpq
+        MRcVJwIACLTuJAcEAAA=
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20210107113207epcms5p268119bdd826f36a0e5e488a5476f82ca
+References: <CGME20210107113207epcms5p268119bdd826f36a0e5e488a5476f82ca@epcms5p2>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 11, 2020 at 02:45:31PM +0530, Maninder Singh wrote:
-> current code checks for sp bit flip in all exceptions,
-> but only el1 exceptions requires this. el0 can not enter
-> into stack overflow case directly.
-> 
-> it will improve performance for el0 exceptions and interrupts.
-> 
-> Signed-off-by: Maninder Singh <maninder1.s@samsung.com>
-> Signed-off-by: Vaneet Narang <v.narang@samsung.com>
+From 0fbcd7e386898d829d3000d094358a91e626ee4a Mon Sep 17 00:00:00 2001
+From: Jie Li <jie6.li@samsung.com>
+Date: Mon, 7 Dec 2020 08:05:07 +0800
+Subject: [PATCH] uio: uio_pci_generic: don't fail probe if pdev->irq equals to
+ IRQ_NOTCONNECTED
 
-I did consider doing this at the time Ard and I wrote the overflow
-detection, but there was no measureable impact on the workloads that I
-tested, and it seemed worthwhile to have this as a sanity check in case
-the SP was somehow corrupted (and to avoid any surprizing differences
-between the EL0 and EL1 entry paths).
+Some devices use 255 as default value of Interrupt Line register, and this
+maybe causes pdev->irq is set as IRQ_NOTCONNECTED in some scenarios. For
+example, NVMe controller connects to Intel Volume Management Device (VMD).
+In this situation, IRQ_NOTCONNECTED means INTx line is not connected, not
+fault. If bind uio_pci_generic to these devices, uio frame will return
+-ENOTCONN through request_irq.
 
-When you say "it will improve performance for el0 exceptions and
-interrupts", do you have a workload where this has a measureable impact,
-or was this found by inspection? Unless this is causing a real issue,
-I'd prefer to leave it as-is for now.
+This patch allows binding uio_pci_generic to device with dev->irq of
+IRQ_NOTCONNECTED.
 
-Thanks,
-Mark.
+Signed-off-by: Jie Li <jie6.li@samsung.com>
+Acked-by: Kyungsan Kim <ks0204.kim@samsung.com>
+---
+ drivers/uio/uio_pci_generic.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> ---
->  arch/arm64/kernel/entry.S | 2 ++
->  1 file changed, 2 insertions(+)
-> 
-> diff --git a/arch/arm64/kernel/entry.S b/arch/arm64/kernel/entry.S
-> index 2a93fa5..cad8faf 100644
-> --- a/arch/arm64/kernel/entry.S
-> +++ b/arch/arm64/kernel/entry.S
-> @@ -77,6 +77,7 @@ alternative_else_nop_endif
->  
->  	sub	sp, sp, #S_FRAME_SIZE
->  #ifdef CONFIG_VMAP_STACK
-> +	.if	\el == 1
->  	/*
->  	 * Test whether the SP has overflowed, without corrupting a GPR.
->  	 * Task and IRQ stacks are aligned so that SP & (1 << THREAD_SHIFT)
-> @@ -118,6 +119,7 @@ alternative_else_nop_endif
->  	/* We were already on the overflow stack. Restore sp/x0 and carry on. */
->  	sub	sp, sp, x0
->  	mrs	x0, tpidrro_el0
-> +	.endif
->  #endif
->  	b	el\()\el\()_\label
->  	.endm
-> -- 
-> 1.9.1
-> 
+diff --git a/drivers/uio/uio_pci_generic.c b/drivers/uio/uio_pci_generic.c
+index b8e44d16279f..c7d681fef198 100644
+--- a/drivers/uio/uio_pci_generic.c
++++ b/drivers/uio/uio_pci_generic.c
+@@ -92,7 +92,7 @@ static int probe(struct pci_dev *pdev,
+ 	gdev->info.version = DRIVER_VERSION;
+ 	gdev->info.release = release;
+ 	gdev->pdev = pdev;
+-	if (pdev->irq) {
++	if (pdev->irq && (pdev->irq != IRQ_NOTCONNECTED)) {
+ 		gdev->info.irq = pdev->irq;
+ 		gdev->info.irq_flags = IRQF_SHARED;
+ 		gdev->info.handler = irqhandler;
+-- 
+2.17.1
+
