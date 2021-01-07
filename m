@@ -2,244 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 048232ECE74
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 12:10:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F25F2ECE72
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 12:10:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727954AbhAGLJe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 06:09:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53366 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726822AbhAGLJa (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S1727924AbhAGLJb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 06:09:31 -0500
+Received: from mga09.intel.com ([134.134.136.24]:16685 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726362AbhAGLJa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 7 Jan 2021 06:09:30 -0500
-Received: from mail-qv1-xf36.google.com (mail-qv1-xf36.google.com [IPv6:2607:f8b0:4864:20::f36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3EBE0C0612F5;
-        Thu,  7 Jan 2021 03:09:10 -0800 (PST)
-Received: by mail-qv1-xf36.google.com with SMTP id p5so2569983qvs.7;
-        Thu, 07 Jan 2021 03:09:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=QiltxrUYrf0bVMIP9HbxN9GwYp1fqxWzzhDW62N0l4g=;
-        b=bgGA8ztjwm3ylYzmfMPM6NzTYvXhpm7nBg4TwZqz7KzmyjG31owyDiHTLUiFH33jx/
-         hinW2w0KkZ7EFqEo8WAzze6E3RspiV6KNvVioAh8tKwRNkQBGdA66UPPhpq0aZhKuKjf
-         IZfxbgQ32y1gf7by80iesraxDgI1DESKe+jPAw97cqLZPSbEy59NfMlZp+GQDB0NAPbc
-         bJ85Av/txRKjz4zwP4t1oilqoR+3tirxqlUFmQWBn+VUmVQBNY73VOmua0etFoeUMWJV
-         5krh/7zjBul9cxqkPHkMFljRWsdSfBdculZY2hHRfVHnYBbNN1BdZ2z5xrnnedA3cbyJ
-         AZCQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=QiltxrUYrf0bVMIP9HbxN9GwYp1fqxWzzhDW62N0l4g=;
-        b=PsqfnHLkdwy49iMpjyvU0XGm/lcHY8gIVeXBsDDE9h8joB3A13yU6PNYspyGSfHouh
-         ScKw991lYJGCy1cLSYFBotTpiyNC1n810nZEjobFDD04N6UNobytvn/VceXIiy87L8qH
-         jmuJFtbHiDIBpv5D943FQR2zYzIcxF9j/hz2UFvu/bPcGlOdtqkB8xIzWIWVxBPZlZMk
-         psp5nc50yTQC5Y8gpqS21gLKxIFxK2j5mabrWTpoBjPQDgMHvTQlymbURs6tPPoIB5vv
-         go/erLYaM3SROHy1iniLtfyS1+ogqxcD6WGrwDDrfAZPpc3CoPmgtT6ZYraDgHmHKaNI
-         9Nrw==
-X-Gm-Message-State: AOAM530ks/Hu/PpFLbv1VC0ATzAQbIUcB/Qsd2pIF3XVuzk4ffj1V9Pl
-        xRxB3ELuAMmddpYrLIr9tH9aR2+eRcVN+Vyuz1PFJm5tw4uFUg==
-X-Google-Smtp-Source: ABdhPJyUjXJKjT4naI60958bxVTPxbguSzBomuXj5zZv+dhfjxE/I7o/wzGKuPPtAqpxuEJPi3dxK8S7Zt3guWXXZLs=
-X-Received: by 2002:a0c:f1ce:: with SMTP id u14mr1393819qvl.24.1610017749417;
- Thu, 07 Jan 2021 03:09:09 -0800 (PST)
+IronPort-SDR: RtDZ7LnG+dYuPUnzZoFQL4miwwX1v3z7dW6UP26ld1X35gsa/+Q4rLC7857D1qTC1fX0oG+Png
+ UXP4I2+M5+KA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9856"; a="177561721"
+X-IronPort-AV: E=Sophos;i="5.79,329,1602572400"; 
+   d="scan'208";a="177561721"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Jan 2021 03:07:43 -0800
+IronPort-SDR: iRT3g9fqFS1nKSm4d846pZC8RuDS2fVn/mIoJ+ck83lwo4Jli1Y4KZm7AaWSlDBqOreGqIyxzL
+ y6YnatQPJMJA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.79,329,1602572400"; 
+   d="scan'208";a="343858622"
+Received: from mattu-haswell.fi.intel.com (HELO [10.237.72.170]) ([10.237.72.170])
+  by fmsmga007.fm.intel.com with ESMTP; 07 Jan 2021 03:07:40 -0800
+Subject: Re: [PATCH v5] usb: xhci-mtk: fix unreleased bandwidth data
+To:     Ikjoon Jang <ikjn@chromium.org>,
+        linux-mediatek@lists.infradead.org, linux-usb@vger.kernel.org
+Cc:     Chunfeng Yun <chunfeng.yun@mediatek.com>,
+        Tianping Fang <tianping.fang@mediatek.com>,
+        Zhanyong Wang <zhanyong.wang@mediatek.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Mathias Nyman <mathias.nyman@intel.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20201229142406.v5.1.Id0d31b5f3ddf5e734d2ab11161ac5821921b1e1e@changeid>
+From:   Mathias Nyman <mathias.nyman@linux.intel.com>
+Autocrypt: addr=mathias.nyman@linux.intel.com; prefer-encrypt=mutual; keydata=
+ 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 fiD/
+Message-ID: <2aea44f0-85e7-fd55-2c35-c1d994f20e03@linux.intel.com>
+Date:   Thu, 7 Jan 2021 13:09:35 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <1607591258-13865-1-git-send-email-yejune.deng@gmail.com> <CAH2r5mvgjFWwEcqt8nfiU_1GJQUU7jN=eNT-t6SBEK8jke0Msg@mail.gmail.com>
-In-Reply-To: <CAH2r5mvgjFWwEcqt8nfiU_1GJQUU7jN=eNT-t6SBEK8jke0Msg@mail.gmail.com>
-From:   Yejune Deng <yejune.deng@gmail.com>
-Date:   Thu, 7 Jan 2021 19:08:58 +0800
-Message-ID: <CABWKuGUj41Qa-y_cApNNvLfTQPLJi2adr+ZKN6RpwFoemskoKg@mail.gmail.com>
-Subject: Re: [PATCH] cifs: fix msleep() is imprecise
-To:     Steve French <smfrench@gmail.com>
-Cc:     Steve French <sfrench@samba.org>,
-        CIFS <linux-cifs@vger.kernel.org>,
-        samba-technical <samba-technical@lists.samba.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20201229142406.v5.1.Id0d31b5f3ddf5e734d2ab11161ac5821921b1e1e@changeid>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-No=E3=80=82I just see Documentation/timers/timers-howto.rst and don't
-recommend using msleep() for (1ms - 20ms). It recommends using
-usleep_range(). And fsleep() is flexible sleeping.
+On 29.12.2020 8.24, Ikjoon Jang wrote:
+> xhci-mtk has hooks on add_endpoint() and drop_endpoint() from xhci
+> to handle its own sw bandwidth managements and stores bandwidth data
+> into internal table every time add_endpoint() is called,
+> so when bandwidth allocation fails at one endpoint, all earlier
+> allocation from the same interface could still remain at the table.
+> 
+> This patch adds two more hooks from check_bandwidth() and
+> reset_bandwidth(), and make mtk-xhci to releases all failed endpoints
+> from reset_bandwidth().
+> 
+> Fixes: 08e469de87a2 ("usb: xhci-mtk: supports bandwidth scheduling with multi-TT")
+> Signed-off-by: Ikjoon Jang <ikjn@chromium.org>
+> 
 
+...
 
-On Wed, Jan 6, 2021 at 12:27 PM Steve French <smfrench@gmail.com> wrote:
->
-> This patch seems reasonable at first glance, but I was a little
-> concerned that we don't see many users yet of fsleep.  Has there been
-> pushback on converting "yield" situations from using msleep to fsleep?
->
-> On Thu, Dec 10, 2020 at 3:09 AM Yejune Deng <yejune.deng@gmail.com> wrote=
-:
-> >
-> > See Documentation/timers/timers-howto.rst, msleep() is not
-> > for (1ms - 20ms), There is a more advanced API is used.
-> >
-> > Signed-off-by: Yejune Deng <yejune.deng@gmail.com>
-> > ---
-> >  fs/cifs/cifsfs.c    |  4 ++--
-> >  fs/cifs/connect.c   | 14 +++++++-------
-> >  fs/cifs/file.c      |  6 +++---
-> >  fs/cifs/smbdirect.c |  2 +-
-> >  4 files changed, 13 insertions(+), 13 deletions(-)
-> >
-> > diff --git a/fs/cifs/cifsfs.c b/fs/cifs/cifsfs.c
-> > index 472cb77..d35ce52 100644
-> > --- a/fs/cifs/cifsfs.c
-> > +++ b/fs/cifs/cifsfs.c
-> > @@ -664,10 +664,10 @@ static void cifs_umount_begin(struct super_block =
-*sb)
-> >                 cifs_dbg(FYI, "wake up tasks now - umount begin not com=
-plete\n");
-> >                 wake_up_all(&tcon->ses->server->request_q);
-> >                 wake_up_all(&tcon->ses->server->response_q);
-> > -               msleep(1); /* yield */
-> > +               fsleep(1000); /* yield */
-> >                 /* we have to kick the requests once more */
-> >                 wake_up_all(&tcon->ses->server->response_q);
-> > -               msleep(1);
-> > +               fsleep(1000);
-> >         }
-> >
-> >         return;
-> > diff --git a/fs/cifs/connect.c b/fs/cifs/connect.c
-> > index 44f9cce..62a9c64 100644
-> > --- a/fs/cifs/connect.c
-> > +++ b/fs/cifs/connect.c
-> > @@ -538,7 +538,7 @@ static inline int reconn_setup_dfs_targets(struct c=
-ifs_sb_info *cifs_sb,
-> >                 if (rc) {
-> >                         cifs_dbg(FYI, "reconnect error %d\n", rc);
-> >                         mutex_unlock(&server->srv_mutex);
-> > -                       msleep(3000);
-> > +                       ssleep(3);
-> >                 } else {
-> >                         atomic_inc(&tcpSesReconnectCount);
-> >                         set_credits(server, 1);
-> > @@ -621,7 +621,7 @@ static inline int reconn_setup_dfs_targets(struct c=
-ifs_sb_info *cifs_sb,
-> >                 server->bigbuf =3D (char *)cifs_buf_get();
-> >                 if (!server->bigbuf) {
-> >                         cifs_server_dbg(VFS, "No memory for large SMB r=
-esponse\n");
-> > -                       msleep(3000);
-> > +                       ssleep(3);
-> >                         /* retry will check if exiting */
-> >                         return false;
-> >                 }
-> > @@ -634,7 +634,7 @@ static inline int reconn_setup_dfs_targets(struct c=
-ifs_sb_info *cifs_sb,
-> >                 server->smallbuf =3D (char *)cifs_small_buf_get();
-> >                 if (!server->smallbuf) {
-> >                         cifs_server_dbg(VFS, "No memory for SMB respons=
-e\n");
-> > -                       msleep(1000);
-> > +                       ssleep(1);
-> >                         /* retry will check if exiting */
-> >                         return false;
-> >                 }
-> > @@ -729,7 +729,7 @@ static inline int reconn_setup_dfs_targets(struct c=
-ifs_sb_info *cifs_sb,
-> >                          * to clear and app threads to set tcpStatus
-> >                          * CifsNeedReconnect if server hung.
-> >                          */
-> > -                       usleep_range(1000, 2000);
-> > +                       fsleep(1000);
-> >                         length =3D 0;
-> >                         continue;
-> >                 }
-> > @@ -790,7 +790,7 @@ static inline int reconn_setup_dfs_targets(struct c=
-ifs_sb_info *cifs_sb,
-> >                  */
-> >                 cifs_dbg(FYI, "RFC 1002 negative session response\n");
-> >                 /* give server a second to clean up */
-> > -               msleep(1000);
-> > +               ssleep(1);
-> >                 /*
-> >                  * Always try 445 first on reconnect since we get NACK
-> >                  * on some if we ever connected to port 139 (the NACK
-> > @@ -944,7 +944,7 @@ static void clean_demultiplex_info(struct TCP_Serve=
-r_Info *server)
-> >                  * response and going ahead and killing cifsd.
-> >                  */
-> >                 cifs_dbg(FYI, "Wait for exit from demultiplex thread\n"=
-);
-> > -               msleep(46000);
-> > +               ssleep(46);
-> >                 /*
-> >                  * If threads still have not exited they are probably n=
-ever
-> >                  * coming home not much else we can do but free the mem=
-ory.
-> > @@ -3655,7 +3655,7 @@ static void rfc1002mangle(char *target, char *sou=
-rce, unsigned int length)
-> >                  * significant slowing down on mount
-> >                  * for everyone else
-> >                  */
-> > -               usleep_range(1000, 2000);
-> > +               fsleep(1000);
-> >         }
-> >         /*
-> >          * else the negprot may still work without this
-> > diff --git a/fs/cifs/file.c b/fs/cifs/file.c
-> > index be46fab..75538a8 100644
-> > --- a/fs/cifs/file.c
-> > +++ b/fs/cifs/file.c
-> > @@ -283,7 +283,7 @@ int cifs_posix_open(char *full_path, struct inode *=
-*pinode,
-> >  cifs_down_write(struct rw_semaphore *sem)
-> >  {
-> >         while (!down_write_trylock(sem))
-> > -               msleep(10);
-> > +               fsleep(10000);
-> >  }
-> >
-> >  static void cifsFileInfo_put_work(struct work_struct *work);
-> > @@ -2828,7 +2828,7 @@ size_t get_numpages(const size_t wsize, const siz=
-e_t len, size_t *cur_len)
-> >
-> >                         if (wsize < wdata->bytes) {
-> >                                 add_credits_and_wake_if(server, &credit=
-s, 0);
-> > -                               msleep(1000);
-> > +                               ssleep(1);
-> >                         }
-> >                 } while (wsize < wdata->bytes);
-> >                 wdata->credits =3D credits;
-> > @@ -3563,7 +3563,7 @@ static int cifs_resend_rdata(struct cifs_readdata=
- *rdata,
-> >
-> >                         if (rsize < rdata->bytes) {
-> >                                 add_credits_and_wake_if(server, &credit=
-s, 0);
-> > -                               msleep(1000);
-> > +                               ssleep(1);
-> >                         }
-> >                 } while (rsize < rdata->bytes);
-> >                 rdata->credits =3D credits;
-> > diff --git a/fs/cifs/smbdirect.c b/fs/cifs/smbdirect.c
-> > index b029ed3..84f97f8 100644
-> > --- a/fs/cifs/smbdirect.c
-> > +++ b/fs/cifs/smbdirect.c
-> > @@ -1372,7 +1372,7 @@ void smbd_destroy(struct TCP_Server_Info *server)
-> >         wake_up_interruptible_all(&info->wait_mr);
-> >         while (atomic_read(&info->mr_used_count)) {
-> >                 mutex_unlock(&server->srv_mutex);
-> > -               msleep(1000);
-> > +               ssleep(1);
-> >                 mutex_lock(&server->srv_mutex);
-> >         }
-> >         destroy_mr_list(info);
-> > --
-> > 1.9.1
-> >
->
->
-> --
-> Thanks,
->
-> Steve
+> 
+> diff --git a/drivers/usb/host/xhci.c b/drivers/usb/host/xhci.c
+> index d4a8d0efbbc4..e1fcd3cf723f 100644
+> --- a/drivers/usb/host/xhci.c
+> +++ b/drivers/usb/host/xhci.c
+> @@ -2882,6 +2882,12 @@ static int xhci_check_bandwidth(struct usb_hcd *hcd, struct usb_device *udev)
+>  	xhci_dbg(xhci, "%s called for udev %p\n", __func__, udev);
+>  	virt_dev = xhci->devs[udev->slot_id];
+>  
+> +	if (xhci->quirks & XHCI_MTK_HOST) {
+> +		ret = xhci_mtk_check_bandwidth(hcd, udev);
+> +		if (ret < 0)
+> +			return ret;
+> +	}
+> +
+
+Just noticed that XHCI_MTK_HOST quirk is only set in xhci-mtk.c.
+xhci-mtk.c calls xhci_init_driver(..., xhci_mtk_overrides) with a .reset override function.
+
+why not add override functions for .check_bandwidth and .reset_bandwidth to xhci_mtk_overrides instead?
+
+Another patch to add similar overrides for .add_endpoint and .drop_endpoint should probably be
+done so that we can get rid of the xhci_mtk_add/drop_ep_quirk() calls in xhci.c as well
+
+Thanks
+-Mathias
+
