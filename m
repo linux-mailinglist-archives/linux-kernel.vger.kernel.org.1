@@ -2,72 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D8212ECEBD
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 12:29:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 770552ECEBF
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 12:30:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727926AbhAGL3J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 06:29:09 -0500
-Received: from szxga05-in.huawei.com ([45.249.212.191]:10559 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726313AbhAGL3I (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 06:29:08 -0500
-Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4DBP8c6Q6BzM7CC;
-        Thu,  7 Jan 2021 19:27:12 +0800 (CST)
-Received: from [10.136.114.67] (10.136.114.67) by smtp.huawei.com
- (10.3.19.207) with Microsoft SMTP Server (TLS) id 14.3.498.0; Thu, 7 Jan 2021
- 19:28:20 +0800
-Subject: Re: linux-next: build warning after merge of the f2fs tree
-To:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Jaegeuk Kim <jaegeuk@kernel.org>
-CC:     Chao Yu <chao@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-References: <20210107141158.312835d8@canb.auug.org.au>
-From:   Chao Yu <yuchao0@huawei.com>
-Message-ID: <3f921b3d-e8f2-e010-0f6b-76596e29e997@huawei.com>
-Date:   Thu, 7 Jan 2021 19:28:19 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.9.1
+        id S1727213AbhAGL3z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 06:29:55 -0500
+Received: from foss.arm.com ([217.140.110.172]:58462 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726151AbhAGL3y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Jan 2021 06:29:54 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 2EC8D31B;
+        Thu,  7 Jan 2021 03:29:09 -0800 (PST)
+Received: from C02TD0UTHF1T.local (unknown [10.57.34.174])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 656C73F719;
+        Thu,  7 Jan 2021 03:29:06 -0800 (PST)
+Date:   Thu, 7 Jan 2021 11:29:03 +0000
+From:   Mark Rutland <mark.rutland@arm.com>
+To:     Maninder Singh <maninder1.s@samsung.com>
+Cc:     catalin.marinas@arm.com, will@kernel.org, broonie@kernel.org,
+        vincenzo.frascino@arm.com, samitolvanen@google.com,
+        ardb@kernel.org, maz@kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        v.narang@samsung.com, a.sahrawat@samsung.com
+Subject: Re: [PATCH 1/1] arm64/entry.S: check for stack overflow in el1 case
+ only
+Message-ID: <20210107112903.GB7523@C02TD0UTHF1T.local>
+References: <CGME20201211091546epcas5p24511325afff612d57306d733a3307648@epcas5p2.samsung.com>
+ <1607678131-20347-1-git-send-email-maninder1.s@samsung.com>
 MIME-Version: 1.0
-In-Reply-To: <20210107141158.312835d8@canb.auug.org.au>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.136.114.67]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1607678131-20347-1-git-send-email-maninder1.s@samsung.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Stephen,
-
-On 2021/1/7 11:11, Stephen Rothwell wrote:
-> Hi all,
+On Fri, Dec 11, 2020 at 02:45:31PM +0530, Maninder Singh wrote:
+> current code checks for sp bit flip in all exceptions,
+> but only el1 exceptions requires this. el0 can not enter
+> into stack overflow case directly.
 > 
-> After merging the f2fs tree, today's linux-next build (htmldocs) produced
-> this warning:
+> it will improve performance for el0 exceptions and interrupts.
 > 
-> Documentation/ABI/testing/sysfs-fs-f2fs:382: WARNING: Inline emphasis start-string without end-string.
+> Signed-off-by: Maninder Singh <maninder1.s@samsung.com>
+> Signed-off-by: Vaneet Narang <v.narang@samsung.com>
 
-IIUC, should I remove "/*" and "*/" for newly added entry in sysfs-fs-f2fs?
+I did consider doing this at the time Ard and I wrote the overflow
+detection, but there was no measureable impact on the workloads that I
+tested, and it seemed worthwhile to have this as a sanity check in case
+the SP was somehow corrupted (and to avoid any surprizing differences
+between the EL0 and EL1 entry paths).
 
-+What:		/sys/fs/f2fs/<disk>/stat/sb_status
-+Date:		December 2020
-+Contact:	"Chao Yu" <yuchao0@huawei.com>
-+Description:	Show status of f2fs superblock in real time.
-+
-+		value           sb status macro                 description
-+		0x1             SBI_IS_DIRTY,                   /* dirty flag for checkpoint */
-+		0x2             SBI_IS_CLOSE,                   /* specify unmounting */
-+		0x4             SBI_NEED_FSCK,                  /* need fsck.f2fs to fix */
-...
+When you say "it will improve performance for el0 exceptions and
+interrupts", do you have a workload where this has a measureable impact,
+or was this found by inspection? Unless this is causing a real issue,
+I'd prefer to leave it as-is for now.
 
 Thanks,
+Mark.
 
+> ---
+>  arch/arm64/kernel/entry.S | 2 ++
+>  1 file changed, 2 insertions(+)
 > 
-> Introduced by commit
-> 
->    f23307575903 ("f2fs: introduce sb_status sysfs node")
+> diff --git a/arch/arm64/kernel/entry.S b/arch/arm64/kernel/entry.S
+> index 2a93fa5..cad8faf 100644
+> --- a/arch/arm64/kernel/entry.S
+> +++ b/arch/arm64/kernel/entry.S
+> @@ -77,6 +77,7 @@ alternative_else_nop_endif
+>  
+>  	sub	sp, sp, #S_FRAME_SIZE
+>  #ifdef CONFIG_VMAP_STACK
+> +	.if	\el == 1
+>  	/*
+>  	 * Test whether the SP has overflowed, without corrupting a GPR.
+>  	 * Task and IRQ stacks are aligned so that SP & (1 << THREAD_SHIFT)
+> @@ -118,6 +119,7 @@ alternative_else_nop_endif
+>  	/* We were already on the overflow stack. Restore sp/x0 and carry on. */
+>  	sub	sp, sp, x0
+>  	mrs	x0, tpidrro_el0
+> +	.endif
+>  #endif
+>  	b	el\()\el\()_\label
+>  	.endm
+> -- 
+> 1.9.1
 > 
