@@ -2,88 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FE4E2ED32F
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 16:04:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 192D02ED336
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 16:07:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728394AbhAGPDB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 10:03:01 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55014 "EHLO mail.kernel.org"
+        id S1727984AbhAGPGc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 10:06:32 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55996 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728073AbhAGPC7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 10:02:59 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AFC3B224D3;
-        Thu,  7 Jan 2021 15:02:18 +0000 (UTC)
+        id S1726319AbhAGPGb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Jan 2021 10:06:31 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E968322B2B;
+        Thu,  7 Jan 2021 15:05:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610031739;
-        bh=C/0ntKQkdPNZnm9r9k+uBHqpkoJHu0igxr4uHyjebhU=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=qobnh4uZ61nKfrB4EFp96Aj+I0k8pbsjsnnVgPQ+KOuL2SmiaClRWlHIUC3RR25LD
-         o5/+TJiEHwF4kBz9Hxy4kmnIEhA5haQAEJ6ZjTnP1dr1tXZ6wsQP23PyNVFmfL23nY
-         AzgFL7QsettAIyJdIiMXUUe43aPxstTHYJ1zwQDw+MfZ5/AZ2H0i+5pZDeVwbv9xNH
-         L/2oCziCPGu1r9Z1NI0vGOjiccr8gh+XPRTLcw3NUcFcMo7BUpFPYIRjGds4PnbBdn
-         RbZZojIrQRmj7dsnipVKMRyS/MmgCoSwRd2ddXhVFscncEyPY7NQhmiVcy+cpNnaOR
-         /7F/9Zr4QvxIA==
-Date:   Thu, 7 Jan 2021 09:02:16 -0600
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Sunil Muthuswamy <sunilmut@microsoft.com>
-Cc:     KY Srinivasan <kys@microsoft.com>,
-        Boqun Feng <Boqun.Feng@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Wei Liu <liuwe@microsoft.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        "\"H. Peter Anvin\"" <hpa@zytor.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Rob Herring <robh@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>
-Subject: Re: [PATCH] Hyper-V: pci: x64: Generalize irq/msi set-up and handling
-Message-ID: <20210107150216.GA1365474@bjorn-Precision-5520>
+        s=k20201202; t=1610031950;
+        bh=QVBe+8xawnGxSu90TwsMGxNaWxKPCzC1iEicL95XcVg=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=sALm77uDwhTnLwzNgG2IAGY0QipoBSlHduiLeV4XfCU9Yq4gLmQSyBH9grBPbnsy/
+         CNGKTXVxSTktK2ztsJbdqWs0Hi+/PUxsh0LpeEiQGrTAk9HkzGExj+yclOaABMJyEi
+         rXSmXB/J0p2bL6C8RKEV2xHoBhFLfbwFZUSJgz9jOBsbUXH5JXPBArl3dAO6d2qqv6
+         iW2Ti7eI0ZmpgFmybuQzjxcHzGbUqX6DfrExIGbTBDMWpoRE0VXCzEN1PB3RIuRjB7
+         G2/k9tI++wpOX539PqN0YXJCDaPCSYtLNNsQ5fPVhBECFwf5jbcdcBxnJlhY7dcemt
+         9VeA+jrwkKUlA==
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id AB6E83522589; Thu,  7 Jan 2021 07:05:50 -0800 (PST)
+Date:   Thu, 7 Jan 2021 07:05:50 -0800
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Yury Norov <yury.norov@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        kernel-team@fb.com, Paul Gortmaker <paul.gortmaker@windriver.com>
+Subject: Re: [PATCH RFC cpumask 4/5] cpumask: Add "last" alias for cpu list
+ specifications
+Message-ID: <20210107150550.GA12121@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <20210106004850.GA11682@paulmck-ThinkPad-P72>
+ <20210106004956.11961-4-paulmck@kernel.org>
+ <X/WHk1hY3cmMAXQz@hirez.programming.kicks-ass.net>
+ <CAAH8bW9jfSeYe+d6feQUTKuqwKr_U0aCGPZEiBh6Hp=KT2iPrA@mail.gmail.com>
+ <X/cYR474/PiTvjfC@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <SN4PR2101MB08808404302E2E1AB6A27DD6C0AF9@SN4PR2101MB0880.namprd21.prod.outlook.com>
+In-Reply-To: <X/cYR474/PiTvjfC@hirez.programming.kicks-ass.net>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There seems to be a long tradition of dreaming up random formats for
-the subject lines of Hyper-V-related patches.  Look at all the
-different ways these are spelled, hyphenated, and capitalized:
+On Thu, Jan 07, 2021 at 03:18:47PM +0100, Peter Zijlstra wrote:
+> On Wed, Jan 06, 2021 at 01:16:50PM -0800, Yury Norov wrote:
+> > On Wed, Jan 6, 2021 at 1:50 AM Peter Zijlstra <peterz@infradead.org> wrote:
+> 
+> > > Aside from the comments Yury made, on how all this is better in
+> > > bitmap_parselist(), how about doing s/last/N/ here? For me something
+> > > like: "4-N" reads much saner than "4-last".
+> > >
+> > > Also, it might make sense to teach all this about core/node topology,
+> > > but that's going to be messy. Imagine something like "Core1-CoreN" or
+> > > "Nore1-NodeN" to mean the mask all/{Core,Node}0.
+> > 
+> > If you just want to teach bitmap_parselist() to "s/Core0/0-4",  I think
+> > it's doable if we add a hook to a proper subsystem in bitmap_parselist().
+> > 
+> > > And that is another feature that seems to be missing from parselist,
+> > > all/except.
+> > 
+> > We already support groups in a range. I think it partially covers the
+> > proposed all/except.
+> > 
+> > Can you share examples on what you miss?
+> 
+> The obvious one is the "all/Core0" example above, which would be
+> equivalent to "Core1-CoreN".
+> 
+> Another case that I don't think we can do today is something like, give
+> me SMT0 of each core.
+> 
+> I don't really see the use of the ranges thing, CPU enumeration just
+> isn't sane like that.
 
-  $ git log --oneline arch/x86/include/asm/mshyperv.h
-  626b901f6044 ("Drivers: hv: vmbus: Add parsing of VMbus interrupt in ACPI DSDT")
-  b9d8cf2eb3ce ("x86/hyperv: Make hv_setup_sched_clock inline")
-  a16be368dd3f ("x86/entry: Convert various hypervisor vectors to IDTENTRY_SYSVEC")
-  2ddddd0b4e89 ("Drivers: hv: Move AEOI determination to architecture dependent code")
-  1cf106d93245 ("PCI: hv: Introduce hv_msi_entry")
-  b95a8a27c300 ("x86/vdso: Use generic VDSO clock mode storage")
-  eec399dd8627 ("x86/vdso: Move VDSO clocksource state tracking to callback")
-  fa36dcdf8b20 ("x86: hv: Add function to allocate zeroed page for Hyper-V")
-  8c3e44bde7fd ("x86/hyperv: Add functions to allocate/deallocate page for Hyper-V")
-  765e33f5211a ("Drivers: hv: vmbus: Break out ISA independent parts of mshyperv.h")
-  dd2cb348613b ("clocksource/drivers: Continue making Hyper-V clocksource ISA agnostic")
-  cc4edae4b924 ("x86/hyper-v: Add HvFlushGuestAddressList hypercall support")
-  b42967dcac1d ("x86/hyper-v: Fix indentation in hv_do_fast_hypercall16()")
-  3a025de64bf8 ("x86/hyperv: Enable PV qspinlock for Hyper-V")
-  eb914cfe72f4 ("X86/Hyper-V: Add flush HvFlushGuestPhysicalAddressSpace hypercall support")
-  ...
+Ranges are useful on many systems.  Users of systems with insane CPU
+enumeration are of course free to provide comma-separated lists of
+numbers for their cpumask boot parameters, avoiding use of minus signs.
 
-On Thu, Jan 07, 2021 at 05:05:36AM +0000, Sunil Muthuswamy wrote:
-> Currently, operations related to irq/msi in Hyper-V vPCI are
-
-In comments in the patch, you use "IRQ" and "MSI".  I don't know
-whether "vPCI" means something or is a typo.  I suppose it probably
-means "virtual PCI" as below.
-
-> x86-specific code. In order to support virtual PCI on Hyper-V for
-> other architectures, introduce generic interfaces to replace the
-> x86-specific ones. There are no functional changes in this patch.
->
-> Signed-off-by: Sunil Muthuswamy <sunilmut@microsoft.com>
-> Signed-off-by: Boqun Feng (Microsoft) <boqun.feng@gmail.com>
-> ...
+							Thanx, Paul
