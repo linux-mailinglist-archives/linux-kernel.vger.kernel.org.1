@@ -2,33 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD26B2ED1E6
+	by mail.lfdr.de (Postfix) with ESMTP id 607C82ED1E5
 	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 15:22:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729406AbhAGOTK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 09:19:10 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39092 "EHLO mail.kernel.org"
+        id S1729382AbhAGOTJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 09:19:09 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39090 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729126AbhAGOR3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1729091AbhAGOR3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 7 Jan 2021 09:17:29 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 50F6523356;
-        Thu,  7 Jan 2021 14:17:03 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8102323358;
+        Thu,  7 Jan 2021 14:17:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610029023;
-        bh=PZq/q3a2lL8AjVHhweQmI0qXZ3AxLRxMRtsWFfqdqeI=;
+        s=korg; t=1610029026;
+        bh=zGPLzw0ptRmSF1sK8hvpfqO36N5dxwnYz9Xb4qpCBrU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=vHyL9j8ikIDXmjMef4MQSfrc7x3Ux9KMmvk6aEpa/bYHuFP7XwcrkNl1Pw27r9Xl0
-         JAeWVvIjx8WdYpk9MshyUbjfcxeI+CRzJrVAGGATwR6op1ex6Qg96BTvQhRGfe3vov
-         HzMPkv92wTVesYpbyMxJnkMSD0tg7TxSeAs0cOI4=
+        b=xGH37FZbkKnBz6I/8mujvwIpz6HelRET5bNtbXdAp4kAuKSPx7XDZoBfmeRXq4Tdz
+         44R1URKKxtezvvg5hR9cCbHrWXs7nzH+ycs3R4/TaRcX3S6x28v08BoPFTnUB8AvZj
+         sXuIm8sbc+EyKfO7z/XfimnXg8ealuTToOrfkafI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Kailang Yang <kailang@realtek.com>,
+        Hui Wang <hui.wang@canonical.com>,
         Takashi Iwai <tiwai@suse.de>,
         Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-Subject: [PATCH 4.9 05/32] ALSA: hda/realtek - Support Dell headset mode for ALC3271
-Date:   Thu,  7 Jan 2021 15:16:25 +0100
-Message-Id: <20210107140828.124378191@linuxfoundation.org>
+Subject: [PATCH 4.9 06/32] ALSA: hda - Fix a wrong FIXUP for alc289 on Dell machines
+Date:   Thu,  7 Jan 2021 15:16:26 +0100
+Message-Id: <20210107140828.165458468@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210107140827.866214702@linuxfoundation.org>
 References: <20210107140827.866214702@linuxfoundation.org>
@@ -40,60 +41,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kailang Yang <kailang@realtek.com>
+From: Hui Wang <hui.wang@canonical.com>
 
-commit fcc6c877a01f83cbce1cca885ea62df6a10d33c3 upstream
+commit d5078193e56bb24f4593f00102a3b5e07bb84ee0 upstream
 
-Add DELL4_MIC_NO_PRESENCE model.
-Add the pin configuration value of this machine into the pin_quirk
-table to make DELL4_MIC_NO_PRESENCE apply to this machine.
+With the alc289, the Pin 0x1b is Headphone-Mic, so we should assign
+ALC269_FIXUP_DELL4_MIC_NO_PRESENCE rather than
+ALC225_FIXUP_DELL1_MIC_NO_PRESENCE to it. And this change is suggested
+by Kailang of Realtek and is verified on the machine.
 
-Signed-off-by: Kailang Yang <kailang@realtek.com>
+Fixes: 3f2f7c553d07 ("ALSA: hda - Fix headset mic detection problem for two Dell machines")
+Cc: Kailang Yang <kailang@realtek.com>
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Hui Wang <hui.wang@canonical.com>
 Signed-off-by: Takashi Iwai <tiwai@suse.de>
 Signed-off-by: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- sound/pci/hda/patch_realtek.c |   16 ++++++++++++++++
- 1 file changed, 16 insertions(+)
+ sound/pci/hda/patch_realtek.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 --- a/sound/pci/hda/patch_realtek.c
 +++ b/sound/pci/hda/patch_realtek.c
-@@ -4896,6 +4896,7 @@ enum {
- 	ALC269_FIXUP_DELL1_MIC_NO_PRESENCE,
- 	ALC269_FIXUP_DELL2_MIC_NO_PRESENCE,
- 	ALC269_FIXUP_DELL3_MIC_NO_PRESENCE,
-+	ALC269_FIXUP_DELL4_MIC_NO_PRESENCE,
- 	ALC269_FIXUP_HEADSET_MODE,
- 	ALC269_FIXUP_HEADSET_MODE_NO_HP_MIC,
- 	ALC269_FIXUP_ASPIRE_HEADSET_MIC,
-@@ -5199,6 +5200,16 @@ static const struct hda_fixup alc269_fix
- 		.chained = true,
- 		.chain_id = ALC269_FIXUP_HEADSET_MODE_NO_HP_MIC
- 	},
-+	[ALC269_FIXUP_DELL4_MIC_NO_PRESENCE] = {
-+		.type = HDA_FIXUP_PINS,
-+		.v.pins = (const struct hda_pintbl[]) {
-+			{ 0x19, 0x01a1913c }, /* use as headset mic, without its own jack detect */
-+			{ 0x1b, 0x01a1913d }, /* use as headphone mic, without its own jack detect */
-+			{ }
-+		},
-+		.chained = true,
-+		.chain_id = ALC269_FIXUP_HEADSET_MODE
-+	},
- 	[ALC269_FIXUP_HEADSET_MODE] = {
- 		.type = HDA_FIXUP_FUNC,
- 		.v.func = alc_fixup_headset_mode,
-@@ -6267,6 +6278,11 @@ static const struct snd_hda_pin_quirk al
- 		{0x17, 0x90170110},
- 		{0x1a, 0x03011020},
- 		{0x21, 0x03211030}),
-+	SND_HDA_PIN_QUIRK(0x10ec0299, 0x1028, "Dell", ALC269_FIXUP_DELL4_MIC_NO_PRESENCE,
-+		ALC225_STANDARD_PINS,
-+		{0x12, 0xb7a60130},
-+		{0x13, 0xb8a60140},
-+		{0x17, 0x90170110}),
- 	{}
- };
- 
+@@ -6194,7 +6194,7 @@ static const struct snd_hda_pin_quirk al
+ 		{0x12, 0x90a60120},
+ 		{0x14, 0x90170110},
+ 		{0x21, 0x0321101f}),
+-	SND_HDA_PIN_QUIRK(0x10ec0289, 0x1028, "Dell", ALC225_FIXUP_DELL1_MIC_NO_PRESENCE,
++	SND_HDA_PIN_QUIRK(0x10ec0289, 0x1028, "Dell", ALC269_FIXUP_DELL4_MIC_NO_PRESENCE,
+ 		{0x12, 0xb7a60130},
+ 		{0x14, 0x90170110},
+ 		{0x21, 0x04211020}),
 
 
