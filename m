@@ -2,110 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE4892ECE1A
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 11:48:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 213202ECE1D
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 11:49:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727363AbhAGKrP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 05:47:15 -0500
-Received: from aserp2120.oracle.com ([141.146.126.78]:48742 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725974AbhAGKrP (ORCPT
+        id S1727649AbhAGKrg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 05:47:36 -0500
+Received: from esa.microchip.iphmx.com ([68.232.153.233]:11639 "EHLO
+        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726326AbhAGKrf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 05:47:15 -0500
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 107Ad2RI021237;
-        Thu, 7 Jan 2021 10:46:09 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- content-transfer-encoding : in-reply-to; s=corp-2020-01-29;
- bh=+nXFbYO12FXZYg/zscsbBhBStV646kHBHdEB2nrr0Bc=;
- b=k5KchOdDK0vlluEtl6ogmdaePJBG7UVjzvwqGPCGBJHYf0uw0Ll9kDy1hlDPIi9FTbJ+
- HLkFk8VJbN1NHaqJzptTYneUm4qmpqbi+i/Q8robgbH/G/Ecm0sFTjdG7XZ5CzHAC9Fj
- 136uKmTA5kg/dAQLIU+vSbDS/1lUVhKmqQEhvshBgWhA6punKy+i1W8id0I407rjUcKC
- VTVprHXakDrSqORmzo79SIAUDORLM6eqWZZnH1596Oq8s01HeUU5TSkqhwT4t7adEgC1
- ueSuRyNg+QRFKqTH5/L83IOMP0xWeEpwxX/0RR1p2decuSJFCoZIPAKEZqfvBOj/yyN2 nQ== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by aserp2120.oracle.com with ESMTP id 35wepmbuwf-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 07 Jan 2021 10:46:09 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 107AeWPL190215;
-        Thu, 7 Jan 2021 10:46:08 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by aserp3030.oracle.com with ESMTP id 35v4rdv74f-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 07 Jan 2021 10:46:08 +0000
-Received: from abhmp0006.oracle.com (abhmp0006.oracle.com [141.146.116.12])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 107Ak5XB027722;
-        Thu, 7 Jan 2021 10:46:05 GMT
-Received: from kadam (/102.36.221.92)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Thu, 07 Jan 2021 02:46:04 -0800
-Date:   Thu, 7 Jan 2021 13:45:57 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     LABBE Corentin <clabbe@baylibre.com>
-Cc:     devel@driverdev.osuosl.org, gregkh@linuxfoundation.org,
-        linux-kernel@vger.kernel.org,
-        Zheng Yongjun <zhengyongjun3@huawei.com>,
-        mjpeg-users@lists.sourceforge.net, mchehab@kernel.org,
-        linux-media@vger.kernel.org
-Subject: Re: [PATCH -next] media: zoran: use resource_size
-Message-ID: <20210107104557.GA5083@kadam>
-References: <20210106131702.32507-1-zhengyongjun3@huawei.com>
- <20210106145100.GJ2809@kadam>
- <X/Ybbj6gN2xrhIwP@Red>
+        Thu, 7 Jan 2021 05:47:35 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1610016455; x=1641552455;
+  h=from:to:cc:subject:date:message-id:mime-version;
+  bh=yHSXn6PNaIM5VUt6eMTv9SHPBhxQB6kktLgSWl4aL3g=;
+  b=HeN2JZ7n5VIffX3yOY3npFLjkxV/o9IYMk7fp5bnL60wlyrzJzufiV4d
+   rhS5TJJEgEB1c9BfQ8ImZ7wUnbU8QWt9kUFdzKmbiBasFADfTQIHcv0Zw
+   TsJu+9QuJvVlTeXyIpFLyNRkS4V4qEtANmIaSt4OQZ5yzd08jCU9p4sFC
+   vSZKN+umCjlQ07HCK+VNOuw8awkFZiXgNOtbtFWqrE4Q2XJyM8EZbLY1W
+   WBHKWK0OdNTMnSY602YAHHodoep2DhqbTvZtLLwPjcpinqPdWAOkZ7bS3
+   coSmrZeuNYbHWuvyYAFk4sf+VrZMQrvX8vuibRd/Wx7QkHCil5li8VvT+
+   w==;
+IronPort-SDR: Lafo0b6nQZ9shAR+tKcmHkRIMxFsKrM/bE0rLbdP03aiYdSI1Nk74HUIhar3XWYuHLKPUFrQ/n
+ j07pw1WeQ/5ksxfOjfW0FgAv/VrwTkyLokpKqx+t4vLtar4XU6oI9GsLnxZTQa8Gq0EVlt/O6m
+ YGVKxnVcj0KyaBmDu/CnN/XQ8qvlFnS0s0DriO/G7yaRh5vCGff075xQu+918CY4TNY/kA6gB7
+ /d2JYFyJn/aATrUPjTd3VM5QUCNhILkUeWC2rO3PTNsjiLduzlqElt7+/bTC8CjTBt++I32HdV
+ wIw=
+X-IronPort-AV: E=Sophos;i="5.79,329,1602572400"; 
+   d="scan'208";a="110118444"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa1.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 07 Jan 2021 03:46:19 -0700
+Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
+ chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Thu, 7 Jan 2021 03:46:19 -0700
+Received: from m18063-ThinkPad-T460p.microchip.com (10.10.115.15) by
+ chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server id
+ 15.1.1979.3 via Frontend Transport; Thu, 7 Jan 2021 03:46:14 -0700
+From:   Claudiu Beznea <claudiu.beznea@microchip.com>
+To:     <a.zummo@towertech.it>, <alexandre.belloni@bootlin.com>,
+        <robh+dt@kernel.org>, <mark.rutland@arm.com>,
+        <nicolas.ferre@microchip.com>, <ludovic.desroches@microchip.com>
+CC:     <linux-rtc@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>,
+        Claudiu Beznea <claudiu.beznea@microchip.com>
+Subject: [PATCH] dt-bindings: rtc: at91rm9200: add sama7g5 compatible
+Date:   Thu, 7 Jan 2021 12:46:12 +0200
+Message-ID: <1610016372-31784-1-git-send-email-claudiu.beznea@microchip.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <X/Ybbj6gN2xrhIwP@Red>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9856 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 mlxscore=0 bulkscore=0
- suspectscore=0 spamscore=0 adultscore=0 malwarescore=0 phishscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2101070064
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9856 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 bulkscore=0 spamscore=0
- impostorscore=0 phishscore=0 lowpriorityscore=0 suspectscore=0
- priorityscore=1501 mlxscore=0 malwarescore=0 clxscore=1015 mlxlogscore=999
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2101070064
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 06, 2021 at 09:19:58PM +0100, LABBE Corentin wrote:
-> Le Wed, Jan 06, 2021 at 05:51:00PM +0300, Dan Carpenter a écrit :
-> > On Wed, Jan 06, 2021 at 09:17:02PM +0800, Zheng Yongjun wrote:
-> > > Use resource_size rather than a verbose computation on
-> > > the end and start fields.
-> > > 
-> > > Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>
-> > > ---
-> > >  drivers/staging/media/zoran/zoran_driver.c | 2 +-
-> > >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > > 
-> > > diff --git a/drivers/staging/media/zoran/zoran_driver.c b/drivers/staging/media/zoran/zoran_driver.c
-> > > index 808196ea5b81..d60b4c73ea80 100644
-> > > --- a/drivers/staging/media/zoran/zoran_driver.c
-> > > +++ b/drivers/staging/media/zoran/zoran_driver.c
-> > > @@ -1020,7 +1020,7 @@ int zoran_queue_init(struct zoran *zr, struct vb2_queue *vq)
-> > >  	vq->buf_struct_size = sizeof(struct zr_buffer);
-> > >  	vq->ops = &zr_video_qops;
-> > >  	vq->mem_ops = &vb2_dma_contig_memops;
-> > > -	vq->gfp_flags = GFP_DMA32,
-> > > +	vq->gfp_flags = GFP_DMA32;
-> > 
-> > The commit doesn't match the patch.  Also this driver is in
-> > staging because it's going to be deleted soon so there probably isn't
-> > much point doing cleanups.
-> > 
-> 
-> No, the driver just came back in staging since I fixed the videobuf2 conversion.
+Add compatible for SAMA7G5 RTC. At the moment the driver is falling
+back on SAM9X60's compatible but SAMA7G5 doesn't have the tamper mode
+register and tamper debounce period register thus the need for a new
+compatible to differentiate b/w these two in case tamper feature will
+be implemented in future.
 
-Ah... Thanks.
+Signed-off-by: Claudiu Beznea <claudiu.beznea@microchip.com>
+---
+ Documentation/devicetree/bindings/rtc/atmel,at91rm9200-rtc.yaml | 1 +
+ 1 file changed, 1 insertion(+)
 
-regards,
-dan carpenter
+diff --git a/Documentation/devicetree/bindings/rtc/atmel,at91rm9200-rtc.yaml b/Documentation/devicetree/bindings/rtc/atmel,at91rm9200-rtc.yaml
+index 02bbfe726c62..994de43d17fa 100644
+--- a/Documentation/devicetree/bindings/rtc/atmel,at91rm9200-rtc.yaml
++++ b/Documentation/devicetree/bindings/rtc/atmel,at91rm9200-rtc.yaml
+@@ -20,6 +20,7 @@ properties:
+       - atmel,sama5d4-rtc
+       - atmel,sama5d2-rtc
+       - microchip,sam9x60-rtc
++      - microchip,sama7g5-rtc
+ 
+   reg:
+     maxItems: 1
+-- 
+2.7.4
 
