@@ -2,81 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B5E3C2ED469
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 17:36:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F8FB2ED470
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 17:40:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728008AbhAGQfj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 11:35:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47716 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725835AbhAGQfj (ORCPT
+        id S1728033AbhAGQkR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 11:40:17 -0500
+Received: from mail-ot1-f44.google.com ([209.85.210.44]:40679 "EHLO
+        mail-ot1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726467AbhAGQkQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 11:35:39 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A7EBC0612F6;
-        Thu,  7 Jan 2021 08:34:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:Subject:Sender:
-        Reply-To:Cc:Content-ID:Content-Description;
-        bh=r1DkkM634LmbM+8iNum9ry0SlTP4QSLEZKVyMcSDUE8=; b=pkREtNwWgEZG339X0qE+wgQ1eF
-        N9UymPXbyG5MYV1N93S6//KKUV8sgkTU+5/T5QHr4fPFUeiQbH3BF+QPDcVfv3tZCuJOyHwZapgMP
-        CVEKXDFQqcRmGazWwLtm932MmwHgLH8yYJqXMeoB4wop9zQVuUcbiOwF1rIE9EVS/hHBaSmaUjFxh
-        trQp26ZztNnjoipY2KP31JcwY5kMS8GQ394GLKnEPQ/qrnes2Y4Ce5FrC8un1ChS/WuJC7WrMtX52
-        U/q1saIHp87MFEvzHms9l0bP+YbW1xwI4GVrNdirESAqDrhB+NYVxP19BXcjoeTF4Bbk8X6pv/vjn
-        ZSwTCf6w==;
-Received: from [2601:1c0:6280:3f0::79df]
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kxYFT-0007Dt-L7; Thu, 07 Jan 2021 16:34:55 +0000
-Subject: Re: [PATCH] docs: admin-guide: bootconfig: Fix feils to fails
-To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>, mhiramat@kernel.org,
-        corbet@lwn.net, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210107125610.1576368-1-unixbhaskar@gmail.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <ee03c134-22f5-0845-de04-6b4d38f00ec2@infradead.org>
-Date:   Thu, 7 Jan 2021 08:34:46 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        Thu, 7 Jan 2021 11:40:16 -0500
+Received: by mail-ot1-f44.google.com with SMTP id j12so6821138ota.7;
+        Thu, 07 Jan 2021 08:40:01 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=6f15dDz/sBid4bA08/uLFiWT+A9f5KxxTm6Kjvrbx5o=;
+        b=r97fbXAkSfFvW7v31pbLgEytAiwCyhDS51c0lp4rEVvQUZmnzoWbBrDC5F4Umnx1pd
+         Yw0e+sCE5ru9K/hnzm2q/p8hfjpyJgAFJnwTspvYGIX6U42g2F8fv8wkt6gUylhWT9qh
+         aThDZkFWK3tJ1C+/ImC/eFLromXhkGX6Vl13GEe0aVsr5QIPHk++u8lo1pYj37Z9E5VX
+         +TUsYlZEKazRlECUoeaIoo02r7DJIZ1VmjbI9Z3JqXSSGS3p7Ls0CCB8rDuh0Rc20Px1
+         Kp1kcXGnL5f58OwCd11NOYxumUxsZLOM6rPYr4U9S6CFs1U75OVclPxhLLwI9qfipcLA
+         8Dyw==
+X-Gm-Message-State: AOAM533opNkbbghwf4Hkieq3xnsl3vyZ2OkXDESLd3qxBBH92/1rhS6V
+        +L/DlrP5TsUIYY8+5gHaGuz0h+zpGDwUo/ecRCo=
+X-Google-Smtp-Source: ABdhPJyRCd+XcKa12I5Zg+gyy1RnqAUd0zOrCx8YgJzzFAyySoyWiJ2m+CdecnCaGOeHVUXx+emZxEUWfFIS7uirqiw=
+X-Received: by 2002:a9d:67da:: with SMTP id c26mr7245123otn.321.1610037575690;
+ Thu, 07 Jan 2021 08:39:35 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20210107125610.1576368-1-unixbhaskar@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210105101957.59072-1-colin.king@canonical.com> <20210105102101.y4jdqdmcru5ouec4@vireshk-i7>
+In-Reply-To: <20210105102101.y4jdqdmcru5ouec4@vireshk-i7>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Thu, 7 Jan 2021 17:39:24 +0100
+Message-ID: <CAJZ5v0gF9XRNnn+O+kCRFtas9sgrQgk8piF1OoHqmGhi66qZwg@mail.gmail.com>
+Subject: Re: [PATCH][V3] cpufreq: powernow-k8: pass policy rather than use cpufreq_cpu_get
+To:     Viresh Kumar <viresh.kumar@linaro.org>,
+        Colin King <colin.king@canonical.com>
+Cc:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Stephen Warren <swarren@nvidia.com>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        kernel-janitors@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 1/7/21 4:56 AM, Bhaskar Chowdhury wrote:
-> s/feils/fails/p
-> 
-> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+On Tue, Jan 5, 2021 at 11:22 AM Viresh Kumar <viresh.kumar@linaro.org> wrote:
+>
+> On 05-01-21, 10:19, Colin King wrote:
+> > From: Colin Ian King <colin.king@canonical.com>
+> >
+> > Currently there is an unlikely case where cpufreq_cpu_get returns a
+> > null policy and this will cause a null pointer dereference later on.
+> > Fix this by passing the policy to transition_frequency_fidvid from the
+> > caller and hence eliminating the need for the cpufreq_cpu_get and
+> > cpufreq_cpu_put.  Thanks to Viresh Kumar for suggesting the fix.
+> >
+> > Addresses-Coverity: ("Dereference null return")
+> > Fixes: b43a7ffbf33b ("cpufreq: Notify all policy->cpus in cpufreq_notify_transition()")
+> > Signed-off-by: Colin Ian King <colin.king@canonical.com>
+> > ---
+> >
+> > V2: pass the policy to transition_frequency_fidvid rather than add
+> >     a null pointer check on the return from a cpufreq_cpu_get call.
+> > V3: update subject line to match the fix
+> >
+> > ---
+> >  drivers/cpufreq/powernow-k8.c | 9 +++------
+> >  1 file changed, 3 insertions(+), 6 deletions(-)
+>
+> Acked-by: Viresh Kumar <viresh.kumar@linaro.org>
 
-Acked-by: Randy Dunlap <rdunlap@infradead.org>
-
-Thanks.
-
-> ---
->  Documentation/admin-guide/bootconfig.rst | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/Documentation/admin-guide/bootconfig.rst b/Documentation/admin-guide/bootconfig.rst
-> index 9b90efcc3a35..452b7dcd7f6b 100644
-> --- a/Documentation/admin-guide/bootconfig.rst
-> +++ b/Documentation/admin-guide/bootconfig.rst
-> @@ -154,7 +154,7 @@ get the boot configuration data.
->  Because of this "piggyback" method, there is no need to change or
->  update the boot loader and the kernel image itself as long as the boot
->  loader passes the correct initrd file size. If by any chance, the boot
-> -loader passes a longer size, the kernel feils to find the bootconfig data.
-> +loader passes a longer size, the kernel fails to find the bootconfig data.
-> 
->  To do this operation, Linux kernel provides "bootconfig" command under
->  tools/bootconfig, which allows admin to apply or delete the config file
-> --
-> 2.30.0
-> 
-
-
--- 
-~Randy
+Applied as 5.11-rc material, thanks!
