@@ -2,156 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E734C2ECB1B
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 08:52:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B5B182ECAF8
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 08:31:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726987AbhAGHvV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 02:51:21 -0500
-Received: from mga12.intel.com ([192.55.52.136]:19927 "EHLO mga12.intel.com"
+        id S1726723AbhAGHbe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 02:31:34 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55600 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725862AbhAGHvU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 02:51:20 -0500
-IronPort-SDR: prHvJ0n5KoCnSYnEnmhOGobVu2PCWvruSRVndboKF932nkGiWWXZ40RmWu7NRgOJqo/nQTE6Nf
- I6/+9Mmtfj0Q==
-X-IronPort-AV: E=McAfee;i="6000,8403,9856"; a="156577794"
-X-IronPort-AV: E=Sophos;i="5.79,329,1602572400"; 
-   d="scan'208";a="156577794"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Jan 2021 23:50:31 -0800
-IronPort-SDR: zvJu60gQiuMjKGjz4BpZ+r0uDdEysFv1uBDV1rpEAxymaJlovjnAkSEXhna7R+Ngg2yDn494zw
- Ij/0+3SvLZUg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.79,329,1602572400"; 
-   d="scan'208";a="351169626"
-Received: from yiliu-dev.bj.intel.com (HELO iov-dev2.bj.intel.com) ([10.238.156.135])
-  by fmsmga008.fm.intel.com with ESMTP; 06 Jan 2021 23:50:29 -0800
-From:   Liu Yi L <yi.l.liu@intel.com>
-To:     baolu.lu@linux.intel.com, joro@8bytes.org, will@kernel.org
-Cc:     kevin.tian@intel.com, ashok.raj@intel.com, jun.j.tian@intel.com,
-        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
-        yi.y.sun@intel.com, yi.l.liu@intel.com, dan.carpenter@oracle.com
-Subject: [PATCH v4 3/3] iommu/vt-d: Fix ineffective devTLB invalidation for subdevices
-Date:   Thu,  7 Jan 2021 00:03:57 +0800
-Message-Id: <1609949037-25291-4-git-send-email-yi.l.liu@intel.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1609949037-25291-1-git-send-email-yi.l.liu@intel.com>
-References: <1609949037-25291-1-git-send-email-yi.l.liu@intel.com>
+        id S1725763AbhAGHbd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Jan 2021 02:31:33 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2391D2311A;
+        Thu,  7 Jan 2021 07:30:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1610004652;
+        bh=+nXGNxH2Zt0Faa3QOoPaLUx5njlSeX/AHRJiAlLZcJ0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Pp9Q08Y7tYbL2bEI7YSXEaDWoLtI22t+r7/d8VgzxWzlhCxZxvwe6/PYeOjtcXb39
+         tdSPUawxYbdv/jBy4U8DSdNnOkqlptS+8O4/2VAUn9GAcItZOU/BdWDaR3A+cPI6f8
+         TxzhKVr9FruyeVgZrz2CNy+KFh36/FLNEsmRPH2tIM8Qjv9J/mM1nBQKgDq2GvQALm
+         ex2s6aKA1L8zy5t+OHlb8Qk/Jm1lWxEdytyD9Z5TrEmz5XEAQjqT+FZngYnuZl2I07
+         QgioHu+0S8xCmnnCE+Zgry5+Ez0ewlcth4voweLKAtywK9MhVaMz6CctY3YaNpPyEg
+         o2Fo+FY2mt6+g==
+Date:   Wed, 6 Jan 2021 23:30:50 -0800
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Stephan =?iso-8859-1?Q?M=FCller?= <smueller@chronox.de>
+Cc:     herbert@gondor.apana.org.au, mathew.j.martineau@linux.intel.com,
+        dhowells@redhat.com, linux-crypto@vger.kernel.org,
+        linux-fscrypt@vger.kernel.org, linux-kernel@vger.kernel.org,
+        keyrings@vger.kernel.org
+Subject: Re: [PATCH 3/5] crypto: add RFC5869 HKDF
+Message-ID: <X/a4qt9Oiw4WgoRY@sol.localdomain>
+References: <4616980.31r3eYUQgx@positron.chronox.de>
+ <12679948.uLZWGnKmhe@positron.chronox.de>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <12679948.uLZWGnKmhe@positron.chronox.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-iommu_flush_dev_iotlb() is called to invalidate caches on device. It only
-loops the devices which are full-attached to the domain. For sub-devices,
-this is ineffective. This results in invalid caching entries left on the
-device. Fix it by adding loop for subdevices as well. Also, the domain->
-has_iotlb_device needs to be updated when attaching to subdevices.
+On Mon, Jan 04, 2021 at 10:49:13PM +0100, Stephan Müller wrote:
+> RFC5869 specifies an extract and expand two-step key derivation
+> function. The HKDF implementation is provided as a service function that
+> operates on a caller-provided HMAC cipher handle.
 
-Fixes: 67b8e02b5e761 ("iommu/vt-d: Aux-domain specific domain attach/detach")
-Signed-off-by: Liu Yi L <yi.l.liu@intel.com>
-Acked-by: Lu Baolu <baolu.lu@linux.intel.com>
----
- drivers/iommu/intel/iommu.c | 53 +++++++++++++++++++++++++++++++--------------
- 1 file changed, 37 insertions(+), 16 deletions(-)
+HMAC isn't a "cipher".
 
-diff --git a/drivers/iommu/intel/iommu.c b/drivers/iommu/intel/iommu.c
-index d7720a8..65cf06d 100644
---- a/drivers/iommu/intel/iommu.c
-+++ b/drivers/iommu/intel/iommu.c
-@@ -719,6 +719,8 @@ static int domain_update_device_node(struct dmar_domain *domain)
- 	return nid;
- }
- 
-+static void domain_update_iotlb(struct dmar_domain *domain);
-+
- /* Some capabilities may be different across iommus */
- static void domain_update_iommu_cap(struct dmar_domain *domain)
- {
-@@ -744,6 +746,8 @@ static void domain_update_iommu_cap(struct dmar_domain *domain)
- 		domain->domain.geometry.aperture_end = __DOMAIN_MAX_ADDR(domain->gaw - 1);
- 	else
- 		domain->domain.geometry.aperture_end = __DOMAIN_MAX_ADDR(domain->gaw);
-+
-+	domain_update_iotlb(domain);
- }
- 
- struct context_entry *iommu_context_addr(struct intel_iommu *iommu, u8 bus,
-@@ -1464,17 +1468,22 @@ static void domain_update_iotlb(struct dmar_domain *domain)
- 
- 	assert_spin_locked(&device_domain_lock);
- 
--	list_for_each_entry(info, &domain->devices, link) {
--		struct pci_dev *pdev;
--
--		if (!info->dev || !dev_is_pci(info->dev))
--			continue;
--
--		pdev = to_pci_dev(info->dev);
--		if (pdev->ats_enabled) {
-+	list_for_each_entry(info, &domain->devices, link)
-+		if (info->ats_enabled) {
- 			has_iotlb_device = true;
- 			break;
- 		}
-+
-+	if (!has_iotlb_device) {
-+		struct subdev_domain_info *sinfo;
-+
-+		list_for_each_entry(sinfo, &domain->subdevices, link_domain) {
-+			info = get_domain_info(sinfo->pdev);
-+			if (info && info->ats_enabled) {
-+				has_iotlb_device = true;
-+				break;
-+			}
-+		}
- 	}
- 
- 	domain->has_iotlb_device = has_iotlb_device;
-@@ -1555,25 +1564,37 @@ static void iommu_disable_dev_iotlb(struct device_domain_info *info)
- #endif
- }
- 
-+static void __iommu_flush_dev_iotlb(struct device_domain_info *info,
-+				    u64 addr, unsigned int mask)
-+{
-+	u16 sid, qdep;
-+
-+	if (!info || !info->ats_enabled)
-+		return;
-+
-+	sid = info->bus << 8 | info->devfn;
-+	qdep = info->ats_qdep;
-+	qi_flush_dev_iotlb(info->iommu, sid, info->pfsid,
-+			   qdep, addr, mask);
-+}
-+
- static void iommu_flush_dev_iotlb(struct dmar_domain *domain,
- 				  u64 addr, unsigned mask)
- {
--	u16 sid, qdep;
- 	unsigned long flags;
- 	struct device_domain_info *info;
-+	struct subdev_domain_info *sinfo;
- 
- 	if (!domain->has_iotlb_device)
- 		return;
- 
- 	spin_lock_irqsave(&device_domain_lock, flags);
--	list_for_each_entry(info, &domain->devices, link) {
--		if (!info->ats_enabled)
--			continue;
-+	list_for_each_entry(info, &domain->devices, link)
-+		__iommu_flush_dev_iotlb(info, addr, mask);
- 
--		sid = info->bus << 8 | info->devfn;
--		qdep = info->ats_qdep;
--		qi_flush_dev_iotlb(info->iommu, sid, info->pfsid,
--				qdep, addr, mask);
-+	list_for_each_entry(sinfo, &domain->subdevices, link_domain) {
-+		info = get_domain_info(sinfo->pdev);
-+		__iommu_flush_dev_iotlb(info, addr, mask);
- 	}
- 	spin_unlock_irqrestore(&device_domain_lock, flags);
- }
--- 
-2.7.4
+> The extract function is invoked via the crypto_hkdf_setkey call.
 
+Any reason not to call this crypto_hkdf_extract(), to match the specification?
+
+> RFC5869
+> allows two optional parameters to be provided to the extract operation:
+> the salt and additional information. Both are to be provided with the
+> seed parameter where the salt is the first entry of the seed parameter
+> and all subsequent entries are handled as additional information. If
+> the caller intends to invoke the HKDF without salt, it has to provide a
+> NULL/0 entry as first entry in seed.
+
+Where does "additional information" for extract come from?  RFC 5869 has:
+
+	HKDF-Extract(salt, IKM) -> PRK
+
+	Inputs:
+	      salt     optional salt value (a non-secret random value);
+		       if not provided, it is set to a string of HashLen zeros.
+	      IKM      input keying material
+
+There's no "additional information".
+
+> 
+> The expand function is invoked via the crypto_hkdf_generate and can be
+> invoked multiple times. This function allows the caller to provide a
+> context for the key derivation operation. As specified in RFC5869, it is
+> optional. In case such context is not provided, the caller must provide
+> NULL / 0 for the info / info_nvec parameters.
+
+Any reason not to call this crypto_hkdf_expand() to match the specification?
+
+- Eric
