@@ -2,403 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 93C7E2ED5E3
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 18:45:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 86C762ED5E9
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 18:45:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727959AbhAGRob (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 12:44:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58512 "EHLO
+        id S1729102AbhAGRo4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 12:44:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58584 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725944AbhAGRob (ORCPT
+        with ESMTP id S1728184AbhAGRoz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 12:44:31 -0500
-Received: from mail-oi1-x232.google.com (mail-oi1-x232.google.com [IPv6:2607:f8b0:4864:20::232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02F45C0612F4
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Jan 2021 09:43:51 -0800 (PST)
-Received: by mail-oi1-x232.google.com with SMTP id l207so8253050oib.4
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Jan 2021 09:43:50 -0800 (PST)
+        Thu, 7 Jan 2021 12:44:55 -0500
+Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BE7DC0612FB
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Jan 2021 09:44:14 -0800 (PST)
+Received: by mail-lf1-x12c.google.com with SMTP id x20so16435911lfe.12
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Jan 2021 09:44:14 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=hVuCAmcENRT4YTWMqLA1a/iaC1560RLZ0bRkSPBMwf4=;
-        b=kTUsN/DncYwlb0Ym5/DHhoV4R1m9C+PCCR8Bd+9sbJsdTr3P/D1S9q90cKQIGGa9uu
-         Dl2SYgORQubfRp18DSSvm7SVTtKWoJvpgMpT6ttJ1Hn4DqMlC75r+5TBFn9nk/mfvEOg
-         X6wAWjlUu1M8IqptHNa9FwJTVauDs4O0ngmT9T5lu1BQRl8JA5tHXUiCTk57p6WZeCF6
-         4qhiiSSnU9FtFc2/u5LC3Ze5mSDoZWcKqiY7CLDny6NnssxmzkrDslhjfmQKa6dwEdb1
-         ladZcRh8oyVg55MTmRiruDarhhQ8TQMxMHj2qCD6+KxdWgMAV5Z49kzyWa6h6y9ljfIg
-         XmfQ==
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=E/dnl8hzKP5RYsuLZ1L8Ai6F/gkDggofRzaB7P8q9uM=;
+        b=g+5XCehK95aPRpOysTCCCJ6U0ZhSmPHp4h2WDl2CRbIBavbHR19IUTG89Z0cgalOYe
+         u9Ekk3rbxn/KadUiiaoKPHuUxNSdZDzs1Y8RoMSZjleUdscrmAT7/JwlfgNqzlIaMENi
+         9cTjBGTxwmHsoG0pBWmBhp5a3Mh4huf4qO4qU=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=hVuCAmcENRT4YTWMqLA1a/iaC1560RLZ0bRkSPBMwf4=;
-        b=lrKtWr1sudTASOUWBEWW8F14lZef2MGVj7PttD2Tomp2S6RukAzQCVuYkH7XCoEBgO
-         JitllMQw9UO3OAwx8L6LNiFG4MsaW+RTGFQidBxuVK+3Po6EcFD+bBhfx4e6n69uh2YK
-         g81UqsFU1ZoX/HkRvDgmrZwEO2uMsJx2+U6FH20nTkI/4peGBZYU/xpWg/iIH1yNhYKa
-         aJzuj1HdXuWEXwefhHjW8DNIgqCSazxk3Cb4VHX35S/AUHKPd74Kr4H6J22DzYAHhUzJ
-         WTx8NGW9aeAs8NzGKLV72O8NI7FDy4y0/OQhfIdt4f4HLHuiJ2gzIipl4/eTfm8Zxyi9
-         gm7g==
-X-Gm-Message-State: AOAM532Wd0q6bo56jnvm8E6xCfeNxOEunhl6ZOKiCVlvjQXVNXb5Wo5N
-        xZ8/3FSbJV/J4JvrQhJC2va6Zg==
-X-Google-Smtp-Source: ABdhPJyiAmSUJzoxEdyWX5XGckGC6xxcMoszWSWVEYmtEcYuYzEvRka2XBRo7msKTKl7Te9ks733lg==
-X-Received: by 2002:a05:6808:10b:: with SMTP id b11mr7508335oie.90.1610041430313;
-        Thu, 07 Jan 2021 09:43:50 -0800 (PST)
-Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id 186sm1425731oie.38.2021.01.07.09.43.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 Jan 2021 09:43:49 -0800 (PST)
-Date:   Thu, 7 Jan 2021 11:43:48 -0600
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Wilken Gottwalt <wilken.gottwalt@posteo.net>
-Cc:     linux-kernel@vger.kernel.org, Ohad Ben-Cohen <ohad@wizery.com>,
-        Baolin Wang <baolin.wang7@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Maxime Ripard <mripard@kernel.org>,
-        Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@siol.net>
-Subject: Re: [PATCH v5 2/2] hwspinlock: add sun6i hardware spinlock support
-Message-ID: <X/dIVIvjJh6olPYx@builder.lan>
-References: <cover.1608721968.git.wilken.gottwalt@posteo.net>
- <0deae76aec31586da45c316546b12bcc316442ee.1608721968.git.wilken.gottwalt@posteo.net>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=E/dnl8hzKP5RYsuLZ1L8Ai6F/gkDggofRzaB7P8q9uM=;
+        b=ZRAj/8rwk/j2K1RLc3D1aRxXXEerVk4Kjh8CCRJaMVYkfNOuGHgIEF/smDBDDWvg52
+         neV/us9m/n1lABuI1BxIZhZhyHy529b/NjV1w9HyqxMtmAi+o9lhF8t0SPskZ15MnAW/
+         9I4T0hrsJuPFe2pOM572SK4q+HJDGeY3yYCAhWYNZSqcbVwpucDYQulcAyqkcyJPBkD2
+         2SGMxeoqXzC2qTDVqozWbACJ2rsucGZEqBdhKRZk26us4hjzRkon259jLiCvugENRUgN
+         S7zIVD/U6OYEiwSJIdTREzGlmR49gkmxVmBnGT7IuUAVohmsThDBX2t5tIl46p+0oTLR
+         PQ8Q==
+X-Gm-Message-State: AOAM5328kEQgQyywh7E3aQdd27D9Vm9RlLOg/e52jSobJ3qqNu+kPS9N
+        C4sLiBLTMkHRLD+pfUVzRv4lBhIwJwsouA==
+X-Google-Smtp-Source: ABdhPJx+hUi6IGvIzZIRZAFzJlHKgvuxCe75ba0+S4Qo883gTIuQsSIj7h4oIsSq7m2He+qkKC8KvA==
+X-Received: by 2002:a05:6512:6d0:: with SMTP id u16mr4586368lff.497.1610041452702;
+        Thu, 07 Jan 2021 09:44:12 -0800 (PST)
+Received: from mail-lf1-f47.google.com (mail-lf1-f47.google.com. [209.85.167.47])
+        by smtp.gmail.com with ESMTPSA id f19sm1407157ljm.7.2021.01.07.09.44.10
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 07 Jan 2021 09:44:10 -0800 (PST)
+Received: by mail-lf1-f47.google.com with SMTP id x20so16435540lfe.12
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Jan 2021 09:44:10 -0800 (PST)
+X-Received: by 2002:a2e:8995:: with SMTP id c21mr4379912lji.251.1610041450018;
+ Thu, 07 Jan 2021 09:44:10 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <0deae76aec31586da45c316546b12bcc316442ee.1608721968.git.wilken.gottwalt@posteo.net>
+References: <20210107134723.GA28532@xsang-OptiPlex-9020>
+In-Reply-To: <20210107134723.GA28532@xsang-OptiPlex-9020>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Thu, 7 Jan 2021 09:43:54 -0800
+X-Gmail-Original-Message-ID: <CAHk-=wgQ5EEH3-GTK9KDB5mBmWjP25YHXC6_-V_KfWd0UTDTDQ@mail.gmail.com>
+Message-ID: <CAHk-=wgQ5EEH3-GTK9KDB5mBmWjP25YHXC6_-V_KfWd0UTDTDQ@mail.gmail.com>
+Subject: Re: [x86] d55564cfc2: will-it-scale.per_thread_ops -5.8% regression
+To:     kernel test robot <oliver.sang@intel.com>
+Cc:     Al Viro <viro@zeniv.linux.org.uk>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@kernel.org>, Borislav Petkov <bp@alien8.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
+        kernel test robot <lkp@intel.com>,
+        "Huang, Ying" <ying.huang@intel.com>,
+        Feng Tang <feng.tang@intel.com>, zhengjun.xing@intel.com
+Content-Type: multipart/mixed; boundary="000000000000b48ca005b852fccb"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 23 Dec 05:35 CST 2020, Wilken Gottwalt wrote:
+--000000000000b48ca005b852fccb
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-> Adds the sun6i_hwspinlock driver for the hardware spinlock unit found in
-> most of the sun6i compatible SoCs.
-> 
-> This unit provides at least 32 spinlocks in hardware. The implementation
-> supports 32, 64, 128 or 256 32bit registers. A lock can be taken by
-> reading a register and released by writing a 0 to it. This driver
-> supports all 4 spinlock setups, but for now only the first setup (32
-> locks) seem to exist in available devices. This spinlock unit is shared
-> between all ARM cores and the embedded companion core. All of them can
-> take/release a lock with a single cycle operation. It can be used to
-> sync access to devices shared by the ARM cores and the companion core.
-> 
-> There are two ways to check if a lock is taken. The first way is to read
-> a lock. If a 0 is returned, the lock was free and is taken now. If an 1
-> is returned, the caller has to try again. Which means the lock is taken.
-> The second way is to read a 32bit wide status register where every bit
-> represents one of the 32 first locks. According to the datasheets this
-> status register supports only the 32 first locks. This is the reason the
-> first way (lock read/write) approach is used to be able to cover all 256
-> locks in future devices. The driver also reports the amount of supported
-> locks via debugfs.
-> 
-> Signed-off-by: Wilken Gottwalt <wilken.gottwalt@posteo.net>
-> ---
-> Changes in v5:
->   - changed symbols to the earliest known supported SoC (sun6i/a31)
->   - changed init back to classic probe/remove callbacks
-> 
-> Changes in v4:
->   - further simplified driver
->   - fixed an add_action_and_reset_ function issue
->   - changed bindings from sun8i-hwspinlock to sun8i-a33-hwspinlock
-> 
-> Changes in v3:
->   - moved test description to cover letter
->   - changed name and symbols from sunxi to sun8i
->   - improved driver description
->   - further simplified driver
->   - fully switched to devm_* and devm_add_action_* functions
-> 
-> Changes in v2:
->   - added suggestions from Bjorn Andersson and Maxime Ripard
->   - provided better driver and test description
-> ---
->  MAINTAINERS                           |   6 +
->  drivers/hwspinlock/Kconfig            |   9 ++
->  drivers/hwspinlock/Makefile           |   1 +
->  drivers/hwspinlock/sun6i_hwspinlock.c | 214 ++++++++++++++++++++++++++
->  4 files changed, 230 insertions(+)
->  create mode 100644 drivers/hwspinlock/sun6i_hwspinlock.c
-> 
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index ad0e34bf8453..0842b2a3ea89 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -722,6 +722,12 @@ L:	linux-crypto@vger.kernel.org
->  S:	Maintained
->  F:	drivers/crypto/allwinner/
->  
-> +ALLWINNER HARDWARE SPINLOCK SUPPORT
-> +M:	Wilken Gottwalt <wilken.gottwalt@posteo.net>
-> +S:	Maintained
-> +F:	Documentation/devicetree/bindings/hwlock/sun6i-a31-hwspinlock.yaml
-> +F:	drivers/hwspinlock/sun6i_hwspinlock.c
-> +
->  ALLWINNER THERMAL DRIVER
->  M:	Vasily Khoruzhick <anarsoul@gmail.com>
->  M:	Yangtao Li <tiny.windzz@gmail.com>
-> diff --git a/drivers/hwspinlock/Kconfig b/drivers/hwspinlock/Kconfig
-> index 32cd26352f38..56ecc1aa3166 100644
-> --- a/drivers/hwspinlock/Kconfig
-> +++ b/drivers/hwspinlock/Kconfig
-> @@ -55,6 +55,15 @@ config HWSPINLOCK_STM32
->  
->  	  If unsure, say N.
->  
-> +config HWSPINLOCK_SUN6I
-> +	tristate "SUN6I Hardware Spinlock device"
-> +	depends on ARCH_SUNXI || COMPILE_TEST
-> +	help
-> +	  Say y here to support the SUN6I Hardware Spinlock device which can be
-> +	  found in most of the sun6i compatible Allwinner SoCs.
-> +
-> +	  If unsure, say N.
-> +
->  config HSEM_U8500
->  	tristate "STE Hardware Semaphore functionality"
->  	depends on ARCH_U8500 || COMPILE_TEST
-> diff --git a/drivers/hwspinlock/Makefile b/drivers/hwspinlock/Makefile
-> index ed053e3f02be..83ec4f03decc 100644
-> --- a/drivers/hwspinlock/Makefile
-> +++ b/drivers/hwspinlock/Makefile
-> @@ -9,4 +9,5 @@ obj-$(CONFIG_HWSPINLOCK_QCOM)		+= qcom_hwspinlock.o
->  obj-$(CONFIG_HWSPINLOCK_SIRF)		+= sirf_hwspinlock.o
->  obj-$(CONFIG_HWSPINLOCK_SPRD)		+= sprd_hwspinlock.o
->  obj-$(CONFIG_HWSPINLOCK_STM32)		+= stm32_hwspinlock.o
-> +obj-$(CONFIG_HWSPINLOCK_SUN6I)		+= sun6i_hwspinlock.o
->  obj-$(CONFIG_HSEM_U8500)		+= u8500_hsem.o
-> diff --git a/drivers/hwspinlock/sun6i_hwspinlock.c b/drivers/hwspinlock/sun6i_hwspinlock.c
-> new file mode 100644
-> index 000000000000..ba56eed818e7
-> --- /dev/null
-> +++ b/drivers/hwspinlock/sun6i_hwspinlock.c
-> @@ -0,0 +1,214 @@
-> +// SPDX-License-Identifier: GPL-2.0-or-later
-> +/*
-> + * sun6i_hwspinlock.c - hardware spinlock driver for sun6i compatible Allwinner SoCs
-> + * Copyright (C) 2020 Wilken Gottwalt <wilken.gottwalt@posteo.net>
-> + */
-> +
-> +#include <linux/clk.h>
-> +#include <linux/debugfs.h>
-> +#include <linux/errno.h>
-> +#include <linux/hwspinlock.h>
-> +#include <linux/io.h>
-> +#include <linux/module.h>
-> +#include <linux/of.h>
-> +#include <linux/platform_device.h>
-> +#include <linux/reset.h>
-> +#include <linux/slab.h>
-> +#include <linux/spinlock.h>
-> +#include <linux/types.h>
-> +
-> +#include "hwspinlock_internal.h"
-> +
-> +#define DRIVER_NAME		"sun6i_hwspinlock"
+On Thu, Jan 7, 2021 at 5:32 AM kernel test robot <oliver.sang@intel.com> wr=
+ote:
+>
+> FYI, we noticed a -5.8% regression of will-it-scale.per_thread_ops due to=
+ commit:
 
-Isn't this the same as KBUILD_MODNAME?
+Ok, that's noticeable.
 
-> +
-> +#define SPINLOCK_BASE_ID	0 /* there is only one hwspinlock device per SoC */
-> +#define SPINLOCK_SYSSTATUS_REG	0x0000
-> +#define SPINLOCK_LOCK_REGN	0x0100
-> +#define SPINLOCK_NOTTAKEN	0
-> +
-> +struct sun6i_hwspinlock_data {
-> +	struct hwspinlock_device *bank;
-> +	struct reset_control *reset;
-> +	struct clk *ahb_clk;
-> +	struct dentry *debugfs;
-> +	int nlocks;
-> +};
-> +
-> +#ifdef CONFIG_DEBUG_FS
-> +
-> +static int hwlocks_supported_show(struct seq_file *seqf, void *unused)
-> +{
-> +	struct sun6i_hwspinlock_data *priv = seqf->private;
-> +
-> +	seq_printf(seqf, "%d\n", priv->nlocks);
-> +
-> +	return 0;
-> +}
-> +DEFINE_SHOW_ATTRIBUTE(hwlocks_supported);
-> +
-> +static void sun6i_hwspinlock_debugfs_init(struct sun6i_hwspinlock_data *priv)
-> +{
-> +	priv->debugfs = debugfs_create_dir(DRIVER_NAME, NULL);
-> +	debugfs_create_file("supported", 0444, priv->debugfs, priv, &hwlocks_supported_fops);
-> +}
-> +
-> +#else
-> +
-> +static void sun6i_hwspinlock_debugfs_init(struct sun6i_hwspinlock_data *priv)
-> +{
-> +}
-> +
-> +#endif
-> +
-> +static int sun6i_hwspinlock_trylock(struct hwspinlock *lock)
-> +{
-> +	void __iomem *lock_addr = lock->priv;
-> +
-> +	return (readl(lock_addr) == SPINLOCK_NOTTAKEN);
-> +}
-> +
-> +static void sun6i_hwspinlock_unlock(struct hwspinlock *lock)
-> +{
-> +	void __iomem *lock_addr = lock->priv;
-> +
-> +	writel(SPINLOCK_NOTTAKEN, lock_addr);
-> +}
-> +
-> +static const struct hwspinlock_ops sun6i_hwspinlock_ops = {
-> +	.trylock	= sun6i_hwspinlock_trylock,
-> +	.unlock		= sun6i_hwspinlock_unlock,
-> +};
-> +
-> +static int sun6i_hwspinlock_probe(struct platform_device *pdev)
-> +{
-> +	struct sun6i_hwspinlock_data *priv;
-> +	struct hwspinlock *hwlock;
-> +	void __iomem *io_base;
-> +	u32 num_banks;
-> +	int err, i;
-> +
-> +	io_base = devm_platform_ioremap_resource(pdev, SPINLOCK_BASE_ID);
-> +	if (IS_ERR(io_base))
-> +		return PTR_ERR(io_base);
-> +
-> +	priv = devm_kzalloc(&pdev->dev, sizeof(*priv), GFP_KERNEL);
-> +	if (!priv)
-> +		return -ENOMEM;
-> +
-> +	priv->ahb_clk = devm_clk_get(&pdev->dev, "ahb");
-> +	if (IS_ERR(priv->ahb_clk)) {
-> +		err = PTR_ERR(priv->ahb_clk);
-> +		dev_err(&pdev->dev, "unable to get AHB clock (%d)\n", err);
-> +		return err;
-> +	}
-> +
-> +	priv->reset = devm_reset_control_get(&pdev->dev, "ahb");
-> +	if (IS_ERR(priv->reset))
-> +		return dev_err_probe(&pdev->dev, PTR_ERR(priv->reset),
-> +				     "unable to get reset control\n");
-> +
-> +	err = reset_control_deassert(priv->reset);
-> +	if (err) {
-> +		dev_err(&pdev->dev, "deassert reset control failure (%d)\n", err);
-> +		return err;
-> +	}
-> +
-> +	err = clk_prepare_enable(priv->ahb_clk);
-> +	if (err) {
-> +		dev_err(&pdev->dev, "unable to prepare AHB clk (%d)\n", err);
-> +		goto clk_fail;
-> +	}
-> +
-> +	/*
-> +	 * bit 28 and 29 represents the hwspinlock setup
-> +	 *
-> +	 * every datasheet (A64, A80, A83T, H3, H5, H6 ...) says the default value is 0x1 and 0x1
-> +	 * to 0x4 represent 32, 64, 128 and 256 locks
-> +	 * but later datasheets (H5, H6) say 00, 01, 10, 11 represent 32, 64, 128 and 256 locks,
-> +	 * but that would mean H5 and H6 have 64 locks, while their datasheets talk about 32 locks
-> +	 * all the time, not a single mentioning of 64 locks
-> +	 * the 0x4 value is also not representable by 2 bits alone, so some datasheets are not
-> +	 * correct
-> +	 * one thing have all in common, default value of the sysstatus register is 0x10000000,
-> +	 * which results in bit 28 being set
-> +	 * this is the reason 0x1 is considered being 32 locks and bit 30 is taken into account
-> +	 * verified on H2+ (datasheet 0x1 = 32 locks) and H5 (datasheet 01 = 64 locks)
-> +	 */
-> +	num_banks = readl(io_base + SPINLOCK_SYSSTATUS_REG) >> 28;
-> +	switch (num_banks) {
-> +	case 1 ... 4:
-> +		priv->nlocks = 1 << (4 + num_banks);
-> +		break;
-> +	default:
-> +		err = -EINVAL;
-> +		dev_err(&pdev->dev, "unsupported hwspinlock setup (%d)\n", num_banks);
-> +		goto bank_fail;
-> +	}
-> +
-> +	priv->bank = devm_kzalloc(&pdev->dev, struct_size(priv->bank, lock, priv->nlocks),
-> +				  GFP_KERNEL);
-> +	if (!priv->bank) {
-> +		err = -ENOMEM;
-> +		goto bank_fail;
-> +	}
-> +
-> +	for (i = 0; i < priv->nlocks; ++i) {
-> +		hwlock = &priv->bank->lock[i];
-> +		hwlock->priv = io_base + SPINLOCK_LOCK_REGN + sizeof(u32) * i;
-> +	}
-> +
-> +	/* failure of debugfs is considered non-fatal */
-> +	sun6i_hwspinlock_debugfs_init(priv);
-> +	if (IS_ERR(priv->debugfs))
-> +		priv->debugfs = NULL;
-> +
-> +	platform_set_drvdata(pdev, priv);
-> +
-> +	return devm_hwspin_lock_register(&pdev->dev, priv->bank, &sun6i_hwspinlock_ops,
-> +					 SPINLOCK_BASE_ID, priv->nlocks);
+And:
 
-If this fails you will leave the reset deasserted and the clocks
-prepared. So please handle this as well.
+> commit: d55564cfc222326e944893eff0c4118353e349ec ("x86: Make __put_user()=
+ generate an out-of-line call")
 
-Regards,
-Bjorn
+Yeah, that wasn't supposed to cause any performance regressions. No
+core code should use __put_user() so much.
 
-> +bank_fail:
-> +	clk_disable_unprepare(priv->ahb_clk);
-> +clk_fail:
-> +	reset_control_assert(priv->reset);
-> +
-> +	return err;
-> +}
-> +
-> +static int sun6i_hwspinlock_remove(struct platform_device *pdev)
-> +{
-> +	struct sun6i_hwspinlock_data *priv = platform_get_drvdata(pdev);
-> +	int err;
-> +
-> +	debugfs_remove_recursive(priv->debugfs);
-> +
-> +	err = hwspin_lock_unregister(priv->bank);
-> +	if (err) {
-> +		dev_err(&pdev->dev, "unregister device failed (%d)\n", err);
-> +		return err;
-> +	}
-> +
-> +	clk_disable_unprepare(priv->ahb_clk);
-> +	reset_control_assert(priv->reset);
-> +
-> +	return 0;
-> +}
-> +
-> +static const struct of_device_id sun6i_hwspinlock_ids[] = {
-> +	{ .compatible = "allwinner,sun6i-a31-hwspinlock", },
-> +	{},
-> +};
-> +MODULE_DEVICE_TABLE(of, sun6i_hwspinlock_ids);
-> +
-> +static struct platform_driver sun6i_hwspinlock_driver = {
-> +	.probe	= sun6i_hwspinlock_probe,
-> +	.remove	= sun6i_hwspinlock_remove,
-> +	.driver	= {
-> +		.name		= DRIVER_NAME,
-> +		.of_match_table	= sun6i_hwspinlock_ids,
-> +	},
-> +};
-> +module_platform_driver(sun6i_hwspinlock_driver);
-> +
-> +MODULE_LICENSE("GPL");
-> +MODULE_DESCRIPTION("SUN6I hardware spinlock driver");
-> +MODULE_AUTHOR("Wilken Gottwalt <wilken.gottwalt@posteo.net>");
-> -- 
-> 2.29.2
-> 
+But:
+
+> | testcase: change | will-it-scale: will-it-scale.per_process_ops -7.3% r=
+egression             |
+> | test machine     | 192 threads Intel(R) Xeon(R) Platinum 9242 CPU @ 2.3=
+0GHz with 192G memory |
+> | test parameters  | cpufreq_governor=3Dperformance                      =
+                        |
+> |                  | mode=3Dprocess                                      =
+                        |
+> |                  | nr_task=3D100%                                      =
+                        |
+> |                  | test=3Dpoll2                                        =
+                        |
+> |                  | ucode=3D0x16                                        =
+                        |
+
+Ok, it's poll(), and it's definitely the __put_user() there:
+
+>       0.00            +1.8        1.77 =C4=85  3%  perf-profile.children.=
+cycles-pp.__put_user_nocheck_2
+>       0.00            +1.6        1.64 =C4=85  3%  perf-profile.self.cycl=
+es-pp.__put_user_nocheck_2
+
+And in fact, it's that final "write back the 16-bit revents field" at the e=
+nd.
+
+Which must have sucked before too, because it used to do a "stac/clac"
+for every word - but now it does it out of line.
+
+The fix is to convert that loop to use "unsafe_put_user()" with the
+necessary accoutrements around it, and that should speed things up
+quite nicely. The (double) loop itself is actually just 14
+instructions, it's ridiculous how bad the code used to be, and how
+much better it is with the nice unsafe_put_user(). The whole double
+loop ends up being just
+
+        lea    0x68(%rsp),%rsi
+        mov    %rcx,%rax
+  1:    mov    0x8(%rsi),%ecx
+        lea    0xc(%rsi),%rdx
+        test   %ecx,%ecx
+        je     3f
+        lea    (%rax,%rcx,8),%rdi
+  2:    movzwl 0x6(%rdx),%ecx
+        mov    %cx,0x6(%rax)
+        add    $0x8,%rax
+        add    $0x8,%rdx
+        cmp    %rdi,%rax
+        jne    2b
+  3:    mov    (%rsi),%rsi
+        test   %rsi,%rsi
+        jne    1b
+
+with the attached patch.
+
+Before, it would do the whole CLAC/STAC dance inside that loop for
+every entry (and with that commit d55564cfc22 it would be a function
+call, of course).
+
+Can you verify that this fixes the regression (and in fact I'd expect
+it to improve that test-case)?
+
+NOTE! The patch is entirely untested. I verified that the code
+generation now looks sane, and it all looks ObviouslyCorrect(tm) to
+me, but mistakes happen and maybe I missed some detail..
+
+               Linus
+
+--000000000000b48ca005b852fccb
+Content-Type: application/octet-stream; name=patch
+Content-Disposition: attachment; filename=patch
+Content-Transfer-Encoding: base64
+Content-ID: <f_kjn50eyv0>
+X-Attachment-Id: f_kjn50eyv0
+
+IGZzL3NlbGVjdC5jIHwgMTQgKysrKysrKysrKystLS0KIDEgZmlsZSBjaGFuZ2VkLCAxMSBpbnNl
+cnRpb25zKCspLCAzIGRlbGV0aW9ucygtKQoKZGlmZiAtLWdpdCBhL2ZzL3NlbGVjdC5jIGIvZnMv
+c2VsZWN0LmMKaW5kZXggZWJmZWJkZmU1YzY5Li4zN2FhYTgzMTdmM2EgMTAwNjQ0Ci0tLSBhL2Zz
+L3NlbGVjdC5jCisrKyBiL2ZzL3NlbGVjdC5jCkBAIC0xMDExLDE0ICsxMDExLDE3IEBAIHN0YXRp
+YyBpbnQgZG9fc3lzX3BvbGwoc3RydWN0IHBvbGxmZCBfX3VzZXIgKnVmZHMsIHVuc2lnbmVkIGlu
+dCBuZmRzLAogCWZkY291bnQgPSBkb19wb2xsKGhlYWQsICZ0YWJsZSwgZW5kX3RpbWUpOwogCXBv
+bGxfZnJlZXdhaXQoJnRhYmxlKTsKIAorCWlmICghdXNlcl93cml0ZV9hY2Nlc3NfYmVnaW4odWZk
+cywgbmZkcyAqIHNpemVvZigqdWZkcykpKQorCQlnb3RvIG91dF9mZHM7CisKIAlmb3IgKHdhbGsg
+PSBoZWFkOyB3YWxrOyB3YWxrID0gd2Fsay0+bmV4dCkgewogCQlzdHJ1Y3QgcG9sbGZkICpmZHMg
+PSB3YWxrLT5lbnRyaWVzOwogCQlpbnQgajsKIAotCQlmb3IgKGogPSAwOyBqIDwgd2Fsay0+bGVu
+OyBqKyssIHVmZHMrKykKLQkJCWlmIChfX3B1dF91c2VyKGZkc1tqXS5yZXZlbnRzLCAmdWZkcy0+
+cmV2ZW50cykpCi0JCQkJZ290byBvdXRfZmRzOworCQlmb3IgKGogPSB3YWxrLT5sZW47IGo7IGZk
+cysrLCB1ZmRzKyssIGotLSkKKwkJCXVuc2FmZV9wdXRfdXNlcihmZHMtPnJldmVudHMsICZ1ZmRz
+LT5yZXZlbnRzLCBFZmF1bHQpOwogICAJfQorCXVzZXJfd3JpdGVfYWNjZXNzX2VuZCgpOwogCiAJ
+ZXJyID0gZmRjb3VudDsKIG91dF9mZHM6CkBAIC0xMDMwLDYgKzEwMzMsMTEgQEAgc3RhdGljIGlu
+dCBkb19zeXNfcG9sbChzdHJ1Y3QgcG9sbGZkIF9fdXNlciAqdWZkcywgdW5zaWduZWQgaW50IG5m
+ZHMsCiAJfQogCiAJcmV0dXJuIGVycjsKKworRWZhdWx0OgorCXVzZXJfd3JpdGVfYWNjZXNzX2Vu
+ZCgpOworCWVyciA9IC1FRkFVTFQ7CisJZ290byBvdXRfZmRzOwogfQogCiBzdGF0aWMgbG9uZyBk
+b19yZXN0YXJ0X3BvbGwoc3RydWN0IHJlc3RhcnRfYmxvY2sgKnJlc3RhcnRfYmxvY2spCg==
+--000000000000b48ca005b852fccb--
