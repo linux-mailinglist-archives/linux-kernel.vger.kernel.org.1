@@ -2,68 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 089182ED456
+	by mail.lfdr.de (Postfix) with ESMTP id 76F0C2ED457
 	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 17:31:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728823AbhAGQ3r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S1728801AbhAGQ3r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Thu, 7 Jan 2021 11:29:47 -0500
-Received: from elvis.franken.de ([193.175.24.41]:34729 "EHLO elvis.franken.de"
+Received: from elvis.franken.de ([193.175.24.41]:34726 "EHLO elvis.franken.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727753AbhAGQ3q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1726441AbhAGQ3q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 7 Jan 2021 11:29:46 -0500
 Received: from uucp (helo=alpha)
         by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1kxY9o-0000Mi-01; Thu, 07 Jan 2021 17:29:04 +0100
+        id 1kxY9o-0000Mi-03; Thu, 07 Jan 2021 17:29:04 +0100
 Received: by alpha.franken.de (Postfix, from userid 1000)
-        id A44DEC080E; Thu,  7 Jan 2021 17:26:40 +0100 (CET)
-Date:   Thu, 7 Jan 2021 17:26:40 +0100
+        id 87160C080E; Thu,  7 Jan 2021 17:27:18 +0100 (CET)
+Date:   Thu, 7 Jan 2021 17:27:18 +0100
 From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 To:     Nathan Chancellor <natechancellor@gmail.com>
-Cc:     John Crispin <john@phrozen.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
+Cc:     Nick Desaulniers <ndesaulniers@google.com>,
         linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        clang-built-linux@googlegroups.com,
-        Dmitry Golovin <dima@golovin.in>
-Subject: Re: [PATCH] MIPS: lantiq: Explicitly compare LTQ_EBU_PCC_ISTAT
- against 0
-Message-ID: <20210107162640.GB11882@alpha.franken.de>
-References: <20210105201548.50920-1-natechancellor@gmail.com>
+        clang-built-linux@googlegroups.com
+Subject: Re: [PATCH] MIPS: c-r4k: Fix section mismatch for loongson2_sc_init
+Message-ID: <20210107162718.GD11882@alpha.franken.de>
+References: <20210105203456.98148-1-natechancellor@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210105201548.50920-1-natechancellor@gmail.com>
+In-Reply-To: <20210105203456.98148-1-natechancellor@gmail.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 05, 2021 at 01:15:48PM -0700, Nathan Chancellor wrote:
-> When building xway_defconfig with clang:
+On Tue, Jan 05, 2021 at 01:34:56PM -0700, Nathan Chancellor wrote:
+> When building with clang, the following section mismatch warning occurs:
 > 
-> arch/mips/lantiq/irq.c:305:48: error: use of logical '&&' with constant
-> operand [-Werror,-Wconstant-logical-operand]
->         if ((irq == LTQ_ICU_EBU_IRQ) && (module == 0) && LTQ_EBU_PCC_ISTAT)
->                                                       ^ ~~~~~~~~~~~~~~~~~
-> arch/mips/lantiq/irq.c:305:48: note: use '&' for a bitwise operation
->         if ((irq == LTQ_ICU_EBU_IRQ) && (module == 0) && LTQ_EBU_PCC_ISTAT)
->                                                       ^~
->                                                       &
-> arch/mips/lantiq/irq.c:305:48: note: remove constant to silence this
-> warning
->         if ((irq == LTQ_ICU_EBU_IRQ) && (module == 0) && LTQ_EBU_PCC_ISTAT)
->                                                      ~^~~~~~~~~~~~~~~~~~~~
-> 1 error generated.
+> WARNING: modpost: vmlinux.o(.text+0x24490): Section mismatch in
+> reference from the function r4k_cache_init() to the function
+> .init.text:loongson2_sc_init()
 > 
-> Explicitly compare the constant LTQ_EBU_PCC_ISTAT against 0 to fix the
-> warning. Additionally, remove the unnecessary parentheses as this is a
-> simple conditional statement and shorthand '== 0' to '!'.
+> This should have been fixed with commit ad4fddef5f23 ("mips: fix Section
+> mismatch in reference") but it was missed. Remove the improper __init
+> annotation like that commit did.
 > 
-> Fixes: 3645da0276ae ("OF: MIPS: lantiq: implement irq_domain support")
-> Link: https://github.com/ClangBuiltLinux/linux/issues/807
-> Reported-by: Dmitry Golovin <dima@golovin.in>
+> Fixes: 078a55fc824c ("MIPS: Delete __cpuinit/__CPUINIT usage from MIPS code")
+> Link: https://github.com/ClangBuiltLinux/linux/issues/787
 > Signed-off-by: Nathan Chancellor <natechancellor@gmail.com>
 > ---
->  arch/mips/lantiq/irq.c | 2 +-
+>  arch/mips/mm/c-r4k.c | 2 +-
 >  1 file changed, 1 insertion(+), 1 deletion(-)
 
 applied to mips-next.
