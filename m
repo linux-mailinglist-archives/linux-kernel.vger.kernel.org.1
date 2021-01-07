@@ -2,130 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CD702EE773
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 22:09:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C70B2EE772
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 22:09:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727699AbhAGVJN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 16:09:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34276 "EHLO
+        id S1727652AbhAGVI5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 16:08:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34234 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726477AbhAGVJL (ORCPT
+        with ESMTP id S1726666AbhAGVI4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 16:09:11 -0500
-Received: from mail-ua1-x934.google.com (mail-ua1-x934.google.com [IPv6:2607:f8b0:4864:20::934])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 615C9C0612F9
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Jan 2021 13:08:31 -0800 (PST)
-Received: by mail-ua1-x934.google.com with SMTP id y21so2746184uag.2
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Jan 2021 13:08:31 -0800 (PST)
+        Thu, 7 Jan 2021 16:08:56 -0500
+Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFFB1C0612F4
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Jan 2021 13:08:15 -0800 (PST)
+Received: by mail-pl1-x62c.google.com with SMTP id j1so4353318pld.3
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Jan 2021 13:08:15 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=9fYan1yzqxVguL0ZQY0BTwdyUMx5dFzjZBmr/vD5tRY=;
-        b=k7t5Q/9M+TUvwdmswWS/rvtjs9qDhmvTiyszvvNXDsiTTlK7iB6M75IDdY0nIKnm6o
-         GYgVSYkz+jKHpbNAvuoI2PnlSbdVKN9N8tYY9oDVdPAJLz3Qh0r961/AZyx9ijfzjpgJ
-         ukj0XTlvL+oBbgW9V7gFwDCroxhJAPHYplQxxdUck0GFKbevY5xd6LlUDYmLfrh2CZFG
-         t9e7IoqPMQ1m2bAiehuDjT3IJJ/WVoT2VKCRUFvLh2ff4ikDY85hN1+fFyduNyKX2Lwq
-         1IADMWi+19HunLHNAHcaQpdX6aEEOEuWryDSKQhxLwPtwfBTH2uENWi3N2YKSrHla3YG
-         w4Qw==
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=RPSS4+wIGvp/3YQYbCUE3lZcjQcE7GevEzI6hP5X/bw=;
+        b=QcHURJUskZnmGtmirPpDXam1+nD3tS58vO+VwHrt5QfpZAT7OkPqMK1Z5s4W/HNPmf
+         7ddcAQFcWD8RlCEXgL5kPn7aJq51foNk1f1ewKIh2dAdzREaU0UWbMRUfCZjWMIa97OP
+         VuvgVhCAg18OWqacs6ABqF8JJ1a4cjtiqQUl8=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=9fYan1yzqxVguL0ZQY0BTwdyUMx5dFzjZBmr/vD5tRY=;
-        b=f+exncM21JJFyfbvFz7hkKNmPFsrxnAPKKqW9xtwDjTzFEI1qE8Vw5hanXcupJEQYY
-         8KvMHgjMr9cFUFM0w5cKc+dh882Vrc96d0p/3SUGZvo8Ae5YepuqJdjA3F5qspWp5HSn
-         hpkqK0PPrGfyu4xbVA7Y4Qhz4ucuyEir9MOPIGSFzc1YKsmPKj67CiNjJTiOcLbMoKGr
-         EkTaDdoVBXawHowhtLvXiYIzLlaOIPgyj9VZJE4n6wCKhagL434fo60BKi9SYuvZfMMW
-         2XSqz8MqzEUs/C4D2Q4UaaWScmveNK3qFzDuslr7r+uITYaQW2opCEWCAZfs+MIr+F5x
-         4vwA==
-X-Gm-Message-State: AOAM5326lL3QM6khwCmoSdrk2Wlz7TdztlbHm/m0aYzoq041Xij5liW7
-        zzPLu6fuofl3ZiTJIaBHInwfql1gD15R0sFyN1W7Vg==
-X-Google-Smtp-Source: ABdhPJxHnJvsbDwyF4bx6K6BhV313BR8eONthkFk/er2XbRI7zrOtNCXhB8Pf0IMiO7/77tD+fvpJVhr9OCB4d8PTk0=
-X-Received: by 2002:ab0:7386:: with SMTP id l6mr642880uap.141.1610053710484;
- Thu, 07 Jan 2021 13:08:30 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=RPSS4+wIGvp/3YQYbCUE3lZcjQcE7GevEzI6hP5X/bw=;
+        b=dp2Eyi5Kqq0fCLJtB3vQH5r6h5rtmmXvo6Mwx6UZPF4hIZg5gPTxD1z5rHDXdpKUg6
+         WbJA4UwZchZ8A1/boc+RiWSVRx/3qrlMQUDb2Or6jZII3azGZTXpMw+hYfjVKFCzKOJG
+         AR7g5qLXaDovDRisBqouoKTfPJh2J/3uoOJ3srp1b3rod5ZeyfcZZ7V7hwsIR+cYE2+1
+         pOydMGkTuh3uSrqqqzpKmrlpFnCSxo1aTSBYMHB+E4cSkFG/WVISec1Lx8QlvSrlaJE1
+         s1vjlH7kyXuSe6WiucwxqVPIMdyKPXnyBiJwYOEA+7CEMBk9QN4h+iMixcr313F+ho7y
+         m1WA==
+X-Gm-Message-State: AOAM530B7zac1qyv0n3LF85MbnR3QqzDc2iQBsf8DZ/Pb5UWCF9C3Hmb
+        sQpwASCi7rwFlRC68ZvRrPr96w==
+X-Google-Smtp-Source: ABdhPJyNhZorRAZXybiTjz8m9XRI5n8wBsWWi8f4w0GjKoH//cf7R8VzKbRIfqr+XwNPjJh7ntRq3A==
+X-Received: by 2002:a17:90b:283:: with SMTP id az3mr367695pjb.84.1610053695540;
+        Thu, 07 Jan 2021 13:08:15 -0800 (PST)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id c18sm6473506pfj.200.2021.01.07.13.08.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 07 Jan 2021 13:08:14 -0800 (PST)
+Date:   Thu, 7 Jan 2021 13:08:13 -0800
+From:   Kees Cook <keescook@chromium.org>
+To:     Xiaoming Ni <nixiaoming@huawei.com>
+Cc:     linux-kernel@vger.kernel.org, mcgrof@kernel.org,
+        yzaikin@google.com, adobriyan@gmail.com, vbabka@suse.cz,
+        linux-fsdevel@vger.kernel.org, mhocko@suse.com,
+        mhiramat@kernel.org, wangle6@huawei.com
+Subject: Re: [PATCH] proc_sysclt: fix oops caused by incorrect command
+ parameters.
+Message-ID: <202101071307.6E0CF2FCA@keescook>
+References: <20201224074256.117413-1-nixiaoming@huawei.com>
+ <202101061539.966EBB293@keescook>
+ <5ad6d160-3a4e-28bd-4e89-cb01a1815861@huawei.com>
 MIME-Version: 1.0
-References: <20201118194838.753436396@linutronix.de> <20201118204007.169209557@linutronix.de>
- <20210106180132.41dc249d@gandalf.local.home> <CAHk-=wh2895wXEXYtb70CTgW+UR7jfh6VFhJB_bOrF0L7UKoEg@mail.gmail.com>
- <20210106174917.3f8ad0d8@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <CA+FuTSevLSxZkNLdJPHqRRksxZmnPc1qFBYJeBx26WsA4A1M7A@mail.gmail.com>
- <CA+FuTScQ9afdnQ3E1mqdeyJ-sOq=2Dm9c1XDN8mnzbEig8iMXA@mail.gmail.com>
- <CAHk-=wh+KfbJ4Wrz4A+hFRRj7ZYWysz9L8s-BosC3bhV6vN-nQ@mail.gmail.com> <20210107155256.7af2505e@gandalf.local.home>
-In-Reply-To: <20210107155256.7af2505e@gandalf.local.home>
-From:   Willem de Bruijn <willemb@google.com>
-Date:   Thu, 7 Jan 2021 16:07:54 -0500
-Message-ID: <CA+FuTSdsTFHY5Yx8y5UHGYqsz=FGevjYn_Kzy-p3kwx-vUxdDw@mail.gmail.com>
-Subject: Re: [BUG] from x86: Support kmap_local() forced debugging
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        David Miller <davem@davemloft.net>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "the arch/x86 maintainers" <x86@kernel.org>,
-        Christoph Hellwig <hch@lst.de>,
-        Matthew Wilcox <willy@infradead.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Netdev <netdev@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <5ad6d160-3a4e-28bd-4e89-cb01a1815861@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 7, 2021 at 3:53 PM Steven Rostedt <rostedt@goodmis.org> wrote:
->
-> On Thu, 7 Jan 2021 11:47:02 -0800
-> Linus Torvalds <torvalds@linux-foundation.org> wrote:
->
-> > On Wed, Jan 6, 2021 at 8:45 PM Willem de Bruijn <willemb@google.com> wrote:
-> > >
-> > > But there are three other kmap_atomic callers under net/ that do not
-> > > loop at all, so assume non-compound pages. In esp_output_head,
-> > > esp6_output_head and skb_seq_read. The first two directly use
-> > > skb_page_frag_refill, which can allocate compound (but not
-> > > __GFP_HIGHMEM) pages, and the third can be inserted with
-> > > netfilter xt_string in the path of tcp transmit skbs, which can also
-> > > have compound pages. I think that these could similarly access
-> > > data beyond the end of the kmap_atomic mapped page. I'll take
-> > > a closer look.
-> >
-> > Thanks.
-> >
-> > Note that I have flushed my random one-liner patch from my system, and
-> > expect to get a proper fix through the normal networking pulls.
-> >
-> > And _if_ the networking people feel that my one-liner was the proper
-> > fix, you can use it and add my sign-off if you want to, but it really
-> > was more of a "this is the quick ugly fix for testing" rather than
-> > anything else.
+On Thu, Jan 07, 2021 at 02:14:18PM +0800, Xiaoming Ni wrote:
+> On 2021/1/7 7:46, Kees Cook wrote:
+> > subject typo: "sysclt" -> "sysctl"
+> > 
+> > On Thu, Dec 24, 2020 at 03:42:56PM +0800, Xiaoming Ni wrote:
+> > > [...]
+> > > +	if (!val)
+> > > +		return 0;
+> > > +
+> > >   	if (strncmp(param, "sysctl", sizeof("sysctl") - 1) == 0) {
+> > >   		param += sizeof("sysctl") - 1;
+> > 
+> > Otherwise, yeah, this is a good test to add. I would make it more
+> > verbose, though:
+> > 
+> > 	if (!val) {
+> > 		pr_err("Missing param value! Expected '%s=...value...'\n", param);
+> > 		return 0;
+> > 	}
+> > 
+> Yes, it's better to add log output.
+> Thank you for your review.
+> Do I need to send V2 patch based on review comments?
 
-I do think it is the proper fix as is. If no one else has comments, I
-can submit it through the net tree.
+Yes please. :)
 
-It won't address the other issues that became apparent only as a
-result of this. I'm preparing separate patches for those.
-
-> Please add:
->
->   Link: https://lore.kernel.org/linux-mm/20210106180132.41dc249d@gandalf.local.home/
->   Reported-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
->
-> And if you take Linus's patch, please add my:
->
->   Tested-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
->
-> and if you come up with another patch, please send it to me for testing.
->
-> Thanks!
-
-Will do, thanks.
+-- 
+Kees Cook
