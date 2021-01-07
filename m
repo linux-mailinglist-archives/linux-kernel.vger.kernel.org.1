@@ -2,102 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3EC972ED4E4
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 18:00:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E76F2ED4E5
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 18:01:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728296AbhAGQ7c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 11:59:32 -0500
-Received: from mail-oi1-f179.google.com ([209.85.167.179]:34748 "EHLO
-        mail-oi1-f179.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726165AbhAGQ7b (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 11:59:31 -0500
-Received: by mail-oi1-f179.google.com with SMTP id s75so8103732oih.1;
-        Thu, 07 Jan 2021 08:59:16 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=TIUCk98ZrOIpG1GmXrTUqVGJnHOd4caRGIWW5TIJbS8=;
-        b=V9wmrk0UF4HA5UOscb5LbilpDS7fBHbHS8dra03Sf+rWktkY691IelWFUBCBwJgZqE
-         SePmY35BDEtnHNgLsIIdq0HYoIGkb1FKkh+BOJPiOOcIIQJle/mxY3xaSR6tXC9gL5QB
-         PIzutpQc5NzAtgQ0adidcW4vZeJBpiYSHaNYkxFUZdcPS5AeAU2HyURZTRVt8oLLy7Mn
-         ZFlNc5VKDNIeF1iGDiO836FISAUhiQVhdT+aH0cPPE4fhjDMJRBv6cAvkOHIf3zYBDDw
-         bqLKYZgnyc1VCboaA6bUY0V7VMbW1V1R4laLms/yo1fwhL5WK/KMke6fPh2+eTlYVbY4
-         FAaQ==
-X-Gm-Message-State: AOAM532pgwAO4DHV8BvMqzguHl2N+bMeIWPFY56IuiJY7U31CjG8Kdao
-        FJPT7Q806EiFxAl+28Stc8iDJaD1RxBRDJ+hqi8vDgIW
-X-Google-Smtp-Source: ABdhPJyukCZVV38p/zQ6tWkukqy7Ouk8hw/xptUTZs702eMWVli+xcwlX7CjqRphxq0FnBzRuew4EmXAlYy3f3RzpsQ=
-X-Received: by 2002:aca:d6c8:: with SMTP id n191mr1825561oig.69.1610038730626;
- Thu, 07 Jan 2021 08:58:50 -0800 (PST)
+        id S1728494AbhAGRAG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 12:00:06 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50188 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726165AbhAGRAG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Jan 2021 12:00:06 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 237CE233FC;
+        Thu,  7 Jan 2021 16:59:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1610038765;
+        bh=dhZEZmOzOGBIyE1OlsruJxFWlIM9M/fElcOJsHOXQIo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=rMFXggiZz+mB2PLr4TYUfTK35QeggbVhQi3mbFVOP5PwjmHcMC/6tI5vtSYXTSYTu
+         2SrGaZSJ93HhA1gMoMFqKRjY3NGgf7pWrmzsnLE9ygaKSfYBGgjqxPzjZfwgOhfSps
+         //APWs0nbEvwH5Y/eFap+14m7q8imS2UBs06lCRCAoFjjsFftOoegbly6MVijw1MCQ
+         uKWIxhUVYC3XA3nV4Lit1emwee1T7C7ArEi1t8YEd89hTKTvP47j9/iK77DrZyPHYC
+         2fqeyZbRXbYiis89MD3ab5uSzxwDjJnibcRjV1Yk5PhuYNI80B/HPrKU8dgrj534Y2
+         M2uwgZ6gZmuIg==
+Date:   Thu, 7 Jan 2021 16:58:55 +0000
+From:   Mark Brown <broonie@kernel.org>
+To:     Richard Fitzgerald <rf@opensource.cirrus.com>
+Cc:     nsaenzjulienne@suse.de, f.fainelli@gmail.com, rjui@broadcom.com,
+        sbranden@broadcom.com, bcm-kernel-feedback-list@broadcom.com,
+        linux-spi@vger.kernel.org, linux-rpi-kernel@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        patches@opensource.cirrus.com
+Subject: Re: [PATCH] spi: bcm2835: Set controller max_speed_hz
+Message-ID: <20210107165855.GG4726@sirena.org.uk>
+References: <20210107164825.21919-1-rf@opensource.cirrus.com>
 MIME-Version: 1.0
-References: <20210105091146.25422-1-yung-chuan.liao@linux.intel.com>
- <20210105091146.25422-3-yung-chuan.liao@linux.intel.com> <20210107141123.GI940479@kuha.fi.intel.com>
-In-Reply-To: <20210107141123.GI940479@kuha.fi.intel.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Thu, 7 Jan 2021 17:58:39 +0100
-Message-ID: <CAJZ5v0go48B+3QV5zreg1yxy2KnvLdp5p=n2Rb+D8XyBtb=Rbg@mail.gmail.com>
-Subject: Re: [PATCH 2/2] device property: add description of fwnode cases
-To:     Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Bard Liao <yung-chuan.liao@linux.intel.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>, bard.liao@intel.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="uc35eWnScqDcQrv5"
+Content-Disposition: inline
+In-Reply-To: <20210107164825.21919-1-rf@opensource.cirrus.com>
+X-Cookie: See store for details.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 7, 2021 at 3:11 PM Heikki Krogerus
-<heikki.krogerus@linux.intel.com> wrote:
->
-> On Tue, Jan 05, 2021 at 05:11:46PM +0800, Bard Liao wrote:
-> > There are only four valid fwnode cases which are
-> > - primary --> secondary --> -ENODEV
-> > - primary --> NULL
-> > - secondary --> -ENODEV
-> > - NULL
-> >
-> > dev->fwnode should be converted between the 4 cases above no matter
-> > how/when set_primary_fwnode() and set_secondary_fwnode() are called.
-> > Describe it in the code so people will keep it in mind.
-> >
-> > Signed-off-by: Bard Liao <yung-chuan.liao@linux.intel.com>
->
-> Reviewed-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
->
-> > ---
-> >  drivers/base/core.c | 7 +++++++
-> >  1 file changed, 7 insertions(+)
-> >
-> > diff --git a/drivers/base/core.c b/drivers/base/core.c
-> > index 51b9545a050b..17eb14607074 100644
-> > --- a/drivers/base/core.c
-> > +++ b/drivers/base/core.c
-> > @@ -4414,6 +4414,12 @@ static inline bool fwnode_is_primary(struct fwnode_handle *fwnode)
-> >   *
-> >   * Set the device's firmware node pointer to @fwnode, but if a secondary
-> >   * firmware node of the device is present, preserve it.
-> > + *
-> > + * Valid fwnode cases are:
-> > + *  - primary --> secondary --> -ENODEV
-> > + *  - primary --> NULL
-> > + *  - secondary --> -ENODEV
-> > + *  - NULL
-> >   */
-> >  void set_primary_fwnode(struct device *dev, struct fwnode_handle *fwnode)
-> >  {
-> > @@ -4432,6 +4438,7 @@ void set_primary_fwnode(struct device *dev, struct fwnode_handle *fwnode)
-> >       } else {
-> >               if (fwnode_is_primary(fn)) {
-> >                       dev->fwnode = fn->secondary;
-> > +                     /* Set fn->secondary = NULL to keep fn as a primary fwnode */
-> >                       if (!(parent && fn == parent->fwnode))
-> >                               fn->secondary = NULL;
-> >               } else {
-> > --
 
-Applied (with a minor edit in the new comment) along with the [1/2] as
-5.11-rc material, thanks!
+--uc35eWnScqDcQrv5
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Thu, Jan 07, 2021 at 04:48:25PM +0000, Richard Fitzgerald wrote:
+
+> If the controller max_speed_hz is not set, the spi core will limit all
+> transfers to 0 Hz so only the minimum possible bus frequency would be used.
+
+That was a bug and is now fixed.
+
+--uc35eWnScqDcQrv5
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl/3Pc4ACgkQJNaLcl1U
+h9D0Ewf/fFivZMKOY5EJJDOKmwXgIBQl0vokcM/wz0pSM5M4oE/orEod0MReVHCS
+CUlnzyu0s0FmaCZ0G945U6LmC2GDemvZTvFujqY78fyyaMfLwErPzuxqpRyES2MN
+It1RyFigQuZOoy9SNCI01WvLMxgGBqe30me98U3lFpt89xU2zFECnRGmQfU6PfZ8
+6zBFWtNkpXyCaC9LTkGPu93T6aQfg+ppKuiZ6UY4xGVZO9Bo1OyoEzmwsRYslcE8
+74iUoQMGUENXH3EnwHZDF5OGiDIJXTL/8xY2dC2jGEDhYxFYAXdp7GoSbJhEhcXr
+raUjT6ibjsaJ90Pcw7mDYq0h1g44/A==
+=Eo8Z
+-----END PGP SIGNATURE-----
+
+--uc35eWnScqDcQrv5--
