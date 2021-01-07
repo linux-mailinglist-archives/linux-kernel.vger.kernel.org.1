@@ -2,158 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A202A2ECE83
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 12:19:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A1922ECEB1
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 12:23:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727673AbhAGLSN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 06:18:13 -0500
-Received: from mx0a-00128a01.pphosted.com ([148.163.135.77]:51396 "EHLO
-        mx0a-00128a01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727252AbhAGLSL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 06:18:11 -0500
-Received: from pps.filterd (m0167088.ppops.net [127.0.0.1])
-        by mx0a-00128a01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 107BEgnW009880;
-        Thu, 7 Jan 2021 06:17:17 -0500
-Received: from nwd2mta4.analog.com ([137.71.173.58])
-        by mx0a-00128a01.pphosted.com with ESMTP id 35wsv6h0ym-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 07 Jan 2021 06:17:17 -0500
-Received: from ASHBMBX9.ad.analog.com (ASHBMBX9.ad.analog.com [10.64.17.10])
-        by nwd2mta4.analog.com (8.14.7/8.14.7) with ESMTP id 107BHGWq024814
-        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=FAIL);
-        Thu, 7 Jan 2021 06:17:16 -0500
-Received: from ASHBCASHYB5.ad.analog.com (10.64.17.133) by
- ASHBMBX9.ad.analog.com (10.64.17.10) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1779.2; Thu, 7 Jan 2021 06:17:15 -0500
-Received: from ASHBMBX9.ad.analog.com (10.64.17.10) by
- ASHBCASHYB5.ad.analog.com (10.64.17.133) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.2.721.2;
- Thu, 7 Jan 2021 06:17:15 -0500
-Received: from zeus.spd.analog.com (10.66.68.11) by ASHBMBX9.ad.analog.com
- (10.64.17.10) with Microsoft SMTP Server id 15.1.1779.2 via Frontend
- Transport; Thu, 7 Jan 2021 06:17:15 -0500
-Received: from localhost.localdomain ([10.48.65.12])
-        by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 107BHDpq015369;
-        Thu, 7 Jan 2021 06:17:13 -0500
-From:   Alexandru Ardelean <alexandru.ardelean@analog.com>
-To:     <linux-iio@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-CC:     <jic23@kernel.org>, <lars@metafoo.de>, <andy.shevchenko@gmail.com>,
-        Alexandru Ardelean <alexandru.ardelean@analog.com>
-Subject: [PATCH v8] iio: Handle enumerated properties with gaps
-Date:   Thu, 7 Jan 2021 13:20:49 +0200
-Message-ID: <20210107112049.10815-1-alexandru.ardelean@analog.com>
-X-Mailer: git-send-email 2.17.1
+        id S1727919AbhAGLXN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 06:23:13 -0500
+Received: from mx2.suse.de ([195.135.220.15]:53592 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727213AbhAGLXM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Jan 2021 06:23:12 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1610018546; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=OAd8Wyoha+vx0tCBHkie2vjkD2eVnSYMKMJBxqvQqE0=;
+        b=uc0I5x+uw23D5YAqdAg4JJY79wNjdbOqRM8WnydNYuYB8uez/SRmf5QV9XH1E3QgNBHiLM
+        /Q+fyDXp8LjewOx3BpFDDOr49Ap1xxl6bcfZuU4+y8LKExv/OVfsOUhrFg+VTSU8hvXnFK
+        qahJ9BOUQD4AFkSNUG8b9aNIbZoXF9g=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 086A4AFB4;
+        Thu,  7 Jan 2021 11:22:26 +0000 (UTC)
+Date:   Thu, 7 Jan 2021 12:22:19 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     Muchun Song <songmuchun@bytedance.com>
+Cc:     Mike Kravetz <mike.kravetz@oracle.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Naoya Horiguchi <n-horiguchi@ah.jp.nec.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [External] Re: [PATCH v2 4/6] mm: hugetlb: add return -EAGAIN
+ for dissolve_free_huge_page
+Message-ID: <20210107112219.GH13207@dhcp22.suse.cz>
+References: <20210106084739.63318-1-songmuchun@bytedance.com>
+ <20210106084739.63318-5-songmuchun@bytedance.com>
+ <20210106170754.GU13207@dhcp22.suse.cz>
+ <CAMZfGtWg0J5syATXMpP8RYOz=w0gJNYz_=UrT3ueMspQjNY7BQ@mail.gmail.com>
+ <20210107083902.GB13207@dhcp22.suse.cz>
+ <CAMZfGtWwHOVCvFUvm-r74k1GEEujW_HniLFOMKbykny7Cu09eA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-ADIRuleOP-NewSCL: Rule Triggered
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2021-01-07_05:2021-01-07,2021-01-07 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 phishscore=0
- impostorscore=0 malwarescore=0 mlxlogscore=965 mlxscore=0 adultscore=0
- suspectscore=0 bulkscore=0 spamscore=0 priorityscore=1501
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2101070069
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAMZfGtWwHOVCvFUvm-r74k1GEEujW_HniLFOMKbykny7Cu09eA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lars-Peter Clausen <lars@metafoo.de>
+On Thu 07-01-21 17:01:16, Muchun Song wrote:
+> On Thu, Jan 7, 2021 at 4:39 PM Michal Hocko <mhocko@suse.com> wrote:
+> >
+> > On Thu 07-01-21 11:11:41, Muchun Song wrote:
+> > > On Thu, Jan 7, 2021 at 1:07 AM Michal Hocko <mhocko@suse.com> wrote:
+> > > >
+> > > > On Wed 06-01-21 16:47:37, Muchun Song wrote:
+> > > > > When dissolve_free_huge_page() races with __free_huge_page(), we can
+> > > > > do a retry. Because the race window is small.
+> > > >
+> > > > Is this a bug fix or mere optimization. I have hard time to tell from
+> > > > the description.
+> > >
+> > > It is optimization. Thanks.
+> > >
+> > > >
+> > > > > Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+> > > > > ---
+> > > > >  mm/hugetlb.c | 26 +++++++++++++++++++++-----
+> > > > >  1 file changed, 21 insertions(+), 5 deletions(-)
+> > > > >
+> > > > > diff --git a/mm/hugetlb.c b/mm/hugetlb.c
+> > > > [...]
+> > > > > @@ -1825,6 +1828,14 @@ int dissolve_free_huge_page(struct page *page)
+> > > > >       }
+> > > > >  out:
+> > > > >       spin_unlock(&hugetlb_lock);
+> > > > > +
+> > > > > +     /*
+> > > > > +      * If the freeing of the HugeTLB page is put on a work queue, we should
+> > > > > +      * flush the work before retrying.
+> > > > > +      */
+> > > > > +     if (unlikely(rc == -EAGAIN))
+> > > > > +             flush_work(&free_hpage_work);
+> > > >
+> > > > Is it safe to wait for the work to finish from this context?
+> > >
+> > > Yes. It is safe.
+> >
+> > Please expand on why in the changelog. Same for the optimization
+> > including some numbers showing it really helps.
+> 
+> OK. Changelog should be updated. Do you agree the race window
+> is quite small?
 
-Some enums might have gaps or reserved values in the middle of their value
-range. E.g. consider a 2-bit enum where the values 0, 1 and 3 have a
-meaning, but 2 is a reserved value and can not be used.
+Yes, the race is very rare and the window itself should be relatively
+small. This doesn't really answer the question about blocking though.
 
-Add support for such enums to the IIO enum helper functions. A reserved
-values is marked by setting its entry in the items array to NULL rather
-than the normal descriptive string value.
+> If so, why is it not an optimization? Don’t we dissolve
+> the page as successfully as possible when we call
+> dissolve_free_huge_page()? I am confused about numbers showing.
+> Because this is not a performance optimization, but an increase in
+> the success rate of dissolving.
 
-Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
-Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
----
-
-Changelog v7 -> v8:
-* https://lore.kernel.org/linux-iio/20210107084434.35283-1-alexandru.ardelean@analog.com/
-* dropped patch 'lib/string.c: add __sysfs_match_string_with_gaps() helper'
-* merged __sysfs_match_string_with_gaps into  drivers/iio/industrial-core.c 
-  as iio_sysfs_match_string_with_gaps()
-
- drivers/iio/industrialio-core.c | 39 ++++++++++++++++++++++++++++++---
- 1 file changed, 36 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/iio/industrialio-core.c b/drivers/iio/industrialio-core.c
-index e9ee9363fed0..db20e2ab437d 100644
---- a/drivers/iio/industrialio-core.c
-+++ b/drivers/iio/industrialio-core.c
-@@ -169,6 +169,36 @@ static const char * const iio_chan_info_postfix[] = {
- 	[IIO_CHAN_INFO_CALIBAMBIENT] = "calibambient",
- };
- 
-+/**
-+ * iio_sysfs_match_string_with_gaps - matches given string in an array with gaps
-+ * @array: array of strings
-+ * @n: number of strings in the array
-+ * @str: string to match with
-+ *
-+ * Returns index of @str in the @array or -EINVAL, similar to match_string().
-+ * Uses sysfs_streq instead of strcmp for matching.
-+ *
-+ * This routine will look for a string in an array of strings.
-+ * The search will continue until the element is found or the n-th element
-+ * is reached, regardless of any NULL elements in the array.
-+ */
-+static int iio_sysfs_match_string_with_gaps(const char * const *array, size_t n,
-+					    const char *str)
-+{
-+	const char *item;
-+	int index;
-+
-+	for (index = 0; index < n; index++) {
-+		item = array[index];
-+		if (!item)
-+			continue;
-+		if (sysfs_streq(item, str))
-+			return index;
-+	}
-+
-+	return -EINVAL;
-+}
-+
- #if defined(CONFIG_DEBUG_FS)
- /*
-  * There's also a CONFIG_DEBUG_FS guard in include/linux/iio/iio.h for
-@@ -470,8 +500,11 @@ ssize_t iio_enum_available_read(struct iio_dev *indio_dev,
- 	if (!e->num_items)
- 		return 0;
- 
--	for (i = 0; i < e->num_items; ++i)
-+	for (i = 0; i < e->num_items; ++i) {
-+		if (!e->items[i])
-+			continue;
- 		len += scnprintf(buf + len, PAGE_SIZE - len, "%s ", e->items[i]);
-+	}
- 
- 	/* replace last space with a newline */
- 	buf[len - 1] = '\n';
-@@ -492,7 +525,7 @@ ssize_t iio_enum_read(struct iio_dev *indio_dev,
- 	i = e->get(indio_dev, chan);
- 	if (i < 0)
- 		return i;
--	else if (i >= e->num_items)
-+	else if (i >= e->num_items || !e->items[i])
- 		return -EINVAL;
- 
- 	return snprintf(buf, PAGE_SIZE, "%s\n", e->items[i]);
-@@ -509,7 +542,7 @@ ssize_t iio_enum_write(struct iio_dev *indio_dev,
- 	if (!e->set)
- 		return -EINVAL;
- 
--	ret = __sysfs_match_string(e->items, e->num_items, buf);
-+	ret = iio_sysfs_match_string_with_gaps(e->items, e->num_items, buf);
- 	if (ret < 0)
- 		return ret;
- 
+And it is a very theoretical one, right? Can you even trigger it? What
+would happen if the race is lost? Is it serious? This all would be part
+of the changelog ideally. This is a tricky area that spans hugetlb,
+memory hotplug and hwpoisoning. All of them tricky. 
 -- 
-2.17.1
-
+Michal Hocko
+SUSE Labs
