@@ -2,247 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C8902ED693
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 19:17:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9261C2ED68B
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 19:17:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729231AbhAGSQu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 13:16:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35442 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729191AbhAGSQt (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 13:16:49 -0500
-Received: from baptiste.telenet-ops.be (baptiste.telenet-ops.be [IPv6:2a02:1800:120:4::f00:13])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 574E1C0612A0
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Jan 2021 10:15:29 -0800 (PST)
-Received: from ramsan.of.borg ([84.195.186.194])
-        by baptiste.telenet-ops.be with bizsmtp
-        id DuFT2400C4C55Sk01uFTJ2; Thu, 07 Jan 2021 19:15:27 +0100
-Received: from rox.of.borg ([192.168.97.57])
-        by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1kxZok-001v2q-Tu; Thu, 07 Jan 2021 19:15:26 +0100
-Received: from geert by rox.of.borg with local (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1kxZok-008AZ9-Fu; Thu, 07 Jan 2021 19:15:26 +0100
-From:   Geert Uytterhoeven <geert+renesas@glider.be>
-To:     Vinod Koul <vkoul@kernel.org>, Rob Herring <robh+dt@kernel.org>
-Cc:     Dan Williams <dan.j.williams@intel.com>,
-        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
-        Phong Hoang <phong.hoang.wz@renesas.com>,
-        dmaengine@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Geert Uytterhoeven <geert+renesas@glider.be>
-Subject: [PATCH 4/4] dmaengine: rcar-dmac: Add support for R-Car V3U
-Date:   Thu,  7 Jan 2021 19:15:24 +0100
-Message-Id: <20210107181524.1947173-5-geert+renesas@glider.be>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210107181524.1947173-1-geert+renesas@glider.be>
-References: <20210107181524.1947173-1-geert+renesas@glider.be>
+        id S1729158AbhAGSQ3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 13:16:29 -0500
+Received: from mail-eopbgr60043.outbound.protection.outlook.com ([40.107.6.43]:65411
+        "EHLO EUR04-DB3-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1728066AbhAGSQ1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Jan 2021 13:16:27 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=fzBvD2NYMQSoaFRw4c78TJv0SFqsbxTNopLlATdNfwTCJy6c/et8t73AN9I1cfGqW5VFYm3szNLMNKzFE0coBzF31gpx6j6uv0DQCufwBHI9Bkg/ilHj178TZ+cFADKTtIbJjGNdrrt7lQG/5GqwJo+bNOCfI6TuUEuxqfByfoiQw0TF7eyd+DFB1s/Zq4VlMf5u28XmMwD9MAOfPan0PPeMsXvBwe0KBJbXpzns4/TrvJAyJIB5Kium1+lgFdnX5QVifL3fJsVgnxNOkFct+iMs69ASebnbVyXYq92iofy0HOcdfzd8bNYoPsQxlyZuliVfnaEftgG3CvBakBGUXA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=y6eIMptboYMkuJlav0LNVSMSeZvj8HyjYi7WhiFsFHg=;
+ b=azJzrxBxx/1Q8m6Pgr5Yflq/TbSprtwvTTy+mtp/XPY2i7CywZexIZbLpw4muyb0eo9MhLg/fpkHhDNAClRtwq4XqCMUTt1KL12jYp7G5kEPHjvLpZ34GpATBSE24oIIzAzxxhuHCWKCcaA9UCnyt0oIvHD1OfiFb5EnF+5qIkoWxZ3jNe9yiWfzSKBKIRdXRt6Raf24KqQWT0/ItnjSlTWaxEH7eyOyhEd+O20rfyea7Tp+EYGWhqg6WsJ0Aw4UYzOB6u/zEEezGFVLN9nz9lOuWSf3tZ3IxyGNaB8qjxa4Vsp0von2HPzwPK3x7d06mEf9P+JH/TasAkZiBXSIyQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fi.rohmeurope.com; dmarc=pass action=none
+ header.from=fi.rohmeurope.com; dkim=pass header.d=fi.rohmeurope.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=rohmsemiconductoreurope.onmicrosoft.com;
+ s=selector1-rohmsemiconductoreurope-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=y6eIMptboYMkuJlav0LNVSMSeZvj8HyjYi7WhiFsFHg=;
+ b=eB8kpOngi/UkpZV6nptHwDwopm0SDmxmStu4ohrrb7N4KvLZh8X7BcVts2pQpHk/T5fFTBgH/pxctmZRthgQAdCNFHBvozZZ1YKAnSHL2fprCgNcdry94RVT8wWzbCAQS6yPkxDfE9rY/XogOc+xmXuPH3GGrqicWz19dBWGUMg=
+Received: from HE1PR03MB3162.eurprd03.prod.outlook.com (2603:10a6:7:55::20) by
+ HE1PR0301MB2395.eurprd03.prod.outlook.com (2603:10a6:3:6d::9) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.3742.6; Thu, 7 Jan 2021 18:15:37 +0000
+Received: from HE1PR03MB3162.eurprd03.prod.outlook.com
+ ([fe80::6558:57bb:5293:f3d3]) by HE1PR03MB3162.eurprd03.prod.outlook.com
+ ([fe80::6558:57bb:5293:f3d3%3]) with mapi id 15.20.3721.024; Thu, 7 Jan 2021
+ 18:15:37 +0000
+From:   "Vaittinen, Matti" <Matti.Vaittinen@fi.rohmeurope.com>
+To:     "linux@roeck-us.net" <linux@roeck-us.net>
+CC:     "mazziesaccount@gmail.com" <mazziesaccount@gmail.com>,
+        "wim@linux-watchdog.org" <wim@linux-watchdog.org>,
+        linux-power <linux-power@fi.rohmeurope.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-watchdog@vger.kernel.org" <linux-watchdog@vger.kernel.org>
+Subject: Re: [PATCH 1/2] watchdog: bd70528: don't crash if WDG is confiured
+ with BD71828
+Thread-Topic: [PATCH 1/2] watchdog: bd70528: don't crash if WDG is confiured
+ with BD71828
+Thread-Index: AQHW5L+IrHihOUehfkywMzhn459XW6ocRXKAgAAzOAA=
+Date:   Thu, 7 Jan 2021 18:15:36 +0000
+Message-ID: <35ba5bcd48d4e027c0e5c839a856751519ee4dd1.camel@fi.rohmeurope.com>
+References: <671ac57ad53ab1614da7fe9a3d0f78bdb5b51fda.1610001365.git.matti.vaittinen@fi.rohmeurope.com>
+         <20210107151211.GA13040@roeck-us.net>
+In-Reply-To: <20210107151211.GA13040@roeck-us.net>
+Reply-To: "Vaittinen, Matti" <Matti.Vaittinen@fi.rohmeurope.com>
+Accept-Language: fi-FI, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+user-agent: Evolution 3.34.4 (3.34.4-1.fc31) 
+authentication-results: roeck-us.net; dkim=none (message not signed)
+ header.d=none;roeck-us.net; dmarc=none action=none
+ header.from=fi.rohmeurope.com;
+x-originating-ip: [62.78.225.252]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 56dc1166-da1a-4fc1-c181-08d8b3383b77
+x-ms-traffictypediagnostic: HE1PR0301MB2395:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <HE1PR0301MB23954F6ADB6E9F74A602D8ACADAF0@HE1PR0301MB2395.eurprd03.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:8273;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 9ilifDqrZYeDyo50AmtfY1TEp3wNzpWfeDRgVmNDFwJqZKp5rjGBXXYSf2b9f4eakCtm0wFZ+MgM4AdE5YX8fnlG3FXl/HgvvEyTlJVSfeLy+1NY/kgHtUkZJ3JZYb+sIZwks3Gs4iKx/Lik+zEEcbQrxq5wCNIqF45FbKT9WAg9GAEgliBpnsD6MtXoxeVwbKKgEnJ79XWjibe+pwdV8kv4pd1DbFD+QF2TVpY9zrC0Jlsw6kbL6ug1WLFR8eY+p711P+4U6xz/nppExDEzGM+murcxydfxK+vg1xVkPgfZF2BjfLVHrLzuwXzY982YuzkFNHY4ASvI279qdQyJqGeyE6JoaHrBpyUro7iQ4nGFtgZbn14qgQUxevG9T2gzbFzogAm7IVpzHWuxbV0eyQ==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:HE1PR03MB3162.eurprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(376002)(136003)(39840400004)(396003)(366004)(8936002)(3450700001)(2906002)(2616005)(71200400001)(186003)(6506007)(5660300002)(26005)(316002)(66946007)(76116006)(64756008)(66556008)(4326008)(66476007)(66446008)(478600001)(6916009)(6486002)(6512007)(54906003)(8676002)(83380400001)(86362001);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: =?utf-8?B?SkRQcndEa3RIcjBaVWhvWE04d2ptWHRTaVZ1b1lxSWlCV0xmdnU2OWg0emxo?=
+ =?utf-8?B?bjc2eStLems2WU1hZktOVVhBVXdKYThKaTNVaTNhakhEaVRDK1ZHdkZGbDNU?=
+ =?utf-8?B?UVFzKzdKbXNBbFlLQ00yTTIvMUk4eVZIbGRTZ0Z6MUpkRVFRUmpxOU1Jcmw2?=
+ =?utf-8?B?cGQ4c2xHZVBnUnpWbmo0YVhoc1lCR3UxbFpDVnd0VU41TU5tdDhrL2djc1kx?=
+ =?utf-8?B?cGRPeU5Mb1pWMUJLRjRNdktMQ1QrM1h3NVVUaU5ZQnBkUC9UbHJNQVRKOFVL?=
+ =?utf-8?B?b1dHaHIxZ1JhOTg1WHZ3R2p0T0VPaFhrOWpaeFowSHBOTVBEcjdNdC9WK3hX?=
+ =?utf-8?B?VXU3V3BpNTZ6SHl3dDFyR2k4TjJEYlZUZmYvZkFuZ2JDZDk0d2FJTzIwUXQ2?=
+ =?utf-8?B?WXVWUy9renNYNUo0OS9zRVQwTE4yVHB4bDlqVTlNNldOWGJtTkpPakphRVZw?=
+ =?utf-8?B?WTdwQVNrWmV6MXhsRlBlQkZsRk5aZWtPNjMwOVF3M1ZVWnp5TWZUVWNMdEJK?=
+ =?utf-8?B?Z3FEdzZzMW9XaHBVT3l4T29PTzdvbWtjNFVHTm4zRnhCWU9MajF2Y1g0c2li?=
+ =?utf-8?B?RnFKRDJoUnF0dDdYZGl3ZDEyc0ltQnJENVFQdnhUZlZKR3B2TFdLWGZ5OU5F?=
+ =?utf-8?B?VnZTTVhWanpKS04vQVRTOUhCVTVkdE1ITm9UUEVsN1JyTkRsbTQwUEZDWWRX?=
+ =?utf-8?B?MzV3NlVPZDYzQXBCY294bUFnZytRMlFXaU4zQktmTU9lMmtmQTVhTzF3TTBW?=
+ =?utf-8?B?K0Uwa2puZ2c4aVZ1QVlRTmtlN2FCak9XeDRPeTIzdlBUTFVjeWljZXhpUU1i?=
+ =?utf-8?B?aVI2QnZadXo0bXVxZGRyQ1BQbS8vSy9JQWl4cE1WU1JNcVdvd21UU2pqb0tS?=
+ =?utf-8?B?VEsrTUFtOUFwQnpTY0pCUUJlY2pLNTBCV29hVnVhSFFPVDVjZ24vdjdLeEJW?=
+ =?utf-8?B?clVPSHZDYTREZEplVEFSZ1pRbTZCeHNZU0JJTjdnZ1FkcU01ZGFlTG8veU5N?=
+ =?utf-8?B?S2VycnptWVViOUdaVTRaYXRodTVVdHpVNHNZekNKbUxOcmhyVWdpNzVVd1oy?=
+ =?utf-8?B?c0ltL0UxWm1xeE5oOGp2K0hudW1nbTFNVW02elhLc2dyanRMeDRLM3hZM21K?=
+ =?utf-8?B?RFRSOE83UzJDWUxiY2F1UVNYUkJ4NTQ3VmxwdkUvZWIzNi9mOXJjRTlxRFhr?=
+ =?utf-8?B?TTdqOEpoaE9MSDJnR2t2K2gwWG1Vc1J2VS8wTUN1OFBIcmpzVjVkVGNmbmND?=
+ =?utf-8?B?UUlQaDZZRjNHdDFPM3N2a2trM2U4amFyQWFSR0lJU2FTZ2xRVzlWMmVmTEd2?=
+ =?utf-8?Q?ON8f61N7yFTyoCpAQGkEjgXMTVS5/KQj3d?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <7CC0E0B626242D40B06F15A3024F4697@eurprd03.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-OriginatorOrg: fi.rohmeurope.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: HE1PR03MB3162.eurprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 56dc1166-da1a-4fc1-c181-08d8b3383b77
+X-MS-Exchange-CrossTenant-originalarrivaltime: 07 Jan 2021 18:15:36.8590
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 94f2c475-a538-4112-b5dd-63f17273d67a
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 740mi8KaJ8bv+nMPSnA3rutS6EwV50h4lvZZ3cCQYbXbMZqSEBYvKPVZhJc9JxqHX9BKMeD5WAyuBIao5w89eMFK3zgFDCBfDo3stgjrQnG3FLjBsWgcn2UyR0Ip7FUd
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: HE1PR0301MB2395
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The DMACs (both SYS-DMAC and RT-DMAC) on R-Car V3U differ slightly from
-the DMACs on R-Car Gen2 and other R-Car Gen3 SoCs:
-  1. The per-channel registers are located in a second register block.
-     Add support for mapping the second block, using the appropriate
-     offsets and stride.
-  2. The common Channel Clear Register (DMACHCLR) was replaced by a
-     per-channel register.
-     Update rcar_dmac_chan_clear{,_all}() to handle this.
-     As rcar_dmac_init() needs to clear the status before the individual
-     channels are probed, channel index and base address initialization
-     are moved forward.
-
-Inspired by a patch in the BSP by Phong Hoang
-<phong.hoang.wz@renesas.com>.
-
-Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
----
- drivers/dma/sh/rcar-dmac.c | 68 +++++++++++++++++++++++++++-----------
- 1 file changed, 49 insertions(+), 19 deletions(-)
-
-diff --git a/drivers/dma/sh/rcar-dmac.c b/drivers/dma/sh/rcar-dmac.c
-index 990d78849a7de704..c11e6255eba1fc6b 100644
---- a/drivers/dma/sh/rcar-dmac.c
-+++ b/drivers/dma/sh/rcar-dmac.c
-@@ -189,7 +189,7 @@ struct rcar_dmac_chan {
-  * struct rcar_dmac - R-Car Gen2 DMA Controller
-  * @engine: base DMA engine object
-  * @dev: the hardware device
-- * @iomem: remapped I/O memory base
-+ * @iomem: remapped I/O memory bases (second is optional)
-  * @n_channels: number of available channels
-  * @channels: array of DMAC channels
-  * @channels_mask: bitfield of which DMA channels are managed by this driver
-@@ -198,7 +198,7 @@ struct rcar_dmac_chan {
- struct rcar_dmac {
- 	struct dma_device engine;
- 	struct device *dev;
--	void __iomem *iomem;
-+	void __iomem *iomem[2];
- 
- 	unsigned int n_channels;
- 	struct rcar_dmac_chan *channels;
-@@ -216,10 +216,12 @@ struct rcar_dmac {
- 
- /*
-  * struct rcar_dmac_of_data - This driver's OF data
-+ * @chan_reg_block: Register block index for DMAC channels
-  * @chan_offset_base: DMAC channels base offset
-  * @chan_offset_stride: DMAC channels offset stride
-  */
- struct rcar_dmac_of_data {
-+	unsigned int chan_reg_block;
- 	u32 chan_offset_base;
- 	u32 chan_offset_stride;
- };
-@@ -235,7 +237,7 @@ struct rcar_dmac_of_data {
- #define RCAR_DMAOR_PRI_ROUND_ROBIN	(3 << 8)
- #define RCAR_DMAOR_AE			(1 << 2)
- #define RCAR_DMAOR_DME			(1 << 0)
--#define RCAR_DMACHCLR			0x0080
-+#define RCAR_DMACHCLR			0x0080	/* Not on R-Car V3U */
- #define RCAR_DMADPSEC			0x00a0
- 
- #define RCAR_DMASAR			0x0000
-@@ -298,6 +300,9 @@ struct rcar_dmac_of_data {
- #define RCAR_DMAFIXDAR			0x0014
- #define RCAR_DMAFIXDPBASE		0x0060
- 
-+/* For R-Car V3U */
-+#define RCAR_V3U_DMACHCLR		0x0100
-+
- /* Hardcode the MEMCPY transfer size to 4 bytes. */
- #define RCAR_DMAC_MEMCPY_XFER_SIZE	4
- 
-@@ -308,17 +313,17 @@ struct rcar_dmac_of_data {
- static void rcar_dmac_write(struct rcar_dmac *dmac, u32 reg, u32 data)
- {
- 	if (reg == RCAR_DMAOR)
--		writew(data, dmac->iomem + reg);
-+		writew(data, dmac->iomem[0] + reg);
- 	else
--		writel(data, dmac->iomem + reg);
-+		writel(data, dmac->iomem[0] + reg);
- }
- 
- static u32 rcar_dmac_read(struct rcar_dmac *dmac, u32 reg)
- {
- 	if (reg == RCAR_DMAOR)
--		return readw(dmac->iomem + reg);
-+		return readw(dmac->iomem[0] + reg);
- 	else
--		return readl(dmac->iomem + reg);
-+		return readl(dmac->iomem[0] + reg);
- }
- 
- static u32 rcar_dmac_chan_read(struct rcar_dmac_chan *chan, u32 reg)
-@@ -340,12 +345,23 @@ static void rcar_dmac_chan_write(struct rcar_dmac_chan *chan, u32 reg, u32 data)
- static void rcar_dmac_chan_clear(struct rcar_dmac *dmac,
- 				 struct rcar_dmac_chan *chan)
- {
--	rcar_dmac_write(dmac, RCAR_DMACHCLR, BIT(chan->index));
-+	if (dmac->iomem[1])
-+		rcar_dmac_chan_write(chan, RCAR_V3U_DMACHCLR, 1);
-+	else
-+		rcar_dmac_write(dmac, RCAR_DMACHCLR, BIT(chan->index));
- }
- 
- static void rcar_dmac_chan_clear_all(struct rcar_dmac *dmac)
- {
--	rcar_dmac_write(dmac, RCAR_DMACHCLR, dmac->channels_mask);
-+	struct rcar_dmac_chan *chan;
-+	unsigned int i;
-+
-+	if (dmac->iomem[1]) {
-+		for_each_rcar_dmac_chan(i, chan, dmac)
-+			rcar_dmac_chan_write(chan, RCAR_V3U_DMACHCLR, 1);
-+	} else {
-+		rcar_dmac_write(dmac, RCAR_DMACHCLR, dmac->channels_mask);
-+	}
- }
- 
- /* -----------------------------------------------------------------------------
-@@ -1745,7 +1761,6 @@ static const struct dev_pm_ops rcar_dmac_pm = {
- 
- static int rcar_dmac_chan_probe(struct rcar_dmac *dmac,
- 				struct rcar_dmac_chan *rchan,
--				const struct rcar_dmac_of_data *data,
- 				unsigned int index)
- {
- 	struct platform_device *pdev = to_platform_device(dmac->dev);
-@@ -1754,9 +1769,6 @@ static int rcar_dmac_chan_probe(struct rcar_dmac *dmac,
- 	char *irqname;
- 	int ret;
- 
--	rchan->index = index;
--	rchan->iomem = dmac->iomem + data->chan_offset_base +
--		       data->chan_offset_stride * index;
- 	rchan->mid_rid = -EINVAL;
- 
- 	spin_lock_init(&rchan->lock);
-@@ -1881,9 +1893,17 @@ static int rcar_dmac_probe(struct platform_device *pdev)
- 		return -ENOMEM;
- 
- 	/* Request resources. */
--	dmac->iomem = devm_platform_ioremap_resource(pdev, 0);
--	if (IS_ERR(dmac->iomem))
--		return PTR_ERR(dmac->iomem);
-+	for (i = 0; i <= data->chan_reg_block; i++) {
-+		dmac->iomem[i] = devm_platform_ioremap_resource(pdev, i);
-+		if (IS_ERR(dmac->iomem[i]))
-+			return PTR_ERR(dmac->iomem[i]);
-+	}
-+
-+	for_each_rcar_dmac_chan(i, chan, dmac) {
-+		chan->index = i;
-+		chan->iomem = dmac->iomem[data->chan_reg_block] +
-+			data->chan_offset_base + i * data->chan_offset_stride;
-+	}
- 
- 	/* Enable runtime PM and initialize the device. */
- 	pm_runtime_enable(&pdev->dev);
-@@ -1930,7 +1950,7 @@ static int rcar_dmac_probe(struct platform_device *pdev)
- 	INIT_LIST_HEAD(&engine->channels);
- 
- 	for_each_rcar_dmac_chan(i, chan, dmac) {
--		ret = rcar_dmac_chan_probe(dmac, chan, data, i);
-+		ret = rcar_dmac_chan_probe(dmac, chan, i);
- 		if (ret < 0)
- 			goto error;
- 	}
-@@ -1978,14 +1998,24 @@ static void rcar_dmac_shutdown(struct platform_device *pdev)
- }
- 
- static const struct rcar_dmac_of_data rcar_dmac_data = {
--	.chan_offset_base = 0x8000,
--	.chan_offset_stride = 0x80,
-+	.chan_reg_block		= 0,
-+	.chan_offset_base	= 0x8000,
-+	.chan_offset_stride	= 0x80,
-+};
-+
-+static const struct rcar_dmac_of_data rcar_v3u_dmac_data = {
-+	.chan_reg_block		= 1,
-+	.chan_offset_base	= 0x0,
-+	.chan_offset_stride	= 0x1000,
- };
- 
- static const struct of_device_id rcar_dmac_of_ids[] = {
- 	{
- 		.compatible = "renesas,rcar-dmac",
- 		.data = &rcar_dmac_data,
-+	}, {
-+		.compatible = "renesas,dmac-r8a779a0",
-+		.data = &rcar_v3u_dmac_data,
- 	},
- 	{ /* Sentinel */ }
- };
--- 
-2.25.1
-
+VGhhbmtzIGEgbG90IGZvciB0YWtpbmcgYSBjYXJlZnVsIGxvb2sgYXQgdGhpcyBHdWVudGVyIQ0K
+DQpPbiBUaHUsIDIwMjEtMDEtMDcgYXQgMDc6MTIgLTA4MDAsIEd1ZW50ZXIgUm9lY2sgd3JvdGU6
+DQo+IE9uIFRodSwgSmFuIDA3LCAyMDIxIGF0IDA4OjM3OjAzQU0gKzAyMDAsIE1hdHRpIFZhaXR0
+aW5lbiB3cm90ZToNCj4gPiBJZiBjb25maWcgZm9yIEJENzA1Mjggd2F0Y2hkb2cgaXMgZW5hYmxl
+ZCB3aGVuIEJENzE4Mjggb3IgQkQ3MTgxNQ0KPiA+IGFyZSB1c2VkIHRoZSBSVEMgbW9kdWxlIHdp
+bGwgaXNzdWUgY2FsbCB0byBCRDcwNTI4IHdhdGNoZG9nIHdpdGgNCj4gPiBOVUxMIGRhdGEuIEln
+bm9yZSB0aGlzIGNhbGwgYW5kIGRvbid0IGNyYXNoLg0KPiA+IA0KPiA+IFNpZ25lZC1vZmYtYnk6
+IE1hdHRpIFZhaXR0aW5lbiA8bWF0dGkudmFpdHRpbmVuQGZpLnJvaG1ldXJvcGUuY29tPg0KPiAN
+Cj4gSSByZWFsbHkgdGhpbmsgdGhpcyBzaG91bGQgYmUgaGFuZGxlZCBpbiB0aGUgY2FsbGluZyBj
+b2RlLg0KPiBBbHNvLCBJIGFtIGN1cmlvdXMgaG93IHRoaXMgaXMgc3VwcG9zZWQgdG8gd29yay4N
+Cj4gDQo+IFRoZSBjb2RlIGlzIGNhbGxlZCB3aXRoDQo+IA0KPiAJcmV0ID0gYmQ3MDUyOF93ZHRf
+c2V0KHItPnBhcmVudCwgbmV3X3N0YXRlICYNCj4gQkQ3MDUyOF9XRFRfU1RBVEVfQklULA0KPiAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICBvbGRfc3RhdGUpOw0KDQpNeSBicmFpbmZhcnQu
+DQpUaGUgYmQ3MDUyOF93ZHRfc2V0IGlzIG5vdCBjYWxsZWQgYXMgaXQgaXMgcHJvdGVjdGVkIGlu
+IFJUQyBieQ0KaGFzX3J0Y190aW1lcnMgZmxhZy4NCg0KSSBpbnNlcnRlZCB0aGlzIGNoZWNrIGlu
+IHdyb25nIGZ1bmN0aW9uLiBUaGUgYmQ3MDUyOF93ZHRfbG9jaygpDQppcyB3aGVyZSB3ZSBtYXkg
+aGl0IHRoZSBwcm9ibGVtIGFzIGl0IGlzIG5vdCBwcm90ZWN0ZWQuDQo+IA0KPiBmcm9tIGJkNzA1
+Mjhfc2V0X3J0Y19iYXNlZF90aW1lcnMoKS4gVGhhdCBzYW1lIGZ1bmN0aW9uIHN1YnNlcXVlbnRs
+eQ0KPiBjYWxscyBiZDcwNTI4X3NldF9lbGFwc2VkX3RtcigpIHdpdGggdGhlIHNhbWUgcGFyYW1l
+dGVyLCBhbmQgdGhhdA0KPiBwYXJhbWV0ZXIgaXMgZGVyZWZlcmVuY2VkIGluIGJkNzA1Mjhfc2V0
+X2VsYXBzZWRfdG1yKCkgd2l0aG91dA0KPiBjaGVja2luZy4NCj4gDQo+IENvbmNlcHR1YWxseSwg
+aXQgc2hvdWxkIG5vdCBiZSBuZWNlc3NhcnkgdG8gZGV0ZXJtaW5lIGF0IGNvbXBpbGUtdGltZQ0K
+PiB3aGljaCBvZiB0aGUgY2hpcHMgaXMgaW4gdGhlIHN5c3RlbS4gSXQgc2hvdWxkIGJlIHBvc2li
+bGUgdG8gY29tcGlsZQ0KPiBhIHNpbmdsZSBrZXJuZWwgd2hpY2ggc3VwcG9ydHMgYWxsIGNoaXBz
+Lg0KDQpJIGFncmVlLiBUaGUgaW5mb3JtYXRpb24gd2hldGhlciBXRFQgc2hvdWxkIGJlIGFjY2Vz
+c2VkIHNob3VsZCBiZQ0KanVkZ2VkIGJ5IGR0LWNvbXBhdGlibGUuIE1GRCBoYXMgdGhpcyBrbm93
+bGVkZ2UgYW5kIHBhc3NlcyBpdCB0byBSVEMuDQpTbyB5ZXMsIFJUQyBzaG91bGQgb21pdCB0aGUg
+Y2FsbCBpZiBCRDcwNTI4IGlzIG5vdCB1c2VkLiBQbGVhc2UgaWdub3JlDQp0aGVzZSBwYXRjaGVz
+LCBJJ2xsIGRvIGNoYW5nZXMgdG8gUlRDIGRyaXZlciA6KQ0KDQoNCkJlc3QgUmVnYXJkcw0KTWF0
+dGkNCg0KDQo=
