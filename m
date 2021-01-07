@@ -2,89 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0496B2EC95F
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 05:23:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CC43A2EC999
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 05:47:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727009AbhAGEWU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Jan 2021 23:22:20 -0500
-Received: from mga04.intel.com ([192.55.52.120]:1526 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725803AbhAGEWU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Jan 2021 23:22:20 -0500
-IronPort-SDR: oqWu0TDuBhrexe+OXET9NFmOnQTCIL28pE+fdKe7ST4cnGfCQGtP8MDnojhA+J7I0XvXi2UK7B
- 3JARg2SYL1zg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9856"; a="174796277"
-X-IronPort-AV: E=Sophos;i="5.79,328,1602572400"; 
-   d="scan'208";a="174796277"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Jan 2021 20:21:39 -0800
-IronPort-SDR: OhsxQADpyZdRHuOTZ3za8ozh7y5Q/N2zIkRWXcAJGgfpnxRYafN2r+7cSn34Og7mwIbNxiinsN
- WRjiScdkviLA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.79,328,1602572400"; 
-   d="scan'208";a="422430265"
-Received: from yilunxu-optiplex-7050.sh.intel.com (HELO localhost) ([10.239.159.141])
-  by orsmga001.jf.intel.com with ESMTP; 06 Jan 2021 20:21:37 -0800
-Date:   Thu, 7 Jan 2021 12:16:53 +0800
-From:   Xu Yilun <yilun.xu@intel.com>
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     arnd@arndb.de, gregkh@linuxfoundation.org,
-        linux-kernel@vger.kernel.org, trix@redhat.com, lgoncalv@redhat.com,
-        hao.wu@intel.com, matthew.gerlach@intel.com,
-        russell.h.weight@intel.com
-Subject: Re: [PATCH 1/2] mfd: intel-m10-bmc: specify the retimer sub devices
-Message-ID: <20210107041652.GB7750@yilunxu-OptiPlex-7050>
-References: <1609918567-13339-1-git-send-email-yilun.xu@intel.com>
- <1609918567-13339-2-git-send-email-yilun.xu@intel.com>
- <20210106082330.GB1592923@dell>
+        id S1727205AbhAGErg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Jan 2021 23:47:36 -0500
+Received: from relay4.mymailcheap.com ([137.74.80.156]:52964 "EHLO
+        relay4.mymailcheap.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726883AbhAGErf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 Jan 2021 23:47:35 -0500
+Received: from filter2.mymailcheap.com (filter2.mymailcheap.com [91.134.140.82])
+        by relay4.mymailcheap.com (Postfix) with ESMTPS id C55E33F1D0;
+        Thu,  7 Jan 2021 05:46:01 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+        by filter2.mymailcheap.com (Postfix) with ESMTP id 93F492A7E5;
+        Thu,  7 Jan 2021 05:46:01 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mymailcheap.com;
+        s=default; t=1609994761;
+        bh=8unyk0aOxyvIXZOJPusmERGg+i43rMAKH28AqjQ7mUY=;
+        h=Date:In-Reply-To:References:Subject:To:CC:From:From;
+        b=tWG5DTHu16/GMSadEHWNO/lgoT9fzvzO4cYUEXp5Tvv4aTy9tVDas9RESuCa3EgyI
+         g+EtosfDBEG8Nm3Z4/xZrYw7+Vk82TVV7SdOJ+gbDMA0WLpj9RClDJVTkHv9mFKQMq
+         74tltlvR96q9kIsGXVkVBHUET9RxtGDBgWeXkXOY=
+X-Virus-Scanned: Debian amavisd-new at filter2.mymailcheap.com
+Received: from filter2.mymailcheap.com ([127.0.0.1])
+        by localhost (filter2.mymailcheap.com [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id 075XNDlJ-52U; Thu,  7 Jan 2021 05:46:00 +0100 (CET)
+Received: from mail20.mymailcheap.com (mail20.mymailcheap.com [51.83.111.147])
+        (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by filter2.mymailcheap.com (Postfix) with ESMTPS;
+        Thu,  7 Jan 2021 05:46:00 +0100 (CET)
+Received: from [148.251.23.173] (ml.mymailcheap.com [148.251.23.173])
+        by mail20.mymailcheap.com (Postfix) with ESMTP id 934AD4228E;
+        Thu,  7 Jan 2021 04:45:59 +0000 (UTC)
+Authentication-Results: mail20.mymailcheap.com;
+        dkim=pass (1024-bit key; unprotected) header.d=aosc.io header.i=@aosc.io header.b="HdmdzN6t";
+        dkim-atps=neutral
+AI-Spam-Status: Not processed
+Received: from [192.168.1.235] (unknown [59.41.161.221])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail20.mymailcheap.com (Postfix) with ESMTPSA id 231964228E;
+        Thu,  7 Jan 2021 04:45:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=aosc.io; s=default;
+        t=1609994755; bh=8unyk0aOxyvIXZOJPusmERGg+i43rMAKH28AqjQ7mUY=;
+        h=Date:In-Reply-To:References:Subject:To:CC:From:From;
+        b=HdmdzN6tQ8OtkUpQeXMIGEF1zUavlVlWiiL1vh+Nh/HP5Yr+NlGVvEWwOMLiA1Pf0
+         h4X4EAACCeCOyW0fafpJqRj4JpypRauSVDoNn90Ssl3y2UKPWLwgnpfb6hRTBYA50G
+         W/6NnxPy5O2Zhl70TRDATe3EEmawivqOjiPlC5Kk=
+Date:   Thu, 07 Jan 2021 12:00:21 +0800
+User-Agent: K-9 Mail for Android
+In-Reply-To: <CAMty3ZCkEb9g5t6Hs5DN5yHXYvDhymriYqqV+6DZiC+Qb645ww@mail.gmail.com>
+References: <20201128125257.1626588-1-icenowy@aosc.io> <CAMty3ZCkEb9g5t6Hs5DN5yHXYvDhymriYqqV+6DZiC+Qb645ww@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210106082330.GB1592923@dell>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+Subject: Re: [PATCH] drm/panel: feiyang-fy07024di26a30d: cleanup if panel attaching failed
+To:     Jagan Teki <jagan@amarulasolutions.com>
+CC:     Thierry Reding <thierry.reding@gmail.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+From:   Icenowy Zheng <icenowy@aosc.io>
+Message-ID: <C1F366E9-0EDB-4679-BB93-92223F5B8C4A@aosc.io>
+X-Rspamd-Server: mail20.mymailcheap.com
+X-Spamd-Result: default: False [1.40 / 10.00];
+         RCVD_VIA_SMTP_AUTH(0.00)[];
+         ARC_NA(0.00)[];
+         R_DKIM_ALLOW(0.00)[aosc.io:s=default];
+         MID_RHS_MATCH_FROM(0.00)[];
+         FROM_HAS_DN(0.00)[];
+         FREEMAIL_ENVRCPT(0.00)[gmail.com];
+         TO_MATCH_ENVRCPT_ALL(0.00)[];
+         TAGGED_RCPT(0.00)[];
+         MIME_GOOD(-0.10)[text/plain];
+         DMARC_NA(0.00)[aosc.io];
+         R_SPF_SOFTFAIL(0.00)[~all];
+         HFILTER_HELO_BAREIP(3.00)[148.251.23.173,1];
+         ML_SERVERS(-3.10)[148.251.23.173];
+         TO_DN_ALL(0.00)[];
+         DKIM_TRACE(0.00)[aosc.io:+];
+         RCPT_COUNT_SEVEN(0.00)[7];
+         RECEIVED_SPAMHAUS_PBL(0.00)[59.41.161.221:received];
+         RCVD_NO_TLS_LAST(0.10)[];
+         FROM_EQ_ENVFROM(0.00)[];
+         MIME_TRACE(0.00)[0:+];
+         ASN(0.00)[asn:24940, ipnet:148.251.0.0/16, country:DE];
+         FREEMAIL_CC(0.00)[gmail.com,ravnborg.org,linux.ie,ffwll.ch,lists.freedesktop.org,vger.kernel.org];
+         SUSPICIOUS_RECIPS(1.50)[];
+         RCVD_COUNT_TWO(0.00)[2]
+X-Rspamd-Queue-Id: 934AD4228E
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 06, 2021 at 08:23:30AM +0000, Lee Jones wrote:
-> On Wed, 06 Jan 2021, Xu Yilun wrote:
-> 
-> > The patch specifies the 2 retimer sub devices and their resources in the
-> > parent driver's mfd_cell. It also adds the register definition of the
-> > retimer sub devices.
-> > 
-> > There are 2 ethernet retimer chips (C827) connected to the Intel MAX 10
-> > BMC. They are managed by the BMC firmware, and host could query them via
-> > retimer interfaces (shared registers) on the BMC. The 2 retimers have
-> > identical register interfaces in different register addresses or fields,
-> > so it is better we define 2 retimer devices and handle them with the same
-> > driver.
-> > 
-> > Signed-off-by: Xu Yilun <yilun.xu@intel.com>
-> > ---
-> >  drivers/mfd/intel-m10-bmc.c       | 19 ++++++++++++++++++-
-> >  include/linux/mfd/intel-m10-bmc.h |  7 +++++++
-> >  2 files changed, 25 insertions(+), 1 deletion(-)
-> > 
-> > diff --git a/drivers/mfd/intel-m10-bmc.c b/drivers/mfd/intel-m10-bmc.c
-> > index b84579b..e0a99a0 100644
-> > --- a/drivers/mfd/intel-m10-bmc.c
-> > +++ b/drivers/mfd/intel-m10-bmc.c
-> > @@ -17,9 +17,26 @@ enum m10bmc_type {
-> >  	M10_N3000,
-> >  };
-> >  
-> > +static struct resource retimer0_resources[] = {
-> > +	{M10BMC_PKVL_A_VER, M10BMC_PKVL_A_VER, "version", IORESOURCE_REG, },
-> > +};
-> > +
-> > +static struct resource retimer1_resources[] = {
-> > +	{M10BMC_PKVL_B_VER, M10BMC_PKVL_B_VER, "version", IORESOURCE_REG, },
-> > +};
-> 
-> Please use the DEFINE_RES_*() helpers for this.
 
-Yes, will change it.
 
-Thanks,
-Yilun
+=E4=BA=8E 2021=E5=B9=B41=E6=9C=886=E6=97=A5 GMT+08:00 =E4=B8=8B=E5=8D=885:=
+47:20, Jagan Teki <jagan@amarulasolutions=2Ecom> =E5=86=99=E5=88=B0:
+>On Sat, Nov 28, 2020 at 6:23 PM Icenowy Zheng <icenowy@aosc=2Eio> wrote:
+>>
+>> Attaching the panel can fail, so cleanup work is necessary, otherwise
+>> a pointer to freed struct drm_panel* will remain in drm_panel code=2E
+>>
+>> Do the cleanup if panel attaching failed=2E
+>>
+>> Fixes: 69dc678abc2b ("drm/panel: Add Feiyang FY07024DI26A30-D
+>MIPI-DSI LCD panel")
+>
+>The fact that this has failed to probe due to recent changes in
+>sun6i_mipi_dsi=2Ec I don't know how to put that into the commit message=
+=2E
+
+It's not related, we shouldn't assume this panel driver will always
+be used with sunxi SoCs=2E
+
+It's a panel driver bug that cannot deal with -EPROBE_DEFER well=2E
+
+>> Signed-off-by: Icenowy Zheng <icenowy@aosc=2Eio>
+>> ---
+>
+>Reviewed-by: Jagan Teki <jagan@amarulasolutions=2Ecom>
