@@ -2,181 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA2622ECADA
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 08:17:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 967912ECADF
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 08:21:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726866AbhAGHRE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 02:17:04 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54342 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726404AbhAGHRE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 02:17:04 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4614F23100;
-        Thu,  7 Jan 2021 07:16:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610003783;
-        bh=6DRAYZOS6gedkI9l2X6RhRYD8BpNTokHC71/7sv/k+Y=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=KuLaTnOuheFSIiPLd7HLtIzrphB47EH3xvlSl3fBRiY5mVn8OSbzz8nMM+83UJ/0z
-         2S4w2pHMLW7M627zuuDCY5znhvyWUHdeI1sCyhi9N6+zQk+ra2VD7hOX3qxPfRRmCj
-         7L0Djsuxi0i5zPIMOsCYsCOdL9H7ZTx/s4wm+xJX6K0GeOoxaswS7+Duk57DAVKd2A
-         Je3/vJu7tBY8HWDhjSS7dBHXKaeP4s/ThfGOrHb60ripAw+IfW0yvf1wCP9a6N7Dpy
-         qsgR92+P464KJESLPsolYgGuZ96yIiLss/+zTxksOOVc9gpc23aeWzHn2cDMAJk9st
-         8K+jIrhR+f+FQ==
-Date:   Thu, 7 Jan 2021 09:16:16 +0200
-From:   Leon Romanovsky <leon@kernel.org>
-To:     "Tian, Kevin" <kevin.tian@intel.com>
-Cc:     Lu Baolu <baolu.lu@linux.intel.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "Raj, Ashok" <ashok.raj@intel.com>,
-        "Jiang, Dave" <dave.jiang@intel.com>,
-        "Dey, Megha" <megha.dey@intel.com>,
-        "dwmw2@infradead.org" <dwmw2@infradead.org>,
-        "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
-        "bhelgaas@google.com" <bhelgaas@google.com>,
-        "Williams, Dan J" <dan.j.williams@intel.com>,
-        "dmaengine@vger.kernel.org" <dmaengine@vger.kernel.org>,
-        "eric.auger@redhat.com" <eric.auger@redhat.com>,
-        "Pan, Jacob jun" <jacob.jun.pan@intel.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "kwankhede@nvidia.com" <kwankhede@nvidia.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
-        "maz@kernel.org" <maz@kernel.org>,
-        "Hossain, Mona" <mona.hossain@intel.com>,
-        "netanelg@mellanox.com" <netanelg@mellanox.com>,
-        "parav@mellanox.com" <parav@mellanox.com>,
-        "pbonzini@redhat.com" <pbonzini@redhat.com>,
-        "rafael@kernel.org" <rafael@kernel.org>,
-        "Ortiz, Samuel" <samuel.ortiz@intel.com>,
-        "Kumar, Sanjay K" <sanjay.k.kumar@intel.com>,
-        "shahafs@mellanox.com" <shahafs@mellanox.com>,
-        "Luck, Tony" <tony.luck@intel.com>,
-        "vkoul@kernel.org" <vkoul@kernel.org>,
-        "yan.y.zhao@linux.intel.com" <yan.y.zhao@linux.intel.com>,
-        "Liu, Yi L" <yi.l.liu@intel.com>
-Subject: Re: [RFC PATCH v2 1/1] platform-msi: Add platform check for
- subdevice irq domain
-Message-ID: <20210107071616.GA31158@unreal>
-References: <20210106022749.2769057-1-baolu.lu@linux.intel.com>
- <20210106060613.GU31158@unreal>
- <3d2620f9-bbd4-3dd0-8e29-0cfe492a109f@linux.intel.com>
- <20210106104017.GV31158@unreal>
- <20210106152339.GA552508@nvidia.com>
- <20210106160158.GX31158@unreal>
- <MWHPR11MB18867EE2F4FA0382DCFEEE2B8CAF0@MWHPR11MB1886.namprd11.prod.outlook.com>
- <20210107060916.GY31158@unreal>
- <MWHPR11MB188629E36439F80AD60900788CAF0@MWHPR11MB1886.namprd11.prod.outlook.com>
+        id S1726801AbhAGHTc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 02:19:32 -0500
+Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:4082 "EHLO
+        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726013AbhAGHTc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Jan 2021 02:19:32 -0500
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5ff6b5db0002>; Wed, 06 Jan 2021 23:18:51 -0800
+Received: from mtl-vdi-166.wap.labs.mlnx (172.20.145.6) by
+ HQMAIL107.nvidia.com (172.20.187.13) with Microsoft SMTP Server (TLS) id
+ 15.0.1473.3; Thu, 7 Jan 2021 07:18:49 +0000
+Date:   Thu, 7 Jan 2021 09:18:45 +0200
+From:   Eli Cohen <elic@nvidia.com>
+To:     <mst@redhat.com>, <virtualization@lists.linux-foundation.org>,
+        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC:     <lulu@redhat.com>, <elic@nvidia.com>
+Subject: [PATCH v1] vdpa/mlx5: Fix memory key MTT population
+Message-ID: <20210107071845.GA224876@mtl-vdi-166.wap.labs.mlnx>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <MWHPR11MB188629E36439F80AD60900788CAF0@MWHPR11MB1886.namprd11.prod.outlook.com>
+User-Agent: Mutt/1.9.5 (bf161cf53efb) (2018-04-13)
+X-Originating-IP: [172.20.145.6]
+X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1610003931; bh=NcydAXraYOykiJbtHv9bmDl70gtSvpqSHEMl3kNpZO8=;
+        h=Date:From:To:CC:Subject:Message-ID:MIME-Version:Content-Type:
+         Content-Disposition:User-Agent:X-Originating-IP:X-ClientProxiedBy;
+        b=EFXLbCIvQe13kA7AHEjQ9n0tm19Rd4J4Rb75BI47Vy4roYv1K7pAfpmoFhuhsLqQJ
+         uCuqETEMA169PIo8YwAIZ1kpcnhSzWdueW4b1oH/2D6W11JZqcCjh6Og8Ijz5iy1Pp
+         yQ8esk5Vv0x+VSz+E/GR6eRNPamLt24yvobdKNpwUpnKHWGrov8HMpb0VmbJ980aH1
+         dcgQyfQLdUr5zBk46PMix8m1U3/wtQ0eC4Pi3lG9xUwdGA5fTcAAHFlyXfPdx+qLXZ
+         RZ3izX28oPfb0ax2Yt7mNxdcetxedVtYUcBeO1E64W5+eTxxHXxNYz4i1M2H/NLgmW
+         qbRPcV5/vEKOQ==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 07, 2021 at 06:55:16AM +0000, Tian, Kevin wrote:
-> > From: Leon Romanovsky <leon@kernel.org>
-> > Sent: Thursday, January 7, 2021 2:09 PM
-> >
-> > On Thu, Jan 07, 2021 at 02:04:29AM +0000, Tian, Kevin wrote:
-> > > > From: Leon Romanovsky <leon@kernel.org>
-> > > > Sent: Thursday, January 7, 2021 12:02 AM
-> > > >
-> > > > On Wed, Jan 06, 2021 at 11:23:39AM -0400, Jason Gunthorpe wrote:
-> > > > > On Wed, Jan 06, 2021 at 12:40:17PM +0200, Leon Romanovsky wrote:
-> > > > >
-> > > > > > I asked what will you do when QEMU will gain needed functionality?
-> > > > > > Will you remove QEMU from this list? If yes, how such "new" kernel
-> > will
-> > > > > > work on old QEMU versions?
-> > > > >
-> > > > > The needed functionality is some VMM hypercall, so presumably new
-> > > > > kernels that support calling this hypercall will be able to discover
-> > > > > if the VMM hypercall exists and if so superceed this entire check.
-> > > >
-> > > > Let's not speculate, do we have well-known path?
-> > > > Will such patch be taken to stable@/distros?
-> > > >
-> > >
-> > > There are two functions introduced in this patch. One is to detect whether
-> > > running on bare metal or in a virtual machine. The other is for deciding
-> > > whether the platform supports ims. Currently the two are identical because
-> > > ims is supported only on bare metal at current stage. In the future it will
-> > look
-> > > like below when ims can be enabled in a VM:
-> > >
-> > > bool arch_support_pci_device_ims(struct pci_dev *pdev)
-> > > {
-> > > 	return on_bare_metal() || hypercall_irq_domain_supported();
-> > > }
-> > >
-> > > The VMM vendor list is for on_bare_metal, and suppose a vendor will
-> > > never be removed once being added to the list since the fact of running
-> > > in a VM never changes, regardless of whether this hypervisor supports
-> > > extra VMM hypercalls.
-> >
-> > This is what I imagined, this list will be forever, and this worries me.
-> >
-> > I don't know if it is true or not, but guess that at least Oracle and
-> > Microsoft bare metal devices and VMs will have same DMI_SYS_VENDOR.
->
-> It's true. David Woodhouse also said it's the case for Amazon EC2 instances.
->
-> >
-> > It means that this on_bare_metal() function won't work reliably in many
-> > cases. Also being part of include/linux/msi.h, at some point of time,
-> > this function will be picked by the users outside for the non-IMS cases.
-> >
-> > I didn't even mention custom forks of QEMU which are prohibited to change
-> > DMI_SYS_VENDOR and private clouds with custom solutions.
->
-> In this case the private QEMU forks are encouraged to set CPUID (X86_
-> FEATURE_HYPERVISOR) if they do plan to adopt a different vendor name.
+map_direct_mr() assumed that the number of scatter/gather entries
+returned by dma_map_sg_attrs() was equal to the number of segments in
+the sgl list. This led to wrong population of the mkey object. Fix this
+by properly referring to the returned value.
 
-Does QEMU set this bit when it runs in host-passthrough CPU model?
+The hardware expects each MTT entry to contain the DMA address of a
+contiguous block of memory of size (1 << mr->log_size) bytes.
+dma_map_sg_attrs() can coalesce several sg entries into a single
+scatter/gather entry of contiguous DMA range so we need to scan the list
+and refer to the size of each s/g entry.
 
->
-> >
-> > The current array makes DMI_SYS_VENDOR interface as some sort of ABI. If
-> > in the future,
-> > the QEMU will decide to use more hipster name, for example "qEmU", this
-> > function
-> > won't work.
-> >
-> > I'm aware that DMI_SYS_VENDOR is used heavily in the kernel code and
-> > various names for the same company are good example how not reliable it.
-> >
-> > The most hilarious example is "Dell/Dell Inc./Dell Inc/Dell Computer
-> > Corporation/Dell Computer",
-> > but other companies are not far from them.
-> >
-> > Luckily enough, this identification is used for hardware product that
-> > was released to the market and their name will be stable for that
-> > specific model. It is not the case here where we need to ensure future
-> > compatibility too (old kernel on new VM emulator).
-> >
-> > I'm not in position to say yes or no to this patch and don't have plans to do it.
-> > Just expressing my feeling that this solution is too hacky for my taste.
-> >
->
-> I agree with your worries and solely relying on DMI_SYS_VENDOR is
-> definitely too hacky. In previous discussions with Thomas there is no
-> elegant way to handle this situation. It has to be a heuristic approach.
-> First we hope the CPUID bit is set properly in most cases thus is checked
-> first. Then other heuristics can be made for the remaining cases. DMI_
-> SYS_VENDOR is the first hint and more can be added later. For example,
-> when IOMMU is present there is vendor specific way to detect whether
-> it's real or virtual. Dave also mentioned some BIOS flag to indicate a
-> virtual machine. Now probably the real question here is whether people
-> are OK with CPUID+DMI_SYS_VENDOR combo check for now (and grow
-> it later) or prefer to having all identified heuristics so far in-place together...
+In addition, get rid of fill_sg() which effect is overwritten by
+populate_mtts().
 
-IMHO, it should be as much as possible close to the end result.
+Fixes: 94abbccdf291 ("vdpa/mlx5: Add shared memory registration code")
+Signed-off-by: Eli Cohen <elic@nvidia.com>
+---
+V0->V1:
+1. Fix typos
+2. Improve changelog 
 
-Thanks
 
->
-> Thanks
-> Kevin
+ drivers/vdpa/mlx5/core/mlx5_vdpa.h |  1 +
+ drivers/vdpa/mlx5/core/mr.c        | 28 ++++++++++++----------------
+ 2 files changed, 13 insertions(+), 16 deletions(-)
+
+diff --git a/drivers/vdpa/mlx5/core/mlx5_vdpa.h b/drivers/vdpa/mlx5/core/mlx5_vdpa.h
+index 5c92a576edae..08f742fd2409 100644
+--- a/drivers/vdpa/mlx5/core/mlx5_vdpa.h
++++ b/drivers/vdpa/mlx5/core/mlx5_vdpa.h
+@@ -15,6 +15,7 @@ struct mlx5_vdpa_direct_mr {
+ 	struct sg_table sg_head;
+ 	int log_size;
+ 	int nsg;
++	int nent;
+ 	struct list_head list;
+ 	u64 offset;
+ };
+diff --git a/drivers/vdpa/mlx5/core/mr.c b/drivers/vdpa/mlx5/core/mr.c
+index 4b6195666c58..d300f799efcd 100644
+--- a/drivers/vdpa/mlx5/core/mr.c
++++ b/drivers/vdpa/mlx5/core/mr.c
+@@ -25,17 +25,6 @@ static int get_octo_len(u64 len, int page_shift)
+ 	return (npages + 1) / 2;
+ }
+ 
+-static void fill_sg(struct mlx5_vdpa_direct_mr *mr, void *in)
+-{
+-	struct scatterlist *sg;
+-	__be64 *pas;
+-	int i;
+-
+-	pas = MLX5_ADDR_OF(create_mkey_in, in, klm_pas_mtt);
+-	for_each_sg(mr->sg_head.sgl, sg, mr->nsg, i)
+-		(*pas) = cpu_to_be64(sg_dma_address(sg));
+-}
+-
+ static void mlx5_set_access_mode(void *mkc, int mode)
+ {
+ 	MLX5_SET(mkc, mkc, access_mode_1_0, mode & 0x3);
+@@ -45,10 +34,18 @@ static void mlx5_set_access_mode(void *mkc, int mode)
+ static void populate_mtts(struct mlx5_vdpa_direct_mr *mr, __be64 *mtt)
+ {
+ 	struct scatterlist *sg;
++	int nsg = mr->nsg;
++	u64 dma_addr;
++	u64 dma_len;
++	int j = 0;
+ 	int i;
+ 
+-	for_each_sg(mr->sg_head.sgl, sg, mr->nsg, i)
+-		mtt[i] = cpu_to_be64(sg_dma_address(sg));
++	for_each_sg(mr->sg_head.sgl, sg, mr->nent, i) {
++		for (dma_addr = sg_dma_address(sg), dma_len = sg_dma_len(sg);
++		     nsg && dma_len;
++		     nsg--, dma_addr += BIT(mr->log_size), dma_len -= BIT(mr->log_size))
++			mtt[j++] = cpu_to_be64(dma_addr);
++	}
+ }
+ 
+ static int create_direct_mr(struct mlx5_vdpa_dev *mvdev, struct mlx5_vdpa_direct_mr *mr)
+@@ -64,7 +61,6 @@ static int create_direct_mr(struct mlx5_vdpa_dev *mvdev, struct mlx5_vdpa_direct
+ 		return -ENOMEM;
+ 
+ 	MLX5_SET(create_mkey_in, in, uid, mvdev->res.uid);
+-	fill_sg(mr, in);
+ 	mkc = MLX5_ADDR_OF(create_mkey_in, in, memory_key_mkey_entry);
+ 	MLX5_SET(mkc, mkc, lw, !!(mr->perm & VHOST_MAP_WO));
+ 	MLX5_SET(mkc, mkc, lr, !!(mr->perm & VHOST_MAP_RO));
+@@ -276,8 +272,8 @@ static int map_direct_mr(struct mlx5_vdpa_dev *mvdev, struct mlx5_vdpa_direct_mr
+ done:
+ 	mr->log_size = log_entity_size;
+ 	mr->nsg = nsg;
+-	err = dma_map_sg_attrs(dma, mr->sg_head.sgl, mr->nsg, DMA_BIDIRECTIONAL, 0);
+-	if (!err)
++	mr->nent = dma_map_sg_attrs(dma, mr->sg_head.sgl, mr->nsg, DMA_BIDIRECTIONAL, 0);
++	if (!mr->nent)
+ 		goto err_map;
+ 
+ 	err = create_direct_mr(mvdev, mr);
+-- 
+2.28.0
+
