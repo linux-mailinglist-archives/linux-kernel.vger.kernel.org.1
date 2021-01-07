@@ -2,74 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67A222ED4F4
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 18:03:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C3CC2ED503
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 18:06:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728868AbhAGRCg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 12:02:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51964 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726650AbhAGRCf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 12:02:35 -0500
-Received: from mail-il1-x12c.google.com (mail-il1-x12c.google.com [IPv6:2607:f8b0:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 791B2C0612F4
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Jan 2021 09:01:55 -0800 (PST)
-Received: by mail-il1-x12c.google.com with SMTP id q5so7347626ilc.10
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Jan 2021 09:01:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=f+81RYRNBA62lGdxvvVO1ABwQxMAX350SDDdSp74ysw=;
-        b=Gs0GS5jXgp2dANbswPSL+jJaT0PEBZTt1y/TdD72Ln5yGm781e1FosZnaoVXWDJzhA
-         N6YB0hzwQk6Iz0SJI5wjVqTd3WUNjj3/dEDtl/Pz07dWgMxi7EIVMrkpGUafVXpieJJT
-         7kJmsvLXBo3LKImsNr/dFvsDefDSLG1H/Koys9RbnUJPZ+J98l4itoiSb3Q7mNeuWVbA
-         Y9aKEMWhWcmqKjN1wXuRFgwik7091GQi2H+he0nL0e753l6J6HwM5zTvEO9kdeYZ3ADQ
-         H20USU20W6lB4tBF8nr490z0gD1AFY9kP4uUTYEcW9VqCmZJLBf3ZEG9RPNxiIUMUQel
-         jlvg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=f+81RYRNBA62lGdxvvVO1ABwQxMAX350SDDdSp74ysw=;
-        b=jS8YF03HJGdtlDezb/JdnVA8fqQB3HhVz1z/f0i7sgJC3Qf9nUyOC87c+gIIVxVMgs
-         z4FS0mFM5OOAxevVvOxZIwathPbP04JkMfYhInAnXuL7ZYfz8JyeueZOGOUAcW9qdi/Y
-         PtVHXHztcjuS1uB4CVH66Q6osMD4E1W4QJ66H2nE0XuFTl4/2KqpXw1RsnldRRD1PZTi
-         9IcAgH66gofib9N9k5SKJrmnvOIAQdi5ntJb800NI8vNiaSYkcN/mmzaxQEFQ1a5jP1l
-         PzRB9jQsXcoLh+fDuMIbKd/jljP7FvxWZ/RugmtuZXXmnCL+pC/3tLCj21gHS2OuxCzp
-         Qaag==
-X-Gm-Message-State: AOAM5308v6cx4r4VBprIRquhlhMTbq+3I5B7Vy2eC7ssdqlxnxJ+C+JE
-        0k4O/Msixjh0VC5cBHVHeTSrKXNLJvz1Fa0a1jg=
-X-Google-Smtp-Source: ABdhPJyLddBz6tNZgn6YVxNU+hS4SzqJ49LyXHUtDrQebk4rWnZ2q09EZz4hRVYDhhYcaZIQ6jGG4eO6pVbXTMhlm7Q=
-X-Received: by 2002:a92:444e:: with SMTP id a14mr9814210ilm.129.1610038914977;
- Thu, 07 Jan 2021 09:01:54 -0800 (PST)
+        id S1728226AbhAGRFp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 12:05:45 -0500
+Received: from mx2.suse.de ([195.135.220.15]:46894 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727453AbhAGRFo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Jan 2021 12:05:44 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1610039097; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=MMfq/PKouT6ktPEQMdn1ZCdmFrDqGcaa8I0x2b98/NQ=;
+        b=l8DMIk0AM0Lx8ZD6OSuzfMbW4nKMZ6WKVw4MmA4GAuTcv53Hdenl9On+h9HXtdA+/xAPXr
+        cUe6J95cuctNrrZP/mnhnUDsoh5ySn3oqhO7saQZKtELu73+m19Bk2rkzJscpvzBePRNTR
+        6UYUcPdDBWuo/CrWCbGlTwdwN74UYKg=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 626DDAD57;
+        Thu,  7 Jan 2021 17:04:57 +0000 (UTC)
+Date:   Thu, 7 Jan 2021 18:04:56 +0100
+From:   Petr Mladek <pmladek@suse.com>
+To:     Vineet Gupta <vgupta@synopsys.com>
+Cc:     John Ogness <john.ogness@linutronix.de>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Shreyas Joshi <shreyas.joshi@biamp.com>,
+        shreyasjoshi15@gmail.com,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
+        linux-kernel@vger.kernel.org, buildroot@busybox.net,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        linux-arch@vger.kernel.org,
+        arcml <linux-snps-arc@lists.infradead.org>
+Subject: Re: ARC no console output (was Re: [PATCH 1/2] init/console: Use
+ ttynull as a fallback when there is no console)
+Message-ID: <X/c/ONCYz2QQdvOP@alley>
+References: <20201111135450.11214-1-pmladek@suse.com>
+ <20201111135450.11214-2-pmladek@suse.com>
+ <d2a3b3c0-e548-7dd1-730f-59bc5c04e191@synopsys.com>
+ <8735zdm86m.fsf@jogness.linutronix.de>
+ <50ade852-c598-6476-1f4b-9a3f8d11d143@synopsys.com>
 MIME-Version: 1.0
-Received: by 2002:ac0:f349:0:0:0:0:0 with HTTP; Thu, 7 Jan 2021 09:01:54 -0800 (PST)
-Reply-To: angeladrchantal@gmail.com
-From:   MRS Chantal Angela <clinton89828904@gmail.com>
-Date:   Thu, 7 Jan 2021 17:01:54 +0000
-Message-ID: <CAB6-Wk+DSBMtFwDb7OJ4T=wEfSnyd5JWwgB0ZXTESitoS2Swhg@mail.gmail.com>
-Subject: Urgent Mail
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <50ade852-c598-6476-1f4b-9a3f8d11d143@synopsys.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear Beneficiary
+On Thu 2021-01-07 08:43:16, Vineet Gupta wrote:
+> Hi John,
+> 
+> On 1/7/21 1:02 AM, John Ogness wrote:
+> > Hi Vineet,
+> > 
+> > On 2021-01-06, Vineet Gupta <vgupta@synopsys.com> wrote:
+> > > This breaks ARC booting (no output on console).
+> > 
+> > Could you provide the kernel boot arguments that you use? This series is
+> > partly about addressing users that have used boot arguments that are
+> > technically incorrect (even if had worked). Seeing the boot arguments of
+> > users that are not experiencing problems may help to reveal some of the
+> > unusual console usages until now.
+> 
+> 
+> Kernel command line: earlycon=uart8250,mmio32,0xf0005000,115200n8
+> console=ttyS0,115200n8 debug print-fatal-signals=1
 
-I am Mrs. Chantal. I am sending this brief letter to solicit your
-partnership to transfer a sum of 15.9 Million Dollars into your
-reliable account as my business partner. However, it's my urgent need
+This is strange, the problematic patch should use ttynull
+only as a fallback. It should not be used when a particular console
+is defined on the command line.
 
-for foreign partner that made me to contact you for this
-transaction.Further details of the transfer will be forwarded to you
-if you are
+The only explanation would be that ttyS0 gets registered too late
+and ttynull is added as a fallback in the meantime.
 
-ready to assist me. This is my private email address
+Anyway, I propose the revert the problematic patch for 5.11-rc3,
+see
+https://lore.kernel.org/lkml/20210107164400.17904-2-pmladek@suse.com/
+This mystery is a good reason to avoid bigger changes at this stage.
 
-(angeladrchantal@gmail.com) please We need your urgent response
-
-Best Regards.
-
-MRS Chantal Angela Rowland
+Best Regards,
+Petr
