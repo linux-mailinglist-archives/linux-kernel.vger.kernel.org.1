@@ -2,136 +2,356 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DDD02ECF4A
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 13:00:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 564202ECF59
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 13:09:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727618AbhAGMAE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 07:00:04 -0500
-Received: from mail-40134.protonmail.ch ([185.70.40.134]:29860 "EHLO
-        mail-40134.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726073AbhAGMAE (ORCPT
+        id S1726576AbhAGMJI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 07:09:08 -0500
+Received: from smtp-fw-4101.amazon.com ([72.21.198.25]:21798 "EHLO
+        smtp-fw-4101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725835AbhAGMJH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 07:00:04 -0500
-Date:   Thu, 07 Jan 2021 11:59:19 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me; s=protonmail;
-        t=1610020761; bh=/QpZtUfW8sCY4JlyQE+cRg/152g/kjH3nLFh80d0Hbk=;
-        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
-        b=Ngatwy647URiYFOHt2f6ts1sFxqi75bAxDr7xnIcvZPgZuOkMvFjU0eJYV52wuChA
-         46KkuGuhpJOWdXPO24qMOoClJI5Gldx28BrcUawpgP5aN/uHvVjChV+R8GoATIQ584
-         035sbeP9/VlhUJ+cnJ7r+EXdoXtMwkh3nofFve85s0zp5hi6p+4UBsAEj/hMzPl664
-         Gv1W9LSRdIKlsOYoqp9xWCZ5LSOcABn1CbRqRSUzqZxHBZEirihfdEpOoTqKk9DvRc
-         wUjnpKugp5AAOqgYJ2hFfcOxfqbIZg7GxMrimwapaM+EN0NnWY9FkPxdj29nCS28Ha
-         DgXM++POOkCSQ==
-To:     Kees Cook <keescook@chromium.org>
-From:   Alexander Lobakin <alobakin@pm.me>
-Cc:     Alexander Lobakin <alobakin@pm.me>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Fangrui Song <maskray@google.com>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        Alex Smith <alex.smith@imgtec.com>,
-        Ralf Baechle <ralf@linux-mips.org>,
-        Markos Chandras <markos.chandras@imgtec.com>,
-        linux-mips@vger.kernel.org, stable@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Sami Tolvanen <samitolvanen@google.com>
-Reply-To: Alexander Lobakin <alobakin@pm.me>
-Subject: Re: [PATCH v2 mips-next 2/4] MIPS: vmlinux.lds.S: add ".gnu.attributes" to DISCARDS
-Message-ID: <20210107115855.281681-1-alobakin@pm.me>
-In-Reply-To: <202101061518.67B9E0205@keescook>
-References: <20210106200713.31840-1-alobakin@pm.me> <20210106200801.31993-1-alobakin@pm.me> <20210106200801.31993-2-alobakin@pm.me> <202101061400.8F83981AE@keescook> <20210106223606.267756-1-alobakin@pm.me> <202101061518.67B9E0205@keescook>
+        Thu, 7 Jan 2021 07:09:07 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1610021347; x=1641557347;
+  h=from:to:cc:subject:date:message-id:mime-version;
+  bh=Pq/1QFmMwIoQiLmPrNgwyVK1ezuCrlRevhqPdfRTny8=;
+  b=huUfGYoAxCTFq0EF3NTuEUNidZPybN/SgBsTYqr/k60/bCDNK20R9plX
+   HM7IzHzKv1Rl7+3Rthf87/wg9mBraiJVVH6n40jCU6pDj7ik597jd6fVc
+   o/Jx19oQGmZeQOboskbtv6CCBne6TVoZl5rJK4lJkQqVzT+I6EODpxeN3
+   8=;
+X-IronPort-AV: E=Sophos;i="5.79,329,1602547200"; 
+   d="scan'208";a="73626685"
+Received: from iad12-co-svc-p1-lb1-vlan2.amazon.com (HELO email-inbound-relay-1a-af6a10df.us-east-1.amazon.com) ([10.43.8.2])
+  by smtp-border-fw-out-4101.iad4.amazon.com with ESMTP; 07 Jan 2021 12:08:19 +0000
+Received: from EX13D31EUA001.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan3.iad.amazon.com [10.40.163.38])
+        by email-inbound-relay-1a-af6a10df.us-east-1.amazon.com (Postfix) with ESMTPS id A8E4EA207D;
+        Thu,  7 Jan 2021 12:08:07 +0000 (UTC)
+Received: from u3f2cd687b01c55.ant.amazon.com (10.43.160.66) by
+ EX13D31EUA001.ant.amazon.com (10.43.165.15) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Thu, 7 Jan 2021 12:07:50 +0000
+From:   SeongJae Park <sjpark@amazon.com>
+To:     <akpm@linux-foundation.org>
+CC:     SeongJae Park <sjpark@amazon.de>, <Jonathan.Cameron@Huawei.com>,
+        <aarcange@redhat.com>, <acme@kernel.org>,
+        <alexander.shishkin@linux.intel.com>, <amit@kernel.org>,
+        <benh@kernel.crashing.org>, <brendan.d.gregg@gmail.com>,
+        <brendanhiggins@google.com>, <cai@lca.pw>,
+        <colin.king@canonical.com>, <corbet@lwn.net>, <david@redhat.com>,
+        <dwmw@amazon.com>, <elver@google.com>, <fan.du@intel.com>,
+        <foersleo@amazon.de>, <gthelen@google.com>, <irogers@google.com>,
+        <jolsa@redhat.com>, <kirill@shutemov.name>, <mark.rutland@arm.com>,
+        <mgorman@suse.de>, <minchan@kernel.org>, <mingo@redhat.com>,
+        <namhyung@kernel.org>, <peterz@infradead.org>,
+        <rdunlap@infradead.org>, <riel@surriel.com>, <rientjes@google.com>,
+        <rostedt@goodmis.org>, <rppt@kernel.org>, <sblbir@amazon.com>,
+        <shakeelb@google.com>, <shuah@kernel.org>, <sj38.park@gmail.com>,
+        <snu@amazon.de>, <vbabka@suse.cz>, <vdavydov.dev@gmail.com>,
+        <yang.shi@linux.alibaba.com>, <ying.huang@intel.com>,
+        <zgf574564920@gmail.com>, <linux-damon@amazon.com>,
+        <linux-mm@kvack.org>, <linux-doc@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: [RFC PATCH] tools/perf: Integrate DAMON in perf
+Date:   Thu, 7 Jan 2021 13:07:29 +0100
+Message-ID: <20210107120729.22328-1-sjpark@amazon.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
-        autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
-        mailout.protonmail.ch
+Content-Type: text/plain
+X-Originating-IP: [10.43.160.66]
+X-ClientProxiedBy: EX13D23UWC003.ant.amazon.com (10.43.162.81) To
+ EX13D31EUA001.ant.amazon.com (10.43.165.15)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kees Cook <keescook@chromium.org>
-Date: Wed, 6 Jan 2021 15:26:18 -0800
+From: SeongJae Park <sjpark@amazon.de>
 
-> On Wed, Jan 06, 2021 at 10:36:38PM +0000, Alexander Lobakin wrote:
->> From: Kees Cook <keescook@chromium.org>
->> Date: Wed, 6 Jan 2021 14:07:07 -0800
->>
->>> On Wed, Jan 06, 2021 at 08:08:19PM +0000, Alexander Lobakin wrote:
->>>> Discard GNU attributes at link time as kernel doesn't use it at all.
->>>> Solves a dozen of the following ld warnings (one per every file):
->>>>
->>>> mips-alpine-linux-musl-ld: warning: orphan section `.gnu.attributes'
->>>> from `arch/mips/kernel/head.o' being placed in section
->>>> `.gnu.attributes'
->>>> mips-alpine-linux-musl-ld: warning: orphan section `.gnu.attributes'
->>>> from `init/main.o' being placed in section `.gnu.attributes'
->>>>
->>>> Misc: sort DISCARDS section entries alphabetically.
->>>
->>> Hmm, I wonder what is causing the appearance of .eh_frame? With help I
->>> tracked down all the causes of this on x86, arm, and arm64, so that's
->>> why it's not in the asm-generic DISCARDS section. I suspect this could
->>> be cleaned up for mips too?
->>
->> I could take a look and hunt it down. Could you please give some refs on
->> what were the causes and solutions for the mentioned architectures?
->
-> Sure! Here are the ones I could find again:
->
-> 34b4a5c54c42 ("arm64/kernel: Remove needless Call Frame Information annot=
-ations")
-> 6e0a66d10c5b ("arm64/build: Remove .eh_frame* sections due to unwind tabl=
-es")
-> d1c0272bc1c0 ("x86/boot/compressed: Remove, discard, or assert for unwant=
-ed sections")
->
->>> Similarly for .gnu.attributes. What is generating that? (Or, more
->>> specifically, why is it both being generated AND discarded?)
->>
->> On my setup, GNU Attributes consist of MIPS FP type (soft) and
->> (if I'm correct) MIPS GNU Hash tables.
->
-> Ah, right, the soft-float markings sound correct to discard, IIUC.
->
->> By the way. I've built the kernel with LLVM stack (and found several
->> subjects for more patches) and, besides '.got', also got a fistful
->> of '.data..compoundliteral*' symbols (drivers/mtd/nand/spi/,
->> net/ipv6/ etc). Where should they be placed (rodata, rwdata, ...)
->> or they are anomalies of some kind and should be fixed somehow?
->
-> Ah yeah, I've seen this before:
-> https://lore.kernel.org/lkml/202010051345.2Q0cvqdM-lkp@intel.com/
-> https://lore.kernel.org/lkml/CAKwvOd=3Ds53vUELe311VSjxt2_eQd+RGNCf__n+cV+=
-R=3DPQ_CdXQ@mail.gmail.com/
->
-> And it looks like LTO trips over it too:
-> https://lore.kernel.org/lkml/20201211184633.3213045-3-samitolvanen@google=
-.com/
->
-> So I think the correct solution is to follow Sami's patch and add it to
-> vmlinux.lds.h:
->
-> -#define DATA_MAIN .data .data.[0-9a-zA-Z_]* .data..LPBX*
-> +#define DATA_MAIN .data .data.[0-9a-zA-Z_]* .data..L* .data..compoundlit=
-eral*
-> ...
-> -#define RODATA_MAIN .rodata .rodata.[0-9a-zA-Z_]*
-> -#define BSS_MAIN .bss .bss.[0-9a-zA-Z_]*
-> +#define RODATA_MAIN .rodata .rodata.[0-9a-zA-Z_]* .rodata..L*
-> +#define BSS_MAIN .bss .bss.[0-9a-zA-Z_]* .bss..compoundliteral*
->
-> Can you include a patch for this in your series?
->
-> Thanks!
+NOTE: This RFC has a dependancy on DAMON (Data Access MONitor)
+patchset[1], which is not merged in the mainline yet.  The aim of this
+is to show how DAMON would be evolved once it is merged in and get some
+comments early.  So, if you have some interest in this, please consider
+reviewing the DAMON patchset, either.
 
-Thanks for the help!
-Hope now I caught them all properly in v3.
+[1] https://lore.kernel.org/linux-mm/20201215115448.25633-1-sjpark@amazon.com
 
-> --
-> Kees Cook
+---
 
-Al
+Though there is a simple debugfs interface for DAMON and even a
+dedicated user space tool, integrating the interface in perf will make
+best user experiences.  For the reason, this commit adds perf scripts
+for DAMON.  After this commit, users can record the data access
+monitoring results and read in human readable form with:
+
+    $ sudo perf script record damon
+    $ sudo perf script report damon
+
+or simply,
+
+    $ sudo perf script damon
+
+Nevertheless, above commands do not start the monitoring by themselves,
+so the user should turn it on in background.  To make it easy, this
+commit also adds a convenient version of 'perf script record damon',
+which executes a command, turns on DAMON for the process, and records
+DAMON trace events.  For example, it can be used as:
+
+    $ sudo ~/libexec/perf-core/scripts/python/bin/damon-record.sh <cmd>
+    $ sudo perf script report damon
+
+Currently, the report command supports only raw format.
+
+Signed-off-by: SeongJae Park <sjpark@amazon.de>
+---
+ tools/perf/scripts/python/bin/damon-record    |   4 +
+ tools/perf/scripts/python/bin/damon-record.sh | 163 ++++++++++++++++++
+ tools/perf/scripts/python/bin/damon-report    |   4 +
+ tools/perf/scripts/python/damon.py            |  44 +++++
+ 4 files changed, 215 insertions(+)
+ create mode 100644 tools/perf/scripts/python/bin/damon-record
+ create mode 100644 tools/perf/scripts/python/bin/damon-record.sh
+ create mode 100644 tools/perf/scripts/python/bin/damon-report
+ create mode 100644 tools/perf/scripts/python/damon.py
+
+diff --git a/tools/perf/scripts/python/bin/damon-record b/tools/perf/scripts/python/bin/damon-record
+new file mode 100644
+index 000000000000..6e21802c8c0e
+--- /dev/null
++++ b/tools/perf/scripts/python/bin/damon-record
+@@ -0,0 +1,4 @@
++#!/bin/bash
++# SPDX-License-Identifier: GPL-2.0
++
++perf record -e damon:damon_aggregated $@
+diff --git a/tools/perf/scripts/python/bin/damon-record.sh b/tools/perf/scripts/python/bin/damon-record.sh
+new file mode 100644
+index 000000000000..3e3e27343ccc
+--- /dev/null
++++ b/tools/perf/scripts/python/bin/damon-record.sh
+@@ -0,0 +1,163 @@
++#!/bin/bash
++# SPDX-License-Identifier: GPL-2.0
++#
++# This is more convenient version of 'perf script record damon <command>'.
++# While the command assumes DAMON will be turned on by the user, this do that
++# instead.  That is, this command starts the command, turn DAMON on for the
++# process, and record the trace events.
++
++pr_usage()
++{
++	>&2 echo "Usage: $0 [OPTION]... <command>"
++	>&2 echo
++	>&2 echo "OPTION"
++	>&2 echo "  --sampling <interval>	Sampling interval (us)"
++	>&2 echo "  --aggregate <interval>	Aggregate interval (us)"
++	>&2 echo "  --update <interval>	Regions update interval (us)"
++	>&2 echo "  --min-reg <nr>		Minimum number of regions"
++	>&2 echo "  --max-reg <nr>		Maximum number of regions"
++}
++
++# Default values (intervals are in us)
++sampling_interval=5000
++aggregate_interval=100000
++regions_update_interval=1000000
++min_nr_regions=10
++max_nr_regions=1000
++cmd=""
++
++debugfs_dir=$(mount | grep -e "type debugfs" | awk '{print $3}')
++if [ -z "$debugfs_dir" ]
++then
++	>&2 echo "debugfs not found"
++	exit 1
++fi
++
++damon_dir="$debugfs_dir/damon"
++if [ ! -d "$damon_dir" ]
++then
++	>&2 echo "damon dir not found"
++	exit 1
++fi
++
++if [ $# -lt 1 ]
++then
++	pr_usage
++	exit 1
++fi
++
++while [ $# -ne 0 ]
++do
++	case $1 in
++	"--sampling")
++		if [ $# -lt 2 ]
++		then
++			>&2 echo "<interval> not given"
++			pr_usage
++			exit 1
++		fi
++		sampling_interval=$2
++		shift 2
++		continue
++		;;
++	"--aggregate")
++		if [ $# -lt 2 ]
++		then
++			>&2 echo "<interval> not given"
++			pr_usage
++			exit 1
++		fi
++		aggregate_interval=$2
++		shift 2
++		continue
++		;;
++	"--update")
++		if [ $# -lt 2 ]
++		then
++			>&2 echo "<interval> not given"
++			pr_usage
++			exit 1
++		fi
++		regions_update_interval=$2
++		shift 2
++		continue
++		;;
++	"--min_reg")
++		if [ $# -lt 2 ]
++		then
++			>&2 echo "<nr> not given"
++			pr_usage
++			exit 1
++		fi
++		min_nr_regions=$2
++		shift 2
++		continue
++		;;
++	"--max_reg")
++		if [ $# -lt 2 ]
++		then
++			>&2 echo "<nr> not given"
++			pr_usage
++			exit 1
++		fi
++		max_nr_regions=$2
++		shift 2
++		continue
++		;;
++	*)
++		if [ $# -lt 1 ]
++		then
++			>&2 echo "<command> not given"
++			pr_usage
++			exit 1
++		fi
++		cmd="$*"
++		break
++		;;
++	esac
++done
++
++if [ -z "$cmd" ]
++then
++	pr_usage
++	exit 1
++fi
++
++orig_attrs=$(cat "$damon_dir/attrs")
++attrs="$sampling_interval $aggregate_interval $regions_update_interval"
++attrs="$attrs $min_nr_regions $max_nr_regions"
++
++echo "$attrs" > "$damon_dir/attrs"
++
++$cmd &
++cmd_pid=$!
++
++echo "$cmd_pid" > "$damon_dir/target_ids"
++echo "on" > "$damon_dir/monitor_on"
++
++perf record -e damon:damon_aggregated &
++perf_pid=$!
++
++sigint_trap()
++{
++	kill 2 "$cmd_pid"
++	kill 2 "$perf_pid"
++	echo "$orig_attrs" > "$damon_dir/attrs"
++	exit
++}
++
++trap sigint_trap INT
++
++>&2 echo "Press Control+C to stop recording"
++
++while :;
++do
++	on_off=$(cat "$damon_dir/monitor_on")
++	if [ "$on_off" = "off" ]
++	then
++		kill 2 $perf_pid
++		echo "$orig_attrs" > "$damon_dir/attrs"
++		break
++	fi
++	sleep 1
++done
+diff --git a/tools/perf/scripts/python/bin/damon-report b/tools/perf/scripts/python/bin/damon-report
+new file mode 100644
+index 000000000000..89ece171959e
+--- /dev/null
++++ b/tools/perf/scripts/python/bin/damon-report
+@@ -0,0 +1,4 @@
++#!/bin/bash
++# description: data access monitoring
++
++perf script $@ -s "$PERF_EXEC_PATH"/scripts/python/damon.py
+diff --git a/tools/perf/scripts/python/damon.py b/tools/perf/scripts/python/damon.py
+new file mode 100644
+index 000000000000..b71a9bdf00e7
+--- /dev/null
++++ b/tools/perf/scripts/python/damon.py
+@@ -0,0 +1,44 @@
++# SPDX-License-Identifier: GPL-2.0
++#
++# Author: SeongJae Park <sjpark@amazon.de>
++
++from __future__ import print_function
++
++import os
++import sys
++
++sys.path.append(os.environ['PERF_EXEC_PATH'] + \
++	'/scripts/python/Perf-Trace-Util/lib/Perf/Trace')
++
++from perf_trace_context import *
++from Core import *
++
++
++def trace_begin():
++	pass
++
++def trace_end():
++	pass
++
++start_time = None
++nr_printed = 0
++def damon__damon_aggregated(event_name, context, common_cpu,
++		common_secs, common_nsecs, common_pid, common_comm,
++		common_callchain, target_id, nr_regions, start, end,
++		nr_accesses, perf_sample_dict):
++	global start_time
++	global nr_printed
++	time = common_secs * 1000000000 + common_nsecs
++	if not start_time:
++		start_time = time
++		print('start_time: %d' % start_time)
++	if nr_printed == 0:
++		print('rel time: %d' % (time - start_time))
++		print('target_id: %d' % target_id)
++		print('nr_regions: %d' % nr_regions)
++	print('%x-%x (%d): %u' % (start, end, end - start, nr_accesses))
++
++	nr_printed += 1
++	if nr_printed == nr_regions:
++		nr_printed = 0
++		print()
+-- 
+2.17.1
 
