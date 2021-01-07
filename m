@@ -2,242 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F4372EE654
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 20:43:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A99C2EE658
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 20:46:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729176AbhAGTmw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 14:42:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48830 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726073AbhAGTmw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 14:42:52 -0500
-Received: from mail-qt1-x831.google.com (mail-qt1-x831.google.com [IPv6:2607:f8b0:4864:20::831])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8954C0612F4
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Jan 2021 11:42:11 -0800 (PST)
-Received: by mail-qt1-x831.google.com with SMTP id 2so5045535qtt.10
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Jan 2021 11:42:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=CLKyO0V7gDngVlGI7pgl0SlpTEPLmQs9Jw8dHDtXgak=;
-        b=ZrGnMcWt5YlDl9xLPUa/NZ2qTa+ZV8kU9SmgDHeQtZcIH3xPBmsNo1pG1z/I4HpNxX
-         ZevcNOde/mrT04xMjFFt9+ZTbAQyRwVqGpPDb7PIQHFoe4MjMqH/U+SqwuAHj27L/KJg
-         94G2jJFEvmvE1cuX5rTfgKJEYyk89vMLGp6wVC5zAlb2cnH0Qi8QPy2tqpKkqE3WPQBh
-         kpwg/iJcOHOTvYLL1f1FOlTAz+TlVaI+ieFCTAAtWzOXW/CzipP4qsd3Yb6RpRDyX0Ti
-         qORGuRx18TSYalpg5ehKEeuzaR2uTD3zkkADvkjsgJ2USIeHEElgFJMikGSF/0XT5Qng
-         9Smw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=CLKyO0V7gDngVlGI7pgl0SlpTEPLmQs9Jw8dHDtXgak=;
-        b=FeUltnbWUFb8SXyAZSZf9TrBZgSvjI5R59AiWPF8XHL/7edgpI6shbvec6WpQRN0dH
-         IjIaN1dyevcOjUpF3VDDYiB2RsDHseGp8/ftbKgrqjNXQrWCrQLR/cg6eTeTmUH+Uc83
-         N404aohaH94us+7486265FKyj5QQ35Xos2yghlCa5METbNma9dJg+/MEMBtxk8xftfcy
-         7sO5Naes6FqdnHaBgjKboaXQv4j3AFBU/JJgJMFh9bbxqmQziUbM0exd5E1eAXjAMTp8
-         Gb0iHYGVjfCAVzVuaeZbFGDZncHNQ0okxiH3SnYHcMOevU9R1qZo4FkQNzS+ImZYtb5r
-         FnOA==
-X-Gm-Message-State: AOAM533wpZbTxhxO1EMFbA86n7HKE1nBGV3g8QBj66etrSOyKlWPhvho
-        aEQIpDtX3Xmye6/Ov7zOuSaHjQ==
-X-Google-Smtp-Source: ABdhPJxOXy6evhdqwl97isTQM5M9r4VhmoGo6e1D+pUsNPYP0PivH0cLY6sWlls2AshSXfoZK/Yn1Q==
-X-Received: by 2002:ac8:578d:: with SMTP id v13mr170661qta.247.1610048530863;
-        Thu, 07 Jan 2021 11:42:10 -0800 (PST)
-Received: from ?IPv6:2601:144:4100:fd1:12bf:48ff:fed7:9537? ([2601:144:4100:fd1:12bf:48ff:fed7:9537])
-        by smtp.gmail.com with ESMTPSA id x49sm3430907qtx.6.2021.01.07.11.42.09
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 07 Jan 2021 11:42:09 -0800 (PST)
-Subject: Re: [RFC 0/2] kbuild: Add support to build overlays (%.dtbo)
-To:     Rob Herring <robh+dt@kernel.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>,
-        Pantelis Antoniou <pantelis.antoniou@konsulko.com>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Michal Marek <michal.lkml@markovi.net>,
-        DTML <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        tero.kristo@gmail.com
-References: <cover.1609844956.git.viresh.kumar@linaro.org>
- <CAL_JsqJMr3vfz2B29vzvFALCt_5-J__eJv2TZHJ0sR9nM=xXaw@mail.gmail.com>
- <CAK7LNAR9fdjZ7iWKSWvJ9etGZkd+n87cmXKN-Hah8DBDYbuAwA@mail.gmail.com>
- <CAL_Jsq+DFF0tRv61XCAGLJYYu=ow8Ah8prd6su=6dpoU_AyMXw@mail.gmail.com>
-From:   Bill Mills <bill.mills@linaro.org>
-Message-ID: <a01a68c5-fbc9-92dd-e374-6839fd8a93e2@linaro.org>
-Date:   Thu, 7 Jan 2021 14:42:08 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1728131AbhAGTqg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 14:46:36 -0500
+Received: from foss.arm.com ([217.140.110.172]:38496 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725835AbhAGTqg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Jan 2021 14:46:36 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 66D62D6E;
+        Thu,  7 Jan 2021 11:45:50 -0800 (PST)
+Received: from [192.168.122.166] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 101603F66E;
+        Thu,  7 Jan 2021 11:45:50 -0800 (PST)
+Subject: Re: [PATCH] arm64: PCI: Enable SMC conduit
+To:     Rob Herring <robh@kernel.org>
+Cc:     linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        PCI <linux-pci@vger.kernel.org>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20210105045735.1709825-1-jeremy.linton@arm.com>
+ <CAL_JsqL2ZXrTg9VFwGK4CawvyBbnHehF9W=cgVEJPzCRoM5G9g@mail.gmail.com>
+ <bdd563a9-c8d4-307b-617c-139dda3e4984@arm.com>
+ <CAL_Jsq+OUX2ctFwiqcQtM=oswyz8s-iq94eHW247sabYYF5B-A@mail.gmail.com>
+From:   Jeremy Linton <jeremy.linton@arm.com>
+Message-ID: <5d4f85a4-248b-b62e-f976-63c6214bf588@arm.com>
+Date:   Thu, 7 Jan 2021 13:45:45 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.1
 MIME-Version: 1.0
-In-Reply-To: <CAL_Jsq+DFF0tRv61XCAGLJYYu=ow8Ah8prd6su=6dpoU_AyMXw@mail.gmail.com>
+In-Reply-To: <CAL_Jsq+OUX2ctFwiqcQtM=oswyz8s-iq94eHW247sabYYF5B-A@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Hi,
 
-On 1/7/21 2:02 PM, Rob Herring wrote:
-> On Wed, Jan 6, 2021 at 10:35 PM Masahiro Yamada <masahiroy@kernel.org> wrote:
+On 1/7/21 11:36 AM, Rob Herring wrote:
+> On Thu, Jan 7, 2021 at 9:24 AM Jeremy Linton <jeremy.linton@arm.com> wrote:
 >>
->> On Wed, Jan 6, 2021 at 12:21 AM Rob Herring <robh+dt@kernel.org> wrote:
+>> Hi,
+>>
+>>
+>> On 1/7/21 9:28 AM, Rob Herring wrote:
+>>> On Mon, Jan 4, 2021 at 9:57 PM Jeremy Linton <jeremy.linton@arm.com> wrote:
+>>>>
+>>>> Given that most arm64 platform's PCI implementations needs quirks
+>>>> to deal with problematic config accesses, this is a good place to
+>>>> apply a firmware abstraction. The ARM PCI SMMCCC spec details a
+>>>> standard SMC conduit designed to provide a simple PCI config
+>>>> accessor. This specification enhances the existing ACPI/PCI
+>>>> abstraction and expects power, config, etc functionality is handled
+
+(trimming)
+
+>>>>
+>>>> +static int smccc_pcie_check_conduit(u16 seg)
 >>>
->>> On Tue, Jan 5, 2021 at 4:24 AM Viresh Kumar <viresh.kumar@linaro.org> wrote:
->>>>
->>>> Hello,
->>>>
->>>> Here is an attempt to make some changes in the kernel to allow building
->>>> of device tree overlays.
->>>>
->>>> While at it, I would also like to discuss about how we should mention
->>>> the base DT blobs in the Makefiles for the overlays, so they can be
->>>> build tested to make sure the overlays apply properly.
->>>>
->>>> A simple way is to mention that with -base extension, like this:
->>>>
->>>> $(overlay-file)-base := platform-base.dtb
->>>>
->>>> Any other preference ?
+>>> check what? Based on how you use this, perhaps _has_conduit() instead.
 >>
+>> Sure.
 >>
->>
->> Viresh's patch is not enough.
->>
->> We will need to change .gitignore
->> and scripts/Makefile.dtbinst as well.
->>
->>
->> In my understanding, the build rule is completely the same
->> between .dtb and .dtbo
->> As Rob mentioned, I am not sure if we really need/want
->> a separate extension.
->>
->>
->> A counter approach is to use an extension like '.ovl.dtb'
->> It clarifies it is an overlay fragment without changing
->> anything in our build system or the upstream DTC project.
-
-*.dtbo is already a well established defato standard.  I see little 
-value in changing it and doing so will likely just bifurcate common usage.
-
->>
->> We use chained extension in some places, for example,
->> .dt.yaml for schema yaml files.
->>
->>
->>
->> dtb-$(CONFIG_ARCH_FOO) += \
->>      foo-board.dtb \
->>      foo-overlay1.ovl.dtb \
->>      foo-overlay2.ovl.dtb
->>
->>
->> Overlay DT source file names must end with '.ovl.dts'
-> 
-> I like that suggestion as then it's also clear looking at the source
-> files which ones are overlays. Or we'd need .dtso to be consistent.
-> 
-
-I don't think there is much of a problem renaming the source side.
-Don't know if that helps if the output is still dtbo.
-
-"Be consistent on dtso" sounds good to me.
-Can it be enforced via build time checks?
-
-> 
->>> I think we'll want something similar to how '-objs' works for modules:
 >>>
->>> foo-board-1-dtbs := foo-board.dtb foo-overlay1.dtbo
->>> foo-board-2-dtbs := foo-board.dtb foo-overlay2.dtbo
->>> foo-board-1-2-dtbs := foo-board.dtb foo-overlay1.dtbo foo-overlay2.dtbo
->>> dtbs-y += foo-board-1.dtb foo-board-2.dtb foo-board-1-2.dtb
+>>>> +{
+>>>> +       struct arm_smccc_res res;
+>>>> +
+>>>> +       if (arm_smccc_1_1_get_conduit() == SMCCC_CONDUIT_NONE)
+>>>> +               return -EOPNOTSUPP;
+>>>> +
+>>>> +       arm_smccc_smc(SMCCC_PCI_VERSION, 0, 0, 0, 0, 0, 0, 0, &res);
+>>>> +       if ((int)res.a0 < 0)
+>>>> +               return -EOPNOTSUPP;
+>>>> +
+>>>> +       arm_smccc_smc(SMCCC_PCI_SEG_INFO, seg, 0, 0, 0, 0, 0, 0, &res);
+>>>> +       if ((int)res.a0 < 0)
+>>>> +               return -EOPNOTSUPP;
 >>>
->>> (One difference here is we will want all the intermediate targets
->>> unlike .o files.)
->>>
->>> You wouldn't necessarily have all the above combinations, but you have
->>> to allow for them. I'm not sure how we'd handle applying any common
->>> overlays where the base and overlay are in different directories.
+>>> Don't you need to check that read and write functions are supported?
 >>
->>
->> I guess the motivation for supporting -dtbs is to
->> add per-board -@ option only when it contains *.dtbo pattern.
+>> In theory no, the first version of the specification makes them
+>> mandatory for all implementations. There isn't a partial access method,
+>> so nothing works if only read or write were implemented.
 > 
-> I hadn't thought that far, but yeah, that would be good. Really, I
-> just want it to be controlled per SoC family at least.
+> Then the spec should change:
 > 
->> But, as you notice, if the overlay files are located
->> under drivers/, it is difficult to add -@ per board.
+> 2.3.3 Caller responsibilities
+> The caller has the following responsibilities:
+> • The caller must ensure that this function is implemented before
+> issuing a call. This function is discoverable
+> by calling PCI_FEATURES with pci_func_id set to 0x8400_0132.
 > 
-> Generally, they shouldn't be. The exceptions are what we already have
-> there which are old dt fixups and unittests.
 > 
-> We want the stripped DT repo (devicetree-rebasing) to have all this
-> and drivers/ is stripped out. (Which reminds me, the DT repo will need
-> some work to support all this. It's a different build sys.)
-> 
->> Another scenario is, some people may want to compile
->> downstream overlay files (i.e. similar concept as external modules),
->> then we have no idea which base board should be given with the -@ flag.
->>
->>
->> I'd rather be tempted to add it globally
->>
->>
->> ifdef CONFIG_OF_OVERLAY
->> DTC_FLAGS += -@
->> endif
-> 
-> We've already rejected doing that. Turning on '-@' can grow the dtb
-> size by a significant amount which could be problematic for some
-> boards >
->>> Another thing here is adding all the above is not really going to
->>> scale on arm32 where we have a single dts directory. We need to move
->>> things to per vendor/soc family directories. I have the script to do
->>> this. We just need to agree on the vendor names and get Arnd/Olof to
->>> run it. I also want that so we can enable schema checks by default
->>> once a vendor is warning free (the whole tree is going to take
->>> forever).
->>
->>
->> If this is a big churn, perhaps we could make it extreme
->> to decouple DT and Linux-arch.
-> 
-> I would be fine with that, but I don't think we'll get agreement
-> there. With that amount of change, we'll be discussing git submodule
-> again.
-> 
-> Rereading the thread on vendor directories[1], we may just move boards
-> one vendor at a time. We could just make that a prerequisite for
-> vendor supporting overlays.
-> 
->> arch/*/boot/dts/*.dts
->>   ->  dts/<vendor>/*.dts
->>
->> Documentation/devicetree/bindings
->>   -> dts/Bindings/
->>
->> include/dt-bindings/
->>   -> dts/include/dt-bindings/
->>
->>
->>
->> Then, other project can take dts/
->> to reuse for them.
-> 
-> This is already possible with devicetree-rebasing.git. Though it is
-> still by arch.
-> 
-> Rob
-> 
-> [1] https://lore.kernel.org/linux-devicetree/20181204183649.GA5716@bogus/
-> 
+> I guess knowing the version is ensuring, but the 2nd sentence makes it
+> seem that is how one should ensure.
 
-Thanks for digging up this script!
+Ok, yes i understand, I will add the check.
 
-Bill
+> 
+> Related, are there any sort of tests for the interface? I generally
+> don't think the kernel's job is validating firmware (a frequent topic
+> for DT), but we should have something. Maybe an SMC unittest module?
+> If nothing else, seems like we should have at least one PCI_FEATURES
+> call to make sure it works. We don't want to add it later only to find
+> that it breaks on some firmware implementations. Though we can just
+> add firmware quirks. ;)
+
+I'm not aware of any unit tests at the moment. My testing so far has 
+been against these patches: 
+https://review.trustedfirmware.org/q/topic:"Arm_PCI_Config_Space_Interface"
+
+But given the next version does the PCI_FEATURES calls, that will 
+satisfy your concern, right?
