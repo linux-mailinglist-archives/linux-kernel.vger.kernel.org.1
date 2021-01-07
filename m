@@ -2,113 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4447A2ED168
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 15:09:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 807832ED16D
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 15:09:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728790AbhAGOG5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 09:06:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52830 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728519AbhAGOG4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 09:06:56 -0500
-Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F4AAC0612F4;
-        Thu,  7 Jan 2021 06:06:16 -0800 (PST)
-Received: by mail-pj1-x1032.google.com with SMTP id u4so2099682pjn.4;
-        Thu, 07 Jan 2021 06:06:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=o+UyASBdKjlwmry0POVJ2KZ2OqhSGLuefGxoigUsixA=;
-        b=LPfFcI5Ru7M7DFFw38G/2AYoGtXDNlRPEWj8FRcJ+UlK1zNH1VjXeAfzL93AY1bDgv
-         48kh6QI8/+4MVFVe8c6LG8hYopwDcoAhQXeRSa5bLWZbinQgUjwRdcDUoV7z5XZ7liBl
-         xJMmnDgd8I+i9KE1asgFOmNb47EBu7h/l9YbseYqM8gA7XEW3HQXTcTPbvtN0IoHeGsR
-         GtBwUOM7/QHzW78jTdaHEzSrglwYcLnH8MCk0fIDWW+UrePsXD86Yact4Fcz2d9/ZJnL
-         Y8OAMAZR7mnbvcIcXpSS1tN6Idhf6YBWJk08VkMjsy2IjRETgQ0CsgOq+X6PEOL9q+fa
-         YelQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=o+UyASBdKjlwmry0POVJ2KZ2OqhSGLuefGxoigUsixA=;
-        b=j4gQvwzIXWwiQCbhbIZrU0CxeEiWNRcNiE7Vp6fKy6+aksHvUwZIn16qN1khl9Uiap
-         gE8MZ2KgtkiJ97ppufppRj563+ky3FkoX+mMEe5Dlrp6x8fS7sXViO2O47XKxpdxM3FX
-         GgJnz0zqZredEcV186Z1PWfDzlkWi66t3Fbwm+aw6pk908IN1qYhA3/+vECjTEuenFLY
-         64fIeqqDvl2SUB2OUMuSlYB8T4wZyUuF0xyjKGmFwOLAiEgoPdsBT1gW2tFF5Yvje1ve
-         GF82R08dP7SWP093Vc1W2kotz6xTldgn0zQORjReXTEEZpvUCuTne9hVIS8ijf1/LSJ7
-         AwKA==
-X-Gm-Message-State: AOAM533XIF0LT0hZ8lYP1asrs6m5WFz7J4NbebvZaL6ugD0XIPH6cvyF
-        NONQiRIb1xRiNHqu8gJhYmBZkPXHDRcNlV2a
-X-Google-Smtp-Source: ABdhPJxD/PX517nLX/q1hyo8Yf+YFXLvFcnWgHRj3RvQB28mHCDoRktmKkeOlgkUNtn8HFEnYHEIeg==
-X-Received: by 2002:a17:902:6b89:b029:da:fc41:baec with SMTP id p9-20020a1709026b89b02900dafc41baecmr9327841plk.39.1610028375208;
-        Thu, 07 Jan 2021 06:06:15 -0800 (PST)
-Received: from [192.168.0.104] ([49.207.197.164])
-        by smtp.gmail.com with ESMTPSA id z16sm6746840pgj.51.2021.01.07.06.06.11
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 07 Jan 2021 06:06:14 -0800 (PST)
-Subject: Re: [PATCH v2 08/15] usb: misc: idmouse: update to use
- usb_control_msg_send()
-To:     Johan Hovold <johan@kernel.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20201130011819.2576481-1-anant.thazhemadam@gmail.com>
- <20201130013031.2580265-1-anant.thazhemadam@gmail.com>
- <X8pL1bRUTyq2re7Z@localhost>
-From:   Anant Thazhemadam <anant.thazhemadam@gmail.com>
-Message-ID: <1dd2bfc0-5190-1841-e04b-4a864dfd0be4@gmail.com>
-Date:   Thu, 7 Jan 2021 19:36:10 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1728819AbhAGOIL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 09:08:11 -0500
+Received: from mga07.intel.com ([134.134.136.100]:46388 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728529AbhAGOIL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Jan 2021 09:08:11 -0500
+IronPort-SDR: 88LSNi42vGwL7ir9aUzE2z5flLwB43ubn+pUOseoMIxCBcIoQnoJOVxxbKbcnwVG+4/4WjqAN5
+ StJjZo5t5bJA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9856"; a="241502326"
+X-IronPort-AV: E=Sophos;i="5.79,329,1602572400"; 
+   d="scan'208";a="241502326"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Jan 2021 06:06:24 -0800
+IronPort-SDR: 9q7t1qlZZhy66zoq1IlpRL0T3OXxLg5r5F4/TNkqbN4LRr66Ehf65cC4JsOXkNr3rkpSJHbVXb
+ nvvGJvLdzOFw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.79,329,1602572400"; 
+   d="scan'208";a="463045039"
+Received: from kuha.fi.intel.com ([10.237.72.162])
+  by fmsmga001.fm.intel.com with SMTP; 07 Jan 2021 06:06:18 -0800
+Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Thu, 07 Jan 2021 16:06:17 +0200
+Date:   Thu, 7 Jan 2021 16:06:17 +0200
+From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
+To:     Daniel Scally <djrscally@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org,
+        linux-media@vger.kernel.org, devel@acpica.org, rjw@rjwysocki.net,
+        lenb@kernel.org, gregkh@linuxfoundation.org, mchehab@kernel.org,
+        sergey.senozhatsky@gmail.com, yong.zhi@intel.com,
+        sakari.ailus@linux.intel.com, bingbu.cao@intel.com,
+        tian.shu.qiu@intel.com, robert.moore@intel.com,
+        erik.kaneda@intel.com, pmladek@suse.com, rostedt@goodmis.org,
+        andriy.shevchenko@linux.intel.com, linux@rasmusvillemoes.dk,
+        laurent.pinchart+renesas@ideasonboard.com,
+        jacopo+renesas@jmondi.org, kieran.bingham+renesas@ideasonboard.com,
+        hverkuil-cisco@xs4all.nl, m.felsch@pengutronix.de,
+        niklas.soderlund+renesas@ragnatech.se,
+        prabhakar.mahadev-lad.rj@bp.renesas.com, slongerbeam@gmail.com,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Subject: Re: [PATCH v5 07/15] device property: Define format macros for ports
+ and endpoints
+Message-ID: <20210107140617.GG940479@kuha.fi.intel.com>
+References: <20210107132838.396641-1-djrscally@gmail.com>
+ <20210107132838.396641-8-djrscally@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <X8pL1bRUTyq2re7Z@localhost>
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210107132838.396641-8-djrscally@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Jan 07, 2021 at 01:28:30PM +0000, Daniel Scally wrote:
+> OF, ACPI and software_nodes all implement graphs including nodes for ports
+> and endpoints. These are all intended to be named with a common schema,
+> as "port@n" and "endpoint@n" where n is an unsigned int representing the
+> index of the node. To ensure commonality across the subsystems, provide a
+> set of macros to define the format.
+> 
+> Suggested-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+> Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+> Signed-off-by: Daniel Scally <djrscally@gmail.com>
 
-On 04/12/20 8:16 pm, Johan Hovold wrote:
-> On Mon, Nov 30, 2020 at 07:00:31AM +0530, Anant Thazhemadam wrote:
->> The newer usb_control_msg_{send|recv}() API are an improvement on the
->> existing usb_control_msg() as it ensures that a short read/write is treated
->> as an error, data can be used off the stack, and raw usb pipes need not be
->> created in the calling functions.
->> For this reason, the instance of usb_control_msg() has been replaced with
->> usb_control_msg_send() appropriately.
->>
->> Signed-off-by: Anant Thazhemadam <anant.thazhemadam@gmail.com>
->> ---
->>  drivers/usb/misc/idmouse.c | 5 +++--
->>  1 file changed, 3 insertions(+), 2 deletions(-)
-> Especially for control transfers without a data stage there isn't
-> really any benefit of the new helper.
->
-> I'd just leave this one unchanged.
->
->> diff --git a/drivers/usb/misc/idmouse.c b/drivers/usb/misc/idmouse.c
->> index e9437a176518..52126441a633 100644
->> --- a/drivers/usb/misc/idmouse.c
->> +++ b/drivers/usb/misc/idmouse.c
->> @@ -56,8 +56,9 @@ static const struct usb_device_id idmouse_table[] = {
->>  #define FTIP_SCROLL  0x24
->>  
->>  #define ftip_command(dev, command, value, index) \
->> -	usb_control_msg(dev->udev, usb_sndctrlpipe(dev->udev, 0), command, \
->> -	USB_TYPE_VENDOR | USB_RECIP_ENDPOINT | USB_DIR_OUT, value, index, NULL, 0, 1000)
->> +	usb_control_msg_send(dev->udev, 0, command, \
->> +	USB_TYPE_VENDOR | USB_RECIP_ENDPOINT | USB_DIR_OUT, \
->> +	value, index, NULL, 0, 1000, GFP_KERNEL)
->>  
->>  MODULE_DEVICE_TABLE(usb, idmouse_table);
-> Johan
+Reviewed-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
 
-Understood. I'll make sure this is left out in the v3.
+> ---
+> Changes in v5:
+> 
+> 	- Changed commit subject
+> 
+>  include/linux/fwnode.h | 7 +++++++
+>  1 file changed, 7 insertions(+)
+> 
+> diff --git a/include/linux/fwnode.h b/include/linux/fwnode.h
+> index fde4ad97564c..77414e431e89 100644
+> --- a/include/linux/fwnode.h
+> +++ b/include/linux/fwnode.h
+> @@ -50,6 +50,13 @@ struct fwnode_endpoint {
+>  	const struct fwnode_handle *local_fwnode;
+>  };
+>  
+> +/*
+> + * ports and endpoints defined as software_nodes should all follow a common
+> + * naming scheme; use these macros to ensure commonality.
+> + */
+> +#define SWNODE_GRAPH_PORT_NAME_FMT		"port@%u"
+> +#define SWNODE_GRAPH_ENDPOINT_NAME_FMT		"endpoint@%u"
+> +
+>  #define NR_FWNODE_REFERENCE_ARGS	8
+>  
+>  /**
+> -- 
+> 2.25.1
 
-Thanks,
-Anant
-
+-- 
+heikki
