@@ -2,56 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 826D62EC80C
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 03:22:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 00F9C2EC80E
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 03:24:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726814AbhAGCWZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Jan 2021 21:22:25 -0500
-Received: from out30-132.freemail.mail.aliyun.com ([115.124.30.132]:48583 "EHLO
-        out30-132.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726703AbhAGCWX (ORCPT
+        id S1726866AbhAGCWo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Jan 2021 21:22:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55760 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726086AbhAGCWn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Jan 2021 21:22:23 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R171e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04400;MF=abaci-bugfix@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0UKxLfZz_1609986086;
-Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:abaci-bugfix@linux.alibaba.com fp:SMTPD_---0UKxLfZz_1609986086)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Thu, 07 Jan 2021 10:21:39 +0800
-From:   Jiapeng Zhong <abaci-bugfix@linux.alibaba.com>
-To:     marcel@holtmann.org
-Cc:     johan.hedberg@gmail.com, davem@davemloft.net, kuba@kernel.org,
-        linux-kernel@vger.kernel.org, linux-bluetooth@vger.kernel.org,
-        Jiapeng Zhong <abaci-bugfix@linux.alibaba.com>
-Subject: [PATCH] net/bluetooth: WARNING: adv_channel_map_fops should be defined with DEFINE_DEBUGFS_ATTRIBUTE
-Date:   Thu,  7 Jan 2021 10:21:11 +0800
-Message-Id: <1609986071-117076-1-git-send-email-abaci-bugfix@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
+        Wed, 6 Jan 2021 21:22:43 -0500
+Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5F0DC0612EF;
+        Wed,  6 Jan 2021 18:22:02 -0800 (PST)
+Received: by mail-pg1-x535.google.com with SMTP id n7so3739344pgg.2;
+        Wed, 06 Jan 2021 18:22:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=NGIGzRN3zCMPGV5whylX6uiTJgaykYphIv1TBJIWg4k=;
+        b=ZY2QY37skaxbTmULnKLebDqP1thXAaMW6TGEU6e9TRpFVX9DFV9F6IvRFICAqIMou+
+         ydz9QWoBBCMvmJYinuXjST8wyhEDKktlSYxKVQLzTQDQpLoxv/ENoL2Za3Us7+5dNJ+e
+         CQmS8ZhsFTkppbnjyAN14IykGPC13sCzxUEjt9zd5TG82L5YLG9EkRhpo25Lw0Z5bC8t
+         5e+0zFiqUpwPO6tTxKju1Wt5VDMwUcM7EIutp3JhNv4/joYlXokapYFo3S+986ebLWob
+         AbmmscMLChcvFUpZwfxc2L4dWNxBnfERpfkvgldKHXp2tTQFemZ4XrNKlKhzoK4ENR+R
+         iUlA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=NGIGzRN3zCMPGV5whylX6uiTJgaykYphIv1TBJIWg4k=;
+        b=gOTlNQV6YoOoRfsrqSnFR/WNaQxIu7PHzFMFkPsqo3NGd7Ao6vKhXURxzRKp+f6z5I
+         GoIwUpK4PpKMTz0zbsk7tg2Fk+rAo8ALNsjmCo0wyhVOgMd6xX+H6WLzBpRi2nbO5GkY
+         ZHtBbhi9/DwR77JRYhNftO29JI/HrIsgKARgQakZcUQ7BueA4ABoJZ/LElai/Y/xHhdV
+         xNqNdm/Sn8Zukp3qfkocjxC6BmV4PpQLBZAFs1G2Rts3dt58LgDc7b/SZ9xK4iuiGbtG
+         FZQPlJp9K/xUdmjO+IlHzJCeRhZXt0crMNqqqQhx5wX8AV80ornNsbo0X+rMU0QnvSI3
+         h18w==
+X-Gm-Message-State: AOAM530qws22i+p+5JZtUMEHGMayIxzPo+eotN+EEOx0N0TxXvNAb/CG
+        tHpL8atUvUOG8Rb8CZgmebA=
+X-Google-Smtp-Source: ABdhPJydc3QeiS3r7yd5ZvoeO2TIri1EsKXT1t6ETz/uM+7MkkBOjqMOOF/qYkfvuICbyIhN1Mk2tQ==
+X-Received: by 2002:a63:2347:: with SMTP id u7mr7394981pgm.189.1609986122127;
+        Wed, 06 Jan 2021 18:22:02 -0800 (PST)
+Received: from google.com ([2620:15c:202:201:a6ae:11ff:fe11:fcc3])
+        by smtp.gmail.com with ESMTPSA id z13sm284380pjt.45.2021.01.06.18.22.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 06 Jan 2021 18:22:01 -0800 (PST)
+Date:   Wed, 6 Jan 2021 18:21:58 -0800
+From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
+To:     Doug Anderson <dianders@chromium.org>
+Cc:     Stephen Boyd <swboyd@chromium.org>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        Benson Leung <bleung@chromium.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "open list:HID CORE LAYER" <linux-input@vger.kernel.org>,
+        Guenter Roeck <groeck@chromium.org>
+Subject: Re: [PATCH] Input: cros_ec_keyb: Add support for a front proximity
+ switch
+Message-ID: <X/ZwRqJFJ9BY4Z3z@google.com>
+References: <20201205004709.3126266-1-swboyd@chromium.org>
+ <CAD=FV=XjzBLTPMqOf1NK0pjXiZWrLT227nksxhMqaFG6GxAqjQ@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAD=FV=XjzBLTPMqOf1NK0pjXiZWrLT227nksxhMqaFG6GxAqjQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-adv_channel_map_fops is used in the debug file, we use
-DEFINE_DEBUGFS_ATTRIBUTE replaces DEFINE_SIMPLE_ATTRIBUTE,
-more clear and intuitive.
+Hi Doug, Stephen,
 
-Signed-off-by: Jiapeng Zhong <abaci-bugfix@linux.alibaba.com>
-Reported-by: Abaci <abaci@linux.alibaba.com>
----
- net/bluetooth/hci_debugfs.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+On Wed, Jan 06, 2021 at 05:16:10PM -0800, Doug Anderson wrote:
+> Hi,
+> 
+> On Fri, Dec 4, 2020 at 4:48 PM Stephen Boyd <swboyd@chromium.org> wrote:
+> >
+> > Some cros ECs support a front proximity MKBP event via
+> > 'EC_MKBP_FRONT_PROXIMITY'. Map this to the 'SW_FRONT_PROXIMITY' input
+> > event code so it can be reported up to userspace.
+> >
+> > Cc: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+> > Cc: Benson Leung <bleung@chromium.org>
+> > Cc: Guenter Roeck <groeck@chromium.org>
+> > Signed-off-by: Stephen Boyd <swboyd@chromium.org>
+> > ---
+> >  drivers/input/keyboard/cros_ec_keyb.c          | 5 +++++
+> >  include/linux/platform_data/cros_ec_commands.h | 1 +
+> >  2 files changed, 6 insertions(+)
+> 
+> This seems really straightforward.
+> 
+> Reviewed-by: Douglas Anderson <dianders@chromium.org>
+> 
+> Given that it touches a header file owned by the Chrome OS maintainers
+> and a driver owned by input, how should it land?  One maintainer Acks
+> and the other lands?
 
-diff --git a/net/bluetooth/hci_debugfs.c b/net/bluetooth/hci_debugfs.c
-index 4626e02..1b67cd3 100644
---- a/net/bluetooth/hci_debugfs.c
-+++ b/net/bluetooth/hci_debugfs.c
-@@ -981,7 +981,7 @@ static int adv_channel_map_get(void *data, u64 *val)
- 	return 0;
- }
- 
--DEFINE_SIMPLE_ATTRIBUTE(adv_channel_map_fops, adv_channel_map_get,
-+DEFINE_DEBUGFS_ATTRIBUTE(adv_channel_map_fops, adv_channel_map_get,
- 			adv_channel_map_set, "%llu\n");
- 
- static int adv_min_interval_set(void *data, u64 val)
+Sorry about missing this one, however the "front proximity" switch has
+been introduced for the benefit of phone devices, to be emitted when a
+device is raised to user's ear, and I do not think we should be using
+this here.
+
+We have just recently had similar discussion with regard to palm- and
+lap-mode sensors and whether they should be reported over input or IIO
+as true proximity sensors:
+
+https://lore.kernel.org/linux-iio/9f9b0ff6-3bf1-63c4-eb36-901cecd7c4d9@redhat.com/
+
+Based on what we are doing for other Chrome OS devices that expose
+proximity sensors (for example trogdor) we have decided that we all
+should be using IIO as it will allow not only on/off, but true proximity
+reporting with potential of implementing smarter policies by userspace.
+
+Because of that we should do the same here and export this as IIO
+proximity sensor as well.
+
+Thanks.
+
 -- 
-1.8.3.1
-
+Dmitry
