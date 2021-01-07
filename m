@@ -2,208 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 88F3D2EE8BB
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 23:32:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C10E82EE8B7
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 23:32:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728516AbhAGWbb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 17:31:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47282 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728391AbhAGWb3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S1728349AbhAGWb3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Thu, 7 Jan 2021 17:31:29 -0500
-Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31D18C0612F4
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Jan 2021 14:30:49 -0800 (PST)
-Received: by mail-ej1-x62f.google.com with SMTP id d17so11883623ejy.9
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Jan 2021 14:30:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=gAqEJZvOUVNx7GjAGJU4++QQQh5Iz2ZggF7mmYWr3jc=;
-        b=bG+BCKd9SPDGkLBVmk9DWALKTJEta7jDlFUQrevNhzIflVRY1koxsH+dTANfkrr5hr
-         UvMJ0eogDoUIQ2k7BkMHc3QD0V3DzolfWfdn9GHIVn1AaN69HmUcULw+LYobqPgZZMEB
-         IB9WQeqvRxQV0J9Wo9qhbnimFNBY73T73CtH8aLBK5VUzlpJDLuWdOZFuamwHFfAzMPg
-         JnaEpoNi15UuZmInclT+SDXs7Pn8znDMcK6VSggPKu9CSdZ5tpe907bI3nXZhjmo2OLd
-         UMQJsbtWwdCJvYAwidna03bNfjP6zGlP5MhHLh4kroT6LSXu3BmCqOcyq4CoA8N7ha0G
-         bSFA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=gAqEJZvOUVNx7GjAGJU4++QQQh5Iz2ZggF7mmYWr3jc=;
-        b=OnlQhiuGv+89FIgkCgcTbojNlbx6061syawnfbaIZCBCbN29S565VbnOpQJzkUuabz
-         4zjtBUdwrNQkq3DENcGJjXKAQ9AeXmkbgcr1RhAG5PWnxcRMwiA8oxWfvW3jkfnZPduf
-         gZ3B68xBLwIcrqH5Xakdwi9l73sXbZcfDxZnEvFBaSVJFJAqE0CB/rhkOki0/zVqOCQv
-         4OP0KeicwLjk7br8w9txzpJWwEthWakueB8EPwzZSYOMr1IajAk6l6MNbTvxa9lGLodj
-         HxD+fx6taQTRinJTIul4AQf7htLk/ivX7KtomddOrs1D1k0bSpayF3Lcx4SVIaTBAdf+
-         IGmA==
-X-Gm-Message-State: AOAM531SIx2iZCONho7d3M/YKSOufEi8yuJpTYYboDC8w20jiGoFgUDL
-        KANl3eHIVSlMinxQvLEiRSwAmpVFne5vV4zYQLFB
-X-Google-Smtp-Source: ABdhPJyFsPwDmA3L3Sh+WXq6NxfIuTJGbBAVParg9HTQzxnopUrkcfnjA+fzjgE75VQpmeAWCPgMnA/gFMROwpue71Q=
-X-Received: by 2002:a17:906:3712:: with SMTP id d18mr753300ejc.178.1610058647771;
- Thu, 07 Jan 2021 14:30:47 -0800 (PST)
+Received: from mga18.intel.com ([134.134.136.126]:51397 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726854AbhAGWb2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Jan 2021 17:31:28 -0500
+IronPort-SDR: TY9dNrQApMWFsFIZtRk4oQ5g+b4Cg/PXRBZFVNNXwRtiiNVwtFip41edv0E5lzxJRVuWvz4et4
+ ABA0A1ebhoPA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9857"; a="165197263"
+X-IronPort-AV: E=Sophos;i="5.79,330,1602572400"; 
+   d="scan'208";a="165197263"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Jan 2021 14:30:48 -0800
+IronPort-SDR: GRIvykcqsFsBX5IUkApi96iKuddlVKRVnnMhUnbMfPHK2unGfa49J40ttknUjaGooGnXWT+ZhX
+ FJUJXhfUgZVw==
+X-IronPort-AV: E=Sophos;i="5.79,330,1602572400"; 
+   d="scan'208";a="497664854"
+Received: from jekeller-mobl1.amr.corp.intel.com (HELO [10.209.22.194]) ([10.209.22.194])
+  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Jan 2021 14:30:47 -0800
+Subject: Re: [RFC V1 RESEND 2/6] PCI/MSI: Dynamic allocation of MSI-X vectors
+ by group
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        Megha Dey <megha.dey@linux.intel.com>
+Cc:     bhelgaas@google.com, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org, marc.zyngier@arm.com,
+        ashok.raj@intel.com, jacob.jun.pan@linux.intel.com,
+        megha.dey@intel.com
+References: <1561162778-12669-1-git-send-email-megha.dey@linux.intel.com>
+ <1561162778-12669-3-git-send-email-megha.dey@linux.intel.com>
+ <alpine.DEB.2.21.1906280739100.32342@nanos.tec.linutronix.de>
+From:   Jacob Keller <jacob.e.keller@intel.com>
+Organization: Intel Corporation
+Message-ID: <eabe50a6-efa8-ea96-d8ed-701a0564a13e@intel.com>
+Date:   Thu, 7 Jan 2021 14:30:45 -0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-References: <20201112015359.1103333-1-lokeshgidra@google.com>
- <20201112015359.1103333-4-lokeshgidra@google.com> <CAHC9VhS2WNXn2cVAUcAY5AmmBv+=XsthCevofNNuEOU3=jtLrg@mail.gmail.com>
- <CA+EESO5wXubeutVOdbp_LamfP5TyG0r7BO-qnWV=wkd9zWqJ4w@mail.gmail.com>
-In-Reply-To: <CA+EESO5wXubeutVOdbp_LamfP5TyG0r7BO-qnWV=wkd9zWqJ4w@mail.gmail.com>
-From:   Paul Moore <paul@paul-moore.com>
-Date:   Thu, 7 Jan 2021 17:30:36 -0500
-Message-ID: <CAHC9VhSPOHr+ayFK2RADh6u8Dsmp5GYPTWs3HLPtjwbFTgVrfQ@mail.gmail.com>
-Subject: Re: [PATCH v13 3/4] selinux: teach SELinux about anonymous inodes
-To:     Lokesh Gidra <lokeshgidra@google.com>
-Cc:     Andrea Arcangeli <aarcange@redhat.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        James Morris <jmorris@namei.org>,
-        Stephen Smalley <stephen.smalley.work@gmail.com>,
-        Casey Schaufler <casey@schaufler-ca.com>,
-        Eric Biggers <ebiggers@kernel.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        Eric Paris <eparis@parisplace.org>,
-        Daniel Colascione <dancol@dancol.org>,
-        Kees Cook <keescook@chromium.org>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        KP Singh <kpsingh@google.com>,
-        David Howells <dhowells@redhat.com>,
-        Anders Roxell <anders.roxell@linaro.org>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Matthew Garrett <matthewgarrett@google.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        "Joel Fernandes (Google)" <joel@joelfernandes.org>,
-        YueHaibing <yuehaibing@huawei.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Adrian Reber <areber@redhat.com>,
-        Aleksa Sarai <cyphar@cyphar.com>,
-        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        LSM List <linux-security-module@vger.kernel.org>,
-        SElinux list <selinux@vger.kernel.org>,
-        Kalesh Singh <kaleshsingh@google.com>,
-        Calin Juravle <calin@google.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Jeffrey Vander Stoep <jeffv@google.com>,
-        "Cc: Android Kernel" <kernel-team@android.com>,
-        "open list:MEMORY MANAGEMENT" <linux-mm@kvack.org>,
-        Andrew Morton <akpm@linux-foundation.org>, hch@infradead.org
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <alpine.DEB.2.21.1906280739100.32342@nanos.tec.linutronix.de>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 6, 2021 at 10:55 PM Lokesh Gidra <lokeshgidra@google.com> wrote:
-> On Wed, Jan 6, 2021 at 7:03 PM Paul Moore <paul@paul-moore.com> wrote:
-> > On Wed, Nov 11, 2020 at 8:54 PM Lokesh Gidra <lokeshgidra@google.com> wrote:
-> > > From: Daniel Colascione <dancol@google.com>
-> > >
-> > > This change uses the anon_inodes and LSM infrastructure introduced in
-> > > the previous patches to give SELinux the ability to control
-> > > anonymous-inode files that are created using the new
-> > > anon_inode_getfd_secure() function.
-> > >
-> > > A SELinux policy author detects and controls these anonymous inodes by
-> > > adding a name-based type_transition rule that assigns a new security
-> > > type to anonymous-inode files created in some domain. The name used
-> > > for the name-based transition is the name associated with the
-> > > anonymous inode for file listings --- e.g., "[userfaultfd]" or
-> > > "[perf_event]".
-> > >
-> > > Example:
-> > >
-> > > type uffd_t;
-> > > type_transition sysadm_t sysadm_t : anon_inode uffd_t "[userfaultfd]";
-> > > allow sysadm_t uffd_t:anon_inode { create };
-> > >
-> > > (The next patch in this series is necessary for making userfaultfd
-> > > support this new interface.  The example above is just
-> > > for exposition.)
-> > >
-> > > Signed-off-by: Daniel Colascione <dancol@google.com>
-> > > Signed-off-by: Lokesh Gidra <lokeshgidra@google.com>
-> > > ---
-> > >  security/selinux/hooks.c            | 56 +++++++++++++++++++++++++++++
-> > >  security/selinux/include/classmap.h |  2 ++
-> > >  2 files changed, 58 insertions(+)
-> > >
-> > > diff --git a/security/selinux/hooks.c b/security/selinux/hooks.c
-> > > index 6b1826fc3658..d092aa512868 100644
-> > > --- a/security/selinux/hooks.c
-> > > +++ b/security/selinux/hooks.c
-> > > @@ -2927,6 +2927,61 @@ static int selinux_inode_init_security(struct inode *inode, struct inode *dir,
-> > >         return 0;
-> > >  }
-> > >
-> > > +static int selinux_inode_init_security_anon(struct inode *inode,
-> > > +                                           const struct qstr *name,
-> > > +                                           const struct inode *context_inode)
-> > > +{
-> > > +       const struct task_security_struct *tsec = selinux_cred(current_cred());
-> > > +       struct common_audit_data ad;
-> > > +       struct inode_security_struct *isec;
-> > > +       int rc;
-> > > +
-> > > +       if (unlikely(!selinux_initialized(&selinux_state)))
-> > > +               return 0;
-> > > +
-> > > +       isec = selinux_inode(inode);
-> > > +
-> > > +       /*
-> > > +        * We only get here once per ephemeral inode.  The inode has
-> > > +        * been initialized via inode_alloc_security but is otherwise
-> > > +        * untouched.
-> > > +        */
-> > > +
-> > > +       if (context_inode) {
-> > > +               struct inode_security_struct *context_isec =
-> > > +                       selinux_inode(context_inode);
-> > > +               if (context_isec->initialized != LABEL_INITIALIZED)
-> > > +                       return -EACCES;
-> > > +
-> > > +               isec->sclass = context_isec->sclass;
-> >
-> > Taking the object class directly from the context_inode is
-> > interesting, and I suspect problematic.  In the case below where no
-> > context_inode is supplied the object class is set to
-> > SECCLASS_ANON_INODE, which is correct, but when a context_inode is
-> > supplied there is no guarantee that the object class will be set to
-> > SECCLASS_ANON_INODE.  This could both pose a problem for policy
-> > writers (how do you distinguish the anon inode from other normal file
-> > inodes in this case?) as well as an outright fault later in this
-> > function when we try to check the ANON_INODE__CREATE on an object
-> > other than a SECCLASS_ANON_INODE object.
-> >
-> Thanks for catching this. I'll initialize 'sclass' unconditionally to
-> SECCLASS_ANON_INODE in the next version. Also, do you think I should
-> add a check that context_inode's sclass must be SECCLASS_ANON_INODE to
-> confirm that we never receive a regular inode as context_inode?
+Hi Thomas,
 
-This is one of the reasons why I was asking if you ever saw the need
-to use a regular inode here.  It seems much safer to me to add a check
-to ensure that context_inode is SECCLASS_ANON_INODE and return an
-error otherwise; I would also suggest emitting an error using pr_err()
-with something along the lines of "SELinux:  initializing anonymous
-inode with inappropriate inode" (or something similar).
+On 6/29/2019 12:59 AM, Thomas Gleixner wrote:
+> As already pointed out, that's overengineered.
+> 
+> First of all this patch is doing too many things at once. These changes
+> need to be split up in reviewable bits and pieces.
+> 
 
-If something changes in the future we can always reconsider this restriction.
+I am looking into this work as I want to implement ability to do grouped
+partial allocations of MSI-X vectors over time in the ice Linux NIC driver.
 
-> > It works in the userfaultfd case because the context_inode is
-> > originally created with this function so the object class is correctly
-> > set to SECCLASS_ANON_INODE, but can we always guarantee that to be the
-> > case?  Do we ever need or want to support using a context_inode that
-> > is not SECCLASS_ANON_INODE?
->
-> I don't think there is any requirement of supporting context_inode
-> which isn't anon-inode. And even if there is, as you described
-> earlier, for ANON_INODE__CREATE to work the sclass has to be
-> SECCLASS_ANON_INODE. I'll appreciate comments on this from others,
-> particularly Daniel and Stephen who originally discussed and
-> implemented this patch.
+> But I consider this approach as a POC and not something which can be meant
+> as a maintainable solution. It just duct tapes this new functionality into
+> the existing code thereby breaking things left and right. And even if you
+> can 'fix' these issues with more duct tape it won't be maintainable at all.
+> 
+> If you want to support group based allocations, then the PCI/MSI facility
+> has to be refactored from ground up.
+> 
 
-I would encourage you not to wait too long for additional feedback
-before sending the next revision.
+I agree that this is the right direction to go, but I am having some
+trouble with following these steps when I started trying to implement
+this stuff.
 
--- 
-paul moore
-www.paul-moore.com
+>   1) Introduce the concept of groups by adding a group list head to struct
+>      pci_dev. Ideally you create a new struct pci_dev_msi or whatever where
+>      all this muck goes into.
+> 
+
+So my big problem I keep running into is that struct msi_desc is used by
+several code paths that aren't PCI. It looks a bit odd trying to
+refactor things to support groups for the non-PCI bus code that uses
+struct msi_desc...
+
+I'd appreciate any further thoughts you have on the right way to go
+forward here. I think that treated vector allocations as groups is a
+huge improvement, as it will make it easier to manage allocating MSI-X
+vectors without running into exhaustion issues due to over allocating.
+
+But does this need to be introduced as part of the generic linux/msi.h
+stuff? Doing this means refactoring a bunch of code paths which don't
+seem to care about grouping. But I can't find a good way to handle this
+grouping in just the PCI layer.
+
+>   2) Change the existing code to treat the current allocation mode as a
+>      group allocation. Keep the entries in a new struct msi_entry_group and
+>      have a group id, list head and the entries in there.
+> 
+>      Take care of protecting the group list.
+> 
+>      Assign group id 0 and add the entry_group to the list in the pci device.
+> 
+>      Rework the related functions so they are group aware.
+> 
+>      This can be split into preparatory and functional pieces, i.e. multiple
+>      patches.
+> 
+
+The locking issue here also seems somewhat problematic. A lot of paths
+that access the msi list don't seem to take a lock today. So any change
+that affects these users would force adding locks on all these flows.
+
+I guess for PCI code we could just stop using dev->msi_list altogether,
+and instead use a PCI specific struct pci_msi_group or something? This
+would mean that any flow that the PCI layer needs would have to take the
+group structure instead of or in addition to the device pointer... It's
+not clear how much code actually crosses between the PCI and non-PCI
+usages of struct msi_desc...
+
+>   3) Split out the 'first time' enablement code into separate functions and
+>      store the relevant state in struct pci_dev_msi
+> 
+>   4) Rename pci_alloc_irq_vectors_affinity() to
+>      pci_alloc_irq_vectors_affinity_group() and add a group_id pointer
+>      argument.
+> 
+>      Make pci_alloc_irq_vectors_affinity() a wrapper function which hands
+>      in a NULL group id pointer and does proper sanity checking.
+> 
+>   5) Create similar constructs for related functionality
+> 
+>   6) Enable the group allocation mode for subsequent allocations
+> 
+
+The rest of the flow makes sense, but I have been struggling with
+finding the right abstraction for handling the msi_desc groups.
+
+Does my idea of separating the PCI layer code to using its own structure
+ (and iterators I guess?) instead of relying on msi_list make sense? I
+guess other code could be converted to groups as well, but I have been
+trying to find a good path forward that has minimal chance of breaking
+other users...
+
+I'd appreciate any insight here.
+
+Thanks,
+Jake
+
+> Thanks,
+> 
+> 	tglx
+> 
+> 
+>   
+> 
+> 
