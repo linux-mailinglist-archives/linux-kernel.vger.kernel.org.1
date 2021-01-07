@@ -2,62 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 548F22ECC80
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 10:16:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 38EC42ECC82
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 10:16:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727420AbhAGJO3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 04:14:29 -0500
-Received: from mail1.protonmail.ch ([185.70.40.18]:37366 "EHLO
-        mail1.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726862AbhAGJO2 (ORCPT
+        id S1727511AbhAGJOf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 04:14:35 -0500
+Received: from lb3-smtp-cloud9.xs4all.net ([194.109.24.30]:41237 "EHLO
+        lb3-smtp-cloud9.xs4all.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726801AbhAGJOd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 04:14:28 -0500
-Date:   Thu, 07 Jan 2021 09:13:40 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me; s=protonmail;
-        t=1610010826; bh=hvwIoelUi1wx+za4I6FAa+/pn9VbnZdTGjdvOxoB1zU=;
-        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
-        b=Y3+xzT7cHW/sNusbEjY8I4TqKzQszsQ7W6lvZv6YnOxGsezOcMfGYhuhpdn3kejN+
-         EzvCGyjX8hJEzXfyggRFglqAnLo8WjnnkOB0MlOl1TVghUW/66ovOGBFr+L9a7vQUA
-         xCwEwngvOEhR++W5p+IVwC/ludLOiIOn+GVFyyKoUU+x8J5nPXYbnjymhZL8GFAEoh
-         bGe9VlzdM4Wqcl/45Z+xyRzTE7r4iG+2/EJ3zF421XDEDxwx3aJ0M1DQiL2g9V7hO9
-         KnSqX5cWxOZdvL9yUcfDRqU03dCJDM0t3uvUKA/4wZmk78i/i02LgUK9fx+9Ke5/u9
-         c/ZAqI6rZ3pmg==
-To:     Jakub Kicinski <kuba@kernel.org>
-From:   Alexander Lobakin <alobakin@pm.me>
-Cc:     Alexander Lobakin <alobakin@pm.me>,
-        "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Reply-To: Alexander Lobakin <alobakin@pm.me>
-Subject: Re: [PATCH net-next] net: sysctl: cleanup net_sysctl_init()
-Message-ID: <20210107091318.2184-1-alobakin@pm.me>
-In-Reply-To: <20210106163056.79d75ffa@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-References: <20210106204014.34730-1-alobakin@pm.me> <20210106163056.79d75ffa@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        Thu, 7 Jan 2021 04:14:33 -0500
+Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
+        by smtp-cloud9.xs4all.net with ESMTPA
+        id xRMVklktVbMeAxRMZkT4Za; Thu, 07 Jan 2021 10:13:50 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s2;
+        t=1610010830; bh=E0MA7bSe09OCRGTiRBeJqYGJV3Asl9zqcjkRywEcSlA=;
+        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
+         Subject;
+        b=LiqJ21KYHrwqKrRJcgKxZqm1AxBN59aAlf3EUIosdZWalxJ2wL1NvKnPXyy3G8Kwv
+         zbWzE6Y8/nuiS6rogUvCfWoh+l8Ubn53VKT3c23ecaosLLAANRjTfe3b7t8k/tjDBd
+         c+/aFH2YhtbKMkbuu93gpQXu7kv6vdbASh4EwInk6aJWmpsaSB1tNUYG5NiFHCsrde
+         qnUIhYzEYwTpnz6KZ16dwFI+vEwuBq2rbmPBT1ewOXKeVIcRsjWZw8KvUqvBJYJ8iR
+         581HlH8TUiMkRbJStjcx5IdxoSN1FWfTsh58D7t3xiH06Dp7mcy+gGJBRPMWD9S9cM
+         hqsAlKnfIx+tg==
+Subject: Re: [PATCH] media: rkvdec: silence ktest bot build warning
+To:     Adrian Ratiu <adrian.ratiu@collabora.com>,
+        linux-media@vger.kernel.org
+Cc:     kernel@collabora.com, linux-rockchip@lists.infradead.org,
+        linux-kernel@vger.kernel.org, devel@driverdev.osuosl.org,
+        Boris Brezillon <boris.brezillon@collabora.com>,
+        Ezequiel Garcia <ezequiel@collabora.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        kernel test robot <lkp@intel.com>
+References: <20201208155540.340583-1-adrian.ratiu@collabora.com>
+From:   Hans Verkuil <hverkuil@xs4all.nl>
+Message-ID: <76b5569c-bc19-3d11-4da7-cf0dbb244433@xs4all.nl>
+Date:   Thu, 7 Jan 2021 10:13:43 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
+In-Reply-To: <20201208155540.340583-1-adrian.ratiu@collabora.com>
 Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
-        autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
-        mailout.protonmail.ch
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-CMAE-Envelope: MS4xfECXKwRH1TUnQACLjcNLsP8PHssfJJz/tIezgMZj62/CxkRMGBxeAwNrUgW+Q3170ToZ4VnWpgpVMi/tPwXxZQTsqdGv1eukLo5ghbZ5Xgmo3wfn6QT4
+ XPHbH2VyQJ9lQ1iiBZnfnwh9mWIE3CTJSlGRJPdtyNo4fb29QXbYynlw0T55QFeTbbDefiJxe8Cby7mIk/gLeHoObJ3kYd9fXUlltm2GF+r6IAgusSlF4VGN
+ cOCIaubQuEIQHGtC++jcl/dTcaw9Q2N0iJTerVTq13CrZlwZInddDIHGqlo0ESut9PLWvuYoj4N1k/BtW/bKP6pFK+/gBw82VLVASDLcBuBG8l9i+CLLMkCU
+ H1BB/rd9s18MP0BUpnMGxrzcK7dbH1CQHA0VxWO94undZRd0wyPOWIVUskiEwnYBvgAFycxi4aUrQKH6h0Tu1eII4xYIcGM9FT88VtCApDcFxCk1/EdAS0Fn
+ sOG/rUxKg5I5+WUdx3/aeoiIHaVWXN2v6SVhDorbPjkKebsLIIMAHX+t80E=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jakub Kicinski <kuba@kernel.org>
-Date: Wed, 6 Jan 2021 16:30:56 -0800
+On 08/12/2020 16:55, Adrian Ratiu wrote:
+> Some configurations built by the ktest bot produce the following
+> warn, so mark the struct as __maybe_unused to avoid unnecessary
+> ML spam.
+> 
+>>> drivers/staging/media/rkvdec/rkvdec.c:967:34: warning: unused variable 'of_rkvdec_match' [-Wunused-const-variable]
+>    static const struct of_device_id of_rkvdec_match[] = {
+> 				    ^
+>    1 warning generated.
 
-> On Wed, 06 Jan 2021 20:40:28 +0000 Alexander Lobakin wrote:
->> 'net_header' is not used outside of this function, so can be moved
->> from BSS onto the stack.
->> Declarations of one-element arrays are discouraged, and there's no
->> need to store 'empty' in BSS. Simply allocate it from heap at init.
->
-> Are you sure? It's passed as an argument to register_sysctl()
-> so it may well need to be valid for the lifetime of net_header.
+I suspect that this is because there is no 'depends on OF' in the Kconfig.
 
-I just moved it from BSS to the heap and allocate it using kzalloc(),
-it's still valid through the lifetime of the kernel.
+'__maybe_unused' isn't used for this anywhere else, so this does not seem like the
+right approach.
 
-Al
+Regards,
+
+	Hans
+
+> 
+> vim +/of_rkvdec_match +967 drivers/staging/media/rkvdec/rkvdec.c
+> 
+>    966
+>  > 967	static const struct of_device_id of_rkvdec_match[] = {
+>    968		{ .compatible = "rockchip,rk3399-vdec" },
+>    969		{ /* sentinel */ }
+>    970	};
+>    971	MODULE_DEVICE_TABLE(of, of_rkvdec_match);
+>    972
+> 
+> Cc: Boris Brezillon <boris.brezillon@collabora.com>
+> Cc: Ezequiel Garcia <ezequiel@collabora.com>
+> Cc: Mauro Carvalho Chehab <mchehab@kernel.org>
+> Reported-by: kernel test robot <lkp@intel.com>
+> Signed-off-by: Adrian Ratiu <adrian.ratiu@collabora.com>
+> ---
+>  drivers/staging/media/rkvdec/rkvdec.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/staging/media/rkvdec/rkvdec.c b/drivers/staging/media/rkvdec/rkvdec.c
+> index aa4f8c287618..3af0f02ec59b 100644
+> --- a/drivers/staging/media/rkvdec/rkvdec.c
+> +++ b/drivers/staging/media/rkvdec/rkvdec.c
+> @@ -992,7 +992,7 @@ static void rkvdec_watchdog_func(struct work_struct *work)
+>  	}
+>  }
+>  
+> -static const struct of_device_id of_rkvdec_match[] = {
+> +static const struct of_device_id __maybe_unused of_rkvdec_match[] = {
+>  	{ .compatible = "rockchip,rk3399-vdec" },
+>  	{ /* sentinel */ }
+>  };
+> 
 
