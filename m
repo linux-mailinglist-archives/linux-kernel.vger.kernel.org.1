@@ -2,124 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 670882EE831
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 23:15:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C17D2EE82F
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 23:15:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728016AbhAGWPa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 17:15:30 -0500
-Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:19365 "EHLO
-        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726646AbhAGWP3 (ORCPT
+        id S1728121AbhAGWPl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 17:15:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44660 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726646AbhAGWPk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 17:15:29 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5ff787d90002>; Thu, 07 Jan 2021 14:14:49 -0800
-Received: from [10.2.53.45] (172.20.145.6) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 7 Jan
- 2021 22:14:46 +0000
-Subject: Re: [PATCH 2/2] mm: soft_dirty: userfaultfd: introduce
- wrprotect_tlb_flush_pending
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-CC:     Andrea Arcangeli <aarcange@redhat.com>,
-        Linux-MM <linux-mm@kvack.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Yu Zhao <yuzhao@google.com>, Andy Lutomirski <luto@kernel.org>,
-        Peter Xu <peterx@redhat.com>,
-        Pavel Emelyanov <xemul@openvz.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Mike Rapoport <rppt@linux.vnet.ibm.com>,
-        "Minchan Kim" <minchan@kernel.org>, Will Deacon <will@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Hugh Dickins <hughd@google.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Oleg Nesterov <oleg@redhat.com>, Jann Horn <jannh@google.com>,
-        Kees Cook <keescook@chromium.org>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>, Jan Kara <jack@suse.cz>,
-        Kirill Tkhai <ktkhai@virtuozzo.com>
-References: <B1B85771-B211-4FCC-AEEF-BDFD37332C25@vmware.com>
- <20210107200402.31095-1-aarcange@redhat.com>
- <20210107200402.31095-3-aarcange@redhat.com>
- <CAHk-=whg-91=EF=8=ayyDQGx_3iuWKp3aHUkDCDkgUb15Yh8AQ@mail.gmail.com>
- <X/d2DyLfXZmBIreY@redhat.com>
- <CAHk-=wjs9v-hp_7HV_TrTmisu7pNX=MwZ62ZV82i0evLhPwS1Q@mail.gmail.com>
- <4100a6f5-ab0b-f7e5-962f-ea1dbcb1e47e@nvidia.com>
- <CAHk-=wjde11Wz+GiVeuttdAPaNBrNydkvUcVm3xBmVWjwA-kNQ@mail.gmail.com>
-From:   John Hubbard <jhubbard@nvidia.com>
-Message-ID: <394e17bc-8bed-4d17-5dba-9ab8052c8bea@nvidia.com>
-Date:   Thu, 7 Jan 2021 14:14:46 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:84.0) Gecko/20100101
- Thunderbird/84.0
+        Thu, 7 Jan 2021 17:15:40 -0500
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33291C0612F4;
+        Thu,  7 Jan 2021 14:15:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=hp/hzbK32x3dtwPGRRysL2rjHsQS0TM3qH9C23QvpIA=; b=j7hHcXeFfYP57LBpWFdXW7V+U
+        +Z6qUX2TtBeaa6rYBqBgNCiVvJT4ilYColt4Yvs0NBPxitPL4ichfEXLoev4YFuUPvGgowKub2LDd
+        AAe9iJDQpPwA9J4yx/uwzlLuBEP5TSDhawMa2Zes3IguK0D+su1mc6Q+31oJCXPCTeCZ8fQOQeVHw
+        1XfnbhMZ8VT+apBUPs/9Wg1nlVOdzrqwdYyMWxw7L/0r7tWp3puyrb2PFeDZOLFEXbHQ8itkvAZ9i
+        TSShIJO/Ke1uITaWdzD/ytM/4PaG/zGLJdt5pAIV2oHT0lUed972s4YgQG2P8V+vgWeV3IV3k50+u
+        tMHKXRq0w==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:45240)
+        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1kxdYR-0003GN-2H; Thu, 07 Jan 2021 22:14:51 +0000
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1kxdYM-0001W8-SH; Thu, 07 Jan 2021 22:14:46 +0000
+Date:   Thu, 7 Jan 2021 22:14:46 +0000
+From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Theodore Ts'o <tytso@mit.edu>, Will Deacon <will@kernel.org>,
+        linux-toolchains@vger.kernel.org,
+        Mark Rutland <mark.rutland@arm.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Ext4 Developers List <linux-ext4@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>
+Subject: Re: Aarch64 EXT4FS inode checksum failures - seems to be weak memory
+ ordering issues
+Message-ID: <20210107221446.GS1551@shell.armlinux.org.uk>
+References: <20210106115359.GB26994@C02TD0UTHF1T.local>
+ <20210106135253.GJ1551@shell.armlinux.org.uk>
+ <20210106172033.GA2165@willie-the-truck>
+ <20210106223223.GM1551@shell.armlinux.org.uk>
+ <20210107111841.GN1551@shell.armlinux.org.uk>
+ <20210107124506.GO1551@shell.armlinux.org.uk>
+ <CAK8P3a2TXPfFpgy+XjpDzOqt1qpDxufwiD-BLNbn4W_jpGp98g@mail.gmail.com>
+ <20210107133747.GP1551@shell.armlinux.org.uk>
+ <X/c2aqSvYCaB9sR6@mit.edu>
+ <CAK8P3a2svyz1KXSqSUMVeDqdag4f1VcERH9jpECSLsn-FWvZbw@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <CAHk-=wjde11Wz+GiVeuttdAPaNBrNydkvUcVm3xBmVWjwA-kNQ@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [172.20.145.6]
-X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
- HQMAIL107.nvidia.com (172.20.187.13)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1610057689; bh=mvMt3QV0kxLxxUJ0iTscamiEGgHeUeuZhDh1c1xneBs=;
-        h=Subject:To:CC:References:From:Message-ID:Date:User-Agent:
-         MIME-Version:In-Reply-To:Content-Type:Content-Language:
-         Content-Transfer-Encoding:X-Originating-IP:X-ClientProxiedBy;
-        b=afxZ3z0kPyVRwdvpJCH3q64AwBm5K/Ggg+Hzr/lRkexTGNAaJrDyc06ZCeMZoYCOj
-         CjvOZK3MLvTKT6Pwc9p5IByX2pxAhyCBvw+/NG1cf+hmQU41UUJ3bJe1xHuwoDz0lN
-         ReYmK9FZmAHhg7vEl1INn854JWe2cWWhLEPpINXbAjdihhQhVZWFk152WjEhPNIa/j
-         Q2ADPLf8eomtRQnfIL7yR39+zoAnqsx4dYOu8KtncCV6afFKkHvcitdrx18b5O5GT7
-         92PD4bN/G32nzm3kCGe2CPWCJF/Cycm9hG11uANRc+SOjv8YHz0NSbjT3wV5iw4MrU
-         qe2bO9eFfEAGg==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAK8P3a2svyz1KXSqSUMVeDqdag4f1VcERH9jpECSLsn-FWvZbw@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Sender: Russell King - ARM Linux admin <linux@armlinux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 1/7/21 2:00 PM, Linus Torvalds wrote:
-> On Thu, Jan 7, 2021 at 1:53 PM John Hubbard <jhubbard@nvidia.com> wrote:
->>
->>>
->>> Now, I do agree that from a QoI standpoint, it would be really lovely
->>> if we actually enforced it. I'm not entirely sure we can, but maybe it
->>> would be reasonable to use that
->>>
->>>     mm->has_pinned && page_maybe_dma_pinned(page)
->>>
->>> at least as the beginning of a heuristic.
->>>
->>> In fact, I do think that "page_maybe_dma_pinned()" could possibly be
->>> made stronger than it is. Because at *THAT* point, we might say "we
->>
->> What exactly did you have in mind, to make it stronger? I think the
->> answer is in this email but I don't quite see it yet...
+On Thu, Jan 07, 2021 at 10:48:05PM +0100, Arnd Bergmann wrote:
+> On Thu, Jan 7, 2021 at 5:27 PM Theodore Ts'o <tytso@mit.edu> wrote:
+> >
+> > On Thu, Jan 07, 2021 at 01:37:47PM +0000, Russell King - ARM Linux admin wrote:
+> > > > The gcc bugzilla mentions backports into gcc-linaro, but I do not see
+> > > > them in my git history.
+> > >
+> > > So, do we raise the minimum gcc version for the kernel as a whole to 5.1
+> > > or just for aarch64?
+> >
+> > Russell, Arnd, thanks so much for tracking down the root cause of the
+> > bug!
 > 
-> Literally just adding a " && page_mapcount(page) == 1" in there
-> (probably best done inside page_maybe_dma_pinned() itself)
+> There is one more thing that I wondered about when looking through
+> the ext4 code: Should it just call the crc32c_le() function directly
+> instead of going through the crypto layer? It seems that with Ard's
+> rework from 2018, that can just call the underlying architecture specific
+> implementation anyway.
 
-Well, that means that pages that are used for pinned DMA like this, can
-not be shared with other processes. Is that an acceptable limitation
-for the RDMA users? It seems a bit constraining, at first glance anyway.
+Yes, I've been wondering about that too. To me, it looks like the
+ext4 code performs a layering violation by going "under the covers"
+- there are accessor functions to set the CRC and retrieve it. ext4
+instead just makes the assumption that the CRC value is stored after
+struct shash_desc. Especially as the crypto/crc32c code references
+the value using:
 
-> 
->> Direct IO pins, on the other hand, are more transient. We can probably live
->> without tagging Direct IO pages as FOLL_PIN. I think.
-> 
-> Yes. I think direct-IO writes should be able to just do a transient
-> GUP, and if it causes a COW fault that isn't coherent, that's the
-> correct semantics, I think (ie the direct-IO will see the original
-> data, the COW faulter will get it's own private copy to make changes
-> to).
-> 
-> I think pinning should be primarily limited to things that _require_
-> coherency (ie you pin because you're going to do some active two-way
-> communication using that page)
-> 
-> Does that match your thinking?
-> 
+	struct chksum_desc_ctx *ctx = shash_desc_ctx(desc);
 
-Yes, perfectly. I'm going to update Documentation/core-api/pin_user_pages.rst
-accordingly, once the dust settles on these discussions.
+Not even crypto drivers are allowed to assume that desc+1 is where
+the CRC is stored.
 
-thanks,
+However, struct shash_desc is already 128 bytes in size on aarch64,
+and the proper way of doing it via SHASH_DESC_ON_STACK() is overkill,
+being strangely 2 * sizeof(struct shash_desc) + 360 (which looks like
+another bug to me!)
+
+#define HASH_MAX_DESCSIZE       (sizeof(struct shash_desc) + 360)
+                                 ^^^^^^^^^^^^^^^^^^^^^^^^^
+#define SHASH_DESC_ON_STACK(shash, ctx)                           \
+        char __##shash##_desc[sizeof(struct shash_desc) +         \
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^
+                HASH_MAX_DESCSIZE] CRYPTO_MINALIGN_ATTR; \
+        struct shash_desc *shash = (struct shash_desc *)__##shash##_desc
+
+So, I agree with you wrt crc32c_le(), especially as it would be more
+efficient, and as the use of crc32c is already hard coded in the ext4
+code - not only with crypto_alloc_shash("crc32c", 0, 0) but also with
+the fixed-size structure in ext4_chksum().
+
+However, it's ultimately up to the ext4 maintainers to decide.
+
 -- 
-John Hubbard
-NVIDIA
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
