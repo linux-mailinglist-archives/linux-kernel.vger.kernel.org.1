@@ -2,75 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 949212ECD1E
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 10:50:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 560292ECD3F
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 10:53:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727182AbhAGJt7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 04:49:59 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49304 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725974AbhAGJt7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 04:49:59 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 776362333D;
-        Thu,  7 Jan 2021 09:49:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610012958;
-        bh=CC5w2dVB0msolsQQjxn98j0tPU3c4rpDBCwIt5Z8nGA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=zgRdSM4C0FhR0XlV7OGhk8xmHZLEuspAvfBgdKQTOl3x/cOcdTqfFGSsxSullwvpe
-         K9Ucl39JlHoaNsdFX7iQeL6URdt4oP94QNyHRYBfWWSh87FafgDaUNHqFzkBDfg+p7
-         9lQtl8xfayzyCTiSD2ldbd6TYlQLJolYHBjX0zU4=
-Date:   Thu, 7 Jan 2021 10:50:38 +0100
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Albert Wang <albertccwang@google.com>
-Cc:     balbi@kernel.org, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] Revert "usb: gadget: Quieten gadget config message"
-Message-ID: <X/bZbluYJ0syB/Do@kroah.com>
-References: <20210107090604.299270-1-albertccwang@google.com>
+        id S1727898AbhAGJvp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 04:51:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41020 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727327AbhAGJvm (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Jan 2021 04:51:42 -0500
+Received: from mail-qk1-x736.google.com (mail-qk1-x736.google.com [IPv6:2607:f8b0:4864:20::736])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A954DC0612F8
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Jan 2021 01:51:05 -0800 (PST)
+Received: by mail-qk1-x736.google.com with SMTP id w79so4970072qkb.5
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Jan 2021 01:51:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=d5fb1hMn9hWlLGl5AFUhw7+QNqYR0IEfWwZ/cw7MuPI=;
+        b=eiPUhaIuhBQm16VYQOXTp37xy4kP6bWufPGP7iUhYVOm5YG9RAyRekOxLHm2fIfVjg
+         zgnfvPrAYCumeX50DEYeAPhnIJ0pqdqRHcvnx0tFGM9UWhhPQA03x/ZJ2JPiAL8rt8bG
+         c9F+xq9CQEUloyCQcP6NW3T0l0apPkCXsqWTs=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=d5fb1hMn9hWlLGl5AFUhw7+QNqYR0IEfWwZ/cw7MuPI=;
+        b=lKlsN8XPkXaeRfc+YrpP5Ax+wJBc3i8WCkZ2KgUdTVcu3HpJJcrvX+wOde3hV2EaIZ
+         ry2rIXccuRWWqvhsUykrdgnyl32C4h3z2MDe8pOpGA6BZ860Kavwq+9zLcyAnmGTnKLs
+         b/CRuJMhXQCcc+7QhsFJBkh7mc2jNbq67u1tjrM646Vq4WN7PvJxhHMr2u2yn/JvArht
+         ZZkyVPtiAxJ4grlJhvcP3KUEH1g0/OusGtUg/aJ33Zoy2lWivjJO6U2gqF7CNHgIB7y3
+         z1qDxZ4/Mhaid4lshbL4+9lVED8Rsa0LfZ+zt1P3UBQMuHoa25Yhj3WfLqImpVnKg7ye
+         Bhdw==
+X-Gm-Message-State: AOAM532uPFEqLAIIJZfECYKkI+eHb3Y3dXDl+2OOfIjJyNqtMzQls1+v
+        rKxk93UWYgWLgW0jr1Z9xM27HAcrmXW5XvRbUcOviA==
+X-Google-Smtp-Source: ABdhPJyYIoIvWLG+rgf9qx0vOjomzvczhlgKeXwNK4TmWVyx01JLUFGD9kYqnv+Saw5oCeEuTJrUcGSGj1JUeeBSpy8=
+X-Received: by 2002:a37:8fc3:: with SMTP id r186mr8245925qkd.228.1610013064877;
+ Thu, 07 Jan 2021 01:51:04 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210107090604.299270-1-albertccwang@google.com>
+References: <20210107034904.4112029-1-pmalani@chromium.org> <X/bRstJuBYaLz4PK@kroah.com>
+In-Reply-To: <X/bRstJuBYaLz4PK@kroah.com>
+From:   Prashant Malani <pmalani@chromium.org>
+Date:   Thu, 7 Jan 2021 01:50:53 -0800
+Message-ID: <CACeCKaediXs81OUTogTWrqoZViP5rLqodO6nngeY2PLnWw=t+w@mail.gmail.com>
+Subject: Re: [PATCH] usb: typec: Send uevent for num_altmodes update
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     "open list:USB NETWORKING DRIVERS" <linux-usb@vger.kernel.org>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Benson Leung <bleung@chromium.org>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 07, 2021 at 09:06:04AM +0000, Albert Wang wrote:
-> This reverts commit 1cbfb8c4f62d667f6b8b3948949737edb92992cc.
-> 
-> The log of USB enumeration result is a useful log and only occupies
-> one line especially when USB3 enumeration failed and then downgrade
-> to USB2.
-> 
-> Signed-off-by: Albert Wang <albertccwang@google.com>
-> ---
->  drivers/usb/gadget/composite.c | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/usb/gadget/composite.c b/drivers/usb/gadget/composite.c
-> index c6d455f2bb92..5b0d6103a63d 100644
-> --- a/drivers/usb/gadget/composite.c
-> +++ b/drivers/usb/gadget/composite.c
-> @@ -840,9 +840,9 @@ static int set_config(struct usb_composite_dev *cdev,
->  		result = 0;
->  	}
->  
-> -	DBG(cdev, "%s config #%d: %s\n",
-> -	    usb_speed_string(gadget->speed),
-> -	    number, c ? c->label : "unconfigured");
-> +	INFO(cdev, "%s config #%d: %s\n",
-> +	     usb_speed_string(gadget->speed),
-> +	     number, c ? c->label : "unconfigured");
+Hi Greg,
 
-When everything is working properly, the kernel should be quiet.  If you
-have to see this message, you can turn it on at runtime, as Felipe
-pointed out, to enable it for your system.  But it's not a good default
-thing to have.
+Thanks for taking a look at the patch.
 
-What do you need to see this message for?  What tool relies on it?  Who
-reads it?
+On Thu, Jan 7, 2021 at 1:16 AM Greg KH <gregkh@linuxfoundation.org> wrote:
+>
+> On Wed, Jan 06, 2021 at 07:49:04PM -0800, Prashant Malani wrote:
+> > Generate a change uevent when the "number_of_alternate_modes" sysfs file
+> > for partners and plugs is updated by a port driver.
+> >
+> > Cc: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+> > Cc: Benson Leung <bleung@chromium.org>
+> > Signed-off-by: Prashant Malani <pmalani@chromium.org>
+> > ---
+> >  drivers/usb/typec/class.c | 2 ++
+> >  1 file changed, 2 insertions(+)
+> >
+> > diff --git a/drivers/usb/typec/class.c b/drivers/usb/typec/class.c
+> > index ebfd3113a9a8..8f77669f9cf4 100644
+> > --- a/drivers/usb/typec/class.c
+> > +++ b/drivers/usb/typec/class.c
+> > @@ -766,6 +766,7 @@ int typec_partner_set_num_altmodes(struct typec_partner *partner, int num_altmod
+> >               return ret;
+> >
+> >       sysfs_notify(&partner->dev.kobj, NULL, "number_of_alternate_modes");
+> > +     kobject_uevent(&partner->dev.kobj, KOBJ_CHANGE);
+>
+> Shouldn't the sysfs_notify() handle the "something has changed" logic
+> good enough for userspace, as obviously someone is polling on the thing
+> (otherwise we wouldn't be calling sysfs_notify...)
+>
+> The kobject itself hasn't "changed", but rather an individual attribute
+> has changed.  We don't want to create uevents for every individual sysfs
+> attribute changing values, do we?
 
-thanks,
+Fair point. I noticed other attributes in this source file use a
+similar approach (sysfs_notify + kobject_uevent)
+and took guidance from there in an attempt to remain consistent
+(though, of course, your point still stands).
 
-greg k-h
+I'm guessing it is for processes that rely on udev events
+(subsystem=typec) rather than polling.
+
+>
+> What is preventing a normal "monitor the sysfs file" logic from working
+> here for anyone who wants to know that the alternate modes have changed?
+
+One limitation I can think of is that this sysfs file is hidden till
+it has a valid value (i.e >= 0), so a user-space process might not
+be able to poll on the file till it is visible (I suppose even then
+one could poll on the parent).
+
+Kindly disregard the patch if you reckon it is unnecessary.
+
+Best regards,
+
+-Prashant
