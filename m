@@ -2,28 +2,28 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D3FBE2EC82A
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 03:41:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 58C7E2EC82B
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 03:41:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726932AbhAGCle (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Jan 2021 21:41:34 -0500
-Received: from smtpcmd11116.aruba.it ([62.149.156.116]:52140 "EHLO
+        id S1726989AbhAGCli (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Jan 2021 21:41:38 -0500
+Received: from smtpcmd11116.aruba.it ([62.149.156.116]:48351 "EHLO
         smtpcmd11116.aruba.it" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726703AbhAGCle (ORCPT
+        with ESMTP id S1726723AbhAGClf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Jan 2021 21:41:34 -0500
+        Wed, 6 Jan 2021 21:41:35 -0500
 Received: from ubuntu.localdomain ([146.241.198.163])
         by Aruba Outgoing Smtp  with ESMTPSA
-        id xL4LkiX9OkRIKxL4OkeM1R; Thu, 07 Jan 2021 03:30:36 +0100
+        id xL4LkiX9OkRIKxL4PkeM1d; Thu, 07 Jan 2021 03:30:37 +0100
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=aruba.it; s=a1;
-        t=1609986636; bh=D5liGHuYvej/2Vs0D+XFNKOleokAhu+S68gzN0VDH9U=;
-        h=From:To:Subject:Date:MIME-Version;
-        b=hdu9yx6qP/HwdpHOlT+OFDXh85hLzsAK6PxWG2FaYWYImwwH2WPzsV6f/fvgyrL0D
-         wTVbQ320IkluX5Zb/CUGxawPt3l8GYFs4KpUpNfA42hFLC0qBjX/m+peXRFwEzhXh2
-         BHJm33fCOelKRpEm5To6YX+qz0thuQFGQJWEjoat3ZG6Ffa9Mu0ompBcYQeMpq0Mua
-         IFAbaD+lZ3+Y/tWHB1bL5ih+5n9Ei2n76HHN6prqFtmgva82GdOixH0YP3sr2w0/NJ
-         BeWzulF7GXUJV9fRz6+BMEVoPLJ+S1w4wXk18bDQrfIfMeRALWy2vi6TVuDQRqIRJ/
-         JYnSbIukC4ycA==
+        t=1609986637; bh=TsdBOWdkASmq0ug4ZNOIO/B3vCFbiRe6dDUb+k/UQ4E=;
+        h=From:To:Subject:Date:MIME-Version:Content-Type;
+        b=mBzxjfQ2sku8+pC+vRYFNCnlDuKEX6L0W8ywr4Je/g3x17XR0tttSskK7ZBp1kCq6
+         CgjVsGHs4SLLXdgjxRuBpLvVF7mQAGCyryzuH4HZ1QCMi3obxbiiAkd36l0sWSF+Hr
+         Ulc3WfKZv1/xz+aNru8Oa7ttmBievwGle9YdsVDAQhIW3fE+AQVG4spJ5cxAGYnxpJ
+         dq48yBq9Zb4ywoaZiMqbxSEdBDyErbK2HPxMu1IW2NHchjNH/POyZt/o0+hE6Kiwr1
+         YcKLSUpAWZMoPTevdbimvG13iDbR9j/995Gl1n9L05sGRoBWCGY3ny1WKqgEUR7fvk
+         ETHLZFan0AGxg==
 From:   Giulio Benetti <giulio.benetti@benettiengineering.com>
 To:     Maxime Ripard <maxime@cerno.tech>
 Cc:     Marjan Pascolo <marjan.pascolo@trexom.it>, wens@csie.org,
@@ -32,59 +32,84 @@ Cc:     Marjan Pascolo <marjan.pascolo@trexom.it>, wens@csie.org,
         dri-devel@lists.freedesktop.org,
         linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         Giulio Benetti <giulio.benetti@micronovasrl.com>
-Subject: [PATCH v2 1/2] drm/sun4i: tcon: fix inverted DCLK polarity
-Date:   Thu,  7 Jan 2021 03:30:31 +0100
-Message-Id: <20210107023032.560182-2-giulio.benetti@benettiengineering.com>
+Subject: [PATCH v2 2/2] drm/sun4i: tcon: improve DCLK polarity handling
+Date:   Thu,  7 Jan 2021 03:30:32 +0100
+Message-Id: <20210107023032.560182-3-giulio.benetti@benettiengineering.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210107023032.560182-1-giulio.benetti@benettiengineering.com>
 References: <3685133.SLcexNTYsu@kista>
  <20210107023032.560182-1-giulio.benetti@benettiengineering.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-CMAE-Envelope: MS4wfDPwNH/FgacnF1sUUyqDtIHhJPzsiAY1wJSQ4dQfBax5aRm4Zi6mwJSLaQbhE5CmjOpGqBGUngrQgHGJt0GdkgiakP6SHa4P3QKO4/VWFMK+FjxxhrCv
- +TXHBPT8FJkM9S9Mfigu6+teKRKk8UOV853vWLWc2fEVeV6moKSNRJUSB0mX0r20rqAmtMIpNY4xiug2H0HEmTnODCUPC41h2wb5FquH1gPAkwYBl7fYWht3
- rQQRUUuw+s1g0pfIvALKMbCzbwJTjtWWu+xbgcLQBvQ3kspe5mXfe1EGGIOch4y5DbFPjPeWxqscUc+giXhqlRBdv9zrhEpYOE6mY49x1Xm9fDnBeUTlWNmP
- Fnn9FbMQEu5cNSmjs43Y9CvD2WqNef8KcOUh9NikYV+7n3+fKjiTMTUYL1QOikDAtB0vpJpqk8DCN14j66gd4+b1mstREjDgfI57bns/zCkA299KW6BsZJpr
- UmNtk2nAzw8xQ2oeawoite2lq3Y1D6FJ2vlIfS+syyK4k0pQFYlZIITHVylsDH2R97VQ78XNbvv5+21NRTLtoFj90KbJgP6H4HEgHQ==
+X-CMAE-Envelope: MS4wfAiJ3v+tQqxZQm2L6MNuPUOmMXkyJgh41Q4J9f+nBGG2LDgpAgSXBGMzr/p67u+hk99UQ0KVAMFRmU2+lQK+F9LAuUjNqX725Tk2dJvTsix5pYBTFRFf
+ To80IhdgB2N9FkcNVVTJiuJdzT/hTMScgbVaJkXY2NKXERyqzRDy6Q/7s+tfpVlPiZOflTVlnGJlgiCK19eBHsV7aIUw/zEk+/ICmSx3lkxE6cWUKawo/4Eo
+ NhkbfK39gAjs8kyxhc5HwkiK06fXqu6j6mHV2qCJNwosXad3+/qscyiSh3xk7XC6zQjNRJ0591VK6S9YZWwVZ0dq4D7mW2zgNmXdcthqwuTUey8/r7sreux1
+ +hvCRL3YyrM7bGGve480+86qMVPZe1s0aYQnUwuN7ySo9jbYUgZTsJESRn5qREVS66SxM4En5p/xyIrUE3pxhcQw5J+Hvo3ebH6HyPcptyH/Jew+xeq+BT/C
+ yFhYF0nIqMkxO1xi2V4rVadpJFMN/h44qf+mPpPo97B6dE5+TX7r4RL/MewgeSCRgSxQSou+pPzr7EY8nRMgq0MNERn+qoUFsd6BEQ==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Giulio Benetti <giulio.benetti@micronovasrl.com>
 
-During commit 88bc4178568b ("drm: Use new
-DRM_BUS_FLAG_*_(DRIVE|SAMPLE)_(POS|NEG)EDGE flags") DRM_BUS_FLAG_*
-macros have been changed to avoid ambiguity but just because of this
-ambiguity previous DRM_BUS_FLAG_PIXDATA_(POS/NEG)EDGE were used meaning
-_SAMPLE_ not _DRIVE_. This lead to DLCK inversion, so let's swap DCLK
-phase to fix it.
+It turned out(Maxime suggestion) that bit 26 of SUN4I_TCON0_IO_POL_REG is
+dedicated to invert DCLK polarity and this makes thing really easier than
+before. So let's handle DCLK polarity by adding
+SUN4I_TCON0_IO_POL_DCLK_POSITIVE as bit 26 and activating according to
+bus_flags the same way is done for all the other signals.
 
-Fixes: 88bc4178568b ("drm: Use new DRM_BUS_FLAG_*_(DRIVE|SAMPLE)_(POS|NEG)EDGE flags")
+Cc: Maxime Ripard <maxime@cerno.tech>
 Signed-off-by: Giulio Benetti <giulio.benetti@micronovasrl.com>
 ---
-V1->V2:
-use Fixes: tag in commit log as suggested by Jernej
----
- drivers/gpu/drm/sun4i/sun4i_tcon.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ drivers/gpu/drm/sun4i/sun4i_tcon.c | 20 +-------------------
+ drivers/gpu/drm/sun4i/sun4i_tcon.h |  1 +
+ 2 files changed, 2 insertions(+), 19 deletions(-)
 
 diff --git a/drivers/gpu/drm/sun4i/sun4i_tcon.c b/drivers/gpu/drm/sun4i/sun4i_tcon.c
-index eaaf5d70e352..52598bb0fb0b 100644
+index 52598bb0fb0b..30171ccd87e5 100644
 --- a/drivers/gpu/drm/sun4i/sun4i_tcon.c
 +++ b/drivers/gpu/drm/sun4i/sun4i_tcon.c
-@@ -585,10 +585,10 @@ static void sun4i_tcon0_mode_set_rgb(struct sun4i_tcon *tcon,
- 	 * and DOTCLOCK drivers.
- 	 */
- 	if (info->bus_flags & DRM_BUS_FLAG_PIXDATA_DRIVE_POSEDGE)
--		clk_set_phase(tcon->dclk, 240);
-+		clk_set_phase(tcon->dclk, 0);
+@@ -569,26 +569,8 @@ static void sun4i_tcon0_mode_set_rgb(struct sun4i_tcon *tcon,
+ 	if (info->bus_flags & DRM_BUS_FLAG_DE_LOW)
+ 		val |= SUN4I_TCON0_IO_POL_DE_NEGATIVE;
  
- 	if (info->bus_flags & DRM_BUS_FLAG_PIXDATA_DRIVE_NEGEDGE)
+-	/*
+-	 * On A20 and similar SoCs, the only way to achieve Positive Edge
+-	 * (Rising Edge), is setting dclk clock phase to 2/3(240°).
+-	 * By default TCON works in Negative Edge(Falling Edge),
+-	 * this is why phase is set to 0 in that case.
+-	 * Unfortunately there's no way to logically invert dclk through
+-	 * IO_POL register.
+-	 * The only acceptable way to work, triple checked with scope,
+-	 * is using clock phase set to 0° for Negative Edge and set to 240°
+-	 * for Positive Edge.
+-	 * On A33 and similar SoCs there would be a 90° phase option,
+-	 * but it divides also dclk by 2.
+-	 * Following code is a way to avoid quirks all around TCON
+-	 * and DOTCLOCK drivers.
+-	 */
+ 	if (info->bus_flags & DRM_BUS_FLAG_PIXDATA_DRIVE_POSEDGE)
 -		clk_set_phase(tcon->dclk, 0);
-+		clk_set_phase(tcon->dclk, 240);
+-
+-	if (info->bus_flags & DRM_BUS_FLAG_PIXDATA_DRIVE_NEGEDGE)
+-		clk_set_phase(tcon->dclk, 240);
++		val |= SUN4I_TCON0_IO_POL_DCLK_POSITIVE;
  
  	regmap_update_bits(tcon->regs, SUN4I_TCON0_IO_POL_REG,
  			   SUN4I_TCON0_IO_POL_HSYNC_POSITIVE |
+diff --git a/drivers/gpu/drm/sun4i/sun4i_tcon.h b/drivers/gpu/drm/sun4i/sun4i_tcon.h
+index cfbf4e6c1679..0ce71d10a31b 100644
+--- a/drivers/gpu/drm/sun4i/sun4i_tcon.h
++++ b/drivers/gpu/drm/sun4i/sun4i_tcon.h
+@@ -113,6 +113,7 @@
+ #define SUN4I_TCON0_IO_POL_REG			0x88
+ #define SUN4I_TCON0_IO_POL_DCLK_PHASE(phase)		((phase & 3) << 28)
+ #define SUN4I_TCON0_IO_POL_DE_NEGATIVE			BIT(27)
++#define SUN4I_TCON0_IO_POL_DCLK_POSITIVE		BIT(26)
+ #define SUN4I_TCON0_IO_POL_HSYNC_POSITIVE		BIT(25)
+ #define SUN4I_TCON0_IO_POL_VSYNC_POSITIVE		BIT(24)
+ 
 -- 
 2.25.1
 
