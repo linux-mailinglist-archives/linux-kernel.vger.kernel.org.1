@@ -2,153 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 475A42ECA7B
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 07:24:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CCFA42ECA7F
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 07:26:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726505AbhAGGYX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 01:24:23 -0500
-Received: from mailout1.samsung.com ([203.254.224.24]:27075 "EHLO
-        mailout1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725900AbhAGGYW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 01:24:22 -0500
-Received: from epcas1p4.samsung.com (unknown [182.195.41.48])
-        by mailout1.samsung.com (KnoxPortal) with ESMTP id 20210107062338epoutp01e0d323fb28a81c2234973bc761d5fd49~X3whUc8v90923509235epoutp01k
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Jan 2021 06:23:38 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com 20210107062338epoutp01e0d323fb28a81c2234973bc761d5fd49~X3whUc8v90923509235epoutp01k
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1610000618;
-        bh=R4is/Ep0hJRf/2NW4TpOdp4BEDnzWEJy5TzUv5ZED2A=;
-        h=From:To:Cc:In-Reply-To:Subject:Date:References:From;
-        b=iuJoVKGWyVOXlpt9KDtR7f5H9fLPvseGfPyThnvZmrGmeH21XvNEEwLYKWqAUZcIu
-         8dp0VZ9SFDijiL5sL64wLYzV6B2TFwzLUMSxzPWd64s9tFx9tYMpjZIpDGBJjovbiX
-         BmJnuCOS0bhOp7QRCSPttTK08OW9Ab9JX6hk0fBE=
-Received: from epsnrtp2.localdomain (unknown [182.195.42.163]) by
-        epcas1p2.samsung.com (KnoxPortal) with ESMTP id
-        20210107062338epcas1p2dd7fff20df0d09ccbeb9dc5b00247a86~X3wg4jwrz1993319933epcas1p2l;
-        Thu,  7 Jan 2021 06:23:38 +0000 (GMT)
-Received: from epsmges1p1.samsung.com (unknown [182.195.40.161]) by
-        epsnrtp2.localdomain (Postfix) with ESMTP id 4DBGQK1VQ9z4x9Q7; Thu,  7 Jan
-        2021 06:23:37 +0000 (GMT)
-Received: from epcas1p1.samsung.com ( [182.195.41.45]) by
-        epsmges1p1.samsung.com (Symantec Messaging Gateway) with SMTP id
-        74.05.02418.9E8A6FF5; Thu,  7 Jan 2021 15:23:37 +0900 (KST)
-Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
-        epcas1p1.samsung.com (KnoxPortal) with ESMTPA id
-        20210107062336epcas1p1f7bb77862b7c00b818c6a24bb04a76fa~X3wfcHk6k1697116971epcas1p1Y;
-        Thu,  7 Jan 2021 06:23:36 +0000 (GMT)
-Received: from epsmgms1p2.samsung.com (unknown [182.195.42.42]) by
-        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20210107062336epsmtrp1906a12427a548ad8cd6d0590ccf351a0~X3wfbZqkr0225302253epsmtrp16;
-        Thu,  7 Jan 2021 06:23:36 +0000 (GMT)
-X-AuditID: b6c32a35-c23ff70000010972-8e-5ff6a8e9a0c5
-Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
-        epsmgms1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
-        A8.3A.08745.8E8A6FF5; Thu,  7 Jan 2021 15:23:36 +0900 (KST)
-Received: from W10PB11329 (unknown [10.253.152.129]) by epsmtip2.samsung.com
-        (KnoxPortal) with ESMTPA id
-        20210107062336epsmtip2f5d1ae94da103c2b4b84f1d97733f074~X3wfOZmuL2214722147epsmtip2j;
-        Thu,  7 Jan 2021 06:23:36 +0000 (GMT)
-From:   "Sungjong Seo" <sj1557.seo@samsung.com>
-To:     "'Hyeongseok Kim'" <hyeongseok@gmail.com>,
-        <namjae.jeon@samsung.com>
-Cc:     <linux-fsdevel@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-In-Reply-To: <20210106043945.36546-1-hyeongseok@gmail.com>
-Subject: RE: [PATCH] exfat: improve performance of exfat_free_cluster when
- using dirsync mount option
-Date:   Thu, 7 Jan 2021 15:23:36 +0900
-Message-ID: <244001d6e4bd$a18072f0$e48158d0$@samsung.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Mailer: Microsoft Outlook 15.0
-Thread-Index: AQE9l3LMTUKYLRjlfrko2bpokujgCAI4/HcfqzyDawA=
-Content-Language: ko
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrHKsWRmVeSWpSXmKPExsWy7bCmru7LFd/iDWYt57D4O/ETk8WevSdZ
-        LC7vmsNm8WN6vQOLx85Zd9k9+rasYvT4vEkugDkqxyYjNTEltUghNS85PyUzL91WyTs43jne
-        1MzAUNfQ0sJcSSEvMTfVVsnFJ0DXLTMHaJmSQlliTilQKCCxuFhJ386mKL+0JFUhI7+4xFYp
-        tSAlp8DQoECvODG3uDQvXS85P9fK0MDAyBSoMiEnY/r2y4wFD3kqftzfy9zAeIOji5GTQ0LA
-        RKL731fGLkYuDiGBHYwSNx/PZoFwPjFKXH3+nhXC+cwo8WbyCjaYlh8tt6ASuxglnt/6xwbh
-        vGSU2DXhABNIFZuArsSTGz+ZQWwRAQ+Jx03HwOLMAs4Sh2+cAotzClhJ3Dq3jh3EFhZIl2i8
-        uB5sA4uAisTqu++B6jk4eAUsJZ79zAUJ8woISpyc+YQFYoy8xPa3c5ghDlKQ2P3pKCvEKiuJ
-        n9cXskHUiEjM7mxjBrlNQuAru8TNrROgPnCRuPB/IzuELSzx6vgWKFtK4mV/G5RdL/F//lp2
-        iOYWRomHn7aBHSQhYC/x/pIFiMksoCmxfpc+RLmixM7fcxkh9vJJvPvawwpRzSvR0SYEUaIi
-        8f3DThaYTVd+XGWawKg0C8lns5B8NgvJB7MQli1gZFnFKJZaUJybnlpsWGCIHNmbGMEJUct0
-        B+PEtx/0DjEycTAeYpTgYFYS4bU49iVeiDclsbIqtSg/vqg0J7X4EKMpMKgnMkuJJucDU3Je
-        SbyhqZGxsbGFiZm5mamxkjhvksGDeCGB9MSS1OzU1ILUIpg+Jg5OqQamXBlT7yMyel1nP93y
-        /VrtmnSRZds5JsXt4p/MF6xfPmfhiuBysaoDOy6/P/q8+vCy5s6+tZsdwh4KGm19vF3FxfVE
-        KtudwLJDNqxHHW/KSppIlQOT7syaisreNwYqK8yWZZ1kdfK6w9cyf+5y470hijafA8pqQgMf
-        6f0MPd97nDcrb1W2pNPSFdWrElJ7NnlnWsXP4OQo2nCyhnfnsd5n7z++inGvsN36vPdtoNrS
-        x43nG9J+lG36vjv8Ta/efZXETKMp4m9VG/af2DhtKV9Jk0/Suer/95g+PS1r5fsmklnsq6hc
-        seiz1eZQv6L9Jek5sp9jFOMu9egJ67jpJL2YGVj+c9ZSU/lZu3/UTlViKc5INNRiLipOBADp
-        FdHwEQQAAA==
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrKLMWRmVeSWpSXmKPExsWy7bCSvO6LFd/iDS78lrP4O/ETk8WevSdZ
-        LC7vmsNm8WN6vQOLx85Zd9k9+rasYvT4vEkugDmKyyYlNSezLLVI3y6BK2P69suMBQ95Kn7c
-        38vcwHiDo4uRk0NCwETiR8st1i5GLg4hgR2MEhs/NrJ3MXIAJaQkDu7ThDCFJQ4fLoYoec4o
-        cWr7ezaQXjYBXYknN34yg9giAl4S+5tes4PYzAKuEvOfr2aDaOhmlPh3+RtYEaeAlcStc+vA
-        ioQFUiX2Pp0DNohFQEVi9d33TCDLeAUsJZ79zAUJ8woISpyc+YQFJMwsoCfRtpERYry8xPa3
-        c5ghzleQ2P3pKCvECVYSP68vZIOoEZGY3dnGPIFReBaSSbMQJs1CMmkWko4FjCyrGCVTC4pz
-        03OLDQuM8lLL9YoTc4tL89L1kvNzNzGCY0JLawfjnlUf9A4xMnEwHmKU4GBWEuG1OPYlXog3
-        JbGyKrUoP76oNCe1+BCjNAeLkjjvha6T8UIC6YklqdmpqQWpRTBZJg5OqQamuplzD7iV3t4r
-        oe+jeuSuz4LGlGcfGoS0kjat3slyYDZPSEDot6c2liKlbK9Yni+5PK9Xij+Tf+pk080+S22W
-        B3azvt1+qLZr4YSKMnMHi4/6QS4rSir42CaY7UzYZVtw35InIb7SSPmHQG3TaRnrVaovnpxa
-        yHxVUf9X9VbNJXxSXNIxqq2z0v+1NRXNjXso/+CUoKTQ3KxnzpvLlH5fLmTctCA7U3vR1k+p
-        oa+OWz//UrVkx8ZMdes6kxXFjMucrV9t+JbxiPX6mj+TwsKMgJHL1vLhg6Ao8xy5F7PX/+Bi
-        unnjZ7dzR23FZFP5mz+DTob9vyN1esttsfjtf8JTvp7Pi7CUMP0irDX9MZsSS3FGoqEWc1Fx
-        IgCitn9S+AIAAA==
-X-CMS-MailID: 20210107062336epcas1p1f7bb77862b7c00b818c6a24bb04a76fa
-X-Msg-Generator: CA
+        id S1726684AbhAGGY7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 01:24:59 -0500
+Received: from mail-db8eur05on2083.outbound.protection.outlook.com ([40.107.20.83]:15067
+        "EHLO EUR05-DB8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725862AbhAGGY6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Jan 2021 01:24:58 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ctG1chpKmGxjhAEsoT8rxVOFefKzMdSkBWacWn+uqbHWo6/PyDx1M8MN8t20TH33h/NgCO1p2Ns3WCvUCl4Q01YuqRe9n0E5n6iQ/INbfbgQTXSy7y83RbmgsQyeY14Tp2Ttu6PRn8ebQtjjGCdqz4/hX/B4qwtxwAnfxjIh7u9NNsbSjK2ftY8MK7azWnErz1mS1rVXhBuyVkVCJHZqx7HgE642h0/NGyJdpc+lylhd8qMeGswMyIJhuZdOVkOZBG0jHEFQgCSSwsp8WW/kj8ZMMSNXBJwgIAVioHLp0n0KgTQnIWfMoAy1Xtfyd6qA8fSU35gh3rwCxkywxwsfpA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=xMXeFblpQvebbUawpEFJDhXPI4fZ1VYtXXJI1mLXBLs=;
+ b=d6+eZ+Qp7q1kVii1JXtQNLnP7QZYSc0ae5h+SvHDfX8rDsumn2tyZjXXuUskD4MuqBEoXiu8qGK2SuP61718pq+yQ0/d6wBLQi6EJqXt3pC3P5ZnSqjmxGJx7MKFzGX3lpQomhhINii3z1aIO1qKI10UmzpaPvh86/gYET768qLwqcWfonsB8Had2wyZmwjd7Bp+1JRCUZQuUFY4RXlr6E/U/EINpJq5S6BO4x9tB2MsMtS+PN61xyDMOYZ3Wt+SwDa8AZ9xCyjvfBvFStwZDBQv1l4WjyhDyOC4LCec8CD6T9XsmifQos137vdWuqLJMwdOJJbzIvhmXh5cT4asqw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fi.rohmeurope.com; dmarc=pass action=none
+ header.from=fi.rohmeurope.com; dkim=pass header.d=fi.rohmeurope.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=rohmsemiconductoreurope.onmicrosoft.com;
+ s=selector1-rohmsemiconductoreurope-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=xMXeFblpQvebbUawpEFJDhXPI4fZ1VYtXXJI1mLXBLs=;
+ b=dN5StX+Fy6tJA+8jnon9GJEgy7WNfLmXucZ52SQZpnuu1TsV1BXGyCxiH695lh/QZv1q+jeU3ETFaiLFbwgJpfGPL//gjWBhqfKtlI7+iF+OUTjHs7I3RdhzP1wtvqHsWkSmRCkmtXtzlM/j2VaEUBoTRV6yvdv34OcGQLxqTbQ=
+Received: from HE1PR03MB3162.eurprd03.prod.outlook.com (2603:10a6:7:55::20) by
+ HE1PR0301MB2171.eurprd03.prod.outlook.com (2603:10a6:3:2c::27) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.3742.6; Thu, 7 Jan 2021 06:24:10 +0000
+Received: from HE1PR03MB3162.eurprd03.prod.outlook.com
+ ([fe80::6558:57bb:5293:f3d3]) by HE1PR03MB3162.eurprd03.prod.outlook.com
+ ([fe80::6558:57bb:5293:f3d3%3]) with mapi id 15.20.3721.024; Thu, 7 Jan 2021
+ 06:24:10 +0000
+From:   "Vaittinen, Matti" <Matti.Vaittinen@fi.rohmeurope.com>
+To:     linux-power <linux-power@fi.rohmeurope.com>,
+        "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>,
+        "brgl@bgdev.pl" <brgl@bgdev.pl>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linus.walleij@linaro.org" <linus.walleij@linaro.org>
+CC:     "bgolaszewski@baylibre.com" <bgolaszewski@baylibre.com>
+Subject: Re: [PATCH] gpio: bd7xxxx: use helper variable for pdev->dev
+Thread-Topic: [PATCH] gpio: bd7xxxx: use helper variable for pdev->dev
+Thread-Index: AQHW5BRTB8TkAz5qSEuDptUuYkkLf6obs0AA
+Date:   Thu, 7 Jan 2021 06:24:09 +0000
+Message-ID: <76dde1826608c737a706ed866af363a6dd5c1b4d.camel@fi.rohmeurope.com>
+References: <20210106101133.18379-1-brgl@bgdev.pl>
+In-Reply-To: <20210106101133.18379-1-brgl@bgdev.pl>
+Reply-To: "Vaittinen, Matti" <Matti.Vaittinen@fi.rohmeurope.com>
+Accept-Language: fi-FI, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+user-agent: Evolution 3.34.4 (3.34.4-1.fc31) 
+authentication-results: fi.rohmeurope.com; dkim=none (message not signed)
+ header.d=none;fi.rohmeurope.com; dmarc=none action=none
+ header.from=fi.rohmeurope.com;
+x-originating-ip: [62.78.225.252]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: b95f2c97-b90e-49ba-1044-08d8b2d4d81f
+x-ms-traffictypediagnostic: HE1PR0301MB2171:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <HE1PR0301MB2171F2D85DBA2F962C5B90D8ADAF0@HE1PR0301MB2171.eurprd03.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:6430;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 6VeLZWdtnbWzvcCgtij/RTc6D5mTEYNb/S5QlE876hgNQLJ6tltYZDWnyA3yI+FJREPUpserOSOS1Vbo/UVeqWFSqJPhIJ2Mp8+/oM3IdcDeYl35e0ivaFyjT5wMCEVWuV6WiuVVH0v77yhLbo+JS/N34Ec2LLEncnlsFayebDEmXT5doJMNlHeqPp4d8g7wJuwrN2PzAblRMrBrV22MJLDD1SfDDRnFKmu3d43uOvL3/CuYZc7NKZheftGs4AA/r3I7aKo/vEaw+ZkjhQu2O+w/+m5wiFQBXxBpX26Kh5I8PNXu4lwTcNtyEiL9TuNLbXNeOhQlICArkO6F1HP6nCtP/3JxPV04kK2Eby6kM7uWgiisJ0PgN9SNZVE+DIqbQGUT5puRtBvzRkujUKjWzg==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:HE1PR03MB3162.eurprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(366004)(396003)(376002)(136003)(39840400004)(8936002)(6486002)(8676002)(4744005)(66476007)(66556008)(66946007)(76116006)(64756008)(66446008)(2616005)(3450700001)(26005)(6506007)(6512007)(110136005)(86362001)(71200400001)(186003)(5660300002)(316002)(478600001)(4326008)(2906002);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: =?utf-8?B?eVplOXMrQ2dsYis1dEdJUERGck1vNkJIRzVIdmFydW05WE5IemQxb1hIem9y?=
+ =?utf-8?B?a1Z6UVpJNVhDaEpoTjZGVWk2WldFUllrd3dLMWVkajZDblhWVGpiNEt2dXlm?=
+ =?utf-8?B?UFMzVG5mMGxsM1NMcjJIR0hnY1VaOU9YS081TjlTTCszRHgvVnZHRFczb0RI?=
+ =?utf-8?B?Qm5XMWx3QXVXekZPMWpwMXZSaWJQQ3hycDlYUDdod0IzZUM2MEhHTTdoOU4y?=
+ =?utf-8?B?ZldQRTl1aEdEaDZUbTFNcnM1b2kwRW50U0lJRTJvbURSeG45UXZKSHJ5Uk5J?=
+ =?utf-8?B?VGExVndxRDErd21sem9MdXJnalZmWjJSU3c4Y0YrZGRlNEFibS9DWFd0cUMv?=
+ =?utf-8?B?YkpIdEoya1VzcFFiKzdKWmtrUmVNRkR0M2h2R0ZNWXpYRzRLM3RCVm00cytH?=
+ =?utf-8?B?Ky83NW5UN2Z4bUxVMStXanNtR1hRLytVNUZPc0JrbjZnQXBpSk5XWGFMTHVP?=
+ =?utf-8?B?QkkrTG9xS1JTK3k3Vnkyd3ZlWndVanJwelg1dzVpL0dqZHFIZ1p2TnZYR2sx?=
+ =?utf-8?B?UFU2dEs0T280OG9aNmIyZHhGUDByOXJsOTh3Rk9ENkRmdGt0OEsxemdoaGJp?=
+ =?utf-8?B?cTlnQnRlN2E0VXlXeUtzOTBCby9ETDZRUldpN2dRb0g1bks4bG1Wb2xyMUlr?=
+ =?utf-8?B?VHl6UW16ZExmQmQ0TkUyaGZTSExCY0dxd1dFZVFwZUxNR1M5OUtidHUwam92?=
+ =?utf-8?B?VmQveTB3aEloMUJBSjNvbDdvOG1ITjdYV055ZlpSUmpIYWdkTGlGeTBOU25H?=
+ =?utf-8?B?VHpOVW9iWTBvUTFZdW1ROW9XVklzajUrZHNndFlGRERnVXFYenRjZ1VqakxD?=
+ =?utf-8?B?ZStiZDNzWE85cUhmY1cyRGd0eGR3MVBuWWJjaTFSb2FUaE9kdm9yNjkzenFM?=
+ =?utf-8?B?a3Q2TGxFamV6T2RpOGNUbVBKMXhadDFqMnFHVzhjVG9kMTM3SHBpU1FTV2NH?=
+ =?utf-8?B?cUppQW43TnI0dmhVZlVLbHp2Sy9nT3JQbjExejNwbEt4ZFZIZUhPcGdHT2RS?=
+ =?utf-8?B?bStSOGZlZFdwOHlod2t3WUdKSk9GSmZqajhrd1lrOFB4WE40SkIvam0zQ203?=
+ =?utf-8?B?ellxeXRvL09nZ2dsOGg1SXVNcFY5dUVvemlhMkJySkJURXRqcXpBZmgrQmNJ?=
+ =?utf-8?B?bGtqUkozMDJvZVdkMFlIWXNPZnRjQmRud3lLWHQ0UWJBNGxXUldtd29Yc3hK?=
+ =?utf-8?B?amh2RFd1Y2Z2K0NLMVpKczFSSzkwTEViTDFlZFR1eDZ3bGZpWnB1aTVpVDZX?=
+ =?utf-8?B?TEw2OTdDQm1vYWhsOFNkZFhBTlM4K2YxaEY3bjMzVU9QYWlsY3ZQQmdRZVNQ?=
+ =?utf-8?Q?l8zpP1g/Av7vQwoj/5RPHJUdEZTb3EG97v?=
 Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: SVC_REQ_APPROVE
-CMS-TYPE: 101P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20210106044038epcas1p2d3488531b0a63c122f7401d4d56b03a8
-References: <CGME20210106044038epcas1p2d3488531b0a63c122f7401d4d56b03a8@epcas1p2.samsung.com>
-        <20210106043945.36546-1-hyeongseok@gmail.com>
+Content-ID: <28C736EA33448C4BAA40ABAD54627365@eurprd03.prod.outlook.com>
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+X-OriginatorOrg: fi.rohmeurope.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: HE1PR03MB3162.eurprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: b95f2c97-b90e-49ba-1044-08d8b2d4d81f
+X-MS-Exchange-CrossTenant-originalarrivaltime: 07 Jan 2021 06:24:10.0401
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 94f2c475-a538-4112-b5dd-63f17273d67a
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: GNF9tj6tSPulzBSNadb0zvAcvxnPe6g9EUjhXnWrIvOdr7LM2ePRXuvK8xlDl/amit3PI2s1VwXL0TM9/d6U67Zl6JD1hgXRXFa2Mq86FtDiiY0QJbvsxePhV+0DXJeX
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: HE1PR0301MB2171
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> There are stressful update of cluster allocation bitmap when using dirsync
-> mount option which is doing sync buffer on every cluster bit clearing.
-> This could result in performance degradation when deleting big size file.
-> Fix to update only when the bitmap buffer index is changed would make less
-> disk access, improving performance especially for truncate operation.
-> 
-> Testing with Samsung 256GB sdcard, mounted with dirsync option (mount -t
-> exfat /dev/block/mmcblk0p1 /temp/mount -o dirsync)
-> 
-> Remove 4GB file, blktrace result.
-> [Before] : 39 secs.
-> Total (blktrace):
->  Reads Queued:      0,        0KiB	 Writes Queued:      32775,
-16387KiB
->  Read Dispatches:   0,        0KiB	 Write Dispatches:   32775,
-16387KiB
->  Reads Requeued:    0		         Writes Requeued:        0
->  Reads Completed:   0,        0KiB	 Writes Completed:   32775,
-16387KiB
->  Read Merges:       0,        0KiB	 Write Merges:           0,
-0KiB
->  IO unplugs:        2        	     Timer unplugs:          0
-> 
-> [After] : 1 sec.
-> Total (blktrace):
->  Reads Queued:      0,        0KiB	 Writes Queued:         13,
-6KiB
->  Read Dispatches:   0,        0KiB	 Write Dispatches:      13,
-6KiB
->  Reads Requeued:    0		         Writes Requeued:        0
->  Reads Completed:   0,        0KiB	 Writes Completed:      13,
-6KiB
->  Read Merges:       0,        0KiB	 Write Merges:           0,
-0KiB
->  IO unplugs:        1        	     Timer unplugs:          0
-> 
-> Signed-off-by: Hyeongseok Kim <hyeongseok@gmail.com>
-
-Looks good.
-Thanks for your work!
-
-Acked-by: Sungjong Seo <sj1557.seo@samsung.com>
-
+VGhhbmtzIGZvciBtYWtpbmcgdGhpcyBiZXR0ZXIgOikNCg0KT24gV2VkLCAyMDIxLTAxLTA2IGF0
+IDExOjExICswMTAwLCBCYXJ0b3N6IEdvbGFzemV3c2tpIHdyb3RlOg0KPiBGcm9tOiBCYXJ0b3N6
+IEdvbGFzemV3c2tpIDxiZ29sYXN6ZXdza2lAYmF5bGlicmUuY29tPg0KPiANCj4gVXNpbmcgYSBo
+ZWxwZXIgbG9jYWwgdmFyaWFibGUgdG8gc3RvcmUgdGhlIGFkZHJlc3Mgb2YgJnBkZXYtPmRldiBh
+ZGRzDQo+IHRvIHJlYWRhYmlsaXR5IGFuZCBhbGxvd3MgdXMgdG8gYXZvaWQgdW5uZWNlc3Nhcnkg
+bGluZSBicmVha3MuDQo+IA0KPiBTaWduZWQtb2ZmLWJ5OiBCYXJ0b3N6IEdvbGFzemV3c2tpIDxi
+Z29sYXN6ZXdza2lAYmF5bGlicmUuY29tPg0KDQpSZXZpZXdlZC1ieTogTWF0dGkgVmFpdHRpbmVu
+IDxtYXR0aS52YWl0dGluZW5AZmkucm9obWV1cm9wZS5jb20+DQoNCg==
