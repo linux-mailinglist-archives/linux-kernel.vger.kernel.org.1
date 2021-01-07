@@ -2,154 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF0F62ED675
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 19:14:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 852072ED67D
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 19:16:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728231AbhAGSOi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 13:14:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35082 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727453AbhAGSOh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 13:14:37 -0500
-Received: from mail-io1-xd34.google.com (mail-io1-xd34.google.com [IPv6:2607:f8b0:4864:20::d34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 544A9C0612F6
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Jan 2021 10:13:57 -0800 (PST)
-Received: by mail-io1-xd34.google.com with SMTP id 81so7005343ioc.13
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Jan 2021 10:13:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=4v8W1olKibG+tkPSMxEvl9d5W+gvZovag0o/cdLJrG8=;
-        b=GCZA18IFXtiLsrpExdF4OWY6T3YUFQsZQ0pI5hzSxRum2HZd5PjWVTvB09K9noe0Sm
-         BDhb9/uNnsbErjeHpM/01JnESAsx2DWuVa4okzgHHTXiwk07GC/T0msMzWGR1glQKeVI
-         6iiPvOODQgMLzeUr6ixevqw7B98U4r6at747k=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=4v8W1olKibG+tkPSMxEvl9d5W+gvZovag0o/cdLJrG8=;
-        b=X6fV/GI+QXSKOBiehiaiPOJwvaI8GMxvs9JNvIs3XIZKdB7aTaN8I6haTrI4NEn2Fn
-         LKSqKZFxREQKfNkb+fPib/QSDoL/y3rxHjwe72UWM53zVXxZl7RSpebEhdUfAsNGz6Af
-         fQjCsInfxZls+5LoSo/+jH7CF3f27GnwUz8Wj2F+Bp4emU6TMsJ7CTn8IUcqJ97lNAyK
-         zBklWxT3+q9b1xO8MpedxF9ujLcjUmNKbYO6U3mozPXirNSAC6CoXu/iDDogSvfBz5Zg
-         asYtGcnGYDc3bP9t8w/VRMF7yJmjN4KMMLVHo399aZjowK0Tm8+vEevfvdsdAGmD70D/
-         zQsg==
-X-Gm-Message-State: AOAM533P7CH2OZcZPhQ+S7oTc9HFOLSoEq0Bydlk4ZT5oScu7FB7+4bg
-        xBUi4PpvkHbJ/56/q7pkn0uz9w==
-X-Google-Smtp-Source: ABdhPJydhQwgn1+aYSgV7WO5YZh9CjoWBndCSExiuxXNuitgYW+BkQs5Z5XIm6//UBosU4iI41llDg==
-X-Received: by 2002:a05:6602:59e:: with SMTP id v30mr2204902iox.37.1610043236697;
-        Thu, 07 Jan 2021 10:13:56 -0800 (PST)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id o7sm3502364iop.51.2021.01.07.10.13.55
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 07 Jan 2021 10:13:56 -0800 (PST)
-Subject: Re: [PATCH] kunit: tool: Force the use of the 'tty' console for UML
-To:     Petr Mladek <pmladek@suse.com>, David Gow <davidgow@google.com>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Brendan Higgins <brendanhiggins@google.com>,
-        Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        KUnit Development <kunit-dev@googlegroups.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Shuah Khan <skhan@linuxfoundation.org>
-References: <20201222073900.3490607-1-davidgow@google.com>
- <20201222111102.GC4077@smile.fi.intel.com>
- <4ae7779c-15c5-0474-5840-44531dcf1d94@linuxfoundation.org>
- <X/SSJQ+I5zEMaYYJ@alley>
- <3828c7ee-52b0-42f9-5771-74ef9386756c@linuxfoundation.org>
- <20210105185731.GT4077@smile.fi.intel.com>
- <918b2d05-f51b-0866-89b3-19a016abdaa3@linuxfoundation.org>
- <CABVgOS=DZjv4-68fEweZwB1-=KB7Tb71iQEfHKHt46OTVWC94w@mail.gmail.com>
- <X/c8jQMyXbsJf85M@alley>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <578de82c-5119-78e4-4497-c8a8d642388d@linuxfoundation.org>
-Date:   Thu, 7 Jan 2021 11:13:54 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+        id S1729019AbhAGSPD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 13:15:03 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35300 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726073AbhAGSPC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Jan 2021 13:15:02 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6E3A723370;
+        Thu,  7 Jan 2021 18:14:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1610043262;
+        bh=/MSHsglIZApAzg6qbqUiSyTvVDKCfmIDw61iXbf+eFQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Gy7+A3tQLG/rL1UITFTM/OPgcLaxU5kxFTvdkt55Z852aRGwzDd6nHHm8v/LDjDYG
+         C87mxApN9s3kSyhSWpUxeRlZBLQ+qHycoQ6I0UTqZRNMQr4xFD9VWLGF5buO/qCFzN
+         /rtWCqvZ0xHf7YTwlSeZPKmrMwY8mD4FtG1YsFI/aQMSy6IoMbTgdEM6kDfkgPS9su
+         nmSh3kbkqjA1mig6QwvjfkfLZ0VEIiXdw8AoUAXdcjUQ5xyqeZAm+JIB0wL0NLW5Un
+         jdNC7cx1iOR3CZr4SPHXqvC2Y3ADLCEoU3095X5WnNfOxqyOQ0wBSDByha5/z2af7h
+         OUDIzcCn2RXVA==
+Date:   Thu, 7 Jan 2021 18:14:17 +0000
+From:   Will Deacon <will@kernel.org>
+To:     Jeremy Linton <jeremy.linton@arm.com>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-pci@vger.kernel.org,
+        lorenzo.pieralisi@arm.com, bhelgaas@google.com,
+        catalin.marinas@arm.com, robh@kernel.org, sudeep.holla@arm.com,
+        mark.rutland@arm.com, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] arm64: PCI: Enable SMC conduit
+Message-ID: <20210107181416.GA3536@willie-the-truck>
+References: <20210105045735.1709825-1-jeremy.linton@arm.com>
 MIME-Version: 1.0
-In-Reply-To: <X/c8jQMyXbsJf85M@alley>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210105045735.1709825-1-jeremy.linton@arm.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 1/7/21 9:53 AM, Petr Mladek wrote:
-> On Wed 2021-01-06 12:29:12, David Gow wrote:
->> On Wed, Jan 6, 2021 at 3:52 AM Shuah Khan <skhan@linuxfoundation.org> wrote:
->>>
->>> On 1/5/21 11:57 AM, Andy Shevchenko wrote:
->>>> On Tue, Jan 05, 2021 at 09:34:33AM -0700, Shuah Khan wrote:
->>>>> On 1/5/21 9:21 AM, Petr Mladek wrote:
->>>>>> On Mon 2021-01-04 09:23:57, Shuah Khan wrote:
->>>>>>> On 12/22/20 4:11 AM, Andy Shevchenko wrote:
->>>>>>>> On Mon, Dec 21, 2020 at 11:39:00PM -0800, David Gow wrote:
->>>>>>>>> kunit_tool relies on the UML console outputting printk() output to the
->>>>>>>>> tty in order to get results. Since the default console driver could
->>>>>>>>> change, pass 'console=tty' to the kernel.
->>>>>>>>>
->>>>>>>>> This is triggered by a change[1] to use ttynull as a fallback console
->>>>>>>>> driver which -- by chance or by design -- seems to have changed the
->>>>>>>>> default console output on UML, breaking kunit_tool. While this may be
->>>>>>>>> fixed, we should be less fragile to such changes in the default.
->>>>>>>>>
->>>>>>>>> [1]:
->>>>>>>>> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=757055ae8dedf5333af17b3b5b4b70ba9bc9da4e
->>>>>>>>
->>>>>>>> Reported-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
->>>>>>>> Tested-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
->>>>>>>>
->>>>>>>
->>>>>>> Thank you all. Now in linux-kselftest kunit-fixes branch.
->>>>>>>
->>>>>>> Will send this up for rc3.
->>>>>>>
->>>>>>> Sorry for the delay - have been away from the keyboard for a
->>>>>>> bit.
->>>>>>
->>>>>> JFYI, I am not sure that this is the right solution. I am
->>>>>> looking into it, see
->>>>>> https://lore.kernel.org/linux-kselftest/X%2FSRA1P8t+ONZFKb@alley/
->>>>>> for more details.
->>>>>>
->>>>>
->>>>> Thanks Petr. I will hold off on sending the patch up to Linus and
->>>>> let you find a the right solution.
->>>>
->>>> Please. leave it in Linux Next at least. Otherwise kunit will be broken for a
->>>> long time which is not good.
->>>>
->>>>
->>>
->>> Yes. That is the plan. It will be in there until real fix comes in.
+On Mon, Jan 04, 2021 at 10:57:35PM -0600, Jeremy Linton wrote:
+> Given that most arm64 platform's PCI implementations needs quirks
+> to deal with problematic config accesses, this is a good place to
+> apply a firmware abstraction. The ARM PCI SMMCCC spec details a
+> standard SMC conduit designed to provide a simple PCI config
+> accessor. This specification enhances the existing ACPI/PCI
+> abstraction and expects power, config, etc functionality is handled
+> by the platform. It also is very explicit that the resulting config
+> space registers must behave as is specified by the pci specification.
 > 
-> The real fix would be too complicated for 5.11-rc3. Instead, I
-> proposed to revert the problematic commit, see
-> https://lore.kernel.org/lkml/20210107164400.17904-2-pmladek@suse.com/
-> I would like to push it for 5.11-rc3.
+> Lets hook the normal ACPI/PCI config path, and when we detect
+> missing MADT data, attempt to probe the SMC conduit. If the conduit
+> exists and responds for the requested segment number (provided by the
+> ACPI namespace) attach a custom pci_ecam_ops which redirects
+> all config read/write requests to the firmware.
 > 
->> Personally, I think that this patch makes some sense to keep even if
->> the underlying issue with ttynull is resolved. Given that kunit.py
->> requires the console output, explicitly stating we want console=tty
->> set is probably worth doing rather than relying on it being the
->> default.
-> 
-> I agree that the patch makes sense on its own. kunit depends on the
-> particular console. Note that "tty" is actually the UML-specific
-> stdio console implemented in arch/um/drivers/stdio_console.c.
-> 
+> This patch is based on the Arm PCI Config space access document @
+> https://developer.arm.com/documentation/den0115/latest
 
-The proposal sounds like revert the problem commit 
-https://lore.kernel.org/lkml/20210107164400.17904-2-pmladek@suse.com/
+Why does firmware need to be involved with this at all? Can't we just
+quirk Linux when these broken designs show up in production? We'll need
+to modify Linux _anyway_ when the firmware interface isn't implemented
+correctly...
 
-and also send kunit fix up. Sounds reasonable to me. I will send
-it for 5.11-rc3
-
-thanks,
--- Shuah
+Will
