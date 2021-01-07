@@ -2,108 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4172F2EE6F7
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 21:33:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 899442EE702
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 21:36:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727197AbhAGUdL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 15:33:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56756 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726073AbhAGUdL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 15:33:11 -0500
-Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA3B8C0612F4
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Jan 2021 12:32:30 -0800 (PST)
-Received: by mail-lf1-x136.google.com with SMTP id o13so17746163lfr.3
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Jan 2021 12:32:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=exdNoEK6aNVTIIvwBb552yhewWQizCMJvF9WzrX9jnw=;
-        b=D2InA4ogLKOyCTV7NlZA4RiumoSXVMs9ntzahvPQMp4OQpQM96X0jajm3v+5LBd+6V
-         dcoiw9TSyMMWbMbJAdUzTtk46W7QnhZWTW8BEnO7/8+YZfyERLDEnVshc67mBo+/e9h5
-         irxASrqJdCjrw7OvErf1/1EFk61vrF1uPi45Q=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=exdNoEK6aNVTIIvwBb552yhewWQizCMJvF9WzrX9jnw=;
-        b=JNQFV8i0LQ7ARJJDdSy+KkZ3ZilUiID9pkYIrqDvHdKa/eOdnUry0C++k86LlrB6Vv
-         qmpvllAU3U6NQxxe2/Sgs9oqUmUxquXho+XCxV4/AD075YlhTj+R3uJIZUw4Ck8lsOVj
-         xigv/KlLLi1eiOaxizYC51F0KTFQqOmC6D/b+WoRPvswB27HECHUA+wcNxYz5f8y+28B
-         eAXLN1H/pS6MQXjLGSSsARiiVvrRG5xnz38UY0RA5GVo7uvaxdCypz7x26tWRnccWjVj
-         lsuFmtFM2A+cFFwAob46vYHT7OeGcMSj35Buca9ekpmGDIsRFnjSb3aC4Dw41QoNT04N
-         eW2Q==
-X-Gm-Message-State: AOAM530V/GuuLLPp8Uwuv5ggnU0cMWqEVN/D1eMrtbLc4OWA58ERU6uR
-        KFZB6z8MlylW8Zp7xBWctdkbSvgD3OFxvA==
-X-Google-Smtp-Source: ABdhPJxI+YFRh8b3iKJoy5fxXvK0eiY5SCfAo7qjDD1Gqa9R4z2q9+XyL60DyhgA0czrx0eLGoWZRw==
-X-Received: by 2002:a19:7ec9:: with SMTP id z192mr248483lfc.50.1610051547936;
-        Thu, 07 Jan 2021 12:32:27 -0800 (PST)
-Received: from mail-lf1-f44.google.com (mail-lf1-f44.google.com. [209.85.167.44])
-        by smtp.gmail.com with ESMTPSA id j12sm1394049lfc.99.2021.01.07.12.32.26
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 07 Jan 2021 12:32:26 -0800 (PST)
-Received: by mail-lf1-f44.google.com with SMTP id m12so17689397lfo.7
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Jan 2021 12:32:26 -0800 (PST)
-X-Received: by 2002:ac2:4987:: with SMTP id f7mr194200lfl.41.1610051545800;
- Thu, 07 Jan 2021 12:32:25 -0800 (PST)
+        id S1726792AbhAGUgZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 15:36:25 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56510 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725944AbhAGUgY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Jan 2021 15:36:24 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 916D723447;
+        Thu,  7 Jan 2021 20:35:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1610051743;
+        bh=po85gdl4mbGgQ3zoAKeD43WPxXK5RT1mSTU3OKiNhVs=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=NVRc3ombNUhTsi7VIIbCgBTp1kgiAL1Ji/eNtcLjti6qYZY+t+QEoPGIH1xW4UdJ9
+         25QMgWFqBBAEx6d/Y27Y/Y6n/dwK1ent3pAwLqei9u1HrkCKZv785sqYUepu0/vkta
+         69GFvDk9iuqliL0u4s0XeULeOBJttxi40nVtmrGJ8DHrRUn/GB19V6WRf9oOkoqJhk
+         Ru+YV6Ypu3rwuv+DRNGTLYkL0D1bowS1u/yZVTRFxaLAv1oaG2mXYeg1/iKrtN2zBc
+         Dg9fkEmcQxixmbkCE1hSpcfHPXGK4Z48lpY5eONeAmtM4aPcaNxC9/QArsz6V9EF42
+         retcQ/wii/u3A==
+Received: by mail-ej1-f43.google.com with SMTP id t16so11433697ejf.13;
+        Thu, 07 Jan 2021 12:35:43 -0800 (PST)
+X-Gm-Message-State: AOAM533J5B0sDqWMwHaYWr1ugRTL5MI4a9+747DpnWKcBQw+OaTpTKDZ
+        beTyP7xBmaYpTkuvCsgrJNM2dh2UtaVCQEmSYA==
+X-Google-Smtp-Source: ABdhPJxkDPWtQ0xY3VDDd1hdruQ8+H5GEjOzabJ81Rv/cCTbHLoq+vApHQul7qsNmbmUkHWACC7bpPpeUJc3TjZuEfs=
+X-Received: by 2002:a17:907:2111:: with SMTP id qn17mr370152ejb.525.1610051742082;
+ Thu, 07 Jan 2021 12:35:42 -0800 (PST)
 MIME-Version: 1.0
-References: <B1B85771-B211-4FCC-AEEF-BDFD37332C25@vmware.com>
- <20210107200402.31095-1-aarcange@redhat.com> <20210107202525.GD504133@ziepe.ca>
-In-Reply-To: <20210107202525.GD504133@ziepe.ca>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Thu, 7 Jan 2021 12:32:09 -0800
-X-Gmail-Original-Message-ID: <CAHk-=wjTuS9JB=Ms4WAMaOkGuLmvYwaf2W0JhXxNPdcv4NWZUA@mail.gmail.com>
-Message-ID: <CAHk-=wjTuS9JB=Ms4WAMaOkGuLmvYwaf2W0JhXxNPdcv4NWZUA@mail.gmail.com>
-Subject: Re: [PATCH 0/2] page_count can't be used to decide when wp_page_copy
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     Andrea Arcangeli <aarcange@redhat.com>,
-        Linux-MM <linux-mm@kvack.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Yu Zhao <yuzhao@google.com>, Andy Lutomirski <luto@kernel.org>,
-        Peter Xu <peterx@redhat.com>,
-        Pavel Emelyanov <xemul@openvz.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Mike Rapoport <rppt@linux.vnet.ibm.com>,
-        Minchan Kim <minchan@kernel.org>,
+References: <20210105045735.1709825-1-jeremy.linton@arm.com>
+ <CAL_JsqL2ZXrTg9VFwGK4CawvyBbnHehF9W=cgVEJPzCRoM5G9g@mail.gmail.com>
+ <bdd563a9-c8d4-307b-617c-139dda3e4984@arm.com> <CAL_Jsq+OUX2ctFwiqcQtM=oswyz8s-iq94eHW247sabYYF5B-A@mail.gmail.com>
+ <5d4f85a4-248b-b62e-f976-63c6214bf588@arm.com>
+In-Reply-To: <5d4f85a4-248b-b62e-f976-63c6214bf588@arm.com>
+From:   Rob Herring <robh@kernel.org>
+Date:   Thu, 7 Jan 2021 13:35:30 -0700
+X-Gmail-Original-Message-ID: <CAL_JsqK6eqAJBmC2Txb3GGaRt+_GL2kdSv1m1tCyx1KBheze_w@mail.gmail.com>
+Message-ID: <CAL_JsqK6eqAJBmC2Txb3GGaRt+_GL2kdSv1m1tCyx1KBheze_w@mail.gmail.com>
+Subject: Re: [PATCH] arm64: PCI: Enable SMC conduit
+To:     Jeremy Linton <jeremy.linton@arm.com>
+Cc:     linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        PCI <linux-pci@vger.kernel.org>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
         Will Deacon <will@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Hugh Dickins <hughd@google.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Oleg Nesterov <oleg@redhat.com>, Jann Horn <jannh@google.com>,
-        Kees Cook <keescook@chromium.org>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Leon Romanovsky <leonro@nvidia.com>, Jan Kara <jack@suse.cz>,
-        Kirill Tkhai <ktkhai@virtuozzo.com>
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 7, 2021 at 12:25 PM Jason Gunthorpe <jgg@ziepe.ca> wrote:
+On Thu, Jan 7, 2021 at 12:45 PM Jeremy Linton <jeremy.linton@arm.com> wrote=
+:
 >
-> Lots of places are relying on pin_user_pages long term pins of memory,
-> and cannot be converted to notifiers.
+> Hi,
 >
-> I don't think it is reasonable to just declare that insecure and
-> requires privileges, it is a huge ABI break.
+> On 1/7/21 11:36 AM, Rob Herring wrote:
+> > On Thu, Jan 7, 2021 at 9:24 AM Jeremy Linton <jeremy.linton@arm.com> wr=
+ote:
+> >>
+> >> Hi,
+> >>
+> >>
+> >> On 1/7/21 9:28 AM, Rob Herring wrote:
+> >>> On Mon, Jan 4, 2021 at 9:57 PM Jeremy Linton <jeremy.linton@arm.com> =
+wrote:
+> >>>>
+> >>>> Given that most arm64 platform's PCI implementations needs quirks
+> >>>> to deal with problematic config accesses, this is a good place to
+> >>>> apply a firmware abstraction. The ARM PCI SMMCCC spec details a
+> >>>> standard SMC conduit designed to provide a simple PCI config
+> >>>> accessor. This specification enhances the existing ACPI/PCI
+> >>>> abstraction and expects power, config, etc functionality is handled
+>
+> (trimming)
+>
+> >>>>
+> >>>> +static int smccc_pcie_check_conduit(u16 seg)
+> >>>
+> >>> check what? Based on how you use this, perhaps _has_conduit() instead=
+.
+> >>
+> >> Sure.
+> >>
+> >>>
+> >>>> +{
+> >>>> +       struct arm_smccc_res res;
+> >>>> +
+> >>>> +       if (arm_smccc_1_1_get_conduit() =3D=3D SMCCC_CONDUIT_NONE)
+> >>>> +               return -EOPNOTSUPP;
+> >>>> +
+> >>>> +       arm_smccc_smc(SMCCC_PCI_VERSION, 0, 0, 0, 0, 0, 0, 0, &res);
+> >>>> +       if ((int)res.a0 < 0)
+> >>>> +               return -EOPNOTSUPP;
+> >>>> +
+> >>>> +       arm_smccc_smc(SMCCC_PCI_SEG_INFO, seg, 0, 0, 0, 0, 0, 0, &re=
+s);
+> >>>> +       if ((int)res.a0 < 0)
+> >>>> +               return -EOPNOTSUPP;
+> >>>
+> >>> Don't you need to check that read and write functions are supported?
+> >>
+> >> In theory no, the first version of the specification makes them
+> >> mandatory for all implementations. There isn't a partial access method=
+,
+> >> so nothing works if only read or write were implemented.
+> >
+> > Then the spec should change:
+> >
+> > 2.3.3 Caller responsibilities
+> > The caller has the following responsibilities:
+> > =E2=80=A2 The caller must ensure that this function is implemented befo=
+re
+> > issuing a call. This function is discoverable
+> > by calling PCI_FEATURES with pci_func_id set to 0x8400_0132.
+> >
+> >
+> > I guess knowing the version is ensuring, but the 2nd sentence makes it
+> > seem that is how one should ensure.
+>
+> Ok, yes i understand, I will add the check.
+>
+> >
+> > Related, are there any sort of tests for the interface? I generally
+> > don't think the kernel's job is validating firmware (a frequent topic
+> > for DT), but we should have something. Maybe an SMC unittest module?
+> > If nothing else, seems like we should have at least one PCI_FEATURES
+> > call to make sure it works. We don't want to add it later only to find
+> > that it breaks on some firmware implementations. Though we can just
+> > add firmware quirks. ;)
+>
+> I'm not aware of any unit tests at the moment. My testing so far has
+> been against these patches:
+> https://review.trustedfirmware.org/q/topic:"Arm_PCI_Config_Space_Interfac=
+e"
+>
+> But given the next version does the PCI_FEATURES calls, that will
+> satisfy your concern, right?
 
-Also, I think GUP (and pin_user_pages() as a special case) is a lot
-more important and more commonly used than UFFD.
+Somewhat, but that doesn't replace the need for unittests. We have
+PSCI checker, maybe the same thing should be required here. Otherwise,
+implementations will only be as good as what Linux currently expects.
 
-Which is really why I think this needs to be fixed by just fixing UFFD
-to take the write lock.
-
-I think Andrea is blinded by his own love for UFFDIO: when I do a
-debian codesearch for UFFDIO_WRITEPROTECT, all it finds is the kernel
-and strace (and the qemu copies of the kernel headers).
-
-Does the debian code search cover everything? Obviously not. But if
-you cannot find A SINGLE USE of that thing in the Debian code search,
-then that is sure a sign of _something_.
-
-            Linus
+Rob
