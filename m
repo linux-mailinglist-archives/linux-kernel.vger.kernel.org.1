@@ -2,111 +2,236 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 071412EE9A7
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 00:14:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B18412EE9A6
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 00:14:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728324AbhAGXOH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 18:14:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53996 "EHLO
+        id S1728844AbhAGXO1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 18:14:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54050 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725944AbhAGXOG (ORCPT
+        with ESMTP id S1725944AbhAGXO0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 18:14:06 -0500
-Received: from mout-p-201.mailbox.org (mout-p-201.mailbox.org [IPv6:2001:67c:2050::465:201])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8860BC0612F4;
-        Thu,  7 Jan 2021 15:13:26 -0800 (PST)
-Received: from smtp1.mailbox.org (smtp1.mailbox.org [IPv6:2001:67c:2050:105:465:1:1:0])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mout-p-201.mailbox.org (Postfix) with ESMTPS id 4DBhpy0bPXzQjkp;
-        Fri,  8 Jan 2021 00:12:58 +0100 (CET)
-X-Virus-Scanned: amavisd-new at heinlein-support.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hauke-m.de; s=MBO0001;
-        t=1610061174;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=d1Fq6KxGLHplkkxd0vbq2wU9v0Nhdb37sYwiuaI4yJk=;
-        b=V/gvRFxz7swGJ6D2ePbo8B3HYAygZwc/aaREj8U1jiGizX+upWi6Ni1o2CyZlJRQTufKfh
-        HoFATmdJVfmHRmbAarKFH4PmPSXEg4aDBaZfAROlPC6s7gnnFx/qEiXRRRkoRrNmah1vvE
-        iawzv1Py15vZFFOl16r7VzlNciWqphYOU31uQ8XeGqumyNCj8X0lSx7J6Igh2Q59QlTgAx
-        r+yFvBdHJOmQSQgEK/0x/D6jUVjkt1yK7bhUHuTHjIjlQUx949WHrgk9SlA0i0msYd6bvs
-        myJbFgwL/ncafEAGn4l6csMoDzqgWDGZdZfI58yYo8eyObEdyQhxxwltZrLAzw==
-Received: from smtp1.mailbox.org ([80.241.60.240])
-        by gerste.heinlein-support.de (gerste.heinlein-support.de [91.198.250.173]) (amavisd-new, port 10030)
-        with ESMTP id 0DG01k1dgDeq; Fri,  8 Jan 2021 00:12:52 +0100 (CET)
-Subject: Re: [PATCH] phy: lantiq: rcu-usb2: wait after clock enable
-To:     Mathias Kresin <dev@kresin.me>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        linux-kernel@vger.kernel.org
-Cc:     Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-        stable@vger.kernel.org
-References: <20210107224901.2102479-1-dev@kresin.me>
-From:   Hauke Mehrtens <hauke@hauke-m.de>
-Message-ID: <c82d382e-d918-0a01-d973-88496e6d8ba0@hauke-m.de>
-Date:   Fri, 8 Jan 2021 00:12:51 +0100
+        Thu, 7 Jan 2021 18:14:26 -0500
+Received: from mail-yb1-xb35.google.com (mail-yb1-xb35.google.com [IPv6:2607:f8b0:4864:20::b35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FFF8C0612F6
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Jan 2021 15:13:46 -0800 (PST)
+Received: by mail-yb1-xb35.google.com with SMTP id k78so7652263ybf.12
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Jan 2021 15:13:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Ma8dmHfcNup9f2l6KiI5aUKrS0zBSPZz4JeC2fHhEeg=;
+        b=dDB7m+6M5qRLNvBOVXpbKeRt4krh9Ey+Ax1NsJ02ZAiFTN5zcObWAiHNQtoIDP3k0h
+         QB+VsvGJr2/HqE7IEH7iBn9ES3r2EtncS3YhenGDA0RVepWqw2xylEt7wAAk+kQmnRsL
+         oJfjsMzwHWXpnej/WSiW6gmf6vwckM5TbaTQSZh4U5V10U9hw+MXxzi8OgkAs50UCqjG
+         2oqBFTJX1h0EgPbXnHrsXK6F741vMlq2zjHxCUxSSO0F7ml8WqN9+SJqDpCvumb/nAOG
+         9FhVNULHc+XE8z9J8E27PBxbUR+x7OZdXcgCRSb+1qZdSBHWoDE1cs5zM8pGjCUQaLul
+         2p+Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Ma8dmHfcNup9f2l6KiI5aUKrS0zBSPZz4JeC2fHhEeg=;
+        b=GrxnJqtpRtm6sRo2RaY0nQJVquLqWpYc8QpZk/175hYbmuSJ7UItk8ySI6I2/vm/op
+         E3kXVRPmehjung/MUp+9k/Wwc+Rj3qgXKgR1nYluAswBScTNOs0alrJP1nJzfn4UvF7L
+         9+gtVyTdEKbuC2zjc9kbuOIFZpR52oE4YIvDI5N/c1maD+6mylrXqusr2aC5+i2STA76
+         6ffdHHD4w44WtUXi0+9zIJpg5W9td4CmEtsB7p6ZIhfLDo2P4L78Hl1OP6m7CxWS1+dE
+         ItPhGUGWq/E6WC36eGhempjQW9KVRSJgdX3dgqhsX1OiXK21X5XAiZMlHQZ634/jrkSx
+         /PDA==
+X-Gm-Message-State: AOAM530LhGyx8aTaLhVVB0LvCZICKDEgEzHZYczsLSOUa24AHdayjIEq
+        Ra8vv/95Xa+UpJGS0eZCtUR/yatnWxobRiQFXxuSsg==
+X-Google-Smtp-Source: ABdhPJzQxkg9rjd5HmkGmFUmyyb8YFizrn/9J62upZOBfX65Ww5bdLnFf9DQbUWCgPIE5PG3FRJYii+nHiCyxKY07hA=
+X-Received: by 2002:a25:4f55:: with SMTP id d82mr1751139ybb.466.1610061225334;
+ Thu, 07 Jan 2021 15:13:45 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20210107224901.2102479-1-dev@kresin.me>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-MBO-SPAM-Probability: 
-X-Rspamd-Score: -4.91 / 15.00 / 15.00
-X-Rspamd-Queue-Id: 1541B1847
-X-Rspamd-UID: dc5c31
+References: <20201218210750.3455872-1-saravanak@google.com>
+ <2a6dbcc83d5aca7a3340e0cf4d751cdc@kernel.org> <20201231211240.GA2333246@robh.at.kernel.org>
+ <877dovlgdl.wl-maz@kernel.org> <CAGETcx9WJdYkQcwJLTF4j9jR4kyrDpXG8ZMuCecK2Hv-HXFgBg@mail.gmail.com>
+ <CAL_Jsq+0DdS+F_NZEyP2ajG5g6a_Q543Yp5ReWXGp8qA+25F=g@mail.gmail.com>
+ <CAGETcx_4n951Fx-Gn14ikDDxgWtv6QqQtNno9pcPJyiiGynWHQ@mail.gmail.com> <CAL_Jsq+mavViUqWDVTAYB5p1j5h7FUNCzM9hg-ttJzLuJazZFQ@mail.gmail.com>
+In-Reply-To: <CAL_Jsq+mavViUqWDVTAYB5p1j5h7FUNCzM9hg-ttJzLuJazZFQ@mail.gmail.com>
+From:   Saravana Kannan <saravanak@google.com>
+Date:   Thu, 7 Jan 2021 15:13:08 -0800
+Message-ID: <CAGETcx-PwEt58S24N-2dhnXavtyzdCd_F332npQXA6Czuf1hWQ@mail.gmail.com>
+Subject: Re: [PATCH] of: property: Add device link support for interrupts
+To:     Rob Herring <robh@kernel.org>
+Cc:     Marc Zyngier <maz@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Kevin Hilman <khilman@baylibre.com>,
+        Android Kernel Team <kernel-team@android.com>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 1/7/21 11:49 PM, Mathias Kresin wrote:
-> Commit 65dc2e725286 ("usb: dwc2: Update Core Reset programming flow.")
-> revealed that the phy isn't ready immediately after enabling it's
-> clocks. The dwc2_check_core_version() fails and the dwc2 usb driver
-> errors out.
-> 
-> Add a short delay to let the phy get up and running. There isn't any
-> documentation how much time is required, the value was chosen based on
-> tests.
-> 
-> Cc: <stable@vger.kernel.org> # v5.7+
-> Signed-off-by: Mathias Kresin <dev@kresin.me>
+On Thu, Jan 7, 2021 at 11:33 AM Rob Herring <robh@kernel.org> wrote:
+>
+> On Thu, Jan 7, 2021 at 12:09 PM Saravana Kannan <saravanak@google.com> wrote:
+> >
+> > On Thu, Jan 7, 2021 at 10:39 AM Rob Herring <robh@kernel.org> wrote:
+> > >
+> > > On Wed, Jan 6, 2021 at 11:53 AM Saravana Kannan <saravanak@google.com> wrote:
+> > > >
+> > > > On Sat, Jan 2, 2021 at 3:37 AM Marc Zyngier <maz@kernel.org> wrote:
+> > > > >
+> > > > > On Thu, 31 Dec 2020 21:12:40 +0000,
+> > > > > Rob Herring <robh@kernel.org> wrote:
+> > > > > >
+> > > > > > On Mon, Dec 21, 2020 at 09:30:45AM +0000, Marc Zyngier wrote:
+> > > > > > > On 2020-12-18 21:07, Saravana Kannan wrote:
+> > > > > > > > Add support for creating device links out of interrupts property.
+> > > > > > > >
+> > > > > > > > Cc: Marc Zyngier <maz@kernel.org>
+> > > > > > > > Cc: Kevin Hilman <khilman@baylibre.com>
+> > > > > > > > Signed-off-by: Saravana Kannan <saravanak@google.com>
+> > > > > > > > ---
+> > > > > > > > Rob/Greg,
+> > > > > > > >
+> > > > > > > > This might need to go into driver-core to avoid conflict
+> > > > > > > > due to fw_devlink refactor series that merged there.
+> > > > > > > >
+> > > > > > > > Thanks,
+> > > > > > > > Saravana
+> > > > > > > >
+> > > > > > > >
+> > > > > > > >  drivers/of/property.c | 17 +++++++++++++++++
+> > > > > > > >  1 file changed, 17 insertions(+)
+> > > > > > > >
+> > > > > > > > diff --git a/drivers/of/property.c b/drivers/of/property.c
+> > > > > > > > index 5f9eed79a8aa..e56a5eae0a0b 100644
+> > > > > > > > --- a/drivers/of/property.c
+> > > > > > > > +++ b/drivers/of/property.c
+> > > > > > > > @@ -1271,6 +1271,22 @@ static struct device_node
+> > > > > > > > *parse_iommu_maps(struct device_node *np,
+> > > > > > > >   return of_parse_phandle(np, prop_name, (index * 4) + 1);
+> > > > > > > >  }
+> > > > > > > >
+> > > > > > > > +static struct device_node *parse_interrupts(struct device_node *np,
+> > > > > > > > +                                     const char *prop_name, int index)
+> > > > > > > > +{
+> > > > > > > > + struct device_node *sup;
+> > > > > > > > +
+> > > > > > > > + if (strcmp(prop_name, "interrupts") || index)
+> > > > > > > > +         return NULL;
+> > > > > > > > +
+> > > > > > > > + of_node_get(np);
+> > > > > > > > + while (np && !(sup = of_parse_phandle(np, "interrupt-parent", 0)))
+> > > > > > > > +         np = of_get_next_parent(np);
+> > > > > > > > + of_node_put(np);
+> > > > > > > > +
+> > > > > > > > + return sup;
+> > > > > > > > +}
+> > > > > > > > +
+> > > > > > > >  static const struct supplier_bindings of_supplier_bindings[] = {
+> > > > > > > >   { .parse_prop = parse_clocks, },
+> > > > > > > >   { .parse_prop = parse_interconnects, },
+> > > > > > > > @@ -1296,6 +1312,7 @@ static const struct supplier_bindings
+> > > > > > > > of_supplier_bindings[] = {
+> > > > > > > >   { .parse_prop = parse_pinctrl6, },
+> > > > > > > >   { .parse_prop = parse_pinctrl7, },
+> > > > > > > >   { .parse_prop = parse_pinctrl8, },
+> > > > > > > > + { .parse_prop = parse_interrupts, },
+> > > > > > > >   { .parse_prop = parse_regulators, },
+> > > > > > > >   { .parse_prop = parse_gpio, },
+> > > > > > > >   { .parse_prop = parse_gpios, },
+> > > > > > >
+> > > > > > > You don't really describe what this is for so I'm only guessing
+> > > > > > > from the context. If you want to follow the interrupt hierarchy,
+> > > > > > > "interrupt-parent" isn't enough. You also need to track
+> > > > > > > things like interrupt-map, or anything that carries a phandle
+> > > > > > > to an interrupt controller.
+> > > > > >
+> > > > > > We don't need to follow the hierarchy, we just need the immediate
+> > > > > > dependencies.
+> > > > >
+> > > > > Indeed. I also wonder why this isn't just a irq_find_parent() call, TBH.
+> > > >
+> > > > Thanks Rob for explaining it.
+> > > >
+> > > > Marc, I wasn't sure if Rob would be okay with including of_irq.h here.
+> > > > Also, I'm trying to keep of/property.c independent of the framework
+> > > > code for now. The long term goal is to see if I can move out most of
+> > > > this into the frameworks. But I want to do that after I sort of some
+> > > > of the larger problems (like getting fw_devlink=on to work on all
+> > > > devices  first). Let me know if you have a strong preference for right
+> > > > now, if not, I'd rather keep property.c independent for now.
+> > > >
+> > > > I wasn't aware of interrupt-map until a few weeks ago and didn't know
+> > > > it carried phandles. I can add support for that too. There's no reason
+> > > > for all of them to go in one patch though.
+> > > >
+> > > > >
+> > > > > > But you are right that 'interrupt-map' also needs to be tracked.
+> > > > >
+> > > > > And 'interrupts-extended', while we're at it.
+> > > >
+> > > > This is already handled.
+> > > >
+> > > > > >
+> > > > > > I also noticed that we define 'interrupt-parent' as a dependency to
+> > > > > > parse, but that's wrong. The dependency is where 'interrupts' appears
+> > > > > > and where 'interrupt-parent' appears is irrelevant.
+> > > >
+> > > > No, the interrupt-parent parsing is correct and it's needed for
+> > > > interrupt controllers to probe in the right order. But
+> > > > interrupt-parent is also needs to be looked at for parsing
+> > > > "interrupts".
+> > >
+> > > If you parse 'interrupts' for interrupt controllers (which in turn
+> > > will use 'interrupt-parent'), then you aren't going to need to track
+> > > 'interrupt-parent' by itself.
+> >
+> > Do all interrupt controllers (that are not the root interrupt
+> > controller) need to have "interrupts" property? If yes, then yeah,
+> > that makes sense. But I vaguely remember that this wasn't the case for
+> > some DT I saw.
+>
+> There are some cases of stacked controllers where it's implicit.
 
-Acked-by: Hauke Mehrtens <hauke@hauke-m.de>
+In that case, I think it's good to track interrupt-parent explicitly.
+Doesn't really hurt anything. We already protect for stuff like making
+sure a parent doesn't depend on its child, etc.
 
-I do not know how long you have to wait here, but this looks ok, when it 
-works.
+> >
+> > Ah, here's one I found.
+> > https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/arch/arm/boot/dts/mt2701.dtsi#n209
+>
+> Right, so this is one of several cases of custom interrupt mapping
+> properties (mediatek,ext-irq-range). Really, 'interrupts' or
+> 'interrupt-map' should have been used here, but 'interrupt-map'
+> doesn't really scale well if you have large ranges of interrupts.
+>
+> To handle the dependency with just 'interrupt-parent', you need to
+> find nodes that are themselves an 'interrupt-parent' and then find
+> their 'interrupt-parent'.
 
-Hauke
+Not sure I understand this.
 
-> ---
->   drivers/phy/lantiq/phy-lantiq-rcu-usb2.c | 10 +++++++++-
->   1 file changed, 9 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/phy/lantiq/phy-lantiq-rcu-usb2.c b/drivers/phy/lantiq/phy-lantiq-rcu-usb2.c
-> index a7d126192cf1..29d246ea24b4 100644
-> --- a/drivers/phy/lantiq/phy-lantiq-rcu-usb2.c
-> +++ b/drivers/phy/lantiq/phy-lantiq-rcu-usb2.c
-> @@ -124,8 +124,16 @@ static int ltq_rcu_usb2_phy_power_on(struct phy *phy)
->   	reset_control_deassert(priv->phy_reset);
->   
->   	ret = clk_prepare_enable(priv->phy_gate_clk);
-> -	if (ret)
-> +	if (ret) {
->   		dev_err(dev, "failed to enable PHY gate\n");
-> +		return ret;
-> +	}
-> +
-> +	/*
-> +	 * at least the xrx200 usb2 phy requires some extra time to be
-> +	 * operational after enabling the clock
-> +	 */
-> +	usleep_range(100, 200);
->   
->   	return ret;
->   }
-> 
+On a side note, if I'm adding device links between a device and the
+"interrupt-parent" it's pointing to, at worst, I'm having it depend on
+an interrupt controller its child devices would depend on. This
+combined with the fact that "weird" links like "parent depending on
+child", "non-device node having interrupt-parent", etc are already
+ignored, seems safe to leave in "interrupt-parent" to catch these
+cases where interrupt controllers don't specify "interrupts" or
+"interrupt-map"? I don't mind removing it, but maybe we can wait till
+we get fw_devlink=on and then remove it to see if anything breaks? If
+nothing breaks, we can remove explicit interrupt-parent parsing?
 
+Going back to interrupt-map, I understand the syntax now. I'm trying
+to see if I can break up of_irq_parse_raw() into smaller pieces and
+reuse (call into) some of that code. While doing that I see that when
+"address-cells" isn't present, the "addrsize" is initialized to 2 [1]
+but when "address-cells" isn't present, the "newaddrsize" is
+initialized to 0 [1]. Why is the default value of #address-cells two
+different numbers?
+
+Thanks,
+Saravana
+
+[1] - https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/drivers/of/irq.c#n141
+[2] - https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/drivers/of/irq.c#n226
