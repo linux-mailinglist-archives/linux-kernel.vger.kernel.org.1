@@ -2,172 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E80512ECDE1
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 11:32:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B25ED2ECE09
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 11:41:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727825AbhAGKcI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 05:32:08 -0500
-Received: from mailout1.samsung.com ([203.254.224.24]:35724 "EHLO
-        mailout1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727716AbhAGKcH (ORCPT
+        id S1727673AbhAGKkg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 05:40:36 -0500
+Received: from carinthia.it.liu.se ([130.236.56.10]:43122 "EHLO
+        carinthia.it.liu.se" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726362AbhAGKkf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 05:32:07 -0500
-Received: from epcas5p2.samsung.com (unknown [182.195.41.40])
-        by mailout1.samsung.com (KnoxPortal) with ESMTP id 20210107103122epoutp0111ab074b7b5593e9c24331ff0d6598dd~X7Iz8ZBxc1363413634epoutp01N
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Jan 2021 10:31:22 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com 20210107103122epoutp0111ab074b7b5593e9c24331ff0d6598dd~X7Iz8ZBxc1363413634epoutp01N
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1610015482;
-        bh=zgnGkAl5H6GoKUAcYr+wE27/PBdE+8JptgJAmhAjafY=;
-        h=From:To:Cc:Subject:Date:References:From;
-        b=jbUuGpct6UFoDu/hTwtofLLe09pRuvs7uq4N5cZUaDkUcYiMsD0pQ9mxyN9gIlPco
-         w+r/1POzrzXlT17HNqdHdP4ByLDen8AelFRPa89DUoFNOVWLKtTKdEMsg8bkoh6R/y
-         wgHQS8OYyuO1As0BS1OUAekYBreImQnsDcbihJIQ=
-Received: from epsmges5p3new.samsung.com (unknown [182.195.42.75]) by
-        epcas5p2.samsung.com (KnoxPortal) with ESMTP id
-        20210107103121epcas5p2a322f86c7f7f9d4734f37bddee79ddc1~X7IzbAEcp1382213822epcas5p2B;
-        Thu,  7 Jan 2021 10:31:21 +0000 (GMT)
-Received: from epcas5p3.samsung.com ( [182.195.41.41]) by
-        epsmges5p3new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        44.8D.33964.9F2E6FF5; Thu,  7 Jan 2021 19:31:21 +0900 (KST)
-Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
-        epcas5p1.samsung.com (KnoxPortal) with ESMTPA id
-        20210107092826epcas5p100f2c57a63715baa2b3fa7219ab58c7b~X6R4CDmyx1773217732epcas5p1v;
-        Thu,  7 Jan 2021 09:28:26 +0000 (GMT)
-Received: from epsmgms1p2.samsung.com (unknown [182.195.42.42]) by
-        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
-        20210107092826epsmtrp28d27298a12781770605a65a82b78e522~X6R4Acp9C2963029630epsmtrp23;
-        Thu,  7 Jan 2021 09:28:26 +0000 (GMT)
-X-AuditID: b6c32a4b-ea1ff700000184ac-26-5ff6e2f95641
-Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
-        epsmgms1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
-        26.A2.08745.A34D6FF5; Thu,  7 Jan 2021 18:28:26 +0900 (KST)
-Received: from Jaguar.sa.corp.samsungelectronics.net (unknown
-        [107.108.73.139]) by epsmtip2.samsung.com (KnoxPortal) with ESMTPA id
-        20210107092825epsmtip28c5b3966d940a0ebee719140eb1f8f94~X6R2s12Ec1431714317epsmtip2O;
-        Thu,  7 Jan 2021 09:28:25 +0000 (GMT)
-From:   Ajay Kumar <ajaykumar.rs@samsung.com>
-To:     iommu@lists.linux-foundation.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        joro@8bytes.org, robh+dt@kernel.org, mark.rutland@arm.com,
-        will@kernel.org, robin.murphy@arm.com
-Cc:     Ajay Kumar <ajaykumar.rs@samsung.com>
-Subject: [PATCH] iommu/arm-smmu-v3: Handle duplicated Stream IDs from other
- masters
-Date:   Thu,  7 Jan 2021 15:03:40 +0530
-Message-Id: <20210107093340.15279-1-ajaykumar.rs@samsung.com>
-X-Mailer: git-send-email 2.17.1
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrJIsWRmVeSWpSXmKPExsWy7bCmpu7PR9/iDXbMlLQ48P4gi8WC/dYW
-        nbM3sFtsenyN1eLyrjlsFkuvX2SyaN17hN3i4IcnrBYtd0wdOD2eHJzH5LFm3hpGj02rOtk8
-        Ni+p95h8YzmjR9+WVYwenzfJBbBHcdmkpOZklqUW6dslcGXcb1nNVvBCuOL45dnMDYwLBLoY
-        OTkkBEwk/nRcYeti5OIQEtjNKDHvxCQ2kISQwCdGiZbeQojEZ0aJzuvHmGA69l19zA6R2MUo
-        8XvSVaiOFiaJ9tXMIDabgLbEtuk3WUCKRATOMUpMWD8TLMEsoCmxdGk3mC0sECqx7nM3Yxcj
-        BweLgKrE5M+GIGFeAVuJWd/+MkMsk5dYveEAM8gcCYFT7BK3Ht1kg0i4SLz9PI8dwhaWeHV8
-        C5QtJfH53V42iIZ+Romn9/9Ada9mlHjw8ALUWHuJA1fmsIBsBrlo/S59iLCsxNRT65ggDuWT
-        6P39BOplXokd80BsDiBbTWLrCj+IsIzEmYNXoEo8JGb+2skOCYhYifufN7FMYJSdhbBgASPj
-        KkbJ1ILi3PTUYtMC47zUcr3ixNzi0rx0veT83E2M4NSg5b2D8dGDD3qHGJk4GA8xSnAwK4nw
-        Whz7Ei/Em5JYWZValB9fVJqTWnyIUZqDRUmcd4fBg3ghgfTEktTs1NSC1CKYLBMHp1QDk5KD
-        m/GEjc1/2Peodh/Zz3QoYf+fD7IyGp9auf+l9sas5o2/dV8l54bc4gbHI4bVT/6ZVXYErLWu
-        ULw5y5x79XSus3YvPh9iSGvgPnZtUo1FxAqTsBkRSflzb1l3MOVqnTn2ur/izKYbn3IUY+w2
-        njl8c4b3whsaUknn5Q7/jQ77MOv8jkof1e2Nrz8ev+dqySr+c4rfGxMBpaLYRZIOx71vnV/d
-        f+Du1i0zsy8sUH3TmZJwjv/QtExfpeXXzjm8dMxceFPq+MHQ63y/0xSCtxQ2XPTa/ePTCl+L
-        U3PT3uyqlndKlO11vrV43+cZMc5rFqx6cGBxpVKjiPmBpemGL104nrf/vVo+T8rciu18wVkl
-        luKMREMt5qLiRAB6SC90fAMAAA==
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFupjluLIzCtJLcpLzFFi42LZdlhJXtfqyrd4g3/zdCwOvD/IYrFgv7VF
-        5+wN7BabHl9jtbi8aw6bxdLrF5ksWvceYbc4+OEJq0XLHVMHTo8nB+cxeayZt4bRY9OqTjaP
-        zUvqPSbfWM7o0bdlFaPH501yAexRXDYpqTmZZalF+nYJXBn3W1azFbwQrjh+eTZzA+MCgS5G
-        Tg4JAROJfVcfs3cxcnEICexglFh9ficzREJG4vmOpywQtrDEyn/PoYqamCRWt3xiB0mwCWhL
-        bJt+kwUkISJwg1Hi8o07rCAJZgFNiaVLu4EmsXMICwRLPAvsYuTgYBFQlZj82RCkgFfAVmLW
-        t79Qq+QlVm84wDyBkWcBI8MqRsnUguLc9NxiwwKjvNRyveLE3OLSvHS95PzcTYzgINPS2sG4
-        Z9UHvUOMTByMhxglOJiVRHgtjn2JF+JNSaysSi3Kjy8qzUktPsQozcGiJM57oetkvJBAemJJ
-        anZqakFqEUyWiYNTqoEp7cMr5ncXr0p7bdP5dy8jY03xtIpZ8SztltHC59xnb+2OPH9E9HPJ
-        X8ltGQo3Dv8/nh0zjfVI9ia1T0IPl20+NEXZUmjzNi2ls7Ktcyac5FWr3uv8uqb12o5TGpWz
-        cjYIV/r0c8+1ZHm+NZM1wzSrdHtK6qSbbrGWlhetdWw3Rn9MtpY+N8n6x4HNNdYHDr59EPM1
-        NVzkQvPaKX+NZ3xTvsXHtLSWkf+Q6L9Np07IH8ic/tRv5VMWL9Fuz8q5YYmyzw3uZcgG2/8P
-        OGie9VKPW2uNhMxx+eWePDwFl1Y+qmzj35wWH3ax8tKjZytcrn1nNv1/Q9+Aa1Vx1u4s+y0L
-        mxbucPKp+JK3782E7b66SizFGYmGWsxFxYkARhXFXqECAAA=
-X-CMS-MailID: 20210107092826epcas5p100f2c57a63715baa2b3fa7219ab58c7b
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: REQ_APPROVE
-CMS-TYPE: 105P
-X-CMS-RootMailID: 20210107092826epcas5p100f2c57a63715baa2b3fa7219ab58c7b
-References: <CGME20210107092826epcas5p100f2c57a63715baa2b3fa7219ab58c7b@epcas5p1.samsung.com>
+        Thu, 7 Jan 2021 05:40:35 -0500
+X-Greylist: delayed 635 seconds by postgrey-1.27 at vger.kernel.org; Thu, 07 Jan 2021 05:40:30 EST
+Received: from e-mailfilter01.sunet.se (e-mailfilter01.sunet.se [IPv6:2001:6b0:8:2::201])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by carinthia.it.liu.se (Postfix) with ESMTPS id CF38280F7A;
+        Thu,  7 Jan 2021 11:29:12 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 carinthia.it.liu.se CF38280F7A
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=liu.se; s=liu.liu;
+        t=1610015352; bh=10n1WDITvywFHZSzdbV9/3ZgA7dRXjLw0RDtZXgmHuc=;
+        h=From:To:Subject:Date:References:In-Reply-To:From;
+        b=Iv80OBkFxsJC7YSqZPy7WzPbEiKdbnWL/pHWnr3qd3WMZMvbgVcATv1Jr5tdcdCiY
+         cvrcmHT4CVrnCc66q1RG0mkYMTjUzORDYJymkqz7EfENj/PAgnAd+/FOULhV/KBT/b
+         AkVPU/RFQ1xbzX04slqabeQGc+PNUMPNOD4bb1YI5fSf5NfzkGsUtexQRH1RBfFRT2
+         3gFlfQ/8RaRmJRoEbPtuxiCCd+m5HC4KOsYLGHInQgekRXHJoC3ek1KyxiNvA1CJUO
+         1jLeUwdX9VKtfZUdLpueSHHxTGr3jQfOUg//8ZW8Y+p29CqBRe1kJldnjELvDzoFrI
+         EuLq9bvAiDgmg==
+Received: from andania.it.liu.se (andania.it.liu.se [IPv6:2001:6b0:17:2004::56:15])
+        by e-mailfilter01.sunet.se (8.14.4/8.14.4/Debian-8+deb8u2) with ESMTP id 107ATBWG193920
+        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NO);
+        Thu, 7 Jan 2021 11:29:12 +0100
+Received: from EUR01-VE1-obe.outbound.protection.outlook.com (mail-ve1eur01lp2058.outbound.protection.outlook.com [104.47.1.58])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by andania.it.liu.se (Postfix) with ESMTPS id 8C14DA015D;
+        Thu,  7 Jan 2021 11:29:09 +0100 (CET)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Pv5YcJrBifOEIgFBM6kdQsJAYIhhNYa47gw4yyOHIlfeLC52jm+UIZ3eUK1up+DDCajCRb4+LkfKIUOo95QlQaDzCV3RehJmlOUifC4NH6ZdJw8lNGUYGXUVrJCzUK6tbfaZijZwTzeXJOjgR5vGn1OqsuvczWNYWO6mN+baoTirSHts8R5+kzDCBwEo7atmV506M7Z+zEHGv7gDJEf6h6Sb1PvP69/bynVT4OePDu2G8dwoNmCyf2UftbhRP7Bgijd0SihnUyf2hM4C6cjX+HtW9jVqXQWAfIca0klyo0+e2e4yb8hO3mvRqdpsUoc4q88OJ5yXTeh3IN/574dRtA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=10n1WDITvywFHZSzdbV9/3ZgA7dRXjLw0RDtZXgmHuc=;
+ b=IuuKbmyLelWzEh804uIu2kDJSIHR1gzz19pejBC9CMi49mTV7457v3ELrxHJpJ1pSdzQUg9WkGkfGh87ifN9mipTimBP8vellZ8MBbIkThVICKMXDPiQeJCv8UQpZPD1RMFShN7LSYiVIAteRbAs44Fn/4GLOMFsdJBrqE6C99g+3b41u7XuPUVTCDy2O4A4ECIAEged9vzAGP4urUktYMrE2fVm9srj/0EjnZ3WBaKfPqbNT42n/RPlLHSF9kkaR+7N2skmjNs/c2qxubeTaQuwuy3RY/GM0OTu+k+oltDzGuK3PVi14u1JoF52Pu3f8IIHZ2H2RYd+viDaFCLAHw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=student.liu.se; dmarc=pass action=none
+ header.from=student.liu.se; dkim=pass header.d=student.liu.se; arc=none
+Received: from HE1P191MB0219.EURP191.PROD.OUTLOOK.COM (2603:10a6:3:c9::7) by
+ HE1P191MB0187.EURP191.PROD.OUTLOOK.COM (2603:10a6:3:ca::8) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.3742.6; Thu, 7 Jan 2021 10:29:08 +0000
+Received: from HE1P191MB0219.EURP191.PROD.OUTLOOK.COM
+ ([fe80::15ad:9a62:f2a5:2d75]) by HE1P191MB0219.EURP191.PROD.OUTLOOK.COM
+ ([fe80::15ad:9a62:f2a5:2d75%7]) with mapi id 15.20.3742.007; Thu, 7 Jan 2021
+ 10:29:08 +0000
+From:   Mikael Szreder <miksz574@student.liu.se>
+To:     Phillip Lougher <phillip@squashfs.org.uk>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: [PATCH] fs/squashfs: Remove caching of errors in squashfs.
+Thread-Topic: [PATCH] fs/squashfs: Remove caching of errors in squashfs.
+Thread-Index: AQHWphvpBQUJqJO400Ollg7lzXQXoqocctKI
+Date:   Thu, 7 Jan 2021 10:29:08 +0000
+Message-ID: <HE1P191MB021916F9655748D8322308B2A5AF0@HE1P191MB0219.EURP191.PROD.OUTLOOK.COM>
+References: <HE1P191MB0219DFBDF498117B6CAFE34EA51E0@HE1P191MB0219.EURP191.PROD.OUTLOOK.COM>
+In-Reply-To: <HE1P191MB0219DFBDF498117B6CAFE34EA51E0@HE1P191MB0219.EURP191.PROD.OUTLOOK.COM>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: squashfs.org.uk; dkim=none (message not signed)
+ header.d=none;squashfs.org.uk; dmarc=none action=none
+ header.from=student.liu.se;
+x-originating-ip: [92.35.24.41]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 037141f5-068b-4770-d1a9-08d8b2f71140
+x-ms-traffictypediagnostic: HE1P191MB0187:
+x-microsoft-antispam-prvs: <HE1P191MB0187869060548C15E26003EDA5AF0@HE1P191MB0187.EURP191.PROD.OUTLOOK.COM>
+x-ms-oob-tlc-oobclassifiers: OLM:3826;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: /N+kdZsadSsN7Y7ycW/40h411sxQS5zdLOPVcHnvgwXFse6wbtLiPpAx+QKTq7Nbw5oG+Sp1EyR6/zTNpJtHNsrFetDDjqklJsqFjy1oNWVQYBHNrYO+xqE+ndmI70Wv0nj5W1eDEkrC8poJO4wCNr5WqSDxoZpc4NovEKrVjGlZb/wEqQsU8O+kxWwnUHW4umvbZ/1NGbGrAoE5lO8H7R3Xp3wZ3EFN1kZMxOgt4vVe5rBAC/ERDqhrXM8qdVNhXOhw5ANUbegV9qThCIMba6uoN4JcpSvJK4Pg3WX2neiSuA8Ga8MoMOWAdoiG35msmNetBcqNK6KT/s7wVWjbvWum4unBm1xw+sV4RGoq6wDBIVevQj74EvwmhjetLFY8Qf+XgmZTWJiTYC7FYd5BKw==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:HE1P191MB0219.EURP191.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(4636009)(136003)(39850400004)(376002)(396003)(366004)(346002)(55016002)(8936002)(33656002)(9686003)(478600001)(83380400001)(186003)(26005)(7696005)(52536014)(8676002)(6506007)(76116006)(786003)(86362001)(66476007)(71200400001)(66556008)(110136005)(66946007)(5660300002)(66446008)(64756008)(2906002)(316002);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: =?iso-8859-1?Q?5NJZTagaSi0yAg/1t1lAnGHMGedxuLHhOBdtKQfk8NlEC1o/StdEmRKQl0?=
+ =?iso-8859-1?Q?vup9tMtgAjL/vcWfoV/NwFP+ULw7o9oUoP5Mo+aZvYeRrntWnEJUGYswsE?=
+ =?iso-8859-1?Q?8cnNFb7T6i99d207gTiPLT3XWyBztQSUlOAVVpDJSUF5fTPp3/Iae12O6w?=
+ =?iso-8859-1?Q?wIi6PGqkHyJ7CDYlQ3S89+wNWaffNZFeRdiGbFuUIBOyE9EnmBqj/oxu2G?=
+ =?iso-8859-1?Q?vqYpiCzaruQppWAdKCmyDz+kGhp+EZhXQLYl6B+DXcVEO0CUioXsDEIP8v?=
+ =?iso-8859-1?Q?pQbMU0izqjn4cQRyUFRh7ox4uQmZp2nwXUvX7GI5ZqSppOjMbvf0ZoSpMC?=
+ =?iso-8859-1?Q?qTXD5yR8k/znKPaLX9Vhkq152W6rIQX1luMvoc+qfyBlwvpd5Pi7kzbrqZ?=
+ =?iso-8859-1?Q?azqQsGAQgrhclQ6Hu/A28FDej0ruYO22PCbGZms64Nnu0hZs0H8N7WCjw9?=
+ =?iso-8859-1?Q?lm4GFPeji3jr/T6Qmj1wIeQmJd8yOXptIW65P4h5I0Ofhj24uCyD4cgHzF?=
+ =?iso-8859-1?Q?WvQVwTgv86qbepTDr4wPqOUGubH5Z4kfwMa6+pNDoDSmtGTe5N0D3i12Jd?=
+ =?iso-8859-1?Q?DWIhaRjlQ/odzm718VPnc2c5pJnwK6obpmPpGuxjqKkZ7y2p2jD3V4H3ey?=
+ =?iso-8859-1?Q?4HB7sMVl+7sVUnEYeBN/I9lnJ1JN4nbur0eJaTRx9lroIbxzFCLZewO3/0?=
+ =?iso-8859-1?Q?AoGNXzMWASgdG/nwrGeoOp2a89DlvFfXhqFYsTn+aVwioMAL1Hhydy+8ov?=
+ =?iso-8859-1?Q?EZIS0RrcBrRAqmb4snoPzVQoUOk+EBqLEyiSAqy/l9ZQ+ptWSWz1aoey1U?=
+ =?iso-8859-1?Q?el72BRUDhAVVHTBQa/nzmDwPQ5elGILzM4ptb8g650gHWSQkMrglCZnzZA?=
+ =?iso-8859-1?Q?JFVHdu/S/YfqDkDDCw2wn/W9TTmKmjj50kRI3nHmcyFYCAhyywp1G2/UWA?=
+ =?iso-8859-1?Q?rViJSkaWAJGXIGWjzMFvzwc5diDeufQNoj7ASnJkD/0HNFoGYb+WIA=3D?=
+ =?iso-8859-1?Q?=3D?=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-OriginatorOrg: student.liu.se
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: HE1P191MB0219.EURP191.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-Network-Message-Id: 037141f5-068b-4770-d1a9-08d8b2f71140
+X-MS-Exchange-CrossTenant-originalarrivaltime: 07 Jan 2021 10:29:08.7352
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 913f18ec-7f26-4c5f-a816-784fe9a58edd
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: mIcQtX21C9AOsS4YKIaWFy2VF1R1EVaNlP1UuoHoHnyjxDN4zCVf6qFFbcrNJamCsvvjMzYD+U4FaHr8QpAEFw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: HE1P191MB0187
+X-Bayes-Prob: 0.0001 (Score 0, tokens from: outbound, outbound-liu-se:default, base:default, @@RPTN)
+X-Spam-Score: 0.00 () [Tag at 10.00] 
+X-p0f-Info: os=Linux 3.11 and newer, link=Ethernet or modem
+X-CanIt-Geo: ip=104.47.1.58; country=AT; region=Vienna; city=Vienna; latitude=48.1933; longitude=16.3727; http://maps.google.com/maps?q=48.1933,16.3727&z=6
+X-CanItPRO-Stream: outbound-liu-se:outbound (inherits from outbound-liu-se:default,base:default)
+X-Canit-Stats-ID: 094dKtcln - b948db63608c - 20210107
+X-CanIt-Archive-Cluster: PfMRe/vJWMiXwM2YIH5BVExnUnw
+X-Scanned-By: CanIt (www . roaringpenguin . com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When PCI function drivers(ex:pci-endpoint-test) are probed for already
-initialized PCIe-RC(Root Complex), and PCIe-RC is already bound to SMMU,
-then we encounter a situation where the function driver tries to attach
-itself to the smmu with the same stream-id as PCIe-RC and re-initialize
-an already initialized STE. This causes ste_live BUG_ON() in the driver.
-
-There is an already existing check in the driver to manage duplicated ids
-if duplicated ids are added in same master device, but there can be
-scenarios like above where we need to extend the check for other masters
-using the same stream-id.
-
-Signed-off-by: Ajay Kumar <ajaykumar.rs@samsung.com>
----
- drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c | 33 +++++++++++++++++++++
- 1 file changed, 33 insertions(+)
-
-diff --git a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
-index e634bbe60573..a91c3c0e9ee8 100644
---- a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
-+++ b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
-@@ -2022,10 +2022,26 @@ static __le64 *arm_smmu_get_step_for_sid(struct arm_smmu_device *smmu, u32 sid)
- 	return step;
- }
- 
-+static bool arm_smmu_check_duplicated_sid(struct arm_smmu_master *master,
-+								int sid)
-+{
-+	int i;
-+
-+	for (i = 0; i < master->num_sids; ++i)
-+		if (master->sids[i] == sid)
-+			return true;
-+
-+	return false;
-+}
-+
- static void arm_smmu_install_ste_for_dev(struct arm_smmu_master *master)
- {
-+	bool sid_in_other_masters;
- 	int i, j;
- 	struct arm_smmu_device *smmu = master->smmu;
-+	unsigned long flags;
-+	struct arm_smmu_domain *smmu_domain = master->domain;
-+	struct arm_smmu_master *other_masters;
- 
- 	for (i = 0; i < master->num_sids; ++i) {
- 		u32 sid = master->sids[i];
-@@ -2038,6 +2054,23 @@ static void arm_smmu_install_ste_for_dev(struct arm_smmu_master *master)
- 		if (j < i)
- 			continue;
- 
-+		/* Check for stream-ID duplication in masters in given domain */
-+		sid_in_other_masters = false;
-+		spin_lock_irqsave(&smmu_domain->devices_lock, flags);
-+		list_for_each_entry(other_masters, &smmu_domain->devices,
-+								domain_head) {
-+			sid_in_other_masters =
-+				arm_smmu_check_duplicated_sid(other_masters,
-+									sid);
-+			if (sid_in_other_masters)
-+				break;
-+		}
-+		spin_unlock_irqrestore(&smmu_domain->devices_lock, flags);
-+
-+		/* Skip STE re-init if stream-id found in other masters */
-+		if (sid_in_other_masters)
-+			continue;
-+
- 		arm_smmu_write_strtab_ent(master, sid, step);
- 	}
- }
--- 
-2.17.1
-
+This is a resubmit of this patch, originally sent on the 19 Oct 2020.=0A=
+=0A=
+If squashfs encounters a read error when reading a block this error will=0A=
+be cached. When the underlying problem that caused this error is fixed,=0A=
+squashfs will still report the previous error, even though, a re-read=0A=
+would now be successful.=0A=
+=0A=
+This patch fixes this by setting the block field of the cache entry to=0A=
+SQUASHFS_INVALID_BLK if an error was encountered. This prevents the cache=
+=0A=
+entry lookup from simply returning the cache entry with the previous error.=
+=0A=
+=0A=
+With this patch a mounted squashfs file system can recover from read=0A=
+errors. Whereas previously this would have required a full remount.=0A=
+=0A=
+Signed-off-by: Mikael Szreder <miksz574@student.liu.se>=0A=
+---=0A=
+=A0fs/squashfs/cache.c | 4 +++-=0A=
+=A01 file changed, 3 insertions(+), 1 deletion(-)=0A=
+=0A=
+diff --git a/fs/squashfs/cache.c b/fs/squashfs/cache.c=0A=
+index 5062326d0efb..020fded42a6b 100644=0A=
+--- a/fs/squashfs/cache.c=0A=
++++ b/fs/squashfs/cache.c=0A=
+@@ -112,8 +112,10 @@ struct squashfs_cache_entry *squashfs_cache_get(struct=
+ super_block *sb,=0A=
+=A0=0A=
+=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 sp=
+in_lock(&cache->lock);=0A=
+=A0=0A=
+-=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 if (ent=
+ry->length < 0)=0A=
++=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 if (ent=
+ry->length < 0) {=0A=
++=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
+=A0=A0=A0=A0=A0=A0 entry->block =3D SQUASHFS_INVALID_BLK;=0A=
+=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
+=A0=A0=A0=A0=A0=A0=A0 entry->error =3D entry->length;=0A=
++=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 }=0A=
+=A0=0A=
+=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 en=
+try->pending =3D 0;=0A=
+=A0=0A=
+-- =0A=
+2.28.0=0A=
