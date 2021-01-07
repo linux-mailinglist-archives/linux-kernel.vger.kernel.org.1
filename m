@@ -2,321 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CBA52ED3C2
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 16:50:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A86D2ED3CA
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 16:53:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728421AbhAGPtA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 10:49:00 -0500
-Received: from aserp2120.oracle.com ([141.146.126.78]:40080 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728338AbhAGPs7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 10:48:59 -0500
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 107FdsMl049661;
-        Thu, 7 Jan 2021 15:48:08 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=mime-version :
- message-id : date : from : sender : to : cc : subject : references :
- in-reply-to : content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=HEo/4+hyn0YdKS47Mma7PweDhqDTetKtGjZMclPyJlA=;
- b=WsNcydjIkkTEdC5F5oJdJyvybRtXGs5cpQU0XE8B77aY6O5Sf39BEJbqN7mF9hPeDu4L
- 6kuIbZZ/XNtX8Lg0b2eTDsjrRmGeo1i/oaZfprUUBe0S/cNNMkJtFFN1Jpq8Vf0ZILEL
- Bk/fLnBKyxq2XP0DZObWlz5FqH659JEAtL1VooCOuOxcDqmuZQXQxEdfvpDzkrSTbiMW
- ZGJGR/ctsg1eckWzGNXLSS9hY52XqCcbqwfXR3W5SMBkKVTI9yNZx2SKa5eFUthnOzek
- zDxiyw70/JdJO3w1bvaGsLVOmPD0bP2cKhpe1cXlJVDE979Aq4RuZSysxDsfGzdlQWrE ag== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by aserp2120.oracle.com with ESMTP id 35wepmcxk7-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 07 Jan 2021 15:48:08 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 107FVjkM115576;
-        Thu, 7 Jan 2021 15:48:08 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by userp3030.oracle.com with ESMTP id 35w3g2w6sb-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 07 Jan 2021 15:48:07 +0000
-Received: from abhmp0012.oracle.com (abhmp0012.oracle.com [141.146.116.18])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 107Fm52W012821;
-        Thu, 7 Jan 2021 15:48:06 GMT
+        id S1728060AbhAGPxf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 10:53:35 -0500
+Received: from mga07.intel.com ([134.134.136.100]:35353 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726864AbhAGPxd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Jan 2021 10:53:33 -0500
+IronPort-SDR: 0LObVhqRAo3tiJH1Iy/0F8M8cBuY2cq+xi2j1D8k1DxEb/ey5ApLnJec7kxISsVFNZN8oy1NOX
+ bbgYPti01QBg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9857"; a="241517808"
+X-IronPort-AV: E=Sophos;i="5.79,329,1602572400"; 
+   d="scan'208";a="241517808"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Jan 2021 07:52:52 -0800
+IronPort-SDR: 9OzmBPeChze1h0ZC85DRo8fnWzA6qjhUiE4v7yYkm6iD5WoYlqr+on3qalNkphPOMarIUj0hgN
+ 2Qjc4q+V00Vw==
+X-IronPort-AV: E=Sophos;i="5.79,329,1602572400"; 
+   d="scan'208";a="362007790"
+Received: from abartsch-mobl.amr.corp.intel.com (HELO [10.212.21.94]) ([10.212.21.94])
+  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Jan 2021 07:52:50 -0800
+Subject: Re: [PATCH v1 2/3] x86/cpu: Set low performance CRC32C flag on some
+ Zhaoxin CPUs
+To:     Tony W Wang-oc <TonyWWang-oc@zhaoxin.com>,
+        herbert@gondor.apana.org.au, davem@davemloft.net,
+        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, x86@kernel.org,
+        hpa@zytor.com, tony.luck@intel.com, seanjc@google.com,
+        fenghua.yu@intel.com, thomas.lendacky@amd.com,
+        kyung.min.park@intel.com, kim.phillips@amd.com,
+        mgross@linux.intel.com, peterz@infradead.org,
+        krish.sadhukhan@oracle.com, liam.merwick@oracle.com,
+        mlevitsk@redhat.com, reinette.chatre@intel.com, babu.moger@amd.com,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     TimGuo-oc@zhaoxin.com, CooperYan@zhaoxin.com,
+        QiyuanWang@zhaoxin.com, HerryYang@zhaoxin.com,
+        CobeChen@zhaoxin.com, SilviaZhao@zhaoxin.com
+References: <1610000348-17316-1-git-send-email-TonyWWang-oc@zhaoxin.com>
+ <1610000348-17316-3-git-send-email-TonyWWang-oc@zhaoxin.com>
+From:   Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+ z5cecg==
+Message-ID: <607494aa-674a-fe93-50f6-2c45f385f7e9@intel.com>
+Date:   Thu, 7 Jan 2021 07:52:49 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Message-ID: <0abfcf5b-5ab8-4968-bf6d-eb4dee32e2f4@default>
-Date:   Thu, 7 Jan 2021 15:48:02 +0000 (UTC)
-From:   Gulam Mohamed <gulam.mohamed@oracle.com>
-Sender: Gulam Mohamed <gulam.mohamed@oracle.com>
-To:     Michael Christie <michael.christie@oracle.com>
-Cc:     Lee Duncan <lduncan@suse.com>, Chris Leech <cleech@redhat.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        Martin Petersen <martin.petersen@oracle.com>,
-        open-iscsi@googlegroups.com, linux-scsi@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Junxiao Bi <junxiao.bi@oracle.com>
-Subject: RE: [PATCH] iscsi: Do Not set param when sock is NULL
-References: <1a8aaa17-b1a3-4d6a-b87a-ff49d61a0d0b@default>
- <9df96d73-015c-4de6-96fa-2f315b066909@default>
- <05277786-2E1F-432D-AE73-F39565C6BEA4@oracle.com>
-In-Reply-To: <05277786-2E1F-432D-AE73-F39565C6BEA4@oracle.com>
-X-Priority: 3
-X-Mailer: Oracle Beehive Extensions for Outlook 2.0.1.9.1  (1003210) [OL
- 16.0.5095.0 (x86)]
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: quoted-printable
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9856 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 malwarescore=0 adultscore=0
- phishscore=0 spamscore=0 mlxlogscore=999 suspectscore=0 bulkscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2101070097
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9856 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 bulkscore=0 spamscore=0
- impostorscore=0 phishscore=0 lowpriorityscore=0 suspectscore=0
- priorityscore=1501 mlxscore=0 malwarescore=0 clxscore=1011 mlxlogscore=999
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2101070097
+In-Reply-To: <1610000348-17316-3-git-send-email-TonyWWang-oc@zhaoxin.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Michael,
+On 1/6/21 10:19 PM, Tony W Wang-oc wrote:
+> +	/*
+> +	 * These CPUs declare support SSE4.2 instruction sets but
+> +	 * having low performance CRC32C instruction implementation.
+> +	 */
+> +	if (c->x86 == 0x6 || (c->x86 == 0x7 && c->x86_model <= 0x3b))
+> +		set_cpu_cap(c, X86_FEATURE_CRC32C);
+>  }
 
-             As per your suggestions in below mail, I have completed the su=
-ggested changes and tested them. Can you please review and let me know your=
- comments? Here is the patch:
+On the Intel side, we've tried to move away from open-coded model
+numbers.  Say another CPU is released that has a microarchitecture close
+to 0x3b, but has a model of 0x3c.  It's a *LOT* easier to grep for
+INTEL_FAM6_NEHALEM (or whatever) than 0x3c.  See:
 
-Description
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-1. This Kernel panic could be due to a timing issue when there is a race be=
-tween the sync thread and the initiator was processing of a login response =
-from the target. The session re-open can be invoked from two places
-  a. Sessions sync thread when the iscsid restart
-  b. From iscsid through iscsi error handler 2. The session reopen sequence=
- is as follows in user-space (iscsi-initiator-utils)
-   a. Disconnect the connection
-   b. Then send the stop connection request to the kernel which releases th=
-e connection (releases the socket)
-   c. Queues the reopen for 2 seconds delay
-   d. Once the delay expires, create the TCP connection again by calling th=
-e connect() call
-   e. Poll for the connection
-   f. When poll is successful i.e when the TCP connection is established, i=
-t performs
-      i. Creation of session and connection data structures
-      ii. Bind the connection to the session. This is the place where we as=
-sign the sock to tcp_sw_conn->sock
-      iii. Sets the parameters like target name, persistent address etc .
-      iv. Creates the login pdu
-       v. Sends the login pdu to kernel
-      vi. Returns to the main loop to process further events. The kernel th=
-en sends the login request over to the target node
-   g. Once login response with success is received, it enters into full fea=
-ture phase and sets the negotiable parameters like max_recv_data_length, ma=
-x_transmit_length, data_digest etc .
-3. While setting the negotiable parameters by calling "iscsi_session_set_ne=
-g_params()", kernel panicked as sock was NULL
+	arch/x86/include/asm/intel-family.h
 
-What happened here is
----------------------
-1. Before initiator received the login response mentioned in above point 2.=
-f.v, another reopen request was sent from the error handler/sync session fo=
-r the same session, as the initiator utils was in main loop to process furt=
-her events (as mentioned in point 2.f.vi above).
-2. While processing this reopen, it stopped the connection which released t=
-he socket and queued this connection and at this point of time the login re=
-sponse was received for the earlier on
-
-Fix
----
-
-1. Create a flag "set_param_fail" in iscsi_cls_conn structure 2. On ep_disc=
-onnect and stop_conn set this flag to indicate set_param calls for connecti=
-on level settings should fail 3. This way, scsi_transport_iscsi can set and=
- check this bit for all drivers 2. On bind_conn clear the bit
-
-Signed-off-by: Gulam Mohamed <gulam.mohamed@oracle.com>
----
- drivers/scsi/scsi_transport_iscsi.c | 6 ++++++  include/scsi/scsi_transpor=
-t_iscsi.h | 3 +++
- 2 files changed, 9 insertions(+)
-
-diff --git a/drivers/scsi/scsi_transport_iscsi.c b/drivers/scsi/scsi_transp=
-ort_iscsi.c
-index 2e68c0a87698..15c5a7223a40 100644
---- a/drivers/scsi/scsi_transport_iscsi.c
-+++ b/drivers/scsi/scsi_transport_iscsi.c
-@@ -2473,6 +2473,8 @@ static void iscsi_if_stop_conn(struct iscsi_cls_conn =
-*conn, int flag)
- =09 * it works.
- =09 */
- =09mutex_lock(&conn_mutex);
-+=09if (!test_bit(ISCSI_SET_PARAM_FAIL_BIT, &conn->set_param_fail))
-+=09=09set_bit(ISCSI_SET_PARAM_FAIL_BIT, &conn->set_param_fail);
- =09conn->transport->stop_conn(conn, flag);
- =09mutex_unlock(&conn_mutex);
-=20
-@@ -2895,6 +2897,8 @@ iscsi_set_param(struct iscsi_transport *transport, st=
-ruct iscsi_uevent *ev)
- =09=09=09session->recovery_tmo =3D value;
- =09=09break;
- =09default:
-+=09=09if (test_bit(ISCSI_SET_PARAM_FAIL_BIT, &conn->set_param_fail))
-+=09=09=09return -ENOTCONN;
- =09=09err =3D transport->set_param(conn, ev->u.set_param.param,
- =09=09=09=09=09   data, ev->u.set_param.len);
- =09}
-@@ -2956,6 +2960,7 @@ static int iscsi_if_ep_disconnect(struct iscsi_transp=
-ort *transport,
- =09=09mutex_lock(&conn->ep_mutex);
- =09=09conn->ep =3D NULL;
- =09=09mutex_unlock(&conn->ep_mutex);
-+=09=09set_bit(ISCSI_SET_PARAM_FAIL_BIT, &conn->set_param_fail);
- =09}
-=20
- =09transport->ep_disconnect(ep);
-@@ -3716,6 +3721,7 @@ iscsi_if_recv_msg(struct sk_buff *skb, struct nlmsghd=
-r *nlh, uint32_t *group)
- =09=09ev->r.retcode =3D=09transport->bind_conn(session, conn,
- =09=09=09=09=09=09ev->u.b_conn.transport_eph,
- =09=09=09=09=09=09ev->u.b_conn.is_leading);
-+=09=09clear_bit(ISCSI_SET_PARAM_FAIL_BIT, &conn->set_param_fail);
- =09=09mutex_unlock(&conn_mutex);
-=20
- =09=09if (ev->r.retcode || !transport->ep_connect) diff --git a/include/sc=
-si/scsi_transport_iscsi.h b/include/scsi/scsi_transport_iscsi.h
-index 8a26a2ffa952..71b1952b913b 100644
---- a/include/scsi/scsi_transport_iscsi.h
-+++ b/include/scsi/scsi_transport_iscsi.h
-@@ -29,6 +29,8 @@ struct bsg_job;
- struct iscsi_bus_flash_session;
- struct iscsi_bus_flash_conn;
-=20
-+#define ISCSI_SET_PARAM_FAIL_BIT=091
-+
- /**
-  * struct iscsi_transport - iSCSI Transport template
-  *
-@@ -206,6 +208,7 @@ struct iscsi_cls_conn {
-=20
- =09struct device dev;=09=09/* sysfs transport/container device */
- =09enum iscsi_connection_state state;
-+=09unsigned long set_param_fail; /* set_param for connection should fail=
-=20
-+*/
- };
-=20
- #define iscsi_dev_to_conn(_dev) \
---
-2.27.0
-
-Regards,
-Gulam Mohamed.
-
------Original Message-----
-From: Michael Christie=20
-Sent: Tuesday, November 24, 2020 4:37 AM
-To: Gulam Mohamed <gulam.mohamed@oracle.com>
-Cc: Lee Duncan <lduncan@suse.com>; Chris Leech <cleech@redhat.com>; James E=
-.J. Bottomley <jejb@linux.ibm.com>; Martin K. Petersen <martin.petersen@ora=
-cle.com>; open-iscsi@googlegroups.com; linux-scsi@vger.kernel.org; linux-ke=
-rnel@vger.kernel.org; Junxiao Bi <junxiao.bi@oracle.com>
-Subject: Re: [PATCH] iscsi: Do Not set param when sock is NULL
-
-
-
-> On Nov 4, 2020, at 11:40 PM, Gulam Mohamed <gulam.mohamed@oracle.com> wro=
-te:
->=20
-> Description
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D
-> 1. This Kernel panic could be due to a timing issue when there is a race =
-between the sync thread and the initiator was processing of a login respons=
-e from the target. The session re-open can be invoked from two places
->          a.=09Sessions sync thread when the iscsid restart
->          b.=09From iscsid through iscsi error handler
-> 2. The session reopen sequence is as follows in user-space (iscsi-initiat=
-or-utils)
->          a.=09Disconnect the connection
->          b.=09Then send the stop connection request to the kernel which r=
-eleases the connection (releases the socket)
->          c.=09Queues the reopen for 2 seconds delay
->         d.=09Once the delay expires, create the TCP connection again by c=
-alling the connect() call
->         e.=09Poll for the connection
->          f.=09When poll is successful i.e when the TCP connection is esta=
-blished, it performs
-> =09i. Creation of session and connection data structures
-> =09ii. Bind the connection to the session. This is the place where we ass=
-ign the sock to tcp_sw_conn->sock
-> =09iii. Sets the parameters like target name, persistent address etc .
-> =09iv. Creates the login pdu
-> =09v. Sends the login pdu to kernel
-> =09vi. Returns to the main loop to process further events. The kernel the=
-n sends the login request over to the target node
-> =09g. Once login response with success is received, it enters into full f=
-eature phase and sets the negotiable parameters like max_recv_data_length, =
-max_transmit_length, data_digest etc .
-> 3. While setting the negotiable parameters by calling=20
-> "iscsi_session_set_neg_params()", kernel panicked as sock was NULL
->=20
-> What happened here is
-> --------------------------------
-> 1.=09Before initiator received the login response mentioned in above poin=
-t 2.f.v, another reopen request was sent from the error handler/sync sessio=
-n for the same session, as the initiator utils was in main loop to process =
-further events (as=20
-> =09mentioned in point 2.f.vi above).=20
-> 2.=09While processing this reopen, it stopped the connection which releas=
-ed the socket and queued this connection and at this point of time the logi=
-n response was received for the earlier one
-
-
-To make sure I got this you are saying before iscsi_sw_tcp_conn_stop calls =
-iscsi_sw_tcp_release_conn that the recv path has called iscsi_recv_pdu righ=
-t?
-
-
-> 3.=09The kernel passed over this response to user-space which then sent t=
-he set_neg_params request to kernel
-> 4.=09As the connection was stopped, the sock was NULL and hence while the=
- kernel was processing the set param request from user-space, it panicked
->=20
-> Fix
-> ----
-> 1.=09While setting the set_param in kernel, we need to check if sock is N=
-ULL
-> 2.=09If the sock is NULL, then return EPERM (operation not permitted)
-> 3.=09Due to this error handler will be invoked in user-space again to rec=
-over the session
->=20
-> Signed-off-by: Gulam Mohamed <gulam.mohamed@oracle.com>
-> Reviewed-by: Junxiao Bi <junxiao.bi@oracle.com>
-> ---
-> diff --git a/drivers/scsi/iscsi_tcp.c b/drivers/scsi/iscsi_tcp.c index=20
-> df47557a02a3..fd668a194053 100644
-> --- a/drivers/scsi/iscsi_tcp.c
-> +++ b/drivers/scsi/iscsi_tcp.c
-> @@ -711,6 +711,12 @@ static int iscsi_sw_tcp_conn_set_param(struct iscsi_=
-cls_conn *cls_conn,
->        struct iscsi_tcp_conn *tcp_conn =3D conn->dd_data;
->        struct iscsi_sw_tcp_conn *tcp_sw_conn =3D tcp_conn->dd_data;
->=20
-> +       if (!tcp_sw_conn->sock) {
-> +               iscsi_conn_printk(KERN_ERR, conn,
-> +                               "Cannot set param as sock is NULL\n");
-> +               return -ENOTCONN;
-> +       }
-> +
-
-I think this might have 2 issues:
-
-1. It only fixes iscsi_tcp. What about other drivers that free/null resourc=
-es/fields in ep_disconnect that we layer need to access in the set_param ca=
-llback (the cxgbi drivers)?
-
-2. What about drivers that do not free/null fields (be2iscsi, bnx2i, ql4xxx=
- and qedi) so the set_param calls end up just working. What state will user=
-space be in where we have logged in, but iscsid also thinks we are in the m=
-iddle of trying to login?
-
-I think we could do:
-
-1. On ep_disconnect and stop_conn set some iscsi_cls_conn bit that indicate=
-s set_param calls for connection level settings should fail. scsi_transport=
-_iscsi could set and check this bit for all drivers.
-2. On bind_conn clear the bit.
+for examples.
