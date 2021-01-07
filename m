@@ -2,153 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD6BB2EC825
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 03:37:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 698CF2EC828
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 03:40:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726790AbhAGChc convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 6 Jan 2021 21:37:32 -0500
-Received: from mail-eopbgr1300091.outbound.protection.outlook.com ([40.107.130.91]:35838
-        "EHLO APC01-HK2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726687AbhAGChb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Jan 2021 21:37:31 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=RpD5liAk095yLPxK2T4kCRBImOfsW+3gFQ7vK6N1OYP2syUOVBzSbzLnNub009K6AgK7V0tFzUL0bdUf4lggds4Vtfla7s5bMjNh4FGviDMFhebN/+eO68a91mXCzx9TttU63lN1Aog7699P0PFiriy3SfbuPOHRPx4JmMK2mWPBktRvYS+D2YzyeeTTgdRRca+A+vG1x8NYXi2xu9qmrKAElOBbdqMgM1fmPQHcAdPUTkdwd5nuYvpMyh/jIVSepMwNJVZI6xWc/scpm/LPJb9LTqX3FYeuDYDlmDO2p3vXJ0DF+6S0Wd7ThGNQ7isYqgMxa298HgZN6Jvt32i53g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=/PjrzBT2z9im296jXVBbhYJe7Oft6hi+Xam1CoRgfxw=;
- b=aJK2QBhBt4QL9ejnZa6nKrjv08CfD2+Rq3zIn2TfL5uv5sCrEaw5ApsZtUxYM0ZvJkBctg7x3fs52ii7P2dVAadsgTpNGQhDrwjUnTP9GqkRZujuffne5dKsu0CXWNCx5ctNfDRxB2FXbvw41WKsew4gjGWgsSqw1RRPakb6VimvsgjOR85CcKXVUrSjGx36PGYIS0SLmdDZFylVO19+JfMJ7uOXtjLO5dWzUTxFg57O1TUfFuEfQh2yGL6Lq/Gfge+esie2Dw0qD7jdXY3um9qT8MrG8/IJQTUMB2DIigtwJMvL8ci4XRWlsSJ9Ju055DB0oVsvSWsE3g90iC6wkw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=aspeedtech.com; dmarc=pass action=none
- header.from=aspeedtech.com; dkim=pass header.d=aspeedtech.com; arc=none
-Received: from HK0PR06MB3779.apcprd06.prod.outlook.com (2603:1096:203:b8::10)
- by HK0PR06MB2819.apcprd06.prod.outlook.com (2603:1096:203:30::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3721.20; Thu, 7 Jan
- 2021 02:35:55 +0000
-Received: from HK0PR06MB3779.apcprd06.prod.outlook.com
- ([fe80::7061:73d9:50ae:b35e]) by HK0PR06MB3779.apcprd06.prod.outlook.com
- ([fe80::7061:73d9:50ae:b35e%7]) with mapi id 15.20.3721.024; Thu, 7 Jan 2021
- 02:35:55 +0000
-From:   ChiaWei Wang <chiawei_wang@aspeedtech.com>
-To:     Rob Herring <robh@kernel.org>
-CC:     "joel@jms.id.au" <joel@jms.id.au>,
-        "andrew@aj.id.au" <andrew@aj.id.au>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "maz@kernel.org" <maz@kernel.org>,
-        "p.zabel@pengutronix.de" <p.zabel@pengutronix.de>,
-        "linux-aspeed@lists.ozlabs.org" <linux-aspeed@lists.ozlabs.org>,
-        "openbmc@lists.ozlabs.org" <openbmc@lists.ozlabs.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        BMC-SW <BMC-SW@aspeedtech.com>
-Subject: RE: [PATCH 5/6] soc: aspeed: Add eSPI driver
-Thread-Topic: [PATCH 5/6] soc: aspeed: Add eSPI driver
-Thread-Index: AQHW4/EGoESQVzUaJEaOOPEvbJ+dwKoaukYAgAC4MiA=
-Date:   Thu, 7 Jan 2021 02:35:55 +0000
-Message-ID: <HK0PR06MB377987E19F57E53CC4F32FF991AF0@HK0PR06MB3779.apcprd06.prod.outlook.com>
-References: <20210106055939.19386-1-chiawei_wang@aspeedtech.com>
- <20210106055939.19386-6-chiawei_wang@aspeedtech.com>
- <20210106153202.GA2258036@robh.at.kernel.org>
-In-Reply-To: <20210106153202.GA2258036@robh.at.kernel.org>
-Accept-Language: zh-TW, en-US
-Content-Language: zh-TW
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=aspeedtech.com;
-x-originating-ip: [211.20.114.70]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: f884026d-687f-48f1-c7f3-08d8b2b4f590
-x-ms-traffictypediagnostic: HK0PR06MB2819:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <HK0PR06MB2819B9BDBD331F87D863723A91AF0@HK0PR06MB2819.apcprd06.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:8273;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: XvKta+2Yf8s1UBBeUHLlOhEC9ScPW4m4YL6jM7ay+EPglCITYNlhFqN5c7kcwkOkme0mtkKaaQdfMLh/C+sWciZu6wphl3oMjHgtTG+jxC6JG6IlFCveXCOqTBs+sOSOZ22RWbQJLx1OdPD7RQnj4BXlD/26nwVrwfNkzKaLT6KPQfMQFBxwgGJ1ShgT36R3RUE69SrFuKFfYn+wmg2Os9iW7bzhDrVWGi5q6RZtQ8pZqxz0vm9BV+7ASYLiK9Wv8pxOzy8CM53eB/mFm89h1mlM60Sx5wV0jvu7CKUC1AdsjCLZ4GOvyTY7KZCPUaYeo2YyRDLBgmKrWwip+YB6BBgD2ZXqi2NEuRygc0N0lwHdqFYABS+Qc8IUqFWZY28x408fcFu4EfieOMR+pf9GgQ==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:HK0PR06MB3779.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(136003)(396003)(39840400004)(346002)(376002)(366004)(54906003)(66476007)(71200400001)(66446008)(66556008)(66946007)(64756008)(83380400001)(33656002)(478600001)(76116006)(55016002)(86362001)(9686003)(7416002)(6916009)(8936002)(52536014)(107886003)(26005)(6506007)(186003)(316002)(8676002)(53546011)(55236004)(2906002)(7696005)(5660300002)(4326008);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: =?us-ascii?Q?prWSocsdHj/06c4eASnPIWHRhQ+2mcCz+CkFZ7ocdpZQD5PLpXzu53B5SXol?=
- =?us-ascii?Q?NQECg1f3Ygnsv/84OwacJIFbvEbu4VahglGbDqvsP6MFr3SjPO4dGQ2BTMqM?=
- =?us-ascii?Q?CCopEiUaBKZLs1UB9WH5zV+cKcXh71GHjOO2f5a6d4C+oevBbUypV7o1VDEn?=
- =?us-ascii?Q?1BVVvUDCo12p3FjcUwLFo7udfv92UsXlzBvbR3pAK+2MO9OTmd2Z8cTZIBkJ?=
- =?us-ascii?Q?LmoIWA2y5D+oaTF0xo5kp2ml7nPW//cg2SFUzJ+7gs8KKWm6CzeiEZ/IOMWI?=
- =?us-ascii?Q?4QBsHsqeZnDc3biHHgr5Fa6jH1GbCkhPy7SLyY/dffr7iiLKyGszK8Ymm5Ya?=
- =?us-ascii?Q?B4DkMecgdOQ7UM0jkOsallnzJKi9WQfWtTmAlrn0CZ85SWV7ELhBrDn3bdEC?=
- =?us-ascii?Q?tvlj0OTqJwvve9scSLtKEzVKdWToY5d3255hFDB06rBWDG9Cf88QnoiUxFjc?=
- =?us-ascii?Q?Kt92Pran4mBRL7lgl7d1IpqV5dpyQYHYwNlHZfGLWHdKL6x9YBj5qkYEi93u?=
- =?us-ascii?Q?JPy84gYTImuxbVcPlxpefGpdMvAgOCqQtVoWr4/kmV/qte5JK9LAzhJishVH?=
- =?us-ascii?Q?lRsRjnzVhjxDjWR5PS50Ol1DSGwnxV3gawctPzyuYk2gG021x+BFn4RORlI/?=
- =?us-ascii?Q?NVoorC6yd3oa8icWTUqyltYV+0KypUCkpFUnUQuROW1YJGguWTq/4NzR2O9v?=
- =?us-ascii?Q?FnJd0ELIVili6VwPP/6+N0UmbZt1vlpNcpqVvbdbnZ7K05F+SCHcfta0ggjx?=
- =?us-ascii?Q?cJl28zZwHg0SKlzl9V5thU+ImuvdA0Ltxp+koDum6j3/V3AwxpcmyrWrQnng?=
- =?us-ascii?Q?9IPIdtUsik4CMwZvGGkdd0xYEHa3jSYXXLBDcfRGwbbnZW3BH4seS9E6Q4A9?=
- =?us-ascii?Q?Ah2vV69tEKgDk6Dk8Ii8HIqjwM0bD8Y/BX5bSi/hjM1E751lxB9BWWWnkFna?=
- =?us-ascii?Q?7xRQaZEoIrbkEF3Fm8Zrsj/THJsDGqLrEql3Hm53f+8=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        id S1726874AbhAGCjs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Jan 2021 21:39:48 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:27424 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726723AbhAGCjs (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 Jan 2021 21:39:48 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1609987102;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=P+QXdNKmRS/r+PXKz582NlhSIlxrJQLOOsv8NwtWn7s=;
+        b=YtZb01Mkz9Nz4lg3HrFjXlPOmXxxa7z+zeYPWElNUHy37z8NGtrxY3dn9QUA1fPlThmlzi
+        LhsF2BELA1kIShtHnflKz4ddm/qG4+IDrqQk6pcpO0lC0WjM7d3RmjUxl5uik+QoMjaBdX
+        z4ZTql3BZ+Y0slBC/KN/McIrV2kWYs8=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-450-oxxrwXkxPLSe8408U34oAA-1; Wed, 06 Jan 2021 21:38:18 -0500
+X-MC-Unique: oxxrwXkxPLSe8408U34oAA-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9CFCE800D53;
+        Thu,  7 Jan 2021 02:38:16 +0000 (UTC)
+Received: from starship (unknown [10.35.206.22])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 899EC27C3C;
+        Thu,  7 Jan 2021 02:38:12 +0000 (UTC)
+Message-ID: <4e9db353de15333e17e023c91e2e0b4ec3d880c7.camel@redhat.com>
+Subject: Re: [PATCH 2/2] KVM: nVMX: fix for disappearing L1->L2 event
+ injection on L1 migration
+From:   Maxim Levitsky <mlevitsk@redhat.com>
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     kvm@vger.kernel.org, Joerg Roedel <joro@8bytes.org>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        "open list:X86 ARCHITECTURE (32-BIT AND 64-BIT)" 
+        <linux-kernel@vger.kernel.org>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Jim Mattson <jmattson@google.com>,
+        Thomas Gleixner <tglx@linutronix.de>
+Date:   Thu, 07 Jan 2021 04:38:11 +0200
+In-Reply-To: <X/X+1q6H/q1Ez6zE@google.com>
+References: <20210106105306.450602-1-mlevitsk@redhat.com>
+         <20210106105306.450602-3-mlevitsk@redhat.com> <X/X+1q6H/q1Ez6zE@google.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.5 (3.36.5-1.fc32) 
 MIME-Version: 1.0
-X-OriginatorOrg: aspeedtech.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: HK0PR06MB3779.apcprd06.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: f884026d-687f-48f1-c7f3-08d8b2b4f590
-X-MS-Exchange-CrossTenant-originalarrivaltime: 07 Jan 2021 02:35:55.5429
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 43d4aa98-e35b-4575-8939-080e90d5a249
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: PRQ11b0V11Z021sUdojzkyBQWhahI2Jm3Bit/AePw5LyaeYZXh6uJV7u/Of4kbTBX683GlQQtTOfGzRJdxgnaevYdsDgN99cE67CoOYFyPE=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: HK0PR06MB2819
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rob,
-
-> -----Original Message-----
-> From: Rob Herring <robh@kernel.org>
-> Sent: Wednesday, January 6, 2021 11:32 PM
-> To: ChiaWei Wang <chiawei_wang@aspeedtech.com>
-> Subject: Re: [PATCH 5/6] soc: aspeed: Add eSPI driver
+On Wed, 2021-01-06 at 10:17 -0800, Sean Christopherson wrote:
+> On Wed, Jan 06, 2021, Maxim Levitsky wrote:
+> > If migration happens while L2 entry with an injected event to L2 is pending,
+> > we weren't including the event in the migration state and it would be
+> > lost leading to L2 hang.
 > 
-> On Wed, Jan 06, 2021 at 01:59:38PM +0800, Chia-Wei, Wang wrote:
-> > The Aspeed eSPI controller is slave device to communicate with the
-> > master through the Enhanced Serial Peripheral Interface (eSPI).
-> > All of the four eSPI channels, namely peripheral, virtual wire,
-> > out-of-band, and flash are supported.
-> >
-> > Signed-off-by: Chia-Wei, Wang <chiawei_wang@aspeedtech.com>
+> But the injected event should still be in vmcs12 and KVM_STATE_NESTED_RUN_PENDING
+> should be set in the migration state, i.e. it should naturally be copied to
+> vmcs02 and thus (re)injected by vmx_set_nested_state().  Is nested_run_pending
+> not set?  Is the info in vmcs12 somehow lost?  Or am I off in left field...
+
+
+You are completely right. 
+The injected event can be copied like that since the vmc(b|s)12 is migrated.
+
+We can safely disregard both these two patches and the parallel two patches for SVM.
+I am almost sure that the real root cause of this bug was that we 
+weren't restoring the nested run pending flag, and I even 
+happened to fix this in this patch series.
+
+This is the trace of the bug (I removed the timestamps to make it easier to read)
+
+
+kvm_exit:             vcpu 0 reason vmrun rip 0xffffffffa0688ffa info1 0x0000000000000000 info2 0x0000000000000000 intr_info 0x00000000 error_code 0x00000000
+kvm_nested_vmrun:     rip: 0xffffffffa0688ffa vmcb: 0x0000000103594000 nrip: 0xffffffff814b3b01 int_ctl: 0x01000001 event_inj: 0x80000036 npt: on
+																^^^ this is the injection
+kvm_nested_intercepts: cr_read: 0010 cr_write: 0010 excp: 00060042 intercepts: bc4c8027 00006e7f 00000000
+kvm_fpu:              unload
+kvm_userspace_exit:   reason KVM_EXIT_INTR (10)
+
+============================================================================
+migration happens here
+============================================================================
+
+...
+kvm_async_pf_ready:   token 0xffffffff gva 0
+kvm_apic_accept_irq:  apicid 0 vec 243 (Fixed|edge)
+
+kvm_nested_intr_vmexit: rip: 0x000000000000fff0
+
+^^^^^ this is the nested vmexit that shouldn't have happened, since nested run is pending,
+and which erased the eventinj field which was migrated correctly just like you say.
+
+kvm_nested_vmexit_inject: reason: interrupt ext_inf1: 0x0000000000000000 ext_inf2: 0x0000000000000000 ext_int: 0x00000000 ext_int_err: 0x00000000
+...
+
+
+We did notice that this vmexit had a wierd RIP and I 
+even explained this later to myself,
+that this is the default RIP which we put to vmcb, 
+and it wasn't yet updated, since it updates just prior to vm entry.
+
+My test already survived about 170 iterations (usually it crashes after 20-40 iterations)
+I am leaving the stress test running all night, let see if it survives.
+
+V2 of the patches is on the way.
+
+Thanks again for the help!
+
+Best regards,
+	Maxim Levitsky
+
+>  
+> > Fix this by queueing the injected event in similar manner to how we queue
+> > interrupted injections.
+> > 
+> > This can be reproduced by running an IO intense task in L2,
+> > and repeatedly migrating the L1.
+> > 
+> > Suggested-by: Paolo Bonzini <pbonzini@redhat.com>
+> > Signed-off-by: Maxim Levitsky <mlevitsk@redhat.com>
 > > ---
-> >  drivers/soc/aspeed/Kconfig                  |  49 ++
-> >  drivers/soc/aspeed/Makefile                 |   5 +
-> >  drivers/soc/aspeed/aspeed-espi-ctrl.c       | 197 ++++++
-> >  drivers/soc/aspeed/aspeed-espi-flash.c      | 490 ++++++++++++++
-> >  drivers/soc/aspeed/aspeed-espi-oob.c        | 706
-> ++++++++++++++++++++
-> >  drivers/soc/aspeed/aspeed-espi-peripheral.c | 613 +++++++++++++++++
-> >  drivers/soc/aspeed/aspeed-espi-vw.c         | 211 ++++++
-> >  include/uapi/linux/aspeed-espi.h            | 160 +++++
-> >  8 files changed, 2431 insertions(+)
-> >  create mode 100644 drivers/soc/aspeed/aspeed-espi-ctrl.c
-> >  create mode 100644 drivers/soc/aspeed/aspeed-espi-flash.c
-> >  create mode 100644 drivers/soc/aspeed/aspeed-espi-oob.c
-> >  create mode 100644 drivers/soc/aspeed/aspeed-espi-peripheral.c
-> >  create mode 100644 drivers/soc/aspeed/aspeed-espi-vw.c
-> 
-> drivers/spi/ is the correct location for a SPI controller.
-> 
-> >  create mode 100644 include/uapi/linux/aspeed-espi.h
-> 
-> This userspace interface is not going to be accepted upstream.
-> 
-> I'd suggest you look at similar SPI flash capable SPI controller drivers upstream
-> and model your driver after them. This looks like it needs major reworking.
-> 
-eSPI resues the timing and electrical specification of SPI but runs completely different protocol.
-Only the flash channel is related to SPI and the other 3 channels are for EC/BMC/SIO.
-Therefore, an eSPI driver might not fit into the SPI model.
+> >  arch/x86/kvm/vmx/nested.c | 12 ++++++------
+> >  1 file changed, 6 insertions(+), 6 deletions(-)
+> > 
+> > diff --git a/arch/x86/kvm/vmx/nested.c b/arch/x86/kvm/vmx/nested.c
+> > index e2f26564a12de..2ea0bb14f385f 100644
+> > --- a/arch/x86/kvm/vmx/nested.c
+> > +++ b/arch/x86/kvm/vmx/nested.c
+> > @@ -2355,12 +2355,12 @@ static void prepare_vmcs02_early(struct vcpu_vmx *vmx, struct vmcs12 *vmcs12)
+> >  	 * Interrupt/Exception Fields
+> >  	 */
+> >  	if (vmx->nested.nested_run_pending) {
+> > -		vmcs_write32(VM_ENTRY_INTR_INFO_FIELD,
+> > -			     vmcs12->vm_entry_intr_info_field);
+> > -		vmcs_write32(VM_ENTRY_EXCEPTION_ERROR_CODE,
+> > -			     vmcs12->vm_entry_exception_error_code);
+> > -		vmcs_write32(VM_ENTRY_INSTRUCTION_LEN,
+> > -			     vmcs12->vm_entry_instruction_len);
+> > +		if ((vmcs12->vm_entry_intr_info_field & VECTORING_INFO_VALID_MASK))
+> > +			vmx_process_injected_event(&vmx->vcpu,
+> > +						   vmcs12->vm_entry_intr_info_field,
+> > +						   vmcs12->vm_entry_instruction_len,
+> > +						   vmcs12->vm_entry_exception_error_code);
+> > +
+> >  		vmcs_write32(GUEST_INTERRUPTIBILITY_INFO,
+> >  			     vmcs12->guest_interruptibility_info);
+> >  		vmx->loaded_vmcs->nmi_known_unmasked =
+> > -- 
+> > 2.26.2
+> > 
 
-Chiawei
+
