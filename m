@@ -2,104 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 55F1C2EC857
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 03:52:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 439FF2EC858
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 03:55:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726620AbhAGCw0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Jan 2021 21:52:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60412 "EHLO
+        id S1726658AbhAGCxl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Jan 2021 21:53:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60602 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726260AbhAGCw0 (ORCPT
+        with ESMTP id S1725789AbhAGCxk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Jan 2021 21:52:26 -0500
-Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7BCFC0612F0
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Jan 2021 18:51:45 -0800 (PST)
-Received: by mail-ej1-x629.google.com with SMTP id w1so7692635ejf.11
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Jan 2021 18:51:45 -0800 (PST)
+        Wed, 6 Jan 2021 21:53:40 -0500
+Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84042C0612EF
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Jan 2021 18:53:00 -0800 (PST)
+Received: by mail-pg1-x52d.google.com with SMTP id g15so3792346pgu.9
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Jan 2021 18:53:00 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=8LO5/Phbq28+31YDa1UZ1eQndglIwHyPOPdAo8T96Wc=;
-        b=HQhQLnWS/ZJhdarKXSdd9H4qvqQ2V+N1W+bmCj0unK8v+b1kFb1bhI3HaS9/i50hzT
-         kjnzni0TONbDtitbOV6IQqx+GH4UXTeabroXuypuTDDPupJ76lnHJOx66Ubp1AM2qBCP
-         DdR/dJqziE60ULJpT4G1r7LtGQ4lkufUh1z85qvdRuzVd1H+YkUGZ32a4e6wu7cQF2AT
-         qZI51OWODB4y0r+MMljmwvkatkq2Ym0xpyzFNmpM89mXs0bwDHxVo5YocIdmCoyUEgPk
-         pn769EBOtvuoqxUfOSg3D7K1mvP8t0awPntTVNXSxKKzJka6xeC11b4yjF7HNVm95RtS
-         ujHg==
+        bh=xjM/12FZ440jYsJkVJrWv4LsYWfcjGwNNBn9yloYJhQ=;
+        b=AmbNg67TWQuuAe08RuN+7R2vJB69lMLJRGhpJ/K1pSCxw8TJUTOQQYXadvlMBZ2EpW
+         DwzK57DTuLMA7YvnQ+aHMi0/YIhtDU+9FDz/1p4qlqtaBzF30xazKzFdzE5ObatvUIa3
+         YHADcrUF+7BCL4QGvaXltlXz71cJ1n1GXSqxHbnJZq0R5ZP+VIoMKIIkgyfsg96RoBs4
+         rvA6CbrTYLFl8yyy/K1GJ/iIPF6xgfEfcPpHStj8iMZvYLGcon1nE31CUQiGSFPeDI+W
+         D09cpTTipC1sT6OJ6eNNUKeeHw61rUmuj6Mkv/+IMMQvasYBTqBm32CCKzq14Bsjf9Ri
+         VgJA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=8LO5/Phbq28+31YDa1UZ1eQndglIwHyPOPdAo8T96Wc=;
-        b=FuSO5bvjJWv/9lOdpoxRWfnDqsCSjLQAx2oXnfxiBWZh3ljHQ6dvpDWT0EAu/+Ulp5
-         1qoZGjjhhnWRb+K07od+JDWnIK2ILz4EZda3mr+ravtcJYbwXQKIWXM+a2j794ARm2W9
-         YcLlBjzG43kKgCEFq5oLJ9k+wJBwm8dW4wfL5gtUQ1r/niWZwkwC+c1wTNxqdp3i9G0C
-         eCTH1g80CxFpBlAXvy8F30apq14930Lhl35Xj6Qwf2scKeO9YdQ+S6WsCWQ5jJI0Nmo0
-         Cu87oFs3WXYN6/tWq4uAdvmY9pSc9qDF5S6MZFqiMRoofMdLHsfWJZLqFjMvfNa/BpML
-         juHw==
-X-Gm-Message-State: AOAM531H210C+weYqGMee9USdPlIqKBwfsX4PvQ7veBh0h35NcjZo48K
-        ylIImMeQ5FyYw0evtnOOOmEtxGZumVdQXlm5EWM=
-X-Google-Smtp-Source: ABdhPJzTIJZrgbwShljzLzrtpDr7Vf+8G5j4QQqhPuCnMXI9QmwqyOOOU6SGWBdt80TvLjY0rucjD3/iZWMmlgN8ZXw=
-X-Received: by 2002:a17:906:417:: with SMTP id d23mr4922263eja.19.1609987904487;
- Wed, 06 Jan 2021 18:51:44 -0800 (PST)
+        bh=xjM/12FZ440jYsJkVJrWv4LsYWfcjGwNNBn9yloYJhQ=;
+        b=CJGEUe9Qle1PBSSb9K+fytc915YcO69NAkp55BSCU9BhoPF+DTkmm7b9vRo5IVz+4r
+         7h0vsouboyB5zENq6o3WG0GntueEbx18c/LVrI8neQqkwktGpLTJnb4EdfR3f7Vn645s
+         kIoV8+6oDsdybwybFpuRo3Fgx9vmdzqWMiONglVOZSyypG1CyPqLzpgA+pnIzvv1Q1sA
+         2MfiCw0E1SEHYZPVCnxntXUd0B4gSEFjuvWOnH0n6921wN3gBn8erm0itnGBBDoO1hRc
+         CwHjOX4sfVUKBRiXkgniCx4ji++E3kTPkas76WFasFdJLTipuYhjjxCF8o+Qdbe+FkYv
+         LGVg==
+X-Gm-Message-State: AOAM531V9gspqWxrEhO3+7rxPPN7KcSeKeVgIOHSipFphvocaZewjlOL
+        pBoSs6Qc2dW6hByfA/oqWHPn7HhLUqyScYcZ7uur0obfupqsHDzaj+M=
+X-Google-Smtp-Source: ABdhPJwQ6lLwtKUmB5u0bfXMnFW/1FXwZEG1smcYuzInOoacCoij6J4Pd4ZSgfvOX2D82Fr+7TSTGXafXy2ks+cOigw=
+X-Received: by 2002:aa7:979d:0:b029:1a4:3b76:a559 with SMTP id
+ o29-20020aa7979d0000b02901a43b76a559mr6601863pfp.49.1609987979866; Wed, 06
+ Jan 2021 18:52:59 -0800 (PST)
 MIME-Version: 1.0
-References: <20201223062412.343-1-zhenzhong.duan@gmail.com> <20210104190240.GF6029@char.us.oracle.com>
-In-Reply-To: <20210104190240.GF6029@char.us.oracle.com>
-From:   Zhenzhong Duan <zhenzhong.duan@gmail.com>
-Date:   Thu, 7 Jan 2021 10:51:33 +0800
-Message-ID: <CAFH1YnP5p0o+Ux9O_VXtx2QFYQjc16tzsR4txJdA8pm-WmtORQ@mail.gmail.com>
-Subject: Re: [PATCH] x86/iommu: Fix two minimal issues in check_iommu_entries()
-To:     Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
-Cc:     linux-kernel <linux-kernel@vger.kernel.org>, zhongjiang@huawei.com,
-        joe@perches.com, Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        iommu@lists.linux-foundation.org,
-        David Woodhouse <dwmw2@infradead.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        Joerg Roedel <joro@8bytes.org>, will@kernel.org
+References: <20210106084739.63318-1-songmuchun@bytedance.com>
+ <20210106084739.63318-2-songmuchun@bytedance.com> <20210106161327.GR13207@dhcp22.suse.cz>
+In-Reply-To: <20210106161327.GR13207@dhcp22.suse.cz>
+From:   Muchun Song <songmuchun@bytedance.com>
+Date:   Thu, 7 Jan 2021 10:52:21 +0800
+Message-ID: <CAMZfGtUTkeeswiS8M1aq67JXztrjQwzqd0aZ9cgvgPZEEQQPEQ@mail.gmail.com>
+Subject: Re: [External] Re: [PATCH v2 1/6] mm: migrate: do not migrate HugeTLB
+ page whose refcount is one
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Mike Kravetz <mike.kravetz@oracle.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Naoya Horiguchi <n-horiguchi@ah.jp.nec.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Yang Shi <shy828301@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 5, 2021 at 3:04 AM Konrad Rzeszutek Wilk
-<konrad.wilk@oracle.com> wrote:
+On Thu, Jan 7, 2021 at 12:13 AM Michal Hocko <mhocko@suse.com> wrote:
 >
-> On Wed, Dec 23, 2020 at 02:24:12PM +0800, Zhenzhong Duan wrote:
-> > check_iommu_entries() checks for cyclic dependency in iommu entries
-> > and fixes the cyclic dependency by setting x->depend to NULL. But
-> > this repairing isn't correct if q is in front of p, there will be
-> > "EXECUTION ORDER INVALID!" report following. Fix it by NULLing
-> > whichever in the front.
-> >
-> > The second issue is about the report of exectuion order reverse,
-> > the order is reversed incorrectly in the report, fix it.
+> On Wed 06-01-21 16:47:34, Muchun Song wrote:
+> > If the refcount is one when it is migrated, it means that the page
+> > was freed from under us. So we are done and do not need to migrate.
 >
-> Heya!
->
-> When you debugged this, did you by any chance save the
-> serial logs and the debug logs to double-check it?
+> Is this common enough that it would warrant the explicit check for each
+> migration?
 
-Hi Konrad,
+Are you worried about the overhead caused by the check? Thanks.
 
-The iommu_table_entry is sorted by sort_iommu_table() and
-check_iommu_entries() finds nothing abnormal,
-so there is no related logs to check.
-
-Sorry for my poor english, I'm not saying there is order reverse, even
-if there is, it will be repaired by sort_iommu_table(). Then
-check_iommu_entries() report nothing.
-What I mean is about check_iommu_entries() itself, below printk isn't correct.
-
-printk(KERN_ERR "EXECUTION ORDER INVALID! %pS should be called before %pS!\n",
-                               p->detect, q->detect);
-
-Should be:
-
-printk(KERN_ERR "EXECUTION ORDER INVALID! %pS should be called before %pS!\n",
-                               q->detect, p->detect);
-
-Regards
-Zhenzhong
+> --
+> Michal Hocko
+> SUSE Labs
