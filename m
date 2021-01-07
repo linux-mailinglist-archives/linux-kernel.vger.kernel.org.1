@@ -2,153 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C5E892ED3D8
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 17:02:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 94E0C2ED3D6
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 17:02:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728026AbhAGQBr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 11:01:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42408 "EHLO
+        id S1728219AbhAGQCN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 11:02:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42480 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725965AbhAGQBr (ORCPT
+        with ESMTP id S1725965AbhAGQCM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 11:01:47 -0500
-Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0370C0612F4
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Jan 2021 08:01:06 -0800 (PST)
-Received: by mail-lf1-x129.google.com with SMTP id 23so15657512lfg.10
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Jan 2021 08:01:06 -0800 (PST)
+        Thu, 7 Jan 2021 11:02:12 -0500
+Received: from mail-vs1-xe34.google.com (mail-vs1-xe34.google.com [IPv6:2607:f8b0:4864:20::e34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A13A2C0612F5
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Jan 2021 08:01:32 -0800 (PST)
+Received: by mail-vs1-xe34.google.com with SMTP id h18so3807945vsg.8
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Jan 2021 08:01:32 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
+        d=chromium.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=HbH1SU/ruZ1vJXPdJiQDwDjioZXlaRMWkVmWvW//4OY=;
-        b=QrEGzhhRgk+vhoHJ3PAEhz50M+p5lrffCNc+dUoxhM2OXVD/uCEhB82SsQDQiSyoIP
-         PcyTcqgdLFNXVb0Y19uLS+9M0YWMnTLfobm9+WUdka2pxcYX0ru4i3XsFdLJgYsBI0Bp
-         N/ggWaFUMDAlQc4Vew5Nc/64TXk3WDqFUjN7dp69DwTfWGtUt96qiDYDiR9yd+iYfVAA
-         8EuP3QsraeOnDH6G/Pve5UJm3CbKQKKjsSRhMrgzp7Hi5XVJNeB+tlpFIYLQxeO4sBg+
-         LBL8e3AvWIllDcyTznEZlSd+Qudo/j6HnoiauJ/xG0Eyhu7zHD2asal1zRGEcSZHJnR0
-         65yg==
+        bh=JVKKP8zyOhDGnVR/3YtVW7x0rMfq/5w74jBHoVaOHoM=;
+        b=YzKeDedpF1bzFmpNO1agtIykqm2SpYPV+ylY3RIdrRWg5SSRe2e/uEqNZYOB/46vwq
+         qv1EwNw4g/C/7UwIgET0XB4Q/sLp9J9wV0c4OysveHLbf6HduIEgPt9od1onfYInUFeC
+         I7E1ppEiLKlUPYfQL8nOB1v6B1DOMhv0EOq/U=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=HbH1SU/ruZ1vJXPdJiQDwDjioZXlaRMWkVmWvW//4OY=;
-        b=LLwjR0nbJCbniOG6ZNxAL3ylGQKyfG9l22DDdW7hZEXzEIyZsujy0ahe8d43Z+6zJM
-         OZUm+Kh/K8D6TtlSol3P3gZYlvVJLG++nWugwnlls/jAlowmPwE37nGT2HbHJRuVKJh0
-         e/2NhY1zmm5V+6jqerKHFh7FarUF6LJJ4ln88Aq6ZIhI/wfyacS+RZO+Fcmk//s+MWXI
-         H9MgmicjyrrJMuRjHVlUjefx7Ceaevivdd/ljJ6ElPiSve6m75qeMAcheIYbGabhKM7S
-         98Yj45QdkMimpqiftVnlqLvKi2/ZoPnMFyidfF6RNu6RxtwBwMwuvRiU4q0lM3hnPRwZ
-         magg==
-X-Gm-Message-State: AOAM53007YKJ3SoQ4Usy1v5Md5dv438a4eRblZDaos7Gl8RhvpQ/Ljrg
-        p+gKYxzY63QubFdqchjUC+wSXQD4nWNjzEqxTw0JvQ==
-X-Google-Smtp-Source: ABdhPJyQIUS/iml4N4Cs8h84Xxoecy/E5sNS2fjPk+wosruwjf15v6cU6AS7Y+7LAkKKJMN5KifyXYGXxFMQ8r9fG0g=
-X-Received: by 2002:ac2:4d91:: with SMTP id g17mr4003001lfe.254.1610035264994;
- Thu, 07 Jan 2021 08:01:04 -0800 (PST)
+        bh=JVKKP8zyOhDGnVR/3YtVW7x0rMfq/5w74jBHoVaOHoM=;
+        b=I5WF11fb9/vfXRmFXX8oAT9e6xjypKd0Ko1wtTsDJsm5hfI6E+GSeJUtW9LN/YMnb8
+         T1iV0FzxsCgkpEgLbLpNIPcssVySOHNvzUiVttbxt4PrSBf01hay/wUnY9fWi0J6UkjI
+         P+GziNNHu8eljZ3WixbLmp1ja15aUYuDZmcrlGB9TrrSdzgJl9sxJ5IPlrMxViD5xsxZ
+         he6zWl3YFnexE3fhsuP56Hl+UekyMGCdsJhqjavYwIDO2z4KbalSwCV0j8nXw3aBt4/M
+         vV6SKfrB0uh10j4GtIbrBLYoYXXxc/9Eh2RhnCjlAlDrsZePchzSBWFMtMZUAATDgPx7
+         1/QA==
+X-Gm-Message-State: AOAM530Cckrznsed5gCUbNL48seCMsQ143vXTkRomksEGXdpshOUdEfj
+        /2f31i0gXGupY6FLUFV2In9zV8VNSaCTew==
+X-Google-Smtp-Source: ABdhPJzqC/wN2DsmgxLZ1Tdv/7wbJdd4YN6shYJFX/QB830QhI7uWBkgYOaaRc3D2uj6gVJOYCVtHQ==
+X-Received: by 2002:a67:bd0a:: with SMTP id y10mr7512890vsq.28.1610035291474;
+        Thu, 07 Jan 2021 08:01:31 -0800 (PST)
+Received: from mail-ua1-f50.google.com (mail-ua1-f50.google.com. [209.85.222.50])
+        by smtp.gmail.com with ESMTPSA id j8sm808923vsn.33.2021.01.07.08.01.29
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 07 Jan 2021 08:01:30 -0800 (PST)
+Received: by mail-ua1-f50.google.com with SMTP id y21so2413345uag.2
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Jan 2021 08:01:29 -0800 (PST)
+X-Received: by 2002:ab0:35fa:: with SMTP id w26mr8049339uau.90.1610035289548;
+ Thu, 07 Jan 2021 08:01:29 -0800 (PST)
 MIME-Version: 1.0
-References: <20210107103325.30851-1-vincent.guittot@linaro.org>
- <20210107103325.30851-3-vincent.guittot@linaro.org> <BN8PR12MB2978EC9CFBAF529C527D05919AAF0@BN8PR12MB2978.namprd12.prod.outlook.com>
-In-Reply-To: <BN8PR12MB2978EC9CFBAF529C527D05919AAF0@BN8PR12MB2978.namprd12.prod.outlook.com>
-From:   Vincent Guittot <vincent.guittot@linaro.org>
-Date:   Thu, 7 Jan 2021 17:00:53 +0100
-Message-ID: <CAKfTPtBrqZQevDmV6QhoOhbdKGSe-AogkjaRNogxQKq_NTiOwQ@mail.gmail.com>
-Subject: Re: [PATCH 2/3 v2] sched/fair: don't set LBF_ALL_PINNED unnecessarily
-To:     Tao Zhou <ouwen210@hotmail.com>
-Cc:     Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>
+References: <1610008770-13891-1-git-send-email-mkshah@codeaurora.org>
+In-Reply-To: <1610008770-13891-1-git-send-email-mkshah@codeaurora.org>
+From:   Doug Anderson <dianders@chromium.org>
+Date:   Thu, 7 Jan 2021 08:01:17 -0800
+X-Gmail-Original-Message-ID: <CAD=FV=WbvfbU4G2H1a1LrG=fwASn3wscHwOymvO1uJwU8aH70Q@mail.gmail.com>
+Message-ID: <CAD=FV=WbvfbU4G2H1a1LrG=fwASn3wscHwOymvO1uJwU8aH70Q@mail.gmail.com>
+Subject: Re: [PATCH v3] soc: qcom: rpmh: Remove serialization of TCS commands
+To:     Maulik Shah <mkshah@codeaurora.org>
+Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Andy Gross <agross@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Lina Iyer <ilina@codeaurora.org>,
+        Srinivas Rao L <lsrao@codeaurora.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 7 Jan 2021 at 16:08, Tao Zhou <ouwen210@hotmail.com> wrote:
->
-> Hi Vincent,
->
-> On Thu, Jan 07, 2021 at 11:33:24AM +0100, Vincent Guittot wrote:
-> > Setting LBF_ALL_PINNED during active load balance is only valid when there
-> > is only 1 running task on the rq otherwise this ends up increasing the
-> > balance interval whereas other tasks could migrate after the next interval
-> > once they become cache-cold as an example.
-> >
-> > LBF_ALL_PINNED flag is now always set it by default. It is then cleared
-> > when we find one task that can be pulled when calling detach_tasks() or
-> > during active migration.
-> >
-> > Signed-off-by: Vincent Guittot <vincent.guittot@linaro.org>
-> > ---
-> >  kernel/sched/fair.c | 7 +++++--
-> >  1 file changed, 5 insertions(+), 2 deletions(-)
-> >
-> > diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> > index 5428b8723e61..a3515dea1afc 100644
-> > --- a/kernel/sched/fair.c
-> > +++ b/kernel/sched/fair.c
-> > @@ -9626,6 +9626,8 @@ static int load_balance(int this_cpu, struct rq *this_rq,
-> >       env.src_rq = busiest;
-> >
-> >       ld_moved = 0;
-> > +     /* Clear this flag as soon as we find a pullable task */
-> > +     env.flags |= LBF_ALL_PINNED;
-> >       if (busiest->nr_running > 1) {
-> >               /*
-> >                * Attempt to move tasks. If find_busiest_group has found
-> > @@ -9633,7 +9635,6 @@ static int load_balance(int this_cpu, struct rq *this_rq,
-> >                * still unbalanced. ld_moved simply stays zero, so it is
-> >                * correctly treated as an imbalance.
-> >                */
-> > -             env.flags |= LBF_ALL_PINNED;
-> >               env.loop_max  = min(sysctl_sched_nr_migrate, busiest->nr_running);
-> >
-> >  more_balance:
-> > @@ -9759,10 +9760,12 @@ static int load_balance(int this_cpu, struct rq *this_rq,
-> >                       if (!cpumask_test_cpu(this_cpu, busiest->curr->cpus_ptr)) {
-> >                               raw_spin_unlock_irqrestore(&busiest->lock,
-> >                                                           flags);
-> > -                             env.flags |= LBF_ALL_PINNED;
->
-> busiest->nr_running > 1, LBF_ALL_PINNED cleared but !ld_moved and get here.
-> This is not consistent with the tip sched code because the original code
-> from this path unconditionally set LBF_ALL_PINNED. But is this intentional
-> to not increase balance interval and allow other tasks migrate not in the
-> next balance interval.
->
-> In v1, there was a condition here to allow that only one task running on rq
-> can set LBF_ALL_PINNED. But in v2, when busiest->nr_running > 1, !ld_moved,
-> LBF_ALL_PINNED is not cleared and can get here. Increase the balance interval.
-> Not consist with v1. If I am not wrong, need a condition like:
->
->   if (busiest->nr_running != 1 /* && env.flags & LBF_ALL_PINNED */)
->       env.flags &= ~LBF_ALL_PINNED;
+Hi,
 
-if (nr_running > 1) then LBF_ALL_PINNED can't be set when we reach the
-active migration  (if (!ld_moved) { ...) because we go to
-out_all_pinned if LBF_ALL_PINNED is set and we tried all cpus of the
-sched_group
+On Thu, Jan 7, 2021 at 12:39 AM Maulik Shah <mkshah@codeaurora.org> wrote:
+>
+> From: Lina Iyer <ilina@codeaurora.org>
+>
+> Requests sent to RPMH can be sent as fire-n-forget or response required,
+> with the latter ensuring the command has been completed by the hardware
+> accelerator. Commands in a request with tcs_cmd::wait set, would ensure
+> that those select commands are sent as response required, even though
+> the actual TCS request may be fire-n-forget.
+>
+> Also, commands with .wait flag were also guaranteed to be complete
+> before the following command in the TCS is sent. This means that the
+> next command of the same request blocked until the current request is
+> completed. This could mean waiting for a voltage to settle or series of
+> NOCs be configured before the next command is sent. But drivers using
+> this feature have never cared about the serialization aspect. By not
+> enforcing the serialization we can allow the hardware to run in parallel
+> improving the performance.
+>
+> Let's clarify the usage of this member in the tcs_cmd structure to mean
+> only completion and not serialization. This should also improve the
+> performance of bus requests where changes could happen in parallel.
+> Also, CPU resume from deep idle may see benefits from certain wake
+> requests.
+>
+> Signed-off-by: Lina Iyer <ilina@codeaurora.org>
+> Signed-off-by: Maulik Shah <mkshah@codeaurora.org>
+> ---
+> Changes in v3:
+> - Update the comment in include/soc/qcom/tcs.h
+> - Update to keep req->wait_for_compl as is irq handler
+>
+> Changes in v2:
+> - Add SoB of self
+> - Fix typo in comment
+> - Update comment as Doug suggested
+> - Remove write to RSC_DRV_CMD_WAIT_FOR_CMPL in tcs_write() and
+>   tcs_invalidate()
+> ---
+>  drivers/soc/qcom/rpmh-rsc.c | 22 +++++++++-------------
+>  include/soc/qcom/tcs.h      |  9 ++++++++-
+>  2 files changed, 17 insertions(+), 14 deletions(-)
 
->
-> I hope this is not a noise to this new thread.
->
-> Thanks,
-> Tao
->
-> > once they become cache-cold as an example
->
-> >                               goto out_one_pinned;
-> >                       }
-> >
-> > +                     /* Record that we found atleast one task that could run on this_cpu */
-> > +                     env.flags &= ~LBF_ALL_PINNED;
-> > +
-> >                       /*
-> >                        * ->active_balance synchronizes accesses to
-> >                        * ->active_balance_work.  Once set, it's cleared
-> > --
-> > 2.17.1
-> >
+Reviewed-by: Douglas Anderson <dianders@chromium.org>
