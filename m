@@ -2,156 +2,244 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 42F392ECE6B
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 12:07:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 048232ECE74
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 12:10:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727590AbhAGLGl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 06:06:41 -0500
-Received: from www62.your-server.de ([213.133.104.62]:43364 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726151AbhAGLGk (ORCPT
+        id S1727954AbhAGLJe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 06:09:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53366 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726822AbhAGLJa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 06:06:40 -0500
-Received: from sslproxy02.your-server.de ([78.47.166.47])
-        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92.3)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1kxT6o-0009mh-Vb; Thu, 07 Jan 2021 12:05:39 +0100
-Received: from [85.7.101.30] (helo=pc-9.home)
-        by sslproxy02.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1kxT6o-000QhI-Ia; Thu, 07 Jan 2021 12:05:38 +0100
-Subject: Re: [PATCH net v2] net: fix use-after-free when UDP GRO with shared
- fraglist
-To:     Dongseok Yi <dseok.yi@samsung.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Willem de Bruijn <willemb@google.com>
-Cc:     Jakub Kicinski <kuba@kernel.org>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Florian Westphal <fw@strlen.de>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Guillaume Nault <gnault@redhat.com>,
-        Yunsheng Lin <linyunsheng@huawei.com>,
-        Steffen Klassert <steffen.klassert@secunet.com>,
-        Yadu Kishore <kyk.segfault@gmail.com>,
-        Marco Elver <elver@google.com>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, namkyu78.kim@samsung.com
-References: <1609750005-115609-1-git-send-email-dseok.yi@samsung.com>
- <CGME20210107005028epcas2p35dfa745fd92e31400024874f54243556@epcas2p3.samsung.com>
- <1609979953-181868-1-git-send-email-dseok.yi@samsung.com>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <83a2b288-c0b2-ed98-9479-61e1cbe25519@iogearbox.net>
-Date:   Thu, 7 Jan 2021 12:05:36 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        Thu, 7 Jan 2021 06:09:30 -0500
+Received: from mail-qv1-xf36.google.com (mail-qv1-xf36.google.com [IPv6:2607:f8b0:4864:20::f36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3EBE0C0612F5;
+        Thu,  7 Jan 2021 03:09:10 -0800 (PST)
+Received: by mail-qv1-xf36.google.com with SMTP id p5so2569983qvs.7;
+        Thu, 07 Jan 2021 03:09:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=QiltxrUYrf0bVMIP9HbxN9GwYp1fqxWzzhDW62N0l4g=;
+        b=bgGA8ztjwm3ylYzmfMPM6NzTYvXhpm7nBg4TwZqz7KzmyjG31owyDiHTLUiFH33jx/
+         hinW2w0KkZ7EFqEo8WAzze6E3RspiV6KNvVioAh8tKwRNkQBGdA66UPPhpq0aZhKuKjf
+         IZfxbgQ32y1gf7by80iesraxDgI1DESKe+jPAw97cqLZPSbEy59NfMlZp+GQDB0NAPbc
+         bJ85Av/txRKjz4zwP4t1oilqoR+3tirxqlUFmQWBn+VUmVQBNY73VOmua0etFoeUMWJV
+         5krh/7zjBul9cxqkPHkMFljRWsdSfBdculZY2hHRfVHnYBbNN1BdZ2z5xrnnedA3cbyJ
+         AZCQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=QiltxrUYrf0bVMIP9HbxN9GwYp1fqxWzzhDW62N0l4g=;
+        b=PsqfnHLkdwy49iMpjyvU0XGm/lcHY8gIVeXBsDDE9h8joB3A13yU6PNYspyGSfHouh
+         ScKw991lYJGCy1cLSYFBotTpiyNC1n810nZEjobFDD04N6UNobytvn/VceXIiy87L8qH
+         jmuJFtbHiDIBpv5D943FQR2zYzIcxF9j/hz2UFvu/bPcGlOdtqkB8xIzWIWVxBPZlZMk
+         psp5nc50yTQC5Y8gpqS21gLKxIFxK2j5mabrWTpoBjPQDgMHvTQlymbURs6tPPoIB5vv
+         go/erLYaM3SROHy1iniLtfyS1+ogqxcD6WGrwDDrfAZPpc3CoPmgtT6ZYraDgHmHKaNI
+         9Nrw==
+X-Gm-Message-State: AOAM530ks/Hu/PpFLbv1VC0ATzAQbIUcB/Qsd2pIF3XVuzk4ffj1V9Pl
+        xRxB3ELuAMmddpYrLIr9tH9aR2+eRcVN+Vyuz1PFJm5tw4uFUg==
+X-Google-Smtp-Source: ABdhPJyUjXJKjT4naI60958bxVTPxbguSzBomuXj5zZv+dhfjxE/I7o/wzGKuPPtAqpxuEJPi3dxK8S7Zt3guWXXZLs=
+X-Received: by 2002:a0c:f1ce:: with SMTP id u14mr1393819qvl.24.1610017749417;
+ Thu, 07 Jan 2021 03:09:09 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <1609979953-181868-1-git-send-email-dseok.yi@samsung.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.102.4/26041/Wed Jan  6 13:36:32 2021)
+References: <1607591258-13865-1-git-send-email-yejune.deng@gmail.com> <CAH2r5mvgjFWwEcqt8nfiU_1GJQUU7jN=eNT-t6SBEK8jke0Msg@mail.gmail.com>
+In-Reply-To: <CAH2r5mvgjFWwEcqt8nfiU_1GJQUU7jN=eNT-t6SBEK8jke0Msg@mail.gmail.com>
+From:   Yejune Deng <yejune.deng@gmail.com>
+Date:   Thu, 7 Jan 2021 19:08:58 +0800
+Message-ID: <CABWKuGUj41Qa-y_cApNNvLfTQPLJi2adr+ZKN6RpwFoemskoKg@mail.gmail.com>
+Subject: Re: [PATCH] cifs: fix msleep() is imprecise
+To:     Steve French <smfrench@gmail.com>
+Cc:     Steve French <sfrench@samba.org>,
+        CIFS <linux-cifs@vger.kernel.org>,
+        samba-technical <samba-technical@lists.samba.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 1/7/21 1:39 AM, Dongseok Yi wrote:
-> skbs in fraglist could be shared by a BPF filter loaded at TC. It
-> triggers skb_ensure_writable -> pskb_expand_head ->
-> skb_clone_fraglist -> skb_get on each skb in the fraglist.
-> 
-> While tcpdump, sk_receive_queue of PF_PACKET has the original fraglist.
-> But the same fraglist is queued to PF_INET (or PF_INET6) as the fraglist
-> chain made by skb_segment_list.
-> 
-> If the new skb (not fraglist) is queued to one of the sk_receive_queue,
-> multiple ptypes can see this. The skb could be released by ptypes and
-> it causes use-after-free.
-> 
-> [ 4443.426215] ------------[ cut here ]------------
-> [ 4443.426222] refcount_t: underflow; use-after-free.
-> [ 4443.426291] WARNING: CPU: 7 PID: 28161 at lib/refcount.c:190
-> refcount_dec_and_test_checked+0xa4/0xc8
-> [ 4443.426726] pstate: 60400005 (nZCv daif +PAN -UAO)
-> [ 4443.426732] pc : refcount_dec_and_test_checked+0xa4/0xc8
-> [ 4443.426737] lr : refcount_dec_and_test_checked+0xa0/0xc8
-> [ 4443.426808] Call trace:
-> [ 4443.426813]  refcount_dec_and_test_checked+0xa4/0xc8
-> [ 4443.426823]  skb_release_data+0x144/0x264
-> [ 4443.426828]  kfree_skb+0x58/0xc4
-> [ 4443.426832]  skb_queue_purge+0x64/0x9c
-> [ 4443.426844]  packet_set_ring+0x5f0/0x820
-> [ 4443.426849]  packet_setsockopt+0x5a4/0xcd0
-> [ 4443.426853]  __sys_setsockopt+0x188/0x278
-> [ 4443.426858]  __arm64_sys_setsockopt+0x28/0x38
-> [ 4443.426869]  el0_svc_common+0xf0/0x1d0
-> [ 4443.426873]  el0_svc_handler+0x74/0x98
-> [ 4443.426880]  el0_svc+0x8/0xc
-> 
-> Fixes: 3a1296a38d0c (net: Support GRO/GSO fraglist chaining.)
-> Signed-off-by: Dongseok Yi <dseok.yi@samsung.com>
-> Acked-by: Willem de Bruijn <willemb@google.com>
-> ---
->   net/core/skbuff.c | 20 +++++++++++++++++++-
->   1 file changed, 19 insertions(+), 1 deletion(-)
-> 
-> v2: Expand the commit message to clarify a BPF filter loaded
-> 
-> diff --git a/net/core/skbuff.c b/net/core/skbuff.c
-> index f62cae3..1dcbda8 100644
-> --- a/net/core/skbuff.c
-> +++ b/net/core/skbuff.c
-> @@ -3655,7 +3655,8 @@ struct sk_buff *skb_segment_list(struct sk_buff *skb,
->   	unsigned int delta_truesize = 0;
->   	unsigned int delta_len = 0;
->   	struct sk_buff *tail = NULL;
-> -	struct sk_buff *nskb;
-> +	struct sk_buff *nskb, *tmp;
-> +	int err;
->   
->   	skb_push(skb, -skb_network_offset(skb) + offset);
->   
-> @@ -3665,11 +3666,28 @@ struct sk_buff *skb_segment_list(struct sk_buff *skb,
->   		nskb = list_skb;
->   		list_skb = list_skb->next;
->   
-> +		err = 0;
-> +		if (skb_shared(nskb)) {
-> +			tmp = skb_clone(nskb, GFP_ATOMIC);
-> +			if (tmp) {
-> +				kfree_skb(nskb);
+No=E3=80=82I just see Documentation/timers/timers-howto.rst and don't
+recommend using msleep() for (1ms - 20ms). It recommends using
+usleep_range(). And fsleep() is flexible sleeping.
 
-Should use consume_skb() to not trigger skb:kfree_skb tracepoint when looking
-for drops in the stack.
 
-> +				nskb = tmp;
-> +				err = skb_unclone(nskb, GFP_ATOMIC);
-
-Could you elaborate why you also need to unclone? This looks odd here. tc layer
-(independent of BPF) from ingress & egress side generally assumes unshared skb,
-so above clone + dropping ref of nskb looks okay to make the main skb struct private
-for mangling attributes (e.g. mark) & should suffice. What is the exact purpose of
-the additional skb_unclone() in this context?
-
-> +			} else {
-> +				err = -ENOMEM;
-> +			}
-> +		}
-> +
->   		if (!tail)
->   			skb->next = nskb;
->   		else
->   			tail->next = nskb;
->   
-> +		if (unlikely(err)) {
-> +			nskb->next = list_skb;
-> +			goto err_linearize;
-> +		}
-> +
->   		tail = nskb;
->   
->   		delta_len += nskb->len;
-> 
-
+On Wed, Jan 6, 2021 at 12:27 PM Steve French <smfrench@gmail.com> wrote:
+>
+> This patch seems reasonable at first glance, but I was a little
+> concerned that we don't see many users yet of fsleep.  Has there been
+> pushback on converting "yield" situations from using msleep to fsleep?
+>
+> On Thu, Dec 10, 2020 at 3:09 AM Yejune Deng <yejune.deng@gmail.com> wrote=
+:
+> >
+> > See Documentation/timers/timers-howto.rst, msleep() is not
+> > for (1ms - 20ms), There is a more advanced API is used.
+> >
+> > Signed-off-by: Yejune Deng <yejune.deng@gmail.com>
+> > ---
+> >  fs/cifs/cifsfs.c    |  4 ++--
+> >  fs/cifs/connect.c   | 14 +++++++-------
+> >  fs/cifs/file.c      |  6 +++---
+> >  fs/cifs/smbdirect.c |  2 +-
+> >  4 files changed, 13 insertions(+), 13 deletions(-)
+> >
+> > diff --git a/fs/cifs/cifsfs.c b/fs/cifs/cifsfs.c
+> > index 472cb77..d35ce52 100644
+> > --- a/fs/cifs/cifsfs.c
+> > +++ b/fs/cifs/cifsfs.c
+> > @@ -664,10 +664,10 @@ static void cifs_umount_begin(struct super_block =
+*sb)
+> >                 cifs_dbg(FYI, "wake up tasks now - umount begin not com=
+plete\n");
+> >                 wake_up_all(&tcon->ses->server->request_q);
+> >                 wake_up_all(&tcon->ses->server->response_q);
+> > -               msleep(1); /* yield */
+> > +               fsleep(1000); /* yield */
+> >                 /* we have to kick the requests once more */
+> >                 wake_up_all(&tcon->ses->server->response_q);
+> > -               msleep(1);
+> > +               fsleep(1000);
+> >         }
+> >
+> >         return;
+> > diff --git a/fs/cifs/connect.c b/fs/cifs/connect.c
+> > index 44f9cce..62a9c64 100644
+> > --- a/fs/cifs/connect.c
+> > +++ b/fs/cifs/connect.c
+> > @@ -538,7 +538,7 @@ static inline int reconn_setup_dfs_targets(struct c=
+ifs_sb_info *cifs_sb,
+> >                 if (rc) {
+> >                         cifs_dbg(FYI, "reconnect error %d\n", rc);
+> >                         mutex_unlock(&server->srv_mutex);
+> > -                       msleep(3000);
+> > +                       ssleep(3);
+> >                 } else {
+> >                         atomic_inc(&tcpSesReconnectCount);
+> >                         set_credits(server, 1);
+> > @@ -621,7 +621,7 @@ static inline int reconn_setup_dfs_targets(struct c=
+ifs_sb_info *cifs_sb,
+> >                 server->bigbuf =3D (char *)cifs_buf_get();
+> >                 if (!server->bigbuf) {
+> >                         cifs_server_dbg(VFS, "No memory for large SMB r=
+esponse\n");
+> > -                       msleep(3000);
+> > +                       ssleep(3);
+> >                         /* retry will check if exiting */
+> >                         return false;
+> >                 }
+> > @@ -634,7 +634,7 @@ static inline int reconn_setup_dfs_targets(struct c=
+ifs_sb_info *cifs_sb,
+> >                 server->smallbuf =3D (char *)cifs_small_buf_get();
+> >                 if (!server->smallbuf) {
+> >                         cifs_server_dbg(VFS, "No memory for SMB respons=
+e\n");
+> > -                       msleep(1000);
+> > +                       ssleep(1);
+> >                         /* retry will check if exiting */
+> >                         return false;
+> >                 }
+> > @@ -729,7 +729,7 @@ static inline int reconn_setup_dfs_targets(struct c=
+ifs_sb_info *cifs_sb,
+> >                          * to clear and app threads to set tcpStatus
+> >                          * CifsNeedReconnect if server hung.
+> >                          */
+> > -                       usleep_range(1000, 2000);
+> > +                       fsleep(1000);
+> >                         length =3D 0;
+> >                         continue;
+> >                 }
+> > @@ -790,7 +790,7 @@ static inline int reconn_setup_dfs_targets(struct c=
+ifs_sb_info *cifs_sb,
+> >                  */
+> >                 cifs_dbg(FYI, "RFC 1002 negative session response\n");
+> >                 /* give server a second to clean up */
+> > -               msleep(1000);
+> > +               ssleep(1);
+> >                 /*
+> >                  * Always try 445 first on reconnect since we get NACK
+> >                  * on some if we ever connected to port 139 (the NACK
+> > @@ -944,7 +944,7 @@ static void clean_demultiplex_info(struct TCP_Serve=
+r_Info *server)
+> >                  * response and going ahead and killing cifsd.
+> >                  */
+> >                 cifs_dbg(FYI, "Wait for exit from demultiplex thread\n"=
+);
+> > -               msleep(46000);
+> > +               ssleep(46);
+> >                 /*
+> >                  * If threads still have not exited they are probably n=
+ever
+> >                  * coming home not much else we can do but free the mem=
+ory.
+> > @@ -3655,7 +3655,7 @@ static void rfc1002mangle(char *target, char *sou=
+rce, unsigned int length)
+> >                  * significant slowing down on mount
+> >                  * for everyone else
+> >                  */
+> > -               usleep_range(1000, 2000);
+> > +               fsleep(1000);
+> >         }
+> >         /*
+> >          * else the negprot may still work without this
+> > diff --git a/fs/cifs/file.c b/fs/cifs/file.c
+> > index be46fab..75538a8 100644
+> > --- a/fs/cifs/file.c
+> > +++ b/fs/cifs/file.c
+> > @@ -283,7 +283,7 @@ int cifs_posix_open(char *full_path, struct inode *=
+*pinode,
+> >  cifs_down_write(struct rw_semaphore *sem)
+> >  {
+> >         while (!down_write_trylock(sem))
+> > -               msleep(10);
+> > +               fsleep(10000);
+> >  }
+> >
+> >  static void cifsFileInfo_put_work(struct work_struct *work);
+> > @@ -2828,7 +2828,7 @@ size_t get_numpages(const size_t wsize, const siz=
+e_t len, size_t *cur_len)
+> >
+> >                         if (wsize < wdata->bytes) {
+> >                                 add_credits_and_wake_if(server, &credit=
+s, 0);
+> > -                               msleep(1000);
+> > +                               ssleep(1);
+> >                         }
+> >                 } while (wsize < wdata->bytes);
+> >                 wdata->credits =3D credits;
+> > @@ -3563,7 +3563,7 @@ static int cifs_resend_rdata(struct cifs_readdata=
+ *rdata,
+> >
+> >                         if (rsize < rdata->bytes) {
+> >                                 add_credits_and_wake_if(server, &credit=
+s, 0);
+> > -                               msleep(1000);
+> > +                               ssleep(1);
+> >                         }
+> >                 } while (rsize < rdata->bytes);
+> >                 rdata->credits =3D credits;
+> > diff --git a/fs/cifs/smbdirect.c b/fs/cifs/smbdirect.c
+> > index b029ed3..84f97f8 100644
+> > --- a/fs/cifs/smbdirect.c
+> > +++ b/fs/cifs/smbdirect.c
+> > @@ -1372,7 +1372,7 @@ void smbd_destroy(struct TCP_Server_Info *server)
+> >         wake_up_interruptible_all(&info->wait_mr);
+> >         while (atomic_read(&info->mr_used_count)) {
+> >                 mutex_unlock(&server->srv_mutex);
+> > -               msleep(1000);
+> > +               ssleep(1);
+> >                 mutex_lock(&server->srv_mutex);
+> >         }
+> >         destroy_mr_list(info);
+> > --
+> > 1.9.1
+> >
+>
+>
+> --
+> Thanks,
+>
+> Steve
