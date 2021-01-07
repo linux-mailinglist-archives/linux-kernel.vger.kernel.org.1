@@ -2,215 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 976622ED706
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 19:56:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A77FB2ED708
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 19:57:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729223AbhAGS4D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 13:56:03 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40216 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726326AbhAGS4C (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 13:56:02 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9C0E223428;
-        Thu,  7 Jan 2021 18:55:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610045721;
-        bh=4Y+zYG7GtFTHzLhMXO9T2m3GcbuSvFUk/1zbJfLgwSE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=HKLcQCJ4/lM6fCRf5mI/ev1NXaJ5HZkj4wL4xitnVLd3o9/Cx0Aa2y2tEy7yNc0NN
-         8WhQwRLXr1/+ueWTOpUzCyY7g9GkxZOppQDjHtwNwHdReTTxX/qjJveZ3/mD2KSRpG
-         pxI8rVhMH57xjvSKq5E8amM9D0KfKy2ntTN/kQFewdf/8WmOt9l0liHXJWdLgRWE/k
-         v88/8K+q9D1rJvUayLg6NyX/AclDHIG4LVgfko+UUUI0LvG/jga3Kv+NYN+//KUzs0
-         Hs+MtjmELbKt9I3hbEsV3O3bbxhjzBwAnx3Bbwxz7jAVlf6sE7THkGicyGFozUjXsH
-         4ecKbYqorKfTg==
-Date:   Thu, 7 Jan 2021 10:55:20 -0800
-From:   Jaegeuk Kim <jaegeuk@kernel.org>
-To:     Can Guo <cang@codeaurora.org>
-Cc:     linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org,
-        kernel-team@android.com, alim.akhtar@samsung.com,
-        avri.altman@wdc.com, bvanassche@acm.org,
-        martin.petersen@oracle.com, stanley.chu@mediatek.com
-Subject: Re: [PATCH v4 2/2] scsi: ufs: handle LINERESET with correct tm_cmd
-Message-ID: <X/dZGOvZ23S6rK+0@google.com>
-References: <20210107074710.549309-1-jaegeuk@kernel.org>
- <20210107074710.549309-3-jaegeuk@kernel.org>
- <03a47a3f49914230653bea777e2ee550@codeaurora.org>
- <X/bBX6t31BOfRG/i@google.com>
- <abce95b0eb219fb6dee50f925e8fdb36@codeaurora.org>
- <X/bKZDxl1HeelB1a@google.com>
- <3e2245953c143b55d512d46a16ed8a2c@codeaurora.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <3e2245953c143b55d512d46a16ed8a2c@codeaurora.org>
+        id S1729085AbhAGS4o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 13:56:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41650 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726326AbhAGS4n (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Jan 2021 13:56:43 -0500
+Received: from mail-pg1-x549.google.com (mail-pg1-x549.google.com [IPv6:2607:f8b0:4864:20::549])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B70B7C0612F4
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Jan 2021 10:56:03 -0800 (PST)
+Received: by mail-pg1-x549.google.com with SMTP id t17so5449711pgu.1
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Jan 2021 10:56:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=sender:date:in-reply-to:message-id:mime-version:references:subject
+         :from:to:cc;
+        bh=Rs0BbOafhHV4Dcur9iSUX1ae/IOL8F95TEfFD8pRkl0=;
+        b=UOoIuhcwmfKGhyH/Pi78u7JkbGmtv1SdsseJ020hvVbJbV42lqvQZo2kQgKoY+4Mvx
+         OBT8dAYuuXE/L0j0ZFomDQWEAgVPJ+2CkoWhle67GGrb+W2aiJJReGB8LSHJ5fDJJlvM
+         WnnqniZeHXYqPt/gxipYxBCHYJH6QeC4ZER/47kSUBP8MHpDSN+De4nWuS22xJ86Sb5+
+         F9Iqv18StRmIraKFSVtPlGi7j3/VhOtEt7gucmHa5dyjmqQ+UHsZ5pbxkC4U/MzGSpA4
+         JpDSAsulXNGWfF9G55gWWZ+da5Ew/syX5GQE4HYSwcWKbGKH7s0WSm9QBvkWVw9Ycnsa
+         rztw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
+         :references:subject:from:to:cc;
+        bh=Rs0BbOafhHV4Dcur9iSUX1ae/IOL8F95TEfFD8pRkl0=;
+        b=RGVZ5F7eY8EUT/dolgyCdIN2J6aKh7m+Kx0ocurAquMxzUe00R0vAZEeHk9bLbFYWm
+         XzfOgx7XIybW35TI19Xj+fSG89+tPLpk750Y/tza6X28nxJvHziZUDMi2CX+krbt/PMP
+         pq0Y/yFFRNtM12wsb3lPZda7BtMnGxf3tHX71qT51IyssZLFQm8QYxxXhmMyMZaWas2L
+         U2WK0TMUkPL/CeDBZcPAlQARJFIQNEAzrK/Gat3zjrnuikCHhpTgCpidvVIPgyV6imeV
+         P65Q8QV5FhxYMdj4fnFRPlLuJz4I2F7mymgChT+oHfPSCryTpNj77iJvI3NHj1/DScN8
+         3fxQ==
+X-Gm-Message-State: AOAM531GdX2CvPNV8E6WabjNDdaxQPep1MKlynmOBFHaOt9gcNSgaS/w
+        AHSnQXgvEkugx0zkFlLjydrWqqOqjlk9
+X-Google-Smtp-Source: ABdhPJwjcs/GBrhway2oGTdKlOJ674yzGlHXv4x74Mlc8jlI2FbIHJe9FEUjbPZMnxm8tOl7ALlYnB4fwZ/k
+Sender: "maskray via sendgmr" <maskray@maskray1.svl.corp.google.com>
+X-Received: from maskray1.svl.corp.google.com ([2620:15c:2ce:0:a6ae:11ff:fe11:4abb])
+ (user=maskray job=sendgmr) by 2002:a17:90a:7149:: with SMTP id
+ g9mr10484548pjs.12.1610045763206; Thu, 07 Jan 2021 10:56:03 -0800 (PST)
+Date:   Thu,  7 Jan 2021 10:55:55 -0800
+In-Reply-To: <20210107023145.GA3778412@ubuntu-m3-large-x86>
+Message-Id: <20210107185555.2781221-1-maskray@google.com>
+Mime-Version: 1.0
+References: <20210107023145.GA3778412@ubuntu-m3-large-x86>
+X-Mailer: git-send-email 2.29.2.729.g45daf8777d-goog
+Subject: [PATCH v2] x86: Treat R_386_PLT32 as R_386_PC32
+From:   Fangrui Song <maskray@google.com>
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org
+Cc:     linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com,
+        Fangrui Song <maskray@google.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Nathan Chancellor <natechancellor@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 01/07, Can Guo wrote:
-> On 2021-01-07 16:46, Jaegeuk Kim wrote:
-> > On 01/07, Can Guo wrote:
-> > > On 2021-01-07 16:07, Jaegeuk Kim wrote:
-> > > > On 01/07, Can Guo wrote:
-> > > > > On 2021-01-07 15:47, Jaegeuk Kim wrote:
-> > > > > > From: Jaegeuk Kim <jaegeuk@google.com>
-> > > > > >
-> > > > > > This fixes a warning caused by wrong reserve tag usage in
-> > > > > > __ufshcd_issue_tm_cmd.
-> > > > > >
-> > > > > > WARNING: CPU: 7 PID: 7 at block/blk-core.c:630 blk_get_request+0x68/0x70
-> > > > > > WARNING: CPU: 4 PID: 157 at block/blk-mq-tag.c:82
-> > > > > > blk_mq_get_tag+0x438/0x46c
-> > > > > >
-> > > > > > And, in ufshcd_err_handler(), we can avoid to send tm_cmd before
-> > > > > > aborting
-> > > > > > outstanding commands by waiting a bit for IO completion like this.
-> > > > > >
-> > > > > > __ufshcd_issue_tm_cmd: task management cmd 0x80 timed-out
-> > > > > >
-> > > > > > Fixes: 69a6c269c097 ("scsi: ufs: Use blk_{get,put}_request() to
-> > > > > > allocate and free TMFs")
-> > > > > > Fixes: 2355b66ed20c ("scsi: ufs: Handle LINERESET indication in err
-> > > > > > handler")
-> > > > >
-> > > > > Hi Jaegeuk,
-> > > > >
-> > > > > Sorry, what is wrong with commit 2355b66ed20c? Clearing pending I/O
-> > > > > reqs is a general procedure for handling all non-fatal errors.
-> > > >
-> > > > Without waiting IOs, I hit the below timeout all the time from
-> > > > LINERESET, which
-> > > > causes UFS stuck permanently, as mentioned in the description.
-> > > >
-> > > > "__ufshcd_issue_tm_cmd: task management cmd 0x80 timed-out"
-> > > 
-> > > In that case, ufshcd_try_to_abort_task(), the caller of
-> > > __ufshcd_issue_tm_cmd(),
-> > > should return -ETIMEOUT, then err_handler would jump to do a full
-> > > reset,
-> > > then bail.
-> > > I am not sure what gets UFS stuck permanently. Could you please
-> > > share the
-> > > callstack
-> > > if possible? I really want to know what is happening. Thanks.
-> > 
-> > I can't share all the log tho, it entered full reset. While printing out
-> > whole registers, the device was hard reset. Thanks,
-> 
-> Hi Jaegeuk,
-> 
-> Entering full reset is expected in this case, which is why I am saying
-> line-reset handling logic should not be penalized. I think we need to
-> find out what caused the hard reset but not just adding a delay before
-> clearing pending reqs, because let's say 3 sec expires and you hit the
-> same tm req timeout (maybe with a lower possibility), you may still end
-> up same at the hard reset. You don't need to share all the log, just the
-> last call stacks before hard reset. Is it a QCOM's platform used in your
-> case? Can you check the log/dump if NoC error happened?
+This is similar to commit b21ebf2fb4cd ("x86: Treat R_X86_64_PLT32 as
+R_X86_64_PC32"), but for i386.  As far as Linux kernel is concerned,
+R_386_PLT32 can be treated the same as R_386_PC32.
 
-Hi Can,
+R_386_PC32/R_X86_64_PC32 are PC-relative relocation types with the
+requirement that the symbol address is significant.
+R_386_PLT32/R_X86_64_PLT32 are PC-relative relocation types without the
+address significance requirement.
 
-I figured out it is caused by verbose kernel logs printed in terminal.
-I posted v5, so could you please review it?
+On x86-64, there is no PIC vs non-PIC PLT distinction and an
+R_X86_64_PLT32 relocation is produced for both `call/jmp foo` and
+`call/jmp foo@PLT` with newer (2018) GNU as/LLVM integrated assembler.
 
-Thanks,
+On i386, there are 2 types of PLTs, PIC and non-PIC. Currently the
+convention is to use R_386_PC32 for non-PIC PLT and R_386_PLT32 for PIC
+PLT, but R_386_PLT32 is arguably preferable for -fno-pic code as well:
+this can avoid a "canonical PLT entry" (st_shndx=0, st_value!=0) if the
+symbol turns out to be defined externally.
 
-> 
-> Thanks.
-> Can Guo.
-> 
-> > 
-> > > 
-> > > Regards,
-> > > Can Guo.
-> > > 
-> > > >
-> > > > >
-> > > > > Thanks,
-> > > > > Can Guo.
-> > > > >
-> > > > > > Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
-> > > > > > ---
-> > > > > >  drivers/scsi/ufs/ufshcd.c | 35 +++++++++++++++++++++++++++++++----
-> > > > > >  1 file changed, 31 insertions(+), 4 deletions(-)
-> > > > > >
-> > > > > > diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
-> > > > > > index e6e7bdf99cd7..340dd5e515dd 100644
-> > > > > > --- a/drivers/scsi/ufs/ufshcd.c
-> > > > > > +++ b/drivers/scsi/ufs/ufshcd.c
-> > > > > > @@ -44,6 +44,9 @@
-> > > > > >  /* Query request timeout */
-> > > > > >  #define QUERY_REQ_TIMEOUT 1500 /* 1.5 seconds */
-> > > > > >
-> > > > > > +/* LINERESET TIME OUT */
-> > > > > > +#define LINERESET_IO_TIMEOUT_MS			(30000) /* 30 sec */
-> > > > > > +
-> > > > > >  /* Task management command timeout */
-> > > > > >  #define TM_CMD_TIMEOUT	100 /* msecs */
-> > > > > >
-> > > > > > @@ -5826,6 +5829,7 @@ static void ufshcd_err_handler(struct work_struct
-> > > > > > *work)
-> > > > > >  	int err = 0, pmc_err;
-> > > > > >  	int tag;
-> > > > > >  	bool needs_reset = false, needs_restore = false;
-> > > > > > +	ktime_t start;
-> > > > > >
-> > > > > >  	hba = container_of(work, struct ufs_hba, eh_work);
-> > > > > >
-> > > > > > @@ -5911,6 +5915,22 @@ static void ufshcd_err_handler(struct work_struct
-> > > > > > *work)
-> > > > > >  	}
-> > > > > >
-> > > > > >  	hba->silence_err_logs = true;
-> > > > > > +
-> > > > > > +	/* Wait for IO completion for non-fatal errors to avoid aborting IOs
-> > > > > > */
-> > > > > > +	start = ktime_get();
-> > > > > > +	while (hba->outstanding_reqs) {
-> > > > > > +		ufshcd_complete_requests(hba);
-> > > > > > +		spin_unlock_irqrestore(hba->host->host_lock, flags);
-> > > > > > +		schedule();
-> > > > > > +		spin_lock_irqsave(hba->host->host_lock, flags);
-> > > > > > +		if (ktime_to_ms(ktime_sub(ktime_get(), start)) >
-> > > > > > +						LINERESET_IO_TIMEOUT_MS) {
-> > > > > > +			dev_err(hba->dev, "%s: timeout, outstanding=0x%lx\n",
-> > > > > > +					__func__, hba->outstanding_reqs);
-> > > > > > +			break;
-> > > > > > +		}
-> > > > > > +	}
-> > > > > > +
-> > > > > >  	/* release lock as clear command might sleep */
-> > > > > >  	spin_unlock_irqrestore(hba->host->host_lock, flags);
-> > > > > >  	/* Clear pending transfer requests */
-> > > > > > @@ -6302,9 +6322,13 @@ static irqreturn_t ufshcd_intr(int irq, void
-> > > > > > *__hba)
-> > > > > >  		intr_status = ufshcd_readl(hba, REG_INTERRUPT_STATUS);
-> > > > > >  	}
-> > > > > >
-> > > > > > -	if (enabled_intr_status && retval == IRQ_NONE) {
-> > > > > > -		dev_err(hba->dev, "%s: Unhandled interrupt 0x%08x\n",
-> > > > > > -					__func__, intr_status);
-> > > > > > +	if (enabled_intr_status && retval == IRQ_NONE &&
-> > > > > > +				!ufshcd_eh_in_progress(hba)) {
-> > > > > > +		dev_err(hba->dev, "%s: Unhandled interrupt 0x%08x (0x%08x,
-> > > > > > 0x%08x)\n",
-> > > > > > +					__func__,
-> > > > > > +					intr_status,
-> > > > > > +					hba->ufs_stats.last_intr_status,
-> > > > > > +					enabled_intr_status);
-> > > > > >  		ufshcd_dump_regs(hba, 0, UFSHCI_REG_SPACE_SIZE, "host_regs: ");
-> > > > > >  	}
-> > > > > >
-> > > > > > @@ -6348,7 +6372,10 @@ static int __ufshcd_issue_tm_cmd(struct ufs_hba
-> > > > > > *hba,
-> > > > > >  	 * Even though we use wait_event() which sleeps indefinitely,
-> > > > > >  	 * the maximum wait time is bounded by %TM_CMD_TIMEOUT.
-> > > > > >  	 */
-> > > > > > -	req = blk_get_request(q, REQ_OP_DRV_OUT, BLK_MQ_REQ_RESERVED);
-> > > > > > +	req = blk_get_request(q, REQ_OP_DRV_OUT, 0);
-> > > > > > +	if (IS_ERR(req))
-> > > > > > +		return PTR_ERR(req);
-> > > > > > +
-> > > > > >  	req->end_io_data = &wait;
-> > > > > >  	free_slot = req->tag;
-> > > > > >  	WARN_ON_ONCE(free_slot < 0 || free_slot >= hba->nutmrs);
+clang-12 -fno-pic (since
+https://github.com/llvm/llvm-project/commit/961f31d8ad14c66829991522d73e14b5a96ff6d4)
+can emit R_386_PLT32 for compiler produced symbols (if we drop
+-ffreestanding for CONFIG_X86_32, library call optimization can produce
+newer declarations) and future GCC -fno-pic may emit R_386_PLT32 as well
+if an option like -fno-direct-access-external-data is adopted to avoid
+canonical PLT entry/copy relocations.
+
+Link: https://github.com/ClangBuiltLinux/linux/issues/1210
+Link: https://github.com/llvm/llvm-project/commit/961f31d8ad14c66829991522d73e14b5a96ff6d4
+Link: https://gcc.gnu.org/bugzilla/show_bug.cgi?id=98112
+Reported-by: Arnd Bergmann <arnd@arndb.de>
+Signed-off-by: Fangrui Song <maskray@google.com>
+Reviewed-by: Nick Desaulniers <ndesaulniers@google.com>
+Reviewed-by: Nathan Chancellor <natechancellor@gmail.com>
+Tested-by: Nick Desaulniers <ndesaulniers@google.com>
+Tested-by: Nathan Chancellor <natechancellor@gmail.com>
+
+---
+Change in v2:
+* Improve commit message
+---
+ arch/x86/kernel/module.c | 1 +
+ arch/x86/tools/relocs.c  | 2 ++
+ 2 files changed, 3 insertions(+)
+
+diff --git a/arch/x86/kernel/module.c b/arch/x86/kernel/module.c
+index 34b153cbd4ac..5e9a34b5bd74 100644
+--- a/arch/x86/kernel/module.c
++++ b/arch/x86/kernel/module.c
+@@ -114,6 +114,7 @@ int apply_relocate(Elf32_Shdr *sechdrs,
+ 			*location += sym->st_value;
+ 			break;
+ 		case R_386_PC32:
++		case R_386_PLT32:
+ 			/* Add the value, subtract its position */
+ 			*location += sym->st_value - (uint32_t)location;
+ 			break;
+diff --git a/arch/x86/tools/relocs.c b/arch/x86/tools/relocs.c
+index ce7188cbdae5..717e48ca28b6 100644
+--- a/arch/x86/tools/relocs.c
++++ b/arch/x86/tools/relocs.c
+@@ -867,6 +867,7 @@ static int do_reloc32(struct section *sec, Elf_Rel *rel, Elf_Sym *sym,
+ 	case R_386_PC32:
+ 	case R_386_PC16:
+ 	case R_386_PC8:
++	case R_386_PLT32:
+ 		/*
+ 		 * NONE can be ignored and PC relative relocations don't
+ 		 * need to be adjusted.
+@@ -910,6 +911,7 @@ static int do_reloc_real(struct section *sec, Elf_Rel *rel, Elf_Sym *sym,
+ 	case R_386_PC32:
+ 	case R_386_PC16:
+ 	case R_386_PC8:
++	case R_386_PLT32:
+ 		/*
+ 		 * NONE can be ignored and PC relative relocations don't
+ 		 * need to be adjusted.
+-- 
+2.29.2.729.g45daf8777d-goog
+
