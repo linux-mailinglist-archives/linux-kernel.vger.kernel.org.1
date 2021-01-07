@@ -2,89 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 16BE22ED429
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 17:21:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A6C502ED430
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 17:23:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728060AbhAGQUo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 11:20:44 -0500
-Received: from verein.lst.de ([213.95.11.211]:41219 "EHLO verein.lst.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726294AbhAGQUo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 11:20:44 -0500
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id AF1D467373; Thu,  7 Jan 2021 17:20:00 +0100 (CET)
-Date:   Thu, 7 Jan 2021 17:20:00 +0100
-From:   Christoph Hellwig <hch@lst.de>
-To:     Satya Tangirala <satyat@google.com>
-Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christoph Hellwig <hch@lst.de>, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Jens Axboe <axboe@kernel.dk>
-Subject: Re: [PATCH] fs: Fix freeze_bdev()/thaw_bdev() accounting of
- bd_fsfreeze_sb
-Message-ID: <20210107162000.GA2693@lst.de>
-References: <20201224044954.1349459-1-satyat@google.com>
+        id S1728506AbhAGQWZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 11:22:25 -0500
+Received: from out30-133.freemail.mail.aliyun.com ([115.124.30.133]:51665 "EHLO
+        out30-133.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728331AbhAGQWZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Jan 2021 11:22:25 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R141e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04400;MF=wenyang@linux.alibaba.com;NM=1;PH=DS;RN=4;SR=0;TI=SMTPD_---0UL.6OEC_1610036498;
+Received: from IT-C02W23QPG8WN.local(mailfrom:wenyang@linux.alibaba.com fp:SMTPD_---0UL.6OEC_1610036498)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Fri, 08 Jan 2021 00:21:38 +0800
+Subject: Re: [PATCH v2 4.9 00/10] fix a race in release_task when flushing the
+ dentry
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Sasha Levin <sashal@kernel.org>,
+        Xunlei Pang <xlpang@linux.alibaba.com>,
+        linux-kernel@vger.kernel.org
+References: <20210107075222.62623-1-wenyang@linux.alibaba.com>
+ <X/b781Kwn48xq8aS@kroah.com>
+From:   Wen Yang <wenyang@linux.alibaba.com>
+Message-ID: <e0fa1641-d00b-acfc-91d7-9eb16fb61664@linux.alibaba.com>
+Date:   Fri, 8 Jan 2021 00:21:38 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
+ Gecko/20100101 Thunderbird/68.1.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201224044954.1349459-1-satyat@google.com>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+In-Reply-To: <X/b781Kwn48xq8aS@kroah.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Can someone pick this up?  Maybe through Jens' block tree as that is
-where my commit this is fixing up came from.
-
-For reference:
 
 
-Reviewed-by: Christoph Hellwig <hch@lst.de>
+在 2021/1/7 下午8:17, Greg Kroah-Hartman 写道:
+> On Thu, Jan 07, 2021 at 03:52:12PM +0800, Wen Yang wrote:
+>> The dentries such as /proc/<pid>/ns/ have the DCACHE_OP_DELETE flag, they
+>> should be deleted when the process exits.
+>>
+>> Suppose the following race appears：
+>>
+>> release_task                 dput
+>> -> proc_flush_task
+>>                               -> dentry->d_op->d_delete(dentry)
+>> -> __exit_signal
+>>                               -> dentry->d_lockref.count--  and return.
+>>
+>> In the proc_flush_task(), if another process is using this dentry, it will
+>> not be deleted. At the same time, in dput(), d_op->d_delete() can be executed
+>> before __exit_signal(pid has not been hashed), d_delete returns false, so
+>> this dentry still cannot be deleted.
+>>
+>> This dentry will always be cached (although its count is 0 and the
+>> DCACHE_OP_DELETE flag is set), its parent denry will also be cached too, and
+>> these dentries can only be deleted when drop_caches is manually triggered.
+>>
+>> This will result in wasted memory. What's more troublesome is that these
+>> dentries reference pid, according to the commit f333c700c610 ("pidns: Add a
+>> limit on the number of pid namespaces"), if the pid cannot be released, it
+>> may result in the inability to create a new pid_ns.
+>>
+>> This issue was introduced by 60347f6716aa ("pid namespaces: prepare
+>> proc_flust_task() to flush entries from multiple proc trees"), exposed by
+>> f333c700c610 ("pidns: Add a limit on the number of pid namespaces"), and then
+>> fixed by 7bc3e6e55acf ("proc: Use a list of inodes to flush from proc").
+> 
+> Why are you just submitting a series for 4.9 and 4.19, what about 4.14?
+> We can't have users move to a newer kernel and then experience old bugs,
+> right?
+> 
+Okay, the patches corresponding to 4.14 will be ready later.
 
-On Thu, Dec 24, 2020 at 04:49:54AM +0000, Satya Tangirala wrote:
-> freeze/thaw_bdev() currently use bdev->bd_fsfreeze_count to infer
-> whether or not bdev->bd_fsfreeze_sb is valid (it's valid iff
-> bd_fsfreeze_count is non-zero). thaw_bdev() doesn't nullify
-> bd_fsfreeze_sb.
+
+> But the larger question is why are you backporting a whole new feature
+> here?  Why is CLONE_PIDFD needed?  That feels really wrong...
 > 
-> But this means a freeze_bdev() call followed by a thaw_bdev() call can
-> leave bd_fsfreeze_sb with a non-null value, while bd_fsfreeze_count is
-> zero. If freeze_bdev() is called again, and this time
-> get_active_super() returns NULL (e.g. because the FS is unmounted),
-> we'll end up with bd_fsfreeze_count > 0, but bd_fsfreeze_sb is
-> *untouched* - it stays the same (now garbage) value. A subsequent
-> thaw_bdev() will decide that the bd_fsfreeze_sb value is legitimate
-> (since bd_fsfreeze_count > 0), and attempt to use it.
-> 
-> Fix this by always setting bd_fsfreeze_sb to NULL when
-> bd_fsfreeze_count is successfully decremented to 0 in thaw_sb().
-> Alternatively, we could set bd_fsfreeze_sb to whatever
-> get_active_super() returns in freeze_bdev() whenever bd_fsfreeze_count
-> is successfully incremented to 1 from 0 (which can be achieved cleanly
-> by moving the line currently setting bd_fsfreeze_sb to immediately
-> after the "sync:" label, but it might be a little too subtle/easily
-> overlooked in future).
-> 
-> This fixes the currently panicking xfstests generic/085.
-> 
-> Fixes: 040f04bd2e82 ("fs: simplify freeze_bdev/thaw_bdev")
-> Signed-off-by: Satya Tangirala <satyat@google.com>
-> ---
->  fs/block_dev.c | 2 ++
->  1 file changed, 2 insertions(+)
-> 
-> diff --git a/fs/block_dev.c b/fs/block_dev.c
-> index 9e56ee1f2652..12a811a9ae4b 100644
-> --- a/fs/block_dev.c
-> +++ b/fs/block_dev.c
-> @@ -606,6 +606,8 @@ int thaw_bdev(struct block_device *bdev)
->  		error = thaw_super(sb);
->  	if (error)
->  		bdev->bd_fsfreeze_count++;
-> +	else
-> +		bdev->bd_fsfreeze_sb = NULL;
->  out:
->  	mutex_unlock(&bdev->bd_fsfreeze_mutex);
->  	return error;
-> -- 
-> 2.29.2.729.g45daf8777d-goog
----end quoted text---
+
+The reason for backporting CLONE_PIDFD is because 7bc3e6e55acf ("proc: 
+Use a list of inodes to flush from proc") relies on wait_pidfd.lock. 
+There are indeed many associated modifications here. We are also testing 
+it. Please check the code more.
+
+Thanks.
+
+-- 
+Best wishes,
+Wen
+
