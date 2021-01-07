@@ -2,109 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52C562ED013
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 13:42:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 66B042ED011
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 13:42:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728640AbhAGMl6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 07:41:58 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:39078 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728126AbhAGMlz (ORCPT
+        id S1728621AbhAGMlw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 07:41:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39632 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728585AbhAGMlq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 07:41:55 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1610023228;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=xdr1bNi/8x8nhjwZ1YkQeFiw/2vRifC0b4Sbse7y77w=;
-        b=gqaMBcYtUmGSyjTweoNkeNrW+268oDoytWJbX8kNf/6dro1fDHkbqdyrAEutMpsFcj/aBP
-        3V1GpKCLZvKRLzx+I7Hj2xKHMnVMoL363jbRqATtilXCOFjneFbXCKqBO8bnBn+b7nEr89
-        L1webUmFcEjXKMv8rrQZ60RESYYbbw0=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-269-gEfkk03cPxeM1nhMd-DFLg-1; Thu, 07 Jan 2021 07:40:27 -0500
-X-MC-Unique: gEfkk03cPxeM1nhMd-DFLg-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9F2B9800D53;
-        Thu,  7 Jan 2021 12:40:25 +0000 (UTC)
-Received: from localhost.localdomain (unknown [10.35.206.22])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 6C4F460C5C;
-        Thu,  7 Jan 2021 12:40:23 +0000 (UTC)
-From:   Maxim Levitsky <mlevitsk@redhat.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     "Darrick J . Wong" <darrick.wong@oracle.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        linux-fsdevel@vger.kernel.org (open list:FILESYSTEMS (VFS and
-        infrastructure)), Jan Kara <jack@suse.cz>,
-        Maxim Levitsky <mlevitsk@redhat.com>
-Subject: [PATCH] block: fallocate: avoid false positive on collision detection
-Date:   Thu,  7 Jan 2021 14:40:22 +0200
-Message-Id: <20210107124022.900172-1-mlevitsk@redhat.com>
-In-Reply-To: <45420b24124b5b91bc0a80a4abad2e06acb8c2b3.camel@redhat.com>
-References: <45420b24124b5b91bc0a80a4abad2e06acb8c2b3.camel@redhat.com>
+        Thu, 7 Jan 2021 07:41:46 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FE11C0612F5;
+        Thu,  7 Jan 2021 04:41:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=kwFuTJhYBR+fxH5ScaaJzgDdFXb0D1CjKuU2YjEc374=; b=ewSrLo2doe3I6S647Y+SKonMAl
+        z68g4MbYcvlg6Qaj0Sgx1J3IfEV39kt97JNw1O9DaiY365fdraX7RGLF9wDJPD/r6KU80HBe+1snh
+        RKQFjpnwJCfIRCkuwwNTSxxsRPuCRTzTk8+pYu1ch90Ukl9KY8uMsaXPd04smceSX9dvqCnULSly1
+        L3ogCWXgfJ8HIBBq62IOEhEOm34IitiHs4AUwjo13bDgIVYwPvIZmZcygApLP4IsZqllkbd+RQP4t
+        elJF0uu9PDl7Kq4Q3+f63YVKZUcR8qxuF1+YkkGzp8UVBY5jgNrdloFS2HqlF3SaxlfgvB+2tPU+x
+        Ix5jDW8w==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kxUb3-00071v-69; Thu, 07 Jan 2021 12:40:57 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 2B0113003E1;
+        Thu,  7 Jan 2021 13:40:55 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 1909C20164735; Thu,  7 Jan 2021 13:40:55 +0100 (CET)
+Date:   Thu, 7 Jan 2021 13:40:55 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     guoren@kernel.org
+Cc:     arnd@arndb.de, linux-kernel@vger.kernel.org,
+        linux-csky@vger.kernel.org, linux-arch@vger.kernel.org,
+        Guo Ren <guoren@linux.alibaba.com>,
+        "Paul E . McKenney" <paulmck@kernel.org>
+Subject: Re: [PATCH v2 4/5] csky: Fixup asm/cmpxchg.h with correct ordering
+ barrier
+Message-ID: <X/cBV8Bll0K2PwTx@hirez.programming.kicks-ass.net>
+References: <1608478763-60148-1-git-send-email-guoren@kernel.org>
+ <1608478763-60148-4-git-send-email-guoren@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1608478763-60148-4-git-send-email-guoren@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Align start and end on page boundaries before calling
-invalidate_inode_pages2_range.
+On Sun, Dec 20, 2020 at 03:39:22PM +0000, guoren@kernel.org wrote:
 
-This might allow us to miss a collision if the write and the discard were done
-to the same page and do overlap but it is still better than returning -EBUSY
-if those writes didn't overlap.
 
-Signed-off-by: Maxim Levitsky <mlevitsk@redhat.com>
----
- fs/block_dev.c | 20 ++++++++++++++++----
- 1 file changed, 16 insertions(+), 4 deletions(-)
+> +#define cmpxchg(ptr, o, n) 					\
+> +({								\
+> +	__typeof__(*(ptr)) __ret;				\
+> +	__smp_release_fence();					\
+> +	__ret = cmpxchg_relaxed(ptr, o, n);			\
+> +	__smp_acquire_fence();					\
+> +	__ret;							\
+> +})
 
-diff --git a/fs/block_dev.c b/fs/block_dev.c
-index 9e84b1928b94..97f0d16661b5 100644
---- a/fs/block_dev.c
-+++ b/fs/block_dev.c
-@@ -1970,6 +1970,7 @@ static long blkdev_fallocate(struct file *file, int mode, loff_t start,
- 	loff_t end = start + len - 1;
- 	loff_t isize;
- 	int error;
-+	pgoff_t invalidate_first_page, invalidate_last_page;
- 
- 	/* Fail if we don't recognize the flags. */
- 	if (mode & ~BLKDEV_FALLOC_FL_SUPPORTED)
-@@ -2020,12 +2021,23 @@ static long blkdev_fallocate(struct file *file, int mode, loff_t start,
- 
- 	/*
- 	 * Invalidate again; if someone wandered in and dirtied a page,
--	 * the caller will be given -EBUSY.  The third argument is
--	 * inclusive, so the rounding here is safe.
-+	 * the caller will be given -EBUSY.
-+	 *
-+	 * If the start/end of the range is not page aligned, exclude the
-+	 * non aligned regions to avoid false positives.
- 	 */
-+	invalidate_first_page = DIV_ROUND_UP(start, PAGE_SIZE);
-+	invalidate_last_page = end >> PAGE_SHIFT;
-+
-+	if ((end + 1) & PAGE_MASK)
-+		invalidate_last_page--;
-+
-+	if (invalidate_last_page < invalidate_first_page)
-+		return 0;
-+
- 	return invalidate_inode_pages2_range(bdev->bd_inode->i_mapping,
--					     start >> PAGE_SHIFT,
--					     end >> PAGE_SHIFT);
-+					     invalidate_first_page,
-+					     invalidate_last_page);
- }
- 
- const struct file_operations def_blk_fops = {
--- 
-2.26.2
+So you failed to Cc me on patch #2 that introduces these barriers. I've
+dug it out, but I'm still terribly confused on all that.
 
+On first reading the above looks wrong.
+
+Could you also clarify the difference (if any) between your bar.brwarw
+and sync instruction?
+
+Specifically, about transitiviry, or whatever we seem to be calling that
+today.
