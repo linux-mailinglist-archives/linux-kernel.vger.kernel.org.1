@@ -2,142 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A61C2EC735
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 01:04:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C11F32EC737
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 01:08:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727739AbhAGAEP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Jan 2021 19:04:15 -0500
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:48708 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726293AbhAGAEO (ORCPT
+        id S1727771AbhAGAHu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Jan 2021 19:07:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34598 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726293AbhAGAHu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Jan 2021 19:04:14 -0500
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 10703Q2G098696;
-        Wed, 6 Jan 2021 18:03:26 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1609977806;
-        bh=tQrVlUnNzpbNpbVX/IO4V0JvoJkj7OSMnP+9H9h9UJA=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=ZwjmnLknoQ8Ahwzpf1rRAvCFiXzyQFMEGeD8+4EYe1FIDZh4MuVMBFfKb1JF8DYBL
-         G6swATQ9kJsfej/rWjyegqWjUbOg1KSiJ7nrmmDsWZ6DLuACvXo0g1gPd4T97zJ4K7
-         UXsDanqiAXESMCyYF250A3EkqJXIxX6mQ79MgxHw=
-Received: from DLEE113.ent.ti.com (dlee113.ent.ti.com [157.170.170.24])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 10703Qpx127037
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 6 Jan 2021 18:03:26 -0600
-Received: from DLEE110.ent.ti.com (157.170.170.21) by DLEE113.ent.ti.com
- (157.170.170.24) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Wed, 6 Jan
- 2021 18:03:26 -0600
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE110.ent.ti.com
- (157.170.170.21) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Wed, 6 Jan 2021 18:03:26 -0600
-Received: from [10.250.66.86] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 10703PVP035418;
-        Wed, 6 Jan 2021 18:03:25 -0600
-Subject: Re: [PATCH v2 0/5] Introduce PRU remoteproc consumer API
-To:     Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Grzegorz Jaszczyk <grzegorz.jaszczyk@linaro.org>
-CC:     <ohad@wizery.com>, <bjorn.andersson@linaro.org>,
-        <robh+dt@kernel.org>, <ssantosh@kernel.org>,
-        <linux-remoteproc@vger.kernel.org>, <lee.jones@linaro.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-omap@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, <praneeth@ti.com>,
-        <rogerq@kernel.org>
-References: <20201216165239.2744-1-grzegorz.jaszczyk@linaro.org>
- <20210106232704.GE9149@xps15>
-From:   Suman Anna <s-anna@ti.com>
-Message-ID: <11303a1b-5ab4-def5-77b1-c500894c9c87@ti.com>
-Date:   Wed, 6 Jan 2021 18:03:25 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Wed, 6 Jan 2021 19:07:50 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07D70C06136B
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Jan 2021 16:07:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description;
+        bh=1QZxiN2Y8LEelG7OpYOldYUkGlfcW+4VFUmTA5CQW+c=; b=XK/J1qNFzLJxho9wHgBcVIyrJr
+        qIXGdrmGZWYJSw6/YqYmrGDdvkSMoNyVmoG8DiOnOTDFvcb5YIrGvMdLqb/70a0QFOu0H2M5/OoLh
+        DHtl9liIWd4xLDKLIhu77cklm1aJRpHLx0NlmQ5TqDJlgpCbdHMzJf9RoAMXPPwKaL4195HHDi1bQ
+        emzwiWqJv6pdrN7bK9zeRG1Wj9zuyqGVbNymOW+ECbL+2PHQRBwOdUiWgOp6dmlcolFoeEVN7pozV
+        pTDs+gXxSJ5I1z8qTpQxCwh5e0kNLMxDEf1h4nPl/Jom4eQxQRLN+5wLDlf/2LYsYFT/IqCJ5f2vb
+        iQ7dGFiA==;
+Received: from [2601:1c0:6280:3f0::79df]
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kxIpU-000816-69; Thu, 07 Jan 2021 00:07:04 +0000
+Subject: Re: [PATCH] mm/uaccess: Use 'unsigned long' to placate UBSAN
+ warnings, again
+To:     Kees Cook <keescook@chromium.org>,
+        Peter Zijlstra <peterz@infradead.org>
+Cc:     Josh Poimboeuf <jpoimboe@redhat.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        linux-kernel@vger.kernel.org, aryabinin@virtuozzo.com,
+        dvyukov@google.com
+References: <590998aa9cc50f431343f76cae72b2abf8ac1fdd.1608699683.git.jpoimboe@redhat.com>
+ <20210104151317.GR3021@hirez.programming.kicks-ass.net>
+ <202101061536.C4A93132@keescook>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <d5b192b2-b216-57d1-4505-06233ae2b882@infradead.org>
+Date:   Wed, 6 Jan 2021 16:06:57 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-In-Reply-To: <20210106232704.GE9149@xps15>
-Content-Type: text/plain; charset="utf-8"
+In-Reply-To: <202101061536.C4A93132@keescook>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mathieu,
-
-On 1/6/21 5:27 PM, Mathieu Poirier wrote:
-> On Wed, Dec 16, 2020 at 05:52:34PM +0100, Grzegorz Jaszczyk wrote:
->> Hi All,
+On 1/6/21 3:37 PM, Kees Cook wrote:
+> On Mon, Jan 04, 2021 at 04:13:17PM +0100, Peter Zijlstra wrote:
+>> On Tue, Dec 22, 2020 at 11:04:54PM -0600, Josh Poimboeuf wrote:
+>>> GCC 7 has a known bug where UBSAN ignores '-fwrapv' and generates false
+>>> signed-overflow-UB warnings.  The type mismatch between 'i' and
+>>> 'nr_segs' in copy_compat_iovec_from_user() is causing such a warning,
+>>> which also happens to violate uaccess rules:
+>>>
+>>>   lib/iov_iter.o: warning: objtool: iovec_from_user()+0x22d: call to __ubsan_handle_add_overflow() with UACCESS enabled
+>>>
+>>> Fix it by making the variable types match.
+>>>
+>>> This is similar to a previous commit:
+>>>
+>>>   29da93fea3ea ("mm/uaccess: Use 'unsigned long' to placate UBSAN warnings on older GCC versions")
 >>
->> The Programmable Real-Time Unit and Industrial Communication Subsystem
->> (PRU-ICSS or simply PRUSS) on various TI SoCs consists of dual 32-bit
->> RISC cores (Programmable Real-Time Units, or PRUs) for program execution.
->>
->> There are 3 foundation components for PRUSS subsystem: the PRUSS platform
->> driver, the PRUSS INTC driver and the PRUSS remoteproc driver. All were
->> already merged and can be found under:
->> 1) drivers/soc/ti/pruss.c
->>    Documentation/devicetree/bindings/soc/ti/ti,pruss.yaml
->> 2) drivers/irqchip/irq-pruss-intc.c
->>    Documentation/devicetree/bindings/interrupt-controller/ti,pruss-intc.yaml
->> 3) drivers/remoteproc/pru_rproc.c
->>    Documentation/devicetree/bindings/remoteproc/ti,pru-rproc.yaml
->>
->> The programmable nature of the PRUs provide flexibility to implement custom
->> peripheral interfaces, fast real-time responses, or specialized data handling.
->> Example of a PRU consumer drivers will be:
->>   - Software UART over PRUSS
->>   - PRU-ICSS Ethernet EMAC
->>
->> In order to make usage of common PRU resources and allow the consumer drivers to
->> configure the PRU hardware for specific usage the PRU API is introduced.
->>
->> Patch #3 of this series depends on one not merged remteproc related patch [1].
->>
->> Please see the individual patches for exact changes in each patch, following is
->> the only change from v1:
->>  - Change the 'prus' property name to 'ti,prus' as suggested by Rob Herring,
->>  which influences patch #1 and patch #2
->>
->> [1] https://patchwork.kernel.org/project/linux-remoteproc/patch/20201121030156.22857-3-s-anna@ti.com/
->>
->> Best regards,
->> Grzegorz
->>
->> Roger Quadros (1):
->>   remoteproc: pru: Add pru_rproc_set_ctable() function
->>
->> Suman Anna (2):
->>   dt-bindings: remoteproc: Add PRU consumer bindings
->>   remoteproc: pru: Deny rproc sysfs ops for PRU client driven boots
->>
->> Tero Kristo (2):
->>   remoteproc: pru: Add APIs to get and put the PRU cores
->>   remoteproc: pru: Configure firmware based on client setup
->>
->>  .../bindings/remoteproc/ti,pru-consumer.yaml  |  64 +++++
->>  drivers/remoteproc/pru_rproc.c                | 221 +++++++++++++++++-
->>  include/linux/pruss.h                         |  78 +++++++
+>> Maybe it's time we make UBSAN builds depend on GCC-8+ ?
 > 
-> This patchset is giving checkpatch.pl errors and as such will not go further
-> with this revision.
+> I would be totally fine with that. The only thing I can think of that
+> might care is syzbot. Dmitry, does syzbot use anything older than gcc 8?
 
-Yeah, I am aware of those. Greg has intentionally skipped the checkpatch
-warnings around ENOTSUPP, based on some similar discussion on a different patch,
-https://lkml.org/lkml/2020/11/10/764.
+I use UBSAN successfully with GCC 7.5.0.
+However, I can revert whatever future patch someone adds for this...
 
-Let me know if you prefer that we change these to EOPNOTSUPP.
-
-regards
-Suman
-
-> 
->>  3 files changed, 360 insertions(+), 3 deletions(-)
->>  create mode 100644 Documentation/devicetree/bindings/remoteproc/ti,pru-consumer.yaml
->>  create mode 100644 include/linux/pruss.h
->>
->> -- 
->> 2.29.0
->>
+-- 
+~Randy
 
