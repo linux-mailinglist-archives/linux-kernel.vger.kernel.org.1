@@ -2,134 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A4B1B2EE814
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 23:05:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A5FD2EE819
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 23:06:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727726AbhAGWEn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 17:04:43 -0500
-Received: from m43-15.mailgun.net ([69.72.43.15]:56049 "EHLO
-        m43-15.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727344AbhAGWEm (ORCPT
+        id S1727822AbhAGWFo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 17:05:44 -0500
+Received: from aserp2120.oracle.com ([141.146.126.78]:33940 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725944AbhAGWFn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 17:04:42 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1610057063; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=og7Iog2EeRDPDZsuuFHbYx6v2VbDmhb2mwPl51ar7Dg=; b=xkDSp8/rzh5BF7fcshau1q7Ly/hsPzfGIO2LMbx9lfRxQLKX4TGnTv7hEHFz3bKjixLA1+vD
- oG1A7dvfACcPSfAu/utCBV2wvNc9JLHY/Tt4n3KizDPD7p9hKZU2CpLlXAsTLLD6g7F08Hso
- pSzTf5fQpaw6MzGZfPFAMuc4Qzw=
-X-Mailgun-Sending-Ip: 69.72.43.15
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n02.prod.us-west-2.postgun.com with SMTP id
- 5ff78546c732bc96210df30f (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 07 Jan 2021 22:03:50
- GMT
-Sender: sidgup=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 0CB16C43462; Thu,  7 Jan 2021 22:03:50 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-3.2 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL autolearn=no autolearn_force=no version=3.4.0
-Received: from [192.168.1.10] (cpe-75-83-25-192.socal.res.rr.com [75.83.25.192])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: sidgup)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id CFD49C433CA;
-        Thu,  7 Jan 2021 22:03:48 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org CFD49C433CA
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=sidgup@codeaurora.org
-Subject: Re: PROBLEM: Firmware loader fallback mechanism no longer works with
- sendfile
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     mcgrof@kernel.org, rafael@kernel.org, viro@zeniv.linux.org.uk,
-        linux-fsdevel@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "psodagud@codeaurora.org" <psodagud@codeaurora.org>
-References: <7e6f44b1-a0d2-d1d1-9c11-dcea163f8f03@codeaurora.org>
- <X/QJCgoLPhfECEmP@kroah.com>
- <180bdfaf-8c84-6946-b46f-3729d4eb17cc@codeaurora.org>
- <X/WSA7nmsUSrpsfr@kroah.com>
-From:   Siddharth Gupta <sidgup@codeaurora.org>
-Message-ID: <62583aaa-d557-8c9a-5959-52c9efad1fe3@codeaurora.org>
-Date:   Thu, 7 Jan 2021 14:03:47 -0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        Thu, 7 Jan 2021 17:05:43 -0500
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 107LtEAY072323;
+        Thu, 7 Jan 2021 22:04:43 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=GrCH6Lvgz6ROdInHx6NZ168A/eibRwVUHX6+Q+x+Klo=;
+ b=TjNWXU3TFXfgk2NKU1qHsa4QdtDyqjVbachZvz19rhi4omCzfTf6WaGpfQOGCwmcA3aN
+ MbWrVDjHxtg3W/4OpNnFM12uz76lQe67hpRTOjdUxZeVN/MX7DfrwZq0LgWwHcRU/A1v
+ yYz3yXSL+s10QKjpnj+64tIbme+VsyJHFVLBYHkhRW1T9OLq2dVSuXpz8BTSKlDz5Fqh
+ aJRczosiUmSO3wMxLyf9Keddoq1z7bgRiW80pBA6tJbIFCz9paAb9LACo5dJUlmeLTAT
+ EYMDgiG7mJgsC41UN2McRQWKfBogo+5X2dTi5XyqIAeTyfYFvmqOr1toVhw3b1izfyAZ EA== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by aserp2120.oracle.com with ESMTP id 35wepmekqn-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 07 Jan 2021 22:04:43 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 107Lt9Ni126833;
+        Thu, 7 Jan 2021 22:04:43 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by aserp3020.oracle.com with ESMTP id 35v1fbs63t-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 07 Jan 2021 22:04:43 +0000
+Received: from abhmp0018.oracle.com (abhmp0018.oracle.com [141.146.116.24])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 107M4cdH010716;
+        Thu, 7 Jan 2021 22:04:39 GMT
+Received: from [192.168.2.112] (/50.38.35.18)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Thu, 07 Jan 2021 22:04:38 +0000
+Subject: Re: [PATCH 3/6] hugetlb: add free page reporting support
+To:     Alexander Duyck <alexander.h.duyck@linux.intel.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        David Hildenbrand <david@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Liang Li <liliangleo@didiglobal.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org,
+        virtualization@lists.linux-foundation.org
+References: <20210106034918.GA1154@open-light-1.localdomain>
+From:   Mike Kravetz <mike.kravetz@oracle.com>
+Message-ID: <3bfdbe48-5818-7470-4c3b-96e62d387fb4@oracle.com>
+Date:   Thu, 7 Jan 2021 14:04:37 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.1
 MIME-Version: 1.0
-In-Reply-To: <X/WSA7nmsUSrpsfr@kroah.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <20210106034918.GA1154@open-light-1.localdomain>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9857 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 phishscore=0
+ suspectscore=0 spamscore=0 bulkscore=0 adultscore=0 mlxscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2101070125
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9857 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 bulkscore=0 spamscore=0
+ impostorscore=0 phishscore=0 lowpriorityscore=0 suspectscore=0
+ priorityscore=1501 mlxscore=0 malwarescore=0 clxscore=1015 mlxlogscore=999
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2101070125
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 1/5/21 7:49 PM, Liang Li wrote:
+> hugetlb manages its page in hstate's free page list, not in buddy
+> system, this patch try to make it works for hugetlbfs. It canbe
+> used for memory overcommit in virtualization and hugetlb pre zero
+> out.
 
-On 1/6/2021 2:33 AM, Greg KH wrote:
-> On Tue, Jan 05, 2021 at 05:00:58PM -0800, Siddharth Gupta wrote:
->> On 1/4/2021 10:36 PM, Greg KH wrote:
->>> On Mon, Jan 04, 2021 at 02:43:45PM -0800, Siddharth Gupta wrote:
->>>> Hi all,
->>>>
->>>> With the introduction of the filesystem change "fs: don't allow splice
->>>> read/write without explicit ops"[1] the fallback mechanism of the firmware
->>>> loader[2] no longer works when using sendfile[3] from the userspace.
->>> What userspace program are you using to load firmware?
->> The userspace program is in the android userspace which listens to a uevent
->> from the firmware loader and then loads the firmware using sendfile[1].
->>>    Are you not using the in-kernel firmware loader for some reason?
->> We have certain non-standard firmware paths that should not be added to the
->> linux kernel, and the firmware_class.path only supports a single path.
-> That option is just for a single override, which should be all that you
-> need if the other paths that are built into the kernel do not work.
-> Surely one of the 5 different paths here are acceptable?
-Unfortunately they are not, and we understand that such changes 
-shouldn't make it to upstream hence it was not a part of the request. If 
-the firmware loader fallback mechanism was being deprecated then we 
-would have to look into our options. As of now the series of changes 
-breaking the sysfs bin attributes is the only bug that affects us.
->
-> If not, how many more do you need?
-We need 2 paths.
->
-> And last I looked, Android wants you to use the built-in kernel firmware
-> loader, and NOT an external firmware binary anymore.  So this shouldn't
-> be an issue for your newer systems anyway :)
-In our discussion with the Android team that is not the case currently. 
-In the future yes, but not now :)
+I am not looking closely at the hugetlb changes yet.  There seem to be
+higher level questions about page reporting/etc.  Once those are sorted,
+I will be happy to take a closer look.  One quick question below.
 
-Regardless this bug is in the kernel and not Android. If the firmware 
-loader fallback mechanism is used on the current kernel we would see the 
-issue with sendfile in the userspace whether Android is running or not.
->
->>>> Since the binary attributes don't support splice_{read,write} functions the
->>>> calls to splice_{read,write} used the default kernel_{read,write} functions.
->>>> With the above change this results in an -EINVAL return from
->>>> do_splice_from[4].
->>>>
->>>> This essentially means that sendfile will not work for any binary attribute
->>>> in the sysfs.
->>> Have you tried fixing this with a patch much like what we did for the
->>> proc files that needed this?  If not, can you?
->> I am not aware of this fix, could you provide me a link for reference? I
->> will try it out.
-> Look at the series of commits starting at fe33850ff798 ("proc: wire up
-> generic_file_splice_read for iter ops") for how this was fixed in procfs
-> as an example of what also needs to be done for binary sysfs files.
-I tried to follow these fixes, but I am unfamiliar with fs code. I don't 
-see the generic_file_splice_write function anymore on newer kernels, 
-also AFAICT kernfs_ops does not define {read,write}_iter operations. If 
-the solution is simple and someone could provide the patches I would be 
-happy to test them out. If not, some more information about how to 
-proceed would be nice.
+> --- a/mm/hugetlb.c
+> +++ b/mm/hugetlb.c
+> @@ -41,6 +41,7 @@
+>  #include <linux/node.h>
+>  #include <linux/userfaultfd_k.h>
+>  #include <linux/page_owner.h>
+> +#include "page_reporting.h"
+>  #include "internal.h"
+>  
+>  int hugetlb_max_hstate __read_mostly;
+> @@ -1028,6 +1029,9 @@ static void enqueue_huge_page(struct hstate *h, struct page *page)
+>  	list_move(&page->lru, &h->hugepage_freelists[nid]);
+>  	h->free_huge_pages++;
+>  	h->free_huge_pages_node[nid]++;
+> +	if (hugepage_reported(page))
+> +		__ClearPageReported(page);
+> +	hugepage_reporting_notify_free(h->order);
+>  }
+>  
+>  static struct page *dequeue_huge_page_node_exact(struct hstate *h, int nid)
+> @@ -5531,6 +5535,21 @@ follow_huge_pgd(struct mm_struct *mm, unsigned long address, pgd_t *pgd, int fla
+>  	return pte_page(*(pte_t *)pgd) + ((address & ~PGDIR_MASK) >> PAGE_SHIFT);
+>  }
+>  
+> +void isolate_free_huge_page(struct page *page, struct hstate *h, int nid)
+> +{
+> +	VM_BUG_ON_PAGE(!PageHead(page), page);
+> +
+> +	list_move(&page->lru, &h->hugepage_activelist);
+> +	set_page_refcounted(page);
+> +}
+> +
+> +void putback_isolate_huge_page(struct hstate *h, struct page *page)
+> +{
+> +	int nid = page_to_nid(page);
+> +
+> +	list_move(&page->lru, &h->hugepage_freelists[nid]);
+> +}
 
-Thanks,
-Sid
->
-> thanks,
->
-> greg k-h
+The above routines move pages between the free and active lists without any
+update to free page counts.  How does that work?  Will the number of entries
+on the free list get out of sync with the free_huge_pages counters?
+-- 
+Mike Kravetz
