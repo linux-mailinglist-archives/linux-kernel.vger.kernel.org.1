@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 434432ECC4C
+	by mail.lfdr.de (Postfix) with ESMTP id B3F5F2ECC4D
 	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 10:08:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727346AbhAGJHZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 04:07:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34118 "EHLO
+        id S1727380AbhAGJH3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 04:07:29 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34130 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726326AbhAGJHX (ORCPT
+        with ESMTP id S1727322AbhAGJHZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 04:07:23 -0500
-Received: from mail-pl1-x62b.google.com (mail-pl1-x62b.google.com [IPv6:2607:f8b0:4864:20::62b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8630DC0612F8
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Jan 2021 01:06:42 -0800 (PST)
-Received: by mail-pl1-x62b.google.com with SMTP id g3so3174201plp.2
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Jan 2021 01:06:42 -0800 (PST)
+        Thu, 7 Jan 2021 04:07:25 -0500
+Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43F8FC0612F9
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Jan 2021 01:06:45 -0800 (PST)
+Received: by mail-pj1-x1034.google.com with SMTP id v1so1095283pjr.2
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Jan 2021 01:06:45 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=endlessos.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=/v7jmcVWhLsLyT6srKRYF+HsEWNOg2R2HWvMNn5cQRg=;
-        b=thzLh1N9XQZBb6ehatjpl3RV1IrUsTvfalJ8qkKkCfvmuLZmIamyMWPsW55blLBoTm
-         gAF10Du7MYQzHb49+SECwk3LYEzTegp1MV2IHUMzQ42MNqiALmnduXx2hkzgueb4l+86
-         hC4RRfjEGmHg8erprT66SX7aH6QzvirlZwO8nkFgaM/BK+FleonRX6MUN21Y+Bstnlq4
-         nmIF5YQUwrTAkqDpnnpNYGa4ZllHsNtV8P5pnIlWx07N6mPnDxnmb43vnazJGze8K4LN
-         /Z5rMY8hog+An2FfKZmeMnC+AGfe5giwSnr/QflijlcuPkijB2ALnG8a8hgXJP450l4E
-         5g7A==
+        bh=ViO6PydNgMGhzgsctVMRzuTtGGnQjswu8DFXv1qC3B8=;
+        b=fDGKemIpa0IVex6SVvtLMLeLpbX8hwf1aTMh3SKYdzc6vf0I0zWjc36xoPzzbiEGKJ
+         a17xHx8PgAgh+BZuBF4h/rwOeKWmeD9VBJ9CgkyAQqRfA5vVD11ddiMzVXu1BG3QfGrZ
+         FL6etZ/dJKCXgqiBJNZOZcLa4Ha5c115UdvKOfbxJaD+Ta1i/0ZGeaJ6PR+Al2hQ78Q5
+         UccaW2ZY7ujhy5a3lrhvWl8pfRZInjbCrXuZAB+2nNsqsG5HezlnXuaESVqW8Nqv8NGt
+         FOStHIjeWu+onuqBmwi3grlhCu/LG35jjKZCndyA22vdym5Yuy439ulEBRmw0wnKneX8
+         f7xw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=/v7jmcVWhLsLyT6srKRYF+HsEWNOg2R2HWvMNn5cQRg=;
-        b=X/3930zKi2RS75VywhPUxDwnrj8RTcaX2is2CxCm81FIAUwsQ5JqnbD8cKaB/B1KtD
-         +Iu9hdq8iR9wdZDyOFh9V6mkO/a8/GAEG2p63NYZnu2IgCyXigPTZctk59V4Wa4kXkZt
-         uxzLu45cyt0YcTyWqWi2RClPS5Vazv0ZhFveryY6btc0LnBCJPPLKIKtXVcg64ILSmbz
-         DFbkZY4qrL8b0cYFbT9tNAUyn6FlEAbKhBFSHDa7jHCDeBY7HUm9hNovQLAZDn3X9xAV
-         yrB4w3URgjYIAyLZWNbW/od3w7DJhJdGLBkNUz9XYKAh2IiFuDEkahx97nUKhOjeLdnb
-         YuFA==
-X-Gm-Message-State: AOAM5334vKwGUp6ZMZtIvdivjEvmLp52CI38sXIX6PAaxcUaNm6ULm5F
-        v2wDwmG4qr9x//TuxfwSyIVWMg==
-X-Google-Smtp-Source: ABdhPJySebxs1m5St5fhhjLE4vYi0pG/2f2WyTXIaNm/Vx7xOnk8LVyFMk5gka4dCbStVDkx5On6Hw==
-X-Received: by 2002:a17:90a:f40e:: with SMTP id ch14mr8326062pjb.172.1610010401941;
-        Thu, 07 Jan 2021 01:06:41 -0800 (PST)
+        bh=ViO6PydNgMGhzgsctVMRzuTtGGnQjswu8DFXv1qC3B8=;
+        b=iIJpo+8625Eg2SXWFWurZ98oCs70ej1ip7mF/RNayNpXBHiOGHeAHvsuJXTrlApeS4
+         iF9FBYtR18FyX9R89OTlRvhKhrvaoyB8mLIxvgjhTZdLgBWVo4/Ed8xRKQAD49VEblMY
+         2RVu9vRgFAEgr0XXT6Z+IZugDWr/apWIt5vCyJJrDpZ/berfd0lZavY/3aBqm7n0IqA7
+         KXlqwQ0+/O1m9dljemUBOhn1j16EbV4xV97GQyMArjS1+cXGy/dOZAQvKx1fF6mXX9P1
+         jFDuH9cL0GEPNJNcm1mA7xJMXQLWc2PhMojhMGo0nfo7SW8LkWgT8UCo753tmenWkW6W
+         5SHA==
+X-Gm-Message-State: AOAM530jrb+NgMlDUqcZ1Cod2QXoneynKIUM4qVJU9lUEwlf1e+oJAPj
+        QC7+2ezIWKLeQqIxrbfQtPzF3w==
+X-Google-Smtp-Source: ABdhPJyQ1BWvEYxS4zI9slZsnUqXT+CnmasvCM1QErDNZiba0rcM9PTPxUq5ZQnbX6d1WRr2XQmfRg==
+X-Received: by 2002:a17:90a:1a10:: with SMTP id 16mr8177738pjk.42.1610010404772;
+        Thu, 07 Jan 2021 01:06:44 -0800 (PST)
 Received: from endless.endlessm-sf.com (ec2-34-209-191-27.us-west-2.compute.amazonaws.com. [34.209.191.27])
-        by smtp.googlemail.com with ESMTPSA id b2sm5006394pfo.164.2021.01.07.01.06.39
+        by smtp.googlemail.com with ESMTPSA id b2sm5006394pfo.164.2021.01.07.01.06.42
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 Jan 2021 01:06:41 -0800 (PST)
+        Thu, 07 Jan 2021 01:06:44 -0800 (PST)
 From:   Chris Chiu <chiu@endlessos.org>
 To:     oder_chiou@realtek.com, lgirdwood@gmail.com, broonie@kernel.org,
         perex@perex.cz, tiwai@suse.com
 Cc:     alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
         linux@endlessos.org, Chris Chiu <chiu@endlessos.org>
-Subject: [PATCH 1/4] ASoC: rt5645: Introduce mapping for ACPI-defined GPIO
-Date:   Thu,  7 Jan 2021 17:06:22 +0800
-Message-Id: <20210107090625.107078-2-chiu@endlessos.org>
+Subject: [PATCH 2/4] ASoC: rt5645: Add ACPI-defined GPIO for ECS EF20 series
+Date:   Thu,  7 Jan 2021 17:06:23 +0800
+Message-Id: <20210107090625.107078-3-chiu@endlessos.org>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20210107090625.107078-1-chiu@endlessos.org>
 References: <20210107090625.107078-1-chiu@endlessos.org>
@@ -65,48 +65,83 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On at least one laptop (ECS EF20EA) the 'hp-detect' GPIO is defined in
-the DSDT table by the ACPI GpioIo resources in _CRS. The GPIO related
-information should be mapped to the rt5645 driver to enable the jack
-detection also on non-DT platforms.
+Add the hp-detect gpio for ECS EF20 series laptops based on the
+_CRS defined in DSDT table.
+
+Method (_CRS, 0, NotSerialized)
+{
+  Name (SBUF, ResourceTemplate ()
+  {
+    I2cSerialBusV2 (0x001A, ControllerInitiated, 0x00061A80,
+        AddressingMode7Bit, "\\_SB.PCI0.I2C2",
+        0x00, ResourceConsumer, , Exclusive,
+        )
+    GpioInt (Edge, ActiveBoth, SharedAndWake, PullNone, 0x0000,
+        "\\_SB.GPO3", 0x00, ResourceConsumer, ,
+        )
+        {   // Pin list
+            0x004F
+        }
+    GpioIo (Shared, PullDefault, 0x0000, 0x0000, IoRestrictionInputOnly,
+        "\\_SB.GPO3", 0x00, ResourceConsumer, ,
+        )
+        {   // Pin list
+            0x004F
+        }
+  })
+  Return (SBUF) /* \_SB_.PCI0.I2C2.RTK2._CRS.SBUF */
+}
 
 Signed-off-by: Chris Chiu <chiu@endlessos.org>
 ---
- sound/soc/codecs/rt5645.c | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
+ sound/soc/codecs/rt5645.c | 27 +++++++++++++++++++++++++++
+ 1 file changed, 27 insertions(+)
 
 diff --git a/sound/soc/codecs/rt5645.c b/sound/soc/codecs/rt5645.c
-index 420003d062c7..78f0ab0a008e 100644
+index 78f0ab0a008e..24a6acb3c12f 100644
 --- a/sound/soc/codecs/rt5645.c
 +++ b/sound/soc/codecs/rt5645.c
-@@ -42,6 +42,8 @@ static unsigned int quirk = -1;
- module_param(quirk, uint, 0444);
- MODULE_PARM_DESC(quirk, "RT5645 pdata quirk override");
+@@ -3653,6 +3653,19 @@ static const struct rt5645_platform_data kahlee_platform_data = {
+ 	.jd_mode = 3,
+ };
  
-+static const struct acpi_gpio_mapping *cht_rt5645_gpios;
++static const struct acpi_gpio_params ef20_hp_detect = { 1, 0, false };
 +
- #define RT5645_DEVICE_ID 0x6308
- #define RT5650_DEVICE_ID 0x6419
- 
-@@ -3780,7 +3782,6 @@ static const struct dmi_system_id dmi_platform_data[] = {
++static const struct acpi_gpio_mapping cht_rt5645_ef20_gpios[] = {
++	{ "hp-detect-gpios", &ef20_hp_detect, 1 },
++	{ },
++};
++
++static int cht_rt5645_ef20_quirk_cb(const struct dmi_system_id *id)
++{
++	cht_rt5645_gpios = cht_rt5645_ef20_gpios;
++	return 1;
++}
++
+ static const struct dmi_system_id dmi_platform_data[] = {
+ 	{
+ 		.ident = "Chrome Buddy",
+@@ -3782,6 +3795,20 @@ static const struct dmi_system_id dmi_platform_data[] = {
  		},
  		.driver_data = (void *)&intel_braswell_platform_data,
  	},
--	{ }
++	{
++		.ident = "EF20",
++		.callback = cht_rt5645_ef20_quirk_cb,
++		.matches = {
++			DMI_MATCH(DMI_PRODUCT_NAME, "EF20"),
++		},
++	},
++	{
++		.ident = "EF20EA",
++		.callback = cht_rt5645_ef20_quirk_cb,
++		.matches = {
++			DMI_MATCH(DMI_PRODUCT_NAME, "EF20EA"),
++		},
++	},
  };
  
  static bool rt5645_check_dp(struct device *dev)
-@@ -3848,6 +3849,10 @@ static int rt5645_i2c_probe(struct i2c_client *i2c,
- 		rt5645->pdata.dmic2_data_pin = QUIRK_DMIC2_DATA_PIN(quirk);
- 	}
- 
-+	if (cht_rt5645_gpios && has_acpi_companion(&i2c->dev))
-+		if (devm_acpi_dev_add_driver_gpios(&i2c->dev, cht_rt5645_gpios))
-+			dev_dbg(&i2c->dev, "Failed to add driver gpios\n");
-+
- 	rt5645->gpiod_hp_det = devm_gpiod_get_optional(&i2c->dev, "hp-detect",
- 						       GPIOD_IN);
- 
 -- 
 2.20.1
 
