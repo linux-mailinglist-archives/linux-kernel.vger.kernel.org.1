@@ -2,131 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 520E42ECD95
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 11:13:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 65F802ECDA4
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 11:18:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727416AbhAGKMu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 05:12:50 -0500
-Received: from burlywood.elm.relay.mailchannels.net ([23.83.212.26]:8690 "EHLO
-        burlywood.elm.relay.mailchannels.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725900AbhAGKMt (ORCPT
+        id S1726830AbhAGKRg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 05:17:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45266 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725974AbhAGKRg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 05:12:49 -0500
-X-Sender-Id: dreamhost|x-authsender|siddhesh@gotplt.org
-Received: from relay.mailchannels.net (localhost [127.0.0.1])
-        by relay.mailchannels.net (Postfix) with ESMTP id 8E11F22021;
-        Thu,  7 Jan 2021 10:12:02 +0000 (UTC)
-Received: from pdx1-sub0-mail-a82.g.dreamhost.com (100-98-64-116.trex.outbound.svc.cluster.local [100.98.64.116])
-        (Authenticated sender: dreamhost)
-        by relay.mailchannels.net (Postfix) with ESMTPA id 2384422074;
-        Thu,  7 Jan 2021 10:12:00 +0000 (UTC)
-X-Sender-Id: dreamhost|x-authsender|siddhesh@gotplt.org
-Received: from pdx1-sub0-mail-a82.g.dreamhost.com (pop.dreamhost.com
- [64.90.62.162])
-        (using TLSv1.2 with cipher DHE-RSA-AES256-GCM-SHA384)
-        by 0.0.0.0:2500 (trex/5.18.11);
-        Thu, 07 Jan 2021 10:12:02 +0000
-X-MC-Relay: Junk
-X-MailChannels-SenderId: dreamhost|x-authsender|siddhesh@gotplt.org
-X-MailChannels-Auth-Id: dreamhost
-X-Illustrious-Plucky: 1e0c89197bb2e911_1610014322307_2265109397
-X-MC-Loop-Signature: 1610014322307:31235877
-X-MC-Ingress-Time: 1610014322307
-Received: from pdx1-sub0-mail-a82.g.dreamhost.com (localhost [127.0.0.1])
-        by pdx1-sub0-mail-a82.g.dreamhost.com (Postfix) with ESMTP id AD0827EFE7;
-        Thu,  7 Jan 2021 02:11:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha1; c=relaxed; d=gotplt.org; h=from:to:cc
-        :subject:date:message-id:mime-version:content-transfer-encoding;
-         s=gotplt.org; bh=X24EKd/nLmqoI3HsWc3nv/fm2AQ=; b=bb8A3PEvFsjuI0
-        KxHow920F/uJERO9s4kvoKNfmGaMabLwmo0sTrbth9fOoXrje3jJFdYDOC8Qi6Nr
-        65Vqx41GcFz2NAW3RrYcwUoFgyaHgZxaK8pvffYm5aAtNVna3gUHJX3GIDv8FgN9
-        7lezjM/b5BUmR+b2mrmOV1kPK9rP8=
-Received: from rhbox.lan (unknown [103.199.172.2])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: siddhesh@gotplt.org)
-        by pdx1-sub0-mail-a82.g.dreamhost.com (Postfix) with ESMTPSA id E0BE57E626;
-        Thu,  7 Jan 2021 02:11:55 -0800 (PST)
-X-DH-BACKEND: pdx1-sub0-mail-a82
-From:   Siddhesh Poyarekar <siddhesh@gotplt.org>
-To:     linux-fsdevel@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org,
-        Alexander Viro <viro@zeniv.linux.org.uk>, siddhesh@gotplt.org,
-        Florian Weimer <fweimer@redhat.com>
-Subject: [RESEND][PATCH v3] proc: Escape more characters in /proc/mounts output
-Date:   Thu,  7 Jan 2021 15:41:13 +0530
-Message-Id: <20210107101113.368139-1-siddhesh@gotplt.org>
-X-Mailer: git-send-email 2.29.2
+        Thu, 7 Jan 2021 05:17:36 -0500
+Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7C6DC0612F4
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Jan 2021 02:16:54 -0800 (PST)
+Received: by mail-pg1-x52f.google.com with SMTP id n25so4544786pgb.0
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Jan 2021 02:16:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=fMg+Efsr+R+6AgYEdihpBKpjToT/4HtI9c2KzJ9otZ8=;
+        b=le0WsLpP4bBFfsvpr8snBYSl8L9P6PHp9BhUUJbbVp1HQi4TnNUNXk4eQlZdVtMPim
+         I6Qta6BUS8FRAjiVX9cSWi0QG7vEDthBZN1bh9zEpkgpZH4O6SubCMnEwZVu6H6y2MqW
+         r75pJEf8v/zqpQxUsQqSKYlWI6VUtM67NC1y8L66spAFTqyAs4Q84EqkkW64yQ63IM7Y
+         VCPcOzKCe+ykQXpoxqBugIV8OmH4CD/B1cmY8xilxzzvXhEAdiLnbLkx1YqODqoZPnEe
+         LVkNENmNJ2xBkWWP7ZdzQEeznD57MjZEZLM561xNZrOV9q+ADk+KZArSce9kn9NzGnoh
+         6DVg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=fMg+Efsr+R+6AgYEdihpBKpjToT/4HtI9c2KzJ9otZ8=;
+        b=U3SlXHebkIMDWWVVMSIMWE9oYg0dfbx+vi3Fd/s9GESIDGghbX+hXcLe2XpK1KEdvz
+         SWypa2IqhWdJ5p8bdEY7n7ZisANPJMWpXIBewBnLFquCZ2MaBGUIDTxBmWxjsN0pJPNr
+         42xGS53VVC9gvioOr+kk5DjxxTONmuh8JbOLOLuHlHE+5S07Ci7cW+pCSOiEiDMk+Nw5
+         BNbnDIydBeTOx/xSHOJm0Z8452rSqRIr4sryViykBuaC7swkJXREwLZngTlJnlc2sMk9
+         Oxc73u8kEsCFCCdyZgQZwyjLbzZsCgAtRK50knx/JsJrqCwKCEQHxbMM8J/YFUNWI3AA
+         J8Wg==
+X-Gm-Message-State: AOAM530XXveUKCGf4f2s54534xi0yPQ5KIkhlJz7mERsrBSvR+aqD1gI
+        trfPXOoeBHOhD5mP7EOW8YZU/AoyqqxaPzmzbGEi2w==
+X-Google-Smtp-Source: ABdhPJwTPnAi13cnwMFKWWpRhZjrz70it7/2/lJzwgmkROoSS+yYxtKi9u9XSoYPLbVM8BWQpZvb3ZsAB7p4l72x1OY=
+X-Received: by 2002:aa7:979d:0:b029:1a4:3b76:a559 with SMTP id
+ o29-20020aa7979d0000b02901a43b76a559mr7945860pfp.49.1610014614360; Thu, 07
+ Jan 2021 02:16:54 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+References: <20210106084739.63318-1-songmuchun@bytedance.com>
+ <7b44eddc-cbae-92b6-5ac7-765cad2a6326@redhat.com> <CAMZfGtUcGLZjesq4ztqHXG2PekmJ2q60s3ymjBRmiJ141syK3A@mail.gmail.com>
+ <7971c96c-6b96-2dca-b9d9-d3828b117e66@redhat.com>
+In-Reply-To: <7971c96c-6b96-2dca-b9d9-d3828b117e66@redhat.com>
+From:   Muchun Song <songmuchun@bytedance.com>
+Date:   Thu, 7 Jan 2021 18:16:14 +0800
+Message-ID: <CAMZfGtXS8V8FgPmHWGtDbd=opkCMzMPsmd5n=1gLH6LpcSaA7w@mail.gmail.com>
+Subject: Re: [External] Re: [PATCH v2 0/6] Fix some bugs about HugeTLB code
+To:     David Hildenbrand <david@redhat.com>
+Cc:     Mike Kravetz <mike.kravetz@oracle.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Naoya Horiguchi <n-horiguchi@ah.jp.nec.com>,
+        Andi Kleen <ak@linux.intel.com>, mhocko@suse.cz,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When a filesystem is mounted with a blank name like so:
+On Thu, Jan 7, 2021 at 6:10 PM David Hildenbrand <david@redhat.com> wrote:
+>
+> On 07.01.21 10:40, Muchun Song wrote:
+> > On Thu, Jan 7, 2021 at 5:30 PM David Hildenbrand <david@redhat.com> wrote:
+> >>
+> >> On 06.01.21 09:47, Muchun Song wrote:
+> >>> This patch series aims to fix some bugs and add some improvements.
+> >>>
+> >>> Changelog since v1 -> v2:
+> >>>   - Export set_page_huge_active() in patch #2 to fix.
+> >>>   - Using head[3].mapping to indicate the page is freed in patch #3.
+> >>>   - Flush @free_hpage_work in patch #4.
+> >>>
+> >>> Muchun Song (6):
+> >>>   mm: migrate: do not migrate HugeTLB page whose refcount is one
+> >>>   mm: hugetlbfs: fix cannot migrate the fallocated HugeTLB page
+> >>>   mm: hugetlb: fix a race between freeing and dissolving the page
+> >>>   mm: hugetlb: add return -EAGAIN for dissolve_free_huge_page
+> >>>   mm: hugetlb: fix a race between isolating and freeing page
+> >>>   mm: hugetlb: remove VM_BUG_ON_PAGE from page_huge_active
+> >>>
+> >>>  fs/hugetlbfs/inode.c    |  3 ++-
+> >>>  include/linux/hugetlb.h |  2 ++
+> >>>  mm/hugetlb.c            | 69 +++++++++++++++++++++++++++++++++++++++++++------
+> >>>  mm/migrate.c            |  6 +++++
+> >>>  4 files changed, 71 insertions(+), 9 deletions(-)
+> >>>
+> >>
+> >> Repeating my question regarding ccing stable on selected fixes.
+> >>
+> >
+> > Just add a CC tag in the commit log of the fix patches? Right?
+> > Sorry, I'm a novice about this. Thanks.
+>
+> Sure, here is some information:
+>
+> https://www.kernel.org/doc/html/v4.10/process/stable-kernel-rules.html
+>
+> Applicable patches should be moved to the beginning of the series.
+>
+> Add "Cc: stable@vger.kernel.org" similar to "Fixes:" to the respective
+> patches. In the ideal case, indicate the applicable earliest stable
+> release where it applies.
+>
+> E.g., take a look at (random commit)
+>
+> commit 20b329129009caf1c646152abe09b697227e1c37
+> Author: Bob Peterson <rpeterso@redhat.com>
+> Date:   Wed Nov 18 08:54:31 2020 -0500
+>
+>     gfs2: Fix regression in freeze_go_sync
+> ...
+>     Fixes: 541656d3a513 ("gfs2: freeze should work on read-only mounts")
+>     Cc: stable@vger.kernel.org # v5.8+
+> ...
+>
+>
+> Consequently, actually cc when sending out these patches (e.g., let "git
+> send-email" do it automatically).
 
- # mount '' bad -t tmpfs
+Great! Very thanks.
 
-its name entry in /proc/mounts is blank causing the line to start
-with a space.
-
- /mnt/bad tmpfs rw,seclabel,relatime,inode64 0 0
-
-Further, the name could start with a hash, causing the entry to look
-like this (leading space added so that git does not strip it out):
-
- # /mnt/bad tmpfs rw,seclabel,relatime,inode64 0 0
-
-This breaks getmntent and any code that aims to parse fstab as well as
-/proc/mounts with the same logic since they need to strip leading
-spaces or skip over comments, due to which they report incorrect
-output or skip over the line respectively.
-
-This fix resolves both issues by (1) treating blank names the same way
-as not having a name and (2) by escaping the hash character into its
-octal encoding, which getmntent can then decode and print correctly.
-As far as file parsing is concerned, these are the only additional
-cases to cater for since they cover all characters that have a special
-meaning in that context.
-
-Signed-off-by: Siddhesh Poyarekar <siddhesh@gotplt.org>
-Cc: Florian Weimer <fweimer@redhat.com>
----
- fs/namespace.c      | 5 +++++
- fs/proc_namespace.c | 2 +-
- 2 files changed, 6 insertions(+), 1 deletion(-)
-
-diff --git a/fs/namespace.c b/fs/namespace.c
-index d2db7dfe232b..2f81f1c7f20a 100644
---- a/fs/namespace.c
-+++ b/fs/namespace.c
-@@ -3421,6 +3421,11 @@ SYSCALL_DEFINE5(mount, char __user *, dev_name, ch=
-ar __user *, dir_name,
- 	if (IS_ERR(kernel_dev))
- 		goto out_dev;
-=20
-+	if (kernel_dev && !kernel_dev[0]) {
-+		kfree(kernel_dev);
-+		kernel_dev =3D NULL;
-+	}
-+
- 	options =3D copy_mount_options(data);
- 	ret =3D PTR_ERR(options);
- 	if (IS_ERR(options))
-diff --git a/fs/proc_namespace.c b/fs/proc_namespace.c
-index eafb75755fa3..6d7e47750781 100644
---- a/fs/proc_namespace.c
-+++ b/fs/proc_namespace.c
-@@ -83,7 +83,7 @@ static void show_mnt_opts(struct seq_file *m, struct vf=
-smount *mnt)
-=20
- static inline void mangle(struct seq_file *m, const char *s)
- {
--	seq_escape(m, s, " \t\n\\");
-+	seq_escape(m, s, " \t\n\\#");
- }
-=20
- static void show_type(struct seq_file *m, struct super_block *sb)
---=20
-2.29.2
-
+>
+> --
+> Thanks,
+>
+> David / dhildenb
+>
