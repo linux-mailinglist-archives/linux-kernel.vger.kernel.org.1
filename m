@@ -2,195 +2,250 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D818F2ECAC5
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 08:04:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BBBBF2ECACB
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 08:04:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726849AbhAGHDx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 02:03:53 -0500
-Received: from mga09.intel.com ([134.134.136.24]:5681 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726436AbhAGHDw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 02:03:52 -0500
-IronPort-SDR: NmwZzqELOX42ixy1ipmdE61GlNsd2aieL1YQUFpeA3j06857tk6hr2RQLp2lszAQdZ4n86uyYL
- iejLRJ9zKeCw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9856"; a="177538256"
-X-IronPort-AV: E=Sophos;i="5.79,329,1602572400"; 
-   d="scan'208";a="177538256"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Jan 2021 23:03:07 -0800
-IronPort-SDR: hlH46tlwmu/j3uGWMnDCBQSrjLRPp304j0zhdvuYV7/SbrqBHWmMwjjLM5avXDx/ICUmgRxshr
- FiLemFextXjA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.79,329,1602572400"; 
-   d="scan'208";a="422470312"
-Received: from fmsmsx604.amr.corp.intel.com ([10.18.126.84])
-  by orsmga001.jf.intel.com with ESMTP; 06 Jan 2021 23:03:06 -0800
-Received: from fmsmsx607.amr.corp.intel.com (10.18.126.87) by
- fmsmsx604.amr.corp.intel.com (10.18.126.84) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Wed, 6 Jan 2021 23:03:06 -0800
-Received: from fmsedg601.ED.cps.intel.com (10.1.192.135) by
- fmsmsx607.amr.corp.intel.com (10.18.126.87) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1713.5
- via Frontend Transport; Wed, 6 Jan 2021 23:03:06 -0800
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com (104.47.56.177)
- by edgegateway.intel.com (192.55.55.70) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.1713.5; Wed, 6 Jan 2021 23:02:11 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=lUVKQlprjqYMcc5sbuY+TeStbOIGAiOBS4j0ZloGr5kQM7tWY4fKURKmslMMcW14RUjheUiN9FbaOs5fAH7WYYal3T2DCOfTxi4+Pml0CG5UsBQkoitwAYWWjYJaqhMCvGQGHnBOgH+EBv7z6OQIVPqa1mO0Htf3e9GkUJBz2aO7DCYdUwC5awZEU6yEdF139Jiz6oBgcxLFnBQp4Ll5lKy98XqMwBi5fcvmrtfSx9V6ziKuwDrru5WhYXJOfc/K9yT4K5T2Ff+ijrsjGNU/Z46RNvbQmhC+coo/0NYRqcA9O4dKYkPphMSisTMhHsvXndnYY7pgJ0JWQl/hd+RAbQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=tFYPTTs3vm5/iyYHnNLYI0wcbTfNKQIs7QYB5AQfbi4=;
- b=WnbgXU3+PlGXz/BTvhCI2/jdSud7uDQtml9v6O9FBC/05CHR26yT/nQxX6NTh+xz/srqUbsdtDSHRN8+swXAFzlS49QwEgYlJJp8soo3bgl6M2MtPkKIte7HlPIuXaN1/KxsyYJN/7s0NMUAleDYAJzJ/95vw65/k4EOc4fFDtASjXB/+ngs3pVebQXfU3EViGusXBqY6ZN8E1nnB7MA8797rqv1mnwUgYJN5CIPdwP+u9sX3HpxFHhA6NYyYTXw4nlqGjaH3Eg6/Rb7jEDt/b7V+0ysSIcMge8Lsz27HadsVyNMTld6fsnNgSyaJACa81I0ynn+ZXd+u9nGVzouaw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
- s=selector2-intel-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=tFYPTTs3vm5/iyYHnNLYI0wcbTfNKQIs7QYB5AQfbi4=;
- b=MaTsnhU7kaHbpkFmqYbtspNMX5pQLgHeLd+enI1NwxbD6FWMLhs8CataaM37krwG6Se3nu00+RBnlNmREO+9Tn6WIWExDbLQ/7yr8FlTKDMHIvQtz3Wm2KazvdIhBgIHzURLHkV151CK/cbB2S48rPwtbkZYl0bttatls/fBRx0=
-Received: from MWHPR11MB1886.namprd11.prod.outlook.com (2603:10b6:300:110::9)
- by MWHPR1101MB2125.namprd11.prod.outlook.com (2603:10b6:301:4d::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3742.6; Thu, 7 Jan
- 2021 07:01:38 +0000
-Received: from MWHPR11MB1886.namprd11.prod.outlook.com
- ([fe80::1d96:5d95:3a17:2419]) by MWHPR11MB1886.namprd11.prod.outlook.com
- ([fe80::1d96:5d95:3a17:2419%4]) with mapi id 15.20.3742.006; Thu, 7 Jan 2021
- 07:01:38 +0000
-From:   "Tian, Kevin" <kevin.tian@intel.com>
-To:     David Woodhouse <dwmw2@infradead.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "Raj, Ashok" <ashok.raj@intel.com>,
-        "Jiang, Dave" <dave.jiang@intel.com>,
-        "Dey, Megha" <megha.dey@intel.com>
-CC:     "alex.williamson@redhat.com" <alex.williamson@redhat.com>,
-        "bhelgaas@google.com" <bhelgaas@google.com>,
-        "Williams, Dan J" <dan.j.williams@intel.com>,
-        "dmaengine@vger.kernel.org" <dmaengine@vger.kernel.org>,
-        "eric.auger@redhat.com" <eric.auger@redhat.com>,
-        "Pan, Jacob jun" <jacob.jun.pan@intel.com>,
-        "jgg@mellanox.com" <jgg@mellanox.com>,
-        "jing.lin@intel.com" <jing.lin@intel.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "kwankhede@nvidia.com" <kwankhede@nvidia.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
-        "maz@kernel.org" <maz@kernel.org>,
-        "Hossain, Mona" <mona.hossain@intel.com>,
-        "netanelg@mellanox.com" <netanelg@mellanox.com>,
-        "parav@mellanox.com" <parav@mellanox.com>,
-        "pbonzini@redhat.com" <pbonzini@redhat.com>,
-        "rafael@kernel.org" <rafael@kernel.org>,
-        "Ortiz, Samuel" <samuel.ortiz@intel.com>,
-        "Kumar, Sanjay K" <sanjay.k.kumar@intel.com>,
-        "shahafs@mellanox.com" <shahafs@mellanox.com>,
-        "Luck, Tony" <tony.luck@intel.com>,
-        "vkoul@kernel.org" <vkoul@kernel.org>,
-        "yan.y.zhao@linux.intel.com" <yan.y.zhao@linux.intel.com>,
-        "Liu, Yi L" <yi.l.liu@intel.com>
-Subject: RE: [RFC PATCH 1/1] platform-msi: Add platform check for subdevice
- irq domain
-Thread-Topic: [RFC PATCH 1/1] platform-msi: Add platform check for subdevice
- irq domain
-Thread-Index: AQHWzo8FNXctlQoCAkC5wQs8oLuLIanv/iqAgCvpD4A=
-Date:   Thu, 7 Jan 2021 07:01:38 +0000
-Message-ID: <MWHPR11MB1886B23293B64C26B5C4B0458CAF0@MWHPR11MB1886.namprd11.prod.outlook.com>
-References: <20201210004624.345282-1-baolu.lu@linux.intel.com>
- <dad0bf6e271532badd84f2a811449be566f537a9.camel@infradead.org>
-In-Reply-To: <dad0bf6e271532badd84f2a811449be566f537a9.camel@infradead.org>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-dlp-version: 11.5.1.3
-dlp-product: dlpe-windows
-dlp-reaction: no-action
-authentication-results: infradead.org; dkim=none (message not signed)
- header.d=none;infradead.org; dmarc=none action=none header.from=intel.com;
-x-originating-ip: [101.88.226.48]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 3aab20d4-cc98-4fbb-f5ea-08d8b2da143f
-x-ms-traffictypediagnostic: MWHPR1101MB2125:
-x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr,ExtFwd
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <MWHPR1101MB2125012AB7AE27499711A5C88CAF0@MWHPR1101MB2125.namprd11.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:9508;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: a0IPJc0sbdQMRjz68T8cQ9BtsbVUzougnYpkej5qwt4bPQx0q2Ercy0sfjMqgvIjuFHtgCkk4FNj8xF+3VY7FQ6TVTvsbQ45ESsj1rWbw1KHZ8Lb65FokRayr385oXikvCvWlWxw076ge9VcyJAwwyo5NWCSwtyQLu37JMIAzfNQx4ENxuZ5hIvDd6P5KPPkZRj8pSyOsBB9EgdDoUgwkPSBx4PnBrXfpTmgUmL9r268wMuN5Z/Y0uYRVdPsVMZ5EXeJZGH5Cwc1vLTYq0hvIZDncrLpNeK5AOpOetlsiTU5JlzauoZDcGWPU2VnVnYGgXQpw9smHdpBbpDKs8Azc4eIoxc450aMpXYjVBbnojGJWQBjuwzS+MHtL20HfV04RC1gQNNkDfjeUaq+YeDu+Q==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR11MB1886.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(39860400002)(346002)(136003)(366004)(376002)(64756008)(33656002)(76116006)(66476007)(66446008)(8936002)(66946007)(7416002)(52536014)(4001150100001)(8676002)(316002)(110136005)(2906002)(71200400001)(54906003)(26005)(66556008)(186003)(7696005)(86362001)(45080400002)(55016002)(4326008)(478600001)(6636002)(6506007)(5660300002)(9686003);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: =?utf-8?B?R3U4ZGRKeFBkRXlaTFYrUFRvNThRcXlraitjYldWL1VaejhhQkxia3BvU0hm?=
- =?utf-8?B?Q1pNRHh3cTlyQVRYbko1OWhvc0ZUaEpzeWFmSzZkVE5xanRrV0VwSUxPMmJF?=
- =?utf-8?B?enczWWpLSnE0M25yN25pQ1pBaVdrdmZTcG1YMHhhTHVPb2dGTVZtZ1BNZHRy?=
- =?utf-8?B?U1RXTmlMMXRYQ3lnNmw4OWtFNWNQTmtYS1pRVU5CRmN2ZVRCdktaM0d1M3hS?=
- =?utf-8?B?RmVmYnczS1RJd2w4OGg4MWJRcDNCcjFPT0dweWZTbFpXbkIwUlMzaGlHNEZM?=
- =?utf-8?B?M2x1R1dFNmNPRUNiZUZBWi9vWjQ5K3RrbGhwaDVHUTcvL09IZWp4M1FaWmtx?=
- =?utf-8?B?VzIvcFBRbGVlNHBodElYSUJ6eFhxQkVnMXplRVF5NW5NM1pJMDgzUDNMVnha?=
- =?utf-8?B?QWFLUFBiQjJibXVzR0pNNzZ1QU1ydXhDRDB6SUhJQWVwRzFxNzdTcjJsa1hQ?=
- =?utf-8?B?L2tSZ2F3WFN1N2hPcEkwSHdaTnNaVFRic3Ezd1Y5STF1eDBIbWtueTFRRkp0?=
- =?utf-8?B?V0dZTjBqTDZrRW9QR0t4SEE4Mnc0NXgvSUF1UGd0T0doU0hFS3RBNEQ5NTE0?=
- =?utf-8?B?MGNZYlQ1eS9XYmVzdWtvcTFucGZwVjREYzhyNW1HaEc4U1o1dk9nZ0JyRzBG?=
- =?utf-8?B?ZXA3enlvdzhjcHc3Z0Z5QjVWKzRCUG5NYUFkT0FlVW9UZmt1UE9iUzJKS2Y1?=
- =?utf-8?B?OUxMWGR4T3VvVWpJNGdpbTU5Qm03SVQxV1lIdGxDUSt6dEkvdFFhQjVHSEll?=
- =?utf-8?B?WTR6YWt0R2lmUmMxMzkvaUVpYW1zNWtzekJhSUE2TDZES244M0gxQTAxTEt3?=
- =?utf-8?B?Vk5KYVhISlVLOHZ0QWFvMUhHSzNyME54c2Y2VEhpdjJOTis4UHVJQWhtbmRx?=
- =?utf-8?B?Q1NQQWtMKy9PR0xIL3djM1o3YVhRNlh4ZGVXbjdjVkU5N1hrU3VPRzdXZzd2?=
- =?utf-8?B?THJFU2w0c25Qb1VoOGFQb2xXMnNnRForTGV5aDNCOWg4Y3FScmtZYVVQTkN3?=
- =?utf-8?B?QXJtUFBaMi9hbnlHOUF6R3IxMGtEWHMzY2pmWTVRQnNIZGJpdkdFNmhlakNx?=
- =?utf-8?B?S0hlNG1zTVRHNjdMYzlsQ3U2MFo1MUhOVzNFWHl3UjJJM1FkeWRIU09VU0lY?=
- =?utf-8?B?N2dYRzBkb0svUEtRcFRvZ2ZUVnZPS0xHOEF2c3RYT0dyZ0pOd2t6UllBTTF2?=
- =?utf-8?B?VTNNY1BXdFVSZGs3WUZvMmFuanhpM0sxV2EyQlF0OGloUC9mTnJrK3JhRktm?=
- =?utf-8?B?M0NDYmxtMkF5WVY1bGZTRythdi83VEgyUE4zNGpRU3RWOEJmS2pjWk4ySi9h?=
- =?utf-8?Q?dt0UNMltCxpQM=3D?=
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        id S1726901AbhAGHED (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 02:04:03 -0500
+Received: from so254-31.mailgun.net ([198.61.254.31]:21261 "EHLO
+        so254-31.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725306AbhAGHED (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Jan 2021 02:04:03 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1610003018; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=IVTGZOL0XTtaN6d7u/utR+yaZEID29Zp8ufQMg8Lu0A=;
+ b=Pxl8ZiE2MiHPHHLcBDGB6xgYrAksEcgfLB/jXtjS56gx7uyYfyvH2q7PxmvlcR4MYtIlcQCp
+ gncaUtKoybY289QlpZ0PUt7nO6lODuZGNtq/DGzw4bb2CWUrf+jU7Hf66hplLnUN2VSp7XE1
+ 0NCBI/zbnMdt4j255Bkt5i4Y8RM=
+X-Mailgun-Sending-Ip: 198.61.254.31
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n03.prod.us-west-2.postgun.com with SMTP id
+ 5ff6b22c661021aa280d2bfa (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 07 Jan 2021 07:03:08
+ GMT
+Sender: cang=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 9DF70C43463; Thu,  7 Jan 2021 07:03:08 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: cang)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 78682C433C6;
+        Thu,  7 Jan 2021 07:03:07 +0000 (UTC)
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: MWHPR11MB1886.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 3aab20d4-cc98-4fbb-f5ea-08d8b2da143f
-X-MS-Exchange-CrossTenant-originalarrivaltime: 07 Jan 2021 07:01:38.4566
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: A6xPcVqmF7enhRp+W6FsxGGJVeq4vdxMr9/eDT93syH0yyZ9B9cP1eVYjhTCI8hwE6UYERv9Xw7ipqkTu+H2sQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR1101MB2125
-X-OriginatorOrg: intel.com
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Thu, 07 Jan 2021 15:03:07 +0800
+From:   Can Guo <cang@codeaurora.org>
+To:     Jaegeuk Kim <jaegeuk@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org,
+        kernel-team@android.com, alim.akhtar@samsung.com,
+        avri.altman@wdc.com, bvanassche@acm.org,
+        martin.petersen@oracle.com, stanley.chu@mediatek.com
+Subject: Re: [PATCH v3 2/2] scsi: ufs: handle LINERESET with correct tm_cmd
+In-Reply-To: <X/avWNrpOzWMj6xY@google.com>
+References: <20210106214109.44041-1-jaegeuk@kernel.org>
+ <20210106214109.44041-3-jaegeuk@kernel.org>
+ <163fae07a94933230e0432e2ca584040@codeaurora.org>
+ <X/avWNrpOzWMj6xY@google.com>
+Message-ID: <7261bef7d8aa003d7f8fc984e37390bb@codeaurora.org>
+X-Sender: cang@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-PiBGcm9tOiBEYXZpZCBXb29kaG91c2UgPGR3bXcyQGluZnJhZGVhZC5vcmc+DQo+IFNlbnQ6IFRo
-dXJzZGF5LCBEZWNlbWJlciAxMCwgMjAyMCA0OjIzIFBNDQo+IA0KPiBPbiBUaHUsIDIwMjAtMTIt
-MTAgYXQgMDg6NDYgKzA4MDAsIEx1IEJhb2x1IHdyb3RlOg0KPiA+ICsvKg0KPiA+ICsgKiBXZSB3
-YW50IHRvIGZpZ3VyZSBvdXQgd2hpY2ggY29udGV4dCB3ZSBhcmUgcnVubmluZyBpbi4gQnV0IHRo
-ZQ0KPiBoYXJkd2FyZQ0KPiA+ICsgKiBkb2VzIG5vdCBpbnRyb2R1Y2UgYSByZWxpYWJsZSB3YXkg
-KGluc3RydWN0aW9uLCBDUFVJRCBsZWFmLCBNU1IsDQo+IHdoYXRldmVyKQ0KPiA+ICsgKiB3aGlj
-aCBjYW4gYmUgbWFuaXB1bGF0ZWQgYnkgdGhlIFZNTSB0byBsZXQgdGhlIE9TIGZpZ3VyZSBvdXQg
-d2hlcmUgaXQNCj4gcnVucy4NCj4gPiArICogU28gd2UgZ28gd2l0aCB0aGUgYmVsb3cgcHJvYmFi
-bHlfb25fYmFyZV9tZXRhbCgpIGZ1bmN0aW9uIGFzIGENCj4gcmVwbGFjZW1lbnQNCj4gPiArICog
-Zm9yIGRlZmluaXRlbHlfb25fYmFyZV9tZXRhbCgpIHRvIGdvIGZvcndhcmQgb25seSBmb3IgdGhl
-IHZlcnkgc2ltcGxlDQo+IHJlYXNvbg0KPiA+ICsgKiB0aGF0IHRoaXMgaXMgdGhlIG9ubHkgb3B0
-aW9uIHdlIGhhdmUuDQo+ID4gKyAqLw0KPiA+ICtzdGF0aWMgY29uc3QgY2hhciAqIGNvbnN0IHBv
-c3NpYmxlX3ZtbV92ZW5kb3JfbmFtZVtdID0gew0KPiA+ICsgICAgICAgIlFFTVUiLCAiQm9jaHMi
-LCAiS1ZNIiwgIlhlbiIsICJWTXdhcmUiLCAiVk1XIiwgIlZNd2FyZSBJbmMuIiwNCj4gPiArICAg
-ICAgICJpbm5vdGVrIEdtYkgiLCAiT3JhY2xlIENvcnBvcmF0aW9uIiwgIlBhcmFsbGVscyIsICJC
-SFlWRSIsDQo+ID4gKyAgICAgICAiTWljcm9zb2Z0IENvcnBvcmF0aW9uIg0KPiA+ICt9Ow0KPiAN
-Cj4gUGVvcGxlIGRvIHVzZSBTZWFCSU9TICgiQm9jaHMiKSBvbiBiYXJlIG1ldGFsLg0KPiANCj4g
-WW91J2xsIGFsc28gc2VlICJBbWF6b24gRUMyIiBvbiB2aXJ0IGluc3RhbmNlcyBhcyB3ZWxsIGFz
-IGJhcmUgbWV0YWwNCj4gaW5zdGFuY2VzLiBBbHRob3VnaCBpbiB0aGF0IGNhc2UgSSBiZWxpZXZl
-IHRoZSB2aXJ0IGluc3RhbmNlcyBkbyBoYXZlDQo+IHRoZSAndmlydHVhbCBtYWNoaW5lJyBmbGFn
-IHNldCBpbiBiaXQgNCBvZiB0aGUgQklPUyBDaGFyYWN0ZXJpc3RpY3MNCj4gRXh0ZW5zaW9uIEJ5
-dGUgMiwgYW5kIHRoZSBiYXJlIG1ldGFsIG9idmlvdXNseSBkb24ndC4NCj4gDQoNCkFyZSB0aG9z
-ZSB2aXJ0dWFsIGluc3RhbmNlcyBoYXZpbmcgQ1BVSUQgaHlwZXJ2aXNvciBiaXQgc2V0PyBJZiB5
-ZXMsDQp0aGV5IGNhbiBiZSBkaWZmZXJlbnRpYXRlZCBmcm9tIGJhcmUgbWV0YWwgaW5zdGFuY2Vz
-IHcvbyBjaGVja2luZw0KdGhlIHZlbmRvciBsaXN0Lg0KDQpidHcgZG8geW91IGtub3cgd2hldGhl
-ciB0aGlzICd2aXJ0dWFsIG1hY2hpbmUnIGZsYWcgaXMgd2lkZWx5IHVzZWQNCmluIHZpcnR1YWxp
-emF0aW9uIGVudmlyb25tZW50cz8gSWYgeWVzLCB3ZSBwcm9iYWJseSBzaG91bGQgYWRkIGNoZWNr
-DQpvbiB0aGlzIGZsYWcgZXZlbiBiZWZvcmUgY2hlY2tpbmcgRE1JX1NZU19WRU5ET1IuIEl0IHNv
-dW5kcyBtb3JlDQpnZW5lcmFsLi4uDQoNClRoYW5rcw0KS2V2aW4NCg0K
+On 2021-01-07 14:51, Jaegeuk Kim wrote:
+> On 01/07, Can Guo wrote:
+>> On 2021-01-07 05:41, Jaegeuk Kim wrote:
+>> > From: Jaegeuk Kim <jaegeuk@google.com>
+>> >
+>> > This fixes a warning caused by wrong reserve tag usage in
+>> > __ufshcd_issue_tm_cmd.
+>> >
+>> > WARNING: CPU: 7 PID: 7 at block/blk-core.c:630 blk_get_request+0x68/0x70
+>> > WARNING: CPU: 4 PID: 157 at block/blk-mq-tag.c:82
+>> > blk_mq_get_tag+0x438/0x46c
+>> >
+>> > And, in ufshcd_err_handler(), we can avoid to send tm_cmd before
+>> > aborting
+>> > outstanding commands by waiting a bit for IO completion like this.
+>> >
+>> > __ufshcd_issue_tm_cmd: task management cmd 0x80 timed-out
+>> >
+>> 
+>> Would you mind add a Fixes tag?
+> 
+> Ok.
+> 
+>> 
+>> > Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
+>> > ---
+>> >  drivers/scsi/ufs/ufshcd.c | 36 ++++++++++++++++++++++++++++++++----
+>> >  1 file changed, 32 insertions(+), 4 deletions(-)
+>> >
+>> > diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
+>> > index 1678cec08b51..47fc8da3cbf9 100644
+>> > --- a/drivers/scsi/ufs/ufshcd.c
+>> > +++ b/drivers/scsi/ufs/ufshcd.c
+>> > @@ -44,6 +44,9 @@
+>> >  /* Query request timeout */
+>> >  #define QUERY_REQ_TIMEOUT 1500 /* 1.5 seconds */
+>> >
+>> > +/* LINERESET TIME OUT */
+>> > +#define LINERESET_IO_TIMEOUT_MS			(30000) /* 30 sec */
+>> > +
+>> >  /* Task management command timeout */
+>> >  #define TM_CMD_TIMEOUT	100 /* msecs */
+>> >
+>> > @@ -5899,6 +5902,8 @@ static void ufshcd_err_handler(struct work_struct
+>> > *work)
+>> >  	 * check if power mode restore is needed.
+>> >  	 */
+>> >  	if (hba->saved_uic_err & UFSHCD_UIC_PA_GENERIC_ERROR) {
+>> > +		ktime_t start = ktime_get();
+>> > +
+>> >  		hba->saved_uic_err &= ~UFSHCD_UIC_PA_GENERIC_ERROR;
+>> >  		if (!hba->saved_uic_err)
+>> >  			hba->saved_err &= ~UIC_ERROR;
+>> > @@ -5906,6 +5911,20 @@ static void ufshcd_err_handler(struct work_struct
+>> > *work)
+>> >  		if (ufshcd_is_pwr_mode_restore_needed(hba))
+>> >  			needs_restore = true;
+>> >  		spin_lock_irqsave(hba->host->host_lock, flags);
+>> > +		/* Wait for IO completion to avoid aborting IOs */
+>> > +		while (hba->outstanding_reqs) {
+>> > +			ufshcd_complete_requests(hba);
+>> > +			spin_unlock_irqrestore(hba->host->host_lock, flags);
+>> > +			schedule();
+>> > +			spin_lock_irqsave(hba->host->host_lock, flags);
+>> > +			if (ktime_to_ms(ktime_sub(ktime_get(), start)) >
+>> > +						LINERESET_IO_TIMEOUT_MS) {
+>> > +				dev_err(hba->dev, "%s: timeout, outstanding=0x%lx\n",
+>> > +					__func__, hba->outstanding_reqs);
+>> > +				break;
+>> > +			}
+>> > +		}
+>> > +
+>> >  		if (!hba->saved_err && !needs_restore)
+>> >  			goto skip_err_handling;
+>> >  	}
+>> > @@ -6302,9 +6321,13 @@ static irqreturn_t ufshcd_intr(int irq, void
+>> > *__hba)
+>> >  		intr_status = ufshcd_readl(hba, REG_INTERRUPT_STATUS);
+>> >  	}
+>> >
+>> > -	if (enabled_intr_status && retval == IRQ_NONE) {
+>> > -		dev_err(hba->dev, "%s: Unhandled interrupt 0x%08x\n",
+>> > -					__func__, intr_status);
+>> > +	if (enabled_intr_status && retval == IRQ_NONE &&
+>> > +				!ufshcd_eh_in_progress(hba)) {
+>> > +		dev_err(hba->dev, "%s: Unhandled interrupt 0x%08x (0x%08x,
+>> > 0x%08x)\n",
+>> > +					__func__,
+>> > +					intr_status,
+>> > +					hba->ufs_stats.last_intr_status,
+>> > +					enabled_intr_status);
+>> >  		ufshcd_dump_regs(hba, 0, UFSHCI_REG_SPACE_SIZE, "host_regs: ");
+>> >  	}
+>> >
+>> > @@ -6348,7 +6371,11 @@ static int __ufshcd_issue_tm_cmd(struct ufs_hba
+>> > *hba,
+>> >  	 * Even though we use wait_event() which sleeps indefinitely,
+>> >  	 * the maximum wait time is bounded by %TM_CMD_TIMEOUT.
+>> >  	 */
+>> > -	req = blk_get_request(q, REQ_OP_DRV_OUT, BLK_MQ_REQ_RESERVED);
+>> > +	req = blk_get_request(q, REQ_OP_DRV_OUT, BLK_MQ_REQ_RESERVED |
+>> > +						BLK_MQ_REQ_NOWAIT);
+>> 
+>> Sorry that I didn't pay much attention to this part of code before.
+>> May I know why must we use the BLK_MQ_REQ_RESERVED flag?
+> 
+> What I understood is the reserved tag is used when aborting outstanding
+> IOs when all the 32 tags were used.
+> 
+
+No, the tm requests and I/O requests are on two different tag sets:
+tm requests come from hba->tmf_tag_set, while I/O requests come from
+hba->shost->tag_set. Meaning they don't share tags with each other.
+
+>> 
+>> Thanks,
+>> Can Guo.
+>> 
+>> > +	if (IS_ERR(req))
+>> > +		return PTR_ERR(req);
+>> > +
+>> >  	req->end_io_data = &wait;
+>> >  	free_slot = req->tag;
+>> >  	WARN_ON_ONCE(free_slot < 0 || free_slot >= hba->nutmrs);
+>> > @@ -9355,6 +9382,7 @@ int ufshcd_init(struct ufs_hba *hba, void
+>> > __iomem *mmio_base, unsigned int irq)
+>> >
+>> >  	hba->tmf_tag_set = (struct blk_mq_tag_set) {
+>> >  		.nr_hw_queues	= 1,
+>> > +		.reserved_tags	= 1,
+>> 
+>> If we give reserved_tags as 1 and always ask for a tm requst with
+>> BLK_MQ_REQ_RESERVED flag set, then the tag shall only be allocated
+>> from the reserved sbitmap_queue, whose depth is set to 1 here.
+>> UFS supports tm queue depth as 8, but here is allowing only one tm
+>> req at a time. Why? Please correct me if my understanding is wrong.
+> 
+> I couldn't find tm can be issued in parallel, so thought it was issued
+> one at a time. If we set 8, then we can use 24 for IOs, IIUC.
+> 
+> Please correct me as well. I'm still trying to understand the flow.
+> 
+
+UFS allows a queue depth as 8, which means it support sending multiple
+tm requests at the same time. You can check commit 69a6c269c097d780a2 -
+before this change, we used to use below func to allocate tags for
+tm reqs, which can tell you the true story.
+
+So I am thinking why don't we just we remove the BLK_MQ_REQ_RESERVED 
+flag?
+Removing it can also fix the warning I suppose. What do you think?
+
+-static bool ufshcd_get_tm_free_slot(struct ufs_hba *hba, int 
+*free_slot)
+-{
+-       int tag;
+-       bool ret = false;
+-
+-       if (!free_slot)
+-               goto out;
+-
+-       do {
+-               tag = find_first_zero_bit(&hba->tm_slots_in_use, 
+hba->nutmrs);
+-               if (tag >= hba->nutmrs)
+-                       goto out;
+-       } while (test_and_set_bit_lock(tag, &hba->tm_slots_in_use));
+-
+-       *free_slot = tag;
+-       ret = true;
+-out:
+-       return ret;
+-}
+
+Thanks,
+Can Guo.
+
+>> 
+>> Thanks,
+>> Can Guo.
+>> 
+>> >  		.queue_depth	= hba->nutmrs,
+>> >  		.ops		= &ufshcd_tmf_ops,
+>> >  		.flags		= BLK_MQ_F_NO_SCHED,
