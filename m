@@ -2,143 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B1212ECE8F
+	by mail.lfdr.de (Postfix) with ESMTP id E6F742ECE91
 	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 12:20:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727946AbhAGLTL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 06:19:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54878 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726326AbhAGLTK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 06:19:10 -0500
-Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F255C0612F4
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Jan 2021 03:18:30 -0800 (PST)
-Received: by mail-ed1-x52a.google.com with SMTP id cm17so7407847edb.4
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Jan 2021 03:18:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=message-id:date:from:user-agent:mime-version:to:cc:subject
-         :references:in-reply-to:content-transfer-encoding;
-        bh=CXQiP4kDperqGE1TeM0C8PdXM9FLi69zGIULpttjNIw=;
-        b=AI/IhqY9MRGIozFUQ/cSfIlKjMJUOmr10g5EoHcotUBK6LsFVwqceBGMwBcb8comb9
-         z/I+HkKA7ScTTLOvr5Y6lZYlL4GvP7/1JM1ShukUYfA0jZP6ukF5qtX05s/wI+f4/Gm/
-         MVG+YMKBZ9GGAk2WstS4r+dv/pbOkSCvU+BaMN2SQBbnm9gt9oovnnWYaf3d1KnVdKJg
-         39jQN/9myoEAZXU8go0UjzldMwS3hYBryBZh3gVWoNyH8lIRVu9yUxiRJ2eyqU08TbvB
-         mcQqyoPYX7m7g5oboV3tFx7htrh1pySeOd/6vxEqcjLhZiiHi2giGx9Kf+c7lSzw1nkk
-         aAGg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:date:from:user-agent:mime-version:to
-         :cc:subject:references:in-reply-to:content-transfer-encoding;
-        bh=CXQiP4kDperqGE1TeM0C8PdXM9FLi69zGIULpttjNIw=;
-        b=gIC1pZWITKpizLwc49Eefuv5xmT0laX+99pryl0DAJ8FXtUMk+wvzdkOVUsFesAQ/T
-         m4cO9pwoUFZzWttOker9ZygqGjpbRBwJqQnBuhmvb+4RBis15XAfdVtmKy5rrZan240L
-         tLTV9fc3XaqnubJihphjcLyPqnjxgGgdYAkozMrza/m4AfCo9tiLInGqCfIpn1VGXbWF
-         b7EzGm+KC2Zor/hlNslkjq5BRB5grgiSWttLXNHZTAGxIFlK6AFQoI0qsRNwE0OUA/aJ
-         b/keGLxCSDRKMvqhFlFBbrISdKHGMbUKWsA/cJ+LvTkSeOKDBD0K2zP7rCoqt1rapjgZ
-         1DQA==
-X-Gm-Message-State: AOAM530SfRidvacqdysC00IaSNjmRzCq7Rr05s03P8S43uOy6WYE60cx
-        j5klyCT8rAyxKU2T0zzFyU0=
-X-Google-Smtp-Source: ABdhPJzr/mwHM2MTsYPSEQDDryMnSpFHxUbbPzgqPZIVBRSd6YJwxuLRPHZN8KJPy+vChzhxx9QPyg==
-X-Received: by 2002:aa7:cac2:: with SMTP id l2mr1302862edt.141.1610018308986;
-        Thu, 07 Jan 2021 03:18:28 -0800 (PST)
-Received: from [89.138.250.57] (89-138-250-57.bb.netvision.net.il. [89.138.250.57])
-        by smtp.gmail.com with ESMTPSA id f8sm2561970eds.19.2021.01.07.03.18.27
-        (version=TLS1 cipher=AES128-SHA bits=128/128);
-        Thu, 07 Jan 2021 03:18:28 -0800 (PST)
-Message-ID: <5FF6EDED.40408@gmail.com>
-Date:   Thu, 07 Jan 2021 13:18:05 +0200
-From:   Eli Billauer <eli.billauer@gmail.com>
-User-Agent: Mozilla/5.0 (X11; U; Linux x86_64; en-US; rv:1.9.1.12) Gecko/20100907 Fedora/3.0.7-1.fc12 Thunderbird/3.0.7
+        id S1727978AbhAGLTQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 06:19:16 -0500
+Received: from mx2.suse.de ([195.135.220.15]:50232 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726326AbhAGLTP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Jan 2021 06:19:15 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1610018308; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=RQpGpOyPrE4bOtyYyPbs1TfHW7kVTnWw1fBHDIw2fno=;
+        b=PYrkANYpWF+ZDJpX+msYjR159brUpvCPsnc5tplfYlWtO2QGfSMmXxjU+E0dIVwZrhKwOo
+        pfxPlm973ZJSrdwtvKvw2LcE4/HWBd0X/j13V4kEbHldGjhWzOweWXObbWm6NPQY+ll532
+        VmK0CAc+Q0iWvlU0qJTFUp3sOcm2HXU=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 34BEFAD12;
+        Thu,  7 Jan 2021 11:18:28 +0000 (UTC)
+Date:   Thu, 7 Jan 2021 12:18:27 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     Muchun Song <songmuchun@bytedance.com>
+Cc:     Mike Kravetz <mike.kravetz@oracle.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Naoya Horiguchi <n-horiguchi@ah.jp.nec.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [External] Re: [PATCH v2 3/6] mm: hugetlb: fix a race between
+ freeing and dissolving the page
+Message-ID: <20210107111827.GG13207@dhcp22.suse.cz>
+References: <20210106084739.63318-1-songmuchun@bytedance.com>
+ <20210106084739.63318-4-songmuchun@bytedance.com>
+ <20210106165632.GT13207@dhcp22.suse.cz>
+ <CAMZfGtWML+PUnK=jJJ1XFmv=VdKOZYmKjyYU=nhpq-1sSGKMqg@mail.gmail.com>
+ <20210107084146.GD13207@dhcp22.suse.cz>
+ <CAMZfGtVr83yb30EHp5i+f90nn5gnNfGH31Q2ebdV-5nnQXCsAQ@mail.gmail.com>
 MIME-Version: 1.0
-To:     Greg KH <gregkh@linuxfoundation.org>
-CC:     arnd@arndb.de, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] char: xillybus: Add driver for XillyUSB (Xillybus variant
- for USB)
-References: <20201213170503.59017-1-eli.billauer@gmail.com> <X/Rt+bUJ9Hs2F8nF@kroah.com> <5FF5C31C.6050804@gmail.com> <X/XH5Q6APKKt4kRR@kroah.com>
-In-Reply-To: <X/XH5Q6APKKt4kRR@kroah.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAMZfGtVr83yb30EHp5i+f90nn5gnNfGH31Q2ebdV-5nnQXCsAQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello, Greg.
+On Thu 07-01-21 16:53:13, Muchun Song wrote:
+> On Thu, Jan 7, 2021 at 4:41 PM Michal Hocko <mhocko@suse.com> wrote:
+> >
+> > On Thu 07-01-21 13:39:38, Muchun Song wrote:
+> > > On Thu, Jan 7, 2021 at 12:56 AM Michal Hocko <mhocko@suse.com> wrote:
+> > > >
+> > > > On Wed 06-01-21 16:47:36, Muchun Song wrote:
+> > > > > There is a race condition between __free_huge_page()
+> > > > > and dissolve_free_huge_page().
+> > > > >
+> > > > > CPU0:                         CPU1:
+> > > > >
+> > > > > // page_count(page) == 1
+> > > > > put_page(page)
+> > > > >   __free_huge_page(page)
+> > > > >                               dissolve_free_huge_page(page)
+> > > > >                                 spin_lock(&hugetlb_lock)
+> > > > >                                 // PageHuge(page) && !page_count(page)
+> > > > >                                 update_and_free_page(page)
+> > > > >                                 // page is freed to the buddy
+> > > > >                                 spin_unlock(&hugetlb_lock)
+> > > > >     spin_lock(&hugetlb_lock)
+> > > > >     clear_page_huge_active(page)
+> > > > >     enqueue_huge_page(page)
+> > > > >     // It is wrong, the page is already freed
+> > > > >     spin_unlock(&hugetlb_lock)
+> > > > >
+> > > > > The race windows is between put_page() and spin_lock() which
+> > > > > is in the __free_huge_page().
+> > > >
+> > > > The race window reall is between put_page and dissolve_free_huge_page.
+> > > > And the result is that the put_page path would clobber an unrelated page
+> > > > (either free or already reused page) which is quite serious.
+> > > > Fortunatelly pages are dissolved very rarely. I believe that user would
+> > > > require to be privileged to hit this by intention.
+> > > >
+> > > > > We should make sure that the page is already on the free list
+> > > > > when it is dissolved.
+> > > >
+> > > > Another option would be to check for PageHuge in __free_huge_page. Have
+> > > > you considered that rather than add yet another state? The scope of the
+> > > > spinlock would have to be extended. If that sounds more tricky then can
+> > > > we check the page->lru in the dissolve path? If the page is still
+> > > > PageHuge and reference count 0 then there shouldn't be many options
+> > > > where it can be queued, right?
+> > >
+> > > Did you mean that we iterate over the free list to check whether
+> > > the page is on the free list?
+> >
+> > No I meant to check that the page is enqueued which along with ref count
+> > = 0 should mean it has been released to the pool unless I am missing
+> > something.
+> 
+> The page can be on the free list or active list or empty when it
+> is freed to the pool. How to check whether it is on the free list?
 
-I'm afraid we're not on the same page. As mentioned in the original 
-patch description, XillyUSB and the existing Xillybus variant presents a 
-nearly identical API. User space programs see no difference when using 
-one or the other, except for different device file names. In that sense, 
-it's exactly like tty devices. But unlike ttys, there are no ioctls or 
-any other special API functions to export. Xillybus' API consists only 
-of the basic file operations, which behave like you'd expect from a 
-pipe, more or less.
-
-So even though one would usually expect this API similarity to take the 
-form of common core routines, as it did with xillybus_pcie and 
-xillybus_of, there is very little of that regarding XillyUSB. This is 
-what I tried to explain in my previous mail: Why this common core is 
-very slim.
-
-I can see the benefit of maintaining the formal structure of a single 
-entry point for the fops for all Xillybus variants. However my 
-understanding while writing the XillyUSB driver was that sticking to 
-this structure would be quite artificial, and that it would mess up 
-things more than anything else.
-
-Or have I misunderstood your concern about this patch?
-
-Thanks and regards,
-    Eli
-
-On 06/01/21 16:23, Greg KH wrote:
-> On Wed, Jan 06, 2021 at 04:03:08PM +0200, Eli Billauer wrote:
->    
->> >  Hello Greg,
->> >  
->> >  Merging XillyUSB's driver into xillybus_core.c was of course the initial
->> >  idea. Practically, it turned out that this doesn't reduce the number of code
->> >  lines nor makes the code easier to understand: The XillyUSB driver is a
->> >  completely different deal internally, in almost every aspect of it.
->> >  
->> >  Indeed, the two drivers do basically the same thing: They create a pipe-like
->> >  API using a hardware interface that is based upon buffers. This is what most
->> >  of the code in both drivers is about. As this underlying hardware interface
->> >  is so fundamentally different, there is little in common between the
->> >  drivers.
->> >  
->> >  The existing xillybus_core.c driver is based upon direct memory register +
->> >  DMA interaction with the hardware. XillyUSB relies on the USB framework for
->> >  all communication. I'll try to demonstrate the practical differences with
->> >  two examples.
->> >  
->> >  (1) Sending commands to the hardware: The existing Xillybus driver just
->> >  writes to registers in memory space. Its XillyUSB counterpart calls
->> >  xillyusb_send_opcode() to prepare a little packet for transmission over USB,
->> >  and may possibly sleep if there's a (temporary) lack of resources to
->> >  complete that task.
->> >  
->> >  (2) Data handling: The existing Xillybus driver just copies user data to and
->> >  from DMA buffers. Its main business is to maintain and juggle these buffers
->> >  with the hardware. The XillyUSB driver, on the other hand, manages a pool of
->> >  URBs to efficiently shuffle the data to and from the hardware. The main
->> >  challenge is to keep the data flowing at 400 MB/s.
->> >  
->> >  This goes on for every single aspect of the two drivers: They do the same
->> >  things essentially, but the actual actions are completely different, as they
->> >  have different means to do get the job done. And completely different
->> >  challenges.
->>      
-> That's fine, but I'm talking about the userspace api.  You should not be
-> creating two different userspace apis just because the bus transport
-> changed for the hardware.
->
-> We don't do that for things like tty devices, right?  :)
->
-> So please, share the same core code that exports the api to userspace to
-> be common, do not create a new one, like you did here.
->
->    
-
+As I've said, I might be missing something here. But if the page is
+freed why does it matter whether it is on a active list or free list
+from the dissolve operation POV?
+-- 
+Michal Hocko
+SUSE Labs
