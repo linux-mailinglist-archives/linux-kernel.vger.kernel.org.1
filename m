@@ -2,77 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DB0C2ED5D1
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 18:41:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 27CE32ED5D9
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 18:43:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728231AbhAGRlB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 12:41:01 -0500
-Received: from foss.arm.com ([217.140.110.172]:36784 "EHLO foss.arm.com"
+        id S1728979AbhAGRmD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 12:42:03 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59144 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726326AbhAGRlB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 12:41:01 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id DF5B431B;
-        Thu,  7 Jan 2021 09:40:15 -0800 (PST)
-Received: from e113632-lin (e113632-lin.cambridge.arm.com [10.1.194.46])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 8DBDD3F719;
-        Thu,  7 Jan 2021 09:40:14 -0800 (PST)
-From:   Valentin Schneider <valentin.schneider@arm.com>
-To:     Vincent Guittot <vincent.guittot@linaro.org>
-Cc:     Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 3/3 v2] sched/fair: reduce cases for active balance
-In-Reply-To: <CAKfTPtAW1e=AFfD3O58sZqAW281WA43gj6VDJUVjFLK4STWfHA@mail.gmail.com>
-References: <20210107103325.30851-1-vincent.guittot@linaro.org> <20210107103325.30851-4-vincent.guittot@linaro.org> <jhjczyhasy0.mognet@arm.com> <CAKfTPtAW1e=AFfD3O58sZqAW281WA43gj6VDJUVjFLK4STWfHA@mail.gmail.com>
-User-Agent: Notmuch/0.21 (http://notmuchmail.org) Emacs/26.3 (x86_64-pc-linux-gnu)
-Date:   Thu, 07 Jan 2021 17:40:11 +0000
-Message-ID: <jhjo8i063yc.mognet@arm.com>
+        id S1726165AbhAGRmD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Jan 2021 12:42:03 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EBEF6233FB;
+        Thu,  7 Jan 2021 17:41:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1610041282;
+        bh=ka0nkpDU2h1gSL1xu+E2qHPvU660nT51WYpv2eqNhKM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=d7YgNieZmdHd/yNCSNq6pfizmmYQGoiTBFTO+ZGX7Ergwh+Nqa2HSPxOltj89nSl8
+         5nO8HB5p6C+M0gur5IXieEdVhBIqquYVj57QFKTcSL7PeGdxuTB02DVaPK2csyW3j3
+         xBnr08hX97l807PdmImJ4tbkZBxbP70SxBeooc+ZOC9NTx4PEUypJdSYqg/VUicXTR
+         Bqdamr49wObgud5b8HlZ0Cd6AbYs4d0Iz6B1U6QhLyUoyw4n1nacREhUMhWuSFup5e
+         5RTreYoyVj9aQSQQs7aYhlyd7hpC+mkDW7RKBLKjWzgko4vYszbLjMVPRy/qf6SvzP
+         nvggNd3hoYt7g==
+Date:   Thu, 7 Jan 2021 17:40:52 +0000
+From:   Mark Brown <broonie@kernel.org>
+To:     Gustav Wiklander <gustavwi@axis.com>
+Cc:     Gustav Wiklander <gustav.wiklander@axis.com>, kernel@axis.com,
+        linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] spi: spidev: Fix so the module is autoloaded when built
+ as external
+Message-ID: <20210107174052.GH4726@sirena.org.uk>
+References: <20210104153436.20083-1-gustav.wiklander@axis.com>
+ <20210104213437.GM5645@sirena.org.uk>
+ <124e3214-37b9-524b-7888-a31e8cb455da@axis.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="wayzTnRSUXKNfBqd"
+Content-Disposition: inline
+In-Reply-To: <124e3214-37b9-524b-7888-a31e8cb455da@axis.com>
+X-Cookie: See store for details.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 07/01/21 13:20, Vincent Guittot wrote:
-> On Thu, 7 Jan 2021 at 12:26, Valentin Schneider
-> <valentin.schneider@arm.com> wrote:
->> > @@ -9499,13 +9499,32 @@ asym_active_balance(struct lb_env *env)
->> >  }
->> >
->> >  static inline bool
->> > -voluntary_active_balance(struct lb_env *env)
->> > +imbalanced_active_balance(struct lb_env *env)
->> > +{
->> > +     struct sched_domain *sd = env->sd;
->> > +
->> > +     /*
->> > +      * The imbalanced case includes the case of pinned tasks preventing a fair
->> > +      * distribution of the load on the system but also the even distribution of the
->> > +      * threads on a system with spare capacity
->> > +      */
->>
->> Do you mean s/imbalanced/migrate_task/? This part here will affect
->> group_imbalanced, group_asym_packing, and some others.
->
-> I really mean the imbalanced case which refers to the function name
-> and includes:
-> - the pinned tasks case aka group_imbalanced and which is the primary
-> target of this function ( which explains its name)
-> - but also the case where we want to evenly spread tasks on system
-> with spare capacity and removed this imbalance
->
 
-But can't this also affect other group_types? calculate_imbalance() can
-set
+--wayzTnRSUXKNfBqd
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-  env->migration_type = migrate_task;
+On Tue, Jan 05, 2021 at 10:44:21AM +0100, Gustav Wiklander wrote:
+> On 1/4/21 10:34 PM, Mark Brown wrote:
+> > On Mon, Jan 04, 2021 at 04:34:35PM +0100, Gustav Wiklander wrote:
 
-for
+> > > The spi framework sets the modalias for the spi device to belong in
+> > > either the acpi device table or the SPI device table. It can never
+> > > be in the OF table. Therefore the spidev driver should populate the
+> > > spi device table rather than the OF table.
 
-  busiest->group_type > group_fully_busy
+> > Why is this a good solution rather than ensuring the the OF IDs can be
+> > used directly?
+
+> You suggestion is of course a solid alternative forward. However, the
+> downside with supporting the OF device table for automatic module loading is
+> that a lot of spi device drivers must be updated. Also
+
+Is the module code too limited to cope with more than one table?
+
+> If adding support of OF device table the spi device drivers must now include
+> a MODULE_DEVICE_TABLE(of,...) as the spi device alias will no longer match
+> the alias in the module.
+
+> This command gives 186 spi device drivers.
+
+How about SPI drivers that already have an OF table and expect it to
+work, I rather suspect we have a lot of cases where people are adding
+SPI IDs to DT that don't appear in the module tables and frankly I think
+that's a reasonable expectation.  If there's an issue here beyond
+missing MODULE_DEVICE_TABLEs in drivers I'd expect it to be fixed in the
+core, otherwise we're just leaving sharp edges for everyone.
+
+--wayzTnRSUXKNfBqd
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl/3R6QACgkQJNaLcl1U
+h9Bu5Qf/dzgvPJikJ4h7m5GFppKSZKhqXVVxbUCHh4ZllWu7bO3Sn2IK4Ut/tPh5
+FhkILkesGWvBuMZf39eORvreabn6xgYMfb2ki+luJOaWDQ5bkr91hy69+djJEa72
+8Aj4XOHqAAeYpoW6RcC+CxE5ZP5+3X9uBh6TVfQMGAOZZw17irSkh62ERLWSHz1+
+GmjiYEHJvMvWYSV32tWootBNpQX8logz/HheuL0gr4BP6ddyZoruZPrMJB1GhQ2t
+S+cUOcOheeSTfWEJtjw6Mq6ylO5d1eNAmAUgHt/WOP0SJDQdXIFEO5SxEbiRHX6A
+4sLLrqWLIP7bY8qitkuBwd1vJw7+8w==
+=K5nM
+-----END PGP SIGNATURE-----
+
+--wayzTnRSUXKNfBqd--
