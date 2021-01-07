@@ -2,87 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 192D02ED336
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 16:07:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A2AE2ED338
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 16:07:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727984AbhAGPGc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 10:06:32 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55996 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726319AbhAGPGb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 10:06:31 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E968322B2B;
-        Thu,  7 Jan 2021 15:05:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610031950;
-        bh=QVBe+8xawnGxSu90TwsMGxNaWxKPCzC1iEicL95XcVg=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=sALm77uDwhTnLwzNgG2IAGY0QipoBSlHduiLeV4XfCU9Yq4gLmQSyBH9grBPbnsy/
-         CNGKTXVxSTktK2ztsJbdqWs0Hi+/PUxsh0LpeEiQGrTAk9HkzGExj+yclOaABMJyEi
-         rXSmXB/J0p2bL6C8RKEV2xHoBhFLfbwFZUSJgz9jOBsbUXH5JXPBArl3dAO6d2qqv6
-         iW2Ti7eI0ZmpgFmybuQzjxcHzGbUqX6DfrExIGbTBDMWpoRE0VXCzEN1PB3RIuRjB7
-         G2/k9tI++wpOX539PqN0YXJCDaPCSYtLNNsQ5fPVhBECFwf5jbcdcBxnJlhY7dcemt
-         9VeA+jrwkKUlA==
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id AB6E83522589; Thu,  7 Jan 2021 07:05:50 -0800 (PST)
-Date:   Thu, 7 Jan 2021 07:05:50 -0800
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Yury Norov <yury.norov@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        kernel-team@fb.com, Paul Gortmaker <paul.gortmaker@windriver.com>
-Subject: Re: [PATCH RFC cpumask 4/5] cpumask: Add "last" alias for cpu list
- specifications
-Message-ID: <20210107150550.GA12121@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20210106004850.GA11682@paulmck-ThinkPad-P72>
- <20210106004956.11961-4-paulmck@kernel.org>
- <X/WHk1hY3cmMAXQz@hirez.programming.kicks-ass.net>
- <CAAH8bW9jfSeYe+d6feQUTKuqwKr_U0aCGPZEiBh6Hp=KT2iPrA@mail.gmail.com>
- <X/cYR474/PiTvjfC@hirez.programming.kicks-ass.net>
+        id S1728172AbhAGPGm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 10:06:42 -0500
+Received: from mail-wm1-f51.google.com ([209.85.128.51]:50927 "EHLO
+        mail-wm1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726319AbhAGPGm (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Jan 2021 10:06:42 -0500
+Received: by mail-wm1-f51.google.com with SMTP id 190so5467709wmz.0;
+        Thu, 07 Jan 2021 07:06:25 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=3Sjk0QtZfwMWY6YcWxhCnMUq7pIJd4NoiTIH0T1tqOg=;
+        b=qRgfhugHxZh5XhSRSyY70UOg/vqWrpxu49BKEmKf2rUeGQGdTrgS4GfgIAayp/tdP3
+         gsrd8SaPpzG4i61I92vWwbLbTYP3IEcC9oS4UJ7lFGGQ3sBj9Jq2cDYKrZ0fJy4vCRkQ
+         CBJM/ZSldpOsSUlSejJUj4fFGRtOwXn52B5iFZThX/h/ZdKg0xIgcGqxJuHSaNRBmqs6
+         EHAfnSd5Y5cXvY8UG77M5il82ewJcyDZZoRxb/+4eBnDgkBdDCn9wW2v83whxt4QTa3m
+         lqMTe+/1Hn1lY9VPnwM8LDZyfX2ZFG0YOk/9DDuD8gQvjZllyYeooO7c9WpegG8HeWMT
+         svcw==
+X-Gm-Message-State: AOAM531eLxmqPxruAM9eQp1JK1OPPgog67QiCEk4bay45BpwVdimJ9m2
+        SyW/groNz2TqPTtDQX56QMI=
+X-Google-Smtp-Source: ABdhPJyO/vLnHyJh1EiVUK97kLBpjzcgLxyDiYYKHCQBBWg4lePJJMW8lVaHcYhX306QvlgrJ4mR8w==
+X-Received: by 2002:a1c:b7d4:: with SMTP id h203mr8479422wmf.59.1610031959794;
+        Thu, 07 Jan 2021 07:05:59 -0800 (PST)
+Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
+        by smtp.gmail.com with ESMTPSA id f77sm7906629wmf.42.2021.01.07.07.05.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 07 Jan 2021 07:05:59 -0800 (PST)
+Date:   Thu, 7 Jan 2021 15:05:58 +0000
+From:   Wei Liu <wei.liu@kernel.org>
+To:     kernel test robot <lkp@intel.com>
+Cc:     Wei Liu <wei.liu@kernel.org>,
+        Linux on Hyper-V List <linux-hyperv@vger.kernel.org>,
+        kbuild-all@lists.01.org, virtualization@lists.linux-foundation.org,
+        Linux Kernel List <linux-kernel@vger.kernel.org>,
+        Michael Kelley <mikelley@microsoft.com>,
+        Vineeth Pillai <viremana@linux.microsoft.com>,
+        Sunil Muthuswamy <sunilmut@microsoft.com>,
+        Nuno Das Neves <nunodasneves@linux.microsoft.com>,
+        "K. Y. Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>
+Subject: Re: [PATCH v4 15/17] x86/hyperv: implement an MSI domain for root
+ partition
+Message-ID: <20210107150557.2pa3qsd4qbni4iaa@liuwe-devbox-debian-v2>
+References: <20210106203350.14568-16-wei.liu@kernel.org>
+ <202101070658.h9Fcg0JA-lkp@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <X/cYR474/PiTvjfC@hirez.programming.kicks-ass.net>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <202101070658.h9Fcg0JA-lkp@intel.com>
+User-Agent: NeoMutt/20180716
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 07, 2021 at 03:18:47PM +0100, Peter Zijlstra wrote:
-> On Wed, Jan 06, 2021 at 01:16:50PM -0800, Yury Norov wrote:
-> > On Wed, Jan 6, 2021 at 1:50 AM Peter Zijlstra <peterz@infradead.org> wrote:
+On Thu, Jan 07, 2021 at 06:21:24AM +0800, kernel test robot wrote:
+> Hi Wei,
 > 
-> > > Aside from the comments Yury made, on how all this is better in
-> > > bitmap_parselist(), how about doing s/last/N/ here? For me something
-> > > like: "4-N" reads much saner than "4-last".
-> > >
-> > > Also, it might make sense to teach all this about core/node topology,
-> > > but that's going to be messy. Imagine something like "Core1-CoreN" or
-> > > "Nore1-NodeN" to mean the mask all/{Core,Node}0.
-> > 
-> > If you just want to teach bitmap_parselist() to "s/Core0/0-4",  I think
-> > it's doable if we add a hook to a proper subsystem in bitmap_parselist().
-> > 
-> > > And that is another feature that seems to be missing from parselist,
-> > > all/except.
-> > 
-> > We already support groups in a range. I think it partially covers the
-> > proposed all/except.
-> > 
-> > Can you share examples on what you miss?
+> I love your patch! Perhaps something to improve:
 > 
-> The obvious one is the "all/Core0" example above, which would be
-> equivalent to "Core1-CoreN".
+> [auto build test WARNING on e71ba9452f0b5b2e8dc8aa5445198cd9214a6a62]
 > 
-> Another case that I don't think we can do today is something like, give
-> me SMT0 of each core.
+> url:    https://github.com/0day-ci/linux/commits/Wei-Liu/Introducing-Linux-root-partition-support-for-Microsoft-Hypervisor/20210107-044149
+> base:    e71ba9452f0b5b2e8dc8aa5445198cd9214a6a62
+> config: i386-randconfig-m021-20210106 (attached as .config)
+> compiler: gcc-9 (Debian 9.3.0-15) 9.3.0
+> reproduce (this is a W=1 build):
+>         # https://github.com/0day-ci/linux/commit/376aee69c6ab18dc23b0386590bee82d59555be8
+>         git remote add linux-review https://github.com/0day-ci/linux
+>         git fetch --no-tags linux-review Wei-Liu/Introducing-Linux-root-partition-support-for-Microsoft-Hypervisor/20210107-044149
+>         git checkout 376aee69c6ab18dc23b0386590bee82d59555be8
+>         # save the attached .config to linux build tree
+>         make W=1 ARCH=i386 
 > 
-> I don't really see the use of the ranges thing, CPU enumeration just
-> isn't sane like that.
+> If you fix the issue, kindly add following tag as appropriate
+> Reported-by: kernel test robot <lkp@intel.com>
+> 
+> All warnings (new ones prefixed by >>):
+> 
+> >> arch/x86/hyperv/irqdomain.c:317:28: warning: no previous prototype for 'hv_create_pci_msi_domain' [-Wmissing-prototypes]
+>      317 | struct irq_domain * __init hv_create_pci_msi_domain(void)
+>          |                            ^~~~~~~~~~~~~~~~~~~~~~~~
+> 
+> 
+> vim +/hv_create_pci_msi_domain +317 arch/x86/hyperv/irqdomain.c
 
-Ranges are useful on many systems.  Users of systems with insane CPU
-enumeration are of course free to provide comma-separated lists of
-numbers for their cpumask boot parameters, avoiding use of minus signs.
+I've fixed this locally by moving the prototype to a header file --
+previously it was left in a C file.
 
-							Thanx, Paul
+Wei.
