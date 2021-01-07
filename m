@@ -2,174 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB9DF2ED57B
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 18:26:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DE40B2ED597
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 18:29:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728251AbhAGRZT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 12:25:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55460 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726541AbhAGRZS (ORCPT
+        id S1729145AbhAGR2a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 12:28:30 -0500
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:9034 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727959AbhAGR23 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 12:25:18 -0500
-Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC154C0612F4;
-        Thu,  7 Jan 2021 09:24:37 -0800 (PST)
-Received: by mail-wm1-x32c.google.com with SMTP id y23so6220752wmi.1;
-        Thu, 07 Jan 2021 09:24:37 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=KMvmEFBpjy2So792rxW7fyxN8VfuxztLpgDX8jgcy6g=;
-        b=ry1v3bCYDlpd2lmszzoxlNXPjCZ2xQdciyO/IvfSSz4lAU8CddtrK78CtbZxzYt8Lk
-         52R/W8yqwNTtRPdn/lWQ+/H7BRfL+fe37DtNZA3XuXZr4+78RJRnKOTx3aKlW7MdCeaU
-         y4JZYt+SrOXX0QsJKEGyRoP6UsYmjY1ocGDHdXyNE3iz2Dal+e5npt/tUOQAQgq3Siim
-         kLaGP0wdqbWZEABtmAYctA43t9R8LyMGurVvvKLuha9R+SZe72SouUEyQGVlYUkYMWeD
-         /3gPrWRa5B9FFU6H1M99v5jawKbG50WZmrmnZhhI55f13Crxz70f5x2b9JxXFYJ3nY0o
-         PG6g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=KMvmEFBpjy2So792rxW7fyxN8VfuxztLpgDX8jgcy6g=;
-        b=OP81mQMeu+zUr3IhFl5+NWOTU9/mtkWBRWRY7SxMLlHIZQnke4xKudBpV95ikh67eS
-         yEJpkNPTO4nDBOq2B3y2Ea/swxLv3TI2RNp/Z9Ul8kxTptsDlUppgdXHVpWhkOawozmA
-         3NGQX7eYa1bV/eYreTH0WcbUjfenbFsGEClJ24W23+SuAwpT2bQNSrBeI12NXwjNAeoy
-         e7+EF0oQ6jAnvAh9kQHXKoeT2vjQeiDXgqTVZyFIdwO8JEPRjzf/fluojCGiThHN9upc
-         /DF8SxlCUL+rJtHgy7Wx6u6io/mdZcEPFIPTImkwF/gw5FPDa0nRvbIi23Q5ZzcDoI4s
-         +qLg==
-X-Gm-Message-State: AOAM532j9F7k4dzD86ZZElvY0GWX8hY0UG9MV56W4k0uptXF4rq6Ocdz
-        OvWzcx9cMMup2C48zPMbBdPOX8QIsOvKBpnz5Yo=
-X-Google-Smtp-Source: ABdhPJxy4Gz9DrRlqVSC+vptof6zKhnSJC7xeTi8iOASRVcGnhavBZazzRnX/a1jbGitOVKzKmABDLKRQXJLlyuiuAw=
-X-Received: by 2002:a7b:c0c8:: with SMTP id s8mr8930405wmh.123.1610040276433;
- Thu, 07 Jan 2021 09:24:36 -0800 (PST)
+        Thu, 7 Jan 2021 12:28:29 -0500
+Received: from pps.filterd (m0098404.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 107H8PxE069192;
+        Thu, 7 Jan 2021 12:27:38 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=SFJ0drAgUkEw+VFOj0hRumM7RsaV232r2ZUNTrGEgnQ=;
+ b=cnz+hdVABrM4TbTaaJl+oxp2ArIk+MilWUVC7SV9KAUHvzl75KrNQYRt3owBfO8BBkGu
+ ynWdafyeqG5lQ68QaDDwZIAjGXTYd+CQK5V4lDViYFAGtLxkNtFI/QjX6id00EbFW1DD
+ DDf7u2yX3/xdTyn53EntvN/ShqJI8NH+QkHw9Lq28u3MSeeyI9iZ0/I1PE0BWx7VUFoH
+ B17ypHOdt4hnw+k5/sgyRHK3bqFn8QsefuC3VY76LeiUbXy4LclK4Dd1mfKnz8wZWdNr
+ cjsWP6B+BQ62mOjWW2F6MJ4/5bOYIwLfJHA/f2+zFXnTNy5tdj2jL7kE6KrIIl7qmS/l Gg== 
+Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 35x5juj0fr-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 07 Jan 2021 12:27:37 -0500
+Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
+        by ppma04ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 107HBtHI025311;
+        Thu, 7 Jan 2021 17:27:35 GMT
+Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
+        by ppma04ams.nl.ibm.com with ESMTP id 35wd379724-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 07 Jan 2021 17:27:35 +0000
+Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
+        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 107HRXrf32637436
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 7 Jan 2021 17:27:33 GMT
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 861DF11C052;
+        Thu,  7 Jan 2021 17:27:33 +0000 (GMT)
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 5F57111C050;
+        Thu,  7 Jan 2021 17:27:33 +0000 (GMT)
+Received: from [9.145.66.183] (unknown [9.145.66.183])
+        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Thu,  7 Jan 2021 17:27:33 +0000 (GMT)
+Subject: Re: [PATCH -next] s390: cio: Use DEFINE_SPINLOCK() for spinlock
+To:     Zheng Yongjun <zhengyongjun3@huawei.com>,
+        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20201223141512.1178-1-zhengyongjun3@huawei.com>
+From:   Julian Wiedmann <jwi@linux.ibm.com>
+Message-ID: <3aed4509-a903-5b26-3667-ad420b1bbb7b@linux.ibm.com>
+Date:   Thu, 7 Jan 2021 18:27:33 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
 MIME-Version: 1.0
-References: <20210104193044.80591-1-konrad.dybcio@somainline.org> <8847b190c9d03afd731881689d9b28d3@codeaurora.org>
-In-Reply-To: <8847b190c9d03afd731881689d9b28d3@codeaurora.org>
-From:   Rob Clark <robdclark@gmail.com>
-Date:   Thu, 7 Jan 2021 09:26:54 -0800
-Message-ID: <CAF6AEGu0Sv6nYNDn0z61pXRjNyFLpLw5S4_O3opmrQ-UVNR_MA@mail.gmail.com>
-Subject: Re: [PATCH] drm/msm: Only enable A6xx LLCC code on A6xx
-To:     Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-Cc:     Konrad Dybcio <konrad.dybcio@somainline.org>,
-        phone-devel@vger.kernel.org, ~postmarketos/upstreaming@lists.sr.ht,
-        martin.botka@somainline.org,
-        angelogioacchino.delregno@somainline.org,
-        marijn.suijten@somainline.org, Sean Paul <sean@poorly.run>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Jordan Crouse <jcrouse@codeaurora.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Jonathan Marek <jonathan@marek.ca>,
-        Dave Airlie <airlied@redhat.com>,
-        Sharat Masetty <smasetty@codeaurora.org>,
-        Akhil P Oommen <akhilpo@codeaurora.org>,
-        Shawn Guo <shawn.guo@linaro.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        freedreno <freedreno@lists.freedesktop.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20201223141512.1178-1-zhengyongjun3@huawei.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
+ definitions=2021-01-07_07:2021-01-07,2021-01-07 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 mlxlogscore=999
+ malwarescore=0 impostorscore=0 spamscore=0 adultscore=0 phishscore=0
+ suspectscore=0 bulkscore=0 lowpriorityscore=0 clxscore=1011
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2101070100
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 6, 2021 at 8:50 PM Sai Prakash Ranjan
-<saiprakash.ranjan@codeaurora.org> wrote:
->
-> On 2021-01-05 01:00, Konrad Dybcio wrote:
-> > Using this code on A5xx (and probably older too) causes a
-> > smmu bug.
-> >
-> > Fixes: 474dadb8b0d5 ("drm/msm/a6xx: Add support for using system
-> > cache(LLC)")
-> > Signed-off-by: Konrad Dybcio <konrad.dybcio@somainline.org>
-> > Tested-by: AngeloGioacchino Del Regno
-> > <angelogioacchino.delregno@somainline.org>
-> > ---
->
-> Reviewed-by: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
->
-> >  drivers/gpu/drm/msm/adreno/adreno_gpu.c | 21 ++++++++++++---------
-> >  drivers/gpu/drm/msm/adreno/adreno_gpu.h |  5 +++++
-> >  2 files changed, 17 insertions(+), 9 deletions(-)
-> >
-> > diff --git a/drivers/gpu/drm/msm/adreno/adreno_gpu.c
-> > b/drivers/gpu/drm/msm/adreno/adreno_gpu.c
-> > index 6cf9975e951e..f09175698827 100644
-> > --- a/drivers/gpu/drm/msm/adreno/adreno_gpu.c
-> > +++ b/drivers/gpu/drm/msm/adreno/adreno_gpu.c
-> > @@ -191,8 +191,6 @@ adreno_iommu_create_address_space(struct msm_gpu
-> > *gpu,
-> >               struct platform_device *pdev)
-> >  {
-> >       struct adreno_gpu *adreno_gpu = to_adreno_gpu(gpu);
-> > -     struct a6xx_gpu *a6xx_gpu = to_a6xx_gpu(adreno_gpu);
-> > -     struct io_pgtable_domain_attr pgtbl_cfg;
-> >       struct iommu_domain *iommu;
-> >       struct msm_mmu *mmu;
-> >       struct msm_gem_address_space *aspace;
-> > @@ -202,13 +200,18 @@ adreno_iommu_create_address_space(struct msm_gpu
-> > *gpu,
-> >       if (!iommu)
-> >               return NULL;
-> >
-> > -     /*
-> > -      * This allows GPU to set the bus attributes required to use system
-> > -      * cache on behalf of the iommu page table walker.
-> > -      */
-> > -     if (!IS_ERR(a6xx_gpu->htw_llc_slice)) {
-> > -             pgtbl_cfg.quirks = IO_PGTABLE_QUIRK_ARM_OUTER_WBWA;
-> > -             iommu_domain_set_attr(iommu, DOMAIN_ATTR_IO_PGTABLE_CFG,
-> > &pgtbl_cfg);
-> > +
-> > +     if (adreno_is_a6xx(adreno_gpu)) {
-> > +             struct a6xx_gpu *a6xx_gpu = to_a6xx_gpu(adreno_gpu);
-> > +             struct io_pgtable_domain_attr pgtbl_cfg;
-> > +             /*
-> > +             * This allows GPU to set the bus attributes required to use system
-> > +             * cache on behalf of the iommu page table walker.
-> > +             */
-> > +             if (!IS_ERR(a6xx_gpu->htw_llc_slice)) {
-> > +                     pgtbl_cfg.quirks = IO_PGTABLE_QUIRK_ARM_OUTER_WBWA;
-> > +                     iommu_domain_set_attr(iommu, DOMAIN_ATTR_IO_PGTABLE_CFG,
-> > &pgtbl_cfg);
-> > +             }
+On 23.12.20 15:15, Zheng Yongjun wrote:
+> spinlock can be initialized automatically with DEFINE_SPINLOCK()
+> rather than explicitly calling spin_lock_init().
+> 
+> Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>
+> ---
+>  drivers/s390/cio/css.c | 3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
+> 
+> diff --git a/drivers/s390/cio/css.c b/drivers/s390/cio/css.c
+> index cca1a7c4bb33..022f573f0bcc 100644
+> --- a/drivers/s390/cio/css.c
+> +++ b/drivers/s390/cio/css.c
+> @@ -647,13 +647,12 @@ static void css_sch_todo(struct work_struct *work)
+>  }
+>  
+>  static struct idset *slow_subchannel_set;
+> -static spinlock_t slow_subchannel_lock;
+> +static DEFINE_SPINLOCK(slow_subchannel_lock);
+>  static wait_queue_head_t css_eval_wq;
+>  static atomic_t css_eval_scheduled;
+>  
+>  static int __init slow_subchannel_init(void)
+>  {
+> -	spin_lock_init(&slow_subchannel_lock);
 
-I'm applying for -fixes as this is an obvious problem..  But kinda
-thinking that we should try to move it into an a6xx specific
-create_address_space() (or wrapper for the generic fxn)
 
-Sai/Jordan, could I talk one of you into trying to clean this up
-better for next cycle?
+>  	atomic_set(&css_eval_scheduled, 0);
+>  	init_waitqueue_head(&css_eval_wq);
 
-BR,
--R
+Mind turning these two into static initializations as well? Thanks.
 
-> >       }
-> >
-> >       mmu = msm_iommu_new(&pdev->dev, iommu);
-> > diff --git a/drivers/gpu/drm/msm/adreno/adreno_gpu.h
-> > b/drivers/gpu/drm/msm/adreno/adreno_gpu.h
-> > index 4574d85c5680..08421fa54a50 100644
-> > --- a/drivers/gpu/drm/msm/adreno/adreno_gpu.h
-> > +++ b/drivers/gpu/drm/msm/adreno/adreno_gpu.h
-> > @@ -226,6 +226,11 @@ static inline int adreno_is_a540(struct adreno_gpu
-> > *gpu)
-> >       return gpu->revn == 540;
-> >  }
-> >
-> > +static inline bool adreno_is_a6xx(struct adreno_gpu *gpu)
-> > +{
-> > +     return ((gpu->revn < 700 && gpu->revn > 599));
-> > +}
-> > +
-> >  static inline int adreno_is_a618(struct adreno_gpu *gpu)
-> >  {
-> >         return gpu->revn == 618;
->
-> --
-> QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a
-> member
-> of Code Aurora Forum, hosted by The Linux Foundation
+
+>  	slow_subchannel_set = idset_sch_new();
+> 
