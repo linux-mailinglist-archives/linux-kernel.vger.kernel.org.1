@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E5B962ED1A7
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 15:17:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D15B2ED1DF
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 15:21:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729180AbhAGORd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 09:17:33 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38960 "EHLO mail.kernel.org"
+        id S1729374AbhAGOSs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 09:18:48 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38958 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729128AbhAGORc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 09:17:32 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B55C52311E;
-        Thu,  7 Jan 2021 14:17:07 +0000 (UTC)
+        id S1729169AbhAGORd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Jan 2021 09:17:33 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EE4032336D;
+        Thu,  7 Jan 2021 14:17:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610029028;
-        bh=w4zL2TZ8jJWAwx8YUDwpPPk7od4PnLLbA4amxIESKT8=;
+        s=korg; t=1610029030;
+        bh=IC2hSnI527U3B+T3hMM6u2ONKB6WjF1q/EMmLDTP7W4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=tJyVTWKHA81FVmdtGCOPSt40iw2PK86305hEOOZPPxnXfhNNuJVWK+W7J4yxxJTJA
-         d42sGLeWDWDUrDZRkhY86rLuhCGlWmzmVoD8dGJ4mUzwmN3L9POTFCWAHFVeoE4S/2
-         82YzwxHK48+vmEed1/1kn1JBLEyDyOSYY2DgeKJo=
+        b=0BTVo/9Xqm8AFnL7uB3hr7oB43NLEbeaM58HMsZFaPYat9BYgonlziMXCu6vAOix1
+         fPR7mbx1ILT8Zs/90LiC5KMPU1smN25t+3a9icr7sV5+241tBXl6AJFt8mf+2RBEJs
+         TQamfQ+qMhVMp7gXK7n08eK/PElkyiipajRJpcFg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Kailang Yang <kailang@realtek.com>,
-        Takashi Iwai <tiwai@suse.de>,
-        Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-Subject: [PATCH 4.9 07/32] ALSA: hda/realtek - Dell headphone has noise on unmute for ALC236
-Date:   Thu,  7 Jan 2021 15:16:27 +0100
-Message-Id: <20210107140828.209609547@linuxfoundation.org>
+        stable@vger.kernel.org, Eric Auger <eric.auger@redhat.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 4.9 08/32] vfio/pci: Move dummy_resources_list init in vfio_pci_probe()
+Date:   Thu,  7 Jan 2021 15:16:28 +0100
+Message-Id: <20210107140828.253250434@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210107140827.866214702@linuxfoundation.org>
 References: <20210107140827.866214702@linuxfoundation.org>
@@ -40,50 +40,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kailang Yang <kailang@realtek.com>
+From: Eric Auger <eric.auger@redhat.com>
 
-commit e1e8c1fdce8b00fce08784d9d738c60ebf598ebc upstream
+[ Upstream commit 16b8fe4caf499ae8e12d2ab1b1324497e36a7b83 ]
 
-headphone have noise even the volume is very small.
-Let it fill up pcbeep hidden register to default value.
-The issue was gone.
+In case an error occurs in vfio_pci_enable() before the call to
+vfio_pci_probe_mmaps(), vfio_pci_disable() will  try to iterate
+on an uninitialized list and cause a kernel panic.
 
-Fixes: 4344aec84bd8 ("ALSA: hda/realtek - New codec support for ALC256")
-Fixes: 736f20a70608 ("ALSA: hda/realtek - Add support for ALC236/ALC3204")
-Signed-off-by: Kailang Yang <kailang@realtek.com>
-Cc: <stable@vger.kernel.org>
-Link: https://lore.kernel.org/r/9ae47f23a64d4e41a9c81e263cd8a250@realtek.com
-Signed-off-by: Takashi Iwai <tiwai@suse.de>
-[sudip: adjust context]
-Signed-off-by: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Lets move to the initialization to vfio_pci_probe() to fix the
+issue.
+
+Signed-off-by: Eric Auger <eric.auger@redhat.com>
+Fixes: 05f0c03fbac1 ("vfio-pci: Allow to mmap sub-page MMIO BARs if the mmio page is exclusive")
+CC: Stable <stable@vger.kernel.org> # v4.7+
+Signed-off-by: Alex Williamson <alex.williamson@redhat.com>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/pci/hda/patch_realtek.c |    7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
+ drivers/vfio/pci/vfio_pci.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -330,9 +330,7 @@ static void alc_fill_eapd_coef(struct hd
- 	case 0x10ec0225:
- 	case 0x10ec0233:
- 	case 0x10ec0235:
--	case 0x10ec0236:
- 	case 0x10ec0255:
--	case 0x10ec0256:
- 	case 0x10ec0257:
- 	case 0x10ec0282:
- 	case 0x10ec0283:
-@@ -343,6 +341,11 @@ static void alc_fill_eapd_coef(struct hd
- 	case 0x10ec0299:
- 		alc_update_coef_idx(codec, 0x10, 1<<9, 0);
- 		break;
-+	case 0x10ec0236:
-+	case 0x10ec0256:
-+		alc_write_coef_idx(codec, 0x36, 0x5757);
-+		alc_update_coef_idx(codec, 0x10, 1<<9, 0);
-+		break;
- 	case 0x10ec0285:
- 	case 0x10ec0293:
- 		alc_update_coef_idx(codec, 0xa, 1<<13, 0);
+diff --git a/drivers/vfio/pci/vfio_pci.c b/drivers/vfio/pci/vfio_pci.c
+index f9a3da02c631b..62fa5340c9652 100644
+--- a/drivers/vfio/pci/vfio_pci.c
++++ b/drivers/vfio/pci/vfio_pci.c
+@@ -118,8 +118,6 @@ static void vfio_pci_probe_mmaps(struct vfio_pci_device *vdev)
+ 	int bar;
+ 	struct vfio_pci_dummy_resource *dummy_res;
+ 
+-	INIT_LIST_HEAD(&vdev->dummy_resources_list);
+-
+ 	for (bar = PCI_STD_RESOURCES; bar <= PCI_STD_RESOURCE_END; bar++) {
+ 		res = vdev->pdev->resource + bar;
+ 
+@@ -1547,7 +1545,7 @@ static int vfio_pci_probe(struct pci_dev *pdev, const struct pci_device_id *id)
+ 	vdev->irq_type = VFIO_PCI_NUM_IRQS;
+ 	mutex_init(&vdev->igate);
+ 	spin_lock_init(&vdev->irqlock);
+-
++	INIT_LIST_HEAD(&vdev->dummy_resources_list);
+ 	mutex_init(&vdev->vma_lock);
+ 	INIT_LIST_HEAD(&vdev->vma_list);
+ 	init_rwsem(&vdev->memory_lock);
+-- 
+2.27.0
+
 
 
