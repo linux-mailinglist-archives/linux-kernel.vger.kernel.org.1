@@ -2,111 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22C792ECDE5
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 11:34:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1EB8F2ECDEA
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 11:35:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727453AbhAGKdH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 05:33:07 -0500
-Received: from youngberry.canonical.com ([91.189.89.112]:37135 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726326AbhAGKdG (ORCPT
+        id S1727846AbhAGKe0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 05:34:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47858 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726467AbhAGKeZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 05:33:06 -0500
-Received: from mail-lf1-f71.google.com ([209.85.167.71])
-        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <kai.heng.feng@canonical.com>)
-        id 1kxSac-0001fq-Pv
-        for linux-kernel@vger.kernel.org; Thu, 07 Jan 2021 10:32:22 +0000
-Received: by mail-lf1-f71.google.com with SMTP id w11so5905737lff.22
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Jan 2021 02:32:22 -0800 (PST)
+        Thu, 7 Jan 2021 05:34:25 -0500
+Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 667B2C0612F4
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Jan 2021 02:33:30 -0800 (PST)
+Received: by mail-wm1-x332.google.com with SMTP id n16so4640646wmc.0
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Jan 2021 02:33:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id;
+        bh=asSp+/DMMwMJalGof8YNSkFl2LZ/5ABaWHsM4v5Eee4=;
+        b=eGGPTq1zC5RABYdfNZUVRLL34O38mU3eA51DiYmqH9S1zUvcaaBgkUdUlWTJUUv8Qt
+         WqkBpDIKZHYSWYezARw1epikqrlAS38Q1ResheSeYIbtDIfq4d75lC7NBe0yruM9BQoo
+         QfUwjbvwtll/d2xXJO7NKxx9Wtnnch4EN+QwhD25Q9GSspTASqSQoqiLkJ3Hx+5JXRYG
+         yOZW1XgXQ/OqLoAqVtUfYI13iNlEvhS3mTKd63r2hNWeCrtGX/V2ibE4Z6jZfvPS+ZmY
+         h0MBoypdNlREp6S79zXKNlPm5EBennamwNk72wyeYsNcz/VoPb/UPvI3PP/M1r24vv1E
+         PpBA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=D/Y5buNtMZu8paZ5pdJK7XpNPN8q/w0jqWstP/iLbT4=;
-        b=m4s/j11tjOgTsfLN/79pIhhJQV50z+BQj0yMTOMGIRh5hKG+XPZF1fmtPm5hLcg6CO
-         5fyyQNosnifKMQ6PWGyM1v75/U/WJM3a33IQvgeAiPaZQhV7z++fRxwXEwFuNElOHUPQ
-         TRRrFwMPEcITl4nSL1PDEsGwtnTB6jd93CY6BLHlYH729YMrAP5tyBHxAyc8Mo9yEQv7
-         Ju0VCUG2QlfpHu9uAR2YoYXofMhZyGBU6Iu+OFMlYRnx0J4/pdGwPl3hrmmqXY42rJis
-         SN0pRQ/B6AsCNBUGGLfYl96rIAMhpEOHyjNBnWS6mUwjrGTn7eXsDfitVDGytF+w2JmY
-         4ACQ==
-X-Gm-Message-State: AOAM531NK+3zDE8hFwwkpYl1554ct4p7qvi/RHYi2zWJ2PxasjSvKV/v
-        qd519xRZFfE8qAVqHJ9/9ryKHtQ3H5bPsFyxxroLrdRdEZQBpbHqW1FBtnKcyfjUMwsZN39wFIS
-        JEDsyn4lYWH5sW2JDqC0llu/VYo130Kkl4T/DM0In3Ggs19ZTRVaMKoQG4Q==
-X-Received: by 2002:a19:dc5:: with SMTP id 188mr3947106lfn.513.1610015542116;
-        Thu, 07 Jan 2021 02:32:22 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJzvjI7EOWLxlJykcG6C96lN66Kbefk0r7+QFwEUXJQvjuBr5gTp9PCQ7STZfkhNmOn0+mGm3OC0x4+P2PVAzZA=
-X-Received: by 2002:a19:dc5:: with SMTP id 188mr3947096lfn.513.1610015541825;
- Thu, 07 Jan 2021 02:32:21 -0800 (PST)
-MIME-Version: 1.0
-References: <20210104140853.228448-1-kai.heng.feng@canonical.com>
- <20210104140853.228448-3-kai.heng.feng@canonical.com> <alpine.DEB.2.22.394.2101051354300.864696@eliteleevi.tm.intel.com>
-In-Reply-To: <alpine.DEB.2.22.394.2101051354300.864696@eliteleevi.tm.intel.com>
-From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
-Date:   Thu, 7 Jan 2021 18:32:09 +0800
-Message-ID: <CAAd53p7JvPAYt3NGQU-cCEDtLaL8L+vBoSyYbYSD-bkKS-g50g@mail.gmail.com>
-Subject: Re: [PATCH v2 3/3] ASoC: SOF: Intel: hda: Avoid checking jack on
- system suspend
-To:     Kai Vehmanen <kai.vehmanen@linux.intel.com>
-Cc:     Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
-        daniel.baluta@nxp.com, Mark Brown <broonie@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Keyon Jie <yang.jie@linux.intel.com>,
-        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
-        Marcin Rajwa <marcin.rajwa@linux.intel.com>,
-        Payal Kshirsagar <payalskshirsagar1234@gmail.com>,
-        "moderated list:SOUND - SOUND OPEN FIRMWARE (SOF) DRIVERS" 
-        <sound-open-firmware@alsa-project.org>,
-        "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..." 
-        <alsa-devel@alsa-project.org>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=asSp+/DMMwMJalGof8YNSkFl2LZ/5ABaWHsM4v5Eee4=;
+        b=JwWfj06qcZfSrL4hK45mGbK8WQXPUoSuIevpPk+I/Ys8EKNBzDPZ2a/Q7eW4tAB6bY
+         qT99MIqQHvi3tUkXuPEZgd/5q1/EyzniGBVIHhf6S3qAFdlHva8W2KGy81A7DgAXDWSF
+         da6IcCJPgCNS5nDmDm0hGSwOgAl+UM+wG1vRsARNZSZvZsBDj7K7QBPOuv0hECbmGwDP
+         L6oL5dL/VYemyjI4lDfvLDGBRBBZG7/cLlo+I3iPi8T6VVRaK09jdK+IUAxgeSBRKOBf
+         QKi4mF6j/SFYmpkqNXnDKd0L4BaM/KEKMFHkG9WVKa9DNk9667vNOXdc+yKVQnn2svKo
+         1MkQ==
+X-Gm-Message-State: AOAM532uwKiZo8LHJTAPIiwCBGU+uitLAVJuKFkbhR2HbMV3qH16JC8C
+        OYCUOenk3813iQmAVupoYtc5Wg==
+X-Google-Smtp-Source: ABdhPJwNzqUQA0X76hwH99DGsSWfxXvzt7Gmaw2wSrEyziUIiQgk81Rtz6Cgk8U5dnkJ6+0FzbHajw==
+X-Received: by 2002:a1c:6a02:: with SMTP id f2mr7665360wmc.36.1610015609059;
+        Thu, 07 Jan 2021 02:33:29 -0800 (PST)
+Received: from localhost.localdomain ([2a01:e0a:f:6020:d7b:24c9:55f9:4b75])
+        by smtp.gmail.com with ESMTPSA id i9sm7734120wrs.70.2021.01.07.02.33.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 07 Jan 2021 02:33:27 -0800 (PST)
+From:   Vincent Guittot <vincent.guittot@linaro.org>
+To:     mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
+        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
+        mgorman@suse.de, bristot@redhat.com, valentin.schneider@arm.com,
+        linux-kernel@vger.kernel.org
+Cc:     Vincent Guittot <vincent.guittot@linaro.org>
+Subject: [PATCH 0/3 v2] Reduce number of active LB
+Date:   Thu,  7 Jan 2021 11:33:22 +0100
+Message-Id: <20210107103325.30851-1-vincent.guittot@linaro.org>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 5, 2021 at 8:28 PM Kai Vehmanen
-<kai.vehmanen@linux.intel.com> wrote:
->
-> Hey,
->
-> On Mon, 4 Jan 2021, Kai-Heng Feng wrote:
->
-> > System takes a very long time to suspend after commit 215a22ed31a1
-> > ("ALSA: hda: Refactor codec PM to use direct-complete optimization"):
-> > [   90.065964] PM: suspend entry (s2idle)
->
-> the patch itself looks good, but can you explain a bit more in what
-> conditions you hit the delay?
+Few improvements related to active LB and the increase of LB interval.
+I haven't seen any performcne impact on various benchmarks except for 
+  -stress-ng mmapfork : +4.54% on my octo-core arm64
+But this was somewhat expected as the changes impact mainly corner cases.
 
-If both controller and codec are suspended, I can 100% reproduce the issue.
+Changes since v1:
+- patch 2: change how LBF_ALL_PINNED is managed as proposed by Valentin
+- patch 3: updated comment and fix typos
+  
+Vincent Guittot (3):
+  sched/fair: skip idle cfs_rq
+  sched/fair: don't set LBF_ALL_PINNED unnecessarily
+  sched/fair: reduce cases for active balance
 
->
-> I tried to reproduce the delay on multiple systems (with tip of
-> tiwai/master), but with no luck. I can see hda_jackpoll_work() called, but
-> at this point runtime pm has been disabled already (via
-> __device_suspend()) and snd_hdac_is_power_on() will return true even when
-> pm_runtime_suspended() is true as well (which is expected as runtime-pm is
-> disabled at this point for system suspend). End result is codec is not
-> powered up in hda_jackpoll_work() and suspend is not delayed.
+ kernel/sched/fair.c | 57 +++++++++++++++++++++++++--------------------
+ 1 file changed, 32 insertions(+), 25 deletions(-)
 
-On my system snd_hdac_is_power_on() calls hda_set_power_state() which
-takes long time to write to (suspended) codec.
-I am not sure why it doesn't power up codec on your system.
+-- 
+2.17.1
 
->
-> The patch still seems correct. You would hit the problem you describe if
-> jackpoll_interval was set to a non-zero value (not the case on most
-> systems supported by SOF, but still a possibility). I'm still curious how
-> you hit the problem. At minimum, we are missing a scenario in our testing.
-
-The issue happens with zero jackpoll_interval.
-
-Kai-Heng
-
->
-> Br, Kai
