@@ -2,176 +2,370 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 633F32ED66E
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 19:10:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 580B02ED67B
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 19:16:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728836AbhAGSJ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 13:09:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34360 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725944AbhAGSJ6 (ORCPT
+        id S1728705AbhAGSO7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 13:14:59 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:25183 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727061AbhAGSO6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 13:09:58 -0500
-Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFDC4C0612F4;
-        Thu,  7 Jan 2021 10:09:18 -0800 (PST)
-Received: by mail-pl1-x630.google.com with SMTP id q4so3953596plr.7;
-        Thu, 07 Jan 2021 10:09:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:autocrypt:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=vw+3fRUkfsBW4QbvQXU0qs0vfRYiwwo/FP9gAc8ddJM=;
-        b=YZm7VyoGVhqHtD1FsmJ/k39LqGH3CzXZDAPcNPkuO69ds5omJ3no6GgI7/xQM878yH
-         79dDv+LBBMHcj6uk3FYEwQ3pT8yJF7xn+BfZE+PQT60r4Lui6xikZO+W4fl4aYpmym66
-         5hkhMFywFQPUAJ1ygS0VFd8zxUlyCk9YnpM0oVd8fu2hkvEa/Rq/FpCp4U5avTd+Sogf
-         TTB5LgMS/c6r+Xsk+6+e0Sbj1F+ND0+arqcCA9xYxjOF/cu8Z9lZmhmsHLVus+fkbk0p
-         tC+tYdwsHfWipxuj11enoTlGiF/M1XGCl7Eh0SQNInPpcaJC3PTQs376g2qUfHCytPZA
-         oyOA==
+        Thu, 7 Jan 2021 13:14:58 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1610043211;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=IWg+Dy8bMmg6eRxlaM9RZlMkMk/A1C/4W7WbWPrcins=;
+        b=glreGN44xYylZj6LqcRm6zXgBpFBx6bkT5sk1z56wZqWQEJpyxztfyrWw1lQIbugaTqAAo
+        Wq8QcyFEdGpfd3DH9w2GxvleN6DZ//3fX5W9j9ix4wINfJVH8eJWIht41C5Ah/sKCfFH4F
+        tQSR/V9Et1DJhJA6PzWqeT61jgeg/0c=
+Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
+ [209.85.128.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-140-mXbVf-m7OKa9nFDvp4b6DA-1; Thu, 07 Jan 2021 13:13:30 -0500
+X-MC-Unique: mXbVf-m7OKa9nFDvp4b6DA-1
+Received: by mail-wm1-f69.google.com with SMTP id h21so2536699wmq.7
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Jan 2021 10:13:30 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:autocrypt
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=vw+3fRUkfsBW4QbvQXU0qs0vfRYiwwo/FP9gAc8ddJM=;
-        b=XUWOyMLt3C0/zmDbbeU0bbwAcKnQDARdj1ek4v8Eql0m5j/2WNEXybJuA6dBUMleGa
-         wV+k4eq/hAaZ5rmRme5rA2aFSQ8cfTSh//4UgYtExa85nzkdcykvoCCyCKavSplPK5J3
-         AclTjrC75y+Nhts3RWUX4n/KLB+GRV+zPzjeK7NsnsFJWkqTyfOvps7czoNkpOkwVCyN
-         6dO7i8J7XiTBaixSKbb5MkqmTaucvWd67DrMeUMn9GltYi14Cl6aPb9lOcHvDiouDFlF
-         mADwaL18MA0tZuoT5AwpMaMwFMxWQ8Qq0vSQ1ad8ALovUcwXdnPRAV5PF77StR4wEpBg
-         /xDA==
-X-Gm-Message-State: AOAM532NXX4LZN7OOVcz0S0M9FvOj4IWV69i74HSBlVV7TSdntdcVzkw
-        lGveVSRR5iblIlitxexd678=
-X-Google-Smtp-Source: ABdhPJx1xoy1ym4Tw7x4gRoJsL4200DE01Znf0lWr3Vuy9ojCIaAyzQSqEaRuQMdpfdFepL4c54dig==
-X-Received: by 2002:a17:90a:398d:: with SMTP id z13mr10369314pjb.1.1610042958180;
-        Thu, 07 Jan 2021 10:09:18 -0800 (PST)
-Received: from [10.67.48.230] ([192.19.223.252])
-        by smtp.googlemail.com with ESMTPSA id 73sm6854065pga.26.2021.01.07.10.09.15
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=IWg+Dy8bMmg6eRxlaM9RZlMkMk/A1C/4W7WbWPrcins=;
+        b=Af3xk1BPXAlT4cjh17XomHM3pS811Lh7ZQLEBTdTVNDb2EFUQ7Ku+ej3eUcG3IlGgK
+         RIsdHXm/gEt8f998xy91Zt2+CXfQBGasYaPBHqg9A7Du1xFqqcyAO0a0mBS9A1OgGhLE
+         GjFEizW7UV1g8JMZKYdo78S5vb161HtyERSVhi6An7kAcdQgZpnRriLnVf7+jhJSiE1x
+         RxP7t1mBLWZOJuy6UrX4hOERDM3CZr8OGSk5x4syJytUCltaSTnAM+Go2VLTKnpvEYDo
+         hMhwBKqRXGQIAk7Gg4BRSScog7G4SQIObxCvlm9cA5KTgGcxLErd7UBLY+1niY6LyFAN
+         Hzag==
+X-Gm-Message-State: AOAM533RVjMX1+Sm/1XZRr/rT21mjU0S5WAYIbRF1RZ7jsfTMfrJ7dw+
+        kzcFQiggA7RuOoXDkXL2t9FKxsKiD6o/8tkXHV2iKae665iAR7x/GBt/uWqhEKWnRSpYq+JvoZ3
+        bFk4brJ+/WElOhy3492yPjfD3
+X-Received: by 2002:adf:d20b:: with SMTP id j11mr9861875wrh.318.1610043208940;
+        Thu, 07 Jan 2021 10:13:28 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJzTpkjaIZH9VZWvuE5Oqm+3xD3DoFiXeTf+mQn/EFflP8vIZnKknaRW5rcjMj6lM0P7luiPsg==
+X-Received: by 2002:adf:d20b:: with SMTP id j11mr9861846wrh.318.1610043208669;
+        Thu, 07 Jan 2021 10:13:28 -0800 (PST)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id a17sm9854175wrs.20.2021.01.07.10.13.27
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 07 Jan 2021 10:09:17 -0800 (PST)
-Subject: Re: [RFC PATCH v3 2/6] swiotlb: Add restricted DMA pool
-To:     Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>,
-        Claire Chang <tientzu@chromium.org>
-Cc:     Rob Herring <robh+dt@kernel.org>, mpe@ellerman.id.au,
-        benh@kernel.crashing.org, paulus@samba.org,
-        "list@263.net:IOMMU DRIVERS" <iommu@lists.linux-foundation.org>,
-        Joerg Roedel <joro@8bytes.org>, joro@8bytes.org,
-        will@kernel.org, Frank Rowand <frowand.list@gmail.com>,
-        boris.ostrovsky@oracle.com, jgross@suse.com,
-        sstabellini@kernel.org, Christoph Hellwig <hch@lst.de>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Robin Murphy <robin.murphy@arm.com>, grant.likely@arm.com,
-        xypron.glpk@gmx.de, Thierry Reding <treding@nvidia.com>,
-        mingo@kernel.org, bauerman@linux.ibm.com, peterz@infradead.org,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Saravana Kannan <saravanak@google.com>,
-        rafael.j.wysocki@intel.com, heikki.krogerus@linux.intel.com,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        rdunlap@infradead.org, dan.j.williams@intel.com,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        linux-devicetree <devicetree@vger.kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        linuxppc-dev@lists.ozlabs.org,
-        "list@263.net:IOMMU DRIVERS" <iommu@lists.linux-foundation.org>,
-        Joerg Roedel <joro@8bytes.org>,
-        iommu@lists.linux-foundation.org, xen-devel@lists.xenproject.org,
-        Tomasz Figa <tfiga@chromium.org>,
-        Nicolas Boichat <drinkcat@chromium.org>
-References: <20210106034124.30560-1-tientzu@chromium.org>
- <20210106034124.30560-3-tientzu@chromium.org>
- <20210106185241.GA109735@localhost.localdomain>
- <CALiNf2-HDf6tFcvVgCttr-ta=88ZMH=OvB5XoryTPc6MNvwV+Q@mail.gmail.com>
- <20210107175740.GA16519@char.us.oracle.com>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Autocrypt: addr=f.fainelli@gmail.com; prefer-encrypt=mutual; keydata=
- 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
- M5kY0ACeNhCZJvZ5g4C2Lc9fcTHu8jxmEkI=
-Message-ID: <aa5af7d1-779e-f0f6-e6ba-8040e603523f@gmail.com>
-Date:   Thu, 7 Jan 2021 10:09:14 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Thu, 07 Jan 2021 10:13:27 -0800 (PST)
+Subject: Re: [PATCH v5.1 27/34] KVM: SVM: Add support for booting APs in an
+ SEV-ES guest
+To:     Tom Lendacky <thomas.lendacky@amd.com>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, x86@kernel.org
+Cc:     Jim Mattson <jmattson@google.com>, Joerg Roedel <joro@8bytes.org>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Borislav Petkov <bp@alien8.de>, Ingo Molnar <mingo@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Brijesh Singh <brijesh.singh@amd.com>
+References: <47d11ed1c1a48ab71858fc3cde766bf67a4612d1.1607620209.git.thomas.lendacky@amd.com>
+ <e8fbebe8eb161ceaabdad7c01a5859a78b424d5e.1609791600.git.thomas.lendacky@amd.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <f7df25ab-0a2c-7295-05c9-dcc6e1878b9c@redhat.com>
+Date:   Thu, 7 Jan 2021 19:13:26 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
 MIME-Version: 1.0
-In-Reply-To: <20210107175740.GA16519@char.us.oracle.com>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <e8fbebe8eb161ceaabdad7c01a5859a78b424d5e.1609791600.git.thomas.lendacky@amd.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 1/7/21 9:57 AM, Konrad Rzeszutek Wilk wrote:
-> On Fri, Jan 08, 2021 at 01:39:18AM +0800, Claire Chang wrote:
->> Hi Greg and Konrad,
->>
->> This change is intended to be non-arch specific. Any arch that lacks DMA access
->> control and has devices not behind an IOMMU can make use of it. Could you share
->> why you think this should be arch specific?
+On 04/01/21 21:20, Tom Lendacky wrote:
+> From: Tom Lendacky <thomas.lendacky@amd.com>
 > 
-> The idea behind non-arch specific code is it to be generic. The devicetree
-> is specific to PowerPC, Sparc, and ARM, and not to x86 - hence it should
-> be in arch specific code.
+> Typically under KVM, an AP is booted using the INIT-SIPI-SIPI sequence,
+> where the guest vCPU register state is updated and then the vCPU is VMRUN
+> to begin execution of the AP. For an SEV-ES guest, this won't work because
+> the guest register state is encrypted.
+> 
+> Following the GHCB specification, the hypervisor must not alter the guest
+> register state, so KVM must track an AP/vCPU boot. Should the guest want
+> to park the AP, it must use the AP Reset Hold exit event in place of, for
+> example, a HLT loop.
+> 
+> First AP boot (first INIT-SIPI-SIPI sequence):
+>    Execute the AP (vCPU) as it was initialized and measured by the SEV-ES
+>    support. It is up to the guest to transfer control of the AP to the
+>    proper location.
+> 
+> Subsequent AP boot:
+>    KVM will expect to receive an AP Reset Hold exit event indicating that
+>    the vCPU is being parked and will require an INIT-SIPI-SIPI sequence to
+>    awaken it. When the AP Reset Hold exit event is received, KVM will place
+>    the vCPU into a simulated HLT mode. Upon receiving the INIT-SIPI-SIPI
+>    sequence, KVM will make the vCPU runnable. It is again up to the guest
+>    to then transfer control of the AP to the proper location.
+> 
+>    To differentiate between an actual HLT and an AP Reset Hold, a new MP
+>    state is introduced, KVM_MP_STATE_AP_RESET_HOLD, which the vCPU is
+>    placed in upon receiving the AP Reset Hold exit event. Additionally, to
+>    communicate the AP Reset Hold exit event up to userspace (if needed), a
+>    new exit reason is introduced, KVM_EXIT_AP_RESET_HOLD.
+> 
+> A new x86 ops function is introduced, vcpu_deliver_sipi_vector, in order
+> to accomplish AP booting. For VMX, vcpu_deliver_sipi_vector is set to the
+> original SIPI delivery function, kvm_vcpu_deliver_sipi_vector(). SVM adds
+> a new function that, for non SEV-ES guests, invokes the original SIPI
+> delivery function, kvm_vcpu_deliver_sipi_vector(), but for SEV-ES guests,
+> implements the logic above.
+> 
+> Signed-off-by: Tom Lendacky <thomas.lendacky@amd.com>
 
-In premise the same code could be used with an ACPI enabled system with
-an appropriate service to identify the restricted DMA regions and unlock
-them.
+Queued, thanks.
 
-More than 1 architecture requiring this function (ARM and ARM64 are the
-two I can think of needing this immediately) sort of calls for making
-the code architecture agnostic since past 2, you need something that scales.
+Paolo
 
-There is already code today under kernel/dma/contiguous.c that is only
-activated on a CONFIG_OF=y && CONFIG_OF_RESERVED_MEM=y system, this is
-no different.
--- 
-Florian
+> ---
+>   arch/x86/include/asm/kvm_host.h |  3 +++
+>   arch/x86/kvm/lapic.c            |  2 +-
+>   arch/x86/kvm/svm/sev.c          | 22 ++++++++++++++++++++++
+>   arch/x86/kvm/svm/svm.c          | 10 ++++++++++
+>   arch/x86/kvm/svm/svm.h          |  2 ++
+>   arch/x86/kvm/vmx/vmx.c          |  2 ++
+>   arch/x86/kvm/x86.c              | 26 +++++++++++++++++++++-----
+>   include/uapi/linux/kvm.h        |  2 ++
+>   8 files changed, 63 insertions(+), 6 deletions(-)
+> 
+> diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
+> index 39707e72b062..23d7b203c060 100644
+> --- a/arch/x86/include/asm/kvm_host.h
+> +++ b/arch/x86/include/asm/kvm_host.h
+> @@ -1287,6 +1287,8 @@ struct kvm_x86_ops {
+>   	void (*migrate_timers)(struct kvm_vcpu *vcpu);
+>   	void (*msr_filter_changed)(struct kvm_vcpu *vcpu);
+>   	int (*complete_emulated_msr)(struct kvm_vcpu *vcpu, int err);
+> +
+> +	void (*vcpu_deliver_sipi_vector)(struct kvm_vcpu *vcpu, u8 vector);
+>   };
+>   
+>   struct kvm_x86_nested_ops {
+> @@ -1468,6 +1470,7 @@ int kvm_fast_pio(struct kvm_vcpu *vcpu, int size, unsigned short port, int in);
+>   int kvm_emulate_cpuid(struct kvm_vcpu *vcpu);
+>   int kvm_emulate_halt(struct kvm_vcpu *vcpu);
+>   int kvm_vcpu_halt(struct kvm_vcpu *vcpu);
+> +int kvm_emulate_ap_reset_hold(struct kvm_vcpu *vcpu);
+>   int kvm_emulate_wbinvd(struct kvm_vcpu *vcpu);
+>   
+>   void kvm_get_segment(struct kvm_vcpu *vcpu, struct kvm_segment *var, int seg);
+> diff --git a/arch/x86/kvm/lapic.c b/arch/x86/kvm/lapic.c
+> index 6a87623aa578..a2f08ed777d8 100644
+> --- a/arch/x86/kvm/lapic.c
+> +++ b/arch/x86/kvm/lapic.c
+> @@ -2898,7 +2898,7 @@ void kvm_apic_accept_events(struct kvm_vcpu *vcpu)
+>   			/* evaluate pending_events before reading the vector */
+>   			smp_rmb();
+>   			sipi_vector = apic->sipi_vector;
+> -			kvm_vcpu_deliver_sipi_vector(vcpu, sipi_vector);
+> +			kvm_x86_ops.vcpu_deliver_sipi_vector(vcpu, sipi_vector);
+>   			vcpu->arch.mp_state = KVM_MP_STATE_RUNNABLE;
+>   		}
+>   	}
+> diff --git a/arch/x86/kvm/svm/sev.c b/arch/x86/kvm/svm/sev.c
+> index e57847ff8bd2..a08cbc04cb4d 100644
+> --- a/arch/x86/kvm/svm/sev.c
+> +++ b/arch/x86/kvm/svm/sev.c
+> @@ -1563,6 +1563,7 @@ static int sev_es_validate_vmgexit(struct vcpu_svm *svm)
+>   			goto vmgexit_err;
+>   		break;
+>   	case SVM_VMGEXIT_NMI_COMPLETE:
+> +	case SVM_VMGEXIT_AP_HLT_LOOP:
+>   	case SVM_VMGEXIT_AP_JUMP_TABLE:
+>   	case SVM_VMGEXIT_UNSUPPORTED_EVENT:
+>   		break;
+> @@ -1888,6 +1889,9 @@ int sev_handle_vmgexit(struct vcpu_svm *svm)
+>   	case SVM_VMGEXIT_NMI_COMPLETE:
+>   		ret = svm_invoke_exit_handler(svm, SVM_EXIT_IRET);
+>   		break;
+> +	case SVM_VMGEXIT_AP_HLT_LOOP:
+> +		ret = kvm_emulate_ap_reset_hold(&svm->vcpu);
+> +		break;
+>   	case SVM_VMGEXIT_AP_JUMP_TABLE: {
+>   		struct kvm_sev_info *sev = &to_kvm_svm(svm->vcpu.kvm)->sev_info;
+>   
+> @@ -2040,3 +2044,21 @@ void sev_es_vcpu_put(struct vcpu_svm *svm)
+>   		wrmsrl(host_save_user_msrs[i].index, svm->host_user_msrs[i]);
+>   	}
+>   }
+> +
+> +void sev_vcpu_deliver_sipi_vector(struct kvm_vcpu *vcpu, u8 vector)
+> +{
+> +	struct vcpu_svm *svm = to_svm(vcpu);
+> +
+> +	/* First SIPI: Use the values as initially set by the VMM */
+> +	if (!svm->received_first_sipi) {
+> +		svm->received_first_sipi = true;
+> +		return;
+> +	}
+> +
+> +	/*
+> +	 * Subsequent SIPI: Return from an AP Reset Hold VMGEXIT, where
+> +	 * the guest will set the CS and RIP. Set SW_EXIT_INFO_2 to a
+> +	 * non-zero value.
+> +	 */
+> +	ghcb_set_sw_exit_info_2(svm->ghcb, 1);
+> +}
+> diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
+> index 941e5251e13f..5c37fa68ee56 100644
+> --- a/arch/x86/kvm/svm/svm.c
+> +++ b/arch/x86/kvm/svm/svm.c
+> @@ -4382,6 +4382,14 @@ static bool svm_apic_init_signal_blocked(struct kvm_vcpu *vcpu)
+>   		   (vmcb_is_intercept(&svm->vmcb->control, INTERCEPT_INIT));
+>   }
+>   
+> +static void svm_vcpu_deliver_sipi_vector(struct kvm_vcpu *vcpu, u8 vector)
+> +{
+> +	if (!sev_es_guest(vcpu->kvm))
+> +		return kvm_vcpu_deliver_sipi_vector(vcpu, vector);
+> +
+> +	sev_vcpu_deliver_sipi_vector(vcpu, vector);
+> +}
+> +
+>   static void svm_vm_destroy(struct kvm *kvm)
+>   {
+>   	avic_vm_destroy(kvm);
+> @@ -4524,6 +4532,8 @@ static struct kvm_x86_ops svm_x86_ops __initdata = {
+>   
+>   	.msr_filter_changed = svm_msr_filter_changed,
+>   	.complete_emulated_msr = svm_complete_emulated_msr,
+> +
+> +	.vcpu_deliver_sipi_vector = svm_vcpu_deliver_sipi_vector,
+>   };
+>   
+>   static struct kvm_x86_init_ops svm_init_ops __initdata = {
+> diff --git a/arch/x86/kvm/svm/svm.h b/arch/x86/kvm/svm/svm.h
+> index 5431e6335e2e..0fe874ae5498 100644
+> --- a/arch/x86/kvm/svm/svm.h
+> +++ b/arch/x86/kvm/svm/svm.h
+> @@ -185,6 +185,7 @@ struct vcpu_svm {
+>   	struct vmcb_save_area *vmsa;
+>   	struct ghcb *ghcb;
+>   	struct kvm_host_map ghcb_map;
+> +	bool received_first_sipi;
+>   
+>   	/* SEV-ES scratch area support */
+>   	void *ghcb_sa;
+> @@ -591,6 +592,7 @@ void sev_es_init_vmcb(struct vcpu_svm *svm);
+>   void sev_es_create_vcpu(struct vcpu_svm *svm);
+>   void sev_es_vcpu_load(struct vcpu_svm *svm, int cpu);
+>   void sev_es_vcpu_put(struct vcpu_svm *svm);
+> +void sev_vcpu_deliver_sipi_vector(struct kvm_vcpu *vcpu, u8 vector);
+>   
+>   /* vmenter.S */
+>   
+> diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
+> index 75c9c6a0a3a4..2af05d3b0590 100644
+> --- a/arch/x86/kvm/vmx/vmx.c
+> +++ b/arch/x86/kvm/vmx/vmx.c
+> @@ -7707,6 +7707,8 @@ static struct kvm_x86_ops vmx_x86_ops __initdata = {
+>   	.msr_filter_changed = vmx_msr_filter_changed,
+>   	.complete_emulated_msr = kvm_complete_insn_gp,
+>   	.cpu_dirty_log_size = vmx_cpu_dirty_log_size,
+> +
+> +	.vcpu_deliver_sipi_vector = kvm_vcpu_deliver_sipi_vector,
+>   };
+>   
+>   static __init int hardware_setup(void)
+> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+> index 648c677b12e9..660683a70b79 100644
+> --- a/arch/x86/kvm/x86.c
+> +++ b/arch/x86/kvm/x86.c
+> @@ -7974,17 +7974,22 @@ void kvm_arch_exit(void)
+>   	kmem_cache_destroy(x86_fpu_cache);
+>   }
+>   
+> -int kvm_vcpu_halt(struct kvm_vcpu *vcpu)
+> +int __kvm_vcpu_halt(struct kvm_vcpu *vcpu, int state, int reason)
+>   {
+>   	++vcpu->stat.halt_exits;
+>   	if (lapic_in_kernel(vcpu)) {
+> -		vcpu->arch.mp_state = KVM_MP_STATE_HALTED;
+> +		vcpu->arch.mp_state = state;
+>   		return 1;
+>   	} else {
+> -		vcpu->run->exit_reason = KVM_EXIT_HLT;
+> +		vcpu->run->exit_reason = reason;
+>   		return 0;
+>   	}
+>   }
+> +
+> +int kvm_vcpu_halt(struct kvm_vcpu *vcpu)
+> +{
+> +	return __kvm_vcpu_halt(vcpu, KVM_MP_STATE_HALTED, KVM_EXIT_HLT);
+> +}
+>   EXPORT_SYMBOL_GPL(kvm_vcpu_halt);
+>   
+>   int kvm_emulate_halt(struct kvm_vcpu *vcpu)
+> @@ -7998,6 +8003,14 @@ int kvm_emulate_halt(struct kvm_vcpu *vcpu)
+>   }
+>   EXPORT_SYMBOL_GPL(kvm_emulate_halt);
+>   
+> +int kvm_emulate_ap_reset_hold(struct kvm_vcpu *vcpu)
+> +{
+> +	int ret = kvm_skip_emulated_instruction(vcpu);
+> +
+> +	return __kvm_vcpu_halt(vcpu, KVM_MP_STATE_AP_RESET_HOLD, KVM_EXIT_AP_RESET_HOLD) && ret;
+> +}
+> +EXPORT_SYMBOL_GPL(kvm_emulate_ap_reset_hold);
+> +
+>   #ifdef CONFIG_X86_64
+>   static int kvm_pv_clock_pairing(struct kvm_vcpu *vcpu, gpa_t paddr,
+>   			        unsigned long clock_type)
+> @@ -9092,6 +9105,7 @@ static inline int vcpu_block(struct kvm *kvm, struct kvm_vcpu *vcpu)
+>   	kvm_apic_accept_events(vcpu);
+>   	switch(vcpu->arch.mp_state) {
+>   	case KVM_MP_STATE_HALTED:
+> +	case KVM_MP_STATE_AP_RESET_HOLD:
+>   		vcpu->arch.pv.pv_unhalted = false;
+>   		vcpu->arch.mp_state =
+>   			KVM_MP_STATE_RUNNABLE;
+> @@ -9518,8 +9532,9 @@ int kvm_arch_vcpu_ioctl_get_mpstate(struct kvm_vcpu *vcpu,
+>   		kvm_load_guest_fpu(vcpu);
+>   
+>   	kvm_apic_accept_events(vcpu);
+> -	if (vcpu->arch.mp_state == KVM_MP_STATE_HALTED &&
+> -					vcpu->arch.pv.pv_unhalted)
+> +	if ((vcpu->arch.mp_state == KVM_MP_STATE_HALTED ||
+> +	     vcpu->arch.mp_state == KVM_MP_STATE_AP_RESET_HOLD) &&
+> +	    vcpu->arch.pv.pv_unhalted)
+>   		mp_state->mp_state = KVM_MP_STATE_RUNNABLE;
+>   	else
+>   		mp_state->mp_state = vcpu->arch.mp_state;
+> @@ -10150,6 +10165,7 @@ void kvm_vcpu_deliver_sipi_vector(struct kvm_vcpu *vcpu, u8 vector)
+>   	kvm_set_segment(vcpu, &cs, VCPU_SREG_CS);
+>   	kvm_rip_write(vcpu, 0);
+>   }
+> +EXPORT_SYMBOL_GPL(kvm_vcpu_deliver_sipi_vector);
+>   
+>   int kvm_arch_hardware_enable(void)
+>   {
+> diff --git a/include/uapi/linux/kvm.h b/include/uapi/linux/kvm.h
+> index 886802b8ffba..374c67875cdb 100644
+> --- a/include/uapi/linux/kvm.h
+> +++ b/include/uapi/linux/kvm.h
+> @@ -251,6 +251,7 @@ struct kvm_hyperv_exit {
+>   #define KVM_EXIT_X86_RDMSR        29
+>   #define KVM_EXIT_X86_WRMSR        30
+>   #define KVM_EXIT_DIRTY_RING_FULL  31
+> +#define KVM_EXIT_AP_RESET_HOLD    32
+>   
+>   /* For KVM_EXIT_INTERNAL_ERROR */
+>   /* Emulate instruction failed. */
+> @@ -573,6 +574,7 @@ struct kvm_vapic_addr {
+>   #define KVM_MP_STATE_CHECK_STOP        6
+>   #define KVM_MP_STATE_OPERATING         7
+>   #define KVM_MP_STATE_LOAD              8
+> +#define KVM_MP_STATE_AP_RESET_HOLD     9
+>   
+>   struct kvm_mp_state {
+>   	__u32 mp_state;
+> 
+
