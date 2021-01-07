@@ -2,186 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF7BA2EE9EC
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 00:49:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ADA7A2EE9F3
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 00:51:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729342AbhAGXtN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 18:49:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59512 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727858AbhAGXtM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 18:49:12 -0500
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0185BC0612F9
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Jan 2021 15:48:32 -0800 (PST)
-Received: by mail-yb1-xb49.google.com with SMTP id o9so13137294yba.4
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Jan 2021 15:48:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:in-reply-to:message-id:mime-version:references:subject
-         :from:to:cc;
-        bh=C2n9JJbC3ufm/Maczydpg97ffZDIcqZmHWyAwbR/1R0=;
-        b=RZeR3IfgJjKaONVYgI0IjUEmCZBHCDg3yn2grnOvoSINeJwCSZ1V4YI086yiuhVCwm
-         cEE3eeXyVDvy+ndldMdYRlnyeg9QrRLI0YEXpDHBC4Pik0hE62Z8tPVB7VPrz0AQjzQh
-         sLc1zfW4oetGssNI2PloZytlnTh7q9JFBcg2BCAjh5c8NxlJq7M4pJm/z8rzYK5JXP4L
-         h0GUUJ1VSSfSR/iiaDUsTsPa8u4K9dl5coHavWvUlBjyEV4TqVGGx8w2hG8Sy1Z3BPcM
-         U9V1oQ3VP3vADaPrjEgX1YzUCe6K+VyrwPrY/bCXQsrIUYe1wNqnFg7O+VS3kmYg94OI
-         ii7A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=C2n9JJbC3ufm/Maczydpg97ffZDIcqZmHWyAwbR/1R0=;
-        b=rFVhIoyJtYjvFgUlSj+/KS9mSGXxr+pI8jxpnOs7+Mo4qBAZ7KwwDyMby3TuAvca4H
-         5U2x0GnStTkKRA+jepj32574a+7Eb1EvdJr+rUHLOwadoEqYr3xqqCMSme33ZTulX/KJ
-         /awJn4fqxFIe6QF+0popLfck8Ee3tOBaEKvK3XTVhoL/qBU7a7cHR0kq1zOSE+P0j/yX
-         NOmH29l4WIE2/Jb6mnxsOFxoi9G95lirAvAfXH0AhtuNBTTpoOt5pGFkQL3ugq9KLJH3
-         X4uJX2O+12YyhiWZGIqznUsMka9RVNM9ekvPYdVgdB5TTyH4PFIH5iX9h7ZFEAfAFH1t
-         HWog==
-X-Gm-Message-State: AOAM5321RaIMVUSWF7mBy1dlKeuQkQ7ilne9dtMeQ3e6OOzTU9kddApk
-        oBhMILeB2za2yMhxAKOqx9ZEtV/2+HtxCw==
-X-Google-Smtp-Source: ABdhPJxAe06FdGKBQJYCE0aATr6itl5DGHJVjYzxHWKk4vt6l4bhR2DvTfw9qFdIEu49BlNy40Hcrljv/mgBNQ==
-Sender: "dlatypov via sendgmr" <dlatypov@dlatypov.svl.corp.google.com>
-X-Received: from dlatypov.svl.corp.google.com ([2620:15c:2cd:202:a28c:fdff:fee3:28c6])
- (user=dlatypov job=sendgmr) by 2002:a5b:990:: with SMTP id
- c16mr1756491ybq.381.1610063311223; Thu, 07 Jan 2021 15:48:31 -0800 (PST)
-Date:   Thu,  7 Jan 2021 15:48:03 -0800
-In-Reply-To: <20210107234803.1096592-1-dlatypov@google.com>
-Message-Id: <20210107234803.1096592-3-dlatypov@google.com>
-Mime-Version: 1.0
-References: <20210107234803.1096592-1-dlatypov@google.com>
-X-Mailer: git-send-email 2.29.2.729.g45daf8777d-goog
-Subject: [PATCH v3 3/3] kunit: tool: move kunitconfig parsing into __init__,
- make it optional
-From:   Daniel Latypov <dlatypov@google.com>
-To:     davidgow@google.com, brendanhiggins@google.com
-Cc:     linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        skhan@linuxfoundation.org, Daniel Latypov <dlatypov@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        id S1729429AbhAGXuw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 18:50:52 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57276 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729377AbhAGXuv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Jan 2021 18:50:51 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPS id 26CB22368A;
+        Thu,  7 Jan 2021 23:50:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1610063411;
+        bh=WsBGKxsLoIyXRmSK+5Qiuf8DW89sKuzB8eC7xN+Mz1k=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=Wlk1S0H8MnKOu9Iz1PR6zcYmQWWAQRA+7nGmBTUi0N8figMo0rHV+uzPOOC2Peg1R
+         tb/l/VT7VcoiBu8KmszETRFy/IAJOCLBVwbhOKMuncEu2elldTldkDxQZtxbGbVI+7
+         9XusnuDaA2loha+TBtObwkEmlHpTXXPaMJemWJVxqrNB1ykSuRZi6lHf9jy7sFap1I
+         S+GAlhUU94MxDTjng9coQH1sjcml/m0oNBmE8bW4ZHfWpbqJBwCWJtMohRMBCPwkXW
+         uf18keyqAtJ6kZiNdoxrz4qh63XzDirTTLGA6uRJJ5iwf0Bgqh0koM2yNxCwEs8dwI
+         k1pcJCfl5fBnw==
+Received: from pdx-korg-docbuild-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-1.ci.codeaurora.org (Postfix) with ESMTP id 1405860385;
+        Thu,  7 Jan 2021 23:50:11 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH v4 net-next 0/7] Offload software learnt bridge addresses to
+ DSA
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <161006341107.8293.17599601765854120224.git-patchwork-notify@kernel.org>
+Date:   Thu, 07 Jan 2021 23:50:11 +0000
+References: <20210106095136.224739-1-olteanv@gmail.com>
+In-Reply-To: <20210106095136.224739-1-olteanv@gmail.com>
+To:     Vladimir Oltean <olteanv@gmail.com>
+Cc:     andrew@lunn.ch, vivien.didelot@gmail.com, f.fainelli@gmail.com,
+        kuba@kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, bridge@lists.linux-foundation.org,
+        roopa@nvidia.com, nikolay@nvidia.com, davem@davemloft.net,
+        dqfext@gmail.com, tobias@waldekranz.com, marek.behun@nic.cz,
+        linux@armlinux.org.uk, wintera@linux.ibm.com, jiri@resnulli.us,
+        idosch@idosch.org, claudiu.manoil@nxp.com,
+        UNGLinuxDriver@microchip.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-LinuxSourceTree will unceremoniously crash if the user doesn't call
-read_kunitconfig() first in a number of functions.
+Hello:
 
-And currently every place we create an instance, the caller also calls
-create_kunitconfig() and read_kunitconfig().
-Move these instead into __init__() so they can't be forgotten and to
-reduce copy-paste.
+This series was applied to netdev/net-next.git (refs/heads/master):
 
-The https://github.com/google/pytype type-checker complained that
-_config wasn't initialized. With this, kunit_tool now type checks
-under both pytype and mypy.
+On Wed,  6 Jan 2021 11:51:29 +0200 you wrote:
+> From: Vladimir Oltean <vladimir.oltean@nxp.com>
+> 
+> This series tries to make DSA behave a bit more sanely when bridged with
+> "foreign" (non-DSA) interfaces and source address learning is not
+> supported on the hardware CPU port (which would make things work more
+> seamlessly without software intervention). When a station A connected to
+> a DSA switch port needs to talk to another station B connected to a
+> non-DSA port through the Linux bridge, DSA must explicitly add a route
+> for station B towards its CPU port.
+> 
+> [...]
 
-Add an optional boolean that can be used to disable this for use cases
-in the future where we might not need/want to load the config.
+Here is the summary with links:
+  - [v4,net-next,1/7] net: bridge: notify switchdev of disappearance of old FDB entry upon migration
+    https://git.kernel.org/netdev/net-next/c/90dc8fd36078
+  - [v4,net-next,2/7] net: dsa: be louder when a non-legacy FDB operation fails
+    https://git.kernel.org/netdev/net-next/c/2fd186501b1c
+  - [v4,net-next,3/7] net: dsa: don't use switchdev_notifier_fdb_info in dsa_switchdev_event_work
+    https://git.kernel.org/netdev/net-next/c/c4bb76a9a0ef
+  - [v4,net-next,4/7] net: dsa: move switchdev event implementation under the same switch/case statement
+    https://git.kernel.org/netdev/net-next/c/447d290a58bd
+  - [v4,net-next,5/7] net: dsa: exit early in dsa_slave_switchdev_event if we can't program the FDB
+    https://git.kernel.org/netdev/net-next/c/5fb4a451a87d
+  - [v4,net-next,6/7] net: dsa: listen for SWITCHDEV_{FDB,DEL}_ADD_TO_DEVICE on foreign bridge neighbors
+    https://git.kernel.org/netdev/net-next/c/d5f19486cee7
+  - [v4,net-next,7/7] net: dsa: ocelot: request DSA to fix up lack of address learning on CPU port
+    https://git.kernel.org/netdev/net-next/c/c54913c1d4ee
 
-Signed-off-by: Daniel Latypov <dlatypov@google.com>
----
- tools/testing/kunit/kunit.py        | 20 ++++----------------
- tools/testing/kunit/kunit_kernel.py | 25 +++++++++++++------------
- 2 files changed, 17 insertions(+), 28 deletions(-)
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
-diff --git a/tools/testing/kunit/kunit.py b/tools/testing/kunit/kunit.py
-index 5521e0a8201e..e808a47c839b 100755
---- a/tools/testing/kunit/kunit.py
-+++ b/tools/testing/kunit/kunit.py
-@@ -256,10 +256,7 @@ def main(argv, linux=None):
- 			os.mkdir(cli_args.build_dir)
- 
- 		if not linux:
--			linux = kunit_kernel.LinuxSourceTree()
--
--		linux.create_kunitconfig(cli_args.build_dir)
--		linux.read_kunitconfig(cli_args.build_dir)
-+			linux = kunit_kernel.LinuxSourceTree(cli_args.build_dir)
- 
- 		request = KunitRequest(cli_args.raw_output,
- 				       cli_args.timeout,
-@@ -277,10 +274,7 @@ def main(argv, linux=None):
- 			os.mkdir(cli_args.build_dir)
- 
- 		if not linux:
--			linux = kunit_kernel.LinuxSourceTree()
--
--		linux.create_kunitconfig(cli_args.build_dir)
--		linux.read_kunitconfig(cli_args.build_dir)
-+			linux = kunit_kernel.LinuxSourceTree(cli_args.build_dir)
- 
- 		request = KunitConfigRequest(cli_args.build_dir,
- 					     cli_args.make_options)
-@@ -292,10 +286,7 @@ def main(argv, linux=None):
- 			sys.exit(1)
- 	elif cli_args.subcommand == 'build':
- 		if not linux:
--			linux = kunit_kernel.LinuxSourceTree()
--
--		linux.create_kunitconfig(cli_args.build_dir)
--		linux.read_kunitconfig(cli_args.build_dir)
-+			linux = kunit_kernel.LinuxSourceTree(cli_args.build_dir)
- 
- 		request = KunitBuildRequest(cli_args.jobs,
- 					    cli_args.build_dir,
-@@ -309,10 +300,7 @@ def main(argv, linux=None):
- 			sys.exit(1)
- 	elif cli_args.subcommand == 'exec':
- 		if not linux:
--			linux = kunit_kernel.LinuxSourceTree()
--
--		linux.create_kunitconfig(cli_args.build_dir)
--		linux.read_kunitconfig(cli_args.build_dir)
-+			linux = kunit_kernel.LinuxSourceTree(cli_args.build_dir)
- 
- 		exec_request = KunitExecRequest(cli_args.timeout,
- 						cli_args.build_dir,
-diff --git a/tools/testing/kunit/kunit_kernel.py b/tools/testing/kunit/kunit_kernel.py
-index db7ed84ea410..bf7a784ac6eb 100644
---- a/tools/testing/kunit/kunit_kernel.py
-+++ b/tools/testing/kunit/kunit_kernel.py
-@@ -123,28 +123,29 @@ def get_outfile_path(build_dir) -> str:
- class LinuxSourceTree(object):
- 	"""Represents a Linux kernel source tree with KUnit tests."""
- 
--	def __init__(self) -> None:
--		self._ops = LinuxSourceTreeOperations()
-+	def __init__(self, build_dir: str, load_config=True, defconfig=DEFAULT_KUNITCONFIG_PATH) -> None:
- 		signal.signal(signal.SIGINT, self.signal_handler)
- 
--	def clean(self) -> bool:
--		try:
--			self._ops.make_mrproper()
--		except ConfigError as e:
--			logging.error(e)
--			return False
--		return True
-+		self._ops = LinuxSourceTreeOperations()
-+
-+		if not load_config:
-+			return
- 
--	def create_kunitconfig(self, build_dir, defconfig=DEFAULT_KUNITCONFIG_PATH) -> None:
- 		kunitconfig_path = get_kunitconfig_path(build_dir)
- 		if not os.path.exists(kunitconfig_path):
- 			shutil.copyfile(defconfig, kunitconfig_path)
- 
--	def read_kunitconfig(self, build_dir) -> None:
--		kunitconfig_path = get_kunitconfig_path(build_dir)
- 		self._kconfig = kunit_config.Kconfig()
- 		self._kconfig.read_from_file(kunitconfig_path)
- 
-+	def clean(self) -> bool:
-+		try:
-+			self._ops.make_mrproper()
-+		except ConfigError as e:
-+			logging.error(e)
-+			return False
-+		return True
-+
- 	def validate_config(self, build_dir) -> bool:
- 		kconfig_path = get_kconfig_path(build_dir)
- 		validated_kconfig = kunit_config.Kconfig()
--- 
-2.29.2.729.g45daf8777d-goog
 
