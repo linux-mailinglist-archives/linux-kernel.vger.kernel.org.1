@@ -2,67 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C7E82ECFDE
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 13:35:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F5FB2ECFE2
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 13:35:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728078AbhAGMeL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 07:34:11 -0500
-Received: from szxga05-in.huawei.com ([45.249.212.191]:10035 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726326AbhAGMeI (ORCPT
+        id S1728149AbhAGMec (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 07:34:32 -0500
+Received: from mail2.protonmail.ch ([185.70.40.22]:31388 "EHLO
+        mail2.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728090AbhAGMeb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 07:34:08 -0500
-Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4DBQbx5DyQzj3X9;
-        Thu,  7 Jan 2021 20:32:29 +0800 (CST)
-Received: from huawei.com (10.175.104.175) by DGGEMS405-HUB.china.huawei.com
- (10.3.19.205) with Microsoft SMTP Server id 14.3.498.0; Thu, 7 Jan 2021
- 20:33:17 +0800
-From:   Miaohe Lin <linmiaohe@huawei.com>
-To:     <akpm@linux-foundation.org>, <mike.kravetz@oracle.com>
-CC:     <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
-        <linmiaohe@huawei.com>
-Subject: [PATCH] mm/hugetlb: Fix potential double free in hugetlb_register_node() error path
-Date:   Thu, 7 Jan 2021 07:32:49 -0500
-Message-ID: <20210107123249.36964-1-linmiaohe@huawei.com>
-X-Mailer: git-send-email 2.19.1
+        Thu, 7 Jan 2021 07:34:31 -0500
+X-Greylist: delayed 2405 seconds by postgrey-1.27 at vger.kernel.org; Thu, 07 Jan 2021 07:34:29 EST
+Date:   Thu, 07 Jan 2021 12:33:38 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me; s=protonmail;
+        t=1610022823; bh=cGGCdvWu4PwKRz1S12Mzu82QSX0n1m3RhliddwWOBIo=;
+        h=Date:To:From:Cc:Reply-To:Subject:From;
+        b=g46HgMEoNVFPYStTMl2U0tiPPlynTb67J8pWxwlfvVy6Em26mrnGfYXJ/NHnzF9C0
+         2l0iJxG1l6L2MQmeYZiPk5ENNdy7OPJYqqUNgs8l5ON/RdkT7ZICusXDnJal0o/X3i
+         Tj4cO9W6AOsYzEJ0gxL2+BDdGBbhOUiaYSHhiaYiMvQthW9Prgz9YMLvzYTSsqwFzf
+         Y1JjpqrCobMYSRQ+oCsp1mj+LhXd0yY23z00kpxeH166K/JShx6Ws84LoZP/ZUU6Ty
+         4BRvaE0wALd41ERV9FeUwIZ0F7w7LKZEhl03kCs89rDDh8rRI5ktvz8h0G0KHnV8m6
+         XoOQIqhKZCu+Q==
+To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+From:   Alexander Lobakin <alobakin@pm.me>
+Cc:     Arnd Bergmann <arnd@arndb.de>, Kees Cook <keescook@chromium.org>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Fangrui Song <maskray@google.com>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Pei Huang <huangpei@loongson.cn>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Alexander Lobakin <alobakin@pm.me>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        Ralf Baechle <ralf@linux-mips.org>,
+        Corey Minyard <cminyard@mvista.com>,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arch@vger.kernel.org, stable@vger.kernel.org,
+        clang-built-linux@googlegroups.com
+Reply-To: Alexander Lobakin <alobakin@pm.me>
+Subject: [PATCH v4 mips-next 0/7] MIPS: vmlinux.lds.S sections fixes & cleanup
+Message-ID: <20210107123331.354075-1-alobakin@pm.me>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.104.175]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
+        autolearn=disabled version=3.4.4
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
+        mailout.protonmail.ch
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In hugetlb_sysfs_add_hstate(), we would do kobject_put() on hstate_kobjs
-when failed to create sysfs group but forget to set hstate_kobjs to NULL.
-Then in hugetlb_register_node() error path, we may free it again via
-hugetlb_unregister_node().
+This series hunts the problems discovered after manual enabling of
+ARCH_WANT_LD_ORPHAN_WARN. Notably:
+ - adds the missing PAGE_ALIGNED_DATA() section affecting VDSO
+   placement (marked for stable);
+ - properly stops .eh_frame section generation.
 
-Fixes: a3437870160c ("hugetlb: new sysfs interface")
-Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
-Cc: <stable@vger.kernel.org>
----
- mm/hugetlb.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+Compile and runtime tested on MIPS32R2 CPS board with no issues
+using two different toolkits:
+ - Binutils 2.35.1, GCC 10.2.0;
+ - LLVM stack 11.0.0.
 
-diff --git a/mm/hugetlb.c b/mm/hugetlb.c
-index e249bffa0e75..91a2a2025a2c 100644
---- a/mm/hugetlb.c
-+++ b/mm/hugetlb.c
-@@ -2947,8 +2947,10 @@ static int hugetlb_sysfs_add_hstate(struct hstate *h, struct kobject *parent,
- 		return -ENOMEM;
- 
- 	retval = sysfs_create_group(hstate_kobjs[hi], hstate_attr_group);
--	if (retval)
-+	if (retval) {
- 		kobject_put(hstate_kobjs[hi]);
-+		hstate_kobjs[hi] = NULL;
-+	}
- 
- 	return retval;
- }
--- 
-2.19.1
+Since v3 [2]:
+ - fix the third patch as GNU stack emits .rel.dyn into VDSO for
+   some reason if .cfi_sections is specified.
+
+Since v2 [1]:
+ - stop discarding .eh_frame and just prevent it from generating
+   (Kees);
+ - drop redundant sections assertions (Fangrui);
+ - place GOT table in .text instead of asserting as it's not empty
+   when building with LLVM (Nathan);
+ - catch compound literals in generic definitions when building with
+   LD_DEAD_CODE_DATA_ELIMINATION (Kees);
+ - collect two Reviewed-bys (Kees).
+
+Since v1 [0]:
+ - catch .got entries too as LLD may produce it (Nathan);
+ - check for unwanted sections to be zero-sized instead of
+   discarding (Fangrui).
+
+[0] https://lore.kernel.org/linux-mips/20210104121729.46981-1-alobakin@pm.m=
+e
+[1] https://lore.kernel.org/linux-mips/20210106200713.31840-1-alobakin@pm.m=
+e
+[2] https://lore.kernel.org/linux-mips/20210107115120.281008-1-alobakin@pm.=
+me
+
+Alexander Lobakin (7):
+  MIPS: vmlinux.lds.S: add missing PAGE_ALIGNED_DATA() section
+  MIPS: vmlinux.lds.S: add ".gnu.attributes" to DISCARDS
+  MIPS: properly stop .eh_frame generation
+  MIPS: vmlinux.lds.S: catch bad .rel.dyn at link time
+  MIPS: vmlinux.lds.S: explicitly declare .got table
+  vmlinux.lds.h: catch compound literals into data and BSS
+  MIPS: select ARCH_WANT_LD_ORPHAN_WARN
+
+ arch/mips/Kconfig                 |  1 +
+ arch/mips/include/asm/asm.h       | 18 ++++++++++++++++++
+ arch/mips/kernel/vmlinux.lds.S    | 15 ++++++++++++++-
+ include/asm-generic/vmlinux.lds.h |  6 +++---
+ 4 files changed, 36 insertions(+), 4 deletions(-)
+
+--=20
+2.30.0
+
 
