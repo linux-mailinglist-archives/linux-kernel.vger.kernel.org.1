@@ -2,250 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BBBBF2ECACB
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 08:04:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 60B2B2ECAC4
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 08:04:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726901AbhAGHED (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 02:04:03 -0500
-Received: from so254-31.mailgun.net ([198.61.254.31]:21261 "EHLO
-        so254-31.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725306AbhAGHED (ORCPT
+        id S1726763AbhAGHDu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 02:03:50 -0500
+Received: from mail-il1-f199.google.com ([209.85.166.199]:37330 "EHLO
+        mail-il1-f199.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726436AbhAGHDt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 02:04:03 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1610003018; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=IVTGZOL0XTtaN6d7u/utR+yaZEID29Zp8ufQMg8Lu0A=;
- b=Pxl8ZiE2MiHPHHLcBDGB6xgYrAksEcgfLB/jXtjS56gx7uyYfyvH2q7PxmvlcR4MYtIlcQCp
- gncaUtKoybY289QlpZ0PUt7nO6lODuZGNtq/DGzw4bb2CWUrf+jU7Hf66hplLnUN2VSp7XE1
- 0NCBI/zbnMdt4j255Bkt5i4Y8RM=
-X-Mailgun-Sending-Ip: 198.61.254.31
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n03.prod.us-west-2.postgun.com with SMTP id
- 5ff6b22c661021aa280d2bfa (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 07 Jan 2021 07:03:08
- GMT
-Sender: cang=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 9DF70C43463; Thu,  7 Jan 2021 07:03:08 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: cang)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 78682C433C6;
-        Thu,  7 Jan 2021 07:03:07 +0000 (UTC)
+        Thu, 7 Jan 2021 02:03:49 -0500
+Received: by mail-il1-f199.google.com with SMTP id g10so5495021ile.4
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Jan 2021 23:03:34 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=Ucf7AyuSHfh9bNDOrZnScHCuoM7E4jcmLmsdWXty8X4=;
+        b=a2kK0cfPVLK/rAEmiZ3Qem9OWwr9JrqEUXzRDKiL5Nr2W9Z/Gld/chSur6fJuWCOKx
+         ub1OUBjEkJXPwz8OWXW/OY91MwLVnVk+kYLaSYR/e+TSpvLbC1KILmuCAhdS04WfvHLg
+         Axyf1aiVZs22twRPCE/vWdL4xkRecafQUGt9Uh8NMpkCVTMAWqkRmYo5HIa3tkloeOKa
+         hhVWTJuUVjNSO0GCysjbDwK6XwSbZiXYirS9TPUqJ92vnTV65b8J9jWJYoxtCnu5oQGD
+         R1VV+arc6PnbY4fIRyraIgSH16omCFr4KH7G6MpllFxl48SRXkF3n4imtmIfyguxbFWB
+         5/gw==
+X-Gm-Message-State: AOAM533cvQs2CSWWkDetg9/dV5er6q//qFzZEgu277pWuY7qGnAeM/NO
+        8WCH70SFVSzjbnbysP98PYgLDxNWNeYSVqv0au0RSUdg26NA
+X-Google-Smtp-Source: ABdhPJzgOkTOlqWPD2AGLe7feZpqc5+9HIgYLKJhdyUMDa2mEIf5pnZwLJ95GDYSTEs+PSnnMgoCQgILv3fejmAGALojWIbaQ1VK
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Thu, 07 Jan 2021 15:03:07 +0800
-From:   Can Guo <cang@codeaurora.org>
-To:     Jaegeuk Kim <jaegeuk@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org,
-        kernel-team@android.com, alim.akhtar@samsung.com,
-        avri.altman@wdc.com, bvanassche@acm.org,
-        martin.petersen@oracle.com, stanley.chu@mediatek.com
-Subject: Re: [PATCH v3 2/2] scsi: ufs: handle LINERESET with correct tm_cmd
-In-Reply-To: <X/avWNrpOzWMj6xY@google.com>
-References: <20210106214109.44041-1-jaegeuk@kernel.org>
- <20210106214109.44041-3-jaegeuk@kernel.org>
- <163fae07a94933230e0432e2ca584040@codeaurora.org>
- <X/avWNrpOzWMj6xY@google.com>
-Message-ID: <7261bef7d8aa003d7f8fc984e37390bb@codeaurora.org>
-X-Sender: cang@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+X-Received: by 2002:a6b:3b92:: with SMTP id i140mr300092ioa.49.1610002989029;
+ Wed, 06 Jan 2021 23:03:09 -0800 (PST)
+Date:   Wed, 06 Jan 2021 23:03:09 -0800
+In-Reply-To: <000000000000209d7205a7c7ab09@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000003fa24b05b84a0886@google.com>
+Subject: Re: INFO: task hung in do_truncate (2)
+From:   syzbot <syzbot+18b2ab4c697021ee8369@syzkaller.appspotmail.com>
+To:     adobriyan@gmail.com, akpm@linux-foundation.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com, torvalds@linux-foundation.org,
+        viro@zeniv.linux.org.uk
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-01-07 14:51, Jaegeuk Kim wrote:
-> On 01/07, Can Guo wrote:
->> On 2021-01-07 05:41, Jaegeuk Kim wrote:
->> > From: Jaegeuk Kim <jaegeuk@google.com>
->> >
->> > This fixes a warning caused by wrong reserve tag usage in
->> > __ufshcd_issue_tm_cmd.
->> >
->> > WARNING: CPU: 7 PID: 7 at block/blk-core.c:630 blk_get_request+0x68/0x70
->> > WARNING: CPU: 4 PID: 157 at block/blk-mq-tag.c:82
->> > blk_mq_get_tag+0x438/0x46c
->> >
->> > And, in ufshcd_err_handler(), we can avoid to send tm_cmd before
->> > aborting
->> > outstanding commands by waiting a bit for IO completion like this.
->> >
->> > __ufshcd_issue_tm_cmd: task management cmd 0x80 timed-out
->> >
->> 
->> Would you mind add a Fixes tag?
-> 
-> Ok.
-> 
->> 
->> > Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
->> > ---
->> >  drivers/scsi/ufs/ufshcd.c | 36 ++++++++++++++++++++++++++++++++----
->> >  1 file changed, 32 insertions(+), 4 deletions(-)
->> >
->> > diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
->> > index 1678cec08b51..47fc8da3cbf9 100644
->> > --- a/drivers/scsi/ufs/ufshcd.c
->> > +++ b/drivers/scsi/ufs/ufshcd.c
->> > @@ -44,6 +44,9 @@
->> >  /* Query request timeout */
->> >  #define QUERY_REQ_TIMEOUT 1500 /* 1.5 seconds */
->> >
->> > +/* LINERESET TIME OUT */
->> > +#define LINERESET_IO_TIMEOUT_MS			(30000) /* 30 sec */
->> > +
->> >  /* Task management command timeout */
->> >  #define TM_CMD_TIMEOUT	100 /* msecs */
->> >
->> > @@ -5899,6 +5902,8 @@ static void ufshcd_err_handler(struct work_struct
->> > *work)
->> >  	 * check if power mode restore is needed.
->> >  	 */
->> >  	if (hba->saved_uic_err & UFSHCD_UIC_PA_GENERIC_ERROR) {
->> > +		ktime_t start = ktime_get();
->> > +
->> >  		hba->saved_uic_err &= ~UFSHCD_UIC_PA_GENERIC_ERROR;
->> >  		if (!hba->saved_uic_err)
->> >  			hba->saved_err &= ~UIC_ERROR;
->> > @@ -5906,6 +5911,20 @@ static void ufshcd_err_handler(struct work_struct
->> > *work)
->> >  		if (ufshcd_is_pwr_mode_restore_needed(hba))
->> >  			needs_restore = true;
->> >  		spin_lock_irqsave(hba->host->host_lock, flags);
->> > +		/* Wait for IO completion to avoid aborting IOs */
->> > +		while (hba->outstanding_reqs) {
->> > +			ufshcd_complete_requests(hba);
->> > +			spin_unlock_irqrestore(hba->host->host_lock, flags);
->> > +			schedule();
->> > +			spin_lock_irqsave(hba->host->host_lock, flags);
->> > +			if (ktime_to_ms(ktime_sub(ktime_get(), start)) >
->> > +						LINERESET_IO_TIMEOUT_MS) {
->> > +				dev_err(hba->dev, "%s: timeout, outstanding=0x%lx\n",
->> > +					__func__, hba->outstanding_reqs);
->> > +				break;
->> > +			}
->> > +		}
->> > +
->> >  		if (!hba->saved_err && !needs_restore)
->> >  			goto skip_err_handling;
->> >  	}
->> > @@ -6302,9 +6321,13 @@ static irqreturn_t ufshcd_intr(int irq, void
->> > *__hba)
->> >  		intr_status = ufshcd_readl(hba, REG_INTERRUPT_STATUS);
->> >  	}
->> >
->> > -	if (enabled_intr_status && retval == IRQ_NONE) {
->> > -		dev_err(hba->dev, "%s: Unhandled interrupt 0x%08x\n",
->> > -					__func__, intr_status);
->> > +	if (enabled_intr_status && retval == IRQ_NONE &&
->> > +				!ufshcd_eh_in_progress(hba)) {
->> > +		dev_err(hba->dev, "%s: Unhandled interrupt 0x%08x (0x%08x,
->> > 0x%08x)\n",
->> > +					__func__,
->> > +					intr_status,
->> > +					hba->ufs_stats.last_intr_status,
->> > +					enabled_intr_status);
->> >  		ufshcd_dump_regs(hba, 0, UFSHCI_REG_SPACE_SIZE, "host_regs: ");
->> >  	}
->> >
->> > @@ -6348,7 +6371,11 @@ static int __ufshcd_issue_tm_cmd(struct ufs_hba
->> > *hba,
->> >  	 * Even though we use wait_event() which sleeps indefinitely,
->> >  	 * the maximum wait time is bounded by %TM_CMD_TIMEOUT.
->> >  	 */
->> > -	req = blk_get_request(q, REQ_OP_DRV_OUT, BLK_MQ_REQ_RESERVED);
->> > +	req = blk_get_request(q, REQ_OP_DRV_OUT, BLK_MQ_REQ_RESERVED |
->> > +						BLK_MQ_REQ_NOWAIT);
->> 
->> Sorry that I didn't pay much attention to this part of code before.
->> May I know why must we use the BLK_MQ_REQ_RESERVED flag?
-> 
-> What I understood is the reserved tag is used when aborting outstanding
-> IOs when all the 32 tags were used.
-> 
+syzbot suspects this issue was fixed by commit:
 
-No, the tm requests and I/O requests are on two different tag sets:
-tm requests come from hba->tmf_tag_set, while I/O requests come from
-hba->shost->tag_set. Meaning they don't share tags with each other.
+commit dfefd226b0bf7c435a58d75a0ce2f9273b9825f6
+Author: Alexey Dobriyan <adobriyan@gmail.com>
+Date:   Tue Dec 15 03:15:03 2020 +0000
 
->> 
->> Thanks,
->> Can Guo.
->> 
->> > +	if (IS_ERR(req))
->> > +		return PTR_ERR(req);
->> > +
->> >  	req->end_io_data = &wait;
->> >  	free_slot = req->tag;
->> >  	WARN_ON_ONCE(free_slot < 0 || free_slot >= hba->nutmrs);
->> > @@ -9355,6 +9382,7 @@ int ufshcd_init(struct ufs_hba *hba, void
->> > __iomem *mmio_base, unsigned int irq)
->> >
->> >  	hba->tmf_tag_set = (struct blk_mq_tag_set) {
->> >  		.nr_hw_queues	= 1,
->> > +		.reserved_tags	= 1,
->> 
->> If we give reserved_tags as 1 and always ask for a tm requst with
->> BLK_MQ_REQ_RESERVED flag set, then the tag shall only be allocated
->> from the reserved sbitmap_queue, whose depth is set to 1 here.
->> UFS supports tm queue depth as 8, but here is allowing only one tm
->> req at a time. Why? Please correct me if my understanding is wrong.
-> 
-> I couldn't find tm can be issued in parallel, so thought it was issued
-> one at a time. If we set 8, then we can use 24 for IOs, IIUC.
-> 
-> Please correct me as well. I'm still trying to understand the flow.
-> 
+    mm: cleanup kstrto*() usage
 
-UFS allows a queue depth as 8, which means it support sending multiple
-tm requests at the same time. You can check commit 69a6c269c097d780a2 -
-before this change, we used to use below func to allocate tags for
-tm reqs, which can tell you the true story.
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=111aa0cf500000
+start commit:   7ae77150 Merge tag 'powerpc-5.8-1' of git://git.kernel.org..
+git tree:       upstream
+kernel config:  https://syzkaller.appspot.com/x/.config?x=d195fe572fb15312
+dashboard link: https://syzkaller.appspot.com/bug?extid=18b2ab4c697021ee8369
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=15cec296100000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=153a741e100000
 
-So I am thinking why don't we just we remove the BLK_MQ_REQ_RESERVED 
-flag?
-Removing it can also fix the warning I suppose. What do you think?
+If the result looks correct, please mark the issue as fixed by replying with:
 
--static bool ufshcd_get_tm_free_slot(struct ufs_hba *hba, int 
-*free_slot)
--{
--       int tag;
--       bool ret = false;
--
--       if (!free_slot)
--               goto out;
--
--       do {
--               tag = find_first_zero_bit(&hba->tm_slots_in_use, 
-hba->nutmrs);
--               if (tag >= hba->nutmrs)
--                       goto out;
--       } while (test_and_set_bit_lock(tag, &hba->tm_slots_in_use));
--
--       *free_slot = tag;
--       ret = true;
--out:
--       return ret;
--}
+#syz fix: mm: cleanup kstrto*() usage
 
-Thanks,
-Can Guo.
-
->> 
->> Thanks,
->> Can Guo.
->> 
->> >  		.queue_depth	= hba->nutmrs,
->> >  		.ops		= &ufshcd_tmf_ops,
->> >  		.flags		= BLK_MQ_F_NO_SCHED,
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
