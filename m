@@ -2,83 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4214D2ECB4E
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 08:55:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9EA1E2ECB54
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 08:59:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727626AbhAGHzc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 02:55:32 -0500
-Received: from spam.zju.edu.cn ([61.164.42.155]:25454 "EHLO zju.edu.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726799AbhAGHzb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 02:55:31 -0500
-Received: by ajax-webmail-mail-app3 (Coremail) ; Thu, 7 Jan 2021 15:54:15
- +0800 (GMT+08:00)
-X-Originating-IP: [222.205.25.254]
-Date:   Thu, 7 Jan 2021 15:54:15 +0800 (GMT+08:00)
-X-CM-HeaderCharset: UTF-8
-From:   dinghao.liu@zju.edu.cn
-To:     "Jakub Kicinski" <kuba@kernel.org>
-Cc:     "Konstantin Ryabitsev" <konstantin@linuxfoundation.org>,
-        "Florian Fainelli" <f.fainelli@gmail.com>,
-        "Andrew Lunn" <andrew@lunn.ch>, kjlu@umn.edu,
-        "David S. Miller" <davem@davemloft.net>,
-        "Jesse Brandeburg" <jesse.brandeburg@intel.com>,
-        "Arnd Bergmann" <arnd@arndb.de>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: Re: [PATCH] net: ethernet: Fix memleak in ethoc_probe
-X-Priority: 3
-X-Mailer: Coremail Webmail Server Version XT5.0.13 build 20200917(3e19599d)
- Copyright (c) 2002-2021 www.mailtech.cn zju.edu.cn
-In-Reply-To: <20210106084430.291a90cc@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-References: <20201223153304.GD3198262@lunn.ch>
- <20201223123218.1cf7d9cb@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <20201223210044.GA3253993@lunn.ch>
- <20201223131149.15fff8d2@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <680850a9-8ab0-4672-498e-6dc740720da3@gmail.com>
- <20201223174146.37e62326@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <20201224180631.l4zieher54ncqvwl@chatter.i7.local>
- <fc7be127-648c-6b09-6f00-3542e0388197@gmail.com>
- <20201228202302.afkxtco27j4ahh6d@chatter.i7.local>
- <08e2b663-c144-d1bb-3f90-5e4ef240d14b@gmail.com>
- <20201228211417.m5gdnqexjzgt4ix6@chatter.i7.local>
- <20201230133618.7c242856@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <328f073a.222d7.176d7572f29.Coremail.dinghao.liu@zju.edu.cn>
- <20210106084430.291a90cc@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-Content-Transfer-Encoding: base64
-Content-Type: text/plain; charset=UTF-8
+        id S1727653AbhAGH4S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 02:56:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51216 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725970AbhAGH4R (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Jan 2021 02:56:17 -0500
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 693F8C0612F4
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Jan 2021 23:55:37 -0800 (PST)
+Received: from zn.tnic (p200300ec2f0e340040aa7c2c4e2416a1.dip0.t-ipconnect.de [IPv6:2003:ec:2f0e:3400:40aa:7c2c:4e24:16a1])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id BF93F1EC04CC;
+        Thu,  7 Jan 2021 08:55:35 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1610006135;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=sW6hm87b5oW8k6oqUpJtDBoftUKMU0GFZ/lyl9nnYg0=;
+        b=Xvz8Mk7TMSXQ5jHVk6boN4KyigI0SHRsxRFbAgke/csYJM+WstZm4pEne89dq1bE0/9XMx
+        wNggDlpIFGobMEn3KvFW3jVoQwFntMrUdAECPwCaO0neSCSnBgwuVgCZqXtD+Ld/PE64fz
+        b47VHgWWtiqlG0SJ10fzvnya2rEIV8c=
+Date:   Thu, 7 Jan 2021 08:55:33 +0100
+From:   Borislav Petkov <bp@alien8.de>
+To:     Dave Jiang <dave.jiang@intel.com>
+Cc:     x86@kernel.org, kernel test robot <lkp@intel.com>,
+        Ben Widawsky <ben.widawsky@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>, tglx@linutronix.de,
+        mingo@redhat.com, hpa@zytor.com, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] x86: fix movdir64b() sparse warning
+Message-ID: <20210107075533.GD14697@zn.tnic>
+References: <160997278817.3976343.969979053457914470.stgit@djiang5-desk3.ch.intel.com>
 MIME-Version: 1.0
-Message-ID: <73439f2d.25481.176dbd6c8ea.Coremail.dinghao.liu@zju.edu.cn>
-X-Coremail-Locale: zh_CN
-X-CM-TRANSID: cC_KCgA343wnvvZfng8dAA--.7749W
-X-CM-SenderInfo: qrrzjiaqtzq6lmxovvfxof0/1tbiAgoRBlZdtR3nOQADsh
-X-Coremail-Antispam: 1Ur529EdanIXcx71UUUUU7IcSsGvfJ3iIAIbVAYjsxI4VWxJw
-        CS07vEb4IE77IF4wCS07vE1I0E4x80FVAKz4kxMIAIbVAFxVCaYxvI4VCIwcAKzIAtYxBI
-        daVFxhVjvjDU=
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <160997278817.3976343.969979053457914470.stgit@djiang5-desk3.ch.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-PiBPbiBXZWQsIDYgSmFuIDIwMjEgMTg6NTY6MjMgKzA4MDAgKEdNVCswODowMCkgZGluZ2hhby5s
-aXVAemp1LmVkdS5jbgo+IHdyb3RlOgo+ID4gPiBJIHVzZWQgdGhpcyBvbmUgZm9yIGEgdGVzdDoK
-PiA+ID4gCj4gPiA+IGh0dHBzOi8vcGF0Y2h3b3JrLmtlcm5lbC5vcmcvcHJvamVjdC9uZXRkZXZi
-cGYvcGF0Y2gvMTYwOTMxMjk5NC0xMjEwMzItMS1naXQtc2VuZC1lbWFpbC1hYmFjaS1idWdmaXhA
-bGludXguYWxpYmFiYS5jb20vCj4gPiA+IAo+ID4gPiBJJ20gbm90IGdldHRpbmcgdGhlIEZpeGVz
-IHRhZyB3aGVuIEkgZG93bmxvYWQgdGhlIG1ib3guICAKPiA+IAo+ID4gSXQgc2VlbXMgdGhhdCBh
-dXRvbWF0aWNhbGx5IGdlbmVyYXRpbmcgRml4ZXMgdGFncyBpcyBhIGhhcmQgd29yay4KPiA+IEJv
-dGggcGF0Y2hlcyBhbmQgYnVncyBjb3VsZCBiZSBjb21wbGV4LiBTb21ldGltZXMgZXZlbiBodW1h
-biBjYW5ub3QKPiA+IGRldGVybWluZSB3aGljaCBjb21taXQgaW50cm9kdWNlZCBhIHRhcmdldCBi
-dWcuCj4gPiAKPiA+IElzIHRoaXMgYW4gYWxyZWFkeSBpbXBsZW1lbnRlZCBmdW5jdGlvbmFsaXR5
-Pwo+IAo+IEknbSBub3Qgc3VyZSBJIHVuZGVyc3RhbmQuIEluZGVlZCBmaW5kaW5nIHRoZSByaWdo
-dCBjb21taXQgdG8gdXNlIGluIAo+IGEgRml4ZXMgdGFnIGlzIG5vdCBhbHdheXMgZWFzeSwgYW5k
-IGRlZmluaXRlbHkgbm90IGVhc3kgdG8gYXV0b21hdGUuCj4gSHVtYW4gdmFsaWRhdGlvbiBpcyBh
-bHdheXMgcmVxdWlyZWQuCj4gCj4gSWYgd2UgY291bGQgZWFzaWx5IGF1dG9tYXRlIGZpbmRpbmcg
-dGhlIGNvbW1pdCB3aGljaCBpbnRyb2R1Y2VkIGEKPiBwcm9ibGVtIHdlIHdvdWxkbid0IG5lZWQg
-dG8gYWRkIHRoZSBleHBsaWNpdCB0YWcsIGJhY2twb3J0ZXJzIGNvdWxkCj4ganVzdCBydW4gc3Vj
-aCBzY3JpcHQgbG9jYWxseS4uIFRoYXQncyB3aHkgaXQncyBiZXN0IGlmIHRoZSBhdXRob3IgCj4g
-ZG9lcyB0aGUgZGlnZ2luZyBhbmQgcHJvdmlkZXMgdGhlIHJpZ2h0IHRhZy4KPiAKPiBUaGUgY29u
-dmVyc2F0aW9uIHdpdGggS29uc3RhbnRpbiBhbmQgRmxvcmlhbiB3YXMgYWJvdXQgYXV0b21hdGlj
-YWxseQo+IHBpY2tpbmcgdXAgRml4ZXMgdGFncyBmcm9tIHRoZSBtYWlsaW5nIGxpc3QgYnkgdGhl
-IHBhdGNod29yayBzb2Z0d2FyZSwKPiB3aGVuIHN1Y2ggdGFncyBhcmUgcG9zdGVkIGluIHJlcGx5
-IHRvIHRoZSBvcmlnaW5hbCBwb3N0aW5nLCBqdXN0IGxpa2UKPiByZXZpZXcgdGFncy4gQnV0IHRo
-ZSB0YWdzIGFyZSBzdGlsbCBnZW5lcmF0ZWQgYnkgaHVtYW5zLgoKSXQncyBjbGVhciB0byBtZSwg
-dGhhbmtzLgoKUmVnYXJkcywKRGluZ2hhbw==
+On Wed, Jan 06, 2021 at 03:40:25PM -0700, Dave Jiang wrote:
+
+> Subject: Re: [PATCH v2] x86: fix movdir64b() sparse warning
+
+There are a lot of times I don't agree with checkpatch but this time I do:
+
+WARNING: A patch subject line should describe the change not the tool that found it
+#2: 
+Subject: [PATCH v2] x86: fix movdir64b() sparse warning
+
+Pls fix your other patch subject too.
+
+> Add missing __iomem annotation to address sparse warning. Caller is expected
+> to pass an __iomem annotated pointer to this function. The current usages
+> send a 64bytes command descriptor to an MMIO location (portal) on a
+> device for consumption. When future usages for MOVDIR64B instruction show
+> up in kernel for memory to memory operation is needed, we can revisit.
+
+Who's "we"?
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
