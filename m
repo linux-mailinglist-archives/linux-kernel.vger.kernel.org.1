@@ -2,87 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 59E942ED749
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 20:12:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CADC42ED744
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 20:11:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729286AbhAGTL2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 14:11:28 -0500
-Received: from userp2130.oracle.com ([156.151.31.86]:44246 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728362AbhAGTL1 (ORCPT
+        id S1729255AbhAGTKa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 14:10:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43840 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726073AbhAGTKa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 14:11:27 -0500
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 107J9ZZf093132;
-        Thu, 7 Jan 2021 19:10:36 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=f4YlWjiMKOPZnipFfsaJcj0Yqv+ngkw69DJro0tpNyE=;
- b=gX+llP9RiJXOByvaEho9EgjKFwsZWLFxsh/7xKQk4bZMQbtQhMb2xXgaWsc9gNIDakWP
- jODKJ2EKKj647wP9d2/+KBNFm8ysNqSNBla6eYMpT/0WSHdxBwXhneCh8fmny3yOp7Fc
- BpcJYS4JQIiQ8JetI7/q7ZmXOai6UsR32dkII8dA5rRi5HL96HMI/WXAIA60okx73s9/
- WmmXnB787GeVNHx0EL10HGyqO0/+2GooPqVySfejncavAQTx/W08TSx9vAlYwbC4vffz
- /QvzfTfGiOgWAXohBNzDU+uVZ1nRWMDxqqdgPMrNPISTwrMk3yOD078zNRK8x/NbSaIN ig== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by userp2130.oracle.com with ESMTP id 35wftxdg14-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 07 Jan 2021 19:10:36 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 107IxSkM159542;
-        Thu, 7 Jan 2021 19:08:36 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by userp3030.oracle.com with ESMTP id 35w3g36mj2-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 07 Jan 2021 19:08:36 +0000
-Received: from abhmp0015.oracle.com (abhmp0015.oracle.com [141.146.116.21])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 107J8ZXM028620;
-        Thu, 7 Jan 2021 19:08:35 GMT
-Received: from [192.168.2.112] (/50.38.35.18)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Thu, 07 Jan 2021 19:08:34 +0000
-Subject: Re: [PATCH] mm/hugetlb: Fix potential missing huge page size info
-To:     Miaohe Lin <linmiaohe@huawei.com>, akpm@linux-foundation.org
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org
-References: <20210107123449.38481-1-linmiaohe@huawei.com>
-From:   Mike Kravetz <mike.kravetz@oracle.com>
-Message-ID: <240018cd-d0b7-6cc9-e026-6b90729254d2@oracle.com>
-Date:   Thu, 7 Jan 2021 11:08:33 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.1.1
+        Thu, 7 Jan 2021 14:10:30 -0500
+Received: from mail-yb1-xb2e.google.com (mail-yb1-xb2e.google.com [IPv6:2607:f8b0:4864:20::b2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 125F7C0612F5
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Jan 2021 11:09:50 -0800 (PST)
+Received: by mail-yb1-xb2e.google.com with SMTP id w127so7095712ybw.8
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Jan 2021 11:09:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=mKGkFmm6dM/AAYIANDqWrJzHUmWC0POy+3cbbrpsiKY=;
+        b=SgPLVDN6cTkiMRRQPbLMl6hNHvL4IFv26gvrZSA4Sr5VrOJDVHtdovZEnIo9jT8ieK
+         3ZZqYJmuATrdEUJDhxkQ3ys5Nhlw4LirtwPrhTGB7IPZJFR+DYOMm3oRDP2k1bS27vsF
+         YQzqjKpfwsLHVdRbT2AZnLMliAtQtshpgN8whBFzGgGPaxufLV9t0dIHDJ8glD6evnzt
+         E6haf9UzYTjmqG6ymcZrJloD6zrurTO4ZkkmsBTE/gPCHISt9fP6frpOECgjzN7odUVL
+         6jOF7KHHZSG0tPMrxqVLdDq49EZQS61QE7Qc5UgG+U46Jnv+OR5wnTVjYjMI9//ty2uU
+         P73g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=mKGkFmm6dM/AAYIANDqWrJzHUmWC0POy+3cbbrpsiKY=;
+        b=V6yyg9Qg8/rXT6k++k1YmyuZ3lxT+m53B18umhJhRwr+7F8YBJk8kHI1mPJ74vHBul
+         X+W6r3ZDm7SJbSi3xVHdrNd1gy78pOCPNTCML9nveukTGDuatd9VUjB1PnvXvLV5C+rI
+         FH9P2T+kLEkLxdal2g9NXi9UgWbFyH9aIYA5m5l6C0TdeoGB/2EFT/ghlo/4xROnLnfC
+         zZoY/2/0U+u04d5C4y76Bn6BdjLptm/jIved+Womusfqbp9UE9l93FBCO41xIxw+FU9j
+         fEjCQ/Xslk9GZYxKOEEdnCpaHGFzcbF48IYr/ADoBbReYshBI/TIsHQRTTe3j4odV+Dj
+         WW1w==
+X-Gm-Message-State: AOAM530+bnm2PlzQRlCeffrPd3FjuDXlcoxCdRNc6lKH/4n86wn+ieY/
+        4MwuJW9TFbnbfH9KbXu6sHWBzpoQbvic+lQC+fqGBQ==
+X-Google-Smtp-Source: ABdhPJw65HlNw5Ta5xSHJ/boxx023/D1yb8PW6AMfxFFa5G+tFXQNBhdk57pg9FzZhYcsRHrZfdjnfPHqsaDPXWzTEM=
+X-Received: by 2002:a25:6604:: with SMTP id a4mr414212ybc.412.1610046588981;
+ Thu, 07 Jan 2021 11:09:48 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20210107123449.38481-1-linmiaohe@huawei.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9857 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 malwarescore=0 adultscore=0
- phishscore=0 spamscore=0 mlxlogscore=999 suspectscore=0 bulkscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2101070110
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9857 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 suspectscore=0 mlxscore=0
- bulkscore=0 priorityscore=1501 impostorscore=0 clxscore=1011
- lowpriorityscore=0 mlxlogscore=999 malwarescore=0 spamscore=0 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2101070111
+References: <20201218210750.3455872-1-saravanak@google.com>
+ <2a6dbcc83d5aca7a3340e0cf4d751cdc@kernel.org> <20201231211240.GA2333246@robh.at.kernel.org>
+ <877dovlgdl.wl-maz@kernel.org> <CAGETcx9WJdYkQcwJLTF4j9jR4kyrDpXG8ZMuCecK2Hv-HXFgBg@mail.gmail.com>
+ <CAL_Jsq+0DdS+F_NZEyP2ajG5g6a_Q543Yp5ReWXGp8qA+25F=g@mail.gmail.com>
+In-Reply-To: <CAL_Jsq+0DdS+F_NZEyP2ajG5g6a_Q543Yp5ReWXGp8qA+25F=g@mail.gmail.com>
+From:   Saravana Kannan <saravanak@google.com>
+Date:   Thu, 7 Jan 2021 11:09:12 -0800
+Message-ID: <CAGETcx_4n951Fx-Gn14ikDDxgWtv6QqQtNno9pcPJyiiGynWHQ@mail.gmail.com>
+Subject: Re: [PATCH] of: property: Add device link support for interrupts
+To:     Rob Herring <robh@kernel.org>
+Cc:     Marc Zyngier <maz@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Kevin Hilman <khilman@baylibre.com>,
+        Android Kernel Team <kernel-team@android.com>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 1/7/21 4:34 AM, Miaohe Lin wrote:
-> The huge page size is encoded for VM_FAULT_HWPOISON errors only. So if we
-> return VM_FAULT_HWPOISON, huge page size would just be ignored.
-> 
-> Fixes: aa50d3a7aa81 ("Encode huge page size for VM_FAULT_HWPOISON errors")
-> Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
-> Cc: <stable@vger.kernel.org>
-> ---
->  mm/hugetlb.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+On Thu, Jan 7, 2021 at 10:39 AM Rob Herring <robh@kernel.org> wrote:
+>
+> On Wed, Jan 6, 2021 at 11:53 AM Saravana Kannan <saravanak@google.com> wrote:
+> >
+> > On Sat, Jan 2, 2021 at 3:37 AM Marc Zyngier <maz@kernel.org> wrote:
+> > >
+> > > On Thu, 31 Dec 2020 21:12:40 +0000,
+> > > Rob Herring <robh@kernel.org> wrote:
+> > > >
+> > > > On Mon, Dec 21, 2020 at 09:30:45AM +0000, Marc Zyngier wrote:
+> > > > > On 2020-12-18 21:07, Saravana Kannan wrote:
+> > > > > > Add support for creating device links out of interrupts property.
+> > > > > >
+> > > > > > Cc: Marc Zyngier <maz@kernel.org>
+> > > > > > Cc: Kevin Hilman <khilman@baylibre.com>
+> > > > > > Signed-off-by: Saravana Kannan <saravanak@google.com>
+> > > > > > ---
+> > > > > > Rob/Greg,
+> > > > > >
+> > > > > > This might need to go into driver-core to avoid conflict
+> > > > > > due to fw_devlink refactor series that merged there.
+> > > > > >
+> > > > > > Thanks,
+> > > > > > Saravana
+> > > > > >
+> > > > > >
+> > > > > >  drivers/of/property.c | 17 +++++++++++++++++
+> > > > > >  1 file changed, 17 insertions(+)
+> > > > > >
+> > > > > > diff --git a/drivers/of/property.c b/drivers/of/property.c
+> > > > > > index 5f9eed79a8aa..e56a5eae0a0b 100644
+> > > > > > --- a/drivers/of/property.c
+> > > > > > +++ b/drivers/of/property.c
+> > > > > > @@ -1271,6 +1271,22 @@ static struct device_node
+> > > > > > *parse_iommu_maps(struct device_node *np,
+> > > > > >   return of_parse_phandle(np, prop_name, (index * 4) + 1);
+> > > > > >  }
+> > > > > >
+> > > > > > +static struct device_node *parse_interrupts(struct device_node *np,
+> > > > > > +                                     const char *prop_name, int index)
+> > > > > > +{
+> > > > > > + struct device_node *sup;
+> > > > > > +
+> > > > > > + if (strcmp(prop_name, "interrupts") || index)
+> > > > > > +         return NULL;
+> > > > > > +
+> > > > > > + of_node_get(np);
+> > > > > > + while (np && !(sup = of_parse_phandle(np, "interrupt-parent", 0)))
+> > > > > > +         np = of_get_next_parent(np);
+> > > > > > + of_node_put(np);
+> > > > > > +
+> > > > > > + return sup;
+> > > > > > +}
+> > > > > > +
+> > > > > >  static const struct supplier_bindings of_supplier_bindings[] = {
+> > > > > >   { .parse_prop = parse_clocks, },
+> > > > > >   { .parse_prop = parse_interconnects, },
+> > > > > > @@ -1296,6 +1312,7 @@ static const struct supplier_bindings
+> > > > > > of_supplier_bindings[] = {
+> > > > > >   { .parse_prop = parse_pinctrl6, },
+> > > > > >   { .parse_prop = parse_pinctrl7, },
+> > > > > >   { .parse_prop = parse_pinctrl8, },
+> > > > > > + { .parse_prop = parse_interrupts, },
+> > > > > >   { .parse_prop = parse_regulators, },
+> > > > > >   { .parse_prop = parse_gpio, },
+> > > > > >   { .parse_prop = parse_gpios, },
+> > > > >
+> > > > > You don't really describe what this is for so I'm only guessing
+> > > > > from the context. If you want to follow the interrupt hierarchy,
+> > > > > "interrupt-parent" isn't enough. You also need to track
+> > > > > things like interrupt-map, or anything that carries a phandle
+> > > > > to an interrupt controller.
+> > > >
+> > > > We don't need to follow the hierarchy, we just need the immediate
+> > > > dependencies.
+> > >
+> > > Indeed. I also wonder why this isn't just a irq_find_parent() call, TBH.
+> >
+> > Thanks Rob for explaining it.
+> >
+> > Marc, I wasn't sure if Rob would be okay with including of_irq.h here.
+> > Also, I'm trying to keep of/property.c independent of the framework
+> > code for now. The long term goal is to see if I can move out most of
+> > this into the frameworks. But I want to do that after I sort of some
+> > of the larger problems (like getting fw_devlink=on to work on all
+> > devices  first). Let me know if you have a strong preference for right
+> > now, if not, I'd rather keep property.c independent for now.
+> >
+> > I wasn't aware of interrupt-map until a few weeks ago and didn't know
+> > it carried phandles. I can add support for that too. There's no reason
+> > for all of them to go in one patch though.
+> >
+> > >
+> > > > But you are right that 'interrupt-map' also needs to be tracked.
+> > >
+> > > And 'interrupts-extended', while we're at it.
+> >
+> > This is already handled.
+> >
+> > > >
+> > > > I also noticed that we define 'interrupt-parent' as a dependency to
+> > > > parse, but that's wrong. The dependency is where 'interrupts' appears
+> > > > and where 'interrupt-parent' appears is irrelevant.
+> >
+> > No, the interrupt-parent parsing is correct and it's needed for
+> > interrupt controllers to probe in the right order. But
+> > interrupt-parent is also needs to be looked at for parsing
+> > "interrupts".
+>
+> If you parse 'interrupts' for interrupt controllers (which in turn
+> will use 'interrupt-parent'), then you aren't going to need to track
+> 'interrupt-parent' by itself.
 
-Thanks!
+Do all interrupt controllers (that are not the root interrupt
+controller) need to have "interrupts" property? If yes, then yeah,
+that makes sense. But I vaguely remember that this wasn't the case for
+some DT I saw.
 
-Reviewed-by: Mike Kravetz <mike.kravetz@oracle.com>
--- 
-Mike Kravetz
+Ah, here's one I found.
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/arch/arm/boot/dts/mt2701.dtsi#n209
+
+-Saravana
