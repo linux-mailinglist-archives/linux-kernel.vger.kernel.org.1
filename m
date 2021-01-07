@@ -2,133 +2,227 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F77B2ED145
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 15:02:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 717DB2ED14B
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 15:03:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728394AbhAGOBO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 09:01:14 -0500
-Received: from mout.gmx.net ([212.227.17.20]:33799 "EHLO mout.gmx.net"
+        id S1728509AbhAGOCH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 09:02:07 -0500
+Received: from foss.arm.com ([217.140.110.172]:33244 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725835AbhAGOBN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 09:01:13 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1610027932;
-        bh=6KXvHFS8hjQxWet0mQrTitxB9mKD6lKq0Lt0NXoM9Lg=;
-        h=X-UI-Sender-Class:Date:From:To:Cc:Subject:References:In-Reply-To;
-        b=Fv1GeYCQhSu8Gk+NvxEmHyo5N62BNUEHSJep6q0+8P9KpA+Frw6CjTmRriCsRaYKG
-         o+zyJWyY+ncxGuVHI8XOJD4/Cd1b+5wrxMvKLEOXGweFQY3FwUoWmDLH3mnM78Xawd
-         sC7Y5OLx1i1SrvVDtFpVJoFv+ZQQ1XnamtUjsT58=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from longitude ([37.201.215.57]) by mail.gmx.com (mrgmx104
- [212.227.17.168]) with ESMTPSA (Nemesis) id 1MYvY8-1kSngS11lI-00UoHB; Thu, 07
- Jan 2021 14:58:52 +0100
-Date:   Thu, 7 Jan 2021 14:58:47 +0100
-From:   Jonathan =?utf-8?Q?Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>
-To:     Jonathan =?utf-8?Q?Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>
-Cc:     linux-kernel@vger.kernel.org, Lee Jones <lee.jones@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Heiko Stuebner <heiko.stuebner@theobroma-systems.com>,
-        Stephan Gerhold <stephan@gerhold.net>,
-        Lubomir Rintel <lkundrak@v3.sk>,
-        Mark Brown <broonie@kernel.org>, allen <allen.chen@ite.com.tw>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        devicetree@vger.kernel.org, linux-pwm@vger.kernel.org,
-        linux-rtc@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        Heiko Stuebner <heiko@sntech.de>,
-        Josua Mayer <josua.mayer@jm0.eu>,
-        Andreas Kemnade <andreas@kemnade.info>,
-        Arnd Bergmann <arnd@arndb.de>, Daniel Palmer <daniel@0x0f.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>
-Subject: Re: [PATCH v6 5/7] rtc: New driver for RTC in Netronix embedded
- controller
-Message-ID: <X/cTlwKdCfxACNNu@latitude>
-References: <20201208011000.3060239-1-j.neuschaefer@gmx.net>
- <20201208011000.3060239-6-j.neuschaefer@gmx.net>
+        id S1728396AbhAGOCH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Jan 2021 09:02:07 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A99AED6E;
+        Thu,  7 Jan 2021 06:01:21 -0800 (PST)
+Received: from [10.57.37.195] (unknown [10.57.37.195])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E99843F70D;
+        Thu,  7 Jan 2021 06:01:19 -0800 (PST)
+Subject: Re: [PATCH 10/11] coresight: sink: Add TRBE driver
+To:     Anshuman Khandual <anshuman.khandual@arm.com>,
+        linux-arm-kernel@lists.infradead.org, coresight@lists.linaro.org
+Cc:     linux-kernel@vger.kernel.org,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Mike Leach <mike.leach@linaro.org>,
+        Linu Cherian <lcherian@marvell.com>
+References: <1608717823-18387-1-git-send-email-anshuman.khandual@arm.com>
+ <1608717823-18387-11-git-send-email-anshuman.khandual@arm.com>
+ <92b5ae56-df5d-3772-0206-b50ea4080c4f@arm.com>
+ <f5ab26f4-8cf2-b7cf-ad3a-53c98d488407@arm.com>
+ <d909717f-c3e2-37cf-63e8-cdf2ac3bf069@arm.com>
+ <88a4d889-242a-2951-9c6e-e8712d013f46@arm.com>
+From:   Suzuki K Poulose <suzuki.poulose@arm.com>
+Message-ID: <5b6d10a3-d16e-ba2c-ef72-cc00d90e6240@arm.com>
+Date:   Thu, 7 Jan 2021 14:01:12 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="zzyZ2qKAXKy5e0zx"
-Content-Disposition: inline
-In-Reply-To: <20201208011000.3060239-6-j.neuschaefer@gmx.net>
-X-Provags-ID: V03:K1:UzPsK+dffc9afKCvS0F9+Hgj9JGWVZOPCSnrUgq9ozQMGwBrOn1
- WpvWYWzAMBorKL9zzEgCb5IoWtqOzmQarM8aXJl7ONkaYKxJnxMGaINMLTqfkztZZFjHHGf
- G7uj1LzDxwKbVNXSqsL+vEXoiOHffRuz/jW/ittEr9b/gxsSoXJu6L4O4wDd9Es0lbplasv
- SPVjkESPUz2ZJA32ai6sw==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:HiAjBn2kIT8=:6XgsBIHMs1aXbi3nmJSBWb
- 9xhs9idVrnn/CDpuIA3t3IJB7A6hI9b1k1+w7e7IgZ3IPaWkYUgLkNk7/FGd1wKb6rXNoUJvr
- Q0uM4nJvsIatHSI4tRYZ3aNSa98nmEOx5PbLnF4CBF7QkmnyrVmbZGv38hoIulGNxkjZZVzWr
- /ZJIROMNcIjuvgxzmf0lUZxV58yab5WxKk3KbHH+qOM0dcWl3g2Es+2pHxonVeIztW1IJggAs
- hKiy3fwGh5Gfjh99jS9T1NE5HYXoMxE38q5Z/pcmGlOxXJ+7s2VGfx8JUHCUoW8KboanGytFr
- Q01dumxcWnDU+6Eu44Z1VhDervoMa+C8SiuqK49SIygHB1NwEJ0NeAAnigUS/8L2UhjZoRn4B
- GBhkeonIkjPT7MylGqmSesS7Hat6FXEgDtG8kgTHTL7C/uMwiBBCKm6qztkgW96St7xhz6w/k
- WQvfk0b7WRu1cE3Pt+rfmk6JWfkmkUt5Gt4+1csKqPBIl4Bfo4yD/dqVS7qdtAD2x7qrCL1Xl
- 0oNNohAVxByzz/KuOmQ5RuCkpyp8MPXjywj6DwkNdtHGagUnCKtstpNUTqLxdiZlq/WAwC6n8
- hHQd/9inTiQjwC3xYB88qELKlcBZkIWMQS975cE2kIRh3vrAmoBLKAiBGf2DZY6Ad+1MwcwiT
- SXmiRQWIMIb8pZZ1WlxO7Vg/9531gNIeb8oQrViBcT0tRFkIXXsY7tVD/cEw2W48H+GszD9yn
- 1RCINyUfKOGVBdPAtnb7BrqY8cAMK0MC7WBU55+/+gEWFqO3FOA/Xdo+aLmMLUP3R8E/HMUc9
- U9WCczp85cJoOpVlZaAB7spZov6fHXft9mG1XEmRMboap7W5Mnu2cr6tU85YHxAHqwgqv8xYO
- uGMHsrt7/CerOCOlkd/w==
+In-Reply-To: <88a4d889-242a-2951-9c6e-e8712d013f46@arm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 1/6/21 11:50 AM, Anshuman Khandual wrote:
+> 
+> 
+> On 1/5/21 5:07 PM, Suzuki K Poulose wrote:
+>> On 1/5/21 9:29 AM, Anshuman Khandual wrote:
 
---zzyZ2qKAXKy5e0zx
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+...
 
-On Tue, Dec 08, 2020 at 02:09:58AM +0100, Jonathan Neusch=C3=A4fer wrote:
-> With this driver, mainline Linux can keep its time and date in sync with
-> the vendor kernel.
->=20
-> Advanced functionality like alarm and automatic power-on is not yet
-> supported.
->=20
-> Signed-off-by: Jonathan Neusch=C3=A4fer <j.neuschaefer@gmx.net>
-> Acked-by: Alexandre Belloni <alexandre.belloni@bootlin.com>
-> ---
-[...]
-> +	return rtc_register_device(dev);
+>>>>> +{
+>>>>> +    struct trbe_buf *buf = etm_perf_sink_config(handle);
+>>>>> +    unsigned long offset;
+>>>>> +
+>>>>> +    if (buf->snapshot)
+>>>>> +        offset = trbe_snapshot_offset(handle);
+>>>>> +    else
+>>>>> +        offset = trbe_normal_offset(handle);
+>>>>> +    return buf->trbe_base + offset;
+>>>>> +}
+>>>>> +
+>>>>> +static void clear_trbe_state(void)
+>>>>
+>>>> nit: The name doesn't give much clue about what it is doing, especially, given
+>>>> the following "set_trbe_state()" which does completely different from this "clear"
+>>>> operation.
+>>>
+>>> I agree that these names could have been better.
+>>>
+>>> s/clear_trbe_state/trbe_reset_perf_state  - Clears TRBE from current perf config
+>>> s/set_trbe_state/trbe_prepare_perf_state  - Prepares TRBE for the next perf config
+>>
+>> Please don't tie them to "perf". This is pure hardware configuration, not perf.
+> 
+> Okay.
+> 
+>>
+>> Also, I wonder if we need a separate "set_trbe_state". Could we not initialize the LIMITR
+>> at one go ?
+> 
+> There are some limitations which could prevent that.
+> 
+>>
+>> i.e, do something like :
+>>
+>> set_trbe_limit_pointer(limit, mode) ?
+>>
+>> where it sets all the fields of limit pointer. Also, you may want to document the mode we
+>> choose for TRBE. i.e, FILL STOP mode for us to collect the trace.
+> 
+> Sure, will document the TRBE mode being choosen here.
+> 
+>>
+>>>
+>>>
+>>>>
+>>>> I would rather open code this with a write of 0 to trbsr in the caller.
+>>>>
+>>>>> +{
+>>>>> +    u64 trbsr = read_sysreg_s(SYS_TRBSR_EL1);
+>>>>> +
+>>>>> +    WARN_ON(is_trbe_enabled());
+>>>>> +    trbsr &= ~TRBSR_IRQ;
+>>>>> +    trbsr &= ~TRBSR_TRG;
+>>>>> +    trbsr &= ~TRBSR_WRAP;
+>>>>> +    trbsr &= ~(TRBSR_EC_MASK << TRBSR_EC_SHIFT);
+>>>>> +    trbsr &= ~(TRBSR_BSC_MASK << TRBSR_BSC_SHIFT);
+>>>>> +    trbsr &= ~(TRBSR_FSC_MASK << TRBSR_FSC_SHIFT);
+>>>>
+>>>> BSC and FSC are the same fields under MSS, with their meanings determined by the EC field.
+>>>
+>>> Could just drop the FSC part if required.
+>>>
+>>>>
+>>>> Could we simply write 0 to the register ?
+>>>
+>>> I would really like to avoid that. This function clearly enumerates all
+>>> individual bit fields being cleared for resetting as well as preparing
+>>> the TRBE for the next perf session. Converting this into a 0 write for
+>>> SYS_TRBSR_EL1 sounds excessive and the only thing it would save is the
+>>> register read.
+>>
+>>>
+>>>>
+>>>>> +    write_sysreg_s(trbsr, SYS_TRBSR_EL1);
+>>>>> +}
+>>>>> +
+>>>>> +static void set_trbe_state(void)
+>>>>> +{
+>>>>> +    u64 trblimitr = read_sysreg_s(SYS_TRBLIMITR_EL1);
+>>>>> +
+>>>>> +    trblimitr &= ~TRBLIMITR_NVM;
+>>>>> +    trblimitr &= ~(TRBLIMITR_FILL_MODE_MASK << TRBLIMITR_FILL_MODE_SHIFT);
+>>>>> +    trblimitr &= ~(TRBLIMITR_TRIG_MODE_MASK << TRBLIMITR_TRIG_MODE_SHIFT);
+>>>>> +    trblimitr |= (TRBE_FILL_STOP & TRBLIMITR_FILL_MODE_MASK) << TRBLIMITR_FILL_MODE_SHIFT;
+>>>>> +    trblimitr |= (TRBE_TRIGGER_IGNORE & TRBLIMITR_TRIG_MODE_MASK) << TRBLIMITR_TRIG_MODE_SHIFT;
+>>>>> +    write_sysreg_s(trblimitr, SYS_TRBLIMITR_EL1);
+>>>>
+>>>> Do we need to read-copy-update here ? Could we simply write 0 ?
+>>>> Same as above comment, could we not simply opencode it at the caller ?
+>>>> Clearly the names don't help.
+>>>
+>>> Will change the names as proposed or something better. But lets leave
+>>> these functions as is. Besides TRBE_TRIGGER_IGNORE also has a positive
+>>> value (i.e 3), writing all 0s into SYS_TRBLIMITR_EL1 will not be ideal.
+>>>
+>>
+>> The point is, we don't need to preserve the values for LIMITR. Also see my comment
+>> above, for folding this to set_trbe_limit_pointer(). In any case, I don't think
+>> we should rely on the values of fields we change. So it is safer and cleaner to
+>> set set all the bits for LIMITR, including the LIMIT address in one go, without
+>> ready-copy-update.
+> 
+> TRBE needs to be disabled (which is also in the LIMIT register) before we can update
+> any other fields in the LIMIT register. So there is already an order dependency here.
+> Looking at the function trbe_enable_hw(), it follows something like
+> 
+> 1. Clear and set the TRBE mode	- followed by an isb()
+> 2. Update the TRBE pointers	- followed by an isb()
+> 3. Set it rolling		- followed by TSB_CSYNC
+> 
+> static void trbe_enable_hw(struct trbe_buf *buf)
+> {
+> 
+> 	[Software checks]
+>          WARN_ON(buf->trbe_write < buf->trbe_base);
+>          WARN_ON(buf->trbe_write >= buf->trbe_limit);
+> 
+> 	[Disable TRBE in the limit register]
+>          set_trbe_disabled();
+> 
 
-This needs a respin due to the RTC API change (devm_ prefixed was added).
-Unless someone objects, I'll respin the whole series in a few days.
+We need an isb() here.
+
+> 	[Clears TRBE status register]
+>          trbe_reset_perf_state();
+
+Please be explicit here. Make the function name reflect the fact that
+we are simply clearing the status register and nothing related to perf.
+
+> 
+> 	[Configures TRBE mode in the limit register]
+>          trbe_prepare_perf_state();
+
+This is unnecessarily introducing a dependency not enforced by the HW.
+You could program the LIMIT register with all the setting, mode, limit
+and *enable TBRE* once we have programmed base and write pointer at one
+shot.
+
+> 
+>          isb();
+
+Drop the ISB
+
+> 
+> 	[Update all required pointers]
+>          set_trbe_base_pointer(buf->trbe_base);
+>          set_trbe_limit_pointer(buf->trbe_limit);
+
+As mentioned above, this could be done in set_trbe_enabled()
+
+>          set_trbe_write_pointer(buf->trbe_write);
+>          isb();
+> 
+> 	[Set it rolling]
+> 
+> 	[Update TRBE status register stop bit]
+>          set_trbe_running();
+
+This doesn't have any significance with Hardware. It is a status bit
+from the HW, which is writable only for "state" save/restore, when
+switching between contexts. Otherwise, this write doesn't do anything.
+So, please combine this with the clear_status operation above.
 
 
-Best regards,
-Jonathan Neusch=C3=A4fer
+> 
+> 	[Update TRBE limit register enable bit]
+>          set_trbe_enabled();
 
---zzyZ2qKAXKy5e0zx
-Content-Type: application/pgp-signature; name="signature.asc"
+Here we could set all the fileds of the LIMIT register, followed by
+an isb()
 
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEvHAHGBBjQPVy+qvDCDBEmo7zX9sFAl/3E4oACgkQCDBEmo7z
-X9vCCxAAnyHyLRWimfwTpump145Yv/rZQxqVkc0KK1+bi2EhJddi3IC/n3VWoog0
-XgXDYKkxINCn/uUb3JSOJ41GTVEcOdgXhNh5Sz1J8Xu4Xavr2qvWHhuh5Uobo6A9
-Ursp17xJxIedZnSZeYJZhLI1+uDASZoEp55FSZpdr/dBE/duI62r7A7xKC7NGuQ5
-FfVuGlSvsJpgEZqVo1mw3A0R2uOhHu20t8zZmXVnirXHs7PoZuIirnPys2Q2YvPX
-j71Xy27WvGJGXfKa8GhN3FRzqcYTQ8D5dWqvCyb9RYuYDFFjQmFC9aDRellR6oKV
-QZQqS6mDzwa6CsQ7WTQtzNE/oDSEaB1JRrhsyfUDdHDnMg6DRVyzNELjMsq0fzbQ
-b4SNv82HjK1OSTNk7nYWEFr8zFh8dHYaydXqw9ok5iAxpjol9FJDeiz3ee/jMr2+
-LlwUGHdptjSh6XubB1jlBCJITWKsoZKKQz8MMzGt5vgJBLQ7g8FoUXfIfJ1SyDuh
-QgsrxpPgdDTRxVFG1V5V6YliJNzm7BEUffrtBeFCgCVQCq8RAzzyMXZ4UlEoazqK
-22LrEAkfadOWJFbwGTcTvgbvpCmFSJr6e7E61dP/WLhh5RGcB8EndK85rFskaOqX
-KUAYnvYDbth0rRZcdy0L+QF2Awe0FRnXCCSQ+Qe7FBzsWQRX32Q=
-=v+1m
------END PGP SIGNATURE-----
-
---zzyZ2qKAXKy5e0zx--
+Kind regards
+Suzuki
