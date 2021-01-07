@@ -2,165 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 41B352ECBA2
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 09:10:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D4A452ECBA8
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 09:14:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727068AbhAGIIn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 03:08:43 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60290 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726772AbhAGIIm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 03:08:42 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1049223125;
-        Thu,  7 Jan 2021 08:08:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610006881;
-        bh=E4f+vlunYAQkddfnRYjBz7RgXFACQJYyFUefk2c3ExU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Bc3gjjnvyIbIl4asfGX+01otD/pU5Y1/ojHTw3h3WFSe03NPel/JOtU4QwieZNz/7
-         f2i5TIoyfzgR4mFzGw01LrNl67byAOsumDpzw59EjBQUn4Q+NG1FdZmzRR2/H/QKUj
-         9ANElrOC1rgnQT2CMuPC7X2PC6pw/i/ajPzDl0qgIFee2pMqm2OAYWDGEHWkX9rADf
-         d2X3yxdqagID4RiS7VhJuEmRBL1irfq+DpIeRCoTus7mHl1W3lWCNcKuPU8hfkxPT6
-         sxCqS+tKj49NVLfbE9+b4v1Ock9tRRARHmxelAEHLhZdW6+iYhdHZAoz3oYeRd/i9B
-         UjfPAUC+pqm2Q==
-Date:   Thu, 7 Jan 2021 00:07:59 -0800
-From:   Jaegeuk Kim <jaegeuk@kernel.org>
-To:     Can Guo <cang@codeaurora.org>
-Cc:     linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org,
-        kernel-team@android.com, alim.akhtar@samsung.com,
-        avri.altman@wdc.com, bvanassche@acm.org,
-        martin.petersen@oracle.com, stanley.chu@mediatek.com
-Subject: Re: [PATCH v4 2/2] scsi: ufs: handle LINERESET with correct tm_cmd
-Message-ID: <X/bBX6t31BOfRG/i@google.com>
-References: <20210107074710.549309-1-jaegeuk@kernel.org>
- <20210107074710.549309-3-jaegeuk@kernel.org>
- <03a47a3f49914230653bea777e2ee550@codeaurora.org>
+        id S1726522AbhAGIOC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 03:14:02 -0500
+Received: from mail-oi1-f177.google.com ([209.85.167.177]:44720 "EHLO
+        mail-oi1-f177.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726171AbhAGIOC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Jan 2021 03:14:02 -0500
+Received: by mail-oi1-f177.google.com with SMTP id d189so6490131oig.11;
+        Thu, 07 Jan 2021 00:13:46 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=2sNU56Ph9zOh5AccBeHHxNWeCtZj6RXCAKwJxVBMKmE=;
+        b=UunNUgONTNSLs9KQH9szadf8eYTaPHc7X+IR67UsD/7/utczvqG7173tay/KazIZoN
+         jtMaFekKPASOb81DdC3hZbakxN3q6LNcAU7jA9RrOzNi6IqHWE1j9lJEIAVmkUl3xR9a
+         Mxcy4yvhf2RDay9H0l3uMro2+GBfWoS6dxW9PcaMTTiJiA7PD9ZbHsiLKtMNrbVhRRuI
+         NGED7BfRVLws1Iaing6f/r2zJCI3RnvcN7PICWhOBaOCmEItx2+e4CbQVrNMa7s4Yfyz
+         7nAzfo66o9Q8a9gImc1FtMFhUmal8ZID9OrLVCPBj9ssxcs7lD+7JlBWBgWUF9gSp++l
+         5fog==
+X-Gm-Message-State: AOAM531XxIv3jd2jkNv7F6FFWHrCdmtOhwBunGG69AoiefRKv2Xr2vs5
+        wu6CTD+SF3ZSZNrA/FuBKRTXnHZ4S2YBhoHY8kTXD2AhJOw=
+X-Google-Smtp-Source: ABdhPJwrnQjPXBYzM2SyYW1CfGTO1vgkI2yKYDdyKTlIhuNFDs8Idq4cEQdtVae6Q4iQGMePy4f/z4WxW1zGTn3wWGI=
+X-Received: by 2002:aca:3cc5:: with SMTP id j188mr684519oia.54.1610007201402;
+ Thu, 07 Jan 2021 00:13:21 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <03a47a3f49914230653bea777e2ee550@codeaurora.org>
+References: <20210104155708.800470590@linuxfoundation.org> <20210104155710.187945647@linuxfoundation.org>
+In-Reply-To: <20210104155710.187945647@linuxfoundation.org>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Thu, 7 Jan 2021 09:13:10 +0100
+Message-ID: <CAMuHMdXRgam2zahPEGcw8+76Xm-0AO-Ci9-YmVa5JpTKVHphRw@mail.gmail.com>
+Subject: Re: [PATCH 5.10 28/63] fbcon: Disable accelerated scrolling
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        stable <stable@vger.kernel.org>,
+        Tomi Valkeinen <tomi.valkeinen@ti.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Ben Skeggs <bskeggs@redhat.com>,
+        Nouveau Dev <nouveau@lists.freedesktop.org>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
+        Peilin Ye <yepeilin.cs@gmail.com>,
+        George Kennedy <george.kennedy@oracle.com>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Peter Rosin <peda@axentia.se>,
+        Daniel Vetter <daniel.vetter@intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 01/07, Can Guo wrote:
-> On 2021-01-07 15:47, Jaegeuk Kim wrote:
-> > From: Jaegeuk Kim <jaegeuk@google.com>
-> > 
-> > This fixes a warning caused by wrong reserve tag usage in
-> > __ufshcd_issue_tm_cmd.
-> > 
-> > WARNING: CPU: 7 PID: 7 at block/blk-core.c:630 blk_get_request+0x68/0x70
-> > WARNING: CPU: 4 PID: 157 at block/blk-mq-tag.c:82
-> > blk_mq_get_tag+0x438/0x46c
-> > 
-> > And, in ufshcd_err_handler(), we can avoid to send tm_cmd before
-> > aborting
-> > outstanding commands by waiting a bit for IO completion like this.
-> > 
-> > __ufshcd_issue_tm_cmd: task management cmd 0x80 timed-out
-> > 
-> > Fixes: 69a6c269c097 ("scsi: ufs: Use blk_{get,put}_request() to
-> > allocate and free TMFs")
-> > Fixes: 2355b66ed20c ("scsi: ufs: Handle LINERESET indication in err
-> > handler")
-> 
-> Hi Jaegeuk,
-> 
-> Sorry, what is wrong with commit 2355b66ed20c? Clearing pending I/O
-> reqs is a general procedure for handling all non-fatal errors.
+On Mon, Jan 4, 2021 at 5:58 PM Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+> From: Daniel Vetter <daniel.vetter@ffwll.ch>
+>
+> commit 39aead8373b3c20bb5965c024dfb51a94e526151 upstream.
+>
+> So ever since syzbot discovered fbcon, we have solid proof that it's
+> full of bugs. And often the solution is to just delete code and remove
+> features, e.g.  50145474f6ef ("fbcon: remove soft scrollback code").
+>
+> Now the problem is that most modern-ish drivers really only treat
+> fbcon as an dumb kernel console until userspace takes over, and Oops
+> printer for some emergencies. Looking at drm drivers and the basic
+> vesa/efi fbdev drivers shows that only 3 drivers support any kind of
+> acceleration:
+>
+> - nouveau, seems to be enabled by default
+> - omapdrm, when a DMM remapper exists using remapper rewriting for
+>   y/xpanning
+> - gma500, but that is getting deleted now for the GTT remapper trick,
+>   and the accelerated copyarea never set the FBINFO_HWACCEL_COPYAREA
+>   flag, so unused (and could be deleted already I think).
+>
+> No other driver supportes accelerated fbcon. And fbcon is the only
 
-Without waiting IOs, I hit the below timeout all the time from LINERESET, which
-causes UFS stuck permanently, as mentioned in the description.
+Note that there are 32 more drivers using acceleration under
+drivers/video/fbdev/.
 
-"__ufshcd_issue_tm_cmd: task management cmd 0x80 timed-out"
+Gr{oetje,eeting}s,
 
-> 
-> Thanks,
-> Can Guo.
-> 
-> > Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
-> > ---
-> >  drivers/scsi/ufs/ufshcd.c | 35 +++++++++++++++++++++++++++++++----
-> >  1 file changed, 31 insertions(+), 4 deletions(-)
-> > 
-> > diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
-> > index e6e7bdf99cd7..340dd5e515dd 100644
-> > --- a/drivers/scsi/ufs/ufshcd.c
-> > +++ b/drivers/scsi/ufs/ufshcd.c
-> > @@ -44,6 +44,9 @@
-> >  /* Query request timeout */
-> >  #define QUERY_REQ_TIMEOUT 1500 /* 1.5 seconds */
-> > 
-> > +/* LINERESET TIME OUT */
-> > +#define LINERESET_IO_TIMEOUT_MS			(30000) /* 30 sec */
-> > +
-> >  /* Task management command timeout */
-> >  #define TM_CMD_TIMEOUT	100 /* msecs */
-> > 
-> > @@ -5826,6 +5829,7 @@ static void ufshcd_err_handler(struct work_struct
-> > *work)
-> >  	int err = 0, pmc_err;
-> >  	int tag;
-> >  	bool needs_reset = false, needs_restore = false;
-> > +	ktime_t start;
-> > 
-> >  	hba = container_of(work, struct ufs_hba, eh_work);
-> > 
-> > @@ -5911,6 +5915,22 @@ static void ufshcd_err_handler(struct work_struct
-> > *work)
-> >  	}
-> > 
-> >  	hba->silence_err_logs = true;
-> > +
-> > +	/* Wait for IO completion for non-fatal errors to avoid aborting IOs
-> > */
-> > +	start = ktime_get();
-> > +	while (hba->outstanding_reqs) {
-> > +		ufshcd_complete_requests(hba);
-> > +		spin_unlock_irqrestore(hba->host->host_lock, flags);
-> > +		schedule();
-> > +		spin_lock_irqsave(hba->host->host_lock, flags);
-> > +		if (ktime_to_ms(ktime_sub(ktime_get(), start)) >
-> > +						LINERESET_IO_TIMEOUT_MS) {
-> > +			dev_err(hba->dev, "%s: timeout, outstanding=0x%lx\n",
-> > +					__func__, hba->outstanding_reqs);
-> > +			break;
-> > +		}
-> > +	}
-> > +
-> >  	/* release lock as clear command might sleep */
-> >  	spin_unlock_irqrestore(hba->host->host_lock, flags);
-> >  	/* Clear pending transfer requests */
-> > @@ -6302,9 +6322,13 @@ static irqreturn_t ufshcd_intr(int irq, void
-> > *__hba)
-> >  		intr_status = ufshcd_readl(hba, REG_INTERRUPT_STATUS);
-> >  	}
-> > 
-> > -	if (enabled_intr_status && retval == IRQ_NONE) {
-> > -		dev_err(hba->dev, "%s: Unhandled interrupt 0x%08x\n",
-> > -					__func__, intr_status);
-> > +	if (enabled_intr_status && retval == IRQ_NONE &&
-> > +				!ufshcd_eh_in_progress(hba)) {
-> > +		dev_err(hba->dev, "%s: Unhandled interrupt 0x%08x (0x%08x,
-> > 0x%08x)\n",
-> > +					__func__,
-> > +					intr_status,
-> > +					hba->ufs_stats.last_intr_status,
-> > +					enabled_intr_status);
-> >  		ufshcd_dump_regs(hba, 0, UFSHCI_REG_SPACE_SIZE, "host_regs: ");
-> >  	}
-> > 
-> > @@ -6348,7 +6372,10 @@ static int __ufshcd_issue_tm_cmd(struct ufs_hba
-> > *hba,
-> >  	 * Even though we use wait_event() which sleeps indefinitely,
-> >  	 * the maximum wait time is bounded by %TM_CMD_TIMEOUT.
-> >  	 */
-> > -	req = blk_get_request(q, REQ_OP_DRV_OUT, BLK_MQ_REQ_RESERVED);
-> > +	req = blk_get_request(q, REQ_OP_DRV_OUT, 0);
-> > +	if (IS_ERR(req))
-> > +		return PTR_ERR(req);
-> > +
-> >  	req->end_io_data = &wait;
-> >  	free_slot = req->tag;
-> >  	WARN_ON_ONCE(free_slot < 0 || free_slot >= hba->nutmrs);
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
