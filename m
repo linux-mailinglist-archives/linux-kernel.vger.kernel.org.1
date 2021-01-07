@@ -2,87 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B5EFB2ED4C5
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 17:52:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 064ED2ED4CB
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 17:53:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728684AbhAGQvw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 11:51:52 -0500
-Received: from mail-oi1-f178.google.com ([209.85.167.178]:41195 "EHLO
-        mail-oi1-f178.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727673AbhAGQvv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 11:51:51 -0500
-Received: by mail-oi1-f178.google.com with SMTP id 15so8047101oix.8;
-        Thu, 07 Jan 2021 08:51:35 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=QRY+oCUw7AZGdFQ4cs7QiDXR0ZT6ctIGkSGF1RXO+kE=;
-        b=Q/aNxtwM87K3fVcnE4x4Ilco6FDDbqn7hgb9HW7WIF66tkueA8GZI2MxNd9LyKapaD
-         98t8vynWOakTOXKi8pD8weAFWVT5hDUCFF5ZwV7yw6i0uTZ6mjz3WX9GbcLy+RGqw7d3
-         FPkrQreLeEXXWrZdkEvlu+myXGod2y3e+G7p8smYhXO0Wi2YcOvw+QL18hIRbLgUG+le
-         PauMK6pRrYsGhpVCSqny4VQVZXYKgYnfG3tKOTyfXjavQiNQcMKJQP508Nrmq6MQvF1l
-         QxGzoi019HEqc6iXV2O4yFBD0oIX7QBMeHDoePb4sZxSI0ezu7IqnYaPV2Kz3baItSS/
-         uiWA==
-X-Gm-Message-State: AOAM530tSjB5V8bs1gBLKHZHLY2LUn5p5N3EVnyMY2SwEl7Kgt4ipcii
-        mbWb7H/zYW3nuHETwmYZd0tu2Q4fEzvx3oxaqPJaNDhT
-X-Google-Smtp-Source: ABdhPJzc1zvGCFdycyKQ4s3da/G/8VntC06Ff9g6YI5/v8JFOOo6IXLnUwSz4SV+L/QInyI5z3bs9hmnMkHpFP5gkuQ=
-X-Received: by 2002:aca:4892:: with SMTP id v140mr1917599oia.71.1610038270432;
- Thu, 07 Jan 2021 08:51:10 -0800 (PST)
+        id S1728713AbhAGQwR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 11:52:17 -0500
+Received: from vps0.lunn.ch ([185.16.172.187]:55394 "EHLO vps0.lunn.ch"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726326AbhAGQwR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Jan 2021 11:52:17 -0500
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
+        (envelope-from <andrew@lunn.ch>)
+        id 1kxYVW-00GiDa-Ot; Thu, 07 Jan 2021 17:51:30 +0100
+Date:   Thu, 7 Jan 2021 17:51:30 +0100
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Pali =?iso-8859-1?Q?Roh=E1r?= <pali@kernel.org>
+Cc:     Russell King - ARM Linux admin <linux@armlinux.org.uk>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Thomas Schreiber <tschreibe@gmail.com>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Marek =?iso-8859-1?Q?Beh=FAn?= <kabel@kernel.org>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 3/3] net: sfp: add mode quirk for GPON module Ubiquiti
+ U-Fiber Instant
+Message-ID: <X/c8EoDjpj3PgSkI@lunn.ch>
+References: <20201230154755.14746-1-pali@kernel.org>
+ <20210106153749.6748-1-pali@kernel.org>
+ <20210106153749.6748-4-pali@kernel.org>
 MIME-Version: 1.0
-References: <20201229111759.1207387-1-pbrobinson@gmail.com>
-In-Reply-To: <20201229111759.1207387-1-pbrobinson@gmail.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Thu, 7 Jan 2021 17:50:59 +0100
-Message-ID: <CAJZ5v0jFUtBMJNA7a4_NnR16q5=bwQ=v+dJ0tiEGGhVZ9TqWPA@mail.gmail.com>
-Subject: Re: [PATCH] ACPI: Update Kconfig help text for items that are no
- longer modular
-To:     Peter Robinson <pbrobinson@gmail.com>
-Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <lenb@kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210106153749.6748-4-pali@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Dec 29, 2020 at 12:19 PM Peter Robinson <pbrobinson@gmail.com> wrote:
->
-> The CONTAINER and HOTPLUG_MEMORY memory options mention modules
-> but are bool only options so if selected are alway built in. Drop
-> the help text about modules.
->
-> Signed-off-by: Peter Robinson <pbrobinson@gmail.com>
-> ---
->  drivers/acpi/Kconfig | 6 ------
->  1 file changed, 6 deletions(-)
->
-> diff --git a/drivers/acpi/Kconfig b/drivers/acpi/Kconfig
-> index edf1558c1105..ebcf534514be 100644
-> --- a/drivers/acpi/Kconfig
-> +++ b/drivers/acpi/Kconfig
-> @@ -395,9 +395,6 @@ config ACPI_CONTAINER
->
->           This helps support hotplug of nodes, CPUs, and memory.
->
-> -         To compile this driver as a module, choose M here:
-> -         the module will be called container.
-> -
->  config ACPI_HOTPLUG_MEMORY
->         bool "Memory Hotplug"
->         depends on MEMORY_HOTPLUG
-> @@ -411,9 +408,6 @@ config ACPI_HOTPLUG_MEMORY
->           removing memory devices at runtime, you need not enable
->           this driver.
->
-> -         To compile this driver as a module, choose M here:
-> -         the module will be called acpi_memhotplug.
-> -
->  config ACPI_HOTPLUG_IOAPIC
->         bool
->         depends on PCI
-> --
+On Wed, Jan 06, 2021 at 04:37:49PM +0100, Pali Rohár wrote:
+> SFP GPON module Ubiquiti U-Fiber Instant has in its EEPROM stored nonsense
+> information. It claims that support all transceiver types including 10G
+> Ethernet which is not truth. So clear all claimed modes and set only one
+> mode which module supports: 1000baseX_Full.
+> 
+> Also this module have set SFF phys_id in its EEPROM. Kernel SFP subsustem
+> currently does not allow to use SFP modules detected as SFF. Therefore add
+> and exception for this module so it can be detected as supported.
+> 
+> This change finally allows to detect and use SFP GPON module Ubiquiti
+> U-Fiber Instant on Linux system.
+> 
+> EEPROM content of this SFP module is (where XX is serial number):
+> 
+> 00: 02 04 0b ff ff ff ff ff ff ff ff 03 0c 00 14 c8    ???........??.??
+> 10: 00 00 00 00 55 42 4e 54 20 20 20 20 20 20 20 20    ....UBNT
+> 20: 20 20 20 20 00 18 e8 29 55 46 2d 49 4e 53 54 41        .??)UF-INSTA
+> 30: 4e 54 20 20 20 20 20 20 34 20 20 20 05 1e 00 36    NT      4   ??.6
+> 40: 00 06 00 00 55 42 4e 54 XX XX XX XX XX XX XX XX    .?..UBNTXXXXXXXX
+> 50: 20 20 20 20 31 34 30 31 32 33 20 20 60 80 02 41        140123  `??A
+> 
+> Signed-off-by: Pali Rohár <pali@kernel.org>
 
-Applied as 5.11-rc material, thanks!
+Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+
+    Andrew
