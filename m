@@ -2,69 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD5452ED450
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 17:29:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4553E2ED446
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 17:28:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728839AbhAGQ3s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 11:29:48 -0500
-Received: from elvis.franken.de ([193.175.24.41]:34735 "EHLO elvis.franken.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726780AbhAGQ3q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 11:29:46 -0500
-Received: from uucp (helo=alpha)
-        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1kxY9o-0000Mi-02; Thu, 07 Jan 2021 17:29:04 +0100
-Received: by alpha.franken.de (Postfix, from userid 1000)
-        id 4A2ECC080E; Thu,  7 Jan 2021 17:26:58 +0100 (CET)
-Date:   Thu, 7 Jan 2021 17:26:58 +0100
-From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Nathan Chancellor <natechancellor@gmail.com>
-Cc:     Florian Fainelli <f.fainelli@gmail.com>,
-        John Crispin <john@phrozen.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        bcm-kernel-feedback-list@broadcom.com, linux-mips@vger.kernel.org,
-        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com
-Subject: Re: [PATCH] MIPS: Use address-of operator on section symbols
-Message-ID: <20210107162658.GC11882@alpha.franken.de>
-References: <20210105201827.51766-1-natechancellor@gmail.com>
+        id S1728773AbhAGQ2X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 11:28:23 -0500
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:34255 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1728060AbhAGQ2W (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Jan 2021 11:28:22 -0500
+Received: from cwcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 107GRMMv023672
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 7 Jan 2021 11:27:23 -0500
+Received: by cwcc.thunk.org (Postfix, from userid 15806)
+        id 3176915C356A; Thu,  7 Jan 2021 11:27:22 -0500 (EST)
+Date:   Thu, 7 Jan 2021 11:27:22 -0500
+From:   "Theodore Ts'o" <tytso@mit.edu>
+To:     Russell King - ARM Linux admin <linux@armlinux.org.uk>
+Cc:     Arnd Bergmann <arnd@kernel.org>, Will Deacon <will@kernel.org>,
+        linux-toolchains@vger.kernel.org,
+        Mark Rutland <mark.rutland@arm.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Ext4 Developers List <linux-ext4@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>
+Subject: Re: Aarch64 EXT4FS inode checksum failures - seems to be weak memory
+ ordering issues
+Message-ID: <X/c2aqSvYCaB9sR6@mit.edu>
+References: <20210105154726.GD1551@shell.armlinux.org.uk>
+ <20210106115359.GB26994@C02TD0UTHF1T.local>
+ <20210106135253.GJ1551@shell.armlinux.org.uk>
+ <20210106172033.GA2165@willie-the-truck>
+ <20210106223223.GM1551@shell.armlinux.org.uk>
+ <20210107111841.GN1551@shell.armlinux.org.uk>
+ <20210107124506.GO1551@shell.armlinux.org.uk>
+ <CAK8P3a2TXPfFpgy+XjpDzOqt1qpDxufwiD-BLNbn4W_jpGp98g@mail.gmail.com>
+ <20210107133747.GP1551@shell.armlinux.org.uk>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210105201827.51766-1-natechancellor@gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210107133747.GP1551@shell.armlinux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Jan 05, 2021 at 01:18:27PM -0700, Nathan Chancellor wrote:
-> When building xway_defconfig with clang:
+On Thu, Jan 07, 2021 at 01:37:47PM +0000, Russell King - ARM Linux admin wrote:
+> > The gcc bugzilla mentions backports into gcc-linaro, but I do not see
+> > them in my git history.
 > 
-> arch/mips/lantiq/prom.c:82:23: error: array comparison always evaluates
-> to true [-Werror,-Wtautological-compare]
->         else if (__dtb_start != __dtb_end)
->                              ^
-> 1 error generated.
-> 
-> These are not true arrays, they are linker defined symbols, which are
-> just addresses. Using the address of operator silences the warning
-> and does not change the resulting assembly with either clang/ld.lld
-> or gcc/ld (tested with diff + objdump -Dr). Do the same thing across
-> the entire MIPS subsystem to ensure there are no more warnings around
-> this type of comparison.
-> 
-> Link: https://github.com/ClangBuiltLinux/linux/issues/1232
-> Signed-off-by: Nathan Chancellor <natechancellor@gmail.com>
-> ---
->  arch/mips/bmips/setup.c          | 2 +-
->  arch/mips/lantiq/prom.c          | 2 +-
->  arch/mips/pic32/pic32mzda/init.c | 2 +-
->  arch/mips/ralink/of.c            | 2 +-
->  4 files changed, 4 insertions(+), 4 deletions(-)
+> So, do we raise the minimum gcc version for the kernel as a whole to 5.1
+> or just for aarch64?
 
-applied to mips-next.
+Russell, Arnd, thanks so much for tracking down the root cause of the
+bug!
 
-Thomas.
+I will note that RHEL 7 uses gcc 4.8.  I personally don't have an
+objections to requiring developers using RHEL 7 to have to install a
+more modern gcc (since I use Debian Testing and gcc 10.2.1, myself,
+and gcc 5.1 is so five years ago :-), but I could imagine that being
+considered inconvenient for some.
 
--- 
-Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
-good idea.                                                [ RFC1925, 2.3 ]
+						- Ted
