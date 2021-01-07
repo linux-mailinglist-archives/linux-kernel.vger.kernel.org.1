@@ -2,141 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 661642ECD7C
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 11:08:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CE762ECD87
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 11:10:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727444AbhAGKIO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 05:08:14 -0500
-Received: from mx2.suse.de ([195.135.220.15]:59432 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726526AbhAGKIO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 05:08:14 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1610014046; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Ag8XU2LBrp1mFu8W7SfzzMZ0Tky5q4LXKgHAQJA9POU=;
-        b=Yv4KUd9HPo25TBD1RfVzdqzlBDuHgQTJRzGeJDXyYnc8avx5uH7380ae4VHzA8zwCwXF/I
-        l5p64O2IV6ZNJTa9TZlrBB8xjitp5WBA9m+B232e8Y0uNoou+XAcVkkc8eGXNoONGw9HY+
-        2nHa6aa6nvYe6bMeCGckho4xOeem0eg=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 9B751ACAF;
-        Thu,  7 Jan 2021 10:07:26 +0000 (UTC)
-From:   Thomas Renninger <trenn@suse.com>
-To:     linux-pm@vger.kernel.org, Ivan Babrou <ivan@cloudflare.com>
-Cc:     linux-kernel@vger.kernel.org, kernel-team@cloudflare.com,
-        Ivan Babrou <ivan@cloudflare.com>,
-        Shuah Khan <shuah@kernel.org>
-Subject: Re: [PATCH] cpupower: add Makefile dependencies for install targets
-Date:   Thu, 07 Jan 2021 11:07:25 +0100
-Message-ID: <2100533.HVZEckHxcR@c100>
-In-Reply-To: <20210104235719.13525-1-ivan@cloudflare.com>
-References: <20210104235719.13525-1-ivan@cloudflare.com>
+        id S1727904AbhAGKKC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 05:10:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44044 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726541AbhAGKKB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Jan 2021 05:10:01 -0500
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8CFDC0612FD
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Jan 2021 02:09:02 -0800 (PST)
+Received: from dude.hi.pengutronix.de ([2001:67c:670:100:1d::7])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ore@pengutronix.de>)
+        id 1kxSDZ-0004cs-13; Thu, 07 Jan 2021 11:08:33 +0100
+Received: from ore by dude.hi.pengutronix.de with local (Exim 4.92)
+        (envelope-from <ore@pengutronix.de>)
+        id 1kxSDY-0007v5-30; Thu, 07 Jan 2021 11:08:32 +0100
+From:   Oleksij Rempel <o.rempel@pengutronix.de>
+To:     Mark Rutland <mark.rutland@arm.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Shawn Guo <shawnguo@kernel.org>
+Cc:     Oleksij Rempel <o.rempel@pengutronix.de>,
+        devicetree@vger.kernel.org, Fabio Estevam <festevam@gmail.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        David Jander <david@protonic.nl>
+Subject: [PATCH v6 0/5] mainline Kverneland boards 
+Date:   Thu,  7 Jan 2021 11:08:26 +0100
+Message-Id: <20210107100831.30389-1-o.rempel@pengutronix.de>
+X-Mailer: git-send-email 2.30.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::7
+X-SA-Exim-Mail-From: ore@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am Dienstag, 5. Januar 2021, 00:57:18 CET schrieb Ivan Babrou:
-> This allows building cpupower in parallel rather than serially.
+changes v6:
+- move startup-delay-us close to gpio property
+- rename video@5c to video-decoder@5c
+- sort out some spaces
+- use defines for linux,code and linux,axis
 
-cpupower is built serially:
+changes v5:
+- reorder kvg prefix
+- add Acked-by: Rob Herring.. 
 
-[ make clean ]
+changes v4:
+- fix active level of SPI CS GPIOs
 
-time make
-real    0m3,742s
-user    0m3,330s
-sys     0m1,105s
+changes v3:
+- add vicutp board
+- change tvnorm to sdtv-standards
+- change linux,default-trigger "mmc" to  "disk-activity";
+- add power-supply property to the panel node
 
-[ make clean ]
+changes v2:
+- add victgo board
+- diff fixes for vicut1.dtsi 
 
-time make -j10
-real    0m1,045s
-user    0m3,153s
-sys     0m1,037s
+Oleksij Rempel (5):
+  dt-bindings: vendor-prefixes: Add an entry for Kverneland Group
+  dt-bindings: arm: fsl: add Kverneland UT1, UT1Q and UI1P boards
+  ARM: dts: add Kverneland UT1, UT1Q and UT1P
+  dt-bindings: arm: fsl: add Kverneland TGO board
+  ARM: dts: add Kverneland TGO board
 
-Only advantage I see is that you can call
-make install-xy
-targets without calling the corresponding build target
-make xy
-similar to the general install target:
-install: all install-lib ...
+ .../devicetree/bindings/arm/fsl.yaml          |   4 +
+ .../devicetree/bindings/vendor-prefixes.yaml  |   2 +
+ arch/arm/boot/dts/Makefile                    |   4 +
+ arch/arm/boot/dts/imx6dl-victgo.dts           | 850 ++++++++++++++++++
+ arch/arm/boot/dts/imx6dl-vicut1.dts           |  13 +
+ arch/arm/boot/dts/imx6q-vicut1.dts            |  17 +
+ arch/arm/boot/dts/imx6qdl-vicut1.dtsi         | 803 +++++++++++++++++
+ arch/arm/boot/dts/imx6qp-vicutp.dts           |  13 +
+ 8 files changed, 1706 insertions(+)
+ create mode 100644 arch/arm/boot/dts/imx6dl-victgo.dts
+ create mode 100644 arch/arm/boot/dts/imx6dl-vicut1.dts
+ create mode 100644 arch/arm/boot/dts/imx6q-vicut1.dts
+ create mode 100644 arch/arm/boot/dts/imx6qdl-vicut1.dtsi
+ create mode 100644 arch/arm/boot/dts/imx6qp-vicutp.dts
 
-Not sure anyone needs this and whether all targets
-successfully work this way.
-If you'd show a useful usecase example...
-
-       Thomas
-
-> 
-> Signed-off-by: Ivan Babrou <ivan@cloudflare.com>
-> ---
->  tools/power/cpupower/Makefile       | 8 ++++----
->  tools/power/cpupower/bench/Makefile | 2 +-
->  2 files changed, 5 insertions(+), 5 deletions(-)
-> 
-> diff --git a/tools/power/cpupower/Makefile b/tools/power/cpupower/Makefile
-> index c7bcddbd486d..3b1594447f29 100644
-> --- a/tools/power/cpupower/Makefile
-> +++ b/tools/power/cpupower/Makefile
-> @@ -270,14 +270,14 @@ clean:
->  	$(MAKE) -C bench O=$(OUTPUT) clean
-> 
-> 
-> -install-lib:
-> +install-lib: libcpupower
->  	$(INSTALL) -d $(DESTDIR)${libdir}
->  	$(CP) $(OUTPUT)libcpupower.so* $(DESTDIR)${libdir}/
->  	$(INSTALL) -d $(DESTDIR)${includedir}
->  	$(INSTALL_DATA) lib/cpufreq.h $(DESTDIR)${includedir}/cpufreq.h
->  	$(INSTALL_DATA) lib/cpuidle.h $(DESTDIR)${includedir}/cpuidle.h
-> 
-> -install-tools:
-> +install-tools: $(OUTPUT)cpupower
->  	$(INSTALL) -d $(DESTDIR)${bindir}
->  	$(INSTALL_PROGRAM) $(OUTPUT)cpupower $(DESTDIR)${bindir}
->  	$(INSTALL) -d $(DESTDIR)${bash_completion_dir}
-> @@ -293,14 +293,14 @@ install-man:
->  	$(INSTALL_DATA) -D man/cpupower-info.1
-> $(DESTDIR)${mandir}/man1/cpupower-info.1 $(INSTALL_DATA) -D
-> man/cpupower-monitor.1 $(DESTDIR)${mandir}/man1/cpupower-monitor.1
-> 
-> -install-gmo:
-> +install-gmo: create-gmo
->  	$(INSTALL) -d $(DESTDIR)${localedir}
->  	for HLANG in $(LANGUAGES); do \
->  		echo '$(INSTALL_DATA) -D $(OUTPUT)po/$$HLANG.gmo
-> $(DESTDIR)${localedir}/$$HLANG/LC_MESSAGES/cpupower.mo'; \ $(INSTALL_DATA)
-> -D $(OUTPUT)po/$$HLANG.gmo
-> $(DESTDIR)${localedir}/$$HLANG/LC_MESSAGES/cpupower.mo; \ done;
-> 
-> -install-bench:
-> +install-bench: compile-bench
->  	@#DESTDIR must be set from outside to survive
->  	@sbindir=$(sbindir) bindir=$(bindir) docdir=$(docdir) confdir=$
-(confdir)
-> $(MAKE) -C bench O=$(OUTPUT) install
-> 
-> diff --git a/tools/power/cpupower/bench/Makefile
-> b/tools/power/cpupower/bench/Makefile index f68b4bc55273..d9d9923af85c
-> 100644
-> --- a/tools/power/cpupower/bench/Makefile
-> +++ b/tools/power/cpupower/bench/Makefile
-> @@ -27,7 +27,7 @@ $(OUTPUT)cpufreq-bench: $(OBJS)
-> 
->  all: $(OUTPUT)cpufreq-bench
-> 
-> -install:
-> +install: $(OUTPUT)cpufreq-bench
->  	mkdir -p $(DESTDIR)/$(sbindir)
->  	mkdir -p $(DESTDIR)/$(bindir)
->  	mkdir -p $(DESTDIR)/$(docdir)
-
-
-
+-- 
+2.30.0
 
