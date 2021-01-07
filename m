@@ -2,438 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0671A2ECC0E
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 09:54:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 34B252ECC13
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 09:55:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726970AbhAGIxb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 03:53:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60122 "EHLO
+        id S1727218AbhAGIyf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 03:54:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60292 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725900AbhAGIxa (ORCPT
+        with ESMTP id S1726366AbhAGIye (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 03:53:30 -0500
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F23B2C0612F6
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Jan 2021 00:52:49 -0800 (PST)
-Received: from dude.hi.pengutronix.de ([2001:67c:670:100:1d::7])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ore@pengutronix.de>)
-        id 1kxR23-00026q-72; Thu, 07 Jan 2021 09:52:35 +0100
-Received: from ore by dude.hi.pengutronix.de with local (Exim 4.92)
-        (envelope-from <ore@pengutronix.de>)
-        id 1kxR22-000456-DG; Thu, 07 Jan 2021 09:52:34 +0100
-From:   Oleksij Rempel <o.rempel@pengutronix.de>
-To:     Mark Rutland <mark.rutland@arm.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Shawn Guo <shawnguo@kernel.org>
-Cc:     Oleksij Rempel <o.rempel@pengutronix.de>,
-        devicetree@vger.kernel.org, Fabio Estevam <festevam@gmail.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        David Jander <david@protonic.nl>
-Subject: [PATCH v2 2/2] ARM: dts: add Protonic PRTI6G board
-Date:   Thu,  7 Jan 2021 09:52:33 +0100
-Message-Id: <20210107085233.15619-3-o.rempel@pengutronix.de>
-X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210107085233.15619-1-o.rempel@pengutronix.de>
-References: <20210107085233.15619-1-o.rempel@pengutronix.de>
+        Thu, 7 Jan 2021 03:54:34 -0500
+Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7390BC0612F4
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Jan 2021 00:53:54 -0800 (PST)
+Received: by mail-pj1-x102e.google.com with SMTP id b5so3328019pjl.0
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Jan 2021 00:53:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=uUCvsHvCUDgIJnzQ3S6T2paSQVZlNmh4rqaC1Y4MszQ=;
+        b=yNIh/Ok5ue6gPDm5vWv/jp/tjwfZKGL5SV96er+kfs6/JS2hV7CxK4SsZHKNWG1jaL
+         a9A4pvLLjJFL7Sz7h0rIoVicHedckkCPXTOBWbJv+IRVvrReXmy+s46Uab3sxrrnj1dq
+         UXul4RrtScmbTNoKRpLQ/SdDmUxKCeg1b6pJEHefHgEasULvdIYLqe2GDBuva1fUDbwD
+         XcJiPQP7KXg5cIEPlLyV9hdT7NukB3gFocliMczwihPUyUMafZ30xqazgCWOemVk09Af
+         Y+fMIFAz3dErvRT7tVMC+R4lOc/ZmAaZbQNqtfXZwRnKkWkPSkI1RnIH1r94aROoWydJ
+         He2A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=uUCvsHvCUDgIJnzQ3S6T2paSQVZlNmh4rqaC1Y4MszQ=;
+        b=jmesm1DMm6S0fr0dcZJ+nm41wYIDaGM/+N7Ig+BKKv03HaSzk3oZGVdxv5z5c4tj+F
+         AV5+wrNCjUFpNwXQYZIjMMA9kKhTZVubBOMxZHvu4ZiphHAGMwsjIlsRKDZ6M0ZOGCbe
+         rydcfzih2hcr9V6St5j8AKDM99IMt83M7lt8+i8kt+69mexYpIlkICg3yukwPCLGHcF/
+         2kCHx2mngh2XURvX5+DL3JcysTeHVSgkSQKp58fr5jyblmncUTdGsA3nWTx4cezzBWsn
+         Htq/9sc9q2vybLGmNMXr6lPoYGQ5Rbf+c6Md5W3xHSNCFVCnvXB5nBdjNBh29qehUZiZ
+         mJVQ==
+X-Gm-Message-State: AOAM5339EHlIaVV0olMP329Ctujv+67Q9L4S/4fjay6QAVbFqogq6+oI
+        HhQavlKggGQAgmmppLAgu54MDC4jICMiLqOacNG48w==
+X-Google-Smtp-Source: ABdhPJy8RktMU98/NVk12c9r+frjlXuodNpdbQALRDB07zw1u882XAAf3iLkeGT5hpdgpaRDdF3a6a4XdODq8+D+tdE=
+X-Received: by 2002:a17:902:b416:b029:dc:3657:9265 with SMTP id
+ x22-20020a170902b416b02900dc36579265mr8232183plr.24.1610009633963; Thu, 07
+ Jan 2021 00:53:53 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::7
-X-SA-Exim-Mail-From: ore@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+References: <20210106084739.63318-1-songmuchun@bytedance.com>
+ <20210106084739.63318-4-songmuchun@bytedance.com> <20210106165632.GT13207@dhcp22.suse.cz>
+ <CAMZfGtWML+PUnK=jJJ1XFmv=VdKOZYmKjyYU=nhpq-1sSGKMqg@mail.gmail.com> <20210107084146.GD13207@dhcp22.suse.cz>
+In-Reply-To: <20210107084146.GD13207@dhcp22.suse.cz>
+From:   Muchun Song <songmuchun@bytedance.com>
+Date:   Thu, 7 Jan 2021 16:53:13 +0800
+Message-ID: <CAMZfGtVr83yb30EHp5i+f90nn5gnNfGH31Q2ebdV-5nnQXCsAQ@mail.gmail.com>
+Subject: Re: [External] Re: [PATCH v2 3/6] mm: hugetlb: fix a race between
+ freeing and dissolving the page
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Mike Kravetz <mike.kravetz@oracle.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Naoya Horiguchi <n-horiguchi@ah.jp.nec.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Protonic PRTI6G is a reference platform for industrial, safety critical
-applications
+On Thu, Jan 7, 2021 at 4:41 PM Michal Hocko <mhocko@suse.com> wrote:
+>
+> On Thu 07-01-21 13:39:38, Muchun Song wrote:
+> > On Thu, Jan 7, 2021 at 12:56 AM Michal Hocko <mhocko@suse.com> wrote:
+> > >
+> > > On Wed 06-01-21 16:47:36, Muchun Song wrote:
+> > > > There is a race condition between __free_huge_page()
+> > > > and dissolve_free_huge_page().
+> > > >
+> > > > CPU0:                         CPU1:
+> > > >
+> > > > // page_count(page) == 1
+> > > > put_page(page)
+> > > >   __free_huge_page(page)
+> > > >                               dissolve_free_huge_page(page)
+> > > >                                 spin_lock(&hugetlb_lock)
+> > > >                                 // PageHuge(page) && !page_count(page)
+> > > >                                 update_and_free_page(page)
+> > > >                                 // page is freed to the buddy
+> > > >                                 spin_unlock(&hugetlb_lock)
+> > > >     spin_lock(&hugetlb_lock)
+> > > >     clear_page_huge_active(page)
+> > > >     enqueue_huge_page(page)
+> > > >     // It is wrong, the page is already freed
+> > > >     spin_unlock(&hugetlb_lock)
+> > > >
+> > > > The race windows is between put_page() and spin_lock() which
+> > > > is in the __free_huge_page().
+> > >
+> > > The race window reall is between put_page and dissolve_free_huge_page.
+> > > And the result is that the put_page path would clobber an unrelated page
+> > > (either free or already reused page) which is quite serious.
+> > > Fortunatelly pages are dissolved very rarely. I believe that user would
+> > > require to be privileged to hit this by intention.
+> > >
+> > > > We should make sure that the page is already on the free list
+> > > > when it is dissolved.
+> > >
+> > > Another option would be to check for PageHuge in __free_huge_page. Have
+> > > you considered that rather than add yet another state? The scope of the
+> > > spinlock would have to be extended. If that sounds more tricky then can
+> > > we check the page->lru in the dissolve path? If the page is still
+> > > PageHuge and reference count 0 then there shouldn't be many options
+> > > where it can be queued, right?
+> >
+> > Did you mean that we iterate over the free list to check whether
+> > the page is on the free list?
+>
+> No I meant to check that the page is enqueued which along with ref count
+> = 0 should mean it has been released to the pool unless I am missing
+> something.
 
-Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
----
- arch/arm/boot/dts/Makefile          |   1 +
- arch/arm/boot/dts/imx6ul-prti6g.dts | 356 ++++++++++++++++++++++++++++
- 2 files changed, 357 insertions(+)
- create mode 100644 arch/arm/boot/dts/imx6ul-prti6g.dts
+The page can be on the free list or active list or empty when it
+is freed to the pool. How to check whether it is on the free list?
 
-diff --git a/arch/arm/boot/dts/Makefile b/arch/arm/boot/dts/Makefile
-index b727542c105b..2f217f4d9732 100644
---- a/arch/arm/boot/dts/Makefile
-+++ b/arch/arm/boot/dts/Makefile
-@@ -638,6 +638,7 @@ dtb-$(CONFIG_SOC_IMX6UL) += \
- 	imx6ul-pico-pi.dtb \
- 	imx6ul-phytec-segin-ff-rdk-emmc.dtb \
- 	imx6ul-phytec-segin-ff-rdk-nand.dtb \
-+	imx6ul-prti6g.dtb \
- 	imx6ul-tx6ul-0010.dtb \
- 	imx6ul-tx6ul-0011.dtb \
- 	imx6ul-tx6ul-mainboard.dtb \
-diff --git a/arch/arm/boot/dts/imx6ul-prti6g.dts b/arch/arm/boot/dts/imx6ul-prti6g.dts
-new file mode 100644
-index 000000000000..d62015701d0a
---- /dev/null
-+++ b/arch/arm/boot/dts/imx6ul-prti6g.dts
-@@ -0,0 +1,356 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later OR MIT
-+/*
-+ * Copyright (c) 2016 Protonic Holland
-+ * Copyright (c) 2020 Oleksij Rempel <kernel@pengutronix.de>, Pengutronix
-+ */
-+
-+/dts-v1/;
-+#include "imx6ul.dtsi"
-+#include <dt-bindings/gpio/gpio.h>
-+
-+/ {
-+	model = "Protonic PRTI6G Board";
-+	compatible = "prt,prti6g", "fsl,imx6ul";
-+
-+	chosen {
-+		stdout-path = &uart1;
-+	};
-+
-+	clock_ksz8081_in: clock-ksz8081-in {
-+		compatible = "fixed-clock";
-+		#clock-cells = <0>;
-+		clock-frequency = <25000000>;
-+	};
-+
-+	clock_ksz8081_out: clock-ksz8081-out {
-+		compatible = "fixed-clock";
-+		#clock-cells = <0>;
-+		clock-frequency = <50000000>;
-+	};
-+
-+	leds {
-+		compatible = "gpio-leds";
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&pinctrl_leds>;
-+
-+		led-0 {
-+			label = "debug0";
-+			gpios = <&gpio4 16 GPIO_ACTIVE_HIGH>;
-+			linux,default-trigger = "heartbeat";
-+		};
-+	};
-+
-+	reg_3v2: regulator-3v2 {
-+		compatible = "regulator-fixed";
-+		regulator-name = "3v2";
-+		regulator-min-microvolt = <3200000>;
-+		regulator-max-microvolt = <3200000>;
-+	};
-+};
-+
-+&can1 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_can1>;
-+	status = "okay";
-+};
-+
-+&can2 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_can2>;
-+	status = "okay";
-+};
-+
-+&ecspi1 {
-+	cs-gpios = <&gpio4 26 GPIO_ACTIVE_LOW>;
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_ecspi1>;
-+	status = "okay";
-+
-+	flash@0 {
-+		compatible = "jedec,spi-nor";
-+		reg = <0>;
-+		spi-max-frequency = <20000000>;
-+	};
-+};
-+
-+&ecspi2 {
-+	cs-gpios = <&gpio4 22 GPIO_ACTIVE_LOW>;
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_ecspi2>;
-+	status = "okay";
-+
-+	spi@0 {
-+		compatible = "spidev";
-+		reg = <0>;
-+		spi-max-frequency = <1000000>;
-+	};
-+};
-+
-+&fec1 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_eth1>;
-+	phy-mode = "rmii";
-+	phy-handle = <&rmii_phy>;
-+	clocks = <&clks IMX6UL_CLK_ENET>,
-+		 <&clks IMX6UL_CLK_ENET_AHB>,
-+		 <&clks IMX6UL_CLK_ENET_PTP>,
-+		 <&clock_ksz8081_out>;
-+	clock-names = "ipg", "ahb", "ptp",
-+		      "enet_clk_ref";
-+	status = "okay";
-+
-+	mdio {
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+
-+		/* Microchip KSZ8081RNA PHY */
-+		rmii_phy: ethernet-phy@0 {
-+			reg = <0>;
-+			interrupts-extended = <&gpio5 1 IRQ_TYPE_LEVEL_LOW>;
-+			reset-gpios = <&gpio5 0 GPIO_ACTIVE_LOW>;
-+			reset-assert-us = <10000>;
-+			reset-deassert-us = <300>;
-+			clocks = <&clock_ksz8081_in>;
-+			clock-names = "rmii-ref";
-+		};
-+	};
-+};
-+
-+&i2c1 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_i2c1>;
-+	clock-frequency = <100000>;
-+	status = "okay";
-+
-+	/* additional i2c devices are added automatically by the boot loader */
-+};
-+
-+&i2c2 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_i2c2>;
-+	clock-frequency = <100000>;
-+	status = "okay";
-+
-+	adc@49 {
-+		compatible = "ti,ads1015";
-+		reg = <0x49>;
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+
-+		channel@4 {
-+			reg = <4>;
-+			ti,gain = <3>;
-+			ti,datarate = <3>;
-+		};
-+
-+		channel@5 {
-+			reg = <5>;
-+			ti,gain = <3>;
-+			ti,datarate = <3>;
-+		};
-+
-+		channel@6 {
-+			reg = <6>;
-+			ti,gain = <3>;
-+			ti,datarate = <3>;
-+		};
-+
-+		channel@7 {
-+			reg = <7>;
-+			ti,gain = <3>;
-+			ti,datarate = <3>;
-+		};
-+	};
-+
-+	rtc@51 {
-+		compatible = "nxp,pcf8563";
-+		reg = <0x51>;
-+	};
-+
-+	temperature-sensor@70 {
-+		compatible = "ti,tmp103";
-+		reg = <0x70>;
-+	};
-+};
-+
-+&uart1 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_uart1>;
-+	status = "okay";
-+};
-+
-+&usbotg1 {
-+	dr_mode = "host";
-+	status = "okay";
-+};
-+
-+&usdhc1 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_usdhc1>;
-+	cd-gpios = <&gpio4 12 GPIO_ACTIVE_LOW>;
-+	vmmc-supply = <&reg_3v2>;
-+	no-1-8-v;
-+	disable-wp;
-+	cap-sd-highspeed;
-+	no-mmc;
-+	no-sdio;
-+	status = "okay";
-+};
-+
-+&usdhc2 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_usdhc2>;
-+	bus-width = <8>;
-+	no-1-8-v;
-+	non-removable;
-+	no-sd;
-+	no-sdio;
-+	status = "okay";
-+};
-+
-+&iomuxc {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_hog>;
-+
-+	pinctrl_can1: can1grp {
-+		fsl,pins = <
-+			MX6UL_PAD_UART3_CTS_B__FLEXCAN1_TX		0x0b0b0
-+			MX6UL_PAD_UART3_RTS_B__FLEXCAN1_RX		0x0b0b0
-+			/* SR */
-+			MX6UL_PAD_SNVS_TAMPER3__GPIO5_IO03		0x0b0b0
-+			/* TERM */
-+			MX6UL_PAD_SNVS_TAMPER4__GPIO5_IO04		0x0b0b0
-+			/* nSMBALERT */
-+			MX6UL_PAD_SNVS_TAMPER2__GPIO5_IO02		0x0b0b0
-+		>;
-+	};
-+
-+	pinctrl_can2: can2grp {
-+		fsl,pins = <
-+			MX6UL_PAD_UART2_CTS_B__FLEXCAN2_TX		0x0b0b0
-+			MX6UL_PAD_UART2_RTS_B__FLEXCAN2_RX		0x0b0b0
-+			/* SR */
-+			MX6UL_PAD_SNVS_TAMPER5__GPIO5_IO05		0x0b0b0
-+		>;
-+	};
-+
-+	pinctrl_ecspi1: ecspi1grp {
-+		fsl,pins = <
-+			MX6UL_PAD_CSI_DATA04__ECSPI1_SCLK		0x0b0b0
-+			MX6UL_PAD_CSI_DATA05__GPIO4_IO26		0x000b1
-+			MX6UL_PAD_CSI_DATA06__ECSPI1_MOSI		0x0b0b0
-+			MX6UL_PAD_CSI_DATA07__ECSPI1_MISO		0x0b0b0
-+		>;
-+	};
-+
-+	pinctrl_ecspi2: ecspi2grp {
-+		fsl,pins = <
-+			MX6UL_PAD_CSI_DATA00__ECSPI2_SCLK		0x0b0b0
-+			MX6UL_PAD_CSI_DATA01__GPIO4_IO22		0x000b1
-+			MX6UL_PAD_CSI_DATA02__ECSPI2_MOSI		0x0b0b0
-+			MX6UL_PAD_CSI_DATA03__ECSPI2_MISO		0x0b0b0
-+		>;
-+	};
-+
-+	pinctrl_eth1: eth1grp {
-+		fsl,pins = <
-+			MX6UL_PAD_GPIO1_IO07__ENET1_MDC			0x1b0b0
-+			MX6UL_PAD_GPIO1_IO06__ENET1_MDIO		0x100b0
-+			MX6UL_PAD_ENET1_RX_DATA0__ENET1_RDATA00		0x1b0b0
-+			MX6UL_PAD_ENET1_RX_DATA1__ENET1_RDATA01		0x1b0b0
-+			MX6UL_PAD_ENET1_RX_EN__ENET1_RX_EN		0x100b0
-+			MX6UL_PAD_ENET1_RX_ER__ENET1_RX_ER		0x1b0b0
-+			MX6UL_PAD_ENET1_TX_EN__ENET1_TX_EN		0x1b0b0
-+			MX6UL_PAD_ENET1_TX_DATA0__ENET1_TDATA00		0x1b0b0
-+			MX6UL_PAD_ENET1_TX_DATA1__ENET1_TDATA01		0x1b0b0
-+			MX6UL_PAD_ENET1_TX_CLK__ENET1_REF_CLK1		0x1b000
-+			/* PHY ENET1_RST */
-+			MX6UL_PAD_SNVS_TAMPER0__GPIO5_IO00		0x00880
-+			/* PHY ENET1_IRQ */
-+			MX6UL_PAD_SNVS_TAMPER1__GPIO5_IO01		0x00880
-+		>;
-+	};
-+
-+	pinctrl_hog: hoggrp {
-+		fsl,pins = <
-+			/* HW revision detect */
-+			/* REV_ID0 */
-+			MX6UL_PAD_ENET2_RX_DATA0__GPIO2_IO08		0x1b0b0
-+			/* REV_ID1 */
-+			MX6UL_PAD_ENET2_RX_DATA1__GPIO2_IO09		0x1b0b0
-+			/* REV_ID2 */
-+			MX6UL_PAD_ENET2_RX_EN__GPIO2_IO10		0x1b0b0
-+			/* REV_ID3 */
-+			MX6UL_PAD_ENET2_TX_DATA0__GPIO2_IO11		0x1b0b0
-+			/* BOARD_ID0 */
-+			MX6UL_PAD_ENET2_TX_EN__GPIO2_IO13		0x1b0b0
-+			/* BOARD_ID1 */
-+			MX6UL_PAD_ENET2_TX_CLK__GPIO2_IO14		0x1b0b0
-+			/* BOARD_ID2 */
-+			MX6UL_PAD_ENET2_RX_ER__GPIO2_IO15		0x1b0b0
-+			/* BOARD_ID3 */
-+			MX6UL_PAD_ENET2_TX_DATA1__GPIO2_IO12		0x1b0b0
-+			/* Safety controller IO */
-+			/* WAKE_SC */
-+			MX6UL_PAD_SNVS_TAMPER6__GPIO5_IO06		0x1b0b0
-+			/* PROGRAM_SC */
-+			MX6UL_PAD_SNVS_TAMPER7__GPIO5_IO07		0x1b0b0
-+		>;
-+	};
-+
-+	pinctrl_i2c1: i2c1grp {
-+		fsl,pins = <
-+			MX6UL_PAD_CSI_MCLK__I2C1_SDA		0x4001b8b0
-+			MX6UL_PAD_CSI_PIXCLK__I2C1_SCL		0x4001b8b0
-+		>;
-+	};
-+
-+	pinctrl_i2c2: i2c2grp {
-+		fsl,pins = <
-+			MX6UL_PAD_CSI_VSYNC__I2C2_SDA		0x4001b8b0
-+			MX6UL_PAD_CSI_HSYNC__I2C2_SCL		0x4001b8b0
-+		>;
-+	};
-+
-+	pinctrl_leds: ledsgrp {
-+		fsl,pins = <
-+			MX6UL_PAD_NAND_DQS__GPIO4_IO16			0x1b0b0
-+		>;
-+	};
-+
-+	pinctrl_uart1: uart1grp {
-+		fsl,pins = <
-+			MX6UL_PAD_UART1_TX_DATA__UART1_DCE_TX		0x1b0b1
-+			MX6UL_PAD_UART1_RX_DATA__UART1_DCE_RX		0x1b0b1
-+		>;
-+	};
-+
-+	pinctrl_usdhc1: usdhc1grp {
-+		fsl,pins = <
-+			MX6UL_PAD_SD1_CMD__USDHC1_CMD			0x070b1
-+			MX6UL_PAD_SD1_CLK__USDHC1_CLK			0x07099
-+			MX6UL_PAD_SD1_DATA0__USDHC1_DATA0		0x070b1
-+			MX6UL_PAD_SD1_DATA1__USDHC1_DATA1		0x070b1
-+			MX6UL_PAD_SD1_DATA2__USDHC1_DATA2		0x070b1
-+			MX6UL_PAD_SD1_DATA3__USDHC1_DATA3		0x070b1
-+			/* SD1 CD */
-+			MX6UL_PAD_NAND_READY_B__GPIO4_IO12		0x170b0
-+		>;
-+	};
-+
-+	pinctrl_usdhc2: usdhc2grp {
-+		fsl,pins = <
-+			MX6UL_PAD_NAND_WE_B__USDHC2_CMD			0x170f9
-+			MX6UL_PAD_NAND_RE_B__USDHC2_CLK			0x100f9
-+			MX6UL_PAD_NAND_DATA00__USDHC2_DATA0		0x170f9
-+			MX6UL_PAD_NAND_DATA01__USDHC2_DATA1		0x170f9
-+			MX6UL_PAD_NAND_DATA02__USDHC2_DATA2		0x170f9
-+			MX6UL_PAD_NAND_DATA03__USDHC2_DATA3		0x170f9
-+			MX6UL_PAD_NAND_DATA04__USDHC2_DATA4		0x170f9
-+			MX6UL_PAD_NAND_DATA05__USDHC2_DATA5		0x170f9
-+			MX6UL_PAD_NAND_DATA06__USDHC2_DATA6		0x170f9
-+			MX6UL_PAD_NAND_DATA07__USDHC2_DATA7		0x170f9
-+			MX6UL_PAD_NAND_ALE__USDHC2_RESET_B		0x170b0
-+		>;
-+	};
-+};
--- 
-2.30.0
-
+> --
+> Michal Hocko
+> SUSE Labs
