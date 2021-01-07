@@ -2,101 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A4632ECE50
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 11:57:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CADA62ECE54
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 12:00:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727894AbhAGK4a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 05:56:30 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60942 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726362AbhAGK43 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 05:56:29 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 01CE020738;
-        Thu,  7 Jan 2021 10:55:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610016948;
-        bh=+DsfLUh5kFJ7Z80t+rQ1R0Nav3+BHBHWCHDZnM1dwLo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Elc9ABNSI4Wq+VLwrn1qWxEzxonNCeiVYvKNsM4bIESPQAAh58w68GCo723Vmjlly
-         a/Zcy4elfc0iH40XAJsZC/4ZmEOrc7RQ/jrR+3yN8iF3ctdp8P7mdOFRsUHcVZ8DvJ
-         kAdoojw9x8i+lN8qhVKLq1UA6d25N0YEHdlZUeaY=
-Date:   Thu, 7 Jan 2021 11:57:08 +0100
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Prashant Malani <pmalani@chromium.org>
-Cc:     "open list:USB NETWORKING DRIVERS" <linux-usb@vger.kernel.org>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Benson Leung <bleung@chromium.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] usb: typec: Send uevent for num_altmodes update
-Message-ID: <X/bpBFLIM91eZAEO@kroah.com>
-References: <20210107034904.4112029-1-pmalani@chromium.org>
- <X/bRstJuBYaLz4PK@kroah.com>
- <CACeCKaediXs81OUTogTWrqoZViP5rLqodO6nngeY2PLnWw=t+w@mail.gmail.com>
+        id S1727149AbhAGK7i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 05:59:38 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:59985 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725974AbhAGK7i (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Jan 2021 05:59:38 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1610017092;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=eJuYKsFgeD/TaN1guAoXSRGGao5WVLChcuMpd8zsQq4=;
+        b=eATXoRTV0j76W6i92snMhCvsEroZV7rPW6UbTm6iEeFtFcbbpIA5R1/RtXrU5/FiaP4Dc7
+        SNMWrtxd8NMUyjgGZF9mh6eWgidW+Jj0izMY3UhcIbN3nys1JLuEhozVgRn5XnhKGZefeG
+        Xcgr2jti49eVoWYRiE/NDZbDEV7qJTw=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-378-PLDymmrbNOGnq5zJt0MzTg-1; Thu, 07 Jan 2021 05:58:09 -0500
+X-MC-Unique: PLDymmrbNOGnq5zJt0MzTg-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 47B8F4239C;
+        Thu,  7 Jan 2021 10:58:06 +0000 (UTC)
+Received: from warthog.procyon.org.uk (ovpn-112-8.rdu2.redhat.com [10.10.112.8])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 67BC271CB9;
+        Thu,  7 Jan 2021 10:58:03 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+From:   David Howells <dhowells@redhat.com>
+In-Reply-To: <20210107092855.76093-1-tianjia.zhang@linux.alibaba.com>
+References: <20210107092855.76093-1-tianjia.zhang@linux.alibaba.com>
+To:     Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
+Cc:     dhowells@redhat.com, Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        Gilad Ben-Yossef <gilad@benyossef.com>,
+        Tobias Markus <tobias@markus-regensburg.de>,
+        Tee Hao Wei <angelsl@in04.sg>, keyrings@vger.kernel.org,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org
+Subject: Re: [PATCH] X.509: Fix crash caused by NULL pointer
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CACeCKaediXs81OUTogTWrqoZViP5rLqodO6nngeY2PLnWw=t+w@mail.gmail.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <772252.1610017082.1@warthog.procyon.org.uk>
+Content-Transfer-Encoding: quoted-printable
+Date:   Thu, 07 Jan 2021 10:58:02 +0000
+Message-ID: <772253.1610017082@warthog.procyon.org.uk>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 07, 2021 at 01:50:53AM -0800, Prashant Malani wrote:
-> Hi Greg,
-> 
-> Thanks for taking a look at the patch.
-> 
-> On Thu, Jan 7, 2021 at 1:16 AM Greg KH <gregkh@linuxfoundation.org> wrote:
-> >
-> > On Wed, Jan 06, 2021 at 07:49:04PM -0800, Prashant Malani wrote:
-> > > Generate a change uevent when the "number_of_alternate_modes" sysfs file
-> > > for partners and plugs is updated by a port driver.
-> > >
-> > > Cc: Heikki Krogerus <heikki.krogerus@linux.intel.com>
-> > > Cc: Benson Leung <bleung@chromium.org>
-> > > Signed-off-by: Prashant Malani <pmalani@chromium.org>
-> > > ---
-> > >  drivers/usb/typec/class.c | 2 ++
-> > >  1 file changed, 2 insertions(+)
-> > >
-> > > diff --git a/drivers/usb/typec/class.c b/drivers/usb/typec/class.c
-> > > index ebfd3113a9a8..8f77669f9cf4 100644
-> > > --- a/drivers/usb/typec/class.c
-> > > +++ b/drivers/usb/typec/class.c
-> > > @@ -766,6 +766,7 @@ int typec_partner_set_num_altmodes(struct typec_partner *partner, int num_altmod
-> > >               return ret;
-> > >
-> > >       sysfs_notify(&partner->dev.kobj, NULL, "number_of_alternate_modes");
-> > > +     kobject_uevent(&partner->dev.kobj, KOBJ_CHANGE);
-> >
-> > Shouldn't the sysfs_notify() handle the "something has changed" logic
-> > good enough for userspace, as obviously someone is polling on the thing
-> > (otherwise we wouldn't be calling sysfs_notify...)
-> >
-> > The kobject itself hasn't "changed", but rather an individual attribute
-> > has changed.  We don't want to create uevents for every individual sysfs
-> > attribute changing values, do we?
-> 
-> Fair point. I noticed other attributes in this source file use a
-> similar approach (sysfs_notify + kobject_uevent)
-> and took guidance from there in an attempt to remain consistent
-> (though, of course, your point still stands).
-> 
-> I'm guessing it is for processes that rely on udev events
-> (subsystem=typec) rather than polling.
-> 
-> >
-> > What is preventing a normal "monitor the sysfs file" logic from working
-> > here for anyone who wants to know that the alternate modes have changed?
-> 
-> One limitation I can think of is that this sysfs file is hidden till
-> it has a valid value (i.e >= 0), so a user-space process might not
-> be able to poll on the file till it is visible (I suppose even then
-> one could poll on the parent).
+Tianjia Zhang <tianjia.zhang@linux.alibaba.com> wrote:
 
-If the file is being added at this point in time, then yes, it is ok to
-send a KOBJ_CHANGE event as that is needed.  Is that what is happening
-here?
+> On the following call path, `sig->pkey_algo` is not assigned
+> in asymmetric_key_verify_signature(), which causes runtime
+> crash in public_key_verify_signature().
+> =
 
-thanks,
+>   keyctl_pkey_verify
+>     asymmetric_key_verify_signature
+>       verify_signature
+>         public_key_verify_signature
+> =
 
-greg k-h
+> This patch simply check this situation and fixes the crash
+> caused by NULL pointer.
+> =
+
+> Fixes: 215525639631 ("X.509: support OSCCA SM2-with-SM3 certificate veri=
+fication")
+> Cc: stable@vger.kernel.org # v5.10+
+> Reported-by: Tobias Markus <tobias@markus-regensburg.de>
+> Signed-off-by: Tianjia Zhang <tianjia.zhang@linux.alibaba.com>
+
+Looks reasonable:
+
+Acked-by: David Howells <dhowells@redhat.com>
+
+I wonder, though, if cert_sig_digest_update() should be obtained by some s=
+ort
+of function pointer.  It doesn't really seem to belong in this file.  But =
+this
+is a separate issue.
+
+David
+
