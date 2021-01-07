@@ -2,126 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 34B252ECC13
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 09:55:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BA352ECC15
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 09:55:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727218AbhAGIyf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 03:54:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60292 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726366AbhAGIye (ORCPT
+        id S1727265AbhAGIzW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 03:55:22 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:24513 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726171AbhAGIzW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 03:54:34 -0500
-Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7390BC0612F4
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Jan 2021 00:53:54 -0800 (PST)
-Received: by mail-pj1-x102e.google.com with SMTP id b5so3328019pjl.0
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Jan 2021 00:53:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=uUCvsHvCUDgIJnzQ3S6T2paSQVZlNmh4rqaC1Y4MszQ=;
-        b=yNIh/Ok5ue6gPDm5vWv/jp/tjwfZKGL5SV96er+kfs6/JS2hV7CxK4SsZHKNWG1jaL
-         a9A4pvLLjJFL7Sz7h0rIoVicHedckkCPXTOBWbJv+IRVvrReXmy+s46Uab3sxrrnj1dq
-         UXul4RrtScmbTNoKRpLQ/SdDmUxKCeg1b6pJEHefHgEasULvdIYLqe2GDBuva1fUDbwD
-         XcJiPQP7KXg5cIEPlLyV9hdT7NukB3gFocliMczwihPUyUMafZ30xqazgCWOemVk09Af
-         Y+fMIFAz3dErvRT7tVMC+R4lOc/ZmAaZbQNqtfXZwRnKkWkPSkI1RnIH1r94aROoWydJ
-         He2A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=uUCvsHvCUDgIJnzQ3S6T2paSQVZlNmh4rqaC1Y4MszQ=;
-        b=jmesm1DMm6S0fr0dcZJ+nm41wYIDaGM/+N7Ig+BKKv03HaSzk3oZGVdxv5z5c4tj+F
-         AV5+wrNCjUFpNwXQYZIjMMA9kKhTZVubBOMxZHvu4ZiphHAGMwsjIlsRKDZ6M0ZOGCbe
-         rydcfzih2hcr9V6St5j8AKDM99IMt83M7lt8+i8kt+69mexYpIlkICg3yukwPCLGHcF/
-         2kCHx2mngh2XURvX5+DL3JcysTeHVSgkSQKp58fr5jyblmncUTdGsA3nWTx4cezzBWsn
-         Htq/9sc9q2vybLGmNMXr6lPoYGQ5Rbf+c6Md5W3xHSNCFVCnvXB5nBdjNBh29qehUZiZ
-         mJVQ==
-X-Gm-Message-State: AOAM5339EHlIaVV0olMP329Ctujv+67Q9L4S/4fjay6QAVbFqogq6+oI
-        HhQavlKggGQAgmmppLAgu54MDC4jICMiLqOacNG48w==
-X-Google-Smtp-Source: ABdhPJy8RktMU98/NVk12c9r+frjlXuodNpdbQALRDB07zw1u882XAAf3iLkeGT5hpdgpaRDdF3a6a4XdODq8+D+tdE=
-X-Received: by 2002:a17:902:b416:b029:dc:3657:9265 with SMTP id
- x22-20020a170902b416b02900dc36579265mr8232183plr.24.1610009633963; Thu, 07
- Jan 2021 00:53:53 -0800 (PST)
-MIME-Version: 1.0
-References: <20210106084739.63318-1-songmuchun@bytedance.com>
- <20210106084739.63318-4-songmuchun@bytedance.com> <20210106165632.GT13207@dhcp22.suse.cz>
- <CAMZfGtWML+PUnK=jJJ1XFmv=VdKOZYmKjyYU=nhpq-1sSGKMqg@mail.gmail.com> <20210107084146.GD13207@dhcp22.suse.cz>
-In-Reply-To: <20210107084146.GD13207@dhcp22.suse.cz>
-From:   Muchun Song <songmuchun@bytedance.com>
-Date:   Thu, 7 Jan 2021 16:53:13 +0800
-Message-ID: <CAMZfGtVr83yb30EHp5i+f90nn5gnNfGH31Q2ebdV-5nnQXCsAQ@mail.gmail.com>
-Subject: Re: [External] Re: [PATCH v2 3/6] mm: hugetlb: fix a race between
- freeing and dissolving the page
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Mike Kravetz <mike.kravetz@oracle.com>,
+        Thu, 7 Jan 2021 03:55:22 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1610009635;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=VnMdV8KJMJ17J1dCjQPgPbu7cJhRA01SnsrY34SOH7c=;
+        b=BYubCQ3yNvObpFrgUfnHZ0TpXNzujZ/mztG+x28ES5zKHm2rn9095EsY39XTxrhyomLLvP
+        axz9AgQ+PKpcarzWHll++t0wC2IAxFTIFAKwxjZja6LXljid4QatOzydoWvTTuBC5Pl4W5
+        d0+GEDa4KcL5OXQi/nAlxew220kXrYw=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-585-clAEW5aGPXGlyysB1gR9YA-1; Thu, 07 Jan 2021 03:53:53 -0500
+X-MC-Unique: clAEW5aGPXGlyysB1gR9YA-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B4F1B801817;
+        Thu,  7 Jan 2021 08:53:50 +0000 (UTC)
+Received: from [10.36.114.161] (ovpn-114-161.ams2.redhat.com [10.36.114.161])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 6DE7D5C8AA;
+        Thu,  7 Jan 2021 08:53:44 +0000 (UTC)
+Subject: Re: [PATCH 3/6] hugetlb: add free page reporting support
+To:     Liang Li <liliang324@gmail.com>, Michal Hocko <mhocko@suse.com>
+Cc:     Alexander Duyck <alexander.h.duyck@linux.intel.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Naoya Horiguchi <n-horiguchi@ah.jp.nec.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Liang Li <liliangleo@didiglobal.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        linux-mm <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        virtualization@lists.linux-foundation.org
+References: <20210106034918.GA1154@open-light-1.localdomain>
+ <20210106160827.GO13207@dhcp22.suse.cz>
+ <CA+2MQi-pxRkaftawN=tMxDT7wWyXuS6ZjofcqK+2fwQ9LHvwfQ@mail.gmail.com>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat GmbH
+Message-ID: <f711ff53-4ba2-9474-73e8-48363a5157d7@redhat.com>
+Date:   Thu, 7 Jan 2021 09:53:43 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
+MIME-Version: 1.0
+In-Reply-To: <CA+2MQi-pxRkaftawN=tMxDT7wWyXuS6ZjofcqK+2fwQ9LHvwfQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 7, 2021 at 4:41 PM Michal Hocko <mhocko@suse.com> wrote:
->
-> On Thu 07-01-21 13:39:38, Muchun Song wrote:
-> > On Thu, Jan 7, 2021 at 12:56 AM Michal Hocko <mhocko@suse.com> wrote:
-> > >
-> > > On Wed 06-01-21 16:47:36, Muchun Song wrote:
-> > > > There is a race condition between __free_huge_page()
-> > > > and dissolve_free_huge_page().
-> > > >
-> > > > CPU0:                         CPU1:
-> > > >
-> > > > // page_count(page) == 1
-> > > > put_page(page)
-> > > >   __free_huge_page(page)
-> > > >                               dissolve_free_huge_page(page)
-> > > >                                 spin_lock(&hugetlb_lock)
-> > > >                                 // PageHuge(page) && !page_count(page)
-> > > >                                 update_and_free_page(page)
-> > > >                                 // page is freed to the buddy
-> > > >                                 spin_unlock(&hugetlb_lock)
-> > > >     spin_lock(&hugetlb_lock)
-> > > >     clear_page_huge_active(page)
-> > > >     enqueue_huge_page(page)
-> > > >     // It is wrong, the page is already freed
-> > > >     spin_unlock(&hugetlb_lock)
-> > > >
-> > > > The race windows is between put_page() and spin_lock() which
-> > > > is in the __free_huge_page().
-> > >
-> > > The race window reall is between put_page and dissolve_free_huge_page.
-> > > And the result is that the put_page path would clobber an unrelated page
-> > > (either free or already reused page) which is quite serious.
-> > > Fortunatelly pages are dissolved very rarely. I believe that user would
-> > > require to be privileged to hit this by intention.
-> > >
-> > > > We should make sure that the page is already on the free list
-> > > > when it is dissolved.
-> > >
-> > > Another option would be to check for PageHuge in __free_huge_page. Have
-> > > you considered that rather than add yet another state? The scope of the
-> > > spinlock would have to be extended. If that sounds more tricky then can
-> > > we check the page->lru in the dissolve path? If the page is still
-> > > PageHuge and reference count 0 then there shouldn't be many options
-> > > where it can be queued, right?
-> >
-> > Did you mean that we iterate over the free list to check whether
-> > the page is on the free list?
->
-> No I meant to check that the page is enqueued which along with ref count
-> = 0 should mean it has been released to the pool unless I am missing
-> something.
+On 07.01.21 04:38, Liang Li wrote:
+> On Thu, Jan 7, 2021 at 12:08 AM Michal Hocko <mhocko@suse.com> wrote:
+>>
+>> On Tue 05-01-21 22:49:21, Liang Li wrote:
+>>> hugetlb manages its page in hstate's free page list, not in buddy
+>>> system, this patch try to make it works for hugetlbfs. It canbe
+>>> used for memory overcommit in virtualization and hugetlb pre zero
+>>> out.
+>>
+>> David has layed down some more fundamental questions in the reply to the
+>> cover letter (btw. can you fix your scripts to send patches and make all
+>> the patches to be in reply to the cover letter please?). But I would
+> 
+> Do you mean attach the patches in the email for the cover letter ?
 
-The page can be on the free list or active list or empty when it
-is freed to the pool. How to check whether it is on the free list?
+You should be using "git format-patch --cover-letter . .." followed by
+"git send-email ...", so the end result is a nicely structured thread.
 
-> --
-> Michal Hocko
-> SUSE Labs
+-- 
+Thanks,
+
+David / dhildenb
+
