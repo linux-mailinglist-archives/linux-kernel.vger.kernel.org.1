@@ -2,24 +2,24 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 97BB12ED1DD
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 15:21:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C37F32ED19E
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 15:17:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729357AbhAGOSl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 09:18:41 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39646 "EHLO mail.kernel.org"
+        id S1728987AbhAGORG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 09:17:06 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38992 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729128AbhAGORf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 09:17:35 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5B2B523383;
-        Thu,  7 Jan 2021 14:16:21 +0000 (UTC)
+        id S1728910AbhAGORE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Jan 2021 09:17:04 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7B68D23381;
+        Thu,  7 Jan 2021 14:16:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610028981;
-        bh=L3VBJnEnMWq60/0e5xHVacF3D4w/DsM7W5anOlTOcjE=;
+        s=korg; t=1610028970;
+        bh=ZrJG1CK5QLyokx63d8Gk23TMDUVVoJlyI2g6KI7N+2o=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qGxQ49Xlj+N7kG3Lt4aZdd1yjUcReSFPANsI2EqDDU0FxYTl1SKGvICwJ7sHSjI8G
-         P/Uzsyt4BADQdAFysA6qMfQz2Ok6SpQ6LRleoZLS67jWCadUC4Q4OcJYs+4EdawunZ
-         AyInKNeKnvRVbSBTqduSkzAaYVgxPBzQZi4N4QpU=
+        b=ZoNj4fQLP0U5rHRig8zA/rrDITElmSqy0HHCQRrWN1Ha5eZEE8s5IebDl7Ll2K4qq
+         S8BKUA4JPXIjQsrDTnXi5JQKccs3APhSIOa6T1c8pUL0i8scvwbg3Glpb8nzvk9oCJ
+         axbiXcAymxCiGLZj+EjMFbq3+b/lc46OFzWb+Crk=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
@@ -30,12 +30,12 @@ Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Florian Weimer <fweimer@redhat.com>,
         Andrew Morton <akpm@linux-foundation.org>,
         Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [PATCH 4.9 13/32] uapi: move constants from <linux/kernel.h> to <linux/const.h>
-Date:   Thu,  7 Jan 2021 15:16:33 +0100
-Message-Id: <20210107140828.493480079@linuxfoundation.org>
+Subject: [PATCH 4.4 09/19] uapi: move constants from <linux/kernel.h> to <linux/const.h>
+Date:   Thu,  7 Jan 2021 15:16:34 +0100
+Message-Id: <20210107140828.015078407@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210107140827.866214702@linuxfoundation.org>
-References: <20210107140827.866214702@linuxfoundation.org>
+In-Reply-To: <20210107140827.584658199@linuxfoundation.org>
+References: <20210107140827.584658199@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -82,14 +82,11 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
 ---
  include/uapi/linux/const.h              |    5 +++++
- include/uapi/linux/ethtool.h            |    2 +-
- include/uapi/linux/kernel.h             |    9 +--------
  include/uapi/linux/lightnvm.h           |    2 +-
- include/uapi/linux/mroute6.h            |    2 +-
  include/uapi/linux/netfilter/x_tables.h |    2 +-
  include/uapi/linux/netlink.h            |    2 +-
  include/uapi/linux/sysctl.h             |    2 +-
- 8 files changed, 12 insertions(+), 14 deletions(-)
+ 5 files changed, 9 insertions(+), 4 deletions(-)
 
 --- a/include/uapi/linux/const.h
 +++ b/include/uapi/linux/const.h
@@ -103,34 +100,6 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 +#define __KERNEL_DIV_ROUND_UP(n, d) (((n) + (d) - 1) / (d))
 +
  #endif /* !(_LINUX_CONST_H) */
---- a/include/uapi/linux/ethtool.h
-+++ b/include/uapi/linux/ethtool.h
-@@ -13,7 +13,7 @@
- #ifndef _UAPI_LINUX_ETHTOOL_H
- #define _UAPI_LINUX_ETHTOOL_H
- 
--#include <linux/kernel.h>
-+#include <linux/const.h>
- #include <linux/types.h>
- #include <linux/if_ether.h>
- 
---- a/include/uapi/linux/kernel.h
-+++ b/include/uapi/linux/kernel.h
-@@ -2,13 +2,6 @@
- #define _UAPI_LINUX_KERNEL_H
- 
- #include <linux/sysinfo.h>
--
--/*
-- * 'kernel.h' contains some often-used function prototypes etc
-- */
--#define __ALIGN_KERNEL(x, a)		__ALIGN_KERNEL_MASK(x, (typeof(x))(a) - 1)
--#define __ALIGN_KERNEL_MASK(x, mask)	(((x) + (mask)) & ~(mask))
--
--#define __KERNEL_DIV_ROUND_UP(n, d) (((n) + (d) - 1) / (d))
-+#include <linux/const.h>
- 
- #endif /* _UAPI_LINUX_KERNEL_H */
 --- a/include/uapi/linux/lightnvm.h
 +++ b/include/uapi/linux/lightnvm.h
 @@ -20,7 +20,7 @@
@@ -142,17 +111,6 @@ Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
  #include <linux/ioctl.h>
  #else /* __KERNEL__ */
  #include <stdio.h>
---- a/include/uapi/linux/mroute6.h
-+++ b/include/uapi/linux/mroute6.h
-@@ -1,7 +1,7 @@
- #ifndef _UAPI__LINUX_MROUTE6_H
- #define _UAPI__LINUX_MROUTE6_H
- 
--#include <linux/kernel.h>
-+#include <linux/const.h>
- #include <linux/types.h>
- #include <linux/sockios.h>
- #include <linux/in6.h>		/* For struct sockaddr_in6. */
 --- a/include/uapi/linux/netfilter/x_tables.h
 +++ b/include/uapi/linux/netfilter/x_tables.h
 @@ -1,6 +1,6 @@
