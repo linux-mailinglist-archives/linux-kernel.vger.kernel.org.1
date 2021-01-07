@@ -2,109 +2,564 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 723B72EE9DB
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 00:38:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C64F02EE9DE
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 00:41:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729400AbhAGXfp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 18:35:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57298 "EHLO
+        id S1728800AbhAGXj7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 18:39:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58014 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729353AbhAGXfo (ORCPT
+        with ESMTP id S1725944AbhAGXj6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 18:35:44 -0500
-Received: from mail-il1-x136.google.com (mail-il1-x136.google.com [IPv6:2607:f8b0:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21ECCC0612A2
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Jan 2021 15:34:13 -0800 (PST)
-Received: by mail-il1-x136.google.com with SMTP id h3so774193ils.4
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Jan 2021 15:34:13 -0800 (PST)
+        Thu, 7 Jan 2021 18:39:58 -0500
+Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4AD59C0612F4
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Jan 2021 15:38:37 -0800 (PST)
+Received: by mail-pj1-x102f.google.com with SMTP id m5so5108895pjv.5
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Jan 2021 15:38:37 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=Jp4jA5VOpxCAdanHFN3bi6TajwKIp0Iz6erEpMOg0cE=;
-        b=G7cxNq+GNEp76ltapeUdfzfbwkmXQwvIBuF7CJ5zql10JvmpHwE9AA9/xxGXRqAWi3
-         9QkFg+MiWsOG/IoQqpkKsSn+Kfb+dyEFbpOuqV1MmnwoC1U2cdiLzZftDmx6e11ienxK
-         vbJkvQ4qhHeEGHfEfXxWmahSmAVXPTcbw1cDHSkt4jrEo8jiht8U5JaBcgVQNEAUCWs7
-         f0+NwVlTdxO8uEfRDe5zRtVbY30d72Tz37ebFxkZvpKejibIrpKrwvsYkNRoD0fRRi2r
-         EsLygg1b6i+tD1nNQ85Nw7yP9ssMOqIgNdg/cJ6xYa6T6ZrML2qsCdouizqpwsRMOLN5
-         xhbQ==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=0PbwMAhaf7zYgeSJNc56/R//P4KF28jTgU+oG6bYl9o=;
+        b=NCbqSQ5XemDXeAYSxFYbFi8RebRj4qT5AX7wz8rrBJxYKnDNxe8IIia2yXrQa7SPp6
+         is7HHzsQS+H0ipDlkdxCJx2rDxnbppONaVdD++huO2Jk/QRK1UUuii4VFcNASw/iWgvc
+         OTImY+79/46nFz/M447xTPJGPUJUJv5zKuqYtxdOdYMO3SKM65r28EuIVaMB6WKktj63
+         WlsAVIg+f7oPPT/oD7yZ9UmtCzzk0Y2HJ9gARnxZ2Gf86aj1TB5HIM+GWF7Y6egnptbd
+         keDYsUl37JayHxTJJ2qbQTTBpv+ktWKnIYsUkl54FRSy7kUR9S9Nyrd8TjIVBgZNyB+/
+         8Ujw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=Jp4jA5VOpxCAdanHFN3bi6TajwKIp0Iz6erEpMOg0cE=;
-        b=aO70tixm7OW5xHAti+Tq29XMUgTUNElFGuTlg3xF84xM2ah9pKWSqJ+TwH1s1nhXJe
-         5lQL/WaCN16MAFILzZwX6MnIAe4tXVvCKutNbu2BTWD7x2tHny5AfkZeaOiA+7pd4VtL
-         sghObb1Kz0lfW0loRjxPXgFLK7MR+GjZ1rXlYvSyosJykPVXQpSm/cyz+7A8FPNHjoZw
-         frmv2/ORPeNLZfsDiSdeGp6ydS8eVu7P32TSuQGo1rP/7UDrHwxEe3I5dAa1UsrWGA+p
-         98TcZh9JMRTTqEhmfXRq0Xz1rNlQDfgsS7m177IIf6al9b2MgfQ8E5wUzadDtDe8pjUA
-         UaBw==
-X-Gm-Message-State: AOAM532crZAxlC3P+3u+xQdgOtiCnvZVrnlcuPt2wuaR3Z+UKRGXwjnt
-        RG7b0fUupm1lRxLsn5M6kkv3sA==
-X-Google-Smtp-Source: ABdhPJwG3GNNIK3srbianIUC1W25DLdDH9iWzkTwJGbge+Xv/NoW4qdFKPzz0woU+/1kXEkxBu3FlQ==
-X-Received: by 2002:a92:9e1d:: with SMTP id q29mr1192638ili.289.1610062452573;
-        Thu, 07 Jan 2021 15:34:12 -0800 (PST)
-Received: from beast.localdomain (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
-        by smtp.gmail.com with ESMTPSA id o195sm5648521ila.38.2021.01.07.15.34.11
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=0PbwMAhaf7zYgeSJNc56/R//P4KF28jTgU+oG6bYl9o=;
+        b=ARFJSIOeEMKhGsB7aJZ5AJBhwVKKQqGSvGUXS1UjcbfRuSQ+sPJ66oR43IulrQAUGL
+         o00WhikPuZ4vmXLYHC7q677RE1BOMhE8uANwfmBJXqJKoHpTODzbGfyPK2xKG3J1KPSn
+         YR2XHKAtt7BO3h4itnyRkb0GzxvrBj4fx3mJaLLkMNPG/1Q5nB3vPzI78tfaffJmA/8y
+         77i2p9SzpiV1JkNZyL35zgryKtgKcmHXK8/AtGrNUD2LWB6r6rSARD4Knq2Rq34X2s1Z
+         i8t/wv7K0oHq2/J21VDBCinCljbwn7nJxsLG0jQdg/yPxAj7bRp/xxYvj65ig94qoZ03
+         2FkQ==
+X-Gm-Message-State: AOAM533OBlLVR5Dh7Rrr815mtOI9F3C5Shme/trOV8THm5Z4CpxfOiSA
+        pveGN7p1BhuDpWbvJRgSRJ2k6Q==
+X-Google-Smtp-Source: ABdhPJxkenBJoyQtYPt/uEE5KHdKHtm8ajcyb6rYYFzd9W4J3udHpu5Mr0nd1D4ZELfocCjqRyNxrw==
+X-Received: by 2002:a17:902:ea89:b029:da:539e:9bb with SMTP id x9-20020a170902ea89b02900da539e09bbmr1159249plb.52.1610062716648;
+        Thu, 07 Jan 2021 15:38:36 -0800 (PST)
+Received: from xps15 (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
+        by smtp.gmail.com with ESMTPSA id z3sm6607141pfb.157.2021.01.07.15.38.35
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 Jan 2021 15:34:12 -0800 (PST)
-From:   Alex Elder <elder@linaro.org>
-To:     davem@davemloft.net, kuba@kernel.org
-Cc:     bjorn.andersson@linaro.org, agross@kernel.org, ohad@wizery.com,
-        evgreen@chromium.org, cpratapa@codeaurora.org,
-        subashab@codeaurora.org, netdev@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-remoteproc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH net-next 4/4] net: ipa: support COMPILE_TEST
-Date:   Thu,  7 Jan 2021 17:34:04 -0600
-Message-Id: <20210107233404.17030-5-elder@linaro.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210107233404.17030-1-elder@linaro.org>
-References: <20210107233404.17030-1-elder@linaro.org>
+        Thu, 07 Jan 2021 15:38:36 -0800 (PST)
+Date:   Thu, 7 Jan 2021 16:38:34 -0700
+From:   Mathieu Poirier <mathieu.poirier@linaro.org>
+To:     Suzuki K Poulose <suzuki.poulose@arm.com>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        coresight@lists.linaro.org, leo.yan@linaro.org,
+        mike.leach@linaro.org, anshuman.khandual@arm.com
+Subject: Re: [PATCH v6 03/26] coresight: Introduce device access abstraction
+Message-ID: <20210107233834.GC43045@xps15>
+References: <20210107123859.674252-1-suzuki.poulose@arm.com>
+ <20210107123859.674252-4-suzuki.poulose@arm.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210107123859.674252-4-suzuki.poulose@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Arrange for the IPA driver to be built when COMPILE_TEST is enabled.
+On Thu, Jan 07, 2021 at 12:38:36PM +0000, Suzuki K Poulose wrote:
+> We are about to introduce support for sysreg access to ETMv4.4+
+> component. Since there are generic routines that access the
+> registers (e.g, CS_LOCK/UNLOCK , claim/disclaim operations, timeout)
+> and in order to preserve the logic of these operations at a
+> single place we introduce an abstraction layer for the accesses
+> to a given device.
+> 
+> Cc: Mike Leach <mike.leach@linaro.org>
+> Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
+> Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
+> ---
+> Change since v3
+>  - Dropped csa argument to read()/write().
+>  - Addressed comments on spacing and adding labels for the #if #else #endifs.
+>    (Mathieu)
+> ---
+>  drivers/hwtracing/coresight/coresight-catu.c  |   1 +
+>  drivers/hwtracing/coresight/coresight-core.c  |  43 ++++
+>  .../hwtracing/coresight/coresight-cti-core.c  |   1 +
+>  drivers/hwtracing/coresight/coresight-etb10.c |   1 +
+>  .../coresight/coresight-etm3x-core.c          |   1 +
+>  .../coresight/coresight-etm4x-core.c          |   1 +
+>  .../hwtracing/coresight/coresight-funnel.c    |   1 +
+>  .../coresight/coresight-replicator.c          |   1 +
+>  drivers/hwtracing/coresight/coresight-stm.c   |   1 +
+>  .../hwtracing/coresight/coresight-tmc-core.c  |   1 +
+>  drivers/hwtracing/coresight/coresight-tpiu.c  |   1 +
+>  include/linux/coresight.h                     | 198 +++++++++++++++++-
+>  12 files changed, 248 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/hwtracing/coresight/coresight-catu.c b/drivers/hwtracing/coresight/coresight-catu.c
+> index a61313f320bd..867c932c7b26 100644
+> --- a/drivers/hwtracing/coresight/coresight-catu.c
+> +++ b/drivers/hwtracing/coresight/coresight-catu.c
+> @@ -551,6 +551,7 @@ static int catu_probe(struct amba_device *adev, const struct amba_id *id)
+>  	dev->platform_data = pdata;
+>  
+>  	drvdata->base = base;
+> +	catu_desc.access = CSDEV_ACCESS_IOMEM(base);
+>  	catu_desc.pdata = pdata;
+>  	catu_desc.dev = dev;
+>  	catu_desc.groups = catu_groups;
+> diff --git a/drivers/hwtracing/coresight/coresight-core.c b/drivers/hwtracing/coresight/coresight-core.c
+> index 4ba801dffcb7..a38af8f0831b 100644
+> --- a/drivers/hwtracing/coresight/coresight-core.c
+> +++ b/drivers/hwtracing/coresight/coresight-core.c
+> @@ -1458,6 +1458,48 @@ int coresight_timeout(void __iomem *addr, u32 offset, int position, int value)
+>  }
+>  EXPORT_SYMBOL_GPL(coresight_timeout);
+>  
+> +u32 coresight_relaxed_read32(struct coresight_device *csdev, u32 offset)
+> +{
+> +	return csdev_access_relaxed_read32(&csdev->access, offset);
+> +}
+> +
+> +u32 coresight_read32(struct coresight_device *csdev, u32 offset)
+> +{
+> +	return csdev_access_read32(&csdev->access, offset);
+> +}
+> +
+> +void coresight_relaxed_write32(struct coresight_device *csdev,
+> +			       u32 val, u32 offset)
+> +{
+> +	csdev_access_relaxed_write32(&csdev->access, val, offset);
+> +}
+> +
+> +void coresight_write32(struct coresight_device *csdev, u32 val, u32 offset)
+> +{
+> +	csdev_access_write32(&csdev->access, val, offset);
+> +}
+> +
+> +u64 coresight_relaxed_read64(struct coresight_device *csdev, u32 offset)
+> +{
+> +	return csdev_access_relaxed_read64(&csdev->access, offset);
+> +}
+> +
+> +u64 coresight_read64(struct coresight_device *csdev, u32 offset)
+> +{
+> +	return csdev_access_read64(&csdev->access, offset);
+> +}
+> +
+> +void coresight_relaxed_write64(struct coresight_device *csdev,
+> +			       u64 val, u32 offset)
+> +{
+> +	csdev_access_relaxed_write64(&csdev->access, val, offset);
+> +}
+> +
+> +void coresight_write64(struct coresight_device *csdev, u64 val, u32 offset)
+> +{
+> +	csdev_access_write64(&csdev->access, val, offset);
+> +}
+> +
+>  /*
+>   * coresight_release_platform_data: Release references to the devices connected
+>   * to the output port of this device.
+> @@ -1522,6 +1564,7 @@ struct coresight_device *coresight_register(struct coresight_desc *desc)
+>  	csdev->type = desc->type;
+>  	csdev->subtype = desc->subtype;
+>  	csdev->ops = desc->ops;
+> +	csdev->access = desc->access;
+>  	csdev->orphan = false;
+>  
+>  	csdev->dev.type = &coresight_dev_type[desc->type];
+> diff --git a/drivers/hwtracing/coresight/coresight-cti-core.c b/drivers/hwtracing/coresight/coresight-cti-core.c
+> index 61dbc1afd8da..b38a8db5f252 100644
+> --- a/drivers/hwtracing/coresight/coresight-cti-core.c
+> +++ b/drivers/hwtracing/coresight/coresight-cti-core.c
+> @@ -870,6 +870,7 @@ static int cti_probe(struct amba_device *adev, const struct amba_id *id)
+>  		return PTR_ERR(base);
+>  
+>  	drvdata->base = base;
+> +	cti_desc.access = CSDEV_ACCESS_IOMEM(base);
+>  
+>  	dev_set_drvdata(dev, drvdata);
+>  
+> diff --git a/drivers/hwtracing/coresight/coresight-etb10.c b/drivers/hwtracing/coresight/coresight-etb10.c
+> index 0cf6f0b947b6..cc742561a986 100644
+> --- a/drivers/hwtracing/coresight/coresight-etb10.c
+> +++ b/drivers/hwtracing/coresight/coresight-etb10.c
+> @@ -757,6 +757,7 @@ static int etb_probe(struct amba_device *adev, const struct amba_id *id)
+>  		return PTR_ERR(base);
+>  
+>  	drvdata->base = base;
+> +	desc.access = CSDEV_ACCESS_IOMEM(base);
+>  
+>  	spin_lock_init(&drvdata->spinlock);
+>  
+> diff --git a/drivers/hwtracing/coresight/coresight-etm3x-core.c b/drivers/hwtracing/coresight/coresight-etm3x-core.c
+> index 5bf5a5a4ce6d..3b7837cbe376 100644
+> --- a/drivers/hwtracing/coresight/coresight-etm3x-core.c
+> +++ b/drivers/hwtracing/coresight/coresight-etm3x-core.c
+> @@ -839,6 +839,7 @@ static int etm_probe(struct amba_device *adev, const struct amba_id *id)
+>  		return PTR_ERR(base);
+>  
+>  	drvdata->base = base;
+> +	desc.access = CSDEV_ACCESS_IOMEM(base);
+>  
+>  	spin_lock_init(&drvdata->spinlock);
+>  
+> diff --git a/drivers/hwtracing/coresight/coresight-etm4x-core.c b/drivers/hwtracing/coresight/coresight-etm4x-core.c
+> index cce65fc0c9aa..ebd41bb7ce1c 100644
+> --- a/drivers/hwtracing/coresight/coresight-etm4x-core.c
+> +++ b/drivers/hwtracing/coresight/coresight-etm4x-core.c
+> @@ -1626,6 +1626,7 @@ static int etm4_probe(struct amba_device *adev, const struct amba_id *id)
+>  		return PTR_ERR(base);
+>  
+>  	drvdata->base = base;
+> +	desc.access = CSDEV_ACCESS_IOMEM(base);
+>  
+>  	spin_lock_init(&drvdata->spinlock);
+>  
+> diff --git a/drivers/hwtracing/coresight/coresight-funnel.c b/drivers/hwtracing/coresight/coresight-funnel.c
+> index 071c723227db..8f7c40d7d8d6 100644
+> --- a/drivers/hwtracing/coresight/coresight-funnel.c
+> +++ b/drivers/hwtracing/coresight/coresight-funnel.c
+> @@ -242,6 +242,7 @@ static int funnel_probe(struct device *dev, struct resource *res)
+>  		}
+>  		drvdata->base = base;
+>  		desc.groups = coresight_funnel_groups;
+> +		desc.access = CSDEV_ACCESS_IOMEM(base);
+>  	}
+>  
+>  	dev_set_drvdata(dev, drvdata);
+> diff --git a/drivers/hwtracing/coresight/coresight-replicator.c b/drivers/hwtracing/coresight/coresight-replicator.c
+> index 7e2a2b7f503f..205756fab729 100644
+> --- a/drivers/hwtracing/coresight/coresight-replicator.c
+> +++ b/drivers/hwtracing/coresight/coresight-replicator.c
+> @@ -254,6 +254,7 @@ static int replicator_probe(struct device *dev, struct resource *res)
+>  		}
+>  		drvdata->base = base;
+>  		desc.groups = replicator_groups;
+> +		desc.access = CSDEV_ACCESS_IOMEM(base);
+>  	}
+>  
+>  	if (fwnode_property_present(dev_fwnode(dev),
+> diff --git a/drivers/hwtracing/coresight/coresight-stm.c b/drivers/hwtracing/coresight/coresight-stm.c
+> index 99791773f682..41d9a922c2d4 100644
+> --- a/drivers/hwtracing/coresight/coresight-stm.c
+> +++ b/drivers/hwtracing/coresight/coresight-stm.c
+> @@ -884,6 +884,7 @@ static int stm_probe(struct amba_device *adev, const struct amba_id *id)
+>  	if (IS_ERR(base))
+>  		return PTR_ERR(base);
+>  	drvdata->base = base;
+> +	desc.access = CSDEV_ACCESS_IOMEM(base);
+>  
+>  	ret = stm_get_stimulus_area(dev, &ch_res);
+>  	if (ret)
+> diff --git a/drivers/hwtracing/coresight/coresight-tmc-core.c b/drivers/hwtracing/coresight/coresight-tmc-core.c
+> index 8169dff5a9f6..e61b75be66b6 100644
+> --- a/drivers/hwtracing/coresight/coresight-tmc-core.c
+> +++ b/drivers/hwtracing/coresight/coresight-tmc-core.c
+> @@ -456,6 +456,7 @@ static int tmc_probe(struct amba_device *adev, const struct amba_id *id)
+>  	}
+>  
+>  	drvdata->base = base;
+> +	desc.access = CSDEV_ACCESS_IOMEM(base);
+>  
+>  	spin_lock_init(&drvdata->spinlock);
+>  
+> diff --git a/drivers/hwtracing/coresight/coresight-tpiu.c b/drivers/hwtracing/coresight/coresight-tpiu.c
+> index d5dfee9ee556..6ca396799883 100644
+> --- a/drivers/hwtracing/coresight/coresight-tpiu.c
+> +++ b/drivers/hwtracing/coresight/coresight-tpiu.c
+> @@ -149,6 +149,7 @@ static int tpiu_probe(struct amba_device *adev, const struct amba_id *id)
+>  		return PTR_ERR(base);
+>  
+>  	drvdata->base = base;
+> +	desc.access = CSDEV_ACCESS_IOMEM(base);
+>  
+>  	/* Disable tpiu to support older devices */
+>  	tpiu_disable_hw(drvdata);
+> diff --git a/include/linux/coresight.h b/include/linux/coresight.h
+> index 7d3c87e5b97c..d3aa328639cd 100644
+> --- a/include/linux/coresight.h
+> +++ b/include/linux/coresight.h
+> @@ -7,6 +7,7 @@
+>  #define _LINUX_CORESIGHT_H
+>  
+>  #include <linux/device.h>
+> +#include <linux/io.h>
+>  #include <linux/perf_event.h>
+>  #include <linux/sched.h>
+>  
+> @@ -114,6 +115,36 @@ struct coresight_platform_data {
+>  	struct coresight_connection *conns;
+>  };
+>  
+> +/**
+> + * struct csdev_access - Abstraction of a CoreSight device access.
+> + *
+> + * @io_mem	: True if the device has memory mapped I/O
+> + * @base	: When io_mem == true, base address of the component
+> + * @read	: Read from the given "offset" of the given instance.
+> + * @write	: Write "val" to the given "offset".
+> + */
+> +struct csdev_access {
+> +	bool io_mem;
+> +	union {
+> +		void __iomem *base;
+> +		struct {
+> +			u64 (*read)(u32 offset,
+> +				    bool relaxed,
+> +				    bool _64bit);
+> +			void (*write)(u64 val,
+> +				      u32 offset,
+> +				      bool relaxed,
+> +				      bool _64bit);
 
-Update the help text to reflect that we support two Qualcomm SoCs.
+Stacking
 
-Suggested-by: Jakub Kicinski <kuba@kernel.org>
-Signed-off-by: Alex Elder <elder@linaro.org>
----
- drivers/net/ipa/Kconfig | 10 ++++++----
- 1 file changed, 6 insertions(+), 4 deletions(-)
+> +		};
+> +	};
+> +};
+> +
+> +#define CSDEV_ACCESS_IOMEM(_addr)		\
+> +	((struct csdev_access)	{		\
+> +		.io_mem		= true,		\
+> +		.base		= (_addr),	\
+> +	})
+> +
+>  /**
+>   * struct coresight_desc - description of a component required from drivers
+>   * @type:	as defined by @coresight_dev_type.
+> @@ -125,6 +156,7 @@ struct coresight_platform_data {
+>   * @groups:	operations specific to this component. These will end up
+>   *		in the component's sysfs sub-directory.
+>   * @name:	name for the coresight device, also shown under sysfs.
+> + * @access:	Describe access to the device
+>   */
+>  struct coresight_desc {
+>  	enum coresight_dev_type type;
+> @@ -134,6 +166,7 @@ struct coresight_desc {
+>  	struct device *dev;
+>  	const struct attribute_group **groups;
+>  	const char *name;
+> +	struct csdev_access access;
+>  };
+>  
+>  /**
+> @@ -173,7 +206,8 @@ struct coresight_sysfs_link {
+>   * @type:	as defined by @coresight_dev_type.
+>   * @subtype:	as defined by @coresight_dev_subtype.
+>   * @ops:	generic operations for this component, as defined
+> -		by @coresight_ops.
+> + *		by @coresight_ops.
+> + * @access:	Device i/o access abstraction for this device.
+>   * @dev:	The device entity associated to this component.
+>   * @refcnt:	keep track of what is in use.
+>   * @orphan:	true if the component has connections that haven't been linked.
+> @@ -195,6 +229,7 @@ struct coresight_device {
+>  	enum coresight_dev_type type;
+>  	union coresight_dev_subtype subtype;
+>  	const struct coresight_ops *ops;
+> +	struct csdev_access access;
+>  	struct device dev;
+>  	atomic_t *refcnt;
+>  	bool orphan;
+> @@ -326,6 +361,104 @@ struct coresight_ops {
+>  };
+>  
+>  #if IS_ENABLED(CONFIG_CORESIGHT)
+> +
+> +static inline u32 csdev_access_relaxed_read32(struct csdev_access *csa,
+> +					      u32 offset)
+> +{
+> +	if (likely(csa->io_mem))
+> +		return readl_relaxed(csa->base + offset);
+> +
+> +	return csa->read(offset, true, false);
+> +}
+> +
+> +static inline u32 csdev_access_read32(struct csdev_access *csa, u32 offset)
+> +{
+> +	if (likely(csa->io_mem))
+> +		return readl(csa->base + offset);
+> +
+> +	return csa->read(offset, false, false);
+> +}
+> +
+> +static inline void csdev_access_relaxed_write32(struct csdev_access *csa,
+> +						u32 val, u32 offset)
+> +{
+> +	if (likely(csa->io_mem))
+> +		writel_relaxed(val, csa->base + offset);
+> +	else
+> +		csa->write(val, offset, true, false);
+> +}
+> +
+> +static inline void csdev_access_write32(struct csdev_access *csa, u32 val, u32 offset)
+> +{
+> +	if (likely(csa->io_mem))
+> +		writel(val, csa->base + offset);
+> +	else
+> +		csa->write(val, offset, false, false);
+> +}
+> +
+> +#ifdef CONFIG_64BIT
+> +
+> +static inline u64 csdev_access_relaxed_read64(struct csdev_access *csa,
+> +					      u32 offset)
+> +{
+> +	if (likely(csa->io_mem))
+> +		return readq_relaxed(csa->base + offset);
+> +
+> +	return csa->read(offset, true, true);
+> +}
+> +
+> +static inline u64 csdev_access_read64(struct csdev_access *csa, u32 offset)
+> +{
+> +	if (likely(csa->io_mem))
+> +		return readq(csa->base + offset);
+> +
+> +	return csa->read(offset, false, true);
+> +}
+> +
+> +static inline void csdev_access_relaxed_write64(struct csdev_access *csa,
+> +						u64 val, u32 offset)
+> +{
+> +	if (likely(csa->io_mem))
+> +		writeq_relaxed(val, csa->base + offset);
+> +	else
+> +		csa->write(val, offset, true, true);
+> +}
+> +
+> +static inline void csdev_access_write64(struct csdev_access *csa, u64 val, u32 offset)
+> +{
+> +	if (likely(csa->io_mem))
+> +		writeq(val, csa->base + offset);
+> +	else
+> +		csa->write(val, offset, false, true);
+> +}
+> +
+> +#else	/* !CONFIG_64BIT */
+> +
+> +static inline u64 csdev_access_relaxed_read64(struct csdev_access *csa,
+> +					   u32 offset)
 
-diff --git a/drivers/net/ipa/Kconfig b/drivers/net/ipa/Kconfig
-index 9f0d2a93379c5..10a0e041ee775 100644
---- a/drivers/net/ipa/Kconfig
-+++ b/drivers/net/ipa/Kconfig
-@@ -1,9 +1,10 @@
- config QCOM_IPA
- 	tristate "Qualcomm IPA support"
--	depends on ARCH_QCOM && 64BIT && NET
--	depends on QCOM_Q6V5_MSS
-+	depends on 64BIT && NET
-+	depends on ARCH_QCOM || COMPILE_TEST
-+	depends on QCOM_RPROC_COMMON || (QCOM_RPROC_COMMON=n && COMPILE_TEST)
-+	select QCOM_MDT_LOADER if ARCH_QCOM
- 	select QCOM_QMI_HELPERS
--	select QCOM_MDT_LOADER
- 	help
- 	  Choose Y or M here to include support for the Qualcomm
- 	  IP Accelerator (IPA), a hardware block present in some
-@@ -11,7 +12,8 @@ config QCOM_IPA
- 	  that is capable of generic hardware handling of IP packets,
- 	  including routing, filtering, and NAT.  Currently the IPA
- 	  driver supports only basic transport of network traffic
--	  between the AP and modem, on the Qualcomm SDM845 SoC.
-+	  between the AP and modem, on the Qualcomm SDM845 and SC7180
-+	  SoCs.
- 
- 	  Note that if selected, the selection type must match that
- 	  of QCOM_Q6V5_COMMON (Y or M).
--- 
-2.20.1
+Indentation
 
+> +{
+> +	WARN_ON(1);
+> +	return 0;
+> +}
+> +
+> +static inline u64 csdev_access_read64(struct csdev_access *csa, u32 offset)
+> +{
+> +	WARN_ON(1);
+> +	return 0;
+> +}
+> +
+> +static inline void csdev_access_relaxed_write64(struct csdev_access *csa,
+> +						u64 val, u32 offset)
+> +{
+> +	WARN_ON(1);
+> +}
+> +
+> +static inline void csdev_access_write64(struct csdev_access *csa, u64 val, u32 offset)
+> +{
+> +	WARN_ON(1);
+> +}
+> +#endif	/* CONFIG_64BIT */
+> +
+>  extern struct coresight_device *
+>  coresight_register(struct coresight_desc *desc);
+>  extern void coresight_unregister(struct coresight_device *csdev);
+> @@ -343,6 +476,20 @@ extern char *coresight_alloc_device_name(struct coresight_dev_list *devs,
+>  					 struct device *dev);
+>  
+>  extern bool coresight_loses_context_with_cpu(struct device *dev);
+> +
+> +u32 coresight_relaxed_read32(struct coresight_device *csdev, u32 offset);
+> +u32 coresight_read32(struct coresight_device *csdev, u32 offset);
+> +void coresight_write32(struct coresight_device *csdev, u32 val, u32 offset);
+> +void coresight_relaxed_write32(struct coresight_device *csdev,
+> +			       u32 val,
+> +			       u32 offset);
+
+Stacking
+
+> +u64 coresight_relaxed_read64(struct coresight_device *csdev, u32 offset);
+> +u64 coresight_read64(struct coresight_device *csdev, u32 offset);
+> +void coresight_relaxed_write64(struct coresight_device *csdev,
+> +			       u64 val, u32 offset);
+> +void coresight_write64(struct coresight_device *csdev, u64 val, u32 offset);
+> +
+> +
+>  #else
+>  static inline struct coresight_device *
+>  coresight_register(struct coresight_desc *desc) { return NULL; }
+> @@ -369,10 +516,55 @@ static inline bool coresight_loses_context_with_cpu(struct device *dev)
+>  {
+>  	return false;
+>  }
+> -#endif
+> +
+> +static inline u32 coresight_relaxed_read32(struct coresight_device *csdev, u32 offset)
+> +{
+> +	WARN_ON_ONCE(1);
+> +	return 0;
+> +}
+> +
+> +static inline u32 coresight_read32(struct coresight_device *csdev, u32 offset)
+> +{
+> +	WARN_ON_ONCE(1);
+> +	return 0;
+> +}
+> +
+> +static inline void coresight_write32(struct coresight_device *csdev, u32 val, u32 offset)
+> +{
+> +}
+> +
+> +static inline void coresight_relaxed_write32(struct coresight_device *csdev,
+> +					     u32 val, u32 offset)
+> +{
+> +}
+> +
+> +static inline u64 coresight_relaxed_read64(struct coresight_device *csdev,
+> +					   u32 offset)
+> +{
+> +	WARN_ON_ONCE(1);
+> +	return 0;
+> +}
+> +
+> +static inline u64 coresight_read64(struct coresight_device *csdev, u32 offset)
+> +{
+> +	WARN_ON_ONCE(1);
+> +	return 0;
+> +}
+> +
+> +static inline void coresight_relaxed_write64(struct coresight_device *csdev,
+> +					     u64 val,
+> +					     u32 offset)
+
+Stacking
+
+I did the changes while applying to my tree - please address if you end up
+re-spinning.
+
+> +{
+> +}
+> +
+> +static inline void coresight_write64(struct coresight_device *csdev, u64 val, u32 offset)
+> +{
+> +}
+> +
+> +#endif		/* IS_ENABLED(CONFIG_CORESIGHT) */
+>  
+>  extern int coresight_get_cpu(struct device *dev);
+>  
+>  struct coresight_platform_data *coresight_get_platform_data(struct device *dev);
+>  
+> -#endif
+> +#endif		/* _LINUX_COREISGHT_H */
+> -- 
+> 2.24.1
+> 
