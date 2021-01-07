@@ -2,241 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 019132ED4E9
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 18:01:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B3232ED4EE
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 18:02:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728624AbhAGRA4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 12:00:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51702 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727874AbhAGRAz (ORCPT
+        id S1728674AbhAGRB4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 12:01:56 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:31993 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726650AbhAGRB4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 12:00:55 -0500
-Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8534EC0612F8
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Jan 2021 09:00:15 -0800 (PST)
-Received: by mail-pj1-x102d.google.com with SMTP id v1so1801547pjr.2
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Jan 2021 09:00:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=D7wKWCdzDkP6avteBtNODYaQ3hJF6WSzmKpZXhol000=;
-        b=br0Co3s3wCez6wcwkJkRxtFcH8mIbALLsoNyBzPVpkq60hgnLg4DP0ZEKkNgmGvebF
-         LUyEKhggcr5oJkCDf2YOc/hj6v/UiSiBapxJCRKL38XV1WmRJbWFaU0q/BnmF2SKZ9D8
-         Qm/IRL2zJCggNlnUHLmgsu5yJ6zc7aC4IAbfVhhbDSr/Yy7medypNSxHBBVOxzNFS383
-         pzIt6AvNKBD93VfHSMJngDqpb8E/4l9m9QQVu9Fq1Fd2G6CsBtQi8uDrrGN0WZB0XZXh
-         Aby97oUGtEScr9eZhNCzVCYKRpiwjW0ojR47osJziitpZ/Cdjhm0NCduYMtL4Sc3ByeV
-         zhhw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=D7wKWCdzDkP6avteBtNODYaQ3hJF6WSzmKpZXhol000=;
-        b=rUeCNx6EnnJmKXmLoNB+rf4pjE5Q9sdngYFPayArxTmkHLhgRvb/B/5mL5h2L+JcWB
-         p0r43BG0lRR2QdHwu8j7lqrqIIF9s6a9dlXzrY/1PjuKryMG2J45SbbyBzu3fjb8zgEG
-         KIWli3XRnudAbwRq7uCvWr82o+cm57nXQYnvKIh/eX/v39OAqZz/++Th3uNfbuduecql
-         wFK9j4dwqsJqQBXt5480d5m/Lixg8Pn+MxWda82GM4p4NCl9TuPAHxyq3KohLggxcGK+
-         ou+cBbBazZ/KG89vu03NScG6fyMfbESkM36ZWITfMcU5vBBW12YG/bFLm7Vuyc7d9B7Y
-         2NEw==
-X-Gm-Message-State: AOAM5302RrCGq4sKylAboKF/xVwfUWeDCr6vlMqK1GrZ2ClyrbOE/vf7
-        kMfEfHbZIpQjpKDeoslyIroNRg==
-X-Google-Smtp-Source: ABdhPJxXorQFds5f78UyOO27dMRfrfPi2SQrpP2RJPuDPsrQXzy3BggA+1r02tq6yv/FuAixTgJU/w==
-X-Received: by 2002:a17:90a:f0c5:: with SMTP id fa5mr5737484pjb.174.1610038814826;
-        Thu, 07 Jan 2021 09:00:14 -0800 (PST)
-Received: from google.com ([2620:15c:f:10:1ea0:b8ff:fe73:50f5])
-        by smtp.gmail.com with ESMTPSA id w63sm6202426pfc.20.2021.01.07.09.00.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 Jan 2021 09:00:14 -0800 (PST)
-Date:   Thu, 7 Jan 2021 09:00:07 -0800
-From:   Sean Christopherson <seanjc@google.com>
-To:     Maxim Levitsky <mlevitsk@redhat.com>
-Cc:     kvm@vger.kernel.org, Vitaly Kuznetsov <vkuznets@redhat.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel@vger.kernel.org,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Jim Mattson <jmattson@google.com>
-Subject: Re: [PATCH v2 1/4] KVM: nSVM: cancel KVM_REQ_GET_NESTED_STATE_PAGES
- on nested vmexit
-Message-ID: <X/c+FzXGfk/3LUC2@google.com>
-References: <20210107093854.882483-1-mlevitsk@redhat.com>
- <20210107093854.882483-2-mlevitsk@redhat.com>
+        Thu, 7 Jan 2021 12:01:56 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1610038829;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=uHtLQ82irY0zw9G0AL7ymoS/HHVkiUCAdKjz4xIDFCA=;
+        b=XXFHgC33NOxSV0tGfCSs4d+naQRzz8XHSNcVgEfCZZd9P8c3adOqfCNYZfPZay3jQTaac2
+        xDYVf3b8/qkGsIsieTEu5zsXUG56SFsYb3oBoY9jGuOfBCEiyveOw1une7GkK9B9tbl81E
+        ZlfUULIWgyq5G9m+i7ed3kt0mRa6/us=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-172-tA9k7NiUM0q06iIHy0qyAg-1; Thu, 07 Jan 2021 12:00:27 -0500
+X-MC-Unique: tA9k7NiUM0q06iIHy0qyAg-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E9084107ACE3;
+        Thu,  7 Jan 2021 17:00:25 +0000 (UTC)
+Received: from oldenburg2.str.redhat.com (ovpn-114-198.ams2.redhat.com [10.36.114.198])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 57E6C19C81;
+        Thu,  7 Jan 2021 17:00:23 +0000 (UTC)
+From:   Florian Weimer <fweimer@redhat.com>
+To:     "Theodore Ts'o" <tytso@mit.edu>
+Cc:     Russell King - ARM Linux admin <linux@armlinux.org.uk>,
+        Arnd Bergmann <arnd@kernel.org>, Will Deacon <will@kernel.org>,
+        linux-toolchains@vger.kernel.org,
+        Mark Rutland <mark.rutland@arm.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Ext4 Developers List <linux-ext4@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>
+Subject: Re: Aarch64 EXT4FS inode checksum failures - seems to be weak
+ memory ordering issues
+References: <20210105154726.GD1551@shell.armlinux.org.uk>
+        <20210106115359.GB26994@C02TD0UTHF1T.local>
+        <20210106135253.GJ1551@shell.armlinux.org.uk>
+        <20210106172033.GA2165@willie-the-truck>
+        <20210106223223.GM1551@shell.armlinux.org.uk>
+        <20210107111841.GN1551@shell.armlinux.org.uk>
+        <20210107124506.GO1551@shell.armlinux.org.uk>
+        <CAK8P3a2TXPfFpgy+XjpDzOqt1qpDxufwiD-BLNbn4W_jpGp98g@mail.gmail.com>
+        <20210107133747.GP1551@shell.armlinux.org.uk>
+        <X/c2aqSvYCaB9sR6@mit.edu>
+Date:   Thu, 07 Jan 2021 18:00:21 +0100
+In-Reply-To: <X/c2aqSvYCaB9sR6@mit.edu> (Theodore Ts'o's message of "Thu, 7
+        Jan 2021 11:27:22 -0500")
+Message-ID: <87r1mwy95m.fsf@oldenburg2.str.redhat.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210107093854.882483-2-mlevitsk@redhat.com>
+Content-Type: text/plain
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 07, 2021, Maxim Levitsky wrote:
-> It is possible to exit the nested guest mode, entered by
-> svm_set_nested_state prior to first vm entry to it (e.g due to pending event)
-> if the nested run was not pending during the migration.
+* Theodore Ts'o:
 
-Ugh, I assume this is due to one of the "premature" nested_ops->check_events()
-calls that are necessitated by the event mess?  I'm guessing kvm_vcpu_running()
-is the culprit?
+> On Thu, Jan 07, 2021 at 01:37:47PM +0000, Russell King - ARM Linux admin wrote:
+>> > The gcc bugzilla mentions backports into gcc-linaro, but I do not see
+>> > them in my git history.
+>> 
+>> So, do we raise the minimum gcc version for the kernel as a whole to 5.1
+>> or just for aarch64?
+>
+> Russell, Arnd, thanks so much for tracking down the root cause of the
+> bug!
+>
+> I will note that RHEL 7 uses gcc 4.8.  I personally don't have an
+> objections to requiring developers using RHEL 7 to have to install a
+> more modern gcc (since I use Debian Testing and gcc 10.2.1, myself,
+> and gcc 5.1 is so five years ago :-), but I could imagine that being
+> considered inconvenient for some.
 
-If my assumption is correct, this bug affects nVMX as well.  Rather than clear
-the request blindly on any nested VM-Exit, what about something like the
-following?  IMO, KVM really shouldn't be synthesizing a nested VM-Exit before it
-processes pending requests, but unfortunately the nested_ops->check_events()
-mess isn't easily fixed.  This will at least limit the mess, e.g. with this we'd
-get a WARN if KVM_REQ_GET_NESTED_STATE_PAGES is set after some other VM-Exit.
+Actually, RHEL 7 should have the fix (internal bug #1362635, curiously
+we encountered it in the *XFS* CRC calculation code back then).
 
-diff --git a/arch/x86/kvm/lapic.c b/arch/x86/kvm/lapic.c
-index 3136e05831cf..f44e6f7a0c9b 100644
---- a/arch/x86/kvm/lapic.c
-+++ b/arch/x86/kvm/lapic.c
-@@ -2857,17 +2857,15 @@ void kvm_apic_accept_events(struct kvm_vcpu *vcpu)
-        if (!pe)
-                return;
+My understanding is that RHEL 7 aarch64 support ceased completely about
+a month ago, so that shouldn't be an argument against bumping the
+minimum version requirement to 5.1.
 
--       if (is_guest_mode(vcpu)) {
--               r = kvm_x86_ops.nested_ops->check_events(vcpu);
--               if (r < 0)
--                       return;
--               /*
--                * If an event has happened and caused a vmexit,
--                * we know INITs are latched and therefore
--                * we will not incorrectly deliver an APIC
--                * event instead of a vmexit.
--                */
--       }
-+       r = kvm_nested_check_events(vcpu);
-+       if (r < 0)
-+               return;
-+
-+       /*
-+        * If an event has happened and caused a vmexit, we know INITs are
-+        * latched and therefore we will not incorrectly deliver an APIC
-+        * event instead of a vmexit.
-+        */
+Thanks,
+Florian
+-- 
+Red Hat GmbH, https://de.redhat.com/ , Registered seat: Grasbrunn,
+Commercial register: Amtsgericht Muenchen, HRB 153243,
+Managing Directors: Charles Cachera, Brian Klemm, Laurie Krebs, Michael O'Neill
 
-        /*
-         * INITs are latched while CPU is in specific states
-diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-index 3f7c1fc7a3ce..b0f172d13cab 100644
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -8223,6 +8223,25 @@ static void update_cr8_intercept(struct kvm_vcpu *vcpu)
-        kvm_x86_ops.update_cr8_intercept(vcpu, tpr, max_irr);
- }
-
-+int kvm_nested_check_events(struct kvm_vcpu *vcpu)
-+{
-+       int r;
-+
-+       if (!is_guest_mode(vcpu))
-+               return 0;
-+
-+       r = kvm_x86_ops.nested_ops->check_events(vcpu);
-+
-+       /*
-+        * Clear nested-specific requests if checking nested events triggered a
-+        * VM-Exit, they'll be re-requested on nested VM-Enter (if necessary).
-+        */
-+       if (!is_guest_mode(vcpu))
-+               kvm_clear_request(KVM_REQ_GET_NESTED_STATE_PAGES, vcpu);
-+
-+       return r;
-+}
-+
- static void inject_pending_event(struct kvm_vcpu *vcpu, bool *req_immediate_exit)
- {
-        int r;
-@@ -8267,11 +8286,9 @@ static void inject_pending_event(struct kvm_vcpu *vcpu, bool *req_immediate_exit
-         * from L2 to L1 due to pending L1 events which require exit
-         * from L2 to L1.
-         */
--       if (is_guest_mode(vcpu)) {
--               r = kvm_x86_ops.nested_ops->check_events(vcpu);
--               if (r < 0)
--                       goto busy;
--       }
-+       r = kvm_nested_check_events(vcpu);
-+       if (r < 0)
-+               goto busy;
-
-        /* try to inject new event if pending */
-        if (vcpu->arch.exception.pending) {
-@@ -8789,7 +8806,8 @@ static int vcpu_enter_guest(struct kvm_vcpu *vcpu)
-
-        if (kvm_request_pending(vcpu)) {
-                if (kvm_check_request(KVM_REQ_GET_NESTED_STATE_PAGES, vcpu)) {
--                       if (unlikely(!kvm_x86_ops.nested_ops->get_nested_state_pages(vcpu))) {
-+                       if (!WARN_ON(!is_guest_mode(vcpu) &&
-+                           unlikely(!kvm_x86_ops.nested_ops->get_nested_state_pages(vcpu)))) {
-                                r = 0;
-                                goto out;
-                        }
-@@ -9111,8 +9129,7 @@ static inline int vcpu_block(struct kvm *kvm, struct kvm_vcpu *vcpu)
-
- static inline bool kvm_vcpu_running(struct kvm_vcpu *vcpu)
- {
--       if (is_guest_mode(vcpu))
--               kvm_x86_ops.nested_ops->check_events(vcpu);
-+       (void)kvm_nested_check_events(vcpu);
-
-        return (vcpu->arch.mp_state == KVM_MP_STATE_RUNNABLE &&
-                !vcpu->arch.apf.halted);
-diff --git a/arch/x86/kvm/x86.h b/arch/x86/kvm/x86.h
-index c5ee0f5ce0f1..dce61fda9c5e 100644
---- a/arch/x86/kvm/x86.h
-+++ b/arch/x86/kvm/x86.h
-@@ -247,6 +247,8 @@ static inline bool kvm_vcpu_latch_init(struct kvm_vcpu *vcpu)
-        return is_smm(vcpu) || kvm_x86_ops.apic_init_signal_blocked(vcpu);
- }
-
-+int kvm_nested_check_events(struct kvm_vcpu *vcpu);
-+
- void kvm_inject_realmode_interrupt(struct kvm_vcpu *vcpu, int irq, int inc_eip);
-
- void kvm_write_tsc(struct kvm_vcpu *vcpu, struct msr_data *msr);
-
-
-> In this case we must not switch to the nested msr permission bitmap.
-> Also add a warning to catch similar cases in the future.
-> 
-> Fixes: a7d5c7ce41ac1 ("KVM: nSVM: delay MSR permission processing to first nested VM run")
-> 
-> Signed-off-by: Maxim Levitsky <mlevitsk@redhat.com>
-> ---
->  arch/x86/kvm/svm/nested.c | 6 ++++++
->  1 file changed, 6 insertions(+)
-> 
-> diff --git a/arch/x86/kvm/svm/nested.c b/arch/x86/kvm/svm/nested.c
-> index b0b667456b2e7..ee4f2082ad1bd 100644
-> --- a/arch/x86/kvm/svm/nested.c
-> +++ b/arch/x86/kvm/svm/nested.c
-> @@ -199,6 +199,10 @@ static bool nested_svm_vmrun_msrpm(struct vcpu_svm *svm)
->  static bool svm_get_nested_state_pages(struct kvm_vcpu *vcpu)
->  {
->  	struct vcpu_svm *svm = to_svm(vcpu);
-> +
-> +	if (WARN_ON_ONCE(!is_guest_mode(&svm->vcpu)))
-> +		return false;
-> +
->  	if (!nested_svm_vmrun_msrpm(svm)) {
->  		vcpu->run->exit_reason = KVM_EXIT_INTERNAL_ERROR;
->  		vcpu->run->internal.suberror =
-> @@ -595,6 +599,8 @@ int nested_svm_vmexit(struct vcpu_svm *svm)
->  	svm->nested.vmcb12_gpa = 0;
->  	WARN_ON_ONCE(svm->nested.nested_run_pending);
->  
-> +	kvm_clear_request(KVM_REQ_GET_NESTED_STATE_PAGES, &svm->vcpu);
-> +
->  	/* in case we halted in L2 */
->  	svm->vcpu.arch.mp_state = KVM_MP_STATE_RUNNABLE;
->  
-> -- 
-> 2.26.2
-> 
