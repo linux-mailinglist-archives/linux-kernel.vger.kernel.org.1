@@ -2,122 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B8BC2ED786
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 20:34:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B45592ED787
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 20:36:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729371AbhAGTei (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 14:34:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47558 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726073AbhAGTeh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 14:34:37 -0500
-Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E75EC0612F5
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Jan 2021 11:33:57 -0800 (PST)
-Received: by mail-lf1-x12f.google.com with SMTP id o17so17333262lfg.4
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Jan 2021 11:33:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=BiccEa2pJi0DIq52d8GptCq8b6FN7Kia/Heor0TK8iU=;
-        b=cSgWqrwKeQA+TlcewT/EN3ag9FvhqObMzUdYPFJ+iIeVnXeXBm9qIUo4mGLTo8rXPV
-         1KJCb5OoqOEDYhpX0ZuwT4+f4Go+pY32utCaeK5ZgIDc/9goEzasnnrVXLRlfO2AW9x9
-         gFTHOhy3amVqZxg8mlo23HBkE/0DxEpNcwYA8=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=BiccEa2pJi0DIq52d8GptCq8b6FN7Kia/Heor0TK8iU=;
-        b=rregz4ukovRPNUBesomlLZUWng7rdlFFcCBh/MKLLvMB/TNiG3Ct8iAjL/BV/kT+VS
-         vXUM08K50TnwiIno1GSKqSiJMiVs5DuNQ5ASNGMCe3m2/wBT7Ua8gU9Tf+j0klhjwuuS
-         JpNvh7JfiRH7xnbVIPP/l/oTMaKAbkdc7YFYyAWFgAFf0fpDPK40I4GTKuSB+9wjgaSL
-         xU0GSrVxtSv2gsM1RLbpHMpQZXCXvUI15gkDpL9YzWiKlOlybCiiNn60XD7Z/r0E86E6
-         WYkP1DOaI7Sbd6nvZsj4FZtHeC62wGuM/H1STD4qbrqSZDoA5Nvj5Z4HpIPX4xlcpf57
-         KIhA==
-X-Gm-Message-State: AOAM530S3ZnZtl0QpId7kyLVYG1gw8CgNhWQ7OgFnrK7Vwei4AiB/U+L
-        4TKkH9LW43aJ9az/dGSGAXk2B3+AeT6pxQ==
-X-Google-Smtp-Source: ABdhPJyf5SacqckfkBl/zAJG0aw5h3N5UxOXN1qm+Z0ygJ+1ZG3I8fjvdY1CzL3/xrFFkrGaPHBZDA==
-X-Received: by 2002:a19:787:: with SMTP id 129mr125636lfh.234.1610048035065;
-        Thu, 07 Jan 2021 11:33:55 -0800 (PST)
-Received: from mail-lf1-f44.google.com (mail-lf1-f44.google.com. [209.85.167.44])
-        by smtp.gmail.com with ESMTPSA id n203sm1361447lfd.7.2021.01.07.11.33.53
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 07 Jan 2021 11:33:53 -0800 (PST)
-Received: by mail-lf1-f44.google.com with SMTP id b26so17286901lff.9
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Jan 2021 11:33:53 -0800 (PST)
-X-Received: by 2002:a05:6512:3048:: with SMTP id b8mr120021lfb.421.1610048032710;
- Thu, 07 Jan 2021 11:33:52 -0800 (PST)
+        id S1729381AbhAGTfK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 14:35:10 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47660 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725835AbhAGTfJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Jan 2021 14:35:09 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EC73F23441;
+        Thu,  7 Jan 2021 19:34:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1610048069;
+        bh=0GubfiMHiB//8n/Be/BNqN0RqV4557ytXaKmIQ84fi0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=scFDswHssVvc5bFYvmnVKwNEWERuY4kdtJQiBjmXX621F/D6m8dyFygJ3N9kmHN1S
+         v1ad81JzY+AgqxyIt42asq4J61YLuy+84reLZgD8gVOtOO5zFGhlqYIafTbRfGBC4u
+         fYfjh9nHf1mEi6qDEHigB0jsqm1vAKffe7/sV3Vc=
+Date:   Thu, 7 Jan 2021 20:35:48 +0100
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Mike Ximing Chen <mike.ximing.chen@intel.com>
+Cc:     linux-kernel@vger.kernel.org, arnd@arndb.de,
+        dan.j.williams@intel.com, pierre-louis.bossart@linux.intel.com,
+        Gage Eads <gage.eads@intel.com>
+Subject: Re: [PATCH v8 01/20] dlb: add skeleton for DLB driver
+Message-ID: <X/dilO0pQI3GVh6F@kroah.com>
+References: <20210105025839.23169-1-mike.ximing.chen@intel.com>
+ <20210105025839.23169-2-mike.ximing.chen@intel.com>
 MIME-Version: 1.0
-References: <20210107134723.GA28532@xsang-OptiPlex-9020> <CAHk-=wgQ5EEH3-GTK9KDB5mBmWjP25YHXC6_-V_KfWd0UTDTDQ@mail.gmail.com>
- <20210107183358.GG3579531@ZenIV.linux.org.uk> <CAHk-=wiZaFRt9hGen9=eOr7LA+Q8o5f980eGEvtxBD6+os7nqA@mail.gmail.com>
- <20210107190445.GK3579531@ZenIV.linux.org.uk>
-In-Reply-To: <20210107190445.GK3579531@ZenIV.linux.org.uk>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Thu, 7 Jan 2021 11:33:36 -0800
-X-Gmail-Original-Message-ID: <CAHk-=whneXU5Sr=iOOrzcqZt6q85zp-8CUSviOwGPj5ePBW4CQ@mail.gmail.com>
-Message-ID: <CAHk-=whneXU5Sr=iOOrzcqZt6q85zp-8CUSviOwGPj5ePBW4CQ@mail.gmail.com>
-Subject: Re: [x86] d55564cfc2: will-it-scale.per_thread_ops -5.8% regression
-To:     Al Viro <viro@zeniv.linux.org.uk>
-Cc:     kernel test robot <oliver.sang@intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@kernel.org>, Borislav Petkov <bp@alien8.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
-        kernel test robot <lkp@intel.com>,
-        "Huang, Ying" <ying.huang@intel.com>,
-        Feng Tang <feng.tang@intel.com>, zhengjun.xing@intel.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210105025839.23169-2-mike.ximing.chen@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 7, 2021 at 11:04 AM Al Viro <viro@zeniv.linux.org.uk> wrote:
->
-> BTW, changing 'event' field in place from another thread is going to
-> be interesting - you have two 16bit values next to each other and
-> two CPUs modifying those with no exclusion.  Sounds like a recipe
-> for massive trouble...
+On Mon, Jan 04, 2021 at 08:58:20PM -0600, Mike Ximing Chen wrote:
+> +static int dlb_probe(struct pci_dev *pdev,
+> +		     const struct pci_device_id *pdev_id)
+> +{
+> +	struct dlb *dlb;
+> +	int ret;
+> +
+> +	dlb = devm_kzalloc(&pdev->dev, sizeof(*dlb), GFP_KERNEL);
+> +	if (!dlb)
+> +		return -ENOMEM;
+> +
+> +	pci_set_drvdata(pdev, dlb);
+> +
+> +	dlb->pdev = pdev;
+> +
+> +	spin_lock(&dlb_ids_lock);
+> +	dlb->id = idr_alloc(&dlb_ids,
+> +			    (void *)dlb,
+> +			    0,
+> +			    DLB_MAX_NUM_DEVICES - 1,
+> +			    GFP_KERNEL);
+> +	spin_unlock(&dlb_ids_lock);
+> +
+> +	if (dlb->id < 0) {
+> +		dev_err(&pdev->dev, "probe: device ID allocation failed\n");
+> +
+> +		ret = dlb->id;
+> +		goto alloc_id_fail;
+> +	}
+> +
+> +	ret = pcim_enable_device(pdev);
+> +	if (ret != 0) {
+> +		dev_err(&pdev->dev, "pcim_enable_device() returned %d\n", ret);
+> +
+> +		goto pci_enable_device_fail;
+> +	}
+> +
+> +	ret = pcim_iomap_regions(pdev,
+> +				 (1U << DLB_CSR_BAR) | (1U << DLB_FUNC_BAR),
+> +				 "dlb");
+> +	if (ret != 0) {
+> +		dev_err(&pdev->dev,
+> +			"pcim_iomap_regions(): returned %d\n", ret);
+> +
+> +		goto pci_enable_device_fail;
+> +	}
+> +
+> +	pci_set_master(pdev);
+> +
+> +	if (pci_enable_pcie_error_reporting(pdev))
+> +		dev_info(&pdev->dev, "[%s()] Failed to enable AER\n", __func__);
 
-It's perfectly fine on just about anything else than on an original
-pre-ev5 alpha.
+Shouldn't that be dev_err() and you fail here?
 
-The C standard even - finally - made it a requirement that accesses to
-different members can't introduce data races.
+And no need for __func__ please, the driver name and device is listed,
+that's all that is necessary.
 
-So I agree with you that it's a bit annoying, and it's likely not even
-very common, but I could easily imagine myself writing code that
-changes either 'fd' or 'events' in a threaded server.
+thanks,
 
-That's pretty much the whole point of 'poll()' after all - threaded
-servers that have that convenient array of pollable file descriptors.
-
-Maybe the pollfd array in many cases ends up being thread-local,
-possibly generated from some other data structure each time. But if it
-is some performance-critical thing (and I can't imagine a lot of more
-performance-critical things than the core poll() loop), I can very
-easily imagine it being re-used in between poll() calls, and people
-modifying it from signal handlers and other threads as the set of
-pollable file descriptors change due to new connections etc.
-
-But I'll be honest - I didn't try to actually find such code, and I
-suspect 99% of all cases would be happy with your "copy everything".
-
-In fact, even some threaded app that does what I suspect it could do
-would likely be ok with it 99% of the time. Because the situation
-where you change the fd in the poll array is likely not the common
-case, and even if some -1 file descriptor gets overwritten by a valid
-one by the poll() system call again, it probably ends up being very
-hard to see a failure.
-
-Which just makes me even more nervous.
-
-But I'm sure that yes, on platforms like s390, that "only write 16
-bits out of every 64 bits" loop is probably pretty painful.
-
-On most normal architectures it's probably a wash. I doubt it is
-measurable on x86, for example.
-
-           Linus
+greg k-h
