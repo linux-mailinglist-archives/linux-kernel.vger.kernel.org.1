@@ -2,183 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D3092EE8BD
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 23:32:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 162942EE8C2
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 23:34:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728342AbhAGWcJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 17:32:09 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42896 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727107AbhAGWcI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 17:32:08 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2E84223609;
-        Thu,  7 Jan 2021 22:31:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610058687;
-        bh=xqP7nlN10qlLZWYC6/slW68hsvWo6XqMEBM86vXA8PE=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=SEtDWiETVgcWKJelDtg/DLCmeXACklrk2otAdX9sTUYhhWvnOEPEmr698f2skfryg
-         4bF7SzGoXHwoLXAQY1kt2u5Vtnsyw5bzwBNQNwTE/r0w8XopBfZ8dQHtdz+JKC7XWK
-         33DZZWTgUENvFkX6zUBo1tOJqbPE4CZMu+knqNoQgGPDAVVP46e0doY8t8gp0FwMK6
-         JGR4hR4fpNWG/mwhAtJXw6c0C8/qu0xZFl9hSsobUmX1n5nULwaICDX1G5sX6z4OJo
-         Ujmx3RZXCnrymIDmgUmadIKku4LqSxZcH5m7LwUjPKg5scsT2iQGsNwDVzmmix0QE6
-         8hrQc9gSa3N4g==
-Received: by mail-ej1-f46.google.com with SMTP id lt17so11970896ejb.3;
-        Thu, 07 Jan 2021 14:31:27 -0800 (PST)
-X-Gm-Message-State: AOAM5307d4FQAWYI7VxDLFcyFPE5AOL59+A65BA7AwGbSQ3bw5Dma8A2
-        mRqhym6abDGcM/hHnc96qjE5nzpzhSNvZw+N8g==
-X-Google-Smtp-Source: ABdhPJxnu6dyOFmZT8UWWTmOntUJrh4NuvNqwX+ajT8EPvM5XfOIQFMoxWh7cN1XA2tLvNXzv8+fT+OgRjTVfE2v4+E=
-X-Received: by 2002:a17:906:1197:: with SMTP id n23mr684003eja.359.1610058685598;
- Thu, 07 Jan 2021 14:31:25 -0800 (PST)
+        id S1728924AbhAGWdN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 17:33:13 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:59635 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727107AbhAGWdK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Jan 2021 17:33:10 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1610058703;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=sH1Oz4zaoHH/onOXGglouMWNOSaa/V+B/VSZ6QQ9VbE=;
+        b=etDT8riLzV4nmOOtYIF9HWMFiJAosee8GI0/rrv90dxBvR22tpdNQjRcAO3BpNOBIMz7UI
+        aEHvAIAoUT6TndnF78t+APnOus7P5/WScFVQFYB6Z7UCLOEic1AR0RTOMkbinemW7de0Jp
+        6gwyzHW0HerdVk2UJXBYunikZul15vY=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-144-28Qz9KUBPwau2GZF_C58Ag-1; Thu, 07 Jan 2021 17:31:39 -0500
+X-MC-Unique: 28Qz9KUBPwau2GZF_C58Ag-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E41A7800D62;
+        Thu,  7 Jan 2021 22:31:36 +0000 (UTC)
+Received: from mail (ovpn-112-222.rdu2.redhat.com [10.10.112.222])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 0CA0C6268F;
+        Thu,  7 Jan 2021 22:31:30 +0000 (UTC)
+Date:   Thu, 7 Jan 2021 17:31:29 -0500
+From:   Andrea Arcangeli <aarcange@redhat.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Linux-MM <linux-mm@kvack.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Yu Zhao <yuzhao@google.com>, Andy Lutomirski <luto@kernel.org>,
+        Peter Xu <peterx@redhat.com>,
+        Pavel Emelyanov <xemul@openvz.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Will Deacon <will@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Hugh Dickins <hughd@google.com>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Oleg Nesterov <oleg@redhat.com>, Jann Horn <jannh@google.com>,
+        Kees Cook <keescook@chromium.org>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>, Jan Kara <jack@suse.cz>,
+        Kirill Tkhai <ktkhai@virtuozzo.com>
+Subject: Re: [PATCH 2/2] mm: soft_dirty: userfaultfd: introduce
+ wrprotect_tlb_flush_pending
+Message-ID: <X/eLwQPd5bi620Vt@redhat.com>
+References: <B1B85771-B211-4FCC-AEEF-BDFD37332C25@vmware.com>
+ <20210107200402.31095-1-aarcange@redhat.com>
+ <20210107200402.31095-3-aarcange@redhat.com>
+ <CAHk-=whg-91=EF=8=ayyDQGx_3iuWKp3aHUkDCDkgUb15Yh8AQ@mail.gmail.com>
+ <X/d2DyLfXZmBIreY@redhat.com>
+ <CAHk-=wjs9v-hp_7HV_TrTmisu7pNX=MwZ62ZV82i0evLhPwS1Q@mail.gmail.com>
 MIME-Version: 1.0
-References: <20201130211145.3012-1-james.quinlan@broadcom.com>
- <20201130211145.3012-2-james.quinlan@broadcom.com> <20201209140122.GA331678@robh.at.kernel.org>
- <CANCKTBsFALwF8Hy-=orH8D-nd-qyXqFDopATmKCvbqPbUTC7Sw@mail.gmail.com>
-In-Reply-To: <CANCKTBsFALwF8Hy-=orH8D-nd-qyXqFDopATmKCvbqPbUTC7Sw@mail.gmail.com>
-From:   Rob Herring <robh@kernel.org>
-Date:   Thu, 7 Jan 2021 15:31:13 -0700
-X-Gmail-Original-Message-ID: <CAL_JsqKPKk3cPO8DG3FQVSHrKnO+Zed1R=PV7n7iAC+qJKgHcw@mail.gmail.com>
-Message-ID: <CAL_JsqKPKk3cPO8DG3FQVSHrKnO+Zed1R=PV7n7iAC+qJKgHcw@mail.gmail.com>
-Subject: Re: [PATCH v2 1/6] dt-bindings: PCI: Add bindings for Brcmstb EP
- voltage regulators
-To:     Jim Quinlan <jim2101024@gmail.com>
-Cc:     Jim Quinlan <james.quinlan@broadcom.com>,
-        linux-pci <linux-pci@vger.kernel.org>,
-        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
-        Mark Brown <broonie@kernel.org>,
-        bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
-        <linux-rpi-kernel@lists.infradead.org>,
-        "moderated list:BROADCOM BCM2711/BCM2835 ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHk-=wjs9v-hp_7HV_TrTmisu7pNX=MwZ62ZV82i0evLhPwS1Q@mail.gmail.com>
+User-Agent: Mutt/2.0.4 (2020-12-30)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 4, 2021 at 3:12 PM Jim Quinlan <jim2101024@gmail.com> wrote:
->
-> On Wed, Dec 9, 2020 at 10:07 AM Rob Herring <robh@kernel.org> wrote:
+On Thu, Jan 07, 2021 at 01:29:43PM -0800, Linus Torvalds wrote:
+> On Thu, Jan 7, 2021 at 12:59 PM Andrea Arcangeli <aarcange@redhat.com> wrote:
 > >
-> > On Mon, Nov 30, 2020 at 04:11:38PM -0500, Jim Quinlan wrote:
-> > > Quite similar to the regulator bindings found in "rockchip-pcie-host.txt",
-> > > this allows optional regulators to be attached and controlled by the
-> > > PCIe RC driver.
-> > >
-> > > Signed-off-by: Jim Quinlan <james.quinlan@broadcom.com>
-> > > ---
-> > >  .../devicetree/bindings/pci/brcm,stb-pcie.yaml       | 12 ++++++++++++
-> > >  1 file changed, 12 insertions(+)
-> > >
-> > > diff --git a/Documentation/devicetree/bindings/pci/brcm,stb-pcie.yaml b/Documentation/devicetree/bindings/pci/brcm,stb-pcie.yaml
-> > > index 807694b4f41f..baacc3d7ec87 100644
-> > > --- a/Documentation/devicetree/bindings/pci/brcm,stb-pcie.yaml
-> > > +++ b/Documentation/devicetree/bindings/pci/brcm,stb-pcie.yaml
-> > > @@ -85,6 +85,18 @@ properties:
-> > >        minItems: 1
-> > >        maxItems: 3
-> > >
-> > > +  vpcie12v-supply:
-> > > +    description: 12v regulator phandle for the endpoint device
-> > > +
-> > > +  vpcie3v3-supply:
-> > > +    description: 3.3v regulator phandle for the endpoint device
-> >
-> > 12V and 3.3V are standard slot supplies, can you add them to
-> > pci-bus.yaml. Then some day maybe we can have common slot handling code.
-> >
-> > With that, here you just need:
-> >
-> > vpcie3v3-supply: true
->
-> Hi Rob,
->
-> Sorry for the delay in responding -- I just came back from vacation.
+> > The problem is it's not even possible to detect reliably if there's
+> > really a long term GUP pin because of speculative pagecache lookups.
+> 
+> So none of the normal code _needs_ that any more these days, which is
+> what I think is so nice. Any pinning will do the COW, and then we have
+> the logic to make sure it stays writable, and that keeps everything
+> nicely coherent and is all fairly simple.
+> 
+> And yes, it does mean that if somebody then explicitly write-protects
+> a page, it may end up being COW'ed after all, but if you first pinned
+> it, and then started playing with the protections of that page, why
+> should you be surprised?
+> 
+> So to me, this sounds like a "don't do that then" situation.
+> 
+> Anybody who does page pinning and wants coherency should NOT TOUCH THE
+> MAPPING IT PINNED.
+> 
+> (And if you do touch it, it's your own fault, and you get to keep both
+> of the broken pieces)
+> 
+> Now, I do agree that from a QoI standpoint, it would be really lovely
+> if we actually enforced it. I'm not entirely sure we can, but maybe it
+> would be reasonable to use that
+> 
+>   mm->has_pinned && page_maybe_dma_pinned(page)
+> 
+> at least as the beginning of a heuristic.
+> 
+> In fact, I do think that "page_maybe_dma_pinned()" could possibly be
+> made stronger than it is. Because at *THAT* point, we might say "we
+> know a pinned page always must have a page_mapcount() of 1" - since as
+> part of pinning it and doing the GUP_PIN, we forced the COW, and then
+> subsequent fork() operations enforce it too.
+> 
+> So I do think that it might be possible to make that clear_refs code
+> notice "this page is pinned, I can't mark it WP without the pinning
+> coherency breaking".
+> 
+> It might not even be hard. But admittedly I'm somewhat handwaving
+> here, and I might not have thought of some situation.
 
-NP, me too.
+I suppose the objective would be to detect when it's a transient pin
+(as an O_DIRECT write) and fail clear_refs with an error for all other
+cases of real long term pins that need to keep reading at full PCI
+bandwidth, without extra GUP invocations after the wp_copy_page run.
 
-> The problem we have is that these regulators are not "slot" supplies
-> -- our HW does not support PCI slots, so if and when general slot
-> power-handling code came along it would probably screw us up.   If you
-> don't think there is a problem then I will submit the two supply-names
-> you OKed, even though they may not match the voltages we are using for
-> the EPs.
+Because of the speculative lookups are making the count unstable, it's
+not even enough to use mmu notifier and never use FOLL_GET in GUP to
+make it safe again (unlike what I mentioned in a previous email).
 
-Maybe no slots, but you defined the voltages here and they look like
-standard voltages. Given this is at least the 2nd usage of these
-properties, it seemed like they should be common. Slot or no physical
-slot.
+Random memory corruption will still silently materialize as result of
+the speculative lookups in the above scenario.
 
-> For us, the supplies are for the EP chip's power.  We have the PCIe
-> controller turning them "on" for power-on/resume and "off" for
-> power-off/suspend.  We need the "xxx-supply" property in the
-> controller's DT node because of the chicken-and-egg situation: if the
-> property was in the EP's DT node, the RC  will never discover the EP
-> to see that there is a regulator to turn on.   We would be happy with
-> a single supply name, something like "ep-power".  We would be ecstatic
-> to have two (ep0-power, ep1-power).
+My whole point here in starting this new thread to suggest page_count
+in do_wp_page is an untenable solution is that such commit silently
+broke every single long term PIN user that may be used in combination
+of clear_refs since 2013.
 
-The chicken-and-egg problem is nothing new. The same thing has come up
-for USB, MDIO, MMC/SD to name a few. If devices on a discoverable bus
-are not discoverable, then they need to be described in DT. I've given
-suggestions many times how to fix the kernel side.
+Silent memory corruption undetected or a detectable error out of
+clear_refs, are both different side effects the same technical ABI
+break that rendered clear_refs fundamentally incompatible with
+clear_refs, so detecting it or not still an ABI break that is.
 
-As Mark said, there's no reason you can't look at other nodes for your
-data. The data a driver needs isn't always nicely packaged up into a
-single node. The DT structure should match the h/w. The EP is a
-different device from the PCI host and its supplies belong in its
-node.
+I felt obliged to report there's something much deeper and
+fundamentally incompatible between the page_count in do_wp_page any
+wrprotection of exclusive memory in place, as if used in combination
+with any RDMA for example. The TLB flushing and the
+mmap_read/write_lock were just the tip of the iceberg and they're not
+the main concern anymore.
 
-Not that if we really wanted to have complete slot support, we'd
-probably end up having slot nodes in DT. That's generally where we've
-ended up at for other cases.
+In addition, the inefficiency caused by the fact the page_count effect
+is multiplied by 512 times or 262144 while the mapcount remains 4k
+granular, makes me think the page_count is unsuitable to be used there
+and this specific cure with page_count in do_wp_page, looks worse than
+the initial zygote disease.
 
-Now there's a second problem here. If this is not standard PCIe rails
-which have a defined power sequencing, then you really need to
-describe the EP device in DT. Otherwise, we don't know what the power
-sequencing is. I will reject any properties such as delays which try
-to poorly describe power sequencing in DT.
+Thanks,
+Andrea
 
->
-> I'm not sure if you remember but FlorianF talked to you about this
-> situation and concluded that something like the above was the way to
-> go forward.
-
-Unless it was last week, assume I don't remember.
-
->  For the latest pullreq I  just copied Rockchip's bindings
-> since you reviewed their bindings commit but it looks like you've
-> changed your mind.
-
-Well, no. First, it takes more than one to see a pattern. So yes, how
-we describe something might evolve. Second, I didn't ask for anything
-different from Rockchip here. Just move what Rockchip had to a common
-location to reuse. But your reply has convinced me you need an EP
-node.
-
->   Given the constraints I have described, what is
-> the best path forward?
->
-> Thanks,
-> Jim Quinlan
-> Broadcom STB
-> >
-> > > +
-> > > +  vpcie1v8-supply:
-> > > +    description: 1.8v regulator phandle for the endpoint device
-> > > +
-> > > +  vpcie0v9-supply:
-> > > +    description: 0.9v regulator phandle for the endpoint device
-> >
-> > These are not standard. They go to a soldered down device or
-> > non-standard connector? For the former, the device should really be
-> > described in DT and the supplies added there.
-> >
-> > Mini PCIe connector also has 1.5V supply.
-> >
-> > Rob
