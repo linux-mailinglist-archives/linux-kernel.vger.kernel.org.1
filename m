@@ -2,94 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 76BC72ECDAA
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 11:19:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2EADD2ECDAD
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 11:20:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727701AbhAGKSr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 05:18:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45448 "EHLO
+        id S1727733AbhAGKTC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 05:19:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45488 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725974AbhAGKSq (ORCPT
+        with ESMTP id S1725974AbhAGKTB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 05:18:46 -0500
-Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 554E0C0612F5
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Jan 2021 02:18:06 -0800 (PST)
-Received: by mail-lf1-x12c.google.com with SMTP id h22so13429557lfu.2
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Jan 2021 02:18:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=eXcgrTzV8O4Ehzt2/ByOy2kk+5XppIuE21Qv6gqnryQ=;
-        b=hoB48T2IASUXAGX3I8lrFPPnJPJgJn9nnnHJpQFa6ebJTZWaM/lqO64OhdwLrlVY2a
-         BnN1YYTeiB97fv1elLtKnHLmp7DFH1xcoFsYRdqfs+S9+icbmfn1sMIpB6qcXetNxK6j
-         yNCRixyOykuayWhR+fsprXZ3qqhrb0Jbetp+dT07/PCeoxwO008PGy2WlNCznin6dI+T
-         aNVM8zLsgRsCEQweJZevibCbmmxaWsEOxiYhl045OPOhwTqkdrYDIL73PGrkTDFBcwif
-         pGZ/XTsRULu7/5qysMfUOmddEStkm+AZA0Nck0OqQGDKTslwNbpungB0SNXszA6ILTt8
-         Zldw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=eXcgrTzV8O4Ehzt2/ByOy2kk+5XppIuE21Qv6gqnryQ=;
-        b=nC/GHTlRGxa6Wo1rlEPKZtFiyF+Ee+yS1HvD6HrZflVP5NMOTlt1rIUYRtgbkYdrV5
-         ajjNnAnVA0yPa6kLi7XtGo0sX20bT86T6cMTNvkR4pZZ4Ir4qaoNZGla685003iQE2qK
-         9+g3wH5rzPxp3l9OYoJMTm81g4EwQCfI7/ZHGeCTOrhWA+huUG7faKXwpBzvlI+8SuLA
-         o1xNsffAUkrUbTCj1vx/xhopJX6B7x51QW/JHoTtT2IewOU5bTMHHwSdpizm4y4RJl3h
-         O4X2KOnsUeoEGVlwMTseLeWSQ822e7M2uAz6n6xbf1pXdLUp36q+wfooJqA7dyl+Tftv
-         VX4Q==
-X-Gm-Message-State: AOAM533uTi0b9PLebYTQV59utpDJZDtYwSUu7481YlME99mP9VA6BFuJ
-        sopHFE5GKHbaY7j+f/rKIcPivjHhSxrsBAeB0WGe4w==
-X-Google-Smtp-Source: ABdhPJxKSrsH31vUM7VoBUuDtA/gc5xAHMMhG3aPfJREu2Ua3Wylwf/2VVsRrTPMakc6kYPKN52BlJejNkZZabaVZzU=
-X-Received: by 2002:a19:495d:: with SMTP id l29mr3491631lfj.465.1610014684689;
- Thu, 07 Jan 2021 02:18:04 -0800 (PST)
+        Thu, 7 Jan 2021 05:19:01 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4FD52C0612F6
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Jan 2021 02:18:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=Yj23qabr6dDcCDmE/NapfputR+pGYNOjt0nOFO5sR9g=; b=I9IBYk/3y/pNo66bsxGlm/JJ+i
+        DYAwEIDNCM4XgJLxyrzxZM42jEiZMrWmkoXM1JndTXyNXr/IlY1QiIS83+5nZcoixE8CQvTsNog0Q
+        azo/beOPAr5V5oQF+l2F7Y/ke6+pW7VnLwx6G8XKhWYPdLptXfMd5rzOSkUkwb52C24KnI3+MZbSR
+        CCmAFwUFbwBb4hMxRuO8u4OcOEp9LYYynYq5yDqEdt6eSK4nIB+o3M2BFE+5OF5MTncJr9nWylFRh
+        mnl0XqnF1ddgLnSM+qVHBMZQoECXEzK8szD9Hsxlb8QRFeR6j+HNlRsrCQwfHBy8SlUohTHGtiUlJ
+        fr9DGZcw==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kxSMr-0000t7-3x; Thu, 07 Jan 2021 10:18:09 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 601963003E5;
+        Thu,  7 Jan 2021 11:18:06 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id DD078203D1B58; Thu,  7 Jan 2021 11:18:06 +0100 (CET)
+Date:   Thu, 7 Jan 2021 11:18:06 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, jpoimboe@redhat.com,
+        sfr@canb.auug.org.au, tony.luck@intel.com
+Subject: [PATCH 7/6] x86: __always_inline __{rd,wr}msr()
+Message-ID: <X/bf3gV+BW7kGEsB@hirez.programming.kicks-ass.net>
+References: <20210106143619.479313782@infradead.org>
+ <20210106144017.532902065@infradead.org>
+ <dc6e7e19-881a-c778-22df-15176db4aeb9@infradead.org>
+ <X/bWK1tNB6mtm0Bu@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-References: <1609936000-28378-1-git-send-email-srinivas.neeli@xilinx.com> <1609936000-28378-6-git-send-email-srinivas.neeli@xilinx.com>
-In-Reply-To: <1609936000-28378-6-git-send-email-srinivas.neeli@xilinx.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Thu, 7 Jan 2021 11:17:54 +0100
-Message-ID: <CACRpkdZrBXJSo_kicWKQ_wtFTZvkOUNyjP6UHZfY7xwRSNZBRw@mail.gmail.com>
-Subject: Re: [PATCH V4 5/5] gpio: gpio-xilinx: Add check if width exceeds 32
-To:     Srinivas Neeli <srinivas.neeli@xilinx.com>
-Cc:     Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Michal Simek <michal.simek@xilinx.com>,
-        Shubhrajyoti Datta <shubhrajyoti.datta@xilinx.com>,
-        sgoud@xilinx.com, Robert Hancock <hancock@sedsystems.ca>,
-        William Breathitt Gray <vilhelm.gray@gmail.com>,
-        Syed Nayyar Waris <syednwaris@gmail.com>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        git@xilinx.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <X/bWK1tNB6mtm0Bu@hirez.programming.kicks-ass.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 6, 2021 at 1:27 PM Srinivas Neeli <srinivas.neeli@xilinx.com> wrote:
+On Thu, Jan 07, 2021 at 10:36:43AM +0100, Peter Zijlstra wrote:
+> On Wed, Jan 06, 2021 at 09:59:17AM -0800, Randy Dunlap wrote:
+> > On 1/6/21 6:36 AM, Peter Zijlstra wrote:
+> > > When the compiler fails to inline; we violate nonisntr:
+> > > 
+> > >   vmlinux.o: warning: objtool: __sev_es_nmi_complete()+0xc7: call to sev_es_wr_ghcb_msr() leaves .noinstr.text section
+> > 
+> > I am still seeing (a variant of) this one:
+> > 
+> > vmlinux.o: warning: objtool: __sev_es_nmi_complete()+0xce: call to __wrmsr.constprop.14() leaves .noinstr.text section
+> 
+> Gah, sorry, I managed to mess up my .config :/ /me goes try again.
 
-> Add check to see if gpio-width property does not exceed 32.
-> If it exceeds then return -EINVAL.
->
-> Signed-off-by: Srinivas Neeli <srinivas.neeli@xilinx.com>
+OK, restored your original .config and that did indeed reproduce, the
+below cures it.
 
-Aha
+---
 
-> @@ -591,6 +591,9 @@ static int xgpio_probe(struct platform_device *pdev)
->         if (of_property_read_u32(np, "xlnx,gpio-width", &chip->gpio_width[0]))
->                 chip->gpio_width[0] = 32;
+Subject: x86: __always_inline __{rd,wr}msr()
+From: Peter Zijlstra <peterz@infradead.org>
+Date: Thu Jan  7 11:14:25 CET 2021
 
-This xlnx,gpio-width seems very much like the standard ngpios property
-from Documentation/devicetree/bindings/gpio/gpio.txt
-but I guess not much to do about that now. :/
+When the compiler choses to not inline the trivial MSR helpers:
 
-Do you think you can add support for both?
+  vmlinux.o: warning: objtool: __sev_es_nmi_complete()+0xce: call to __wrmsr.constprop.14() leaves .noinstr.text section
 
-> +       if (chip->gpio_width[0] > 32)
-> +               return -EINVAL;
+Reported-by: Randy Dunlap <rdunlap@infradead.org>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+---
+ arch/x86/include/asm/msr.h |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-This looks OK.
-
-Yours,
-Linus Walleij
+--- a/arch/x86/include/asm/msr.h
++++ b/arch/x86/include/asm/msr.h
+@@ -86,7 +86,7 @@ static inline void do_trace_rdpmc(unsign
+  * think of extending them - you will be slapped with a stinking trout or a frozen
+  * shark will reach you, wherever you are! You've been warned.
+  */
+-static inline unsigned long long notrace __rdmsr(unsigned int msr)
++static __always_inline unsigned long long __rdmsr(unsigned int msr)
+ {
+ 	DECLARE_ARGS(val, low, high);
+ 
+@@ -98,7 +98,7 @@ static inline unsigned long long notrace
+ 	return EAX_EDX_VAL(val, low, high);
+ }
+ 
+-static inline void notrace __wrmsr(unsigned int msr, u32 low, u32 high)
++static __always_inline void __wrmsr(unsigned int msr, u32 low, u32 high)
+ {
+ 	asm volatile("1: wrmsr\n"
+ 		     "2:\n"
