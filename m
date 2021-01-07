@@ -2,86 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5946E2ECCAE
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 10:26:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DE14D2ECCAB
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 10:26:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727360AbhAGJ0S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 04:26:18 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45622 "EHLO mail.kernel.org"
+        id S1727197AbhAGJZd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 04:25:33 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45472 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725900AbhAGJ0Q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 04:26:16 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C032E2312E;
-        Thu,  7 Jan 2021 09:25:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610011535;
-        bh=1aJhxIDD2Vnut5LarTGoKaEJliwkbJvwXYSuBMBrGZs=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=JQRxFcEIL48LnXgW+dc8pOdNhle3qErICG8D7mONmBbWkkrH4bZAaMDeFf/nQUx9Z
-         Mt1VKi4NGttt6aFTbL9WTX/4eJzHOcCITcG7Zjr2qywDAp2x03/2hIWg13g+BbicSN
-         X43UKTnt0818Kf9QXw5qkl59/kQtgzUw5eAkicw1vok/Q4lGUHVmCy9rJIonNjxwi8
-         meZF2ApzWiMRSGj6qHXid1VZems+zzWoLvzVj6xrLmZ0g9TPTxFfmjc1Z7e/XhLM8h
-         Ht9QvZONdvK+e+TMf8RxQEVVXt9FmaR5HAbW0yEmmlkzE+BKAvKHGdj+ce8Yp0qhqH
-         V6J6K3heNbbuA==
-From:   Felipe Balbi <balbi@kernel.org>
-To:     Jerome Brunet <jbrunet@baylibre.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Jerome Brunet <jbrunet@baylibre.com>,
-        Ruslan Bilovol <ruslan.bilovol@gmail.com>,
-        Jack Pham <jackp@codeaurora.org>, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 3/5] usb: gadget: u_audio: factorize ssize to alsa
- fmt conversion
-In-Reply-To: <20210106133652.512178-4-jbrunet@baylibre.com>
-References: <20210106133652.512178-1-jbrunet@baylibre.com>
- <20210106133652.512178-4-jbrunet@baylibre.com>
-Date:   Thu, 07 Jan 2021 11:25:28 +0200
-Message-ID: <87sg7dayk7.fsf@kernel.org>
+        id S1726793AbhAGJZc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Jan 2021 04:25:32 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9798323333;
+        Thu,  7 Jan 2021 09:24:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1610011492;
+        bh=fxwmuL/Qs6SNY83+/gRu2pNV3MxZ86kZSjNwXWJ74FM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=G3Yg1ETV4XfGyMZzQyLllMyfHX/3AoVFknDJvN9dJlWXdVfcE+EjYxxm7d5VmytOc
+         EKlMxR81ioNfI5AOdItG6iKNmzU/Z6Hm5N0OkMr59FKYaiWzECOmXhgCqUKRXk2gD4
+         QSwxGuaAfykbTTwut+i4zEvYTeZ1Lm2JFZ9dXjc0=
+Date:   Thu, 7 Jan 2021 10:26:12 +0100
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Xu Yilun <yilun.xu@intel.com>
+Cc:     andrew@lunn.ch, arnd@arndb.de, lee.jones@linaro.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        trix@redhat.com, lgoncalv@redhat.com, hao.wu@intel.com,
+        matthew.gerlach@intel.com, russell.h.weight@intel.com
+Subject: Re: [RESEND PATCH 2/2] misc: add support for retimers interfaces on
+ Intel MAX 10 BMC
+Message-ID: <X/bTtBUevX5IBPUl@kroah.com>
+References: <1609999628-12748-1-git-send-email-yilun.xu@intel.com>
+ <1609999628-12748-3-git-send-email-yilun.xu@intel.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="=-=-=";
-        micalg=pgp-sha256; protocol="application/pgp-signature"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1609999628-12748-3-git-send-email-yilun.xu@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---=-=-=
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
+On Thu, Jan 07, 2021 at 02:07:08PM +0800, Xu Yilun wrote:
+> This driver supports the ethernet retimers (C827) for the Intel PAC
+> (Programmable Acceleration Card) N3000, which is a FPGA based Smart NIC.
+> 
+> C827 is an Intel(R) Ethernet serdes transceiver chip that supports
+> up to 100G transfer. On Intel PAC N3000 there are 2 C827 chips
+> managed by the Intel MAX 10 BMC firmware. They are configured in 4 ports
+> 10G/25G retimer mode. Host could query their link states and firmware
+> version information via retimer interfaces (Shared registers) on Intel
+> MAX 10 BMC. The driver creates sysfs interfaces for users to query these
+> information.
 
-Jerome Brunet <jbrunet@baylibre.com> writes:
+Networking people, please look at this sysfs file:
 
-> Factorize format related code common to the capture and playback path.
->
-> Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
+> +What:		/sys/bus/platform/devices/n3000bmc-retimer.*.auto/link_statusX
+> +Date:		Jan 2021
+> +KernelVersion:	5.12
+> +Contact:	Xu Yilun <yilun.xu@intel.com>
+> +Description:	Read only. Returns the status of each line side link. "1" for
+> +		link up, "0" for link down.
+> +		Format: "%u".
 
-It's never a good idea to send fixes and cleanups/refactors in the same
-series as that can confuse the person applying your changes.
+as I need your approval to add it because it is not the "normal" way for
+link status to be exported to userspace.
 
-In any case:
+One code issue:
 
-Acked-by: Felipe Balbi <balbi@kernel.org>
+> +#define to_link_attr(dev_attr) \
+> +	container_of(dev_attr, struct link_attr, attr)
+> +
+> +static ssize_t
+> +link_status_show(struct device *dev, struct device_attribute *attr, char *buf)
+> +{
+> +	struct m10bmc_retimer *retimer = dev_get_drvdata(dev);
+> +	struct link_attr *lattr = to_link_attr(attr);
+> +	unsigned int val;
+> +	int ret;
+> +
+> +	ret = m10bmc_sys_read(retimer->m10bmc, M10BMC_PKVL_LSTATUS, &val);
+> +	if (ret)
+> +		return ret;
+> +
+> +	return sysfs_emit(buf, "%u\n",
+> +			  !!(val & BIT((retimer->id << 2) + lattr->index)));
+> +}
+> +
+> +#define link_status_attr(_index)				\
+> +	static struct link_attr link_attr_status##_index =	\
+> +		{ .attr = __ATTR(link_status##_index, 0444,	\
+> +				 link_status_show, NULL),	\
+> +		  .index = (_index) }
 
-=2D-=20
-balbi
+Why is this a "raw" attribute and not a device attribute?
 
---=-=-=
-Content-Type: application/pgp-signature; name="signature.asc"
+Please just use a normal DEVICE_ATTR_RO() macro to make it simpler and
+easier to understand over time, what you are doing here.  I can't
+determine what is happening with this code now...
 
------BEGIN PGP SIGNATURE-----
+thanks,
 
-iQJFBAEBCAAvFiEElLzh7wn96CXwjh2IzL64meEamQYFAl/204gRHGJhbGJpQGtl
-cm5lbC5vcmcACgkQzL64meEamQYfmQ//T8FZigoooZYq/9Mjn79TiP+AZEY1Rfth
-JVyyKtPVtwYDY8zDfEgQGqu3IIG0oOiuhVBegSCnIsg4UxqNFAqFQS7N0SUdlEmU
-CROwa7p9hBJkGIHI49zs7R9gvaT19ngnM20pPDBa1o7xVMIOPb3bqmFMfxChSq/S
-LrFbqQThhvx+635ndaN+6suMZOGzYQ5PR383i++u1cWvouuASt329BwZlh2S3MjA
-hDFpkKNyFdnwRRS+Ndyi9G2NF59NRcSpTA8tMyiTksjweKdT75eZSCJmMlBTMof5
-3nzRe6zrTCtjld80/GTrcLAQjTu/hFRXt2wwHs9TMZrc0H28+MU1SvxYaqvjWcbk
-Hi2OmTcVqi75rnIgVE+OWeCgBeI3SmUoxRpDK1CUxKuMq70wRt1l2KqU93PIBakE
-W3T6+f0z+8PB8il1KTVHT5WCa5sa4bWV/D0vrUWOhujxuXtppbduHi6hz9sA2s/o
-23xhD9LLu1lABjOZ1RCYf2AL3379EsvogOXj/NqKXRAuFXGPONJlwFmP1bxZ+jwj
-nTsJwcivE6eQMu3U4ycx4Y51qBqnhMyHr/RJUBcm/4hXc6O+bMLggSvMM+fSDsGK
-c0ppj716R6ZRPBr13diQFZejum441ZXO2ftn7cptDGwtI+/iNYdOlAQecLyTVsj9
-Uxwu8VTtMOc=
-=e1QP
------END PGP SIGNATURE-----
---=-=-=--
+greg k-h
