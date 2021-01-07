@@ -2,123 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F7752ED108
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 14:43:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D8AB2ED10F
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 14:43:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728705AbhAGNmF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 08:42:05 -0500
-Received: from relay6-d.mail.gandi.net ([217.70.183.198]:56825 "EHLO
-        relay6-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728642AbhAGNmD (ORCPT
+        id S1728755AbhAGNmu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 08:42:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49096 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728736AbhAGNms (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 08:42:03 -0500
-X-Originating-IP: 93.29.109.196
-Received: from localhost.localdomain (196.109.29.93.rev.sfr.net [93.29.109.196])
-        (Authenticated sender: paul.kocialkowski@bootlin.com)
-        by relay6-d.mail.gandi.net (Postfix) with ESMTPSA id 37DC0C0003;
-        Thu,  7 Jan 2021 13:41:20 +0000 (UTC)
-From:   Paul Kocialkowski <paul.kocialkowski@bootlin.com>
-To:     linux-media@vger.kernel.org, linux-rockchip@lists.infradead.org,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Cc:     Jacob Chen <jacob-chen@iotwrt.com>,
-        Ezequiel Garcia <ezequiel@collabora.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Paul Kocialkowski <paul.kocialkowski@bootlin.com>
-Subject: [PATCH 5/5] media: hantro: Add support for the Rockchip PX30
-Date:   Thu,  7 Jan 2021 14:41:01 +0100
-Message-Id: <20210107134101.195426-6-paul.kocialkowski@bootlin.com>
-X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210107134101.195426-1-paul.kocialkowski@bootlin.com>
-References: <20210107134101.195426-1-paul.kocialkowski@bootlin.com>
+        Thu, 7 Jan 2021 08:42:48 -0500
+Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 307FCC0612F5
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Jan 2021 05:42:08 -0800 (PST)
+Received: by mail-wr1-x42e.google.com with SMTP id 91so5683121wrj.7
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Jan 2021 05:42:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bgdev-pl.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=v3qbp3ZMuwuzWhmCass4IRAk8ZAQ/ACJDj2q433vAbg=;
+        b=rZXJ+p7nRYeGl9SWPfS1whanzVkdZoIbBxEWvnNvDx/P/T0FRcoy/6H3OM1Frz/1nx
+         FGRs5WxCLAFOz+d3ap5a+xHiHJQD2cWlqY4yVKXYrNzLqpg3RnnIJt6LT8ApD8Az3bQj
+         u2besmmV3asVZJMii9cWrsryRvCpxgytlYSBlxswLNANwutC01QhPpzXGitSwWh/SjPU
+         TZJIcYYqyWT35SBhhjUnFOInUGdeiQ312TAL/EM6cwWnyOLROZxRXoQtLHqCSCymLyG6
+         zcYVQ83WNbjUOk1j2HifRpdEzc4SKVFMrBfOsWF0yCzIquI0NwYUyKHcS4q7zK6AFU+O
+         oxzQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=v3qbp3ZMuwuzWhmCass4IRAk8ZAQ/ACJDj2q433vAbg=;
+        b=aufka6+hvSorglq7C6xTyhTNyFOkdJk8/xEtmTX5mf6JAznNAS0e7KCLZowQjnKy8Q
+         I3vKrH0gR280J+6NrLESpxCP5zKi/UOEKQG9QQgUo8mlmbxzatNHLp2BTszki8RBx9r2
+         nlVPy2OaY8S8603B+2oZaI5aOxuAFhfXVo7U/lkIogqTNVCbSEA1yGwnBjK4CbibM38U
+         ucvKl3nVKzmhuBY2l4ewtwTbqgrOYLC7ZztfIA/WgdD5k5aI/ULa3px2iQayL5/5UIiP
+         GTlXcD5wiKFUt7wGUdyBwEbNd9pdAE0+2rEqtVHlB6WxFXkydgjqRM5cAq5pgoILSSWs
+         +aVA==
+X-Gm-Message-State: AOAM532q+ShV+I5pPJ8YrvDrusgyW4JkH+K+Va2Ye0eoavYoEsfzDKPF
+        F+08DFmRV/TMbpI70TQKFN32YcT6cp36CQ==
+X-Google-Smtp-Source: ABdhPJyoOYIbXOl7BaXgxmBR2MYncdd+LZgqtPeWdOiP64bRsHmgX+TEX8fh5IC7i0elOaJDb61gew==
+X-Received: by 2002:a5d:4dc6:: with SMTP id f6mr9216369wru.336.1610026926883;
+        Thu, 07 Jan 2021 05:42:06 -0800 (PST)
+Received: from debian-brgl.home (amarseille-656-1-4-167.w90-8.abo.wanadoo.fr. [90.8.158.167])
+        by smtp.gmail.com with ESMTPSA id g184sm7852710wma.16.2021.01.07.05.42.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 07 Jan 2021 05:42:06 -0800 (PST)
+From:   Bartosz Golaszewski <brgl@bgdev.pl>
+To:     Krzysztof Kozlowski <krzk@kernel.org>,
+        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>
+Cc:     linux-kernel@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
+        linux-rtc@vger.kernel.org,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Subject: [PATCH 1/2] rtc: s5m: check the return value of s5m8767_rtc_init_reg()
+Date:   Thu,  7 Jan 2021 14:42:02 +0100
+Message-Id: <20210107134203.9388-1-brgl@bgdev.pl>
+X-Mailer: git-send-email 2.29.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The PX30 SoC includes both the VDPU2 and VEPU2 blocks which are similar
-to the RK3399 (Hantro G1/H1 with shuffled registers).
+From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
 
-Besides taking an extra clock, it also shares an interrupt with the IOMMU
-so it's necessary to request the interrupt shared.
+This function can fail if regmap operations fail so check its return
+value in probe().
 
-Signed-off-by: Paul Kocialkowski <paul.kocialkowski@bootlin.com>
+Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
 ---
- drivers/staging/media/hantro/hantro_drv.c    |  5 +++--
- drivers/staging/media/hantro/hantro_hw.h     |  1 +
- drivers/staging/media/hantro/rk3399_vpu_hw.c | 21 ++++++++++++++++++++
- 3 files changed, 25 insertions(+), 2 deletions(-)
+ drivers/rtc/rtc-s5m.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/drivers/staging/media/hantro/hantro_drv.c b/drivers/staging/media/hantro/hantro_drv.c
-index e5f200e64993..076a7782b476 100644
---- a/drivers/staging/media/hantro/hantro_drv.c
-+++ b/drivers/staging/media/hantro/hantro_drv.c
-@@ -472,6 +472,7 @@ static const struct v4l2_file_operations hantro_fops = {
+diff --git a/drivers/rtc/rtc-s5m.c b/drivers/rtc/rtc-s5m.c
+index eb9dde4095a9..e0011d3cf61b 100644
+--- a/drivers/rtc/rtc-s5m.c
++++ b/drivers/rtc/rtc-s5m.c
+@@ -791,6 +791,8 @@ static int s5m_rtc_probe(struct platform_device *pdev)
+ 	platform_set_drvdata(pdev, info);
  
- static const struct of_device_id of_hantro_match[] = {
- #ifdef CONFIG_VIDEO_HANTRO_ROCKCHIP
-+	{ .compatible = "rockchip,px30-vpu", .data = &px30_vpu_variant, },
- 	{ .compatible = "rockchip,rk3399-vpu", .data = &rk3399_vpu_variant, },
- 	{ .compatible = "rockchip,rk3328-vpu", .data = &rk3328_vpu_variant, },
- 	{ .compatible = "rockchip,rk3288-vpu", .data = &rk3288_vpu_variant, },
-@@ -796,8 +797,8 @@ static int hantro_probe(struct platform_device *pdev)
- 			return -ENXIO;
+ 	ret = s5m8767_rtc_init_reg(info);
++	if (ret)
++		return ret;
  
- 		ret = devm_request_irq(vpu->dev, irq,
--				       vpu->variant->irqs[i].handler, 0,
--				       dev_name(vpu->dev), vpu);
-+				       vpu->variant->irqs[i].handler,
-+				       IRQF_SHARED, dev_name(vpu->dev), vpu);
- 		if (ret) {
- 			dev_err(vpu->dev, "Could not request %s IRQ.\n",
- 				irq_name);
-diff --git a/drivers/staging/media/hantro/hantro_hw.h b/drivers/staging/media/hantro/hantro_hw.h
-index 34c9e4649a25..07f516fd7a2e 100644
---- a/drivers/staging/media/hantro/hantro_hw.h
-+++ b/drivers/staging/media/hantro/hantro_hw.h
-@@ -148,6 +148,7 @@ enum hantro_enc_fmt {
- 	RK3288_VPU_ENC_FMT_UYVY422 = 3,
- };
+ 	device_init_wakeup(&pdev->dev, 1);
  
-+extern const struct hantro_variant px30_vpu_variant;
- extern const struct hantro_variant rk3399_vpu_variant;
- extern const struct hantro_variant rk3328_vpu_variant;
- extern const struct hantro_variant rk3288_vpu_variant;
-diff --git a/drivers/staging/media/hantro/rk3399_vpu_hw.c b/drivers/staging/media/hantro/rk3399_vpu_hw.c
-index 7a7962cf771e..4112f98baa60 100644
---- a/drivers/staging/media/hantro/rk3399_vpu_hw.c
-+++ b/drivers/staging/media/hantro/rk3399_vpu_hw.c
-@@ -220,3 +220,24 @@ const struct hantro_variant rk3328_vpu_variant = {
- 	.clk_names = rk3399_clk_names,
- 	.num_clocks = ARRAY_SIZE(rk3399_clk_names),
- };
-+
-+static const char * const px30_clk_names[] = {
-+	"aclk", "hclk", "sclk"
-+};
-+
-+const struct hantro_variant px30_vpu_variant = {
-+	.enc_offset = 0x0,
-+	.enc_fmts = rk3399_vpu_enc_fmts,
-+	.num_enc_fmts = ARRAY_SIZE(rk3399_vpu_enc_fmts),
-+	.dec_offset = 0x400,
-+	.dec_fmts = rk3399_vpu_dec_fmts,
-+	.num_dec_fmts = ARRAY_SIZE(rk3399_vpu_dec_fmts),
-+	.codec = HANTRO_JPEG_ENCODER | HANTRO_MPEG2_DECODER |
-+		 HANTRO_VP8_DECODER,
-+	.codec_ops = rk3399_vpu_codec_ops,
-+	.irqs = rk3399_irqs,
-+	.num_irqs = ARRAY_SIZE(rk3399_irqs),
-+	.init = rk3399_vpu_hw_init,
-+	.clk_names = px30_clk_names,
-+	.num_clocks = ARRAY_SIZE(px30_clk_names)
-+};
 -- 
-2.30.0
+2.29.1
 
