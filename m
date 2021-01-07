@@ -2,142 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D24712ED3DB
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 17:02:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D9E7C2ED3E7
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 17:05:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728362AbhAGQCe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 11:02:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42548 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726165AbhAGQCd (ORCPT
+        id S1728576AbhAGQEg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 11:04:36 -0500
+Received: from mail-40131.protonmail.ch ([185.70.40.131]:55835 "EHLO
+        mail-40131.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726780AbhAGQEf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 11:02:33 -0500
-Received: from mail-wr1-x449.google.com (mail-wr1-x449.google.com [IPv6:2a00:1450:4864:20::449])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36307C0612F8
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Jan 2021 08:01:53 -0800 (PST)
-Received: by mail-wr1-x449.google.com with SMTP id g17so2818227wrr.11
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Jan 2021 08:01:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:message-id:mime-version:subject:from:to:cc;
-        bh=cIq2VE7GHy/A2isTfDsjFX2FggL4BJiiCnO6T+jBwiM=;
-        b=V2dITOA4ZjQIh2CP/4hdMBOhHdPmn6LvL5o1BQmeXUJWYStzYxOyeukrKxJFrwD7I5
-         PWWjqrFvsPibnGIuA9XfKs2wn2Bu5zrka5JWFF1njoWkmqfZvWZCTubMCUYP9JHYTLF/
-         t31kkKtUmhSwZ9ARkQpjC+ec2pnVBix1wPsb2jB3nQlL6iZV907N98AY7YG0CKM/brIh
-         q8TqXjUY1FiHrtCGpOZ4wKJrYZASTlk+Z4KsvxXqk1BWaMf4pXW2y/hzx0nmGWS618uW
-         i+qeKOQdDicunc596/MeRoR2lOh5f09ia0+QO6tcP4xmLfAK6m4FnshJxxJA1cGOEKoC
-         bEnQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
-         :to:cc;
-        bh=cIq2VE7GHy/A2isTfDsjFX2FggL4BJiiCnO6T+jBwiM=;
-        b=kpBPARnTV/pB3Biut92fzYn5L2hk3LsI0M2XgoQzr8IwYB9kwJn6PK1ZLJn8CIZpyb
-         ++scLdzr1gKBSiUZJiA9AbbYgQPxNvlTAyfMD5f7mdYqy1PmjjbNeaBellHFrJ7hAGNg
-         YjTPjJuUOAxKtG/QoaVp3Uh/hZSfENlSOMVyNbYZOTbmmQYgyjY3yIF2HzWxzDJxVH1f
-         jCBKNWKdurO/df2GGpjMy4gqt72lbeO23m4jPmFLHBW6KNu3fNGrNi2Ze60Qx3cdBt9M
-         woZjoYMsnfBmrUa0HZoSpsneHF2/hmx+MA5BGGpGsabPGQDg0MZCyvtWzf424tYiITXZ
-         kZ4w==
-X-Gm-Message-State: AOAM530QohNRPn04LEkWn4rXLtsBTPzqUKpTD1Uh6s5RFmBcyWnUTA/T
-        sPVbRcoXfyEjY09MoPwEW121auFMNyaym4L3
-X-Google-Smtp-Source: ABdhPJwA5EIT8h4WB2E34cwYPYToSiJcQ93GEB2pMHddQLY8+1saxvnZdXIrKJ6e9sf9dluJGXMEXRjObypGj0Hz
-Sender: "andreyknvl via sendgmr" <andreyknvl@andreyknvl3.muc.corp.google.com>
-X-Received: from andreyknvl3.muc.corp.google.com ([2a00:79e0:15:13:7220:84ff:fe09:7e9d])
- (user=andreyknvl job=sendgmr) by 2002:a1c:2c89:: with SMTP id
- s131mr1458471wms.0.1610035310903; Thu, 07 Jan 2021 08:01:50 -0800 (PST)
-Date:   Thu,  7 Jan 2021 17:01:44 +0100
-Message-Id: <04978189d40307e979be61c458f4944b61134198.1610035117.git.andreyknvl@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.29.2.729.g45daf8777d-goog
-Subject: [PATCH v2] kcov, usb: hide in_serving_softirq checks in __usb_hcd_giveback_urb
-From:   Andrey Konovalov <andreyknvl@google.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kasan-dev@googlegroups.com, Dmitry Vyukov <dvyukov@google.com>,
-        Alexander Potapenko <glider@google.com>,
-        Marco Elver <elver@google.com>,
-        Andrey Konovalov <andreyknvl@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        Thu, 7 Jan 2021 11:04:35 -0500
+Date:   Thu, 07 Jan 2021 16:03:46 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
+        s=protonmail; t=1610035434;
+        bh=NjLJYtrwGi8fl20fDTPPgaGJm/yzsWtQLjMz/qlJmLk=;
+        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
+        b=YSQTm42DGqX8ZPXsVtyGVhjqPm5q6vCLEN4Sx7EiO87N1onFud9/81022/13EsdnF
+         k2mNEwH75SbWPm4WmpU881Bh1bhkZsZjuiyb/Fi/cvECB2h++QvBkqz8cKVXiY8OrJ
+         t7TOyibNkOhB6qtBsgpho1hDLZw3kB2JvV8sXEU0=
+To:     Hans de Goede <hdegoede@redhat.com>
+From:   =?utf-8?Q?Barnab=C3=A1s_P=C5=91cze?= <pobrn@protonmail.com>
+Cc:     Perry Yuan <Perry.Yuan@dell.com>,
+        "mgross@linux.intel.com" <mgross@linux.intel.com>,
+        "platform-driver-x86@vger.kernel.org" 
+        <platform-driver-x86@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Limonciello Mario <Mario.Limonciello@dell.com>
+Reply-To: =?utf-8?Q?Barnab=C3=A1s_P=C5=91cze?= <pobrn@protonmail.com>
+Subject: Re: [PATCH v2 1/2] platform/x86: dell-privacy: Add support for Dell hardware privacy
+Message-ID: <kt8PP3Pj3sI0-gL28bw5rPCvcv3S8STD0pMFoQUrixarFRv_36In5dPDtrOtSSJk2WhEo4FN9duHO_pNG8kDDPng06mDOX9UvmXeaPNI6sE=@protonmail.com>
+In-Reply-To: <d1d31281-d5c8-ea09-9e2d-1c5acb35deef@redhat.com>
+References: <20201228132855.17544-1-Perry_Yuan@Dell.com> <d1d31281-d5c8-ea09-9e2d-1c5acb35deef@redhat.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM shortcircuit=no
+        autolearn=disabled version=3.4.4
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
+        mailout.protonmail.ch
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Done opencode in_serving_softirq() checks in __usb_hcd_giveback_urb() to
-avoid cluttering the code, hide them in kcov helpers instead.
+Hi
 
-Fixes: aee9ddb1d371 ("kcov, usb: only collect coverage from __usb_hcd_giveback_urb in softirq")
-Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
----
 
-Changes v1->v2:
-- Fix a typo in the commit description and in a comment in the patch.
+2021. janu=C3=A1r 7., cs=C3=BCt=C3=B6rt=C3=B6k 0:43 keltez=C3=A9ssel, Hans =
+de Goede =C3=ADrta:
 
----
- drivers/usb/core/hcd.c |  8 +++-----
- include/linux/kcov.h   | 21 +++++++++++++++++++++
- 2 files changed, 24 insertions(+), 5 deletions(-)
+> Hi Perry,
+>
+> On 12/28/20 2:28 PM, Perry Yuan wrote:
+>
+> > From: Perry Yuan perry_yuan@dell.com
+> > add support for dell privacy driver for the dell units equipped
+> > hardware privacy design, which protect users privacy
+> > of audio and camera from hardware level. once the audio or camera
+> > privacy mode enabled, any applications will not get any audio or
+> > video stream.
+> > when user pressed ctrl+F4 hotkey, audio privacy mode will be
+> > enabled,Micmute led will be also changed accordingly.
+> > The micmute led is fully controlled by hardware & EC.
+> > and camera mute hotkey is ctrl+F9.currently design only emmit
+> > SW_CAMERA_LENS_COVER event while the camera LENS shutter will be
+> > changed by EC & HW control.
+> > *The flow is like this:
+> >
+> > 1.  User presses key. HW does stuff with this key (timeout is started)
+> > 2.  Event is emitted from FW
+> > 3.  Event received by dell-privacy
+> > 4.  KEY_MICMUTE emitted from dell-privacy
+> > 5.  Userland picks up key and modifies kcontrol for SW mute
+> > 6.  Codec kernel driver catches and calls ledtrig_audio_set, like this:
+> >     ledtrig_audio_set(LED_AUDIO_MICMUTE,
+> >     rt715->micmute_led ? LED_ON :LED_OFF);
+> >
+> > 7.  If "LED" is set to on dell-privacy notifies ec,
+> >     and timeout is cancelled,HW mic mute activated.
+> >
+> >
+> > Signed-off-by: Perry Yuan perry_yuan@dell.com
+> > Signed-off-by: Limonciello Mario mario_limonciello@dell.com
+>
+> Thank you for your patch, please send a new version addressing
+> Barnab=C3=A1s' review comment and including the second patch of the
+> series.
+> [...]
 
-diff --git a/drivers/usb/core/hcd.c b/drivers/usb/core/hcd.c
-index 60886a7464c3..ad5a0f405a75 100644
---- a/drivers/usb/core/hcd.c
-+++ b/drivers/usb/core/hcd.c
-@@ -1649,14 +1649,12 @@ static void __usb_hcd_giveback_urb(struct urb *urb)
- 	urb->status = status;
- 	/*
- 	 * This function can be called in task context inside another remote
--	 * coverage collection section, but KCOV doesn't support that kind of
-+	 * coverage collection section, but kcov doesn't support that kind of
- 	 * recursion yet. Only collect coverage in softirq context for now.
- 	 */
--	if (in_serving_softirq())
--		kcov_remote_start_usb((u64)urb->dev->bus->busnum);
-+	kcov_remote_start_usb_softirq((u64)urb->dev->bus->busnum);
- 	urb->complete(urb);
--	if (in_serving_softirq())
--		kcov_remote_stop();
-+	kcov_remote_stop_softirq();
- 
- 	usb_anchor_resume_wakeups(anchor);
- 	atomic_dec(&urb->use_count);
-diff --git a/include/linux/kcov.h b/include/linux/kcov.h
-index a10e84707d82..18306ef8ad5a 100644
---- a/include/linux/kcov.h
-+++ b/include/linux/kcov.h
-@@ -52,6 +52,25 @@ static inline void kcov_remote_start_usb(u64 id)
- 	kcov_remote_start(kcov_remote_handle(KCOV_SUBSYSTEM_USB, id));
- }
- 
-+/*
-+ * The softirq flavor of kcov_remote_*() functions is introduced as a temporary
-+ * workaround for kcov's lack of nested remote coverage sections support in
-+ * task context. Adding suport for nested sections is tracked in:
-+ * https://bugzilla.kernel.org/show_bug.cgi?id=210337
-+ */
-+
-+static inline void kcov_remote_start_usb_softirq(u64 id)
-+{
-+	if (in_serving_softirq())
-+		kcov_remote_start_usb(id);
-+}
-+
-+static inline void kcov_remote_stop_softirq(void)
-+{
-+	if (in_serving_softirq())
-+		kcov_remote_stop();
-+}
-+
- #else
- 
- static inline void kcov_task_init(struct task_struct *t) {}
-@@ -66,6 +85,8 @@ static inline u64 kcov_common_handle(void)
- }
- static inline void kcov_remote_start_common(u64 id) {}
- static inline void kcov_remote_start_usb(u64 id) {}
-+static inline void kcov_remote_start_usb_softirq(u64 id) {}
-+static inline void kcov_remote_stop_softirq(void) {}
- 
- #endif /* CONFIG_KCOV */
- #endif /* _LINUX_KCOV_H */
--- 
-2.29.2.729.g45daf8777d-goog
+I think first something needs to be figured out regarding
+the integration with the rest of the Dell modules. I feel
+that list is not a desirable way to do it.
 
+
+Regards,
+Barnab=C3=A1s P=C5=91cze
