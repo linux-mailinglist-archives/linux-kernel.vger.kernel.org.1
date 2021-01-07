@@ -2,197 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E3882ED183
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 15:15:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3896B2ED185
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 15:15:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728112AbhAGOOk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 09:14:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54012 "EHLO
+        id S1728473AbhAGOPC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 09:15:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54072 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725835AbhAGOOj (ORCPT
+        with ESMTP id S1728145AbhAGOPB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 09:14:39 -0500
-Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76558C0612F4;
-        Thu,  7 Jan 2021 06:13:59 -0800 (PST)
-Received: by mail-pj1-x1030.google.com with SMTP id iq13so1537954pjb.3;
-        Thu, 07 Jan 2021 06:13:59 -0800 (PST)
+        Thu, 7 Jan 2021 09:15:01 -0500
+Received: from mail-il1-x12c.google.com (mail-il1-x12c.google.com [IPv6:2607:f8b0:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D69C9C0612F6
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Jan 2021 06:14:21 -0800 (PST)
+Received: by mail-il1-x12c.google.com with SMTP id q5so6800590ilc.10
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Jan 2021 06:14:21 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=8KQjDPhISIzSyLBDTkOXvkJNOnLb//j0j00T7o4MgxE=;
-        b=Ceg9w/sUSD3qvx5BnYc8euP+QYq4ByLULjkiMUbfUKOPv9xvbExJiJaC0YQvOUIXrb
-         sbtdzprZJa+q3XF6kCo7R7muv53FrhH7Y0SyqtSC5pWml2uyvXXQGTvwaVgPkcEPFDeC
-         GuygtxvpLraqXZP47LFTXI9tFu4RkcMQbCqaTs4fwXk4IykFNqmRwJcbOPvbEvs7bZpj
-         RPRh2M33CIDQ3+x5oES+Ey7o5AosCcW7xaytjpveQycs/AE1uvlBy2ny0KdZH/NePtzA
-         UJWLyVocHfcdcLvel98xOpcJA9HqIu+YS5j3OHR6VcCjSeN2XmjxR9JjF26cOzjfuupV
-         bLQQ==
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=5EKjm5VT/QdJn/B1BYcuiBIUG9oQpN1/AMx3O8ZLC64=;
+        b=LF4UpleR6FsIZbyEpjiLbQPE887zOCnrGlHR7ccv+cu7FlMU1Yo0SbefHfeSAgdlMR
+         Ldk5bvNrxJgg/hf9f0gZ+xMoDsCQ22tTW1nM1jLgelWwGVg4lSQdm+o+adk3MQZrjP26
+         oyA4A0yU9yq7NCGzqcSM5ysirka/OI141IFrs=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=8KQjDPhISIzSyLBDTkOXvkJNOnLb//j0j00T7o4MgxE=;
-        b=XNH6pL2tMzu8JvsPBGeE90IaSGimVEL1IeRj30sjEQA9jbOXJbHMCxk8gqyNMRrzeQ
-         dTCO7mY49LPROO9P8RrPyWOWCLaBsBXCry7VgAaDEluGT3yCj7TlZdq/LMg8mhjG5a+B
-         oxqnFB7LjuOfLhGentl4xQLzEg3CwREYfl7+Mn3s0Rs2IM+wsSYlJbkHvW0Lz+qas8MU
-         007UmipX+6v5//mkwJobgS3jEkgbsN06vQq+VS+JdxioraKi0NlImbxMyKEXc2Hx6y9z
-         5NjcYoWRmVHtMKMLtX3sUqeRZ29hDVE/MfkR830ooXAtK+bKEiJMReKeP7KzL6GKwCKU
-         FY+g==
-X-Gm-Message-State: AOAM531hPemD0twNNjQ5u8QLQq9H7LgY4Lpjob1EGmLcJ6Onb0CkrLMv
-        58C8LLnlJMCNbPPjNl+34ozsqW5ooDjo/d9x
-X-Google-Smtp-Source: ABdhPJwVFeI6e7qT1LWBz0K59xmj1PjTYjsgPaS49JY6LJfIfRPiupttXLY//VFhtErWQa5iRU3EBA==
-X-Received: by 2002:a17:90a:c306:: with SMTP id g6mr9680670pjt.104.1610028838445;
-        Thu, 07 Jan 2021 06:13:58 -0800 (PST)
-Received: from [192.168.0.104] ([49.207.197.164])
-        by smtp.gmail.com with ESMTPSA id 193sm6228358pfz.36.2021.01.07.06.13.55
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=5EKjm5VT/QdJn/B1BYcuiBIUG9oQpN1/AMx3O8ZLC64=;
+        b=gjhkoUuIAj5jB0SjxGVhEO9lo8xPgzpKE7SBYF+oKEwl/AR2wtpBWxnvWVKBzASbN9
+         m09aLY6ZvgYxycL6mynGP09tTbBvgif6Nx2Sr3etkIklVcJxNnw9IbWTCCj0+S3yAER9
+         bOsLDnRu8egdLPKUHe5JXcVz9v9W7KiTtaS/WvsKOxYktf3+6r0peOAuY1TSY4xdqu5w
+         +K29gvBbiA+fl27cPKRJvwjyaw80os0mXTFitiX4wZfDAsh1VFN2mHtiX+dVp9LxA5tp
+         ToJGHfUMr+nsnqBV4rodsfATViAGdWjsGVRyVUUjhA/bu/9SPpdvsp7/9f92vnVot4GU
+         VICw==
+X-Gm-Message-State: AOAM531rGTRUBDmmOAeyG78J2FJDxcMJA0Xr8D8rQ3BWf9lss9gLzuJu
+        NnIJehFbsApZ7IKYaj9p1TlQ901QDNxeFw==
+X-Google-Smtp-Source: ABdhPJz6CUesgbH9d5UachWoJRwU67x/VJca3mG+coB9TnBt2W/rftnYHZnPMBxPxRU6txMnFl3Lhw==
+X-Received: by 2002:a92:d350:: with SMTP id a16mr7329026ilh.262.1610028860878;
+        Thu, 07 Jan 2021 06:14:20 -0800 (PST)
+Received: from mail-io1-f50.google.com (mail-io1-f50.google.com. [209.85.166.50])
+        by smtp.gmail.com with ESMTPSA id 14sm4659188ilz.7.2021.01.07.06.14.19
+        for <linux-kernel@vger.kernel.org>
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 07 Jan 2021 06:13:57 -0800 (PST)
-Subject: Re: [PATCH v2 05/15] usb: misc: emi26: update to use
- usb_control_msg_send()
-To:     Johan Hovold <johan@kernel.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20201130011819.2576481-1-anant.thazhemadam@gmail.com>
- <20201130012847.2579463-1-anant.thazhemadam@gmail.com>
- <X8pKmmdvO0cIQXnL@localhost>
-From:   Anant Thazhemadam <anant.thazhemadam@gmail.com>
-Message-ID: <6806f8e4-c2f7-3c6a-b855-3f87ab8d9e22@gmail.com>
-Date:   Thu, 7 Jan 2021 19:43:54 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Thu, 07 Jan 2021 06:14:19 -0800 (PST)
+Received: by mail-io1-f50.google.com with SMTP id m23so6295072ioy.2
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Jan 2021 06:14:19 -0800 (PST)
+X-Received: by 2002:a6b:cd02:: with SMTP id d2mr1461830iog.4.1610028858785;
+ Thu, 07 Jan 2021 06:14:18 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <X8pKmmdvO0cIQXnL@localhost>
-Content-Type: text/plain; charset=windows-1252
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+References: <20201125221917.150463-1-ribalda@chromium.org> <20201130083410.GD32234@lst.de>
+ <20201201033658.GE3723071@google.com> <20201201144916.GA14682@lst.de>
+ <CAAFQd5BBEbmENrrZ-vMK9cKOap19XWmfcxwrxKfjWx-wEew8rg@mail.gmail.com>
+ <20201208071320.GA1667627@google.com> <20201209111639.GB22806@lst.de>
+In-Reply-To: <20201209111639.GB22806@lst.de>
+From:   Ricardo Ribalda <ribalda@chromium.org>
+Date:   Thu, 7 Jan 2021 15:14:08 +0100
+X-Gmail-Original-Message-ID: <CANiDSCtsOdJUK3r_t8UNKhh7Px0ANNFJkuwM1fBgZ7wnVh0JFA@mail.gmail.com>
+Message-ID: <CANiDSCtsOdJUK3r_t8UNKhh7Px0ANNFJkuwM1fBgZ7wnVh0JFA@mail.gmail.com>
+Subject: Re: [PATCH v3 5/6] media: uvcvideo: Use dma_alloc_noncontiguos API
+To:     ". Christoph Hellwig" <hch@lst.de>
+Cc:     Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
+        Tomasz Figa <tfiga@chromium.org>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        IOMMU DRIVERS <iommu@lists.linux-foundation.org>,
+        Joerg Roedel <joro@8bytes.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        Sergey Senozhatsky <senozhatsky@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Christoph
 
-On 04/12/20 8:11 pm, Johan Hovold wrote:
-> On Mon, Nov 30, 2020 at 06:58:47AM +0530, Anant Thazhemadam wrote:
->> The newer usb_control_msg_{send|recv}() API are an improvement on the
->> existing usb_control_msg() as it ensures that a short read/write is treated
->> as an error,
-> Short writes have always been treated as an error. The new send helper
-> only changes the return value from the transfer size to 0.
+Happy new year!
+
+On Wed, Dec 9, 2020 at 12:16 PM . Christoph Hellwig <hch@lst.de> wrote:
 >
-> And this driver never reads.
+> On Tue, Dec 08, 2020 at 04:13:20PM +0900, Sergey Senozhatsky wrote:
+> > On (20/12/08 13:54), Tomasz Figa wrote:
+> > >
+> > > In any case, Sergey is going to share a preliminary patch on how the
+> > > current API would be used in the V4L2 videobuf2 framework. That should
+> > > give us more input on how such a helper could look.
+> >
+> > HUGE apologies for the previous screw up! I replied in the
+> > gmail web-interface and that did not work out as expected
+> > (at all, big times).
 >
-> Try to describe the motivation for changing this driver which is to
-> avoid the explicit kmemdup().
+> Actually the previous mail was a mime multipart one, and the plain text
+> version displayed just fine here.  My the gmail engineers finally learned
+> something after all.
 >
-Thank you. I will try and put a more appropriate commit message.
->> data can be used off the stack, and raw usb pipes need not be
->> created in the calling functions.
->> For this reason, the instance of usb_control_msg() has been replaced with
->> usb_control_msg_send() appropriately.
->>
->> Signed-off-by: Anant Thazhemadam <anant.thazhemadam@gmail.com>
->> ---
->>  drivers/usb/misc/emi26.c | 31 ++++++++-----------------------
->>  1 file changed, 8 insertions(+), 23 deletions(-)
->>
->> diff --git a/drivers/usb/misc/emi26.c b/drivers/usb/misc/emi26.c
->> index 24d841850e05..1dd024507f40 100644
->> --- a/drivers/usb/misc/emi26.c
->> +++ b/drivers/usb/misc/emi26.c
->> @@ -27,7 +27,7 @@
->>  #define INTERNAL_RAM(address)   (address <= MAX_INTERNAL_ADDRESS)
->>  
->>  static int emi26_writememory( struct usb_device *dev, int address,
->> -			      const unsigned char *data, int length,
->> +			      const void *data, int length,
-> Why is this needed?
+> > Another thing to notice is that the new API requires us to have two execution branches
+> > in allocators - one for the current API; and one for the new API (if it's supported and
+> > if user-space requested non-coherent allocation).
 >
->>  			      __u8 bRequest);
->>  static int emi26_set_reset(struct usb_device *dev, unsigned char reset_bit);
->>  static int emi26_load_firmware (struct usb_device *dev);
->> @@ -35,22 +35,12 @@ static int emi26_probe(struct usb_interface *intf, const struct usb_device_id *i
->>  static void emi26_disconnect(struct usb_interface *intf);
->>  
->>  /* thanks to drivers/usb/serial/keyspan_pda.c code */
->> -static int emi26_writememory (struct usb_device *dev, int address,
->> -			      const unsigned char *data, int length,
->> +static int emi26_writememory(struct usb_device *dev, int address,
->> +			      const void *data, int length,
->>  			      __u8 request)
->>  {
->> -	int result;
->> -	unsigned char *buffer =  kmemdup(data, length, GFP_KERNEL);
->> -
->> -	if (!buffer) {
->> -		dev_err(&dev->dev, "kmalloc(%d) failed.\n", length);
->> -		return -ENOMEM;
->> -	}
->> -	/* Note: usb_control_msg returns negative value on error or length of the
->> -	 * 		 data that was written! */
->> -	result = usb_control_msg (dev, usb_sndctrlpipe(dev, 0), request, 0x40, address, 0, buffer, length, 300);
->> -	kfree (buffer);
->> -	return result;
->> +	return usb_control_msg_send(dev, 0, request, 0x40, address, 0,
->> +				    data, length, 300, GFP_KERNEL);
-> So you're changing the return value on success from length to 0 here.
-> Did you make sure that all callers can handle that?
-
-All the callers presently contain only an error checking condition for a return value < 0,
-which still applies even with this change. So this wouldn't raise any issues.
-
->>  }
->>  
->>  /* thanks to drivers/usb/serial/keyspan_pda.c code */
->> @@ -77,11 +67,7 @@ static int emi26_load_firmware (struct usb_device *dev)
->>  	int err = -ENOMEM;
->>  	int i;
->>  	__u32 addr;	/* Address to write */
->> -	__u8 *buf;
->> -
->> -	buf = kmalloc(FW_LOAD_SIZE, GFP_KERNEL);
->> -	if (!buf)
->> -		goto wraperr;
->> +	__u8 buf[FW_LOAD_SIZE];
-> As the build bots reported, you must not put large structures like this
-> on the stack.
-
-Understood. 
-But I'm considering dropping this change (and the one proposed for emi62)
-altogether in v3 - since these would end up requiring memory to dynamically allocated
-twice for the same purpose.
-However, if you still think the pros of updating this (and emi62) outweigh the cons,
-please let me know, and I'll make sure to send in another version fixing it.
-
-
->>  
->>  	err = request_ihex_firmware(&loader_fw, "emi26/loader.fw", &dev->dev);
->>  	if (err)
->> @@ -133,11 +119,11 @@ static int emi26_load_firmware (struct usb_device *dev)
->>  
->>  		/* intel hex records are terminated with type 0 element */
->>  		while (rec && (i + be16_to_cpu(rec->len) < FW_LOAD_SIZE)) {
->> -			memcpy(buf + i, rec->data, be16_to_cpu(rec->len));
->> +			memcpy(&buf[i], rec->data, be16_to_cpu(rec->len));
->>  			i += be16_to_cpu(rec->len);
->>  			rec = ihex_next_binrec(rec);
->>  		}
->> -		err = emi26_writememory(dev, addr, buf, i, ANCHOR_LOAD_FPGA);
->> +		err = emi26_writememory(dev, addr, &buf, i, ANCHOR_LOAD_FPGA);
->>  		if (err < 0)
->>  			goto wraperr;
->>  	} while (rec);
->> @@ -211,7 +197,6 @@ static int emi26_load_firmware (struct usb_device *dev)
->>  	release_firmware(bitstream_fw);
->>  	release_firmware(firmware_fw);
->>  
->> -	kfree(buf);
->>  	return err;
->>  }
-> Looks good otherwise.
+> So I think we do want these branches for coherent vs non-coherent as they
+> have very different semantics and I do not think that hiding them under
+> the same API helps people to understand those vastly different semantics.
 >
-> Johan
+> OTOH we should look into a fallback for DMA API instances that do not
+> support the discontigous allocations.
+>
+> I think between your comments and those from Ricardo I have a good idea
+> for a somewhat updated API.  I'll try to post something in the next days.
 
-Thanks,
-Anant
+Did you have time to look into this?
 
+No hurry, I just want to make sure that I didn't miss anything ;)
+
+Best regards!
+
+
+
+-- 
+Ricardo Ribalda
