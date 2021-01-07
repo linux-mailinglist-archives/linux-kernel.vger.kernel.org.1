@@ -2,164 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E9FC32EE765
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 22:06:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C6982EE76C
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 22:08:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727222AbhAGVGi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 16:06:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33872 "EHLO
+        id S1727535AbhAGVIE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 16:08:04 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34094 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725944AbhAGVGi (ORCPT
+        with ESMTP id S1727128AbhAGVID (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 16:06:38 -0500
-Received: from mail-qt1-x829.google.com (mail-qt1-x829.google.com [IPv6:2607:f8b0:4864:20::829])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0A53C0612F6
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Jan 2021 13:05:57 -0800 (PST)
-Received: by mail-qt1-x829.google.com with SMTP id v5so5241345qtv.7
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Jan 2021 13:05:57 -0800 (PST)
+        Thu, 7 Jan 2021 16:08:03 -0500
+Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8EF97C0612F4
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Jan 2021 13:07:23 -0800 (PST)
+Received: by mail-pj1-x102b.google.com with SMTP id f14so2279391pju.4
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Jan 2021 13:07:23 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=jonmasters-org.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:organization:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=FadgRMCjqSfK1p2dGVB6UAyZWKTELanycTILncMf0V4=;
-        b=sGo2d1y0YMj5ISVaYjlg8g3gbdADAkFDo37t100vvlXkZ7fFkSjTKQlrRrDsWKrCUM
-         B9fjXz6qkpzTNKXFbHd55FTLqcolca7TUsDvwQ7Qw1p07zeCbweNnbTQPGLqeJC4qfLk
-         pfsdgzeSMhVkyGhAvRqERvfnbdNMRB62RIUJlS2xH18378mAiB/Lihu8zG8NQhZs0PSb
-         M1dVPiSWzEk+H73tJds4x3i+3rBdMB8kyna/2wZju6dAE98GHRyraV9Ep1HAVl7e/LJB
-         BoWdt9dOB9e8LsAFNOmGTiNscYDBr5FnTi232BdHBrW3cbyDUb9qEdhBSddIfGWn7Vtu
-         R27g==
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=AycS9z5H5EArYSxCaTn3F0nB+eORScUBujc0QAwlLzw=;
+        b=Jqk7mULK+iMpB4jFuRtzuf1CrwqB6iEZd188K1psKIbbPNJG2x47K7Dz2mYD9AGzNj
+         Dm4LwZ/+eG0GLcZuZMj1CqssDHCnsSYgDlF4ShZ5bQ7/eLXF9y06u9s/y8Ty4APMBj1g
+         7+bWiu/o02cuUh8emjrYQzeNZjQ6DR+D1vG8A=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:organization
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=FadgRMCjqSfK1p2dGVB6UAyZWKTELanycTILncMf0V4=;
-        b=EVHjIvPSzrKHdDPo00BuOy0n3CK+1KdcFXdm9UhbUcCLXsyJ5xtzI/jWDNQ4OWNuAb
-         fGXFpgpE64j2dWKtijqA5wCtTavH7JX7VA6cwA7pyYo3QONMO0w+wB4/GxUlA9uybNLt
-         3/BtJi0H0BtZQnNd0kRDSOk02L8E0jHmbJQR5cEc6h1hC+FiJ/zZgxu8vZxHz7m1rYoe
-         gr/R2bda/IvFK2W4ivWnJ9HdkDFPZK358lBrENk2RCrr3WiCykVK6L+ONVF1zw7NOBD6
-         Bql4lWGZA65Ux35B9SLgtzOUP/3Au3hp1hjUyBWwWQJ05wltxLb55T16wRem51FyI4FC
-         7fcA==
-X-Gm-Message-State: AOAM530KRZvHkpKBuwtb3qZzOZS2EH+kaN0zww280rXxKU2Vz0L3DLlo
-        4qye9SWrDzzBafQEAFpJ5MpaCA==
-X-Google-Smtp-Source: ABdhPJxzXggeoNZjF84y+uAKodjui60LUjdVr31/hQwxp5mzN5dQTNGemD+VGIcUnS8c9gEW3/0GGA==
-X-Received: by 2002:ac8:5514:: with SMTP id j20mr479421qtq.387.1610053556805;
-        Thu, 07 Jan 2021 13:05:56 -0800 (PST)
-Received: from independence.bos.jonmasters.org (Boston.jonmasters.org. [50.195.43.97])
-        by smtp.gmail.com with ESMTPSA id z20sm3873243qkz.37.2021.01.07.13.05.54
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 07 Jan 2021 13:05:56 -0800 (PST)
-Subject: Re: [PATCH] arm64: PCI: Enable SMC conduit
-To:     Will Deacon <will@kernel.org>,
-        Jeremy Linton <jeremy.linton@arm.com>
-Cc:     mark.rutland@arm.com, lorenzo.pieralisi@arm.com,
-        linux-pci@vger.kernel.org, sudeep.holla@arm.com,
-        linux-kernel@vger.kernel.org, catalin.marinas@arm.com,
-        bhelgaas@google.com, linux-arm-kernel@lists.infradead.org
-References: <20210105045735.1709825-1-jeremy.linton@arm.com>
- <20210107181416.GA3536@willie-the-truck>
-From:   Jon Masters <jcm@jonmasters.org>
-Organization: World Organi{s,z}ation of Broken Dreams
-Message-ID: <56375cd8-8e11-aba6-9e11-1e0ec546e423@jonmasters.org>
-Date:   Thu, 7 Jan 2021 16:05:48 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.2.2
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=AycS9z5H5EArYSxCaTn3F0nB+eORScUBujc0QAwlLzw=;
+        b=unt0Wq+ULNCTUU6Cx7csb0XnnndqMEMVwqo/Dd5qrEqlS9rYXc0iBp8mh26gMwnuV2
+         0NxQpe2wt10gojMADEa5ULe9Il5dv12surFmUyblrBmKx74uVPocxkZMlTsjiK105DT+
+         9Q2vKv2U066L4RZWLmpfnBTzxVZS5XRMpMYPVE7xtZ4oIrfn7plCJAk35a4hMu+eWrDh
+         nsn9u4AXxJjIGDNSk1TY8rFqA+JMZZGqk/TpFEB+OgtMikz8D440fLeStIhSTbRRoiMf
+         Fs7dxgueNd7NQ/eOHX++hVWufcv2M3wxvinG3XkSRs0M3gTpjQU5nJLT7w0thejzVMln
+         vSyA==
+X-Gm-Message-State: AOAM5301/Qlcyw/Him9w0GWalICQJW+gwtYnG6CbcPCVRSNzoiKIrW5G
+        tmImivUQZOHe4hApfLSlKZ+D6A==
+X-Google-Smtp-Source: ABdhPJx3/TFeN/AstWxBEfrnwhATMveAU7tRlhBMrs2seRKjvwVq1MCf2BbOASd0c2+qyJ1X5kKakQ==
+X-Received: by 2002:a17:902:d38b:b029:db:e003:3ff0 with SMTP id e11-20020a170902d38bb02900dbe0033ff0mr635386pld.7.1610053643172;
+        Thu, 07 Jan 2021 13:07:23 -0800 (PST)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id d1sm7103672pgb.13.2021.01.07.13.07.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 07 Jan 2021 13:07:22 -0800 (PST)
+Date:   Thu, 7 Jan 2021 13:07:21 -0800
+From:   Kees Cook <keescook@chromium.org>
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        linux-kernel@vger.kernel.org, aryabinin@virtuozzo.com,
+        dvyukov@google.com
+Subject: Re: [PATCH] mm/uaccess: Use 'unsigned long' to placate UBSAN
+ warnings, again
+Message-ID: <202101071306.5A39AAC3A7@keescook>
+References: <590998aa9cc50f431343f76cae72b2abf8ac1fdd.1608699683.git.jpoimboe@redhat.com>
+ <20210104151317.GR3021@hirez.programming.kicks-ass.net>
+ <202101061536.C4A93132@keescook>
+ <d5b192b2-b216-57d1-4505-06233ae2b882@infradead.org>
 MIME-Version: 1.0
-In-Reply-To: <20210107181416.GA3536@willie-the-truck>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <d5b192b2-b216-57d1-4505-06233ae2b882@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi will, everyone,
-
-On 1/7/21 1:14 PM, Will Deacon wrote:
-
-> On Mon, Jan 04, 2021 at 10:57:35PM -0600, Jeremy Linton wrote:
->> Given that most arm64 platform's PCI implementations needs quirks
->> to deal with problematic config accesses, this is a good place to
->> apply a firmware abstraction. The ARM PCI SMMCCC spec details a
->> standard SMC conduit designed to provide a simple PCI config
->> accessor. This specification enhances the existing ACPI/PCI
->> abstraction and expects power, config, etc functionality is handled
->> by the platform. It also is very explicit that the resulting config
->> space registers must behave as is specified by the pci specification.
->>
->> Lets hook the normal ACPI/PCI config path, and when we detect
->> missing MADT data, attempt to probe the SMC conduit. If the conduit
->> exists and responds for the requested segment number (provided by the
->> ACPI namespace) attach a custom pci_ecam_ops which redirects
->> all config read/write requests to the firmware.
->>
->> This patch is based on the Arm PCI Config space access document @
->> https://developer.arm.com/documentation/den0115/latest
+On Wed, Jan 06, 2021 at 04:06:57PM -0800, Randy Dunlap wrote:
+> On 1/6/21 3:37 PM, Kees Cook wrote:
+> > On Mon, Jan 04, 2021 at 04:13:17PM +0100, Peter Zijlstra wrote:
+> >> On Tue, Dec 22, 2020 at 11:04:54PM -0600, Josh Poimboeuf wrote:
+> >>> GCC 7 has a known bug where UBSAN ignores '-fwrapv' and generates false
+> >>> signed-overflow-UB warnings.  The type mismatch between 'i' and
+> >>> 'nr_segs' in copy_compat_iovec_from_user() is causing such a warning,
+> >>> which also happens to violate uaccess rules:
+> >>>
+> >>>   lib/iov_iter.o: warning: objtool: iovec_from_user()+0x22d: call to __ubsan_handle_add_overflow() with UACCESS enabled
+> >>>
+> >>> Fix it by making the variable types match.
+> >>>
+> >>> This is similar to a previous commit:
+> >>>
+> >>>   29da93fea3ea ("mm/uaccess: Use 'unsigned long' to placate UBSAN warnings on older GCC versions")
+> >>
+> >> Maybe it's time we make UBSAN builds depend on GCC-8+ ?
+> > 
+> > I would be totally fine with that. The only thing I can think of that
+> > might care is syzbot. Dmitry, does syzbot use anything older than gcc 8?
 > 
-> Why does firmware need to be involved with this at all? Can't we just
-> quirk Linux when these broken designs show up in production? We'll need
-> to modify Linux _anyway_ when the firmware interface isn't implemented
-> correctly...
+> I use UBSAN successfully with GCC 7.5.0.
+> However, I can revert whatever future patch someone adds for this...
 
-I agree with Will on this. I think we want to find a way to address some 
-of the non-compliance concerns through quirks in Linux. However...
-
-Several folks here (particularly Lorenzo) have diligently worked hard 
-over the past few years - and pushed their patience - to accommodate 
-hardware vendors with early "not quite compliant" systems. They've taken 
-lots of quirks that frankly shouldn't continue to be necessary were it 
-even remotely a priority in the vendor ecosystem to get a handle on 
-addressing PCIe compliance once and for all. But, again frankly, it 
-hasn't been enough of a priority to get this fixed. The third party IP 
-vendors *need* to address this, and their customers *need* to push back.
-
-We can't keep having a situation in which kinda-sorta compliant stuff 
-comes to market that would work out of the box but for whatever the 
-quirk is this time around. There have been multiple OS releases for the 
-past quite a few years on which this stuff could be tested prior to ever 
-taping out a chip, and so it ought not to be possible to come to market 
-now with an excuse that it wasn't tested. And yet here we still are. All 
-these years and still the message isn't quite being received properly. I 
-do know it takes time to make hardware, and some of it was designed 
-years before and is still trickling down into these threads. But I also 
-think there are cases where much more could have been done earlier.
-
-None of these vendors can possibly want this deep down. Their engineers 
-almost certainly realize that just having compliant ECAM would mean that 
-the hardware was infinitely more valuable being able to run out of the 
-box software that much more easily. And it's not just ECAM. Inevitably, 
-that is just the observable syndrome for worse issues, often with the 
-ITS and forcing quirked systems to have lousy legacy interrupts, etc. 
-Alas, this level of nuance is likely lost by the time it reaches upper 
-management, where "Linux" is all the same to them. I would hope that can 
-change. I would also remind them that if they want to run non-Linux 
-OSes, they will also want to be actually compliant. The willingness of 
-kind folks like Lorenzo and others here to entertain quirks is not 
-necessarily something you will find in every part of the industry.
-
-But that all said, we have a situation in which there are still 
-platforms out there that aren't fully compliant and something has to be 
-done to support them because otherwise it's going to be even more ugly 
-with vendor trees, distro hacks, and other stuff.
-
-Some of you in recent weeks have asked what I and others can do to help 
-from the distro and standardization side of things. To do my part, I'm 
-going to commit to reach out to assorted vendors and have a heart to 
-heart with them about really, truly fully addressing their compliance 
-issues. That includes Cadence, Synopsys, and others who need to stop 
-shipping IP that requires quirks, as well as SoC vendors who need to do 
-more to test their silicon with stock kernels prior to taping out. And I 
-would like to involve the good folks here who are trying to navigate.
-
-I would also politely suggest that we collectively consider how much 
-wiggle room there can be to use quirks for what we are stuck with rather 
-than an SMC-based solution. We all know that quirks can't be a free ride 
-forever. Those who need them should offer something strong in return. A 
-firm commitment that they will never come asking for the same stuff in 
-the future. Is there a way we can do something like that?
-
-Jon.
+Peter, which GCC version specifically are you seeing this on? (i.e. can
+I just make in 7.5+ instead of 8+ to make Randy's life easier?)
 
 -- 
-Computer Architect
+Kees Cook
