@@ -2,90 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 620662ED5ED
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 18:46:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 775202ED5F8
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 18:47:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728783AbhAGRpz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 12:45:55 -0500
-Received: from mx2.suse.de ([195.135.220.15]:39698 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727061AbhAGRpy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 12:45:54 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 3E703AD78;
-        Thu,  7 Jan 2021 17:45:13 +0000 (UTC)
-To:     Andrea Arcangeli <aarcange@redhat.com>
-Cc:     Hugh Dickins <hughd@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alex Shi <alex.shi@linux.alibaba.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Michal Hocko <mhocko@suse.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-References: <1607743586-80303-1-git-send-email-alex.shi@linux.alibaba.com>
- <1607743586-80303-2-git-send-email-alex.shi@linux.alibaba.com>
- <e50574aa-87b8-8ddf-2235-ef98e22bcb7d@linux.alibaba.com>
- <alpine.LSU.2.11.2101051919130.1361@eggly.anvils>
- <20210106114620.5c221690f3a9cad7afcc3077@linux-foundation.org>
- <X/YY+mjpq15nmryI@redhat.com>
- <alpine.LSU.2.11.2101061213540.2492@eggly.anvils>
- <bd10e2dc-7a5e-835d-9a1f-9fff36cc22b5@suse.cz> <X/dGhD/R8r5yeElq@redhat.com>
-From:   Vlastimil Babka <vbabka@suse.cz>
-Subject: Re: [PATCH] mm/mmap: replace if (cond) BUG() with BUG_ON()
-Message-ID: <e59e109d-0f46-c789-8e2c-52fc6d023a82@suse.cz>
-Date:   Thu, 7 Jan 2021 18:45:12 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        id S1729082AbhAGRrM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 12:47:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58944 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727215AbhAGRrL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Jan 2021 12:47:11 -0500
+Received: from mail-qk1-x730.google.com (mail-qk1-x730.google.com [IPv6:2607:f8b0:4864:20::730])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6792BC0612F4
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Jan 2021 09:46:31 -0800 (PST)
+Received: by mail-qk1-x730.google.com with SMTP id z11so6152459qkj.7
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Jan 2021 09:46:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=CNK3GvEL4U8HNz+MK8A+YotA76v+OyTJ7DMDgcIh4hA=;
+        b=K845TS0CJJvuvFjUj0/sOIf8ijCuVcy9Rrl8aFb3820OKBUWOcx+gm8R4Go8dLn4k7
+         10usGfYNKrO3Dn7k10RIjdXiBYhbGLFYuuVaxFPvW44RQCk+hmBONOLVCwN3ooyzcxnZ
+         TjTxetXJakVoUOQ5iFjr608k+SiM4Xf4dr968ZRG+nJn2CNhIn0g0LTo64NQVlhO5VC1
+         xBJ4FqAtnsca75tRq3wez0V3QiAhd/j17TM8ryuO3S8hnxU1iWvGtYnFOFQuMeMzOZ3H
+         sJ17/FpXL5LIIG8fydoHgoWmOhNvAfw/urnEq+3WwWrKeoO3vlTfqI/PNdKtRWhff3BO
+         a4OQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=CNK3GvEL4U8HNz+MK8A+YotA76v+OyTJ7DMDgcIh4hA=;
+        b=rAD0vyPciu01mIpOv1gQhTJiDE1kz1hNd+wyl46N1aDRVYk6O12eri9NQHbsDUQi4n
+         txVI3LGP2eqinPqGxFqqPJP5BpG1xfqJyiJ4MwvAqxUFsac0G7CFlo0N/Fxuxhq3KIce
+         mWHQ/iWSFZQD5KneN5NhsnOOXnQB1grV4XVaz3DqFyRErztsf9rZt6rnq7w2PlpB4oyQ
+         iM/1jibSgpliLtiKOnev8+OERX5xo4s5yC5pMYdzMhCFe0E83aTwKEJzuTdkuN4BM4NC
+         s1sTRQN3mjq6T27ibI/c5oKdwGKz6KE1ABieD5Hzeo0aMyo5ZVxSmUW67XKDy6LQvwnB
+         CBgA==
+X-Gm-Message-State: AOAM531t5+gaygx0La7uRx3S1azR+IakBqnv21YM6kwXK9JAu7hfT/WY
+        p5gMMeTE6Y1Pcm0qhEaPERhgYg==
+X-Google-Smtp-Source: ABdhPJz9vaq8bg7IjIElCsf54gkPa23NreE78PAjXOcXgIgk1qq0jaVgdhKg55lZfp/2GgHu7fk7og==
+X-Received: by 2002:a37:584:: with SMTP id 126mr5587qkf.332.1610041590660;
+        Thu, 07 Jan 2021 09:46:30 -0800 (PST)
+Received: from ziepe.ca (hlfxns017vw-142-162-115-133.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.115.133])
+        by smtp.gmail.com with ESMTPSA id j142sm3555681qke.117.2021.01.07.09.46.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 07 Jan 2021 09:46:30 -0800 (PST)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1kxZMj-003lto-I9; Thu, 07 Jan 2021 13:46:29 -0400
+Date:   Thu, 7 Jan 2021 13:46:29 -0400
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Douglas Gilbert <dgilbert@interlog.com>
+Cc:     linux-scsi@vger.kernel.org, linux-block@vger.kernel.org,
+        target-devel@vger.kernel.org, linux-rdma@vger.kernel.org,
+        linux-kernel@vger.kernel.org, martin.petersen@oracle.com,
+        jejb@linux.vnet.ibm.com, bostroesser@gmail.com, bvanassche@acm.org,
+        ddiss@suse.de
+Subject: Re: [PATCH v5 4/4] scatterlist: add sgl_memset()
+Message-ID: <20210107174629.GC504133@ziepe.ca>
+References: <20201228234955.190858-1-dgilbert@interlog.com>
+ <20201228234955.190858-5-dgilbert@interlog.com>
 MIME-Version: 1.0
-In-Reply-To: <X/dGhD/R8r5yeElq@redhat.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201228234955.190858-5-dgilbert@interlog.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 1/7/21 6:36 PM, Andrea Arcangeli wrote:
-> On Thu, Jan 07, 2021 at 06:28:29PM +0100, Vlastimil Babka wrote:
->> On 1/6/21 9:18 PM, Hugh Dickins wrote:
->> > On Wed, 6 Jan 2021, Andrea Arcangeli wrote:
->> >> 
->> >> I'd be surprised if the kernel can boot with BUG_ON() defined as "do
->> >> {}while(0)" so I guess it doesn't make any difference.
->> > 
->> > I had been afraid of that too, when CONFIG_BUG is not set:
->> > but I think it's actually "if (cond) do {} while (0)".
->> 
->> It's a maze of configs and arch-specific vs generic headers, but I do see this
->> in include/asm-generic/bug.h:
->> 
->> #else /* !CONFIG_BUG */
->> #ifndef HAVE_ARCH_BUG
->> #define BUG() do {} while (1)
->> #endif
->> 
->> So seems to me there *are* configurations possible where side-effects are indeed
->> thrown away, right?
+On Mon, Dec 28, 2020 at 06:49:55PM -0500, Douglas Gilbert wrote:
+> The existing sg_zero_buffer() function is a bit restrictive. For
+> example protection information (PI) blocks are usually initialized
+> to 0xff bytes. As its name suggests sgl_memset() is modelled on
+> memset(). One difference is the type of the val argument which is
+> u8 rather than int. Plus it returns the number of bytes (over)written.
 > 
-> But this not BUG_ON, 
-
-Oh, you're right, I got lost in the maze.
-
-> and that is an infinite loop while(1), not an
-
-And I overlooked that "1" too.
-
-So that AFAICS means *both* VM_BUG_ON and VM_WARN_ON behave differently wrt
-side-effects when disabled than BUG_ON and WARN_ON.
-
-> optimization away as in while (0) that I was suggesting to just throw
-> away cond and make it a noop. BUG() is actually the thing to use to
-> move functional stuff out of BUG_ON so it's not going to be causing
-> issues if it just loops.
+> Change implementation of sg_zero_buffer() to call this new function.
 > 
-> This overall feels mostly an aesthetically issue.
+> Reviewed-by: Bodo Stroesser <bostroesser@gmail.com>
+> Signed-off-by: Douglas Gilbert <dgilbert@interlog.com>
+>  include/linux/scatterlist.h |  3 ++
+>  lib/scatterlist.c           | 65 +++++++++++++++++++++++++------------
+>  2 files changed, 48 insertions(+), 20 deletions(-)
 > 
-> Thanks,
-> Andrea
-> 
+> diff --git a/include/linux/scatterlist.h b/include/linux/scatterlist.h
+> index 71be65f9ebb5..70d3f1f73df1 100644
+> +++ b/include/linux/scatterlist.h
+> @@ -333,6 +333,9 @@ bool sgl_compare_sgl_idx(struct scatterlist *x_sgl, unsigned int x_nents, off_t
+>  			 struct scatterlist *y_sgl, unsigned int y_nents, off_t y_skip,
+>  			 size_t n_bytes, size_t *miscompare_idx);
+>  
+> +size_t sgl_memset(struct scatterlist *sgl, unsigned int nents, off_t skip,
+> +		  u8 val, size_t n_bytes);
+> +
+>  /*
+>   * Maximum number of entries that will be allocated in one piece, if
+>   * a list larger than this is required then chaining will be utilized.
+> diff --git a/lib/scatterlist.c b/lib/scatterlist.c
+> index 9332365e7eb6..f06614a880c8 100644
+> +++ b/lib/scatterlist.c
+> @@ -1038,26 +1038,7 @@ EXPORT_SYMBOL(sg_pcopy_to_buffer);
+>  size_t sg_zero_buffer(struct scatterlist *sgl, unsigned int nents,
+>  		       size_t buflen, off_t skip)
+>  {
+> -	unsigned int offset = 0;
+> -	struct sg_mapping_iter miter;
+> -	unsigned int sg_flags = SG_MITER_ATOMIC | SG_MITER_TO_SG;
+> -
+> -	sg_miter_start(&miter, sgl, nents, sg_flags);
+> -
+> -	if (!sg_miter_skip(&miter, skip))
+> -		return false;
+> -
+> -	while (offset < buflen && sg_miter_next(&miter)) {
+> -		unsigned int len;
+> -
+> -		len = min(miter.length, buflen - offset);
+> -		memset(miter.addr, 0, len);
+> -
+> -		offset += len;
+> -	}
+> -
+> -	sg_miter_stop(&miter);
+> -	return offset;
+> +	return sgl_memset(sgl, nents, skip, 0, buflen);
+>  }
+>  EXPORT_SYMBOL(sg_zero_buffer);
 
+May as well make this one liner a static inline in the header. Just
+rename this function to sgl_memset so the diff is clearer
+
+Jason
