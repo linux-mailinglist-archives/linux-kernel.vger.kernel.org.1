@@ -2,95 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 87DC72ED0EE
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 14:39:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A45622ED0F1
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 14:41:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728606AbhAGNic (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 08:38:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48440 "EHLO
+        id S1728383AbhAGNkm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 08:40:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48768 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728026AbhAGNib (ORCPT
+        with ESMTP id S1726326AbhAGNkl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 08:38:31 -0500
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13945C0612F4;
-        Thu,  7 Jan 2021 05:37:51 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=3VXG1gjVht0cxl9ViTm3PDVS6dPgMzDNMoqL8tdmikk=; b=k64FnmbV4KB12EIuVh77t+bl1
-        J1Rcz2wbaBMBbYJXF+n3xQC676/dz0YE1rB2ymmNi3E8YvzTOKw8W2t4D36ZM6/YCUs5mYzo3pfAX
-        +5nN1SsuRbhqSKjuVPS0aWTGGkbyivSp+erTSrUTXjoQvIuoxjTHotYq/CGFhCknE+jtWDjOpRiFf
-        n0ksS53oJEuP5Odzn9Xar9/F/ODZBNLYdLGF6Oa5vL7eTFUMT25mPLTj35TOA60D42t5xfP+R+tW/
-        KuxQV0bBi1ixf4erXhXp8DdBtbiVVhOXf9iQz7AMFwbhvCUqMkFNXmwknRgx7FvUPVpzrER+ITOsR
-        hl9NLNZxA==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:45222)
-        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1kxVU4-0002sQ-BI; Thu, 07 Jan 2021 13:37:48 +0000
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1kxVU3-0001DA-Bm; Thu, 07 Jan 2021 13:37:47 +0000
-Date:   Thu, 7 Jan 2021 13:37:47 +0000
-From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Will Deacon <will@kernel.org>, linux-toolchains@vger.kernel.org,
-        Mark Rutland <mark.rutland@arm.com>,
-        Theodore Ts'o <tytso@mit.edu>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Ext4 Developers List <linux-ext4@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
-Subject: Re: Aarch64 EXT4FS inode checksum failures - seems to be weak memory
- ordering issues
-Message-ID: <20210107133747.GP1551@shell.armlinux.org.uk>
-References: <20210105154726.GD1551@shell.armlinux.org.uk>
- <20210106115359.GB26994@C02TD0UTHF1T.local>
- <20210106135253.GJ1551@shell.armlinux.org.uk>
- <20210106172033.GA2165@willie-the-truck>
- <20210106223223.GM1551@shell.armlinux.org.uk>
- <20210107111841.GN1551@shell.armlinux.org.uk>
- <20210107124506.GO1551@shell.armlinux.org.uk>
- <CAK8P3a2TXPfFpgy+XjpDzOqt1qpDxufwiD-BLNbn4W_jpGp98g@mail.gmail.com>
+        Thu, 7 Jan 2021 08:40:41 -0500
+Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC205C0612F4;
+        Thu,  7 Jan 2021 05:40:00 -0800 (PST)
+Received: by mail-pg1-x52a.google.com with SMTP id n7so4867735pgg.2;
+        Thu, 07 Jan 2021 05:40:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=oHAKwH9vSA8AdCN9U8+YV/5eT7vno7k7DP5s7UpkfBg=;
+        b=ILYsePsM8H1Vk3NA2Rgig07+0vr1Bf45DH7Yeifbhij3qlF3BkhC9x9pYjc+9VszqK
+         Lq82wjwebEOBpNHoGGfgoyT4xrpbp1+xOvMW9dRos6xT/iArW024RRANP9QJXyasLoW3
+         BmELKZMNl3erkAnM6A412pCyWPGWL7KwB0/4M55fHSEp759spG9k8veZoDKxqE/b9+PD
+         n4y9aWjKuAHOpdyIXXlHnxutUu2WFHfA7oSL90LtSk9FYSvaDxdaYmBlIPkoSAZny1QX
+         pSKQAeCp98/lffvD5KNxrv6lSqsOx4/Tz1XMEIR1NJ1kTGlyshM4VmM9r+PJd8lETT57
+         vEfQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=oHAKwH9vSA8AdCN9U8+YV/5eT7vno7k7DP5s7UpkfBg=;
+        b=CdrpYWdVnAdi/X+Bq0hHDYknUrH1UVBlX9en0bazRhy4ppgJQXsvwO9C28n8D8WT67
+         y3mHQxogUeB/sGLriJG00jFhlbLVDvXnEsbW2/n+do2txkMKljVC6ex7Fj0XTZUGHnDS
+         EiLwalO00atlyzaBflo4jvzzyoPkoGLW3k1QH3vYk67IDPKwGZIvVw+PYmGTM2aXfJgF
+         +vWcIETaCpIlgYp8oP4A74Z+iVPxqL5sFjLFSP7n88LDqi8wIhkAdylKOqAMAghvHeDl
+         ThjZZWZ2texGO46KfCKF0UdR7Skm16PmldkQYeaH1tzJiKgyWp0ysNIKgM5aCg1Tu6I5
+         RNHQ==
+X-Gm-Message-State: AOAM53025HmwGbNxEmCWQF1PhfZppsaeCOVcLjlyKKs9xgpneXciC1Dw
+        c20jliy5ErlKmDZN0MngSkyqUAAwSqkCWxX+ngU=
+X-Google-Smtp-Source: ABdhPJxr5GBvI9d4Rl13Q2/4ALtozP4g+ar2orhQaIxenfn8W+wOKNW86jhecoPUNJ7f8Fgn3Znkqw==
+X-Received: by 2002:a05:6a00:8c7:b029:19d:afa5:34e5 with SMTP id s7-20020a056a0008c7b029019dafa534e5mr9076108pfu.30.1610026800319;
+        Thu, 07 Jan 2021 05:40:00 -0800 (PST)
+Received: from ?IPv6:2405:201:9004:69cd:a39f:75ee:d9e7:25d7? ([2405:201:9004:69cd:a39f:75ee:d9e7:25d7])
+        by smtp.gmail.com with ESMTPSA id a1sm5733114pfo.56.2021.01.07.05.39.56
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 07 Jan 2021 05:39:59 -0800 (PST)
+Subject: Re: [PATCH] ACPI: scan: Fix a Hyper-V Linux VM panic caused by buffer
+ overflow
+To:     decui@microsoft.com, linux-acpi@vger.kernel.org, rjw@rjwysocki.net,
+        len.brown@intel.com, mikelley@microsoft.com
+Cc:     linux-kernel@vger.kernel.org, wei.liu@kernel.org,
+        sthemmin@microsoft.com, haiyangz@microsoft.com, kys@microsoft.com
+References: <20201218040826.57203-1-decui@microsoft.com>
+From:   Dwaipayan Ray <dwaipayanray1@gmail.com>
+Message-ID: <42a039e8-d31e-9f17-bfe6-6a50968688db@gmail.com>
+Date:   Thu, 7 Jan 2021 19:09:53 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAK8P3a2TXPfFpgy+XjpDzOqt1qpDxufwiD-BLNbn4W_jpGp98g@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Sender: Russell King - ARM Linux admin <linux@armlinux.org.uk>
+In-Reply-To: <20201218040826.57203-1-decui@microsoft.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 07, 2021 at 02:16:25PM +0100, Arnd Bergmann wrote:
-> On Thu, Jan 7, 2021 at 1:47 PM Russell King - ARM Linux admin
-> <linux@armlinux.org.uk> wrote:
-> 
-> > Arnd has found via bisecting gcc:
-> >
-> > 7e8c2bd54af ("[AArch64] fix unsafe access to deallocated stack")
-> >
-> > which seems to be https://gcc.gnu.org/bugzilla/show_bug.cgi?id=63293
-> >
-> > That seems to suggest that gcc-5.0.0 is also affected.
-> >
-> > Looking at the changelog in Debian's gcc-8.3 packages, this doesn't
-> > feature, so it's not easy just to look at the changelogs to work out
-> > which versions are affected.
-> 
-> I checked the history to confirm that all gcc-5 releases (5.0.x is pre-release)
-> and later have the fix.
-> 
-> The gcc bugzilla mentions backports into gcc-linaro, but I do not see
-> them in my git history.
 
-So, do we raise the minimum gcc version for the kernel as a whole to 5.1
-or just for aarch64?
+On 18/12/20 9:38 am, Dexuan Cui wrote:
+> Linux VM on Hyper-V crashes with the latest mainline:
+>
+> [    4.069624] detected buffer overflow in strcpy
+> [    4.077733] kernel BUG at lib/string.c:1149!
+> ..
+> [    4.085819] RIP: 0010:fortify_panic+0xf/0x11
+> ...
+> [    4.085819] Call Trace:
+> [    4.085819]  acpi_device_add.cold.15+0xf2/0xfb
+> [    4.085819]  acpi_add_single_object+0x2a6/0x690
+> [    4.085819]  acpi_bus_check_add+0xc6/0x280
+> [    4.085819]  acpi_ns_walk_namespace+0xda/0x1aa
+> [    4.085819]  acpi_walk_namespace+0x9a/0xc2
+> [    4.085819]  acpi_bus_scan+0x78/0x90
+> [    4.085819]  acpi_scan_init+0xfa/0x248
+> [    4.085819]  acpi_init+0x2c1/0x321
+> [    4.085819]  do_one_initcall+0x44/0x1d0
+> [    4.085819]  kernel_init_freeable+0x1ab/0x1f4
+>
+> This is because of the recent buffer overflow detection in the
+> commit 6a39e62abbaf ("lib: string.h: detect intra-object overflow in fortified string functions")
+>
+> Here acpi_device_bus_id->bus_id can only hold 14 characters, while the
+> the acpi_device_hid(device) returns a 22-char string
+> "HYPER_V_GEN_COUNTER_V1".
+>
+> Per ACPI Spec v6.2, Section 6.1.5 _HID (Hardware ID), if the ID is a
+> string, it must be of the form AAA#### or NNNN####, i.e. 7 chars or 8
+> chars.
+>
+> The field bus_id in struct acpi_device_bus_id was originally defined as
+> char bus_id[9], and later was enlarged to char bus_id[15] in 2007 in the
+> commit bb0958544f3c ("ACPI: use more understandable bus_id for ACPI devices")
+>
+> It looks like so far an ID string of >=15 chars is only seen in the guest
+> BIOS/firmware by Hyper-V, and AFAIK the ID string "HYPER_V_GEN_COUNTER_V1"
+> is never used by Linux VM on Hyper-V, so let's just truncate the string to
+> fix the panic.
+>
+> Signed-off-by: Dexuan Cui <decui@microsoft.com>
+> ---
+>   drivers/acpi/scan.c | 3 ++-
+>   1 file changed, 2 insertions(+), 1 deletion(-)
+>
+> diff --git a/drivers/acpi/scan.c b/drivers/acpi/scan.c
+> index a1b226eb2ce2..b801442b6b1b 100644
+> --- a/drivers/acpi/scan.c
+> +++ b/drivers/acpi/scan.c
+> @@ -674,7 +674,8 @@ int acpi_device_add(struct acpi_device *device,
+>   	}
+>   	if (!found) {
+>   		acpi_device_bus_id = new_bus_id;
+> -		strcpy(acpi_device_bus_id->bus_id, acpi_device_hid(device));
+> +		strlcpy(acpi_device_bus_id->bus_id, acpi_device_hid(device),
+> +			sizeof(acpi_device_bus_id->bus_id));
 
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
+Please prefer strscpy() over strlcpy():
+
++		strscpy(acpi_device_bus_id->bus_id, acpi_device_hid(device),
++			sizeof(acpi_device_bus_id->bus_id));
+
+See: 
+https://lore.kernel.org/lkml/CAHk-=wgfRnXz0W3D37d01q3JFkr_i_uTL=V6A6G1oUZcprmknw@mail.gmail.com/
+
+Thanks,
+Dwaipayan.
+
+>   		acpi_device_bus_id->instance_no = 0;
+>   		list_add_tail(&acpi_device_bus_id->node, &acpi_bus_id_list);
+>   	}
