@@ -2,123 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 79B002ED07A
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 14:18:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B2F82ED07C
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 14:18:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728437AbhAGNRQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 08:17:16 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:26721 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728026AbhAGNRP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 08:17:15 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1610025349;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
-        bh=WcMTwxKBmFx0TTx3051cBL+gyEZFsErFP3TOaLoFIRY=;
-        b=gRUxBBj+3QKi/NOiPtM0k1GcAF428e5+a2C4+YsO26c0dIx6cVYsHy5Jy8hM36UYGomR+v
-        Z3cVo3vE6srn2feskIlren4SKImvdouUJ14AQxqiNta0FWNVzvaFC8max7JePX6Or2CiJT
-        sLpVRJRex0RYSGJWzmgGLnvoaTR5f4A=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-322-7Tu4ndmSM82TvyuEKUjd5g-1; Thu, 07 Jan 2021 08:15:45 -0500
-X-MC-Unique: 7Tu4ndmSM82TvyuEKUjd5g-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 51628196632C;
-        Thu,  7 Jan 2021 13:15:43 +0000 (UTC)
-Received: from file01.intranet.prod.int.rdu2.redhat.com (file01.intranet.prod.int.rdu2.redhat.com [10.11.5.7])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 00A695B6AF;
-        Thu,  7 Jan 2021 13:15:42 +0000 (UTC)
-Received: from file01.intranet.prod.int.rdu2.redhat.com (localhost [127.0.0.1])
-        by file01.intranet.prod.int.rdu2.redhat.com (8.14.4/8.14.4) with ESMTP id 107DFgOT026586;
-        Thu, 7 Jan 2021 08:15:42 -0500
-Received: from localhost (mpatocka@localhost)
-        by file01.intranet.prod.int.rdu2.redhat.com (8.14.4/8.14.4/Submit) with ESMTP id 107DFfsK026582;
-        Thu, 7 Jan 2021 08:15:41 -0500
-X-Authentication-Warning: file01.intranet.prod.int.rdu2.redhat.com: mpatocka owned process doing -bs
-Date:   Thu, 7 Jan 2021 08:15:41 -0500 (EST)
-From:   Mikulas Patocka <mpatocka@redhat.com>
-X-X-Sender: mpatocka@file01.intranet.prod.int.rdu2.redhat.com
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Ira Weiny <ira.weiny@intel.com>,
-        Matthew Wilcox <willy@infradead.org>, Jan Kara <jack@suse.cz>,
-        Steven Whitehouse <swhiteho@redhat.com>,
-        Eric Sandeen <esandeen@redhat.com>,
-        Dave Chinner <dchinner@redhat.com>,
-        "Theodore Ts'o" <tytso@mit.edu>,
-        Wang Jianchao <jianchao.wan9@gmail.com>,
-        "Kani, Toshi" <toshi.kani@hpe.com>,
-        "Norton, Scott J" <scott.norton@hpe.com>,
-        "Tadakamadla, Rajesh" <rajesh.tadakamadla@hpe.com>
-cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-nvdimm@lists.01.org
-Subject: [RFC v2] nvfs: a filesystem for persistent memory
-Message-ID: <alpine.LRH.2.02.2101061245100.30542@file01.intranet.prod.int.rdu2.redhat.com>
-User-Agent: Alpine 2.02 (LRH 1266 2009-07-14)
+        id S1728455AbhAGNRY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 08:17:24 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56212 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726326AbhAGNRX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Jan 2021 08:17:23 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AFE49224B2;
+        Thu,  7 Jan 2021 13:16:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1610025402;
+        bh=QmL4gwaruMyEzb9wlsHh8j27tKlovaSI3kLbdCHshWQ=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=Stu0AztRS+ejfWCk9DTrhtqADdNdFYlJ5HdYOSIff4kqHwY8ilkMxSVaQ0Qjtt78j
+         bUutGGB4fvAJPfgCNq1M6SCE1WVYb2m5vD3LCWy2Z1SwEMP5BTgYrCG0Ui9TlkVvXU
+         Wixl51oVDOFiuLxKSIVuzNOCOvrlBVtZ3pvzUZEJ1vX1ZFESI5X8wQltKVRjkuTxnu
+         yvgKVcyMeFaiTi4YYhskBsI9y93eTIFoJhP6gD9w7qjMrPsKAfyb9CeQoIohX2xf+0
+         ZPlCMVLJI/9qVe85tkkZfhYtjHsQS2RyZ6gqhQbIf0CKqbyheLWsB+dPk2oUwog4TB
+         Ocb81aQxP7DSg==
+Received: by mail-oo1-f46.google.com with SMTP id o5so1544644oop.12;
+        Thu, 07 Jan 2021 05:16:42 -0800 (PST)
+X-Gm-Message-State: AOAM532O2TGPuM9h9v9oYdpbMPV1iZKsSykjm5+qBVA0YdF7zRhp2ztL
+        j6UmTie985LM62R8FnbyP0L4dlGWMg8DlsZLF60=
+X-Google-Smtp-Source: ABdhPJyJgbGRIU0IGdkkEcptmjFwgAFtJpFQPDGT4dh99plTedsE/YppUBh1v+OG6OVe0mDt2zfqISgzafS4t8ek3kU=
+X-Received: by 2002:a4a:2cc9:: with SMTP id o192mr1073655ooo.66.1610025401960;
+ Thu, 07 Jan 2021 05:16:41 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+References: <20210105154726.GD1551@shell.armlinux.org.uk> <20210106115359.GB26994@C02TD0UTHF1T.local>
+ <20210106135253.GJ1551@shell.armlinux.org.uk> <20210106172033.GA2165@willie-the-truck>
+ <20210106223223.GM1551@shell.armlinux.org.uk> <20210107111841.GN1551@shell.armlinux.org.uk>
+ <20210107124506.GO1551@shell.armlinux.org.uk>
+In-Reply-To: <20210107124506.GO1551@shell.armlinux.org.uk>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Thu, 7 Jan 2021 14:16:25 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a2TXPfFpgy+XjpDzOqt1qpDxufwiD-BLNbn4W_jpGp98g@mail.gmail.com>
+Message-ID: <CAK8P3a2TXPfFpgy+XjpDzOqt1qpDxufwiD-BLNbn4W_jpGp98g@mail.gmail.com>
+Subject: Re: Aarch64 EXT4FS inode checksum failures - seems to be weak memory
+ ordering issues
+To:     Russell King - ARM Linux admin <linux@armlinux.org.uk>
+Cc:     Will Deacon <will@kernel.org>, linux-toolchains@vger.kernel.org,
+        Mark Rutland <mark.rutland@arm.com>,
+        "Theodore Ts'o" <tytso@mit.edu>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Ext4 Developers List <linux-ext4@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi
+On Thu, Jan 7, 2021 at 1:47 PM Russell King - ARM Linux admin
+<linux@armlinux.org.uk> wrote:
 
-I announce a new version of NVFS - a filesystem for persistent memory.
-	http://people.redhat.com/~mpatocka/nvfs/
-	git://leontynka.twibright.com/nvfs.git
+> Arnd has found via bisecting gcc:
+>
+> 7e8c2bd54af ("[AArch64] fix unsafe access to deallocated stack")
+>
+> which seems to be https://gcc.gnu.org/bugzilla/show_bug.cgi?id=63293
+>
+> That seems to suggest that gcc-5.0.0 is also affected.
+>
+> Looking at the changelog in Debian's gcc-8.3 packages, this doesn't
+> feature, so it's not easy just to look at the changelogs to work out
+> which versions are affected.
 
-Changes since the last release:
+I checked the history to confirm that all gcc-5 releases (5.0.x is pre-release)
+and later have the fix.
 
-* I added a microjournal to the filesystem, it can hold up to 16 entries. 
-  Each CPU has it's own journal, so that there is no lock contention. The 
-  journal is used to provide atomicity of reaname() and extended attribute 
-  replace.
-  (note that file creation or deletion doesn't use the journal, because 
-  these operations can be deterministically cleaned up by fsck)
+The gcc bugzilla mentions backports into gcc-linaro, but I do not see
+them in my git history.
 
-* I created a framework that can be used to verify the filesystem driver. 
-  It logs all writes and memory barriers to a file, the entries in the 
-  file are randomly reordered (to simulate reordering in the CPU 
-  write-combining buffers), the sequence is cut at a random point (to 
-  simulate a system crash) and the result is replayed on a filesystem 
-  image.
-  With this framework, we can for example check that if a crash happens 
-  during rename(), either old file or new file will be present in a 
-  directory.
-  This framework helped to find a few bugs in sequencing the writes.
-
-* If we map an executable image, we turn off the DAX flag on the inode 
-  (because executables run 4% slower from persistent memory). There is 
-  also a switch that can turn DAX always off or always on.
-
-
-
-
-I'd like to ask about this piece of code in __kernel_read:
-	if (unlikely(!file->f_op->read_iter || file->f_op->read))
-		return warn_unsupported...
-and __kernel_write:
-	if (unlikely(!file->f_op->write_iter || file->f_op->write))
-		return warn_unsupported...
-
-- It exits with an error if both read_iter and read or write_iter and 
-write are present.
-
-I found out that on NVFS, reading a file with the read method has 10% 
-better performance than the read_iter method. The benchmark just reads the 
-same 4k page over and over again - and the cost of creating and parsing 
-the kiocb and iov_iter structures is just that high.
-
-So, I'd like to have both read and read_iter methods. Could the above 
-conditions be changed, so that they don't fail with an error if the "read" 
-or "write" method is present?
-
-Mikulas
-
+       Arnd
