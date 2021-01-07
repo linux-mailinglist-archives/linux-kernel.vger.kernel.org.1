@@ -2,116 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A86D2ED3CA
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 16:53:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3953D2ED3FE
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 17:13:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728060AbhAGPxf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 10:53:35 -0500
-Received: from mga07.intel.com ([134.134.136.100]:35353 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726864AbhAGPxd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 10:53:33 -0500
-IronPort-SDR: 0LObVhqRAo3tiJH1Iy/0F8M8cBuY2cq+xi2j1D8k1DxEb/ey5ApLnJec7kxISsVFNZN8oy1NOX
- bbgYPti01QBg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9857"; a="241517808"
-X-IronPort-AV: E=Sophos;i="5.79,329,1602572400"; 
-   d="scan'208";a="241517808"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Jan 2021 07:52:52 -0800
-IronPort-SDR: 9OzmBPeChze1h0ZC85DRo8fnWzA6qjhUiE4v7yYkm6iD5WoYlqr+on3qalNkphPOMarIUj0hgN
- 2Qjc4q+V00Vw==
-X-IronPort-AV: E=Sophos;i="5.79,329,1602572400"; 
-   d="scan'208";a="362007790"
-Received: from abartsch-mobl.amr.corp.intel.com (HELO [10.212.21.94]) ([10.212.21.94])
-  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Jan 2021 07:52:50 -0800
-Subject: Re: [PATCH v1 2/3] x86/cpu: Set low performance CRC32C flag on some
- Zhaoxin CPUs
-To:     Tony W Wang-oc <TonyWWang-oc@zhaoxin.com>,
-        herbert@gondor.apana.org.au, davem@davemloft.net,
-        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, x86@kernel.org,
-        hpa@zytor.com, tony.luck@intel.com, seanjc@google.com,
-        fenghua.yu@intel.com, thomas.lendacky@amd.com,
-        kyung.min.park@intel.com, kim.phillips@amd.com,
-        mgross@linux.intel.com, peterz@infradead.org,
-        krish.sadhukhan@oracle.com, liam.merwick@oracle.com,
-        mlevitsk@redhat.com, reinette.chatre@intel.com, babu.moger@amd.com,
-        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     TimGuo-oc@zhaoxin.com, CooperYan@zhaoxin.com,
-        QiyuanWang@zhaoxin.com, HerryYang@zhaoxin.com,
-        CobeChen@zhaoxin.com, SilviaZhao@zhaoxin.com
-References: <1610000348-17316-1-git-send-email-TonyWWang-oc@zhaoxin.com>
- <1610000348-17316-3-git-send-email-TonyWWang-oc@zhaoxin.com>
-From:   Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
- z5cecg==
-Message-ID: <607494aa-674a-fe93-50f6-2c45f385f7e9@intel.com>
-Date:   Thu, 7 Jan 2021 07:52:49 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <1610000348-17316-3-git-send-email-TonyWWang-oc@zhaoxin.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+        id S1728472AbhAGQK7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 11:10:59 -0500
+Received: from mailout4.samsung.com ([203.254.224.34]:49331 "EHLO
+        mailout4.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725835AbhAGQK6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Jan 2021 11:10:58 -0500
+Received: from epcas5p4.samsung.com (unknown [182.195.41.42])
+        by mailout4.samsung.com (KnoxPortal) with ESMTP id 20210107161015epoutp04adfa91b2ea245635cd91aee22164dcf8~X-wtAH1bf2392623926epoutp04_
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Jan 2021 16:10:15 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout4.samsung.com 20210107161015epoutp04adfa91b2ea245635cd91aee22164dcf8~X-wtAH1bf2392623926epoutp04_
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1610035815;
+        bh=uuUvWOFqJZQ4hJc1/kGBf9qGITSHyVmlvTN7W+i4GGQ=;
+        h=From:To:Cc:Subject:Date:References:From;
+        b=HDmdlUbiAxkyhsVVVOzJkpfav/vFluy2dLEZwbMJFU1cCqRIC5m5DBEGqIOD6EC55
+         Xik7xls4Bs0TOt58n02crUVNZsJ98BbSrFEDa80WYHoZCgCWmDs+Gvu0+M37msuzo3
+         kJMgATkI65tUoAAmqZyqplkZdPY0bBmrbkRwNZGU=
+Received: from epsmges5p2new.samsung.com (unknown [182.195.42.74]) by
+        epcas5p3.samsung.com (KnoxPortal) with ESMTP id
+        20210107161014epcas5p3a2ef0cd705917e2d00a00c68e47cb19f~X-wsH93jX1863018630epcas5p3w;
+        Thu,  7 Jan 2021 16:10:14 +0000 (GMT)
+Received: from epcas5p2.samsung.com ( [182.195.41.40]) by
+        epsmges5p2new.samsung.com (Symantec Messaging Gateway) with SMTP id
+        C8.0C.50652.66237FF5; Fri,  8 Jan 2021 01:10:14 +0900 (KST)
+Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
+        epcas5p1.samsung.com (KnoxPortal) with ESMTPA id
+        20210107152945epcas5p158e88c757a44e98f4e9a898d3ff5f87c~X-NVo2Ho21966319663epcas5p1k;
+        Thu,  7 Jan 2021 15:29:45 +0000 (GMT)
+Received: from epsmgms1p2.samsung.com (unknown [182.195.42.42]) by
+        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
+        20210107152945epsmtrp24d37acc3040721520f4db4480a46e8d9~X-NVn20W_0276302763epsmtrp2-;
+        Thu,  7 Jan 2021 15:29:45 +0000 (GMT)
+X-AuditID: b6c32a4a-6c9ff7000000c5dc-f8-5ff732660aad
+Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
+        epsmgms1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
+        9C.1A.08745.9E827FF5; Fri,  8 Jan 2021 00:29:45 +0900 (KST)
+Received: from ubuntu.sa.corp.samsungelectronics.net (unknown
+        [107.108.83.125]) by epsmtip2.samsung.com (KnoxPortal) with ESMTPA id
+        20210107152943epsmtip204376ee473fbe0e1a3bab56a121d1785~X-NUMRDCG2046620466epsmtip2L;
+        Thu,  7 Jan 2021 15:29:43 +0000 (GMT)
+From:   Shradha Todi <shradha.t@samsung.com>
+To:     linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org,
+        linux-pci@vger.kernel.org
+Cc:     pankaj.dubey@samsung.com, sriram.dash@samsung.com,
+        niyas.ahmed@samsung.com, p.rajanbabu@samsung.com,
+        l.mehra@samsung.com, hari.tv@samsung.com,
+        Shradha Todi <shradha.t@samsung.com>
+Subject: [PATCH v7 0/5] Add support to handle ZRX-DC Compliant PHYs
+Date:   Thu,  7 Jan 2021 20:58:38 +0530
+Message-Id: <1610033323-10560-1-git-send-email-shradha.t@samsung.com>
+X-Mailer: git-send-email 2.7.4
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrAIsWRmVeSWpSXmKPExsWy7bCmhm6a0fd4g5u/FC0+TlvJZHHn+Q1G
+        i8u75rBZnJ13nM2i88ssNosnUx6xWhzdGGyxaOsXdovew7UWN9azO3B59G1ZxejxeZNcAFMU
+        l01Kak5mWWqRvl0CV8aknbEFn4QqzvYcZ2pg/M/XxcjJISFgItHbPIENxBYS2M0osXKZWBcj
+        F5D9iVFi9q3DLBCJz4wSe2+WdjFygDW8O8sOEd7FKLGvhwmivoVJYsGSv2AJNgEticavXcwg
+        tohAlMTM7a2sIDYzyIJV79NAbGEBZ4l1WyaCLWYRUJV4N+sWE4jNK+Aq0fR4BSPEcXISN891
+        MoMskBBYxy7x5tU3FoiEi8SH29ugioQlXh3fwg5hS0l8freXDcLOl5h64SkLxNEVEst76iDC
+        9hIHrswBCzMLaEqs36UPEZaVmHpqHRPEmXwSvb+fMEHEeSV2zIOxlSW+/N0DdYGkxLxjl1kh
+        bA+Jaa0TWCFhEiuxY/5i5gmMsrMQNixgZFzFKJlaUJybnlpsWmCUl1quV5yYW1yal66XnJ+7
+        iREc6VpeOxgfPvigd4iRiYPxEKMEB7OSCK/FsS/xQrwpiZVVqUX58UWlOanFhxilOViUxHl3
+        GDyIFxJITyxJzU5NLUgtgskycXBKNTCtbdz/yf+5zOnppvYX15j/3ca622/+Pa33/7t9NV+v
+        mOBT/kQj6MJGbsGr0aIpdRynHzv6bxWRz1CRPt7EcPTMg6upXZ22p7ceZ6ye7MgQ0XCw5kLt
+        j6s7rpw4+rkyTnEC07aVFm0pu17nz4l+EOL5x61FzO6Cw8UXcQ95VqV9/3gk/9z5uekfds77
+        P/mWvP6vo97nv6jOlZFqfdXvsb646lOU99x9jn8cahd+5ZuWUKhbW6JRc2r1yY1JTnobRc37
+        g0Xt+Q+3d0ZFL4ppSKvc8jR/S9Or+2zTZz1Rzcjxfa7C06FVdaJ1W4jxJaE7HcsW2d31vzSh
+        fWa8DOcvM1XtMzu23ph+MEj/GG/I4dilSizFGYmGWsxFxYkANE/LYGMDAAA=
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrNJMWRmVeSWpSXmKPExsWy7bCSvO5Lje/xBjtn81l8nLaSyeLO8xuM
+        Fpd3zWGzODvvOJtF55dZbBZPpjxitTi6Mdhi0dYv7Ba9h2stbqxnd+Dy6NuyitHj8ya5AKYo
+        LpuU1JzMstQifbsEroxJO2MLPglVnO05ztTA+J+vi5GDQ0LAROLdWfYuRi4OIYEdjBLbjzYw
+        dzFyAsUlJT5fXMcEYQtLrPz3HKqoiUni4ME3rCAJNgEticavXWANIgIxEuv/3WQFKWIWOMwo
+        seL8QrBuYQFniXVbJrKB2CwCqhLvZt0Ci/MKuEo0PV7BCLFBTuLmuU7mCYw8CxgZVjFKphYU
+        56bnFhsWGOWllusVJ+YWl+al6yXn525iBIePltYOxj2rPugdYmTiYDzEKMHBrCTCa3HsS7wQ
+        b0piZVVqUX58UWlOavEhRmkOFiVx3gtdJ+OFBNITS1KzU1MLUotgskwcnFINTMKpqVLHnNtm
+        fPI+fbRKqEvUfo7wjpvVi3neOP5beezZ34RLpflH1Zty2/dcFGnlWOXQ/d1oy5/C/nscZR99
+        xd0XCUm5bfdY71TzrLjppqhca9edp9p++5LKVumy/lwza/9vlQnpQRrqmqLz7t66lrv4wrE8
+        I+55C7bpZDxZUTyJb5nS0hhhRqZVZcwL65jmtLWL9BssWnbt+ZV73KKTZ8zY1Ms5a3V/abT2
+        vrZ/Re/miS2dE3qt4Vz7ngOWImtUDh9ZfXyXxMreO/WVk8pCcjt97B+UFk7bx5/xRUZy1uFI
+        mzWvio27jj5mqWC9Vrj7yherAK/GNWri2YcXX1vDZHU09mXvo0wl8Tt1EqePsCmxFGckGmox
+        FxUnAgA5VS2yjgIAAA==
+X-CMS-MailID: 20210107152945epcas5p158e88c757a44e98f4e9a898d3ff5f87c
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: REQ_APPROVE
+CMS-TYPE: 105P
+X-CMS-RootMailID: 20210107152945epcas5p158e88c757a44e98f4e9a898d3ff5f87c
+References: <CGME20210107152945epcas5p158e88c757a44e98f4e9a898d3ff5f87c@epcas5p1.samsung.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 1/6/21 10:19 PM, Tony W Wang-oc wrote:
-> +	/*
-> +	 * These CPUs declare support SSE4.2 instruction sets but
-> +	 * having low performance CRC32C instruction implementation.
-> +	 */
-> +	if (c->x86 == 0x6 || (c->x86 == 0x7 && c->x86_model <= 0x3b))
-> +		set_cpu_cap(c, X86_FEATURE_CRC32C);
->  }
+According the PCI Express base specification when PHY does not meet ZRX-DC
+specification, after every 100ms timeout the link should transition to
+recovery state when the link is in low power states. 
 
-On the Intel side, we've tried to move away from open-coded model
-numbers.  Say another CPU is released that has a microarchitecture close
-to 0x3b, but has a model of 0x3c.  It's a *LOT* easier to grep for
-INTEL_FAM6_NEHALEM (or whatever) than 0x3c.  See:
+Ports that meet the ZRX-DC specification for 2.5 GT/s while in the L1.Idle
+state and are therefore not required to implement the 100 ms timeout and
+transition to Recovery should avoid implementing it, since it will reduce
+the power savings expected from the L1 state.
 
-	arch/x86/include/asm/intel-family.h
+DesignWare controller provides GEN3_ZRXDC_NONCOMPL field in
+GEN3_RELATED_OFF to specify about ZRX-DC compliant PHY.
 
-for examples.
+We need to get the PHY property in controller driver. So, we are proposing
+a new method phy_property_present() in the phy driver.
+
+PCIe controller platform drivers should populate the phy_zrxdc_compliant
+flag, which will be used by generic DesignWare driver.
+
+pci->phy_zrxdc_compliant = phy_property_present(xxxx_ctrl->phy, "phy-zrxdc-compliant");
+
+Patchset v2 can be found at:
+- 1/2: https://lkml.org/lkml/2019/11/11/672
+- 2/2: https://lkml.org/lkml/2019/10/28/285
+
+Changes w.r.t v2:
+- Addressed review comments
+- Rebased on latest linus/master
+
+Changes w.r.t v3:
+- Added linux-pci@xxxxxxxxxxxxxxx as pointed by Gustavo, Sorry for annoying.
+
+Changes w.r.t v4:
+- Addressed review comments from Andrew Murray
+- Rebased on latest linus/master
+
+Changes w.r.t v5:
+- Added check for NULL pointer
+
+Changes w.r.t v6:
+- Rebased on latest linus/master
+- Used this feature in nvidia tegra files
+
+Pankaj Dubey (3):
+  phy: core: add phy_property_present method
+  PCI: dwc: add support to handle ZRX-DC Compliant PHYs
+  PCI: tegra: Remove platform driver support for ZRX-DC compliant PHY
+
+Shradha Todi (2):
+  dt-bindings: PHY: P2U: Add binding for ZRX-DC PHY property
+  arm64: tegra: Add support for ZRX DC PHY property
+
+ .../devicetree/bindings/phy/phy-tegra194-p2u.txt     |  4 ++++
+ arch/arm64/boot/dts/nvidia/tegra194.dtsi             | 20 ++++++++++++++++++++
+ drivers/pci/controller/dwc/pcie-designware.c         |  6 ++++++
+ drivers/pci/controller/dwc/pcie-designware.h         |  4 ++++
+ drivers/pci/controller/dwc/pcie-tegra194.c           | 17 ++++++++---------
+ drivers/phy/phy-core.c                               | 20 ++++++++++++++++++++
+ include/linux/phy/phy.h                              |  6 ++++++
+ 7 files changed, 68 insertions(+), 9 deletions(-)
+
+-- 
+2.7.4
+
