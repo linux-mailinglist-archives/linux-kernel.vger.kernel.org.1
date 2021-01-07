@@ -2,70 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 669E72EC74B
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 01:22:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A2782EC750
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 01:25:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727805AbhAGAUt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Jan 2021 19:20:49 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55338 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726481AbhAGAUs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Jan 2021 19:20:48 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPS id F05DC221EA;
-        Thu,  7 Jan 2021 00:20:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1609978808;
-        bh=Pyd7Q5FpX6EiuoWn5shNq4eTuiszLENLn3GuRwZrnS0=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=kPseRpZPB4bZ3cNniRVigU92yJzYUITFRNKZGzGk/mI/aHETom0ATTFeM2TR9qQTb
-         0q55aFjfrIJuB0Q0I4YfnHE+3VgC8p8NIgfa6W9KWL3yDcS3bQqjlLCHarGeM7rXti
-         FpiadYijg/zb1byy9daByttb64bZnLtspdFZ1a7aWHyetuEGuhtToMjaFL9WeIYgU9
-         M6UAgMTcVX0iEdKx2R/pVGpaqcQ8eQg0dZYZaAUFt6JfNua0Z/mLZ+ZujZcPC+rhWR
-         TI494KnfP7BLrHH2FereL8fMN4UBb4uRt1bmNyfwZNnooCZBHXKvXGkgwYOWd4Yhmy
-         47D3mmBf2L28w==
-Received: from pdx-korg-docbuild-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-1.ci.codeaurora.org (Postfix) with ESMTP id E115360385;
-        Thu,  7 Jan 2021 00:20:07 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S1726367AbhAGAZU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Jan 2021 19:25:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37360 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725803AbhAGAZT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 6 Jan 2021 19:25:19 -0500
+Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 677C2C06136F
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Jan 2021 16:24:39 -0800 (PST)
+Received: by mail-lf1-x12e.google.com with SMTP id o13so10744160lfr.3
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Jan 2021 16:24:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=y2JDLTfqOpjQxN8FILQClzf9FmSPwRHg0vB82buu7nE=;
+        b=inAS7K5t7adUK26GrcC2htux/ANDgLVum0YBEXPqfJkCbBgVNpow5XIcZbgx2rps5c
+         S7fh2UIOEowFv4GLK6bJquuhDUzISPL4KUHqWIdyyEdR1Scag7APmNCN5niYl1bBh0uo
+         3DP5EMyEqNnzd/cmlCIMcIYfQm4HqSnXor7wNGqubQpoCfP1G0+3ewE/QHpWQjox0JFi
+         Aak/cBv6OF63BXXC5TGUK0SYyxp4OXIQglaEYYhDW4Burfb5zqELqcG9LoeOkF2giOlP
+         5UdR/3ln0f7p96O/HwtOotFXBuvZRXDgjJ5bw+22onLM5NcdUaaIwim1gQ9TnYa45dGd
+         PJaQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=y2JDLTfqOpjQxN8FILQClzf9FmSPwRHg0vB82buu7nE=;
+        b=WDT8T6JrnCISNOyt7Eh3Ovq0TEMBtJUAWNtqXmpYM0UpQMDjXWJuBMfcOvRlP/91JD
+         nYprKax9Z8rh5RZ0P6XyGTZjb8YZw4jP8r/9/OpeuK6QpJfsizgRNogzd9u3Ts2qH6HQ
+         eS6Q1UUlofcYTXA4m6+02ODoenHoI6BaVawOnQ98ke6x+jsxewFKHM265KNk1Jxag7Qt
+         pQAqUgjxGT7MIDkeKGJE68ardhY7qga442aiuTtqEXVu23SUt0ODrqUhGxCnyovd8AQ3
+         8VOvXzSGEy6g7GP+OypomlXKYzvdVHdKslBkPKkKy/2JAbKn3DVcOqP9ysGD7iw338T1
+         SB/g==
+X-Gm-Message-State: AOAM533Hi/+wYgGZpxKuNREQg+jcsAqnZXaPRazwKmr3biztRFdlNmFU
+        4y1b1e1qa9uL7MAa3n+8FcU/L8XO7L/krdFk0m880DWLO3RdjA==
+X-Google-Smtp-Source: ABdhPJwSrbvBZizwUDwD9EsBcL8ZrzHv8Wff2CJqlkBuAlD67nLTGHkuPWke/DnrHU1JwLLrhbZfRnqaA86N5RzHlyk=
+X-Received: by 2002:a2e:9896:: with SMTP id b22mr2905956ljj.9.1609979077706;
+ Wed, 06 Jan 2021 16:24:37 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH] net: dsa: fix led_classdev build errors
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <160997880791.16542.2183389787876275211.git-patchwork-notify@kernel.org>
-Date:   Thu, 07 Jan 2021 00:20:07 +0000
-References: <20210106021815.31796-1-rdunlap@infradead.org>
-In-Reply-To: <20210106021815.31796-1-rdunlap@infradead.org>
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     linux-kernel@vger.kernel.org, lkp@intel.com, kurt@linutronix.de,
-        netdev@vger.kernel.org, davem@davemloft.net, kuba@kernel.org
+References: <20201117025522.1874864-1-rkir@google.com> <CAOGAQerMMg5+WgfebtFO3nut47QKa9QtpWxg3Eb3cR2ri3pRTQ@mail.gmail.com>
+In-Reply-To: <CAOGAQerMMg5+WgfebtFO3nut47QKa9QtpWxg3Eb3cR2ri3pRTQ@mail.gmail.com>
+From:   Roman Kiryanov <rkir@google.com>
+Date:   Wed, 6 Jan 2021 16:24:26 -0800
+Message-ID: <CAOGAQeqMUj0MCbTfetAX54iN40UCYqxqQ48UPtntYQKOTK6N3w@mail.gmail.com>
+Subject: Re: [PATCH] arch: x86: platform: retire arch/x86/platform/goldfish
+To:     Thomas Gleixner <tglx@linutronix.de>, mingo@redhat.com,
+        Borislav Petkov <bp@alien8.de>
+Cc:     LKML <linux-kernel@vger.kernel.org>, Lingfeng Yang <lfy@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
++Thoman, +Ingo, +Borislav
 
-This patch was applied to netdev/net.git (refs/heads/master):
-
-On Tue,  5 Jan 2021 18:18:15 -0800 you wrote:
-> Fix build errors when LEDS_CLASS=m and NET_DSA_HIRSCHMANN_HELLCREEK=y.
-> This limits the latter to =m when LEDS_CLASS=m.
-> 
-> microblaze-linux-ld: drivers/net/dsa/hirschmann/hellcreek_ptp.o: in function `hellcreek_ptp_setup':
-> (.text+0xf80): undefined reference to `led_classdev_register_ext'
-> microblaze-linux-ld: (.text+0xf94): undefined reference to `led_classdev_register_ext'
-> microblaze-linux-ld: drivers/net/dsa/hirschmann/hellcreek_ptp.o: in function `hellcreek_ptp_free':
-> (.text+0x1018): undefined reference to `led_classdev_unregister'
-> microblaze-linux-ld: (.text+0x1024): undefined reference to `led_classdev_unregister'
-> 
-> [...]
-
-Here is the summary with links:
-  - net: dsa: fix led_classdev build errors
-    https://git.kernel.org/netdev/net/c/7f847db30408
-
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+On Mon, Dec 14, 2020 at 1:20 PM Roman Kiryanov <rkir@google.com> wrote:
+>
+> On Mon, Nov 16, 2020 at 6:55 PM <rkir@google.com> wrote:
+> >
+> > From: Roman Kiryanov <rkir@google.com>
+> >
+> > The Android Studio Emulator (aka goldfish) does not
+> > use arch/x86/platform/goldfish since 5.4 kernel.
+> >
+> > Signed-off-by: Roman Kiryanov <rkir@google.com>
+>
+> Gentle ping.
