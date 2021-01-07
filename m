@@ -2,223 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 99CC02EEA0A
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 00:57:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CA4442EEA0D
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 01:01:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729436AbhAGXz6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 18:55:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60554 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727722AbhAGXz5 (ORCPT
+        id S1729184AbhAGX7r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 18:59:47 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:58041 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727300AbhAGX7r (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 18:55:57 -0500
-Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7725C0612F4;
-        Thu,  7 Jan 2021 15:55:16 -0800 (PST)
-Received: by mail-wm1-x32b.google.com with SMTP id q75so6969348wme.2;
-        Thu, 07 Jan 2021 15:55:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=ZncM7JH6Ki9FcKPmGbPeUTYbtASY1HLiha8VMirLUHY=;
-        b=mMyXEhd1cUGjWTGi0vOP8/6X+t+zUyEBQASUR6Ru0sHOF52lbgJQrX8BQjrmJpl9RH
-         IInQNx9iicLUum5zdjbNgCRCPPZ/Aaa/8NKFSc6btEfsOnMb1t6jV1mvOiEHeg212mwn
-         C+V483iiw42ts69wgoOvjRtaknBVVTEo0NvaUGZTl6tdIsMvRQssSBf7uD6xWpp9rRNV
-         uith9x4ogywuYCApBR0HU3WHFFgDeta5T5zc9tw1jHz4YaAj8CxVBUoVSqZUq1aUU96D
-         DXsCxTaGpca/JhJgoFlwM/+DOPu+jNec7sZoz+shzN7xqwWc7WrukuNptry77lKDBn+z
-         CoDg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=ZncM7JH6Ki9FcKPmGbPeUTYbtASY1HLiha8VMirLUHY=;
-        b=QZiHkg7nbcsuA5n14HaWfBOLHTYr7Ye16O5ygeVq8X48yq1QkfnFvM50fUqI04tajv
-         qjYetAFMNH7UveTrwCjHw7uWrIyfRf0kwjN6zNfRgj8GFb4op8bdHBno2Afui5SZBhTo
-         hrXpBYUoeSlwIpDYfvce2mGx1nuubQQDeQm216DjjptJD0yI23rWlZ3qR1jPy6o9jhw8
-         XoBbBfXZwLcJIwBeYyyvLvHfuSQkk28En9QSXi/BWfOmXst4Q2gYiLg5REjWS3vJ/EGZ
-         sRQil2xudU8i9DxfjiFqa7WC4efJ0UZOWGLbXAgUkw6qgbDc6Ai+c997JrV57hfyT0SB
-         Azdg==
-X-Gm-Message-State: AOAM533nxT+LFqqjVQAJRHxm304Kk2xS9u1uKhu43MlhEZfgh9BOo5Ig
-        F9WmaPBT71GTyZYvBFDhlWJ8niJScUP4I8YD
-X-Google-Smtp-Source: ABdhPJwaqtio3vX4piZLRmmLcmP6Vxg8q/YXAaanNNYcOSEMk1p6rpteK4dG6OqK3aUCUmJVOBuuXw==
-X-Received: by 2002:a1c:63d4:: with SMTP id x203mr704864wmb.28.1610063715330;
-        Thu, 07 Jan 2021 15:55:15 -0800 (PST)
-Received: from [192.168.1.211] ([2.29.208.120])
-        by smtp.gmail.com with ESMTPSA id v189sm10471673wmg.14.2021.01.07.15.55.13
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 07 Jan 2021 15:55:14 -0800 (PST)
-Subject: Re: [PATCH 18/18] ipu3: Add driver for dummy INT3472 ACPI device
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org,
-        linux-gpio@vger.kernel.org, linux-i2c@vger.kernel.org,
-        linux-media@vger.kernel.org, devel@acpica.org, rjw@rjwysocki.net,
-        lenb@kernel.org, gregkh@linuxfoundation.org,
-        mika.westerberg@linux.intel.com, linus.walleij@linaro.org,
-        bgolaszewski@baylibre.com, wsa@kernel.org, yong.zhi@intel.com,
-        sakari.ailus@linux.intel.com, bingbu.cao@intel.com,
-        tian.shu.qiu@intel.com, mchehab@kernel.org, robert.moore@intel.com,
-        erik.kaneda@intel.com, pmladek@suse.com, rostedt@goodmis.org,
-        sergey.senozhatsky@gmail.com, linux@rasmusvillemoes.dk,
-        kieran.bingham+renesas@ideasonboard.com, jacopo+renesas@jmondi.org,
-        laurent.pinchart+renesas@ideasonboard.com,
-        jorhand@linux.microsoft.com, kitakar@gmail.com,
-        heikki.krogerus@linux.intel.com,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-References: <20201130133129.1024662-1-djrscally@gmail.com>
- <20201130133129.1024662-19-djrscally@gmail.com>
- <20201130200719.GB4077@smile.fi.intel.com>
-From:   Daniel Scally <djrscally@gmail.com>
-Message-ID: <778f23fc-b99c-33a2-642d-ca0e47fd4ed5@gmail.com>
-Date:   Thu, 7 Jan 2021 23:55:13 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Thu, 7 Jan 2021 18:59:47 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1610063901;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=rac20jbc+HZUTIRq8HeTeM5nvA7TtlA4vvI9RN7mu6Q=;
+        b=XtfeY0bYv3XYC/MFXOTPdHf40L8JDawaDzGUGi+/5DH6vlJX1m/2pQTjDTjZPC40N9Y3Li
+        tKGW/Eo0j27piniyTSA9ONnLMciaJnPObMD0wi68GU7V++CUZNyXwmVCHGlof91Kg8M9kV
+        VDGXfBnvoU+DxehiYz20+VZeNBfSKPs=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-445-Pac8vphWMPqgQbeoQ6I6ew-1; Thu, 07 Jan 2021 18:58:19 -0500
+X-MC-Unique: Pac8vphWMPqgQbeoQ6I6ew-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 5D13D180A094;
+        Thu,  7 Jan 2021 23:58:17 +0000 (UTC)
+Received: from redhat.com (dhcp-17-185.bos.redhat.com [10.18.17.185])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id E09365C8AA;
+        Thu,  7 Jan 2021 23:58:15 +0000 (UTC)
+Date:   Thu, 7 Jan 2021 18:58:13 -0500
+From:   Jarod Wilson <jarod@redhat.com>
+To:     Jiri Pirko <jiri@resnulli.us>
+Cc:     linux-kernel@vger.kernel.org, Jay Vosburgh <j.vosburgh@gmail.com>,
+        Veaceslav Falico <vfalico@gmail.com>,
+        Andy Gospodarek <andy@greyhouse.net>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Thomas Davis <tadavis@lbl.gov>, netdev@vger.kernel.org
+Subject: Re: [RFC PATCH net-next] bonding: add a vlan+srcmac tx hashing option
+Message-ID: <20210107235813.GB29828@redhat.com>
+References: <20201218193033.6138-1-jarod@redhat.com>
+ <20201228101145.GC3565223@nanopsycho.orion>
 MIME-Version: 1.0
-In-Reply-To: <20201130200719.GB4077@smile.fi.intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201228101145.GC3565223@nanopsycho.orion>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Andy, all
+On Mon, Dec 28, 2020 at 11:11:45AM +0100, Jiri Pirko wrote:
+> Fri, Dec 18, 2020 at 08:30:33PM CET, jarod@redhat.com wrote:
+> >This comes from an end-user request, where they're running multiple VMs on
+> >hosts with bonded interfaces connected to some interest switch topologies,
+> >where 802.3ad isn't an option. They're currently running a proprietary
+> >solution that effectively achieves load-balancing of VMs and bandwidth
+> >utilization improvements with a similar form of transmission algorithm.
+> >
+> >Basically, each VM has it's own vlan, so it always sends its traffic out
+> >the same interface, unless that interface fails. Traffic gets split
+> >between the interfaces, maintaining a consistent path, with failover still
+> >available if an interface goes down.
+> >
+> >This has been rudimetarily tested to provide similar results, suitable for
+> >them to use to move off their current proprietary solution.
+> >
+> >Still on the TODO list, if these even looks sane to begin with, is
+> >fleshing out Documentation/networking/bonding.rst.
+> 
+> Jarod, did you consider using team driver instead ? :)
 
-On 30/11/2020 20:07, Andy Shevchenko wrote:
-> On Mon, Nov 30, 2020 at 01:31:29PM +0000, Daniel Scally wrote:
->> On platforms where ACPI is designed for use with Windows, resources
->> that are intended to be consumed by sensor devices are sometimes in
->> the _CRS of a dummy INT3472 device upon which the sensor depends. This
->> driver binds to the dummy acpi device (which does not represent a
-> acpi device -> acpi_device
->
->> physical PMIC) and maps them into GPIO lines and regulators for use by
->> the sensor device instead.
-> ...
->
->> This patch contains the bits of this process that we're least sure about.
->> The sensors in scope for this work are called out as dependent (in their
->> DSDT entry's _DEP) on a device with _HID INT3472. These come in at least
->> 2 kinds; those with an I2cSerialBusV2 entry (which we presume therefore
->> are legitimate tps68470 PMICs that need handling by those drivers - work
->> on that in the future). And those without an I2C device. For those without
->> an I2C device they instead have an array of GPIO pins defined in _CRS. So
->> for example, my Lenovo Miix 510's OVTI2680 sensor is dependent on one of
->> the _latter_ kind of INT3472 devices, with this _CRS:
->>
->> Method (_CRS, 0, NotSerialized)  // _CRS: Current Resource Settings
->> {
->>     Name (SBUF, ResourceTemplate ()
->>     {
->>         GpioIo (Exclusive, PullDefault, 0x0000, 0x0000,
->> 	    IoRestrictionOutputOnly, "\\_SB.PCI0.GPI0",
->> 	    0x00, ResourceConsumer, ,
->>             )
->>             {   // Pin list
->>                 0x0079
->>             }
->>         GpioIo (Exclusive, PullDefault, 0x0000, 0x0000,
->> 	    IoRestrictionOutputOnly, "\\_SB.PCI0.GPI0",
->> 	    0x00, ResourceConsumer, ,
->>             )
->>             {   // Pin list
->>                 0x007A
->>             }
->>         GpioIo (Exclusive, PullDefault, 0x0000, 0x0000,
->> 	    IoRestrictionOutputOnly, "\\_SB.PCI0.GPI0",
->> 	    0x00, ResourceConsumer, ,
->>             )
->>             {   // Pin list
->>                 0x008F
->>             }
->>     })
->>     Return (SBUF) /* \_SB_.PCI0.PMI1._CRS.SBUF */
->> }
->>
->> and the same device has a _DSM Method, which returns 32-bit ints where
->> the second lowest byte we noticed to match the pin numbers of the GPIO
->> lines:
->>
->> Method (_DSM, 4, NotSerialized)  // _DSM: Device-Specific Method
->> {
->>     If ((Arg0 == ToUUID ("79234640-9e10-4fea-a5c1-b5aa8b19756f")))
->>     {
->>         If ((Arg2 == One))
->>         {
->>             Return (0x03)
->>         }
->>
->>         If ((Arg2 == 0x02))
->>         {
->>             Return (0x01007900)
->>         }
->>
->>         If ((Arg2 == 0x03))
->>         {
->>             Return (0x01007A0C)
->>         }
->>
->>         If ((Arg2 == 0x04))
->>         {
->>             Return (0x01008F01)
->>         }
->>     }
->>
->>     Return (Zero)
->> }
->>
->> We know that at least some of those pins have to be toggled active for the
->> sensor devices to be available in i2c, so the conclusion we came to was
->> that those GPIO entries assigned to the INT3472 device actually represent
->> GPIOs and regulators to be consumed by the sensors themselves. Tsuchiya
->> noticed that the lowest byte in the return values of the _DSM method
->> seemed to represent the type or function of the GPIO line, and we
->> confirmed that by testing on each surface device that GPIO lines where the
->> low byte in the _DSM entry for that pin was 0x0d controlled the privacy
->> LED of the cameras.
->>
->> We're guessing as to the exact meaning of the function byte, but I
->> conclude they're something like this:
->>
->> 0x00 - probably a reset GPIO
->> 0x01 - regulator for the sensor
->> 0x0c - regulator for the sensor
->> 0x0b - regulator again, but for a VCM or EEPROM
->> 0x0d - privacy led (only one we're totally confident of since we can see
->>        it happen!)
-> It's solely Windows driver design...
-> Luckily I found some information and can clarify above table:
->
-> 0x00 Reset
-> 0x01 Power down
-> 0x0b Power enable
-> 0x0c Clock enable
-> 0x0d LED (active high)
->
-> The above text perhaps should go somewhere under Documentation.
+That's actually one of the things that was suggested, since team I believe
+already has support for this, but the user really wants to use bonding.
+We're finding that a lot of users really still prefer bonding over team.
 
-Coming back to this; there's a bit of an anomaly with the 0x01 Power
-Down pin for at least one platform.  As listed above, the OV2680 on one
-of my platforms has 3 GPIOs defined, and the table above gives them as
-type Reset, Power down and Clock enable. I'd assumed from this table
-that "power down" meant a powerdown GPIO (I.E. the one usually called
-PWDNB in Omnivision datasheets and "powerdown" in drivers), but the
-datasheet for the OV2680 doesn't list a separate reset and powerdown
-pin, but rather a single pin that performs both functions.
-
-
-Am I wrong to treat that as something that ought to be mapped as a
-powerdown GPIO to the sensors? Or do you know of any other way to
-reconcile that discrepancy?
-
-
-Failing that; the only way I can think to handle this is to register
-proxy GPIO pins assigned to the sensors as you suggested previously, and
-have them toggle the GPIO's assigned to the INT3472 based on platform
-specific mapping data (I.E. we register a pin called "reset", which on
-most platforms just toggles the 0x00 pin, but on this specific platform
-would drive both 0x00 and 0x01 together. We're already heading that way
-for the regulator consumer supplies so it's sort of nothing new, but I'd
-still rather not if it can be avoided.
+-- 
+Jarod Wilson
+jarod@redhat.com
 
