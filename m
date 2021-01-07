@@ -2,99 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 448A22ECD1B
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 10:49:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 949212ECD1E
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 10:50:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727011AbhAGJst (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 04:48:49 -0500
-Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:7024 "EHLO
-        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725900AbhAGJss (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 04:48:48 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5ff6d8d80001>; Thu, 07 Jan 2021 01:48:08 -0800
-Received: from [10.26.72.150] (172.20.145.6) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 7 Jan
- 2021 09:48:06 +0000
-Subject: Re: [PATCH] arm64: tegra: Add power-domain for Tegra210 HDA
-To:     Sameer Pujar <spujar@nvidia.com>, <thierry.reding@gmail.com>,
-        <robh+dt@kernel.org>
-CC:     <devicetree@vger.kernel.org>, <linux-tegra@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <stable@vger.kernel.org>
-References: <1609995970-12256-1-git-send-email-spujar@nvidia.com>
-From:   Jon Hunter <jonathanh@nvidia.com>
-Message-ID: <1dfc080c-f587-d19f-65c9-b3220b3202a0@nvidia.com>
-Date:   Thu, 7 Jan 2021 09:48:04 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1727182AbhAGJt7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 04:49:59 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49304 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725974AbhAGJt7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Jan 2021 04:49:59 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 776362333D;
+        Thu,  7 Jan 2021 09:49:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1610012958;
+        bh=CC5w2dVB0msolsQQjxn98j0tPU3c4rpDBCwIt5Z8nGA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=zgRdSM4C0FhR0XlV7OGhk8xmHZLEuspAvfBgdKQTOl3x/cOcdTqfFGSsxSullwvpe
+         K9Ucl39JlHoaNsdFX7iQeL6URdt4oP94QNyHRYBfWWSh87FafgDaUNHqFzkBDfg+p7
+         9lQtl8xfayzyCTiSD2ldbd6TYlQLJolYHBjX0zU4=
+Date:   Thu, 7 Jan 2021 10:50:38 +0100
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Albert Wang <albertccwang@google.com>
+Cc:     balbi@kernel.org, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] Revert "usb: gadget: Quieten gadget config message"
+Message-ID: <X/bZbluYJ0syB/Do@kroah.com>
+References: <20210107090604.299270-1-albertccwang@google.com>
 MIME-Version: 1.0
-In-Reply-To: <1609995970-12256-1-git-send-email-spujar@nvidia.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [172.20.145.6]
-X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
- HQMAIL107.nvidia.com (172.20.187.13)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1610012888; bh=IjN25z+yWpSbbGI53L+67ScDv4QXQ/8Bbz0TLdhRyYY=;
-        h=Subject:To:CC:References:From:Message-ID:Date:User-Agent:
-         MIME-Version:In-Reply-To:Content-Type:Content-Language:
-         Content-Transfer-Encoding:X-Originating-IP:X-ClientProxiedBy;
-        b=qznrjEdnM+8mWavbGJf3rO0LQ3iotUPiNeuxvyJx46Ish8/Wf5e57/u6S51anRH9i
-         8yIa+4+SPIIBprmZJUC/rDpPY6iVoqLxqzhdw3NQtL89llzVTR4LbCjAp9CH3Xp/cq
-         OvtvdlzUYz7eq7KWiSwaQ2M++oDC5IECF8OK6C84HMIm9E5n2VGqF1IrkvEeBX9eis
-         Us9XxNEj5e7OHPF6GW+204NzUKzX+nQGuK5Z1RwTHWco0vtipJMI78rOd/UBtijxmH
-         pNLL8NQO0PWTiXsb7MRt94yRntPVg3bplOcEi8k9iAVRvPDu7sjJtwUl7s1Yfgh5VP
-         Xmh/wDGucEdUw==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210107090604.299270-1-albertccwang@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On 07/01/2021 05:06, Sameer Pujar wrote:
-> HDA initialization is failing occasionally on Tegra210 and following
-> print is observed in the boot log. Because of this probe() fails and
-> no sound card is registered.
+On Thu, Jan 07, 2021 at 09:06:04AM +0000, Albert Wang wrote:
+> This reverts commit 1cbfb8c4f62d667f6b8b3948949737edb92992cc.
 > 
->   [16.800802] tegra-hda 70030000.hda: no codecs found!
+> The log of USB enumeration result is a useful log and only occupies
+> one line especially when USB3 enumeration failed and then downgrade
+> to USB2.
 > 
-> Codecs request a state change and enumeration by the controller. In
-> failure cases this does not seem to happen as STATETS register reads 0.
-> 
-> The problem seems to be related to the HDA codec dependency on SOR
-> power domain. If it is gated during HDA probe then the failure is
-> observed. Building Tegra HDA driver into kernel image avoids this
-> failure but does not completely address the dependency part. Fix this
-> problem by adding 'power-domains' DT property for Tegra210 HDA. Note
-> that Tegra186 and Tegra194 HDA do this already.
-> 
-> Fixes: 742af7e7a0a1 ("arm64: tegra: Add Tegra210 support")
-> Depends-on: 96d1f078ff0 ("arm64: tegra: Add SOR power-domain for Tegra210")
-> Cc: <stable@vger.kernel.org>
-> Signed-off-by: Sameer Pujar <spujar@nvidia.com>
+> Signed-off-by: Albert Wang <albertccwang@google.com>
 > ---
->  arch/arm64/boot/dts/nvidia/tegra210.dtsi | 1 +
->  1 file changed, 1 insertion(+)
+>  drivers/usb/gadget/composite.c | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
 > 
-> diff --git a/arch/arm64/boot/dts/nvidia/tegra210.dtsi b/arch/arm64/boot/dts/nvidia/tegra210.dtsi
-> index 4fbf8c1..fd33b4d 100644
-> --- a/arch/arm64/boot/dts/nvidia/tegra210.dtsi
-> +++ b/arch/arm64/boot/dts/nvidia/tegra210.dtsi
-> @@ -997,6 +997,7 @@
->  			 <&tegra_car 128>, /* hda2hdmi */
->  			 <&tegra_car 111>; /* hda2codec_2x */
->  		reset-names = "hda", "hda2hdmi", "hda2codec_2x";
-> +		power-domains = <&pd_sor>;
->  		status = "disabled";
->  	};
+> diff --git a/drivers/usb/gadget/composite.c b/drivers/usb/gadget/composite.c
+> index c6d455f2bb92..5b0d6103a63d 100644
+> --- a/drivers/usb/gadget/composite.c
+> +++ b/drivers/usb/gadget/composite.c
+> @@ -840,9 +840,9 @@ static int set_config(struct usb_composite_dev *cdev,
+>  		result = 0;
+>  	}
+>  
+> -	DBG(cdev, "%s config #%d: %s\n",
+> -	    usb_speed_string(gadget->speed),
+> -	    number, c ? c->label : "unconfigured");
+> +	INFO(cdev, "%s config #%d: %s\n",
+> +	     usb_speed_string(gadget->speed),
+> +	     number, c ? c->label : "unconfigured");
 
-Thanks!
+When everything is working properly, the kernel should be quiet.  If you
+have to see this message, you can turn it on at runtime, as Felipe
+pointed out, to enable it for your system.  But it's not a good default
+thing to have.
 
-Acked-by: Jon Hunter <jonathanh@nvidia.com>
+What do you need to see this message for?  What tool relies on it?  Who
+reads it?
 
-Cheers
-Jon
+thanks,
 
--- 
-nvpublic
+greg k-h
