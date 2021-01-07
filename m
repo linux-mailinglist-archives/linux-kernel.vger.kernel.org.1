@@ -2,119 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F1C42ED353
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 16:14:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 127D82ED355
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 16:14:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728376AbhAGPNi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 10:13:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34936 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725965AbhAGPNh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 10:13:37 -0500
-Received: from mail-oi1-x235.google.com (mail-oi1-x235.google.com [IPv6:2607:f8b0:4864:20::235])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 486F6C0612F4;
-        Thu,  7 Jan 2021 07:12:57 -0800 (PST)
-Received: by mail-oi1-x235.google.com with SMTP id d189so7639491oig.11;
-        Thu, 07 Jan 2021 07:12:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=J/eHM8bGecKftTerD53gLlkk3eG1KUR0ZnErJXZNe24=;
-        b=H16Rmvo3mY2xceqsspMZ3eDcmF2Wz/jdFJzsJNxFcAZuBf5/sPomNv0NKmCCGvsoYW
-         IY1Z63fYHrKktBHdZWaxMe5bxmZr0HmdEOiJqLaleZOqRX5x6Q+HSi2vXGPoowT57M95
-         YidYPqa2folvs/vjQKVvduDPAggEC0PLC/BWGvQ91qBLURZyh7sbHT8747ez4J8QZNh2
-         SR/Y/gT/74ileeDcdYbWHwvhupsGoi0srnStAFvrw3qA/l5/FTjzORySH8FgRZw3QN7f
-         3HE2mh7CES4cA9vH3XyXLXZyHLfmiEl+2V3dhTZ/Tdh8evaDNHRNX0lqu+aRMV7y1x1z
-         VdKw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to:user-agent;
-        bh=J/eHM8bGecKftTerD53gLlkk3eG1KUR0ZnErJXZNe24=;
-        b=Bv9ccPF0MNLahZlwfibAn/c6UwdO6ExrvkecghzKM90QVRaw/nmOhOvD346eQ3F8ir
-         8AWV4d1moWwRfQGUwWS0mxw2yaRKsc2PM4Fb3MjCKpwiAZGGljCJatScwsILu8PPApI4
-         brTZGyuvfutfD2xJoPwb3NoDcJjPW/GUpH22/wS7yZA+84RXUs7Fl6dHjPqp+Got/vtb
-         1PimIKAQOGq6P/sfo0pq+At+Kjkn2ERpruaP4nO6OxNcrDzLWZZXrD303b21KkkRYBP/
-         lImYQKaC6N6jPWBcJMYOz2hswp3KfaalNJY3Jl0Ze1n1JWaMk/SrSUI+Zc/q6tlSozu5
-         48IA==
-X-Gm-Message-State: AOAM532pJArPxZhqp1/JIiabl+Znkw6eDXnNOL5Ch4ASDcZNgud2feLu
-        wKUgr8gwz4gKy8ATKXWTfOA=
-X-Google-Smtp-Source: ABdhPJyFqOMWEMcF4A88Iy/0w7DT5uHf5SK1comLS4iu85ds4T2uhzwXRZgUOP6XD34zRrz9dwO/Qw==
-X-Received: by 2002:aca:5253:: with SMTP id g80mr6708242oib.98.1610032376707;
-        Thu, 07 Jan 2021 07:12:56 -0800 (PST)
-Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id l21sm1194383otd.0.2021.01.07.07.12.55
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Thu, 07 Jan 2021 07:12:56 -0800 (PST)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Thu, 7 Jan 2021 07:12:54 -0800
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
-Cc:     mazziesaccount@gmail.com,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        linux-power@fi.rohmeurope.com, linux-watchdog@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/2] watchdog: BD70528: conditionally allow BD70528 module
-Message-ID: <20210107151254.GB13040@roeck-us.net>
-References: <671ac57ad53ab1614da7fe9a3d0f78bdb5b51fda.1610001365.git.matti.vaittinen@fi.rohmeurope.com>
- <019c196041600a00143fe16bda19b2a8f060e9a9.1610001365.git.matti.vaittinen@fi.rohmeurope.com>
+        id S1728273AbhAGPOf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 10:14:35 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57860 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725965AbhAGPOe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Jan 2021 10:14:34 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 49031233F6;
+        Thu,  7 Jan 2021 15:13:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1610032433;
+        bh=hmkOGG92RRXz7BEJQDKw/xkmVnvkEqfCdqeGjl3cgXo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=OSV8G/ovhjz9X/mQ56knTN11DMny8iGIhwgClAXYJ07eTiBpvwk5vjNe+dYFptWUN
+         AQjdung1lB/Hc3A/4Un6w0Dp42q9W67J3HhXjSF0LICBCu4K+mfKVkR3n30SqHD2e5
+         MheqXezXD1ea9GI54LfTPL213drm5B6u1Z9yU8IA=
+Date:   Thu, 7 Jan 2021 16:15:13 +0100
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     zhangqiumiao1@huawei.com
+Cc:     jirislaby@kernel.org, linux-kernel@vger.kernel.org,
+        linux-serial@vger.kernel.org
+Subject: Re: [PATCH v2] tty: make pl011 serial port driver support 485 mode
+Message-ID: <X/clgcNQJXN72Ys/@kroah.com>
+References: <1610000201-4117-1-git-send-email-zhangqiumiao1@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <019c196041600a00143fe16bda19b2a8f060e9a9.1610001365.git.matti.vaittinen@fi.rohmeurope.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <1610000201-4117-1-git-send-email-zhangqiumiao1@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 07, 2021 at 08:37:25AM +0200, Matti Vaittinen wrote:
-> The BD70528 watchdog module provides start/stop interface for RTC
-> driver because the BD70528 watchdog must be stopped when RTC time
-> is set. (WDG uses RTC counter and setting RTC may accidentally trigger
-> WDG if WDG is enabled). The BD71828 use same RTC driver as BD70528 but
-> don't share same WDG logic. When BD70528 is not configured a stub call
-> to "stop WDG" is implemented and in case when BD71828 is used, this
-> stub function should be called. Prevent configuring in the BD70528
-> watchdog when BD71828 is configured to avoid access to real WDG
-> functions when WDG does not exist in HW.
+On Thu, Jan 07, 2021 at 02:16:41PM +0800, zhangqiumiao1@huawei.com wrote:
+> From: Qiumiao Zhang <zhangqiumiao1@huawei.com>
 > 
-> Signed-off-by: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
-
-As mentioned in my response to the other patch, I think this is the
-wrong solution.
-
-Guenter
-
+> make pl011 serial port support 485 mode full duplex communication
+> 
+> Signed-off-by: Qiumiao Zhang <zhangqiumiao1@huawei.com>
 > ---
->  drivers/watchdog/Kconfig | 1 +
->  1 file changed, 1 insertion(+)
+> Changes in v2:
+>  - Fix two compilation errors
+
+What changed from the version you sent yesterday with this same subject
+line?
+
+>  drivers/tty/serial/amba-pl011.c | 38 +++++++++++++++++++++++++++++++++
+>  1 file changed, 38 insertions(+)
 > 
-> diff --git a/drivers/watchdog/Kconfig b/drivers/watchdog/Kconfig
-> index fd7968635e6d..40e1b4c69537 100644
-> --- a/drivers/watchdog/Kconfig
-> +++ b/drivers/watchdog/Kconfig
-> @@ -163,6 +163,7 @@ config SOFT_WATCHDOG_PRETIMEOUT
->  config BD70528_WATCHDOG
->  	tristate "ROHM BD70528 PMIC Watchdog"
->  	depends on MFD_ROHM_BD70528
-> +	depends on MFD_ROHM_BD71828 = n
->  	select WATCHDOG_CORE
->  	help
->  	  Support for the watchdog in the ROHM BD70528 PMIC. Watchdog trigger
-> -- 
-> 2.25.4
+> diff --git a/drivers/tty/serial/amba-pl011.c b/drivers/tty/serial/amba-pl011.c
+> index c255476cce28..f6a7fe61e699 100644
+> --- a/drivers/tty/serial/amba-pl011.c
+> +++ b/drivers/tty/serial/amba-pl011.c
+> @@ -44,6 +44,7 @@
 > 
+>  #include "amba-pl011.h"
 > 
-> -- 
-> Matti Vaittinen, Linux device drivers
-> ROHM Semiconductors, Finland SWDC
-> Kiviharjunlenkki 1E
-> 90220 OULU
-> FINLAND
+> +#define ISEMPTY			1
+>  #define UART_NR			14
 > 
-> ~~~ "I don't think so," said Rene Descartes. Just then he vanished ~~~
-> Simon says - in Latin please.
-> ~~~ "non cogito me" dixit Rene Descarte, deinde evanescavit ~~~
-> Thanks to Simon Glass for the translation =] 
+>  #define SERIAL_AMBA_MAJOR	204
+> @@ -1284,14 +1285,33 @@ static inline bool pl011_dma_rx_running(struct uart_amba_port *uap)
+>  #define pl011_dma_flush_buffer	NULL
+>  #endif
+> 
+> +static unsigned int pl011_tx_empty(struct uart_port *port);
+> +
+>  static void pl011_stop_tx(struct uart_port *port)
+>  {
+> +	unsigned int cr;
+> +	unsigned int result;
+
+But below the uap definition please, like kernel style normally is.
+
+>  	struct uart_amba_port *uap =
+>  	    container_of(port, struct uart_amba_port, port);
+> 
+>  	uap->im &= ~UART011_TXIM;
+>  	pl011_write(uap->im, uap, REG_IMSC);
+>  	pl011_dma_tx_stop(uap);
+> +	if (port->rs485.flags & SER_RS485_ENABLED) {
+> +		while(1) {
+> +			result = pl011_tx_empty(port);
+> +			if (ISEMPTY == result) {
+> +				break;
+> +			}
+
+It's not ok to busy loop forever, sorry.
+
+> +		}
+> +		cr = pl011_read(uap, REG_CR);
+> +		if (port->rs485.flags & SER_RS485_RTS_AFTER_SEND) {
+> +			cr |= UART011_CR_RTS;
+> +		} else {
+> +			cr &= ~UART011_CR_RTS;
+> +		}
+
+Did you run checkpatch on this code?  Please fix up.
+
+thanks,
+
+greg k-h
