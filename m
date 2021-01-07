@@ -2,749 +2,618 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E90D2ECEFB
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 12:49:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F32A82ECF0A
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 12:51:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727789AbhAGLtE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 06:49:04 -0500
-Received: from szxga06-in.huawei.com ([45.249.212.32]:9973 "EHLO
-        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726362AbhAGLtE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 06:49:04 -0500
-Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4DBPc26Mt0zj36M;
-        Thu,  7 Jan 2021 19:47:30 +0800 (CST)
-Received: from [10.136.114.67] (10.136.114.67) by smtp.huawei.com
- (10.3.19.202) with Microsoft SMTP Server (TLS) id 14.3.498.0; Thu, 7 Jan 2021
- 19:48:14 +0800
-Subject: Re: [f2fs-dev] [PATCH RESEND v2 1/5] f2fs: compress: add
- compress_inode to cache compressed blocks
-To:     Jaegeuk Kim <jaegeuk@kernel.org>
-CC:     <linux-kernel@vger.kernel.org>,
-        <linux-f2fs-devel@lists.sourceforge.net>
-References: <20201209084328.30416-1-yuchao0@huawei.com>
- <dffb051a-101d-4cd0-637e-52ceeacb37db@huawei.com>
- <X9GE0Z4KOPzibC43@google.com> <X/YcDFEYBM1NYHvd@google.com>
-From:   Chao Yu <yuchao0@huawei.com>
-Message-ID: <e5d2cea9-400b-e222-d024-b6fbd6711997@huawei.com>
-Date:   Thu, 7 Jan 2021 19:48:14 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.9.1
+        id S1727846AbhAGLu3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 06:50:29 -0500
+Received: from foss.arm.com ([217.140.110.172]:58764 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726073AbhAGLu2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Jan 2021 06:50:28 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B766F31B;
+        Thu,  7 Jan 2021 03:49:41 -0800 (PST)
+Received: from C02TD0UTHF1T.local (unknown [10.57.34.174])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D586D3F719;
+        Thu,  7 Jan 2021 03:49:36 -0800 (PST)
+Date:   Thu, 7 Jan 2021 11:49:34 +0000
+From:   Mark Rutland <mark.rutland@arm.com>
+To:     Sang Yan <sangyan@huawei.com>
+Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        catalin.marinas@arm.com, will@kernel.org, zhuling8@huawei.com,
+        luanjianhai@huawei.com, luolongjun@huawei.com,
+        lixiaoguang2@huawei.com, luchunhua@huawei.com, shenkai8@huawei.com
+Subject: Re: [PATCH] arm64: smp: Add support for cpu park
+Message-ID: <20210107114934.GD7523@C02TD0UTHF1T.local>
+References: <20201219052317.14106-1-sangyan@huawei.com>
 MIME-Version: 1.0
-In-Reply-To: <X/YcDFEYBM1NYHvd@google.com>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.136.114.67]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201219052317.14106-1-sangyan@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/1/7 4:22, Jaegeuk Kim wrote:
-> On 12/09, Jaegeuk Kim wrote:
->> On 12/10, Chao Yu wrote:
->>> Hi Daeho, Jaegeuk
->>>
->>> I found one missing place in this patch which should adapt
->>> "compress vs verity race bugfix"
->>>
->>> Could you please check and apply below diff?
->>
->> Applied.
-> 
-> Hi Chao,
-> 
-> Could you please rebase this patch on top of Eric's cleanup?
+On Sat, Dec 19, 2020 at 01:23:17PM +0800, Sang Yan wrote:
+> Introducing a feature of CPU PARK in order to save time
+> of cpus down and up during kexec, which may cost 250ms of
+> per cpu's down and 30ms of up.
 
-Done, :)
+Where is that 250ms spent? Is that mostly in FW, or in the kernel
+preparing/monitoring the shutdown? If the majority of that time is
+in-kernel we might be able to improve that somewhat.
+
+> As a result, for 128 cores, it costs more than 30 seconds
+> to down and up cpus during kexec. Think about 256 cores and more.
+
+For growing core counts we should look at parallelising the shutdown. We
+already do that for crash kernels, and IIRC Thomas Glexiner was
+interested in making CPU bringup and teardown parallelisable generally,
+so we might be able to make core code changes if necessary to permit
+that.
+
+> CPU PARK is a state that cpu power-on and staying in spin loop, polling
+> for exit chances, such as writing exit address.
+> 
+> Reserving a block of memory, to fill with cpu park text section,
+> exit address and park-magic-flag of each cpu. In implementation,
+> reserved one page for one cpu core.
+> 
+> Cpus going to park state instead of down in machine_shutdown().
+> Cpus going out of park state in smp_init instead of brought up.
+
+I really do not want to introduce another mechanism for CPU handoff.
+It's very hard to get this right, comes with an ever-growing set of ABI
+challenges, and is incompatible with a kexec to another (non-Linux)
+target.
+
+I do not think that we should pursue this approach unless we have
+exhausted the alternatives.
 
 Thanks,
+Mark.
 
 > 
-> Thanks,
+> One of cpu park sections in pre-reserved memory blocks,:
+> +--------------+
+> + exit address +
+> +--------------+
+> + park magic   +
+> +--------------+
+> + park codes   +
+> +      .       +
+> +      .       +
+> +      .       +
+> +--------------+
 > 
->>
->>>
->>>  From 61a9812944ac2f6f64fb458d5ef8b662c007bc50 Mon Sep 17 00:00:00 2001
->>> From: Chao Yu <yuchao0@huawei.com>
->>> Date: Thu, 10 Dec 2020 09:52:42 +0800
->>> Subject: [PATCH] fix
->>>
->>> Signed-off-by: Chao Yu <yuchao0@huawei.com>
->>> ---
->>>   fs/f2fs/data.c | 7 ++-----
->>>   1 file changed, 2 insertions(+), 5 deletions(-)
->>>
->>> diff --git a/fs/f2fs/data.c b/fs/f2fs/data.c
->>> index 6787a7a03e86..894c5680db4a 100644
->>> --- a/fs/f2fs/data.c
->>> +++ b/fs/f2fs/data.c
->>> @@ -2271,11 +2271,8 @@ int f2fs_read_multi_pages(struct compress_ctx *cc, struct bio **bio_ret,
->>>   		f2fs_load_compressed_page(sbi, page, blkaddr);
->>>   		if (PageUptodate(page)) {
->>>   			if (!atomic_dec_return(&dic->pending_pages)) {
->>> -				bool verity =
->>> -					f2fs_need_verity(inode, start_idx);
->>> -
->>> -				f2fs_do_decompress_pages(dic, verity);
->>> -				if (verity) {
->>> +				f2fs_do_decompress_pages(dic, for_verity);
->>> +				if (for_verity) {
->>>   					f2fs_verify_pages(dic->rpages,
->>>   							dic->cluster_size);
->>>   					f2fs_free_dic(dic);
->>> -- 
->>> 2.29.2
->>>
->>> Thanks,
->>>
->>> On 2020/12/9 16:43, Chao Yu wrote:
->>>> Support to use address space of inner inode to cache compressed block,
->>>> in order to improve cache hit ratio of random read.
->>>>
->>>> Signed-off-by: Chao Yu <yuchao0@huawei.com>
->>>> ---
->>>>    Documentation/filesystems/f2fs.rst |   3 +
->>>>    fs/f2fs/compress.c                 | 198 +++++++++++++++++++++++++++--
->>>>    fs/f2fs/data.c                     |  29 ++++-
->>>>    fs/f2fs/debug.c                    |  13 ++
->>>>    fs/f2fs/f2fs.h                     |  34 ++++-
->>>>    fs/f2fs/gc.c                       |   1 +
->>>>    fs/f2fs/inode.c                    |  21 ++-
->>>>    fs/f2fs/segment.c                  |   6 +-
->>>>    fs/f2fs/super.c                    |  19 ++-
->>>>    include/linux/f2fs_fs.h            |   1 +
->>>>    10 files changed, 305 insertions(+), 20 deletions(-)
->>>>
->>>> diff --git a/Documentation/filesystems/f2fs.rst b/Documentation/filesystems/f2fs.rst
->>>> index dae15c96e659..5fa45fd8e4af 100644
->>>> --- a/Documentation/filesystems/f2fs.rst
->>>> +++ b/Documentation/filesystems/f2fs.rst
->>>> @@ -268,6 +268,9 @@ compress_mode=%s	 Control file compression mode. This supports "fs" and "user"
->>>>    			 choosing the target file and the timing. The user can do manual
->>>>    			 compression/decompression on the compression enabled files using
->>>>    			 ioctls.
->>>> +compress_cache		 Support to use address space of a filesystem managed inode to
->>>> +			 cache compressed block, in order to improve cache hit ratio of
->>>> +			 random read.
->>>>    inlinecrypt		 When possible, encrypt/decrypt the contents of encrypted
->>>>    			 files using the blk-crypto framework rather than
->>>>    			 filesystem-layer encryption. This allows the use of
->>>> diff --git a/fs/f2fs/compress.c b/fs/f2fs/compress.c
->>>> index 4bcbacfe3325..446dd41a7bad 100644
->>>> --- a/fs/f2fs/compress.c
->>>> +++ b/fs/f2fs/compress.c
->>>> @@ -12,9 +12,11 @@
->>>>    #include <linux/lzo.h>
->>>>    #include <linux/lz4.h>
->>>>    #include <linux/zstd.h>
->>>> +#include <linux/pagevec.h>
->>>>    #include "f2fs.h"
->>>>    #include "node.h"
->>>> +#include "segment.h"
->>>>    #include <trace/events/f2fs.h>
->>>>    static struct kmem_cache *cic_entry_slab;
->>>> @@ -721,25 +723,14 @@ static int f2fs_compress_pages(struct compress_ctx *cc)
->>>>    	return ret;
->>>>    }
->>>> -void f2fs_decompress_pages(struct bio *bio, struct page *page, bool verity)
->>>> +void f2fs_do_decompress_pages(struct decompress_io_ctx *dic, bool verity)
->>>>    {
->>>> -	struct decompress_io_ctx *dic =
->>>> -			(struct decompress_io_ctx *)page_private(page);
->>>> -	struct f2fs_sb_info *sbi = F2FS_I_SB(dic->inode);
->>>>    	struct f2fs_inode_info *fi= F2FS_I(dic->inode);
->>>>    	const struct f2fs_compress_ops *cops =
->>>>    			f2fs_cops[fi->i_compress_algorithm];
->>>>    	int ret;
->>>>    	int i;
->>>> -	dec_page_count(sbi, F2FS_RD_DATA);
->>>> -
->>>> -	if (bio->bi_status || PageError(page))
->>>> -		dic->failed = true;
->>>> -
->>>> -	if (atomic_dec_return(&dic->pending_pages))
->>>> -		return;
->>>> -
->>>>    	trace_f2fs_decompress_pages_start(dic->inode, dic->cluster_idx,
->>>>    				dic->cluster_size, fi->i_compress_algorithm);
->>>> @@ -797,6 +788,7 @@ void f2fs_decompress_pages(struct bio *bio, struct page *page, bool verity)
->>>>    	ret = cops->decompress_pages(dic);
->>>>    	if (!ret && (fi->i_compress_flag & 1 << COMPRESS_CHKSUM)) {
->>>> +		struct f2fs_sb_info *sbi = F2FS_I_SB(dic->inode);
->>>>    		u32 provided = le32_to_cpu(dic->cbuf->chksum);
->>>>    		u32 calculated = f2fs_crc32(sbi, dic->cbuf->cdata, dic->clen);
->>>> @@ -830,6 +822,30 @@ void f2fs_decompress_pages(struct bio *bio, struct page *page, bool verity)
->>>>    		f2fs_free_dic(dic);
->>>>    }
->>>> +void f2fs_cache_compressed_page(struct f2fs_sb_info *sbi, struct page *page,
->>>> +						nid_t ino, block_t blkaddr);
->>>> +void f2fs_decompress_pages(struct bio *bio, struct page *page,
->>>> +						bool verity, unsigned int ofs)
->>>> +{
->>>> +	struct decompress_io_ctx *dic =
->>>> +			(struct decompress_io_ctx *)page_private(page);
->>>> +	struct f2fs_sb_info *sbi = F2FS_I_SB(dic->inode);
->>>> +	block_t blkaddr;
->>>> +
->>>> +	dec_page_count(sbi, F2FS_RD_DATA);
->>>> +
->>>> +	if (bio->bi_status || PageError(page))
->>>> +		dic->failed = true;
->>>> +
->>>> +	blkaddr = SECTOR_TO_BLOCK(bio->bi_iter.bi_sector) + ofs;
->>>> +	f2fs_cache_compressed_page(sbi, page, dic->inode->i_ino, blkaddr);
->>>> +
->>>> +	if (atomic_dec_return(&dic->pending_pages))
->>>> +		return;
->>>> +
->>>> +	f2fs_do_decompress_pages(dic, verity);
->>>> +}
->>>> +
->>>>    static bool is_page_in_cluster(struct compress_ctx *cc, pgoff_t index)
->>>>    {
->>>>    	if (cc->cluster_idx == NULL_CLUSTER)
->>>> @@ -1600,6 +1616,164 @@ void f2fs_decompress_end_io(struct page **rpages,
->>>>    	}
->>>>    }
->>>> +const struct address_space_operations f2fs_compress_aops = {
->>>> +	.releasepage = f2fs_release_page,
->>>> +	.invalidatepage = f2fs_invalidate_page,
->>>> +};
->>>> +
->>>> +struct address_space *COMPRESS_MAPPING(struct f2fs_sb_info *sbi)
->>>> +{
->>>> +	return sbi->compress_inode->i_mapping;
->>>> +}
->>>> +
->>>> +void f2fs_invalidate_compress_page(struct f2fs_sb_info *sbi, block_t blkaddr)
->>>> +{
->>>> +	if (!sbi->compress_inode)
->>>> +		return;
->>>> +	invalidate_mapping_pages(COMPRESS_MAPPING(sbi), blkaddr, blkaddr);
->>>> +}
->>>> +
->>>> +void f2fs_cache_compressed_page(struct f2fs_sb_info *sbi, struct page *page,
->>>> +						nid_t ino, block_t blkaddr)
->>>> +{
->>>> +	struct page *cpage;
->>>> +	int ret;
->>>> +	struct sysinfo si;
->>>> +	unsigned long free_ram, avail_ram;
->>>> +
->>>> +	if (!test_opt(sbi, COMPRESS_CACHE))
->>>> +		return;
->>>> +
->>>> +	si_meminfo(&si);
->>>> +	free_ram = si.freeram;
->>>> +	avail_ram = si.totalram - si.totalhigh;
->>>> +
->>>> +	/* free memory is lower than watermark, deny caching compress page */
->>>> +	if (free_ram <= sbi->compress_watermark / 100 * avail_ram)
->>>> +		return;
->>>> +
->>>> +	/* cached page count exceed threshold, deny caching compress page */
->>>> +	if (COMPRESS_MAPPING(sbi)->nrpages >=
->>>> +			free_ram / 100 * sbi->compress_percent)
->>>> +		return;
->>>> +
->>>> +	cpage = find_get_page(COMPRESS_MAPPING(sbi), blkaddr);
->>>> +	if (cpage) {
->>>> +		f2fs_put_page(cpage, 0);
->>>> +		return;
->>>> +	}
->>>> +
->>>> +	cpage = alloc_page(__GFP_IO);
->>>> +	if (!cpage)
->>>> +		return;
->>>> +
->>>> +	ret = add_to_page_cache_lru(cpage, COMPRESS_MAPPING(sbi),
->>>> +						blkaddr, GFP_NOFS);
->>>> +	if (ret) {
->>>> +		f2fs_put_page(cpage, 0);
->>>> +		return;
->>>> +	}
->>>> +
->>>> +	memcpy(page_address(cpage), page_address(page), PAGE_SIZE);
->>>> +	SetPageUptodate(cpage);
->>>> +
->>>> +	f2fs_set_page_private(cpage, ino);
->>>> +
->>>> +	f2fs_put_page(cpage, 1);
->>>> +}
->>>> +
->>>> +void f2fs_load_compressed_page(struct f2fs_sb_info *sbi, struct page *page,
->>>> +								block_t blkaddr)
->>>> +{
->>>> +	struct page *cpage;
->>>> +
->>>> +	if (!test_opt(sbi, COMPRESS_CACHE))
->>>> +		return;
->>>> +
->>>> +	cpage = f2fs_pagecache_get_page(COMPRESS_MAPPING(sbi),
->>>> +				blkaddr, FGP_LOCK | FGP_NOWAIT, GFP_NOFS);
->>>> +	if (cpage) {
->>>> +		if (PageUptodate(cpage)) {
->>>> +			atomic_inc(&sbi->compress_page_hit);
->>>> +			memcpy(page_address(page),
->>>> +				page_address(cpage), PAGE_SIZE);
->>>> +			SetPageUptodate(page);
->>>> +		}
->>>> +		f2fs_put_page(cpage, 1);
->>>> +	}
->>>> +}
->>>> +
->>>> +void f2fs_invalidate_compress_pages(struct f2fs_sb_info *sbi, nid_t ino)
->>>> +{
->>>> +	struct address_space *mapping = sbi->compress_inode->i_mapping;
->>>> +	struct pagevec pvec;
->>>> +	pgoff_t index = 0;
->>>> +	pgoff_t end = MAX_BLKADDR(sbi);
->>>> +
->>>> +	pagevec_init(&pvec);
->>>> +
->>>> +	do {
->>>> +		unsigned int nr_pages;
->>>> +		int i;
->>>> +
->>>> +		nr_pages = pagevec_lookup_range(&pvec, mapping,
->>>> +						&index, end - 1);
->>>> +		if (!nr_pages)
->>>> +			break;
->>>> +
->>>> +		for (i = 0; i < nr_pages; i++) {
->>>> +			struct page *page = pvec.pages[i];
->>>> +
->>>> +			if (page->index > end)
->>>> +				break;
->>>> +
->>>> +			lock_page(page);
->>>> +			if (page->mapping != mapping) {
->>>> +				unlock_page(page);
->>>> +				continue;
->>>> +			}
->>>> +
->>>> +			if (ino != page_private(page)) {
->>>> +				unlock_page(page);
->>>> +				continue;
->>>> +			}
->>>> +
->>>> +			generic_error_remove_page(mapping, page);
->>>> +			unlock_page(page);
->>>> +		}
->>>> +		pagevec_release(&pvec);
->>>> +		cond_resched();
->>>> +	} while (index < end);
->>>> +}
->>>> +
->>>> +int f2fs_init_compress_inode(struct f2fs_sb_info *sbi)
->>>> +{
->>>> +	struct inode *inode;
->>>> +
->>>> +	if (!test_opt(sbi, COMPRESS_CACHE))
->>>> +		return 0;
->>>> +
->>>> +	inode = f2fs_iget(sbi->sb, F2FS_COMPRESS_INO(sbi));
->>>> +	if (IS_ERR(inode))
->>>> +		return PTR_ERR(inode);
->>>> +	sbi->compress_inode = inode;
->>>> +
->>>> +	sbi->compress_percent = COMPRESS_PERCENT;
->>>> +	sbi->compress_watermark = COMPRESS_WATERMARK;
->>>> +
->>>> +	atomic_set(&sbi->compress_page_hit, 0);
->>>> +
->>>> +	return 0;
->>>> +}
->>>> +
->>>> +void f2fs_destroy_compress_inode(struct f2fs_sb_info *sbi)
->>>> +{
->>>> +	if (!sbi->compress_inode)
->>>> +		return;
->>>> +	iput(sbi->compress_inode);
->>>> +	sbi->compress_inode = NULL;
->>>> +}
->>>> +
->>>>    int f2fs_init_page_array_cache(struct f2fs_sb_info *sbi)
->>>>    {
->>>>    	dev_t dev = sbi->sb->s_bdev->bd_dev;
->>>> diff --git a/fs/f2fs/data.c b/fs/f2fs/data.c
->>>> index aa34d620bec9..6787a7a03e86 100644
->>>> --- a/fs/f2fs/data.c
->>>> +++ b/fs/f2fs/data.c
->>>> @@ -133,17 +133,21 @@ static void __read_end_io(struct bio *bio, bool compr, bool verity)
->>>>    	struct page *page;
->>>>    	struct bio_vec *bv;
->>>>    	struct bvec_iter_all iter_all;
->>>> +	unsigned int ofs = 0;
->>>>    	bio_for_each_segment_all(bv, bio, iter_all) {
->>>>    		page = bv->bv_page;
->>>>    #ifdef CONFIG_F2FS_FS_COMPRESSION
->>>>    		if (compr && f2fs_is_compressed_page(page)) {
->>>> -			f2fs_decompress_pages(bio, page, verity);
->>>> +			f2fs_decompress_pages(bio, page, verity, ofs);
->>>> +			ofs++;
->>>>    			continue;
->>>>    		}
->>>> -		if (verity)
->>>> +		if (verity) {
->>>> +			ofs++;
->>>>    			continue;
->>>> +		}
->>>>    #endif
->>>>    		/* PG_error was set if any post_read step failed */
->>>> @@ -156,6 +160,7 @@ static void __read_end_io(struct bio *bio, bool compr, bool verity)
->>>>    		}
->>>>    		dec_page_count(F2FS_P_SB(page), __read_io_type(page));
->>>>    		unlock_page(page);
->>>> +		ofs++;
->>>>    	}
->>>>    }
->>>> @@ -1421,9 +1426,11 @@ static int __allocate_data_block(struct dnode_of_data *dn, int seg_type)
->>>>    	old_blkaddr = dn->data_blkaddr;
->>>>    	f2fs_allocate_data_block(sbi, NULL, old_blkaddr, &dn->data_blkaddr,
->>>>    				&sum, seg_type, NULL);
->>>> -	if (GET_SEGNO(sbi, old_blkaddr) != NULL_SEGNO)
->>>> +	if (GET_SEGNO(sbi, old_blkaddr) != NULL_SEGNO) {
->>>>    		invalidate_mapping_pages(META_MAPPING(sbi),
->>>>    					old_blkaddr, old_blkaddr);
->>>> +		f2fs_invalidate_compress_page(sbi, old_blkaddr);
->>>> +	}
->>>>    	f2fs_update_data_blkaddr(dn, dn->data_blkaddr);
->>>>    	/*
->>>> @@ -2261,6 +2268,22 @@ int f2fs_read_multi_pages(struct compress_ctx *cc, struct bio **bio_ret,
->>>>    		blkaddr = data_blkaddr(dn.inode, dn.node_page,
->>>>    						dn.ofs_in_node + i + 1);
->>>> +		f2fs_load_compressed_page(sbi, page, blkaddr);
->>>> +		if (PageUptodate(page)) {
->>>> +			if (!atomic_dec_return(&dic->pending_pages)) {
->>>> +				bool verity =
->>>> +					f2fs_need_verity(inode, start_idx);
->>>> +
->>>> +				f2fs_do_decompress_pages(dic, verity);
->>>> +				if (verity) {
->>>> +					f2fs_verify_pages(dic->rpages,
->>>> +							dic->cluster_size);
->>>> +					f2fs_free_dic(dic);
->>>> +				}
->>>> +			}
->>>> +			continue;
->>>> +		}
->>>> +
->>>>    		if (bio && (!page_is_mergeable(sbi, bio,
->>>>    					*last_block_in_bio, blkaddr) ||
->>>>    		    !f2fs_crypt_mergeable_bio(bio, inode, page->index, NULL))) {
->>>> diff --git a/fs/f2fs/debug.c b/fs/f2fs/debug.c
->>>> index 197c914119da..f1f8714066c5 100644
->>>> --- a/fs/f2fs/debug.c
->>>> +++ b/fs/f2fs/debug.c
->>>> @@ -145,6 +145,12 @@ static void update_general_status(struct f2fs_sb_info *sbi)
->>>>    		si->node_pages = NODE_MAPPING(sbi)->nrpages;
->>>>    	if (sbi->meta_inode)
->>>>    		si->meta_pages = META_MAPPING(sbi)->nrpages;
->>>> +#ifdef CONFIG_F2FS_FS_COMPRESSION
->>>> +	if (sbi->compress_inode) {
->>>> +		si->compress_pages = COMPRESS_MAPPING(sbi)->nrpages;
->>>> +		si->compress_page_hit = atomic_read(&sbi->compress_page_hit);
->>>> +	}
->>>> +#endif
->>>>    	si->nats = NM_I(sbi)->nat_cnt[TOTAL_NAT];
->>>>    	si->dirty_nats = NM_I(sbi)->nat_cnt[DIRTY_NAT];
->>>>    	si->sits = MAIN_SEGS(sbi);
->>>> @@ -299,6 +305,12 @@ static void update_mem_info(struct f2fs_sb_info *sbi)
->>>>    		unsigned npages = META_MAPPING(sbi)->nrpages;
->>>>    		si->page_mem += (unsigned long long)npages << PAGE_SHIFT;
->>>>    	}
->>>> +#ifdef CONFIG_F2FS_FS_COMPRESSION
->>>> +	if (sbi->compress_inode) {
->>>> +		unsigned npages = COMPRESS_MAPPING(sbi)->nrpages;
->>>> +		si->page_mem += (unsigned long long)npages << PAGE_SHIFT;
->>>> +	}
->>>> +#endif
->>>>    }
->>>>    static int stat_show(struct seq_file *s, void *v)
->>>> @@ -461,6 +473,7 @@ static int stat_show(struct seq_file *s, void *v)
->>>>    			"volatile IO: %4d (Max. %4d)\n",
->>>>    			   si->inmem_pages, si->aw_cnt, si->max_aw_cnt,
->>>>    			   si->vw_cnt, si->max_vw_cnt);
->>>> +		seq_printf(s, "  - compress: %4d, hit:%8d\n", si->compress_pages, si->compress_page_hit);
->>>>    		seq_printf(s, "  - nodes: %4d in %4d\n",
->>>>    			   si->ndirty_node, si->node_pages);
->>>>    		seq_printf(s, "  - dents: %4d in dirs:%4d (%4d)\n",
->>>> diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
->>>> index 7364d453783f..0ff8b18eda05 100644
->>>> --- a/fs/f2fs/f2fs.h
->>>> +++ b/fs/f2fs/f2fs.h
->>>> @@ -97,6 +97,7 @@ extern const char *f2fs_fault_name[FAULT_MAX];
->>>>    #define F2FS_MOUNT_DISABLE_CHECKPOINT	0x02000000
->>>>    #define F2FS_MOUNT_NORECOVERY		0x04000000
->>>>    #define F2FS_MOUNT_ATGC			0x08000000
->>>> +#define F2FS_MOUNT_COMPRESS_CACHE	0x10000000
->>>>    #define F2FS_OPTION(sbi)	((sbi)->mount_opt)
->>>>    #define clear_opt(sbi, option)	(F2FS_OPTION(sbi).opt &= ~F2FS_MOUNT_##option)
->>>> @@ -1298,6 +1299,9 @@ enum compress_flag {
->>>>    	COMPRESS_MAX_FLAG,
->>>>    };
->>>> +#define	COMPRESS_WATERMARK			20
->>>> +#define	COMPRESS_PERCENT			20
->>>> +
->>>>    #define COMPRESS_DATA_RESERVED_SIZE		4
->>>>    struct compress_data {
->>>>    	__le32 clen;			/* compressed data size */
->>>> @@ -1571,6 +1575,11 @@ struct f2fs_sb_info {
->>>>    #ifdef CONFIG_F2FS_FS_COMPRESSION
->>>>    	struct kmem_cache *page_array_slab;	/* page array entry */
->>>>    	unsigned int page_array_slab_size;	/* default page array slab size */
->>>> +
->>>> +	struct inode *compress_inode;		/* cache compressed blocks */
->>>> +	unsigned int compress_percent;		/* cache page percentage */
->>>> +	unsigned int compress_watermark;	/* cache page watermark */
->>>> +	atomic_t compress_page_hit;		/* cache hit count */
->>>>    #endif
->>>>    };
->>>> @@ -3536,7 +3545,8 @@ struct f2fs_stat_info {
->>>>    	unsigned int bimodal, avg_vblocks;
->>>>    	int util_free, util_valid, util_invalid;
->>>>    	int rsvd_segs, overp_segs;
->>>> -	int dirty_count, node_pages, meta_pages;
->>>> +	int dirty_count, node_pages, meta_pages, compress_pages;
->>>> +	int compress_page_hit;
->>>>    	int prefree_count, call_count, cp_count, bg_cp_count;
->>>>    	int tot_segs, node_segs, data_segs, free_segs, free_secs;
->>>>    	int bg_node_segs, bg_data_segs;
->>>> @@ -3874,7 +3884,8 @@ void f2fs_compress_write_end_io(struct bio *bio, struct page *page);
->>>>    bool f2fs_is_compress_backend_ready(struct inode *inode);
->>>>    int f2fs_init_compress_mempool(void);
->>>>    void f2fs_destroy_compress_mempool(void);
->>>> -void f2fs_decompress_pages(struct bio *bio, struct page *page, bool verity);
->>>> +void f2fs_do_decompress_pages(struct decompress_io_ctx *dic, bool verity);
->>>> +void f2fs_decompress_pages(struct bio *bio, struct page *page, bool verity, unsigned int ofs);
->>>>    bool f2fs_cluster_is_empty(struct compress_ctx *cc);
->>>>    bool f2fs_cluster_can_merge_page(struct compress_ctx *cc, pgoff_t index);
->>>>    void f2fs_compress_ctx_add_page(struct compress_ctx *cc, struct page *page);
->>>> @@ -3893,10 +3904,19 @@ void f2fs_decompress_end_io(struct page **rpages,
->>>>    int f2fs_init_compress_ctx(struct compress_ctx *cc);
->>>>    void f2fs_destroy_compress_ctx(struct compress_ctx *cc);
->>>>    void f2fs_init_compress_info(struct f2fs_sb_info *sbi);
->>>> +int f2fs_init_compress_inode(struct f2fs_sb_info *sbi);
->>>> +void f2fs_destroy_compress_inode(struct f2fs_sb_info *sbi);
->>>>    int f2fs_init_page_array_cache(struct f2fs_sb_info *sbi);
->>>>    void f2fs_destroy_page_array_cache(struct f2fs_sb_info *sbi);
->>>>    int __init f2fs_init_compress_cache(void);
->>>>    void f2fs_destroy_compress_cache(void);
->>>> +struct address_space *COMPRESS_MAPPING(struct f2fs_sb_info *sbi);
->>>> +void f2fs_invalidate_compress_page(struct f2fs_sb_info *sbi, block_t blkaddr);
->>>> +void f2fs_cache_compressed_page(struct f2fs_sb_info *sbi, struct page *page,
->>>> +						nid_t ino, block_t blkaddr);
->>>> +void f2fs_load_compressed_page(struct f2fs_sb_info *sbi, struct page *page,
->>>> +								block_t blkaddr);
->>>> +void f2fs_invalidate_compress_pages(struct f2fs_sb_info *sbi, nid_t ino);
->>>>    #else
->>>>    static inline bool f2fs_is_compressed_page(struct page *page) { return false; }
->>>>    static inline bool f2fs_is_compress_backend_ready(struct inode *inode)
->>>> @@ -3913,10 +3933,20 @@ static inline struct page *f2fs_compress_control_page(struct page *page)
->>>>    }
->>>>    static inline int f2fs_init_compress_mempool(void) { return 0; }
->>>>    static inline void f2fs_destroy_compress_mempool(void) { }
->>>> +static inline int f2fs_init_compress_inode(struct f2fs_sb_info *sbi) { return 0; }
->>>> +static inline void f2fs_destroy_compress_inode(struct f2fs_sb_info *sbi) { }
->>>>    static inline int f2fs_init_page_array_cache(struct f2fs_sb_info *sbi) { return 0; }
->>>>    static inline void f2fs_destroy_page_array_cache(struct f2fs_sb_info *sbi) { }
->>>>    static inline int __init f2fs_init_compress_cache(void) { return 0; }
->>>>    static inline void f2fs_destroy_compress_cache(void) { }
->>>> +static inline void f2fs_invalidate_compress_page(struct f2fs_sb_info *sbi,
->>>> +				block_t blkaddr) { }
->>>> +static inline void f2fs_cache_compressed_page(struct f2fs_sb_info *sbi,
->>>> +				struct page *page, nid_t ino, block_t blkaddr) { }
->>>> +static inline void f2fs_load_compressed_page(struct f2fs_sb_info *sbi,
->>>> +				struct page *page, block_t blkaddr) { }
->>>> +static inline void f2fs_invalidate_compress_pages(struct f2fs_sb_info *sbi,
->>>> +							nid_t ino) { }
->>>>    #endif
->>>>    static inline void set_compress_context(struct inode *inode)
->>>> diff --git a/fs/f2fs/gc.c b/fs/f2fs/gc.c
->>>> index 3ef84e6ded41..43919a3ae6a6 100644
->>>> --- a/fs/f2fs/gc.c
->>>> +++ b/fs/f2fs/gc.c
->>>> @@ -1225,6 +1225,7 @@ static int move_data_block(struct inode *inode, block_t bidx,
->>>>    	f2fs_put_page(mpage, 1);
->>>>    	invalidate_mapping_pages(META_MAPPING(fio.sbi),
->>>>    				fio.old_blkaddr, fio.old_blkaddr);
->>>> +	f2fs_invalidate_compress_page(fio.sbi, fio.old_blkaddr);
->>>>    	set_page_dirty(fio.encrypted_page);
->>>>    	if (clear_page_dirty_for_io(fio.encrypted_page))
->>>> diff --git a/fs/f2fs/inode.c b/fs/f2fs/inode.c
->>>> index 349d9cb933ee..f030b9b79202 100644
->>>> --- a/fs/f2fs/inode.c
->>>> +++ b/fs/f2fs/inode.c
->>>> @@ -18,6 +18,10 @@
->>>>    #include <trace/events/f2fs.h>
->>>> +#ifdef CONFIG_F2FS_FS_COMPRESSION
->>>> +extern const struct address_space_operations f2fs_compress_aops;
->>>> +#endif
->>>> +
->>>>    void f2fs_mark_inode_dirty_sync(struct inode *inode, bool sync)
->>>>    {
->>>>    	if (is_inode_flag_set(inode, FI_NEW_INODE))
->>>> @@ -494,6 +498,11 @@ struct inode *f2fs_iget(struct super_block *sb, unsigned long ino)
->>>>    	if (ino == F2FS_NODE_INO(sbi) || ino == F2FS_META_INO(sbi))
->>>>    		goto make_now;
->>>> +#ifdef CONFIG_F2FS_FS_COMPRESSION
->>>> +	if (ino == F2FS_COMPRESS_INO(sbi))
->>>> +		goto make_now;
->>>> +#endif
->>>> +
->>>>    	ret = do_read_inode(inode);
->>>>    	if (ret)
->>>>    		goto bad_inode;
->>>> @@ -504,6 +513,12 @@ struct inode *f2fs_iget(struct super_block *sb, unsigned long ino)
->>>>    	} else if (ino == F2FS_META_INO(sbi)) {
->>>>    		inode->i_mapping->a_ops = &f2fs_meta_aops;
->>>>    		mapping_set_gfp_mask(inode->i_mapping, GFP_NOFS);
->>>> +	} else if (ino == F2FS_COMPRESS_INO(sbi)) {
->>>> +#ifdef CONFIG_F2FS_FS_COMPRESSION
->>>> +		inode->i_mapping->a_ops = &f2fs_compress_aops;
->>>> +#endif
->>>> +		mapping_set_gfp_mask(inode->i_mapping,
->>>> +			GFP_NOFS | __GFP_HIGHMEM | __GFP_MOVABLE);
->>>>    	} else if (S_ISREG(inode->i_mode)) {
->>>>    		inode->i_op = &f2fs_file_inode_operations;
->>>>    		inode->i_fop = &f2fs_file_operations;
->>>> @@ -722,8 +737,12 @@ void f2fs_evict_inode(struct inode *inode)
->>>>    	trace_f2fs_evict_inode(inode);
->>>>    	truncate_inode_pages_final(&inode->i_data);
->>>> +	if (test_opt(sbi, COMPRESS_CACHE) && f2fs_compressed_file(inode))
->>>> +		f2fs_invalidate_compress_pages(sbi, inode->i_ino);
->>>> +
->>>>    	if (inode->i_ino == F2FS_NODE_INO(sbi) ||
->>>> -			inode->i_ino == F2FS_META_INO(sbi))
->>>> +			inode->i_ino == F2FS_META_INO(sbi) ||
->>>> +			inode->i_ino == F2FS_COMPRESS_INO(sbi))
->>>>    		goto out_clear;
->>>>    	f2fs_bug_on(sbi, get_dirty_pages(inode));
->>>> diff --git a/fs/f2fs/segment.c b/fs/f2fs/segment.c
->>>> index deca74cb17df..d8570b0359f5 100644
->>>> --- a/fs/f2fs/segment.c
->>>> +++ b/fs/f2fs/segment.c
->>>> @@ -2305,6 +2305,7 @@ void f2fs_invalidate_blocks(struct f2fs_sb_info *sbi, block_t addr)
->>>>    		return;
->>>>    	invalidate_mapping_pages(META_MAPPING(sbi), addr, addr);
->>>> +	f2fs_invalidate_compress_page(sbi, addr);
->>>>    	/* add it into sit main buffer */
->>>>    	down_write(&sit_i->sentry_lock);
->>>> @@ -3432,9 +3433,11 @@ static void do_write_page(struct f2fs_summary *sum, struct f2fs_io_info *fio)
->>>>    reallocate:
->>>>    	f2fs_allocate_data_block(fio->sbi, fio->page, fio->old_blkaddr,
->>>>    			&fio->new_blkaddr, sum, type, fio);
->>>> -	if (GET_SEGNO(fio->sbi, fio->old_blkaddr) != NULL_SEGNO)
->>>> +	if (GET_SEGNO(fio->sbi, fio->old_blkaddr) != NULL_SEGNO) {
->>>>    		invalidate_mapping_pages(META_MAPPING(fio->sbi),
->>>>    					fio->old_blkaddr, fio->old_blkaddr);
->>>> +		f2fs_invalidate_compress_page(fio->sbi, fio->old_blkaddr);
->>>> +	}
->>>>    	/* writeout dirty page into bdev */
->>>>    	f2fs_submit_page_write(fio);
->>>> @@ -3607,6 +3610,7 @@ void f2fs_do_replace_block(struct f2fs_sb_info *sbi, struct f2fs_summary *sum,
->>>>    	if (GET_SEGNO(sbi, old_blkaddr) != NULL_SEGNO) {
->>>>    		invalidate_mapping_pages(META_MAPPING(sbi),
->>>>    					old_blkaddr, old_blkaddr);
->>>> +		f2fs_invalidate_compress_page(sbi, old_blkaddr);
->>>>    		if (!from_gc)
->>>>    			update_segment_mtime(sbi, old_blkaddr, 0);
->>>>    		update_sit_entry(sbi, old_blkaddr, -1);
->>>> diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
->>>> index 8a82721b69ef..50e749169841 100644
->>>> --- a/fs/f2fs/super.c
->>>> +++ b/fs/f2fs/super.c
->>>> @@ -148,6 +148,7 @@ enum {
->>>>    	Opt_compress_extension,
->>>>    	Opt_compress_chksum,
->>>>    	Opt_compress_mode,
->>>> +	Opt_compress_cache,
->>>>    	Opt_atgc,
->>>>    	Opt_err,
->>>>    };
->>>> @@ -218,6 +219,7 @@ static match_table_t f2fs_tokens = {
->>>>    	{Opt_compress_extension, "compress_extension=%s"},
->>>>    	{Opt_compress_chksum, "compress_chksum"},
->>>>    	{Opt_compress_mode, "compress_mode=%s"},
->>>> +	{Opt_compress_cache, "compress_cache"},
->>>>    	{Opt_atgc, "atgc"},
->>>>    	{Opt_err, NULL},
->>>>    };
->>>> @@ -955,12 +957,16 @@ static int parse_options(struct super_block *sb, char *options, bool is_remount)
->>>>    			}
->>>>    			kfree(name);
->>>>    			break;
->>>> +		case Opt_compress_cache:
->>>> +			set_opt(sbi, COMPRESS_CACHE);
->>>> +			break;
->>>>    #else
->>>>    		case Opt_compress_algorithm:
->>>>    		case Opt_compress_log_size:
->>>>    		case Opt_compress_extension:
->>>>    		case Opt_compress_chksum:
->>>>    		case Opt_compress_mode:
->>>> +		case Opt_compress_cache:
->>>>    			f2fs_info(sbi, "compression options not supported");
->>>>    			break;
->>>>    #endif
->>>> @@ -1285,6 +1291,8 @@ static void f2fs_put_super(struct super_block *sb)
->>>>    	f2fs_bug_on(sbi, sbi->fsync_node_num);
->>>> +	f2fs_destroy_compress_inode(sbi);
->>>> +
->>>>    	iput(sbi->node_inode);
->>>>    	sbi->node_inode = NULL;
->>>> @@ -1554,6 +1562,9 @@ static inline void f2fs_show_compress_options(struct seq_file *seq,
->>>>    		seq_printf(seq, ",compress_mode=%s", "fs");
->>>>    	else if (F2FS_OPTION(sbi).compress_mode == COMPR_MODE_USER)
->>>>    		seq_printf(seq, ",compress_mode=%s", "user");
->>>> +
->>>> +	if (test_opt(sbi, COMPRESS_CACHE))
->>>> +		seq_puts(seq, ",compress_cache");
->>>>    }
->>>>    static int f2fs_show_options(struct seq_file *seq, struct dentry *root)
->>>> @@ -3759,10 +3770,14 @@ static int f2fs_fill_super(struct super_block *sb, void *data, int silent)
->>>>    		goto free_node_inode;
->>>>    	}
->>>> -	err = f2fs_register_sysfs(sbi);
->>>> +	err = f2fs_init_compress_inode(sbi);
->>>>    	if (err)
->>>>    		goto free_root_inode;
->>>> +	err = f2fs_register_sysfs(sbi);
->>>> +	if (err)
->>>> +		goto free_compress_inode;
->>>> +
->>>>    #ifdef CONFIG_QUOTA
->>>>    	/* Enable quota usage during mount */
->>>>    	if (f2fs_sb_has_quota_ino(sbi) && !f2fs_readonly(sb)) {
->>>> @@ -3896,6 +3911,8 @@ static int f2fs_fill_super(struct super_block *sb, void *data, int silent)
->>>>    	/* evict some inodes being cached by GC */
->>>>    	evict_inodes(sb);
->>>>    	f2fs_unregister_sysfs(sbi);
->>>> +free_compress_inode:
->>>> +	f2fs_destroy_compress_inode(sbi);
->>>>    free_root_inode:
->>>>    	dput(sb->s_root);
->>>>    	sb->s_root = NULL;
->>>> diff --git a/include/linux/f2fs_fs.h b/include/linux/f2fs_fs.h
->>>> index 7dc2a06cf19a..55be7afeee90 100644
->>>> --- a/include/linux/f2fs_fs.h
->>>> +++ b/include/linux/f2fs_fs.h
->>>> @@ -34,6 +34,7 @@
->>>>    #define F2FS_ROOT_INO(sbi)	((sbi)->root_ino_num)
->>>>    #define F2FS_NODE_INO(sbi)	((sbi)->node_ino_num)
->>>>    #define F2FS_META_INO(sbi)	((sbi)->meta_ino_num)
->>>> +#define F2FS_COMPRESS_INO(sbi)	(NM_I(sbi)->max_nid)
->>>>    #define F2FS_MAX_QUOTAS		3
->>>>
->>
->>
->> _______________________________________________
->> Linux-f2fs-devel mailing list
->> Linux-f2fs-devel@lists.sourceforge.net
->> https://lists.sourceforge.net/lists/listinfo/linux-f2fs-devel
-> .
+> Signed-off-by: Sang Yan <sangyan@huawei.com>
+> ---
+>  arch/arm64/Kconfig                |  12 +++
+>  arch/arm64/include/asm/cpu.h      |   9 ++
+>  arch/arm64/include/asm/kexec.h    |   7 ++
+>  arch/arm64/include/asm/smp.h      |   3 +
+>  arch/arm64/kernel/Makefile        |   1 +
+>  arch/arm64/kernel/cpu-park.S      |  49 +++++++++
+>  arch/arm64/kernel/machine_kexec.c |   2 +-
+>  arch/arm64/kernel/process.c       |   4 +
+>  arch/arm64/kernel/smp.c           | 220 ++++++++++++++++++++++++++++++++++++++
+>  arch/arm64/mm/init.c              |  56 ++++++++++
+>  10 files changed, 362 insertions(+), 1 deletion(-)
+>  create mode 100644 arch/arm64/kernel/cpu-park.S
+> 
+> diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
+> index 9f0139b..7a9defd 100644
+> --- a/arch/arm64/Kconfig
+> +++ b/arch/arm64/Kconfig
+> @@ -347,6 +347,18 @@ config KASAN_SHADOW_OFFSET
+>  	default 0xeffffff800000000 if ARM64_VA_BITS_36 && KASAN_SW_TAGS
+>  	default 0xffffffffffffffff
+>  
+> +config ARM64_CPU_PARK
+> +	bool "Support CPU PARK on kexec"
+> +	depends on SMP
+> +	depends on KEXEC_CORE
+> +	help
+> +	 This enables support for CPU PARK feature in
+> +	 order to save time of cpu down to up.
+> +	 CPU park is a state through kexec, spin loop
+> +	 instead of cpu die before jumping to new kernel,
+> +	 jumping out from loop to new kernel entry in
+> +	 smp_init.
+> +
+>  source "arch/arm64/Kconfig.platforms"
+>  
+>  menu "Kernel Features"
+> diff --git a/arch/arm64/include/asm/cpu.h b/arch/arm64/include/asm/cpu.h
+> index 7faae6f..e616a50 100644
+> --- a/arch/arm64/include/asm/cpu.h
+> +++ b/arch/arm64/include/asm/cpu.h
+> @@ -68,4 +68,13 @@ void __init init_cpu_features(struct cpuinfo_arm64 *info);
+>  void update_cpu_features(int cpu, struct cpuinfo_arm64 *info,
+>  				 struct cpuinfo_arm64 *boot);
+>  
+> +#ifdef CONFIG_ARM64_CPU_PARK
+> +#define PARK_SECTION_SIZE PAGE_SIZE
+> +extern unsigned long park_start;
+> +extern unsigned long park_len;
+> +extern unsigned long park_start_v;
+> +extern void __cpu_park(unsigned long text, unsigned long exit);
+> +extern void __do_cpu_park(unsigned long exit);
+> +#endif
+> +
+>  #endif /* __ASM_CPU_H */
+> diff --git a/arch/arm64/include/asm/kexec.h b/arch/arm64/include/asm/kexec.h
+> index d24b527..69a66ca 100644
+> --- a/arch/arm64/include/asm/kexec.h
+> +++ b/arch/arm64/include/asm/kexec.h
+> @@ -25,6 +25,11 @@
+>  
+>  #define KEXEC_ARCH KEXEC_ARCH_AARCH64
+>  
+> +#ifdef CONFIG_ARM64_CPU_PARK
+> +/* CPU park state flag: "park" */
+> +#define PARK_MAGIC 0x7061726b
+> +#endif
+> +
+>  #ifndef __ASSEMBLY__
+>  
+>  /**
+> @@ -90,6 +95,8 @@ static inline void crash_prepare_suspend(void) {}
+>  static inline void crash_post_resume(void) {}
+>  #endif
+>  
+> +void machine_kexec_mask_interrupts(void);
+> +
+>  #ifdef CONFIG_KEXEC_FILE
+>  #define ARCH_HAS_KIMAGE_ARCH
+>  
+> diff --git a/arch/arm64/include/asm/smp.h b/arch/arm64/include/asm/smp.h
+> index 2e7f529..9141fa8 100644
+> --- a/arch/arm64/include/asm/smp.h
+> +++ b/arch/arm64/include/asm/smp.h
+> @@ -145,6 +145,9 @@ bool cpus_are_stuck_in_kernel(void);
+>  
+>  extern void crash_smp_send_stop(void);
+>  extern bool smp_crash_stop_failed(void);
+> +#ifdef CONFIG_ARM64_CPU_PARK
+> +extern int kexec_smp_send_park(void);
+> +#endif
+>  
+>  #endif /* ifndef __ASSEMBLY__ */
+>  
+> diff --git a/arch/arm64/kernel/Makefile b/arch/arm64/kernel/Makefile
+> index 86364ab..7ea26ab 100644
+> --- a/arch/arm64/kernel/Makefile
+> +++ b/arch/arm64/kernel/Makefile
+> @@ -51,6 +51,7 @@ obj-$(CONFIG_RANDOMIZE_BASE)		+= kaslr.o
+>  obj-$(CONFIG_HIBERNATION)		+= hibernate.o hibernate-asm.o
+>  obj-$(CONFIG_KEXEC_CORE)		+= machine_kexec.o relocate_kernel.o	\
+>  					   cpu-reset.o
+> +obj-$(CONFIG_ARM64_CPU_PARK)		+= cpu-park.o
+>  obj-$(CONFIG_KEXEC_FILE)		+= machine_kexec_file.o kexec_image.o
+>  obj-$(CONFIG_ARM64_RELOC_TEST)		+= arm64-reloc-test.o
+>  arm64-reloc-test-y := reloc_test_core.o reloc_test_syms.o
+> diff --git a/arch/arm64/kernel/cpu-park.S b/arch/arm64/kernel/cpu-park.S
+> new file mode 100644
+> index 00000000..8c01484
+> --- /dev/null
+> +++ b/arch/arm64/kernel/cpu-park.S
+> @@ -0,0 +1,49 @@
+> +/* SPDX-License-Identifier: GPL-2.0-only */
+> +/*
+> + * CPU park routines
+> + *
+> + * Copyright (C) 2020 Huawei Technologies., Ltd.
+> + *
+> + * This program is free software; you can redistribute it and/or modify
+> + * it under the terms of the GNU General Public License version 2 as
+> + * published by the Free Software Foundation.
+> + */
+> +
+> +#include <linux/linkage.h>
+> +#include <asm/assembler.h>
+> +#include <asm/kexec.h>
+> +#include <asm/sysreg.h>
+> +#include <asm/virt.h>
+> +
+> +.text
+> +.pushsection    .idmap.text, "awx"
+> +
+> +/* cpu park helper in idmap section */
+> +SYM_CODE_START(__cpu_park)
+> +	/* Clear sctlr_el1 flags. */
+> +	mrs	x12, sctlr_el1
+> +	ldr	x13, =SCTLR_ELx_FLAGS
+> +	bic	x12, x12, x13
+> +	pre_disable_mmu_workaround
+> +	msr	sctlr_el1, x12		/* disable mmu */
+> +	isb
+> +
+> +	mov	x18, x0
+> +	mov	x0, x1			/* secondary_entry addr */
+> +	br	x18			/* call __do_cpu_park of each cpu */
+> +SYM_CODE_END(__cpu_park)
+> +
+> +.popsection
+> +
+> +SYM_CODE_START(__do_cpu_park)
+> +	ldr	x18, =PARK_MAGIC	/* magic number "park" */
+> +	str	x18, [x0, #8]		/* set on-park flag */
+> +
+> +.Lloop:	ldr	x19, [x0]
+> +	cmp	x19, #0			/* test secondary_entry */
+> +	wfe
+> +	b.eq	.Lloop
+> +
+> +	br	x19			/* jump to secondary_entry */
+> +SYM_CODE_END(__do_cpu_park)
+> +
+> diff --git a/arch/arm64/kernel/machine_kexec.c b/arch/arm64/kernel/machine_kexec.c
+> index a0b144c..f47ce96 100644
+> --- a/arch/arm64/kernel/machine_kexec.c
+> +++ b/arch/arm64/kernel/machine_kexec.c
+> @@ -213,7 +213,7 @@ void machine_kexec(struct kimage *kimage)
+>  	BUG(); /* Should never get here. */
+>  }
+>  
+> -static void machine_kexec_mask_interrupts(void)
+> +void machine_kexec_mask_interrupts(void)
+>  {
+>  	unsigned int i;
+>  	struct irq_desc *desc;
+> diff --git a/arch/arm64/kernel/process.c b/arch/arm64/kernel/process.c
+> index 6616486..70d8dac 100644
+> --- a/arch/arm64/kernel/process.c
+> +++ b/arch/arm64/kernel/process.c
+> @@ -147,6 +147,10 @@ void arch_cpu_idle_dead(void)
+>   */
+>  void machine_shutdown(void)
+>  {
+> +#ifdef CONFIG_ARM64_CPU_PARK
+> +	if (kexec_smp_send_park() == 0)
+> +		return;
+> +#endif
+>  	smp_shutdown_nonboot_cpus(reboot_cpu);
+>  }
+>  
+> diff --git a/arch/arm64/kernel/smp.c b/arch/arm64/kernel/smp.c
+> index 2499b89..80a7a28 100644
+> --- a/arch/arm64/kernel/smp.c
+> +++ b/arch/arm64/kernel/smp.c
+> @@ -93,6 +93,159 @@ static inline int op_cpu_kill(unsigned int cpu)
+>  }
+>  #endif
+>  
+> +#ifdef CONFIG_ARM64_CPU_PARK
+> +struct cpu_park_section {
+> +	unsigned long exit;	/* exit address of park look */
+> +	unsigned long magic;	/* maigc represent park state */
+> +	char text[0];		/* text section of park */
+> +};
+> +
+> +static int mmap_cpu_park_mem(void)
+> +{
+> +	if (!park_start)
+> +		return -ENOMEM;
+> +
+> +	if (park_start_v)
+> +		return 0;
+> +
+> +	park_start_v = (unsigned long)__ioremap(park_start, park_len,
+> +						PAGE_KERNEL_EXEC);
+> +	if (!park_start_v) {
+> +		pr_warn("map park memory failed.");
+> +		return -ENOMEM;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static inline unsigned long cpu_park_section_v(unsigned int cpu)
+> +{
+> +	return PAGE_ALIGN(park_start_v + PARK_SECTION_SIZE * (cpu - 1));
+> +}
+> +
+> +static inline unsigned long cpu_park_section_p(unsigned int cpu)
+> +{
+> +	return PAGE_ALIGN(park_start + PARK_SECTION_SIZE * (cpu - 1));
+> +}
+> +
+> +/*
+> + * Write the secondary_entry to exit section of park state.
+> + * Then the secondary cpu will jump straight into the kernel
+> + * by the secondary_entry.
+> + */
+> +static int write_park_exit(unsigned int cpu)
+> +{
+> +	struct cpu_park_section *park_section;
+> +	unsigned long *park_exit;
+> +	unsigned long *park_text;
+> +
+> +	if (mmap_cpu_park_mem() != 0)
+> +		return -EPERM;
+> +
+> +	park_section = (struct cpu_park_section *)cpu_park_section_v(cpu);
+> +	park_exit = &park_section->exit;
+> +	park_text = (unsigned long *)park_section->text;
+> +	pr_info("park_text 0x%lx : 0x%lx, __do_cpu_park text 0x%lx : 0x%lx",
+> +		(unsigned long)park_text, *park_text,
+> +		(unsigned long)__do_cpu_park,
+> +		*(unsigned long *)__do_cpu_park);
+> +
+> +	isb();
+> +
+> +	/*
+> +	 * Test first 8 bytes to determine
+> +	 * whether needs to write cpu park exit.
+> +	 */
+> +	if (*park_text == *(unsigned long *)__do_cpu_park) {
+> +		*park_exit = __pa_symbol(secondary_entry);
+> +		isb();
+> +		pr_info("Write cpu %u secondary entry 0x%lx to 0x%lx",
+> +			 cpu, *park_exit, (unsigned long)park_exit);
+> +		return 0;
+> +	}
+> +
+> +	return -EPERM;
+> +}
+> +
+> +/* Install cpu park sections for the specific cpu. */
+> +static int install_cpu_park(unsigned int cpu)
+> +{
+> +	struct cpu_park_section *park_section;
+> +	unsigned long *park_exit;
+> +	unsigned long *park_magic;
+> +	unsigned long park_text_len;
+> +
+> +	park_section = (struct cpu_park_section *)cpu_park_section_v(cpu);
+> +	pr_debug("Install cpu park on cpu %u park exit 0x%lx park text 0x%lx",
+> +		 cpu, (unsigned long)park_section,
+> +		 (unsigned long)(park_section->text));
+> +
+> +	park_exit = &park_section->exit;
+> +	park_magic = &park_section->magic;
+> +	park_text_len = PARK_SECTION_SIZE - sizeof(struct cpu_park_section);
+> +
+> +	*park_exit = 0UL;
+> +	*park_magic = 0UL;
+> +	memcpy((void *)park_section->text, __do_cpu_park, park_text_len);
+> +
+> +	isb();
+> +
+> +	return 0;
+> +}
+> +
+> +static int uninstall_cpu_park(unsigned int cpu)
+> +{
+> +	unsigned long park_section;
+> +
+> +	if (mmap_cpu_park_mem() != 0)
+> +		return -EPERM;
+> +
+> +	park_section = cpu_park_section_v(cpu);
+> +	memset((void *)park_section, 0, PARK_SECTION_SIZE);
+> +
+> +	return 0;
+> +}
+> +
+> +static int cpu_wait_park(unsigned int cpu)
+> +{
+> +	unsigned long timeout;
+> +	struct cpu_park_section *park_section;
+> +	unsigned long *park_magic;
+> +
+> +	park_section = (struct cpu_park_section *)cpu_park_section_v(cpu);
+> +	park_magic = &park_section->magic;
+> +
+> +	timeout = USEC_PER_SEC;
+> +	while (*park_magic != PARK_MAGIC && timeout--)
+> +		udelay(1);
+> +
+> +	if (timeout)
+> +		pr_debug("cpu %u park done.", cpu);
+> +	else
+> +		pr_err("cpu %u park failed.", cpu);
+> +
+> +	return *park_magic == PARK_MAGIC;
+> +}
+> +
+> +static void cpu_park(unsigned int cpu)
+> +{
+> +	unsigned long park_section_p;
+> +	unsigned long park_exit_phy;
+> +	unsigned long do_park;
+> +	typeof(__cpu_park) *park;
+> +
+> +	park_section_p = cpu_park_section_p(cpu);
+> +	park_exit_phy = park_section_p;
+> +	pr_debug("Go to park cpu %u exit address 0x%lx", cpu, park_exit_phy);
+> +
+> +	do_park = park_section_p + sizeof(struct cpu_park_section);
+> +	park = (void *)__pa_symbol(__cpu_park);
+> +
+> +	cpu_install_idmap();
+> +	park(do_park, park_exit_phy);
+> +	unreachable();
+> +}
+> +#endif
+>  
+>  /*
+>   * Boot a secondary CPU, and assign it the specified idle task.
+> @@ -102,6 +255,10 @@ static int boot_secondary(unsigned int cpu, struct task_struct *idle)
+>  {
+>  	const struct cpu_operations *ops = get_cpu_ops(cpu);
+>  
+> +#ifdef CONFIG_ARM64_CPU_PARK
+> +	if (write_park_exit(cpu) == 0)
+> +		return 0;
+> +#endif
+>  	if (ops->cpu_boot)
+>  		return ops->cpu_boot(cpu);
+>  
+> @@ -131,6 +288,9 @@ int __cpu_up(unsigned int cpu, struct task_struct *idle)
+>  		return ret;
+>  	}
+>  
+> +#ifdef CONFIG_ARM64_CPU_PARK
+> +	uninstall_cpu_park(cpu);
+> +#endif
+>  	/*
+>  	 * CPU was successfully started, wait for it to come online or
+>  	 * time out.
+> @@ -843,10 +1003,31 @@ void arch_irq_work_raise(void)
+>  
+>  static void local_cpu_stop(void)
+>  {
+> +	int cpu;
+> +	const struct cpu_operations *ops = NULL;
+> +
+>  	set_cpu_online(smp_processor_id(), false);
+>  
+>  	local_daif_mask();
+>  	sdei_mask_local_cpu();
+> +
+> +#ifdef CONFIG_ARM64_CPU_PARK
+> +	/*
+> +	 * Go to cpu park state.
+> +	 * Otherwise go to cpu die.
+> +	 */
+> +	cpu = smp_processor_id();
+> +	if (kexec_in_progress) {
+> +		machine_kexec_mask_interrupts();
+> +		if (park_start_v)
+> +			cpu_park(cpu);
+> +
+> +		ops = get_cpu_ops(cpu);
+> +		if (ops && ops->cpu_die)
+> +			ops->cpu_die(cpu);
+> +	}
+> +#endif
+> +
+>  	cpu_park_loop();
+>  }
+>  
+> @@ -1052,6 +1233,45 @@ void smp_send_stop(void)
+>  	sdei_mask_local_cpu();
+>  }
+>  
+> +#ifdef CONFIG_ARM64_CPU_PARK
+> +int kexec_smp_send_park(void)
+> +{
+> +	unsigned long cpu;
+> +
+> +	if (WARN_ON(!kexec_in_progress)) {
+> +		pr_crit("%s called not in kexec progress.", __func__);
+> +		return -EPERM;
+> +	}
+> +
+> +	if (mmap_cpu_park_mem() != 0) {
+> +		pr_info("no cpuparkmem, goto normal way.");
+> +		return -EPERM;
+> +	}
+> +
+> +	local_irq_disable();
+> +
+> +	if (num_online_cpus() > 1) {
+> +		cpumask_t mask;
+> +
+> +		cpumask_copy(&mask, cpu_online_mask);
+> +		cpumask_clear_cpu(smp_processor_id(), &mask);
+> +
+> +		for_each_cpu(cpu, &mask)
+> +			install_cpu_park(cpu);
+> +		smp_cross_call(&mask, IPI_CPU_STOP);
+> +
+> +		/* Wait for other CPUs to park */
+> +		for_each_cpu(cpu, &mask)
+> +			cpu_wait_park(cpu);
+> +		pr_info("smp park other cpus done\n");
+> +	}
+> +
+> +	sdei_mask_local_cpu();
+> +
+> +	return 0;
+> +}
+> +#endif
+> +
+>  #ifdef CONFIG_KEXEC_CORE
+>  void crash_smp_send_stop(void)
+>  {
+> diff --git a/arch/arm64/mm/init.c b/arch/arm64/mm/init.c
+> index 69d4251..d25bb61 100644
+> --- a/arch/arm64/mm/init.c
+> +++ b/arch/arm64/mm/init.c
+> @@ -279,6 +279,58 @@ static void __init fdt_enforce_memory_region(void)
+>  		memblock_cap_memory_range(reg.base, reg.size);
+>  }
+>  
+> +#ifdef CONFIG_ARM64_CPU_PARK
+> +/* Physical address of reserved park memory. */
+> +unsigned long park_start;
+> +/* Virtual address of reserved park memory. */
+> +unsigned long park_start_v;
+> +/* park reserve mem len should be PAGE_SIZE * NR_CPUS */
+> +unsigned long park_len = PAGE_SIZE * NR_CPUS;
+> +
+> +static int __init parse_park_mem(char *p)
+> +{
+> +	if (!p)
+> +		return 0;
+> +
+> +	park_start = PAGE_ALIGN(memparse(p, NULL));
+> +	if (park_start == 0)
+> +		pr_info("cpu park mem params[%s]", p);
+> +
+> +	return 0;
+> +}
+> +early_param("cpuparkmem", parse_park_mem);
+> +
+> +static int __init reserve_park_mem(void)
+> +{
+> +	if (park_start == 0 || park_len == 0)
+> +		return 0;
+> +
+> +	park_start = PAGE_ALIGN(park_start);
+> +	park_len = PAGE_ALIGN(park_len);
+> +
+> +	if (!memblock_is_region_memory(park_start, park_len)) {
+> +		pr_warn("cannot reserve park mem: region is not memory!");
+> +		goto out;
+> +	}
+> +
+> +	if (memblock_is_region_reserved(park_start, park_len)) {
+> +		pr_warn("cannot reserve park mem: region overlaps reserved memory!");
+> +		goto out;
+> +	}
+> +
+> +	memblock_reserve(park_start, park_len);
+> +	memblock_remove(park_start, park_len);
+> +	pr_info("cpu park mem reserved: 0x%016lx - 0x%016lx (%ld MB)",
+> +		park_start, park_start + park_len, park_len >> 20);
+> +
+> +	return 0;
+> +out:
+> +	park_start = 0;
+> +	park_len = 0;
+> +	return -EINVAL;
+> +}
+> +#endif
+> +
+>  void __init arm64_memblock_init(void)
+>  {
+>  	const s64 linear_region_size = PAGE_END - _PAGE_OFFSET(vabits_actual);
+> @@ -396,6 +448,10 @@ void __init arm64_memblock_init(void)
+>  	else
+>  		arm64_dma32_phys_limit = PHYS_MASK + 1;
+>  
+> +#ifdef CONFIG_ARM64_CPU_PARK
+> +	reserve_park_mem();
+> +#endif
+> +
+>  	reserve_elfcorehdr();
+>  
+>  	high_memory = __va(memblock_end_of_DRAM() - 1) + 1;
+> -- 
+> 2.9.5
 > 
