@@ -2,84 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE3452ED130
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 14:52:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B4D922ED136
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 14:56:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728535AbhAGNwJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 08:52:09 -0500
-Received: from mail-ot1-f50.google.com ([209.85.210.50]:35286 "EHLO
-        mail-ot1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728452AbhAGNwJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 08:52:09 -0500
-Received: by mail-ot1-f50.google.com with SMTP id i6so6326331otr.2;
-        Thu, 07 Jan 2021 05:51:53 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=CMWuGz3d4Qig577O3FdlCU+qyCG2EaepFu5Glz45Sg4=;
-        b=XBaSAzT4Tc8j0MickH0r/N1zNOSlDVm8C/qJZG7Ki1bzANZY3XVaiXOPkskkL1BIgs
-         JVCrwr9zuwyxn542lUKGCT4qq8by3qiP5CocqxYJFqvPkoeFbdinAhylClxbFPX24k7e
-         TC9IY3yboCd1SLTHuJq07CRbYRT47hN7OGnzMNRuJ+hzZra5Dzkx5Esg4Z6CG5q7UYCI
-         3HxdHEy7E48CGLIoj14/2PAIcweOPISVXuYeucj3LMwgCZ6QAefGJMS499z1iuw8sC0M
-         EgGLA0MtNuAOOZI9xv5UE9lERWu+KnY5b5W53XRIpQ22C0mOj6kitC+/LwnOaJrK8jFE
-         Tmjg==
-X-Gm-Message-State: AOAM531ctlVhCQA8U9M/AAGiBkMcdlocBkVyzE9e0Nget46UrP8hssD1
-        m0fWA3RSjdyhJRS1dduYNdQakeJjIZehn8xpgEk=
-X-Google-Smtp-Source: ABdhPJw7thMotG+kLxNi6hR91Eh41PYqaTrzXs93IWXGnkZxQEZY9mKCQCaBD2A8QaIWhZE2tUGwEPq0qy+dEL/k0dA=
-X-Received: by 2002:a9d:67da:: with SMTP id c26mr6708467otn.321.1610027487936;
- Thu, 07 Jan 2021 05:51:27 -0800 (PST)
+        id S1728374AbhAGN4J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 08:56:09 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36102 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725835AbhAGN4J (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Jan 2021 08:56:09 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6FB3C23142;
+        Thu,  7 Jan 2021 13:55:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1610027729;
+        bh=LXnYFuO/m7yLkPaglBXr1YjV5t1JasbH7WmOzsST9Wk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=tL/Xgu59loQzasBhYzsuRuw5qW96vjuHKF6R7TV68gC7h09S8Pjnxe1wp/UjouzSQ
+         Wbz8oGvH+SsrVkZ6BXlbw625mlWaSMdhelst/hsQhEVn3pGNrSL/eAZ/d4CBw3anNA
+         SxFybFDAO+wcReIEx8xiIglNfdv5VqRLzTcOQqqODyTOKrW4ISNpmnQb1J/CJ8E0AE
+         q4Ruhu2Rwe1CJ+2F+42Drum5jt47YG1oAi4OFusucNgJP66s3gDGVxZ/ZH4lRpeYtL
+         jeZ/lrfRoW1mJ5O2q6GgTr7H4eE9rskovRPyKq5pOse1mNDg/2ETBqjS99sPI5xg+M
+         ipPpoTxeJpVWQ==
+Date:   Thu, 7 Jan 2021 13:54:59 +0000
+From:   Mark Brown <broonie@kernel.org>
+To:     Yu-Hsuan Hsu <yuhsuan@chromium.org>
+Cc:     linux-kernel@vger.kernel.org, Benson Leung <bleung@chromium.org>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        Guenter Roeck <groeck@chromium.org>,
+        Cheng-Yi Chiang <cychiang@chromium.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Prashant Malani <pmalani@chromium.org>,
+        Pi-Hsun Shih <pihsun@chromium.org>,
+        "Gustavo A . R . Silva" <gustavoars@kernel.org>,
+        alsa-devel@alsa-project.org
+Subject: Re: [PATCH 1/2] cros_ec_commands: Add EC_CODEC_I2S_RX_RESET
+Message-ID: <20210107135459.GB4726@sirena.org.uk>
+References: <20210107085942.2891525-1-yuhsuan@chromium.org>
 MIME-Version: 1.0
-References: <20210101125629.20974-1-jiaxun.yang@flygoat.com>
- <35ac853a-266c-6944-6e5e-6286456865e3@redhat.com> <CAJZ5v0jcCD3qWUJQcS+nFVJWSCQEbq2eN3i07mN8yFr3WZD9dg@mail.gmail.com>
- <6a29f338-d9e4-150c-81dd-2ffb54f5bc35@redhat.com> <CAJZ5v0je41iXQnr3m-RY9fD_C-qnqbLdqYMvUzp0qgBwEvVoJA@mail.gmail.com>
- <9e745724-d704-6250-9bfb-e347f3611ec4@redhat.com>
-In-Reply-To: <9e745724-d704-6250-9bfb-e347f3611ec4@redhat.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Thu, 7 Jan 2021 14:50:51 +0100
-Message-ID: <CAJZ5v0gSCpZ6O+o7uXQKyQN+xOWhQSjiRqdqSdkez=ZsgCaOjg@mail.gmail.com>
-Subject: Re: [PATCH 0/2] IdeaPad platform profile support
-To:     Hans de Goede <hdegoede@redhat.com>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        Platform Driver <platform-driver-x86@vger.kernel.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <lenb@kernel.org>,
-        Mark Gross <mgross@linux.intel.com>,
-        Ike Panhc <ike.pan@canonical.com>,
-        Mark Pearson <markpearson@lenovo.com>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="kORqDWCi7qDJ0mEj"
+Content-Disposition: inline
+In-Reply-To: <20210107085942.2891525-1-yuhsuan@chromium.org>
+X-Cookie: See store for details.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 6, 2021 at 10:17 AM Hans de Goede <hdegoede@redhat.com> wrote:
->
-> Hi,
->
-> On 1/5/21 6:18 PM, Rafael J. Wysocki wrote:
-> > On Mon, Jan 4, 2021 at 9:58 PM Hans de Goede <hdegoede@redhat.com> wrote:
->
-> <snip>
->
-> >> Patch 1/2 does use a slightly different approach then I suggest above,
-> >> thinking more about this it would be cleaner IMHO to just pass the
-> >> cur_profile pointer to the callbacks as the pseudo-code patch which I
-> >> wrote above does. Drivers which use globals can then just ignore
-> >> the extra argument (and keep the platform_profile_handler struct const)
-> >> where as drivers which use dynamic allocation can embed the struct in
-> >> their driver's data-struct.
-> >
-> > Agreed.
->
-> Note that Jiaxun has provided a v2 of this patch-set with patch 1/2 implementing
-> the new approach.
->
-> Can you merge merge that patch please and then once you're happy that this
-> has seen enough exposure in -next, provide me with an immutable branch with
-> the 3 platform-profile patches in it ?
 
-I will, thanks!
+--kORqDWCi7qDJ0mEj
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Thu, Jan 07, 2021 at 04:59:41PM +0800, Yu-Hsuan Hsu wrote:
+> Add the new command EC_CODEC_I2S_RX_RESET in ec_codec_i2s_rx_subcmd,
+> which is used for resetting the EC codec.
+
+I think the request was to sync over all the commands that are supported
+in the EC rather than just split this one addition into a separate
+patch.
+
+--kORqDWCi7qDJ0mEj
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl/3ErIACgkQJNaLcl1U
+h9AuIQgAhsn5doavvuB2jUYoY2Vgy/KRdrB0f0S4BCUso6u8B5NBsKVudkZGYy2N
+UCNkXPtEnMnMR+hvvxw+b1Ntj80HbL26Ih/ZgtFAzWFkMg+DLf8QOIQIBaI9cK1r
+YC7IW1f3XZ+U81xyLncWZTXBJ0LI3mJMJ6TNnxWiYaa+ebFEsCS/wqUMtjUFOKjw
+en5ZSZpAa/KebHEmLU4q/cL8nF/xN9H/dNLuxGYJR30oQsdX8N69+fQRU24A717/
+KkGl2QXHlmOIS5+po6YTFC8auuuU6LEcsKVU1uEJ2w7asaklubUO71AaohFt4uT7
+UDghAbNdmHDXvrV7Dd6bCBqWLr4mtA==
+=zhj3
+-----END PGP SIGNATURE-----
+
+--kORqDWCi7qDJ0mEj--
