@@ -2,82 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 439FF2EC858
+	by mail.lfdr.de (Postfix) with ESMTP id B130F2EC859
 	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 03:55:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726658AbhAGCxl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Jan 2021 21:53:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60602 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725789AbhAGCxk (ORCPT
+        id S1726709AbhAGCzD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Jan 2021 21:55:03 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:35736 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726297AbhAGCzD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Jan 2021 21:53:40 -0500
-Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84042C0612EF
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Jan 2021 18:53:00 -0800 (PST)
-Received: by mail-pg1-x52d.google.com with SMTP id g15so3792346pgu.9
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Jan 2021 18:53:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=xjM/12FZ440jYsJkVJrWv4LsYWfcjGwNNBn9yloYJhQ=;
-        b=AmbNg67TWQuuAe08RuN+7R2vJB69lMLJRGhpJ/K1pSCxw8TJUTOQQYXadvlMBZ2EpW
-         DwzK57DTuLMA7YvnQ+aHMi0/YIhtDU+9FDz/1p4qlqtaBzF30xazKzFdzE5ObatvUIa3
-         YHADcrUF+7BCL4QGvaXltlXz71cJ1n1GXSqxHbnJZq0R5ZP+VIoMKIIkgyfsg96RoBs4
-         rvA6CbrTYLFl8yyy/K1GJ/iIPF6xgfEfcPpHStj8iMZvYLGcon1nE31CUQiGSFPeDI+W
-         D09cpTTipC1sT6OJ6eNNUKeeHw61rUmuj6Mkv/+IMMQvasYBTqBm32CCKzq14Bsjf9Ri
-         VgJA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=xjM/12FZ440jYsJkVJrWv4LsYWfcjGwNNBn9yloYJhQ=;
-        b=CJGEUe9Qle1PBSSb9K+fytc915YcO69NAkp55BSCU9BhoPF+DTkmm7b9vRo5IVz+4r
-         7h0vsouboyB5zENq6o3WG0GntueEbx18c/LVrI8neQqkwktGpLTJnb4EdfR3f7Vn645s
-         kIoV8+6oDsdybwybFpuRo3Fgx9vmdzqWMiONglVOZSyypG1CyPqLzpgA+pnIzvv1Q1sA
-         2MfiCw0E1SEHYZPVCnxntXUd0B4gSEFjuvWOnH0n6921wN3gBn8erm0itnGBBDoO1hRc
-         CwHjOX4sfVUKBRiXkgniCx4ji++E3kTPkas76WFasFdJLTipuYhjjxCF8o+Qdbe+FkYv
-         LGVg==
-X-Gm-Message-State: AOAM531V9gspqWxrEhO3+7rxPPN7KcSeKeVgIOHSipFphvocaZewjlOL
-        pBoSs6Qc2dW6hByfA/oqWHPn7HhLUqyScYcZ7uur0obfupqsHDzaj+M=
-X-Google-Smtp-Source: ABdhPJwQ6lLwtKUmB5u0bfXMnFW/1FXwZEG1smcYuzInOoacCoij6J4Pd4ZSgfvOX2D82Fr+7TSTGXafXy2ks+cOigw=
-X-Received: by 2002:aa7:979d:0:b029:1a4:3b76:a559 with SMTP id
- o29-20020aa7979d0000b02901a43b76a559mr6601863pfp.49.1609987979866; Wed, 06
- Jan 2021 18:52:59 -0800 (PST)
+        Wed, 6 Jan 2021 21:55:03 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1609988017;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=RlmE8gtKZ+mcWaD+9WFmA0/MsQMlwlKVF0NW+mmjFVw=;
+        b=OuV2WIhq2mZv0LigIWvtiAocbZc0Yh8q9NW/ukpNiW0lZ/0oeaJ6qsuydZu6mf/RwpTCvf
+        yq9W6kGqUlNdF26WnvOLGSFWbfmBJlqKsqrMM/1clDpsWAn0DZDen53P24H7wjmLavrjOZ
+        n5Li7t4zmhutqMYtVnv0I8/E4U2wDBo=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-447-iUQ3oHCiO2OS24FN5zkMfw-1; Wed, 06 Jan 2021 21:53:34 -0500
+X-MC-Unique: iUQ3oHCiO2OS24FN5zkMfw-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id AE128180A094;
+        Thu,  7 Jan 2021 02:53:32 +0000 (UTC)
+Received: from localhost (ovpn-12-191.pek2.redhat.com [10.72.12.191])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id BE5C752791;
+        Thu,  7 Jan 2021 02:53:31 +0000 (UTC)
+Date:   Thu, 7 Jan 2021 10:53:28 +0800
+From:   Baoquan He <bhe@redhat.com>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Hugh Dickins <hughd@google.com>, Hui Su <sh_def@163.com>,
+        Alex Shi <alex.shi@linux.alibaba.com>,
+        Lorenzo Stoakes <lstoakes@gmail.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Shakeel Butt <shakeelb@google.com>,
+        Roman Gushchin <guro@fb.org>, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org
+Subject: Re: [PATCH] mm/memcontrol: fix warning in mem_cgroup_page_lruvec()
+Message-ID: <20210107025328.GB4820@MiWiFi-R3L-srv>
+References: <alpine.LSU.2.11.2101032056260.1093@eggly.anvils>
+ <20210106064935.GA3338@MiWiFi-R3L-srv>
+ <20210106113531.6f327d37eff78e4e1bb0e13a@linux-foundation.org>
 MIME-Version: 1.0
-References: <20210106084739.63318-1-songmuchun@bytedance.com>
- <20210106084739.63318-2-songmuchun@bytedance.com> <20210106161327.GR13207@dhcp22.suse.cz>
-In-Reply-To: <20210106161327.GR13207@dhcp22.suse.cz>
-From:   Muchun Song <songmuchun@bytedance.com>
-Date:   Thu, 7 Jan 2021 10:52:21 +0800
-Message-ID: <CAMZfGtUTkeeswiS8M1aq67JXztrjQwzqd0aZ9cgvgPZEEQQPEQ@mail.gmail.com>
-Subject: Re: [External] Re: [PATCH v2 1/6] mm: migrate: do not migrate HugeTLB
- page whose refcount is one
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Mike Kravetz <mike.kravetz@oracle.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Naoya Horiguchi <n-horiguchi@ah.jp.nec.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Yang Shi <shy828301@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210106113531.6f327d37eff78e4e1bb0e13a@linux-foundation.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 7, 2021 at 12:13 AM Michal Hocko <mhocko@suse.com> wrote:
->
-> On Wed 06-01-21 16:47:34, Muchun Song wrote:
-> > If the refcount is one when it is migrated, it means that the page
-> > was freed from under us. So we are done and do not need to migrate.
->
-> Is this common enough that it would warrant the explicit check for each
-> migration?
+On 01/06/21 at 11:35am, Andrew Morton wrote:
+> On Wed, 6 Jan 2021 14:49:35 +0800 Baoquan He <bhe@redhat.com> wrote:
+> 
+> > > Fixes: 9a1ac2288cf1 ("mm/memcontrol:rewrite mem_cgroup_page_lruvec()")
+> > 
+> > ...
+> >
+> > Thanks for fixing this. We also encountered this issue in kdump kernel
+> > with the mainline 5.10 kernel since 'cgroup_disable=memory' is added.
+> 
+> Wait.  9a1ac2288cf1 isn't present in 5.10?
+> 
 
-Are you worried about the overhead caused by the check? Thanks.
+Yes, just checked, commit 9a1ac2288cf1 was merged in 5.11-rc1, not in
+5.10.0. Seems Redhat CKI doesn't treat the kernel release correctly, it
+calls all kernel 5.11-rcx as 5.10.0. Sorry for the confusion, I will
+send mail to them to change this.
 
-> --
-> Michal Hocko
-> SUSE Labs
+I got the failure report from redhat's CKI test, the kernel repo is as
+below, but the subject of failure report and 'uname -r' told it's
+5.10.0.
+
+       Kernel repo: https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+            Commit: 58cf05f597b0 - Merge tag 'sound-fix-5.11-rc1' of git://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound
+
