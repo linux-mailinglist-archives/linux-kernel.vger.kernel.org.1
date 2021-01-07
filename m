@@ -2,79 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92C252ECC85
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 10:16:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 038AA2ECC88
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 10:16:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727520AbhAGJPe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 04:15:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35416 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726326AbhAGJPd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 04:15:33 -0500
-Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9465C0612F4
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Jan 2021 01:14:52 -0800 (PST)
-Received: by mail-lf1-x134.google.com with SMTP id o19so13039401lfo.1
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Jan 2021 01:14:52 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=GuQBd5Bv/M8sEF3cnpZAcsUDB8M9ZiHQitHCQNG7YKs=;
-        b=nDm2Cxv5oCTBaJCU9X7aUHty8qfhrprXLyiPp8fF1B/7A15p69CPeSIhpMWA30Lbv/
-         BGiR5atDqSrSBvLzAEcFX2mFRtBNchkId65oUf6DAWbiqa8u6AjnQ7FyANlRbJEnsWAe
-         ovXVuxCpTGAPXEsOSPwhMe9EJ3LXZlhZ8WxfiJoeJzhPid9nyKDkS/sMg+BMiF6EcgEH
-         Gw++YWwdUuV3WZD6v9lJYAewkD2aDrwiqPZzU3UkAesdrahZZ9kfSqSGOn1yiRZrcBMf
-         vnPAnxFcW7o4gNpNslXSF/QFJPBZUh0HBlpy/pnJce47vFRKgZm9aMJXjbA1oHk/stAZ
-         Etug==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=GuQBd5Bv/M8sEF3cnpZAcsUDB8M9ZiHQitHCQNG7YKs=;
-        b=HoSh2OhAktQZuJwR4HllRSnyjja26Xqi41FU+V/J9FTcwFPTqfHN9h89Z1hVOX+AB0
-         MWuUuGIHLQVqi7vJsMaPMgwh75Ja/2GpvZ16tl3hvLo47DUM6shO1/R4pUoXgXNv0sRR
-         e1v+cSFNMHmvu606kEIsq//I2+SZqTDj9Xv4Y/MCWf7w6coiIxiEAy7YcgaVx4sF6Bqq
-         qtijcs2Wtwb0mhRZMFX6qqYYc0/VPdu6tq5GuIsv6akZdHqzDKKcSkRIdfIZAAzwJSVJ
-         9+vQ6ot4lKGtNuioxtW+xKYywrgpYZ7v9AyAFeKWKHCkJuWCTOCLnFkdIkoTT5NCjaLD
-         yFow==
-X-Gm-Message-State: AOAM532bkDSsRWW8iWaKA8o9/+VOgx2mWvCNaeGLVqf37OcxvKJYwMWa
-        1iQAtdrPFJJjd+IwiWt7E++v8/bqmWSTX4Ypuz+B2A==
-X-Google-Smtp-Source: ABdhPJzluqhmKSx2xvx6A3E28Qg6ceuRBHi81mGKgx+iIRNrjoEvHxYEFN4uKbJymAzKULEKFmaBjYyjr3Kk49xzY0c=
-X-Received: by 2002:a2e:3503:: with SMTP id z3mr3996490ljz.74.1610010891299;
- Thu, 07 Jan 2021 01:14:51 -0800 (PST)
+        id S1727617AbhAGJQK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 04:16:10 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44130 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726326AbhAGJQI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Jan 2021 04:16:08 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 53B932312E;
+        Thu,  7 Jan 2021 09:15:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1610010928;
+        bh=Eh6KUSwoPsCkD9mUQP+H7klASF40gUofPS2/w04o/m4=;
+        h=Date:From:To:cc:Subject:In-Reply-To:References:From;
+        b=MCLnRmvGuyYW3xsVWvNEaZxUpZSGhL1gG+sVYrqXHp/l0oGisCcqi46PAArHWUJF/
+         RQ6jHRB9nW9Js9kfHBPGi/eIrcfuxg85PXbLhbxR8U0FJvwfcu0EId3If85/bIeWaH
+         wv0d+BGCJqLrX6Gj0N/nht7HLKRUaH0o8tS/LA939t+0cw5F2ZraXNGGAgtui6W3KX
+         lk4P2F/fjTarEYNZbXJZcOZG7ZH7J96KqJXa7EJqm6z4jfMycOYCGIE90NQmQRAb9V
+         bJ+r3e+OTgYo+Wq+EZAl0vtfwnJKKJSBVV6z+Ql5y4YMWDpI5v7ZjNB6gJxlaMvBZD
+         UCypKGgCEdMXw==
+Date:   Thu, 7 Jan 2021 10:15:25 +0100 (CET)
+From:   Jiri Kosina <jikos@kernel.org>
+To:     Tom Rix <trix@redhat.com>
+cc:     benjamin.tissoires@redhat.com, linux-input@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] HID: uclogic: remove h from printk format specifier
+In-Reply-To: <20201215145454.1905175-1-trix@redhat.com>
+Message-ID: <nycvar.YFH.7.76.2101071015160.13752@cbobk.fhfr.pm>
+References: <20201215145454.1905175-1-trix@redhat.com>
+User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
 MIME-Version: 1.0
-References: <1609936000-28378-1-git-send-email-srinivas.neeli@xilinx.com> <1609936000-28378-3-git-send-email-srinivas.neeli@xilinx.com>
-In-Reply-To: <1609936000-28378-3-git-send-email-srinivas.neeli@xilinx.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Thu, 7 Jan 2021 10:14:40 +0100
-Message-ID: <CACRpkda4AupiD2mkuYzmJTcq9nVVNUbo4KzyMQXUokFLxgp+Tw@mail.gmail.com>
-Subject: Re: [PATCH V4 2/5] gpio: gpio-xilinx: Reduce spinlock array to array
-To:     Srinivas Neeli <srinivas.neeli@xilinx.com>
-Cc:     Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Michal Simek <michal.simek@xilinx.com>,
-        Shubhrajyoti Datta <shubhrajyoti.datta@xilinx.com>,
-        sgoud@xilinx.com, Robert Hancock <hancock@sedsystems.ca>,
-        William Breathitt Gray <vilhelm.gray@gmail.com>,
-        Syed Nayyar Waris <syednwaris@gmail.com>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        git@xilinx.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 6, 2021 at 1:27 PM Srinivas Neeli <srinivas.neeli@xilinx.com> wrote:
+On Tue, 15 Dec 2020, trix@redhat.com wrote:
 
-> Changed spinlock array to single. It is preparation for irq support which
-> is shared between two channels that's why spinlock should be only one.
->
-> Signed-off-by: Srinivas Neeli <srinivas.neeli@xilinx.com>
+> From: Tom Rix <trix@redhat.com>
+> 
+> See Documentation/core-api/printk-formats.rst.
+> h should no longer be used in the format specifier for printk.
+> 
+> Signed-off-by: Tom Rix <trix@redhat.com>
 
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+Applied, thanks.
 
-Yours,
-Linus Walleij
+-- 
+Jiri Kosina
+SUSE Labs
+
