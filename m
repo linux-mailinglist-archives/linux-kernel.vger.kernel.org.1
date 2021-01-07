@@ -2,117 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 94E0C2ED3D6
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 17:02:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D24712ED3DB
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 17:02:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728219AbhAGQCN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 11:02:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42480 "EHLO
+        id S1728362AbhAGQCe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 11:02:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42548 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725965AbhAGQCM (ORCPT
+        with ESMTP id S1726165AbhAGQCd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 11:02:12 -0500
-Received: from mail-vs1-xe34.google.com (mail-vs1-xe34.google.com [IPv6:2607:f8b0:4864:20::e34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A13A2C0612F5
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Jan 2021 08:01:32 -0800 (PST)
-Received: by mail-vs1-xe34.google.com with SMTP id h18so3807945vsg.8
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Jan 2021 08:01:32 -0800 (PST)
+        Thu, 7 Jan 2021 11:02:33 -0500
+Received: from mail-wr1-x449.google.com (mail-wr1-x449.google.com [IPv6:2a00:1450:4864:20::449])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36307C0612F8
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Jan 2021 08:01:53 -0800 (PST)
+Received: by mail-wr1-x449.google.com with SMTP id g17so2818227wrr.11
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Jan 2021 08:01:53 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=JVKKP8zyOhDGnVR/3YtVW7x0rMfq/5w74jBHoVaOHoM=;
-        b=YzKeDedpF1bzFmpNO1agtIykqm2SpYPV+ylY3RIdrRWg5SSRe2e/uEqNZYOB/46vwq
-         qv1EwNw4g/C/7UwIgET0XB4Q/sLp9J9wV0c4OysveHLbf6HduIEgPt9od1onfYInUFeC
-         I7E1ppEiLKlUPYfQL8nOB1v6B1DOMhv0EOq/U=
+        d=google.com; s=20161025;
+        h=sender:date:message-id:mime-version:subject:from:to:cc;
+        bh=cIq2VE7GHy/A2isTfDsjFX2FggL4BJiiCnO6T+jBwiM=;
+        b=V2dITOA4ZjQIh2CP/4hdMBOhHdPmn6LvL5o1BQmeXUJWYStzYxOyeukrKxJFrwD7I5
+         PWWjqrFvsPibnGIuA9XfKs2wn2Bu5zrka5JWFF1njoWkmqfZvWZCTubMCUYP9JHYTLF/
+         t31kkKtUmhSwZ9ARkQpjC+ec2pnVBix1wPsb2jB3nQlL6iZV907N98AY7YG0CKM/brIh
+         q8TqXjUY1FiHrtCGpOZ4wKJrYZASTlk+Z4KsvxXqk1BWaMf4pXW2y/hzx0nmGWS618uW
+         i+qeKOQdDicunc596/MeRoR2lOh5f09ia0+QO6tcP4xmLfAK6m4FnshJxxJA1cGOEKoC
+         bEnQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=JVKKP8zyOhDGnVR/3YtVW7x0rMfq/5w74jBHoVaOHoM=;
-        b=I5WF11fb9/vfXRmFXX8oAT9e6xjypKd0Ko1wtTsDJsm5hfI6E+GSeJUtW9LN/YMnb8
-         T1iV0FzxsCgkpEgLbLpNIPcssVySOHNvzUiVttbxt4PrSBf01hay/wUnY9fWi0J6UkjI
-         P+GziNNHu8eljZ3WixbLmp1ja15aUYuDZmcrlGB9TrrSdzgJl9sxJ5IPlrMxViD5xsxZ
-         he6zWl3YFnexE3fhsuP56Hl+UekyMGCdsJhqjavYwIDO2z4KbalSwCV0j8nXw3aBt4/M
-         vV6SKfrB0uh10j4GtIbrBLYoYXXxc/9Eh2RhnCjlAlDrsZePchzSBWFMtMZUAATDgPx7
-         1/QA==
-X-Gm-Message-State: AOAM530Cckrznsed5gCUbNL48seCMsQ143vXTkRomksEGXdpshOUdEfj
-        /2f31i0gXGupY6FLUFV2In9zV8VNSaCTew==
-X-Google-Smtp-Source: ABdhPJzqC/wN2DsmgxLZ1Tdv/7wbJdd4YN6shYJFX/QB830QhI7uWBkgYOaaRc3D2uj6gVJOYCVtHQ==
-X-Received: by 2002:a67:bd0a:: with SMTP id y10mr7512890vsq.28.1610035291474;
-        Thu, 07 Jan 2021 08:01:31 -0800 (PST)
-Received: from mail-ua1-f50.google.com (mail-ua1-f50.google.com. [209.85.222.50])
-        by smtp.gmail.com with ESMTPSA id j8sm808923vsn.33.2021.01.07.08.01.29
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 07 Jan 2021 08:01:30 -0800 (PST)
-Received: by mail-ua1-f50.google.com with SMTP id y21so2413345uag.2
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Jan 2021 08:01:29 -0800 (PST)
-X-Received: by 2002:ab0:35fa:: with SMTP id w26mr8049339uau.90.1610035289548;
- Thu, 07 Jan 2021 08:01:29 -0800 (PST)
-MIME-Version: 1.0
-References: <1610008770-13891-1-git-send-email-mkshah@codeaurora.org>
-In-Reply-To: <1610008770-13891-1-git-send-email-mkshah@codeaurora.org>
-From:   Doug Anderson <dianders@chromium.org>
-Date:   Thu, 7 Jan 2021 08:01:17 -0800
-X-Gmail-Original-Message-ID: <CAD=FV=WbvfbU4G2H1a1LrG=fwASn3wscHwOymvO1uJwU8aH70Q@mail.gmail.com>
-Message-ID: <CAD=FV=WbvfbU4G2H1a1LrG=fwASn3wscHwOymvO1uJwU8aH70Q@mail.gmail.com>
-Subject: Re: [PATCH v3] soc: qcom: rpmh: Remove serialization of TCS commands
-To:     Maulik Shah <mkshah@codeaurora.org>
-Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Andy Gross <agross@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        Lina Iyer <ilina@codeaurora.org>,
-        Srinivas Rao L <lsrao@codeaurora.org>
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :to:cc;
+        bh=cIq2VE7GHy/A2isTfDsjFX2FggL4BJiiCnO6T+jBwiM=;
+        b=kpBPARnTV/pB3Biut92fzYn5L2hk3LsI0M2XgoQzr8IwYB9kwJn6PK1ZLJn8CIZpyb
+         ++scLdzr1gKBSiUZJiA9AbbYgQPxNvlTAyfMD5f7mdYqy1PmjjbNeaBellHFrJ7hAGNg
+         YjTPjJuUOAxKtG/QoaVp3Uh/hZSfENlSOMVyNbYZOTbmmQYgyjY3yIF2HzWxzDJxVH1f
+         jCBKNWKdurO/df2GGpjMy4gqt72lbeO23m4jPmFLHBW6KNu3fNGrNi2Ze60Qx3cdBt9M
+         woZjoYMsnfBmrUa0HZoSpsneHF2/hmx+MA5BGGpGsabPGQDg0MZCyvtWzf424tYiITXZ
+         kZ4w==
+X-Gm-Message-State: AOAM530QohNRPn04LEkWn4rXLtsBTPzqUKpTD1Uh6s5RFmBcyWnUTA/T
+        sPVbRcoXfyEjY09MoPwEW121auFMNyaym4L3
+X-Google-Smtp-Source: ABdhPJwA5EIT8h4WB2E34cwYPYToSiJcQ93GEB2pMHddQLY8+1saxvnZdXIrKJ6e9sf9dluJGXMEXRjObypGj0Hz
+Sender: "andreyknvl via sendgmr" <andreyknvl@andreyknvl3.muc.corp.google.com>
+X-Received: from andreyknvl3.muc.corp.google.com ([2a00:79e0:15:13:7220:84ff:fe09:7e9d])
+ (user=andreyknvl job=sendgmr) by 2002:a1c:2c89:: with SMTP id
+ s131mr1458471wms.0.1610035310903; Thu, 07 Jan 2021 08:01:50 -0800 (PST)
+Date:   Thu,  7 Jan 2021 17:01:44 +0100
+Message-Id: <04978189d40307e979be61c458f4944b61134198.1610035117.git.andreyknvl@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.29.2.729.g45daf8777d-goog
+Subject: [PATCH v2] kcov, usb: hide in_serving_softirq checks in __usb_hcd_giveback_urb
+From:   Andrey Konovalov <andreyknvl@google.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kasan-dev@googlegroups.com, Dmitry Vyukov <dvyukov@google.com>,
+        Alexander Potapenko <glider@google.com>,
+        Marco Elver <elver@google.com>,
+        Andrey Konovalov <andreyknvl@google.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Done opencode in_serving_softirq() checks in __usb_hcd_giveback_urb() to
+avoid cluttering the code, hide them in kcov helpers instead.
 
-On Thu, Jan 7, 2021 at 12:39 AM Maulik Shah <mkshah@codeaurora.org> wrote:
->
-> From: Lina Iyer <ilina@codeaurora.org>
->
-> Requests sent to RPMH can be sent as fire-n-forget or response required,
-> with the latter ensuring the command has been completed by the hardware
-> accelerator. Commands in a request with tcs_cmd::wait set, would ensure
-> that those select commands are sent as response required, even though
-> the actual TCS request may be fire-n-forget.
->
-> Also, commands with .wait flag were also guaranteed to be complete
-> before the following command in the TCS is sent. This means that the
-> next command of the same request blocked until the current request is
-> completed. This could mean waiting for a voltage to settle or series of
-> NOCs be configured before the next command is sent. But drivers using
-> this feature have never cared about the serialization aspect. By not
-> enforcing the serialization we can allow the hardware to run in parallel
-> improving the performance.
->
-> Let's clarify the usage of this member in the tcs_cmd structure to mean
-> only completion and not serialization. This should also improve the
-> performance of bus requests where changes could happen in parallel.
-> Also, CPU resume from deep idle may see benefits from certain wake
-> requests.
->
-> Signed-off-by: Lina Iyer <ilina@codeaurora.org>
-> Signed-off-by: Maulik Shah <mkshah@codeaurora.org>
-> ---
-> Changes in v3:
-> - Update the comment in include/soc/qcom/tcs.h
-> - Update to keep req->wait_for_compl as is irq handler
->
-> Changes in v2:
-> - Add SoB of self
-> - Fix typo in comment
-> - Update comment as Doug suggested
-> - Remove write to RSC_DRV_CMD_WAIT_FOR_CMPL in tcs_write() and
->   tcs_invalidate()
-> ---
->  drivers/soc/qcom/rpmh-rsc.c | 22 +++++++++-------------
->  include/soc/qcom/tcs.h      |  9 ++++++++-
->  2 files changed, 17 insertions(+), 14 deletions(-)
+Fixes: aee9ddb1d371 ("kcov, usb: only collect coverage from __usb_hcd_giveback_urb in softirq")
+Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
+---
 
-Reviewed-by: Douglas Anderson <dianders@chromium.org>
+Changes v1->v2:
+- Fix a typo in the commit description and in a comment in the patch.
+
+---
+ drivers/usb/core/hcd.c |  8 +++-----
+ include/linux/kcov.h   | 21 +++++++++++++++++++++
+ 2 files changed, 24 insertions(+), 5 deletions(-)
+
+diff --git a/drivers/usb/core/hcd.c b/drivers/usb/core/hcd.c
+index 60886a7464c3..ad5a0f405a75 100644
+--- a/drivers/usb/core/hcd.c
++++ b/drivers/usb/core/hcd.c
+@@ -1649,14 +1649,12 @@ static void __usb_hcd_giveback_urb(struct urb *urb)
+ 	urb->status = status;
+ 	/*
+ 	 * This function can be called in task context inside another remote
+-	 * coverage collection section, but KCOV doesn't support that kind of
++	 * coverage collection section, but kcov doesn't support that kind of
+ 	 * recursion yet. Only collect coverage in softirq context for now.
+ 	 */
+-	if (in_serving_softirq())
+-		kcov_remote_start_usb((u64)urb->dev->bus->busnum);
++	kcov_remote_start_usb_softirq((u64)urb->dev->bus->busnum);
+ 	urb->complete(urb);
+-	if (in_serving_softirq())
+-		kcov_remote_stop();
++	kcov_remote_stop_softirq();
+ 
+ 	usb_anchor_resume_wakeups(anchor);
+ 	atomic_dec(&urb->use_count);
+diff --git a/include/linux/kcov.h b/include/linux/kcov.h
+index a10e84707d82..18306ef8ad5a 100644
+--- a/include/linux/kcov.h
++++ b/include/linux/kcov.h
+@@ -52,6 +52,25 @@ static inline void kcov_remote_start_usb(u64 id)
+ 	kcov_remote_start(kcov_remote_handle(KCOV_SUBSYSTEM_USB, id));
+ }
+ 
++/*
++ * The softirq flavor of kcov_remote_*() functions is introduced as a temporary
++ * workaround for kcov's lack of nested remote coverage sections support in
++ * task context. Adding suport for nested sections is tracked in:
++ * https://bugzilla.kernel.org/show_bug.cgi?id=210337
++ */
++
++static inline void kcov_remote_start_usb_softirq(u64 id)
++{
++	if (in_serving_softirq())
++		kcov_remote_start_usb(id);
++}
++
++static inline void kcov_remote_stop_softirq(void)
++{
++	if (in_serving_softirq())
++		kcov_remote_stop();
++}
++
+ #else
+ 
+ static inline void kcov_task_init(struct task_struct *t) {}
+@@ -66,6 +85,8 @@ static inline u64 kcov_common_handle(void)
+ }
+ static inline void kcov_remote_start_common(u64 id) {}
+ static inline void kcov_remote_start_usb(u64 id) {}
++static inline void kcov_remote_start_usb_softirq(u64 id) {}
++static inline void kcov_remote_stop_softirq(void) {}
+ 
+ #endif /* CONFIG_KCOV */
+ #endif /* _LINUX_KCOV_H */
+-- 
+2.29.2.729.g45daf8777d-goog
+
