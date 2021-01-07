@@ -2,90 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 673222ECEE8
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 12:43:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 53D4D2ECEEC
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 12:45:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727973AbhAGLnC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 06:43:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58692 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727714AbhAGLnC (ORCPT
+        id S1727850AbhAGLo3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 06:44:29 -0500
+Received: from szxga04-in.huawei.com ([45.249.212.190]:10116 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726768AbhAGLo3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 06:43:02 -0500
-Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07B83C0612F5
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Jan 2021 03:42:21 -0800 (PST)
-Received: by mail-pl1-x62c.google.com with SMTP id 4so3347856plk.5
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Jan 2021 03:42:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=9LgQWsmOFElkiLf05U+26lKjk/BOB6UPEZTx7RDx+X8=;
-        b=iDrhS3bvpsoJA//KOJIA8S6QmOm/T6S3WIhlulzR3yc6ZWw0DE5VdsQstr9G/C6Rav
-         LMrI4fYZJ/OT83tH5gUtKsiUPorPLTi7I5lQF5ho7D9d79WBTDMFAjSbP5/ksRk9cVVS
-         Z6/3sb2OKAXtwY8ZWiaNXeMmw6ZfczgYyPXmxVrx7RI72zX9/ubr2QiDHMJTyqygxmyQ
-         houU/9IMLwrdFGaiIEL2VcEWa2ClokQpcIB5+uRniVvh3qtVu9l54dNjHTaLI7Ch4kBa
-         Hs553dJx/t8N8rSYtMKKKfEvfIuqkn4MYG/aNHW8LEbO8eDVziPBoZvBi0qsab+qqQhV
-         PqBg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=9LgQWsmOFElkiLf05U+26lKjk/BOB6UPEZTx7RDx+X8=;
-        b=ovKcT0iCsebuBiJuEPA7fu+97mWlKbV9qbCsUveB+2sQD82vSKZ7cQhvUOs8fX+mD5
-         cFvFEydn4JJW31IRN0sEBof3B0jYYfm3+29zgtwOybZZEk/Grk4kWPE0yF9HoGKh1nF4
-         7Zij2PT4n2UC+wyZfum5jfXAz3SAR9pgrAuXKr2LeLuwYNILzdHjJ+JcbpoQm/RLLLSD
-         o+ph4M+HZq/ujRz+TGzDAtXFkan/zi7jgiQ78acUqZqWO2YPBV/J6XRpdZ2xdcO8+bua
-         0rjcuClzeEqG1GOLjjfmGxjo+OdnpsBjp0Zgzd/NghNF/yAmQyOhqTIYUG9cSolGWvWL
-         B3/A==
-X-Gm-Message-State: AOAM5338L44c57D+MFkaP17RWar/tusAGbEWoi2gad5Qo2pUHfKlkUWz
-        5Z8b0dtgKnw00RzZjnhYHQlRQw==
-X-Google-Smtp-Source: ABdhPJxzZ8oeKB/meYVSBeksDMO+gwFZyPlb9af11OzHmvmJ3fVK8ygHaa9PJ9gzmrHIVVfHzRPB2w==
-X-Received: by 2002:a17:90a:902:: with SMTP id n2mr8851796pjn.126.1610019741338;
-        Thu, 07 Jan 2021 03:42:21 -0800 (PST)
-Received: from localhost ([122.172.20.109])
-        by smtp.gmail.com with ESMTPSA id o1sm6196138pgq.1.2021.01.07.03.42.20
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 07 Jan 2021 03:42:20 -0800 (PST)
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Jonathan Corbet <corbet@lwn.net>
-Cc:     Viresh Kumar <viresh.kumar@linaro.org>,
-        linux-kernel@vger.kernel.org, linux-kbuild@vger.kernel.org,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        anmar.oueja@linaro.org, linux-doc@vger.kernel.org
-Subject: [PATCH] Documentation: kbuild: Fix section reference
-Date:   Thu,  7 Jan 2021 17:12:08 +0530
-Message-Id: <6f551ebb80f88e9b1bf6aa981f3c201409e1555c.1610019699.git.viresh.kumar@linaro.org>
-X-Mailer: git-send-email 2.25.0.rc1.19.g042ed3e048af
+        Thu, 7 Jan 2021 06:44:29 -0500
+Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4DBPVf1MTKz15pGG;
+        Thu,  7 Jan 2021 19:42:50 +0800 (CST)
+Received: from [10.174.178.6] (10.174.178.6) by DGGEMS406-HUB.china.huawei.com
+ (10.3.19.206) with Microsoft SMTP Server id 14.3.498.0; Thu, 7 Jan 2021
+ 19:43:39 +0800
+From:   lijinlin <lijinlin3@huawei.com>
+Subject: scsi: Add diagnostic log for scsi device reset
+To:     <linux-scsi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <jejb@linux.ibm.com>, <martin.petersen@oracle.com>
+CC:     <linfeilong@huawei.com>, <liuzhiqiang26@huawei.com>
+Message-ID: <c391120e-897a-0ee1-d01a-0defe504d6df@huawei.com>
+Date:   Thu, 7 Jan 2021 19:43:31 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
+Content-Type: text/plain; charset="gbk"
 Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.174.178.6]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Section 3.11 was incorrectly called 3.9, fix it.
+From: lijinlin <lijinlin3@huawei.com>
 
-Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
+For enhancing diagnosis capability when scsi device reset£¬we direct print
+these logs which are infrequently printed, and add disk name to logs.
+
+logs as follow:
+[  550.268049] sd 3:0:0:0: [sdc] Sending device reset
+[  550.268053] sd 3:0:0:0: [sdc] Sending target reset
+[  550.268055] sd 3:0:0:0: [sdc] Sending bus reset
+[  550.268056] sd 3:0:0:0: [sdc] Sending host reset
+
+Signed-off-by: lijinlin <lijinlin3@huawei.com>
 ---
- Documentation/kbuild/makefiles.rst | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/scsi/scsi_error.c | 31 ++++++++++++++++---------------
+ 1 file changed, 16 insertions(+), 15 deletions(-)
 
-diff --git a/Documentation/kbuild/makefiles.rst b/Documentation/kbuild/makefiles.rst
-index d36768cf1250..9f6a11881951 100644
---- a/Documentation/kbuild/makefiles.rst
-+++ b/Documentation/kbuild/makefiles.rst
-@@ -598,7 +598,7 @@ more details, with real examples.
- 	explicitly added to $(targets).
+diff --git a/drivers/scsi/scsi_error.c b/drivers/scsi/scsi_error.c
+index f11f51e..3e62ade 100644
+--- a/drivers/scsi/scsi_error.c
++++ b/drivers/scsi/scsi_error.c
+@@ -1507,9 +1507,10 @@ static int scsi_eh_bus_device_reset(struct Scsi_Host *shost,
+ 		if (!bdr_scmd)
+ 			continue;
  
- 	Assignments to $(targets) are without $(obj)/ prefix. if_changed may be
--	used in conjunction with custom rules as defined in "3.9 Custom Rules".
-+	used in conjunction with custom rules as defined in "3.11 Custom Rules".
+-		SCSI_LOG_ERROR_RECOVERY(3,
++		if (bdr_scmd->request && bdr_scmd->request->rq_disk)
+ 			sdev_printk(KERN_INFO, sdev,
+-				     "%s: Sending BDR\n", current->comm));
++				     "[%s] Sending device reset\n",
++				     bdr_scmd->request->rq_disk->disk_name);
+ 		rtn = scsi_try_bus_device_reset(bdr_scmd);
+ 		if (rtn == SUCCESS || rtn == FAST_IO_FAIL) {
+ 			if (!scsi_device_online(sdev) ||
+@@ -1570,10 +1571,10 @@ static int scsi_eh_target_reset(struct Scsi_Host *shost,
+ 		scmd = list_entry(tmp_list.next, struct scsi_cmnd, eh_entry);
+ 		id = scmd_id(scmd);
  
- 	Note: It is a typical mistake to forget the FORCE prerequisite.
- 	Another common pitfall is that whitespace is sometimes significant; for
+-		SCSI_LOG_ERROR_RECOVERY(3,
+-			shost_printk(KERN_INFO, shost,
+-				     "%s: Sending target reset to target %d\n",
+-				     current->comm, id));
++		if (scmd->device && scmd->request && scmd->request->rq_disk)
++			sdev_printk(KERN_INFO, scmd->device,
++				     "[%s] Sending target reset\n",
++				     scmd->request->rq_disk->disk_name);
+ 		rtn = scsi_try_target_reset(scmd);
+ 		if (rtn != SUCCESS && rtn != FAST_IO_FAIL)
+ 			SCSI_LOG_ERROR_RECOVERY(3,
+@@ -1644,10 +1645,11 @@ static int scsi_eh_bus_reset(struct Scsi_Host *shost,
+ 
+ 		if (!chan_scmd)
+ 			continue;
+-		SCSI_LOG_ERROR_RECOVERY(3,
+-			shost_printk(KERN_INFO, shost,
+-				     "%s: Sending BRST chan: %d\n",
+-				     current->comm, channel));
++		if (chan_scmd->device && chan_scmd->request
++			&& chan_scmd->request->rq_disk)
++			sdev_printk(KERN_INFO, chan_scmd->device,
++				     "[%s] Sending bus reset\n",
++				     chan_scmd->request->rq_disk->disk_name);
+ 		rtn = scsi_try_bus_reset(chan_scmd);
+ 		if (rtn == SUCCESS || rtn == FAST_IO_FAIL) {
+ 			list_for_each_entry_safe(scmd, next, work_q, eh_entry) {
+@@ -1688,11 +1690,10 @@ static int scsi_eh_host_reset(struct Scsi_Host *shost,
+ 		scmd = list_entry(work_q->next,
+ 				  struct scsi_cmnd, eh_entry);
+ 
+-		SCSI_LOG_ERROR_RECOVERY(3,
+-			shost_printk(KERN_INFO, shost,
+-				     "%s: Sending HRST\n",
+-				     current->comm));
+-
++		if (scmd->device && scmd->request && scmd->request->rq_disk)
++			sdev_printk(KERN_INFO, scmd->device,
++				     "[%s] Sending host reset\n",
++				     scmd->request->rq_disk->disk_name);
+ 		rtn = scsi_try_host_reset(scmd);
+ 		if (rtn == SUCCESS) {
+ 			list_splice_init(work_q, &check_list);
 -- 
-2.25.0.rc1.19.g042ed3e048af
+1.8.3.1
 
