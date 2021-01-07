@@ -2,65 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 49A5B2ECCEE
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 10:40:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 89F752ECCF2
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 10:41:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726884AbhAGJjP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 04:39:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39110 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725974AbhAGJjP (ORCPT
+        id S1727049AbhAGJke (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 04:40:34 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:56071 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725974AbhAGJke (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 04:39:15 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8797C0612F4
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Jan 2021 01:38:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=EVqP79nL9SAhqJQfMwCKQrDaTJtNttKzCx/0iIrZQmg=; b=B1c0Ijs5LwQGbTeOhQLWEEpB5E
-        FkfldyRO1d68I+dNpnb2OSKB2HP4cDZwU000lq0XYD1S+0m2juDmMkUdvyQ1r0pzPs2APA2KyhCt2
-        HrqhQI9oEE215vxQYtMObiHBhjAXfWmwG91vXhLLwptoM8e8oFeCtD0JBQtedVSuOftluLQer2oNJ
-        GUOoNuccd9axt/XxqWaygssZi6KnykZU+vi/9d73Xc95DW8eSWsYLDJTvhywe+rxkD5fpDOitv/Gh
-        8L15K/HcpLV59wIC4SZZPnxx1mmDC80nMrzIwS7q+wP7+GtoYnAY/q1KmpAzNB4eGBhVh4urYKK+w
-        FAMj/hSQ==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1kxRip-003FBY-A0; Thu, 07 Jan 2021 09:37:21 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 6B34F3013E5;
-        Thu,  7 Jan 2021 10:36:43 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id D83772029C718; Thu,  7 Jan 2021 10:36:43 +0100 (CET)
-Date:   Thu, 7 Jan 2021 10:36:43 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org, jpoimboe@redhat.com,
-        sfr@canb.auug.org.au, tony.luck@intel.com
-Subject: Re: [PATCH 2/6] x86/sev: Fix nonistr violation
-Message-ID: <X/bWK1tNB6mtm0Bu@hirez.programming.kicks-ass.net>
-References: <20210106143619.479313782@infradead.org>
- <20210106144017.532902065@infradead.org>
- <dc6e7e19-881a-c778-22df-15176db4aeb9@infradead.org>
+        Thu, 7 Jan 2021 04:40:34 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1610012348;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=0/UvIsE6v1FZ8l1jZ7AnILfXjsl6XgnZoeG7pEBoAX4=;
+        b=JrsmlQAf7EwoLiVU7g3UT4MxEsGshQBzlC7Ed24tfR7/8mQZn8V+RnOSjuLp+K00+1WVcO
+        0srcD6Yym6o05f8NWfLB1Nu8+TGp+2yVxeeMFX3GgHWBxWFsF6RTRKL00Z3gb1tYut0kto
+        nSrWY8ekCOL/RKEkSvFGqjW/ICYXsZk=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-497-34FcIbIPMUOnL2sw4IGfiQ-1; Thu, 07 Jan 2021 04:39:06 -0500
+X-MC-Unique: 34FcIbIPMUOnL2sw4IGfiQ-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 33CD9AFA80;
+        Thu,  7 Jan 2021 09:39:04 +0000 (UTC)
+Received: from localhost.localdomain (unknown [10.35.206.22])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 3966219D7D;
+        Thu,  7 Jan 2021 09:38:55 +0000 (UTC)
+From:   Maxim Levitsky <mlevitsk@redhat.com>
+To:     kvm@vger.kernel.org
+Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel@vger.kernel.org,
+        x86@kernel.org (maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)),
+        Ingo Molnar <mingo@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Jim Mattson <jmattson@google.com>,
+        Maxim Levitsky <mlevitsk@redhat.com>
+Subject: [PATCH v2 0/4] KVM: nSVM: few random fixes
+Date:   Thu,  7 Jan 2021 11:38:50 +0200
+Message-Id: <20210107093854.882483-1-mlevitsk@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <dc6e7e19-881a-c778-22df-15176db4aeb9@infradead.org>
+Content-Transfer-Encoding: quoted-printable
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 06, 2021 at 09:59:17AM -0800, Randy Dunlap wrote:
-> On 1/6/21 6:36 AM, Peter Zijlstra wrote:
-> > When the compiler fails to inline; we violate nonisntr:
-> > 
-> >   vmlinux.o: warning: objtool: __sev_es_nmi_complete()+0xc7: call to sev_es_wr_ghcb_msr() leaves .noinstr.text section
-> 
-> I am still seeing (a variant of) this one:
-> 
-> vmlinux.o: warning: objtool: __sev_es_nmi_complete()+0xce: call to __wrmsr.constprop.14() leaves .noinstr.text section
+This is a series of fixes to nested SVM, that finally makes my kvm on kvm=0D
+stress test pass, and fix various other issues/regressions.=0D
+=0D
+Patch 1 is a fix for recent regression related to code that delayed the nes=
+ted=0D
+msr bitmap processing to the next vm entry, and started to crash the L1 aft=
+er=0D
+my on demand nested state allocation patches.=0D
+=0D
+The problem was that the code assumed that we will still be in the nested=0D
+guest mode on next vmentry after setting the nested state, but a pending ev=
+ent=0D
+can cause a nested vmexit prior to that.=0D
+=0D
+Patch 2 makes KVM restore nested_run_pending flag on migration which fixes=
+=0D
+various issues including potentially missed L1->L2 event injection=0D
+if migration happens while nested run is pending.=0D
+=0D
+Patches 3,4 are few things I found while reviewing the nested migration cod=
+e.=0D
+I don't have a reproducer for them.=0D
+=0D
+Thanks a lot to Sean Christopherson for the review feedback on V1 of this=0D
+series, which is fully incorporated in this series.=0D
+=0D
+Best regards,=0D
+	Maxim Levitsky=0D
+=0D
+Maxim Levitsky (4):=0D
+  KVM: nSVM: cancel KVM_REQ_GET_NESTED_STATE_PAGES on nested vmexit=0D
+  KVM: nSVM: correctly restore nested_run_pending on migration=0D
+  KVM: nSVM: always leave the nested state first on KVM_SET_NESTED_STATE=0D
+  KVM: nSVM: mark vmcb as dirty when forcingly leaving the guest mode=0D
+=0D
+ arch/x86/kvm/svm/nested.c | 12 ++++++++++++=0D
+ 1 file changed, 12 insertions(+)=0D
+=0D
+-- =0D
+2.26.2=0D
+=0D
 
-Gah, sorry, I managed to mess up my .config :/ /me goes try again.
