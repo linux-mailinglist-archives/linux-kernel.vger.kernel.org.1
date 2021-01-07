@@ -2,155 +2,201 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B2ECC2ECA23
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 06:28:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CB7712ECA27
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 06:30:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726009AbhAGF1t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 00:27:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56378 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725763AbhAGF1s (ORCPT
+        id S1726482AbhAGF3w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 00:29:52 -0500
+Received: from conssluserg-05.nifty.com ([210.131.2.90]:32619 "EHLO
+        conssluserg-05.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725970AbhAGF3v (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 00:27:48 -0500
-Received: from mail-ua1-x92d.google.com (mail-ua1-x92d.google.com [IPv6:2607:f8b0:4864:20::92d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D823C0612F0
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Jan 2021 21:27:08 -0800 (PST)
-Received: by mail-ua1-x92d.google.com with SMTP id 73so1881911uac.8
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Jan 2021 21:27:08 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=DL77our55iztoQFTHcrzUPd8D74YCElR4PL+z7wu+tE=;
-        b=OjyQY9vIgfuLF929d9DU5SnHiUtSpxLXxLvQtJZ2SZyiA7P3AmVHw+4xzcD07euXZH
-         iAeFcVqv2ly3jq3fBIFqHUl7OII9uiJQT5O2ZhI4ERoovHY2bndHVBdfFkqKm9vvkX5R
-         pFbb8V7es0KIqSQOUe0KRJlSA5gGBDBsrdyJU=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=DL77our55iztoQFTHcrzUPd8D74YCElR4PL+z7wu+tE=;
-        b=GREbgfJfWm6X1GR/zaV8u+FA9qb0mp5JWpQfH/utnvee55jGXRUpe0wotehOdEhBxA
-         XnL66DPMN2N/bb+P63pWY1TKARRcyL8sCYH/4gXOhmgzsp/pHSrsKQsRzRAd97TTuILd
-         ZGPaVNsiDQkr26g8+um32uNIvHQwWqcyFnFx584KyNKSUVbHGwoF1IsgX6y+bWp6fyaS
-         3KrBbSJRU3TcKp10uaknNCV3+zAhFd5tWohYlJt6VAQ7a7VzfrVbtAFk/X+tYH7szsFl
-         4+JDzK21vaX59u1F0Mjl1ywv1tqd3oiqWQPwcx7K7gn8ClaNreC1s/rPGjTgskD2Tb6+
-         x43w==
-X-Gm-Message-State: AOAM532bycG9Z0SI/ntlnpw5gjZSo8FYVabXSZ4aOrDXfac0jLS8OKEj
-        pgtyRAhBkAc9fBSPzrksMD02kE0NOpof0yE4vvU5IRWNSrw=
-X-Google-Smtp-Source: ABdhPJza3lS4l/BC3JjMmkmHf9Pi95rSoxNXaGQIp2kYtkNvVExUIZyYTCtGmm/WEDb6QKqPXjyKM8SQjMKPBVwMy3Q=
-X-Received: by 2002:ab0:74d2:: with SMTP id f18mr6292889uaq.48.1609997226350;
- Wed, 06 Jan 2021 21:27:06 -0800 (PST)
+        Thu, 7 Jan 2021 00:29:51 -0500
+Received: from mail-pl1-f178.google.com (mail-pl1-f178.google.com [209.85.214.178]) (authenticated)
+        by conssluserg-05.nifty.com with ESMTP id 1075ScAO022423;
+        Thu, 7 Jan 2021 14:28:39 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-05.nifty.com 1075ScAO022423
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1609997319;
+        bh=lvPP/ovJSzu/fFkNuqkFGmuMHuzmmi/KupX+Somo4Tk=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=ftfyjNRqlB3xR4s/fn9hHp0Zhbeyi54WZTvfFonqaRoV45wTu1B06gJr9qFKN7Mjo
+         /sVDpsdTXXrCq/fwd87AMyZjS90aXa3cvEVvjAr+ZKFbMvZ5Q31+aDk/6KRBx8PTVT
+         wQ6yywdyHS2g8SwPDMlZhER8h1f1nhPUKf5ZA81dIgT7LRswqGBWAqN3fcEJrG+JsX
+         rQvBmhINzhGnRKlTzKWgxga3BfM5rHlEehtGdWMn4mEuPD7yw3m5yJEdKQaORNJYC3
+         KwwThb0hvRtFpB3mEJDkyqi5OH94RciDRohLzRZisCHDHdRCqdNc72CAKWiObNt5mH
+         flTUSL9vt0RrQ==
+X-Nifty-SrcIP: [209.85.214.178]
+Received: by mail-pl1-f178.google.com with SMTP id y8so2903976plp.8;
+        Wed, 06 Jan 2021 21:28:38 -0800 (PST)
+X-Gm-Message-State: AOAM533ck1/j7X5Ssg20nCKORrBSCVwvTQpncpLMHWtoUKXZk6JbN+/H
+        b1iTtzOcK7PnY+B7Pp6bg/f5oWLrPt1vm0R7kKo=
+X-Google-Smtp-Source: ABdhPJyqieTynTjtxOoQxrDCON3gMFLOBlYhUZzKbpbFKt+1C8c/pAXPUwmKwIbRKppuzO6KfEEXXk/JvebLVaIAAfk=
+X-Received: by 2002:a17:90a:c910:: with SMTP id v16mr7675125pjt.198.1609997318210;
+ Wed, 06 Jan 2021 21:28:38 -0800 (PST)
 MIME-Version: 1.0
-References: <20210107052206.2599844-1-hsinyi@chromium.org>
-In-Reply-To: <20210107052206.2599844-1-hsinyi@chromium.org>
-From:   Nicolas Boichat <drinkcat@chromium.org>
-Date:   Thu, 7 Jan 2021 13:26:55 +0800
-Message-ID: <CANMq1KCadbb+P9Lm7VD+Eq9UoY5ky9UEZjYOYBFSNj3qM4NKJQ@mail.gmail.com>
-Subject: Re: [PATCH v2 1/2] arm64: dts: mt8183: config dsi node
-To:     Hsin-Yi Wang <hsinyi@chromium.org>
-Cc:     linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        Devicetree List <devicetree@vger.kernel.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        lkml <linux-kernel@vger.kernel.org>
+References: <cover.1609844956.git.viresh.kumar@linaro.org> <CAL_JsqJMr3vfz2B29vzvFALCt_5-J__eJv2TZHJ0sR9nM=xXaw@mail.gmail.com>
+In-Reply-To: <CAL_JsqJMr3vfz2B29vzvFALCt_5-J__eJv2TZHJ0sR9nM=xXaw@mail.gmail.com>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Thu, 7 Jan 2021 14:28:01 +0900
+X-Gmail-Original-Message-ID: <CAK7LNAR9fdjZ7iWKSWvJ9etGZkd+n87cmXKN-Hah8DBDYbuAwA@mail.gmail.com>
+Message-ID: <CAK7LNAR9fdjZ7iWKSWvJ9etGZkd+n87cmXKN-Hah8DBDYbuAwA@mail.gmail.com>
+Subject: Re: [RFC 0/2] kbuild: Add support to build overlays (%.dtbo)
+To:     Rob Herring <robh+dt@kernel.org>
+Cc:     Viresh Kumar <viresh.kumar@linaro.org>,
+        Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>,
+        Pantelis Antoniou <pantelis.antoniou@konsulko.com>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Michal Marek <michal.lkml@markovi.net>,
+        DTML <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Bill Mills <bill.mills@linaro.org>, tero.kristo@gmail.com
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 7, 2021 at 1:22 PM Hsin-Yi Wang <hsinyi@chromium.org> wrote:
+On Wed, Jan 6, 2021 at 12:21 AM Rob Herring <robh+dt@kernel.org> wrote:
 >
-> Config dsi node for mt8183 kukui. Set panel and ports.
->
-> Several kukui boards share the same panel property and only compatible
-> is different. So compatible will be set in board dts for comparison
-> convenience.
+> On Tue, Jan 5, 2021 at 4:24 AM Viresh Kumar <viresh.kumar@linaro.org> wrote:
+> >
+> > Hello,
+> >
+> > Here is an attempt to make some changes in the kernel to allow building
+> > of device tree overlays.
+> >
+> > While at it, I would also like to discuss about how we should mention
+> > the base DT blobs in the Makefiles for the overlays, so they can be
+> > build tested to make sure the overlays apply properly.
+> >
+> > A simple way is to mention that with -base extension, like this:
+> >
+> > $(overlay-file)-base := platform-base.dtb
+> >
+> > Any other preference ?
 
-I like this, but maybe others have different opinions ,-)
 
-Reviewed-by: Nicolas Boichat <drinkcat@chromium.org>
 
-> Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
-> ---
-> Change:
-> v2: move compatible to board dts
-> ---
->  .../mediatek/mt8183-kukui-krane-sku176.dts    |  5 +++
->  .../arm64/boot/dts/mediatek/mt8183-kukui.dtsi | 37 +++++++++++++++++++
->  2 files changed, 42 insertions(+)
+Viresh's patch is not enough.
+
+We will need to change .gitignore
+and scripts/Makefile.dtbinst as well.
+
+
+In my understanding, the build rule is completely the same
+between .dtb and .dtbo
+As Rob mentioned, I am not sure if we really need/want
+a separate extension.
+
+
+A counter approach is to use an extension like '.ovl.dtb'
+It clarifies it is an overlay fragment without changing
+anything in our build system or the upstream DTC project.
+
+We use chained extension in some places, for example,
+.dt.yaml for schema yaml files.
+
+
+
+dtb-$(CONFIG_ARCH_FOO) += \
+    foo-board.dtb \
+    foo-overlay1.ovl.dtb \
+    foo-overlay2.ovl.dtb
+
+
+Overlay DT source file names must end with '.ovl.dts'
+
+
+
+
 >
-> diff --git a/arch/arm64/boot/dts/mediatek/mt8183-kukui-krane-sku176.dts b/arch/arm64/boot/dts/mediatek/mt8183-kukui-krane-sku176.dts
-> index 47113e275cb52..721d16f9c3b4f 100644
-> --- a/arch/arm64/boot/dts/mediatek/mt8183-kukui-krane-sku176.dts
-> +++ b/arch/arm64/boot/dts/mediatek/mt8183-kukui-krane-sku176.dts
-> @@ -16,3 +16,8 @@ / {
->         model = "MediaTek krane sku176 board";
->         compatible = "google,krane-sku176", "google,krane", "mediatek,mt8183";
->  };
-> +
-> +&panel {
-> +        status = "okay";
-> +        compatible = "boe,tv101wum-nl6";
-> +};
-> diff --git a/arch/arm64/boot/dts/mediatek/mt8183-kukui.dtsi b/arch/arm64/boot/dts/mediatek/mt8183-kukui.dtsi
-> index bf2ad1294dd30..d3d20e4773cf1 100644
-> --- a/arch/arm64/boot/dts/mediatek/mt8183-kukui.dtsi
-> +++ b/arch/arm64/boot/dts/mediatek/mt8183-kukui.dtsi
-> @@ -249,6 +249,35 @@ &cpu7 {
->         proc-supply = <&mt6358_vproc11_reg>;
->  };
+> I think we'll want something similar to how '-objs' works for modules:
 >
-> +&dsi0 {
-> +       status = "okay";
-> +       #address-cells = <1>;
-> +       #size-cells = <0>;
-> +       panel: panel@0 {
-> +               // compatible will be set in board dts
-> +               reg = <0>;
-> +               enable-gpios = <&pio 45 0>;
-> +               pinctrl-names = "default";
-> +               pinctrl-0 = <&panel_pins_default>;
-> +               avdd-supply = <&ppvarn_lcd>;
-> +               avee-supply = <&ppvarp_lcd>;
-> +               pp1800-supply = <&pp1800_lcd>;
-> +               port {
-> +                       panel_in: endpoint {
-> +                               remote-endpoint = <&dsi_out>;
-> +                       };
-> +               };
-> +       };
-> +
-> +       ports {
-> +               port {
-> +                       dsi_out: endpoint {
-> +                               remote-endpoint = <&panel_in>;
-> +                       };
-> +               };
-> +       };
-> +};
-> +
->  &i2c0 {
->         pinctrl-names = "default";
->         pinctrl-0 = <&i2c0_pins>;
-> @@ -547,6 +576,14 @@ pins_clk {
->                 };
->         };
+> foo-board-1-dtbs := foo-board.dtb foo-overlay1.dtbo
+> foo-board-2-dtbs := foo-board.dtb foo-overlay2.dtbo
+> foo-board-1-2-dtbs := foo-board.dtb foo-overlay1.dtbo foo-overlay2.dtbo
+> dtbs-y += foo-board-1.dtb foo-board-2.dtb foo-board-1-2.dtb
 >
-> +       panel_pins_default: panel_pins_default {
-> +               panel_reset {
-> +                       pinmux = <PINMUX_GPIO45__FUNC_GPIO45>;
-> +                       output-low;
-> +                       bias-pull-up;
-> +               };
-> +       };
-> +
->         pwm0_pin_default: pwm0_pin_default {
->                 pins1 {
->                         pinmux = <PINMUX_GPIO176__FUNC_GPIO176>;
-> --
-> 2.29.2.729.g45daf8777d-goog
+> (One difference here is we will want all the intermediate targets
+> unlike .o files.)
 >
+> You wouldn't necessarily have all the above combinations, but you have
+> to allow for them. I'm not sure how we'd handle applying any common
+> overlays where the base and overlay are in different directories.
+
+
+I guess the motivation for supporting -dtbs is to
+add per-board -@ option only when it contains *.dtbo pattern.
+
+But, as you notice, if the overlay files are located
+under drivers/, it is difficult to add -@ per board.
+
+Another scenario is, some people may want to compile
+downstream overlay files (i.e. similar concept as external modules),
+then we have no idea which base board should be given with the -@ flag.
+
+
+I'd rather be tempted to add it globally
+
+
+ifdef CONFIG_OF_OVERLAY
+DTC_FLAGS += -@
+endif
+
+
+
+
+
+
+
+>
+> Another thing here is adding all the above is not really going to
+> scale on arm32 where we have a single dts directory. We need to move
+> things to per vendor/soc family directories. I have the script to do
+> this. We just need to agree on the vendor names and get Arnd/Olof to
+> run it. I also want that so we can enable schema checks by default
+> once a vendor is warning free (the whole tree is going to take
+> forever).
+
+
+If this is a big churn, perhaps we could make it extreme
+to decouple DT and Linux-arch.
+
+
+
+arch/*/boot/dts/*.dts
+ ->  dts/<vendor>/*.dts
+
+Documentation/devicetree/bindings
+ -> dts/Bindings/
+
+include/dt-bindings/
+ -> dts/include/dt-bindings/
+
+
+
+Then, other project can take dts/
+to reuse for them.
+
+
+
+
+
+
+
+> > Also fdtoverlay is an external entity right now, and is not part of the
+> > kernel. Do we need to make it part of the kernel ? Or keep using the
+> > external entity ?
+>
+> Part of the kernel. We just need to add it to the dtc sync script and
+> makefile I think.
+>
+> Rob
+
+
+
+--
+Best Regards
+Masahiro Yamada
