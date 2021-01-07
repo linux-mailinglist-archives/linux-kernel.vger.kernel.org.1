@@ -2,174 +2,199 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E80332ED2B2
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 15:38:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C9C792ED22D
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 15:32:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729476AbhAGOgg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 09:36:36 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46396 "EHLO mail.kernel.org"
+        id S1728507AbhAGObK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 09:31:10 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45174 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729289AbhAGOcT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 09:32:19 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2491A2333E;
-        Thu,  7 Jan 2021 14:31:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610029877;
-        bh=USX+2TpBUoiVKLv8nPZdH7ewWdDApeo2U7DhVBNhRjU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=RZH25cGJx/88oQyPhBFR8c1wnkXYfb6eScg1CVBVUNQzBscuJDX8LfAXJMVZSSrRZ
-         7rJBo4O38ooluwjCJdHOgNoBATY9JyCRjgZMKapBa+BYwxFfoAhQaBgRFm6/58mJpd
-         1Eqkwp8hEuIvAVtBULVc78CtUvN8YNrIWsW+gDAXEjMUGQHLA7BbPUiEKbl3v6cnJ6
-         A3ixb7vvbb/xK4rN/9eg1QyNSQf3pt+UUFvnec3XXKGHY44ImSF8gN7Oz4ooi1b36G
-         66gwHgDiePqd7zfSEfXDRumUKc8oKwOQNAQ1fEMLUwq8BvJif2jJX/oMoUgX4Y+JGo
-         D2571O3jAI48Q==
-Date:   Thu, 7 Jan 2021 15:31:12 +0100
-From:   Jessica Yu <jeyu@kernel.org>
-To:     Will McVicker <willmcvicker@google.com>
-Cc:     Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        Saravana Kannan <saravanak@google.com>,
-        linux-kernel@vger.kernel.org, linux-kbuild@vger.kernel.org,
-        kernel-team@android.com
-Subject: Re: [PATCH v4] modules: introduce the MODULE_SCMVERSION config
-Message-ID: <20210107143111.GA30412@linux-8ccs>
-References: <20201216220850.659584-1-willmcvicker@google.com>
- <20201218120138.GA5265@linux-8ccs>
- <CABYd82bf+RACxboKCxoV=N63ynKwPspGhb6G5yYPiCFKnOk9Hw@mail.gmail.com>
+        id S1726319AbhAGObJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Jan 2021 09:31:09 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E72D423343;
+        Thu,  7 Jan 2021 14:30:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1610029828;
+        bh=GVL+E4+txpvarzFyPumGWCpY73arDVDFceM+2WCFEZo=;
+        h=From:To:Cc:Subject:Date:From;
+        b=y7jQoZUQSPC+XE0lqAHvz32r7XMxUpDGqfZWOZuCh31917aUs5NE0qBeaBTfOO2vo
+         ZHXCAgZfwJsyULXGHxyCnJTUw8NPs8ZNr0g9nLUdTsZt7ECq3lZWT1oGsvyE4eZdLR
+         H7gHGJ5OanePTQvtevzq8MO4QlKY9FimzzKU/F28=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, stable@vger.kernel.org
+Subject: [PATCH 4.14 00/29] 4.14.214-rc1 review
+Date:   Thu,  7 Jan 2021 15:31:15 +0100
+Message-Id: <20210107143052.973437064@linuxfoundation.org>
+X-Mailer: git-send-email 2.30.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <CABYd82bf+RACxboKCxoV=N63ynKwPspGhb6G5yYPiCFKnOk9Hw@mail.gmail.com>
-X-OS:   Linux linux-8ccs 4.12.14-lp150.12.28-default x86_64
-User-Agent: Mutt/1.10.1 (2018-07-13)
+User-Agent: quilt/0.66
+X-stable: review
+X-Patchwork-Hint: ignore
+X-KernelTest-Patch: http://kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.14.214-rc1.gz
+X-KernelTest-Tree: git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
+X-KernelTest-Branch: linux-4.14.y
+X-KernelTest-Patches: git://git.kernel.org/pub/scm/linux/kernel/git/stable/stable-queue.git
+X-KernelTest-Version: 4.14.214-rc1
+X-KernelTest-Deadline: 2021-01-09T14:30+00:00
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-+++ Will McVicker [06/01/21 10:44 -0800]:
->Thanks for the vacation notice Jessica! I'm just letting you know I'm
->back as well and am happy to respond to any concerns regarding v4 when
->you get all caught up.
->
->I hope you had a relaxing holiday :)
+This is the start of the stable review cycle for the 4.14.214 release.
+There are 29 patches in this series, all will be posted as a response
+to this one.  If anyone has any issues with these being applied, please
+let me know.
 
-Hi Will - thanks, same to you!
+Responses should be made by Sat, 09 Jan 2021 14:30:35 +0000.
+Anything received after that time might be too late.
 
->On Fri, Dec 18, 2020 at 4:01 AM Jessica Yu <jeyu@kernel.org> wrote:
->>
->> +++ Will McVicker [16/12/20 22:08 +0000]:
->> >Config MODULE_SCMVERSION introduces a new module attribute --
->> >`scmversion` -- which can be used to identify a given module's SCM
->> >version.  This is very useful for developers that update their kernel
->> >independently from their kernel modules or vice-versa since the SCM
->> >version provided by UTS_RELEASE (`uname -r`) will now differ from the
->> >module's vermagic attribute.
->> >
->> >For example, we have a CI setup that tests new kernel changes on the
->> >hikey960 and db845c devices without updating their kernel modules. When
->> >these tests fail, we need to be able to identify the exact device
->> >configuration the test was using. By including MODULE_SCMVERSION, we can
->> >identify the exact kernel and modules' SCM versions for debugging the
->> >failures.
->> >
->> >Additionally, by exposing the SCM version via the sysfs node
->> >/sys/module/MODULENAME/scmversion, one can also verify the SCM versions
->> >of the modules loaded from the initramfs. Currently, modinfo can only
->> >retrieve module attributes from the module's ko on disk and not from the
->> >actual module that is loaded in RAM.
->> >
->> >You can retrieve the SCM version in two ways,
->> >
->> >1) By using modinfo:
->> >    > modinfo -F scmversion MODULENAME
->> >2) By module sysfs node:
->> >    > cat /sys/module/MODULENAME/scmversion
->> >
->> >Signed-off-by: Will McVicker <willmcvicker@google.com>
->> >---
-[ added back diff ]
->> >Changelog since v3:
->> >- Dropped [PATCH v2 1/2] scripts/setlocalversion: allow running in a subdir
->> >
->> > Documentation/ABI/stable/sysfs-module | 18 ++++++++++++++++++
->> > include/linux/module.h                |  1 +
->> > init/Kconfig                          | 12 ++++++++++++
->> > kernel/module.c                       |  2 ++
->> > scripts/Makefile.modpost              | 22 ++++++++++++++++++++++
->> > scripts/mod/modpost.c                 | 24 +++++++++++++++++++++++-
->> > 6 files changed, 78 insertions(+), 1 deletion(-)
->> >
->> >diff --git a/Documentation/ABI/stable/sysfs-module b/Documentation/ABI/stable/sysfs-module
->> >index 6272ae5fb366..2ba731767737 100644
->> >--- a/Documentation/ABI/stable/sysfs-module
->> >+++ b/Documentation/ABI/stable/sysfs-module
->> >@@ -32,3 +32,21 @@ Description:
->> > 		Note: If the module is built into the kernel, or if the
->> > 		CONFIG_MODULE_UNLOAD kernel configuration value is not enabled,
->> > 		this file will not be present.
->> >+
->> >+What:		/sys/module/MODULENAME/scmversion
->> >+Date:		November 2020
->> >+KernelVersion:	5.11
+The whole patch series can be found in one patch at:
+	https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.14.214-rc1.gz
+or in the git tree and branch at:
+	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.14.y
+and the diffstat can be found below.
 
-I guess we'll have to bump KernelVersion now (sorry about the timing!)
+thanks,
 
->> >+Contact:	Will McVicker <willmcvicker@google.com>
->> >+Description:	This read-only file will appear if modpost was supplied with an
->> >+		SCM version for the module. It can be enabled with the config
->> >+		MODULE_SCMVERSION. The SCM version is retrieved by
->> >+		scripts/setlocalversion, which means that the presence of this
->> >+		file depends on CONFIG_LOCALVERSION_AUTO=y or LOCALVERSION=.
+greg k-h
 
-I think the "or LOCALVERSION=" part is inaccurate, right? We need
-just LOCALVERSION_AUTO for the full scm string for this to work.
+-------------
+Pseudo-Shortlog of commits:
 
->> >+		When read, the SCM version that the module was compiled with is
->> >+		returned. The SCM version is returned in the following format::
->> >+
->> >+		===
->> >+		Git:		g[a-f0-9]\+(-dirty)\?
->> >+		Mercurial:	hg[a-f0-9]\+(-dirty)\?
->> >+		Subversion:	svn[0-9]\+
->> >+		===
->> >diff --git a/include/linux/module.h b/include/linux/module.h
->> >index c4e7a887f469..6bd710308863 100644
->> >--- a/include/linux/module.h
->> >+++ b/include/linux/module.h
->> >@@ -372,6 +372,7 @@ struct module {
->> > 	struct module_attribute *modinfo_attrs;
->> > 	const char *version;
->> > 	const char *srcversion;
->> >+	const char *scmversion;
->> > 	struct kobject *holders_dir;
->> >
->> > 	/* Exported symbols */
->> >diff --git a/init/Kconfig b/init/Kconfig
->> >index b77c60f8b963..d9ae12f16ba2 100644
->> >--- a/init/Kconfig
->> >+++ b/init/Kconfig
->> >@@ -2131,6 +2131,18 @@ config MODULE_SRCVERSION_ALL
->> > 	  the version).  With this option, such a "srcversion" field
->> > 	  will be created for all modules.  If unsure, say N.
->> >
->> >+config MODULE_SCMVERSION
->> >+	bool "SCM version for modules"
->> >+	depends on LOCALVERSION_AUTO
->> >+	help
->> >+	  This enables the module attribute "scmversion" which can be used
->> >+	  by developers to identify the SCM version of a given module, e.g.
->> >+	  git sha1 or hg sha1. The SCM version can be queried by modinfo or
->> >+	  via the sysfs node: /sys/modules/MODULENAME/scmversion. This is
->> >+	  useful when the kernel or kernel modules are updated separately
->> >+	  since that causes the vermagic of the kernel and the module to
->> >+	  differ.
+Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+    Linux 4.14.214-rc1
 
-Since I consider this a debug/developer option, let's add a "If
-unsure, say N." at the end of this, similar to the other
-module options.
+Zhang Xiaohui <ruc_zhangxiaohui@163.com>
+    mwifiex: Fix possible buffer overflows in mwifiex_cmd_802_11_ad_hoc_start
 
-Thanks!
+Jonathan Cameron <Jonathan.Cameron@huawei.com>
+    iio:magnetometer:mag3110: Fix alignment and data leak issues.
 
-Jessica
+Jonathan Cameron <Jonathan.Cameron@huawei.com>
+    iio:imu:bmi160: Fix alignment and data leak issues
+
+Josh Poimboeuf <jpoimboe@redhat.com>
+    kdev_t: always inline major/minor helper functions
+
+Hyeongseok Kim <hyeongseok@gmail.com>
+    dm verity: skip verity work if I/O error when system is shutting down
+
+Takashi Iwai <tiwai@suse.de>
+    ALSA: pcm: Clear the full allocated memory at hw_params
+
+Jessica Yu <jeyu@kernel.org>
+    module: delay kobject uevent until after module init call
+
+Qinglang Miao <miaoqinglang@huawei.com>
+    powerpc: sysdev: add missing iounmap() on error in mpic_msgr_probe()
+
+Jan Kara <jack@suse.cz>
+    quota: Don't overflow quota file offsets
+
+Miroslav Benes <mbenes@suse.cz>
+    module: set MODULE_STATE_GOING state when a module fails to load
+
+Dinghao Liu <dinghao.liu@zju.edu.cn>
+    rtc: sun6i: Fix memleak in sun6i_rtc_clk_init
+
+Takashi Iwai <tiwai@suse.de>
+    ALSA: seq: Use bool for snd_seq_queue internal flags
+
+Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+    media: gp8psk: initialize stats at power control logic
+
+Anant Thazhemadam <anant.thazhemadam@gmail.com>
+    misc: vmw_vmci: fix kernel info-leak by initializing dbells in vmci_ctx_get_chkpt_doorbells()
+
+Rustam Kovhaev <rkovhaev@gmail.com>
+    reiserfs: add check for an invalid ih_entry_count
+
+Johan Hovold <johan@kernel.org>
+    of: fix linker-section match-table corruption
+
+Petr Vorel <petr.vorel@gmail.com>
+    uapi: move constants from <linux/kernel.h> to <linux/const.h>
+
+Christophe Leroy <christophe.leroy@csgroup.eu>
+    powerpc/bitops: Fix possible undefined behaviour with fls() and fls64()
+
+Johan Hovold <johan@kernel.org>
+    USB: serial: digi_acceleport: fix write-wakeup deadlocks
+
+Stefan Haberland <sth@linux.ibm.com>
+    s390/dasd: fix hanging device offline processing
+
+Eric Auger <eric.auger@redhat.com>
+    vfio/pci: Move dummy_resources_list init in vfio_pci_probe()
+
+Johannes Weiner <hannes@cmpxchg.org>
+    mm: memcontrol: fix excessive complexity in memory.stat reporting
+
+Johannes Weiner <hannes@cmpxchg.org>
+    mm: memcontrol: implement lruvec stat functions on top of each other
+
+Johannes Weiner <hannes@cmpxchg.org>
+    mm: memcontrol: eliminate raw access to stat and event counters
+
+Johan Hovold <johan@kernel.org>
+    ALSA: usb-audio: fix sync-ep altsetting sanity check
+
+Alberto Aguirre <albaguirre@gmail.com>
+    ALSA: usb-audio: simplify set_sync_ep_implicit_fb_quirk
+
+Takashi Iwai <tiwai@suse.de>
+    ALSA: hda/ca0132 - Fix work handling in delayed HP detection
+
+Kevin Vigor <kvigor@gmail.com>
+    md/raid10: initialize r10_bio->read_slot before use.
+
+Jan Beulich <JBeulich@suse.com>
+    x86/entry/64: Add instruction suffix
+
+
+-------------
+
+Diffstat:
+
+ Makefile                                    |   4 +-
+ arch/powerpc/include/asm/bitops.h           |  23 +++-
+ arch/powerpc/sysdev/mpic_msgr.c             |   2 +-
+ arch/x86/entry/entry_64.S                   |   2 +-
+ drivers/iio/imu/bmi160/bmi160_core.c        |  13 ++-
+ drivers/iio/magnetometer/mag3110.c          |  13 ++-
+ drivers/md/dm-verity-target.c               |  12 +-
+ drivers/md/raid10.c                         |   3 +-
+ drivers/media/usb/dvb-usb/gp8psk.c          |   2 +-
+ drivers/misc/vmw_vmci/vmci_context.c        |   2 +-
+ drivers/net/wireless/marvell/mwifiex/join.c |   2 +
+ drivers/rtc/rtc-sun6i.c                     |   8 +-
+ drivers/s390/block/dasd_alias.c             |  10 +-
+ drivers/usb/serial/digi_acceleport.c        |  45 +++-----
+ drivers/vfio/pci/vfio_pci.c                 |   3 +-
+ fs/quota/quota_tree.c                       |   8 +-
+ fs/reiserfs/stree.c                         |   6 +
+ include/linux/kdev_t.h                      |  22 ++--
+ include/linux/memcontrol.h                  | 165 +++++++++++++++++-----------
+ include/linux/of.h                          |   1 +
+ include/uapi/linux/const.h                  |   5 +
+ include/uapi/linux/ethtool.h                |   2 +-
+ include/uapi/linux/kernel.h                 |   9 +-
+ include/uapi/linux/lightnvm.h               |   2 +-
+ include/uapi/linux/mroute6.h                |   2 +-
+ include/uapi/linux/netfilter/x_tables.h     |   2 +-
+ include/uapi/linux/netlink.h                |   2 +-
+ include/uapi/linux/sysctl.h                 |   2 +-
+ kernel/module.c                             |   6 +-
+ mm/memcontrol.c                             | 160 +++++++++++++--------------
+ sound/core/pcm_native.c                     |   9 +-
+ sound/core/seq/seq_queue.h                  |   8 +-
+ sound/pci/hda/patch_ca0132.c                |  16 ++-
+ sound/usb/pcm.c                             |  52 ++++-----
+ 34 files changed, 348 insertions(+), 275 deletions(-)
+
+
