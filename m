@@ -2,172 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C7A92ED6CA
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 19:40:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 649722ED6D0
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 19:41:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729104AbhAGSj7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 13:39:59 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38076 "EHLO mail.kernel.org"
+        id S1729008AbhAGSlH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 13:41:07 -0500
+Received: from mga07.intel.com ([134.134.136.100]:48703 "EHLO mga07.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728088AbhAGSj7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 13:39:59 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CE2A923403;
-        Thu,  7 Jan 2021 18:39:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610044758;
-        bh=6+kQE334J9SbW0yM3NlWxvaes7U9CBgIgTENrhIeApQ=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=WecSKvLqEpXuq1LKLnwc0qdwdS5RlfZwGoW594uX0owQE+g7C9vXHhXFs4y1p/NX1
-         C+NaaQCnKioFWCwoQVdYzzGT9m6K4KsmmLLAPGEK6KmU9I+8Cgw40IKAkAR30hOkPO
-         Kg9h/CngluYr8fUkR050c8cjEVhX1Cu/ZPQ1HAi277Pf7f79lQBCw7cjCX+Qb9pL5d
-         vdpqoJaz6ykdW7pHTQ9AgWTx6hY4TTl1rl8zbVJFl0EZVgzCXNf4Xriws+FCc41qbb
-         i9fXRtbfjUiacCvnH5MZfpTtBVF0OIP/kb4oryys3LqLmLcM5W7J+Y/L197JLWVuWA
-         NcLBrLictgEgQ==
-Received: by mail-ej1-f49.google.com with SMTP id d17so11042992ejy.9;
-        Thu, 07 Jan 2021 10:39:17 -0800 (PST)
-X-Gm-Message-State: AOAM530szlXwcUcxjc2zoT870G667EGRoaz6PSvP3pSk0B5j/Q+kAXBi
-        QVoKsRHNNUhfW8Ofr+E1OYY5SF98bddxgyXuEA==
-X-Google-Smtp-Source: ABdhPJw2T/nYP8wCSKP9LM1NhNkUO/a7gkRrME4qq0kUTYpXK6H/AVboPr3+a/BiQcPdXbZu9rLcKNTraNnwIHLWrz8=
-X-Received: by 2002:a17:906:d87:: with SMTP id m7mr128297eji.108.1610044756363;
- Thu, 07 Jan 2021 10:39:16 -0800 (PST)
+        id S1726386AbhAGSlG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Jan 2021 13:41:06 -0500
+IronPort-SDR: n59yNbGiWLtgfpxTZh7h8Ywl0d9XduvmDrUkpJGKrj8Scx51SVwc63F6pet9DP1FfO+jEFuv42
+ mvKI3VdZXyFg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9857"; a="241549667"
+X-IronPort-AV: E=Sophos;i="5.79,329,1602572400"; 
+   d="scan'208";a="241549667"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Jan 2021 10:40:23 -0800
+IronPort-SDR: oQqX8k3CPRWNgw8Z6NW7bkTAm+ui5+EdW7HL4igdck6cGlbtNMdcHQYlIGYjvHXkBdLMP3/Hmt
+ urv4J0HWsWlA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.79,329,1602572400"; 
+   d="scan'208";a="347085049"
+Received: from fmsmsx603.amr.corp.intel.com ([10.18.126.83])
+  by orsmga003.jf.intel.com with ESMTP; 07 Jan 2021 10:40:24 -0800
+Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
+ fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Thu, 7 Jan 2021 10:40:24 -0800
+Received: from fmsmsx602.amr.corp.intel.com (10.18.126.82) by
+ fmsmsx612.amr.corp.intel.com (10.18.126.92) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Thu, 7 Jan 2021 10:40:23 -0800
+Received: from FMSEDG603.ED.cps.intel.com (10.1.192.133) by
+ fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1713.5
+ via Frontend Transport; Thu, 7 Jan 2021 10:40:23 -0800
+Received: from NAM11-DM6-obe.outbound.protection.outlook.com (104.47.57.176)
+ by edgegateway.intel.com (192.55.55.68) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.1713.5; Thu, 7 Jan 2021 10:40:23 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=AGbDMPq/sLkBiTnucUzERyJul+foVUl71yhLtQ34TT2fJ6F23S748TEMk7tp/4hLDYjbibd7oQ6MnKKLAb/GNYmKjSgTYKueQaFBMynxyaFAnodrpev9HXEs/6+BMFfH//BvfzUNHjyo9vGRAYjIPhski5cARWlvf4gVAkT6lhiV9s17otsr6C6LQZtkXXKrHacun7Ce/FbnYTkqc/sgRJII17F1sfpKPHGfmOgkpgL3AyuyffxaysNVHRubHiQcILUw8Sj6bRl/+V7/wZijzDAYcSOuKJDqOpjLfeOAcXdnXW37YMAhSB4sAY+pRD9c0697TiVTcBpvYCrVQuKHHw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=oyKBf+UeMfeiONK1HOkMhQ5GORsgfckWTKGeAU3fUEc=;
+ b=E01fXg9RWVxC0pz1CA0K7ZdCOouceveOJCN+MihoQfdJpy69CMkhIQoipvMKfKjkIw1Ph7VWHQYeWQgai+QZJ8vpHcP+2Q3Y3Nm1b4BXE4gOH+K8tMAMfGO/pHWEVK8Yb+d74JRh04LGeG/Pl2AVCNAkW+/bahYmBKBTGP+oByOQuWj92KU+nSoGPMKId1GvPHDXVMI7D/eE1W60FCaRR+y+O5MgAAyEq94ic9v7KO2nVMZXbz4VsOt5ohe6XCA+bbqjf7+3pdun8jitVsnlJiLb/l7QqqZiMtj8cUY6c0Zynigaf+A4oQxnggQJQcNTUEvU/w7hC94IvJi8R+nQ8A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
+ s=selector2-intel-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=oyKBf+UeMfeiONK1HOkMhQ5GORsgfckWTKGeAU3fUEc=;
+ b=FZOwAs7k2EWJLpmryszdeKYITBkuFVTnS6hAA/cP00a3n+vFISBH6ex2zbAPW6JstTjSoaCOyupA3W/uGiaFBfLu97n0nGw1nRXWKd1CXFim84zhApnUhHe9bVz85G/JKuHTRJgAzrHWjnVUcAmbk9ZUHQ2UwETGR73Ei2celLA=
+Received: from PH0PR11MB4855.namprd11.prod.outlook.com (2603:10b6:510:41::12)
+ by PH0PR11MB4837.namprd11.prod.outlook.com (2603:10b6:510:41::7) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3742.6; Thu, 7 Jan
+ 2021 18:40:22 +0000
+Received: from PH0PR11MB4855.namprd11.prod.outlook.com
+ ([fe80::819:e14a:af80:d33]) by PH0PR11MB4855.namprd11.prod.outlook.com
+ ([fe80::819:e14a:af80:d33%6]) with mapi id 15.20.3721.024; Thu, 7 Jan 2021
+ 18:40:22 +0000
+From:   "Bae, Chang Seok" <chang.seok.bae@intel.com>
+To:     "Liu, Jing2" <jing2.liu@intel.com>
+CC:     "bp@suse.de" <bp@suse.de>, "luto@kernel.org" <luto@kernel.org>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "mingo@kernel.org" <mingo@kernel.org>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "Brown, Len" <len.brown@intel.com>,
+        "Hansen, Dave" <dave.hansen@intel.com>,
+        "Shankar, Ravi V" <ravi.v.shankar@intel.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>
+Subject: Re: [PATCH v3 10/21] x86/fpu/xstate: Update xstate save function to
+ support dynamic xstate
+Thread-Topic: [PATCH v3 10/21] x86/fpu/xstate: Update xstate save function to
+ support dynamic xstate
+Thread-Index: AQHW2UTrfabGiuGaq0+dx4jPc8ZDRKob7zCAgACnYAA=
+Date:   Thu, 7 Jan 2021 18:40:21 +0000
+Message-ID: <29CB32F5-1E73-46D4-BF92-18AD05F53E8E@intel.com>
+References: <20201223155717.19556-1-chang.seok.bae@intel.com>
+ <20201223155717.19556-11-chang.seok.bae@intel.com>
+ <BYAPR11MB3256BBBB24F9131D99CF7EF5A9AF0@BYAPR11MB3256.namprd11.prod.outlook.com>
+In-Reply-To: <BYAPR11MB3256BBBB24F9131D99CF7EF5A9AF0@BYAPR11MB3256.namprd11.prod.outlook.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-mailer: Apple Mail (2.3608.120.23.2.4)
+authentication-results: intel.com; dkim=none (message not signed)
+ header.d=none;intel.com; dmarc=none action=none header.from=intel.com;
+x-originating-ip: [112.148.21.62]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 0cb335b7-d15b-43e6-baaa-08d8b33bb099
+x-ms-traffictypediagnostic: PH0PR11MB4837:
+x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <PH0PR11MB48379ECE972354A650DAEB52D8AF0@PH0PR11MB4837.namprd11.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:10000;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: gO3eN/DI017nQbOcHaiz7+36sVH/CVD4eKaqJHJQdQYwR1Fg0Ram6JJRkqiK+Az3niGJHovoSXIjNPvnl8dOu0tdUj7Ncnq3kmN/RaM41yfc1QjrHgxRfzoG1LGVSKc6NMZTAQhOa+g4sPjpE5eVuvipaIzq6TNMX3F0RDeY3LQ2ZIpHslpvVPDh49pNe2jCjdGTtGc86NW0gHitZmsK5kgbCrNPWVOTM+PweCog0zJ0qH6D/Mo91I0rJ+IXoEqgcA1PLLwirdtygqiNwYoF3fjF76isNHH/SfhMyVMQp9ofEXygAw3gVavsAg/Ci/cz7B0YRHmURcga6tz0sP7Gy5ZzZSk7113oKL4vOfi/lCDdAYxJbQ2k+OFaVfiLlX3+K4Sd9TTAUn0vCpNwh6PMg8pEqWrFyBk2PVZcIqrV9tdRD3lyqJg76pgGSMS9cevR
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR11MB4855.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(346002)(39860400002)(136003)(396003)(366004)(8936002)(91956017)(66946007)(76116006)(26005)(2616005)(6636002)(64756008)(2906002)(71200400001)(66556008)(54906003)(66476007)(37006003)(6486002)(6512007)(6862004)(66446008)(316002)(36756003)(53546011)(478600001)(86362001)(6506007)(8676002)(5660300002)(4326008)(33656002)(186003)(45980500001);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: =?us-ascii?Q?nP20rzqrTG0cGq8P8MzGmdMQ2eG5iuslJpiRhgMr9/+QBGa3KpvnrUGHDBuT?=
+ =?us-ascii?Q?wxjP2urtEbbAR699uSXiLUxSYF5pXCAWKYZh4eQthxJXsA5/iXscy7B+e8Vi?=
+ =?us-ascii?Q?SY237ahK1qxmI7am6j/5nEAKBvSWYDeSXtRwifAW17GzX/3Dj8PZuaxHdS/h?=
+ =?us-ascii?Q?3MsvTnFbDqDtuInhKVUYU0WpC4S18C/Nqt8/7Tw0gYfAH0mZ28CEIl6Nr/rS?=
+ =?us-ascii?Q?zfd5Y+6P83khHL4SlYzgD9vWFjNaL/m7L9OoMXqLCd+H8taEDQsKw7OF/XSC?=
+ =?us-ascii?Q?nN1yd4kP6LZLYN2k7N4BEN7hG1aePG2SAyW51Afxs6PL7ZJo1O/trPfznSZm?=
+ =?us-ascii?Q?jaB8LNMrtJz9F7TZbR2aAImzyjVLtbwfMmCi8UQwLxFSKNKhyyjZEHId2KnJ?=
+ =?us-ascii?Q?Wmx1asff1ClDIOg63So45PLgfJw7NKUvafniJTzn5djJnUQ2y7IgA0INf0Wh?=
+ =?us-ascii?Q?SO+o7fPj4g82qNMA7zI14bNLbB91NWz2f8dwFtKO8m6kw4QWp5zdwokQnqrg?=
+ =?us-ascii?Q?d5JdWPe3CljjSmjW3OwC6WBQPS3BAxLphagB5250x4c17zr4iDbZszaCCRwA?=
+ =?us-ascii?Q?smUSsWUAgMJktSJnKUPkS93ysqqxM0M7JY7yCMej42YSKf4v74eKw1Q3Yzez?=
+ =?us-ascii?Q?HG+iuaU9n8F6UtEgYiFaSL6kIWA2EMF+lFex8xRdOyDok9HDVvGps0mzYfOa?=
+ =?us-ascii?Q?jOaW01GrTd8/a/E2KRiaJkqH+dSpwvnj4eCDnj+NqOFIkN+fgilfCLfF/IFC?=
+ =?us-ascii?Q?JJA+SNVtCyCcwyehEZRWk3raKJEXkNxxAKz+kLMcNDgUwmlpg6OgWKeCgq5B?=
+ =?us-ascii?Q?OxNpjW6p81sVSvxd2tRf/wVKUy+IQukQ4Pv3oue2CVjn9nTjjz+y6FoqjmwC?=
+ =?us-ascii?Q?3egwANJFFBihZaNR9xvF9LQFp/wRkHiNLJ5BB96Cq3ZHmPlIfiI9o9UtoU9e?=
+ =?us-ascii?Q?GjFIjpmDO0tcQIO2ZddrVtdUVCYxDPDGe/YHhezI5V4YKjkyUoJt2WEhTa1J?=
+ =?us-ascii?Q?+gDN?=
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <15331A1012BFA14AA45075BB840735D2@namprd11.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-References: <20201218210750.3455872-1-saravanak@google.com>
- <2a6dbcc83d5aca7a3340e0cf4d751cdc@kernel.org> <20201231211240.GA2333246@robh.at.kernel.org>
- <877dovlgdl.wl-maz@kernel.org> <CAGETcx9WJdYkQcwJLTF4j9jR4kyrDpXG8ZMuCecK2Hv-HXFgBg@mail.gmail.com>
-In-Reply-To: <CAGETcx9WJdYkQcwJLTF4j9jR4kyrDpXG8ZMuCecK2Hv-HXFgBg@mail.gmail.com>
-From:   Rob Herring <robh@kernel.org>
-Date:   Thu, 7 Jan 2021 11:39:04 -0700
-X-Gmail-Original-Message-ID: <CAL_Jsq+0DdS+F_NZEyP2ajG5g6a_Q543Yp5ReWXGp8qA+25F=g@mail.gmail.com>
-Message-ID: <CAL_Jsq+0DdS+F_NZEyP2ajG5g6a_Q543Yp5ReWXGp8qA+25F=g@mail.gmail.com>
-Subject: Re: [PATCH] of: property: Add device link support for interrupts
-To:     Saravana Kannan <saravanak@google.com>
-Cc:     Marc Zyngier <maz@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Kevin Hilman <khilman@baylibre.com>,
-        Android Kernel Team <kernel-team@android.com>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR11MB4855.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 0cb335b7-d15b-43e6-baaa-08d8b33bb099
+X-MS-Exchange-CrossTenant-originalarrivaltime: 07 Jan 2021 18:40:21.8559
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: /arqb4WkgxGKaPKHo0zvuYKt5RLLt/ZBZ/gVkZnpiBVoKc5dIZ/Ml/8yaM0WOdy6EEEDqwd00a06rit/APezk/oFONng5ecW1zXlkO4rVPE=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR11MB4837
+X-OriginatorOrg: intel.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 6, 2021 at 11:53 AM Saravana Kannan <saravanak@google.com> wrote:
->
-> On Sat, Jan 2, 2021 at 3:37 AM Marc Zyngier <maz@kernel.org> wrote:
-> >
-> > On Thu, 31 Dec 2020 21:12:40 +0000,
-> > Rob Herring <robh@kernel.org> wrote:
-> > >
-> > > On Mon, Dec 21, 2020 at 09:30:45AM +0000, Marc Zyngier wrote:
-> > > > On 2020-12-18 21:07, Saravana Kannan wrote:
-> > > > > Add support for creating device links out of interrupts property.
-> > > > >
-> > > > > Cc: Marc Zyngier <maz@kernel.org>
-> > > > > Cc: Kevin Hilman <khilman@baylibre.com>
-> > > > > Signed-off-by: Saravana Kannan <saravanak@google.com>
-> > > > > ---
-> > > > > Rob/Greg,
-> > > > >
-> > > > > This might need to go into driver-core to avoid conflict
-> > > > > due to fw_devlink refactor series that merged there.
-> > > > >
-> > > > > Thanks,
-> > > > > Saravana
-> > > > >
-> > > > >
-> > > > >  drivers/of/property.c | 17 +++++++++++++++++
-> > > > >  1 file changed, 17 insertions(+)
-> > > > >
-> > > > > diff --git a/drivers/of/property.c b/drivers/of/property.c
-> > > > > index 5f9eed79a8aa..e56a5eae0a0b 100644
-> > > > > --- a/drivers/of/property.c
-> > > > > +++ b/drivers/of/property.c
-> > > > > @@ -1271,6 +1271,22 @@ static struct device_node
-> > > > > *parse_iommu_maps(struct device_node *np,
-> > > > >   return of_parse_phandle(np, prop_name, (index * 4) + 1);
-> > > > >  }
-> > > > >
-> > > > > +static struct device_node *parse_interrupts(struct device_node *np,
-> > > > > +                                     const char *prop_name, int index)
-> > > > > +{
-> > > > > + struct device_node *sup;
-> > > > > +
-> > > > > + if (strcmp(prop_name, "interrupts") || index)
-> > > > > +         return NULL;
-> > > > > +
-> > > > > + of_node_get(np);
-> > > > > + while (np && !(sup = of_parse_phandle(np, "interrupt-parent", 0)))
-> > > > > +         np = of_get_next_parent(np);
-> > > > > + of_node_put(np);
-> > > > > +
-> > > > > + return sup;
-> > > > > +}
-> > > > > +
-> > > > >  static const struct supplier_bindings of_supplier_bindings[] = {
-> > > > >   { .parse_prop = parse_clocks, },
-> > > > >   { .parse_prop = parse_interconnects, },
-> > > > > @@ -1296,6 +1312,7 @@ static const struct supplier_bindings
-> > > > > of_supplier_bindings[] = {
-> > > > >   { .parse_prop = parse_pinctrl6, },
-> > > > >   { .parse_prop = parse_pinctrl7, },
-> > > > >   { .parse_prop = parse_pinctrl8, },
-> > > > > + { .parse_prop = parse_interrupts, },
-> > > > >   { .parse_prop = parse_regulators, },
-> > > > >   { .parse_prop = parse_gpio, },
-> > > > >   { .parse_prop = parse_gpios, },
-> > > >
-> > > > You don't really describe what this is for so I'm only guessing
-> > > > from the context. If you want to follow the interrupt hierarchy,
-> > > > "interrupt-parent" isn't enough. You also need to track
-> > > > things like interrupt-map, or anything that carries a phandle
-> > > > to an interrupt controller.
-> > >
-> > > We don't need to follow the hierarchy, we just need the immediate
-> > > dependencies.
-> >
-> > Indeed. I also wonder why this isn't just a irq_find_parent() call, TBH.
->
-> Thanks Rob for explaining it.
->
-> Marc, I wasn't sure if Rob would be okay with including of_irq.h here.
-> Also, I'm trying to keep of/property.c independent of the framework
-> code for now. The long term goal is to see if I can move out most of
-> this into the frameworks. But I want to do that after I sort of some
-> of the larger problems (like getting fw_devlink=on to work on all
-> devices  first). Let me know if you have a strong preference for right
-> now, if not, I'd rather keep property.c independent for now.
->
-> I wasn't aware of interrupt-map until a few weeks ago and didn't know
-> it carried phandles. I can add support for that too. There's no reason
-> for all of them to go in one patch though.
->
-> >
-> > > But you are right that 'interrupt-map' also needs to be tracked.
-> >
-> > And 'interrupts-extended', while we're at it.
->
-> This is already handled.
->
-> > >
-> > > I also noticed that we define 'interrupt-parent' as a dependency to
-> > > parse, but that's wrong. The dependency is where 'interrupts' appears
-> > > and where 'interrupt-parent' appears is irrelevant.
->
-> No, the interrupt-parent parsing is correct and it's needed for
-> interrupt controllers to probe in the right order. But
-> interrupt-parent is also needs to be looked at for parsing
-> "interrupts".
 
-If you parse 'interrupts' for interrupt controllers (which in turn
-will use 'interrupt-parent'), then you aren't going to need to track
-'interrupt-parent' by itself.
+> On Jan 7, 2021, at 17:41, Liu, Jing2 <jing2.liu@intel.com> wrote:
+>=20
+> static void kvm_save_current_fpu(struct fpu *fpu)  {
+> +	struct fpu *src_fpu =3D &current->thread.fpu;
+> +
+> 	/*
+> 	 * If the target FPU state is not resident in the CPU registers, just
+> 	 * memcpy() from current, else save CPU state directly to the target.
+> 	 */
+> -	if (test_thread_flag(TIF_NEED_FPU_LOAD))
+> -		memcpy(&fpu->state, &current->thread.fpu.state,
+> +	if (test_thread_flag(TIF_NEED_FPU_LOAD)) {
+> +		memcpy(&fpu->state, &src_fpu->state,
+> 		       fpu_kernel_xstate_min_size);
+> For kvm, if we assume that it does not support dynamic features until thi=
+s series,
+> memcpy for only fpu->state is correct.=20
+> I think this kind of assumption is reasonable and we only make original x=
+state work.
+>=20
+> -	else
+> +	} else {
+> +		if (fpu->state_mask !=3D src_fpu->state_mask)
+> +			fpu->state_mask =3D src_fpu->state_mask;
+>=20
+> Though dynamic feature is not supported in kvm now, this function still n=
+eed
+> consider more things for fpu->state_mask.
 
-To look at it another way, 'interrupt-parent' can appear in any
-ancestor node. Which node the dts author arbitrarily decided to put it
-in does not matter at all. It could be at the DT root or duplicated in
-every single node with 'interrupts'. Those are logically the same. The
-node(s) with the dependency are the ones with 'interrupts'.
+Can you elaborate this? Which path might be affected by fpu->state_mask
+without dynamic state supported in KVM?
 
-Rob
+> I suggest that we can set it before if...else (for both cases) and not ch=
+ange other.=20
+
+I tried a minimum change here.  The fpu->state_mask value does not impact t=
+he
+memcpy(). So, why do we need to change it for both?
+
+Thanks,
+Chang=
