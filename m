@@ -2,84 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E2142ED4F0
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 18:03:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 67A222ED4F4
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 18:03:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728814AbhAGRCZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 12:02:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51932 "EHLO
+        id S1728868AbhAGRCg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 12:02:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51964 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726436AbhAGRCY (ORCPT
+        with ESMTP id S1726650AbhAGRCf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 12:02:24 -0500
-Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21706C0612F8;
-        Thu,  7 Jan 2021 09:01:44 -0800 (PST)
-Received: by mail-ed1-x530.google.com with SMTP id b2so8460264edm.3;
-        Thu, 07 Jan 2021 09:01:44 -0800 (PST)
+        Thu, 7 Jan 2021 12:02:35 -0500
+Received: from mail-il1-x12c.google.com (mail-il1-x12c.google.com [IPv6:2607:f8b0:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 791B2C0612F4
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Jan 2021 09:01:55 -0800 (PST)
+Received: by mail-il1-x12c.google.com with SMTP id q5so7347626ilc.10
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Jan 2021 09:01:55 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=e6QzQXBlWfecJhgtXdVXCWBkESw5K/fN23w2JVJbfkQ=;
-        b=I/I8LHm/F9D2H9UNGPQ/ArnEaifDJkI5QyPBuyZo9G1t2BdinCsFbQBvRYaamRRMii
-         ayz7yIPZzgUgp0fOdcWtBC73Si8E4ky3c1dytTvzziyxJnIG0Vw2DRK0XRgN3mf9tVqf
-         6wc8L/QiQeHBeOeEB+wsQdIXGLrOkTHu6lFwXqpnol3WLckROsFaMc9jMDYFW32T1qiU
-         LD2OS0vs7HYIQCszVqhbnOHW35HR3fdAqcUoXXNU+X3pP0yfH4atVGje2cU++PSsQWY4
-         CdOA9+DzAJlN+j8rs/oEVQ4wezZjrNYsXTOpPVExhyqcMJLMlxd9wDZF10S4dUxf+KcB
-         FA5Q==
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=f+81RYRNBA62lGdxvvVO1ABwQxMAX350SDDdSp74ysw=;
+        b=Gs0GS5jXgp2dANbswPSL+jJaT0PEBZTt1y/TdD72Ln5yGm781e1FosZnaoVXWDJzhA
+         N6YB0hzwQk6Iz0SJI5wjVqTd3WUNjj3/dEDtl/Pz07dWgMxi7EIVMrkpGUafVXpieJJT
+         7kJmsvLXBo3LKImsNr/dFvsDefDSLG1H/Koys9RbnUJPZ+J98l4itoiSb3Q7mNeuWVbA
+         Y9aKEMWhWcmqKjN1wXuRFgwik7091GQi2H+he0nL0e753l6J6HwM5zTvEO9kdeYZ3ADQ
+         H20USU20W6lB4tBF8nr490z0gD1AFY9kP4uUTYEcW9VqCmZJLBf3ZEG9RPNxiIUMUQel
+         jlvg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=e6QzQXBlWfecJhgtXdVXCWBkESw5K/fN23w2JVJbfkQ=;
-        b=aiC5EVv4hoSxLeX/sBtHeBajySio0IojIFcr3cOEuBOiLuDC5Lmpq8hrUydOwzPQe2
-         NY9T43i1wOcyc2i2CylkTj20sRSUcBFtTeEqkjBrBh+661KHpLvpCxEmvCr3s2L0xjZu
-         PHWtnOkDZxDQDZ49dc+a1bLUWjihgDDrjH+0lPb/26+L7SDd+mbJqjSC0PsrmyNzly8+
-         NUGmDNzcJjdq1HYu/LcEpGTAmEGNJPgOsRMlDHeUujnKbXdodgj3vMwfYEEKNXiBOQMU
-         4osijlgA46dkfQjYolMotMSeIjrlpZp5CAYxMzKIQZpjKYzzgYZBLDIaQ4Knktjs167k
-         KjWg==
-X-Gm-Message-State: AOAM533AkLgZifPk+J/0B5oOCVRWihe9T7Cf42Rnm7TM/iWWW4m5Ea2B
-        HZc9iWoFqu8u1d3x/WNIMvyM66Kw5lMFZrNRqAI=
-X-Google-Smtp-Source: ABdhPJwuAC5wMYKkyhGUW9GlV/rS6710r8LDpwxU8ycrOTK0Jkk98gHnOuZ2G3Tvv7ARvij9uNvc+yrTjpu5j3VfbH8=
-X-Received: by 2002:aa7:ce94:: with SMTP id y20mr2305433edv.361.1610038902892;
- Thu, 07 Jan 2021 09:01:42 -0800 (PST)
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=f+81RYRNBA62lGdxvvVO1ABwQxMAX350SDDdSp74ysw=;
+        b=jS8YF03HJGdtlDezb/JdnVA8fqQB3HhVz1z/f0i7sgJC3Qf9nUyOC87c+gIIVxVMgs
+         z4FS0mFM5OOAxevVvOxZIwathPbP04JkMfYhInAnXuL7ZYfz8JyeueZOGOUAcW9qdi/Y
+         PtVHXHztcjuS1uB4CVH66Q6osMD4E1W4QJ66H2nE0XuFTl4/2KqpXw1RsnldRRD1PZTi
+         9IcAgH66gofib9N9k5SKJrmnvOIAQdi5ntJb800NI8vNiaSYkcN/mmzaxQEFQ1a5jP1l
+         PzRB9jQsXcoLh+fDuMIbKd/jljP7FvxWZ/RugmtuZXXmnCL+pC/3tLCj21gHS2OuxCzp
+         Qaag==
+X-Gm-Message-State: AOAM5308v6cx4r4VBprIRquhlhMTbq+3I5B7Vy2eC7ssdqlxnxJ+C+JE
+        0k4O/Msixjh0VC5cBHVHeTSrKXNLJvz1Fa0a1jg=
+X-Google-Smtp-Source: ABdhPJyLddBz6tNZgn6YVxNU+hS4SzqJ49LyXHUtDrQebk4rWnZ2q09EZz4hRVYDhhYcaZIQ6jGG4eO6pVbXTMhlm7Q=
+X-Received: by 2002:a92:444e:: with SMTP id a14mr9814210ilm.129.1610038914977;
+ Thu, 07 Jan 2021 09:01:54 -0800 (PST)
 MIME-Version: 1.0
-References: <20210107123916.189748-1-colin.king@canonical.com>
-In-Reply-To: <20210107123916.189748-1-colin.king@canonical.com>
-From:   Sunil Kovvuri <sunil.kovvuri@gmail.com>
-Date:   Thu, 7 Jan 2021 22:31:30 +0530
-Message-ID: <CA+sq2CcPRuQijfOFA74KrNF9E5tj-QqH_0nNC21fT=rqkuuCcw@mail.gmail.com>
-Subject: Re: [PATCH] octeontx2-af: fix memory leak of lmac and lmac->name
-To:     Colin King <colin.king@canonical.com>
-Cc:     Sunil Goutham <sgoutham@marvell.com>,
-        Linu Cherian <lcherian@marvell.com>,
-        Geetha sowjanya <gakula@marvell.com>,
-        Jerin Jacob <jerinj@marvell.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Nithya Mani <nmani@marvell.com>,
-        Linux Netdev List <netdev@vger.kernel.org>,
-        kernel-janitors@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>
+Received: by 2002:ac0:f349:0:0:0:0:0 with HTTP; Thu, 7 Jan 2021 09:01:54 -0800 (PST)
+Reply-To: angeladrchantal@gmail.com
+From:   MRS Chantal Angela <clinton89828904@gmail.com>
+Date:   Thu, 7 Jan 2021 17:01:54 +0000
+Message-ID: <CAB6-Wk+DSBMtFwDb7OJ4T=wEfSnyd5JWwgB0ZXTESitoS2Swhg@mail.gmail.com>
+Subject: Urgent Mail
+To:     undisclosed-recipients:;
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 7, 2021 at 6:11 PM Colin King <colin.king@canonical.com> wrote:
->
-> From: Colin Ian King <colin.king@canonical.com>
->
-> Currently the error return paths don't kfree lmac and lmac->name
-> leading to some memory leaks.  Fix this by adding two error return
-> paths that kfree these objects
->
-> Addresses-Coverity: ("Resource leak")
-> Fixes: 1463f382f58d ("octeontx2-af: Add support for CGX link management")
-> Signed-off-by: Colin Ian King <colin.king@canonical.com>
-> ---
+Dear Beneficiary
 
-Thanks for the fix, looks good to me.
+I am Mrs. Chantal. I am sending this brief letter to solicit your
+partnership to transfer a sum of 15.9 Million Dollars into your
+reliable account as my business partner. However, it's my urgent need
 
-Sunil.
+for foreign partner that made me to contact you for this
+transaction.Further details of the transfer will be forwarded to you
+if you are
+
+ready to assist me. This is my private email address
+
+(angeladrchantal@gmail.com) please We need your urgent response
+
+Best Regards.
+
+MRS Chantal Angela Rowland
