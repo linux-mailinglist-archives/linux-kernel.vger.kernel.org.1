@@ -2,115 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B7F3B2EE65B
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 20:48:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D4762EE65D
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 20:48:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729190AbhAGTqx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 14:46:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49404 "EHLO
+        id S1729312AbhAGTrd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 14:47:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49552 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725835AbhAGTqw (ORCPT
+        with ESMTP id S1729210AbhAGTrc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 14:46:52 -0500
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 775CFC0612F4;
-        Thu,  7 Jan 2021 11:45:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=0VYbVRFaEHfXgTed8Qk8VILkIca2duBnZVrPZ6rhtgY=; b=QcfTC1dmOQtFnIDeaPka2FPCp
-        QeuOZZSsD29kSsTaEalm46h5tQbLAz8TnRTlMkD3C4iG58QGzV+i1n1rzuzOkKdjttuPmXU5uL05t
-        T6cyQnpuZ9AjDtnQV7qo7z9SlXYw5M47S1fB2zx3Daayb6TH9IDpj2bXssRrTOrRi57uX3LxId2tI
-        0QuzPMnUlmDO1Ia+LsKRaeObSg7X5SZqrbMFN0XOjXFYNGlsbZpsJpDn/lSdQv61vV3/zo3vPf8vY
-        ioXisI7rRBM62yKuNmjRlgfa3ObyihflutpmYC3U3VyFRmGOSIpdQg6PSSdTREnkDh/q9TmyQsW+M
-        VCn6yYheA==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:45238)
-        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1kxbEE-0003An-Vn; Thu, 07 Jan 2021 19:45:51 +0000
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1kxbED-0001QM-EM; Thu, 07 Jan 2021 19:45:49 +0000
-Date:   Thu, 7 Jan 2021 19:45:49 +0000
-From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
-To:     Andrew Lunn <andrew@lunn.ch>
-Cc:     Pali =?iso-8859-1?Q?Roh=E1r?= <pali@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Thomas Schreiber <tschreibe@gmail.com>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Marek =?iso-8859-1?Q?Beh=FAn?= <kabel@kernel.org>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 1/3] net: sfp: add workaround for Realtek RTL8672 and
- RTL9601C chips
-Message-ID: <20210107194549.GR1551@shell.armlinux.org.uk>
-References: <20201230154755.14746-1-pali@kernel.org>
- <20210106153749.6748-1-pali@kernel.org>
- <20210106153749.6748-2-pali@kernel.org>
- <X/dCm1fK9jcjs4XT@lunn.ch>
+        Thu, 7 Jan 2021 14:47:32 -0500
+Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF7CCC0612F5;
+        Thu,  7 Jan 2021 11:46:51 -0800 (PST)
+Received: by mail-pf1-x42e.google.com with SMTP id c12so4497988pfo.10;
+        Thu, 07 Jan 2021 11:46:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=FNyC6Er0Vf4MXtGvepy8MWknjFic90Vra4nSpDA+ySM=;
+        b=cYlKdSRxDfqNct6chKWDD4JxtLM74AW1ToY48zAt16UVfHQf73dIX1f3+2U6YFXRXX
+         90v6CbqliO9389WSX9lUHcA6y3T015uMf7IantNUUtiDAxFuTYWahyxrbsGhTueJ8oKF
+         xLFU9VvXSe37zYL0+KG2kit+H3Co/+nGaso/C3Bf06LPrWE4vTQW2JALqisi5uVKBrqN
+         odCNycPhtaUloXE6b7oTMd/g4M0RiFnhbVw8BCzxA7RHjVEWBwootQIagxXu8Bp3ince
+         INCUofq/f0oewqv/kPcb7wB83Qi22GH0FNBJ1/wM9IUwJVq5vSKPAlAKOVaa71FVPNVQ
+         nolw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=FNyC6Er0Vf4MXtGvepy8MWknjFic90Vra4nSpDA+ySM=;
+        b=d0xNkEuBjUNP5RV7zq5a16f5qnxmTArqAHqZBS85aN2i/Qx26k9tC9BLb2fplh6lBh
+         8Zm86H8l2NBtXB1TDVhut8CvJaO1PqYUTXFsEeN1iRe4Ocwforc2sWhuw95t330+Sf3z
+         ZmPmP4lh1oVGZxUhgFaS3DG32I6QaRAosjbkhlMMYFkC+cGVZkjgJ09ySFKmx3dM12oe
+         J4Zi7ADVhlLcAKmNj3oJ3i0arug83xrKc0Nl1pR4N62IKAKw3oF627bcgCqvME99w+7d
+         WOxRXbkeWGCoS+L9QGBDNbQhrUQuA9DIlcTJ1Z0WR6yBtiuaCLiXi6CVhC5eloisxMne
+         gWOQ==
+X-Gm-Message-State: AOAM532zQ5Qqsj2Ce8cimRHrq1dwno0Lllonm1JdwSMXbHatzlgnr+Of
+        5UUmFc6KO0k/OxTglQPJI9o=
+X-Google-Smtp-Source: ABdhPJxb1V7TISf3W0nWDSfzyUGQWMB3x3UDgN92bCoR9Furw8Vxe9ggYQvwGbQ/DmpnQ6ykodB4ag==
+X-Received: by 2002:a65:6659:: with SMTP id z25mr3434957pgv.427.1610048811180;
+        Thu, 07 Jan 2021 11:46:51 -0800 (PST)
+Received: from google.com ([2620:15c:202:201:a6ae:11ff:fe11:fcc3])
+        by smtp.gmail.com with ESMTPSA id s21sm6888579pga.12.2021.01.07.11.46.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 07 Jan 2021 11:46:50 -0800 (PST)
+Date:   Thu, 7 Jan 2021 11:46:48 -0800
+From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
+To:     Doug Anderson <dianders@chromium.org>
+Cc:     Stephen Boyd <swboyd@chromium.org>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        Benson Leung <bleung@chromium.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "open list:HID CORE LAYER" <linux-input@vger.kernel.org>,
+        Guenter Roeck <groeck@chromium.org>
+Subject: Re: [PATCH] Input: cros_ec_keyb: Add support for a front proximity
+ switch
+Message-ID: <X/dlKKeAHU/Ab+VD@google.com>
+References: <20201205004709.3126266-1-swboyd@chromium.org>
+ <CAD=FV=XjzBLTPMqOf1NK0pjXiZWrLT227nksxhMqaFG6GxAqjQ@mail.gmail.com>
+ <X/ZwRqJFJ9BY4Z3z@google.com>
+ <CAD=FV=VmNQDSZFT3vaJ64DYyGqoE39uig581ZmaX0s-Y1U_CTw@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <X/dCm1fK9jcjs4XT@lunn.ch>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Sender: Russell King - ARM Linux admin <linux@armlinux.org.uk>
+In-Reply-To: <CAD=FV=VmNQDSZFT3vaJ64DYyGqoE39uig581ZmaX0s-Y1U_CTw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 07, 2021 at 06:19:23PM +0100, Andrew Lunn wrote:
-> > -static int sfp_quirk_i2c_block_size(const struct sfp_eeprom_base *base)
-> > +static bool sfp_id_needs_byte_io(struct sfp *sfp, void *buf, size_t len)
-> >  {
-> > -	if (!memcmp(base->vendor_name, "VSOL            ", 16))
-> > -		return 1;
-> > -	if (!memcmp(base->vendor_name, "OEM             ", 16) &&
-> > -	    !memcmp(base->vendor_pn,   "V2801F          ", 16))
-> > -		return 1;
-> > +	size_t i, block_size = sfp->i2c_block_size;
-> >  
-> > -	/* Some modules can't cope with long reads */
-> > -	return 16;
-> > -}
-> > +	/* Already using byte IO */
-> > +	if (block_size == 1)
-> > +		return false;
+On Thu, Jan 07, 2021 at 06:57:10AM -0800, Doug Anderson wrote:
+> Hi,
 > 
-> This seems counter intuitive. We don't need byte IO because we are
-> doing btye IO? Can we return True here?
-
-It is counter-intuitive, but as this is indicating whether we need to
-switch to byte IO, if we're already doing byte IO, then we don't need
-to switch.
-
-> > -static void sfp_quirks_base(struct sfp *sfp, const struct sfp_eeprom_base *base)
-> > -{
-> > -	sfp->i2c_block_size = sfp_quirk_i2c_block_size(base);
-> > +	for (i = 1; i < len; i += block_size) {
-> > +		if (memchr_inv(buf + i, '\0', block_size - 1))
-> > +			return false;
-> > +	}
+> On Wed, Jan 6, 2021 at 6:22 PM Dmitry Torokhov
+> <dmitry.torokhov@gmail.com> wrote:
+> >
+> > Hi Doug, Stephen,
+> >
+> > On Wed, Jan 06, 2021 at 05:16:10PM -0800, Doug Anderson wrote:
+> > > Hi,
+> > >
+> > > On Fri, Dec 4, 2020 at 4:48 PM Stephen Boyd <swboyd@chromium.org> wrote:
+> > > >
+> > > > Some cros ECs support a front proximity MKBP event via
+> > > > 'EC_MKBP_FRONT_PROXIMITY'. Map this to the 'SW_FRONT_PROXIMITY' input
+> > > > event code so it can be reported up to userspace.
+> > > >
+> > > > Cc: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+> > > > Cc: Benson Leung <bleung@chromium.org>
+> > > > Cc: Guenter Roeck <groeck@chromium.org>
+> > > > Signed-off-by: Stephen Boyd <swboyd@chromium.org>
+> > > > ---
+> > > >  drivers/input/keyboard/cros_ec_keyb.c          | 5 +++++
+> > > >  include/linux/platform_data/cros_ec_commands.h | 1 +
+> > > >  2 files changed, 6 insertions(+)
+> > >
+> > > This seems really straightforward.
+> > >
+> > > Reviewed-by: Douglas Anderson <dianders@chromium.org>
+> > >
+> > > Given that it touches a header file owned by the Chrome OS maintainers
+> > > and a driver owned by input, how should it land?  One maintainer Acks
+> > > and the other lands?
+> >
+> > Sorry about missing this one, however the "front proximity" switch has
+> > been introduced for the benefit of phone devices, to be emitted when a
+> > device is raised to user's ear, and I do not think we should be using
+> > this here.
+> >
+> > We have just recently had similar discussion with regard to palm- and
+> > lap-mode sensors and whether they should be reported over input or IIO
+> > as true proximity sensors:
+> >
+> > https://lore.kernel.org/linux-iio/9f9b0ff6-3bf1-63c4-eb36-901cecd7c4d9@redhat.com/
+> >
+> > Based on what we are doing for other Chrome OS devices that expose
+> > proximity sensors (for example trogdor) we have decided that we all
+> > should be using IIO as it will allow not only on/off, but true proximity
+> > reporting with potential of implementing smarter policies by userspace.
+> >
+> > Because of that we should do the same here and export this as IIO
+> > proximity sensor as well.
 > 
-> Is the loop needed?
+> For devices with a true proximity sensor that's exactly what we're
+> doing.  I've only been involved in the periphery of the discussion,
+> but as I understand it there are some models of laptop for which we
+> don't have a true proximity sensor.  On these devices, the EC is in
+> charge of deciding about proximity based on a number of factors.
 
-I think you're not reading the code very well. It checks for bytes at
-offset 1..blocksize-1, blocksize+1..2*blocksize-1, etc are zero. It
-does _not_ check that byte 0 or the byte at N*blocksize is zero - these
-bytes are skipped. In other words, the first byte of each transfer can
-be any value. The other bytes of the _entire_ ID must be zero.
+Yes, I understand that on some devices the proximity sensors are not
+true sensors but rather on/off signals, potentially derived from a
+multitude of sources. However there is still a benefit in exposing them
+as IIO proximity devices with limited reporting representing
+[near, infinity] range/values. This will mean that userspace needs to
+monitor only one set of devices (IIO) instead of both IIO and input, and
+will not require constantly expanding EV_SW set to account for
+ever-growing number of proximity sensors (lap, palm, general presence,
+etc).
 
-> I also wonder if on the last iteration of the loop you go passed the
-> end of buf? Don't you need a min(block_size -1, len - i) or
-> similar?
-
-The ID is 64 bytes long, and is fixed. block_size could be a non-power
-of two, but that is highly unlikely. block_size will never be larger
-than 16 either.
+Thanks.
 
 -- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
+Dmitry
