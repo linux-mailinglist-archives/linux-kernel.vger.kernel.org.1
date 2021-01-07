@@ -2,39 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 512F32ED209
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 15:25:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 414712ED20B
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 15:25:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728674AbhAGOXk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 09:23:40 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42996 "EHLO mail.kernel.org"
+        id S1729053AbhAGOXm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 09:23:42 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43012 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725894AbhAGOXj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 09:23:39 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EB78723340;
-        Thu,  7 Jan 2021 14:22:50 +0000 (UTC)
+        id S1725894AbhAGOXl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Jan 2021 09:23:41 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 028F223355;
+        Thu,  7 Jan 2021 14:22:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610029372;
-        bh=QwOHtluI5QjPAV+iXFS1yvi49MqVAvgoQ2rboBEBOpU=;
+        s=k20201202; t=1610029374;
+        bh=oNLPJObW2d3YofpkNjkaRbAPG15OxVo1dNrFQ+tYOAk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=PNabRhPE10cp2uCbeRIIlWuNVwROfR7d1Jc8lv57+sBchnd9xm2/6paMrq6akzVjK
-         iNAjoK2H75lpmOuav5qpv9FP/ICRMeeHZEuQfgtBLGyFg654hX80PXYa0ra5WtO5tY
-         FZA1L5NVwnGtxKQKwk/LCO9FV/7S1tlEN36rY03NiiFBdCF4CGFVvMxAFDuRmzxLrI
-         BP2uiFPG6YrInkO+Rjp+BNJsXcfXLGoV2zuSzn9AzbPWVzZ4jEXiH+EixoG5aKsbib
-         DpPPHBfkh162vI9wlenvAj1Df58lqm0CndcltXf+GVwWmSWHLFD1qvFtji/bFSbc5q
-         TIDX+aRQtmkgw==
+        b=vRO705TTCihW/nt+W1NTwTO30dWw+FCwmHKdGwCkUKgJIePLYAgeMuT7Z5ZzQ+IWn
+         HAecnqHoHDkHHAr+gdxLjoRDxDrI9UJwRSs4s+MkMC5lT/KvTbJ2I2B0KXxFutYKYT
+         bDPXEuPIvgn6uQy6hFIKM8cdCtaEgyJ2/UZC7/BPqCzHus/RwOSFAMDVuQ4JRBqpcq
+         +zSrbG69307ZWYgkOvqm42COAzZIP2Jw19THIvwdobP2YJfXjDAuT0GQtHuyW8vPHT
+         B2thw+fGL1JLK+qn+FJx+afc6yWSTv8I42k0BsZdte5J3ov0uO18kAZD/KmIJ4L+IY
+         Ks0qTuF9ZtQYA==
 From:   Will Deacon <will@kernel.org>
-To:     Joerg Roedel <joro@8bytes.org>, Lu Baolu <baolu.lu@linux.intel.com>
+To:     Joerg Roedel <joro@8bytes.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Robin Murphy <robin.murphy@arm.com>
 Cc:     catalin.marinas@arm.com, kernel-team@android.com,
         Will Deacon <will@kernel.org>,
-        iommu@lists.linux-foundation.org, Ashok Raj <ashok.raj@intel.com>,
-        Guo Kaijie <Kaijie.Guo@intel.com>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/5] iommu/vt-d: Fix misuse of ALIGN in qi_flush_piotlb()
-Date:   Thu,  7 Jan 2021 14:22:46 +0000
-Message-Id: <161002603532.2363893.7669085161472435807.b4-ty@kernel.org>
+        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-arm-msm@vger.kernel.org, iommu@lists.linux-foundation.org
+Subject: Re: [PATCH] iommu/arm-smmu-qcom: Initialize SCTLR of the bypass context
+Date:   Thu,  7 Jan 2021 14:22:47 +0000
+Message-Id: <161002864635.3143366.6483038182849083276.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20201231005323.2178523-1-baolu.lu@linux.intel.com>
-References: <20201231005323.2178523-1-baolu.lu@linux.intel.com>
+In-Reply-To: <20210106005038.4152731-1-bjorn.andersson@linaro.org>
+References: <20210106005038.4152731-1-bjorn.andersson@linaro.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -42,17 +45,21 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 31 Dec 2020 08:53:19 +0800, Lu Baolu wrote:
-> Use IS_ALIGNED() instead. Otherwise, an unaligned address will be ignored.
+On Tue, 5 Jan 2021 16:50:38 -0800, Bjorn Andersson wrote:
+> On SM8150 it's occasionally observed that the boot hangs in between the
+> writing of SMEs and context banks in arm_smmu_device_reset().
+> 
+> The problem seems to coincide with a display refresh happening after
+> updating the stream mapping, but before clearing - and there by
+> disabling translation - the context bank picked to emulate translation
+> bypass.
+> 
+> [...]
 
-Applied patches 1, 4 and 5 to arm64 (for-next/iommu/fixes), thanks!
+Applied to arm64 (for-next/iommu/fixes), thanks!
 
-[1/5] iommu/vt-d: Fix misuse of ALIGN in qi_flush_piotlb()
-      https://git.kernel.org/arm64/c/1efd17e7acb6
-[4/5] Revert "iommu: Add quirk for Intel graphic devices in map_sg"
-      https://git.kernel.org/arm64/c/4df7b2268ad8
-[5/5] iommu/vt-d: Fix lockdep splat in sva bind()/unbind()
-      https://git.kernel.org/arm64/c/420d42f6f9db
+[1/1] iommu/arm-smmu-qcom: Initialize SCTLR of the bypass context
+      https://git.kernel.org/arm64/c/aded8c7c2b72
 
 Cheers,
 -- 
