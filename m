@@ -2,163 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F39C2ECDED
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 11:35:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EC8C72ECDDE
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 11:32:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727902AbhAGKeh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 05:34:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47864 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727209AbhAGKeZ (ORCPT
+        id S1727536AbhAGKbr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 05:31:47 -0500
+Received: from mx0a-00128a01.pphosted.com ([148.163.135.77]:48818 "EHLO
+        mx0a-00128a01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726110AbhAGKbq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 05:34:25 -0500
-Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29331C0612F8
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Jan 2021 02:33:35 -0800 (PST)
-Received: by mail-wr1-x436.google.com with SMTP id 91so5114116wrj.7
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Jan 2021 02:33:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=3yJrCZHt3G7YVDh20BCiLWsyZdxeGghFUC/3zVX3EPw=;
-        b=qJTbmnDixZ1wps+tzJwKiBVaQXP0/0ou76RygQVI2Uqt/ekDD6h9RI25PLjxXA0J3P
-         /G8+jneeuMKRHl6BPv1aXIDgx5CJcVGG8gAJF9bO0rdNn+wsIeIf63hM+aLzAcOJr5+P
-         egbqhMPwAtlgwqntPrIAcLqcw+xFlVyOSFO/0cEDzCoXCxlkoVYjO/y3V1IznXE2lINz
-         UIbleNFKoYqRiS1G12reHAPrGA86L4TC8q5izIr8c2106tjGUcIYpF/JnOk3/JjREYM3
-         lAQCpAf7hOKHnYlv23f99UIUAZ2WS3v3oPKhBFijK3eXiwQhkZT7iHizLo89ZGaGvsz+
-         OkHQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=3yJrCZHt3G7YVDh20BCiLWsyZdxeGghFUC/3zVX3EPw=;
-        b=K5RDfT6L42SR2mQWZp+Y9QwhLGTB1CcYxzdihmOTwj7MMIims6Jn2sWomdN3/8OibH
-         2XYzW3rKSRFMvSIPVNIgu3XGR0lFx0TWOA5CSqZ1ziD0mM4HD465LJnxk8kBNG3naBeR
-         9oFlmH23J6qnm4wkzAjLoK6ZJIesMtAcKHwZTYJt5JqgJb6O5P4SgyLbGIOX2Bf+FFlR
-         In0UNfJilcF0hya+jpCg8UIzZrT+GSEuLLNV53nypT9nQOez9mWKz97FRPF9Quv74fld
-         tkYSYCCbFMuUSIWqZk/qM7fpwjg70W0q3EzR6lKIWqwcJh+9lULURQmBPvkU686S2Rls
-         Gj2A==
-X-Gm-Message-State: AOAM533eAXxJHXrzekKS2ek/PwOtZtEyC06gwbFFRPzcuD422cZG0Umd
-        ag9HRxIVfabCqmkfceEKiNzqJA==
-X-Google-Smtp-Source: ABdhPJwg9KiOnJzK36mdVV4ka9AW1508Rnge76FUU0ijASfKSYxUQMYWmLKE6KGKpXTFWCdxlv76Dg==
-X-Received: by 2002:adf:b78d:: with SMTP id s13mr8404957wre.344.1610015613886;
-        Thu, 07 Jan 2021 02:33:33 -0800 (PST)
-Received: from localhost.localdomain ([2a01:e0a:f:6020:d7b:24c9:55f9:4b75])
-        by smtp.gmail.com with ESMTPSA id i9sm7734120wrs.70.2021.01.07.02.33.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 Jan 2021 02:33:33 -0800 (PST)
-From:   Vincent Guittot <vincent.guittot@linaro.org>
-To:     mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
-        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
-        mgorman@suse.de, bristot@redhat.com, valentin.schneider@arm.com,
-        linux-kernel@vger.kernel.org
-Cc:     Vincent Guittot <vincent.guittot@linaro.org>
-Subject: [PATCH 3/3 v2] sched/fair: reduce cases for active balance
-Date:   Thu,  7 Jan 2021 11:33:25 +0100
-Message-Id: <20210107103325.30851-4-vincent.guittot@linaro.org>
+        Thu, 7 Jan 2021 05:31:46 -0500
+Received: from pps.filterd (m0167089.ppops.net [127.0.0.1])
+        by mx0a-00128a01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 107ATiCJ007408;
+        Thu, 7 Jan 2021 05:30:49 -0500
+Received: from nwd2mta3.analog.com ([137.71.173.56])
+        by mx0a-00128a01.pphosted.com with ESMTP id 35wnkjhdt4-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 07 Jan 2021 05:30:48 -0500
+Received: from ASHBMBX8.ad.analog.com (ASHBMBX8.ad.analog.com [10.64.17.5])
+        by nwd2mta3.analog.com (8.14.7/8.14.7) with ESMTP id 107AUl37041841
+        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 7 Jan 2021 05:30:47 -0500
+Received: from ASHBMBX8.ad.analog.com (10.64.17.5) by ASHBMBX8.ad.analog.com
+ (10.64.17.5) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.721.2; Thu, 7 Jan 2021
+ 05:30:46 -0500
+Received: from zeus.spd.analog.com (10.66.68.11) by ashbmbx8.ad.analog.com
+ (10.64.17.5) with Microsoft SMTP Server id 15.2.721.2 via Frontend Transport;
+ Thu, 7 Jan 2021 05:30:46 -0500
+Received: from localhost.localdomain ([10.48.65.12])
+        by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 107AUhsh013109;
+        Thu, 7 Jan 2021 05:30:44 -0500
+From:   Alexandru Ardelean <alexandru.ardelean@analog.com>
+To:     <linux-hwmon@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     <robh+dt@kernel.org>, <linux@roeck-us.net>, <jdelvare@suse.com>,
+        <mark.thoren@analog.com>, <ardeleanalex@gmail.com>,
+        Alexandru Ardelean <alexandru.ardelean@analog.com>
+Subject: [PATCH v3 0/4] hwmon: (ltc2945): add support for sense resistor
+Date:   Thu, 7 Jan 2021 12:34:13 +0200
+Message-ID: <20210107103417.16010-1-alexandru.ardelean@analog.com>
 X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210107103325.30851-1-vincent.guittot@linaro.org>
-References: <20210107103325.30851-1-vincent.guittot@linaro.org>
+MIME-Version: 1.0
+Content-Type: text/plain
+X-ADIRuleOP-NewSCL: Rule Triggered
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
+ definitions=2021-01-07_05:2021-01-07,2021-01-07 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 impostorscore=0
+ suspectscore=0 clxscore=1011 phishscore=0 mlxscore=0 adultscore=0
+ mlxlogscore=999 priorityscore=1501 lowpriorityscore=0 bulkscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2101070063
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Active balance is triggered for a number of voluntary cases like misfit
-or pinned tasks cases but also after that a number of load balance
-attempts failed to migrate a task. There is no need to use active load
-balance when the group is overloaded because an overloaded state means
-that there is at least one waiting task. Nevertheless, the waiting task
-is not selected and detached until the threshold becomes higher than its
-load. This threshold increases with the number of failed lb (see the
-condition if ((load >> env->sd->nr_balance_failed) > env->imbalance) in
-detach_tasks()) and the waiting task will end up to be selected after a
-number of attempts.
+Changeset adds support for sense resistor.
 
-Signed-off-by: Vincent Guittot <vincent.guittot@linaro.org>
----
- kernel/sched/fair.c | 45 +++++++++++++++++++++++----------------------
- 1 file changed, 23 insertions(+), 22 deletions(-)
+Changelog v2 -> v3:
+* https://lore.kernel.org/linux-hwmon/20201111091259.46773-1-alexandru.ardelean@analog.com/
+* dropped patch 'docs: hwmon: (ltc2945): change type of val to ULL in ltc2945_val_to_reg()'
+* add patch 'hwmon: (ltc2945): clamp values before converting'
+* for patch 'hwmon: (ltc2945): add support for sense resistor'
+  - sense-resistor is represented in milli-ohms internally; this
+    risks of any other potential overflows with the multiplication to
+    1000; the scaling in the driver becomes simpler, but we can't allow
+    a lower resistor value that 1 mOhm, and all resistor values
+    need to be integer in mOhm.
+  - added max power and max amps limits, adjusted to sense resistor
+* for patch 'dt-bindings: hwmon: ltc2945: add device tree doc for ltc2945 '
+  added 'Reviewed-by: Rob Herring <robh@kernel.org>'
 
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index a3515dea1afc..00ec5b901188 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -9499,13 +9499,32 @@ asym_active_balance(struct lb_env *env)
- }
- 
- static inline bool
--voluntary_active_balance(struct lb_env *env)
-+imbalanced_active_balance(struct lb_env *env)
-+{
-+	struct sched_domain *sd = env->sd;
-+
-+	/*
-+	 * The imbalanced case includes the case of pinned tasks preventing a fair
-+	 * distribution of the load on the system but also the even distribution of the
-+	 * threads on a system with spare capacity
-+	 */
-+	if ((env->migration_type == migrate_task) &&
-+	    (sd->nr_balance_failed > sd->cache_nice_tries+2))
-+		return 1;
-+
-+	return 0;
-+}
-+
-+static int need_active_balance(struct lb_env *env)
- {
- 	struct sched_domain *sd = env->sd;
- 
- 	if (asym_active_balance(env))
- 		return 1;
- 
-+	if (imbalanced_active_balance(env))
-+		return 1;
-+
- 	/*
- 	 * The dst_cpu is idle and the src_cpu CPU has only 1 CFS task.
- 	 * It's worth migrating the task if the src_cpu's capacity is reduced
-@@ -9525,16 +9544,6 @@ voluntary_active_balance(struct lb_env *env)
- 	return 0;
- }
- 
--static int need_active_balance(struct lb_env *env)
--{
--	struct sched_domain *sd = env->sd;
--
--	if (voluntary_active_balance(env))
--		return 1;
--
--	return unlikely(sd->nr_balance_failed > sd->cache_nice_tries+2);
--}
--
- static int active_load_balance_cpu_stop(void *data);
- 
- static int should_we_balance(struct lb_env *env)
-@@ -9787,21 +9796,13 @@ static int load_balance(int this_cpu, struct rq *this_rq,
- 			/* We've kicked active balancing, force task migration. */
- 			sd->nr_balance_failed = sd->cache_nice_tries+1;
- 		}
--	} else
-+	} else {
- 		sd->nr_balance_failed = 0;
-+	}
- 
--	if (likely(!active_balance) || voluntary_active_balance(&env)) {
-+	if (likely(!active_balance) || need_active_balance(&env)) {
- 		/* We were unbalanced, so reset the balancing interval */
- 		sd->balance_interval = sd->min_interval;
--	} else {
--		/*
--		 * If we've begun active balancing, start to back off. This
--		 * case may not be covered by the all_pinned logic if there
--		 * is only 1 task on the busy runqueue (because we don't call
--		 * detach_tasks).
--		 */
--		if (sd->balance_interval < sd->max_interval)
--			sd->balance_interval *= 2;
- 	}
- 
- 	goto out;
+Alexandru Ardelean (4):
+  hwmon: (ltc2945): wrap regmap into an ltc2945_state struct
+  hwmon: (ltc2945): clamp values before converting
+  hwmon: (ltc2945): add support for sense resistor
+  dt-bindings: hwmon: ltc2945: add device tree doc for ltc2945
+
+ .../bindings/hwmon/adi,ltc2945.yaml           |  49 +++++++
+ drivers/hwmon/ltc2945.c                       | 128 +++++++++++++++---
+ 2 files changed, 156 insertions(+), 21 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/hwmon/adi,ltc2945.yaml
+
 -- 
 2.17.1
 
