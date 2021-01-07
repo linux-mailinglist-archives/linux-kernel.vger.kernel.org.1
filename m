@@ -2,129 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 31EE72EC7AF
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 02:26:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DAFD2EC7B7
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 02:27:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726362AbhAGBYh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Jan 2021 20:24:37 -0500
-Received: from mailout1.samsung.com ([203.254.224.24]:28889 "EHLO
-        mailout1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726293AbhAGBYh (ORCPT
+        id S1726730AbhAGB0u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Jan 2021 20:26:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47026 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726233AbhAGB0t (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Jan 2021 20:24:37 -0500
-Received: from epcas5p2.samsung.com (unknown [182.195.41.40])
-        by mailout1.samsung.com (KnoxPortal) with ESMTP id 20210107012352epoutp012e34ef3fcafbc57e05638774a3cdf892~XzqyqKfC_2854628546epoutp01-
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Jan 2021 01:23:52 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com 20210107012352epoutp012e34ef3fcafbc57e05638774a3cdf892~XzqyqKfC_2854628546epoutp01-
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1609982632;
-        bh=lZQr/BNAVc2zPCCDVpvZSEEd7+/C8Ub6qxHC3FLZMSk=;
-        h=From:To:Cc:In-Reply-To:Subject:Date:References:From;
-        b=KOycJRT5KoKCflTgowFTA61pjUQTgnllsrsbzGAnoOGNKJYwLtLgwip57iZMHt0ef
-         SiXuy73wQ/SYtTlCAdVpwXw44CjXrDMwg4DiLom8qy+CvUkSlT2oB75A9pf31yCUQq
-         hyYH2LupfKodP3V/laTRUAyhEkgEesS1/eniZ9kg=
-Received: from epsmges5p3new.samsung.com (unknown [182.195.42.75]) by
-        epcas5p1.samsung.com (KnoxPortal) with ESMTP id
-        20210107012352epcas5p18d38c0faac64c151f2d10b93260fa91e~XzqydAx482216122161epcas5p1m;
-        Thu,  7 Jan 2021 01:23:52 +0000 (GMT)
-Received: from epcas5p3.samsung.com ( [182.195.41.41]) by
-        epsmges5p3new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        5E.1D.33964.8A266FF5; Thu,  7 Jan 2021 10:23:52 +0900 (KST)
-Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
-        epcas5p2.samsung.com (KnoxPortal) with ESMTPA id
-        20210107012352epcas5p28217298cc4e6cf7787aff1472d618726~XzqyGkTCA1106611066epcas5p24;
-        Thu,  7 Jan 2021 01:23:52 +0000 (GMT)
-Received: from epsmgms1p2.samsung.com (unknown [182.195.42.42]) by
-        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
-        20210107012352epsmtrp24726259c6b740963d579e384c7278e7c~XzqyFzS8Q3004530045epsmtrp2D;
-        Thu,  7 Jan 2021 01:23:52 +0000 (GMT)
-X-AuditID: b6c32a4b-eb7ff700000184ac-83-5ff662a8d1c1
-Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
-        epsmgms1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
-        2C.9F.08745.7A266FF5; Thu,  7 Jan 2021 10:23:52 +0900 (KST)
-Received: from alimakhtar02 (unknown [107.122.12.5]) by epsmtip1.samsung.com
-        (KnoxPortal) with ESMTPA id
-        20210107012351epsmtip1c0debdb305ba4238bed6831a3d1ebfd0~XzqxEcmI82381423814epsmtip1Q;
-        Thu,  7 Jan 2021 01:23:50 +0000 (GMT)
-From:   "Alim Akhtar" <alim.akhtar@samsung.com>
-To:     "'Randy Dunlap'" <rdunlap@infradead.org>,
-        <linux-kernel@vger.kernel.org>
-Cc:     "'Avri Altman'" <avri.altman@wdc.com>,
-        <linux-scsi@vger.kernel.org>,
-        "'James E.J. Bottomley'" <jejb@linux.ibm.com>,
-        "'Martin K. Petersen'" <martin.petersen@oracle.com>
-In-Reply-To: <20210106205554.18082-1-rdunlap@infradead.org>
-Subject: RE: [PATCH -next] scsi: ufs: fix all Kconfig help text indentation
-Date:   Thu, 7 Jan 2021 06:53:49 +0530
-Message-ID: <052001d6e493$c1fb0fb0$45f12f10$@samsung.com>
+        Wed, 6 Jan 2021 20:26:49 -0500
+Received: from mail-yb1-xb29.google.com (mail-yb1-xb29.google.com [IPv6:2607:f8b0:4864:20::b29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C977C0612F0
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Jan 2021 17:26:09 -0800 (PST)
+Received: by mail-yb1-xb29.google.com with SMTP id o144so4695312ybc.0
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Jan 2021 17:26:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=+Q3ISD9lk+iyEMVjautQ2BP91e+OXNI/7EQGZw2zmBA=;
+        b=kXTXHfEKQ73/mo9oyzafshtxpx+SFtovx9OgM9m53qzvmnTKW/UJrdSt9lXl5xeu+j
+         K4U34rsRwU00ghxDMIXdtWuSqjInH6Fs6EpnlwptjPnPq8A9c8rCMZSefm10Zk0lPOGI
+         DMtD9HUx/OIqFZHDkzAH1ymWYfT9ZhiXMwZZawRUCNy8CWe92DrPLSdyzuQrAb7fBgDL
+         2iQ8xstc0d/rfcbemElL5xwCWIqj7Ie9FPGythfjKpmOqweHcRHHO6ZJRabeTmDth/u4
+         b/eXeLKY4SblaTp5ljio5OxisckstSoJuf1BQkrecKpKnKjb8Y3mgqcRwIVdu+7nWkzo
+         CqIw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=+Q3ISD9lk+iyEMVjautQ2BP91e+OXNI/7EQGZw2zmBA=;
+        b=UVoGwOSbW+MyYhJn5Xu2TBEmt7FBH3u2Q+IDzeilKckmMcCr2pKJjcP2Ree1GN/Arw
+         q8O+lyMc7RsEmiEIBwcGfuJTKu4J042BXlrETgaCfwOLOv/X6eP7ZWUo6+eJJWMhA+Ja
+         4Qh+uE/AZU+gqtS+OJt2XGjwXWA57gd2vVIt+cbaLW62Jb1HGEuf2Y7LLAVRycWrr2ck
+         RVwtepQjKJW2u+4emKYoHjcUQfMmqInHbjOm/rW8XTAECAfNT5Cu9XJU7NCnGOyFSnUk
+         0s2WzxO5IDu0HGS+ji30ORHxtMbgErxy+eb/MWCODmJOTMO7/4qzpXPAkrRQwa+waRqk
+         IYZA==
+X-Gm-Message-State: AOAM531ZvO47dPdEWs25vpdOkAbWs+N9PUgDiI3n2lGRiqQEylPzoN5O
+        ej1HBeNZbalRMxMerOIsJMibek8I6+JJzHIW3DongQ==
+X-Google-Smtp-Source: ABdhPJxGvAuJ8UWOzecyVj/LYSXmdqjwby6wjLe+OCX4j8PTQ6cv0HsvKl+Mhj4jggRIlJvDTA8OQlk2j2zZAaylpiE=
+X-Received: by 2002:a25:6604:: with SMTP id a4mr10119739ybc.412.1609982768103;
+ Wed, 06 Jan 2021 17:26:08 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-Mailer: Microsoft Outlook 16.0
-Thread-Index: AQG3tqYHXragKCNirWnPT3uZrpIbEgIXg0mOqkj9U9A=
-Content-Language: en-in
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprBKsWRmVeSWpSXmKPExsWy7bCmpu6KpG/xBp1bZC1e/rzKZrHoxjYm
-        i8u75rBZdF/fwWax/Pg/Jou3d6azOLB5bF6h5TFh0QFGj49Pb7F4fN4k59F+oJspgDWKyyYl
-        NSezLLVI3y6BK6P7snpBO3vFrj0zWRsYG9m6GDk5JARMJA7d+cjUxcjFISSwm1Hi6r11bBDO
-        J0aJQ2sus0M4nxklPs9YzwzTsuLHHKiWXUCJJXNYIZyXjBJT3k8CG8wmoCuxY3EbmC0i4CPx
-        +vQxRpAiZoH1jBJHV/9lB0lwClhLTNrxA6xIWMBb4sLT42BxFgEViR371zKC2LwClhIftyxj
-        gbAFJU7OfAJmMwvIS2x/OwfqJAWJn0+XsUIss5LonDGBFaJGXOLozx6oml4OiUMzzSBsF4kN
-        15qh4sISr45vYYewpSQ+v9sLdA8HkJ0t0bPLGCJcI7F03jEWCNte4sCVOSwgJcwCmhLrd+lD
-        bOKT6P39hAmik1eio00IolpVovndVahOaYmJ3d2sELaHxPmzL5kmMCrOQvLXLCR/zUJy/yyE
-        ZQsYWVYxSqYWFOempxabFhjnpZbrFSfmFpfmpesl5+duYgQnHi3vHYyPHnzQO8TIxMF4iFGC
-        g1lJhNfi2Jd4Id6UxMqq1KL8+KLSnNTiQ4zSHCxK4rw7DB7ECwmkJ5akZqemFqQWwWSZODil
-        GpisM7bIBjIqehvm6v7uYL12RDAoID3r8d8FvjMK5011lbmsecHiW8LDqkXrFRXP2u7a0DxT
-        tblWPyHl/Z1z71Qk2SayS4ZIutxyfWWu3Olsy/ah8Jil5/9bhQcUQxYZ7XNLD1M7P8s3L7Nq
-        wZ8z/6WyzyspvFHd5/Jsj2XLq3ds+x983uP0MPmMCoNmzdcOd/M226U/TwbtdpDOWht6oacs
-        scDX5fac1NK6tNc/jVqWz/v9k+dAcaRA7oHD3/L7ej6LzNyy1CgiyM5gzntv3/Za2Vsh1kH3
-        1u6IE9t3YT7DhJ35Gdfjd5sEx9/rySzI0Nx+mNNh+oU91gFzn/2wisv1PdK4smrfy9scvdM1
-        uJRYijMSDbWYi4oTAbOxeeyrAwAA
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrNLMWRmVeSWpSXmKPExsWy7bCSnO6KpG/xBrveMlm8/HmVzWLRjW1M
-        Fpd3zWGz6L6+g81i+fF/TBZv70xncWDz2LxCy2PCogOMHh+f3mLx+LxJzqP9QDdTAGsUl01K
-        ak5mWWqRvl0CV0b3ZfWCdvaKXXtmsjYwNrJ1MXJySAiYSKz4MYepi5GLQ0hgB6PErva/UAlp
-        iesbJ7BD2MISK/89B7OFBJ4zSjyblAJiswnoSuxY3AZWLyLgJ7H73BE2kEHMAhsZJabNuMYO
-        MbWHUeLJzUdg3ZwC1hKTdvwA6xAW8Ja48PQ4WJxFQEVix/61jCA2r4ClxMcty1ggbEGJkzOf
-        ANkcQFP1JNo2gpUwC8hLbH87hxniOAWJn0+XsUIcYSXROWMCK0SNuMTRnz3MExiFZyGZNAth
-        0iwkk2Yh6VjAyLKKUTK1oDg3PbfYsMAoL7Vcrzgxt7g0L10vOT93EyM4frS0djDuWfVB7xAj
-        EwfjIUYJDmYlEV6LY1/ihXhTEiurUovy44tKc1KLDzFKc7AoifNe6DoZLySQnliSmp2aWpBa
-        BJNl4uCUamCS/r8tf7J5PctVs9uFQs0azQ+1t/EeWc+pz8E3nduAtfFPR+DTud4nMu51SL7u
-        6Ju6INHy178Xb/jXeNuevrXpzKo7dtVrxHbvWPnCNuzSmokxR9ydZwcHmZee/+xxjHXRRo9w
-        IdeurI2cvrNvnJo5ZXqIU3Hf9NfeYndf17MXvSwV7snQSlybOiex+LZX4NVPIpfXZ31kmFOk
-        9Gax0cun+QwBrbI7Tq2+p/JT1+9ia9B7FfkFE9uLywxmyb4I/CbBXHS39XHJ1rMTCrJDpSI3
-        bTjOsKz96ur3SrZ3/89OkDqWmyGnb8/pM61etfLlvf7ZVz8Lln+olLX+pHXypdedqXc7VIyl
-        FZJFDMIf1V9QYinOSDTUYi4qTgQA/aTJgg4DAAA=
-X-CMS-MailID: 20210107012352epcas5p28217298cc4e6cf7787aff1472d618726
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-CMS-TYPE: 105P
-X-CMS-RootMailID: 20210106205857epcas5p31c8d9aee87cb459ef431b8e8c965bdfe
-References: <CGME20210106205857epcas5p31c8d9aee87cb459ef431b8e8c965bdfe@epcas5p3.samsung.com>
-        <20210106205554.18082-1-rdunlap@infradead.org>
+References: <20201218210750.3455872-1-saravanak@google.com>
+ <2a6dbcc83d5aca7a3340e0cf4d751cdc@kernel.org> <20201231211240.GA2333246@robh.at.kernel.org>
+ <877dovlgdl.wl-maz@kernel.org> <CAGETcx9WJdYkQcwJLTF4j9jR4kyrDpXG8ZMuCecK2Hv-HXFgBg@mail.gmail.com>
+In-Reply-To: <CAGETcx9WJdYkQcwJLTF4j9jR4kyrDpXG8ZMuCecK2Hv-HXFgBg@mail.gmail.com>
+From:   Saravana Kannan <saravanak@google.com>
+Date:   Wed, 6 Jan 2021 17:25:31 -0800
+Message-ID: <CAGETcx_y6pj-8xEUfMi164iFTiDLVcdATofkOTjvFBCSAQY3sw@mail.gmail.com>
+Subject: Re: [PATCH] of: property: Add device link support for interrupts
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     Rob Herring <robh@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Kevin Hilman <khilman@baylibre.com>,
+        Android Kernel Team <kernel-team@android.com>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Randy,
+On Wed, Jan 6, 2021 at 10:52 AM Saravana Kannan <saravanak@google.com> wrote:
+>
+> On Sat, Jan 2, 2021 at 3:37 AM Marc Zyngier <maz@kernel.org> wrote:
+> >
+> > On Thu, 31 Dec 2020 21:12:40 +0000,
+> > Rob Herring <robh@kernel.org> wrote:
+> > >
+> > > On Mon, Dec 21, 2020 at 09:30:45AM +0000, Marc Zyngier wrote:
+> > > > On 2020-12-18 21:07, Saravana Kannan wrote:
+> > > > > Add support for creating device links out of interrupts property.
+> > > > >
+> > > > > Cc: Marc Zyngier <maz@kernel.org>
+> > > > > Cc: Kevin Hilman <khilman@baylibre.com>
+> > > > > Signed-off-by: Saravana Kannan <saravanak@google.com>
+> > > > > ---
+> > > > > Rob/Greg,
+> > > > >
+> > > > > This might need to go into driver-core to avoid conflict
+> > > > > due to fw_devlink refactor series that merged there.
+> > > > >
+> > > > > Thanks,
+> > > > > Saravana
+> > > > >
+> > > > >
+> > > > >  drivers/of/property.c | 17 +++++++++++++++++
+> > > > >  1 file changed, 17 insertions(+)
+> > > > >
+> > > > > diff --git a/drivers/of/property.c b/drivers/of/property.c
+> > > > > index 5f9eed79a8aa..e56a5eae0a0b 100644
+> > > > > --- a/drivers/of/property.c
+> > > > > +++ b/drivers/of/property.c
+> > > > > @@ -1271,6 +1271,22 @@ static struct device_node
+> > > > > *parse_iommu_maps(struct device_node *np,
+> > > > >   return of_parse_phandle(np, prop_name, (index * 4) + 1);
+> > > > >  }
+> > > > >
+> > > > > +static struct device_node *parse_interrupts(struct device_node *np,
+> > > > > +                                     const char *prop_name, int index)
+> > > > > +{
+> > > > > + struct device_node *sup;
+> > > > > +
+> > > > > + if (strcmp(prop_name, "interrupts") || index)
+> > > > > +         return NULL;
+> > > > > +
+> > > > > + of_node_get(np);
+> > > > > + while (np && !(sup = of_parse_phandle(np, "interrupt-parent", 0)))
+> > > > > +         np = of_get_next_parent(np);
+> > > > > + of_node_put(np);
+> > > > > +
+> > > > > + return sup;
+> > > > > +}
+> > > > > +
+> > > > >  static const struct supplier_bindings of_supplier_bindings[] = {
+> > > > >   { .parse_prop = parse_clocks, },
+> > > > >   { .parse_prop = parse_interconnects, },
+> > > > > @@ -1296,6 +1312,7 @@ static const struct supplier_bindings
+> > > > > of_supplier_bindings[] = {
+> > > > >   { .parse_prop = parse_pinctrl6, },
+> > > > >   { .parse_prop = parse_pinctrl7, },
+> > > > >   { .parse_prop = parse_pinctrl8, },
+> > > > > + { .parse_prop = parse_interrupts, },
+> > > > >   { .parse_prop = parse_regulators, },
+> > > > >   { .parse_prop = parse_gpio, },
+> > > > >   { .parse_prop = parse_gpios, },
+> > > >
+> > > > You don't really describe what this is for so I'm only guessing
+> > > > from the context. If you want to follow the interrupt hierarchy,
+> > > > "interrupt-parent" isn't enough. You also need to track
+> > > > things like interrupt-map, or anything that carries a phandle
+> > > > to an interrupt controller.
+> > >
+> > > We don't need to follow the hierarchy, we just need the immediate
+> > > dependencies.
+> >
+> > Indeed. I also wonder why this isn't just a irq_find_parent() call, TBH.
+>
+> Thanks Rob for explaining it.
+>
+> Marc, I wasn't sure if Rob would be okay with including of_irq.h here.
+> Also, I'm trying to keep of/property.c independent of the framework
+> code for now. The long term goal is to see if I can move out most of
+> this into the frameworks. But I want to do that after I sort of some
+> of the larger problems (like getting fw_devlink=on to work on all
+> devices  first). Let me know if you have a strong preference for right
+> now, if not, I'd rather keep property.c independent for now.
+>
+> I wasn't aware of interrupt-map until a few weeks ago and didn't know
+> it carried phandles. I can add support for that too. There's no reason
+> for all of them to go in one patch though.
 
-> -----Original Message-----
-> From: Randy Dunlap <rdunlap@infradead.org>
-> Sent: 07 January 2021 02:26
-> To: linux-kernel@vger.kernel.org
-> Cc: Randy Dunlap <rdunlap@infradead.org>; Alim Akhtar
-> <alim.akhtar@samsung.com>; Avri Altman <avri.altman@wdc.com>; linux-
-> scsi@vger.kernel.org; James E.J. Bottomley <jejb@linux.ibm.com>; Martin K.
-> Petersen <martin.petersen@oracle.com>
-> Subject: [PATCH -next] scsi: ufs: fix all Kconfig help text indentation
-> 
-> Use consistent and expected indentation for all Kconfig text.
-> 
-> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-> Cc: Alim Akhtar <alim.akhtar@samsung.com>
-> Cc: Avri Altman <avri.altman@wdc.com>
-> Cc: linux-scsi@vger.kernel.org
-> Cc: "James E.J. Bottomley" <jejb@linux.ibm.com>
-> Cc: "Martin K. Petersen" <martin.petersen@oracle.com>
-> ---
+Hmm... I looked at
+Documentation/devicetree/bindings/interrupt-controller/interrupts.txt
+and it has no documentation for interrupt-map. There's a bunch of
+references to it in device specific DT binding documentation but I
+don't want to rely on those for correctness.
 
-Reviewed-by: Alim Akhtar <alim.akhtar@samsung.com>
+Marc, can you explain the interrupt-map format here or add
+documentation for it please?
 
-
+-Saravana
