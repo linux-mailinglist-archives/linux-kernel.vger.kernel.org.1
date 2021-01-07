@@ -2,33 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5ED702ED1D8
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 15:21:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 45D782ED1F4
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 15:22:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729340AbhAGOSY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 09:18:24 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39688 "EHLO mail.kernel.org"
+        id S1729442AbhAGOUP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 09:20:15 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38960 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727213AbhAGORj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 09:17:39 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 81B44233CF;
-        Thu,  7 Jan 2021 14:16:43 +0000 (UTC)
+        id S1729035AbhAGORR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Jan 2021 09:17:17 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B7A6E233EA;
+        Thu,  7 Jan 2021 14:16:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610029004;
-        bh=+Xn62bd3ftwGzAH1gYcGDKKwqAG0nQPv6h0Rk/QxdHs=;
+        s=korg; t=1610029006;
+        bh=IyU2w5Da81355Wd3x6My+376ltuOG5afqP2dxu6QPnA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=NGjNmgngqWKBhhvyb2+suznyl792pt7IdISNWu3aICiGreU52V6dB6lnOaPvRgqgH
-         LsDE8msSv6nbv++ocM3rJb2aRUu4/WPxlVp4UoJN/CGACqBe6j+6wmHeyIDn+dENp3
-         I99cHxnwSAllfKbIAnAPr6atu9k49+risL93SGZc=
+        b=ZID+XCUXU31r8VN+D88qYVT3K6zY29GdEDE3lc2oIf5tNNHyEkbc27u1WdBPvnr4d
+         w1+JWAe6iYG8lG4tXOroNP4zVDETus9Relc1akTw5lB5x9/Z9hUFzfGICnDNm/H8uS
+         ua7angPdk6jpBxykmAEe1UPx9wrsPtoKSXJLeCrg=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Nicolas Morey-Chaisemartin <nmoreychaisemartin@suse.com>,
-        Jessica Yu <jeyu@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.9 22/32] module: delay kobject uevent until after module init call
-Date:   Thu,  7 Jan 2021 15:16:42 +0100
-Message-Id: <20210107140828.906349210@linuxfoundation.org>
+        stable@vger.kernel.org, Josh Poimboeuf <jpoimboe@redhat.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: [PATCH 4.9 23/32] kdev_t: always inline major/minor helper functions
+Date:   Thu,  7 Jan 2021 15:16:43 +0100
+Message-Id: <20210107140828.954293977@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210107140827.866214702@linuxfoundation.org>
 References: <20210107140827.866214702@linuxfoundation.org>
@@ -40,71 +42,104 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jessica Yu <jeyu@kernel.org>
+From: Josh Poimboeuf <jpoimboe@redhat.com>
 
-[ Upstream commit 38dc717e97153e46375ee21797aa54777e5498f3 ]
+commit aa8c7db494d0a83ecae583aa193f1134ef25d506 upstream.
 
-Apparently there has been a longstanding race between udev/systemd and
-the module loader. Currently, the module loader sends a uevent right
-after sysfs initialization, but before the module calls its init
-function. However, some udev rules expect that the module has
-initialized already upon receiving the uevent.
+Silly GCC doesn't always inline these trivial functions.
 
-This race has been triggered recently (see link in references) in some
-systemd mount unit files. For instance, the configfs module creates the
-/sys/kernel/config mount point in its init function, however the module
-loader issues the uevent before this happens. sys-kernel-config.mount
-expects to be able to mount /sys/kernel/config upon receipt of the
-module loading uevent, but if the configfs module has not called its
-init function yet, then this directory will not exist and the mount unit
-fails. A similar situation exists for sys-fs-fuse-connections.mount, as
-the fuse sysfs mount point is created during the fuse module's init
-function. If udev is faster than module initialization then the mount
-unit would fail in a similar fashion.
+Fixes the following warning:
 
-To fix this race, delay the module KOBJ_ADD uevent until after the
-module has finished calling its init routine.
+  arch/x86/kernel/sys_ia32.o: warning: objtool: cp_stat64()+0xd8: call to new_encode_dev() with UACCESS enabled
 
-Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Tested-By: Nicolas Morey-Chaisemartin <nmoreychaisemartin@suse.com>
-Signed-off-by: Jessica Yu <jeyu@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Link: https://lkml.kernel.org/r/984353b44a4484d86ba9f73884b7306232e25e30.1608737428.git.jpoimboe@redhat.com
+Signed-off-by: Josh Poimboeuf <jpoimboe@redhat.com>
+Reported-by: Randy Dunlap <rdunlap@infradead.org>
+Acked-by: Randy Dunlap <rdunlap@infradead.org>	[build-tested]
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
 ---
- kernel/module.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ include/linux/kdev_t.h |   22 +++++++++++-----------
+ 1 file changed, 11 insertions(+), 11 deletions(-)
 
-diff --git a/kernel/module.c b/kernel/module.c
-index a106801f1582b..0219301b6109c 100644
---- a/kernel/module.c
-+++ b/kernel/module.c
-@@ -1762,7 +1762,6 @@ static int mod_sysfs_init(struct module *mod)
- 	if (err)
- 		mod_kobject_put(mod);
+--- a/include/linux/kdev_t.h
++++ b/include/linux/kdev_t.h
+@@ -20,61 +20,61 @@
+ 	})
  
--	/* delay uevent until full sysfs population */
- out:
- 	return err;
+ /* acceptable for old filesystems */
+-static inline bool old_valid_dev(dev_t dev)
++static __always_inline bool old_valid_dev(dev_t dev)
+ {
+ 	return MAJOR(dev) < 256 && MINOR(dev) < 256;
  }
-@@ -1796,7 +1795,6 @@ static int mod_sysfs_setup(struct module *mod,
- 	add_sect_attrs(mod, info);
- 	add_notes_attrs(mod, info);
  
--	kobject_uevent(&mod->mkobj.kobj, KOBJ_ADD);
- 	return 0;
+-static inline u16 old_encode_dev(dev_t dev)
++static __always_inline u16 old_encode_dev(dev_t dev)
+ {
+ 	return (MAJOR(dev) << 8) | MINOR(dev);
+ }
  
- out_unreg_param:
-@@ -3427,6 +3425,9 @@ static noinline int do_init_module(struct module *mod)
- 	blocking_notifier_call_chain(&module_notify_list,
- 				     MODULE_STATE_LIVE, mod);
+-static inline dev_t old_decode_dev(u16 val)
++static __always_inline dev_t old_decode_dev(u16 val)
+ {
+ 	return MKDEV((val >> 8) & 255, val & 255);
+ }
  
-+	/* Delay uevent until module has finished its init routine */
-+	kobject_uevent(&mod->mkobj.kobj, KOBJ_ADD);
-+
- 	/*
- 	 * We need to finish all async code before the module init sequence
- 	 * is done.  This has potential to deadlock.  For example, a newly
--- 
-2.27.0
-
+-static inline u32 new_encode_dev(dev_t dev)
++static __always_inline u32 new_encode_dev(dev_t dev)
+ {
+ 	unsigned major = MAJOR(dev);
+ 	unsigned minor = MINOR(dev);
+ 	return (minor & 0xff) | (major << 8) | ((minor & ~0xff) << 12);
+ }
+ 
+-static inline dev_t new_decode_dev(u32 dev)
++static __always_inline dev_t new_decode_dev(u32 dev)
+ {
+ 	unsigned major = (dev & 0xfff00) >> 8;
+ 	unsigned minor = (dev & 0xff) | ((dev >> 12) & 0xfff00);
+ 	return MKDEV(major, minor);
+ }
+ 
+-static inline u64 huge_encode_dev(dev_t dev)
++static __always_inline u64 huge_encode_dev(dev_t dev)
+ {
+ 	return new_encode_dev(dev);
+ }
+ 
+-static inline dev_t huge_decode_dev(u64 dev)
++static __always_inline dev_t huge_decode_dev(u64 dev)
+ {
+ 	return new_decode_dev(dev);
+ }
+ 
+-static inline int sysv_valid_dev(dev_t dev)
++static __always_inline int sysv_valid_dev(dev_t dev)
+ {
+ 	return MAJOR(dev) < (1<<14) && MINOR(dev) < (1<<18);
+ }
+ 
+-static inline u32 sysv_encode_dev(dev_t dev)
++static __always_inline u32 sysv_encode_dev(dev_t dev)
+ {
+ 	return MINOR(dev) | (MAJOR(dev) << 18);
+ }
+ 
+-static inline unsigned sysv_major(u32 dev)
++static __always_inline unsigned sysv_major(u32 dev)
+ {
+ 	return (dev >> 18) & 0x3fff;
+ }
+ 
+-static inline unsigned sysv_minor(u32 dev)
++static __always_inline unsigned sysv_minor(u32 dev)
+ {
+ 	return dev & 0x3ffff;
+ }
 
 
