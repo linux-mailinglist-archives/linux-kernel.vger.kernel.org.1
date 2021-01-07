@@ -2,62 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BF952ECFF2
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 13:37:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9A3992ECFEC
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 13:37:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728302AbhAGMgD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 07:36:03 -0500
-Received: from szxga07-in.huawei.com ([45.249.212.35]:10404 "EHLO
-        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726294AbhAGMgC (ORCPT
+        id S1728237AbhAGMfl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 07:35:41 -0500
+Received: from mail2.protonmail.ch ([185.70.40.22]:17024 "EHLO
+        mail2.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728202AbhAGMfk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 07:36:02 -0500
-Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4DBQf80R70z7Fbj;
-        Thu,  7 Jan 2021 20:34:24 +0800 (CST)
-Received: from huawei.com (10.175.104.175) by DGGEMS404-HUB.china.huawei.com
- (10.3.19.204) with Microsoft SMTP Server id 14.3.498.0; Thu, 7 Jan 2021
- 20:35:13 +0800
-From:   Miaohe Lin <linmiaohe@huawei.com>
-To:     <akpm@linux-foundation.org>, <mike.kravetz@oracle.com>
-CC:     <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
-        <linmiaohe@huawei.com>
-Subject: [PATCH] mm/hugetlb: Fix potential missing huge page size info
-Date:   Thu, 7 Jan 2021 07:34:49 -0500
-Message-ID: <20210107123449.38481-1-linmiaohe@huawei.com>
-X-Mailer: git-send-email 2.19.1
+        Thu, 7 Jan 2021 07:35:40 -0500
+Date:   Thu, 07 Jan 2021 12:34:53 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me; s=protonmail;
+        t=1610022898; bh=012vDHOxvqVPo52Yrh8ZCe0PscXXJoRaQmC+Qol94bs=;
+        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
+        b=SvZOZeHRjbzSSnW4dvfM9BrtRGjLLTvIhxnVV3QgsCdA69aUJroaV24Xk9SFhlx+u
+         sHD65gs8WP+lrkH3PIpa/Epk4dVLI8R4mARZ+do02zCYBZU0l36zTPiCSCG7IxDvJl
+         vfv/aRCcswEfBYznLPw+IM4hpYm15nOy4rJQYP3BUAiw7L/JXI44SysEpxSxHp3Ahn
+         o9sVf29pNp0w/t/SsQ9D2o/j5lx5/WLvT8sjVIczhfyXYjdWhdevSc0Y02Kp8Ecb2H
+         3GysfZh18+0wEbte2CXW9SSiFBSXXe2hFWip2eAR86tHqBY1ABt95QqvfCuSuoVA/P
+         9FnpbO50thbVw==
+To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+From:   Alexander Lobakin <alobakin@pm.me>
+Cc:     Arnd Bergmann <arnd@arndb.de>, Kees Cook <keescook@chromium.org>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Fangrui Song <maskray@google.com>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Pei Huang <huangpei@loongson.cn>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Alexander Lobakin <alobakin@pm.me>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        Ralf Baechle <ralf@linux-mips.org>,
+        Corey Minyard <cminyard@mvista.com>,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arch@vger.kernel.org, stable@vger.kernel.org,
+        clang-built-linux@googlegroups.com
+Reply-To: Alexander Lobakin <alobakin@pm.me>
+Subject: [PATCH v4 mips-next 2/7] MIPS: vmlinux.lds.S: add ".gnu.attributes" to DISCARDS
+Message-ID: <20210107123428.354231-2-alobakin@pm.me>
+In-Reply-To: <20210107123428.354231-1-alobakin@pm.me>
+References: <20210107123331.354075-1-alobakin@pm.me> <20210107123428.354231-1-alobakin@pm.me>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.104.175]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
+        autolearn=disabled version=3.4.4
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
+        mailout.protonmail.ch
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The huge page size is encoded for VM_FAULT_HWPOISON errors only. So if we
-return VM_FAULT_HWPOISON, huge page size would just be ignored.
+Discard GNU attributes (MIPS FP type, GNU Hash etc.) at link time
+as kernel doesn't use it at all.
+Solves a dozen of the following ld warnings (one per every file):
 
-Fixes: aa50d3a7aa81 ("Encode huge page size for VM_FAULT_HWPOISON errors")
-Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
-Cc: <stable@vger.kernel.org>
+mips-alpine-linux-musl-ld: warning: orphan section `.gnu.attributes'
+from `arch/mips/kernel/head.o' being placed in section
+`.gnu.attributes'
+mips-alpine-linux-musl-ld: warning: orphan section `.gnu.attributes'
+from `init/main.o' being placed in section `.gnu.attributes'
+
+Signed-off-by: Alexander Lobakin <alobakin@pm.me>
 ---
- mm/hugetlb.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/mips/kernel/vmlinux.lds.S | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/mm/hugetlb.c b/mm/hugetlb.c
-index 3ada2e78316c..e249bffa0e75 100644
---- a/mm/hugetlb.c
-+++ b/mm/hugetlb.c
-@@ -4371,7 +4371,7 @@ static vm_fault_t hugetlb_no_page(struct mm_struct *mm,
- 		 * So we need to block hugepage fault by PG_hwpoison bit check.
- 		 */
- 		if (unlikely(PageHWPoison(page))) {
--			ret = VM_FAULT_HWPOISON |
-+			ret = VM_FAULT_HWPOISON_LARGE |
- 				VM_FAULT_SET_HINDEX(hstate_index(h));
- 			goto backout_unlocked;
- 		}
--- 
-2.19.1
+diff --git a/arch/mips/kernel/vmlinux.lds.S b/arch/mips/kernel/vmlinux.lds.=
+S
+index 83e27a181206..16468957cba2 100644
+--- a/arch/mips/kernel/vmlinux.lds.S
++++ b/arch/mips/kernel/vmlinux.lds.S
+@@ -221,6 +221,7 @@ SECTIONS
+ =09=09/* ABI crap starts here */
+ =09=09*(.MIPS.abiflags)
+ =09=09*(.MIPS.options)
++=09=09*(.gnu.attributes)
+ =09=09*(.options)
+ =09=09*(.pdr)
+ =09=09*(.reginfo)
+--=20
+2.30.0
+
 
