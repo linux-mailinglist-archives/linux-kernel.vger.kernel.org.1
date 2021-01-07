@@ -2,131 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6016F2EEA01
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 00:54:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B4AFA2EEA03
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 00:55:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729455AbhAGXwW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 18:52:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60010 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728735AbhAGXwV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 18:52:21 -0500
-Received: from mail-vs1-xe31.google.com (mail-vs1-xe31.google.com [IPv6:2607:f8b0:4864:20::e31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 969B2C0612F5
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Jan 2021 15:51:41 -0800 (PST)
-Received: by mail-vs1-xe31.google.com with SMTP id z16so4602594vsp.5
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Jan 2021 15:51:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=saxzFi2qg+LHi04jHDIQ3UvqFgOV5HAgl5X/y1F1t08=;
-        b=dL/mVSlvGXthCVPyZ6Pe+O48W73y116kleZpYbPxK++MAfqzp1qMmveKDKu/OAi4qP
-         qFOvto+IkJa192coHUzkjlT5xp9P5i270Vo9+7gDcXnbhVypCb4BQLgETBusGpkVch3+
-         IR6xBKmCFQ9prL/01SEfafD6/FykeURCpL0Lk=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=saxzFi2qg+LHi04jHDIQ3UvqFgOV5HAgl5X/y1F1t08=;
-        b=M7tDjuSjenULt4jSvd+FGaCVpF5PwTe4AEUNBU8Th8C5S06P6ad6e1j/jIaoB1SHJs
-         jtNJXoi1TdhrqT3+IK/V4KSPAl+kl0B/x0watz2Qg2oR9Pl+a6zAFCe9DxRigbRLhCFf
-         yZzu5x8aleFsOZPipW1VowxkyG8W6+ZIHdWKOXWx32iQr3w+pT3s/PGNCC8YTHV9ouZD
-         De0na6hU+ND3Q49H37M5TnE/G4YVFy78lHM1kEX5njX1vtG9I3BXJtbGOdyTMvWp2jjy
-         xn1cfwmSOfqNoB3v3Nlf++K2rfHrf1H6LEZPWjqMUdCnrRw+CqhEXALZSHkFDGAbCCIa
-         0N7w==
-X-Gm-Message-State: AOAM533QwYlB/IzqhHfbatTqS5HWx40N8UDv0S2F57r1wtuF28uAeTce
-        bEB7FCwsTqQG561fdMTilrnuJhvlCb6Lrzw81Yd2LA==
-X-Google-Smtp-Source: ABdhPJw1C0m4sHMYXtQQD3eml75tEOs+sgZjRpT4W2AlK3r6i58wCDPPBx6s6G1r3niZh+Am9726r1aTlNXyks4MGyY=
-X-Received: by 2002:a67:7993:: with SMTP id u141mr733890vsc.21.1610063500807;
- Thu, 07 Jan 2021 15:51:40 -0800 (PST)
+        id S1729354AbhAGXyj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 18:54:39 -0500
+Received: from mga04.intel.com ([192.55.52.120]:43624 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727858AbhAGXyi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Jan 2021 18:54:38 -0500
+IronPort-SDR: KPzm0TVKueA9LWdFGJxyGzMjkvMTqNn5DmFxjj6o+pJajpsH/tRRrX18t9YtXkh6Ww4648RTmL
+ vyNLgHeM8UcQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9857"; a="174935433"
+X-IronPort-AV: E=Sophos;i="5.79,330,1602572400"; 
+   d="scan'208";a="174935433"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Jan 2021 15:52:52 -0800
+IronPort-SDR: STUYzP1dmLk5rXkzTQFfUHnw4R0sK1nl2mGZ8Xx/VvgmNgfthmWjQSqGTB1GPv3B9u0R6fZTvR
+ qJkph4PCMZ3g==
+X-IronPort-AV: E=Sophos;i="5.79,330,1602572400"; 
+   d="scan'208";a="379907722"
+Received: from blu2-mobl3.ccr.corp.intel.com (HELO [10.255.31.120]) ([10.255.31.120])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Jan 2021 15:52:49 -0800
+Cc:     baolu.lu@linux.intel.com, Joerg Roedel <joro@8bytes.org>,
+        Ashok Raj <ashok.raj@intel.com>,
+        Jacob Pan <jacob.jun.pan@linux.intel.com>,
+        Guo Kaijie <Kaijie.Guo@intel.com>,
+        Liu Yi L <yi.l.liu@intel.com>,
+        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org
+To:     Will Deacon <will@kernel.org>
+References: <20201231005323.2178523-1-baolu.lu@linux.intel.com>
+ <20201231005323.2178523-2-baolu.lu@linux.intel.com>
+ <20210105190357.GA12182@willie-the-truck>
+ <f8c7f124-48ab-f74f-a5cb-51b0ca4785ac@linux.intel.com>
+From:   Lu Baolu <baolu.lu@linux.intel.com>
+Subject: Re: [PATCH 2/5] iommu/vt-d: Fix unaligned addresses for
+ intel_flush_svm_range_dev()
+Message-ID: <9b26b7ac-b5c7-f38a-a078-b53a6b6bf375@linux.intel.com>
+Date:   Fri, 8 Jan 2021 07:52:47 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-References: <20210105001119.2129559-1-drinkcat@chromium.org>
- <20210105081111.v6.3.I3af068abe30c9c85cabc4486385c52e56527a509@changeid> <a373044b-3e24-4e00-432f-46b0bd91b213@arm.com>
-In-Reply-To: <a373044b-3e24-4e00-432f-46b0bd91b213@arm.com>
-From:   Nicolas Boichat <drinkcat@chromium.org>
-Date:   Fri, 8 Jan 2021 07:51:29 +0800
-Message-ID: <CANMq1KCbA9FawgtK4+rjBKO=dFomrAt7kpN8K_180mHRAeUkAg@mail.gmail.com>
-Subject: Re: [PATCH v6 3/4] drm/panfrost: devfreq: Disable devfreq when
- num_supplies > 1
-To:     Steven Price <steven.price@arm.com>
-Cc:     Rob Herring <robh@kernel.org>,
-        Alyssa Rosenzweig <alyssa.rosenzweig@collabora.com>,
-        Hsin-Yi Wang <hsinyi@chromium.org>,
-        Kristian Kristensen <hoegsberg@chromium.org>,
-        Fei Shao <fshao@chromium.org>,
-        Boris Brezillon <boris.brezillon@collabora.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>,
-        Tomeu Vizoso <tomeu.vizoso@collabora.com>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        lkml <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <f8c7f124-48ab-f74f-a5cb-51b0ca4785ac@linux.intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 7, 2021 at 11:59 PM Steven Price <steven.price@arm.com> wrote:
->
-> On 05/01/2021 00:11, Nicolas Boichat wrote:
-> > GPUs with more than a single regulator (e.g. G-57 on MT8183) will
-> > require platform-specific handling, disable devfreq for now.
->
-> Can you explain what actually goes wrong here? AFAICT the existing code
-> does support controlling multiple regulators - but clearly this is the
-> first platform that exercises that code with num_supplies>1.
+Hi Will,
 
-Sure, I should have expanded in the commit message, will do in v9.
+On 2021/1/6 9:09, Lu Baolu wrote:
+> Hi Will,
+> 
+> Happy New Year!
+> 
+> On 2021/1/6 3:03, Will Deacon wrote:
+>> On Thu, Dec 31, 2020 at 08:53:20AM +0800, Lu Baolu wrote:
+>>> The VT-d hardware will ignore those Addr bits which have been masked by
+>>> the AM field in the PASID-based-IOTLB invalidation descriptor. As the
+>>> result, if the starting address in the descriptor is not aligned with
+>>> the address mask, some IOTLB caches might not invalidate. Hence people
+>>> will see below errors.
+>>>
+>>> [ 1093.704661] dmar_fault: 29 callbacks suppressed
+>>> [ 1093.704664] DMAR: DRHD: handling fault status reg 3
+>>> [ 1093.712738] DMAR: [DMA Read] Request device [7a:02.0] PASID 2
+>>>                 fault addr 7f81c968d000 [fault reason 113]
+>>>                 SM: Present bit in first-level paging entry is clear
+>>>
+>>> Fix this by using aligned address for PASID-based-IOTLB invalidation.
+>>>
+>>> Fixes: 1c4f88b7f1f92 ("iommu/vt-d: Shared virtual address in scalable 
+>>> mode")
+>>> Reported-and-tested-by: Guo Kaijie <Kaijie.Guo@intel.com>
+>>> Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
+>>> ---
+>>>   drivers/iommu/intel/svm.c | 22 ++++++++++++++++++++--
+>>>   1 file changed, 20 insertions(+), 2 deletions(-)
+>>>
+>>> diff --git a/drivers/iommu/intel/svm.c b/drivers/iommu/intel/svm.c
+>>> index 69566695d032..b16a4791acfb 100644
+>>> --- a/drivers/iommu/intel/svm.c
+>>> +++ b/drivers/iommu/intel/svm.c
+>>> @@ -118,8 +118,10 @@ void intel_svm_check(struct intel_iommu *iommu)
+>>>       iommu->flags |= VTD_FLAG_SVM_CAPABLE;
+>>>   }
+>>> -static void intel_flush_svm_range_dev (struct intel_svm *svm, struct 
+>>> intel_svm_dev *sdev,
+>>> -                unsigned long address, unsigned long pages, int ih)
+>>> +static void __flush_svm_range_dev(struct intel_svm *svm,
+>>> +                  struct intel_svm_dev *sdev,
+>>> +                  unsigned long address,
+>>> +                  unsigned long pages, int ih)
+>>>   {
+>>>       struct qi_desc desc;
+>>> @@ -170,6 +172,22 @@ static void intel_flush_svm_range_dev (struct 
+>>> intel_svm *svm, struct intel_svm_d
+>>>       }
+>>>   }
+>>> +static void intel_flush_svm_range_dev(struct intel_svm *svm,
+>>> +                      struct intel_svm_dev *sdev,
+>>> +                      unsigned long address,
+>>> +                      unsigned long pages, int ih)
+>>> +{
+>>> +    unsigned long shift = ilog2(__roundup_pow_of_two(pages));
+>>> +    unsigned long align = (1ULL << (VTD_PAGE_SHIFT + shift));
+>>> +    unsigned long start = ALIGN_DOWN(address, align);
+>>> +    unsigned long end = ALIGN(address + (pages << VTD_PAGE_SHIFT), 
+>>> align);
+>>> +
+>>> +    while (start < end) {
+>>> +        __flush_svm_range_dev(svm, sdev, start, align >> 
+>>> VTD_PAGE_SHIFT, ih);
+>>> +        start += align;
+>>> +    }
+>>> +}
+>>
+>> Given that this only seems to be called from intel_invalidate_range(), 
+>> which
+>> has to compute 'pages' only to have it pulled apart again here, 
+>> perhaps it
+>> would be cleaner for intel_flush_svm_range() to take something like an
+>> 'order' argument instead?
+>>
+>> What do you think?
+> 
+> We need to clean up here. It's duplicate with the qi_flush_piotlb()
+> helper. I have a patch under testing for this. I will post it for review
+> later.
 
-We have support for >1 supplies, and we need to enable them to get the
-GPU running _at all_ (and the default voltages should be safe by
-design).
+I'm sorry, above reply is a little vague.
 
-For devfreq though:
- 1. There are constraints on the voltage difference between the core
-and SRAM, we have this caterpillar logic downstream [1], so somebody
-will need to port it (TBH I don't think it's overly critical at this
-point, as Bifrost support is still not very mature from what I can
-see, and devfreq is purely a performance thing).
- 2. The core [2] does not support multiple regulators, so we'll need
-custom code anyway. Even if we didn't have constraints.
+I meant to say, let's take 'pages' as the argument. We are going to use
+qi_flush_piotlb() here to avoid duplicate QI interactions. The
+qi_flush_piotlb() helper also takes 'pages', so keep 'pages' here will
+make things easier.
 
-[1] https://chromium.googlesource.com/chromiumos/third_party/kernel/+/refs/heads/chromeos-4.19/drivers/gpu/arm/bifrost/platform/mediatek/mali_kbase_runtime_pm.c#367
-[2] https://elixir.bootlin.com/linux/latest/source/drivers/opp/core.c#L679
+My cleanup patch is for v5.12. Can you please take this for v5.11?
 
->
-> Steve
->
-> >
-> > Signed-off-by: Nicolas Boichat <drinkcat@chromium.org>
-> > ---
-> >
-> > Changes in v6:
-> >   - New change
-> >
-> >   drivers/gpu/drm/panfrost/panfrost_devfreq.c | 9 +++++++++
-> >   1 file changed, 9 insertions(+)
-> >
-> > diff --git a/drivers/gpu/drm/panfrost/panfrost_devfreq.c b/drivers/gpu/drm/panfrost/panfrost_devfreq.c
-> > index f44d28fad085..1f49043aae73 100644
-> > --- a/drivers/gpu/drm/panfrost/panfrost_devfreq.c
-> > +++ b/drivers/gpu/drm/panfrost/panfrost_devfreq.c
-> > @@ -92,6 +92,15 @@ int panfrost_devfreq_init(struct panfrost_device *pfdev)
-> >       struct thermal_cooling_device *cooling;
-> >       struct panfrost_devfreq *pfdevfreq = &pfdev->pfdevfreq;
-> >
-> > +     if (pfdev->comp->num_supplies > 1) {
-> > +             /*
-> > +              * GPUs with more than 1 supply require platform-specific handling:
-> > +              * continue without devfreq
-> > +              */
-> > +             DRM_DEV_ERROR(dev, "More than 1 supply is not supported yet\n");
-> > +             return 0;
-> > +     }
-> > +
-> >       opp_table = dev_pm_opp_set_regulators(dev, pfdev->comp->supply_names,
-> >                                             pfdev->comp->num_supplies);
-> >       if (IS_ERR(opp_table)) {
-> >
->
+Best regards,
+baolu
