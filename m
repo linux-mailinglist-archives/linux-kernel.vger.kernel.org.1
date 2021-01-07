@@ -2,118 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B1F5C2ECFE5
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 13:35:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BF952ECFF2
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 13:37:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728188AbhAGMfd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 07:35:33 -0500
-Received: from mail-40131.protonmail.ch ([185.70.40.131]:12368 "EHLO
-        mail-40131.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727871AbhAGMfd (ORCPT
+        id S1728302AbhAGMgD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 07:36:03 -0500
+Received: from szxga07-in.huawei.com ([45.249.212.35]:10404 "EHLO
+        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726294AbhAGMgC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 07:35:33 -0500
-Date:   Thu, 07 Jan 2021 12:34:47 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me; s=protonmail;
-        t=1610022890; bh=Hhk9OJTluJ5KWBmdxz+W1q3+eakKWb3hNy44poTwuNA=;
-        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
-        b=l5GVk4sCvt8vCoYVw0sPrYtfanVAMJIAYRjscOnpxyU9uMfcf0KfgJs3gJYKc6WR9
-         Rd5fCvH/l8aC5UaiBJ0Ox3AumM0Cv14/wKLw/JT6vgzKN2EgDkfHrYmFwXDqZfnXGr
-         rH9Y4HZKVbGq4o277yjpACwZZ/u0A8eJ3V0IDI6fNKiaKSa/N8ShJeDriSxpaCnnRs
-         dHMGbCAO09EcojIUbyaHDGhDR8avm1x0QHGYq6fMfQy2wgWfmOSZ3sqTjP9huowfnA
-         2IcDDcBnck63tmzZ0Z6vqNM8ettTkwhSFm3/PdSxYIjjRaC6jV82q0kRFNmf8KWOqL
-         XpHoYfy/nvyvg==
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-From:   Alexander Lobakin <alobakin@pm.me>
-Cc:     Arnd Bergmann <arnd@arndb.de>, Kees Cook <keescook@chromium.org>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Fangrui Song <maskray@google.com>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Pei Huang <huangpei@loongson.cn>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        Alexander Lobakin <alobakin@pm.me>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        Ralf Baechle <ralf@linux-mips.org>,
-        Corey Minyard <cminyard@mvista.com>,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arch@vger.kernel.org, stable@vger.kernel.org,
-        clang-built-linux@googlegroups.com
-Reply-To: Alexander Lobakin <alobakin@pm.me>
-Subject: [PATCH v4 mips-next 1/7] MIPS: vmlinux.lds.S: add missing PAGE_ALIGNED_DATA() section
-Message-ID: <20210107123428.354231-1-alobakin@pm.me>
-In-Reply-To: <20210107123331.354075-1-alobakin@pm.me>
-References: <20210107123331.354075-1-alobakin@pm.me>
+        Thu, 7 Jan 2021 07:36:02 -0500
+Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4DBQf80R70z7Fbj;
+        Thu,  7 Jan 2021 20:34:24 +0800 (CST)
+Received: from huawei.com (10.175.104.175) by DGGEMS404-HUB.china.huawei.com
+ (10.3.19.204) with Microsoft SMTP Server id 14.3.498.0; Thu, 7 Jan 2021
+ 20:35:13 +0800
+From:   Miaohe Lin <linmiaohe@huawei.com>
+To:     <akpm@linux-foundation.org>, <mike.kravetz@oracle.com>
+CC:     <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
+        <linmiaohe@huawei.com>
+Subject: [PATCH] mm/hugetlb: Fix potential missing huge page size info
+Date:   Thu, 7 Jan 2021 07:34:49 -0500
+Message-ID: <20210107123449.38481-1-linmiaohe@huawei.com>
+X-Mailer: git-send-email 2.19.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
-        autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
-        mailout.protonmail.ch
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.104.175]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-MIPS uses its own declaration of rwdata, and thus it should be kept
-in sync with the asm-generic one. Currently PAGE_ALIGNED_DATA() is
-missing from the linker script, which emits the following ld
-warnings:
+The huge page size is encoded for VM_FAULT_HWPOISON errors only. So if we
+return VM_FAULT_HWPOISON, huge page size would just be ignored.
 
-mips-alpine-linux-musl-ld: warning: orphan section
-`.data..page_aligned' from `arch/mips/kernel/vdso.o' being placed
-in section `.data..page_aligned'
-mips-alpine-linux-musl-ld: warning: orphan section
-`.data..page_aligned' from `arch/mips/vdso/vdso-image.o' being placed
-in section `.data..page_aligned'
-
-Add the necessary declaration, so the mentioned structures will be
-placed in vmlinux as intended:
-
-ffffffff80630580 D __end_once
-ffffffff80630580 D __start___dyndbg
-ffffffff80630580 D __start_once
-ffffffff80630580 D __stop___dyndbg
-ffffffff80634000 d mips_vdso_data
-ffffffff80638000 d vdso_data
-ffffffff80638580 D _gp
-ffffffff8063c000 T __init_begin
-ffffffff8063c000 D _edata
-ffffffff8063c000 T _sinittext
-
-->
-
-ffffffff805a4000 D __end_init_task
-ffffffff805a4000 D __nosave_begin
-ffffffff805a4000 D __nosave_end
-ffffffff805a4000 d mips_vdso_data
-ffffffff805a8000 d vdso_data
-ffffffff805ac000 D mmlist_lock
-ffffffff805ac080 D tasklist_lock
-
-Fixes: ebb5e78cc634 ("MIPS: Initial implementation of a VDSO")
-Cc: stable@vger.kernel.org # 4.4+
-Signed-off-by: Alexander Lobakin <alobakin@pm.me>
-Reviewed-by: Kees Cook <keescook@chromium.org>
+Fixes: aa50d3a7aa81 ("Encode huge page size for VM_FAULT_HWPOISON errors")
+Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+Cc: <stable@vger.kernel.org>
 ---
- arch/mips/kernel/vmlinux.lds.S | 1 +
- 1 file changed, 1 insertion(+)
+ mm/hugetlb.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/mips/kernel/vmlinux.lds.S b/arch/mips/kernel/vmlinux.lds.=
-S
-index 5e97e9d02f98..83e27a181206 100644
---- a/arch/mips/kernel/vmlinux.lds.S
-+++ b/arch/mips/kernel/vmlinux.lds.S
-@@ -90,6 +90,7 @@ SECTIONS
-=20
- =09=09INIT_TASK_DATA(THREAD_SIZE)
- =09=09NOSAVE_DATA
-+=09=09PAGE_ALIGNED_DATA(PAGE_SIZE)
- =09=09CACHELINE_ALIGNED_DATA(1 << CONFIG_MIPS_L1_CACHE_SHIFT)
- =09=09READ_MOSTLY_DATA(1 << CONFIG_MIPS_L1_CACHE_SHIFT)
- =09=09DATA_DATA
---=20
-2.30.0
-
+diff --git a/mm/hugetlb.c b/mm/hugetlb.c
+index 3ada2e78316c..e249bffa0e75 100644
+--- a/mm/hugetlb.c
++++ b/mm/hugetlb.c
+@@ -4371,7 +4371,7 @@ static vm_fault_t hugetlb_no_page(struct mm_struct *mm,
+ 		 * So we need to block hugepage fault by PG_hwpoison bit check.
+ 		 */
+ 		if (unlikely(PageHWPoison(page))) {
+-			ret = VM_FAULT_HWPOISON |
++			ret = VM_FAULT_HWPOISON_LARGE |
+ 				VM_FAULT_SET_HINDEX(hstate_index(h));
+ 			goto backout_unlocked;
+ 		}
+-- 
+2.19.1
 
