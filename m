@@ -2,110 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B9F802EC7F6
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 03:13:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FAC92EC7F8
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 03:15:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726791AbhAGCMr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Jan 2021 21:12:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54238 "EHLO
+        id S1726844AbhAGCNq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Jan 2021 21:13:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54390 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726086AbhAGCMq (ORCPT
+        with ESMTP id S1726477AbhAGCNq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Jan 2021 21:12:46 -0500
-Received: from mail-vs1-xe2e.google.com (mail-vs1-xe2e.google.com [IPv6:2607:f8b0:4864:20::e2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0EBC8C0612EF
-        for <linux-kernel@vger.kernel.org>; Wed,  6 Jan 2021 18:12:06 -0800 (PST)
-Received: by mail-vs1-xe2e.google.com with SMTP id h6so2859414vsr.6
-        for <linux-kernel@vger.kernel.org>; Wed, 06 Jan 2021 18:12:06 -0800 (PST)
+        Wed, 6 Jan 2021 21:13:46 -0500
+Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31BE0C0612F1
+        for <linux-kernel@vger.kernel.org>; Wed,  6 Jan 2021 18:13:06 -0800 (PST)
+Received: by mail-pj1-x1032.google.com with SMTP id l23so2751593pjg.1
+        for <linux-kernel@vger.kernel.org>; Wed, 06 Jan 2021 18:13:06 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=7QUKDV8GhR0Hal3SMjWQ+BvIoYteQVe/RM0xw5OztWs=;
-        b=i4RKVO87xQDD+OHygS/7nJBRBxgtFlnBHuiJMdXRggb+7FIB9GFulzfuHXlTGOfyCQ
-         lKVdCnLvycIAnj2agamwAe6A3DGtzF3hL5Mt3jWXGT/ys8+xXuU+3qLpeXzxx3TPrmOh
-         ykGYRaOklikyjYiAw3nKv0s38DcRNOy627qPug6NpPA3RrOb1fra+XRhx8joUYwKYLcQ
-         m4rByeYQBBqRfmTxySw7XY1/qtxAbk2OQHzVfr77kEu75OCfEq3uopLsQGqJhTI8RsWC
-         Y7btRuv/pAr/eZSRLptQn5vCOk6ES+stdaon3n0b/wui/e4cfm4macRk4nH4PTID0bAI
-         1ifg==
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=4DKo8j9zd5HVNAsTP7vh/Z4vfechORbzWS0lt8jxtJM=;
+        b=tTDlZ77eDD4Ql/QwKncvUibBxgVcOuFziriMe9Fu65c510MzufDAApkBRkCmZ7T+Se
+         VV3oxhpiEgucluyXCRBDJaE5oj1FcUpODpL+NA1qaaY37kG4PcmraT4JFsGmwEIlBWqE
+         jJuV/6mznWuhakFXhnQARwKuVOM3nxHTk1HDTOUtBwKDoMpDLD+kPGSVSNVSb3QxEga4
+         RJz5ESH4T9I+Engo3JZGr9OZekVnnScSXFZsDCoJgVtbBhmC9T/TrR2xOJ4v/Ts4/VKo
+         UhDcGJVHZPgA5auCP828wZrJIVLn4MF1Mdrqlejq3Q/3suVIDSYpePHFDyLmn9pM5bWq
+         XGcA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=7QUKDV8GhR0Hal3SMjWQ+BvIoYteQVe/RM0xw5OztWs=;
-        b=EE5FBC27PcwXfgsWDOfyf96MDd5SKBhcLg4KXdK3h3w19fAif/qvebz0ZChRZKrP4R
-         JUEm7b4Rqb0BOES+Lh2uaCNoFpaQfTeV3z4yMYAib+XqUpzRtw8W43vMadiOLCZrFdEL
-         wCDz8n/QEenITG0LzCU/6TMNx0/jFOOiCLetns8jmo+3vcSj/08TYJWIRJWzCov6M32s
-         Z2tihMOX15CYPwS64KVZE7E+mK6TZ4q3fGSGV+ksF7FvhD9yLnuvOiIeFFT47yaOSOCa
-         xu6P4qP0m2j5XAOMM/RPCtsBvocffJ890Bj0hLMZOl/SF0g1xJFBcafDIGRLerOSqRwE
-         YUKw==
-X-Gm-Message-State: AOAM531HIBQZWOcjgIwusSLfLVt3frOLuQF97z6zpLpU8AyyjV83vZiJ
-        7I5CFtyHxy5HYUNc8VfCetemtgSyrzDI4UOOsOykhQ==
-X-Google-Smtp-Source: ABdhPJzFX5Aa0HwKE/uKV7fWrYvU66XSjmQssphDz1+cqe0pd76y1FEU5PNhifPpd41zsw+1nazA0hu7T7iv1hroDSE=
-X-Received: by 2002:a67:f043:: with SMTP id q3mr5511928vsm.14.1609985525023;
- Wed, 06 Jan 2021 18:12:05 -0800 (PST)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=4DKo8j9zd5HVNAsTP7vh/Z4vfechORbzWS0lt8jxtJM=;
+        b=p/OGyzAlZh56o+uIn920hyhxy6zyM+/POzy5b/81YdQKwRynUg9t4LYEhmRWJYqzXF
+         kBeY+KqfRcFQ34qgc8cqwfp84PzJpjVcGFybZppFA8czE5pCejs9jT6ArlyNLyGWerDr
+         MYHq+A1N5PvIU5irR6KMhdARdHHt1TFzdaBeWcg+Bk15hGL8uGaGVl4LCI9uZpztMwv0
+         eyVLLFqZu5dyVnScu+bdy4X6QKOyF4LIladvVmx/BZnJh+/xYHz2SRoytZ/LSkad20W7
+         ZmEfIPbZaS38vyBqYV+T7CHoNDkEE6bg1qSVLDD0o/FlD+EFL+L05NyA7jG0yVl7/nfY
+         5sZw==
+X-Gm-Message-State: AOAM533tXB+wkPlKS7mOzFTpppaBw+wXruhthsZqWZkpMWJVRzV6PQ23
+        MPHq4wcskqb1TawRI8oXQqBLRAgVx1Wo3w==
+X-Google-Smtp-Source: ABdhPJyi55P4FaLeiehm3exv0s4ICVbVwfXQPiURe81s9bmktcmOCslfJ8xFNhl81y5fubuYq+TL4g==
+X-Received: by 2002:a17:90a:fa18:: with SMTP id cm24mr6977671pjb.220.1609985585530;
+        Wed, 06 Jan 2021 18:13:05 -0800 (PST)
+Received: from [192.168.1.134] ([66.219.217.173])
+        by smtp.gmail.com with ESMTPSA id z23sm4129540pfj.143.2021.01.06.18.13.04
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 06 Jan 2021 18:13:04 -0800 (PST)
+Subject: Re: [PATCH] ARC: unbork 5.11 bootup: fix snafu in _TIF_NOTIFY_SIGNAL
+ handling
+To:     Vineet Gupta <Vineet.Gupta1@synopsys.com>,
+        linux-snps-arc@lists.infradead.org
+Cc:     linux-kernel@vger.kernel.org
+References: <20210107001225.3063163-1-vgupta@synopsys.com>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <0c62fbca-87e1-f53a-26e1-35244e2e6f48@kernel.dk>
+Date:   Wed, 6 Jan 2021 19:13:03 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20201118194838.753436396@linutronix.de> <20201118204007.169209557@linutronix.de>
- <20210106180132.41dc249d@gandalf.local.home> <CAHk-=wh2895wXEXYtb70CTgW+UR7jfh6VFhJB_bOrF0L7UKoEg@mail.gmail.com>
- <20210106174917.3f8ad0d8@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <20210106174917.3f8ad0d8@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-From:   Willem de Bruijn <willemb@google.com>
-Date:   Wed, 6 Jan 2021 21:11:27 -0500
-Message-ID: <CA+FuTSevLSxZkNLdJPHqRRksxZmnPc1qFBYJeBx26WsA4A1M7A@mail.gmail.com>
-Subject: Re: [BUG] from x86: Support kmap_local() forced debugging
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        David Miller <davem@davemloft.net>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "the arch/x86 maintainers" <x86@kernel.org>,
-        Christoph Hellwig <hch@lst.de>,
-        Matthew Wilcox <willy@infradead.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Netdev <netdev@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210107001225.3063163-1-vgupta@synopsys.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 6, 2021 at 8:49 PM Jakub Kicinski <kuba@kernel.org> wrote:
->
-> On Wed, 6 Jan 2021 17:03:48 -0800 Linus Torvalds wrote:
-> > I wonder whether there is other code that "knows" about kmap() only
-> > affecting PageHighmem() pages thing that is no longer true.
-> >
-> > Looking at some other code, skb_gro_reset_offset() looks suspiciously
-> > like it also thinks highmem pages are special.
-> >
-> > Adding the networking people involved in this area to the cc too.
->
-> Thanks for the detailed analysis! skb_gro_reset_offset() checks if
-> kernel can read data in the fragments directly as an optimization,
-> in case the entire header is in a fragment.
->
-> IIUC DEBUG_KMAP_LOCAL_FORCE_MAP only affects the mappings from
-> explicit kmap calls, which GRO won't make - it will fall back to
-> pulling the header out of the fragment and end up in skb_copy_bits(),
-> i.e. the loop you fixed. So GRO should be good. I think..
+On 1/6/21 5:12 PM, Vineet Gupta wrote:
+> Linux 5.11.rcX was failing to boot on ARC HSDK board. Turns out we have
+> a couple of issues, this being the first one, and I'm to blame as I
+> didn't pay attention during review.
+> 
+> TIF_NOTIFY_SIGNAL support requires checking multiple TIF_* bits in
+> kernel return code path. Old code only needed to check a single bit so
+> BBIT0 <TIF_SIGPENDING> worked. New code needs to check multiple bits so
+> AND <bit-mask> instruction. So needs to use bit mask variant _TIF_SIGPENDING
 
-Agreed. That code in skb_gro_reset_offset skips the GRO frag0
-optimization in various cases, including if the first fragment is in
-high mem.
+Sorry about that, my arc asm isn't that strong :-)
+Thanks for fixing it.
 
-That specific check goes back to the introduction of the frag0
-optimization in commit 86911732d399 ("gro: Avoid copying headers of
-unmerged packets"), at the time in helper skb_gro_header().
+-- 
+Jens Axboe
 
-Very glad to hear that the fix addresses the crash in
-skb_frag_foreach_page. Thanks!
