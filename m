@@ -2,95 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D17332ED5C4
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 18:38:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C20802ED5C6
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 18:38:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728783AbhAGRhh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 12:37:37 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:46981 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726427AbhAGRhh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 12:37:37 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1610040971;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=HAodYt2HQFDdAV3Nlwj/zRiTtI08o4QNW6FChKlHIwI=;
-        b=VREKnqPw8DtlosGR8JZEVxU6wAKZxVSXxfZ2aUggMax4F9+FFmQlL8MJIZgfgpWAtwQ/ib
-        4JyuQVF8kNVvDJf5rb+mXKRERi75kY5irEdIZRwIHVLKWbLr12Xxk70y/KIW0MnBvUUI/M
-        8E1i4HnU3OzMl0OmAVIa2NDJYIDlxMA=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-580-jdWXXdCXP9mMnCa2FnvqhA-1; Thu, 07 Jan 2021 12:36:06 -0500
-X-MC-Unique: jdWXXdCXP9mMnCa2FnvqhA-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 5073C100F349;
-        Thu,  7 Jan 2021 17:36:05 +0000 (UTC)
-Received: from mail (ovpn-112-222.rdu2.redhat.com [10.10.112.222])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id DDEC860C0F;
-        Thu,  7 Jan 2021 17:36:04 +0000 (UTC)
-Date:   Thu, 7 Jan 2021 12:36:04 -0500
-From:   Andrea Arcangeli <aarcange@redhat.com>
-To:     Vlastimil Babka <vbabka@suse.cz>
-Cc:     Hugh Dickins <hughd@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alex Shi <alex.shi@linux.alibaba.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Michal Hocko <mhocko@suse.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mm/mmap: replace if (cond) BUG() with BUG_ON()
-Message-ID: <X/dGhD/R8r5yeElq@redhat.com>
-References: <1607743586-80303-1-git-send-email-alex.shi@linux.alibaba.com>
- <1607743586-80303-2-git-send-email-alex.shi@linux.alibaba.com>
- <e50574aa-87b8-8ddf-2235-ef98e22bcb7d@linux.alibaba.com>
- <alpine.LSU.2.11.2101051919130.1361@eggly.anvils>
- <20210106114620.5c221690f3a9cad7afcc3077@linux-foundation.org>
- <X/YY+mjpq15nmryI@redhat.com>
- <alpine.LSU.2.11.2101061213540.2492@eggly.anvils>
- <bd10e2dc-7a5e-835d-9a1f-9fff36cc22b5@suse.cz>
+        id S1728862AbhAGRhs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 12:37:48 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58644 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726064AbhAGRhr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Jan 2021 12:37:47 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DAEC1233FB;
+        Thu,  7 Jan 2021 17:37:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1610041027;
+        bh=W8Sz3wrq8nz0i3FXZOdUqghbLht4+0EwsMoYMeRXPaY=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=ZhPCBL/H1Ne6spP9NfQpPG2Rk7t7+CMQuWfj3k0aFk/LeJjc4imZBd68O79X2FFmq
+         wPUUlV3Q20DxMPBrnsj0vYn4TAPm9fo7CyyibUD36m3Aq9cU/vWBKJKyzvZRGwr9/c
+         hCw0NaP3l1VZx+8QjRVFEv7wzqxGklBq3ES5m+a9ob70egJzbltdGsfqN4OshE/C2d
+         AQJDhQ8gG2yTSRZjUIAHEdXk0Ly6EYpyoxryEG0Y5ydkde9JGWrzz55Dy77jKIX8wi
+         QvGG72aamrHLxN41m7INBY1K9ZUgk1HZua6jh0pXIVEBpK6A9OFHta/MPb/xh/c0ha
+         lvtZkCiStslTQ==
+Received: by mail-qv1-f41.google.com with SMTP id p5so3108105qvs.7;
+        Thu, 07 Jan 2021 09:37:06 -0800 (PST)
+X-Gm-Message-State: AOAM531uvDtLkwTKSBST50+OU2gwiQz7DFxK0gGY/taMzBk05abQXSGg
+        p0iIhbCRIymDBZbeaO3quQYb5gFGYEX/+//bIw==
+X-Google-Smtp-Source: ABdhPJzURj++TxosCxNiS9vlUB76midDLxNdvQtTqewOJTwH+v7wz9NYeiovBs2vgzJFIHz8aO6WNDW1+ZyOsbn9gKw=
+X-Received: by 2002:ad4:4c8c:: with SMTP id bs12mr9730295qvb.11.1610041025928;
+ Thu, 07 Jan 2021 09:37:05 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <bd10e2dc-7a5e-835d-9a1f-9fff36cc22b5@suse.cz>
-User-Agent: Mutt/2.0.4 (2020-12-30)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+References: <20210105045735.1709825-1-jeremy.linton@arm.com>
+ <CAL_JsqL2ZXrTg9VFwGK4CawvyBbnHehF9W=cgVEJPzCRoM5G9g@mail.gmail.com> <bdd563a9-c8d4-307b-617c-139dda3e4984@arm.com>
+In-Reply-To: <bdd563a9-c8d4-307b-617c-139dda3e4984@arm.com>
+From:   Rob Herring <robh@kernel.org>
+Date:   Thu, 7 Jan 2021 10:36:53 -0700
+X-Gmail-Original-Message-ID: <CAL_Jsq+OUX2ctFwiqcQtM=oswyz8s-iq94eHW247sabYYF5B-A@mail.gmail.com>
+Message-ID: <CAL_Jsq+OUX2ctFwiqcQtM=oswyz8s-iq94eHW247sabYYF5B-A@mail.gmail.com>
+Subject: Re: [PATCH] arm64: PCI: Enable SMC conduit
+To:     Jeremy Linton <jeremy.linton@arm.com>
+Cc:     linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        PCI <linux-pci@vger.kernel.org>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 07, 2021 at 06:28:29PM +0100, Vlastimil Babka wrote:
-> On 1/6/21 9:18 PM, Hugh Dickins wrote:
-> > On Wed, 6 Jan 2021, Andrea Arcangeli wrote:
-> >> 
-> >> I'd be surprised if the kernel can boot with BUG_ON() defined as "do
-> >> {}while(0)" so I guess it doesn't make any difference.
-> > 
-> > I had been afraid of that too, when CONFIG_BUG is not set:
-> > but I think it's actually "if (cond) do {} while (0)".
-> 
-> It's a maze of configs and arch-specific vs generic headers, but I do see this
-> in include/asm-generic/bug.h:
-> 
-> #else /* !CONFIG_BUG */
-> #ifndef HAVE_ARCH_BUG
-> #define BUG() do {} while (1)
-> #endif
-> 
-> So seems to me there *are* configurations possible where side-effects are indeed
-> thrown away, right?
+On Thu, Jan 7, 2021 at 9:24 AM Jeremy Linton <jeremy.linton@arm.com> wrote:
+>
+> Hi,
+>
+>
+> On 1/7/21 9:28 AM, Rob Herring wrote:
+> > On Mon, Jan 4, 2021 at 9:57 PM Jeremy Linton <jeremy.linton@arm.com> wr=
+ote:
+> >>
+> >> Given that most arm64 platform's PCI implementations needs quirks
+> >> to deal with problematic config accesses, this is a good place to
+> >> apply a firmware abstraction. The ARM PCI SMMCCC spec details a
+> >> standard SMC conduit designed to provide a simple PCI config
+> >> accessor. This specification enhances the existing ACPI/PCI
+> >> abstraction and expects power, config, etc functionality is handled
+> >> by the platform. It also is very explicit that the resulting config
+> >> space registers must behave as is specified by the pci specification.
+> >
+> > If we put it in a document, they must behave.
+> >
+> >> Lets hook the normal ACPI/PCI config path, and when we detect
+> >> missing MADT data, attempt to probe the SMC conduit. If the conduit
+> >> exists and responds for the requested segment number (provided by the
+> >> ACPI namespace) attach a custom pci_ecam_ops which redirects
+> >> all config read/write requests to the firmware.
+> >>
+> >> This patch is based on the Arm PCI Config space access document @
+> >> https://developer.arm.com/documentation/den0115/latest
+> >
+> >  From the spec:
+> > "On some platforms, the SoC may only support 32-bit PCI configuration
+> > space writes. On such platforms, calls to this function with access
+> > size of 1 or 2 bytes may require the implementation of this function
+> > to perform a PCI configuration read, following by the write. This
+> > could result in inadvertently corrupting adjacent RW1C fields. It is
+> > the implementation responsibility to be aware of these situations and
+> > guard against them if possible."
+> >
+> > First, this contradicts the above statement about being compliant with
+> > the PCI spec. Second, Linux is left to just guess whether this is the
+> > case or not? I guess it would be pointless for firmware to advertise
+> > this because it could just lie.
+>
+> Thanks for taking a look at this.
+>
+> Right, to clarify. The result of the SMC calls must appear to be
+> compliant, but the underlying hardware of course may not be.
+>
+> The RW1C discussion during the spec reviews was extensive, but as you
+> can see from the language the intention is that the results appear
+> compliant. But IMHO, considering that ECAM is a configuration mechanism
+> not an operational one, if one looks at the results of the existing
+> alignment quirks in the kernel & the DT host bridge drivers, its not
+> particularly problematic. In the case that there is a problem with a
+> particular adapter, its the firmware's responsibility to deal with it.
+> If that isn't possible then of course the machine is neither ECAM or
+> compatible with this specification, same as what happens if there is a
+> fundamental issue with the MMIO mapping. Its also not unheard of for
+> cards to simply be incompatible with machines due to lack of optional
+> features like PIO.
+>
+>
+> >
+> > I would like to know how to 'guard against them' so I can implement
+> > that in the kernel accessors.  >
+> >> Signed-off-by: Jeremy Linton <jeremy.linton@arm.com>
+> >> ---
+> >>   arch/arm64/kernel/pci.c   | 87 +++++++++++++++++++++++++++++++++++++=
+++
+> >>   include/linux/arm-smccc.h | 26 ++++++++++++
+> >>   2 files changed, 113 insertions(+)
+> >>
+> >> diff --git a/arch/arm64/kernel/pci.c b/arch/arm64/kernel/pci.c
+> >> index 1006ed2d7c60..56d3773aaa25 100644
+> >> --- a/arch/arm64/kernel/pci.c
+> >> +++ b/arch/arm64/kernel/pci.c
+> >> @@ -7,6 +7,7 @@
+> >>    */
+> >>
+> >>   #include <linux/acpi.h>
+> >> +#include <linux/arm-smccc.h>
+> >>   #include <linux/init.h>
+> >>   #include <linux/io.h>
+> >>   #include <linux/kernel.h>
+> >> @@ -107,6 +108,90 @@ static int pci_acpi_root_prepare_resources(struct=
+ acpi_pci_root_info *ci)
+> >>          return status;
+> >>   }
+> >>
+> >> +static int smccc_pcie_check_conduit(u16 seg)
+> >
+> > check what? Based on how you use this, perhaps _has_conduit() instead.
+>
+> Sure.
+>
+> >
+> >> +{
+> >> +       struct arm_smccc_res res;
+> >> +
+> >> +       if (arm_smccc_1_1_get_conduit() =3D=3D SMCCC_CONDUIT_NONE)
+> >> +               return -EOPNOTSUPP;
+> >> +
+> >> +       arm_smccc_smc(SMCCC_PCI_VERSION, 0, 0, 0, 0, 0, 0, 0, &res);
+> >> +       if ((int)res.a0 < 0)
+> >> +               return -EOPNOTSUPP;
+> >> +
+> >> +       arm_smccc_smc(SMCCC_PCI_SEG_INFO, seg, 0, 0, 0, 0, 0, 0, &res)=
+;
+> >> +       if ((int)res.a0 < 0)
+> >> +               return -EOPNOTSUPP;
+> >
+> > Don't you need to check that read and write functions are supported?
+>
+> In theory no, the first version of the specification makes them
+> mandatory for all implementations. There isn't a partial access method,
+> so nothing works if only read or write were implemented.
 
-But this not BUG_ON, and that is an infinite loop while(1), not an
-optimization away as in while (0) that I was suggesting to just throw
-away cond and make it a noop. BUG() is actually the thing to use to
-move functional stuff out of BUG_ON so it's not going to be causing
-issues if it just loops.
+Then the spec should change:
 
-This overall feels mostly an aesthetically issue.
+2.3.3 Caller responsibilities
+The caller has the following responsibilities:
+=E2=80=A2 The caller must ensure that this function is implemented before
+issuing a call. This function is discoverable
+by calling PCI_FEATURES with pci_func_id set to 0x8400_0132.
 
-Thanks,
-Andrea
 
+I guess knowing the version is ensuring, but the 2nd sentence makes it
+seem that is how one should ensure.
+
+Related, are there any sort of tests for the interface? I generally
+don't think the kernel's job is validating firmware (a frequent topic
+for DT), but we should have something. Maybe an SMC unittest module?
+If nothing else, seems like we should have at least one PCI_FEATURES
+call to make sure it works. We don't want to add it later only to find
+that it breaks on some firmware implementations. Though we can just
+add firmware quirks. ;)
+
+Rob
