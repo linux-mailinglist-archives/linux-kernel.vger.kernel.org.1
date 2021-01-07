@@ -2,378 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B995F2ECB44
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 08:55:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 321962ECB53
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 08:59:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727530AbhAGHyJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 02:54:09 -0500
-Received: from out30-131.freemail.mail.aliyun.com ([115.124.30.131]:45610 "EHLO
-        out30-131.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727463AbhAGHyH (ORCPT
+        id S1727639AbhAGH4J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 02:56:09 -0500
+Received: from mo4-p01-ob.smtp.rzone.de ([85.215.255.52]:23466 "EHLO
+        mo4-p01-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725970AbhAGH4I (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 02:54:07 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R531e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04400;MF=wenyang@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0UKzNwIl_1610006002;
-Received: from localhost(mailfrom:wenyang@linux.alibaba.com fp:SMTPD_---0UKzNwIl_1610006002)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Thu, 07 Jan 2021 15:53:22 +0800
-From:   Wen Yang <wenyang@linux.alibaba.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Sasha Levin <sashal@kernel.org>
-Cc:     Xunlei Pang <xlpang@linux.alibaba.com>,
-        linux-kernel@vger.kernel.org,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        stable@vger.kernel.org, Wen Yang <wenyang@linux.alibaba.com>
-Subject: [PATCH 4.19 7/7] proc: Use a list of inodes to flush from proc
-Date:   Thu,  7 Jan 2021 15:53:14 +0800
-Message-Id: <20210107075314.62683-8-wenyang@linux.alibaba.com>
-X-Mailer: git-send-email 2.23.0
-In-Reply-To: <20210107075314.62683-1-wenyang@linux.alibaba.com>
-References: <20210107075314.62683-1-wenyang@linux.alibaba.com>
+        Thu, 7 Jan 2021 02:56:08 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1610005995;
+        s=strato-dkim-0002; d=chronox.de;
+        h=References:In-Reply-To:Date:Cc:To:From:Subject:Message-ID:From:
+        Subject:Sender;
+        bh=KeYZOhheY0c+6YwZ/Ytl1iRm8ID+YfLlMyMcKez+UfA=;
+        b=l5xUZ+JK8oIyy+KMdfjWHfEazaQAwGhpjZq3zAhn7o0OvAd6dQh2hmItMN59R6zeQV
+        ZOgmg/HuP6BzanUkI58/EE66+Z6S6XthfpqielTkQhm8q6n6J2lzyiMnf2SZCDkI11JA
+        z/bOAasrBznNcE1mUtTSd3ohdr9F2U2cY7YxqYcAgSXjPxT5/5HXRzgn7YfzmDenJKw4
+        4o2kgzSshSNbH1yVUrdi5U/czXB+Mloy+zHOUCs/OAMwnNsmR/H0j41TSHz7buYjj2Bh
+        Wmfp5HtY+VywBWlNYvaiKYJYMzYlvnlf4p88bx63BueVKVypR40NAmRgxWsWzcYYa4HA
+        osww==
+X-RZG-AUTH: ":P2ERcEykfu11Y98lp/T7+hdri+uKZK8TKWEqNzyCzy1Sfr67uExK884EC0GFGHavJShPkMRYMkE="
+X-RZG-CLASS-ID: mo00
+Received: from tauon.chronox.de
+        by smtp.strato.de (RZmta 47.12.1 DYNA|AUTH)
+        with ESMTPSA id Z04c46x077rFCYk
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
+        (Client did not present a certificate);
+        Thu, 7 Jan 2021 08:53:15 +0100 (CET)
+Message-ID: <a5c50afa7e11329ea301e64bc03951b38f4e1eda.camel@chronox.de>
+Subject: Re: [PATCH 3/5] crypto: add RFC5869 HKDF
+From:   Stephan Mueller <smueller@chronox.de>
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     herbert@gondor.apana.org.au, mathew.j.martineau@linux.intel.com,
+        dhowells@redhat.com, linux-crypto@vger.kernel.org,
+        linux-fscrypt@vger.kernel.org, linux-kernel@vger.kernel.org,
+        keyrings@vger.kernel.org
+Date:   Thu, 07 Jan 2021 08:53:15 +0100
+In-Reply-To: <X/a4qt9Oiw4WgoRY@sol.localdomain>
+References: <4616980.31r3eYUQgx@positron.chronox.de>
+         <12679948.uLZWGnKmhe@positron.chronox.de>
+         <X/a4qt9Oiw4WgoRY@sol.localdomain>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.2 (3.38.2-1.fc33) 
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Eric W. Biederman" <ebiederm@xmission.com>
+Am Mittwoch, dem 06.01.2021 um 23:30 -0800 schrieb Eric Biggers:
+> On Mon, Jan 04, 2021 at 10:49:13PM +0100, Stephan Müller wrote:
+> > RFC5869 specifies an extract and expand two-step key derivation
+> > function. The HKDF implementation is provided as a service function that
+> > operates on a caller-provided HMAC cipher handle.
+> 
+> HMAC isn't a "cipher".
+> 
+> > The extract function is invoked via the crypto_hkdf_setkey call.
+> 
+> Any reason not to call this crypto_hkdf_extract(), to match the
+> specification?
 
-[ Upstream commit 7bc3e6e55acf065500a24621f3b313e7e5998acf ]
+I named it to match the other KDF implementation. But you are right, I will
+name it accordingly.
 
-Rework the flushing of proc to use a list of directory inodes that
-need to be flushed.
+> 
+> > RFC5869
+> > allows two optional parameters to be provided to the extract operation:
+> > the salt and additional information. Both are to be provided with the
+> > seed parameter where the salt is the first entry of the seed parameter
+> > and all subsequent entries are handled as additional information. If
+> > the caller intends to invoke the HKDF without salt, it has to provide a
+> > NULL/0 entry as first entry in seed.
+> 
+> Where does "additional information" for extract come from?  RFC 5869 has:
+> 
+>         HKDF-Extract(salt, IKM) -> PRK
+> 
+>         Inputs:
+>               salt     optional salt value (a non-secret random value);
+>                        if not provided, it is set to a string of HashLen
+> zeros.
+>               IKM      input keying material
+> 
+> There's no "additional information".
 
-The list is kept on struct pid not on struct task_struct, as there is
-a fixed connection between proc inodes and pids but at least for the
-case of de_thread the pid of a task_struct changes.
+I used the terminology from SP800-108. I will update the description
+accordingly. 
+> 
+> > 
+> > The expand function is invoked via the crypto_hkdf_generate and can be
+> > invoked multiple times. This function allows the caller to provide a
+> > context for the key derivation operation. As specified in RFC5869, it is
+> > optional. In case such context is not provided, the caller must provide
+> > NULL / 0 for the info / info_nvec parameters.
+> 
+> Any reason not to call this crypto_hkdf_expand() to match the specification?
 
-This removes the dependency on proc_mnt which allows for different
-mounts of proc having different mount options even in the same pid
-namespace and this allows for the removal of proc_mnt which will
-trivially the first mount of proc to honor it's mount options.
+I will update the function name.
 
-This flushing remains an optimization.  The functions
-pid_delete_dentry and pid_revalidate ensure that ordinary dcache
-management will not attempt to use dentries past the point their
-respective task has died.  When unused the shrinker will
-eventually be able to remove these dentries.
+Thanks
+Stephan
+> 
+> - Eric
 
-There is a case in de_thread where proc_flush_pid can be
-called early for a given pid.  Which winds up being
-safe (if suboptimal) as this is just an optiimization.
-
-Only pid directories are put on the list as the other
-per pid files are children of those directories and
-d_invalidate on the directory will get them as well.
-
-So that the pid can be used during flushing it's reference count is
-taken in release_task and dropped in proc_flush_pid.  Further the call
-of proc_flush_pid is moved after the tasklist_lock is released in
-release_task so that it is certain that the pid has already been
-unhashed when flushing it taking place.  This removes a small race
-where a dentry could recreated.
-
-As struct pid is supposed to be small and I need a per pid lock
-I reuse the only lock that currently exists in struct pid the
-the wait_pidfd.lock.
-
-The net result is that this adds all of this functionality
-with just a little extra list management overhead and
-a single extra pointer in struct pid.
-
-v2: Initialize pid->inodes.  I somehow failed to get that
-    initialization into the initial version of the patch.  A boot
-    failure was reported by "kernel test robot <lkp@intel.com>", and
-    failure to initialize that pid->inodes matches all of the reported
-    symptoms.
-
-Signed-off-by: Eric W. Biederman <ebiederm@xmission.com>
-Fixes: f333c700c610 ("pidns: Add a limit on the number of pid
-namespaces")
-Fixes: 60347f6716aa ("pid namespaces: prepare proc_flust_task() to flush
-entries from multiple proc trees")
-Cc: <stable@vger.kernel.org> # 4.19.x: b3e583825266: clone: add
-CLONE_PIDFD
-Cc: <stable@vger.kernel.org> # 4.19.x: b53b0b9d9a61: pidfd: add polling
-support
-Cc: <stable@vger.kernel.org> # 4.19.x: 0afa5ca82212: proc: Rename in
-proc_inode rename sysctl_inodes sibling_inodes
-Cc: <stable@vger.kernel.org> # 4.19.x: 26dbc60f385f: proc: Generalize
-proc_sys_prune_dcache into proc_prune_siblings_dcache
-Cc: <stable@vger.kernel.org> # 4.19.x: 71448011ea2a: proc: Clear the
-pieces of
-proc_inode that proc_evict_inode cares about
-Cc: <stable@vger.kernel.org> # 4.19.x: f90f3cafe8d5: Use d_invalidate in
-proc_prune_siblings_dcache
-Cc: <stable@vger.kernel.org> # 4.19.x
-Signed-off-by: Wen Yang <wenyang@linux.alibaba.com>
----
- fs/proc/base.c          | 111 ++++++++++++++++--------------------------------
- fs/proc/inode.c         |   2 +-
- fs/proc/internal.h      |   1 +
- include/linux/pid.h     |   1 +
- include/linux/proc_fs.h |   4 +-
- kernel/exit.c           |   4 +-
- kernel/pid.c            |   1 +
- 7 files changed, 45 insertions(+), 79 deletions(-)
-
-diff --git a/fs/proc/base.c b/fs/proc/base.c
-index 5e705fa..ea74c7c 100644
---- a/fs/proc/base.c
-+++ b/fs/proc/base.c
-@@ -1741,11 +1741,25 @@ void task_dump_owner(struct task_struct *task, umode_t mode,
- 	*rgid = gid;
- }
- 
-+void proc_pid_evict_inode(struct proc_inode *ei)
-+{
-+	struct pid *pid = ei->pid;
-+
-+	if (S_ISDIR(ei->vfs_inode.i_mode)) {
-+		spin_lock(&pid->wait_pidfd.lock);
-+		hlist_del_init_rcu(&ei->sibling_inodes);
-+		spin_unlock(&pid->wait_pidfd.lock);
-+	}
-+
-+	put_pid(pid);
-+}
-+
- struct inode *proc_pid_make_inode(struct super_block * sb,
- 				  struct task_struct *task, umode_t mode)
- {
- 	struct inode * inode;
- 	struct proc_inode *ei;
-+	struct pid *pid;
- 
- 	/* We need a new inode */
- 
-@@ -1763,10 +1777,18 @@ struct inode *proc_pid_make_inode(struct super_block * sb,
- 	/*
- 	 * grab the reference to task.
- 	 */
--	ei->pid = get_task_pid(task, PIDTYPE_PID);
--	if (!ei->pid)
-+	pid = get_task_pid(task, PIDTYPE_PID);
-+	if (!pid)
- 		goto out_unlock;
- 
-+	/* Let the pid remember us for quick removal */
-+	ei->pid = pid;
-+	if (S_ISDIR(mode)) {
-+		spin_lock(&pid->wait_pidfd.lock);
-+		hlist_add_head_rcu(&ei->sibling_inodes, &pid->inodes);
-+		spin_unlock(&pid->wait_pidfd.lock);
-+	}
-+
- 	task_dump_owner(task, 0, &inode->i_uid, &inode->i_gid);
- 	security_task_to_inode(task, inode);
- 
-@@ -3067,90 +3089,29 @@ static struct dentry *proc_tgid_base_lookup(struct inode *dir, struct dentry *de
- 	.permission	= proc_pid_permission,
- };
- 
--static void proc_flush_task_mnt(struct vfsmount *mnt, pid_t pid, pid_t tgid)
--{
--	struct dentry *dentry, *leader, *dir;
--	char buf[10 + 1];
--	struct qstr name;
--
--	name.name = buf;
--	name.len = snprintf(buf, sizeof(buf), "%u", pid);
--	/* no ->d_hash() rejects on procfs */
--	dentry = d_hash_and_lookup(mnt->mnt_root, &name);
--	if (dentry) {
--		d_invalidate(dentry);
--		dput(dentry);
--	}
--
--	if (pid == tgid)
--		return;
--
--	name.name = buf;
--	name.len = snprintf(buf, sizeof(buf), "%u", tgid);
--	leader = d_hash_and_lookup(mnt->mnt_root, &name);
--	if (!leader)
--		goto out;
--
--	name.name = "task";
--	name.len = strlen(name.name);
--	dir = d_hash_and_lookup(leader, &name);
--	if (!dir)
--		goto out_put_leader;
--
--	name.name = buf;
--	name.len = snprintf(buf, sizeof(buf), "%u", pid);
--	dentry = d_hash_and_lookup(dir, &name);
--	if (dentry) {
--		d_invalidate(dentry);
--		dput(dentry);
--	}
--
--	dput(dir);
--out_put_leader:
--	dput(leader);
--out:
--	return;
--}
--
- /**
-- * proc_flush_task -  Remove dcache entries for @task from the /proc dcache.
-- * @task: task that should be flushed.
-+ * proc_flush_pid -  Remove dcache entries for @pid from the /proc dcache.
-+ * @pid: pid that should be flushed.
-  *
-- * When flushing dentries from proc, one needs to flush them from global
-- * proc (proc_mnt) and from all the namespaces' procs this task was seen
-- * in. This call is supposed to do all of this job.
-- *
-- * Looks in the dcache for
-- * /proc/@pid
-- * /proc/@tgid/task/@pid
-- * if either directory is present flushes it and all of it'ts children
-- * from the dcache.
-+ * This function walks a list of inodes (that belong to any proc
-+ * filesystem) that are attached to the pid and flushes them from
-+ * the dentry cache.
-  *
-  * It is safe and reasonable to cache /proc entries for a task until
-  * that task exits.  After that they just clog up the dcache with
-  * useless entries, possibly causing useful dcache entries to be
-- * flushed instead.  This routine is proved to flush those useless
-- * dcache entries at process exit time.
-+ * flushed instead.  This routine is provided to flush those useless
-+ * dcache entries when a process is reaped.
-  *
-  * NOTE: This routine is just an optimization so it does not guarantee
-- *       that no dcache entries will exist at process exit time it
-- *       just makes it very unlikely that any will persist.
-+ *       that no dcache entries will exist after a process is reaped
-+ *       it just makes it very unlikely that any will persist.
-  */
- 
--void proc_flush_task(struct task_struct *task)
-+void proc_flush_pid(struct pid *pid)
- {
--	int i;
--	struct pid *pid, *tgid;
--	struct upid *upid;
--
--	pid = task_pid(task);
--	tgid = task_tgid(task);
--
--	for (i = 0; i <= pid->level; i++) {
--		upid = &pid->numbers[i];
--		proc_flush_task_mnt(upid->ns->proc_mnt, upid->nr,
--					tgid->numbers[i].nr);
--	}
-+	proc_invalidate_siblings_dcache(&pid->inodes, &pid->wait_pidfd.lock);
-+	put_pid(pid);
- }
- 
- static struct dentry *proc_pid_instantiate(struct dentry * dentry,
-diff --git a/fs/proc/inode.c b/fs/proc/inode.c
-index fad579e..83c640a 100644
---- a/fs/proc/inode.c
-+++ b/fs/proc/inode.c
-@@ -41,7 +41,7 @@ static void proc_evict_inode(struct inode *inode)
- 
- 	/* Stop tracking associated processes */
- 	if (ei->pid) {
--		put_pid(ei->pid);
-+		proc_pid_evict_inode(ei);
- 		ei->pid = NULL;
- 	}
- 
-diff --git a/fs/proc/internal.h b/fs/proc/internal.h
-index 1db693b..be55ee2 100644
---- a/fs/proc/internal.h
-+++ b/fs/proc/internal.h
-@@ -158,6 +158,7 @@ extern int proc_pid_statm(struct seq_file *, struct pid_namespace *,
- extern const struct dentry_operations pid_dentry_operations;
- extern int pid_getattr(const struct path *, struct kstat *, u32, unsigned int);
- extern int proc_setattr(struct dentry *, struct iattr *);
-+extern void proc_pid_evict_inode(struct proc_inode *);
- extern struct inode *proc_pid_make_inode(struct super_block *, struct task_struct *, umode_t);
- extern void pid_update_inode(struct task_struct *, struct inode *);
- extern int pid_delete_dentry(const struct dentry *);
-diff --git a/include/linux/pid.h b/include/linux/pid.h
-index a82d2f7..08efbe1 100644
---- a/include/linux/pid.h
-+++ b/include/linux/pid.h
-@@ -61,6 +61,7 @@ struct pid
- 	unsigned int level;
- 	/* lists of tasks that use this pid */
- 	struct hlist_head tasks[PIDTYPE_MAX];
-+	struct hlist_head inodes;
- 	/* wait queue for pidfd notifications */
- 	wait_queue_head_t wait_pidfd;
- 	struct rcu_head rcu;
-diff --git a/include/linux/proc_fs.h b/include/linux/proc_fs.h
-index d0e1f15..94bf352 100644
---- a/include/linux/proc_fs.h
-+++ b/include/linux/proc_fs.h
-@@ -17,7 +17,7 @@
- typedef int (*proc_write_t)(struct file *, char *, size_t);
- 
- extern void proc_root_init(void);
--extern void proc_flush_task(struct task_struct *);
-+extern void proc_flush_pid(struct pid *);
- 
- extern struct proc_dir_entry *proc_symlink(const char *,
- 		struct proc_dir_entry *, const char *);
-@@ -80,7 +80,7 @@ static inline void proc_root_init(void)
- {
- }
- 
--static inline void proc_flush_task(struct task_struct *task)
-+static inline void proc_flush_pid(struct pid *pid)
- {
- }
- 
-diff --git a/kernel/exit.c b/kernel/exit.c
-index 65133eb..55996ba 100644
---- a/kernel/exit.c
-+++ b/kernel/exit.c
-@@ -185,6 +185,7 @@ static void delayed_put_task_struct(struct rcu_head *rhp)
- void release_task(struct task_struct *p)
- {
- 	struct task_struct *leader;
-+	struct pid *thread_pid;
- 	int zap_leader;
- repeat:
- 	/* don't need to get the RCU readlock here - the process is dead and
-@@ -193,11 +194,11 @@ void release_task(struct task_struct *p)
- 	atomic_dec(&__task_cred(p)->user->processes);
- 	rcu_read_unlock();
- 
--	proc_flush_task(p);
- 	cgroup_release(p);
- 
- 	write_lock_irq(&tasklist_lock);
- 	ptrace_release_task(p);
-+	thread_pid = get_pid(p->thread_pid);
- 	__exit_signal(p);
- 
- 	/*
-@@ -220,6 +221,7 @@ void release_task(struct task_struct *p)
- 	}
- 
- 	write_unlock_irq(&tasklist_lock);
-+	proc_flush_pid(thread_pid);
- 	release_thread(p);
- 	call_rcu(&p->rcu, delayed_put_task_struct);
- 
-diff --git a/kernel/pid.c b/kernel/pid.c
-index 3ba6fcb..65df035 100644
---- a/kernel/pid.c
-+++ b/kernel/pid.c
-@@ -215,6 +215,7 @@ struct pid *alloc_pid(struct pid_namespace *ns)
- 		INIT_HLIST_HEAD(&pid->tasks[type]);
- 
- 	init_waitqueue_head(&pid->wait_pidfd);
-+	INIT_HLIST_HEAD(&pid->inodes);
- 
- 	upid = pid->numbers + ns->level;
- 	spin_lock_irq(&pidmap_lock);
--- 
-1.8.3.1
 
