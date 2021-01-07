@@ -2,73 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CACBA2ED37F
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 16:28:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6AE3B2ED384
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 16:30:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728255AbhAGP1n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 10:27:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37096 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727590AbhAGP1m (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 10:27:42 -0500
-Received: from mail-io1-xd31.google.com (mail-io1-xd31.google.com [IPv6:2607:f8b0:4864:20::d31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75A80C0612F4
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Jan 2021 07:27:02 -0800 (PST)
-Received: by mail-io1-xd31.google.com with SMTP id e22so5944375iom.5
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Jan 2021 07:27:02 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=y/SEaH66pBA29x93gS6ZcgQnv1v016M3KaF0tG3FzqI=;
-        b=g1tk8/5UXBfzy5bAsoF01lUPwaqvenystwgie0hn/2izTsQFu+U0sq8fqUo0W/Q+ZX
-         M3mz5DYn77HobEc15SfBzUNjmn5KCi16f2/S7IWR+x3nd8syPR1xCF4iMKMNVmWANDQ4
-         sA3RO3dhKpm0jTqz+CKS9dMWEbVT7ZlA7h/SKzoqQxo9hpZZza4qgq27LgmN43q/KkIL
-         S+PevdoiYNdiPQJiyw0X1I70KZrSfGLGJtwIVz3C1NC3IBpbq1XNYIDkG2QwPH6KB2QQ
-         kGIcnE439az5QNJtu5SKpjYET+JABJDkzLRfcnLJpEi7k/VYvn1GJDpR8rdqWRL3E4bS
-         MJCQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=y/SEaH66pBA29x93gS6ZcgQnv1v016M3KaF0tG3FzqI=;
-        b=o3m4bgTL2z1mXYYZ0QjPYbu8NrvG2GtXBhM2Q6hlSidb5VqN9lhSx4fAa2LtfFL/4B
-         p7oRawg/hmwE5MSS/Hqds6Ku0xJ/QE+reBXQ34guHY8/l32MKJ69DcjuHdM5pYHN6nYN
-         Tg95Cd/DW1g+LyAsnjbMP9KF80msPd8upW8hsq+FkgBCVA7VIV3E3PAZb08kXdtZKjpK
-         I8EDJIsXfErQ/72TqOdcP3TbMkvmwcbhkgUr5hqIyFIE1bTw5azscPza7LERfPOMMQHH
-         YxKw6UMTso2v+U42Ts2mOZBEyoiwWpPcyyQIpxiPhcfh0/tJZ/LL9ULQ6gcDs3jl60cn
-         NzpQ==
-X-Gm-Message-State: AOAM532oc5eAEzLK73WUnkABkapy1KoQp4zf4vQxk1J1Y2W8Z/ZY1c6B
-        ZONxxtFH7YMpD1g2fW4YiTMxbIJ3YalnPVXGQdo=
-X-Google-Smtp-Source: ABdhPJymw/5eIyNpa2b+OgiEaCfiH4ADWJ9brZmsWEY+dyYxKimcPkvYul0QT0PWkOgOq47VkmuGFcT5GoQnJQlFwkI=
-X-Received: by 2002:a05:6602:441:: with SMTP id e1mr1695150iov.82.1610033221966;
- Thu, 07 Jan 2021 07:27:01 -0800 (PST)
+        id S1728349AbhAGP2r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 10:28:47 -0500
+Received: from smtp1-g21.free.fr ([212.27.42.1]:22304 "EHLO smtp1-g21.free.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726319AbhAGP2q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Jan 2021 10:28:46 -0500
+Received: from ymorin.is-a-geek.org (unknown [IPv6:2a01:cb19:8b51:cb00:e49b:7e99:8172:6888])
+        (Authenticated sender: yann.morin.1998)
+        by smtp1-g21.free.fr (Postfix) with ESMTPSA id 32EE5B005A4;
+        Thu,  7 Jan 2021 16:27:25 +0100 (CET)
+Received: by ymorin.is-a-geek.org (sSMTP sendmail emulation); Thu, 07 Jan 2021 16:27:24 +0100
+Date:   Thu, 7 Jan 2021 16:27:24 +0100
+From:   "Yann E. MORIN" <yann.morin.1998@free.fr>
+To:     Vineet Gupta <vgupta@synopsys.com>
+Cc:     Petr Mladek <pmladek@suse.com>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        John Ogness <john.ogness@linutronix.de>,
+        linux-arch@vger.kernel.org,
+        Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
+        Shreyas Joshi <shreyas.joshi@biamp.com>,
+        linux-kernel@vger.kernel.org,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        buildroot@busybox.net, arcml <linux-snps-arc@lists.infradead.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        shreyasjoshi15@gmail.com, Guenter Roeck <linux@roeck-us.net>
+Subject: Re: [Buildroot] ARC no console output (was Re: [PATCH 1/2]
+ init/console: Use ttynull as a fallback when there is no console)
+Message-ID: <20210107152724.GL1485369@scaer>
+References: <20201111135450.11214-1-pmladek@suse.com>
+ <20201111135450.11214-2-pmladek@suse.com>
+ <d2a3b3c0-e548-7dd1-730f-59bc5c04e191@synopsys.com>
 MIME-Version: 1.0
-Received: by 2002:a6b:8d55:0:0:0:0:0 with HTTP; Thu, 7 Jan 2021 07:27:01 -0800 (PST)
-Reply-To: andywilliamsb2@gmail.com
-From:   Andy Williams <lukeadama7@gmail.com>
-Date:   Thu, 7 Jan 2021 15:27:01 +0000
-Message-ID: <CALu=KJAUOkgi+Hv9Gbk0Fy363s6cOy_p+A8Z22Ejj6AVQpB2pw@mail.gmail.com>
-Subject: FROM ANDY WILLIAMS
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <d2a3b3c0-e548-7dd1-730f-59bc5c04e191@synopsys.com>
+User-Agent: Mutt/1.5.22 (2013-10-16)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Vineet, All,
+
+On 2021-01-06 15:36 -0800, Vineet Gupta spake thusly:
+> On 11/11/20 5:54 AM, Petr Mladek wrote:
+[--SNIP--]
+> >Make sure that stdin, stdout, stderr, and /dev/console are always
+> >available by a fallback to the existing ttynull driver. It has
+> >been implemented for exactly this purpose but it was used only
+> >when explicitly configured.
+> >
+> >Signed-off-by: Petr Mladek <pmladek@suse.com>
+> 
+> >--- a/init/main.c
+> >+++ b/init/main.c
+> >@@ -1470,8 +1470,14 @@ void __init console_on_rootfs(void)
+> >  	struct file *file = filp_open("/dev/console", O_RDWR, 0);
+> >  	if (IS_ERR(file)) {
+> >-		pr_err("Warning: unable to open an initial console.\n");
+> >-		return;
+> >+		pr_err("Warning: unable to open an initial console. Fallback to ttynull.\n");
+> >+		register_ttynull_console();
+> >+
+> >+		file = filp_open("/dev/console", O_RDWR, 0);
+> >+		if (IS_ERR(file)) {
+> >+			pr_err("Warning: Failed to add ttynull console. No stdin, stdout, and stderr for the init process!\n");
+> >+			return;
+> >+		}
+> 
+> This breaks ARC booting (no output on console).
+> 
+> Our Buildroot based setup has dynamic /dev where /dev/console doesn't exist
+> statically and there's a primoridla /init shell script which does following
+> 
+> /bin/mount -t devtmpfs devtmpfs /dev
+> exec 0</dev/console
+> exec 1>/dev/console
+> exec 2>/dev/console
+> exec /sbin/init "$@"
+
+I guess you are speaking about the initramfs (cpio) case, right?
+
+We've changed that code last August:
+
+    https://git.buildroot.org/buildroot/commit/fs/cpio/init?id=b9026e83f
+
+I.e. if we can't do the redirection, then we don't redirect anything.
+The change was done for people who explicitly pass an empty console= on
+their kernel command line.
+
+Now, I haven't looked at nulltty yet, and I have (so far) no idea on how
+it works. Thanks for the hint, I'll have a look.
+
+> Buildroot has had this way of handling missing /dev/console since 2011 [1]
+> and [2].
+
+See also more archaelogy on that topic, referenced in that commit:
+    https://git.buildroot.org/buildroot/commit/fs/cpio/?id=98a6f1fc02e41
+
+> Please advise what needs to be done to unbork boot.
+
+This has been present since the 2020.08 release, and has been backported
+to the maintenance branches:
+    2020.02.x (LTS) -> f1a83afe2df2a
+    2020.05.x       -> 797f9e40224c9
+
+> Otherwise this seems
+> like a kernel change which breaks user-space and needs to be backed-out (or
+> perhaps conditionalize on CONFIG_NULL_TTY. I'm surprised it hasn't been
+> reported by any other  embedded folks
+
+I won't speak about whether this is a kernel regression or not, not my
+call.
+
+Regards,
+Yann E. MORIN.
+
 -- 
- Hello friend,
-After our end of year 2020 auditing we have some amount of money left
-over here as a result of over invoicing and covid-19 victims which
-brings my account imbalance. I will be glad if my message meets you in
-a happy status and healthy to enable you cooperate with me to achieve
-this great opportunity at hand.I will need your assistance and full
-cooperation to transferring the money into your bank account to enable
-us to share it 60/40 or invest it into real estate in Paraguay because
-we as a government official are not allowed to own foreign bank
-account. I already posted the money into a late contractor`s account
-instead of government to seize it. I look forward to your reply for
-details on how we can cooperate to achieve this goal.
-Sincerely
-Andy Williams.
-Citi bank UK.A/c offic
+.-----------------.--------------------.------------------.--------------------.
+|  Yann E. MORIN  | Real-Time Embedded | /"\ ASCII RIBBON | Erics' conspiracy: |
+| +33 662 376 056 | Software  Designer | \ / CAMPAIGN     |  ___               |
+| +33 561 099 427 `------------.-------:  X  AGAINST      |  \e/  There is no  |
+| http://ymorin.is-a-geek.org/ | _/*\_ | / \ HTML MAIL    |   v   conspiracy.  |
+'------------------------------^-------^------------------^--------------------'
