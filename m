@@ -2,143 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 030FA2ED627
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 18:57:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DE7202ED637
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 19:00:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728997AbhAGR5N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 12:57:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60598 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727058AbhAGR5M (ORCPT
+        id S1728783AbhAGR7w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 12:59:52 -0500
+Received: from aserp2130.oracle.com ([141.146.126.79]:43182 "EHLO
+        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726319AbhAGR7v (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 12:57:12 -0500
-Received: from mail-il1-x134.google.com (mail-il1-x134.google.com [IPv6:2607:f8b0:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 342D5C0612F4
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Jan 2021 09:56:30 -0800 (PST)
-Received: by mail-il1-x134.google.com with SMTP id q1so7570435ilt.6
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Jan 2021 09:56:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=gIcTJnmCObWJEcPsEVSzZEbUrwSNec8NhE63eBq7ZSM=;
-        b=Q2YrzMgiAxkXvm9SqzdMmHt/P1Q3M9VnclkYPlj3KXvMS/VdYP3gLVH9iWfi/tPfJW
-         1ohVoytOusKvdsnudhL748xmMxKTx7YBk99jXoeatAdd9FHMFLFk5l7g/TM/KY5snEdF
-         l0/qgeWJoRyUQi7Wty/0E0ufwlC4/2sLCis8IhzGwT2j7BZDIcWT6iHKVxizOccE+bDH
-         0BdkWOCmUK0CbbhAzv5C6fAenYzSxPe0C3EOIadGWdvl7ABNS/xyzeo8KoUZvz0EaVSK
-         5jry93pSQujT1YsqNOeVAY/9W0IB0TYiJtUYwE9AwMoa/JUCLLa7heo9RtcVDBm4m5kE
-         mbeA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=gIcTJnmCObWJEcPsEVSzZEbUrwSNec8NhE63eBq7ZSM=;
-        b=C5QIyzfWCFth5J8fH+0B0pATaMMIf9vpmKmv4F1N3JXgqQhwjIuUuI5kgL7wwkzvpg
-         cHgBfBcPcd9lpGoIphIoQ5x1+N0feR5uztFSyEjMpGSDDt257pmjjhfsbls1i0jMvW3a
-         OfYwUQYD2dmo5Qz7qOk0bERa3HPqVbBJCvoKqSIvGPNobNf/YmGtI0Dksu72nGsxrMkW
-         +TvkxabfBCdtdK1qxccjEMgtp6551odPz8yF4SWBbeohHMCpzpc5i6vLxnOyK4Gpygjd
-         iZc/boYO0C2NIg4IslgR6DOkShWJt7pZ7K243K0q84oLOrpjES/KR6ykNQdB0JnM+Jo0
-         qKYw==
-X-Gm-Message-State: AOAM531egBQ3Nl4h5QYEfir8H5yIvUvyAeVgy8bOoTLJw2DS4FBQbZGL
-        e9k2aaQv/u6g57oHUQXqqPitbSC2PxsTlbCSYgF6usb6+E8=
-X-Google-Smtp-Source: ABdhPJzpGidOJI6I9ogzE3vbvyp2WNvFouko1ksIuIDvXVu11Iivfx97nwvbu3D+KbJDypKndB70eA+Nz4JBOgdYGZM=
-X-Received: by 2002:a92:d592:: with SMTP id a18mr57802iln.64.1610042189444;
- Thu, 07 Jan 2021 09:56:29 -0800 (PST)
+        Thu, 7 Jan 2021 12:59:51 -0500
+Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
+        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 107HsvN8089524;
+        Thu, 7 Jan 2021 17:58:15 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=kvAvwbOOeMZscVufplocdrmX5bmXMbY8zl2FvlMlnz0=;
+ b=c2pjUMyOuFSlsI0qTgNl9X2BTN0fwdZV5CjgZLw/fK5pJGjqgudnCOrZXdgkYHh00CxF
+ LiFA0a++EWjmEAnNdlWfNpXXZz6ITazKwFJmmLt90OS5obpTmGor0Edc3an16aV6cPrq
+ BuZjy4lLXobdVm82Y4aeL6YU21ZsSRHrYPmEkl7OXFIOkrzzFmym3rhxU7m0zFdXRJ9J
+ 7G3IFUyGpFK3HKmg0T9vQqyw4vf9WJsuWCiEWBtSqE/lg7w8qHbcX6uwbYJqRhlTzP3U
+ r9MbFlxO7AMNgXzkKQ9sIxqWZq9w0c4dYQTdzU1G7jk7cpsQeLvms3CnkhfW0q8cELG1 lg== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by aserp2130.oracle.com with ESMTP id 35wcuxwy8k-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 07 Jan 2021 17:58:15 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 107HuSg5055718;
+        Thu, 7 Jan 2021 17:58:14 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by userp3020.oracle.com with ESMTP id 35w3qu1hjs-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 07 Jan 2021 17:58:14 +0000
+Received: from abhmp0013.oracle.com (abhmp0013.oracle.com [141.146.116.19])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 107Hvwcu012048;
+        Thu, 7 Jan 2021 17:57:58 GMT
+Received: from char.us.oracle.com (/10.152.32.25)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Thu, 07 Jan 2021 17:57:43 +0000
+Received: by char.us.oracle.com (Postfix, from userid 1000)
+        id DE3C86A00C3; Thu,  7 Jan 2021 12:57:40 -0500 (EST)
+Date:   Thu, 7 Jan 2021 12:57:40 -0500
+From:   Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
+To:     Claire Chang <tientzu@chromium.org>
+Cc:     Rob Herring <robh+dt@kernel.org>, mpe@ellerman.id.au,
+        benh@kernel.crashing.org, paulus@samba.org,
+        "list@263.net:IOMMU DRIVERS <iommu@lists.linux-foundation.org>, Joerg
+        Roedel <joro@8bytes.org>," <joro@8bytes.org>, will@kernel.org,
+        Frank Rowand <frowand.list@gmail.com>,
+        boris.ostrovsky@oracle.com, jgross@suse.com,
+        sstabellini@kernel.org, Christoph Hellwig <hch@lst.de>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Robin Murphy <robin.murphy@arm.com>, grant.likely@arm.com,
+        xypron.glpk@gmx.de, Thierry Reding <treding@nvidia.com>,
+        mingo@kernel.org, bauerman@linux.ibm.com, peterz@infradead.org,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Saravana Kannan <saravanak@google.com>,
+        rafael.j.wysocki@intel.com, heikki.krogerus@linux.intel.com,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        rdunlap@infradead.org, dan.j.williams@intel.com,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        linux-devicetree <devicetree@vger.kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        linuxppc-dev@lists.ozlabs.org,
+        "list@263.net:IOMMU DRIVERS <iommu@lists.linux-foundation.org>, Joerg
+        Roedel <joro@8bytes.org>," <iommu@lists.linux-foundation.org>,
+        xen-devel@lists.xenproject.org, Tomasz Figa <tfiga@chromium.org>,
+        Nicolas Boichat <drinkcat@chromium.org>
+Subject: Re: [RFC PATCH v3 2/6] swiotlb: Add restricted DMA pool
+Message-ID: <20210107175740.GA16519@char.us.oracle.com>
+References: <20210106034124.30560-1-tientzu@chromium.org>
+ <20210106034124.30560-3-tientzu@chromium.org>
+ <20210106185241.GA109735@localhost.localdomain>
+ <CALiNf2-HDf6tFcvVgCttr-ta=88ZMH=OvB5XoryTPc6MNvwV+Q@mail.gmail.com>
 MIME-Version: 1.0
-References: <20210106035027.GA1160@open-light-1.localdomain>
- <CAKgT0Ue=hXEarqjW-h2G1fODA5UiSjHsKz3FpcyTcaTtQR4iMw@mail.gmail.com> <CA+2MQi9MxE_DWW3BHLJbvYDsOppCmfL6AHkdRwtHX0gBDpDebA@mail.gmail.com>
-In-Reply-To: <CA+2MQi9MxE_DWW3BHLJbvYDsOppCmfL6AHkdRwtHX0gBDpDebA@mail.gmail.com>
-From:   Alexander Duyck <alexander.duyck@gmail.com>
-Date:   Thu, 7 Jan 2021 09:56:18 -0800
-Message-ID: <CAKgT0UfQUgZvsw6iQOFuFCGSt1SoU5ij4nC7tsUwbvf4C_0fnA@mail.gmail.com>
-Subject: Re: [PATCH 4/6] hugetlb: avoid allocation failed when page reporting
- is on going
-To:     Liang Li <liliang324@gmail.com>
-Cc:     Mel Gorman <mgorman@techsingularity.net>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        David Hildenbrand <david@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Liang Li <liliangleo@didiglobal.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        linux-mm <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        virtualization@lists.linux-foundation.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CALiNf2-HDf6tFcvVgCttr-ta=88ZMH=OvB5XoryTPc6MNvwV+Q@mail.gmail.com>
+User-Agent: Mutt/1.9.1 (2017-09-22)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9857 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 malwarescore=0 mlxscore=0
+ spamscore=0 mlxlogscore=999 phishscore=0 bulkscore=0 suspectscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2101070105
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9857 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 bulkscore=0
+ clxscore=1015 spamscore=0 impostorscore=0 priorityscore=1501 mlxscore=0
+ adultscore=0 mlxlogscore=999 lowpriorityscore=0 phishscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2101070105
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 6, 2021 at 7:57 PM Liang Li <liliang324@gmail.com> wrote:
->
-> > > Page reporting isolates free pages temporarily when reporting
-> > > free pages information. It will reduce the actual free pages
-> > > and may cause application failed for no enough available memory.
-> > > This patch try to solve this issue, when there is no free page
-> > > and page repoting is on going, wait until it is done.
-> > >
-> > > Cc: Alexander Duyck <alexander.h.duyck@linux.intel.com>
-> >
-> > Please don't use this email address for me anymore. Either use
-> > alexander.duyck@gmail.com or alexanderduyck@fb.com. I am getting
-> > bounces when I reply to this thread because of the old address.
->
-> No problem.
->
-> > > diff --git a/mm/hugetlb.c b/mm/hugetlb.c
-> > > index eb533995cb49..0fccd5f96954 100644
-> > > --- a/mm/hugetlb.c
-> > > +++ b/mm/hugetlb.c
-> > > @@ -2320,6 +2320,12 @@ struct page *alloc_huge_page(struct vm_area_struct *vma,
-> > >                 goto out_uncharge_cgroup_reservation;
-> > >
-> > >         spin_lock(&hugetlb_lock);
-> > > +       while (h->free_huge_pages <= 1 && h->isolated_huge_pages) {
-> > > +               spin_unlock(&hugetlb_lock);
-> > > +               mutex_lock(&h->mtx_prezero);
-> > > +               mutex_unlock(&h->mtx_prezero);
-> > > +               spin_lock(&hugetlb_lock);
-> > > +       }
-> >
-> > This seems like a bad idea. It kind of defeats the whole point of
-> > doing the page zeroing outside of the hugetlb_lock. Also it is
-> > operating on the assumption that the only way you might get a page is
-> > from the page zeroing logic.
-> >
-> > With the page reporting code we wouldn't drop the count to zero. We
-> > had checks that were going through and monitoring the watermarks and
-> > if we started to hit the low watermark we would stop page reporting
-> > and just assume there aren't enough pages to report. You might need to
-> > look at doing something similar here so that you can avoid colliding
-> > with the allocator.
->
-> For hugetlb, things are a little different, Just like Mike points out:
->      "On some systems, hugetlb pages are a precious resource and
->       the sysadmin carefully configures the number needed by
->       applications.  Removing a hugetlb page (even for a very short
->       period of time) could cause serious application failure."
->
-> Just keeping some pages in the freelist is not enough to prevent that from
-> happening, because these pages may be allocated while zero out is on
-> going, and application may still run into a situation for not available free
-> pages.
+On Fri, Jan 08, 2021 at 01:39:18AM +0800, Claire Chang wrote:
+> Hi Greg and Konrad,
+> 
+> This change is intended to be non-arch specific. Any arch that lacks DMA access
+> control and has devices not behind an IOMMU can make use of it. Could you share
+> why you think this should be arch specific?
 
-I get what you are saying. However I don't know if it is acceptable
-for the allocating thread to be put to sleep in this situation. There
-are two scenarios where I can see this being problematic.
+The idea behind non-arch specific code is it to be generic. The devicetree
+is specific to PowerPC, Sparc, and ARM, and not to x86 - hence it should
+be in arch specific code.
 
-One is a setup where you put the page allocator to sleep and while it
-is sleeping another thread is then freeing a page and your thread
-cannot respond to that newly freed page and is stuck waiting on the
-zeroed page.
-
-The second issue is that users may want a different option of just
-breaking up the request into smaller pages rather than waiting on the
-page zeroing, or to do something else while waiting on the page. So
-instead of sitting on the request and waiting it might make more sense
-to return an error pointer like EAGAIN or EBUSY to indicate that there
-is a page there, but it is momentarily tied up.
+> 
+> Thanks!
