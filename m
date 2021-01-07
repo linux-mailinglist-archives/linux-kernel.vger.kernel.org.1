@@ -2,52 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B5412ED417
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 17:14:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 16BE22ED429
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 17:21:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728421AbhAGQN4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 11:13:56 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40896 "EHLO mail.kernel.org"
+        id S1728060AbhAGQUo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 11:20:44 -0500
+Received: from verein.lst.de ([213.95.11.211]:41219 "EHLO verein.lst.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727667AbhAGQNz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 11:13:55 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A4F5F22EBF;
-        Thu,  7 Jan 2021 16:13:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610035995;
-        bh=wHGLhgCqicBKL1spOVewqdmUrB/hMDx4rFPyfDRNi4c=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Roph5+kdVvYz2Wkq+im/V2CC2FlODI4Y6+GLLsISN5WjHUsIIDwgby8IeF0wWp3/8
-         6VJz3phpoKTCPL0HVauGbNOS1tHQseGLIRxLXFlvYEn+w3hxQrIuLAi7FoXK3qwUGd
-         YQvg1vcGFVhhKp3wL1/6DJRocTaINGpftVPH9uio=
-Date:   Thu, 7 Jan 2021 17:14:34 +0100
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Tom Rix <trix@redhat.com>
-Cc:     Moritz Fischer <mdf@kernel.org>, linux-fpga@vger.kernel.org,
-        linux-kernel@vger.kernel.org, moritzf@google.com
-Subject: Re: [PATCH 0/8] FPGA DFL Changes for 5.12
-Message-ID: <X/czarr9bXr849p5@kroah.com>
-References: <20210107043714.991646-1-mdf@kernel.org>
- <80b29715-aa0a-b2ac-03af-904fc8f8be98@redhat.com>
+        id S1726294AbhAGQUo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Jan 2021 11:20:44 -0500
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id AF1D467373; Thu,  7 Jan 2021 17:20:00 +0100 (CET)
+Date:   Thu, 7 Jan 2021 17:20:00 +0100
+From:   Christoph Hellwig <hch@lst.de>
+To:     Satya Tangirala <satyat@google.com>
+Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christoph Hellwig <hch@lst.de>, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Jens Axboe <axboe@kernel.dk>
+Subject: Re: [PATCH] fs: Fix freeze_bdev()/thaw_bdev() accounting of
+ bd_fsfreeze_sb
+Message-ID: <20210107162000.GA2693@lst.de>
+References: <20201224044954.1349459-1-satyat@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <80b29715-aa0a-b2ac-03af-904fc8f8be98@redhat.com>
+In-Reply-To: <20201224044954.1349459-1-satyat@google.com>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 07, 2021 at 08:09:12AM -0800, Tom Rix wrote:
+Can someone pick this up?  Maybe through Jens' block tree as that is
+where my commit this is fixing up came from.
+
+For reference:
+
+
+Reviewed-by: Christoph Hellwig <hch@lst.de>
+
+On Thu, Dec 24, 2020 at 04:49:54AM +0000, Satya Tangirala wrote:
+> freeze/thaw_bdev() currently use bdev->bd_fsfreeze_count to infer
+> whether or not bdev->bd_fsfreeze_sb is valid (it's valid iff
+> bd_fsfreeze_count is non-zero). thaw_bdev() doesn't nullify
+> bd_fsfreeze_sb.
 > 
-> On 1/6/21 8:37 PM, Moritz Fischer wrote:
-> > This is a resend of the previous (unfortunately late) patchset of
-> > changes for FPGA DFL.
+> But this means a freeze_bdev() call followed by a thaw_bdev() call can
+> leave bd_fsfreeze_sb with a non-null value, while bd_fsfreeze_count is
+> zero. If freeze_bdev() is called again, and this time
+> get_active_super() returns NULL (e.g. because the FS is unmounted),
+> we'll end up with bd_fsfreeze_count > 0, but bd_fsfreeze_sb is
+> *untouched* - it stays the same (now garbage) value. A subsequent
+> thaw_bdev() will decide that the bd_fsfreeze_sb value is legitimate
+> (since bd_fsfreeze_count > 0), and attempt to use it.
 > 
-> Is there something I can do to help ?
-
-This is all now merged in my tree, so there's not much left to do here
-:)
-
-thanks,
-
-greg k-h
+> Fix this by always setting bd_fsfreeze_sb to NULL when
+> bd_fsfreeze_count is successfully decremented to 0 in thaw_sb().
+> Alternatively, we could set bd_fsfreeze_sb to whatever
+> get_active_super() returns in freeze_bdev() whenever bd_fsfreeze_count
+> is successfully incremented to 1 from 0 (which can be achieved cleanly
+> by moving the line currently setting bd_fsfreeze_sb to immediately
+> after the "sync:" label, but it might be a little too subtle/easily
+> overlooked in future).
+> 
+> This fixes the currently panicking xfstests generic/085.
+> 
+> Fixes: 040f04bd2e82 ("fs: simplify freeze_bdev/thaw_bdev")
+> Signed-off-by: Satya Tangirala <satyat@google.com>
+> ---
+>  fs/block_dev.c | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
+> diff --git a/fs/block_dev.c b/fs/block_dev.c
+> index 9e56ee1f2652..12a811a9ae4b 100644
+> --- a/fs/block_dev.c
+> +++ b/fs/block_dev.c
+> @@ -606,6 +606,8 @@ int thaw_bdev(struct block_device *bdev)
+>  		error = thaw_super(sb);
+>  	if (error)
+>  		bdev->bd_fsfreeze_count++;
+> +	else
+> +		bdev->bd_fsfreeze_sb = NULL;
+>  out:
+>  	mutex_unlock(&bdev->bd_fsfreeze_mutex);
+>  	return error;
+> -- 
+> 2.29.2.729.g45daf8777d-goog
+---end quoted text---
