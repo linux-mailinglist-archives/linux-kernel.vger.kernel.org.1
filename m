@@ -2,88 +2,213 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 565C22ED19D
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 15:17:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B6BB2ED1D5
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 15:21:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728974AbhAGORF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 09:17:05 -0500
-Received: from esa.microchip.iphmx.com ([68.232.154.123]:16454 "EHLO
-        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728943AbhAGORC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 09:17:02 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1610029021; x=1641565021;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version;
-  bh=4QhHyeujT+lb+gqqtezm3Ek1N0lMijNnWzOwgiYQ6aw=;
-  b=wVvkAl9Z2CgA3x7EtI+vJRoWNmP05D6WoFAdy9Ck16OmVKquZyXX3SNK
-   YBsaqFWTw5qVHyhCuteY7MQ2Pk9B0y+EDTuMu4maINF7awdthlL3RTi9z
-   fOa+UVX7Qis34Fm1SBrq5p5/a3+Uhu9bbdn7g3opCYpznAsvihiKpKdh7
-   6pSRKaxVgtnoz9sDWjBNAxYN5kmPlrQtuNV308cp/hsp94IaVcUd16rlm
-   z/rQsC+h68xX8A+qTBV5p9ULZUsQAOisKb6r9R9kZplKrpnight5fYqEt
-   rL6Ymb/bNGjZpYPRnHM9WVca7/kJD0Tl5wVq1uoWGuE3Hju+1U9frPcaR
-   g==;
-IronPort-SDR: MDVW/CHkblbwjqyN+JUvhkMuSLkzJ0tGMxlH8dz0yxa+j+asTh7/LJujfhSo7W2Z8SZpH8RDFe
- CoDW/YFy6JSzJQDkPGp5RSB4yubaygNKBaGOvNpiVrYBhWcF7OyLLlqcL70dXn8/WA8//8cv7F
- 04woakvam5HcGIKJdATWOo8gSylc9jyZC54dBk+PMmNgWekUJqeRVaDAyfHP1Pn++nsEU883So
- yrkZdxzQd+b3cnzh7HZJTCTgFtRjkn++lpXTL79Q6Hx5g9MplToCoLboDg7uA/zhc00eHoIo+B
- 6rI=
-X-IronPort-AV: E=Sophos;i="5.79,329,1602572400"; 
-   d="scan'208";a="39654793"
-Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
-  by esa6.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 07 Jan 2021 07:15:45 -0700
-Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Thu, 7 Jan 2021 07:15:45 -0700
-Received: from m18063-ThinkPad-T460p.microchip.com (10.10.115.15) by
- chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server id
- 15.1.1979.3 via Frontend Transport; Thu, 7 Jan 2021 07:15:42 -0700
-From:   Claudiu Beznea <claudiu.beznea@microchip.com>
-To:     <lgirdwood@gmail.com>, <broonie@kernel.org>, <robh+dt@kernel.org>
-CC:     <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <nicolas.ferre@microchip.com>,
-        Claudiu Beznea <claudiu.beznea@microchip.com>
-Subject: [PATCH 3/3] MAINTAINERS: add myself as maintainer for mcp16502
-Date:   Thu, 7 Jan 2021 16:15:27 +0200
-Message-ID: <1610028927-9842-4-git-send-email-claudiu.beznea@microchip.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1610028927-9842-1-git-send-email-claudiu.beznea@microchip.com>
-References: <1610028927-9842-1-git-send-email-claudiu.beznea@microchip.com>
+        id S1729294AbhAGOSH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 09:18:07 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38994 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729215AbhAGORj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Jan 2021 09:17:39 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5C49E2312A;
+        Thu,  7 Jan 2021 14:17:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1610029034;
+        bh=BtEPK5ysdjNQr4qtInHsy5m4NZsdCiuPKPNxSoMSD2Y=;
+        h=From:To:Cc:Subject:Date:From;
+        b=cekYU2hK96E4Dxi5R0prkhnFrOczLYKpeCVI3y9uGVMnZU6Cxu8e54GaZ/YHN7vCj
+         acEgUiThVqLanss45CKzm3sr0EC9JA50Je5+lZ5yTlgnKQB9s8L/HgjknKiseniLiY
+         vVY+o1DMXjd+x48oOShCvqzaUyM/b3q32DNxvuvg=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, stable@vger.kernel.org
+Subject: [PATCH 4.9 00/32] 4.9.250-rc1 review
+Date:   Thu,  7 Jan 2021 15:16:20 +0100
+Message-Id: <20210107140827.866214702@linuxfoundation.org>
+X-Mailer: git-send-email 2.30.0
 MIME-Version: 1.0
-Content-Type: text/plain
+User-Agent: quilt/0.66
+X-stable: review
+X-Patchwork-Hint: ignore
+X-KernelTest-Patch: http://kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.9.250-rc1.gz
+X-KernelTest-Tree: git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
+X-KernelTest-Branch: linux-4.9.y
+X-KernelTest-Patches: git://git.kernel.org/pub/scm/linux/kernel/git/stable/stable-queue.git
+X-KernelTest-Version: 4.9.250-rc1
+X-KernelTest-Deadline: 2021-01-09T14:08+00:00
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Andrei is no longer with Microchip. Add myself as maintainer for
-MCP16502. Along with this change the status from maintained to
-supported.
+This is the start of the stable review cycle for the 4.9.250 release.
+There are 32 patches in this series, all will be posted as a response
+to this one.  If anyone has any issues with these being applied, please
+let me know.
 
-Signed-off-by: Claudiu Beznea <claudiu.beznea@microchip.com>
----
- MAINTAINERS | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Responses should be made by Sat, 09 Jan 2021 14:08:13 +0000.
+Anything received after that time might be too late.
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 6eff4f720c72..1cd9914b95eb 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -11690,9 +11690,9 @@ F:	drivers/video/fbdev/atmel_lcdfb.c
- F:	include/video/atmel_lcdc.h
- 
- MICROCHIP MCP16502 PMIC DRIVER
--M:	Andrei Stefanescu <andrei.stefanescu@microchip.com>
-+M:	Claudiu Beznea <claudiu.beznea@microchip.com>
- L:	linux-arm-kernel@lists.infradead.org (moderated for non-subscribers)
--S:	Maintained
-+S:	Supported
- F:	Documentation/devicetree/bindings/regulator/mcp16502-regulator.txt
- F:	drivers/regulator/mcp16502.c
- 
--- 
-2.7.4
+The whole patch series can be found in one patch at:
+	https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.9.250-rc1.gz
+or in the git tree and branch at:
+	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.9.y
+and the diffstat can be found below.
+
+thanks,
+
+greg k-h
+
+-------------
+Pseudo-Shortlog of commits:
+
+Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+    Linux 4.9.250-rc1
+
+Jonathan Cameron <Jonathan.Cameron@huawei.com>
+    iio:magnetometer:mag3110: Fix alignment and data leak issues.
+
+Jonathan Cameron <Jonathan.Cameron@huawei.com>
+    iio:imu:bmi160: Fix alignment and data leak issues
+
+Jonathan Cameron <Jonathan.Cameron@huawei.com>
+    iio:imu:bmi160: Fix too large a buffer.
+
+sayli karnik <karniksayli1995@gmail.com>
+    iio: bmi160_core: Fix sparse warning due to incorrect type in assignment
+
+SeongJae Park <sjpark@amazon.de>
+    xenbus/xenbus_backend: Disallow pending watch messages
+
+SeongJae Park <sjpark@amazon.de>
+    xen/xenbus: Count pending messages for each watch
+
+SeongJae Park <sjpark@amazon.de>
+    xen/xenbus/xen_bus_type: Support will_handle watch callback
+
+SeongJae Park <sjpark@amazon.de>
+    xen/xenbus: Add 'will_handle' callback support in xenbus_watch_path()
+
+SeongJae Park <sjpark@amazon.de>
+    xen/xenbus: Allow watches discard events before queueing
+
+Josh Poimboeuf <jpoimboe@redhat.com>
+    kdev_t: always inline major/minor helper functions
+
+Jessica Yu <jeyu@kernel.org>
+    module: delay kobject uevent until after module init call
+
+Qinglang Miao <miaoqinglang@huawei.com>
+    powerpc: sysdev: add missing iounmap() on error in mpic_msgr_probe()
+
+Jan Kara <jack@suse.cz>
+    quota: Don't overflow quota file offsets
+
+Miroslav Benes <mbenes@suse.cz>
+    module: set MODULE_STATE_GOING state when a module fails to load
+
+Takashi Iwai <tiwai@suse.de>
+    ALSA: seq: Use bool for snd_seq_queue internal flags
+
+Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+    media: gp8psk: initialize stats at power control logic
+
+Anant Thazhemadam <anant.thazhemadam@gmail.com>
+    misc: vmw_vmci: fix kernel info-leak by initializing dbells in vmci_ctx_get_chkpt_doorbells()
+
+Rustam Kovhaev <rkovhaev@gmail.com>
+    reiserfs: add check for an invalid ih_entry_count
+
+Johan Hovold <johan@kernel.org>
+    of: fix linker-section match-table corruption
+
+Petr Vorel <petr.vorel@gmail.com>
+    uapi: move constants from <linux/kernel.h> to <linux/const.h>
+
+Paolo Abeni <pabeni@redhat.com>
+    l2tp: fix races with ipv4-mapped ipv6 addresses
+
+Paolo Abeni <pabeni@redhat.com>
+    net: ipv6: keep sk status consistent after datagram connect failure
+
+Johan Hovold <johan@kernel.org>
+    USB: serial: digi_acceleport: fix write-wakeup deadlocks
+
+Stefan Haberland <sth@linux.ibm.com>
+    s390/dasd: fix hanging device offline processing
+
+Eric Auger <eric.auger@redhat.com>
+    vfio/pci: Move dummy_resources_list init in vfio_pci_probe()
+
+Kailang Yang <kailang@realtek.com>
+    ALSA: hda/realtek - Dell headphone has noise on unmute for ALC236
+
+Hui Wang <hui.wang@canonical.com>
+    ALSA: hda - Fix a wrong FIXUP for alc289 on Dell machines
+
+Kailang Yang <kailang@realtek.com>
+    ALSA: hda/realtek - Support Dell headset mode for ALC3271
+
+Johan Hovold <johan@kernel.org>
+    ALSA: usb-audio: fix sync-ep altsetting sanity check
+
+Alberto Aguirre <albaguirre@gmail.com>
+    ALSA: usb-audio: simplify set_sync_ep_implicit_fb_quirk
+
+Takashi Iwai <tiwai@suse.de>
+    ALSA: hda/ca0132 - Fix work handling in delayed HP detection
+
+Jan Beulich <JBeulich@suse.com>
+    x86/entry/64: Add instruction suffix
+
+
+-------------
+
+Diffstat:
+
+ Makefile                                  |  4 +--
+ arch/powerpc/sysdev/mpic_msgr.c           |  2 +-
+ arch/x86/entry/entry_64.S                 |  2 +-
+ drivers/block/xen-blkback/xenbus.c        |  3 +-
+ drivers/iio/imu/bmi160/bmi160_core.c      | 12 +++++--
+ drivers/iio/magnetometer/mag3110.c        | 13 +++++---
+ drivers/media/usb/dvb-usb/gp8psk.c        |  2 +-
+ drivers/misc/vmw_vmci/vmci_context.c      |  2 +-
+ drivers/net/xen-netback/xenbus.c          |  4 ++-
+ drivers/s390/block/dasd_alias.c           | 10 +++++-
+ drivers/usb/serial/digi_acceleport.c      | 45 ++++++++------------------
+ drivers/vfio/pci/vfio_pci.c               |  4 +--
+ drivers/xen/xen-pciback/xenbus.c          |  2 +-
+ drivers/xen/xenbus/xenbus_client.c        |  8 ++++-
+ drivers/xen/xenbus/xenbus_probe.c         |  1 +
+ drivers/xen/xenbus/xenbus_probe.h         |  2 ++
+ drivers/xen/xenbus/xenbus_probe_backend.c |  7 +++++
+ drivers/xen/xenbus/xenbus_xs.c            | 38 ++++++++++++++--------
+ fs/quota/quota_tree.c                     |  8 ++---
+ fs/reiserfs/stree.c                       |  6 ++++
+ include/linux/kdev_t.h                    | 22 ++++++-------
+ include/linux/of.h                        |  1 +
+ include/uapi/linux/const.h                |  5 +++
+ include/uapi/linux/ethtool.h              |  2 +-
+ include/uapi/linux/kernel.h               |  9 +-----
+ include/uapi/linux/lightnvm.h             |  2 +-
+ include/uapi/linux/mroute6.h              |  2 +-
+ include/uapi/linux/netfilter/x_tables.h   |  2 +-
+ include/uapi/linux/netlink.h              |  2 +-
+ include/uapi/linux/sysctl.h               |  2 +-
+ include/xen/xenbus.h                      | 15 ++++++++-
+ kernel/module.c                           |  6 ++--
+ net/ipv6/datagram.c                       | 21 ++++++++++---
+ net/l2tp/l2tp_core.c                      | 38 +++++++++++-----------
+ net/l2tp/l2tp_core.h                      |  3 --
+ sound/core/seq/seq_queue.h                |  8 ++---
+ sound/pci/hda/patch_ca0132.c              | 16 ++++++++--
+ sound/pci/hda/patch_realtek.c             | 25 +++++++++++++--
+ sound/usb/pcm.c                           | 52 ++++++++++++-------------------
+ 39 files changed, 242 insertions(+), 166 deletions(-)
+
 
