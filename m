@@ -2,130 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC43A2EC999
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 05:47:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B13A2EC965
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 05:39:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727205AbhAGErg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 6 Jan 2021 23:47:36 -0500
-Received: from relay4.mymailcheap.com ([137.74.80.156]:52964 "EHLO
-        relay4.mymailcheap.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726883AbhAGErf (ORCPT
+        id S1726821AbhAGEjB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 6 Jan 2021 23:39:01 -0500
+Received: from mail-pg1-f178.google.com ([209.85.215.178]:45395 "EHLO
+        mail-pg1-f178.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726507AbhAGEjB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 6 Jan 2021 23:47:35 -0500
-Received: from filter2.mymailcheap.com (filter2.mymailcheap.com [91.134.140.82])
-        by relay4.mymailcheap.com (Postfix) with ESMTPS id C55E33F1D0;
-        Thu,  7 Jan 2021 05:46:01 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-        by filter2.mymailcheap.com (Postfix) with ESMTP id 93F492A7E5;
-        Thu,  7 Jan 2021 05:46:01 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mymailcheap.com;
-        s=default; t=1609994761;
-        bh=8unyk0aOxyvIXZOJPusmERGg+i43rMAKH28AqjQ7mUY=;
-        h=Date:In-Reply-To:References:Subject:To:CC:From:From;
-        b=tWG5DTHu16/GMSadEHWNO/lgoT9fzvzO4cYUEXp5Tvv4aTy9tVDas9RESuCa3EgyI
-         g+EtosfDBEG8Nm3Z4/xZrYw7+Vk82TVV7SdOJ+gbDMA0WLpj9RClDJVTkHv9mFKQMq
-         74tltlvR96q9kIsGXVkVBHUET9RxtGDBgWeXkXOY=
-X-Virus-Scanned: Debian amavisd-new at filter2.mymailcheap.com
-Received: from filter2.mymailcheap.com ([127.0.0.1])
-        by localhost (filter2.mymailcheap.com [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id 075XNDlJ-52U; Thu,  7 Jan 2021 05:46:00 +0100 (CET)
-Received: from mail20.mymailcheap.com (mail20.mymailcheap.com [51.83.111.147])
-        (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by filter2.mymailcheap.com (Postfix) with ESMTPS;
-        Thu,  7 Jan 2021 05:46:00 +0100 (CET)
-Received: from [148.251.23.173] (ml.mymailcheap.com [148.251.23.173])
-        by mail20.mymailcheap.com (Postfix) with ESMTP id 934AD4228E;
-        Thu,  7 Jan 2021 04:45:59 +0000 (UTC)
-Authentication-Results: mail20.mymailcheap.com;
-        dkim=pass (1024-bit key; unprotected) header.d=aosc.io header.i=@aosc.io header.b="HdmdzN6t";
-        dkim-atps=neutral
-AI-Spam-Status: Not processed
-Received: from [192.168.1.235] (unknown [59.41.161.221])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail20.mymailcheap.com (Postfix) with ESMTPSA id 231964228E;
-        Thu,  7 Jan 2021 04:45:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=aosc.io; s=default;
-        t=1609994755; bh=8unyk0aOxyvIXZOJPusmERGg+i43rMAKH28AqjQ7mUY=;
-        h=Date:In-Reply-To:References:Subject:To:CC:From:From;
-        b=HdmdzN6tQ8OtkUpQeXMIGEF1zUavlVlWiiL1vh+Nh/HP5Yr+NlGVvEWwOMLiA1Pf0
-         h4X4EAACCeCOyW0fafpJqRj4JpypRauSVDoNn90Ssl3y2UKPWLwgnpfb6hRTBYA50G
-         W/6NnxPy5O2Zhl70TRDATe3EEmawivqOjiPlC5Kk=
-Date:   Thu, 07 Jan 2021 12:00:21 +0800
-User-Agent: K-9 Mail for Android
-In-Reply-To: <CAMty3ZCkEb9g5t6Hs5DN5yHXYvDhymriYqqV+6DZiC+Qb645ww@mail.gmail.com>
-References: <20201128125257.1626588-1-icenowy@aosc.io> <CAMty3ZCkEb9g5t6Hs5DN5yHXYvDhymriYqqV+6DZiC+Qb645ww@mail.gmail.com>
+        Wed, 6 Jan 2021 23:39:01 -0500
+Received: by mail-pg1-f178.google.com with SMTP id v19so3969127pgj.12;
+        Wed, 06 Jan 2021 20:38:45 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=onitCBuokTYDXRoVEN/uFmLYnneMswAzM8mHLGXS6ho=;
+        b=BZ0loy9elWAS3u7ETlMLcvGVyusKbQ/f7BOayRZ+Fy/rJxB7pG20wR06qH//rQsljf
+         L2yQZczph8Vm4H/mZO5EHHVmVbJhDhWL62aV0s3OO0eCA2VpUUZeF5RNfBAt1KDkAbQS
+         AAh0b3KjCvexE2GjC5V27gGYl5ECcw6t28yD5hwZtCicJLQbH+l9MSr6f2qekSXBQWjA
+         i2iHE9Fljox4OIPu3hhdonk50NVB9V1OAk7MsgA9zX3cQMXCJwilcFKfzpF6Yb+GjEyB
+         9T9p9ka/lSNEmTQhm9chjSk+xI5+/rcjSOhsrNGuC8WjhDucSOj8RqtHoKX3mSgaERZx
+         PvTw==
+X-Gm-Message-State: AOAM531TVTJQRaphUcq3HCYj8aO5Wcw/qpMimKl4Dqrg0XBk4pN73N7S
+        /207o6+OWXShbrwfpcRJPcn8OdJP+bw=
+X-Google-Smtp-Source: ABdhPJwJfCnybMADoR1Z6gRyUJgGiGh8pphf4a5lNxDNPOGtE/eyszDbW5y4PCFoCeSSmJ7kLJSPVg==
+X-Received: by 2002:a63:6207:: with SMTP id w7mr3841pgb.164.1609994300199;
+        Wed, 06 Jan 2021 20:38:20 -0800 (PST)
+Received: from localhost ([2601:647:5b00:1161:a4cc:eef9:fbc0:2781])
+        by smtp.gmail.com with ESMTPSA id 14sm3935019pfi.131.2021.01.06.20.38.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 06 Jan 2021 20:38:19 -0800 (PST)
+From:   Moritz Fischer <mdf@kernel.org>
+To:     gregkh@linuxfoundation.org
+Cc:     linux-fpga@vger.kernel.org, linux-kernel@vger.kernel.org,
+        trix@redhat.com, moritzf@google.com,
+        Moritz Fischer <mdf@kernel.org>
+Subject: [PATCH 0/8] FPGA DFL Changes for 5.12
+Date:   Wed,  6 Jan 2021 20:37:06 -0800
+Message-Id: <20210107043714.991646-1-mdf@kernel.org>
+X-Mailer: git-send-email 2.30.0
 MIME-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-Subject: Re: [PATCH] drm/panel: feiyang-fy07024di26a30d: cleanup if panel attaching failed
-To:     Jagan Teki <jagan@amarulasolutions.com>
-CC:     Thierry Reding <thierry.reding@gmail.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-From:   Icenowy Zheng <icenowy@aosc.io>
-Message-ID: <C1F366E9-0EDB-4679-BB93-92223F5B8C4A@aosc.io>
-X-Rspamd-Server: mail20.mymailcheap.com
-X-Spamd-Result: default: False [1.40 / 10.00];
-         RCVD_VIA_SMTP_AUTH(0.00)[];
-         ARC_NA(0.00)[];
-         R_DKIM_ALLOW(0.00)[aosc.io:s=default];
-         MID_RHS_MATCH_FROM(0.00)[];
-         FROM_HAS_DN(0.00)[];
-         FREEMAIL_ENVRCPT(0.00)[gmail.com];
-         TO_MATCH_ENVRCPT_ALL(0.00)[];
-         TAGGED_RCPT(0.00)[];
-         MIME_GOOD(-0.10)[text/plain];
-         DMARC_NA(0.00)[aosc.io];
-         R_SPF_SOFTFAIL(0.00)[~all];
-         HFILTER_HELO_BAREIP(3.00)[148.251.23.173,1];
-         ML_SERVERS(-3.10)[148.251.23.173];
-         TO_DN_ALL(0.00)[];
-         DKIM_TRACE(0.00)[aosc.io:+];
-         RCPT_COUNT_SEVEN(0.00)[7];
-         RECEIVED_SPAMHAUS_PBL(0.00)[59.41.161.221:received];
-         RCVD_NO_TLS_LAST(0.10)[];
-         FROM_EQ_ENVFROM(0.00)[];
-         MIME_TRACE(0.00)[0:+];
-         ASN(0.00)[asn:24940, ipnet:148.251.0.0/16, country:DE];
-         FREEMAIL_CC(0.00)[gmail.com,ravnborg.org,linux.ie,ffwll.ch,lists.freedesktop.org,vger.kernel.org];
-         SUSPICIOUS_RECIPS(1.50)[];
-         RCVD_COUNT_TWO(0.00)[2]
-X-Rspamd-Queue-Id: 934AD4228E
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This is a resend of the previous (unfortunately late) patchset of
+changes for FPGA DFL.
 
+This contains Matthew's changes to allow for more flexible discovery of
+DFLs.
 
-=E4=BA=8E 2021=E5=B9=B41=E6=9C=886=E6=97=A5 GMT+08:00 =E4=B8=8B=E5=8D=885:=
-47:20, Jagan Teki <jagan@amarulasolutions=2Ecom> =E5=86=99=E5=88=B0:
->On Sat, Nov 28, 2020 at 6:23 PM Icenowy Zheng <icenowy@aosc=2Eio> wrote:
->>
->> Attaching the panel can fail, so cleanup work is necessary, otherwise
->> a pointer to freed struct drm_panel* will remain in drm_panel code=2E
->>
->> Do the cleanup if panel attaching failed=2E
->>
->> Fixes: 69dc678abc2b ("drm/panel: Add Feiyang FY07024DI26A30-D
->MIPI-DSI LCD panel")
->
->The fact that this has failed to probe due to recent changes in
->sun6i_mipi_dsi=2Ec I don't know how to put that into the commit message=
-=2E
+Xu's changeset adds support for DFL device drivers. Two of the first
+users are part of the patchset: dfl-emif a memory controller, as well as
+support for the NIOS N3000.
 
-It's not related, we shouldn't assume this panel driver will always
-be used with sunxi SoCs=2E
+Thanks,
+Moritz
 
-It's a panel driver bug that cannot deal with -EPROBE_DEFER well=2E
+Matthew Gerlach (2):
+  fpga: dfl: refactor cci_enumerate_feature_devs()
+  fpga: dfl-pci: locate DFLs by PCIe vendor specific capability
 
->> Signed-off-by: Icenowy Zheng <icenowy@aosc=2Eio>
->> ---
->
->Reviewed-by: Jagan Teki <jagan@amarulasolutions=2Ecom>
+Xu Yilun (6):
+  fpga: dfl: fix the definitions of type & feature_id for dfl devices
+  fpga: dfl: move dfl_device_id to mod_devicetable.h
+  fpga: dfl: add dfl bus support to MODULE_DEVICE_TABLE()
+  fpga: dfl: move dfl bus related APIs to include/linux/dfl.h
+  fpga: dfl: add support for N3000 Nios private feature
+  memory: dfl-emif: add the DFL EMIF private feature driver
+
+ .../ABI/testing/sysfs-bus-dfl-devices-emif    |  25 +
+ .../testing/sysfs-bus-dfl-devices-n3000-nios  |  47 ++
+ Documentation/fpga/dfl.rst                    |  27 +
+ MAINTAINERS                                   |   3 +-
+ drivers/fpga/Kconfig                          |  11 +
+ drivers/fpga/Makefile                         |   2 +
+ drivers/fpga/dfl-n3000-nios.c                 | 588 ++++++++++++++++++
+ drivers/fpga/dfl-pci.c                        | 165 +++--
+ drivers/fpga/dfl.c                            |   4 +-
+ drivers/fpga/dfl.h                            |  85 +--
+ drivers/memory/Kconfig                        |   9 +
+ drivers/memory/Makefile                       |   2 +
+ drivers/memory/dfl-emif.c                     | 207 ++++++
+ include/linux/dfl.h                           |  86 +++
+ include/linux/mod_devicetable.h               |  24 +
+ scripts/mod/devicetable-offsets.c             |   4 +
+ scripts/mod/file2alias.c                      |  13 +
+ 17 files changed, 1180 insertions(+), 122 deletions(-)
+ create mode 100644 Documentation/ABI/testing/sysfs-bus-dfl-devices-emif
+ create mode 100644 Documentation/ABI/testing/sysfs-bus-dfl-devices-n3000-nios
+ create mode 100644 drivers/fpga/dfl-n3000-nios.c
+ create mode 100644 drivers/memory/dfl-emif.c
+ create mode 100644 include/linux/dfl.h
+
+-- 
+2.30.0
+
