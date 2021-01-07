@@ -2,123 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A72B2ED58C
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 18:27:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BB9DF2ED57B
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 18:26:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729036AbhAGR1P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 12:27:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55756 "EHLO
+        id S1728251AbhAGRZT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 12:25:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55460 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726436AbhAGR1O (ORCPT
+        with ESMTP id S1726541AbhAGRZS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 12:27:14 -0500
-Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F209FC0612F5
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Jan 2021 09:26:33 -0800 (PST)
-Received: by mail-pg1-x532.google.com with SMTP id i7so5398243pgc.8
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Jan 2021 09:26:33 -0800 (PST)
+        Thu, 7 Jan 2021 12:25:18 -0500
+Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC154C0612F4;
+        Thu,  7 Jan 2021 09:24:37 -0800 (PST)
+Received: by mail-wm1-x32c.google.com with SMTP id y23so6220752wmi.1;
+        Thu, 07 Jan 2021 09:24:37 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=6lWkPYmqT0bK/p92szu7J/reIaTk7BKnOinjKdXvDN8=;
-        b=H58Wk18/UoqqmlC3FTHkIhsh5gQb7JOahE4qtlxf2WAsFOWRKSWzfyzBQUG4a1T4Xr
-         NIvrYLeLcsaP/9EJtK6gnVr4ygLmGlPWDKCCijCB0Cc1SKVu6GS4QvJHE/KXSfLxu0zW
-         TlEhQ3AvR+4kpFRhII6qUaLoipkhhQy03/rtDmPoQq+MqYWvdJf7NtyQP1nHw7NzY+cM
-         iV4tiF+t5aGrrOEdbCYSS3YoakbJVvD0mw8IQLQ9I8upo81SZmJ9/N55LOwrwJ1nC3HV
-         KZd9PUL73CyNUCwYGDFMTdoDKtUto+iWIezfC9NJtUlfqBNHCr4yZeojX9xaZP+xNBQG
-         OwoA==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=KMvmEFBpjy2So792rxW7fyxN8VfuxztLpgDX8jgcy6g=;
+        b=ry1v3bCYDlpd2lmszzoxlNXPjCZ2xQdciyO/IvfSSz4lAU8CddtrK78CtbZxzYt8Lk
+         52R/W8yqwNTtRPdn/lWQ+/H7BRfL+fe37DtNZA3XuXZr4+78RJRnKOTx3aKlW7MdCeaU
+         y4JZYt+SrOXX0QsJKEGyRoP6UsYmjY1ocGDHdXyNE3iz2Dal+e5npt/tUOQAQgq3Siim
+         kLaGP0wdqbWZEABtmAYctA43t9R8LyMGurVvvKLuha9R+SZe72SouUEyQGVlYUkYMWeD
+         /3gPrWRa5B9FFU6H1M99v5jawKbG50WZmrmnZhhI55f13Crxz70f5x2b9JxXFYJ3nY0o
+         PG6g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=6lWkPYmqT0bK/p92szu7J/reIaTk7BKnOinjKdXvDN8=;
-        b=pZEOHvEkEq6eRVAzeQqf18VFI69OsoZEyZ3YzsNfl/z5mIPqJTKqxMAMtfIpOKfr48
-         fN0ykKRX5DdWQL+QdzHyEytyagEAYLJFIBOe6yfoZFGKZcTGeu6P/nVXitVhA7atXSMq
-         YPTQ5V4r/h7slgGopxF/DMhzTV4d4XU8kyZRdI6d49VNqHXw1PPUnUTBpyNdkXgr01cw
-         hKzX9VBimMaFqG+azUPLIOan+Uj1ry5+UftKsZpAsJPNE5Rr95Iqrghei+Tz6jmTkkK0
-         rdndUGPs5lV4lKp6Si4Wu5SinGum9GgwjddLWu1zfPDOkYcnzJHJQydAHrZ0v2sKhAQC
-         S5+A==
-X-Gm-Message-State: AOAM530gVBbRXBmHp/mI+fQw94oIRoBZOby2CXw9YGguRMQr+9BFuIP4
-        EN4zUUVbfP4sWFma6Hk5YBm2RA==
-X-Google-Smtp-Source: ABdhPJw/q/FMr9jxp6eEm5Nw6T0uz/rVWWCYZLX+6kNy8PPMligfp/kv10WzO7sQoFhXVM51+CcjMw==
-X-Received: by 2002:a63:7402:: with SMTP id p2mr2866216pgc.101.1610040393358;
-        Thu, 07 Jan 2021 09:26:33 -0800 (PST)
-Received: from google.com ([2620:15c:f:10:1ea0:b8ff:fe73:50f5])
-        by smtp.gmail.com with ESMTPSA id z5sm6581160pff.44.2021.01.07.09.26.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 Jan 2021 09:26:32 -0800 (PST)
-Date:   Thu, 7 Jan 2021 09:26:25 -0800
-From:   Sean Christopherson <seanjc@google.com>
-To:     Ashish Kalra <ashish.kalra@amd.com>
-Cc:     Steve Rutherford <srutherford@google.com>,
-        "Dr. David Alan Gilbert" <dgilbert@redhat.com>,
-        "Singh, Brijesh" <brijesh.singh@amd.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Joerg Roedel <joro@8bytes.org>,
-        Borislav Petkov <bp@suse.de>,
-        "Lendacky, Thomas" <Thomas.Lendacky@amd.com>,
-        X86 ML <x86@kernel.org>, KVM list <kvm@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "dovmurik@linux.vnet.ibm.com" <dovmurik@linux.vnet.ibm.com>,
-        "tobin@ibm.com" <tobin@ibm.com>,
-        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
-        "frankeh@us.ibm.com" <frankeh@us.ibm.com>, jon.grimm@amd.com
-Subject: Re: [PATCH v2 1/9] KVM: x86: Add AMD SEV specific Hypercall3
-Message-ID: <X/dEQRZpSb+oQloX@google.com>
-References: <CABayD+esy0yeKi9W3wQw+ou4y4840LPCwd-PHhN1J6Uh_fvSjA@mail.gmail.com>
- <765f86ae-7c68-6722-c6e0-c6150ce69e59@amd.com>
- <20201211225542.GA30409@ashkalra_ubuntu_server>
- <20201212045603.GA27415@ashkalra_ubuntu_server>
- <20201218193956.GJ2956@work-vm>
- <E79E09A2-F314-4B59-B7AE-07B1D422DF2B@amd.com>
- <20201218195641.GL2956@work-vm>
- <20210106230555.GA13999@ashkalra_ubuntu_server>
- <CABayD+dQwaeCnr5_+DUpvbQ42O6cZBMO79pEEzi5WXPO=NH3iA@mail.gmail.com>
- <20210107170728.GA16965@ashkalra_ubuntu_server>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=KMvmEFBpjy2So792rxW7fyxN8VfuxztLpgDX8jgcy6g=;
+        b=OP81mQMeu+zUr3IhFl5+NWOTU9/mtkWBRWRY7SxMLlHIZQnke4xKudBpV95ikh67eS
+         yEJpkNPTO4nDBOq2B3y2Ea/swxLv3TI2RNp/Z9Ul8kxTptsDlUppgdXHVpWhkOawozmA
+         3NGQX7eYa1bV/eYreTH0WcbUjfenbFsGEClJ24W23+SuAwpT2bQNSrBeI12NXwjNAeoy
+         e7+EF0oQ6jAnvAh9kQHXKoeT2vjQeiDXgqTVZyFIdwO8JEPRjzf/fluojCGiThHN9upc
+         /DF8SxlCUL+rJtHgy7Wx6u6io/mdZcEPFIPTImkwF/gw5FPDa0nRvbIi23Q5ZzcDoI4s
+         +qLg==
+X-Gm-Message-State: AOAM532j9F7k4dzD86ZZElvY0GWX8hY0UG9MV56W4k0uptXF4rq6Ocdz
+        OvWzcx9cMMup2C48zPMbBdPOX8QIsOvKBpnz5Yo=
+X-Google-Smtp-Source: ABdhPJxy4Gz9DrRlqVSC+vptof6zKhnSJC7xeTi8iOASRVcGnhavBZazzRnX/a1jbGitOVKzKmABDLKRQXJLlyuiuAw=
+X-Received: by 2002:a7b:c0c8:: with SMTP id s8mr8930405wmh.123.1610040276433;
+ Thu, 07 Jan 2021 09:24:36 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210107170728.GA16965@ashkalra_ubuntu_server>
+References: <20210104193044.80591-1-konrad.dybcio@somainline.org> <8847b190c9d03afd731881689d9b28d3@codeaurora.org>
+In-Reply-To: <8847b190c9d03afd731881689d9b28d3@codeaurora.org>
+From:   Rob Clark <robdclark@gmail.com>
+Date:   Thu, 7 Jan 2021 09:26:54 -0800
+Message-ID: <CAF6AEGu0Sv6nYNDn0z61pXRjNyFLpLw5S4_O3opmrQ-UVNR_MA@mail.gmail.com>
+Subject: Re: [PATCH] drm/msm: Only enable A6xx LLCC code on A6xx
+To:     Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+Cc:     Konrad Dybcio <konrad.dybcio@somainline.org>,
+        phone-devel@vger.kernel.org, ~postmarketos/upstreaming@lists.sr.ht,
+        martin.botka@somainline.org,
+        angelogioacchino.delregno@somainline.org,
+        marijn.suijten@somainline.org, Sean Paul <sean@poorly.run>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Jordan Crouse <jcrouse@codeaurora.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Jonathan Marek <jonathan@marek.ca>,
+        Dave Airlie <airlied@redhat.com>,
+        Sharat Masetty <smasetty@codeaurora.org>,
+        Akhil P Oommen <akhilpo@codeaurora.org>,
+        Shawn Guo <shawn.guo@linaro.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        freedreno <freedreno@lists.freedesktop.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 07, 2021, Ashish Kalra wrote:
-> Hello Steve,
-> 
-> On Wed, Jan 06, 2021 at 05:01:33PM -0800, Steve Rutherford wrote:
-> > Avoiding an rbtree for such a small (but unstable) list seems correct.
-> > 
-> > For the unencrypted region list strategy, the only questions that I
-> > have are fairly secondary.
-> > - How should the kernel upper bound the size of the list in the face
-> > of malicious guests, but still support large guests? (Something
-> > similar to the size provided in the bitmap API would work).
-> 
-> I am thinking of another scenario, where a malicious guest can make
-> infinite/repetetive hypercalls and DOS attack the host. 
-> 
-> But probably this is a more generic issue, this can be done by any guest
-> and under any hypervisor, i don't know what kind of mitigations exist
-> for such a scenario ?
-> 
-> Potentially, the guest memory donation model can handle such an attack,
-> because in this model, the hypervisor will expect only one hypercall,
-> any repetetive hypercalls can make the hypervisor disable the guest ?
+On Wed, Jan 6, 2021 at 8:50 PM Sai Prakash Ranjan
+<saiprakash.ranjan@codeaurora.org> wrote:
+>
+> On 2021-01-05 01:00, Konrad Dybcio wrote:
+> > Using this code on A5xx (and probably older too) causes a
+> > smmu bug.
+> >
+> > Fixes: 474dadb8b0d5 ("drm/msm/a6xx: Add support for using system
+> > cache(LLC)")
+> > Signed-off-by: Konrad Dybcio <konrad.dybcio@somainline.org>
+> > Tested-by: AngeloGioacchino Del Regno
+> > <angelogioacchino.delregno@somainline.org>
+> > ---
+>
+> Reviewed-by: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+>
+> >  drivers/gpu/drm/msm/adreno/adreno_gpu.c | 21 ++++++++++++---------
+> >  drivers/gpu/drm/msm/adreno/adreno_gpu.h |  5 +++++
+> >  2 files changed, 17 insertions(+), 9 deletions(-)
+> >
+> > diff --git a/drivers/gpu/drm/msm/adreno/adreno_gpu.c
+> > b/drivers/gpu/drm/msm/adreno/adreno_gpu.c
+> > index 6cf9975e951e..f09175698827 100644
+> > --- a/drivers/gpu/drm/msm/adreno/adreno_gpu.c
+> > +++ b/drivers/gpu/drm/msm/adreno/adreno_gpu.c
+> > @@ -191,8 +191,6 @@ adreno_iommu_create_address_space(struct msm_gpu
+> > *gpu,
+> >               struct platform_device *pdev)
+> >  {
+> >       struct adreno_gpu *adreno_gpu = to_adreno_gpu(gpu);
+> > -     struct a6xx_gpu *a6xx_gpu = to_a6xx_gpu(adreno_gpu);
+> > -     struct io_pgtable_domain_attr pgtbl_cfg;
+> >       struct iommu_domain *iommu;
+> >       struct msm_mmu *mmu;
+> >       struct msm_gem_address_space *aspace;
+> > @@ -202,13 +200,18 @@ adreno_iommu_create_address_space(struct msm_gpu
+> > *gpu,
+> >       if (!iommu)
+> >               return NULL;
+> >
+> > -     /*
+> > -      * This allows GPU to set the bus attributes required to use system
+> > -      * cache on behalf of the iommu page table walker.
+> > -      */
+> > -     if (!IS_ERR(a6xx_gpu->htw_llc_slice)) {
+> > -             pgtbl_cfg.quirks = IO_PGTABLE_QUIRK_ARM_OUTER_WBWA;
+> > -             iommu_domain_set_attr(iommu, DOMAIN_ATTR_IO_PGTABLE_CFG,
+> > &pgtbl_cfg);
+> > +
+> > +     if (adreno_is_a6xx(adreno_gpu)) {
+> > +             struct a6xx_gpu *a6xx_gpu = to_a6xx_gpu(adreno_gpu);
+> > +             struct io_pgtable_domain_attr pgtbl_cfg;
+> > +             /*
+> > +             * This allows GPU to set the bus attributes required to use system
+> > +             * cache on behalf of the iommu page table walker.
+> > +             */
+> > +             if (!IS_ERR(a6xx_gpu->htw_llc_slice)) {
+> > +                     pgtbl_cfg.quirks = IO_PGTABLE_QUIRK_ARM_OUTER_WBWA;
+> > +                     iommu_domain_set_attr(iommu, DOMAIN_ATTR_IO_PGTABLE_CFG,
+> > &pgtbl_cfg);
+> > +             }
 
-KVM doesn't need to explicitly bound its tracking structures, it just needs to
-use GFP_KERNEL_ACCOUNT when allocating kernel memory for the structures so that
-the memory will be accounted to the task/process/VM.  Shadow MMU pages are the
-only exception that comes to mind; they're still accounted properly, but KVM
-also explicitly limits them for a variety of reasons.
+I'm applying for -fixes as this is an obvious problem..  But kinda
+thinking that we should try to move it into an a6xx specific
+create_address_space() (or wrapper for the generic fxn)
 
-The size of the list will naturally be bounded by the size of the guest; and
-assuming KVM proactively merges adjancent regions, that upper bound is probably
-reasonably low compared to other allocations, e.g. the aforementioned MMU pages.
+Sai/Jordan, could I talk one of you into trying to clean this up
+better for next cycle?
 
-And, using a list means a malicious guest will get automatically throttled as
-the latency of walking the list (to merge/delete existing entries) will increase
-with the size of the list.
+BR,
+-R
+
+> >       }
+> >
+> >       mmu = msm_iommu_new(&pdev->dev, iommu);
+> > diff --git a/drivers/gpu/drm/msm/adreno/adreno_gpu.h
+> > b/drivers/gpu/drm/msm/adreno/adreno_gpu.h
+> > index 4574d85c5680..08421fa54a50 100644
+> > --- a/drivers/gpu/drm/msm/adreno/adreno_gpu.h
+> > +++ b/drivers/gpu/drm/msm/adreno/adreno_gpu.h
+> > @@ -226,6 +226,11 @@ static inline int adreno_is_a540(struct adreno_gpu
+> > *gpu)
+> >       return gpu->revn == 540;
+> >  }
+> >
+> > +static inline bool adreno_is_a6xx(struct adreno_gpu *gpu)
+> > +{
+> > +     return ((gpu->revn < 700 && gpu->revn > 599));
+> > +}
+> > +
+> >  static inline int adreno_is_a618(struct adreno_gpu *gpu)
+> >  {
+> >         return gpu->revn == 618;
+>
+> --
+> QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a
+> member
+> of Code Aurora Forum, hosted by The Linux Foundation
