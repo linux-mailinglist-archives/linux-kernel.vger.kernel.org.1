@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1620B2ED1CA
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 15:21:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5FD852ED1F2
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 15:22:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729125AbhAGOR3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 09:17:29 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39548 "EHLO mail.kernel.org"
+        id S1729433AbhAGOUD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 09:20:03 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38958 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729091AbhAGOR0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 09:17:26 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3FE3023372;
-        Thu,  7 Jan 2021 14:16:08 +0000 (UTC)
+        id S1728036AbhAGORR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Jan 2021 09:17:17 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E3B3F233E2;
+        Thu,  7 Jan 2021 14:16:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610028968;
-        bh=CL6Zjm3irMGPOylu9c7/m01S43Y6DOM8i3vetiiOhmE=;
+        s=korg; t=1610029008;
+        bh=M8r8CHOnyqls9B7FWyeet+G/8JiA4BwX4eNqgpkXWvo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=I/fc8UhL1EBuSN8As3k/m56i87VPZ7kOSbzUp/5oCuxmzvMp0NNr+1OCWoe51LWqH
-         SDSGt+2XxeO/BQ1IcNsIOp6ctKBfMzpf4wZTTnKTYkqf7AMsi1qphge/tX2bBSYPaV
-         Ltabm9/pRyvNjLjaX4VfRwbd0H7WjMN5zxFxvXH4=
+        b=SM1iEgTi2LbYt1Mr9OTjhfqilZSCTA8i2LKq7/HoldgDkkRLIH8/QCTCELvMjr3p2
+         lZy1kHS5c1w0lP9GYIs3jrZ0dyhfz7GychYyKt/qcCc+m0D8Wh34jzqQvJKPVQxVWK
+         K66oYntPSgzjpDk1HP3y35ud4bBJARYwFwBNuTLA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org,
-        Nicolas Morey-Chaisemartin <nmoreychaisemartin@suse.com>,
-        Jessica Yu <jeyu@kernel.org>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 4.4 18/19] module: delay kobject uevent until after module init call
-Date:   Thu,  7 Jan 2021 15:16:43 +0100
-Message-Id: <20210107140828.429521522@linuxfoundation.org>
+        stable@vger.kernel.org, SeongJae Park <sjpark@amazon.de>,
+        Michael Kurth <mku@amazon.de>,
+        Pawel Wieczorkiewicz <wipawel@amazon.de>,
+        Juergen Gross <jgross@suse.com>
+Subject: [PATCH 4.9 24/32] xen/xenbus: Allow watches discard events before queueing
+Date:   Thu,  7 Jan 2021 15:16:44 +0100
+Message-Id: <20210107140829.007519269@linuxfoundation.org>
 X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210107140827.584658199@linuxfoundation.org>
-References: <20210107140827.584658199@linuxfoundation.org>
+In-Reply-To: <20210107140827.866214702@linuxfoundation.org>
+References: <20210107140827.866214702@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -40,66 +41,102 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jessica Yu <jeyu@kernel.org>
+From: SeongJae Park <sjpark@amazon.de>
 
-[ Upstream commit 38dc717e97153e46375ee21797aa54777e5498f3 ]
+commit fed1755b118147721f2c87b37b9d66e62c39b668 upstream.
 
-Apparently there has been a longstanding race between udev/systemd and
-the module loader. Currently, the module loader sends a uevent right
-after sysfs initialization, but before the module calls its init
-function. However, some udev rules expect that the module has
-initialized already upon receiving the uevent.
+If handling logics of watch events are slower than the events enqueue
+logic and the events can be created from the guests, the guests could
+trigger memory pressure by intensively inducing the events, because it
+will create a huge number of pending events that exhausting the memory.
 
-This race has been triggered recently (see link in references) in some
-systemd mount unit files. For instance, the configfs module creates the
-/sys/kernel/config mount point in its init function, however the module
-loader issues the uevent before this happens. sys-kernel-config.mount
-expects to be able to mount /sys/kernel/config upon receipt of the
-module loading uevent, but if the configfs module has not called its
-init function yet, then this directory will not exist and the mount unit
-fails. A similar situation exists for sys-fs-fuse-connections.mount, as
-the fuse sysfs mount point is created during the fuse module's init
-function. If udev is faster than module initialization then the mount
-unit would fail in a similar fashion.
+Fortunately, some watch events could be ignored, depending on its
+handler callback.  For example, if the callback has interest in only one
+single path, the watch wouldn't want multiple pending events.  Or, some
+watches could ignore events to same path.
 
-To fix this race, delay the module KOBJ_ADD uevent until after the
-module has finished calling its init routine.
+To let such watches to volutarily help avoiding the memory pressure
+situation, this commit introduces new watch callback, 'will_handle'.  If
+it is not NULL, it will be called for each new event just before
+enqueuing it.  Then, if the callback returns false, the event will be
+discarded.  No watch is using the callback for now, though.
 
-Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Tested-By: Nicolas Morey-Chaisemartin <nmoreychaisemartin@suse.com>
-Signed-off-by: Jessica Yu <jeyu@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+This is part of XSA-349
+
+Cc: stable@vger.kernel.org
+Signed-off-by: SeongJae Park <sjpark@amazon.de>
+Reported-by: Michael Kurth <mku@amazon.de>
+Reported-by: Pawel Wieczorkiewicz <wipawel@amazon.de>
+Reviewed-by: Juergen Gross <jgross@suse.com>
+Signed-off-by: Juergen Gross <jgross@suse.com>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
+
 ---
- kernel/module.c |    5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ drivers/net/xen-netback/xenbus.c   |    2 ++
+ drivers/xen/xenbus/xenbus_client.c |    1 +
+ drivers/xen/xenbus/xenbus_xs.c     |    7 ++++++-
+ include/xen/xenbus.h               |    7 +++++++
+ 4 files changed, 16 insertions(+), 1 deletion(-)
 
---- a/kernel/module.c
-+++ b/kernel/module.c
-@@ -1779,7 +1779,6 @@ static int mod_sysfs_init(struct module
- 	if (err)
- 		mod_kobject_put(mod);
- 
--	/* delay uevent until full sysfs population */
- out:
+--- a/drivers/net/xen-netback/xenbus.c
++++ b/drivers/net/xen-netback/xenbus.c
+@@ -770,12 +770,14 @@ static int xen_register_credit_watch(str
+ 		return -ENOMEM;
+ 	snprintf(node, maxlen, "%s/rate", dev->nodename);
+ 	vif->credit_watch.node = node;
++	vif->credit_watch.will_handle = NULL;
+ 	vif->credit_watch.callback = xen_net_rate_changed;
+ 	err = register_xenbus_watch(&vif->credit_watch);
+ 	if (err) {
+ 		pr_err("Failed to set watcher %s\n", vif->credit_watch.node);
+ 		kfree(node);
+ 		vif->credit_watch.node = NULL;
++		vif->credit_watch.will_handle = NULL;
+ 		vif->credit_watch.callback = NULL;
+ 	}
  	return err;
- }
-@@ -1813,7 +1812,6 @@ static int mod_sysfs_setup(struct module
- 	add_sect_attrs(mod, info);
- 	add_notes_attrs(mod, info);
+--- a/drivers/xen/xenbus/xenbus_client.c
++++ b/drivers/xen/xenbus/xenbus_client.c
+@@ -120,6 +120,7 @@ int xenbus_watch_path(struct xenbus_devi
+ 	int err;
  
--	kobject_uevent(&mod->mkobj.kobj, KOBJ_ADD);
- 	return 0;
+ 	watch->node = path;
++	watch->will_handle = NULL;
+ 	watch->callback = callback;
  
- out_unreg_param:
-@@ -3301,6 +3299,9 @@ static noinline int do_init_module(struc
- 	blocking_notifier_call_chain(&module_notify_list,
- 				     MODULE_STATE_LIVE, mod);
+ 	err = register_xenbus_watch(watch);
+--- a/drivers/xen/xenbus/xenbus_xs.c
++++ b/drivers/xen/xenbus/xenbus_xs.c
+@@ -901,7 +901,12 @@ static int process_msg(void)
+ 		spin_lock(&watches_lock);
+ 		msg->u.watch.handle = find_watch(
+ 			msg->u.watch.vec[XS_WATCH_TOKEN]);
+-		if (msg->u.watch.handle != NULL) {
++		if (msg->u.watch.handle != NULL &&
++				(!msg->u.watch.handle->will_handle ||
++				 msg->u.watch.handle->will_handle(
++					 msg->u.watch.handle,
++					 (const char **)msg->u.watch.vec,
++					 msg->u.watch.vec_size))) {
+ 			spin_lock(&watch_events_lock);
+ 			list_add_tail(&msg->list, &watch_events);
+ 			wake_up(&watch_events_waitq);
+--- a/include/xen/xenbus.h
++++ b/include/xen/xenbus.h
+@@ -58,6 +58,13 @@ struct xenbus_watch
+ 	/* Path being watched. */
+ 	const char *node;
  
-+	/* Delay uevent until module has finished its init routine */
-+	kobject_uevent(&mod->mkobj.kobj, KOBJ_ADD);
++	/*
++	 * Called just before enqueing new event while a spinlock is held.
++	 * The event will be discarded if this callback returns false.
++	 */
++	bool (*will_handle)(struct xenbus_watch *,
++			    const char **vec, unsigned int len);
 +
- 	/*
- 	 * We need to finish all async code before the module init sequence
- 	 * is done.  This has potential to deadlock.  For example, a newly
+ 	/* Callback (executed in a process context with no locks held). */
+ 	void (*callback)(struct xenbus_watch *,
+ 			 const char **vec, unsigned int len);
 
 
