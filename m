@@ -2,91 +2,279 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4769D2ED541
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 18:16:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F251C2ED551
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 18:18:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728201AbhAGROz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 12:14:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53840 "EHLO
+        id S1728735AbhAGRSH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 12:18:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54340 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725835AbhAGROz (ORCPT
+        with ESMTP id S1726436AbhAGRSF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 12:14:55 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C78CCC0612F4
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Jan 2021 09:14:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=3RoonU/YcEe0gg0vqaGauY9MST17giXfSJb9Q67uaxw=; b=g/CuNus7wOcueBuWo8MBWtn7ya
-        +O/c5+5K1ulmzEaoRMqEuLA61Z9Zsd5h2KmBxgH8BcYDdE8bnQhn1wSGmJAYbXvjCCxKD5mFVsehQ
-        n3PajQltHaduvIyh19a1etCPXDH9Tc/4IoXVOMdqWKhGUR/X45gbvg0Rj4rulTpQy1br0uCsMf2lX
-        7ibfGCz9NkvY2Hveb/Ip0x8qjtTYOElQgAiH+cY1KawtvOL+ggDsPZJuM/F5g8jljhYRc04UqDZvL
-        V7GMEivt7ZehVi3Al1Ow3Jf0kNaQF/xSyvEKPiFOJHYnB8Xb16Vl1/a3qI80mUgeCPAWNseiTXHQZ
-        Qn7VAC1w==;
-Received: from [2601:1c0:6280:3f0::79df]
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kxYrS-0003wR-4b; Thu, 07 Jan 2021 17:14:10 +0000
-Subject: Re: undefined reference to `led_classdev_unregister'
-To:     kernel test robot <lkp@intel.com>,
-        Kurt Kanzenbach <kurt@linutronix.de>
-Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
-        Jakub Kicinski <kuba@kernel.org>, Andrew Lunn <andrew@lunn.ch>,
-        Florian Fainelli <f.fainelli@gmail.com>
-References: <202101061932.tXwNws1g-lkp@intel.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <7b677508-94b8-aa73-6844-2ab3dea91058@infradead.org>
-Date:   Thu, 7 Jan 2021 09:14:04 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        Thu, 7 Jan 2021 12:18:05 -0500
+Received: from mail-oi1-x229.google.com (mail-oi1-x229.google.com [IPv6:2607:f8b0:4864:20::229])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45FAFC0612F6
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Jan 2021 09:17:25 -0800 (PST)
+Received: by mail-oi1-x229.google.com with SMTP id s2so8168919oij.2
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Jan 2021 09:17:25 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=y0b32X4SCSQW4ZyWSqBJZ7gE3D/FLBK0/PnLsSA/kDo=;
+        b=iFZBxcINm4NcJ4GzA0htrQ1YNQO9+Xa8zaWCTXqusc3yELttivb/svo9bOBQv5wCwU
+         Twrmlc7cAbS+irWpBW5j976lssLbI+/dKST1tZx/DS5RHnWrzpkQmSS6kFWmD3rKSkHH
+         rHrLUaCW92FgBRZUM47aXZe1ymhd19CHHKALMJoSR2DAYJt6Is16xa9LhVlOOht51vID
+         zgbIrWzpPYqmyMyJh9uQ1aWyPdZCZaD6jqSTbVInDZOfDpXBtCsgpCO3zVZugwxten0M
+         /qmL/TslKIVLI6yqRhsKaof+atdMdGyVjjnZ6ADlb1+5uLGsn74k984zij7/JKk/hhdK
+         31xQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=y0b32X4SCSQW4ZyWSqBJZ7gE3D/FLBK0/PnLsSA/kDo=;
+        b=H92Prj2WGpXYZqEYL75bhZK9/emYIe+R6RcHSu/sFUOWlVz5Sbg43biVZh0O9Yro7T
+         Ciwl+g8R8Nyx7o8RqkM1Ym8h7dgpiJMFG7IrwoXpC6Bx+szcO2h24w0vDPrH38SwX68T
+         BlG7dmNUpzbhVA3+qQ43Ches2yLnVDi/aqDDTZtacVcIh8FvEkhFT07bPgytWZW1Lc6D
+         OxxNu2yKpX3QfQCqwsFmX2YhAY1xvejHpiZI6BwCRRLzGl1hHh5q76Mr5GcDUeMAoDKN
+         vkZ0XGpjFO2F97CbSsGH3r+ncl4J6SD12m5PUvV4GYp9WgEwVwUqDjepqLq3N2JMwidA
+         wDgg==
+X-Gm-Message-State: AOAM5324FEJsHbd/ciwfGRQGA6nSiFSDpLJgmHuu53YEdnDUl80MhYk8
+        WkY7vi3hMC5o706qB74O9/kRNw==
+X-Google-Smtp-Source: ABdhPJzRRmW36uQ+skMh0nkic0qhC58gTdp5qyWT1IhJrztmvIepafMnqRRJtZ2hZyzfiMrDmy6EYA==
+X-Received: by 2002:aca:3192:: with SMTP id x140mr2010483oix.172.1610039844452;
+        Thu, 07 Jan 2021 09:17:24 -0800 (PST)
+Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id u141sm1382809oie.46.2021.01.07.09.17.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 07 Jan 2021 09:17:23 -0800 (PST)
+Date:   Thu, 7 Jan 2021 11:17:22 -0600
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Vinod Koul <vkoul@kernel.org>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        linux-arm-msm@vger.kernel.org, Andy Gross <agross@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>, linux-gpio@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 1/2] dt-bindings: pinctrl: qcom: Add SM8350 pinctrl
+ bindings
+Message-ID: <X/dCIuUR/El8Gxaa@builder.lan>
+References: <20210106054950.303244-1-vkoul@kernel.org>
+ <20210106054950.303244-2-vkoul@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <202101061932.tXwNws1g-lkp@intel.com>
-Content-Type: text/plain; charset=windows-1252
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210106054950.303244-2-vkoul@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 1/6/21 3:22 AM, kernel test robot wrote:
-> Hi Kurt,
+On Tue 05 Jan 23:49 CST 2021, Vinod Koul wrote:
+
+> Add device tree binding Documentation details for Qualcomm SM8350
+> pinctrl driver.
 > 
-> FYI, the error/warning still remains.
+> Signed-off-by: Vinod Koul <vkoul@kernel.org>
+> ---
+>  .../bindings/pinctrl/qcom,sm8350-tlmm.yaml    | 149 ++++++++++++++++++
+>  1 file changed, 149 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/pinctrl/qcom,sm8350-tlmm.yaml
 > 
-> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-> head:   e71ba9452f0b5b2e8dc8aa5445198cd9214a6a62
-> commit: 7d9ee2e8ff1541c60dcb5cfdf41def9659204c3e net: dsa: hellcreek: Add PTP status LEDs
-> date:   9 weeks ago
-> config: microblaze-randconfig-r016-20210106 (attached as .config)
-> compiler: microblaze-linux-gcc (GCC) 9.3.0
-> reproduce (this is a W=1 build):
->         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
->         chmod +x ~/bin/make.cross
->         # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=7d9ee2e8ff1541c60dcb5cfdf41def9659204c3e
->         git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
->         git fetch --no-tags linus master
->         git checkout 7d9ee2e8ff1541c60dcb5cfdf41def9659204c3e
->         # save the attached .config to linux build tree
->         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 make.cross ARCH=microblaze 
+> diff --git a/Documentation/devicetree/bindings/pinctrl/qcom,sm8350-tlmm.yaml b/Documentation/devicetree/bindings/pinctrl/qcom,sm8350-tlmm.yaml
+> new file mode 100644
+> index 000000000000..abdafd25bfc2
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/pinctrl/qcom,sm8350-tlmm.yaml
+> @@ -0,0 +1,149 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/pinctrl/qcom,sm8350-tlmm.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Qualcomm Technologies, Inc. SM8350 TLMM block
+> +
+> +maintainers:
+> +  - Vinod Koul <vkoul@kernel.org>
+> +
+> +description: |
+> +  This binding describes the Top Level Mode Multiplexer block found in the
+> +  SM8350 platform.
+> +
+> +properties:
+> +  compatible:
+> +    const: qcom,sm8350-tlmm
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  interrupts:
+> +    maxItems: 1
+> +
+> +  interrupt-controller: true
+> +
+> +  '#interrupt-cells':
+> +    description: Specifies the PIN numbers and Flags, as defined in
+> +      include/dt-bindings/interrupt-controller/irq.h
+> +    const: 2
+> +
+> +  gpio-controller: true
+> +
+> +  '#gpio-cells':
+> +    description: Specifying the pin number and flags, as defined in
+> +      include/dt-bindings/gpio/gpio.h
+> +    const: 2
+> +
+> +  gpio-ranges:
+> +    maxItems: 1
+> +
+> +  gpio-reserved-ranges:
+> +    maxItems: 1
+> +
+> +#PIN CONFIGURATION NODES
+> +patternProperties:
+> +  '-pinmux$':
+
+I believe that what Rob was asking for was the matter of describing the
+mux and config subnodes under this one. But I don't know really how to
+express this, because the following are all valid:
+
+default_state: default-state {
+	pins = "gpio1";
+	bias-disable;
+};
+
+default_state: default-state {
+	rx {
+		pins = "gpio1";
+		function = "gpio";
+		bias-disable;
+	};
+};
+
+default_state: default-state {
+	pinmux {
+		pins = "gpio1";
+		function = "gpio";
+	};
+
+	pinconf {
+		pins = "gpio1";
+		bias-disable;
+	};
+};
+
+I.e. the properties described here applies either to this node directly,
+or any subnodes (1 level) down.
+
+
+Also we've been using different "patternProperties" for this node since
+the introduction of the binding 7 years ago. But to be "-state$" seems
+to best represent what the node actually describes.
+
+Regards,
+Bjorn
+
+> +    type: object
+> +    description:
+> +      Pinctrl node's client devices use subnodes for desired pin configuration.
+> +      Client device subnodes use below standard properties.
+> +    $ref: "/schemas/pinctrl/pincfg-node.yaml"
+> +
+> +    properties:
+> +      pins:
+> +        description:
+> +          List of gpio pins affected by the properties specified in this subnode.
+> +        items:
+> +          oneOf:
+> +            - pattern: "^gpio([0-9]|[1-9][0-9]|1[0-9][0-9]|20[0-3])$"
+> +            - enum: [ sdc1_clk, sdc1_cmd, sdc1_data, sdc2_clk, sdc2_cmd, sdc2_data ]
+> +        minItems: 1
+> +        maxItems: 36
+> +
+> +      function:
+> +        description:
+> +          Specify the alternative function to be configured for the specified
+> +          pins. Functions are only valid for gpio pins.
+> +        enum: [ atest_char, atest_usb, audio_ref, cam_mclk, cci_async,
+> +                cci_i2c, cci_timer, cmu_rng, coex_uart1, coex_uart2, cri_trng,
+> +                cri_trng0, cri_trng1, dbg_out, ddr_bist, ddr_pxi0, ddr_pxi1,
+> +                ddr_pxi2, ddr_pxi3, dp_hot, dp_lcd, gcc_gp1, gcc_gp2, gcc_gp3,
+> +                gpio, ibi_i3c, jitter_bist, lpass_slimbus, mdp_vsync, mdp_vsync0,
+> +                mdp_vsync1, mdp_vsync2, mdp_vsync3, mi2s0_data0, mi2s0_data1,
+> +                mi2s0_sck, mi2s0_ws, mi2s1_data0, mi2s1_data1, mi2s1_sck,
+> +                mi2s1_ws, mi2s2_data0, mi2s2_data1, mi2s2_sck, mi2s2_ws,
+> +                mss_grfc0, mss_grfc1, mss_grfc10, mss_grfc11, mss_grfc12,
+> +                mss_grfc2, mss_grfc3, mss_grfc4, mss_grfc5, mss_grfc6,
+> +                mss_grfc7, mss_grfc8, mss_grfc9, nav_gpio, pa_indicator,
+> +                pcie0_clkreqn, pcie1_clkreqn, phase_flag, pll_bist, pll_clk,
+> +                pri_mi2s, prng_rosc, qdss_cti, qdss_gpio, qlink0_enable,
+> +                qlink0_request, qlink0_wmss, qlink1_enable, qlink1_request,
+> +                qlink1_wmss, qlink2_enable, qlink2_request, qlink2_wmss, qspi0,
+> +                qspi1, qspi2, qspi3, qspi_clk, qspi_cs, qup0, qup1, qup10,
+> +                qup11, qup12, qup13, qup14, qup15, qup16, qup17, qup18, qup19,
+> +                qup2, qup3, qup4, qup5, qup6, qup7, qup8, qup9, qup_l4, qup_l5,
+> +                qup_l6, sd_write, sdc40, sdc41, sdc42, sdc43, sdc4_clk,
+> +                sdc4_cmd, sec_mi2s, tb_trig, tgu_ch0, tgu_ch1, tgu_ch2,
+> +                tgu_ch3, tsense_pwm1, tsense_pwm2, uim0_clk, uim0_data,
+> +                uim0_present, uim0_reset, uim1_clk, uim1_data, uim1_present,
+> +                uim1_reset, usb2phy_ac, usb_phy, vfr_0, vfr_1, vsense_trigger ]
+> +
+> +
+> +      drive-strength:
+> +        enum: [2, 4, 6, 8, 10, 12, 14, 16]
+> +        default: 2
+> +        description:
+> +          Selects the drive strength for the specified pins, in mA.
+> +
+> +      bias-pull-down: true
+> +
+> +      bias-pull-up: true
+> +
+> +      bias-disable: true
+> +
+> +      output-high: true
+> +
+> +      output-low: true
+> +
+> +    required:
+> +      - pins
+> +      - function
+> +
+> +    additionalProperties: false
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - interrupts
+> +  - interrupt-controller
+> +  - '#interrupt-cells'
+> +  - gpio-controller
+> +  - '#gpio-cells'
+> +  - gpio-ranges
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +        #include <dt-bindings/interrupt-controller/arm-gic.h>
+> +        tlmm: pinctrl@f000000 {
+> +          compatible = "qcom,sm8350-tlmm";
+> +          reg = <0x0f100000 0x300000>;
+> +          interrupts = <GIC_SPI 208 IRQ_TYPE_LEVEL_HIGH>;
+> +          gpio-controller;
+> +          #gpio-cells = <2>;
+> +          interrupt-controller;
+> +          #interrupt-cells = <2>;
+> +          gpio-ranges = <&tlmm 0 0 203>;
+> +          serial-pinmux {
+> +            pins = "gpio18", "gpio19";
+> +            function = "qup3";
+> +            drive-strength = <8>;
+> +            bias-disable;
+> +          };
+> +        };
+> +
+> +...
+> -- 
+> 2.26.2
 > 
-> If you fix the issue, kindly add following tag as appropriate
-> Reported-by: kernel test robot <lkp@intel.com>
-
-Now fixed in the netdev tree:
-
-https://git.kernel.org/netdev/net/c/7f847db30408
-
-> All errors (new ones prefixed by >>):
-> 
->    microblaze-linux-ld: drivers/net/dsa/hirschmann/hellcreek_ptp.o: in function `hellcreek_ptp_setup':
->>> (.text+0xf80): undefined reference to `led_classdev_register_ext'
->>> microblaze-linux-ld: (.text+0xf94): undefined reference to `led_classdev_register_ext'
->    microblaze-linux-ld: drivers/net/dsa/hirschmann/hellcreek_ptp.o: in function `hellcreek_ptp_free':
->>> (.text+0x1018): undefined reference to `led_classdev_unregister'
->>> microblaze-linux-ld: (.text+0x1024): undefined reference to `led_classdev_unregister'
-
-
--- 
-~Randy
-
