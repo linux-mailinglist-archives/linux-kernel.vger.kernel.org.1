@@ -2,119 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E42B62ECA3C
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 06:47:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D1CD2ECA48
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 06:57:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726005AbhAGFqv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 00:46:51 -0500
-Received: from conssluserg-05.nifty.com ([210.131.2.90]:63806 "EHLO
-        conssluserg-05.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725306AbhAGFqv (ORCPT
+        id S1726005AbhAGF4n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 00:56:43 -0500
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:42176 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725306AbhAGF4n (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 00:46:51 -0500
-X-Greylist: delayed 1019 seconds by postgrey-1.27 at vger.kernel.org; Thu, 07 Jan 2021 00:46:49 EST
-Received: from mail-pg1-f176.google.com (mail-pg1-f176.google.com [209.85.215.176]) (authenticated)
-        by conssluserg-05.nifty.com with ESMTP id 1075jgUj031567;
-        Thu, 7 Jan 2021 14:45:42 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-05.nifty.com 1075jgUj031567
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1609998342;
-        bh=rj8HGx1HfRkEblm56nJKgmbopku3uQXDt96s8x7uQtA=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=fJHQ4ip8hPPdtiEdhiWQ62H1hBwdVfe1dSGsMibaZ/2v4gryd+uq/xOKt+UdN4qSK
-         m7hhU7tmUtcirclnVoGYBA5Vp0sZo+yNOcdGAgH3cvs9ZAPvn+0euGnh3Qnw99fxSi
-         JaYT8plyJtefbzH7P3mUPayOXxu7q8kT5EhPmJRvhw9sHy3IerML6Beq0y9fG6IJyC
-         vBxxciIbLHDQKWEjv5nk8B7IImfx/UU+LrvYqsZuslihvUTHgTpgPzlkY5jePzJjst
-         lLNSfjUm5I1vg0+kW2R5oLCPktfjrOHOsutpNp8eunWk6+LX+hORTBnBZ0Cb2vDiDk
-         Duy46CjLnPpWw==
-X-Nifty-SrcIP: [209.85.215.176]
-Received: by mail-pg1-f176.google.com with SMTP id v19so4065430pgj.12;
-        Wed, 06 Jan 2021 21:45:42 -0800 (PST)
-X-Gm-Message-State: AOAM533Hh4uIy2Yt1N0I52mynJtRgeIUmfDlpjJkyrdFcyrZv5t97tNN
-        W+0FcY5RJZZVC+q5rdCZjsSQ1g//FZ46sjPdw0c=
-X-Google-Smtp-Source: ABdhPJz0+9prxBLGe8m959E3gyV2nUXaR2c2tmXe29c1Wxm4CSVOXB3IncRfKA5GEUXUcTfon+sl+AcKXtjnyBB0E8M=
-X-Received: by 2002:a63:1f1d:: with SMTP id f29mr199667pgf.47.1609998341486;
- Wed, 06 Jan 2021 21:45:41 -0800 (PST)
+        Thu, 7 Jan 2021 00:56:43 -0500
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 1075t6d2052309;
+        Wed, 6 Jan 2021 23:55:06 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1609998906;
+        bh=/QI3+09DvV2knCjkBtoiAnZ1FWH8h0+S/wf3RSIDwfs=;
+        h=From:To:CC:Subject:Date;
+        b=XGar1MFMS50Q+2jVX/FGP+iEEVIBF1c/xPM4x3R+sE1l1htit9Dmmd6CKNcW7ZmpF
+         zz04Kos9dav4t7QhZwvgcwvoi3Xd6HA3JTwnQKyZ1GpeNeXSWskxTHHXJRnJaFd3CZ
+         PAyWOaehNMmAK98qL3QhUC2Bk8pBz9kTg/nbUDRg=
+Received: from DLEE111.ent.ti.com (dlee111.ent.ti.com [157.170.170.22])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 1075t5H2004338
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 6 Jan 2021 23:55:06 -0600
+Received: from DLEE105.ent.ti.com (157.170.170.35) by DLEE111.ent.ti.com
+ (157.170.170.22) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Wed, 6 Jan
+ 2021 23:55:05 -0600
+Received: from lelv0327.itg.ti.com (10.180.67.183) by DLEE105.ent.ti.com
+ (157.170.170.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Wed, 6 Jan 2021 23:55:05 -0600
+Received: from gsaswath-HP-ProBook-640-G5.dal.design.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 1075t0JD112728;
+        Wed, 6 Jan 2021 23:55:02 -0600
+From:   Aswath Govindraju <a-govindraju@ti.com>
+CC:     Vignesh Raghavendra <vigneshr@ti.com>,
+        Sekhar Nori <nsekhar@ti.com>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Aswath Govindraju <a-govindraju@ti.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>, <linux-mmc@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH] dt-bindings: mmc: sdhci-am654: Add compatible string for AM64 SoC
+Date:   Thu, 7 Jan 2021 11:24:57 +0530
+Message-ID: <20210107055457.14948-1-a-govindraju@ti.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-References: <be5cb12a68d9ac2c35ad9dd50d6b168f7cad6837.1609996381.git.viresh.kumar@linaro.org>
- <d6e4edd213433d24a2a5c7e6a816bc40b0ada32d.1609996381.git.viresh.kumar@linaro.org>
-In-Reply-To: <d6e4edd213433d24a2a5c7e6a816bc40b0ada32d.1609996381.git.viresh.kumar@linaro.org>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Thu, 7 Jan 2021 14:45:04 +0900
-X-Gmail-Original-Message-ID: <CAK7LNAQT5nVHGAZDhj4dct0v8UMzQ+-mdfBXJsfedR-7mZTnyA@mail.gmail.com>
-Message-ID: <CAK7LNAQT5nVHGAZDhj4dct0v8UMzQ+-mdfBXJsfedR-7mZTnyA@mail.gmail.com>
-Subject: Re: [PATCH V2 2/2] scripts: dtc: Build fdtoverlay and fdtdump tools
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     Pantelis Antoniou <pantelis.antoniou@konsulko.com>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        DTML <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Bill Mills <bill.mills@linaro.org>, anmar.oueja@linaro.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 7, 2021 at 2:16 PM Viresh Kumar <viresh.kumar@linaro.org> wrote:
->
-> We will start building overlays for platforms soon in the kernel and
-> would need these tools going forward. Lets start building them.
+Add compatible string for AM64 SoC in device tree binding of AM654 SDHCI
+module as the same IP is used.
 
+Signed-off-by: Aswath Govindraju <a-govindraju@ti.com>
+---
+ Documentation/devicetree/bindings/mmc/sdhci-am654.yaml | 2 ++
+ 1 file changed, 2 insertions(+)
 
-The commit log should explain how fdtdump and fdtoverlay are used
-while building the kernel tree.
+diff --git a/Documentation/devicetree/bindings/mmc/sdhci-am654.yaml b/Documentation/devicetree/bindings/mmc/sdhci-am654.yaml
+index 1ae945434c53..34e53db29428 100644
+--- a/Documentation/devicetree/bindings/mmc/sdhci-am654.yaml
++++ b/Documentation/devicetree/bindings/mmc/sdhci-am654.yaml
+@@ -21,6 +21,8 @@ properties:
+       - ti,j721e-sdhci-4bit
+       - ti,j7200-sdhci-8bit
+       - ti,j721e-sdhci-4bit
++      - ti,am64-sdhci-8bit
++      - ti,am64-sdhci-4bit
+ 
+   reg:
+     maxItems: 2
+-- 
+2.17.1
 
-
-
-
-
-
-
-> Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
-> ---
->  scripts/dtc/Makefile | 8 +++++++-
->  1 file changed, 7 insertions(+), 1 deletion(-)
->
-> diff --git a/scripts/dtc/Makefile b/scripts/dtc/Makefile
-> index 4852bf44e913..c607980a5c17 100644
-> --- a/scripts/dtc/Makefile
-> +++ b/scripts/dtc/Makefile
-> @@ -1,12 +1,18 @@
->  # SPDX-License-Identifier: GPL-2.0
->  # scripts/dtc makefile
->
-> -hostprogs-always-$(CONFIG_DTC)         += dtc
-> +hostprogs-always-$(CONFIG_DTC)         += dtc fdtdump fdtoverlay
->  hostprogs-always-$(CHECK_DT_BINDING)   += dtc
->
->  dtc-objs       := dtc.o flattree.o fstree.o data.o livetree.o treesource.o \
->                    srcpos.o checks.o util.o
->  dtc-objs       += dtc-lexer.lex.o dtc-parser.tab.o
-> +fdtdump-objs   := fdtdump.o util.o
-> +
-> +libfdt_dir     = libfdt
-
-
-Adding 'libfdt_dir' is not helpful except
-increasing the amount of code.
-
-Please hard-code 'libfdt'
-
-
-> +libfdt-objs    := fdt.o fdt_ro.o fdt_wip.o fdt_sw.o fdt_rw.o fdt_strerror.o fdt_empty_tree.o fdt_addresses.o fdt_overlay.o
-> +libfdt         = $(addprefix $(libfdt_dir)/,$(libfdt-objs))
-> +fdtoverlay-objs        := $(libfdt) fdtoverlay.o util.o
->  # Source files need to get at the userspace version of libfdt_env.h to compile
->  HOST_EXTRACFLAGS += -I $(srctree)/$(src)/libfdt
-> --
-> 2.25.0.rc1.19.g042ed3e048af
->
-
-
---
-Best Regards
-
-Masahiro Yamada
