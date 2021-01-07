@@ -2,199 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4461A2EE6F3
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 21:33:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4172F2EE6F7
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 21:33:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727777AbhAGUcR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 15:32:17 -0500
-Received: from m43-15.mailgun.net ([69.72.43.15]:48061 "EHLO
-        m43-15.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726477AbhAGUcQ (ORCPT
+        id S1727197AbhAGUdL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 15:33:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56756 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726073AbhAGUdL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 15:32:16 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1610051514; h=References: In-Reply-To: Message-Id: Date:
- Subject: Cc: To: From: Sender;
- bh=rGtiyIUQzSQUfcYufCkTsN6R9TU5i6mxMo6AQakOfqs=; b=qLQD0ERiBZtA1UdRe5aOMk09RF6j5KaUlnFKx5f0gY7jZ4txIY4AappjReJr3jAvsTBHNy18
- bCYOY88ZHVoYliWb4cA14Z1n1ny5qDxEyey8N8/zv98mOptvIhzDG5ZszTM2TkM9XXzeCszQ
- sD2z5HNwGpWiLmqyYMTMa9V9YbE=
-X-Mailgun-Sending-Ip: 69.72.43.15
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n08.prod.us-west-2.postgun.com with SMTP id
- 5ff76f94b95fc59326e370fe (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 07 Jan 2021 20:31:16
- GMT
-Sender: khsieh=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id C02F8C433C6; Thu,  7 Jan 2021 20:31:15 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from khsieh-linux1.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: khsieh)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 402E1C433CA;
-        Thu,  7 Jan 2021 20:31:13 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 402E1C433CA
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=khsieh@codeaurora.org
-From:   Kuogee Hsieh <khsieh@codeaurora.org>
-To:     dri-devel@lists.freedesktop.org, robdclark@gmail.com,
-        sean@poorly.run, swboyd@chromium.org
-Cc:     Kuogee Hsieh <khsieh@codeaurora.org>, tanmay@codeaurora.org,
-        abhinavk@codeaurora.org, aravindh@codeaurora.org, airlied@linux.ie,
-        daniel@ffwll.ch, linux-arm-msm@vger.kernel.org,
-        freedreno@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 2/2] drm/msm/dp: unplug interrupt missed after irq_hpd handler
-Date:   Thu,  7 Jan 2021 12:30:25 -0800
-Message-Id: <1610051425-20632-3-git-send-email-khsieh@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1610051425-20632-1-git-send-email-khsieh@codeaurora.org>
-References: <y>
- <1610051425-20632-1-git-send-email-khsieh@codeaurora.org>
+        Thu, 7 Jan 2021 15:33:11 -0500
+Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA3B8C0612F4
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Jan 2021 12:32:30 -0800 (PST)
+Received: by mail-lf1-x136.google.com with SMTP id o13so17746163lfr.3
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Jan 2021 12:32:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=exdNoEK6aNVTIIvwBb552yhewWQizCMJvF9WzrX9jnw=;
+        b=D2InA4ogLKOyCTV7NlZA4RiumoSXVMs9ntzahvPQMp4OQpQM96X0jajm3v+5LBd+6V
+         dcoiw9TSyMMWbMbJAdUzTtk46W7QnhZWTW8BEnO7/8+YZfyERLDEnVshc67mBo+/e9h5
+         irxASrqJdCjrw7OvErf1/1EFk61vrF1uPi45Q=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=exdNoEK6aNVTIIvwBb552yhewWQizCMJvF9WzrX9jnw=;
+        b=JNQFV8i0LQ7ARJJDdSy+KkZ3ZilUiID9pkYIrqDvHdKa/eOdnUry0C++k86LlrB6Vv
+         qmpvllAU3U6NQxxe2/Sgs9oqUmUxquXho+XCxV4/AD075YlhTj+R3uJIZUw4Ck8lsOVj
+         xigv/KlLLi1eiOaxizYC51F0KTFQqOmC6D/b+WoRPvswB27HECHUA+wcNxYz5f8y+28B
+         eAXLN1H/pS6MQXjLGSSsARiiVvrRG5xnz38UY0RA5GVo7uvaxdCypz7x26tWRnccWjVj
+         lsuFmtFM2A+cFFwAob46vYHT7OeGcMSj35Buca9ekpmGDIsRFnjSb3aC4Dw41QoNT04N
+         eW2Q==
+X-Gm-Message-State: AOAM530V/GuuLLPp8Uwuv5ggnU0cMWqEVN/D1eMrtbLc4OWA58ERU6uR
+        KFZB6z8MlylW8Zp7xBWctdkbSvgD3OFxvA==
+X-Google-Smtp-Source: ABdhPJxI+YFRh8b3iKJoy5fxXvK0eiY5SCfAo7qjDD1Gqa9R4z2q9+XyL60DyhgA0czrx0eLGoWZRw==
+X-Received: by 2002:a19:7ec9:: with SMTP id z192mr248483lfc.50.1610051547936;
+        Thu, 07 Jan 2021 12:32:27 -0800 (PST)
+Received: from mail-lf1-f44.google.com (mail-lf1-f44.google.com. [209.85.167.44])
+        by smtp.gmail.com with ESMTPSA id j12sm1394049lfc.99.2021.01.07.12.32.26
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 07 Jan 2021 12:32:26 -0800 (PST)
+Received: by mail-lf1-f44.google.com with SMTP id m12so17689397lfo.7
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Jan 2021 12:32:26 -0800 (PST)
+X-Received: by 2002:ac2:4987:: with SMTP id f7mr194200lfl.41.1610051545800;
+ Thu, 07 Jan 2021 12:32:25 -0800 (PST)
+MIME-Version: 1.0
+References: <B1B85771-B211-4FCC-AEEF-BDFD37332C25@vmware.com>
+ <20210107200402.31095-1-aarcange@redhat.com> <20210107202525.GD504133@ziepe.ca>
+In-Reply-To: <20210107202525.GD504133@ziepe.ca>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Thu, 7 Jan 2021 12:32:09 -0800
+X-Gmail-Original-Message-ID: <CAHk-=wjTuS9JB=Ms4WAMaOkGuLmvYwaf2W0JhXxNPdcv4NWZUA@mail.gmail.com>
+Message-ID: <CAHk-=wjTuS9JB=Ms4WAMaOkGuLmvYwaf2W0JhXxNPdcv4NWZUA@mail.gmail.com>
+Subject: Re: [PATCH 0/2] page_count can't be used to decide when wp_page_copy
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     Andrea Arcangeli <aarcange@redhat.com>,
+        Linux-MM <linux-mm@kvack.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Yu Zhao <yuzhao@google.com>, Andy Lutomirski <luto@kernel.org>,
+        Peter Xu <peterx@redhat.com>,
+        Pavel Emelyanov <xemul@openvz.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Will Deacon <will@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Hugh Dickins <hughd@google.com>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Oleg Nesterov <oleg@redhat.com>, Jann Horn <jannh@google.com>,
+        Kees Cook <keescook@chromium.org>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Leon Romanovsky <leonro@nvidia.com>, Jan Kara <jack@suse.cz>,
+        Kirill Tkhai <ktkhai@virtuozzo.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There is HPD unplug interrupts missed at scenario of an irq_hpd
-followed by unplug interrupts with around 10 ms in between.
-Since both AUX_SW_RESET and DP_SW_RESET clear pending HPD interrupts,
-irq_hpd handler should not issues either aux or sw reset to avoid
-following unplug interrupt be cleared accidentally.
+On Thu, Jan 7, 2021 at 12:25 PM Jason Gunthorpe <jgg@ziepe.ca> wrote:
+>
+> Lots of places are relying on pin_user_pages long term pins of memory,
+> and cannot be converted to notifiers.
+>
+> I don't think it is reasonable to just declare that insecure and
+> requires privileges, it is a huge ABI break.
 
-Signed-off-by: Kuogee Hsieh <khsieh@codeaurora.org>
----
- drivers/gpu/drm/msm/dp/dp_aux.c     |  7 -------
- drivers/gpu/drm/msm/dp/dp_catalog.c | 24 ++++++++++++++++++++++++
- drivers/gpu/drm/msm/dp/dp_ctrl.c    | 15 ++++++++++-----
- 3 files changed, 34 insertions(+), 12 deletions(-)
+Also, I think GUP (and pin_user_pages() as a special case) is a lot
+more important and more commonly used than UFFD.
 
-diff --git a/drivers/gpu/drm/msm/dp/dp_aux.c b/drivers/gpu/drm/msm/dp/dp_aux.c
-index 19b35ae..1c6e1d2 100644
---- a/drivers/gpu/drm/msm/dp/dp_aux.c
-+++ b/drivers/gpu/drm/msm/dp/dp_aux.c
-@@ -336,7 +336,6 @@ static ssize_t dp_aux_transfer(struct drm_dp_aux *dp_aux,
- 	ssize_t ret;
- 	int const aux_cmd_native_max = 16;
- 	int const aux_cmd_i2c_max = 128;
--	int const retry_count = 5;
- 	struct dp_aux_private *aux = container_of(dp_aux,
- 		struct dp_aux_private, dp_aux);
- 
-@@ -378,12 +377,6 @@ static ssize_t dp_aux_transfer(struct drm_dp_aux *dp_aux,
- 	ret = dp_aux_cmd_fifo_tx(aux, msg);
- 
- 	if (ret < 0) {
--		if (aux->native) {
--			aux->retry_cnt++;
--			if (!(aux->retry_cnt % retry_count))
--				dp_catalog_aux_update_cfg(aux->catalog);
--			dp_catalog_aux_reset(aux->catalog);
--		}
- 		usleep_range(400, 500); /* at least 400us to next try */
- 		goto unlock_exit;
- 	}
-diff --git a/drivers/gpu/drm/msm/dp/dp_catalog.c b/drivers/gpu/drm/msm/dp/dp_catalog.c
-index 44f0c57..9c0ce98 100644
---- a/drivers/gpu/drm/msm/dp/dp_catalog.c
-+++ b/drivers/gpu/drm/msm/dp/dp_catalog.c
-@@ -190,6 +190,18 @@ int dp_catalog_aux_clear_hw_interrupts(struct dp_catalog *dp_catalog)
- 	return 0;
- }
- 
-+/**
-+ * dp_catalog_aux_reset() - reset AUX controller
-+ *
-+ * @aux: DP catalog structure
-+ *
-+ * return: void
-+ *
-+ * This function reset AUX controller
-+ *
-+ * NOTE: reset AUX controller will also clear any pending HPD related interrupts
-+ * 
-+ */
- void dp_catalog_aux_reset(struct dp_catalog *dp_catalog)
- {
- 	u32 aux_ctrl;
-@@ -483,6 +495,18 @@ int dp_catalog_ctrl_set_pattern(struct dp_catalog *dp_catalog,
- 	return 0;
- }
- 
-+/**
-+ * dp_catalog_ctrl_reset() - reset DP controller
-+ *
-+ * @aux: DP catalog structure
-+ *
-+ * return: void
-+ *
-+ * This function reset DP controller
-+ *
-+ * NOTE: reset DP controller will also clear any pending HPD related interrupts
-+ * 
-+ */
- void dp_catalog_ctrl_reset(struct dp_catalog *dp_catalog)
- {
- 	u32 sw_reset;
-diff --git a/drivers/gpu/drm/msm/dp/dp_ctrl.c b/drivers/gpu/drm/msm/dp/dp_ctrl.c
-index e3462f5..f96c415 100644
---- a/drivers/gpu/drm/msm/dp/dp_ctrl.c
-+++ b/drivers/gpu/drm/msm/dp/dp_ctrl.c
-@@ -1296,7 +1296,8 @@ static int dp_ctrl_setup_main_link(struct dp_ctrl_private *ctrl,
- 	 * transitioned to PUSH_IDLE. In order to start transmitting
- 	 * a link training pattern, we have to first do soft reset.
- 	 */
--	dp_catalog_ctrl_reset(ctrl->catalog);
-+	if (*training_step != DP_TRAINING_NONE)
-+		dp_catalog_ctrl_reset(ctrl->catalog);
- 
- 	ret = dp_ctrl_link_train(ctrl, cr, training_step);
- 
-@@ -1491,15 +1492,18 @@ static int dp_ctrl_deinitialize_mainlink(struct dp_ctrl_private *ctrl)
- 	return 0;
- }
- 
-+static void dp_ctrl_link_idle_reset(struct dp_ctrl_private *ctrl)
-+{
-+	dp_ctrl_push_idle(&ctrl->dp_ctrl);
-+	dp_catalog_ctrl_reset(ctrl->catalog);
-+}
-+
- static int dp_ctrl_link_maintenance(struct dp_ctrl_private *ctrl)
- {
- 	int ret = 0;
- 	struct dp_cr_status cr;
- 	int training_step = DP_TRAINING_NONE;
- 
--	dp_ctrl_push_idle(&ctrl->dp_ctrl);
--	dp_catalog_ctrl_reset(ctrl->catalog);
--
- 	ctrl->dp_ctrl.pixel_rate = ctrl->panel->dp_mode.drm_mode.clock;
- 
- 	ret = dp_ctrl_setup_main_link(ctrl, &cr, &training_step);
-@@ -1626,6 +1630,7 @@ void dp_ctrl_handle_sink_request(struct dp_ctrl *dp_ctrl)
- 
- 	if (sink_request & DP_TEST_LINK_TRAINING) {
- 		dp_link_send_test_response(ctrl->link);
-+		dp_ctrl_link_idle_reset(ctrl);
- 		if (dp_ctrl_link_maintenance(ctrl)) {
- 			DRM_ERROR("LM failed: TEST_LINK_TRAINING\n");
- 			return;
-@@ -1679,7 +1684,7 @@ int dp_ctrl_on_link(struct dp_ctrl *dp_ctrl)
- 			break;
- 		}
- 
--		training_step = DP_TRAINING_NONE;
-+		training_step = DP_TRAINING_1;
- 		rc = dp_ctrl_setup_main_link(ctrl, &cr, &training_step);
- 		if (rc == 0) {
- 			/* training completed successfully */
--- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
+Which is really why I think this needs to be fixed by just fixing UFFD
+to take the write lock.
 
+I think Andrea is blinded by his own love for UFFDIO: when I do a
+debian codesearch for UFFDIO_WRITEPROTECT, all it finds is the kernel
+and strace (and the qemu copies of the kernel headers).
+
+Does the debian code search cover everything? Obviously not. But if
+you cannot find A SINGLE USE of that thing in the Debian code search,
+then that is sure a sign of _something_.
+
+            Linus
