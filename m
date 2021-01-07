@@ -2,108 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 638B42ECD03
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 10:42:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 81AC32ECD0B
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 10:46:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727815AbhAGJl7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 04:41:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39518 "EHLO
+        id S1727495AbhAGJpr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 04:45:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40150 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727770AbhAGJlz (ORCPT
+        with ESMTP id S1725974AbhAGJpq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 04:41:55 -0500
-Received: from mail-oi1-x22a.google.com (mail-oi1-x22a.google.com [IPv6:2607:f8b0:4864:20::22a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B44BC0612F5;
-        Thu,  7 Jan 2021 01:41:15 -0800 (PST)
-Received: by mail-oi1-x22a.google.com with SMTP id w124so6765418oia.6;
-        Thu, 07 Jan 2021 01:41:15 -0800 (PST)
+        Thu, 7 Jan 2021 04:45:46 -0500
+Received: from mail-qk1-x732.google.com (mail-qk1-x732.google.com [IPv6:2607:f8b0:4864:20::732])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D51AC0612F4
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Jan 2021 01:45:06 -0800 (PST)
+Received: by mail-qk1-x732.google.com with SMTP id v126so4920375qkd.11
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Jan 2021 01:45:06 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=07CQdayrVUCOmFfJbKyB6H+lGHZIcXlD5ztce6dGZb4=;
-        b=F4HfC9tNbEpV+xPrU3x2kF2k4GD71u7PRb84PGwizPAUXO4WP/LosXpb4tF6nVNUmv
-         yKpovtwBG61ASwGyaGQi32HEj/6BHaIW7XYdz7ik8NF0G5HOy3LS7kuoDY7dyYKZGiiX
-         ZunYdgmeuYPOQ7MzbQp1Fu5f+BhkESxL3wXbc3xyEsT3/I2Oi/4F2KPqHtBdInnt/M8i
-         FeX3ctUZVNHPYwISKOkC0Js839LvnzqCYPKQNigsRmuqdDvorYGdzuIEhkEDorPEZ+VU
-         OxMSZNNVt91gd6QQ1o1FADNPMU5IsKJ/V6gfuv/0Pg++Q9wdGVu5P7VZo7RwM2gWHUuV
-         b/mg==
+        bh=/gkZ6YBZc1TuDyrVRGbq/7fN83HRpfdis1YYIT6DC+Q=;
+        b=XUX0BcoIa1MQ2jcMuATtV/lSqagHaVmb173j0UE8FAksPf0cENNwe06K9x9EyN/xij
+         wf5RagTSVuw+GTnkcCTqtPvMabsfRvVjmCblHL9xl1iv3k3Yhy+cmQxf+Ro5otZvpM0h
+         yfRsRQQef8iiX6B8LfBZ0/X6+3fYSnEqL6Q1MSg2dC7xiDynol+1c8zX5M+3V7XOGgp/
+         5D8odmrKLEh0A+3UrF7oHzdKoJf/I5P+FIk4c4lAyP181Ce6ILIpCJCoz5GWjXbaQDKL
+         G8/1e8OTsvfCUkYB8Kc1hJKbqHMMlBBh80re0nX73tg11ilb1hcDg+V6RYIC3WWHEGl2
+         lCfg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=07CQdayrVUCOmFfJbKyB6H+lGHZIcXlD5ztce6dGZb4=;
-        b=qV3j0uTCETogh6EPz9+XyMAhP8s/Af+PcRsFInbwY7Sl38n25VtviyHWqiiPmGu9I8
-         CaMqLnodjKaDkCIjil60yosDaY4sM7prCP9j6/GSwuBu3+jpdtxQIiUkKgq+Y01lM0Pf
-         xsPgB1o3ew4aa9zCmOmPOzHeS+FMQjx0Vk20lvx3nSJv8WnD+VflQJKPrzaVHM2bfarK
-         L7NqaljMPmKXF1Vq3HemdMdAehOmJ0LsTovd6S4Ed9VBnjhV8h04CMeW8vPdm2+1yWYe
-         QFr7Kl77IM1mvsVFuTwVQDDusW/OzZ+vrlB/Roj2ldDhVOKxyc4aoIfN+PpHdOPPUSGh
-         Ng5A==
-X-Gm-Message-State: AOAM532YNikP6dcb3tkwsbvvQw+Abey/UEmjWELNra40Fe8tzFAewFbm
-        YLiHSFas/eX2hoR8UNi0FuLYP944ZjYKeInXifU=
-X-Google-Smtp-Source: ABdhPJzMAQJFJ2VHCewfKniMGCOfKs3FvgcTBOQtn/yDFMAZsYQNBRcbDFgcyVAvpElixHUO6hJbI2yGSFez+ORxZvk=
-X-Received: by 2002:aca:6202:: with SMTP id w2mr5667587oib.5.1610012474555;
- Thu, 07 Jan 2021 01:41:14 -0800 (PST)
+        bh=/gkZ6YBZc1TuDyrVRGbq/7fN83HRpfdis1YYIT6DC+Q=;
+        b=XgbuF0qQLRNub7fRMIerr5wqoI04+qMhjYPNGz+Xx0zCNrwDJ6+4/bRwY+SiQZ7NkB
+         GMGHgpYkv0ndH+0pGcIcHNVsF0z8IABXZPmw2gn4zH3vn2hFOjiDXBTyRLIKXMdKMahw
+         diQCd8plY+gp/v8wzuCmjMqB8ZVe+6NF1Sn3h5Im0s5T5upOSR3Akn1/F239/eUvmjxo
+         oR9t45HNH7RzjR031g8Fp2YEnjBSgssU9Vor7Eph8ipSvWNC5ysoF+NH16fZqyI9hooe
+         +oxUqSIC4l/lfwNzu7n/+i9F4a//ofgsNi4HOL542ItaZBcXdox4hdjpaPPzLJyDeOqO
+         F8EQ==
+X-Gm-Message-State: AOAM531wDCNZXc1TgTSaA1R5m+jBrGm+Ct913iHBCO9EyvsClkdFEqvj
+        g4WoQ1h6Vhq2eMeaXY02E26WQIU1jOEi0JeZ4tqOMQ==
+X-Google-Smtp-Source: ABdhPJx7kwa5a7LxPnTXYQ5MyNqZ5CugH7qK0JJGeAQNJ5mrH4DPL3YL16IhEb8XYH5a2YOgkTl2U3E1RFcUPrE3IPc=
+X-Received: by 2002:a05:620a:2051:: with SMTP id d17mr8211283qka.403.1610012704444;
+ Thu, 07 Jan 2021 01:45:04 -0800 (PST)
 MIME-Version: 1.0
-References: <20210105192844.296277-1-nitesh@redhat.com> <874kjuidgp.fsf@vitty.brq.redhat.com>
- <X/XvWG18aBWocvvf@google.com> <87ble1gkgx.fsf@vitty.brq.redhat.com>
-In-Reply-To: <87ble1gkgx.fsf@vitty.brq.redhat.com>
-From:   Wanpeng Li <kernellwp@gmail.com>
-Date:   Thu, 7 Jan 2021 17:41:03 +0800
-Message-ID: <CANRm+CzXOiWV1dUQiN69TZijifBqiNoJ-b6z58yoGw51Pu1+6g@mail.gmail.com>
-Subject: Re: [PATCH] Revert "KVM: x86: Unconditionally enable irqs in guest context"
-To:     Vitaly Kuznetsov <vkuznets@redhat.com>
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Nitesh Narayan Lal <nitesh@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>, kvm <kvm@vger.kernel.org>,
-        w90p710@gmail.com, Paolo Bonzini <pbonzini@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>
+References: <1609332331-2456-1-git-send-email-vjitta@codeaurora.org>
+In-Reply-To: <1609332331-2456-1-git-send-email-vjitta@codeaurora.org>
+From:   Alexander Potapenko <glider@google.com>
+Date:   Thu, 7 Jan 2021 10:44:53 +0100
+Message-ID: <CAG_fn=V7LwUExnvVhAswj=VtEGPh9okB9ofzqnRfL2OV6qom5w@mail.gmail.com>
+Subject: Re: [PATCH v4 1/2] lib: stackdepot: Add support to configure STACK_HASH_SIZE
+To:     Vijayanand Jitta <vjitta@codeaurora.org>
+Cc:     Minchan Kim <minchan@kernel.org>, dan.j.williams@intel.com,
+        broonie@kernel.org, Masami Hiramatsu <mhiramat@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>, ylal@codeaurora.org,
+        vinmenon@codeaurora.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 7 Jan 2021 at 17:35, Vitaly Kuznetsov <vkuznets@redhat.com> wrote:
+On Wed, Dec 30, 2020 at 1:46 PM <vjitta@codeaurora.org> wrote:
 >
-> Sean Christopherson <seanjc@google.com> writes:
+> From: Yogesh Lal <ylal@codeaurora.org>
 >
-> > On Wed, Jan 06, 2021, Vitaly Kuznetsov wrote:
-> >>
-> >> Looking back, I don't quite understand why we wanted to account ticks
-> >> between vmexit and exiting guest context as 'guest' in the first place;
-> >> to my understanging 'guest time' is time spent within VMX non-root
-> >> operation, the rest is KVM overhead (system).
-> >
-> > With tick-based accounting, if the tick IRQ is received after PF_VCPU is cleared
-> > then that tick will be accounted to the host/system.  The motivation for opening
-> > an IRQ window after VM-Exit is to handle the case where the guest is constantly
-> > exiting for a different reason _just_ before the tick arrives, e.g. if the guest
-> > has its tick configured such that the guest and host ticks get synchronized
-> > in a bad way.
-> >
-> > This is a non-issue when using CONFIG_VIRT_CPU_ACCOUNTING_GEN=y, at least with a
-> > stable TSC, as the accounting happens during guest_exit_irqoff() itself.
-> > Accounting might be less-than-stellar if TSC is unstable, but I don't think it
-> > would be as binary of a failure as tick-based accounting.
-> >
->
-> Oh, yea, I vaguely remember we had to deal with a very similar problem
-> but for userspace/kernel accounting. It was possible to observe e.g. a
-> userspace task going 100% kernel while in reality it was just perfectly
-> synchronized with the tick and doing a syscall just before it arrives
-> (or something like that, I may be misremembering the details).
+> Use STACK_HASH_ORDER_SHIFT to configure STACK_HASH_SIZE.
+I think "ORDER_SHIFT" is somewhat redundant, as "SMTH_ORDER" already
+means this is a power of two we'll be using for shifting.
+Leaving this up to you.
 
-Yes. :)  commit 2a42eb9594a1 ("sched/cputime: Accumulate vtime on top
-of nsec clocksource")
-
-> So depending on the frequency, it is probably possible to e.g observe
-> '100% host' with tick based accounting, the guest just has to
-> synchronize exiting to KVM in a way that the tick will always arrive
-> past guest_exit_irqoff().
->
-> It seems to me this is a fundamental problem in case the frequency of
-> guest exits can match the frequency of the time accounting tick.
->
-> --
-> Vitaly
->
+Alex
