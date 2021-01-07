@@ -2,86 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A6382ECBDE
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 09:45:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A0F942ECBD8
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 09:42:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727049AbhAGIoO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 03:44:14 -0500
-Received: from mout01.posteo.de ([185.67.36.65]:40121 "EHLO mout01.posteo.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726313AbhAGIoO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 03:44:14 -0500
-Received: from submission (posteo.de [89.146.220.130]) 
-        by mout01.posteo.de (Postfix) with ESMTPS id 2CEDB16005C
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Jan 2021 09:43:17 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=posteo.net; s=2017;
-        t=1610008997; bh=oHvWaW/9ILYAjQezTXmK7N8EHUTV5WutlcDCrTY4GHI=;
-        h=Date:From:To:Cc:Subject:From;
-        b=Kjzgp2iq1PTUt6khNJ49b1dNIYzpgyDtgN2lBRqUUeRiNK7x6fgrhjVzCFisd5MEJ
-         Rfkvx45NAihChOkr7erHnVKtyJp5/GBUzJ4WtbXDpQRVxp2MWOJttTtciyP+3KH6VT
-         Oa4bvhphEdCj/BkLDB9UQzso7QiVIz4bLqMLTD2eLEqCgPmL66xlgzOceE+5GID1Am
-         mvQqp6W5gN4rbDeQ2Gf2HNppI+U53jVNTXFxYAEngUhD0zQvJ7At1cv322HRQPdz/G
-         SRalDvPjp7myAJeWgCYMJhYemjaBqmZAvu+/0i8zaK54LTa4izl6yOmSq45/xB9tVW
-         CMSym7e6aPbGg==
-Received: from customer (localhost [127.0.0.1])
-        by submission (posteo.de) with ESMTPSA id 4DBKWR6HRyz6tmN;
-        Thu,  7 Jan 2021 09:43:15 +0100 (CET)
-Date:   Thu, 7 Jan 2021 09:43:14 +0100
-From:   Wilken Gottwalt <wilken.gottwalt@posteo.net>
-To:     Maxime Ripard <maxime@cerno.tech>
-Cc:     linux-kernel@vger.kernel.org, Ohad Ben-Cohen <ohad@wizery.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Baolin Wang <baolin.wang7@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@siol.net>
-Subject: Re: [PATCH v5 2/2] hwspinlock: add sun6i hardware spinlock support
-Message-ID: <20210107094314.4cfd5756@monster.powergraphx.local>
-In-Reply-To: <20210106101542.zziwdyhq7arysrsj@gilmour>
-References: <cover.1608721968.git.wilken.gottwalt@posteo.net>
-        <0deae76aec31586da45c316546b12bcc316442ee.1608721968.git.wilken.gottwalt@posteo.net>
-        <20210106101542.zziwdyhq7arysrsj@gilmour>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S1727166AbhAGIl6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 03:41:58 -0500
+Received: from mx0a-00128a01.pphosted.com ([148.163.135.77]:47726 "EHLO
+        mx0a-00128a01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726616AbhAGIl6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Jan 2021 03:41:58 -0500
+Received: from pps.filterd (m0167089.ppops.net [127.0.0.1])
+        by mx0a-00128a01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 1078TUDS014219;
+        Thu, 7 Jan 2021 03:41:02 -0500
+Received: from nwd2mta4.analog.com ([137.71.173.58])
+        by mx0a-00128a01.pphosted.com with ESMTP id 35wnkjh5te-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 07 Jan 2021 03:41:02 -0500
+Received: from ASHBMBX9.ad.analog.com (ASHBMBX9.ad.analog.com [10.64.17.10])
+        by nwd2mta4.analog.com (8.14.7/8.14.7) with ESMTP id 1078f1tY021890
+        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=FAIL);
+        Thu, 7 Jan 2021 03:41:01 -0500
+Received: from ASHBCASHYB5.ad.analog.com (10.64.17.133) by
+ ASHBMBX9.ad.analog.com (10.64.17.10) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1779.2; Thu, 7 Jan 2021 03:41:00 -0500
+Received: from ASHBMBX9.ad.analog.com (10.64.17.10) by
+ ASHBCASHYB5.ad.analog.com (10.64.17.133) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.2.721.2;
+ Thu, 7 Jan 2021 03:40:57 -0500
+Received: from zeus.spd.analog.com (10.66.68.11) by ASHBMBX9.ad.analog.com
+ (10.64.17.10) with Microsoft SMTP Server id 15.1.1779.2 via Frontend
+ Transport; Thu, 7 Jan 2021 03:40:57 -0500
+Received: from localhost.localdomain ([10.48.65.12])
+        by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 1078es9h007259;
+        Thu, 7 Jan 2021 03:40:55 -0500
+From:   Alexandru Ardelean <alexandru.ardelean@analog.com>
+To:     <linux-iio@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC:     <jic23@kernel.org>, <lars@metafoo.de>, <akpm@linux-foundation.org>,
+        <gregkh@linuxfoundation.org>, <andy.shevchenko@gmail.com>,
+        Alexandru Ardelean <alexandru.ardelean@analog.com>
+Subject: [PATCH v7 1/2] lib/string.c: add __sysfs_match_string_with_gaps() helper
+Date:   Thu, 7 Jan 2021 10:44:33 +0200
+Message-ID: <20210107084434.35283-1-alexandru.ardelean@analog.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-ADIRuleOP-NewSCL: Rule Triggered
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
+ definitions=2021-01-07_04:2021-01-06,2021-01-07 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 impostorscore=0
+ suspectscore=0 clxscore=1015 phishscore=0 mlxscore=0 adultscore=0
+ mlxlogscore=999 priorityscore=1501 lowpriorityscore=0 bulkscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2101070051
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 6 Jan 2021 11:15:42 +0100
-Maxime Ripard <maxime@cerno.tech> wrote:
+The original docstring of the __sysfs_match_string() and match_string()
+helper, implied that -1 could be used to search through NULL terminated
+arrays, and positive 'n' could be used to go through arrays that may have
+NULL elements in the middle of the array.
 
-> On Wed, Dec 23, 2020 at 12:35:10PM +0100, Wilken Gottwalt wrote:
-> > Adds the sun6i_hwspinlock driver for the hardware spinlock unit found in
-> > most of the sun6i compatible SoCs.
-> > 
-> > This unit provides at least 32 spinlocks in hardware. The implementation
-> > supports 32, 64, 128 or 256 32bit registers. A lock can be taken by
-> > reading a register and released by writing a 0 to it. This driver
-> > supports all 4 spinlock setups, but for now only the first setup (32
-> > locks) seem to exist in available devices. This spinlock unit is shared
-> > between all ARM cores and the embedded companion core. All of them can
-> > take/release a lock with a single cycle operation. It can be used to
-> > sync access to devices shared by the ARM cores and the companion core.
-> > 
-> > There are two ways to check if a lock is taken. The first way is to read
-> > a lock. If a 0 is returned, the lock was free and is taken now. If an 1
-> > is returned, the caller has to try again. Which means the lock is taken.
-> > The second way is to read a 32bit wide status register where every bit
-> > represents one of the 32 first locks. According to the datasheets this
-> > status register supports only the 32 first locks. This is the reason the
-> > first way (lock read/write) approach is used to be able to cover all 256
-> > locks in future devices. The driver also reports the amount of supported
-> > locks via debugfs.
-> > 
-> > Signed-off-by: Wilken Gottwalt <wilken.gottwalt@posteo.net>
-> 
-> Reviewed-by: Maxime Ripard <mripard@kernel.org>
+This isn't true. Regardless of the value of 'n', the first NULL element in
+the array will stop the search, even if the element may be after a NULL
+element.
 
-Does it mean the driver is okay and I only need to fix the bindings
-documentation? If so, would you prefer an updated patch set or only the
-documentation patch in a new version?
+To allow for a behavior where we can use the __sysfs_match_string() to
+search over arrays with NULL elements in the middle, the
+__sysfs_match_string_with_gaps() helper is added.
+If n > 0, the search will continue until the element is found or n is
+reached.
+If n < 0, the search will continue until the element is found or a NULL
+character is found.
 
-> Thanks!
-> Maxime
+Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
+---
+
+FWIW (from my side): I am not fully sure yet that implementing a
+new helper is the best idea. It's also not a bad idea.
+It's one of those "this could be useful for others as well later", but
+right now we would have only one user (IIO) for this.
+
+I'm also fine with just implementing it in IIO first, and the someone
+else can move it to lib/string.c if needed.
+
+For now, this patch serves mostly as a notifier, in case there is more
+interest out there for something like this.
+I might do a V8, with this implemented in IIO core, and then have it
+there, until others would find it useful.
+
+Changelog v6 -> v7:
+* https://patchwork.kernel.org/project/linux-iio/patch/20201222131312.64957-1-alexandru.ardelean@analog.com/
+* added standalone __sysfs_match_string_with_gaps() function
+
+ include/linux/string.h |  1 +
+ lib/string.c           | 36 ++++++++++++++++++++++++++++++++++++
+ 2 files changed, 37 insertions(+)
+
+diff --git a/include/linux/string.h b/include/linux/string.h
+index b1f3894a0a3e..d7999e50dae1 100644
+--- a/include/linux/string.h
++++ b/include/linux/string.h
+@@ -191,6 +191,7 @@ static inline int strtobool(const char *s, bool *res)
+ 
+ int match_string(const char * const *array, size_t n, const char *string);
+ int __sysfs_match_string(const char * const *array, size_t n, const char *s);
++int __sysfs_match_string_with_gaps(const char * const *array, ssize_t n, const char *s);
+ 
+ /**
+  * sysfs_match_string - matches given string in an array
+diff --git a/lib/string.c b/lib/string.c
+index 4288e0158d47..bb99313ad4c1 100644
+--- a/lib/string.c
++++ b/lib/string.c
+@@ -785,6 +785,42 @@ int __sysfs_match_string(const char * const *array, size_t n, const char *str)
+ }
+ EXPORT_SYMBOL(__sysfs_match_string);
+ 
++/**
++ * __sysfs_match_string_with_gaps - matches given string in an array with gaps
++ * @array: array of strings
++ * @n: number of strings in the array or negative for NULL terminated arrays
++ * @str: string to match with
++ *
++ * Returns index of @str in the @array or -EINVAL, similar to match_string().
++ * Uses sysfs_streq instead of strcmp for matching.
++ *
++ * This routine will look for a string in an array of strings.
++ * If n > 0, then the search will continue until the element is found or
++ * the n-th element is reached, regardless of any NULL elements in the array.
++ * If n < 0, then the search will continue until the element is found or
++ * until the first NULL element.
++ */
++int __sysfs_match_string_with_gaps(const char * const *array, ssize_t n,
++				   const char *str)
++{
++	const char *item;
++	int index;
++
++	for (index = 0; index < n; index++) {
++		item = array[index];
++		if (!item) {
++			if (n < 0)
++				break;
++			continue;
++		}
++		if (sysfs_streq(item, str))
++			return index;
++	}
++
++	return -EINVAL;
++}
++EXPORT_SYMBOL(__sysfs_match_string_with_gaps);
++
+ #ifndef __HAVE_ARCH_MEMSET
+ /**
+  * memset - Fill a region of memory with the given value
+-- 
+2.17.1
 
