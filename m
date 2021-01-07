@@ -2,106 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 527BE2ED69F
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 19:20:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 97E0E2ED6A4
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 19:22:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728088AbhAGSUJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 13:20:09 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:38241 "EHLO
+        id S1729023AbhAGSVe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 13:21:34 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:50032 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726165AbhAGSUI (ORCPT
+        by vger.kernel.org with ESMTP id S1728674AbhAGSVd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 13:20:08 -0500
+        Thu, 7 Jan 2021 13:21:33 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1610043522;
+        s=mimecast20190719; t=1610043606;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=jmwdppp4KSdjSBui+pFcX3CZuLo5H+3bgjVupL0lUBE=;
-        b=K3zh7goRCaplikkjbRLHTunLtFbl3fEdOZfut3xspI9KNsGWkrq/1SE9QrHZ7yqhjPqY6B
-        I6lQ81+y4OKXPSqiUZlvPmAj4107wJZVsy0UBoCmlfUfLZMvDHNBbIKIGacao0YI1wIzIU
-        f4sxPm4LWuWMkya+mnnnOrjjh48Oulk=
+        bh=Pl35x0Cl+kwuobwnKT9pU8/ptvmcEj74wGGft0vf5zc=;
+        b=V3tCxCk1qJs87GEOY+U5SyIZ/OKgNJTICYW3ekdr/t+eLSCxC9PX4rYvKOkHuC+efEWIZe
+        r7kcXJb9gIpa2iAI0+KmfJe55dkibMJNGnksvcPUTUin7BRPw4cBTWy4cmN7HLFpRV/vjf
+        mn9Js1guwYhUrrro1+chJE9y/eVz2As=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-355-2ue6GNs7N0CujjnsvCMULQ-1; Thu, 07 Jan 2021 13:18:40 -0500
-X-MC-Unique: 2ue6GNs7N0CujjnsvCMULQ-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+ us-mta-285-e65DrLljOYejgUN8wLdnvA-1; Thu, 07 Jan 2021 13:20:04 -0500
+X-MC-Unique: e65DrLljOYejgUN8wLdnvA-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D848959;
-        Thu,  7 Jan 2021 18:18:38 +0000 (UTC)
-Received: from treble (ovpn-120-156.rdu2.redhat.com [10.10.120.156])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id EE9D210013BD;
-        Thu,  7 Jan 2021 18:18:37 +0000 (UTC)
-Date:   Thu, 7 Jan 2021 12:18:35 -0600
-From:   Josh Poimboeuf <jpoimboe@redhat.com>
-To:     Miroslav Benes <mbenes@suse.cz>
-Cc:     Juergen Gross <jgross@suse.com>, xen-devel@lists.xenproject.org,
-        linux-kernel@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Shinichiro Kawasaki <shinichiro.kawasaki@wdc.com>
-Subject: Re: [PATCH 3/3] objtool: Support stack layout changes in alternatives
-Message-ID: <20210107181835.rc7lutdqujf4mead@treble>
-References: <cover.1608700338.git.jpoimboe@redhat.com>
- <9f78604e49b400eb3b2ca613591f8c357474ed4e.1608700338.git.jpoimboe@redhat.com>
- <alpine.LSU.2.21.2101071417440.31250@pobox.suse.cz>
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4E69B1F765;
+        Thu,  7 Jan 2021 18:20:03 +0000 (UTC)
+Received: from colo-mx.corp.redhat.com (colo-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.20])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 214CC5D9DD;
+        Thu,  7 Jan 2021 18:20:03 +0000 (UTC)
+Received: from zmail21.collab.prod.int.phx2.redhat.com (zmail21.collab.prod.int.phx2.redhat.com [10.5.83.24])
+        by colo-mx.corp.redhat.com (Postfix) with ESMTP id 075E418095FF;
+        Thu,  7 Jan 2021 18:20:03 +0000 (UTC)
+Date:   Thu, 7 Jan 2021 13:20:00 -0500 (EST)
+From:   Bob Peterson <rpeterso@redhat.com>
+To:     linux-fsdevel@vger.kernel.org, Jens Axboe <axboe@kernel.dk>
+Cc:     Satya Tangirala <satyat@google.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        linux-kernel@vger.kernel.org, Christoph Hellwig <hch@lst.de>
+Message-ID: <1630504905.43082455.1610043600869.JavaMail.zimbra@redhat.com>
+In-Reply-To: <1137375419.42956970.1610036857271.JavaMail.zimbra@redhat.com>
+References: <20201224044954.1349459-1-satyat@google.com> <20210107162000.GA2693@lst.de> <1137375419.42956970.1610036857271.JavaMail.zimbra@redhat.com>
+Subject: [fs PATCH] fs: fix freeze count problem in freeze_bdev
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <alpine.LSU.2.21.2101071417440.31250@pobox.suse.cz>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.3.112.201, 10.4.195.4]
+Thread-Topic: Fix freeze_bdev()/thaw_bdev() accounting of bd_fsfreeze_sb
+Thread-Index: QLSEzKoRlbffxOodTzmv1w/O4NuJkjkVwvLu
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 07, 2021 at 02:22:27PM +0100, Miroslav Benes wrote:
-> On Tue, 22 Dec 2020, Josh Poimboeuf wrote:
-> 
-> > BTW, another benefit of these changes is that, thanks to some related
-> > cleanups (new fake nops and alt_group struct) objtool can finally be rid
-> > of fake jumps, which were a constant source of headaches.
-> 
-> \o/
-> 
-> You may also want to remove/edit the comment right before 
-> handle_group_alt() now that fake jumps are gone.
-> 
-> Anyway, I walked through the patch (set) and I think it should work fine 
-> (but I am not confident enough to give it Reviewed-by. My head spins :)). 
-> I even like the change.
-> 
-> Also, 1/3 is a benefit on its own, so if nothing else, it could go in.
+Hi,
 
-Thanks for the review!
+I wrote this patch to fix the freeze/thaw device problem before I saw
+the patch "fs: Fix freeze_bdev()/thaw_bdev() accounting of bd_fsfreeze_sb"
+from Satya Tangirala. That one, however, does not fix the bd_freeze_count
+problem and this patch does. Jens, Christoph, what do you think?
+This is a very recreatable problem via repeated runs of generic/085,
+at least on gfs2.
 
-That comment is indeed now obsolete.  I can squash something like so:
+Description:
 
-diff --git a/tools/objtool/check.c b/tools/objtool/check.c
-index 81d56fdef1c3..ce67437aaf3f 100644
---- a/tools/objtool/check.c
-+++ b/tools/objtool/check.c
-@@ -958,21 +958,8 @@ static int add_call_destinations(struct objtool_file *file)
- }
+Before this patch, if you tried to freeze a device (function freeze_bdev)
+while it was being unmounted, it would get NULL back from get_active_super
+and correctly bypass the freeze calls. Unfortunately, it forgot to decrement
+its bd_fsfreeze_count. Subsequent calls to device thaw (thaw_bdev) would
+see the non-zero bd_fsfreeze_count and assume the bd_fsfreeze_sb value was
+still valid. That's not a safe assumption and resulted in use-after-free,
+which often caused fatal kernel errors like: "unable to handle page fault
+for address."
+
+This patch adds the necessary decrement of bd_fsfreeze_count for that
+error path. It also adds code to set the bd_fsfreeze_sb to NULL when the
+last reference is reached in thaw_bdev.
+
+Signed-off-by: Bob Peterson <rpeterso@redhat.com>
+---
+ fs/block_dev.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
+
+diff --git a/fs/block_dev.c b/fs/block_dev.c
+index 9e56ee1f2652..c6daf7d12546 100644
+--- a/fs/block_dev.c
++++ b/fs/block_dev.c
+@@ -555,8 +555,10 @@ int freeze_bdev(struct block_device *bdev)
+ 		goto done;
  
- /*
-- * The .alternatives section requires some extra special care, over and above
-- * what other special sections require:
-- *
-- * 1. Because alternatives are patched in-place, we need to insert a fake jump
-- *    instruction at the end so that validate_branch() skips all the original
-- *    replaced instructions when validating the new instruction path.
-- *
-- * 2. An added wrinkle is that the new instruction length might be zero.  In
-- *    that case the old instructions are replaced with noops.  We simulate that
-- *    by creating a fake jump as the only new instruction.
-- *
-- * 3. In some cases, the alternative section includes an instruction which
-- *    conditionally jumps to the _end_ of the entry.  We have to modify these
-- *    jumps' destinations to point back to .text rather than the end of the
-- *    entry in .altinstr_replacement.
-+ * The .alternatives section requires some extra special care over and above
-+ * other special sections because alternatives are patched in place.
-  */
- static int handle_group_alt(struct objtool_file *file,
- 			    struct special_alt *special_alt,
+ 	sb = get_active_super(bdev);
+-	if (!sb)
++	if (!sb) {
++		bdev->bd_fsfreeze_count--;
+ 		goto sync;
++	}
+ 	if (sb->s_op->freeze_super)
+ 		error = sb->s_op->freeze_super(sb);
+ 	else
+@@ -600,6 +602,7 @@ int thaw_bdev(struct block_device *bdev)
+ 	if (!sb)
+ 		goto out;
+ 
++	bdev->bd_fsfreeze_sb = NULL;
+ 	if (sb->s_op->thaw_super)
+ 		error = sb->s_op->thaw_super(sb);
+ 	else
 
