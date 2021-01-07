@@ -2,80 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 775012ECA84
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 07:28:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 94A5F2ECA8A
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 07:36:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726371AbhAGG1t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 01:27:49 -0500
-Received: from ZXSHCAS2.zhaoxin.com ([203.148.12.82]:46886 "EHLO
-        ZXSHCAS2.zhaoxin.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725929AbhAGG1s (ORCPT
+        id S1726110AbhAGGgK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 01:36:10 -0500
+Received: from m43-15.mailgun.net ([69.72.43.15]:10731 "EHLO
+        m43-15.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725763AbhAGGgJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 01:27:48 -0500
-Received: from zxbjmbx1.zhaoxin.com (10.29.252.163) by ZXSHCAS2.zhaoxin.com
- (10.28.252.162) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1979.3; Thu, 7 Jan 2021
- 14:27:06 +0800
-Received: from [10.32.56.37] (10.32.56.37) by zxbjmbx1.zhaoxin.com
- (10.29.252.163) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1979.3; Thu, 7 Jan 2021
- 14:27:04 +0800
-Subject: Re: [PATCH] crypto: x86/crc32c-intel - Don't match some Zhaoxin CPUs
-To:     Herbert Xu <herbert@gondor.apana.org.au>
-CC:     <davem@davemloft.net>, <tglx@linutronix.de>, <mingo@redhat.com>,
-        <bp@alien8.de>, <x86@kernel.org>, <hpa@zytor.com>,
-        <linux-crypto@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <TimGuo-oc@zhaoxin.com>, <CooperYan@zhaoxin.com>,
-        <QiyuanWang@zhaoxin.com>, <HerryYang@zhaoxin.com>,
-        <CobeChen@zhaoxin.com>, <SilviaZhao@zhaoxin.com>
-References: <1608028091-29439-1-git-send-email-TonyWWang-oc@zhaoxin.com>
- <20210102211200.GA1750@gondor.apana.org.au>
-From:   Tony W Wang-oc <TonyWWang-oc@zhaoxin.com>
-Message-ID: <464482ed-bce6-7e55-bd34-b3be736a6e8b@zhaoxin.com>
-Date:   Thu, 7 Jan 2021 14:27:00 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        Thu, 7 Jan 2021 01:36:09 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1610001344; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=zaE4+TJQvH3SFoKXVDoAMLGGx6TuByIHlqy6fvPhicY=;
+ b=b2JKhaTVOoxe/JkgZe44wlPESIckT3clBXamHz/JZrXfIG0sDXpQhKfCZ6CjqqKZYoqmab3t
+ Uj8/xpK4NjpjXjHZBawGiJJLWGmdAj1GLGQGmsCkux3bfBlVjrL/5QLnC4s8mydLL0g85qUM
+ 8VKc1rF4hZpUYvhzx+rrIp0IPnQ=
+X-Mailgun-Sending-Ip: 69.72.43.15
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n05.prod.us-west-2.postgun.com with SMTP id
+ 5ff6aba5fc3778927efec519 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 07 Jan 2021 06:35:17
+ GMT
+Sender: saiprakash.ranjan=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id D0492C43464; Thu,  7 Jan 2021 06:35:16 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: saiprakash.ranjan)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id CEEB5C433C6;
+        Thu,  7 Jan 2021 06:35:15 +0000 (UTC)
 MIME-Version: 1.0
-In-Reply-To: <20210102211200.GA1750@gondor.apana.org.au>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.32.56.37]
-X-ClientProxiedBy: ZXSHCAS1.zhaoxin.com (10.28.252.161) To
- zxbjmbx1.zhaoxin.com (10.29.252.163)
+Date:   Thu, 07 Jan 2021 12:05:15 +0530
+From:   Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+To:     Will Deacon <will@kernel.org>
+Cc:     Robin Murphy <robin.murphy@arm.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        iommu@lists.linux-foundation.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org,
+        Jordan Crouse <jcrouse@codeaurora.org>,
+        Rob Clark <robdclark@gmail.com>,
+        Akhil P Oommen <akhilpo@codeaurora.org>
+Subject: Re: [PATCH] iommu/io-pgtable-arm: Allow non-coherent masters to use
+ system cache
+In-Reply-To: <20210106115615.GA1763@willie-the-truck>
+References: <20201224064007.2339-1-saiprakash.ranjan@codeaurora.org>
+ <20210106115615.GA1763@willie-the-truck>
+Message-ID: <ce8981988c84ccb015ea04fc439e8949@codeaurora.org>
+X-Sender: saiprakash.ranjan@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 03/01/2021 05:12, Herbert Xu wrote:
-> On Tue, Dec 15, 2020 at 06:28:11PM +0800, Tony W Wang-oc wrote:
->> The driver crc32c-intel match CPUs supporting X86_FEATURE_XMM4_2.
->> On platforms with Zhaoxin CPUs supporting this X86 feature, when
->> crc32c-intel and crc32c-generic are both registered, system will
->> use crc32c-intel because its .cra_priority is greater than
->> crc32c-generic.
->>
->> When doing lmbench3 Create and Delete file test on partitions with
->> ext4 enabling metadata checksum, found using crc32c-generic driver
->> could get about 20% performance gain than using the driver crc32c-intel
->> on some Zhaoxin CPUs.
->>
->> This case expect to use crc32c-generic driver for these Zhaoxin CPUs
->> to get performance gain, so remove these Zhaoxin CPUs support from
->> crc32c-intel.
->>
->> Signed-off-by: Tony W Wang-oc <TonyWWang-oc@zhaoxin.com>
+Hi Will,
+
+On 2021-01-06 17:26, Will Deacon wrote:
+> On Thu, Dec 24, 2020 at 12:10:07PM +0530, Sai Prakash Ranjan wrote:
+>> commit ecd7274fb4cd ("iommu: Remove unused IOMMU_SYS_CACHE_ONLY flag")
+>> removed unused IOMMU_SYS_CACHE_ONLY prot flag and along with it went
+>> the memory type setting required for the non-coherent masters to use
+>> system cache. Now that system cache support for GPU is added, we will
+>> need to mark the memory as normal sys-cached for GPU to use system 
+>> cache.
+>> Without this, the system cache lines are not allocated for GPU. We use
+>> the IO_PGTABLE_QUIRK_ARM_OUTER_WBWA quirk instead of a page protection
+>> flag as the flag cannot be exposed via DMA api because of no in-tree
+>> users.
+>> 
+>> Signed-off-by: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
 >> ---
->>  arch/x86/crypto/crc32c-intel_glue.c | 21 +++++++++++++++++++--
->>  1 file changed, 19 insertions(+), 2 deletions(-)
+>>  drivers/iommu/io-pgtable-arm.c | 3 +++
+>>  1 file changed, 3 insertions(+)
+>> 
+>> diff --git a/drivers/iommu/io-pgtable-arm.c 
+>> b/drivers/iommu/io-pgtable-arm.c
+>> index 7c9ea9d7874a..3fb7de8304a2 100644
+>> --- a/drivers/iommu/io-pgtable-arm.c
+>> +++ b/drivers/iommu/io-pgtable-arm.c
+>> @@ -415,6 +415,9 @@ static arm_lpae_iopte arm_lpae_prot_to_pte(struct 
+>> arm_lpae_io_pgtable *data,
+>>  		else if (prot & IOMMU_CACHE)
+>>  			pte |= (ARM_LPAE_MAIR_ATTR_IDX_CACHE
+>>  				<< ARM_LPAE_PTE_ATTRINDX_SHIFT);
+>> +		else if (data->iop.cfg.quirks & IO_PGTABLE_QUIRK_ARM_OUTER_WBWA)
+>> +			pte |= (ARM_LPAE_MAIR_ATTR_IDX_INC_OCACHE
+>> +				<< ARM_LPAE_PTE_ATTRINDX_SHIFT);
+>>  	}
 > 
-> This does not seem to address the latest comment from hpa.
+> drivers/iommu/io-pgtable.c currently documents this quirk as applying 
+> only
+> to the page-table walker. Given that we only have one user at the 
+> moment,
+> I think it's ok to change that, but please update the comment.
 > 
 
-Yes, please ignore this patch. Have send new patch set per Hpa's suggestion.
+Sure, how about this change in comment:
 
-Sincerely
-Tonyw
+          * IO_PGTABLE_QUIRK_ARM_OUTER_WBWA: Override the 
+outer-cacheability
+-        *      attributes set in the TCR for a non-coherent page-table 
+walker.
++        *      attributes set in the TCR for a non-coherent page-table 
+walker
++        *      and also to set the correct cacheability attributes to 
+use an
++        *      outer level of cache for non-coherent masters.
 
-> Thanks,
+> We also need to decide on whether we want to allow the quirk to be 
+> passed
+> if the coherency of the page-table walker differs from the DMA device, 
+> since
+> we have these combinations:
 > 
+> 	Coherent walker?	IOMMU_CACHE	IO_PGTABLE_QUIRK_ARM_OUTER_WBWA
+> 0:	N			0		0
+> 1:	N			0		1
+> 2:	N			1		0
+> 3:	N			1		1
+> 4:	Y			0		0
+> 5:	Y			0		1
+> 6:	Y			1		0
+> 7:	Y			1		1
+> 
+> Some of them are obviously bogus, such as (7), but I don't know what to
+> do about cases such as (3) and (5).
+> 
+
+I thought this was already decided when IOMMU_SYS_CACHE_ONLY prot flag 
+was
+added in this same location [1]. dma-coherent masters can use the normal
+cached memory type to use the system cache and non dma-coherent masters
+willing to use system cache should use normal sys-cached memory type 
+with
+this quirk.
+
+[1] 
+https://lore.kernel.org/linux-arm-msm/20190516093020.18028-1-vivek.gautam@codeaurora.org/
+
+Thanks,
+Sai
+
+-- 
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a 
+member
+of Code Aurora Forum, hosted by The Linux Foundation
