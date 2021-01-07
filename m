@@ -2,552 +2,339 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 948312ED772
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 20:27:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 602052ED776
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 20:31:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728821AbhAGT06 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 14:26:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46380 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725944AbhAGT06 (ORCPT
+        id S1729131AbhAGTar (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 14:30:47 -0500
+Received: from smtp-fw-2101.amazon.com ([72.21.196.25]:46097 "EHLO
+        smtp-fw-2101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725944AbhAGTar (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 14:26:58 -0500
-Received: from mail-io1-xd2c.google.com (mail-io1-xd2c.google.com [IPv6:2607:f8b0:4864:20::d2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98EE2C0612F6
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Jan 2021 11:26:17 -0800 (PST)
-Received: by mail-io1-xd2c.google.com with SMTP id q137so7244524iod.9
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Jan 2021 11:26:17 -0800 (PST)
+        Thu, 7 Jan 2021 14:30:47 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=atishpatra.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=R9ec2rorXNKpnB5tpr0X0coC8E+Od//lfBeIjHtucUw=;
-        b=pxXetlPiVN82xE9Utf2DOeuVkOUHkb5PYQc5m2LypbJEFviN56Xg3SZLkjEI6wOaeH
-         9dwZoCz6hO/sjs3RBoCQwSvbVERozi+jq4q0/Afk1nhVDyu5ekCQfGCAzscsEkPAS2Pl
-         +FQCrFrTN4pBNcvA8eCe728iBQSPDnS6qpXks=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=R9ec2rorXNKpnB5tpr0X0coC8E+Od//lfBeIjHtucUw=;
-        b=Imf4FDMGXqf5+zt44Csh9rB/LYjN4vK+xX3jcz5RLpZ+b0DF4gpkLB3BtDsjnig/A0
-         JSl3J+CV3ggtueViNZd1euNKkAggWB61Gmgh4BqCtG2i00ewh5ZVWigt7DZDwA28KfxB
-         wo9fZGaMiG+ONXw+KoaFKJ9MtifHdfx1HjCFQ/dYVwXAzUS7YpmzOaDgilSjHgdYAXo3
-         Og87hF1HvoiyaCnwSzet4DrShCr1tqfAP1gBjb3LNl0dkGm4bcueleGVhdE+fbW3ZLqT
-         w30kf/z5m1PCdnQhP5hjc4OF0AGO4R3cwAf/DoRPNo4IsI7dpGPx6/a0XaTKsyesB4hQ
-         vCAA==
-X-Gm-Message-State: AOAM533p7+d6wYWkCPYV483Dwzllg4qP7tza7I3KoSo5w3Z5QNLWO6s1
-        oYm9pwSFz5/t5tr1JnUt2SywgfrKoAXpEViEbcss
-X-Google-Smtp-Source: ABdhPJwKo2RBLquH5L0hmkYQd7dKygceqZfrhZIYn3DOjHOnBNzT/Lrjc4dDYo/97VNS147443mS5MBdvvmroK0dvpM=
-X-Received: by 2002:a02:cd84:: with SMTP id l4mr35876jap.141.1610047576807;
- Thu, 07 Jan 2021 11:26:16 -0800 (PST)
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1610047845; x=1641583845;
+  h=from:to:cc:subject:date:message-id:mime-version;
+  bh=+vuYLy41NLSRlJ545SEuo1c5q6mPmv7tXpmCENmeHIA=;
+  b=AQRMbZsaKLJ7gyplyp4nX5ayXxuJw8qcehvqJ4VaDvIj+RlafcF1Ob86
+   BQZEqIJfsDFHoINnjNvuDQfiOYFfT9SBZ9Lqild211c+7uVP1iCUa9rBZ
+   7RS5QsjMz8DIhDO9B71yAECSvmnoUVEWDBJoSU44vQvcI3FouwVVLE/NP
+   o=;
+X-IronPort-AV: E=Sophos;i="5.79,329,1602547200"; 
+   d="scan'208";a="73460932"
+Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-1a-821c648d.us-east-1.amazon.com) ([10.43.8.6])
+  by smtp-border-fw-out-2101.iad2.amazon.com with ESMTP; 07 Jan 2021 19:30:04 +0000
+Received: from EX13MTAUWB001.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan3.iad.amazon.com [10.40.163.38])
+        by email-inbound-relay-1a-821c648d.us-east-1.amazon.com (Postfix) with ESMTPS id 3F04EA20FF;
+        Thu,  7 Jan 2021 19:30:03 +0000 (UTC)
+Received: from EX13D13UWA004.ant.amazon.com (10.43.160.251) by
+ EX13MTAUWB001.ant.amazon.com (10.43.161.249) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Thu, 7 Jan 2021 19:30:03 +0000
+Received: from EX13MTAUEA001.ant.amazon.com (10.43.61.82) by
+ EX13D13UWA004.ant.amazon.com (10.43.160.251) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Thu, 7 Jan 2021 19:30:03 +0000
+Received: from dev-dsk-fllinden-2c-c1893d73.us-west-2.amazon.com
+ (172.23.141.97) by mail-relay.amazon.com (10.43.61.243) with Microsoft SMTP
+ Server id 15.0.1497.2 via Frontend Transport; Thu, 7 Jan 2021 19:30:02 +0000
+Received: by dev-dsk-fllinden-2c-c1893d73.us-west-2.amazon.com (Postfix, from userid 6262777)
+        id 031A7DE122; Thu,  7 Jan 2021 19:30:01 +0000 (UTC)
+From:   Frank van der Linden <fllinden@amazon.com>
+To:     <jeyu@kernel.org>, <linux-kernel@vger.kernel.org>
+CC:     Frank van der Linden <fllinden@amazon.com>
+Subject: [PATCH v2] module: harden ELF info handling
+Date:   Thu, 7 Jan 2021 19:30:01 +0000
+Message-ID: <20210107193001.12039-1-fllinden@amazon.com>
+X-Mailer: git-send-email 2.16.6
 MIME-Version: 1.0
-References: <20201204085835.2406541-1-atish.patra@wdc.com> <20201204085835.2406541-4-atish.patra@wdc.com>
- <3d13a678-f804-245b-696e-400f128658c5@microchip.com>
-In-Reply-To: <3d13a678-f804-245b-696e-400f128658c5@microchip.com>
-From:   Atish Patra <atishp@atishpatra.org>
-Date:   Thu, 7 Jan 2021 11:26:05 -0800
-Message-ID: <CAOnJCUKz-5hFBL1_XEUOdfnvpgMmBFKJHVEJ_vwx_+puHa483A@mail.gmail.com>
-Subject: Re: [PATCH v3 3/5] RISC-V: Initial DTS for Microchip ICICLE board
-To:     Cyril.Jean@microchip.com
-Cc:     Atish Patra <atish.patra@wdc.com>,
-        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        Anup Patel <anup.patel@wdc.com>,
-        Daire McNamara <Daire.McNamara@microchip.com>,
-        Bin Meng <bin.meng@windriver.com>, Conor.Dooley@microchip.com,
-        Rob Herring <robh+dt@kernel.org>, Ivan.Griffin@microchip.com,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Alistair Francis <alistair.francis@wdc.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        linux-riscv <linux-riscv@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 7, 2021 at 3:44 AM <Cyril.Jean@microchip.com> wrote:
->
-> Hi Atish,
->
-> On 12/4/20 8:58 AM, Atish Patra wrote:
-> > EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
-> >
-> > Add initial DTS for Microchip ICICLE board having only
-> > essential devices (clocks, sdhci, ethernet, serial, etc).
-> > The device tree is based on the U-Boot patch.
-> >
-> > https://patchwork.ozlabs.org/project/uboot/patch/20201110103414.10142-6-padmarao.begari@microchip.com/
-> >
-> > Signed-off-by: Atish Patra <atish.patra@wdc.com>
-> > ---
-> >   arch/riscv/boot/dts/Makefile                  |   1 +
-> >   arch/riscv/boot/dts/microchip/Makefile        |   2 +
-> >   .../microchip/microchip-mpfs-icicle-kit.dts   |  72 ++++
-> >   .../boot/dts/microchip/microchip-mpfs.dtsi    | 331 ++++++++++++++++++
-> >   4 files changed, 406 insertions(+)
-> >   create mode 100644 arch/riscv/boot/dts/microchip/Makefile
-> >   create mode 100644 arch/riscv/boot/dts/microchip/microchip-mpfs-icicle-kit.dts
-> >   create mode 100644 arch/riscv/boot/dts/microchip/microchip-mpfs.dtsi
-> >
-> > diff --git a/arch/riscv/boot/dts/Makefile b/arch/riscv/boot/dts/Makefile
-> > index ca1f8cbd78c0..3ea94ea0a18a 100644
-> > --- a/arch/riscv/boot/dts/Makefile
-> > +++ b/arch/riscv/boot/dts/Makefile
-> > @@ -1,5 +1,6 @@
-> >   # SPDX-License-Identifier: GPL-2.0
-> >   subdir-y += sifive
-> >   subdir-y += kendryte
-> > +subdir-y += microchip
-> >
-> >   obj-$(CONFIG_BUILTIN_DTB) := $(addsuffix /, $(subdir-y))
-> > diff --git a/arch/riscv/boot/dts/microchip/Makefile b/arch/riscv/boot/dts/microchip/Makefile
-> > new file mode 100644
-> > index 000000000000..622b12771fd3
-> > --- /dev/null
-> > +++ b/arch/riscv/boot/dts/microchip/Makefile
-> > @@ -0,0 +1,2 @@
-> > +# SPDX-License-Identifier: GPL-2.0
-> > +dtb-$(CONFIG_SOC_MICROCHIP_POLARFIRE) += microchip-mpfs-icicle-kit.dtb
-> > diff --git a/arch/riscv/boot/dts/microchip/microchip-mpfs-icicle-kit.dts b/arch/riscv/boot/dts/microchip/microchip-mpfs-icicle-kit.dts
-> > new file mode 100644
-> > index 000000000000..5b51dad13c72
-> > --- /dev/null
-> > +++ b/arch/riscv/boot/dts/microchip/microchip-mpfs-icicle-kit.dts
-> > @@ -0,0 +1,72 @@
-> > +// SPDX-License-Identifier: (GPL-2.0 OR MIT)
-> > +/* Copyright (c) 2020 Microchip Technology Inc */
-> > +
-> > +/dts-v1/;
-> > +
-> > +#include "microchip-mpfs.dtsi"
-> > +
-> > +/* Clock frequency (in Hz) of the rtcclk */
-> > +#define RTCCLK_FREQ            1000000
-> > +
-> > +/ {
-> > +       #address-cells = <2>;
-> > +       #size-cells = <2>;
-> > +       model = "Microchip PolarFire-SoC Icicle Kit";
-> > +       compatible = "microchip,mpfs-icicle-kit", "microchip,polarfire-soc";
-> > +
-> > +       chosen {
-> > +               stdout-path = &serial0;
-> > +       };
-> > +
-> > +       cpus {
-> > +               timebase-frequency = <RTCCLK_FREQ>;
-> > +       };
-> > +
-> > +       memory@80000000 {
-> > +               device_type = "memory";
-> > +               reg = <0x0 0x80000000 0x0 0x40000000>;
-> > +               clocks = <&clkcfg 26>;
-> > +       };
-> > +
-> > +       soc {
-> > +       };
-> > +};
-> > +
-> > +&serial0 {
-> > +       status = "okay";
-> > +};
-> > +
-> > +&serial1 {
-> > +       status = "okay";
-> > +};
-> > +
-> > +&serial2 {
-> > +       status = "okay";
-> > +};
-> > +
-> > +&serial3 {
-> > +       status = "okay";
-> > +};
-> > +
-> > +&sdcard {
-> > +       status = "okay";
-> > +};
-> > +
-> > +&emac0 {
-> > +       phy-mode = "sgmii";
-> > +       phy-handle = <&phy0>;
-> > +       phy0: ethernet-phy@8 {
-> > +               reg = <8>;
-> > +               ti,fifo-depth = <0x01>;
-> > +       };
-> > +};
-> > +
-> > +&emac1 {
-> > +       status = "okay";
-> > +       phy-mode = "sgmii";
-> > +       phy-handle = <&phy1>;
-> > +       phy1: ethernet-phy@9 {
-> > +               reg = <9>;
-> > +               ti,fifo-depth = <0x01>;
-> > +       };
-> > +};
-> > diff --git a/arch/riscv/boot/dts/microchip/microchip-mpfs.dtsi b/arch/riscv/boot/dts/microchip/microchip-mpfs.dtsi
-> > new file mode 100644
-> > index 000000000000..7a076aa4c78d
-> > --- /dev/null
-> > +++ b/arch/riscv/boot/dts/microchip/microchip-mpfs.dtsi
-> > @@ -0,0 +1,331 @@
-> > +// SPDX-License-Identifier: (GPL-2.0 OR MIT)
-> > +/* Copyright (c) 2020 Microchip Technology Inc */
-> > +
-> > +/dts-v1/;
-> > +
-> > +/ {
-> > +       #address-cells = <2>;
-> > +       #size-cells = <2>;
-> > +       model = "Microchip PolarFire-SoC";
-> > +       compatible = "microchip,polarfire-soc";
-> > +
-> > +       chosen {
-> > +       };
-> > +
-> > +       cpus {
-> > +               #address-cells = <1>;
-> > +               #size-cells = <0>;
-> > +
-> > +               cpu@0 {
-> > +                       clock-frequency = <0>;
-> > +                       compatible = "sifive,rocket0", "riscv";
-> > +                       device_type = "cpu";
-> > +                       i-cache-block-size = <64>;
-> > +                       i-cache-sets = <128>;
-> > +                       i-cache-size = <16384>;
-> > +                       reg = <0>;
-> > +                       riscv,isa = "rv64imac";
-> > +                       status = "disabled";
-> > +
-> > +                       cpu0_intc: interrupt-controller {
-> > +                               #interrupt-cells = <1>;
-> > +                               compatible = "riscv,cpu-intc";
-> > +                               interrupt-controller;
-> > +                       };
-> > +               };
-> > +
-> > +               cpu@1 {
-> > +                       clock-frequency = <0>;
-> > +                       compatible = "sifive,rocket0", "riscv";
-> > +                       d-cache-block-size = <64>;
-> > +                       d-cache-sets = <64>;
-> > +                       d-cache-size = <32768>;
-> > +                       d-tlb-sets = <1>;
-> > +                       d-tlb-size = <32>;
-> > +                       device_type = "cpu";
-> > +                       i-cache-block-size = <64>;
-> > +                       i-cache-sets = <64>;
-> > +                       i-cache-size = <32768>;
-> > +                       i-tlb-sets = <1>;
-> > +                       i-tlb-size = <32>;
-> > +                       mmu-type = "riscv,sv39";
-> > +                       reg = <1>;
-> > +                       riscv,isa = "rv64imafdc";
-> > +                       tlb-split;
-> > +                       status = "okay";
-> > +
-> > +                       cpu1_intc: interrupt-controller {
-> > +                               #interrupt-cells = <1>;
-> > +                               compatible = "riscv,cpu-intc";
-> > +                               interrupt-controller;
-> > +                       };
-> > +               };
-> > +
-> > +               cpu@2 {
-> > +                       clock-frequency = <0>;
-> > +                       compatible = "sifive,rocket0", "riscv";
-> > +                       d-cache-block-size = <64>;
-> > +                       d-cache-sets = <64>;
-> > +                       d-cache-size = <32768>;
-> > +                       d-tlb-sets = <1>;
-> > +                       d-tlb-size = <32>;
-> > +                       device_type = "cpu";
-> > +                       i-cache-block-size = <64>;
-> > +                       i-cache-sets = <64>;
-> > +                       i-cache-size = <32768>;
-> > +                       i-tlb-sets = <1>;
-> > +                       i-tlb-size = <32>;
-> > +                       mmu-type = "riscv,sv39";
-> > +                       reg = <2>;
-> > +                       riscv,isa = "rv64imafdc";
-> > +                       tlb-split;
-> > +                       status = "okay";
-> > +
-> > +                       cpu2_intc: interrupt-controller {
-> > +                               #interrupt-cells = <1>;
-> > +                               compatible = "riscv,cpu-intc";
-> > +                               interrupt-controller;
-> > +                       };
-> > +               };
-> > +
-> > +               cpu@3 {
-> > +                       clock-frequency = <0>;
-> > +                       compatible = "sifive,rocket0", "riscv";
-> > +                       d-cache-block-size = <64>;
-> > +                       d-cache-sets = <64>;
-> > +                       d-cache-size = <32768>;
-> > +                       d-tlb-sets = <1>;
-> > +                       d-tlb-size = <32>;
-> > +                       device_type = "cpu";
-> > +                       i-cache-block-size = <64>;
-> > +                       i-cache-sets = <64>;
-> > +                       i-cache-size = <32768>;
-> > +                       i-tlb-sets = <1>;
-> > +                       i-tlb-size = <32>;
-> > +                       mmu-type = "riscv,sv39";
-> > +                       reg = <3>;
-> > +                       riscv,isa = "rv64imafdc";
-> > +                       tlb-split;
-> > +                       status = "okay";
-> > +
-> > +                       cpu3_intc: interrupt-controller {
-> > +                               #interrupt-cells = <1>;
-> > +                               compatible = "riscv,cpu-intc";
-> > +                               interrupt-controller;
-> > +                       };
-> > +               };
-> > +
-> > +               cpu@4 {
-> > +                       clock-frequency = <0>;
-> > +                       compatible = "sifive,rocket0", "riscv";
-> > +                       d-cache-block-size = <64>;
-> > +                       d-cache-sets = <64>;
-> > +                       d-cache-size = <32768>;
-> > +                       d-tlb-sets = <1>;
-> > +                       d-tlb-size = <32>;
-> > +                       device_type = "cpu";
-> > +                       i-cache-block-size = <64>;
-> > +                       i-cache-sets = <64>;
-> > +                       i-cache-size = <32768>;
-> > +                       i-tlb-sets = <1>;
-> > +                       i-tlb-size = <32>;
-> > +                       mmu-type = "riscv,sv39";
-> > +                       reg = <4>;
-> > +                       riscv,isa = "rv64imafdc";
-> > +                       tlb-split;
-> > +                       status = "okay";
-> > +                       cpu4_intc: interrupt-controller {
-> > +                               #interrupt-cells = <1>;
-> > +                               compatible = "riscv,cpu-intc";
-> > +                               interrupt-controller;
-> > +                       };
-> > +               };
-> > +       };
-> > +
-> > +       soc {
-> > +               #address-cells = <2>;
-> > +               #size-cells = <2>;
-> > +               compatible = "simple-bus";
-> > +               ranges;
-> > +
-> > +               cache-controller@2010000 {
-> > +                       compatible = "sifive,fu540-c000-ccache", "cache";
-> > +                       cache-block-size = <64>;
-> > +                       cache-level = <2>;
-> > +                       cache-sets = <1024>;
-> > +                       cache-size = <2097152>;
-> > +                       cache-unified;
-> > +                       interrupt-parent = <&plic>;
-> > +                       interrupts = <1 2 3>;
-> > +                       reg = <0x0 0x2010000 0x0 0x1000>;
-> > +               };
-> > +
-> > +               clint@2000000 {
-> > +                       compatible = "riscv,clint0";
-> > +                       reg = <0x0 0x2000000 0x0 0xC000>;
-> > +                       interrupts-extended = <&cpu0_intc 3 &cpu0_intc 7
-> > +                                               &cpu1_intc 3 &cpu1_intc 7
-> > +                                               &cpu2_intc 3 &cpu2_intc 7
-> > +                                               &cpu3_intc 3 &cpu3_intc 7
-> > +                                               &cpu4_intc 3 &cpu4_intc 7>;
-> > +               };
-> > +
-> > +               plic: interrupt-controller@c000000 {
-> > +                       #interrupt-cells = <1>;
-> > +                       compatible = "sifive,plic-1.0.0";
-> > +                       reg = <0x0 0xc000000 0x0 0x4000000>;
-> > +                       riscv,ndev = <186>;
-> > +                       interrupt-controller;
-> > +                       interrupts-extended = <&cpu0_intc 11
-> > +                                       &cpu1_intc 11 &cpu1_intc 9
-> > +                                       &cpu2_intc 11 &cpu2_intc 9
-> > +                                       &cpu3_intc 11 &cpu3_intc 9
-> > +                                       &cpu4_intc 11 &cpu4_intc 9>;
-> > +               };
-> > +
-> > +               dma@3000000 {
-> > +                       compatible = "sifive,fu540-c000-pdma";
-> > +                       reg = <0x0 0x3000000 0x0 0x8000>;
-> > +                       interrupt-parent = <&plic>;
-> > +                       interrupts = <23 24 25 26 27 28 29 30>;
-> > +                       #dma-cells = <1>;
-> > +               };
-> > +
-> > +               refclk: refclk {
-> > +                       compatible = "fixed-clock";
-> > +                       #clock-cells = <0>;
-> > +                       clock-frequency = <600000000>;
-> > +                       clock-output-names = "msspllclk";
-> > +               };
-> > +
-> > +               clkcfg: clkcfg@20002000 {
-> > +                       compatible = "microchip,pfsoc-clkcfg";
->
-> Can you please change "microchip,pfsoc-clkcfg" to
-> "microchip,mpfs-clkcfg" to align with the v2 clock driver?
->
+5fdc7db644 ("module: setup load info before module_sig_check()")
+moved the ELF setup, so that it was done before the signature
+check. This made the module name available to signature error
+messages.
 
-Sure.
+However, the checks for ELF correctness in setup_load_info
+are not sufficient to prevent bad memory references due to
+corrupted offset fields, indices, etc.
 
->
-> > +                       reg = <0x0 0x20002000 0x0 0x1000>;
-> > +                       reg-names = "mss_sysreg";
-> > +                       clocks = <&refclk>;
-> > +                       #clock-cells = <1>;
-> > +                       clock-output-names = "cpu", "axi", "ahb", "envm",       /* 0-3   */
-> > +                                "mac0", "mac1", "mmc", "timer",                /* 4-7   */
-> > +                               "mmuart0", "mmuart1", "mmuart2", "mmuart3",     /* 8-11  */
-> > +                               "mmuart4", "spi0", "spi1", "i2c0",              /* 12-15 */
-> > +                               "i2c1", "can0", "can1", "usb",                  /* 16-19 */
-> > +                               "rsvd", "rtc", "qspi", "gpio0",                 /* 20-23 */
-> > +                               "gpio1", "gpio2", "ddrc", "fic0",               /* 24-27 */
-> > +                               "fic1", "fic2", "fic3", "athena", "cfm";        /* 28-32 */
-> > +               };
-> > +
-> > +               serial0: serial@20000000 {
-> > +                       compatible = "ns16550a";
-> > +                       reg = <0x0 0x20000000 0x0 0x400>;
-> > +                       reg-io-width = <4>;
-> > +                       reg-shift = <2>;
-> > +                       interrupt-parent = <&plic>;
-> > +                       interrupts = <90>;
-> > +                       current-speed = <115200>;
-> > +                       clocks = <&clkcfg 8>;
-> > +                       status = "disabled";
-> > +               };
-> > +
-> > +               serial1: serial@20100000 {
-> > +                       compatible = "ns16550a";
-> > +                       reg = <0x0 0x20100000 0x0 0x400>;
-> > +                       reg-io-width = <4>;
-> > +                       reg-shift = <2>;
-> > +                       interrupt-parent = <&plic>;
-> > +                       interrupts = <91>;
-> > +                       current-speed = <115200>;
-> > +                       clocks = <&clkcfg 9>;
-> > +                       status = "disabled";
-> > +               };
-> > +
-> > +               serial2: serial@20102000 {
-> > +                       compatible = "ns16550a";
-> > +                       reg = <0x0 0x20102000 0x0 0x400>;
-> > +                       reg-io-width = <4>;
-> > +                       reg-shift = <2>;
-> > +                       interrupt-parent = <&plic>;
-> > +                       interrupts = <92>;
-> > +                       current-speed = <115200>;
-> > +                       clocks = <&clkcfg 10>;
-> > +                       status = "disabled";
-> > +               };
-> > +
-> > +               serial3: serial@20104000 {
-> > +                       compatible = "ns16550a";
-> > +                       reg = <0x0 0x20104000 0x0 0x400>;
-> > +                       reg-io-width = <4>;
-> > +                       reg-shift = <2>;
-> > +                       interrupt-parent = <&plic>;
-> > +                       interrupts = <93>;
-> > +                       current-speed = <115200>;
-> > +                       clocks = <&clkcfg 11>;
-> > +                       status = "disabled";
-> > +               };
-> > +
-> > +               emmc: mmc@20008000 {
-> > +                       compatible = "cdns,sd4hc";
-> > +                       reg = <0x0 0x20008000 0x0 0x1000>;
-> > +                       interrupt-parent = <&plic>;
-> > +                       interrupts = <88 89>;
-> > +                       pinctrl-names = "default";
-> > +                       clocks = <&clkcfg 6>;
-> > +                       bus-width = <4>;
-> > +                       cap-mmc-highspeed;
-> > +                       mmc-ddr-3_3v;
-> > +                       max-frequency = <200000000>;
-> > +                       non-removable;
-> > +                       no-sd;
-> > +                       no-sdio;
-> > +                       voltage-ranges = <3300 3300>;
-> > +                       status = "disabled";
-> > +               };
-> > +
-> > +               sdcard: sdhc@20008000 {
-> > +                       compatible = "cdns,sd4hc";
-> > +                       reg = <0x0 0x20008000 0x0 0x1000>;
-> > +                       interrupt-parent = <&plic>;
-> > +                       interrupts = <88>;
-> > +                       pinctrl-names = "default";
-> > +                       clocks = <&clkcfg 6>;
-> > +                       bus-width = <4>;
-> > +                       disable-wp;
-> > +                       no-1-8-v;
-> > +                       cap-mmc-highspeed;
-> > +                       cap-sd-highspeed;
-> > +                       card-detect-delay = <200>;
-> > +                       sd-uhs-sdr12;
-> > +                       sd-uhs-sdr25;
-> > +                       sd-uhs-sdr50;
-> > +                       sd-uhs-sdr104;
-> > +                       max-frequency = <200000000>;
-> > +                       status = "disabled";
-> > +               };
-> > +
-> > +               emac0: ethernet@20110000 {
-> > +                       compatible = "cdns,macb";
-> > +                       reg = <0x0 0x20110000 0x0 0x2000>;
-> > +                       interrupt-parent = <&plic>;
-> > +                       interrupts = <64 65 66 67>;
-> > +                       local-mac-address = [00 00 00 00 00 00];
-> > +                       clocks = <&clkcfg 5>, <&clkcfg 2>;
-> > +                       clock-names = "pclk", "hclk";
-> > +                       status = "disabled";
-> > +                       #address-cells = <1>;
-> > +                       #size-cells = <0>;
-> > +               };
-> > +
-> > +               emac1: ethernet@20112000 {
-> > +                       compatible = "cdns,macb";
-> > +                       reg = <0x0 0x20112000 0x0 0x2000>;
-> > +                       interrupt-parent = <&plic>;
-> > +                       interrupts = <70 71 72 73>;
-> > +                       mac-address = [00 00 00 00 00 00];
-> > +                       clocks = <&clkcfg 5>, <&clkcfg 2>;
-> > +                       status = "disabled";
-> > +                       clock-names = "pclk", "hclk";
-> > +                       #address-cells = <1>;
-> > +                       #size-cells = <0>;
-> > +               };
-> > +
-> > +       };
-> > +};
-> > --
-> > 2.25.1
-> >
-> Regards,
->
-> Cyril
->
->
-> _______________________________________________
-> linux-riscv mailing list
-> linux-riscv@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-riscv
+So, there's a regression in behavior here: a corrupt and unsigned
+(or badly signed) module, which might previously have been rejected
+immediately, can now cause an oops/crash.
 
+Harden ELF handling for module loading by doing the following:
 
+- Move the signature check back up so that it comes before ELF
+  initialization. It's best to do the signature check to see
+  if we can trust the module, before using the ELF structures
+  inside it. This also makes checks against info->len
+  more accurate again, as this field will be reduced by the
+  length of the signature in mod_check_sig().
 
+  The module name is now once again not available for error
+  messages during the signature check, but that seems like
+  a fair tradeoff.
+
+- Check if sections have offset / size fields that at least don't
+  exceed the length of the module.
+
+- Check if sections have section name offsets that don't fall
+  outside the section name table.
+
+- Add a few other sanity checks against invalid section indices,
+  etc.
+
+This is not an exhaustive consistency check, but the idea is to
+at least get through the signature and blacklist checks without
+crashing because of corrupted ELF info, and to error out gracefully
+for most issues that would have caused problems later on.
+
+Fixes: 5fdc7db644 ("module: setup load info before module_sig_check()")
+Signed-off-by: Frank van der Linden <fllinden@amazon.com>
+---
+ kernel/module.c           | 143 ++++++++++++++++++++++++++++++++++++++++------
+ kernel/module_signature.c |   2 +-
+ kernel/module_signing.c   |   2 +-
+ 3 files changed, 126 insertions(+), 21 deletions(-)
+
+diff --git a/kernel/module.c b/kernel/module.c
+index 4bf30e4b3eaa..34fc6c85eb65 100644
+--- a/kernel/module.c
++++ b/kernel/module.c
+@@ -2964,7 +2964,7 @@ static int module_sig_check(struct load_info *info, int flags)
+ 	}
+ 
+ 	if (is_module_sig_enforced()) {
+-		pr_notice("%s: loading of %s is rejected\n", info->name, reason);
++		pr_notice("Loading of %s is rejected\n", reason);
+ 		return -EKEYREJECTED;
+ 	}
+ 
+@@ -2977,9 +2977,33 @@ static int module_sig_check(struct load_info *info, int flags)
+ }
+ #endif /* !CONFIG_MODULE_SIG */
+ 
+-/* Sanity checks against invalid binaries, wrong arch, weird elf version. */
+-static int elf_header_check(struct load_info *info)
++static int validate_section_offset(struct load_info *info, Elf_Shdr *shdr)
+ {
++	unsigned long secend;
++
++	/*
++	 * Check for both overflow and offset/size being
++	 * too large.
++	 */
++	secend = shdr->sh_offset + shdr->sh_size;
++	if (secend < shdr->sh_offset || secend > info->len)
++		return -ENOEXEC;
++
++	return 0;
++}
++
++/*
++ * Sanity checks against invalid binaries, wrong arch, weird elf version.
++ *
++ * Also do basic validity checks against section offsets and sizes, the
++ * section name string table, and the indices used for it (sh_name).
++ */
++static int elf_validity_check(struct load_info *info)
++{
++	unsigned int i;
++	Elf_Shdr *shdr, *strhdr;
++	int err;
++
+ 	if (info->len < sizeof(*(info->hdr)))
+ 		return -ENOEXEC;
+ 
+@@ -2989,11 +3013,78 @@ static int elf_header_check(struct load_info *info)
+ 	    || info->hdr->e_shentsize != sizeof(Elf_Shdr))
+ 		return -ENOEXEC;
+ 
++	/*
++	 * e_shnum is 16 bits, and sizeof(Elf_Shdr) is
++	 * known and small. So e_shnum * sizeof(Elf_Shdr)
++	 * will not overflow unsigned long on any platform.
++	 */
+ 	if (info->hdr->e_shoff >= info->len
+ 	    || (info->hdr->e_shnum * sizeof(Elf_Shdr) >
+ 		info->len - info->hdr->e_shoff))
+ 		return -ENOEXEC;
+ 
++	info->sechdrs = (void *)info->hdr + info->hdr->e_shoff;
++
++	/*
++	 * Verify if the section name table index is valid.
++	 */
++	if (info->hdr->e_shstrndx == SHN_UNDEF
++	    || info->hdr->e_shstrndx >= info->hdr->e_shnum)
++		return -ENOEXEC;
++
++	strhdr = &info->sechdrs[info->hdr->e_shstrndx];
++	err = validate_section_offset(info, strhdr);
++	if (err < 0)
++		return err;
++
++	/*
++	 * The section name table must be NUL-terminated, as required
++	 * by the spec. This makes strcmp and pr_* calls that access
++	 * strings in the section safe.
++	 */
++	info->secstrings = (void *)info->hdr + strhdr->sh_offset;
++	if (info->secstrings[strhdr->sh_size - 1] != '\0')
++		return -ENOEXEC;
++
++	/*
++	 * The code assumes that section 0 has a length of zero and
++	 * an addr of zero, so check for it.
++	 */
++	if (info->sechdrs[0].sh_type != SHT_NULL
++	    || info->sechdrs[0].sh_size != 0
++	    || info->sechdrs[0].sh_addr != 0)
++		return -ENOEXEC;
++
++	for (i = 1; i < info->hdr->e_shnum; i++) {
++		shdr = &info->sechdrs[i];
++		switch (shdr->sh_type) {
++		case SHT_NULL:
++		case SHT_NOBITS:
++			continue;
++		case SHT_SYMTAB:
++			if (shdr->sh_link == SHN_UNDEF
++			    || shdr->sh_link >= info->hdr->e_shnum)
++				return -ENOEXEC;
++			fallthrough;
++		default:
++			err = validate_section_offset(info, shdr);
++			if (err < 0) {
++				pr_err("Invalid ELF section in module (section %u type %u)\n",
++					i, shdr->sh_type);
++				return err;
++			}
++
++			if (shdr->sh_flags & SHF_ALLOC) {
++				if (shdr->sh_name >= strhdr->sh_size) {
++					pr_err("Invalid ELF section name in module (section num %u type %u)\n",
++					       i, shdr->sh_type);
++					return -ENOEXEC;
++				}
++			}
++			break;
++		}
++	}
++
+ 	return 0;
+ }
+ 
+@@ -3095,11 +3186,6 @@ static int rewrite_section_headers(struct load_info *info, int flags)
+ 
+ 	for (i = 1; i < info->hdr->e_shnum; i++) {
+ 		Elf_Shdr *shdr = &info->sechdrs[i];
+-		if (shdr->sh_type != SHT_NOBITS
+-		    && info->len < shdr->sh_offset + shdr->sh_size) {
+-			pr_err("Module len %lu truncated\n", info->len);
+-			return -ENOEXEC;
+-		}
+ 
+ 		/*
+ 		 * Mark all sections sh_addr with their address in the
+@@ -3133,11 +3219,6 @@ static int setup_load_info(struct load_info *info, int flags)
+ {
+ 	unsigned int i;
+ 
+-	/* Set up the convenience variables */
+-	info->sechdrs = (void *)info->hdr + info->hdr->e_shoff;
+-	info->secstrings = (void *)info->hdr
+-		+ info->sechdrs[info->hdr->e_shstrndx].sh_offset;
+-
+ 	/* Try to find a name early so we can log errors with a module name */
+ 	info->index.info = find_sec(info, ".modinfo");
+ 	if (info->index.info)
+@@ -3894,26 +3975,50 @@ static int load_module(struct load_info *info, const char __user *uargs,
+ 	long err = 0;
+ 	char *after_dashes;
+ 
+-	err = elf_header_check(info);
++	/*
++	 * Do the signature check (if any) first. All that
++	 * the signature check needs is info->len, it does
++	 * not need any of the section info. That can be
++	 * set up later. This will minimize the chances
++	 * of a corrupt module causing problems before
++	 * we even get to the signature check.
++	 *
++	 * The check will also adjust info->len by stripping
++	 * off the sig length at the end of the module, making
++	 * checks against info->len more correct.
++	 */
++	err = module_sig_check(info, flags);
++	if (err)
++		goto free_copy;
++
++	/*
++	 * Do basic sanity checks against the ELF header and
++	 * sections.
++	 */
++	err = elf_validity_check(info);
+ 	if (err) {
+-		pr_err("Module has invalid ELF header\n");
++		pr_err("Module has invalid ELF structures\n");
+ 		goto free_copy;
+ 	}
+ 
++	/*
++	 * Everything checks out, so set up the section info
++	 * in the info structure.
++	 */
+ 	err = setup_load_info(info, flags);
+ 	if (err)
+ 		goto free_copy;
+ 
++	/*
++	 * Now that we know we have the correct module name, check
++	 * if it's blacklisted.
++	 */
+ 	if (blacklisted(info->name)) {
+ 		err = -EPERM;
+ 		pr_err("Module %s is blacklisted\n", info->name);
+ 		goto free_copy;
+ 	}
+ 
+-	err = module_sig_check(info, flags);
+-	if (err)
+-		goto free_copy;
+-
+ 	err = rewrite_section_headers(info, flags);
+ 	if (err)
+ 		goto free_copy;
+diff --git a/kernel/module_signature.c b/kernel/module_signature.c
+index 4224a1086b7d..00132d12487c 100644
+--- a/kernel/module_signature.c
++++ b/kernel/module_signature.c
+@@ -25,7 +25,7 @@ int mod_check_sig(const struct module_signature *ms, size_t file_len,
+ 		return -EBADMSG;
+ 
+ 	if (ms->id_type != PKEY_ID_PKCS7) {
+-		pr_err("%s: Module is not signed with expected PKCS#7 message\n",
++		pr_err("%s: not signed with expected PKCS#7 message\n",
+ 		       name);
+ 		return -ENOPKG;
+ 	}
+diff --git a/kernel/module_signing.c b/kernel/module_signing.c
+index 9d9fc678c91d..9a057c5d1d4d 100644
+--- a/kernel/module_signing.c
++++ b/kernel/module_signing.c
+@@ -30,7 +30,7 @@ int mod_verify_sig(const void *mod, struct load_info *info)
+ 
+ 	memcpy(&ms, mod + (modlen - sizeof(ms)), sizeof(ms));
+ 
+-	ret = mod_check_sig(&ms, modlen, info->name);
++	ret = mod_check_sig(&ms, modlen, info->name ?: "module");
+ 	if (ret)
+ 		return ret;
+ 
 -- 
-Regards,
-Atish
+2.16.6
+
