@@ -2,59 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 440512EE6CC
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 21:27:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 28FAC2EE6CE
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 21:27:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727416AbhAGU0I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 15:26:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55680 "EHLO
+        id S1727307AbhAGU0x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 15:26:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55792 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726646AbhAGU0H (ORCPT
+        with ESMTP id S1726646AbhAGU0w (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 15:26:07 -0500
-Received: from mail-qv1-xf31.google.com (mail-qv1-xf31.google.com [IPv6:2607:f8b0:4864:20::f31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6EC85C0612F5
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Jan 2021 12:25:27 -0800 (PST)
-Received: by mail-qv1-xf31.google.com with SMTP id et9so3362056qvb.10
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Jan 2021 12:25:27 -0800 (PST)
+        Thu, 7 Jan 2021 15:26:52 -0500
+Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B937BC0612F4
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Jan 2021 12:26:11 -0800 (PST)
+Received: by mail-lf1-x12c.google.com with SMTP id m12so17649047lfo.7
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Jan 2021 12:26:11 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=a1+La7RSJx5ojmYbP5Ad9U1tNT01Ee+7olXre/2vb0w=;
-        b=LfCDHyTsr7XsP4ntg9rIG1P4K6EMpjM6n+gSXufmtHnUs1LHUGF0xeYMt/oGPEXrK8
-         yHA/Y0IUoMZlKx9OyLz0WcPyfeLSl5lx+rFXuyAsLvqVh4T6/G2upcvTt7qImhNtk165
-         K6jEZY50rWZkIvbgpaXopo91VOWYv4TA6iavYNhbbyEWwp08+GHJGqIJAk8GgJob/Qs3
-         CiRioRCYpZsJeLplH3BWYjRLUefZmVqm0nZqmHvz1UFuQ0Gq0kus2vkjNKr8cm1fHru0
-         qCa9Q2VIigVgcMP+S/f0qZq0dNjxyonzANk/iLsuAkWu0Oxov6ku8FExIn7trKrUm3x7
-         PsUA==
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=mxC7Pi19p8cz9ZZ2LryEFt22huH1dYLNt1Jl5fJ6l6U=;
+        b=eL5ihb6BHCB6J0eXuVVxUcrFJ/2yM56DATzhrCXzYJYNCgH7Zbmjj+BWXd8Y9tQ88L
+         Yp8zr1Vt7DyvZJP4MF5GlFLdB6/0PmE4fWpAj4wxGHunm8r5o9bGYelPbQspdDM8yoHq
+         kteyqFopqXZfxcYN58vbnXUHk3ilVzusNJaKE=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=a1+La7RSJx5ojmYbP5Ad9U1tNT01Ee+7olXre/2vb0w=;
-        b=bEHgdvAaN0eDWhS96/Ponk4zOfdRt2Nq3JHc1wpykL25e/i9szg0gucr+iTC1MY60R
-         7a0z2eOAsTEjftvjeEFyfMXwKCZYBIxoILnI426SPQ6Eu5imtNQmuiYtsa9plsMw4xUS
-         qXYp02tz9b1i7uekg2Y3dOayGyP21TEt+ndZ++AmNtzUHH+fLU9Wb0w/PiXczMUNAGST
-         Ci3eIxo8TWBSr6zU/78Bs+yjftl3cHrCBL/orjOCig65U4TIo/ukUNkSH+TLVWKa01Zt
-         p601eWpVkhoTG9Gq2rtx3THjA0VDSuJPUP+FXimr+G6vwNcdWCGhZdZpi+ZJObQOIZP1
-         wtVA==
-X-Gm-Message-State: AOAM531cAgD8ot2oSZqWoFN5yNBux2Xt5O61xu+/PCItSHEDAoqOy5bR
-        Iuntt2RQvFliKxXqf+TugvuQHw==
-X-Google-Smtp-Source: ABdhPJzyL47FcPVROVV2y/vCdG2NPcBICWubrj6+KiQfew4o8B1KI+yz8QILM/dGFOe3JJ9ChjQ59A==
-X-Received: by 2002:a0c:b64e:: with SMTP id q14mr343807qvf.52.1610051126502;
-        Thu, 07 Jan 2021 12:25:26 -0800 (PST)
-Received: from ziepe.ca (hlfxns017vw-142-162-115-133.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.115.133])
-        by smtp.gmail.com with ESMTPSA id u65sm3796362qkb.58.2021.01.07.12.25.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 Jan 2021 12:25:25 -0800 (PST)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1kxbqX-003ua2-C3; Thu, 07 Jan 2021 16:25:25 -0400
-Date:   Thu, 7 Jan 2021 16:25:25 -0400
-From:   Jason Gunthorpe <jgg@ziepe.ca>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=mxC7Pi19p8cz9ZZ2LryEFt22huH1dYLNt1Jl5fJ6l6U=;
+        b=g2G8zfGsE267lpf3l0DGzAhwuVsxL66kEQmuvwOLkwGZFYeACBsRp97DFRkfIsovCl
+         Dr+ylqu0KKE3GTFUrdNhnA68YoKCB/nO1tnOia2o+ut1hFQcEtHnUArEOBHw7rjO6JqD
+         r3wPoJ4tuxEfLL2zDtTlAfTREj2Av4uWeRrKzPWF8YdF8ylt0Zu5Z69akpdnORj9xFEi
+         WRt3FdGq4KjnLTvsL5aYiUURD5q1g9MO7UexSACgneUWFqtfK3dPl6CgAUbQIMt6ZbHy
+         5c1F1y6w21MQdRDmKihHljNJgyrhYg7cOtClYMix8V3RqDWPJkqPpnqZOizkoLr1Y3+O
+         Pazg==
+X-Gm-Message-State: AOAM531v3XNHSsJoOlW439ZuSCmpRdTEASU5J0rUZg5A9B3x8Cha3wGR
+        /d0hrgPAhxryoN2bd5f64blIOAagEW16Kg==
+X-Google-Smtp-Source: ABdhPJy2dsXTa9aOYNDQqdaWQIrGAa6Nn6/GSji7c9MyLyEmho7P0zCxk+rFJSFM1XHFqHUzpydleg==
+X-Received: by 2002:a05:6512:2009:: with SMTP id a9mr178717lfb.575.1610051170026;
+        Thu, 07 Jan 2021 12:26:10 -0800 (PST)
+Received: from mail-lf1-f50.google.com (mail-lf1-f50.google.com. [209.85.167.50])
+        by smtp.gmail.com with ESMTPSA id 2sm1385434lff.188.2021.01.07.12.26.08
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 07 Jan 2021 12:26:09 -0800 (PST)
+Received: by mail-lf1-f50.google.com with SMTP id h205so17667883lfd.5
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Jan 2021 12:26:08 -0800 (PST)
+X-Received: by 2002:a2e:9ad7:: with SMTP id p23mr70545ljj.465.1610051168427;
+ Thu, 07 Jan 2021 12:26:08 -0800 (PST)
+MIME-Version: 1.0
+References: <B1B85771-B211-4FCC-AEEF-BDFD37332C25@vmware.com>
+ <20210107200402.31095-1-aarcange@redhat.com> <20210107200402.31095-3-aarcange@redhat.com>
+ <CAHk-=whg-91=EF=8=ayyDQGx_3iuWKp3aHUkDCDkgUb15Yh8AQ@mail.gmail.com>
+In-Reply-To: <CAHk-=whg-91=EF=8=ayyDQGx_3iuWKp3aHUkDCDkgUb15Yh8AQ@mail.gmail.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Thu, 7 Jan 2021 12:25:52 -0800
+X-Gmail-Original-Message-ID: <CAHk-=wh1a+Hw4KhT=CokZ=w_XLadOr=bTKBgqX2bhG8ez7KgxQ@mail.gmail.com>
+Message-ID: <CAHk-=wh1a+Hw4KhT=CokZ=w_XLadOr=bTKBgqX2bhG8ez7KgxQ@mail.gmail.com>
+Subject: Re: [PATCH 2/2] mm: soft_dirty: userfaultfd: introduce wrprotect_tlb_flush_pending
 To:     Andrea Arcangeli <aarcange@redhat.com>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+Cc:     Linux-MM <linux-mm@kvack.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
         Yu Zhao <yuzhao@google.com>, Andy Lutomirski <luto@kernel.org>,
         Peter Xu <peterx@redhat.com>,
         Pavel Emelyanov <xemul@openvz.org>,
@@ -63,41 +71,31 @@ Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
         Minchan Kim <minchan@kernel.org>,
         Will Deacon <will@kernel.org>,
         Peter Zijlstra <peterz@infradead.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
         Hugh Dickins <hughd@google.com>,
         "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
         Matthew Wilcox <willy@infradead.org>,
         Oleg Nesterov <oleg@redhat.com>, Jann Horn <jannh@google.com>,
         Kees Cook <keescook@chromium.org>,
         John Hubbard <jhubbard@nvidia.com>,
-        Leon Romanovsky <leonro@nvidia.com>, Jan Kara <jack@suse.cz>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>, Jan Kara <jack@suse.cz>,
         Kirill Tkhai <ktkhai@virtuozzo.com>
-Subject: Re: [PATCH 0/2] page_count can't be used to decide when wp_page_copy
-Message-ID: <20210107202525.GD504133@ziepe.ca>
-References: <B1B85771-B211-4FCC-AEEF-BDFD37332C25@vmware.com>
- <20210107200402.31095-1-aarcange@redhat.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210107200402.31095-1-aarcange@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 07, 2021 at 03:04:00PM -0500, Andrea Arcangeli wrote:
+On Thu, Jan 7, 2021 at 12:17 PM Linus Torvalds
+<torvalds@linux-foundation.org> wrote:
+>
+> I still think the real fix is "Don't do that then", and just take the
+> write lock.
 
-> vmsplice syscall API is insecure allowing long term GUP PINs without
-> privilege.
+The alternative, of course, is to just make sure the page table flush
+is done inside the page table lock (and then we make COW do the copy
+inside of it).
 
-Lots of places are relying on pin_user_pages long term pins of memory,
-and cannot be converted to notifiers.
+But this whole "we know UFFD breaks all rules, we'll add even more
+crap to it" approach is horrendous.
 
-I don't think it is reasonable to just declare that insecure and
-requires privileges, it is a huge ABI break.
-
-FWIW, vhost tries to use notifiers as a replacement for GUP, and I
-think it ended up quite strange and complicated. It is hard to
-maintain performance when every access to the pages needs to hold some
-protection against parallel invalidation.
-
-Jason
+               Linus
