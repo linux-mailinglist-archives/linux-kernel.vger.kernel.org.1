@@ -2,142 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 773C62ED039
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 13:50:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2CB942ED03A
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 13:52:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728327AbhAGMtR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 07:49:17 -0500
-Received: from mx2.suse.de ([195.135.220.15]:57650 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728180AbhAGMtQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 07:49:16 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1610023708; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=M3fsgJ4y1qrIo5WUjYDZW5qHVTbkdAXEHQARuQrTSQA=;
-        b=l12sFVAYH+BxrN7h9cAZo1z18t+ytiRNq8XfT1CuTlVXqSX39LNptAduSG/4POUTvSWBUR
-        ybQxpwK4KmW3/8V/qu3dmgAchq/w5TY2kfDWOk2ESOJxqkQrQgMN2vJbbbOR1/1i4XaDMl
-        oHsTa71UqqoZ753ZAIIy9TiQzI/3E6M=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 2D231ACAF;
-        Thu,  7 Jan 2021 12:48:28 +0000 (UTC)
-Date:   Thu, 7 Jan 2021 13:48:27 +0100
-From:   Petr Mladek <pmladek@suse.com>
-To:     Vineet Gupta <vgupta@synopsys.com>
-Cc:     Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        John Ogness <john.ogness@linutronix.de>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Shreyas Joshi <shreyas.joshi@biamp.com>,
-        shreyasjoshi15@gmail.com,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
-        linux-kernel@vger.kernel.org, buildroot@busybox.net,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        linux-arch@vger.kernel.org,
-        arcml <linux-snps-arc@lists.infradead.org>
-Subject: Re: ARC no console output (was Re: [PATCH 1/2] init/console: Use
- ttynull as a fallback when there is no console)
-Message-ID: <X/cDG/xCCzSWW2cd@alley>
-References: <20201111135450.11214-1-pmladek@suse.com>
- <20201111135450.11214-2-pmladek@suse.com>
- <d2a3b3c0-e548-7dd1-730f-59bc5c04e191@synopsys.com>
+        id S1727912AbhAGMum (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 07:50:42 -0500
+Received: from www62.your-server.de ([213.133.104.62]:53320 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727327AbhAGMum (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Jan 2021 07:50:42 -0500
+Received: from sslproxy06.your-server.de ([78.46.172.3])
+        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92.3)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1kxUjX-00039w-Ce; Thu, 07 Jan 2021 13:49:43 +0100
+Received: from [85.7.101.30] (helo=pc-9.home)
+        by sslproxy06.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1kxUjX-000SrG-1I; Thu, 07 Jan 2021 13:49:43 +0100
+Subject: Re: [PATCH net v2] net: fix use-after-free when UDP GRO with shared
+ fraglist
+To:     Dongseok Yi <dseok.yi@samsung.com>,
+        "'David S. Miller'" <davem@davemloft.net>,
+        'Willem de Bruijn' <willemb@google.com>
+Cc:     'Jakub Kicinski' <kuba@kernel.org>,
+        'Miaohe Lin' <linmiaohe@huawei.com>,
+        'Paolo Abeni' <pabeni@redhat.com>,
+        'Florian Westphal' <fw@strlen.de>,
+        'Al Viro' <viro@zeniv.linux.org.uk>,
+        'Guillaume Nault' <gnault@redhat.com>,
+        'Yunsheng Lin' <linyunsheng@huawei.com>,
+        'Steffen Klassert' <steffen.klassert@secunet.com>,
+        'Yadu Kishore' <kyk.segfault@gmail.com>,
+        'Marco Elver' <elver@google.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, namkyu78.kim@samsung.com
+References: <1609750005-115609-1-git-send-email-dseok.yi@samsung.com>
+ <CGME20210107005028epcas2p35dfa745fd92e31400024874f54243556@epcas2p3.samsung.com>
+ <1609979953-181868-1-git-send-email-dseok.yi@samsung.com>
+ <83a2b288-c0b2-ed98-9479-61e1cbe25519@iogearbox.net>
+ <028b01d6e4e9$ddd5fd70$9981f850$@samsung.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <c051bc98-6af2-f6ec-76d1-7feaa9da2436@iogearbox.net>
+Date:   Thu, 7 Jan 2021 13:49:26 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <d2a3b3c0-e548-7dd1-730f-59bc5c04e191@synopsys.com>
+In-Reply-To: <028b01d6e4e9$ddd5fd70$9981f850$@samsung.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.102.4/26041/Wed Jan  6 13:36:32 2021)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 2021-01-06 15:36:36, Vineet Gupta wrote:
-> +CC Buildroot folks
+On 1/7/21 12:40 PM, Dongseok Yi wrote:
+> On 2021-01-07 20:05, Daniel Borkmann wrote:
+>> On 1/7/21 1:39 AM, Dongseok Yi wrote:
+>>> skbs in fraglist could be shared by a BPF filter loaded at TC. It
+>>> triggers skb_ensure_writable -> pskb_expand_head ->
+>>> skb_clone_fraglist -> skb_get on each skb in the fraglist.
+>>>
+>>> While tcpdump, sk_receive_queue of PF_PACKET has the original fraglist.
+>>> But the same fraglist is queued to PF_INET (or PF_INET6) as the fraglist
+>>> chain made by skb_segment_list.
+>>>
+>>> If the new skb (not fraglist) is queued to one of the sk_receive_queue,
+>>> multiple ptypes can see this. The skb could be released by ptypes and
+>>> it causes use-after-free.
+>>>
+>>> [ 4443.426215] ------------[ cut here ]------------
+>>> [ 4443.426222] refcount_t: underflow; use-after-free.
+>>> [ 4443.426291] WARNING: CPU: 7 PID: 28161 at lib/refcount.c:190
+>>> refcount_dec_and_test_checked+0xa4/0xc8
+>>> [ 4443.426726] pstate: 60400005 (nZCv daif +PAN -UAO)
+>>> [ 4443.426732] pc : refcount_dec_and_test_checked+0xa4/0xc8
+>>> [ 4443.426737] lr : refcount_dec_and_test_checked+0xa0/0xc8
+>>> [ 4443.426808] Call trace:
+>>> [ 4443.426813]  refcount_dec_and_test_checked+0xa4/0xc8
+>>> [ 4443.426823]  skb_release_data+0x144/0x264
+>>> [ 4443.426828]  kfree_skb+0x58/0xc4
+>>> [ 4443.426832]  skb_queue_purge+0x64/0x9c
+>>> [ 4443.426844]  packet_set_ring+0x5f0/0x820
+>>> [ 4443.426849]  packet_setsockopt+0x5a4/0xcd0
+>>> [ 4443.426853]  __sys_setsockopt+0x188/0x278
+>>> [ 4443.426858]  __arm64_sys_setsockopt+0x28/0x38
+>>> [ 4443.426869]  el0_svc_common+0xf0/0x1d0
+>>> [ 4443.426873]  el0_svc_handler+0x74/0x98
+>>> [ 4443.426880]  el0_svc+0x8/0xc
+>>>
+>>> Fixes: 3a1296a38d0c (net: Support GRO/GSO fraglist chaining.)
+>>> Signed-off-by: Dongseok Yi <dseok.yi@samsung.com>
+>>> Acked-by: Willem de Bruijn <willemb@google.com>
+>>> ---
+>>>    net/core/skbuff.c | 20 +++++++++++++++++++-
+>>>    1 file changed, 19 insertions(+), 1 deletion(-)
+>>>
+>>> v2: Expand the commit message to clarify a BPF filter loaded
+>>>
+>>> diff --git a/net/core/skbuff.c b/net/core/skbuff.c
+>>> index f62cae3..1dcbda8 100644
+>>> --- a/net/core/skbuff.c
+>>> +++ b/net/core/skbuff.c
+>>> @@ -3655,7 +3655,8 @@ struct sk_buff *skb_segment_list(struct sk_buff *skb,
+>>>    	unsigned int delta_truesize = 0;
+>>>    	unsigned int delta_len = 0;
+>>>    	struct sk_buff *tail = NULL;
+>>> -	struct sk_buff *nskb;
+>>> +	struct sk_buff *nskb, *tmp;
+>>> +	int err;
+>>>
+>>>    	skb_push(skb, -skb_network_offset(skb) + offset);
+>>>
+>>> @@ -3665,11 +3666,28 @@ struct sk_buff *skb_segment_list(struct sk_buff *skb,
+>>>    		nskb = list_skb;
+>>>    		list_skb = list_skb->next;
+>>>
+>>> +		err = 0;
+>>> +		if (skb_shared(nskb)) {
+>>> +			tmp = skb_clone(nskb, GFP_ATOMIC);
+>>> +			if (tmp) {
+>>> +				kfree_skb(nskb);
+>>
+>> Should use consume_skb() to not trigger skb:kfree_skb tracepoint when looking
+>> for drops in the stack.
 > 
-> Hi Petr,
+> I will use to consume_skb() on the next version.
 > 
-> On 11/11/20 5:54 AM, Petr Mladek wrote:
-> > stdin, stdout, and stderr standard I/O stream are created for the init
-> > process. They are not available when there is no console registered
-> > for /dev/console. It might lead to a crash when the init process
-> > tries to use them, see the commit 48021f98130880dd742 ("printk: handle
-> > blank console arguments passed in.").
-> > 
-> > Normally, ttySX and ttyX consoles are used as a fallback when no consoles
-> > are defined via the command line, device tree, or SPCR. But there
-> > will be no console registered when an invalid console name is configured
-> > or when the configured consoles do not exist on the system.
-> > 
-> > Users even try to avoid the console intentionally, for example,
-> > by using console="" or console=null. It is used on production
-> > systems where the serial port or terminal are not visible to
-> > users. Pushing messages to these consoles would just unnecessary
-> > slowdown the system.
-> > 
-> > Make sure that stdin, stdout, stderr, and /dev/console are always
-> > available by a fallback to the existing ttynull driver. It has
-> > been implemented for exactly this purpose but it was used only
-> > when explicitly configured.
-> > 
-> > Signed-off-by: Petr Mladek <pmladek@suse.com>
+>>> +				nskb = tmp;
+>>> +				err = skb_unclone(nskb, GFP_ATOMIC);
+>>
+>> Could you elaborate why you also need to unclone? This looks odd here. tc layer
+>> (independent of BPF) from ingress & egress side generally assumes unshared skb,
+>> so above clone + dropping ref of nskb looks okay to make the main skb struct private
+>> for mangling attributes (e.g. mark) & should suffice. What is the exact purpose of
+>> the additional skb_unclone() in this context?
 > 
-> > --- a/init/main.c
-> > +++ b/init/main.c
-> > @@ -1470,8 +1470,14 @@ void __init console_on_rootfs(void)
-> >   	struct file *file = filp_open("/dev/console", O_RDWR, 0);
-> >   	if (IS_ERR(file)) {
-> > -		pr_err("Warning: unable to open an initial console.\n");
-> > -		return;
-> > +		pr_err("Warning: unable to open an initial console. Fallback to ttynull.\n");
-> > +		register_ttynull_console();
-> > +
-> > +		file = filp_open("/dev/console", O_RDWR, 0);
-> > +		if (IS_ERR(file)) {
-> > +			pr_err("Warning: Failed to add ttynull console. No stdin, stdout, and stderr for the init process!\n");
-> > +			return;
-> > +		}
+> Willem de Bruijn said:
+> udp_rcv_segment later converts the udp-gro-list skb to a list of
+> regular packets to pass these one-by-one to udp_queue_rcv_one_skb.
+> Now all the frags are fully fledged packets, with headers pushed
+> before the payload.
+
+Yes.
+
+> PF_PACKET handles untouched fraglist. To modify the payload only
+> for udp_rcv_segment, skb_unclone is necessary.
+
+I don't parse this last sentence here, please elaborate in more detail on why
+it is necessary.
+
+For example, if tc layer would modify mark on the skb, then __copy_skb_header()
+in skb_segment_list() will propagate it. If tc layer would modify payload, the
+skb_ensure_writable() will take care of that internally and if needed pull in
+parts from fraglist into linear section to make it private. The purpose of the
+skb_clone() above iff shared is to make the struct itself private (to safely
+modify its struct members). What am I missing?
+
+>>> +			} else {
+>>> +				err = -ENOMEM;
+>>> +			}
+>>> +		}
+>>> +
+>>>    		if (!tail)
+>>>    			skb->next = nskb;
+>>>    		else
+>>>    			tail->next = nskb;
+>>>
+>>> +		if (unlikely(err)) {
+>>> +			nskb->next = list_skb;
+>>> +			goto err_linearize;
+>>> +		}
+>>> +
+>>>    		tail = nskb;
+>>>
+>>>    		delta_len += nskb->len;
+>>>
 > 
 > 
-> This breaks ARC booting (no output on console).
 
-This is likely the same problem as with kunit and um kernels.
-It is being discussed at
-https://lore.kernel.org/linux-kselftest/X%2FSRA1P8t+ONZFKb@alley/#t
-
-We have several workarounds. I am still squashing my head about the
-right solution. The console registration code is like a vasps' nest.
-It is always a pain when we touch it.
-
-I hope that I will send a patchset for review later today.
-In the worst case, we will revert the patch in the mainline.
-
-> Our Buildroot based setup has dynamic /dev where /dev/console doesn't exist
-> statically and there's a primoridla /init shell script which does following
-> 
-> /bin/mount -t devtmpfs devtmpfs /dev
-> exec 0</dev/console
-> exec 1>/dev/console
-> exec 2>/dev/console
-> exec /sbin/init "$@"
-> 
-> Buildroot has had this way of handling missing /dev/console since 2011 [1]
-> and [2].
-
-Good to know.
-
-> Please advise what needs to be done to unbork boot. Otherwise this seems
-> like a kernel change which breaks user-space and needs to be backed-out (or
-> perhaps conditionalize on CONFIG_NULL_TTY. I'm surprised it hasn't been
-> reported by any other  embedded folks
-
-Two workarounds can be fount at
-https://lore.kernel.org/linux-kselftest/X%2FSYhBZyudfnKY1u@alley/
-https://lore.kernel.org/linux-kselftest/X%2FW2sl7RMvfaV4Ru@alley/
-
-But I still see them as only a partial solutiuon. I still another sources
-of potential problems.
-
-Best Regards,
-Petr
