@@ -2,84 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D1DC32ECCB5
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 10:28:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F1922ECCB2
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 10:28:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727536AbhAGJ2P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 04:28:15 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45866 "EHLO mail.kernel.org"
+        id S1727464AbhAGJ0y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 04:26:54 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45678 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726110AbhAGJ2O (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 04:28:14 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5898623333;
-        Thu,  7 Jan 2021 09:27:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610011654;
-        bh=v6tvU4u75O87XGVKqhuOgv2RQDTCtSf4BgDyD57m030=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=Y8jTbsUXH5iyZAabxfYOFhllsKQo77IH4SzINhJ/wQrMUJA/sDLCg9EpoLvKvAMSn
-         MPEWbzMZJpiDububonhNxNxzZHUhUsF8EbBYUIdSo/EDDFdFKsri2TWBG7DndgCfda
-         Mu48kd6UacKCzEXUZ4warblVeMRUtSUrvgWkwvb2NUl3gcWUmIFIg+vIDxaBzptVyR
-         fjIwowTk+gYlauQ76i3r5+R/qHKLOlvMii4b9j4EGq3fJMHYT5k2nTzSKOIClqmox2
-         DM2pOsI5BMJUuU+r0gx4KAkauYW24OpYIwhl1IxJJJPPDo03xq1TesOPCSK7Yx6Qgb
-         6QGv2Fd2C/+bQ==
-From:   Felipe Balbi <balbi@kernel.org>
-To:     Jerome Brunet <jbrunet@baylibre.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Jerome Brunet <jbrunet@baylibre.com>,
-        Ruslan Bilovol <ruslan.bilovol@gmail.com>,
-        Jack Pham <jackp@codeaurora.org>, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 4/5] usb: gadget: u_audio: remove struct uac_req
-In-Reply-To: <20210106133652.512178-5-jbrunet@baylibre.com>
-References: <20210106133652.512178-1-jbrunet@baylibre.com>
- <20210106133652.512178-5-jbrunet@baylibre.com>
-Date:   Thu, 07 Jan 2021 11:27:26 +0200
-Message-ID: <87pn2haygx.fsf@kernel.org>
+        id S1727294AbhAGJ0x (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Jan 2021 04:26:53 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4F1F523333;
+        Thu,  7 Jan 2021 09:26:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1610011571;
+        bh=ocDJtJI92hSvv87v7zQC5Co/Ose6YDdrm8p+0C/IJM8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=occebe3eK+e1I/sfF7TfkDnyJGw2ryKuMp0ceub2byakk7nH/HjmoAp+UElWSsYCS
+         cC43gUGZsNzUaZHxFDTICBjFwVAyor8kL1cMK+X9ydUo+q20IgQfHACYEZ+NWghYix
+         ri4n2vcUlFbE51FYukpL+SHHLjw0UkX6USgqipxQ=
+Date:   Thu, 7 Jan 2021 10:27:31 +0100
+From:   "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>
+To:     =?utf-8?B?5p2O5o23?= <jie6.li@samsung.com>
+Cc:     "mst@redhat.com" <mst@redhat.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        =?utf-8?B?6rmA6rK97IKw?= <ks0204.kim@samsung.com>,
+        =?utf-8?B?5L2V5YW0?= <xing84.he@samsung.com>,
+        =?utf-8?B?5ZCV6auY6aOe?= <gaofei.lv@samsung.com>
+Subject: Re: [PATCH] uio: uio_pci_generic: don't fail probe if pdev->irq
+ equals to IRQ_NOTCONNECTED
+Message-ID: <X/bUA2li9RyoFN7P@kroah.com>
+References: <CGME20210107075037epcms5p2b53d8edb70df2ad0f75613ecbbcf9456@epcms5p2>
+ <20210107075037epcms5p2b53d8edb70df2ad0f75613ecbbcf9456@epcms5p2>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="=-=-=";
-        micalg=pgp-sha256; protocol="application/pgp-signature"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210107075037epcms5p2b53d8edb70df2ad0f75613ecbbcf9456@epcms5p2>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---=-=-=
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
+On Thu, Jan 07, 2021 at 03:50:37PM +0800, 李捷 wrote:
+> From 0fbcd7e386898d829d3000d094358a91e626ee4a Mon Sep 17 00:00:00 2001
+> From: Jie Li <jie6.li@samsung.com>
+> Date: Mon, 7 Dec 2020 08:05:07 +0800
+> Subject: [PATCH] uio: uio_pci_generic: don't fail probe if pdev->irq equals to
+>  IRQ_NOTCONNECTED
+> 
+> Some devices use 255 as default value of Interrupt Line register, and this
+> maybe causes pdev->irq is set as IRQ_NOTCONNECTED in some scenarios. For
+> example, NVMe controller connects to Intel Volume Management Device (VMD).
+> In this situation, IRQ_NOTCONNECTED means INTx line is not connected, not
+> fault. If bind uio_pci_generic to these devices, uio frame will return
+> -ENOTCONN through request_irq.
+> 
+> This patch allows binding uio_pci_generic to device with dev->irq of
+> IRQ_NOTCONNECTED.
+> 
+> Signed-off-by: Jie Li <jie6.li@samsung.com>
+> Acked-by: Kyungsan Kim <ks0204.kim@samsung.com>
+> ---
+>  drivers/uio/uio_pci_generic.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/uio/uio_pci_generic.c b/drivers/uio/uio_pci_generic.c
+> index b8e44d16279f..c7d681fef198 100644
+> --- a/drivers/uio/uio_pci_generic.c
+> +++ b/drivers/uio/uio_pci_generic.c
+> @@ -92,7 +92,7 @@ static int probe(struct pci_dev *pdev,
+>         gdev->info.version = DRIVER_VERSION;
+>         gdev->info.release = release;
+>         gdev->pdev = pdev;
+> -       if (pdev->irq) {
+> +       if (pdev->irq && (pdev->irq != IRQ_NOTCONNECTED)) {
+>                 gdev->info.irq = pdev->irq;
+>                 gdev->info.irq_flags = IRQF_SHARED;
+>                 gdev->info.handler = irqhandler;
+> --
+> 2.17.1
+> 
+> 
+>  
+> 
+> [cid]
+> 
+> *
+> 
 
-Jerome Brunet <jbrunet@baylibre.com> writes:
 
-> 'struct uac_req' purpose is to link 'struct usb_request' to the
-> corresponding 'struct uac_rtd_params'. However member req is never
-> used. Using the context of the usb request, we can keep track of the
-> corresponding 'struct uac_rtd_params' just as well, without allocating
-> extra memory.
->
-> Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
+Hi,
 
-Acked-by: Felipe Balbi <balbi@kernel.org>
+This is the friendly patch-bot of Greg Kroah-Hartman.  You have sent him
+a patch that has triggered this response.  He used to manually respond
+to these common problems, but in order to save his sanity (he kept
+writing the same thing over and over, yet to different people), I was
+created.  Hopefully you will not take offence and will fix the problem
+in your patch and resubmit it so that it can be accepted into the Linux
+kernel tree.
 
-=2D-=20
-balbi
+You are receiving this message because of the following common error(s)
+as indicated below:
 
---=-=-=
-Content-Type: application/pgp-signature; name="signature.asc"
+- Your patch was attached, please place it inline so that it can be
+  applied directly from the email message itself.
 
------BEGIN PGP SIGNATURE-----
+- Your email was sent in html format, which is rejected by the kernel
+  mailing lists and make it impossible for anyone to find in the
+  archives.
 
-iQJFBAEBCAAvFiEElLzh7wn96CXwjh2IzL64meEamQYFAl/20/8RHGJhbGJpQGtl
-cm5lbC5vcmcACgkQzL64meEamQazkQ/9FhF2BPE1CNXYaihR2W9A8AQb1CalTw3y
-El25MMwd6mbleUenrL6MKOnZln+ObUHfj7f6bYnEX+7w4MGBdYtXIgPV7HMoaSMF
-Z+vL+uoQMwHmHksLgmJzs1X2QSV4ZRYEqA9dlhxY7tipzAhI+aDudIrtiiH0c7Km
-5wspdF1tk7SapK3d0wdwBEQI1o8D58Uer0ULp8p6ODYhEhennIN+wfLm2J5sEkZp
-pgtETuzFxe04kz14vtkD3flhHsqDGl8M640s56sqR12nXU9Gqk7zI2qPjC7WW0Kr
-FTXyod8BStK/nBZOHfWiXDFYinrVNeIMTfuwhUX7vTGzcabE6d8ySIzP46BgKBWO
-Fc9NnBKFypNDZ0zlTBI1SjVlo+61QvBk2Z3mj9DOoD0l5zLHgKlrotUJcn0Mefpw
-h+z/l3cqp2HOZa1/sQ/s/2cBxhbx7Sm9kx/FbKsMvR7+J+3EuKHGktbonBCjNku8
-mZzGIcsbRBsnADTdLUR4WFL5TPsyNv0wSEr4WCYUV1sSC5+ZLgFYryGx16EePtmo
-CAxzDCV6/qges6cTph4ujw3EvOzeN0Eq6DbdyoXPWszgp1UXjBEtj7JXhns0akBc
-Ezn0rZl81/PeTI9D/0Ut2MieNKNffjRQU7fAxMr7IM2ENFA7p8mXRgAAcdj2zUrt
-jsode1yCWVQ=
-=Ylh8
------END PGP SIGNATURE-----
---=-=-=--
+If you wish to discuss this problem further, or you have questions about
+how to resolve this issue, please feel free to respond to this email and
+Greg will reply once he has dug out from the pending patches received
+from other developers.
+
+thanks,
+
+greg k-h's patch email bot
