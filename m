@@ -2,127 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF63F2ECBBE
+	by mail.lfdr.de (Postfix) with ESMTP id 521772ECBBD
 	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 09:28:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727077AbhAGI21 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 03:28:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56168 "EHLO
+        id S1727116AbhAGI22 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 03:28:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56170 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726949AbhAGI2Y (ORCPT
+        with ESMTP id S1726953AbhAGI2Z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 03:28:24 -0500
-Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A089C0612FD
+        Thu, 7 Jan 2021 03:28:25 -0500
+Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F807C0612FE
         for <linux-kernel@vger.kernel.org>; Thu,  7 Jan 2021 00:27:16 -0800 (PST)
-Received: by mail-pl1-x62d.google.com with SMTP id s15so3102847plr.9
+Received: by mail-lf1-x131.google.com with SMTP id 23so12646364lfg.10
         for <linux-kernel@vger.kernel.org>; Thu, 07 Jan 2021 00:27:16 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=TIbF8BOOybLHCWqc59wyJcsKEyaAhWuDenEcPQgxfZw=;
-        b=jPrpFaAFvjw0X3873nZRiJppA7K+apkFmzHYJFTLuOQQVtLD6sNRbqaBiB5wL3znBJ
-         zJzETNk9SJXaNmp11Y2MseJeYUfhrYq5EGys10eRmqi10e3SWtTT+8qokmyqAfp9J7QM
-         i7e1hxp54snaPlEMbXV4Q/uoAG4RTKA4Rdnfg=
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=l690XN5TZWtKSPCjHwhvoVvMjHxWHQ7pwZ5Jd08fsFY=;
+        b=dV+Tuusb7E7Yqr7fLGv44TNbCL67UDmlpS/QdSuBQ8OZnaO5qfQpAjNrtsTNsYgXIK
+         6BrdwNNzofeju+4zhU3IpZnhItc6mWLLZJ1aBZT7I6JGAOLleVHO0tiDhEvIL8iH/oIA
+         p+J3jMzJqfDZFB0jFe1GHJd9HI1eB49C8dkij5A/sEDffnHaHxgptuIC/b18Uba9jWTD
+         Yv/jJfsytp5x3D1JphFPK6KPsD4gStxL+8M9M8xonzxbia2OPFhXTrxxNQ4uEALz+uMu
+         nnhOm01fjolMAoJgQmVQ7E0mPIHSTpVWwC8IqV2E97qygorKcPDCGwu1OOeux6aY5KVu
+         4S/g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=TIbF8BOOybLHCWqc59wyJcsKEyaAhWuDenEcPQgxfZw=;
-        b=inDgUNF0GVLl6wUhKwEsfL1TkMcy3bY3NaDfOB90gL92UhCnRyz1kMKLvIB+6M6RW/
-         lUcdafqyXc1xF2/b/AOVGkM69mr6jwwb6Y71ox6PBb/sXD/IJniJBYMtMx5Dc9lHh8Uu
-         rtQxmwq7eOB+UyC2YlhmNLGUvNYUPcPZ0kfR+mJamRNtUZyzTS/o+SmgvKrua8dECCmu
-         pstC0z5NrV2a6qdg2eaOhJlzIT/EexKkI/avxnr0r9x5TW84+rlR0lPf73SN9ZcmNgWU
-         iIdwPM7FWGFhhdi2M96OOrou6BKe2CMeIp0jFYmP46clXbPebRh2AqJvIswT4olVW+k2
-         bing==
-X-Gm-Message-State: AOAM53041B9Smr9oYH9EKK5zM4LkXAOJ65jz3nALSV06fpmZQmwkARrj
-        wJb++U7ukpQHyo24UlyfwMQQaQ==
-X-Google-Smtp-Source: ABdhPJyP8/q5fNmHRDDhrkqPcpwWJP45UJ+SYR315cmXNF5eQCklwIZpeLN0+OjxEfF5KqzuCgO9wQ==
-X-Received: by 2002:a17:902:8d82:b029:dc:20b8:3c19 with SMTP id v2-20020a1709028d82b02900dc20b83c19mr8080091plo.29.1610008036066;
-        Thu, 07 Jan 2021 00:27:16 -0800 (PST)
-Received: from drinkcat2.tpe.corp.google.com ([2401:fa00:1:b:7220:84ff:fe09:41dc])
-        by smtp.gmail.com with ESMTPSA id o14sm5825580pgr.44.2021.01.07.00.27.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 Jan 2021 00:27:15 -0800 (PST)
-From:   Nicolas Boichat <drinkcat@chromium.org>
-To:     Rob Herring <robh@kernel.org>, Steven Price <steven.price@arm.com>,
-        Alyssa Rosenzweig <alyssa.rosenzweig@collabora.com>
-Cc:     hoegsberg@chromium.org, fshao@chromium.org, hsinyi@chromium.org,
-        boris.brezillon@collabora.com,
-        Nicolas Boichat <drinkcat@chromium.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Tomeu Vizoso <tomeu.vizoso@collabora.com>,
-        dri-devel@lists.freedesktop.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-mediatek@lists.infradead.org
-Subject: [PATCH v7 4/4] drm/panfrost: Add mt8183-mali compatible string
-Date:   Thu,  7 Jan 2021 16:26:53 +0800
-Message-Id: <20210107162632.v7.4.I5f6b04431828ec9c3e41e65f3337cec6a127480d@changeid>
-X-Mailer: git-send-email 2.29.2.729.g45daf8777d-goog
-In-Reply-To: <20210107082653.3519337-1-drinkcat@chromium.org>
-References: <20210107082653.3519337-1-drinkcat@chromium.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=l690XN5TZWtKSPCjHwhvoVvMjHxWHQ7pwZ5Jd08fsFY=;
+        b=jMAmkXy4bMyVcDN5oFpHTIVnCzumqJ7AMrUiEWiRmxYfChyg0Ogm95OvfzP15r50tQ
+         5q7F8cEisPyGc1mexLqET+9imsytY7Kd6Znu+jOQKflHpSRn+1gIgO68rQDVLUtebDSJ
+         yFSc+WrJxBOLr9OQYQbArW0ZKwWyczBoSr+VkGi7dw8bdb2vHE3tLGBB4gFa614Hy7fB
+         Wg2oXYgssg94QxU8x7BB+4q2Ns0TIko9gjKuSFUl8C0PLDw8YKg58bV3cjsEyZMTsNOu
+         IYcXbttRf68HSgrTQHOkTx/jhVeGwG20piNirotqj/v1Wg6vTK5pu2pGQLsk5ZuVZvXn
+         yD5g==
+X-Gm-Message-State: AOAM531mXg9mCtG6qsyxc7N/EZKa7um5qvMXP0IRYOLCAFOqmTMX5Fl9
+        qyhAfzTxPSgd0wca1YJQspisVzLcz2n7+/GIjzk5mA==
+X-Google-Smtp-Source: ABdhPJws8tIhskSL7AY+UM7Guk7kFAT1zqkcsDQlU1/hgiXcZjKBbjCETB+YXDNsXXJKmq3r0pIqaUyjbGQtp3y9uV0=
+X-Received: by 2002:a19:2d0a:: with SMTP id k10mr3770872lfj.286.1610008035054;
+ Thu, 07 Jan 2021 00:27:15 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210107015726.54362-1-qianjun.kernel@gmail.com>
+In-Reply-To: <20210107015726.54362-1-qianjun.kernel@gmail.com>
+From:   Vincent Guittot <vincent.guittot@linaro.org>
+Date:   Thu, 7 Jan 2021 09:27:04 +0100
+Message-ID: <CAKfTPtDWVoSsXL6Zh6ZNW7eeHsoZxVBHa2fkY7rNm1mA-tbyXg@mail.gmail.com>
+Subject: Re: [PATCH 1/1] sched/fair:Avoid unnecessary assignment to cfs_rq->on_list
+To:     qianjun.kernel@gmail.com
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add support for MT8183's G72 Bifrost.
+On Thu, 7 Jan 2021 at 02:57, <qianjun.kernel@gmail.com> wrote:
+>
+> From: jun qian <qianjun.kernel@gmail.com>
+>
+> Obviously, cfs_rq->on_list is already equal to 1 when cfs_rq->on_list
+> is assigned a value of 1, so an else branch is needed to avoid unnecessary
+> assignment operations.
+>
+> Signed-off-by: jun qian <qianjun.kernel@gmail.com>
+> ---
+>  kernel/sched/fair.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+>
+> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> index 04a3ce20da67..ef6ebd95443d 100644
+> --- a/kernel/sched/fair.c
+> +++ b/kernel/sched/fair.c
+> @@ -305,8 +305,8 @@ static inline bool list_add_leaf_cfs_rq(struct cfs_rq *cfs_rq)
+>
+>         if (cfs_rq->on_list)
+>                 return rq->tmp_alone_branch == &rq->leaf_cfs_rq_list;
 
-Signed-off-by: Nicolas Boichat <drinkcat@chromium.org>
----
+if cfs_rq->on_list == 1, list_add_leaf_cfs_rq() returns and will not
+unnecessary set cfs_rq->on_list
 
-Changes in v7:
- - Fix GPU ID in commit message
+so your change is useless but makes the code less readable
 
-Changes in v6:
- - Context conflicts, reflow the code.
- - Use ARRAY_SIZE for power domains too.
-
-Changes in v5:
- - Change power domain name from 2d to core2.
-
-Changes in v4:
- - Add power domain names.
-
-Changes in v3:
- - Match mt8183-mali instead of bifrost, as we require special
-   handling for the 2 regulators and 3 power domains.
-
- drivers/gpu/drm/panfrost/panfrost_drv.c | 10 ++++++++++
- 1 file changed, 10 insertions(+)
-
-diff --git a/drivers/gpu/drm/panfrost/panfrost_drv.c b/drivers/gpu/drm/panfrost/panfrost_drv.c
-index 83a461bdeea8..ca07098a6141 100644
---- a/drivers/gpu/drm/panfrost/panfrost_drv.c
-+++ b/drivers/gpu/drm/panfrost/panfrost_drv.c
-@@ -665,6 +665,15 @@ static const struct panfrost_compatible amlogic_data = {
- 	.vendor_quirk = panfrost_gpu_amlogic_quirk,
- };
- 
-+const char * const mediatek_mt8183_supplies[] = { "mali", "sram" };
-+const char * const mediatek_mt8183_pm_domains[] = { "core0", "core1", "core2" };
-+static const struct panfrost_compatible mediatek_mt8183_data = {
-+	.num_supplies = ARRAY_SIZE(mediatek_mt8183_supplies),
-+	.supply_names = mediatek_mt8183_supplies,
-+	.num_pm_domains = ARRAY_SIZE(mediatek_mt8183_pm_domains),
-+	.pm_domain_names = mediatek_mt8183_pm_domains,
-+};
-+
- static const struct of_device_id dt_match[] = {
- 	/* Set first to probe before the generic compatibles */
- 	{ .compatible = "amlogic,meson-gxm-mali",
-@@ -681,6 +690,7 @@ static const struct of_device_id dt_match[] = {
- 	{ .compatible = "arm,mali-t860", .data = &default_data, },
- 	{ .compatible = "arm,mali-t880", .data = &default_data, },
- 	{ .compatible = "arm,mali-bifrost", .data = &default_data, },
-+	{ .compatible = "mediatek,mt8183-mali", .data = &mediatek_mt8183_data },
- 	{}
- };
- MODULE_DEVICE_TABLE(of, dt_match);
--- 
-2.29.2.729.g45daf8777d-goog
-
+> -
+> -       cfs_rq->on_list = 1;
+> +       else
+> +               cfs_rq->on_list = 1;
+>
+>         /*
+>          * Ensure we either appear before our parent (if already
+> --
+> 2.18.2
+>
