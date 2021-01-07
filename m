@@ -2,114 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 108CD2ECE3D
+	by mail.lfdr.de (Postfix) with ESMTP id 7F13A2ECE3E
 	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 11:54:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727850AbhAGKyR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 05:54:17 -0500
-Received: from aserp2120.oracle.com ([141.146.126.78]:53930 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727202AbhAGKyR (ORCPT
+        id S1727283AbhAGKyj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 05:54:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51064 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725974AbhAGKyi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 05:54:17 -0500
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 107Amxsk107836;
-        Thu, 7 Jan 2021 10:53:28 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=5SMoYs193H/F2DE2IQKVDg7HukA9+pDr7yls5T+ESaE=;
- b=mu2G665tqrqAhD7acNOnw/a0qAAuKRXmrs3oajhu0N37db1iQheaQfvTnLPaA2B/cjHl
- 1nsKbCvyEi342gk9lHJgh0PcFwomWNIboPojiWg5GKa3qyIoiVjzwGXvLsmW4nn87dW1
- dTPF9hCKMxxTSeIrx7HWYqoK1sMH4X70CrDsWBOU3oUGVRze+0+zRbi6MVd5cYpRymOQ
- 26cYSAu0LZiZ6zqqa3XjhfZ4ZjC7o6XrkrP17H8QpsTugQ0jlv7R+fBPe59eZbmxa8Vt
- mlNFFRMIrtlpqW0ZR76jf4R84+DS/D/MieFsMU7673w9i0aA293+rhZDmPotfZEocKRO Ow== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by aserp2120.oracle.com with ESMTP id 35wepmbvgn-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 07 Jan 2021 10:53:28 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 107Ais8x174981;
-        Thu, 7 Jan 2021 10:53:27 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by aserp3020.oracle.com with ESMTP id 35v1fb47ad-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 07 Jan 2021 10:53:27 +0000
-Received: from abhmp0005.oracle.com (abhmp0005.oracle.com [141.146.116.11])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 107ArQw7015782;
-        Thu, 7 Jan 2021 10:53:26 GMT
-Received: from kadam (/102.36.221.92)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Thu, 07 Jan 2021 02:53:19 -0800
-Date:   Thu, 7 Jan 2021 13:53:10 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Joe Perches <joe@perches.com>
-Cc:     Filip Kolev <fil.kolev@gmail.com>, devel@driverdev.osuosl.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org
-Subject: Re: [PATCH] media: atomisp: ov2722: replace hardcoded function name
-Message-ID: <20210107105310.GB5083@kadam>
-References: <20210105202945.26913-1-fil.kolev@gmail.com>
- <X/VsF364jpGz6oze@kroah.com>
- <dcdda829-89d6-badd-4f22-72d95d24e9e3@gmail.com>
- <X/X45909l1Tk7Bni@kroah.com>
- <c9284a7f1443146b3885e8ceae3dcf113c531a36.camel@perches.com>
- <20210106193633.GK2809@kadam>
- <c5781c80a582cc68e1ae1bdc106c50cb263f81bf.camel@perches.com>
+        Thu, 7 Jan 2021 05:54:38 -0500
+Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D394EC0612F5
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Jan 2021 02:53:56 -0800 (PST)
+Received: by mail-pj1-x102a.google.com with SMTP id l23so3478258pjg.1
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Jan 2021 02:53:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=endlessos.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=wj1ygJR5+FaqE4ft+YDdxBj7ZFRXR4m0BwjI6oUvI+E=;
+        b=UzAWpcLJBQSsqf6X+xsUgXjtFcgW393dKOcDhPA0nzD3e1PFuOgSL64k4cDABYnTlT
+         lobfa801yCVwreawYN27jxjEUyj3dZ/WHR3vF0364EfQ1VASGxmXjpQjDpksxA2TmfXX
+         8Vk2hTssx9SUVtT3m1nTcB+xGl98vLiCEAFsL0uL5sW8TPt8oX8EwDgQcUOsvihLCkZ9
+         vu4QrSgHyH0AkyX2Ci5cUijIscZmdQxd5Ca9hh2308Cxi6+V0RxSRzM9RfE7qSXSlE4D
+         ePCoWvJV+3qtybmcV/oCMwwXRDzHDjIcn3ny57XD0hVZ5iSwZReOJFLGNv3d/tKhJXAu
+         dd6A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=wj1ygJR5+FaqE4ft+YDdxBj7ZFRXR4m0BwjI6oUvI+E=;
+        b=rAIoP0X8sewraFbu4rMgltJydG6gHU0HKkSM9MfGl/92HCPxgzhaLv1M6ttEEemAWD
+         UEl6r9/oSY0GLyvLdkSdWQMfsUBu+VXEb9Yn3EeSvNshjTJ6VeohKqwrkKZnOzG67kdx
+         1HVssQwOm6hXuAzBLCEHjixT8F6dtf+huNAroWK/nOuS2diSj9bsEpPBIKKDh9UlZAPk
+         8q454BbFUiLjoOVBhN/igycd+6t7DvDsBAcRcs4uYjtXdR9kjPBo5KYLv4Nq3/Rutkv5
+         g9RucK5CCzSBZv9fsVW3T5q/wCBz6DtG3dACN0oUZdHa5skghXvxMhe8TXaNfG79aLLk
+         5UKA==
+X-Gm-Message-State: AOAM5303Kfr86cQfx0D2lceRwk2FDqspDOT4IraAq67C3fg8wnPgq+np
+        gLLIw3lhhbAimfQV3Q69WTOmBQ==
+X-Google-Smtp-Source: ABdhPJxObwz+sTsR5viQerIB0RWI0i44SwygcnPBJnPFMGURLrM2mImOiO/zb4QdmtgohbFdEDiB1A==
+X-Received: by 2002:a17:90a:d70e:: with SMTP id y14mr8641686pju.9.1610016836314;
+        Thu, 07 Jan 2021 02:53:56 -0800 (PST)
+Received: from localhost.localdomain (123-204-46-122.static.seed.net.tw. [123.204.46.122])
+        by smtp.googlemail.com with ESMTPSA id p187sm5426042pfp.60.2021.01.07.02.53.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 07 Jan 2021 02:53:55 -0800 (PST)
+From:   Chris Chiu <chiu@endlessos.org>
+To:     oder_chiou@realtek.com, lgirdwood@gmail.com, broonie@kernel.org,
+        perex@perex.cz, tiwai@suse.com
+Cc:     alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+        linux@endlessos.org, Chris Chiu <chiu@endlessos.org>
+Subject: [PATCH v2 0/4] ASoC: rt5645: Enable internal mic and headset on ECS EF20
+Date:   Thu,  7 Jan 2021 18:53:25 +0800
+Message-Id: <20210107105329.146988-1-chiu@endlessos.org>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <c5781c80a582cc68e1ae1bdc106c50cb263f81bf.camel@perches.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9856 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 phishscore=0
- suspectscore=0 spamscore=0 bulkscore=0 adultscore=0 mlxscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2101070065
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9856 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 bulkscore=0 spamscore=0
- impostorscore=0 phishscore=0 lowpriorityscore=0 suspectscore=0
- priorityscore=1501 mlxscore=0 malwarescore=0 clxscore=1015 mlxlogscore=999
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2101070065
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 06, 2021 at 01:17:47PM -0800, Joe Perches wrote:
-> On Wed, 2021-01-06 at 22:36 +0300, Dan Carpenter wrote:
-> > On Wed, Jan 06, 2021 at 10:25:26AM -0800, Joe Perches wrote:
-> > > On Wed, 2021-01-06 at 18:52 +0100, Greg Kroah-Hartman wrote:
-> > > > On Wed, Jan 06, 2021 at 07:43:42PM +0200, Filip Kolev wrote: 
-> > > > > On 06-Jan-21 09:51, Greg Kroah-Hartman wrote:
-> > > > > > On Tue, Jan 05, 2021 at 10:29:18PM +0200, Filip Kolev wrote:
-> > > > > > > There is a debug message using hardcoded function name instead of the
-> > > > > > > __func__ macro. Replace it.
-> > > > > > > 
-> > > > > > > Report from checkpatch.pl on the file:
-> > > > > > > 
-> > > > > > > WARNING: Prefer using '"%s...", __func__' to using 'ov2722_remove', this function's name, in a string
-> > > > > > > +	dev_dbg(&client->dev, "ov2722_remove...\n");
-> []
-> > > There are quite a lot of these relatively useless function tracing like
-> > > uses in the kernel:
-> > > 
-> > > $ git grep -P '"%s[\.\!]*\\n"\s*,\s*__func__\s*\)' | wc -l
-> > > 1065
-> > 
-> > These are printing other stuff besides just the function name.
-> 
-> No, these are printing _only_ the function name.
-> 
+These patches are trying to fix the jack detection and internal
+microphone problems on ECS EF20 series laptops which are empowered
+by Intel Atom x5-Z8350 CPU (CherryTrail) with Realtek rt5645 audio
+codec.
 
-Oh...  Duh...  I was looking at the complete wrong output.  My bad.
+---
+  v1 -> v2:
+	Invoke callback() of the DMI quirk if it exists, because
+	the dmi_first_match() doesn't.
 
-Yeah.  I like this warning.
+---
 
-regards,
-dan carpenter
+Chris Chiu (4):
+  ASoC: rt5645: Introduce mapping for ACPI-defined GPIO
+  ASoC: rt5645: Add ACPI-defined GPIO for ECS EF20 series
+  ASoC: rt5645: add inv_hp_det flag
+  ASoC: rt5645: Enable internal microphone and JD on ECS EF20
+
+ include/sound/rt5645.h    |  2 ++
+ sound/soc/codecs/rt5645.c | 48 ++++++++++++++++++++++++++++++++++++++-
+ 2 files changed, 49 insertions(+), 1 deletion(-)
+
+-- 
+2.20.1
 
