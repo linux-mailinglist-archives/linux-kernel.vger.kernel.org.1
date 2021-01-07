@@ -2,124 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A99C2EE658
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 20:46:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B7F3B2EE65B
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 20:48:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728131AbhAGTqg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 14:46:36 -0500
-Received: from foss.arm.com ([217.140.110.172]:38496 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725835AbhAGTqg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 14:46:36 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 66D62D6E;
-        Thu,  7 Jan 2021 11:45:50 -0800 (PST)
-Received: from [192.168.122.166] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 101603F66E;
-        Thu,  7 Jan 2021 11:45:50 -0800 (PST)
-Subject: Re: [PATCH] arm64: PCI: Enable SMC conduit
-To:     Rob Herring <robh@kernel.org>
-Cc:     linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        PCI <linux-pci@vger.kernel.org>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Sudeep Holla <sudeep.holla@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <20210105045735.1709825-1-jeremy.linton@arm.com>
- <CAL_JsqL2ZXrTg9VFwGK4CawvyBbnHehF9W=cgVEJPzCRoM5G9g@mail.gmail.com>
- <bdd563a9-c8d4-307b-617c-139dda3e4984@arm.com>
- <CAL_Jsq+OUX2ctFwiqcQtM=oswyz8s-iq94eHW247sabYYF5B-A@mail.gmail.com>
-From:   Jeremy Linton <jeremy.linton@arm.com>
-Message-ID: <5d4f85a4-248b-b62e-f976-63c6214bf588@arm.com>
-Date:   Thu, 7 Jan 2021 13:45:45 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.3.1
+        id S1729190AbhAGTqx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 14:46:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49404 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725835AbhAGTqw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Jan 2021 14:46:52 -0500
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 775CFC0612F4;
+        Thu,  7 Jan 2021 11:45:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=0VYbVRFaEHfXgTed8Qk8VILkIca2duBnZVrPZ6rhtgY=; b=QcfTC1dmOQtFnIDeaPka2FPCp
+        QeuOZZSsD29kSsTaEalm46h5tQbLAz8TnRTlMkD3C4iG58QGzV+i1n1rzuzOkKdjttuPmXU5uL05t
+        T6cyQnpuZ9AjDtnQV7qo7z9SlXYw5M47S1fB2zx3Daayb6TH9IDpj2bXssRrTOrRi57uX3LxId2tI
+        0QuzPMnUlmDO1Ia+LsKRaeObSg7X5SZqrbMFN0XOjXFYNGlsbZpsJpDn/lSdQv61vV3/zo3vPf8vY
+        ioXisI7rRBM62yKuNmjRlgfa3ObyihflutpmYC3U3VyFRmGOSIpdQg6PSSdTREnkDh/q9TmyQsW+M
+        VCn6yYheA==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:45238)
+        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1kxbEE-0003An-Vn; Thu, 07 Jan 2021 19:45:51 +0000
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1kxbED-0001QM-EM; Thu, 07 Jan 2021 19:45:49 +0000
+Date:   Thu, 7 Jan 2021 19:45:49 +0000
+From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
+To:     Andrew Lunn <andrew@lunn.ch>
+Cc:     Pali =?iso-8859-1?Q?Roh=E1r?= <pali@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Thomas Schreiber <tschreibe@gmail.com>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Marek =?iso-8859-1?Q?Beh=FAn?= <kabel@kernel.org>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 1/3] net: sfp: add workaround for Realtek RTL8672 and
+ RTL9601C chips
+Message-ID: <20210107194549.GR1551@shell.armlinux.org.uk>
+References: <20201230154755.14746-1-pali@kernel.org>
+ <20210106153749.6748-1-pali@kernel.org>
+ <20210106153749.6748-2-pali@kernel.org>
+ <X/dCm1fK9jcjs4XT@lunn.ch>
 MIME-Version: 1.0
-In-Reply-To: <CAL_Jsq+OUX2ctFwiqcQtM=oswyz8s-iq94eHW247sabYYF5B-A@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <X/dCm1fK9jcjs4XT@lunn.ch>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Sender: Russell King - ARM Linux admin <linux@armlinux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On 1/7/21 11:36 AM, Rob Herring wrote:
-> On Thu, Jan 7, 2021 at 9:24 AM Jeremy Linton <jeremy.linton@arm.com> wrote:
->>
->> Hi,
->>
->>
->> On 1/7/21 9:28 AM, Rob Herring wrote:
->>> On Mon, Jan 4, 2021 at 9:57 PM Jeremy Linton <jeremy.linton@arm.com> wrote:
->>>>
->>>> Given that most arm64 platform's PCI implementations needs quirks
->>>> to deal with problematic config accesses, this is a good place to
->>>> apply a firmware abstraction. The ARM PCI SMMCCC spec details a
->>>> standard SMC conduit designed to provide a simple PCI config
->>>> accessor. This specification enhances the existing ACPI/PCI
->>>> abstraction and expects power, config, etc functionality is handled
-
-(trimming)
-
->>>>
->>>> +static int smccc_pcie_check_conduit(u16 seg)
->>>
->>> check what? Based on how you use this, perhaps _has_conduit() instead.
->>
->> Sure.
->>
->>>
->>>> +{
->>>> +       struct arm_smccc_res res;
->>>> +
->>>> +       if (arm_smccc_1_1_get_conduit() == SMCCC_CONDUIT_NONE)
->>>> +               return -EOPNOTSUPP;
->>>> +
->>>> +       arm_smccc_smc(SMCCC_PCI_VERSION, 0, 0, 0, 0, 0, 0, 0, &res);
->>>> +       if ((int)res.a0 < 0)
->>>> +               return -EOPNOTSUPP;
->>>> +
->>>> +       arm_smccc_smc(SMCCC_PCI_SEG_INFO, seg, 0, 0, 0, 0, 0, 0, &res);
->>>> +       if ((int)res.a0 < 0)
->>>> +               return -EOPNOTSUPP;
->>>
->>> Don't you need to check that read and write functions are supported?
->>
->> In theory no, the first version of the specification makes them
->> mandatory for all implementations. There isn't a partial access method,
->> so nothing works if only read or write were implemented.
+On Thu, Jan 07, 2021 at 06:19:23PM +0100, Andrew Lunn wrote:
+> > -static int sfp_quirk_i2c_block_size(const struct sfp_eeprom_base *base)
+> > +static bool sfp_id_needs_byte_io(struct sfp *sfp, void *buf, size_t len)
+> >  {
+> > -	if (!memcmp(base->vendor_name, "VSOL            ", 16))
+> > -		return 1;
+> > -	if (!memcmp(base->vendor_name, "OEM             ", 16) &&
+> > -	    !memcmp(base->vendor_pn,   "V2801F          ", 16))
+> > -		return 1;
+> > +	size_t i, block_size = sfp->i2c_block_size;
+> >  
+> > -	/* Some modules can't cope with long reads */
+> > -	return 16;
+> > -}
+> > +	/* Already using byte IO */
+> > +	if (block_size == 1)
+> > +		return false;
 > 
-> Then the spec should change:
-> 
-> 2.3.3 Caller responsibilities
-> The caller has the following responsibilities:
-> • The caller must ensure that this function is implemented before
-> issuing a call. This function is discoverable
-> by calling PCI_FEATURES with pci_func_id set to 0x8400_0132.
-> 
-> 
-> I guess knowing the version is ensuring, but the 2nd sentence makes it
-> seem that is how one should ensure.
+> This seems counter intuitive. We don't need byte IO because we are
+> doing btye IO? Can we return True here?
 
-Ok, yes i understand, I will add the check.
+It is counter-intuitive, but as this is indicating whether we need to
+switch to byte IO, if we're already doing byte IO, then we don't need
+to switch.
 
+> > -static void sfp_quirks_base(struct sfp *sfp, const struct sfp_eeprom_base *base)
+> > -{
+> > -	sfp->i2c_block_size = sfp_quirk_i2c_block_size(base);
+> > +	for (i = 1; i < len; i += block_size) {
+> > +		if (memchr_inv(buf + i, '\0', block_size - 1))
+> > +			return false;
+> > +	}
 > 
-> Related, are there any sort of tests for the interface? I generally
-> don't think the kernel's job is validating firmware (a frequent topic
-> for DT), but we should have something. Maybe an SMC unittest module?
-> If nothing else, seems like we should have at least one PCI_FEATURES
-> call to make sure it works. We don't want to add it later only to find
-> that it breaks on some firmware implementations. Though we can just
-> add firmware quirks. ;)
+> Is the loop needed?
 
-I'm not aware of any unit tests at the moment. My testing so far has 
-been against these patches: 
-https://review.trustedfirmware.org/q/topic:"Arm_PCI_Config_Space_Interface"
+I think you're not reading the code very well. It checks for bytes at
+offset 1..blocksize-1, blocksize+1..2*blocksize-1, etc are zero. It
+does _not_ check that byte 0 or the byte at N*blocksize is zero - these
+bytes are skipped. In other words, the first byte of each transfer can
+be any value. The other bytes of the _entire_ ID must be zero.
 
-But given the next version does the PCI_FEATURES calls, that will 
-satisfy your concern, right?
+> I also wonder if on the last iteration of the loop you go passed the
+> end of buf? Don't you need a min(block_size -1, len - i) or
+> similar?
+
+The ID is 64 bytes long, and is fixed. block_size could be a non-power
+of two, but that is highly unlikely. block_size will never be larger
+than 16 either.
+
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
