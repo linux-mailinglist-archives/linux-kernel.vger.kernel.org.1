@@ -2,63 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C7562ECE9A
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 12:21:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 60A832ECE92
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 12:20:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727416AbhAGLUZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 06:20:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55070 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726229AbhAGLUY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 06:20:24 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 969B8C0612F4;
-        Thu,  7 Jan 2021 03:19:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=OaPgUI5aCCYZQI5vszvvf5IbsCgMfnpkhzevE0JkHCg=; b=IqMv68P+0jpey0fzZ2N7VF5J0c
-        +L6n+CHvNdfG/kIP9nSZwYPxAJ8845r1RWz+LYvGkHdRK4gsZOa8Kdduzx3/MzGNN9F/cmC3hY9Xh
-        H/k0ui/EotgpzaVCqeDsSVJDevd+hbrEf1roXh7bNuatFoRaR1XUFHsUfuJMtJBMEKL0SZ1RwD3tC
-        +FvDUxIKEkVBUystdkRrTilwb3iJcNGpE2v1lP108klPNUzFh12n0aQG1W14x/rZDgTXhJ6BHr5CZ
-        t4lp82RVBz6/Qw1NrnFqHYha8VShHtXEsgcY61ub/lWvzEFFk4yCrrnp80NGV8SI1M41GYbKaiQzk
-        QGBk9MuA==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1kxTJr-003JrH-MO; Thu, 07 Jan 2021 11:19:16 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 996513060AE;
-        Thu,  7 Jan 2021 12:19:04 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 7F47220164737; Thu,  7 Jan 2021 12:19:04 +0100 (CET)
-Date:   Thu, 7 Jan 2021 12:19:04 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     guoren@kernel.org
-Cc:     arnd@arndb.de, linux-kernel@vger.kernel.org,
-        linux-csky@vger.kernel.org, linux-arch@vger.kernel.org,
-        Guo Ren <guoren@linux.alibaba.com>,
-        Arnd Bergmann <arnd@kernel.org>,
-        "Paul E . McKenney" <paulmck@kernel.org>
-Subject: Re: [PATCH v2 1/5] csky: Remove custom asm/atomic.h implementation
-Message-ID: <X/buKPr5OCH3C32J@hirez.programming.kicks-ass.net>
-References: <1608478763-60148-1-git-send-email-guoren@kernel.org>
+        id S1727991AbhAGLTR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 06:19:17 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34864 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727949AbhAGLTO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Jan 2021 06:19:14 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 45A63221E9;
+        Thu,  7 Jan 2021 11:18:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1610018313;
+        bh=CePN95XLwXDP+83fIST32f96djP/fsYDPjd7ZQQqssE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=CvcbyZghY1IZ0LMMm4/G0bzhADIvVPiSVZV5KPz7ymJR9nh21WnJfhS8ZiEkiKHzh
+         ThOq6gaB3jUxM0bZNjGA/gBalhLpkEevIRh34dOhKBHD0Anvs5Z3IJt3vwaxzuZJr1
+         E70cv6nLVBA4US15UPVZVFIEuT44YmR52B8WHQaw=
+Date:   Thu, 7 Jan 2021 12:19:53 +0100
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Georgi Djakov <georgi.djakov@linaro.org>
+Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [GIT PULL] interconnect fixes for 5.11-rc
+Message-ID: <X/buWeMxnoIs8ck4@kroah.com>
+References: <20210106094723.563-1-georgi.djakov@linaro.org>
+ <X/X5euQ0xgzVv/0R@kroah.com>
+ <16762fad-e814-6f74-333e-71676aa4b90d@linaro.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1608478763-60148-1-git-send-email-guoren@kernel.org>
+In-Reply-To: <16762fad-e814-6f74-333e-71676aa4b90d@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Dec 20, 2020 at 03:39:19PM +0000, guoren@kernel.org wrote:
-> From: Guo Ren <guoren@linux.alibaba.com>
+On Thu, Jan 07, 2021 at 01:12:14PM +0200, Georgi Djakov wrote:
+> On 1/6/21 19:55, Greg KH wrote:
+> > On Wed, Jan 06, 2021 at 11:47:23AM +0200, Georgi Djakov wrote:
+> > > Hello Greg,
+> > > 
+> > > Here is a pull request with a few interconnect fixes for 5.11-rc.
+> > > More details are available in the signed tag. Please take them into
+> > > char-misc-linus when possible. The patches have been in linux-next
+> > > during the last few days.
+> > > 
+> > > Thanks,
+> > > Georgi
+> > > 
+> > > The following changes since commit 5c8fe583cce542aa0b84adc939ce85293de36e5e:
+> > > 
+> > >    Linux 5.11-rc1 (2020-12-27 15:30:22 -0800)
+> > > 
+> > > are available in the Git repository at:
+> > > 
+> > >    git://git.kernel.org/pub/scm/linux/kernel/git/djakov/icc.git tags/icc-5.11-rc3
+> > 
+> > Pulled and pushed out, thanks.
+> > 
+> Hi Greg,
 > 
-> Use generic atomic implementation based on cmpxchg. So remove csky
-> asm/atomic.h.
+> I still don't see this in your tree, so just checking whether i need to fix
+> something or some script is stuck? Or maybe I just need to be more patient,
+> since you haven't had a chance to push yet.
 
-Clarification would be good. Typically cmpxchg() loops perform
-sub-optimal on LL/SC architectures, due to the double loop construction.
+{sigh}
+
+I forgot the "push" part of the above statement :)
+
+Should now be there, sorry about that.
+
+greg k-h
