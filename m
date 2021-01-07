@@ -2,95 +2,213 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C70B2EE772
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 22:09:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 027732EE785
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 22:17:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727652AbhAGVI5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 16:08:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34234 "EHLO
+        id S1727344AbhAGVQ1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 16:16:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35358 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726666AbhAGVI4 (ORCPT
+        with ESMTP id S1726541AbhAGVQ0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 16:08:56 -0500
-Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFFB1C0612F4
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Jan 2021 13:08:15 -0800 (PST)
-Received: by mail-pl1-x62c.google.com with SMTP id j1so4353318pld.3
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Jan 2021 13:08:15 -0800 (PST)
+        Thu, 7 Jan 2021 16:16:26 -0500
+Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1784DC0612F4
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Jan 2021 13:15:29 -0800 (PST)
+Received: by mail-lf1-x12c.google.com with SMTP id a12so17968475lfl.6
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Jan 2021 13:15:29 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=RPSS4+wIGvp/3YQYbCUE3lZcjQcE7GevEzI6hP5X/bw=;
-        b=QcHURJUskZnmGtmirPpDXam1+nD3tS58vO+VwHrt5QfpZAT7OkPqMK1Z5s4W/HNPmf
-         7ddcAQFcWD8RlCEXgL5kPn7aJq51foNk1f1ewKIh2dAdzREaU0UWbMRUfCZjWMIa97OP
-         VuvgVhCAg18OWqacs6ABqF8JJ1a4cjtiqQUl8=
+        d=cloudflare.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=TKs0fV6NhoCyOBE5f3/MGawBR0S3YXYEf2e8DTZq60I=;
+        b=uOFERN45dgTYuB9A1SChV46j7m+Puc+TMuLTbVa+aO+MpTkMo0jNiVR149K9x/3Xxg
+         b8bDLsBSNOkzt0W91UElG89VlcVdZD3brDOy8J2A876Bk9/A0Q3Nft/ZHbFICXjCrEQt
+         9/SkUmrjrsf9fMBc2F31ItnpsrbJ+V4+VdgsM=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=RPSS4+wIGvp/3YQYbCUE3lZcjQcE7GevEzI6hP5X/bw=;
-        b=dp2Eyi5Kqq0fCLJtB3vQH5r6h5rtmmXvo6Mwx6UZPF4hIZg5gPTxD1z5rHDXdpKUg6
-         WbJA4UwZchZ8A1/boc+RiWSVRx/3qrlMQUDb2Or6jZII3azGZTXpMw+hYfjVKFCzKOJG
-         AR7g5qLXaDovDRisBqouoKTfPJh2J/3uoOJ3srp1b3rod5ZeyfcZZ7V7hwsIR+cYE2+1
-         pOydMGkTuh3uSrqqqzpKmrlpFnCSxo1aTSBYMHB+E4cSkFG/WVISec1Lx8QlvSrlaJE1
-         s1vjlH7kyXuSe6WiucwxqVPIMdyKPXnyBiJwYOEA+7CEMBk9QN4h+iMixcr313F+ho7y
-         m1WA==
-X-Gm-Message-State: AOAM530B7zac1qyv0n3LF85MbnR3QqzDc2iQBsf8DZ/Pb5UWCF9C3Hmb
-        sQpwASCi7rwFlRC68ZvRrPr96w==
-X-Google-Smtp-Source: ABdhPJyNhZorRAZXybiTjz8m9XRI5n8wBsWWi8f4w0GjKoH//cf7R8VzKbRIfqr+XwNPjJh7ntRq3A==
-X-Received: by 2002:a17:90b:283:: with SMTP id az3mr367695pjb.84.1610053695540;
-        Thu, 07 Jan 2021 13:08:15 -0800 (PST)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id c18sm6473506pfj.200.2021.01.07.13.08.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 Jan 2021 13:08:14 -0800 (PST)
-Date:   Thu, 7 Jan 2021 13:08:13 -0800
-From:   Kees Cook <keescook@chromium.org>
-To:     Xiaoming Ni <nixiaoming@huawei.com>
-Cc:     linux-kernel@vger.kernel.org, mcgrof@kernel.org,
-        yzaikin@google.com, adobriyan@gmail.com, vbabka@suse.cz,
-        linux-fsdevel@vger.kernel.org, mhocko@suse.com,
-        mhiramat@kernel.org, wangle6@huawei.com
-Subject: Re: [PATCH] proc_sysclt: fix oops caused by incorrect command
- parameters.
-Message-ID: <202101071307.6E0CF2FCA@keescook>
-References: <20201224074256.117413-1-nixiaoming@huawei.com>
- <202101061539.966EBB293@keescook>
- <5ad6d160-3a4e-28bd-4e89-cb01a1815861@huawei.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=TKs0fV6NhoCyOBE5f3/MGawBR0S3YXYEf2e8DTZq60I=;
+        b=gUCoQ2DKz9e+hXUiKJ/DtbHYX3TNkxBRrO/akNV30/bUsrHXFLpPcJ1z9pjKny2tQi
+         jurmTR/hCtetL+GPGD8nyorhmVw8kui5rX4IcuAkSLiTHr+jyEiVd2nvtNtcLEE79usR
+         rrxNnqGdFKcrOiIj4yM3ydY3TdZSXvouTpIiWhGXMBxfcUuEjGgeD5Lu4Tr7WiSVpwpa
+         YSpD5jFgEmseRCmw4kVSBUISybnD2cZAsXKNyjZgMZrY8O55j0HY4aLc3b0nJlSTqGOz
+         AUB1PSOYrpuEIK/d9nm789Kph3a2leotP3yHUgTEiG7LUeHU/imssgs+76Vu3W+M6mV0
+         rX9Q==
+X-Gm-Message-State: AOAM5302HL+nq0DCmrnVFOiO4EV2VnPIBaqHvYfyt/t71QME8zEEV8Z5
+        YYCVj90aBbujQ25uX6POX0tF/3BZe5c+0Qx4SyS91g==
+X-Google-Smtp-Source: ABdhPJy55liTZNWi1UXpuwUDkKD4fqjRFNCx1C0skwjNBj5h2D+6PI2TrEVVftvoWVd1az66O6k3tPK/k8c427OSGrw=
+X-Received: by 2002:a2e:574d:: with SMTP id r13mr149988ljd.479.1610054127441;
+ Thu, 07 Jan 2021 13:15:27 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <5ad6d160-3a4e-28bd-4e89-cb01a1815861@huawei.com>
+References: <20210104235719.13525-1-ivan@cloudflare.com> <2100533.HVZEckHxcR@c100>
+ <CABWYdi0sne=6reP5oZMFbYk9Nctws=FLoYkjdmnBwXu0bVFozA@mail.gmail.com> <3977966.bfq5YHlNPR@c100>
+In-Reply-To: <3977966.bfq5YHlNPR@c100>
+From:   Ivan Babrou <ivan@cloudflare.com>
+Date:   Thu, 7 Jan 2021 13:15:16 -0800
+Message-ID: <CABWYdi3yOYrLq_Zo2qrvFVZtwhbS85zWbt2+by0Fm6D3S17ZQw@mail.gmail.com>
+Subject: Re: [PATCH] cpupower: add Makefile dependencies for install targets
+To:     Thomas Renninger <trenn@suse.com>
+Cc:     linux-pm@vger.kernel.org,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        kernel-team <kernel-team@cloudflare.com>,
+        Shuah Khan <shuah@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 07, 2021 at 02:14:18PM +0800, Xiaoming Ni wrote:
-> On 2021/1/7 7:46, Kees Cook wrote:
-> > subject typo: "sysclt" -> "sysctl"
-> > 
-> > On Thu, Dec 24, 2020 at 03:42:56PM +0800, Xiaoming Ni wrote:
-> > > [...]
-> > > +	if (!val)
-> > > +		return 0;
-> > > +
-> > >   	if (strncmp(param, "sysctl", sizeof("sysctl") - 1) == 0) {
-> > >   		param += sizeof("sysctl") - 1;
-> > 
-> > Otherwise, yeah, this is a good test to add. I would make it more
-> > verbose, though:
-> > 
-> > 	if (!val) {
-> > 		pr_err("Missing param value! Expected '%s=...value...'\n", param);
-> > 		return 0;
-> > 	}
-> > 
-> Yes, it's better to add log output.
-> Thank you for your review.
-> Do I need to send V2 patch based on review comments?
+On Thu, Jan 7, 2021 at 12:59 PM Thomas Renninger <trenn@suse.com> wrote:
+>
+> Am Donnerstag, 7. Januar 2021, 18:42:25 CET schrieb Ivan Babrou:
+> > On Thu, Jan 7, 2021 at 2:07 AM Thomas Renninger <trenn@suse.com> wrote:
+> > > Am Dienstag, 5. Januar 2021, 00:57:18 CET schrieb Ivan Babrou:
+> > > > This allows building cpupower in parallel rather than serially.
+> > >
+> > > cpupower is built serially:
+> > >
+> > > [ make clean ]
+> > >
+> > > time make
+> > > real    0m3,742s
+> > > user    0m3,330s
+> > > sys     0m1,105s
+> > >
+> > > [ make clean ]
+> > >
+> > > time make -j10
+> > > real    0m1,045s
+> > > user    0m3,153s
+> > > sys     0m1,037s
+> > >
+> > > Only advantage I see is that you can call
+> > > make install-xy
+> > > targets without calling the corresponding build target
+> > > make xy
+> > > similar to the general install target:
+> > > install: all install-lib ...
+> > >
+> > > Not sure anyone needs this and whether all targets
+> > > successfully work this way.
+> > > If you'd show a useful usecase example...
+> >
+> > We build a bunch of kernel related tools (perf, cpupower, bpftool,
+> > etc.) from our own top level Makefile, propagating parallelism
+> > downwards like one should.
+> I still do not understand why you do not simply build:
+> Also if I call this from /tools directory I get a quick build:
+> make -j20 cpupower
+>
+> Can you please show the make calls, ideally with a timing to better understand
+> and also to reproduce the advantages this patch introduces.
+> From what I can see, it only helps if one calls "sub-install" targets
+> directly?
 
-Yes please. :)
+That's exactly what we do: make install directly:
 
--- 
-Kees Cook
+/linux-5.10.5$ make -C ./tools/power/cpupower DESTDIR=/tmp/cpupower
+install -j $(nproc)
+
+make: Entering directory '/state/home/ivan/linux-5.10.5/tools/power/cpupower'
+  CC       cpupower
+  MSGFMT   po/de.gmo
+  MSGFMT   po/fr.gmo
+  MSGFMT   po/it.gmo
+  MSGFMT   po/cs.gmo
+/usr/bin/install -c -d /tmp/cpupower/usr/lib64
+  MSGFMT   po/pt.gmo
+/usr/bin/install -c -d /tmp/cpupower/usr/bin
+/usr/bin/install -c -m 644 -D man/cpupower.1
+/tmp/cpupower/usr/man/man1/cpupower.1
+/usr/bin/install -c -d /tmp/cpupower/usr/share/locale
+cp -fpR ./libcpupower.so* /tmp/cpupower/usr/lib64/
+/usr/bin/install -c ./cpupower /tmp/cpupower/usr/bin
+/usr/bin/install -c -m 644 -D man/cpupower-frequency-set.1
+/tmp/cpupower/usr/man/man1/cpupower-frequency-set.1
+make[1]: Entering directory
+'/state/home/ivan/linux-5.10.5/tools/power/cpupower/bench'
+for HLANG in de fr it cs pt; do \
+echo '/usr/bin/install -c -m 644 -D ./po/$HLANG.gmo
+/tmp/cpupower/usr/share/locale/$HLANG/LC_MESSAGES/cpupower.mo'; \
+/usr/bin/install -c -m 644 -D ./po/$HLANG.gmo
+/tmp/cpupower/usr/share/locale/$HLANG/LC_MESSAGES/cpupower.mo; \
+done;
+  CC       main.o
+/usr/bin/install -c -d /tmp/cpupower/usr/share/bash-completion/completions
+/usr/bin/install -c -m 644 -D ./po/$HLANG.gmo
+/tmp/cpupower/usr/share/locale/$HLANG/LC_MESSAGES/cpupower.mo
+  CC       parse.o
+/usr/bin/install -c -m 644 -D man/cpupower-frequency-info.1
+/tmp/cpupower/usr/man/man1/cpupower-frequency-info.1
+  CC       system.o
+/usr/bin/install: cannot stat './po/de.gmo'/usr/bin/install -c -d
+/tmp/cpupower/usr/include
+: No such file or directory
+make[1]: Entering directory
+'/state/home/ivan/linux-5.10.5/tools/power/cpupower/bench'
+mkdir -p /tmp/cpupower//usr/sbin
+/usr/bin/install -c -m 644 cpupower-completion.sh
+'/tmp/cpupower/usr/share/bash-completion/completions/cpupower'
+/usr/bin/install -c -m 644 -D ./po/$HLANG.gmo
+/tmp/cpupower/usr/share/locale/$HLANG/LC_MESSAGES/cpupower.mo
+  CC       benchmark.o
+/usr/bin/install -c -m 644 -D man/cpupower-idle-set.1
+/tmp/cpupower/usr/man/man1/cpupower-idle-set.1
+/usr/bin/install: cannot stat './po/fr.gmo': No such file or directory
+/usr/bin/install -c -m 644 -D ./po/$HLANG.gmo
+/tmp/cpupower/usr/share/locale/$HLANG/LC_MESSAGES/cpupower.mo
+mkdir -p /tmp/cpupower//usr/bin
+/usr/bin/install -c -m 644 lib/cpufreq.h /tmp/cpupower/usr/include/cpufreq.h
+/usr/bin/install -c -m 644 -D man/cpupower-idle-info.1
+/tmp/cpupower/usr/man/man1/cpupower-idle-info.1
+mkdir -p /tmp/cpupower//usr/share/doc/packages/cpupower
+/usr/bin/install -c -m 644 -D ./po/$HLANG.gmo
+/tmp/cpupower/usr/share/locale/$HLANG/LC_MESSAGES/cpupower.mo
+/usr/bin/install -c -m 644 lib/cpuidle.h /tmp/cpupower/usr/include/cpuidle.h
+mkdir -p /tmp/cpupower//etc/
+/usr/bin/install -c -m 644 -D man/cpupower-set.1
+/tmp/cpupower/usr/man/man1/cpupower-set.1
+/usr/bin/install -c -m 644 -D ./po/$HLANG.gmo
+/tmp/cpupower/usr/share/locale/$HLANG/LC_MESSAGES/cpupower.mo
+install -m 755 .//cpufreq-bench /tmp/cpupower//usr/sbin/cpufreq-bench
+/usr/bin/install -c -m 644 -D man/cpupower-info.1
+/tmp/cpupower/usr/man/man1/cpupower-info.1
+/usr/bin/install -c -m 644 -D man/cpupower-monitor.1
+/tmp/cpupower/usr/man/man1/cpupower-monitor.1
+install: cannot stat './/cpufreq-bench': No such file or directory
+Makefile:31: recipe for target 'install' failed
+make[1]: *** [install] Error 1
+make[1]: Leaving directory
+'/state/home/ivan/linux-5.10.5/tools/power/cpupower/bench'
+Makefile:304: recipe for target 'install-bench' failed
+make: *** [install-bench] Error 2
+make: *** Waiting for unfinished jobs....
+  CC       cpufreq-bench
+make[1]: Leaving directory
+'/state/home/ivan/linux-5.10.5/tools/power/cpupower/bench'
+make: Leaving directory '/state/home/ivan/linux-5.10.5/tools/power/cpupower'
+
+It works with -j 1. My patch makes it work with arbitrary parallelism,
+same as any other tool we build internally (perf, bpftool, turbostat,
+etc.).
+
+> And I still do not understand why things should be more parallel now.
+>
+> > Without this patch we have to remove parallelism for cpupower,
+> Why?
+>
+> > which doesn't seem like a very clean thing
+> > to do, especially if you consider that it's 3x faster with parallelism
+> > enabled in wall clock terms.
+> Sure, you want to build in parallel. I still do not understand how this
+> patch helps in this regard.
+>
+> BTW, I recently had a bunch of userspace tools Makefile patches.
+> I'd like to add you to CC for a review if they are not submitted already.
+
+Don't know how useful I can be, but feel free to.
+
+>     Thomas
+>
+>
