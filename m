@@ -2,76 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 580B02ED67B
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 19:16:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EF0F62ED675
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 19:14:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728705AbhAGSO7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 13:14:59 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:25183 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727061AbhAGSO6 (ORCPT
+        id S1728231AbhAGSOi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 13:14:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35082 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727453AbhAGSOh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 13:14:58 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1610043211;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=IWg+Dy8bMmg6eRxlaM9RZlMkMk/A1C/4W7WbWPrcins=;
-        b=glreGN44xYylZj6LqcRm6zXgBpFBx6bkT5sk1z56wZqWQEJpyxztfyrWw1lQIbugaTqAAo
-        Wq8QcyFEdGpfd3DH9w2GxvleN6DZ//3fX5W9j9ix4wINfJVH8eJWIht41C5Ah/sKCfFH4F
-        tQSR/V9Et1DJhJA6PzWqeT61jgeg/0c=
-Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
- [209.85.128.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-140-mXbVf-m7OKa9nFDvp4b6DA-1; Thu, 07 Jan 2021 13:13:30 -0500
-X-MC-Unique: mXbVf-m7OKa9nFDvp4b6DA-1
-Received: by mail-wm1-f69.google.com with SMTP id h21so2536699wmq.7
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Jan 2021 10:13:30 -0800 (PST)
+        Thu, 7 Jan 2021 13:14:37 -0500
+Received: from mail-io1-xd34.google.com (mail-io1-xd34.google.com [IPv6:2607:f8b0:4864:20::d34])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 544A9C0612F6
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Jan 2021 10:13:57 -0800 (PST)
+Received: by mail-io1-xd34.google.com with SMTP id 81so7005343ioc.13
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Jan 2021 10:13:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxfoundation.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=4v8W1olKibG+tkPSMxEvl9d5W+gvZovag0o/cdLJrG8=;
+        b=GCZA18IFXtiLsrpExdF4OWY6T3YUFQsZQ0pI5hzSxRum2HZd5PjWVTvB09K9noe0Sm
+         BDhb9/uNnsbErjeHpM/01JnESAsx2DWuVa4okzgHHTXiwk07GC/T0msMzWGR1glQKeVI
+         6iiPvOODQgMLzeUr6ixevqw7B98U4r6at747k=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=IWg+Dy8bMmg6eRxlaM9RZlMkMk/A1C/4W7WbWPrcins=;
-        b=Af3xk1BPXAlT4cjh17XomHM3pS811Lh7ZQLEBTdTVNDb2EFUQ7Ku+ej3eUcG3IlGgK
-         RIsdHXm/gEt8f998xy91Zt2+CXfQBGasYaPBHqg9A7Du1xFqqcyAO0a0mBS9A1OgGhLE
-         GjFEizW7UV1g8JMZKYdo78S5vb161HtyERSVhi6An7kAcdQgZpnRriLnVf7+jhJSiE1x
-         RxP7t1mBLWZOJuy6UrX4hOERDM3CZr8OGSk5x4syJytUCltaSTnAM+Go2VLTKnpvEYDo
-         hMhwBKqRXGQIAk7Gg4BRSScog7G4SQIObxCvlm9cA5KTgGcxLErd7UBLY+1niY6LyFAN
-         Hzag==
-X-Gm-Message-State: AOAM533RVjMX1+Sm/1XZRr/rT21mjU0S5WAYIbRF1RZ7jsfTMfrJ7dw+
-        kzcFQiggA7RuOoXDkXL2t9FKxsKiD6o/8tkXHV2iKae665iAR7x/GBt/uWqhEKWnRSpYq+JvoZ3
-        bFk4brJ+/WElOhy3492yPjfD3
-X-Received: by 2002:adf:d20b:: with SMTP id j11mr9861875wrh.318.1610043208940;
-        Thu, 07 Jan 2021 10:13:28 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJzTpkjaIZH9VZWvuE5Oqm+3xD3DoFiXeTf+mQn/EFflP8vIZnKknaRW5rcjMj6lM0P7luiPsg==
-X-Received: by 2002:adf:d20b:: with SMTP id j11mr9861846wrh.318.1610043208669;
-        Thu, 07 Jan 2021 10:13:28 -0800 (PST)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id a17sm9854175wrs.20.2021.01.07.10.13.27
+        bh=4v8W1olKibG+tkPSMxEvl9d5W+gvZovag0o/cdLJrG8=;
+        b=X6fV/GI+QXSKOBiehiaiPOJwvaI8GMxvs9JNvIs3XIZKdB7aTaN8I6haTrI4NEn2Fn
+         LKSqKZFxREQKfNkb+fPib/QSDoL/y3rxHjwe72UWM53zVXxZl7RSpebEhdUfAsNGz6Af
+         fQjCsInfxZls+5LoSo/+jH7CF3f27GnwUz8Wj2F+Bp4emU6TMsJ7CTn8IUcqJ97lNAyK
+         zBklWxT3+q9b1xO8MpedxF9ujLcjUmNKbYO6U3mozPXirNSAC6CoXu/iDDogSvfBz5Zg
+         asYtGcnGYDc3bP9t8w/VRMF7yJmjN4KMMLVHo399aZjowK0Tm8+vEevfvdsdAGmD70D/
+         zQsg==
+X-Gm-Message-State: AOAM533P7CH2OZcZPhQ+S7oTc9HFOLSoEq0Bydlk4ZT5oScu7FB7+4bg
+        xBUi4PpvkHbJ/56/q7pkn0uz9w==
+X-Google-Smtp-Source: ABdhPJydhQwgn1+aYSgV7WO5YZh9CjoWBndCSExiuxXNuitgYW+BkQs5Z5XIm6//UBosU4iI41llDg==
+X-Received: by 2002:a05:6602:59e:: with SMTP id v30mr2204902iox.37.1610043236697;
+        Thu, 07 Jan 2021 10:13:56 -0800 (PST)
+Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
+        by smtp.gmail.com with ESMTPSA id o7sm3502364iop.51.2021.01.07.10.13.55
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 07 Jan 2021 10:13:27 -0800 (PST)
-Subject: Re: [PATCH v5.1 27/34] KVM: SVM: Add support for booting APs in an
- SEV-ES guest
-To:     Tom Lendacky <thomas.lendacky@amd.com>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, x86@kernel.org
-Cc:     Jim Mattson <jmattson@google.com>, Joerg Roedel <joro@8bytes.org>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Borislav Petkov <bp@alien8.de>, Ingo Molnar <mingo@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Brijesh Singh <brijesh.singh@amd.com>
-References: <47d11ed1c1a48ab71858fc3cde766bf67a4612d1.1607620209.git.thomas.lendacky@amd.com>
- <e8fbebe8eb161ceaabdad7c01a5859a78b424d5e.1609791600.git.thomas.lendacky@amd.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <f7df25ab-0a2c-7295-05c9-dcc6e1878b9c@redhat.com>
-Date:   Thu, 7 Jan 2021 19:13:26 +0100
+        Thu, 07 Jan 2021 10:13:56 -0800 (PST)
+Subject: Re: [PATCH] kunit: tool: Force the use of the 'tty' console for UML
+To:     Petr Mladek <pmladek@suse.com>, David Gow <davidgow@google.com>
+Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Brendan Higgins <brendanhiggins@google.com>,
+        Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        KUnit Development <kunit-dev@googlegroups.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Shuah Khan <skhan@linuxfoundation.org>
+References: <20201222073900.3490607-1-davidgow@google.com>
+ <20201222111102.GC4077@smile.fi.intel.com>
+ <4ae7779c-15c5-0474-5840-44531dcf1d94@linuxfoundation.org>
+ <X/SSJQ+I5zEMaYYJ@alley>
+ <3828c7ee-52b0-42f9-5771-74ef9386756c@linuxfoundation.org>
+ <20210105185731.GT4077@smile.fi.intel.com>
+ <918b2d05-f51b-0866-89b3-19a016abdaa3@linuxfoundation.org>
+ <CABVgOS=DZjv4-68fEweZwB1-=KB7Tb71iQEfHKHt46OTVWC94w@mail.gmail.com>
+ <X/c8jQMyXbsJf85M@alley>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+Message-ID: <578de82c-5119-78e4-4497-c8a8d642388d@linuxfoundation.org>
+Date:   Thu, 7 Jan 2021 11:13:54 -0700
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.5.0
 MIME-Version: 1.0
-In-Reply-To: <e8fbebe8eb161ceaabdad7c01a5859a78b424d5e.1609791600.git.thomas.lendacky@amd.com>
+In-Reply-To: <X/c8jQMyXbsJf85M@alley>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -79,293 +80,76 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 04/01/21 21:20, Tom Lendacky wrote:
-> From: Tom Lendacky <thomas.lendacky@amd.com>
+On 1/7/21 9:53 AM, Petr Mladek wrote:
+> On Wed 2021-01-06 12:29:12, David Gow wrote:
+>> On Wed, Jan 6, 2021 at 3:52 AM Shuah Khan <skhan@linuxfoundation.org> wrote:
+>>>
+>>> On 1/5/21 11:57 AM, Andy Shevchenko wrote:
+>>>> On Tue, Jan 05, 2021 at 09:34:33AM -0700, Shuah Khan wrote:
+>>>>> On 1/5/21 9:21 AM, Petr Mladek wrote:
+>>>>>> On Mon 2021-01-04 09:23:57, Shuah Khan wrote:
+>>>>>>> On 12/22/20 4:11 AM, Andy Shevchenko wrote:
+>>>>>>>> On Mon, Dec 21, 2020 at 11:39:00PM -0800, David Gow wrote:
+>>>>>>>>> kunit_tool relies on the UML console outputting printk() output to the
+>>>>>>>>> tty in order to get results. Since the default console driver could
+>>>>>>>>> change, pass 'console=tty' to the kernel.
+>>>>>>>>>
+>>>>>>>>> This is triggered by a change[1] to use ttynull as a fallback console
+>>>>>>>>> driver which -- by chance or by design -- seems to have changed the
+>>>>>>>>> default console output on UML, breaking kunit_tool. While this may be
+>>>>>>>>> fixed, we should be less fragile to such changes in the default.
+>>>>>>>>>
+>>>>>>>>> [1]:
+>>>>>>>>> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=757055ae8dedf5333af17b3b5b4b70ba9bc9da4e
+>>>>>>>>
+>>>>>>>> Reported-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+>>>>>>>> Tested-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+>>>>>>>>
+>>>>>>>
+>>>>>>> Thank you all. Now in linux-kselftest kunit-fixes branch.
+>>>>>>>
+>>>>>>> Will send this up for rc3.
+>>>>>>>
+>>>>>>> Sorry for the delay - have been away from the keyboard for a
+>>>>>>> bit.
+>>>>>>
+>>>>>> JFYI, I am not sure that this is the right solution. I am
+>>>>>> looking into it, see
+>>>>>> https://lore.kernel.org/linux-kselftest/X%2FSRA1P8t+ONZFKb@alley/
+>>>>>> for more details.
+>>>>>>
+>>>>>
+>>>>> Thanks Petr. I will hold off on sending the patch up to Linus and
+>>>>> let you find a the right solution.
+>>>>
+>>>> Please. leave it in Linux Next at least. Otherwise kunit will be broken for a
+>>>> long time which is not good.
+>>>>
+>>>>
+>>>
+>>> Yes. That is the plan. It will be in there until real fix comes in.
 > 
-> Typically under KVM, an AP is booted using the INIT-SIPI-SIPI sequence,
-> where the guest vCPU register state is updated and then the vCPU is VMRUN
-> to begin execution of the AP. For an SEV-ES guest, this won't work because
-> the guest register state is encrypted.
+> The real fix would be too complicated for 5.11-rc3. Instead, I
+> proposed to revert the problematic commit, see
+> https://lore.kernel.org/lkml/20210107164400.17904-2-pmladek@suse.com/
+> I would like to push it for 5.11-rc3.
 > 
-> Following the GHCB specification, the hypervisor must not alter the guest
-> register state, so KVM must track an AP/vCPU boot. Should the guest want
-> to park the AP, it must use the AP Reset Hold exit event in place of, for
-> example, a HLT loop.
+>> Personally, I think that this patch makes some sense to keep even if
+>> the underlying issue with ttynull is resolved. Given that kunit.py
+>> requires the console output, explicitly stating we want console=tty
+>> set is probably worth doing rather than relying on it being the
+>> default.
 > 
-> First AP boot (first INIT-SIPI-SIPI sequence):
->    Execute the AP (vCPU) as it was initialized and measured by the SEV-ES
->    support. It is up to the guest to transfer control of the AP to the
->    proper location.
-> 
-> Subsequent AP boot:
->    KVM will expect to receive an AP Reset Hold exit event indicating that
->    the vCPU is being parked and will require an INIT-SIPI-SIPI sequence to
->    awaken it. When the AP Reset Hold exit event is received, KVM will place
->    the vCPU into a simulated HLT mode. Upon receiving the INIT-SIPI-SIPI
->    sequence, KVM will make the vCPU runnable. It is again up to the guest
->    to then transfer control of the AP to the proper location.
-> 
->    To differentiate between an actual HLT and an AP Reset Hold, a new MP
->    state is introduced, KVM_MP_STATE_AP_RESET_HOLD, which the vCPU is
->    placed in upon receiving the AP Reset Hold exit event. Additionally, to
->    communicate the AP Reset Hold exit event up to userspace (if needed), a
->    new exit reason is introduced, KVM_EXIT_AP_RESET_HOLD.
-> 
-> A new x86 ops function is introduced, vcpu_deliver_sipi_vector, in order
-> to accomplish AP booting. For VMX, vcpu_deliver_sipi_vector is set to the
-> original SIPI delivery function, kvm_vcpu_deliver_sipi_vector(). SVM adds
-> a new function that, for non SEV-ES guests, invokes the original SIPI
-> delivery function, kvm_vcpu_deliver_sipi_vector(), but for SEV-ES guests,
-> implements the logic above.
-> 
-> Signed-off-by: Tom Lendacky <thomas.lendacky@amd.com>
-
-Queued, thanks.
-
-Paolo
-
-> ---
->   arch/x86/include/asm/kvm_host.h |  3 +++
->   arch/x86/kvm/lapic.c            |  2 +-
->   arch/x86/kvm/svm/sev.c          | 22 ++++++++++++++++++++++
->   arch/x86/kvm/svm/svm.c          | 10 ++++++++++
->   arch/x86/kvm/svm/svm.h          |  2 ++
->   arch/x86/kvm/vmx/vmx.c          |  2 ++
->   arch/x86/kvm/x86.c              | 26 +++++++++++++++++++++-----
->   include/uapi/linux/kvm.h        |  2 ++
->   8 files changed, 63 insertions(+), 6 deletions(-)
-> 
-> diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
-> index 39707e72b062..23d7b203c060 100644
-> --- a/arch/x86/include/asm/kvm_host.h
-> +++ b/arch/x86/include/asm/kvm_host.h
-> @@ -1287,6 +1287,8 @@ struct kvm_x86_ops {
->   	void (*migrate_timers)(struct kvm_vcpu *vcpu);
->   	void (*msr_filter_changed)(struct kvm_vcpu *vcpu);
->   	int (*complete_emulated_msr)(struct kvm_vcpu *vcpu, int err);
-> +
-> +	void (*vcpu_deliver_sipi_vector)(struct kvm_vcpu *vcpu, u8 vector);
->   };
->   
->   struct kvm_x86_nested_ops {
-> @@ -1468,6 +1470,7 @@ int kvm_fast_pio(struct kvm_vcpu *vcpu, int size, unsigned short port, int in);
->   int kvm_emulate_cpuid(struct kvm_vcpu *vcpu);
->   int kvm_emulate_halt(struct kvm_vcpu *vcpu);
->   int kvm_vcpu_halt(struct kvm_vcpu *vcpu);
-> +int kvm_emulate_ap_reset_hold(struct kvm_vcpu *vcpu);
->   int kvm_emulate_wbinvd(struct kvm_vcpu *vcpu);
->   
->   void kvm_get_segment(struct kvm_vcpu *vcpu, struct kvm_segment *var, int seg);
-> diff --git a/arch/x86/kvm/lapic.c b/arch/x86/kvm/lapic.c
-> index 6a87623aa578..a2f08ed777d8 100644
-> --- a/arch/x86/kvm/lapic.c
-> +++ b/arch/x86/kvm/lapic.c
-> @@ -2898,7 +2898,7 @@ void kvm_apic_accept_events(struct kvm_vcpu *vcpu)
->   			/* evaluate pending_events before reading the vector */
->   			smp_rmb();
->   			sipi_vector = apic->sipi_vector;
-> -			kvm_vcpu_deliver_sipi_vector(vcpu, sipi_vector);
-> +			kvm_x86_ops.vcpu_deliver_sipi_vector(vcpu, sipi_vector);
->   			vcpu->arch.mp_state = KVM_MP_STATE_RUNNABLE;
->   		}
->   	}
-> diff --git a/arch/x86/kvm/svm/sev.c b/arch/x86/kvm/svm/sev.c
-> index e57847ff8bd2..a08cbc04cb4d 100644
-> --- a/arch/x86/kvm/svm/sev.c
-> +++ b/arch/x86/kvm/svm/sev.c
-> @@ -1563,6 +1563,7 @@ static int sev_es_validate_vmgexit(struct vcpu_svm *svm)
->   			goto vmgexit_err;
->   		break;
->   	case SVM_VMGEXIT_NMI_COMPLETE:
-> +	case SVM_VMGEXIT_AP_HLT_LOOP:
->   	case SVM_VMGEXIT_AP_JUMP_TABLE:
->   	case SVM_VMGEXIT_UNSUPPORTED_EVENT:
->   		break;
-> @@ -1888,6 +1889,9 @@ int sev_handle_vmgexit(struct vcpu_svm *svm)
->   	case SVM_VMGEXIT_NMI_COMPLETE:
->   		ret = svm_invoke_exit_handler(svm, SVM_EXIT_IRET);
->   		break;
-> +	case SVM_VMGEXIT_AP_HLT_LOOP:
-> +		ret = kvm_emulate_ap_reset_hold(&svm->vcpu);
-> +		break;
->   	case SVM_VMGEXIT_AP_JUMP_TABLE: {
->   		struct kvm_sev_info *sev = &to_kvm_svm(svm->vcpu.kvm)->sev_info;
->   
-> @@ -2040,3 +2044,21 @@ void sev_es_vcpu_put(struct vcpu_svm *svm)
->   		wrmsrl(host_save_user_msrs[i].index, svm->host_user_msrs[i]);
->   	}
->   }
-> +
-> +void sev_vcpu_deliver_sipi_vector(struct kvm_vcpu *vcpu, u8 vector)
-> +{
-> +	struct vcpu_svm *svm = to_svm(vcpu);
-> +
-> +	/* First SIPI: Use the values as initially set by the VMM */
-> +	if (!svm->received_first_sipi) {
-> +		svm->received_first_sipi = true;
-> +		return;
-> +	}
-> +
-> +	/*
-> +	 * Subsequent SIPI: Return from an AP Reset Hold VMGEXIT, where
-> +	 * the guest will set the CS and RIP. Set SW_EXIT_INFO_2 to a
-> +	 * non-zero value.
-> +	 */
-> +	ghcb_set_sw_exit_info_2(svm->ghcb, 1);
-> +}
-> diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
-> index 941e5251e13f..5c37fa68ee56 100644
-> --- a/arch/x86/kvm/svm/svm.c
-> +++ b/arch/x86/kvm/svm/svm.c
-> @@ -4382,6 +4382,14 @@ static bool svm_apic_init_signal_blocked(struct kvm_vcpu *vcpu)
->   		   (vmcb_is_intercept(&svm->vmcb->control, INTERCEPT_INIT));
->   }
->   
-> +static void svm_vcpu_deliver_sipi_vector(struct kvm_vcpu *vcpu, u8 vector)
-> +{
-> +	if (!sev_es_guest(vcpu->kvm))
-> +		return kvm_vcpu_deliver_sipi_vector(vcpu, vector);
-> +
-> +	sev_vcpu_deliver_sipi_vector(vcpu, vector);
-> +}
-> +
->   static void svm_vm_destroy(struct kvm *kvm)
->   {
->   	avic_vm_destroy(kvm);
-> @@ -4524,6 +4532,8 @@ static struct kvm_x86_ops svm_x86_ops __initdata = {
->   
->   	.msr_filter_changed = svm_msr_filter_changed,
->   	.complete_emulated_msr = svm_complete_emulated_msr,
-> +
-> +	.vcpu_deliver_sipi_vector = svm_vcpu_deliver_sipi_vector,
->   };
->   
->   static struct kvm_x86_init_ops svm_init_ops __initdata = {
-> diff --git a/arch/x86/kvm/svm/svm.h b/arch/x86/kvm/svm/svm.h
-> index 5431e6335e2e..0fe874ae5498 100644
-> --- a/arch/x86/kvm/svm/svm.h
-> +++ b/arch/x86/kvm/svm/svm.h
-> @@ -185,6 +185,7 @@ struct vcpu_svm {
->   	struct vmcb_save_area *vmsa;
->   	struct ghcb *ghcb;
->   	struct kvm_host_map ghcb_map;
-> +	bool received_first_sipi;
->   
->   	/* SEV-ES scratch area support */
->   	void *ghcb_sa;
-> @@ -591,6 +592,7 @@ void sev_es_init_vmcb(struct vcpu_svm *svm);
->   void sev_es_create_vcpu(struct vcpu_svm *svm);
->   void sev_es_vcpu_load(struct vcpu_svm *svm, int cpu);
->   void sev_es_vcpu_put(struct vcpu_svm *svm);
-> +void sev_vcpu_deliver_sipi_vector(struct kvm_vcpu *vcpu, u8 vector);
->   
->   /* vmenter.S */
->   
-> diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-> index 75c9c6a0a3a4..2af05d3b0590 100644
-> --- a/arch/x86/kvm/vmx/vmx.c
-> +++ b/arch/x86/kvm/vmx/vmx.c
-> @@ -7707,6 +7707,8 @@ static struct kvm_x86_ops vmx_x86_ops __initdata = {
->   	.msr_filter_changed = vmx_msr_filter_changed,
->   	.complete_emulated_msr = kvm_complete_insn_gp,
->   	.cpu_dirty_log_size = vmx_cpu_dirty_log_size,
-> +
-> +	.vcpu_deliver_sipi_vector = kvm_vcpu_deliver_sipi_vector,
->   };
->   
->   static __init int hardware_setup(void)
-> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-> index 648c677b12e9..660683a70b79 100644
-> --- a/arch/x86/kvm/x86.c
-> +++ b/arch/x86/kvm/x86.c
-> @@ -7974,17 +7974,22 @@ void kvm_arch_exit(void)
->   	kmem_cache_destroy(x86_fpu_cache);
->   }
->   
-> -int kvm_vcpu_halt(struct kvm_vcpu *vcpu)
-> +int __kvm_vcpu_halt(struct kvm_vcpu *vcpu, int state, int reason)
->   {
->   	++vcpu->stat.halt_exits;
->   	if (lapic_in_kernel(vcpu)) {
-> -		vcpu->arch.mp_state = KVM_MP_STATE_HALTED;
-> +		vcpu->arch.mp_state = state;
->   		return 1;
->   	} else {
-> -		vcpu->run->exit_reason = KVM_EXIT_HLT;
-> +		vcpu->run->exit_reason = reason;
->   		return 0;
->   	}
->   }
-> +
-> +int kvm_vcpu_halt(struct kvm_vcpu *vcpu)
-> +{
-> +	return __kvm_vcpu_halt(vcpu, KVM_MP_STATE_HALTED, KVM_EXIT_HLT);
-> +}
->   EXPORT_SYMBOL_GPL(kvm_vcpu_halt);
->   
->   int kvm_emulate_halt(struct kvm_vcpu *vcpu)
-> @@ -7998,6 +8003,14 @@ int kvm_emulate_halt(struct kvm_vcpu *vcpu)
->   }
->   EXPORT_SYMBOL_GPL(kvm_emulate_halt);
->   
-> +int kvm_emulate_ap_reset_hold(struct kvm_vcpu *vcpu)
-> +{
-> +	int ret = kvm_skip_emulated_instruction(vcpu);
-> +
-> +	return __kvm_vcpu_halt(vcpu, KVM_MP_STATE_AP_RESET_HOLD, KVM_EXIT_AP_RESET_HOLD) && ret;
-> +}
-> +EXPORT_SYMBOL_GPL(kvm_emulate_ap_reset_hold);
-> +
->   #ifdef CONFIG_X86_64
->   static int kvm_pv_clock_pairing(struct kvm_vcpu *vcpu, gpa_t paddr,
->   			        unsigned long clock_type)
-> @@ -9092,6 +9105,7 @@ static inline int vcpu_block(struct kvm *kvm, struct kvm_vcpu *vcpu)
->   	kvm_apic_accept_events(vcpu);
->   	switch(vcpu->arch.mp_state) {
->   	case KVM_MP_STATE_HALTED:
-> +	case KVM_MP_STATE_AP_RESET_HOLD:
->   		vcpu->arch.pv.pv_unhalted = false;
->   		vcpu->arch.mp_state =
->   			KVM_MP_STATE_RUNNABLE;
-> @@ -9518,8 +9532,9 @@ int kvm_arch_vcpu_ioctl_get_mpstate(struct kvm_vcpu *vcpu,
->   		kvm_load_guest_fpu(vcpu);
->   
->   	kvm_apic_accept_events(vcpu);
-> -	if (vcpu->arch.mp_state == KVM_MP_STATE_HALTED &&
-> -					vcpu->arch.pv.pv_unhalted)
-> +	if ((vcpu->arch.mp_state == KVM_MP_STATE_HALTED ||
-> +	     vcpu->arch.mp_state == KVM_MP_STATE_AP_RESET_HOLD) &&
-> +	    vcpu->arch.pv.pv_unhalted)
->   		mp_state->mp_state = KVM_MP_STATE_RUNNABLE;
->   	else
->   		mp_state->mp_state = vcpu->arch.mp_state;
-> @@ -10150,6 +10165,7 @@ void kvm_vcpu_deliver_sipi_vector(struct kvm_vcpu *vcpu, u8 vector)
->   	kvm_set_segment(vcpu, &cs, VCPU_SREG_CS);
->   	kvm_rip_write(vcpu, 0);
->   }
-> +EXPORT_SYMBOL_GPL(kvm_vcpu_deliver_sipi_vector);
->   
->   int kvm_arch_hardware_enable(void)
->   {
-> diff --git a/include/uapi/linux/kvm.h b/include/uapi/linux/kvm.h
-> index 886802b8ffba..374c67875cdb 100644
-> --- a/include/uapi/linux/kvm.h
-> +++ b/include/uapi/linux/kvm.h
-> @@ -251,6 +251,7 @@ struct kvm_hyperv_exit {
->   #define KVM_EXIT_X86_RDMSR        29
->   #define KVM_EXIT_X86_WRMSR        30
->   #define KVM_EXIT_DIRTY_RING_FULL  31
-> +#define KVM_EXIT_AP_RESET_HOLD    32
->   
->   /* For KVM_EXIT_INTERNAL_ERROR */
->   /* Emulate instruction failed. */
-> @@ -573,6 +574,7 @@ struct kvm_vapic_addr {
->   #define KVM_MP_STATE_CHECK_STOP        6
->   #define KVM_MP_STATE_OPERATING         7
->   #define KVM_MP_STATE_LOAD              8
-> +#define KVM_MP_STATE_AP_RESET_HOLD     9
->   
->   struct kvm_mp_state {
->   	__u32 mp_state;
+> I agree that the patch makes sense on its own. kunit depends on the
+> particular console. Note that "tty" is actually the UML-specific
+> stdio console implemented in arch/um/drivers/stdio_console.c.
 > 
 
+The proposal sounds like revert the problem commit 
+https://lore.kernel.org/lkml/20210107164400.17904-2-pmladek@suse.com/
+
+and also send kunit fix up. Sounds reasonable to me. I will send
+it for 5.11-rc3
+
+thanks,
+-- Shuah
