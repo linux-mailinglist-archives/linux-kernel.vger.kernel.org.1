@@ -2,93 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 858102ED38B
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 16:30:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 42B6B2ED380
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 16:28:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728506AbhAGPaI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 10:30:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37370 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726503AbhAGPaH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 10:30:07 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78074C0612F5;
-        Thu,  7 Jan 2021 07:28:48 -0800 (PST)
-Date:   Thu, 7 Jan 2021 16:28:43 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1610033325;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Ibf4lbjnLQq73uPQIikk1cOLrXZlZFMOQpG5OMPbtCQ=;
-        b=d/vq04muIoC7z/4L0G3Wy9fe60DwgKiiaxv/08Uab8lsZiU6APacbuthXtybD+gAtQO1hj
-        dM4TtyjJGJ5z+Jec1TpGsdurvydiBFXCKpg+ojBtyQeRhRP7YiG5poLL4U2D3ynBA4k5De
-        kCYWL6S+b2ZcCg7j1qn6HG27Qw3NopN43FQsafTOduoesbAvZedGwrvnnsL7BNcR7NYrbc
-        ekfWHu+a+pbufoGOIO7olXk/la+rlgLvsBnCuhzbNOXLBhUQNUc8CXcGpD7k5q+2NhqOCk
-        Vd9uCoYW+QAS3RWBdp5yAdIG86Bbbu2YLNVtNVK4aWoy391Q0Z20oQNtiDrqHQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1610033325;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Ibf4lbjnLQq73uPQIikk1cOLrXZlZFMOQpG5OMPbtCQ=;
-        b=1j9L/p/eWYVrdgVFgV+UCsa9ruyNqiFRX3bDJ5y2SAiMQQZnsOqUj5FWwW5L2hEYUwHHbD
-        lIcPebTxrDbAhZAA==
-From:   Sebastian Siewior <bigeasy@linutronix.de>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Ran Wang <ran.wang_1@nxp.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Jiafei Pan <jiafei.pan@nxp.com>,
-        linux-rt-users@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] [RFC] rt: kernel/sched/core: fix kthread_park() pending
- too long when CPU un-plugged
-Message-ID: <20210107152843.gyljmpctkwybfewh@linutronix.de>
-References: <20210107091841.19798-1-ran.wang_1@nxp.com>
- <X/bmU4byS7k46zWM@hirez.programming.kicks-ass.net>
+        id S1728310AbhAGP2U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 10:28:20 -0500
+Received: from mail.kernel.org ([198.145.29.99]:60696 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726359AbhAGP2T (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Jan 2021 10:28:19 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 58D5F23403;
+        Thu,  7 Jan 2021 15:27:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1610033258;
+        bh=3zkBKuvh5O9njYVZ7/x32WLyY2ph3SVrA7wza+8uQkI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=fb2uyLagmTQ7sjUIU2DaMwUtWK9X5BkZNzRm2AUIg6sjgaI5cjXCOf4YhsuCm1lt8
+         EGn6hZxiws7ZT2ZZaKNrePbxDe1D8xzEXtQ4Cb7ASqwdiGUEeSepK5yN7kiw8g0+Bs
+         TksBmtJVxtv9TU8BXvxNkjrncC7sez3ROKzyzE/c=
+Date:   Thu, 7 Jan 2021 16:28:58 +0100
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     zhangqiumiao1@huwei.com
+Cc:     jirislaby@kernel.org, linux-kernel@vger.kernel.org,
+        zhangqiumiao <zhangqiumiao1@huawei.com>
+Subject: Re: [PATCH] tty: fix timeout equals to 0 problem in tty_ioctl
+Message-ID: <X/couq0YmTE8ypTn@kroah.com>
+References: <1608348451-24082-1-git-send-email-zhangqiumiao1@huwei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <X/bmU4byS7k46zWM@hirez.programming.kicks-ass.net>
+In-Reply-To: <1608348451-24082-1-git-send-email-zhangqiumiao1@huwei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-01-07 11:45:39 [+0100], Peter Zijlstra wrote:
-> On Thu, Jan 07, 2021 at 05:18:41PM +0800, Ran Wang wrote:
-> > +
-> > +			if (IS_ENABLED(CONFIG_PREEMPT_RT) &&
-> > +			    !strncmp(p->comm, "ksoftirqd/", 10))
-> > +				schedule_hrtimeout(&to,
-> > +					HRTIMER_MODE_REL | HRTIMER_MODE_HARD);
-> > +			else
-> > +				schedule_hrtimeout(&to, HRTIMER_MODE_REL);
+On Sat, Dec 19, 2020 at 11:27:31AM +0800, zhangqiumiao1@huwei.com wrote:
+> From: zhangqiumiao <zhangqiumiao1@huawei.com>
 > 
-> This is horrific, why did you not self-censor and spare me the mental
-> anguish of having to formulate a CoC compliant response?
+> Fix the problem that tty buffer data was not flushed when timeout=0.
+
+How can that happen?  We need a lot better changelog text here please.
+
 > 
-> It also violates coding style, but given the total lack of any sense,
-> that seems like a minor detail.
+> Signed-off-by: zhangqiumiao <zhangqiumiao1@huawei.com>
+
+I need a "full" name here, please.
+
+> ---
+>  drivers/tty/tty_ioctl.c | 12 ++++++++++--
+>  1 file changed, 10 insertions(+), 2 deletions(-)
 > 
-> Why can't we use HRTIMER_MODE_HARD unconditionally?
+> diff --git a/drivers/tty/tty_ioctl.c b/drivers/tty/tty_ioctl.c
+> index 4de1c6ddb8ff..f9d4b6e22308 100644
+> --- a/drivers/tty/tty_ioctl.c
+> +++ b/drivers/tty/tty_ioctl.c
+> @@ -220,13 +220,21 @@ void tty_wait_until_sent(struct tty_struct *tty, long timeout)
+>  	tty_debug_wait_until_sent(tty, "wait until sent, timeout=%ld\n", timeout);
+>  
+>  	if (!timeout)
+> -		timeout = MAX_SCHEDULE_TIMEOUT;
+> +		timeout = 60 * HZ;
 
-I had a similar patch in -RT and dropped it in v5.10-rc7-rt16.
-It was added because RT couldn't boot since creating the boot-threads
-didn't work before the ksoftirqd was up. This was fixed by commit
-   26c7295be0c5e ("kthread: Do not preempt current task if it is going to call schedule()")
+Why pick this random number?
 
-and live was good again.
-tglx (also) suggested to add HRTIMER_MODE_HARD unconditionally (it
-looked at SYSTEM_STATE back then) and I was only worried some abuse via
-userland.
-This sleep can be triggered by ptrace/strace() and with brief testing I
-can trigger the sleep there but I don't get it anywhere near where I
-would notice it with cyclictest.
+>  
+>  	timeout = wait_event_interruptible_timeout(tty->write_wait,
+>  			!tty_chars_in_buffer(tty), timeout);
+> -	if (timeout <= 0)
+> +	if (timeout < 0)
+>  		return;
+>  
+> +	if (timeout == 0) {
+> +		if (tty->ops->flush_buffer) {
+> +			pr_info("%s: flush buffer\n", __func__);
 
-Sebastian
+Debugging code needs to be removed.
+
+thanks,
+
+greg k-h
