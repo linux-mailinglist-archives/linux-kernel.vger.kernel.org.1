@@ -2,94 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 87E912ED226
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 15:32:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E80332ED2B2
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 15:38:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728205AbhAGOay (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 09:30:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56564 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725965AbhAGOay (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 09:30:54 -0500
-Received: from mail-il1-x131.google.com (mail-il1-x131.google.com [IPv6:2607:f8b0:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F285AC0612F4
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Jan 2021 06:30:13 -0800 (PST)
-Received: by mail-il1-x131.google.com with SMTP id x15so6925305ilq.1
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Jan 2021 06:30:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=lZ360d7dY3x4Jmcj9v1OSvGTbH537K+ABkcsuSU72C8=;
-        b=rcvZNaCpiXJk5A0gg5iqqkJ8wwepUifSO4ZxnGjp+xbhpY4yvG0P0RAtM6v68zgFOG
-         botTIOkAFdn7V0zMOYz145VF5DUKbky4pJeobP8BUDcQND/V744pvmDeoFuHjy6PtLfO
-         A2icfEv0QkCuvv59EhNmnXNwxwjZBr8aiNdrNdc/A4mhDUk08WvbBr8L3Cz0XWujnI1A
-         KnoKHhMEvzvqgyoEfzcLlpH3Mg2WGBRapFJV7yA85fmNSHEnLSKcT0ghauwoOEmS4x02
-         7wMzU0eSo/WyciehLKr+OsZi/mjn2/506eEcDtEZMsJO+DFH/Ozp8+UVei8CEjabJQ98
-         zd+w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=lZ360d7dY3x4Jmcj9v1OSvGTbH537K+ABkcsuSU72C8=;
-        b=S8YutVUXOzS0TZa7lZqs+J1Cc8lwkrFUXuMMmewmx1fiDSOZmay/9AMrh31sUfYOT2
-         D5vL18YaO+mzUWLz3eyOGjILxIODGUw3KQA6D7XDyip0l9T4fOc1ShLh0gbtq4kkFSuX
-         iukEoqxatFAvuVKCsos/esNikbpquSx78GBHHdksv/90HYod4WzpnzBGIgFRs+laKdyc
-         Oy5xX2/rtGKyhHQwGIjxIsf0r2WFX4dejKoua8EYpV0omDswhy4pMhS3Of/uWgzRdQsJ
-         TLh4VIVC1ez4qXnTBMUqDO57x6Hk1YGCZhvFp9UoVvMhptngDqEMIGiQnmdra49fgm7o
-         nvvw==
-X-Gm-Message-State: AOAM530i55okdy3EJiNqAKZ9CVpUIj23ERrYqtDk4PFgrECI/CcxLOlj
-        pqL/YgPUKZxilqwt5RIl/fNO8Q==
-X-Google-Smtp-Source: ABdhPJwm3VK3HntHK43XEXoAPkYpbM5dOSeaU4Wlzzh7ajTQcVlU6zolWFBvGElXenJm+wfSEkhO1w==
-X-Received: by 2002:a92:bbc1:: with SMTP id x62mr7112810ilk.73.1610029813451;
-        Thu, 07 Jan 2021 06:30:13 -0800 (PST)
-Received: from [192.168.1.93] (pool-71-163-245-5.washdc.fios.verizon.net. [71.163.245.5])
-        by smtp.gmail.com with ESMTPSA id f3sm4527282ilu.74.2021.01.07.06.30.12
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 07 Jan 2021 06:30:12 -0800 (PST)
-Subject: Re: [PATCH v4 04/37] [RFC] firmware: arm_scmi: introduce bare get/put
- protocols ops
-To:     Cristian Marussi <cristian.marussi@arm.com>,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Cc:     sudeep.holla@arm.com, lukasz.luba@arm.com,
-        james.quinlan@broadcom.com, Jonathan.Cameron@Huawei.com,
-        f.fainelli@gmail.com, etienne.carriere@linaro.org,
-        vincent.guittot@linaro.org, souvik.chakravarty@arm.com
-References: <20210106201610.26538-1-cristian.marussi@arm.com>
- <20210106201610.26538-5-cristian.marussi@arm.com>
-From:   Thara Gopinath <thara.gopinath@linaro.org>
-Message-ID: <25d2e1ca-52dc-69a2-636e-211a21884f92@linaro.org>
-Date:   Thu, 7 Jan 2021 09:30:11 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1729476AbhAGOgg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 09:36:36 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46396 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729289AbhAGOcT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Jan 2021 09:32:19 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2491A2333E;
+        Thu,  7 Jan 2021 14:31:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1610029877;
+        bh=USX+2TpBUoiVKLv8nPZdH7ewWdDApeo2U7DhVBNhRjU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=RZH25cGJx/88oQyPhBFR8c1wnkXYfb6eScg1CVBVUNQzBscuJDX8LfAXJMVZSSrRZ
+         7rJBo4O38ooluwjCJdHOgNoBATY9JyCRjgZMKapBa+BYwxFfoAhQaBgRFm6/58mJpd
+         1Eqkwp8hEuIvAVtBULVc78CtUvN8YNrIWsW+gDAXEjMUGQHLA7BbPUiEKbl3v6cnJ6
+         A3ixb7vvbb/xK4rN/9eg1QyNSQf3pt+UUFvnec3XXKGHY44ImSF8gN7Oz4ooi1b36G
+         66gwHgDiePqd7zfSEfXDRumUKc8oKwOQNAQ1fEMLUwq8BvJif2jJX/oMoUgX4Y+JGo
+         D2571O3jAI48Q==
+Date:   Thu, 7 Jan 2021 15:31:12 +0100
+From:   Jessica Yu <jeyu@kernel.org>
+To:     Will McVicker <willmcvicker@google.com>
+Cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        Saravana Kannan <saravanak@google.com>,
+        linux-kernel@vger.kernel.org, linux-kbuild@vger.kernel.org,
+        kernel-team@android.com
+Subject: Re: [PATCH v4] modules: introduce the MODULE_SCMVERSION config
+Message-ID: <20210107143111.GA30412@linux-8ccs>
+References: <20201216220850.659584-1-willmcvicker@google.com>
+ <20201218120138.GA5265@linux-8ccs>
+ <CABYd82bf+RACxboKCxoV=N63ynKwPspGhb6G5yYPiCFKnOk9Hw@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20210106201610.26538-5-cristian.marussi@arm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <CABYd82bf+RACxboKCxoV=N63ynKwPspGhb6G5yYPiCFKnOk9Hw@mail.gmail.com>
+X-OS:   Linux linux-8ccs 4.12.14-lp150.12.28-default x86_64
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
++++ Will McVicker [06/01/21 10:44 -0800]:
+>Thanks for the vacation notice Jessica! I'm just letting you know I'm
+>back as well and am happy to respond to any concerns regarding v4 when
+>you get all caught up.
+>
+>I hope you had a relaxing holiday :)
 
+Hi Will - thanks, same to you!
 
-On 1/6/21 3:15 PM, Cristian Marussi wrote:
-> Expose to the SCMI drivers a non managed version of a common protocols API
-> based on generic get/put methods and protocol handles.
-> 
-> All drivers still keep using the old API, no functional change.
-> 
-> Signed-off-by: Cristian Marussi <cristian.marussi@arm.com>
-> ---
-> These non devres methods are probably not needed, given the devm_ ones are
-> already provided and any SCMI driver (user of the API) has surely available
-> an scmi_device reference to use in the devm_ flavour...so the RFC
+>On Fri, Dec 18, 2020 at 4:01 AM Jessica Yu <jeyu@kernel.org> wrote:
+>>
+>> +++ Will McVicker [16/12/20 22:08 +0000]:
+>> >Config MODULE_SCMVERSION introduces a new module attribute --
+>> >`scmversion` -- which can be used to identify a given module's SCM
+>> >version.  This is very useful for developers that update their kernel
+>> >independently from their kernel modules or vice-versa since the SCM
+>> >version provided by UTS_RELEASE (`uname -r`) will now differ from the
+>> >module's vermagic attribute.
+>> >
+>> >For example, we have a CI setup that tests new kernel changes on the
+>> >hikey960 and db845c devices without updating their kernel modules. When
+>> >these tests fail, we need to be able to identify the exact device
+>> >configuration the test was using. By including MODULE_SCMVERSION, we can
+>> >identify the exact kernel and modules' SCM versions for debugging the
+>> >failures.
+>> >
+>> >Additionally, by exposing the SCM version via the sysfs node
+>> >/sys/module/MODULENAME/scmversion, one can also verify the SCM versions
+>> >of the modules loaded from the initramfs. Currently, modinfo can only
+>> >retrieve module attributes from the module's ko on disk and not from the
+>> >actual module that is loaded in RAM.
+>> >
+>> >You can retrieve the SCM version in two ways,
+>> >
+>> >1) By using modinfo:
+>> >    > modinfo -F scmversion MODULENAME
+>> >2) By module sysfs node:
+>> >    > cat /sys/module/MODULENAME/scmversion
+>> >
+>> >Signed-off-by: Will McVicker <willmcvicker@google.com>
+>> >---
+[ added back diff ]
+>> >Changelog since v3:
+>> >- Dropped [PATCH v2 1/2] scripts/setlocalversion: allow running in a subdir
+>> >
+>> > Documentation/ABI/stable/sysfs-module | 18 ++++++++++++++++++
+>> > include/linux/module.h                |  1 +
+>> > init/Kconfig                          | 12 ++++++++++++
+>> > kernel/module.c                       |  2 ++
+>> > scripts/Makefile.modpost              | 22 ++++++++++++++++++++++
+>> > scripts/mod/modpost.c                 | 24 +++++++++++++++++++++++-
+>> > 6 files changed, 78 insertions(+), 1 deletion(-)
+>> >
+>> >diff --git a/Documentation/ABI/stable/sysfs-module b/Documentation/ABI/stable/sysfs-module
+>> >index 6272ae5fb366..2ba731767737 100644
+>> >--- a/Documentation/ABI/stable/sysfs-module
+>> >+++ b/Documentation/ABI/stable/sysfs-module
+>> >@@ -32,3 +32,21 @@ Description:
+>> > 		Note: If the module is built into the kernel, or if the
+>> > 		CONFIG_MODULE_UNLOAD kernel configuration value is not enabled,
+>> > 		this file will not be present.
+>> >+
+>> >+What:		/sys/module/MODULENAME/scmversion
+>> >+Date:		November 2020
+>> >+KernelVersion:	5.11
 
-I agree. The protocol devices can use the devm_ flavor.
+I guess we'll have to bump KernelVersion now (sorry about the timing!)
 
+>> >+Contact:	Will McVicker <willmcvicker@google.com>
+>> >+Description:	This read-only file will appear if modpost was supplied with an
+>> >+		SCM version for the module. It can be enabled with the config
+>> >+		MODULE_SCMVERSION. The SCM version is retrieved by
+>> >+		scripts/setlocalversion, which means that the presence of this
+>> >+		file depends on CONFIG_LOCALVERSION_AUTO=y or LOCALVERSION=.
 
--- 
-Warm Regards
-Thara
+I think the "or LOCALVERSION=" part is inaccurate, right? We need
+just LOCALVERSION_AUTO for the full scm string for this to work.
+
+>> >+		When read, the SCM version that the module was compiled with is
+>> >+		returned. The SCM version is returned in the following format::
+>> >+
+>> >+		===
+>> >+		Git:		g[a-f0-9]\+(-dirty)\?
+>> >+		Mercurial:	hg[a-f0-9]\+(-dirty)\?
+>> >+		Subversion:	svn[0-9]\+
+>> >+		===
+>> >diff --git a/include/linux/module.h b/include/linux/module.h
+>> >index c4e7a887f469..6bd710308863 100644
+>> >--- a/include/linux/module.h
+>> >+++ b/include/linux/module.h
+>> >@@ -372,6 +372,7 @@ struct module {
+>> > 	struct module_attribute *modinfo_attrs;
+>> > 	const char *version;
+>> > 	const char *srcversion;
+>> >+	const char *scmversion;
+>> > 	struct kobject *holders_dir;
+>> >
+>> > 	/* Exported symbols */
+>> >diff --git a/init/Kconfig b/init/Kconfig
+>> >index b77c60f8b963..d9ae12f16ba2 100644
+>> >--- a/init/Kconfig
+>> >+++ b/init/Kconfig
+>> >@@ -2131,6 +2131,18 @@ config MODULE_SRCVERSION_ALL
+>> > 	  the version).  With this option, such a "srcversion" field
+>> > 	  will be created for all modules.  If unsure, say N.
+>> >
+>> >+config MODULE_SCMVERSION
+>> >+	bool "SCM version for modules"
+>> >+	depends on LOCALVERSION_AUTO
+>> >+	help
+>> >+	  This enables the module attribute "scmversion" which can be used
+>> >+	  by developers to identify the SCM version of a given module, e.g.
+>> >+	  git sha1 or hg sha1. The SCM version can be queried by modinfo or
+>> >+	  via the sysfs node: /sys/modules/MODULENAME/scmversion. This is
+>> >+	  useful when the kernel or kernel modules are updated separately
+>> >+	  since that causes the vermagic of the kernel and the module to
+>> >+	  differ.
+
+Since I consider this a debug/developer option, let's add a "If
+unsure, say N." at the end of this, similar to the other
+module options.
+
+Thanks!
+
+Jessica
