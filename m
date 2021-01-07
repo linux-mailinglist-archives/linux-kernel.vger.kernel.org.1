@@ -2,257 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E929C2ED712
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 20:01:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CC9C2ED717
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 20:03:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729139AbhAGTAi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 14:00:38 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:25644 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727749AbhAGTAi (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 14:00:38 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1610045950;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=5Xi2LsUJTfR3F6Kw+mgZKWaNP6g+KrERh5YVstyYnNc=;
-        b=VX019de+AbkSmsJBO+ipq4JTtcRS3vYWx9vvZ5r4xf26Ly1BKlA7aD34ckuFvG+bY+6zot
-        ec5tqfJQR5fb2olBZpnMoM7I9U7P3E/i11I7wdz79Dtc8VM8aVDITXEmjXCVYrcq9uS5/O
-        FbusfHwHhyC1nF7f+t1+oxL6rsdMHQ4=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-129-1dVGJka0OZeA2-GkdfYnAA-1; Thu, 07 Jan 2021 13:59:06 -0500
-X-MC-Unique: 1dVGJka0OZeA2-GkdfYnAA-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 7143D107ACF5;
-        Thu,  7 Jan 2021 18:59:04 +0000 (UTC)
-Received: from file01.intranet.prod.int.rdu2.redhat.com (file01.intranet.prod.int.rdu2.redhat.com [10.11.5.7])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 0613C19630;
-        Thu,  7 Jan 2021 18:59:03 +0000 (UTC)
-Received: from file01.intranet.prod.int.rdu2.redhat.com (localhost [127.0.0.1])
-        by file01.intranet.prod.int.rdu2.redhat.com (8.14.4/8.14.4) with ESMTP id 107Ix3eV025400;
-        Thu, 7 Jan 2021 13:59:03 -0500
-Received: from localhost (mpatocka@localhost)
-        by file01.intranet.prod.int.rdu2.redhat.com (8.14.4/8.14.4/Submit) with ESMTP id 107Ix18i025339;
-        Thu, 7 Jan 2021 13:59:02 -0500
-X-Authentication-Warning: file01.intranet.prod.int.rdu2.redhat.com: mpatocka owned process doing -bs
-Date:   Thu, 7 Jan 2021 13:59:01 -0500 (EST)
-From:   Mikulas Patocka <mpatocka@redhat.com>
-X-X-Sender: mpatocka@file01.intranet.prod.int.rdu2.redhat.com
-To:     Matthew Wilcox <willy@infradead.org>
-cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Ira Weiny <ira.weiny@intel.com>, Jan Kara <jack@suse.cz>,
-        Steven Whitehouse <swhiteho@redhat.com>,
-        Eric Sandeen <esandeen@redhat.com>,
-        Dave Chinner <dchinner@redhat.com>,
-        "Theodore Ts'o" <tytso@mit.edu>,
-        Wang Jianchao <jianchao.wan9@gmail.com>,
-        "Kani, Toshi" <toshi.kani@hpe.com>,
-        "Norton, Scott J" <scott.norton@hpe.com>,
-        "Tadakamadla, Rajesh" <rajesh.tadakamadla@hpe.com>,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-nvdimm@lists.01.org
-Subject: Re: Expense of read_iter
-In-Reply-To: <20210107151125.GB5270@casper.infradead.org>
-Message-ID: <alpine.LRH.2.02.2101071110080.30654@file01.intranet.prod.int.rdu2.redhat.com>
-References: <alpine.LRH.2.02.2101061245100.30542@file01.intranet.prod.int.rdu2.redhat.com> <20210107151125.GB5270@casper.infradead.org>
-User-Agent: Alpine 2.02 (LRH 1266 2009-07-14)
+        id S1729131AbhAGTDB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 14:03:01 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41050 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726326AbhAGTDB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Jan 2021 14:03:01 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 45AB723435;
+        Thu,  7 Jan 2021 19:02:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1610046140;
+        bh=TZFc2uhAUvgMw7NBM7C6fXOSdHM+P8snV02JquEUOw4=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=BTS3AwKfTR0dYLwq+62mTag8GjfkQE4fBld0gDTblX2L/0l7ze+dHXhHSb/zorx27
+         qQSR+bQ9VC8Jxqcs84UA4jEfxK7bfRAKN41BLnUHXdzn1cd+9ZN80AJyTlmdOelPUD
+         vhuisk5IUBEXTtvBNXs9dyJNd/VVSMST+In3X4PzJl1+GpXhEHJL4MqcJaRXguuIqx
+         AH1sYsCSyxB9uXi1DPb9oomF6U4lH7Q1gvKa7xX6o9rO+QxIHduKhyNf908nAX1ueP
+         kbAY+J2mr03glNJPEpgT97PwdaGqHC+OnYJeqrYYXHR65gyuhfXEV6OmoACBEiSzfK
+         rttUvOPqo/jZA==
+Received: by mail-ej1-f50.google.com with SMTP id jx16so11115579ejb.10;
+        Thu, 07 Jan 2021 11:02:20 -0800 (PST)
+X-Gm-Message-State: AOAM530fWx557vdWBUtW3JVQqqEcCxT5rr+/5LOUeN8oq2xnw09fnufj
+        FVj/LWNwiZ9EHvSQK/sBIYaMuuKXn3PcZ1spBQ==
+X-Google-Smtp-Source: ABdhPJzSOhiLtuwC0AOfF/dJCQPjohzs36dVzzBpRAyXqzab3yXw9Q53sB/TVrj7BjS+gNHtCNXY41OIMTOKGMhEoyo=
+X-Received: by 2002:a17:906:4146:: with SMTP id l6mr138538ejk.341.1610046138784;
+ Thu, 07 Jan 2021 11:02:18 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+References: <cover.1609844956.git.viresh.kumar@linaro.org> <CAL_JsqJMr3vfz2B29vzvFALCt_5-J__eJv2TZHJ0sR9nM=xXaw@mail.gmail.com>
+ <CAK7LNAR9fdjZ7iWKSWvJ9etGZkd+n87cmXKN-Hah8DBDYbuAwA@mail.gmail.com>
+In-Reply-To: <CAK7LNAR9fdjZ7iWKSWvJ9etGZkd+n87cmXKN-Hah8DBDYbuAwA@mail.gmail.com>
+From:   Rob Herring <robh+dt@kernel.org>
+Date:   Thu, 7 Jan 2021 12:02:06 -0700
+X-Gmail-Original-Message-ID: <CAL_Jsq+DFF0tRv61XCAGLJYYu=ow8Ah8prd6su=6dpoU_AyMXw@mail.gmail.com>
+Message-ID: <CAL_Jsq+DFF0tRv61XCAGLJYYu=ow8Ah8prd6su=6dpoU_AyMXw@mail.gmail.com>
+Subject: Re: [RFC 0/2] kbuild: Add support to build overlays (%.dtbo)
+To:     Masahiro Yamada <masahiroy@kernel.org>,
+        Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>,
+        Pantelis Antoniou <pantelis.antoniou@konsulko.com>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Michal Marek <michal.lkml@markovi.net>,
+        DTML <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Bill Mills <bill.mills@linaro.org>, tero.kristo@gmail.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Jan 6, 2021 at 10:35 PM Masahiro Yamada <masahiroy@kernel.org> wrote:
+>
+> On Wed, Jan 6, 2021 at 12:21 AM Rob Herring <robh+dt@kernel.org> wrote:
+> >
+> > On Tue, Jan 5, 2021 at 4:24 AM Viresh Kumar <viresh.kumar@linaro.org> wrote:
+> > >
+> > > Hello,
+> > >
+> > > Here is an attempt to make some changes in the kernel to allow building
+> > > of device tree overlays.
+> > >
+> > > While at it, I would also like to discuss about how we should mention
+> > > the base DT blobs in the Makefiles for the overlays, so they can be
+> > > build tested to make sure the overlays apply properly.
+> > >
+> > > A simple way is to mention that with -base extension, like this:
+> > >
+> > > $(overlay-file)-base := platform-base.dtb
+> > >
+> > > Any other preference ?
+>
+>
+>
+> Viresh's patch is not enough.
+>
+> We will need to change .gitignore
+> and scripts/Makefile.dtbinst as well.
+>
+>
+> In my understanding, the build rule is completely the same
+> between .dtb and .dtbo
+> As Rob mentioned, I am not sure if we really need/want
+> a separate extension.
+>
+>
+> A counter approach is to use an extension like '.ovl.dtb'
+> It clarifies it is an overlay fragment without changing
+> anything in our build system or the upstream DTC project.
+>
+> We use chained extension in some places, for example,
+> .dt.yaml for schema yaml files.
+>
+>
+>
+> dtb-$(CONFIG_ARCH_FOO) += \
+>     foo-board.dtb \
+>     foo-overlay1.ovl.dtb \
+>     foo-overlay2.ovl.dtb
+>
+>
+> Overlay DT source file names must end with '.ovl.dts'
+
+I like that suggestion as then it's also clear looking at the source
+files which ones are overlays. Or we'd need .dtso to be consistent.
 
 
-On Thu, 7 Jan 2021, Matthew Wilcox wrote:
+> > I think we'll want something similar to how '-objs' works for modules:
+> >
+> > foo-board-1-dtbs := foo-board.dtb foo-overlay1.dtbo
+> > foo-board-2-dtbs := foo-board.dtb foo-overlay2.dtbo
+> > foo-board-1-2-dtbs := foo-board.dtb foo-overlay1.dtbo foo-overlay2.dtbo
+> > dtbs-y += foo-board-1.dtb foo-board-2.dtb foo-board-1-2.dtb
+> >
+> > (One difference here is we will want all the intermediate targets
+> > unlike .o files.)
+> >
+> > You wouldn't necessarily have all the above combinations, but you have
+> > to allow for them. I'm not sure how we'd handle applying any common
+> > overlays where the base and overlay are in different directories.
+>
+>
+> I guess the motivation for supporting -dtbs is to
+> add per-board -@ option only when it contains *.dtbo pattern.
 
-> On Thu, Jan 07, 2021 at 08:15:41AM -0500, Mikulas Patocka wrote:
-> > I'd like to ask about this piece of code in __kernel_read:
-> > 	if (unlikely(!file->f_op->read_iter || file->f_op->read))
-> > 		return warn_unsupported...
-> > and __kernel_write:
-> > 	if (unlikely(!file->f_op->write_iter || file->f_op->write))
-> > 		return warn_unsupported...
-> > 
-> > - It exits with an error if both read_iter and read or write_iter and 
-> > write are present.
-> > 
-> > I found out that on NVFS, reading a file with the read method has 10% 
-> > better performance than the read_iter method. The benchmark just reads the 
-> > same 4k page over and over again - and the cost of creating and parsing 
-> > the kiocb and iov_iter structures is just that high.
-> 
-> Which part of it is so expensive?
+I hadn't thought that far, but yeah, that would be good. Really, I
+just want it to be controlled per SoC family at least.
 
-The read_iter path is much bigger:
-vfs_read		- 0x160 bytes
-new_sync_read		- 0x160 bytes
-nvfs_rw_iter		- 0x100 bytes
-nvfs_rw_iter_locked	- 0x4a0 bytes
-iov_iter_advance	- 0x300 bytes
+> But, as you notice, if the overlay files are located
+> under drivers/, it is difficult to add -@ per board.
 
-If we go with the "read" method, there's just:
-vfs_read		- 0x160 bytes
-nvfs_read		- 0x200 bytes
+Generally, they shouldn't be. The exceptions are what we already have
+there which are old dt fixups and unittests.
 
-> Is it worth, eg adding an iov_iter
-> type that points to a single buffer instead of a single-member iov?
-> 
-> +++ b/include/linux/uio.h
-> @@ -19,6 +19,7 @@ struct kvec {
->  
->  enum iter_type {
->         /* iter types */
-> +       ITER_UBUF = 2,
->         ITER_IOVEC = 4,
->         ITER_KVEC = 8,
->         ITER_BVEC = 16,
-> @@ -36,6 +36,7 @@ struct iov_iter {
->         size_t iov_offset;
->         size_t count;
->         union {
-> +               void __user *buf;
->                 const struct iovec *iov;
->                 const struct kvec *kvec;
->                 const struct bio_vec *bvec;
-> 
-> and then doing all the appropriate changes to make that work.
+We want the stripped DT repo (devicetree-rebasing) to have all this
+and drivers/ is stripped out. (Which reminds me, the DT repo will need
+some work to support all this. It's a different build sys.)
+
+> Another scenario is, some people may want to compile
+> downstream overlay files (i.e. similar concept as external modules),
+> then we have no idea which base board should be given with the -@ flag.
+>
+>
+> I'd rather be tempted to add it globally
+>
+>
+> ifdef CONFIG_OF_OVERLAY
+> DTC_FLAGS += -@
+> endif
+
+We've already rejected doing that. Turning on '-@' can grow the dtb
+size by a significant amount which could be problematic for some
+boards.
 
 
-I tried this benchmark on nvfs:
+> > Another thing here is adding all the above is not really going to
+> > scale on arm32 where we have a single dts directory. We need to move
+> > things to per vendor/soc family directories. I have the script to do
+> > this. We just need to agree on the vendor names and get Arnd/Olof to
+> > run it. I also want that so we can enable schema checks by default
+> > once a vendor is warning free (the whole tree is going to take
+> > forever).
+>
+>
+> If this is a big churn, perhaps we could make it extreme
+> to decouple DT and Linux-arch.
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <unistd.h>
+I would be fine with that, but I don't think we'll get agreement
+there. With that amount of change, we'll be discussing git submodule
+again.
 
-int main(void)
-{
-	unsigned long i;
-	unsigned long l = 1UL << 38;
-	unsigned s = 4096;
-	void *a = valloc(s);
-	if (!a) perror("malloc"), exit(1);
-	for (i = 0; i < l; i += s) {
-		if (pread(0, a, s, 0) != s) perror("read"), exit(1);
-	}
-	return 0;
-}
+Rereading the thread on vendor directories[1], we may just move boards
+one vendor at a time. We could just make that a prerequisite for
+vendor supporting overlays.
 
+> arch/*/boot/dts/*.dts
+>  ->  dts/<vendor>/*.dts
+>
+> Documentation/devicetree/bindings
+>  -> dts/Bindings/
+>
+> include/dt-bindings/
+>  -> dts/include/dt-bindings/
+>
+>
+>
+> Then, other project can take dts/
+> to reuse for them.
 
-Result, using the read_iter method:
+This is already possible with devicetree-rebasing.git. Though it is
+still by arch.
 
-# To display the perf.data header info, please use --header/--header-only options.
-#
-#
-# Total Lost Samples: 0
-#
-# Samples: 3K of event 'cycles'
-# Event count (approx.): 1049885560
-#
-# Overhead  Command  Shared Object     Symbol                               
-# ........  .......  ................  .....................................
-#
-    47.32%  pread    [kernel.vmlinux]  [k] copy_user_generic_string
-     7.83%  pread    [kernel.vmlinux]  [k] current_time
-     6.57%  pread    [nvfs]            [k] nvfs_rw_iter_locked
-     5.59%  pread    [kernel.vmlinux]  [k] entry_SYSCALL_64
-     4.23%  pread    libc-2.31.so      [.] __libc_pread
-     3.51%  pread    [kernel.vmlinux]  [k] syscall_return_via_sysret
-     2.34%  pread    [kernel.vmlinux]  [k] entry_SYSCALL_64_after_hwframe
-     2.34%  pread    [kernel.vmlinux]  [k] vfs_read
-     2.34%  pread    [kernel.vmlinux]  [k] __fsnotify_parent
-     2.31%  pread    [kernel.vmlinux]  [k] new_sync_read
-     2.21%  pread    [nvfs]            [k] nvfs_bmap
-     1.89%  pread    [kernel.vmlinux]  [k] iov_iter_advance
-     1.71%  pread    [kernel.vmlinux]  [k] __x64_sys_pread64
-     1.59%  pread    [kernel.vmlinux]  [k] atime_needs_update
-     1.24%  pread    [nvfs]            [k] nvfs_rw_iter
-     0.94%  pread    [kernel.vmlinux]  [k] touch_atime
-     0.75%  pread    [kernel.vmlinux]  [k] syscall_enter_from_user_mode
-     0.72%  pread    [kernel.vmlinux]  [k] ktime_get_coarse_real_ts64
-     0.68%  pread    [kernel.vmlinux]  [k] down_read
-     0.62%  pread    [kernel.vmlinux]  [k] exit_to_user_mode_prepare
-     0.52%  pread    [kernel.vmlinux]  [k] syscall_exit_to_user_mode
-     0.49%  pread    [kernel.vmlinux]  [k] syscall_exit_to_user_mode_prepare
-     0.47%  pread    [kernel.vmlinux]  [k] __fget_light
-     0.46%  pread    [kernel.vmlinux]  [k] do_syscall_64
-     0.42%  pread    pread             [.] main
-     0.33%  pread    [kernel.vmlinux]  [k] up_read
-     0.29%  pread    [kernel.vmlinux]  [k] iov_iter_init
-     0.16%  pread    [kernel.vmlinux]  [k] __fdget
-     0.10%  pread    [kernel.vmlinux]  [k] entry_SYSCALL_64_safe_stack
-     0.03%  pread    pread             [.] pread@plt
-     0.00%  perf     [kernel.vmlinux]  [k] x86_pmu_enable_all
+Rob
 
-
-#
-# (Tip: Use --symfs <dir> if your symbol files are in non-standard locations)
-#
-
-
-
-Result, using the read method:
-
-# To display the perf.data header info, please use --header/--header-only options.
-#
-#
-# Total Lost Samples: 0
-#
-# Samples: 3K of event 'cycles'
-# Event count (approx.): 1312158116
-#
-# Overhead  Command  Shared Object     Symbol                               
-# ........  .......  ................  .....................................
-#
-    60.77%  pread    [kernel.vmlinux]  [k] copy_user_generic_string
-     6.14%  pread    [kernel.vmlinux]  [k] current_time
-     3.88%  pread    [kernel.vmlinux]  [k] entry_SYSCALL_64
-     3.55%  pread    libc-2.31.so      [.] __libc_pread
-     3.04%  pread    [nvfs]            [k] nvfs_bmap
-     2.84%  pread    [kernel.vmlinux]  [k] syscall_return_via_sysret
-     2.71%  pread    [nvfs]            [k] nvfs_read
-     2.56%  pread    [kernel.vmlinux]  [k] entry_SYSCALL_64_after_hwframe
-     2.00%  pread    [kernel.vmlinux]  [k] __x64_sys_pread64
-     1.98%  pread    [kernel.vmlinux]  [k] __fsnotify_parent
-     1.77%  pread    [kernel.vmlinux]  [k] vfs_read
-     1.35%  pread    [kernel.vmlinux]  [k] atime_needs_update
-     0.94%  pread    [kernel.vmlinux]  [k] exit_to_user_mode_prepare
-     0.91%  pread    [kernel.vmlinux]  [k] __fget_light
-     0.83%  pread    [kernel.vmlinux]  [k] syscall_enter_from_user_mode
-     0.70%  pread    [kernel.vmlinux]  [k] down_read
-     0.70%  pread    [kernel.vmlinux]  [k] touch_atime
-     0.65%  pread    [kernel.vmlinux]  [k] ktime_get_coarse_real_ts64
-     0.55%  pread    [kernel.vmlinux]  [k] syscall_exit_to_user_mode
-     0.49%  pread    [kernel.vmlinux]  [k] up_read
-     0.44%  pread    [kernel.vmlinux]  [k] do_syscall_64
-     0.39%  pread    [kernel.vmlinux]  [k] syscall_exit_to_user_mode_prepare
-     0.34%  pread    pread             [.] main
-     0.26%  pread    [kernel.vmlinux]  [k] __fdget
-     0.10%  pread    pread             [.] pread@plt
-     0.10%  pread    [kernel.vmlinux]  [k] entry_SYSCALL_64_safe_stack
-     0.00%  perf     [kernel.vmlinux]  [k] x86_pmu_enable_all
-
-
-#
-# (Tip: To set sample time separation other than 100ms with --sort time use --time-quantum)
-#
-
-
-Note that if we sum the percentage of nvfs_iter_locked, new_sync_read, 
-iov_iter_advance, nvfs_rw_iter, we get 12.01%. On the other hand, in the 
-second trace, nvfs_read consumes just 2.71% - and it replaces 
-functionality of all these functions.
-
-That is the reason for that 10% degradation with read_iter.
-
-Mikulas
-
+[1] https://lore.kernel.org/linux-devicetree/20181204183649.GA5716@bogus/
