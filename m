@@ -2,110 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE7202ED637
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 19:00:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 701E12ED62E
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 18:59:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728783AbhAGR7w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 12:59:52 -0500
-Received: from aserp2130.oracle.com ([141.146.126.79]:43182 "EHLO
-        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726319AbhAGR7v (ORCPT
+        id S1728889AbhAGR6q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 12:58:46 -0500
+Received: from jabberwock.ucw.cz ([46.255.230.98]:37514 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726406AbhAGR6p (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 12:59:51 -0500
-Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
-        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 107HsvN8089524;
-        Thu, 7 Jan 2021 17:58:15 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=kvAvwbOOeMZscVufplocdrmX5bmXMbY8zl2FvlMlnz0=;
- b=c2pjUMyOuFSlsI0qTgNl9X2BTN0fwdZV5CjgZLw/fK5pJGjqgudnCOrZXdgkYHh00CxF
- LiFA0a++EWjmEAnNdlWfNpXXZz6ITazKwFJmmLt90OS5obpTmGor0Edc3an16aV6cPrq
- BuZjy4lLXobdVm82Y4aeL6YU21ZsSRHrYPmEkl7OXFIOkrzzFmym3rhxU7m0zFdXRJ9J
- 7G3IFUyGpFK3HKmg0T9vQqyw4vf9WJsuWCiEWBtSqE/lg7w8qHbcX6uwbYJqRhlTzP3U
- r9MbFlxO7AMNgXzkKQ9sIxqWZq9w0c4dYQTdzU1G7jk7cpsQeLvms3CnkhfW0q8cELG1 lg== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by aserp2130.oracle.com with ESMTP id 35wcuxwy8k-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 07 Jan 2021 17:58:15 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 107HuSg5055718;
-        Thu, 7 Jan 2021 17:58:14 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by userp3020.oracle.com with ESMTP id 35w3qu1hjs-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 07 Jan 2021 17:58:14 +0000
-Received: from abhmp0013.oracle.com (abhmp0013.oracle.com [141.146.116.19])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 107Hvwcu012048;
-        Thu, 7 Jan 2021 17:57:58 GMT
-Received: from char.us.oracle.com (/10.152.32.25)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Thu, 07 Jan 2021 17:57:43 +0000
-Received: by char.us.oracle.com (Postfix, from userid 1000)
-        id DE3C86A00C3; Thu,  7 Jan 2021 12:57:40 -0500 (EST)
-Date:   Thu, 7 Jan 2021 12:57:40 -0500
-From:   Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
-To:     Claire Chang <tientzu@chromium.org>
-Cc:     Rob Herring <robh+dt@kernel.org>, mpe@ellerman.id.au,
-        benh@kernel.crashing.org, paulus@samba.org,
-        "list@263.net:IOMMU DRIVERS <iommu@lists.linux-foundation.org>, Joerg
-        Roedel <joro@8bytes.org>," <joro@8bytes.org>, will@kernel.org,
-        Frank Rowand <frowand.list@gmail.com>,
-        boris.ostrovsky@oracle.com, jgross@suse.com,
-        sstabellini@kernel.org, Christoph Hellwig <hch@lst.de>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Robin Murphy <robin.murphy@arm.com>, grant.likely@arm.com,
-        xypron.glpk@gmx.de, Thierry Reding <treding@nvidia.com>,
-        mingo@kernel.org, bauerman@linux.ibm.com, peterz@infradead.org,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Saravana Kannan <saravanak@google.com>,
-        rafael.j.wysocki@intel.com, heikki.krogerus@linux.intel.com,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        rdunlap@infradead.org, dan.j.williams@intel.com,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        linux-devicetree <devicetree@vger.kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        linuxppc-dev@lists.ozlabs.org,
-        "list@263.net:IOMMU DRIVERS <iommu@lists.linux-foundation.org>, Joerg
-        Roedel <joro@8bytes.org>," <iommu@lists.linux-foundation.org>,
-        xen-devel@lists.xenproject.org, Tomasz Figa <tfiga@chromium.org>,
-        Nicolas Boichat <drinkcat@chromium.org>
-Subject: Re: [RFC PATCH v3 2/6] swiotlb: Add restricted DMA pool
-Message-ID: <20210107175740.GA16519@char.us.oracle.com>
-References: <20210106034124.30560-1-tientzu@chromium.org>
- <20210106034124.30560-3-tientzu@chromium.org>
- <20210106185241.GA109735@localhost.localdomain>
- <CALiNf2-HDf6tFcvVgCttr-ta=88ZMH=OvB5XoryTPc6MNvwV+Q@mail.gmail.com>
+        Thu, 7 Jan 2021 12:58:45 -0500
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id C1FD71C0B81; Thu,  7 Jan 2021 18:58:02 +0100 (CET)
+Date:   Thu, 7 Jan 2021 18:58:01 +0100
+From:   Pavel Machek <pavel@denx.de>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
+        stable@vger.kernel.org
+Subject: Re: [PATCH 4.19 0/8] 4.19.166-rc1 review
+Message-ID: <20210107175801.GA3906@amd>
+References: <20210107143047.586006010@linuxfoundation.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="7AUc2qLy4jB3hD7Z"
 Content-Disposition: inline
-In-Reply-To: <CALiNf2-HDf6tFcvVgCttr-ta=88ZMH=OvB5XoryTPc6MNvwV+Q@mail.gmail.com>
-User-Agent: Mutt/1.9.1 (2017-09-22)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9857 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 malwarescore=0 mlxscore=0
- spamscore=0 mlxlogscore=999 phishscore=0 bulkscore=0 suspectscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2101070105
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9857 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 bulkscore=0
- clxscore=1015 spamscore=0 impostorscore=0 priorityscore=1501 mlxscore=0
- adultscore=0 mlxlogscore=999 lowpriorityscore=0 phishscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2101070105
+In-Reply-To: <20210107143047.586006010@linuxfoundation.org>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 08, 2021 at 01:39:18AM +0800, Claire Chang wrote:
-> Hi Greg and Konrad,
-> 
-> This change is intended to be non-arch specific. Any arch that lacks DMA access
-> control and has devices not behind an IOMMU can make use of it. Could you share
-> why you think this should be arch specific?
 
-The idea behind non-arch specific code is it to be generic. The devicetree
-is specific to PowerPC, Sparc, and ARM, and not to x86 - hence it should
-be in arch specific code.
+--7AUc2qLy4jB3hD7Z
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> 
-> Thanks!
+Hi!
+
+> This is the start of the stable review cycle for the 4.19.166 release.
+> There are 8 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+
+This was tested by CIP project, and we did not find anything wrong.
+
+https://gitlab.com/cip-project/cip-testing/linux-stable-rc-ci/-/tree/linux-=
+4.19.y
+
+Tested-by: Pavel Machek (CIP) <pavel@denx.de>
+
+Best regards,
+                                                                Pavel
+
+--=20
+DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
+HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
+
+--7AUc2qLy4jB3hD7Z
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+
+iEYEARECAAYFAl/3S6gACgkQMOfwapXb+vK2mACfTvbwuRU6myMEHl52RvSBUaON
+f3AAnRYGX5R29CRVh1GfpDXvvakpEjIR
+=bGr3
+-----END PGP SIGNATURE-----
+
+--7AUc2qLy4jB3hD7Z--
