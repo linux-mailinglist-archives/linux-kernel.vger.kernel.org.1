@@ -2,73 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 81AC32ECD0B
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 10:46:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A4642ECD15
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 10:48:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727495AbhAGJpr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 04:45:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40150 "EHLO
+        id S1726948AbhAGJro (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 04:47:44 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40460 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725974AbhAGJpq (ORCPT
+        with ESMTP id S1725974AbhAGJrn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 04:45:46 -0500
-Received: from mail-qk1-x732.google.com (mail-qk1-x732.google.com [IPv6:2607:f8b0:4864:20::732])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D51AC0612F4
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Jan 2021 01:45:06 -0800 (PST)
-Received: by mail-qk1-x732.google.com with SMTP id v126so4920375qkd.11
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Jan 2021 01:45:06 -0800 (PST)
+        Thu, 7 Jan 2021 04:47:43 -0500
+Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5236CC0612F5
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Jan 2021 01:47:03 -0800 (PST)
+Received: by mail-lf1-x135.google.com with SMTP id b26so13138814lff.9
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Jan 2021 01:47:03 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
+        d=linaro.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=/gkZ6YBZc1TuDyrVRGbq/7fN83HRpfdis1YYIT6DC+Q=;
-        b=XUX0BcoIa1MQ2jcMuATtV/lSqagHaVmb173j0UE8FAksPf0cENNwe06K9x9EyN/xij
-         wf5RagTSVuw+GTnkcCTqtPvMabsfRvVjmCblHL9xl1iv3k3Yhy+cmQxf+Ro5otZvpM0h
-         yfRsRQQef8iiX6B8LfBZ0/X6+3fYSnEqL6Q1MSg2dC7xiDynol+1c8zX5M+3V7XOGgp/
-         5D8odmrKLEh0A+3UrF7oHzdKoJf/I5P+FIk4c4lAyP181Ce6ILIpCJCoz5GWjXbaQDKL
-         G8/1e8OTsvfCUkYB8Kc1hJKbqHMMlBBh80re0nX73tg11ilb1hcDg+V6RYIC3WWHEGl2
-         lCfg==
+        bh=G7NaTlfrTJWUXaJilppzFOMdooG1dXbh0X2tc9uYq8I=;
+        b=LCI0f0rY6PkEMU9S/IavbvrPp/OFZ8yVpLwgKYUZirUIaQrAwYTdI/PePfSJfsQs7P
+         YXZcN3WMAtpmVzNOa1+n6iR6qDMVVF0ukoOMOV0sw5iiXeh+4EL/A+fhISbywyKea7KE
+         zvbMuMGEbgo32Fhp9bSQXFegMX+tD6G7e/IzFSVsgrnE/uXXEsaunvygj0w8PNCti5xi
+         vhruJX9S+lTkcQrAXdhKe1As5OObtP5nXVnzbsPxMAACiur+IvXmUbXsj/4dsJdWr4Q1
+         0yuWWNji7ArQ2izpnAPO4Rd9sOXlAePwXlrlHyNGC/eSW+6JILadizCTH8NpReZXe7/e
+         3RZw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=/gkZ6YBZc1TuDyrVRGbq/7fN83HRpfdis1YYIT6DC+Q=;
-        b=XgbuF0qQLRNub7fRMIerr5wqoI04+qMhjYPNGz+Xx0zCNrwDJ6+4/bRwY+SiQZ7NkB
-         GMGHgpYkv0ndH+0pGcIcHNVsF0z8IABXZPmw2gn4zH3vn2hFOjiDXBTyRLIKXMdKMahw
-         diQCd8plY+gp/v8wzuCmjMqB8ZVe+6NF1Sn3h5Im0s5T5upOSR3Akn1/F239/eUvmjxo
-         oR9t45HNH7RzjR031g8Fp2YEnjBSgssU9Vor7Eph8ipSvWNC5ysoF+NH16fZqyI9hooe
-         +oxUqSIC4l/lfwNzu7n/+i9F4a//ofgsNi4HOL542ItaZBcXdox4hdjpaPPzLJyDeOqO
-         F8EQ==
-X-Gm-Message-State: AOAM531wDCNZXc1TgTSaA1R5m+jBrGm+Ct913iHBCO9EyvsClkdFEqvj
-        g4WoQ1h6Vhq2eMeaXY02E26WQIU1jOEi0JeZ4tqOMQ==
-X-Google-Smtp-Source: ABdhPJx7kwa5a7LxPnTXYQ5MyNqZ5CugH7qK0JJGeAQNJ5mrH4DPL3YL16IhEb8XYH5a2YOgkTl2U3E1RFcUPrE3IPc=
-X-Received: by 2002:a05:620a:2051:: with SMTP id d17mr8211283qka.403.1610012704444;
- Thu, 07 Jan 2021 01:45:04 -0800 (PST)
+        bh=G7NaTlfrTJWUXaJilppzFOMdooG1dXbh0X2tc9uYq8I=;
+        b=GJp0coMn8z783MdtrRC0iO+Yqiufg3sNlowvGc7kCBlmoQ7S1/H/1zi4DrwW8pczsi
+         xWe5W+C1Uy4Z2saQvbX2YbrZrSxCeVJMv0OyuW6POfWG9uEI1bOqoYNO7GzLIYDx9tx9
+         rMMMV1dcwBlqJ5gtOnGDG6p9VoJ1H/IVNb/TjeY+RzcOKWvcHpnhuRL/WSGAmm2YbtFc
+         bQ5b3QONowU/+IY9SzWeJo1YAqhi4s3eirmYolRgytZMOYEk5HyCXWL8882H8RxznCoz
+         QWs6lGplOTx6Q2G3JEwK3MtrCAyFCO2FAU0iNLdKgQbL2wSNk6KRe+k/ceu0Zhm0Gxrq
+         1EFw==
+X-Gm-Message-State: AOAM5300V/H4J/dDZvhTlEr6mT7np3IyWCm/aftQ+0mcvGWPWRHS29S/
+        OWlAZ46JHMAEsxxQF+MwquxkEYIodzjHB0AFqfpt7Q==
+X-Google-Smtp-Source: ABdhPJyQBSxHaR6UnF6GTmWO2HCJ6YwoFxMYYd9E080KXVWwBZDt8H1Rl/oeOTyutVVocPigqgYIaY4dC0/E8aocHvs=
+X-Received: by 2002:a19:495d:: with SMTP id l29mr3445703lfj.465.1610012821860;
+ Thu, 07 Jan 2021 01:47:01 -0800 (PST)
 MIME-Version: 1.0
-References: <1609332331-2456-1-git-send-email-vjitta@codeaurora.org>
-In-Reply-To: <1609332331-2456-1-git-send-email-vjitta@codeaurora.org>
-From:   Alexander Potapenko <glider@google.com>
-Date:   Thu, 7 Jan 2021 10:44:53 +0100
-Message-ID: <CAG_fn=V7LwUExnvVhAswj=VtEGPh9okB9ofzqnRfL2OV6qom5w@mail.gmail.com>
-Subject: Re: [PATCH v4 1/2] lib: stackdepot: Add support to configure STACK_HASH_SIZE
-To:     Vijayanand Jitta <vjitta@codeaurora.org>
-Cc:     Minchan Kim <minchan@kernel.org>, dan.j.williams@intel.com,
-        broonie@kernel.org, Masami Hiramatsu <mhiramat@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>, ylal@codeaurora.org,
-        vinmenon@codeaurora.org
+References: <1609936000-28378-1-git-send-email-srinivas.neeli@xilinx.com> <1609936000-28378-5-git-send-email-srinivas.neeli@xilinx.com>
+In-Reply-To: <1609936000-28378-5-git-send-email-srinivas.neeli@xilinx.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Thu, 7 Jan 2021 10:46:51 +0100
+Message-ID: <CACRpkdYLp0uuB-QO5HvLH222TkCjk54JmftveHgpiW1JExF7DQ@mail.gmail.com>
+Subject: Re: [PATCH V4 4/5] gpio: gpio-xilinx: Add support for suspend and resume
+To:     Srinivas Neeli <srinivas.neeli@xilinx.com>
+Cc:     Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Michal Simek <michal.simek@xilinx.com>,
+        Shubhrajyoti Datta <shubhrajyoti.datta@xilinx.com>,
+        sgoud@xilinx.com, Robert Hancock <hancock@sedsystems.ca>,
+        William Breathitt Gray <vilhelm.gray@gmail.com>,
+        Syed Nayyar Waris <syednwaris@gmail.com>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        git@xilinx.com
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 30, 2020 at 1:46 PM <vjitta@codeaurora.org> wrote:
->
-> From: Yogesh Lal <ylal@codeaurora.org>
->
-> Use STACK_HASH_ORDER_SHIFT to configure STACK_HASH_SIZE.
-I think "ORDER_SHIFT" is somewhat redundant, as "SMTH_ORDER" already
-means this is a power of two we'll be using for shifting.
-Leaving this up to you.
+On Wed, Jan 6, 2021 at 1:27 PM Srinivas Neeli <srinivas.neeli@xilinx.com> wrote:
 
-Alex
+> Add support for suspend and resume, pm runtime suspend and resume.
+> Added free and request calls.
+>
+> Signed-off-by: Srinivas Neeli <srinivas.neeli@xilinx.com>
+(...)
+
+> +static int xgpio_request(struct gpio_chip *chip, unsigned int offset)
+> +{
+> +       int ret;
+> +
+> +       ret = pm_runtime_get_sync(chip->parent);
+> +       /*
+> +        * If the device is already active pm_runtime_get() will return 1 on
+> +        * success, but gpio_request still needs to return 0.
+> +        */
+> +       return ret < 0 ? ret : 0;
+> +}
+
+That's clever. I think more GPIO drivers should be doing it like this,
+today I think most just ignore the return code.
+
+> +static int __maybe_unused xgpio_suspend(struct device *dev)
+> +static int __maybe_unused xgpio_resume(struct device *dev)
+
+Those look good.
+
+
+>  /**
+>   * xgpio_remove - Remove method for the GPIO device.
+>   * @pdev: pointer to the platform device
+> @@ -289,7 +323,10 @@ static int xgpio_remove(struct platform_device *pdev)
+>  {
+>         struct xgpio_instance *gpio = platform_get_drvdata(pdev);
+>
+> -       clk_disable_unprepare(gpio->clk);
+> +       if (!pm_runtime_suspended(&pdev->dev))
+> +               clk_disable_unprepare(gpio->clk);
+> +
+> +       pm_runtime_disable(&pdev->dev);
+
+This looks complex and racy. What if the device is resumed after you
+executed the
+first part of the statement.
+
+The normal sequence is:
+
+pm_runtime_get_sync(dev);
+pm_runtime_put_noidle(dev);
+pm_runtime_disable(dev);
+
+This will make sure the clock is enabled and pm runtime is disabled.
+After this you can unconditionally call clk_disable_unprepare(gpio->clk);
+
+It is what you are doing on the errorpath of probe().
+
+Yours,
+Linus Walleij
