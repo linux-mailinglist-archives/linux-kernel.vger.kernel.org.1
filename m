@@ -2,174 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7AA0E2ED530
-	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 18:09:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 942E92ED52E
+	for <lists+linux-kernel@lfdr.de>; Thu,  7 Jan 2021 18:09:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728889AbhAGRJh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 12:09:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53028 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728633AbhAGRJd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 12:09:33 -0500
-Received: from mail-yb1-xb32.google.com (mail-yb1-xb32.google.com [IPv6:2607:f8b0:4864:20::b32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D5D2C0612F5
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Jan 2021 09:08:52 -0800 (PST)
-Received: by mail-yb1-xb32.google.com with SMTP id k4so6750820ybp.6
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Jan 2021 09:08:52 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=SS3DM2iEdyFUgDhuSMZ8Sz2/zsciyLMLy6hexAt6XHw=;
-        b=XTHrAcEoXL6NXFTI6YYLlkcFJ4JYiZA4lZ2r4NlQbR4yvEwd0rHwLuvjtc8A9FzMoo
-         jcXJ8ooo9EFzkUpdS0YKUiFO8/nzr1PuZ2ww4DlVtU8gdatYwpdyGTaXpN4UJj40TIxM
-         fHfvmH89gtb50EutYmZlN4ElLGQ/7S/z8HJUUuPmjnbr7QjuPrcfeilv+oAL3+7dhfZ9
-         g6lIGNSVHK0qg2XOIRtmCIgdkKIIcRZBXzKoA7y0bHNTIBEjxKBRXQO6K0yx8hW30nwQ
-         Eygxda6iS+fW1hIMbCXnBhfHKME/Jz/GzGSiKjnTcYUkJuQiMk108d1I2wnyHPuabIrC
-         cFIg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=SS3DM2iEdyFUgDhuSMZ8Sz2/zsciyLMLy6hexAt6XHw=;
-        b=fhtFzBRjQmBp1mdDLasmsylJ4hfc0kzU8Zgg2hB9YhL/Dsdi0TApoBUCoJLYWeD/8m
-         woHZ3bwDD1QTqvRbu/ihJaZsi0/JYCPve6CrmwLMqjHOvbRuD+95qYdzi7OcouqbEc7L
-         OXKqO04RL6ZAWKqmZL5vvxzU0KhkQNuiQ7ssUlqfaCOp44H1Dp697TnnmIDDZ1Ttm/91
-         q1Mxl8jPioNJ/oqCnvAafiBy8b+DjhZIlEUvkAhvt3SD1NWvWMtRJkD9iatrF76cLrz/
-         ciYNeOnsif0XqEtv04jPsa3OCgeFZauzlG3ddvztY1/BGDlTN6syoXrmnF7bLt1tF9uL
-         yvJw==
-X-Gm-Message-State: AOAM532Qyw9PSEmhaARyEC2rYKBTPBT9FQbykTAGvm0aVgZVPxBkWatB
-        5/DQrSCi7XA8MteJRiu/AhjNMUF5kuz4/pIpQFeUqg==
-X-Google-Smtp-Source: ABdhPJzdHxcYJZiIF6rorYMgkdsqh3rdIFCGsiyDWZpYkaXLuNAk04h6SjasWV00BvCK9RRiHoYYc1NDa7zYUoraEns=
-X-Received: by 2002:a25:d7d7:: with SMTP id o206mr14472508ybg.228.1610039331469;
- Thu, 07 Jan 2021 09:08:51 -0800 (PST)
+        id S1728494AbhAGRJ1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 12:09:27 -0500
+Received: from mail.kernel.org ([198.145.29.99]:51480 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725835AbhAGRJ0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Jan 2021 12:09:26 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 699C82311E;
+        Thu,  7 Jan 2021 17:08:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1610039325;
+        bh=Ae684cwuNq4RhuSrLBrd+ncse0Ixp9T3bL2Vjgf29ZI=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=q1gw86e5uP5mDfhVt4VLEtHbj2aYhmDotxc5eelA0dEl8qUpUEP8TCeMkKwK2i8Dt
+         kdd+0h9GGMVA5PF3Zx1zHM0DcjBRMjism06a76fkySNywMfdOTYhIPXLR6qgoXTsL+
+         rc99VWFkwJezzeK+soRZj/Ve9zb/AmvUkwVhZ3zHtxS6amEYO1jhUlNqr8KwxT8WAQ
+         jBU/kVoLXZI9CL3eQF4MG7/PT6wyA2pAgudcOuJPdbEi9Mw3kEzCUeanJ22HNGNwIL
+         H7BS+vnED4OB/rkfKBpPwiMmojBm0SLDPR0a51GyxSvWANBgR8qm108DyKeTSno2h0
+         Nt0JomXs0ds4g==
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id F0A43352271C; Thu,  7 Jan 2021 09:08:44 -0800 (PST)
+Date:   Thu, 7 Jan 2021 09:08:44 -0800
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     linux-kernel@vger.kernel.org, x86@kernel.org,
+        linux-edac@vger.kernel.org, tony.luck@intel.com,
+        tglx@linutronix.de, mingo@redhat.com, hpa@zytor.com,
+        kernel-team@fb.com
+Subject: Re: [PATCH RFC x86/mce] Make mce_timed_out() identify holdout CPUs
+Message-ID: <20210107170844.GM2743@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <20210106174102.GA23874@paulmck-ThinkPad-P72>
+ <20210106183244.GA24607@zn.tnic>
+ <20210106191353.GA2743@paulmck-ThinkPad-P72>
+ <20210107070724.GC14697@zn.tnic>
 MIME-Version: 1.0
-References: <20201218210750.3455872-1-saravanak@google.com>
- <2a6dbcc83d5aca7a3340e0cf4d751cdc@kernel.org> <20201231211240.GA2333246@robh.at.kernel.org>
- <877dovlgdl.wl-maz@kernel.org> <CAGETcx9WJdYkQcwJLTF4j9jR4kyrDpXG8ZMuCecK2Hv-HXFgBg@mail.gmail.com>
- <CAGETcx_y6pj-8xEUfMi164iFTiDLVcdATofkOTjvFBCSAQY3sw@mail.gmail.com> <CAL_JsqJX_eWEU=0STW0rjxO=0NVgpuV5rD-5utD7Yzd6otPFvw@mail.gmail.com>
-In-Reply-To: <CAL_JsqJX_eWEU=0STW0rjxO=0NVgpuV5rD-5utD7Yzd6otPFvw@mail.gmail.com>
-From:   Saravana Kannan <saravanak@google.com>
-Date:   Thu, 7 Jan 2021 09:08:15 -0800
-Message-ID: <CAGETcx8D6Q7XojOnRCPNAZWcxhNt5ebFCp6gyh-cuKeaKfS2Bw@mail.gmail.com>
-Subject: Re: [PATCH] of: property: Add device link support for interrupts
-To:     Rob Herring <robh@kernel.org>
-Cc:     Marc Zyngier <maz@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Kevin Hilman <khilman@baylibre.com>,
-        Android Kernel Team <kernel-team@android.com>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210107070724.GC14697@zn.tnic>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 7, 2021 at 8:48 AM Rob Herring <robh@kernel.org> wrote:
->
-> On Wed, Jan 6, 2021 at 6:26 PM Saravana Kannan <saravanak@google.com> wrote:
-> >
-> > On Wed, Jan 6, 2021 at 10:52 AM Saravana Kannan <saravanak@google.com> wrote:
-> > >
-> > > On Sat, Jan 2, 2021 at 3:37 AM Marc Zyngier <maz@kernel.org> wrote:
-> > > >
-> > > > On Thu, 31 Dec 2020 21:12:40 +0000,
-> > > > Rob Herring <robh@kernel.org> wrote:
-> > > > >
-> > > > > On Mon, Dec 21, 2020 at 09:30:45AM +0000, Marc Zyngier wrote:
-> > > > > > On 2020-12-18 21:07, Saravana Kannan wrote:
-> > > > > > > Add support for creating device links out of interrupts property.
-> > > > > > >
-> > > > > > > Cc: Marc Zyngier <maz@kernel.org>
-> > > > > > > Cc: Kevin Hilman <khilman@baylibre.com>
-> > > > > > > Signed-off-by: Saravana Kannan <saravanak@google.com>
-> > > > > > > ---
-> > > > > > > Rob/Greg,
-> > > > > > >
-> > > > > > > This might need to go into driver-core to avoid conflict
-> > > > > > > due to fw_devlink refactor series that merged there.
-> > > > > > >
-> > > > > > > Thanks,
-> > > > > > > Saravana
-> > > > > > >
-> > > > > > >
-> > > > > > >  drivers/of/property.c | 17 +++++++++++++++++
-> > > > > > >  1 file changed, 17 insertions(+)
-> > > > > > >
-> > > > > > > diff --git a/drivers/of/property.c b/drivers/of/property.c
-> > > > > > > index 5f9eed79a8aa..e56a5eae0a0b 100644
-> > > > > > > --- a/drivers/of/property.c
-> > > > > > > +++ b/drivers/of/property.c
-> > > > > > > @@ -1271,6 +1271,22 @@ static struct device_node
-> > > > > > > *parse_iommu_maps(struct device_node *np,
-> > > > > > >   return of_parse_phandle(np, prop_name, (index * 4) + 1);
-> > > > > > >  }
-> > > > > > >
-> > > > > > > +static struct device_node *parse_interrupts(struct device_node *np,
-> > > > > > > +                                     const char *prop_name, int index)
-> > > > > > > +{
-> > > > > > > + struct device_node *sup;
-> > > > > > > +
-> > > > > > > + if (strcmp(prop_name, "interrupts") || index)
-> > > > > > > +         return NULL;
-> > > > > > > +
-> > > > > > > + of_node_get(np);
-> > > > > > > + while (np && !(sup = of_parse_phandle(np, "interrupt-parent", 0)))
-> > > > > > > +         np = of_get_next_parent(np);
-> > > > > > > + of_node_put(np);
-> > > > > > > +
-> > > > > > > + return sup;
-> > > > > > > +}
-> > > > > > > +
-> > > > > > >  static const struct supplier_bindings of_supplier_bindings[] = {
-> > > > > > >   { .parse_prop = parse_clocks, },
-> > > > > > >   { .parse_prop = parse_interconnects, },
-> > > > > > > @@ -1296,6 +1312,7 @@ static const struct supplier_bindings
-> > > > > > > of_supplier_bindings[] = {
-> > > > > > >   { .parse_prop = parse_pinctrl6, },
-> > > > > > >   { .parse_prop = parse_pinctrl7, },
-> > > > > > >   { .parse_prop = parse_pinctrl8, },
-> > > > > > > + { .parse_prop = parse_interrupts, },
-> > > > > > >   { .parse_prop = parse_regulators, },
-> > > > > > >   { .parse_prop = parse_gpio, },
-> > > > > > >   { .parse_prop = parse_gpios, },
-> > > > > >
-> > > > > > You don't really describe what this is for so I'm only guessing
-> > > > > > from the context. If you want to follow the interrupt hierarchy,
-> > > > > > "interrupt-parent" isn't enough. You also need to track
-> > > > > > things like interrupt-map, or anything that carries a phandle
-> > > > > > to an interrupt controller.
-> > > > >
-> > > > > We don't need to follow the hierarchy, we just need the immediate
-> > > > > dependencies.
-> > > >
-> > > > Indeed. I also wonder why this isn't just a irq_find_parent() call, TBH.
-> > >
-> > > Thanks Rob for explaining it.
-> > >
-> > > Marc, I wasn't sure if Rob would be okay with including of_irq.h here.
-> > > Also, I'm trying to keep of/property.c independent of the framework
-> > > code for now. The long term goal is to see if I can move out most of
-> > > this into the frameworks. But I want to do that after I sort of some
-> > > of the larger problems (like getting fw_devlink=on to work on all
-> > > devices  first). Let me know if you have a strong preference for right
-> > > now, if not, I'd rather keep property.c independent for now.
-> > >
-> > > I wasn't aware of interrupt-map until a few weeks ago and didn't know
-> > > it carried phandles. I can add support for that too. There's no reason
-> > > for all of them to go in one patch though.
-> >
-> > Hmm... I looked at
-> > Documentation/devicetree/bindings/interrupt-controller/interrupts.txt
-> > and it has no documentation for interrupt-map. There's a bunch of
-> > references to it in device specific DT binding documentation but I
-> > don't want to rely on those for correctness.
->
-> See the DT spec and there's also details on elinux.org. It's only
-> existed since the 1990s.
+On Thu, Jan 07, 2021 at 08:07:24AM +0100, Borislav Petkov wrote:
+> On Wed, Jan 06, 2021 at 11:13:53AM -0800, Paul E. McKenney wrote:
+> > Not yet, it isn't!  Well, except in -rcu.  ;-)
+> 
+> Of course it is - saying "This commit" in this commit's commit message
+> is very much a tautology. :-)
 
-Thanks :) Will try to find it there.
+Tautology?  Maybe self-referential?  ;-)
 
--Saravana
+> > You are suggesting dropping mce_missing_cpus and just doing this?
+> > 
+> > if (!cpumask_andnot(&mce_present_cpus, cpu_online_mask, &mce_present_cpus))
+> 
+> Yes.
+
+I could drop mce_present_cpus, and then initialize mce_missing_cpus
+to CPU_MASK_ALL, and have each CPU clear its bit on entry using
+cpumask_clear_cpu().  Then cpumask_and() it with cpu_online_mask and
+print it out.  That allows late-arriving CPUs to be properly accounted
+for, most of the time, anyway.
+
+> And pls don't call it "holdout CPUs"
+
+How about "missing CPUs"?  That is what I used in the meantime, please
+see below.  If you have something you would prefer that it be called,
+please let me know.
+
+>                                      and change the order so that it is
+> more user-friendly (yap, you don't need __func__ either):
+> 
+> [   78.946153] mce: Not all CPUs (24-47,120-143) entered the broadcast exception handler.
+> [   78.946153] Kernel panic - not syncing: Timeout: MCA synchronization.
+> 
+> or so.
+
+I removed __func__, but the pr_info() already precedes the mce_panic().
+Do I need a udelay() after the pr_info() or some such?  If so, how long
+should is spin?
+
+> And that's fine if it appears twice as long as it is the same info - the
+> MCA code is one complex mess so you can probably guess why I'd like to
+> have new stuff added to it be as simplistic as possible.
+
+Works for me.  ;-)
+
+> > I was worried (perhaps unnecessarily) about the possibility of CPUs
+> > checking in during the printout operation, which would set rather than
+> > clear the bit.  But perhaps the possible false positives that Tony points
+> > out make this race not worth worrying about.
+> > 
+> > Thoughts?
+> 
+> Yah, apparently, it is not going to be a precise report as you wanted it
+> to be but at least it'll tell you which *sockets* you can rule out, if
+> not cores.
+> 
+> :-)
+
+Some information is usually better than none.  And I bet that failing
+hardware is capable of all sorts of tricks at all sorts of levels.  ;-)
+
+Updated patch below.  Is this what you had in mind?
+
+							Thanx, Paul
+
+------------------------------------------------------------------------
+
+commit 4b4b57692fdd3b111098eda94df7529f85c54406
+Author: Paul E. McKenney <paulmck@kernel.org>
+Date:   Wed Dec 23 17:04:19 2020 -0800
+
+    x86/mce: Make mce_timed_out() identify holdout CPUs
+    
+    The "Timeout: Not all CPUs entered broadcast exception handler" message
+    will appear from time to time given enough systems, but this message does
+    not identify which CPUs failed to enter the broadcast exception handler.
+    This information would be valuable if available, for example, in order to
+    correlated with other hardware-oriented error messages.  This commit
+    therefore maintains a cpumask_t of CPUs that have entered this handler,
+    and prints out which ones failed to enter in the event of a timeout.
+    
+    Cc: Tony Luck <tony.luck@intel.com>
+    Cc: Borislav Petkov <bp@alien8.de>
+    Cc: Thomas Gleixner <tglx@linutronix.de>
+    Cc: Ingo Molnar <mingo@redhat.com>
+    Cc: "H. Peter Anvin" <hpa@zytor.com>
+    Cc: <x86@kernel.org>
+    Cc: <linux-edac@vger.kernel.org>
+    [ paulmck: Fix cpumask_andnot() check per Tony Luck testing and feedback. ]
+    [ paulmck: Apply Borislav Petkov feedback. ]
+    Reported-by: Jonathan Lemon <bsd@fb.com>
+    Tested-by: Tony Luck <tony.luck@intel.com>
+    Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+
+diff --git a/arch/x86/kernel/cpu/mce/core.c b/arch/x86/kernel/cpu/mce/core.c
+index 13d3f1c..c83331b 100644
+--- a/arch/x86/kernel/cpu/mce/core.c
++++ b/arch/x86/kernel/cpu/mce/core.c
+@@ -878,6 +878,11 @@ static atomic_t mce_executing;
+ static atomic_t mce_callin;
+ 
+ /*
++ * Track which CPUs entered and not in order to print holdouts.
++ */
++static cpumask_t mce_missing_cpus = CPU_MASK_ALL;
++
++/*
+  * Check if a timeout waiting for other CPUs happened.
+  */
+ static int mce_timed_out(u64 *t, const char *msg)
+@@ -894,8 +899,12 @@ static int mce_timed_out(u64 *t, const char *msg)
+ 	if (!mca_cfg.monarch_timeout)
+ 		goto out;
+ 	if ((s64)*t < SPINUNIT) {
+-		if (mca_cfg.tolerant <= 1)
++		if (mca_cfg.tolerant <= 1) {
++			if (cpumask_and(&mce_missing_cpus, cpu_online_mask, &mce_missing_cpus))
++				pr_info("MCE missing CPUs (may include false positives): %*pbl\n",
++					cpumask_pr_args(&mce_missing_cpus));
+ 			mce_panic(msg, NULL, NULL);
++		}
+ 		cpu_missing = 1;
+ 		return 1;
+ 	}
+@@ -1006,6 +1015,7 @@ static int mce_start(int *no_way_out)
+ 	 * is updated before mce_callin.
+ 	 */
+ 	order = atomic_inc_return(&mce_callin);
++	cpumask_clear_cpu(smp_processor_id(), &mce_missing_cpus);
+ 
+ 	/*
+ 	 * Wait for everyone.
+@@ -1114,6 +1124,7 @@ static int mce_end(int order)
+ reset:
+ 	atomic_set(&global_nwo, 0);
+ 	atomic_set(&mce_callin, 0);
++	cpumask_setall(&mce_missing_cpus);
+ 	barrier();
+ 
+ 	/*
+@@ -2712,6 +2723,7 @@ static void mce_reset(void)
+ 	atomic_set(&mce_executing, 0);
+ 	atomic_set(&mce_callin, 0);
+ 	atomic_set(&global_nwo, 0);
++	cpumask_setall(&mce_missing_cpus);
+ }
+ 
+ static int fake_panic_get(void *data, u64 *val)
