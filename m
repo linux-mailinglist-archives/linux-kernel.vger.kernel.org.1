@@ -2,73 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F7952EF0CB
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 11:42:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9300F2EF0CC
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 11:43:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727525AbhAHKlz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Jan 2021 05:41:55 -0500
-Received: from szxga06-in.huawei.com ([45.249.212.32]:10422 "EHLO
-        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727293AbhAHKly (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Jan 2021 05:41:54 -0500
-Received: from DGGEMS414-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4DC04B5Hr5zj46B;
-        Fri,  8 Jan 2021 18:40:26 +0800 (CST)
-Received: from localhost.localdomain (10.69.192.56) by
- DGGEMS414-HUB.china.huawei.com (10.3.19.214) with Microsoft SMTP Server id
- 14.3.498.0; Fri, 8 Jan 2021 18:41:11 +0800
-From:   Tian Tao <tiantao6@hisilicon.com>
-To:     <airlied@linux.ie>, <daniel@ffwll.ch>, <tzimmermann@suse.de>,
-        <kraxel@redhat.com>, <alexander.deucher@amd.com>,
-        <tglx@linutronix.de>, <dri-devel@lists.freedesktop.org>,
-        <xinliang.liu@linaro.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH] drm/hisilicon: Delete the empty function mode_valid
-Date:   Fri, 8 Jan 2021 18:41:05 +0800
-Message-ID: <1610102465-36501-1-git-send-email-tiantao6@hisilicon.com>
-X-Mailer: git-send-email 2.7.4
+        id S1727571AbhAHKmw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Jan 2021 05:42:52 -0500
+Received: from foss.arm.com ([217.140.110.172]:48854 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726752AbhAHKmw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 Jan 2021 05:42:52 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 625DFD6E;
+        Fri,  8 Jan 2021 02:42:06 -0800 (PST)
+Received: from localhost (unknown [10.1.198.32])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 02CAD3F70D;
+        Fri,  8 Jan 2021 02:42:05 -0800 (PST)
+Date:   Fri, 8 Jan 2021 10:42:04 +0000
+From:   Ionela Voinescu <ionela.voinescu@arm.com>
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH V3 3/3] arm64: topology: Make AMUs work with modular
+ cpufreq drivers
+Message-ID: <20210108104204.GA27168@arm.com>
+References: <5ffc7b9ed03c6301ac2f710f609282959491b526.1608010334.git.viresh.kumar@linaro.org>
+ <8f0fe23d1c9effed71d5660c939472d43726a61b.1608010334.git.viresh.kumar@linaro.org>
+ <20201216000349.GA5299@arm.com>
+ <20201216043805.bx6laemhfm2eaufv@vireshk-i7>
+ <20201216193724.GA375@arm.com>
+ <20201217105049.z3aqhl4mo56hhqvk@vireshk-i7>
+ <20210108094416.GA19952@arm.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.69.192.56]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210108094416.GA19952@arm.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Based on the drm_connector_mode_valid, if the hibmc implementation
-of mode_valid only returns MODE_OK, then we can not implement the
-mode_valid function.
+On Friday 08 Jan 2021 at 09:44:16 (+0000), Ionela Voinescu wrote:
+> On Thursday 17 Dec 2020 at 16:20:49 (+0530), Viresh Kumar wrote:
+> > On 16-12-20, 19:37, Ionela Voinescu wrote:
+> > > I did not yet test this, but reading this comment made me wonder..
+> > > 
+> > > arch_scale_freq_invariant() (or topology_scale_freq_invariant()) is also
+> > > called from schedutil when obtaining the next frequency.
+> > > 
+> > > So if we had a system that only partly supports AMUs but had at some
+> > > point a cpufreq driver that provided FIE for the other CPUs, when we
+> > > unregister the driver, the cpufreq_freq_invariance static key is
+> > > disabled. Therefore, none of the conditions for system invariance is
+> > > now accomplished and arch_scale_freq_invariant() will return false.
+> > > This will be broken as utilization is still scaled, but the algorithm
+> > > for computing the next frequency in schedutil will not take this into
+> > > account.
+> > 
+> > I think the best and the easiest solution for this is:
+> > 
+> > bool arch_freq_counters_available(const struct cpumask *cpus)
+> > {
+> >         return amu_freq_invariant();
+> > }
+> > 
+> > But we probably need to rename it to something like arch_is_fie().
+> > 
 
-Signed-off-by: Tian Tao <tiantao6@hisilicon.com>
----
- drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_vdac.c | 7 -------
- 1 file changed, 7 deletions(-)
+Forgot to answer this one:
 
-diff --git a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_vdac.c b/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_vdac.c
-index c76f996..c74a35b 100644
---- a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_vdac.c
-+++ b/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_vdac.c
-@@ -43,12 +43,6 @@ static int hibmc_connector_get_modes(struct drm_connector *connector)
- 	return count;
- }
- 
--static enum drm_mode_status hibmc_connector_mode_valid(struct drm_connector *connector,
--						       struct drm_display_mode *mode)
--{
--	return MODE_OK;
--}
--
- static void hibmc_connector_destroy(struct drm_connector *connector)
- {
- 	struct hibmc_connector *hibmc_connector = to_hibmc_connector(connector);
-@@ -60,7 +54,6 @@ static void hibmc_connector_destroy(struct drm_connector *connector)
- static const struct drm_connector_helper_funcs
- 	hibmc_connector_helper_funcs = {
- 	.get_modes = hibmc_connector_get_modes,
--	.mode_valid = hibmc_connector_mode_valid,
- };
- 
- static const struct drm_connector_funcs hibmc_connector_funcs = {
--- 
-2.7.4
+arch_freq_counters_available() is also used in arch_set_freq_scale() to
+tell us not only if the arch is FI, but also to tell us if the AMUs are
+used for FI for some particular CPUs. So we couldn't easily rewrite this
+one, or do it in a way that would be worth it.
 
+Ionela.
+
+> 
+> Now that I think of it again (after spending 30 minutes trying to come
+> up with a more clear solution) I realised this is not actually a
+> problem :).
+> 
+> The only location that checks the invariance status is schedutil, but
+> what a cpufreq governor does becomes irrelevant if you remove the
+> cpufreq driver. The only potential problem is if one then inmods a
+> cpufreq driver that's not invariant. But I think that might be on "if"
+> too many to consider. What do you think?
+> 
+> Thanks,
+> Ionela.
