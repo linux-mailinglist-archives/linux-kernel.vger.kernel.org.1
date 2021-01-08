@@ -2,167 +2,268 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 538F42EF415
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 15:42:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0BFAE2EF41A
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 15:44:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727433AbhAHOlw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Jan 2021 09:41:52 -0500
-Received: from outbound-smtp63.blacknight.com ([46.22.136.252]:47045 "EHLO
-        outbound-smtp63.blacknight.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726497AbhAHOlw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Jan 2021 09:41:52 -0500
-Received: from mail.blacknight.com (pemlinmail01.blacknight.ie [81.17.254.10])
-        by outbound-smtp63.blacknight.com (Postfix) with ESMTPS id C7DCCFAB66
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Jan 2021 14:40:59 +0000 (GMT)
-Received: (qmail 21939 invoked from network); 8 Jan 2021 14:40:59 -0000
-Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.22.4])
-  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 8 Jan 2021 14:40:59 -0000
-Date:   Fri, 8 Jan 2021 14:40:58 +0000
-From:   Mel Gorman <mgorman@techsingularity.net>
-To:     Vincent Guittot <vincent.guittot@linaro.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        "Li, Aubrey" <aubrey.li@linux.intel.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Qais Yousef <qais.yousef@arm.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>,
-        Tim Chen <tim.c.chen@linux.intel.com>,
-        Jiang Biao <benbjiang@gmail.com>
-Subject: Re: [RFC][PATCH 1/5] sched/fair: Fix select_idle_cpu()s cost
- accounting
-Message-ID: <20210108144058.GD3592@techsingularity.net>
-References: <20201214164822.402812729@infradead.org>
- <20201214170017.877557652@infradead.org>
- <c4e31235-e1fb-52ac-99a8-ae943ee0de54@linux.intel.com>
- <20201215075911.GA3040@hirez.programming.kicks-ass.net>
- <20210108102738.GB3592@techsingularity.net>
- <CAKfTPtD5R1S=rwp9C-jyMg8bAB-37FCe3qrqad9KEeyR7mOmkw@mail.gmail.com>
+        id S1727396AbhAHOns (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Jan 2021 09:43:48 -0500
+Received: from foss.arm.com ([217.140.110.172]:52244 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726474AbhAHOnr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 Jan 2021 09:43:47 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 8C877ED1;
+        Fri,  8 Jan 2021 06:43:01 -0800 (PST)
+Received: from e120937-lin (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id BD6123F70D;
+        Fri,  8 Jan 2021 06:42:59 -0800 (PST)
+Date:   Fri, 8 Jan 2021 14:42:57 +0000
+From:   Cristian Marussi <cristian.marussi@arm.com>
+To:     Thara Gopinath <thara.gopinath@linaro.org>
+Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        sudeep.holla@arm.com, lukasz.luba@arm.com,
+        james.quinlan@broadcom.com, Jonathan.Cameron@Huawei.com,
+        f.fainelli@gmail.com, etienne.carriere@linaro.org,
+        vincent.guittot@linaro.org, souvik.chakravarty@arm.com
+Subject: Re: [PATCH v4 37/37] firmware: arm_scmi: add dynamic scmi devices
+ creation
+Message-ID: <20210108144257.GD9138@e120937-lin>
+References: <20210106201610.26538-1-cristian.marussi@arm.com>
+ <20210106201610.26538-38-cristian.marussi@arm.com>
+ <50434a02-0fe0-50f3-1529-51ab8a0cc1f3@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAKfTPtD5R1S=rwp9C-jyMg8bAB-37FCe3qrqad9KEeyR7mOmkw@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <50434a02-0fe0-50f3-1529-51ab8a0cc1f3@linaro.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 08, 2021 at 02:41:19PM +0100, Vincent Guittot wrote:
-> > 1. avg_scan_cost is now based on the average scan cost of a rq but
-> >    avg_idle is still scaled to the domain size. This is a bit problematic
-> >    because it's comparing scan cost of a single rq with the estimated
-> >    average idle time of a domain. As a result, the scan depth can be much
-> >    larger than it was before the patch and led to some regressions.
+On Thu, Jan 07, 2021 at 09:28:07AM -0500, Thara Gopinath wrote:
+> Hi Christian,
 > 
-> Point 1 makes sense to me too
+> On 1/6/21 3:16 PM, Cristian Marussi wrote:
+> > Having added the support for SCMI protocols as modules in order to let
+> > vendors extend the SCMI core with their own additions it seems odd to
+> > then force SCMI drivers built on top to use a static device table to
+> > declare their devices since this way any new SCMI drivers addition
+> > would need the core SCMI device table to be updated too.
+> > 
+> > Remove the static core device table and let SCMI drivers to simply declare
+> > which device/protocol pair they need at initialization time: the core will
+> > then take care to generate such devices dynamically during platform
+> > initialization or at module loading time, as long as the requested
+> > underlying protocol is defined in the DT.
+> > 
+> > Signed-off-by: Cristian Marussi <cristian.marussi@arm.com>
+> > ---
+> 	
+> [snip]
 > 
-> >
-> > 2. Accounting for the scan cost of success makes sense but there is a
-> >    big difference between a scan that finds an idle CPU and one that fails.
-> >    For failures, the scan cost is wasted CPU time where as a success
-> >    means that an uncontested CPU is used. This can cause a search to be
-> >    truncated earlier than it should be when the domain is lightly loaded.
+> > -static inline void
+> > -scmi_create_protocol_devices(struct device_node *np, struct scmi_info *info,
+> > -			     int prot_id)
+> > +	for (; rdev; rdev = rdev->next)
+> > +		scmi_create_protocol_device(np, info, prot_id,
+> > +					    rdev->id_table->name);
+> > +}
+> > +
+> > +/**
+> > + * scmi_request_protocol_device  - Helper to request a device
+> > + *
+> > + * @id_table: A protocol/name pair descriptor for the device to be created.
+> > + *
+> > + * This helper let an SCMI driver request specific devices identified by the
+> > + * @id_table to be created for each active SCMI instance.
+> > + *
+> > + * The requested device name MUST NOT be already existent for any protocol;
+> > + * at first the freshly requested @id_table is annotated in the IDR table
+> > + * @scmi_requested_devices, then a matching device is created for each already
+> > + * active SCMI instance. (if any)
+> > + *
+> > + * This way the requested device is created straight-away for all the already
+> > + * initialized(probed) SCMI instances (handles) but it remains instead pending
+> > + * for creation if the requesting SCMI driver is loaded before some instance
+> > + * and related transports was available: when such late SCMI instance is probed
+> > + * it will take care to scan the list of pending requested devices and create
+> > + * those on its own (see @scmi_create_protocol_devices and its enclosing loop)
+> > + *
+> > + * Return: 0 on Success
+> > + */
+> > +int scmi_request_protocol_device(const struct scmi_device_id *id_table)
+> >   {
+> > -	int loop, cnt;
+> > +	int ret = 0;
+> > +	unsigned int id = 0;
+> > +	struct scmi_requested_dev *rdev, *proto_rdev = NULL;
+> > +	struct scmi_info *info;
+> > -	for (loop = 0; loop < ARRAY_SIZE(devnames); loop++) {
+> > -		if (devnames[loop].protocol_id != prot_id)
+> > -			continue;
+> > +	pr_debug("Requesting SCMI device (%s) for protocol %x\n",
+> > +		 id_table->name, id_table->protocol_id);
+> > -		for (cnt = 0; cnt < ARRAY_SIZE(devnames[loop].names); cnt++) {
+> > -			const char *name = devnames[loop].names[cnt];
+> > +	/*
+> > +	 * Search for the matching protocol rdev list and then search
+> > +	 * of any existent equally named device...fails if any duplicate found.
+> > +	 */
+> > +	mutex_lock(&scmi_requested_devices_mutex);
+> > +	idr_for_each_entry(&scmi_requested_devices, rdev, id) {
+> > +		if (rdev->id_table->protocol_id == id_table->protocol_id)
+> > +			proto_rdev = rdev;
+> > +		for (; rdev; rdev = rdev->next) {
+> > +			if (!strcmp(rdev->id_table->name, id_table->name)) {
+> > +				pr_err("Ignoring duplicate request [%d] %s\n",
+> > +				       rdev->id_table->protocol_id,
+> > +				       rdev->id_table->name);
+> > +				ret = -EINVAL;
+> > +				goto out;
+> > +			}
+> 	Shouldn't there be proto_rdev = rdev here as well ?
 > 
-> But I'm not sure to catch your problem with point 2.
-> track the average cost to scan one rq so looping all rqs are only few
-> should not impact (much) the avg_scan_cost
+
+No, because each IDR entry points to one or more linked rdev descriptors
+for the same protocol: while scanning each list in the IDR table I'm
+searching for the proto_rdev representing the head of that protocol list
+(if any already exist) and also scan all the lists fully to check for
+duplicates, in such a case we give up.
+The IDR map containing list resembles a lot a Linux hash implementation
+but I decided not to use it because it seemed cumbersome to use an
+hash given most of the time each IDR entry will contain just one single
+element and this lookup happens really very infrequently (just at driver
+loading time)
+
+> > +		}
+> > +	}
+> > +
+> > +	/*
+> > +	 * No duplicate found for requested id_table, so let's create a new
+> > +	 * requested device entry for this new valid request.
+> > +	 */
+> > +	rdev = kzalloc(sizeof(*rdev), GFP_KERNEL);
+> > +	if (!rdev) {
+> > +		ret = -ENOMEM;
+> > +		goto out;
+> > +	}
+> > +	rdev->id_table = id_table;
+> > +
+> > +	/*
+> > +	 * Append the new requested device table descriptor to the head of the
+> > +	 * related protocol chain, eventually creating such chain if not already
+> > +	 * there.
+> > +	 */
+> > +	if (!proto_rdev) {
+> > +		ret = idr_alloc(&scmi_requested_devices, (void *)rdev,
+> > +				rdev->id_table->protocol_id,
+> > +				rdev->id_table->protocol_id + 1, GFP_KERNEL);
+> > +		if (ret != rdev->id_table->protocol_id) {
+> > +			pr_err("Failed to save SCMI device - ret:%d\n", ret);
+> > +			kfree(rdev);
+> > +			ret = -EINVAL;
+> > +			goto out;
+> > +		}
+> > +		ret = 0;
+> > +	} else {
+> > +		proto_rdev->next = rdev;
+> > +	}
+> > +
+> > +	/*
+> > +	 * Now effectively create and initialize the requested device for every
+> > +	 * already initialized SCMI instance which has registered the requested
+> > +	 * protocol as a valid active one: i.e. defined in DT and supported by
+> > +	 * current platform FW.
+> > +	 */
+> > +	mutex_lock(&scmi_list_mutex);
+> > +	list_for_each_entry(info, &scmi_list, node) {
+> > +		struct device_node *child;
+> > +
+> > +		child = idr_find(&info->active_protocols,
+> > +				 id_table->protocol_id);
+> > +		if (child) {
+> > +			struct scmi_device *sdev;
+> > +
+> > +			sdev = scmi_get_protocol_device(child, info,
+> > +							id_table->protocol_id,
+> > +							id_table->name);
+> > +			/* Set handle if not already set (device existed) */
+> > +			if (sdev && !sdev->handle)
+> > +				sdev->handle = scmi_handle_get_from_info(info);
+> > +		} else {
+> > +			dev_err(info->dev,
+> > +				"Failed. SCMI protocol %d not active.\n",
+> > +				id_table->protocol_id);
+> > +		}
+> > +	}
+> > +	mutex_unlock(&scmi_list_mutex);
+> > +
+> > +out:
+> > +	mutex_unlock(&scmi_requested_devices_mutex);
+> > +
+> > +	return ret;
+> > +}
+> > +
+> > +/**
+> > + * scmi_unrequest_protocol_device  - Helper to unrequest a device
+> > + *
+> > + * @id_table: A protocol/name pair descriptor for the device to be unrequested.
+> > + *
+> > + * An helper to let an SCMI driver release its request about devices; note that
+> > + * devices are created and initialized once the first SCMI driver request them
+> > + * but they destroyed only on SCMI core unloading/unbinding.
+> > + *
+> > + * The current SCMI transport layer uses such devices as internal references and
+> > + * as such they could be shared as same transport between multiple drivers so
+> > + * that cannot be safely destroyed till the whole SCMI stack is removed.
+> > + * (unless adding further burden of refcounting.)
+> > + */
+> > +void scmi_unrequest_protocol_device(const struct scmi_device_id *id_table)
+> > +{
+> > +	struct scmi_requested_dev *victim, *prev, *head;
+> > +
+> > +	pr_debug("Unrequesting SCMI device (%s) for protocol %x\n",
+> > +		 id_table->name, id_table->protocol_id);
+> > -			if (name)
+> > -				scmi_create_protocol_device(np, info, prot_id,
+> > -							    name);
+> > +	head = idr_find(&scmi_requested_devices, id_table->protocol_id);
+> > +	if (!head)
+> > +		return;
+> > +
+> > +	/*
+> > +	 * Scan the protocol list of requested device name searching
+> > +	 * for the victim.
+> > +	 */
+> > +	victim = head;
+> > +	for (prev = victim; victim; prev = victim, victim = victim->next)
 > 
-> Trying to bias the avg_scan_cost with:  loops <<= 2;
-> will just make avg_scan_cost lost any kind of meaning because it
-> doesn't reflect the avg cost of scanning a rq anymore
+> 	The initial assignment for the for loop is wrong. With this when you break
+> prev will be equal to victim. You want prev to be the one pointing to the
+> victim. Or am I missing something?
 > 
 
-Before the series, the avg_scan_cost also did not represent the cost of
-scanning a RQ before either. Treating scan failures and successes equally
-can problems with the depth of the scan conducted. Previously the "cost"
-of a successful scan was 0 so successful scans allowed deeper scans in
-the near future. This partially illustrates the problem.
+Yes prev is the one preceding the victim, if any, but if it was the head
+I'll remove the head and not use at all the prev really.
+I think is right as it is, it is the naming that is misleading, because
+yes in the initial assignment prev = victim BUT victim = head, so if I bail
+out immediately I'm really removing the head.
+It would be clearer like
 
-                          5.11.0-rc2             5.11.0-rc2             5.11.0-rc2
-                       baseline-v2r1          acctscan-v2r1           altscan-v2r8
-Hmean     1        429.47 (   0.00%)      420.90 *  -2.00%*      414.27 *  -3.54%*
-Hmean     2        709.39 (   0.00%)      796.05 *  12.22%*      791.98 *  11.64%*
-Hmean     4       1449.19 (   0.00%)     1445.14 (  -0.28%)     1319.09 *  -8.98%*
-Hmean     8       2765.65 (   0.00%)     2750.07 *  -0.56%*     2756.17 *  -0.34%*
-Hmean     16      5158.47 (   0.00%)     5056.59 *  -1.97%*     5030.67 *  -2.48%*
-Hmean     32      8969.96 (   0.00%)     8796.96 *  -1.93%*     8768.34 *  -2.25%*
-Hmean     64     11210.05 (   0.00%)     9910.39 * -11.59%*    11073.42 *  -1.22%*
-Hmean     128    17978.21 (   0.00%)    17031.41 *  -5.27%*    17037.76 *  -5.23%*
-Hmean     256    16143.32 (   0.00%)    15636.59 *  -3.14%*    15761.12 *  -2.37%*
-Hmean     320    16388.59 (   0.00%)    15591.78 *  -4.86%*    15588.85 *  -4.88%*
+         prev = victim = head;
+         for (; victim; prev = victim, victim = victim->next)
+	 ...
 
-Note the impact of Peters patch (accescan-v2r1) for 64 threads. The
-machine is 2-socket (40 cores, 80 threads) so 64 is the load is
-balancing between two domains (load balancing vs wakeup migrations).
-altscan is my suggested patch on top and with Peter's patch, there is a
-11.59% regression that is negligible with my patch on top.
+But it's better that I review this whole loop in deep to simplify it; I
+avoided using klist because seemed easier enough to handle a singly
+linked list which most of the time is one element deep, buut maybe I
+should just stick with well known and proven kists.
 
-The impact is machine-specific or specific to the CPU generation. Here
-is just comparing just the suggested alteration on a slightly older
-generation.
+Thanks
 
-                          5.11.0-rc2             5.11.0-rc2
-                       acctscan-v2r1           altscan-v2r8
-Hmean     1        155.44 (   0.00%)      183.32 *  17.94%*
-Hmean     2        445.46 (   0.00%)      548.51 *  23.13%*
-Hmean     4       1080.25 (   0.00%)     1112.49 *   2.98%*
-Hmean     8       2253.48 (   0.00%)     2457.46 *   9.05%*
-Hmean     16      3996.73 (   0.00%)     4244.59 *   6.20%*
-Hmean     32      5318.93 (   0.00%)     5798.17 *   9.01%*
-Hmean     64      9301.55 (   0.00%)     9563.24 *   2.81%*
-Hmean     128     8560.89 (   0.00%)     8873.72 *   3.65%*
-Hmean     192     8526.92 (   0.00%)     8843.43 *   3.71%*
+Cristian
 
-And another 2-socket machine on a newer generation.
-
-Hmean     1        551.16 (   0.00%)      503.75 *  -8.60%*
-Hmean     2       1074.19 (   0.00%)     1078.08 *   0.36%*
-Hmean     4       2024.72 (   0.00%)     2049.29 *   1.21%*
-Hmean     8       3762.49 (   0.00%)     4002.24 *   6.37%*
-Hmean     16      6589.98 (   0.00%)     6688.21 *   1.49%*
-Hmean     32     10080.23 (   0.00%)    10270.34 *   1.89%*
-Hmean     64     11349.16 (   0.00%)    12452.68 *   9.72%*
-Hmean     128    21670.93 (   0.00%)    21823.70 *   0.70%*
-Hmean     256    20605.62 (   0.00%)    20615.01 *   0.05%*
-Hmean     320    20974.29 (   0.00%)    20565.11 *  -1.95%*
-
-For hackbench with processes communicating via pipes on the first
-machine
-
-                          5.11.0-rc2             5.11.0-rc2
-                       acctscan-v2r1           altscan-v2r8
-Amean     1        0.3927 (   0.00%)      0.3943 (  -0.42%)
-Amean     4        0.9247 (   0.00%)      0.9267 (  -0.22%)
-Amean     7        1.4587 (   0.00%)      1.5147 *  -3.84%*
-Amean     12       2.3637 (   0.00%)      2.4507 *  -3.68%*
-Amean     21       4.0700 (   0.00%)      4.1757 *  -2.60%*
-Amean     30       5.6573 (   0.00%)      5.7390 *  -1.44%*
-Amean     48       8.9037 (   0.00%)      8.8053 *   1.10%*
-Amean     79      14.9190 (   0.00%)     14.4360 *   3.24%*
-Amean     110     22.5703 (   0.00%)     21.9210 (   2.88%)
-Amean     141     29.2400 (   0.00%)     28.0110 *   4.20%*
-Amean     172     36.3720 (   0.00%)     34.7963 (   4.33%)
-Amean     203     43.5783 (   0.00%)     42.5537 *   2.35%*
-Amean     234     50.3653 (   0.00%)     47.3463 *   5.99%*
-Amean     265     57.6153 (   0.00%)     55.6247 *   3.46%*
-Amean     296     62.7370 (   0.00%)     62.0720 (   1.06%)
-
-Adjusting the scan cost for successes is neither a universal win or
-failure but it's closer to historical behaviour and the strict
-accounting does hit corner cases.  If a deep scan is finding an idle CPU,
-it makes some sense to continue scanning deeply by adjusting the weight
-instead of prematurely failing.
-
-The testing of the full series previously showed that some loads never
-recovered from side-effects of the first patch and the last patch in the
-series introduced new problems of its own. Hence, I would like to limit
-the negative impact of the first patch and, if necessary, cut the last
-patch altogether.
-
--- 
-Mel Gorman
-SUSE Labs
+> 
+> -- 
+> Warm Regards
+> Thara
