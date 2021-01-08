@@ -2,200 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E2A52EEAD7
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 02:18:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 657AF2EEAD5
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 02:18:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729749AbhAHBRX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 20:17:23 -0500
-Received: from so254-31.mailgun.net ([198.61.254.31]:40819 "EHLO
-        so254-31.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729564AbhAHBRX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 20:17:23 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1610068624; h=Message-Id: Date: Subject: Cc: To: From:
- Sender; bh=cqNjlNBBgadimuvCOQhJCtKlZ2t+VTKBlMiwNFmVwME=; b=IshdKj2ZEiNE4k4F5qe/x48XnPuUzhg8ZZVgJ9wsP5BEGGB0HreIRXoZEopWKjF01tORVr6H
- YBEiTzsvRqVus76Gj/Ga6xhlITbJDbBZA0UM8Pq+73B+mIpSi0EvUa5E2AYNQD90j5Hv5cDA
- scLuEQQflaGifgO0GmbMW7we+NY=
-X-Mailgun-Sending-Ip: 198.61.254.31
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n08.prod.us-west-2.postgun.com with SMTP id
- 5ff7b25bb95fc593268fd052 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 08 Jan 2021 01:16:11
- GMT
-Sender: collinsd=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id E09F8C433C6; Fri,  8 Jan 2021 01:16:10 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from codeaurora.org (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        id S1729781AbhAHBR7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 20:17:59 -0500
+Received: from bilbo.ozlabs.org ([203.11.71.1]:38039 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727634AbhAHBR6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Jan 2021 20:17:58 -0500
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
-        (Authenticated sender: collinsd)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id B061AC433CA;
-        Fri,  8 Jan 2021 01:16:09 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org B061AC433CA
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=collinsd@codeaurora.org
-From:   David Collins <collinsd@codeaurora.org>
-To:     Mark Brown <broonie@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>
-Cc:     David Collins <collinsd@codeaurora.org>,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] regulator: core: avoid regulator_resolve_supply() race condition
-Date:   Thu,  7 Jan 2021 17:16:02 -0800
-Message-Id: <1610068562-4410-1-git-send-email-collinsd@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4DBlZN4MRPz9sW8;
+        Fri,  8 Jan 2021 12:17:16 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1610068636;
+        bh=pDVt1BbK+UDosdTk0hGWhuK2FPCer6YAixo1SzJUR9o=;
+        h=Date:From:To:Cc:Subject:From;
+        b=RqgW39DKehnFKNv2AABrzBDVG7xq8+EN0ezLNPk3hN9oQmloXt7l7QQ6WvSOXD6ow
+         Nvr7QEKQ+j25/qQXvDiKOC81z1sxsrDgH2BbtTEnYHjV2Xa4lU/czlP6xUzyfH4VEG
+         OTCvJKQ7Vbzl51gPY3w1dcMZ9/zObyF0Z0KA8H0PphmaU5jh+RpLw8X2IjQ4MgPRiI
+         bpNmebY6bOulMVIAbUlZr65icR3vfJmhenrFBa/fYHNrCPJSw86ori6U56TT4hXxMw
+         NCOg+xluQ7NHhir6YF3GyoxRR6RtWbHnL9ZRXT2XTFYBCV3QH4iVbJgigM4HwNw5QI
+         DofCaR5iDgoKg==
+Date:   Fri, 8 Jan 2021 12:17:15 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Alex Deucher <alexdeucher@gmail.com>
+Cc:     Bhawanpreet Lakha <Bhawanpreet.Lakha@amd.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: build failure after merge of the amdgpu tree
+Message-ID: <20210108121715.2f33a6fe@canb.auug.org.au>
+MIME-Version: 1.0
+Content-Type: multipart/signed; boundary="Sig_/qhYz2xoa.EcX7FhgRKB9z9c";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The final step in regulator_register() is to call
-regulator_resolve_supply() for each registered regulator
-(including the one in the process of being registered).  The
-regulator_resolve_supply() function first checks if rdev->supply
-is NULL, then it performs various steps to try to find the supply.
-If successful, rdev->supply is set inside of set_supply().
+--Sig_/qhYz2xoa.EcX7FhgRKB9z9c
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-This procedure can encounter a race condition if two concurrent
-tasks call regulator_register() near to each other on separate CPUs
-and one of the regulators has rdev->supply_name specified.  There
-is currently nothing guaranteeing atomicity between the rdev->supply
-check and set steps.  Thus, both tasks can observe rdev->supply==NULL
-in their regulator_resolve_supply() calls.  This then results in
-both creating a struct regulator for the supply.  One ends up
-actually stored in rdev->supply and the other is lost (though still
-present in the supply's consumer_list).
+Hi all,
 
-Here is a kernel log snippet showing the issue:
+After merging the amdgpu tree, today's linux-next build (x86_64
+allmodconfig) failed like this:
 
-[   12.421768] gpu_cc_gx_gdsc: supplied by pm8350_s5_level
-[   12.425854] gpu_cc_gx_gdsc: supplied by pm8350_s5_level
-[   12.429064] debugfs: Directory 'regulator.4-SUPPLY' with parent
-               '17a00000.rsc:rpmh-regulator-gfxlvl-pm8350_s5_level'
-               already present!
+drivers/gpu/drm/amd/amdgpu/../display/amdgpu_dm/amdgpu_dm.c: In function 'd=
+m_set_vblank':
+drivers/gpu/drm/amd/amdgpu/../display/amdgpu_dm/amdgpu_dm.c:5493:2: error: =
+implicit declaration of function 'dc_allow_idle_optimizations' [-Werror=3Di=
+mplicit-function-declaration]
+ 5493 |  dc_allow_idle_optimizations(
+      |  ^~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Avoid this race condition by holding the rdev->mutex lock inside
-of regulator_resolve_supply() while checking and setting
-rdev->supply.
+Caused by commit
 
-Signed-off-by: David Collins <collinsd@codeaurora.org>
----
- drivers/regulator/core.c | 39 ++++++++++++++++++++++++++++-----------
- 1 file changed, 28 insertions(+), 11 deletions(-)
+  71338cb4a7c2 ("drm/amd/display: enable idle optimizations for linux (MALL=
+ stutter)")
 
-diff --git a/drivers/regulator/core.c b/drivers/regulator/core.c
-index fee9241..3ae5ccd 100644
---- a/drivers/regulator/core.c
-+++ b/drivers/regulator/core.c
-@@ -1813,23 +1813,34 @@ static int regulator_resolve_supply(struct regulator_dev *rdev)
- {
- 	struct regulator_dev *r;
- 	struct device *dev = rdev->dev.parent;
--	int ret;
-+	int ret = 0;
- 
- 	/* No supply to resolve? */
- 	if (!rdev->supply_name)
- 		return 0;
- 
--	/* Supply already resolved? */
-+	/* Supply already resolved? (fast-path without locking contention) */
- 	if (rdev->supply)
- 		return 0;
- 
-+	/*
-+	 * Recheck rdev->supply with rdev->mutex lock held to avoid a race
-+	 * between rdev->supply null check and setting rdev->supply in
-+	 * set_supply() from concurrent tasks.
-+	 */
-+	regulator_lock(rdev);
-+
-+	/* Supply just resolved by a concurrent task? */
-+	if (rdev->supply)
-+		goto out;
-+
- 	r = regulator_dev_lookup(dev, rdev->supply_name);
- 	if (IS_ERR(r)) {
- 		ret = PTR_ERR(r);
- 
- 		/* Did the lookup explicitly defer for us? */
- 		if (ret == -EPROBE_DEFER)
--			return ret;
-+			goto out;
- 
- 		if (have_full_constraints()) {
- 			r = dummy_regulator_rdev;
-@@ -1837,15 +1848,18 @@ static int regulator_resolve_supply(struct regulator_dev *rdev)
- 		} else {
- 			dev_err(dev, "Failed to resolve %s-supply for %s\n",
- 				rdev->supply_name, rdev->desc->name);
--			return -EPROBE_DEFER;
-+			ret = -EPROBE_DEFER;
-+			goto out;
- 		}
- 	}
- 
- 	if (r == rdev) {
- 		dev_err(dev, "Supply for %s (%s) resolved to itself\n",
- 			rdev->desc->name, rdev->supply_name);
--		if (!have_full_constraints())
--			return -EINVAL;
-+		if (!have_full_constraints()) {
-+			ret = -EINVAL;
-+			goto out;
-+		}
- 		r = dummy_regulator_rdev;
- 		get_device(&r->dev);
- 	}
-@@ -1859,7 +1873,8 @@ static int regulator_resolve_supply(struct regulator_dev *rdev)
- 	if (r->dev.parent && r->dev.parent != rdev->dev.parent) {
- 		if (!device_is_bound(r->dev.parent)) {
- 			put_device(&r->dev);
--			return -EPROBE_DEFER;
-+			ret = -EPROBE_DEFER;
-+			goto out;
- 		}
- 	}
- 
-@@ -1867,13 +1882,13 @@ static int regulator_resolve_supply(struct regulator_dev *rdev)
- 	ret = regulator_resolve_supply(r);
- 	if (ret < 0) {
- 		put_device(&r->dev);
--		return ret;
-+		goto out;
- 	}
- 
- 	ret = set_supply(rdev, r);
- 	if (ret < 0) {
- 		put_device(&r->dev);
--		return ret;
-+		goto out;
- 	}
- 
- 	/*
-@@ -1886,11 +1901,13 @@ static int regulator_resolve_supply(struct regulator_dev *rdev)
- 		if (ret < 0) {
- 			_regulator_put(rdev->supply);
- 			rdev->supply = NULL;
--			return ret;
-+			goto out;
- 		}
- 	}
- 
--	return 0;
-+out:
-+	regulator_unlock(rdev);
-+	return ret;
- }
- 
- /* Internal regulator request function */
--- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
+I have used the amdgpu tree from next-20210107 for today.
+dc_allow_idle_optimizations() is only declared when CONFIG_DRM_AMD_DC_DCN
+is set.
 
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/qhYz2xoa.EcX7FhgRKB9z9c
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl/3spsACgkQAVBC80lX
+0GyrPQf/cdS1AsBtCXfzXQNUJadHiJPqA29ogebo47bA/ptGav0dPp9TaXFPvJxv
+kSV8fY+9L/a4SNhuHS6YjpurglkWbbqBXnJjw6eKzBWGkuWa9tyFXEKzHg9LrdVF
+/JmWFXXqSIXD59nGrUuWWlLVRxZDBq7qx9X4nRZPXyATdK/ShR2Oq91DQrVGVFYv
+rXVdmn9yWSflDpJm+vfzmyMhUWJXzTOEHzCIxkcBJJH54C7bcftbp8nMtH5crrKc
+ZtWy0powIeh92osjb0ncALm7dbp4J6/oNA0nxV4n46YBZv2EQuQkoNgUhifmc5V6
+vZyoVwbOuoYqDsdfOOsAy8kcOTWwEw==
+=7Qqs
+-----END PGP SIGNATURE-----
+
+--Sig_/qhYz2xoa.EcX7FhgRKB9z9c--
