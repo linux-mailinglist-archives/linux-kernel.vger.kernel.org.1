@@ -2,29 +2,29 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 90FB82EEF77
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 10:23:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 772E82EEF79
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 10:23:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728360AbhAHJXd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Jan 2021 04:23:33 -0500
-Received: from szxga04-in.huawei.com ([45.249.212.190]:10119 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727045AbhAHJXc (ORCPT
+        id S1728384AbhAHJXn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Jan 2021 04:23:43 -0500
+Received: from szxga07-in.huawei.com ([45.249.212.35]:10411 "EHLO
+        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727045AbhAHJXl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Jan 2021 04:23:32 -0500
-Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4DByKY5q6jz15r0J;
-        Fri,  8 Jan 2021 17:21:53 +0800 (CST)
+        Fri, 8 Jan 2021 04:23:41 -0500
+Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4DByKj2Zh4z7Rxd;
+        Fri,  8 Jan 2021 17:22:01 +0800 (CST)
 Received: from ubuntu.network (10.175.138.68) by
- DGGEMS412-HUB.china.huawei.com (10.3.19.212) with Microsoft SMTP Server id
- 14.3.498.0; Fri, 8 Jan 2021 17:22:40 +0800
+ DGGEMS409-HUB.china.huawei.com (10.3.19.209) with Microsoft SMTP Server id
+ 14.3.498.0; Fri, 8 Jan 2021 17:22:50 +0800
 From:   Zheng Yongjun <zhengyongjun3@huawei.com>
-To:     <miquel.raynal@bootlin.com>, <richard@nod.at>, <vigneshr@ti.com>,
-        <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>
+To:     <linus.walleij@linaro.org>, <bgolaszewski@baylibre.com>,
+        <linux-gpio@vger.kernel.org>, <linux-kernel@vger.kernel.org>
 CC:     Zheng Yongjun <zhengyongjun3@huawei.com>
-Subject: [PATCH v2 -next] mtd: st_spi_fsm: convert comma to semicolon
-Date:   Fri, 8 Jan 2021 17:23:25 +0800
-Message-ID: <20210108092325.19037-1-zhengyongjun3@huawei.com>
+Subject: [PATCH v2 -next] gpio: convert comma to semicolon
+Date:   Fri, 8 Jan 2021 17:23:34 +0800
+Message-ID: <20210108092334.19101-1-zhengyongjun3@huawei.com>
 X-Mailer: git-send-email 2.22.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7BIT
@@ -39,22 +39,22 @@ Replace a comma between expression statements by a semicolon.
 
 Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>
 ---
- drivers/mtd/devices/st_spi_fsm.c | 2 +-
+ drivers/gpio/gpio-mc33880.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/mtd/devices/st_spi_fsm.c b/drivers/mtd/devices/st_spi_fsm.c
-index 1888523d9745..983999c020d6 100644
---- a/drivers/mtd/devices/st_spi_fsm.c
-+++ b/drivers/mtd/devices/st_spi_fsm.c
-@@ -924,7 +924,7 @@ static int stfsm_read_status(struct stfsm *fsm, uint8_t cmd,
- 	BUG_ON(bytes != 1 && bytes != 2);
+diff --git a/drivers/gpio/gpio-mc33880.c b/drivers/gpio/gpio-mc33880.c
+index f8194f7c6186..704cd4e6171f 100644
+--- a/drivers/gpio/gpio-mc33880.c
++++ b/drivers/gpio/gpio-mc33880.c
+@@ -99,7 +99,7 @@ static int mc33880_probe(struct spi_device *spi)
  
- 	seq->seq_opc[0] = (SEQ_OPC_PADS_1 | SEQ_OPC_CYCLES(8) |
--			   SEQ_OPC_OPCODE(cmd)),
-+			   SEQ_OPC_OPCODE(cmd));
+ 	mc->spi = spi;
  
- 	stfsm_load_seq(fsm, seq);
- 
+-	mc->chip.label = DRIVER_NAME,
++	mc->chip.label = DRIVER_NAME;
+ 	mc->chip.set = mc33880_set;
+ 	mc->chip.base = pdata->base;
+ 	mc->chip.ngpio = PIN_NUMBER;
 -- 
 2.22.0
 
