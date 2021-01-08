@@ -2,167 +2,214 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E13C52EF446
+	by mail.lfdr.de (Postfix) with ESMTP id 0EADB2EF443
 	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 15:56:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727442AbhAHOzz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Jan 2021 09:55:55 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50494 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725942AbhAHOzz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Jan 2021 09:55:55 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 66A9F2388B;
-        Fri,  8 Jan 2021 14:55:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610117714;
-        bh=KXyZUJgp4S/FkZX12/a7VseM4D/rbIALeIzXvFoAeKQ=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=KHvTQDzTYJA6Un3GYPoyLFBis/3D66He4P4k9a2thvmNiGqblKgqsGnl8vu4A6LqL
-         S3seVY8WEscIhRgwXxK/BJfAzx9/1hEH2euFIzo8L0jHmGgwWfm39uPNmtZ4C/0yrz
-         rgPm0N4vcJ4s7mLlp4WQNP7YqPba0ZKCKvGxTYG8/xmw+Do6MUbsmhWRTIFSCO/DBo
-         z8xRhQMXtStV74D2VjDVelROvxDZGVX9myhayqOTGlDI+MLebPiNw26/7c5d6Pj61I
-         Ro6j8lSFKG0Z4MmBzyNX6f+HSt1ut3B+w98xUXV4oZ3Sh4/mXgkv6sz4hYXnj0bO/A
-         uDHZhWgctSbVA==
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 1B63D3522B7D; Fri,  8 Jan 2021 06:55:14 -0800 (PST)
-Date:   Fri, 8 Jan 2021 06:55:14 -0800
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     linux-kernel@vger.kernel.org, x86@kernel.org,
-        linux-edac@vger.kernel.org, tony.luck@intel.com,
-        tglx@linutronix.de, mingo@redhat.com, hpa@zytor.com,
-        kernel-team@fb.com
-Subject: Re: [PATCH RFC x86/mce] Make mce_timed_out() identify holdout CPUs
-Message-ID: <20210108145514.GS2743@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20210106174102.GA23874@paulmck-ThinkPad-P72>
- <20210106183244.GA24607@zn.tnic>
- <20210106191353.GA2743@paulmck-ThinkPad-P72>
- <20210107070724.GC14697@zn.tnic>
- <20210107170844.GM2743@paulmck-ThinkPad-P72>
- <20210108123156.GD4042@zn.tnic>
+        id S1727623AbhAHO4N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Jan 2021 09:56:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58998 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725817AbhAHO4J (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 Jan 2021 09:56:09 -0500
+Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8976C061380
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Jan 2021 06:55:28 -0800 (PST)
+Received: by mail-pf1-x435.google.com with SMTP id 11so6385920pfu.4
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Jan 2021 06:55:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=qOxuY9wpscodu+ZQbxU6QBZGxwvhQkFOjd62XGBbhmc=;
+        b=OfOntIbLTnaWW/Oecl8sXNWYyKfTpXTJxzQrfP4C2HcCP98Cbg1dPrsPiJhyQFl2OW
+         3022xV0dSuOn8S8yuGe9vew4triG9/MFShpKf7LG2S8WPTPLanoRCv9hDZpAaDrwdtRY
+         yiHknZt4X8Nj2NQkCmr6DynFBG8YtYSHM2Q7tvDUJiJ7yOFfZdpCCKixq7KOLXaEN8nq
+         Ouv09Ro7XPmE0fT45rQSDJE4pHOa/oWTej3NLB9Hp5uqy8xukQqmUlXp/PA4Xmnl/lQX
+         2XEj4b9j9/r95hjv+CCqppomuFjC5VRmmbxFjtnpfBOhv9AKUHuswu2I1d7ycXNcL1r3
+         3JxQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=qOxuY9wpscodu+ZQbxU6QBZGxwvhQkFOjd62XGBbhmc=;
+        b=g4BP4Fv2daR4pWrp7GRtPUxi8flus2UPLZtSjf0vKrke9rdyXphI2hlXyjuHnNNqHO
+         sAXFdISy/e+iLbBq29eEhIkjJW/ULgqNh82AiDTqtE2tDyQMQN7RI7nWdnu17y5BKxUy
+         Hk5w5VvvHR+kjTL3k/yXaoUo28w5FFVxM+moK7czmj6zXW7M6lZNMybVr2q+ML8hPUVH
+         7EK4WhCw5vKkrEXlDF+H2rEGykFmuY3MuZzSaoit69UlyVjJ7R7M9zSRorzN1BZKmPm4
+         fHElnrPpGyIE21opCOz/JPG0UhPibbvAEWwx7ht+nob0+SJKeZQxj1qHX5uI6093v8SK
+         u0dg==
+X-Gm-Message-State: AOAM532/pMjDbjqtvpZyyd/pIAg2Hbc4cnbSe2r2a3hmdBYHeGbASepM
+        ybGowt7u5OL4sqouq9iMbSFyk9ZIQFcwZrGdM2gpPg==
+X-Google-Smtp-Source: ABdhPJzIRLdW5PNKJIGbBZln1OdzLcjN5zyipjHcdBiRHjXYo+S0e+2kf6qgmoGB57ORLd/HMCSNoN7XOr8K2drYjEA=
+X-Received: by 2002:a62:8f0e:0:b029:1aa:1268:fa4e with SMTP id
+ n14-20020a628f0e0000b02901aa1268fa4emr7336530pfd.18.1610117728287; Fri, 08
+ Jan 2021 06:55:28 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210108123156.GD4042@zn.tnic>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+References: <20210107142123.639477-1-robert.foss@linaro.org>
+ <CAAFQd5BVSNGDV7ZkiVpZwbfTfRLJmNvopMQFnQno+CDs+bo3Gg@mail.gmail.com> <6ec75d88-0cd5-79cc-6413-81f169b5e976@linaro.org>
+In-Reply-To: <6ec75d88-0cd5-79cc-6413-81f169b5e976@linaro.org>
+From:   Robert Foss <robert.foss@linaro.org>
+Date:   Fri, 8 Jan 2021 15:55:17 +0100
+Message-ID: <CAG3jFyvOcKm61L0iOBi_PxOeTv4D+satyxpNaGZZdZ482H7YOw@mail.gmail.com>
+Subject: Re: [PATCH v2] media: ov8856: Fix Bayer format dependance on mode
+To:     Andrey Konovalov <andrey.konovalov@linaro.org>
+Cc:     Tomasz Figa <tfiga@google.com>,
+        Dongchun Zhu <dongchun.zhu@mediatek.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Bingbu Cao <bingbu.cao@linux.intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 08, 2021 at 01:31:56PM +0100, Borislav Petkov wrote:
-> On Thu, Jan 07, 2021 at 09:08:44AM -0800, Paul E. McKenney wrote:
-> > Some information is usually better than none.  And I bet that failing
-> > hardware is capable of all sorts of tricks at all sorts of levels.  ;-)
-> 
-> Tell me about it.
-> 
-> > Updated patch below.  Is this what you had in mind?
-> 
-> Ok, so I've massaged it into the below locally while taking another
-> detailed look. Made the pr_info pr_emerg and poked at the text more, as
-> I do. :)
-> 
-> Lemme know if something else needs to be adjusted, otherwise I'll queue
-> it.
+Hey Tomasz & Andrey,
 
-Looks good to me!  I agree that your change to the pr_emerg() string is
-much better than my original.  And good point on your added comment,
-plus it was fun to see that my original "holdouts" wording has not
-completely vanished.  ;-)
+On Fri, 8 Jan 2021 at 11:46, Andrey Konovalov
+<andrey.konovalov@linaro.org> wrote:
+>
+> Hi Robert and Tomasz,
+>
+> On 08.01.2021 12:49, Tomasz Figa wrote:
+> > Hi Robert,
+> >
+> > On Thu, Jan 7, 2021 at 11:21 PM Robert Foss <robert.foss@linaro.org> wrote:
+> >>
+> >> The Bayer GRBG10 mode used for earlier modes 3280x2460 and
+> >> 1640x1232 isn't the mode output by the sensor for the
+> >> 3264x2448 and 1632x1224 modes.
+> >>
+> >> Switch from MEDIA_BUS_FMT_SGRBG10_1X10 to MEDIA_BUS_FMT_SBGGR10_1X10
+> >> for 3264x2448 & 1632x1224 modes.
+> >>
+> >> Signed-off-by: Robert Foss <robert.foss@linaro.org>
+> >> ---
+> >>
+> >> Changes since v1:
+> >>   - Sakari: Added mode information to ov8856_mode struct
+> >>   - Sakari: enum_mbus_code updated
+> >>
+> >>   drivers/media/i2c/ov8856.c | 24 ++++++++++++++++++------
+> >>   1 file changed, 18 insertions(+), 6 deletions(-)
+> >>
+> >> diff --git a/drivers/media/i2c/ov8856.c b/drivers/media/i2c/ov8856.c
+> >> index 2f4ceaa80593..7cd83564585c 100644
+> >> --- a/drivers/media/i2c/ov8856.c
+> >> +++ b/drivers/media/i2c/ov8856.c
+> >> @@ -126,6 +126,9 @@ struct ov8856_mode {
+> >>
+> >>          /* Sensor register settings for this resolution */
+> >>          const struct ov8856_reg_list reg_list;
+> >> +
+> >> +       /* MEDIA_BUS_FMT for this mode */
+> >> +       u32 code;
+> >>   };
+> >>
+> >>   static const struct ov8856_reg mipi_data_rate_720mbps[] = {
+> >> @@ -942,6 +945,11 @@ static const char * const ov8856_test_pattern_menu[] = {
+> >>          "Bottom-Top Darker Color Bar"
+> >>   };
+> >>
+> >> +static const u32 ov8856_formats[] = {
+> >> +       MEDIA_BUS_FMT_SBGGR10_1X10,
+> >> +       MEDIA_BUS_FMT_SGRBG10_1X10,
+> >> +};
+> >> +
+> >>   static const s64 link_freq_menu_items[] = {
+> >>          OV8856_LINK_FREQ_360MHZ,
+> >>          OV8856_LINK_FREQ_180MHZ
+> >> @@ -974,6 +982,7 @@ static const struct ov8856_mode supported_modes[] = {
+> >>                          .regs = mode_3280x2464_regs,
+> >>                  },
+> >>                  .link_freq_index = OV8856_LINK_FREQ_720MBPS,
+> >> +               .code = MEDIA_BUS_FMT_SGRBG10_1X10,
+> >>          },
+> >>          {
+> >>                  .width = 3264,
+> >> @@ -986,6 +995,7 @@ static const struct ov8856_mode supported_modes[] = {
+> >>                          .regs = mode_3264x2448_regs,
+> >>                  },
+> >>                  .link_freq_index = OV8856_LINK_FREQ_720MBPS,
+> >> +               .code = MEDIA_BUS_FMT_SBGGR10_1X10,
+> >>          },
+> >>          {
+> >>                  .width = 1640,
+> >> @@ -998,6 +1008,7 @@ static const struct ov8856_mode supported_modes[] = {
+> >>                          .regs = mode_1640x1232_regs,
+> >>                  },
+> >>                  .link_freq_index = OV8856_LINK_FREQ_360MBPS,
+> >> +               .code = MEDIA_BUS_FMT_SGRBG10_1X10,
+> >>          },
+> >>          {
+> >>                  .width = 1632,
+> >> @@ -1010,6 +1021,7 @@ static const struct ov8856_mode supported_modes[] = {
+> >>                          .regs = mode_1632x1224_regs,
+> >>                  },
+> >>                  .link_freq_index = OV8856_LINK_FREQ_360MBPS,
+> >> +               .code = MEDIA_BUS_FMT_SBGGR10_1X10,
+> >>          }
+> >>   };
+> >>
+> >> @@ -1281,8 +1293,8 @@ static void ov8856_update_pad_format(const struct ov8856_mode *mode,
+> >>   {
+> >>          fmt->width = mode->width;
+> >>          fmt->height = mode->height;
+> >> -       fmt->code = MEDIA_BUS_FMT_SGRBG10_1X10;
+> >>          fmt->field = V4L2_FIELD_NONE;
+> >> +       fmt->code = mode->code;
+> >>   }
+> >>
+> >>   static int ov8856_start_streaming(struct ov8856 *ov8856)
+> >> @@ -1519,11 +1531,10 @@ static int ov8856_enum_mbus_code(struct v4l2_subdev *sd,
+> >>                                   struct v4l2_subdev_pad_config *cfg,
+> >>                                   struct v4l2_subdev_mbus_code_enum *code)
+> >>   {
+> >> -       /* Only one bayer order GRBG is supported */
+> >> -       if (code->index > 0)
+> >> +       if (code->index >= ARRAY_SIZE(ov8856_formats))
+> >>                  return -EINVAL;
+> >>
+> >> -       code->code = MEDIA_BUS_FMT_SGRBG10_1X10;
+> >> +       code->code = ov8856_formats[code->index];
+> >>
+> >>          return 0;
+> >>   }
+> >> @@ -1532,10 +1543,11 @@ static int ov8856_enum_frame_size(struct v4l2_subdev *sd,
+> >>                                    struct v4l2_subdev_pad_config *cfg,
+> >>                                    struct v4l2_subdev_frame_size_enum *fse)
+> >>   {
+> >> -       if (fse->index >= ARRAY_SIZE(supported_modes))
+> >> +       if ((fse->code != ov8856_formats[0]) &&
+> >> +           (fse->code != ov8856_formats[1]))
+> >
+> > Shouldn't this be validated against the current mode? I guess it's the
+> > question about which part of the state takes precedence - the mbus
+> > code or the frame size.
+>
+> The docs [1] say "enumerate all frame sizes supported by a sub-device on the given pad
+> for the given media bus format". It doesn't seem to mention the current mode. But the
+> frame sizes reported should be filtered by the mbus code, and this patch misses that
+> if I read it correct.
 
-Thank you very much!!!
+I was trying to grok this, and looking at the other sensor drivers
+didn't provide much
+guidance so your input is very welcome.
 
-							Thanx, Paul
-
-> Thx.
-> 
-> ---
-> Author: Paul E. McKenney <paulmck@kernel.org>
-> Date:   Wed Dec 23 17:04:19 2020 -0800
-> 
->     x86/mce: Make mce_timed_out() identify holdout CPUs
->     
->     The
->     
->       "Timeout: Not all CPUs entered broadcast exception handler"
->     
->     message will appear from time to time given enough systems, but this
->     message does not identify which CPUs failed to enter the broadcast
->     exception handler. This information would be valuable if available,
->     for example, in order to correlate with other hardware-oriented error
->     messages.
->     
->     Add a cpumask of CPUs which maintains which CPUs have entered this
->     handler, and print out which ones failed to enter in the event of a
->     timeout.
->     
->      [ bp: Massage. ]
->     
->     Reported-by: Jonathan Lemon <bsd@fb.com>
->     Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
->     Signed-off-by: Borislav Petkov <bp@suse.de>
->     Tested-by: Tony Luck <tony.luck@intel.com>
->     Link: https://lkml.kernel.org/r/20210106174102.GA23874@paulmck-ThinkPad-P72
-> 
-> diff --git a/arch/x86/kernel/cpu/mce/core.c b/arch/x86/kernel/cpu/mce/core.c
-> index 13d3f1cbda17..6c81d0998e0a 100644
-> --- a/arch/x86/kernel/cpu/mce/core.c
-> +++ b/arch/x86/kernel/cpu/mce/core.c
-> @@ -877,6 +877,12 @@ static atomic_t mce_executing;
->   */
->  static atomic_t mce_callin;
->  
-> +/*
-> + * Track which CPUs entered the MCA broadcast synchronization and which not in
-> + * order to print holdouts.
-> + */
-> +static cpumask_t mce_missing_cpus = CPU_MASK_ALL;
-> +
->  /*
->   * Check if a timeout waiting for other CPUs happened.
->   */
-> @@ -894,8 +900,12 @@ static int mce_timed_out(u64 *t, const char *msg)
->  	if (!mca_cfg.monarch_timeout)
->  		goto out;
->  	if ((s64)*t < SPINUNIT) {
-> -		if (mca_cfg.tolerant <= 1)
-> +		if (mca_cfg.tolerant <= 1) {
-> +			if (cpumask_and(&mce_missing_cpus, cpu_online_mask, &mce_missing_cpus))
-> +				pr_emerg("CPUs not responding to MCE broadcast (may include false positives): %*pbl\n",
-> +					 cpumask_pr_args(&mce_missing_cpus));
->  			mce_panic(msg, NULL, NULL);
-> +		}
->  		cpu_missing = 1;
->  		return 1;
->  	}
-> @@ -1006,6 +1016,7 @@ static int mce_start(int *no_way_out)
->  	 * is updated before mce_callin.
->  	 */
->  	order = atomic_inc_return(&mce_callin);
-> +	cpumask_clear_cpu(smp_processor_id(), &mce_missing_cpus);
->  
->  	/*
->  	 * Wait for everyone.
-> @@ -1114,6 +1125,7 @@ static int mce_end(int order)
->  reset:
->  	atomic_set(&global_nwo, 0);
->  	atomic_set(&mce_callin, 0);
-> +	cpumask_setall(&mce_missing_cpus);
->  	barrier();
->  
->  	/*
-> @@ -2712,6 +2724,7 @@ static void mce_reset(void)
->  	atomic_set(&mce_executing, 0);
->  	atomic_set(&mce_callin, 0);
->  	atomic_set(&global_nwo, 0);
-> +	cpumask_setall(&mce_missing_cpus);
->  }
->  
->  static int fake_panic_get(void *data, u64 *val)
-> 
-> -- 
-> Regards/Gruss,
->     Boris.
-> 
-> https://people.kernel.org/tglx/notes-about-netiquette
+>
+> But this situation when the mbus code depends on the mode (on the resolution in fact)...
+> Yes, if we read the pixels from a rectangle smaller than the active area, we can change
+> the bayer order by moving this "read-out" rectangle by one pixel along x, y, or both x
+> and y axes. But wouldn't it be better if we try to review the register setting for the
+> current modes so that the bayer order would be the same for all the modes?
+>
+> Thanks,
+> Andrey
+>
+> > Best regards,
+> > Tomasz
+> >
+>
+> [1] https://linuxtv.org/downloads/v4l-dvb-apis-new/userspace-api/v4l/vidioc-subdev-enum-frame-size.html
