@@ -2,147 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 90D0F2EF6D5
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 18:56:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 46EA52EF6CD
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 18:54:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728564AbhAHRy5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Jan 2021 12:54:57 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:42268 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728480AbhAHRy4 (ORCPT
+        id S1728534AbhAHRyW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Jan 2021 12:54:22 -0500
+Received: from mail-oi1-f181.google.com ([209.85.167.181]:46886 "EHLO
+        mail-oi1-f181.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728483AbhAHRyV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Jan 2021 12:54:56 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1610128410;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Nxq9Vs4PPNDPrpqL+JjGyYANEQaSFuCmNckkWvxfyR0=;
-        b=d5Jew1ijpEqOLTsGfc9o1KHs2GmDqAlQ9eaS20AgG3iA7fQerbg6NoJMSRZp0FxjR8+TdY
-        +/pu1N0DewMBM3QJNrvVbL2Y95yBxx/4ekARR45oG6LJEM7onv0EJ+zC6xkJYrXPaG8emX
-        0uxZppunnqTwKFBFxAXUtRO7nRx10Mw=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-233-W5TVzRJbOum_izCrlNcgXQ-1; Fri, 08 Jan 2021 12:53:25 -0500
-X-MC-Unique: W5TVzRJbOum_izCrlNcgXQ-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4D0EE107ACE4;
-        Fri,  8 Jan 2021 17:53:21 +0000 (UTC)
-Received: from mail (ovpn-112-222.rdu2.redhat.com [10.10.112.222])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id DD21A19C48;
-        Fri,  8 Jan 2021 17:53:08 +0000 (UTC)
-Date:   Fri, 8 Jan 2021 12:53:08 -0500
-From:   Andrea Arcangeli <aarcange@redhat.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Will Deacon <will@kernel.org>, Linux-MM <linux-mm@kvack.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Yu Zhao <yuzhao@google.com>, Andy Lutomirski <luto@kernel.org>,
-        Peter Xu <peterx@redhat.com>,
-        Pavel Emelyanov <xemul@openvz.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Mike Rapoport <rppt@linux.vnet.ibm.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Hugh Dickins <hughd@google.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Oleg Nesterov <oleg@redhat.com>, Jann Horn <jannh@google.com>,
-        Kees Cook <keescook@chromium.org>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>, Jan Kara <jack@suse.cz>,
-        Kirill Tkhai <ktkhai@virtuozzo.com>,
-        Nadav Amit <nadav.amit@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [PATCH 2/2] mm: soft_dirty: userfaultfd: introduce
- wrprotect_tlb_flush_pending
-Message-ID: <X/icBLF59bREm97b@redhat.com>
-References: <X/d2DyLfXZmBIreY@redhat.com>
- <CAHk-=wjs9v-hp_7HV_TrTmisu7pNX=MwZ62ZV82i0evLhPwS1Q@mail.gmail.com>
- <X/eLwQPd5bi620Vt@redhat.com>
- <CAHk-=whjS3pUZRJLR_HdgB0_1Sd4gWXUbLLyShKxOg0ySCdnUA@mail.gmail.com>
- <CAHk-=wgRZ5o5pUqKC6cwTLU=V-G+rF5DTexGh1kCMGrgXDufew@mail.gmail.com>
- <X/edsWgguQDgsOtx@redhat.com>
- <CAHk-=whTCBa6Frpbveuy7Hnz17P+g03yQvynkApFbBjV5rVrsA@mail.gmail.com>
- <20210108124815.GA4512@willie-the-truck>
- <X/iEyk0ijxhSvs9T@redhat.com>
- <CAHk-=wizOEqJTomh=K5CR300mtTCwWdj+QYYCXKHaiU-R0YE9Q@mail.gmail.com>
+        Fri, 8 Jan 2021 12:54:21 -0500
+Received: by mail-oi1-f181.google.com with SMTP id q205so12177035oig.13;
+        Fri, 08 Jan 2021 09:54:05 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=64bLvDgCgYBUvVvAphyLAP7mcN/gvgPAZaS5Ydc+1zM=;
+        b=VoIjvmVH8pN/IrUdJwwxpuY1TyEFBCjBVrKBpXaxhe9MtZzy4yJ618QXQRikiWkVUR
+         XZG1IkkPAlBV6Nldks9jQXZSvwq0neQrP7zK3BRa1iuAy+sK7KYcdVvwmnDgd5P0DRTp
+         y6NsBDZGMtI3jDg9T5q/VkxoVVe7VhJwGuz7/ecRGC/Of3dLzt3uIjRc6iJzUlIIeI/p
+         S+RWLzDPj8n9rwiATHea7HxFQz/I5nqFwHG88tnw/MWTbVglPIPDbg3MLO5vPS7FYN7/
+         vEeiBTIXpY4/vsJ86dC3vV+p1I/ATlQ3Rcnz54rkANpb97ypaDagcMq2hrcgZwggLKnj
+         pnEw==
+X-Gm-Message-State: AOAM530zioVT/H+kLmBdh9r/PYy6BdOlJZzm+IO9r1kbW66AjgpTBOKa
+        NAohyOpGwLQATnzsrvN5GGMOtKSomaH03hm9MUChvP19G7w=
+X-Google-Smtp-Source: ABdhPJzF3kao47vS5LN6XIubxJB7JS5wJsaGQHNNPbD2uqTmUXtzyumaR+GdxUWLoOjPrxsok9JJO4fXMcNI8CqEec8=
+X-Received: by 2002:aca:d6c8:: with SMTP id n191mr2897549oig.69.1610128420533;
+ Fri, 08 Jan 2021 09:53:40 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHk-=wizOEqJTomh=K5CR300mtTCwWdj+QYYCXKHaiU-R0YE9Q@mail.gmail.com>
-User-Agent: Mutt/2.0.4 (2020-12-30)
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Fri, 8 Jan 2021 18:53:29 +0100
+Message-ID: <CAJZ5v0hZP8tsniMBtjBatd-ORJMXqVWXiPEPpJvpfZagUGyPEw@mail.gmail.com>
+Subject: [GIT PULL] ACPI fixes for v5.11-rc3
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 08, 2021 at 09:39:56AM -0800, Linus Torvalds wrote:
-> page_count() is simply the right and efficient thing to do.
-> 
-> You talk about all these theoretical inefficiencies for cases like
-> zygote and page pinning, which have never ever been seen except as a
-> possible attack vector.
+Hi Linus,
 
-Do you intend to eventually fix the zygote vmsplice case or not?
-Because in current upstream it's not fixed currently using the
-enterprise default config.
+Please pull from the tag
 
-> Stop talking about irrelevant things. Stop trying to "optimize" things
-> that never happen and don't matter.
-> 
-> Instead, what matters is the *NORMAL* VM flow.
-> 
-> Things like COW.
-> 
-> Things like "oh, now that we check just the page count, we don't even
-> need the page lock for the common case any more".
-> 
-> > For the long term, I can't see how using page_count in do_wp_page is a
-> > tenable proposition,
-> 
-> I think you should re-calibrate your expectations, and accept that
-> page_count() is the right thing to do, and live with it.
-> 
-> And instead of worrying about irrelevant special-case code, start
+ git://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git \
+ acpi-5.11-rc3
 
-Irrelevant special case as in: long term GUP pin on the memory?
+with top-most commit 24e8ab6886d80fe60b1d4e64b6d9f15ea9ad597a
 
-Or irrelevant special case as in: causing secondary MMU to hit silent
-data loss if a pte is ever wrprotected (arch code, vm86, whatever, all
-under mmap_write_lock of course).
+ Merge branches 'acpi-scan' and 'acpi-misc'
 
-> worrying about the code that gets triggered tens of thousands of times
-> a second, on regular loads, without anybody doing anything odd or
-> special at all, just running plain and normal shell scripts or any
-> other normal traditional load.
-> 
-> Those irrelevant special cases should be simple and work, not badly
-> optimized to the point where they are buggy. And they are MUCH LESS
-> IMPORTANT than the normal VM code, so if somebody does something odd,
-> and it's slow, then that is the problem for the _odd_ case, not for
-> the normal codepaths.
-> 
-> This is why I refuse to add crazy new special cases to core code. Make
-> the rules simple and straightforward, and make the code VM work well.
+on top of commit e71ba9452f0b5b2e8dc8aa5445198cd9214a6a62
 
-New special cases? which new cases?
+ Linux 5.11-rc2
 
-There's nothing new here besides the zygote that wasn't fully fixed
-with 09854ba94c6aad7886996bfbee2530b3d8a7f4f4 and is actually the only
-new case I can imagine where page_count actually isn't a regression.
+to receive ACPI fixes for 5.11-rc3.
 
-All old cases that you seem to refer as irrelevant and are in
-production in v4.18, I don't see anything new here.
+These address two build issues and drop confusing text from a couple
+of Kconfig entries.
 
-Even for the pure COW case with zero GUP involvement an hugepage with
-cows happening in different processes, would forever hit wp_copy_page
-since count is always > 1 despite mapcount can be 1 for all
-subpages. A simple app doing fork/exec would forever copy all memory
-in the parent even after the exec is finished.
+Specifics:
 
-Thanks,
-Andrea
+ - Drop two local variables that are never read and the code updating
+   their values from the x86 suspend-to-idle code (Rafael Wysocki).
 
+ - Add empty stub of an ACPI helper function to avoid build issues
+   when CONFIG_ACPI is not set (Shawn Guo).
+
+ - Remove confusing text regarding modules from Kconfig entries that
+   correspond to non-modular code (Peter Robinson).
+
+Thanks!
+
+
+---------------
+
+Peter Robinson (1):
+      ACPI: Update Kconfig help text for items that are no longer modular
+
+Rafael J. Wysocki (1):
+      ACPI: PM: s2idle: Drop unused local variables and related code
+
+Shawn Guo (1):
+      ACPI: scan: add stub acpi_create_platform_device() for !CONFIG_ACPI
+
+---------------
+
+ drivers/acpi/Kconfig      |  6 ------
+ drivers/acpi/x86/s2idle.c | 14 +-------------
+ include/linux/acpi.h      |  7 +++++++
+ 3 files changed, 8 insertions(+), 19 deletions(-)
