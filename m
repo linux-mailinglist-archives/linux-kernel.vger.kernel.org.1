@@ -2,181 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D50472EEDFB
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 08:48:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BDB352EEDFD
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 08:48:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727476AbhAHHsB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Jan 2021 02:48:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49004 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725848AbhAHHsA (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Jan 2021 02:48:00 -0500
-Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7CF7C0612F4
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Jan 2021 23:47:20 -0800 (PST)
-Received: by mail-pl1-x635.google.com with SMTP id x18so5245607pln.6
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Jan 2021 23:47:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=oxN7Ql6o+SZAidFXTRR4YApaIeN7xqQ60rez/PZAroI=;
-        b=SACCD/lZUwxHWXCdfqsKwXI5c6hrG5mawwzzB5OE7Y/CUAbqISZR+A9CGNt7OxZkrD
-         y740zJiiJks5yKSIwncYpth5K/NV52cl8AT8pIy+XZ7HhoeYUXV4+fJgUkVvuPya2xwU
-         W4keWj5uUnkfl4XgE1EG9LBMqBLNo6jBrWwbM1YwwQ82rW0C1PWGj1eulJWv7g+k1db6
-         T5d7XXFDIOQgt4QUNO/sVHr9SEPEpF/v/39QWnpyy/8llDvQaWDPCXsdanwP8YafVC7a
-         OUR+twUrkP0bM8L2Mt7wOEdoyztU4hUhIKqrH6Dcn5Tju3/umAy5ciQhC4+vle12IUTa
-         yzug==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
-         :mime-version:content-transfer-encoding;
-        bh=oxN7Ql6o+SZAidFXTRR4YApaIeN7xqQ60rez/PZAroI=;
-        b=g7fBGgTLO31A+hbwG18ENLxXarEKs4sfVqQBycFLY53s+tU1o7tqqlN1f45BvgF6Ww
-         o5icLargSDEMg0fJp9P6deOyt49K+NDMsr+pW5XgvvLvaFpF8LwI98xq/f/mwqjmULDR
-         j83QZl2wq9ADDPVT1QmyUQuBjTKugqEepYBlk8ZIrcyJhlV7LXSrp8wkjGidaDIOV6dn
-         cJI81RpR6tjbgPBGX6WPZ289JmZqTYexB4DVmFFxPtHyI4SOrqkHhlGmzYB9NNmBv8BB
-         zEm5UjQDffRbbBlw3Xo2j+/OmG9KfdAVBt1oZLczrWNlQ3q/GnsTruN75ak8C65J1Exo
-         VODg==
-X-Gm-Message-State: AOAM532vbO1YRZ9dBROYoC2ZuS4TgXjPTaDclntCvZW76SAMS1uyJ5ze
-        0rnRUaiaaALaBvmOI44xAts=
-X-Google-Smtp-Source: ABdhPJwupXJ5b6UrmPP4OqQblPe+fWvykEOsz1vnMav74WiddecbeOj1UMgkg2zkmBkPFBMQDFr78Q==
-X-Received: by 2002:a17:902:ed0a:b029:dc:55b:5cb9 with SMTP id b10-20020a170902ed0ab02900dc055b5cb9mr2701424pld.40.1610092040244;
-        Thu, 07 Jan 2021 23:47:20 -0800 (PST)
-Received: from balhae.roam.corp.google.com ([112.159.19.5])
-        by smtp.gmail.com with ESMTPSA id q23sm7764950pfg.192.2021.01.07.23.47.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 Jan 2021 23:47:19 -0800 (PST)
-Sender: Namhyung Kim <namhyung@gmail.com>
-From:   Namhyung Kim <namhyung@kernel.org>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@redhat.com>
-Cc:     Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Stephane Eranian <eranian@google.com>,
-        Ian Rogers <irogers@google.com>,
-        Jin Yao <yao.jin@linux.intel.com>
-Subject: [PATCH] perf test: Fix shadow stat test for non-bash shells
-Date:   Fri,  8 Jan 2021 16:47:12 +0900
-Message-Id: <20210108074712.947223-1-namhyung@kernel.org>
-X-Mailer: git-send-email 2.30.0.284.gd98b1dd5eaa7-goog
+        id S1727525AbhAHHsI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Jan 2021 02:48:08 -0500
+Received: from mail-eopbgr20108.outbound.protection.outlook.com ([40.107.2.108]:34117
+        "EHLO EUR02-VE1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725965AbhAHHsG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 Jan 2021 02:48:06 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=caO2zuac1RHvla9wxx79zryxcQWrEuG/Nbr22OsG3upbs3kuuPwkhnfoDqKTMYYXHUhYpvZ//xTddj6LdWoqsEClZ0+UihFacGCBSa7j7wvhDxkxKBhzaiy+NwNjnregzEZJdqknk4ofmQi1hjkr/oKSURaMpZfNI64KeXCoMRG25mageix4sDOaAuBo9XNp6/6jNEGVLYiLXk2ugXzP6kZQRnsIIhGsKJ63jmbJgWI5y3CM6nDJDSdIJx4qtoXEp+rbWCdhQ6ryHbGHMHdi7DhEUrrKPtEeua4VJivFK807Bfu5JGIC/8IHAw4eD7ni7/R376WZiXMFraurjjwcsQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=9OSew8siE/ghz4yVRQxXA+Um3Gt6Y2OGb7X3DHW+wGg=;
+ b=N4w7YIXIaA3OT+fT7qHkftWBGS4mh+MkXA7AfuJ8gKdza0jl/I+lqKWa+/tswaGdI1sUXHzSuEkBBmahvLjXoCl2rmlHAgzfKja7xfgnvqxtcb+t7Qn0Fsw/ij9s2z3+L4OAT0rDXkynAuKo3hSV2hZvlTSpIlH4GSrVdR0ajN/DlCEstsncWsD5uWVcBl+a7ZayMIlyxoAZn9NjizkYcI0lSC8Qh0LR+HG6Aq7eyAS+dkjMxA8kATh+YpvYY4+OZJh3+1AL6tYepvsrBW9nlwS+WVl74vv+eI3z9hzASaP9K0NHqr3tqVIXDfU7Z14AOa8cBvynIw8wolparsBQJQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nokia.com; dmarc=pass action=none header.from=nokia.com;
+ dkim=pass header.d=nokia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nokia.onmicrosoft.com;
+ s=selector1-nokia-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=9OSew8siE/ghz4yVRQxXA+Um3Gt6Y2OGb7X3DHW+wGg=;
+ b=eITsdoc4QwkM4ektTiUioFmD1F9sNA3IDTsGFXBVMMB1CmEJneE/1WwGunJ2QbkR4JNO7dy26OV1n2xWSbgGAkyoNJY1qGW3E/MqPRDcAyoBXghkFF4vjgeg0aFcumV76ifli6qeJ0Dc43WDNAZWhiYr3OEm+NTndLLepGeEOeQ=
+Received: from HE1PR07MB3450.eurprd07.prod.outlook.com (2603:10a6:7:2c::17) by
+ HE1PR0701MB2347.eurprd07.prod.outlook.com (2603:10a6:3:6f::19) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.3763.2; Fri, 8 Jan 2021 07:47:17 +0000
+Received: from HE1PR07MB3450.eurprd07.prod.outlook.com
+ ([fe80::e1f6:25bb:eee:8194]) by HE1PR07MB3450.eurprd07.prod.outlook.com
+ ([fe80::e1f6:25bb:eee:8194%5]) with mapi id 15.20.3742.006; Fri, 8 Jan 2021
+ 07:47:17 +0000
+From:   "Rantala, Tommi T. (Nokia - FI/Espoo)" <tommi.t.rantala@nokia.com>
+To:     "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>
+CC:     "stable@vger.kernel.org" <stable@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "adobriyan@gmail.com" <adobriyan@gmail.com>
+Subject: LTS: proc: fix lookup in /proc/net subdirectories after setns(2)
+Thread-Topic: LTS: proc: fix lookup in /proc/net subdirectories after setns(2)
+Thread-Index: AQHW5ZJ8QIqwgnQ31kmc8+AuyljCEg==
+Date:   Fri, 8 Jan 2021 07:47:17 +0000
+Message-ID: <935692185a18ab86667e66a85aaed382aa34c3bd.camel@nokia.com>
+Accept-Language: en-150, fi-FI, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+user-agent: Evolution 3.36.5 (3.36.5-2.fc32) 
+authentication-results: linuxfoundation.org; dkim=none (message not signed)
+ header.d=none;linuxfoundation.org; dmarc=none action=none
+ header.from=nokia.com;
+x-originating-ip: [131.228.2.25]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: 02794038-4b6b-41d6-ddb3-08d8b3a99f1b
+x-ms-traffictypediagnostic: HE1PR0701MB2347:
+x-microsoft-antispam-prvs: <HE1PR0701MB234751F66F6861F5F721E144B4AE0@HE1PR0701MB2347.eurprd07.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:169;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 6iplKah1oxN6zsg32hraGnygJbrNadM9TxV6cIbs+G8XeE7SMrIpKY+cU+ICDWhYSQE9e1AGN9FJU8DWoJ/jm7/wfSVmv/nWDXcW2yVjAFKRChl3ZNrLToRLJWidHAGReZBYnXGpvASxh92bao+n9duxsiLQy9+xGzjO5r8soM0Je4q215KNDQ6eENp4qaGR2qnTB6/CEh15gK/8McAZR6np3Atj2G/4lqYnq3CNJEHxUX6XqSC/gW9UgjD7J7PJ8i0cJijaa31kGDeUzfafC1CE+iP61F/aB9yuW7wmPEiQWCSD89YuWzryZh4k/31Rq1/tXdK1HRvB5xhYaeI/+toMG9P/yu45f2lphIDhK22uuCEkQFxqweuOSskO//cj7RJFBZ4/NRpCnpc6l9NY6w==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:HE1PR07MB3450.eurprd07.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(366004)(346002)(39860400002)(396003)(136003)(4744005)(86362001)(26005)(186003)(8936002)(6506007)(66556008)(36756003)(6916009)(6512007)(83380400001)(478600001)(6486002)(64756008)(2616005)(66476007)(76116006)(4326008)(91956017)(66446008)(2906002)(54906003)(71200400001)(8676002)(316002)(5660300002)(66946007);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: =?utf-8?B?eXZ2Z2pqQlJvRHpxL2w5aFhESk8zNldqeTJrREc0YVJiMUhHeDhEeUdtSStQ?=
+ =?utf-8?B?TGI2dnppNE0yaCtBZUJudDI2UzB0VGIwLy84SzFMOVYxUTRLYjhxbjRwSlhW?=
+ =?utf-8?B?bDkxZHp1Wk9rbUhBZmV1OTNjSWFsZW0ydVM4SWFBV1JHZVkxNk54Z0hSOVBB?=
+ =?utf-8?B?ajNEVU81cklYQy9KUmozM3MxdHhlVC9IRlR6aDFoSC9PK1oyb3VjQWt6aXpM?=
+ =?utf-8?B?bXBKTjUxcUp6VnNOYVpvRUF3WU9XUVN2VDhKckEwQkpFYy84R0wydjhJR3g5?=
+ =?utf-8?B?VDNxNCtjaDF3MkMyNE9rY3lGdko4dmJ4a3FLUis5UllGUHgwSXppbTlCWnlz?=
+ =?utf-8?B?RHpXd2JjZVBlVUdlNXFiL1NQSFBzcnRYbjl3ZVpobUJMMnNKZUF1aGV1Nkw0?=
+ =?utf-8?B?Y3N6YUdteWVrSzcvdTFUaDE1S0pXQ01iTXNUUTN2ZGtjZlJ6TVhRN0piaUV6?=
+ =?utf-8?B?L2kyL1dCbVlxZGVjNHZUdXdodjVnMHh0ci85OTJvUlV5QnUvWFlIOE0vbXlT?=
+ =?utf-8?B?cDBtT25ia3M1WE12aGYrajVpcEd1Ui9tWE5tVVRyMjkwaEE5MmpET3RPRmYy?=
+ =?utf-8?B?WnlNQ3dkUWp2THRtODRuVnBmdkZhNGh6a3VnWFJycWwzNDRqanNMZlloaWFT?=
+ =?utf-8?B?MGwzbmFZa2VET3VsK1B2WU9mSTdNWjZyUzBwVjdEWW5QdGJHaVh6L0Rta2ti?=
+ =?utf-8?B?bmovYldMemNBaG9XRDR5T2paVy8vcVQ4eEJHcW9NSCs3Z09xcXhhT2w1MkVR?=
+ =?utf-8?B?aVVHVVh2MmUxRjU3SXk3MUowU3lMSEdrNGZ6VDlJRkN0VTRQM05QbzVVaU90?=
+ =?utf-8?B?dmVOckprdVZybDVoVEc2cGRGT3hCdkdvVEd3Yzg4NjFIUEVpeWVIT3RrckFF?=
+ =?utf-8?B?Zm9BVkRvZXNrVERzSmxSRExXSjhXY2JrY0lnUm5WK2JXbmorY1ZINFNzZmVo?=
+ =?utf-8?B?cHNoSDk2ZWVieFVjUTZSbFZ0SjRQN0VrWFdGTzl4eEQ3MHkwMkFIVVdrbG1I?=
+ =?utf-8?B?TlFqNkhSMllvZkNHUnVaeThxVlk5QVRudGx3YTZxQ2R1RTBITTQyL2ozMmxi?=
+ =?utf-8?B?eTRSV0JuajJ3dWNkZU1sU2tleks2QU9pcVBEVHYvd0lPQ3JRN1BzRTJNTFRH?=
+ =?utf-8?B?V3Y5Mm4vTGI3Qk5MeUdCQTQrbEZOMU02R0JvdG9VdlJVcnJQcFVKaytXR1E0?=
+ =?utf-8?B?TXJHdVNhVFdjemg5TG9PalNiRnFvOUtBUGk5eDVpV0Q5ZU1zbmtMeFNCMzhi?=
+ =?utf-8?B?bFRGY2ZuNEpPR1JWNDdKZ0c5SU92SFBSa2NPT2tSUUpzZS9pdUh6ckJBczVQ?=
+ =?utf-8?Q?Z+VkliFHRn2qccb0FT29kJDPodE370PEKw?=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <8B68F2F2A86C264DB3284C0F8C239023@eurprd07.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-OriginatorOrg: nokia.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: HE1PR07MB3450.eurprd07.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 02794038-4b6b-41d6-ddb3-08d8b3a99f1b
+X-MS-Exchange-CrossTenant-originalarrivaltime: 08 Jan 2021 07:47:17.1534
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 5d471751-9675-428d-917b-70f44f9630b0
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: eQWryYiieC0QeRI+55/ad+1hsK3txZ/rmgILNHSWP2FSGkAeNquMv5XmfUAaNeQjWswRZJ2zQ1mAsO4Nenb3NrQSBpo7i0Y62+Rq2lIGPyU=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: HE1PR0701MB2347
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It was using some bash-specific features and failed to parse when
-running with a different shell like below:
-
-  root@kbl-ppc:~/kbl-ws/perf-dev/lck-9077/acme.tmp/tools/perf# ./perf test 83 -vv
-  83: perf stat metrics (shadow stat) test                            :
-  --- start ---
-  test child forked, pid 3922
-  ./tests/shell/stat+shadow_stat.sh: 19: ./tests/shell/stat+shadow_stat.sh: [[: not found
-  ./tests/shell/stat+shadow_stat.sh: 24: ./tests/shell/stat+shadow_stat.sh: [[: not found
-  ./tests/shell/stat+shadow_stat.sh: 30: ./tests/shell/stat+shadow_stat.sh: [[: not found
-  (standard_in) 2: syntax error
-  ./tests/shell/stat+shadow_stat.sh: 36: ./tests/shell/stat+shadow_stat.sh: [[: not found
-  ./tests/shell/stat+shadow_stat.sh: 19: ./tests/shell/stat+shadow_stat.sh: [[: not found
-  ./tests/shell/stat+shadow_stat.sh: 24: ./tests/shell/stat+shadow_stat.sh: [[: not found
-  ./tests/shell/stat+shadow_stat.sh: 30: ./tests/shell/stat+shadow_stat.sh: [[: not found
-  (standard_in) 2: syntax error
-  ./tests/shell/stat+shadow_stat.sh: 36: ./tests/shell/stat+shadow_stat.sh: [[: not found
-  ./tests/shell/stat+shadow_stat.sh: 45: ./tests/shell/stat+shadow_stat.sh: declare: not found
-  test child finished with -1
-  ---- end ----
-  perf stat metrics (shadow stat) test: FAILED!
-
-Reported-by: Jin Yao <yao.jin@linux.intel.com>
-Signed-off-by: Namhyung Kim <namhyung@kernel.org>
----
- tools/perf/tests/shell/stat+shadow_stat.sh | 24 ++++++++++++----------
- 1 file changed, 13 insertions(+), 11 deletions(-)
-
-diff --git a/tools/perf/tests/shell/stat+shadow_stat.sh b/tools/perf/tests/shell/stat+shadow_stat.sh
-index 249dfe48cf6a..e2c7ac4ed91d 100755
---- a/tools/perf/tests/shell/stat+shadow_stat.sh
-+++ b/tools/perf/tests/shell/stat+shadow_stat.sh
-@@ -16,24 +16,24 @@ test_global_aggr()
- 	while read num evt hash ipc rest
- 	do
- 		# skip not counted events
--		if [[ $num == "<not" ]]; then
-+		if [ "$num" = "<not" ]; then
- 			continue
- 		fi
- 
- 		# save cycles count
--		if [[ $evt == "cycles" ]]; then
-+		if [ "$evt" = "cycles" ]; then
- 			cyc=$num
- 			continue
- 		fi
- 
- 		# skip if no cycles
--		if [[ -z $cyc ]]; then
-+		if [ -z "$cyc" ]; then
- 			continue
- 		fi
- 
- 		# use printf for rounding and a leading zero
- 		local res=`printf "%.2f" $(echo "scale=6; $num / $cyc" | bc -q)`
--		if [[ $ipc != $res ]]; then
-+		if [ "$ipc" != "$res" ]; then
- 			echo "IPC is different: $res != $ipc  ($num / $cyc)"
- 			exit 1
- 		fi
-@@ -42,36 +42,38 @@ test_global_aggr()
- 
- test_no_aggr()
- {
--	declare -A results
-+	results=$(mktemp /tmp/perf-test-shadow-stat-XXXXXX)
- 
- 	perf stat -a -A --no-big-num -e cycles,instructions sleep 1  2>&1 | \
- 	grep ^CPU | \
- 	while read cpu num evt hash ipc rest
- 	do
- 		# skip not counted events
--		if [[ $num == "<not" ]]; then
-+		if [ "$num" = "<not" ]; then
- 			continue
- 		fi
- 
- 		# save cycles count
--		if [[ $evt == "cycles" ]]; then
--			results[$cpu]=$num
-+		if [ "$evt" = "cycles" ]; then
-+			echo $cpu $num >> $results
- 			continue
- 		fi
- 
- 		# skip if no cycles
--		local cyc=${results[$cpu]}
--		if [[ -z $cyc ]]; then
-+		local cyc=$(grep $cpu $results | cut -d' ' -f2)
-+		if [ -z "$cyc" ]; then
- 			continue
- 		fi
- 
- 		# use printf for rounding and a leading zero
- 		local res=`printf "%.2f" $(echo "scale=6; $num / $cyc" | bc -q)`
--		if [[ $ipc != $res ]]; then
-+		if [ "$ipc" != "$res" ]; then
- 			echo "IPC is different for $cpu: $res != $ipc  ($num / $cyc)"
-+			rm -f $results
- 			exit 1
- 		fi
- 	done
-+	rm -f $results
- }
- 
- test_global_aggr
--- 
-2.30.0.284.gd98b1dd5eaa7-goog
-
+SGkgR3JlZywNCg0KQ2FuIHlvdSBjaGVycnktcGljayB0aGVzZSB0byA0LjE5LnkgJiA1LjQueToN
+Cg0KY29tbWl0IGUwNjY4OWJmNTcwMTdhYzAyMmNjZjBmMmE1MDcxZjc2MDgyMWNlMGYNCkF1dGhv
+cjogQWxleGV5IERvYnJpeWFuIDxhZG9icml5YW5AZ21haWwuY29tPg0KRGF0ZTogICBXZWQgRGVj
+IDQgMTY6NDk6NTkgMjAxOSAtMDgwMA0KDQogICAgcHJvYzogY2hhbmdlIC0+bmxpbmsgdW5kZXIg
+cHJvY19zdWJkaXJfbG9jaw0KDQpjb21taXQgYzZjNzVkZWRhODEzNDRjM2E5NWQxZDFmNjA2ZDVj
+ZWUxMDllNWQ1NA0KQXV0aG9yOiBBbGV4ZXkgRG9icml5YW4gPGFkb2JyaXlhbkBnbWFpbC5jb20+
+DQpEYXRlOiAgIFR1ZSBEZWMgMTUgMjA6NDI6MzkgMjAyMCAtMDgwMA0KDQogICAgcHJvYzogZml4
+IGxvb2t1cCBpbiAvcHJvYy9uZXQgc3ViZGlyZWN0b3JpZXMgYWZ0ZXIgc2V0bnMoMikNCg0KDQot
+VG9tbWkNCg0K
