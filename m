@@ -2,79 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A97952EF36E
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 14:48:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2249E2EF371
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 14:49:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727966AbhAHNsa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Jan 2021 08:48:30 -0500
-Received: from outbound-smtp46.blacknight.com ([46.22.136.58]:59557 "EHLO
-        outbound-smtp46.blacknight.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727228AbhAHNs3 (ORCPT
+        id S1727909AbhAHNtD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Jan 2021 08:49:03 -0500
+Received: from mail-qk1-f179.google.com ([209.85.222.179]:35093 "EHLO
+        mail-qk1-f179.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726829AbhAHNtC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Jan 2021 08:48:29 -0500
-Received: from mail.blacknight.com (pemlinmail02.blacknight.ie [81.17.254.11])
-        by outbound-smtp46.blacknight.com (Postfix) with ESMTPS id CE72DFB4D5
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Jan 2021 13:47:37 +0000 (GMT)
-Received: (qmail 2071 invoked from network); 8 Jan 2021 13:47:37 -0000
-Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.22.4])
-  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 8 Jan 2021 13:47:37 -0000
-Date:   Fri, 8 Jan 2021 13:47:36 +0000
-From:   Mel Gorman <mgorman@techsingularity.net>
-To:     Qais Yousef <qais.yousef@arm.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        "Li, Aubrey" <aubrey.li@linux.intel.com>,
-        vincent.guittot@linaro.org, linux-kernel@vger.kernel.org,
-        mingo@redhat.com, juri.lelli@redhat.com,
-        valentin.schneider@arm.com, dietmar.eggemann@arm.com,
-        rostedt@goodmis.org, bsegall@google.com,
-        tim.c.chen@linux.intel.com, benbjiang@gmail.com
-Subject: Re: [RFC][PATCH 1/5] sched/fair: Fix select_idle_cpu()s cost
- accounting
-Message-ID: <20210108134736.GC3592@techsingularity.net>
-References: <20201214164822.402812729@infradead.org>
- <20201214170017.877557652@infradead.org>
- <c4e31235-e1fb-52ac-99a8-ae943ee0de54@linux.intel.com>
- <20201215075911.GA3040@hirez.programming.kicks-ass.net>
- <20210108102738.GB3592@techsingularity.net>
- <20210108130110.cj3zqsnjdt5mg3uz@e107158-lin>
+        Fri, 8 Jan 2021 08:49:02 -0500
+Received: by mail-qk1-f179.google.com with SMTP id n142so8462315qkn.2;
+        Fri, 08 Jan 2021 05:48:46 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=dsWlo1zvyIlqHcMyjUDRI2wxTIK9nGJHgxOSincESNo=;
+        b=mJmLzqms6f2t1q808VhY2IBbnrdalltuFU85fNGbEPWD0SHd0Nbm6sN8AgEC96//JY
+         h4ePL58x9IJ6ldpW6cMke3yiQBFAV8SH+nhjS0fRyKU2smGxEM3DzmpouD6FzNtbAHvU
+         n4VdlkbT6fgLXNRfIjCuXb9H9Wc3g71+m/dFObbFpGAUemoPv3VPX7lErpweMZ5on/c1
+         J7IM1fW3riYfgO032woqav/ROqk/E0iUBMYtZrgUtMA+Y4UsQxIr/hSWtUu1FqV1gcYD
+         e/NU7TXAIp7iHQIINCJFGY4UsCN+GxBGfctm8pnNCkOBg2c/2Oyr8PIgqPhBWyPhTfl3
+         ntMw==
+X-Gm-Message-State: AOAM530QivjzuE3+pSDYvM20qLgAOhEQ0Jz2iylzoKALJJFf3/o2pxue
+        RjAb6EV8MUD9TStHZC1t630N3jxF7P4tDVLHVNDAnQrs
+X-Google-Smtp-Source: ABdhPJzdxGzfJwat198rymz5ud2yr9A1pPdGTaJp4KL9PrpPBr6TSgOk95fSlc1AoTd30hb9iUOyw+Yhy6YytyFRY5o=
+X-Received: by 2002:a05:620a:531:: with SMTP id h17mr3955686qkh.428.1610113700546;
+ Fri, 08 Jan 2021 05:48:20 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
-Content-Disposition: inline
-In-Reply-To: <20210108130110.cj3zqsnjdt5mg3uz@e107158-lin>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20201224170502.2254683-1-aford173@gmail.com> <20201224170502.2254683-6-aford173@gmail.com>
+In-Reply-To: <20201224170502.2254683-6-aford173@gmail.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Fri, 8 Jan 2021 14:48:08 +0100
+Message-ID: <CAMuHMdWE6XfKGdkAoXN_KMNK9ZrSoTTjLP6MN2j+1P5V-KmAPg@mail.gmail.com>
+Subject: Re: [PATCH V2 6/9] arm64: dts: renesas: beacon-rzg2m-kit: Rearange
+ SoC unique functions
+To:     Adam Ford <aford173@gmail.com>
+Cc:     Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        Adam Ford-BE <aford@beaconembedded.com>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 08, 2021 at 01:01:10PM +0000, Qais Yousef wrote:
-> On 01/08/21 10:27, Mel Gorman wrote:
-> >  	for_each_cpu_wrap(cpu, cpus, target) {
-> > -		if (available_idle_cpu(cpu) || sched_idle_cpu(cpu))
-> > +		if (available_idle_cpu(cpu) || sched_idle_cpu(cpu)) {
-> > +			/* Adjust cost of a successful scan */
-> > +			loops <<= 2;
-> > +
-> >  			break;
-> > +		}
-> >  
-> > -		if (loops >= nr) {
-> > +		if (++loops >= nr) {
-> >  			cpu = -1;
-> >  			break;
-> >  		}
-> > -		loops++;
-> 
-> Random (out of the blue) comment.
-> 
-> Now this will increment loops before the comparison/break. ie: we're
-> effectively doing one iteration less IIRC. Should loops be initialized to
-> 0 instead of 1?
-> 
+On Thu, Dec 24, 2020 at 6:05 PM Adam Ford <aford173@gmail.com> wrote:
+> In preparation for adding new dev kits, move anything specific to the
+> RZ/G2M from the SOM-level and baseboard-levels and move them to the
+> kit-level.  This allows the SOM and baseboard to be reused with
+> other SoC's.
+>
+> Signed-off-by: Adam Ford <aford173@gmail.com>
 
-Yep, although in practice it'll make little difference except after a
-rapid phase change when avg_idle still appears high on a per-rq basis
-yet the domain is fully busy with no idle CPUs.
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+i.e. will queue in renesas-devel for v5.12.
+
+Gr{oetje,eeting}s,
+
+                        Geert
 
 -- 
-Mel Gorman
-SUSE Labs
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
