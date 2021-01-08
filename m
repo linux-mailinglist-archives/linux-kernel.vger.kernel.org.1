@@ -2,30 +2,29 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA9472EEF85
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 10:25:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BBCCD2EEF87
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 10:25:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728479AbhAHJYV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Jan 2021 04:24:21 -0500
-Received: from szxga04-in.huawei.com ([45.249.212.190]:9727 "EHLO
+        id S1728496AbhAHJYa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Jan 2021 04:24:30 -0500
+Received: from szxga04-in.huawei.com ([45.249.212.190]:10120 "EHLO
         szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728097AbhAHJYT (ORCPT
+        with ESMTP id S1727416AbhAHJY3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Jan 2021 04:24:19 -0500
-Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4DByL81gdKzl2Bt;
-        Fri,  8 Jan 2021 17:22:24 +0800 (CST)
+        Fri, 8 Jan 2021 04:24:29 -0500
+Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4DByLf2NRzz15qrL;
+        Fri,  8 Jan 2021 17:22:50 +0800 (CST)
 Received: from ubuntu.network (10.175.138.68) by
- DGGEMS412-HUB.china.huawei.com (10.3.19.212) with Microsoft SMTP Server id
- 14.3.498.0; Fri, 8 Jan 2021 17:23:29 +0800
+ DGGEMS406-HUB.china.huawei.com (10.3.19.206) with Microsoft SMTP Server id
+ 14.3.498.0; Fri, 8 Jan 2021 17:23:40 +0800
 From:   Zheng Yongjun <zhengyongjun3@huawei.com>
-To:     <sathyanarayanan.kuppuswamy@linux.intel.com>, <andy@kernel.org>,
-        <linus.walleij@linaro.org>, <bgolaszewski@baylibre.com>,
-        <linux-gpio@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+To:     <mchehab@kernel.org>, <linux-media@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
 CC:     Zheng Yongjun <zhengyongjun3@huawei.com>
-Subject: [PATCH v2 -next] gpio: wcove: convert comma to semicolon
-Date:   Fri, 8 Jan 2021 17:24:13 +0800
-Message-ID: <20210108092413.19354-1-zhengyongjun3@huawei.com>
+Subject: [PATCH v2 -next] media: dvbsky: convert comma to semicolon
+Date:   Fri, 8 Jan 2021 17:24:24 +0800
+Message-ID: <20210108092424.19419-1-zhengyongjun3@huawei.com>
 X-Mailer: git-send-email 2.22.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7BIT
@@ -40,22 +39,49 @@ Replace a comma between expression statements by a semicolon.
 
 Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>
 ---
- drivers/gpio/gpio-wcove.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/media/usb/dvb-usb-v2/dvbsky.c | 22 +++++++++++-----------
+ 1 file changed, 11 insertions(+), 11 deletions(-)
 
-diff --git a/drivers/gpio/gpio-wcove.c b/drivers/gpio/gpio-wcove.c
-index b5fbba5a783a..97c5f1d01b62 100644
---- a/drivers/gpio/gpio-wcove.c
-+++ b/drivers/gpio/gpio-wcove.c
-@@ -434,7 +434,7 @@ static int wcove_gpio_probe(struct platform_device *pdev)
- 	wg->chip.get_direction = wcove_gpio_get_direction;
- 	wg->chip.get = wcove_gpio_get;
- 	wg->chip.set = wcove_gpio_set;
--	wg->chip.set_config = wcove_gpio_set_config,
-+	wg->chip.set_config = wcove_gpio_set_config;
- 	wg->chip.base = -1;
- 	wg->chip.ngpio = WCOVE_VGPIO_NUM;
- 	wg->chip.can_sleep = true;
+diff --git a/drivers/media/usb/dvb-usb-v2/dvbsky.c b/drivers/media/usb/dvb-usb-v2/dvbsky.c
+index 0d9657f7f29d..689829f1b52a 100644
+--- a/drivers/media/usb/dvb-usb-v2/dvbsky.c
++++ b/drivers/media/usb/dvb-usb-v2/dvbsky.c
+@@ -287,8 +287,8 @@ static int dvbsky_s960_attach(struct dvb_usb_adapter *adap)
+ 	m88ds3103_pdata.ts_clk = 16000;
+ 	m88ds3103_pdata.ts_clk_pol = 0;
+ 	m88ds3103_pdata.agc = 0x99;
+-	m88ds3103_pdata.lnb_hv_pol = 1,
+-	m88ds3103_pdata.lnb_en_pol = 1,
++	m88ds3103_pdata.lnb_hv_pol = 1;
++	m88ds3103_pdata.lnb_en_pol = 1;
+ 
+ 	state->i2c_client_demod = dvb_module_probe("m88ds3103", NULL,
+ 						   &d->i2c_adap,
+@@ -383,15 +383,15 @@ static int dvbsky_s960c_attach(struct dvb_usb_adapter *adap)
+ 	struct sp2_config sp2_config = {};
+ 
+ 	/* attach demod */
+-	m88ds3103_pdata.clk = 27000000,
+-	m88ds3103_pdata.i2c_wr_max = 33,
+-	m88ds3103_pdata.clk_out = 0,
+-	m88ds3103_pdata.ts_mode = M88DS3103_TS_CI,
+-	m88ds3103_pdata.ts_clk = 10000,
+-	m88ds3103_pdata.ts_clk_pol = 1,
+-	m88ds3103_pdata.agc = 0x99,
+-	m88ds3103_pdata.lnb_hv_pol = 0,
+-	m88ds3103_pdata.lnb_en_pol = 1,
++	m88ds3103_pdata.clk = 27000000;
++	m88ds3103_pdata.i2c_wr_max = 33;
++	m88ds3103_pdata.clk_out = 0;
++	m88ds3103_pdata.ts_mode = M88DS3103_TS_CI;
++	m88ds3103_pdata.ts_clk = 10000;
++	m88ds3103_pdata.ts_clk_pol = 1;
++	m88ds3103_pdata.agc = 0x99;
++	m88ds3103_pdata.lnb_hv_pol = 0;
++	m88ds3103_pdata.lnb_en_pol = 1;
+ 
+ 	state->i2c_client_demod = dvb_module_probe("m88ds3103", NULL,
+ 						   &d->i2c_adap,
 -- 
 2.22.0
 
