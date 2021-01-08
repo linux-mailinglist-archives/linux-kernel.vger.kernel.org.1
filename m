@@ -2,57 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 35D752EF246
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 13:17:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 767432EF269
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 13:19:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727984AbhAHMRW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Jan 2021 07:17:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34266 "EHLO
+        id S1728369AbhAHMTO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Jan 2021 07:19:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34268 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727747AbhAHMRT (ORCPT
+        with ESMTP id S1727887AbhAHMRT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 8 Jan 2021 07:17:19 -0500
-Received: from mail-qv1-xf49.google.com (mail-qv1-xf49.google.com [IPv6:2607:f8b0:4864:20::f49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98804C061247
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Jan 2021 04:16:03 -0800 (PST)
-Received: by mail-qv1-xf49.google.com with SMTP id 12so8075602qvk.23
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Jan 2021 04:16:03 -0800 (PST)
+Received: from mail-wr1-x449.google.com (mail-wr1-x449.google.com [IPv6:2a00:1450:4864:20::449])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11174C061249
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Jan 2021 04:16:07 -0800 (PST)
+Received: by mail-wr1-x449.google.com with SMTP id u3so4039101wri.19
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Jan 2021 04:16:06 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=sender:date:in-reply-to:message-id:mime-version:references:subject
          :from:to:cc;
-        bh=/oJOiodTmUn3adVtPGhw7M8zv8JCp37BW1nUJ/LMPTQ=;
-        b=pU/9SM07gIQWUokQHD3qTj/NffUXCMLsM8TsFEn4oVEVeZPwQv+BFOZFalEFokXz6m
-         kebX9OWnC7Ufx8YeV5eb2zUbyi2hDbPPOsnyH+9qSOApc6p+Wl1Na1hoVzx/LRIXJ52f
-         U2FNQrVVHJgMRVlcsycw6jGoo8I4B3KKr584MmnydYCeH/D3TXeZB9nzMvXB8+cJ6FEP
-         vooAmBFoUQci3tycOUbChjhEypy8Yifjabxebh2m5fIDJQ7vigXwCb38PZk6kKpVK90X
-         cqGoUojnqYzUoItkHpdGgVO16Rafonm42FcVi46NZNkrSW5TPUtN7G880l7qgTpGuXAB
-         Ns6Q==
+        bh=QIpOnJAJDFYwraC0ddDqr7tOixX5GyHqc+eN2zNJpAo=;
+        b=il5Ne6t9ivsIijZMruN4gBaX+EYvvCeqM4wXdD5b87Akf7GQMUT8tlcc2rbeXb7ACq
+         W7SWjD+hfCBW1GKfXcme+zjutCmdrdDkjDj5gkZnYovFg7hEqVXuCt4LrZRE0D57GxY6
+         jZbSgOnq3+qcZ4Dw+JxLPQAjxFDxivg8qTM4alr2Zlpvs1Qqp7TcV7961SoTi+NCFKv4
+         EJFusiTj/nYe3sG8Izc+8vA0vPTM0bQ3MFtgsDM67pHpZQSPjgWpmqNfWmxC513MPx9X
+         B29+4inY3oKYwuI28k+z5rC2h4J3QqMM7y9GNFIXvEv3PjLk2FMDzIH2+TuzoBoPrG9L
+         a+Rw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=/oJOiodTmUn3adVtPGhw7M8zv8JCp37BW1nUJ/LMPTQ=;
-        b=IP846EFhQn7QoVqn5twDJ6J/xPQ8dqiBbh3BtvSBT5qzQ97FAshA8HCB/T04tj0X1I
-         W+fmn+dLi/DzHXhnHaooKBd4ECsVHtSZmIjQaudv7gKJPnnVPJwdktZZOIDfQRFifKPd
-         sOvkL/SyOyBrcDVrxYbmyW+6MTqZ9NSu2udkBCkjw9raEAVosoUbPHhpngCghWWp3Ak7
-         Vn6yxIeYX4HdhOmPU0ikFpsYCtCnPYbzLgP0J+adohAHlx6V3DUsv6DqopQU52xO6g7E
-         ltoTstx+mnU7aMFXQBGv0+49rLVGRDoancRCLfpH1FF1YPd/Azl81K1NwYqsEYp8Rgl0
-         hEww==
-X-Gm-Message-State: AOAM530Dky3By0gjFlav3HFLsicmlOPAU/3Zh4aY+7AYjxxwt0SP92Fq
-        suF3/Ni3lf6bacMoM5S35Um8VrvzNH/P
-X-Google-Smtp-Source: ABdhPJzgKPDINojiI0dbVwoX+0TC5gHxTs7z5Z+8Zygu+vvUzA255jllaF6UbGDN3Gp4kXcFpUe67wJWaUvz
+        bh=QIpOnJAJDFYwraC0ddDqr7tOixX5GyHqc+eN2zNJpAo=;
+        b=FkbO5f4xhZVfueh1h+HpDiEm5uLSmrGsbS+FPZyacPmWrdvQEmQR6tUV/Axl1c5u7N
+         dB2201wWZUexqtEW995TlcJz/vbhyMs892nTgl5sVAlyFPKFeWZ9GpLVrC45QTiIRz9u
+         cDkLovOve5d0PGBwGr5ZW0hQFvXDEXzhCrM1OQr8t1z8jbLMxirSXVYUcF1LgbfT1hth
+         flfIrAxniypPCPQJWiYDBLWrzpvyNIttYSzJ2bwRVJ7joQFcQMHtiQo0Z+6tWyVYDbGl
+         +TV2R6ossBgJ8uWPAvYr7FSpNWt0fMP1KWQLCoOMDxyVQJCzKPMNoesaeB+3kAk5X1n2
+         Z9Hw==
+X-Gm-Message-State: AOAM532HniIzg7fuGyBWueWGfsbiog6gOCk1XZ2oJzw+alReK42DleZm
+        UvawLfNH4ixYZ2vM5qAoC231NWVdXHtX
+X-Google-Smtp-Source: ABdhPJzjWGN+5xVfhWSi3YDL8WD48Ac+Xyz9aYshsE62TB/0secJVMv8rCBBauyHDfw1ABRdMfgAQ+Xn26ZG
 Sender: "qperret via sendgmr" <qperret@r2d2-qp.c.googlers.com>
 X-Received: from r2d2-qp.c.googlers.com ([fda3:e722:ac3:cc00:28:9cb1:c0a8:1652])
- (user=qperret job=sendgmr) by 2002:a0c:da07:: with SMTP id
- x7mr6289768qvj.39.1610108162797; Fri, 08 Jan 2021 04:16:02 -0800 (PST)
-Date:   Fri,  8 Jan 2021 12:15:15 +0000
+ (user=qperret job=sendgmr) by 2002:a7b:c044:: with SMTP id
+ u4mr1784013wmc.1.1610108165063; Fri, 08 Jan 2021 04:16:05 -0800 (PST)
+Date:   Fri,  8 Jan 2021 12:15:16 +0000
 In-Reply-To: <20210108121524.656872-1-qperret@google.com>
-Message-Id: <20210108121524.656872-18-qperret@google.com>
+Message-Id: <20210108121524.656872-19-qperret@google.com>
 Mime-Version: 1.0
 References: <20210108121524.656872-1-qperret@google.com>
 X-Mailer: git-send-email 2.30.0.284.gd98b1dd5eaa7-goog
-Subject: [RFC PATCH v2 17/26] KVM: arm64: Elevate Hyp mappings creation at EL2
+Subject: [RFC PATCH v2 18/26] KVM: arm64: Use kvm_arch for stage 2 pgtable
 From:   Quentin Perret <qperret@google.com>
 To:     Catalin Marinas <catalin.marinas@arm.com>,
         Will Deacon <will@kernel.org>, Marc Zyngier <maz@kernel.org>,
@@ -72,219 +72,77 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Previous commits have introduced infrastructure at EL2 to enable the Hyp
-code to manage its own memory, and more specifically its stage 1 page
-tables. However, this was preliminary work, and none of it is currently
-in use.
-
-Put all of this together by elevating the hyp mappings creation at EL2
-when memory protection is enabled. In this case, the host kernel running
-at EL1 still creates _temporary_ Hyp mappings, only used while
-initializing the hypervisor, but frees them right after.
-
-As such, all calls to create_hyp_mappings() after kvm init has finished
-turn into hypercalls, as the host now has no 'legal' way to modify the
-hypevisor page tables directly.
+In order to make use of the stage 2 pgtable code for the host stage 2,
+use struct kvm_arch in lieu of struct kvm as the host will have the
+former but not the latter.
 
 Signed-off-by: Quentin Perret <qperret@google.com>
 ---
- arch/arm64/include/asm/kvm_mmu.h |  1 -
- arch/arm64/kvm/arm.c             | 62 +++++++++++++++++++++++++++++---
- arch/arm64/kvm/mmu.c             | 34 ++++++++++++++++++
- 3 files changed, 92 insertions(+), 5 deletions(-)
+ arch/arm64/include/asm/kvm_pgtable.h | 5 +++--
+ arch/arm64/kvm/hyp/pgtable.c         | 6 +++---
+ arch/arm64/kvm/mmu.c                 | 2 +-
+ 3 files changed, 7 insertions(+), 6 deletions(-)
 
-diff --git a/arch/arm64/include/asm/kvm_mmu.h b/arch/arm64/include/asm/kvm_mmu.h
-index d7ebd73ec86f..6c8466a042a9 100644
---- a/arch/arm64/include/asm/kvm_mmu.h
-+++ b/arch/arm64/include/asm/kvm_mmu.h
-@@ -309,6 +309,5 @@ static __always_inline void __load_guest_stage2(struct kvm_s2_mmu *mmu)
- 	 */
- 	asm(ALTERNATIVE("nop", "isb", ARM64_WORKAROUND_SPECULATIVE_AT));
- }
--
- #endif /* __ASSEMBLY__ */
- #endif /* __ARM64_KVM_MMU_H__ */
-diff --git a/arch/arm64/kvm/arm.c b/arch/arm64/kvm/arm.c
-index 6af9204bcd5b..e524682c2ccf 100644
---- a/arch/arm64/kvm/arm.c
-+++ b/arch/arm64/kvm/arm.c
-@@ -1421,7 +1421,7 @@ static void cpu_prepare_hyp_mode(int cpu)
- 	kvm_flush_dcache_to_poc(params, sizeof(*params));
- }
- 
--static void cpu_init_hyp_mode(void)
-+static void kvm_set_hyp_vector(void)
- {
- 	struct kvm_nvhe_init_params *params;
- 	struct arm_smccc_res res;
-@@ -1439,6 +1439,11 @@ static void cpu_init_hyp_mode(void)
- 	params = this_cpu_ptr_nvhe_sym(kvm_init_params);
- 	arm_smccc_1_1_hvc(KVM_HOST_SMCCC_FUNC(__kvm_hyp_init), virt_to_phys(params), &res);
- 	WARN_ON(res.a0 != SMCCC_RET_SUCCESS);
-+}
-+
-+static void cpu_init_hyp_mode(void)
-+{
-+	kvm_set_hyp_vector();
- 
- 	/*
- 	 * Disabling SSBD on a non-VHE system requires us to enable SSBS
-@@ -1481,7 +1486,10 @@ static void cpu_set_hyp_vector(void)
- 	struct bp_hardening_data *data = this_cpu_ptr(&bp_hardening_data);
- 	void *vector = hyp_spectre_vector_selector[data->slot];
- 
--	*this_cpu_ptr_hyp_sym(kvm_hyp_vector) = (unsigned long)vector;
-+	if (!is_protected_kvm_enabled())
-+		*this_cpu_ptr_hyp_sym(kvm_hyp_vector) = (unsigned long)vector;
-+	else
-+		kvm_call_hyp_nvhe(__pkvm_cpu_set_vector, data->slot);
- }
- 
- static void cpu_hyp_reinit(void)
-@@ -1489,13 +1497,14 @@ static void cpu_hyp_reinit(void)
- 	kvm_init_host_cpu_context(&this_cpu_ptr_hyp_sym(kvm_host_data)->host_ctxt);
- 
- 	cpu_hyp_reset();
--	cpu_set_hyp_vector();
- 
- 	if (is_kernel_in_hyp_mode())
- 		kvm_timer_init_vhe();
- 	else
- 		cpu_init_hyp_mode();
- 
-+	cpu_set_hyp_vector();
-+
- 	kvm_arm_init_debug();
- 
- 	if (vgic_present)
-@@ -1714,13 +1723,52 @@ static int copy_cpu_ftr_regs(void)
- 	return 0;
- }
- 
-+static int kvm_hyp_enable_protection(void)
-+{
-+	void *per_cpu_base = kvm_ksym_ref(kvm_arm_hyp_percpu_base);
-+	int ret, cpu;
-+	void *addr;
-+
-+	if (!is_protected_kvm_enabled())
-+		return 0;
-+
-+	if (!hyp_mem_base)
-+		return -ENOMEM;
-+
-+	addr = phys_to_virt(hyp_mem_base);
-+	ret = create_hyp_mappings(addr, addr + hyp_mem_size - 1, PAGE_HYP);
-+	if (ret)
-+		return ret;
-+
-+	preempt_disable();
-+	kvm_set_hyp_vector();
-+	ret = kvm_call_hyp_nvhe(__pkvm_init, hyp_mem_base, hyp_mem_size,
-+				num_possible_cpus(), kern_hyp_va(per_cpu_base));
-+	preempt_enable();
-+	if (ret)
-+		return ret;
-+
-+	free_hyp_pgds();
-+	for_each_possible_cpu(cpu)
-+		free_page(per_cpu(kvm_arm_hyp_stack_page, cpu));
-+
-+	return 0;
-+}
-+
+diff --git a/arch/arm64/include/asm/kvm_pgtable.h b/arch/arm64/include/asm/kvm_pgtable.h
+index 45acc9dc6c45..8e8f1d2c5e0e 100644
+--- a/arch/arm64/include/asm/kvm_pgtable.h
++++ b/arch/arm64/include/asm/kvm_pgtable.h
+@@ -151,12 +151,13 @@ int kvm_pgtable_hyp_map(struct kvm_pgtable *pgt, u64 addr, u64 size, u64 phys,
  /**
-  * Inits Hyp-mode on all online CPUs
+  * kvm_pgtable_stage2_init() - Initialise a guest stage-2 page-table.
+  * @pgt:	Uninitialised page-table structure to initialise.
+- * @kvm:	KVM structure representing the guest virtual machine.
++ * @arch:	Arch-specific KVM structure representing the guest virtual
++ *		machine.
+  * @mm_ops:	Memory management callbacks.
+  *
+  * Return: 0 on success, negative error code on failure.
   */
- static int init_hyp_mode(void)
+-int kvm_pgtable_stage2_init(struct kvm_pgtable *pgt, struct kvm *kvm,
++int kvm_pgtable_stage2_init(struct kvm_pgtable *pgt, struct kvm_arch *arch,
+ 			    struct kvm_pgtable_mm_ops *mm_ops);
+ 
+ /**
+diff --git a/arch/arm64/kvm/hyp/pgtable.c b/arch/arm64/kvm/hyp/pgtable.c
+index 61a8a34ddfdb..96a25d0b7b6e 100644
+--- a/arch/arm64/kvm/hyp/pgtable.c
++++ b/arch/arm64/kvm/hyp/pgtable.c
+@@ -855,11 +855,11 @@ int kvm_pgtable_stage2_flush(struct kvm_pgtable *pgt, u64 addr, u64 size)
+ 	return kvm_pgtable_walk(pgt, addr, size, &walker);
+ }
+ 
+-int kvm_pgtable_stage2_init(struct kvm_pgtable *pgt, struct kvm *kvm,
++int kvm_pgtable_stage2_init(struct kvm_pgtable *pgt, struct kvm_arch *arch,
+ 			    struct kvm_pgtable_mm_ops *mm_ops)
  {
- 	int cpu;
--	int err = 0;
-+	int err = -ENOMEM;
-+
-+	/*
-+	 * The protected Hyp-mode cannot be initialized if the memory pool
-+	 * allocation has failed.
-+	 */
-+	if (is_protected_kvm_enabled() && !hyp_mem_base)
-+		return err;
+ 	size_t pgd_sz;
+-	u64 vtcr = kvm->arch.vtcr;
++	u64 vtcr = arch->vtcr;
+ 	u32 ia_bits = VTCR_EL2_IPA(vtcr);
+ 	u32 sl0 = FIELD_GET(VTCR_EL2_SL0_MASK, vtcr);
+ 	u32 start_level = VTCR_EL2_TGRAN_SL0_BASE - sl0;
+@@ -872,7 +872,7 @@ int kvm_pgtable_stage2_init(struct kvm_pgtable *pgt, struct kvm *kvm,
+ 	pgt->ia_bits		= ia_bits;
+ 	pgt->start_level	= start_level;
+ 	pgt->mm_ops		= mm_ops;
+-	pgt->mmu		= &kvm->arch.mmu;
++	pgt->mmu		= &arch->mmu;
  
- 	/*
- 	 * Copy the required CPU feature register in their EL2 counterpart
-@@ -1854,6 +1902,12 @@ static int init_hyp_mode(void)
- 	for_each_possible_cpu(cpu)
- 		cpu_prepare_hyp_mode(cpu);
- 
-+	err = kvm_hyp_enable_protection();
-+	if (err) {
-+		kvm_err("Failed to enable hyp memory protection: %d\n", err);
-+		goto out_err;
-+	}
-+
- 	return 0;
- 
- out_err:
+ 	/* Ensure zeroed PGD pages are visible to the hardware walker */
+ 	dsb(ishst);
 diff --git a/arch/arm64/kvm/mmu.c b/arch/arm64/kvm/mmu.c
-index 3cf9397dabdb..9d4c9251208e 100644
+index 9d4c9251208e..7e6263103943 100644
 --- a/arch/arm64/kvm/mmu.c
 +++ b/arch/arm64/kvm/mmu.c
-@@ -225,15 +225,39 @@ void free_hyp_pgds(void)
- 	if (hyp_pgtable) {
- 		kvm_pgtable_hyp_destroy(hyp_pgtable);
- 		kfree(hyp_pgtable);
-+		hyp_pgtable = NULL;
- 	}
- 	mutex_unlock(&kvm_hyp_pgd_mutex);
- }
+@@ -461,7 +461,7 @@ int kvm_init_stage2_mmu(struct kvm *kvm, struct kvm_s2_mmu *mmu)
+ 	if (!pgt)
+ 		return -ENOMEM;
  
-+static bool kvm_host_owns_hyp_mappings(void)
-+{
-+	if (static_branch_likely(&kvm_protected_mode_initialized))
-+		return false;
-+
-+	/*
-+	 * This can happen at boot time when __create_hyp_mappings() is called
-+	 * after the hyp protection has been enabled, but the static key has
-+	 * not been flipped yet.
-+	 */
-+	if (!hyp_pgtable && is_protected_kvm_enabled())
-+		return false;
-+
-+	BUG_ON(!hyp_pgtable);
-+
-+	return true;
-+}
-+
- static int __create_hyp_mappings(unsigned long start, unsigned long size,
- 				 unsigned long phys, enum kvm_pgtable_prot prot)
- {
- 	int err;
+-	err = kvm_pgtable_stage2_init(pgt, kvm, &kvm_s2_mm_ops);
++	err = kvm_pgtable_stage2_init(pgt, &kvm->arch, &kvm_s2_mm_ops);
+ 	if (err)
+ 		goto out_free_pgtable;
  
-+	if (!kvm_host_owns_hyp_mappings()) {
-+		return kvm_call_hyp_nvhe(__pkvm_create_mappings,
-+					 start, size, phys, prot);
-+	}
-+
- 	mutex_lock(&kvm_hyp_pgd_mutex);
- 	err = kvm_pgtable_hyp_map(hyp_pgtable, start, size, phys, prot);
- 	mutex_unlock(&kvm_hyp_pgd_mutex);
-@@ -295,6 +319,16 @@ static int __create_hyp_private_mapping(phys_addr_t phys_addr, size_t size,
- 	unsigned long base;
- 	int ret = 0;
- 
-+	if (!kvm_host_owns_hyp_mappings()) {
-+		base = kvm_call_hyp_nvhe(__pkvm_create_private_mapping,
-+					 phys_addr, size, prot);
-+		if (!base)
-+			return -ENOMEM;
-+		*haddr = base;
-+
-+		return 0;
-+	}
-+
- 	mutex_lock(&kvm_hyp_pgd_mutex);
- 
- 	/*
 -- 
 2.30.0.284.gd98b1dd5eaa7-goog
 
