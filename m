@@ -2,111 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C8AE82EEA14
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 01:04:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 438CB2EEA15
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 01:04:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729462AbhAHABv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 19:01:51 -0500
-Received: from mga18.intel.com ([134.134.136.126]:14571 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727300AbhAHABu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 19:01:50 -0500
-IronPort-SDR: y3pvJRvcja4b/As7ZPsneiUrehH6aiaXGFLUjlT5pbr7bVCau3opOL5A3HNSPg4nPQi1ZHhe+0
- lfaOQgaz+kZg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9857"; a="165206445"
-X-IronPort-AV: E=Sophos;i="5.79,330,1602572400"; 
-   d="scan'208";a="165206445"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Jan 2021 16:00:04 -0800
-IronPort-SDR: 6JFQMRWF/KBXXX0hd/QgIrgA7QCfQXw80JWsEERH3iTsHJHY72M1OCYy4cu7O0i0qi74F2aSQI
- XHWEnKaPTtcA==
-X-IronPort-AV: E=Sophos;i="5.79,330,1602572400"; 
-   d="scan'208";a="379909949"
-Received: from blu2-mobl3.ccr.corp.intel.com (HELO [10.255.31.120]) ([10.255.31.120])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Jan 2021 16:00:02 -0800
-Cc:     baolu.lu@linux.intel.com, Joerg Roedel <joro@8bytes.org>,
-        Ashok Raj <ashok.raj@intel.com>,
-        Jacob Pan <jacob.jun.pan@linux.intel.com>,
-        Guo Kaijie <Kaijie.Guo@intel.com>,
-        Liu Yi L <yi.l.liu@intel.com>,
-        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 3/5] iommu/vt-d: Remove unused dma map/unmap trace events
-To:     Will Deacon <will@kernel.org>
-References: <20201231005323.2178523-1-baolu.lu@linux.intel.com>
- <20201231005323.2178523-3-baolu.lu@linux.intel.com>
- <20210105190443.GB12182@willie-the-truck>
- <8bf33c93-3154-e832-1197-891c684d6ded@linux.intel.com>
- <20210107144049.GB3413@willie-the-truck>
-From:   Lu Baolu <baolu.lu@linux.intel.com>
-Message-ID: <ab546a36-2403-f400-a354-edfd21795e0d@linux.intel.com>
-Date:   Fri, 8 Jan 2021 08:00:00 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        id S1729470AbhAHACV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 19:02:21 -0500
+Received: from mail-il1-f176.google.com ([209.85.166.176]:40925 "EHLO
+        mail-il1-f176.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727300AbhAHACV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Jan 2021 19:02:21 -0500
+Received: by mail-il1-f176.google.com with SMTP id e7so8538968ile.7
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Jan 2021 16:02:05 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=OUdgYT2bV2z9JMQ5Dnm5gfN8+JaqX2+57UkKZK6TJcg=;
+        b=GXNToxlossapLsH5x+/2Da9dF9cJHXn83ykpcG1zWFQm0Y4zYCcZ6Zo9mhpUVv03GU
+         ICr6BMwysjGhfZJM6+132Yfw27NUC2O9HE+GeUJ0221MIZ7nrOzcdw6377F9Hh4n7qPW
+         IXj6xDxY5o+cJt/FR6pkqIV16sIdIQ+ouDnFG5+PM1qk8Mi+9uojKmxC4+iBXGajlJ3t
+         ULpvYH+zTVtqkw8fAnLaFF8c7ZvwblzRvTbE1nib6N5HCqb40d28XUm+nRf/3+uNeAYW
+         Rc4WWHED0YA7z+GEtC/AD9ae8D7L6LXC9yD6lPY9TaLDQNPXZmaCoHlq6fGhpAlIhjf+
+         EiyA==
+X-Gm-Message-State: AOAM533wJxU7SuefvxV7YXDHDIgDeJZJe4EOeSWKPptW0ppyKrhuH8TM
+        jeheVRL2VBgXJom65KNgdg==
+X-Google-Smtp-Source: ABdhPJzntJusReXegW/sOc5IBt2tMDZ27KMS4THSZ/OAA40iCURuV8r5pMDzeoz0JkAkQX+iGARIdw==
+X-Received: by 2002:a92:d210:: with SMTP id y16mr1331520ily.97.1610064100261;
+        Thu, 07 Jan 2021 16:01:40 -0800 (PST)
+Received: from xps15.herring.priv ([64.188.179.253])
+        by smtp.googlemail.com with ESMTPSA id i6sm5127742ilm.70.2021.01.07.16.01.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 07 Jan 2021 16:01:39 -0800 (PST)
+From:   Rob Herring <robh@kernel.org>
+To:     Jiri Olsa <jolsa@redhat.com>
+Cc:     Will Deacon <will@kernel.org>, Andy Lutomirski <luto@kernel.org>,
+        linux-kernel@vger.kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>
+Subject: [RFC] perf/x86: Only expose userspace rdpmc for events on current CPU
+Date:   Thu,  7 Jan 2021 17:01:36 -0700
+Message-Id: <20210108000136.1556129-1-robh@kernel.org>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-In-Reply-To: <20210107144049.GB3413@willie-the-truck>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Will,
+Userspace access using rdpmc only makes sense if the event is valid for
+the current CPU. However, cap_user_rdpmc is currently set no matter which
+CPU the event is associated with. The result is userspace reading another
+CPU's event thinks it can use rdpmc to read the counter. In doing so, the
+wrong counter will be read.
 
-On 2021/1/7 22:40, Will Deacon wrote:
-> On Wed, Jan 06, 2021 at 09:14:22AM +0800, Lu Baolu wrote:
->> On 2021/1/6 3:04, Will Deacon wrote:
->>> On Thu, Dec 31, 2020 at 08:53:21AM +0800, Lu Baolu wrote:
->>>> With commit c588072bba6b5 ("iommu/vt-d: Convert intel iommu driver to
->>>> the iommu ops"), the trace events for dma map/unmap have no users any
->>>> more. Remove them so that they don't show up under
->>>> /sys/kernel/debug/tracing/events/intel_iommu. The users should use the
->>>> map/unmap traces defined in the iommu core from now on.
->>>>
->>>> Fixes: c588072bba6b5 ("iommu/vt-d: Convert intel iommu driver to the iommu ops")
->>>> Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
->>>> ---
->>>>    include/trace/events/intel_iommu.h | 119 -----------------------------
->>>>    1 file changed, 119 deletions(-)
->>>
->>> Is this needed in 5.11, or can it wait until 5.12?
->>
->> It's necessary for 5.11 as far as I can see. Without this, users still
->> see the events under /sys/kernel/debug/tracing/events/intel_iommu, but
->> they will get nothing traced even they enable the events.
-> 
-> I'm just a bit wary about breaking userspace by removing them altogether,
-> although I see that there's plenty of precedent for removing events from
-> the include/trace/events directory, so it's probably fine.
-> 
-> However, the patch as-is results in this warning for me:
-> 
->   | In file included from include/trace/define_trace.h:102,
->   |                  from include/trace/events/intel_iommu.h:22,
->   |                  from drivers/iommu/intel/trace.c:14:
->   | include/trace/trace_events.h:27:23: warning: ‘str__intel_iommu__trace_system_name’ defined but not used [-Wunused-const-variable=]
->   |    27 | #define __app__(x, y) str__##x##y
->   |       |                       ^~~~~
->   | include/trace/trace_events.h:28:21: note: in expansion of macro ‘__app__’
->   |    28 | #define __app(x, y) __app__(x, y)
->   |       |                     ^~~~~~~
->   | include/trace/trace_events.h:30:29: note: in expansion of macro ‘__app’
->   |    30 | #define TRACE_SYSTEM_STRING __app(TRACE_SYSTEM_VAR,__trace_system_name)
->   |       |                             ^~~~~
->   | include/trace/trace_events.h:33:20: note: in expansion of macro ‘TRACE_SYSTEM_STRING’
->   |    33 |  static const char TRACE_SYSTEM_STRING[] = \
->   |       |                    ^~~~~~~~~~~~~~~~~~~
->   | include/trace/trace_events.h:36:1: note: in expansion of macro ‘TRACE_MAKE_SYSTEM_STR’
->   |    36 | TRACE_MAKE_SYSTEM_STR();
->   |       | ^~~~~~~~~~~~~~~~~~~~~
-> 
-> so I'll drop this for now.
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Ingo Molnar <mingo@redhat.com>
+Cc: Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc: Mark Rutland <mark.rutland@arm.com>
+Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
+Cc: Jiri Olsa <jolsa@redhat.com>
+Cc: Namhyung Kim <namhyung@kernel.org>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Borislav Petkov <bp@alien8.de>
+Cc: x86@kernel.org
+Cc: "H. Peter Anvin" <hpa@zytor.com>
+Signed-off-by: Rob Herring <robh@kernel.org>
+---
+I'm working on adding userspace counter access for arm64 along with a
+common access routine in libperf. I found this issue when testing per CPU
+events. More details are here[1]. 
 
-Okay, I will rework this. Thanks!
+I'm going to need the same thing for arm64. This could possibly go into
+perf_event_update_userpage() instead, but perhaps there could be an arch
+where userspace can read other cpu's counters.
 
-> 
-> Will
-> 
+What's the ABI between libperf and kernel versions? This change will 
+only help the libperf implementation if libperf doesn't need to support 
+old kernels.
 
-Best regards,
-baolu
+[1] https://lore.kernel.org/r/CAL_JsqJzeCebq4VP+xBtfh=fbomvaJoVMp35AQQDGTYD-fRWgw@mail.gmail.com
+---
+ arch/x86/events/core.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/arch/x86/events/core.c b/arch/x86/events/core.c
+index a88c94d65693..6e6d4c1d03ca 100644
+--- a/arch/x86/events/core.c
++++ b/arch/x86/events/core.c
+@@ -2490,7 +2490,8 @@ void arch_perf_update_userpage(struct perf_event *event,
+ 	userpg->cap_user_time = 0;
+ 	userpg->cap_user_time_zero = 0;
+ 	userpg->cap_user_rdpmc =
+-		!!(event->hw.flags & PERF_X86_EVENT_RDPMC_ALLOWED);
++		!!(event->hw.flags & PERF_X86_EVENT_RDPMC_ALLOWED) &&
++		(event->oncpu == smp_processor_id());
+ 	userpg->pmc_width = x86_pmu.cntval_bits;
+ 
+ 	if (!using_native_sched_clock() || !sched_clock_stable())
+-- 
+2.27.0
+
