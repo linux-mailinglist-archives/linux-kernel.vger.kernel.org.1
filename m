@@ -2,297 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E71632EF058
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 11:02:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CD532EF060
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 11:03:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728194AbhAHKBQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Jan 2021 05:01:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41426 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727569AbhAHKBP (ORCPT
+        id S1728286AbhAHKCp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Jan 2021 05:02:45 -0500
+Received: from szxga06-in.huawei.com ([45.249.212.32]:10421 "EHLO
+        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726120AbhAHKCo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Jan 2021 05:01:15 -0500
-Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73627C0612F4
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Jan 2021 02:00:35 -0800 (PST)
-Received: by mail-ej1-x636.google.com with SMTP id 6so13768786ejz.5
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Jan 2021 02:00:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=RIPDrybHYDhrvRvtrv7fNkrHahASlP6RR/P3/LW+RDQ=;
-        b=VLn2tfq+cDp5QXVPJu7O9dnF40qGvvxBpHn0n6yOHOwnNP+XP8cT6kPTUe1T23K+is
-         OKV3bhfEzVswtI+ATO28Ul3IpAdT9JUzOSA+9XD9Q9oDn0GYgSAHWF4XuYp548lt6on4
-         J3QLISt2daUJJhWALz5NzsT3tqkTLp0OKVG18=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=RIPDrybHYDhrvRvtrv7fNkrHahASlP6RR/P3/LW+RDQ=;
-        b=CJfTPqchpshjfJzqbeYORZFUw/qsp7LHnn4tx/iXW8/PJhIjVzz4oUBet/wzcjuY4u
-         7XcmjkkbZh/XtM3qCOFnRHm/1O+ybEbg3XWq2iLo/5Y/HtUYw47VQ3fD3jyqRQlYUxP0
-         YU7fWGWjTHkRmnqKPknrMlg9c5V336NBvSpnCmNEZQGV6fmtp6iKTWElYC1ZhVWhNTp1
-         vonRsmoyxbJSna5BMoPquOUn4PwjkmTtfOBOn/20wn2HxU2OofVRrRk7gorsWx0x32lI
-         bP4SUkmsnVTfz0r55p4sFDcpTsoddoETP+btXFJ7mRfcevRPVdpb89hlWrChcylPktq1
-         mqdw==
-X-Gm-Message-State: AOAM532ooIVPY4vf/LhJzkBomKjdKqoI0FTfygOmnRgRkgzXt06vbs/j
-        VaDFGznLIsM6eZRzdZlC5Yw8B2tuUFi2Tg==
-X-Google-Smtp-Source: ABdhPJxn59rLZOxhPreENmFFdLg8Hx0NxQE6w7MoifCgJyrWBDHAKw0A9uvJlRB+1QwDIdwDcK/UxQ==
-X-Received: by 2002:a17:906:b24c:: with SMTP id ce12mr2143466ejb.89.1610100034267;
-        Fri, 08 Jan 2021 02:00:34 -0800 (PST)
-Received: from mail-wm1-f41.google.com (mail-wm1-f41.google.com. [209.85.128.41])
-        by smtp.gmail.com with ESMTPSA id b21sm3611514edr.53.2021.01.08.02.00.33
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 08 Jan 2021 02:00:34 -0800 (PST)
-Received: by mail-wm1-f41.google.com with SMTP id c133so7316620wme.4
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Jan 2021 02:00:33 -0800 (PST)
-X-Received: by 2002:a1c:c308:: with SMTP id t8mr2392160wmf.22.1610100033143;
- Fri, 08 Jan 2021 02:00:33 -0800 (PST)
+        Fri, 8 Jan 2021 05:02:44 -0500
+Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4DBzBw64Vhzj3l4;
+        Fri,  8 Jan 2021 18:01:12 +0800 (CST)
+Received: from [10.67.102.197] (10.67.102.197) by
+ DGGEMS401-HUB.china.huawei.com (10.3.19.201) with Microsoft SMTP Server id
+ 14.3.498.0; Fri, 8 Jan 2021 18:01:52 +0800
+Subject: Re: [PATCH v2] proc_sysctl: fix oops caused by incorrect command
+ parameters.
+To:     Michal Hocko <mhocko@suse.com>
+CC:     <linux-kernel@vger.kernel.org>, <mcgrof@kernel.org>,
+        <keescook@chromium.org>, <yzaikin@google.com>,
+        <adobriyan@gmail.com>, <linux-fsdevel@vger.kernel.org>,
+        <vbabka@suse.cz>, <akpm@linux-foundation.org>, <wangle6@huawei.com>
+References: <20210108023339.55917-1-nixiaoming@huawei.com>
+ <20210108092145.GX13207@dhcp22.suse.cz>
+From:   Xiaoming Ni <nixiaoming@huawei.com>
+Message-ID: <829bbba0-d3bb-a114-af81-df7390082958@huawei.com>
+Date:   Fri, 8 Jan 2021 18:01:52 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.0.1
 MIME-Version: 1.0
-References: <20200804192939.2251988-1-helen.koike@collabora.com>
- <20200804192939.2251988-3-helen.koike@collabora.com> <b8a08145-c54e-3d06-dd61-78ce99a812d5@xs4all.nl>
- <3ac23162-ce59-6cc3-da48-90f26c618345@collabora.com> <CAAFQd5A1F7g=LSJrtqwF+KEUq-QXmi0__-mbebsN27xFA0rQCQ@mail.gmail.com>
- <b14809a5-e471-73da-efde-1d0d6f54e485@collabora.com> <de781845-7192-df0b-26c4-36b981237735@xs4all.nl>
- <f565c17a-e6ef-e875-bc01-1122ba59a50a@collabora.com> <CAAFQd5C=+0YYNHrk+B3-zUTLT8rfBg3iC9Jn7nXzFccC0JW79Q@mail.gmail.com>
- <a41fe519-8835-97a0-ef8a-ad5b5efcb449@collabora.com> <CAAFQd5DKE=xVf9tX6J6RaVR0M4udK9JDnMESdBSa8aKLwQsvfQ@mail.gmail.com>
- <4fec6e91-a19b-b0be-d4b6-72a333451d9b@collabora.com> <CAAFQd5Ds5DQ0V+c_Oapwg9CQ0ADkjtML6w6H5Ad4hwMz9Rg9YQ@mail.gmail.com>
- <79f59368-2295-c9d9-b09a-9d1256c7b0f2@collabora.com>
-In-Reply-To: <79f59368-2295-c9d9-b09a-9d1256c7b0f2@collabora.com>
-From:   Tomasz Figa <tfiga@chromium.org>
-Date:   Fri, 8 Jan 2021 19:00:21 +0900
-X-Gmail-Original-Message-ID: <CAAFQd5A5jQWd3Vt+M9ft4npQyV72TJRhdyn6F7OVdhZrFmnkyw@mail.gmail.com>
-Message-ID: <CAAFQd5A5jQWd3Vt+M9ft4npQyV72TJRhdyn6F7OVdhZrFmnkyw@mail.gmail.com>
-Subject: Re: [PATCH v5 2/7] media: v4l2: Add extended buffer operations
-To:     Helen Koike <helen.koike@collabora.com>
-Cc:     Hans Verkuil <hverkuil@xs4all.nl>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Hans Verkuil <hans.verkuil@cisco.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Sakari Ailus <sakari.ailus@iki.fi>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        Boris Brezillon <boris.brezillon@collabora.com>,
-        Hirokazu Honda <hiroh@chromium.org>,
-        Nicolas Dufresne <nicolas@ndufresne.ca>,
-        Brian Starkey <Brian.Starkey@arm.com>, kernel@collabora.com,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Fritz Koenig <frkoenig@chromium.org>,
-        Maxime Jourdan <mjourdan@baylibre.com>,
-        Stanimir Varbanov <stanimir.varbanov@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210108092145.GX13207@dhcp22.suse.cz>
+Content-Type: text/plain; charset="gbk"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.67.102.197]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 23, 2020 at 9:04 PM Helen Koike <helen.koike@collabora.com> wrote:
->
-> Hi Tomasz,
->
-> On 12/21/20 12:13 AM, Tomasz Figa wrote:
-> > On Thu, Dec 17, 2020 at 10:20 PM Helen Koike <helen.koike@collabora.com> wrote:
-> >>
-> >> Hi Tomasz,
-> >>
-> >> Thanks for your comments, I have a few questions below.
-> >>
-> >> On 12/16/20 12:13 AM, Tomasz Figa wrote:
-> >>> On Tue, Dec 15, 2020 at 11:37 PM Helen Koike <helen.koike@collabora.com> wrote:
-> >>>>
-> >>>> Hi Tomasz,
-> >>>>
-> >>>> On 12/14/20 7:46 AM, Tomasz Figa wrote:
-> >>>>> On Fri, Dec 4, 2020 at 4:52 AM Helen Koike <helen.koike@collabora.com> wrote:
-> >>>>>>
-> >>>>>> Hi,
-> >>>>>>
-> >>>>>> Please see my 2 points below (about v4l2_ext_buffer and another about timestamp).
-> >>>>>>
-> >>>>>> On 12/3/20 12:11 PM, Hans Verkuil wrote:
-> >>>>>>> On 23/11/2020 18:40, Helen Koike wrote:
-> >>>>>>>>
-> >>>>>>>>
-> >>>>>>>> On 11/23/20 12:46 PM, Tomasz Figa wrote:
-> >>>>>>>>> On Tue, Nov 24, 2020 at 12:08 AM Helen Koike <helen.koike@collabora.com> wrote:
-> >>>>>>>>>>
-> >>>>>>>>>> Hi Hans,
-> >>>>>>>>>>
-> >>>>>>>>>> Thank you for your review.
-> >>>>>>>>>>
-> >>>>>>>>>> On 9/9/20 9:27 AM, Hans Verkuil wrote:
-> >>>>>>>>>>> Hi Helen,
-> >>>>>>>>>>>
-> >>>>>>>>>>> Again I'm just reviewing the uAPI.
-> >>>>>>>>>>>
-> >>>>>>>>>>> On 04/08/2020 21:29, Helen Koike wrote:
-> > [snip]
-> >>>
-> >>>>
-> >>>> Output: userspace fills plane information, informing in which memory buffer each
-> >>>>         plane was placed (Or should this be pre-determined by the driver?)
-> >>>>
-> >>>> For MMAP
-> >>>> -----------------------
-> >>>> userspace performs EXT_CREATE_BUF ioctl to reserve a buffer "index" range in
-> >>>> that mode, to be used in EXT_QBUF and EXT_DQBUF
-> >>>>
-> >>>> Should the API allow userspace to select how many memory buffers it wants?
-> >>>> (maybe not)
-> >>>
-> >>> I think it does allow that - it accepts the v4l2_ext_format struct.
-> >>
-> >> hmmm, I thought v4l2_ext_format would describe color planes, and not memory planes.
-> >> Should it describe memory planes instead? Since planes are defined by the pixelformat.
-> >> But is this information relevant to ext_{set/get/try} format?
-> >>
-> >
-> > Good point. I ended up assuming the current convention, where giving
-> > an M format would imply num_memory_planes == num_color_planes and
-> > non-M format num_memory_planes == 1. Sounds like we might want
-> > something like a flags field and that could have bits defined to
-> > select that. I think it would actually be useful for S_FMT as well,
-> > because that's what REQBUFS would use.
->
-> Would this flag select between memory and color planes?
-> I didn't understand how this flag would be useful to S_FMT, could you
-> please clarify?
+On 2021/1/8 17:21, Michal Hocko wrote:
+> On Fri 08-01-21 10:33:39, Xiaoming Ni wrote:
+>> The process_sysctl_arg() does not check whether val is empty before
+>>   invoking strlen(val). If the command line parameter () is incorrectly
+>>   configured and val is empty, oops is triggered.
+>>
+>> For example, "hung_task_panic=1" is incorrectly written as "hung_task_panic".
+>>
+>> log:
+>> 	Kernel command line: .... hung_task_panic
+>> 	....
+>> 	[000000000000000n] user address but active_mm is swapper
+>> 	Internal error: Oops: 96000005 [#1] SMP
+>> 	Modules linked in:
+>> 	CPU: 0 PID: 1 Comm: swapper/0 Not tainted 5.10.1 #1
+>> 	Hardware name: linux,dummy-virt (DT)
+>> 	pstate: 40000005 (nZcv daif -PAN -UAO -TCO BTYPE=--)
+>> 	pc : __pi_strlen+0x10/0x98
+>> 	lr : process_sysctl_arg+0x1e4/0x2ac
+>> 	sp : ffffffc01104bd40
+>> 	x29: ffffffc01104bd40 x28: 0000000000000000
+>> 	x27: ffffff80c0a4691e x26: ffffffc0102a7c8c
+>> 	x25: 0000000000000000 x24: ffffffc01104be80
+>> 	x23: ffffff80c22f0b00 x22: ffffff80c02e28c0
+>> 	x21: ffffffc0109f9000 x20: 0000000000000000
+>> 	x19: ffffffc0107c08de x18: 0000000000000003
+>> 	x17: ffffffc01105d000 x16: 0000000000000054
+>> 	x15: ffffffffffffffff x14: 3030253078413830
+>> 	x13: 000000000000ffff x12: 0000000000000000
+>> 	x11: 0101010101010101 x10: 0000000000000005
+>> 	x9 : 0000000000000003 x8 : ffffff80c0980c08
+>> 	x7 : 0000000000000000 x6 : 0000000000000002
+>> 	x5 : ffffff80c0235000 x4 : ffffff810f7c7ee0
+>> 	x3 : 000000000000043a x2 : 00bdcc4ebacf1a54
+>> 	x1 : 0000000000000000 x0 : 0000000000000000
+>> 	Call trace:
+>> 	 __pi_strlen+0x10/0x98
+>> 	 parse_args+0x278/0x344
+>> 	 do_sysctl_args+0x8c/0xfc
+>> 	 kernel_init+0x5c/0xf4
+>> 	 ret_from_fork+0x10/0x30
+>> 	Code: b200c3eb 927cec01 f2400c07 54000301 (a8c10c22)
+>>
+>> Fixes: 3db978d480e2843 ("kernel/sysctl: support setting sysctl parameters
+>>   from kernel command line")
+>> Signed-off-by: Xiaoming Ni <nixiaoming@huawei.com>
+> 
+> Thanks for catching this!
+> 
+>> ---------
+>> v2:
+>>     Added log output of the failure branch based on the review comments of Kees Cook.
+>> v1: https://lore.kernel.org/lkml/20201224074256.117413-1-nixiaoming@huawei.com/
+>> ---------
+>> ---
+>>   fs/proc/proc_sysctl.c | 5 +++++
+>>   1 file changed, 5 insertions(+)
+>>
+>> diff --git a/fs/proc/proc_sysctl.c b/fs/proc/proc_sysctl.c
+>> index 317899222d7f..dc1a56515e86 100644
+>> --- a/fs/proc/proc_sysctl.c
+>> +++ b/fs/proc/proc_sysctl.c
+>> @@ -1757,6 +1757,11 @@ static int process_sysctl_arg(char *param, char *val,
+>>   	loff_t pos = 0;
+>>   	ssize_t wret;
+>>   
+>> +	if (!val) {
+>> +		pr_err("Missing param value! Expected '%s=...value...'\n", param);
+>> +		return 0;
+I may need to move the validation code for val to the end of the 
+validation code for param to prevent non-sysctl arguments from 
+triggering the current print.
+Or delete the print and keep it silent for a little better performance.
+Which is better?
 
-I mean a flag that decides the plane layout between the 2 possible
-options (all planes in their own buffers at offsets 0 vs all planes in
-one buffer one after another), rather than giving too much flexibility
-for MMAP buffers, which isn't necessary any way, because DMABUF can be
-used if more flexibility is needed.
 
-Best regards,
-Tomasz
+>> +	}
+> 
+> Shouldn't you return an error here? Also my understanding is that
+> parse_args is responsible for reporting the error.
+> 
+All exception branches in process_sysctl_arg record logs and return 0.
+Do I need to keep the same processing in the new branch?
 
->
-> Thanks
-> Helen
->
-> >
-> >>>
-> >>>>
-> >>>> userspace performs EXT_QUERY_MMAP_BUF to get the mmap offset/cookie and length
-> >>>> for each memory buffer.
-> >>>>
-> >>>> On EXT_QBUF, userspace doesn't need to fill membuf information. Should the
-> >>>> mmap offset and length be filled by the kernel and returned to userspace here
-> >>>> as well? I'm leaning towards: no.
-> >>>
-> >>> Yeah, based on my comment above, I think the answer should be no.
-> >>>
-> >>>>
-> >>>> If the answer is no, then here is my proposal:
-> >>>> ----------------------------------------------
-> >>>>
-> >>>> /* If MMAP, drivers decide how many memory buffers to allocate */
-> >>>> int ioctl( int fd, VIDIOC_EXT_CREATE_BUFS, struct v4l2_ext_buffer *argp )
-> >>>>
-> >>>> /* Returns -EINVAL if not MMAP */
-> >>>> int ioctl( int fd, VIDIOC_EXT_MMAP_QUERYBUF, struct v4l2_ext_mmap_querybuf *argp )
-> >>>>
-> >>>> /* userspace fills v4l2_ext_buffer.membufs if DMA-fd or Userptr, leave it zero for MMAP
-> >>>>  * Should userspace also fill v4l2_ext_buffer.planes?
-> >>>>  */
-> >>>> int ioctl( int fd, VIDIOC_EXT_QBUF, struct v4l2_ext_buffer *argp )
-> >>>>
-> >>>> /* v4l2_ext_buffer.membufs is set to zero by the driver */
-> >>>> int ioctl( int fd, VIDIOC_EXT_DBUF, struct v4l2_ext_buffer *argp )
-> >>>>
-> >>>> (I omitted reserved fields below)
-> >>>>
-> >>>> struct v4l2_ext_create_buffers {
-> >>>>         __u32                           index;
-> >>>>         __u32                           count;
-> >>>>         __u32                           memory;
-> >>>>         __u32                           capabilities;
-> >>>>         struct v4l2_ext_pix_format      format;
-> >>>> };
-> >>>>
-> >>>> struct v4l2_ext_mmap_membuf {
-> >>>>         __u32 offset;
-> >>>>         __u32 length;
-> >>>> }
-> >>>>
-> >>>> struct v4l2_ext_mmap_querybuf {
-> >>>>         __u32 index;
-> >>>>         struct v4l2_ext_mmap_membuf membufs[VIDEO_MAX_PLANES];
-> >>>> }
-> >>>>
-> >>>> struct v4l2_ext_membuf {
-> >>>>         __u32 memory;
-> >>>>         union {
-> >>>>                 __u64 userptr;
-> >>>>                 __s32 dmabuf_fd;
-> >>>>         } m;
-> >>>>         // Can't we just remove the union and "memory" field, and the non-zero
-> >>>>         // is the one we should use?
-> >>>
-> >>> I think that would lead to an equivalent result in this case. That
-> >>> said, I'm not sure if there would be any significant enough benefit to
-> >>> justify moving away from the current convention. Having the memory
-> >>> field might also make the structure a bit less error prone, e.g.
-> >>> resilient to missing memset().
-> >>>
-> >>>> };
-> >>>>
-> >>>> struct v4l2_ext_plane {
-> >>>>         __u32 membuf_index;
-> >>>>         __u32 offset;
-> >>>>         __u32 bytesused;
-> >>>> };
-> >>>>
-> >>>> struct v4l2_ext_buffer {
-> >>>>         __u32 index;
-> >>>>         __u32 type;
-> >>>>         __u32 field;
-> >>>>         __u32 sequence;
-> >>>>         __u64 flags;
-> >>>>         __u64 timestamp;
-> >>>>         struct v4l2_ext_membuf membufs[VIDEO_MAX_PLANES];
-> >>>>         struct v4l2_ext_plane planes[VIDEO_MAX_PLANES];
-> >>>
-> >>> Do we actually need this split into membufs and planes here? After
-> >>> all, all we want to pass to the kernel here is in what buffer the
-> >>> plane is in.
-> >>
-> >> You are right, we don't.
-> >>
-> >>>
-> >>> struct v4l2_ext_plane {
-> >>>         __u32 memory;
-> >>
-> >> Should we design the API to allow a buffer to contain multiple memory planes
-> >> of different types? Lets say one memplane is DMA-fd, the other is userptr.
-> >> If the answer is yes, then struct v4l2_ext_create_buffers requires some changes.
-> >> If not, then there is no need a "memory" field per memory plane in a buffer.
-> >>
-> >
-> > That's a good question. I haven't seen any practical need to do that.
-> > Moreover, I suspect that the API might be going towards the DMA-buf
-> > centric model, with DMA-buf heaps getting upstream acceptance, so
-> > maybe we would be fine moving the memory field to the buffer struct
-> > indeed.
-> >
-> >>>         union {
-> >>>                 __u32 membuf_index;
-> >>>                 __u64 userptr;
-> >>>                 __s32 dmabuf_fd;
-> >>>         } m;
-> >>>         __u32 offset;
-> >>>         __u32 bytesused;
-> >>
-> >> We also need userptr_length right?
-> >
-> > Is it actually needed? The length of the plane is determined by the
-> > current format. I can only see as it being an extra sanity check
-> > before accessing the process memory, but is it necessary? I think I
-> > want to hear others's opinion on this.
-> >
-> > [snip]
-> >
-> > Best regards,
-> > Tomasz
-> >
+
+>> +
+>>   	if (strncmp(param, "sysctl", sizeof("sysctl") - 1) == 0) {
+>>   		param += sizeof("sysctl") - 1;
+>>   
+>> -- 
+>> 2.27.0
+> 
+
+Thanks
+Xiaoming Ni
