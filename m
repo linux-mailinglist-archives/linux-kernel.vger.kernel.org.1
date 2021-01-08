@@ -2,143 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FAD02EF1C0
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 13:06:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CB602EF1FB
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 13:08:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726720AbhAHMFU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Jan 2021 07:05:20 -0500
-Received: from foss.arm.com ([217.140.110.172]:49854 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725791AbhAHMFT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Jan 2021 07:05:19 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B258431B;
-        Fri,  8 Jan 2021 04:04:33 -0800 (PST)
-Received: from e120937-lin (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D95ED3F719;
-        Fri,  8 Jan 2021 04:04:31 -0800 (PST)
-Date:   Fri, 8 Jan 2021 12:04:28 +0000
-From:   Cristian Marussi <cristian.marussi@arm.com>
-To:     Thara Gopinath <thara.gopinath@linaro.org>
-Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        sudeep.holla@arm.com, lukasz.luba@arm.com,
-        james.quinlan@broadcom.com, Jonathan.Cameron@Huawei.com,
-        f.fainelli@gmail.com, etienne.carriere@linaro.org,
-        vincent.guittot@linaro.org, souvik.chakravarty@arm.com
-Subject: Re: [PATCH v4 02/37] firmware: arm_scmi: introduce protocol handle
- definitions
-Message-ID: <20210108120428.GB9138@e120937-lin>
-References: <20210106201610.26538-1-cristian.marussi@arm.com>
- <20210106201610.26538-3-cristian.marussi@arm.com>
- <19054e89-c117-ef85-444e-8e126a8a9efb@linaro.org>
+        id S1727990AbhAHMHW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Jan 2021 07:07:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60832 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727957AbhAHMHT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 Jan 2021 07:07:19 -0500
+Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D6A4C0611CA
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Jan 2021 04:05:30 -0800 (PST)
+Received: by mail-ed1-x52d.google.com with SMTP id g24so10910452edw.9
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Jan 2021 04:05:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=3Va61gtlE6uxlap+HqL4vMBtDSl5k8JpvKXjXKVjwAk=;
+        b=byPa3xtdvQ0i/tmlCxZ7vv2VnjzkRMO1OrnooifKgMBgo7QH3NG6ATLM9Pqa74puBo
+         jBuqWezz9NjPjDw5gXB9H5SsQy5QjHKMfjAPRljHoTQF2Dd+M8IQeiIWySe35UiVbfc9
+         ZA+DgRFb4e/0zFzH+YsUpKCX9UxO+Bn+/S5JZ99hWwgQuu71h5Um8XFae8dc/Kd4qoSP
+         SobPCh1eBngUMXvUoVP/JJg78m3i8Ffot9pTnPMr623iOmZhRUT/Hpd8sVYeU9fLGlkn
+         l2OU/XZmGErwvVx/dOlxXwNjdgIdPg7dr54HlH1iVq/H/hbjBlGPXdRc40ikrbsFfobn
+         lF0g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=3Va61gtlE6uxlap+HqL4vMBtDSl5k8JpvKXjXKVjwAk=;
+        b=qnfw5iAy3ied7NBrhMBxkG7XTzV3G07RE9V4I8BtszJZM7BPmaE+Z4jARD4x1HsLar
+         yCXojiH4zhkjjIPQuqZjxp2YR7InCacvmjwwIItTQS5pM0/aNTdMAgG+pP0bmxAJVzzi
+         x2Om483BDJyxFm4VyUafhiF3D/wFhRTcKfcr8dx3sohIC8Ng4f4LT88UgI5EK1msGHhB
+         VVwMYC5fcR6SYmcmFZ/VTgHJn73jvinzT0iEZxpW4u9VV7242+C+4TbIRWN6KS3nFKIb
+         X71f/CIHQzE/LSDCzqcnpA44zIKne613hDrGlU0MtvfvP+i/cB0+hWw3sLAuf4dIELpc
+         48kQ==
+X-Gm-Message-State: AOAM53285fjd+ue+V38LsyCaUi9a6gF9WgHD1qDkOr31seqldHC0gp5D
+        wDed5isoaLm1YXZHVYRfZxxxgw==
+X-Google-Smtp-Source: ABdhPJyK1Tt9/zHH2O1rW8RB+C1F4stz5RCecfAXLBEwdQzpQdfrTSXScY3UpNwXL+H3vrXxWpCgRQ==
+X-Received: by 2002:aa7:c3cf:: with SMTP id l15mr5192444edr.282.1610107528821;
+        Fri, 08 Jan 2021 04:05:28 -0800 (PST)
+Received: from localhost.localdomain ([2a02:2450:102f:d6a:bb2e:8b50:322a:1b9a])
+        by smtp.gmail.com with ESMTPSA id i18sm3674498edt.68.2021.01.08.04.05.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 08 Jan 2021 04:05:28 -0800 (PST)
+From:   Robert Foss <robert.foss@linaro.org>
+To:     agross@kernel.org, bjorn.andersson@linaro.org,
+        robert.foss@linaro.org, todor.too@gmail.com, mchehab@kernel.org,
+        robh+dt@kernel.org, catalin.marinas@arm.com, will@kernel.org,
+        shawnguo@kernel.org, leoyang.li@nxp.com, geert+renesas@glider.be,
+        arnd@arndb.de, Anson.Huang@nxp.com, michael@walle.cc,
+        agx@sigxcpu.org, max.oss.09@gmail.com,
+        linux-arm-msm@vger.kernel.org, linux-media@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        AngeloGioacchino Del Regno <kholk11@gmail.com>,
+        Andrey Konovalov <andrey.konovalov@linaro.org>
+Cc:     Tomasz Figa <tfiga@chromium.org>,
+        Azam Sadiq Pasha Kapatrala Syed <akapatra@quicinc.com>,
+        Sarvesh Sridutt <Sarvesh.Sridutt@smartwirelesscompute.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Subject: [PATCH v1 17/17] arm64: dts: sdm845-db845c: Enable ov8856 sensor and connect to ISP
+Date:   Fri,  8 Jan 2021 13:04:29 +0100
+Message-Id: <20210108120429.895046-18-robert.foss@linaro.org>
+X-Mailer: git-send-email 2.27.0
+In-Reply-To: <20210108120429.895046-1-robert.foss@linaro.org>
+References: <20210108120429.895046-1-robert.foss@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <19054e89-c117-ef85-444e-8e126a8a9efb@linaro.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Thara
+Enable camss & ov8856 DT nodes.
 
-thanks for reviewing.
+Signed-off-by: Robert Foss <robert.foss@linaro.org>
+---
+ arch/arm64/boot/dts/qcom/sdm845-db845c.dts | 18 +++++++++++++++---
+ 1 file changed, 15 insertions(+), 3 deletions(-)
 
-On Thu, Jan 07, 2021 at 09:29:17AM -0500, Thara Gopinath wrote:
-> 
-> 
-> On 1/6/21 3:15 PM, Cristian Marussi wrote:
-> > Add basic protocol handles definitions and private data helpers support.
-> > 
-> > A protocol handle identifies a protocol instance initialized against a
-> > specific handle; it embeds all the references to the core SCMI xfer methods
-> > that will be needed by a protocol implementation to build and send its own
-> > protocol specific messages using common core methods.
-> > 
-> > As such, in the interface, a protocol handle will be passed down from the
-> > core to the protocol specific initialization callback at init time.
-> > 
-> > Anyway at this point only definitions are introduced, all protocols
-> > initialization code and SCMI drivers probing is still based on the old
-> > interface, so no functional change.
-> > 
-> > Signed-off-by: Cristian Marussi <cristian.marussi@arm.com>
-> > ---
-> >   drivers/firmware/arm_scmi/common.h | 59 ++++++++++++++++++++++++++++++
-> >   drivers/firmware/arm_scmi/driver.c | 45 +++++++++++++++++++++++
-> >   2 files changed, 104 insertions(+)
-> > 
-> > diff --git a/drivers/firmware/arm_scmi/common.h b/drivers/firmware/arm_scmi/common.h
-> > index e052507dc918..977e31224efe 100644
-> > --- a/drivers/firmware/arm_scmi/common.h
-> > +++ b/drivers/firmware/arm_scmi/common.h
-> > @@ -149,6 +149,65 @@ int scmi_xfer_get_init(const struct scmi_handle *h, u8 msg_id, u8 prot_id,
-> >   		       size_t tx_size, size_t rx_size, struct scmi_xfer **p);
-> >   void scmi_reset_rx_to_maxsz(const struct scmi_handle *handle,
-> >   			    struct scmi_xfer *xfer);
-> > +
-> > +struct scmi_xfer_ops;
-> > +
-> > +/**
-> > + * struct scmi_protocol_handle  - Reference to an initialized protocol instance
-> > + *
-> > + * @dev: A reference to the associated SCMI instance device (handle->dev).
-> > + * @xops: A reference to a struct holding refs to the core xfer operations that
-> > + *	  can be used by the protocol implementation to generate SCMI messages.
-> > + * @set_priv: A method to set protocol private data for this instance.
-> > + * @get_priv: A method to get protocol private data previously set.
-> > + *
-> > + * This structure represents a protocol initialized against specific SCMI
-> > + * instance and it will be used as follows:
-> > + * - as a parameter fed from the core to the protocol initialization code so
-> > + *   that it can access the core xfer operations to build and generate SCMI
-> > + *   messages exclusively for the specific underlying protocol instance.
-> > + * - as an opaque handle fed by an SCMI driver user when it tries to access
-> > + *   this protocol through its own protocol operations.
-> > + *   In this case this handle will be returned as an opaque object together
-> > + *   with the related protocol operations when the SCMI driver tries to access
-> > + *   the protocol.
-> > + */
-> > +struct scmi_protocol_handle {
-> > +	struct device *dev;
-> > +	const struct scmi_xfer_ops *xops;
-> > +	int (*set_priv)(const struct scmi_protocol_handle *ph, void *priv);
-> > +	void *(*get_priv)(const struct scmi_protocol_handle *ph);
-> > +};
-> > +
-> > +/**
-> > + * struct scmi_xfer_ops  - References to the core SCMI xfer operations.
-> > + * @version_get: Get this version protocol.
-> > + * @xfer_get_init: Initialize one struct xfer if any xfer slot is free.
-> > + * @reset_rx_to_maxsz: Reset rx size to max transport size.
-> > + * @do_xfer: Do the SCMI transfer.
-> > + * @do_xfer_with_response: Do the SCMI transfer waiting for a response.
-> > + * @xfer_put: Free the xfer slot.
-> > + *
-> > + * Note that all this operations expect a protocol handle as first parameter;
-> > + * they then internally use it to infer the underlying protocol number: this
-> > + * way is not possible for a protocol implementation to forge messages for
-> > + * another protocol.
-> > + */
-> > +struct scmi_xfer_ops {
-> 
-> Maybe move the definition above struct scmi_protocol_handle to avoid a
-> declaration ?
-> 
+diff --git a/arch/arm64/boot/dts/qcom/sdm845-db845c.dts b/arch/arm64/boot/dts/qcom/sdm845-db845c.dts
+index 7bad0515345e..94a15d4bd05d 100644
+--- a/arch/arm64/boot/dts/qcom/sdm845-db845c.dts
++++ b/arch/arm64/boot/dts/qcom/sdm845-db845c.dts
+@@ -1114,8 +1114,20 @@ &camss {
+ 	vdda-csi1-supply = <&vdda_mipi_csi1_0p9>;
+ 	vdda-csi2-supply = <&vdda_mipi_csi2_0p9>;
+ 
+-	status = "disabled";
++	status = "ok";
+ 
++	ports {
++		#address-cells = <1>;
++		#size-cells = <0>;
++		port@0 {
++			reg = <0>;
++			csiphy0_ep: endpoint {
++				clock-lanes = <1>;
++				data-lanes = <1 2 3 4>;
++				remote-endpoint = <&ov8856_ep>;
++			};
++		};
++	};
+ };
+ 
+ &cci_i2c0 {
+@@ -1147,7 +1159,7 @@ camera@10 {
+ 		avdd-supply = <&cam0_avdd_2v8>;
+ 		dvdd-supply = <&cam0_dvdd_1v2>;
+ 
+-		status = "disable";
++		status = "ok";
+ 
+ 		port {
+ 			ov8856_ep: endpoint {
+@@ -1155,7 +1167,7 @@ ov8856_ep: endpoint {
+ 				link-frequencies = /bits/ 64
+ 					<360000000 180000000>;
+ 				data-lanes = <1 2 3 4>;
+-//				remote-endpoint = <&csiphy0_ep>;
++				remote-endpoint = <&csiphy0_ep>;
+ 			};
+ 		};
+ 	};
+-- 
+2.27.0
 
-But all the ops defined inside scmi_xfer_ops refers then to a param
-struct scmi_protocol_handle, so I'd need anyway a similar declaration
-the other way around.
-
-If not:
-
-linux/drivers/firmware/arm_scmi/common.h:178:32: warning: ‘struct scmi_protocol_handle’ declared inside parameter list will not be visible outside of this definition or declaration
-
-Thanks
-
-Cristian
-> 
-> -- 
-> Warm Regards
-> Thara
