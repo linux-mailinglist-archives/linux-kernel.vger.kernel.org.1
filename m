@@ -2,104 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 656142EF72C
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 19:17:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9660F2EF728
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 19:17:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728442AbhAHSQi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Jan 2021 13:16:38 -0500
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:48078 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728357AbhAHSQh (ORCPT
+        id S1728346AbhAHSQI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Jan 2021 13:16:08 -0500
+Received: from aserp2130.oracle.com ([141.146.126.79]:43920 "EHLO
+        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727429AbhAHSQH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Jan 2021 13:16:37 -0500
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 108IF0lV106593;
-        Fri, 8 Jan 2021 12:15:00 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1610129700;
-        bh=KpVH0T45ukV3JB85id8uO0iEDiN+mFCps3nC6zX2Kx4=;
-        h=From:To:CC:Subject:Date;
-        b=ytFv0HIIxSs0y36sEf2SO/SX2MbUQpYmrNAif5XJz10hkHKspKZJQjVOBzUTRWjUi
-         zZ0+/iH5ChoIoZYu/klaRU90fDHsevisx+HKcC10MtvpXRAFK7iqUvV57UkcMXYX7W
-         D1fi2vRaNlwbm2eHidk70I8sjsl/HP6sbVGiLKQQ=
-Received: from DFLE110.ent.ti.com (dfle110.ent.ti.com [10.64.6.31])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 108IF02r056201
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 8 Jan 2021 12:15:00 -0600
-Received: from DFLE101.ent.ti.com (10.64.6.22) by DFLE110.ent.ti.com
- (10.64.6.31) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Fri, 8 Jan
- 2021 12:15:00 -0600
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE101.ent.ti.com
- (10.64.6.22) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Fri, 8 Jan 2021 12:14:59 -0600
-Received: from pratyush-OptiPlex-790.dhcp.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 108IEwVm113769;
-        Fri, 8 Jan 2021 12:14:58 -0600
-From:   Pratyush Yadav <p.yadav@ti.com>
-To:     Mark Brown <broonie@kernel.org>, <linux-spi@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     Pratyush Yadav <p.yadav@ti.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>
-Subject: [PATCH] spi: cadence-quadspi: Fix build warning on 32-bit platforms
-Date:   Fri, 8 Jan 2021 23:44:57 +0530
-Message-ID: <20210108181457.30291-1-p.yadav@ti.com>
-X-Mailer: git-send-email 2.28.0
+        Fri, 8 Jan 2021 13:16:07 -0500
+Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
+        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 108HwwOY004690;
+        Fri, 8 Jan 2021 18:15:09 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=KiTw25sQnwXSQX+0iRD1HBB4uXxJXhd7Tk5XQ9JUJTE=;
+ b=gTJvSGLjyueTzS8vgNsV+rpKJmQFk8fY+zb3p5ZDQqfAWD0TXtxr0+zcwpk/Z5f9BG5e
+ VwNDwsqFMNUcseD6IEwkpfpSHYOITZNUp5dTFJF3GZJlV0Qbvj5cXNFfUWQ4mhZbb6Kh
+ 7t601GM0mXU18dnI2cVo1qytEC2sUIBJA6/fu4DmcG+wxp0PxPmrBAwkqYTHm9KeCfXv
+ FqcIB4Ec7M+DYaIHNVo1oCCjPzOaZ1lgAMjgQF/f8urKsNVcjV12MvAhvgmFwrWXDi2x
+ SFEINWClUGqtHlOWAU9dapkOdg1gHd2jiFKW+9gf1IC+ZJpceqxWihAQYrpFIpewNTLj zg== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by aserp2130.oracle.com with ESMTP id 35wcuy2pbg-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 08 Jan 2021 18:15:08 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 108I0wFn081682;
+        Fri, 8 Jan 2021 18:15:08 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by aserp3020.oracle.com with ESMTP id 35v1fcvpaa-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 08 Jan 2021 18:15:08 +0000
+Received: from abhmp0016.oracle.com (abhmp0016.oracle.com [141.146.116.22])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 108IF6J1019818;
+        Fri, 8 Jan 2021 18:15:06 GMT
+Received: from [10.159.230.21] (/10.159.230.21)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Fri, 08 Jan 2021 18:15:05 +0000
+Subject: Re: [RFC PATCH v3 0/9] fsdax: introduce fs query to support reflink
+To:     Ruan Shiyang <ruansy.fnst@cn.fujitsu.com>,
+        "Darrick J. Wong" <darrick.wong@oracle.com>
+Cc:     linux-kernel@vger.kernel.org, linux-xfs@vger.kernel.org,
+        linux-nvdimm@lists.01.org, linux-mm@kvack.org,
+        linux-fsdevel@vger.kernel.org, linux-raid@vger.kernel.org,
+        dan.j.williams@intel.com, david@fromorbit.com, hch@lst.de,
+        song@kernel.org, rgoldwyn@suse.de, qi.fuli@fujitsu.com,
+        y-goto@fujitsu.com
+References: <20201215121414.253660-1-ruansy.fnst@cn.fujitsu.com>
+ <7fc7ba7c-f138-4944-dcc7-ce4b3f097528@oracle.com>
+ <a57c44dd-127a-3bd2-fcb3-f1373572de27@cn.fujitsu.com>
+ <20201218034907.GG6918@magnolia>
+ <16ac8000-2892-7491-26a0-84de4301f168@cn.fujitsu.com>
+From:   Jane Chu <jane.chu@oracle.com>
+Organization: Oracle Corporation
+Message-ID: <f3f93809-ba68-521f-70d8-27f1ba5d0036@oracle.com>
+Date:   Fri, 8 Jan 2021 10:14:58 -0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
+In-Reply-To: <16ac8000-2892-7491-26a0-84de4301f168@cn.fujitsu.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9858 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 phishscore=0
+ suspectscore=0 spamscore=0 bulkscore=0 adultscore=0 mlxscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2101080099
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9858 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 bulkscore=0
+ clxscore=1011 spamscore=0 impostorscore=0 priorityscore=1501 mlxscore=0
+ adultscore=0 mlxlogscore=999 lowpriorityscore=0 phishscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2101080099
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The kernel test robot reports the following warning.
+Hi, Shiyang,
 
-drivers/spi/spi-cadence-quadspi.c:966:24: warning: comparison of distinct pointer types ('typeof (len) *' (aka 'unsigned int *') and 'typeof (500UL) *' (aka 'unsigned long *')) [-Wcompare-distinct-pointer-types]
-                                            msecs_to_jiffies(max(len, 500UL)))) {
-                                                             ^~~~~~~~~~~~~~~
-   include/linux/minmax.h:58:19: note: expanded from macro 'max'
-   #define max(x, y)       __careful_cmp(x, y, >)
-                           ^~~~~~~~~~~~~~~~~~~~~~
-   include/linux/minmax.h:42:24: note: expanded from macro '__careful_cmp'
-           __builtin_choose_expr(__safe_cmp(x, y), \
-                                 ^~~~~~~~~~~~~~~~
-   include/linux/minmax.h:32:4: note: expanded from macro '__safe_cmp'
-                   (__typecheck(x, y) && __no_side_effects(x, y))
-                    ^~~~~~~~~~~~~~~~~
-   include/linux/minmax.h:18:28: note: expanded from macro '__typecheck'
-           (!!(sizeof((typeof(x) *)1 == (typeof(y) *)1)))
-                      ~~~~~~~~~~~~~~ ^  ~~~~~~~~~~~~~~
-   1 warning generated.
+On 12/18/2020 1:13 AM, Ruan Shiyang wrote:
+>>>>
+>>>> So I tried the patchset with pmem error injection, the SIGBUS payload
+>>>> does not look right -
+>>>>
+>>>> ** SIGBUS(7): **
+>>>> ** si_addr(0x(nil)), si_lsb(0xC), si_code(0x4, BUS_MCEERR_AR) **
+>>>>
+>>>> I expect the payload looks like
+>>>>
+>>>> ** si_addr(0x7f3672e00000), si_lsb(0x15), si_code(0x4, 
+>>>> BUS_MCEERR_AR) **
+>>>
+>>> Thanks for testing.  I test the SIGBUS by writing a program which calls
+>>> madvise(... ,MADV_HWPOISON) to inject memory-failure.  It just shows 
+>>> that
+>>> the program is killed by SIGBUS.  I cannot get any detail from it.  So,
+>>> could you please show me the right way(test tools) to test it?
+>>
+>> I'm assuming that Jane is using a program that calls sigaction to
+>> install a SIGBUS handler, and dumps the entire siginfo_t structure
+>> whenever it receives one...
 
-This happens because size_t is unsigned long on 64-bit platforms like
-arm64 but it is unsigned int on 32-bit platforms like arm. Omitting the
-"UL" would result in a warning on 64-bit platforms. Squash it by type
-casting the arguments to size_t using max_t(). This way builds on both
-type of platforms can be satisfied. There is no chance of any truncation
-since 500 is small enough to fit into both int and long.
+Yes, thanks Darrick.
 
-Fixes: f453f293979f ("spi: cadence-quadspi: Wait at least 500 ms for direct reads")
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Pratyush Yadav <p.yadav@ti.com>
----
- drivers/spi/spi-cadence-quadspi.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> OK.  Let me try it and figure out what's wrong in it.
 
-diff --git a/drivers/spi/spi-cadence-quadspi.c b/drivers/spi/spi-cadence-quadspi.c
-index 06a65e9a8a60..af13c0025bf5 100644
---- a/drivers/spi/spi-cadence-quadspi.c
-+++ b/drivers/spi/spi-cadence-quadspi.c
-@@ -1150,7 +1150,7 @@ static int cqspi_direct_read_execute(struct cqspi_flash_pdata *f_pdata,
+I injected poison via "ndctl inject-error",  not expecting it made any 
+difference though.
 
- 	dma_async_issue_pending(cqspi->rx_chan);
- 	if (!wait_for_completion_timeout(&cqspi->rx_dma_complete,
--					 msecs_to_jiffies(max(len, 500UL)))) {
-+					 msecs_to_jiffies(max_t(size_t, len, 500)))) {
- 		dmaengine_terminate_sync(cqspi->rx_chan);
- 		dev_err(dev, "DMA wait_for_completion_timeout\n");
- 		ret = -ETIMEDOUT;
---
-2.28.0
+Any luck?
+
+thanks,
+-jane
 
