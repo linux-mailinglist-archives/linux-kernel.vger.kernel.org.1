@@ -2,179 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE5222EEDEE
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 08:36:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 28C9B2EEDF0
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 08:40:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727455AbhAHHgC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Jan 2021 02:36:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47136 "EHLO
+        id S1727176AbhAHHkZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Jan 2021 02:40:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47808 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726763AbhAHHgB (ORCPT
+        with ESMTP id S1725308AbhAHHkY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Jan 2021 02:36:01 -0500
-Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47B15C0612F5
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Jan 2021 23:35:21 -0800 (PST)
-Received: by mail-ej1-x635.google.com with SMTP id lt17so13316561ejb.3
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Jan 2021 23:35:21 -0800 (PST)
+        Fri, 8 Jan 2021 02:40:24 -0500
+Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01924C0612F4;
+        Thu,  7 Jan 2021 23:39:44 -0800 (PST)
+Received: by mail-wr1-x433.google.com with SMTP id i9so8025755wrc.4;
+        Thu, 07 Jan 2021 23:39:43 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=Ia90VSCRxJpyJeflDd0jLaMRS7LvQDio8SCYZlNgxQg=;
-        b=Rr+YniyWmbt8+TSlVcDrsGE5g8lrTSagTpq0EuXMPmJLSezAA3ixUrYu7Re7EtjD/W
-         yVMag7kCbRVrqilc1fRc9bheGehrql4gTKBRuz+DGRVoOr6bQn34GyX84a/V5OTBmhCt
-         LoZwQ085ebMmk5ZnIR3/iYeNLpsNE8eromoSjo7x2hvcvsAHNgXqUx4XmAhR2pFhYewu
-         FtUSVPO4CoUo2FFD71DnoxHXoadgZhexzjtchrI41PnMXlwR1Qh7A0U00p345NV8Z+nd
-         YmlSN64lmoLbJrVeeuAov2yWgCTUJfZ/xdZcdIH585krMdB3FRp+P2xFYlJQCSqaXSIO
-         P7bA==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=c5P+vvdX7z4Mp5Q7UAxuVpXv4FhDjOB40VptQJQFkP8=;
+        b=ULcPG7pG3hfb4RaCCdNWz8cGe/83A/1O4EhCZZuR85Zw/37aUPVEbsyX2NP4o7pV7Y
+         YgaN7jW7IfTxRYJIi6gS1L/KZ2BHYUBVAxFMXXL2BScQ6d3Iinjpp6JlfYbMPZQHuTCR
+         dAhxYci+RBDU9jMf+d4pFm0FIzmrHwYoXdPBqaTs+PbSiEMUWGcssQ5woavK7Hgx76ia
+         6sn1VWGWM5yQuRw5aCL7yC6tsoitzHI5pJhALfIpf0ULe4zoC5HG1Q5GgybKrj5OMOXp
+         FsoIZYNwQ0P8xgazLZZZKRp9CgfFqvFSu2XtFRTNM7JzUIErBffGvCd8BSt4rPmyjAk6
+         lEVQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=Ia90VSCRxJpyJeflDd0jLaMRS7LvQDio8SCYZlNgxQg=;
-        b=XgfIMTRPO/XqQm55hULVrlY7sN1EgBBN5PsF2myxWVZSvHdBxexrnzkCfVCY7eqJK2
-         27/2/BnaPtGZS//NoZLkqisXJYrBWLTBooAnZqe08Lu17JSP6QLqhEbulnLcTdROzm1U
-         HAEW07IMXCWjWLUT243hGCyCStuJ1eaEVO5twTrOvB9KLSng6socjO7vbpTCdENUnOcc
-         iR9ojPwnihZmkdmcQO81RxMjU6g1Hq5I8mr7yOI+8r7AInvcvGj6f4bIqOe2BV4iJQgI
-         r3BhAO8y9xg1gPLxbihozlMBpTfEVGsj7gqToo+lpIRo624p1ytS4eq76eax+Q/2XKPe
-         x9rw==
-X-Gm-Message-State: AOAM532EXzedmj1QIHu3W7h9piggNv4fN1CJ5JA7mVMIvHffweU5hOEp
-        PxMWPFBH7QSyd3hLyLerEvuwEWulWky8gyOxaGYG6w==
-X-Google-Smtp-Source: ABdhPJz8pIHIvbQysbONkrx2KDV/JpaibV3D6FxTOiehzqzSdBYXxEFioXBD+N1SeBNzwsqbRR2NjHouavuEsfaCx18=
-X-Received: by 2002:a17:906:1498:: with SMTP id x24mr1781034ejc.170.1610091319750;
- Thu, 07 Jan 2021 23:35:19 -0800 (PST)
-MIME-Version: 1.0
-References: <20210107143052.973437064@linuxfoundation.org>
-In-Reply-To: <20210107143052.973437064@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Fri, 8 Jan 2021 13:05:08 +0530
-Message-ID: <CA+G9fYtQprq0zUC7ZgG9t17MXgmGEKM7wzQTSxq-7wcd6nqm1Q@mail.gmail.com>
-Subject: Re: [PATCH 4.14 00/29] 4.14.214-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
-        lkft-triage@lists.linaro.org,
-        linux-stable <stable@vger.kernel.org>, pavel@denx.de,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=c5P+vvdX7z4Mp5Q7UAxuVpXv4FhDjOB40VptQJQFkP8=;
+        b=Bbmsn28yom6WZnFosoW95WpVFhsCK+HQXcl78QJ4l2LvjcXWrK1UsY59GXiZ8dspne
+         Pm8POAuW+910dA9bbwFf3fmfOQ7J9elrz8mzBEffj80Hz6Qe2eM6iR+IcZRoMQKTwiMD
+         pnXh0OrU6OL56PiJpVPf9aC//4sO0G0ZiTnCWZMoIof8C9lSEbHLjodSngDSNE6c3XLi
+         OqICcCQ8G91j02fRQD2vRXkKH0CY9fBUJTyVsb3H5gjA7sXcxAB1sxkvJrTLJMcgWod2
+         ZeE52F4pKLW+JI+MoRQsUAikyHhKj8ibh9vfo2qpPOP0nKooQEdluqWtnA+iCdkeVIws
+         EJgQ==
+X-Gm-Message-State: AOAM530cgDdTYjh2SNGfZJ8vOzRyMVif0FVAW4hKTxWhoMF9c/svU/Lg
+        1nqH9MBowY92JVPAH2lefis=
+X-Google-Smtp-Source: ABdhPJyPwtYCwKwbl9aqmXccDodCIGu87EsclY/46H4yL3ExGm0bY2bMvlfX5nOmTTnNZkwgkK0Mbg==
+X-Received: by 2002:adf:e511:: with SMTP id j17mr2258610wrm.416.1610091582663;
+        Thu, 07 Jan 2021 23:39:42 -0800 (PST)
+Received: from felia.fritz.box ([2001:16b8:2dc3:3e00:c96a:15b:2758:58ec])
+        by smtp.gmail.com with ESMTPSA id x18sm13895152wrg.55.2021.01.07.23.39.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 07 Jan 2021 23:39:41 -0800 (PST)
+From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
+To:     Marc Kleine-Budde <mkl@pengutronix.de>, linux-can@vger.kernel.org
+Cc:     Dan Murphy <dmurphy@ti.com>, Sean Nyekjaer <sean@geanix.com>,
+        Sriram Dash <sriram.dash@samsung.com>,
+        Joe Perches <joe@perches.com>,
+        Ralf Ramsauer <ralf.ramsauer@oth-regensburg.de>,
+        Pia Eichinger <pia.eichinger@st.oth-regensburg.de>,
+        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Subject: [PATCH for can-next] MAINTAINERS: adjust entry to tcan4x5x file split
+Date:   Fri,  8 Jan 2021 08:39:32 +0100
+Message-Id: <20210108073932.20804-1-lukas.bulwahn@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 7 Jan 2021 at 20:00, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> This is the start of the stable review cycle for the 4.14.214 release.
-> There are 29 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Sat, 09 Jan 2021 14:30:35 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-=
-4.14.214-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-4.14.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
+Commit 7813887ea972 ("can: tcan4x5x: rename tcan4x5x.c -> tcan4x5x-core.c")
+and commit 67def4ef8bb9 ("can: tcan4x5x: move regmap code into seperate
+file") split the file tcan4x5x.c into two files, but missed to adjust the
+TI TCAN4X5X DEVICE DRIVER section in MAINTAINERS.
 
-Results from Linaro=E2=80=99s test farm.
-No regressions on arm64, arm, x86_64, and i386.
+Hence, ./scripts/get_maintainer.pl --self-test=patterns complains:
 
-Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
+  warning: no file matches    F:    drivers/net/can/m_can/tcan4x5x.c
 
-Summary
-------------------------------------------------------------------------
+Adjust the file entry in MAINTAINERS to the tcan4x5x file splitting.
 
-kernel: 4.14.214-rc1
-git repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stab=
-le-rc.git
-git branch: linux-4.14.y
-git commit: 78e4e5e07ab0059bd4c96c117fb2a8e24bda7127
-git describe: v4.14.213-30-g78e4e5e07ab0
-Test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-4.14=
-.y/build/v4.14.213-30-g78e4e5e07ab0
+Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+---
+applies cleanly on next-20210107, not for current master
 
-No regressions (compared to build v4.14.213)
+Marc, please pick this for your -next tree on top of the tcan4x5x cleanup.
 
-No fixes (compared to build v4.14.213)
+ MAINTAINERS | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Ran 40940 total tests in the following environments and test suites.
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 8170b40d6236..0d75f07fc951 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -17887,7 +17887,7 @@ M:	Dan Murphy <dmurphy@ti.com>
+ L:	linux-can@vger.kernel.org
+ S:	Maintained
+ F:	Documentation/devicetree/bindings/net/can/tcan4x5x.txt
+-F:	drivers/net/can/m_can/tcan4x5x.c
++F:	drivers/net/can/m_can/tcan4x5x*
+ 
+ TI TRF7970A NFC DRIVER
+ M:	Mark Greer <mgreer@animalcreek.com>
+-- 
+2.17.1
 
-Environments
---------------
-- arm
-- arm64
-- dragonboard-410c - arm64
-- hi6220-hikey - arm64
-- i386
-- juno-r2 - arm64
-- juno-r2-compat
-- juno-r2-kasan
-- mips
-- qemu-arm64-kasan
-- qemu-x86_64-kasan
-- qemu_arm
-- qemu_arm64
-- qemu_arm64-compat
-- qemu_i386
-- qemu_x86_64
-- qemu_x86_64-compat
-- sparc
-- x15 - arm
-- x86_64
-- x86-kasan
-
-Test Suites
------------
-* build
-* linux-log-parser
-* igt-gpu-tools
-* install-android-platform-tools-r2600
-* kvm-unit-tests
-* ltp-dio-tests
-* ltp-fcntl-locktests-tests
-* ltp-filecaps-tests
-* ltp-fs_bind-tests
-* ltp-fs_perms_simple-tests
-* ltp-fsx-tests
-* ltp-hugetlb-tests
-* ltp-io-tests
-* ltp-mm-tests
-* ltp-sched-tests
-* ltp-syscalls-tests
-* ltp-tracing-tests
-* perf
-* fwts
-* libhugetlbfs
-* ltp-cap_bounds-tests
-* ltp-commands-tests
-* ltp-controllers-tests
-* ltp-cpuhotplug-tests
-* ltp-crypto-tests
-* ltp-cve-tests
-* ltp-fs-tests
-* ltp-ipc-tests
-* ltp-math-tests
-* ltp-nptl-tests
-* ltp-pty-tests
-* ltp-securebits-tests
-* network-basic-tests
-* v4l2-compliance
-* ltp-containers-tests
-* ltp-open-posix-tests
-* rcutorture
-
---=20
-Linaro LKFT
-https://lkft.linaro.org
