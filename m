@@ -2,95 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F9E92EF6CA
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 18:53:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BC9D82EF6CE
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 18:54:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728432AbhAHRw6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Jan 2021 12:52:58 -0500
-Received: from mail-oo1-f42.google.com ([209.85.161.42]:45985 "EHLO
-        mail-oo1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726011AbhAHRw6 (ORCPT
+        id S1728517AbhAHRyW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Jan 2021 12:54:22 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:39548 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728479AbhAHRyV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Jan 2021 12:52:58 -0500
-Received: by mail-oo1-f42.google.com with SMTP id o5so2558874oop.12;
-        Fri, 08 Jan 2021 09:52:43 -0800 (PST)
+        Fri, 8 Jan 2021 12:54:21 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1610128374;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=ApjdY65NLh4ukaTTHH8c86uuWfyLWMuFPHofhf/ZJ0I=;
+        b=Nxr3VzAzurwoTMb1LnSfU2p9AzdQ++owVF1puBJ8HmLvjEjSmP+sSOmDpchUSAwwt2i99M
+        YIBSTm7yYT+uX/+5pdXAeJAV9Pm1XxLHyz0eKRcnw+xMhLjnIGpRMzjI8IRkq/1Ljab01p
+        5dxOVMzGemAgacpX8P9hjThluZK3D3Q=
+Received: from mail-pl1-f198.google.com (mail-pl1-f198.google.com
+ [209.85.214.198]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-289-3V83fFUePwuu1OnC-a_SJQ-1; Fri, 08 Jan 2021 12:52:53 -0500
+X-MC-Unique: 3V83fFUePwuu1OnC-a_SJQ-1
+Received: by mail-pl1-f198.google.com with SMTP id c5so6770664plr.4
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Jan 2021 09:52:53 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=Ez5mXhhTrzTdRQ9SbQCDV6+1CgYl+rx+hxup8pZc1AU=;
-        b=Iic07sn0BLWO1V/JqKraltn8tyIVIAnKo1z7aiKIVs1W3wlaYPvLya563axhtGGJTd
-         T/53pPXT2SrDHaDfpNjD1LvpcMIcY5KrhqhhLZkH2H9b0s9g5ZJIK67pFsvmJovZzKfk
-         IZtls4Nujg1DXf/EK8HzeL3pzS/+OtG/2Xyla07gO8M1y7DDuQgu6C+HOQdQr21HtEMD
-         PXIYrlohVSzJOgALsFIKsyQE/R1ZxZ3sYT0+OaTO1Hsm+CGcC7gI1UF0a//vaIHid/s+
-         ryGwQNC+jPCtBZaffI2X7646THMGL6Rc6uHUHPPVYlACwn1RN17TBCs8mSeKqlQaCPHm
-         /dHA==
-X-Gm-Message-State: AOAM531lxgxDMja02AHHHl1zCqqUE1vEeMSWvQCiu3oZTmnUvn3YCACI
-        cekD40J7coMAr/t9VgW5kDy2GJilMWaSEU2CyATg2hs9Z1E=
-X-Google-Smtp-Source: ABdhPJyzCCynIGv7vELT97SoT0uCT1xcdnLE15cUwfeE2LYoor1FoU2TkGwj21l8qbAT3L+o+IsL+1V2oTDe9N1ivxA=
-X-Received: by 2002:a4a:bf14:: with SMTP id r20mr5121391oop.2.1610128337586;
- Fri, 08 Jan 2021 09:52:17 -0800 (PST)
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ApjdY65NLh4ukaTTHH8c86uuWfyLWMuFPHofhf/ZJ0I=;
+        b=mDZAo1UaVUfFO75XvIB1EHHhLlwvXuvpuAs6mChKaLUlF+795IKzl0rwXa5YNv0Vlr
+         GpagomNvQ5OWYO2Pe6qyFgKATM8lW3TmyDfvFUNPlV2ci6WTIWgRDCH/1fkoEwc5YTzd
+         rxdumaL4BRLibAl4TR0/GOO1Yq69HYKvsye8hKJ3pHjR9PEZhH6PCbpf9bwXcP67qTOA
+         3RkPkfHdjd1R0+Av0d5A4wFlFS09UliAtPXPCXnZ38WmSHol5scLO1EStE5i+HK2vicX
+         ldJ56K5N3DG/OVBWK772Ni6ZjCLNMSH6gxmc2D+6J3cnTOCEkR7F6zGksf09/1BXf3bF
+         2OqQ==
+X-Gm-Message-State: AOAM533muWzdFebxKdg3qk7eiY/sz0nHIZ4LtWbFuUOiGwu6AXYbu37M
+        NKEECYrmJivXe/GL1qRoQ6R3XK9DCPaQrcfC4ebzxzdOoM/AqcdQoMMf9lXOUAjS1V6cd/E9VY1
+        t44nGWsWdAr4gIhrRHJTbrF+y447Nxc7j5mgGaO9C
+X-Received: by 2002:aa7:8641:0:b029:1a1:e2f5:23de with SMTP id a1-20020aa786410000b02901a1e2f523demr4697939pfo.35.1610128372069;
+        Fri, 08 Jan 2021 09:52:52 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJy9ULWofreNDD91DUrkxShVGr1ZmP4TBmQxtimlVwbZObVFp63Ht0t6i8P+fj0Epj5Me2AF1+DolTtFy7YXtb4=
+X-Received: by 2002:aa7:8641:0:b029:1a1:e2f5:23de with SMTP id
+ a1-20020aa786410000b02901a1e2f523demr4697894pfo.35.1610128371787; Fri, 08 Jan
+ 2021 09:52:51 -0800 (PST)
 MIME-Version: 1.0
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Fri, 8 Jan 2021 18:52:06 +0100
-Message-ID: <CAJZ5v0iPXqB1zkrbORP+N-ZgLA_fSym7o1xbkBCt0=TTdu_hxg@mail.gmail.com>
-Subject: [GIT PULL] Power management fixes for v5.11-rc3
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Linux PM <linux-pm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20201211222448.2115188-1-dianders@chromium.org> <CAD=FV=Ve4wGJ=KxQjraYsiAQZHG_5qEeFW0ZhmBBkRmtdm7Gwg@mail.gmail.com>
+In-Reply-To: <CAD=FV=Ve4wGJ=KxQjraYsiAQZHG_5qEeFW0ZhmBBkRmtdm7Gwg@mail.gmail.com>
+From:   Benjamin Tissoires <benjamin.tissoires@redhat.com>
+Date:   Fri, 8 Jan 2021 18:52:40 +0100
+Message-ID: <CAO-hwJK+=537C-EbgNXPY3=m5LvM8SVKCDB5X145BfSMHgUMdw@mail.gmail.com>
+Subject: Re: [PATCH v8 0/4] HID: i2c-hid: Reorganize to allow supporting goodix,gt7375p
+To:     Doug Anderson <dianders@chromium.org>
+Cc:     Jiri Kosina <jkosina@suse.cz>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        "open list:HID CORE LAYER" <linux-input@vger.kernel.org>,
+        Kai-Heng Feng <kai.heng.feng@canonical.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Andrea Borgia <andrea@borgia.bo.it>,
+        Anson Huang <Anson.Huang@nxp.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Daniel Playfair Cal <daniel.playfair.cal@gmail.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        =?UTF-8?Q?Guido_G=C3=BCnther?= <agx@sigxcpu.org>,
+        Jiri Kosina <jikos@kernel.org>, Li Yang <leoyang.li@nxp.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Max Krummenacher <max.oss.09@gmail.com>,
+        Michael Walle <michael@walle.cc>,
+        Pavel Balan <admin@kryma.net>, Shawn Guo <shawnguo@kernel.org>,
+        Vinod Koul <vkoul@kernel.org>, Will Deacon <will@kernel.org>,
+        Xiaofei Tan <tanxiaofei@huawei.com>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+Hi Doug,
 
-Please pull from the tag
+On Wed, Jan 6, 2021 at 2:35 AM Doug Anderson <dianders@chromium.org> wrote:
+>
+> Benjamin,
+>
+> On Fri, Dec 11, 2020 at 2:24 PM Douglas Anderson <dianders@chromium.org> wrote:
+> >
+> > The goal of this series is to support the Goodix GT7375P touchscreen.
+> > This touchscreen is special because it has power sequencing
+> > requirements that necessitate driving a reset GPIO.
+> >
+> > To do this, we totally rejigger the way i2c-hid is organized so that
+> > it's easier to jam the Goodix support in there.
+> >
+> > This series was:
+> > - Tested on a device that uses normal i2c-hid.
+> > - Tested on a device that has a Goodix i2c-hid device.
+> > - Tested on an ACPI device, but an earlier version of the series.
+> >
+> > I believe the plan is for Benjamin to land the whole series.  Will
+> > said this about the arm64 defconfig change (and provided his Ack):
+> > > ...there are a few things I really care about
+> > > in defconfig (e.g. things like page size!), generally speaking we don't
+> > > need to Ack everything that changes in there.
+> > >
+> > > That said, might be worth checking whether arm-soc have any defconfig
+> > > changes queued in -next so you don't end up with conflicts.
+> >
+> > Changes in v8:
+> > - Mark suspend/resume as static as per patches robot.
+> >
+> > Changes in v7:
+> > - Rebase atop commit afdd34c5fa40 ("HID: i2c-hid: show the error ...")
+> >
+> > Changes in v6:
+> > - ACPI probe function should have been "static"
+> > - Don't export suspend/resume, just export dev_pm_ops from core.
+> > - Fixed crash in ACPI module (missing init of "client")
+> > - No need for regulator include in the core.
+> > - Removed i2c_device_id table from ACPI module.
+> > - Suspend/resume are no longer exported from the core.
+> >
+> > Changes in v5:
+> > - Add shutdown_tail op and use it in ACPI.
+> > - Added mention of i2c-hid in the yaml itself as per Rob.
+> > - Adjusted subject as per Rob.
+> > - i2chid_subclass_data => i2chid_ops.
+> > - power_up_device => power_up (same with power_down).
+> > - subclass => ops.
+> >
+> > Changes in v4:
+> > - ("arm64: defconfig: Update config names for i2c-hid rejigger") new for v4.
+> > - Fully rejigger so ACPI and OF are full subclasses.
+> > - Totally redid based on the new subclass system.
+> >
+> > Changes in v3:
+> > - Fixed compatible in example.
+> > - Removed Benjamin as a maintainer.
+> > - Rework to use subclassing.
+> > - Updated description.
+> >
+> > Changes in v2:
+> > - ("dt-bindings: HID: i2c-hid: Introduce bindings for the Goodix GT7375P") new in v2.
+> > - Get timings based on the compatible string.
+> > - Use a separate compatible string for this new touchscreen.
+> >
+> > Douglas Anderson (4):
+> >   HID: i2c-hid: Reorganize so ACPI and OF are separate modules
+> >   arm64: defconfig: Update config names for i2c-hid rejigger
+> >   dt-bindings: input: HID: i2c-hid: Introduce bindings for the Goodix
+> >     GT7375P
+> >   HID: i2c-hid: Introduce goodix-i2c-hid using i2c-hid core
+>
+> I think this series is ready to land.  The "defconfig" has a trivial
+> conflict with commit 74b87103b3d0 ("arm64: defconfig: Enable HID
+> multitouch") against linuxnext, but it's so simple that hopefully
+> folks will be OK with that when it lands.
+>
+> Please let me know if there's anything else you need me to do.  :-)
+>
 
- git://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git \
- pm-5.11-rc3
+I wanted to apply the series yesterday, but for these kinds of changes
+I like giving it a spin on actual hardware. Turns out that my XPS-13
+can not boot to v5.11-rc2, which makes testing the new branch slightly
+more difficult.
 
-with top-most commit c4151604f0603d5700072183a05828ff87d764e4
+I'll give it a spin next week, but I think I should be able to land it for 5.12.
 
- cpufreq: intel_pstate: remove obsolete functions
+Regarding the defconfig conflict, no worries, we can handle it with
+Stephen and Linus.
 
-on top of commit e71ba9452f0b5b2e8dc8aa5445198cd9214a6a62
+Cheers,
+Benjamin
 
- Linux 5.11-rc2
-
-to receive power management fixes for 5.11-rc3.
-
-These address two issues in the intel_pstate driver and one in the
-powernow-k8 cpufreq driver.
-
-Specifics:
-
- - Make the powernow-k8 cpufreq driver avoid calling cpufreq_cpu_get(),
-   which theoretically may return NULL, to get a policy pointer that
-   is known to it already (Colin Ian King).
-
- - Drop two functions that are not used any more from the intel_pstate
-   driver (Lukas Bulwahn).
-
- - Make intel_pstate check the HWP capabilities to get the maximum
-   available P-state in the passive mode to avoid using a stale value
-   of it in case of out-of-band updates (Rafael Wysocki).
-
-Thanks!
-
-
----------------
-
-Colin Ian King (1):
-      cpufreq: powernow-k8: pass policy rather than use cpufreq_cpu_get()
-
-Lukas Bulwahn (1):
-      cpufreq: intel_pstate: remove obsolete functions
-
-Rafael J. Wysocki (1):
-      cpufreq: intel_pstate: Use HWP capabilities in intel_cpufreq_adjust_perf()
-
----------------
-
- drivers/cpufreq/intel_pstate.c | 15 +++------------
- drivers/cpufreq/powernow-k8.c  |  9 +++------
- 2 files changed, 6 insertions(+), 18 deletions(-)
