@@ -2,191 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 56C9F2EF32A
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 14:39:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DDA122EF329
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 14:38:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727697AbhAHNho (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Jan 2021 08:37:44 -0500
-Received: from mail-lf1-f51.google.com ([209.85.167.51]:35729 "EHLO
-        mail-lf1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726060AbhAHNho (ORCPT
+        id S1727648AbhAHNhl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Jan 2021 08:37:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46768 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727442AbhAHNhj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Jan 2021 08:37:44 -0500
-Received: by mail-lf1-f51.google.com with SMTP id u25so2194578lfc.2;
-        Fri, 08 Jan 2021 05:37:11 -0800 (PST)
+        Fri, 8 Jan 2021 08:37:39 -0500
+Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92912C0612F5
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Jan 2021 05:36:59 -0800 (PST)
+Received: by mail-pl1-x632.google.com with SMTP id y8so5663439plp.8
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Jan 2021 05:36:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=2H4NRUpssxmHvO//onxHk/0LPtfW86OVu0j9eYubnLc=;
+        b=SLY+QxdrqHdJ2uP5KNaiBHXk48J1xlfhCMQIVdxTzXaENX8pz32T0lesa+t0AWstHA
+         ARdGIcwCAcMUYw3EG7rttfsxeRdwK+AnmQ3ErSrt+2TME17Z4+XNi/F2DBqfV9uJKRAa
+         udyKmiOCfTjpxv5s4kAW833BX3PTrWacStDLcFUFT2UFPMjfUeLcTXKVsLvC/7ssD0C+
+         NNFFFuLp8KYEyD9oUg4ft529Pc9h7jr3B6kS2rmHFzcy2V3z/B98L8a/hWZcwyVhLnMs
+         CBC3/eUZMyTO2i4qRv6d4o/78FtYTdKPGKx04E5N57UuSjV7X7ze3jv2ugfdvTZfeo/e
+         X1dg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=m7peezITxLo8cvzv94lyciJjJzgj2cWPwMBBkA+DKGQ=;
-        b=RzgazgmU/JysZvE3dYImbp6zj3wp/Xc6Ue24Sgjr17ZWC/Ar2iBW8LkGYgT+aWxUXw
-         FzK+Aci9rop9feCTb+DjS8EdDBQ/HICkn0a6jTj2q8PgWNmTnoK9UpMK7dnhwKH3syRt
-         P5W+iH2X8t445xsRKbFklej8jkUBaleGLiyA5V+ShDUSk/oYFNUVxlHTQtIL3Uin9kXJ
-         eWzmk8nUPiBNT2fL8NqOOr8QXr5tzGnDqLdDmj7Ne2I/aYxY6FerHM1qcPcU7hd6rwG7
-         a82zOgQperr64HgrIbleK0BpAitArKHZgsM4PyoS4xFgvPhr8FN8jIQ6WOX/9tWGVNRs
-         UIZA==
-X-Gm-Message-State: AOAM531/H8oxs9WHtzIrBWwV/3mNn3Nbosb1e92Dwo4TNs7NC3wCFOQY
-        /lh7entvA3h8OHfzcIdYDIs=
-X-Google-Smtp-Source: ABdhPJytLjRzLl7i42qpSSbNSeQbKkO4vzWD2amf/jiSEaAP9/cBku58fW1UqyYDALU0cSGng9B6Ug==
-X-Received: by 2002:a2e:3c01:: with SMTP id j1mr1480663lja.258.1610113005584;
-        Fri, 08 Jan 2021 05:36:45 -0800 (PST)
-Received: from localhost.localdomain (62-78-225-252.bb.dnainternet.fi. [62.78.225.252])
-        by smtp.gmail.com with ESMTPSA id y3sm2072102ljh.107.2021.01.08.05.36.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 08 Jan 2021 05:36:45 -0800 (PST)
-Date:   Fri, 8 Jan 2021 15:36:38 +0200
-From:   Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
-To:     matti.vaittinen@fi.rohmeurope.com, mazziesaccount@gmail.com
-Cc:     Lee Jones <lee.jones@linaro.org>, Rob Herring <robh+dt@kernel.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-power@fi.rohmeurope.com, linux-gpio@vger.kernel.org
-Subject: [PATCH 06/15] dt_bindings: regulator: Add ROHM BD71815 PMIC
- regulators
-Message-ID: <3ca03c3b76d6898c46ee645ddb5fa25cbfc62367.1610110144.git.matti.vaittinen@fi.rohmeurope.com>
-References: <cover.1610110144.git.matti.vaittinen@fi.rohmeurope.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=2H4NRUpssxmHvO//onxHk/0LPtfW86OVu0j9eYubnLc=;
+        b=WXh8gtGXce0+BzkBKU+47BEwZSu9qjFt3KbWTQV6iTeQLn/43ifszCimuQSGBUzIYN
+         iyqo0Ju+MCj+6XaVa1zsNXbYQX1Od232eb5o2XgvPjRF6yWW09E60TijaJsviQr/wbBd
+         9gnbH9IJ7NYcPH8wTYB9Q56XT5gSTyYu2tfZ52SlVcJDICM9H+CEkDoOkPThOpmq2yit
+         iYNvIRhC6aJdbtVxn3U8ZCMC3DRdy+7bijIMOJEdgfJ0GtFMRr3KUCEUjXHeXOvJTmnH
+         viRUA6fGsMQdzhSpZb27lNIXzotJFUkd7OGsVCrdoHMffGQcmhtZJEcy9Qc745fk2ZjR
+         Thsw==
+X-Gm-Message-State: AOAM533sORK80qfG5skvlICt73oanuDyAW74uBvu+Kk6opcFp2yvf1qx
+        gLCfPU/AJOBKFjO54xntbAP94VrZPB1m7oovxQc/ZQ==
+X-Google-Smtp-Source: ABdhPJzpTc0UQR+hgscAav0gZ5De9rk59XFTJC1VFhvY0Dfql8DGLIjtuXMtQBjGOFKQCOMvXn3p388NehqzJiu5ZJY=
+X-Received: by 2002:a17:902:9009:b029:dc:52a6:575 with SMTP id
+ a9-20020a1709029009b02900dc52a60575mr3718033plp.57.1610113018926; Fri, 08 Jan
+ 2021 05:36:58 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cover.1610110144.git.matti.vaittinen@fi.rohmeurope.com>
+References: <20210106115519.32222-1-vincenzo.frascino@arm.com>
+ <20210106115519.32222-3-vincenzo.frascino@arm.com> <CAAeHK+xuGRzkLdrfGZVo-RVfkH31qUrNdBaPd4k5ffMKHWGfTQ@mail.gmail.com>
+ <c4f04127-a682-d809-1dad-5ee1f51d3e0a@arm.com> <CAAeHK+xBrCX1Ly0RU-=ySEU8SsyyRkMdOYrN52ONc4DeRJA5eg@mail.gmail.com>
+ <c3efaa8d-cb3a-0c2a-457e-bfba60551d80@arm.com>
+In-Reply-To: <c3efaa8d-cb3a-0c2a-457e-bfba60551d80@arm.com>
+From:   Andrey Konovalov <andreyknvl@google.com>
+Date:   Fri, 8 Jan 2021 14:36:47 +0100
+Message-ID: <CAAeHK+zjwr0M92zqUjseJmRmhHb=4GjevEft-mahfx5DOkq==w@mail.gmail.com>
+Subject: Re: [PATCH 2/4] arm64: mte: Add asynchronous mode support
+To:     Vincenzo Frascino <vincenzo.frascino@arm.com>
+Cc:     Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will.deacon@arm.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Alexander Potapenko <glider@google.com>,
+        Marco Elver <elver@google.com>,
+        Evgenii Stepanov <eugenis@google.com>,
+        Branislav Rankov <Branislav.Rankov@arm.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add binding documentation for regulators on ROHM BD71815 PMIC.
-5 bucks, 7 LDOs and a boost for LED.
+On Fri, Jan 8, 2021 at 11:44 AM Vincenzo Frascino
+<vincenzo.frascino@arm.com> wrote:
+>
+> Hi Andrey,
+>
+> On 1/7/21 7:18 PM, Andrey Konovalov wrote:
+> >> Boolean arguments are generally bad for legibility, hence I tend to avoid them.
+> >> In this case exposing the constants does not seem a big issue especially because
+> >> the only user of this code is "KASAN_HW_TAGS" and definitely improves its
+> >> legibility hence I would prefer to keep it as is.
+> >
+> > I don't like that this spills KASAN internals to the arm64 code.
+>
+> Could you please elaborate a bit more on this?
+>
+> If I understand it correctly these enumerations I exposed are the direct
+> representation of a kernel command line parameter which, according to me, should
+> not be considered an internal interface.
+> Seems that in general the kernel subsystems expose the interface for the
+> architectures to consume which is the same design pattern I followed in this case.
 
-Signed-off-by: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
----
- .../regulator/rohm,bd71815-regulator.yaml     | 104 ++++++++++++++++++
- 1 file changed, 104 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/regulator/rohm,bd71815-regulator.yaml
+It's fine from the point of view of kernel interfaces and such, but
+not from a higher-level design perspective.
 
-diff --git a/Documentation/devicetree/bindings/regulator/rohm,bd71815-regulator.yaml b/Documentation/devicetree/bindings/regulator/rohm,bd71815-regulator.yaml
-new file mode 100644
-index 000000000000..2aa21603698c
---- /dev/null
-+++ b/Documentation/devicetree/bindings/regulator/rohm,bd71815-regulator.yaml
-@@ -0,0 +1,104 @@
-+# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/regulator/rohm,bd71815-regulator.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: ROHM BD71815 Power Management Integrated Circuit regulators
-+
-+maintainers:
-+  - Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
-+
-+description: |
-+  This module is part of the ROHM BD718215 MFD device. For more details
-+  see Documentation/devicetree/bindings/mfd/rohm,bd71815-pmic.yaml.
-+
-+  The regulator controller is represented as a sub-node of the PMIC node
-+  on the device tree.
-+
-+  The valid names for BD71815 regulator nodes are
-+  buck1, buck2, buck3, buck4, buck5,
-+  ldo1, ldo2, ldo3, ldo4, ldo5,
-+  ldodvref, ldolpsr, wled
-+
-+patternProperties:
-+  "^(ldo|buck)[1-5]$":
-+    type: object
-+    description:
-+      Properties for single LDO/BUCK regulator.
-+    $ref: regulator.yaml#
-+
-+    properties:
-+      regulator-name:
-+        pattern: "^(ldo|buck)[1-5]$"
-+        description:
-+          should be "ldo1", ..., "ldo5" and "buck1", ..., "buck5"
-+
-+      rohm,vsel-gpios:
-+        description:
-+          GPIO used to control ldo4 state (when ldo4 is controlled by GPIO).
-+
-+      rohm,dvs-run-voltage:
-+        description:
-+          PMIC "RUN" state voltage in uV when PMIC HW states are used. See
-+          comments below for bucks/LDOs which support this. 0 means
-+          regulator should be disabled at RUN state.
-+        $ref: "/schemas/types.yaml#/definitions/uint32"
-+        minimum: 0
-+        maximum: 3300000
-+
-+      rohm,dvs-snvs-voltage:
-+        description:
-+          Whether to keep regulator enabled at "SNVS" state or not.
-+          0 means regulator should be disabled at SNVS state, non zero voltage
-+          keeps regulator enabled. BD71815 does not change voltage level
-+          when PMIC transitions to SNVS.SNVS voltage depends on the previous
-+          state (from which the PMIC transitioned to SNVS).
-+        $ref: "/schemas/types.yaml#/definitions/uint32"
-+        minimum: 0
-+        maximum: 3300000
-+
-+      rohm,dvs-suspend-voltage:
-+        description:
-+          PMIC "SUSPEND" state voltage in uV when PMIC HW states are used. See
-+          comments below for bucks/LDOs which support this. 0 means
-+          regulator should be disabled at SUSPEND state.
-+        $ref: "/schemas/types.yaml#/definitions/uint32"
-+        minimum: 0
-+        maximum: 3300000
-+
-+      rohm,dvs-lpsr-voltage:
-+        description:
-+          PMIC "LPSR" state voltage in uV when PMIC HW states are used. See
-+          comments below for bucks/LDOs which support this. 0 means
-+          regulator should be disabled at LPSR state.
-+        $ref: "/schemas/types.yaml#/definitions/uint32"
-+        minimum: 0
-+        maximum: 3300000
-+
-+        # Bucks 1 and 2 support giving separate voltages for operational states
-+        # (RUN /CLEAN according to data-sheet) and non operational states
-+        # (LPSR/SUSPEND). The voltage is automatically changed when HW
-+        # state changes. Omitting these properties from bucks 1 and 2 leave
-+        # buck voltages to not be toggled by HW state. Enable status may still
-+        # be toggled by state changes depending on HW default settings.
-+        #
-+        # Bucks 3-5 and ldos 1-5 support setting the RUN state voltage here.
-+        # Given RUN voltage is used at all states if regulator is enabled at
-+        # given state.
-+        # Values given for other states are regarded as enable/disable at
-+        # given state (see below).
-+        #
-+        # All regulators except WLED support specifying enable/disable status
-+        # for each of the HW states (RUN/SNVS/SUSPEND/LPSR). HW defaults can
-+        # be overridden by setting voltage to 0 (regulator disabled at given
-+        # state) or non-zero (regulator enabled at given state). Please note
-+        # that setting non zero voltages for bucks 1/2 will also enable voltage
-+        # changes according to state change.
-+
-+    required:
-+      - regulator-name
-+
-+    unevaluatedProperties: false
-+
-+additionalProperties: false
--- 
-2.25.4
+I think the best way to approach the KASAN-MTE architecture is: 1.
+arm64 code provides API to enable, disable and otherwise work with
+MTE, and 2. KASAN builds on top of this API to implement the logic of
+the bug detector, including which APIs to use. Part #2 includes making
+the decisions about which mode - sync or async - to use and when. And
+that mode is chosen by KASAN code based on the command line configs.
 
+With your current approach, the active decision about enabling
+sync/async is made by the arm64 code, and that doesn't fit within this
+architecture. But having a decisionless arm64 API to choose the MTE
+mode and using it from KASAN code would fit.
 
--- 
-Matti Vaittinen, Linux device drivers
-ROHM Semiconductors, Finland SWDC
-Kiviharjunlenkki 1E
-90220 OULU
-FINLAND
+> > Let's add another enum with two values and pass it as an argument then.
+> > Something like:
+> >
+> > enum mte_mode {
+> >   ARM_MTE_SYNC,
+> >   ARM_MTE_ASYNC
+> > }
+>
+> I had something similar at the beginning of the development but I ended up in a
+> situation in which the generic kasan code had to know about "enum mte_mode",
+> hence I preferred to keep kasan agnostic to the hw implementation details.
+>
+> What do you think?
 
-~~~ "I don't think so," said Rene Descartes. Just then he vanished ~~~
-Simon says - in Latin please.
-~~~ "non cogito me" dixit Rene Descarte, deinde evanescavit ~~~
-Thanks to Simon Glass for the translation =] 
+Perhaps we could add a generic arch-agnostic enum to
+include/linux/kasan.h and use it in both arm64 and KASAN code?
+
+enum kasan_hw_tags_mode {
+  KASAN_HW_TAGS_SYNC,
+  KASAN_HW_TAGS_ASYNC
+}
+
+Assuming other architectures that support memory tagging will end up
+with sync/async mode separation as well, this should work. But even if
+that doesn't happen, this interface can be adjusted later.
