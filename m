@@ -2,138 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CD532EF060
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 11:03:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FBBA2EF06D
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 11:09:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728286AbhAHKCp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Jan 2021 05:02:45 -0500
-Received: from szxga06-in.huawei.com ([45.249.212.32]:10421 "EHLO
-        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726120AbhAHKCo (ORCPT
+        id S1726929AbhAHKHd convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 8 Jan 2021 05:07:33 -0500
+Received: from eu-smtp-delivery-151.mimecast.com ([207.82.80.151]:60074 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726205AbhAHKHc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Jan 2021 05:02:44 -0500
-Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4DBzBw64Vhzj3l4;
-        Fri,  8 Jan 2021 18:01:12 +0800 (CST)
-Received: from [10.67.102.197] (10.67.102.197) by
- DGGEMS401-HUB.china.huawei.com (10.3.19.201) with Microsoft SMTP Server id
- 14.3.498.0; Fri, 8 Jan 2021 18:01:52 +0800
-Subject: Re: [PATCH v2] proc_sysctl: fix oops caused by incorrect command
- parameters.
-To:     Michal Hocko <mhocko@suse.com>
-CC:     <linux-kernel@vger.kernel.org>, <mcgrof@kernel.org>,
-        <keescook@chromium.org>, <yzaikin@google.com>,
-        <adobriyan@gmail.com>, <linux-fsdevel@vger.kernel.org>,
-        <vbabka@suse.cz>, <akpm@linux-foundation.org>, <wangle6@huawei.com>
-References: <20210108023339.55917-1-nixiaoming@huawei.com>
- <20210108092145.GX13207@dhcp22.suse.cz>
-From:   Xiaoming Ni <nixiaoming@huawei.com>
-Message-ID: <829bbba0-d3bb-a114-af81-df7390082958@huawei.com>
-Date:   Fri, 8 Jan 2021 18:01:52 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.0.1
+        Fri, 8 Jan 2021 05:07:32 -0500
+Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-164-B6UsFJH8P-uef6L30UKDVQ-1; Fri, 08 Jan 2021 10:05:53 +0000
+X-MC-Unique: B6UsFJH8P-uef6L30UKDVQ-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
+ Server (TLS) id 15.0.1347.2; Fri, 8 Jan 2021 10:05:52 +0000
+Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
+ AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
+ Fri, 8 Jan 2021 10:05:52 +0000
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Joe Perches' <joe@perches.com>, Kees Cook <keescook@chromium.org>
+CC:     Dwaipayan Ray <dwaipayanray1@gmail.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        "linux-kernel-mentees@lists.linuxfoundation.org" 
+        <linux-kernel-mentees@lists.linuxfoundation.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Subject: RE: deprecated.rst: deprecated strcpy ? (was: [PATCH] checkpatch: add
+ a new check for strcpy/strlcpy uses)
+Thread-Topic: deprecated.rst: deprecated strcpy ? (was: [PATCH] checkpatch:
+ add a new check for strcpy/strlcpy uses)
+Thread-Index: AQHW5Vix10kkBz1uN0KCdEjPICQLQ6odf7Ew
+Date:   Fri, 8 Jan 2021 10:05:52 +0000
+Message-ID: <05733c9670a14463bec36b2cf0eeeede@AcuMS.aculab.com>
+References: <20210105082303.15310-1-dwaipayanray1@gmail.com>
+         <50cc861121b62b3c1518222f24f679c3f72b868d.camel@perches.com>
+         <CABJPP5DQ0Y42z9ej_j06+KaQevT3ztWcwGMkismj4qv5EHvnxA@mail.gmail.com>
+         <3ffe616d8c3fb54833bfc4d86cb73427cf6c7add.camel@perches.com>
+         <202101071310.3AC5F0C4@keescook>
+ <9e111f0f673ae6ced12efc01d32eefe8402c7f72.camel@perches.com>
+In-Reply-To: <9e111f0f673ae6ced12efc01d32eefe8402c7f72.camel@perches.com>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-In-Reply-To: <20210108092145.GX13207@dhcp22.suse.cz>
-Content-Type: text/plain; charset="gbk"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.67.102.197]
-X-CFilter-Loop: Reflected
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/1/8 17:21, Michal Hocko wrote:
-> On Fri 08-01-21 10:33:39, Xiaoming Ni wrote:
->> The process_sysctl_arg() does not check whether val is empty before
->>   invoking strlen(val). If the command line parameter () is incorrectly
->>   configured and val is empty, oops is triggered.
->>
->> For example, "hung_task_panic=1" is incorrectly written as "hung_task_panic".
->>
->> log:
->> 	Kernel command line: .... hung_task_panic
->> 	....
->> 	[000000000000000n] user address but active_mm is swapper
->> 	Internal error: Oops: 96000005 [#1] SMP
->> 	Modules linked in:
->> 	CPU: 0 PID: 1 Comm: swapper/0 Not tainted 5.10.1 #1
->> 	Hardware name: linux,dummy-virt (DT)
->> 	pstate: 40000005 (nZcv daif -PAN -UAO -TCO BTYPE=--)
->> 	pc : __pi_strlen+0x10/0x98
->> 	lr : process_sysctl_arg+0x1e4/0x2ac
->> 	sp : ffffffc01104bd40
->> 	x29: ffffffc01104bd40 x28: 0000000000000000
->> 	x27: ffffff80c0a4691e x26: ffffffc0102a7c8c
->> 	x25: 0000000000000000 x24: ffffffc01104be80
->> 	x23: ffffff80c22f0b00 x22: ffffff80c02e28c0
->> 	x21: ffffffc0109f9000 x20: 0000000000000000
->> 	x19: ffffffc0107c08de x18: 0000000000000003
->> 	x17: ffffffc01105d000 x16: 0000000000000054
->> 	x15: ffffffffffffffff x14: 3030253078413830
->> 	x13: 000000000000ffff x12: 0000000000000000
->> 	x11: 0101010101010101 x10: 0000000000000005
->> 	x9 : 0000000000000003 x8 : ffffff80c0980c08
->> 	x7 : 0000000000000000 x6 : 0000000000000002
->> 	x5 : ffffff80c0235000 x4 : ffffff810f7c7ee0
->> 	x3 : 000000000000043a x2 : 00bdcc4ebacf1a54
->> 	x1 : 0000000000000000 x0 : 0000000000000000
->> 	Call trace:
->> 	 __pi_strlen+0x10/0x98
->> 	 parse_args+0x278/0x344
->> 	 do_sysctl_args+0x8c/0xfc
->> 	 kernel_init+0x5c/0xf4
->> 	 ret_from_fork+0x10/0x30
->> 	Code: b200c3eb 927cec01 f2400c07 54000301 (a8c10c22)
->>
->> Fixes: 3db978d480e2843 ("kernel/sysctl: support setting sysctl parameters
->>   from kernel command line")
->> Signed-off-by: Xiaoming Ni <nixiaoming@huawei.com>
+From: Joe Perches
+> Sent: 08 January 2021 00:52
+...
+> > The original goal was to use another helper that worked on static
+> > strings like this. Linus rejected that idea, so we're in a weird place.
+> > I think we could perhaps build a strcpy() replacement that requires
+> > compile-time validated arguments, and to break the build if not.
+> >
+> > i.e.
+> >
+> > given:
+> > 	char array[8];
+> > 	char *ptr;
+> >
+> > allow:
+> >
+> >
+> > 	strcpy(array, "1234567");
+> >
+> > disallow:
+> >
+> > 	strcpy(array, "12345678");	/* too long */
+> > 	strcpy(array, src);		/* not optimized, so use strscpy? */
+> > 	strcpy(ptr, "1234567");		/* unknown destination size */
+> > 	strcpy(ptr, src);		/* unknown destination size */
 > 
-> Thanks for catching this!
+> I think that's not a good idea as it's not a generic equivalent of the
+> string.h code.
 > 
->> ---------
->> v2:
->>     Added log output of the failure branch based on the review comments of Kees Cook.
->> v1: https://lore.kernel.org/lkml/20201224074256.117413-1-nixiaoming@huawei.com/
->> ---------
->> ---
->>   fs/proc/proc_sysctl.c | 5 +++++
->>   1 file changed, 5 insertions(+)
->>
->> diff --git a/fs/proc/proc_sysctl.c b/fs/proc/proc_sysctl.c
->> index 317899222d7f..dc1a56515e86 100644
->> --- a/fs/proc/proc_sysctl.c
->> +++ b/fs/proc/proc_sysctl.c
->> @@ -1757,6 +1757,11 @@ static int process_sysctl_arg(char *param, char *val,
->>   	loff_t pos = 0;
->>   	ssize_t wret;
->>   
->> +	if (!val) {
->> +		pr_err("Missing param value! Expected '%s=...value...'\n", param);
->> +		return 0;
-I may need to move the validation code for val to the end of the 
-validation code for param to prevent non-sysctl arguments from 
-triggering the current print.
-Or delete the print and keep it silent for a little better performance.
-Which is better?
-
-
->> +	}
+> I still like the stracpy variant I proposed:
 > 
-> Shouldn't you return an error here? Also my understanding is that
-> parse_args is responsible for reporting the error.
+> https://lore.kernel.org/lkml/24bb53c57767c1c2a8f266c305a670f7@sk2.org/T/#m0627aa770a076af1937cb5c610ed
+> 71dab3f1da72
+> https://lore.kernel.org/lkml/CAHk-=wgqQKoAnhmhGE-2PBFt7oQs9LLAATKbYa573UO=DPBE0Q@mail.gmail.com/
 > 
-All exception branches in process_sysctl_arg record logs and return 0.
-Do I need to keep the same processing in the new branch?
-
-
->> +
->>   	if (strncmp(param, "sysctl", sizeof("sysctl") - 1) == 0) {
->>   		param += sizeof("sysctl") - 1;
->>   
->> -- 
->> 2.27.0
+> Linus liked a variant he called copy_string:
 > 
+> https://lore.kernel.org/lkml/CAHk-=wg8vLmmwTGhXM51NpSWJW8RFEAKoXxG0Hu_Q9Uwbjj8kw@mail.gmail.com/
+> 
+> I think the cocci scripts that convert:
+> 
+> 	strlcpy -> strscpy (only when return value unused)
+> 	str<sln>cpy(array, "string") -> stracpy(foo, "string")
+> 	s[cn]printf -> sysfs_emit
+> 
+> would leave relatively few uses of strcpy and sprintf variants and would
+> make it much easier to analyze the remainder uses for potential overflows.
 
-Thanks
-Xiaoming Ni
+The advantage of allowing strcpy() but only when the when it can be
+converted into a non-overflowing memcpy() is that you know that the
+copies never get truncated.
+
+The next round of string copy errors could easily by the 'silent truncation'
+ones - so using such a strcpy() will cut down the next audit.
+
+	David
+
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+Registration No: 1397386 (Wales)
+
