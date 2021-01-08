@@ -2,106 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D1FC32EF983
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 21:42:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D0682EF992
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 21:44:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729595AbhAHUlJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Jan 2021 15:41:09 -0500
-Received: from so254-31.mailgun.net ([198.61.254.31]:17538 "EHLO
-        so254-31.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729448AbhAHUlG (ORCPT
+        id S1729239AbhAHUn1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Jan 2021 15:43:27 -0500
+Received: from casper.infradead.org ([90.155.50.34]:51166 "EHLO
+        casper.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726227AbhAHUnZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Jan 2021 15:41:06 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1610138443; h=References: In-Reply-To: Message-Id: Date:
- Subject: Cc: To: From: Sender;
- bh=0A9qEjaCZLWEwf5j+pLVAqetSzia45MWAiCwaJxKAho=; b=QKb94IwAL2K4qFykvY0F13g3p01KcBJydrgbBBdMRyt7z4wj+B6HfRdCu51g+fJCgxMs/iEx
- Zi6y7+Kf2mkXv3gxrmAApNqmWfsyBgktz2sKrNXnFAE8ZTcF0dCcKucF2R28/0ZeGEEqWH7/
- wdIPre6AQb8LqComVX8K7JkftAo=
-X-Mailgun-Sending-Ip: 198.61.254.31
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n09.prod.us-east-1.postgun.com with SMTP id
- 5ff8c3288fb3cda82fd37a12 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 08 Jan 2021 20:40:08
- GMT
-Sender: bbhatt=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 84958C43465; Fri,  8 Jan 2021 20:40:07 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from malabar-linux.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: bbhatt)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id CE2CFC43463;
-        Fri,  8 Jan 2021 20:40:06 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org CE2CFC43463
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=bbhatt@codeaurora.org
-From:   Bhaumik Bhatt <bbhatt@codeaurora.org>
-To:     manivannan.sadhasivam@linaro.org
-Cc:     linux-arm-msm@vger.kernel.org, hemantk@codeaurora.org,
-        jhugo@codeaurora.org, linux-kernel@vger.kernel.org,
-        loic.poulain@linaro.org, Bhaumik Bhatt <bbhatt@codeaurora.org>
-Subject: [RESEND PATCH v4 4/8] bus: mhi: core: Clear configuration from channel context during reset
-Date:   Fri,  8 Jan 2021 12:39:52 -0800
-Message-Id: <1610138396-25811-5-git-send-email-bbhatt@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1610138396-25811-1-git-send-email-bbhatt@codeaurora.org>
-References: <1610138396-25811-1-git-send-email-bbhatt@codeaurora.org>
+        Fri, 8 Jan 2021 15:43:25 -0500
+X-Greylist: delayed 398 seconds by postgrey-1.27 at vger.kernel.org; Fri, 08 Jan 2021 15:43:25 EST
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=Fh1FiaPgximaUf/jTCpsygk/6dDJoGnbhcrl2nWi8C8=; b=HrVyzxCBV/pGgvd8ZD53/tfTMS
+        IK7lQhcX5ydSWkAVEKKoQgNPiFRLnvTp6tNypCovPHhS9smNH3jfL8/mZEpAAo3AdJ3v0g7IfUfUs
+        Xc7AFVJCMMBF3evvGocW6HybrPNUirdz+vm1wRTPvYQ2OfQqfVkTaeUyUjbrgIgFSLWbRRpmRkMqI
+        kXfkd6gJpfM4gG2FVgpfmmQ+5AFRyt14P2JMQ9W1FN3dxmIOip/p0Nd35rRrODpooKJAsTGDa8fxG
+        3zVGhRwTXLgnWVXPqGhBHW8qzsPoVOt6g/Jd7MlM4AP+NDCEj4HoBpFJE2qXJvAAIm+eiylh4lcAW
+        dH4Zfetw==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1kxyY7-0003SS-Gg; Fri, 08 Jan 2021 20:40:35 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 01D3F305C10;
+        Fri,  8 Jan 2021 21:39:53 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id C2C362C8F2DAA; Fri,  8 Jan 2021 21:39:53 +0100 (CET)
+Date:   Fri, 8 Jan 2021 21:39:53 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Will Deacon <will@kernel.org>
+Cc:     Arnd Bergmann <arnd@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-arch@vger.kernel.org, clang-built-linux@googlegroups.com
+Subject: Re: [PATCH] arm64: make atomic helpers __always_inline
+Message-ID: <X/jDGbwDNcVrZdDJ@hirez.programming.kicks-ass.net>
+References: <20210108092024.4034860-1-arnd@kernel.org>
+ <20210108093258.GB4031@willie-the-truck>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210108093258.GB4031@willie-the-truck>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When clearing up the channel context after client drivers are
-done using channels, the configuration is currently not being
-reset entirely. Ensure this is done to appropriately handle
-issues where clients unaware of the context state end up calling
-functions which expect a context.
+On Fri, Jan 08, 2021 at 09:32:58AM +0000, Will Deacon wrote:
+> Hi Arnd,
+> 
+> On Fri, Jan 08, 2021 at 10:19:56AM +0100, Arnd Bergmann wrote:
+> > From: Arnd Bergmann <arnd@arndb.de>
+> > 
+> > With UBSAN enabled and building with clang, there are occasionally
+> > warnings like
+> > 
+> > WARNING: modpost: vmlinux.o(.text+0xc533ec): Section mismatch in reference from the function arch_atomic64_or() to the variable .init.data:numa_nodes_parsed
+> > The function arch_atomic64_or() references
+> > the variable __initdata numa_nodes_parsed.
+> > This is often because arch_atomic64_or lacks a __initdata
+> > annotation or the annotation of numa_nodes_parsed is wrong.
+> > 
+> > for functions that end up not being inlined as intended but operating
+> > on __initdata variables. Mark these as __always_inline, along with
+> > the corresponding asm-generic wrappers.
+> 
+> Hmm, I don't fully grok this. Why does it matter if a non '__init' function
+> is called with a pointer to some '__initdata'? Or is the reference coming
+> from somewhere else? (where?).
 
-Signed-off-by: Bhaumik Bhatt <bbhatt@codeaurora.org>
----
- drivers/bus/mhi/core/init.c | 13 +++++++++++++
- 1 file changed, 13 insertions(+)
-
-diff --git a/drivers/bus/mhi/core/init.c b/drivers/bus/mhi/core/init.c
-index 482b365..30eef19 100644
---- a/drivers/bus/mhi/core/init.c
-+++ b/drivers/bus/mhi/core/init.c
-@@ -558,6 +558,7 @@ void mhi_deinit_chan_ctxt(struct mhi_controller *mhi_cntrl,
- 	struct mhi_ring *buf_ring;
- 	struct mhi_ring *tre_ring;
- 	struct mhi_chan_ctxt *chan_ctxt;
-+	u32 tmp;
- 
- 	buf_ring = &mhi_chan->buf_ring;
- 	tre_ring = &mhi_chan->tre_ring;
-@@ -568,7 +569,19 @@ void mhi_deinit_chan_ctxt(struct mhi_controller *mhi_cntrl,
- 	vfree(buf_ring->base);
- 
- 	buf_ring->base = tre_ring->base = NULL;
-+	tre_ring->ctxt_wp = NULL;
- 	chan_ctxt->rbase = 0;
-+	chan_ctxt->rlen = 0;
-+	chan_ctxt->rp = 0;
-+	chan_ctxt->wp = 0;
-+
-+	tmp = chan_ctxt->chcfg;
-+	tmp &= ~CHAN_CTX_CHSTATE_MASK;
-+	tmp |= (MHI_CH_STATE_DISABLED << CHAN_CTX_CHSTATE_SHIFT);
-+	chan_ctxt->chcfg = tmp;
-+
-+	/* Update to all cores */
-+	smp_wmb();
- }
- 
- int mhi_init_chan_ctxt(struct mhi_controller *mhi_cntrl,
--- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
-
+FWIW the x86 atomics are __always_inline in part due to the noinstr
+crud, which I imagine resulted in much the same 'fun'.
