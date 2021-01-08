@@ -2,87 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E23D02EF8FE
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 21:23:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BCA722EF927
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 21:25:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729286AbhAHUXR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Jan 2021 15:23:17 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46330 "EHLO mail.kernel.org"
+        id S1729147AbhAHUYa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Jan 2021 15:24:30 -0500
+Received: from mga04.intel.com ([192.55.52.120]:21882 "EHLO mga04.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729017AbhAHUXQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Jan 2021 15:23:16 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A3FC723AC2;
-        Fri,  8 Jan 2021 20:22:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610137355;
-        bh=eaVy/h1sqS72eojXpxZdrAkyp/2+sHG6P9GrVWKTzf0=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=jDtcPFPT0sAh3JVCRwf39s1NaB8Sw80GSm3jJCWgg+Qiv8paW/ZpBb2arPhI2wrA2
-         Z7aRP6OfCwaFuRJp0PxaG9pa8+mJt+zeJJlFZaTUU3vAursh8I1Bo7skbLBgQ3tdqs
-         ubvSITIFfNJLZzEYTr7scbKMKnmtD9qJ9bM7udSotn/pIo2isSJH2kuQAWhTxgomVw
-         3e5ZUeU7XzoTk/C7GXeQl5Z1Xtg6F33Qy9o+PktmY1po4X11WzEfHrjdYcwQaID5Ch
-         Qpcwtq1RtGGb/NlZ2W4z7IHqbsuCBRUemTSMHvRvBBwYnWg37kxKsSmBJGa3w/n4lQ
-         TTIIW5OFOuNtg==
-Received: by mail-oi1-f170.google.com with SMTP id p5so12732154oif.7;
-        Fri, 08 Jan 2021 12:22:35 -0800 (PST)
-X-Gm-Message-State: AOAM5309mQGJFCtHtMvOihiPQfANNluwAi3kPo16x9Ddsinz8PDxo/iv
-        OzD/jhdipklGv7j1hVFdfRr87ZCAAOOCG4QgDyo=
-X-Google-Smtp-Source: ABdhPJwVTMd3FygXgJ3u5lYNHsXmgTpMPMS6Ohlq8w/Sp951W2jKYng2WW7Hs1gngp0AbUAXySzAfu0RQUSAdgliM64=
-X-Received: by 2002:aca:e103:: with SMTP id y3mr3288783oig.11.1610137355049;
- Fri, 08 Jan 2021 12:22:35 -0800 (PST)
+        id S1727443AbhAHUY2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 Jan 2021 15:24:28 -0500
+IronPort-SDR: XLhZcQfpqO32TVQaUAghStaHXqBN7SIYGxgtnnhkotgOG8PhnmEWa91jd66WtWsV6e6nLxxjen
+ SK0kNqbdoPmQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9858"; a="175073218"
+X-IronPort-AV: E=Sophos;i="5.79,332,1602572400"; 
+   d="scan'208";a="175073218"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jan 2021 12:22:42 -0800
+IronPort-SDR: qkTrf23l5JW13Vmuj4KCq4mHK3AZV+A/sIyb8Wpyuf8i9pwYTSRgCws/RgkJtEeahgU0TChbaQ
+ Hu8qPjKuWs1Q==
+X-IronPort-AV: E=Sophos;i="5.79,332,1602572400"; 
+   d="scan'208";a="380241453"
+Received: from schen9-mobl.amr.corp.intel.com ([10.252.142.111])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jan 2021 12:22:42 -0800
+Subject: Re: [RFC PATCH v3 0/2] scheduler: expose the topology of clusters and
+ add cluster scheduler
+To:     Morten Rasmussen <morten.rasmussen@arm.com>
+Cc:     Barry Song <song.bao.hua@hisilicon.com>,
+        valentin.schneider@arm.com, catalin.marinas@arm.com,
+        will@kernel.org, rjw@rjwysocki.net, vincent.guittot@linaro.org,
+        lenb@kernel.org, gregkh@linuxfoundation.org,
+        jonathan.cameron@huawei.com, mingo@redhat.com,
+        peterz@infradead.org, juri.lelli@redhat.com,
+        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
+        mgorman@suse.de, mark.rutland@arm.com, sudeep.holla@arm.com,
+        aubrey.li@linux.intel.com, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org,
+        linuxarm@openeuler.org, xuwei5@huawei.com,
+        prime.zeng@hisilicon.com, tiantao6@hisilicon.com
+References: <20210106083026.40444-1-song.bao.hua@hisilicon.com>
+ <737932c9-846a-0a6b-08b8-e2d2d95b67ce@linux.intel.com>
+ <20210108151241.GA47324@e123083-lin>
+From:   Tim Chen <tim.c.chen@linux.intel.com>
+Message-ID: <99c07bdf-02d1-153a-bd1e-2f4200cc67c5@linux.intel.com>
+Date:   Fri, 8 Jan 2021 12:22:41 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-References: <20210106115359.GB26994@C02TD0UTHF1T.local> <20210106135253.GJ1551@shell.armlinux.org.uk>
- <20210106172033.GA2165@willie-the-truck> <20210106223223.GM1551@shell.armlinux.org.uk>
- <20210107111841.GN1551@shell.armlinux.org.uk> <20210107124506.GO1551@shell.armlinux.org.uk>
- <CAK8P3a2TXPfFpgy+XjpDzOqt1qpDxufwiD-BLNbn4W_jpGp98g@mail.gmail.com>
- <20210107133747.GP1551@shell.armlinux.org.uk> <CAK8P3a2J8fLjPhyV0XUeuRBdSo6rz1gU4wrQRyfzKQvwhf22ag@mail.gmail.com>
- <X/gkMmObbkI4+ip/@hirez.programming.kicks-ass.net> <20210108092655.GA4031@willie-the-truck>
- <CAHk-=whnKkj5CSbj-uG_MVVUsPZ6ppd_MFhZf_kpXDkh2MAVRA@mail.gmail.com>
-In-Reply-To: <CAHk-=whnKkj5CSbj-uG_MVVUsPZ6ppd_MFhZf_kpXDkh2MAVRA@mail.gmail.com>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Fri, 8 Jan 2021 21:22:18 +0100
-X-Gmail-Original-Message-ID: <CAK8P3a2w2u8pcQJue3OveDckJNkGmwzVdfOM-VEXShQEw8EOzw@mail.gmail.com>
-Message-ID: <CAK8P3a2w2u8pcQJue3OveDckJNkGmwzVdfOM-VEXShQEw8EOzw@mail.gmail.com>
-Subject: Re: Aarch64 EXT4FS inode checksum failures - seems to be weak memory
- ordering issues
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Will Deacon <will@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Russell King - ARM Linux admin <linux@armlinux.org.uk>,
-        linux-toolchains@vger.kernel.org,
-        Mark Rutland <mark.rutland@arm.com>,
-        "Theodore Ts'o" <tytso@mit.edu>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Ext4 Developers List <linux-ext4@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210108151241.GA47324@e123083-lin>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 8, 2021 at 9:02 PM Linus Torvalds
-<torvalds@linux-foundation.org> wrote:
-> On Fri, Jan 8, 2021 at 1:27 AM Will Deacon <will@kernel.org> wrote:
-> >
-> > On Fri, Jan 08, 2021 at 10:21:54AM +0100, Peter Zijlstra wrote:
-> > > On Thu, Jan 07, 2021 at 10:20:38PM +0100, Arnd Bergmann wrote:
-> > > > On Thu, Jan 7, 2021 at 2:37 PM Russell King - ARM Linux admin
->
-> I appreciate Arnd pointing out "--std=gnu11", though. What are the
-> actual relevant language improvements?
->
-> Variable declarations in for-loops is the only one I can think of. I
-> think that would clean up some code (and some macros), but might not
-> be compelling on its own.
 
-I think that was the main one, as most of --std=c11 is already part
-of --std=gnu89 as a gnu extension. There were a few things that
-came up with clang porting, as clang is somewhat closer to gnu11
-than to gnu89, but I don't remember exactly what that was.
 
-I would still like to improve READ_ONCE()/get_user()/cmpxchg()
-further using __auto_type and _Generic where possible, but I think
-that was already supported in gcc-4.9, and does not require gcc-5.
+On 1/8/21 7:12 AM, Morten Rasmussen wrote:
+> On Thu, Jan 07, 2021 at 03:16:47PM -0800, Tim Chen wrote:
+>> On 1/6/21 12:30 AM, Barry Song wrote:
+>>> ARM64 server chip Kunpeng 920 has 6 clusters in each NUMA node, and each
+>>> cluster has 4 cpus. All clusters share L3 cache data while each cluster
+>>> has local L3 tag. On the other hand, each cluster will share some
+>>> internal system bus. This means cache is much more affine inside one cluster
+>>> than across clusters.
+>>
+>> There is a similar need for clustering in x86.  Some x86 cores could share L2 caches that
+>> is similar to the cluster in Kupeng 920 (e.g. on Jacobsville there are 6 clusters
+>> of 4 Atom cores, each cluster sharing a separate L2, and 24 cores sharing L3).  
+>> Having a sched domain at the L2 cluster helps spread load among 
+>> L2 domains.  This will reduce L2 cache contention and help with
+>> performance for low to moderate load scenarios.
+> 
+> IIUC, you are arguing for the exact opposite behaviour, i.e. balancing
+> between L2 caches while Barry is after consolidating tasks within the
+> boundaries of a L3 tag cache. One helps cache utilization, the other
+> communication latency between tasks. Am I missing something? 
+> 
+> IMHO, we need some numbers on the table to say which way to go. Looking
+> at just benchmarks of one type doesn't show that this is a good idea in
+> general.
+> 
 
-       Arnd
+I think it is going to depend on the workload.  If there are dependent
+tasks that communicate with one another, putting them together
+in the same cluster will be the right thing to do to reduce communication
+costs.  On the other hand, if the tasks are independent, putting them together on the same cluster
+will increase resource contention and spreading them out will be better.
+
+Any thoughts on what is the right clustering "tag" to use to clump related tasks together?
+Cgroup? Pid? Tasks with same mm?
+
+Tim 
