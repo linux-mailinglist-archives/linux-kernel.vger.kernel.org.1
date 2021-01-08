@@ -2,102 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 51FE02EF412
+	by mail.lfdr.de (Postfix) with ESMTP id BF06B2EF413
 	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 15:41:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727650AbhAHOkJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Jan 2021 09:40:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56444 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726205AbhAHOkI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Jan 2021 09:40:08 -0500
-Received: from cc-smtpout2.netcologne.de (cc-smtpout2.netcologne.de [IPv6:2001:4dd0:100:1062:25:2:0:2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54A40C061381
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Jan 2021 06:39:28 -0800 (PST)
-Received: from cc-smtpin3.netcologne.de (cc-smtpin3.netcologne.de [89.1.8.203])
-        by cc-smtpout2.netcologne.de (Postfix) with ESMTP id 319B0126B8;
-        Fri,  8 Jan 2021 15:39:26 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-        by cc-smtpin3.netcologne.de (Postfix) with ESMTP id 2E49911E68;
-        Fri,  8 Jan 2021 15:39:26 +0100 (CET)
-Received: from [213.196.221.66] (helo=cc-smtpin3.netcologne.de)
-        by localhost with ESMTP (eXpurgate 4.11.6)
-        (envelope-from <kurt@garloff.de>)
-        id 5ff86e9e-0799-7f0000012729-7f000001abc8-1
-        for <multiple-recipients>; Fri, 08 Jan 2021 15:39:26 +0100
-Received: from nas2.garloff.de (xdsl-213-196-221-66.nc.de [213.196.221.66])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by cc-smtpin3.netcologne.de (Postfix) with ESMTPSA;
-        Fri,  8 Jan 2021 15:39:22 +0100 (CET)
-Received: from [192.168.155.202] (ap4.garloff.de [192.168.155.15])
-        by nas2.garloff.de (Postfix) with ESMTPSA id 289B9B3B13A5;
-        Fri,  8 Jan 2021 15:39:21 +0100 (CET)
-Subject: Re: NFS 4.2 client support broken on 5.10.5
-To:     Trond Myklebust <trondmy@hammerspace.com>,
-        "NeilB@suse.de" <NeilB@suse.de>,
-        "Anna.Schumaker@Netapp.com" <Anna.Schumaker@Netapp.com>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <ee320885-9a78-80b8-9341-7c631df60d3a@garloff.de>
- <2f401e0a738b7acb926bd2375012e6384a2cd9b6.camel@hammerspace.com>
-From:   Kurt Garloff <kurt@garloff.de>
-Message-ID: <927fcf61-7992-1b9f-ae39-c71d96323fbc@garloff.de>
-Date:   Fri, 8 Jan 2021 15:39:20 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        id S1727665AbhAHOkh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Jan 2021 09:40:37 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47700 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725791AbhAHOkg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 Jan 2021 09:40:36 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E22C023A03;
+        Fri,  8 Jan 2021 14:39:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1610116796;
+        bh=wu8Z1NndSiclLvgiYArv1I/gUeY9KPNK/Rtzl6oOWao=;
+        h=Date:From:To:Cc:Subject:From;
+        b=cyKH4bn+4uQ4o5U3IUubRGSPqAbgrbuR2x+uYDfuh70R9qvB5zMPij+kLFUzvTKsr
+         DQ9FrP3ZWY9c1TtGaoPQoQbhHDbdIB/+ei7TUVTAiwjqJ3CTWxP4YIXUDGdpnEdLSd
+         G1FteR399sqlPngl6qKSNQMzhCxHgGsAw4knlCk/eVlWJKY/kX0dGQYRnuCgrWJK8P
+         OheDsDGmMkZ9zDft80iCn2GtzRQjfsCcU/7Qy2MqWhKRCaAfnF5kxADlxJ6sELOmFD
+         ze8QOYGwxDr9Cwm6oAKIH1jZQmwXwbbfym38DO+bkl/ShdEw8495dKrj/59oh3c/zE
+         IRqWVw3qJno/g==
+Date:   Fri, 8 Jan 2021 14:39:51 +0000
+From:   Will Deacon <will@kernel.org>
+To:     torvalds@linux-foundation.org
+Cc:     iommu <iommu@lists.linux-foundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Joerg Roedel <joro@8bytes.org>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Lu Baolu <baolu.lu@linux.intel.com>
+Subject: [GIT PULL] IOMMU fixes for -rc3
+Message-ID: <20210108143951.GA4867@willie-the-truck>
 MIME-Version: 1.0
-In-Reply-To: <2f401e0a738b7acb926bd2375012e6384a2cd9b6.camel@hammerspace.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Trond,
+Hi Linus,
 
-On 08/01/2021 12:58, Trond Myklebust wrote:
-> On Fri, 2021-01-08 at 12:41 +0100, Kurt Garloff wrote:
->> Hi Neil, Anna, Trond,
->>
->> compiling a kernel, I suddenly started getting errors from objtool
->> orc.
->> (This first occurs on init/main.o.)
->>
->> I looked at all kind of things, before I noticed that this was not a
->> toolchain issue (gcc-10.2.1 self compiled), gcc plugins (I use
->> structleak and stackleak) nor an issue with objtool or libelf,
->> but that there was an -EIO error.
->>
->> The kernel tree is on an NFS share, and I run 5.10.5 client kernel
->> against the kernel NFS (4.2) server, running a 5.10.3 kernel.
->>
->> The issue does NOT occur on a 5.10.3 client kernel, but is easily
->> reproducible on 5.10.5. Note that 5.10.5 on a local file system or
->> against an NFSv3 server does not show the issue.
->>
->> Test program that reproduces this on the first pwrite64() is
->> attached.
->> Note that the call to ftruncate() is required to make the problem
->> happen.
->>
->> I could go on bisecting this to a particular patch, but you'll
->> probably be able to see right away what's wrong.
->>
-> Hmm... If this is NFSv4.2 do you have READ_PLUS turned on or off in
-> .config? It really is not safe to enable READ_PLUS on 5.10 kernels
-> since that can cause random memory corruption.
-OK, it is turned on in my kernel -- looks like I have not read the
-warning in the config option help text carefully enough ...
+Please pull these IOMMU fixes for -rc3. It's mainly all Intel VT-D stuff,
+but there are some fixes for AMD and ARM as well. We've also got the
+revert I promised during the merge window, which removes a temporary
+hack to accomodate i915 while we transitioned the Intel IOMMU driver
+over to the common DMA-IOMMU API.
 
-I'll test what happens if I switch it off and report back.
+Finally, there are still a couple of other VT-D fixes floating around, so I
+expect to send you another batch of fixes next week.
 
-Thanks for the quick response
+Cheers,
 
----
+Will
 
-Kurt Garloff <kurt@garloff.de>
-Cologne, Germany
+--->8
 
+The following changes since commit 5c8fe583cce542aa0b84adc939ce85293de36e5e:
 
+  Linux 5.11-rc1 (2020-12-27 15:30:22 -0800)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git tags/iommu-fixes
+
+for you to fetch changes up to 7c29ada5e70083805bc3a68daa23441df421fbee:
+
+  iommu/vt-d: Fix ineffective devTLB invalidation for subdevices (2021-01-07 14:38:15 +0000)
+
+----------------------------------------------------------------
+iommu fixes for -rc3
+
+- Fix VT-D TLB invalidation for subdevices
+
+- Fix VT-D use-after-free on subdevice detach
+
+- Fix VT-D locking so that IRQs are disabled during SVA bind/unbind
+
+- Fix VT-D address alignment when flushing IOTLB
+
+- Fix memory leak in VT-D IRQ remapping failure path
+
+- Revert temporary i915 sglist hack now that it is no longer required
+
+- Fix sporadic boot failure with Arm SMMU on Qualcomm SM8150
+
+- Fix NULL dereference in AMD IRQ remapping code with remapping disabled
+
+- Fix accidental enabling of irqs on AMD resume-from-suspend path
+
+- Fix some typos in comments
+
+----------------------------------------------------------------
+Bjorn Andersson (1):
+      iommu/arm-smmu-qcom: Initialize SCTLR of the bypass context
+
+David Woodhouse (2):
+      iommu/amd: Set iommu->int_enabled consistently when interrupts are set up
+      iommu/amd: Stop irq_remapping_select() matching when remapping is disabled
+
+Dinghao Liu (1):
+      iommu/intel: Fix memleak in intel_irq_remapping_alloc
+
+Liu Yi L (3):
+      iommu/vt-d: Move intel_iommu info from struct intel_svm to struct intel_svm_dev
+      iommu/vt-d: Fix general protection fault in aux_detach_device()
+      iommu/vt-d: Fix ineffective devTLB invalidation for subdevices
+
+Lu Baolu (3):
+      iommu/vt-d: Fix misuse of ALIGN in qi_flush_piotlb()
+      Revert "iommu: Add quirk for Intel graphic devices in map_sg"
+      iommu/vt-d: Fix lockdep splat in sva bind()/unbind()
+
+Stefano Garzarella (1):
+      iommu/iova: fix 'domain' typos
+
+ drivers/iommu/amd/init.c                   |   3 +-
+ drivers/iommu/amd/iommu.c                  |   3 +
+ drivers/iommu/arm/arm-smmu/arm-smmu-qcom.c |   2 +
+ drivers/iommu/dma-iommu.c                  |  27 ------
+ drivers/iommu/intel/dmar.c                 |   4 +-
+ drivers/iommu/intel/iommu.c                | 148 +++++++++++++++++++++--------
+ drivers/iommu/intel/irq_remapping.c        |   2 +
+ drivers/iommu/intel/svm.c                  |  23 +++--
+ drivers/iommu/iova.c                       |   8 +-
+ include/linux/intel-iommu.h                |  18 ++--
+ 10 files changed, 147 insertions(+), 91 deletions(-)
