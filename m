@@ -2,93 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 171CC2EF87A
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 21:00:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 37A562EF882
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 21:05:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729077AbhAHT7g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Jan 2021 14:59:36 -0500
-Received: from asavdk3.altibox.net ([109.247.116.14]:59142 "EHLO
-        asavdk3.altibox.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726650AbhAHT7f (ORCPT
+        id S1729108AbhAHUEa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Jan 2021 15:04:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50506 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729057AbhAHUE3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Jan 2021 14:59:35 -0500
-Received: from ravnborg.org (unknown [188.228.123.71])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by asavdk3.altibox.net (Postfix) with ESMTPS id 1984E20021;
-        Fri,  8 Jan 2021 20:58:40 +0100 (CET)
-Date:   Fri, 8 Jan 2021 20:58:39 +0100
-From:   Sam Ravnborg <sam@ravnborg.org>
-To:     Sebastian Reichel <sebastian.reichel@collabora.com>
-Cc:     Sebastian Reichel <sre@kernel.org>,
-        Tomi Valkeinen <tomi.valkeinen@ti.com>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-next@vger.kernel.org,
-        kernel@collabora.com
-Subject: Re: [PATCHv1] video: omapfb2: Make standard and custom DSI command
- mode panel driver mutually exclusive
-Message-ID: <20210108195839.GA1429715@ravnborg.org>
-References: <20210108122540.657501b2@canb.auug.org.au>
- <20210108112441.14609-1-sebastian.reichel@collabora.com>
+        Fri, 8 Jan 2021 15:04:29 -0500
+Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB939C0612AD
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Jan 2021 12:03:13 -0800 (PST)
+Received: by mail-lf1-x12d.google.com with SMTP id h205so25798081lfd.5
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Jan 2021 12:03:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=PmspDcv/ocVoLjM7eZCys1d3yrpEciEb1QwZ9ZHCG10=;
+        b=BK/5L/vmNIcg4m+RxJlM6MSBoYFNRgclyJ3q7dL4Xn+udGNWmcjBD/magHIwpo/iOs
+         W4/GoBbDVvgnMvBl4GEuZQbo3jGtrL4vsK3dKcclqKMZygPwOVPxGbmLu8GWxVw6SjtZ
+         MAsSFa5bDGCIwjrhbwDLN8kkunnSOyISqo78A=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=PmspDcv/ocVoLjM7eZCys1d3yrpEciEb1QwZ9ZHCG10=;
+        b=kTBNJV42r3TuNw3xxh53gi9YXdW3Z0k9Eq07QCpXzjfgzVEKs+lB4vzCjiXwA+9MwK
+         R/q0MxSu8AouKDhQBx3N2WVXj/4K386+NAI31cTslkWmX44HSvocF8Njc7M3+VJFYLhU
+         v3qaGyg2mkY1QYVvuXq1r6Z55Pi8jaHGNSvhPFmWD+SS9vzdVxtsYRNb2q6xNvMG7L7F
+         CGDZBeO2KbniD9YX38DvlaCOc6JN2AIYlohpJHgyTkA63lJm+x9nkkrthzKp6tKpGw2B
+         ZYVgwpPhfo2kEghPAi2mAUoWz66PUX6WxTP+nnihO05h2/xXb4w6TZJIZ+rd/2B7Zqfv
+         P6hw==
+X-Gm-Message-State: AOAM531hjzts45sDkADVm4CKxajg1oI9bF7FM1nS53Is0Y2pqdJFLzMK
+        yfi1rPDmtheOWnZcc6CKhevJaLg8DhmFZg==
+X-Google-Smtp-Source: ABdhPJwv+tYnwhjOA4nb2zmYKWCikIBftohQSSbYPEaWR8WsFQ1IK2Ii/hcIkMfvBAP9pWt2ROUdoQ==
+X-Received: by 2002:a05:6512:22cd:: with SMTP id g13mr2059991lfu.368.1610136191608;
+        Fri, 08 Jan 2021 12:03:11 -0800 (PST)
+Received: from mail-lf1-f49.google.com (mail-lf1-f49.google.com. [209.85.167.49])
+        by smtp.gmail.com with ESMTPSA id v23sm2333439ljg.97.2021.01.08.12.03.10
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 08 Jan 2021 12:03:10 -0800 (PST)
+Received: by mail-lf1-f49.google.com with SMTP id u25so5024453lfc.2
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Jan 2021 12:03:10 -0800 (PST)
+X-Received: by 2002:ac2:41d9:: with SMTP id d25mr2021963lfi.377.1610136189681;
+ Fri, 08 Jan 2021 12:03:09 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210108112441.14609-1-sebastian.reichel@collabora.com>
-X-CMAE-Score: 0
-X-CMAE-Analysis: v=2.3 cv=Ibmpp1ia c=1 sm=1 tr=0
-        a=S6zTFyMACwkrwXSdXUNehg==:117 a=S6zTFyMACwkrwXSdXUNehg==:17
-        a=kj9zAlcOel0A:10 a=rOUgymgbAAAA:8 a=QX4gbG5DAAAA:8 a=7gkXJVJtAAAA:8
-        a=bFzB3eAsRtkcaW2KersA:9 a=CjuIK1q_8ugA:10 a=MP9ZtiD8KjrkvI0BhSjB:22
-        a=AbAUZ8qAyYyZVLSsDulk:22 a=E9Po1WZjFZOl8hwRPBS3:22
+References: <20210106115359.GB26994@C02TD0UTHF1T.local> <20210106135253.GJ1551@shell.armlinux.org.uk>
+ <20210106172033.GA2165@willie-the-truck> <20210106223223.GM1551@shell.armlinux.org.uk>
+ <20210107111841.GN1551@shell.armlinux.org.uk> <20210107124506.GO1551@shell.armlinux.org.uk>
+ <CAK8P3a2TXPfFpgy+XjpDzOqt1qpDxufwiD-BLNbn4W_jpGp98g@mail.gmail.com>
+ <20210107133747.GP1551@shell.armlinux.org.uk> <CAK8P3a2J8fLjPhyV0XUeuRBdSo6rz1gU4wrQRyfzKQvwhf22ag@mail.gmail.com>
+ <X/gkMmObbkI4+ip/@hirez.programming.kicks-ass.net> <20210108092655.GA4031@willie-the-truck>
+In-Reply-To: <20210108092655.GA4031@willie-the-truck>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Fri, 8 Jan 2021 12:02:53 -0800
+X-Gmail-Original-Message-ID: <CAHk-=whnKkj5CSbj-uG_MVVUsPZ6ppd_MFhZf_kpXDkh2MAVRA@mail.gmail.com>
+Message-ID: <CAHk-=whnKkj5CSbj-uG_MVVUsPZ6ppd_MFhZf_kpXDkh2MAVRA@mail.gmail.com>
+Subject: Re: Aarch64 EXT4FS inode checksum failures - seems to be weak memory
+ ordering issues
+To:     Will Deacon <will@kernel.org>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Arnd Bergmann <arnd@kernel.org>,
+        Russell King - ARM Linux admin <linux@armlinux.org.uk>,
+        linux-toolchains@vger.kernel.org,
+        Mark Rutland <mark.rutland@arm.com>,
+        "Theodore Ts'o" <tytso@mit.edu>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Ext4 Developers List <linux-ext4@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Sebatian,
+On Fri, Jan 8, 2021 at 1:27 AM Will Deacon <will@kernel.org> wrote:
+>
+> On Fri, Jan 08, 2021 at 10:21:54AM +0100, Peter Zijlstra wrote:
+> > On Thu, Jan 07, 2021 at 10:20:38PM +0100, Arnd Bergmann wrote:
+> > > On Thu, Jan 7, 2021 at 2:37 PM Russell King - ARM Linux admin
+> >
+> > > > So, do we raise the minimum gcc version for the kernel as a whole to 5.1
+> > > > or just for aarch64?
+> > >
+> > > I'd personally love to see gcc-5 as the global minimum version, as that
+> > > would let us finally use --std=gnu11 features instead of gnu89. [There are
+> > > a couple of useful features that are incompatible with gnu89, and
+> > > gnu99/gnu11 support in gcc didn't like the kernel sources]
+> >
+> > +1 for raising the tree-wide minimum (again!). We actually have a bunch
+> > of work-arounds for 4.9 bugs we can get rid of as well.
+>
+> We even just added another one for arm64 KVM! [1]
+>
+> So yes, I'm in favour of leaving gcc 4.9 to rot as well, especially after
+> this ext4 debugging experience.
 
-On Fri, Jan 08, 2021 at 12:24:41PM +0100, Sebastian Reichel wrote:
-> Standard DRM panel driver for DSI command mode panel used by omapfb2 is also
-> available now. Just like the other panels its module name clashes with the
-> module from drivers/video/fbdev/omap2/omapfb/displays, part of the deprecated
-> omapfb2 fbdev driver. As omapfb2 can only be compiled when the omapdrm driver
-> is disabled, and the DRM panel drivers are useless in that case, make the
-> omapfb2 panel depend on the standard DRM panels being disabled to fix
-> the name clash.
-> 
-> Fixes: cf64148abcfd ("drm/panel: Move OMAP's DSI command mode panel driver")
-> Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
-> Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
+Well, honestly, I'm always in favor of having people not use ancient
+compilers, but both of the issues at hand do seem to be specific to
+arm64.
 
-For a backport this looks good:
-Acked-by: Sam Ravnborg <sam@ravnborg.org>
+The "gcc before 5.1 generates incorrect stack pointer writes on arm64"
+sounds pretty much deadly, and I think means that yes, for arm64 we
+simply need to require 5.1 or newer.
 
-But why is it it we need omapfb at all when we have omapdrm?
-Can we sunset all or some parts of omap support in video/?
-If not, what is missing to do so.
+I also suspect there is much less reason to use old gcc's on arm64. I
+can't imagine that people really run very old setups, Is some old RHEL
+version even relevant for arm64?
 
-	Sam
+So while I'd love to just say "everybody needs to make sure they have
+an up-to-date compiler", my git feel is that at least with the current
+crop of issues, there is little to really push us globally.
 
-> ---
-> Laurent introduced and fixed the same issue for the other panels and
-> this simply replicates the same solution for DSI command mode panel.
-> ---
->  drivers/video/fbdev/omap2/omapfb/displays/Kconfig | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/drivers/video/fbdev/omap2/omapfb/displays/Kconfig b/drivers/video/fbdev/omap2/omapfb/displays/Kconfig
-> index 744416dc530e..384d74a126dc 100644
-> --- a/drivers/video/fbdev/omap2/omapfb/displays/Kconfig
-> +++ b/drivers/video/fbdev/omap2/omapfb/displays/Kconfig
-> @@ -43,6 +43,7 @@ config FB_OMAP2_PANEL_DPI
->  config FB_OMAP2_PANEL_DSI_CM
->  	tristate "Generic DSI Command Mode Panel"
->  	depends on BACKLIGHT_CLASS_DEVICE
-> +	depends on DRM_PANEL_DSI_CM = n
->  	help
->  	  Driver for generic DSI command mode panels.
->  
-> -- 
-> 2.29.2
+I appreciate Arnd pointing out "--std=gnu11", though. What are the
+actual relevant language improvements?
+
+Variable declarations in for-loops is the only one I can think of. I
+think that would clean up some code (and some macros), but might not
+be compelling on its own.
+
+               Linus
