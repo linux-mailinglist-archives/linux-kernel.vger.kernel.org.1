@@ -2,77 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02B7B2EFB9F
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Jan 2021 00:18:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B4972EFB9E
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Jan 2021 00:18:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726251AbhAHXRb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Jan 2021 18:17:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52342 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725792AbhAHXRa (ORCPT
+        id S1726077AbhAHXRP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Jan 2021 18:17:15 -0500
+Received: from m43-15.mailgun.net ([69.72.43.15]:43387 "EHLO
+        m43-15.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725792AbhAHXRP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Jan 2021 18:17:30 -0500
-Received: from nautica.notk.org (ipv6.notk.org [IPv6:2001:41d0:1:7a93::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 714A1C061574
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Jan 2021 15:16:50 -0800 (PST)
-Received: by nautica.notk.org (Postfix, from userid 108)
-        id 43F73C01E; Sat,  9 Jan 2021 00:16:04 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=codewreck.org; s=2;
-        t=1610147764; bh=EIJ3VFsukrboXt6dlSV6x9vCPLwaTFNwnBDwe0e29MA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ljRVZFYdlSHVLjOlc7/r5zZfWa2AoPX5DSdsq4hSzf+OVrSVOLqGEON/HK/+aMOd6
-         87Qll45jko8fwcynw3zSafrwDo1KwXtt0aVP5McmDCJgJDzv1yxAFsmBRHPPDCuR/5
-         SCOKroFpmns7CiMThpAtTEH8RiLJNJlmkrU9dSNBPLuiuRzE1CGQ4lx6HGKp52Q1/M
-         BRWcJwf/3Qg8qGc6HfQtIRuOuhaRIal+ZOAL69ikSMMCwaAGGTm0/+6fcNh3m4OeFg
-         xww/bK5y4RUn+89nKLMRMx9rbedjgU2Tn4+ByJWypv51YV7Zb5Poh3r9EbP3y3hLW0
-         8Nwn8tKzSNJ0Q==
-X-Spam-Checker-Version: SpamAssassin 3.3.2 (2011-06-06) on nautica.notk.org
+        Fri, 8 Jan 2021 18:17:15 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1610147815; h=Content-Transfer-Encoding: MIME-Version:
+ Message-Id: Date: Subject: Cc: To: From: Sender;
+ bh=8k9WBpeIGAP0mLspkxyR4XM/TtoK/2Q8inGNLk6er9g=; b=P9x/Xe0jHwUcu3ni85S+HFO38hYth6byvdZ/EGo7p/wwjNLqA9FVWxb3vuxF6z4u6/L256ps
+ 9x8lN1kupnpmCrb9zPJ+Y2LK6EMFodSzHzoPSAnBgU2N5cikLIRG1aVlHv/FtBo0R45eoF1j
+ p3Gh1a22S37GO8T06/ZlcxfXiwA=
+X-Mailgun-Sending-Ip: 69.72.43.15
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n08.prod.us-east-1.postgun.com with SMTP id
+ 5ff8e7c246a6c7cde75592b9 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 08 Jan 2021 23:16:18
+ GMT
+Sender: sudaraja=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 38631C43463; Fri,  8 Jan 2021 23:16:18 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
 X-Spam-Level: 
-X-Spam-Status: No, score=0.0 required=5.0 tests=UNPARSEABLE_RELAY
-        autolearn=unavailable version=3.3.2
-Received: from tyr.codewreck.org (localhost [127.0.0.1])
-        by nautica.notk.org (Postfix) with SMTP id 8C2A8C01B;
-        Sat,  9 Jan 2021 00:16:01 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=codewreck.org; s=2;
-        t=1610147763; bh=EIJ3VFsukrboXt6dlSV6x9vCPLwaTFNwnBDwe0e29MA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=yV6g5bexMO5FrJLLiz/eZhdNh1x37pn5Exnk/tpHMxDqb/RnGFoksOQYMlk7mSpeJ
-         EcZ2s9CscKZZWQHkHZtHP+zqKwVO1u682vzlUt/GbTieZUN6isBJd7U2qu4Oh3FAxk
-         mrsgVdrMj8WaRHyafIlIZGwEL5ujD95gZEhYtCUefK7b0lovU46dfVfN6Y6yQf+MmZ
-         Behz+pz5ZdPKhZb0WOYeN2PCAXrM0NzASsVDLcdVPvTkDhnhLQDf2JE/qCxpUYx5mz
-         OIJ8dbC14sB36IeQWINcAQ6X2qSmKyh7kXyC9Ml65R+mivWyW6N+S96jZPAvpt18Nn
-         QClq5VEPlaYQw==
-Received: (from asmadeus@codewreck.org)
-        by tyr.codewreck.org (mini_sendmail/1.3.9 19Oct2015);
-        Sat, 09 Jan 2021 08:16:00 JST
-        (sender asmadeus@tyr.codewreck.org)
-Date:   Sat, 9 Jan 2021 08:15:45 +0900
-From:   Dominique Martinet <asmadeus@codewreck.org>
-To:     Rikard Falkeborn <rikard.falkeborn@gmail.com>
-Cc:     ric Van Hensbergen <ericvh@gmail.com>,
-        Latchesar Ionkov <lucho@ionkov.net>,
-        v9fs-developer@lists.sourceforge.net, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] 9p: Constify static struct v9fs_attr_group
-Message-ID: <20210108231545.GA42582@tyr>
-References: <20210108224650.25872-1-rikard.falkeborn@gmail.com>
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from th-lint-014.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: sudaraja)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 4704CC433C6;
+        Fri,  8 Jan 2021 23:16:17 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 4704CC433C6
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=sudaraja@codeaurora.org
+From:   Sudarshan Rajagopalan <sudaraja@codeaurora.org>
+To:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        will@kernel.org, anshuman.khandual@arm.com, david@redhat.com
+Cc:     Sudarshan Rajagopalan <sudaraja@codeaurora.org>
+Subject: [PATCH 0/1] arm64: reduce section size for sparsemem
+Date:   Fri,  8 Jan 2021 15:15:59 -0800
+Message-Id: <cover.1610146597.git.sudaraja@codeaurora.org>
+X-Mailer: git-send-email 2.25.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210108224650.25872-1-rikard.falkeborn@gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This patch is the follow-up from the discussions in the thread [1].
+Reducing the section size has the merit of reducing wastage of reserved memory
+for huge memory holes in sparsemem model. Also with smaller section size gives
+more grunularity and agility for memory hot(un)plugging.
 
-Rikard Falkeborn wrote on Fri, Jan 08, 2021 at 11:46:50PM +0100:
-> The only usage of v9fs_attr_group is to pass its address to
-> sysfs_create_group() and sysfs_create_group(), both which takes pointers
-> to const struct attribute_group. Make it const to allow the compiler to
-> put it in read-only memory.
-> 
-> Signed-off-by: Rikard Falkeborn <rikard.falkeborn@gmail.com>
+This patch tends to use the suggestion from David Hildenbrand in thread [1]
+to set the least possible SECTION_SIZE_BITS for 4K, 16K and 64K page granule.
+That is 27 (128MB) for 4K/16K and 29 (512MB) for 64K page granule.
 
-Thanks, taking it.
+[1] https://lore.kernel.org/lkml/cover.1609895500.git.sudaraja@codeaurora.org/T/#m8ee60ae69db5e9eb06ca7999c43828d49ccb9626
+
+Sudarshan Rajagopalan (1):
+  arm64: reduce section size for sparsemem
+
+ arch/arm64/include/asm/sparsemem.h | 10 ++++++++--
+ 1 file changed, 8 insertions(+), 2 deletions(-)
+
 -- 
-Dominique
+Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
+a Linux Foundation Collaborative Project
+
