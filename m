@@ -2,57 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EF982EF234
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 13:17:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3901F2EF238
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 13:17:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727330AbhAHMQM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Jan 2021 07:16:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34166 "EHLO
+        id S1727377AbhAHMQt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Jan 2021 07:16:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34264 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726754AbhAHMQL (ORCPT
+        with ESMTP id S1726862AbhAHMQs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Jan 2021 07:16:11 -0500
-Received: from mail-wr1-x44a.google.com (mail-wr1-x44a.google.com [IPv6:2a00:1450:4864:20::44a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CF99C0612F8
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Jan 2021 04:15:30 -0800 (PST)
-Received: by mail-wr1-x44a.google.com with SMTP id n11so4070259wro.7
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Jan 2021 04:15:30 -0800 (PST)
+        Fri, 8 Jan 2021 07:16:48 -0500
+Received: from mail-qk1-x749.google.com (mail-qk1-x749.google.com [IPv6:2607:f8b0:4864:20::749])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC21DC0612FA
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Jan 2021 04:15:31 -0800 (PST)
+Received: by mail-qk1-x749.google.com with SMTP id k126so9146955qkf.8
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Jan 2021 04:15:31 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=sender:date:in-reply-to:message-id:mime-version:references:subject
          :from:to:cc;
-        bh=2AvxqWsiNZiBgTFedPJYPTYC/iX22/lJxd+Fe6flKw0=;
-        b=XIyewR3btdhcaLpqgHHf31EmI/fdUcLfY2l8kYP4b62kKxx9iTpjV2a87Z2iqPdVdh
-         3YXXLs/Ky8cj/4mgJkr2p7eSWVX+S+lIe4YQMowwmloU1LTRFbPQeCWsn7ja28FPpFxg
-         PwX+aTx1oHZub2LCC/ssQtz+EkVTbbxzq0Eep7agFz+EkOn0+/LZFQHu6yoviR1jsOr2
-         MgFkYUmjkq+qlR91UBaqCSn/hp+eCjs3Wah+TaXvMZOZq8x5mZ4WEfPjCwP3SRodjLET
-         8G+W+2AnHQygsHUYleRZs3XIMWfRKcaN0SIjbYx3+NFR4g+Nhx4GGr7jVp9LAnWmo/lK
-         i6Aw==
+        bh=5e3BSd7vmIFaVsypq9rMBmoYLFEaRN3k4F/khfSlKV0=;
+        b=cjAwptXdgK4IjsCiFRTJr4GUXRP+Bt83eRibYAY7d95vi5ie+a7Dh4W6jtEie3v8p4
+         CSWvFyAbl4e4Ne5fz9XJcVCpIwp+omNyk0PMTcAhlsXmvHds5+cpjdjUUTFLVyxSUaGM
+         jFbE4/Wa4r00sv/Vy5ghNzPONZJ6TO9wyuU6lGRKi7ur6X9TULFMJASjvxgPL8TP2TXx
+         M4sM+47rF9DZKaO6x/DKr1lS+5QuM2uC81E+WViGnRTojd9l0OI8FzMU3BAmZFw9iIL6
+         OeGqmLn/NOfoUqdkCpqbMfvQPupVqW7zkoMoaYTb1YUgzWZa9tk8L2MICwwUFfDAExoI
+         5BBw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=2AvxqWsiNZiBgTFedPJYPTYC/iX22/lJxd+Fe6flKw0=;
-        b=EmweYstqqq2ALVfzrVt6uxkgdU/7OMRyinodUbQT32CYE6n4Ubz/dYHZ2H0dvmewj6
-         l1aYflgJNIclT69N5uCt8r2E8nvtI82N6hBoJ1Dd2LzoZiU+PniJ3kS6tdykslv3kvRO
-         6u7m9qMmALCxqihmHOlg3wh3GoDViAhgthS80QuwaIlQ9wKOeyv8wfD0C/bpE7JfwwPE
-         Xil7GDKNNlSxwpBvdwuvJunfvPFWudEIp0hGTPLdGnS2dux9bt0X8UbAQfCXXlfA1P+3
-         AUgWE1raJ/gjuMHvSw5ca9+lpT8TD6hA2e+znm4DkfpDUoyKdPDpnYjaA5CVNCZDScv7
-         qP3g==
-X-Gm-Message-State: AOAM5316nosWquFesbR3pwTtZ44IDsYwaKnAOFWH5YB1a839wRuZXxb8
-        RvMlW3xgsG+uXgA53U7tR+5rX2vTKiS+
-X-Google-Smtp-Source: ABdhPJyf1ctEy51fuFCix0vOeWng0452zHo1A6Dfvf1j1eurJXucg7DaQIxlCVhea+1iolch1bleRN20EdPf
+        bh=5e3BSd7vmIFaVsypq9rMBmoYLFEaRN3k4F/khfSlKV0=;
+        b=bWe25Z2DjaHuqn95+bHtmN3liByNCcLyrwSirchDsULhaGJr7rc+X3N03lIiBIeMpK
+         rErSgCR6aHo74GVm/ysaVA874/Ger0fgfw7Z4hDbqAgtObPqTw57M2oMpRM9Sj+p3i4o
+         mxS1N5vmDJEHA2Z/pjkY4PE6M60k2KhWACE6Ag43zyGy6aS+i/hxvVc8V6Z3NbJKK/JI
+         MRpR8FUoIx0lEHlIZyFHoaxb2LX4G+UmWtTkkzfiFaXOuek5P0Cmu++LF+/CGxpWTiwJ
+         I4rjRJXFl3vXjZKp5ThuZ0vW2HzuikZb1JPbA3p+Z2EK2c49cFihBSN7o5khxzv5BroU
+         g+jg==
+X-Gm-Message-State: AOAM5310DoYzVp3tdIHhTUTQ7mTQtjMRp/dqxJ2EoF0uuzA8JWNOR/0i
+        eJYMvPjhCzNyKMr3doXZ6UpNoKqH1T9b
+X-Google-Smtp-Source: ABdhPJwY/NqATOtRh6UO3IjAH6vrAoafYC2NEIZf1AOtSUiHAi44hYkfMu+wX3SAuwLxf/UxVn56Yi12CCSa
 Sender: "qperret via sendgmr" <qperret@r2d2-qp.c.googlers.com>
 X-Received: from r2d2-qp.c.googlers.com ([fda3:e722:ac3:cc00:28:9cb1:c0a8:1652])
- (user=qperret job=sendgmr) by 2002:a1c:2c89:: with SMTP id
- s131mr1783892wms.0.1610108128579; Fri, 08 Jan 2021 04:15:28 -0800 (PST)
-Date:   Fri,  8 Jan 2021 12:14:59 +0000
+ (user=qperret job=sendgmr) by 2002:ad4:4952:: with SMTP id
+ o18mr3311159qvy.27.1610108130916; Fri, 08 Jan 2021 04:15:30 -0800 (PST)
+Date:   Fri,  8 Jan 2021 12:15:00 +0000
 In-Reply-To: <20210108121524.656872-1-qperret@google.com>
-Message-Id: <20210108121524.656872-2-qperret@google.com>
+Message-Id: <20210108121524.656872-3-qperret@google.com>
 Mime-Version: 1.0
 References: <20210108121524.656872-1-qperret@google.com>
 X-Mailer: git-send-email 2.30.0.284.gd98b1dd5eaa7-goog
-Subject: [RFC PATCH v2 01/26] arm64: lib: Annotate {clear,copy}_page() as position-independent
+Subject: [RFC PATCH v2 02/26] KVM: arm64: Link position-independent string
+ routines into .hyp.text
 From:   Quentin Perret <qperret@google.com>
 To:     Catalin Marinas <catalin.marinas@arm.com>,
         Will Deacon <will@kernel.org>, Marc Zyngier <maz@kernel.org>,
@@ -74,56 +75,75 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Will Deacon <will@kernel.org>
 
-clear_page() and copy_page() are suitable for use outside of the kernel
-address space, so annotate them as position-independent code.
+Pull clear_page(), copy_page(), memcpy() and memset() into the nVHE hyp
+code and ensure that we always execute the '__pi_' entry point on the
+offchance that it changes in future.
+
+[ qperret: Commit title nits ]
 
 Signed-off-by: Will Deacon <will@kernel.org>
 Signed-off-by: Quentin Perret <qperret@google.com>
 ---
- arch/arm64/lib/clear_page.S | 4 ++--
- arch/arm64/lib/copy_page.S  | 4 ++--
- 2 files changed, 4 insertions(+), 4 deletions(-)
+ arch/arm64/include/asm/hyp_image.h |  3 +++
+ arch/arm64/kernel/image-vars.h     | 11 +++++++++++
+ arch/arm64/kvm/hyp/nvhe/Makefile   |  4 ++++
+ 3 files changed, 18 insertions(+)
 
-diff --git a/arch/arm64/lib/clear_page.S b/arch/arm64/lib/clear_page.S
-index 073acbf02a7c..b84b179edba3 100644
---- a/arch/arm64/lib/clear_page.S
-+++ b/arch/arm64/lib/clear_page.S
-@@ -14,7 +14,7 @@
-  * Parameters:
-  *	x0 - dest
+diff --git a/arch/arm64/include/asm/hyp_image.h b/arch/arm64/include/asm/hyp_image.h
+index daa1a1da539e..e06842756051 100644
+--- a/arch/arm64/include/asm/hyp_image.h
++++ b/arch/arm64/include/asm/hyp_image.h
+@@ -31,6 +31,9 @@
   */
--SYM_FUNC_START(clear_page)
-+SYM_FUNC_START_PI(clear_page)
- 	mrs	x1, dczid_el0
- 	and	w1, w1, #0xf
- 	mov	x2, #4
-@@ -25,5 +25,5 @@ SYM_FUNC_START(clear_page)
- 	tst	x0, #(PAGE_SIZE - 1)
- 	b.ne	1b
- 	ret
--SYM_FUNC_END(clear_page)
-+SYM_FUNC_END_PI(clear_page)
- EXPORT_SYMBOL(clear_page)
-diff --git a/arch/arm64/lib/copy_page.S b/arch/arm64/lib/copy_page.S
-index e7a793961408..29144f4cd449 100644
---- a/arch/arm64/lib/copy_page.S
-+++ b/arch/arm64/lib/copy_page.S
-@@ -17,7 +17,7 @@
-  *	x0 - dest
-  *	x1 - src
-  */
--SYM_FUNC_START(copy_page)
-+SYM_FUNC_START_PI(copy_page)
- alternative_if ARM64_HAS_NO_HW_PREFETCH
- 	// Prefetch three cache lines ahead.
- 	prfm	pldl1strm, [x1, #128]
-@@ -75,5 +75,5 @@ alternative_else_nop_endif
- 	stnp	x16, x17, [x0, #112 - 256]
+ #define KVM_NVHE_ALIAS(sym)	kvm_nvhe_sym(sym) = sym;
  
- 	ret
--SYM_FUNC_END(copy_page)
-+SYM_FUNC_END_PI(copy_page)
- EXPORT_SYMBOL(copy_page)
++/* Defines a linker script alias for KVM nVHE hyp symbols */
++#define KVM_NVHE_ALIAS_HYP(first, sec)	kvm_nvhe_sym(first) = kvm_nvhe_sym(sec);
++
+ #endif /* LINKER_SCRIPT */
+ 
+ #endif /* __ARM64_HYP_IMAGE_H__ */
+diff --git a/arch/arm64/kernel/image-vars.h b/arch/arm64/kernel/image-vars.h
+index 39289d75118d..43f3a1d6e92d 100644
+--- a/arch/arm64/kernel/image-vars.h
++++ b/arch/arm64/kernel/image-vars.h
+@@ -102,6 +102,17 @@ KVM_NVHE_ALIAS(__stop___kvm_ex_table);
+ /* Array containing bases of nVHE per-CPU memory regions. */
+ KVM_NVHE_ALIAS(kvm_arm_hyp_percpu_base);
+ 
++/* Position-independent library routines */
++KVM_NVHE_ALIAS_HYP(clear_page, __pi_clear_page);
++KVM_NVHE_ALIAS_HYP(copy_page, __pi_copy_page);
++KVM_NVHE_ALIAS_HYP(memcpy, __pi_memcpy);
++KVM_NVHE_ALIAS_HYP(memset, __pi_memset);
++
++#ifdef CONFIG_KASAN
++KVM_NVHE_ALIAS_HYP(__memcpy, __pi_memcpy);
++KVM_NVHE_ALIAS_HYP(__memset, __pi_memset);
++#endif
++
+ #endif /* CONFIG_KVM */
+ 
+ #endif /* __ARM64_KERNEL_IMAGE_VARS_H */
+diff --git a/arch/arm64/kvm/hyp/nvhe/Makefile b/arch/arm64/kvm/hyp/nvhe/Makefile
+index 1f1e351c5fe2..590fdefb42dd 100644
+--- a/arch/arm64/kvm/hyp/nvhe/Makefile
++++ b/arch/arm64/kvm/hyp/nvhe/Makefile
+@@ -6,10 +6,14 @@
+ asflags-y := -D__KVM_NVHE_HYPERVISOR__
+ ccflags-y := -D__KVM_NVHE_HYPERVISOR__
+ 
++lib-objs := clear_page.o copy_page.o memcpy.o memset.o
++lib-objs := $(addprefix ../../../lib/, $(lib-objs))
++
+ obj-y := timer-sr.o sysreg-sr.o debug-sr.o switch.o tlb.o hyp-init.o host.o \
+ 	 hyp-main.o hyp-smp.o psci-relay.o
+ obj-y += ../vgic-v3-sr.o ../aarch32.o ../vgic-v2-cpuif-proxy.o ../entry.o \
+ 	 ../fpsimd.o ../hyp-entry.o ../exception.o
++obj-y += $(lib-objs)
+ 
+ ##
+ ## Build rules for compiling nVHE hyp code
 -- 
 2.30.0.284.gd98b1dd5eaa7-goog
 
