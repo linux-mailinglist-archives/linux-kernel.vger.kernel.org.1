@@ -2,231 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 652EB2EEA9C
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 01:56:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B0F62EEAA6
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 02:02:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729724AbhAHA4N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 19:56:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41770 "EHLO
+        id S1729603AbhAHBBu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 20:01:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42676 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729502AbhAHA4N (ORCPT
+        with ESMTP id S1729465AbhAHBBt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 19:56:13 -0500
-Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBA45C0612F6
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Jan 2021 16:55:32 -0800 (PST)
-Received: by mail-pg1-x534.google.com with SMTP id 30so6540649pgr.6
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Jan 2021 16:55:32 -0800 (PST)
+        Thu, 7 Jan 2021 20:01:49 -0500
+Received: from mail-yb1-xb35.google.com (mail-yb1-xb35.google.com [IPv6:2607:f8b0:4864:20::b35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AAC17C0612F5
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Jan 2021 17:01:09 -0800 (PST)
+Received: by mail-yb1-xb35.google.com with SMTP id y128so7873547ybf.10
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Jan 2021 17:01:09 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Mzp+TKeYFNUCiao7ntDagpd86LmNj82kXWV1cqQ1gNI=;
-        b=JeJ1X0pCi75b4g3kj1TGG6/QZXo7nahPOMSU99vr/5fWNWQzc8j8qvv5Abn/cPgiMe
-         29wPh9yxax0MhLxicw0fS9B4dACTTtrPJURsBfa8BFNFgE8VxoZglovipeft/ILmyiS9
-         ntuNx5mysRoXl6Lb/CHC4FHcTrsBzs8KgARelCj2SIqGaWInEj6XUjIftItKoO9k9zmm
-         IOH24gnezg8of17ZuvACN2z9DghDEULLUHTCdOWS+2dENlTITRPRIDF+tLkEeGzARXVG
-         IreZ/WS0k5u8Vz89TMPxcfX+C332ScQR2AwQBmlUqPRnRqNI5FKxr5g07njeH+pT04Al
-         wU8Q==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=/P7ZZM4ofuWIA4Z9kNDbpxnZxWc1UDny2fHMN28PyvY=;
+        b=jddN2onR7BwhOKfW+091rXuUnJ89PUpYp7/2+ZPpNP8AaUVGtW3n7+x09XxtOHjttr
+         9lAJ7+M5+DJ3LMBu4At8gjg+AlMjfdDW8KUlLDci4MXW4jtQFkj3GOlGCsGZVnrFGWMZ
+         y9P4dHW/6638+DaTAr3pI3GHaJAhNep+OGROVha4MpymTGURySrn7O38e8f9MXWcGTHm
+         A8Jy56AsO3lVu0UstCH9qqwB9YUmVWVY13+NvL2gFssqXYrAeIlo5LUCOiefiByV6GBF
+         zUgz3fwD2ymO8kxUDNUIk3cnHT0kqDWr8etfTIk6cpG8GRy1HFcwC94sN+V8/auYllSc
+         DhVQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Mzp+TKeYFNUCiao7ntDagpd86LmNj82kXWV1cqQ1gNI=;
-        b=WhSMJPqdcsrawavkaiaem70/A/7chrRzBHrKPLYgILr4PNLlciTwHA8zI2xU4wzTGq
-         iSjOkzI+l+TXsUBidqYSvj48mBgelexMSVBWl96mQvDpPfJW9NWaje5D31lDXDaQQp35
-         T+F3bJxfV0W5gc4JwZrw0Ul/mHWWGGAJ3ipJkiLSxTbCUY1c2EsVV+oIjwLnDHvVrKug
-         xYYheTN5PejXv/HSCR3kSUnAGQ5wixzjJdtIUOg1NYdF6KU+NhFPm4gmjAGPNyGcbeAF
-         KaZ4N5fv1pfxQgGL0/itOQJZ76qs9uRJox29hsofHG5nUYpZ35ZZ2onD1zgUzKEqHj82
-         K18A==
-X-Gm-Message-State: AOAM530kq02YzNNwYtUZesdbqehqb9XYw8gZl3/Epv9qwpVrk26dANl4
-        6eBPxIHTwTyR2F3zWtO6fYSoY81v/xi+QQ==
-X-Google-Smtp-Source: ABdhPJzrM7Mp9eqqFecmQeZMe9QR7J6u4/eKLpiMSe8b2309T4WQ1gv3hByU9Msd3unojKGQQrZNLg==
-X-Received: by 2002:a63:1322:: with SMTP id i34mr4417255pgl.282.1610067332432;
-        Thu, 07 Jan 2021 16:55:32 -0800 (PST)
-Received: from xps15 (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
-        by smtp.gmail.com with ESMTPSA id x15sm6524892pfn.118.2021.01.07.16.55.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 Jan 2021 16:55:31 -0800 (PST)
-Date:   Thu, 7 Jan 2021 17:55:30 -0700
-From:   Mathieu Poirier <mathieu.poirier@linaro.org>
-To:     Suzuki K Poulose <suzuki.poulose@arm.com>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        coresight@lists.linaro.org, leo.yan@linaro.org,
-        mike.leach@linaro.org, anshuman.khandual@arm.com
-Subject: Re: [PATCH v6 23/26] coresight: etm4x: Add support for sysreg only
- devices
-Message-ID: <20210108005530.GG43045@xps15>
-References: <20210107123859.674252-1-suzuki.poulose@arm.com>
- <20210107123859.674252-24-suzuki.poulose@arm.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=/P7ZZM4ofuWIA4Z9kNDbpxnZxWc1UDny2fHMN28PyvY=;
+        b=Y8SJMADJQizB7DWdiaMXMtgF0pp953i3+bXYuGYiNoWcFdaKMyve1z1RZOyxpvU/4e
+         gF3XyDjNvpLaOfcOhilwwrzisZDs2P8vKTjhyhBrPb+GQB9kmDymMEW2lOzv6dqapKT/
+         xR1gmud3uv/d/GiGfNCdee1EgaEuXi1BwC5TjOTJpcxHkNQQ4v9Z196P2TvYPQ6mrTCv
+         uZMz2Ak0ss5WUxBW3aD79M9LUsG8K272+GxXvhsPstfzKoPPCaWgzSaUnx4XeiH/2DSy
+         s2GxX8UBn+RwhmR9q1iLt9gGl/nIvfkduCLLAiBOuR1+2ZCRQlJ/GOcOj0hodZg8iFH3
+         Ddjg==
+X-Gm-Message-State: AOAM5311y4Y1Xe2zDoDT+p/E+3JjN5TWu7qZvKc9j5kQfE4zNq1vJ3p7
+        ET8n45u8//09a/Pfkfu87zOWGIetnnq+ZPJseuMg+Q==
+X-Google-Smtp-Source: ABdhPJyIkIJWAnqL2BZraYNLirI9O5lRPwlYEJv/lE3m0NMPYkRFYVCGb3QcRUzeu4soEsiPrjwhM5bC+7FP8wapRG4=
+X-Received: by 2002:a25:6604:: with SMTP id a4mr2394920ybc.412.1610067668778;
+ Thu, 07 Jan 2021 17:01:08 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210107123859.674252-24-suzuki.poulose@arm.com>
+References: <20210107234136.740371-1-saravanak@google.com> <b3cda25a3e3911a12a8766f141c9e300@walle.cc>
+ <CAGETcx-q04E0TW6LMoyoRC64xH25Uogk7twSNEbT411ciZPfUw@mail.gmail.com>
+In-Reply-To: <CAGETcx-q04E0TW6LMoyoRC64xH25Uogk7twSNEbT411ciZPfUw@mail.gmail.com>
+From:   Saravana Kannan <saravanak@google.com>
+Date:   Thu, 7 Jan 2021 17:00:32 -0800
+Message-ID: <CAGETcx_CJjOxim+CEptLRSgfYAKHBbP8rHW7BY+U7-X+L2eObg@mail.gmail.com>
+Subject: Re: [PATCH v2] driver core: Fix device link device name collision
+To:     Michael Walle <michael@walle.cc>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        stable <stable@vger.kernel.org>,
+        Android Kernel Team <kernel-team@android.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 07, 2021 at 12:38:56PM +0000, Suzuki K Poulose wrote:
-> Add support for devices with system instruction access only.
-> They don't have a memory mapped interface and thus are not
-> AMBA devices. System register access is not permitted to
-> TRCPDCR and thus skip access to them.
-> 
-> Cc: Mike Leach <mike.leach@linaro.org>
-> Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
-> Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
-> ---
-> Changes since v5:
->  - Rebased to accommodate check_arch_features().
->    Added comments to explain why we don't pass PID for system
->    register based devices.
-> Changes since v4
->  - Add "remove" callback for platform_driver.
->  - Dropped Reviewed-by tag from Mathieu due to the above
-> 
-> Changes since v3
->  - Improve comment over "TRCPDCR" usage with sysreg
->  - Rename etm_xx => etm4_xx
->  - Update the compatible to "arm,coresight-etm4x-sysreg"
-> ---
->  .../coresight/coresight-etm4x-core.c          | 68 +++++++++++++++++--
->  1 file changed, 63 insertions(+), 5 deletions(-)
-> 
-> diff --git a/drivers/hwtracing/coresight/coresight-etm4x-core.c b/drivers/hwtracing/coresight/coresight-etm4x-core.c
-> index f4fbb65b4cc1..34a6cdff75e7 100644
-> --- a/drivers/hwtracing/coresight/coresight-etm4x-core.c
-> +++ b/drivers/hwtracing/coresight/coresight-etm4x-core.c
-> @@ -27,6 +27,7 @@
->  #include <linux/seq_file.h>
->  #include <linux/uaccess.h>
->  #include <linux/perf_event.h>
-> +#include <linux/platform_device.h>
->  #include <linux/pm_runtime.h>
->  #include <linux/property.h>
->  
-> @@ -1736,9 +1737,6 @@ static int etm4_probe(struct device *dev, void __iomem *base, u32 etm_pid)
->  			return -ENOMEM;
->  	}
->  
-> -	if (fwnode_property_present(dev_fwnode(dev), "qcom,skip-power-up"))
-> -		drvdata->skip_power_up = true;
-> -
->  	drvdata->base = base;
->  
->  	spin_lock_init(&drvdata->spinlock);
-> @@ -1762,6 +1760,11 @@ static int etm4_probe(struct device *dev, void __iomem *base, u32 etm_pid)
->  	if (!drvdata->arch)
->  		return -EINVAL;
->  
-> +	/* TRCPDCR is not accessible with system instructions. */
-> +	if (!desc.access.io_mem ||
-> +	    fwnode_property_present(dev_fwnode(dev), "qcom,skip-power-up"))
-> +		drvdata->skip_power_up = true;
-> +
->  	etm4_init_trace_id(drvdata);
->  	etm4_set_default(&drvdata->config);
->  
-> @@ -1820,6 +1823,25 @@ static int etm4_probe_amba(struct amba_device *adev, const struct amba_id *id)
->  	return ret;
->  }
->  
-> +static int etm4_probe_platform_dev(struct platform_device *pdev)
-> +{
-> +	int ret;
-> +
-> +	pm_runtime_get_noresume(&pdev->dev);
-> +	pm_runtime_set_active(&pdev->dev);
-> +	pm_runtime_enable(&pdev->dev);
-> +
-> +	/*
-> +	 * System register based devices could match the
-> +	 * HW by reading appropriate registers on the HW
-> +	 * and thus we could skip the PID.
-> +	 */
-> +	ret = etm4_probe(&pdev->dev, NULL, 0);
-> +
-> +	pm_runtime_put(&pdev->dev);
-> +	return ret;
-> +}
-> +
->  static struct amba_cs_uci_id uci_id_etm4[] = {
->  	{
->  		/*  ETMv4 UCI data */
-> @@ -1869,6 +1891,17 @@ static int __exit etm4_remove_amba(struct amba_device *adev)
->  	return 0;
->  }
->  
-> +static int __exit etm4_remove_platform_dev(struct platform_device *pdev)
-> +{
-> +	int ret = 0;
-> +	struct etmv4_drvdata *drvdata = dev_get_drvdata(&pdev->dev);
-> +
-> +	if (drvdata)
-> +		ret = etm4_remove_dev(drvdata);
-> +	pm_runtime_disable(&pdev->dev);
-> +	return ret;
-> +}
-> +
->  static const struct amba_id etm4_ids[] = {
->  	CS_AMBA_ID(0x000bb95d),			/* Cortex-A53 */
->  	CS_AMBA_ID(0x000bb95e),			/* Cortex-A57 */
-> @@ -1901,6 +1934,21 @@ static struct amba_driver etm4x_amba_driver = {
->  	.id_table	= etm4_ids,
->  };
->  
-> +static const struct of_device_id etm4_sysreg_match[] = {
-> +	{ .compatible	= "arm,coresight-etm4x-sysreg" },
-> +	{}
-> +};
-> +
-> +static struct platform_driver etm4_platform_driver = {
-> +	.probe		= etm4_probe_platform_dev,
-> +	.remove		= etm4_remove_platform_dev,
-> +	.driver			= {
-> +		.name			= "coresight-etm4x",
-> +		.of_match_table		= etm4_sysreg_match,
-> +		.suppress_bind_attrs	= true,
-> +	},
-> +};
-> +
->  static int __init etm4x_init(void)
->  {
->  	int ret;
-> @@ -1913,16 +1961,26 @@ static int __init etm4x_init(void)
->  
->  	ret = amba_driver_register(&etm4x_amba_driver);
->  	if (ret) {
-> -		pr_err("Error registering etm4x driver\n");
-> -		etm4_pm_clear();
-> +		pr_err("Error registering etm4x AMBA driver\n");
-> +		goto clear_pm;
->  	}
->  
-> +	ret = platform_driver_register(&etm4_platform_driver);
-> +	if (!ret)
-> +		return 0;
-> +
-> +	pr_err("Error registering etm4x platform driver\n");
-> +	amba_driver_unregister(&etm4x_amba_driver);
-> +
-> +clear_pm:
-> +	etm4_pm_clear();
->  	return ret;
->  }
->  
->  static void __exit etm4x_exit(void)
->  {
->  	amba_driver_unregister(&etm4x_amba_driver);
-> +	platform_driver_unregister(&etm4_platform_driver);
+On Thu, Jan 7, 2021 at 4:43 PM Saravana Kannan <saravanak@google.com> wrote:
+>
+> On Thu, Jan 7, 2021 at 4:14 PM Michael Walle <michael@walle.cc> wrote:
+> >
+> > Am 2021-01-08 00:41, schrieb Saravana Kannan:
+> > > The device link device's name was of the form:
+> > > <supplier-dev-name>--<consumer-dev-name>
+> > >
+> > > This can cause name collision as reported here [1] as device names are
+> > > not globally unique. Since device names have to be unique within the
+> > > bus/class, add the bus/class name as a prefix to the device names used
+> > > to
+> > > construct the device link device name.
+> > >
+> > > So the devuce link device's name will be of the form:
+> > > <supplier-bus-name>:<supplier-dev-name>--<consumer-bus-name>:<consumer-dev-name>
+> > >
+> > > [1] -
+> > > https://lore.kernel.org/lkml/20201229033440.32142-1-michael@walle.cc/
+> > >
+> > > Cc: stable@vger.kernel.org
+> > > Fixes: 287905e68dd2 ("driver core: Expose device link details in
+> > > sysfs")
+> > > Reported-by: Michael Walle <michael@walle.cc>
+> > > Signed-off-by: Saravana Kannan <saravanak@google.com>
+> > > ---
+> >
+> > This makes it even worse. Please see below for a full bootlog with the
+> > dev_dbg() converted to dev_info() and initcall_debug enabled.
+>
+> Sorry if I'm missing something obvious (been a long day), but how is
+> it worse? I don't see any warnings in this log. I'll reply to your
+> other emails separately.
+>
 
-Good catch.
+Nevermind, I see it now. Also, in the future, if you can dump the logs
+in some kind of pastebin site, that'd be nice. Avoid the emails
+becoming unwieldy and also avoids the log lines from wrapping.
 
-Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
-
->  	etm4_pm_clear();
->  }
->  
-> -- 
-> 2.24.1
-> 
+-Saravana
