@@ -2,171 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7952F2EFA1A
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 22:17:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D88642EFA1D
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 22:17:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729642AbhAHVQZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Jan 2021 16:16:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33684 "EHLO
+        id S1729676AbhAHVRD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Jan 2021 16:17:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33776 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727845AbhAHVQZ (ORCPT
+        with ESMTP id S1727003AbhAHVRC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Jan 2021 16:16:25 -0500
-Received: from mail-ot1-x335.google.com (mail-ot1-x335.google.com [IPv6:2607:f8b0:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBC2BC061574
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Jan 2021 13:15:44 -0800 (PST)
-Received: by mail-ot1-x335.google.com with SMTP id b24so11111311otj.0
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Jan 2021 13:15:44 -0800 (PST)
+        Fri, 8 Jan 2021 16:17:02 -0500
+Received: from mail-qk1-x72e.google.com (mail-qk1-x72e.google.com [IPv6:2607:f8b0:4864:20::72e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6024FC061757;
+        Fri,  8 Jan 2021 13:16:22 -0800 (PST)
+Received: by mail-qk1-x72e.google.com with SMTP id p14so9781751qke.6;
+        Fri, 08 Jan 2021 13:16:22 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=RdHU0V+l/5mQjoD9Rkq0FokpPahQQiZHJdwaPeqIFOw=;
-        b=N/9q3tnXNvoXj9NNSpNsp/WqUeWVnlXZmfdK5XKDodktfsDUrcKtMMoGr3+ipiy+kJ
-         LSIfJyZzXDXtETPGIqnqGxqqHpxB9795RthL27QqsKOxtHlej07Jxk+VIk02x2vd5hLJ
-         te5c3x9ZnSsi4p3D4P/7sBKCCs2vt2qB8JSpQiaJa0FoKFMLS+4/Hyla3wFQ6nKjBGuc
-         oWwf64peHkELSW1QZsJRj+JSDPUuNtgOdYtDy1whEUtvKRbxmLJTLlY5EfEugO4y/awo
-         8RjDEf2IScxGiMTzkQXE4agUt3YLLGoMaCW9jB+VtO5/0827gEWrmQQimdkjHRu1iwBZ
-         sMeg==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=HMTP4DMZypyBbg2Z/QgoI6zKf6gSO7jQrH+KkN6+xjM=;
+        b=P4EKNOU7WlIuWILQXYWZpaP4A5X4wFLxLhnm+hXN4zmE5OoKvqwiuwb+IF1S4n80lR
+         XykOhAQxPiq2qvk0qN9KSCFabubN/jMeZx95NPylCCAV2u+9+vyPdb09SLjf+7XxcNxt
+         WMNdJZACLC08cevH7Gu1bbnirF3DPy9Ue7hEwRA26ffkvIVOVMtQ7BBmgR9CVk5djBhg
+         8xE4eJSdBxTgqc5VUFAyqg9BoXUHtyc2gE0PZQLpL7rXjuEtNtZqFK4NVr80F3FKwslj
+         Yh7W8X2XuGsBJlQ/tfBIaLwaFDGAwZyItETm9HndfUlX9Vzh73D6LwRRLEl9AK1YtLmJ
+         gXSw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=RdHU0V+l/5mQjoD9Rkq0FokpPahQQiZHJdwaPeqIFOw=;
-        b=JQ0co9Qm2Z2jowuE629ECXtsH/ogI47xy17RHKGXe/dCbPol1kNxwfvGGafPdaW0/3
-         wY+27PvORB2oRoDrYuFYUjpDHtH+4fuQ5A7D3ZnYWb+iyGJ6RIIt63CG1aajkqpq5Tge
-         69/KeCWComIQEgNnOg39YUeY2G3v6PLq0hY0+2sOM5MR0672gwOPEZg8jxbvOoWbwSjn
-         sdXFFwMmqlRf5wk9cWf/rQjWA30R4r2uHb5+Ii744kxlGehwMCQZQaqA9k1+Qqa4hhE1
-         7cJfPNJNYvEa8MRDskFbgWoCnqQenqFlDgSxu/cDy/e5Rg3wbzx7nqzPStuXjY1YgMJT
-         kG8A==
-X-Gm-Message-State: AOAM531BkIsRyrDQho2x3/pRwdZ+d8Z695OoatCO6bXqUJUrNd33az47
-        Oodlwp0Pn8+sHMtheGALXvstCa0waOWdI/+AZUc=
-X-Google-Smtp-Source: ABdhPJxUgRAka2RPKA+U8s8ytzVCIDZKjm/nFhiLdVPVHrGZ4YUvczYtQ+lBCAP0taI+zW0Tsik0GJrHRn2GsSUX9Zg=
-X-Received: by 2002:a05:6830:1b7b:: with SMTP id d27mr4083848ote.132.1610140544373;
- Fri, 08 Jan 2021 13:15:44 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=HMTP4DMZypyBbg2Z/QgoI6zKf6gSO7jQrH+KkN6+xjM=;
+        b=pDS0ngAxMS91gMEO/vg3IFsy490Nxxs8kOdH8J9OSSVfV29IUK7NFOsGH1MeZvWEPH
+         3j4auOAIeLiTBazgYDT5kjT+yDqyNMkm3Fil7UOxSMu5cHYyAPR6PyyHbTnuKV7tpwDE
+         TUTvTiDJkphjCE7ZEEQ0djQElWrO+YVEr3YbWGv2D2EmTY8OU2dH4seJcdGKjKP7OIWY
+         0nnas40cG3ZiyXgiaHSFL5+nNTBXVG+7pyCCluGiCWi8fdNHYPhWsFxp9iZcvAHs+C8j
+         zc5PSovwniaAZnh8Vt1vwaRAA3SZPUnFkrPdKfh1vThwbuFiR51k4odcTuf+Cp+Pu9O9
+         s6ZA==
+X-Gm-Message-State: AOAM532xqjU8Bpq/5JRU3KC8SPQBFrW+FItcqyQLVNcG084IPEg+2lfP
+        m2WfgU0K5kMY3cRKyAz20Js=
+X-Google-Smtp-Source: ABdhPJxfL35M0hlqTEnuDKZfg9k7dtly9P6XMsUz8mpcpIMRqwYpKaliPfZszIzGV12s2+iLSRmGmw==
+X-Received: by 2002:a37:c92:: with SMTP id 140mr5886796qkm.152.1610140581536;
+        Fri, 08 Jan 2021 13:16:21 -0800 (PST)
+Received: from ubuntu-m3-large-x86 ([2604:1380:45f1:1d00::1])
+        by smtp.gmail.com with ESMTPSA id s14sm5598438qke.45.2021.01.08.13.16.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 08 Jan 2021 13:16:20 -0800 (PST)
+Date:   Fri, 8 Jan 2021 14:16:19 -0700
+From:   Nathan Chancellor <natechancellor@gmail.com>
+To:     Alexander Lobakin <alobakin@pm.me>
+Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Kees Cook <keescook@chromium.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Fangrui Song <maskray@google.com>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Pei Huang <huangpei@loongson.cn>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        Ralf Baechle <ralf@linux-mips.org>,
+        Corey Minyard <cminyard@mvista.com>,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arch@vger.kernel.org, stable@vger.kernel.org,
+        clang-built-linux@googlegroups.com
+Subject: Re: [PATCH v4 mips-next 3/7] MIPS: properly stop .eh_frame generation
+Message-ID: <20210108211619.GC2547542@ubuntu-m3-large-x86>
+References: <20210107123331.354075-1-alobakin@pm.me>
+ <20210107123428.354231-1-alobakin@pm.me>
+ <20210107123428.354231-3-alobakin@pm.me>
 MIME-Version: 1.0
-References: <20210108201457.3078600-1-lee.jones@linaro.org> <20210108201457.3078600-28-lee.jones@linaro.org>
-In-Reply-To: <20210108201457.3078600-28-lee.jones@linaro.org>
-From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Fri, 8 Jan 2021 16:15:33 -0500
-Message-ID: <CADnq5_P=6PbbOLYE6PiXP1_J9weqZgrKRwGU3Q7ZsRnx7BX2eA@mail.gmail.com>
-Subject: Re: [PATCH 27/40] drm/amd/pm/powerplay/hwmgr/vega10_hwmgr: Fix worthy
- function headers, demote barely documented one
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     David Airlie <airlied@linux.ie>,
-        LKML <linux-kernel@vger.kernel.org>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        Maling list - DRI developers 
-        <dri-devel@lists.freedesktop.org>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Evan Quan <evan.quan@amd.com>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210107123428.354231-3-alobakin@pm.me>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 8, 2021 at 3:15 PM Lee Jones <lee.jones@linaro.org> wrote:
->
-> Fixes the following W=3D1 kernel build warning(s):
->
->  drivers/gpu/drm/amd/amdgpu/../pm/powerplay/hwmgr/vega10_hwmgr.c:1556: wa=
-rning: Function parameter or member 'acg_freq' not described in 'vega10_pop=
-ulate_single_gfx_level'
->  drivers/gpu/drm/amd/amdgpu/../pm/powerplay/hwmgr/vega10_hwmgr.c:1621: wa=
-rning: Function parameter or member 'current_soc_did' not described in 'veg=
-a10_populate_single_soc_level'
->  drivers/gpu/drm/amd/amdgpu/../pm/powerplay/hwmgr/vega10_hwmgr.c:1621: wa=
-rning: Function parameter or member 'current_vol_index' not described in 'v=
-ega10_populate_single_soc_level'
->  drivers/gpu/drm/amd/amdgpu/../pm/powerplay/hwmgr/vega10_hwmgr.c:1621: wa=
-rning: Excess function parameter 'current_socclk_level' description in 'veg=
-a10_populate_single_soc_level'
->  drivers/gpu/drm/amd/amdgpu/../pm/powerplay/hwmgr/vega10_hwmgr.c:1757: wa=
-rning: Function parameter or member 'current_mem_vid' not described in 'veg=
-a10_populate_single_memory_level'
->  drivers/gpu/drm/amd/amdgpu/../pm/powerplay/hwmgr/vega10_hwmgr.c:1757: wa=
-rning: Function parameter or member 'current_memclk_level' not described in=
- 'vega10_populate_single_memory_level'
->  drivers/gpu/drm/amd/amdgpu/../pm/powerplay/hwmgr/vega10_hwmgr.c:1757: wa=
-rning: Function parameter or member 'current_mem_soc_vind' not described in=
- 'vega10_populate_single_memory_level'
->  drivers/gpu/drm/amd/amdgpu/../pm/powerplay/hwmgr/vega10_hwmgr.c:2871: wa=
-rning: Function parameter or member 'bitmap' not described in 'vega10_start=
-_dpm'
->
-> Cc: Evan Quan <evan.quan@amd.com>
-> Cc: Alex Deucher <alexander.deucher@amd.com>
-> Cc: "Christian K=C3=B6nig" <christian.koenig@amd.com>
-> Cc: David Airlie <airlied@linux.ie>
-> Cc: Daniel Vetter <daniel@ffwll.ch>
-> Cc: amd-gfx@lists.freedesktop.org
-> Cc: dri-devel@lists.freedesktop.org
-> Signed-off-by: Lee Jones <lee.jones@linaro.org>
+On Thu, Jan 07, 2021 at 12:35:01PM +0000, Alexander Lobakin wrote:
+> Commit 866b6a89c6d1 ("MIPS: Add DWARF unwinding to assembly") added
+> -fno-asynchronous-unwind-tables to KBUILD_CFLAGS to prevent compiler
+> from emitting .eh_frame symbols.
+> However, as MIPS heavily uses CFI, that's not enough. Use the
+> approach taken for x86 (as it also uses CFI) and explicitly put CFI
+> symbols into the .debug_frame section (except for VDSO).
+> This allows us to drop .eh_frame from DISCARDS as it's no longer
+> being generated.
+> 
+> Fixes: 866b6a89c6d1 ("MIPS: Add DWARF unwinding to assembly")
+> Suggested-by: Kees Cook <keescook@chromium.org>
+> Signed-off-by: Alexander Lobakin <alobakin@pm.me>
 
-Applied.  Thanks!
-
-Alex
-
+Reviewed-by: Nathan Chancellor <natechancellor@gmail.com>
 
 > ---
->  drivers/gpu/drm/amd/pm/powerplay/hwmgr/vega10_hwmgr.c | 10 ++++++----
->  1 file changed, 6 insertions(+), 4 deletions(-)
->
-> diff --git a/drivers/gpu/drm/amd/pm/powerplay/hwmgr/vega10_hwmgr.c b/driv=
-ers/gpu/drm/amd/pm/powerplay/hwmgr/vega10_hwmgr.c
-> index da470462d6e2c..29c99642d22d4 100644
-> --- a/drivers/gpu/drm/amd/pm/powerplay/hwmgr/vega10_hwmgr.c
-> +++ b/drivers/gpu/drm/amd/pm/powerplay/hwmgr/vega10_hwmgr.c
-> @@ -1549,6 +1549,7 @@ static int vega10_populate_smc_link_levels(struct p=
-p_hwmgr *hwmgr)
->   * @hwmgr:      the address of the hardware manager
->   * @gfx_clock:  the GFX clock to use to populate the structure.
->   * @current_gfxclk_level:  location in PPTable for the SMC GFXCLK struct=
-ure.
-> + * @acg_freq:   ACG frequenty to return (MHz)
->   */
->  static int vega10_populate_single_gfx_level(struct pp_hwmgr *hwmgr,
->                 uint32_t gfx_clock, PllSetting_t *current_gfxclk_level,
-> @@ -1612,7 +1613,8 @@ static int vega10_populate_single_gfx_level(struct =
-pp_hwmgr *hwmgr,
->   *
->   * @hwmgr:     the address of the hardware manager.
->   * @soc_clock: the SOC clock to use to populate the structure.
-> - * @current_socclk_level: location in PPTable for the SMC SOCCLK structu=
-re.
-> + * @current_soc_did:   DFS divider to pass back to caller
-> + * @current_vol_index: index of current VDD to pass back to caller
->   * return:      0 on success
->   */
->  static int vega10_populate_single_soc_level(struct pp_hwmgr *hwmgr,
-> @@ -1744,7 +1746,7 @@ static void vega10_populate_vddc_soc_levels(struct =
-pp_hwmgr *hwmgr)
->         }
->  }
->
-> -/**
+>  arch/mips/include/asm/asm.h    | 18 ++++++++++++++++++
+>  arch/mips/kernel/vmlinux.lds.S |  1 -
+>  2 files changed, 18 insertions(+), 1 deletion(-)
+> 
+> diff --git a/arch/mips/include/asm/asm.h b/arch/mips/include/asm/asm.h
+> index 3682d1a0bb80..908f6d6ae24b 100644
+> --- a/arch/mips/include/asm/asm.h
+> +++ b/arch/mips/include/asm/asm.h
+> @@ -20,10 +20,27 @@
+>  #include <asm/sgidefs.h>
+>  #include <asm/asm-eva.h>
+>  
+> +#ifndef __VDSO__
 > +/*
->   * Populates single SMC GFXCLK structure using the provided clock.
->   *
->   * @hwmgr:     the address of the hardware manager.
-> @@ -2863,8 +2865,8 @@ static int vega10_stop_dpm(struct pp_hwmgr *hwmgr, =
-uint32_t bitmap)
->  /**
->   * Tell SMC to enabled the supported DPMs.
->   *
-> - * @hwmgr:  the address of the powerplay hardware manager.
-> - * @bitmap  bitmap for the features to enabled.
-> + * @hwmgr:   the address of the powerplay hardware manager.
-> + * @bitmap:  bitmap for the features to enabled.
->   * return:  0 on at least one DPM is successfully enabled.
+> + * Emit CFI data in .debug_frame sections, not .eh_frame sections.
+> + * We don't do DWARF unwinding at runtime, so only the offline DWARF
+> + * information is useful to anyone. Note we should change this if we
+> + * ever decide to enable DWARF unwinding at runtime.
+> + */
+> +#define CFI_SECTIONS	.cfi_sections .debug_frame
+> +#else
+> + /*
+> +  * For the vDSO, emit both runtime unwind information and debug
+> +  * symbols for the .dbg file.
+> +  */
+> +#define CFI_SECTIONS
+> +#endif
+> +
+>  /*
+>   * LEAF - declare leaf routine
 >   */
->  static int vega10_start_dpm(struct pp_hwmgr *hwmgr, uint32_t bitmap)
-> --
-> 2.25.1
->
-> _______________________________________________
-> dri-devel mailing list
-> dri-devel@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/dri-devel
+>  #define LEAF(symbol)					\
+> +		CFI_SECTIONS;				\
+>  		.globl	symbol;				\
+>  		.align	2;				\
+>  		.type	symbol, @function;		\
+> @@ -36,6 +53,7 @@ symbol:		.frame	sp, 0, ra;			\
+>   * NESTED - declare nested routine entry point
+>   */
+>  #define NESTED(symbol, framesize, rpc)			\
+> +		CFI_SECTIONS;				\
+>  		.globl	symbol;				\
+>  		.align	2;				\
+>  		.type	symbol, @function;		\
+> diff --git a/arch/mips/kernel/vmlinux.lds.S b/arch/mips/kernel/vmlinux.lds.S
+> index 16468957cba2..0f4e46ea4458 100644
+> --- a/arch/mips/kernel/vmlinux.lds.S
+> +++ b/arch/mips/kernel/vmlinux.lds.S
+> @@ -225,6 +225,5 @@ SECTIONS
+>  		*(.options)
+>  		*(.pdr)
+>  		*(.reginfo)
+> -		*(.eh_frame)
+>  	}
+>  }
+> -- 
+> 2.30.0
+> 
+> 
