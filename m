@@ -2,123 +2,212 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E31482EF8DD
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 21:19:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3446B2EF8E2
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 21:19:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729510AbhAHUR5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Jan 2021 15:17:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52556 "EHLO
+        id S1729537AbhAHUSS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Jan 2021 15:18:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52782 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729370AbhAHURD (ORCPT
+        with ESMTP id S1729504AbhAHUSH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Jan 2021 15:17:03 -0500
-Received: from mail-io1-xd2a.google.com (mail-io1-xd2a.google.com [IPv6:2607:f8b0:4864:20::d2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBFADC06129C
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Jan 2021 12:16:20 -0800 (PST)
-Received: by mail-io1-xd2a.google.com with SMTP id z5so10949515iob.11
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Jan 2021 12:16:20 -0800 (PST)
+        Fri, 8 Jan 2021 15:18:07 -0500
+Received: from mail-ej1-x62c.google.com (mail-ej1-x62c.google.com [IPv6:2a00:1450:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89E36C0612EA
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Jan 2021 12:17:26 -0800 (PST)
+Received: by mail-ej1-x62c.google.com with SMTP id n26so16159396eju.6
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Jan 2021 12:17:26 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=JxLqkk42jTtbkrCXBk4LQLnq5f1cF9SNxn9PWZ+rG9o=;
-        b=fUkb19X8+ue3SJacHn0WfI9ExD/QdyriO1e7IUkdh1Rc28A0bY8rJnkwD4jbcALHcc
-         vk1uoKt3R3fFzv7OuMH5LDQ9uwyN2tydls4y/AxPKUbSyBApG6hG/tmVtBVBOvBFoJY9
-         jX0ZCCa1Ir3cN8AGd6RKZw0FFaCtZll8oUhxe8lY/RUixr5tf5YW8qaIOjBYqr9kcY/s
-         OYrcfluH6DZmx5QgWL/c3XmvNEDqCqoRmtB2zYcopTOEygNuEUTTp5sKDcccgkVfm5zX
-         TBZq05yz03DL94gdSBSPa4Pq0RG2Gi7fzLthIu7edzqV3bAhxiinyLNio3CCFBBKiHNr
-         JCBA==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=EwrOgDTg96KrzDvgtinwO514AtzHfwPfpJcfahxEYVI=;
+        b=aGlRquYV7bBoqWOfhg/mBYEuzggSozf1JOKAipPHB6CHoFm9cW3lprBEnleXHV82pE
+         r5stn0vhAinJiv33KPHJ5w2fLw5Icm3NYqX8LQ0wAt21tWNTl6vudMYutWVrDrufXsKL
+         5FFs6hddoUdt10NDUrvs+56xFAfqToaAXTQent1IQQntDeUhmZ/QkLQcxbY/QmNj0Dca
+         4weEE7eCLoFXkAgKjbAxDWd7Haie/lzKOV1kXZl5EnV7TrZ3SpiwDi9RMToSkT0It6C6
+         HcFCJqGsfukio8J9XbsSYIhGB9QtbX2JDlLjWpn94zM1pIQkBdL0pEHk7skG8iTc9zyH
+         kVbw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=JxLqkk42jTtbkrCXBk4LQLnq5f1cF9SNxn9PWZ+rG9o=;
-        b=BlqrKKCfEJlLZK49P3EV1qyfz6035jLgNdOmGPM6L6tSwS5s1PJXzBEDcgB76jCj1q
-         N3hGm3jqjzU2z7Iqj9ArVblu4D1Hv10YfOIbvRXGe6IchWAXcpHcbJcETasya7bgB0hP
-         WXwmKszQGaOp57XF3a5KDx+oJ8kz+2Mi4XvykXXqhg4Hu2DweAPzVY4mnMw8NARnr/0J
-         UR9b4Hmv6MGk7PpCQwGlYbagBpYxBdfBkl5FbPYCJqbL9s/Wa2cMGwl2QvUvqzRMPVKt
-         Z+FNg7pqeJVmKiRoCG2xY6HcdGalIB3P3muhYSQNEP8Wy2Jghypl3xfTy9aLUZJ2t35p
-         hUFQ==
-X-Gm-Message-State: AOAM532qDmJW8T9FEAJA7QzDW0bFV9U6lV5Ki7NgUnZ6J0D9VAMghrvV
-        eE6MyIRitZmm7IhkUDnIq7wMHiIb9X9ATw==
-X-Google-Smtp-Source: ABdhPJzBMVnK82HVkHSa5l6cgbzbaR/2WVtM1ThhGbCnW/6cYCd7kvv3k00Q5RZx1s1FoVUhW6J43g==
-X-Received: by 2002:a6b:b205:: with SMTP id b5mr6552718iof.190.1610136979905;
-        Fri, 08 Jan 2021 12:16:19 -0800 (PST)
-Received: from [172.22.22.4] (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
-        by smtp.googlemail.com with ESMTPSA id q5sm7572105ilg.62.2021.01.08.12.16.18
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 08 Jan 2021 12:16:19 -0800 (PST)
-Subject: Re: [PATCH net 2/2] net: ipa: re-enable NAPI before enabling
- interrupt
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     davem@davemloft.net, evgreen@chromium.org,
-        bjorn.andersson@linaro.org, cpratapa@codeaurora.org,
-        subashab@codeaurora.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210107214325.7077-1-elder@linaro.org>
- <20210107214325.7077-3-elder@linaro.org>
- <20210107183803.47308e23@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-From:   Alex Elder <elder@linaro.org>
-Message-ID: <49105454-8f5e-6fa6-bdef-fa68c4510d62@linaro.org>
-Date:   Fri, 8 Jan 2021 14:16:18 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=EwrOgDTg96KrzDvgtinwO514AtzHfwPfpJcfahxEYVI=;
+        b=HfT4TNV3/quOXodkHgSfQljXD8c1D9Ocx/zCp6foa2mlvAx4jxpi8Kxb6uXkZILPSF
+         gPx/XhCz7OA7CVQZzgUSgbuD1gtDB4yTZssZwAnD7GiMDWXb6z16wKRCi4+mt443CmSa
+         IU4fvBoUolvx9pK77X+OKSm1aEV2OIb6MxzypalRh4srCC1iLs24RDvn3zbWMk5O7moj
+         peJvuKPcuUBX0+e2X6lKX3bawcyczzixgdbXl708uV5dCbjHmkrMybOVQeW8Omfhh3MR
+         sXKJJBLMOC4lN5SW7KhMadp4wNLM3z0Cwg6WmXwRxDjXsxVruiSHQWKldLd2tErhWBLH
+         wMMw==
+X-Gm-Message-State: AOAM531a6WccrZ+a6McU0QsKCyy5xvux45J6UyQa09eB2b8zRRnmZe9M
+        veSjhbxLvCepKs3vuRuzkOPdCI30M0LFC+cxY/eT8g==
+X-Google-Smtp-Source: ABdhPJye2R3aseIB1YZzP7HfOO+3uXuVcvm7i9jO6SKjJISprsBWoeK3t3aCDNf/qzYvphit8xROqcEb2lZxYjcwLC4=
+X-Received: by 2002:a17:907:101c:: with SMTP id ox28mr3462266ejb.201.1610137044856;
+ Fri, 08 Jan 2021 12:17:24 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20210107183803.47308e23@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20201112015359.1103333-1-lokeshgidra@google.com>
+ <20201112015359.1103333-4-lokeshgidra@google.com> <CAHC9VhS2WNXn2cVAUcAY5AmmBv+=XsthCevofNNuEOU3=jtLrg@mail.gmail.com>
+ <CAEjxPJ6TA_nXrUJ6CjhG-j0_oAj9WU1vRn5pGvjDqQ2Bk9VVag@mail.gmail.com>
+In-Reply-To: <CAEjxPJ6TA_nXrUJ6CjhG-j0_oAj9WU1vRn5pGvjDqQ2Bk9VVag@mail.gmail.com>
+From:   Lokesh Gidra <lokeshgidra@google.com>
+Date:   Fri, 8 Jan 2021 12:17:13 -0800
+Message-ID: <CA+EESO45ezOtg1-MHfwSk3YNYRS7cYnH+kMz-T_MdaSpyW=8Yw@mail.gmail.com>
+Subject: Re: [PATCH v13 3/4] selinux: teach SELinux about anonymous inodes
+To:     Stephen Smalley <stephen.smalley.work@gmail.com>
+Cc:     Paul Moore <paul@paul-moore.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        James Morris <jmorris@namei.org>,
+        Casey Schaufler <casey@schaufler-ca.com>,
+        Eric Biggers <ebiggers@kernel.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        Eric Paris <eparis@parisplace.org>,
+        Daniel Colascione <dancol@dancol.org>,
+        Kees Cook <keescook@chromium.org>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        KP Singh <kpsingh@google.com>,
+        David Howells <dhowells@redhat.com>,
+        Anders Roxell <anders.roxell@linaro.org>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Matthew Garrett <matthewgarrett@google.com>,
+        Aaron Goidel <acgoide@tycho.nsa.gov>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        "Joel Fernandes (Google)" <joel@joelfernandes.org>,
+        YueHaibing <yuehaibing@huawei.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Alexey Budankov <alexey.budankov@linux.intel.com>,
+        Adrian Reber <areber@redhat.com>,
+        Aleksa Sarai <cyphar@cyphar.com>,
+        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        LSM List <linux-security-module@vger.kernel.org>,
+        SElinux list <selinux@vger.kernel.org>,
+        Kalesh Singh <kaleshsingh@google.com>,
+        Calin Juravle <calin@google.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Jeffrey Vander Stoep <jeffv@google.com>,
+        "Cc: Android Kernel" <kernel-team@android.com>,
+        "open list:MEMORY MANAGEMENT" <linux-mm@kvack.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        Daniel Colascione <dancol@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 1/7/21 8:38 PM, Jakub Kicinski wrote:
-> On Thu,  7 Jan 2021 15:43:25 -0600 Alex Elder wrote:
->> @@ -743,21 +743,21 @@ static void gsi_channel_freeze(struct gsi_channel *channel)
->>   	set_bit(GSI_CHANNEL_FLAG_STOPPING, channel->flags);
->>   	smp_mb__after_atomic();	/* Ensure gsi_channel_poll() sees new value */
->>   
->> -	napi_disable(&channel->napi);
->> -
->>   	gsi_irq_ieob_disable(channel->gsi, channel->evt_ring_id);
->> +
->> +	napi_disable(&channel->napi);
->>   }
-> 
-> So patch 1 is entirely for the purpose of keeping the code symmetric
-> here? I can't think of other reason why masking this IRQ couldn't be
-> left after NAPI is disabled, and that should work as you expect.
+On Fri, Jan 8, 2021 at 11:35 AM Stephen Smalley
+<stephen.smalley.work@gmail.com> wrote:
+>
+> On Wed, Jan 6, 2021 at 10:03 PM Paul Moore <paul@paul-moore.com> wrote:
+> >
+> > On Wed, Nov 11, 2020 at 8:54 PM Lokesh Gidra <lokeshgidra@google.com> wrote:
+> > > From: Daniel Colascione <dancol@google.com>
+> > >
+> > > This change uses the anon_inodes and LSM infrastructure introduced in
+> > > the previous patches to give SELinux the ability to control
+> > > anonymous-inode files that are created using the new
+> > > anon_inode_getfd_secure() function.
+> > >
+> > > A SELinux policy author detects and controls these anonymous inodes by
+> > > adding a name-based type_transition rule that assigns a new security
+> > > type to anonymous-inode files created in some domain. The name used
+> > > for the name-based transition is the name associated with the
+> > > anonymous inode for file listings --- e.g., "[userfaultfd]" or
+> > > "[perf_event]".
+> > >
+> > > Example:
+> > >
+> > > type uffd_t;
+> > > type_transition sysadm_t sysadm_t : anon_inode uffd_t "[userfaultfd]";
+> > > allow sysadm_t uffd_t:anon_inode { create };
+> > >
+> > > (The next patch in this series is necessary for making userfaultfd
+> > > support this new interface.  The example above is just
+> > > for exposition.)
+> > >
+> > > Signed-off-by: Daniel Colascione <dancol@google.com>
+> > > Signed-off-by: Lokesh Gidra <lokeshgidra@google.com>
+> > > ---
+> > >  security/selinux/hooks.c            | 56 +++++++++++++++++++++++++++++
+> > >  security/selinux/include/classmap.h |  2 ++
+> > >  2 files changed, 58 insertions(+)
+> > >
+> > > diff --git a/security/selinux/hooks.c b/security/selinux/hooks.c
+> > > index 6b1826fc3658..d092aa512868 100644
+> > > --- a/security/selinux/hooks.c
+> > > +++ b/security/selinux/hooks.c
+> > > @@ -2927,6 +2927,61 @@ static int selinux_inode_init_security(struct inode *inode, struct inode *dir,
+> > >         return 0;
+> > >  }
+> > >
+> > > +static int selinux_inode_init_security_anon(struct inode *inode,
+> > > +                                           const struct qstr *name,
+> > > +                                           const struct inode *context_inode)
+> > > +{
+> > > +       const struct task_security_struct *tsec = selinux_cred(current_cred());
+> > > +       struct common_audit_data ad;
+> > > +       struct inode_security_struct *isec;
+> > > +       int rc;
+> > > +
+> > > +       if (unlikely(!selinux_initialized(&selinux_state)))
+> > > +               return 0;
+> > > +
+> > > +       isec = selinux_inode(inode);
+> > > +
+> > > +       /*
+> > > +        * We only get here once per ephemeral inode.  The inode has
+> > > +        * been initialized via inode_alloc_security but is otherwise
+> > > +        * untouched.
+> > > +        */
+> > > +
+> > > +       if (context_inode) {
+> > > +               struct inode_security_struct *context_isec =
+> > > +                       selinux_inode(context_inode);
+> > > +               if (context_isec->initialized != LABEL_INITIALIZED)
+> > > +                       return -EACCES;
+Stephen, as per your explanation below, is this check also
+problematic? I mean is it possible that /dev/kvm context_inode may not
+have its label initialized? If so, then v12 of the patch series can be
+used as is. Otherwise, I will send the next version which rollbacks
+v14 and v13, except for this check. Kindly confirm.
 
-No, that is not the purpose of the first patch.
+> > > +
+> > > +               isec->sclass = context_isec->sclass;
+> >
+> > Taking the object class directly from the context_inode is
+> > interesting, and I suspect problematic.  In the case below where no
+> > context_inode is supplied the object class is set to
+> > SECCLASS_ANON_INODE, which is correct, but when a context_inode is
+> > supplied there is no guarantee that the object class will be set to
+> > SECCLASS_ANON_INODE.  This could both pose a problem for policy
+> > writers (how do you distinguish the anon inode from other normal file
+> > inodes in this case?) as well as an outright fault later in this
+> > function when we try to check the ANON_INODE__CREATE on an object
+> > other than a SECCLASS_ANON_INODE object.
+> >
+> > It works in the userfaultfd case because the context_inode is
+> > originally created with this function so the object class is correctly
+> > set to SECCLASS_ANON_INODE, but can we always guarantee that to be the
+> > case?  Do we ever need or want to support using a context_inode that
+> > is not SECCLASS_ANON_INODE?
+>
+> Sorry, I haven't been following this.  IIRC, the original reason for
+> passing a context_inode was to support the /dev/kvm or similar use
+> cases where the driver is creating anonymous inodes to represent
+> specific objects/interfaces derived from the device node and we want
+> to be able to control subsequent ioctl operations on those anonymous
+> inodes in the same manner as for the device node.  For example, ioctl
+> operations on /dev/kvm can end up returning file descriptors for
+> anonymous inodes representing a specific VM or VCPU or similar.  If we
+> propagate the security class and SID from the /dev/kvm inode (the
+> context inode) to the new anonymous inode, we can write a single
+> policy rule over all ioctl operations related to /dev/kvm.  That's
+> also why we used the FILE__CREATE permission here originally; that was
+> also intentional.  All the file-related classes including anon_inode
+> inherit a common set of file permissions including create and thus we
+> often use the FILE__<permission> in common code when checking
+> permission against any potentially derived class.
 
-But regardless, I'm really glad you pushed back on this
-because it made me step back and re-evaluate in a different
-way what was happening during suspend.  Your earlier response
-(about what happens during napi_disable()) also helped me to
-see there's probably something *else* wrong with how the
-driver is stopping channels.
-
-I was going to go into more detail here but for now
-let me just rescind this series.  I will be reworking
-the channel stop/suspend logic and will send that work
-out when it's tested and ready.
-
-Thanks.
-
-					-Alex
-
->>   /* Allow transactions to be used on the channel again. */
->>   static void gsi_channel_thaw(struct gsi_channel *channel)
->>   {
->> -	gsi_irq_ieob_enable(channel->gsi, channel->evt_ring_id);
->> -
->>   	/* Allow the NAPI poll loop to re-enable interrupts again */
->>   	clear_bit(GSI_CHANNEL_FLAG_STOPPING, channel->flags);
->>   	smp_mb__after_atomic();	/* Ensure gsi_channel_poll() sees new value */
->>   
->>   	napi_enable(&channel->napi);
->> +
->> +	gsi_irq_ieob_enable(channel->gsi, channel->evt_ring_id);
->>   }
-
+Thanks a lot for the explanation.
