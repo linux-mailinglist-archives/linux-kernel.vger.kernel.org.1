@@ -2,128 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D8512EEB73
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 03:46:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 51A452EEB75
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 03:46:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727291AbhAHCnd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 21:43:33 -0500
-Received: from out30-132.freemail.mail.aliyun.com ([115.124.30.132]:36092 "EHLO
-        out30-132.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726993AbhAHCnb (ORCPT
+        id S1726751AbhAHCpP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 21:45:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58774 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726113AbhAHCpP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 21:43:31 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R161e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04420;MF=wenyang@linux.alibaba.com;NM=1;PH=DS;RN=5;SR=0;TI=SMTPD_---0UL1ZENl_1610073767;
-Received: from IT-C02W23QPG8WN.local(mailfrom:wenyang@linux.alibaba.com fp:SMTPD_---0UL1ZENl_1610073767)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Fri, 08 Jan 2021 10:42:47 +0800
-Subject: Re: [PATCH v2 4.9 00/10] fix a race in release_task when flushing the
- dentry
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Christian Brauner <christian@brauner.io>
-Cc:     Sasha Levin <sashal@kernel.org>,
-        Xunlei Pang <xlpang@linux.alibaba.com>,
-        linux-kernel@vger.kernel.org
-References: <20210107075222.62623-1-wenyang@linux.alibaba.com>
- <X/b781Kwn48xq8aS@kroah.com>
- <e0fa1641-d00b-acfc-91d7-9eb16fb61664@linux.alibaba.com>
- <X/dS37kyW+jf4gg/@kroah.com>
-From:   Wen Yang <wenyang@linux.alibaba.com>
-Message-ID: <82fb683a-bc9d-2083-f657-116f3e96d785@linux.alibaba.com>
-Date:   Fri, 8 Jan 2021 10:42:47 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
- Gecko/20100101 Thunderbird/68.1.0
+        Thu, 7 Jan 2021 21:45:15 -0500
+Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70C5DC0612F5
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Jan 2021 18:44:28 -0800 (PST)
+Received: by mail-ed1-x52f.google.com with SMTP id b2so9783580edm.3
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Jan 2021 18:44:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=NS3ezHf4QCzMGW6WEzOGr6UnmAdwirkpgipq6BYO9fU=;
+        b=ntZrM8I/p9FFhseyV9vPjRIl0DNC/zQseVL5Fb1CF7i57w+6aFlsXCQyafvceAXBfw
+         g0/PICcvIs6aP9qjjXrG2iT4mxfmWJ1m7ssWaggYxyNmQqbnGSnztcuSMngWNoHYDQcm
+         CQ+3v86/DHVS/gOuaFz0fnGZcgnn9QYIgHaYE3hKxYMS229hD300cU2LJARiLo/L2AhL
+         hjE7fSV/3paKTTHi7JBsEvqQFtDug4sUDSmBdNbkjqd5xK1rwdwOXecbAT9bxmmPjTht
+         l3mRI+fbw9wns5bzRuwThIw1c/DOE/a2kWi1GCOvL7St2XyVgBORmHQvDQcJwcFVY/B0
+         By1Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=NS3ezHf4QCzMGW6WEzOGr6UnmAdwirkpgipq6BYO9fU=;
+        b=mokwXfZa9TIM4FCMU3CPnadXsksO05kygIcsESL6uVX/EbuVE0ViMFVmUoHAoqjNAc
+         E1FWnN3BQky4Pcfxc96/TipzcqfhaXj+JHY1guE/cPnmZvybbJdOFy35aLm3cddmX9yx
+         inM7DgEbIJ05GZ/FX36Kq8uPWQ/3ul6iFMeN5Z4dU+kpctVmOwOuEz1DQG+U1bhpDFoL
+         nMHWTREIXwaVgIzX2V4F+EiGyUo3tnpzpI5yQmzwt1Mvi2kRtMbrkGETwhBr/yzPt44V
+         ouhL5R2d6GPyK8CccyKVqALIocVbS6N3dLPlFJMfvlxPk2sj+b1L2/97isI9BwCY++uh
+         uP6A==
+X-Gm-Message-State: AOAM530hHaGK4k5pPIRmYPvmEWT5kfxc84whbAJHWP2EyfH0EzNqGxxQ
+        quHE9kuMIZloCMRB/OFyzJXr0StK1kRsBSbySgUiAA==
+X-Google-Smtp-Source: ABdhPJyDJSJngApTDCTJHOpdCD2VikUDdjPcmRUMathfS/hc48dxh9y6vNQ9GDUnsc8A/bQZZLEzSX9YugKunfiqQzU=
+X-Received: by 2002:a05:6402:3074:: with SMTP id bs20mr3735885edb.365.1610073866935;
+ Thu, 07 Jan 2021 18:44:26 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <X/dS37kyW+jf4gg/@kroah.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+References: <20210107143047.586006010@linuxfoundation.org>
+In-Reply-To: <20210107143047.586006010@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Fri, 8 Jan 2021 08:14:16 +0530
+Message-ID: <CA+G9fYv4cXp=e5JEGTzx1qtBySO8KbvCCMKOpPQphBzDkCb9tQ@mail.gmail.com>
+Subject: Re: [PATCH 4.19 0/8] 4.19.166-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
+        lkft-triage@lists.linaro.org,
+        linux-stable <stable@vger.kernel.org>, pavel@denx.de,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, 7 Jan 2021 at 20:01, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> This is the start of the stable review cycle for the 4.19.166 release.
+> There are 8 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Sat, 09 Jan 2021 14:30:35 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-=
+4.19.166-rc1.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-4.19.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
 
-在 2021/1/8 上午2:28, Greg Kroah-Hartman 写道:
-> On Fri, Jan 08, 2021 at 12:21:38AM +0800, Wen Yang wrote:
->>
->>
->> 在 2021/1/7 下午8:17, Greg Kroah-Hartman 写道:
->>> On Thu, Jan 07, 2021 at 03:52:12PM +0800, Wen Yang wrote:
->>>> The dentries such as /proc/<pid>/ns/ have the DCACHE_OP_DELETE flag, they
->>>> should be deleted when the process exits.
->>>>
->>>> Suppose the following race appears：
->>>>
->>>> release_task                 dput
->>>> -> proc_flush_task
->>>>                                -> dentry->d_op->d_delete(dentry)
->>>> -> __exit_signal
->>>>                                -> dentry->d_lockref.count--  and return.
->>>>
->>>> In the proc_flush_task(), if another process is using this dentry, it will
->>>> not be deleted. At the same time, in dput(), d_op->d_delete() can be executed
->>>> before __exit_signal(pid has not been hashed), d_delete returns false, so
->>>> this dentry still cannot be deleted.
->>>>
->>>> This dentry will always be cached (although its count is 0 and the
->>>> DCACHE_OP_DELETE flag is set), its parent denry will also be cached too, and
->>>> these dentries can only be deleted when drop_caches is manually triggered.
->>>>
->>>> This will result in wasted memory. What's more troublesome is that these
->>>> dentries reference pid, according to the commit f333c700c610 ("pidns: Add a
->>>> limit on the number of pid namespaces"), if the pid cannot be released, it
->>>> may result in the inability to create a new pid_ns.
->>>>
->>>> This issue was introduced by 60347f6716aa ("pid namespaces: prepare
->>>> proc_flust_task() to flush entries from multiple proc trees"), exposed by
->>>> f333c700c610 ("pidns: Add a limit on the number of pid namespaces"), and then
->>>> fixed by 7bc3e6e55acf ("proc: Use a list of inodes to flush from proc").
->>>
->>> Why are you just submitting a series for 4.9 and 4.19, what about 4.14?
->>> We can't have users move to a newer kernel and then experience old bugs,
->>> right?
->>>
->> Okay, the patches corresponding to 4.14 will be ready later.
-> 
-> Note for some reason you didn't cc: the stable list for these patches :(
-> 
->>> But the larger question is why are you backporting a whole new feature
->>> here?  Why is CLONE_PIDFD needed?  That feels really wrong...
->>>
->>
->> The reason for backporting CLONE_PIDFD is because 7bc3e6e55acf ("proc: Use a
->> list of inodes to flush from proc") relies on wait_pidfd.lock. There are
->> indeed many associated modifications here. We are also testing it. Please
->> check the code more.
-> 
-> Is the only "issue" here wasted memory?  Will it eventually be freed
-> anyway even if you do not echo to the proc file to flush caches?
-> 
-> You mention the inability to create a new pid for a specific namespace,
-> is that really a problem?  Shouldn't the code handle such issues
-> normally?  What breaks without these changes?
-> 
-> I think at this point, it might just time for you to move to a newer
-> kernel release, as adding a whole new userspace feature for this feels
-> really really odd.
-> 
-> What is preventing you from doing that today?  What holds you to older
-> kernels that will not allow you to move forward?
-> 
+Results from Linaro=E2=80=99s test farm.
+No regressions on arm64, arm, x86_64, and i386.
 
-We have encountered this problem in the cloud server environment. Users 
-will frequently create and delete containers, and the corresponding 
-pid_ns will accumulate, eventually making it impossible to create a new 
-container.
+Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
-https://bugzilla.kernel.org/show_bug.cgi?id=208613
+Summary
+------------------------------------------------------------------------
 
-The kernels (4.9/4.19) used on a large scale in our current production 
-environment (almost tens of thousands of machines) may need to be fixed.
+kernel: 4.19.166-rc1
+git repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stab=
+le-rc.git
+git branch: linux-4.19.y
+git commit: 0f2782448d9a6522601ffabef0f3304a50d99857
+git describe: v4.19.165-9-g0f2782448d9a
+Test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-4.19=
+.y/build/v4.19.165-9-g0f2782448d9a
 
-Thanks.
+No regressions (compared to build v4.19.165)
 
--- 
-Best wishes,
-Wen
+No fixes (compared to build v4.19.165)
 
+Ran 47163 total tests in the following environments and test suites.
 
+Environments
+--------------
+- arm
+- arm64
+- dragonboard-410c - arm64
+- hi6220-hikey - arm64
+- i386
+- juno-r2 - arm64
+- juno-r2-compat
+- juno-r2-kasan
+- mips
+- nxp-ls2088
+- qemu-arm64-clang
+- qemu-arm64-kasan
+- qemu-x86_64-clang
+- qemu-x86_64-kasan
+- qemu_arm
+- qemu_arm64
+- qemu_arm64-compat
+- qemu_i386
+- qemu_x86_64
+- qemu_x86_64-compat
+- s390
+- sparc
+- x15 - arm
+- x86_64
+- x86-kasan
+
+Test Suites
+-----------
+* build
+* linux-log-parser
+* igt-gpu-tools
+* install-android-platform-tools-r2600
+* kselftest
+* libhugetlbfs
+* ltp-containers-tests
+* ltp-cve-tests
+* ltp-ipc-tests
+* ltp-nptl-tests
+* ltp-pty-tests
+* ltp-sched-tests
+* ltp-securebits-tests
+* perf
+* fwts
+* ltp-cap_bounds-tests
+* ltp-commands-tests
+* ltp-controllers-tests
+* ltp-cpuhotplug-tests
+* ltp-crypto-tests
+* ltp-dio-tests
+* ltp-fcntl-locktests-tests
+* ltp-filecaps-tests
+* ltp-fs_bind-tests
+* ltp-fs_perms_simple-tests
+* ltp-fsx-tests
+* ltp-hugetlb-tests
+* ltp-io-tests
+* ltp-math-tests
+* ltp-mm-tests
+* ltp-syscalls-tests
+* ltp-tracing-tests
+* network-basic-tests
+* v4l2-compliance
+* ltp-fs-tests
+* ltp-open-posix-tests
+* kvm-unit-tests
+* rcutorture
+* kselftest-vsyscall-mode-native
+* kselftest-vsyscall-mode-none
+
+--=20
+Linaro LKFT
+https://lkft.linaro.org
