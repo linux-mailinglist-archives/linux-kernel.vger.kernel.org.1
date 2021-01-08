@@ -2,288 +2,290 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9245C2EF553
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 17:00:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 354172EF54E
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 17:00:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728018AbhAHP7x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Jan 2021 10:59:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40722 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726784AbhAHP7w (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Jan 2021 10:59:52 -0500
-Received: from mail-pg1-x54a.google.com (mail-pg1-x54a.google.com [IPv6:2607:f8b0:4864:20::54a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F1E2C06129E
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Jan 2021 07:58:59 -0800 (PST)
-Received: by mail-pg1-x54a.google.com with SMTP id m23so7782669pgl.6
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Jan 2021 07:58:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:in-reply-to:message-id:mime-version:references:subject
-         :from:to:cc;
-        bh=g1r20L2y/+Vs64GcqkOyQsynkiR99T8MGa9bpmhj4bA=;
-        b=VqUC+m0NVv8gKWrjihePYZs7HBf4LGyotWGvxZw8w1sG/g5Szdsw1jUVXioIWXcDj0
-         pHKmJj1rCbn3P9gu3Febd8+ZcSfCzxrMKBggwr+WgvD1RkiU36XFFqo9QVmJWGYJNgpP
-         pqDJxDhbh6aL76K4J5CS2kODMDlSecdF2YxvFamSqCmqlmjiP4kzAgxTgC5quO7hyeCc
-         +wNe5O8+Giix4p8scXIKK9CDwEkggTCLlmMkaujr4P8X9EEfmvQewrOzFGUhVTIg1S9p
-         BEy6iLn2df2KiawwehuyaOy4S7bp2WwUO5W15xQaOap5XIW80cB2kQR2BxljdwnHZ+G6
-         j0Ug==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=g1r20L2y/+Vs64GcqkOyQsynkiR99T8MGa9bpmhj4bA=;
-        b=lWPRbMjWNeypp5sxjQwzXoyq6SFxVqXlUMdBpk1M5MLs53qVTo+ncMJQqnJJczrCO+
-         U81b2KyPzVe6gxHXxAbNOC4b0WbuPhPgJbwDLu2BCmGCyogjBrWiv7plwkNJjdqBYnCD
-         owtdlvccj1WvI9+YZm64hy609prwrnwqsfLllIcT78076ieHiFbv4E/z2yNFwdFpi9FO
-         vP4OpFkIWM0NCBXRnzz9DjC/SnXCX9lm3R9rTCTcoM+d5k8FbLnkBeQ9PcmoiO34Cvh+
-         66mZN5OFlZvbVVIaUnLkvXVoGq0fzwC8WunjnLSXSA9OePICtkEa2lwOf9GbRrZewmjH
-         61WQ==
-X-Gm-Message-State: AOAM530CO3t6ITOTPR8U55X8r4NUGqWGpTnRLq5cXKF5Zkd/G1dI8PR9
-        i73hkpIKHU26CWc5Hka2TPycGoWIxCK8Fg==
-X-Google-Smtp-Source: ABdhPJz3KLir/tKt1c7Y4SRY/GgAf2xGPFtwALOmv4F5r/ITJg+RQL1ymlZ6cnswi9MAAZxXx9NjL1LOF8chvA==
-Sender: "shakeelb via sendgmr" <shakeelb@shakeelb.svl.corp.google.com>
-X-Received: from shakeelb.svl.corp.google.com ([100.116.77.44]) (user=shakeelb
- job=sendgmr) by 2002:a65:6a53:: with SMTP id o19mr7579327pgu.212.1610121538547;
- Fri, 08 Jan 2021 07:58:58 -0800 (PST)
-Date:   Fri,  8 Jan 2021 07:58:13 -0800
-In-Reply-To: <20210108155813.2914586-1-shakeelb@google.com>
-Message-Id: <20210108155813.2914586-3-shakeelb@google.com>
-Mime-Version: 1.0
-References: <20210108155813.2914586-1-shakeelb@google.com>
-X-Mailer: git-send-email 2.29.2.729.g45daf8777d-goog
-Subject: [PATCH v2 3/3] mm: memcg: add swapcache stat for memcg v2
-From:   Shakeel Butt <shakeelb@google.com>
-To:     Johannes Weiner <hannes@cmpxchg.org>, Roman Gushchin <guro@fb.com>,
-        Michal Hocko <mhocko@kernel.org>,
-        Yang Shi <shy828301@gmail.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Shakeel Butt <shakeelb@google.com>,
-        Michal Hocko <mhocko@suse.com>
-Content-Type: text/plain; charset="UTF-8"
+        id S1727984AbhAHP7N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Jan 2021 10:59:13 -0500
+Received: from foss.arm.com ([217.140.110.172]:53472 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727910AbhAHP7M (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 Jan 2021 10:59:12 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id DA76331B;
+        Fri,  8 Jan 2021 07:58:26 -0800 (PST)
+Received: from [192.168.1.179] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 4C6F83F70D;
+        Fri,  8 Jan 2021 07:58:25 -0800 (PST)
+Subject: Re: [PATCH v2 2/2] arm64: dts: mt8192: Add node for the Mali GPU
+To:     Nick Fan <Nick.Fan@mediatek.com>, Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>
+Cc:     devicetree@vger.kernel.org, srv_heupstream@mediatek.com,
+        David Airlie <airlied@linux.ie>, linux-kernel@vger.kernel.org,
+        dri-devel@lists.freedesktop.org,
+        Project_Global_Chrome_Upstream_Group@mediatek.com,
+        linux-mediatek@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org
+References: <20210105053632.5476-1-Nick.Fan@mediatek.com>
+ <20210105053632.5476-2-Nick.Fan@mediatek.com>
+From:   Steven Price <steven.price@arm.com>
+Message-ID: <3d3bf91a-92b0-385c-b7c1-35af7732f05f@arm.com>
+Date:   Fri, 8 Jan 2021 15:58:24 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+MIME-Version: 1.0
+In-Reply-To: <20210105053632.5476-2-Nick.Fan@mediatek.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch adds swapcache stat for the cgroup v2. The swapcache
-represents the memory that is accounted against both the memory and the
-swap limit of the cgroup. The main motivation behind exposing the
-swapcache stat is for enabling users to gracefully migrate from cgroup
-v1's memsw counter to cgroup v2's memory and swap counters.
+On 05/01/2021 05:36, Nick Fan wrote:
+> Add a basic GPU node for mt8192.
+> 
+> Signed-off-by: Nick Fan <Nick.Fan@mediatek.com>
+> ---
+> This patch depends on Mediatek power and regulator support.
+> 
+> Listed as following.
+> 
+> [1]https://lore.kernel.org/patchwork/patch/1336293/
+> [2]https://patchwork.kernel.org/project/linux-mediatek/list/?series=374013
+> [3]https://lore.kernel.org/patchwork/patch/1356037/
+> [4]https://patchwork.kernel.org/project/linux-mediatek/list/?series=405777
+> [5]https://lore.kernel.org/patchwork/patch/1356175/
+> [6]https://patchwork.kernel.org/project/linux-mediatek/patch/1605700894-32699-6-git-send-email-hsin-hsiung.wang@mediatek.com/
+> [7]https://patchwork.kernel.org/project/linux-mediatek/patch/1608104827-7937-10-git-send-email-hsin-hsiung.wang@mediatek.com/
+> ---
+> ---
+>   arch/arm64/boot/dts/mediatek/mt8192-evb.dts |   7 +
+>   arch/arm64/boot/dts/mediatek/mt8192.dtsi    | 176 ++++++++++++++++++++
+>   2 files changed, 183 insertions(+)
+> 
+> diff --git a/arch/arm64/boot/dts/mediatek/mt8192-evb.dts b/arch/arm64/boot/dts/mediatek/mt8192-evb.dts
+> index 6c1e2b3e8a60..48c0e240dd92 100644
+> --- a/arch/arm64/boot/dts/mediatek/mt8192-evb.dts
+> +++ b/arch/arm64/boot/dts/mediatek/mt8192-evb.dts
+> @@ -5,6 +5,7 @@
+>    */
+>   /dts-v1/;
+>   #include "mt8192.dtsi"
+> +#include "mt6359.dtsi"
+>   
+>   / {
+>   	model = "MediaTek MT8192 evaluation board";
+> @@ -70,6 +71,12 @@
+>   	};
+>   };
+>   
+> +&gpu {
+> +	supply-names = "mali","sram";
+> +	mali-supply = <&mt6315_7_vbuck1>;
+> +	sram-supply = <&mt6359_vsram_others_ldo_reg>;
+> +};
+> +
+>   &uart0 {
+>   	status = "okay";
+>   };
+> diff --git a/arch/arm64/boot/dts/mediatek/mt8192.dtsi b/arch/arm64/boot/dts/mediatek/mt8192.dtsi
+> index d6a4ad242a33..de166ea750af 100644
+> --- a/arch/arm64/boot/dts/mediatek/mt8192.dtsi
+> +++ b/arch/arm64/boot/dts/mediatek/mt8192.dtsi
+> @@ -822,6 +822,182 @@
+>   			#clock-cells = <1>;
+>   		};
+>   
+> +		gpu: mali@13000000 {
+> +			compatible = "mediatek,mt8192-mali", "arm,mali-valhall";
+> +			reg = <0 0x13000000 0 0x4000>;
+> +			interrupts =
+> +				<GIC_SPI 363 IRQ_TYPE_LEVEL_HIGH 0>,
+> +				<GIC_SPI 364 IRQ_TYPE_LEVEL_HIGH 0>,
+> +				<GIC_SPI 365 IRQ_TYPE_LEVEL_HIGH 0>,
+> +				<GIC_SPI 366 IRQ_TYPE_LEVEL_HIGH 0>,
+> +				<GIC_SPI 367 IRQ_TYPE_LEVEL_HIGH 0>;
+> +			interrupt-names =
+> +				"GPU",
+> +				"MMU",
+> +				"JOB",
+> +				"EVENT",
+> +				"PWR";
 
-Cgroup v1's memsw limit allows users to limit the memory+swap usage of a
-workload but without control on the exact proportion of memory and swap.
-Cgroup v2 provides separate limits for memory and swap which enables
-more control on the exact usage of memory and swap individually for the
-workload.
+These interrupt names don't match the binding you've posted (GPU, MMU, 
+JOB are upper case here, lower case in the binding). Also EVENT and PWR 
+are not mentioned in the binding - should they be?
 
-With some little subtleties, the v1's memsw limit can be switched with
-the sum of the v2's memory and swap limits. However the alternative for
-memsw usage is not yet available in cgroup v2. Exposing per-cgroup
-swapcache stat enables that alternative. Adding the memory usage and
-swap usage and subtracting the swapcache will approximate the memsw
-usage. This will help in the transparent migration of the workloads
-depending on memsw usage and limit to v2' memory and swap counters.
+I know there are differences here between kbase's requirements and the 
+existing upstream bindings (case specifically), but I haven't seen a 
+binding containing EVENT and PWR before.
 
-The reasons these applications are still interested in this approximate
-memsw usage are: (1) these applications are not really interested in two
-separate memory and swap usage metrics. A single usage metric is more
-simple to use and reason about for them.
+Steve
 
-(2) The memsw usage metric hides the underlying system's swap setup from
-the applications. Applications with multiple instances running in a
-datacenter with heterogeneous systems (some have swap and some don't)
-will keep seeing a consistent view of their usage.
-
-Signed-off-by: Shakeel Butt <shakeelb@google.com>
-Acked-by: Michal Hocko <mhocko@suse.com>
----
-Changes since v1:
-- Updated commit message
-
- Documentation/admin-guide/cgroup-v2.rst |  4 ++++
- drivers/base/node.c                     |  6 ++++++
- include/linux/mmzone.h                  |  3 +++
- include/linux/swap.h                    |  6 +++++-
- mm/memcontrol.c                         |  1 +
- mm/migrate.c                            |  4 ++++
- mm/swap_state.c                         | 28 ++-----------------------
- mm/vmstat.c                             |  3 +++
- 8 files changed, 28 insertions(+), 27 deletions(-)
-
-diff --git a/Documentation/admin-guide/cgroup-v2.rst b/Documentation/admin-guide/cgroup-v2.rst
-index 63521cd36ce5..5923e2c3e0e5 100644
---- a/Documentation/admin-guide/cgroup-v2.rst
-+++ b/Documentation/admin-guide/cgroup-v2.rst
-@@ -1299,6 +1299,10 @@ PAGE_SIZE multiple when read back.
- 		Amount of cached filesystem data that was modified and
- 		is currently being written back to disk
- 
-+	  swapcached
-+		Amount of swap cached in memory. The swapcache is accounted
-+		against both memory and swap usage.
-+
- 	  anon_thp
- 		Amount of memory used in anonymous mappings backed by
- 		transparent hugepages
-diff --git a/drivers/base/node.c b/drivers/base/node.c
-index d02d86aec19f..f449dbb2c746 100644
---- a/drivers/base/node.c
-+++ b/drivers/base/node.c
-@@ -372,14 +372,19 @@ static ssize_t node_read_meminfo(struct device *dev,
- 	struct pglist_data *pgdat = NODE_DATA(nid);
- 	struct sysinfo i;
- 	unsigned long sreclaimable, sunreclaimable;
-+	unsigned long swapcached = 0;
- 
- 	si_meminfo_node(&i, nid);
- 	sreclaimable = node_page_state_pages(pgdat, NR_SLAB_RECLAIMABLE_B);
- 	sunreclaimable = node_page_state_pages(pgdat, NR_SLAB_UNRECLAIMABLE_B);
-+#ifdef CONFIG_SWAP
-+	swapcached = node_page_state_pages(pgdat, NR_SWAPCACHE);
-+#endif
- 	len = sysfs_emit_at(buf, len,
- 			    "Node %d MemTotal:       %8lu kB\n"
- 			    "Node %d MemFree:        %8lu kB\n"
- 			    "Node %d MemUsed:        %8lu kB\n"
-+			    "Node %d SwapCached:     %8lu kB\n"
- 			    "Node %d Active:         %8lu kB\n"
- 			    "Node %d Inactive:       %8lu kB\n"
- 			    "Node %d Active(anon):   %8lu kB\n"
-@@ -391,6 +396,7 @@ static ssize_t node_read_meminfo(struct device *dev,
- 			    nid, K(i.totalram),
- 			    nid, K(i.freeram),
- 			    nid, K(i.totalram - i.freeram),
-+			    nid, K(swapcached),
- 			    nid, K(node_page_state(pgdat, NR_ACTIVE_ANON) +
- 				   node_page_state(pgdat, NR_ACTIVE_FILE)),
- 			    nid, K(node_page_state(pgdat, NR_INACTIVE_ANON) +
-diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
-index 66d68e5d5a0f..fc99e9241846 100644
---- a/include/linux/mmzone.h
-+++ b/include/linux/mmzone.h
-@@ -206,6 +206,9 @@ enum node_stat_item {
- 	NR_KERNEL_SCS_KB,	/* measured in KiB */
- #endif
- 	NR_PAGETABLE,		/* used for pagetables */
-+#ifdef CONFIG_SWAP
-+	NR_SWAPCACHE,
-+#endif
- 	NR_VM_NODE_STAT_ITEMS
- };
- 
-diff --git a/include/linux/swap.h b/include/linux/swap.h
-index 5bba15ac5a2e..71166bc10d17 100644
---- a/include/linux/swap.h
-+++ b/include/linux/swap.h
-@@ -408,7 +408,11 @@ extern struct address_space *swapper_spaces[];
- #define swap_address_space(entry)			    \
- 	(&swapper_spaces[swp_type(entry)][swp_offset(entry) \
- 		>> SWAP_ADDRESS_SPACE_SHIFT])
--extern unsigned long total_swapcache_pages(void);
-+static inline unsigned long total_swapcache_pages(void)
-+{
-+	return global_node_page_state(NR_SWAPCACHE);
-+}
-+
- extern void show_swap_cache_info(void);
- extern int add_to_swap(struct page *page);
- extern void *get_shadow_from_swap_cache(swp_entry_t entry);
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index 0d74b80fa4de..e853bef32b23 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -1521,6 +1521,7 @@ static const struct memory_stat memory_stats[] = {
- 	{ "file_mapped",		NR_FILE_MAPPED			},
- 	{ "file_dirty",			NR_FILE_DIRTY			},
- 	{ "file_writeback",		NR_WRITEBACK			},
-+	{ "swapcached",			NR_SWAPCACHE			},
- #ifdef CONFIG_TRANSPARENT_HUGEPAGE
- 	{ "anon_thp",			NR_ANON_THPS			},
- 	{ "file_thp",			NR_FILE_THPS			},
-diff --git a/mm/migrate.c b/mm/migrate.c
-index c0efe921bca5..7336c6d40c13 100644
---- a/mm/migrate.c
-+++ b/mm/migrate.c
-@@ -500,6 +500,10 @@ int migrate_page_move_mapping(struct address_space *mapping,
- 			__mod_lruvec_state(old_lruvec, NR_SHMEM, -nr);
- 			__mod_lruvec_state(new_lruvec, NR_SHMEM, nr);
- 		}
-+		if (PageSwapCache(page)) {
-+			__mod_lruvec_state(old_lruvec, NR_SWAPCACHE, -nr);
-+			__mod_lruvec_state(new_lruvec, NR_SWAPCACHE, nr);
-+		}
- 		if (dirty && mapping_can_writeback(mapping)) {
- 			__mod_lruvec_state(old_lruvec, NR_FILE_DIRTY, -nr);
- 			__mod_zone_page_state(oldzone, NR_ZONE_WRITE_PENDING, -nr);
-diff --git a/mm/swap_state.c b/mm/swap_state.c
-index 6ecc84448d75..d0d417efeecc 100644
---- a/mm/swap_state.c
-+++ b/mm/swap_state.c
-@@ -68,32 +68,6 @@ static struct {
- 	unsigned long find_total;
- } swap_cache_info;
- 
--unsigned long total_swapcache_pages(void)
--{
--	unsigned int i, j, nr;
--	unsigned long ret = 0;
--	struct address_space *spaces;
--	struct swap_info_struct *si;
--
--	for (i = 0; i < MAX_SWAPFILES; i++) {
--		swp_entry_t entry = swp_entry(i, 1);
--
--		/* Avoid get_swap_device() to warn for bad swap entry */
--		if (!swp_swap_info(entry))
--			continue;
--		/* Prevent swapoff to free swapper_spaces */
--		si = get_swap_device(entry);
--		if (!si)
--			continue;
--		nr = nr_swapper_spaces[i];
--		spaces = swapper_spaces[i];
--		for (j = 0; j < nr; j++)
--			ret += spaces[j].nrpages;
--		put_swap_device(si);
--	}
--	return ret;
--}
--
- static atomic_t swapin_readahead_hits = ATOMIC_INIT(4);
- 
- void show_swap_cache_info(void)
-@@ -161,6 +135,7 @@ int add_to_swap_cache(struct page *page, swp_entry_t entry,
- 		address_space->nrexceptional -= nr_shadows;
- 		address_space->nrpages += nr;
- 		__mod_node_page_state(page_pgdat(page), NR_FILE_PAGES, nr);
-+		__mod_lruvec_page_state(page, NR_SWAPCACHE, nr);
- 		ADD_CACHE_INFO(add_total, nr);
- unlock:
- 		xas_unlock_irq(&xas);
-@@ -201,6 +176,7 @@ void __delete_from_swap_cache(struct page *page,
- 		address_space->nrexceptional += nr;
- 	address_space->nrpages -= nr;
- 	__mod_node_page_state(page_pgdat(page), NR_FILE_PAGES, -nr);
-+	__mod_lruvec_page_state(page, NR_SWAPCACHE, -nr);
- 	ADD_CACHE_INFO(del_total, nr);
- }
- 
-diff --git a/mm/vmstat.c b/mm/vmstat.c
-index 37c9e7b21e1e..03a0cbc1eefa 100644
---- a/mm/vmstat.c
-+++ b/mm/vmstat.c
-@@ -1220,6 +1220,9 @@ const char * const vmstat_text[] = {
- 	"nr_shadow_call_stack",
- #endif
- 	"nr_page_table_pages",
-+#ifdef CONFIG_SWAP
-+	"nr_swapcached",
-+#endif
- 
- 	/* enum writeback_stat_item counters */
- 	"nr_dirty_threshold",
--- 
-2.29.2.729.g45daf8777d-goog
+> +
+> +			clocks =
+> +				<&apmixedsys CLK_APMIXED_MFGPLL>,
+> +				<&topckgen CLK_TOP_MFG_PLL_SEL>,
+> +				<&topckgen CLK_TOP_MFG_REF_SEL>,
+> +				<&mfgcfg CLK_MFG_BG3D>;
+> +			clock-names =
+> +				"clk_main_parent",
+> +				"clk_mux",
+> +				"clk_sub_parent",
+> +				"subsys_mfg_cg";
+> +
+> +			power-domains =
+> +				<&scpsys MT8192_POWER_DOMAIN_MFG2>,
+> +				<&scpsys MT8192_POWER_DOMAIN_MFG3>,
+> +				<&scpsys MT8192_POWER_DOMAIN_MFG4>,
+> +				<&scpsys MT8192_POWER_DOMAIN_MFG5>,
+> +				<&scpsys MT8192_POWER_DOMAIN_MFG6>;
+> +			power-domain-names = "core0",
+> +					     "core1",
+> +					     "core2",
+> +					     "core3",
+> +					     "core4";
+> +
+> +			operating-points-v2 = <&gpu_opp_table>;
+> +			#cooling-cells = <2>;
+> +		};
+> +
+> +		gpu_opp_table: opp_table0 {
+> +			compatible = "operating-points-v2";
+> +			opp-shared;
+> +
+> +			opp-358000000 {
+> +				opp-hz = /bits/ 64 <358000000>;
+> +				opp-hz-real = /bits/ 64 <358000000>,
+> +					      /bits/ 64 <358000000>;
+> +				opp-microvolt = <606250>,
+> +						<750000>;
+> +			};
+> +
+> +			opp-399000000 {
+> +				opp-hz = /bits/ 64 <399000000>;
+> +				opp-hz-real = /bits/ 64 <399000000>,
+> +					      /bits/ 64 <399000000>;
+> +				opp-microvolt = <618750>,
+> +						<750000>;
+> +			};
+> +
+> +			opp-440000000 {
+> +				opp-hz = /bits/ 64 <440000000>;
+> +				opp-hz-real = /bits/ 64 <440000000>,
+> +					      /bits/ 64 <440000000>;
+> +				opp-microvolt = <631250>,
+> +						<750000>;
+> +			};
+> +
+> +			opp-482000000 {
+> +				opp-hz = /bits/ 64 <482000000>;
+> +				opp-hz-real = /bits/ 64 <482000000>,
+> +					      /bits/ 64 <482000000>;
+> +				opp-microvolt = <643750>,
+> +						<750000>;
+> +			};
+> +
+> +			opp-523000000 {
+> +				opp-hz = /bits/ 64 <523000000>;
+> +				opp-hz-real = /bits/ 64 <523000000>,
+> +					      /bits/ 64 <523000000>;
+> +				opp-microvolt = <656250>,
+> +						<750000>;
+> +			};
+> +
+> +			opp-564000000 {
+> +				opp-hz = /bits/ 64 <564000000>;
+> +				opp-hz-real = /bits/ 64 <564000000>,
+> +					      /bits/ 64 <564000000>;
+> +				opp-microvolt = <668750>,
+> +						<750000>;
+> +			};
+> +
+> +			opp-605000000 {
+> +				opp-hz = /bits/ 64 <605000000>;
+> +				opp-hz-real = /bits/ 64 <605000000>,
+> +					      /bits/ 64 <605000000>;
+> +				opp-microvolt = <681250>,
+> +						<750000>;
+> +			};
+> +
+> +			opp-647000000 {
+> +				opp-hz = /bits/ 64 <647000000>;
+> +				opp-hz-real = /bits/ 64 <647000000>,
+> +					      /bits/ 64 <647000000>;
+> +				opp-microvolt = <693750>,
+> +						<750000>;
+> +			};
+> +
+> +			opp-688000000 {
+> +				opp-hz = /bits/ 64 <688000000>;
+> +				opp-hz-real = /bits/ 64 <688000000>,
+> +					      /bits/ 64 <688000000>;
+> +				opp-microvolt = <706250>,
+> +						<750000>;
+> +			};
+> +
+> +			opp-724000000 {
+> +				opp-hz = /bits/ 64 <724000000>;
+> +				opp-hz-real = /bits/ 64 <724000000>,
+> +					      /bits/ 64 <724000000>;
+> +				opp-microvolt = <725000>,
+> +						<750000>;
+> +			};
+> +
+> +			opp-760000000 {
+> +				opp-hz = /bits/ 64 <760000000>;
+> +				opp-hz-real = /bits/ 64 <760000000>,
+> +					      /bits/ 64 <760000000>;
+> +				opp-microvolt = <743750>,
+> +						<750000>;
+> +			};
+> +
+> +			opp-795000000 {
+> +				opp-hz = /bits/ 64 <795000000>;
+> +				opp-hz-real = /bits/ 64 <795000000>,
+> +					      /bits/ 64 <795000000>;
+> +				opp-microvolt = <762500>,
+> +						<762500>;
+> +			};
+> +
+> +			opp-831000000 {
+> +				opp-hz = /bits/ 64 <831000000>;
+> +				opp-hz-real = /bits/ 64 <831000000>,
+> +					      /bits/ 64 <831000000>;
+> +				opp-microvolt = <781250>,
+> +						<781250>;
+> +			};
+> +
+> +			opp-855000000 {
+> +				opp-hz = /bits/ 64 <855000000>;
+> +				opp-hz-real = /bits/ 64 <855000000>,
+> +					      /bits/ 64 <855000000>;
+> +				opp-microvolt = <793750>,
+> +						<793750>;
+> +			};
+> +
+> +			opp-902000000 {
+> +				opp-hz = /bits/ 64 <902000000>;
+> +				opp-hz-real = /bits/ 64 <902000000>,
+> +					      /bits/ 64 <902000000>;
+> +				opp-microvolt = <818750>,
+> +						<818750>;
+> +			};
+> +
+> +			opp-950000000 {
+> +				opp-hz = /bits/ 64 <950000000>;
+> +				opp-hz-real = /bits/ 64 <950000000>,
+> +					      /bits/ 64 <950000000>;
+> +				opp-microvolt = <843750>,
+> +						<843750>;
+> +			};
+> +		};
+> +
+>   		mfgcfg: syscon@13fbf000 {
+>   			compatible = "mediatek,mt8192-mfgcfg", "syscon";
+>   			reg = <0 0x13fbf000 0 0x1000>;
+> 
 
