@@ -2,77 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D9F8C2EF3CE
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 15:16:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D536B2EF3D0
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 15:16:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727063AbhAHOP7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Jan 2021 09:15:59 -0500
-Received: from mail-oi1-f171.google.com ([209.85.167.171]:45612 "EHLO
-        mail-oi1-f171.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725942AbhAHOP6 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Jan 2021 09:15:58 -0500
-Received: by mail-oi1-f171.google.com with SMTP id f132so11397744oib.12;
-        Fri, 08 Jan 2021 06:15:42 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Ck+PkyxpVc679nAlJE4ATOc3uxubhhqpwkHVwNf7E5s=;
-        b=aOWdtA3R1gvpjyqBBFmhZ+GJr5QSNpXAoSLO248r6r7KHzEBKkSaSFb37bo3GtOMxg
-         lAAeNG8s+Z05NBz0DYuSEkpB2+L5gccMIboQTueiVhyD3uhCvcTFHharZ4vpG5wvjLdP
-         Ap0aIOuiEeh+/e8dRenHoCjp37boHipC9f4Boz2uvI8qoYIAJ7udz9wFJj2HMOvaN2+K
-         7dkRqzcEiOCpUqTXW1fykHJmDspBglhAz2MJGi+ChX0QL4Zmx8gKMZo2HTNJy8ih367P
-         7LQ0AFE2HhHlYB3gQnxYwF58EPOJ2ihyGpWMhNd/oiw2D66IWYQy2TZriWElQPMWgmjl
-         Ro3w==
-X-Gm-Message-State: AOAM533oJBrpL4ageXnTamNf6s9LvN9Q5AnhOtwj+M7h3BSn6Chtziul
-        eAG+eyxyzxT/+rRDMAsvVc6hZPnD3fMXkNaIEFQ=
-X-Google-Smtp-Source: ABdhPJyNdT7mG6eIwonLaCJk5adaiSzltL3YDJdJmZxbYq7Nz/EB1M/if4s3Xephc+RFWDzcH2F4uuRsDiXrx7vifxw=
-X-Received: by 2002:aca:ec09:: with SMTP id k9mr2369609oih.153.1610115317303;
- Fri, 08 Jan 2021 06:15:17 -0800 (PST)
+        id S1727235AbhAHOQU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Jan 2021 09:16:20 -0500
+Received: from foss.arm.com ([217.140.110.172]:51872 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725817AbhAHOQT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 Jan 2021 09:16:19 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 88A0FED1;
+        Fri,  8 Jan 2021 06:15:33 -0800 (PST)
+Received: from [10.57.37.195] (unknown [10.57.37.195])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C455A3F70D;
+        Fri,  8 Jan 2021 06:15:29 -0800 (PST)
+Subject: Re: [PATCH v6 00/26] coresight: etm4x: Support for system
+ instructions
+From:   Suzuki K Poulose <suzuki.poulose@arm.com>
+To:     Mathieu Poirier <mathieu.poirier@linaro.org>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        coresight@lists.linaro.org, leo.yan@linaro.org,
+        mike.leach@linaro.org, anshuman.khandual@arm.com
+References: <20210107123859.674252-1-suzuki.poulose@arm.com>
+ <20210108010907.GJ43045@xps15> <7f3304f7-8c68-3a61-48da-553de87c027d@arm.com>
+Message-ID: <2f9d4b4e-4382-ab2a-5156-26fb9275d0f2@arm.com>
+Date:   Fri, 8 Jan 2021 14:15:22 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-References: <20201228213121.2331449-1-aford173@gmail.com> <20201228213121.2331449-2-aford173@gmail.com>
-In-Reply-To: <20201228213121.2331449-2-aford173@gmail.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Fri, 8 Jan 2021 15:15:06 +0100
-Message-ID: <CAMuHMdW1R9V23wf+bB=RjMxeTw8e393vcO-8FZnUtQjWZTQ1JQ@mail.gmail.com>
-Subject: Re: [PATCH 2/4] ARM: dts: renesas: Add fck to etheravb-rcar-gen2
- clock-names list
-To:     Adam Ford <aford173@gmail.com>
-Cc:     Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        Adam Ford-BE <aford@beaconembedded.com>,
-        Sergei Shtylyov <sergei.shtylyov@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Magnus Damm <magnus.damm@gmail.com>,
-        netdev <netdev@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <7f3304f7-8c68-3a61-48da-553de87c027d@arm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 28, 2020 at 10:32 PM Adam Ford <aford173@gmail.com> wrote:
-> The bindings have been updated to support two clocks, but the
-> original clock now requires the name fck.  Add a clock-names
-> list in the device tree with fck in it.
->
-> Signed-off-by: Adam Ford <aford173@gmail.com>
+Hi Mathieu,
 
-Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
-i.e. will queue in renesas-devel once PATCH 1/4 has been accepted.
+Please hold on with this series, I will update the series, fixing the
+issues you have spotted and some additional patches to prevent accesses
+to all the system registers that may not be available via system instructions.
 
-Gr{oetje,eeting}s,
+Apologies for the inconvenience
 
-                        Geert
+Kind regards
+Suzuki
 
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+On 1/8/21 9:08 AM, Suzuki K Poulose wrote:
+> Hi Mathieu
+> 
+> On 1/8/21 1:09 AM, Mathieu Poirier wrote:
+>> Hi Suzuki,
+>>
+>> On Thu, Jan 07, 2021 at 12:38:33PM +0000, Suzuki K Poulose wrote:
+>>> CoreSight ETMv4.4 obsoletes memory mapped access to ETM and
+>>> mandates the system instructions for registers.
+>>> This also implies that they may not be on the amba bus.
+>>> Right now all the CoreSight components are accessed via memory
+>>> map. Also, we have some common routines in coresight generic
+>>> code driver (e.g, CS_LOCK, claim/disclaim), which assume the
+>>> mmio. In order to preserve the generic algorithms at a single
+>>> place and to allow dynamic switch for ETMs, this series introduces
+>>> an abstraction layer for accessing a coresight device. It is
+>>> designed such that the mmio access are fast tracked (i.e, without
+>>> an indirect function call).
+>>>
+>>> This will also help us to get rid of the driver+attribute specific
+>>> sysfs show/store routines and replace them with a single routine
+>>> to access a given register offset (which can be embedded in the
+>>> dev_ext_attribute). This is not currently implemented in the series,
+>>> but can be achieved.
+>>>
+>>> Further we switch the generic routines to work with the abstraction.
+>>> With this in place, we refactor the etm4x code a bit to allow for
+>>> supporting the system instructions with very little new code.
+>>>
+>>> We use TRCDEVARCH for the detection of the ETM component, which
+>>> is a standard register as per CoreSight architecture, rather than
+>>> the etm specific id register TRCIDR1. This is for making sure
+>>> that we are able to detect the ETM via system instructions accurately,
+>>> when the the trace unit could be anything (etm or a custom trace unit).
+>>> To keep the backward compatibility for any existing broken
+>>> impelementation which may not implement TRCDEVARCH, we fall back to TRCIDR1.
+>>> Also this covers us for the changes in the future architecture [0].
+>>>
+>>> Also, v8.4 self-hosted tracing extensions (coupled with ETMv4.4) adds
+>>> new filtering registers for trace by exception level. So on a v8.4
+>>> system, with Trace Filtering support, without the appropriate
+>>> programming of the Trace filter registers (TRFCR_ELx), tracing
+>>> will not be enabled. This series also includes the TraceFiltering
+>>> support to cover the ETM-v4.4 support.
+>>>
+>>> The series has been mildly tested on a model for system instructions.
+>>> I would really appreciate any testing on real hardware.
+>>
+>> I have queued your work in my local tree.  I will have a final pass before
+>> pushing to coresight-next tomorrow or on Monday.
+>>
+> 
+> Thanks for the review and fixups. Please let me know if you need a respin.
+> 
+> Cheers
+> Suzuki
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
