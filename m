@@ -2,155 +2,209 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 10B1D2EEA92
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 01:53:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 00F0F2EEA94
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 01:53:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729663AbhAHAwQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 19:52:16 -0500
-Received: from smtprelay0041.hostedemail.com ([216.40.44.41]:36068 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727695AbhAHAwP (ORCPT
+        id S1729706AbhAHAxT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 19:53:19 -0500
+Received: from aserp2130.oracle.com ([141.146.126.79]:38126 "EHLO
+        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727695AbhAHAxS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 19:52:15 -0500
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay07.hostedemail.com (Postfix) with ESMTP id 57BD9181D337B;
-        Fri,  8 Jan 2021 00:51:34 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 50,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:960:967:973:982:988:989:1260:1261:1277:1311:1313:1314:1345:1359:1394:1437:1515:1516:1518:1535:1544:1593:1594:1605:1711:1730:1747:1777:1792:1981:2194:2199:2393:2525:2553:2565:2682:2685:2689:2691:2828:2859:2933:2937:2939:2942:2945:2947:2951:2954:3022:3138:3139:3140:3141:3142:3622:3865:3866:3867:3868:3870:3871:3872:3874:3934:3936:3938:3941:3944:3947:3950:3953:3956:3959:4321:5007:7652:8603:8957:9025:10004:10249:10848:11026:11232:11473:11658:11783:11914:12043:12266:12297:12438:12555:12740:12895:12986:13153:13228:13255:13439:13845:13894:14181:14659:14721:21080:21324:21347:21365:21433:21451:21627:21740:21795:21939:21990:30012:30051:30054:30070:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
-X-HE-Tag: clam92_5d138c7274ee
-X-Filterd-Recvd-Size: 5431
-Received: from [192.168.1.159] (unknown [47.151.137.21])
-        (Authenticated sender: joe@perches.com)
-        by omf11.hostedemail.com (Postfix) with ESMTPA;
-        Fri,  8 Jan 2021 00:51:32 +0000 (UTC)
-Message-ID: <9e111f0f673ae6ced12efc01d32eefe8402c7f72.camel@perches.com>
-Subject: Re: deprecated.rst: deprecated strcpy ? (was: [PATCH] checkpatch:
- add a new check for strcpy/strlcpy uses)
-From:   Joe Perches <joe@perches.com>
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Dwaipayan Ray <dwaipayanray1@gmail.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Thu, 07 Jan 2021 16:51:31 -0800
-In-Reply-To: <202101071310.3AC5F0C4@keescook>
-References: <20210105082303.15310-1-dwaipayanray1@gmail.com>
-         <50cc861121b62b3c1518222f24f679c3f72b868d.camel@perches.com>
-         <CABJPP5DQ0Y42z9ej_j06+KaQevT3ztWcwGMkismj4qv5EHvnxA@mail.gmail.com>
-         <3ffe616d8c3fb54833bfc4d86cb73427cf6c7add.camel@perches.com>
-         <202101071310.3AC5F0C4@keescook>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.38.1-1 
+        Thu, 7 Jan 2021 19:53:18 -0500
+Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
+        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 1080Z4aL182515;
+        Fri, 8 Jan 2021 00:52:25 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=6Yuo+VxFPfGQC4s1IrUj9sSA2Cqk6UuNoZ/DE8PBsk0=;
+ b=MFg8yjJAUzj+cRrlFMTX5gU9LBOMwckVgF1b2Hg6EoPfOP8l/wPjsZrjeQ6pZhFCiaix
+ Oy19dUGH9hVU+y3iwLzoMZk7/A1XQRio3OWomW7qgyRaS+Z8DcBzf4Hc2p98PU+KHPiR
+ eUrKOIVBkg8+hUZUc4ucGkrjM69sRquYw2NQRrPgepcGWCRhibgqE0V13gc1cCO6Rvpu
+ 44mElzSUMw3YPSKlKS3Xln4tCyhK1vTew3VYOO5R+UhMTZC+zzFv6covmRoVBMt1mDVR
+ jMScM4afemfqv/lNJklCJ4XanB7BaahToTYM+IwUabmnOwFo/WuZ3ofX5+Mw1tHboRDs gQ== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by aserp2130.oracle.com with ESMTP id 35wcuxyeag-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 08 Jan 2021 00:52:25 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 1080Ykhk157312;
+        Fri, 8 Jan 2021 00:52:25 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by aserp3030.oracle.com with ESMTP id 35v4renp9n-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 08 Jan 2021 00:52:24 +0000
+Received: from abhmp0012.oracle.com (abhmp0012.oracle.com [141.146.116.18])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 1080qLYK000383;
+        Fri, 8 Jan 2021 00:52:21 GMT
+Received: from [192.168.2.112] (/50.38.35.18)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Fri, 08 Jan 2021 00:52:21 +0000
+Subject: Re: [PATCH v2 3/6] mm: hugetlb: fix a race between freeing and
+ dissolving the page
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Muchun Song <songmuchun@bytedance.com>, akpm@linux-foundation.org,
+        n-horiguchi@ah.jp.nec.com, ak@linux.intel.com, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+References: <20210106084739.63318-1-songmuchun@bytedance.com>
+ <20210106084739.63318-4-songmuchun@bytedance.com>
+ <20210106165632.GT13207@dhcp22.suse.cz>
+ <a9c59b0e-9a9d-c568-5503-5df6fe8db908@oracle.com>
+ <20210107084038.GC13207@dhcp22.suse.cz>
+From:   Mike Kravetz <mike.kravetz@oracle.com>
+Message-ID: <509ef752-cc2e-3edf-5871-87f971a7bc0f@oracle.com>
+Date:   Thu, 7 Jan 2021 16:52:19 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210107084038.GC13207@dhcp22.suse.cz>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9857 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 mlxscore=0 bulkscore=0
+ suspectscore=0 spamscore=0 adultscore=0 malwarescore=0 phishscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2101080000
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9857 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 bulkscore=0
+ clxscore=1015 spamscore=0 impostorscore=0 priorityscore=1501 mlxscore=0
+ adultscore=0 mlxlogscore=999 lowpriorityscore=0 phishscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2101080000
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2021-01-07 at 13:16 -0800, Kees Cook wrote:
-> On Tue, Jan 05, 2021 at 01:28:18AM -0800, Joe Perches wrote:
-> > On Tue, 2021-01-05 at 14:29 +0530, Dwaipayan Ray wrote:
-> > > On Tue, Jan 5, 2021 at 2:14 PM Joe Perches <joe@perches.com> wrote:
-> > > > 
-> > > > On Tue, 2021-01-05 at 13:53 +0530, Dwaipayan Ray wrote:
-> > > > > strcpy() performs no bounds checking on the destination buffer.
-> > > > > This could result in linear overflows beyond the end of the buffer.
-> > > > > 
-> > > > > strlcpy() reads the entire source buffer first. This read
-> > > > > may exceed the destination size limit. This can be both inefficient
-> > > > > and lead to linear read overflows.
-> > > > > 
-> > > > > The safe replacement to both of these is to use strscpy() instead.
-> > > > > Add a new checkpatch warning which alerts the user on finding usage of
-> > > > > strcpy() or strlcpy().
-> > > > 
-> > > > I do not believe that strscpy is preferred over strcpy.
-> > > > 
-> > > > When the size of the output buffer is known to be larger
-> > > > than the input, strcpy is faster.
-> > > > 
-> > > > There are about 2k uses of strcpy.
-> > > > Is there a use where strcpy use actually matters?
-> > > > I don't know offhand...
-> > > > 
-> > > > But I believe compilers do not optimize away the uses of strscpy
-> > > > to a simple memcpy like they do for strcpy with a const from
-> > > > 
-> > > >         strcpy(foo, "bar");
-> > > > 
-> > > 
-> > > Yes the optimization here definitely helps. So in case the programmer
-> > > knows that the destination buffer is always larger, then strcpy() should be
-> > > preferred? I think the documentation might have been too strict about
-> > > strcpy() uses here:
-> > > 
-> > > Documentation/process/deprecated.rst:
-> > > "strcpy() performs no bounds checking on the destination buffer. This
-> > > could result in linear overflows beyond the end of the buffer, leading to
-> > > all kinds of misbehaviors. While `CONFIG_FORTIFY_SOURCE=y` and various
-> > > compiler flags help reduce the risk of using this function, there is
-> > > no good reason to add new uses of this function. The safe replacement
-> > > is strscpy(),..."
-> > 
-> > Kees/Jonathan:
-> > 
-> > Perhaps this text is overly restrictive.
-> > 
-> > There are ~2k uses of strcpy in the kernel.
-> > 
-> > About half of these are where the buffer length of foo is known and the
-> > use is 'strcpy(foo, "bar")' so the compiler converts/optimizes away the
-> > strcpy to memcpy and may not even put "bar" into the string table.
-> > 
-> > I believe strscpy uses do not have this optimization.
-> > 
-> > Is there a case where the runtime costs actually matters?
-> > I expect so.
+On 1/7/21 12:40 AM, Michal Hocko wrote:
+> On Wed 06-01-21 12:58:29, Mike Kravetz wrote:
+>> On 1/6/21 8:56 AM, Michal Hocko wrote:
+>>> On Wed 06-01-21 16:47:36, Muchun Song wrote:
+>>>> There is a race condition between __free_huge_page()
+>>>> and dissolve_free_huge_page().
+>>>>
+>>>> CPU0:                         CPU1:
+>>>>
+>>>> // page_count(page) == 1
+>>>> put_page(page)
+>>>>   __free_huge_page(page)
+>>>>                               dissolve_free_huge_page(page)
+>>>>                                 spin_lock(&hugetlb_lock)
+>>>>                                 // PageHuge(page) && !page_count(page)
+>>>>                                 update_and_free_page(page)
+>>>>                                 // page is freed to the buddy
+>>>>                                 spin_unlock(&hugetlb_lock)
+>>>>     spin_lock(&hugetlb_lock)
+>>>>     clear_page_huge_active(page)
+>>>>     enqueue_huge_page(page)
+>>>>     // It is wrong, the page is already freed
+>>>>     spin_unlock(&hugetlb_lock)
+>>>>
+>>>> The race windows is between put_page() and spin_lock() which
+>>>> is in the __free_huge_page().
+>>>
+>>> The race window reall is between put_page and dissolve_free_huge_page.
+>>> And the result is that the put_page path would clobber an unrelated page
+>>> (either free or already reused page) which is quite serious.
+>>> Fortunatelly pages are dissolved very rarely. I believe that user would
+>>> require to be privileged to hit this by intention.
+>>>
+>>>> We should make sure that the page is already on the free list
+>>>> when it is dissolved.
+>>>
+>>> Another option would be to check for PageHuge in __free_huge_page. Have
+>>> you considered that rather than add yet another state? The scope of the
+>>> spinlock would have to be extended. If that sounds more tricky then can
+>>> we check the page->lru in the dissolve path? If the page is still
+>>> PageHuge and reference count 0 then there shouldn't be many options
+>>> where it can be queued, right?
+>>
+>> The tricky part with expanding lock scope will be the potential call to
+>> hugepage_subpool_put_pages as it may also try to acquire the hugetlb_lock.
 > 
-> The original goal was to use another helper that worked on static
-> strings like this. Linus rejected that idea, so we're in a weird place.
-> I think we could perhaps build a strcpy() replacement that requires
-> compile-time validated arguments, and to break the build if not.
-> 
-> i.e.
-> 
-> given:
-> 	char array[8];
-> 	char *ptr;
-> 
-> allow:
-> 
-> 
-> 	strcpy(array, "1234567");
-> 
-> disallow:
-> 
-> 	strcpy(array, "12345678");	/* too long */
-> 	strcpy(array, src);		/* not optimized, so use strscpy? */
-> 	strcpy(ptr, "1234567");		/* unknown destination size */
-> 	strcpy(ptr, src);		/* unknown destination size */
+> Can we rearrange the code and move hugepage_subpool_put_pages after all
+> this is done? Or is there any strong reason for the particular ordering?
 
-I think that's not a good idea as it's not a generic equivalent of the
-string.h code.
+The reservation code is so fragile, I always get nervous when making
+any changes.  However, the straight forward patch below passes some
+simple testing.  The only difference I can see is that global counts
+are adjusted before sub-pool counts.  This should not be an issue as
+global and sub-pool counts are adjusted independently (not under the
+same lock).  Allocation code checks sub-pool counts before global
+counts.  So, there is a SMALL potential that a racing allocation which
+previously succeeded would now fail.  I do not think this is an issue
+in practice.
 
-I still like the stracpy variant I proposed:
-
-https://lore.kernel.org/lkml/24bb53c57767c1c2a8f266c305a670f7@sk2.org/T/#m0627aa770a076af1937cb5c610ed71dab3f1da72
-https://lore.kernel.org/lkml/CAHk-=wgqQKoAnhmhGE-2PBFt7oQs9LLAATKbYa573UO=DPBE0Q@mail.gmail.com/
-
-Linus liked a variant he called copy_string:
-
-https://lore.kernel.org/lkml/CAHk-=wg8vLmmwTGhXM51NpSWJW8RFEAKoXxG0Hu_Q9Uwbjj8kw@mail.gmail.com/
-
-I think the cocci scripts that convert:
-
-	strlcpy -> strscpy (only when return value unused)
-	str<sln>cpy(array, "string") -> stracpy(foo, "string")
-	s[cn]printf -> sysfs_emit
-
-would leave relatively few uses of strcpy and sprintf variants and would
-make it much easier to analyze the remainder uses for potential overflows.
-
-
+diff --git a/mm/hugetlb.c b/mm/hugetlb.c
+index 3b38ea958e95..658593840212 100644
+--- a/mm/hugetlb.c
++++ b/mm/hugetlb.c
+@@ -1395,6 +1395,11 @@ static void __free_huge_page(struct page *page)
+ 		(struct hugepage_subpool *)page_private(page);
+ 	bool restore_reserve;
+ 
++	spin_lock(&hugetlb_lock);
++	/* check for race with dissolve_free_huge_page/update_and_free_page */
++	if (!PageHuge(page))
++		return;
++
+ 	VM_BUG_ON_PAGE(page_count(page), page);
+ 	VM_BUG_ON_PAGE(page_mapcount(page), page);
+ 
+@@ -1403,26 +1408,6 @@ static void __free_huge_page(struct page *page)
+ 	restore_reserve = PagePrivate(page);
+ 	ClearPagePrivate(page);
+ 
+-	/*
+-	 * If PagePrivate() was set on page, page allocation consumed a
+-	 * reservation.  If the page was associated with a subpool, there
+-	 * would have been a page reserved in the subpool before allocation
+-	 * via hugepage_subpool_get_pages().  Since we are 'restoring' the
+-	 * reservtion, do not call hugepage_subpool_put_pages() as this will
+-	 * remove the reserved page from the subpool.
+-	 */
+-	if (!restore_reserve) {
+-		/*
+-		 * A return code of zero implies that the subpool will be
+-		 * under its minimum size if the reservation is not restored
+-		 * after page is free.  Therefore, force restore_reserve
+-		 * operation.
+-		 */
+-		if (hugepage_subpool_put_pages(spool, 1) == 0)
+-			restore_reserve = true;
+-	}
+-
+-	spin_lock(&hugetlb_lock);
+ 	clear_page_huge_active(page);
+ 	hugetlb_cgroup_uncharge_page(hstate_index(h),
+ 				     pages_per_huge_page(h), page);
+@@ -1446,6 +1431,28 @@ static void __free_huge_page(struct page *page)
+ 		enqueue_huge_page(h, page);
+ 	}
+ 	spin_unlock(&hugetlb_lock);
++
++	/*
++	 * If PagePrivate() was set on page, page allocation consumed a
++	 * reservation.  If the page was associated with a subpool, there
++	 * would have been a page reserved in the subpool before allocation
++	 * via hugepage_subpool_get_pages().  Since we are 'restoring' the
++	 * reservtion, do not call hugepage_subpool_put_pages() as this will
++	 * remove the reserved page from the subpool.
++	 */
++	if (!restore_reserve) {
++		/*
++		 * A return code of zero implies that the subpool will be
++		 * under its minimum size if the reservation is not restored
++		 * after page is free.  Therefore, we need to add 1 to the
++		 * global reserve count.
++		 */
++		if (hugepage_subpool_put_pages(spool, 1) == 0) {
++			spin_lock(&hugetlb_lock);
++			h->resv_huge_pages++;
++			spin_unlock(&hugetlb_lock);
++		}
++	}
+ }
+ 
+ /*
