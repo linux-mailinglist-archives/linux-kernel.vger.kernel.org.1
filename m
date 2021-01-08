@@ -2,105 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D33382EF18F
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 12:45:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 948582EF195
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 12:48:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726952AbhAHLpC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Jan 2021 06:45:02 -0500
-Received: from mx2.suse.de ([195.135.220.15]:51786 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726712AbhAHLpB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Jan 2021 06:45:01 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1610106255; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=juA/rjimuf4amfdEX7RimPAoa1+KKf3TgHYaOyIieVc=;
-        b=ABRrKYRoUt1hlvtpqGqNDKbnd18yaddIlZxNbdkb//XHcmeG43N+dnToStz7d8qALCrV8o
-        E9F3jB06j1uTHLsSuyyU0H4WRZ29PSFWolcE1r7yII23QBt+BGsbMSC5ISZT2O7cjLhzz6
-        HnZ59ppWuTk7rEbPRgOHdkY1kzE/Ty0=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id D895DADE6;
-        Fri,  8 Jan 2021 11:44:14 +0000 (UTC)
-Date:   Fri, 8 Jan 2021 12:44:11 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     Muchun Song <songmuchun@bytedance.com>
-Cc:     Mike Kravetz <mike.kravetz@oracle.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Naoya Horiguchi <n-horiguchi@ah.jp.nec.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [External] Re: [PATCH v2 3/6] mm: hugetlb: fix a race between
- freeing and dissolving the page
-Message-ID: <20210108114411.GZ13207@dhcp22.suse.cz>
-References: <20210107111827.GG13207@dhcp22.suse.cz>
- <CAMZfGtV_k=FxcWfazpuT=3ByXSqK-CH-E3yRQUE_dG6JMnAZeg@mail.gmail.com>
- <20210107123854.GJ13207@dhcp22.suse.cz>
- <CAMZfGtWUP1H47ZGcczsmqsQvxYP=FK9vYVr8WbOY_9UG2SCv0A@mail.gmail.com>
- <20210107141130.GL13207@dhcp22.suse.cz>
- <CAMZfGtW8hDxV_5isGTNLQMFttoymRwxc2N7nEgqxLLj6t5oN3g@mail.gmail.com>
- <20210108084330.GW13207@dhcp22.suse.cz>
- <CAMZfGtUy740SbsCW_h1NaP5O=ahSZniezkC+62pxZ5bW+vZpBg@mail.gmail.com>
- <20210108093136.GY13207@dhcp22.suse.cz>
- <CAMZfGtXhMDjw=C8XBUwsQLD7ZLv5osoLWy+RJzqY11WFm07GwQ@mail.gmail.com>
+        id S1726929AbhAHLrj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Jan 2021 06:47:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57920 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726251AbhAHLri (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 Jan 2021 06:47:38 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3150AC0612F4
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Jan 2021 03:46:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=yLAqPIM0zGFnApY9dGBlUnodOsvbrHBdXkQ8n3+DH2g=; b=pQQG+ZoeRSC1mdNkxArJfxqDLo
+        qy6Zg/+FE/1jOMcE1a1I9Ye3mVLrnxg+pVwJVNnyDgRwUpRzXyvyBKO85ZPyLbvDQav9pTxW2k8/R
+        7mPfrWARestd+Q8QJnC8KadQWWnplQg4Lb+4enZ8rj49xXKjqijUz1Wq1gc6dC9noiD5khII5VhA5
+        55ESF5gjIv9jXqebC5QBs32ScNxhw01bf2KYeLRB2VA91ScR7rZqPTfaPZZB1zPPxVDkR4+0pwlxE
+        PLsDxPmwqJWWNfpAEk/gSdc1ePNIPR4+dMR7GnnuqWIlTIDwUnoHSCGzmNXhXZT1v0aBecJCl0Mla
+        tU9Pnj/w==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kxqE7-0007a2-9c; Fri, 08 Jan 2021 11:46:43 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 03D193003D8;
+        Fri,  8 Jan 2021 12:46:36 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id BC4FC200E972D; Fri,  8 Jan 2021 12:46:36 +0100 (CET)
+Date:   Fri, 8 Jan 2021 12:46:36 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Lai Jiangshan <jiangshanlai@gmail.com>
+Cc:     linux-kernel@vger.kernel.org,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Qian Cai <cai@redhat.com>,
+        Vincent Donnefort <vincent.donnefort@arm.com>,
+        Dexuan Cui <decui@microsoft.com>,
+        Lai Jiangshan <laijs@linux.alibaba.com>,
+        Paul McKenney <paulmck@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Steven Rostedt <rostedt@goodmis.org>
+Subject: Re: [PATCH -tip V3 0/8] workqueue: break affinity initiatively
+Message-ID: <X/hGHNGB9fltElWB@hirez.programming.kicks-ass.net>
+References: <20201226025117.2770-1-jiangshanlai@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAMZfGtXhMDjw=C8XBUwsQLD7ZLv5osoLWy+RJzqY11WFm07GwQ@mail.gmail.com>
+In-Reply-To: <20201226025117.2770-1-jiangshanlai@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri 08-01-21 18:08:57, Muchun Song wrote:
-> On Fri, Jan 8, 2021 at 5:31 PM Michal Hocko <mhocko@suse.com> wrote:
-> >
-> > On Fri 08-01-21 17:01:03, Muchun Song wrote:
-> > > On Fri, Jan 8, 2021 at 4:43 PM Michal Hocko <mhocko@suse.com> wrote:
-> > > >
-> > > > On Thu 07-01-21 23:11:22, Muchun Song wrote:
-> > [..]
-> > > > > But I find a tricky problem to solve. See free_huge_page().
-> > > > > If we are in non-task context, we should schedule a work
-> > > > > to free the page. We reuse the page->mapping. If the page
-> > > > > is already freed by the dissolve path. We should not touch
-> > > > > the page->mapping. So we need to check PageHuge().
-> > > > > The check and llist_add() should be protected by
-> > > > > hugetlb_lock. But we cannot do that. Right? If dissolve
-> > > > > happens after it is linked to the list. We also should
-> > > > > remove it from the list (hpage_freelist). It seems to make
-> > > > > the thing more complex.
-> > > >
-> > > > I am not sure I follow you here but yes PageHuge under hugetlb_lock
-> > > > should be the reliable way to check for the race. I am not sure why we
-> > > > really need to care about mapping or other state.
-> > >
-> > > CPU0:                               CPU1:
-> > > free_huge_page(page)
-> > >   if (PageHuge(page))
-> > >                                     dissolve_free_huge_page(page)
-> > >                                       spin_lock(&hugetlb_lock)
-> > >                                       update_and_free_page(page)
-> > >                                       spin_unlock(&hugetlb_lock)
-> > >     llist_add(page->mapping)
-> > >     // the mapping is corrupted
-> > >
-> > > The PageHuge(page) and llist_add() should be protected by
-> > > hugetlb_lock. Right? If so, we cannot hold hugetlb_lock
-> > > in free_huge_page() path.
-> >
-> > OK, I see. I completely forgot about this snowflake. I thought that
-> > free_huge_page was a typo missing initial __. Anyway you are right that
-> > this path needs a check as well. But I don't see why we couldn't use the
-> > lock here. The lock can be held only inside the !in_task branch.
+On Sat, Dec 26, 2020 at 10:51:08AM +0800, Lai Jiangshan wrote:
+> From: Lai Jiangshan <laijs@linux.alibaba.com>
 > 
-> Because we hold the hugetlb_lock without disable irq. So if an interrupt
-> occurs after we hold the lock. And we also free a HugeTLB page. Then
-> it leads to deadlock.
+> 06249738a41a ("workqueue: Manually break affinity on hotplug")
+> said that scheduler will not force break affinity for us.
 
-There is nothing really to prevent making hugetlb_lock irq safe, isn't
-it?
--- 
-Michal Hocko
-SUSE Labs
+So I've been looking at this the past day or so, and the more I look,
+the more I think commit:
+
+  1cf12e08bc4d ("sched/hotplug: Consolidate task migration on CPU unplug")
+
+is a real problem and we need to revert it (at least for now).
+
+Let me attempt a brain dump:
+
+ - the assumption that per-cpu kernel threads are 'well behaved' on
+   hot-plug has, I think, been proven incorrect, it's far worse than
+   just bounded workqueue. Therefore, it makes sense to provide the old
+   semantics.
+
+ - making the current code provide the old semantics (forcing affinity
+   on per-cpu kernel threads) is tricky, but could probably be done:
+
+    * we need to disallow new per-cpu kthreads while going down
+    * we need to force push more agressive; basically when
+      rcuwait_active(rq->hotplug_wait) push everything except that task,
+      irrespective of is_per_cpu_kthread()
+    * we need to disallow wakeups of anything not the hotplug thread or
+      stop-machine from happening from the rcuwait_wait_event()
+
+   and I have patches for most of that... except they're adding more
+   complexity than 1cf12e08bc4d ever deleted.
+
+However, even with all that, there's a further problem...
+
+Fundamentally, waiting for !rq_has_pinned_tasks() so late in
+hot-un-plug, is wrong I think. It means that migrate_disable() code
+might encounter a mostly torn down CPU. This is OK-ish for per-cpu
+kernel threads [*], but is now exposed to any random odd kernel code
+that does migrate_disable().
+
+[*] arguably running 'work' this late is similarly problematic.
+
+Let me go do lunch and ponder this further..
