@@ -2,80 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 23F452EEAFF
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 02:42:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 654C42EEB1A
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 02:49:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729797AbhAHBlq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 20:41:46 -0500
-Received: from szxga04-in.huawei.com ([45.249.212.190]:9725 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727634AbhAHBlq (ORCPT
+        id S1730034AbhAHBs5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 20:48:57 -0500
+Received: from mailgw02.mediatek.com ([210.61.82.184]:37108 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1729812AbhAHBs4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 20:41:46 -0500
-Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4DBm4S6m0Lzl11j;
-        Fri,  8 Jan 2021 09:39:52 +0800 (CST)
-Received: from [10.174.179.174] (10.174.179.174) by
- DGGEMS409-HUB.china.huawei.com (10.3.19.209) with Microsoft SMTP Server id
- 14.3.498.0; Fri, 8 Jan 2021 09:41:01 +0800
-Subject: Re: [PATCH] mm/hugetlb: Fix potential double free in
- hugetlb_register_node() error path
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>
-CC:     <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>
-References: <20210107123249.36964-1-linmiaohe@huawei.com>
- <a8753475-e9a8-a730-c095-086530ecdd17@oracle.com>
- <20210107151502.7c581d98078ba90e63553dd4@linux-foundation.org>
-From:   Miaohe Lin <linmiaohe@huawei.com>
-Message-ID: <0c53d7a7-df61-9187-676b-6ba5d0829394@huawei.com>
-Date:   Fri, 8 Jan 2021 09:41:01 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        Thu, 7 Jan 2021 20:48:56 -0500
+X-UUID: 729c725f5e6242db9551a4ee653bd7bd-20210108
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:Reply-To:From:Subject:Message-ID; bh=NPP5jpMnteAgsJpkoNqsMUTLM/8AlhOp/XPWd4WayzM=;
+        b=aupKRcA3tCWLDs1A4m1gsP2wep+Lkr9qQ7DtVqvjgrg+uMwDFXNFg+0K28SyvrMW5FgFJXfFsi2Aiw04lRp13IxGKiPTbyvTQRKDuZp7kJf9jtCoJSF6OKJc71au9cChr/0wMNUZRkaeJuJuoO65wq68p5JE9MXTisQoLz6H2OA=;
+X-UUID: 729c725f5e6242db9551a4ee653bd7bd-20210108
+Received: from mtkcas11.mediatek.inc [(172.21.101.40)] by mailgw02.mediatek.com
+        (envelope-from <yongqiang.niu@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 488800082; Fri, 08 Jan 2021 09:48:09 +0800
+Received: from MTKCAS36.mediatek.inc (172.27.4.186) by mtkmbs08n2.mediatek.inc
+ (172.21.101.56) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Fri, 8 Jan
+ 2021 09:48:06 +0800
+Received: from [10.17.3.153] (10.17.3.153) by MTKCAS36.mediatek.inc
+ (172.27.4.170) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Fri, 8 Jan 2021 09:48:05 +0800
+Message-ID: <1610070485.1574.10.camel@mhfsdcap03>
+Subject: Re: [PATCH v2] soc: mediatek: cmdq: add address shift in jump
+From:   Yongqiang Niu <yongqiang.niu@mediatek.com>
+Reply-To: Yongqiang Niu <yongqiang.niu@mediatek.com>
+To:     CK Hu <ck.hu@mediatek.com>, Jassi Brar <jassisinghbrar@gmail.com>
+CC:     Philipp Zabel <p.zabel@pengutronix.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        "David Airlie" <airlied@linux.ie>, Daniel Vetter <daniel@ffwll.ch>,
+        Mark Rutland <mark.rutland@arm.com>,
+        <dri-devel@lists.freedesktop.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <Project_Global_Chrome_Upstream_Group@mediatek.com>,
+        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+        <damon.chu@mediatek.com>, <dennis-yc.hsieh@mediatek.com>
+Date:   Fri, 8 Jan 2021 09:48:05 +0800
+In-Reply-To: <1608712499-24956-2-git-send-email-yongqiang.niu@mediatek.com>
+References: <1608712499-24956-1-git-send-email-yongqiang.niu@mediatek.com>
+         <1608712499-24956-2-git-send-email-yongqiang.niu@mediatek.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.10.4-0ubuntu2 
 MIME-Version: 1.0
-In-Reply-To: <20210107151502.7c581d98078ba90e63553dd4@linux-foundation.org>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.179.174]
-X-CFilter-Loop: Reflected
+X-TM-SNTS-SMTP: 68847612D0C798759DAC2DE39BDF7DDFAD4EDA6D3284292B08F310D98A8DC2A62000:8
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/1/8 7:15, Andrew Morton wrote:
-> On Thu, 7 Jan 2021 11:59:38 -0800 Mike Kravetz <mike.kravetz@oracle.com> wrote:
-> 
->> On 1/7/21 4:32 AM, Miaohe Lin wrote:
->>> In hugetlb_sysfs_add_hstate(), we would do kobject_put() on hstate_kobjs
->>> when failed to create sysfs group but forget to set hstate_kobjs to NULL.
->>> Then in hugetlb_register_node() error path, we may free it again via
->>> hugetlb_unregister_node().
->>>
->>> Fixes: a3437870160c ("hugetlb: new sysfs interface")
->>> Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
->>> Cc: <stable@vger.kernel.org>
->>> ---
->>>  mm/hugetlb.c | 4 +++-
->>>  1 file changed, 3 insertions(+), 1 deletion(-)
->>
->> Thanks, this is a potential issue that should be fixed.
->>
->> Reviewed-by: Mike Kravetz <mike.kravetz@oracle.com>
->>
->> This has been around for a long time (more than 12 years).  I suspect
->> nobody actually experienced this issue.  You just discovered via code
->> inspection.  Correct?
+T24gV2VkLCAyMDIwLTEyLTIzIGF0IDE2OjM0ICswODAwLCBZb25ncWlhbmcgTml1IHdyb3RlOg0K
+PiBBZGQgYWRkcmVzcyBzaGlmdCB3aGVuIGNvbXBvc2UganVtcCBpbnN0cnVjdGlvbg0KPiB0byBj
+b21wYXRpYmxlIHdpdGggMzViaXQgZm9ybWF0Lg0KPiANCj4gRml4ZXM6IDA4NThmZGU0OTZmOCAo
+Im1haWxib3g6IGNtZHE6IHZhcmlhYmxpemUgYWRkcmVzcyBzaGlmdCBpbiBwbGF0Zm9ybSIpDQo+
+IA0KPiBTaWduZWQtb2ZmLWJ5OiBZb25ncWlhbmcgTml1IDx5b25ncWlhbmcubml1QG1lZGlhdGVr
+LmNvbT4NCj4gUmV2aWV3ZWQtYnk6IE5pY29sYXMgQm9pY2hhdCA8ZHJpbmtjYXRAY2hyb21pdW0u
+b3JnPg0KPiAtLS0NCj4gIGRyaXZlcnMvbWFpbGJveC9tdGstY21kcS1tYWlsYm94LmMgfCAzICsr
+LQ0KPiAgMSBmaWxlIGNoYW5nZWQsIDIgaW5zZXJ0aW9ucygrKSwgMSBkZWxldGlvbigtKQ0KPiAN
+Cj4gZGlmZiAtLWdpdCBhL2RyaXZlcnMvbWFpbGJveC9tdGstY21kcS1tYWlsYm94LmMgYi9kcml2
+ZXJzL21haWxib3gvbXRrLWNtZHEtbWFpbGJveC5jDQo+IGluZGV4IDU2NjViNmUuLjc1Mzc4ZTMg
+MTAwNjQ0DQo+IC0tLSBhL2RyaXZlcnMvbWFpbGJveC9tdGstY21kcS1tYWlsYm94LmMNCj4gKysr
+IGIvZHJpdmVycy9tYWlsYm94L210ay1jbWRxLW1haWxib3guYw0KPiBAQCAtMTY4LDcgKzE2OCw4
+IEBAIHN0YXRpYyB2b2lkIGNtZHFfdGFza19pbnNlcnRfaW50b190aHJlYWQoc3RydWN0IGNtZHFf
+dGFzayAqdGFzaykNCj4gIAlkbWFfc3luY19zaW5nbGVfZm9yX2NwdShkZXYsIHByZXZfdGFzay0+
+cGFfYmFzZSwNCj4gIAkJCQlwcmV2X3Rhc2stPnBrdC0+Y21kX2J1Zl9zaXplLCBETUFfVE9fREVW
+SUNFKTsNCj4gIAlwcmV2X3Rhc2tfYmFzZVtDTURRX05VTV9DTUQocHJldl90YXNrLT5wa3QpIC0g
+MV0gPQ0KPiAtCQkodTY0KUNNRFFfSlVNUF9CWV9QQSA8PCAzMiB8IHRhc2stPnBhX2Jhc2U7DQo+
+ICsJCSh1NjQpQ01EUV9KVU1QX0JZX1BBIDw8IDMyIHwNCj4gKwkJKHRhc2stPnBhX2Jhc2UgPj4g
+dGFzay0+Y21kcS0+c2hpZnRfcGEpOw0KPiAgCWRtYV9zeW5jX3NpbmdsZV9mb3JfZGV2aWNlKGRl
+diwgcHJldl90YXNrLT5wYV9iYXNlLA0KPiAgCQkJCSAgIHByZXZfdGFzay0+cGt0LT5jbWRfYnVm
+X3NpemUsIERNQV9UT19ERVZJQ0UpOw0KPiAgDQoNCmhpIGphc3NpDQoNCnBsZWFzZSBjb25maXJt
+IGlzIHRoZXJlIGFueSBxdWVzdGlvbiBhYm91dCB0aGlzIHBhdGNoLg0KaWYgbm90LCBwbGVhc2Ug
+YXBwbHkgdGhpcyBpbnRvIG5leHQgdmVyc2lvbiwgdGtzDQo=
 
-Yes, I found this by code inspection.
-
->> At one time cc stable would not be accepted for this type of issue,
->> not sure about today.
-> 
-> sysfs_create_group() will only fail if something is terribly messed up
-> - probably it has never happened to anyone.  I don't think the
-> cc:stable is justified here.
-> 
-> .
-> 
-
-I would take care of more when cc stable. Many thanks for both of you!
