@@ -2,24 +2,24 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F69A2EF2B9
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 13:58:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B3592EF2B7
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 13:58:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727398AbhAHM6D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Jan 2021 07:58:03 -0500
-Received: from honk.sigxcpu.org ([24.134.29.49]:44968 "EHLO honk.sigxcpu.org"
+        id S1727063AbhAHM57 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Jan 2021 07:57:59 -0500
+Received: from honk.sigxcpu.org ([24.134.29.49]:44940 "EHLO honk.sigxcpu.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725816AbhAHM6A (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Jan 2021 07:58:00 -0500
+        id S1725965AbhAHM56 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 Jan 2021 07:57:58 -0500
 Received: from localhost (localhost [127.0.0.1])
-        by honk.sigxcpu.org (Postfix) with ESMTP id 92781FB03;
-        Fri,  8 Jan 2021 13:57:16 +0100 (CET)
+        by honk.sigxcpu.org (Postfix) with ESMTP id 22441FB02;
+        Fri,  8 Jan 2021 13:57:15 +0100 (CET)
 X-Virus-Scanned: Debian amavisd-new at honk.sigxcpu.org
 Received: from honk.sigxcpu.org ([127.0.0.1])
         by localhost (honk.sigxcpu.org [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id HwL-KFf8YOXo; Fri,  8 Jan 2021 13:57:15 +0100 (CET)
+        with ESMTP id Ad-lw2qiTfel; Fri,  8 Jan 2021 13:57:11 +0100 (CET)
 Received: by bogon.sigxcpu.org (Postfix, from userid 1000)
-        id 9DC9040445; Fri,  8 Jan 2021 13:57:10 +0100 (CET)
+        id B15D740887; Fri,  8 Jan 2021 13:57:10 +0100 (CET)
 From:   =?UTF-8?q?Guido=20G=C3=BCnther?= <agx@sigxcpu.org>
 To:     Rob Herring <robh+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
         Sascha Hauer <s.hauer@pengutronix.de>,
@@ -39,9 +39,9 @@ To:     Rob Herring <robh+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
         Michael Walle <michael@walle.cc>, devicetree@vger.kernel.org,
         linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         phone-devel@vger.kernel.org
-Subject: [PATCH v3 1/4] arm64: defconfig: Enable Librem 5 devkit components
-Date:   Fri,  8 Jan 2021 13:57:07 +0100
-Message-Id: <5636a3d6e3217475e2a479248250d5c0e0a50e26.1610110514.git.agx@sigxcpu.org>
+Subject: [PATCH v3 2/4] arm64: dts: imx8mq-librem5-devkit: Tweak pmic regulators
+Date:   Fri,  8 Jan 2021 13:57:08 +0100
+Message-Id: <a0f7efc0fcd23093706e2958b489383d91d11aca.1610110514.git.agx@sigxcpu.org>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <cover.1610110514.git.agx@sigxcpu.org>
 References: <cover.1610110514.git.agx@sigxcpu.org>
@@ -52,101 +52,124 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The Librem 5 devkit is based on NXP's i.MX8MQ. Schematics are at
-https://source.puri.sm/Librem5/dvk-mx8m-bsb.
+BUCK3 needs a regulator-enable-ramp-delay since otherwise the board
+freezes on etnaviv probe. With this pgc_gpu suspends and resumes as
+expected. This must have been always broken since gpcv2 support was
+enabled.
 
-This enables drivers for the following hardware components that aren't
-yet enabled in defconfig:
+We also enable all the regulators needed for Deep Sleep Mode (DSM) as
+always-on:
 
-- Goodix GT5688 touchscreen
-- iMX8MQ's PWM for the LCD backlight
-- TI BQ25896 charge controller
-- NXP SGTL5000 audio codec
-- Microcrystal RV-4162-C7 RTC
-- magnetometer: CONFIG_IIO_ST_MAGN_3AXIS
-- the SIMCom SIM7100E/A modem
-- NXP PTN5110HQZ usb-c controller
+- VDD_SOC supplied by BUCK1
+- VDDA_1P8 supplied by BUCK7
+- VDDA_0P9 supplied by LDO4
+- VDDA_DRAM supplied by LDO3
+- NVCC_DRAM supplied by BUCK8
+- VDD_DRAM supplied by BUCK5
+
+Finally LDO5 and LDO6 provide VDD_PHY_1V8 and VDD_PHY_0V9 used by the
+SOCs MIPI, HDMI and USB IP cores. While we would in theory be able to
+turn these off (and I've tested that or LDO6 and mipi with USB disabled)
+it is of little practical use atm since USB doesn't runtime suspend so
+let's revisit this at a later point.
 
 Signed-off-by: Guido Günther <agx@sigxcpu.org>
 Reviewed-by: Krzysztof Kozlowski <krzk@kernel.org>
 ---
- arch/arm64/configs/defconfig | 9 +++++++++
- 1 file changed, 9 insertions(+)
+ .../boot/dts/freescale/imx8mq-librem5-devkit.dts      | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
 
-diff --git a/arch/arm64/configs/defconfig b/arch/arm64/configs/defconfig
-index 4bb16b93e5d9..078d3d86289f 100644
---- a/arch/arm64/configs/defconfig
-+++ b/arch/arm64/configs/defconfig
-@@ -417,6 +417,7 @@ CONFIG_KEYBOARD_IMX_SC_KEY=m
- CONFIG_KEYBOARD_CROS_EC=y
- CONFIG_INPUT_TOUCHSCREEN=y
- CONFIG_TOUCHSCREEN_ATMEL_MXT=m
-+CONFIG_TOUCHSCREEN_GOODIX=m
- CONFIG_TOUCHSCREEN_EDT_FT5X06=m
- CONFIG_INPUT_MISC=y
- CONFIG_INPUT_PM8941_PWRKEY=y
-@@ -566,6 +567,7 @@ CONFIG_BATTERY_SBS=m
- CONFIG_BATTERY_BQ27XXX=y
- CONFIG_SENSORS_ARM_SCMI=y
- CONFIG_BATTERY_MAX17042=m
-+CONFIG_CHARGER_BQ25890=m
- CONFIG_CHARGER_BQ25980=m
- CONFIG_SENSORS_ARM_SCPI=y
- CONFIG_SENSORS_LM90=m
-@@ -747,6 +749,7 @@ CONFIG_SND_SOC_FSL_ASRC=m
- CONFIG_SND_SOC_FSL_MICFIL=m
- CONFIG_SND_SOC_FSL_EASRC=m
- CONFIG_SND_IMX_SOC=m
-+CONFIG_SND_SOC_IMX_SGTL5000=m
- CONFIG_SND_SOC_IMX_SPDIF=m
- CONFIG_SND_SOC_IMX_AUDMIX=m
- CONFIG_SND_SOC_FSL_ASOC_CARD=m
-@@ -773,6 +776,7 @@ CONFIG_SND_SOC_TEGRA210_ADMAIF=m
- CONFIG_SND_SOC_AK4613=m
- CONFIG_SND_SOC_ES7134=m
- CONFIG_SND_SOC_ES7241=m
-+CONFIG_SND_SOC_GTM601=m
- CONFIG_SND_SOC_PCM3168A_I2C=m
- CONFIG_SND_SOC_SIMPLE_AMPLIFIER=m
- CONFIG_SND_SOC_TAS571X=m
-@@ -810,6 +814,7 @@ CONFIG_USB_ISP1760=y
- CONFIG_USB_SERIAL=m
- CONFIG_USB_SERIAL_CP210X=m
- CONFIG_USB_SERIAL_FTDI_SIO=m
-+CONFIG_USB_SERIAL_OPTION=m
- CONFIG_USB_HSIC_USB3503=y
- CONFIG_NOP_USB_XCEIV=y
- CONFIG_USB_GADGET=y
-@@ -829,6 +834,7 @@ CONFIG_USB_CONFIGFS_MASS_STORAGE=y
- CONFIG_USB_CONFIGFS_F_FS=y
- CONFIG_TYPEC=m
- CONFIG_TYPEC_TCPM=m
-+CONFIG_TYPEC_TCPCI=m
- CONFIG_TYPEC_FUSB302=m
- CONFIG_TYPEC_HD3SS3220=m
- CONFIG_TYPEC_TPS6598X=m
-@@ -879,6 +885,7 @@ CONFIG_RTC_DRV_HYM8563=m
- CONFIG_RTC_DRV_MAX77686=y
- CONFIG_RTC_DRV_RK808=m
- CONFIG_RTC_DRV_PCF85363=m
-+CONFIG_RTC_DRV_M41T80=m
- CONFIG_RTC_DRV_RX8581=m
- CONFIG_RTC_DRV_RV8803=m
- CONFIG_RTC_DRV_S5M=y
-@@ -1043,11 +1050,13 @@ CONFIG_IIO_ST_LSM6DSX=m
- CONFIG_IIO_CROS_EC_LIGHT_PROX=m
- CONFIG_SENSORS_ISL29018=m
- CONFIG_VCNL4000=m
-+CONFIG_IIO_ST_MAGN_3AXIS=m
- CONFIG_IIO_CROS_EC_BARO=m
- CONFIG_MPL3115=m
- CONFIG_PWM=y
- CONFIG_PWM_BCM2835=m
- CONFIG_PWM_CROS_EC=m
-+CONFIG_PWM_IMX27=m
- CONFIG_PWM_MESON=m
- CONFIG_PWM_RCAR=m
- CONFIG_PWM_ROCKCHIP=y
+diff --git a/arch/arm64/boot/dts/freescale/imx8mq-librem5-devkit.dts b/arch/arm64/boot/dts/freescale/imx8mq-librem5-devkit.dts
+index af139b283daf..f35d6897fbf7 100644
+--- a/arch/arm64/boot/dts/freescale/imx8mq-librem5-devkit.dts
++++ b/arch/arm64/boot/dts/freescale/imx8mq-librem5-devkit.dts
+@@ -298,6 +298,7 @@ buck1_reg: BUCK1 {
+ 				regulator-min-microvolt = <700000>;
+ 				regulator-max-microvolt = <1300000>;
+ 				regulator-boot-on;
++				regulator-always-on;
+ 				regulator-ramp-delay = <1250>;
+ 				rohm,dvs-run-voltage = <900000>;
+ 				rohm,dvs-idle-voltage = <850000>;
+@@ -319,6 +320,7 @@ buck3_reg: BUCK3 {
+ 				regulator-min-microvolt = <700000>;
+ 				regulator-max-microvolt = <1300000>;
+ 				regulator-boot-on;
++				regulator-enable-ramp-delay = <200>;
+ 				rohm,dvs-run-voltage = <900000>;
+ 			};
+ 
+@@ -334,6 +336,7 @@ buck5_reg: BUCK5 {
+ 				regulator-min-microvolt = <700000>;
+ 				regulator-max-microvolt = <1350000>;
+ 				regulator-boot-on;
++				regulator-always-on;
+ 			};
+ 
+ 			buck6_reg: BUCK6 {
+@@ -341,6 +344,7 @@ buck6_reg: BUCK6 {
+ 				regulator-min-microvolt = <3000000>;
+ 				regulator-max-microvolt = <3300000>;
+ 				regulator-boot-on;
++				regulator-always-on;
+ 			};
+ 
+ 			buck7_reg: BUCK7 {
+@@ -348,6 +352,7 @@ buck7_reg: BUCK7 {
+ 				regulator-min-microvolt = <1605000>;
+ 				regulator-max-microvolt = <1995000>;
+ 				regulator-boot-on;
++				regulator-always-on;
+ 			};
+ 
+ 			buck8_reg: BUCK8 {
+@@ -355,6 +360,7 @@ buck8_reg: BUCK8 {
+ 				regulator-min-microvolt = <800000>;
+ 				regulator-max-microvolt = <1400000>;
+ 				regulator-boot-on;
++				regulator-always-on;
+ 			};
+ 
+ 			ldo1_reg: LDO1 {
+@@ -380,6 +386,7 @@ ldo3_reg: LDO3 {
+ 				regulator-min-microvolt = <1800000>;
+ 				regulator-max-microvolt = <3300000>;
+ 				regulator-boot-on;
++				regulator-always-on;
+ 			};
+ 
+ 			ldo4_reg: LDO4 {
+@@ -387,12 +394,14 @@ ldo4_reg: LDO4 {
+ 				regulator-min-microvolt = <900000>;
+ 				regulator-max-microvolt = <1800000>;
+ 				regulator-boot-on;
++				regulator-always-on;
+ 			};
+ 
+ 			ldo5_reg: LDO5 {
+ 				regulator-name = "ldo5";
+ 				regulator-min-microvolt = <1800000>;
+ 				regulator-max-microvolt = <3300000>;
++				regulator-always-on;
+ 			};
+ 
+ 			ldo6_reg: LDO6 {
+@@ -400,6 +409,7 @@ ldo6_reg: LDO6 {
+ 				regulator-min-microvolt = <900000>;
+ 				regulator-max-microvolt = <1800000>;
+ 				regulator-boot-on;
++				regulator-always-on;
+ 			};
+ 
+ 			ldo7_reg: LDO7 {
+@@ -407,6 +417,7 @@ ldo7_reg: LDO7 {
+ 				regulator-min-microvolt = <1800000>;
+ 				regulator-max-microvolt = <3300000>;
+ 				regulator-boot-on;
++				regulator-always-on;
+ 			};
+ 		};
+ 	};
 -- 
 2.29.2
 
