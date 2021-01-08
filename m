@@ -2,118 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FBB92EF58C
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 17:12:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 335B52EF58E
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 17:12:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727979AbhAHQLF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Jan 2021 11:11:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42474 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726906AbhAHQLF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Jan 2021 11:11:05 -0500
-Received: from mail-il1-x134.google.com (mail-il1-x134.google.com [IPv6:2607:f8b0:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22425C061380
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Jan 2021 08:10:25 -0800 (PST)
-Received: by mail-il1-x134.google.com with SMTP id h3so3047510ils.4
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Jan 2021 08:10:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=0QGPFasA/mlJ8O6Agjy43TljTX1e0tfJqweWTwBQCFU=;
-        b=n9S3cb75C6AQyMA3YNYpDX2VpVNFC6yHQsWvikKFoDKLrApx61lf6wW7LIF2BUx3I6
-         Rs059J9SohrXtAHaw5hh5XYS9f3qxdyHPKfYIDwS6Gj9pEzyntLiTWuGCX+fVjJ+OrfC
-         /jZQW66aEXGJWXsD76p46GW2DD8X4jewww30FSG7RYD4SHc8gQtVLyKxpTTxhbCvK4GK
-         jnZylauIPgRxAJVEVhZlwsS8lpocW7nQUJL47YyG1w+4B7Rcrt45l7ItLVYoU5R4nFUK
-         GHrWSAbZru6d7oPHyOZCwCFrgn/g5nA2LU7hdmWUZD7ndB7FgKdlx+Df/zbfYFst7qIy
-         iVAw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=0QGPFasA/mlJ8O6Agjy43TljTX1e0tfJqweWTwBQCFU=;
-        b=KaBcUyGwjFMuLPJPHP8vYAPvuwZlUsXnlKnp7nLTfSEnqmJsp/ALwWknJOoT87Yw5Y
-         cp2zlbQKbEQYYtDPCt9iBEIA4Scp9mSAKroflw5fOgmq7610yTb32nkctoqpeS9MfM6s
-         sK1oUbEboz6RV7KPf0ZKJ/zccwm5sdZOqCckfrf8TFU35RgDJoHtIWmf1yjdyCcIob8e
-         yNWfjw1rtD37ZTxrWU8yGt9+EpVT/2yDoebjwfR4KUYtsCC6Afl/t4KNn53cPtv0n27T
-         gohIZ5OSCGgrbzPa+YjbnWLKBJjMHtUx/oK50/1VRHzdQCsef72mPYRRnCd31B9F+NPO
-         2dyw==
-X-Gm-Message-State: AOAM533ezMVyPpsFbZC/5lN+iP/aJ2s/FVxkphLn7/farDQFJha9zigS
-        RnFjBpYN6TfGbDPLpfck75BsEQ==
-X-Google-Smtp-Source: ABdhPJxASBZFtWw19rWt+faqaOwMIaJNr1uVa5XJI4wu80lPXkgBxPOg236tQ7Bv5zcnoHLcv1VhKQ==
-X-Received: by 2002:a92:4002:: with SMTP id n2mr4341557ila.293.1610122224353;
-        Fri, 08 Jan 2021 08:10:24 -0800 (PST)
-Received: from [192.168.1.30] ([65.144.74.34])
-        by smtp.gmail.com with ESMTPSA id d5sm7419122ilf.33.2021.01.08.08.10.23
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 08 Jan 2021 08:10:23 -0800 (PST)
-Subject: Re: [PATCH] fs: process fput task_work with TWA_SIGNAL
-To:     Al Viro <viro@zeniv.linux.org.uk>
-Cc:     linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Song Liu <songliubraving@fb.com>
-References: <d6ddf6c2-3789-2e10-ba71-668cba03eb35@kernel.dk>
- <20210108052651.GM3579531@ZenIV.linux.org.uk>
- <20210108064639.GN3579531@ZenIV.linux.org.uk>
- <245fba32-76cc-c4e1-6007-0b1f8a22a86b@kernel.dk>
- <20210108155807.GQ3579531@ZenIV.linux.org.uk>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <41e33492-7b01-6801-cbb1-78ecef0c9fc0@kernel.dk>
-Date:   Fri, 8 Jan 2021 09:10:23 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1728049AbhAHQLa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Jan 2021 11:11:30 -0500
+Received: from vps0.lunn.ch ([185.16.172.187]:57324 "EHLO vps0.lunn.ch"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726654AbhAHQLa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 Jan 2021 11:11:30 -0500
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
+        (envelope-from <andrew@lunn.ch>)
+        id 1kxuLX-00Gvey-Pc; Fri, 08 Jan 2021 17:10:39 +0100
+Date:   Fri, 8 Jan 2021 17:10:39 +0100
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Claudiu Beznea <claudiu.beznea@microchip.com>
+Cc:     hkallweit1@gmail.com, linux@armlinux.org.uk, davem@davemloft.net,
+        kuba@kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] net: phy: micrel: reconfigure the phy on resume
+Message-ID: <X/iD/3dl+FxiIjUU@lunn.ch>
+References: <1610120754-14331-1-git-send-email-claudiu.beznea@microchip.com>
 MIME-Version: 1.0
-In-Reply-To: <20210108155807.GQ3579531@ZenIV.linux.org.uk>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1610120754-14331-1-git-send-email-claudiu.beznea@microchip.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 1/8/21 8:58 AM, Al Viro wrote:
-> On Fri, Jan 08, 2021 at 08:13:25AM -0700, Jens Axboe wrote:
->>> Anyway, bedtime for me; right now it looks like at least for task ==
->>> current we always want TWA_SIGNAL.  I'll look into that more tomorrow
->>> when I get up, but so far it smells like switching everything to
->>> TWA_SIGNAL would be the right thing to do, if not going back to bool
->>> notify for task_work_add()...
->>
->> Before the change, the fact that we ran task_work off get_signal() and
->> thus processed even non-notify work in that path was a bit of a mess,
->> imho. If you have work that needs processing now, in the same manner as
->> signals, then you really should be using TWA_SIGNAL. For this pipe case,
->> and I'd need to setup and reproduce it again, the task must have a
->> signal pending and that would have previously caused the task_work to
->> run, and now it does not. TWA_RESUME technically didn't change its
->> behavior, it's still the same notification type, we just don't run
->> task_work unconditionally (regardless of notification type) from
->> get_signal().
+On Fri, Jan 08, 2021 at 05:45:54PM +0200, Claudiu Beznea wrote:
+> KSZ9131 is used in setups with SAMA7G5. SAMA7G5 supports a special
+> power saving mode (backup mode) that cuts the power for almost all
+> parts of the SoC. The rail powering the ethernet PHY is also cut off.
+> When resuming, in case the PHY has been configured on probe with
+> slew rate or DLL settings these needs to be restored thus call
+> driver's config_init() on resume.
 > 
-> It sure as hell did change behaviour.  Think of the effect of getting
-> hit with SIGSTOP.  That's what that "bit of a mess" had been about.
-> Work done now vs. possibly several days later when SIGCONT finally
-> gets sent.
-> 
->> I think the main question here is if we want to re-instate the behavior
->> of running task_work off get_signal(). I'm leaning towards not doing
->> that and ensuring that callers that DO need that are using TWA_SIGNAL.
-> 
-> Can you show the callers that DO NOT need it?
+> Signed-off-by: Claudiu Beznea <claudiu.beznea@microchip.com>
 
-OK, so here's my suggestion:
+Reviewed-by: Andrew Lunn <andrew@lunn.ch>
 
-1) For 5.11, we just re-instate the task_work run in get_signal(). This
-   will make TWA_RESUME have the exact same behavior as before.
-
-2) For 5.12, I'll prepare a patch that collapses TWA_RESUME and TWA_SIGNAL,
-   turning it into a bool again (notify or no notify).
-
-How does that sound?
-
--- 
-Jens Axboe
-
+    Andrew
