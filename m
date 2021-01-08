@@ -2,134 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DDA122EF329
+	by mail.lfdr.de (Postfix) with ESMTP id 65DC22EF328
 	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 14:38:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727648AbhAHNhl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Jan 2021 08:37:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46768 "EHLO
+        id S1727353AbhAHNhd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Jan 2021 08:37:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46746 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727442AbhAHNhj (ORCPT
+        with ESMTP id S1725816AbhAHNhc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Jan 2021 08:37:39 -0500
-Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92912C0612F5
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Jan 2021 05:36:59 -0800 (PST)
-Received: by mail-pl1-x632.google.com with SMTP id y8so5663439plp.8
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Jan 2021 05:36:59 -0800 (PST)
+        Fri, 8 Jan 2021 08:37:32 -0500
+Received: from mail-il1-x12d.google.com (mail-il1-x12d.google.com [IPv6:2607:f8b0:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39747C0612F4
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Jan 2021 05:36:52 -0800 (PST)
+Received: by mail-il1-x12d.google.com with SMTP id 14so8977660ilq.2
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Jan 2021 05:36:52 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=2H4NRUpssxmHvO//onxHk/0LPtfW86OVu0j9eYubnLc=;
-        b=SLY+QxdrqHdJ2uP5KNaiBHXk48J1xlfhCMQIVdxTzXaENX8pz32T0lesa+t0AWstHA
-         ARdGIcwCAcMUYw3EG7rttfsxeRdwK+AnmQ3ErSrt+2TME17Z4+XNi/F2DBqfV9uJKRAa
-         udyKmiOCfTjpxv5s4kAW833BX3PTrWacStDLcFUFT2UFPMjfUeLcTXKVsLvC/7ssD0C+
-         NNFFFuLp8KYEyD9oUg4ft529Pc9h7jr3B6kS2rmHFzcy2V3z/B98L8a/hWZcwyVhLnMs
-         CBC3/eUZMyTO2i4qRv6d4o/78FtYTdKPGKx04E5N57UuSjV7X7ze3jv2ugfdvTZfeo/e
-         X1dg==
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=ehVJZhNwbv/+X0MqNJz70oUJLCNIbym2FZsQKK9qJjI=;
+        b=oICYMf9NNsqqEXfxvdnVjhRU6h75pdbaXZDFqkKqkmskLgh/sYnVnxQQJaydrfPQHG
+         VmLJViuGJPuqcbV5E2RwKQnpWqKF/GI6gnWpwIsM5SlKGVgSYPHCBJzdc1DFj81jPhSA
+         n9hOwHJS267m3LqQyZR3AieB+dihA/BHt7LYbTDJzydcXgD5PADdq3ui4N6v79qQDdHl
+         eM4y03Bwf7WRXSiNdAA2sKEeLY96l1sMbbL27obXorjW/Syv7SYtaaOOaecWq0Orqgh3
+         LLXm83tpodBY2Nh3mkOkdmUKB0g2eANzhTYuOsYpCGwNflGxP07RQHmeolcnoEJzMAtr
+         l6Lg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=2H4NRUpssxmHvO//onxHk/0LPtfW86OVu0j9eYubnLc=;
-        b=WXh8gtGXce0+BzkBKU+47BEwZSu9qjFt3KbWTQV6iTeQLn/43ifszCimuQSGBUzIYN
-         iyqo0Ju+MCj+6XaVa1zsNXbYQX1Od232eb5o2XgvPjRF6yWW09E60TijaJsviQr/wbBd
-         9gnbH9IJ7NYcPH8wTYB9Q56XT5gSTyYu2tfZ52SlVcJDICM9H+CEkDoOkPThOpmq2yit
-         iYNvIRhC6aJdbtVxn3U8ZCMC3DRdy+7bijIMOJEdgfJ0GtFMRr3KUCEUjXHeXOvJTmnH
-         viRUA6fGsMQdzhSpZb27lNIXzotJFUkd7OGsVCrdoHMffGQcmhtZJEcy9Qc745fk2ZjR
-         Thsw==
-X-Gm-Message-State: AOAM533sORK80qfG5skvlICt73oanuDyAW74uBvu+Kk6opcFp2yvf1qx
-        gLCfPU/AJOBKFjO54xntbAP94VrZPB1m7oovxQc/ZQ==
-X-Google-Smtp-Source: ABdhPJzpTc0UQR+hgscAav0gZ5De9rk59XFTJC1VFhvY0Dfql8DGLIjtuXMtQBjGOFKQCOMvXn3p388NehqzJiu5ZJY=
-X-Received: by 2002:a17:902:9009:b029:dc:52a6:575 with SMTP id
- a9-20020a1709029009b02900dc52a60575mr3718033plp.57.1610113018926; Fri, 08 Jan
- 2021 05:36:58 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=ehVJZhNwbv/+X0MqNJz70oUJLCNIbym2FZsQKK9qJjI=;
+        b=CA51a+avjs82o6/bGqLpijbvLXPjBnfZ6zxJ0/bD/QYOYeKVUhleqw+WE+bERFRz95
+         FiK6FfmIFeVMsYL5BoGJrtbvZkFMXWwCtDoLyYu7CWUlV4hOQm5Hj8yKBOBNfXAA2wMt
+         j2bXnuYfA+hMNuYTR3LHdDIz0KDDeJap5rMuRulJfgV11gE/2Je2rUGIfnBrhIJsOqYy
+         v+ke4k1Tpc/Cte60JAY7iiyu4WskXScfpWOmnv0mhBZpf9BrJZ0wwUkWY+cOYMTor8Rt
+         vJwGnIu45bAaohV4uIQVyyulVtjgVIElf8Hst8j2Upwy4SHsL2qE/3euOLq0AC7dGZi3
+         bg5g==
+X-Gm-Message-State: AOAM533RTaxWt4drX5rGw9/OfCX2cTrY4sdBJNN5iOEkZlYJrZquUkVe
+        YoccITv0cdzBzcYdKmTTCYh21NQSn4nfLg==
+X-Google-Smtp-Source: ABdhPJwq/xJLILBlp2Vz6XBMrfMxKijk6BrFhljxHhVPGX05Fl7lTCdfWf4H3M5kvBLcH7kCaam0oA==
+X-Received: by 2002:a92:c052:: with SMTP id o18mr3832166ilf.245.1610113011579;
+        Fri, 08 Jan 2021 05:36:51 -0800 (PST)
+Received: from ziepe.ca (hlfxns017vw-142-162-115-133.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.115.133])
+        by smtp.gmail.com with ESMTPSA id b82sm7680684ilg.44.2021.01.08.05.36.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 08 Jan 2021 05:36:51 -0800 (PST)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1kxrwf-004Ccq-VY; Fri, 08 Jan 2021 09:36:49 -0400
+Date:   Fri, 8 Jan 2021 09:36:49 -0400
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Andrea Arcangeli <aarcange@redhat.com>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Yu Zhao <yuzhao@google.com>, Andy Lutomirski <luto@kernel.org>,
+        Peter Xu <peterx@redhat.com>,
+        Pavel Emelyanov <xemul@openvz.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Will Deacon <will@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Hugh Dickins <hughd@google.com>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Oleg Nesterov <oleg@redhat.com>, Jann Horn <jannh@google.com>,
+        Kees Cook <keescook@chromium.org>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Leon Romanovsky <leonro@nvidia.com>, Jan Kara <jack@suse.cz>,
+        Kirill Tkhai <ktkhai@virtuozzo.com>
+Subject: Re: [PATCH 0/2] page_count can't be used to decide when wp_page_copy
+Message-ID: <20210108133649.GE504133@ziepe.ca>
+References: <B1B85771-B211-4FCC-AEEF-BDFD37332C25@vmware.com>
+ <20210107200402.31095-1-aarcange@redhat.com>
+ <20210107202525.GD504133@ziepe.ca>
+ <X/eA/f1r5GXvcRWH@redhat.com>
 MIME-Version: 1.0
-References: <20210106115519.32222-1-vincenzo.frascino@arm.com>
- <20210106115519.32222-3-vincenzo.frascino@arm.com> <CAAeHK+xuGRzkLdrfGZVo-RVfkH31qUrNdBaPd4k5ffMKHWGfTQ@mail.gmail.com>
- <c4f04127-a682-d809-1dad-5ee1f51d3e0a@arm.com> <CAAeHK+xBrCX1Ly0RU-=ySEU8SsyyRkMdOYrN52ONc4DeRJA5eg@mail.gmail.com>
- <c3efaa8d-cb3a-0c2a-457e-bfba60551d80@arm.com>
-In-Reply-To: <c3efaa8d-cb3a-0c2a-457e-bfba60551d80@arm.com>
-From:   Andrey Konovalov <andreyknvl@google.com>
-Date:   Fri, 8 Jan 2021 14:36:47 +0100
-Message-ID: <CAAeHK+zjwr0M92zqUjseJmRmhHb=4GjevEft-mahfx5DOkq==w@mail.gmail.com>
-Subject: Re: [PATCH 2/4] arm64: mte: Add asynchronous mode support
-To:     Vincenzo Frascino <vincenzo.frascino@arm.com>
-Cc:     Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will.deacon@arm.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Alexander Potapenko <glider@google.com>,
-        Marco Elver <elver@google.com>,
-        Evgenii Stepanov <eugenis@google.com>,
-        Branislav Rankov <Branislav.Rankov@arm.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <X/eA/f1r5GXvcRWH@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 8, 2021 at 11:44 AM Vincenzo Frascino
-<vincenzo.frascino@arm.com> wrote:
->
-> Hi Andrey,
->
-> On 1/7/21 7:18 PM, Andrey Konovalov wrote:
-> >> Boolean arguments are generally bad for legibility, hence I tend to avoid them.
-> >> In this case exposing the constants does not seem a big issue especially because
-> >> the only user of this code is "KASAN_HW_TAGS" and definitely improves its
-> >> legibility hence I would prefer to keep it as is.
-> >
-> > I don't like that this spills KASAN internals to the arm64 code.
->
-> Could you please elaborate a bit more on this?
->
-> If I understand it correctly these enumerations I exposed are the direct
-> representation of a kernel command line parameter which, according to me, should
-> not be considered an internal interface.
-> Seems that in general the kernel subsystems expose the interface for the
-> architectures to consume which is the same design pattern I followed in this case.
+On Thu, Jan 07, 2021 at 04:45:33PM -0500, Andrea Arcangeli wrote:
+> On Thu, Jan 07, 2021 at 04:25:25PM -0400, Jason Gunthorpe wrote:
+> > On Thu, Jan 07, 2021 at 03:04:00PM -0500, Andrea Arcangeli wrote:
+> > 
+> > > vmsplice syscall API is insecure allowing long term GUP PINs without
+> > > privilege.
+> > 
+> > Lots of places are relying on pin_user_pages long term pins of memory,
+> > and cannot be converted to notifiers.
+> > 
+> > I don't think it is reasonable to just declare that insecure and
+> > requires privileges, it is a huge ABI break.
+> 
+> Where's that ABI? Are there specs or a code example in kernel besides
+> vmsplice itself?
 
-It's fine from the point of view of kernel interfaces and such, but
-not from a higher-level design perspective.
+If I understand you right, you are trying to say that the 193
+pin_user_pages() callers cannot exist as unpriv any more?
 
-I think the best way to approach the KASAN-MTE architecture is: 1.
-arm64 code provides API to enable, disable and otherwise work with
-MTE, and 2. KASAN builds on top of this API to implement the logic of
-the bug detector, including which APIs to use. Part #2 includes making
-the decisions about which mode - sync or async - to use and when. And
-that mode is chosen by KASAN code based on the command line configs.
+The majority cannot be converted to notifiers because they are DMA
+based. Every one of those is an ABI for something, and does not expect
+extra privilege to function. It would be a major breaking change to
+have pin_user_pages require some cap.
 
-With your current approach, the active decision about enabling
-sync/async is made by the arm64 code, and that doesn't fit within this
-architecture. But having a decisionless arm64 API to choose the MTE
-mode and using it from KASAN code would fit.
+> The whole zygote issue wouldn't even register if the child had the
+> exact same credentials of the parent. Problem is the child dropped
+> privileges and went with a luser id, that clearly cannot ptrace the
+> parent, and so if long term unprivileged GUP pins are gone from the
+> equation, what remains that the child can do is purely theoretical
+> even before commit 17839856fd588f4ab6b789f482ed3ffd7c403e1f.
 
-> > Let's add another enum with two values and pass it as an argument then.
-> > Something like:
-> >
-> > enum mte_mode {
-> >   ARM_MTE_SYNC,
-> >   ARM_MTE_ASYNC
-> > }
->
-> I had something similar at the beginning of the development but I ended up in a
-> situation in which the generic kasan code had to know about "enum mte_mode",
-> hence I preferred to keep kasan agnostic to the hw implementation details.
->
-> What do you think?
+Sorry, I'm not sure I've found a good explanation how ptrace and GUP
+are interacting to become a security problem.
 
-Perhaps we could add a generic arch-agnostic enum to
-include/linux/kasan.h and use it in both arm64 and KASAN code?
+17839 makes sense to me, and read-only GUP has been avoided by places
+like RDMA and others for a very long time because of these issues,
+adding the same idea to the core code looks OK.
 
-enum kasan_hw_tags_mode {
-  KASAN_HW_TAGS_SYNC,
-  KASAN_HW_TAGS_ASYNC
-}
+The semantics we discussed during the COW on fork thread for pin user
+pages were, more or less, that once pinned a page should not be
+silently removed from the mm it is currently in by COW or otherwise in
+the kernel.
 
-Assuming other architectures that support memory tagging will end up
-with sync/async mode separation as well, this should work. But even if
-that doesn't happen, this interface can be adjusted later.
+So maybe ptrace should not be COW'ing pinned pages at all, as that is
+exactly the same kind of silent corruption fork was causing.
+
+Jason
