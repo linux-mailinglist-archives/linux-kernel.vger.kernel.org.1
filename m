@@ -2,95 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BCA722EF927
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 21:25:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DAF72EF92A
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 21:26:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729147AbhAHUYa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Jan 2021 15:24:30 -0500
-Received: from mga04.intel.com ([192.55.52.120]:21882 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727443AbhAHUY2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Jan 2021 15:24:28 -0500
-IronPort-SDR: XLhZcQfpqO32TVQaUAghStaHXqBN7SIYGxgtnnhkotgOG8PhnmEWa91jd66WtWsV6e6nLxxjen
- SK0kNqbdoPmQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9858"; a="175073218"
-X-IronPort-AV: E=Sophos;i="5.79,332,1602572400"; 
-   d="scan'208";a="175073218"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jan 2021 12:22:42 -0800
-IronPort-SDR: qkTrf23l5JW13Vmuj4KCq4mHK3AZV+A/sIyb8Wpyuf8i9pwYTSRgCws/RgkJtEeahgU0TChbaQ
- Hu8qPjKuWs1Q==
-X-IronPort-AV: E=Sophos;i="5.79,332,1602572400"; 
-   d="scan'208";a="380241453"
-Received: from schen9-mobl.amr.corp.intel.com ([10.252.142.111])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jan 2021 12:22:42 -0800
-Subject: Re: [RFC PATCH v3 0/2] scheduler: expose the topology of clusters and
- add cluster scheduler
-To:     Morten Rasmussen <morten.rasmussen@arm.com>
-Cc:     Barry Song <song.bao.hua@hisilicon.com>,
-        valentin.schneider@arm.com, catalin.marinas@arm.com,
-        will@kernel.org, rjw@rjwysocki.net, vincent.guittot@linaro.org,
-        lenb@kernel.org, gregkh@linuxfoundation.org,
-        jonathan.cameron@huawei.com, mingo@redhat.com,
-        peterz@infradead.org, juri.lelli@redhat.com,
-        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
-        mgorman@suse.de, mark.rutland@arm.com, sudeep.holla@arm.com,
-        aubrey.li@linux.intel.com, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-acpi@vger.kernel.org,
-        linuxarm@openeuler.org, xuwei5@huawei.com,
-        prime.zeng@hisilicon.com, tiantao6@hisilicon.com
-References: <20210106083026.40444-1-song.bao.hua@hisilicon.com>
- <737932c9-846a-0a6b-08b8-e2d2d95b67ce@linux.intel.com>
- <20210108151241.GA47324@e123083-lin>
-From:   Tim Chen <tim.c.chen@linux.intel.com>
-Message-ID: <99c07bdf-02d1-153a-bd1e-2f4200cc67c5@linux.intel.com>
-Date:   Fri, 8 Jan 2021 12:22:41 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+        id S1729150AbhAHU0P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Jan 2021 15:26:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54018 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729022AbhAHU0O (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 Jan 2021 15:26:14 -0500
+Received: from mail-yb1-xb2f.google.com (mail-yb1-xb2f.google.com [IPv6:2607:f8b0:4864:20::b2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A09C2C061380;
+        Fri,  8 Jan 2021 12:25:33 -0800 (PST)
+Received: by mail-yb1-xb2f.google.com with SMTP id u203so10532960ybb.2;
+        Fri, 08 Jan 2021 12:25:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=oyFWoz9ZBkG/9fD01WqqQ9V3Wvlu3oAY5p/OWrRVFXo=;
+        b=fbnADsDJ3KhVD4fmLtswJOHo1oKMXPr5yqaCIqvaoFlYpBGADBzkxspbX5GZcqKTzN
+         tEVRJhsoYVK0LkVHxSjxaZfzWZZGS0eWN4ecP1DQFIKpDe1wuuhuHDgKcp4D5AiBPXhO
+         PT+apN5bGYChrLfK53aVgBaiBASumbs8hYcYD8VaF+y2lEfuZsI2Wv1BAutiiTja94rP
+         hBle6sjaD9tv+qmvIA6ssOQGltGf0W5sZBMXvXQZEL4tn6bJqxoGtDcSMZO8jm0KhHRt
+         fF30qzQltd1yvF6RWCI8H74eR9qWjejdw2TntXhKdbQ5/lhy8+DMejyRq6INe/IUBCr/
+         LIqw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=oyFWoz9ZBkG/9fD01WqqQ9V3Wvlu3oAY5p/OWrRVFXo=;
+        b=qqtFoBH1Q+rTz3eFhAyRR/QulJgOGqO9I7N8c3qtbfNBRqtON7z2quJBczxbtgPQXj
+         grPGYPzAKg4I3C8pUYFB+1tpTG9ncunxw/h3TO7A5YpVduYK30WEGlkltS/bYe0aw85i
+         8qMFx63/DSQeoArlXDexQM15kVNvKS6Rhv/lCX7S6+VVcLT5c2Xo9qvFwc7hkv3x60AD
+         C0mJjM5NrTfrtCEYIDSugiE2O4a05hLi4A/SFDgbYmxgQ11i3GPwMoUXpWe8yZXD0sPp
+         MGMsmDS/57lJot9fcsUNtiZIxtOcqqxGKXxWwdLv0GLTJtDjfWPxzZ4AMOOMEpOUFmeU
+         qUBg==
+X-Gm-Message-State: AOAM531xtojrIFMaLyx4yKX32V8BBrtOmyTAJCteqR15LuYtlw2gGaQw
+        oLVUWi+Szn4ChsP5ZHOPqEUMjfJ05o2hIuK6lJM=
+X-Google-Smtp-Source: ABdhPJyc1F4e3RuLHb51W+RDdAbcnxWn06EGTpl6dLuxZFiSdfTs7ZDcsBdLBDqqD+wqnt1Wv4syCJ3dT+ikyws/PtE=
+X-Received: by 2002:a25:c7c6:: with SMTP id w189mr7920774ybe.403.1610137533031;
+ Fri, 08 Jan 2021 12:25:33 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20210108151241.GA47324@e123083-lin>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <HKAPR02MB42916F8599BF7B58AD73C27AE0AE0@HKAPR02MB4291.apcprd02.prod.outlook.com>
+In-Reply-To: <HKAPR02MB42916F8599BF7B58AD73C27AE0AE0@HKAPR02MB4291.apcprd02.prod.outlook.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Fri, 8 Jan 2021 12:25:22 -0800
+Message-ID: <CAEf4BzZr=hgWGuU4EPEZbavAsN7hy+j-9RQAL7xvfMJ8hqv58g@mail.gmail.com>
+Subject: Re: [PATCH] tools/bpf: Remove unnecessary parameter in bpf_object__probe_loading
+To:     =?UTF-8?B?5b2t5rWpKFJpY2hhcmQp?= <richard.peng@oppo.com>
+Cc:     "ast@kernel.org" <ast@kernel.org>,
+        "andrii@kernel.org" <andrii@kernel.org>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Jan 7, 2021 at 6:08 PM =E5=BD=AD=E6=B5=A9(Richard) <richard.peng@op=
+po.com> wrote:
+>
+> struct bpf_object *obj is not used in bpf_object__probe_loading, so we
+> can remove it.
+>
+> Signed-off-by: Peng Hao <richard.peng@oppo.com>
+> ---
+
+It causes no harm, no performance cost, and no maintenance issues. I
+consider eventually allowing to have a per-bpf_object log callback (as
+opposed to current global one), so at that time I'd need to re-add
+struct bpf_object back to this. Which means just unnecessary code
+churn.
+
+So thanks for the patch, there is nothing wrong with it, but I'll
+leave this code as is for now. Thanks!
 
 
-On 1/8/21 7:12 AM, Morten Rasmussen wrote:
-> On Thu, Jan 07, 2021 at 03:16:47PM -0800, Tim Chen wrote:
->> On 1/6/21 12:30 AM, Barry Song wrote:
->>> ARM64 server chip Kunpeng 920 has 6 clusters in each NUMA node, and each
->>> cluster has 4 cpus. All clusters share L3 cache data while each cluster
->>> has local L3 tag. On the other hand, each cluster will share some
->>> internal system bus. This means cache is much more affine inside one cluster
->>> than across clusters.
->>
->> There is a similar need for clustering in x86.  Some x86 cores could share L2 caches that
->> is similar to the cluster in Kupeng 920 (e.g. on Jacobsville there are 6 clusters
->> of 4 Atom cores, each cluster sharing a separate L2, and 24 cores sharing L3).  
->> Having a sched domain at the L2 cluster helps spread load among 
->> L2 domains.  This will reduce L2 cache contention and help with
->> performance for low to moderate load scenarios.
-> 
-> IIUC, you are arguing for the exact opposite behaviour, i.e. balancing
-> between L2 caches while Barry is after consolidating tasks within the
-> boundaries of a L3 tag cache. One helps cache utilization, the other
-> communication latency between tasks. Am I missing something? 
-> 
-> IMHO, we need some numbers on the table to say which way to go. Looking
-> at just benchmarks of one type doesn't show that this is a good idea in
-> general.
-> 
-
-I think it is going to depend on the workload.  If there are dependent
-tasks that communicate with one another, putting them together
-in the same cluster will be the right thing to do to reduce communication
-costs.  On the other hand, if the tasks are independent, putting them together on the same cluster
-will increase resource contention and spreading them out will be better.
-
-Any thoughts on what is the right clustering "tag" to use to clump related tasks together?
-Cgroup? Pid? Tasks with same mm?
-
-Tim 
+>  tools/lib/bpf/libbpf.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+>
+> diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+> index 313034117070..17d90779f09a 100644
+> --- a/tools/lib/bpf/libbpf.c
+> +++ b/tools/lib/bpf/libbpf.c
+> @@ -3685,7 +3685,7 @@ int bpf_map__resize(struct bpf_map *map, __u32 max_=
+entries)
+>  }
+>
+>  static int
+> -bpf_object__probe_loading(struct bpf_object *obj)
+> +bpf_object__probe_loading(void)
+>  {
+>         struct bpf_load_program_attr attr;
+>         char *cp, errmsg[STRERR_BUFSIZE];
+> @@ -7258,7 +7258,7 @@ int bpf_object__load_xattr(struct bpf_object_load_a=
+ttr *attr)
+>                 return -EINVAL;
+>         }
+>
+> -       err =3D bpf_object__probe_loading(obj);
+> +       err =3D bpf_object__probe_loading();
+>         err =3D err ? : bpf_object__load_vmlinux_btf(obj);
+>         err =3D err ? : bpf_object__resolve_externs(obj, obj->kconfig);
+>         err =3D err ? : bpf_object__sanitize_and_load_btf(obj);
+> --
+> 2.18.4
