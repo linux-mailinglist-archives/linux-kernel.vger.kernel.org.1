@@ -2,82 +2,206 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD88F2EEE0D
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 08:51:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B51342EEE35
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 08:58:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727738AbhAHHtU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Jan 2021 02:49:20 -0500
-Received: from mailgw01.mediatek.com ([210.61.82.183]:45669 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1725848AbhAHHtT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Jan 2021 02:49:19 -0500
-X-UUID: 6250bc7763c245ea86a64d16946a72f3-20210108
-X-UUID: 6250bc7763c245ea86a64d16946a72f3-20210108
-Received: from mtkcas11.mediatek.inc [(172.21.101.40)] by mailgw01.mediatek.com
-        (envelope-from <henryc.chen@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 1713634454; Fri, 08 Jan 2021 15:48:22 +0800
-Received: from mtkcas10.mediatek.inc (172.21.101.39) by
- mtkmbs02n1.mediatek.inc (172.21.101.77) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Fri, 8 Jan 2021 15:48:21 +0800
-Received: from mtksdaap41.mediatek.inc (172.21.77.4) by mtkcas10.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Fri, 8 Jan 2021 15:48:21 +0800
-From:   Henry Chen <henryc.chen@mediatek.com>
-To:     Georgi Djakov <georgi.djakov@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Ryan Case <ryandcase@chromium.org>,
-        Mark Brown <broonie@kernel.org>
-CC:     Mark Rutland <mark.rutland@arm.com>,
-        Nicolas Boichat <drinkcat@google.com>,
-        Fan Chen <fan.chen@mediatek.com>,
-        James Liao <jamesjj.liao@mediatek.com>,
-        Arvin Wang <arvin.wang@mediatek.com>,
-        <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <linux-pm@vger.kernel.org>,
-        Henry Chen <henryc.chen@mediatek.com>
-Subject: [PATCH V7 13/13] arm64: dts: mt8192: add dvfsrc regulator nodes
-Date:   Fri, 8 Jan 2021 15:48:15 +0800
-Message-ID: <1610092095-5113-14-git-send-email-henryc.chen@mediatek.com>
-X-Mailer: git-send-email 1.9.1
-In-Reply-To: <1610092095-5113-1-git-send-email-henryc.chen@mediatek.com>
-References: <1610092095-5113-1-git-send-email-henryc.chen@mediatek.com>
+        id S1727518AbhAHH6c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Jan 2021 02:58:32 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54096 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727463AbhAHH6c (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 Jan 2021 02:58:32 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EA59D2343F;
+        Fri,  8 Jan 2021 07:57:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1610092670;
+        bh=VMgcTa9UQyuYxcm5rW2+nfQAw6U+ZXe9qiG0wkd8OOE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=QWxSIX+B82Sg2oEvqcJzp9gxiGpQ7y3ihZ5kxR6JtI6vywYp3/YYVmig2MjC1+lAM
+         +SRVMf/2H5l9f+qc55BqWliaYsKBSkyN2sfRPv1hCMR5I77pbHIaZCDyjdcrTnoXJO
+         G6rEMJhLGDI3YvBjGQjpCneSBsRUuUkw69YJxHlGCgsT8Sbdio92v6x0PmLdPBXgwa
+         1JrUTy3asUuMKEQZwQRRyLtZSvHK/xkWRw64AS3A97gTWfSOXgumVrJsj2hx+nS6w6
+         3FXsRfXqfz4aV1Smf/9a6YZItzsuEW0j71dGmCy3Snbpb9IruHhAqfWQ0u1yosaXQ+
+         HBtfcMEqjCDuw==
+Date:   Fri, 8 Jan 2021 13:27:46 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        linux-arm-msm@vger.kernel.org, Andy Gross <agross@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>, linux-gpio@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 1/2] dt-bindings: pinctrl: qcom: Add SM8350 pinctrl
+ bindings
+Message-ID: <20210108075746.GV2771@vkoul-mobl>
+References: <20210106054950.303244-1-vkoul@kernel.org>
+ <20210106054950.303244-2-vkoul@kernel.org>
+ <X/dCIuUR/El8Gxaa@builder.lan>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <X/dCIuUR/El8Gxaa@builder.lan>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add dvfsrc regulator nodes which is for MT8192-based platforms
+Hi Bjorn,
 
-Signed-off-by: Henry Chen <henryc.chen@mediatek.com>
----
- arch/arm64/boot/dts/mediatek/mt8192.dtsi | 6 ++++++
- 1 file changed, 6 insertions(+)
+On 07-01-21, 11:17, Bjorn Andersson wrote:
+> On Tue 05 Jan 23:49 CST 2021, Vinod Koul wrote:
+> > +#PIN CONFIGURATION NODES
+> > +patternProperties:
+> > +  '-pinmux$':
+> 
+> I believe that what Rob was asking for was the matter of describing the
+> mux and config subnodes under this one. But I don't know really how to
+> express this, because the following are all valid:
 
-diff --git a/arch/arm64/boot/dts/mediatek/mt8192.dtsi b/arch/arm64/boot/dts/mediatek/mt8192.dtsi
-index 81d7d05..1cf91a4 100644
---- a/arch/arm64/boot/dts/mediatek/mt8192.dtsi
-+++ b/arch/arm64/boot/dts/mediatek/mt8192.dtsi
-@@ -470,6 +470,12 @@
- 				     "mediatek,mt6873-dvfsrc";
- 			reg = <0 0x10012000 0 0x1000>;
- 			#interconnect-cells = <1>;
-+			dvfsrc_vcore: dvfsrc-vcore {
-+				regulator-name = "dvfsrc-vcore";
-+				regulator-min-microvolt = <575000>;
-+				regulator-max-microvolt = <725000>;
-+				regulator-always-on;
-+			};
- 		};
- 
- 		systimer: timer@10017000 {
+I looked at the pinmux-node.yaml which describes subnodes with function
+and groups, this is a generic description and should be in
+pinmux-node.yaml not in every device description.. said that I am not
+sure why else should we add here :)
+
+> 
+> default_state: default-state {
+> 	pins = "gpio1";
+> 	bias-disable;
+> };
+> 
+> default_state: default-state {
+> 	rx {
+> 		pins = "gpio1";
+> 		function = "gpio";
+> 		bias-disable;
+> 	};
+> };
+> 
+> default_state: default-state {
+> 	pinmux {
+> 		pins = "gpio1";
+> 		function = "gpio";
+> 	};
+> 
+> 	pinconf {
+> 		pins = "gpio1";
+> 		bias-disable;
+> 	};
+> };
+> 
+> I.e. the properties described here applies either to this node directly,
+> or any subnodes (1 level) down.
+> 
+> 
+> Also we've been using different "patternProperties" for this node since
+> the introduction of the binding 7 years ago. But to be "-state$" seems
+> to best represent what the node actually describes.
+> 
+> Regards,
+> Bjorn
+> 
+> > +    type: object
+> > +    description:
+> > +      Pinctrl node's client devices use subnodes for desired pin configuration.
+> > +      Client device subnodes use below standard properties.
+> > +    $ref: "/schemas/pinctrl/pincfg-node.yaml"
+> > +
+> > +    properties:
+> > +      pins:
+> > +        description:
+> > +          List of gpio pins affected by the properties specified in this subnode.
+> > +        items:
+> > +          oneOf:
+> > +            - pattern: "^gpio([0-9]|[1-9][0-9]|1[0-9][0-9]|20[0-3])$"
+> > +            - enum: [ sdc1_clk, sdc1_cmd, sdc1_data, sdc2_clk, sdc2_cmd, sdc2_data ]
+> > +        minItems: 1
+> > +        maxItems: 36
+> > +
+> > +      function:
+> > +        description:
+> > +          Specify the alternative function to be configured for the specified
+> > +          pins. Functions are only valid for gpio pins.
+> > +        enum: [ atest_char, atest_usb, audio_ref, cam_mclk, cci_async,
+> > +                cci_i2c, cci_timer, cmu_rng, coex_uart1, coex_uart2, cri_trng,
+> > +                cri_trng0, cri_trng1, dbg_out, ddr_bist, ddr_pxi0, ddr_pxi1,
+> > +                ddr_pxi2, ddr_pxi3, dp_hot, dp_lcd, gcc_gp1, gcc_gp2, gcc_gp3,
+> > +                gpio, ibi_i3c, jitter_bist, lpass_slimbus, mdp_vsync, mdp_vsync0,
+> > +                mdp_vsync1, mdp_vsync2, mdp_vsync3, mi2s0_data0, mi2s0_data1,
+> > +                mi2s0_sck, mi2s0_ws, mi2s1_data0, mi2s1_data1, mi2s1_sck,
+> > +                mi2s1_ws, mi2s2_data0, mi2s2_data1, mi2s2_sck, mi2s2_ws,
+> > +                mss_grfc0, mss_grfc1, mss_grfc10, mss_grfc11, mss_grfc12,
+> > +                mss_grfc2, mss_grfc3, mss_grfc4, mss_grfc5, mss_grfc6,
+> > +                mss_grfc7, mss_grfc8, mss_grfc9, nav_gpio, pa_indicator,
+> > +                pcie0_clkreqn, pcie1_clkreqn, phase_flag, pll_bist, pll_clk,
+> > +                pri_mi2s, prng_rosc, qdss_cti, qdss_gpio, qlink0_enable,
+> > +                qlink0_request, qlink0_wmss, qlink1_enable, qlink1_request,
+> > +                qlink1_wmss, qlink2_enable, qlink2_request, qlink2_wmss, qspi0,
+> > +                qspi1, qspi2, qspi3, qspi_clk, qspi_cs, qup0, qup1, qup10,
+> > +                qup11, qup12, qup13, qup14, qup15, qup16, qup17, qup18, qup19,
+> > +                qup2, qup3, qup4, qup5, qup6, qup7, qup8, qup9, qup_l4, qup_l5,
+> > +                qup_l6, sd_write, sdc40, sdc41, sdc42, sdc43, sdc4_clk,
+> > +                sdc4_cmd, sec_mi2s, tb_trig, tgu_ch0, tgu_ch1, tgu_ch2,
+> > +                tgu_ch3, tsense_pwm1, tsense_pwm2, uim0_clk, uim0_data,
+> > +                uim0_present, uim0_reset, uim1_clk, uim1_data, uim1_present,
+> > +                uim1_reset, usb2phy_ac, usb_phy, vfr_0, vfr_1, vsense_trigger ]
+> > +
+> > +
+> > +      drive-strength:
+> > +        enum: [2, 4, 6, 8, 10, 12, 14, 16]
+> > +        default: 2
+> > +        description:
+> > +          Selects the drive strength for the specified pins, in mA.
+> > +
+> > +      bias-pull-down: true
+> > +
+> > +      bias-pull-up: true
+> > +
+> > +      bias-disable: true
+> > +
+> > +      output-high: true
+> > +
+> > +      output-low: true
+> > +
+> > +    required:
+> > +      - pins
+> > +      - function
+> > +
+> > +    additionalProperties: false
+> > +
+> > +required:
+> > +  - compatible
+> > +  - reg
+> > +  - interrupts
+> > +  - interrupt-controller
+> > +  - '#interrupt-cells'
+> > +  - gpio-controller
+> > +  - '#gpio-cells'
+> > +  - gpio-ranges
+> > +
+> > +additionalProperties: false
+> > +
+> > +examples:
+> > +  - |
+> > +        #include <dt-bindings/interrupt-controller/arm-gic.h>
+> > +        tlmm: pinctrl@f000000 {
+> > +          compatible = "qcom,sm8350-tlmm";
+> > +          reg = <0x0f100000 0x300000>;
+> > +          interrupts = <GIC_SPI 208 IRQ_TYPE_LEVEL_HIGH>;
+> > +          gpio-controller;
+> > +          #gpio-cells = <2>;
+> > +          interrupt-controller;
+> > +          #interrupt-cells = <2>;
+> > +          gpio-ranges = <&tlmm 0 0 203>;
+> > +          serial-pinmux {
+> > +            pins = "gpio18", "gpio19";
+> > +            function = "qup3";
+> > +            drive-strength = <8>;
+> > +            bias-disable;
+> > +          };
+> > +        };
+> > +
+> > +...
+> > -- 
+> > 2.26.2
+> > 
+
 -- 
-1.9.1
-
+~Vinod
