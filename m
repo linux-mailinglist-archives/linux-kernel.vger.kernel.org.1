@@ -2,131 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E0D682EEB2C
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 03:06:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BD462EEB2F
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 03:13:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728423AbhAHCE0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 21:04:26 -0500
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:28734 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726526AbhAHCEZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 21:04:25 -0500
-Received: from pps.filterd (m0109334.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 1081wkJt003470
-        for <linux-kernel@vger.kernel.org>; Thu, 7 Jan 2021 18:03:45 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-transfer-encoding :
- content-type; s=facebook; bh=pRYJLLzOZvumxDbhEHf/OPArDN25i7TvdvWCfdrC2ZM=;
- b=BIl1yD9l+tm+SxPL2zEEE/nFL/RHIwGIwXkLvpv4YvzRuyrCw47cgFabjkeyrcehZoDv
- vNjDBUQ0XK97QhwucWl0hWFx46ZdXj8IT37Yw55JmJZqVUNFWy8QG1zvQ+0YQADSDdLA
- gji6PcMNM1zZ1HHwZAY9k7ru0oF5iLCnQsI= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 35wpuv64rn-5
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Jan 2021 18:03:44 -0800
-Received: from intmgw001.41.prn1.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:82::d) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Thu, 7 Jan 2021 18:03:43 -0800
-Received: by devvm3388.prn0.facebook.com (Postfix, from userid 111017)
-        id 7C6942B33436; Thu,  7 Jan 2021 18:03:41 -0800 (PST)
-From:   Roman Gushchin <guro@fb.com>
-To:     Andrew Morton <akpm@linux-foundation.org>, <linux-mm@kvack.org>
-CC:     Michal Hocko <mhocko@kernel.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Shakeel Butt <shakeelb@google.com>,
-        <linux-kernel@vger.kernel.org>, <kernel-team@fb.com>,
-        Roman Gushchin <guro@fb.com>
-Subject: [PATCH] mm: kmem: make __memcg_kmem_(un)charge static
-Date:   Thu, 7 Jan 2021 18:03:32 -0800
-Message-ID: <20210108020332.4096911-1-guro@fb.com>
-X-Mailer: git-send-email 2.24.1
+        id S1728596AbhAHCK5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 21:10:57 -0500
+Received: from mga07.intel.com ([134.134.136.100]:14295 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726720AbhAHCK4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Jan 2021 21:10:56 -0500
+IronPort-SDR: UgUgcL2Do8tlDxWhsfeSSK3y120PeIPw1txt72cj29FNaRrJ2niXqGpYkMMtYCaXkluDNFjt4v
+ Az4X2UsdMPPw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9857"; a="241601783"
+X-IronPort-AV: E=Sophos;i="5.79,330,1602572400"; 
+   d="scan'208";a="241601783"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Jan 2021 18:10:15 -0800
+IronPort-SDR: N67v0aA70R1CbVpDWG5IJqyPmHZjZE5QRETh5lKYQSZmJ7UoltFbrPBaMZfCXgGJ+PAUuksAYf
+ oC/nYXt/PvLg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.79,330,1602572400"; 
+   d="scan'208";a="398826424"
+Received: from yilunxu-optiplex-7050.sh.intel.com (HELO localhost) ([10.239.159.141])
+  by fmsmga002.fm.intel.com with ESMTP; 07 Jan 2021 18:10:12 -0800
+Date:   Fri, 8 Jan 2021 10:05:26 +0800
+From:   Xu Yilun <yilun.xu@intel.com>
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     andrew@lunn.ch, arnd@arndb.de, lee.jones@linaro.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        trix@redhat.com, lgoncalv@redhat.com, hao.wu@intel.com,
+        matthew.gerlach@intel.com, russell.h.weight@intel.com,
+        yilun.xu@intel.com
+Subject: Re: [RESEND PATCH 2/2] misc: add support for retimers interfaces on
+  Intel MAX 10 BMC
+Message-ID: <20210108020526.GB13860@yilunxu-OptiPlex-7050>
+References: <1609999628-12748-1-git-send-email-yilun.xu@intel.com>
+ <1609999628-12748-3-git-send-email-yilun.xu@intel.com>
+ <X/bTtBUevX5IBPUl@kroah.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2021-01-07_11:2021-01-07,2021-01-07 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 suspectscore=0
- adultscore=0 spamscore=0 mlxscore=0 malwarescore=0 priorityscore=1501
- lowpriorityscore=0 mlxlogscore=745 phishscore=0 clxscore=1015 bulkscore=0
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2101080008
-X-FB-Internal: deliver
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <X/bTtBUevX5IBPUl@kroah.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I've noticed that __memcg_kmem_charge() and __memcg_kmem_uncharge()
-are not used anywhere except memcontrol.c. Yet they are not declared
-as non-static and are declared in memcontrol.h.
+On Thu, Jan 07, 2021 at 10:26:12AM +0100, Greg KH wrote:
+> On Thu, Jan 07, 2021 at 02:07:08PM +0800, Xu Yilun wrote:
+> > This driver supports the ethernet retimers (C827) for the Intel PAC
+> > (Programmable Acceleration Card) N3000, which is a FPGA based Smart NIC.
+> > 
+> > C827 is an Intel(R) Ethernet serdes transceiver chip that supports
+> > up to 100G transfer. On Intel PAC N3000 there are 2 C827 chips
+> > managed by the Intel MAX 10 BMC firmware. They are configured in 4 ports
+> > 10G/25G retimer mode. Host could query their link states and firmware
+> > version information via retimer interfaces (Shared registers) on Intel
+> > MAX 10 BMC. The driver creates sysfs interfaces for users to query these
+> > information.
+> 
+> Networking people, please look at this sysfs file:
+> 
+> > +What:		/sys/bus/platform/devices/n3000bmc-retimer.*.auto/link_statusX
+> > +Date:		Jan 2021
+> > +KernelVersion:	5.12
+> > +Contact:	Xu Yilun <yilun.xu@intel.com>
+> > +Description:	Read only. Returns the status of each line side link. "1" for
+> > +		link up, "0" for link down.
+> > +		Format: "%u".
+> 
+> as I need your approval to add it because it is not the "normal" way for
+> link status to be exported to userspace.
+> 
+> One code issue:
+> 
+> > +#define to_link_attr(dev_attr) \
+> > +	container_of(dev_attr, struct link_attr, attr)
+> > +
+> > +static ssize_t
+> > +link_status_show(struct device *dev, struct device_attribute *attr, char *buf)
+> > +{
+> > +	struct m10bmc_retimer *retimer = dev_get_drvdata(dev);
+> > +	struct link_attr *lattr = to_link_attr(attr);
+> > +	unsigned int val;
+> > +	int ret;
+> > +
+> > +	ret = m10bmc_sys_read(retimer->m10bmc, M10BMC_PKVL_LSTATUS, &val);
+> > +	if (ret)
+> > +		return ret;
+> > +
+> > +	return sysfs_emit(buf, "%u\n",
+> > +			  !!(val & BIT((retimer->id << 2) + lattr->index)));
+> > +}
+> > +
+> > +#define link_status_attr(_index)				\
+> > +	static struct link_attr link_attr_status##_index =	\
+> > +		{ .attr = __ATTR(link_status##_index, 0444,	\
+> > +				 link_status_show, NULL),	\
+> > +		  .index = (_index) }
+> 
+> Why is this a "raw" attribute and not a device attribute?
 
-This patch makes them static.
+It is actually a device_attribute. The device_attribute is embedded in
+link_attr, like:
 
-Signed-off-by: Roman Gushchin <guro@fb.com>
----
- include/linux/memcontrol.h |  3 ---
- mm/memcontrol.c            | 11 ++++++++---
- 2 files changed, 8 insertions(+), 6 deletions(-)
+  struct link_attr {
+	struct device_attribute attr;
+	u32 index;
+  };
 
-diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
-index 41bbf71edd9f..7a38a1517a05 100644
---- a/include/linux/memcontrol.h
-+++ b/include/linux/memcontrol.h
-@@ -1592,9 +1592,6 @@ static inline void memcg_set_shrinker_bit(struct me=
-m_cgroup *memcg,
- #endif
-=20
- #ifdef CONFIG_MEMCG_KMEM
--int __memcg_kmem_charge(struct mem_cgroup *memcg, gfp_t gfp,
--			unsigned int nr_pages);
--void __memcg_kmem_uncharge(struct mem_cgroup *memcg, unsigned int nr_pag=
-es);
- int __memcg_kmem_charge_page(struct page *page, gfp_t gfp, int order);
- void __memcg_kmem_uncharge_page(struct page *page, int order);
-=20
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index 0d74b80fa4de..61f7c9ca14b7 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -255,6 +255,11 @@ struct cgroup_subsys_state *vmpressure_to_css(struct=
- vmpressure *vmpr)
- #ifdef CONFIG_MEMCG_KMEM
- extern spinlock_t css_set_lock;
-=20
-+static int __memcg_kmem_charge(struct mem_cgroup *memcg, gfp_t gfp,
-+			       unsigned int nr_pages);
-+static void __memcg_kmem_uncharge(struct mem_cgroup *memcg,
-+				  unsigned int nr_pages);
-+
- static void obj_cgroup_release(struct percpu_ref *ref)
- {
- 	struct obj_cgroup *objcg =3D container_of(ref, struct obj_cgroup, refcn=
-t);
-@@ -3084,8 +3089,8 @@ static void memcg_free_cache_id(int id)
-  *
-  * Returns 0 on success, an error code on failure.
-  */
--int __memcg_kmem_charge(struct mem_cgroup *memcg, gfp_t gfp,
--			unsigned int nr_pages)
-+static int __memcg_kmem_charge(struct mem_cgroup *memcg, gfp_t gfp,
-+			       unsigned int nr_pages)
- {
- 	struct page_counter *counter;
- 	int ret;
-@@ -3117,7 +3122,7 @@ int __memcg_kmem_charge(struct mem_cgroup *memcg, g=
-fp_t gfp,
-  * @memcg: memcg to uncharge
-  * @nr_pages: number of pages to uncharge
-  */
--void __memcg_kmem_uncharge(struct mem_cgroup *memcg, unsigned int nr_pag=
-es)
-+static void __memcg_kmem_uncharge(struct mem_cgroup *memcg, unsigned int=
- nr_pages)
- {
- 	if (!cgroup_subsys_on_dfl(memory_cgrp_subsys))
- 		page_counter_uncharge(&memcg->kmem, nr_pages);
---=20
-2.26.2
+An index for the link is appended along with the device_attribute, so we
+could identify which link is being queried on link_status_show(). There
+are 4 links and this is to avoid duplicated code like
+link_status_1_show(), link_status_2_show() ...
 
+> 
+> Please just use a normal DEVICE_ATTR_RO() macro to make it simpler and
+
+DEVICE_ATTR_RO() is to define a standalone device_attribute variable, but
+here we are initializing a field in struct link_attr.
+
+Thanks,
+Yilun
+
+> easier to understand over time, what you are doing here.  I can't
+> determine what is happening with this code now...
+> 
+> thanks,
+> 
+> greg k-h
