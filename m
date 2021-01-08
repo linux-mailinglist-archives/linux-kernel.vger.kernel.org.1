@@ -2,100 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 591162EEBAE
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 04:10:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 55EED2EEBB4
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 04:10:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727337AbhAHDHo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 22:07:44 -0500
-Received: from mail-io1-f46.google.com ([209.85.166.46]:44348 "EHLO
-        mail-io1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726099AbhAHDHn (ORCPT
+        id S1727418AbhAHDKV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 22:10:21 -0500
+Received: from mail-il1-f172.google.com ([209.85.166.172]:32913 "EHLO
+        mail-il1-f172.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726410AbhAHDKV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 22:07:43 -0500
-Received: by mail-io1-f46.google.com with SMTP id z5so8363127iob.11;
-        Thu, 07 Jan 2021 19:07:27 -0800 (PST)
+        Thu, 7 Jan 2021 22:10:21 -0500
+Received: by mail-il1-f172.google.com with SMTP id n9so8978553ili.0;
+        Thu, 07 Jan 2021 19:10:05 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=8KcxnzAs3ni/01L1eWgKza5Z0B+3uDNHSn0G445YVHg=;
-        b=e7lJrlcX4xVkQoGVesqM0RGAcmD22bcmvVi2vOW7YU+yZG7PpnCynNiogB08yahZAS
-         NJklLLudiTXhUm6+UUuA9dk4KJ/HxUFg7DmmKdhmPzgNrlVdoyVJO1cvBqmzbj+/OLHc
-         02hN5Mouv9wQ4ggB1Dk+6jOu3cQVuXQMT6r125mmw9k3ghqAvKW65GYrl7I2wbJghXyq
-         YjpOwPGEt9LgffA24obYVimPlGTgt52N5Q77+agScRxFgE9f/pvSI2QTtHPuTHzugj++
-         5PcAjB5T6qcYLBDHByLOtZ6skcJ3lk0eoPW3+xurdEaDCjO4sYIFZo49E7hpepM5SDsq
-         Dytw==
-X-Gm-Message-State: AOAM5319w5QXYXsmclbE1XupwrknP6KUojZRTR0OI756KTx57aE6u1yb
-        TGrHRSDdJ6wcK8Z4uBtFqA==
-X-Google-Smtp-Source: ABdhPJxfKaoaAn2T5WBaPEv5PLxKzEgHV8iS3F793MOnICO4dRtjruSucVwbpui6WwUnMMVGHMmVLw==
-X-Received: by 2002:a5d:9c91:: with SMTP id p17mr3801573iop.36.1610075222485;
-        Thu, 07 Jan 2021 19:07:02 -0800 (PST)
+        bh=LgCpZ89bhPoAzu1QaTKGtMiYIqqk0qB0oUZoQsv4bL8=;
+        b=kZsGFX1Yqe8O6JxlP17V7D5MxfnSUPxPr94csWDNjQcugNkKrynVMUHscqr8AdXfXe
+         o54Ss7lIsw4OqLocSHv4xFbUrpIkA9xW0ubIiScQDzJk3gkM+lC9c5/P1cEZ+125+WJp
+         GP4WQ2qAS3gd4XdJ0WkgibfO1xonUQA/jjUCRTMbXRohNkjkU3FxQPyLKzFSjCyH2I5O
+         wCUVmsqL5OfvCTl//NkJs9W3NJnByNrva+kntvxCjhR8e6UutU22PKAx7p93VrYzRJ8G
+         CzA72+lIe3mB+tDEJd8ulr2dt8KDzmG5JZyZJKGcMPT4f0C+776xls37VWxavHBB3TD6
+         bvRw==
+X-Gm-Message-State: AOAM5308ibCZy5NlNLcw+82QiKQnTVnFGEd+3uGszDxZZlF154wKhh6T
+        fqQgevst9E+OUUONCJ5N4g==
+X-Google-Smtp-Source: ABdhPJyTo5xe6pis2HLmGkd2WeF1mOCMYefIn8WWRVKOqqhyq9PW9kuxdyo1JzxthAcVJl7U/Jigqw==
+X-Received: by 2002:a05:6e02:1b8a:: with SMTP id h10mr1970185ili.141.1610075380095;
+        Thu, 07 Jan 2021 19:09:40 -0800 (PST)
 Received: from robh.at.kernel.org ([64.188.179.253])
-        by smtp.gmail.com with ESMTPSA id x5sm5939782ilm.22.2021.01.07.19.06.58
+        by smtp.gmail.com with ESMTPSA id x5sm5839653ilp.55.2021.01.07.19.09.37
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 Jan 2021 19:07:01 -0800 (PST)
-Received: (nullmailer pid 1802363 invoked by uid 1000);
-        Fri, 08 Jan 2021 03:06:57 -0000
-Date:   Thu, 7 Jan 2021 20:06:57 -0700
+        Thu, 07 Jan 2021 19:09:38 -0800 (PST)
+Received: (nullmailer pid 1805889 invoked by uid 1000);
+        Fri, 08 Jan 2021 03:09:36 -0000
+Date:   Thu, 7 Jan 2021 20:09:36 -0700
 From:   Rob Herring <robh@kernel.org>
 To:     Chunfeng Yun <chunfeng.yun@mediatek.com>
-Cc:     Vinod Koul <vkoul@kernel.org>, Jakub Kicinski <kuba@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        Min Guo <min.guo@mediatek.com>,
+Cc:     netdev@vger.kernel.org, linux-usb@vger.kernel.org,
         Kishon Vijay Abraham I <kishon@ti.com>,
-        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
-        Serge Semin <Sergey.Semin@baikalelectronics.ru>,
+        David Airlie <airlied@linux.ie>,
         Matthias Brugger <matthias.bgg@gmail.com>,
-        Stanley Chu <stanley.chu@mediatek.com>,
-        linux-usb@vger.kernel.org, David Airlie <airlied@linux.ie>,
-        netdev@vger.kernel.org, devicetree@vger.kernel.org,
+        devicetree@vger.kernel.org, Jakub Kicinski <kuba@kernel.org>,
+        Min Guo <min.guo@mediatek.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Rob Herring <robh+dt@kernel.org>,
         linux-mediatek@lists.infradead.org,
-        dri-devel@lists.freedesktop.org, Rob Herring <robh+dt@kernel.org>
-Subject: Re: [PATCH v5 09/11] dt-bindings: usb: convert mediatek,
- mtk-xhci.txt to YAML schema
-Message-ID: <20210108030657.GA1802097@robh.at.kernel.org>
+        Stanley Chu <stanley.chu@mediatek.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Serge Semin <Sergey.Semin@baikalelectronics.ru>,
+        Chun-Kuang Hu <chunkuang.hu@kernel.org>,
+        Vinod Koul <vkoul@kernel.org>, dri-devel@lists.freedesktop.org
+Subject: Re: [PATCH v5 10/11] dt-bindings: usb: convert mediatek, mtu3.txt to
+ YAML schema
+Message-ID: <20210108030936.GA1805818@robh.at.kernel.org>
 References: <20201225075258.33352-1-chunfeng.yun@mediatek.com>
- <20201225075258.33352-9-chunfeng.yun@mediatek.com>
+ <20201225075258.33352-10-chunfeng.yun@mediatek.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201225075258.33352-9-chunfeng.yun@mediatek.com>
+In-Reply-To: <20201225075258.33352-10-chunfeng.yun@mediatek.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 25 Dec 2020 15:52:56 +0800, Chunfeng Yun wrote:
-> Convert mediatek,mtk-xhci.txt to YAML schema mediatek,mtk-xhci.yaml
+On Fri, 25 Dec 2020 15:52:57 +0800, Chunfeng Yun wrote:
+> Convert mediatek,mtu3.txt to YAML schema mediatek,mtu3.yaml
 > 
 > Signed-off-by: Chunfeng Yun <chunfeng.yun@mediatek.com>
 > ---
 > v5: changes suggested by Rob
->   1. refer to usb-xhci.yaml instead of usb-hcd.yaml
->   2. remove unnecessary maxItems
->   3. add items for all phys may be supported
->   4. change pattern, and limit pattern length of patternProperties
+>   1. remove unnecessary maxItems
+>   2. define all phys supported
 > 
-> v4: update it according to Rob's suggestion
->   1. modify dictionary of phys
->   2. fix endentation in "mediatek,syscon-wakeup" items
->   3. remove reference to usb-hcd.yaml
+> v4:
+>   1. refer to usb-drd.yaml insstead of usb/generic.txt
+>   the following ones suggested by Rob:
+>   2. add the number of phys supported
+>   3. fix indentation of wakeup
+>   4. add examples for port and connector
 > 
 > v3:
 >   1. fix yamllint warning
->   2. remove pinctrl* properties supported by default suggested by Rob
->   3. drop unused labels
->   4. modify description of mediatek,syscon-wakeup
->   5. remove type of imod-interval-ns
+>   2. remove pinctrl* properties
+>   3. remove unnecessary '|'
+>   4. drop unused labels in example
 > 
 > v2: new patch
 > ---
->  .../bindings/usb/mediatek,mtk-xhci.txt        | 121 ------------
->  .../bindings/usb/mediatek,mtk-xhci.yaml       | 178 ++++++++++++++++++
->  2 files changed, 178 insertions(+), 121 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/usb/mediatek,mtk-xhci.txt
->  create mode 100644 Documentation/devicetree/bindings/usb/mediatek,mtk-xhci.yaml
+>  .../devicetree/bindings/usb/mediatek,mtu3.txt | 108 -------
+>  .../bindings/usb/mediatek,mtu3.yaml           | 287 ++++++++++++++++++
+>  2 files changed, 287 insertions(+), 108 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/usb/mediatek,mtu3.txt
+>  create mode 100644 Documentation/devicetree/bindings/usb/mediatek,mtu3.yaml
 > 
 
 Reviewed-by: Rob Herring <robh@kernel.org>
