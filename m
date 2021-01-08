@@ -2,60 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B160F2EF9EC
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 22:08:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C6222EF9F5
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 22:10:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729420AbhAHVII (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Jan 2021 16:08:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60612 "EHLO
+        id S1729462AbhAHVJH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Jan 2021 16:09:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60764 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729349AbhAHVIH (ORCPT
+        with ESMTP id S1727003AbhAHVJG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Jan 2021 16:08:07 -0500
-Received: from mail-oi1-x229.google.com (mail-oi1-x229.google.com [IPv6:2607:f8b0:4864:20::229])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53B14C061574
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Jan 2021 13:07:27 -0800 (PST)
-Received: by mail-oi1-x229.google.com with SMTP id s75so12901818oih.1
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Jan 2021 13:07:27 -0800 (PST)
+        Fri, 8 Jan 2021 16:09:06 -0500
+Received: from mail-ot1-x336.google.com (mail-ot1-x336.google.com [IPv6:2607:f8b0:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 799A6C061574
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Jan 2021 13:08:26 -0800 (PST)
+Received: by mail-ot1-x336.google.com with SMTP id j12so11008549ota.7
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Jan 2021 13:08:26 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc:content-transfer-encoding;
-        bh=Pcr4Tdvxc8bDQEjz7KUOR4L9kv90/P1v7PgP00kdfaM=;
-        b=BnC4iPd0jnVFxunJsHGzISYmry9eUi/Ih0S4OS5xA6tAhcCgNxhxL2FBTScCEbZivj
-         ezVDaKwHrzkyT6JOOkkXTcpDVgd8lGyQc4TcC9yFv6ZI3RCGdZgozMegrxAIRl33ub1I
-         3ZqxI50CDbmICj/FwX0d3GVeNm9lgUCAu+DLPfgcT7LWA/VzEgTkG/biENrzx7pXqLBv
-         Vww8HweJinbROeDY3AUBQKEo4nZpVqFOgwSFy9qcqesWRHjz033DFptGDg/dWbJW3boG
-         5YoOsuoKsbMUqddt6My8qcbinXXUhEnyrFS1NjZUFXMZkDPM1tnDSUz1N59WSfcApQBC
-         +eQg==
+        bh=nRS0L7fvUGqSA/e/lDofkKYEIWrtPa7uYouhHiULOy0=;
+        b=E4PhqOjB/Thrk2iqgGRHz9qHCn2oXuwy8TbZ5/imW5zcS/BMBgSl9UDlO/ZxiYzSZo
+         YPeLgu+Moamgjx8J9MJaIQ15X3sLBYVizDb0QS68VJJWSDXlET5dDtRSSaaNQRWFCDjE
+         A0f6FEiQ1MKb/eg18K2FISo0LwzbPNxz32xZGFnUP+zGDwCt1xMqppXyGmK8RjhhD4id
+         H2vJ40Jdm8ate031crwnaSE9j2/SNjZlHGymwyHUoJDiq2QZFVmVWH8E+LAIM4wRhvNx
+         L0hKU8dUjfWYZ0mHTYfiWi7lLT/sVMM7w4WOPGMoS+WvdnxRV9mlGj/wOCVdjYK/XPFs
+         E4hA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc:content-transfer-encoding;
-        bh=Pcr4Tdvxc8bDQEjz7KUOR4L9kv90/P1v7PgP00kdfaM=;
-        b=NWGxoNxn/G1xhdcNGXrWFuMe72QWuYVQ+QMVli9HwwyJO6/gFCksR00D/pl92i88bu
-         QoVGMLBjGIR5nNIZzqYXKOOAdS56zJ+Ddtm9sgxvGyrqXFzdC6KTnCqC5ScyDeAnJ0rO
-         n1fyDui4Yh0k6sLjRUm7jvJgVj9XOrg+ZGn0p99ET2mnJpGz8BhHyBQyRFGktfGk/uU7
-         vsjFQ3hDgu3DcyI2rogK8M63zsgnvTnTz87mdvvg7r6DNfz98zoYv86sMeaDGNyQjtpV
-         K/MIH3AMb5tOxqBal9aD7sNPNMc2wrrIbHEdJU9mRMgThWtTUfRSUJtOBgcK4bR7f7ve
-         0/Bw==
-X-Gm-Message-State: AOAM532viUm5cGsv0iOy7tpJOU9w0W35A0kY4H8OTHMUOQFz8MAPzLqb
-        SRJugndkN0aX/bdvglxhL+NXN4bZ2m1NA/IhvGw=
-X-Google-Smtp-Source: ABdhPJxrSdeOuaVjOtCGANRq8MeS+tK/Fe/2NYSYId6ZgxhFadUmADwANBNROTRVJcjXq6iy5M8R94Zav+YSQSBPgSA=
-X-Received: by 2002:a54:4083:: with SMTP id i3mr3473144oii.120.1610140046621;
- Fri, 08 Jan 2021 13:07:26 -0800 (PST)
+        bh=nRS0L7fvUGqSA/e/lDofkKYEIWrtPa7uYouhHiULOy0=;
+        b=PdLjfhl/fO+wCLs+CGkFKQYzBu8qu8OHcrp0N5YhtNyrPoobZC7fuB1qLpo1EhrPja
+         rGlJlchXO+iVx/6/G8Wd4ePZAAPI+ICqf75kC/Er3WhCOfdT6BeoRUdGoEmNnaoLMP6o
+         0tcAEbuP3XYLTEpF7GA1EHfSeYXyz1jnIWQiUfbQhQsME497SIPFWJvLM1EMEFD/3jVS
+         uMUFFbeKy1ZHteYeguXwhcMEyVGuP6S6CB/OYL7YF2Bc9Fvgmc+I4k0TWrs3jnFOtAZD
+         aJ3cpMCaZp5ar6hgtsVEqc4fjFBbT+IGCVwGxViefZtBH7FB/jgdlwLkjE8z61p3kIOY
+         3oXQ==
+X-Gm-Message-State: AOAM533WF6ha3WdzlPSKuHsoo41ppsRFltbes9HiEcRsyI9OfL86mLOa
+        ilNq0X+6k1UdN2I4NvYwtCZg/XRMTx3wjcmjcwI=
+X-Google-Smtp-Source: ABdhPJwUKn189k6jz2ID6ROoxv+heGK+T09fzz48QxLhws12Sthaohe17iu9PHOzfBs+E9feRpimhMnvhtp18nRVzCk=
+X-Received: by 2002:a05:6830:1b7b:: with SMTP id d27mr4067082ote.132.1610140105945;
+ Fri, 08 Jan 2021 13:08:25 -0800 (PST)
 MIME-Version: 1.0
-References: <20210108201457.3078600-1-lee.jones@linaro.org> <20210108201457.3078600-22-lee.jones@linaro.org>
-In-Reply-To: <20210108201457.3078600-22-lee.jones@linaro.org>
+References: <20210108201457.3078600-1-lee.jones@linaro.org> <20210108201457.3078600-23-lee.jones@linaro.org>
+In-Reply-To: <20210108201457.3078600-23-lee.jones@linaro.org>
 From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Fri, 8 Jan 2021 16:07:15 -0500
-Message-ID: <CADnq5_MO9YN--+TZsYM6j12LhBO4JjbiNhUQULBZY2YOBGzV3g@mail.gmail.com>
-Subject: Re: [PATCH 21/40] drm/amd/display/dc/calcs/dce_calcs: Remove unused
- variables 'v_filter_init_mode' and 'sclk_lvl'
-To:     Lee Jones <lee.jones@linaro.org>,
-        Harry Wentland <hwentlan@amd.com>,
-        "Leo (Sunpeng) Li" <Sunpeng.Li@amd.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
+Date:   Fri, 8 Jan 2021 16:08:15 -0500
+Message-ID: <CADnq5_Odj55sMJ3FD-PmRx=1if-DnjC4EtNNPdVgSktBN=2C9Q@mail.gmail.com>
+Subject: Re: [PATCH 22/40] drm/amd/display/dc/bios/bios_parser2: Fix some
+ formatting issues and missing parameter docs
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     Leo Li <sunpeng.li@amd.com>, LKML <linux-kernel@vger.kernel.org>,
         amd-gfx list <amd-gfx@lists.freedesktop.org>,
         David Airlie <airlied@linux.ie>,
         Maling list - DRI developers 
@@ -72,16 +70,33 @@ On Fri, Jan 8, 2021 at 3:15 PM Lee Jones <lee.jones@linaro.org> wrote:
 >
 > Fixes the following W=3D1 kernel build warning(s):
 >
->  drivers/gpu/drm/amd/amdgpu/../display/dc/calcs/dce_calcs.c: In function =
-=E2=80=98calculate_bandwidth=E2=80=99:
->  drivers/gpu/drm/amd/amdgpu/../display/dc/calcs/dce_calcs.c:109:18: warni=
-ng: variable =E2=80=98v_filter_init_mode=E2=80=99 set but not used [-Wunuse=
-d-but-set-variable]
->  drivers/gpu/drm/amd/amdgpu/../display/dc/calcs/dce_calcs.c: In function =
-=E2=80=98bw_calcs=E2=80=99:
->  drivers/gpu/drm/amd/amdgpu/../display/dc/calcs/dce_calcs.c:3031:21: warn=
-ing: variable =E2=80=98sclk_lvl=E2=80=99 set but not used [-Wunused-but-set=
--variable]
+>  drivers/gpu/drm/amd/amdgpu/../display/dc/bios/bios_parser2.c:501: warnin=
+g: Function parameter or member 'dcb' not described in 'bios_parser_get_gpi=
+o_pin_info'
+>  drivers/gpu/drm/amd/amdgpu/../display/dc/bios/bios_parser2.c:501: warnin=
+g: Function parameter or member 'gpio_id' not described in 'bios_parser_get=
+_gpio_pin_info'
+>  drivers/gpu/drm/amd/amdgpu/../display/dc/bios/bios_parser2.c:501: warnin=
+g: Function parameter or member 'info' not described in 'bios_parser_get_gp=
+io_pin_info'
+>  drivers/gpu/drm/amd/amdgpu/../display/dc/bios/bios_parser2.c:815: warnin=
+g: Function parameter or member 'dcb' not described in 'bios_parser_get_spr=
+ead_spectrum_info'
+>  drivers/gpu/drm/amd/amdgpu/../display/dc/bios/bios_parser2.c:815: warnin=
+g: Function parameter or member 'signal' not described in 'bios_parser_get_=
+spread_spectrum_info'
+>  drivers/gpu/drm/amd/amdgpu/../display/dc/bios/bios_parser2.c:815: warnin=
+g: Function parameter or member 'index' not described in 'bios_parser_get_s=
+pread_spectrum_info'
+>  drivers/gpu/drm/amd/amdgpu/../display/dc/bios/bios_parser2.c:815: warnin=
+g: Function parameter or member 'ss_info' not described in 'bios_parser_get=
+_spread_spectrum_info'
+>  drivers/gpu/drm/amd/amdgpu/../display/dc/bios/bios_parser2.c:1210: warni=
+ng: Function parameter or member 'dcb' not described in 'bios_parser_set_sc=
+ratch_critical_state'
+>  drivers/gpu/drm/amd/amdgpu/../display/dc/bios/bios_parser2.c:1210: warni=
+ng: Function parameter or member 'state' not described in 'bios_parser_set_=
+scratch_critical_state'
 >
 > Cc: Harry Wentland <harry.wentland@amd.com>
 > Cc: Leo Li <sunpeng.li@amd.com>
@@ -93,66 +108,73 @@ ing: variable =E2=80=98sclk_lvl=E2=80=99 set but not used [-Wunused-but-set=
 > Cc: dri-devel@lists.freedesktop.org
 > Signed-off-by: Lee Jones <lee.jones@linaro.org>
 
-@Harry Wentland
-, @Leo (Sunpeng) Li I think this file is generated from a script or
-something.  Wanted to get your take on how to properly integrate a
-change like this.
+Applied.  Thanks!
 
 Alex
 
 
 > ---
->  drivers/gpu/drm/amd/display/dc/calcs/dce_calcs.c | 8 +-------
->  1 file changed, 1 insertion(+), 7 deletions(-)
+>  .../drm/amd/display/dc/bios/bios_parser2.c    | 29 +++++++++----------
+>  1 file changed, 14 insertions(+), 15 deletions(-)
 >
-> diff --git a/drivers/gpu/drm/amd/display/dc/calcs/dce_calcs.c b/drivers/g=
-pu/drm/amd/display/dc/calcs/dce_calcs.c
-> index ef41b287cbe23..158d927c03e55 100644
-> --- a/drivers/gpu/drm/amd/display/dc/calcs/dce_calcs.c
-> +++ b/drivers/gpu/drm/amd/display/dc/calcs/dce_calcs.c
-> @@ -106,7 +106,6 @@ static void calculate_bandwidth(
->         bool lpt_enabled;
->         enum bw_defines sclk_message;
->         enum bw_defines yclk_message;
-> -       enum bw_defines v_filter_init_mode[maximum_number_of_surfaces];
->         enum bw_defines tiling_mode[maximum_number_of_surfaces];
->         enum bw_defines surface_type[maximum_number_of_surfaces];
->         enum bw_defines voltage;
-> @@ -792,12 +791,8 @@ static void calculate_bandwidth(
->                                 data->v_filter_init[i] =3D bw_add(data->v=
-_filter_init[i], bw_int_to_fixed(1));
->                         }
->                         if (data->stereo_mode[i] =3D=3D bw_def_top_bottom=
-) {
-> -                               v_filter_init_mode[i] =3D bw_def_manual;
->                                 data->v_filter_init[i] =3D bw_min2(data->=
-v_filter_init[i], bw_int_to_fixed(4));
->                         }
-> -                       else {
-> -                               v_filter_init_mode[i] =3D bw_def_auto;
-> -                       }
->                         if (data->stereo_mode[i] =3D=3D bw_def_top_bottom=
-) {
->                                 data->num_lines_at_frame_start =3D bw_int=
-_to_fixed(1);
->                         }
-> @@ -3028,7 +3023,7 @@ bool bw_calcs(struct dc_context *ctx,
->                 calcs_output->all_displays_in_sync =3D false;
+> diff --git a/drivers/gpu/drm/amd/display/dc/bios/bios_parser2.c b/drivers=
+/gpu/drm/amd/display/dc/bios/bios_parser2.c
+> index 670c265838178..9f9fda3118d1f 100644
+> --- a/drivers/gpu/drm/amd/display/dc/bios/bios_parser2.c
+> +++ b/drivers/gpu/drm/amd/display/dc/bios/bios_parser2.c
+> @@ -485,10 +485,11 @@ static struct atom_hpd_int_record *get_hpd_record(
+>   * bios_parser_get_gpio_pin_info
+>   * Get GpioPin information of input gpio id
+>   *
+> - * @param gpio_id, GPIO ID
+> - * @param info, GpioPin information structure
+> - * @return Bios parser result code
+> - * @note
+> + * @dcb:     pointer to the DC BIOS
+> + * @gpio_id: GPIO ID
+> + * @info:    GpioPin information structure
+> + * return: Bios parser result code
+> + * note:
+>   *  to get the GPIO PIN INFO, we need:
+>   *  1. get the GPIO_ID from other object table, see GetHPDInfo()
+>   *  2. in DATA_TABLE.GPIO_Pin_LUT, search all records,
+> @@ -801,11 +802,11 @@ static enum bp_result get_ss_info_v4_2(
+>   * ver 3.1,
+>   * there is only one entry for each signal /ss id.  However, there is
+>   * no planning of supporting multiple spread Sprectum entry for EverGree=
+n
+> - * @param [in] this
+> - * @param [in] signal, ASSignalType to be converted to info index
+> - * @param [in] index, number of entries that match the converted info in=
+dex
+> - * @param [out] ss_info, sprectrum information structure,
+> - * @return Bios parser result code
+> + * @dcb:     pointer to the DC BIOS
+> + * @signal:  ASSignalType to be converted to info index
+> + * @index:   number of entries that match the converted info index
+> + * @ss_info: sprectrum information structure,
+> + * return: Bios parser result code
+>   */
+>  static enum bp_result bios_parser_get_spread_spectrum_info(
+>         struct dc_bios *dcb,
+> @@ -1196,13 +1197,11 @@ static bool bios_parser_is_accelerated_mode(
+>  }
 >
->         if (data->number_of_displays !=3D 0) {
-> -               uint8_t yclk_lvl, sclk_lvl;
-> +               uint8_t yclk_lvl;
->                 struct bw_fixed high_sclk =3D vbios->high_sclk;
->                 struct bw_fixed mid1_sclk =3D vbios->mid1_sclk;
->                 struct bw_fixed mid2_sclk =3D vbios->mid2_sclk;
-> @@ -3049,7 +3044,6 @@ bool bw_calcs(struct dc_context *ctx,
->                 calculate_bandwidth(dceip, vbios, data);
->
->                 yclk_lvl =3D data->y_clk_level;
-> -               sclk_lvl =3D data->sclk_level;
->
->                 calcs_output->nbp_state_change_enable =3D
->                         data->nbp_state_change_enable;
+>  /**
+> - * bios_parser_set_scratch_critical_state
+> + * bios_parser_set_scratch_critical_state - update critical state bit
+> + *                                          in VBIOS scratch register
+>   *
+> - * @brief
+> - *  update critical state bit in VBIOS scratch register
+> - *
+> - * @param
+> - *  bool - to set or reset state
+> + * @dcb:   pointer to the DC BIO
+> + * @state: set or reset state
+>   */
+>  static void bios_parser_set_scratch_critical_state(
+>         struct dc_bios *dcb,
 > --
 > 2.25.1
 >
