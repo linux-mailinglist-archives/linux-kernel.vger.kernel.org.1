@@ -2,217 +2,207 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E7B12EEAD9
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 02:22:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 394FA2EEADE
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 02:25:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729790AbhAHBUz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 20:20:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45684 "EHLO
+        id S1729760AbhAHBZM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 20:25:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46350 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727634AbhAHBUy (ORCPT
+        with ESMTP id S1727634AbhAHBZM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 20:20:54 -0500
-Received: from mail-yb1-xb35.google.com (mail-yb1-xb35.google.com [IPv6:2607:f8b0:4864:20::b35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E132C0612F4
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Jan 2021 17:20:08 -0800 (PST)
-Received: by mail-yb1-xb35.google.com with SMTP id y128so7907513ybf.10
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Jan 2021 17:20:08 -0800 (PST)
+        Thu, 7 Jan 2021 20:25:12 -0500
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 294A0C0612F4
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Jan 2021 17:24:32 -0800 (PST)
+Received: by mail-yb1-xb49.google.com with SMTP id l8so13506970ybj.16
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Jan 2021 17:24:32 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=MKOJhIjloyiap+fBdPjgGU8hes3uQBRyIo0jT4R9AKs=;
-        b=wICtRvWhDF6vOJOe09weaCLx/Wv+l6B1L4ORkSpnsEowH5fae/vy1J5kaqpzf12q+5
-         ru+wHPgMh/cocvMuuE23JeJTLJDIribJ9yEMTCZWjQJ6QO8/UBh/7PydGIqrHMvkIsGQ
-         Fv+9olhkj/2BgIQmP6qDk7q7AF8vzUf0i+c0MrqGMb7YZ6WiUvDdlCIH2UC8vkx1Ri56
-         XX2/dcZ5n4KY21NzjwgXNUmvRjGNjBqX1RqcH4twSEEAcGXLEZFoVRGmRtBi4jh9qDaQ
-         Ie+nLYeMz53Yg+X5nJ4cpbfMP2s9c4tJTM0lZ9XUdngOGAdEa2uli+VwHCnaCMvXGUuP
-         oxRA==
+        h=sender:date:message-id:mime-version:subject:from:to:cc;
+        bh=KOAVDThdKzrh65X/GbWaYtQc60+9XyXrjP6Yz10hBpg=;
+        b=RBGLN+zZzbIyfD+Sx/8r3MreHegdReAedekFKpvtaPNNaqDbxkXYUj2VDgIfMU2A+a
+         0gSrIzpImGQ7lN+roVMUsqqZ/U6UKXglPQAKcLOxtuXz5XCZrSBzdnRyeyAZ6P7rAP2+
+         p20EzqAtITf3uOy8l+7o8K8aplevxQgr8mcMGEN/YLXWuDLt8A/lOi6vRoJ24r/ltKVD
+         kyQB7m52qcSKNuifYv9rjJ5XWDxv3vyUrdczvAB0Al217clWckEOomaFHNDcQuiAkhs2
+         wb9lWUU5U2EJa53S5Bd1MeIOxKCQDs1WnLO2WDPO0iabFn/+7S/upoYubbaTArj+IHqn
+         XzIA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=MKOJhIjloyiap+fBdPjgGU8hes3uQBRyIo0jT4R9AKs=;
-        b=fIpRx++PHRJ3IhrLVhEnemR6XzWv06NhV15TxHTz2Zra5bDf+zrdXnFxFowaZ169vj
-         IX5JxmMT9EKYU9BqRkV0hOfFNE3g2R/RktB6x6g7slUA5GaEzq4V75158AQQS+R62a5r
-         gQJQdJtVr/1mmFZXf2cZ2/cPHZJZx1kaaWADnqaX5FCoQ7dZrPReaevTQiwhR5SUUbeJ
-         Mg43kzKzRoOa4oMCLhRiMcCvnWaZpr1WTfwtgHDqG2UkEe7z5mujdxmCxQxnda62cLKQ
-         Dwlq7mKL2eXVN13naQyGYpAxX7N8pNawqoWLxOmtEkF2c7PMSGXX69Pc2UZYm4e0TYL3
-         DQXg==
-X-Gm-Message-State: AOAM531PHesk6I3giRd5QoZvPLP+0ao4wmzUsQJBYEgJRg1UzWxjdYMO
-        loaVhhm+uGXSsqiCIIy6zL8YhO4hfZvrC+hP6a3MEw==
-X-Google-Smtp-Source: ABdhPJxySK3WH1I+wCO2adFcRXXcVY1LZJ72V5QLw2jC2CV7NfjTqvVn8FFKYANa4DI0Aqmmbt60w6WxD203wT0ELOc=
-X-Received: by 2002:a5b:b49:: with SMTP id b9mr2174071ybr.310.1610068807210;
- Thu, 07 Jan 2021 17:20:07 -0800 (PST)
-MIME-Version: 1.0
-References: <20210106232641.459081-1-saravanak@google.com> <305deba691b59aec2414dee611c23e69@walle.cc>
- <CAGETcx9J-WzdE+HAvftERPj9K5Q5gV_F03GKAOrQ9Vv733+szw@mail.gmail.com> <1f1263e3f383918573a3e4238e4b1fc3@walle.cc>
-In-Reply-To: <1f1263e3f383918573a3e4238e4b1fc3@walle.cc>
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :to:cc;
+        bh=KOAVDThdKzrh65X/GbWaYtQc60+9XyXrjP6Yz10hBpg=;
+        b=YpVxufkrXyP14gpni7OuF+BQt2qmqHVSWXjTzPrBHsuba2+jQLG1wm2pobwWcGQ+cI
+         6II2328Nbg2II3u8iORif6IoZoq3/snHy6eITqfAC+xiApGkkArLZgvQOtKsWtvz6m+G
+         Fl//0yatqk+2ZIhMu1npcceQvLVITC3s+05QbB5gUGgvmgDuTuqY0XdeNvSGMmBiiS+7
+         6EyXBx15KIUEAJ0qIqsIZY61FSbuXnhcJ09FWIAb3UGgqP6RudsP5qtVSs8mQBjDt4wb
+         mrzseREi8BLfEQHivkdakCm5TZ6N3FFqw17phPlwKWqM2pTNZIyVVP6QAYHxt30bQDSl
+         JE/Q==
+X-Gm-Message-State: AOAM530hva19lj/vi5MDDvg3nETpLAtQU+9ToQYjpi35PRpT1CjN87Z9
+        14FKU5k+VaSk5gPhEAduf9+AbzrIAJ1fk3U=
+X-Google-Smtp-Source: ABdhPJzcbE9RQxvMxNJh1QmFnA8FU8pPSupKeop38Z4gjuGWxWAa4dIAdZFbvDm5UgGdd3I+qjJIZj+dv7KoTlU=
+Sender: "saravanak via sendgmr" <saravanak@saravanak.san.corp.google.com>
+X-Received: from saravanak.san.corp.google.com ([2620:15c:2d:3:7220:84ff:fe09:fedc])
+ (user=saravanak job=sendgmr) by 2002:a25:c095:: with SMTP id
+ c143mr2229233ybf.119.1610069071305; Thu, 07 Jan 2021 17:24:31 -0800 (PST)
+Date:   Thu,  7 Jan 2021 17:24:26 -0800
+Message-Id: <20210108012427.766318-1-saravanak@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.29.2.729.g45daf8777d-goog
+Subject: [PATCH v3] driver core: Fix device link device name collision
 From:   Saravana Kannan <saravanak@google.com>
-Date:   Thu, 7 Jan 2021 17:19:31 -0800
-Message-ID: <CAGETcx8uvJ7tQqW6KSkTdW4A9D+gwSq98ZyvcdHJBSkH--AYaw@mail.gmail.com>
-Subject: Re: [PATCH v1] driver core: Fix device link device name collision
-To:     Michael Walle <michael@walle.cc>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         "Rafael J. Wysocki" <rafael@kernel.org>,
-        Android Kernel Team <kernel-team@android.com>,
-        LKML <linux-kernel@vger.kernel.org>
+        Saravana Kannan <saravanak@google.com>
+Cc:     stable@vger.kernel.org, Michael Walle <michael@walle.cc>,
+        kernel-team@android.com, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 7, 2021 at 4:22 PM Michael Walle <michael@walle.cc> wrote:
->
-> Am 2021-01-08 00:39, schrieb Saravana Kannan:
-> > On Thu, Jan 7, 2021 at 1:56 AM Michael Walle <michael@walle.cc> wrote:
-> >>
-> >> Hi Saravana,
-> >>
-> >> Am 2021-01-07 00:26, schrieb Saravana Kannan:
-> >> > The device link device's name was of the form:
-> >> > <supplier-dev-name>--<consumer-dev-name>
-> >> >
-> >> > This can cause name collision as reported here [1] as device names are
-> >> > not globally unique. Since device names have to be unique within the
-> >> > bus/class, add the bus/class name as a prefix to the device names used
-> >> > to
-> >> > construct the device link device name.
-> >> >
-> >> > So the devuce link device's name will be of the form:
-> >> > <supplier-bus-name>:<supplier-dev-name>--<consumer-bus-name><consumer-dev-name>
-> >> >
-> >> > [1] -
-> >> > https://lore.kernel.org/lkml/20201229033440.32142-1-michael@walle.cc/
-> >> > Reported-by: Michael Walle <michael@walle.cc>
-> >> > Signed-off-by: Saravana Kannan <saravanak@google.com>
-> >>
-> >> missing Fixes: tag?
-> >>
-> >> > Can you please test this? This should fix your issue.
-> >>
-> >> Unfortunately, not:
-> >>
-> >> [    4.234617] fsl_enetc 0000:00:00.0: Adding to iommu group 1
-> >> [    4.346768] fsl_enetc 0000:00:00.0: enabling device (0400 -> 0402)
-> >> [    4.353012] fsl_enetc 0000:00:00.0: no MAC address specified for
-> >> SI1,
-> >> using 3e:6a:a1:57:9c:b0
-> >> [    4.361580] fsl_enetc 0000:00:00.0: no MAC address specified for
-> >> SI2,
-> >> using 9e:8b:7b:e3:e2:ad
-> >> [    4.370539] libphy: Freescale ENETC MDIO Bus: probed
-> >> [    4.376751] libphy: Freescale ENETC internal MDIO Bus: probed
-> >> [    4.383060] fsl_enetc 0000:00:00.1: Adding to iommu group 2
-> >> [    4.494764] fsl_enetc 0000:00:00.1: enabling device (0400 -> 0402)
-> >> [    4.501012] fsl_enetc 0000:00:00.1: no MAC address specified for
-> >> SI1,
-> >> using ee:99:cb:b1:24:4c
-> >> [    4.509580] fsl_enetc 0000:00:00.1: no MAC address specified for
-> >> SI2,
-> >> using 66:60:f4:0d:9e:e0
-> >> [    4.518556] sysfs: cannot create duplicate filename
-> >> '/devices/platform/soc/1f0000000.pcie/pci0000:00/0000:00:00.1/consumer:0000:00:00.1'
-> >> [    4.530882] CPU: 1 PID: 1 Comm: swapper/0 Not tainted
-> >> 5.11.0-rc2-next-20210107-00017-g392ec8cbdef5 #303
-> >> [    4.540317] Hardware name: Kontron KBox A-230-LS (DT)
-> >> [    4.545385] Call trace:
-> >> [    4.547834]  dump_backtrace+0x0/0x1b8
-> >> [    4.551517]  show_stack+0x20/0x70
-> >> [    4.554844]  dump_stack+0xd8/0x134
-> >> [    4.558258]  sysfs_warn_dup+0x6c/0x88
-> >> [    4.561932]  sysfs_do_create_link_sd.isra.2+0x10c/0x110
-> >> [    4.567175]  sysfs_create_link+0x2c/0x50
-> >> [    4.571109]  devlink_add_symlinks+0x110/0x1b8
-> >> [    4.575484]  device_add+0x460/0x798
-> >> [    4.578982]  device_link_add+0x46c/0x628
-> >> [    4.582917]  fw_devlink_create_devlink+0xb8/0xc8
-> >> [    4.587549]  __fw_devlink_link_to_suppliers+0x84/0x180
-> >> [    4.592705]  __fw_devlink_link_to_suppliers+0x134/0x180
-> >> [    4.597948]  device_add+0x778/0x798
-> >> [    4.601445]  device_register+0x28/0x38
-> >> [    4.605205]  __mdiobus_register+0x94/0x340
-> >> [    4.609317]  of_mdiobus_register+0xb4/0x380
-> >> [    4.613513]  enetc_pf_probe+0x73c/0xb10
-> >> [    4.617362]  local_pci_probe+0x48/0xb8
-> >> [    4.621125]  pci_device_probe+0x120/0x1c0
-> >> [    4.625146]  really_probe+0xec/0x3c0
-> >> [    4.628732]  driver_probe_device+0x60/0xc0
-> >> [    4.632842]  device_driver_attach+0x7c/0x88
-> >> [    4.637039]  __driver_attach+0x60/0xe8
-> >> [    4.640799]  bus_for_each_dev+0x7c/0xd0
-> >> [    4.644647]  driver_attach+0x2c/0x38
-> >> [    4.648232]  bus_add_driver+0x194/0x1f8
-> >> [    4.652079]  driver_register+0x6c/0x128
-> >> [    4.655927]  __pci_register_driver+0x4c/0x58
-> >> [    4.660213]  enetc_pf_driver_init+0x2c/0x38
-> >> [    4.664412]  do_one_initcall+0x54/0x2d8
-> >> [    4.668260]  kernel_init_freeable+0x200/0x26c
-> >> [    4.672631]  kernel_init+0x1c/0x120
-> >> [    4.676131]  ret_from_fork+0x10/0x30
-> >> [    4.679758] libphy: Freescale ENETC MDIO Bus: probed
-> >> [    4.686590] fsl_enetc 0000:00:00.2: Adding to iommu group 3
-> >> [    4.798764] fsl_enetc 0000:00:00.2: enabling device (0400 -> 0402)
-> >> [    4.805010] fsl_enetc 0000:00:00.2: no MAC address specified for
-> >> SI0,
-> >> using 2a:90:8e:f9:ee:5d
-> >> [    4.814279] fsl_enetc 0000:00:00.6: Adding to iommu group 4
-> >> [    4.819992] fsl_enetc 0000:00:00.6: device is disabled, skipping
-> >> [    4.826146] fsl_enetc_mdio 0000:00:00.3: Adding to iommu group 5
-> >> [    4.938764] fsl_enetc_mdio 0000:00:00.3: enabling device (0400 ->
-> >> 0402)
-> >> [    4.945601] libphy: FSL PCIe IE Central MDIO Bus: probed
-> >>
-> >> Please note the:
-> >> [    4.518556] sysfs: cannot create duplicate filename
-> >> '/devices/platform/soc/1f0000000.pcie/pci0000:00/0000:00:00.1/consumer:0000:00:00.1'
-> >>
-> >> Your patch just addresses the link names, but not the ones for
-> >> "consumer:"
-> >> and "supplier:" under the device itself, right?
-> >
-> > Ah, this is another location where I needed to fix the collision. Will
-> > send out a v2.
-> >
-> >> > Having said that, do you have some local DT changes when you are
-> >> > testing
-> >> > this?
-> >>
-> >> No. But keep in mind that this is also PCI and there might be other
-> >> devices too.
-> >
-> > Right, but fw_devlink is only parsing DT to figure out the
-> > dependencies. So I'm confused where these dependencies are inferred
-> > from DT. I did check all the DT includes, but it's hard to tell if you
-> > have downstream changes or if I'm missing something. Looks like the
-> > mdio bus or one of its children is dependent on both the mdio bus node
-> > AND the PCI root node. Do you know which one that might be? Can you
-> > point to it in DT?
->
-> Sorry, I'm not familiar with that whole devlink thing. But one thing
-> I noticed is, that it only seems to happen with the following device
-> tree:
->    arch/arm64/boot/dts/freescale/fsl-ls1028a-kontron-kbox-a-230-ls.dts
-> and not with:
->    arch/arm64/boot/dts/freescale/fsl-ls1028a-kontron-sl28-var3-ads2.dts
->
-> The difference here is that on the latter the second enetc is not
-> enabled (pci dev 0000:00:00.1).
->
-> And in the log I've sent you in the v2 thread I've noticed that the
-> filenames seem to be truncated:
->
-> [   10.875402] platform 2000000.i2c:sl28cpld@4a:gpio@10: Linked as a
-> sync state only consumer to 2310000.gpio
-> [   10.890943] sysfs: cannot create duplicate filename
-> '/devices/platform/soc/2310000.gpio/consumer:platform:2000000.i2c:sl28cpld@4'
->
-> Shouldn't this be
-> "/devices/platform/soc/2310000.gpio/consumer:platform:2000000.i2c:sl28cpld@4a:gpio@10
-> ?
+The device link device's name was of the form:
+<supplier-dev-name>--<consumer-dev-name>
 
-Good catch regarding the truncation. *face palm* v3 it is. Hopefully
-that catches all the issues, but I'm not too confident it will. I'll
-send out v3 now just to get it tested out quickly.
+This can cause name collision as reported here [1] as device names are
+not globally unique. Since device names have to be unique within the
+bus/class, add the bus/class name as a prefix to the device names used to
+construct the device link device name.
 
--Saravana
+So the devuce link device's name will be of the form:
+<supplier-bus-name>:<supplier-dev-name>--<consumer-bus-name>:<consumer-dev-name>
+
+[1] - https://lore.kernel.org/lkml/20201229033440.32142-1-michael@walle.cc/
+
+Cc: stable@vger.kernel.org
+Fixes: 287905e68dd2 ("driver core: Expose device link details in sysfs")
+Reported-by: Michael Walle <michael@walle.cc>
+Signed-off-by: Saravana Kannan <saravanak@google.com>
+---
+ Documentation/ABI/testing/sysfs-class-devlink   |  4 ++--
+ .../ABI/testing/sysfs-devices-consumer          |  5 +++--
+ .../ABI/testing/sysfs-devices-supplier          |  5 +++--
+ drivers/base/core.c                             | 17 +++++++++--------
+ include/linux/device.h                          | 12 ++++++++++++
+ 5 files changed, 29 insertions(+), 14 deletions(-)
+
+diff --git a/Documentation/ABI/testing/sysfs-class-devlink b/Documentation/ABI/testing/sysfs-class-devlink
+index b662f747c83e..8a21ce515f61 100644
+--- a/Documentation/ABI/testing/sysfs-class-devlink
++++ b/Documentation/ABI/testing/sysfs-class-devlink
+@@ -5,8 +5,8 @@ Description:
+ 		Provide a place in sysfs for the device link objects in the
+ 		kernel at any given time.  The name of a device link directory,
+ 		denoted as ... above, is of the form <supplier>--<consumer>
+-		where <supplier> is the supplier device name and <consumer> is
+-		the consumer device name.
++		where <supplier> is the supplier bus:device name and <consumer>
++		is the consumer bus:device name.
+ 
+ What:		/sys/class/devlink/.../auto_remove_on
+ Date:		May 2020
+diff --git a/Documentation/ABI/testing/sysfs-devices-consumer b/Documentation/ABI/testing/sysfs-devices-consumer
+index 1f06d74d1c3c..0809fda092e6 100644
+--- a/Documentation/ABI/testing/sysfs-devices-consumer
++++ b/Documentation/ABI/testing/sysfs-devices-consumer
+@@ -4,5 +4,6 @@ Contact:	Saravana Kannan <saravanak@google.com>
+ Description:
+ 		The /sys/devices/.../consumer:<consumer> are symlinks to device
+ 		links where this device is the supplier. <consumer> denotes the
+-		name of the consumer in that device link. There can be zero or
+-		more of these symlinks for a given device.
++		name of the consumer in that device link and is of the form
++		bus:device name. There can be zero or more of these symlinks
++		for a given device.
+diff --git a/Documentation/ABI/testing/sysfs-devices-supplier b/Documentation/ABI/testing/sysfs-devices-supplier
+index a919e0db5e90..207f5972e98d 100644
+--- a/Documentation/ABI/testing/sysfs-devices-supplier
++++ b/Documentation/ABI/testing/sysfs-devices-supplier
+@@ -4,5 +4,6 @@ Contact:	Saravana Kannan <saravanak@google.com>
+ Description:
+ 		The /sys/devices/.../supplier:<supplier> are symlinks to device
+ 		links where this device is the consumer. <supplier> denotes the
+-		name of the supplier in that device link. There can be zero or
+-		more of these symlinks for a given device.
++		name of the supplier in that device link and is of the form
++		bus:device name. There can be zero or more of these symlinks
++		for a given device.
+diff --git a/drivers/base/core.c b/drivers/base/core.c
+index 25e08e5f40bd..4140a69dfe18 100644
+--- a/drivers/base/core.c
++++ b/drivers/base/core.c
+@@ -456,7 +456,9 @@ static int devlink_add_symlinks(struct device *dev,
+ 	struct device *con = link->consumer;
+ 	char *buf;
+ 
+-	len = max(strlen(dev_name(sup)), strlen(dev_name(con)));
++	len = max(strlen(dev_bus_name(sup)) + strlen(dev_name(sup)),
++		  strlen(dev_bus_name(con)) + strlen(dev_name(con)));
++	len += strlen(":");
+ 	len += strlen("supplier:") + 1;
+ 	buf = kzalloc(len, GFP_KERNEL);
+ 	if (!buf)
+@@ -470,12 +472,12 @@ static int devlink_add_symlinks(struct device *dev,
+ 	if (ret)
+ 		goto err_con;
+ 
+-	snprintf(buf, len, "consumer:%s", dev_name(con));
++	snprintf(buf, len, "consumer:%s:%s", dev_bus_name(con), dev_name(con));
+ 	ret = sysfs_create_link(&sup->kobj, &link->link_dev.kobj, buf);
+ 	if (ret)
+ 		goto err_con_dev;
+ 
+-	snprintf(buf, len, "supplier:%s", dev_name(sup));
++	snprintf(buf, len, "supplier:%s:%s", dev_bus_name(sup), dev_name(sup));
+ 	ret = sysfs_create_link(&con->kobj, &link->link_dev.kobj, buf);
+ 	if (ret)
+ 		goto err_sup_dev;
+@@ -737,8 +739,9 @@ struct device_link *device_link_add(struct device *consumer,
+ 
+ 	link->link_dev.class = &devlink_class;
+ 	device_set_pm_not_required(&link->link_dev);
+-	dev_set_name(&link->link_dev, "%s--%s",
+-		     dev_name(supplier), dev_name(consumer));
++	dev_set_name(&link->link_dev, "%s:%s--%s:%s",
++		     dev_bus_name(supplier), dev_name(supplier),
++		     dev_bus_name(consumer), dev_name(consumer));
+ 	if (device_register(&link->link_dev)) {
+ 		put_device(consumer);
+ 		put_device(supplier);
+@@ -1808,9 +1811,7 @@ const char *dev_driver_string(const struct device *dev)
+ 	 * never change once they are set, so they don't need special care.
+ 	 */
+ 	drv = READ_ONCE(dev->driver);
+-	return drv ? drv->name :
+-			(dev->bus ? dev->bus->name :
+-			(dev->class ? dev->class->name : ""));
++	return drv ? drv->name : dev_bus_name(dev);
+ }
+ EXPORT_SYMBOL(dev_driver_string);
+ 
+diff --git a/include/linux/device.h b/include/linux/device.h
+index 89bb8b84173e..1779f90eeb4c 100644
+--- a/include/linux/device.h
++++ b/include/linux/device.h
+@@ -609,6 +609,18 @@ static inline const char *dev_name(const struct device *dev)
+ 	return kobject_name(&dev->kobj);
+ }
+ 
++/**
++ * dev_bus_name - Return a device's bus/class name, if at all possible
++ * @dev: struct device to get the bus/class name of
++ *
++ * Will return the name of the bus/class the device is attached to.  If it is
++ * not attached to a bus/class, an empty string will be returned.
++ */
++static inline const char *dev_bus_name(const struct device *dev)
++{
++	return dev->bus ? dev->bus->name : (dev->class ? dev->class->name : "");
++}
++
+ __printf(2, 3) int dev_set_name(struct device *dev, const char *name, ...);
+ 
+ #ifdef CONFIG_NUMA
+-- 
+2.29.2.729.g45daf8777d-goog
+
