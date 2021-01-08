@@ -2,93 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9300F2EF0CC
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 11:43:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A9772EF0D3
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 11:45:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727571AbhAHKmw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Jan 2021 05:42:52 -0500
-Received: from foss.arm.com ([217.140.110.172]:48854 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726752AbhAHKmw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Jan 2021 05:42:52 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 625DFD6E;
-        Fri,  8 Jan 2021 02:42:06 -0800 (PST)
-Received: from localhost (unknown [10.1.198.32])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 02CAD3F70D;
-        Fri,  8 Jan 2021 02:42:05 -0800 (PST)
-Date:   Fri, 8 Jan 2021 10:42:04 +0000
-From:   Ionela Voinescu <ionela.voinescu@arm.com>
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH V3 3/3] arm64: topology: Make AMUs work with modular
- cpufreq drivers
-Message-ID: <20210108104204.GA27168@arm.com>
-References: <5ffc7b9ed03c6301ac2f710f609282959491b526.1608010334.git.viresh.kumar@linaro.org>
- <8f0fe23d1c9effed71d5660c939472d43726a61b.1608010334.git.viresh.kumar@linaro.org>
- <20201216000349.GA5299@arm.com>
- <20201216043805.bx6laemhfm2eaufv@vireshk-i7>
- <20201216193724.GA375@arm.com>
- <20201217105049.z3aqhl4mo56hhqvk@vireshk-i7>
- <20210108094416.GA19952@arm.com>
+        id S1727697AbhAHKpp convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 8 Jan 2021 05:45:45 -0500
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:53255 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726752AbhAHKpo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 Jan 2021 05:45:44 -0500
+Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-17-04M2xobfMwm9oKu886QCTg-1; Fri, 08 Jan 2021 10:44:05 +0000
+X-MC-Unique: 04M2xobfMwm9oKu886QCTg-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
+ Server (TLS) id 15.0.1347.2; Fri, 8 Jan 2021 10:44:04 +0000
+Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
+ AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
+ Fri, 8 Jan 2021 10:44:04 +0000
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Peter Zijlstra' <peterz@infradead.org>
+CC:     'Linus Torvalds' <torvalds@linux-foundation.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        kernel test robot <oliver.sang@intel.com>,
+        "Thomas Gleixner" <tglx@linutronix.de>,
+        Ingo Molnar <mingo@kernel.org>,
+        "Borislav Petkov" <bp@alien8.de>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "lkp@lists.01.org" <lkp@lists.01.org>,
+        kernel test robot <lkp@intel.com>,
+        "Huang, Ying" <ying.huang@intel.com>,
+        Feng Tang <feng.tang@intel.com>,
+        "zhengjun.xing@intel.com" <zhengjun.xing@intel.com>
+Subject: RE: [x86] d55564cfc2: will-it-scale.per_thread_ops -5.8% regression
+Thread-Topic: [x86] d55564cfc2: will-it-scale.per_thread_ops -5.8% regression
+Thread-Index: AQHW5SyQsxcCoz6xzUCV1q8xqWXcS6odd5WggAAF3gCAAAqDgA==
+Date:   Fri, 8 Jan 2021 10:44:04 +0000
+Message-ID: <bd305585311745ae9f721b7d50307fc5@AcuMS.aculab.com>
+References: <20210107134723.GA28532@xsang-OptiPlex-9020>
+ <CAHk-=wgQ5EEH3-GTK9KDB5mBmWjP25YHXC6_-V_KfWd0UTDTDQ@mail.gmail.com>
+ <20210107183358.GG3579531@ZenIV.linux.org.uk>
+ <CAHk-=wiZaFRt9hGen9=eOr7LA+Q8o5f980eGEvtxBD6+os7nqA@mail.gmail.com>
+ <20210107190445.GK3579531@ZenIV.linux.org.uk>
+ <CAHk-=whneXU5Sr=iOOrzcqZt6q85zp-8CUSviOwGPj5ePBW4CQ@mail.gmail.com>
+ <824461ae2cb642b1b2f82fac140a98da@AcuMS.aculab.com>
+ <X/grPFTgOMvtqEVZ@hirez.programming.kicks-ass.net>
+In-Reply-To: <X/grPFTgOMvtqEVZ@hirez.programming.kicks-ass.net>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210108094416.GA19952@arm.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Friday 08 Jan 2021 at 09:44:16 (+0000), Ionela Voinescu wrote:
-> On Thursday 17 Dec 2020 at 16:20:49 (+0530), Viresh Kumar wrote:
-> > On 16-12-20, 19:37, Ionela Voinescu wrote:
-> > > I did not yet test this, but reading this comment made me wonder..
-> > > 
-> > > arch_scale_freq_invariant() (or topology_scale_freq_invariant()) is also
-> > > called from schedutil when obtaining the next frequency.
-> > > 
-> > > So if we had a system that only partly supports AMUs but had at some
-> > > point a cpufreq driver that provided FIE for the other CPUs, when we
-> > > unregister the driver, the cpufreq_freq_invariance static key is
-> > > disabled. Therefore, none of the conditions for system invariance is
-> > > now accomplished and arch_scale_freq_invariant() will return false.
-> > > This will be broken as utilization is still scaled, but the algorithm
-> > > for computing the next frequency in schedutil will not take this into
-> > > account.
-> > 
-> > I think the best and the easiest solution for this is:
-> > 
-> > bool arch_freq_counters_available(const struct cpumask *cpus)
-> > {
-> >         return amu_freq_invariant();
-> > }
-> > 
-> > But we probably need to rename it to something like arch_is_fie().
-> > 
-
-Forgot to answer this one:
-
-arch_freq_counters_available() is also used in arch_set_freq_scale() to
-tell us not only if the arch is FI, but also to tell us if the AMUs are
-used for FI for some particular CPUs. So we couldn't easily rewrite this
-one, or do it in a way that would be worth it.
-
-Ionela.
-
+From: Peter Zijlstra
+> Sent: 08 January 2021 09:52
 > 
-> Now that I think of it again (after spending 30 minutes trying to come
-> up with a more clear solution) I realised this is not actually a
-> problem :).
+> On Fri, Jan 08, 2021 at 09:37:45AM +0000, David Laight wrote:
+> > The lack of spinlocks in userspace really kills you.
 > 
-> The only location that checks the invariance status is schedutil, but
-> what a cpufreq governor does becomes irrelevant if you remove the
-> cpufreq driver. The only potential problem is if one then inmods a
-> cpufreq driver that's not invariant. But I think that might be on "if"
-> too many to consider. What do you think?
-> 
-> Thanks,
-> Ionela.
+> Glibc has them, but please don't complain about lock holder preemption
+> issues if you do actually use them ;-)
+
+Nothing that glibc can do can help.
+It would need to disable interrupts - which isn't allowed in userspace.
+
+The problem isn't that the process holding the lock gets preempted,
+but that the lock hold time goes from a few instructions to ~1ms.
+
+It is also entirely noticeable (and a problem) that the futex call
+that implements cv_broadcast() gets each process to wake up the next one.
+There are two issues:
+1) It takes time for the cpu to come out of the sleep states.
+   These happen in sequence rather than all together.
+2) If the processor affinities mean that one of the threads can't
+   be run immediately, then none of the later threads runs either.
+
+I realise this is (probably) done to avoid the 'thundering herd'
+on the related mutex - but this code gets nowhere near acquiring
+the mutex before the delays, and the mutex is released pretty
+soon after 'return to user'.
+
+The delays are far longer than a normal system call or even a 
+process switch.
+
+	David
+
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+Registration No: 1397386 (Wales)
+
