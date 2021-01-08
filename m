@@ -2,71 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DB142EED7B
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 07:35:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 35DA32EED7D
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 07:35:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726650AbhAHGe4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Jan 2021 01:34:56 -0500
-Received: from mailgw02.mediatek.com ([1.203.163.81]:45451 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1725308AbhAHGe4 (ORCPT
+        id S1726890AbhAHGfl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Jan 2021 01:35:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37826 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725791AbhAHGfk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Jan 2021 01:34:56 -0500
-X-UUID: 55c8912c73be4b9ebcb8bec3238891e7-20210108
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=FMnLCnisKI4QJNM0w1sFZfQNsdLpDgJ5G65JySoATkI=;
-        b=soUUJ1C6hznBgM+w3yueqmo+Q4tJAZo9zIOhxZDGIG7ubUvSMl7cPvmGXuN6C+8WERRV2s3ZCTodJG056kf8nwuLhyLJ1tvbRvGLYdeBXr4VO2nsRaEDoai6ljrib4+R0Mb2Y6ca1cr47P8Nl3Fbhuu8k/Q9HR7UQCG8ZZwi5QQ=;
-X-UUID: 55c8912c73be4b9ebcb8bec3238891e7-20210108
-Received: from mtkcas35.mediatek.inc [(172.27.4.253)] by mailgw02.mediatek.com
-        (envelope-from <chunfeng.yun@mediatek.com>)
-        (mailgw01.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 1488119658; Fri, 08 Jan 2021 14:34:12 +0800
-Received: from MTKCAS36.mediatek.inc (172.27.4.186) by MTKMBS31DR.mediatek.inc
- (172.27.6.102) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Fri, 8 Jan
- 2021 14:34:09 +0800
-Received: from [10.17.3.153] (10.17.3.153) by MTKCAS36.mediatek.inc
- (172.27.4.170) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Fri, 8 Jan 2021 14:34:08 +0800
-Message-ID: <1610087648.24856.41.camel@mhfsdcap03>
-Subject: Re: [PATCH v5] usb: xhci-mtk: fix unreleased bandwidth data
-From:   Chunfeng Yun <chunfeng.yun@mediatek.com>
-To:     Ikjoon Jang <ikjn@chromium.org>
-CC:     <linux-mediatek@lists.infradead.org>, <linux-usb@vger.kernel.org>,
-        "Tianping Fang" <tianping.fang@mediatek.com>,
-        Zhanyong Wang <zhanyong.wang@mediatek.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Mathias Nyman <mathias.nyman@intel.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-Date:   Fri, 8 Jan 2021 14:34:08 +0800
-In-Reply-To: <20201229142406.v5.1.Id0d31b5f3ddf5e734d2ab11161ac5821921b1e1e@changeid>
-References: <20201229142406.v5.1.Id0d31b5f3ddf5e734d2ab11161ac5821921b1e1e@changeid>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.10.4-0ubuntu2 
+        Fri, 8 Jan 2021 01:35:40 -0500
+Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56B4EC0612F4;
+        Thu,  7 Jan 2021 22:35:00 -0800 (PST)
+Received: by mail-ed1-x536.google.com with SMTP id r5so10049719eda.12;
+        Thu, 07 Jan 2021 22:35:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Z9yWM8kO/yF3fqCL5n5LCq8fF4B951xR4ABXYDaphFA=;
+        b=GxYZ5/aERBYX+FmTnV/3chH3usPDq5qUsSCf/k2a2YystQU/HJsAmj7rbPy/KQtUZE
+         yD4D7B6EYc95ocuEA/5x73yz5hsaeJrfSIMZlYJ49rPhWANy3qvSkCmzt9EwsPov81il
+         Qei3hRnSljCzESnt/oZAXlyf+y/QH+4jjcWvA2EeBUzKEesf2C/wSXs7j6OUBm6hHUwL
+         +vXFU8DBH81xQ/fU+K5fAfnCMpXJD4EaeToQ4vC1OwPKzfpCKoFYPeBVlVbGmoh/Nwnw
+         WCnMiXaeVJV0UVcZuAmKF9kLcRK3rXudq+NFISCtPprfO/kQCJ7eAyLoulf/o5ZFWtZ9
+         OISA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Z9yWM8kO/yF3fqCL5n5LCq8fF4B951xR4ABXYDaphFA=;
+        b=TLJmuQ3ur9hzdv1y5IfeBCtWNsNISlUE0NpgJ5lBl49nhjRsrpH4VyERWvwD8DdJCc
+         uEu5JIVAj2iVIVuK+A+poRLY/ZONd5blGeKvRjh3XQsqjf/wFzj0lWoQ/xGeaWR/4JsZ
+         mg+2qhtkYXipdn9sgsXgSLbIkc8RVEqfRh5wk1uh68/xrq2pwDXav7Pu8cb7nBU1nMZO
+         4gZBmcUe1jBpHzQ+QHi1/ubaWMW6UsPxUw5hzE2cKSPLqoxvGZDW4S9R12Y6ZkVW7VJc
+         nOpIGXHrt1PjF85PE8zt/VM3iUZnr6Aa4sTwxkTllq1WcipdR+9zEMGSblmrbnGJKBLX
+         16OQ==
+X-Gm-Message-State: AOAM532XoXzEzWK27fotJiQcDWA/Qyc5/Rs2WB/KY9OGSY1YXtBStbfT
+        Erp4fCGZkdaUkNhjDne2VnUe9vSpVfNjj62/Js58ebQp
+X-Google-Smtp-Source: ABdhPJy9ieoFaI86x6eIWFE4vyV9chCjzWRsITSEBJIQi3E5g/iQQ6nc0j2dtbL2FWZwVUQKRwJFUk06/MdUOzy7hgU=
+X-Received: by 2002:a50:ed17:: with SMTP id j23mr4230998eds.218.1610087697277;
+ Thu, 07 Jan 2021 22:34:57 -0800 (PST)
 MIME-Version: 1.0
-X-TM-SNTS-SMTP: 84426B80790F79195531223CD2A53D05FA1963BDE08E9CE47C2D172FE34682F02000:8
-X-MTK:  N
-Content-Transfer-Encoding: base64
+References: <671ac57ad53ab1614da7fe9a3d0f78bdb5b51fda.1610001365.git.matti.vaittinen@fi.rohmeurope.com>
+ <019c196041600a00143fe16bda19b2a8f060e9a9.1610001365.git.matti.vaittinen@fi.rohmeurope.com>
+ <20210107151254.GB13040@roeck-us.net>
+In-Reply-To: <20210107151254.GB13040@roeck-us.net>
+From:   Matti Vaittinen <mazziesaccount@gmail.com>
+Date:   Fri, 8 Jan 2021 08:34:46 +0200
+Message-ID: <CANhJrGPqqb0WA0efEE0fjMEqaCwJaabyxBx2ucGhvC-JVxt7-w@mail.gmail.com>
+Subject: Re: [PATCH 2/2] watchdog: BD70528: conditionally allow BD70528 module
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        linux-power@fi.rohmeurope.com,
+        LINUXWATCHDOG <linux-watchdog@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gVHVlLCAyMDIwLTEyLTI5IGF0IDE0OjI0ICswODAwLCBJa2pvb24gSmFuZyB3cm90ZToNCj4g
-eGhjaS1tdGsgaGFzIGhvb2tzIG9uIGFkZF9lbmRwb2ludCgpIGFuZCBkcm9wX2VuZHBvaW50KCkg
-ZnJvbSB4aGNpDQo+IHRvIGhhbmRsZSBpdHMgb3duIHN3IGJhbmR3aWR0aCBtYW5hZ2VtZW50cyBh
-bmQgc3RvcmVzIGJhbmR3aWR0aCBkYXRhDQo+IGludG8gaW50ZXJuYWwgdGFibGUgZXZlcnkgdGlt
-ZSBhZGRfZW5kcG9pbnQoKSBpcyBjYWxsZWQsDQo+IHNvIHdoZW4gYmFuZHdpZHRoIGFsbG9jYXRp
-b24gZmFpbHMgYXQgb25lIGVuZHBvaW50LCBhbGwgZWFybGllcg0KPiBhbGxvY2F0aW9uIGZyb20g
-dGhlIHNhbWUgaW50ZXJmYWNlIGNvdWxkIHN0aWxsIHJlbWFpbiBhdCB0aGUgdGFibGUuDQpJZiBm
-YWlsZWQgdG8gYWRkIGFuIGVuZHBvaW50LCB3aWxsIGNhdXNlIGZhaWx1cmUgb2YgaXRzIGludGVy
-ZmFjZQ0KY29uZmlnLCB0aGVuIHRoZSBvdGhlciBlbmRwb2ludHMgaW4gdGhlIHNhbWUgaW50ZXJm
-YWNlIHdpbGwgYmUgZHJvcHBlZA0KbGF0ZXI/IHlvdSBtZWFuIHNvbWUgZW5kcG9pbnRzIGluIGFu
-IGludGVyZmFjZSBtYXkgZmFpbCBidXQgd2l0aG91dA0KYWZmZWN0aW5nIGl0cyBmdW5jdGlvbj8N
-Cg0KPiANCj4gVGhpcyBwYXRjaCBhZGRzIHR3byBtb3JlIGhvb2tzIGZyb20gY2hlY2tfYmFuZHdp
-ZHRoKCkgYW5kDQo+IHJlc2V0X2JhbmR3aWR0aCgpLCBhbmQgbWFrZSBtdGsteGhjaSB0byByZWxl
-YXNlcyBhbGwgZmFpbGVkIGVuZHBvaW50cw0KPiBmcm9tIHJlc2V0X2JhbmR3aWR0aCgpLg0KPiAN
-Cj4gRml4ZXM6IDA4ZTQ2OWRlODdhMiAoInVzYjogeGhjaS1tdGs6IHN1cHBvcnRzIGJhbmR3aWR0
-aCBzY2hlZHVsaW5nIHdpdGggbXVsdGktVFQiKQ0KPiBTaWduZWQtb2ZmLWJ5OiBJa2pvb24gSmFu
-ZyA8aWtqbkBjaHJvbWl1bS5vcmc+DQoNCg==
+On Thu, Jan 7, 2021 at 5:12 PM Guenter Roeck <linux@roeck-us.net> wrote:
+>
+> On Thu, Jan 07, 2021 at 08:37:25AM +0200, Matti Vaittinen wrote:
+> > The BD70528 watchdog module provides start/stop interface for RTC
+> > driver because the BD70528 watchdog must be stopped when RTC time
+> > is set. (WDG uses RTC counter and setting RTC may accidentally trigger
+> > WDG if WDG is enabled). The BD71828 use same RTC driver as BD70528 but
+> > don't share same WDG logic. When BD70528 is not configured a stub call
+> > to "stop WDG" is implemented and in case when BD71828 is used, this
+> > stub function should be called. Prevent configuring in the BD70528
+> > watchdog when BD71828 is configured to avoid access to real WDG
+> > functions when WDG does not exist in HW.
+> >
+> > Signed-off-by: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
+>
+> As mentioned in my response to the other patch, I think this is the
+> wrong solution.
 
+I agree. Please forget this :)
+Thanks for the review!
+
+Best Regards
+Matti
+
+-- 
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+-Matti Vaittinen
+
+When you feel blue, no one sees your tears...
+When your down, no one understands your struggle...
+When you feel happy, no one notices your smile...
+But fart just once...
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
