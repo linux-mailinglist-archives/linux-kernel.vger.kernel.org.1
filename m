@@ -2,181 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58C4F2EF00C
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 10:51:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F77A2EF00E
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 10:51:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728204AbhAHJuC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Jan 2021 04:50:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39680 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726683AbhAHJuB (ORCPT
+        id S1728150AbhAHJvB convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 8 Jan 2021 04:51:01 -0500
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:51317 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725791AbhAHJvA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Jan 2021 04:50:01 -0500
-Received: from mail-wr1-x42c.google.com (mail-wr1-x42c.google.com [IPv6:2a00:1450:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 219D0C0612F4
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Jan 2021 01:49:21 -0800 (PST)
-Received: by mail-wr1-x42c.google.com with SMTP id t16so8383245wra.3
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Jan 2021 01:49:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=6RcYttTMOnXQ/EkpLSa2hP7WyET9NuXOkFaalMdFVgM=;
-        b=upXMSd/IWf84zJj2eifJ4ej+Bxpt7HnlTttf4LiN36uw9tvU4eCtR/jUPqxNvZs8As
-         a0eAYW6UlPazIZ1HlYiMsk9te0WbcyZ5wZbU+3Gh34KKqWpbXV6ArAIWaSFVzHXlRGnw
-         z91DEW7/aeQF0F566EvGbEMUnqSo0xkuVmkcL+SFNNHnrUBLsp6N3Za7NZU4CIp+IMFF
-         pTp2B15WVxZSmWpy3ChmdL7+Lvt1qbHrk/JaupVjx+iunmBCr6mQXuxb22F8yixtQrxT
-         RwuvvA6MAk8qlu2lq8jyK82T684YEpZe3pQ/EITjvGQbfCOz8sSxKLXZDi2vunT+xh0B
-         VrqA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=6RcYttTMOnXQ/EkpLSa2hP7WyET9NuXOkFaalMdFVgM=;
-        b=DMXR63PDOTF/BSCbpOpES1DXCl3UV/q3LpR1jgMIGysucC3ODdW8zHVxaKXQ6IXfYr
-         YljehiQXl/aZKa2gTlBB4Ge/+VJUA+hjEAYYsyfS7sDcL3ed22kxvYiGamBd8ca078qk
-         rIcT8LiueyHEfAV4VNyUSaIX2ME5fa+jSEA59c4pS6BZUfDrA9dy1QAI2fSLrM+aSH13
-         pv++UxpJ+QTT4U3i/acvtNv/XlfBuuBiMz5Z414e1hJgNb1cNlCRsiebOiOWbnm0SuwY
-         taT/FVJrtKtrIJhBhnXDEjYxHhWRsJF0Za1oDpScZStslNSBz5wrkhS6hYSYT+kgyNlu
-         Nn5w==
-X-Gm-Message-State: AOAM532XZPvrdGLK8ZindFqn2Lr8BDSJlDje++Db5nZLKSa1IOWli8XY
-        H/u254MqUQhKEm3GiWyPQkf1w+r00cnGHNw73YBsWw==
-X-Google-Smtp-Source: ABdhPJxlNukvJ6v5Vi6Sol8VEaWaRMlqnUbpU+ZmI4OWw99W5JQjYWAAj0IN9GsuCkAUMQ2pNFDQXTMEJRyimM4JS2M=
-X-Received: by 2002:adf:ef12:: with SMTP id e18mr2779398wro.192.1610099359674;
- Fri, 08 Jan 2021 01:49:19 -0800 (PST)
+        Fri, 8 Jan 2021 04:51:00 -0500
+Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-219-OQYpK6Q3PCSSKUP3lf-peg-1; Fri, 08 Jan 2021 09:49:21 +0000
+X-MC-Unique: OQYpK6Q3PCSSKUP3lf-peg-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
+ Server (TLS) id 15.0.1347.2; Fri, 8 Jan 2021 09:49:20 +0000
+Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
+ AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
+ Fri, 8 Jan 2021 09:49:20 +0000
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Al Viro' <viro@zeniv.linux.org.uk>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+CC:     kernel test robot <oliver.sang@intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@kernel.org>, Borislav Petkov <bp@alien8.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "lkp@lists.01.org" <lkp@lists.01.org>,
+        kernel test robot <lkp@intel.com>,
+        "Huang, Ying" <ying.huang@intel.com>,
+        Feng Tang <feng.tang@intel.com>,
+        "zhengjun.xing@intel.com" <zhengjun.xing@intel.com>
+Subject: RE: [x86] d55564cfc2: will-it-scale.per_thread_ops -5.8% regression
+Thread-Topic: [x86] d55564cfc2: will-it-scale.per_thread_ops -5.8% regression
+Thread-Index: AQHW5SP2JRv8nkj1EkuGw6TTCMykjqodevww
+Date:   Fri, 8 Jan 2021 09:49:20 +0000
+Message-ID: <cc0646c570f4489bb1bfb20688d64dbe@AcuMS.aculab.com>
+References: <20210107134723.GA28532@xsang-OptiPlex-9020>
+ <CAHk-=wgQ5EEH3-GTK9KDB5mBmWjP25YHXC6_-V_KfWd0UTDTDQ@mail.gmail.com>
+ <20210107183358.GG3579531@ZenIV.linux.org.uk>
+In-Reply-To: <20210107183358.GG3579531@ZenIV.linux.org.uk>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-References: <20210107142123.639477-1-robert.foss@linaro.org>
-In-Reply-To: <20210107142123.639477-1-robert.foss@linaro.org>
-From:   Tomasz Figa <tfiga@google.com>
-Date:   Fri, 8 Jan 2021 18:49:07 +0900
-Message-ID: <CAAFQd5BVSNGDV7ZkiVpZwbfTfRLJmNvopMQFnQno+CDs+bo3Gg@mail.gmail.com>
-Subject: Re: [PATCH v2] media: ov8856: Fix Bayer format dependance on mode
-To:     Robert Foss <robert.foss@linaro.org>
-Cc:     Dongchun Zhu <dongchun.zhu@mediatek.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Bingbu Cao <bingbu.cao@linux.intel.com>
-Content-Type: text/plain; charset="UTF-8"
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Robert,
-
-On Thu, Jan 7, 2021 at 11:21 PM Robert Foss <robert.foss@linaro.org> wrote:
->
-> The Bayer GRBG10 mode used for earlier modes 3280x2460 and
-> 1640x1232 isn't the mode output by the sensor for the
-> 3264x2448 and 1632x1224 modes.
->
-> Switch from MEDIA_BUS_FMT_SGRBG10_1X10 to MEDIA_BUS_FMT_SBGGR10_1X10
-> for 3264x2448 & 1632x1224 modes.
->
-> Signed-off-by: Robert Foss <robert.foss@linaro.org>
-> ---
->
-> Changes since v1:
->  - Sakari: Added mode information to ov8856_mode struct
->  - Sakari: enum_mbus_code updated
->
->  drivers/media/i2c/ov8856.c | 24 ++++++++++++++++++------
->  1 file changed, 18 insertions(+), 6 deletions(-)
->
-> diff --git a/drivers/media/i2c/ov8856.c b/drivers/media/i2c/ov8856.c
-> index 2f4ceaa80593..7cd83564585c 100644
-> --- a/drivers/media/i2c/ov8856.c
-> +++ b/drivers/media/i2c/ov8856.c
-> @@ -126,6 +126,9 @@ struct ov8856_mode {
->
->         /* Sensor register settings for this resolution */
->         const struct ov8856_reg_list reg_list;
-> +
-> +       /* MEDIA_BUS_FMT for this mode */
-> +       u32 code;
->  };
->
->  static const struct ov8856_reg mipi_data_rate_720mbps[] = {
-> @@ -942,6 +945,11 @@ static const char * const ov8856_test_pattern_menu[] = {
->         "Bottom-Top Darker Color Bar"
->  };
->
-> +static const u32 ov8856_formats[] = {
-> +       MEDIA_BUS_FMT_SBGGR10_1X10,
-> +       MEDIA_BUS_FMT_SGRBG10_1X10,
-> +};
-> +
->  static const s64 link_freq_menu_items[] = {
->         OV8856_LINK_FREQ_360MHZ,
->         OV8856_LINK_FREQ_180MHZ
-> @@ -974,6 +982,7 @@ static const struct ov8856_mode supported_modes[] = {
->                         .regs = mode_3280x2464_regs,
->                 },
->                 .link_freq_index = OV8856_LINK_FREQ_720MBPS,
-> +               .code = MEDIA_BUS_FMT_SGRBG10_1X10,
->         },
->         {
->                 .width = 3264,
-> @@ -986,6 +995,7 @@ static const struct ov8856_mode supported_modes[] = {
->                         .regs = mode_3264x2448_regs,
->                 },
->                 .link_freq_index = OV8856_LINK_FREQ_720MBPS,
-> +               .code = MEDIA_BUS_FMT_SBGGR10_1X10,
->         },
->         {
->                 .width = 1640,
-> @@ -998,6 +1008,7 @@ static const struct ov8856_mode supported_modes[] = {
->                         .regs = mode_1640x1232_regs,
->                 },
->                 .link_freq_index = OV8856_LINK_FREQ_360MBPS,
-> +               .code = MEDIA_BUS_FMT_SGRBG10_1X10,
->         },
->         {
->                 .width = 1632,
-> @@ -1010,6 +1021,7 @@ static const struct ov8856_mode supported_modes[] = {
->                         .regs = mode_1632x1224_regs,
->                 },
->                 .link_freq_index = OV8856_LINK_FREQ_360MBPS,
-> +               .code = MEDIA_BUS_FMT_SBGGR10_1X10,
+From: Al Viro
+> Sent: 07 January 2021 18:34
+> 
+> On Thu, Jan 07, 2021 at 09:43:54AM -0800, Linus Torvalds wrote:
+> 
+> > Before, it would do the whole CLAC/STAC dance inside that loop for
+> > every entry (and with that commit d55564cfc22 it would be a function
+> > call, of course).
+> >
+> > Can you verify that this fixes the regression (and in fact I'd expect
+> > it to improve that test-case)?
+> 
+> I'm not sure it's the best approach, TBH.  How about simply
+>         for (walk = head; walk; ufds += walk->len, walk = walk->next) {
+> 		if (copy_to_user(ufds, walk->entries,
+> 				 walk->len * sizeof(struct pollfd))
+> 			goto out_fds;
 >         }
->  };
->
-> @@ -1281,8 +1293,8 @@ static void ov8856_update_pad_format(const struct ov8856_mode *mode,
->  {
->         fmt->width = mode->width;
->         fmt->height = mode->height;
-> -       fmt->code = MEDIA_BUS_FMT_SGRBG10_1X10;
->         fmt->field = V4L2_FIELD_NONE;
-> +       fmt->code = mode->code;
->  }
->
->  static int ov8856_start_streaming(struct ov8856 *ov8856)
-> @@ -1519,11 +1531,10 @@ static int ov8856_enum_mbus_code(struct v4l2_subdev *sd,
->                                  struct v4l2_subdev_pad_config *cfg,
->                                  struct v4l2_subdev_mbus_code_enum *code)
->  {
-> -       /* Only one bayer order GRBG is supported */
-> -       if (code->index > 0)
-> +       if (code->index >= ARRAY_SIZE(ov8856_formats))
->                 return -EINVAL;
->
-> -       code->code = MEDIA_BUS_FMT_SGRBG10_1X10;
-> +       code->code = ov8856_formats[code->index];
->
->         return 0;
->  }
-> @@ -1532,10 +1543,11 @@ static int ov8856_enum_frame_size(struct v4l2_subdev *sd,
->                                   struct v4l2_subdev_pad_config *cfg,
->                                   struct v4l2_subdev_frame_size_enum *fse)
->  {
-> -       if (fse->index >= ARRAY_SIZE(supported_modes))
-> +       if ((fse->code != ov8856_formats[0]) &&
-> +           (fse->code != ov8856_formats[1]))
+> in there?  It's both simpler (obviously matches the copyin side) and
+> might very well be faster...
 
-Shouldn't this be validated against the current mode? I guess it's the
-question about which part of the state takes precedence - the mbus
-code or the frame size.
+I bet it isn't, especially if 'user copy hardening' is enabled.
+You also have to 'negotiate' all the conditionals in copy_to_user()
+for misaligned lengths, very short copies and alternate algorithms for
+long copies.
 
-Best regards,
-Tomasz
+I'll bet there is a measurable gain from having copy_to/from_user_u64()
+that is optimised for copying a structure to/from userspace in 64bit
+chunks.
+
+	David
+
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+Registration No: 1397386 (Wales)
+
