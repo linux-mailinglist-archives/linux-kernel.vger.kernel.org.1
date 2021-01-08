@@ -2,82 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 378112EFB9C
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Jan 2021 00:16:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 02B7B2EFB9F
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Jan 2021 00:18:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726005AbhAHXP6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Jan 2021 18:15:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52100 "EHLO
+        id S1726251AbhAHXRb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Jan 2021 18:17:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52342 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725306AbhAHXP5 (ORCPT
+        with ESMTP id S1725792AbhAHXRa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Jan 2021 18:15:57 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D3CEC061574;
-        Fri,  8 Jan 2021 15:15:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=TmO09cObcPohwfcznvarkJ3GaxSuxbSBMS5Y5aaVzdk=; b=TyXKOGDk9E8YintME3xbAqr/B9
-        K+tYo9PPw3b3nuqfZ1us1zZLL7vIzv0mkZbT9jkIetntI8a0A/SRNJ12IlxJZgEeA6O9ieAa1ClrH
-        61WReUB0glKhhrH33J4teA1L77tLr8VzY+HQvewUAqesj0rUIqgb+E91EYKhNuGZmfm7cOzmNqzEE
-        KOYZfImxWooGC26vkLSXNU05SkgqezmppqCDEt8XJSNnO9Kr6glaka/Y8Y6Osoz+If7t4DLqntkO9
-        Q6fbLpuHyCmW672fn/PAoYFMQcrjsoPrJZArUbhYCSbVp6HnOSanMwRo016uKcqCh9MFKPS2Tl7u6
-        uHVGhTbg==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1ky0yF-0005sk-M4; Fri, 08 Jan 2021 23:15:04 +0000
-Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 9605A9866B2; Sat,  9 Jan 2021 00:14:59 +0100 (CET)
-Date:   Sat, 9 Jan 2021 00:14:59 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     "Luck, Tony" <tony.luck@intel.com>
-Cc:     Borislav Petkov <bp@alien8.de>, "x86@kernel.org" <x86@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Darren Hart <dvhart@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-edac@vger.kernel.org" <linux-edac@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>
-Subject: Re: [PATCH 2/2] futex, x86/mce: Avoid double machine checks
-Message-ID: <20210108231459.GC2453@worktop.programming.kicks-ass.net>
-References: <20210108222251.14391-1-tony.luck@intel.com>
- <20210108222251.14391-3-tony.luck@intel.com>
- <20210108224715.GB2453@worktop.programming.kicks-ass.net>
- <4493a015ffcd4d82bbea7d1e5c2e73e4@intel.com>
+        Fri, 8 Jan 2021 18:17:30 -0500
+Received: from nautica.notk.org (ipv6.notk.org [IPv6:2001:41d0:1:7a93::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 714A1C061574
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Jan 2021 15:16:50 -0800 (PST)
+Received: by nautica.notk.org (Postfix, from userid 108)
+        id 43F73C01E; Sat,  9 Jan 2021 00:16:04 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=codewreck.org; s=2;
+        t=1610147764; bh=EIJ3VFsukrboXt6dlSV6x9vCPLwaTFNwnBDwe0e29MA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ljRVZFYdlSHVLjOlc7/r5zZfWa2AoPX5DSdsq4hSzf+OVrSVOLqGEON/HK/+aMOd6
+         87Qll45jko8fwcynw3zSafrwDo1KwXtt0aVP5McmDCJgJDzv1yxAFsmBRHPPDCuR/5
+         SCOKroFpmns7CiMThpAtTEH8RiLJNJlmkrU9dSNBPLuiuRzE1CGQ4lx6HGKp52Q1/M
+         BRWcJwf/3Qg8qGc6HfQtIRuOuhaRIal+ZOAL69ikSMMCwaAGGTm0/+6fcNh3m4OeFg
+         xww/bK5y4RUn+89nKLMRMx9rbedjgU2Tn4+ByJWypv51YV7Zb5Poh3r9EbP3y3hLW0
+         8Nwn8tKzSNJ0Q==
+X-Spam-Checker-Version: SpamAssassin 3.3.2 (2011-06-06) on nautica.notk.org
+X-Spam-Level: 
+X-Spam-Status: No, score=0.0 required=5.0 tests=UNPARSEABLE_RELAY
+        autolearn=unavailable version=3.3.2
+Received: from tyr.codewreck.org (localhost [127.0.0.1])
+        by nautica.notk.org (Postfix) with SMTP id 8C2A8C01B;
+        Sat,  9 Jan 2021 00:16:01 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=codewreck.org; s=2;
+        t=1610147763; bh=EIJ3VFsukrboXt6dlSV6x9vCPLwaTFNwnBDwe0e29MA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=yV6g5bexMO5FrJLLiz/eZhdNh1x37pn5Exnk/tpHMxDqb/RnGFoksOQYMlk7mSpeJ
+         EcZ2s9CscKZZWQHkHZtHP+zqKwVO1u682vzlUt/GbTieZUN6isBJd7U2qu4Oh3FAxk
+         mrsgVdrMj8WaRHyafIlIZGwEL5ujD95gZEhYtCUefK7b0lovU46dfVfN6Y6yQf+MmZ
+         Behz+pz5ZdPKhZb0WOYeN2PCAXrM0NzASsVDLcdVPvTkDhnhLQDf2JE/qCxpUYx5mz
+         OIJ8dbC14sB36IeQWINcAQ6X2qSmKyh7kXyC9Ml65R+mivWyW6N+S96jZPAvpt18Nn
+         QClq5VEPlaYQw==
+Received: (from asmadeus@codewreck.org)
+        by tyr.codewreck.org (mini_sendmail/1.3.9 19Oct2015);
+        Sat, 09 Jan 2021 08:16:00 JST
+        (sender asmadeus@tyr.codewreck.org)
+Date:   Sat, 9 Jan 2021 08:15:45 +0900
+From:   Dominique Martinet <asmadeus@codewreck.org>
+To:     Rikard Falkeborn <rikard.falkeborn@gmail.com>
+Cc:     ric Van Hensbergen <ericvh@gmail.com>,
+        Latchesar Ionkov <lucho@ionkov.net>,
+        v9fs-developer@lists.sourceforge.net, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] 9p: Constify static struct v9fs_attr_group
+Message-ID: <20210108231545.GA42582@tyr>
+References: <20210108224650.25872-1-rikard.falkeborn@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <4493a015ffcd4d82bbea7d1e5c2e73e4@intel.com>
+In-Reply-To: <20210108224650.25872-1-rikard.falkeborn@gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 08, 2021 at 11:08:58PM +0000, Luck, Tony wrote:
-> > I think this is horrid; why can't we have it return something different
-> > then -EFAULT instead?
-> 
-> I did consider this ... but it appears that architectures aren't unified in the
-> return value from get_user()
 
-But surely none are currently returning -EMEMERR or whatever name we
-come up with.
+Rikard Falkeborn wrote on Fri, Jan 08, 2021 at 11:46:50PM +0100:
+> The only usage of v9fs_attr_group is to pass its address to
+> sysfs_create_group() and sysfs_create_group(), both which takes pointers
+> to const struct attribute_group. Make it const to allow the compiler to
+> put it in read-only memory.
+> 
+> Signed-off-by: Rikard Falkeborn <rikard.falkeborn@gmail.com>
 
-> Here's another function involved in the futex call chain leading to this:
-> 
-> static int get_futex_value_locked(u32 *dest, u32 __user *from)
-> {
->         int ret;
-> 
->         pagefault_disable();
->         ret = __get_user(*dest, from);
->         pagefault_enable();
-> 
->         return ret ? -EFAULT : 0;
-> }
-> 
-> It seems like the expectation here is just "zero or not" and we
-> don't care what the "not" value is ... just turn it into -EFAULT.
-
-Yeah, saw that, but that should be trivially fixable I'm thinking.
+Thanks, taking it.
+-- 
+Dominique
