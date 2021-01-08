@@ -2,149 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 80F8C2EF2A6
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 13:48:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 385632EF2A8
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 13:50:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726794AbhAHMsn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Jan 2021 07:48:43 -0500
-Received: from mx2.suse.de ([195.135.220.15]:39102 "EHLO mx2.suse.de"
+        id S1726929AbhAHMtF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Jan 2021 07:49:05 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57694 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725817AbhAHMsn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Jan 2021 07:48:43 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1610110077; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=DckcCzsJ+u0tQc15f+xtfESHNbQlsx8GV/bkEuYJ8P0=;
-        b=ocsWBWYbP5iRk6KKSnQ9NGsRsaPJ7jDiStJvkOEF/UwhljYpqmwHz/RAV9R1ttciVhBegM
-        6Sdx4CUO3Ixo3XIHxcaolSJ1UnrWpn7bfr82TL1C+jHap/1kfV/qnJYum4P5sFVhuwNplf
-        YI+Q37oA9/Bm7YuMgnWYt0rfeKjh/L4=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id E3941AD62;
-        Fri,  8 Jan 2021 12:47:56 +0000 (UTC)
-Date:   Fri, 8 Jan 2021 13:47:56 +0100
-From:   Petr Mladek <pmladek@suse.com>
-To:     =?utf-8?Q?=E2=80=9CWilliam?= Roche <william.roche@oracle.com>
-Cc:     linux-kernel@vger.kernel.org,
-        John Ogness <john.ogness@linutronix.de>,
+        id S1725817AbhAHMtE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 Jan 2021 07:49:04 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C1A0423975;
+        Fri,  8 Jan 2021 12:48:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1610110103;
+        bh=36VZw2L66bGcuQh5lKshp8v9vfagj/C2VUJhkwmPQHE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=iT3tw22cOC4rEe+FXic7rm/lVuU6IAYPYgodiMJg6+41ROlW354+Xhu2uBi2ND02D
+         rwBxzIxxfFUDXwiR4kAnDgpY5u5QTqx6PR1Eo5fH/GrpHPcna+ONSNYSXbgEu6sKj1
+         /CL1n30AYNwZZwaEptIULV8Vn8WJ0GrdWOodfppdOI6QTU1lQV4ubFwY60TRCw18R4
+         niyvX3VogLN3wRZArtLNPT000RvUjSwgItDZeAEoDFbRRmF+H1GRnsGwNuZ656+xGW
+         ovwZdvqeVcPcYz/dTQPpOntJI2oEWl5HKdQhtwvsLn3T/8y3s7geRpZibEkO4h1RRy
+         h4DvBXWUYX13Q==
+Date:   Fri, 8 Jan 2021 12:48:16 +0000
+From:   Will Deacon <will@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Andrea Arcangeli <aarcange@redhat.com>,
+        Linux-MM <linux-mm@kvack.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Yu Zhao <yuzhao@google.com>, Andy Lutomirski <luto@kernel.org>,
+        Peter Xu <peterx@redhat.com>,
+        Pavel Emelyanov <xemul@openvz.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>,
+        Minchan Kim <minchan@kernel.org>,
         Peter Zijlstra <peterz@infradead.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>
-Subject: Re: [PATCH v1] panic: push panic() messages to the console even from
- the MCE nmi handler
-Message-ID: <X/hUfBaYBCPqek5T@alley>
-References: <1609794955-3661-1-git-send-email-william.roche@oracle.com>
+        Hugh Dickins <hughd@google.com>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Oleg Nesterov <oleg@redhat.com>, Jann Horn <jannh@google.com>,
+        Kees Cook <keescook@chromium.org>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>, Jan Kara <jack@suse.cz>,
+        Kirill Tkhai <ktkhai@virtuozzo.com>
+Subject: Re: [PATCH 2/2] mm: soft_dirty: userfaultfd: introduce
+ wrprotect_tlb_flush_pending
+Message-ID: <20210108124815.GA4512@willie-the-truck>
+References: <20210107200402.31095-1-aarcange@redhat.com>
+ <20210107200402.31095-3-aarcange@redhat.com>
+ <CAHk-=whg-91=EF=8=ayyDQGx_3iuWKp3aHUkDCDkgUb15Yh8AQ@mail.gmail.com>
+ <X/d2DyLfXZmBIreY@redhat.com>
+ <CAHk-=wjs9v-hp_7HV_TrTmisu7pNX=MwZ62ZV82i0evLhPwS1Q@mail.gmail.com>
+ <X/eLwQPd5bi620Vt@redhat.com>
+ <CAHk-=whjS3pUZRJLR_HdgB0_1Sd4gWXUbLLyShKxOg0ySCdnUA@mail.gmail.com>
+ <CAHk-=wgRZ5o5pUqKC6cwTLU=V-G+rF5DTexGh1kCMGrgXDufew@mail.gmail.com>
+ <X/edsWgguQDgsOtx@redhat.com>
+ <CAHk-=whTCBa6Frpbveuy7Hnz17P+g03yQvynkApFbBjV5rVrsA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1609794955-3661-1-git-send-email-william.roche@oracle.com>
+In-Reply-To: <CAHk-=whTCBa6Frpbveuy7Hnz17P+g03yQvynkApFbBjV5rVrsA@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 2021-01-04 16:15:55, “William Roche wrote:
-> From: William Roche <william.roche@oracle.com>
-> 
-> Force push panic messages to the console as panic() can be called from NMI
-> interrupt handler functions where printed messages can't always reach the
-> console without an explicit push provided by printk_safe_flush_on_panic()
-> and console_flush_on_panic().
-> This is the case with the MCE handler that can lead to a system panic
-> giving information on the fatal MCE root cause that must reach the console.
-> 
-> Signed-off-by: William Roche <william.roche@oracle.com>
-> ---
-> 
-> Notes:
->     	While testing MCE injection and kernel reaction, we discovered a bug
->     in the way the kernel provides the panic reason information: When dealing
->     with fatal MCE, the machine (physical or virtual) can reboot without
->     leaving any message on the console.
->     
->     	This behavior can be reproduced on Intel with the mce-inject tool
->     with a simple:
->     	# modprobe mce-inject
->     	# mce-inject test/uncorrected
->     
->     	The investigations showed that the MCE panic can be totally message-less
->     or can give a small set of messages. This behavior depends on the use of the
->     crash_kexec mechanism (using the "crashkernel" parameter). Not using this
->     parameter, we get a partial [Hardware Error] information on panic, but some
->     important notifications can be missing. And when using it, a fatal MCE can
->     panic the system without leaving any information.
->     
->     . Without "crashkernel", a Fatal MCE injection shows:
->     
->     [  212.153928] mce: Machine check injector initialized
->     [  236.730682] mce: Triggering MCE exception on CPU 0
->     [  236.731304] Disabling lock debugging due to kernel taint
->     [  236.731947] mce: [Hardware Error]: CPU 0: Machine Check: 0 Bank 1: b000000000000000
->     [  236.731948] mce: [Hardware Error]: TSC 78418fb4a83f
->     [  236.731949] mce: [Hardware Error]: PROCESSOR 0:406f1 TIME 1605312952 SOCKET 0 APIC 0 microcode 1
->     [  236.731949] mce: [Hardware Error]: Run the above through 'mcelog --ascii'
->     [  236.731950] mce: [Hardware Error]: Machine check: MCIP not set in MCA handler
->     [  236.731950] Kernel panic - not syncing: Fatal machine check
->     [  236.732047] Kernel Offset: disabled
->     
->     	The system hangs 30 seconds without any additional message, and finally
->     reboots.
->     
->     . With the use of "crashkernel", a Fatal MCE injection shows only the
->     injection message
->     
->     [   80.811708] mce: Machine check injector initialized
->     [   92.298755] mce: Triggering MCE exception on CPU 0
->     [   92.299362] Disabling lock debugging due to kernel taint
->     
->     	No other messages is displayed and the system reboots immediately.
+On Thu, Jan 07, 2021 at 04:25:54PM -0800, Linus Torvalds wrote:
+> Please. Why is the correct patch not the attached one (apart from the
+> obvious fact that I haven't tested it and maybe just screwed up
+> completely - but you get the idea)?
 
-But you could find the messages in the crashdump. Aren't you?
+It certainly looks simple and correct to me, although it means we're now
+taking the mmap sem for write in the case where we only want to clear the
+access flag, which should be fine with the thing only held for read, no?
 
-It works this way by "design". The idea is the following:
-
-Taking any locks from NMI context might lead to a deadlock.
-Re-initializing the locks might lead to deadlock as well
-because of possible double unlock. Ignoring the locks might
-lead to problems either.
-
-A compromise is needed:
-
-1. crashdump disabled
-
-   console_flush_on_panic() is called. It tries hard to get the
-   messages on the console because it is the only chance.
-
-   It does console_trylock(). It is called after
-   bust_spinlocks(1) so that even the console-specific locks
-   are taken only with trylock, see oops_in_progress.
-
-   BTW: There are people that do not like this because there
-	is still a risk of a deadlock. Some code paths
-	take locks without checking oops_in_progress.
-	For these people, more reliable reboot is more
-	important because they want to have the system
-	back ASAP (cloud people).
-
-
-2. crashdump enabled:
-
-  Only printk_safe_flush_on_panic() is called. It does the best effort
-  to flush messages from the per-CPU buffers into the main log buffer
-  so that they can be found easily in the core.
-
-  It it pretty reliable. It should not be needed at all once the new
-  lockless ringbuffer gets fully integrated,
-
-  It does not try to flush the messages to the console. Getting
-  the crash dump is more important than risking a deadlock with
-  consoles.
-
-
-Best Regards,
-Petr
+Will
