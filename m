@@ -2,184 +2,218 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BDE592EEB42
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 03:27:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 11B932EEB46
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 03:30:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726738AbhAHC04 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 21:26:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55920 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726358AbhAHC0z (ORCPT
+        id S1726862AbhAHC27 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 21:28:59 -0500
+Received: from mail-il1-f170.google.com ([209.85.166.170]:46109 "EHLO
+        mail-il1-f170.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726113AbhAHC26 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 21:26:55 -0500
-Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 609B8C0612F4
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Jan 2021 18:26:15 -0800 (PST)
-Received: by mail-pl1-x62e.google.com with SMTP id s15so4877019plr.9
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Jan 2021 18:26:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dilger-ca.20150623.gappssmtp.com; s=20150623;
-        h=from:message-id:mime-version:subject:date:in-reply-to:cc:to
-         :references;
-        bh=luDdg7XXyDwvXnZdD6ygdGvp+3kTJU9lQeguNQTRpqU=;
-        b=yp1ETCZQTCsO1E6aEVnIIPr71KsyUtIol1gvDChcfdldWH9z/jo3rzKoGhiPLLNjUJ
-         drJ8q57u8m+bH5ZaBWkRJT3qP6uwdarhDXb5bvFbPjJEdT6Ceg+m8nZ6huO6yOd6SIJc
-         /Cz2grG2gZZ9fE+Y8dAh2WBfyyamOpQkvVqcjXvnwGIiWC5Iujf5lX+iYj7g0UIyP3oF
-         UwZmJbzmZ7FdGtlIrlcR97wpXzdGtU9ng5yihyuUquYTFXfdyY0vXpuiin3QK8nNepLn
-         gA4YqUaHjOm8JbmrJDSN+YgwHDSNdk6O1Jz3v3v11Oi0NSHwSaKPzJqGCFjz0rxp5U9O
-         l1rQ==
+        Thu, 7 Jan 2021 21:28:58 -0500
+Received: by mail-il1-f170.google.com with SMTP id 75so8815949ilv.13;
+        Thu, 07 Jan 2021 18:28:42 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:message-id:mime-version:subject:date
-         :in-reply-to:cc:to:references;
-        bh=luDdg7XXyDwvXnZdD6ygdGvp+3kTJU9lQeguNQTRpqU=;
-        b=Rix48Uc/f3rOEShQHUIYvDsPZBW/umViVzYsUGFJU5PlrYW9b2fpCqnG+9vmTRJ5z3
-         fROjP76R/kpSAiV+OhquGpCGfck4O4r8auKxDDDSzuAPVYPO+SxPN2ia+ThZJhV8v/HV
-         qfoFZG9O8l8bEeFLghRaYvWOLSTeqZgnw4B8fwEa4NGN0obLOiQK6yb0PxU+hOG7Sta6
-         DFLQve8ihuMFjIV4luAyHxnyyGW80JD8Eau66uIYI9a/6JGoEnJFQeR7xBwHgESfLstJ
-         UClivlhvJp4LZ4Ttkhq1tHvPo2QE0hS8wvdwD7dEiA0ObAV66v1obApK1tjC0hUkOrkP
-         GZwA==
-X-Gm-Message-State: AOAM5333ZWzUa1md+mrSaYbWFOCPv/92vOaoORtaidyKudWLzXjkDRmS
-        EQuVxVcq/SWlFYsZo1sogbFD3w==
-X-Google-Smtp-Source: ABdhPJxoy0OOAPYHD0E0wy/5EXKLXB/liUsySyu/vCSGyL99vHHJSYSWHPe/9yXbvOlSKRR8miLFNg==
-X-Received: by 2002:a17:90a:a24:: with SMTP id o33mr1373554pjo.191.1610072774908;
-        Thu, 07 Jan 2021 18:26:14 -0800 (PST)
-Received: from cabot.adilger.int (S01061cabc081bf83.cg.shawcable.net. [70.77.221.9])
-        by smtp.gmail.com with ESMTPSA id x1sm6756810pfc.112.2021.01.07.18.26.13
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 07 Jan 2021 18:26:14 -0800 (PST)
-From:   Andreas Dilger <adilger@dilger.ca>
-Message-Id: <8A3C241B-9536-447B-B22D-F922D64731C7@dilger.ca>
-Content-Type: multipart/signed;
- boundary="Apple-Mail=_336CE80D-E491-4ADD-ADCD-5E4DA97ECF62";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-Mime-Version: 1.0 (Mac OS X Mail 10.3 \(3273\))
-Subject: Re: [PATCH] ext4: Remove expensive flush on fast commit
-Date:   Thu, 7 Jan 2021 19:26:11 -0700
-In-Reply-To: <CAD+ocbyp+SOzpDDYsJVpd+t+UcjanZRtR85dHLgykLdURhV5wA@mail.gmail.com>
-Cc:     "tytso@mit.edu" <tytso@mit.edu>,
-        "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-To:     daejun7.park@samsung.com,
-        harshad shirwadkar <harshadshirwadkar@gmail.com>
-References: <CGME20210106013242epcms2p5b6b4ed8ca86f29456fdf56aa580e74b4@epcms2p5>
- <20210106013242epcms2p5b6b4ed8ca86f29456fdf56aa580e74b4@epcms2p5>
- <CAD+ocbyp+SOzpDDYsJVpd+t+UcjanZRtR85dHLgykLdURhV5wA@mail.gmail.com>
-X-Mailer: Apple Mail (2.3273)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=4v0yXGMtjVzg0GR4VJAcMxCAi3C/k0/sDlzwVx/HuwA=;
+        b=luowqDt1GljuRW+HqVhWSMjWF6Pe8EcAJYamJCX0tfLoBmIXGWd5/21goBKgRdG+Yt
+         j3q33B5m1IC+NAnL398C1Z2C9OTdwJ3Tab11Ie39HJCJ1tc5M+N/i41CFu9e3m7LwBqV
+         VeoJIGuSC9Uu/GhfPFKpgxxMsAZ0mWcruvRIEl/1+4bKtebeFgM5hzRF8qA2P4o3YQ/S
+         UxKiVriCb5QlKX/rxcx4W/2J3FJ9DxbLWnzYfu4YyBeHD9R1y0fEX+LOs02M5oA+xmU8
+         ynDuVUhliI9ZikUFPZyAMh/YCd8Dr6d/x2g2W9rbUJcl2q9iCpzmh6eZ9iHGjj6Kqq5U
+         4cUw==
+X-Gm-Message-State: AOAM530cf7wznbrK5DJk6olqf2sHSDCnEXp0u/8QDdMK3nbNgSY1VwwE
+        bgBuEEXpcQpSy5EiKNaWOs8LfnCWyA==
+X-Google-Smtp-Source: ABdhPJyb+2E6oPfTxbL0DlUunHkJR+PHkbpVAfqM8TZJ7y8fTIKJGU5mLf/lOpFwyffXDH0xl2JHsA==
+X-Received: by 2002:a92:d6cb:: with SMTP id z11mr1791226ilp.169.1610072897059;
+        Thu, 07 Jan 2021 18:28:17 -0800 (PST)
+Received: from robh.at.kernel.org ([64.188.179.253])
+        by smtp.gmail.com with ESMTPSA id s25sm1419581ioe.27.2021.01.07.18.28.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 07 Jan 2021 18:28:16 -0800 (PST)
+Received: (nullmailer pid 1750590 invoked by uid 1000);
+        Fri, 08 Jan 2021 02:28:13 -0000
+Date:   Thu, 7 Jan 2021 19:28:13 -0700
+From:   Rob Herring <robh@kernel.org>
+To:     Jerome Pouiller <Jerome.Pouiller@silabs.com>
+Cc:     linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        devicetree@vger.kernel.org, linux-mmc@vger.kernel.org,
+        Pali =?iso-8859-1?Q?Roh=E1r?= <pali@kernel.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>
+Subject: Re: [PATCH v4 02/24] dt-bindings: introduce silabs,wfx.yaml
+Message-ID: <20210108022813.GA1747586@robh.at.kernel.org>
+References: <20201223153925.73742-1-Jerome.Pouiller@silabs.com>
+ <20201223153925.73742-3-Jerome.Pouiller@silabs.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201223153925.73742-3-Jerome.Pouiller@silabs.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Dec 23, 2020 at 04:39:03PM +0100, Jerome Pouiller wrote:
+> From: Jérôme Pouiller <jerome.pouiller@silabs.com>
 
---Apple-Mail=_336CE80D-E491-4ADD-ADCD-5E4DA97ECF62
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain;
-	charset=us-ascii
+Commit message?
 
-On Tue, Jan 5, 2021 at 5:32 PM Daejun Park <daejun7.park@samsung.com> =
-wrote:
->=20
-> In the fast commit, it adds REQ_FUA and REQ_PREFLUSH on each fast =
-commit
-> block when barrier is enabled. However, in recovery phase, ext4 =
-compares
-> CRC value in the tail. So it is sufficient adds REQ_FUA and =
-REQ_PREFLUSH
-> on the block that has tail.
+checkpatch.pl reports trailing whitespace errors.
 
-Does the tail block *always* contain a CRC, or is that dependent on
-EXT4_FEATURE_RO_COMPAT_METADATA_CSUM, JBD2_FEATURE_INCOMPAT_CSUM_V2,
-or JBD2_FEATURE_INCOMPAT_CSUM_V3 being enabled?
-
-If one of those features is *required* before the FAST_COMMIT feature
-can be used, then this patch looks OK.  Otherwise, the CSUM feature
-should be checked before the FUA is skipped for non-tail blocks.
-
-Cheers, Andreas
-
-> Signed-off-by: Daejun Park <daejun7.park@samsung.com>
+> 
+> Signed-off-by: Jérôme Pouiller <jerome.pouiller@silabs.com>
 > ---
-> fs/ext4/fast_commit.c | 10 +++++-----
-> 1 file changed, 5 insertions(+), 5 deletions(-)
->=20
-> diff --git a/fs/ext4/fast_commit.c b/fs/ext4/fast_commit.c
-> index 4fcc21c25e79..e66507be334c 100644
-> --- a/fs/ext4/fast_commit.c
-> +++ b/fs/ext4/fast_commit.c
-> @@ -604,13 +604,13 @@ void ext4_fc_track_range(handle_t *handle, =
-struct inode *inode, ext4_lblk_t star
->        trace_ext4_fc_track_range(inode, start, end, ret);
-> }
->=20
-> -static void ext4_fc_submit_bh(struct super_block *sb)
-> +static void ext4_fc_submit_bh(struct super_block *sb, bool is_tail)
-> {
->        int write_flags =3D REQ_SYNC;
->        struct buffer_head *bh =3D EXT4_SB(sb)->s_fc_bh;
->=20
-> -       /* TODO: REQ_FUA | REQ_PREFLUSH is unnecessarily expensive. */
-> -       if (test_opt(sb, BARRIER))
-> +       /* Add REQ_FUA | REQ_PREFLUSH only its tail */
-> +       if (test_opt(sb, BARRIER) && is_tail)
->                write_flags |=3D REQ_FUA | REQ_PREFLUSH;
->        lock_buffer(bh);
->        set_buffer_dirty(bh);
-> @@ -684,7 +684,7 @@ static u8 *ext4_fc_reserve_space(struct =
-super_block *sb, int len, u32 *crc)
->                *crc =3D ext4_chksum(sbi, *crc, tl, sizeof(*tl));
->        if (pad_len > 0)
->                ext4_fc_memzero(sb, tl + 1, pad_len, crc);
-> -       ext4_fc_submit_bh(sb);
-> +       ext4_fc_submit_bh(sb, false);
->=20
->        ret =3D jbd2_fc_get_buf(EXT4_SB(sb)->s_journal, &bh);
->        if (ret)
-> @@ -741,7 +741,7 @@ static int ext4_fc_write_tail(struct super_block =
-*sb, u32 crc)
->        tail.fc_crc =3D cpu_to_le32(crc);
->        ext4_fc_memcpy(sb, dst, &tail.fc_crc, sizeof(tail.fc_crc), =
-NULL);
->=20
-> -       ext4_fc_submit_bh(sb);
-> +       ext4_fc_submit_bh(sb, true);
->=20
->        return 0;
-> }
-> --
-> 2.25.1
-
-
-Cheers, Andreas
-
-
-
-
-
-
---Apple-Mail=_336CE80D-E491-4ADD-ADCD-5E4DA97ECF62
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
-	filename=signature.asc
-Content-Type: application/pgp-signature;
-	name=signature.asc
-Content-Description: Message signed with OpenPGP
-
------BEGIN PGP SIGNATURE-----
-Comment: GPGTools - http://gpgtools.org
-
-iQIzBAEBCAAdFiEEDb73u6ZejP5ZMprvcqXauRfMH+AFAl/3wsMACgkQcqXauRfM
-H+Bvsg//Y5fdGY7LiAoLcJ27WC3ILhpqMd8TaA06bove8p8+rlCQFFYDXC7lUWKE
-BagTLsNKzvFSB5EeuO2lXb2uWdCGb+eS5mkfGmUQDljBS/Ls7QHJlxFKjAnOmsK0
-bboRfDWGxDwj9kSUCbkRHYwxJOAPTBbDfYkcB1uc1wzACWH8lTy5conL18WAQECS
-PGxvFduSxRdyoSGueD7TPOsWEZQcZA0LPkVEYTgRufwJYhGwtTKYPt0fBq5n1beo
-WC8EtKPdudEE3jD+S1THuDrhnxmekZZu2h/JCtDa15N396qQt1HzPJ7AAdSgLIxk
-v+ltaC3K9g+zok4Yxokhq3kdghe/3/Wp5CCrp+vTx/ywmlZc31nfpxdqJi5HPSyK
-zNGTdUEeaMh9aJpeLwpDUtMSbrBHMR5A/Yy2vKMheyvEZQ1dR5NjFj3wPoWUSZAA
-G6pCRoB8UQNPPNQztquAhNEEp4LXVfdufTgg3GhsU7Ye6qDpQy15z2Dwxce4LGyW
-XzO31lrX5pYJgplYVfplNgdFwDx7APGFOOlpY9P4Kix/GQLgmrKkP8dSGCvq8/Vc
-LTr3a+1QAvUKWRL03vZv6knGRUNJ9vTJkW/TxbTBR6cq8xQx9ZhF4RVloxm/iMsH
-+Ij8RM+7RNmEYDUGsQCMsahr+LwdlzkiKzY1QDcK7nDaR+CcV/I=
-=d8v7
------END PGP SIGNATURE-----
-
---Apple-Mail=_336CE80D-E491-4ADD-ADCD-5E4DA97ECF62--
+>  .../bindings/net/wireless/silabs,wfx.yaml     | 133 ++++++++++++++++++
+>  1 file changed, 133 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/net/wireless/silabs,wfx.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/net/wireless/silabs,wfx.yaml b/Documentation/devicetree/bindings/net/wireless/silabs,wfx.yaml
+> new file mode 100644
+> index 000000000000..487d46c5fdc0
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/net/wireless/silabs,wfx.yaml
+> @@ -0,0 +1,133 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +# Copyright (c) 2020, Silicon Laboratories, Inc.
+> +%YAML 1.2
+> +---
+> +
+> +$id: http://devicetree.org/schemas/net/wireless/silabs,wfx.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Silicon Labs WFxxx devicetree bindings
+> +
+> +maintainers:
+> +  - Jérôme Pouiller <jerome.pouiller@silabs.com>
+> +
+> +description: >
+> +  Support for the Wifi chip WFxxx from Silicon Labs. Currently, the only device
+> +  from the WFxxx series is the WF200 described here:
+> +     https://www.silabs.com/documents/public/data-sheets/wf200-datasheet.pdf
+> +  
+> +  The WF200 can be connected via SPI or via SDIO.
+> +  
+> +  For SDIO:
+> +  
+> +    Declaring the WFxxx chip in device tree is mandatory (usually, the VID/PID is
+> +    sufficient for the SDIO devices).
+> +  
+> +    It is recommended to declare a mmc-pwrseq on SDIO host above WFx. Without
+> +    it, you may encounter issues during reboot. The mmc-pwrseq should be
+> +    compatible with mmc-pwrseq-simple. Please consult
+> +    Documentation/devicetree/bindings/mmc/mmc-pwrseq-simple.txt for more
+> +    information.
+> +  
+> +  For SPI:
+> +  
+> +    In add of the properties below, please consult
+> +    Documentation/devicetree/bindings/spi/spi-controller.yaml for optional SPI
+> +    related properties.
+> +
+> +properties:
+> +  compatible:
+> +    const: silabs,wf200
+> +
+> +  reg:
+> +    description:
+> +      When used on SDIO bus, <reg> must be set to 1. When used on SPI bus, it is
+> +      the chip select address of the device as defined in the SPI devices
+> +      bindings.
+> +    maxItems: 1
+> +
+> +  spi-max-frequency: true
+> +
+> +  interrupts:
+> +    description: The interrupt line. Triggers IRQ_TYPE_LEVEL_HIGH and
+> +      IRQ_TYPE_EDGE_RISING are both supported by the chip and the driver. When
+> +      SPI is used, this property is required. When SDIO is used, the "in-band"
+> +      interrupt provided by the SDIO bus is used unless an interrupt is defined
+> +      in the Device Tree.
+> +    maxItems: 1
+> +
+> +  reset-gpios:
+> +    description: (SPI only) Phandle of gpio that will be used to reset chip
+> +      during probe. Without this property, you may encounter issues with warm
+> +      boot. (For legacy purpose, the gpio in inverted when compatible ==
+> +      "silabs,wfx-spi")
+> +
+> +      For SDIO, the reset gpio should declared using a mmc-pwrseq.
+> +    maxItems: 1
+> +
+> +  wakeup-gpios:
+> +    description: Phandle of gpio that will be used to wake-up chip. Without this
+> +      property, driver will disable most of power saving features.
+> +    maxItems: 1
+> +
+> +  silabs,antenna-config-file:
+> +    $ref: /schemas/types.yaml#/definitions/string
+> +    description: Use an alternative file for antenna configuration (aka
+> +      "Platform Data Set" in Silabs jargon). Default is 'wf200.pds'.
+> +
+> +  local-mac-address: true
+> +
+> +  mac-address: true
+> +
+> +additionalProperties: false
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/gpio/gpio.h>
+> +    #include <dt-bindings/interrupt-controller/irq.h>
+> +
+> +    spi0 {
+> +        #address-cells = <1>;
+> +        #size-cells = <0>;
+> +
+> +        wifi@0 {
+> +            compatible = "silabs,wf200";
+> +            pinctrl-names = "default";
+> +            pinctrl-0 = <&wfx_irq &wfx_gpios>;
+> +            reg = <0>;
+> +            interrupts-extended = <&gpio 16 IRQ_TYPE_EDGE_RISING>;
+> +            wakeup-gpios = <&gpio 12 GPIO_ACTIVE_HIGH>;
+> +            reset-gpios = <&gpio 13 GPIO_ACTIVE_LOW>;
+> +            spi-max-frequency = <42000000>;
+> +        };
+> +    };
+> +
+> +  - |
+> +    #include <dt-bindings/gpio/gpio.h>
+> +    #include <dt-bindings/interrupt-controller/irq.h>
+> +
+> +    wfx_pwrseq: wfx_pwrseq {
+> +        compatible = "mmc-pwrseq-simple";
+> +        pinctrl-names = "default";
+> +        pinctrl-0 = <&wfx_reset>;
+> +        reset-gpios = <&gpio 13 GPIO_ACTIVE_LOW>;
+> +    };
+> +
+> +    mmc0 {
+> +        mmc-pwrseq = <&wfx_pwrseq>;
+> +        #address-cells = <1>;
+> +        #size-cells = <0>;
+> +
+> +        wifi@1 {
+> +            compatible = "silabs,wf200";
+> +            pinctrl-names = "default";
+> +            pinctrl-0 = <&wfx_wakeup>;
+> +            reg = <1>;
+> +            wakeup-gpios = <&gpio 12 GPIO_ACTIVE_HIGH>;
+> +        };
+> +    };
+> +...
+> -- 
+> 2.29.2
+> 
