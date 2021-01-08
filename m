@@ -2,137 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 438342EFA6B
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 22:27:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 20FD52EFA72
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 22:28:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728518AbhAHV0f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Jan 2021 16:26:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35290 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727067AbhAHV0e (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Jan 2021 16:26:34 -0500
-Received: from mail-ot1-x32b.google.com (mail-ot1-x32b.google.com [IPv6:2607:f8b0:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D0F4C061574
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Jan 2021 13:25:54 -0800 (PST)
-Received: by mail-ot1-x32b.google.com with SMTP id d20so11109281otl.3
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Jan 2021 13:25:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=3U/EHOfY39AcbryurHHctLCFf/TUx0axlocAKoUFaDI=;
-        b=LCIs9PMXFfP78WpjYndzNMd8DpHcKjZQQp7JySp+4RY/5Hw0lfJeyAEsYrZr64ht7B
-         J1nyPIZjHf8aGQxSiiIP6tz2PH8D/dYZSYbRSR1+PHVM+/kaUEbiYVrcRoHfxPqe77co
-         3IxZYupa+zE0azrsoomWE0e/jB1q5uN2yFtTmPtzbPnMn4U5HdiJqpiMomiN1dXP7PM6
-         qqtE/MN3qZai3zZydN9OlkuIhadi0LeXWyJ4bb0Oyv96hl6timf8UY8s9aWVkuSq0x7d
-         0vXdEt/y3C0A1f6J9xUU61s7UUoT8lardtzwtDzk90XhdVPpcLD7WOCVkQ3HFm+hDDO3
-         zdeg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=3U/EHOfY39AcbryurHHctLCFf/TUx0axlocAKoUFaDI=;
-        b=peHvl5uwLgxSZuZl6ZwjYwAD4jPO8FtejaDiEu+qG1jvp21G/j5Am//dO3IB0/oXJU
-         tFmFGZD+tvYALZrqPw2Fx7HF729bu+aGyv1DTNSi3W9/zOQQaqZdRGphGcEcfhIPuKa9
-         PnC9wDyk1tyMVNa0lPHFlvqGDIx6b6GoyzjUr8HgmrAH8ZpNqsJdG2hCPa3T+QJXRge1
-         Z/TUiW33DpcrkmedX/5tN+gZewM00qnm0nDm7FsBP8SvfqnnmWVY2hmeAQ+Ug002x85X
-         V3indqVddDXhh2u45E3p9w2OcE3FPFOLjl0l5RI3IswTRlG4sEApZimTcRlCo5QjU+I+
-         qNRA==
-X-Gm-Message-State: AOAM532XTouISsrTl3qyEHkjYmap+OXIu56JDEiP48My4lP0tgVmtSEJ
-        Jj3zt9eVgeGLYSVqm7M3N7lW8s5KnAYfFz8YIFY=
-X-Google-Smtp-Source: ABdhPJzY43R3m7sa4CM/3MJzsT5LjVm/tO/tr1JBRDf2CaqbzL47ScVnjFGSeZYBaWMzq0x1DgaR3b8Fqmc9RSyXMtw=
-X-Received: by 2002:a05:6830:1d66:: with SMTP id l6mr3906537oti.23.1610141153981;
- Fri, 08 Jan 2021 13:25:53 -0800 (PST)
-MIME-Version: 1.0
-References: <20210108201457.3078600-1-lee.jones@linaro.org> <20210108201457.3078600-39-lee.jones@linaro.org>
-In-Reply-To: <20210108201457.3078600-39-lee.jones@linaro.org>
-From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Fri, 8 Jan 2021 16:25:42 -0500
-Message-ID: <CADnq5_OMbx2RnpYXhprGUXNQAxwKjB3eEiWgFjwDW3+hurQVsQ@mail.gmail.com>
-Subject: Re: [PATCH 38/40] drm/amd/display/dc/dce/dce_panel_cntl: Remove
- unused variables 'bl_pwm_cntl' and 'pwm_period_cntl'
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     Leo Li <sunpeng.li@amd.com>, Anthony Koo <Anthony.Koo@amd.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        David Airlie <airlied@linux.ie>,
-        Maling list - DRI developers 
-        <dri-devel@lists.freedesktop.org>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        id S1729515AbhAHV2D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Jan 2021 16:28:03 -0500
+Received: from mga07.intel.com ([134.134.136.100]:22465 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729107AbhAHV2A (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 Jan 2021 16:28:00 -0500
+IronPort-SDR: g++lnxyo5HamV/EvjnIWqoyE5535zrR9Oz2ZW2dCJiXPt6tVZb0nLHUfXPI0RRRACXu8mboj2W
+ 4ggY364hM23w==
+X-IronPort-AV: E=McAfee;i="6000,8403,9858"; a="241732867"
+X-IronPort-AV: E=Sophos;i="5.79,332,1602572400"; 
+   d="scan'208";a="241732867"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jan 2021 13:26:04 -0800
+IronPort-SDR: vtB2gtlbJzbG5xEsObl4+kw78d5aSeFZ3rBoHbLojSGf8u3FiHP9SVhc6qfUCdMHVQOt/Xe7JQ
+ fltGMjWjOJdw==
+X-IronPort-AV: E=Sophos;i="5.79,332,1602572400"; 
+   d="scan'208";a="362470721"
+Received: from smtp.ostc.intel.com ([10.54.29.231])
+  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jan 2021 13:26:04 -0800
+Received: from mtg-dev (mtg-dev.jf.intel.com [10.54.74.10])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by smtp.ostc.intel.com (Postfix) with ESMTPS id E1462636A;
+        Fri,  8 Jan 2021 13:26:04 -0800 (PST)
+Received: from mgross by mtg-dev with local (Exim 4.90_1)
+        (envelope-from <mgross@linux.intel.com>)
+        id 1kxzGm-0009cT-Pr; Fri, 08 Jan 2021 13:26:04 -0800
+From:   mgross@linux.intel.com
+To:     markgross@kernel.org, mgross@linux.intel.com, arnd@arndb.de,
+        bp@suse.de, damien.lemoal@wdc.com, dragan.cvetic@xilinx.com,
+        gregkh@linuxfoundation.org, corbet@lwn.net,
+        leonard.crestez@nxp.com, palmerdabbelt@google.com,
+        paul.walmsley@sifive.com, peng.fan@nxp.com, robh+dt@kernel.org,
+        shawnguo@kernel.org, jassisinghbrar@gmail.com
+Cc:     linux-kernel@vger.kernel.org,
+        Seamus Kelly <seamus.kelly@intel.com>,
+        devicetree@vger.kernel.org,
+        Ryan Carnaghi <ryan.r.carnaghi@intel.com>
+Subject: [PATCH v2 17/34] xlink-ipc: Add xlink ipc device tree bindings
+Date:   Fri,  8 Jan 2021 13:25:43 -0800
+Message-Id: <20210108212600.36850-18-mgross@linux.intel.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20210108212600.36850-1-mgross@linux.intel.com>
+References: <20210108212600.36850-1-mgross@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 8, 2021 at 3:16 PM Lee Jones <lee.jones@linaro.org> wrote:
->
-> Fixes the following W=3D1 kernel build warning(s):
->
->  drivers/gpu/drm/amd/amdgpu/../display/dc/dce/dce_panel_cntl.c: In functi=
-on =E2=80=98dce_get_16_bit_backlight_from_pwm=E2=80=99:
->  drivers/gpu/drm/amd/amdgpu/../display/dc/dce/dce_panel_cntl.c:54:11: war=
-ning: variable =E2=80=98bl_pwm_cntl=E2=80=99 set but not used [-Wunused-but=
--set-variable]
->  drivers/gpu/drm/amd/amdgpu/../display/dc/dce/dce_panel_cntl.c:53:11: war=
-ning: variable =E2=80=98pwm_period_cntl=E2=80=99 set but not used [-Wunused=
--but-set-variable]
->
-> Cc: Harry Wentland <harry.wentland@amd.com>
-> Cc: Leo Li <sunpeng.li@amd.com>
-> Cc: Alex Deucher <alexander.deucher@amd.com>
-> Cc: "Christian K=C3=B6nig" <christian.koenig@amd.com>
-> Cc: David Airlie <airlied@linux.ie>
-> Cc: Daniel Vetter <daniel@ffwll.ch>
-> Cc: Anthony Koo <Anthony.Koo@amd.com>
-> Cc: amd-gfx@lists.freedesktop.org
-> Cc: dri-devel@lists.freedesktop.org
-> Signed-off-by: Lee Jones <lee.jones@linaro.org>
+From: Seamus Kelly <seamus.kelly@intel.com>
 
-Applied.  Thanks!
+Add device tree bindings for the xLink IPC driver which enables xLink to
+control and communicate with the VPU IP present on the Intel Keem Bay
+SoC.
 
-Alex
+Cc: Rob Herring <robh+dt@kernel.org>
+Cc: devicetree@vger.kernel.org
+Reviewed-by: Mark Gross <mgross@linux.intel.com>
+Signed-off-by: Seamus Kelly <seamus.kelly@intel.com>
+Signed-off-by: Ryan Carnaghi <ryan.r.carnaghi@intel.com>
+---
+ .../misc/intel,keembay-xlink-ipc.yaml         | 49 +++++++++++++++++++
+ 1 file changed, 49 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/misc/intel,keembay-xlink-ipc.yaml
 
-> ---
->  drivers/gpu/drm/amd/display/dc/dce/dce_panel_cntl.c | 8 ++++----
->  1 file changed, 4 insertions(+), 4 deletions(-)
->
-> diff --git a/drivers/gpu/drm/amd/display/dc/dce/dce_panel_cntl.c b/driver=
-s/gpu/drm/amd/display/dc/dce/dce_panel_cntl.c
-> index 761fdfc1f5bd0..e923392358631 100644
-> --- a/drivers/gpu/drm/amd/display/dc/dce/dce_panel_cntl.c
-> +++ b/drivers/gpu/drm/amd/display/dc/dce/dce_panel_cntl.c
-> @@ -50,16 +50,16 @@ static unsigned int dce_get_16_bit_backlight_from_pwm=
-(struct panel_cntl *panel_c
->  {
->         uint64_t current_backlight;
->         uint32_t round_result;
-> -       uint32_t pwm_period_cntl, bl_period, bl_int_count;
-> -       uint32_t bl_pwm_cntl, bl_pwm, fractional_duty_cycle_en;
-> +       uint32_t bl_period, bl_int_count;
-> +       uint32_t bl_pwm, fractional_duty_cycle_en;
->         uint32_t bl_period_mask, bl_pwm_mask;
->         struct dce_panel_cntl *dce_panel_cntl =3D TO_DCE_PANEL_CNTL(panel=
-_cntl);
->
-> -       pwm_period_cntl =3D REG_READ(BL_PWM_PERIOD_CNTL);
-> +       REG_READ(BL_PWM_PERIOD_CNTL);
->         REG_GET(BL_PWM_PERIOD_CNTL, BL_PWM_PERIOD, &bl_period);
->         REG_GET(BL_PWM_PERIOD_CNTL, BL_PWM_PERIOD_BITCNT, &bl_int_count);
->
-> -       bl_pwm_cntl =3D REG_READ(BL_PWM_CNTL);
-> +       REG_READ(BL_PWM_CNTL);
->         REG_GET(BL_PWM_CNTL, BL_ACTIVE_INT_FRAC_CNT, (uint32_t *)(&bl_pwm=
-));
->         REG_GET(BL_PWM_CNTL, BL_PWM_FRACTIONAL_EN, &fractional_duty_cycle=
-_en);
->
-> --
-> 2.25.1
->
-> _______________________________________________
-> dri-devel mailing list
-> dri-devel@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/dri-devel
+diff --git a/Documentation/devicetree/bindings/misc/intel,keembay-xlink-ipc.yaml b/Documentation/devicetree/bindings/misc/intel,keembay-xlink-ipc.yaml
+new file mode 100644
+index 000000000000..699e43c4cd40
+--- /dev/null
++++ b/Documentation/devicetree/bindings/misc/intel,keembay-xlink-ipc.yaml
+@@ -0,0 +1,49 @@
++# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
++# Copyright (c) Intel Corporation. All rights reserved.
++%YAML 1.2
++---
++$id: "http://devicetree.org/schemas/misc/intel,keembay-xlink-ipc.yaml#"
++$schema: "http://devicetree.org/meta-schemas/core.yaml#"
++
++title: Intel Keem Bay xlink IPC
++
++maintainers:
++  - Kelly Seamus <seamus.kelly@intel.com>
++
++description: |
++  The Keem Bay xlink IPC driver enables the communication/control sub-system
++  for internal IPC communications within the Intel Keem Bay SoC.
++
++properties:
++  compatible:
++    oneOf:
++      - items:
++        - const: intel,keembay-xlink-ipc
++
++  memory-region:
++    items:
++      - description: reference to the CSS xlink IPC reserved memory region.
++      - description: reference to the MSS xlink IPC reserved memory region.
++
++  intel,keembay-vpu-ipc-id:
++    $ref: "/schemas/types.yaml#/definitions/uint32"
++    description: The numeric ID identifying the VPU within the xLink stack.
++
++  intel,keembay-vpu-ipc-name:
++    $ref: "/schemas/types.yaml#/definitions/string"
++    description: User-friendly name for the VPU within the xLink stack.
++
++  intel,keembay-vpu-ipc:
++    $ref: "/schemas/types.yaml#/definitions/phandle"
++    description: reference to the corresponding intel,keembay-vpu-ipc node.
++
++examples:
++  - |
++    xlink-ipc {
++        compatible = "intel,keembay-xlink-ipc";
++        memory-region = <&css_xlink_reserved>,
++                        <&mss_xlink_reserved>;
++        intel,keembay-vpu-ipc-id = <0x0>;
++        intel,keembay-vpu-ipc-name = "vpu-slice-0";
++        intel,keembay-vpu-ipc = <&vpuipc>;
++    };
+-- 
+2.17.1
+
