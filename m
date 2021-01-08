@@ -2,132 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B96D2EEA8D
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 01:50:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 10B1D2EEA92
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 01:53:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729657AbhAHAua (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 19:50:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40864 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727695AbhAHAua (ORCPT
+        id S1729663AbhAHAwQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 19:52:16 -0500
+Received: from smtprelay0041.hostedemail.com ([216.40.44.41]:36068 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1727695AbhAHAwP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 19:50:30 -0500
-Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 721D0C0612F4
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Jan 2021 16:49:49 -0800 (PST)
-Received: by mail-pf1-x432.google.com with SMTP id h10so5148042pfo.9
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Jan 2021 16:49:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=bWwf6/4j4tVvES7fVpbsX1jLm+cH+7knbN6V1u2/IfA=;
-        b=FuUOoESBvVMOtLaY+nWl466nPXdTItMSrURONIbA7uC2PhHdOCKZmlsGJ718BPoOuf
-         OGeKnQBixA8VYW8BW133gy/wwlUnEpUp9PuuSCsnY/AGIeNKnQ/invNDLvjuIsX7xgyE
-         yzoLaBELBQoiyiuYC8yDef7jRsOSTS4Z/JNj1bItsys4WHT73DPf0sOGwtSH7SLxsNYS
-         a30F9IDMkGrX02gO7LIxldaN9+AtKolbUWeJevYsjs8DsSYvETLzV5DT2r2zwspPjBjl
-         jLapb1iqSa3bxPj9rGlShZCnr9SArJNXHb+8aWy8jV8AWNsIl7oNCze3Na17LSNS3VlV
-         r8dA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=bWwf6/4j4tVvES7fVpbsX1jLm+cH+7knbN6V1u2/IfA=;
-        b=kR6YRuY9CDGMLznSD3XDDEP/MSgMLk6zxDjJUsiDlxVdo/ackoX/Ngb4Js1PJ9RsKz
-         cpuFR3+9ag62Go8JbblJ6hKawRbKAgdN0ElLG0XqsS4CFAAeyvU6imQvcJmZWby9ZXT3
-         ppU8FcgwSnt7OoSsUjMS+ssx5AOrura8sj/LJEKpN+T+Pgd6B5Jl4eo7BYYVWe/R+JJZ
-         j/Qzeldlk7Ckh4jdgo6WWQrcTyQLpxxk4jGQPdMTP8ogUwtyY6AHXf63Y8gpjlAaNwbp
-         TlH2lJndRnmgvNhsK7X3ndoHshYCV6kbRISKCk3oEztl02EfUMVwtNEzzPY97qzn2lYe
-         hN9g==
-X-Gm-Message-State: AOAM533ucIdxmChKbiATg8OCYc3UAc4WOA3bZehxVum+nBjbLlLyz30h
-        5TW7SXDNgDXgxQq7QNn8Uq+FbEknoDRneA==
-X-Google-Smtp-Source: ABdhPJxL7i4DsWOU0fETM4nqI82E7mp5+9hr0CKEiGTdF2QrVsGhC8Tr+k1fHZg0LjBPNNyXikKJ9w==
-X-Received: by 2002:a62:ac09:0:b029:1a9:dd65:2f46 with SMTP id v9-20020a62ac090000b02901a9dd652f46mr1089803pfe.15.1610066988994;
-        Thu, 07 Jan 2021 16:49:48 -0800 (PST)
-Received: from xps15 (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
-        by smtp.gmail.com with ESMTPSA id t25sm7480075pgv.30.2021.01.07.16.49.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 Jan 2021 16:49:48 -0800 (PST)
-Date:   Thu, 7 Jan 2021 17:49:46 -0700
-From:   Mathieu Poirier <mathieu.poirier@linaro.org>
-To:     Suzuki K Poulose <suzuki.poulose@arm.com>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        coresight@lists.linaro.org, leo.yan@linaro.org,
-        mike.leach@linaro.org, anshuman.khandual@arm.com,
-        liuqi115@huawei.com
-Subject: Re: [PATCH v6 22/26] coresight: etm4x: Run arch feature detection on
- the CPU
-Message-ID: <20210108004946.GF43045@xps15>
-References: <20210107123859.674252-1-suzuki.poulose@arm.com>
- <20210107123859.674252-23-suzuki.poulose@arm.com>
+        Thu, 7 Jan 2021 19:52:15 -0500
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay07.hostedemail.com (Postfix) with ESMTP id 57BD9181D337B;
+        Fri,  8 Jan 2021 00:51:34 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 50,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:960:967:973:982:988:989:1260:1261:1277:1311:1313:1314:1345:1359:1394:1437:1515:1516:1518:1535:1544:1593:1594:1605:1711:1730:1747:1777:1792:1981:2194:2199:2393:2525:2553:2565:2682:2685:2689:2691:2828:2859:2933:2937:2939:2942:2945:2947:2951:2954:3022:3138:3139:3140:3141:3142:3622:3865:3866:3867:3868:3870:3871:3872:3874:3934:3936:3938:3941:3944:3947:3950:3953:3956:3959:4321:5007:7652:8603:8957:9025:10004:10249:10848:11026:11232:11473:11658:11783:11914:12043:12266:12297:12438:12555:12740:12895:12986:13153:13228:13255:13439:13845:13894:14181:14659:14721:21080:21324:21347:21365:21433:21451:21627:21740:21795:21939:21990:30012:30051:30054:30070:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
+X-HE-Tag: clam92_5d138c7274ee
+X-Filterd-Recvd-Size: 5431
+Received: from [192.168.1.159] (unknown [47.151.137.21])
+        (Authenticated sender: joe@perches.com)
+        by omf11.hostedemail.com (Postfix) with ESMTPA;
+        Fri,  8 Jan 2021 00:51:32 +0000 (UTC)
+Message-ID: <9e111f0f673ae6ced12efc01d32eefe8402c7f72.camel@perches.com>
+Subject: Re: deprecated.rst: deprecated strcpy ? (was: [PATCH] checkpatch:
+ add a new check for strcpy/strlcpy uses)
+From:   Joe Perches <joe@perches.com>
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Dwaipayan Ray <dwaipayanray1@gmail.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Thu, 07 Jan 2021 16:51:31 -0800
+In-Reply-To: <202101071310.3AC5F0C4@keescook>
+References: <20210105082303.15310-1-dwaipayanray1@gmail.com>
+         <50cc861121b62b3c1518222f24f679c3f72b868d.camel@perches.com>
+         <CABJPP5DQ0Y42z9ej_j06+KaQevT3ztWcwGMkismj4qv5EHvnxA@mail.gmail.com>
+         <3ffe616d8c3fb54833bfc4d86cb73427cf6c7add.camel@perches.com>
+         <202101071310.3AC5F0C4@keescook>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.38.1-1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210107123859.674252-23-suzuki.poulose@arm.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 07, 2021 at 12:38:55PM +0000, Suzuki K Poulose wrote:
-> As we are about to add support for system register based devices,
-> we don't get an AMBA pid. So, the detection code could check
-> the system registers running on the CPU to check for the architecture
-> specific features. Thus we move the arch feature detection to
-> run on the CPU. We cannot always read the PID from the HW (i.e even
-> for AMBA devices), as the as the PID could be overridden by DT for
-
-s/as the as the/as the
-
-I made the change.
-
-> broken devices. So, use the PID from AMBA layer if available.
+On Thu, 2021-01-07 at 13:16 -0800, Kees Cook wrote:
+> On Tue, Jan 05, 2021 at 01:28:18AM -0800, Joe Perches wrote:
+> > On Tue, 2021-01-05 at 14:29 +0530, Dwaipayan Ray wrote:
+> > > On Tue, Jan 5, 2021 at 2:14 PM Joe Perches <joe@perches.com> wrote:
+> > > > 
+> > > > On Tue, 2021-01-05 at 13:53 +0530, Dwaipayan Ray wrote:
+> > > > > strcpy() performs no bounds checking on the destination buffer.
+> > > > > This could result in linear overflows beyond the end of the buffer.
+> > > > > 
+> > > > > strlcpy() reads the entire source buffer first. This read
+> > > > > may exceed the destination size limit. This can be both inefficient
+> > > > > and lead to linear read overflows.
+> > > > > 
+> > > > > The safe replacement to both of these is to use strscpy() instead.
+> > > > > Add a new checkpatch warning which alerts the user on finding usage of
+> > > > > strcpy() or strlcpy().
+> > > > 
+> > > > I do not believe that strscpy is preferred over strcpy.
+> > > > 
+> > > > When the size of the output buffer is known to be larger
+> > > > than the input, strcpy is faster.
+> > > > 
+> > > > There are about 2k uses of strcpy.
+> > > > Is there a use where strcpy use actually matters?
+> > > > I don't know offhand...
+> > > > 
+> > > > But I believe compilers do not optimize away the uses of strscpy
+> > > > to a simple memcpy like they do for strcpy with a const from
+> > > > 
+> > > >         strcpy(foo, "bar");
+> > > > 
+> > > 
+> > > Yes the optimization here definitely helps. So in case the programmer
+> > > knows that the destination buffer is always larger, then strcpy() should be
+> > > preferred? I think the documentation might have been too strict about
+> > > strcpy() uses here:
+> > > 
+> > > Documentation/process/deprecated.rst:
+> > > "strcpy() performs no bounds checking on the destination buffer. This
+> > > could result in linear overflows beyond the end of the buffer, leading to
+> > > all kinds of misbehaviors. While `CONFIG_FORTIFY_SOURCE=y` and various
+> > > compiler flags help reduce the risk of using this function, there is
+> > > no good reason to add new uses of this function. The safe replacement
+> > > is strscpy(),..."
+> > 
+> > Kees/Jonathan:
+> > 
+> > Perhaps this text is overly restrictive.
+> > 
+> > There are ~2k uses of strcpy in the kernel.
+> > 
+> > About half of these are where the buffer length of foo is known and the
+> > use is 'strcpy(foo, "bar")' so the compiler converts/optimizes away the
+> > strcpy to memcpy and may not even put "bar" into the string table.
+> > 
+> > I believe strscpy uses do not have this optimization.
+> > 
+> > Is there a case where the runtime costs actually matters?
+> > I expect so.
 > 
-> Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
-> Cc: Mike Leach <mike.leach@linaro.org>
-> Cc: liuqi115@huawei.com
-> Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
-> ---
->  drivers/hwtracing/coresight/coresight-etm4x-core.c | 6 ++++--
->  1 file changed, 4 insertions(+), 2 deletions(-)
+> The original goal was to use another helper that worked on static
+> strings like this. Linus rejected that idea, so we're in a weird place.
+> I think we could perhaps build a strcpy() replacement that requires
+> compile-time validated arguments, and to break the build if not.
 > 
-> diff --git a/drivers/hwtracing/coresight/coresight-etm4x-core.c b/drivers/hwtracing/coresight/coresight-etm4x-core.c
-> index 228845f6fdd8..f4fbb65b4cc1 100644
-> --- a/drivers/hwtracing/coresight/coresight-etm4x-core.c
-> +++ b/drivers/hwtracing/coresight/coresight-etm4x-core.c
-> @@ -60,6 +60,7 @@ static u64 etm4_get_access_type(struct etmv4_config *config);
->  static enum cpuhp_state hp_online;
->  
->  struct etm4_init_arg {
-> +	unsigned int		pid;
->  	struct etmv4_drvdata	*drvdata;
->  	struct csdev_access	*csa;
->  };
-> @@ -884,6 +885,8 @@ static void etm4_init_arch_data(void *info)
->  	etm4_os_unlock_csa(drvdata, csa);
->  	etm4_cs_unlock(drvdata, csa);
->  
-> +	etm4_check_arch_features(drvdata, init_arg->pid);
-> +
->  	/* find all capabilities of the tracing unit */
->  	etmidr0 = etm4x_relaxed_read32(csa, TRCIDR0);
->  
-> @@ -1750,6 +1753,7 @@ static int etm4_probe(struct device *dev, void __iomem *base, u32 etm_pid)
->  
->  	init_arg.drvdata = drvdata;
->  	init_arg.csa = &desc.access;
-> +	init_arg.pid = etm_pid;
->  
->  	if (smp_call_function_single(drvdata->cpu,
->  				etm4_init_arch_data,  &init_arg, 1))
-> @@ -1794,8 +1798,6 @@ static int etm4_probe(struct device *dev, void __iomem *base, u32 etm_pid)
->  		drvdata->boot_enable = true;
->  	}
->  
-> -	etm4_check_arch_features(drvdata, etm_pid);
-> -
->  	return 0;
->  }
->  
-> -- 
-> 2.24.1
+> i.e.
 > 
+> given:
+> 	char array[8];
+> 	char *ptr;
+> 
+> allow:
+> 
+> 
+> 	strcpy(array, "1234567");
+> 
+> disallow:
+> 
+> 	strcpy(array, "12345678");	/* too long */
+> 	strcpy(array, src);		/* not optimized, so use strscpy? */
+> 	strcpy(ptr, "1234567");		/* unknown destination size */
+> 	strcpy(ptr, src);		/* unknown destination size */
+
+I think that's not a good idea as it's not a generic equivalent of the
+string.h code.
+
+I still like the stracpy variant I proposed:
+
+https://lore.kernel.org/lkml/24bb53c57767c1c2a8f266c305a670f7@sk2.org/T/#m0627aa770a076af1937cb5c610ed71dab3f1da72
+https://lore.kernel.org/lkml/CAHk-=wgqQKoAnhmhGE-2PBFt7oQs9LLAATKbYa573UO=DPBE0Q@mail.gmail.com/
+
+Linus liked a variant he called copy_string:
+
+https://lore.kernel.org/lkml/CAHk-=wg8vLmmwTGhXM51NpSWJW8RFEAKoXxG0Hu_Q9Uwbjj8kw@mail.gmail.com/
+
+I think the cocci scripts that convert:
+
+	strlcpy -> strscpy (only when return value unused)
+	str<sln>cpy(array, "string") -> stracpy(foo, "string")
+	s[cn]printf -> sysfs_emit
+
+would leave relatively few uses of strcpy and sprintf variants and would
+make it much easier to analyze the remainder uses for potential overflows.
+
+
