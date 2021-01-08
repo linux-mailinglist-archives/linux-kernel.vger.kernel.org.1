@@ -2,115 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6481B2EFA31
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 22:19:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 484122EFA33
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 22:19:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729741AbhAHVSM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Jan 2021 16:18:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33960 "EHLO
+        id S1729745AbhAHVSq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Jan 2021 16:18:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34048 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729452AbhAHVSM (ORCPT
+        with ESMTP id S1728890AbhAHVSp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Jan 2021 16:18:12 -0500
-Received: from mail-qk1-x72e.google.com (mail-qk1-x72e.google.com [IPv6:2607:f8b0:4864:20::72e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E4BDC061786;
-        Fri,  8 Jan 2021 13:17:31 -0800 (PST)
-Received: by mail-qk1-x72e.google.com with SMTP id 186so9807720qkj.3;
-        Fri, 08 Jan 2021 13:17:31 -0800 (PST)
+        Fri, 8 Jan 2021 16:18:45 -0500
+Received: from mail-ot1-x330.google.com (mail-ot1-x330.google.com [IPv6:2607:f8b0:4864:20::330])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E915C061574
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Jan 2021 13:18:05 -0800 (PST)
+Received: by mail-ot1-x330.google.com with SMTP id b24so11117312otj.0
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Jan 2021 13:18:05 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=CwnmURqbXWi83+YJ2u0BfQ7YOsLloUGg9mtui9lPXE4=;
-        b=NmZdsAfKHe+255PDndngVtKAu8nMd2MXHttlqF5HxQ45ZAGa/mNYrYpfHamJYuZgXl
-         qyI2TRugzunZHHus/iRK/ZWD7Obx5ZiOiuf8V2ea76rwDLH+BWXZIUVzHXbhkVZclZzG
-         S8u9q8PO10jcQUZkIGqKXDMNaggK/xl5lrkYhT2NYP6F9lGjhUORxa1QoLE//En6pd/4
-         S/FX0ZNzchl27Fzu/llHmIVhh8sNdMhYnrGtgy26ayrTz42NFcXsEMMwOHTmF4uZFyLs
-         uV15EYT6Wp5d8oSinBhwOHMg+2zihEnwQwR2z+ETl4jLiIsifubLzZPUwv375BE/BEPm
-         vYmA==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=4ELcB1n16HnyQ+PPet2qQqyGcOAAV6Ox4dEHeBx+UOQ=;
+        b=hLIj/KKW2I5OAEqC6oizpKmGpdvX7cKwHI5APTXltw2iaT5tY6p8sBnNeSQxT/CgdA
+         Qfsni1x/hVSULOp2KDdVHyNLIYaxWqHl+YXO27uZGMvgy2Eao3KxJ5t17ssqz27qOHvY
+         DSQZ4Km+A5F/spGhUpzPQY0tp2/0rUYEeKXo5ISyBUf7nXeeKEyWhmxf6GGdo8O4gJSe
+         v1lU1rxVJaaR8/SWtbD5NQcGN9xFvReg+63xlDf6febIC+/ubMWO9WMl1FGEbNL1faD6
+         MKP5nPLcMBCrKyNfhehpf8NhjQENNLlnmLItBK8w6FBqdVMiUJCjdyB8IVkV5Hqozw4e
+         uasg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=CwnmURqbXWi83+YJ2u0BfQ7YOsLloUGg9mtui9lPXE4=;
-        b=a1sEj93XrNU5sIMVf1BCsaC00iV6Z9hjnOwsGptgjsQxI110TCE78LFuGpfNVuQJhF
-         qhe6f/Ma54hknULt88MzZcEtPFb2Jl+y8ynqVMV76keZQhnGcQM9SS6VNL4DX6nrS8aN
-         J1JwtIRybEIjU2Y2gXtZ4YTiQ8/Fgnp7eky79gmmL+ZafAZcDWynd2PKB9hgaCfbQ9MA
-         5jVXy+ESFyCtSru87mWaOfQCMUqbFSaB4Ppkc7AJb7RTzHLVgLnBi1NbVHK8mKI0lXFe
-         0o0DMBK2iLEuBr0JILD8UttUAtM5ccywCOmLyslkYm02VnrdseKeYpMpfLwG5ZvKe9SN
-         klfg==
-X-Gm-Message-State: AOAM531Um/AUMUxP33Ofcl0vf2T4BhYwdZBlkvLzgG94PgiPxlLrxzbX
-        O49iv7c90NbkRM6XdSBHdGc=
-X-Google-Smtp-Source: ABdhPJwYeJUt6gB0gAwhAnxzXp2NRRU8FBnM8XYYTz56YtbWM7wJOLi/BpXWdEJ/8lynUZTreKO2Eg==
-X-Received: by 2002:a37:c442:: with SMTP id h2mr5841601qkm.283.1610140650847;
-        Fri, 08 Jan 2021 13:17:30 -0800 (PST)
-Received: from ubuntu-m3-large-x86 ([2604:1380:45f1:1d00::1])
-        by smtp.gmail.com with ESMTPSA id a9sm5412026qkk.39.2021.01.08.13.17.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 08 Jan 2021 13:17:30 -0800 (PST)
-Date:   Fri, 8 Jan 2021 14:17:28 -0700
-From:   Nathan Chancellor <natechancellor@gmail.com>
-To:     Alexander Lobakin <alobakin@pm.me>
-Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Kees Cook <keescook@chromium.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Fangrui Song <maskray@google.com>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Pei Huang <huangpei@loongson.cn>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        Ralf Baechle <ralf@linux-mips.org>,
-        Corey Minyard <cminyard@mvista.com>,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arch@vger.kernel.org, stable@vger.kernel.org,
-        clang-built-linux@googlegroups.com
-Subject: Re: [PATCH v4 mips-next 5/7] MIPS: vmlinux.lds.S: explicitly declare
- .got table
-Message-ID: <20210108211728.GE2547542@ubuntu-m3-large-x86>
-References: <20210107123331.354075-1-alobakin@pm.me>
- <20210107132010.463129-1-alobakin@pm.me>
- <20210107132010.463129-2-alobakin@pm.me>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=4ELcB1n16HnyQ+PPet2qQqyGcOAAV6Ox4dEHeBx+UOQ=;
+        b=tgIccmoK6HkZdPVj5Nq6e78QrUORoqHhFhNdUkEufe1H5EKf0WkrapKy0TVR1lCnnm
+         wKlpeUtAtVN0/GhidqbdI3RRmLIh7GQrfnXPMCxk2z1/N77Sc4989ysdCC/7y8xDDjXs
+         CGdekocsgSeG/iClqYQT2xDJ98wDVtxTvxhKppIvVjloDpRGVQSZpCMEwgF+yNjb9uHp
+         h+Qn9AcNUBvdFaov42nYDBIaxX1HjxnEgA31j6z/vmdJBQ7wn1jSqiYyjd8T95Gzgnny
+         2Ee2rStIJGRGY7xf+z1d9S0WTqyMREvLksq6wcMwQfUGB8AFydtg+ZG/o/z7Hv7YxftT
+         2Dpg==
+X-Gm-Message-State: AOAM530v2/FDZuvSKkkg2csMJNUv/ZASGailzOf67B+Ot7ZuHDbyBtm+
+        vlMwmu8P86r2/MWxsoh48UUn/+syhaN3l7Fko6w=
+X-Google-Smtp-Source: ABdhPJxd7NOc/UlrlgEgpRKqoSLeq73YHde4TXgizOSPJ8EDuVrpVjMNAVnFEuJ8yS4fnR/Ur8lHAt4/tg1lidDpyBY=
+X-Received: by 2002:a05:6830:1d66:: with SMTP id l6mr3890500oti.23.1610140684949;
+ Fri, 08 Jan 2021 13:18:04 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210107132010.463129-2-alobakin@pm.me>
+References: <20210108201457.3078600-1-lee.jones@linaro.org> <20210108201457.3078600-30-lee.jones@linaro.org>
+In-Reply-To: <20210108201457.3078600-30-lee.jones@linaro.org>
+From:   Alex Deucher <alexdeucher@gmail.com>
+Date:   Fri, 8 Jan 2021 16:17:53 -0500
+Message-ID: <CADnq5_PT6StMHY-cQUMxKO+yFEZ9g4TUS6Ho2GoxDRfSPXW5=Q@mail.gmail.com>
+Subject: Re: [PATCH 29/40] drm/amd/display/dc/dce/dce_dmcu: Staticify local
+ function call 'dce_dmcu_load_iram'
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     Krunoslav Kovac <Krunoslav.Kovac@amd.com>,
+        Leo Li <sunpeng.li@amd.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        David Airlie <airlied@linux.ie>,
+        Maling list - DRI developers 
+        <dri-devel@lists.freedesktop.org>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 07, 2021 at 01:20:49PM +0000, Alexander Lobakin wrote:
-> LLVM stack generates GOT table when building the kernel:
-> 
-> ld.lld: warning: <internal>:(.got) is being placed in '.got'
-> 
-> According to the debug assertions, it's not zero-sized and thus
-> can't be handled the same way as .rel.dyn (like it's done for x86).
-> Use the ARM/ARM64 path here and place it at the end of .text section.
-> 
-> Reported-by: Nathan Chancellor <natechancellor@gmail.com>
-> Signed-off-by: Alexander Lobakin <alobakin@pm.me>
+On Fri, Jan 8, 2021 at 3:15 PM Lee Jones <lee.jones@linaro.org> wrote:
+>
+> Fixes the following W=3D1 kernel build warning(s):
+>
+>  drivers/gpu/drm/amd/amdgpu/../display/dc/dce/dce_dmcu.c:74:6: warning: n=
+o previous prototype for =E2=80=98dce_dmcu_load_iram=E2=80=99 [-Wmissing-pr=
+ototypes]
+>  In file included from drivers/gpu/drm/amd/amdgpu/../display/dc/dce/dce_d=
+mcu.c:31:
+>
+> Cc: Harry Wentland <harry.wentland@amd.com>
+> Cc: Leo Li <sunpeng.li@amd.com>
+> Cc: Alex Deucher <alexander.deucher@amd.com>
+> Cc: "Christian K=C3=B6nig" <christian.koenig@amd.com>
+> Cc: David Airlie <airlied@linux.ie>
+> Cc: Daniel Vetter <daniel@ffwll.ch>
+> Cc: Krunoslav Kovac <Krunoslav.Kovac@amd.com>
+> Cc: amd-gfx@lists.freedesktop.org
+> Cc: dri-devel@lists.freedesktop.org
+> Signed-off-by: Lee Jones <lee.jones@linaro.org>
 
-Reviewed-by: Nathan Chancellor <natechancellor@gmail.com>
+Applied.  Thanks!
+
+Alex
 
 > ---
->  arch/mips/kernel/vmlinux.lds.S | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/arch/mips/kernel/vmlinux.lds.S b/arch/mips/kernel/vmlinux.lds.S
-> index 0f736d60d43e..4709959f6985 100644
-> --- a/arch/mips/kernel/vmlinux.lds.S
-> +++ b/arch/mips/kernel/vmlinux.lds.S
-> @@ -69,6 +69,7 @@ SECTIONS
->  		*(.text.*)
->  		*(.fixup)
->  		*(.gnu.warning)
-> +		*(.got)
->  	} :text = 0
->  	_etext = .;	/* End of text section */
->  
-> -- 
-> 2.30.0
-> 
-> 
+>  drivers/gpu/drm/amd/display/dc/dce/dce_dmcu.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/gpu/drm/amd/display/dc/dce/dce_dmcu.c b/drivers/gpu/=
+drm/amd/display/dc/dce/dce_dmcu.c
+> index f3ed8b619cafd..fa2b47d41ee2f 100644
+> --- a/drivers/gpu/drm/amd/display/dc/dce/dce_dmcu.c
+> +++ b/drivers/gpu/drm/amd/display/dc/dce/dce_dmcu.c
+> @@ -71,7 +71,7 @@ static bool dce_dmcu_init(struct dmcu *dmcu)
+>         return true;
+>  }
+>
+> -bool dce_dmcu_load_iram(struct dmcu *dmcu,
+> +static bool dce_dmcu_load_iram(struct dmcu *dmcu,
+>                 unsigned int start_offset,
+>                 const char *src,
+>                 unsigned int bytes)
+> --
+> 2.25.1
+>
+> _______________________________________________
+> dri-devel mailing list
+> dri-devel@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/dri-devel
