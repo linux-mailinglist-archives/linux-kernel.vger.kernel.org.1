@@ -2,80 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CBCFF2EF488
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 16:10:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 602D22EF490
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 16:11:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727773AbhAHPI7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Jan 2021 10:08:59 -0500
-Received: from alexa-out.qualcomm.com ([129.46.98.28]:7185 "EHLO
-        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725806AbhAHPI7 (ORCPT
+        id S1727377AbhAHPLV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Jan 2021 10:11:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33138 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726251AbhAHPLU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Jan 2021 10:08:59 -0500
-Received: from ironmsg07-lv.qualcomm.com (HELO ironmsg07-lv.qulacomm.com) ([10.47.202.151])
-  by alexa-out.qualcomm.com with ESMTP; 08 Jan 2021 07:08:19 -0800
-X-QCInternal: smtphost
-Received: from ironmsg02-blr.qualcomm.com ([10.86.208.131])
-  by ironmsg07-lv.qulacomm.com with ESMTP/TLS/AES256-SHA; 08 Jan 2021 07:08:17 -0800
-X-QCInternal: smtphost
-Received: from nitirawa-linux.qualcomm.com ([10.206.25.176])
-  by ironmsg02-blr.qualcomm.com with ESMTP; 08 Jan 2021 20:37:56 +0530
-Received: by nitirawa-linux.qualcomm.com (Postfix, from userid 2342877)
-        id 20AE81A5C; Fri,  8 Jan 2021 20:37:56 +0530 (IST)
-From:   Nitin Rawat <nitirawa@codeaurora.org>
-To:     asutoshd@codeaurora.org, stummala@codeaurora.org,
-        vbadigan@codeaurora.org, alim.akhtar@samsung.com,
-        avri.altman@wdc.com, jejb@linux.ibm.com,
-        martin.petersen@oracle.com, cang@codeaurora.org,
-        stanley.chu@mediatek.com, beanhuo@micron.com
-Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Nitin Rawat <nitirawa@codeaurora.org>
-Subject: [PATCH V1] scsi: ufs: Add UFS3.0 in ufs HCI version check
-Date:   Fri,  8 Jan 2021 20:37:53 +0530
-Message-Id: <1610118473-21021-1-git-send-email-nitirawa@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
+        Fri, 8 Jan 2021 10:11:20 -0500
+Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 131D7C061380;
+        Fri,  8 Jan 2021 07:10:40 -0800 (PST)
+Received: by mail-ed1-x531.google.com with SMTP id cw27so11522760edb.5;
+        Fri, 08 Jan 2021 07:10:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Yv1Cd7yjkWa6SiXfOYc2/ThBFnWGdgOOaqiI+T4YVvU=;
+        b=ISM7io9NxWtXYCEJtzD7rih2PcZf6Tj6x7AZQjcYcYbWq7SWTPmFan4+UF/rxApTTY
+         5UgYkmt/sIsRaGz/tnXGGnn2HcLGvqlqtWhDDkeQiIqmh/klcBRG4rUDxgEUNPkdr436
+         UyylC4fRDqE+5y5uC8DyQVykfkjSl0m58sjot2xy+NZHVg6Ti28gduJ1kBR8nrmitBfa
+         lJpebXYagcD8TCwENvbEkHybXRFw5LIYG5+glipe2W+KQhCx/L7nWATxkK06X+3zD0WS
+         FBOxgcvlqnk33vJkzrnRUfbb59qod+6TgTgehgjoFX2ZQ7fLiRwtLOuYfLkBMUUGAD5N
+         IiuQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Yv1Cd7yjkWa6SiXfOYc2/ThBFnWGdgOOaqiI+T4YVvU=;
+        b=fxk02B6QuRmtgawzRJYhydgRwaqM2m6uw+nIO9bHSjwMkqMVh2EN3RTeGeY30fkeEX
+         5faj/SREkfwgEJIRJ0B5MCWFax6n14c0utK0sXKHQQOZ9n/J8KfDAoWW8/l1c1Jjl/kU
+         x9txWlfhFWaVQRx+HF7nlQv73gAFLlzpee3B2wqB6XFJAwvUCXtmjDY8v0Vrw4dEHnaW
+         66FIXY0PMZpSHXnmVClOG6mtQ5moJCxrLZPyzTG/d4AKQYRA4UzBXImENoc3zqVLR4/U
+         Ic8Iaao/cXAMdLNTtPhJ6ywa4q/KICDS1bXoLoTQMtIDLLtcaBvlPmFMGFybJ3n6VG5w
+         /sEQ==
+X-Gm-Message-State: AOAM531w4+TnW0OIcNh1Id9KjonNWhhlP7dtf08tW6KqBGCvHz6WILmr
+        HpoSweK11J9OF3DHsznUxw==
+X-Google-Smtp-Source: ABdhPJxoepKz8v6G+i9nSzXAadPVyX1jnM/Mpr31ibtS4FGr/ETI9yCKbb9OQz28l/TtkW85zUE0CQ==
+X-Received: by 2002:a05:6402:404:: with SMTP id q4mr5788509edv.295.1610118638748;
+        Fri, 08 Jan 2021 07:10:38 -0800 (PST)
+Received: from demetris-TA770E3.lan ([212.50.117.154])
+        by smtp.gmail.com with ESMTPSA id oq7sm3669286ejb.63.2021.01.08.07.10.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 08 Jan 2021 07:10:38 -0800 (PST)
+From:   Demetris Ierokipides <ierokipides.dem@gmail.com>
+To:     Heiko Stuebner <heiko@sntech.de>, Rob Herring <robh+dt@kernel.org>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Demetris Ierokipides <ierokipides.dem@gmail.com>
+Subject: [PATCH 0/2] ARM: dts: rockchip: minor tweaks for rk3288-miqi.This series adds a missing mali GPU node and two additional CPU opp points
+Date:   Fri,  8 Jan 2021 17:10:34 +0200
+Message-Id: <20210108151036.36434-1-ierokipides.dem@gmail.com>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As per JESD223D UFS HCI v3.0 specs, HCI version 3.0
-is also supported. Hence Adding UFS3.0 in UFS HCI
-version check to avoid logging the error message.
+From: Ntemis <ierokipides.dem@gmail.com>
 
-Signed-off-by: Nitin Rawat <nitirawa@codeaurora.org>
----
- drivers/scsi/ufs/ufshcd.c | 5 +++--
- drivers/scsi/ufs/ufshci.h | 1 +
- 2 files changed, 4 insertions(+), 2 deletions(-)
+Demetris Ierokipides (2):
+  ARM: dts: rockchip: add gpu node to rk3288-miqi
+  ARM: dts: rockchip: add extra cpu opp points to rk3288-miqi
 
-diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
-index 82ad317..54ca765 100644
---- a/drivers/scsi/ufs/ufshcd.c
-+++ b/drivers/scsi/ufs/ufshcd.c
-@@ -9255,8 +9255,9 @@ int ufshcd_init(struct ufs_hba *hba, void __iomem *mmio_base, unsigned int irq)
- 	if ((hba->ufs_version != UFSHCI_VERSION_10) &&
- 	    (hba->ufs_version != UFSHCI_VERSION_11) &&
- 	    (hba->ufs_version != UFSHCI_VERSION_20) &&
--	    (hba->ufs_version != UFSHCI_VERSION_21))
--		dev_err(hba->dev, "invalid UFS version 0x%x\n",
-+	    (hba->ufs_version != UFSHCI_VERSION_21) &&
-+	    (hba->ufs_version != UFSHCI_VERSION_30))
-+		dev_err(hba->dev, "invalid UFS HCI version 0x%x\n",
- 			hba->ufs_version);
+ arch/arm/boot/dts/rk3288-miqi.dts | 17 +++++++++++++++++
+ 1 file changed, 17 insertions(+)
 
- 	/* Get Interrupt bit mask per version */
-diff --git a/drivers/scsi/ufs/ufshci.h b/drivers/scsi/ufs/ufshci.h
-index 6795e1f..48f6c19 100644
---- a/drivers/scsi/ufs/ufshci.h
-+++ b/drivers/scsi/ufs/ufshci.h
-@@ -80,6 +80,7 @@ enum {
- 	UFSHCI_VERSION_11 = 0x00010100, /* 1.1 */
- 	UFSHCI_VERSION_20 = 0x00000200, /* 2.0 */
- 	UFSHCI_VERSION_21 = 0x00000210, /* 2.1 */
-+	UFSHCI_VERSION_30 = 0x00000300, /* 3.0 */
- };
-
- /*
---
-2.7.4
+-- 
+2.25.1
 
