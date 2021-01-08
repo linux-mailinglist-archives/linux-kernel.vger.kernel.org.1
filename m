@@ -2,86 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 95FC72EF6A4
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 18:42:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 498412EF6C4
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 18:47:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728555AbhAHRmE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Jan 2021 12:42:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56580 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726011AbhAHRmE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Jan 2021 12:42:04 -0500
-Received: from mail-ot1-x332.google.com (mail-ot1-x332.google.com [IPv6:2607:f8b0:4864:20::332])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF329C061380;
-        Fri,  8 Jan 2021 09:41:23 -0800 (PST)
-Received: by mail-ot1-x332.google.com with SMTP id r9so10344106otk.11;
-        Fri, 08 Jan 2021 09:41:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=eilUWP5R4wV4MoijQE+EsVa5yYDOaYmTSkLVKYEjl2U=;
-        b=t8/s63C9zg1APlDSvbhu4E55I8gB9DTCb8v9zh5JSZj/pMFF1FP7xtGjSQkp2Z5zlF
-         XUSlru64m6EqBG9LnWcExpvwrwfylKYQMm9xEAagqwmL3N6OPGjf0V0ZQJ8FFqj9n//P
-         uVH9jrfhNyoVQAQMWqacUDX+EsA6rKDSYikNbjNGOFHC/81y2vsQt/eZuWeP2/agkxVG
-         w3ppxktutf+AM+/Dkxcf3r42Yowu+sRgJcr/Qi+ov3CW2y9bPQByE4nww0jdCZCzr5GE
-         szrH5rsjKtCX16xS5YyiM8GrmxBw5nvj2/D48nkMtDYrwak3H8Ie5I2UohdV57o2u90l
-         wVBw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to:user-agent;
-        bh=eilUWP5R4wV4MoijQE+EsVa5yYDOaYmTSkLVKYEjl2U=;
-        b=ms7mxWAxsr2/YI89j4054+7G3WeaiWCEYnBPproSap/D1uf7t3cALVoq6ea0Exv6l+
-         8js3K3txOv82ZkId+NmUPk/QQESaYoXwWrB1LZC8XgbX/0NoOt2OBN2PZvLRpIcZsH02
-         DKVXvapBAnCKGfJms8HS05g9+9CwoDOOv/Nwqh5M/ixeuZjg3227rTtMH7WTYHZvci+Z
-         wVYNy2ryHolaD47EO+5JpZDCHRBYuHhrz9o4UbH7uevMk03eRTuvEKmEwv6vfrHE4xDI
-         w1FDu9ofeNSKe7Nm9bfwg9Muuhj7bSA6EVWJ8qJF5OCOe+68EAdHz5WgWfCrw0S9iVwS
-         FC2g==
-X-Gm-Message-State: AOAM530JwJtSjgsQoGPdYFrZDNH7MbqslvRzxjFGHmoN2NkWvmoopKKC
-        S7E2NRTQNfkojci2uFI8v6A=
-X-Google-Smtp-Source: ABdhPJwAPkwu6SqOpD1KsEien74X5L/V4G1EgC4lwXdvdaEZvOtxYeDJe2bjwW/4+ZnJuq4GFx7rDA==
-X-Received: by 2002:a05:6830:1011:: with SMTP id a17mr3328682otp.97.1610127681820;
-        Fri, 08 Jan 2021 09:41:21 -0800 (PST)
-Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id 8sm2136594oii.45.2021.01.08.09.41.20
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Fri, 08 Jan 2021 09:41:21 -0800 (PST)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Fri, 8 Jan 2021 09:41:19 -0800
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, stable@vger.kernel.org
-Subject: Re: [PATCH 5.10 00/20] 5.10.6-rc1 review
-Message-ID: <20210108174119.GA4664@roeck-us.net>
-References: <20210107143052.392839477@linuxfoundation.org>
+        id S1728444AbhAHRp7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Jan 2021 12:45:59 -0500
+Received: from mx2.suse.de ([195.135.220.15]:47478 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726386AbhAHRp6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 Jan 2021 12:45:58 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1610127912; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Gy94qC4XCy03Semo26HM+yaE2VFSVwCyprGmcwkRvVI=;
+        b=SPX3VXdgQ5pSeM9Dz6Ec/vHWeJjC3dP4d0sVp8nu0MJm+2as3EwPdUev55dvdtfpEBQquP
+        HbearfZGYHeraCtHzqAjnbFypmEHLCIFrKJqPnjRwuUd+i6NfyE2WYf1oqFDNw5CWUfipq
+        fs7R+iICh2OP3oV7YRAKUTfb8HfxUSA=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 73105AD1E;
+        Fri,  8 Jan 2021 17:45:12 +0000 (UTC)
+Date:   Fri, 8 Jan 2021 18:45:11 +0100
+From:   Petr Mladek <pmladek@suse.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        John Ogness <john.ogness@linutronix.de>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Shreyas Joshi <shreyas.joshi@biamp.com>,
+        shreyasjoshi15@gmail.com,
+        Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
+        Greg Ungerer <gerg@linux-m68k.org>,
+        Vineet Gupta <vgupta@synopsys.com>,
+        Thomas Meyer <thomas@m3y3r.de>,
+        David Gow <davidgow@google.com>,
+        Brendan Higgins <brendanhiggins@google.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 1/1] Revert "init/console: Use ttynull as a fallback when
+ there is no console"
+Message-ID: <X/iaJw1JKRRGcoX9@alley>
+References: <20210107164400.17904-1-pmladek@suse.com>
+ <20210107164400.17904-2-pmladek@suse.com>
+ <X/deF3U+LK5YCQT3@kroah.com>
+ <CAHk-=wjSz8tS=QqvnMDk4qHe5t5FS-Nk-SQMPAHJo5SJYp_t6w@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210107143052.392839477@linuxfoundation.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <CAHk-=wjSz8tS=QqvnMDk4qHe5t5FS-Nk-SQMPAHJo5SJYp_t6w@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 07, 2021 at 03:33:55PM +0100, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.10.6 release.
-> There are 20 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+On Thu 2021-01-07 11:38:36, Linus Torvalds wrote:
+> On Thu, Jan 7, 2021 at 11:15 AM Greg Kroah-Hartman
+> <gregkh@linuxfoundation.org> wrote:
+> >
+> > Linus, can you take this directly, or is this going through some other
+> > tree?
 > 
-> Responses should be made by Sat, 09 Jan 2021 14:30:35 +0000.
-> Anything received after that time might be too late.
+> I was _assuming_ that I'd get it through the normal printk pull
+> request, it doesn't seem to be that timing-critical.
 > 
+> But if there is nothing else pending, I can certainly take it directly
+> as that patch too.
 
-Build results:
-	total: 154 pass: 154 fail: 0
-Qemu test results:
-	total: 427 pass: 427 fail: 0
+This is the only printk-related fix at the moment.
 
-Tested-by: Guenter Roeck <linux@roeck-us.net>
+I have just pushed v2 (updated commit message, tags) into
+printk/linux.git for linux-next. It is the patch sent as
+https://lore.kernel.org/lkml/20210108114847.23469-1-pmladek@suse.com/
 
-Guenter
+Feel free to push v2 directly. Or I will create pull request the
+following week after it spends few days in linux-next.
+
+Best Regards,
+Petr
