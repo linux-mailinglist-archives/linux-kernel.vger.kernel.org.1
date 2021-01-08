@@ -2,132 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FD7E2EF4A7
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 16:16:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F2482EF4AC
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 16:19:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727457AbhAHPQa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Jan 2021 10:16:30 -0500
-Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:19624 "EHLO
-        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725817AbhAHPQ3 (ORCPT
+        id S1727543AbhAHPRj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Jan 2021 10:17:39 -0500
+Received: from mail-40131.protonmail.ch ([185.70.40.131]:27218 "EHLO
+        mail-40131.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726312AbhAHPRi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Jan 2021 10:16:29 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5ff877250001>; Fri, 08 Jan 2021 07:15:49 -0800
-Received: from [10.25.98.33] (172.20.145.6) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 8 Jan
- 2021 15:15:43 +0000
-Subject: Re: [PATCH v2 2/2] ALSA: hda/tegra: fix tegra-hda on tegra30 soc
-To:     Peter Geis <pgwipeout@gmail.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        "Peter De Schrijver" <pdeschrijver@nvidia.com>,
-        Prashant Gaikwad <pgaikwad@nvidia.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>, Mohan Kumar <mkumard@nvidia.com>
-CC:     <linux-clk@vger.kernel.org>, <linux-tegra@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <alsa-devel@alsa-project.org>,
-        Ion Agorria <ion@agorria.com>
-References: <20210108135913.2421585-1-pgwipeout@gmail.com>
- <20210108135913.2421585-3-pgwipeout@gmail.com>
-From:   Sameer Pujar <spujar@nvidia.com>
-Message-ID: <87d7cb13-92af-28ee-2e64-29648aefdc64@nvidia.com>
-Date:   Fri, 8 Jan 2021 20:45:39 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        Fri, 8 Jan 2021 10:17:38 -0500
+Date:   Fri, 08 Jan 2021 15:16:48 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
+        s=protonmail; t=1610119016;
+        bh=nTvFORzb1bf2GhxFAnJcMjuDAmjBfj16QbcnGKmQQN8=;
+        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
+        b=I3etT1bVJJGG6EmNOlOKiyuMd9VujUvYRzGxE60kGx0AXi0dA8XeUIIGWXYLxRAfJ
+         DvU62wDrGEyiH8DuYssDVuJ4t5139c5U3Gbz1gfMg+Jy+qYrh7t4cNju86CvimuKbO
+         59pR8dRcakP+eFG72Q3elh57SfTrSYFBbiBdvoQ8=
+To:     Mark Brown <broonie@kernel.org>
+From:   Timon Baetz <timon.baetz@protonmail.com>
+Cc:     Krzysztof Kozlowski <krzk@kernel.org>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        MyungJoo Ham <myungjoo.ham@samsung.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        Sebastian Reichel <sre@kernel.org>,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-pm@vger.kernel.org,
+        ~postmarketos/upstreaming@lists.sr.ht
+Reply-To: Timon Baetz <timon.baetz@protonmail.com>
+Subject: Re: [PATCH v6 2/8] regulator: dt-bindings: Document max8997-pmic nodes
+Message-ID: <20210108161635.1b9303c8.timon.baetz@protonmail.com>
+In-Reply-To: <20210106145931.GE4752@sirena.org.uk>
+References: <20201230205139.1812366-1-timon.baetz@protonmail.com> <20201230205139.1812366-2-timon.baetz@protonmail.com> <20210104135156.GB5645@sirena.org.uk> <20210104181825.GB27043@kozik-lap> <20210104182734.GH5645@sirena.org.uk> <20210104183821.GA29033@kozik-lap> <20210104212449.GJ5645@sirena.org.uk> <20210105165529.GB20401@kozik-lap> <20210106145931.GE4752@sirena.org.uk>
 MIME-Version: 1.0
-In-Reply-To: <20210108135913.2421585-3-pgwipeout@gmail.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-GB
-X-Originating-IP: [172.20.145.6]
-X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
- HQMAIL107.nvidia.com (172.20.187.13)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1610118949; bh=QvgaUD/pWxodzW1R5/ccezezD2UdcnNQ0QB4pDiJd9I=;
-        h=Subject:To:CC:References:From:Message-ID:Date:User-Agent:
-         MIME-Version:In-Reply-To:Content-Type:Content-Transfer-Encoding:
-         Content-Language:X-Originating-IP:X-ClientProxiedBy;
-        b=NjFvgCvWeuJPFhLVJfRCSiXoZR9aV1814DS6IFgco2+Zao6Xyr6Az6roi3ytTfKEQ
-         g8M1stC00ZIUDqaGRzyCIPa3Ns5wAmcc6FlcTlTyQeM4HnxTxF4Qzr4QJCi830Bm8G
-         IHMalQBYuXRYXDGlTaiWPTXv24G0ZrRF4XGRqmsN2T1CRCTmQ6pJ7hBYx7f3lZ+S/V
-         UXtCZgZ1TZ2EZeuWXtC59v8VrYtU5ECnrlziYdBzNLeY94bdVOnT2bXGqkE1hc1PAk
-         yqDNIY2Wp6J8i+QI13Gk2pNNHV9UD2m0QYfw05+br0pi/2gAwNwSoNq8dCzC1sLXlO
-         elb51gemr6S9Q==
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM shortcircuit=no
+        autolearn=disabled version=3.4.4
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
+        mailout.protonmail.ch
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, 6 Jan 2021 14:59:31 +0000, Mark Brown wrote:
+> On Tue, Jan 05, 2021 at 05:55:29PM +0100, Krzysztof Kozlowski wrote:
+> > On Mon, Jan 04, 2021 at 09:24:49PM +0000, Mark Brown wrote: =20
+>=20
+> > > I'm not sure I follow, sorry?  Either the core driver can parse the
+> > > bindings enough to know what children it has or (probably better) it =
+can
+> > > instantiate the children unconditionally and then the function driver=
+s
+> > > can figure out if they need to do anything. =20
+>=20
+> > Currently the MFD parent/core driver will instantiate children
+> > unconditionally.  It would have to be adapted. With proposed bindings -
+> > nothing to change.  MFD core already does the thing. =20
+>=20
+> We're not talking massive amounts of code here, but we are talking ABI
+> for a DT update.
+>=20
+> > The point is that function drivers should not be even bound, should not
+> > start to probe. Otherwise if they probe and fail, they will pollute the
+> > dmesg/probe log with failure. With the failure coming from looking for
+> > missing of_node or any other condition from parent/core driver. =20
+>=20
+> There will only be an error message if one is printed, if we can do a
+> definitive -ENODEV there should be no need to print an error.
+>=20
+> > > > Another point, is that this reflects the real hardware. The same as=
+ we
+> > > > model entire SoC as multiple children of soc node (with their own
+> > > > properties), here we represent smaller chip which also has
+> > > > sub-components. =20
+>=20
+> > > Components we're calling things like "extcon"... =20
+>=20
+> > I am rather thinking about charger, but yes, extcon as well. Either you
+> > have USB socket (and want to use associated logic) or not. =20
+>=20
+> Right, I'm just saying we don't need to add new device nodes reflecting
+> implementation details into the DT to do that.
 
+I'm not sure I can contribute that much to this discussion (this is my
+first proper kernel patch, also I don't really understand the argument).
+FWIW I looked at other MFD devices while implementing this like max77836,=
+=20
+max77693, max77650, max77843 (just to name a few).=20
+Assigning of_node to sub-devices using sub-nodes with compatible strings=20
+seemed to be a common pattern for MFD devices.
+Muic needs a node to be used with extcon_get_edev_by_phandle().
+Charger needs a node to reference a regulator.
 
-On 1/8/2021 7:29 PM, Peter Geis wrote:
-> External email: Use caution opening links or attachments
->
->
-> Currently hda on tegra30 fails to open a stream with an input/output error.
->
-> For example:
-> speaker-test -Dhw:0,3 -c 2
->
-> speaker-test 1.2.2
->
-> Playback device is hw:0,3
-> Stream parameters are 48000Hz, S16_LE, 2 channels
-> Using 16 octaves of pink noise
-> Rate set to 48000Hz (requested 48000Hz)
-> Buffer size range from 64 to 16384
-> Period size range from 32 to 8192
-> Using max buffer size 16384
-> Periods = 4
-> was set period_size = 4096
-> was set buffer_size = 16384
->   0 - Front Left
-> Write error: -5,Input/output error
-> xrun_recovery failed: -5,Input/output error
-> Transfer failed: Input/output error
->
-> The tegra-hda device was introduced in tegra30 but only utilized in
-> tegra124 until recent chips. Tegra210/186 work only due to a hardware
-> change. For this reason it is unknown when this issue first manifested.
-> Discussions with the hardware team show this applies to all current tegra
-> chips. It has been resolved in the tegra234, which does not have hda
-> support at this time.
->
-> The explanation from the hardware team is this:
-> Below is the striping formula referenced from HD audio spec.
->     { ((num_channels * bits_per_sample) / number of SDOs) >= 8 }
->
-> The current issue is seen because Tegra HW has a problem with boundary
-> condition (= 8) for striping. The reason why it is not seen on
-> Tegra210/Tegra186 is because it uses max 2SDO lines. Max SDO lines is
-> read from GCAP register.
->
-> For the given stream (channels = 2, bps = 16);
-> ratio = (channels * bps) / NSDO = 32 / NSDO;
->
-> On Tegra30,      ratio = 32/4 = 8  (FAIL)
-> On Tegra210/186, ratio = 32/2 = 16 (PASS)
-> On Tegra194,     ratio = 32/4 = 8  (FAIL) ==> Earlier workaround was
-> applied for it
->
-> If Tegra210/186 is forced to use 4SDO, it fails there as well. So the
-> behavior is consistent across all these chips.
->
-> Applying the fix in [1] universally resolves this issue on tegra30-hda.
-> Tested on the Ouya game console and the tf201 tablet.
->
-> [1] commit 60019d8c650d ("ALSA: hda/tegra: workaround playback failure on
-> Tegra194")
->
-> Reviewed-by: Jon Hunter <jonathanh@nvidia.com>
-> Tested-by: Ion Agorria <ion@agorria.com>
-> Signed-off-by: Peter Geis <pgwipeout@gmail.com>
-> ---
->   sound/pci/hda/hda_tegra.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-
-Thanks Peter.
-
-Reviewed-by: Sameer Pujar <spujar@nvidia.com>
