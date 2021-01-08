@@ -2,171 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C3D142EF3C0
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 15:13:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 56D0F2EF3C3
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 15:13:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727099AbhAHOMn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Jan 2021 09:12:43 -0500
-Received: from mga12.intel.com ([192.55.52.136]:10340 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726077AbhAHOMm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Jan 2021 09:12:42 -0500
-IronPort-SDR: b9EGTKpTnEajTLN2KIQ0cbpIOMp6gZ6yAvYO0g4lf5Lc08AagweL4Q4hiJxVqXdehLvRKz2jDo
- wv6Sg3aFhQVA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9857"; a="156783581"
-X-IronPort-AV: E=Sophos;i="5.79,331,1602572400"; 
-   d="scan'208";a="156783581"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jan 2021 06:11:52 -0800
-IronPort-SDR: QIvcRUEpv49LosbMs+0tjk4yidtLtHYQzcMuKTISxNNKSps1p+yp3rU8G6MMjI6BXW/pcKbxAX
- JTtAJcrQaCdw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.79,331,1602572400"; 
-   d="scan'208";a="347362189"
-Received: from lkp-server01.sh.intel.com (HELO 412602b27703) ([10.239.97.150])
-  by orsmga003.jf.intel.com with ESMTP; 08 Jan 2021 06:11:51 -0800
-Received: from kbuild by 412602b27703 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1kxsUY-0000JH-P0; Fri, 08 Jan 2021 14:11:50 +0000
-Date:   Fri, 08 Jan 2021 22:11:10 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:x86/cleanups] BUILD SUCCESS
- 91a8f6cb06b33adc79fbf5f7381d907485767c00
-Message-ID: <5ff867fe.TlW+PDz7kRZGFfTl%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S1727432AbhAHOMx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Jan 2021 09:12:53 -0500
+Received: from mail-oi1-f177.google.com ([209.85.167.177]:38848 "EHLO
+        mail-oi1-f177.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725793AbhAHOMw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 Jan 2021 09:12:52 -0500
+Received: by mail-oi1-f177.google.com with SMTP id x13so11442412oic.5;
+        Fri, 08 Jan 2021 06:12:36 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=wIuJZZvb0gzZkSS4B0eLCyXExMgaXIe5iJbAbqQLb5w=;
+        b=limr+0RxlP/aCLqANfhJnqKMwyLk3aMgSnz1M1NoyxsaW0O/GuHmsN4ZOuLFGCDdwv
+         AIVS8vyR85MrnwdWEbbnBnqd4lVjmdSI7Ho7YacVn45YZmc/ZF9NH4o6MMs1uUsogZd8
+         LIBxLusquv1CPMfVDtRPSUV/+JUR5t4nQchKFX8Zh+nkweIdGwg1wWLjFXrMzgAmfGGD
+         sPUerNat2P4OZwqmijmBqosC3hMMBbZQe5CkImuiKMEnCqyTXzUkpIlaDCiQOhonRCJx
+         +Lk7TpxNQheJuSRj7IHJLyUqF2sudFE8p9fU5YUkrUkWiKiMrFEv/pDA3CR8jtsgZjPq
+         DwDw==
+X-Gm-Message-State: AOAM533oxhmRYoAg3H/tHPF3sQuJOMno1GfnAK5n6fkSW2pF3LgNCtJ1
+        3XSiFya4acueZGi9AVxKAhQAGGp3ffsyC4/tWjY=
+X-Google-Smtp-Source: ABdhPJyemCjOC5dvpA4+jMsIA0V0xTUIe/Wk8kgEjN4sB5bYCpAmxwjdD7IQ/WgXE542apoi59gaN+8T5vt4YF4Ccig=
+X-Received: by 2002:aca:3cc5:: with SMTP id j188mr2459213oia.54.1610115130954;
+ Fri, 08 Jan 2021 06:12:10 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+References: <20201228213121.2331449-1-aford173@gmail.com>
+In-Reply-To: <20201228213121.2331449-1-aford173@gmail.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Fri, 8 Jan 2021 15:11:59 +0100
+Message-ID: <CAMuHMdWE7FS-BLjT0sXupPX+V7XOTjN8ZKnRmShNEOx0i9DCGQ@mail.gmail.com>
+Subject: Re: [PATCH 1/4] dt-bindings: net: renesas,etheravb: Add additional clocks
+To:     Adam Ford <aford173@gmail.com>
+Cc:     Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        Adam Ford-BE <aford@beaconembedded.com>,
+        Sergei Shtylyov <sergei.shtylyov@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        netdev <netdev@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git  x86/cleanups
-branch HEAD: 91a8f6cb06b33adc79fbf5f7381d907485767c00  x86/mm: Refine mmap syscall implementation
+On Mon, Dec 28, 2020 at 10:32 PM Adam Ford <aford173@gmail.com> wrote:
+> The AVB driver assumes there is an external clock, but it could
+> be driven by an external clock.  In order to enable a programmable
+> clock, it needs to be added to the clocks list and enabled in the
+> driver.  Since there currently only one clock, there is no
+> clock-names list either.
+>
+> Update bindings to add the additional optional clock, and explicitly
+> name both of them.
+>
+> Signed-off-by: Adam Ford <aford173@gmail.com>
 
-elapsed time: 749m
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
 
-configs tested: 109
-configs skipped: 133
+Gr{oetje,eeting}s,
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+                        Geert
 
-gcc tested configs:
-arm64                            allyesconfig
-arm64                               defconfig
-arm                                 defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-nios2                            alldefconfig
-c6x                         dsk6455_defconfig
-arm                        mini2440_defconfig
-mips                          rb532_defconfig
-mips                       rbtx49xx_defconfig
-nios2                            allyesconfig
-powerpc                    mvme5100_defconfig
-mips                          ath25_defconfig
-sh                             shx3_defconfig
-m68k                          multi_defconfig
-sh                          lboxre2_defconfig
-arm                       aspeed_g4_defconfig
-arm                         vf610m4_defconfig
-arm                          badge4_defconfig
-arm                        neponset_defconfig
-arm                       imx_v4_v5_defconfig
-sh                         ap325rxa_defconfig
-m68k                         amcore_defconfig
-ia64                             alldefconfig
-sh                        sh7785lcr_defconfig
-nds32                            alldefconfig
-sh                         microdev_defconfig
-powerpc                      arches_defconfig
-powerpc                mpc7448_hpc2_defconfig
-powerpc                 xes_mpc85xx_defconfig
-mips                          rm200_defconfig
-powerpc                        cell_defconfig
-x86_64                              defconfig
-ia64                            zx1_defconfig
-powerpc                     ppa8548_defconfig
-mips                           ip22_defconfig
-openrisc                    or1ksim_defconfig
-sh                           se7724_defconfig
-powerpc                      cm5200_defconfig
-arm                         lpc32xx_defconfig
-ia64                         bigsur_defconfig
-arm                        vexpress_defconfig
-mips                            gpr_defconfig
-sh                            hp6xx_defconfig
-arm                      integrator_defconfig
-sh                   rts7751r2dplus_defconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-nds32                               defconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-c6x                              allyesconfig
-i386                             allyesconfig
-i386                               tinyconfig
-i386                                defconfig
-sparc                            allyesconfig
-sparc                               defconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-x86_64               randconfig-a004-20210108
-x86_64               randconfig-a006-20210108
-x86_64               randconfig-a001-20210108
-x86_64               randconfig-a002-20210108
-x86_64               randconfig-a003-20210108
-x86_64               randconfig-a005-20210108
-i386                 randconfig-a005-20210108
-i386                 randconfig-a002-20210108
-i386                 randconfig-a001-20210108
-i386                 randconfig-a003-20210108
-i386                 randconfig-a006-20210108
-i386                 randconfig-a004-20210108
-i386                 randconfig-a016-20210108
-i386                 randconfig-a011-20210108
-i386                 randconfig-a014-20210108
-i386                 randconfig-a015-20210108
-i386                 randconfig-a013-20210108
-i386                 randconfig-a012-20210108
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-x86_64                                   rhel
-x86_64                           allyesconfig
-x86_64                    rhel-7.6-kselftests
-x86_64                               rhel-8.3
-x86_64                      rhel-8.3-kbuiltin
-x86_64                                  kexec
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-clang tested configs:
-x86_64               randconfig-a013-20210108
-x86_64               randconfig-a011-20210108
-x86_64               randconfig-a012-20210108
-x86_64               randconfig-a016-20210108
-x86_64               randconfig-a014-20210108
-x86_64               randconfig-a015-20210108
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
