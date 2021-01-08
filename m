@@ -2,103 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 961952EF37F
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 14:53:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F78F2EF382
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 14:54:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727856AbhAHNxS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Jan 2021 08:53:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49176 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727373AbhAHNxQ (ORCPT
+        id S1726981AbhAHNyP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Jan 2021 08:54:15 -0500
+Received: from mail-qt1-f173.google.com ([209.85.160.173]:36096 "EHLO
+        mail-qt1-f173.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726113AbhAHNyO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Jan 2021 08:53:16 -0500
-Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8493FC0612F8
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Jan 2021 05:52:36 -0800 (PST)
-Received: by mail-pg1-x52b.google.com with SMTP id 30so7704580pgr.6
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Jan 2021 05:52:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=N80gZSJtD3sqRIKTg0+kuHqupK03C+4GqJPUMKGxVjo=;
-        b=RjwwxxG9RdsovLTHrqvuicORcNaP2zRywzjXwm0T+Y+HV+uiIBdz7BoPUptz6Agvkv
-         Zz9zkKx0LnoYw4pSfcY5DJymuoSxKL6aWqjllMuR37m0g8YIXPiK9jb3SsbDyohIK9Jg
-         GIhbI0KUxy+fGwAmA62WHgW7lu5ygXM44s5PNMWHEbIyKAEQEVn1oiDM4q1Q7amXaZha
-         v2Kz/HeM8X0GlfTUXvMFd+pAe540+LtDg3lsFFAko5g19bT6TImZuHadkKiwqS06UTvc
-         TZP8p9aRye7ADNEwnj9aaj9DZiVvuSJvMiQ7lKp+dQG2bGm0e/hMdDeF8n48yEmJdZ73
-         WoNA==
+        Fri, 8 Jan 2021 08:54:14 -0500
+Received: by mail-qt1-f173.google.com with SMTP id z20so6532070qtq.3;
+        Fri, 08 Jan 2021 05:53:58 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=N80gZSJtD3sqRIKTg0+kuHqupK03C+4GqJPUMKGxVjo=;
-        b=FQLOvsB9/9mXrSxsIZvP2rew9UBRXYZQNucm6ibQfITlJDg4dVD4sFpcXxvbsGTJa+
-         QtwCjX56C9wL9L63sE4qfgdGHdhWJK0ewwalV/jTknDBIC3iEADdJW/JbZf/JoMsVXdz
-         dXgWQIylNEg753RAHFW2+Cu3gJOwSsHeK7ht+GNlfWvyAGTIb/0l330t0HHgNJiwHXCL
-         TVlWdNyScPEoYNxyVlr2TMrhH8M/y+OTAeu/Ium6Q/1hLuoztjgSvatrokKfsIqNxvBf
-         QR5JO7qWzaZNyASO3jLNIhx7hvdMISqg8epZ6ZsdlHA2EXilzhQ86PhAJEZyhIFTSTlE
-         zhoQ==
-X-Gm-Message-State: AOAM530pAD3/QXuYIjdNoO5PzAi18UHTmU59IbhQHbnZtmqLSOSwc2cS
-        oXdM4aXND4TFm5Y59gOSRAl1og==
-X-Google-Smtp-Source: ABdhPJwPMpwFfv9We2pWiH5vl2GZqYcxbmkp7GhhGclLrujLse7jwrz7ilEjL3gqatP5ymUO/o2JeQ==
-X-Received: by 2002:a65:608e:: with SMTP id t14mr7135630pgu.436.1610113956080;
-        Fri, 08 Jan 2021 05:52:36 -0800 (PST)
-Received: from always-libai.bytedance.net ([153.254.110.96])
-        by smtp.gmail.com with ESMTPSA id k64sm9401184pfd.75.2021.01.08.05.52.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 08 Jan 2021 05:52:35 -0800 (PST)
-From:   zhenwei pi <pizhenwei@bytedance.com>
-To:     arnd@arndb.de, gregkh@linuxfoundation.org
-Cc:     pbonzini@redhat.com, linux-kernel@vger.kernel.org,
-        pizhenwei@bytedance.com
-Subject: [PATCH v3 2/2] misc: pvpanic: introduce module parameter 'events'
-Date:   Fri,  8 Jan 2021 21:52:23 +0800
-Message-Id: <20210108135223.2924507-3-pizhenwei@bytedance.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210108135223.2924507-1-pizhenwei@bytedance.com>
-References: <20210108135223.2924507-1-pizhenwei@bytedance.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Rqj5Xsr/qj48fOwKpidxFwGYAamy0pFhkyboNHnnmD0=;
+        b=VKvenMBIj2wvAiIBOlgP8LH+6nirlRwZgGoSB2l7cMFA8EZViy8TWO4g7jxjnCPmh2
+         XjCSeM853eseG8onXrKaU9ghNV9+eEkdAj3XzzMpIqYH1IrCOF4Oa7BKhqG0jBvfVfY7
+         JamxjEBdB2MEOtmgV03CaJax1iq4p1SNbqk1dXvKOHgR3AMjHVfsKu1AbNkQbxe9mMcH
+         POyqqx3AbaHHOXUKzCqLYcVioB4OFW5DR2Nen33KaUxhGLNOZFvkG4IJaAVONAAtcaiG
+         oavbELZTseunFmnjTjeDl3sLpQ0/llgzNpSVZqyQy8sg98QlJ/ut2D7IlA8BurvoLUT3
+         vebA==
+X-Gm-Message-State: AOAM533wGDkbovMN5y+t/Kr31HRP1pflcDlCT03gxKcrKE989wmrg/UW
+        /lLU4GqP8dnKO5zmjMU8Q3Jp/xx5W1a5MXS5SU1o6CrDkkI=
+X-Google-Smtp-Source: ABdhPJxOLjxxIvzP+aqbdKXHt8YgvoA5SLGccMd6a22edrbQ9XXSRc6LPSCDN39g6QA0pEqGU+cPeToDlbJhQ0L819s=
+X-Received: by 2002:ac8:6e8b:: with SMTP id c11mr3514144qtv.314.1610114012891;
+ Fri, 08 Jan 2021 05:53:32 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20201224170502.2254683-1-aford173@gmail.com> <20201224170502.2254683-7-aford173@gmail.com>
+In-Reply-To: <20201224170502.2254683-7-aford173@gmail.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Fri, 8 Jan 2021 14:53:21 +0100
+Message-ID: <CAMuHMdX17fDaCsOu09u-wJFPtx0ywp_mQfp3U4pQGHTPW9fovA@mail.gmail.com>
+Subject: Re: [PATCH V2 7/9] arm64: dts: renesas: Introduce r8a774b1-beacon-rzg2n-kit
+To:     Adam Ford <aford173@gmail.com>
+Cc:     Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        Adam Ford-BE <aford@beaconembedded.com>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Suggested by Paolo, add a module parameter that can be used to limit
-which capabilities the driver uses.
+Hi Adam,
 
-Finally, the pvpanic guest driver works by the limitation of both
-device capability and user setting.
+On Thu, Dec 24, 2020 at 6:05 PM Adam Ford <aford173@gmail.com> wrote:
+> Beacon EmebeddedWorks is introducing a new kit based on the
+> RZ/G2N SoC from Renesas.
+>
+> The SOM supports eMMC, WiFi and Bluetooth, along with a Cat-M1
+> cellular radio.
+>
+> The Baseboard has Ethernet, USB, HDMI, stereo audio in and out,
+> along with a variety of push buttons and LED's, and support for
+> a parallel RGB and an LVDS display.  It uses the same baseboard
+> and SOM as the RZ/G2M.
+>
+> This SOM has only 2GB of DDR, and beacon-renesom-som.dtsi contains
+> the base memory node, so an additional memory node isn't necessary.
+>
+> Signed-off-by: Adam Ford <aford173@gmail.com>
+> ---
+> V2:  Add missing du node entries.
 
-Signed-off-by: zhenwei pi <pizhenwei@bytedance.com>
----
- drivers/misc/pvpanic.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+Thanks for the update!
 
-diff --git a/drivers/misc/pvpanic.c b/drivers/misc/pvpanic.c
-index e1023c7b8fb0..417f1086e764 100644
---- a/drivers/misc/pvpanic.c
-+++ b/drivers/misc/pvpanic.c
-@@ -19,6 +19,10 @@
- #include <uapi/misc/pvpanic.h>
- 
- static void __iomem *base;
-+static unsigned int events = PVPANIC_PANICKED | PVPANIC_CRASH_LOADED;
-+module_param(events, uint, 0644);
-+MODULE_PARM_DESC(events, "set event limitation of pvpanic device");
-+
- static unsigned int capability = PVPANIC_PANICKED | PVPANIC_CRASH_LOADED;
- 
- static ssize_t capability_show(struct device *dev,
-@@ -48,7 +52,7 @@ MODULE_LICENSE("GPL");
- static void
- pvpanic_send_event(unsigned int event)
- {
--	if (event & capability)
-+	if (event & capability & events)
- 		iowrite8(event, base);
- }
- 
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+i.e. will queue in renesas-devel for v5.12.
+
+> --- /dev/null
+> +++ b/arch/arm64/boot/dts/renesas/r8a774b1-beacon-rzg2n-kit.dts
+
+> +/* Reference versaclock instead of audio_clk_a */
+> +&rcar_sound {
+> +       clocks = <&cpg CPG_MOD 1005>,
+> +                <&cpg CPG_MOD 1006>, <&cpg CPG_MOD 1007>,
+> +                <&cpg CPG_MOD 1008>, <&cpg CPG_MOD 1009>,
+> +                <&cpg CPG_MOD 1010>, <&cpg CPG_MOD 1011>,
+> +                <&cpg CPG_MOD 1012>, <&cpg CPG_MOD 1013>,
+> +                <&cpg CPG_MOD 1014>, <&cpg CPG_MOD 1015>,
+> +                <&cpg CPG_MOD 1022>, <&cpg CPG_MOD 1023>,
+> +                <&cpg CPG_MOD 1024>, <&cpg CPG_MOD 1025>,
+> +                <&cpg CPG_MOD 1026>, <&cpg CPG_MOD 1027>,
+> +                <&cpg CPG_MOD 1028>, <&cpg CPG_MOD 1029>,
+> +                <&cpg CPG_MOD 1030>, <&cpg CPG_MOD 1031>,
+> +                <&cpg CPG_MOD 1020>, <&cpg CPG_MOD 1021>,
+> +                <&cpg CPG_MOD 1020>, <&cpg CPG_MOD 1021>,
+> +                <&cpg CPG_MOD 1019>, <&cpg CPG_MOD 1018>,
+> +                <&versaclock6_bb 4>, <&audio_clk_b>,
+> +                <&audio_clk_c>,
+> +                <&cpg CPG_CORE R8A774B1_CLK_S0D4>;
+
+BTW, r8a774[abe]1.dtsi define CPG_AUDIO_CLK_I. If you would use
+that instead of R8A774[ABE]1_CLK_S0D4, all rcar_sound clocks
+properties overrides would become identical, and you could consolidate
+them back in beacon-renesom-baseboard.dtsi.
+
+That can be done in a single patch on top later, though.
+
+> +};
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
 -- 
-2.25.1
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
