@@ -2,75 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 502892EEE8B
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 09:26:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 84CC72EEE92
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 09:28:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727660AbhAHI0W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Jan 2021 03:26:22 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:55661 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726312AbhAHI0W (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Jan 2021 03:26:22 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1610094295;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=D+IuUwBOwg8hNsyqoX4+8hAWhxTgkK/XQNwgdiHxBek=;
-        b=i2dTczA/fCUy1VwBwDIDiSb1FN3j+0MZCNaziiIzOp+KHiT8PAVJOen8jQi015icWp4XK5
-        30bOa+M1FwJM4QxBoLP2KntDji/U+Cse6UtcLPeIZLSx9Ails+xNGJxr1cvbRMwQfyj3XH
-        0TzejLGvsujoLuRgq+RsT5MMmF6XXLI=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-59-daqfk_FRPGiSBT6dZBS_dQ-1; Fri, 08 Jan 2021 03:24:52 -0500
-X-MC-Unique: daqfk_FRPGiSBT6dZBS_dQ-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 1AC2E180A08A;
-        Fri,  8 Jan 2021 08:24:51 +0000 (UTC)
-Received: from jason-ThinkPad-X1-Carbon-6th.redhat.com (ovpn-12-229.pek2.redhat.com [10.72.12.229])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 2FA055D9E4;
-        Fri,  8 Jan 2021 08:24:44 +0000 (UTC)
-From:   Jason Wang <jasowang@redhat.com>
-To:     mst@redhat.com, jasowang@redhat.com
-Cc:     elic@nvidia.com, virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] mlx5: vdpa: fix possible uninitialized var
-Date:   Fri,  8 Jan 2021 16:24:43 +0800
-Message-Id: <20210108082443.5609-1-jasowang@redhat.com>
+        id S1727661AbhAHI2l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Jan 2021 03:28:41 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59414 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727418AbhAHI2k (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 Jan 2021 03:28:40 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0CC7A23435;
+        Fri,  8 Jan 2021 08:27:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1610094479;
+        bh=SAoDiXJG+49pPIJcmLEdT3YdpudMLb3tXzuV+M1ddMg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=EnEKOJIN+WnD4u6lFgo77faKCj54N+d/pFKhcGzW/Y3/Ccl68siuEONd2+MQVmWwA
+         g8i5J1Jp9PRFqP+bjh1UVHmW6ZNZoM79Em/nHN5DHOG6ps9hEvQuax6LdoYTVQba6R
+         W0M3rPvSPrbm/vYAaPU9CsppYeuXAhSoIAN8UGVK69VCDMDjU1FlkyeISfeCHTf0Cp
+         UrPLrlJpGz0S4tUYkZu+D7Yp8uZm4/13PvNs53jDnTG1yuR/TZx3S6Q2A5kjWrfu5R
+         w1MefWO2hD7veYyvb2xtc7eB2pAO3ZpInFWl5OgE2Cy2VRAsn/olPyc/xhF+bAgyze
+         9qY+rCVqge15w==
+Date:   Fri, 8 Jan 2021 13:57:54 +0530
+From:   Vinod Koul <vkoul@kernel.org>
+To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc:     Joe Perches <joe@perches.com>, Matt Mackall <mpm@selenic.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Dan Williams <dan.j.williams@intel.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Mark Brown <broonie@kernel.org>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>, linux-mips@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-crypto@vger.kernel.org,
+        dmaengine@vger.kernel.org, linux-ide@vger.kernel.org,
+        linux-mtd@lists.infradead.org, netdev@vger.kernel.org,
+        linux-rtc@vger.kernel.org, linux-spi@vger.kernel.org,
+        linux-watchdog@vger.kernel.org, alsa-devel@alsa-project.org
+Subject: Re: [PATCH 05/10] dma: tx49 removal
+Message-ID: <20210108082754.GW2771@vkoul-mobl>
+References: <20210105140305.141401-1-tsbogend@alpha.franken.de>
+ <20210105140305.141401-6-tsbogend@alpha.franken.de>
+ <b84dadc2e98b1986dc800c5f6f202880ed905b38.camel@perches.com>
+ <20210107164015.GA12533@alpha.franken.de>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+In-Reply-To: <20210107164015.GA12533@alpha.franken.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Upstream: posted
+On 07-01-21, 17:40, Thomas Bogendoerfer wrote:
+> On Wed, Jan 06, 2021 at 11:10:38AM -0800, Joe Perches wrote:
+> > On Tue, 2021-01-05 at 15:02 +0100, Thomas Bogendoerfer wrote:
+> > > Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+> > []
+> > > diff --git a/drivers/dma/txx9dmac.h b/drivers/dma/txx9dmac.h
+> > []
+> > > @@ -26,11 +26,6 @@
+> > >   * DMA channel.
+> > >   */
+> > >  
+> > > 
+> > > -#ifdef CONFIG_MACH_TX49XX
+> > > -static inline bool txx9_dma_have_SMPCHN(void)
+> > > -{
+> > > -	return true;
+> > > -}
+> > >  #define TXX9_DMA_USE_SIMPLE_CHAIN
+> > >  #else
+> > >  static inline bool txx9_dma_have_SMPCHN(void)
+> > 
+> > This doesn't look like it compiles as there's now an #else
+> > without an #if
+> 
+> you are right, no idea what I had in mind while doing that.
+> 
+> Vinod,
+> 
+> as this patch series found a still active user of the platform,
+> could you drop the patch from your tree, or do you want a revert
+> from me ?
 
-When compiling with -Werror=maybe-uninitialized, gcc may complains the
-possible uninitialized umem. Fix that.
+Dropped now
 
-Signed-off-by: Jason Wang <jasowang@redhat.com>
----
- drivers/vdpa/mlx5/net/mlx5_vnet.c | 3 +++
- 1 file changed, 3 insertions(+)
-
-diff --git a/drivers/vdpa/mlx5/net/mlx5_vnet.c b/drivers/vdpa/mlx5/net/mlx5_vnet.c
-index f1d54814db97..a6ad83d8d8e2 100644
---- a/drivers/vdpa/mlx5/net/mlx5_vnet.c
-+++ b/drivers/vdpa/mlx5/net/mlx5_vnet.c
-@@ -706,6 +706,9 @@ static void umem_destroy(struct mlx5_vdpa_net *ndev, struct mlx5_vdpa_virtqueue
- 	case 3:
- 		umem = &mvq->umem3;
- 		break;
-+	default:
-+		WARN(1, "unsupported umem num %d\n", num);
-+		return;
- 	}
- 
- 	MLX5_SET(destroy_umem_in, in, opcode, MLX5_CMD_OP_DESTROY_UMEM);
 -- 
-2.25.1
-
+~Vinod
