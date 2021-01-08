@@ -2,148 +2,379 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9826F2EEEC1
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 09:46:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ACFA22EEEC3
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 09:49:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727762AbhAHIqF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Jan 2021 03:46:05 -0500
-Received: from mail-eopbgr00063.outbound.protection.outlook.com ([40.107.0.63]:61249
-        "EHLO EUR02-AM5-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725793AbhAHIqE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Jan 2021 03:46:04 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=WbVoPuMwEQKBKEYnLAuuMbEfk27cl07tgykY2sb276+yCPt/pk4upIWUdP5XlJUzjKs8WGddaqU0mexmcE1fFXxQV12BQKMeTHn9jpel63GOWrcc22h7bg1UkOxDSiVeH67qGYccKpjPRH7vhhnGGFEDF1QWl3hyEV/BqVa0P8kCzrPLfLF9R81rQu4Rra9x8aFVOdCRs2u71B6dOSwCBxwKwjLkhvxpZgCEvtx2P9ykzQCNTHc+muS3yyjZbDwhlYZUYp0amq60AsCkDaOwi38T5Kb7GueYCx+YA4StRWwvBbL01JFCjsaB6CN+nfI03wNJloBe0E9yVpFrK8uKzw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=I8P94qgp2Y/14sMCwVByDKJEhr2TKZ1tprdVAlrL3E8=;
- b=a6p0vJnWwLgAnOFc921B99fv1RhI1+p3Q9ra81Vp80xCV7UTsMF4l0yxob8LbfKhEFMF/REB22L0ezMhkC3XlgM61y0xKCsa4TuOg+h80BFt4mbKPGFZ7NNGDRW7CcSPYLA/qoWM1wmVs9jLhY2HNIPw2ztkO3OTrg90Gko+4UguKcXknDG+T0XYwoXKc+icauvaVrlRtTvXxSbq2D605g4OThT38ZI+tf14OY8onQXZr22hS8BrX909MdR1/nuoxd6ca8T8IWIkAbJtsp07Qm0NGqRw4XG8RMyEQLPCIDJUccKSR1xuNXlZtpTFxRpS7oRfZvV15gjNgIyLB+MPAA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=I8P94qgp2Y/14sMCwVByDKJEhr2TKZ1tprdVAlrL3E8=;
- b=c8Q9CGdWVWMEy7ztxEZ1cn1JadcrtqcAprGoj2G87voWz2AhgpL3GbDoMgb18peSxU4zkqwUOxZnHgjeiO6alIHGb7EO4Lz7KRvUQij/zNNogMy7U6bgwCOjBcPsxEq1mgp94k6ZAWLvxtzMvcbYRu+n8740EB9gjc8NN9RlhJg=
-Received: from AM6PR04MB5413.eurprd04.prod.outlook.com (2603:10a6:20b:96::28)
- by AM6PR04MB5703.eurprd04.prod.outlook.com (2603:10a6:20b:a3::22) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3742.6; Fri, 8 Jan
- 2021 08:45:15 +0000
-Received: from AM6PR04MB5413.eurprd04.prod.outlook.com
- ([fe80::f067:a4a9:70e0:e910]) by AM6PR04MB5413.eurprd04.prod.outlook.com
- ([fe80::f067:a4a9:70e0:e910%4]) with mapi id 15.20.3742.006; Fri, 8 Jan 2021
- 08:45:15 +0000
-From:   Ran Wang <ran.wang_1@nxp.com>
-To:     Sebastian Siewior <bigeasy@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>
-CC:     Thomas Gleixner <tglx@linutronix.de>,
-        Jiafei Pan <jiafei.pan@nxp.com>,
-        "linux-rt-users@vger.kernel.org" <linux-rt-users@vger.kernel.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH] [RFC] rt: kernel/sched/core: fix kthread_park() pending
- too long when CPU un-plugged
-Thread-Topic: [PATCH] [RFC] rt: kernel/sched/core: fix kthread_park() pending
- too long when CPU un-plugged
-Thread-Index: AQHW5NTeAJUSfO8HlkyY76riLvO0Vaob+tCAgABPFoCAAR//cA==
-Date:   Fri, 8 Jan 2021 08:45:14 +0000
-Message-ID: <AM6PR04MB5413F9490E9264273E22264FF1AE0@AM6PR04MB5413.eurprd04.prod.outlook.com>
-References: <20210107091841.19798-1-ran.wang_1@nxp.com>
- <X/bmU4byS7k46zWM@hirez.programming.kicks-ass.net>
- <20210107152843.gyljmpctkwybfewh@linutronix.de>
-In-Reply-To: <20210107152843.gyljmpctkwybfewh@linutronix.de>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: linutronix.de; dkim=none (message not signed)
- header.d=none;linutronix.de; dmarc=none action=none header.from=nxp.com;
-x-originating-ip: [119.31.174.73]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 8f379f48-89b0-42dc-b21e-08d8b3b1b802
-x-ms-traffictypediagnostic: AM6PR04MB5703:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <AM6PR04MB570364F624313A808ACC0D41F1AE0@AM6PR04MB5703.eurprd04.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:8882;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: UVq8rHjqbnIIq8h6SzKi4kPZTMXkPRI2HpN1a+UTwy8YkmNCp2Y9DsBTEDMtPTP+HlhK4dJl1hXtcDuuw4jcCHhfycI0vvR+pqRneWZeeyvGdHFMMzWHYPkVxjaiaGZxrVDKsYyd3ZnmX2qIijapamHx5TF/Xsk4YzyUHsp9jlqpWTt8fsX7X7QeO6l8tftdH9C8hvLPWAMini7bn2fE3rtErtb/mUd3fo68IMMnoKy7JIVO+8wZtZbUaIqYI/TaoZvRwUXcsXAReTjWAR9f7jURSMyqVNgxosxlzFd6KvVRD1KlKU6m9+7OnDU4lEoR3ickJhRwbzvET4WDcWm2EyPCdFwA6t8EwFXWUCawmyENCqBKjUlZE5nTE6UQE+DzmGJG8PTvx049pnoIz4iRAg==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM6PR04MB5413.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(136003)(376002)(366004)(396003)(39860400002)(110136005)(478600001)(316002)(186003)(86362001)(54906003)(55016002)(76116006)(52536014)(71200400001)(7696005)(2906002)(83380400001)(26005)(6506007)(53546011)(33656002)(66446008)(64756008)(66476007)(8676002)(8936002)(5660300002)(4326008)(66556008)(7416002)(66946007)(9686003);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: =?utf-8?B?OG9IUFpIMGtFNlJsU3FpeGZsT2JxQ216YXZiVkVZeVBKV2RZTE1yOU4vVDI5?=
- =?utf-8?B?U2FhWi9Ldy9HR1g5OUJIQlAwWG1yNzNYVnlydi9mQnFQZDgrSi9DQzVVMW9Y?=
- =?utf-8?B?VFdpMlFmSWozNzN2NWtkaktsenBrMWV2eHVOSkJMbUdSMngyUE1QK00vU1Zy?=
- =?utf-8?B?VCtoUVR6bWlibVhOSkVvckdJOU1pSlRyUkJJdVdHL01YRG5YR2ROVTZ4bVNj?=
- =?utf-8?B?TzNSeFpITGo5NkJlalE5RkxPN1V3OEUvYjF6ZmkzTSt2dmtGQncyOG5xT3px?=
- =?utf-8?B?QjFSY2svZncwRzFaMEhSTlhYQVk1Nzd4b0kvRWRRTkE1SjZsVFJhcmJPVzhv?=
- =?utf-8?B?RGR6M1BvM2ZsWGlyeHR5aStGeUVLSmZ3ZGZ6QTY4TDcvNC80STcyVDRzbVN5?=
- =?utf-8?B?T0tSRFAxRWpXUFMrT0JxV0Q3OGlyZDRicnk3SHJJb3FYczFheU84ajlnd1ZC?=
- =?utf-8?B?ZEE5R3pHZkU3cTZjamJrUXNpTmpCUWNSWlowYk9aTlJCNlUwZThRUlVwT0Nt?=
- =?utf-8?B?dGhscDVKSzh4MEkrbHU5V2R0SzdoS1VFV3ZtMkFZdXZrVEl2cEU4U2VMc1hX?=
- =?utf-8?B?SGxvcXNhL0F2Q0JxVnYvaFRwUkN2cjhXUmlJQ2JkWjJ4SVNiZ3hObUY5eXhk?=
- =?utf-8?B?d1VuN3U3K05ibmxIOEJRYXNONXJBcy9WK1JLVFduM1pINGtQSnphUW9YUmtK?=
- =?utf-8?B?U2FKQ2NyaklpN29QUHdSWS9ubkQ0SGY2ZHpzdXAwSUM5cXlvd3Y5UnJlNmdo?=
- =?utf-8?B?VUQrSlN2UStJWHdLdk9sQWhFWjZrV1RJOEN1RzA0WmVQTEVpUUVxRmxaVXRJ?=
- =?utf-8?B?RTVnY0wrRlBOa1lucEdyYnpYRVZ4M0lHVUh4OUdDM2hYQm1oTG8rTGNweWpU?=
- =?utf-8?B?MWRxbU1PUSt2ZkhtT2xDSGtlZUo4L1hqcDZNWnZZaTk4bCttK2JqTmo5bzlZ?=
- =?utf-8?B?K2xQYzROb0xkNjZLdnhvS3gxSHhlME90c2dpNHE0WnJIMUs5a0dwM3QxMFlr?=
- =?utf-8?B?OW9vc1RtcGlDRmFGMGwrZmcxdVM0SDdBR2JBeUhPUGhPNzhDY25BU1h5U05t?=
- =?utf-8?B?RklCYmFSVFRwQ3YraHIxeDl3aUVhYXFCT01rY2hWTm9oN3lsZ0FQRzdvS3kv?=
- =?utf-8?B?UDM3SlVWS1Q3M25uUG5MWUJpRU4zVklBYXVMUENBZVpvaUVOVThTRG9pYVZM?=
- =?utf-8?B?VWw4QnFzL2tMUkxkek5tWElXZzJIQ1QzM0dPeEFmY2JaNXZWNHpGSm16bzBu?=
- =?utf-8?B?SDNYWkFVUVVTcnpyRUw0YnBmb21sTnNIa0VHcU9Temo4RSsrVnF2TXhzNVVT?=
- =?utf-8?Q?XfOXCqx2efKRY=3D?=
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        id S1727729AbhAHIsw convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 8 Jan 2021 03:48:52 -0500
+Received: from youngberry.canonical.com ([91.189.89.112]:39834 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727484AbhAHIsv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 Jan 2021 03:48:51 -0500
+Received: from mail-oi1-f200.google.com ([209.85.167.200])
+        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <dongdong.tao@canonical.com>)
+        id 1kxnRH-0006cx-MT
+        for linux-kernel@vger.kernel.org; Fri, 08 Jan 2021 08:48:08 +0000
+Received: by mail-oi1-f200.google.com with SMTP id l9so6738041oih.23
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Jan 2021 00:48:07 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=tf8/pod5WqzoZqpge0fb1+Jz4ozT8c0mmNfV0zqbfk4=;
+        b=deb4JCDAlWnLXsLkzFXamz95iF3lPJ5PPNb50GpoyIs/qseAHXYOoEmki8xPUj0k2s
+         fx/+7zisKwrL74crqwwV8QsJ/zbTIy+96rB5sJYQPb6JjMtCAeIJ6hhKuO464i8ArOft
+         L0YQwO2LYIMWSVMn9EeBr+7HlvGp4qLMuYzXWcCnX5vhrmDQyZ1hLuOdUk1OiWvHo+al
+         178DHpxZ9kMPmdtGNpJ46MDUlbCrrf684OMKDMXhNzicVZC7/zHb717K51kJtzZCeQNf
+         cMqBlhZU/nuTMkhiuyQnjqCyOKes3nA6OO9J+lypZxrAmNEPzSTbVwDwojn+W2JLwNV+
+         3GSQ==
+X-Gm-Message-State: AOAM531MRoY/9kTvPAEW4eGHCU0BTFCoP9JlFD1RDc6f1cWoRbh/qhnR
+        QnmlvsScThUSFg9a9Yla6wTe7uFDOvBtLDftlLor05lUpUYfi3m4vpvbkr3a0oHnTQLlRDYtqi+
+        sxD+yRrZzNQ5wsK5caJGvvIQ8270UagbqFJtTKljzeUH6ClX0NLIGNNhjbg==
+X-Received: by 2002:a9d:620f:: with SMTP id g15mr1765406otj.361.1610095686493;
+        Fri, 08 Jan 2021 00:48:06 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJxTmrvKkCicGS6EZ/xMTqB/2KZLFmbn5gpsyQoMmB9wKHpLn6CrD+gbnWlz8XSP8LSrsovmGC8RaIQ0Te1eITs=
+X-Received: by 2002:a9d:620f:: with SMTP id g15mr1765399otj.361.1610095686148;
+ Fri, 08 Jan 2021 00:48:06 -0800 (PST)
 MIME-Version: 1.0
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: AM6PR04MB5413.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 8f379f48-89b0-42dc-b21e-08d8b3b1b802
-X-MS-Exchange-CrossTenant-originalarrivaltime: 08 Jan 2021 08:45:14.9333
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: H6fiiLUZ9BOHjpQc1ZF7Yj8FPPs568EuMUdfBUTnVoDZG6BNvx9SjIs4DS+9gJtPwaekdxar6ndB1Yprlvn6LA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM6PR04MB5703
+References: <20210105030602.14427-1-tdd21151186@gmail.com> <CAJS8hVK-ZCxJt=E3hwR0hmqPYL1T07_WC_nerb-dZodO+DqtDA@mail.gmail.com>
+ <1a4b2a68-a7b0-8eb0-e60b-c3cf5a5a9e56@suse.de> <CAJS8hVL2B=RZr8H4jFbz=bX9k_E9ur7kTeue6BJwzm4pwv1+qQ@mail.gmail.com>
+ <084276ab-7c74-31be-b957-3b039d7061a1@suse.de> <CAJS8hVKJMZ-9Ep-8v7FALeW5dGMttpQ45=WKJTQmLUKEozhfXg@mail.gmail.com>
+ <299ea3ff-4a9c-734e-0ec1-8b8d7480a019@suse.de>
+In-Reply-To: <299ea3ff-4a9c-734e-0ec1-8b8d7480a019@suse.de>
+From:   Dongdong Tao <dongdong.tao@canonical.com>
+Date:   Fri, 8 Jan 2021 16:47:55 +0800
+Message-ID: <CAJS8hVLSP2mk0Qzsxp=i5_ZgH4QJppPOrr2LU0oEAM-EOMjOyg@mail.gmail.com>
+Subject: Re: [PATCH] bcache: consider the fragmentation when update the
+ writeback rate
+To:     Coly Li <colyli@suse.de>
+Cc:     Kent Overstreet <kent.overstreet@gmail.com>,
+        "open list:BCACHE (BLOCK LAYER CACHE)" <linux-bcache@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Gavin Guo <gavin.guo@canonical.com>,
+        Gerald Yang <gerald.yang@canonical.com>,
+        Trent Lloyd <trent.lloyd@canonical.com>,
+        Dominique Poulain <dominique.poulain@canonical.com>,
+        Dongsheng Yang <dongsheng.yang@easystack.cn>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGkgU2ViYXN0aWFuLCBQZXRlcg0KDQpUaHVyc2RheSwgSmFudWFyeSA3LCAyMDIxIDExOjI5IFBN
-LCBTZWJhc3RpYW4gU2lld2lvciB3cm90ZToNCj4gDQo+IE9uIDIwMjEtMDEtMDcgMTE6NDU6Mzkg
-WyswMTAwXSwgUGV0ZXIgWmlqbHN0cmEgd3JvdGU6DQo+ID4gT24gVGh1LCBKYW4gMDcsIDIwMjEg
-YXQgMDU6MTg6NDFQTSArMDgwMCwgUmFuIFdhbmcgd3JvdGU6DQo+ID4gPiArDQo+ID4gPiArCQkJ
-aWYgKElTX0VOQUJMRUQoQ09ORklHX1BSRUVNUFRfUlQpICYmDQo+ID4gPiArCQkJICAgICFzdHJu
-Y21wKHAtPmNvbW0sICJrc29mdGlycWQvIiwgMTApKQ0KPiA+ID4gKwkJCQlzY2hlZHVsZV9ocnRp
-bWVvdXQoJnRvLA0KPiA+ID4gKwkJCQkJSFJUSU1FUl9NT0RFX1JFTCB8IEhSVElNRVJfTU9ERV9I
-QVJEKTsNCj4gPiA+ICsJCQllbHNlDQo+ID4gPiArCQkJCXNjaGVkdWxlX2hydGltZW91dCgmdG8s
-IEhSVElNRVJfTU9ERV9SRUwpOw0KPiA+DQo+ID4gVGhpcyBpcyBob3JyaWZpYywgd2h5IGRpZCB5
-b3Ugbm90IHNlbGYtY2Vuc29yIGFuZCBzcGFyZSBtZSB0aGUgbWVudGFsDQo+ID4gYW5ndWlzaCBv
-ZiBoYXZpbmcgdG8gZm9ybXVsYXRlIGEgQ29DIGNvbXBsaWFudCByZXNwb25zZT8NCj4gPg0KPiA+
-IEl0IGFsc28gdmlvbGF0ZXMgY29kaW5nIHN0eWxlLCBidXQgZ2l2ZW4gdGhlIHRvdGFsIGxhY2sg
-b2YgYW55IHNlbnNlLA0KPiA+IHRoYXQgc2VlbXMgbGlrZSBhIG1pbm9yIGRldGFpbC4NCj4gPg0K
-PiA+IFdoeSBjYW4ndCB3ZSB1c2UgSFJUSU1FUl9NT0RFX0hBUkQgdW5jb25kaXRpb25hbGx5Pw0K
-PiANCj4gSSBoYWQgYSBzaW1pbGFyIHBhdGNoIGluIC1SVCBhbmQgZHJvcHBlZCBpdCBpbiB2NS4x
-MC1yYzctcnQxNi4NCj4gSXQgd2FzIGFkZGVkIGJlY2F1c2UgUlQgY291bGRuJ3QgYm9vdCBzaW5j
-ZSBjcmVhdGluZyB0aGUgYm9vdC10aHJlYWRzIGRpZG4ndCB3b3JrIGJlZm9yZSB0aGUga3NvZnRp
-cnFkIHdhcyB1cC4gVGhpcyB3YXMgZml4ZWQgYnkgY29tbWl0DQo+ICAgIDI2YzcyOTViZTBjNWUg
-KCJrdGhyZWFkOiBEbyBub3QgcHJlZW1wdCBjdXJyZW50IHRhc2sgaWYgaXQgaXMgZ29pbmcgdG8g
-Y2FsbCBzY2hlZHVsZSgpIikNCg0KSSB0cmllZCBhcHBseWluZyBhYm92ZSBjb21taXQgdG8gbGlu
-dXgtNS42LnktcnQsIGl0IGNvdWxkIHJlc29sdmUgbXkgcHJvYmxlbSBvbiBMWDIxNjBBUkRCLCBU
-SEFOS1MhDQoNCj4gYW5kIGxpdmUgd2FzIGdvb2QgYWdhaW4uDQo+IHRnbHggKGFsc28pIHN1Z2dl
-c3RlZCB0byBhZGQgSFJUSU1FUl9NT0RFX0hBUkQgdW5jb25kaXRpb25hbGx5IChpdCBsb29rZWQg
-YXQgU1lTVEVNX1NUQVRFIGJhY2sgdGhlbikgYW5kIEkgd2FzIG9ubHkgd29ycmllZCBzb21lDQo+
-IGFidXNlIHZpYSB1c2VybGFuZC4NCg0KR290IGl0Lg0KDQpSZWdhcmRzLA0KUmFuDQoNCj4gVGhp
-cyBzbGVlcCBjYW4gYmUgdHJpZ2dlcmVkIGJ5IHB0cmFjZS9zdHJhY2UoKSBhbmQgd2l0aCBicmll
-ZiB0ZXN0aW5nIEkgY2FuIHRyaWdnZXIgdGhlIHNsZWVwIHRoZXJlIGJ1dCBJIGRvbid0IGdldCBp
-dCBhbnl3aGVyZSBuZWFyIHdoZXJlIEkNCj4gd291bGQgbm90aWNlIGl0IHdpdGggY3ljbGljdGVz
-dC4NCj4gDQo+IFNlYmFzdGlhbg0K
+Yeap, I will scale the testing for multiple threads with larger IO
+depth, thanks for the suggestion!
+
+On Fri, Jan 8, 2021 at 4:40 PM Coly Li <colyli@suse.de> wrote:
+>
+> On 1/8/21 4:30 PM, Dongdong Tao wrote:
+> > Hi Coly,
+> >
+> > They are captured with the same time length, the meaning of the
+> > timestamp and the time unit on the x-axis are different.
+> > (Sorry, I should have clarified this right after the chart)
+> >
+> > For the latency chart:
+> > The timestamp is the relative time since the beginning of the
+> > benchmark, so the start timestamp is 0 and the unit is based on
+> > millisecond
+> >
+> > For the dirty data and cache available percent chart:
+> > The timestamp is the UNIX timestamp, the time unit is based on second,
+> > I capture the stats every 5 seconds with the below script:
+> > ---
+> > #!/bin/sh
+> > while true; do echo "`date +%s`, `cat
+> > /sys/block/bcache0/bcache/dirty_data`, `cat
+> > /sys/block/bcache0/bcache/cache/cache_available_percent`, `cat
+> > /sys/block/bcache0/bcache/writeback_rate`" >> $1; sleep 5; done;
+> > ---
+> >
+> > Unfortunately, I can't easily make them using the same timestamp, but
+> > I guess I can try to convert the UNIX timestamp to the relative time
+> > like the first one.
+> > But If we ignore the value of the X-axis,  we can still roughly
+> > compare them by using the length of the X-axis since they have the
+> > same time length,
+> > and we can see that the Master's write start hitting the backing
+> > device when the cache_available_percent dropped to around 30.
+>
+> Copied, thanks for the explanation. The chart for single thread with io
+> depth 1 is convinced IMHO :-)
+>
+> One more question, the benchmark is about a single I/O thread with io
+> depth 1, which is not typical condition for real workload. Do you have
+> plan to test the latency and IOPS for multiple threads with larger I/O
+> depth ?
+>
+>
+> Thanks.
+>
+>
+> Coly Li
+>
+>
+> >
+> > On Fri, Jan 8, 2021 at 12:06 PM Coly Li <colyli@suse.de> wrote:
+> >>
+> >> On 1/7/21 10:55 PM, Dongdong Tao wrote:
+> >>> Hi Coly,
+> >>>
+> >>>
+> >>> Thanks for the reminder, I understand that the rate is only a hint of
+> >>> the throughput, it’s a value to calculate the sleep time between each
+> >>> round of keys writeback, the higher the rate, the shorter the sleep
+> >>> time, most of the time this means the more dirty keys it can writeback
+> >>> in a certain amount of time before the hard disk running out of speed.
+> >>>
+> >>>
+> >>> Here is the testing data that run on a 400GB NVME + 1TB NVME HDD
+> >>>
+> >>
+> >> Hi Dongdong,
+> >>
+> >> Nice charts :-)
+> >>
+> >>> Steps:
+> >>>
+> >>>  1.
+> >>>
+> >>>     make-bcache -B <HDD> -C <NVME> --writeback
+> >>>
+> >>>  2.
+> >>>
+> >>>     sudo fio --name=random-writers --filename=/dev/bcache0
+> >>>     --ioengine=libaio --iodepth=1 --rw=randrw --blocksize=64k,8k
+> >>>     --direct=1 --numjobs=1  --write_lat_log=mix --log_avg_msec=10
+> >>>> The fio benchmark commands ran for about 20 hours.
+> >>>
+> >>
+> >> The time lengths of first 3 charts are 7.000e+7, rested are 1.60930e+9.
+> >> I guess the time length of the I/O latency chart is 1/100 of the rested.
+> >>
+> >> Can you also post the latency charts for 1.60930e+9 seconds? Then I can
+> >> compare the latency with dirty data and available cache charts.
+> >>
+> >>
+> >> Thanks.
+> >>
+> >>
+> >> Coly Li
+> >>
+> >>
+> >>
+> >>
+> >>
+> >>>
+> >>> Let’s have a look at the write latency first:
+> >>>
+> >>> Master:
+> >>>
+> >>>
+> >>>
+> >>> Master+the patch:
+> >>>
+> >>> Combine them together:
+> >>>
+> >>> Again, the latency (y-axis) is based on nano-second, x-axis is the
+> >>> timestamp based on milli-second,  as we can see the master latency is
+> >>> obviously much higher than the one with my patch when the master bcache
+> >>> hit the cutoff writeback sync, the master isn’t going to get out of this
+> >>> cutoff writeback sync situation, This graph showed it already stuck at
+> >>> the cutoff writeback sync for about 4 hours before I finish the testing,
+> >>> it may still needs to stuck for days before it can get out this
+> >>> situation itself.
+> >>>
+> >>>
+> >>> Note that there are 1 million points for each , red represents master,
+> >>> green represents mater+my patch.  Most of them are overlapped with each
+> >>> other, so it may look like this graph has more red points then green
+> >>> after it hitting the cutoff, but simply it’s because the latency has
+> >>> scaled to a bigger range which represents the HDD latency.
+> >>>
+> >>>
+> >>>
+> >>> Let’s also have a look at the bcache’s cache available percent and dirty
+> >>> data percent.
+> >>>
+> >>> Master:
+> >>>
+> >>> Master+this patch:
+> >>>
+> >>> As you can see, this patch can avoid it hitting the cutoff writeback sync.
+> >>>
+> >>>
+> >>> As to say the improvement for this patch against the first one, let’s
+> >>> take a look at the writeback rate changing during the run.
+> >>>
+> >>> patch V1:
+> >>>
+> >>>
+> >>>
+> >>> Patch V2:
+> >>>
+> >>>
+> >>> The Y-axis is the value of rate, the V1 is very aggressive as it jumps
+> >>> instantly from a minimum 8 to around 10 million. And the patch V2 can
+> >>> control the rate under 5000 during the run, and after the first round of
+> >>> writeback, it can stay even under 2500, so this proves we don’t need to
+> >>> be as aggressive as V1 to get out of the high fragment situation which
+> >>> eventually causes all writes hitting the backing device. This looks very
+> >>> reasonable for me now.
+> >>>
+> >>> Note that the fio command that I used is consuming the bucket quite
+> >>> aggressively, so it had to hit the third stage which has the highest
+> >>> aggressiveness, but I believe this is not true in a real production env,
+> >>> real production env won’t consume buckets that aggressively, so I expect
+> >>> stage 3 may not very often be needed to hit.
+> >>>
+> >>>
+> >>> As discussed, I'll run multiple block size testing on at least 1TB NVME
+> >>> device later.
+> >>> But it might take some time.
+> >>>
+> >>>
+> >>> Regards,
+> >>> Dongdong
+> >>>
+> >>> On Tue, Jan 5, 2021 at 12:33 PM Coly Li <colyli@suse.de
+> >>> <mailto:colyli@suse.de>> wrote:
+> >>>
+> >>>     On 1/5/21 11:44 AM, Dongdong Tao wrote:
+> >>>     > Hey Coly,
+> >>>     >
+> >>>     > This is the second version of the patch, please allow me to explain a
+> >>>     > bit for this patch:
+> >>>     >
+> >>>     > We accelerate the rate in 3 stages with different aggressiveness, the
+> >>>     > first stage starts when dirty buckets percent reach above
+> >>>     > BCH_WRITEBACK_FRAGMENT_THRESHOLD_LOW(50), the second is
+> >>>     > BCH_WRITEBACK_FRAGMENT_THRESHOLD_MID(57) and the third is
+> >>>     > BCH_WRITEBACK_FRAGMENT_THRESHOLD_HIGH(64). By default the first stage
+> >>>     > tries to writeback the amount of dirty data in one bucket (on average)
+> >>>     > in (1 / (dirty_buckets_percent - 50)) second, the second stage
+> >>>     tries to
+> >>>     > writeback the amount of dirty data in one bucket in (1 /
+> >>>     > (dirty_buckets_percent - 57)) * 200 millisecond. The third stage tries
+> >>>     > to writeback the amount of dirty data in one bucket in (1 /
+> >>>     > (dirty_buckets_percent - 64)) * 20 millisecond.
+> >>>     >
+> >>>     > As we can see, there are two writeback aggressiveness increasing
+> >>>     > strategies, one strategy is with the increasing of the stage, the
+> >>>     first
+> >>>     > stage is the easy-going phase whose initial rate is trying to
+> >>>     write back
+> >>>     > dirty data of one bucket in 1 second, the second stage is a bit more
+> >>>     > aggressive, the initial rate tries to writeback the dirty data of one
+> >>>     > bucket in 200 ms, the last stage is even more, whose initial rate
+> >>>     tries
+> >>>     > to writeback the dirty data of one bucket in 20 ms. This makes sense,
+> >>>     > one reason is that if the preceding stage couldn’t get the
+> >>>     fragmentation
+> >>>     > to a fine stage, then the next stage should increase the
+> >>>     aggressiveness
+> >>>     > properly, also it is because the later stage is closer to the
+> >>>     > bch_cutoff_writeback_sync. Another aggressiveness increasing
+> >>>     strategy is
+> >>>     > with the increasing of dirty bucket percent within each stage, the
+> >>>     first
+> >>>     > strategy controls the initial writeback rate of each stage, while this
+> >>>     > one increases the rate based on the initial rate, which is
+> >>>     initial_rate
+> >>>     > * (dirty bucket percent - BCH_WRITEBACK_FRAGMENT_THRESHOLD_X).
+> >>>     >
+> >>>     > The initial rate can be controlled by 3 parameters
+> >>>     > writeback_rate_fp_term_low, writeback_rate_fp_term_mid,
+> >>>     > writeback_rate_fp_term_high, they are default 1, 5, 50, users can
+> >>>     adjust
+> >>>     > them based on their needs.
+> >>>     >
+> >>>     > The reason that I choose 50, 57, 64 as the threshold value is because
+> >>>     > the GC must be triggered at least once during each stage due to the
+> >>>     > “sectors_to_gc” being set to 1/16 (6.25 %) of the total cache
+> >>>     size. So,
+> >>>     > the hope is that the first and second stage can get us back to good
+> >>>     > shape in most situations by smoothly writing back the dirty data
+> >>>     without
+> >>>     > giving too much stress to the backing devices, but it might still
+> >>>     enter
+> >>>     > the third stage if the bucket consumption is very aggressive.
+> >>>     >
+> >>>     > This patch use (dirty / dirty_buckets) * fp_term to calculate the
+> >>>     rate,
+> >>>     > this formula means that we want to writeback (dirty /
+> >>>     dirty_buckets) in
+> >>>     > 1/fp_term second, fp_term is calculated by above aggressiveness
+> >>>     > controller, “dirty” is the current dirty sectors, “dirty_buckets”
+> >>>     is the
+> >>>     > current dirty buckets, so (dirty / dirty_buckets) means the average
+> >>>     > dirty sectors in one bucket, the value is between 0 to 1024 for the
+> >>>     > default setting,  so this formula basically gives a hint that to
+> >>>     reclaim
+> >>>     > one bucket in 1/fp_term second. By using this semantic, we can have a
+> >>>     > lower writeback rate when the amount of dirty data is decreasing and
+> >>>     > overcome the fact that dirty buckets number is always increasing
+> >>>     unless
+> >>>     > GC happens.
+> >>>     >
+> >>>     > *Compare to the first patch:
+> >>>     > *The first patch is trying to write back all the data in 40 seconds,
+> >>>     > this will result in a very high writeback rate when the amount of
+> >>>     dirty
+> >>>     > data is big, this is mostly true for the large cache devices. The
+> >>>     basic
+> >>>     > problem is that the semantic of this patch is not ideal, because we
+> >>>     > don’t really need to writeback all dirty data in order to solve this
+> >>>     > issue, and the instant large increase of the rate is something I
+> >>>     feel we
+> >>>     > should better avoid (I like things to be smoothly changed unless no
+> >>>     > choice: )).
+> >>>     >
+> >>>     > Before I get to this new patch(which I believe should be optimal
+> >>>     for me
+> >>>     > atm), there have been many tuning/testing iterations, eg. I’ve
+> >>>     tried to
+> >>>     > tune the algorithm to writeback ⅓ of the dirty data in a certain
+> >>>     amount
+> >>>     > of seconds, writeback 1/fragment of the dirty data in a certain amount
+> >>>     > of seconds, writeback all the dirty data only in those error_buckets
+> >>>     > (error buckets = dirty buckets - 50% of the total buckets) in a
+> >>>     certain
+> >>>     > amount of time. However, those all turn out not to be ideal, only the
+> >>>     > semantic of the patch makes much sense for me and allows me to control
+> >>>     > the rate in a more precise way.
+> >>>     >
+> >>>     > *Testing data:
+> >>>     > *I'll provide the visualized testing data in the next couple of days
+> >>>     > with 1TB NVME devices cache but with HDD as backing device since it's
+> >>>     > what we mostly used in production env.
+> >>>     > I have the data for 400GB NVME, let me prepare it and take it for
+> >>>     you to
+> >>>     > review.
+> >>>     [snipped]
+> >>>
+> >>>     Hi Dongdong,
+> >>>
+> >>>     Thanks for the update and continuous effort on this idea.
+> >>>
+> >>>     Please keep in mind the writeback rate is just a advice rate for the
+> >>>     writeback throughput, in real workload changing the writeback rate
+> >>>     number does not change writeback throughput obviously.
+> >>>
+> >>>     Currently I feel this is an interesting and promising idea for your
+> >>>     patch, but I am not able to say whether it may take effect in real
+> >>>     workload, so we do need convinced performance data on real workload and
+> >>>     configuration.
+> >>>
+> >>>     Of course I may also help on the benchmark, but my to-do list is long
+> >>>     enough and it may take a very long delay time.
+> >>>
+> >>>     Thanks.
+> >>>
+> >>>     Coly Li
+> >>>
+> >>
+>
