@@ -2,132 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 079502EFB32
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 23:24:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E253F2EFB38
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 23:27:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726754AbhAHWYN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Jan 2021 17:24:13 -0500
-Received: from mga09.intel.com ([134.134.136.24]:1525 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725763AbhAHWYM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Jan 2021 17:24:12 -0500
-IronPort-SDR: 41bHxkV0yZQ5kXHEsm0OURGHvxKIDzeXOuMKDZc4rbMgAGripvvnEDRheWkutdHYClpCfVP8bA
- fz8RZdao0XSw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9858"; a="177810719"
-X-IronPort-AV: E=Sophos;i="5.79,332,1602572400"; 
-   d="scan'208";a="177810719"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jan 2021 14:22:59 -0800
-IronPort-SDR: 6AZfUQRjruUiq3waI6R4k01goON3OjB2cqqQj1j2GNQRPzZpyApD/F3AYswfgMRTmeJhb6rm1s
- +vA4n6WyeXBQ==
-X-IronPort-AV: E=Sophos;i="5.79,332,1602572400"; 
-   d="scan'208";a="423091296"
-Received: from agluck-desk2.sc.intel.com ([10.3.52.68])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jan 2021 14:22:59 -0800
-From:   Tony Luck <tony.luck@intel.com>
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     Tony Luck <tony.luck@intel.com>, x86@kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Darren Hart <dvhart@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-edac@vger.kernel.org,
-        linux-mm@kvack.org
-Subject: [PATCH 2/2] futex, x86/mce: Avoid double machine checks
-Date:   Fri,  8 Jan 2021 14:22:51 -0800
-Message-Id: <20210108222251.14391-3-tony.luck@intel.com>
-X-Mailer: git-send-email 2.21.1
-In-Reply-To: <20210108222251.14391-1-tony.luck@intel.com>
-References: <20210108222251.14391-1-tony.luck@intel.com>
+        id S1726793AbhAHWZN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Jan 2021 17:25:13 -0500
+Received: from aserp2120.oracle.com ([141.146.126.78]:33650 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725792AbhAHWZM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 Jan 2021 17:25:12 -0500
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 108MF4Ww149384;
+        Fri, 8 Jan 2021 22:24:21 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=jJ8etmteWZ41HBD6qWBhSf930GsQVHkwZKhpGCrLnFc=;
+ b=P4lPF61soEzFuhkoW5IsYuM4vTwcWI7HL9KU08NK8XqoFBnq4KsaB6M+w/MRNvZn+PMt
+ AWjWEbumeaVeh+kmHIv7F5umyBgcRPZ/LJEXjSc0iZsIXxhTNFbBXK5IDbA2zyLILt0f
+ MpjvJUIMoXPaqmS1QIEWCwcbKm6kwJ3eX1lOU8HT9exnR4xmfNlOPkRYl/IbM36bcHZ3
+ XD9ovz08IwS/W+sIGo/kuEkRMlg7zAEwqqtITgYKP/gyvPA9wl3aiRRxaDPxejIHFHRk
+ 2A12aYDcsKa3eB6faHrkmkBuL62WQ1mHdKw2i6p9earXtd6nka2UYP0eET+6b8KYK1kq 1g== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by aserp2120.oracle.com with ESMTP id 35wepmk6ne-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 08 Jan 2021 22:24:21 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 108MExoU137164;
+        Fri, 8 Jan 2021 22:24:21 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by aserp3020.oracle.com with ESMTP id 35v1fd3bey-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 08 Jan 2021 22:24:21 +0000
+Received: from abhmp0018.oracle.com (abhmp0018.oracle.com [141.146.116.24])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 108MOH5S025417;
+        Fri, 8 Jan 2021 22:24:18 GMT
+Received: from [192.168.2.112] (/50.38.35.18)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Fri, 08 Jan 2021 22:24:17 +0000
+Subject: Re: [PATCH v2 6/6] mm: hugetlb: remove VM_BUG_ON_PAGE from
+ page_huge_active
+To:     Muchun Song <songmuchun@bytedance.com>, akpm@linux-foundation.org
+Cc:     n-horiguchi@ah.jp.nec.com, ak@linux.intel.com, mhocko@suse.cz,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+References: <20210106084739.63318-1-songmuchun@bytedance.com>
+ <20210106084739.63318-7-songmuchun@bytedance.com>
+From:   Mike Kravetz <mike.kravetz@oracle.com>
+Message-ID: <b4777be4-fa76-4e71-8659-7d0820005028@oracle.com>
+Date:   Fri, 8 Jan 2021 14:24:16 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210106084739.63318-7-songmuchun@bytedance.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9858 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 phishscore=0
+ suspectscore=0 spamscore=0 bulkscore=0 adultscore=0 mlxscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2101080114
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9858 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 bulkscore=0 spamscore=0
+ impostorscore=0 phishscore=0 lowpriorityscore=0 suspectscore=0
+ priorityscore=1501 mlxscore=0 malwarescore=0 clxscore=1015 mlxlogscore=999
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2101080114
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-futex_wait_setup() first tries to read the user value with page faults
-disabled (because it holds a lock, and so cannot sleep). If that read
-fails it drops the lock and tries again.
+On 1/6/21 12:47 AM, Muchun Song wrote:
+> The page_huge_active() can be called from scan_movable_pages() which
+> do not hold a reference count to the HugeTLB page. So when we call
+> page_huge_active() from scan_movable_pages(), the HugeTLB page can
+> be freed parallel. Then we will trigger a BUG_ON which is in the
+> page_huge_active() when CONFIG_DEBUG_VM is enabled. Just remove the
+> VM_BUG_ON_PAGE.
+> 
+> Fixes: 7e1f049efb86 ("mm: hugetlb: cleanup using paeg_huge_active()")
+> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+> Reviewed-by: Mike Kravetz <mike.kravetz@oracle.com>
+> ---
+>  mm/hugetlb.c | 1 -
+>  1 file changed, 1 deletion(-)
+> 
+> diff --git a/mm/hugetlb.c b/mm/hugetlb.c
+> index 67200dd25b1d..7a24ed28ec4f 100644
+> --- a/mm/hugetlb.c
+> +++ b/mm/hugetlb.c
+> @@ -1372,7 +1372,6 @@ struct hstate *size_to_hstate(unsigned long size)
+>   */
+>  bool page_huge_active(struct page *page)
+>  {
+> -	VM_BUG_ON_PAGE(!PageHuge(page), page);
+>  	return PageHead(page) && PagePrivate(&page[1]);
+>  }
 
-But there are now two reasons why the user space read can fail. Either:
-1) legacy case of a page fault, in which case it is reasonable to retry
-2) machine check on the user address, bad idea to re-read
+After more thought, should that return statement be changed to?
+	return PageHeadHuge(page) && PagePrivate(&page[1]);
 
-Add some infrastructure to differentiate these cases.
-
-Signed-off-by: Tony Luck <tony.luck@intel.com>
----
- arch/x86/include/asm/mmu.h     |  7 +++++++
- arch/x86/kernel/cpu/mce/core.c | 10 ++++++++++
- include/linux/mm.h             |  4 ++++
- kernel/futex.c                 |  3 +++
- 4 files changed, 24 insertions(+)
-
-diff --git a/arch/x86/include/asm/mmu.h b/arch/x86/include/asm/mmu.h
-index 5d7494631ea9..a46c78381388 100644
---- a/arch/x86/include/asm/mmu.h
-+++ b/arch/x86/include/asm/mmu.h
-@@ -66,4 +66,11 @@ typedef struct {
- void leave_mm(int cpu);
- #define leave_mm leave_mm
- 
-+#if defined(CONFIG_X86_MCE) && defined(CONFIG_MEMORY_FAILURE)
-+#undef arch_memory_failure
-+#define arch_memory_failure x86_memory_failure
-+#endif
-+
-+bool x86_memory_failure(u32 __user *addr);
-+
- #endif /* _ASM_X86_MMU_H */
-diff --git a/arch/x86/kernel/cpu/mce/core.c b/arch/x86/kernel/cpu/mce/core.c
-index 1bf11213e093..b27aa30290bb 100644
---- a/arch/x86/kernel/cpu/mce/core.c
-+++ b/arch/x86/kernel/cpu/mce/core.c
-@@ -1236,6 +1236,16 @@ static void __mc_scan_banks(struct mce *m, struct pt_regs *regs, struct mce *fin
- 	*m = *final;
- }
- 
-+bool x86_memory_failure(u32 __user *addr)
-+{
-+	if (current->mce_busy == 0)
-+		return false;
-+
-+	WARN_ON(current->mce_vaddr != addr);
-+
-+	return true;
-+}
-+
- static void kill_me_now(struct callback_head *ch)
- {
- 	force_sig(SIGBUS);
-diff --git a/include/linux/mm.h b/include/linux/mm.h
-index ecdf8a8cd6ae..470708a71dd3 100644
---- a/include/linux/mm.h
-+++ b/include/linux/mm.h
-@@ -3177,5 +3177,9 @@ unsigned long wp_shared_mapping_range(struct address_space *mapping,
- 
- extern int sysctl_nr_trim_pages;
- 
-+#ifndef arch_memory_failure
-+#define arch_memory_failure(vaddr)	(0)
-+#endif
-+
- #endif /* __KERNEL__ */
- #endif /* _LINUX_MM_H */
-diff --git a/kernel/futex.c b/kernel/futex.c
-index c47d1015d759..8fa2fc854026 100644
---- a/kernel/futex.c
-+++ b/kernel/futex.c
-@@ -2658,6 +2658,9 @@ static int futex_wait_setup(u32 __user *uaddr, u32 val, unsigned int flags,
- 	if (ret) {
- 		queue_unlock(*hb);
- 
-+		if (arch_memory_failure(uaddr))
-+			return ret;
-+
- 		ret = get_user(uval, uaddr);
- 		if (ret)
- 			return ret;
+We only want to test that PagePrivate flag for hugetlb head pages.
+Although, the possibility that the hugetlb page was freed and turned
+into another compound page in this race window is REALLY small.
 -- 
-2.21.1
-
+Mike Kravetz
