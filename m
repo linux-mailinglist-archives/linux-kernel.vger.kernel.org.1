@@ -2,119 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 127AB2EED9E
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 07:53:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A213B2EEDA7
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 08:00:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727525AbhAHGxf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Jan 2021 01:53:35 -0500
-Received: from mga02.intel.com ([134.134.136.20]:45892 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726957AbhAHGxe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Jan 2021 01:53:34 -0500
-IronPort-SDR: aPfsNz5pPm4k1R5oHcxQ3W9yA90l+BqQ8Dkvw7rAmFoeG5uB6qv2yyJlSUq0Uc9xRiQv2yH4nv
- P9tZpGqMcT+g==
-X-IronPort-AV: E=McAfee;i="6000,8403,9857"; a="164628733"
-X-IronPort-AV: E=Sophos;i="5.79,330,1602572400"; 
-   d="scan'208";a="164628733"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Jan 2021 22:52:43 -0800
-IronPort-SDR: oigxrtHREXZTibkRQWv6PiZfLKNgdtUIFI04i/bOgJdgJRP4GxNM+adzewHEWy305h1TbtAdQI
- zaMEF+BdNokw==
-X-IronPort-AV: E=Sophos;i="5.79,330,1602572400"; 
-   d="scan'208";a="570660463"
-Received: from chenyi-pc.sh.intel.com ([10.239.159.137])
-  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Jan 2021 22:52:42 -0800
-From:   Chenyi Qiang <chenyi.qiang@intel.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Xiaoyao Li <xiaoyao.li@intel.com>
-Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [RESEND v5 4/4] KVM: X86: Add the Document for KVM_CAP_X86_BUS_LOCK_EXIT
-Date:   Fri,  8 Jan 2021 14:55:30 +0800
-Message-Id: <20210108065530.2135-5-chenyi.qiang@intel.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210108065530.2135-1-chenyi.qiang@intel.com>
-References: <20210108065530.2135-1-chenyi.qiang@intel.com>
+        id S1727091AbhAHG7g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Jan 2021 01:59:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41528 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726784AbhAHG7f (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 Jan 2021 01:59:35 -0500
+Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 14DF1C0612F5
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Jan 2021 22:58:55 -0800 (PST)
+Received: by mail-ej1-x629.google.com with SMTP id 6so13170433ejz.5
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Jan 2021 22:58:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloud.ionos.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=zyfooBhJts+sWxSNLv+q770xV7CBKIUuvLR9O7/XxUs=;
+        b=dybQenKjNZ/nxMioP1vQ6vA9PWQUxB+DL1MSSIkwc5+6wayK9C5Yxxn4FeF399lM9W
+         zgRVeem6Hz44yeMMaNaudwEEwVuZTP5BQBtq1qBVefAV1zokT4LA9puK0uSq9pro66zQ
+         7clqerf49iq+xKqBQLSFOCo6kbEBlpZrNR23iHaFP/WbnR28fIzlK98QFQTkjvnnlYmF
+         4QtM0gl9JMMPTmvgqmKVF/R7qAg/nsDR644FTpCesGGQCye+7Y4OfsD9BMGeWT43Nc++
+         Pd6RzFZB4CtyhvhA2Sn75AzdeKLMHGvx0atRvrRk7sbuLJKrzCf7IMk241ZZOpO3I9nS
+         Ar8w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=zyfooBhJts+sWxSNLv+q770xV7CBKIUuvLR9O7/XxUs=;
+        b=XQwAZNYSdSUQAmqpApOiCzo34Rv9PZ/L6GOZ1RNGZ4OFtnWZPqNUrZG+6+iIRyNl6r
+         4v5WlrAzmDhFUVoYYG+GGY0IIp7hXeL3PdY37cdeuOw+rM1AIKyOJSnyvIr9WT6U/HsM
+         uC3S0VP4TCt7LIF6HbPzy21+XcxjUOaeHjDiDuPBV7c5piaHBa5KwMopgy60iH5QLkw9
+         K5gHnxrgQvvJqQGSAzHC22EJCZyReY2wCgydbEwqHR8ciEcyhLH0X6lF8R6FxqOEGnwp
+         rB7Jx0uk8BcMEAXH4JXBHc2We+VU7mqe3SGxQNqIEwq5SEiXYadmfw5lbSzNiZfGnd02
+         p1xg==
+X-Gm-Message-State: AOAM530fqUQ9gykN7sarvQF/pJCewHdQI6o2riGElKFhRPa+JZ6a79xW
+        vD0ty91koyqXt5Xg3iJuMMH2exvH87KGTyU/6xDQQA==
+X-Google-Smtp-Source: ABdhPJzF+WHohfJ5Ngwm/gOwgGPzKSNacc454v7d7YjJjbMbuBvERIDI1X9s/eLINQGPFnsh0zSbbKk3MKyBg/mIiik=
+X-Received: by 2002:a17:906:16da:: with SMTP id t26mr1713761ejd.478.1610089133826;
+ Thu, 07 Jan 2021 22:58:53 -0800 (PST)
+MIME-Version: 1.0
+References: <202101081429.0yyvkacR-lkp@intel.com>
+In-Reply-To: <202101081429.0yyvkacR-lkp@intel.com>
+From:   Jinpu Wang <jinpu.wang@cloud.ionos.com>
+Date:   Fri, 8 Jan 2021 07:58:43 +0100
+Message-ID: <CAMGffEnd9Vv7mHMxXE_9LdGwFdQQtp3HFBC8jQr7NguXkMj3yw@mail.gmail.com>
+Subject: Re: drivers/block/rnbd/rnbd-clt.c:387:2: error: implicit declaration
+ of function 'sg_free_table_chained'
+To:     kernel test robot <lkp@intel.com>
+Cc:     Gioh Kim <gi-oh.kim@cloud.ionos.com>, kbuild-all@lists.01.org,
+        open list <linux-kernel@vger.kernel.org>,
+        Jens Axboe <axboe@kernel.dk>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Introduce a new capability named KVM_CAP_X86_BUS_LOCK_EXIT, which is
-used to handle bus locks detected in guest. It allows the userspace to
-do custom throttling policies to mitigate the 'noisy neighbour' problem.
+On Fri, Jan 8, 2021 at 7:46 AM kernel test robot <lkp@intel.com> wrote:
+>
+> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+> head:   f5e6c330254ae691f6d7befe61c786eb5056007e
+> commit: 5a1328d0c3a757cdd8c65f4dfe0a02502a5810bc block/rnbd-clt: Dynamically allocate sglist for rnbd_iu
+> date:   3 weeks ago
+> config: parisc-randconfig-r011-20210108 (attached as .config)
+> compiler: hppa-linux-gcc (GCC) 9.3.0
+> reproduce (this is a W=1 build):
+>         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+>         chmod +x ~/bin/make.cross
+>         # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=5a1328d0c3a757cdd8c65f4dfe0a02502a5810bc
+>         git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+>         git fetch --no-tags linus master
+>         git checkout 5a1328d0c3a757cdd8c65f4dfe0a02502a5810bc
+>         # save the attached .config to linux build tree
+>         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 make.cross ARCH=parisc
+>
+> If you fix the issue, kindly add following tag as appropriate
+> Reported-by: kernel test robot <lkp@intel.com>
+>
+> All errors (new ones prefixed by >>):
+>
+>    drivers/block/rnbd/rnbd-clt.c: In function 'rnbd_softirq_done_fn':
+> >> drivers/block/rnbd/rnbd-clt.c:387:2: error: implicit declaration of function 'sg_free_table_chained' [-Werror=implicit-function-declaration]
+>      387 |  sg_free_table_chained(&iu->sgt, RNBD_INLINE_SG_CNT);
+>          |  ^~~~~~~~~~~~~~~~~~~~~
+>    drivers/block/rnbd/rnbd-clt.c: In function 'rnbd_queue_rq':
+> >> drivers/block/rnbd/rnbd-clt.c:1142:8: error: implicit declaration of function 'sg_alloc_table_chained'; did you mean 'sg_alloc_table'? [-Werror=implicit-function-declaration]
+>     1142 |  err = sg_alloc_table_chained(&iu->sgt,
+>          |        ^~~~~~~~~~~~~~~~~~~~~~
+>          |        sg_alloc_table
+>    cc1: some warnings being treated as errors
+>
+>
+> vim +/sg_free_table_chained +387 drivers/block/rnbd/rnbd-clt.c
+Thanks for reporting, I've found the problem, we need to
+select SG_POOL in Kconfig for RNBD client, will send out a fix soon today.
 
-Signed-off-by: Chenyi Qiang <chenyi.qiang@intel.com>
----
- Documentation/virt/kvm/api.rst | 45 +++++++++++++++++++++++++++++++---
- 1 file changed, 42 insertions(+), 3 deletions(-)
-
-diff --git a/Documentation/virt/kvm/api.rst b/Documentation/virt/kvm/api.rst
-index 70254eaa5229..68bdefca5372 100644
---- a/Documentation/virt/kvm/api.rst
-+++ b/Documentation/virt/kvm/api.rst
-@@ -4887,9 +4887,11 @@ local APIC is not used.
- 	__u16 flags;
- 
- More architecture-specific flags detailing state of the VCPU that may
--affect the device's behavior.  The only currently defined flag is
--KVM_RUN_X86_SMM, which is valid on x86 machines and is set if the
--VCPU is in system management mode.
-+affect the device's behavior. Current defined flags:
-+  /* x86, set if the VCPU is in system management mode */
-+  #define KVM_RUN_X86_SMM     (1 << 0)
-+  /* x86, set if bus lock detected in VM */
-+  #define KVM_RUN_BUS_LOCK    (1 << 1)
- 
- ::
- 
-@@ -6032,6 +6034,43 @@ KVM_EXIT_X86_RDMSR and KVM_EXIT_X86_WRMSR exit notifications which user space
- can then handle to implement model specific MSR handling and/or user notifications
- to inform a user that an MSR was not handled.
- 
-+7.22 KVM_CAP_X86_BUS_LOCK_EXIT
-+-------------------------------
-+
-+:Architectures: x86
-+:Target: VM
-+:Parameters: args[0] defines the policy used when bus locks detected in guest
-+:Returns: 0 on success, -EINVAL when args[0] contains invalid bits
-+
-+Valid bits in args[0] are::
-+
-+  #define KVM_BUS_LOCK_DETECTION_OFF      (1 << 0)
-+  #define KVM_BUS_LOCK_DETECTION_EXIT     (1 << 1)
-+
-+Enabling this capability on a VM provides userspace with a way to select
-+a policy to handle the bus locks detected in guest. Userspace can obtain
-+the supported modes from the result of KVM_CHECK_EXTENSION and define it
-+through the KVM_ENABLE_CAP.
-+
-+KVM_BUS_LOCK_DETECTION_OFF and KVM_BUS_LOCK_DETECTION_EXIT are supported
-+currently and mutually exclusive with each other. More bits can be added in
-+the future.
-+
-+With KVM_BUS_LOCK_DETECTION_OFF set, bus locks in guest will not cause vm exits
-+so that no additional actions are needed. This is the default mode.
-+
-+With KVM_BUS_LOCK_DETECTION_EXIT set, vm exits happen when bus lock detected
-+in VM. KVM just exits to userspace when handling them. Userspace can enforce
-+its own throttling or other policy based mitigations.
-+
-+This capability is aimed to address the thread that VM can exploit bus locks to
-+degree the performance of the whole system. Once the userspace enable this
-+capability and select the KVM_BUS_LOCK_DETECTION_EXIT mode, KVM will set the
-+KVM_RUN_BUS_LOCK flag in vcpu-run->flags field and exit to userspace. Concerning
-+the bus lock vm exit can be preempted by a higher priority VM exit, the exit
-+notifications to userspace can be KVM_EXIT_BUS_LOCK or other reasons.
-+KVM_RUN_BUS_LOCK flag is used to distinguish between them.
-+
- 8. Other capabilities.
- ======================
- 
--- 
-2.17.1
-
+Regards!
+Jack
