@@ -2,182 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D01A02EFA62
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 22:25:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CC14B2EFA6A
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 22:27:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728850AbhAHVYx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Jan 2021 16:24:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35008 "EHLO
+        id S1727904AbhAHVZa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Jan 2021 16:25:30 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35106 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727479AbhAHVYv (ORCPT
+        with ESMTP id S1726227AbhAHVZa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Jan 2021 16:24:51 -0500
-Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 128EAC061796;
-        Fri,  8 Jan 2021 13:24:11 -0800 (PST)
-Received: by mail-lf1-x12f.google.com with SMTP id o17so26297584lfg.4;
-        Fri, 08 Jan 2021 13:24:10 -0800 (PST)
+        Fri, 8 Jan 2021 16:25:30 -0500
+Received: from mail-oi1-x233.google.com (mail-oi1-x233.google.com [IPv6:2607:f8b0:4864:20::233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCD40C061574
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Jan 2021 13:24:49 -0800 (PST)
+Received: by mail-oi1-x233.google.com with SMTP id q25so12900758oij.10
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Jan 2021 13:24:49 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=+afgHAtxhrr/i0EcynJ2CYFaHfGmcyOTzMQ7jRJw+34=;
-        b=EWLV5/5BkInHF7B8SUxiUYVtKJo/pNuo44Gb8xnDt/w4FZxPLZ8xfTzdWYJMrAW/+a
-         +LaIs19proJuaO55Kb6fm7+XwoBa0RSfdRj8CDpynFu+mvinLspy6QaPnJmyHZCXTpRH
-         2tzjQhNaKzXG/hsIDyZN7dp+K0bG1Q1yOxvrbLQMQADxtmON3+FCqM6CvATijn69lpXO
-         9g32ONk0kwEuiJ0f1/C+jgSCoxih3JnKyx8TQtMjyO0q7RmPmAItIL9AGhHuI+nVQ7dC
-         YcfRN5oyxzE08hOUyju+DpHfnCLTyQYxz1HZ/Bv9mXci8/QpfnGPzGuEyGXWQbe/uGW3
-         58vg==
+         :cc:content-transfer-encoding;
+        bh=auD7mbSMX/XpHUok2f7h/lpQb4MboPYfCPmFvkXVnf0=;
+        b=e5eWhLc6AKzo+0/H5kiPOp8zABjRQimjDbdTgufmBkHLoYKpOZWtnS+/XZKIdwBBsM
+         L1ebh1nosR7hviVAn5L47/g2R8UUnf0R5+PpNkERBfvD4EwD2+vjw2Ty5bUKMJ75viF8
+         NrXhPG+R7oo4epfnscKqKypjUGSdMHatpqmXa2N4GxP5urZWtsDEexrigFhOGZzd4FSk
+         r2rr/rpPk8FLf2FSuXLfrLEA8yso6yxeTCMWUP99xX576i0E3DOgfHoCsItwaDb8RUUz
+         K06kMlVXPYuNhuPRVcPRn/uJ2yEDKGuP5QQDywgC/sL/pRD4lUBK41KOwVOgD8TsbMfg
+         ueYg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=+afgHAtxhrr/i0EcynJ2CYFaHfGmcyOTzMQ7jRJw+34=;
-        b=UK0wocWUZtu0DHqTjE8Sdvb02AoF+BRQlebgV0oCZJX1Ub40meqOeHUQkMBRJoVAmh
-         1lFLIZzWAtF+D/hzNX2GkkZjW6gQ1WvU8Hl1z1MOqEfmSJxx3bop6zDk7GVKd1qPhuaY
-         ASCguyZ1BnWTOBaekcWh+l24DUocL5Nrj4YTJ9lrFIfXCyvnMoUZUhNwlDfpEy2+7ACJ
-         ToSD15q4kVtAPWFp5maahIXg6VB68kOdVVNTptKvTDDDGxIK5v8453cbi8mDC1ci5D9I
-         KmXu6eIb5iFufusqtjC0x70g0ROkKgPcfkZ/0ZZfQhmhrXvvAi3kU+m2jwDCH6qiV79I
-         L5rg==
-X-Gm-Message-State: AOAM531WxYsctfAqL+lN9TnPjgLTV4XpKrmMXyVDXFttzGgfW1mc+nJL
-        3ztG67REqTHCNmyY8bnJDIMbCw0RLN526xjLCA4=
-X-Google-Smtp-Source: ABdhPJw0Nu906p07vhl6IlMcKRUd1QVarTQZeVS6m9q64qCsKOGolBZa7QCJCdGe5JoJ7BqKGChStMaECN6aBDppJQc=
-X-Received: by 2002:a19:6b0e:: with SMTP id d14mr162388lfa.210.1610141049528;
- Fri, 08 Jan 2021 13:24:09 -0800 (PST)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=auD7mbSMX/XpHUok2f7h/lpQb4MboPYfCPmFvkXVnf0=;
+        b=RPiAxutMHYnBkuv0/7LZoFY0Tj6WpNDpa5tvB3xXjlI0fBQ/dWgwnMSsPzsZBoh9RH
+         1aVAL9C7QZdLApaa91XbBvZvhp5AFRdR11GNT+4b9N2IJlm0pySlZkAjE9zn2/iTLZDs
+         Tvjj/pVNeSkbMGEXh/Df4h1wcMGm+K4j0K7nT5pUerE1xC9Xj7Zsavz9gYJfmXTEi1No
+         inoUxNMAN8HxmazcrmLf+RE0KWBNS8Z7xWdTDJTyxThNKrebj5hP47jwEaxuiopWupU8
+         8bHQarXZ/yq2KhsJ4UD5V2G0JqmDr6dPwZ9nC0nhVcPELO1AG5N8HKE7Ozxd/BBm5dNk
+         BnSw==
+X-Gm-Message-State: AOAM531HF9EqeKLXPmP0F2V/ZDCIwtrsFwa0UGoFg8KTWO84psylwrdV
+        clnPe+cvFBQYEy+LedaaOnki7TJ5ckCcKlymQaUzUAnp
+X-Google-Smtp-Source: ABdhPJyaS/QWrXyCB59tCxKopFR4J1F5TFDQyUTG+B8t/fvPSX9e8d78847ZnKfyBF0J22jUSwXCMQnKv0x4062FbV0=
+X-Received: by 2002:aca:6202:: with SMTP id w2mr3387318oib.5.1610141089341;
+ Fri, 08 Jan 2021 13:24:49 -0800 (PST)
 MIME-Version: 1.0
-References: <20201112015359.1103333-1-lokeshgidra@google.com>
- <20201112015359.1103333-4-lokeshgidra@google.com> <CAHC9VhS2WNXn2cVAUcAY5AmmBv+=XsthCevofNNuEOU3=jtLrg@mail.gmail.com>
- <CAEjxPJ6TA_nXrUJ6CjhG-j0_oAj9WU1vRn5pGvjDqQ2Bk9VVag@mail.gmail.com> <CA+EESO45ezOtg1-MHfwSk3YNYRS7cYnH+kMz-T_MdaSpyW=8Yw@mail.gmail.com>
-In-Reply-To: <CA+EESO45ezOtg1-MHfwSk3YNYRS7cYnH+kMz-T_MdaSpyW=8Yw@mail.gmail.com>
-From:   Stephen Smalley <stephen.smalley.work@gmail.com>
-Date:   Fri, 8 Jan 2021 16:23:58 -0500
-Message-ID: <CAEjxPJ7CL0WbEeooyh=d_LggZ7xTtcqsLY3TSunJ6oXWNxBOuw@mail.gmail.com>
-Subject: Re: [PATCH v13 3/4] selinux: teach SELinux about anonymous inodes
-To:     Lokesh Gidra <lokeshgidra@google.com>
-Cc:     Paul Moore <paul@paul-moore.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        James Morris <jmorris@namei.org>,
-        Casey Schaufler <casey@schaufler-ca.com>,
-        Eric Biggers <ebiggers@kernel.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        Eric Paris <eparis@parisplace.org>,
-        Daniel Colascione <dancol@dancol.org>,
-        Kees Cook <keescook@chromium.org>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        KP Singh <kpsingh@google.com>,
-        David Howells <dhowells@redhat.com>,
-        Anders Roxell <anders.roxell@linaro.org>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Matthew Garrett <matthewgarrett@google.com>,
-        Aaron Goidel <acgoide@tycho.nsa.gov>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        "Joel Fernandes (Google)" <joel@joelfernandes.org>,
-        YueHaibing <yuehaibing@huawei.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Alexey Budankov <alexey.budankov@linux.intel.com>,
-        Adrian Reber <areber@redhat.com>,
-        Aleksa Sarai <cyphar@cyphar.com>,
-        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        LSM List <linux-security-module@vger.kernel.org>,
-        SElinux list <selinux@vger.kernel.org>,
-        Kalesh Singh <kaleshsingh@google.com>,
-        Calin Juravle <calin@google.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Jeffrey Vander Stoep <jeffv@google.com>,
-        "Cc: Android Kernel" <kernel-team@android.com>,
-        "open list:MEMORY MANAGEMENT" <linux-mm@kvack.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        Daniel Colascione <dancol@google.com>
+References: <20210108201457.3078600-1-lee.jones@linaro.org> <20210108201457.3078600-38-lee.jones@linaro.org>
+In-Reply-To: <20210108201457.3078600-38-lee.jones@linaro.org>
+From:   Alex Deucher <alexdeucher@gmail.com>
+Date:   Fri, 8 Jan 2021 16:24:38 -0500
+Message-ID: <CADnq5_NHZ6V9R3P22vWNBmWtn0Xz840K-r8kxV-1dv=0UPSECQ@mail.gmail.com>
+Subject: Re: [PATCH 37/40] drm/amd/display/dc/dce/dce_i2c_sw: Make a bunch of
+ local functions static
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     Leo Li <sunpeng.li@amd.com>, LKML <linux-kernel@vger.kernel.org>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        David Airlie <airlied@linux.ie>,
+        Maling list - DRI developers 
+        <dri-devel@lists.freedesktop.org>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 8, 2021 at 3:17 PM Lokesh Gidra <lokeshgidra@google.com> wrote:
+On Fri, Jan 8, 2021 at 3:16 PM Lee Jones <lee.jones@linaro.org> wrote:
 >
-> On Fri, Jan 8, 2021 at 11:35 AM Stephen Smalley
-> <stephen.smalley.work@gmail.com> wrote:
-> >
-> > On Wed, Jan 6, 2021 at 10:03 PM Paul Moore <paul@paul-moore.com> wrote:
-> > >
-> > > On Wed, Nov 11, 2020 at 8:54 PM Lokesh Gidra <lokeshgidra@google.com> wrote:
-> > > > From: Daniel Colascione <dancol@google.com>
-> > > >
-> > > > This change uses the anon_inodes and LSM infrastructure introduced in
-> > > > the previous patches to give SELinux the ability to control
-> > > > anonymous-inode files that are created using the new
-> > > > anon_inode_getfd_secure() function.
-> > > >
-> > > > A SELinux policy author detects and controls these anonymous inodes by
-> > > > adding a name-based type_transition rule that assigns a new security
-> > > > type to anonymous-inode files created in some domain. The name used
-> > > > for the name-based transition is the name associated with the
-> > > > anonymous inode for file listings --- e.g., "[userfaultfd]" or
-> > > > "[perf_event]".
-> > > >
-> > > > Example:
-> > > >
-> > > > type uffd_t;
-> > > > type_transition sysadm_t sysadm_t : anon_inode uffd_t "[userfaultfd]";
-> > > > allow sysadm_t uffd_t:anon_inode { create };
-> > > >
-> > > > (The next patch in this series is necessary for making userfaultfd
-> > > > support this new interface.  The example above is just
-> > > > for exposition.)
-> > > >
-> > > > Signed-off-by: Daniel Colascione <dancol@google.com>
-> > > > Signed-off-by: Lokesh Gidra <lokeshgidra@google.com>
-> > > > ---
-> > > >  security/selinux/hooks.c            | 56 +++++++++++++++++++++++++++++
-> > > >  security/selinux/include/classmap.h |  2 ++
-> > > >  2 files changed, 58 insertions(+)
-> > > >
-> > > > diff --git a/security/selinux/hooks.c b/security/selinux/hooks.c
-> > > > index 6b1826fc3658..d092aa512868 100644
-> > > > --- a/security/selinux/hooks.c
-> > > > +++ b/security/selinux/hooks.c
-> > > > @@ -2927,6 +2927,61 @@ static int selinux_inode_init_security(struct inode *inode, struct inode *dir,
-> > > >         return 0;
-> > > >  }
-> > > >
-> > > > +static int selinux_inode_init_security_anon(struct inode *inode,
-> > > > +                                           const struct qstr *name,
-> > > > +                                           const struct inode *context_inode)
-> > > > +{
-> > > > +       const struct task_security_struct *tsec = selinux_cred(current_cred());
-> > > > +       struct common_audit_data ad;
-> > > > +       struct inode_security_struct *isec;
-> > > > +       int rc;
-> > > > +
-> > > > +       if (unlikely(!selinux_initialized(&selinux_state)))
-> > > > +               return 0;
-> > > > +
-> > > > +       isec = selinux_inode(inode);
-> > > > +
-> > > > +       /*
-> > > > +        * We only get here once per ephemeral inode.  The inode has
-> > > > +        * been initialized via inode_alloc_security but is otherwise
-> > > > +        * untouched.
-> > > > +        */
-> > > > +
-> > > > +       if (context_inode) {
-> > > > +               struct inode_security_struct *context_isec =
-> > > > +                       selinux_inode(context_inode);
-> > > > +               if (context_isec->initialized != LABEL_INITIALIZED)
-> > > > +                       return -EACCES;
-> Stephen, as per your explanation below, is this check also
-> problematic? I mean is it possible that /dev/kvm context_inode may not
-> have its label initialized? If so, then v12 of the patch series can be
-> used as is. Otherwise, I will send the next version which rollbacks
-> v14 and v13, except for this check. Kindly confirm.
+> Fixes the following W=3D1 kernel build warning(s):
+>
+>  drivers/gpu/drm/amd/amdgpu/../display/dc/dce/dce_i2c_sw.c:342:6: warning=
+: no previous prototype for =E2=80=98dce_i2c_sw_engine_set_speed=E2=80=99 [=
+-Wmissing-prototypes]
+>  drivers/gpu/drm/amd/amdgpu/../display/dc/dce/dce_i2c_sw.c:356:6: warning=
+: no previous prototype for =E2=80=98dce_i2c_sw_engine_acquire_engine=E2=80=
+=99 [-Wmissing-prototypes]
+>  drivers/gpu/drm/amd/amdgpu/../display/dc/dce/dce_i2c_sw.c:400:6: warning=
+: no previous prototype for =E2=80=98dce_i2c_sw_engine_submit_channel_reque=
+st=E2=80=99 [-Wmissing-prototypes]
+>  drivers/gpu/drm/amd/amdgpu/../display/dc/dce/dce_i2c_sw.c:443:6: warning=
+: no previous prototype for =E2=80=98dce_i2c_sw_engine_submit_payload=E2=80=
+=99 [-Wmissing-prototypes]
+>
+> Cc: Harry Wentland <harry.wentland@amd.com>
+> Cc: Leo Li <sunpeng.li@amd.com>
+> Cc: Alex Deucher <alexander.deucher@amd.com>
+> Cc: "Christian K=C3=B6nig" <christian.koenig@amd.com>
+> Cc: David Airlie <airlied@linux.ie>
+> Cc: Daniel Vetter <daniel@ffwll.ch>
+> Cc: amd-gfx@lists.freedesktop.org
+> Cc: dri-devel@lists.freedesktop.org
+> Signed-off-by: Lee Jones <lee.jones@linaro.org>
 
-The context_inode should always be initialized already.  I'm not fond
-though of silently returning -EACCES here.  At the least we should
-have a pr_err() or pr_warn() here.  In reality, this could only occur
-in the case of a kernel bug or memory corruption so it used to be a
-candidate for WARN_ON() or BUG_ON() or similar but I know that
-BUG_ON() at least is frowned upon these days.
+Applied.  Thanks!
+
+Alex
+
+
+> ---
+>  drivers/gpu/drm/amd/display/dc/dce/dce_i2c_sw.c | 9 +++++----
+>  1 file changed, 5 insertions(+), 4 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/amd/display/dc/dce/dce_i2c_sw.c b/drivers/gp=
+u/drm/amd/display/dc/dce/dce_i2c_sw.c
+> index 87d8428df6c46..6846afd83701b 100644
+> --- a/drivers/gpu/drm/amd/display/dc/dce/dce_i2c_sw.c
+> +++ b/drivers/gpu/drm/amd/display/dc/dce/dce_i2c_sw.c
+> @@ -339,7 +339,7 @@ static bool start_sync_sw(
+>         return false;
+>  }
+>
+> -void dce_i2c_sw_engine_set_speed(
+> +static void dce_i2c_sw_engine_set_speed(
+>         struct dce_i2c_sw *engine,
+>         uint32_t speed)
+>  {
+> @@ -353,7 +353,7 @@ void dce_i2c_sw_engine_set_speed(
+>                 engine->clock_delay =3D 12;
+>  }
+>
+> -bool dce_i2c_sw_engine_acquire_engine(
+> +static bool dce_i2c_sw_engine_acquire_engine(
+>         struct dce_i2c_sw *engine,
+>         struct ddc *ddc)
+>  {
+> @@ -397,7 +397,7 @@ bool dce_i2c_engine_acquire_sw(
+>
+>
+>
+> -void dce_i2c_sw_engine_submit_channel_request(
+> +static void dce_i2c_sw_engine_submit_channel_request(
+>         struct dce_i2c_sw *engine,
+>         struct i2c_request_transaction_data *req)
+>  {
+> @@ -440,7 +440,8 @@ void dce_i2c_sw_engine_submit_channel_request(
+>                 I2C_CHANNEL_OPERATION_SUCCEEDED :
+>                 I2C_CHANNEL_OPERATION_FAILED;
+>  }
+> -bool dce_i2c_sw_engine_submit_payload(
+> +
+> +static bool dce_i2c_sw_engine_submit_payload(
+>         struct dce_i2c_sw *engine,
+>         struct i2c_payload *payload,
+>         bool middle_of_transaction)
+> --
+> 2.25.1
+>
+> _______________________________________________
+> dri-devel mailing list
+> dri-devel@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/dri-devel
