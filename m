@@ -2,102 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30F222EF857
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 20:44:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E1BB72EF85D
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 20:47:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729052AbhAHTnj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Jan 2021 14:43:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47368 "EHLO
+        id S1728921AbhAHTq7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Jan 2021 14:46:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47878 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728724AbhAHTnj (ORCPT
+        with ESMTP id S1728759AbhAHTq7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Jan 2021 14:43:39 -0500
-Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76D9CC061381
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Jan 2021 11:42:58 -0800 (PST)
-Received: by mail-lf1-x12a.google.com with SMTP id m25so25533512lfc.11
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Jan 2021 11:42:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Zyk0hmvOCmlf96OHjavNOOWZKXPdqm3y4uCVwGOPVVs=;
-        b=Twey0HfDIE2MlqEURpSvHVkJLmkrIAf1QsDiId4VmSGRbgzqVpRXfv4JuljsdpWkY2
-         hBMh8AEu5reKfgO15Ne6WbVrqrp5hlLzOCuW0IwkjDbpEB4eLNTnEZXOtFjRixzY+rgU
-         5G8AG5Ypo8vvd+q3R6RgzYd1DGcjDChC5vVF0=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Zyk0hmvOCmlf96OHjavNOOWZKXPdqm3y4uCVwGOPVVs=;
-        b=L/eOPKwmpyQAau32rj6XiKD8Hs23fGEYXmbc52vy+HRXi/2TDLQ6jYgbnJZE57Z7+Z
-         VYtqzMa2QCGlKfBqWMLKAkaYezxdvSxvyg7sUcnk1dSBLaFtfpAclz5S+VLP/D9VoA2I
-         LSpn5r72b5efpUDt10+0DrcOE9GDeYXDj03OuZJXyq9At8q4xoD3+Oj2yZ/KqEmXi7Ch
-         rQ7ErHRkyp1IAEyBEAQ6WR4BViecnPr5Hm/pdPwavrfzquP9wmQRlHGRzFKsM9Bi/Hqv
-         W49YwpQnjfFhWp8bbp09DT6GF7dgQ+CNG+2Ut3lH7Ee7yhrjWGGdBZ+BP/QDfpXw3Emn
-         sCCw==
-X-Gm-Message-State: AOAM530okOdhWxNHb0NBfcv//7GqKBAEsI/+xQdvryfLOQoTOokBjx99
-        y62x/jzFhD006irmdbU1/Ep/1UMxBvpFSw==
-X-Google-Smtp-Source: ABdhPJxDcRCXf23itER4wwwBtGls+7/3WPGDzDkmRHAMjT4+ROXTpf3sT7jOgvlF7rLSi+OJ64llKw==
-X-Received: by 2002:a05:6512:3e7:: with SMTP id n7mr2133456lfq.585.1610134976489;
-        Fri, 08 Jan 2021 11:42:56 -0800 (PST)
-Received: from mail-lf1-f41.google.com (mail-lf1-f41.google.com. [209.85.167.41])
-        by smtp.gmail.com with ESMTPSA id y13sm2076496lfg.189.2021.01.08.11.42.55
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 08 Jan 2021 11:42:55 -0800 (PST)
-Received: by mail-lf1-f41.google.com with SMTP id o13so25709255lfr.3
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Jan 2021 11:42:55 -0800 (PST)
-X-Received: by 2002:a2e:6f17:: with SMTP id k23mr2233926ljc.411.1610134974839;
- Fri, 08 Jan 2021 11:42:54 -0800 (PST)
+        Fri, 8 Jan 2021 14:46:59 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98B35C061380
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Jan 2021 11:46:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=oOtQDu7w1ab6cweuFIDLs0jH0PgEz7DuChoBHnBqhjY=; b=ezABTJEo25pEyy8exv16P+jYeK
+        0xmgd65tq60rvsCkakyn2p3IaNG59Pb538U82McIBLZcyv1Kc9HHzM7cZqC7WP0jO/VxmbcgZgjXo
+        ti/DTFIGGnvAVX1s6xnwnhCoiVKfXQ8U3HPu2gIOnfhQc5OYOnrwakzq6EoBTf/3cFW62soScWLnF
+        /wPK56qVnW6SaOifD1t3ZREPk9vS2jIaxBbsICZoaCPELzVEr6Yz0gI/XTDBSLKfWKEF3P7Nk3IWE
+        cEITXV6zeZdKYGet+qazKExGu4qt280U1e5ell3trROosKqnaYQ/Bf6FknWQswydbNNMlaa5BVLlC
+        DeUVgw3w==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kxxhn-0007O1-K1; Fri, 08 Jan 2021 19:45:51 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 10E8D3003D8;
+        Fri,  8 Jan 2021 20:45:45 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id F2E0220167A86; Fri,  8 Jan 2021 20:45:44 +0100 (CET)
+Date:   Fri, 8 Jan 2021 20:45:44 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Vincent Guittot <vincent.guittot@linaro.org>
+Cc:     Mel Gorman <mgorman@techsingularity.net>,
+        "Li, Aubrey" <aubrey.li@linux.intel.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Qais Yousef <qais.yousef@arm.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>,
+        Tim Chen <tim.c.chen@linux.intel.com>,
+        Jiang Biao <benbjiang@gmail.com>
+Subject: Re: [RFC][PATCH 1/5] sched/fair: Fix select_idle_cpu()s cost
+ accounting
+Message-ID: <X/i2aIKmeyi5SZ7g@hirez.programming.kicks-ass.net>
+References: <20201214164822.402812729@infradead.org>
+ <20201214170017.877557652@infradead.org>
+ <c4e31235-e1fb-52ac-99a8-ae943ee0de54@linux.intel.com>
+ <20201215075911.GA3040@hirez.programming.kicks-ass.net>
+ <20210108102738.GB3592@techsingularity.net>
+ <CAKfTPtD5R1S=rwp9C-jyMg8bAB-37FCe3qrqad9KEeyR7mOmkw@mail.gmail.com>
+ <20210108144058.GD3592@techsingularity.net>
+ <CAKfTPtCGCmCv0yXSUmYUh6=8uzd0n9xFPqC0cW4sm-FqDvjvCQ@mail.gmail.com>
 MIME-Version: 1.0
-References: <20210108171517.5290-1-will@kernel.org> <CAHk-=wg3UkUdiTbqWFx3zBLXv9VJHuNZAa5QyDvXiSmD4gX94A@mail.gmail.com>
-In-Reply-To: <CAHk-=wg3UkUdiTbqWFx3zBLXv9VJHuNZAa5QyDvXiSmD4gX94A@mail.gmail.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Fri, 8 Jan 2021 11:42:39 -0800
-X-Gmail-Original-Message-ID: <CAHk-=wh=6=7qYKL0RLbzg4vKnT0v_c66n8RYS-CvmUxnO9MxPw@mail.gmail.com>
-Message-ID: <CAHk-=wh=6=7qYKL0RLbzg4vKnT0v_c66n8RYS-CvmUxnO9MxPw@mail.gmail.com>
-Subject: Re: [PATCH v2 0/3] Create 'old' ptes for faultaround mappings on
- arm64 with hardware access flag
-To:     Will Deacon <will@kernel.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Jan Kara <jack@suse.cz>, Minchan Kim <minchan@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
-        Vinayak Menon <vinmenon@codeaurora.org>,
-        Hugh Dickins <hughd@google.com>,
-        Android Kernel Team <kernel-team@android.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAKfTPtCGCmCv0yXSUmYUh6=8uzd0n9xFPqC0cW4sm-FqDvjvCQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 8, 2021 at 11:34 AM Linus Torvalds
-<torvalds@linux-foundation.org> wrote:
->
-> Yeah, I think that's a side effect of "now the code really makes a lot
-> more sense". Your subsequent patches 2-3 certainly are much simpler
-> now
+On Fri, Jan 08, 2021 at 04:10:51PM +0100, Vincent Guittot wrote:
+> Also, there is another problem (that I'm investigating)  which is that
+> this_rq()->avg_idle is stalled when your cpu is busy. Which means that
+> this avg_idle can just be a very old and meaningless value. I think
+> that we should decay it periodically to reflect there is less and less
 
-On that note - they could be simpler still if this was just done
-entirely unconditionally..
+https://lkml.kernel.org/r/20180530143105.977759909@infradead.org
 
-I'm taking your word for "it makes sense", but when you say
-
-  On CPUs with hardware AF/DBM, initialising prefaulted PTEs as 'old'
-  improves vmscan behaviour and does not appear to introduce any overhead.
-
-in the description for patch 3, it makes me wonder how noticeable the
-overhead is on the hardware that _does_ take a fault on old pte's..
-
-IOW, it would be lovely to see numbers if you have any like that..
-
-Both ways, actually. Because I also wonder how noticeable the vmscan
-improvement is. You say there's no measurable overhead for platforms
-with hardware dirty/accessed bits, but maybe there's not a lot of
-measurable improvements from a more exact accessed bit either?
-
-             Linus
+:-)
