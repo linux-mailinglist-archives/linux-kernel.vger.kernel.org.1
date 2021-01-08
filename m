@@ -2,61 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ECEFD2EF277
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 13:22:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 98ABA2EF27D
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 13:24:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727395AbhAHMWA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Jan 2021 07:22:00 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54134 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725901AbhAHMV7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Jan 2021 07:21:59 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 93195238E4;
-        Fri,  8 Jan 2021 12:21:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610108478;
-        bh=CGyJVGRnQUYO+Dwo4ILDxEFobjgiAm4vANZ35SFjRV4=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=MLryRnKHypOReQqOXqkOcMYCuhbGUcwnL3G7NGpCrsl4eVIPM5AisIPpGId1oC5a0
-         3QmasNX/oubX4G5K3RnPBJialUK24gquHFumpY54G63J7pj1N+0hskyCQJ6K8cv8sn
-         aIQrBdsYmZIVbGsRT4tIF71fu/aFVO46XJXVC7lO2omH6DsxMLPVbNcy9G2YyHY3og
-         8C2ZQaeZdLndkK5MKaSIIiyVoZ5vpdn4J3yLip7fTbL0iDRdptJoiXneLEOS2qf67P
-         fIrvcHFdrEc2xgMTl1JVMv1Z1n4o0dAdBbtp17/XAUS42b2DP4lT2NmqpbXO9/tyjl
-         6/UwelUa18wNA==
-From:   Felipe Balbi <balbi@kernel.org>
-To:     Ryan Chen <ryan_chen@aspeedtech.com>, BMC-SW@aspeedtech.com,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Joel Stanley <joel@jms.id.au>,
-        Andrew Jeffery <andrew@aj.id.au>, linux-usb@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Cc:     Ryan Chen <ryan_chen@aspeedtech.com>
-Subject: Re: [PATCH 1/1] usb: gadget: aspeed: fix stop dma register setting.
-In-Reply-To: <20210108081238.10199-2-ryan_chen@aspeedtech.com>
-References: <20210108081238.10199-1-ryan_chen@aspeedtech.com>
- <20210108081238.10199-2-ryan_chen@aspeedtech.com>
-Date:   Fri, 08 Jan 2021 14:21:14 +0200
-Message-ID: <87h7nrwret.fsf@kernel.org>
+        id S1727485AbhAHMX7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Jan 2021 07:23:59 -0500
+Received: from mail-oo1-f46.google.com ([209.85.161.46]:45197 "EHLO
+        mail-oo1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725965AbhAHMX6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 Jan 2021 07:23:58 -0500
+Received: by mail-oo1-f46.google.com with SMTP id o5so2325390oop.12;
+        Fri, 08 Jan 2021 04:23:42 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=l7OdcqjyDor9BwazdtiKyf4HiIQOu+rqcNvqBVdFAhg=;
+        b=AFWeSk5Bu1L4osivPOServalr1NbtZsp4EH7nySm2+ykkBe24yy0jDCFxm+KN/Xnmt
+         MQ0bvCzSnyVwGPrMjfn039IJGFtt8LuYOF/25vKQ2PbRm1XuVAFwORjghe5zwbrYkpjh
+         AdsCFIewRH1YN7t1+zeglJfo/rqB9FP9Xc+UpeLTXxn6bfAbCJgVHUoY1ZYc6xDORRQo
+         D/KVhq9AQHseKw91Pf4DsUXTvlhjPUWF40o/yQJPCVEan5InMjJnBN+An6pZnCqwIPxF
+         HP1wNYbeKMob3cY9zJFPvO0fFgvPzmeRLGs8ODdLVg6TWDqGAREQ/thzD3tjIZW9iWP5
+         9FgA==
+X-Gm-Message-State: AOAM532gyOcKXFbY8GBCvzg5buvxPo9xCTPEPMGl8MgTmDhSUL/ktfid
+        PvKqEE+Yy5xsAN7T2ZOnQmsWBXrSPWhc6WasULQ=
+X-Google-Smtp-Source: ABdhPJxHVBS7wWZhg49UPwP89juTmOHL4Bq/N7J3LK6uD41jcKLaqFfegeyewa8/SMHqw85SE8v+Pq8GvdfRJJuCijs=
+X-Received: by 2002:a4a:ca14:: with SMTP id w20mr4137395ooq.11.1610108597447;
+ Fri, 08 Jan 2021 04:23:17 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <20201227174202.40834-1-wsa+renesas@sang-engineering.com> <20201227174202.40834-2-wsa+renesas@sang-engineering.com>
+In-Reply-To: <20201227174202.40834-2-wsa+renesas@sang-engineering.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Fri, 8 Jan 2021 13:23:06 +0100
+Message-ID: <CAMuHMdWkk+KusB-J0qp+mh34z+sNmKPtBBgwJ-APph5_jUtHhQ@mail.gmail.com>
+Subject: Re: [PATCH 1/6] dt-bindings: mmc: renesas,sdhi: Add r8a779a0 support
+To:     Wolfram Sang <wsa+renesas@sang-engineering.com>
+Cc:     Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Linux MMC List <linux-mmc@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Sun, Dec 27, 2020 at 6:44 PM Wolfram Sang
+<wsa+renesas@sang-engineering.com> wrote:
+> Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
 
-Hi,
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
 
-Ryan Chen <ryan_chen@aspeedtech.com> writes:
-> The vhub engine has two dma mode, one is descriptor list, another
-> is single stage DMA. Each mode has different stop register setting.
-> Descriptor list operation (bit2) : 0 disable reset, 1: enable reset
-> Single mode operation (bit0) : 0 : disable, 1: enable
->
-> Signed-off-by: Ryan Chen <ryan_chen@aspeedtech.com>
+Gr{oetje,eeting}s,
 
-I don't have HW, but FWIW:
-
-Acked-by: Felipe Balbi <balbi@kernel.org>
+                        Geert
 
 -- 
-balbi
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
