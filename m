@@ -2,77 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 830EA2EF6D7
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 18:56:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BD7372EF6D9
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 18:58:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728588AbhAHRzb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Jan 2021 12:55:31 -0500
-Received: from mail-ot1-f46.google.com ([209.85.210.46]:39866 "EHLO
-        mail-ot1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728412AbhAHRza (ORCPT
+        id S1728506AbhAHR6H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Jan 2021 12:58:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59056 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728306AbhAHR6G (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Jan 2021 12:55:30 -0500
-Received: by mail-ot1-f46.google.com with SMTP id d8so10444429otq.6;
-        Fri, 08 Jan 2021 09:55:14 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=XeX1l1nPiNtc5q7NBHuWNuod0L9IFtRRz4+aS3Q/Wn8=;
-        b=Id6Dxv8zZYdxAAquGPy9x30G4KjRg9SLA16Ti+rKQHKWMjt5X0Ai7zWX/MalADdSE6
-         27DrKjmhf86EpUY9MSr94hLTg+pWDeCLa5j9RJhiDiVHhGz4ylsIH7AivW/rGAZe/F6A
-         NPMeHIcffC5KqjRhdTFGdW7ou6wlWr11UNRET65gwcOzCJ9utPuR4MQQ+4EVDUI2y5mX
-         fUoA6m6nyafsAk65K1nnPz+OOsw4mx9OJ5cnBD+AQM8RG8wiyXDfkOGImDNMPa9A9/kw
-         KDfDzdAUSwk/dv+ulSUdbT3fXBBhfE86BmScqogx6cOuHshOofUV6N4mfxIZ4ih+OiRh
-         rKCQ==
-X-Gm-Message-State: AOAM530pbioZCDY3cFamZOz6PAmIgFc0QpC1wzRSB8buMLYDKApBqRan
-        NsUslPJEctBHV/t/40OALOYCKIaAVPYFpMvc9F8ETYGFDlc=
-X-Google-Smtp-Source: ABdhPJwXqe5X1qNT5lcOoAxI+APdjrsiJz8nFSxjZCITJ07HiqOQHygWDMgtsAEYyoAw106FZY7amoWgyuTjtF+QtgI=
-X-Received: by 2002:a9d:745a:: with SMTP id p26mr3523364otk.206.1610128489496;
- Fri, 08 Jan 2021 09:54:49 -0800 (PST)
+        Fri, 8 Jan 2021 12:58:06 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9780AC061380
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Jan 2021 09:57:26 -0800 (PST)
+Date:   Fri, 8 Jan 2021 18:57:23 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1610128645;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+        bh=C2y4+ecKpsmHcb/3eNFWG1CKXZN48EwfB8bnapJyrW0=;
+        b=rvlPk4NZ3Z04WeurV7XZLAhWnp5l5D2U0jr69C/hTBA4Utz5o6sppQGx12iG0r0GXg9cA6
+        oHZwjilWYu9rlj9zDt4baCETXxv00vn1iy8N4yyhxt4qVdOwRTQ1K/Adv9SvK38gTj28uY
+        HjpUKnHKQlWY7PSo7JhcHKRrW/ZsINk5rzRkIKLY5l7mCYePb3PqxYx9p6N56yH2Rzv2Lr
+        niHmlfS4VrqnMYoXxsSu9WhKSUZM605tkmGTkiI4HtibWgMSc7Yp1+ZZDWiH0wuOAyRfKS
+        sEyQGtygu5on5rz2Ivloyaa76Me7CemjwxMH6oP438mGSpEwcaND7L7BLDDj5w==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1610128645;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+        bh=C2y4+ecKpsmHcb/3eNFWG1CKXZN48EwfB8bnapJyrW0=;
+        b=oWdB8WKCFDDUGKwK3BhuvX7CaLQ/aYJceO44Sd18msi998myRq86qgSx23bGTLWVtuT1Jw
+        MrhG4qr6H0ifTQCw==
+From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        linux-kernel@vger.kernel.org
+Subject: [RFC] The purpose of raw_spin_lock_bh()
+Message-ID: <20210108175723.d6r7omgoq3qv5wb7@linutronix.de>
 MIME-Version: 1.0
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Fri, 8 Jan 2021 18:54:38 +0100
-Message-ID: <CAJZ5v0h0kagZ6n+xC0wcCN5Zg3=HQ0NS_HO6fC0do8H5BqbD-w@mail.gmail.com>
-Subject: [GIT PULL] Device properties framework fixes for v5.11-rc3
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+I just noticed that we have raw_spin_lock_bh() and it has a few users.
+My guess is that the API should be removed and the existing user(s)
+should be moved to spin_lock_bh() / spinlock_t instead.
+On !RT it works as expected and there is no difference compared to
+spinlock_t.
+On RT it is kind of broken: It uses a raw_spinlock_t, disables BH but
+does not disable preemption. So it will spin on the lock but the owner
+could be scheduled out.
 
-Please pull from the tag
+I could (of course) make raw_spin_lock_bh() do the right thing on RT
+but from a quick look in sock_map_update_common() there is at least
+  raw_spin_lock_bh(&stab->lock);
+    -> sock_map_add_link()
+       -> spin_lock_bh(&psock->link_lock);
 
- git://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git \
- devprop-5.11-rc3
+which would then trigger a might_sleep().
 
-with top-most commit 3f7bddaf5d5a83aa2eb1e6d72db221d3ec43c813
-
- device property: add description of fwnode cases
-
-on top of commit e71ba9452f0b5b2e8dc8aa5445198cd9214a6a62
-
- Linux 5.11-rc2
-
-to receive device properties framework fixes for 5.11-rc3.
-
-These revert a problematic commit that went in during the 5.10 cycle
-and iprove the kerneldoc description of the function affected by it
-(both changes from Bard Liao).
-
-Thanks!
-
-
----------------
-
-Bard Liao (2):
-      Revert "device property: Keep secondary firmware node secondary by type"
-      device property: add description of fwnode cases
-
----------------
-
- drivers/base/core.c | 9 ++++++++-
- 1 file changed, 8 insertions(+), 1 deletion(-)
+Sebastian
