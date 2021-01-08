@@ -2,80 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FDD42EF4BA
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 16:22:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4863C2EF4BE
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 16:24:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727697AbhAHPVW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Jan 2021 10:21:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34660 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727049AbhAHPVT (ORCPT
+        id S1727763AbhAHPWz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Jan 2021 10:22:55 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:43976 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726977AbhAHPWy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Jan 2021 10:21:19 -0500
-Received: from mail-il1-x12b.google.com (mail-il1-x12b.google.com [IPv6:2607:f8b0:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30034C061381
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Jan 2021 07:20:39 -0800 (PST)
-Received: by mail-il1-x12b.google.com with SMTP id 75so10566181ilv.13
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Jan 2021 07:20:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=8zCsmPDJQdJDnkQKZejQHJWw0dwAHVEo5bCx7sWw+Us=;
-        b=f3/KYLt/J0hCYtwNhNQq+jNhIOIWqktI64HygeRj75qq1fPnhgIkN6NSbXBwf3AFJV
-         dpswdSOXhnqXsIrqnRhxjdPs/6B9KDV9xd/HUsY7RwiPnV9CYPDuannIRoPOfnDzmipr
-         xeOl3gqtigloxFfCU2BiU5hWGcYKkMWMudttgRY1ZHmUSaZMy+ChjbBMY1DDQNlRbSOl
-         N0VymzHgJ7JTmAoklloysMoGESJ+v24My6ef/zOHq7MtfKWgC6AVFaaIVpuoeFes3Lnj
-         DLyhgGlXd/7LXcRJhZGRkVD9s3J6a5ix56LXsx6k4roNiMHZOp6WA911hlGnYtpbAv6f
-         dgZQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=8zCsmPDJQdJDnkQKZejQHJWw0dwAHVEo5bCx7sWw+Us=;
-        b=Pp4WIntWUs2T7FEa8iL3PKz/Skpeg+XisBxc1BxH7Bw6zmI1hio4F3t+is7lTl1BXy
-         zHvkKAJzteeytaUkczjhCZwj5A10Kn9hIHKplFvPfa23a6FdpcQABqtaHvaXw/2QgnAK
-         +4NpkBR7Sr5+VtsYb1UgW59rzrZDJ5Lghy2v0ODIpnAqreJorahmwxDRr2/hoWkMm68P
-         OQIKMHU2Qj5CFRvdcMWnp173eIobZC7EnXMg3fqY+bW8YHW8e4SoOOE2C1qJH/Q3iEhZ
-         gHyESqOR806zWvHNQJpKO9//PcvBNpXvvu+uMG2+D+/k2ZKb+Bips6TukzxTcPTPTlf+
-         cVzQ==
-X-Gm-Message-State: AOAM530KbiMCnpVKT41w3WjT4vEA3m+WnKbmkGiaxLASXtGOr2CchrzA
-        qVbaqhd7VxVeXGryT5EHAUahls0V50dXWQ==
-X-Google-Smtp-Source: ABdhPJwLHghE+FJPmb5oqFCSqhecGE7My9bkts6MyHEwGH3AtUS5gKdtSmwdByWeukzwHGaxC9YDhA==
-X-Received: by 2002:a92:d84a:: with SMTP id h10mr4088593ilq.77.1610119238421;
-        Fri, 08 Jan 2021 07:20:38 -0800 (PST)
-Received: from [192.168.1.30] ([65.144.74.34])
-        by smtp.gmail.com with ESMTPSA id d1sm5364829ioh.3.2021.01.08.07.20.37
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 08 Jan 2021 07:20:37 -0800 (PST)
-Subject: Re: [PATCH] blk-mq-debugfs: Add decode for BLK_MQ_F_TAG_HCTX_SHARED
-To:     John Garry <john.garry@huawei.com>
-Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <1610096137-187414-1-git-send-email-john.garry@huawei.com>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <d0fa03b0-55b3-c4aa-6a8f-ac8b9afd6d13@kernel.dk>
-Date:   Fri, 8 Jan 2021 08:20:37 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Fri, 8 Jan 2021 10:22:54 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1610119287;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=/aeFvJpJFMTwfZ7/vJ01xGc8codi2ZIp83v/Ajx1hj0=;
+        b=MCopq8l26+2IMzUgEB01vLTbR+2+38HEyMzunJLn5irx6KfWXb2MVNHixktbIeCM4gT9jv
+        aC5Edbmw4yPFekOCCjrPMnNnWA3teO0pz3S6MP5OZf8Qxh7MlLdmJHZi/G8kYvrBA8bbQZ
+        /qsqDqB/zePx76DoL6oci+oHbNL2UNA=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-116-4dDv4JWPP7aKlhsYflMGiA-1; Fri, 08 Jan 2021 10:21:23 -0500
+X-MC-Unique: 4dDv4JWPP7aKlhsYflMGiA-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9252C803621;
+        Fri,  8 Jan 2021 15:21:21 +0000 (UTC)
+Received: from redhat.com (dhcp-17-185.bos.redhat.com [10.18.17.185])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 1A1205D9C0;
+        Fri,  8 Jan 2021 15:21:19 +0000 (UTC)
+Date:   Fri, 8 Jan 2021 10:21:17 -0500
+From:   Jarod Wilson <jarod@redhat.com>
+To:     Jiri Pirko <jiri@resnulli.us>
+Cc:     linux-kernel@vger.kernel.org, Jay Vosburgh <j.vosburgh@gmail.com>,
+        Veaceslav Falico <vfalico@gmail.com>,
+        Andy Gospodarek <andy@greyhouse.net>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Thomas Davis <tadavis@lbl.gov>, netdev@vger.kernel.org
+Subject: Re: [RFC PATCH net-next] bonding: add a vlan+srcmac tx hashing option
+Message-ID: <20210108152117.GC63172@redhat.com>
+References: <20201218193033.6138-1-jarod@redhat.com>
+ <20201228101145.GC3565223@nanopsycho.orion>
+ <20210107235813.GB29828@redhat.com>
+ <20210108131256.GG3565223@nanopsycho.orion>
 MIME-Version: 1.0
-In-Reply-To: <1610096137-187414-1-git-send-email-john.garry@huawei.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210108131256.GG3565223@nanopsycho.orion>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 1/8/21 1:55 AM, John Garry wrote:
-> Showing the hctx flags for when BLK_MQ_F_TAG_HCTX_SHARED is set gives
-> something like:
+On Fri, Jan 08, 2021 at 02:12:56PM +0100, Jiri Pirko wrote:
+> Fri, Jan 08, 2021 at 12:58:13AM CET, jarod@redhat.com wrote:
+> >On Mon, Dec 28, 2020 at 11:11:45AM +0100, Jiri Pirko wrote:
+> >> Fri, Dec 18, 2020 at 08:30:33PM CET, jarod@redhat.com wrote:
+> >> >This comes from an end-user request, where they're running multiple VMs on
+> >> >hosts with bonded interfaces connected to some interest switch topologies,
+> >> >where 802.3ad isn't an option. They're currently running a proprietary
+> >> >solution that effectively achieves load-balancing of VMs and bandwidth
+> >> >utilization improvements with a similar form of transmission algorithm.
+> >> >
+> >> >Basically, each VM has it's own vlan, so it always sends its traffic out
+> >> >the same interface, unless that interface fails. Traffic gets split
+> >> >between the interfaces, maintaining a consistent path, with failover still
+> >> >available if an interface goes down.
+> >> >
+> >> >This has been rudimetarily tested to provide similar results, suitable for
+> >> >them to use to move off their current proprietary solution.
+> >> >
+> >> >Still on the TODO list, if these even looks sane to begin with, is
+> >> >fleshing out Documentation/networking/bonding.rst.
+> >> 
+> >> Jarod, did you consider using team driver instead ? :)
+> >
+> >That's actually one of the things that was suggested, since team I believe
+> >already has support for this, but the user really wants to use bonding.
+> >We're finding that a lot of users really still prefer bonding over team.
 > 
-> root@debian:/home/john# more /sys/kernel/debug/block/sda/hctx0/flags
-> alloc_policy=FIFO SHOULD_MERGE|TAG_QUEUE_SHARED|3
+> Do you know the reason, other than "nostalgia"?
 
-Applied, thanks.
+I've heard a few different reasons that come to mind:
+
+1) nostalgia is definitely one -- "we know bonding here"
+2) support -- "the things I'm running say I need bonding to properly
+support failover in their environment". How accurate this is, I don't
+actually know.
+3) monitoring -- "my monitoring solution knows about bonding, but not
+about team". This is probably easily fixed, but may or may not be in the
+user's direct control.
+4) footprint -- "bonding does the job w/o team's userspace footprint".
+I think this one is kind of hard for team to do anything about, bonding
+really does have a smaller userspace footprint, which is a plus for
+embedded type applications and high-security environments looking to keep
+things as minimal as possible.
+
+I think I've heard a few "we tried team years ago and it didn't work" as
+well, which of course is ridiculous as a reason not to try something again,
+since a lot can change in a few years in this world.
 
 -- 
-Jens Axboe
+Jarod Wilson
+jarod@redhat.com
 
