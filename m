@@ -2,80 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 237AE2EEDCD
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 08:23:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C5702EEDD2
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 08:25:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727248AbhAHHXV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Jan 2021 02:23:21 -0500
-Received: from muru.com ([72.249.23.125]:41184 "EHLO muru.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726809AbhAHHXV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Jan 2021 02:23:21 -0500
-Received: from atomide.com (localhost [127.0.0.1])
-        by muru.com (Postfix) with ESMTPS id 1DE0580B4;
-        Fri,  8 Jan 2021 07:23:00 +0000 (UTC)
-Date:   Fri, 8 Jan 2021 09:22:35 +0200
-From:   Tony Lindgren <tony@atomide.com>
-To:     "H. Nikolaus Schaller" <hns@goldelico.com>
-Cc:     Adam Ford <aford173@gmail.com>, Amit Kucheria <amitk@kernel.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Eduardo Valentin <edubezval@gmail.com>,
-        Keerthy <j-keerthy@ti.com>, linux-pm@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux-OMAP <linux-omap@vger.kernel.org>,
-        Carl Philipp Klemm <philipp@uvos.xyz>,
-        Merlijn Wajer <merlijn@wizzup.org>,
-        Pavel Machek <pavel@ucw.cz>,
-        Peter Ujfalusi <peter.ujfalusi@gmail.com>,
-        Sebastian Reichel <sre@kernel.org>,
-        Andreas Kemnade <andreas@kemnade.info>
-Subject: Re: [PATCH 1/3] thermal: ti-soc-thermal: Fix stuck sensor with
- continuous mode for 4430
-Message-ID: <X/gIO9Ta3JPDaeV3@atomide.com>
-References: <20201230084338.19410-1-tony@atomide.com>
- <CAHCN7xJmwcUOpoza-LNxTAbRNb9ToERnBNuKboP86DSBdtS61A@mail.gmail.com>
- <7C9106E0-FC75-4056-AD5F-16CCFA9C24E5@goldelico.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <7C9106E0-FC75-4056-AD5F-16CCFA9C24E5@goldelico.com>
+        id S1727045AbhAHHYq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Jan 2021 02:24:46 -0500
+Received: from alexa-out.qualcomm.com ([129.46.98.28]:13994 "EHLO
+        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725308AbhAHHYq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 Jan 2021 02:24:46 -0500
+Received: from ironmsg-lv-alpha.qualcomm.com ([10.47.202.13])
+  by alexa-out.qualcomm.com with ESMTP; 07 Jan 2021 23:24:06 -0800
+X-QCInternal: smtphost
+Received: from ironmsg01-blr.qualcomm.com ([10.86.208.130])
+  by ironmsg-lv-alpha.qualcomm.com with ESMTP/TLS/AES256-SHA; 07 Jan 2021 23:24:04 -0800
+X-QCInternal: smtphost
+Received: from dikshita-linux.qualcomm.com ([10.204.65.237])
+  by ironmsg01-blr.qualcomm.com with ESMTP; 08 Jan 2021 12:53:51 +0530
+Received: by dikshita-linux.qualcomm.com (Postfix, from userid 347544)
+        id EC40E2149A; Fri,  8 Jan 2021 12:53:49 +0530 (IST)
+From:   Dikshita Agarwal <dikshita@codeaurora.org>
+To:     linux-media@vger.kernel.org, stanimir.varbanov@linaro.org
+Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        vgarodia@codeaurora.org, Dikshita Agarwal <dikshita@codeaurora.org>
+Subject: [PATCH RESEND v3] venus: venc: set inband mode property to FW.
+Date:   Fri,  8 Jan 2021 12:53:37 +0530
+Message-Id: <1610090618-30070-1-git-send-email-dikshita@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-* H. Nikolaus Schaller <hns@goldelico.com> [201230 13:29]:
-> > Am 30.12.2020 um 13:55 schrieb Adam Ford <aford173@gmail.com>:
-> > On Wed, Dec 30, 2020 at 2:43 AM Tony Lindgren <tony@atomide.com> wrote:
-> >> 
-> >> At least for 4430, trying to use the single conversion mode eventually
-> >> hangs the thermal sensor. This can be quite easily seen with errors:
-> >> 
-> >> thermal thermal_zone0: failed to read out thermal zone (-5)
-...
+set HFI_PROPERTY_CONFIG_VENC_SYNC_FRAME_SEQUENCE_HEADER to FW
+to support inband sequence header mode.
 
-> > I don't have an OMAP4, but if you want, I can test a DM3730.
-> 
-> Indeed I remember a similar discussion from the DM3730 [1]. temp values were
-> always those from the last measurement. E.g. the first one was done
-> during (cold) boot and the first request after 10 minutes did show a
-> quite cold system... The next one did show a hot system independent
-> of what had been between (suspend or high activity).
-> 
-> It seems as if it was even reproducible with a very old kernel on a BeagleBoard.
-> So it is quite fundamental.
-> 
-> We tried to fix it but did not come to a solution [2]. So we opened an issue
-> in our tracker [3] and decided to stay with continuous conversion although this
-> raises idle mode processor load.
+Signed-off-by: Dikshita Agarwal <dikshita@codeaurora.org>
 
-Hmm so maybe eocz high always times out in single mode since it also
-triggers at least on dra7?
+Changes since v2:
+- fixed Null pointer dereference (Stanimir, Fritz)
+- added set property call at correct place.
+---
+ drivers/media/platform/qcom/venus/venc.c       | 14 ++++++++++++++
+ drivers/media/platform/qcom/venus/venc_ctrls.c | 17 ++++++++++++++++-
+ 2 files changed, 30 insertions(+), 1 deletion(-)
 
-Yes it would be great if you guys can the $subject patch a try at
-least on your omap36xx and omap5 boards and see if you see eocz
-time out warnings in dmesg.
+diff --git a/drivers/media/platform/qcom/venus/venc.c b/drivers/media/platform/qcom/venus/venc.c
+index 3a2e449..ae21a7c 100644
+--- a/drivers/media/platform/qcom/venus/venc.c
++++ b/drivers/media/platform/qcom/venus/venc.c
+@@ -536,6 +536,7 @@ static int venc_set_properties(struct venus_inst *inst)
+ 	struct hfi_idr_period idrp;
+ 	struct hfi_quantization quant;
+ 	struct hfi_quantization_range quant_range;
++	struct hfi_enable en;
+ 	u32 ptype, rate_control, bitrate;
+ 	u32 profile, level;
+ 	int ret;
+@@ -655,6 +656,19 @@ static int venc_set_properties(struct venus_inst *inst)
+ 	if (ret)
+ 		return ret;
+ 
++	if (inst->fmt_cap->pixfmt == V4L2_PIX_FMT_H264 ||
++	    inst->fmt_cap->pixfmt == V4L2_PIX_FMT_HEVC) {
++		ptype = HFI_PROPERTY_CONFIG_VENC_SYNC_FRAME_SEQUENCE_HEADER;
++		if (ctr->header_mode == V4L2_MPEG_VIDEO_HEADER_MODE_SEPARATE)
++			en.enable = 0;
++		else
++			en.enable = 1;
++
++		ret = hfi_session_set_property(inst, ptype, &en);
++		if (ret)
++			return ret;
++	}
++
+ 	if (!ctr->bitrate_peak)
+ 		bitrate *= 2;
+ 	else
+diff --git a/drivers/media/platform/qcom/venus/venc_ctrls.c b/drivers/media/platform/qcom/venus/venc_ctrls.c
+index cf860e6..3ce02ad 100644
+--- a/drivers/media/platform/qcom/venus/venc_ctrls.c
++++ b/drivers/media/platform/qcom/venus/venc_ctrls.c
+@@ -158,6 +158,20 @@ static int venc_op_s_ctrl(struct v4l2_ctrl *ctrl)
+ 		break;
+ 	case V4L2_CID_MPEG_VIDEO_HEADER_MODE:
+ 		ctr->header_mode = ctrl->val;
++		mutex_lock(&inst->lock);
++		if (inst->streamon_out && inst->streamon_cap) {
++			if (ctrl->val == V4L2_MPEG_VIDEO_HEADER_MODE_SEPARATE)
++				en.enable = 0;
++			else
++				en.enable = 1;
++			ptype = HFI_PROPERTY_CONFIG_VENC_SYNC_FRAME_SEQUENCE_HEADER;
++			ret = hfi_session_set_property(inst, ptype, &en);
++			if (ret) {
++				mutex_unlock(&inst->lock);
++				return ret;
++			}
++		}
++		mutex_unlock(&inst->lock);
+ 		break;
+ 	case V4L2_CID_MPEG_VIDEO_CYCLIC_INTRA_REFRESH_MB:
+ 		break;
+@@ -289,7 +303,8 @@ int venc_ctrl_init(struct venus_inst *inst)
+ 	v4l2_ctrl_new_std_menu(&inst->ctrl_handler, &venc_ctrl_ops,
+ 		V4L2_CID_MPEG_VIDEO_HEADER_MODE,
+ 		V4L2_MPEG_VIDEO_HEADER_MODE_JOINED_WITH_1ST_FRAME,
+-		1 << V4L2_MPEG_VIDEO_HEADER_MODE_JOINED_WITH_1ST_FRAME,
++		~((1 << V4L2_MPEG_VIDEO_HEADER_MODE_SEPARATE) |
++		(1 << V4L2_MPEG_VIDEO_HEADER_MODE_JOINED_WITH_1ST_FRAME)),
+ 		V4L2_MPEG_VIDEO_HEADER_MODE_SEPARATE);
+ 
+ 	v4l2_ctrl_new_std_menu(&inst->ctrl_handler, &venc_ctrl_ops,
+-- 
+2.7.4
 
-Regards,
-
-Tony
