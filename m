@@ -2,123 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 66F7C2EEDFA
+	by mail.lfdr.de (Postfix) with ESMTP id D50472EEDFB
 	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 08:48:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727445AbhAHHrr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Jan 2021 02:47:47 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50656 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726027AbhAHHrr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Jan 2021 02:47:47 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 890D2233EE;
-        Fri,  8 Jan 2021 07:47:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610092026;
-        bh=aht0WdMXCPlAoFq0DlnM+/6kealmxDfX0uEiia9bmxs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=vWX6roBwrJrKKoRl6iEtW14ixgMgYXomRcg1ExcRPNyoKh4jaMUzdTmnVkv3twW4R
-         K4tZI0562rr6LGrnJsDAbETE6A3KH/48g+5EQE5YIbtnFSlc2SKf0h23QN9lr9REIj
-         ufYwT6idwpnSKYBaT4VySvKkVo8f05E3UOJPueCc=
-Date:   Fri, 8 Jan 2021 08:47:02 +0100
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Xu Yilun <yilun.xu@intel.com>
-Cc:     andrew@lunn.ch, arnd@arndb.de, lee.jones@linaro.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        trix@redhat.com, lgoncalv@redhat.com, hao.wu@intel.com,
-        matthew.gerlach@intel.com, russell.h.weight@intel.com
-Subject: Re: [RESEND PATCH 2/2] misc: add support for retimers interfaces on
- Intel MAX 10 BMC
-Message-ID: <X/gN9godW5uiBtB7@kroah.com>
-References: <1609999628-12748-1-git-send-email-yilun.xu@intel.com>
- <1609999628-12748-3-git-send-email-yilun.xu@intel.com>
- <X/bTtBUevX5IBPUl@kroah.com>
- <20210108020526.GB13860@yilunxu-OptiPlex-7050>
+        id S1727476AbhAHHsB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Jan 2021 02:48:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49004 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725848AbhAHHsA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 Jan 2021 02:48:00 -0500
+Received: from mail-pl1-x635.google.com (mail-pl1-x635.google.com [IPv6:2607:f8b0:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7CF7C0612F4
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Jan 2021 23:47:20 -0800 (PST)
+Received: by mail-pl1-x635.google.com with SMTP id x18so5245607pln.6
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Jan 2021 23:47:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=oxN7Ql6o+SZAidFXTRR4YApaIeN7xqQ60rez/PZAroI=;
+        b=SACCD/lZUwxHWXCdfqsKwXI5c6hrG5mawwzzB5OE7Y/CUAbqISZR+A9CGNt7OxZkrD
+         y740zJiiJks5yKSIwncYpth5K/NV52cl8AT8pIy+XZ7HhoeYUXV4+fJgUkVvuPya2xwU
+         W4keWj5uUnkfl4XgE1EG9LBMqBLNo6jBrWwbM1YwwQ82rW0C1PWGj1eulJWv7g+k1db6
+         T5d7XXFDIOQgt4QUNO/sVHr9SEPEpF/v/39QWnpyy/8llDvQaWDPCXsdanwP8YafVC7a
+         OUR+twUrkP0bM8L2Mt7wOEdoyztU4hUhIKqrH6Dcn5Tju3/umAy5ciQhC4+vle12IUTa
+         yzug==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
+         :mime-version:content-transfer-encoding;
+        bh=oxN7Ql6o+SZAidFXTRR4YApaIeN7xqQ60rez/PZAroI=;
+        b=g7fBGgTLO31A+hbwG18ENLxXarEKs4sfVqQBycFLY53s+tU1o7tqqlN1f45BvgF6Ww
+         o5icLargSDEMg0fJp9P6deOyt49K+NDMsr+pW5XgvvLvaFpF8LwI98xq/f/mwqjmULDR
+         j83QZl2wq9ADDPVT1QmyUQuBjTKugqEepYBlk8ZIrcyJhlV7LXSrp8wkjGidaDIOV6dn
+         cJI81RpR6tjbgPBGX6WPZ289JmZqTYexB4DVmFFxPtHyI4SOrqkHhlGmzYB9NNmBv8BB
+         zEm5UjQDffRbbBlw3Xo2j+/OmG9KfdAVBt1oZLczrWNlQ3q/GnsTruN75ak8C65J1Exo
+         VODg==
+X-Gm-Message-State: AOAM532vbO1YRZ9dBROYoC2ZuS4TgXjPTaDclntCvZW76SAMS1uyJ5ze
+        0rnRUaiaaALaBvmOI44xAts=
+X-Google-Smtp-Source: ABdhPJwupXJ5b6UrmPP4OqQblPe+fWvykEOsz1vnMav74WiddecbeOj1UMgkg2zkmBkPFBMQDFr78Q==
+X-Received: by 2002:a17:902:ed0a:b029:dc:55b:5cb9 with SMTP id b10-20020a170902ed0ab02900dc055b5cb9mr2701424pld.40.1610092040244;
+        Thu, 07 Jan 2021 23:47:20 -0800 (PST)
+Received: from balhae.roam.corp.google.com ([112.159.19.5])
+        by smtp.gmail.com with ESMTPSA id q23sm7764950pfg.192.2021.01.07.23.47.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 07 Jan 2021 23:47:19 -0800 (PST)
+Sender: Namhyung Kim <namhyung@gmail.com>
+From:   Namhyung Kim <namhyung@kernel.org>
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Jiri Olsa <jolsa@redhat.com>
+Cc:     Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Stephane Eranian <eranian@google.com>,
+        Ian Rogers <irogers@google.com>,
+        Jin Yao <yao.jin@linux.intel.com>
+Subject: [PATCH] perf test: Fix shadow stat test for non-bash shells
+Date:   Fri,  8 Jan 2021 16:47:12 +0900
+Message-Id: <20210108074712.947223-1-namhyung@kernel.org>
+X-Mailer: git-send-email 2.30.0.284.gd98b1dd5eaa7-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210108020526.GB13860@yilunxu-OptiPlex-7050>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 08, 2021 at 10:05:26AM +0800, Xu Yilun wrote:
-> On Thu, Jan 07, 2021 at 10:26:12AM +0100, Greg KH wrote:
-> > On Thu, Jan 07, 2021 at 02:07:08PM +0800, Xu Yilun wrote:
-> > > This driver supports the ethernet retimers (C827) for the Intel PAC
-> > > (Programmable Acceleration Card) N3000, which is a FPGA based Smart NIC.
-> > > 
-> > > C827 is an Intel(R) Ethernet serdes transceiver chip that supports
-> > > up to 100G transfer. On Intel PAC N3000 there are 2 C827 chips
-> > > managed by the Intel MAX 10 BMC firmware. They are configured in 4 ports
-> > > 10G/25G retimer mode. Host could query their link states and firmware
-> > > version information via retimer interfaces (Shared registers) on Intel
-> > > MAX 10 BMC. The driver creates sysfs interfaces for users to query these
-> > > information.
-> > 
-> > Networking people, please look at this sysfs file:
-> > 
-> > > +What:		/sys/bus/platform/devices/n3000bmc-retimer.*.auto/link_statusX
-> > > +Date:		Jan 2021
-> > > +KernelVersion:	5.12
-> > > +Contact:	Xu Yilun <yilun.xu@intel.com>
-> > > +Description:	Read only. Returns the status of each line side link. "1" for
-> > > +		link up, "0" for link down.
-> > > +		Format: "%u".
-> > 
-> > as I need your approval to add it because it is not the "normal" way for
-> > link status to be exported to userspace.
-> > 
-> > One code issue:
-> > 
-> > > +#define to_link_attr(dev_attr) \
-> > > +	container_of(dev_attr, struct link_attr, attr)
-> > > +
-> > > +static ssize_t
-> > > +link_status_show(struct device *dev, struct device_attribute *attr, char *buf)
-> > > +{
-> > > +	struct m10bmc_retimer *retimer = dev_get_drvdata(dev);
-> > > +	struct link_attr *lattr = to_link_attr(attr);
-> > > +	unsigned int val;
-> > > +	int ret;
-> > > +
-> > > +	ret = m10bmc_sys_read(retimer->m10bmc, M10BMC_PKVL_LSTATUS, &val);
-> > > +	if (ret)
-> > > +		return ret;
-> > > +
-> > > +	return sysfs_emit(buf, "%u\n",
-> > > +			  !!(val & BIT((retimer->id << 2) + lattr->index)));
-> > > +}
-> > > +
-> > > +#define link_status_attr(_index)				\
-> > > +	static struct link_attr link_attr_status##_index =	\
-> > > +		{ .attr = __ATTR(link_status##_index, 0444,	\
-> > > +				 link_status_show, NULL),	\
-> > > +		  .index = (_index) }
-> > 
-> > Why is this a "raw" attribute and not a device attribute?
-> 
-> It is actually a device_attribute. The device_attribute is embedded in
-> link_attr, like:
-> 
->   struct link_attr {
-> 	struct device_attribute attr;
-> 	u32 index;
->   };
-> 
-> An index for the link is appended along with the device_attribute, so we
-> could identify which link is being queried on link_status_show(). There
-> are 4 links and this is to avoid duplicated code like
-> link_status_1_show(), link_status_2_show() ...
+It was using some bash-specific features and failed to parse when
+running with a different shell like below:
 
-Duplicated code is better to read than complex code :)
+  root@kbl-ppc:~/kbl-ws/perf-dev/lck-9077/acme.tmp/tools/perf# ./perf test 83 -vv
+  83: perf stat metrics (shadow stat) test                            :
+  --- start ---
+  test child forked, pid 3922
+  ./tests/shell/stat+shadow_stat.sh: 19: ./tests/shell/stat+shadow_stat.sh: [[: not found
+  ./tests/shell/stat+shadow_stat.sh: 24: ./tests/shell/stat+shadow_stat.sh: [[: not found
+  ./tests/shell/stat+shadow_stat.sh: 30: ./tests/shell/stat+shadow_stat.sh: [[: not found
+  (standard_in) 2: syntax error
+  ./tests/shell/stat+shadow_stat.sh: 36: ./tests/shell/stat+shadow_stat.sh: [[: not found
+  ./tests/shell/stat+shadow_stat.sh: 19: ./tests/shell/stat+shadow_stat.sh: [[: not found
+  ./tests/shell/stat+shadow_stat.sh: 24: ./tests/shell/stat+shadow_stat.sh: [[: not found
+  ./tests/shell/stat+shadow_stat.sh: 30: ./tests/shell/stat+shadow_stat.sh: [[: not found
+  (standard_in) 2: syntax error
+  ./tests/shell/stat+shadow_stat.sh: 36: ./tests/shell/stat+shadow_stat.sh: [[: not found
+  ./tests/shell/stat+shadow_stat.sh: 45: ./tests/shell/stat+shadow_stat.sh: declare: not found
+  test child finished with -1
+  ---- end ----
+  perf stat metrics (shadow stat) test: FAILED!
 
-> > Please just use a normal DEVICE_ATTR_RO() macro to make it simpler and
-> 
-> DEVICE_ATTR_RO() is to define a standalone device_attribute variable, but
-> here we are initializing a field in struct link_attr.
+Reported-by: Jin Yao <yao.jin@linux.intel.com>
+Signed-off-by: Namhyung Kim <namhyung@kernel.org>
+---
+ tools/perf/tests/shell/stat+shadow_stat.sh | 24 ++++++++++++----------
+ 1 file changed, 13 insertions(+), 11 deletions(-)
 
-Then use the correct initialization macro that is given to you for that,
-do not roll your own.
+diff --git a/tools/perf/tests/shell/stat+shadow_stat.sh b/tools/perf/tests/shell/stat+shadow_stat.sh
+index 249dfe48cf6a..e2c7ac4ed91d 100755
+--- a/tools/perf/tests/shell/stat+shadow_stat.sh
++++ b/tools/perf/tests/shell/stat+shadow_stat.sh
+@@ -16,24 +16,24 @@ test_global_aggr()
+ 	while read num evt hash ipc rest
+ 	do
+ 		# skip not counted events
+-		if [[ $num == "<not" ]]; then
++		if [ "$num" = "<not" ]; then
+ 			continue
+ 		fi
+ 
+ 		# save cycles count
+-		if [[ $evt == "cycles" ]]; then
++		if [ "$evt" = "cycles" ]; then
+ 			cyc=$num
+ 			continue
+ 		fi
+ 
+ 		# skip if no cycles
+-		if [[ -z $cyc ]]; then
++		if [ -z "$cyc" ]; then
+ 			continue
+ 		fi
+ 
+ 		# use printf for rounding and a leading zero
+ 		local res=`printf "%.2f" $(echo "scale=6; $num / $cyc" | bc -q)`
+-		if [[ $ipc != $res ]]; then
++		if [ "$ipc" != "$res" ]; then
+ 			echo "IPC is different: $res != $ipc  ($num / $cyc)"
+ 			exit 1
+ 		fi
+@@ -42,36 +42,38 @@ test_global_aggr()
+ 
+ test_no_aggr()
+ {
+-	declare -A results
++	results=$(mktemp /tmp/perf-test-shadow-stat-XXXXXX)
+ 
+ 	perf stat -a -A --no-big-num -e cycles,instructions sleep 1  2>&1 | \
+ 	grep ^CPU | \
+ 	while read cpu num evt hash ipc rest
+ 	do
+ 		# skip not counted events
+-		if [[ $num == "<not" ]]; then
++		if [ "$num" = "<not" ]; then
+ 			continue
+ 		fi
+ 
+ 		# save cycles count
+-		if [[ $evt == "cycles" ]]; then
+-			results[$cpu]=$num
++		if [ "$evt" = "cycles" ]; then
++			echo $cpu $num >> $results
+ 			continue
+ 		fi
+ 
+ 		# skip if no cycles
+-		local cyc=${results[$cpu]}
+-		if [[ -z $cyc ]]; then
++		local cyc=$(grep $cpu $results | cut -d' ' -f2)
++		if [ -z "$cyc" ]; then
+ 			continue
+ 		fi
+ 
+ 		# use printf for rounding and a leading zero
+ 		local res=`printf "%.2f" $(echo "scale=6; $num / $cyc" | bc -q)`
+-		if [[ $ipc != $res ]]; then
++		if [ "$ipc" != "$res" ]; then
+ 			echo "IPC is different for $cpu: $res != $ipc  ($num / $cyc)"
++			rm -f $results
+ 			exit 1
+ 		fi
+ 	done
++	rm -f $results
+ }
+ 
+ test_global_aggr
+-- 
+2.30.0.284.gd98b1dd5eaa7-goog
 
-greg k-h
