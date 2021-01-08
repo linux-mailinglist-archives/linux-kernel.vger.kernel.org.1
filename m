@@ -2,100 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0534F2EF28F
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 13:30:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 917D92EF292
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 13:33:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726536AbhAHMaJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Jan 2021 07:30:09 -0500
-Received: from mout.gmx.net ([212.227.17.20]:40265 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725828AbhAHMaI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Jan 2021 07:30:08 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1610108899;
-        bh=KpCMpUy6VUc1Hr1ym6ONwZxAKziozlsCHoXJ7ei23Ng=;
-        h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
-        b=VhrhkA5jCNfY4F7ZNWFTV+NJnx/jcSBlqxBx4UlyovLhD0tSxToceN0NOdgaPW7nl
-         xMbfH8jVDU/3UyckUd0HEcpo11VN2ua7NPMJCboedPy/GgLEoAJZ+l+ZoAQ//8y0Bi
-         6iirT0SKEbNMnYskGIPBaAVTkbNG6gg8floEISUk=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from longitude ([37.201.215.57]) by mail.gmx.com (mrgmx105
- [212.227.17.168]) with ESMTPSA (Nemesis) id 1M8ykg-1kv73d068E-0063as; Fri, 08
- Jan 2021 13:28:19 +0100
-From:   =?UTF-8?q?Jonathan=20Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>
-To:     devicetree@vger.kernel.org
-Cc:     =?UTF-8?q?Jonathan=20Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>,
-        Avi Fishman <avifishman70@gmail.com>,
-        Tomer Maimon <tmaimon77@gmail.com>,
-        Tali Perry <tali.perry1@gmail.com>,
-        Patrick Venture <venture@google.com>,
-        Nancy Yuen <yuenn@google.com>,
-        Benjamin Fair <benjaminfair@google.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Rob Herring <robh+dt@kernel.org>, openbmc@lists.ozlabs.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] dt-bindings: timer: nuvoton: Clarify that interrupt of timer 0 should be specified
-Date:   Fri,  8 Jan 2021 13:28:03 +0100
-Message-Id: <20210108122804.359258-1-j.neuschaefer@gmx.net>
-X-Mailer: git-send-email 2.29.2
+        id S1726884AbhAHMcm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Jan 2021 07:32:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36766 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726205AbhAHMcl (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 Jan 2021 07:32:41 -0500
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02A02C0612F4;
+        Fri,  8 Jan 2021 04:32:00 -0800 (PST)
+Received: from zn.tnic (p200300ec2f0a310099313965888db647.dip0.t-ipconnect.de [IPv6:2003:ec:2f0a:3100:9931:3965:888d:b647])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 299391EC0513;
+        Fri,  8 Jan 2021 13:31:58 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1610109118;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=Tu3Nlta5RSVpZXD0IzNaB9PfxGBdsgfgwf9n2ihbJ5s=;
+        b=mwNt3ZDcB15d1hOhWbgNDdzHmhwWG77Rr++kNPKmRlmRWYRtKntFCoUpjblGgUnid45+r8
+        4JDPtK5Whas6L59xllXlVBuz1Dmj5INXz5pfmIXKA7UaH/Pe0gIEGzHufB/48ucG7MO/zo
+        0SPEoQAp5Mb0HsVaosIpH8C3S9oS4Ok=
+Date:   Fri, 8 Jan 2021 13:31:56 +0100
+From:   Borislav Petkov <bp@alien8.de>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, x86@kernel.org,
+        linux-edac@vger.kernel.org, tony.luck@intel.com,
+        tglx@linutronix.de, mingo@redhat.com, hpa@zytor.com,
+        kernel-team@fb.com
+Subject: Re: [PATCH RFC x86/mce] Make mce_timed_out() identify holdout CPUs
+Message-ID: <20210108123156.GD4042@zn.tnic>
+References: <20210106174102.GA23874@paulmck-ThinkPad-P72>
+ <20210106183244.GA24607@zn.tnic>
+ <20210106191353.GA2743@paulmck-ThinkPad-P72>
+ <20210107070724.GC14697@zn.tnic>
+ <20210107170844.GM2743@paulmck-ThinkPad-P72>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:+I2sI3Dy+uSuRw4shPx2VBxLIOPM5YM/mSuhVlLMSX1EyJVcYS5
- U24ERaShIptBAGYfJhC/vf6h180d1PakfL9R8FkqI6cV//Td77xXkjmBg/3OSws+lIfx22t
- 9ZEuSWRowbqvvyMYsvBcLdRG+4thuWNfwjc6cvIHGi13OqrsziYDl8mtvFdLuKflKM7AhY0
- KKMo/TemmlIfo46wwPiSQ==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:rzb1sPHW5bc=:iXNlcqZO2fIPkLZTiNhn9E
- XmbFtGpgB9//v6Nu+wyMJPsOVw+/qN6qE5N1R8gUozACB0uUi25+S4m3lmecy0K3fVuVWOK0m
- SMXU+nSvZgmC6zNvZ7ZB1R1L9sPAKDT5om93oS16S3kWqQslnMEzEDlbQPWujzmUjRq8KWUeR
- APQhePupMKhgub8j7XblgRKMXTjODEwrWO7XN5IGnr3r3nal0mb9phcL6G7/A9y2TOD1WqQxk
- wArRMt4IAOx06iuouipgaQmkQnMQzsThpPRKTJkhp9QYXFxBXs1P90Cy632cqLmTcd6cUvrj1
- jOl1X0/HB4+/5GpQtH7vayOJHXXiYRwhmltdVN2FlZB2Jsl686mrw78yKeTaxsvZDZrW/7w2/
- Ca9Qn1G2Jaa8F0l4Czhe4nybmFaK11DySDFEs+s6pQ9gBj13e2P35tZkqRwpVWAaCkjsT8gZa
- 4lldftBgaKjgXZb3K7XvpEzjrSPUeGmzwd8OdS13tBBnLuEjAAC72wRyWQR7CdAiBRKIY4nX0
- bma6Inr8BR2xnXAcWyz5QTpBjuubyPzcB7PhtGUs+H4+AdM3H350TtAORmFZ1GVoydr/gyrmv
- 2akipmFkrMH+rHLrrLgt61NLOvREheZOVssTxyUB5jl6/dMTfwHjP+24GihkIibZZ4LXDLveH
- Evzg7vglw7TzDvKrgpgbiWji9Bp8E6/hA6o1GjInblTQyz6OrNh+/JevR9ej5JS7PjerJvkkS
- bPwriwrEJSbWlB2po2aVfhX+TzIdQbiP61LMS1anG44LwjYP0pt8i3otAVA3HzhBiPfaRjpKY
- Td+IhMtL10eYZB/XmT0C4QbE8gavCyLBj92g7Cl6WcclEVIKfPp0L3sRIZO3QOlG8AB82fRRR
- YiWxmKbaGj+MjrPeiJsA==
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210107170844.GM2743@paulmck-ThinkPad-P72>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The NPCM750 Timer/Watchdoc Controller has multiple interrupt lines,
-connected to multiple timers. The driver uses timer 0 for timer
-interrupts, so the interrupt line corresponding to timer 0 should be
-specified in DT.
+On Thu, Jan 07, 2021 at 09:08:44AM -0800, Paul E. McKenney wrote:
+> Some information is usually better than none.  And I bet that failing
+> hardware is capable of all sorts of tricks at all sorts of levels.  ;-)
 
-I removed the mention of "flags for falling edge", because the timer
-controller uses high-level interrupts rather than falling-edge
-interrupts, and whether flags should be specified is up the interrupt
-controller's DT binding.
+Tell me about it.
 
-Signed-off-by: Jonathan Neusch=C3=A4fer <j.neuschaefer@gmx.net>
-=2D--
- .../devicetree/bindings/timer/nuvoton,npcm7xx-timer.txt        | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+> Updated patch below.  Is this what you had in mind?
 
-diff --git a/Documentation/devicetree/bindings/timer/nuvoton,npcm7xx-timer=
-.txt b/Documentation/devicetree/bindings/timer/nuvoton,npcm7xx-timer.txt
-index ea22dfe485bee..97258f1a1505b 100644
-=2D-- a/Documentation/devicetree/bindings/timer/nuvoton,npcm7xx-timer.txt
-+++ b/Documentation/devicetree/bindings/timer/nuvoton,npcm7xx-timer.txt
-@@ -6,8 +6,7 @@ timer counters.
- Required properties:
- - compatible      : "nuvoton,npcm750-timer" for Poleg NPCM750.
- - reg             : Offset and length of the register set for the device.
-=2D- interrupts      : Contain the timer interrupt with flags for
--                    falling edge.
-+- interrupts      : Contain the timer interrupt of timer 0.
- - clocks          : phandle of timer reference clock (usually a 25 MHz cl=
-ock).
+Ok, so I've massaged it into the below locally while taking another
+detailed look. Made the pr_info pr_emerg and poked at the text more, as
+I do. :)
 
- Example:
-=2D-
-2.29.2
+Lemme know if something else needs to be adjusted, otherwise I'll queue
+it.
 
+Thx.
+
+---
+Author: Paul E. McKenney <paulmck@kernel.org>
+Date:   Wed Dec 23 17:04:19 2020 -0800
+
+    x86/mce: Make mce_timed_out() identify holdout CPUs
+    
+    The
+    
+      "Timeout: Not all CPUs entered broadcast exception handler"
+    
+    message will appear from time to time given enough systems, but this
+    message does not identify which CPUs failed to enter the broadcast
+    exception handler. This information would be valuable if available,
+    for example, in order to correlate with other hardware-oriented error
+    messages.
+    
+    Add a cpumask of CPUs which maintains which CPUs have entered this
+    handler, and print out which ones failed to enter in the event of a
+    timeout.
+    
+     [ bp: Massage. ]
+    
+    Reported-by: Jonathan Lemon <bsd@fb.com>
+    Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+    Signed-off-by: Borislav Petkov <bp@suse.de>
+    Tested-by: Tony Luck <tony.luck@intel.com>
+    Link: https://lkml.kernel.org/r/20210106174102.GA23874@paulmck-ThinkPad-P72
+
+diff --git a/arch/x86/kernel/cpu/mce/core.c b/arch/x86/kernel/cpu/mce/core.c
+index 13d3f1cbda17..6c81d0998e0a 100644
+--- a/arch/x86/kernel/cpu/mce/core.c
++++ b/arch/x86/kernel/cpu/mce/core.c
+@@ -877,6 +877,12 @@ static atomic_t mce_executing;
+  */
+ static atomic_t mce_callin;
+ 
++/*
++ * Track which CPUs entered the MCA broadcast synchronization and which not in
++ * order to print holdouts.
++ */
++static cpumask_t mce_missing_cpus = CPU_MASK_ALL;
++
+ /*
+  * Check if a timeout waiting for other CPUs happened.
+  */
+@@ -894,8 +900,12 @@ static int mce_timed_out(u64 *t, const char *msg)
+ 	if (!mca_cfg.monarch_timeout)
+ 		goto out;
+ 	if ((s64)*t < SPINUNIT) {
+-		if (mca_cfg.tolerant <= 1)
++		if (mca_cfg.tolerant <= 1) {
++			if (cpumask_and(&mce_missing_cpus, cpu_online_mask, &mce_missing_cpus))
++				pr_emerg("CPUs not responding to MCE broadcast (may include false positives): %*pbl\n",
++					 cpumask_pr_args(&mce_missing_cpus));
+ 			mce_panic(msg, NULL, NULL);
++		}
+ 		cpu_missing = 1;
+ 		return 1;
+ 	}
+@@ -1006,6 +1016,7 @@ static int mce_start(int *no_way_out)
+ 	 * is updated before mce_callin.
+ 	 */
+ 	order = atomic_inc_return(&mce_callin);
++	cpumask_clear_cpu(smp_processor_id(), &mce_missing_cpus);
+ 
+ 	/*
+ 	 * Wait for everyone.
+@@ -1114,6 +1125,7 @@ static int mce_end(int order)
+ reset:
+ 	atomic_set(&global_nwo, 0);
+ 	atomic_set(&mce_callin, 0);
++	cpumask_setall(&mce_missing_cpus);
+ 	barrier();
+ 
+ 	/*
+@@ -2712,6 +2724,7 @@ static void mce_reset(void)
+ 	atomic_set(&mce_executing, 0);
+ 	atomic_set(&mce_callin, 0);
+ 	atomic_set(&global_nwo, 0);
++	cpumask_setall(&mce_missing_cpus);
+ }
+ 
+ static int fake_panic_get(void *data, u64 *val)
+
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
