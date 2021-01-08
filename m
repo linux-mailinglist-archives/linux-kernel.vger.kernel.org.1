@@ -2,209 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 00F0F2EEA94
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 01:53:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 338A82EEA97
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 01:55:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729706AbhAHAxT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 19:53:19 -0500
-Received: from aserp2130.oracle.com ([141.146.126.79]:38126 "EHLO
-        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727695AbhAHAxS (ORCPT
+        id S1729713AbhAHAy1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 19:54:27 -0500
+Received: from so254-31.mailgun.net ([198.61.254.31]:53695 "EHLO
+        so254-31.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729465AbhAHAy0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 19:53:18 -0500
-Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
-        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 1080Z4aL182515;
-        Fri, 8 Jan 2021 00:52:25 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=6Yuo+VxFPfGQC4s1IrUj9sSA2Cqk6UuNoZ/DE8PBsk0=;
- b=MFg8yjJAUzj+cRrlFMTX5gU9LBOMwckVgF1b2Hg6EoPfOP8l/wPjsZrjeQ6pZhFCiaix
- Oy19dUGH9hVU+y3iwLzoMZk7/A1XQRio3OWomW7qgyRaS+Z8DcBzf4Hc2p98PU+KHPiR
- eUrKOIVBkg8+hUZUc4ucGkrjM69sRquYw2NQRrPgepcGWCRhibgqE0V13gc1cCO6Rvpu
- 44mElzSUMw3YPSKlKS3Xln4tCyhK1vTew3VYOO5R+UhMTZC+zzFv6covmRoVBMt1mDVR
- jMScM4afemfqv/lNJklCJ4XanB7BaahToTYM+IwUabmnOwFo/WuZ3ofX5+Mw1tHboRDs gQ== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by aserp2130.oracle.com with ESMTP id 35wcuxyeag-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 08 Jan 2021 00:52:25 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 1080Ykhk157312;
-        Fri, 8 Jan 2021 00:52:25 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by aserp3030.oracle.com with ESMTP id 35v4renp9n-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 08 Jan 2021 00:52:24 +0000
-Received: from abhmp0012.oracle.com (abhmp0012.oracle.com [141.146.116.18])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 1080qLYK000383;
-        Fri, 8 Jan 2021 00:52:21 GMT
-Received: from [192.168.2.112] (/50.38.35.18)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Fri, 08 Jan 2021 00:52:21 +0000
-Subject: Re: [PATCH v2 3/6] mm: hugetlb: fix a race between freeing and
- dissolving the page
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Muchun Song <songmuchun@bytedance.com>, akpm@linux-foundation.org,
-        n-horiguchi@ah.jp.nec.com, ak@linux.intel.com, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-References: <20210106084739.63318-1-songmuchun@bytedance.com>
- <20210106084739.63318-4-songmuchun@bytedance.com>
- <20210106165632.GT13207@dhcp22.suse.cz>
- <a9c59b0e-9a9d-c568-5503-5df6fe8db908@oracle.com>
- <20210107084038.GC13207@dhcp22.suse.cz>
-From:   Mike Kravetz <mike.kravetz@oracle.com>
-Message-ID: <509ef752-cc2e-3edf-5871-87f971a7bc0f@oracle.com>
-Date:   Thu, 7 Jan 2021 16:52:19 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.1.1
+        Thu, 7 Jan 2021 19:54:26 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1610067240; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=ZnflnoUouOv7Eqb6dF8qeZur2ghTIhhUt8tvBtyEcJE=;
+ b=RdgkrRUZ/8zNVKbiopVBwHgCaqYsKpYgxyiGIMBbEdlEwWKf5vLZWbV0G67cZP+mGz0l1ZQ3
+ f7Elmu1ryFuBZaNMy7AHpp9FoCl1KfOEfxM+PJo5jMxb3NnOobeRnmsQ3+pmV4zmfdVO4SaG
+ kz5OsQVimGh7OyTdCeWQqNNvyzo=
+X-Mailgun-Sending-Ip: 198.61.254.31
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n10.prod.us-east-1.postgun.com with SMTP id
+ 5ff7ad0befc4a0d0baed19a7 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 08 Jan 2021 00:53:31
+ GMT
+Sender: cang=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 01CDCC43466; Fri,  8 Jan 2021 00:53:31 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: cang)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id F3136C433C6;
+        Fri,  8 Jan 2021 00:53:29 +0000 (UTC)
 MIME-Version: 1.0
-In-Reply-To: <20210107084038.GC13207@dhcp22.suse.cz>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
 Content-Transfer-Encoding: 7bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9857 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 mlxscore=0 bulkscore=0
- suspectscore=0 spamscore=0 adultscore=0 malwarescore=0 phishscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2101080000
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9857 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 bulkscore=0
- clxscore=1015 spamscore=0 impostorscore=0 priorityscore=1501 mlxscore=0
- adultscore=0 mlxlogscore=999 lowpriorityscore=0 phishscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2101080000
+Date:   Fri, 08 Jan 2021 08:53:29 +0800
+From:   Can Guo <cang@codeaurora.org>
+To:     Jaegeuk Kim <jaegeuk@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org,
+        kernel-team@android.com, alim.akhtar@samsung.com,
+        avri.altman@wdc.com, bvanassche@acm.org,
+        martin.petersen@oracle.com, stanley.chu@mediatek.com,
+        Jaegeuk Kim <jaegeuk@google.com>
+Subject: Re: [PATCH v5 2/2] scsi: ufs: fix tm request correctly when non-fatal
+ error happens
+In-Reply-To: <20210107185316.788815-3-jaegeuk@kernel.org>
+References: <20210107185316.788815-1-jaegeuk@kernel.org>
+ <20210107185316.788815-3-jaegeuk@kernel.org>
+Message-ID: <acf85e531f282b3d1162a4879a1160d5@codeaurora.org>
+X-Sender: cang@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 1/7/21 12:40 AM, Michal Hocko wrote:
-> On Wed 06-01-21 12:58:29, Mike Kravetz wrote:
->> On 1/6/21 8:56 AM, Michal Hocko wrote:
->>> On Wed 06-01-21 16:47:36, Muchun Song wrote:
->>>> There is a race condition between __free_huge_page()
->>>> and dissolve_free_huge_page().
->>>>
->>>> CPU0:                         CPU1:
->>>>
->>>> // page_count(page) == 1
->>>> put_page(page)
->>>>   __free_huge_page(page)
->>>>                               dissolve_free_huge_page(page)
->>>>                                 spin_lock(&hugetlb_lock)
->>>>                                 // PageHuge(page) && !page_count(page)
->>>>                                 update_and_free_page(page)
->>>>                                 // page is freed to the buddy
->>>>                                 spin_unlock(&hugetlb_lock)
->>>>     spin_lock(&hugetlb_lock)
->>>>     clear_page_huge_active(page)
->>>>     enqueue_huge_page(page)
->>>>     // It is wrong, the page is already freed
->>>>     spin_unlock(&hugetlb_lock)
->>>>
->>>> The race windows is between put_page() and spin_lock() which
->>>> is in the __free_huge_page().
->>>
->>> The race window reall is between put_page and dissolve_free_huge_page.
->>> And the result is that the put_page path would clobber an unrelated page
->>> (either free or already reused page) which is quite serious.
->>> Fortunatelly pages are dissolved very rarely. I believe that user would
->>> require to be privileged to hit this by intention.
->>>
->>>> We should make sure that the page is already on the free list
->>>> when it is dissolved.
->>>
->>> Another option would be to check for PageHuge in __free_huge_page. Have
->>> you considered that rather than add yet another state? The scope of the
->>> spinlock would have to be extended. If that sounds more tricky then can
->>> we check the page->lru in the dissolve path? If the page is still
->>> PageHuge and reference count 0 then there shouldn't be many options
->>> where it can be queued, right?
->>
->> The tricky part with expanding lock scope will be the potential call to
->> hugepage_subpool_put_pages as it may also try to acquire the hugetlb_lock.
+On 2021-01-08 02:53, Jaegeuk Kim wrote:
+> From: Jaegeuk Kim <jaegeuk@google.com>
 > 
-> Can we rearrange the code and move hugepage_subpool_put_pages after all
-> this is done? Or is there any strong reason for the particular ordering?
+> When non-fatal error like line-reset happens, ufshcd_err_handler() 
+> starts to
+> abort tasks by ufshcd_try_to_abort_task(). When it tries to issue tm 
+> request,
+> we've hit two warnings.
+> 
+> WARNING: CPU: 7 PID: 7 at block/blk-core.c:630 
+> blk_get_request+0x68/0x70
+> WARNING: CPU: 4 PID: 157 at block/blk-mq-tag.c:82 
+> blk_mq_get_tag+0x438/0x46c
+> 
+> After fixing the above warnings, I've hit another tm_cmd timeout, which 
+> may be
+> caused by unstable controller state.
+> 
+> __ufshcd_issue_tm_cmd: task management cmd 0x80 timed-out
+> 
+> Then, ufshcd_err_handler() enters full reset, and I hit kernel stuck. 
+> It turned
+> out ufshcd_print_trs() printed too many messages in console which 
+> requires CPU
+> locks. Likewise hba->silence_err_logs, we need to avoid too verbose 
+> messages.
+> Actually it came from ufshcd_transfer_rsp_status() when requeuing 
+> commands back.
+> Indeed, this is actually not an error case, so let's fix it.
+> 
+> Fixes: 69a6c269c097 ("scsi: ufs: Use blk_{get,put}_request() to
+> allocate and free TMFs")
+> Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
 
-The reservation code is so fragile, I always get nervous when making
-any changes.  However, the straight forward patch below passes some
-simple testing.  The only difference I can see is that global counts
-are adjusted before sub-pool counts.  This should not be an issue as
-global and sub-pool counts are adjusted independently (not under the
-same lock).  Allocation code checks sub-pool counts before global
-counts.  So, there is a SMALL potential that a racing allocation which
-previously succeeded would now fail.  I do not think this is an issue
-in practice.
+It is really good to find out the root cause! Thanks for the fix.
 
-diff --git a/mm/hugetlb.c b/mm/hugetlb.c
-index 3b38ea958e95..658593840212 100644
---- a/mm/hugetlb.c
-+++ b/mm/hugetlb.c
-@@ -1395,6 +1395,11 @@ static void __free_huge_page(struct page *page)
- 		(struct hugepage_subpool *)page_private(page);
- 	bool restore_reserve;
- 
-+	spin_lock(&hugetlb_lock);
-+	/* check for race with dissolve_free_huge_page/update_and_free_page */
-+	if (!PageHuge(page))
-+		return;
-+
- 	VM_BUG_ON_PAGE(page_count(page), page);
- 	VM_BUG_ON_PAGE(page_mapcount(page), page);
- 
-@@ -1403,26 +1408,6 @@ static void __free_huge_page(struct page *page)
- 	restore_reserve = PagePrivate(page);
- 	ClearPagePrivate(page);
- 
--	/*
--	 * If PagePrivate() was set on page, page allocation consumed a
--	 * reservation.  If the page was associated with a subpool, there
--	 * would have been a page reserved in the subpool before allocation
--	 * via hugepage_subpool_get_pages().  Since we are 'restoring' the
--	 * reservtion, do not call hugepage_subpool_put_pages() as this will
--	 * remove the reserved page from the subpool.
--	 */
--	if (!restore_reserve) {
--		/*
--		 * A return code of zero implies that the subpool will be
--		 * under its minimum size if the reservation is not restored
--		 * after page is free.  Therefore, force restore_reserve
--		 * operation.
--		 */
--		if (hugepage_subpool_put_pages(spool, 1) == 0)
--			restore_reserve = true;
--	}
--
--	spin_lock(&hugetlb_lock);
- 	clear_page_huge_active(page);
- 	hugetlb_cgroup_uncharge_page(hstate_index(h),
- 				     pages_per_huge_page(h), page);
-@@ -1446,6 +1431,28 @@ static void __free_huge_page(struct page *page)
- 		enqueue_huge_page(h, page);
- 	}
- 	spin_unlock(&hugetlb_lock);
-+
-+	/*
-+	 * If PagePrivate() was set on page, page allocation consumed a
-+	 * reservation.  If the page was associated with a subpool, there
-+	 * would have been a page reserved in the subpool before allocation
-+	 * via hugepage_subpool_get_pages().  Since we are 'restoring' the
-+	 * reservtion, do not call hugepage_subpool_put_pages() as this will
-+	 * remove the reserved page from the subpool.
-+	 */
-+	if (!restore_reserve) {
-+		/*
-+		 * A return code of zero implies that the subpool will be
-+		 * under its minimum size if the reservation is not restored
-+		 * after page is free.  Therefore, we need to add 1 to the
-+		 * global reserve count.
-+		 */
-+		if (hugepage_subpool_put_pages(spool, 1) == 0) {
-+			spin_lock(&hugetlb_lock);
-+			h->resv_huge_pages++;
-+			spin_unlock(&hugetlb_lock);
-+		}
-+	}
- }
- 
- /*
+Reviewed-by: Can Guo <cang@codeaurora.org>
+
+> ---
+>  drivers/scsi/ufs/ufshcd.c | 18 +++++++++++++-----
+>  1 file changed, 13 insertions(+), 5 deletions(-)
+> 
+> diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
+> index e6e7bdf99cd7..2a715f13fe1d 100644
+> --- a/drivers/scsi/ufs/ufshcd.c
+> +++ b/drivers/scsi/ufs/ufshcd.c
+> @@ -4996,7 +4996,8 @@ ufshcd_transfer_rsp_status(struct ufs_hba *hba,
+> struct ufshcd_lrb *lrbp)
+>  		break;
+>  	} /* end of switch */
+> 
+> -	if ((host_byte(result) != DID_OK) && !hba->silence_err_logs)
+> +	if ((host_byte(result) != DID_OK) &&
+> +	    (host_byte(result) != DID_REQUEUE) && !hba->silence_err_logs)
+>  		ufshcd_print_trs(hba, 1 << lrbp->task_tag, true);
+>  	return result;
+>  }
+> @@ -6302,9 +6303,13 @@ static irqreturn_t ufshcd_intr(int irq, void 
+> *__hba)
+>  		intr_status = ufshcd_readl(hba, REG_INTERRUPT_STATUS);
+>  	}
+> 
+> -	if (enabled_intr_status && retval == IRQ_NONE) {
+> -		dev_err(hba->dev, "%s: Unhandled interrupt 0x%08x\n",
+> -					__func__, intr_status);
+> +	if (enabled_intr_status && retval == IRQ_NONE &&
+> +				!ufshcd_eh_in_progress(hba)) {
+> +		dev_err(hba->dev, "%s: Unhandled interrupt 0x%08x (0x%08x, 
+> 0x%08x)\n",
+> +					__func__,
+> +					intr_status,
+> +					hba->ufs_stats.last_intr_status,
+> +					enabled_intr_status);
+>  		ufshcd_dump_regs(hba, 0, UFSHCI_REG_SPACE_SIZE, "host_regs: ");
+>  	}
+> 
+> @@ -6348,7 +6353,10 @@ static int __ufshcd_issue_tm_cmd(struct ufs_hba 
+> *hba,
+>  	 * Even though we use wait_event() which sleeps indefinitely,
+>  	 * the maximum wait time is bounded by %TM_CMD_TIMEOUT.
+>  	 */
+> -	req = blk_get_request(q, REQ_OP_DRV_OUT, BLK_MQ_REQ_RESERVED);
+> +	req = blk_get_request(q, REQ_OP_DRV_OUT, 0);
+> +	if (IS_ERR(req))
+> +		return PTR_ERR(req);
+> +
+>  	req->end_io_data = &wait;
+>  	free_slot = req->tag;
+>  	WARN_ON_ONCE(free_slot < 0 || free_slot >= hba->nutmrs);
