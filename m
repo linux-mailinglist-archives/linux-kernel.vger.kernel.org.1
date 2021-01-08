@@ -2,222 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6005C2EEE52
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 09:06:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 697692EEE54
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 09:07:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727482AbhAHIGH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Jan 2021 03:06:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51814 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725869AbhAHIGH (ORCPT
+        id S1727525AbhAHIGy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Jan 2021 03:06:54 -0500
+Received: from m43-15.mailgun.net ([69.72.43.15]:21141 "EHLO
+        m43-15.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725869AbhAHIGx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Jan 2021 03:06:07 -0500
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2AE35C0612F8
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Jan 2021 00:05:27 -0800 (PST)
-Received: from pty.hi.pengutronix.de ([2001:67c:670:100:1d::c5])
-        by metis.ext.pengutronix.de with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ore@pengutronix.de>)
-        id 1kxmlu-0006oW-To; Fri, 08 Jan 2021 09:05:22 +0100
-Received: from ore by pty.hi.pengutronix.de with local (Exim 4.89)
-        (envelope-from <ore@pengutronix.de>)
-        id 1kxmlt-0006pP-L0; Fri, 08 Jan 2021 09:05:21 +0100
-Date:   Fri, 8 Jan 2021 09:05:21 +0100
-From:   Oleksij Rempel <o.rempel@pengutronix.de>
-To:     Kevin Paul Herbert <kph@platinasystems.com>
-Cc:     biwen.li@nxp.com, leoyang.li@nxp.com, linux@rempel-privat.de,
-        kernel@pengutronix.de, wsa@the-dreams.de, shawnguo@kernel.org,
-        s.hauer@pengutronix.de, festevam@gmail.com, aisheng.dong@nxp.com,
-        xiaoning.wang@nxp.com, linux-i2c@vger.kernel.org,
-        linux-kernel@vger.kernel.org, jiafei.pan@nxp.com,
-        xiaobo.xie@nxp.com, linux-arm-kernel@lists.infradead.org,
-        biwen.li@oss.nxp.com
-Subject: Re: [PATCH] i2c-imx.c: Synthesize end of transaction events without
- idle interrupts
-Message-ID: <20210108080521.dzm2gczd3d2ygb5y@pengutronix.de>
-References: <20201222194850.2274527-1-kph@platinasystems.com>
+        Fri, 8 Jan 2021 03:06:53 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1610093187; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=IerCxgllX+H4BxTtMqh1+m3HbmpoXQhrwRCctXiZmWs=;
+ b=HsdnECUKHz8J2JmLgjigniNb3usHHKteCamo9TR06RLrKcL75rFAqLeIMNQexomQmjzL9P30
+ f3275L2FsVMTJ28dlHDsrgnm3Zom2RQPpOIfc1LSsZq4vTr5hULn7URqm0hnyOeqWNtwgQz9
+ /Gc3X1PO4W9cZZnQo7LTedtm3NM=
+X-Mailgun-Sending-Ip: 69.72.43.15
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n06.prod.us-east-1.postgun.com with SMTP id
+ 5ff81269d092322d9e52e485 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 08 Jan 2021 08:06:01
+ GMT
+Sender: cang=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id F3ED6C4346A; Fri,  8 Jan 2021 08:05:59 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: cang)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id F3F74C433C6;
+        Fri,  8 Jan 2021 08:05:58 +0000 (UTC)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20201222194850.2274527-1-kph@platinasystems.com>
-X-Sent-From: Pengutronix Hildesheim
-X-URL:  http://www.pengutronix.de/
-X-IRC:  #ptxdist @freenode
-X-Accept-Language: de,en
-X-Accept-Content-Type: text/plain
-X-Uptime: 09:02:14 up 36 days, 22:08, 26 users,  load average: 0.14, 0.05,
- 0.01
-User-Agent: NeoMutt/20170113 (1.7.2)
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c5
-X-SA-Exim-Mail-From: ore@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Fri, 08 Jan 2021 16:05:58 +0800
+From:   Can Guo <cang@codeaurora.org>
+To:     Ziqi Chen <ziqichen@codeaurora.org>
+Cc:     asutoshd@codeaurora.org, nguyenb@codeaurora.org,
+        hongwus@codeaurora.org, rnayak@codeaurora.org,
+        vinholikatti@gmail.com, jejb@linux.vnet.ibm.com,
+        martin.petersen@oracle.com, linux-scsi@vger.kernel.org,
+        kernel-team@android.com, saravanak@google.com, salyzyn@google.com,
+        kwmad.kim@samsung.com, stanley.chu@mediatek.com,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        Avri Altman <avri.altman@wdc.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v5 2/2] scsi: ufs-qcom: Fix ufs RST_n specs violation
+In-Reply-To: <1610090885-50099-3-git-send-email-ziqichen@codeaurora.org>
+References: <1610090885-50099-1-git-send-email-ziqichen@codeaurora.org>
+ <1610090885-50099-3-git-send-email-ziqichen@codeaurora.org>
+Message-ID: <d7e6a5ed6da3b18be7440e7590f6ef14@codeaurora.org>
+X-Sender: cang@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Kevin Paul,
-
-On Tue, Dec 22, 2020 at 11:48:50AM -0800, Kevin Paul Herbert wrote:
-> Only the Layerscape SoCs have interrupts on bus idle, which facilitate
-> sending events which complete slave bus transactions.
+On 2021-01-08 15:28, Ziqi Chen wrote:
+> As per specs, e.g, JESD220E chapter 7.2, while powering
+> off/on the ufs device, RST_n signal should be between
+> VSS(Ground) and VCCQ/VCCQ2.
 > 
-> Add support for synthesizing missing events. If we see a master request,
-> or a newly addressed slave request, if the last event sent to the backend
-> was I2C_SLAVE_READ_REQUESTED, send the backend a I2C_SLAVE_READ_PROCESSED
-> followed by I2C_SLAVE_STOP. For all other events, send an I2C_SLAVE_STOP.
-> 
-> Signed-off-by: Kevin Paul Herbert <kph@platinasystems.com>
+> Signed-off-by: Ziqi Chen <ziqichen@codeaurora.org>
 > ---
->  drivers/i2c/busses/i2c-imx.c | 59 +++++++++++++++++++++++++++++++-----
->  1 file changed, 52 insertions(+), 7 deletions(-)
+>  drivers/scsi/ufs/ufs-qcom.c | 4 ++++
+>  1 file changed, 4 insertions(+)
 > 
-> diff --git a/drivers/i2c/busses/i2c-imx.c b/drivers/i2c/busses/i2c-imx.c
-> index b444fbf1a262..b3e2a6a7fc19 100644
-> --- a/drivers/i2c/busses/i2c-imx.c
-> +++ b/drivers/i2c/busses/i2c-imx.c
-> @@ -209,6 +209,7 @@ struct imx_i2c_struct {
->  
->  	struct imx_i2c_dma	*dma;
->  	struct i2c_client	*slave;
-> +	enum i2c_slave_event last_slave_event;
->  };
->  
->  static const struct imx_i2c_hwdata imx1_i2c_hwdata = {
-> @@ -662,6 +663,36 @@ static void i2c_imx_enable_bus_idle(struct imx_i2c_struct *i2c_imx)
+> diff --git a/drivers/scsi/ufs/ufs-qcom.c b/drivers/scsi/ufs/ufs-qcom.c
+> index 2206b1e..d8b896c 100644
+> --- a/drivers/scsi/ufs/ufs-qcom.c
+> +++ b/drivers/scsi/ufs/ufs-qcom.c
+> @@ -582,6 +582,10 @@ static int ufs_qcom_suspend(struct ufs_hba *hba,
+> enum ufs_pm_op pm_op)
+>  		ufs_qcom_disable_lane_clks(host);
+>  		phy_power_off(phy);
+> 
+> +		/* reset the connected UFS device during power down */
+> +		if (host->device_reset)
+> +			gpiod_set_value_cansleep(host->device_reset, 1);
+> +
+
+Instead of calling gpiod_set_value(1/0) directly,
+can we have a wrapper func for it?
+
+Thanks,
+Can Guo.
+
+>  	} else if (!ufs_qcom_is_link_active(hba)) {
+>  		ufs_qcom_disable_lane_clks(host);
 >  	}
->  }
->  
-> +static void i2c_imx_slave_event(struct imx_i2c_struct *i2c_imx,
-> +				enum i2c_slave_event event, u8 *val)
-> +{
-> +	i2c_slave_event(i2c_imx->slave, event, val);
-> +	i2c_imx->last_slave_event = event;
-> +}
-> +
-> +static void i2c_imx_slave_finish_op(struct imx_i2c_struct *i2c_imx)
-> +{
-> +	u8 val;
-> +
-> +	while (i2c_imx->last_slave_event != I2C_SLAVE_STOP) {
-> +		switch (i2c_imx->last_slave_event) {
-> +		case I2C_SLAVE_READ_REQUESTED:
-> +			i2c_imx_slave_event(i2c_imx, I2C_SLAVE_READ_PROCESSED,
-> +					    &val);
-> +			break;
-> +
-> +		case I2C_SLAVE_WRITE_REQUESTED:
-> +		case I2C_SLAVE_READ_PROCESSED:
-> +		case I2C_SLAVE_WRITE_RECEIVED:
-> +			i2c_imx_slave_event(i2c_imx, I2C_SLAVE_STOP, &val);
-> +			break;
-> +
-> +		case I2C_SLAVE_STOP:
-> +			break;
-> +		}
-> +	}
-> +}
-
-Is it really working code?
-
-The i2c_imx_slave_finish_op() is a waiting busy loop withing an IRQ! And
-it is waiting for an event, which is updated in the same IRQ callback.
-Or am i missing some thing?
-
-Regards,
-Oleksij
-
->  static irqreturn_t i2c_imx_slave_isr(struct imx_i2c_struct *i2c_imx,
->  				     unsigned int status, unsigned int ctl)
->  {
-> @@ -674,9 +705,11 @@ static irqreturn_t i2c_imx_slave_isr(struct imx_i2c_struct *i2c_imx,
->  	}
->  
->  	if (status & I2SR_IAAS) { /* Addressed as a slave */
-> +		i2c_imx_slave_finish_op(i2c_imx);
->  		if (status & I2SR_SRW) { /* Master wants to read from us*/
->  			dev_dbg(&i2c_imx->adapter.dev, "read requested");
-> -			i2c_slave_event(i2c_imx->slave, I2C_SLAVE_READ_REQUESTED, &value);
-> +			i2c_imx_slave_event(i2c_imx,
-> +					    I2C_SLAVE_READ_REQUESTED, &value);
->  
->  			/* Slave transmit */
->  			ctl |= I2CR_MTX;
-> @@ -686,7 +719,8 @@ static irqreturn_t i2c_imx_slave_isr(struct imx_i2c_struct *i2c_imx,
->  			imx_i2c_write_reg(value, i2c_imx, IMX_I2C_I2DR);
->  		} else { /* Master wants to write to us */
->  			dev_dbg(&i2c_imx->adapter.dev, "write requested");
-> -			i2c_slave_event(i2c_imx->slave,	I2C_SLAVE_WRITE_REQUESTED, &value);
-> +			i2c_imx_slave_event(i2c_imx,
-> +					    I2C_SLAVE_WRITE_REQUESTED, &value);
->  
->  			/* Slave receive */
->  			ctl &= ~I2CR_MTX;
-> @@ -697,17 +731,20 @@ static irqreturn_t i2c_imx_slave_isr(struct imx_i2c_struct *i2c_imx,
->  	} else if (!(ctl & I2CR_MTX)) { /* Receive mode */
->  		if (status & I2SR_IBB) { /* No STOP signal detected */
->  			value = imx_i2c_read_reg(i2c_imx, IMX_I2C_I2DR);
-> -			i2c_slave_event(i2c_imx->slave,	I2C_SLAVE_WRITE_RECEIVED, &value);
-> +			i2c_imx_slave_event(i2c_imx,
-> +					    I2C_SLAVE_WRITE_RECEIVED, &value);
->  		} else { /* STOP signal is detected */
->  			dev_dbg(&i2c_imx->adapter.dev,
->  				"STOP signal detected");
-> -			i2c_slave_event(i2c_imx->slave, I2C_SLAVE_STOP, &value);
-> +			i2c_imx_slave_event(i2c_imx,
-> +					    I2C_SLAVE_STOP, &value);
->  		}
->  	} else if (!(status & I2SR_RXAK)) { /* Transmit mode received ACK */
->  		ctl |= I2CR_MTX;
->  		imx_i2c_write_reg(ctl, i2c_imx, IMX_I2C_I2CR);
->  
-> -		i2c_slave_event(i2c_imx->slave,	I2C_SLAVE_READ_PROCESSED, &value);
-> +		i2c_imx_slave_event(i2c_imx,
-> +				    I2C_SLAVE_READ_PROCESSED, &value);
->  
->  		imx_i2c_write_reg(value, i2c_imx, IMX_I2C_I2DR);
->  	} else { /* Transmit mode received NAK */
-> @@ -748,6 +785,7 @@ static int i2c_imx_reg_slave(struct i2c_client *client)
->  		return -EBUSY;
->  
->  	i2c_imx->slave = client;
-> +	i2c_imx->last_slave_event = I2C_SLAVE_STOP;
->  
->  	/* Resume */
->  	ret = pm_runtime_get_sync(i2c_imx->adapter.dev.parent);
-> @@ -800,10 +838,17 @@ static irqreturn_t i2c_imx_isr(int irq, void *dev_id)
->  
->  	status = imx_i2c_read_reg(i2c_imx, IMX_I2C_I2SR);
->  	ctl = imx_i2c_read_reg(i2c_imx, IMX_I2C_I2CR);
-> +
->  	if (status & I2SR_IIF) {
->  		i2c_imx_clear_irq(i2c_imx, I2SR_IIF);
-> -		if (i2c_imx->slave && !(ctl & I2CR_MSTA))
-> -			return i2c_imx_slave_isr(i2c_imx, status, ctl);
-> +		if (i2c_imx->slave) {
-> +			if (!(ctl & I2CR_MSTA)) {
-> +				return i2c_imx_slave_isr(i2c_imx, status, ctl);
-> +			} else if (i2c_imx->last_slave_event !=
-> +				   I2C_SLAVE_STOP) {
-> +				i2c_imx_slave_finish_op(i2c_imx);
-> +			}
-> +		}
->  		return i2c_imx_master_isr(i2c_imx, status);
->  	}
->  
-> -- 
-> 2.25.1
-> 
-> 
-> _______________________________________________
-> linux-arm-kernel mailing list
-> linux-arm-kernel@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
-> 
-
--- 
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
