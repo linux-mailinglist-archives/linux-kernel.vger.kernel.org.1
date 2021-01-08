@@ -2,123 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E51CF2EF5FC
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 17:49:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D7E762EF606
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 17:52:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728171AbhAHQtN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Jan 2021 11:49:13 -0500
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:57192 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727357AbhAHQtN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Jan 2021 11:49:13 -0500
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 108GmVF9077119;
-        Fri, 8 Jan 2021 10:48:31 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1610124511;
-        bh=IQ6c6TEgxh89EfD2jzKuI2hDt60lwX6bPkqrrRsFPqE=;
-        h=Date:From:To:CC:Subject:References:In-Reply-To;
-        b=Qx6dTEcVH9uNjj9dSxO6toMnsW7/Bkt3jGT/m1hNKfUiyupyYe/A63mBxRXNctmib
-         Ea48Zljon9qdxjc376pQK7k2QpfYdq47YOCFrWPDEagUtzuO0O6WYJlzG2qcgcXA2b
-         ZziVID4miDkNrUo7wooJvI161DOTBvHWoDIAjhw8=
-Received: from DFLE113.ent.ti.com (dfle113.ent.ti.com [10.64.6.34])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 108GmVvb000437
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 8 Jan 2021 10:48:31 -0600
-Received: from DFLE108.ent.ti.com (10.64.6.29) by DFLE113.ent.ti.com
- (10.64.6.34) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Fri, 8 Jan
- 2021 10:48:30 -0600
-Received: from lelv0327.itg.ti.com (10.180.67.183) by DFLE108.ent.ti.com
- (10.64.6.29) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Fri, 8 Jan 2021 10:48:31 -0600
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0327.itg.ti.com (8.15.2/8.15.2) with ESMTP id 108GmU2S058156;
-        Fri, 8 Jan 2021 10:48:30 -0600
-Date:   Fri, 8 Jan 2021 22:18:29 +0530
-From:   Pratyush Yadav <p.yadav@ti.com>
-To:     Mark Brown <broonie@kernel.org>
-CC:     Vignesh Raghavendra <vigneshr@ti.com>,
-        <linux-kernel@vger.kernel.org>, <linux-spi@vger.kernel.org>
-Subject: Re: [PATCH 0/7] spi: cadence-quadspi: Add Octal DTR support
-Message-ID: <20210108164829.llziqunksj2iaopm@ti.com>
-References: <20201222184425.7028-1-p.yadav@ti.com>
- <160994515510.52247.9169476392444387381.b4-ty@kernel.org>
+        id S1728087AbhAHQvz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Jan 2021 11:51:55 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42978 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726749AbhAHQvy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 Jan 2021 11:51:54 -0500
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 084A9239FD;
+        Fri,  8 Jan 2021 16:51:14 +0000 (UTC)
+Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.94)
+        (envelope-from <maz@kernel.org>)
+        id 1kxuyl-0067gk-RL; Fri, 08 Jan 2021 16:51:11 +0000
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <160994515510.52247.9169476392444387381.b4-ty@kernel.org>
-User-Agent: NeoMutt/20171215
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Fri, 08 Jan 2021 16:51:11 +0000
+From:   Marc Zyngier <maz@kernel.org>
+To:     Steven Price <steven.price@arm.com>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org,
+        Alexander Potapenko <glider@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andrey Konovalov <andreyknvl@google.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>
+Subject: Re: [PATCH] KVM: arm64: Compute TPIDR_EL2 ignoring MTE tag
+In-Reply-To: <20210108161254.53674-1-steven.price@arm.com>
+References: <20210108161254.53674-1-steven.price@arm.com>
+User-Agent: Roundcube Webmail/1.4.9
+Message-ID: <e49459f08d0afb30a120dfb3d6b80741@kernel.org>
+X-Sender: maz@kernel.org
+X-SA-Exim-Connect-IP: 51.254.78.96
+X-SA-Exim-Rcpt-To: steven.price@arm.com, catalin.marinas@arm.com, will@kernel.org, james.morse@arm.com, julien.thierry.kdev@gmail.com, suzuki.poulose@arm.com, kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, glider@google.com, akpm@linux-foundation.org, andreyknvl@google.com, vincenzo.frascino@arm.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mark,
+Hi Steven,
 
-On 06/01/21 02:59PM, Mark Brown wrote:
-> On Wed, 23 Dec 2020 00:14:18 +0530, Pratyush Yadav wrote:
-> > This series adds support for Octal DTR mode now that SPI NOR supports
-> > these flashes. Patches 1/7 to 4/7 and 6/7 fix some minor bugs and issues.
-> > Patche 5/7 lays some groundwork by implementing the supports_op() hook.
-> > Patch 7/7 adds the Octal DTR mode support.
-> > 
-> > While the main aim of this series is to support 8D-8D-8D mode, other
-> > modes like 4D-4D-4D or 2S-2S-2S should also now be supported, though
-> > they have not been tested.
-> > 
-> > [...]
+On 2021-01-08 16:12, Steven Price wrote:
+> KASAN in HW_TAGS mode will store MTE tags in the top byte of the
+> pointer. When computing the offset for TPIDR_EL2 we don't want anything
+> in the top byte, so remove the tag to ensure the computation is correct
+> no matter what the tag.
 > 
-> Applied to
-> 
->    https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git for-next
-> 
-> Thanks!
+> Fixes: 94ab5b61ee16 ("kasan, arm64: enable CONFIG_KASAN_HW_TAGS")
+> Signed-off-by: Steven Price <steven.price@arm.com>
+> ---
+> Without this fix I can't boot a config with KASAN_HW_TAGS and KVM on an
+> MTE enabled host. I'm unsure if this should really be in
+> this_cpu_ptr_nvhe_sym().
 
-:-)
- 
-> [1/7] spi: cadence-quadspi: Set master max_speed_hz
->       commit: 3a5c09c8d1ed9a7323f0e5c435021531f0865c16
-> [2/7] spi: cadence-quadspi: Abort read if dummy cycles required are too many
->       commit: ceeda328edeeeeac7579e9dbf0610785a3b83d39
-> [3/7] spi: cadence-quadspi: Set dummy cycles from STIG commands
->       commit: 888d517b992532df2b6115fbdc9620673ca7c651
-> [4/7] spi: cadence-quadspi: Fix dummy cycle calculation when buswidth > 1
->       commit: 7512eaf54190e4cc9247f18439c008d44b15022c
-> [5/7] spi: cadence-quadspi: Implement a simple supports_op hook
->       commit: a273596b9b50c76a9cc1f65d3eb7f8ab5c3eb3e3
-> [6/7] spi: cadence-quadspi: Wait at least 500 ms for direct reads
->       commit: 0920a32cf6f20467aa133a47b776ee782daa889f
+this_cpu_ptr_nvhe_sym() should return something that is valid for
+the EL1 kernel, so I guess untagging in the helper may not be
+that useful.
 
-The kernel test robot reported some build warnings on this patch on 
-32-bit platforms and I was planning on re-rolling it soon. Now that it 
-is in your tree, I will send a follow-up patch to fix it.
+However, I'm more concerned by anything at requires us to follow
+pointers set up by EL1 at EL2. It looks to me that the only reason
+the whole thing works is because kern_hyp_va() *accidentally* drops
+tags before applying the EL1/EL2 offset...
 
-> [7/7] spi: cadence-quadspi: Add DTR support
->       commit: f453f293979fb648d2e505c132887811acb6bde6
-> 
-> All being well this means that it will be integrated into the linux-next
-> tree (usually sometime in the next 24 hours) and sent to Linus during
-> the next merge window (or sooner if it is a bug fix), however if
-> problems are discovered then the patch may be dropped or reverted.
-> 
-> You may get further e-mails resulting from automated or manual testing
-> and review of the tree, please engage with people reporting problems and
-> send followup patches addressing any issues that are reported if needed.
-> 
-> If any updates are required or you are submitting further changes they
-> should be sent as incremental updates against current git, existing
-> patches will not be replaced.
-> 
-> Please add any relevant lists and maintainers to the CCs when replying
-> to this mail.
-> 
-> Thanks,
-> Mark
+Or am I getting it wrong?
 
+Thanks,
+
+         M.
 -- 
-Regards,
-Pratyush Yadav
-Texas Instruments India
+Jazz is not dead. It just smells funny...
