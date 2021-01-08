@@ -2,135 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 114812EF29D
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 13:43:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 90BDE2EF2A4
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 13:48:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726397AbhAHMnM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Jan 2021 07:43:12 -0500
-Received: from mout.gmx.net ([212.227.15.19]:43637 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725816AbhAHMnL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Jan 2021 07:43:11 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1610109685;
-        bh=l9w+fA1nB7LgxEMoj4TbYENKSEtybJKSCvqFjsvIf28=;
-        h=X-UI-Sender-Class:Date:From:To:Cc:Subject:References:In-Reply-To;
-        b=PPk95QFfRFDtFmXK0NiRTcX2mLY8wd02DYWND6PEh09VyWrqWl6X0u6/4Cbf/T4D/
-         xfJCYCDmBr9J4naDavpM+81kn5VwedHQR/F2Wd0qopAQ3eGnAREjoShrH+SIi7/LBT
-         xVeeVR53YW2xLUD+TwLbP2lG4/j0wkvuZzymvWec=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from longitude ([37.201.215.57]) by mail.gmx.com (mrgmx004
- [212.227.17.190]) with ESMTPSA (Nemesis) id 1N1fis-1jwAbV1rGy-0122Ls; Fri, 08
- Jan 2021 13:41:25 +0100
-Date:   Fri, 8 Jan 2021 13:41:23 +0100
-From:   Jonathan =?utf-8?Q?Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>
-To:     Jonathan =?utf-8?Q?Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>
-Cc:     devicetree@vger.kernel.org, Avi Fishman <avifishman70@gmail.com>,
-        Tomer Maimon <tmaimon77@gmail.com>,
-        Tali Perry <tali.perry1@gmail.com>,
-        Patrick Venture <venture@google.com>,
-        Nancy Yuen <yuenn@google.com>,
-        Benjamin Fair <benjaminfair@google.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Rob Herring <robh+dt@kernel.org>, openbmc@lists.ozlabs.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] dt-bindings: timer: nuvoton: Clarify that interrupt of
- timer 0 should be specified
-Message-ID: <X/hS86Ctfm6Rs2tG@latitude>
-References: <20210108122804.359258-1-j.neuschaefer@gmx.net>
+        id S1726505AbhAHMsd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Jan 2021 07:48:33 -0500
+Received: from mail-ot1-f43.google.com ([209.85.210.43]:40734 "EHLO
+        mail-ot1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725817AbhAHMsc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 Jan 2021 07:48:32 -0500
+Received: by mail-ot1-f43.google.com with SMTP id j12so9505421ota.7;
+        Fri, 08 Jan 2021 04:48:17 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=X1+MciefbFYchiFVRX8BkaWe9O4pIYQazrMh5q9VfEQ=;
+        b=km/inHl3mXa2SHdJAcdslkH6kh+ioyVZuNdxXYZ+Y25QiwCDJuDIqN9Pl2VYB/MRpi
+         Jg/z9WWFS/XsqRLZMEtb6sHc+HJevp4q1wgkezIp+6R4PMlZKUJVjHVz/oxs79lJI9gz
+         +tGg15fcv6IEB7AhLYNDRLA0nLYlRTaTRfV7L/jk5vIo8+aaCsDQn/rqWTJ+BzRlrVMR
+         7ChW6AzkkhfJmK5U9dervrumLK5R9jCb4nWNq/C/An2X/BkiqeUYAwxitoZi+BjZ2UDU
+         yiL22ZPQly5/QSvwir1+FzMvwGWy+cS/sLuL48pfXxa/oWIKy9DRhhG/czRBThZRb89V
+         IVDg==
+X-Gm-Message-State: AOAM532AuzOGu2iDn+z0XF7SgIxr3u6jUeIQutM9xzpt4Sz8wcnWfF0J
+        ZA6x6aE8wSqnl7y/OKEJ/pgURNaqq58q7Uk46pg=
+X-Google-Smtp-Source: ABdhPJy84uDYp1M3oPhW4hWuXypttMIU3cvbZFCKQX9IeU4EMR0zmIXnG0Whg5oAqRyF4bXOZzof7q1874d0uQX4RPE=
+X-Received: by 2002:a9d:c01:: with SMTP id 1mr2392614otr.107.1610110071606;
+ Fri, 08 Jan 2021 04:47:51 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="K03Z6K2xej/j0lJ7"
-Content-Disposition: inline
-In-Reply-To: <20210108122804.359258-1-j.neuschaefer@gmx.net>
-X-Provags-ID: V03:K1:oHFeoO5DEDuor9D937Hd/hNnJ87Dr0FeKq2Cx610lPJQQ2bI2cp
- DP4c6VwGbrCQJoby+PcdCsT1f8hZ3VtOo37MUSVCczyHcLrROxrX3IfHGPZStDafBBL8xnY
- 6k7qxIgRnlF9FSNLznYTprUicr1v/zUFLf0Md2DEGfBlL5GDm/ztsgGff+GuZ/zTqn8wO8I
- u9XCXwtbXsnzXlCOtXmOg==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:Dfm7JvNsyIQ=:4+XijEtdxzqJLJSinQgrou
- dRbPH/Xg8WTTH1JBWHSMmJAwEPK9cDrl49D/bPKcFTGFIhpvgVlC+Ww8WNtm6L+ZLHoeq7UOZ
- HLHqYPlg2MuOumGdxvXwi77dSW86iq9rlQ7qGwo8ZuAuvjR52GMT8jWp7hWUOClSWtXMpg1ez
- WKFydmmkxlFbn/qrGPdcRnDY+QxjIzWq8EshXOMMC5AWIdaWO1Ft4Ait2u9KklhFeBFV1xD5D
- WRfqdQ34wH20z9qX7OH0rMKXv9ZIjvRlgaZyYH7va5otqT6rHbj72s9t2MGa2kNK51RbR1QDl
- +iFWxvaW9uXDDdClHq6PlC4V83Dz+omLMAVvZhQeIwD0U5vV0+5uMnexv6li5jv2ixul8qph8
- VeSbjuQP/UX58nIJjaiUeoAY99Wb8hsfWf5gaKzGCXbFeU6/bpIHX6xn2tpskKKL5WZFRwpqD
- DHyw8hEGS+f3KuoR7Yz/jW4W9tU9DERfzAoTBq74jRn0HsqXnACYh7SG6q9LCT6mtTgQ9wTXt
- zkU6kpjC8MG3qp51zK8u/jQsNF/SiPejFVMHU5Ettoyf+kvBj6BKwhMcpefXRM8dYxhbL9SaQ
- 3LfdZ2wfC6zwzjyFT619RtmaSFUsLR51ZdV3ktdUUWTvidKaIsMh7Nj7pJZkF5MDd13PphYSL
- MbH/FUEUKu54sHTyKmh1dvUG9cgiWHNUoI4U73ncCXPrXLPJQOCumMX+2qyFG16mbMwFLx5+Z
- pJeXpCxj3PQ1A4gwreGIW8Q0jRuBcA6JclY+ScqI3nGlstWbsjDZiD/i4KdFC89e9PG8IxgEd
- Tgs8HDowFEcjSze02k2hPWxr2lMqbHuAUTnT4/z8QinhWYyeRf6qHzhw/TKsQJJFv30CiOcwK
- Nmj6x/J/uBcuQs/xo92w==
+References: <20201227174202.40834-1-wsa+renesas@sang-engineering.com> <20201227174202.40834-6-wsa+renesas@sang-engineering.com>
+In-Reply-To: <20201227174202.40834-6-wsa+renesas@sang-engineering.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Fri, 8 Jan 2021 13:47:40 +0100
+Message-ID: <CAMuHMdUDm72KH+Bwub1VWoq_F2MwG2uzE7=rwg2yN_z9d=Nx7A@mail.gmail.com>
+Subject: Re: [PATCH 5/6] arm64: dts: renesas: r8a779a0: Add MMC node
+To:     Wolfram Sang <wsa+renesas@sang-engineering.com>
+Cc:     Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        Takeshi Saito <takeshi.saito.xv@renesas.com>,
+        Koji Matsuoka <koji.matsuoka.xm@renesas.com>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Wolfram,
 
---K03Z6K2xej/j0lJ7
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On Sun, Dec 27, 2020 at 6:42 PM Wolfram Sang
+<wsa+renesas@sang-engineering.com> wrote:
+> From: Takeshi Saito <takeshi.saito.xv@renesas.com>
+>
+> Add a device node for MMC.
+>
+> Signed-off-by: Koji Matsuoka <koji.matsuoka.xm@renesas.com>
+> [wsa: double checked & rebased]
+> Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
 
-On Fri, Jan 08, 2021 at 01:28:03PM +0100, Jonathan Neusch=C3=A4fer wrote:
-> The NPCM750 Timer/Watchdoc Controller has multiple interrupt lines,
-                    ^^^^^^^^
+Thanks for your patch!
 
-oops, that's a typo.
+> --- a/arch/arm64/boot/dts/renesas/r8a779a0.dtsi
+> +++ b/arch/arm64/boot/dts/renesas/r8a779a0.dtsi
+> @@ -667,6 +667,18 @@ dmac1: dma-controller@e7350000 {
+>                         /* placeholder */
+>                 };
+>
+> +               mmc0: mmc@ee140000 {
 
-> connected to multiple timers. The driver uses timer 0 for timer
-> interrupts, so the interrupt line corresponding to timer 0 should be
-> specified in DT.
->=20
-> I removed the mention of "flags for falling edge", because the timer
-> controller uses high-level interrupts rather than falling-edge
-> interrupts, and whether flags should be specified is up the interrupt
-> controller's DT binding.
->=20
-> Signed-off-by: Jonathan Neusch=C3=A4fer <j.neuschaefer@gmx.net>
-> ---
->  .../devicetree/bindings/timer/nuvoton,npcm7xx-timer.txt        | 3 +--
->  1 file changed, 1 insertion(+), 2 deletions(-)
->=20
-> diff --git a/Documentation/devicetree/bindings/timer/nuvoton,npcm7xx-time=
-r.txt b/Documentation/devicetree/bindings/timer/nuvoton,npcm7xx-timer.txt
-> index ea22dfe485bee..97258f1a1505b 100644
-> --- a/Documentation/devicetree/bindings/timer/nuvoton,npcm7xx-timer.txt
-> +++ b/Documentation/devicetree/bindings/timer/nuvoton,npcm7xx-timer.txt
-> @@ -6,8 +6,7 @@ timer counters.
->  Required properties:
->  - compatible      : "nuvoton,npcm750-timer" for Poleg NPCM750.
->  - reg             : Offset and length of the register set for the device.
-> -- interrupts      : Contain the timer interrupt with flags for
-> -                    falling edge.
-> +- interrupts      : Contain the timer interrupt of timer 0.
->  - clocks          : phandle of timer reference clock (usually a 25 MHz c=
-lock).
->=20
->  Example:
-> --
-> 2.29.2
->=20
+Hmm, seems we use the mmc0 label on all V3[HMU] SoCs, but sdhiX on all
+other R-Car Gen3 SoCs...
 
---K03Z6K2xej/j0lJ7
-Content-Type: application/pgp-signature; name="signature.asc"
+> +                       compatible = "renesas,sdhi-r8a779a0",
+> +                                    "renesas,rcar-gen3-sdhi";
+> +                       reg = <0 0xee140000 0 0x2000>;
+> +                       interrupts = <GIC_SPI 236 IRQ_TYPE_LEVEL_HIGH>;
+> +                       clocks = <&cpg CPG_MOD 706>;
+> +                       power-domains = <&sysc R8A779A0_PD_ALWAYS_ON>;
+> +                       resets = <&cpg 706>;
+> +                       max-frequency = <200000000>;
+> +                       status = "disabled";
+> +               };
+> +
 
------BEGIN PGP SIGNATURE-----
+Anyway:
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
 
-iQIzBAABCgAdFiEEvHAHGBBjQPVy+qvDCDBEmo7zX9sFAl/4UusACgkQCDBEmo7z
-X9spyhAAn9X9Q9bYF3hwQdGBBaQXGHJR1mo0hmBSyHgIML2W1sioPUx1WLYab7WR
-CNfEGJznnFn6PPZL9KwJr9aSS7qZ6iyiy1PdIj9C3xqaAHXz2XQArmZz2hd8NcMy
-gqnYsV07ksSRqBTFR3N/tGCiEPII3IVia0jjqL9/ou60emVxxPCA41hAlP7L1iwn
-Ejl0bOA5oRc9+UkrNaPbMmJFQwctR3FTiiHHv/L1gqpPkWNx6biETDpL1NDVtj0L
-TVkZoMeqzmIKnEyG7A9kHTLzEsgpasdj/qvnSiTZlctKsNxkXW+6fgG6jyLqlF2b
-mrcqfU9wp9T9eUfjJGbUbk8ki00p0BntQ+EgFFQzS8RSlm1u+Aeyf4AWFfxOyEJD
-A0OYTRFYIPmdvR6orZVqF14hPXCp1/YJkJ3UhgYE63pgNzPtKh4mznQabFheOrYM
-LyaXt92KO7YT10AGNxoy0O7m+nuvIuwBV328O+y9J0FwofgOC+aFK3ONzj4EZ555
-OmRRootSzE29zjvQ15z+NQohUD6lJSWBhc3s0zo7DokLMTjCfy3B0Ec19awgDqKe
-jbfyEfqEBAgQ18MsUkz8MzRIyqhBfAknMWRvxiSfiwDOM2u8oD60f8ey7/2XCb/Y
-tlhRz3uskp05nSE5vQ9cEyLHm3yHgWgwqPGdnGbmOWZGRKziVTU=
-=CHL0
------END PGP SIGNATURE-----
+Gr{oetje,eeting}s,
 
---K03Z6K2xej/j0lJ7--
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
