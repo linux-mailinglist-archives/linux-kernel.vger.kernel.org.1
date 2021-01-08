@@ -2,140 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F6172EF30D
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 14:33:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 382FA2EF310
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 14:33:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727012AbhAHNcs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Jan 2021 08:32:48 -0500
-Received: from mail-lf1-f51.google.com ([209.85.167.51]:42003 "EHLO
-        mail-lf1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726060AbhAHNcr (ORCPT
+        id S1727226AbhAHNdJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Jan 2021 08:33:09 -0500
+Received: from mail-oi1-f181.google.com ([209.85.167.181]:46402 "EHLO
+        mail-oi1-f181.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726215AbhAHNdI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Jan 2021 08:32:47 -0500
-Received: by mail-lf1-f51.google.com with SMTP id b26so22903753lff.9;
-        Fri, 08 Jan 2021 05:32:30 -0800 (PST)
+        Fri, 8 Jan 2021 08:33:08 -0500
+Received: by mail-oi1-f181.google.com with SMTP id q205so11274168oig.13;
+        Fri, 08 Jan 2021 05:32:53 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=W4lO/s0iMGk19qMdPoDZMWO0rMg1GjXtK6eR1C/M5p4=;
-        b=ayQAfDHlZnuCFZ8CIEBCIPFz/iPrHhSC+w7W4PzVSdi3fh0Bw110XjHm5yNx2SgFm6
-         fb6485AowWDSnB7qS7gh5PKA1XnWLuMH+cC2EOFntV6amYMcKX8B1kwTGFQBsaKlMNAO
-         oizfWvy9UDmCtPaC7DinE2Z6jJpwqN74ZAR9OrMiu4/lrj90y9mXm75UXDXIgf9YnsoF
-         te/W08MVAYwt08tl4x+DiZO7NZV5QalPKuMBcOixyBDEU+PdhF8svPUj9hU/zml9mxAL
-         F77XWIxncxqYEHcqUSTZMIm8G53MvBnHl+qfmMscIJQUEAAgB3Quw4cnFeWal3HdldgE
-         v5dQ==
-X-Gm-Message-State: AOAM5336IiMxpV6fazm398F1IDm5skkGMAGXNAsjseIPe/Eoctl1xy8C
-        l1pAq+W4D+2s8vJVpoc0hxA=
-X-Google-Smtp-Source: ABdhPJzNeNcWW331RO5MgKjZvd31biHvCz3tM5gWXozpEtYwSSjNaxmnc2YLuJL/rJz2qjsfbPXzOw==
-X-Received: by 2002:a2e:586:: with SMTP id 128mr1656161ljf.273.1610112725049;
-        Fri, 08 Jan 2021 05:32:05 -0800 (PST)
-Received: from localhost.localdomain (62-78-225-252.bb.dnainternet.fi. [62.78.225.252])
-        by smtp.gmail.com with ESMTPSA id j18sm1960739lfb.77.2021.01.08.05.32.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 08 Jan 2021 05:32:04 -0800 (PST)
-Date:   Fri, 8 Jan 2021 15:31:57 +0200
-From:   Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
-To:     matti.vaittinen@fi.rohmeurope.com, mazziesaccount@gmail.com
-Cc:     Lee Jones <lee.jones@linaro.org>,
-        Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-kernel@vger.kernel.org, linux-power@fi.rohmeurope.com,
-        linux-clk@vger.kernel.org
-Subject: [PATCH 02/15] clk: BD718x7: Do not depend on parent driver data
-Message-ID: <831b5fd8f595599b628303c1b678a9c74d73907d.1610110144.git.matti.vaittinen@fi.rohmeurope.com>
-References: <cover.1610110144.git.matti.vaittinen@fi.rohmeurope.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=jIc5HQYZP0D1yiv2pxYG9auu4IigSo+Oa/oIpIOuZyQ=;
+        b=WasDwmSXdFqpEaKkZM63Y857N1955dvmSqt3UbuLCbN7PHLzSXDlzRtXnsL4wmILyw
+         JP8ArKcsLtjfsu7Md7/x2bd+h2QXtCNPUHM97ht7ZUim+hbUFPOoL4Qf9CzPe3PBrKDF
+         LbHDQ/N7cnKyBR6SxCk+S4f8oQ9Dp0yIsMpRX8bNd73uKK/ZZ6F39EiBcEQnVd+spj4K
+         ZNCvLNpsnrJdUa1It1p2BLyOgsU1Wp78WiENkwhpyvdpfuJJi6v/qFU5IQvVQ+tGCmEF
+         7ElrlujY8GryDuOp/EyLvP4lqNBym8VRtdGXgO+DBwxR3gCoMBQZboGsRZ3UtugqRpMI
+         31lw==
+X-Gm-Message-State: AOAM530tmwO3/8QK25/QcNxalDnIy2NJ2Djv6uhFhlARCJX6x46Mxwcc
+        cjLppu+SBrxyYcic2uYPq8fw2yoSxhw8nvE3Gu0=
+X-Google-Smtp-Source: ABdhPJyaLxa54Jkbz99WXb6rd12UOsCflopAn20JykdbzdzlkRwm1cDPKUpL41nIIpomZMXmmMhWrp78aqfv/O/zZWg=
+X-Received: by 2002:aca:4b16:: with SMTP id y22mr2290800oia.148.1610112747824;
+ Fri, 08 Jan 2021 05:32:27 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cover.1610110144.git.matti.vaittinen@fi.rohmeurope.com>
+References: <20201224170502.2254683-1-aford173@gmail.com>
+In-Reply-To: <20201224170502.2254683-1-aford173@gmail.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Fri, 8 Jan 2021 14:32:16 +0100
+Message-ID: <CAMuHMdV7zA+dWm+AY6VdOzUPd=7c=M0iDE2gXJsKuBoZCPK_bQ@mail.gmail.com>
+Subject: Re: [PATCH V2 1/9] arm64: dts: renesas: beacon kit: Configure
+ programmable clocks
+To:     Adam Ford <aford173@gmail.com>
+Cc:     Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        Adam Ford-BE <aford@beaconembedded.com>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The bd718x7 only needs a regmap from parent device. This can be
-obtained by call to dev_get_regmap. Do not require parent to
-populate the driver data for this.
+On Thu, Dec 24, 2020 at 6:05 PM Adam Ford <aford173@gmail.com> wrote:
+> When the board was added, clock drivers were being updated done at
+> the same time to allow the versaclock driver to properly configure
+> the modes.  Unfortunately, the updates were not applied to the board
+> files at the time they should have been, so do it now.
+>
+> Signed-off-by: Adam Ford <aford173@gmail.com>
 
-Signed-off-by: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
----
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+i.e. will queue in renesas-devel for v5.12.
 
-Please note that this same change has been sent individually:
-https://lore.kernel.org/lkml/20210105123028.GA3409663@localhost.localdomain/
-It is present in this series only because some patches depend on it.
+Gr{oetje,eeting}s,
 
- drivers/clk/clk-bd718x7.c | 12 +++++++-----
- 1 file changed, 7 insertions(+), 5 deletions(-)
-
-diff --git a/drivers/clk/clk-bd718x7.c b/drivers/clk/clk-bd718x7.c
-index b52e8d6f660c..17d90e09f1c0 100644
---- a/drivers/clk/clk-bd718x7.c
-+++ b/drivers/clk/clk-bd718x7.c
-@@ -31,12 +31,12 @@ struct bd718xx_clk {
- 	u8 reg;
- 	u8 mask;
- 	struct platform_device *pdev;
--	struct rohm_regmap_dev *mfd;
-+	struct regmap *regmap;
- };
- 
- static int bd71837_clk_set(struct bd718xx_clk *c, unsigned int status)
- {
--	return regmap_update_bits(c->mfd->regmap, c->reg, c->mask, status);
-+	return regmap_update_bits(c->regmap, c->reg, c->mask, status);
- }
- 
- static void bd71837_clk_disable(struct clk_hw *hw)
-@@ -62,7 +62,7 @@ static int bd71837_clk_is_enabled(struct clk_hw *hw)
- 	int rval;
- 	struct bd718xx_clk *c = container_of(hw, struct bd718xx_clk, hw);
- 
--	rval = regmap_read(c->mfd->regmap, c->reg, &enabled);
-+	rval = regmap_read(c->regmap, c->reg, &enabled);
- 
- 	if (rval)
- 		return rval;
-@@ -82,7 +82,6 @@ static int bd71837_clk_probe(struct platform_device *pdev)
- 	int rval = -ENOMEM;
- 	const char *parent_clk;
- 	struct device *parent = pdev->dev.parent;
--	struct rohm_regmap_dev *mfd = dev_get_drvdata(parent);
- 	struct clk_init_data init = {
- 		.name = "bd718xx-32k-out",
- 		.ops = &bd71837_clk_ops,
-@@ -93,6 +92,10 @@ static int bd71837_clk_probe(struct platform_device *pdev)
- 	if (!c)
- 		return -ENOMEM;
- 
-+	c->regmap = dev_get_regmap(pdev->dev.parent, NULL);
-+	if (!c->regmap)
-+		return -ENODEV;
-+
- 	init.num_parents = 1;
- 	parent_clk = of_clk_get_parent_name(parent->of_node, 0);
- 
-@@ -119,7 +122,6 @@ static int bd71837_clk_probe(struct platform_device *pdev)
- 		dev_err(&pdev->dev, "Unknown clk chip\n");
- 		return -EINVAL;
- 	}
--	c->mfd = mfd;
- 	c->pdev = pdev;
- 	c->hw.init = &init;
- 
--- 
-2.25.4
-
+                        Geert
 
 -- 
-Matti Vaittinen, Linux device drivers
-ROHM Semiconductors, Finland SWDC
-Kiviharjunlenkki 1E
-90220 OULU
-FINLAND
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-~~~ "I don't think so," said Rene Descartes. Just then he vanished ~~~
-Simon says - in Latin please.
-~~~ "non cogito me" dixit Rene Descarte, deinde evanescavit ~~~
-Thanks to Simon Glass for the translation =] 
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
