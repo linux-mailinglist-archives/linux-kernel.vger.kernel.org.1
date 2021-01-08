@@ -2,236 +2,250 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 146142EF895
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 21:14:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B06AF2EF8BF
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 21:16:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729144AbhAHUNn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Jan 2021 15:13:43 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43448 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728894AbhAHUNm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Jan 2021 15:13:42 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4408623AAC;
-        Fri,  8 Jan 2021 20:13:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610136781;
-        bh=0+oDcnV/Kj32RXiBZBSk7/49tBpNnfdZxwIjSKX2pNw=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=ex/Uh2MDzPJi1iAkVyhPKlQyJ+jCwoSR5+iRgLWV+odV1dVA6zEtDGIaJANmndtoN
-         RiYYwk+sGJFOPEWQV7nOyupWihX1Bs4kFJUxJHxkgXKceqV4uruku7MiUiPbWKre1e
-         451/DOO643x1oG+4bv8lrNVgN1VSEKyaS1CR33N8W+Vw9gQ5hC43eR8RLvxOGi17JX
-         ua7D9MOeJl5+xdBMQr54EGjDEeJ4XP8lNm0Cco8AUmBKOLuSUKoIqffSEu7wGrkDo1
-         n64xDhj5dVXqdUuny3nb/T5P8ayxcXL9NF0x4yUFhK9osdVpkMGvDFhRh1Cw61XWcT
-         PKob4D5kb6epg==
-Date:   Fri, 8 Jan 2021 14:12:59 -0600
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Sunil Muthuswamy <sunilmut@microsoft.com>
-Cc:     KY Srinivasan <kys@microsoft.com>,
-        Boqun Feng <Boqun.Feng@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Wei Liu <liuwe@microsoft.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        "\"H. Peter Anvin\"" <hpa@zytor.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Rob Herring <robh@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>
-Subject: Re: [PATCH v2 1/2] Hyper-V: pci: x64: Generalize irq/msi set-up and
- handling
-Message-ID: <20210108201259.GA1461930@bjorn-Precision-5520>
+        id S1729031AbhAHUPq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Jan 2021 15:15:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52372 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728591AbhAHUPo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 Jan 2021 15:15:44 -0500
+Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 194A1C0612EA
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Jan 2021 12:15:04 -0800 (PST)
+Received: by mail-wm1-x331.google.com with SMTP id q75so9453066wme.2
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Jan 2021 12:15:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=QeXXbkShC0KTgz4n+dtT2axDbKBu7SEofVtSgTaHdlA=;
+        b=EpUldkEu63PuzXZYe8Jr/P+khJQOipAojDEohRiyHCTrwR0wQhBpn8uRQqxNWXdbFI
+         L+dS4H5R6ZR6Nq1EnbNFG4xu1Ac1uz9nb8rmmiRJbO1/yFtULhfWjvOc+2S1rkJnnPpu
+         8Cwz3Ikl8cVre8c+OOmS2DtGaPSKre5SgJiCEFW9g5mO9CXo9AnmUwcr8T0m/4djIU/b
+         ePHEJmMElk7oomdFJSXWhoidk98MWCrwHKc57ySEpTtXRKe6wXQwusjsoBXeE9/zJaH8
+         VeS5jFRmNpp+hqFVRac36sBQtcWD0EQMs+ioyWScgxcBIkYyXe3EQSenusSG1dL1dbhZ
+         0ZEQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=QeXXbkShC0KTgz4n+dtT2axDbKBu7SEofVtSgTaHdlA=;
+        b=FW6dR1WC43h74OWP5KEcc35bBiARwOPY91XYmf7BfYg0RMWkIHCcmO1WRHhh0pSeNR
+         R3gVtFdZUkdLba4kEfjP2/vCpkZiGAGTwNB2gTi1f/01OC5MilmIxwH/ll1Vfo0S/VL5
+         wqwOJjgCEVqWtoQQ2LP2GOaN95CxuZAAIe0f3Qu8psHYuIHlModVC3ThbPQA0QAKo/Fv
+         mzd4w7/EgPo10RxfrzvedbZsJIOqVSZgqM7C8ebOCLivv/v5gVlDvBdfkM6Pgpvxi1qq
+         hWFxzmVlHsXlzhVdmeB4oEejkbkuFxgf+gtTfeCubAKFod3wbLEt/cuzwFMSHjupBQ1F
+         hwaQ==
+X-Gm-Message-State: AOAM530qdXnAjwuJnS1Wen8viDuF1ooATN1xFiD2pnNeoeNObIBNz8ck
+        t/buoIye75RIqhGtDPPzOUxdnw==
+X-Google-Smtp-Source: ABdhPJwl3kU/DFu/+SHxqnLdc9NJoAEBkx5a1X6cfHiA0SIPK8+omrC1+fEQ6fahQl61Z3lNinh7/g==
+X-Received: by 2002:a1c:c308:: with SMTP id t8mr4593743wmf.22.1610136902655;
+        Fri, 08 Jan 2021 12:15:02 -0800 (PST)
+Received: from dell.default ([91.110.221.229])
+        by smtp.gmail.com with ESMTPSA id l8sm15598671wrb.73.2021.01.08.12.14.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 08 Jan 2021 12:15:01 -0800 (PST)
+From:   Lee Jones <lee.jones@linaro.org>
+To:     lee.jones@linaro.org
+Cc:     linux-kernel@vger.kernel.org,
+        Alex Deucher <alexander.deucher@amd.com>,
+        amd-gfx@lists.freedesktop.org, Anthony Koo <Anthony.Koo@amd.com>,
+        Ben Skeggs <bskeggs@redhat.com>,
+        Bhawanpreet Lakha <Bhawanpreet.Lakha@amd.com>,
+        Charlene Liu <Charlene.Liu@amd.com>,
+        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        dri-devel@lists.freedesktop.org,
+        Eric Bernstein <eric.bernstein@amd.com>,
+        Eryk Brol <eryk.brol@amd.com>, Evan Quan <evan.quan@amd.com>,
+        Feifei Xu <Feifei.Xu@amd.com>,
+        Felix Kuehling <Felix.Kuehling@amd.com>,
+        freedreno@lists.freedesktop.org, George Shen <george.shen@amd.com>,
+        Harry Wentland <harry.wentland@amd.com>,
+        Hawking Zhang <Hawking.Zhang@amd.com>,
+        Igor Kravchenko <Igor.Kravchenko@amd.com>,
+        Krunoslav Kovac <Krunoslav.Kovac@amd.com>,
+        Kuogee Hsieh <khsieh@codeaurora.org>,
+        Leo Li <sunpeng.li@amd.com>, Lewis Huang <Lewis.Huang@amd.com>,
+        linux-arm-msm@vger.kernel.org,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Mauro Rossi <issor.oruam@gmail.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Mikita Lipski <mikita.lipski@amd.com>,
+        nouveau@lists.freedesktop.org,
+        Qinglang Miao <miaoqinglang@huawei.com>,
+        Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Wyatt Wood <wyatt.wood@amd.com>
+Subject: [PATCH 00/40] [Set 11] Rid W=1 warnings from GPU
+Date:   Fri,  8 Jan 2021 20:14:17 +0000
+Message-Id: <20210108201457.3078600-1-lee.jones@linaro.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <SN4PR2101MB0880A1BF1E62836EED4B8358C0AE9@SN4PR2101MB0880.namprd21.prod.outlook.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-At the very least you could pick one of the subject line prefixes that
-has been used before for either mshyperv.h or pci-hyperv.c instead of
-making up something completely new and different.
+This set is part of a larger effort attempting to clean-up W=1
+kernel builds, which are currently overwhelmingly riddled with
+niggly little warnings.
 
-On Fri, Jan 08, 2021 at 07:31:08AM +0000, Sunil Muthuswamy wrote:
-> Currently, operations related to irq/msi in Hyper-V vPCI are
-> x86-specific code. In order to support virtual PCI on Hyper-V for
-> other architectures, introduce generic interfaces to replace the
-> x86-specific ones. There are no functional changes in this patch.
-> 
-> Co-developed-by: Boqun Feng (Microsoft) <boqun.feng@gmail.com>
-> Signed-off-by: Boqun Feng (Microsoft) <boqun.feng@gmail.com>
-> Signed-off-by: Sunil Muthuswamy <sunilmut@microsoft.com>
-> ---
-> In V2:
-> - Addressed feedback on SoB tab.
-> - Added a second patch to move the MSI entry definition.
-> ---
->  arch/x86/include/asm/mshyperv.h     | 24 +++++++++++++++++++++
->  drivers/pci/controller/pci-hyperv.c | 33 +++++++++++++++++------------
->  2 files changed, 44 insertions(+), 13 deletions(-)
-> 
-> diff --git a/arch/x86/include/asm/mshyperv.h b/arch/x86/include/asm/mshyperv.h
-> index ffc289992d1b..05b32ef57e34 100644
-> --- a/arch/x86/include/asm/mshyperv.h
-> +++ b/arch/x86/include/asm/mshyperv.h
-> @@ -245,6 +245,30 @@ bool hv_vcpu_is_preempted(int vcpu);
->  static inline void hv_apic_init(void) {}
->  #endif
->  
-> +#define hv_msi_handler		handle_edge_irq
-> +#define hv_msi_handler_name	"edge"
-> +#define hv_msi_prepare		pci_msi_prepare
-> +
-> +/* Returns the Hyper-V PCI parent MSI vector domain. */
-> +static inline struct irq_domain *hv_msi_parent_vector_domain(void)
-> +{
-> +	return x86_vector_domain;
-> +}
-> +
-> +/* Returns the interrupt vector mapped to the given IRQ. */
-> +static inline unsigned int hv_msi_get_int_vector(struct irq_data *data)
-> +{
-> +	struct irq_cfg *cfg = irqd_cfg(data);
-> +
-> +	return cfg->vector;
-> +}
-> +
-> +/* Get the IRQ delivery mode. */
-> +static inline u8 hv_msi_irq_delivery_mode(void)
-> +{
-> +	return APIC_DELIVERY_MODE_FIXED;
-> +}
-> +
->  static inline void hv_set_msi_entry_from_desc(union hv_msi_entry *msi_entry,
->  					      struct msi_desc *msi_desc)
->  {
-> diff --git a/drivers/pci/controller/pci-hyperv.c b/drivers/pci/controller/pci-hyperv.c
-> index 6db8d96a78eb..9ca740d275d7 100644
-> --- a/drivers/pci/controller/pci-hyperv.c
-> +++ b/drivers/pci/controller/pci-hyperv.c
-> @@ -43,12 +43,11 @@
->  #include <linux/delay.h>
->  #include <linux/semaphore.h>
->  #include <linux/irqdomain.h>
-> -#include <asm/irqdomain.h>
-> -#include <asm/apic.h>
->  #include <linux/irq.h>
->  #include <linux/msi.h>
->  #include <linux/hyperv.h>
->  #include <linux/refcount.h>
-> +#include <linux/pci.h>
->  #include <asm/mshyperv.h>
->  
->  /*
-> @@ -1194,7 +1193,6 @@ static void hv_irq_mask(struct irq_data *data)
->  static void hv_irq_unmask(struct irq_data *data)
->  {
->  	struct msi_desc *msi_desc = irq_data_get_msi_desc(data);
-> -	struct irq_cfg *cfg = irqd_cfg(data);
->  	struct hv_retarget_device_interrupt *params;
->  	struct hv_pcibus_device *hbus;
->  	struct cpumask *dest;
-> @@ -1223,7 +1221,7 @@ static void hv_irq_unmask(struct irq_data *data)
->  			   (hbus->hdev->dev_instance.b[7] << 8) |
->  			   (hbus->hdev->dev_instance.b[6] & 0xf8) |
->  			   PCI_FUNC(pdev->devfn);
-> -	params->int_target.vector = cfg->vector;
-> +	params->int_target.vector = hv_msi_get_int_vector(data);
->  
->  	/*
->  	 * Honoring apic->delivery_mode set to APIC_DELIVERY_MODE_FIXED by
-> @@ -1324,7 +1322,7 @@ static u32 hv_compose_msi_req_v1(
->  	int_pkt->wslot.slot = slot;
->  	int_pkt->int_desc.vector = vector;
->  	int_pkt->int_desc.vector_count = 1;
-> -	int_pkt->int_desc.delivery_mode = APIC_DELIVERY_MODE_FIXED;
-> +	int_pkt->int_desc.delivery_mode = hv_msi_irq_delivery_mode();
->  
->  	/*
->  	 * Create MSI w/ dummy vCPU set, overwritten by subsequent retarget in
-> @@ -1345,7 +1343,7 @@ static u32 hv_compose_msi_req_v2(
->  	int_pkt->wslot.slot = slot;
->  	int_pkt->int_desc.vector = vector;
->  	int_pkt->int_desc.vector_count = 1;
-> -	int_pkt->int_desc.delivery_mode = APIC_DELIVERY_MODE_FIXED;
-> +	int_pkt->int_desc.delivery_mode = hv_msi_irq_delivery_mode();
->  
->  	/*
->  	 * Create MSI w/ dummy vCPU set targeting just one vCPU, overwritten
-> @@ -1372,7 +1370,6 @@ static u32 hv_compose_msi_req_v2(
->   */
->  static void hv_compose_msi_msg(struct irq_data *data, struct msi_msg *msg)
->  {
-> -	struct irq_cfg *cfg = irqd_cfg(data);
->  	struct hv_pcibus_device *hbus;
->  	struct vmbus_channel *channel;
->  	struct hv_pci_dev *hpdev;
-> @@ -1422,7 +1419,7 @@ static void hv_compose_msi_msg(struct irq_data *data, struct msi_msg *msg)
->  		size = hv_compose_msi_req_v1(&ctxt.int_pkts.v1,
->  					dest,
->  					hpdev->desc.win_slot.slot,
-> -					cfg->vector);
-> +					hv_msi_get_int_vector(data));
->  		break;
->  
->  	case PCI_PROTOCOL_VERSION_1_2:
-> @@ -1430,7 +1427,7 @@ static void hv_compose_msi_msg(struct irq_data *data, struct msi_msg *msg)
->  		size = hv_compose_msi_req_v2(&ctxt.int_pkts.v2,
->  					dest,
->  					hpdev->desc.win_slot.slot,
-> -					cfg->vector);
-> +					hv_msi_get_int_vector(data));
->  		break;
->  
->  	default:
-> @@ -1541,12 +1538,13 @@ static struct irq_chip hv_msi_irq_chip = {
->  	.irq_compose_msi_msg	= hv_compose_msi_msg,
->  	.irq_set_affinity	= hv_set_affinity,
->  	.irq_ack		= irq_chip_ack_parent,
-> +	.irq_eoi		= irq_chip_eoi_parent,
->  	.irq_mask		= hv_irq_mask,
->  	.irq_unmask		= hv_irq_unmask,
->  };
->  
->  static struct msi_domain_ops hv_msi_ops = {
-> -	.msi_prepare	= pci_msi_prepare,
-> +	.msi_prepare	= hv_msi_prepare,
->  	.msi_free	= hv_msi_free,
->  };
->  
-> @@ -1565,17 +1563,26 @@ static struct msi_domain_ops hv_msi_ops = {
->   */
->  static int hv_pcie_init_irq_domain(struct hv_pcibus_device *hbus)
->  {
-> +	struct irq_domain *parent_domain;
-> +
-> +	parent_domain = hv_msi_parent_vector_domain();
-> +	if (!parent_domain) {
-> +		dev_err(&hbus->hdev->device,
-> +			"Failed to get parent MSI domain\n");
-> +		return -ENODEV;
-> +	}
-> +
->  	hbus->msi_info.chip = &hv_msi_irq_chip;
->  	hbus->msi_info.ops = &hv_msi_ops;
->  	hbus->msi_info.flags = (MSI_FLAG_USE_DEF_DOM_OPS |
->  		MSI_FLAG_USE_DEF_CHIP_OPS | MSI_FLAG_MULTI_PCI_MSI |
->  		MSI_FLAG_PCI_MSIX);
-> -	hbus->msi_info.handler = handle_edge_irq;
-> -	hbus->msi_info.handler_name = "edge";
-> +	hbus->msi_info.handler = hv_msi_handler;
-> +	hbus->msi_info.handler_name = hv_msi_handler_name;
->  	hbus->msi_info.data = hbus;
->  	hbus->irq_domain = pci_msi_create_irq_domain(hbus->sysdata.fwnode,
->  						     &hbus->msi_info,
-> -						     x86_vector_domain);
-> +						     parent_domain);
->  	if (!hbus->irq_domain) {
->  		dev_err(&hbus->hdev->device,
->  			"Failed to build an MSI IRQ domain\n");
-> -- 
-> 2.17.1
+300 out of 5000 left!
+
+Lee Jones (40):
+  drm/nouveau/nvkm/subdev/bios/init: Demote obvious abuse of kernel-doc
+  drm/nouveau/dispnv50/disp: Remove unused variable 'ret'
+  drm/msm/dp/dp_display: Remove unused variable 'hpd'
+  drm/amd/amdgpu/amdgpu_ih: Update 'amdgpu_ih_decode_iv_helper()'s
+    function header
+  drm/amd/amdgpu/vega20_ih: Add missing descriptions for 'ih' and fix
+    spelling error
+  drm/amd/pm/powerplay/hwmgr/process_pptables_v1_0: Provide description
+    of 'call_back_func'
+  drm/amd/pm/powerplay/hwmgr/ppatomctrl: Fix documentation for
+    'mpll_param'
+  drm/amd/pm/powerplay/hwmgr/vega12_hwmgr: Fix legacy function header
+    formatting
+  drm/amd/pm/powerplay/hwmgr/vega20_hwmgr: Fix legacy function header
+    formatting
+  drm/amd/pm/powerplay/hwmgr/smu7_hwmgr: Fix formatting and spelling
+    issues
+  drm/amd/pm/powerplay/hwmgr/hwmgr: Move prototype into shared header
+  drm/amd/pm/powerplay/hwmgr/vega10_hwmgr: Fix a bunch of kernel-doc
+    formatting issues
+  drm/amd/display/dc/basics/conversion: Demote obvious kernel-doc abuse
+  drm/amd/display/amdgpu_dm/amdgpu_dm_debugfs: Demote non-kernel-doc
+    comment blocks
+  drm/amd/display/dc/bios/command_table_helper: Fix kernel-doc
+    formatting
+  drm/amd/display/dc/bios/command_table_helper2: Fix legacy formatting
+    problems
+  drm/amd/display/dc/bios/bios_parser: Make local functions static
+  drm/amd/display/dc/bios/bios_parser: Fix a whole bunch of legacy doc
+    formatting
+  drm/amd/display/dc/bios/command_table: Remove unused variable
+  include: drm: drm_atomic: Make use of 'new_plane_state'
+  drm/amd/display/dc/calcs/dce_calcs: Remove unused variables
+    'v_filter_init_mode' and 'sclk_lvl'
+  drm/amd/display/dc/bios/bios_parser2: Fix some formatting issues and
+    missing parameter docs
+  drm/amd/display/dc/dce/dce_audio: Make function invoked by reference
+    static
+  drm/amd/display/dc/dce/dce_stream_encoder: Remove unused variable
+    'regval'
+  drm/amd/display/dc/dce/dce_link_encoder: Make functions invoked by
+    reference static
+  drm/amd/display/dc/dce/dce_clock_source: Fix formatting/spelling of
+    worthy function headers
+  drm/amd/pm/powerplay/hwmgr/vega10_hwmgr: Fix worthy function headers,
+    demote barely documented one
+  drm/amd/display/dc/dce/dce_transform: Remove 3 unused/legacy variables
+  drm/amd/display/dc/dce/dce_dmcu: Staticify local function call
+    'dce_dmcu_load_iram'
+  drm/amd/display/dc/dce/dce_dmcu: Move 'abm_gain_stepsize' to only
+    source file it's used in
+  drm/amd/display/dc/dce/dce_opp: Make local functions and ones invoked
+    by reference static
+  drm/amd/display/dc/dce/dce_aux: Remove unused function
+    'get_engine_type'
+  drm/nouveau/nvkm/subdev/volt/gk20a: Demote non-conformant kernel-doc
+    headers
+  drm/amd/display/dc/bios/bios_parser: Fix misspelling of function
+    parameter
+  drm/amd/display/dc/bios/command_table: Remove unused variable and
+    associated comment
+  drm/amd/display/dc/dce/dce_i2c_hw: Make functions called by reference
+    static
+  drm/amd/display/dc/dce/dce_i2c_sw: Make a bunch of local functions
+    static
+  drm/amd/display/dc/dce/dce_panel_cntl: Remove unused variables
+    'bl_pwm_cntl' and 'pwm_period_cntl'
+  drm/amd/display/dc/dce/dmub_psr: Demote non-conformant kernel-doc
+    headers
+  drm/amd/display/dc/gpio/hw_factory: Delete unused function
+    'dal_hw_factory_destroy'
+
+ drivers/gpu/drm/amd/amdgpu/amdgpu_ih.c        |   2 +
+ drivers/gpu/drm/amd/amdgpu/vega20_ih.c        |   5 +-
+ .../amd/display/amdgpu_dm/amdgpu_dm_debugfs.c |   4 +-
+ .../drm/amd/display/dc/basics/conversion.c    |   9 +-
+ .../gpu/drm/amd/display/dc/bios/bios_parser.c | 119 +++++-----
+ .../drm/amd/display/dc/bios/bios_parser2.c    |  29 ++-
+ .../drm/amd/display/dc/bios/command_table.c   |  16 +-
+ .../display/dc/bios/command_table_helper.c    |  20 +-
+ .../display/dc/bios/command_table_helper2.c   |  20 +-
+ .../gpu/drm/amd/display/dc/calcs/dce_calcs.c  |   8 +-
+ .../gpu/drm/amd/display/dc/dce/dce_audio.c    |   2 +-
+ drivers/gpu/drm/amd/display/dc/dce/dce_aux.c  |   6 -
+ .../drm/amd/display/dc/dce/dce_clock_source.c |  57 +++--
+ drivers/gpu/drm/amd/display/dc/dce/dce_dmcu.c |   6 +-
+ drivers/gpu/drm/amd/display/dc/dce/dce_dmcu.h |   2 -
+ .../gpu/drm/amd/display/dc/dce/dce_i2c_hw.c   |   4 +-
+ .../gpu/drm/amd/display/dc/dce/dce_i2c_sw.c   |   9 +-
+ .../drm/amd/display/dc/dce/dce_link_encoder.c |   6 +-
+ drivers/gpu/drm/amd/display/dc/dce/dce_opp.c  |   8 +-
+ .../drm/amd/display/dc/dce/dce_panel_cntl.c   |   8 +-
+ .../amd/display/dc/dce/dce_stream_encoder.c   |   3 +-
+ .../drm/amd/display/dc/dce/dce_transform.c    |  13 --
+ drivers/gpu/drm/amd/display/dc/dce/dmub_psr.c |  22 +-
+ .../gpu/drm/amd/display/dc/gpio/hw_factory.c  |  14 --
+ .../gpu/drm/amd/pm/powerplay/hwmgr/hwmgr.c    |   2 +-
+ .../drm/amd/pm/powerplay/hwmgr/ppatomctrl.c   |   4 +-
+ .../powerplay/hwmgr/process_pptables_v1_0.c   |   1 +
+ .../drm/amd/pm/powerplay/hwmgr/smu7_hwmgr.c   |   4 +-
+ .../drm/amd/pm/powerplay/hwmgr/vega10_hwmgr.c | 137 ++++++------
+ .../drm/amd/pm/powerplay/hwmgr/vega10_hwmgr.h |   1 +
+ .../drm/amd/pm/powerplay/hwmgr/vega12_hwmgr.c |  11 +-
+ .../drm/amd/pm/powerplay/hwmgr/vega20_hwmgr.c |  11 +-
+ drivers/gpu/drm/msm/dp/dp_display.c           |   3 -
+ drivers/gpu/drm/nouveau/dispnv50/disp.c       |   3 +-
+ .../gpu/drm/nouveau/nvkm/subdev/bios/init.c   | 204 ++++++------------
+ .../gpu/drm/nouveau/nvkm/subdev/volt/gk20a.c  |   4 +-
+ include/drm/drm_atomic.h                      |   3 +-
+ 37 files changed, 325 insertions(+), 455 deletions(-)
+
+Cc: Alex Deucher <alexander.deucher@amd.com>
+Cc: amd-gfx@lists.freedesktop.org
+Cc: Anthony Koo <Anthony.Koo@amd.com>
+Cc: Ben Skeggs <bskeggs@redhat.com>
+Cc: Bhawanpreet Lakha <Bhawanpreet.Lakha@amd.com>
+Cc: Charlene Liu <Charlene.Liu@amd.com>
+Cc: "Christian König" <christian.koenig@amd.com>
+Cc: Daniel Vetter <daniel@ffwll.ch>
+Cc: David Airlie <airlied@linux.ie>
+Cc: dri-devel@lists.freedesktop.org
+Cc: Eric Bernstein <eric.bernstein@amd.com>
+Cc: Eryk Brol <eryk.brol@amd.com>
+Cc: Evan Quan <evan.quan@amd.com>
+Cc: Feifei Xu <Feifei.Xu@amd.com>
+Cc: Felix Kuehling <Felix.Kuehling@amd.com>
+Cc: freedreno@lists.freedesktop.org
+Cc: George Shen <george.shen@amd.com>
+Cc: Harry Wentland <harry.wentland@amd.com>
+Cc: Hawking Zhang <Hawking.Zhang@amd.com>
+Cc: Igor Kravchenko <Igor.Kravchenko@amd.com>
+Cc: Krunoslav Kovac <Krunoslav.Kovac@amd.com>
+Cc: Kuogee Hsieh <khsieh@codeaurora.org>
+Cc: Lee Jones <lee.jones@linaro.org>
+Cc: Leo Li <sunpeng.li@amd.com>
+Cc: Lewis Huang <Lewis.Huang@amd.com>
+Cc: linux-arm-msm@vger.kernel.org
+Cc: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
+Cc: Mauro Rossi <issor.oruam@gmail.com>
+Cc: Maxime Ripard <mripard@kernel.org>
+Cc: Mikita Lipski <mikita.lipski@amd.com>
+Cc: nouveau@lists.freedesktop.org
+Cc: Qinglang Miao <miaoqinglang@huawei.com>
+Cc: Rob Clark <robdclark@gmail.com>
+Cc: Sean Paul <sean@poorly.run>
+Cc: Thomas Zimmermann <tzimmermann@suse.de>
+Cc: Wyatt Wood <wyatt.wood@amd.com>
+-- 
+2.25.1
+
