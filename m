@@ -2,121 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CEC512EF11F
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 12:15:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B5AE02EF121
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 12:15:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727058AbhAHLPT convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 8 Jan 2021 06:15:19 -0500
-Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:49284 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726397AbhAHLPR (ORCPT
+        id S1727287AbhAHLPg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Jan 2021 06:15:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52924 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726397AbhAHLPf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Jan 2021 06:15:17 -0500
-Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-175-sD4VRU_TPyetWiPTPnISpQ-1; Fri, 08 Jan 2021 11:13:38 +0000
-X-MC-Unique: sD4VRU_TPyetWiPTPnISpQ-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
- Server (TLS) id 15.0.1347.2; Fri, 8 Jan 2021 11:13:37 +0000
-Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
- AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
- Fri, 8 Jan 2021 11:13:37 +0000
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Christoph Hellwig' <hch@infradead.org>
-CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "io-uring@vger.kernel.org" <io-uring@vger.kernel.org>,
-        Jens Axboe <axboe@kernel.dk>,
-        "David S. Miller" <davem@davemloft.net>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>
-Subject: RE: [PATCH 5/9 next] scsi: Use iovec_import() instead of
- import_iovec().
-Thread-Topic: [PATCH 5/9 next] scsi: Use iovec_import() instead of
- import_iovec().
-Thread-Index: AdaLbdBrrJnvb+q4Sa6RtPibF1KBcwErGHIAFWTS8sA=
-Date:   Fri, 8 Jan 2021 11:13:37 +0000
-Message-ID: <881cc102501e4c1a93785f0906dbd650@AcuMS.aculab.com>
-References: <27be46ece36c42d6a7dabf62c6ac7a98@AcuMS.aculab.com>
- <20200921142204.GE24515@infradead.org>
-In-Reply-To: <20200921142204.GE24515@infradead.org>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Fri, 8 Jan 2021 06:15:35 -0500
+Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A29F1C0612F4
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Jan 2021 03:14:55 -0800 (PST)
+Received: by mail-pj1-x1031.google.com with SMTP id p12so3465361pju.5
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Jan 2021 03:14:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=iDPzHwkjsTkAD1Mw6MWGrS58dCqLiAXWEIlIfgXIsz0=;
+        b=H+cAe7WRpd5OceyKAkBLVVK3lWt0NmaFOfNVrKpUD7w5kNqrFpsAuPUP8axFspVRkH
+         tv/CQ38zUF3CLl4A516dqH9ZcVZtY0PO+vlU2OGdJzBG4Jytg2PK1Jc5PIVfvPIkaJ+F
+         qL0aGActIFb7ShvkBEWopm+Szp+xFBspbKiUneyrwdUZBoFsZQTYdvjaPh3bfahAJzJ2
+         2HpFYKteLXXN1jDKmSipRWkNPeq8l1C/cjiRPMPTR29GWAa7ZNzqCN4gywlDApcyz9DC
+         CDw12P6gRhNgJEi8MCxHwnr/M3ozKycT3lqKvulsLsCUwsJi84nD/YHIypmarMV8OgXY
+         RQeg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=iDPzHwkjsTkAD1Mw6MWGrS58dCqLiAXWEIlIfgXIsz0=;
+        b=BWViIoNcwdYbREKtyxfEBUCdQLROvNgWLMnT3a+bQUAwIrC24i/Iu0BKfgulw9+IpD
+         DEmgOhz552F7DBKVGfH1aGP7Zf8UHBI6r/+pUiR6UMW3+TM8opLDpwc9FS5eNJB1FsCX
+         5lxFAJxunWRf7f1DOYaeynD/Oeh4Fym8+i7GAwe0Rp3+QnIEK9yGI2ImKRjKjQ/7So82
+         hwcWvCOg4EWQl+P8r8Baor5Zq9iv9xaMmDrRshwhnpuERzCfVfOVbIas5DJONI1f7PO7
+         WLZGU9BdwzZ3QD6ZLdbpaQCTidD00z6FdNiW9OR99jdvmyCptBnRZEEVK68cdNKxacu6
+         BgLw==
+X-Gm-Message-State: AOAM53186BzdTs3IysyKdUJQsF0dqyYy1TCnNYrwlyeoiWKpdWPPNJf1
+        wr+Xq4W7Bml2kHrOMsy7jM5w
+X-Google-Smtp-Source: ABdhPJykxqlj1kTzfUydKgsPfFlM4j0Zz+C4wHy/9kI8sjN1024WhAXsPIlo7pUMSzjC0B6pabFphw==
+X-Received: by 2002:a17:902:7596:b029:da:b7a3:cdd0 with SMTP id j22-20020a1709027596b02900dab7a3cdd0mr3353005pll.14.1610104495148;
+        Fri, 08 Jan 2021 03:14:55 -0800 (PST)
+Received: from thinkpad ([103.77.37.188])
+        by smtp.gmail.com with ESMTPSA id p22sm9635613pgk.21.2021.01.08.03.14.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 08 Jan 2021 03:14:54 -0800 (PST)
+Date:   Fri, 8 Jan 2021 16:44:48 +0530
+From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+To:     Konrad Dybcio <konrad.dybcio@somainline.org>
+Cc:     mturquette@baylibre.com, sboyd@kernel.org, robh+dt@kernel.org,
+        jassisinghbrar@gmail.com, viresh.kumar@linaro.org,
+        ulf.hansson@linaro.org, bjorn.andersson@linaro.org,
+        agross@kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org,
+        devicetree@vger.kernel.org
+Subject: Re: [PATCH 4/5] clk: qcom: Add A7 PLL support
+Message-ID: <20210108111448.GA74017@thinkpad>
+References: <20210104081125.147300-1-manivannan.sadhasivam@linaro.org>
+ <20210104081125.147300-5-manivannan.sadhasivam@linaro.org>
+ <a880d96f-d879-52d0-48ff-cbcdb88a3f29@somainline.org>
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <a880d96f-d879-52d0-48ff-cbcdb88a3f29@somainline.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christoph Hellwig
-> Sent: 21 September 2020 15:22
+On Mon, Jan 04, 2021 at 04:30:11PM +0100, Konrad Dybcio wrote:
+> Hi,
 > 
-> So looking at the various callers I'm not sure this API is the
-> best.  If we want to do something fancy I'd hide the struct iovec
-> instances entirely with something like:
+> could you explicitly state in the probe function (or just in the driver in general, as there's not much more?) and the config structs that the target SoC is X55?
 > 
-> struct iov_storage {
-> 	struct iovec stack[UIO_FASTIOV], *vec;
-> }
+
+The compatible says it...
+
+> A few more SoCs (MDM9607, MSM8x26 and some others) also use what's known as "A7PLL" downstream, but all of them have a separate configuration for their specific PLLs, which aren't compatible with each other.
 > 
-> int iov_iter_import_iovec(struct iov_iter *iter, struct iov_storage *s,
-> 		const struct iovec __user *vec, unsigned long nr_segs,
-> 		int type);
+
+Yes, but that difference can be factored using the SoC specific compatibles in
+future. The idea here is to have a generic A7 PLL driver much like A53 one and
+use SoC specific PLL settings.
+
+Thanks,
+Mani
+
 > 
-> and then add a new helper to free the thing if needed:
+> Konrad
 > 
-> void iov_iter_release_iovec(struct iov_storage *s)
-> {
-> 	if (s->vec != s->stack)
-> 		kfree(s->vec);
-> }
-
-I've been looking at this code again now most of the pending changes
-are in Linus's tree.
-
-I was actually looking at going one stage further.
-The 'iov_iter' is always allocated with the 'iov_storage' *above).
-Usually both are on the callers stack - possibly in different functions.
-
-So add:
-struct iovec_iter {
-	struct iov_iter iter;
-	struct iovec to_free;
-	struct iovec stack[UIO_FASTIOV];
-};
-
-int __iovec_import(struct iovec_iter *, const struct iovec __user *vec,
-	unsigned long nr_segs, int type, bool compat);
-
-And a 'clean' function to do kfree(iovec->to_free);
-
-This reduces the complexity of most of the callers.
-
-I started doing the changes, but got in a mess in io_uring.c (as usual).
-I think I've got a patch pending (in my brain) to simplify the io_uring code.
-
-The plan is to add:
-	if (iter->iov != xxx->to_free)
-		iter->iov = xxx->stack;
-Prior to every use of the iter.
-This fixes up anything that got broken by a memcpy() of the fields.
-The tidyup code is then always kfree(xxx->to_free).
-
-	David
-
-	
-
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-Registration No: 1397386 (Wales)
-
