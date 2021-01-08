@@ -2,187 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 51A452EEB75
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 03:46:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B7712EEB7C
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 03:53:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726751AbhAHCpP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 21:45:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58774 "EHLO
+        id S1726683AbhAHCwC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 21:52:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59822 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726113AbhAHCpP (ORCPT
+        with ESMTP id S1726482AbhAHCwC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 21:45:15 -0500
-Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70C5DC0612F5
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Jan 2021 18:44:28 -0800 (PST)
-Received: by mail-ed1-x52f.google.com with SMTP id b2so9783580edm.3
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Jan 2021 18:44:28 -0800 (PST)
+        Thu, 7 Jan 2021 21:52:02 -0500
+Received: from mail-pf1-x449.google.com (mail-pf1-x449.google.com [IPv6:2607:f8b0:4864:20::449])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2BB2C0612F4
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Jan 2021 18:51:21 -0800 (PST)
+Received: by mail-pf1-x449.google.com with SMTP id 15so5606310pfu.6
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Jan 2021 18:51:21 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=NS3ezHf4QCzMGW6WEzOGr6UnmAdwirkpgipq6BYO9fU=;
-        b=ntZrM8I/p9FFhseyV9vPjRIl0DNC/zQseVL5Fb1CF7i57w+6aFlsXCQyafvceAXBfw
-         g0/PICcvIs6aP9qjjXrG2iT4mxfmWJ1m7ssWaggYxyNmQqbnGSnztcuSMngWNoHYDQcm
-         CQ+3v86/DHVS/gOuaFz0fnGZcgnn9QYIgHaYE3hKxYMS229hD300cU2LJARiLo/L2AhL
-         hjE7fSV/3paKTTHi7JBsEvqQFtDug4sUDSmBdNbkjqd5xK1rwdwOXecbAT9bxmmPjTht
-         l3mRI+fbw9wns5bzRuwThIw1c/DOE/a2kWi1GCOvL7St2XyVgBORmHQvDQcJwcFVY/B0
-         By1Q==
+        d=google.com; s=20161025;
+        h=sender:date:message-id:mime-version:subject:from:to:cc;
+        bh=igBGrAi6Rm5zuPhj7f6tM3a6FH4jJ4t835DAUEG27WY=;
+        b=NkJg0hcph3kLiTW/09AU80ChiiYrzkV/MKO33Iako84r/B723quJq1qwiNUafzuDOc
+         1vYHMDLG+AGqgZi6UkYPxZHzAuRzj4ST71oWMmMm4xMR/Zfc9DTnfeNi+mayoHcncQKA
+         9xhwIdzrdTd5wNGA5KcXKF04SR1gaJtD/R1TCePFMrnTJy16eFXEn2BKueRCnEHXX2GA
+         Hxx50oPqGcPBFRyV/if7ErbMYwq4W19jBC1nR4t6UxCSoiLBJpnPUmD3E8w5cA/F0o6h
+         NrZTYFVHu9MEdmwQwrC3tfeMT+cMjs7VmHiTRrQFEsaQStJbquJZR5YT6kE/OuLpQlPm
+         qQXw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=NS3ezHf4QCzMGW6WEzOGr6UnmAdwirkpgipq6BYO9fU=;
-        b=mokwXfZa9TIM4FCMU3CPnadXsksO05kygIcsESL6uVX/EbuVE0ViMFVmUoHAoqjNAc
-         E1FWnN3BQky4Pcfxc96/TipzcqfhaXj+JHY1guE/cPnmZvybbJdOFy35aLm3cddmX9yx
-         inM7DgEbIJ05GZ/FX36Kq8uPWQ/3ul6iFMeN5Z4dU+kpctVmOwOuEz1DQG+U1bhpDFoL
-         nMHWTREIXwaVgIzX2V4F+EiGyUo3tnpzpI5yQmzwt1Mvi2kRtMbrkGETwhBr/yzPt44V
-         ouhL5R2d6GPyK8CccyKVqALIocVbS6N3dLPlFJMfvlxPk2sj+b1L2/97isI9BwCY++uh
-         uP6A==
-X-Gm-Message-State: AOAM530hHaGK4k5pPIRmYPvmEWT5kfxc84whbAJHWP2EyfH0EzNqGxxQ
-        quHE9kuMIZloCMRB/OFyzJXr0StK1kRsBSbySgUiAA==
-X-Google-Smtp-Source: ABdhPJyDJSJngApTDCTJHOpdCD2VikUDdjPcmRUMathfS/hc48dxh9y6vNQ9GDUnsc8A/bQZZLEzSX9YugKunfiqQzU=
-X-Received: by 2002:a05:6402:3074:: with SMTP id bs20mr3735885edb.365.1610073866935;
- Thu, 07 Jan 2021 18:44:26 -0800 (PST)
-MIME-Version: 1.0
-References: <20210107143047.586006010@linuxfoundation.org>
-In-Reply-To: <20210107143047.586006010@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Fri, 8 Jan 2021 08:14:16 +0530
-Message-ID: <CA+G9fYv4cXp=e5JEGTzx1qtBySO8KbvCCMKOpPQphBzDkCb9tQ@mail.gmail.com>
-Subject: Re: [PATCH 4.19 0/8] 4.19.166-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
-        lkft-triage@lists.linaro.org,
-        linux-stable <stable@vger.kernel.org>, pavel@denx.de,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :to:cc;
+        bh=igBGrAi6Rm5zuPhj7f6tM3a6FH4jJ4t835DAUEG27WY=;
+        b=Bow7qS3aGnWp4OH0s2lOTu8YpmNliO2h5xRh3VFYfrCcKMnHuBjHgJ/q9wy6hA2IxW
+         oqHR2IUsPH9hQnzUNtFy207kNgZMEftyktlK8IxF66OKCse+QXPv09g4kue+wZIta+j/
+         NfPAewKarlW/BUds9n5MT886Q5oija2SyqrWPRdSjvQ31wm1Y2i8rfMrV3BbVrLJenou
+         KML3iNxzCTpcEKc3s12B7xXsZLSUckZumQ2NIRLz4sxUMenQdobgCDfpxgbXLCNcPtqG
+         hdJ/dE2Do3W5EgCayj5RQ+WIQT07FXVWCAn0Qnm30xktWcnX9P7VkCNsr6RZMPkKfhql
+         VNpg==
+X-Gm-Message-State: AOAM53314EvfJZNwNI/OC97sJkFq1m10bW7CgD+s2GA15bcvN6P6Qunf
+        /cEExTQuoD9Bt3WBxqNnXoV3SZdzl7k=
+X-Google-Smtp-Source: ABdhPJwJ/hjL4qcB91A5Mt4uYQAf/7kFnz8+SYqM0DpYLT7O6zdyS6JzC1YkuIJ4kx5su6Y8jPmRqN2PkiQ=
+Sender: "baekhw via sendgmr" <baekhw@heavenly0xe8.kir.corp.google.com>
+X-Received: from heavenly0xe8.kir.corp.google.com ([2620:0:1008:11:f693:9fff:feea:d503])
+ (user=baekhw job=sendgmr) by 2002:a17:902:7205:b029:db:d2d5:fe79 with SMTP id
+ ba5-20020a1709027205b02900dbd2d5fe79mr4929950plb.30.1610074281228; Thu, 07
+ Jan 2021 18:51:21 -0800 (PST)
+Date:   Thu,  7 Jan 2021 18:51:07 -0800
+Message-Id: <20210108025107.1223487-1-baekhw@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.29.2.729.g45daf8777d-goog
+Subject: [PATCH] x86/sev-es: Fix SEV-ES #VC handler for string port IO
+From:   "Hyunwook (Wooky) Baek" <baekhw@google.com>
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>
+Cc:     Joerg Roedel <jroedel@suse.de>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        David Rientjes <rientjes@google.com>,
+        Sean Christopherson <seanjc@google.com>,
+        linux-kernel@vger.kernel.org, x86@kernel.org,
+        "Hyunwook (Wooky) Baek" <baekhw@google.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 7 Jan 2021 at 20:01, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> This is the start of the stable review cycle for the 4.19.166 release.
-> There are 8 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Sat, 09 Jan 2021 14:30:35 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-=
-4.19.166-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-4.19.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
+Don't assume dest/source buffers are userspace addresses when manually
+copying data for string I/O or MOVS MMIO, as {get,put}_user() will fail
+if handed a kernel address and ultimately lead to a kernel panic.
 
+Signed-off-by: Hyunwook (Wooky) Baek <baekhw@google.com>
+Acked-by: David Rientjes <rientjes@google.com>
+---
+ arch/x86/kernel/sev-es.c | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
 
-Results from Linaro=E2=80=99s test farm.
-No regressions on arm64, arm, x86_64, and i386.
+diff --git a/arch/x86/kernel/sev-es.c b/arch/x86/kernel/sev-es.c
+index 0bd1a0fc587e..812494d216ba 100644
+--- a/arch/x86/kernel/sev-es.c
++++ b/arch/x86/kernel/sev-es.c
+@@ -286,6 +286,12 @@ static enum es_result vc_write_mem(struct es_em_ctxt *ctxt,
+ 	u16 d2;
+ 	u8  d1;
+ 
++	/* If instruction ran in kernel mode and the I/O buffer is in kernel space */
++	if (!user_mode(ctxt->regs) && !access_ok(s, size)) {
++		memcpy(dst, buf, size);
++		return ES_OK;
++	}
++
+ 	switch (size) {
+ 	case 1:
+ 		memcpy(&d1, buf, 1);
+@@ -335,6 +341,12 @@ static enum es_result vc_read_mem(struct es_em_ctxt *ctxt,
+ 	u16 d2;
+ 	u8  d1;
+ 
++	/* If instruction ran in kernel mode and the I/O buffer is in kernel space */
++	if (!user_mode(ctxt->regs) && !access_ok(s, size)) {
++		memcpy(buf, src, size);
++		return ES_OK;
++	}
++
+ 	switch (size) {
+ 	case 1:
+ 		if (get_user(d1, s))
+-- 
+2.29.2.729.g45daf8777d-goog
 
-Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
-
-Summary
-------------------------------------------------------------------------
-
-kernel: 4.19.166-rc1
-git repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stab=
-le-rc.git
-git branch: linux-4.19.y
-git commit: 0f2782448d9a6522601ffabef0f3304a50d99857
-git describe: v4.19.165-9-g0f2782448d9a
-Test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-4.19=
-.y/build/v4.19.165-9-g0f2782448d9a
-
-No regressions (compared to build v4.19.165)
-
-No fixes (compared to build v4.19.165)
-
-Ran 47163 total tests in the following environments and test suites.
-
-Environments
---------------
-- arm
-- arm64
-- dragonboard-410c - arm64
-- hi6220-hikey - arm64
-- i386
-- juno-r2 - arm64
-- juno-r2-compat
-- juno-r2-kasan
-- mips
-- nxp-ls2088
-- qemu-arm64-clang
-- qemu-arm64-kasan
-- qemu-x86_64-clang
-- qemu-x86_64-kasan
-- qemu_arm
-- qemu_arm64
-- qemu_arm64-compat
-- qemu_i386
-- qemu_x86_64
-- qemu_x86_64-compat
-- s390
-- sparc
-- x15 - arm
-- x86_64
-- x86-kasan
-
-Test Suites
------------
-* build
-* linux-log-parser
-* igt-gpu-tools
-* install-android-platform-tools-r2600
-* kselftest
-* libhugetlbfs
-* ltp-containers-tests
-* ltp-cve-tests
-* ltp-ipc-tests
-* ltp-nptl-tests
-* ltp-pty-tests
-* ltp-sched-tests
-* ltp-securebits-tests
-* perf
-* fwts
-* ltp-cap_bounds-tests
-* ltp-commands-tests
-* ltp-controllers-tests
-* ltp-cpuhotplug-tests
-* ltp-crypto-tests
-* ltp-dio-tests
-* ltp-fcntl-locktests-tests
-* ltp-filecaps-tests
-* ltp-fs_bind-tests
-* ltp-fs_perms_simple-tests
-* ltp-fsx-tests
-* ltp-hugetlb-tests
-* ltp-io-tests
-* ltp-math-tests
-* ltp-mm-tests
-* ltp-syscalls-tests
-* ltp-tracing-tests
-* network-basic-tests
-* v4l2-compliance
-* ltp-fs-tests
-* ltp-open-posix-tests
-* kvm-unit-tests
-* rcutorture
-* kselftest-vsyscall-mode-native
-* kselftest-vsyscall-mode-none
-
---=20
-Linaro LKFT
-https://lkft.linaro.org
