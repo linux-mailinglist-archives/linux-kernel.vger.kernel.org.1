@@ -2,229 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E1CE02EEC4E
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 05:12:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CEBE2EEC54
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 05:17:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727131AbhAHEKa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 23:10:30 -0500
-Received: from mailgw01.mediatek.com ([210.61.82.183]:48986 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1726600AbhAHEKa (ORCPT
+        id S1727073AbhAHEQh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 23:16:37 -0500
+Received: from aserp2120.oracle.com ([141.146.126.78]:49528 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726600AbhAHEQg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 23:10:30 -0500
-X-UUID: 95460ae080ac436fa08532eb34eb7458-20210108
-X-UUID: 95460ae080ac436fa08532eb34eb7458-20210108
-Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw01.mediatek.com
-        (envelope-from <walter-zh.wu@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 438929673; Fri, 08 Jan 2021 12:09:44 +0800
-Received: from mtkcas07.mediatek.inc (172.21.101.84) by
- mtkmbs01n2.mediatek.inc (172.21.101.79) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Fri, 8 Jan 2021 12:09:41 +0800
-Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas07.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Fri, 8 Jan 2021 12:09:41 +0800
-From:   Walter Wu <walter-zh.wu@mediatek.com>
-To:     Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Alexander Potapenko <glider@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Andrey Konovalov <andreyknvl@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Nathan Chancellor <natechancellor@gmail.com>
-CC:     <kasan-dev@googlegroups.com>, <linux-mm@kvack.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        wsd_upstream <wsd_upstream@mediatek.com>,
-        <linux-mediatek@lists.infradead.org>,
-        Walter Wu <walter-zh.wu@mediatek.com>
-Subject: [PATCH v3] kasan: remove redundant config option
-Date:   Fri, 8 Jan 2021 12:09:40 +0800
-Message-ID: <20210108040940.1138-1-walter-zh.wu@mediatek.com>
-X-Mailer: git-send-email 2.18.0
-MIME-Version: 1.0
+        Thu, 7 Jan 2021 23:16:36 -0500
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 1084A8WQ097419;
+        Fri, 8 Jan 2021 04:15:50 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
+ from : message-id : references : date : in-reply-to : content-type :
+ mime-version; s=corp-2020-01-29;
+ bh=ftuaTL/lm+H6JG13d03igNmvEoOC4qgMx0ZANFMmyZ0=;
+ b=LsPXYeNOpcKgPo/uOWysUoAc5kx2M6KLf85nFBStDuI3WSxBTTZpdKIW0BAcoCZlsbiw
+ Sc6cD4L5zy8OuBJVOSan2h81EgPZnuys0sFNfDBbbPMAfLBWgihUXK6L60LpB473IhM9
+ kk8yx0xshZeX5QXJNQVtCMitbjWa2YSWu582xUxRmGLMlPvEYQx5q6KXzBOpMl2wDofD
+ Luq9CDU1AA7+/6e3uZsnINFgb4j6a+E7/4ekRF+coIzm+GGluyhou0+lEVH2TeD4B4/Q
+ l3YimJ8L+LJVD4ELEsQBJTc9SL7cXC+ECAqrPJsVODKbgEOzaBWlEcApG4asz/CfH4xP MA== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by aserp2120.oracle.com with ESMTP id 35wepmfd2h-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 08 Jan 2021 04:15:49 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 1084AUJe040474;
+        Fri, 8 Jan 2021 04:15:49 GMT
+Received: from nam11-co1-obe.outbound.protection.outlook.com (mail-co1nam11lp2174.outbound.protection.outlook.com [104.47.56.174])
+        by userp3020.oracle.com with ESMTP id 35w3quswve-2
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 08 Jan 2021 04:15:49 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Fzi/3HYKbW6Isg9sGB7w5qWmYn+9OOozxvo5TH4BNo89pjYEx2oWp5+meguLoJ3aHH7dTlGlcwEa3eFPmPwdBO7OimzwyIr/KAyfP+DwKfNHFB/EgfVGHYkrGBH97KakzPvCMpMRfcnjDKJVUgqtC4nc6CN9Ej+EEVpkhF84OfL3560LPyCFRgaMPrr5U0PD5P7WrMIxkyN6wAIeTLVsby/RxLn/p6dw5rNj6R+rJEg4NG+ZVIHfZ/82o7VWFFQdq8jqRLgo3NcjKoRrgoDhgS0/C2nnED+WEX2XnlwPxWiETjql75mqX2hq2W8eACObBmybcKE/X1BFwqwUc8XcZw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ftuaTL/lm+H6JG13d03igNmvEoOC4qgMx0ZANFMmyZ0=;
+ b=O6OJJOWsFmtC07xoeaBQwsiM2tPcbXa35UWUu7JlR07uJmsxLAeS3sveAFWQEiVX4mN3ubRb0z/JoFA4lGA1O4MX3QC8D0o0pO16XJH7LNM5VcE1ZEUNl/4nb8dQ8rbTAm7xCAPt6aAIMlbjwMlGU87sv1S5eilFtfzmOWDHoAYzhdMGCkZ7iz+pBwdFpQrcZU2J5ucvFxxIIqhkzSMEvS4T8xwfV82W5Me/sOfFWzOqK/uoAyB0OZ9Pj3U7USDxNRwYjfQO7GDUGrz3E165dlQApcbqOO2bXCKTu8E5IfRpNlkI9SKgiPfJT0uPRF+AkUP78ok1MVXop1ycU64Gfg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ftuaTL/lm+H6JG13d03igNmvEoOC4qgMx0ZANFMmyZ0=;
+ b=qI7J0eU0CBMqSZ4LeWNYYLvPkFNkuOeFna1ZFCKXhRGCy6X3e2Y/syc86h3R3D5cZVITUfReFMPCghRAzeNPDopVWn3jvoh1P4ehecd0iYrD/Jo4bZ5z//RdZz67Lp1YCK1/4vBpHIdN3axTLheHy1uK1Feq2jlgYwCJLbO1leg=
+Authentication-Results: gmail.com; dkim=none (message not signed)
+ header.d=none;gmail.com; dmarc=none action=none header.from=oracle.com;
+Received: from PH0PR10MB4759.namprd10.prod.outlook.com (2603:10b6:510:3d::12)
+ by PH0PR10MB4534.namprd10.prod.outlook.com (2603:10b6:510:30::23) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3742.6; Fri, 8 Jan
+ 2021 04:15:46 +0000
+Received: from PH0PR10MB4759.namprd10.prod.outlook.com
+ ([fe80::54f3:a8aa:a2cd:a3a4]) by PH0PR10MB4759.namprd10.prod.outlook.com
+ ([fe80::54f3:a8aa:a2cd:a3a4%5]) with mapi id 15.20.3742.006; Fri, 8 Jan 2021
+ 04:15:46 +0000
+To:     "Andrea Parri (Microsoft)" <parri.andrea@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, linux-hyperv@vger.kernel.org,
+        "K . Y . Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
+        Michael Kelley <mikelley@microsoft.com>,
+        Saruhan Karademir <skarade@microsoft.com>,
+        Juan Vazquez <juvazq@microsoft.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        linux-scsi@vger.kernel.org
+Subject: Re: [PATCH 0/3] scsi: storvsc: Validate length of incoming packet
+ in storvsc_on_channel_callback() -- Take 2
+From:   "Martin K. Petersen" <martin.petersen@oracle.com>
+Organization: Oracle Corporation
+Message-ID: <yq1h7nsawt5.fsf@ca-mkp.ca.oracle.com>
+References: <20201217203321.4539-1-parri.andrea@gmail.com>
+Date:   Thu, 07 Jan 2021 23:15:44 -0500
+In-Reply-To: <20201217203321.4539-1-parri.andrea@gmail.com> (Andrea Parri's
+        message of "Thu, 17 Dec 2020 21:33:18 +0100")
 Content-Type: text/plain
-X-TM-SNTS-SMTP: A0BC49EDB6B8B99BD15B778B5C0058C077F8B25104FB38FF69F13199E1903C002000:8
-X-MTK:  N
+X-Originating-IP: [138.3.200.58]
+X-ClientProxiedBy: BYAPR08CA0048.namprd08.prod.outlook.com
+ (2603:10b6:a03:117::25) To PH0PR10MB4759.namprd10.prod.outlook.com
+ (2603:10b6:510:3d::12)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from ca-mkp.ca.oracle.com (138.3.200.58) by BYAPR08CA0048.namprd08.prod.outlook.com (2603:10b6:a03:117::25) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3742.6 via Frontend Transport; Fri, 8 Jan 2021 04:15:46 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: eb2cfc5d-b396-4f66-8ebb-08d8b38c12f7
+X-MS-TrafficTypeDiagnostic: PH0PR10MB4534:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <PH0PR10MB45345E875F3D76081A51FEF98EAE0@PH0PR10MB4534.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:7219;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: c9NwbSvuXH5WHXSaNuxr3d5B6DfcWWXMWSsq859ESywA/EV0EucfNCJnUvLFP/ZP8Eif00yenUACm94fwTQ8JjqEIo3GaQR5nvwuq1ktXPmJTyxZj55Yj4RptvSfhcYVvVxoqVDD3EEVkWBpUTwqC3We3wC+DytKJNZ27jEpnNpxpTT4JyyOQUopjvT1XDqls8nH2GFrnodhz48Txrr4eRAQbG5DDjEUhQFuSyWlpFqHNaJ94GwIfBQ+YTeqYLLN0oeBVJzrdnOxppiEhGeLOZzY4QIDaMdDctFe9tDjkuWXNaEn2T+4jlqNFut1VwSXmwx8lLl0Jl0PFIFwqYfyCnwa53wXs04sTEjuRApsxQGi6E2JpU9+/Jp/xTr9IBdchs6PJiNloi4Q0IKp9G/3sw==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR10MB4759.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(136003)(376002)(346002)(366004)(396003)(39850400004)(186003)(4326008)(54906003)(5660300002)(55016002)(2906002)(956004)(66556008)(478600001)(16526019)(6916009)(86362001)(7416002)(26005)(52116002)(36916002)(7696005)(316002)(8676002)(4744005)(66946007)(83380400001)(8936002)(66476007)(15650500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?lZr7Eywrx9iaR0WgkHEWr1MeNcu5jqtqWYJecWOB0VjJr4DAg9rWcF+lfGF5?=
+ =?us-ascii?Q?cNxJscvVs8FjEHwwUSopdviA76N8ttroeexno1KcmdNXdUaSccG5N9m6WsdR?=
+ =?us-ascii?Q?APzKv1bS1iDh/4uj0AfhnrKd0geojEGv7gDCt9jh2D2y3ffrjHVkX+Mu8op4?=
+ =?us-ascii?Q?MCtxiW0kO8CaB5rjGgY6DtCjRMwtvyGHLh3y4txDS8+7cngL212+lPm8ASC6?=
+ =?us-ascii?Q?2/9KZR8K+ASydPLoJwFkSB0yhhCchCkh7qFAeDudtcd+5/L0kgj5I3uIZgzF?=
+ =?us-ascii?Q?PT8AqN2b8UDCR4H9DYRkKL0wW3eg/Bhbf/bB9KAyi4VH8y/jUfK06i8W/zJL?=
+ =?us-ascii?Q?xO2nrfOkBYc/DCpEeDuSLgwnFGVzcFZnsjGP6vJTaIqcdzG4JqgK5nCppmtb?=
+ =?us-ascii?Q?3IbBf2sWhpARniqHjC83SpbnJ4uiddLB8MjmniiQG7oNKyn/fre2kU0I3Iyl?=
+ =?us-ascii?Q?0wTURfl1TLc9fb+6pN77COnldCTHha9GBL2aOsG79vsl4MvGE9x9iJU0oL7O?=
+ =?us-ascii?Q?OAq6mw84VasUh6TFYxtJY4ol1SQZ7Dzuz2MwxaQ+rI4yydJ77Z4IW1VvjKIF?=
+ =?us-ascii?Q?527YjDKfy8rfJqxvgzn3AcEJiMuqIYan1ga3XIWfqzuuasDl4FNVGTgbAr6Q?=
+ =?us-ascii?Q?eAvtUCjNI+azEYxiVUqDLm4SRoXxHEpwYJg8DWCdPwzEHGXekKSEavaAgLBi?=
+ =?us-ascii?Q?gNKsdpfs0LU3QzJ0iL/a61Bx16c0DuhPqtndF8YgwUAGEuouxs1H91dokGRD?=
+ =?us-ascii?Q?bCAb4RGmfYgIbjtToOZ7V9rhESULqH+wTJz1JZVWFFKXJztWkSeINRN/ATM+?=
+ =?us-ascii?Q?eg/wPwbppVImQTM/dVQwXu9HjZPuJqQoW2mdl8x2ZjJuTPB5Mbwx1AtRhUB7?=
+ =?us-ascii?Q?54bswaGN5WUweKUBpuRVkzVAKdHK/9eo7u+NfGMPFdljunZm3hLWHB4KwpGA?=
+ =?us-ascii?Q?Vv5pYHffCe9AmTK9BAwXXrNl2GdGyADB2YZCmkQDMCo=3D?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR10MB4759.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Jan 2021 04:15:46.7384
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-Network-Message-Id: eb2cfc5d-b396-4f66-8ebb-08d8b38c12f7
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: A4HZf3Ri4/boF8OK0xKfMio7PkJMQ9CEjvLS0Q7vpfVc7+oObFiDhZ/ocJmdj+18oZAnqJYHy7ps9hMACw2pI/sXh5NMhxt7JfZ9yLQO56s=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR10MB4534
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9857 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 malwarescore=0 mlxscore=0
+ spamscore=0 mlxlogscore=913 phishscore=0 bulkscore=0 suspectscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2101080021
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9857 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 bulkscore=0 spamscore=0
+ impostorscore=0 phishscore=0 lowpriorityscore=0 suspectscore=0
+ priorityscore=1501 mlxscore=0 malwarescore=0 clxscore=1011 mlxlogscore=999
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2101080021
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-CONFIG_KASAN_STACK and CONFIG_KASAN_STACK_ENABLE both enable KASAN stack
-instrumentation, but we should only need one config, so that we remove
-CONFIG_KASAN_STACK_ENABLE and make CONFIG_KASAN_STACK workable. see [1].
 
-When enable KASAN stack instrumentation, then for gcc we could do
-no prompt and default value y, and for clang prompt and default
-value n.
+Andrea,
 
-[1]: https://bugzilla.kernel.org/show_bug.cgi?id=210221
+> This series is to address the problems mentioned in:
+>
+>   4da3a54f5a0258 ("Revert "scsi: storvsc: Validate length of incoming packet in storvsc_on_channel_callback()"")
+>
+> (cf., in particular, patch 2/3) and to re-introduce the validation in
+> question (patch 3/3); patch 1/3 emerged from internal review of these
+> two patches and is a related fix.
 
-Signed-off-by: Walter Wu <walter-zh.wu@mediatek.com>
-Suggested-by: Dmitry Vyukov <dvyukov@google.com>
-Cc: Andrey Ryabinin <aryabinin@virtuozzo.com>
-Cc: Dmitry Vyukov <dvyukov@google.com>
-Cc: Andrey Konovalov <andreyknvl@google.com>
-Cc: Alexander Potapenko <glider@google.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>
-Cc: Nathan Chancellor <natechancellor@gmail.com>
----
+Applied to 5.12/scsi-staging, thanks!
 
-v2: make commit log to be more readable.
-v3: remain CONFIG_KASAN_STACK_ENABLE setting
-    fix the pre-processors syntax
-
----
- arch/arm64/kernel/sleep.S        |  2 +-
- arch/x86/kernel/acpi/wakeup_64.S |  2 +-
- include/linux/kasan.h            |  2 +-
- lib/Kconfig.kasan                |  8 ++------
- mm/kasan/common.c                |  2 +-
- mm/kasan/kasan.h                 |  2 +-
- mm/kasan/report_generic.c        |  2 +-
- scripts/Makefile.kasan           | 10 ++++++++--
- 8 files changed, 16 insertions(+), 14 deletions(-)
-
-diff --git a/arch/arm64/kernel/sleep.S b/arch/arm64/kernel/sleep.S
-index 6bdef7362c0e..7c44ede122a9 100644
---- a/arch/arm64/kernel/sleep.S
-+++ b/arch/arm64/kernel/sleep.S
-@@ -133,7 +133,7 @@ SYM_FUNC_START(_cpu_resume)
- 	 */
- 	bl	cpu_do_resume
- 
--#if defined(CONFIG_KASAN) && CONFIG_KASAN_STACK
-+#if defined(CONFIG_KASAN) && defined(CONFIG_KASAN_STACK)
- 	mov	x0, sp
- 	bl	kasan_unpoison_task_stack_below
- #endif
-diff --git a/arch/x86/kernel/acpi/wakeup_64.S b/arch/x86/kernel/acpi/wakeup_64.S
-index 5d3a0b8fd379..c7f412f4e07d 100644
---- a/arch/x86/kernel/acpi/wakeup_64.S
-+++ b/arch/x86/kernel/acpi/wakeup_64.S
-@@ -112,7 +112,7 @@ SYM_FUNC_START(do_suspend_lowlevel)
- 	movq	pt_regs_r14(%rax), %r14
- 	movq	pt_regs_r15(%rax), %r15
- 
--#if defined(CONFIG_KASAN) && CONFIG_KASAN_STACK
-+#if defined(CONFIG_KASAN) && defined(CONFIG_KASAN_STACK)
- 	/*
- 	 * The suspend path may have poisoned some areas deeper in the stack,
- 	 * which we now need to unpoison.
-diff --git a/include/linux/kasan.h b/include/linux/kasan.h
-index 5e0655fb2a6f..35d1e9b2cbfa 100644
---- a/include/linux/kasan.h
-+++ b/include/linux/kasan.h
-@@ -302,7 +302,7 @@ static inline void kasan_kfree_large(void *ptr, unsigned long ip) {}
- 
- #endif /* CONFIG_KASAN */
- 
--#if defined(CONFIG_KASAN) && CONFIG_KASAN_STACK
-+#if defined(CONFIG_KASAN) && defined(CONFIG_KASAN_STACK)
- void kasan_unpoison_task_stack(struct task_struct *task);
- #else
- static inline void kasan_unpoison_task_stack(struct task_struct *task) {}
-diff --git a/lib/Kconfig.kasan b/lib/Kconfig.kasan
-index f5fa4ba126bf..fde82ec85f8f 100644
---- a/lib/Kconfig.kasan
-+++ b/lib/Kconfig.kasan
-@@ -138,9 +138,10 @@ config KASAN_INLINE
- 
- endchoice
- 
--config KASAN_STACK_ENABLE
-+config KASAN_STACK
- 	bool "Enable stack instrumentation (unsafe)" if CC_IS_CLANG && !COMPILE_TEST
- 	depends on KASAN_GENERIC || KASAN_SW_TAGS
-+	default y if CC_IS_GCC
- 	help
- 	  The LLVM stack address sanitizer has a know problem that
- 	  causes excessive stack usage in a lot of functions, see
-@@ -154,11 +155,6 @@ config KASAN_STACK_ENABLE
- 	  CONFIG_COMPILE_TEST.	On gcc it is assumed to always be safe
- 	  to use and enabled by default.
- 
--config KASAN_STACK
--	int
--	default 1 if KASAN_STACK_ENABLE || CC_IS_GCC
--	default 0
--
- config KASAN_SW_TAGS_IDENTIFY
- 	bool "Enable memory corruption identification"
- 	depends on KASAN_SW_TAGS
-diff --git a/mm/kasan/common.c b/mm/kasan/common.c
-index 38ba2aecd8f4..bf8b073eed62 100644
---- a/mm/kasan/common.c
-+++ b/mm/kasan/common.c
-@@ -63,7 +63,7 @@ void __kasan_unpoison_range(const void *address, size_t size)
- 	unpoison_range(address, size);
- }
- 
--#if CONFIG_KASAN_STACK
-+#ifdef CONFIG_KASAN_STACK
- /* Unpoison the entire stack for a task. */
- void kasan_unpoison_task_stack(struct task_struct *task)
- {
-diff --git a/mm/kasan/kasan.h b/mm/kasan/kasan.h
-index cc4d9e1d49b1..bdfdb1cff653 100644
---- a/mm/kasan/kasan.h
-+++ b/mm/kasan/kasan.h
-@@ -224,7 +224,7 @@ void *find_first_bad_addr(void *addr, size_t size);
- const char *get_bug_type(struct kasan_access_info *info);
- void metadata_fetch_row(char *buffer, void *row);
- 
--#if defined(CONFIG_KASAN_GENERIC) && CONFIG_KASAN_STACK
-+#if defined(CONFIG_KASAN_GENERIC) && defined(CONFIG_KASAN_STACK)
- void print_address_stack_frame(const void *addr);
- #else
- static inline void print_address_stack_frame(const void *addr) { }
-diff --git a/mm/kasan/report_generic.c b/mm/kasan/report_generic.c
-index 8a9c889872da..4e16518d9877 100644
---- a/mm/kasan/report_generic.c
-+++ b/mm/kasan/report_generic.c
-@@ -128,7 +128,7 @@ void metadata_fetch_row(char *buffer, void *row)
- 	memcpy(buffer, kasan_mem_to_shadow(row), META_BYTES_PER_ROW);
- }
- 
--#if CONFIG_KASAN_STACK
-+#ifdef CONFIG_KASAN_STACK
- static bool __must_check tokenize_frame_descr(const char **frame_descr,
- 					      char *token, size_t max_tok_len,
- 					      unsigned long *value)
-diff --git a/scripts/Makefile.kasan b/scripts/Makefile.kasan
-index 1e000cc2e7b4..abf231d209b1 100644
---- a/scripts/Makefile.kasan
-+++ b/scripts/Makefile.kasan
-@@ -2,6 +2,12 @@
- CFLAGS_KASAN_NOSANITIZE := -fno-builtin
- KASAN_SHADOW_OFFSET ?= $(CONFIG_KASAN_SHADOW_OFFSET)
- 
-+ifdef CONFIG_KASAN_STACK
-+	stack_enable := 1
-+else
-+	stack_enable := 0
-+endif
-+
- ifdef CONFIG_KASAN_GENERIC
- 
- ifdef CONFIG_KASAN_INLINE
-@@ -27,7 +33,7 @@ else
- 	CFLAGS_KASAN := $(CFLAGS_KASAN_SHADOW) \
- 	 $(call cc-param,asan-globals=1) \
- 	 $(call cc-param,asan-instrumentation-with-call-threshold=$(call_threshold)) \
--	 $(call cc-param,asan-stack=$(CONFIG_KASAN_STACK)) \
-+	 $(call cc-param,asan-stack=$(stack_enable)) \
- 	 $(call cc-param,asan-instrument-allocas=1)
- endif
- 
-@@ -42,7 +48,7 @@ else
- endif
- 
- CFLAGS_KASAN := -fsanitize=kernel-hwaddress \
--		-mllvm -hwasan-instrument-stack=$(CONFIG_KASAN_STACK) \
-+		-mllvm -hwasan-instrument-stack=$(stack_enable) \
- 		-mllvm -hwasan-use-short-granules=0 \
- 		$(instrumentation_flags)
- 
 -- 
-2.18.0
-
+Martin K. Petersen	Oracle Linux Engineering
