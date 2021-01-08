@@ -2,91 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CCF3C2EF51C
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 16:49:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E0C982EF51E
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 16:50:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727796AbhAHPtI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Jan 2021 10:49:08 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60072 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726751AbhAHPtH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Jan 2021 10:49:07 -0500
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 267452368A;
-        Fri,  8 Jan 2021 15:48:27 +0000 (UTC)
-Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
-        by disco-boy.misterjones.org with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.94)
-        (envelope-from <maz@kernel.org>)
-        id 1kxu01-0066wY-2F; Fri, 08 Jan 2021 15:48:25 +0000
+        id S1727489AbhAHPuX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Jan 2021 10:50:23 -0500
+Received: from mail-ot1-f51.google.com ([209.85.210.51]:34904 "EHLO
+        mail-ot1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726189AbhAHPuW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 Jan 2021 10:50:22 -0500
+Received: by mail-ot1-f51.google.com with SMTP id i6so10060218otr.2;
+        Fri, 08 Jan 2021 07:50:07 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=fA2nnIzJ/uq/MJ6l1MulASkOUQ1R/EZA8/Cttt4YQUE=;
+        b=mUS4kmmCIlNVWuWL73FUftipLprPOEhaa6l2AWsUnDFfP0qU+DqjeaOlSdI5xZ+Y+b
+         K3ZrumK9RQ/z2RFpNnN31Cd5BABPAkgv03tWhQv2J0RC3IqIN5ut87cbAvBt9BDscgJ9
+         pXrO139JXSaxl95Qme7qmA0VTq8nJjOjK5GegrQBC4ogtx62WMxRYaiCWxQ/j3eejqcQ
+         5UOaFrAYIqd/MEQ0nAA112KI27QeZZ/dFcd/fIDW0CKF4RlpVQALP+PZYZ7JAX/g2JtK
+         gSxM1bSz0LPwQ/697co7GCdGZNVi34m6GtTkFmllSvFuZvDbjpNkflxRi/IQ5huQCdRv
+         K7iQ==
+X-Gm-Message-State: AOAM5330/BRKuM2W17bng6ZDxKduA1XyWtd6Jyi2E6X/AwdceRBw/2Fc
+        rIOOyvKBk3iL6+iKsl9MbdIKWBJg18tAQHZedXo=
+X-Google-Smtp-Source: ABdhPJzyV8OFJPz2/HTlwHjG/t1VVwXZS6b8DMmLNa8DO2xRyfbDYxAtDsrTSQ7rXz4W3pzCukHYufCt5qCzbmpChw8=
+X-Received: by 2002:a9d:208a:: with SMTP id x10mr2979437ota.260.1610120980429;
+ Fri, 08 Jan 2021 07:49:40 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Fri, 08 Jan 2021 15:48:24 +0000
-From:   Marc Zyngier <maz@kernel.org>
-To:     John Garry <john.garry@huawei.com>
-Cc:     Greg KH <gregkh@linuxfoundation.org>, rafael@kernel.org,
-        tglx@linutronix.de, linux-kernel@vger.kernel.org,
-        dan.carpenter@oracle.com
-Subject: Re: [PATCH] Driver core: platform: Add extra error check in
- devm_platform_get_irqs_affinity()
-In-Reply-To: <e10af177-583b-636a-be14-6f781baaa61a@huawei.com>
-References: <1608561055-231244-1-git-send-email-john.garry@huawei.com>
- <X/h9vy/1h0E1hyN0@kroah.com>
- <e10af177-583b-636a-be14-6f781baaa61a@huawei.com>
-User-Agent: Roundcube Webmail/1.4.9
-Message-ID: <68e22d9cd4cc631201f06300205bafb6@kernel.org>
-X-Sender: maz@kernel.org
-X-SA-Exim-Connect-IP: 51.254.78.96
-X-SA-Exim-Rcpt-To: john.garry@huawei.com, gregkh@linuxfoundation.org, rafael@kernel.org, tglx@linutronix.de, linux-kernel@vger.kernel.org, dan.carpenter@oracle.com
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+References: <20201201213019.1558738-1-furquan@google.com>
+In-Reply-To: <20201201213019.1558738-1-furquan@google.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Fri, 8 Jan 2021 16:49:29 +0100
+Message-ID: <CAJZ5v0iJ-yN91KJAaTkBVVKmuL0EmeUE=VqYPdZZfmcQm8oc1w@mail.gmail.com>
+Subject: Re: [PATCH] drivers: core: Detach device from power domain on shutdown
+To:     Furquan Shaikh <furquan@google.com>
+Cc:     "Rafael J . Wysocki" <rafael@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-01-08 15:43, John Garry wrote:
-> On 08/01/2021 15:43, Greg KH wrote:
->> On Mon, Dec 21, 2020 at 10:30:55PM +0800, John Garry wrote:
->>> The current check of nvec < minvec for nvec returned from
->>> platform_irq_count() will not detect a negative error code in nvec.
->>> 
->>> This is because minvec is unsigned, and, as such, nvec is promoted to
->>> unsigned in that check, which will make it a huge number (if it 
->>> contained
->>> -EPROBE_DEFER).
->>> 
->>> In practice, an error should not occur in nvec for the only in-tree
->>> user, but add a check anyway.
->>> 
->>> Fixes: e15f2fa959f2 ("driver core: platform: Add 
->>> devm_platform_get_irqs_affinity()")
->>> Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
->>> Signed-off-by: John Garry <john.garry@huawei.com>
->>> ---
->>> I hope that this can go through either irqchip or driver/core trees, 
->>> thanks!
->> 
->> I'll take it, thanks.
->> 
-> 
-> Hi Greg,
-> 
-> I think that Marc already has taken it:
-> 
-> https://lore.kernel.org/lkml/X%2Fh9vy%2F1h0E1hyN0@kroah.com/T/#m95ef1736dbbd801cd85a4144c8f13c2afe33bc2c
-> 
-> I hope it doesn't cause hassle.
+On Tue, Dec 1, 2020 at 10:30 PM Furquan Shaikh <furquan@google.com> wrote:
+>
+> When the system is powered off or rebooted, devices are not detached
+> from their PM domain. This results in ACPI PM not being invoked and
+> hence PowerResouce _OFF method not being invoked for any of the
+> devices. Because the ACPI power resources are not turned off in case
+> of poweroff and reboot, it violates the power sequencing requirements
+> which impacts the reliability of the devices over the lifetime of the
+> platform. This is currently observed on all Chromebooks using ACPI.
+>
+> In order to solve the above problem, this change detaches a device
+> from its PM domain whenever it is shutdown. This action is basically
+> analogous to ->remove() from driver model perspective. Detaching the
+> device from its PM domain ensures that the ACPI PM gets a chance to
+> turn off the power resources for the device thus complying with its
+> power sequencing requirements.
+>
+> Signed-off-by: Furquan Shaikh <furquan@google.com>
 
-I was about to send tglx a pull request.
+Acked-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 
-Greg, let me know if you want me to drop it.
-
-Thanks,
-
-         M.
--- 
-Jazz is not dead. It just smells funny...
+> ---
+>  drivers/base/core.c | 3 +++
+>  1 file changed, 3 insertions(+)
+>
+> diff --git a/drivers/base/core.c b/drivers/base/core.c
+> index d661ada1518f..5823f1d719e1 100644
+> --- a/drivers/base/core.c
+> +++ b/drivers/base/core.c
+> @@ -23,6 +23,7 @@
+>  #include <linux/of_device.h>
+>  #include <linux/genhd.h>
+>  #include <linux/mutex.h>
+> +#include <linux/pm_domain.h>
+>  #include <linux/pm_runtime.h>
+>  #include <linux/netdevice.h>
+>  #include <linux/sched/signal.h>
+> @@ -4057,6 +4058,8 @@ void device_shutdown(void)
+>                         dev->driver->shutdown(dev);
+>                 }
+>
+> +               dev_pm_domain_detach(dev, true);
+> +
+>                 device_unlock(dev);
+>                 if (parent)
+>                         device_unlock(parent);
+> --
+> 2.29.2.454.gaff20da3a2-goog
+>
