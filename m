@@ -2,147 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C7BEB2EF71E
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 19:15:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 656142EF72C
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 19:17:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728024AbhAHSPR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Jan 2021 13:15:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33410 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727067AbhAHSPR (ORCPT
+        id S1728442AbhAHSQi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Jan 2021 13:16:38 -0500
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:48078 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728357AbhAHSQh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Jan 2021 13:15:17 -0500
-Received: from mail-io1-xd30.google.com (mail-io1-xd30.google.com [IPv6:2607:f8b0:4864:20::d30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33E1EC061381
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Jan 2021 10:14:42 -0800 (PST)
-Received: by mail-io1-xd30.google.com with SMTP id i18so10668390ioa.1
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Jan 2021 10:14:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=to:cc:from:subject:message-id:date:user-agent:mime-version
-         :content-language;
-        bh=4pYuW2RQzkGNYe6pqrE6i2YoyXvOiNofhCQUPGZDd+k=;
-        b=TZi/L8bvFoNzQt/wG+hOn2kDcHlSXn3CfoOQXXVEmgSQCX6LvWCyLfpTP+gHI3SuwY
-         pfyF9JhC3oOw6VGCyhYyUIxVxKPVx718w7hj8OWsaaFQk/+nYPipQmwGA+w1X8Pc8hko
-         UYOo9jRRArdBoIR07yLx6y38Ip95EhKsfh15M=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:from:subject:message-id:date:user-agent
-         :mime-version:content-language;
-        bh=4pYuW2RQzkGNYe6pqrE6i2YoyXvOiNofhCQUPGZDd+k=;
-        b=KdIxc1pmUak9+Q8J9VlmzQKV1umkMqvd09yMZhxI/mQBs7Ow0dSJlXG5Z5jWRT2TtX
-         cwRyMEVnemymXfNdHjYkaj1PvA2YVTIlFBw7G0Z+vEy04eI/xb2Fsdy9o16aZmqeyxFY
-         vrAE21stSPgDko+ArZYeVT5sWu/bVABM1sKPdFBR20sxyDElom50HxT7cEF4CPVazzcT
-         rKzNcmwTsuFFvEvrJu/H24LpKGYCt1ITYGqJzu8ftxeYa0mDwQZ77HmpNrlN4hcuyzZK
-         ul4YN6ohhxEm7VMfhMKqNg2joNrey+4K/q+ykmE1icfvc6GuB8F2VIU+bDujZQFHpQIi
-         6B1w==
-X-Gm-Message-State: AOAM532phPfPeN8lg/JEu+VKjahqCsgUotbuLDOkFPYglolKd1mA5Gln
-        K09+vUsaDEafrxtqgUBi65+Wb76p1cZZ5A==
-X-Google-Smtp-Source: ABdhPJxmuf43w45jGrHdUTOv6iywp2DdUyAYGnf9Xt7WbtdLB8PkRo9oa0ekQ4Dt3cRUUTxpB5lSKA==
-X-Received: by 2002:a02:91c2:: with SMTP id s2mr4594597jag.48.1610129681309;
-        Fri, 08 Jan 2021 10:14:41 -0800 (PST)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id o7sm5411243iop.51.2021.01.08.10.14.40
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 08 Jan 2021 10:14:40 -0800 (PST)
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Shuah Khan <skhan@linuxfoundation.org>,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Subject: [GIT PULL] Kselftest fixes for Linux 5.11-rc3
-Message-ID: <2f3c419c-89ea-8a53-c2a4-ef8fa6312f23@linuxfoundation.org>
-Date:   Fri, 8 Jan 2021 11:14:39 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+        Fri, 8 Jan 2021 13:16:37 -0500
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 108IF0lV106593;
+        Fri, 8 Jan 2021 12:15:00 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1610129700;
+        bh=KpVH0T45ukV3JB85id8uO0iEDiN+mFCps3nC6zX2Kx4=;
+        h=From:To:CC:Subject:Date;
+        b=ytFv0HIIxSs0y36sEf2SO/SX2MbUQpYmrNAif5XJz10hkHKspKZJQjVOBzUTRWjUi
+         zZ0+/iH5ChoIoZYu/klaRU90fDHsevisx+HKcC10MtvpXRAFK7iqUvV57UkcMXYX7W
+         D1fi2vRaNlwbm2eHidk70I8sjsl/HP6sbVGiLKQQ=
+Received: from DFLE110.ent.ti.com (dfle110.ent.ti.com [10.64.6.31])
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 108IF02r056201
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 8 Jan 2021 12:15:00 -0600
+Received: from DFLE101.ent.ti.com (10.64.6.22) by DFLE110.ent.ti.com
+ (10.64.6.31) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Fri, 8 Jan
+ 2021 12:15:00 -0600
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE101.ent.ti.com
+ (10.64.6.22) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Fri, 8 Jan 2021 12:14:59 -0600
+Received: from pratyush-OptiPlex-790.dhcp.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 108IEwVm113769;
+        Fri, 8 Jan 2021 12:14:58 -0600
+From:   Pratyush Yadav <p.yadav@ti.com>
+To:     Mark Brown <broonie@kernel.org>, <linux-spi@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     Pratyush Yadav <p.yadav@ti.com>,
+        Vignesh Raghavendra <vigneshr@ti.com>
+Subject: [PATCH] spi: cadence-quadspi: Fix build warning on 32-bit platforms
+Date:   Fri, 8 Jan 2021 23:44:57 +0530
+Message-ID: <20210108181457.30291-1-p.yadav@ti.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Type: multipart/mixed;
- boundary="------------D9143DE09C878CF24D204415"
-Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is a multi-part message in MIME format.
---------------D9143DE09C878CF24D204415
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
+The kernel test robot reports the following warning.
 
-Hi Linus,
+drivers/spi/spi-cadence-quadspi.c:966:24: warning: comparison of distinct pointer types ('typeof (len) *' (aka 'unsigned int *') and 'typeof (500UL) *' (aka 'unsigned long *')) [-Wcompare-distinct-pointer-types]
+                                            msecs_to_jiffies(max(len, 500UL)))) {
+                                                             ^~~~~~~~~~~~~~~
+   include/linux/minmax.h:58:19: note: expanded from macro 'max'
+   #define max(x, y)       __careful_cmp(x, y, >)
+                           ^~~~~~~~~~~~~~~~~~~~~~
+   include/linux/minmax.h:42:24: note: expanded from macro '__careful_cmp'
+           __builtin_choose_expr(__safe_cmp(x, y), \
+                                 ^~~~~~~~~~~~~~~~
+   include/linux/minmax.h:32:4: note: expanded from macro '__safe_cmp'
+                   (__typecheck(x, y) && __no_side_effects(x, y))
+                    ^~~~~~~~~~~~~~~~~
+   include/linux/minmax.h:18:28: note: expanded from macro '__typecheck'
+           (!!(sizeof((typeof(x) *)1 == (typeof(y) *)1)))
+                      ~~~~~~~~~~~~~~ ^  ~~~~~~~~~~~~~~
+   1 warning generated.
 
-Please pull the following fixes update for Linux 5.11-rc3.
+This happens because size_t is unsigned long on 64-bit platforms like
+arm64 but it is unsigned int on 32-bit platforms like arm. Omitting the
+"UL" would result in a warning on 64-bit platforms. Squash it by type
+casting the arguments to size_t using max_t(). This way builds on both
+type of platforms can be satisfied. There is no chance of any truncation
+since 500 is small enough to fit into both int and long.
 
-This fixes update for 5.11-rc3 consists of two minor fixes to vDSO test
-changes in 5.11-rc1 update.
+Fixes: f453f293979f ("spi: cadence-quadspi: Wait at least 500 ms for direct reads")
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Pratyush Yadav <p.yadav@ti.com>
+---
+ drivers/spi/spi-cadence-quadspi.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff is attached.
+diff --git a/drivers/spi/spi-cadence-quadspi.c b/drivers/spi/spi-cadence-quadspi.c
+index 06a65e9a8a60..af13c0025bf5 100644
+--- a/drivers/spi/spi-cadence-quadspi.c
++++ b/drivers/spi/spi-cadence-quadspi.c
+@@ -1150,7 +1150,7 @@ static int cqspi_direct_read_execute(struct cqspi_flash_pdata *f_pdata,
 
-thanks,
--- Shuah
+ 	dma_async_issue_pending(cqspi->rx_chan);
+ 	if (!wait_for_completion_timeout(&cqspi->rx_dma_complete,
+-					 msecs_to_jiffies(max(len, 500UL)))) {
++					 msecs_to_jiffies(max_t(size_t, len, 500)))) {
+ 		dmaengine_terminate_sync(cqspi->rx_chan);
+ 		dev_err(dev, "DMA wait_for_completion_timeout\n");
+ 		ret = -ETIMEDOUT;
+--
+2.28.0
 
-----------------------------------------------------------------
-The following changes since commit e71ba9452f0b5b2e8dc8aa5445198cd9214a6a62:
-
-   Linux 5.11-rc2 (2021-01-03 15:55:30 -0800)
-
-are available in the Git repository at:
-
-   git://git.kernel.org/pub/scm/linux/kernel/git/shuah/linux-kselftest 
-tags/linux-kselftest-next-5.11-rc3
-
-for you to fetch changes up to df00d02989024d193a6efd1a85513a5658c6a10f:
-
-   selftests/vDSO: fix -Wformat warning in vdso_test_correctness 
-(2021-01-04 09:25:45 -0700)
-
-----------------------------------------------------------------
-linux-kselftest-next-5.11-rc3
-
-This fixes update for 5.11-rc3 consists of two minor fixes to vDSO test
-changes in 5.11-rc1 update.
-
-----------------------------------------------------------------
-Tobias Klauser (2):
-       selftests/vDSO: add additional binaries to .gitignore
-       selftests/vDSO: fix -Wformat warning in vdso_test_correctness
-
-  tools/testing/selftests/vDSO/.gitignore              | 3 +++
-  tools/testing/selftests/vDSO/vdso_test_correctness.c | 2 +-
-  2 files changed, 4 insertions(+), 1 deletion(-)
-
-----------------------------------------------------------------
-
---------------D9143DE09C878CF24D204415
-Content-Type: text/x-patch; charset=UTF-8;
- name="linux-kselftest-next-5.11-rc3.diff"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
- filename="linux-kselftest-next-5.11-rc3.diff"
-
-diff --git a/tools/testing/selftests/vDSO/.gitignore b/tools/testing/selftests/vDSO/.gitignore
-index 5eb64d41e541..a8dc51af5a9c 100644
---- a/tools/testing/selftests/vDSO/.gitignore
-+++ b/tools/testing/selftests/vDSO/.gitignore
-@@ -1,5 +1,8 @@
- # SPDX-License-Identifier: GPL-2.0-only
- vdso_test
-+vdso_test_abi
-+vdso_test_clock_getres
-+vdso_test_correctness
- vdso_test_gettimeofday
- vdso_test_getcpu
- vdso_standalone_test_x86
-diff --git a/tools/testing/selftests/vDSO/vdso_test_correctness.c b/tools/testing/selftests/vDSO/vdso_test_correctness.c
-index 5029ef9b228c..c4aea794725a 100644
---- a/tools/testing/selftests/vDSO/vdso_test_correctness.c
-+++ b/tools/testing/selftests/vDSO/vdso_test_correctness.c
-@@ -349,7 +349,7 @@ static void test_one_clock_gettime64(int clock, const char *name)
- 		return;
- 	}
- 
--	printf("\t%llu.%09ld %llu.%09ld %llu.%09ld\n",
-+	printf("\t%llu.%09lld %llu.%09lld %llu.%09lld\n",
- 	       (unsigned long long)start.tv_sec, start.tv_nsec,
- 	       (unsigned long long)vdso.tv_sec, vdso.tv_nsec,
- 	       (unsigned long long)end.tv_sec, end.tv_nsec);
-
---------------D9143DE09C878CF24D204415--
