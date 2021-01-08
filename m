@@ -2,85 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D0682EF992
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 21:44:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F0B5D2EF98A
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 21:42:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729239AbhAHUn1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Jan 2021 15:43:27 -0500
-Received: from casper.infradead.org ([90.155.50.34]:51166 "EHLO
-        casper.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726227AbhAHUnZ (ORCPT
+        id S1729675AbhAHUla (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Jan 2021 15:41:30 -0500
+Received: from m43-15.mailgun.net ([69.72.43.15]:18527 "EHLO
+        m43-15.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729587AbhAHUlK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Jan 2021 15:43:25 -0500
-X-Greylist: delayed 398 seconds by postgrey-1.27 at vger.kernel.org; Fri, 08 Jan 2021 15:43:25 EST
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=Fh1FiaPgximaUf/jTCpsygk/6dDJoGnbhcrl2nWi8C8=; b=HrVyzxCBV/pGgvd8ZD53/tfTMS
-        IK7lQhcX5ydSWkAVEKKoQgNPiFRLnvTp6tNypCovPHhS9smNH3jfL8/mZEpAAo3AdJ3v0g7IfUfUs
-        Xc7AFVJCMMBF3evvGocW6HybrPNUirdz+vm1wRTPvYQ2OfQqfVkTaeUyUjbrgIgFSLWbRRpmRkMqI
-        kXfkd6gJpfM4gG2FVgpfmmQ+5AFRyt14P2JMQ9W1FN3dxmIOip/p0Nd35rRrODpooKJAsTGDa8fxG
-        3zVGhRwTXLgnWVXPqGhBHW8qzsPoVOt6g/Jd7MlM4AP+NDCEj4HoBpFJE2qXJvAAIm+eiylh4lcAW
-        dH4Zfetw==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1kxyY7-0003SS-Gg; Fri, 08 Jan 2021 20:40:35 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 01D3F305C10;
-        Fri,  8 Jan 2021 21:39:53 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id C2C362C8F2DAA; Fri,  8 Jan 2021 21:39:53 +0100 (CET)
-Date:   Fri, 8 Jan 2021 21:39:53 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Will Deacon <will@kernel.org>
-Cc:     Arnd Bergmann <arnd@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-arch@vger.kernel.org, clang-built-linux@googlegroups.com
-Subject: Re: [PATCH] arm64: make atomic helpers __always_inline
-Message-ID: <X/jDGbwDNcVrZdDJ@hirez.programming.kicks-ass.net>
-References: <20210108092024.4034860-1-arnd@kernel.org>
- <20210108093258.GB4031@willie-the-truck>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210108093258.GB4031@willie-the-truck>
+        Fri, 8 Jan 2021 15:41:10 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1610138443; h=References: In-Reply-To: Message-Id: Date:
+ Subject: Cc: To: From: Sender;
+ bh=V4rBMWOG/gFDcK+CfdId8OGWYl/QjbS13yiJIdqSMtM=; b=pchgR7nBpLEyCS5R5Vw/zJW3krFowcUoL2POMpe9zsflxKS++Dn9PFVbNTpysBNre5oryfcY
+ nsElBEQonBQcLETHivNyThLhr4jIHaoR7wDFIcVeNIZCtNRvb4J9H+gM4sKrWEZXbM9NNY59
+ g4/o0zBnFtAbfdu0cnKcfsvrPJY=
+X-Mailgun-Sending-Ip: 69.72.43.15
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n07.prod.us-east-1.postgun.com with SMTP id
+ 5ff8c3294dcca1247573d956 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 08 Jan 2021 20:40:09
+ GMT
+Sender: bbhatt=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 8D732C43464; Fri,  8 Jan 2021 20:40:08 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from malabar-linux.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: bbhatt)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 68F2FC433CA;
+        Fri,  8 Jan 2021 20:40:07 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 68F2FC433CA
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=bbhatt@codeaurora.org
+From:   Bhaumik Bhatt <bbhatt@codeaurora.org>
+To:     manivannan.sadhasivam@linaro.org
+Cc:     linux-arm-msm@vger.kernel.org, hemantk@codeaurora.org,
+        jhugo@codeaurora.org, linux-kernel@vger.kernel.org,
+        loic.poulain@linaro.org, Bhaumik Bhatt <bbhatt@codeaurora.org>
+Subject: [RESEND PATCH v4 5/8] bus: mhi: core: Add support to stop or start channel data transfers
+Date:   Fri,  8 Jan 2021 12:39:53 -0800
+Message-Id: <1610138396-25811-6-git-send-email-bbhatt@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
+In-Reply-To: <1610138396-25811-1-git-send-email-bbhatt@codeaurora.org>
+References: <1610138396-25811-1-git-send-email-bbhatt@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 08, 2021 at 09:32:58AM +0000, Will Deacon wrote:
-> Hi Arnd,
-> 
-> On Fri, Jan 08, 2021 at 10:19:56AM +0100, Arnd Bergmann wrote:
-> > From: Arnd Bergmann <arnd@arndb.de>
-> > 
-> > With UBSAN enabled and building with clang, there are occasionally
-> > warnings like
-> > 
-> > WARNING: modpost: vmlinux.o(.text+0xc533ec): Section mismatch in reference from the function arch_atomic64_or() to the variable .init.data:numa_nodes_parsed
-> > The function arch_atomic64_or() references
-> > the variable __initdata numa_nodes_parsed.
-> > This is often because arch_atomic64_or lacks a __initdata
-> > annotation or the annotation of numa_nodes_parsed is wrong.
-> > 
-> > for functions that end up not being inlined as intended but operating
-> > on __initdata variables. Mark these as __always_inline, along with
-> > the corresponding asm-generic wrappers.
-> 
-> Hmm, I don't fully grok this. Why does it matter if a non '__init' function
-> is called with a pointer to some '__initdata'? Or is the reference coming
-> from somewhere else? (where?).
+Some MHI client drivers may want to request a pause or halt of
+data transfer activity on their channels. Support for this does
+not exist and must be introduced, wherein the channel context is
+not reset or cleared but only the STOP channel command is issued.
+This would need to be paired with an API that allows resuming the
+data transfer activity on channels by use of the START channel
+command. This API assumes that the context information is already
+setup. Enable this using two new APIs, mhi_start_transfer() and
+mhi_stop_transfer().
 
-FWIW the x86 atomics are __always_inline in part due to the noinstr
-crud, which I imagine resulted in much the same 'fun'.
+Signed-off-by: Bhaumik Bhatt <bbhatt@codeaurora.org>
+---
+ drivers/bus/mhi/core/main.c | 50 +++++++++++++++++++++++++++++++++++++++++++++
+ include/linux/mhi.h         | 19 +++++++++++++++++
+ 2 files changed, 69 insertions(+)
+
+diff --git a/drivers/bus/mhi/core/main.c b/drivers/bus/mhi/core/main.c
+index 081fdf0..a84e6aa 100644
+--- a/drivers/bus/mhi/core/main.c
++++ b/drivers/bus/mhi/core/main.c
+@@ -1583,6 +1583,56 @@ void mhi_unprepare_from_transfer(struct mhi_device *mhi_dev)
+ }
+ EXPORT_SYMBOL_GPL(mhi_unprepare_from_transfer);
+ 
++static int mhi_update_transfer_state(struct mhi_device *mhi_dev,
++				     enum mhi_ch_state_type to_state)
++{
++	struct mhi_controller *mhi_cntrl = mhi_dev->mhi_cntrl;
++	struct device *dev = &mhi_cntrl->mhi_dev->dev;
++	struct mhi_chan *mhi_chan;
++	struct mhi_chan_ctxt *chan_ctxt;
++	int dir, ret;
++
++	for (dir = 0; dir < 2; dir++) {
++		mhi_chan = dir ? mhi_dev->ul_chan : mhi_dev->dl_chan;
++
++		if (!mhi_chan)
++			continue;
++
++		/*
++		 * Bail out if one of the channels fails as client will reset
++		 * both upon failure
++		 */
++		mutex_lock(&mhi_chan->mutex);
++		chan_ctxt = &mhi_cntrl->mhi_ctxt->chan_ctxt[mhi_chan->chan];
++		if (!(chan_ctxt->chcfg & CHAN_CTX_CHSTATE_MASK)) {
++			mutex_unlock(&mhi_chan->mutex);
++			dev_err(dev, "Channel %s(%u) context not initialized\n",
++				mhi_chan->name, mhi_chan->chan);
++			return -EINVAL;
++		}
++		ret = mhi_update_channel_state(mhi_cntrl, mhi_chan, to_state);
++		if (ret) {
++			mutex_unlock(&mhi_chan->mutex);
++			return ret;
++		}
++		mutex_unlock(&mhi_chan->mutex);
++	}
++
++	return 0;
++}
++
++int mhi_stop_transfer(struct mhi_device *mhi_dev)
++{
++	return mhi_update_transfer_state(mhi_dev, MHI_CH_STATE_TYPE_STOP);
++}
++EXPORT_SYMBOL_GPL(mhi_stop_transfer);
++
++int mhi_start_transfer(struct mhi_device *mhi_dev)
++{
++	return mhi_update_transfer_state(mhi_dev, MHI_CH_STATE_TYPE_START);
++}
++EXPORT_SYMBOL_GPL(mhi_start_transfer);
++
+ int mhi_poll(struct mhi_device *mhi_dev, u32 budget)
+ {
+ 	struct mhi_controller *mhi_cntrl = mhi_dev->mhi_cntrl;
+diff --git a/include/linux/mhi.h b/include/linux/mhi.h
+index fe65554..b5e11ba 100644
+--- a/include/linux/mhi.h
++++ b/include/linux/mhi.h
+@@ -715,6 +715,25 @@ int mhi_prepare_for_transfer(struct mhi_device *mhi_dev);
+ void mhi_unprepare_from_transfer(struct mhi_device *mhi_dev);
+ 
+ /**
++ * mhi_stop_transfer - Pauses ongoing channel activity by issuing the STOP
++ *                     channel command to both UL and DL channels. This command
++ *                     does not reset the channel context and the client drivers
++ *                     can issue mhi_start_transfer to resume activity.
++ * @mhi_dev: Device associated with the channels
++ */
++int mhi_stop_transfer(struct mhi_device *mhi_dev);
++
++/**
++ * mhi_start_transfer - Resumes channel activity by issuing the START channel
++ *                      command to both UL and DL channels. This command assumes
++ *                      the channel context is already setup and the client
++ *                      drivers can issue mhi_stop_transfer to pause activity if
++ *                      required.
++ * @mhi_dev: Device associated with the channels
++ */
++int mhi_start_transfer(struct mhi_device *mhi_dev);
++
++/**
+  * mhi_poll - Poll for any available data in DL direction
+  * @mhi_dev: Device associated with the channels
+  * @budget: # of events to process
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
+
