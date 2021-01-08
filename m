@@ -2,134 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA1EE2EF73B
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 19:20:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B7102EF741
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 19:22:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728771AbhAHSTR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Jan 2021 13:19:17 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57800 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728405AbhAHSTQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Jan 2021 13:19:16 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1BB9723A7A;
-        Fri,  8 Jan 2021 18:18:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610129916;
-        bh=1EJDjUMPNL/dY0XEEkmAoh+OfzkB5yqH0QpcKX27KdQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=gOAaZKMBGevPezWNeCeeRPpwnW3ki8JMZ3ojjuJnY5SMO0nydVHO/xXY0yA6k6eMc
-         ruSWe9plVJ0Zo3oSx5nQvnje1e0kI3FdZX3Q/dEf1lExhqP7XIq74eEnikkOOKavco
-         duc/mpql1uOwc/kZucSz5iG+biQbSXdzPhSuI/k5ZNagSsk8YmI7PObnEnJpakgRje
-         Aw/uLHiRUU0A3VHsVUPnqKqPOC0plw2zNgYfVDEr1sriYbuyMku128jorI5DcaHf7j
-         /9Cnj8jfwv+6xqPDZBioVAfeT4kfCrcS66RFA22SqEGYaJSdqC+E0nWaV8k3bnE6Hx
-         4LHFeRNRBeeFQ==
-Date:   Fri, 8 Jan 2021 18:18:30 +0000
-From:   Will Deacon <will@kernel.org>
-To:     Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-Cc:     isaacm@codeaurora.org, Rob Clark <robdclark@gmail.com>,
-        Jordan Crouse <jcrouse@codeaurora.org>,
-        linux-arm-msm@vger.kernel.org, Joerg Roedel <joro@8bytes.org>,
-        linux-kernel@vger.kernel.org,
-        Akhil P Oommen <akhilpo@codeaurora.org>,
-        iommu@lists.linux-foundation.org,
-        Robin Murphy <robin.murphy@arm.com>,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH] iommu/io-pgtable-arm: Allow non-coherent masters to use
- system cache
-Message-ID: <20210108181830.GA5457@willie-the-truck>
-References: <20201224064007.2339-1-saiprakash.ranjan@codeaurora.org>
- <20210106115615.GA1763@willie-the-truck>
- <cfced52002337025088a64aa159760b2@codeaurora.org>
- <8cfefbff135a5287d177b6ab2ccc3304@codeaurora.org>
+        id S1728782AbhAHSU7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Jan 2021 13:20:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34458 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728505AbhAHSU4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 Jan 2021 13:20:56 -0500
+Received: from mail-qt1-x834.google.com (mail-qt1-x834.google.com [IPv6:2607:f8b0:4864:20::834])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76DCFC061380
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Jan 2021 10:19:48 -0800 (PST)
+Received: by mail-qt1-x834.google.com with SMTP id z3so7143631qtw.9
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Jan 2021 10:19:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=eRLIK07R5/k0ZbmMrIsckpNA62/b6A5anKQsmHzEdBY=;
+        b=R+475cboSKr58vv5Hxs0z9t7POpKNf/xhofVv4JdASVwAwEsgcjZcJmwpLBGtHnbMI
+         /y4gV0jyoiWjSN+CQcuhmyl+l+hLgRJ3n8luhxBPOfykD4a0qw0AlPCE+FB4nejDX9TQ
+         QUPNKenHeiKIbLHyyFjs0Y9mS8tSfEEDX5GAJd+nbuvh94vxkaM9mxkv8owrl/qYzi7a
+         Nyx3g4KNCyekZ5JMFw6Kwpc8DJzsP6J/gwh7eXiQJSpg/QozsRrR7jGcpij+crgr5dgc
+         FE0j4XH2c76AMTWuGgMUuekYV/I9iVmGyjf7w7wbSoo8Jk46wn2VMC7AMes4ngH5Q9oE
+         cSTw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=eRLIK07R5/k0ZbmMrIsckpNA62/b6A5anKQsmHzEdBY=;
+        b=suaPxs9PkeDndcvUJqEDohJy6aSBlylLB6nQwiuZiZke8ZkXPuhlnKNBxljEKdZ8NU
+         SlbRMW8XmbF5p+LkEwxfjzZqWffbk42hmXE5J1iv4lQ517GC4m9ZBIlDlJmlCug8HGyr
+         UmPG6xrB7Ql/GKDbj8v8YgbDomRbf0Z35hFQdGE7iEqwRquLoKr8+cljmIDeOQ9gY+af
+         Nps/yZ44cZiZcSO2sSNWbVusctKavdDCGZ61dB5m62BeI/uXU6voOumEodRRnnOApQr5
+         jjPyg/CT91E177sclwyfw1AOnRhJCKlLsQrAGP7r9ugahrB1Tsr9IQg1V3cKNlfJw9Ti
+         oizg==
+X-Gm-Message-State: AOAM530ccZ3A0aftBna0npotbjXMwpErapPR1DbYcrAEjusxEGORWNeB
+        usxunUb4To6QGFxffykPH/CFnQ==
+X-Google-Smtp-Source: ABdhPJyuOfC07l6KISbB7sKwd+cR+1B6S/d4qwAz+y56h3RO8A4CD+ubqr00QYTycwUsBN9/P8hF7w==
+X-Received: by 2002:ac8:7a81:: with SMTP id x1mr4591721qtr.373.1610129987552;
+        Fri, 08 Jan 2021 10:19:47 -0800 (PST)
+Received: from ziepe.ca (hlfxns017vw-142-162-115-133.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.115.133])
+        by smtp.gmail.com with ESMTPSA id d46sm4848135qtc.76.2021.01.08.10.19.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 08 Jan 2021 10:19:46 -0800 (PST)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1kxwMT-004IpK-Ik; Fri, 08 Jan 2021 14:19:45 -0400
+Date:   Fri, 8 Jan 2021 14:19:45 -0400
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Andrea Arcangeli <aarcange@redhat.com>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Yu Zhao <yuzhao@google.com>, Andy Lutomirski <luto@kernel.org>,
+        Peter Xu <peterx@redhat.com>,
+        Pavel Emelyanov <xemul@openvz.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Will Deacon <will@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Hugh Dickins <hughd@google.com>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Oleg Nesterov <oleg@redhat.com>, Jann Horn <jannh@google.com>,
+        Kees Cook <keescook@chromium.org>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Leon Romanovsky <leonro@nvidia.com>, Jan Kara <jack@suse.cz>,
+        Kirill Tkhai <ktkhai@virtuozzo.com>
+Subject: Re: [PATCH 0/2] page_count can't be used to decide when wp_page_copy
+Message-ID: <20210108181945.GF504133@ziepe.ca>
+References: <B1B85771-B211-4FCC-AEEF-BDFD37332C25@vmware.com>
+ <20210107200402.31095-1-aarcange@redhat.com>
+ <20210107202525.GD504133@ziepe.ca>
+ <X/eA/f1r5GXvcRWH@redhat.com>
+ <20210108133649.GE504133@ziepe.ca>
+ <X/iPtCktcQHwuK5T@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <8cfefbff135a5287d177b6ab2ccc3304@codeaurora.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <X/iPtCktcQHwuK5T@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 08, 2021 at 11:17:25AM +0530, Sai Prakash Ranjan wrote:
-> On 2021-01-07 22:27, isaacm@codeaurora.org wrote:
-> > On 2021-01-06 03:56, Will Deacon wrote:
-> > > On Thu, Dec 24, 2020 at 12:10:07PM +0530, Sai Prakash Ranjan wrote:
-> > > > commit ecd7274fb4cd ("iommu: Remove unused IOMMU_SYS_CACHE_ONLY
-> > > > flag")
-> > > > removed unused IOMMU_SYS_CACHE_ONLY prot flag and along with it went
-> > > > the memory type setting required for the non-coherent masters to use
-> > > > system cache. Now that system cache support for GPU is added, we will
-> > > > need to mark the memory as normal sys-cached for GPU to use
-> > > > system cache.
-> > > > Without this, the system cache lines are not allocated for GPU.
-> > > > We use
-> > > > the IO_PGTABLE_QUIRK_ARM_OUTER_WBWA quirk instead of a page
-> > > > protection
-> > > > flag as the flag cannot be exposed via DMA api because of no in-tree
-> > > > users.
-> > > > 
-> > > > Signed-off-by: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-> > > > ---
-> > > >  drivers/iommu/io-pgtable-arm.c | 3 +++
-> > > >  1 file changed, 3 insertions(+)
-> > > > 
-> > > > diff --git a/drivers/iommu/io-pgtable-arm.c
-> > > > b/drivers/iommu/io-pgtable-arm.c
-> > > > index 7c9ea9d7874a..3fb7de8304a2 100644
-> > > > --- a/drivers/iommu/io-pgtable-arm.c
-> > > > +++ b/drivers/iommu/io-pgtable-arm.c
-> > > > @@ -415,6 +415,9 @@ static arm_lpae_iopte
-> > > > arm_lpae_prot_to_pte(struct arm_lpae_io_pgtable *data,
-> > > >  		else if (prot & IOMMU_CACHE)
-> > > >  			pte |= (ARM_LPAE_MAIR_ATTR_IDX_CACHE
-> > > >  				<< ARM_LPAE_PTE_ATTRINDX_SHIFT);
-> > > > +		else if (data->iop.cfg.quirks & IO_PGTABLE_QUIRK_ARM_OUTER_WBWA)
-> > > > +			pte |= (ARM_LPAE_MAIR_ATTR_IDX_INC_OCACHE
-> > > > +				<< ARM_LPAE_PTE_ATTRINDX_SHIFT);
-> > > >  	}
-> > > 
-> > While this approach of enabling system cache globally for both page
-> > tables and other buffers
-> > works for the GPU usecase, this isn't ideal for other clients that use
-> > system cache. For example,
-> > video clients only want to cache a subset of their buffers in the
-> > system cache, due to the sizing constraint
-> > imposed by how much of the system cache they can use. So, it would be
-> > ideal to have
-> > a way of expressing the desire to use the system cache on a per-buffer
-> > basis. Additionally,
-> > our video clients use the DMA layer, and since the requirement is for
-> > caching in the system cache
-> > to be a per buffer attribute, it seems like we would have to have a
-> > DMA attribute to express
-> > this on a per-buffer basis.
-> > 
+On Fri, Jan 08, 2021 at 12:00:36PM -0500, Andrea Arcangeli wrote:
+> > The majority cannot be converted to notifiers because they are DMA
+> > based. Every one of those is an ABI for something, and does not expect
+> > extra privilege to function. It would be a major breaking change to
+> > have pin_user_pages require some cap.
 > 
-> I did bring this up initially [1], also where is this video client
-> in upstream? AFAIK, only system cache user in upstream is GPU.
-> We cannot add any DMA attribute unless there is any user upstream
-> as per [2], so when the support for such a client is added, wouldn't
-> ((data->iop.cfg.quirks & IO_PGTABLE_QUIRK_ARM_OUTER_WBWA) || PROT_FLAG)
-> work?
+> ... what makes them safe is to be transient GUP pin and not long
+> term.
+> 
+> Please note the "long term" in the underlined line.
 
-Hmm, I think this is another case where we need to separate out the
-page-table walker attributes from the access attributes. Currently,
-IO_PGTABLE_QUIRK_ARM_OUTER_WBWA applies _only_ to the page-table walker
-and I don't think it makes any sense for that to be per-buffer (how would
-you even manage that?). However, if we want to extend this to data accesses
-and we know that there are valid use-cases where this should be per-buffer,
-then shoe-horning it in with the walker quirk does not feel like the best
-thing to do.
+Many of them are long term, though only 50 or so have been marked
+specifically with FOLL_LONGTERM. I don't see how we can make such a
+major ABI break.
 
-As a starting point, we could:
+Looking at it, vmsplice() is simply wrong. A long term page pin must
+use pin_user_pages(), and either FOLL_LONGTERM|FOLL_WRITE (write mode)
+FOLL_LONGTERM|FOLL_FORCE|FOLL_WRITE (read mode)
 
-  1. Rename IO_PGTABLE_QUIRK_ARM_OUTER_WBWA to IO_PGTABLE_QUIRK_PTW_LLC
-  2. Add a new prot flag IOMMU_LLC
-  3. Have the GPU pass the new prot for its buffer mappings
+ie it must COW and it must reject cases that are not longterm safe,
+like DAX and CMA and so on.
 
-Does that work? One thing I'm not sure about is whether IOMMU_CACHE should
-imply IOMMU_LLC, or whether there is a use-case for inner-cacheable, outer
-non-cacheable mappings for a coherent device. Have you ever seen that sort
-of thing before?
+These are the well established rules, vmsplice does not get a pass
+simply because it is using the CPU to memory copy as its "DMA".
 
-Will
+> speaking in practice. io_uring has similar concern but it can use mmu
+> notifier, so it can totally fix it and be 100% safe from this.
+
+IIRC io_uring does use FOLL_LONGTERM and FOLL_WRITE..
+
+> The scheduler disclosure date was 2020-08-25 so I can freely explain
+> the case that motivated all these changes.
+> 
+> case A)
+> 
+> if !fork() {
+>    // in child
+>    mmap one page
+>    vmsplice takes gup pin long term on such page
+>    munmap one page
+>    // mapcount == 1 (parent mm)
+>    // page_count == 2 (gup in child, and parent mm)
+> } else {
+>    parent writes to the page
+>    // mapcount == 1, wp_page_reuse
+> }
+> 
+> parent did a COW with mapcount == 1 so the parent will take over a
+> page that is still GUP pinned in the child. 
+
+Sorry, I missed something, how does mmaping a fresh new page in the
+child impact the parent?
+
+I guess the issue is not to mmap but to GUP a shared page in a way
+that doesn't trigger COW during GUP and then munmap that page so a
+future parent COW does re-use, leaking access.
+
+It seems enforcing FOLL_WRITE to always COW on GUP closes this, right?
+
+This is what all correct FOLL_LONGTERM users do today, it is required
+for many other reasons beyond this interesting security issue.
+
+> However, you know full well in the second case it is a feature and not
+> a bug, that wp_page_reuse is called instead, and in fact it has to be
+> called or it's a bug (and that's the bug page_count in do_wp_page
+> introduces).
+
+What I was trying to explain below, is I think we agreed that a page
+under active FOLL_LONGTERM pin *can not* be write protected.
+
+Establishing the FOLL_LONGTERM pin (for read or write) must *always*
+break the write protection and the VM *cannot* later establish a new
+write protection on that page while the pin is active.
+
+Indeed, it is complete nonsense to try and write protect a page that
+has active DMA write activity! Changing the CPU page protection bits
+will not stop any DMA! Doing so will inevitably become a security
+problem with an attack similar to what you described.
+
+So this is what was done during fork() - fork will no longer write
+protect pages under FOLL_LONGTERM to make them COWable, instead it
+will copy them at fork time.
+
+Any other place doing write protect must also follow these same
+rules.
+
+I wasn't aware this could be used to create a security problem, but it
+does make sense. write protect really must mean writes to the memory
+must stop and that is fundementally incompatible with active DMA.
+
+Thus write protect of pages under DMA must be forbidden, as a matter
+of security.
+
+Jason
