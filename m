@@ -2,87 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A1C5B2EEF51
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 10:18:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E637F2EEF57
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 10:20:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728088AbhAHJST (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Jan 2021 04:18:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34750 "EHLO
+        id S1728064AbhAHJTn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Jan 2021 04:19:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34964 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728023AbhAHJSS (ORCPT
+        with ESMTP id S1726120AbhAHJTm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Jan 2021 04:18:18 -0500
-Received: from mail-qk1-x735.google.com (mail-qk1-x735.google.com [IPv6:2607:f8b0:4864:20::735])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13D06C0612F4
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Jan 2021 01:17:38 -0800 (PST)
-Received: by mail-qk1-x735.google.com with SMTP id z11so7905187qkj.7
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Jan 2021 01:17:38 -0800 (PST)
+        Fri, 8 Jan 2021 04:19:42 -0500
+Received: from mail-io1-xd2b.google.com (mail-io1-xd2b.google.com [IPv6:2607:f8b0:4864:20::d2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 083C8C0612F4;
+        Fri,  8 Jan 2021 01:19:02 -0800 (PST)
+Received: by mail-io1-xd2b.google.com with SMTP id t8so9094780iov.8;
+        Fri, 08 Jan 2021 01:19:01 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=xJnl+FZ1gpOcd35fdEFuMTp9+v183tYb0UiM+fOy7cU=;
-        b=di5xAHbQJBIzcIWF3bZji77qGMchbDheH0ljp9OeVzxTJsTkb1EEh34uHGhcXd+m8m
-         5iqambvjFTe572A7AoC16IwDHfrRhZxHxhlJzWPmrO1wJUB205Y1INzACZRzIQbU9YXZ
-         /ypBV5AK+hR/1EyVAzOpzWPZOenaDnRLgHgUW80KsjG1DpqABnI+g6n/LxGbUjGS2lHg
-         6E6v8FlKp76BiO+yl2ER5CEkut0OvIkrLvOUmf3a7890RChpZNYop62WodONPAA2yvZM
-         RGZOXFC2C1OwJlfrLDF60NCJEYq5gN5LAhZAnaTix/0HE5uGhgns7qZ8nbufaKH37Nix
-         SIpA==
+        bh=K0UzHOd3okV0qpJMc682hFBfathXKjKul5nXUx2yUFc=;
+        b=F8f7tTd5RCkx2C4eh3Qvv9dClv2bZtMk3yyiFQQx74z0WQqkC3TBDn8Yf4geL8cTaF
+         ndytfDet/nngjB6Wis7vk27FHZ8mNuUHlTVii2bpCDGq8MrM8Flknior7qEVgvIzlqDf
+         Y96Z9QwPlV2dI16gKEMzFOdAIuS4VAkPBpj9pmYaV3/Npky3HQ5yqar+A0tDU+6lmQ88
+         pYGuA6e3bTSZOEqOjEcSYwppb/8mdcTiso6KDjtlPlwSCB1hTyJTSwxNkVxprH9iO+pd
+         tqNDFhjh7kpAYWRgePSKmB6YgS+v8Z8+WUNPBZk3mBBh+arxrnE77wCAwxnH63n/Y0DC
+         5C7A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=xJnl+FZ1gpOcd35fdEFuMTp9+v183tYb0UiM+fOy7cU=;
-        b=C2q4mnvO5tbKdvHYVY5c8td2ieSthXT431vom4HZn4sWnili5pVPEZof1YGX59Ojwf
-         GlUnCXmdUy/Uw5KVgr+V0ltnGXctAljtVk/9s/D0VAQLmzwuVS/vVwthV7tHs9E5F7p8
-         vnJsWcPXJvnfQ3FIAZ1AUGGcB2LeYLmimJGyjD5pwqBgFNwvQcnVw95nc2QYdkWrvkkD
-         VpwQ2r0FZD/iYmjIYg+onIVgREV4nGTSrEr9Tgd6NRDO/Hf6a+GbijUCw2SL61CC+AlW
-         +lzcsObD4Q9DB8gXBuD4DmI8+BYAMgl9HyuStYlM4PLIMt4JDmkZUAonTnOFHt7H+m//
-         gk5g==
-X-Gm-Message-State: AOAM5303464Fv1DrZgJ9+oUTPc+syqS1ZWU1BzTDWICtSvx/Y/G+Yoic
-        clXa4938zrC9BDUpchZtY3aopQMZcJpAPmb0cExAaALjiFmDJQ==
-X-Google-Smtp-Source: ABdhPJwgedTY862qpgm479A9m2UJWEKg7jtCcvc3RXMc3hBBjnqJesYi2jlShDdx8J8kJGzFlV2lK/PbOOI2sqRem/k=
-X-Received: by 2002:a37:4285:: with SMTP id p127mr2790403qka.501.1610097456944;
- Fri, 08 Jan 2021 01:17:36 -0800 (PST)
+        bh=K0UzHOd3okV0qpJMc682hFBfathXKjKul5nXUx2yUFc=;
+        b=jKTuXexB6CA6lFzc9OYijHwFSiP1UE/GzUeIJjLZmRWceBnCZ8/PwW0/lXO3QDUZN9
+         DSYGFTT55nPfwNeD6f/j4+ae2hYIvc3++q/ORlIKOxjeIWZOK9LrHMedZFSVqj02aezC
+         f1pyAl6GDvz1Gxg+qA4AMfUMxGhdXp82p7laoDirSylpT4xnut/L7bt3r+ymMGT/6LtP
+         9z04UIai/b1qPgPmD+f49MshU2dbeqWGWuajIgGOFwzyp1ZbBCCxx3MvLX7cQUI+Ox5y
+         CmhP8u5LVCfWGsMTGAQpfstuMWRQ4AqTGAxZFIOnmGmBzfLeHHTW9D4KKg3yVVUKBv5C
+         ZgLQ==
+X-Gm-Message-State: AOAM5332ED25lCByUWub96Mf2R6lJPBkJPbYJHL/KTRDfgfnlTn3lHJq
+        +bomgjXz0zoc6EComz7Rtfe/VfvHAqQ0Xupxa7w=
+X-Google-Smtp-Source: ABdhPJyfjLwgvHCGe6CncF0auRwlIUDRFyy4qz1UYNc+B5B0sgSfo5G7aPXzeVtJYm+wsjlb0rJtWZX+RmqLQs2yFpA=
+X-Received: by 2002:a02:3f62:: with SMTP id c34mr2662497jaf.16.1610097541408;
+ Fri, 08 Jan 2021 01:19:01 -0800 (PST)
 MIME-Version: 1.0
-References: <00000000000053e36405b3c538fc@google.com> <0000000000008f60c505b84f2cd0@google.com>
-In-Reply-To: <0000000000008f60c505b84f2cd0@google.com>
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Fri, 8 Jan 2021 10:17:25 +0100
-Message-ID: <CACT4Y+YJCMyTDrUFWXEnZ-raQMos0+1F1O8k5eX998pqNUWKSw@mail.gmail.com>
-Subject: Re: KASAN: null-ptr-deref Write in start_transaction
-To:     syzbot <syzbot+6700bca07dff187809c4@syzkaller.appspotmail.com>
-Cc:     syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        LKML <linux-kernel@vger.kernel.org>, linux-btrfs@vger.kernel.org
+References: <20210107103417.16010-1-alexandru.ardelean@analog.com>
+ <20210107103417.16010-4-alexandru.ardelean@analog.com> <20210107152538.GC13040@roeck-us.net>
+ <CA+U=Dspo0aovB4M76FoUaPpfYN-ZiCkCUc1Am24Mq7VSHRStEQ@mail.gmail.com> <20210107173548.GA49383@roeck-us.net>
+In-Reply-To: <20210107173548.GA49383@roeck-us.net>
+From:   Alexandru Ardelean <ardeleanalex@gmail.com>
+Date:   Fri, 8 Jan 2021 11:18:49 +0200
+Message-ID: <CA+U=Dsr+AZrn8MBkYbXzQqhYxph1tiU1ja5GaSeZSsy5m=55Gw@mail.gmail.com>
+Subject: Re: [PATCH v3 3/4] hwmon: (ltc2945): add support for sense resistor
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     Alexandru Ardelean <alexandru.ardelean@analog.com>,
+        linux-hwmon@vger.kernel.org,
+        devicetree <devicetree@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Rob Herring <robh+dt@kernel.org>, jdelvare@suse.com,
+        "Thoren, Mark" <mark.thoren@analog.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 7, 2021 at 2:11 PM syzbot
-<syzbot+6700bca07dff187809c4@syzkaller.appspotmail.com> wrote:
+On Thu, Jan 7, 2021 at 7:35 PM Guenter Roeck <linux@roeck-us.net> wrote:
 >
-> syzbot suspects this issue was fixed by commit:
->
-> commit f30bed83426c5cb9fce6cabb3f7cc5a9d5428fcc
-> Author: Filipe Manana <fdmanana@suse.com>
-> Date:   Fri Nov 13 11:24:17 2020 +0000
->
->     btrfs: remove unnecessary attempt to drop extent maps after adding inline extent
->
-> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=13ddc30b500000
-> start commit:   521b619a Merge tag 'linux-kselftest-kunit-fixes-5.10-rc3' ..
-> git tree:       upstream
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=61033507391c77ff
-> dashboard link: https://syzkaller.appspot.com/bug?extid=6700bca07dff187809c4
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=14a07ab2500000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=10fe69c6500000
->
-> If the result looks correct, please mark the issue as fixed by replying with:
->
-> #syz fix: btrfs: remove unnecessary attempt to drop extent maps after adding inline extent
->
-> For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+> On Thu, Jan 07, 2021 at 05:44:33PM +0200, Alexandru Ardelean wrote:
+> > >
+> > > Note that this patch doesn't compile on 32-bit targets.
+> >
+> > Yeah, my bad.
+> > I only tested with  make allmodconfig, and that doesn't do a good job
+> > at providing linker issues.
+> >
+> The problem is the 64-bit divide operation introduced with your patch.
+> You'd see that if you build allmodconfig with ARCH=i386.
 
-#syz fix: btrfs: remove unnecessary attempt to drop extent maps after
-adding inline extent
+Oh, right.
+That thought actually escaped me.
+
+Thanks for the tip
+Alex
+
+>
+> Guenter
