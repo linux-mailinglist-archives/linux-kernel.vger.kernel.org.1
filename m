@@ -2,177 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 462512EFA4B
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 22:22:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 260B52EFA4F
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 22:22:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729808AbhAHVVV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Jan 2021 16:21:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34444 "EHLO
+        id S1729557AbhAHVV6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Jan 2021 16:21:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34556 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729695AbhAHVVT (ORCPT
+        with ESMTP id S1729212AbhAHVV6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Jan 2021 16:21:19 -0500
-Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F21C0C061757
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Jan 2021 13:20:38 -0800 (PST)
-Received: by mail-pl1-x62c.google.com with SMTP id 4so6328090plk.5
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Jan 2021 13:20:38 -0800 (PST)
+        Fri, 8 Jan 2021 16:21:58 -0500
+Received: from mail-ua1-x92d.google.com (mail-ua1-x92d.google.com [IPv6:2607:f8b0:4864:20::92d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9FFB2C061798
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Jan 2021 13:21:17 -0800 (PST)
+Received: by mail-ua1-x92d.google.com with SMTP id w7so3877500uap.13
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Jan 2021 13:21:17 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
+        d=chromium.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=zj0bwaI1Yg9SJ8+KthhKFiHsft2v7jMXKdNfXLE27cs=;
-        b=ob6U9DHAEvzAi1bufn6CgxcWd8olQiKbbPIAhZYPKeH/oVeN5oyMN2OEI6dmw5TIhh
-         BY5fJgwOqDbjlwpZR1dpmELMl9YbkTUkmEYGQomZszYJXllERB2W7HHSOQvFlJUg0VdA
-         c5ZqNwgBNpbw3LV4lEzN7Jx1Io4TRzpINw14w5im+H0Ga1oMTqybejMcj03ZNDb7Eyn0
-         9rXONMLgNn1iC2hfEEtPRvQ6wSVwgoq1fNxYHeu+PA8aLdsxGXvaowSJSsNmtj1LdCLm
-         mhTETI6t/NaWlfOQ0PEyDqNtz1GgzGvQRac4UQbqQ9eL5rFt1IBsa3x8Wrg8NvTnrQ9r
-         0H9g==
+        bh=XR8VpqhNvfyeOSjiVGS0Gw6y6Ox46JoGQ/emSYjsvjk=;
+        b=AjRH6z5bgTXQmT6C30AB861Wlw5FHUKheGMZVGD8gYjod0dQ3o5VfJLtZeFhJuvoJ5
+         WavBV44odXXue/TjtQTruTB7I3vowZx0iO1kXKgc8Tk0Y1GTU8H6UNmVXbPbcRBssPNa
+         47U1Y10tNMnEC6216t1LAMqhVBEg4IpxVSqqE=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=zj0bwaI1Yg9SJ8+KthhKFiHsft2v7jMXKdNfXLE27cs=;
-        b=lK9RHi7abPaS3prd6Yb4OWTiQvLg0ELuHHUq6tz4N6hJOmXXUUEmsA/o5uGURjAA7W
-         3wRBYo93dDjAqJ8cBXWqrmPG2ckEDWUHdCPP9aV9yfJfzbGPpONtQ3Rypyn34ooftCjU
-         DTbfntQjyLVSZlz9bpjC5hW3gSqU9ejIEgNtu/q5tKsdDFsYZYG7TFnFjOJN4BNyG2nV
-         rp+u57e1xWiofEqnMDbeKe9JDx7CsTtXJKFWRt/S8p2xyBg6CLnJdHMBXHiriH3/cvkn
-         BHgV93lJ/X8zJzjvzPz5TB5ghmxAgWEDA1U506SwbyddG4aEpokzuK3RwydSD0L+E1y4
-         satw==
-X-Gm-Message-State: AOAM533reGXp43WBBzRP6c1X+WCoTs7Xm9/U9xpA2xmt13uLZOfW8UBP
-        lJio5r3/v1VJ1rGLmzvEctsH6ySYO0m29oUmK5GV+Q==
-X-Google-Smtp-Source: ABdhPJw4+Aw9i9bi7y60gChG4h4UFGLR+2cSCCczj94KdWXiDg5keuXXDluFhcCGMaGsn7ykhskIUZLD7FurfLRUKhQ=
-X-Received: by 2002:a17:90a:31c3:: with SMTP id j3mr5582833pjf.25.1610140838310;
- Fri, 08 Jan 2021 13:20:38 -0800 (PST)
+        bh=XR8VpqhNvfyeOSjiVGS0Gw6y6Ox46JoGQ/emSYjsvjk=;
+        b=WvT08fpU4cVb/EMjoTej0N02K/mOoasxnjnZdnBd8ey41j4T139U3JA4zYEYRhN/G8
+         cp28l6pJxSZjn5ftnWrYQpFgezKTX3TMWjCn7vyWG9zXUOkaOSZjdT7FOTPCVKDHCfRE
+         fLNHfP8D+kmGcGc+DVkTJFmci9dcHsw969r6NWR369/benEV059WL2E5aZwwc6dZQK3H
+         tM4wtUXOKDgGguZQUgVV8r+KsodMJh8IGWNbOa/A8poRFItvQCwaX8aVHQlyVjQxNvRx
+         o5+79YhEaOAfwXiRnjhFNKlwFWuiQxxcCVCC0qTdFTnxVO/5GLURX650KHgQH+RRWAWu
+         AbKQ==
+X-Gm-Message-State: AOAM532zfnMt3YrxxZqFFOZ7C+In2KefPFBIpIhSto9bx0AthvnxE3PH
+        nzpfj1F+5BmxPybrlRQ5KSNckgVOyfD3pw==
+X-Google-Smtp-Source: ABdhPJwchAstYzLAftpqzpdmCeN33k0zcEnlTd7TirUEuN5SvfGYIegmmwsX/XPLQx5hPSHrYkyP0A==
+X-Received: by 2002:ab0:65cc:: with SMTP id n12mr4966572uaq.99.1610140874922;
+        Fri, 08 Jan 2021 13:21:14 -0800 (PST)
+Received: from mail-ua1-f49.google.com (mail-ua1-f49.google.com. [209.85.222.49])
+        by smtp.gmail.com with ESMTPSA id g79sm467943vkf.14.2021.01.08.13.21.12
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 08 Jan 2021 13:21:13 -0800 (PST)
+Received: by mail-ua1-f49.google.com with SMTP id w7so3877439uap.13
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Jan 2021 13:21:12 -0800 (PST)
+X-Received: by 2002:ab0:2e99:: with SMTP id f25mr4896052uaa.104.1610140872334;
+ Fri, 08 Jan 2021 13:21:12 -0800 (PST)
 MIME-Version: 1.0
-References: <20210106115359.GB26994@C02TD0UTHF1T.local> <20210106135253.GJ1551@shell.armlinux.org.uk>
- <20210106172033.GA2165@willie-the-truck> <20210106223223.GM1551@shell.armlinux.org.uk>
- <20210107111841.GN1551@shell.armlinux.org.uk> <20210107124506.GO1551@shell.armlinux.org.uk>
- <CAK8P3a2TXPfFpgy+XjpDzOqt1qpDxufwiD-BLNbn4W_jpGp98g@mail.gmail.com>
- <20210107133747.GP1551@shell.armlinux.org.uk> <CAK8P3a2J8fLjPhyV0XUeuRBdSo6rz1gU4wrQRyfzKQvwhf22ag@mail.gmail.com>
- <X/gkMmObbkI4+ip/@hirez.programming.kicks-ass.net> <20210108092655.GA4031@willie-the-truck>
- <CAHk-=whnKkj5CSbj-uG_MVVUsPZ6ppd_MFhZf_kpXDkh2MAVRA@mail.gmail.com> <CAK8P3a2w2u8pcQJue3OveDckJNkGmwzVdfOM-VEXShQEw8EOzw@mail.gmail.com>
-In-Reply-To: <CAK8P3a2w2u8pcQJue3OveDckJNkGmwzVdfOM-VEXShQEw8EOzw@mail.gmail.com>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Fri, 8 Jan 2021 13:20:27 -0800
-Message-ID: <CAKwvOdmcKjwJkiu+VDWrjQO9RYjv-WEqepQJnLZrY2wtBmEwmg@mail.gmail.com>
-Subject: Re: Aarch64 EXT4FS inode checksum failures - seems to be weak memory
- ordering issues
-To:     Arnd Bergmann <arnd@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Will Deacon <will@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Russell King - ARM Linux admin <linux@armlinux.org.uk>,
-        linux-toolchains@vger.kernel.org,
-        Mark Rutland <mark.rutland@arm.com>,
-        "Theodore Ts'o" <tytso@mit.edu>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Ext4 Developers List <linux-ext4@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
+References: <20201214092048.v5.1.Iec3430c7d3c2a29262695edef7b82a14aaa567e5@changeid>
+In-Reply-To: <20201214092048.v5.1.Iec3430c7d3c2a29262695edef7b82a14aaa567e5@changeid>
+From:   Doug Anderson <dianders@chromium.org>
+Date:   Fri, 8 Jan 2021 13:21:00 -0800
+X-Gmail-Original-Message-ID: <CAD=FV=Xt0O7WOe-hsiqJ7Jqhgs7TQ_c-_BtyAuj0D2Yxi-TqEg@mail.gmail.com>
+Message-ID: <CAD=FV=Xt0O7WOe-hsiqJ7Jqhgs7TQ_c-_BtyAuj0D2Yxi-TqEg@mail.gmail.com>
+Subject: Re: [PATCH v5 1/2] mmc: sdhci-msm: Warn about overclocking SD/MMC
+To:     Ulf Hansson <ulf.hansson@linaro.org>,
+        Adrian Hunter <adrian.hunter@intel.com>
+Cc:     Taniya Das <tdas@codeaurora.org>,
+        Veerabhadrarao Badiganti <vbadigan@codeaurora.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Andy Gross <agross@kernel.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux MMC List <linux-mmc@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 8, 2021 at 12:34 PM Arnd Bergmann <arnd@kernel.org> wrote:
+Ulf,
+
+On Mon, Dec 14, 2020 at 9:23 AM Douglas Anderson <dianders@chromium.org> wrote:
 >
-> On Fri, Jan 8, 2021 at 9:02 PM Linus Torvalds
-> <torvalds@linux-foundation.org> wrote:
-> > On Fri, Jan 8, 2021 at 1:27 AM Will Deacon <will@kernel.org> wrote:
-> > >
-> > > On Fri, Jan 08, 2021 at 10:21:54AM +0100, Peter Zijlstra wrote:
-> > > > On Thu, Jan 07, 2021 at 10:20:38PM +0100, Arnd Bergmann wrote:
-> > > > > On Thu, Jan 7, 2021 at 2:37 PM Russell King - ARM Linux admin
-> >
-> > I appreciate Arnd pointing out "--std=gnu11", though. What are the
-> > actual relevant language improvements?
+> As talked about in commit 5e4b7e82d497 ("clk: qcom: gcc-sdm845: Use
+> floor ops for sdcc clks"), most clocks handled by the Qualcomm clock
+> drivers are rounded _up_ by default instead of down.  We should make
+> sure SD/MMC clocks are always rounded down in the clock drivers.
+> Let's add a warning in the Qualcomm SDHCI driver to help catch the
+> problem.
+>
+> This would have saved a bunch of time [1].
+>
+> NOTE: this doesn't actually fix any problems, it just makes it obvious
+> to devs that there is a problem and that should be an indication to
+> fix the clock driver.
+>
+> [1] http://lore.kernel.org/r/20201210102234.1.I096779f219625148900fc984dd0084ed1ba87c7f@changeid
+>
+> Suggested-by: Stephen Boyd <swboyd@chromium.org>
+> Signed-off-by: Douglas Anderson <dianders@chromium.org>
+> Reviewed-by: Stephen Boyd <swboyd@chromium.org>
+> Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+> ---
+>
+> (no changes since v4)
+>
+> Changes in v4:
+> - Emphasize in the commit message that this itself doesn't fix anything.
+>
+> Changes in v3:
+> - Proper printf format code.
+>
+> Changes in v2:
+> - Store rate in unsigned long, not unsigned int.
+> - Reuse the clk_get_rate() in the later print.
+>
+>  drivers/mmc/host/sdhci-msm.c | 15 +++++++++++++--
+>  1 file changed, 13 insertions(+), 2 deletions(-)
 
-It's hard to say, since a lot of new language features were already
-GNU C extensions.
+Is there anything you need me to do for this patch and the next one?
+They are both reviewed / Acked and hopefully have sat around long
+enough that folks who took a long holiday break had a chance to shout
+if they were going to, so I think they could land.  ;-)  Please yell
+if there's something you need me to do, or feel free to tell me to sit
+quietly and be patient.
 
-The only semantic difference I'm aware of is the semantics of `extern
-inline` changed 100% from c89 to c99 (so jumping from gnu89 to gnu11
-would change that).  We already #define inline to
-__attribute__((__gnu_inline)) (there's also a -fgnu-inline flag), but
-I worry for places that don't include that header or drop
-KBUILD_CFLAGS (like every vdso), though `extern inline` is awful (and
-I should be put in jail for introducing it to the kernel; now we have
-__attribute__((no_stack_protector)) in both toolchains, and should be
-using that instead, but we don't have it yet for all supported
-compiler versions).
+Thanks!
 
-A quick grep through clang's sources shows mostly parser changes for
-_Noreturn, _Alignof and friends etc..  New to me are unicode literal
-strings (u or U suffix or prefix?) and something about loops expected
-to make forward progress???
-
-Another thing I've been worried about is Makefiles that reset
-KBUILD_CFLAGS, since that's a constant source of pain/breakage for
-cross compiling from Clang.  That tends to drop -std=gnu89.  For
-instance:
-
-$ make LLVM=1 -j71 defconfig
-$ make LLVM=1 -j71 V=1 &>log.txt
-$ grep -v std=gnu89 log.txt | grep clang | rev | cut -d ' ' -f 1 | rev
-| grep -v \\.S
-arch/x86/realmode/rm/wakemain.c
-arch/x86/realmode/rm/video-mode.c
-arch/x86/realmode/rm/regs.c
-arch/x86/realmode/rm/video-vga.c
-arch/x86/realmode/rm/video-vesa.c
-arch/x86/realmode/rm/video-bios.c
-drivers/firmware/efi/libstub/efi-stub-helper.c
-drivers/firmware/efi/libstub/gop.c
-drivers/firmware/efi/libstub/secureboot.c
-drivers/firmware/efi/libstub/tpm.c
-drivers/firmware/efi/libstub/file.c
-drivers/firmware/efi/libstub/mem.c
-drivers/firmware/efi/libstub/random.c
-drivers/firmware/efi/libstub/randomalloc.c
-drivers/firmware/efi/libstub/pci.c
-drivers/firmware/efi/libstub/skip_spaces.c
-lib/cmdline.c
-lib/ctype.c
-drivers/firmware/efi/libstub/alignedmem.c
-drivers/firmware/efi/libstub/relocate.c
-drivers/firmware/efi/libstub/vsprintf.c
-drivers/firmware/efi/libstub/x86-stub.c
-arch/x86/boot/a20.c
-arch/x86/boot/cmdline.c
-arch/x86/boot/cpuflags.c
-arch/x86/boot/cpucheck.c
-arch/x86/boot/early_serial_console.c
-arch/x86/boot/edd.c
-arch/x86/boot/main.c
-arch/x86/boot/memory.c
-arch/x86/boot/pm.c
-arch/x86/boot/printf.c
-arch/x86/boot/regs.c
-arch/x86/boot/string.c
-arch/x86/boot/tty.c
-arch/x86/boot/video.c
-arch/x86/boot/video-mode.c
-arch/x86/boot/version.c
-arch/x86/boot/video-vga.c
-arch/x86/boot/video-vesa.c
-arch/x86/boot/video-bios.c
-arch/x86/boot/cpu.c
-arch/x86/boot/compressed/string.c
-arch/x86/boot/compressed/cmdline.c
-arch/x86/boot/compressed/error.c
-arch/x86/boot/compressed/cpuflags.c
-arch/x86/boot/compressed/early_serial_console.c
-arch/x86/boot/compressed/kaslr.c
-arch/x86/boot/compressed/ident_map_64.c
-arch/x86/boot/compressed/idt_64.c
-arch/x86/boot/compressed/pgtable_64.c
-arch/x86/boot/compressed/acpi.c
-arch/x86/boot/compressed/misc.c
-
-So it looks like parts of the tree are already built with -std=gnu11
-or -std=gnu17, as they rely on the implicit default C language mode
-when unspecified.  Oops?
--- 
-Thanks,
-~Nick Desaulniers
+-Doug
