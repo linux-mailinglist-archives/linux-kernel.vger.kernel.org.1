@@ -2,138 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DFFE2EEBC3
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 04:14:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 38EA62EEBDE
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 04:33:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727369AbhAHDNs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 22:13:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34934 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726281AbhAHDNs (ORCPT
+        id S1726929AbhAHDdG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 22:33:06 -0500
+Received: from aserp2120.oracle.com ([141.146.126.78]:46534 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726703AbhAHDdF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 22:13:48 -0500
-Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2677FC0612FA
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Jan 2021 19:12:28 -0800 (PST)
-Received: by mail-pf1-x434.google.com with SMTP id h10so5343899pfo.9
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Jan 2021 19:12:28 -0800 (PST)
+        Thu, 7 Jan 2021 22:33:05 -0500
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 1083TKJk009678;
+        Fri, 8 Jan 2021 03:31:41 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
+ from : message-id : references : date : in-reply-to : content-type :
+ mime-version; s=corp-2020-01-29;
+ bh=Ycv+L+blUPQmCBMJQROV9DwJ+8aVZxm4tOxyk3RvcGs=;
+ b=DYkzHp1UO3G5NTIyn869knNgKvA3lGgd666st0YCZQWhPSTLsNJnIF4bRbeRkFLjEPNv
+ agGHZ4HSzXLPE57wJGaqQinR/O1g5RKIy17ZvUny8G8IknFROF9f0IyQo6oyObFkFtiL
+ ly+61jSi168A5FXi415AxZXBiwMcgyl/QI1RBsvHxEoRmieMlVpkHq7B606ZfsWGzfm7
+ t9LfIm9O7Dllaao2gdrXIr92t6NWDusmOxpC3u2RGzlCno77An0nAyd7xh5jYmYEcDOq
+ FtXeU2NG+9Xrao5yunpj1OFHQyk6lyvoQHlTsy7oe4AP7Z8gSesaCwZiFCQFg+GQY8os vQ== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by aserp2120.oracle.com with ESMTP id 35wepmfat9-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 08 Jan 2021 03:31:41 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 1083BTWF032539;
+        Fri, 8 Jan 2021 03:29:40 GMT
+Received: from nam11-co1-obe.outbound.protection.outlook.com (mail-co1nam11lp2177.outbound.protection.outlook.com [104.47.56.177])
+        by userp3030.oracle.com with ESMTP id 35w3g3q39s-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 08 Jan 2021 03:29:40 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=TU91NYgFgz3Ni1KNt3arHP5qxtN84U5gtsSUP/AlEx7ZiRK12oJmW93/izmVSUrU8o83D/x5znfyj63o1cQJeN4a479YJotUeGjXNg1st44/xkimEnDOTx8egJcamK/IsQe9edQhKSLg089OZPJsMe+iKLjWdkaxF2DAmbB75fUudVe4WwaM4KnFrPOi0sw9RoYFyNRHFFryGGUcTGTuqM2fz/xEh2yAqF6Klu0FOwSB2uzSofXW77UJ8snbeGlHJd+zTr1gQs2b7NW581a5MeWZgH0/rF/X7yeYkHP5r0j0JXIMinlh5MJjRbDhlSCM0mvMHjQiYM33U+SfVOb41A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Ycv+L+blUPQmCBMJQROV9DwJ+8aVZxm4tOxyk3RvcGs=;
+ b=ObuzCrynvtafVeR7aFl+v8PsGom22CM55gOqpRXdZcrxN6+Q9C+ny9aSnhe8pLOkBGLWPO2oyyrHBZaoglfR1NSWhDyFrvr5oaymLpppwmI2EZHSqY+dXPxT8U38itXC5eLopysnf5mN7BlnMVwz9tTL6xY2KZC1Te8hiCfMVywASYRUliqlLkHtXfZwqFLGGESGXqGmAjQX7iHicjk0RbQhGPno+Qc0Yt5yyfl8E2kOIMkrZBoIrO0Zywb71uAMFjl9+UL6tftADkS4eiula3HrhrCBOspdkeDHNU4vi6Hp5Rm2vjIEVo563jywQhNjwK3f4pjQ42RNiIGTLvNosg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dabbelt-com.20150623.gappssmtp.com; s=20150623;
-        h=date:subject:in-reply-to:cc:from:to:message-id:mime-version
-         :content-transfer-encoding;
-        bh=SjIxw593j/BG7x2X3ksVVnxB2uu71tEZmxrMsCj4BiM=;
-        b=h2ktI7s4n8xCoqkoSVH4EHqwEk9bp/enKaHzfXG4daTjSVem3smhzGjWZOERytTBt1
-         uct1LT+TzDwe1P+tWsKICLXw/a9f1Y5NGttqGWBIlq7W0terFsRHlavDYV15Cf8egItt
-         ssfplpyFYDBmZLa4Bss7IeleNkqZcrj7JtyEEWkZPzvoHbtHiUCt9ectPN4fr1muZPpM
-         ywgRFdcUijDEgD1cnBXSpdui63N7Pur/ocDaLM3e7YxpSFI76doqdNO0TUcSv7NbVbUQ
-         egGDX7XIhDuYYpHZ5nnBoNW06xDqi3t8gF0kGVKM7WpiLVNcmrFR1T8datur+4zctrQd
-         fHgw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id
-         :mime-version:content-transfer-encoding;
-        bh=SjIxw593j/BG7x2X3ksVVnxB2uu71tEZmxrMsCj4BiM=;
-        b=SAypzb1SqTa2pILmqZem4fjEA8opO5/rCUXIGudG3iJF+DT8mnBqTiB56SjaKXYplk
-         ZOwHRuklm4KJ+TJTnfkFqRUWEZmhl4FOeafQc8+JmKCF9ffDdzEHVl9jXPs55djuqHMv
-         6zkeLf5oq73Bc82Oauq95okJ+ohWnTQzcKwK3hF5VJJp0Ipjoz64ehXZe/tZqczzTrSh
-         4uTTSVFHJVC7UWUPLYiVXZ/t8GiVc8XwMJQqFOWGuQUy+MyBuiVVC5QBHXVbRieEtCye
-         lCMvwCUHU+1OQlBr8+n50wtDwpuVeyPvCKKsCKzp2XdmuRGHI2e6wdhUDwEhENPP4nPW
-         DqDw==
-X-Gm-Message-State: AOAM531fj+rUXV3PiELvf18aRyo7AAm9FS4pJVnZKYiULddRFtVaAnvw
-        QnrzRqi7O+8JiVNUYePLpWV2bQ==
-X-Google-Smtp-Source: ABdhPJxeTiUgNKGaw5qtkvFU0vf1c4xAKljKlMnfqJb88DCjQRxBowLvlBQ4gqSHPM+ucT8Xlx08sQ==
-X-Received: by 2002:a63:1f47:: with SMTP id q7mr4962672pgm.10.1610075547296;
-        Thu, 07 Jan 2021 19:12:27 -0800 (PST)
-Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
-        by smtp.gmail.com with ESMTPSA id r185sm6938981pfc.53.2021.01.07.19.12.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 Jan 2021 19:12:26 -0800 (PST)
-Date:   Thu, 07 Jan 2021 19:12:26 -0800 (PST)
-X-Google-Original-Date: Thu, 07 Jan 2021 17:52:56 PST (-0800)
-Subject:     Re: [PATCH v2 0/9] arch: riscv: add board and SoC DT file support
-In-Reply-To: <1607403341-57214-1-git-send-email-yash.shah@sifive.com>
-CC:     linux-spi@vger.kernel.org, linux-serial@vger.kernel.org,
-        linux-pwm@vger.kernel.org, linux-i2c@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
-        devicetree@vger.kernel.org, linux-gpio@vger.kernel.org,
-        broonie@kernel.org, Greg KH <gregkh@linuxfoundation.org>,
-        aou@eecs.berkeley.edu, lee.jones@linaro.org,
-        u.kleine-koenig@pengutronix.de, thierry.reding@gmail.com,
-        andrew@lunn.ch, peter@korsgaard.com,
-        Paul Walmsley <paul.walmsley@sifive.com>, robh+dt@kernel.org,
-        bgolaszewski@baylibre.com, linus.walleij@linaro.org,
-        yash.shah@sifive.com
-From:   Palmer Dabbelt <palmer@dabbelt.com>
-To:     yash.shah@sifive.com
-Message-ID: <mhng-abbd57b3-7d81-4c66-9883-67bc11f1f3a3@palmerdabbelt-glaptop>
-Mime-Version: 1.0 (MHng)
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Ycv+L+blUPQmCBMJQROV9DwJ+8aVZxm4tOxyk3RvcGs=;
+ b=R54L03KAdDFlrhbHy1OKCfdPNToqz5IX58rJZZG2Cp8Shu0B0ehkCTMcw5ux4tnyyfcuYkDKM/Leheu3hKkxBSfyTl2PAI5jo2kKjk02A1JesUYfLqhVvci59wCjmqtuGEDpBzEsMRvRJ0wG9zTbLfS9ebKMW60VEAxj9wByl/0=
+Authentication-Results: gmail.com; dkim=none (message not signed)
+ header.d=none;gmail.com; dmarc=none action=none header.from=oracle.com;
+Received: from PH0PR10MB4759.namprd10.prod.outlook.com (2603:10b6:510:3d::12)
+ by PH0PR10MB4405.namprd10.prod.outlook.com (2603:10b6:510:40::8) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3721.20; Fri, 8 Jan
+ 2021 03:29:38 +0000
+Received: from PH0PR10MB4759.namprd10.prod.outlook.com
+ ([fe80::54f3:a8aa:a2cd:a3a4]) by PH0PR10MB4759.namprd10.prod.outlook.com
+ ([fe80::54f3:a8aa:a2cd:a3a4%5]) with mapi id 15.20.3742.006; Fri, 8 Jan 2021
+ 03:29:38 +0000
+To:     Bean Huo <huobean@gmail.com>
+Cc:     alim.akhtar@samsung.com, avri.altman@wdc.com,
+        asutoshd@codeaurora.org, jejb@linux.ibm.com,
+        martin.petersen@oracle.com, stanley.chu@mediatek.com,
+        beanhuo@micron.com, bvanassche@acm.org, tomas.winkler@intel.com,
+        cang@codeaurora.org, rostedt@goodmis.org,
+        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 0/6] Several changes for the UPIU trace
+From:   "Martin K. Petersen" <martin.petersen@oracle.com>
+Organization: Oracle Corporation
+Message-ID: <yq1lfd4cdik.fsf@ca-mkp.ca.oracle.com>
+References: <20210105113446.16027-1-huobean@gmail.com>
+Date:   Thu, 07 Jan 2021 22:29:35 -0500
+In-Reply-To: <20210105113446.16027-1-huobean@gmail.com> (Bean Huo's message of
+        "Tue, 5 Jan 2021 12:34:40 +0100")
+Content-Type: text/plain
+X-Originating-IP: [138.3.200.58]
+X-ClientProxiedBy: BYAPR06CA0011.namprd06.prod.outlook.com
+ (2603:10b6:a03:d4::24) To PH0PR10MB4759.namprd10.prod.outlook.com
+ (2603:10b6:510:3d::12)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from ca-mkp.ca.oracle.com (138.3.200.58) by BYAPR06CA0011.namprd06.prod.outlook.com (2603:10b6:a03:d4::24) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3742.6 via Frontend Transport; Fri, 8 Jan 2021 03:29:37 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: d70a6cae-1b56-4c17-52b2-08d8b385a0b6
+X-MS-TrafficTypeDiagnostic: PH0PR10MB4405:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <PH0PR10MB440508000D5BDDF1DDCF7AC88EAE0@PH0PR10MB4405.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:2331;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: nCiM7anh4TNjOfVCHx9JuX2oQ25j3yIbW1XGu9xLi1LhkdaCO0ZVrA11gYzNZG7sE+RFeZmM2mZYSsm0E6Mjm5TMXRJW1anQeW9ZfdvTmJ6p0DoksHVHG79njOLk3iQsoPpN8NhKzV8em50QKRANQY/AKfAP95ag5pQl8TfgtSjHG5q6to3yRbqz4Qh0qMs94ICjdAvtGQDCHmsznG4TbYf0DZf9gXkKLemUX4InmEZaX52zzylqShfjGQ2caRYudHLtdCdTii0BauFpQ7pwPOEzZpqxAYoMrAebltU7RV9QnpMyTHQYD96j/JeapUK9I89+VxF9PnHwir8ihRq2tcD6tLkaWvGxJRYO445GsR2eaHhlD85GRn4qetFgkNwujBiJBBORJMKXgo4853O6uA==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR10MB4759.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(39850400004)(346002)(366004)(136003)(396003)(376002)(66556008)(478600001)(316002)(52116002)(36916002)(4326008)(7696005)(7416002)(956004)(55016002)(186003)(83380400001)(8936002)(2906002)(26005)(16526019)(66476007)(8676002)(86362001)(5660300002)(4744005)(6916009)(66946007);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?9sBtMAF8hHsBb0aYXRz96uYqE3kPxkR/n0qhcjgVDSy1c5nEDwXnZ1RIS8FM?=
+ =?us-ascii?Q?/5j8xg/SEk4aahCut1iSH20Tx9t1mquH0vWKFSezlBngm3KAh3bDTGzUiQml?=
+ =?us-ascii?Q?/DX7JVkHL7HkiZTku9B+x9WZe7DJX3v2+32ctXOSQw5Dow5987zinS90dcbK?=
+ =?us-ascii?Q?1YpeEmedyGdYh1/3guLVkmSQZzfI8SXKWZ18AtwkxvgyMZwl+D53DDxHogh0?=
+ =?us-ascii?Q?84DI9f+MyEYOIYJwWX5nM+JyJ04C2ZIOqposRp5BahbY4ZmQSQLUGYFuhYod?=
+ =?us-ascii?Q?DoGy+STN6GJeDlvOAtorAMvdDikJhIqJ+erF9FUiZoVcNlIT9og1elh7KWdS?=
+ =?us-ascii?Q?yFOPCHlwpJYu3gedtSoKLHRuLauPL4BNktLUliPLaMO90Cdomf5VWJSCu00W?=
+ =?us-ascii?Q?L+fsAaalAtVPuj+FW43ZdHMxS+UfwFw4ijVhNIJGlS0tP5Fl2SP4VIRYQzTq?=
+ =?us-ascii?Q?4pUFBJF0pdnzya4STHbgawu+Nwugs2FaapN6gxb3+RUqXGJ0Y3wNFs967Jzu?=
+ =?us-ascii?Q?1viTjid3e+8DiijYia81ZO3a7xpXB6Y5AX+LR68T8HgAUyWlV1selddxhELz?=
+ =?us-ascii?Q?5ZSg7Aw2aTqxwJRMpUaeNkR3aUOe+7INtzzu1Vgv6lUlG6ofNdRBkc3Zgqrt?=
+ =?us-ascii?Q?wymAOXO96usYQIT5SFSQ62d5h3jAKwpiu7BtJperW+p8BOixu32v84858YjQ?=
+ =?us-ascii?Q?n6GR/PSx/cjdDwiLt4FRfqF2YucQFsgtmLH0BAxdiTvPw/hWr5PqDYK5Orbt?=
+ =?us-ascii?Q?zBqJpD2LsFoKSgsGYgf9lUXroHqin3K3iYJQYjV4sy/Mf0iQ5Vwi3cHztFs3?=
+ =?us-ascii?Q?Gm49eGEKKNFD1cc1YIgV64uCXzSyQ3xOKdW2SZhcbeJFE8QmZxaJznSTCFBQ?=
+ =?us-ascii?Q?b7LskQ0AnND3eI6dkkwaw+YxpGyuqElsKu4Kei3RezNtYWhNJNPVNPl1G61P?=
+ =?us-ascii?Q?YlrsAxfTpcpmrxXTAL8gagRw93WUNKx/PXb6rJTpPrY=3D?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR10MB4759.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Jan 2021 03:29:38.0006
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-Network-Message-Id: d70a6cae-1b56-4c17-52b2-08d8b385a0b6
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 2dKyQ467mkOL8kE5QsmO89Zdl1LBYU6ezIEsxGg5mpnSO3SB/fX/KcnTj9p9/rfWbUQAIK2bB6BrdYKZ5Ei7fZ3k4xz4fCrak5x0Oz2IZX8=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR10MB4405
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9857 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 malwarescore=0 adultscore=0
+ phishscore=0 spamscore=0 mlxlogscore=964 suspectscore=0 bulkscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2101080017
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9857 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 bulkscore=0 spamscore=0
+ impostorscore=0 phishscore=0 lowpriorityscore=0 suspectscore=0
+ priorityscore=1501 mlxscore=0 malwarescore=0 clxscore=1011 mlxlogscore=999
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2101080018
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 07 Dec 2020 20:55:32 PST (-0800), yash.shah@sifive.com wrote:
-> Start board support by adding initial support for the SiFive FU740 SoC
-> and the first development board that uses it, the SiFive HiFive
-> Unmatched A00.
->
-> Boot-tested on Linux 5.10-rc4 on a HiFive Unmatched A00 board using the
-> U-boot and OpenSBI.
->
-> This patch series is dependent on Zong's Patchset[0]. The patchset also
-> adds two new nodes in dtsi file. The binding documentation patch
-> for these nodes are already posted on the mailing list[1][2].
->
-> [0]: https://lore.kernel.org/linux-riscv/20201130082330.77268-4-zong.li@sifive.com/T/#u
-> [1]: https://lore.kernel.org/linux-riscv/1606714984-16593-1-git-send-email-yash.shah@sifive.com/T/#t
-> [2]: https://lore.kernel.org/linux-riscv/20201126030043.67390-1-zong.li@sifive.com/T/#u
->
-> Changes in v2:
-> - The dt bindings patch is split into several individual patches.
-> - Expand the full list for compatible strings in i2c-ocores.txt
->
-> Yash Shah (9):
->   dt-bindings: riscv: Update DT binding docs to support SiFive FU740 SoC
->   dt-bindings: spi: Update DT binding docs to support SiFive FU740 SoC
->   dt-bindings: pwm: Update DT binding docs to support SiFive FU740 SoC
->   dt-bindings: serial: Update DT binding docs to support SiFive FU740
->     SoC
->   dt-bindings: gpio: Update DT binding docs to support SiFive FU740 SoC
->   dt-bindings: i2c: Update DT binding docs to support SiFive FU740 SoC
->   riscv: dts: add initial support for the SiFive FU740-C000 SoC
->   dt-bindings: riscv: Update YAML doc to support SiFive HiFive Unmatched
->     board
->   riscv: dts: add initial board data for the SiFive HiFive Unmatched
->
->  .../devicetree/bindings/gpio/sifive,gpio.yaml      |   4 +-
->  .../devicetree/bindings/i2c/i2c-ocores.txt         |   8 +-
->  .../devicetree/bindings/pwm/pwm-sifive.yaml        |   9 +-
->  Documentation/devicetree/bindings/riscv/cpus.yaml  |   6 +
->  .../devicetree/bindings/riscv/sifive.yaml          |  17 +-
->  .../devicetree/bindings/serial/sifive-serial.yaml  |   4 +-
->  .../devicetree/bindings/spi/spi-sifive.yaml        |  10 +-
->  arch/riscv/boot/dts/sifive/Makefile                |   3 +-
->  arch/riscv/boot/dts/sifive/fu740-c000.dtsi         | 293 +++++++++++++++++++++
->  .../riscv/boot/dts/sifive/hifive-unmatched-a00.dts | 253 ++++++++++++++++++
->  10 files changed, 590 insertions(+), 17 deletions(-)
->  create mode 100644 arch/riscv/boot/dts/sifive/fu740-c000.dtsi
->  create mode 100644 arch/riscv/boot/dts/sifive/hifive-unmatched-a00.dts
 
-Thanks, these are on for-next.  There was one checkpatch warning about the
-missing ISSI device tree entry, but we already had that in the FU540 so I'm OK
-letting it slide.
+Bean,
 
-I'm also not really sure this is the right way to do this sort of thing: most
-of the patches here really aren't RISC-V things, they're SiFive SOC things.
-Some of these patches have been picked up by other trees, but I just took the
-rest.  I'm not all that happy about taking DT bindings for things like GPIO or
-PWM bindings, but as they're pretty small I'm OK doing it in this instance.
+> Bean Huo (6):
+>   scsi: ufs: Remove stringize operator '#' restriction
+>   scsi: ufs: Use __print_symbolic() for UFS trace string print
+>   scsi: ufs: Don't call trace_ufshcd_upiu() in case trace poit is
+>     disabled
+>   scsi: ufs: Distinguish between query REQ and query RSP in query trace
+>   scsi: ufs: Distinguish between TM request UPIU and response UPIU in TM
+>     UPIU trace
+>   scsi: ufs: Make UPIU trace easier differentiate among CDB, OSF, and TM
 
-In the future it would really be better to split these up and land them via
-their respectitve trees, rather than trying to do all the SOC stuff over here.
-I know that can be a headache, but we have that SOC group for this purpose to
-try and keep things a bit more together -- I know it was a while ago and there
-really hasn't been much SOC activity on the RISC-V side of things so maybe it
-hasn't been that widley discussed, but that was really designed to solve these
-sorts of problems.
+Applied to 5.12/scsi-staging, thanks!
+
+-- 
+Martin K. Petersen	Oracle Linux Engineering
