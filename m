@@ -2,101 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 663922EF18E
+	by mail.lfdr.de (Postfix) with ESMTP id D33382EF18F
 	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 12:45:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726662AbhAHLon (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Jan 2021 06:44:43 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:31958 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725869AbhAHLon (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Jan 2021 06:44:43 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1610106196;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
+        id S1726952AbhAHLpC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Jan 2021 06:45:02 -0500
+Received: from mx2.suse.de ([195.135.220.15]:51786 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726712AbhAHLpB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 Jan 2021 06:45:01 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1610106255; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=ctBL/5oSz6RkrBnr0MEEZUVCK5FyLIpgAD8MYSed/SQ=;
-        b=eYmG6DWFHrrA++ptV8obC/MjD7uPZgz2jSi/UUkUROV9D88r5itdN/8AYZyUhUT2eDZEnY
-        McI5GFf79Xb11VC4M0rMgIw+tpYS6iK/SlPEBucdhICU58OpT6DYbSyFa06zSXUlVO1cYt
-        Kksf48S/3Xw+7MMw3iOi+rUrFr4MNC8=
-Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
- [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-24-_Bzccef3NDWIUiX2Jy-gFw-1; Fri, 08 Jan 2021 06:43:15 -0500
-X-MC-Unique: _Bzccef3NDWIUiX2Jy-gFw-1
-Received: by mail-wr1-f71.google.com with SMTP id i4so4025902wrm.21
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Jan 2021 03:43:15 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=ctBL/5oSz6RkrBnr0MEEZUVCK5FyLIpgAD8MYSed/SQ=;
-        b=hRqFtQx1erdpmj1ObKWfzt27PsvL5S/xntaLQXacJdLBbX8Mu6sV0LfkjPcAcFBGmp
-         3LTf8irZ6HfgEYKGSAkH7M8n9XULHfo6CDRCcrTH+0V63B1h6UmbG4qkNKJD4ha0rVAk
-         oA5/p3JXieFXCxjajYh/ojmqB4fPGzqIC9A6MakZmkq2HDVT3QQL3bMh0qsDP31dfTqK
-         Q53UnkQBOcIqFOshMAJ2IIm+KU3Pi/tNQxhDSzN2PSYrMP8HM1hCHC6EQ05fS37xcygJ
-         GklifBEmETnEUAMgmXdShN+s10oaA4JgI+4OvoEW9+bu4deDhMqSlKQIe2oVr5CAVmY0
-         FWHw==
-X-Gm-Message-State: AOAM531nw9vPFoMZQLdBoqVt5l/+ekHeEhkbZ+lh0zyZRE2ywUcVLuab
-        mf5t/BLQAGXf11Z2xuHkwXSFpTQrEyhTS5INqFDuLYglNFk+Vbb++2OZOMVSkGW06rlrQHY9T1m
-        0SQaxmzGRTVBJ9ZdFfqR0IFr0qdQhBpN1ES09FcyvYkbyZPDRPV0g6RQYNYRkTrCmq400UP4PHv
-        TI
-X-Received: by 2002:a5d:5146:: with SMTP id u6mr3283025wrt.46.1610106193614;
-        Fri, 08 Jan 2021 03:43:13 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJwXlYfELChnMCDAy12qWAx4O8ZhccSQ3iS6OlkpsACSthzQkK8nrEaswpfVSl0bHosSFcM0gg==
-X-Received: by 2002:a5d:5146:: with SMTP id u6mr3283001wrt.46.1610106193390;
-        Fri, 08 Jan 2021 03:43:13 -0800 (PST)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id y63sm12077452wmd.21.2021.01.08.03.43.12
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 08 Jan 2021 03:43:12 -0800 (PST)
-Subject: Re: [PATCH v2] misc: pvpanic: introduce device capability
-To:     Greg KH <gregkh@linuxfoundation.org>,
-        zhenwei pi <pizhenwei@bytedance.com>
-Cc:     arnd@arndb.de, linux-kernel@vger.kernel.org
-References: <20210108111710.2665279-1-pizhenwei@bytedance.com>
- <X/hB7ejy7XtjNO68@kroah.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <12aebc37-aaba-2ed2-d944-c80eeac6f052@redhat.com>
-Date:   Fri, 8 Jan 2021 12:43:11 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+        bh=juA/rjimuf4amfdEX7RimPAoa1+KKf3TgHYaOyIieVc=;
+        b=ABRrKYRoUt1hlvtpqGqNDKbnd18yaddIlZxNbdkb//XHcmeG43N+dnToStz7d8qALCrV8o
+        E9F3jB06j1uTHLsSuyyU0H4WRZ29PSFWolcE1r7yII23QBt+BGsbMSC5ISZT2O7cjLhzz6
+        HnZ59ppWuTk7rEbPRgOHdkY1kzE/Ty0=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id D895DADE6;
+        Fri,  8 Jan 2021 11:44:14 +0000 (UTC)
+Date:   Fri, 8 Jan 2021 12:44:11 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     Muchun Song <songmuchun@bytedance.com>
+Cc:     Mike Kravetz <mike.kravetz@oracle.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Naoya Horiguchi <n-horiguchi@ah.jp.nec.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [External] Re: [PATCH v2 3/6] mm: hugetlb: fix a race between
+ freeing and dissolving the page
+Message-ID: <20210108114411.GZ13207@dhcp22.suse.cz>
+References: <20210107111827.GG13207@dhcp22.suse.cz>
+ <CAMZfGtV_k=FxcWfazpuT=3ByXSqK-CH-E3yRQUE_dG6JMnAZeg@mail.gmail.com>
+ <20210107123854.GJ13207@dhcp22.suse.cz>
+ <CAMZfGtWUP1H47ZGcczsmqsQvxYP=FK9vYVr8WbOY_9UG2SCv0A@mail.gmail.com>
+ <20210107141130.GL13207@dhcp22.suse.cz>
+ <CAMZfGtW8hDxV_5isGTNLQMFttoymRwxc2N7nEgqxLLj6t5oN3g@mail.gmail.com>
+ <20210108084330.GW13207@dhcp22.suse.cz>
+ <CAMZfGtUy740SbsCW_h1NaP5O=ahSZniezkC+62pxZ5bW+vZpBg@mail.gmail.com>
+ <20210108093136.GY13207@dhcp22.suse.cz>
+ <CAMZfGtXhMDjw=C8XBUwsQLD7ZLv5osoLWy+RJzqY11WFm07GwQ@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <X/hB7ejy7XtjNO68@kroah.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAMZfGtXhMDjw=C8XBUwsQLD7ZLv5osoLWy+RJzqY11WFm07GwQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 08/01/21 12:28, Greg KH wrote:
->>   static void __iomem *base;
->> +static unsigned int capability = PVPANIC_PANICKED | PVPANIC_CRASH_LOADED;
->> +module_param(capability, uint, 0444);
->> +MODULE_PARM_DESC(capability, "capability of pvpanic device");
-> This is not the 1990's, please do not add new module parameters:(
+On Fri 08-01-21 18:08:57, Muchun Song wrote:
+> On Fri, Jan 8, 2021 at 5:31 PM Michal Hocko <mhocko@suse.com> wrote:
+> >
+> > On Fri 08-01-21 17:01:03, Muchun Song wrote:
+> > > On Fri, Jan 8, 2021 at 4:43 PM Michal Hocko <mhocko@suse.com> wrote:
+> > > >
+> > > > On Thu 07-01-21 23:11:22, Muchun Song wrote:
+> > [..]
+> > > > > But I find a tricky problem to solve. See free_huge_page().
+> > > > > If we are in non-task context, we should schedule a work
+> > > > > to free the page. We reuse the page->mapping. If the page
+> > > > > is already freed by the dissolve path. We should not touch
+> > > > > the page->mapping. So we need to check PageHuge().
+> > > > > The check and llist_add() should be protected by
+> > > > > hugetlb_lock. But we cannot do that. Right? If dissolve
+> > > > > happens after it is linked to the list. We also should
+> > > > > remove it from the list (hpage_freelist). It seems to make
+> > > > > the thing more complex.
+> > > >
+> > > > I am not sure I follow you here but yes PageHuge under hugetlb_lock
+> > > > should be the reliable way to check for the race. I am not sure why we
+> > > > really need to care about mapping or other state.
+> > >
+> > > CPU0:                               CPU1:
+> > > free_huge_page(page)
+> > >   if (PageHuge(page))
+> > >                                     dissolve_free_huge_page(page)
+> > >                                       spin_lock(&hugetlb_lock)
+> > >                                       update_and_free_page(page)
+> > >                                       spin_unlock(&hugetlb_lock)
+> > >     llist_add(page->mapping)
+> > >     // the mapping is corrupted
+> > >
+> > > The PageHuge(page) and llist_add() should be protected by
+> > > hugetlb_lock. Right? If so, we cannot hold hugetlb_lock
+> > > in free_huge_page() path.
+> >
+> > OK, I see. I completely forgot about this snowflake. I thought that
+> > free_huge_page was a typo missing initial __. Anyway you are right that
+> > this path needs a check as well. But I don't see why we couldn't use the
+> > lock here. The lock can be held only inside the !in_task branch.
+> 
+> Because we hold the hugetlb_lock without disable irq. So if an interrupt
+> occurs after we hold the lock. And we also free a HugeTLB page. Then
+> it leads to deadlock.
 
-Note that the parameter can also be used to _limit_ which capabilities 
-the driver uses:
-
-v1:
-
-> +	/* initlize capability by RDPT */
-> +	capability = ioread8(base);
-
-v2:
-
-> +	/* initlize capability by RDPT */
-> +	capability &= ioread8(base);
-
-Of course it would have helped if there was a summary of v1->v2 changes 
-in the message. :)
-
-Paolo
-
-> Use sysfs, and properly document the file in Documentation/ABI/
-
+There is nothing really to prevent making hugetlb_lock irq safe, isn't
+it?
+-- 
+Michal Hocko
+SUSE Labs
