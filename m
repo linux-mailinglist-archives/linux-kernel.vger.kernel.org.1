@@ -2,281 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BA192EF16B
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 12:35:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 302BC2EF16D
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 12:35:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727362AbhAHLey (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Jan 2021 06:34:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55924 "EHLO
+        id S1727395AbhAHLfC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Jan 2021 06:35:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55930 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727113AbhAHLer (ORCPT
+        with ESMTP id S1727132AbhAHLer (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 8 Jan 2021 06:34:47 -0500
-Received: from mail-pl1-x636.google.com (mail-pl1-x636.google.com [IPv6:2607:f8b0:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2461BC0612A9
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Jan 2021 03:33:10 -0800 (PST)
-Received: by mail-pl1-x636.google.com with SMTP id be12so5519735plb.4
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Jan 2021 03:33:10 -0800 (PST)
+Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B68B0C0612F4;
+        Fri,  8 Jan 2021 03:34:01 -0800 (PST)
+Received: by mail-wr1-x433.google.com with SMTP id r7so8669023wrc.5;
+        Fri, 08 Jan 2021 03:34:01 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=uOArHEk74zxp/6R3wPGuqn1ZRRiW7s9F52OXIpe5TrE=;
-        b=stQBnjAadctlpxO7/dJzEgv+2cNh7ivO3jj17260oDuigH98Qk74MpYVdozDIrL7kH
-         6t7HPqGdFXsi+7E9NKCuHv8OS907eF3zPxSeqkwvzztQLmn/GXxJPNNEfSIIpbU9OVXk
-         56Oe/yUit+UiNNyzhnUrHW/U79VGnBJTUezvICJT+AGom6lqQ/eqZl/IPHcx71logWgX
-         sH+jwIJi4gSQEWwF1txk8pph89s6/qh97u4oSl02MrQzGE608JHy4AtjGnpOPVXG5MyC
-         Ggs5njlpJ9tOhDXTsNhR3S72q/XptcIR8F1+uRtu1bK/1+iMYYYErOAOFLALKoVAzKsp
-         OsfQ==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=nEc5wG3dILAGk32bL1jujPzJlzS0QKkC1c/kQMfY5N8=;
+        b=hIFrMTB3S+rVuuFdrk8zk/CaNWPHJfeNY7BFvbSSacGai+bOhV7u6eN3HpUjKSV127
+         iBBmZipZMLFv0uk96RlbxHnSqrGgR4vDmowkKeHwD3Q+BN4nvNrVaGMCncTjK+b4OK7z
+         gl09CRyJ6oCv0zdGqkPx+na5S0dR0YoWaZrgfwWj7fDjnMES7OF8E13zV505q0IyRlwy
+         tNyI8+P/Dwylvr92HvYe6+tIIt0WPIM5OEf9k9Nspok89WAZpA3ZZ1S5CxK8c3x6gRjr
+         c0P7AghE0+VK/I9JDCCsakvYJgTTqpo4CdzCuBGr2Qbc8DWzrSrD3GS4vOrSNi3ircrt
+         Tv9A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=uOArHEk74zxp/6R3wPGuqn1ZRRiW7s9F52OXIpe5TrE=;
-        b=anRSXS+58mXwOcBHPQj/TWQF8fBi9tygzAxTUH+h70n0ramKvq09VLbl2HBTfRDm4F
-         JkHx+0C13/OohwDPBIg1MbMMbFH4Kix3Jdxn4ONcdYN3vXHvPGZf7z5w41Zo1h/Wx8Br
-         XfTxRlrl7g0SrjkVB0bxVO8y8p/nIqQf9ekyzFjgNh2hZPsNz+J8AMhBk49GSXimZwlG
-         WKdRjREK5Yy8++5+AvUfXeESHneq8+IF3YDfPVCGWo9/yivRMBB5IyIeMRzowEUehqdQ
-         uJVlpIr6T/otPOKtA4gtknSIXqnZrNEoA3C8ngl6AtiX9PjDWNcA5pvwLAQaTyV4KSym
-         PdlQ==
-X-Gm-Message-State: AOAM533t1fENNV90zPHXNxzdNwKWibtc5FqHfheOVwlVSbaXcms8WNgZ
-        oHd2OALsdjrO/6NhGoyPiyE8
-X-Google-Smtp-Source: ABdhPJxKghmviKmrfdxuoG+n7DZl7uukwQ3AjAxxM+Aod5gjLB+4O7OdnTna1BTxIR/ZRYyznFDQxg==
-X-Received: by 2002:a17:90a:fa0c:: with SMTP id cm12mr3301258pjb.87.1610105589575;
-        Fri, 08 Jan 2021 03:33:09 -0800 (PST)
-Received: from localhost.localdomain ([103.77.37.188])
-        by smtp.gmail.com with ESMTPSA id i25sm9261573pgb.33.2021.01.08.03.33.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 08 Jan 2021 03:33:08 -0800 (PST)
-From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To:     mturquette@baylibre.com, sboyd@kernel.org, robh+dt@kernel.org,
-        jassisinghbrar@gmail.com
-Cc:     viresh.kumar@linaro.org, ulf.hansson@linaro.org,
-        bjorn.andersson@linaro.org, agross@kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Subject: [PATCH v2 5/5] clk: qcom: Add SDX55 APCS clock controller support
-Date:   Fri,  8 Jan 2021 17:02:33 +0530
-Message-Id: <20210108113233.75418-6-manivannan.sadhasivam@linaro.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210108113233.75418-1-manivannan.sadhasivam@linaro.org>
-References: <20210108113233.75418-1-manivannan.sadhasivam@linaro.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=nEc5wG3dILAGk32bL1jujPzJlzS0QKkC1c/kQMfY5N8=;
+        b=WGIpptkeN/yeoIPr9adxfpAaVcK01J6a6vSEt0BgCmQxG088HC3sEv1DP2hd0EHgu/
+         Pe1neaDzu2YeT1Vmz+0z6DZh8esw96sspLdyOmCtPeuro0ZAowz7WV/DNMDp+iv4RHmK
+         RIQ06OLIQSzEF4wCqOqX+w9YDQp/AEPRBAOHms/belNEt1FPXxMMDwn5J/TieleB3BWM
+         Wad522Kf1EJKcJCo/7Vf025C3ZRWVO1a6npA+5AIYTgZ1XO21+9Q4UNPV1L9cYDur7GA
+         E8g3+5jyvaahCp8tSUTJtPIuKsXWM4w23nFCmbDgc1NpT7oHy/Xkg0i8obBTK+0MmkFm
+         t1JA==
+X-Gm-Message-State: AOAM532Uw2uII13eznVVCgsddCFBS2vFMonPVu+tZ7fONSlu0url5saV
+        OixMaR5uxb8/iVJ7ujo6B5OvnKYbmQMoXR7ICp8=
+X-Google-Smtp-Source: ABdhPJxoWjNkep0c2aYKAL7kFh3Z7DoXzlAjVZ7GuVFKaPKYi0xepL6M9O6IiOMlXmnqZPyeYImKYuC4797dnlCDJ60=
+X-Received: by 2002:a5d:60c1:: with SMTP id x1mr3214644wrt.271.1610105640518;
+ Fri, 08 Jan 2021 03:34:00 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20201223111633.1711477-1-zhang.lyra@gmail.com> <20210108022545.GA1744725@robh.at.kernel.org>
+In-Reply-To: <20210108022545.GA1744725@robh.at.kernel.org>
+From:   Chunyan Zhang <zhang.lyra@gmail.com>
+Date:   Fri, 8 Jan 2021 19:33:24 +0800
+Message-ID: <CAAfSe-svn4ACvhk3McO7APLLSKdC=9ei7bvmD9ZhnSosnLQ1AA@mail.gmail.com>
+Subject: Re: [RFC PATCH 1/2] dt-bindings: iommu: add bindings for sprd iommu
+To:     Rob Herring <robh@kernel.org>
+Cc:     Joerg Roedel <joro@8bytes.org>, iommu@lists.linux-foundation.org,
+        DTML <devicetree@vger.kernel.org>,
+        Baolin Wang <baolin.wang7@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Orson Zhai <orsonzhai@gmail.com>,
+        Sheng Xu <sheng.xu@unisoc.com>,
+        Kevin Tang <kevin.tang@unisoc.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add a driver for the SDX55 APCS clock controller. It is part of the APCS
-hardware block, which among other things implements also a combined mux
-and half integer divider functionality. The APCS clock controller has 3
-parent clocks:
+On Fri, 8 Jan 2021 at 10:25, Rob Herring <robh@kernel.org> wrote:
+>
+> On Wed, Dec 23, 2020 at 07:16:32PM +0800, Chunyan Zhang wrote:
+> > From: Chunyan Zhang <chunyan.zhang@unisoc.com>
+> >
+> > This patch only adds bindings to support display iommu, support for others
+> > would be added once finished tests with those devices, such as Image
+> > codec(jpeg) processor, a few signal processors, including VSP(video),
+> > GSP(graphic), ISP(image), and camera CPP, etc.
+> >
+> > Signed-off-by: Chunyan Zhang <chunyan.zhang@unisoc.com>
+> > ---
+> >  .../devicetree/bindings/iommu/sprd,iommu.yaml | 44 +++++++++++++++++++
+> >  1 file changed, 44 insertions(+)
+> >  create mode 100644 Documentation/devicetree/bindings/iommu/sprd,iommu.yaml
+> >
+> > diff --git a/Documentation/devicetree/bindings/iommu/sprd,iommu.yaml b/Documentation/devicetree/bindings/iommu/sprd,iommu.yaml
+> > new file mode 100644
+> > index 000000000000..4d9a578a7cc9
+> > --- /dev/null
+> > +++ b/Documentation/devicetree/bindings/iommu/sprd,iommu.yaml
+> > @@ -0,0 +1,44 @@
+> > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> > +# Copyright 2020 Unisoc Inc.
+> > +%YAML 1.2
+> > +---
+> > +$id: http://devicetree.org/schemas/iommu/sprd,iommu.yaml#
+> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > +
+> > +title: Unisoc IOMMU and Multi-media MMU
+> > +
+> > +maintainers:
+> > +  - Chunyan Zhang <zhang.lyra@gmail.com>
+> > +
+> > +properties:
+> > +  compatible:
+> > +    enum:
+> > +      - sprd,iommu-disp
+>
+> Needs to be Soc specific.
 
-1. Board XO
-2. Fixed rate GPLL0
-3. A7 PLL
+All SoCs so far use the same iommu IP, there's a little different
+among different iommu users.
 
-The source and the divider can be set both at the same time.
+> Is this block specific to display subsys or
+> that just happens to be where the instance is?
 
-This is required for enabling CPU frequency scaling on SDX55-based
-platforms.
+This iommu driver can serve many subsystem devices, such as Video,
+Camera, Image, etc., but they have their own iommu module which looks
+like a subdevice embedded in the master devices.
+I will add more compatible strings for those devices when needed.
+For now, only this one was listed here because I just tested this
+iommu driver with DPU only.
 
-Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
----
- drivers/clk/qcom/Kconfig      |   9 ++
- drivers/clk/qcom/Makefile     |   1 +
- drivers/clk/qcom/apcs-sdx55.c | 149 ++++++++++++++++++++++++++++++++++
- 3 files changed, 159 insertions(+)
- create mode 100644 drivers/clk/qcom/apcs-sdx55.c
+Thanks for the review.
 
-diff --git a/drivers/clk/qcom/Kconfig b/drivers/clk/qcom/Kconfig
-index d6f4aee4427a..2c67fdfae913 100644
---- a/drivers/clk/qcom/Kconfig
-+++ b/drivers/clk/qcom/Kconfig
-@@ -45,6 +45,15 @@ config QCOM_CLK_APCS_MSM8916
- 	  Say Y if you want to support CPU frequency scaling on devices
- 	  such as msm8916.
- 
-+config QCOM_CLK_APCS_SDX55
-+	tristate "SDX55 APCS Clock Controller"
-+	depends on QCOM_APCS_IPC || COMPILE_TEST
-+	help
-+	  Support for the APCS Clock Controller on SDX55 platform. The
-+	  APCS is managing the mux and divider which feeds the CPUs.
-+	  Say Y if you want to support CPU frequency scaling on devices
-+	  such as SDX55.
-+
- config QCOM_CLK_APCC_MSM8996
- 	tristate "MSM8996 CPU Clock Controller"
- 	select QCOM_KRYO_L2_ACCESSORS
-diff --git a/drivers/clk/qcom/Makefile b/drivers/clk/qcom/Makefile
-index e7e0ac382176..a9271f40916c 100644
---- a/drivers/clk/qcom/Makefile
-+++ b/drivers/clk/qcom/Makefile
-@@ -46,6 +46,7 @@ obj-$(CONFIG_MSM_MMCC_8998) += mmcc-msm8998.o
- obj-$(CONFIG_QCOM_A53PLL) += a53-pll.o
- obj-$(CONFIG_QCOM_A7PLL) += a7-pll.o
- obj-$(CONFIG_QCOM_CLK_APCS_MSM8916) += apcs-msm8916.o
-+obj-$(CONFIG_QCOM_CLK_APCS_SDX55) += apcs-sdx55.o
- obj-$(CONFIG_QCOM_CLK_APCC_MSM8996) += clk-cpu-8996.o
- obj-$(CONFIG_QCOM_CLK_RPM) += clk-rpm.o
- obj-$(CONFIG_QCOM_CLK_RPMH) += clk-rpmh.o
-diff --git a/drivers/clk/qcom/apcs-sdx55.c b/drivers/clk/qcom/apcs-sdx55.c
-new file mode 100644
-index 000000000000..14413c957d83
---- /dev/null
-+++ b/drivers/clk/qcom/apcs-sdx55.c
-@@ -0,0 +1,149 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Qualcomm SDX55 APCS clock controller driver
-+ *
-+ * Copyright (c) 2020, Linaro Limited
-+ * Author: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-+ */
-+
-+#include <linux/clk.h>
-+#include <linux/clk-provider.h>
-+#include <linux/cpu.h>
-+#include <linux/kernel.h>
-+#include <linux/module.h>
-+#include <linux/platform_device.h>
-+#include <linux/pm_domain.h>
-+#include <linux/regmap.h>
-+#include <linux/slab.h>
-+
-+#include "clk-regmap.h"
-+#include "clk-regmap-mux-div.h"
-+#include "common.h"
-+
-+static const u32 apcs_mux_clk_parent_map[] = { 0, 1, 5 };
-+
-+static const struct clk_parent_data pdata[] = {
-+	{ .fw_name = "ref", .name = "bi_tcxo", },
-+	{ .fw_name = "aux", .name = "gpll0", },
-+	{ .fw_name = "pll", .name = "a7pll", },
-+};
-+
-+/*
-+ * We use the notifier function for switching to a temporary safe configuration
-+ * (mux and divider), while the A7 PLL is reconfigured.
-+ */
-+static int a7cc_notifier_cb(struct notifier_block *nb, unsigned long event,
-+			    void *data)
-+{
-+	int ret = 0;
-+	struct clk_regmap_mux_div *md = container_of(nb,
-+						     struct clk_regmap_mux_div,
-+						     clk_nb);
-+	if (event == PRE_RATE_CHANGE)
-+		/* set the mux and divider to safe frequency (400mhz) */
-+		ret = mux_div_set_src_div(md, 1, 2);
-+
-+	return notifier_from_errno(ret);
-+}
-+
-+static int qcom_apcs_sdx55_clk_probe(struct platform_device *pdev)
-+{
-+	struct device *dev = &pdev->dev;
-+	struct device *parent = dev->parent;
-+	struct device *cpu_dev;
-+	struct clk_regmap_mux_div *a7cc;
-+	struct regmap *regmap;
-+	struct clk_init_data init = { };
-+	int ret = -ENODEV;
-+
-+	regmap = dev_get_regmap(parent, NULL);
-+	if (!regmap) {
-+		dev_err(dev, "Failed to get parent regmap: %d\n", ret);
-+		return ret;
-+	}
-+
-+	a7cc = devm_kzalloc(dev, sizeof(*a7cc), GFP_KERNEL);
-+	if (!a7cc)
-+		return -ENOMEM;
-+
-+	init.name = "a7mux";
-+	init.parent_data = pdata;
-+	init.num_parents = ARRAY_SIZE(pdata);
-+	init.ops = &clk_regmap_mux_div_ops;
-+
-+	a7cc->clkr.hw.init = &init;
-+	a7cc->clkr.regmap = regmap;
-+	a7cc->reg_offset = 0x8;
-+	a7cc->hid_width = 5;
-+	a7cc->hid_shift = 0;
-+	a7cc->src_width = 3;
-+	a7cc->src_shift = 8;
-+	a7cc->parent_map = apcs_mux_clk_parent_map;
-+
-+	a7cc->pclk = devm_clk_get(parent, "pll");
-+	if (IS_ERR(a7cc->pclk)) {
-+		ret = PTR_ERR(a7cc->pclk);
-+		if (ret != -EPROBE_DEFER)
-+			dev_err(dev, "Failed to get PLL clk: %d\n", ret);
-+		return ret;
-+	}
-+
-+	a7cc->clk_nb.notifier_call = a7cc_notifier_cb;
-+	ret = clk_notifier_register(a7cc->pclk, &a7cc->clk_nb);
-+	if (ret) {
-+		dev_err(dev, "Failed to register clock notifier: %d\n", ret);
-+		return ret;
-+	}
-+
-+	ret = devm_clk_register_regmap(dev, &a7cc->clkr);
-+	if (ret) {
-+		dev_err(dev, "Failed to register regmap clock: %d\n", ret);
-+		goto err;
-+	}
-+
-+	ret = devm_of_clk_add_hw_provider(dev, of_clk_hw_simple_get,
-+					  &a7cc->clkr.hw);
-+	if (ret) {
-+		dev_err(dev, "Failed to add clock provider: %d\n", ret);
-+		goto err;
-+	}
-+
-+	platform_set_drvdata(pdev, a7cc);
-+
-+	/*
-+	 * Attach the power domain to cpudev. There seems to be no better place
-+	 * to do this, so do it here.
-+	 */
-+	cpu_dev = get_cpu_device(0);
-+	dev_pm_domain_attach(cpu_dev, true);
-+
-+	return 0;
-+
-+err:
-+	clk_notifier_unregister(a7cc->pclk, &a7cc->clk_nb);
-+	return ret;
-+}
-+
-+static int qcom_apcs_sdx55_clk_remove(struct platform_device *pdev)
-+{
-+	struct device *cpu_dev = get_cpu_device(0);
-+	struct clk_regmap_mux_div *a7cc = platform_get_drvdata(pdev);
-+
-+	clk_notifier_unregister(a7cc->pclk, &a7cc->clk_nb);
-+	dev_pm_domain_detach(cpu_dev, true);
-+
-+	return 0;
-+}
-+
-+static struct platform_driver qcom_apcs_sdx55_clk_driver = {
-+	.probe = qcom_apcs_sdx55_clk_probe,
-+	.remove = qcom_apcs_sdx55_clk_remove,
-+	.driver = {
-+		.name = "qcom-sdx55-acps-clk",
-+	},
-+};
-+module_platform_driver(qcom_apcs_sdx55_clk_driver);
-+
-+MODULE_AUTHOR("Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>");
-+MODULE_LICENSE("GPL v2");
-+MODULE_DESCRIPTION("Qualcomm SDX55 APCS clock driver");
--- 
-2.25.1
+Chunyan
 
+>
+> > +
+> > +  reg:
+> > +    maxItems: 1
+> > +
+> > +  "#iommu-cells":
+> > +    const: 0
+> > +    description:
+> > +      Unisoc IOMMUs are all single-master IOMMU devices, therefore no
+> > +      additional information needs to associate with its master device.
+> > +      Please refer to the generic bindings document for more details,
+> > +      Documentation/devicetree/bindings/iommu/iommu.txt
+> > +
+> > +required:
+> > +  - compatible
+> > +  - reg
+> > +  - "#iommu-cells"
+> > +
+> > +additionalProperties: false
+> > +
+> > +examples:
+> > +  - |
+> > +    iommu_disp: iommu@63000000 {
+> > +      compatible = "sprd,iommu-disp";
+> > +      reg = <0x63000000 0x880>;
+> > +      #iommu-cells = <0>;
+> > +    };
+> > +
+> > +...
+> > --
+> > 2.25.1
+> >
