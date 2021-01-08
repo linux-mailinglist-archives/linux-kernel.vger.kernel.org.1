@@ -2,133 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C322C2EF35A
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 14:45:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D4BE22EF35E
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 14:46:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727965AbhAHNoy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Jan 2021 08:44:54 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38998 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727477AbhAHNow (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Jan 2021 08:44:52 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C1D252399A;
-        Fri,  8 Jan 2021 13:44:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610113451;
-        bh=h+vDHTOmaGWbBmJWkFpmvIx5STIK8nENF4fEjQtdhuk=;
-        h=Date:From:To:cc:Subject:In-Reply-To:References:From;
-        b=q1RDuBeMA8aiW2uuttqMmoK+rCxfzwEaw5CQAb1NbGfQCv8xd4p/eGF6xg2/yStjx
-         wAlJtZai7dJDFJWdyY2k9UBpPYf3Lv/FaB8p4DEUfTL14skDoSgF61L2pNSJLiwM/G
-         XjSByFc2jzvheU5C9+2pFsT17bGDd1K4v5RtKwAP8cHlqgmIIwO7NYdvD5CaCcwHNm
-         R3X9lteQdoLXwFJVdbq6LpeXu++38KoVJKNLuWvQ77wCL8GDB/nuBNmo5GHMqJ0GgH
-         lj7EAsWawnrbJHeSDH9n3OKv342iA7M03lKzvLmS2siRp8a3H2MuWVysYactj1enbk
-         4LEbb3iN7wUyA==
-Date:   Fri, 8 Jan 2021 14:44:08 +0100 (CET)
-From:   Jiri Kosina <jikos@kernel.org>
-To:     =?ISO-8859-15?Q?Filipe_La=EDns?= <lains@archlinux.org>
-cc:     Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] HID: logitech-hidpp: add support for Unified Battery
- (1004) feature
-In-Reply-To: <20210104182937.1472673-1-lains@archlinux.org>
-Message-ID: <nycvar.YFH.7.76.2101081438530.13752@cbobk.fhfr.pm>
-References: <20210104182937.1472673-1-lains@archlinux.org>
-User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
+        id S1727748AbhAHNqC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Jan 2021 08:46:02 -0500
+Received: from mail-lf1-f53.google.com ([209.85.167.53]:41479 "EHLO
+        mail-lf1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725816AbhAHNqB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 Jan 2021 08:46:01 -0500
+Received: by mail-lf1-f53.google.com with SMTP id s26so22969319lfc.8;
+        Fri, 08 Jan 2021 05:45:44 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=hcPn4TWQQPUZScLPb9Qm3OsZ30QXjS5mL4RQ1+HMCzU=;
+        b=hj29WVjBW16HMeYTXIxtTBHytzhHW21ZRrJjqyWU3vD+kTLdvq/U6gRvjCu+YNbM9N
+         aWPhTBjrZB0x88qGav8nZ28vXc+gPp6OXV+ixfWIH8KMuenN3vcR97Pu8AzDM8b2C9sl
+         fFh3PbzPrxcMIj1OlSsa7fOppPQkGGSfHQ0XLff4dMHjxKkdrr6EjRaFsMpIEao6qj2T
+         KMHBsG9am04GLoN6aVVrN2/3qX63FTvM230kvT41f4z5I6t9Xn8mZO4L/bIpyeTLDPTU
+         mnqrRhFjE274uz3iX3k77WCbRrjKSZXg0b/Xyb83rJZWkjnFt/1xxgLJvSb2G+zH8l5o
+         N77g==
+X-Gm-Message-State: AOAM530ANyH3Zr6eafu+WHbn+WlsmrHyOEQ7S/THP+w/j0RDxelxKyg1
+        NeFQiFFlUSlyZJBqEMq7hwc=
+X-Google-Smtp-Source: ABdhPJzQdbbDSXsC04NpQ3qkGR7Bk8zzRBsAOmlfHghDqN0zZsCVMKH5urw/OMvAqTxTMNU4fdSMKA==
+X-Received: by 2002:a2e:9792:: with SMTP id y18mr1632815lji.204.1610113519286;
+        Fri, 08 Jan 2021 05:45:19 -0800 (PST)
+Received: from localhost.localdomain (62-78-225-252.bb.dnainternet.fi. [62.78.225.252])
+        by smtp.gmail.com with ESMTPSA id w23sm1163793lff.84.2021.01.08.05.45.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 08 Jan 2021 05:45:18 -0800 (PST)
+Date:   Fri, 8 Jan 2021 15:45:12 +0200
+From:   Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
+To:     matti.vaittinen@fi.rohmeurope.com, mazziesaccount@gmail.com
+Cc:     Lee Jones <lee.jones@linaro.org>,
+        Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>, linux-kernel@vger.kernel.org,
+        linux-power@fi.rohmeurope.com, linux-clk@vger.kernel.org
+Subject: [PATCH 13/15] clk: bd718x7: Add support for clk gate on ROHM BD71815
+ PMIC
+Message-ID: <d7d070abbebcff9f3304f566b571e9ad16bda73d.1610110144.git.matti.vaittinen@fi.rohmeurope.com>
+References: <cover.1610110144.git.matti.vaittinen@fi.rohmeurope.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-15
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cover.1610110144.git.matti.vaittinen@fi.rohmeurope.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 4 Jan 2021, lains@archlinux.org wrote:
+ROHM BD71815 also provide clk signal for RTC. Add control
+for gating this clock.
 
-> From: Filipe Laíns <lains@archlinux.org>
-> 
-> This new feature present in new devices replaces the old Battery Level
-> Status (0x1000) feature. It keeps essentially the same information for
-> levels (reporting critical, low, good and full) but makes these levels
-> optional, the device exports a capability setting which describes which
-> levels it supports. In addition to this, there is an optional
-> state_of_charge paramenter that exports the battery percentage.
-> 
-> This patch adds support for this new feature. There were some
-> implementation choices, as described below and in the code.
-> 
-> If the device supports the state_of_charge parameter, we will just
-> export the battery percentage and not the levels, which the device might
-> still support.
-> 
-> Since this feature can co-exist with the Battery Voltage (0x1001)
-> feature and we currently only support one battery feature, I changed the
-> battery feature discovery to try to use 0x1000 and 0x1004 first and only
-> then 0x1001, the battery voltage feature.
-> In the future we could uncouple this and make the battery feature
-> co-exists with 0x1000 and 0x1004, allowing the device to export voltage
-> information in addition to the battery percentage or level.
-> 
-> I tested this patch with a MX Anywhere 3, which supports the new
-> feature. Since I don't have any device that doesn't support the
-> state_of_charge parameter of this feature, I forced the MX Anywhere 3 to
-> use the level information, instead of battery percentage, to test that
-> part of the implementation.
-> I also tested with a MX Master 3, which supports the Battery Level
-> Status (0x1000) feature, and a G703 Hero, which supports the Battery
-> Voltage (0x1001) feature, to make sure nothing broke there.
+Signed-off-by: Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>
 
-Thanks a lot for the patch, Filipe. Minor details:
+clk Kconfig fix
+---
+ drivers/clk/clk-bd718x7.c | 9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
 
-> Signed-off-by: Filipe Laíns <lains@archlinux.org>
-> ---
->  drivers/hid/hid-logitech-hidpp.c | 244 ++++++++++++++++++++++++++++++-
->  1 file changed, 237 insertions(+), 7 deletions(-)
-> 
-> diff --git a/drivers/hid/hid-logitech-hidpp.c b/drivers/hid/hid-logitech-hidpp.c
-> index f85781464807..291c6b4d26b7 100644
-> --- a/drivers/hid/hid-logitech-hidpp.c
-> +++ b/drivers/hid/hid-logitech-hidpp.c
-> @@ -92,6 +92,8 @@ MODULE_PARM_DESC(disable_tap_to_click,
->  #define HIDPP_CAPABILITY_BATTERY_MILEAGE	BIT(2)
->  #define HIDPP_CAPABILITY_BATTERY_LEVEL_STATUS	BIT(3)
->  #define HIDPP_CAPABILITY_BATTERY_VOLTAGE	BIT(4)
-> +#define HIDPP_CAPABILITY_BATTERY_PERCENTAGE	BIT(5)
-> +#define HIDPP_CAPABILITY_UNIFIED_BATTERY	BIT(6)
->  
->  #define lg_map_key_clear(c)  hid_map_usage_clear(hi, usage, bit, max, EV_KEY, (c))
->  
-> @@ -152,6 +154,7 @@ struct hidpp_battery {
->  	int voltage;
->  	int charge_type;
->  	bool online;
-> +	u8 supported_levels_1004;
->  };
->  
->  /**
-> @@ -1171,7 +1174,7 @@ static int hidpp20_batterylevel_get_battery_info(struct hidpp_device *hidpp,
->  	return 0;
->  }
->  
-> -static int hidpp20_query_battery_info(struct hidpp_device *hidpp)
-> +static int hidpp20_query_battery_info_1000(struct hidpp_device *hidpp)
+diff --git a/drivers/clk/clk-bd718x7.c b/drivers/clk/clk-bd718x7.c
+index 17d90e09f1c0..d9e70e506d18 100644
+--- a/drivers/clk/clk-bd718x7.c
++++ b/drivers/clk/clk-bd718x7.c
+@@ -13,6 +13,8 @@
+ #include <linux/regmap.h>
+ 
+ /* clk control registers */
++/* BD71815 */
++#define BD71815_REG_OUT32K	0x1d
+ /* BD70528 */
+ #define BD70528_REG_OUT32K	0x2c
+ /* BD71828 */
+@@ -118,6 +120,10 @@ static int bd71837_clk_probe(struct platform_device *pdev)
+ 		c->reg = BD70528_REG_OUT32K;
+ 		c->mask = CLK_OUT_EN_MASK;
+ 		break;
++	case ROHM_CHIP_TYPE_BD71815:
++		c->reg = BD71815_REG_OUT32K;
++		c->mask = CLK_OUT_EN_MASK;
++		break;
+ 	default:
+ 		dev_err(&pdev->dev, "Unknown clk chip\n");
+ 		return -EINVAL;
+@@ -146,6 +152,7 @@ static const struct platform_device_id bd718x7_clk_id[] = {
+ 	{ "bd71847-clk", ROHM_CHIP_TYPE_BD71847 },
+ 	{ "bd70528-clk", ROHM_CHIP_TYPE_BD70528 },
+ 	{ "bd71828-clk", ROHM_CHIP_TYPE_BD71828 },
++	{ "bd71815-clk", ROHM_CHIP_TYPE_BD71815 },
+ 	{ },
+ };
+ MODULE_DEVICE_TABLE(platform, bd718x7_clk_id);
+@@ -161,6 +168,6 @@ static struct platform_driver bd71837_clk = {
+ module_platform_driver(bd71837_clk);
+ 
+ MODULE_AUTHOR("Matti Vaittinen <matti.vaittinen@fi.rohmeurope.com>");
+-MODULE_DESCRIPTION("BD71837/BD71847/BD70528 chip clk driver");
++MODULE_DESCRIPTION("BD718(15/18/28/37/47/50) and BD70528 chip clk driver");
+ MODULE_LICENSE("GPL");
+ MODULE_ALIAS("platform:bd718xx-clk");
+-- 
+2.25.4
 
-That '_1000' suffix looks strange to me, as it's not completely obvious 
-just from looking at the code what it actually means. Would it perhaps be 
-more readable to call it something like hidpp20_query_battery_level(), and 
-symmentrically change hidpp20_query_battery_info_1004() to e.g. 
-hidpp20_query_battery_voltage() ?
-
-[ ... snip ... ]
-> +	/* if the device supports state of charge (battery percentage) we won't
-> +	   export the battery level information. there are 4 possible battery
-> +	   levels and they all are optional, this means that the device might
-> +	   not support any of them, we are just better off with the battery
-> +	   percentage. */
-
-Could you please use standard kernel commenting style here?
-
-Thanks,
 
 -- 
-Jiri Kosina
-SUSE Labs
+Matti Vaittinen, Linux device drivers
+ROHM Semiconductors, Finland SWDC
+Kiviharjunlenkki 1E
+90220 OULU
+FINLAND
 
+~~~ "I don't think so," said Rene Descartes. Just then he vanished ~~~
+Simon says - in Latin please.
+~~~ "non cogito me" dixit Rene Descarte, deinde evanescavit ~~~
+Thanks to Simon Glass for the translation =] 
