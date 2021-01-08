@@ -2,180 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 70EE82EF01E
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 10:53:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AF9DE2EF018
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 10:53:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728321AbhAHJxB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Jan 2021 04:53:01 -0500
-Received: from so254-31.mailgun.net ([198.61.254.31]:32575 "EHLO
-        so254-31.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728299AbhAHJxA (ORCPT
+        id S1728257AbhAHJwt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Jan 2021 04:52:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40122 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727629AbhAHJws (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Jan 2021 04:53:00 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1610099554; h=Message-Id: Date: Subject: Cc: To: From:
- Sender; bh=TwVrvVK1OzG/lArxagrlCuTmDgJ2ODUQJRFSPWgtUOk=; b=j2UcN/8uNh1hpG8UJPAXxbUEOF3mdXUqcamkhx3eEngMo9dA4inqyaXFabAGURPYMhRMKOIW
- uB2g1DYGFznqz3PyMH7g1kqSms998DtwTFTwGqsBm31vOyD5qT7QaPa45f0YgT5rMipfHlVK
- pjAlTAV/Th/atfXB8m01pJ1Vs+o=
-X-Mailgun-Sending-Ip: 198.61.254.31
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n08.prod.us-east-1.postgun.com with SMTP id
- 5ff82b43d092322d9e7779eb (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 08 Jan 2021 09:52:03
- GMT
-Sender: pnagar=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id A2CC0C43468; Fri,  8 Jan 2021 09:52:02 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from pnagar-linux.qualcomm.com (unknown [202.46.22.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: pnagar)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id C6A8EC433C6;
-        Fri,  8 Jan 2021 09:51:56 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org C6A8EC433C6
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=pnagar@codeaurora.org
-From:   Preeti Nagar <pnagar@codeaurora.org>
-To:     arnd@arndb.de, jmorris@namei.org, serge@hallyn.com,
-        paul@paul-moore.com, stephen.smalley.work@gmail.com,
-        eparis@parisplace.org, linux-security-module@vger.kernel.org,
-        selinux@vger.kernel.org, linux-arch@vger.kernel.org
-Cc:     psodagud@codeaurora.org, nmardana@codeaurora.org,
-        dsule@codeaurora.org, pnagar@codeaurora.org,
-        Joe Perches <joe@perches.com>, Miguel Ojeda <ojeda@kernel.org>,
-        Nick Desaulniers <ndesaulniers@gooogle.com>,
-        linux-kernel@vger.kernel.org
-Subject: [RFC PATCH v2] selinux: security: Move selinux_state to a separate page
-Date:   Fri,  8 Jan 2021 15:19:47 +0530
-Message-Id: <1610099389-28329-1-git-send-email-pnagar@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
+        Fri, 8 Jan 2021 04:52:48 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CECCC0612F4
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Jan 2021 01:52:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=1PDtrbcaBPK2Go3OlTjgm02lDmV3mwof4pPUUTeO7Z4=; b=0uEJgH+66I5JaBymO9Gh0bMRwC
+        UITBv1j2qRhYCStpw8VpTopyJo6yv3ZOprk9DliwkJE3btxsYl0St71q7iEdB+9h4P39swUix3Hp1
+        ejf07vs2FQeafuQjw7kq6EOUuR0+wY4Pd4TSsxiIaSQDl6aMr36UsjCGvjedaS/P/7Yq/i/GmkzVr
+        Ao+mxPb/i/0U1ZsWWDpBKMxsd4jsqBa7ca3bPnDoBujTNqRwSNlgx93O1BfQO2JfqJP54/3rSdJBy
+        Cs4TH8To2KstXWc4HcHzGLTGe7/lFxsAW+ZLmuqmmcEZuadKFlmSqhIGpSDwLUPd4/1AjZBzhqeUh
+        Ud5VKs/A==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kxoR4-0000kL-6W; Fri, 08 Jan 2021 09:51:58 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 40E9D3003D8;
+        Fri,  8 Jan 2021 10:51:56 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 2FC322BC2B3D9; Fri,  8 Jan 2021 10:51:56 +0100 (CET)
+Date:   Fri, 8 Jan 2021 10:51:56 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     David Laight <David.Laight@aculab.com>
+Cc:     'Linus Torvalds' <torvalds@linux-foundation.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        kernel test robot <oliver.sang@intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@kernel.org>, Borislav Petkov <bp@alien8.de>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "lkp@lists.01.org" <lkp@lists.01.org>,
+        kernel test robot <lkp@intel.com>,
+        "Huang, Ying" <ying.huang@intel.com>,
+        Feng Tang <feng.tang@intel.com>,
+        "zhengjun.xing@intel.com" <zhengjun.xing@intel.com>
+Subject: Re: [x86] d55564cfc2: will-it-scale.per_thread_ops -5.8% regression
+Message-ID: <X/grPFTgOMvtqEVZ@hirez.programming.kicks-ass.net>
+References: <20210107134723.GA28532@xsang-OptiPlex-9020>
+ <CAHk-=wgQ5EEH3-GTK9KDB5mBmWjP25YHXC6_-V_KfWd0UTDTDQ@mail.gmail.com>
+ <20210107183358.GG3579531@ZenIV.linux.org.uk>
+ <CAHk-=wiZaFRt9hGen9=eOr7LA+Q8o5f980eGEvtxBD6+os7nqA@mail.gmail.com>
+ <20210107190445.GK3579531@ZenIV.linux.org.uk>
+ <CAHk-=whneXU5Sr=iOOrzcqZt6q85zp-8CUSviOwGPj5ePBW4CQ@mail.gmail.com>
+ <824461ae2cb642b1b2f82fac140a98da@AcuMS.aculab.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <824461ae2cb642b1b2f82fac140a98da@AcuMS.aculab.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The changes introduce a new security feature, RunTime Integrity Check
-(RTIC), designed to protect Linux Kernel at runtime. The motivation
-behind these changes is:
-1. The system protection offered by SE for Android relies on the
-assumption of kernel integrity. If the kernel itself is compromised (by
-a perhaps as yet unknown future vulnerability), SE for Android security
-mechanisms could potentially be disabled and rendered ineffective.
-2. Qualcomm Snapdragon devices use Secure Boot, which adds cryptographic
-checks to each stage of the boot-up process, to assert the authenticity
-of all secure software images that the device executes.  However, due to
-various vulnerabilities in SW modules, the integrity of the system can be
-compromised at any time after device boot-up, leading to un-authorized
-SW executing.
+On Fri, Jan 08, 2021 at 09:37:45AM +0000, David Laight wrote:
+> The lack of spinlocks in userspace really kills you.
 
-The feature's idea is to move some sensitive kernel structures to a
-separate page and monitor further any unauthorized changes to these,
-from higher Exception Levels using stage 2 MMU. Moving these to a
-different page will help avoid getting page faults from un-related data.
-Using this mechanism, some sensitive variables of the kernel which are
-initialized after init or are updated rarely can also be protected from
-simple overwrites and attacks trying to modify these.
-
-Currently, the change moves selinux_state structure to a separate page. In
-future we plan to move more security-related kernel assets to this page to
-enhance protection.
-
-We want to seek your suggestions and comments on the idea and the changes
-in the patch.
-
-Signed-off-by: Preeti Nagar <pnagar@codeaurora.org>
----
- include/asm-generic/vmlinux.lds.h | 10 ++++++++++
- include/linux/init.h              |  4 ++++
- security/Kconfig                  | 10 ++++++++++
- security/selinux/hooks.c          |  4 ++++
- 4 files changed, 28 insertions(+)
-
-diff --git a/include/asm-generic/vmlinux.lds.h b/include/asm-generic/vmlinux.lds.h
-index b2b3d81..158dbc2 100644
---- a/include/asm-generic/vmlinux.lds.h
-+++ b/include/asm-generic/vmlinux.lds.h
-@@ -770,6 +770,15 @@
- 		*(.scommon)						\
- 	}
- 
-+#ifdef CONFIG_SECURITY_RTIC
-+#define RTIC_BSS							\
-+	. = ALIGN(PAGE_SIZE);						\
-+	KEEP(*(.bss.rtic))						\
-+	. = ALIGN(PAGE_SIZE);
-+#else
-+#define RTIC_BSS
-+#endif
-+
- /*
-  * Allow archectures to redefine BSS_FIRST_SECTIONS to add extra
-  * sections to the front of bss.
-@@ -782,6 +791,7 @@
- 	. = ALIGN(bss_align);						\
- 	.bss : AT(ADDR(.bss) - LOAD_OFFSET) {				\
- 		BSS_FIRST_SECTIONS					\
-+		RTIC_BSS						\
- 		. = ALIGN(PAGE_SIZE);					\
- 		*(.bss..page_aligned)					\
- 		. = ALIGN(PAGE_SIZE);					\
-diff --git a/include/linux/init.h b/include/linux/init.h
-index 7b53cb3..617adcf 100644
---- a/include/linux/init.h
-+++ b/include/linux/init.h
-@@ -300,6 +300,10 @@ void __init parse_early_options(char *cmdline);
- /* Data marked not to be saved by software suspend */
- #define __nosavedata __section(".data..nosave")
- 
-+#ifdef CONFIG_SECURITY_RTIC
-+#define __rticdata  __section(".bss.rtic")
-+#endif
-+
- #ifdef MODULE
- #define __exit_p(x) x
- #else
-diff --git a/security/Kconfig b/security/Kconfig
-index 7561f6f..66b61b9 100644
---- a/security/Kconfig
-+++ b/security/Kconfig
-@@ -291,5 +291,15 @@ config LSM
- 
- source "security/Kconfig.hardening"
- 
-+config SECURITY_RTIC
-+        bool "RunTime Integrity Check feature"
-+        help
-+	  RTIC(RunTime Integrity Check) feature is to protect Linux kernel
-+	  at runtime. This relocates some of the security sensitive kernel
-+	  structures to a separate page aligned special section.
-+
-+	  This is to enable monitoring and protection of these kernel assets
-+	  from a higher exception level(EL) against any unauthorized changes.
-+
- endmenu
- 
-diff --git a/security/selinux/hooks.c b/security/selinux/hooks.c
-index 6b1826f..7add17c 100644
---- a/security/selinux/hooks.c
-+++ b/security/selinux/hooks.c
-@@ -104,7 +104,11 @@
- #include "audit.h"
- #include "avc_ss.h"
- 
-+#ifdef CONFIG_SECURITY_RTIC
-+struct selinux_state selinux_state __rticdata;
-+#else
- struct selinux_state selinux_state;
-+#endif
- 
- /* SECMARK reference count */
- static atomic_t selinux_secmark_refcount = ATOMIC_INIT(0);
--- 
-2.7.4
-
+Glibc has them, but please don't complain about lock holder preemption
+issues if you do actually use them ;-)
