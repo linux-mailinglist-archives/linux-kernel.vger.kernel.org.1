@@ -2,93 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 019DE2EFB93
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Jan 2021 00:09:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 32EA92EFB95
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Jan 2021 00:11:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726319AbhAHXJ3 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 8 Jan 2021 18:09:29 -0500
-Received: from mga06.intel.com ([134.134.136.31]:9024 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725792AbhAHXJ2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Jan 2021 18:09:28 -0500
-IronPort-SDR: 1zAMVA1Q2xSzCU18L2qOrgDzGvN9sh+v7fPIFxiKui49eIG7/ImSecpa3Jd564KK/xfceXCjSt
- TY1XRZbcuyZw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9858"; a="239215312"
-X-IronPort-AV: E=Sophos;i="5.79,333,1602572400"; 
-   d="scan'208";a="239215312"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jan 2021 15:08:59 -0800
-IronPort-SDR: +ofVZIE9INDn8Rs02famlryxSS4bKsPILtr6un1eWfK1B2Zc3b2OGsDZ7fD8E6NxUSpLZ/XztJ
- TgONT3kizRvQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.79,333,1602572400"; 
-   d="scan'208";a="568217572"
-Received: from fmsmsx605.amr.corp.intel.com ([10.18.126.85])
-  by fmsmga006.fm.intel.com with ESMTP; 08 Jan 2021 15:08:59 -0800
-Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
- fmsmsx605.amr.corp.intel.com (10.18.126.85) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Fri, 8 Jan 2021 15:08:59 -0800
-Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
- fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Fri, 8 Jan 2021 15:08:58 -0800
-Received: from fmsmsx610.amr.corp.intel.com ([10.18.126.90]) by
- fmsmsx610.amr.corp.intel.com ([10.18.126.90]) with mapi id 15.01.1713.004;
- Fri, 8 Jan 2021 15:08:58 -0800
-From:   "Luck, Tony" <tony.luck@intel.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-CC:     Borislav Petkov <bp@alien8.de>, "x86@kernel.org" <x86@kernel.org>,
-        "Andrew Morton" <akpm@linux-foundation.org>,
-        Darren Hart <dvhart@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-edac@vger.kernel.org" <linux-edac@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>
-Subject: RE: [PATCH 2/2] futex, x86/mce: Avoid double machine checks
-Thread-Topic: [PATCH 2/2] futex, x86/mce: Avoid double machine checks
-Thread-Index: AQHW5gzS994+pBz0+EqmRhsWwoX/Iaoe2m6A//9/AZA=
-Date:   Fri, 8 Jan 2021 23:08:58 +0000
-Message-ID: <4493a015ffcd4d82bbea7d1e5c2e73e4@intel.com>
-References: <20210108222251.14391-1-tony.luck@intel.com>
- <20210108222251.14391-3-tony.luck@intel.com>
- <20210108224715.GB2453@worktop.programming.kicks-ass.net>
-In-Reply-To: <20210108224715.GB2453@worktop.programming.kicks-ass.net>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-dlp-product: dlpe-windows
-dlp-reaction: no-action
-dlp-version: 11.5.1.3
-x-originating-ip: [10.1.200.100]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        id S1726381AbhAHXKP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Jan 2021 18:10:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51232 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725836AbhAHXKP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 Jan 2021 18:10:15 -0500
+Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88CD7C061574;
+        Fri,  8 Jan 2021 15:09:34 -0800 (PST)
+Received: by mail-lf1-x129.google.com with SMTP id m12so26792273lfo.7;
+        Fri, 08 Jan 2021 15:09:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=QxReFlRL658xHbvF0w+cE6+pBgV0FdWMdR2zg93M1ho=;
+        b=KFVj7EsONPRX+yGIGJEUXCf3seHQC1ULt3DEDoRhBXrEIkKUECrTPT69UjjwrpS4cv
+         4GD0cqlHvWb9YxQ923LrYbrJfRwQDuhaBfRnyAyKpyy5KKTdVpOAD8QOB8ToKg3s1YIP
+         ldP56SJzJpxIy1q3ngaXS6Ffdp23MOBjGlWXV+NMjcehm7HybKBb8QV/0i8zqx6wjF9J
+         6dWKAq8K7C3vm/0DWEsXF7rMIy9kX3ecEZlZ516K0TFka7CJjn5NhaLVkYdoxzyF0/qo
+         pQ0JZRePMaoxazT1mUOkSYCRdltpw0mGNaxwzcvU6EksyzDK3bhfOIBahTZKGy8CBLCt
+         xhqw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=QxReFlRL658xHbvF0w+cE6+pBgV0FdWMdR2zg93M1ho=;
+        b=DhNhUZOvNi1bn7lxuVVMvW22HVS98KWnVBPMLXFk8kiboIkDhdci01QGOzWItj5pI3
+         7dHi0+rpMdolZLJ/m8/0AQAb1G0T1XkhlTQ7piSrpbhgdVZ8ZueUlrbIfjQuwKIwb+At
+         GnvJSPHoS825srw8mwExHqJxAX+xet+ShdWTE4krEPdEC2zK0G9Wb2n6sh3NuVJrDP2M
+         /HjrsCriM6ttBlqfPVauYA92e/bWu52Utpl6dDpoHM4H2+wp2x/tyO0yr3FXqB0PW47w
+         zO+YE8eJN5Q8J6JXzew1at4Z8GCzUfRQ9xHtvyGcFPpA6fXT2VbxaN9qC7yanCLU9+fo
+         20Kg==
+X-Gm-Message-State: AOAM532oW1Zwp/AeL0HXA1xif1xjT+a6iDCBC7Rhe7wSg6x+OTMbVRZL
+        eeA+9ADlu+IYCS15JcaBe84=
+X-Google-Smtp-Source: ABdhPJyo0u75Qam4b0FEJ3p7PCVVqvhna9BNUi2RGv29+MVF36Zq+whghy7BdnIrmEkhHVsfUpFoOA==
+X-Received: by 2002:a05:6512:788:: with SMTP id x8mr2778551lfr.250.1610147372821;
+        Fri, 08 Jan 2021 15:09:32 -0800 (PST)
+Received: from localhost.localdomain (h-98-128-228-148.NA.cust.bahnhof.se. [98.128.228.148])
+        by smtp.gmail.com with ESMTPSA id w16sm2186264lfn.227.2021.01.08.15.09.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 08 Jan 2021 15:09:31 -0800 (PST)
+From:   Rikard Falkeborn <rikard.falkeborn@gmail.com>
+To:     Andreas Noever <andreas.noever@gmail.com>,
+        Michael Jamet <michael.jamet@intel.com>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Yehezkel Bernat <YehezkelShB@gmail.com>
+Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Rikard Falkeborn <rikard.falkeborn@gmail.com>
+Subject: [PATCH] thunderbolt: Constify static attribute_group structs
+Date:   Sat,  9 Jan 2021 00:09:19 +0100
+Message-Id: <20210108230918.32302-1-rikard.falkeborn@gmail.com>
+X-Mailer: git-send-email 2.30.0
 MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> I think this is horrid; why can't we have it return something different
-> then -EFAULT instead?
+The only usage of these is to put their addresses in arrays of pointers
+to const attribute_groups. Make them const to allow the compiler to put
+them in read-only memory.
 
-I did consider this ... but it appears that architectures aren't unified in the
-return value from get_user()
+Signed-off-by: Rikard Falkeborn <rikard.falkeborn@gmail.com>
+---
+ drivers/thunderbolt/domain.c  | 2 +-
+ drivers/thunderbolt/switch.c  | 2 +-
+ drivers/thunderbolt/xdomain.c | 4 ++--
+ 3 files changed, 4 insertions(+), 4 deletions(-)
 
-Here's another function involved in the futex call chain leading to this:
+diff --git a/drivers/thunderbolt/domain.c b/drivers/thunderbolt/domain.c
+index f0de94f7acbf..d2b92a8be577 100644
+--- a/drivers/thunderbolt/domain.c
++++ b/drivers/thunderbolt/domain.c
+@@ -289,7 +289,7 @@ static umode_t domain_attr_is_visible(struct kobject *kobj,
+ 	return attr->mode;
+ }
+ 
+-static struct attribute_group domain_attr_group = {
++static const struct attribute_group domain_attr_group = {
+ 	.is_visible = domain_attr_is_visible,
+ 	.attrs = domain_attrs,
+ };
+diff --git a/drivers/thunderbolt/switch.c b/drivers/thunderbolt/switch.c
+index a8572f49d3ad..602e1835bf61 100644
+--- a/drivers/thunderbolt/switch.c
++++ b/drivers/thunderbolt/switch.c
+@@ -1771,7 +1771,7 @@ static umode_t switch_attr_is_visible(struct kobject *kobj,
+ 	return sw->safe_mode ? 0 : attr->mode;
+ }
+ 
+-static struct attribute_group switch_group = {
++static const struct attribute_group switch_group = {
+ 	.is_visible = switch_attr_is_visible,
+ 	.attrs = switch_attrs,
+ };
+diff --git a/drivers/thunderbolt/xdomain.c b/drivers/thunderbolt/xdomain.c
+index 9b3a299a1202..f2d4db1cd84d 100644
+--- a/drivers/thunderbolt/xdomain.c
++++ b/drivers/thunderbolt/xdomain.c
+@@ -756,7 +756,7 @@ static struct attribute *tb_service_attrs[] = {
+ 	NULL,
+ };
+ 
+-static struct attribute_group tb_service_attr_group = {
++static const struct attribute_group tb_service_attr_group = {
+ 	.attrs = tb_service_attrs,
+ };
+ 
+@@ -1239,7 +1239,7 @@ static struct attribute *xdomain_attrs[] = {
+ 	NULL,
+ };
+ 
+-static struct attribute_group xdomain_attr_group = {
++static const struct attribute_group xdomain_attr_group = {
+ 	.attrs = xdomain_attrs,
+ };
+ 
+-- 
+2.30.0
 
-static int get_futex_value_locked(u32 *dest, u32 __user *from)
-{
-        int ret;
-
-        pagefault_disable();
-        ret = __get_user(*dest, from);
-        pagefault_enable();
-
-        return ret ? -EFAULT : 0;
-}
-
-It seems like the expectation here is just "zero or not" and we
-don't care what the "not" value is ... just turn it into -EFAULT.
-
--Tony
