@@ -2,104 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 948582EF195
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 12:48:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EA0F2EF196
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 12:48:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726929AbhAHLrj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Jan 2021 06:47:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57920 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726251AbhAHLri (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Jan 2021 06:47:38 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3150AC0612F4
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Jan 2021 03:46:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=yLAqPIM0zGFnApY9dGBlUnodOsvbrHBdXkQ8n3+DH2g=; b=pQQG+ZoeRSC1mdNkxArJfxqDLo
-        qy6Zg/+FE/1jOMcE1a1I9Ye3mVLrnxg+pVwJVNnyDgRwUpRzXyvyBKO85ZPyLbvDQav9pTxW2k8/R
-        7mPfrWARestd+Q8QJnC8KadQWWnplQg4Lb+4enZ8rj49xXKjqijUz1Wq1gc6dC9noiD5khII5VhA5
-        55ESF5gjIv9jXqebC5QBs32ScNxhw01bf2KYeLRB2VA91ScR7rZqPTfaPZZB1zPPxVDkR4+0pwlxE
-        PLsDxPmwqJWWNfpAEk/gSdc1ePNIPR4+dMR7GnnuqWIlTIDwUnoHSCGzmNXhXZT1v0aBecJCl0Mla
-        tU9Pnj/w==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kxqE7-0007a2-9c; Fri, 08 Jan 2021 11:46:43 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 03D193003D8;
-        Fri,  8 Jan 2021 12:46:36 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id BC4FC200E972D; Fri,  8 Jan 2021 12:46:36 +0100 (CET)
-Date:   Fri, 8 Jan 2021 12:46:36 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Lai Jiangshan <jiangshanlai@gmail.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Qian Cai <cai@redhat.com>,
-        Vincent Donnefort <vincent.donnefort@arm.com>,
-        Dexuan Cui <decui@microsoft.com>,
-        Lai Jiangshan <laijs@linux.alibaba.com>,
-        Paul McKenney <paulmck@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Steven Rostedt <rostedt@goodmis.org>
-Subject: Re: [PATCH -tip V3 0/8] workqueue: break affinity initiatively
-Message-ID: <X/hGHNGB9fltElWB@hirez.programming.kicks-ass.net>
-References: <20201226025117.2770-1-jiangshanlai@gmail.com>
+        id S1727213AbhAHLsJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Jan 2021 06:48:09 -0500
+Received: from mx2.suse.de ([195.135.220.15]:52512 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727090AbhAHLsI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 Jan 2021 06:48:08 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1610106441; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=cRs14sUKQFDtfxfOv42U2R1ffmk3k5kFywb1nQwYHDc=;
+        b=Nw8SdwvSoRzqFvf51E98pVV82XwTvggeDVESclI9UaaVfT4L3bWYUUeoPPb7rdpQmSCR7W
+        u/Ju5CnbypZ1jUgoP4IxGpKtyfQGoydMXiIXo+GT1eoKSxnEA3JYZw8paWmJZVeeokBcRJ
+        UhvGSdL0ZtYC2VDPr74quplkTocELFw=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 2D8F2AD24;
+        Fri,  8 Jan 2021 11:47:21 +0000 (UTC)
+Date:   Fri, 8 Jan 2021 12:47:18 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     Xiaoming Ni <nixiaoming@huawei.com>
+Cc:     linux-kernel@vger.kernel.org, mcgrof@kernel.org,
+        keescook@chromium.org, yzaikin@google.com, adobriyan@gmail.com,
+        linux-fsdevel@vger.kernel.org, vbabka@suse.cz,
+        akpm@linux-foundation.org, wangle6@huawei.com
+Subject: Re: [PATCH v2] proc_sysctl: fix oops caused by incorrect command
+ parameters.
+Message-ID: <20210108114718.GA13207@dhcp22.suse.cz>
+References: <20210108023339.55917-1-nixiaoming@huawei.com>
+ <20210108092145.GX13207@dhcp22.suse.cz>
+ <829bbba0-d3bb-a114-af81-df7390082958@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201226025117.2770-1-jiangshanlai@gmail.com>
+In-Reply-To: <829bbba0-d3bb-a114-af81-df7390082958@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Dec 26, 2020 at 10:51:08AM +0800, Lai Jiangshan wrote:
-> From: Lai Jiangshan <laijs@linux.alibaba.com>
-> 
-> 06249738a41a ("workqueue: Manually break affinity on hotplug")
-> said that scheduler will not force break affinity for us.
+On Fri 08-01-21 18:01:52, Xiaoming Ni wrote:
+> On 2021/1/8 17:21, Michal Hocko wrote:
+> > On Fri 08-01-21 10:33:39, Xiaoming Ni wrote:
+> > > The process_sysctl_arg() does not check whether val is empty before
+> > >   invoking strlen(val). If the command line parameter () is incorrectly
+> > >   configured and val is empty, oops is triggered.
+> > > 
+> > > For example, "hung_task_panic=1" is incorrectly written as "hung_task_panic".
+> > > 
+> > > log:
+> > > 	Kernel command line: .... hung_task_panic
+> > > 	....
+> > > 	[000000000000000n] user address but active_mm is swapper
+> > > 	Internal error: Oops: 96000005 [#1] SMP
+> > > 	Modules linked in:
+> > > 	CPU: 0 PID: 1 Comm: swapper/0 Not tainted 5.10.1 #1
+> > > 	Hardware name: linux,dummy-virt (DT)
+> > > 	pstate: 40000005 (nZcv daif -PAN -UAO -TCO BTYPE=--)
+> > > 	pc : __pi_strlen+0x10/0x98
+> > > 	lr : process_sysctl_arg+0x1e4/0x2ac
+> > > 	sp : ffffffc01104bd40
+> > > 	x29: ffffffc01104bd40 x28: 0000000000000000
+> > > 	x27: ffffff80c0a4691e x26: ffffffc0102a7c8c
+> > > 	x25: 0000000000000000 x24: ffffffc01104be80
+> > > 	x23: ffffff80c22f0b00 x22: ffffff80c02e28c0
+> > > 	x21: ffffffc0109f9000 x20: 0000000000000000
+> > > 	x19: ffffffc0107c08de x18: 0000000000000003
+> > > 	x17: ffffffc01105d000 x16: 0000000000000054
+> > > 	x15: ffffffffffffffff x14: 3030253078413830
+> > > 	x13: 000000000000ffff x12: 0000000000000000
+> > > 	x11: 0101010101010101 x10: 0000000000000005
+> > > 	x9 : 0000000000000003 x8 : ffffff80c0980c08
+> > > 	x7 : 0000000000000000 x6 : 0000000000000002
+> > > 	x5 : ffffff80c0235000 x4 : ffffff810f7c7ee0
+> > > 	x3 : 000000000000043a x2 : 00bdcc4ebacf1a54
+> > > 	x1 : 0000000000000000 x0 : 0000000000000000
+> > > 	Call trace:
+> > > 	 __pi_strlen+0x10/0x98
+> > > 	 parse_args+0x278/0x344
+> > > 	 do_sysctl_args+0x8c/0xfc
+> > > 	 kernel_init+0x5c/0xf4
+> > > 	 ret_from_fork+0x10/0x30
+> > > 	Code: b200c3eb 927cec01 f2400c07 54000301 (a8c10c22)
+> > > 
+> > > Fixes: 3db978d480e2843 ("kernel/sysctl: support setting sysctl parameters
+> > >   from kernel command line")
+> > > Signed-off-by: Xiaoming Ni <nixiaoming@huawei.com>
+> > 
+> > Thanks for catching this!
+> > 
+> > > ---------
+> > > v2:
+> > >     Added log output of the failure branch based on the review comments of Kees Cook.
+> > > v1: https://lore.kernel.org/lkml/20201224074256.117413-1-nixiaoming@huawei.com/
+> > > ---------
+> > > ---
+> > >   fs/proc/proc_sysctl.c | 5 +++++
+> > >   1 file changed, 5 insertions(+)
+> > > 
+> > > diff --git a/fs/proc/proc_sysctl.c b/fs/proc/proc_sysctl.c
+> > > index 317899222d7f..dc1a56515e86 100644
+> > > --- a/fs/proc/proc_sysctl.c
+> > > +++ b/fs/proc/proc_sysctl.c
+> > > @@ -1757,6 +1757,11 @@ static int process_sysctl_arg(char *param, char *val,
+> > >   	loff_t pos = 0;
+> > >   	ssize_t wret;
+> > > +	if (!val) {
+> > > +		pr_err("Missing param value! Expected '%s=...value...'\n", param);
+> > > +		return 0;
+> I may need to move the validation code for val to the end of the validation
+> code for param to prevent non-sysctl arguments from triggering the current
+> print.
 
-So I've been looking at this the past day or so, and the more I look,
-the more I think commit:
+Why would that matter? A missing value is clearly a error path and it
+should be reported.
 
-  1cf12e08bc4d ("sched/hotplug: Consolidate task migration on CPU unplug")
+> Or delete the print and keep it silent for a little better performance.
+> Which is better?
 
-is a real problem and we need to revert it (at least for now).
+I do not think there is a performance argument on the table. The generic
+code is returning EINVAL on a missing value where it is needed. Sysctl
+all require a value IIRC so EINVAL would be the right way to report
+this and let the generic code to complain.
 
-Let me attempt a brain dump:
-
- - the assumption that per-cpu kernel threads are 'well behaved' on
-   hot-plug has, I think, been proven incorrect, it's far worse than
-   just bounded workqueue. Therefore, it makes sense to provide the old
-   semantics.
-
- - making the current code provide the old semantics (forcing affinity
-   on per-cpu kernel threads) is tricky, but could probably be done:
-
-    * we need to disallow new per-cpu kthreads while going down
-    * we need to force push more agressive; basically when
-      rcuwait_active(rq->hotplug_wait) push everything except that task,
-      irrespective of is_per_cpu_kthread()
-    * we need to disallow wakeups of anything not the hotplug thread or
-      stop-machine from happening from the rcuwait_wait_event()
-
-   and I have patches for most of that... except they're adding more
-   complexity than 1cf12e08bc4d ever deleted.
-
-However, even with all that, there's a further problem...
-
-Fundamentally, waiting for !rq_has_pinned_tasks() so late in
-hot-un-plug, is wrong I think. It means that migrate_disable() code
-might encounter a mostly torn down CPU. This is OK-ish for per-cpu
-kernel threads [*], but is now exposed to any random odd kernel code
-that does migrate_disable().
-
-[*] arguably running 'work' this late is similarly problematic.
-
-Let me go do lunch and ponder this further..
+-- 
+Michal Hocko
+SUSE Labs
