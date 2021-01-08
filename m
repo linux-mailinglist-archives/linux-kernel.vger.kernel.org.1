@@ -2,79 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ABF832EFBBD
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Jan 2021 00:35:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5FE442EFBBE
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Jan 2021 00:36:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726272AbhAHXey (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Jan 2021 18:34:54 -0500
-Received: from vern.gendns.com ([98.142.107.122]:34544 "EHLO vern.gendns.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725763AbhAHXex (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Jan 2021 18:34:53 -0500
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=lechnology.com; s=default; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=1byDzLX7PLFqYa4MN8gCIY7S5iSbUJGZSpSg/yf9kEg=; b=y8pE8/GEQUWn2abxRzDV1KHl4j
-        r9eS3FOLBwjvtXMrHOdZdeH7ha0Ygt+4UjdQO8d/6J5lsF/X74kpHn2/+jliXSMqMphUwIRNV50Ng
-        xtGVwTxZhoJ/aJ0JsjimuvhwYQfMCj5XmAdzWOGRD88iIsWeOwR8XuyNOYBjugpMOXrFzVJIa98v3
-        g6eojONbw8BAith5kva3wlRF3LXL4NpQ49cBfLPTgPVxqnYtsjwIaupmScp37ZP6DusSg7UPp94bu
-        a2QZxgZ+c/A+74cqd36PtPj626AjNEQhvv4TC6dGrWEGH2q5FVL04RMxHIEAQJ0mW+fhDjVAMwf2K
-        8kDYVHZA==;
-Received: from 108-198-5-147.lightspeed.okcbok.sbcglobal.net ([108.198.5.147]:55968 helo=[192.168.0.134])
-        by vern.gendns.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <david@lechnology.com>)
-        id 1ky1Gj-00086l-7O; Fri, 08 Jan 2021 18:34:09 -0500
-Subject: Re: [PATCH] irqchip: Simplify the TI_PRUSS_INTC Kconfig
-To:     Suman Anna <s-anna@ti.com>, Marc Zyngier <maz@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>
-Cc:     Santosh Shilimkar <ssantosh@kernel.org>,
-        Tony Lindgren <tony@atomide.com>,
-        Lokesh Vutla <lokeshvutla@ti.com>,
-        linux-kernel@vger.kernel.org, linux-omap@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        Grzegorz Jaszczyk <grzegorz.jaszczyk@linaro.org>
-References: <20210108162901.6003-1-s-anna@ti.com>
-From:   David Lechner <david@lechnology.com>
-Message-ID: <8a1fc38a-af44-925b-a621-b9da8a0df537@lechnology.com>
-Date:   Fri, 8 Jan 2021 17:34:07 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1726319AbhAHXfy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Jan 2021 18:35:54 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:33255 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725763AbhAHXfx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 Jan 2021 18:35:53 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1610148866;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=ZfbPHvrLKXuKE5/saUOXhlx+4Jqlj3bL/XQQqTvjtLQ=;
+        b=W9+RcB4TYw6q7kIOLm+Zr4CoJiUuna1BP1VPGscpW46OMJ9mazcYyh4PE9QCy1JpMyyxNl
+        ZE7CCqvFSboL+gVIvmRxpPr1VG54lh+8tjy+3l5P5VCYsUXpu5WAJLEBfcZjuMkW22YKTr
+        Axv7ntETmSyHNvbYSQaFoesWS7moHoU=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-283-9MPMCzH3OU6eo5HVF7JNMA-1; Fri, 08 Jan 2021 18:34:24 -0500
+X-MC-Unique: 9MPMCzH3OU6eo5HVF7JNMA-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id AF690B8100;
+        Fri,  8 Jan 2021 23:34:21 +0000 (UTC)
+Received: from mail (ovpn-112-222.rdu2.redhat.com [10.10.112.222])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 725D6722DC;
+        Fri,  8 Jan 2021 23:34:10 +0000 (UTC)
+Date:   Fri, 8 Jan 2021 18:34:09 -0500
+From:   Andrea Arcangeli <aarcange@redhat.com>
+To:     Andy Lutomirski <luto@kernel.org>
+Cc:     Jason Gunthorpe <jgg@ziepe.ca>, Linux-MM <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>, Yu Zhao <yuzhao@google.com>,
+        Peter Xu <peterx@redhat.com>,
+        Pavel Emelyanov <xemul@openvz.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Will Deacon <will@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Hugh Dickins <hughd@google.com>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Oleg Nesterov <oleg@redhat.com>, Jann Horn <jannh@google.com>,
+        Kees Cook <keescook@chromium.org>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Leon Romanovsky <leonro@nvidia.com>, Jan Kara <jack@suse.cz>,
+        Kirill Tkhai <ktkhai@virtuozzo.com>
+Subject: Re: [PATCH 0/2] page_count can't be used to decide when wp_page_copy
+Message-ID: <X/jr8QfeolQwn39f@redhat.com>
+References: <B1B85771-B211-4FCC-AEEF-BDFD37332C25@vmware.com>
+ <20210107200402.31095-1-aarcange@redhat.com>
+ <20210107202525.GD504133@ziepe.ca>
+ <X/eA/f1r5GXvcRWH@redhat.com>
+ <20210108133649.GE504133@ziepe.ca>
+ <X/iPtCktcQHwuK5T@redhat.com>
+ <20210108181945.GF504133@ziepe.ca>
+ <CALCETrVWGZ5MkN6S+o_h5isOHKVpjwSz-jyXSsp9VJjVOYOyyg@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20210108162901.6003-1-s-anna@ti.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - vern.gendns.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - lechnology.com
-X-Get-Message-Sender-Via: vern.gendns.com: authenticated_id: davidmain+lechnology.com/only user confirmed/virtual account not confirmed
-X-Authenticated-Sender: vern.gendns.com: davidmain@lechnology.com
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CALCETrVWGZ5MkN6S+o_h5isOHKVpjwSz-jyXSsp9VJjVOYOyyg@mail.gmail.com>
+User-Agent: Mutt/2.0.4 (2020-12-30)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 1/8/21 10:29 AM, Suman Anna wrote:
-> The TI PRUSS INTC irqchip driver handles the local interrupt controller
-> which is a child device of it's parent PRUSS/ICSSG device. The driver
-> was upstreamed in parallel with the PRUSS platform driver, and was
-> configurable independently previously. The PRUSS interrupt controller
-> is an integral part of the overall PRUSS software architecture, and is
-> not useful at all by itself.
-> 
-> Simplify the TI_PRUSS_INTC Kconfig dependencies by making it silent and
-> selected automatically when the TI_PRUSS platform driver is enabled.
-> 
-> Signed-off-by: Suman Anna <s-anna@ti.com>
-> ---
+On Fri, Jan 08, 2021 at 10:31:24AM -0800, Andy Lutomirski wrote:
+> Can we just remove vmsplice() support?  We could make it do a normal
 
-Reviewed-by: David Lechner <david@lechnology.com>
+The single case I've seen vmsplice used so far, that was really cool
+is localhost live migration of qemu. However despite really cool, it
+wasn't merged in the end, and I don't recall exactly why.
+
+There are even more efficient (but slightly more complex) ways to do
+that than vmsplice: using MAP_SHARED gigapages or MAP_SHARED tmpfs
+with THP opted-in in the tmpfs mount, as guest physical memory instead
+of anon memory and finding a way not having it cleared by kexec, so
+you can also upgrade the host kernel and not just qemu... is a way
+more optimal way to PIN and move all pages through the pipe and still
+having to pay a superfluous copy on destination.
+
+My guess why it's not popular, and I may be completely wrong on this
+since I basically never used vmsplice (other than to proof of concept
+DoS my phone to verify the long term GUP pin exploit works), is that
+vmsplice is a more efficient, but not the most efficient option.
+
+Exactly like in the live migration in place, it's always more
+efficient to share a tmpfs THP backed region and have true zero copy,
+than going through a pipe that still does one copy at the receiving
+end. It may also be simpler and it's not dependent on F_SETPIPE_SIZE
+obscure tunings. So in the end it's still too slow for apps that
+requires maximum performance, and not worth the extra work for those
+that don't.
+
+I love vmsplice conceptually, just I'd rather prefer an luser cannot
+run it.
+
+> copy, thereby getting rid of a fair amount of nastiness and potential
+> attacks.  Even ignoring issues relating to the length of time that the
+> vmsplice reference is alive, we also have whatever problems could be
+> caused by a malicious or misguided user vmsplice()ing some memory and
+> then modifying it.
+
+Sorry to ask but I'm curious, what also goes wrong if the user
+modifies memory under GUP pin from vmsplice? That's not obvious to
+see.
+
+Thanks,
+Andrea
 
