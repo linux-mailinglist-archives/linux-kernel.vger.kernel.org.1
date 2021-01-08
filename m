@@ -2,127 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B86C22EF114
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 12:09:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D8C402EF117
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 12:11:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727761AbhAHLIz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Jan 2021 06:08:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51908 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726607AbhAHLIy (ORCPT
+        id S1726823AbhAHLLL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Jan 2021 06:11:11 -0500
+Received: from wout5-smtp.messagingengine.com ([64.147.123.21]:51339 "EHLO
+        wout5-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726011AbhAHLLK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Jan 2021 06:08:54 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01715C0612F4;
-        Fri,  8 Jan 2021 03:08:13 -0800 (PST)
-Date:   Fri, 08 Jan 2021 11:08:11 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1610104091;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=wbt5GrQZk7/Or5HYgOF7PDj8cEURSPo4rBTl6/xtUBo=;
-        b=J1Wx1tGzFCT6XgdDCJCvi8c7gJqpx3kQCcgQla0P/gerTbrvZdjCDHZwhnqHayrBFPf6Gm
-        jd0PzIXJDZsyxKmia3aNCllCPT3mc/HmyLZwoV09kDZeF/FWhWQMIJv1uYBZmx46BbcQfD
-        XbKMBkZIxCpELsia4pU2S7FRhlEuP/1BeAmLrnv6bfAFv9bRfkX/p186KZpd1NLqg8slLC
-        zjqvQa+4jMMrrUOO3sH5Ax361f9tLUZ5jansTRdN27UQwZMqb6bPcCdrbLOk5RB+tIr1Tu
-        3MSnTC9IJeByRlHulffKRIqocoQWWcFWv+mVdxgH9dUCRM+2nKJFwKM4+dbgSg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1610104091;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=wbt5GrQZk7/Or5HYgOF7PDj8cEURSPo4rBTl6/xtUBo=;
-        b=vCL4mJllkEXaaw58nKAsBk/+virqsEd88UHKoUatou1DSvsxNk7hwdyjOGIeQqJ11DWCTa
-        y7DbwQdldttk0bBg==
-From:   "tip-bot2 for Dave Jiang" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/asm] x86/asm: Annotate movdir64b()'s dst argument with __iomem
-Cc:     kernel test robot <lkp@intel.com>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Borislav Petkov <bp@suse.de>,
-        Ben Widawsky <ben.widawsky@intel.com>,
-        Dan Williams <dan.j.williams@intel.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <161003787823.4062451.6564503265464317197.stgit@djiang5-desk3.ch.intel.com>
-References: <161003787823.4062451.6564503265464317197.stgit@djiang5-desk3.ch.intel.com>
-MIME-Version: 1.0
-Message-ID: <161010409107.414.15253065088862415819.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+        Fri, 8 Jan 2021 06:11:10 -0500
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
+        by mailout.west.internal (Postfix) with ESMTP id D59971AD2
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Jan 2021 06:10:24 -0500 (EST)
+Received: from imap6 ([10.202.2.56])
+  by compute2.internal (MEProxy); Fri, 08 Jan 2021 06:10:24 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kode54.net; h=
+        mime-version:message-id:date:from:to:subject:content-type; s=
+        fm2; bh=awxeo4GTIfDddgqljasaQcdCXWQGMfj8+WQBFFo7+TY=; b=ACHhbB/6
+        CKrMVNZZkSM1paCxbVFRWSIXr0HoTeyjy7v17sJSxNV6Qkr4QY2wJrxWLBNKeOp0
+        mbSTOcNWqWFEVgXwG0UPZKQjAPGoA3tTBP5VVCVKjo1oepa2qEZ8uIf/cokenxHN
+        Yq1yuyoWpsKqE9E2xsmnjQA49AL5UzFfBPhWabL/9/xKolqq0D1qVCcnAkFtRVLK
+        GH5d2RJzTRmcAyAn64tYVoKleNqqRfz8+FnhMDsNNpYLEH1z0eYnfUmSj3SM3aXd
+        iwwtC8IsxAYEG4DQBTKCN1vZwmkMRXs0z3maGJVXrBJL/pGzTOMNGtpv87P1QFrX
+        /kaLhfAWwmr2+Q==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=content-type:date:from:message-id
+        :mime-version:subject:to:x-me-proxy:x-me-proxy:x-me-sender
+        :x-me-sender:x-sasl-enc; s=fm1; bh=awxeo4GTIfDddgqljasaQcdCXWQGM
+        fj8+WQBFFo7+TY=; b=M+VTNoX/ENnrgkCgZ7yyBENbTuPh4F838k8BWcr9GeTSa
+        8mwDEXLGeMfOQv7Nq25xg5BFHBRml26edMzcliCO6z+VJ9JP+B5dyLKT7vad/0Bt
+        HIQvwpgedZA8iw71COjGyrmo37QPzIV3fKEWEbeX5XExB08RJ0bKqweWmom1G1/W
+        P26xo/GcDqFe66YVh60QgFxNlSCvMgqRP2lawhdcSEj+QT2v3hfykAl8NibHGjL7
+        nigbwx8VnMm9eiCqkgcVKGdyCnTm3lYOqhBZveh878VpzTnL/IzrldR8rdK5coNJ
+        nGqlGpN4Q32FL38kI2r1fKcmC6Oga+qpO3K+OX+kw==
+X-ME-Sender: <xms:oD34X9aoNH5BgXqaFFz4C5Z_5rxdbFfjInRW6AV3GwTNVXL6Wiz1YA>
+    <xme:oD34X0ZDWo2R7x2MsFugSRZSnvZyDP39DKPu2kq-jlaE_SAXlEzRsqSYLTVN8QmPt
+    SNBlI2fOemGSOrRNyg>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrvdeggedgvdehucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucenucfjughrpefofgggkfffhffvufgtsehttdertd
+    erredtnecuhfhrohhmpedfvehhrhhishhtohhphhgvrhcuhghilhhlihgrmhcuufhnohif
+    hhhilhhlfdcuoegthhhrihhssehkohguvgehgedrnhgvtheqnecuggftrfgrthhtvghrnh
+    epleduvddtteduhedvuefhhfehkeetlefhjeefvddtffdugfeikedtueetgeffgfehnecu
+    vehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheptghhrhhish
+    eskhhouggvheegrdhnvght
+X-ME-Proxy: <xmx:oD34X__gx_dgkoc1Z0aRH5Uph5oiki1az27rMk3DwPc6EBeWP9-d3A>
+    <xmx:oD34X7pSN-a619e8HsVSxghnmAdVaiD7w9iesRdssORa2KyOqU07Ug>
+    <xmx:oD34X4oZnYWBIccsORdmb5b9mEFHCrvMNju3_3E9blQjnI8UBOApXA>
+    <xmx:oD34X10Y5dY6DvJyWLPDBJ5DNAIe9Si-YBi85VAaTaiuGp19_ZWJ3A>
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id 969931400A1; Fri,  8 Jan 2021 06:10:31 -0500 (EST)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.3.1-61-gb52c239-fm-20201210.001-gb52c2396
+Mime-Version: 1.0
+Message-Id: <90b1b5c8-36d5-4094-add4-3a2d211085c2@www.fastmail.com>
+Date:   Fri, 08 Jan 2021 03:10:03 -0800
+From:   "Christopher William Snowhill" <chris@kode54.net>
+To:     linux-kernel@vger.kernel.org
+Subject: Re: Linux 5.11-rc2
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/asm branch of tip:
+There appears to be a regression with the filesystem NLS modules. I cannot load any of them. They all produce:
 
-Commit-ID:     6ae58d871319dc22ef780baaacd393f8543a1e74
-Gitweb:        https://git.kernel.org/tip/6ae58d871319dc22ef780baaacd393f8543a1e74
-Author:        Dave Jiang <dave.jiang@intel.com>
-AuthorDate:    Thu, 07 Jan 2021 09:44:51 -07:00
-Committer:     Borislav Petkov <bp@suse.de>
-CommitterDate: Fri, 08 Jan 2021 11:41:29 +01:00
+modprobe: ERROR: could not insert 'nls_cp437': Invalid argument
 
-x86/asm: Annotate movdir64b()'s dst argument with __iomem
+The system journal reports:
 
-Add a missing __iomem annotation to address a sparse warning. The caller
-is expected to pass an __iomem annotated pointer to this function. The
-current usages send a 64-bytes command descriptor to an MMIO location
-(portal) on a device for consumption. When future usages for the
-MOVDIR64B instruction warrant a separate variant of a memory to memory
-operation, the argument annotation can be revisited.
+Jan 08 02:04:56 mrgency kernel: BPF:No data
+Jan 08 02:04:56 mrgency kernel: failed to validate module [nls_cp437] BTF: -22
 
-Also, from the comment in movdir64b() @__dst must be supplied as an
-lvalue because this tells the compiler what the object is (its size) the
-instruction accesses. I.e., not the pointers but what they point to,
-thus the deref'ing '*'."
-
-The actual sparse warning is:
-
-  sparse warnings: (new ones prefixed by >>)
-     drivers/dma/idxd/submit.c: note: in included file (through include/linux/io.h, include/linux/pci.h):
-  >> arch/x86/include/asm/io.h:422:27: sparse: sparse: incorrect type in \
-     argument 1 (different address spaces)
-		   @@     expected void *dst
-		   @@     got void [noderef] __iomem *dst @@
-     arch/x86/include/asm/io.h:422:27: sparse:     expected void *dst
-     arch/x86/include/asm/io.h:422:27: sparse:     got void [noderef] __iomem *dst
-
- [ bp: Massage commit message. ]
-
-Fixes: 0888e1030d3e ("x86/asm: Carve out a generic movdir64b() helper for general usage")
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Dave Jiang <dave.jiang@intel.com>
-Signed-off-by: Borislav Petkov <bp@suse.de>
-Reviewed-by: Ben Widawsky <ben.widawsky@intel.com>
-Reviewed-by: Dan Williams <dan.j.williams@intel.com>
-Link: https://lkml.kernel.org/r/161003787823.4062451.6564503265464317197.stgit@djiang5-desk3.ch.intel.com
----
- arch/x86/include/asm/special_insns.h | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/arch/x86/include/asm/special_insns.h b/arch/x86/include/asm/special_insns.h
-index cc177b4..4e23464 100644
---- a/arch/x86/include/asm/special_insns.h
-+++ b/arch/x86/include/asm/special_insns.h
-@@ -243,10 +243,10 @@ static inline void serialize(void)
- }
- 
- /* The dst parameter must be 64-bytes aligned */
--static inline void movdir64b(void *dst, const void *src)
-+static inline void movdir64b(void __iomem *dst, const void *src)
- {
- 	const struct { char _[64]; } *__src = src;
--	struct { char _[64]; } *__dst = dst;
-+	struct { char _[64]; } __iomem *__dst = dst;
- 
- 	/*
- 	 * MOVDIR64B %(rdx), rax.
+As a result, I cannot mount vfat filesystems with the usual CP437 default. Or any other code page, for that matter.
