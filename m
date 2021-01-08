@@ -2,60 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B639C2EFBDB
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Jan 2021 00:50:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F1DBA2EFBD8
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Jan 2021 00:49:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726454AbhAHXto (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Jan 2021 18:49:44 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52654 "EHLO mail.kernel.org"
+        id S1726512AbhAHXtv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Jan 2021 18:49:51 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52672 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725877AbhAHXtm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Jan 2021 18:49:42 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPS id 1A23023A9D;
-        Fri,  8 Jan 2021 23:49:02 +0000 (UTC)
+        id S1726415AbhAHXtn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 Jan 2021 18:49:43 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPS id 47A4A23A74;
+        Fri,  8 Jan 2021 23:49:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610149742;
-        bh=kVuMIv3ezT4SphLrIQOHZyCrYXc4poJVk7uyKGKQ/c8=;
+        s=k20201202; t=1610149743;
+        bh=uxW3SRVWSh00k6tE6ywyz1JEtZ25EmCJVF1gmrieScQ=;
         h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=j94WOsYdYQSTI6fr9IhsyeGlaIiIRgYp2CFvpMJO34BjHRlzPqiGJPJ2Lg/zJ0bxl
-         q9As4op4Pv+IgA+IJkxP18a78dDorPMkj6mCPJ56FaRCHMUhr2xjWiH4KCzwV+FfFJ
-         0RKHdjN8kCkNoisk0M3oEQtQRgTiDZtWQzKEFWVQwgjDaOra7ahtufnxgiwG1iqVjB
-         +4M2gP3S605sSqcuQanNntwq4KQfMfcTWMkL4fD9Appv+6cxHdrHWsob6SOIyPsYer
-         hAkt7tZOjDbV25gedJIgPawr35Nzq2VGai+s7PJOIPHw2+GvB5u9Xmv607M0LgBZWA
-         yzehjvju9+IYg==
+        b=pt85kHdqcUcsj1+cO9bOoz10wE88YT+GCrKoiN0S4TszemBlLkvXPVFSQ43/twHHA
+         KuFwaIOCfRbft+qeRhXyW5dda2T1Lyoc8zBruENrcvJT+r/BqtvVmF5scebJEx071F
+         UaE/yRAxxKIynGDPac4I9E20Z/XzqC/NnX7i2uZhKl5pBFW2Bu4n2a5+DRQbgBavcK
+         jidCWvWZahyBnHDoIPrWcaVNVLAlJFy9HA+tEBS4B9C5nj5UNIlrsHzFV3WCIDzIAI
+         KsWn/7yblGRAo475ikjy49BCsEZqkn2sGK/zxl/bAPYMNtwUCSzwrPb+XJw/Gl5iuv
+         5DYEGLBtZC0cw==
 Received: from pdx-korg-docbuild-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-1.ci.codeaurora.org (Postfix) with ESMTP id 116D160157;
-        Fri,  8 Jan 2021 23:49:02 +0000 (UTC)
-Subject: Re: [GIT PULL] IOMMU fixes for -rc3
+        by pdx-korg-docbuild-1.ci.codeaurora.org (Postfix) with ESMTP id 42F5A60597;
+        Fri,  8 Jan 2021 23:49:03 +0000 (UTC)
+Subject: Re: [PULL] drm-fixes
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20210108143951.GA4867@willie-the-truck>
-References: <20210108143951.GA4867@willie-the-truck>
-X-PR-Tracked-List-Id: Development issues for Linux IOMMU support
- <iommu.lists.linux-foundation.org>
-X-PR-Tracked-Message-Id: <20210108143951.GA4867@willie-the-truck>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git tags/iommu-fixes
-X-PR-Tracked-Commit-Id: 7c29ada5e70083805bc3a68daa23441df421fbee
+In-Reply-To: <X/iA/qwB8X11akLF@phenom.ffwll.local>
+References: <X/iA/qwB8X11akLF@phenom.ffwll.local>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <X/iA/qwB8X11akLF@phenom.ffwll.local>
+X-PR-Tracked-Remote: git://anongit.freedesktop.org/drm/drm tags/drm-fixes-2021-01-08
+X-PR-Tracked-Commit-Id: 29f95f20581c4bb4e58c1cc1cb15bff9b931cad9
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 3e2a590acbed38a6908a5c4df7754dcb65f6fd37
-Message-Id: <161014974206.3246.14661746099090491156.pr-tracker-bot@kernel.org>
-Date:   Fri, 08 Jan 2021 23:49:02 +0000
-To:     Will Deacon <will@kernel.org>
-Cc:     torvalds@linux-foundation.org,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        iommu <iommu@lists.linux-foundation.org>,
-        Robin Murphy <robin.murphy@arm.com>
+X-PR-Merge-Commit-Id: 43d3d587d22530ae92239b6aba5b0b2d5ba2e088
+Message-Id: <161014974326.3246.8133980198722266663.pr-tracker-bot@kernel.org>
+Date:   Fri, 08 Jan 2021 23:49:03 +0000
+To:     Daniel Vetter <daniel.vetter@ffwll.ch>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        DRI Development <dri-devel@lists.freedesktop.org>,
+        Dave Airlie <airlied@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Fri, 8 Jan 2021 14:39:51 +0000:
+The pull request you sent on Fri, 8 Jan 2021 16:57:50 +0100:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git tags/iommu-fixes
+> git://anongit.freedesktop.org/drm/drm tags/drm-fixes-2021-01-08
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/3e2a590acbed38a6908a5c4df7754dcb65f6fd37
+https://git.kernel.org/torvalds/c/43d3d587d22530ae92239b6aba5b0b2d5ba2e088
 
 Thank you!
 
