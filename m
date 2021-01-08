@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B842A2EFA9F
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 22:32:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F41BE2EFA97
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 22:32:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730046AbhAHVbC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Jan 2021 16:31:02 -0500
+        id S1729980AbhAHVaG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Jan 2021 16:30:06 -0500
 Received: from mga07.intel.com ([134.134.136.100]:22448 "EHLO mga07.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730016AbhAHVax (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Jan 2021 16:30:53 -0500
-IronPort-SDR: jPsr/AqBxWjoHtEcA7yjWtjMUW6Erl8drWsL6xPxuOXnutXMFvJXTgHOwVlj6UTy1DGjOJkSFU
- s3dQAzrHclBQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9858"; a="241732885"
+        id S1729872AbhAHV3W (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 Jan 2021 16:29:22 -0500
+IronPort-SDR: 6hl74/zhcXwYDfwKzZfW0A5tiKTgzVnCEH1HMtmCTl80GqovGbI/65oLxs1RV6v46SonUd9O9L
+ fSAWhjXzsHRw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9858"; a="241732871"
 X-IronPort-AV: E=Sophos;i="5.79,332,1602572400"; 
-   d="scan'208";a="241732885"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jan 2021 13:26:05 -0800
-IronPort-SDR: gV7H+NcCgE1Ae2xjO+iS8RlKSrs1VBnVsvNYrGcKiRHls4aq6QVoDpmxBQGcJS1qswQYbZzQgE
- P5I5bwCLq1xQ==
+   d="scan'208";a="241732871"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jan 2021 13:26:04 -0800
+IronPort-SDR: zXXycP+sHqZvWgfx4HCb3qcdhp+8eeVZOLkZDqH/iqMtdTsZs+8jqRX+3OIdRBAiCsVyegzevm
+ UChvZA1Z0m9g==
 X-IronPort-AV: E=Sophos;i="5.79,332,1602572400"; 
-   d="scan'208";a="351806694"
+   d="scan'208";a="423078107"
 Received: from smtp.ostc.intel.com ([10.54.29.231])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jan 2021 13:26:04 -0800
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jan 2021 13:26:04 -0800
 Received: from mtg-dev (mtg-dev.jf.intel.com [10.54.74.10])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by smtp.ostc.intel.com (Postfix) with ESMTPS id AF6A9636B;
+        by smtp.ostc.intel.com (Postfix) with ESMTPS id C9ABE636A;
         Fri,  8 Jan 2021 13:26:04 -0800 (PST)
 Received: from mgross by mtg-dev with local (Exim 4.90_1)
         (envelope-from <mgross@linux.intel.com>)
-        id 1kxzGm-0009cN-Is; Fri, 08 Jan 2021 13:26:04 -0800
+        id 1kxzGm-0009cQ-MO; Fri, 08 Jan 2021 13:26:04 -0800
 From:   mgross@linux.intel.com
 To:     markgross@kernel.org, mgross@linux.intel.com, arnd@arndb.de,
         bp@suse.de, damien.lemoal@wdc.com, dragan.cvetic@xilinx.com,
@@ -41,9 +41,9 @@ To:     markgross@kernel.org, mgross@linux.intel.com, arnd@arndb.de,
         shawnguo@kernel.org, jassisinghbrar@gmail.com
 Cc:     linux-kernel@vger.kernel.org,
         Srikanth Thokala <srikanth.thokala@intel.com>
-Subject: [PATCH v2 15/34] misc: xlink-pcie: Add XLink API interface
-Date:   Fri,  8 Jan 2021 13:25:41 -0800
-Message-Id: <20210108212600.36850-16-mgross@linux.intel.com>
+Subject: [PATCH v2 16/34] misc: xlink-pcie: Add asynchronous event notification support for XLink
+Date:   Fri,  8 Jan 2021 13:25:42 -0800
+Message-Id: <20210108212600.36850-17-mgross@linux.intel.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20210108212600.36850-1-mgross@linux.intel.com>
 References: <20210108212600.36850-1-mgross@linux.intel.com>
@@ -53,153 +53,198 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Srikanth Thokala <srikanth.thokala@intel.com>
 
-Provide interface for XLink layer to interact with XLink PCIe transport
-layer on both local host and remote host.
+Add support to notify XLink layer upon PCIe link UP/DOWN events
 
 Cc: Arnd Bergmann <arnd@arndb.de>
 Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Reviewed-by: Mark Gross <mgross@linux.intel.com>
 Signed-off-by: Srikanth Thokala <srikanth.thokala@intel.com>
 ---
- drivers/misc/xlink-pcie/common/interface.c   | 109 +++++++++++++++++++
- drivers/misc/xlink-pcie/local_host/Makefile  |   1 +
- drivers/misc/xlink-pcie/remote_host/Makefile |   1 +
- 3 files changed, 111 insertions(+)
- create mode 100644 drivers/misc/xlink-pcie/common/interface.c
+ drivers/misc/xlink-pcie/common/core.h      |  3 ++
+ drivers/misc/xlink-pcie/common/interface.c | 17 ++++++++++
+ drivers/misc/xlink-pcie/local_host/core.c  | 11 +++++++
+ drivers/misc/xlink-pcie/remote_host/main.c |  3 ++
+ drivers/misc/xlink-pcie/remote_host/pci.c  | 36 ++++++++++++++++++++++
+ drivers/misc/xlink-pcie/remote_host/pci.h  |  3 ++
+ include/linux/xlink_drv_inf.h              | 12 ++++++++
+ 7 files changed, 85 insertions(+)
 
+diff --git a/drivers/misc/xlink-pcie/common/core.h b/drivers/misc/xlink-pcie/common/core.h
+index eec8566c19d9..34b6c268aac5 100644
+--- a/drivers/misc/xlink-pcie/common/core.h
++++ b/drivers/misc/xlink-pcie/common/core.h
+@@ -241,4 +241,7 @@ int intel_xpcie_pci_connect_device(u32 id);
+ int intel_xpcie_pci_read(u32 id, void *data, size_t *size, u32 timeout);
+ int intel_xpcie_pci_write(u32 id, void *data, size_t *size, u32 timeout);
+ int intel_xpcie_pci_reset_device(u32 id);
++int intel_xpcie_pci_register_device_event(u32 sw_device_id,
++					  xlink_device_event event_notif_fn);
++int intel_xpcie_pci_unregister_device_event(u32 sw_device_id);
+ #endif /* XPCIE_CORE_HEADER_ */
 diff --git a/drivers/misc/xlink-pcie/common/interface.c b/drivers/misc/xlink-pcie/common/interface.c
-new file mode 100644
-index 000000000000..56c1d9ed9d8f
---- /dev/null
+index 56c1d9ed9d8f..4ad291ff97c8 100644
+--- a/drivers/misc/xlink-pcie/common/interface.c
 +++ b/drivers/misc/xlink-pcie/common/interface.c
-@@ -0,0 +1,109 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/*****************************************************************************
-+ *
-+ * Intel Keem Bay XLink PCIe Driver
-+ *
-+ * Copyright (C) 2020 Intel Corporation
-+ *
-+ ****************************************************************************/
+@@ -107,3 +107,20 @@ int xlink_pcie_reset_device(u32 sw_device_id)
+ 	return intel_xpcie_pci_reset_device(sw_device_id);
+ }
+ EXPORT_SYMBOL(xlink_pcie_reset_device);
 +
-+#include <linux/xlink_drv_inf.h>
-+
-+#include "core.h"
-+#include "xpcie.h"
-+
-+/* Define xpcie driver interface API */
-+int xlink_pcie_get_device_list(u32 *sw_device_id_list, u32 *num_devices)
++int xlink_pcie_register_device_event(u32 sw_device_id,
++				     xlink_device_event event_notif_fn)
 +{
-+	if (!sw_device_id_list || !num_devices)
++	if (!event_notif_fn)
 +		return -EINVAL;
 +
-+	*num_devices = intel_xpcie_get_device_num(sw_device_id_list);
-+
-+	return 0;
++	return intel_xpcie_pci_register_device_event(sw_device_id,
++						     event_notif_fn);
 +}
-+EXPORT_SYMBOL(xlink_pcie_get_device_list);
++EXPORT_SYMBOL(xlink_pcie_register_device_event);
 +
-+int xlink_pcie_get_device_name(u32 sw_device_id, char *device_name,
-+			       size_t name_size)
++int xlink_pcie_unregister_device_event(u32 sw_device_id)
 +{
-+	if (!device_name)
-+		return -EINVAL;
-+
-+	return intel_xpcie_get_device_name_by_id(sw_device_id,
-+						 device_name, name_size);
++	return intel_xpcie_pci_unregister_device_event(sw_device_id);
 +}
-+EXPORT_SYMBOL(xlink_pcie_get_device_name);
++EXPORT_SYMBOL(xlink_pcie_unregister_device_event);
+diff --git a/drivers/misc/xlink-pcie/local_host/core.c b/drivers/misc/xlink-pcie/local_host/core.c
+index 51fa25259515..a343e30d8b45 100644
+--- a/drivers/misc/xlink-pcie/local_host/core.c
++++ b/drivers/misc/xlink-pcie/local_host/core.c
+@@ -806,3 +806,14 @@ int intel_xpcie_pci_reset_device(u32 id)
+ {
+ 	return 0;
+ }
 +
-+int xlink_pcie_get_device_status(u32 sw_device_id, u32 *device_status)
-+{
-+	u32 status;
-+	int rc;
-+
-+	if (!device_status)
-+		return -EINVAL;
-+
-+	rc = intel_xpcie_get_device_status_by_id(sw_device_id, &status);
-+	if (rc)
-+		return rc;
-+
-+	switch (status) {
-+	case XPCIE_STATUS_READY:
-+	case XPCIE_STATUS_RUN:
-+		*device_status = _XLINK_DEV_READY;
-+		break;
-+	case XPCIE_STATUS_ERROR:
-+		*device_status = _XLINK_DEV_ERROR;
-+		break;
-+	case XPCIE_STATUS_RECOVERY:
-+		*device_status = _XLINK_DEV_RECOVERY;
-+		break;
-+	case XPCIE_STATUS_OFF:
-+		*device_status = _XLINK_DEV_OFF;
-+		break;
-+	default:
-+		*device_status = _XLINK_DEV_BUSY;
-+		break;
-+	}
-+
-+	return 0;
-+}
-+EXPORT_SYMBOL(xlink_pcie_get_device_status);
-+
-+int xlink_pcie_boot_device(u32 sw_device_id, const char *binary_name)
++int intel_xpcie_pci_register_device_event(u32 sw_device_id,
++					  xlink_device_event event_notif_fn)
 +{
 +	return 0;
 +}
-+EXPORT_SYMBOL(xlink_pcie_boot_device);
 +
-+int xlink_pcie_connect(u32 sw_device_id)
++int intel_xpcie_pci_unregister_device_event(u32 sw_device_id)
 +{
-+	return intel_xpcie_pci_connect_device(sw_device_id);
++	return 0;
 +}
-+EXPORT_SYMBOL(xlink_pcie_connect);
+diff --git a/drivers/misc/xlink-pcie/remote_host/main.c b/drivers/misc/xlink-pcie/remote_host/main.c
+index d88257dd2585..fd31ee3c153b 100644
+--- a/drivers/misc/xlink-pcie/remote_host/main.c
++++ b/drivers/misc/xlink-pcie/remote_host/main.c
+@@ -55,6 +55,8 @@ static int intel_xpcie_probe(struct pci_dev *pdev,
+ 	if (new_device)
+ 		intel_xpcie_list_add_device(xdev);
+ 
++	intel_xpcie_pci_notify_event(xdev, NOTIFY_DEVICE_CONNECTED);
 +
-+int xlink_pcie_read(u32 sw_device_id, void *data, size_t *const size,
-+		    u32 timeout)
+ 	return ret;
+ }
+ 
+@@ -64,6 +66,7 @@ static void intel_xpcie_remove(struct pci_dev *pdev)
+ 
+ 	if (xdev) {
+ 		intel_xpcie_pci_cleanup(xdev);
++		intel_xpcie_pci_notify_event(xdev, NOTIFY_DEVICE_DISCONNECTED);
+ 		intel_xpcie_remove_device(xdev);
+ 	}
+ }
+diff --git a/drivers/misc/xlink-pcie/remote_host/pci.c b/drivers/misc/xlink-pcie/remote_host/pci.c
+index f92a78f41324..0046bff5f604 100644
+--- a/drivers/misc/xlink-pcie/remote_host/pci.c
++++ b/drivers/misc/xlink-pcie/remote_host/pci.c
+@@ -8,6 +8,7 @@
+  ****************************************************************************/
+ 
+ #include <linux/mutex.h>
++#include <linux/pci.h>
+ #include <linux/sched.h>
+ #include <linux/wait.h>
+ #include <linux/workqueue.h>
+@@ -487,3 +488,38 @@ int intel_xpcie_pci_reset_device(u32 id)
+ 
+ 	return intel_xpcie_pci_prepare_dev_reset(xdev, true);
+ }
++
++int intel_xpcie_pci_register_device_event(u32 sw_device_id,
++					  xlink_device_event event_notif_fn)
 +{
-+	if (!data || !size)
-+		return -EINVAL;
++	struct xpcie_dev *xdev = intel_xpcie_get_device_by_id(sw_device_id);
 +
-+	return intel_xpcie_pci_read(sw_device_id, data, size, timeout);
++	if (!xdev)
++		return -ENOMEM;
++
++	xdev->event_fn = event_notif_fn;
++
++	return 0;
 +}
-+EXPORT_SYMBOL(xlink_pcie_read);
 +
-+int xlink_pcie_write(u32 sw_device_id, void *data, size_t *const size,
-+		     u32 timeout)
++int intel_xpcie_pci_unregister_device_event(u32 sw_device_id)
 +{
-+	if (!data || !size)
-+		return -EINVAL;
++	struct xpcie_dev *xdev = intel_xpcie_get_device_by_id(sw_device_id);
 +
-+	return intel_xpcie_pci_write(sw_device_id, data, size, timeout);
++	if (!xdev)
++		return -ENOMEM;
++
++	xdev->event_fn = NULL;
++
++	return 0;
 +}
-+EXPORT_SYMBOL(xlink_pcie_write);
 +
-+int xlink_pcie_reset_device(u32 sw_device_id)
++void intel_xpcie_pci_notify_event(struct xpcie_dev *xdev,
++				  enum xlink_device_event_type event_type)
 +{
-+	return intel_xpcie_pci_reset_device(sw_device_id);
++	if (event_type >= NUM_EVENT_TYPE)
++		return;
++
++	if (xdev->event_fn)
++		xdev->event_fn(xdev->devid, event_type);
 +}
-+EXPORT_SYMBOL(xlink_pcie_reset_device);
-diff --git a/drivers/misc/xlink-pcie/local_host/Makefile b/drivers/misc/xlink-pcie/local_host/Makefile
-index 65df94c7e860..16bb1e7345ac 100644
---- a/drivers/misc/xlink-pcie/local_host/Makefile
-+++ b/drivers/misc/xlink-pcie/local_host/Makefile
-@@ -3,3 +3,4 @@ mxlk_ep-objs := epf.o
- mxlk_ep-objs += dma.o
- mxlk_ep-objs += core.o
- mxlk_ep-objs += ../common/util.o
-+mxlk_ep-objs += ../common/interface.o
-diff --git a/drivers/misc/xlink-pcie/remote_host/Makefile b/drivers/misc/xlink-pcie/remote_host/Makefile
-index e8074dbb1161..088e121ad46e 100644
---- a/drivers/misc/xlink-pcie/remote_host/Makefile
-+++ b/drivers/misc/xlink-pcie/remote_host/Makefile
-@@ -3,3 +3,4 @@ mxlk-objs := main.o
- mxlk-objs += pci.o
- mxlk-objs += core.o
- mxlk-objs += ../common/util.o
-+mxlk-objs += ../common/interface.o
+diff --git a/drivers/misc/xlink-pcie/remote_host/pci.h b/drivers/misc/xlink-pcie/remote_host/pci.h
+index 72de3701f83a..a05dedf36a12 100644
+--- a/drivers/misc/xlink-pcie/remote_host/pci.h
++++ b/drivers/misc/xlink-pcie/remote_host/pci.h
+@@ -38,6 +38,7 @@ struct xpcie_dev {
+ 	irq_handler_t core_irq_callback;
+ 
+ 	struct xpcie xpcie;
++	xlink_device_event event_fn;
+ };
+ 
+ static inline struct device *xpcie_to_dev(struct xpcie *xpcie)
+@@ -60,5 +61,7 @@ struct xpcie_dev *intel_xpcie_create_device(u32 sw_device_id,
+ void intel_xpcie_remove_device(struct xpcie_dev *xdev);
+ void intel_xpcie_list_add_device(struct xpcie_dev *xdev);
+ void intel_xpcie_list_del_device(struct xpcie_dev *xdev);
++void intel_xpcie_pci_notify_event(struct xpcie_dev *xdev,
++				  enum xlink_device_event_type event_type);
+ 
+ #endif /* XPCIE_PCI_HEADER_ */
+diff --git a/include/linux/xlink_drv_inf.h b/include/linux/xlink_drv_inf.h
+index ffe8f4c253e6..5ca0ae1ae2e3 100644
+--- a/include/linux/xlink_drv_inf.h
++++ b/include/linux/xlink_drv_inf.h
+@@ -44,6 +44,15 @@ enum _xlink_device_status {
+ 	_XLINK_DEV_READY
+ };
+ 
++enum xlink_device_event_type {
++	NOTIFY_DEVICE_DISCONNECTED,
++	NOTIFY_DEVICE_CONNECTED,
++	NUM_EVENT_TYPE
++};
++
++typedef int (*xlink_device_event)(u32 sw_device_id,
++				  enum xlink_device_event_type event_type);
++
+ int xlink_pcie_get_device_list(u32 *sw_device_id_list,
+ 			       u32 *num_devices);
+ int xlink_pcie_get_device_name(u32 sw_device_id, char *device_name,
+@@ -57,4 +66,7 @@ int xlink_pcie_read(u32 sw_device_id, void *data, size_t *const size,
+ int xlink_pcie_write(u32 sw_device_id, void *data, size_t *const size,
+ 		     u32 timeout);
+ int xlink_pcie_reset_device(u32 sw_device_id);
++int xlink_pcie_register_device_event(u32 sw_device_id,
++				     xlink_device_event event_notif_fn);
++int xlink_pcie_unregister_device_event(u32 sw_device_id);
+ #endif
 -- 
 2.17.1
 
