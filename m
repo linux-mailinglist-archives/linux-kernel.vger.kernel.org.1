@@ -2,142 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FCCA2EEA1A
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 01:04:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C69BE2EEA22
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 01:08:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729491AbhAHAD6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 19:03:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33556 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728674AbhAHAD5 (ORCPT
+        id S1729497AbhAHAFQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 19:05:16 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:44325 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728698AbhAHAFP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 19:03:57 -0500
-Received: from mail-oi1-x233.google.com (mail-oi1-x233.google.com [IPv6:2607:f8b0:4864:20::233])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DBAAC0612F5
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Jan 2021 16:03:17 -0800 (PST)
-Received: by mail-oi1-x233.google.com with SMTP id s75so9474638oih.1
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Jan 2021 16:03:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=VnrWTd2vISRaf7ZK8SYvTF83BwjJL1Dds3Ex444l+Oc=;
-        b=eUtAZ6C1q8Ukgw7rArZ5bwk0Slk89o1R9bsNuxQztd8bC1pOKDzL88J5sR4CXV7d9B
-         dTdn6ZSlzVj/gvEQ5AMDSYSL+AT2hj3c8Av8x2ZiGJoJKXE/5zV2R9Cq+waYNCPXwott
-         g/QiAb8ukx56QCeb2nCYGFe4XbtXNsqczpdZP0LxyBxlLXvLdjJxGGsi/uvJ5YvP1geS
-         YPFFb8JO0KwvQ6zCQcVKR5T28Blwb9MysxXyc5TSZAcSdu0g76XYRPuvMFiCkyXs0CMG
-         Hp6g/PePlDsz9Pzx/WRXwH+HtthVNlR/LDZbNxYI+0yuQuG2jneMev/4F1fDefd06IU4
-         IA5A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=VnrWTd2vISRaf7ZK8SYvTF83BwjJL1Dds3Ex444l+Oc=;
-        b=HR6x/xWaVE5F/l4XdeFnBI5dyGyZh+VWZDBNz3cKfG6wuB/mQodetCn2b5Y5/OzPPw
-         e7ppvjr8USDlKc5dYzLarzRhiPtQdafWcaH7LgmlyfOjK6bNMF2/v56Es5E/UgZ9TyBr
-         SvoqX17cByVDrLDvQjtP8A1NJrr/eSAJiBVYKuHXIoVNlXzk9jsodUZhqpinJWVEEtCe
-         5sn6vPh+rwFKlbyJimG4Ba8JRnQ7q5pLCghK4IF8HPA0IT3OvH7u7YX8+BUfSY7wYgc9
-         2Q9uw1pBs6hfz3OgJdP18ssJCniptqEA/nRBgh+tCTw7iO6CDT+U0HVFc44PK75k9w2g
-         dIcw==
-X-Gm-Message-State: AOAM532zU+XekjH31OOy1LbqbMbHZETELgmJ5ZFOiX/iFymRVz5V6IV3
-        g4pLrk4Y9iN9kPe9s1i8j7Fwih2F5NJiLA==
-X-Google-Smtp-Source: ABdhPJx1J1V8KwZ4CTnKn+pXjpgiMdH7CWez2YUIny/CpRre+sbZGyDpfawEU/b9ofFVSKqaGdeu/g==
-X-Received: by 2002:aca:afd0:: with SMTP id y199mr701814oie.7.1610064196811;
-        Thu, 07 Jan 2021 16:03:16 -0800 (PST)
-Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id o49sm1420932ota.51.2021.01.07.16.03.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 Jan 2021 16:03:15 -0800 (PST)
-Date:   Thu, 7 Jan 2021 18:03:14 -0600
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Siddharth Gupta <sidgup@codeaurora.org>
-Cc:     agross@kernel.org, ohad@wizery.com, linux-arm-msm@vger.kernel.org,
-        linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        psodagud@codeaurora.org, rishabhb@codeaurora.org
-Subject: Re: [PATCH 1/3] soc: qcom: mdt_loader: Allow hash at any phdr
-Message-ID: <X/ehQiTzo+AW0DRK@builder.lan>
-References: <1609968211-7579-1-git-send-email-sidgup@codeaurora.org>
- <1609968211-7579-2-git-send-email-sidgup@codeaurora.org>
+        Thu, 7 Jan 2021 19:05:15 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1610064229;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=L4HO0Yj29jyCFpzT2x1n0U+73ImIUkhV6HJs7/htSCA=;
+        b=U+/uFAdtIvCmbLPAKNrDo5lwv98DL57Cplh5TJPba2K06ycIVnM1UHn54SdjWuTf/PwY82
+        yfijqDV8jrI+E4H7IOR91LOA3Svntqg5cIwDdiGGRvwdmTPdTdc+BrQyV9EOoom88Ar1XD
+        5gzDZ3XdIHWKqrdKVvsJgsnVA2cFfRg=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-151-uCmgvnO7PvSKOd1nT75pMw-1; Thu, 07 Jan 2021 19:03:45 -0500
+X-MC-Unique: uCmgvnO7PvSKOd1nT75pMw-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A67FB801817;
+        Fri,  8 Jan 2021 00:03:43 +0000 (UTC)
+Received: from redhat.com (dhcp-17-185.bos.redhat.com [10.18.17.185])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 893ED19809;
+        Fri,  8 Jan 2021 00:03:42 +0000 (UTC)
+Date:   Thu, 7 Jan 2021 19:03:40 -0500
+From:   Jarod Wilson <jarod@redhat.com>
+To:     Jay Vosburgh <jay.vosburgh@canonical.com>
+Cc:     linux-kernel@vger.kernel.org, Veaceslav Falico <vfalico@gmail.com>,
+        Andy Gospodarek <andy@greyhouse.net>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Thomas Davis <tadavis@lbl.gov>, netdev@vger.kernel.org
+Subject: Re: [RFC PATCH net-next] bonding: add a vlan+srcmac tx hashing option
+Message-ID: <20210108000340.GC29828@redhat.com>
+References: <20201218193033.6138-1-jarod@redhat.com>
+ <21784.1608337139@famine>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1609968211-7579-2-git-send-email-sidgup@codeaurora.org>
+In-Reply-To: <21784.1608337139@famine>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 06 Jan 15:23 CST 2021, Siddharth Gupta wrote:
-
-> The assumption that the elf program header will always have the hash
-> segment program header at index 1 may not hold true in all cases. This
-> change updates the read metadata function to find the hash program header
-> dynamically.
+On Fri, Dec 18, 2020 at 04:18:59PM -0800, Jay Vosburgh wrote:
+> Jarod Wilson <jarod@redhat.com> wrote:
 > 
-
-Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
-
-Regards,
-Bjorn
-
-> Signed-off-by: Siddharth Gupta <sidgup@codeaurora.org>
-> ---
->  drivers/soc/qcom/mdt_loader.c | 16 +++++++++++-----
->  1 file changed, 11 insertions(+), 5 deletions(-)
+> >This comes from an end-user request, where they're running multiple VMs on
+> >hosts with bonded interfaces connected to some interest switch topologies,
+> >where 802.3ad isn't an option. They're currently running a proprietary
+> >solution that effectively achieves load-balancing of VMs and bandwidth
+> >utilization improvements with a similar form of transmission algorithm.
+> >
+> >Basically, each VM has it's own vlan, so it always sends its traffic out
+> >the same interface, unless that interface fails. Traffic gets split
+> >between the interfaces, maintaining a consistent path, with failover still
+> >available if an interface goes down.
+> >
+> >This has been rudimetarily tested to provide similar results, suitable for
+> >them to use to move off their current proprietary solution.
+> >
+> >Still on the TODO list, if these even looks sane to begin with, is
+> >fleshing out Documentation/networking/bonding.rst.
 > 
-> diff --git a/drivers/soc/qcom/mdt_loader.c b/drivers/soc/qcom/mdt_loader.c
-> index 24cd193..813216d 100644
-> --- a/drivers/soc/qcom/mdt_loader.c
-> +++ b/drivers/soc/qcom/mdt_loader.c
-> @@ -4,7 +4,7 @@
->   *
->   * Copyright (C) 2016 Linaro Ltd
->   * Copyright (C) 2015 Sony Mobile Communications Inc
-> - * Copyright (c) 2012-2013, The Linux Foundation. All rights reserved.
-> + * Copyright (c) 2012-2013, 2020 The Linux Foundation. All rights reserved.
->   */
->  
->  #include <linux/device.h>
-> @@ -88,6 +88,7 @@ void *qcom_mdt_read_metadata(const struct firmware *fw, size_t *data_len)
->  	const struct elf32_phdr *phdrs;
->  	const struct elf32_hdr *ehdr;
->  	size_t hash_offset;
-> +	size_t hash_index;
->  	size_t hash_size;
->  	size_t ehdr_size;
->  	void *data;
-> @@ -98,14 +99,19 @@ void *qcom_mdt_read_metadata(const struct firmware *fw, size_t *data_len)
->  	if (ehdr->e_phnum < 2)
->  		return ERR_PTR(-EINVAL);
->  
-> -	if (phdrs[0].p_type == PT_LOAD || phdrs[1].p_type == PT_LOAD)
-> +	if (phdrs[0].p_type == PT_LOAD)
->  		return ERR_PTR(-EINVAL);
->  
-> -	if ((phdrs[1].p_flags & QCOM_MDT_TYPE_MASK) != QCOM_MDT_TYPE_HASH)
-> +	for (hash_index = 1; hash_index < ehdr->e_phnum; hash_index++) {
-> +		if (phdrs[hash_index].p_type != PT_LOAD &&
-> +		   (phdrs[hash_index].p_flags & QCOM_MDT_TYPE_MASK) == QCOM_MDT_TYPE_HASH)
-> +			break;
-> +	}
-> +	if (hash_index >= ehdr->e_phnum)
->  		return ERR_PTR(-EINVAL);
->  
->  	ehdr_size = phdrs[0].p_filesz;
-> -	hash_size = phdrs[1].p_filesz;
-> +	hash_size = phdrs[hash_index].p_filesz;
->  
->  	data = kmalloc(ehdr_size + hash_size, GFP_KERNEL);
->  	if (!data)
-> @@ -115,7 +121,7 @@ void *qcom_mdt_read_metadata(const struct firmware *fw, size_t *data_len)
->  	if (ehdr_size + hash_size == fw->size)
->  		hash_offset = phdrs[0].p_filesz;
->  	else
-> -		hash_offset = phdrs[1].p_offset;
-> +		hash_offset = phdrs[hash_index].p_offset;
->  
->  	memcpy(data, fw->data, ehdr_size);
->  	memcpy(data + ehdr_size, fw->data + hash_offset, hash_size);
-> -- 
-> Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-> a Linux Foundation Collaborative Project
+> 	I'm sure you're aware, but any final submission will also need
+> to include netlink and iproute2 support.
+
+I believe everything for netlink support is already included, but I'll
+double-check that before submitting something for inclusion consideration.
+
+> >diff --git a/drivers/net/bonding/bond_main.c b/drivers/net/bonding/bond_main.c
+> >index 5fe5232cc3f3..151ce8c7a56f 100644
+> >--- a/drivers/net/bonding/bond_main.c
+> >+++ b/drivers/net/bonding/bond_main.c
+> >@@ -164,7 +164,7 @@ module_param(xmit_hash_policy, charp, 0);
+> > MODULE_PARM_DESC(xmit_hash_policy, "balance-alb, balance-tlb, balance-xor, 802.3ad hashing method; "
+> > 				   "0 for layer 2 (default), 1 for layer 3+4, "
+> > 				   "2 for layer 2+3, 3 for encap layer 2+3, "
+> >-				   "4 for encap layer 3+4");
+> >+				   "4 for encap layer 3+4, 5 for vlan+srcmac");
+> > module_param(arp_interval, int, 0);
+> > MODULE_PARM_DESC(arp_interval, "arp interval in milliseconds");
+> > module_param_array(arp_ip_target, charp, NULL, 0);
+> >@@ -1434,6 +1434,8 @@ static enum netdev_lag_hash bond_lag_hash_type(struct bonding *bond,
+> > 		return NETDEV_LAG_HASH_E23;
+> > 	case BOND_XMIT_POLICY_ENCAP34:
+> > 		return NETDEV_LAG_HASH_E34;
+> >+	case BOND_XMIT_POLICY_VLAN_SRCMAC:
+> >+		return NETDEV_LAG_HASH_VLAN_SRCMAC;
+> > 	default:
+> > 		return NETDEV_LAG_HASH_UNKNOWN;
+> > 	}
+> >@@ -3494,6 +3496,20 @@ static bool bond_flow_ip(struct sk_buff *skb, struct flow_keys *fk,
+> > 	return true;
+> > }
+> > 
+> >+static inline u32 bond_vlan_srcmac_hash(struct sk_buff *skb)
+> >+{
+> >+	struct ethhdr *mac_hdr = (struct ethhdr *)skb_mac_header(skb);
+> >+	u32 srcmac = mac_hdr->h_source[5];
+> >+	u16 vlan;
+> >+
+> >+	if (!skb_vlan_tag_present(skb))
+> >+		return srcmac;
+> >+
+> >+	vlan = skb_vlan_tag_get(skb);
+> >+
+> >+	return srcmac ^ vlan;
 > 
+> 	For the common configuration wherein multiple VLANs are
+> configured atop a single interface (and thus by default end up with the
+> same MAC address), this seems like a fairly weak hash.  The TCI is 16
+> bits (12 of which are the VID), but only 8 are used from the MAC, which
+> will be a constant.
+> 
+> 	Is this algorithm copying the proprietary solution you mention?
+
+I've not actually seen the code in question, so I can't be 100% certain,
+but this is exactly how it was described to me, and testing seems to bear
+out that it behaves at least similarly enough for the user. They like
+simplicity, and the very basic hash suits their needs, which are basically
+just getting some load-balancing with failover w/o having to have lacp,
+running on some older switches that can't do lacp.
+
+-- 
+Jarod Wilson
+jarod@redhat.com
+
