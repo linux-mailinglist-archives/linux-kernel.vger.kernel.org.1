@@ -2,171 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A4BB52EF389
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 14:58:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 071632EF385
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 14:56:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727132AbhAHN5b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Jan 2021 08:57:31 -0500
-Received: from mga12.intel.com ([192.55.52.136]:9380 "EHLO mga12.intel.com"
+        id S1726820AbhAHN4Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Jan 2021 08:56:25 -0500
+Received: from mga04.intel.com ([192.55.52.120]:60934 "EHLO mga04.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725793AbhAHN5b (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Jan 2021 08:57:31 -0500
-IronPort-SDR: gsWuanPfH44RiswdZh8oHOEzo8ClAL1AFzqQmQx5IPIcMBWlTvlxXCjjRPrko/NXJd7+970sdr
- 8fXj/Mom80vw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9857"; a="156781241"
+        id S1726060AbhAHN4Z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 Jan 2021 08:56:25 -0500
+IronPort-SDR: m9o5BIEI6jqaUe8iopAiO2Ti9hSaRjWIKVBBoHqdViJVZpwhmXDtfRg92OE6V717BaImQkicPt
+ 6Zyheail05Eg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9857"; a="175018357"
 X-IronPort-AV: E=Sophos;i="5.79,331,1602572400"; 
-   d="scan'208";a="156781241"
+   d="scan'208";a="175018357"
 Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jan 2021 05:56:50 -0800
-IronPort-SDR: BKSXDiqxgFJ2l2sAC2Rb9H+gKajZAD58VQClhnqq3PKHMihhJf6oSQ1flbbixKJbdIpOHaHTmR
- +41Gq6+vFsBA==
-X-ExtLoop1: 1
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jan 2021 05:55:44 -0800
+IronPort-SDR: WVLjkAa0469ZD84Vmr7HfBitILcZcwP+RB0lmkPmlq4wlP/uzoCcLeuj9ZoebEo8x1KWD2+m95
+ MADmlj35EkiA==
 X-IronPort-AV: E=Sophos;i="5.79,331,1602572400"; 
-   d="scan'208";a="362337496"
-Received: from lkp-server01.sh.intel.com (HELO 412602b27703) ([10.239.97.150])
-  by orsmga002.jf.intel.com with ESMTP; 08 Jan 2021 05:56:49 -0800
-Received: from kbuild by 412602b27703 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1kxsG0-0000IY-Rw; Fri, 08 Jan 2021 13:56:48 +0000
-Date:   Fri, 08 Jan 2021 21:56:38 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:perf/kprobes] BUILD SUCCESS
- abd82e533d88df1521e3da6799b83ce88852ab88
-Message-ID: <5ff86496.ySH90YtbhYOfvqhl%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+   d="scan'208";a="362337390"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jan 2021 05:55:42 -0800
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@intel.com>)
+        id 1kxsFw-006CqW-KN; Fri, 08 Jan 2021 15:56:44 +0200
+Date:   Fri, 8 Jan 2021 15:56:44 +0200
+From:   Andy Shevchenko <andriy.shevchenko@intel.com>
+To:     Zheng Yongjun <zhengyongjun3@huawei.com>
+Cc:     sathyanarayanan.kuppuswamy@linux.intel.com, andy@kernel.org,
+        linus.walleij@linaro.org, bgolaszewski@baylibre.com,
+        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 -next] gpio: wcove: convert comma to semicolon
+Message-ID: <20210108135644.GO4077@smile.fi.intel.com>
+References: <20210108092413.19354-1-zhengyongjun3@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+In-Reply-To: <20210108092413.19354-1-zhengyongjun3@huawei.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/peterz/queue.git  perf/kprobes
-branch HEAD: abd82e533d88df1521e3da6799b83ce88852ab88  x86/kprobes: Do not decode opcode in resume_execution()
+On Fri, Jan 08, 2021 at 05:24:13PM +0800, Zheng Yongjun wrote:
+> Replace a comma between expression statements by a semicolon.
 
-elapsed time: 735m
+Pushed to my review and testing queue, thanks!
 
-configs tested: 109
-configs skipped: 133
+> Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>
+> ---
+>  drivers/gpio/gpio-wcove.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/gpio/gpio-wcove.c b/drivers/gpio/gpio-wcove.c
+> index b5fbba5a783a..97c5f1d01b62 100644
+> --- a/drivers/gpio/gpio-wcove.c
+> +++ b/drivers/gpio/gpio-wcove.c
+> @@ -434,7 +434,7 @@ static int wcove_gpio_probe(struct platform_device *pdev)
+>  	wg->chip.get_direction = wcove_gpio_get_direction;
+>  	wg->chip.get = wcove_gpio_get;
+>  	wg->chip.set = wcove_gpio_set;
+> -	wg->chip.set_config = wcove_gpio_set_config,
+> +	wg->chip.set_config = wcove_gpio_set_config;
+>  	wg->chip.base = -1;
+>  	wg->chip.ngpio = WCOVE_VGPIO_NUM;
+>  	wg->chip.can_sleep = true;
+> -- 
+> 2.22.0
+> 
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+-- 
+With Best Regards,
+Andy Shevchenko
 
-gcc tested configs:
-arm64                            allyesconfig
-arm64                               defconfig
-arm                                 defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-nios2                            alldefconfig
-c6x                         dsk6455_defconfig
-arm                        mini2440_defconfig
-mips                          rb532_defconfig
-mips                       rbtx49xx_defconfig
-nios2                            allyesconfig
-powerpc                    mvme5100_defconfig
-mips                          ath25_defconfig
-sh                             shx3_defconfig
-m68k                          multi_defconfig
-sh                          lboxre2_defconfig
-arm                       aspeed_g4_defconfig
-arm                         vf610m4_defconfig
-arm                          badge4_defconfig
-arm                        neponset_defconfig
-arm                       imx_v4_v5_defconfig
-sh                         ap325rxa_defconfig
-m68k                         amcore_defconfig
-ia64                             alldefconfig
-sh                        sh7785lcr_defconfig
-nds32                            alldefconfig
-sh                         microdev_defconfig
-powerpc                      arches_defconfig
-powerpc                mpc7448_hpc2_defconfig
-powerpc                 xes_mpc85xx_defconfig
-mips                          rm200_defconfig
-powerpc                        cell_defconfig
-x86_64                              defconfig
-ia64                            zx1_defconfig
-powerpc                     ppa8548_defconfig
-mips                           ip22_defconfig
-openrisc                    or1ksim_defconfig
-sh                           se7724_defconfig
-powerpc                      cm5200_defconfig
-arm                         lpc32xx_defconfig
-ia64                         bigsur_defconfig
-arm                        vexpress_defconfig
-mips                            gpr_defconfig
-sh                            hp6xx_defconfig
-arm                      integrator_defconfig
-sh                   rts7751r2dplus_defconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-nds32                               defconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-c6x                              allyesconfig
-i386                             allyesconfig
-i386                               tinyconfig
-i386                                defconfig
-sparc                            allyesconfig
-sparc                               defconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-x86_64               randconfig-a004-20210108
-x86_64               randconfig-a006-20210108
-x86_64               randconfig-a001-20210108
-x86_64               randconfig-a002-20210108
-x86_64               randconfig-a003-20210108
-x86_64               randconfig-a005-20210108
-i386                 randconfig-a005-20210108
-i386                 randconfig-a002-20210108
-i386                 randconfig-a001-20210108
-i386                 randconfig-a003-20210108
-i386                 randconfig-a006-20210108
-i386                 randconfig-a004-20210108
-i386                 randconfig-a016-20210108
-i386                 randconfig-a011-20210108
-i386                 randconfig-a014-20210108
-i386                 randconfig-a015-20210108
-i386                 randconfig-a013-20210108
-i386                 randconfig-a012-20210108
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-x86_64                                   rhel
-x86_64                           allyesconfig
-x86_64                    rhel-7.6-kselftests
-x86_64                               rhel-8.3
-x86_64                      rhel-8.3-kbuiltin
-x86_64                                  kexec
 
-clang tested configs:
-x86_64               randconfig-a013-20210108
-x86_64               randconfig-a011-20210108
-x86_64               randconfig-a012-20210108
-x86_64               randconfig-a016-20210108
-x86_64               randconfig-a014-20210108
-x86_64               randconfig-a015-20210108
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
