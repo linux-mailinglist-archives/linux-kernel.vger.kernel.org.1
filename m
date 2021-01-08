@@ -2,127 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 513E82EEB41
+	by mail.lfdr.de (Postfix) with ESMTP id BDE592EEB42
 	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 03:27:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726655AbhAHC03 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 21:26:29 -0500
-Received: from mail-il1-f172.google.com ([209.85.166.172]:38853 "EHLO
-        mail-il1-f172.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726358AbhAHC02 (ORCPT
+        id S1726738AbhAHC04 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 21:26:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55920 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726358AbhAHC0z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 21:26:28 -0500
-Received: by mail-il1-f172.google.com with SMTP id v3so8858784ilo.5;
-        Thu, 07 Jan 2021 18:26:13 -0800 (PST)
+        Thu, 7 Jan 2021 21:26:55 -0500
+Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 609B8C0612F4
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Jan 2021 18:26:15 -0800 (PST)
+Received: by mail-pl1-x62e.google.com with SMTP id s15so4877019plr.9
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Jan 2021 18:26:15 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=dilger-ca.20150623.gappssmtp.com; s=20150623;
+        h=from:message-id:mime-version:subject:date:in-reply-to:cc:to
+         :references;
+        bh=luDdg7XXyDwvXnZdD6ygdGvp+3kTJU9lQeguNQTRpqU=;
+        b=yp1ETCZQTCsO1E6aEVnIIPr71KsyUtIol1gvDChcfdldWH9z/jo3rzKoGhiPLLNjUJ
+         drJ8q57u8m+bH5ZaBWkRJT3qP6uwdarhDXb5bvFbPjJEdT6Ceg+m8nZ6huO6yOd6SIJc
+         /Cz2grG2gZZ9fE+Y8dAh2WBfyyamOpQkvVqcjXvnwGIiWC5Iujf5lX+iYj7g0UIyP3oF
+         UwZmJbzmZ7FdGtlIrlcR97wpXzdGtU9ng5yihyuUquYTFXfdyY0vXpuiin3QK8nNepLn
+         gA4YqUaHjOm8JbmrJDSN+YgwHDSNdk6O1Jz3v3v11Oi0NSHwSaKPzJqGCFjz0rxp5U9O
+         l1rQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=hre6xfB6NrLqQ3dXVlKDAfHEjfp9rD+sjidZkUWhifo=;
-        b=BX/0MWIlQ9MLS4r5jP5he2u/aZOTita9KTO2kOiiIhFtNy40zs+nhb1p+EfyNWPS8V
-         ByPgrXnvSrrh/ml3ykTMKc+1W2f5pkgEkPoKrZP3nxz4u1eQptBoGu1LrE19MWzN50yD
-         h+K4SiiUGRMyNLAuwnYLLLn/X0h40I/86mFVrvxwbg/yERZZwiZy2ZyWE97OUka654j9
-         qiJ0Gh+OuyvM2kyEw7rhRyXoKboPDis3I2MiZA+3SXLMsChRH6Sw8tiCkIG1X699DVDE
-         fPuI3T8+yP1x181zBm9HNO8ETgBBAoxZhELxI7N1uDOzKNQPmuedi4WfbnSS5CrwkT3A
-         5u/Q==
-X-Gm-Message-State: AOAM530jRTVHpcxXGvuP774aqUcClKBxrRhwiuYB4A7+uU1y1vLJdG9H
-        hhlrCMUWiI0jY3NCZjR8aQ==
-X-Google-Smtp-Source: ABdhPJy6+5gcSiBXjrC4K+yGR0iKJSoDzy7Ki/YVuyrvV6OQ5PDNXOa+TAV4NklLz8zbiPyYZrPUSw==
-X-Received: by 2002:a05:6e02:1786:: with SMTP id y6mr1718502ilu.74.1610072747732;
-        Thu, 07 Jan 2021 18:25:47 -0800 (PST)
-Received: from robh.at.kernel.org ([64.188.179.253])
-        by smtp.gmail.com with ESMTPSA id h17sm4536936ioz.12.2021.01.07.18.25.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 Jan 2021 18:25:46 -0800 (PST)
-Received: (nullmailer pid 1747334 invoked by uid 1000);
-        Fri, 08 Jan 2021 02:25:45 -0000
-Date:   Thu, 7 Jan 2021 19:25:45 -0700
-From:   Rob Herring <robh@kernel.org>
-To:     Chunyan Zhang <zhang.lyra@gmail.com>
-Cc:     Joerg Roedel <joro@8bytes.org>, iommu@lists.linux-foundation.org,
-        devicetree@vger.kernel.org, Baolin Wang <baolin.wang7@gmail.com>,
-        linux-kernel@vger.kernel.org, Orson Zhai <orsonzhai@gmail.com>,
-        Sheng Xu <sheng.xu@unisoc.com>,
-        Kevin Tang <kevin.tang@unisoc.com>
-Subject: Re: [RFC PATCH 1/2] dt-bindings: iommu: add bindings for sprd iommu
-Message-ID: <20210108022545.GA1744725@robh.at.kernel.org>
-References: <20201223111633.1711477-1-zhang.lyra@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201223111633.1711477-1-zhang.lyra@gmail.com>
+        h=x-gm-message-state:from:message-id:mime-version:subject:date
+         :in-reply-to:cc:to:references;
+        bh=luDdg7XXyDwvXnZdD6ygdGvp+3kTJU9lQeguNQTRpqU=;
+        b=Rix48Uc/f3rOEShQHUIYvDsPZBW/umViVzYsUGFJU5PlrYW9b2fpCqnG+9vmTRJ5z3
+         fROjP76R/kpSAiV+OhquGpCGfck4O4r8auKxDDDSzuAPVYPO+SxPN2ia+ThZJhV8v/HV
+         qfoFZG9O8l8bEeFLghRaYvWOLSTeqZgnw4B8fwEa4NGN0obLOiQK6yb0PxU+hOG7Sta6
+         DFLQve8ihuMFjIV4luAyHxnyyGW80JD8Eau66uIYI9a/6JGoEnJFQeR7xBwHgESfLstJ
+         UClivlhvJp4LZ4Ttkhq1tHvPo2QE0hS8wvdwD7dEiA0ObAV66v1obApK1tjC0hUkOrkP
+         GZwA==
+X-Gm-Message-State: AOAM5333ZWzUa1md+mrSaYbWFOCPv/92vOaoORtaidyKudWLzXjkDRmS
+        EQuVxVcq/SWlFYsZo1sogbFD3w==
+X-Google-Smtp-Source: ABdhPJxoy0OOAPYHD0E0wy/5EXKLXB/liUsySyu/vCSGyL99vHHJSYSWHPe/9yXbvOlSKRR8miLFNg==
+X-Received: by 2002:a17:90a:a24:: with SMTP id o33mr1373554pjo.191.1610072774908;
+        Thu, 07 Jan 2021 18:26:14 -0800 (PST)
+Received: from cabot.adilger.int (S01061cabc081bf83.cg.shawcable.net. [70.77.221.9])
+        by smtp.gmail.com with ESMTPSA id x1sm6756810pfc.112.2021.01.07.18.26.13
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 07 Jan 2021 18:26:14 -0800 (PST)
+From:   Andreas Dilger <adilger@dilger.ca>
+Message-Id: <8A3C241B-9536-447B-B22D-F922D64731C7@dilger.ca>
+Content-Type: multipart/signed;
+ boundary="Apple-Mail=_336CE80D-E491-4ADD-ADCD-5E4DA97ECF62";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
+Mime-Version: 1.0 (Mac OS X Mail 10.3 \(3273\))
+Subject: Re: [PATCH] ext4: Remove expensive flush on fast commit
+Date:   Thu, 7 Jan 2021 19:26:11 -0700
+In-Reply-To: <CAD+ocbyp+SOzpDDYsJVpd+t+UcjanZRtR85dHLgykLdURhV5wA@mail.gmail.com>
+Cc:     "tytso@mit.edu" <tytso@mit.edu>,
+        "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+To:     daejun7.park@samsung.com,
+        harshad shirwadkar <harshadshirwadkar@gmail.com>
+References: <CGME20210106013242epcms2p5b6b4ed8ca86f29456fdf56aa580e74b4@epcms2p5>
+ <20210106013242epcms2p5b6b4ed8ca86f29456fdf56aa580e74b4@epcms2p5>
+ <CAD+ocbyp+SOzpDDYsJVpd+t+UcjanZRtR85dHLgykLdURhV5wA@mail.gmail.com>
+X-Mailer: Apple Mail (2.3273)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 23, 2020 at 07:16:32PM +0800, Chunyan Zhang wrote:
-> From: Chunyan Zhang <chunyan.zhang@unisoc.com>
-> 
-> This patch only adds bindings to support display iommu, support for others
-> would be added once finished tests with those devices, such as Image
-> codec(jpeg) processor, a few signal processors, including VSP(video),
-> GSP(graphic), ISP(image), and camera CPP, etc.
-> 
-> Signed-off-by: Chunyan Zhang <chunyan.zhang@unisoc.com>
+
+--Apple-Mail=_336CE80D-E491-4ADD-ADCD-5E4DA97ECF62
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain;
+	charset=us-ascii
+
+On Tue, Jan 5, 2021 at 5:32 PM Daejun Park <daejun7.park@samsung.com> =
+wrote:
+>=20
+> In the fast commit, it adds REQ_FUA and REQ_PREFLUSH on each fast =
+commit
+> block when barrier is enabled. However, in recovery phase, ext4 =
+compares
+> CRC value in the tail. So it is sufficient adds REQ_FUA and =
+REQ_PREFLUSH
+> on the block that has tail.
+
+Does the tail block *always* contain a CRC, or is that dependent on
+EXT4_FEATURE_RO_COMPAT_METADATA_CSUM, JBD2_FEATURE_INCOMPAT_CSUM_V2,
+or JBD2_FEATURE_INCOMPAT_CSUM_V3 being enabled?
+
+If one of those features is *required* before the FAST_COMMIT feature
+can be used, then this patch looks OK.  Otherwise, the CSUM feature
+should be checked before the FUA is skipped for non-tail blocks.
+
+Cheers, Andreas
+
+> Signed-off-by: Daejun Park <daejun7.park@samsung.com>
 > ---
->  .../devicetree/bindings/iommu/sprd,iommu.yaml | 44 +++++++++++++++++++
->  1 file changed, 44 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/iommu/sprd,iommu.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/iommu/sprd,iommu.yaml b/Documentation/devicetree/bindings/iommu/sprd,iommu.yaml
-> new file mode 100644
-> index 000000000000..4d9a578a7cc9
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/iommu/sprd,iommu.yaml
-> @@ -0,0 +1,44 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +# Copyright 2020 Unisoc Inc.
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/iommu/sprd,iommu.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Unisoc IOMMU and Multi-media MMU
-> +
-> +maintainers:
-> +  - Chunyan Zhang <zhang.lyra@gmail.com>
-> +
-> +properties:
-> +  compatible:
-> +    enum:
-> +      - sprd,iommu-disp
-
-Needs to be Soc specific. Is this block specific to display subsys or 
-that just happens to be where the instance is?
-
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +  "#iommu-cells":
-> +    const: 0
-> +    description:
-> +      Unisoc IOMMUs are all single-master IOMMU devices, therefore no
-> +      additional information needs to associate with its master device.
-> +      Please refer to the generic bindings document for more details,
-> +      Documentation/devicetree/bindings/iommu/iommu.txt
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - "#iommu-cells"
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    iommu_disp: iommu@63000000 {
-> +      compatible = "sprd,iommu-disp";
-> +      reg = <0x63000000 0x880>;
-> +      #iommu-cells = <0>;
-> +    };
-> +
-> +...
-> -- 
+> fs/ext4/fast_commit.c | 10 +++++-----
+> 1 file changed, 5 insertions(+), 5 deletions(-)
+>=20
+> diff --git a/fs/ext4/fast_commit.c b/fs/ext4/fast_commit.c
+> index 4fcc21c25e79..e66507be334c 100644
+> --- a/fs/ext4/fast_commit.c
+> +++ b/fs/ext4/fast_commit.c
+> @@ -604,13 +604,13 @@ void ext4_fc_track_range(handle_t *handle, =
+struct inode *inode, ext4_lblk_t star
+>        trace_ext4_fc_track_range(inode, start, end, ret);
+> }
+>=20
+> -static void ext4_fc_submit_bh(struct super_block *sb)
+> +static void ext4_fc_submit_bh(struct super_block *sb, bool is_tail)
+> {
+>        int write_flags =3D REQ_SYNC;
+>        struct buffer_head *bh =3D EXT4_SB(sb)->s_fc_bh;
+>=20
+> -       /* TODO: REQ_FUA | REQ_PREFLUSH is unnecessarily expensive. */
+> -       if (test_opt(sb, BARRIER))
+> +       /* Add REQ_FUA | REQ_PREFLUSH only its tail */
+> +       if (test_opt(sb, BARRIER) && is_tail)
+>                write_flags |=3D REQ_FUA | REQ_PREFLUSH;
+>        lock_buffer(bh);
+>        set_buffer_dirty(bh);
+> @@ -684,7 +684,7 @@ static u8 *ext4_fc_reserve_space(struct =
+super_block *sb, int len, u32 *crc)
+>                *crc =3D ext4_chksum(sbi, *crc, tl, sizeof(*tl));
+>        if (pad_len > 0)
+>                ext4_fc_memzero(sb, tl + 1, pad_len, crc);
+> -       ext4_fc_submit_bh(sb);
+> +       ext4_fc_submit_bh(sb, false);
+>=20
+>        ret =3D jbd2_fc_get_buf(EXT4_SB(sb)->s_journal, &bh);
+>        if (ret)
+> @@ -741,7 +741,7 @@ static int ext4_fc_write_tail(struct super_block =
+*sb, u32 crc)
+>        tail.fc_crc =3D cpu_to_le32(crc);
+>        ext4_fc_memcpy(sb, dst, &tail.fc_crc, sizeof(tail.fc_crc), =
+NULL);
+>=20
+> -       ext4_fc_submit_bh(sb);
+> +       ext4_fc_submit_bh(sb, true);
+>=20
+>        return 0;
+> }
+> --
 > 2.25.1
-> 
+
+
+Cheers, Andreas
+
+
+
+
+
+
+--Apple-Mail=_336CE80D-E491-4ADD-ADCD-5E4DA97ECF62
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+	filename=signature.asc
+Content-Type: application/pgp-signature;
+	name=signature.asc
+Content-Description: Message signed with OpenPGP
+
+-----BEGIN PGP SIGNATURE-----
+Comment: GPGTools - http://gpgtools.org
+
+iQIzBAEBCAAdFiEEDb73u6ZejP5ZMprvcqXauRfMH+AFAl/3wsMACgkQcqXauRfM
+H+Bvsg//Y5fdGY7LiAoLcJ27WC3ILhpqMd8TaA06bove8p8+rlCQFFYDXC7lUWKE
+BagTLsNKzvFSB5EeuO2lXb2uWdCGb+eS5mkfGmUQDljBS/Ls7QHJlxFKjAnOmsK0
+bboRfDWGxDwj9kSUCbkRHYwxJOAPTBbDfYkcB1uc1wzACWH8lTy5conL18WAQECS
+PGxvFduSxRdyoSGueD7TPOsWEZQcZA0LPkVEYTgRufwJYhGwtTKYPt0fBq5n1beo
+WC8EtKPdudEE3jD+S1THuDrhnxmekZZu2h/JCtDa15N396qQt1HzPJ7AAdSgLIxk
+v+ltaC3K9g+zok4Yxokhq3kdghe/3/Wp5CCrp+vTx/ywmlZc31nfpxdqJi5HPSyK
+zNGTdUEeaMh9aJpeLwpDUtMSbrBHMR5A/Yy2vKMheyvEZQ1dR5NjFj3wPoWUSZAA
+G6pCRoB8UQNPPNQztquAhNEEp4LXVfdufTgg3GhsU7Ye6qDpQy15z2Dwxce4LGyW
+XzO31lrX5pYJgplYVfplNgdFwDx7APGFOOlpY9P4Kix/GQLgmrKkP8dSGCvq8/Vc
+LTr3a+1QAvUKWRL03vZv6knGRUNJ9vTJkW/TxbTBR6cq8xQx9ZhF4RVloxm/iMsH
++Ij8RM+7RNmEYDUGsQCMsahr+LwdlzkiKzY1QDcK7nDaR+CcV/I=
+=d8v7
+-----END PGP SIGNATURE-----
+
+--Apple-Mail=_336CE80D-E491-4ADD-ADCD-5E4DA97ECF62--
