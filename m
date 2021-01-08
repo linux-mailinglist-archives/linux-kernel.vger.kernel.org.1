@@ -2,193 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 27C912EEAFE
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 02:40:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 23F452EEAFF
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 02:42:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729841AbhAHBjS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 20:39:18 -0500
-Received: from mailgw01.mediatek.com ([210.61.82.183]:48822 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1727634AbhAHBjS (ORCPT
+        id S1729797AbhAHBlq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 20:41:46 -0500
+Received: from szxga04-in.huawei.com ([45.249.212.190]:9725 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727634AbhAHBlq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 20:39:18 -0500
-X-UUID: 24877376222d4592a23c8e03783fa998-20210108
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=s+o0wQ44oQ0OJjcZVE6WER+igqM6j9ySewzTsgGNyp8=;
-        b=cV7EBqGbmT2/J3zHRidlEZ1iZfKQZXZPFUgA40G8x0oi8n7WRmPYGhqu+N0GYY0ApkNr1egbdXv6//KXOIOxFyhyPbj2tZoy7RX0Romx4Ezx4wpLrauewyzoov31dWYwkjbIBsP4Mg+A+2hwwfn4+CIpq8aCyvnzowyTdB/dEmk=;
-X-UUID: 24877376222d4592a23c8e03783fa998-20210108
-Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw01.mediatek.com
-        (envelope-from <walter-zh.wu@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 1771301999; Fri, 08 Jan 2021 09:38:32 +0800
-Received: from mtkcas10.mediatek.inc (172.21.101.39) by
- mtkmbs01n2.mediatek.inc (172.21.101.79) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Fri, 8 Jan 2021 09:38:30 +0800
-Received: from [172.21.84.99] (172.21.84.99) by mtkcas10.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Fri, 8 Jan 2021 09:38:30 +0800
-Message-ID: <1610069910.29507.3.camel@mtksdccf07>
-Subject: Re: [PATCH] kasan: remove redundant config option
-From:   Walter Wu <walter-zh.wu@mediatek.com>
-To:     Nathan Chancellor <natechancellor@gmail.com>
-CC:     Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Alexander Potapenko <glider@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Andrey Konovalov <andreyknvl@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        <kasan-dev@googlegroups.com>, <linux-mm@kvack.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        wsd_upstream <wsd_upstream@mediatek.com>,
-        <linux-mediatek@lists.infradead.org>,
-        <clang-built-linux@googlegroups.com>
-Date:   Fri, 8 Jan 2021 09:38:30 +0800
-In-Reply-To: <20210107210045.GA1456581@ubuntu-m3-large-x86>
-References: <20210107062152.2015-1-walter-zh.wu@mediatek.com>
-         <20210107210045.GA1456581@ubuntu-m3-large-x86>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.2.3-0ubuntu6 
+        Thu, 7 Jan 2021 20:41:46 -0500
+Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4DBm4S6m0Lzl11j;
+        Fri,  8 Jan 2021 09:39:52 +0800 (CST)
+Received: from [10.174.179.174] (10.174.179.174) by
+ DGGEMS409-HUB.china.huawei.com (10.3.19.209) with Microsoft SMTP Server id
+ 14.3.498.0; Fri, 8 Jan 2021 09:41:01 +0800
+Subject: Re: [PATCH] mm/hugetlb: Fix potential double free in
+ hugetlb_register_node() error path
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>
+CC:     <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>
+References: <20210107123249.36964-1-linmiaohe@huawei.com>
+ <a8753475-e9a8-a730-c095-086530ecdd17@oracle.com>
+ <20210107151502.7c581d98078ba90e63553dd4@linux-foundation.org>
+From:   Miaohe Lin <linmiaohe@huawei.com>
+Message-ID: <0c53d7a7-df61-9187-676b-6ba5d0829394@huawei.com>
+Date:   Fri, 8 Jan 2021 09:41:01 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-X-TM-SNTS-SMTP: CFE1FE589981CD48E25B11BC0CC153010BB4FBB961CFCB681BFAFCF0AF1E593B2000:8
-X-MTK:  N
-Content-Transfer-Encoding: base64
+In-Reply-To: <20210107151502.7c581d98078ba90e63553dd4@linux-foundation.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.179.174]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gVGh1LCAyMDIxLTAxLTA3IGF0IDE0OjAwIC0wNzAwLCBOYXRoYW4gQ2hhbmNlbGxvciB3cm90
-ZToNCj4gT24gVGh1LCBKYW4gMDcsIDIwMjEgYXQgMDI6MjE6NTJQTSArMDgwMCwgV2FsdGVyIFd1
-IHdyb3RlOg0KPiA+IENPTkZJR19LQVNBTl9TVEFDSyBhbmQgQ09ORklHX0tBU0FOX1NUQUNLX0VO
-QUJMRSBib3RoIGVuYWJsZSBLQVNBTg0KPiA+IHN0YWNrIGluc3RydW1lbnRhdGlvbiwgYnV0IHdl
-IHNob3VsZCBvbmx5IG5lZWQgb25lIGNvbmZpZyBvcHRpb24sDQo+ID4gc28gdGhhdCB3ZSByZW1v
-dmUgQ09ORklHX0tBU0FOX1NUQUNLX0VOQUJMRS4gc2VlIFsxXS4NCj4gPiANCj4gPiBGb3IgZ2Nj
-IHdlIGNvdWxkIGRvIG5vIHByb21wdCBhbmQgZGVmYXVsdCB2YWx1ZSB5LCBhbmQgZm9yIGNsYW5n
-DQo+ID4gcHJvbXB0IGFuZCBkZWZhdWx0IHZhbHVlIG4uDQo+ID4gDQo+ID4gWzFdOiBodHRwczov
-L2J1Z3ppbGxhLmtlcm5lbC5vcmcvc2hvd19idWcuY2dpP2lkPTIxMDIyMQ0KPiA+IA0KPiA+IFNp
-Z25lZC1vZmYtYnk6IFdhbHRlciBXdSA8d2FsdGVyLXpoLnd1QG1lZGlhdGVrLmNvbT4NCj4gPiBT
-dWdnZXN0ZWQtYnk6IERtaXRyeSBWeXVrb3YgPGR2eXVrb3ZAZ29vZ2xlLmNvbT4NCj4gPiBDYzog
-QW5kcmV5IFJ5YWJpbmluIDxhcnlhYmluaW5AdmlydHVvenpvLmNvbT4NCj4gPiBDYzogRG1pdHJ5
-IFZ5dWtvdiA8ZHZ5dWtvdkBnb29nbGUuY29tPg0KPiA+IENjOiBBbmRyZXkgS29ub3ZhbG92IDxh
-bmRyZXlrbnZsQGdvb2dsZS5jb20+DQo+ID4gQ2M6IEFsZXhhbmRlciBQb3RhcGVua28gPGdsaWRl
-ckBnb29nbGUuY29tPg0KPiA+IENjOiBBbmRyZXcgTW9ydG9uIDxha3BtQGxpbnV4LWZvdW5kYXRp
-b24ub3JnPg0KPiA+IC0tLQ0KPiA+ICBhcmNoL2FybTY0L2tlcm5lbC9zbGVlcC5TICAgICAgICB8
-ICAyICstDQo+ID4gIGFyY2gveDg2L2tlcm5lbC9hY3BpL3dha2V1cF82NC5TIHwgIDIgKy0NCj4g
-PiAgaW5jbHVkZS9saW51eC9rYXNhbi5oICAgICAgICAgICAgfCAgMiArLQ0KPiA+ICBsaWIvS2Nv
-bmZpZy5rYXNhbiAgICAgICAgICAgICAgICB8IDExICsrKystLS0tLS0tDQo+ID4gIG1tL2thc2Fu
-L2NvbW1vbi5jICAgICAgICAgICAgICAgIHwgIDIgKy0NCj4gPiAgbW0va2FzYW4va2FzYW4uaCAg
-ICAgICAgICAgICAgICAgfCAgMiArLQ0KPiA+ICBtbS9rYXNhbi9yZXBvcnRfZ2VuZXJpYy5jICAg
-ICAgICB8ICAyICstDQo+ID4gIHNjcmlwdHMvTWFrZWZpbGUua2FzYW4gICAgICAgICAgIHwgMTAg
-KysrKysrKystLQ0KPiA+ICA4IGZpbGVzIGNoYW5nZWQsIDE4IGluc2VydGlvbnMoKyksIDE1IGRl
-bGV0aW9ucygtKQ0KPiA+IA0KPiA+IGRpZmYgLS1naXQgYS9hcmNoL2FybTY0L2tlcm5lbC9zbGVl
-cC5TIGIvYXJjaC9hcm02NC9rZXJuZWwvc2xlZXAuUw0KPiA+IGluZGV4IDZiZGVmNzM2MmMwZS4u
-N2M0NGVkZTEyMmE5IDEwMDY0NA0KPiA+IC0tLSBhL2FyY2gvYXJtNjQva2VybmVsL3NsZWVwLlMN
-Cj4gPiArKysgYi9hcmNoL2FybTY0L2tlcm5lbC9zbGVlcC5TDQo+ID4gQEAgLTEzMyw3ICsxMzMs
-NyBAQCBTWU1fRlVOQ19TVEFSVChfY3B1X3Jlc3VtZSkNCj4gPiAgCSAqLw0KPiA+ICAJYmwJY3B1
-X2RvX3Jlc3VtZQ0KPiA+ICANCj4gPiAtI2lmIGRlZmluZWQoQ09ORklHX0tBU0FOKSAmJiBDT05G
-SUdfS0FTQU5fU1RBQ0sNCj4gPiArI2lmIGRlZmluZWQoQ09ORklHX0tBU0FOKSAmJiBkZWZpbmVk
-KENPTkZJR19LQVNBTl9TVEFDSykNCj4gPiAgCW1vdgl4MCwgc3ANCj4gPiAgCWJsCWthc2FuX3Vu
-cG9pc29uX3Rhc2tfc3RhY2tfYmVsb3cNCj4gPiAgI2VuZGlmDQo+ID4gZGlmZiAtLWdpdCBhL2Fy
-Y2gveDg2L2tlcm5lbC9hY3BpL3dha2V1cF82NC5TIGIvYXJjaC94ODYva2VybmVsL2FjcGkvd2Fr
-ZXVwXzY0LlMNCj4gPiBpbmRleCA1ZDNhMGI4ZmQzNzkuLmM3ZjQxMmY0ZTA3ZCAxMDA2NDQNCj4g
-PiAtLS0gYS9hcmNoL3g4Ni9rZXJuZWwvYWNwaS93YWtldXBfNjQuUw0KPiA+ICsrKyBiL2FyY2gv
-eDg2L2tlcm5lbC9hY3BpL3dha2V1cF82NC5TDQo+ID4gQEAgLTExMiw3ICsxMTIsNyBAQCBTWU1f
-RlVOQ19TVEFSVChkb19zdXNwZW5kX2xvd2xldmVsKQ0KPiA+ICAJbW92cQlwdF9yZWdzX3IxNCgl
-cmF4KSwgJXIxNA0KPiA+ICAJbW92cQlwdF9yZWdzX3IxNSglcmF4KSwgJXIxNQ0KPiA+ICANCj4g
-PiAtI2lmIGRlZmluZWQoQ09ORklHX0tBU0FOKSAmJiBDT05GSUdfS0FTQU5fU1RBQ0sNCj4gPiAr
-I2lmIGRlZmluZWQoQ09ORklHX0tBU0FOKSAmJiBkZWZpbmVkKENPTkZJR19LQVNBTl9TVEFDSykN
-Cj4gPiAgCS8qDQo+ID4gIAkgKiBUaGUgc3VzcGVuZCBwYXRoIG1heSBoYXZlIHBvaXNvbmVkIHNv
-bWUgYXJlYXMgZGVlcGVyIGluIHRoZSBzdGFjaywNCj4gPiAgCSAqIHdoaWNoIHdlIG5vdyBuZWVk
-IHRvIHVucG9pc29uLg0KPiA+IGRpZmYgLS1naXQgYS9pbmNsdWRlL2xpbnV4L2thc2FuLmggYi9p
-bmNsdWRlL2xpbnV4L2thc2FuLmgNCj4gPiBpbmRleCA1ZTA2NTVmYjJhNmYuLjM1ZDFlOWIyY2Jm
-YSAxMDA2NDQNCj4gPiAtLS0gYS9pbmNsdWRlL2xpbnV4L2thc2FuLmgNCj4gPiArKysgYi9pbmNs
-dWRlL2xpbnV4L2thc2FuLmgNCj4gPiBAQCAtMzAyLDcgKzMwMiw3IEBAIHN0YXRpYyBpbmxpbmUg
-dm9pZCBrYXNhbl9rZnJlZV9sYXJnZSh2b2lkICpwdHIsIHVuc2lnbmVkIGxvbmcgaXApIHt9DQo+
-ID4gIA0KPiA+ICAjZW5kaWYgLyogQ09ORklHX0tBU0FOICovDQo+ID4gIA0KPiA+IC0jaWYgZGVm
-aW5lZChDT05GSUdfS0FTQU4pICYmIENPTkZJR19LQVNBTl9TVEFDSw0KPiA+ICsjaWYgZGVmaW5l
-ZChDT05GSUdfS0FTQU4pICYmIGRlZmluZWQoQ09ORklHX0tBU0FOX1NUQUNLKQ0KPiA+ICB2b2lk
-IGthc2FuX3VucG9pc29uX3Rhc2tfc3RhY2soc3RydWN0IHRhc2tfc3RydWN0ICp0YXNrKTsNCj4g
-PiAgI2Vsc2UNCj4gPiAgc3RhdGljIGlubGluZSB2b2lkIGthc2FuX3VucG9pc29uX3Rhc2tfc3Rh
-Y2soc3RydWN0IHRhc2tfc3RydWN0ICp0YXNrKSB7fQ0KPiA+IGRpZmYgLS1naXQgYS9saWIvS2Nv
-bmZpZy5rYXNhbiBiL2xpYi9LY29uZmlnLmthc2FuDQo+ID4gaW5kZXggZjVmYTRiYTEyNmJmLi41
-OWRlNzQyOTM0NTQgMTAwNjQ0DQo+ID4gLS0tIGEvbGliL0tjb25maWcua2FzYW4NCj4gPiArKysg
-Yi9saWIvS2NvbmZpZy5rYXNhbg0KPiA+IEBAIC0xMzgsOSArMTM4LDExIEBAIGNvbmZpZyBLQVNB
-Tl9JTkxJTkUNCj4gPiAgDQo+ID4gIGVuZGNob2ljZQ0KPiA+ICANCj4gPiAtY29uZmlnIEtBU0FO
-X1NUQUNLX0VOQUJMRQ0KPiA+IC0JYm9vbCAiRW5hYmxlIHN0YWNrIGluc3RydW1lbnRhdGlvbiAo
-dW5zYWZlKSIgaWYgQ0NfSVNfQ0xBTkcgJiYgIUNPTVBJTEVfVEVTVA0KPiANCj4gWW91IGFyZSBl
-ZmZlY3RpdmVseSB1bmRvaW5nIGNvbW1pdHMgNmJhZWM4ODBkN2E1ICgia2FzYW46IHR1cm4gb2Zm
-DQo+IGFzYW4tc3RhY2sgZm9yIGNsYW5nLTggYW5kIGVhcmxpZXIiKSBhbmQgZWJiNmQzNWE3NGNl
-ICgia2FzYW46IHJlbW92ZQ0KPiBjbGFuZyB2ZXJzaW9uIGNoZWNrIGZvciBLQVNBTl9TVEFDSyIp
-IHdpdGggdGhpcyBjaGFuZ2UuIFRoaXMgY2hhbmdlDQo+IHNob3VsZCBzdGlsbCByZW1haW4gYXJv
-dW5kIHNvIHRoYXQgYWxse21vZCx5ZXN9Y29uZmlnIHJlbWFpbiBtb3N0bHkNCj4gY2xlYW4gZm9y
-IGNsYW5nIGJ1aWxkcy4gVGhpcyBzaG91bGQgbm90IGNoYW5nZSBhbnl0aGluZyBmcm9tIHRoZSB1
-c2VyJ3MNCj4gcGVyc3BlY3RpdmUgYmVjYXVzZSB0aGlzIG9wdGlvbiB3YXMgbmV2ZXIgdXNlciBz
-ZWxlY3RhYmxlIGZvciBHQ0MgYW5kDQo+IHRoZSBkZWZhdWx0IHkga2VlcHMgaXQgb24uDQo+IA0K
-DQpPaywgSSB3aWxsIHJlbWFpbiB0aGlzLg0KDQo+ID4gK2NvbmZpZyBLQVNBTl9TVEFDSw0KPiA+
-ICsJYm9vbCAiRW5hYmxlIHN0YWNrIGluc3RydW1lbnRhdGlvbiAodW5zYWZlKSINCj4gPiAgCWRl
-cGVuZHMgb24gS0FTQU5fR0VORVJJQyB8fCBLQVNBTl9TV19UQUdTDQo+ID4gKwlkZWZhdWx0IHkg
-aWYgQ0NfSVNfR0NDDQo+ID4gKwlkZWZhdWx0IG4gaWYgQ0NfSVNfQ0xBTkcNCj4gDQo+IFRoaXMg
-aXMgaW1wbGllZCBhbmQgY2FuIGJlIHJlbW92ZWQuDQo+IA0KPiA+ICAJaGVscA0KPiA+ICAJICBU
-aGUgTExWTSBzdGFjayBhZGRyZXNzIHNhbml0aXplciBoYXMgYSBrbm93IHByb2JsZW0gdGhhdA0K
-PiA+ICAJICBjYXVzZXMgZXhjZXNzaXZlIHN0YWNrIHVzYWdlIGluIGEgbG90IG9mIGZ1bmN0aW9u
-cywgc2VlDQo+ID4gQEAgLTE1NCwxMSArMTU2LDYgQEAgY29uZmlnIEtBU0FOX1NUQUNLX0VOQUJM
-RQ0KPiA+ICAJICBDT05GSUdfQ09NUElMRV9URVNULglPbiBnY2MgaXQgaXMgYXNzdW1lZCB0byBh
-bHdheXMgYmUgc2FmZQ0KPiA+ICAJICB0byB1c2UgYW5kIGVuYWJsZWQgYnkgZGVmYXVsdC4NCj4g
-PiAgDQo+ID4gLWNvbmZpZyBLQVNBTl9TVEFDSw0KPiA+IC0JaW50DQo+ID4gLQlkZWZhdWx0IDEg
-aWYgS0FTQU5fU1RBQ0tfRU5BQkxFIHx8IENDX0lTX0dDQw0KPiA+IC0JZGVmYXVsdCAwDQo+ID4g
-LQ0KPiA+ICBjb25maWcgS0FTQU5fU1dfVEFHU19JREVOVElGWQ0KPiA+ICAJYm9vbCAiRW5hYmxl
-IG1lbW9yeSBjb3JydXB0aW9uIGlkZW50aWZpY2F0aW9uIg0KPiA+ICAJZGVwZW5kcyBvbiBLQVNB
-Tl9TV19UQUdTDQo+ID4gZGlmZiAtLWdpdCBhL21tL2thc2FuL2NvbW1vbi5jIGIvbW0va2FzYW4v
-Y29tbW9uLmMNCj4gPiBpbmRleCAzOGJhMmFlY2Q4ZjQuLjAyZWM3ZjgxZGMxNiAxMDA2NDQNCj4g
-PiAtLS0gYS9tbS9rYXNhbi9jb21tb24uYw0KPiA+ICsrKyBiL21tL2thc2FuL2NvbW1vbi5jDQo+
-ID4gQEAgLTYzLDcgKzYzLDcgQEAgdm9pZCBfX2thc2FuX3VucG9pc29uX3JhbmdlKGNvbnN0IHZv
-aWQgKmFkZHJlc3MsIHNpemVfdCBzaXplKQ0KPiA+ICAJdW5wb2lzb25fcmFuZ2UoYWRkcmVzcywg
-c2l6ZSk7DQo+ID4gIH0NCj4gPiAgDQo+ID4gLSNpZiBDT05GSUdfS0FTQU5fU1RBQ0sNCj4gPiAr
-I2lmIGRlZmluZWQoQ09ORklHX0tBU0FOX1NUQUNLKQ0KPiANCj4gSXNuJ3QgJyNpZmRlZiBDT05G
-SUdfLi4uJyBwcmVmZXJyZWQgZm9yIENPTkZJRyBzeW1ib2xzPw0KPiANCg0KWWVzLCBJIHdpbGwg
-Zml4IGluIHRoZSBuZXh0IHZlcnNpb24uIFRoYW5rcyBmb3IgeW91ciByZXZpZXcuDQoNCj4gPiAg
-LyogVW5wb2lzb24gdGhlIGVudGlyZSBzdGFjayBmb3IgYSB0YXNrLiAqLw0KPiA+ICB2b2lkIGth
-c2FuX3VucG9pc29uX3Rhc2tfc3RhY2soc3RydWN0IHRhc2tfc3RydWN0ICp0YXNrKQ0KPiA+ICB7
-DQo+ID4gZGlmZiAtLWdpdCBhL21tL2thc2FuL2thc2FuLmggYi9tbS9rYXNhbi9rYXNhbi5oDQo+
-ID4gaW5kZXggY2M0ZDllMWQ0OWIxLi5iZGZkYjFjZmY2NTMgMTAwNjQ0DQo+ID4gLS0tIGEvbW0v
-a2FzYW4va2FzYW4uaA0KPiA+ICsrKyBiL21tL2thc2FuL2thc2FuLmgNCj4gPiBAQCAtMjI0LDcg
-KzIyNCw3IEBAIHZvaWQgKmZpbmRfZmlyc3RfYmFkX2FkZHIodm9pZCAqYWRkciwgc2l6ZV90IHNp
-emUpOw0KPiA+ICBjb25zdCBjaGFyICpnZXRfYnVnX3R5cGUoc3RydWN0IGthc2FuX2FjY2Vzc19p
-bmZvICppbmZvKTsNCj4gPiAgdm9pZCBtZXRhZGF0YV9mZXRjaF9yb3coY2hhciAqYnVmZmVyLCB2
-b2lkICpyb3cpOw0KPiA+ICANCj4gPiAtI2lmIGRlZmluZWQoQ09ORklHX0tBU0FOX0dFTkVSSUMp
-ICYmIENPTkZJR19LQVNBTl9TVEFDSw0KPiA+ICsjaWYgZGVmaW5lZChDT05GSUdfS0FTQU5fR0VO
-RVJJQykgJiYgZGVmaW5lZChDT05GSUdfS0FTQU5fU1RBQ0spDQo+ID4gIHZvaWQgcHJpbnRfYWRk
-cmVzc19zdGFja19mcmFtZShjb25zdCB2b2lkICphZGRyKTsNCj4gPiAgI2Vsc2UNCj4gPiAgc3Rh
-dGljIGlubGluZSB2b2lkIHByaW50X2FkZHJlc3Nfc3RhY2tfZnJhbWUoY29uc3Qgdm9pZCAqYWRk
-cikgeyB9DQo+ID4gZGlmZiAtLWdpdCBhL21tL2thc2FuL3JlcG9ydF9nZW5lcmljLmMgYi9tbS9r
-YXNhbi9yZXBvcnRfZ2VuZXJpYy5jDQo+ID4gaW5kZXggOGE5Yzg4OTg3MmRhLi4xMzdhMWRiYTE5
-NzggMTAwNjQ0DQo+ID4gLS0tIGEvbW0va2FzYW4vcmVwb3J0X2dlbmVyaWMuYw0KPiA+ICsrKyBi
-L21tL2thc2FuL3JlcG9ydF9nZW5lcmljLmMNCj4gPiBAQCAtMTI4LDcgKzEyOCw3IEBAIHZvaWQg
-bWV0YWRhdGFfZmV0Y2hfcm93KGNoYXIgKmJ1ZmZlciwgdm9pZCAqcm93KQ0KPiA+ICAJbWVtY3B5
-KGJ1ZmZlciwga2FzYW5fbWVtX3RvX3NoYWRvdyhyb3cpLCBNRVRBX0JZVEVTX1BFUl9ST1cpOw0K
-PiA+ICB9DQo+ID4gIA0KPiA+IC0jaWYgQ09ORklHX0tBU0FOX1NUQUNLDQo+ID4gKyNpZiBkZWZp
-bmVkKENPTkZJR19LQVNBTl9TVEFDSykNCj4gPiAgc3RhdGljIGJvb2wgX19tdXN0X2NoZWNrIHRv
-a2VuaXplX2ZyYW1lX2Rlc2NyKGNvbnN0IGNoYXIgKipmcmFtZV9kZXNjciwNCj4gPiAgCQkJCQkg
-ICAgICBjaGFyICp0b2tlbiwgc2l6ZV90IG1heF90b2tfbGVuLA0KPiA+ICAJCQkJCSAgICAgIHVu
-c2lnbmVkIGxvbmcgKnZhbHVlKQ0KPiA+IGRpZmYgLS1naXQgYS9zY3JpcHRzL01ha2VmaWxlLmth
-c2FuIGIvc2NyaXB0cy9NYWtlZmlsZS5rYXNhbg0KPiA+IGluZGV4IDFlMDAwY2MyZTdiNC4uYWJm
-MjMxZDIwOWIxIDEwMDY0NA0KPiA+IC0tLSBhL3NjcmlwdHMvTWFrZWZpbGUua2FzYW4NCj4gPiAr
-KysgYi9zY3JpcHRzL01ha2VmaWxlLmthc2FuDQo+ID4gQEAgLTIsNiArMiwxMiBAQA0KPiA+ICBD
-RkxBR1NfS0FTQU5fTk9TQU5JVElaRSA6PSAtZm5vLWJ1aWx0aW4NCj4gPiAgS0FTQU5fU0hBRE9X
-X09GRlNFVCA/PSAkKENPTkZJR19LQVNBTl9TSEFET1dfT0ZGU0VUKQ0KPiA+ICANCj4gPiAraWZk
-ZWYgQ09ORklHX0tBU0FOX1NUQUNLDQo+ID4gKwlzdGFja19lbmFibGUgOj0gMQ0KPiA+ICtlbHNl
-DQo+ID4gKwlzdGFja19lbmFibGUgOj0gMA0KPiA+ICtlbmRpZg0KPiA+ICsNCj4gPiAgaWZkZWYg
-Q09ORklHX0tBU0FOX0dFTkVSSUMNCj4gPiAgDQo+ID4gIGlmZGVmIENPTkZJR19LQVNBTl9JTkxJ
-TkUNCj4gPiBAQCAtMjcsNyArMzMsNyBAQCBlbHNlDQo+ID4gIAlDRkxBR1NfS0FTQU4gOj0gJChD
-RkxBR1NfS0FTQU5fU0hBRE9XKSBcDQo+ID4gIAkgJChjYWxsIGNjLXBhcmFtLGFzYW4tZ2xvYmFs
-cz0xKSBcDQo+ID4gIAkgJChjYWxsIGNjLXBhcmFtLGFzYW4taW5zdHJ1bWVudGF0aW9uLXdpdGgt
-Y2FsbC10aHJlc2hvbGQ9JChjYWxsX3RocmVzaG9sZCkpIFwNCj4gPiAtCSAkKGNhbGwgY2MtcGFy
-YW0sYXNhbi1zdGFjaz0kKENPTkZJR19LQVNBTl9TVEFDSykpIFwNCj4gPiArCSAkKGNhbGwgY2Mt
-cGFyYW0sYXNhbi1zdGFjaz0kKHN0YWNrX2VuYWJsZSkpIFwNCj4gPiAgCSAkKGNhbGwgY2MtcGFy
-YW0sYXNhbi1pbnN0cnVtZW50LWFsbG9jYXM9MSkNCj4gPiAgZW5kaWYNCj4gPiAgDQo+ID4gQEAg
-LTQyLDcgKzQ4LDcgQEAgZWxzZQ0KPiA+ICBlbmRpZg0KPiA+ICANCj4gPiAgQ0ZMQUdTX0tBU0FO
-IDo9IC1mc2FuaXRpemU9a2VybmVsLWh3YWRkcmVzcyBcDQo+ID4gLQkJLW1sbHZtIC1od2FzYW4t
-aW5zdHJ1bWVudC1zdGFjaz0kKENPTkZJR19LQVNBTl9TVEFDSykgXA0KPiA+ICsJCS1tbGx2bSAt
-aHdhc2FuLWluc3RydW1lbnQtc3RhY2s9JChzdGFja19lbmFibGUpIFwNCj4gPiAgCQktbWxsdm0g
-LWh3YXNhbi11c2Utc2hvcnQtZ3JhbnVsZXM9MCBcDQo+ID4gIAkJJChpbnN0cnVtZW50YXRpb25f
-ZmxhZ3MpDQo+ID4gIA0KPiA+IC0tIA0KPiA+IDIuMTguMA0KPiA+IA0KPiANCg0K
+On 2021/1/8 7:15, Andrew Morton wrote:
+> On Thu, 7 Jan 2021 11:59:38 -0800 Mike Kravetz <mike.kravetz@oracle.com> wrote:
+> 
+>> On 1/7/21 4:32 AM, Miaohe Lin wrote:
+>>> In hugetlb_sysfs_add_hstate(), we would do kobject_put() on hstate_kobjs
+>>> when failed to create sysfs group but forget to set hstate_kobjs to NULL.
+>>> Then in hugetlb_register_node() error path, we may free it again via
+>>> hugetlb_unregister_node().
+>>>
+>>> Fixes: a3437870160c ("hugetlb: new sysfs interface")
+>>> Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+>>> Cc: <stable@vger.kernel.org>
+>>> ---
+>>>  mm/hugetlb.c | 4 +++-
+>>>  1 file changed, 3 insertions(+), 1 deletion(-)
+>>
+>> Thanks, this is a potential issue that should be fixed.
+>>
+>> Reviewed-by: Mike Kravetz <mike.kravetz@oracle.com>
+>>
+>> This has been around for a long time (more than 12 years).  I suspect
+>> nobody actually experienced this issue.  You just discovered via code
+>> inspection.  Correct?
 
+Yes, I found this by code inspection.
+
+>> At one time cc stable would not be accepted for this type of issue,
+>> not sure about today.
+> 
+> sysfs_create_group() will only fail if something is terribly messed up
+> - probably it has never happened to anyone.  I don't think the
+> cc:stable is justified here.
+> 
+> .
+> 
+
+I would take care of more when cc stable. Many thanks for both of you!
