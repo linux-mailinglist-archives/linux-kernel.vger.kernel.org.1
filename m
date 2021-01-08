@@ -2,77 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C8E642EF289
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 13:29:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0534F2EF28F
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 13:30:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727931AbhAHM2j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Jan 2021 07:28:39 -0500
-Received: from mail.kernel.org ([198.145.29.99]:55296 "EHLO mail.kernel.org"
+        id S1726536AbhAHMaJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Jan 2021 07:30:09 -0500
+Received: from mout.gmx.net ([212.227.17.20]:40265 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725926AbhAHM2i (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Jan 2021 07:28:38 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 990FD239EB;
-        Fri,  8 Jan 2021 12:27:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610108878;
-        bh=7Xo7mSbLPZgJ0KB4zSspcHTOUBO4KZLNffBMqGNo2/8=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=jKI8wGewQbd7KOMctKJswhxv+ll820IcTzmFrqTn4wwm+LeD/nLU/7XvHnEngK+bv
-         XBnt0OtSDsKF3CxgbJAxVbqn2sEj5cC9kaTQ/jA8ZB19HHZUPyyp28qwt5FYRM60sr
-         Xd6tY1I69xXo2dUktyGPQOyekwxe2/ZT4elRTt6T8KL4n5BSMkPIar7dGqXR63cp9r
-         nJSMNjLqEKE3NeEpTabZuC2Nf33xeaiYEK2mSzawC7zKTD1NawrwZkf0QgrnyiOPPB
-         CW3qEaq6lpkfg2S39UFpSNsKLmI3bucFDCrmSdZH5n91da+rDGJUa2aD9mFwXk+vd3
-         E/kV0ruKuF1Wg==
-From:   Felipe Balbi <balbi@kernel.org>
-To:     Yejune Deng <yejune.deng@gmail.com>, gregkh@linuxfoundation.org,
-        p.zabel@pengutronix.de
-Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        yejune.deng@gmail.com
-Subject: Re: [PATCH] usb: dwc3: core: Replace devm_reset_control_array_get()
-In-Reply-To: <1604375863-6649-1-git-send-email-yejune.deng@gmail.com>
-References: <1604375863-6649-1-git-send-email-yejune.deng@gmail.com>
-Date:   Fri, 08 Jan 2021 14:27:50 +0200
-Message-ID: <878s93wr3t.fsf@kernel.org>
+        id S1725828AbhAHMaI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 Jan 2021 07:30:08 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1610108899;
+        bh=KpCMpUy6VUc1Hr1ym6ONwZxAKziozlsCHoXJ7ei23Ng=;
+        h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
+        b=VhrhkA5jCNfY4F7ZNWFTV+NJnx/jcSBlqxBx4UlyovLhD0tSxToceN0NOdgaPW7nl
+         xMbfH8jVDU/3UyckUd0HEcpo11VN2ua7NPMJCboedPy/GgLEoAJZ+l+ZoAQ//8y0Bi
+         6iirT0SKEbNMnYskGIPBaAVTkbNG6gg8floEISUk=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from longitude ([37.201.215.57]) by mail.gmx.com (mrgmx105
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1M8ykg-1kv73d068E-0063as; Fri, 08
+ Jan 2021 13:28:19 +0100
+From:   =?UTF-8?q?Jonathan=20Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>
+To:     devicetree@vger.kernel.org
+Cc:     =?UTF-8?q?Jonathan=20Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>,
+        Avi Fishman <avifishman70@gmail.com>,
+        Tomer Maimon <tmaimon77@gmail.com>,
+        Tali Perry <tali.perry1@gmail.com>,
+        Patrick Venture <venture@google.com>,
+        Nancy Yuen <yuenn@google.com>,
+        Benjamin Fair <benjaminfair@google.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Rob Herring <robh+dt@kernel.org>, openbmc@lists.ozlabs.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] dt-bindings: timer: nuvoton: Clarify that interrupt of timer 0 should be specified
+Date:   Fri,  8 Jan 2021 13:28:03 +0100
+Message-Id: <20210108122804.359258-1-j.neuschaefer@gmx.net>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="=-=-=";
-        micalg=pgp-sha256; protocol="application/pgp-signature"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:+I2sI3Dy+uSuRw4shPx2VBxLIOPM5YM/mSuhVlLMSX1EyJVcYS5
+ U24ERaShIptBAGYfJhC/vf6h180d1PakfL9R8FkqI6cV//Td77xXkjmBg/3OSws+lIfx22t
+ 9ZEuSWRowbqvvyMYsvBcLdRG+4thuWNfwjc6cvIHGi13OqrsziYDl8mtvFdLuKflKM7AhY0
+ KKMo/TemmlIfo46wwPiSQ==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:rzb1sPHW5bc=:iXNlcqZO2fIPkLZTiNhn9E
+ XmbFtGpgB9//v6Nu+wyMJPsOVw+/qN6qE5N1R8gUozACB0uUi25+S4m3lmecy0K3fVuVWOK0m
+ SMXU+nSvZgmC6zNvZ7ZB1R1L9sPAKDT5om93oS16S3kWqQslnMEzEDlbQPWujzmUjRq8KWUeR
+ APQhePupMKhgub8j7XblgRKMXTjODEwrWO7XN5IGnr3r3nal0mb9phcL6G7/A9y2TOD1WqQxk
+ wArRMt4IAOx06iuouipgaQmkQnMQzsThpPRKTJkhp9QYXFxBXs1P90Cy632cqLmTcd6cUvrj1
+ jOl1X0/HB4+/5GpQtH7vayOJHXXiYRwhmltdVN2FlZB2Jsl686mrw78yKeTaxsvZDZrW/7w2/
+ Ca9Qn1G2Jaa8F0l4Czhe4nybmFaK11DySDFEs+s6pQ9gBj13e2P35tZkqRwpVWAaCkjsT8gZa
+ 4lldftBgaKjgXZb3K7XvpEzjrSPUeGmzwd8OdS13tBBnLuEjAAC72wRyWQR7CdAiBRKIY4nX0
+ bma6Inr8BR2xnXAcWyz5QTpBjuubyPzcB7PhtGUs+H4+AdM3H350TtAORmFZ1GVoydr/gyrmv
+ 2akipmFkrMH+rHLrrLgt61NLOvREheZOVssTxyUB5jl6/dMTfwHjP+24GihkIibZZ4LXDLveH
+ Evzg7vglw7TzDvKrgpgbiWji9Bp8E6/hA6o1GjInblTQyz6OrNh+/JevR9ej5JS7PjerJvkkS
+ bPwriwrEJSbWlB2po2aVfhX+TzIdQbiP61LMS1anG44LwjYP0pt8i3otAVA3HzhBiPfaRjpKY
+ Td+IhMtL10eYZB/XmT0C4QbE8gavCyLBj92g7Cl6WcclEVIKfPp0L3sRIZO3QOlG8AB82fRRR
+ YiWxmKbaGj+MjrPeiJsA==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---=-=-=
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
+The NPCM750 Timer/Watchdoc Controller has multiple interrupt lines,
+connected to multiple timers. The driver uses timer 0 for timer
+interrupts, so the interrupt line corresponding to timer 0 should be
+specified in DT.
 
-Yejune Deng <yejune.deng@gmail.com> writes:
+I removed the mention of "flags for falling edge", because the timer
+controller uses high-level interrupts rather than falling-edge
+interrupts, and whether flags should be specified is up the interrupt
+controller's DT binding.
 
-> devm_reset_control_array_get_optional_shared() looks more readable
->
-> Signed-off-by: Yejune Deng <yejune.deng@gmail.com>
+Signed-off-by: Jonathan Neusch=C3=A4fer <j.neuschaefer@gmx.net>
+=2D--
+ .../devicetree/bindings/timer/nuvoton,npcm7xx-timer.txt        | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-Acked-by: Felipe Balbi <balbi@kernel.org>
+diff --git a/Documentation/devicetree/bindings/timer/nuvoton,npcm7xx-timer=
+.txt b/Documentation/devicetree/bindings/timer/nuvoton,npcm7xx-timer.txt
+index ea22dfe485bee..97258f1a1505b 100644
+=2D-- a/Documentation/devicetree/bindings/timer/nuvoton,npcm7xx-timer.txt
++++ b/Documentation/devicetree/bindings/timer/nuvoton,npcm7xx-timer.txt
+@@ -6,8 +6,7 @@ timer counters.
+ Required properties:
+ - compatible      : "nuvoton,npcm750-timer" for Poleg NPCM750.
+ - reg             : Offset and length of the register set for the device.
+=2D- interrupts      : Contain the timer interrupt with flags for
+-                    falling edge.
++- interrupts      : Contain the timer interrupt of timer 0.
+ - clocks          : phandle of timer reference clock (usually a 25 MHz cl=
+ock).
 
-=2D-=20
-balbi
+ Example:
+=2D-
+2.29.2
 
---=-=-=
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQJFBAEBCAAvFiEElLzh7wn96CXwjh2IzL64meEamQYFAl/4T8cRHGJhbGJpQGtl
-cm5lbC5vcmcACgkQzL64meEamQZLfg/+OBXk3NrhzwjQIr6AI6W3nD8PBgpk4cFs
-yjIB72TCEe4w1DuzQxt8C4f+JUoJ8U8BVgixQoDyKRK1DYkWhc3R+Pn111hPZXST
-jlOtG4+L+d/l2wlevV4fzQLtAA1gWWvvdLPgl5hoBYAcbeQDLPclMFdNkSt0S/Xi
-tglYtwpxWTM/7X4VxAhvI9w9A9v7gxZB+l/UTxeAxI6vUsrVaytiZGVrHS7zGRkt
-DgEkFWelROeN9BisRByZUe8Fzb4t67rBuy80ai1oBqKubWy9SxRE3JnUoqD54+3a
-UgHBQEK5+VtoZaf0Tul6knixErYT696y7IL2TxryYZGaVjByqWfvo4hSr8qaC8O+
-M3eLpYSJz2S3A4ecX6ojEZuy5LAHn8pISbrOkIMcw0lNO9UkOrsWdP0EZS3swmZk
-KVkDq9i8yj9Y/MRLok/vjv78gjzbL9itawgnH8sHBhnpfrzt0QHjYjLcyDl84fKU
-WO2JpZa2K/Xc/N3quvwJnO4br8h4Uv9VMp2SeD5BhUTH/MPPbZEE09AxUurgKHW8
-zXH6mWQqZs5SRjYqjameA2G7VCknRb6NtoYQoH7qtBE8VaDIWtBoDNNmF8YnWzKI
-ico44s3g6SlN4vcvSlLS7mBFx04HYoDXyiwxreaiHaN7DAZMrjJEIImj3dczl6L3
-7sjmIdFiL4s=
-=25Oe
------END PGP SIGNATURE-----
---=-=-=--
