@@ -2,102 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 90BDE2EF2A4
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 13:48:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 80F8C2EF2A6
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 13:48:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726505AbhAHMsd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Jan 2021 07:48:33 -0500
-Received: from mail-ot1-f43.google.com ([209.85.210.43]:40734 "EHLO
-        mail-ot1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725817AbhAHMsc (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Jan 2021 07:48:32 -0500
-Received: by mail-ot1-f43.google.com with SMTP id j12so9505421ota.7;
-        Fri, 08 Jan 2021 04:48:17 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=X1+MciefbFYchiFVRX8BkaWe9O4pIYQazrMh5q9VfEQ=;
-        b=km/inHl3mXa2SHdJAcdslkH6kh+ioyVZuNdxXYZ+Y25QiwCDJuDIqN9Pl2VYB/MRpi
-         Jg/z9WWFS/XsqRLZMEtb6sHc+HJevp4q1wgkezIp+6R4PMlZKUJVjHVz/oxs79lJI9gz
-         +tGg15fcv6IEB7AhLYNDRLA0nLYlRTaTRfV7L/jk5vIo8+aaCsDQn/rqWTJ+BzRlrVMR
-         7ChW6AzkkhfJmK5U9dervrumLK5R9jCb4nWNq/C/An2X/BkiqeUYAwxitoZi+BjZ2UDU
-         yiL22ZPQly5/QSvwir1+FzMvwGWy+cS/sLuL48pfXxa/oWIKy9DRhhG/czRBThZRb89V
-         IVDg==
-X-Gm-Message-State: AOAM532AuzOGu2iDn+z0XF7SgIxr3u6jUeIQutM9xzpt4Sz8wcnWfF0J
-        ZA6x6aE8wSqnl7y/OKEJ/pgURNaqq58q7Uk46pg=
-X-Google-Smtp-Source: ABdhPJy84uDYp1M3oPhW4hWuXypttMIU3cvbZFCKQX9IeU4EMR0zmIXnG0Whg5oAqRyF4bXOZzof7q1874d0uQX4RPE=
-X-Received: by 2002:a9d:c01:: with SMTP id 1mr2392614otr.107.1610110071606;
- Fri, 08 Jan 2021 04:47:51 -0800 (PST)
+        id S1726794AbhAHMsn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Jan 2021 07:48:43 -0500
+Received: from mx2.suse.de ([195.135.220.15]:39102 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725817AbhAHMsn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 Jan 2021 07:48:43 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1610110077; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=DckcCzsJ+u0tQc15f+xtfESHNbQlsx8GV/bkEuYJ8P0=;
+        b=ocsWBWYbP5iRk6KKSnQ9NGsRsaPJ7jDiStJvkOEF/UwhljYpqmwHz/RAV9R1ttciVhBegM
+        6Sdx4CUO3Ixo3XIHxcaolSJ1UnrWpn7bfr82TL1C+jHap/1kfV/qnJYum4P5sFVhuwNplf
+        YI+Q37oA9/Bm7YuMgnWYt0rfeKjh/L4=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id E3941AD62;
+        Fri,  8 Jan 2021 12:47:56 +0000 (UTC)
+Date:   Fri, 8 Jan 2021 13:47:56 +0100
+From:   Petr Mladek <pmladek@suse.com>
+To:     =?utf-8?Q?=E2=80=9CWilliam?= Roche <william.roche@oracle.com>
+Cc:     linux-kernel@vger.kernel.org,
+        John Ogness <john.ogness@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>
+Subject: Re: [PATCH v1] panic: push panic() messages to the console even from
+ the MCE nmi handler
+Message-ID: <X/hUfBaYBCPqek5T@alley>
+References: <1609794955-3661-1-git-send-email-william.roche@oracle.com>
 MIME-Version: 1.0
-References: <20201227174202.40834-1-wsa+renesas@sang-engineering.com> <20201227174202.40834-6-wsa+renesas@sang-engineering.com>
-In-Reply-To: <20201227174202.40834-6-wsa+renesas@sang-engineering.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Fri, 8 Jan 2021 13:47:40 +0100
-Message-ID: <CAMuHMdUDm72KH+Bwub1VWoq_F2MwG2uzE7=rwg2yN_z9d=Nx7A@mail.gmail.com>
-Subject: Re: [PATCH 5/6] arm64: dts: renesas: r8a779a0: Add MMC node
-To:     Wolfram Sang <wsa+renesas@sang-engineering.com>
-Cc:     Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        Takeshi Saito <takeshi.saito.xv@renesas.com>,
-        Koji Matsuoka <koji.matsuoka.xm@renesas.com>,
-        Magnus Damm <magnus.damm@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1609794955-3661-1-git-send-email-william.roche@oracle.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Wolfram,
+On Mon 2021-01-04 16:15:55, “William Roche wrote:
+> From: William Roche <william.roche@oracle.com>
+> 
+> Force push panic messages to the console as panic() can be called from NMI
+> interrupt handler functions where printed messages can't always reach the
+> console without an explicit push provided by printk_safe_flush_on_panic()
+> and console_flush_on_panic().
+> This is the case with the MCE handler that can lead to a system panic
+> giving information on the fatal MCE root cause that must reach the console.
+> 
+> Signed-off-by: William Roche <william.roche@oracle.com>
+> ---
+> 
+> Notes:
+>     	While testing MCE injection and kernel reaction, we discovered a bug
+>     in the way the kernel provides the panic reason information: When dealing
+>     with fatal MCE, the machine (physical or virtual) can reboot without
+>     leaving any message on the console.
+>     
+>     	This behavior can be reproduced on Intel with the mce-inject tool
+>     with a simple:
+>     	# modprobe mce-inject
+>     	# mce-inject test/uncorrected
+>     
+>     	The investigations showed that the MCE panic can be totally message-less
+>     or can give a small set of messages. This behavior depends on the use of the
+>     crash_kexec mechanism (using the "crashkernel" parameter). Not using this
+>     parameter, we get a partial [Hardware Error] information on panic, but some
+>     important notifications can be missing. And when using it, a fatal MCE can
+>     panic the system without leaving any information.
+>     
+>     . Without "crashkernel", a Fatal MCE injection shows:
+>     
+>     [  212.153928] mce: Machine check injector initialized
+>     [  236.730682] mce: Triggering MCE exception on CPU 0
+>     [  236.731304] Disabling lock debugging due to kernel taint
+>     [  236.731947] mce: [Hardware Error]: CPU 0: Machine Check: 0 Bank 1: b000000000000000
+>     [  236.731948] mce: [Hardware Error]: TSC 78418fb4a83f
+>     [  236.731949] mce: [Hardware Error]: PROCESSOR 0:406f1 TIME 1605312952 SOCKET 0 APIC 0 microcode 1
+>     [  236.731949] mce: [Hardware Error]: Run the above through 'mcelog --ascii'
+>     [  236.731950] mce: [Hardware Error]: Machine check: MCIP not set in MCA handler
+>     [  236.731950] Kernel panic - not syncing: Fatal machine check
+>     [  236.732047] Kernel Offset: disabled
+>     
+>     	The system hangs 30 seconds without any additional message, and finally
+>     reboots.
+>     
+>     . With the use of "crashkernel", a Fatal MCE injection shows only the
+>     injection message
+>     
+>     [   80.811708] mce: Machine check injector initialized
+>     [   92.298755] mce: Triggering MCE exception on CPU 0
+>     [   92.299362] Disabling lock debugging due to kernel taint
+>     
+>     	No other messages is displayed and the system reboots immediately.
 
-On Sun, Dec 27, 2020 at 6:42 PM Wolfram Sang
-<wsa+renesas@sang-engineering.com> wrote:
-> From: Takeshi Saito <takeshi.saito.xv@renesas.com>
->
-> Add a device node for MMC.
->
-> Signed-off-by: Koji Matsuoka <koji.matsuoka.xm@renesas.com>
-> [wsa: double checked & rebased]
-> Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
+But you could find the messages in the crashdump. Aren't you?
 
-Thanks for your patch!
+It works this way by "design". The idea is the following:
 
-> --- a/arch/arm64/boot/dts/renesas/r8a779a0.dtsi
-> +++ b/arch/arm64/boot/dts/renesas/r8a779a0.dtsi
-> @@ -667,6 +667,18 @@ dmac1: dma-controller@e7350000 {
->                         /* placeholder */
->                 };
->
-> +               mmc0: mmc@ee140000 {
+Taking any locks from NMI context might lead to a deadlock.
+Re-initializing the locks might lead to deadlock as well
+because of possible double unlock. Ignoring the locks might
+lead to problems either.
 
-Hmm, seems we use the mmc0 label on all V3[HMU] SoCs, but sdhiX on all
-other R-Car Gen3 SoCs...
+A compromise is needed:
 
-> +                       compatible = "renesas,sdhi-r8a779a0",
-> +                                    "renesas,rcar-gen3-sdhi";
-> +                       reg = <0 0xee140000 0 0x2000>;
-> +                       interrupts = <GIC_SPI 236 IRQ_TYPE_LEVEL_HIGH>;
-> +                       clocks = <&cpg CPG_MOD 706>;
-> +                       power-domains = <&sysc R8A779A0_PD_ALWAYS_ON>;
-> +                       resets = <&cpg 706>;
-> +                       max-frequency = <200000000>;
-> +                       status = "disabled";
-> +               };
-> +
+1. crashdump disabled
 
-Anyway:
-Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+   console_flush_on_panic() is called. It tries hard to get the
+   messages on the console because it is the only chance.
 
-Gr{oetje,eeting}s,
+   It does console_trylock(). It is called after
+   bust_spinlocks(1) so that even the console-specific locks
+   are taken only with trylock, see oops_in_progress.
 
-                        Geert
+   BTW: There are people that do not like this because there
+	is still a risk of a deadlock. Some code paths
+	take locks without checking oops_in_progress.
+	For these people, more reliable reboot is more
+	important because they want to have the system
+	back ASAP (cloud people).
 
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+2. crashdump enabled:
+
+  Only printk_safe_flush_on_panic() is called. It does the best effort
+  to flush messages from the per-CPU buffers into the main log buffer
+  so that they can be found easily in the core.
+
+  It it pretty reliable. It should not be needed at all once the new
+  lockless ringbuffer gets fully integrated,
+
+  It does not try to flush the messages to the console. Getting
+  the crash dump is more important than risking a deadlock with
+  consoles.
+
+
+Best Regards,
+Petr
