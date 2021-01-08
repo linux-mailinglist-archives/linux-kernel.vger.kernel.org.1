@@ -2,100 +2,275 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 28C9B2EEDF0
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 08:40:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C2BCD2EEDF3
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 08:44:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727176AbhAHHkZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Jan 2021 02:40:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47808 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725308AbhAHHkY (ORCPT
+        id S1727363AbhAHHn4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Jan 2021 02:43:56 -0500
+Received: from mail7.static.mailgun.info ([104.130.122.7]:64351 "EHLO
+        mail7.static.mailgun.info" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725791AbhAHHnz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Jan 2021 02:40:24 -0500
-Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01924C0612F4;
-        Thu,  7 Jan 2021 23:39:44 -0800 (PST)
-Received: by mail-wr1-x433.google.com with SMTP id i9so8025755wrc.4;
-        Thu, 07 Jan 2021 23:39:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=c5P+vvdX7z4Mp5Q7UAxuVpXv4FhDjOB40VptQJQFkP8=;
-        b=ULcPG7pG3hfb4RaCCdNWz8cGe/83A/1O4EhCZZuR85Zw/37aUPVEbsyX2NP4o7pV7Y
-         YgaN7jW7IfTxRYJIi6gS1L/KZ2BHYUBVAxFMXXL2BScQ6d3Iinjpp6JlfYbMPZQHuTCR
-         dAhxYci+RBDU9jMf+d4pFm0FIzmrHwYoXdPBqaTs+PbSiEMUWGcssQ5woavK7Hgx76ia
-         6sn1VWGWM5yQuRw5aCL7yC6tsoitzHI5pJhALfIpf0ULe4zoC5HG1Q5GgybKrj5OMOXp
-         FsoIZYNwQ0P8xgazLZZZKRp9CgfFqvFSu2XtFRTNM7JzUIErBffGvCd8BSt4rPmyjAk6
-         lEVQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=c5P+vvdX7z4Mp5Q7UAxuVpXv4FhDjOB40VptQJQFkP8=;
-        b=Bbmsn28yom6WZnFosoW95WpVFhsCK+HQXcl78QJ4l2LvjcXWrK1UsY59GXiZ8dspne
-         Pm8POAuW+910dA9bbwFf3fmfOQ7J9elrz8mzBEffj80Hz6Qe2eM6iR+IcZRoMQKTwiMD
-         pnXh0OrU6OL56PiJpVPf9aC//4sO0G0ZiTnCWZMoIof8C9lSEbHLjodSngDSNE6c3XLi
-         OqICcCQ8G91j02fRQD2vRXkKH0CY9fBUJTyVsb3H5gjA7sXcxAB1sxkvJrTLJMcgWod2
-         ZeE52F4pKLW+JI+MoRQsUAikyHhKj8ibh9vfo2qpPOP0nKooQEdluqWtnA+iCdkeVIws
-         EJgQ==
-X-Gm-Message-State: AOAM530cgDdTYjh2SNGfZJ8vOzRyMVif0FVAW4hKTxWhoMF9c/svU/Lg
-        1nqH9MBowY92JVPAH2lefis=
-X-Google-Smtp-Source: ABdhPJyPwtYCwKwbl9aqmXccDodCIGu87EsclY/46H4yL3ExGm0bY2bMvlfX5nOmTTnNZkwgkK0Mbg==
-X-Received: by 2002:adf:e511:: with SMTP id j17mr2258610wrm.416.1610091582663;
-        Thu, 07 Jan 2021 23:39:42 -0800 (PST)
-Received: from felia.fritz.box ([2001:16b8:2dc3:3e00:c96a:15b:2758:58ec])
-        by smtp.gmail.com with ESMTPSA id x18sm13895152wrg.55.2021.01.07.23.39.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 Jan 2021 23:39:41 -0800 (PST)
-From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
-To:     Marc Kleine-Budde <mkl@pengutronix.de>, linux-can@vger.kernel.org
-Cc:     Dan Murphy <dmurphy@ti.com>, Sean Nyekjaer <sean@geanix.com>,
-        Sriram Dash <sriram.dash@samsung.com>,
-        Joe Perches <joe@perches.com>,
-        Ralf Ramsauer <ralf.ramsauer@oth-regensburg.de>,
-        Pia Eichinger <pia.eichinger@st.oth-regensburg.de>,
-        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Subject: [PATCH for can-next] MAINTAINERS: adjust entry to tcan4x5x file split
-Date:   Fri,  8 Jan 2021 08:39:32 +0100
-Message-Id: <20210108073932.20804-1-lukas.bulwahn@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        Fri, 8 Jan 2021 02:43:55 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mixtli.metztli.it; q=dns/txt;
+ s=mx; t=1610091808; h=From: Date: Message-Id: To: Subject: Sender;
+ bh=rAG2J6mfTMkVgZd7v0q2+hCGLRY7aY1K3RTnFlhQmTI=; b=yt6SNXVmsDDZgx6XfNeEM+V4HD4rQ0wQFzSmqESBfzM5YldyhmTK8NynDgBxnIhRrallx4Sh
+ yr+szl8pSsR+VnFz+Q9qeLTiXOLnXADM7xZdbu7pQHQJ834/eV0B6oh58AbFzgv6BIKNFULi
+ aLskfCyMh1X5/5lJ7NZ4DTPdUOI=
+X-Mailgun-Sending-Ip: 104.130.122.7
+X-Mailgun-Sid: WyIxYzIzYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgIjE3YjU0Il0=
+Received: from huitzilopochtli.metztli-it.com
+ (99-130-254-3.lightspeed.sntcca.sbcglobal.net [99.130.254.3]) by
+ smtp-out-n03.prod.us-west-2.postgun.com with SMTP id
+ 5ff80d06661021aa286aca1e (version=TLS1.3, cipher=TLS_AES_128_GCM_SHA256);
+ Fri, 08 Jan 2021 07:43:02 GMT
+Sender: jose.r.r=metztli.com@mixtli.metztli.it
+Received: by huitzilopochtli.metztli-it.com (Postfix, from userid 1000)
+        id 8F4B17416825; Thu,  7 Jan 2021 23:43:25 -0800 (PST)
+Subject: Re: [reiser4 SFRN 5.1.3] kernel [5.10.x] read not supported for file /test-exec \(pid: 10094 comm: debootstrap\)
+To:     <edward.shishkin@gmail.com>, <reiserfs-devel@vger.kernel.org>,
+        <hch@lst.de>, <linux-kernel@vger.kernel.org>
+X-Mailer: mail (GNU Mailutils 3.9)
+Message-Id: <20210108074325.8F4B17416825@huitzilopochtli.metztli-it.com>
+Date:   Thu,  7 Jan 2021 23:43:25 -0800 (PST)
+From:   Metztli Information Technology <jose.r.r@metztli.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit 7813887ea972 ("can: tcan4x5x: rename tcan4x5x.c -> tcan4x5x-core.c")
-and commit 67def4ef8bb9 ("can: tcan4x5x: move regmap code into seperate
-file") split the file tcan4x5x.c into two files, but missed to adjust the
-TI TCAN4X5X DEVICE DRIVER section in MAINTAINERS.
+On Fri, Dec 25, 2020 at 8:44 AM Metztli Information Technology <jose.r.r@metztli.com> wrote:
+>
+> On Wed, Dec 23, 2020 at 3:40 PM Edward Shishkin <edward.shishkin@gmail.com> wrote:
+> >
+> > On 12/23/2020 05:01 PM, Metztli Information Technology wrote:
+> > > Niltze [Ð—Ð´Ñ€Ð°Ð²Ñ Ñ‚Ð²ÑƒÐ¹Ñ‚Ðµ : Hello], Ed-
+> > >
+> > > I built Linux kernel 5.10.1-1 within the 'Debian way' -- as usual -- to generate a kernel component for my Debian-Installer (d-i).
+> > > The patch I applied is reiser4-for-5.10-rc3.patch.gz from v5-unstable.
+> > >
+> > > Once I built the proper reiser4progs-2.0.4.tar.gz and generated one set of components for d-i I built the d-i image.
+> > >
+> > > Fact is, the installer throws an error in *both* bare metal and VirtualBox 6.1.16:
+> > > ...
+> > > Dec 22 20:19:56 main-menu[330]: INFO: Menu item 'bootstrap-base' selected
+> > > Dec 22 20:19:56 debootstrap: /usr/sbin/debootstrap --components=main --debian-installer --resolve-deps --keyring=/usr/share/keyrings/archive.gpg buster /target http://deb.debian.org/debian/
+> > > Dec 22 20:19:56 debootstrap: /usr/sbin/debootstrap: line 1596: /target/test-exec: Invalid argument
+> > > Dec 22 20:19:56 kernel: [ 1018.632648] kernel read not supported for file /test-exec (pid: 10077 comm: debootstrap)
+> > > Dec 22 20:19:56 debootstrap: E: NOEXEC
+> > > Dec 22 20:19:56 debootstrap: EF: Cannot install into target '/target' mounted with noexec or nodev
+> > > Dec 22 20:20:12 base-installer: error: exiting on error base-installer/debootstrap-failed
+> > > Dec 22 20:20:14 main-menu[330]: WARNING **: Configuring 'bootstrap-base' failed with error code 1
+> > > Dec 22 20:20:14 main-menu[330]: WARNING **: Menu item 'bootstrap-base' failed.
+> > > Dec 22 20:20:15 main-menu[330]: INFO: Falling back to the package description for brltty-udeb
+> > >
+> >
+> > [...]
+> >
+> > >
+> > > Apparently, d-i [Debian-installer] complains about being unable to set the test file executable and causes the error when 1 is returned.
+> > > Notwithstanding, I manually verified that I am able to touch a file and set it +x executable.
+> > >
+> > > Furthermore, tricking the function return value to 0 I am able to make d-i continue with the latest SFRN5 installation (see [*trick*] below); yet, subsequently halts again with
+> > > an apparently related error --can not proceed any further.
+> > >
+> > > Digging deeper with dmesg, we can see that apparently it is the kernel which cannot 'read' properly. Please find a partial dmesg log with relevant output
+> > > from an attempt on my physical development machine.
+> > > ...
+> > > [  508.614488] Loading Reiser4 (Software Framework Release: 5.1.3). See reiser4.wiki.kernel.org for a description of Reiser4.
+> > > [  508.661951] SGI XFS with ACLs, security attributes, realtime, quota, no debug enabled
+> > > [  509.326270] device-mapper: uevent: version 1.0.3
+> > > [  509.326505] device-mapper: ioctl: 4.43.0-ioctl (2020-10-01) initialised: dm-devel@redhat.com
+> > > [  509.902828]  sda: sda1 sda2 sda3 sda4 sda5 sda6
+> > > [  509.915300]  sdb: sdb1 sdb2 sdb3
+> > > [  511.973360]  sdb: sdb1 sdb2 sdb3
+> > > [  627.525371] Adding 9765884k swap on /dev/sda3.  Priority:-2 extents:1 across:9765884k FS
+> > > [  636.240812] reiser4[mount(9430)]: reiser4_register_subvol (fs/reiser4/init_volume.c:222)[edward-1932]:
+> > > [  636.240812] NOTICE: brick /dev/sda6 has been registered
+> > > [  636.243003] reiser4 (sda6): found disk format 5.1.3.
+> > > [  643.759971] reiser4 (/dev/sda6): using Hybrid Transaction Model.
+> > > [  643.759980] reiser4: brick /dev/sda6 activated
+> > > [  643.788537] EXT4-fs (sda1): mounting ext2 file system using the ext4 subsystem
+> > > [  643.813474] EXT4-fs (sda1): mounted filesystem without journal. Opts: (null)
+> > > [  643.813488] ext2 filesystem being mounted at /target/boot supports timestamps until 2038 (0x7fffffff)
+> > > [  648.168730] kernel read not supported for file /test-exec (pid: 9876 comm: debootstrap) [*trick*]
+> > > [  898.761385] reiser4: brick /dev/sda6 deactivated
+> > > [  991.001332] reiser4 (sda6): found disk format 5.1.3.
+> > > [  999.093471] reiser4 (/dev/sda6): using Hybrid Transaction Model.
+> > > [  999.093480] reiser4: brick /dev/sda6 activated
+> > > [ 1009.340117] EXT4-fs (sda1): mounting ext2 file system using the ext4 subsystem
+> > > [ 1009.362722] EXT4-fs (sda1): mounted filesystem without journal. Opts: (null)
+> > > [ 1009.362737] ext2 filesystem being mounted at /target/boot supports timestamps until 2038 (0x7fffffff)
+> > > [ 6373.748413] kernel read not supported for file /test-exec (pid: 10094 comm: debootstrap)
+> > > [ 6413.169920] kernel read not supported for file /usr/bin/true (pid: 15960 comm: chroot)
+> >
+> >
+> > Hello.
+> >
+> > This is because of VFS changes in Linux-5.10.X.
+> > Specifically, because of the following patch:
+> > https://lkml.org/lkml/2020/8/17/174
+> > In the upstream git repository it is commit 4d03e3cc59828c82ee89ea6e2
+>
+> Earlier I spun up a Google Compute Engine (GCE) AMD Epyc instance from a snapshot with kernel 5.9.15-1
+> < https://metztli.it/buster/gce-amd-epyc-5.9.15-1.png >
+>
+> and built an stable reiser4 SFRN 4.0.2 kernel within the Debian packaging for 5.10.2-1 framework.
+> Subsequently, I built my custom Debian-Installer (d-i) and gave it another try. Same kernel fail:
+> ... tail -n 30 /var/log/syslog
+> Dec 25 10:23:06 kernel: [  164.409309] reiser4: sda7: found disk format 4.0.2.
+> Dec 25 10:23:06 kernel: [  164.459638] reiser4: sda7: using Hybrid Transaction Model.
+> Dec 25 10:23:07 apt-install: Queueing package jfsutils for later installation
+> Dec 25 10:23:07 apt-install: Queueing package reiser4progs for later installation
+> Dec 25 10:23:07 apt-install: Queueing package initramfs-tools for later installation
+> Dec 25 10:23:07 apt-install: Queueing package linux-base for later installation
+> Dec 25 10:23:07 main-menu[240]: (process:3056): File descriptor 3 (pipe:[8689]) leaked on pvs invocation.
+> Dec 25 10:23:07 main-menu[240]: (process:3056):  Parent PID 5687: /bin/sh
+> Dec 25 10:23:07 main-menu[240]: (process:3056): File descriptor 4 (/dev/pts/0) leaked on pvs invocation.
+> Dec 25 10:23:07 main-menu[240]: (process:3056):  Parent PID 5687: /bin/sh
+> Dec 25 10:23:07 main-menu[240]: (process:3056): File descriptor 5 (/dev/pts/0) leaked on pvs invocation.
+> Dec 25 10:23:07 main-menu[240]: (process:3056):  Parent PID 5687: /bin/sh
+> Dec 25 10:23:07 main-menu[240]: (process:3056): File descriptor 3 (pipe:[8689]) leaked on pvs invocation.
+> Dec 25 10:23:07 main-menu[240]: (process:3056):  Parent PID 5726: /bin/sh
+> Dec 25 10:23:07 main-menu[240]: (process:3056): File descriptor 4 (/dev/pts/0) leaked on pvs invocation.
+> Dec 25 10:23:07 main-menu[240]: (process:3056):  Parent PID 5726: /bin/sh
+> Dec 25 10:23:07 main-menu[240]: (process:3056): File descriptor 5 (/dev/pts/0) leaked on pvs invocation.
+> Dec 25 10:23:07 main-menu[240]: (process:3056):  Parent PID 5726: /bin/sh
+> Dec 25 10:23:07 main-menu[240]: INFO: Falling back to the package description for brltty-udeb
+> Dec 25 10:23:07 main-menu[240]: INFO: Falling back to the package description for brltty-udeb
+> Dec 25 10:23:07 main-menu[240]: INFO: Menu item 'bootstrap-base' selected
+> Dec 25 10:23:07 debootstrap: /usr/sbin/debootstrap --components=main --debian-installer --resolve-deps --keyring=/usr/share/keyrings/archive.gpg buster /target http://mirrors.namecheap.com/debian/
+> Dec 25 10:23:07 debootstrap: /usr/sbin/debootstrap:
+> Dec 25 10:23:07 debootstrap: line 1596:
+> Dec 25 10:23:07 debootstrap: /target/test-exec: Invalid argument
+> Dec 25 10:23:07 debootstrap:
+> Dec 25 10:23:07 debootstrap: E: NOEXEC
+> Dec 25 10:23:07 debootstrap: EF: Cannot install into target '/target' mounted with noexec or nodev
+> Dec 25 10:23:07 kernel: [  165.368737] kernel read not supported for file /test-exec (pid: 5940 comm: debootstrap)
+> Dec 25 10:24:57 init: starting pid 222, tty '/dev/tty3': '-/bin/sh'
+> ...
+>
+> and dmesg from within the installer environment:
+>
+> ...tail -n 20 /var/log/debian-5.10.2.1.dmesg
+> [  133.743458] raid6: sse2x2   xor()  7821 MB/s
+> [  133.825936] raid6: sse2x1   gen() 11332 MB/s
+> [  133.914288] raid6: sse2x1   xor()  7571 MB/s
+> [  133.914290] raid6: using algorithm sse2x2 gen() 15942 MB/s
+> [  133.914291] raid6: .... xor() 7821 MB/s, rmw enabled
+> [  133.914293] raid6: using ssse3x2 recovery algorithm
+> [  133.915254] xor: automatically using best checksumming function   avx
+> [  133.942598] Btrfs loaded, crc32c=crc32c-generic
+> [  133.970966] JFS: nTxBlock = 8192, nTxLock = 65536
+> [  133.994981] Loading Reiser4 (format release: 4.0.2) See www.namesys.com for a description of Reiser4.
+> [  134.047520] SGI XFS with ACLs, security attributes, realtime, quota, no debug enabled
+> [  134.529127] device-mapper: uevent: version 1.0.3
+> [  134.529484] device-mapper: ioctl: 4.43.0-ioctl (2020-10-01) initialised: dm-devel@redhat.com
+> [  163.693555]  sda: sda1 sda2 < sda5 sda6 sda7 >
+> [  164.012669] Adding 999420k swap on /dev/sda6.  Priority:-2 extents:1 across:999420k FS
+> [  164.375818] reiser4: sda5: found disk format 4.0.2.
+> [  164.393521] reiser4: sda5: using Hybrid Transaction Model.
+> [  164.409309] reiser4: sda7: found disk format 4.0.2.
+> [  164.459638] reiser4: sda7: using Hybrid Transaction Model.
+> [  165.368737] kernel read not supported for file /test-exec (pid: 5940 comm: debootstrap)
+> ...
+>
+> Please, note that I even replaced debootstrap UDEB with a newer source release to no avail.
+>
+> >
+> > So, Christoph, what to do now for file systems which implement
+> > ->read() method of file operations? It seems that chroot doesn't work
+> > for them. And people are not able to release distros with upgraded
+> > kernels..
+> >
+> > Thanks,
+> > Edward.
+>
+[]
+I came across 'bug #554444 unable to install a Bullseye system' and Bug#971946: libdebian-installer: READSIZE size insufficient for cdebootstrap to build sid/unstable from buster/stable environment
+< https://bugs.debian.org/971946 >
 
-Hence, ./scripts/get_maintainer.pl --self-test=patterns complains:
+As I exhaust all possibilities, I downloaded Debian Buster package source:
+< https://packages.debian.org/source/buster/libdebian-installer >
 
-  warning: no file matches    F:    drivers/net/can/m_can/tcan4x5x.c
+applied the patch
 
-Adjust the file entry in MAINTAINERS to the tcan4x5x file splitting.
+diff --git a/src/parser_rfc822.c b/src/parser_rfc822.c
+index afd336a..b14859e 100644
+--- a/src/parser_rfc822.c
++++ b/src/parser_rfc822.c
+@@ -35,7 +35,7 @@
+ #include <sys/types.h>
+ #include <unistd.h>
 
-Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
----
-applies cleanly on next-20210107, not for current master
+-#define READSIZE 65536
++#define READSIZE 262144
 
-Marc, please pick this for your -next tree on top of the tcan4x5x cleanup.
-
- MAINTAINERS | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 8170b40d6236..0d75f07fc951 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -17887,7 +17887,7 @@ M:	Dan Murphy <dmurphy@ti.com>
- L:	linux-can@vger.kernel.org
- S:	Maintained
- F:	Documentation/devicetree/bindings/net/can/tcan4x5x.txt
--F:	drivers/net/can/m_can/tcan4x5x.c
-+F:	drivers/net/can/m_can/tcan4x5x*
+ int di_parser_rfc822_read (char *begin, size_t size, di_parser_info *info, di_parser_read_entry_new entry_new, di_parser_read_entry_finish entry_finish, void *user_data)
+ {
  
- TI TRF7970A NFC DRIVER
- M:	Mark Greer <mgreer@animalcreek.com>
--- 
-2.17.1
+and rebuilt the package:
+libdebian-installer4_0.119+nmu1_amd64.deb         
+libdebian-installer4-dbgsym_0.119+nmu1_amd64.deb  
+libdebian-installer4-dev_0.119+nmu1_amd64.deb     
+libdebian-installer4-udeb_0.119+nmu1_amd64.udeb *
+libdebian-installer-extra4_0.119+nmu1_amd64.deb
+libdebian-installer-extra4-dbgsym_0.119+nmu1_amd64.deb
+libdebian-installer-extra4-udeb_0.119+nmu1_amd64.udeb *
 
+hoping to get some different feedback by including the resulting UDEBs(*) into my custom Debian-Installer (d-i) --as well as referencing those appropriately in the relevant configuration file for a minimal netboot image.
+
+The result did not vary from prior occassions (this installation attempt is a merely root fs formatted in Reiser4 SFRN 5.1.3, and 500Mb JFS /boot partition):
+
+------------[snip]-------------------------
+Jan  8 05:00:59 kernel: [  133.368304] Adding 998396k swap on /dev/sda6.  Priority:-2 extents:1 across:998396k FS
+Jan  8 05:00:59 kernel: [  133.685578] reiser4[mount(5208)]: reiser4_register_subvol (fs/reiser4/init_volume.c:222)[edward-1932]:
+Jan  8 05:00:59 kernel: [  133.685578] NOTICE: brick /dev/sda5 has been registered
+Jan  8 05:00:59 kernel: [  133.686528] reiser4 (sda5): found disk format 5.1.3.
+Jan  8 05:00:59 kernel: [  133.746172] reiser4 (/dev/sda5): using Hybrid Transaction Model.
+Jan  8 05:00:59 kernel: [  133.746176] reiser4: brick /dev/sda5 activated
+Jan  8 05:00:59 apt-install: Queueing package jfsutils for later installation
+Jan  8 05:00:59 apt-install: Queueing package reiser4progs for later installation
+Jan  8 05:00:59 apt-install: Queueing package initramfs-tools for later installation
+Jan  8 05:00:59 apt-install: Queueing package linux-base for later installation
+Jan  8 05:00:59 main-menu[239]: (process:3051): File descriptor 3 (pipe:[8687]) leaked on pvs invocation.
+Jan  8 05:00:59 main-menu[239]: (process:3051):  Parent PID 5363: /bin/sh
+Jan  8 05:00:59 main-menu[239]: (process:3051): File descriptor 4 (/dev/pts/0) leaked on pvs invocation.
+Jan  8 05:00:59 main-menu[239]: (process:3051):  Parent PID 5363: /bin/sh
+Jan  8 05:00:59 main-menu[239]: (process:3051): File descriptor 5 (/dev/pts/0) leaked on pvs invocation.
+Jan  8 05:00:59 main-menu[239]: (process:3051):  Parent PID 5363: /bin/sh
+Jan  8 05:00:59 main-menu[239]: (process:3051): File descriptor 3 (pipe:[8687]) leaked on pvs invocation.
+Jan  8 05:00:59 main-menu[239]: (process:3051):  Parent PID 5402: /bin/sh
+Jan  8 05:00:59 main-menu[239]: (process:3051): File descriptor 4 (/dev/pts/0) leaked on pvs invocation.
+Jan  8 05:00:59 main-menu[239]: (process:3051):  Parent PID 5402: /bin/sh
+Jan  8 05:00:59 main-menu[239]: (process:3051): File descriptor 5 (/dev/pts/0) leaked on pvs invocation.
+Jan  8 05:00:59 main-menu[239]: (process:3051):  Parent PID 5402: /bin/sh
+Jan  8 05:01:00 main-menu[239]: INFO: Falling back to the package description for brltty-udeb
+Jan  8 05:01:00 main-menu[239]: INFO: Falling back to the package description for brltty-udeb
+Jan  8 05:01:00 main-menu[239]: INFO: Menu item 'bootstrap-base' selected
+Jan  8 05:01:00 debootstrap: /usr/sbin/debootstrap --components=main --debian-installer --resolve-deps --keyring=/usr/share/keyrings/archive.gpg buster /target http://deb.debian.org/debian/
+Jan  8 05:01:00 debootstrap: /usr/sbin/debootstrap:
+Jan  8 05:01:00 debootstrap: line 1622:
+Jan  8 05:01:00 debootstrap: /target/test-exec: Invalid argument
+Jan  8 05:01:00 debootstrap:
+Jan  8 05:01:00 debootstrap: E: NOEXEC
+Jan  8 05:01:00 debootstrap: EF: Cannot install into target '/target' mounted with noexec or nodev
+Jan  8 05:01:00 kernel: [  134.634946] kernel read not supported for file /test-exec (pid: 5609 comm: debootstrap)
+--------------------------------------------------------------------
+
+If nothing is modified in 5.10.x kernel upstream, Linux 5.9.15/16EOL may be the last kernel version to benefit from a Reiser5 -enabled custom Debian-Installer (d-i), LXQT snapshot for posterity ;-)
+< https://metztli.it/buster/reiser4-sfrn-5.1.3-LXQT-Debian.png >
+
+
+Best Professional Regards.
+
+-- 
+Jose R R
+http://metztli.it
+---------------------------------------------------------------------------------------------
+Download Metztli Reiser4: Debian Buster w/ Linux 5.9.15 AMD64
+---------------------------------------------------------------------------------------------
+feats ZSTD compression https://sf.net/projects/metztli-reiser4/
+---------------------------------------------------------------------------------------------
+or SFRN 5.1.3, Metztli Reiser5 https://sf.net/projects/debian-reiser4/
+-------------------------------------------------------------------------------------------
+Official current Reiser4 resources: https://reiser4.wiki.kernel.org/
