@@ -2,212 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7516A2EF0D5
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 11:47:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D1BE52EF0D1
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 11:45:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727757AbhAHKqv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Jan 2021 05:46:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48504 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726752AbhAHKqu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Jan 2021 05:46:50 -0500
-Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF1A5C0612F4
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Jan 2021 02:46:09 -0800 (PST)
-Received: by mail-lf1-x136.google.com with SMTP id l11so21973720lfg.0
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Jan 2021 02:46:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=p+waloq0fk/MGdpK82nCZe9TIaeg5dnHeMElfg7ryM4=;
-        b=BKpjsFphvWdKBCHkA4RhemDDINeDoPUwbMlWozZMEDjYKYz3sh+JQclxys0m1+XuBa
-         /4wzP5ULgApjOCKj1Yj/SnkVAcmbQxg/z+piNUuZFMXnxvl/LXgrjrGPJIONoRNGP3zq
-         kaq3n+jRGjg3c5T5aPU+gtXdJlY+4PzERzZMRmPH2xnCbBugiLGgeXO3svaK/5Xnlfd+
-         Zlpd7vz3SVh+bkAWO0NvLK7Yg+f581MV8OX0R4eyjxAYzD5rF3UJy84HesNTYrYk3mxK
-         uAfSm2h9Y9PjEUYzZ56eGgJ18xsRv49HxBI+U7SAw5Cwak8pZmywGwnO6PSO/4UICsFD
-         ZMxQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=p+waloq0fk/MGdpK82nCZe9TIaeg5dnHeMElfg7ryM4=;
-        b=cBhEEhIcW3mi/5rTuKCjB/ccQU8tfuqeatCm7PZ8V2sB4v+TPQK7vFcS0o6bdX4x+l
-         K/CRZ38INmwzYxKqNJ9s/lUylFBsMLzWZPjTOEXKXkymEehNu8XXktQwEWeL8886ALHD
-         wjwGj/T0N+QfdDigqtCPRa0SdnsVcpxcmZKCkc8oGkpWpiHTiqXx6XbQXxC+/CByuNBH
-         vwaZx867+8H/ylQcY4fzmRY52ChdXYg2n0junBoKPaBlBs5H/TkxPd9l6UcGVyLyju4s
-         9be/O4HKEFcvAG0gknN5pbrm6rUvCP12Ncn+gIGW7bgsxBJvd94GDAMt23Pznc0t9n3l
-         QEqA==
-X-Gm-Message-State: AOAM530j+F7uImtEYQ7S01MkEhr3jLAgXzQ8SLT2Uqy6DZoHgcgx9RZQ
-        SUV5VgW7y0jgDHjYC41eaZgAbg==
-X-Google-Smtp-Source: ABdhPJxyd5pjnYXDovgitsQk+ePH2PwRGsbg5/X5D8xjJRjKtyVtA+LosBWIyYGCr+TskuNhZ3AOZw==
-X-Received: by 2002:ac2:5042:: with SMTP id a2mr1322451lfm.42.1610102768460;
-        Fri, 08 Jan 2021 02:46:08 -0800 (PST)
-Received: from [192.168.118.216] ([85.249.43.69])
-        by smtp.gmail.com with ESMTPSA id a15sm1983948lji.105.2021.01.08.02.46.07
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 08 Jan 2021 02:46:07 -0800 (PST)
-Subject: Re: [PATCH v2] media: ov8856: Fix Bayer format dependance on mode
-To:     Tomasz Figa <tfiga@google.com>,
-        Robert Foss <robert.foss@linaro.org>
-Cc:     Dongchun Zhu <dongchun.zhu@mediatek.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Bingbu Cao <bingbu.cao@linux.intel.com>
-References: <20210107142123.639477-1-robert.foss@linaro.org>
- <CAAFQd5BVSNGDV7ZkiVpZwbfTfRLJmNvopMQFnQno+CDs+bo3Gg@mail.gmail.com>
-From:   Andrey Konovalov <andrey.konovalov@linaro.org>
-Message-ID: <6ec75d88-0cd5-79cc-6413-81f169b5e976@linaro.org>
-Date:   Fri, 8 Jan 2021 13:46:06 +0300
+        id S1727611AbhAHKpX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Jan 2021 05:45:23 -0500
+Received: from foss.arm.com ([217.140.110.172]:48898 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727203AbhAHKpW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 Jan 2021 05:45:22 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 7E267D6E;
+        Fri,  8 Jan 2021 02:44:36 -0800 (PST)
+Received: from [10.37.8.22] (unknown [10.37.8.22])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 4F5D03F70D;
+        Fri,  8 Jan 2021 02:44:34 -0800 (PST)
+Subject: Re: [PATCH 2/4] arm64: mte: Add asynchronous mode support
+To:     Andrey Konovalov <andreyknvl@google.com>
+Cc:     Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will.deacon@arm.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Alexander Potapenko <glider@google.com>,
+        Marco Elver <elver@google.com>,
+        Evgenii Stepanov <eugenis@google.com>,
+        Branislav Rankov <Branislav.Rankov@arm.com>
+References: <20210106115519.32222-1-vincenzo.frascino@arm.com>
+ <20210106115519.32222-3-vincenzo.frascino@arm.com>
+ <CAAeHK+xuGRzkLdrfGZVo-RVfkH31qUrNdBaPd4k5ffMKHWGfTQ@mail.gmail.com>
+ <c4f04127-a682-d809-1dad-5ee1f51d3e0a@arm.com>
+ <CAAeHK+xBrCX1Ly0RU-=ySEU8SsyyRkMdOYrN52ONc4DeRJA5eg@mail.gmail.com>
+From:   Vincenzo Frascino <vincenzo.frascino@arm.com>
+Message-ID: <c3efaa8d-cb3a-0c2a-457e-bfba60551d80@arm.com>
+Date:   Fri, 8 Jan 2021 10:48:15 +0000
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <CAAFQd5BVSNGDV7ZkiVpZwbfTfRLJmNvopMQFnQno+CDs+bo3Gg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <CAAeHK+xBrCX1Ly0RU-=ySEU8SsyyRkMdOYrN52ONc4DeRJA5eg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Robert and Tomasz,
+Hi Andrey,
 
-On 08.01.2021 12:49, Tomasz Figa wrote:
-> Hi Robert,
+On 1/7/21 7:18 PM, Andrey Konovalov wrote:
+>> Boolean arguments are generally bad for legibility, hence I tend to avoid them.
+>> In this case exposing the constants does not seem a big issue especially because
+>> the only user of this code is "KASAN_HW_TAGS" and definitely improves its
+>> legibility hence I would prefer to keep it as is.
+>
+> I don't like that this spills KASAN internals to the arm64 code.
+
+Could you please elaborate a bit more on this?
+
+If I understand it correctly these enumerations I exposed are the direct
+representation of a kernel command line parameter which, according to me, should
+not be considered an internal interface.
+Seems that in general the kernel subsystems expose the interface for the
+architectures to consume which is the same design pattern I followed in this case.
+
+> Let's add another enum with two values and pass it as an argument then.
+> Something like:
 > 
-> On Thu, Jan 7, 2021 at 11:21 PM Robert Foss <robert.foss@linaro.org> wrote:
->>
->> The Bayer GRBG10 mode used for earlier modes 3280x2460 and
->> 1640x1232 isn't the mode output by the sensor for the
->> 3264x2448 and 1632x1224 modes.
->>
->> Switch from MEDIA_BUS_FMT_SGRBG10_1X10 to MEDIA_BUS_FMT_SBGGR10_1X10
->> for 3264x2448 & 1632x1224 modes.
->>
->> Signed-off-by: Robert Foss <robert.foss@linaro.org>
->> ---
->>
->> Changes since v1:
->>   - Sakari: Added mode information to ov8856_mode struct
->>   - Sakari: enum_mbus_code updated
->>
->>   drivers/media/i2c/ov8856.c | 24 ++++++++++++++++++------
->>   1 file changed, 18 insertions(+), 6 deletions(-)
->>
->> diff --git a/drivers/media/i2c/ov8856.c b/drivers/media/i2c/ov8856.c
->> index 2f4ceaa80593..7cd83564585c 100644
->> --- a/drivers/media/i2c/ov8856.c
->> +++ b/drivers/media/i2c/ov8856.c
->> @@ -126,6 +126,9 @@ struct ov8856_mode {
->>
->>          /* Sensor register settings for this resolution */
->>          const struct ov8856_reg_list reg_list;
->> +
->> +       /* MEDIA_BUS_FMT for this mode */
->> +       u32 code;
->>   };
->>
->>   static const struct ov8856_reg mipi_data_rate_720mbps[] = {
->> @@ -942,6 +945,11 @@ static const char * const ov8856_test_pattern_menu[] = {
->>          "Bottom-Top Darker Color Bar"
->>   };
->>
->> +static const u32 ov8856_formats[] = {
->> +       MEDIA_BUS_FMT_SBGGR10_1X10,
->> +       MEDIA_BUS_FMT_SGRBG10_1X10,
->> +};
->> +
->>   static const s64 link_freq_menu_items[] = {
->>          OV8856_LINK_FREQ_360MHZ,
->>          OV8856_LINK_FREQ_180MHZ
->> @@ -974,6 +982,7 @@ static const struct ov8856_mode supported_modes[] = {
->>                          .regs = mode_3280x2464_regs,
->>                  },
->>                  .link_freq_index = OV8856_LINK_FREQ_720MBPS,
->> +               .code = MEDIA_BUS_FMT_SGRBG10_1X10,
->>          },
->>          {
->>                  .width = 3264,
->> @@ -986,6 +995,7 @@ static const struct ov8856_mode supported_modes[] = {
->>                          .regs = mode_3264x2448_regs,
->>                  },
->>                  .link_freq_index = OV8856_LINK_FREQ_720MBPS,
->> +               .code = MEDIA_BUS_FMT_SBGGR10_1X10,
->>          },
->>          {
->>                  .width = 1640,
->> @@ -998,6 +1008,7 @@ static const struct ov8856_mode supported_modes[] = {
->>                          .regs = mode_1640x1232_regs,
->>                  },
->>                  .link_freq_index = OV8856_LINK_FREQ_360MBPS,
->> +               .code = MEDIA_BUS_FMT_SGRBG10_1X10,
->>          },
->>          {
->>                  .width = 1632,
->> @@ -1010,6 +1021,7 @@ static const struct ov8856_mode supported_modes[] = {
->>                          .regs = mode_1632x1224_regs,
->>                  },
->>                  .link_freq_index = OV8856_LINK_FREQ_360MBPS,
->> +               .code = MEDIA_BUS_FMT_SBGGR10_1X10,
->>          }
->>   };
->>
->> @@ -1281,8 +1293,8 @@ static void ov8856_update_pad_format(const struct ov8856_mode *mode,
->>   {
->>          fmt->width = mode->width;
->>          fmt->height = mode->height;
->> -       fmt->code = MEDIA_BUS_FMT_SGRBG10_1X10;
->>          fmt->field = V4L2_FIELD_NONE;
->> +       fmt->code = mode->code;
->>   }
->>
->>   static int ov8856_start_streaming(struct ov8856 *ov8856)
->> @@ -1519,11 +1531,10 @@ static int ov8856_enum_mbus_code(struct v4l2_subdev *sd,
->>                                   struct v4l2_subdev_pad_config *cfg,
->>                                   struct v4l2_subdev_mbus_code_enum *code)
->>   {
->> -       /* Only one bayer order GRBG is supported */
->> -       if (code->index > 0)
->> +       if (code->index >= ARRAY_SIZE(ov8856_formats))
->>                  return -EINVAL;
->>
->> -       code->code = MEDIA_BUS_FMT_SGRBG10_1X10;
->> +       code->code = ov8856_formats[code->index];
->>
->>          return 0;
->>   }
->> @@ -1532,10 +1543,11 @@ static int ov8856_enum_frame_size(struct v4l2_subdev *sd,
->>                                    struct v4l2_subdev_pad_config *cfg,
->>                                    struct v4l2_subdev_frame_size_enum *fse)
->>   {
->> -       if (fse->index >= ARRAY_SIZE(supported_modes))
->> +       if ((fse->code != ov8856_formats[0]) &&
->> +           (fse->code != ov8856_formats[1]))
-> 
-> Shouldn't this be validated against the current mode? I guess it's the
-> question about which part of the state takes precedence - the mbus
-> code or the frame size.
+> enum mte_mode {
+>   ARM_MTE_SYNC,
+>   ARM_MTE_ASYNC
+> }
 
-The docs [1] say "enumerate all frame sizes supported by a sub-device on the given pad
-for the given media bus format". It doesn't seem to mention the current mode. But the
-frame sizes reported should be filtered by the mbus code, and this patch misses that
-if I read it correct.
+I had something similar at the beginning of the development but I ended up in a
+situation in which the generic kasan code had to know about "enum mte_mode",
+hence I preferred to keep kasan agnostic to the hw implementation details.
 
-But this situation when the mbus code depends on the mode (on the resolution in fact)...
-Yes, if we read the pixels from a rectangle smaller than the active area, we can change
-the bayer order by moving this "read-out" rectangle by one pixel along x, y, or both x
-and y axes. But wouldn't it be better if we try to review the register setting for the
-current modes so that the bayer order would be the same for all the modes?
+What do you think?
 
-Thanks,
-Andrey
-
-> Best regards,
-> Tomasz
-> 
-
-[1] https://linuxtv.org/downloads/v4l-dvb-apis-new/userspace-api/v4l/vidioc-subdev-enum-frame-size.html
+-- 
+Regards,
+Vincenzo
