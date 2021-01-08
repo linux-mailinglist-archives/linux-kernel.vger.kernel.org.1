@@ -2,89 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 741362EF447
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 15:56:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E13C52EF446
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 15:56:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727505AbhAHOz5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Jan 2021 09:55:57 -0500
-Received: from mail.kernel.org ([198.145.29.99]:50498 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725817AbhAHOzz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1727442AbhAHOzz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Fri, 8 Jan 2021 09:55:55 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 83170235FF;
-        Fri,  8 Jan 2021 14:55:13 +0000 (UTC)
+Received: from mail.kernel.org ([198.145.29.99]:50494 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725942AbhAHOzz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 Jan 2021 09:55:55 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 66A9F2388B;
+        Fri,  8 Jan 2021 14:55:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1610117714;
-        bh=b371CPuhZ8sdWbGeXW8xhatSptW+DNr/MiaYoSUDTfo=;
-        h=Date:From:To:cc:Subject:In-Reply-To:References:From;
-        b=TrvvxQ9yDSdy4XMmsuqZvOuyHORPZXOZ4mwQf1Hozvl0k+hg8hc/QQ7ockGQU707A
-         7FnkJFtzHpKYJ/SW3vHIDlwye9QFJA33EOPsaFLhL0gDj498YsGGtabRy1iVx4xVMk
-         agNlmmeff1ksvNhVMm606vDTBMB2QRgRz4Hoj+Eo5tiw+6EHwIxFJpsc6nfkKr5Wdu
-         tr9YgNfNCuVV5SK5CVZHzLaryh+w2S52L1AfAP5P4dD4U0ML+xbW36FgAtd/+Xhwq/
-         PSehSPQlhNxk0Xjni9ab//Yaegw4hPs8xxqcxzFtUqb/xmN1eoLR2+lgfGy+MWYW79
-         5o/aePNKIbKMg==
-Date:   Fri, 8 Jan 2021 15:55:11 +0100 (CET)
-From:   Jiri Kosina <jikos@kernel.org>
-To:     =?ISO-8859-15?Q?Filipe_La=EDns?= <lains@archlinux.org>
-cc:     Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] HID: logitech-hidpp: add support for Unified Battery
- (1004) feature
-In-Reply-To: <e832278f9021c0f71afc5f90261bd17aea45a336.camel@archlinux.org>
-Message-ID: <nycvar.YFH.7.76.2101081554190.13752@cbobk.fhfr.pm>
-References: <20210104182937.1472673-1-lains@archlinux.org>  <nycvar.YFH.7.76.2101081438530.13752@cbobk.fhfr.pm> <e832278f9021c0f71afc5f90261bd17aea45a336.camel@archlinux.org>
-User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
+        bh=KXyZUJgp4S/FkZX12/a7VseM4D/rbIALeIzXvFoAeKQ=;
+        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+        b=KHvTQDzTYJA6Un3GYPoyLFBis/3D66He4P4k9a2thvmNiGqblKgqsGnl8vu4A6LqL
+         S3seVY8WEscIhRgwXxK/BJfAzx9/1hEH2euFIzo8L0jHmGgwWfm39uPNmtZ4C/0yrz
+         rgPm0N4vcJ4s7mLlp4WQNP7YqPba0ZKCKvGxTYG8/xmw+Do6MUbsmhWRTIFSCO/DBo
+         z8xRhQMXtStV74D2VjDVelROvxDZGVX9myhayqOTGlDI+MLebPiNw26/7c5d6Pj61I
+         Ro6j8lSFKG0Z4MmBzyNX6f+HSt1ut3B+w98xUXV4oZ3Sh4/mXgkv6sz4hYXnj0bO/A
+         uDHZhWgctSbVA==
+Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
+        id 1B63D3522B7D; Fri,  8 Jan 2021 06:55:14 -0800 (PST)
+Date:   Fri, 8 Jan 2021 06:55:14 -0800
+From:   "Paul E. McKenney" <paulmck@kernel.org>
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     linux-kernel@vger.kernel.org, x86@kernel.org,
+        linux-edac@vger.kernel.org, tony.luck@intel.com,
+        tglx@linutronix.de, mingo@redhat.com, hpa@zytor.com,
+        kernel-team@fb.com
+Subject: Re: [PATCH RFC x86/mce] Make mce_timed_out() identify holdout CPUs
+Message-ID: <20210108145514.GS2743@paulmck-ThinkPad-P72>
+Reply-To: paulmck@kernel.org
+References: <20210106174102.GA23874@paulmck-ThinkPad-P72>
+ <20210106183244.GA24607@zn.tnic>
+ <20210106191353.GA2743@paulmck-ThinkPad-P72>
+ <20210107070724.GC14697@zn.tnic>
+ <20210107170844.GM2743@paulmck-ThinkPad-P72>
+ <20210108123156.GD4042@zn.tnic>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210108123156.GD4042@zn.tnic>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 8 Jan 2021, Filipe Laíns wrote:
-
-> > > -static int hidpp20_query_battery_info(struct hidpp_device *hidpp)
-> > > +static int hidpp20_query_battery_info_1000(struct hidpp_device *hidpp)
-> > 
-> > That '_1000' suffix looks strange to me, as it's not completely obvious 
-> > just from looking at the code what it actually means. Would it perhaps be 
-> > more readable to call it something like hidpp20_query_battery_level(), and 
-> > symmentrically change hidpp20_query_battery_info_1004() to e.g. 
-> > hidpp20_query_battery_voltage() ?
+On Fri, Jan 08, 2021 at 01:31:56PM +0100, Borislav Petkov wrote:
+> On Thu, Jan 07, 2021 at 09:08:44AM -0800, Paul E. McKenney wrote:
+> > Some information is usually better than none.  And I bet that failing
+> > hardware is capable of all sorts of tricks at all sorts of levels.  ;-)
 > 
-> The problem here is that hidpp20_query_battery_info_1004() does not set the
-> battery voltage, it is also the battery level. The best alternative I can think
-> of is replacing the 1000/1004 with slightly mangled HID++ feature names, like we
-> do on the other feature function. The drawback here is that I think that could
-> get confusing quickly.
+> Tell me about it.
 > 
-> hidpp20_batterylevel_query_battery_info()
-> hidpp20_unifiedbattery_query_battery_info()
+> > Updated patch below.  Is this what you had in mind?
 > 
-> Note that this does not provide *that* much more information than the feature
-> number, though it is probably the best option. What do you think?
-
-Alright, what a mess :) Would it perhaps help if there is at least a short 
-comment preceding the function definition, noting what the constants 
-actually are?
-
-> > [ ... snip ... ]
-> > > +       /* if the device supports state of charge (battery percentage) we
-> > > won't
-> > > +          export the battery level information. there are 4 possible
-> > > battery
-> > > +          levels and they all are optional, this means that the device
-> > > might
-> > > +          not support any of them, we are just better off with the battery
-> > > +          percentage. */
-> > 
-> > Could you please use standard kernel commenting style here?
+> Ok, so I've massaged it into the below locally while taking another
+> detailed look. Made the pr_info pr_emerg and poked at the text more, as
+> I do. :)
 > 
-> Oops, sorry. Will do :)
+> Lemme know if something else needs to be adjusted, otherwise I'll queue
+> it.
 
-Thanks,
+Looks good to me!  I agree that your change to the pr_emerg() string is
+much better than my original.  And good point on your added comment,
+plus it was fun to see that my original "holdouts" wording has not
+completely vanished.  ;-)
 
--- 
-Jiri Kosina
-SUSE Labs
+Thank you very much!!!
 
+							Thanx, Paul
+
+> Thx.
+> 
+> ---
+> Author: Paul E. McKenney <paulmck@kernel.org>
+> Date:   Wed Dec 23 17:04:19 2020 -0800
+> 
+>     x86/mce: Make mce_timed_out() identify holdout CPUs
+>     
+>     The
+>     
+>       "Timeout: Not all CPUs entered broadcast exception handler"
+>     
+>     message will appear from time to time given enough systems, but this
+>     message does not identify which CPUs failed to enter the broadcast
+>     exception handler. This information would be valuable if available,
+>     for example, in order to correlate with other hardware-oriented error
+>     messages.
+>     
+>     Add a cpumask of CPUs which maintains which CPUs have entered this
+>     handler, and print out which ones failed to enter in the event of a
+>     timeout.
+>     
+>      [ bp: Massage. ]
+>     
+>     Reported-by: Jonathan Lemon <bsd@fb.com>
+>     Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
+>     Signed-off-by: Borislav Petkov <bp@suse.de>
+>     Tested-by: Tony Luck <tony.luck@intel.com>
+>     Link: https://lkml.kernel.org/r/20210106174102.GA23874@paulmck-ThinkPad-P72
+> 
+> diff --git a/arch/x86/kernel/cpu/mce/core.c b/arch/x86/kernel/cpu/mce/core.c
+> index 13d3f1cbda17..6c81d0998e0a 100644
+> --- a/arch/x86/kernel/cpu/mce/core.c
+> +++ b/arch/x86/kernel/cpu/mce/core.c
+> @@ -877,6 +877,12 @@ static atomic_t mce_executing;
+>   */
+>  static atomic_t mce_callin;
+>  
+> +/*
+> + * Track which CPUs entered the MCA broadcast synchronization and which not in
+> + * order to print holdouts.
+> + */
+> +static cpumask_t mce_missing_cpus = CPU_MASK_ALL;
+> +
+>  /*
+>   * Check if a timeout waiting for other CPUs happened.
+>   */
+> @@ -894,8 +900,12 @@ static int mce_timed_out(u64 *t, const char *msg)
+>  	if (!mca_cfg.monarch_timeout)
+>  		goto out;
+>  	if ((s64)*t < SPINUNIT) {
+> -		if (mca_cfg.tolerant <= 1)
+> +		if (mca_cfg.tolerant <= 1) {
+> +			if (cpumask_and(&mce_missing_cpus, cpu_online_mask, &mce_missing_cpus))
+> +				pr_emerg("CPUs not responding to MCE broadcast (may include false positives): %*pbl\n",
+> +					 cpumask_pr_args(&mce_missing_cpus));
+>  			mce_panic(msg, NULL, NULL);
+> +		}
+>  		cpu_missing = 1;
+>  		return 1;
+>  	}
+> @@ -1006,6 +1016,7 @@ static int mce_start(int *no_way_out)
+>  	 * is updated before mce_callin.
+>  	 */
+>  	order = atomic_inc_return(&mce_callin);
+> +	cpumask_clear_cpu(smp_processor_id(), &mce_missing_cpus);
+>  
+>  	/*
+>  	 * Wait for everyone.
+> @@ -1114,6 +1125,7 @@ static int mce_end(int order)
+>  reset:
+>  	atomic_set(&global_nwo, 0);
+>  	atomic_set(&mce_callin, 0);
+> +	cpumask_setall(&mce_missing_cpus);
+>  	barrier();
+>  
+>  	/*
+> @@ -2712,6 +2724,7 @@ static void mce_reset(void)
+>  	atomic_set(&mce_executing, 0);
+>  	atomic_set(&mce_callin, 0);
+>  	atomic_set(&global_nwo, 0);
+> +	cpumask_setall(&mce_missing_cpus);
+>  }
+>  
+>  static int fake_panic_get(void *data, u64 *val)
+> 
+> -- 
+> Regards/Gruss,
+>     Boris.
+> 
+> https://people.kernel.org/tglx/notes-about-netiquette
