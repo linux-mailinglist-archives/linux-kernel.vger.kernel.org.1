@@ -2,109 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB0C12EF7FD
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 20:18:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 30BBA2EF801
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 20:20:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728816AbhAHTR7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Jan 2021 14:17:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43354 "EHLO
+        id S1728881AbhAHTTZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Jan 2021 14:19:25 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43574 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727376AbhAHTR7 (ORCPT
+        with ESMTP id S1726059AbhAHTTZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Jan 2021 14:17:59 -0500
-Received: from mail-io1-xd33.google.com (mail-io1-xd33.google.com [IPv6:2607:f8b0:4864:20::d33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94280C061380;
-        Fri,  8 Jan 2021 11:17:18 -0800 (PST)
-Received: by mail-io1-xd33.google.com with SMTP id e22so10271815iom.5;
-        Fri, 08 Jan 2021 11:17:18 -0800 (PST)
+        Fri, 8 Jan 2021 14:19:25 -0500
+Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 979F6C061380
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Jan 2021 11:18:44 -0800 (PST)
+Received: by mail-lf1-x136.google.com with SMTP id 23so25419958lfg.10
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Jan 2021 11:18:44 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=linaro.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=/iMSKDwUK0Dhamj+iFw+n77dmHZP0my5gPs6n21NXXw=;
-        b=QAOTNm+QNcWgL47iLbsNQcCbXMw04+sIkmxb8PBK9KdIuVTjoR1Nf3KalWTFrZ7K/u
-         enhQu/B9N3y+bweGcneh1i7QelevIReuKhypW6+AS18xdIwmRuRFZ3+IN0FDPyq31xIy
-         iglMCWdfbUn25Bhk+ueUQlJOoCBd9W6hRut+HD2TAMtyN17eKnQXzTyDAYtdL9NUyk8P
-         cnXnU+afo5r1S3LcPCmNDj97cUZa76vwrF8PfihhTahrtFIVeUPN/lK5c+GuFEjbT8Nc
-         jHgB/djlcS9r63tSBGtjjLzLDJfCsi3/LcbCjqQxZyCmnT0/qDx2zrmtTZ6nvuHf8dX0
-         dwBA==
+        bh=ozbpLtkK1xvRTK+jwsC/Xn8VvSovcm0+oA0TWoxuKes=;
+        b=REri6ss5W8tvw++tDJHa6Tj2j4DNNmbizybl3TpCOkP38qlwzLJL3iRDH7m/iGR88P
+         KKogFPJnAi3XbSxBoOCLhMhQtWw2FK8m1e/Opk5TYu1FtVmOAlVcihIgg0EBhL0EdZGc
+         CbwCuj8pEebcxR8ZblMQORCBY38zzkSYAB7gk4WXEIoVwoMBjKLijfznN2jiU5upNMZb
+         mphSVuEwfY0CQI1aG0II4jxKl3pd+VdlF705kzvT3hj50Zgu0uc2PyqDJLpEHdfGTu3J
+         gDXLVc1budnOYeU9tZLX9zd3zIpC1ToycjGkxxgsCeJ9jVf5DhhwfSaZKi1DqgLzbWFq
+         Q8QA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=/iMSKDwUK0Dhamj+iFw+n77dmHZP0my5gPs6n21NXXw=;
-        b=jcdhGsNXhveeyzBVkZR4lyDbcH3OJgcIcmw/cCa92uNOouIFBY/3AFEYiG8KPJSFjV
-         MBs5rT7kHUISQ14AhMARBdJYk2UGSyLumqG9EzNDEy2S9hlvjnwZgkAToDCJ079te/6y
-         f9B3TDah/RW+b5hcYeZoJqd9X6QM2s4HD1xor41PBmaosdieO7/9TaDUjMTqcWo184Be
-         FdbJQz7tJWbzIlCzvtt3jhuhWE9hJIiOWJvuRZTSnzIu8nGMHymCvO1F8RZJw/+gZasi
-         Qnxq6XtewHXkiU48vDysAZg6+OvuXeadTdY4FbwAjcmrJOxcsPl7/UOcYy+GWT8Vobwd
-         yD1w==
-X-Gm-Message-State: AOAM533SivfFK+l8n0EoIFrVmQFH8FIcnSQ7wOJ87/R86pkWPFoKWPGl
-        4D7k2BDcLUuPT5VQRUOpkvLUZ1UEAxuTrz3gPzaiQhXCm8VuGj75
-X-Google-Smtp-Source: ABdhPJyL//rapegAYYhoC2sePJlVysU1h+1n4CrjEzqqdsUMg12wG6nrsmJP77X0+iWg10DwukjzgI9jkLvriZFGV98=
-X-Received: by 2002:a05:6638:153:: with SMTP id y19mr4668821jao.47.1610133437955;
- Fri, 08 Jan 2021 11:17:17 -0800 (PST)
+        bh=ozbpLtkK1xvRTK+jwsC/Xn8VvSovcm0+oA0TWoxuKes=;
+        b=fuvOXhFYHGpuP0LcUVBE6p0kMbjOp2Xb3iPc8oWkkbiik0OSg+Xg37V3jITaCMHTVG
+         b4IPqbJSu7aluaHyG7cYTycaM2RwVChzkTM/wJ5Lzw4g+CeHw2ZSx66dZ1oJ2X2EV1nr
+         v58ELmeOUT7FgPk7I4vsXYR+z4o++Zfh9SUWagC8ufxByIU9s6rwBymR2/yuv8swYPTs
+         V2XulAp1NA/mnSi1qTB1RA7Pv24gpNCrC6rlToomtum0bkcO59aSfLg6FLWFCOIsMANE
+         EY+1lGazUShVF78BioCUpAOYkdWZ8OOQgOTFhs8lr0kXyYnVZAbqbcwyG4BSgauqd7ir
+         eGrA==
+X-Gm-Message-State: AOAM533Mr0y82JoszTScCzqrM7HpmWv0T14Iz3intNs65Xb5+Uhc4TyI
+        qgSLVnzocRzynh5rvGLDWMULSbLWX2IWwd5GKnIy4Q==
+X-Google-Smtp-Source: ABdhPJxx2DQBiILCuOPqsqJgdHwSJDlbEqnxDQdO81BLoZ6Je4piriGPaWJvYOymof0WkMoIdkFIKsl++hELe3lzdB4=
+X-Received: by 2002:a2e:b001:: with SMTP id y1mr2310498ljk.257.1610133523015;
+ Fri, 08 Jan 2021 11:18:43 -0800 (PST)
 MIME-Version: 1.0
-References: <20201204095539.31705-1-andreas@kemnade.info> <CAD=FV=WLcEBv7gaA3MOVYmxJ3d2Q+mo+Amkex=0eu_19jMtjrA@mail.gmail.com>
- <20201204171428.0a011188@aktux> <CAD=FV=Vynttaz00yqbihgK0HxyrPt9b0i0-8Ft6-4NEPc_NkeQ@mail.gmail.com>
- <20201207135753.GA26857@atomide.com>
-In-Reply-To: <20201207135753.GA26857@atomide.com>
-From:   Adam Ford <aford173@gmail.com>
-Date:   Fri, 8 Jan 2021 13:17:06 -0600
-Message-ID: <CAHCN7xLWbXtN6SfUW4fbwfUPvGVOjvGxJS=S-HWH2BSDkrUfYQ@mail.gmail.com>
-Subject: Re: [PATCH] ARM: OMAP2+: omap_device: fix idling of devices during probe
-To:     Tony Lindgren <tony@atomide.com>
-Cc:     Doug Anderson <dianders@chromium.org>,
-        Andreas Kemnade <andreas@kemnade.info>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        linux-omap <linux-omap@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Discussions about the Letux Kernel 
-        <letux-kernel@openphoenux.org>
+References: <20210108015115.27920-1-john.stultz@linaro.org> <87bldzwr6x.fsf@kernel.org>
+In-Reply-To: <87bldzwr6x.fsf@kernel.org>
+From:   John Stultz <john.stultz@linaro.org>
+Date:   Fri, 8 Jan 2021 11:18:32 -0800
+Message-ID: <CALAqxLWdWj9=a-7NGDzJyrfyRABwKnJM7EQo3Zm+k9JqAhPz+g@mail.gmail.com>
+Subject: Re: [PATCH v3 1/2] usb: dwc3: Trigger a GCTL soft reset when
+ switching modes in DRD
+To:     Felipe Balbi <balbi@kernel.org>
+Cc:     lkml <linux-kernel@vger.kernel.org>, Yu Chen <chenyu56@huawei.com>,
+        Tejas Joglekar <tejas.joglekar@synopsys.com>,
+        Yang Fei <fei.yang@intel.com>,
+        YongQin Liu <yongqin.liu@linaro.org>,
+        Andrzej Pietrasiewicz <andrzej.p@collabora.com>,
+        Thinh Nguyen <thinhn@synopsys.com>,
+        Jun Li <lijun.kernel@gmail.com>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Linux USB List <linux-usb@vger.kernel.org>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Roger Quadros <rogerq@ti.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 7, 2020 at 8:01 AM Tony Lindgren <tony@atomide.com> wrote:
+On Fri, Jan 8, 2021 at 4:26 AM Felipe Balbi <balbi@kernel.org> wrote:
 >
-> * Doug Anderson <dianders@chromium.org> [201204 16:43]:
-> > Hi,
+>
+> Hi,
+>
+> John Stultz <john.stultz@linaro.org> writes:
+> > From: Yu Chen <chenyu56@huawei.com>
 > >
-> > On Fri, Dec 4, 2020 at 8:14 AM Andreas Kemnade <andreas@kemnade.info> wrote:
-> > >
-> > > > > Fixes: 21b2cec61c04 ("mmc: Set PROBE_PREFER_ASYNCHRONOUS for drivers that existed in v4.4")
-> > > >
-> > > > From the description it sounds like this problem has always existed
-> > > > but the async probe just tickled it reliably.  Seems like it'd make
-> > > > sense to tag the "Fixes" as some earlier commit so you make sure your
-> > > > fix gets picked to kernels even if they don't have the async probe
-> > > > patch?
-> > > >
-> > >
-> > > Hmm, maybe
-> > > Fixes: 04abaf07f6d5 ("ARM: OMAP2+: omap_device: Sync omap_device and
-> > > pm_runtime after probe defer")
-> > >
-> > > But on the other hand to stable branches only such patches are applied
-> > > which solve pratical problems not only theoretical problems. But maybe
-> > > it solves several random issues where nobody took care to debug them.
-> > >
-> > > That would be since v4.11.
+> > Just resending this, as discussion died out a bit and I'm not
+> > sure how to make further progress. See here for debug data that
+> > was requested last time around:
+> >   https://lore.kernel.org/lkml/CALAqxLXdnaUfJKx0aN9xWwtfWVjMWigPpy2aqsNj56yvnbU80g@mail.gmail.com/
 > >
-> > I guess maybe best is to include both.  Then if someone is debugging
-> > why their async probe is failing they will notice this commit, but
-> > they also might decide to pick it earlier just to be safe...
+> > With the current dwc3 code on the HiKey960 we often see the
+> > COREIDLE flag get stuck off in __dwc3_gadget_start(), which
+> > seems to prevent the reset irq and causes the USB gadget to
+> > fail to initialize.
+> >
+> > We had seen occasional initialization failures with older
+> > kernels but with recent 5.x era kernels it seemed to be becoming
+> > much more common, so I dug back through some older trees and
+> > realized I dropped this quirk from Yu Chen during upstreaming
+> > as I couldn't provide a proper rational for it and it didn't
+> > seem to be necessary. I now realize I was wrong.
+> >
+> > After resubmitting the quirk, Thinh Nguyen pointed out that it
+> > shouldn't be a quirk at all and it is actually mentioned in the
+> > programming guide that it should be done when switching modes
+> > in DRD.
+> >
+> > So, to avoid these !COREIDLE lockups seen on HiKey960, this
+> > patch issues GCTL soft reset when switching modes if the
+> > controller is in DRD mode.
+> >
+> > Cc: Felipe Balbi <balbi@kernel.org>
+> > Cc: Tejas Joglekar <tejas.joglekar@synopsys.com>
+> > Cc: Yang Fei <fei.yang@intel.com>
+> > Cc: YongQin Liu <yongqin.liu@linaro.org>
+> > Cc: Andrzej Pietrasiewicz <andrzej.p@collabora.com>
+> > Cc: Thinh Nguyen <thinhn@synopsys.com>
+> > Cc: Jun Li <lijun.kernel@gmail.com>
+> > Cc: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+> > Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> > Cc: linux-usb@vger.kernel.org
+> > Signed-off-by: Yu Chen <chenyu56@huawei.com>
+> > Signed-off-by: John Stultz <john.stultz@linaro.org>
+> > ---
+> > v2:
+> > * Rework to always call the GCTL soft reset in DRD mode,
+> >   rather then using a quirk as suggested by Thinh Nguyen
+> >
+> > v3:
+> > * Move GCTL soft reset under the spinlock as suggested by
+> >   Thinh Nguyen
 >
-> OK I'll add the above fixes tag too and apply this into fixes.
->
+> Because this is such an invasive change, I would prefer that we get
+> Tested-By tags from a good fraction of the users before applying these
+> two changes.
 
-It might be too late, but...
+I'm happy to reach out to folks to try to get that. Though I'm
+wondering if it would be better to put it behind a dts quirk flag, as
+originally proposed?
+   https://lore.kernel.org/lkml/20201021181803.79650-1-john.stultz@linaro.org/
 
-Tested-by: Adam Ford <aford173@gmail.com>  #logicpd-torpedo-37xx-devkit
+That way folks can enable it for devices as they need?
 
-> Thanks,
->
-> Tony
+Again, I'm not trying to force this in as-is, just mostly sending it
+out again for discussion to understand what other approach might work.
+
+thanks
+-john
