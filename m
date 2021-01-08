@@ -2,73 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 56A342EEFBB
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 10:34:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 92D992EEFC0
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 10:37:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728393AbhAHJdr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Jan 2021 04:33:47 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52774 "EHLO mail.kernel.org"
+        id S1727831AbhAHJhE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Jan 2021 04:37:04 -0500
+Received: from verein.lst.de ([213.95.11.211]:43255 "EHLO verein.lst.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727661AbhAHJdp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Jan 2021 04:33:45 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 365F822BE8;
-        Fri,  8 Jan 2021 09:33:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610098384;
-        bh=FbhPcDUndjAB6/H1OTOUBoWyx4YiqVFJQbRKF5EZ9PY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=XBAh5ke3xFCC21/4t0+IO8+LeZnsYAEC0R6ItjiQSI7InY6o3dZRqrB4iiupGt7xa
-         VYRiwYGWeMJFUUAxhz6+aGGlbLR2fxRptKjEUvT+9B9ta2H2G8SAyyRyywBFORV95q
-         7fpkthtWE/KXuIuVGS0coDDfUjusg8xw4Wtq2GjR0LOysKvcKrBpuhcGhqg3gQFkdg
-         Xw1rQ87+TsGU6Q5IYIZYAQ5uomGTZx8dm7azSnrtMtxXCb2VMZjol2G2bnoduru3sq
-         mX4I8xjmuHXxzuBIDzGbU3KTabtbfybdZH8YXCOc4YS0tqsPKQBssXmR8NW81RIG9f
-         rDTMfigP4y5mw==
-Date:   Fri, 8 Jan 2021 09:32:58 +0000
-From:   Will Deacon <will@kernel.org>
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-arch@vger.kernel.org, clang-built-linux@googlegroups.com
-Subject: Re: [PATCH] arm64: make atomic helpers __always_inline
-Message-ID: <20210108093258.GB4031@willie-the-truck>
-References: <20210108092024.4034860-1-arnd@kernel.org>
+        id S1727294AbhAHJhE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 Jan 2021 04:37:04 -0500
+Received: by verein.lst.de (Postfix, from userid 2407)
+        id BE02E67373; Fri,  8 Jan 2021 10:36:21 +0100 (CET)
+Date:   Fri, 8 Jan 2021 10:36:21 +0100
+From:   Christoph Hellwig <hch@lst.de>
+To:     Satya Tangirala <satyat@google.com>
+Cc:     Bob Peterson <rpeterso@redhat.com>, Christoph Hellwig <hch@lst.de>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jens Axboe <axboe@kernel.dk>
+Subject: Re: [PATCH] fs: Fix freeze_bdev()/thaw_bdev() accounting of
+ bd_fsfreeze_sb
+Message-ID: <20210108093621.GA3788@lst.de>
+References: <20201224044954.1349459-1-satyat@google.com> <20210107162000.GA2693@lst.de> <1137375419.42956970.1610036857271.JavaMail.zimbra@redhat.com> <X/eUd4iLxnl2nYRF@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210108092024.4034860-1-arnd@kernel.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <X/eUd4iLxnl2nYRF@google.com>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Arnd,
+On Thu, Jan 07, 2021 at 11:08:39PM +0000, Satya Tangirala wrote:
+> >  		error = sb->s_op->freeze_super(sb);
+> >  	else
+> > @@ -600,6 +602,7 @@ int thaw_bdev(struct block_device *bdev)
+> >  	if (!sb)
+> >  		goto out;
+> >  
+> > +	bdev->bd_fsfreeze_sb = NULL;
+> This causes bdev->bd_fsfreeze_sb to be set to NULL even if the call to
+> thaw_super right after this line fail. So if a caller tries to call
+> thaw_bdev() again after receiving such an error, that next call won't even
+> try to call thaw_super(). Is that what we want here?  (I don't know much
+> about this code, but from a cursory glance I think this difference is
+> visible to emergency_thaw_bdev() in fs/buffer.c)
 
-On Fri, Jan 08, 2021 at 10:19:56AM +0100, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
-> 
-> With UBSAN enabled and building with clang, there are occasionally
-> warnings like
-> 
-> WARNING: modpost: vmlinux.o(.text+0xc533ec): Section mismatch in reference from the function arch_atomic64_or() to the variable .init.data:numa_nodes_parsed
-> The function arch_atomic64_or() references
-> the variable __initdata numa_nodes_parsed.
-> This is often because arch_atomic64_or lacks a __initdata
-> annotation or the annotation of numa_nodes_parsed is wrong.
-> 
-> for functions that end up not being inlined as intended but operating
-> on __initdata variables. Mark these as __always_inline, along with
-> the corresponding asm-generic wrappers.
+Yes, that definitively is an issue.
 
-Hmm, I don't fully grok this. Why does it matter if a non '__init' function
-is called with a pointer to some '__initdata'? Or is the reference coming
-from somewhere else? (where?).
+> 
+> I think the second difference (decrementing bd_fsfreeze_count when
+> get_active_super() returns NULL) doesn't change anything w.r.t the
+> use-after-free. It does however, change the behaviour of the function
+> slightly, and it might be caller visible (because from a cursory glance, it
+> looks like we're reading the bd_fsfreeze_count from some other places like
+> fs/super.c). Even before 040f04bd2e82, the code wouldn't decrement
+> bd_fsfreeze_count when get_active_super() returned NULL - so is this change
+> in behaviour intentional? And if so, maybe it should go in a separate
+> patch?
 
-Will
+Yes, that would be a change in behavior.  And I'm not sure why we would
+want to change it.  But if so we should do it in a separate patch that
+documents the why, on top of the patch that already is in the block tree.
