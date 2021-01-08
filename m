@@ -2,130 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F2BD32EFA5E
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 22:25:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EBA0A2EFA60
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 22:25:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727760AbhAHVY1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Jan 2021 16:24:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34936 "EHLO
+        id S1728471AbhAHVYv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Jan 2021 16:24:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35000 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726935AbhAHVY0 (ORCPT
+        with ESMTP id S1727479AbhAHVYu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Jan 2021 16:24:26 -0500
-Received: from mail-ot1-x32f.google.com (mail-ot1-x32f.google.com [IPv6:2607:f8b0:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 995DAC061574
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Jan 2021 13:23:46 -0800 (PST)
-Received: by mail-ot1-x32f.google.com with SMTP id w3so11013139otp.13
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Jan 2021 13:23:46 -0800 (PST)
+        Fri, 8 Jan 2021 16:24:50 -0500
+Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57401C061786
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Jan 2021 13:24:10 -0800 (PST)
+Received: by mail-pg1-x533.google.com with SMTP id q7so6527520pgm.5
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Jan 2021 13:24:10 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=aCoAbGKkVysmTlB8nOnLajkPksJNfkFdrsTwnEpGsSI=;
-        b=dw8z5uqcP4yfpvEpx9m+W8twaWwhF8X4C4YEoWC+okMrrLSN5v6vdoivlehcwM4w3K
-         byA8Y+RzIDsNBmPVhbzKcg3unN/BdvyFfaZCPHVqLD29UWDIjHhjGAjdBe4pdEjOwP18
-         4JWdj9ObeNJjTa0/ZtxRXkP7Gx/DgCKBLOda9cDDT2bT1w0yzEuLc54Gq/tMZd4WNxcQ
-         sQhnrTmTxgwy+GOTfJkw05hxw7UyvNlshkNR2ZyDdtLIsthz5Man2QrnUowaGSz6tUiU
-         lYZbe+E9Thy3pjpjm06DqesLhYnHy5+btBCFzsDf1573SMgRpU9dTN+7zlCb+0IUcAaJ
-         /Ckg==
+         :cc;
+        bh=gXhZ728/q6Uo5WIgNruf81h0fqXJVTEcW5f5eeageBQ=;
+        b=VqzD82yXJfOmBagZ9ORhbg/MoZj2O0543WpKtM3DlsSr51kE4vDTwVs3642NiQwEDH
+         1zTxRTZOt/v3lJz5f2XqdX6dfShlwy+W+Lup4Rcx9Vv7qTfhJMvEeL4l6FLxG+yLRmBV
+         al5SnoGST8nzQm+J/ueTr9rP1oNXCGL47fllh7mJNLnOL6vIDd5Rt/gKQdP+PQ9unWES
+         /0s8XwBSaU0hUwBIEwmJ/ojTbDahdgNrktWE/92f8jF7aVU3kJk4tsVQ5bcocj9SylxJ
+         6kT+80pTGSdI2GDMwpvoWNZoU5HJexdZznltFVqbjHz962iYOwSWprCqb3hqEtPLXpog
+         jXVg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=aCoAbGKkVysmTlB8nOnLajkPksJNfkFdrsTwnEpGsSI=;
-        b=t8P1KA21paHcjPcjwQlta8Hd6am96vr/CKk7cNifNfTpNcGfgQ0aVe8fS4i3AP7Gs/
-         b+9lK05VZQkWqbBzfK9NUzBDBvmuISxnJRnAxQ8N5qmM/jjKrx0aV3GB09yF7sXINUOY
-         +tMH9bNB3wXFA8twsz9alNKlILvxfru1hmbMlIi1veUMsOTRuiefubNxYHFmjWQzBOg0
-         ty2bkiY3PQqj0dn9JZNzkikYK61eK+R78vXpgHHR5RRY3uGL5UoNdtXfbaiS5mweOpX4
-         Y/BhogsUVoddd7iY2CF62/ur19MHVCgN0YjffKmiJIta/nWSVdhXQS8TTbNz3OSXvGju
-         nxdw==
-X-Gm-Message-State: AOAM5325zSomI7yTxFuDwPEGmVYse9avL4FMf6CPEp1hdhIiDv3Q0P65
-        yIsJVmy3zSBlqwV3uPjxWWsuvilkRgrB+dFPP7dWYHtW
-X-Google-Smtp-Source: ABdhPJyKMBdC32hANO1XiAZxwbrpCwG6gelTpkW9IiHXMRtS3Ms+jMC1qMYHR7T93LBlrMvaDocCheQB64ssDHUsBCY=
-X-Received: by 2002:a05:6830:1d66:: with SMTP id l6mr3902194oti.23.1610141024619;
- Fri, 08 Jan 2021 13:23:44 -0800 (PST)
+         :message-id:subject:to:cc;
+        bh=gXhZ728/q6Uo5WIgNruf81h0fqXJVTEcW5f5eeageBQ=;
+        b=mcmxdr2JNg3k8YSDtIVJ+eu3dmBe5OCuqKZggcenigCZP8sod+Q8Ek2wKm28gs69o8
+         T6ZpNJize83Uf0sLtgtr3AxO6FHRmDNAk1XXRSExF5JcYt//CK5XOm4Ctk/Xpy6cwWs3
+         XuPK53XAefK9CZyMS99rdILCrYqLy8ikeJ00OxTeTJ7pHXectUIjzeC4HrY9rpJMM9Yx
+         Flqyiola49KTxmTpqUBiOWgprhcrTxGVphKI3mtU6UFXtFZVtYZ0QHqviMNqgxmWLV0S
+         A2OWfA2h4sE8Iz6/wGHk8b/l5zlGEwVYz6C9PiBInDQnDvYdVISzj/ME6VCkoe2tc2ZN
+         c1bg==
+X-Gm-Message-State: AOAM533au75W98UEt3nrV/s1OHhCUhiMBBQKbjnkbq5wPe5wi4dBRTTT
+        wTGLzR5j56QWP8mwzeRUZzb4xEjs76FNgXKIHtpWdA==
+X-Google-Smtp-Source: ABdhPJznVuBLE0Y/KOfnwW+Tb3nLZGgFDiTyiQNkKueYB3rN6uQaJZtkNQwuxLH3n5KWE9Xse4Bg1LsKd4sAvAR+1y0=
+X-Received: by 2002:a63:1142:: with SMTP id 2mr8978911pgr.263.1610141049735;
+ Fri, 08 Jan 2021 13:24:09 -0800 (PST)
 MIME-Version: 1.0
-References: <20210108201457.3078600-1-lee.jones@linaro.org> <20210108201457.3078600-37-lee.jones@linaro.org>
-In-Reply-To: <20210108201457.3078600-37-lee.jones@linaro.org>
-From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Fri, 8 Jan 2021 16:23:33 -0500
-Message-ID: <CADnq5_PDo2XRMkrhwz52+01r3StpuP7TJHUE=W-8E__kuMtd3A@mail.gmail.com>
-Subject: Re: [PATCH 36/40] drm/amd/display/dc/dce/dce_i2c_hw: Make functions
- called by reference static
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     Lewis Huang <Lewis.Huang@amd.com>, Leo Li <sunpeng.li@amd.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        David Airlie <airlied@linux.ie>,
-        Maling list - DRI developers 
-        <dri-devel@lists.freedesktop.org>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
+References: <20210108092024.4034860-1-arnd@kernel.org> <20210108093258.GB4031@willie-the-truck>
+ <CAK8P3a27y_EM6s3SwH1e6FR7bqeT3PEoLbxSWPyZ=4BzqAjceg@mail.gmail.com>
+In-Reply-To: <CAK8P3a27y_EM6s3SwH1e6FR7bqeT3PEoLbxSWPyZ=4BzqAjceg@mail.gmail.com>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Fri, 8 Jan 2021 13:23:58 -0800
+Message-ID: <CAKwvOdkrfFXoZs8_xSJMhEFs7XQw6KKcu_JRT7_rUnHNR7A5qQ@mail.gmail.com>
+Subject: Re: [PATCH] arm64: make atomic helpers __always_inline
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Will Deacon <will@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 8, 2021 at 3:16 PM Lee Jones <lee.jones@linaro.org> wrote:
+On Fri, Jan 8, 2021 at 2:27 AM Arnd Bergmann <arnd@kernel.org> wrote:
 >
-> Fixes the following W=3D1 kernel build warning(s):
+> On Fri, Jan 8, 2021 at 10:33 AM Will Deacon <will@kernel.org> wrote:
+> > On Fri, Jan 08, 2021 at 10:19:56AM +0100, Arnd Bergmann wrote:
+> > > From: Arnd Bergmann <arnd@arndb.de>
+> > >
+> > > With UBSAN enabled and building with clang, there are occasionally
+> > > warnings like
+> > >
+> > > WARNING: modpost: vmlinux.o(.text+0xc533ec): Section mismatch in reference from the function arch_atomic64_or() to the variable .init.data:numa_nodes_parsed
+> > > The function arch_atomic64_or() references
+> > > the variable __initdata numa_nodes_parsed.
+> > > This is often because arch_atomic64_or lacks a __initdata
+> > > annotation or the annotation of numa_nodes_parsed is wrong.
+> > >
+> > > for functions that end up not being inlined as intended but operating
+> > > on __initdata variables. Mark these as __always_inline, along with
+> > > the corresponding asm-generic wrappers.
+> >
+> > Hmm, I don't fully grok this. Why does it matter if a non '__init' function
+> > is called with a pointer to some '__initdata'? Or is the reference coming
+> > from somewhere else? (where?).
 >
->  drivers/gpu/drm/amd/amdgpu/../display/dc/dce/dce_i2c_hw.c:438:35: warnin=
-g: no previous prototype for =E2=80=98dce_i2c_hw_engine_wait_on_operation_r=
-esult=E2=80=99 [-Wmissing-prototypes]
->  drivers/gpu/drm/amd/amdgpu/../display/dc/dce/dce_i2c_hw.c:505:6: warning=
-: no previous prototype for =E2=80=98dce_i2c_hw_engine_submit_payload=E2=80=
-=99 [-Wmissing-prototypes]
+> There are (at least) three ways for gcc to deal with a 'static inline'
+> function:
 >
-> Cc: Harry Wentland <harry.wentland@amd.com>
-> Cc: Leo Li <sunpeng.li@amd.com>
-> Cc: Alex Deucher <alexander.deucher@amd.com>
-> Cc: "Christian K=C3=B6nig" <christian.koenig@amd.com>
-> Cc: David Airlie <airlied@linux.ie>
-> Cc: Daniel Vetter <daniel@ffwll.ch>
-> Cc: Lewis Huang <Lewis.Huang@amd.com>
-> Cc: amd-gfx@lists.freedesktop.org
-> Cc: dri-devel@lists.freedesktop.org
-> Signed-off-by: Lee Jones <lee.jones@linaro.org>
+> a) fully inline it as the __always_inline attribute does
+> b) not inline it at all, treating it as a regular static function
+> c) create a specialized version with different calling conventions
+>
+> In this case, clang goes with option c when it notices that all
+> callers pass the same constant pointer. This means we have a
+> synthetic
+>
+> static noinline long arch_atomic64_or(long i)
+> {
+>         return __lse_ll_sc_body(atomic64_fetch_or, i, &numa_nodes_parsed);
+> }
+>
+> which is a few bytes shorter than option b as it saves a load in the
+> caller. This function definition however violates the kernel's rules
+> for section references, as the synthetic version is not marked __init.
 
-Applied.  Thanks!
+Interesting, I didn't know LLVM could do that.  Do you have a simpler
+test case? Maybe I could just fix that in LLVM. (I would guess that
+when synthesizing a function from an existing function, the new
+function needs to copy the original functions attributes as well).
 
-Alex
-
-> ---
->  drivers/gpu/drm/amd/display/dc/dce/dce_i2c_hw.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
->
-> diff --git a/drivers/gpu/drm/amd/display/dc/dce/dce_i2c_hw.c b/drivers/gp=
-u/drm/amd/display/dc/dce/dce_i2c_hw.c
-> index 7fbd92fbc63a9..a524f471e0d75 100644
-> --- a/drivers/gpu/drm/amd/display/dc/dce/dce_i2c_hw.c
-> +++ b/drivers/gpu/drm/amd/display/dc/dce/dce_i2c_hw.c
-> @@ -435,7 +435,7 @@ struct dce_i2c_hw *acquire_i2c_hw_engine(
->         return dce_i2c_hw;
->  }
->
-> -enum i2c_channel_operation_result dce_i2c_hw_engine_wait_on_operation_re=
-sult(
-> +static enum i2c_channel_operation_result dce_i2c_hw_engine_wait_on_opera=
-tion_result(
->         struct dce_i2c_hw *dce_i2c_hw,
->         uint32_t timeout,
->         enum i2c_channel_operation_result expected_result)
-> @@ -502,7 +502,7 @@ static uint32_t get_transaction_timeout_hw(
->         return period_timeout * num_of_clock_stretches;
->  }
->
-> -bool dce_i2c_hw_engine_submit_payload(
-> +static bool dce_i2c_hw_engine_submit_payload(
->         struct dce_i2c_hw *dce_i2c_hw,
->         struct i2c_payload *payload,
->         bool middle_of_transaction,
-> --
-> 2.25.1
->
-> _______________________________________________
-> dri-devel mailing list
-> dri-devel@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/dri-devel
+-- 
+Thanks,
+~Nick Desaulniers
