@@ -2,151 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6FB12EFA3E
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 22:21:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 55E142EFA3B
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 22:21:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729763AbhAHVTu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Jan 2021 16:19:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34206 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727845AbhAHVTr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S1729749AbhAHVTr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Fri, 8 Jan 2021 16:19:47 -0500
-Received: from mail-ot1-x329.google.com (mail-ot1-x329.google.com [IPv6:2607:f8b0:4864:20::329])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97978C061757
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Jan 2021 13:19:07 -0800 (PST)
-Received: by mail-ot1-x329.google.com with SMTP id a109so11082539otc.1
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Jan 2021 13:19:07 -0800 (PST)
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34200 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727845AbhAHVTq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 Jan 2021 16:19:46 -0500
+Received: from mail-qt1-x835.google.com (mail-qt1-x835.google.com [IPv6:2607:f8b0:4864:20::835])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3368BC061574;
+        Fri,  8 Jan 2021 13:19:06 -0800 (PST)
+Received: by mail-qt1-x835.google.com with SMTP id 2so7548241qtt.10;
+        Fri, 08 Jan 2021 13:19:06 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=+BVMFNqO9VtQw50JkrleUaGJ0i7fU8M+bV3fNxrSKxc=;
-        b=pLgTcndfV6cW6spCSGmjB9Fb3TfBg6Tmw3S+ubIj/B1HgTeqyjz5qA9/Z7BpIp2tVT
-         AIAdfrenkZLlqi0vENVzKN5z6sRCG/HRIxDlE7rXaBHDMJ36kgnddELtWGMAWeX+vZVE
-         hG47TowHgJIpYX6BIS+tu8ABMiCtX3NfE+4x2yCa2ADEX5cIBZN4BPcu+oLBeXmVBk2I
-         O4EZVDZdWPKEtDWDquMvP9o7hq9V4ooPyqjY+vttyNwgIS2+V3ZqjNC4mqBtuDuyhFW+
-         xK7g9eBKmIbWjVWdezeRFWB73Rm+B3xjuqs97WTfGUFhIdphaq81fYQ+YLGkggsDVhJq
-         JEWQ==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=FT8leUKcQW0PbWbAqTVuy6I1pPu6asWx5VuvUk3OGU0=;
+        b=ldFjd7QEAoot+4bc90T+cGOopb7MJhsAriABNvpBJNnORtF7foNGMXIt/DCLHLLiko
+         X/E1kW0YQ0ajzR7D6Hd3PWn/Q79xZrFAQxptsdz4Zk5+H0K6F03nTYXck82taYpiqwYD
+         EjCsKxf1rhikMbj/TtRWKbkPl4qCxhnhgvF6Qp+0avDZ3W6/18yPCJ/d8vxruCIDjVhD
+         X3iGWWyabEB+60KSJwxj34YUl1ZiPewWP7RkIyYpVgpV7OLKapEnaTqvZys+mEw1BJes
+         Q6ArnijyCqb1UgCNHOvZAnRpnbFpOjzF91L2LduPR3oXSLmP++shftBTipa+KFwzieAz
+         fKlw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=+BVMFNqO9VtQw50JkrleUaGJ0i7fU8M+bV3fNxrSKxc=;
-        b=JRfzeEHmcK5yolaZt8vTfoYgLUMk0bJ+1CA/5SCqv67UNOzzElfMtRUgkhzrG7ADZt
-         miOQQmR1vjpqmxuXFJtEAjMncd9N10LRBrxSRb4IDobD8S/I1cTAATCD3RW9Gbaq14Sg
-         pA6gwLD8kqG6yh1x9t9OoZuWzH8IrUEqzc4fkeqPZQMdUgYu3IC6yGAEJb1AamBlEGdm
-         t4BigbWeXM12/m5g7rRuyQ82WT+tUYnhOUMRz+DTTwxm9JTkJY/QlLfkSeZvuYNKTPEo
-         Dnjc27t8M37dJn5oD9TjovJdcUx+cGphN6Sn/iu+2NSaNk0k+KonKPoHQT2DxLl/VfNg
-         ckhw==
-X-Gm-Message-State: AOAM533jRKJr8IIETInUicXaPOyS3yYuMpCxOjddsQiUz9Xq5hz/Nw2H
-        PY0Us18GBzRyqXBruch3Ktw+WS1jAXOqeMpZfbRB2fUw
-X-Google-Smtp-Source: ABdhPJxeFs1iL9KeAXeDXqdeEvesZuOa6FUbcR/HvCtgBKTdtd+5IUJYYuhMsC+0OFyPkE66/LzhP1w3wx3BwPOu6CU=
-X-Received: by 2002:a9d:75d4:: with SMTP id c20mr3901460otl.311.1610140747098;
- Fri, 08 Jan 2021 13:19:07 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=FT8leUKcQW0PbWbAqTVuy6I1pPu6asWx5VuvUk3OGU0=;
+        b=TmZQFi2R9X157Q9n74IG0cVoklpOfQWue+t4A7vppk/mX8+GVYg8YcWeTDTO52v+t4
+         3gD/MyiCztCZwPbt41fT0Iaz0ScEoS6FBpbqZXr6+4RGy/1kzATqoQ7YoVBKMXnbpXt4
+         1ZczhddDrzVCeEQ89bCHM5Y7MMazYaIo2woiqb3p9NXfFPudiDPsptB/RZPIwy/e1C81
+         Pm5hKJ5hV0sySKl/Xf8kgszNwHAUc1fUNPs1JU6hWj4XsixhQcdEyNbwxgl9TU4v+l1T
+         ZC3FFHfaGRcpicu1biqh/c5UjfzXqPHD+7Goh66AaYvn80SCUPKDQaNGLFjIuxW1zBAs
+         h8Tw==
+X-Gm-Message-State: AOAM532V4uzgLWAf2C/UYMyLd1fST2kEa5ZfMEbACIvi29uqaJ0Tqecm
+        p4AJ/ikiTEW+fc2vgUMO44Q=
+X-Google-Smtp-Source: ABdhPJwXR85WUk2uK/FbRNd/B1DnI7feLX9vmw2Gdl1bj4XQ72b9R23KlhnbciRs+xN7GkOABAJUTQ==
+X-Received: by 2002:aed:231d:: with SMTP id h29mr5412755qtc.238.1610140745288;
+        Fri, 08 Jan 2021 13:19:05 -0800 (PST)
+Received: from ubuntu-m3-large-x86 ([2604:1380:45f1:1d00::1])
+        by smtp.gmail.com with ESMTPSA id l204sm5408189qke.56.2021.01.08.13.19.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 08 Jan 2021 13:19:04 -0800 (PST)
+Date:   Fri, 8 Jan 2021 14:19:03 -0700
+From:   Nathan Chancellor <natechancellor@gmail.com>
+To:     Alexander Lobakin <alobakin@pm.me>
+Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Kees Cook <keescook@chromium.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Fangrui Song <maskray@google.com>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Pei Huang <huangpei@loongson.cn>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        Ralf Baechle <ralf@linux-mips.org>,
+        Corey Minyard <cminyard@mvista.com>,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arch@vger.kernel.org, stable@vger.kernel.org,
+        clang-built-linux@googlegroups.com
+Subject: Re: [PATCH v4 mips-next 6/7] vmlinux.lds.h: catch compound literals
+ into data and BSS
+Message-ID: <20210108211903.GF2547542@ubuntu-m3-large-x86>
+References: <20210107123331.354075-1-alobakin@pm.me>
+ <20210107132010.463129-1-alobakin@pm.me>
+ <20210107132010.463129-3-alobakin@pm.me>
 MIME-Version: 1.0
-References: <20210108201457.3078600-1-lee.jones@linaro.org> <20210108201457.3078600-31-lee.jones@linaro.org>
-In-Reply-To: <20210108201457.3078600-31-lee.jones@linaro.org>
-From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Fri, 8 Jan 2021 16:18:56 -0500
-Message-ID: <CADnq5_PcfiXEc=dpOVM+xttj91tnPsw0UT4T-arzxZhvdusiqw@mail.gmail.com>
-Subject: Re: [PATCH 30/40] drm/amd/display/dc/dce/dce_dmcu: Move
- 'abm_gain_stepsize' to only source file it's used in
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     Leo Li <sunpeng.li@amd.com>, Mauro Rossi <issor.oruam@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        David Airlie <airlied@linux.ie>,
-        Maling list - DRI developers 
-        <dri-devel@lists.freedesktop.org>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210107132010.463129-3-alobakin@pm.me>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 8, 2021 at 3:15 PM Lee Jones <lee.jones@linaro.org> wrote:
->
-> And only declare it if it's to be used.
->
-> Fixes the following W=3D1 kernel build warning(s):
->
->  drivers/gpu/drm/amd/amdgpu/../display/dc/dce/dce_dmcu.h:320:23: warning:=
- =E2=80=98abm_gain_stepsize=E2=80=99 defined but not used [-Wunused-const-v=
-ariable=3D]
->  drivers/gpu/drm/amd/amdgpu/../display/dc/dce/dce_dmcu.h:320:23: warning:=
- =E2=80=98abm_gain_stepsize=E2=80=99 defined but not used [-Wunused-const-v=
-ariable=3D]
->  drivers/gpu/drm/amd/amdgpu/../display/dc/dce/dce_dmcu.h:320:23: warning:=
- =E2=80=98abm_gain_stepsize=E2=80=99 defined but not used [-Wunused-const-v=
-ariable=3D]
->  drivers/gpu/drm/amd/amdgpu/../display/dc/dce/dce_dmcu.h:320:23: warning:=
- =E2=80=98abm_gain_stepsize=E2=80=99 defined but not used [-Wunused-const-v=
-ariable=3D]
->  drivers/gpu/drm/amd/amdgpu/../display/dc/dce/dce_dmcu.h:320:23: warning:=
- =E2=80=98abm_gain_stepsize=E2=80=99 defined but not used [-Wunused-const-v=
-ariable=3D]
->  drivers/gpu/drm/amd/amdgpu/../display/dc/dce/dce_dmcu.h:320:23: warning:=
- =E2=80=98abm_gain_stepsize=E2=80=99 defined but not used [-Wunused-const-v=
-ariable=3D]
->  drivers/gpu/drm/amd/amdgpu/../display/dc/dce/dce_dmcu.h:320:23: warning:=
- =E2=80=98abm_gain_stepsize=E2=80=99 defined but not used [-Wunused-const-v=
-ariable=3D]
->
-> Cc: Harry Wentland <harry.wentland@amd.com>
-> Cc: Leo Li <sunpeng.li@amd.com>
-> Cc: Alex Deucher <alexander.deucher@amd.com>
-> Cc: "Christian K=C3=B6nig" <christian.koenig@amd.com>
-> Cc: David Airlie <airlied@linux.ie>
-> Cc: Daniel Vetter <daniel@ffwll.ch>
-> Cc: Mauro Rossi <issor.oruam@gmail.com>
-> Cc: amd-gfx@lists.freedesktop.org
-> Cc: dri-devel@lists.freedesktop.org
-> Signed-off-by: Lee Jones <lee.jones@linaro.org>
+On Thu, Jan 07, 2021 at 01:20:55PM +0000, Alexander Lobakin wrote:
+> When building kernel with LD_DEAD_CODE_DATA_ELIMINATION, LLVM stack
+> generates separate sections for compound literals, just like in case
+> with enabled LTO [0]:
+> 
+> ld.lld: warning: drivers/built-in.a(mtd/nand/spi/gigadevice.o):
+> (.data..compoundliteral.14) is being placed in
+> '.data..compoundliteral.14'
+> ld.lld: warning: drivers/built-in.a(mtd/nand/spi/gigadevice.o):
+> (.data..compoundliteral.15) is being placed in
+> '.data..compoundliteral.15'
+> ld.lld: warning: drivers/built-in.a(mtd/nand/spi/gigadevice.o):
+> (.data..compoundliteral.16) is being placed in
+> '.data..compoundliteral.16'
+> ld.lld: warning: drivers/built-in.a(mtd/nand/spi/gigadevice.o):
+> (.data..compoundliteral.17) is being placed in
+> '.data..compoundliteral.17'
+> 
+> [...]
+> 
+> Handle this by adding the related sections to generic definitions
+> as suggested by Sami [0].
+> 
+> [0] https://lore.kernel.org/lkml/20201211184633.3213045-3-samitolvanen@google.com
+> 
+> Suggested-by: Kees Cook <keescook@chromium.org>
+> Signed-off-by: Alexander Lobakin <alobakin@pm.me>
 
-Applied.  Thanks!
-
-Alex
+Reviewed-by: Nathan Chancellor <natechancellor@gmail.com>
 
 > ---
->  drivers/gpu/drm/amd/display/dc/dce/dce_dmcu.c | 4 ++++
->  drivers/gpu/drm/amd/display/dc/dce/dce_dmcu.h | 2 --
->  2 files changed, 4 insertions(+), 2 deletions(-)
->
-> diff --git a/drivers/gpu/drm/amd/display/dc/dce/dce_dmcu.c b/drivers/gpu/=
-drm/amd/display/dc/dce/dce_dmcu.c
-> index fa2b47d41ee2f..30264fc151a2b 100644
-> --- a/drivers/gpu/drm/amd/display/dc/dce/dce_dmcu.c
-> +++ b/drivers/gpu/drm/amd/display/dc/dce/dce_dmcu.c
-> @@ -65,6 +65,10 @@
->  //Register access policy version
->  #define mmMP0_SMN_C2PMSG_91                            0x1609B
->
-> +#if defined(CONFIG_DRM_AMD_DC_DCN)
-> +static const uint32_t abm_gain_stepsize =3D 0x0060;
-> +#endif
-> +
->  static bool dce_dmcu_init(struct dmcu *dmcu)
->  {
->         // Do nothing
-> diff --git a/drivers/gpu/drm/amd/display/dc/dce/dce_dmcu.h b/drivers/gpu/=
-drm/amd/display/dc/dce/dce_dmcu.h
-> index 93e7f34d4775e..cefb7f5bf42cc 100644
-> --- a/drivers/gpu/drm/amd/display/dc/dce/dce_dmcu.h
-> +++ b/drivers/gpu/drm/amd/display/dc/dce/dce_dmcu.h
-> @@ -317,6 +317,4 @@ struct dmcu *dcn21_dmcu_create(
->
->  void dce_dmcu_destroy(struct dmcu **dmcu);
->
-> -static const uint32_t abm_gain_stepsize =3D 0x0060;
-> -
->  #endif /* _DCE_ABM_H_ */
-> --
-> 2.25.1
->
-> _______________________________________________
-> dri-devel mailing list
-> dri-devel@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/dri-devel
+>  include/asm-generic/vmlinux.lds.h | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
+> 
+> diff --git a/include/asm-generic/vmlinux.lds.h b/include/asm-generic/vmlinux.lds.h
+> index b2b3d81b1535..5f2f5b1db84f 100644
+> --- a/include/asm-generic/vmlinux.lds.h
+> +++ b/include/asm-generic/vmlinux.lds.h
+> @@ -95,10 +95,10 @@
+>   */
+>  #ifdef CONFIG_LD_DEAD_CODE_DATA_ELIMINATION
+>  #define TEXT_MAIN .text .text.[0-9a-zA-Z_]*
+> -#define DATA_MAIN .data .data.[0-9a-zA-Z_]* .data..LPBX*
+> +#define DATA_MAIN .data .data.[0-9a-zA-Z_]* .data..L* .data..compoundliteral*
+>  #define SDATA_MAIN .sdata .sdata.[0-9a-zA-Z_]*
+> -#define RODATA_MAIN .rodata .rodata.[0-9a-zA-Z_]*
+> -#define BSS_MAIN .bss .bss.[0-9a-zA-Z_]*
+> +#define RODATA_MAIN .rodata .rodata.[0-9a-zA-Z_]* .rodata..L*
+> +#define BSS_MAIN .bss .bss.[0-9a-zA-Z_]* .bss..compoundliteral*
+>  #define SBSS_MAIN .sbss .sbss.[0-9a-zA-Z_]*
+>  #else
+>  #define TEXT_MAIN .text
+> -- 
+> 2.30.0
+> 
+> 
