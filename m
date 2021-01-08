@@ -2,82 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 498412EF6C4
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 18:47:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F9E92EF6CA
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 18:53:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728444AbhAHRp7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Jan 2021 12:45:59 -0500
-Received: from mx2.suse.de ([195.135.220.15]:47478 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726386AbhAHRp6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Jan 2021 12:45:58 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1610127912; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Gy94qC4XCy03Semo26HM+yaE2VFSVwCyprGmcwkRvVI=;
-        b=SPX3VXdgQ5pSeM9Dz6Ec/vHWeJjC3dP4d0sVp8nu0MJm+2as3EwPdUev55dvdtfpEBQquP
-        HbearfZGYHeraCtHzqAjnbFypmEHLCIFrKJqPnjRwuUd+i6NfyE2WYf1oqFDNw5CWUfipq
-        fs7R+iICh2OP3oV7YRAKUTfb8HfxUSA=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 73105AD1E;
-        Fri,  8 Jan 2021 17:45:12 +0000 (UTC)
-Date:   Fri, 8 Jan 2021 18:45:11 +0100
-From:   Petr Mladek <pmladek@suse.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        John Ogness <john.ogness@linutronix.de>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Shreyas Joshi <shreyas.joshi@biamp.com>,
-        shreyasjoshi15@gmail.com,
-        Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
-        Greg Ungerer <gerg@linux-m68k.org>,
-        Vineet Gupta <vgupta@synopsys.com>,
-        Thomas Meyer <thomas@m3y3r.de>,
-        David Gow <davidgow@google.com>,
-        Brendan Higgins <brendanhiggins@google.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 1/1] Revert "init/console: Use ttynull as a fallback when
- there is no console"
-Message-ID: <X/iaJw1JKRRGcoX9@alley>
-References: <20210107164400.17904-1-pmladek@suse.com>
- <20210107164400.17904-2-pmladek@suse.com>
- <X/deF3U+LK5YCQT3@kroah.com>
- <CAHk-=wjSz8tS=QqvnMDk4qHe5t5FS-Nk-SQMPAHJo5SJYp_t6w@mail.gmail.com>
+        id S1728432AbhAHRw6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Jan 2021 12:52:58 -0500
+Received: from mail-oo1-f42.google.com ([209.85.161.42]:45985 "EHLO
+        mail-oo1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726011AbhAHRw6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 Jan 2021 12:52:58 -0500
+Received: by mail-oo1-f42.google.com with SMTP id o5so2558874oop.12;
+        Fri, 08 Jan 2021 09:52:43 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=Ez5mXhhTrzTdRQ9SbQCDV6+1CgYl+rx+hxup8pZc1AU=;
+        b=Iic07sn0BLWO1V/JqKraltn8tyIVIAnKo1z7aiKIVs1W3wlaYPvLya563axhtGGJTd
+         T/53pPXT2SrDHaDfpNjD1LvpcMIcY5KrhqhhLZkH2H9b0s9g5ZJIK67pFsvmJovZzKfk
+         IZtls4Nujg1DXf/EK8HzeL3pzS/+OtG/2Xyla07gO8M1y7DDuQgu6C+HOQdQr21HtEMD
+         PXIYrlohVSzJOgALsFIKsyQE/R1ZxZ3sYT0+OaTO1Hsm+CGcC7gI1UF0a//vaIHid/s+
+         ryGwQNC+jPCtBZaffI2X7646THMGL6Rc6uHUHPPVYlACwn1RN17TBCs8mSeKqlQaCPHm
+         /dHA==
+X-Gm-Message-State: AOAM531lxgxDMja02AHHHl1zCqqUE1vEeMSWvQCiu3oZTmnUvn3YCACI
+        cekD40J7coMAr/t9VgW5kDy2GJilMWaSEU2CyATg2hs9Z1E=
+X-Google-Smtp-Source: ABdhPJyzCCynIGv7vELT97SoT0uCT1xcdnLE15cUwfeE2LYoor1FoU2TkGwj21l8qbAT3L+o+IsL+1V2oTDe9N1ivxA=
+X-Received: by 2002:a4a:bf14:: with SMTP id r20mr5121391oop.2.1610128337586;
+ Fri, 08 Jan 2021 09:52:17 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHk-=wjSz8tS=QqvnMDk4qHe5t5FS-Nk-SQMPAHJo5SJYp_t6w@mail.gmail.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Fri, 8 Jan 2021 18:52:06 +0100
+Message-ID: <CAJZ5v0iPXqB1zkrbORP+N-ZgLA_fSym7o1xbkBCt0=TTdu_hxg@mail.gmail.com>
+Subject: [GIT PULL] Power management fixes for v5.11-rc3
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Linux PM <linux-pm@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu 2021-01-07 11:38:36, Linus Torvalds wrote:
-> On Thu, Jan 7, 2021 at 11:15 AM Greg Kroah-Hartman
-> <gregkh@linuxfoundation.org> wrote:
-> >
-> > Linus, can you take this directly, or is this going through some other
-> > tree?
-> 
-> I was _assuming_ that I'd get it through the normal printk pull
-> request, it doesn't seem to be that timing-critical.
-> 
-> But if there is nothing else pending, I can certainly take it directly
-> as that patch too.
+Hi Linus,
 
-This is the only printk-related fix at the moment.
+Please pull from the tag
 
-I have just pushed v2 (updated commit message, tags) into
-printk/linux.git for linux-next. It is the patch sent as
-https://lore.kernel.org/lkml/20210108114847.23469-1-pmladek@suse.com/
+ git://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git \
+ pm-5.11-rc3
 
-Feel free to push v2 directly. Or I will create pull request the
-following week after it spends few days in linux-next.
+with top-most commit c4151604f0603d5700072183a05828ff87d764e4
 
-Best Regards,
-Petr
+ cpufreq: intel_pstate: remove obsolete functions
+
+on top of commit e71ba9452f0b5b2e8dc8aa5445198cd9214a6a62
+
+ Linux 5.11-rc2
+
+to receive power management fixes for 5.11-rc3.
+
+These address two issues in the intel_pstate driver and one in the
+powernow-k8 cpufreq driver.
+
+Specifics:
+
+ - Make the powernow-k8 cpufreq driver avoid calling cpufreq_cpu_get(),
+   which theoretically may return NULL, to get a policy pointer that
+   is known to it already (Colin Ian King).
+
+ - Drop two functions that are not used any more from the intel_pstate
+   driver (Lukas Bulwahn).
+
+ - Make intel_pstate check the HWP capabilities to get the maximum
+   available P-state in the passive mode to avoid using a stale value
+   of it in case of out-of-band updates (Rafael Wysocki).
+
+Thanks!
+
+
+---------------
+
+Colin Ian King (1):
+      cpufreq: powernow-k8: pass policy rather than use cpufreq_cpu_get()
+
+Lukas Bulwahn (1):
+      cpufreq: intel_pstate: remove obsolete functions
+
+Rafael J. Wysocki (1):
+      cpufreq: intel_pstate: Use HWP capabilities in intel_cpufreq_adjust_perf()
+
+---------------
+
+ drivers/cpufreq/intel_pstate.c | 15 +++------------
+ drivers/cpufreq/powernow-k8.c  |  9 +++------
+ 2 files changed, 6 insertions(+), 18 deletions(-)
