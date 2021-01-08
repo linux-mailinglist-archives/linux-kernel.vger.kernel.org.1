@@ -2,79 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E1BB72EF85D
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 20:47:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E2B1D2EF85F
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 20:49:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728921AbhAHTq7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Jan 2021 14:46:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47878 "EHLO
+        id S1728991AbhAHTs6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Jan 2021 14:48:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48184 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728759AbhAHTq7 (ORCPT
+        with ESMTP id S1728864AbhAHTs6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Jan 2021 14:46:59 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98B35C061380
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Jan 2021 11:46:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=oOtQDu7w1ab6cweuFIDLs0jH0PgEz7DuChoBHnBqhjY=; b=ezABTJEo25pEyy8exv16P+jYeK
-        0xmgd65tq60rvsCkakyn2p3IaNG59Pb538U82McIBLZcyv1Kc9HHzM7cZqC7WP0jO/VxmbcgZgjXo
-        ti/DTFIGGnvAVX1s6xnwnhCoiVKfXQ8U3HPu2gIOnfhQc5OYOnrwakzq6EoBTf/3cFW62soScWLnF
-        /wPK56qVnW6SaOifD1t3ZREPk9vS2jIaxBbsICZoaCPELzVEr6Yz0gI/XTDBSLKfWKEF3P7Nk3IWE
-        cEITXV6zeZdKYGet+qazKExGu4qt280U1e5ell3trROosKqnaYQ/Bf6FknWQswydbNNMlaa5BVLlC
-        DeUVgw3w==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kxxhn-0007O1-K1; Fri, 08 Jan 2021 19:45:51 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 10E8D3003D8;
-        Fri,  8 Jan 2021 20:45:45 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id F2E0220167A86; Fri,  8 Jan 2021 20:45:44 +0100 (CET)
-Date:   Fri, 8 Jan 2021 20:45:44 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Vincent Guittot <vincent.guittot@linaro.org>
-Cc:     Mel Gorman <mgorman@techsingularity.net>,
-        "Li, Aubrey" <aubrey.li@linux.intel.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Qais Yousef <qais.yousef@arm.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>,
-        Tim Chen <tim.c.chen@linux.intel.com>,
-        Jiang Biao <benbjiang@gmail.com>
-Subject: Re: [RFC][PATCH 1/5] sched/fair: Fix select_idle_cpu()s cost
- accounting
-Message-ID: <X/i2aIKmeyi5SZ7g@hirez.programming.kicks-ass.net>
-References: <20201214164822.402812729@infradead.org>
- <20201214170017.877557652@infradead.org>
- <c4e31235-e1fb-52ac-99a8-ae943ee0de54@linux.intel.com>
- <20201215075911.GA3040@hirez.programming.kicks-ass.net>
- <20210108102738.GB3592@techsingularity.net>
- <CAKfTPtD5R1S=rwp9C-jyMg8bAB-37FCe3qrqad9KEeyR7mOmkw@mail.gmail.com>
- <20210108144058.GD3592@techsingularity.net>
- <CAKfTPtCGCmCv0yXSUmYUh6=8uzd0n9xFPqC0cW4sm-FqDvjvCQ@mail.gmail.com>
+        Fri, 8 Jan 2021 14:48:58 -0500
+Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D32BCC061380;
+        Fri,  8 Jan 2021 11:48:17 -0800 (PST)
+Received: by mail-ed1-x535.google.com with SMTP id r5so12283005eda.12;
+        Fri, 08 Jan 2021 11:48:17 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=googlemail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=I8TKAHdoaMvYSSqtTCZDWPAAByIaQ1v5o/szfpAMfPI=;
+        b=AFvoo6GF4rLr+/wmxY6an8Ra99XiWLq3NePV7Jm4wKbfP3kzzYk4ibd4/pThs8pDY1
+         cT7Z8PSPOVHMFEknsuxrH64bvGD5lnzQgop1iIkEOsSSqxCyrbeUeuD39M5e4zblEwz7
+         F9u7NOD1iptwQP+6Ddnk7uWeh+2pCOqP7gzJ2hCR73JtCO/tt3ocbiSnn/IZmhAqYEHx
+         I0OxPx5+EMiq1r8vzX3QE8BGH3vjSSrY65Ho7pN3J4eR1qyrnPJeyqjxEi9YShHjguS9
+         NQZqUp+IetfWAgdJTRFBVxWOLKC9QCmU1BrObx/dyWjtm0UgmEu+3mFe6NkWSkvwWjSP
+         1mQQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=I8TKAHdoaMvYSSqtTCZDWPAAByIaQ1v5o/szfpAMfPI=;
+        b=osZ20ho5fbQCMQN1ZjRvi7O8pl5WmoF7jRvu7ubg/HMXyog3T15YTS7B6uY3ZnbH72
+         cf1ftZDN2OjRZf0HWQRBku0JNQgoZGModuNW/3oN3S3rNhB5N+Tdeeen1Z5nLwlYxdKw
+         MuBYxyxMhznnObhMrim/1e1wCm1B7ciO06SvlQ463o810saiUQB9RJqPOOV30otnrihh
+         Qs1S+/fb6QuXc7XgczB8Qmu+YaQA9Ip8CjPK1d8cAY8zD8XHlQ1bte0WwREj8DQU4J66
+         WEGAbB72ydXDE6riNIUUOvfVDRnkneLaBsYRmiqACZrypsKoarKhH2bWg907YaFUVBIE
+         t+pw==
+X-Gm-Message-State: AOAM531YsAT60QMd095n0byuWPYSoQ6eCsC73fqX3V6U4dj+EjR6ICQZ
+        fetvIV6qITpPH2+J/DKzh9Nuyz/HujnDomO0o0w=
+X-Google-Smtp-Source: ABdhPJyenGgCHpGwIEFtgOpxprh9mlhrucBVG/ODvez51ZPA9HerfntfYtO/J2aXFHAYBrI30uDivgk3HmS0VlYRDh8=
+X-Received: by 2002:a50:fd18:: with SMTP id i24mr6543911eds.146.1610135296578;
+ Fri, 08 Jan 2021 11:48:16 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAKfTPtCGCmCv0yXSUmYUh6=8uzd0n9xFPqC0cW4sm-FqDvjvCQ@mail.gmail.com>
+References: <20210107224901.2102479-1-dev@kresin.me>
+In-Reply-To: <20210107224901.2102479-1-dev@kresin.me>
+From:   Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Date:   Fri, 8 Jan 2021 20:48:05 +0100
+Message-ID: <CAFBinCBm21ZwN2eB8pjWQivkZQp1eC_5=g9M-VwKpRtakJjnHg@mail.gmail.com>
+Subject: Re: [PATCH] phy: lantiq: rcu-usb2: wait after clock enable
+To:     Mathias Kresin <dev@kresin.me>
+Cc:     Kishon Vijay Abraham I <kishon@ti.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        linux-kernel@vger.kernel.org, Hauke Mehrtens <hauke@hauke-m.de>,
+        stable@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 08, 2021 at 04:10:51PM +0100, Vincent Guittot wrote:
-> Also, there is another problem (that I'm investigating)  which is that
-> this_rq()->avg_idle is stalled when your cpu is busy. Which means that
-> this avg_idle can just be a very old and meaningless value. I think
-> that we should decay it periodically to reflect there is less and less
-
-https://lkml.kernel.org/r/20180530143105.977759909@infradead.org
-
-:-)
+On Thu, Jan 7, 2021 at 11:49 PM Mathias Kresin <dev@kresin.me> wrote:
+>
+> Commit 65dc2e725286 ("usb: dwc2: Update Core Reset programming flow.")
+> revealed that the phy isn't ready immediately after enabling it's
+> clocks. The dwc2_check_core_version() fails and the dwc2 usb driver
+> errors out.
+>
+> Add a short delay to let the phy get up and running. There isn't any
+> documentation how much time is required, the value was chosen based on
+> tests.
+>
+> Cc: <stable@vger.kernel.org> # v5.7+
+> Signed-off-by: Mathias Kresin <dev@kresin.me>
+Acked-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
