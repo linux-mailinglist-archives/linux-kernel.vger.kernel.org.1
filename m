@@ -2,79 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE7542EF38C
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 14:59:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A5952EF392
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 15:01:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727362AbhAHN7N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Jan 2021 08:59:13 -0500
-Received: from mail-qt1-f174.google.com ([209.85.160.174]:35686 "EHLO
-        mail-qt1-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726612AbhAHN7N (ORCPT
+        id S1726938AbhAHOAN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Jan 2021 09:00:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50240 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725793AbhAHOAM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Jan 2021 08:59:13 -0500
-Received: by mail-qt1-f174.google.com with SMTP id b9so6547151qtr.2;
-        Fri, 08 Jan 2021 05:58:57 -0800 (PST)
+        Fri, 8 Jan 2021 09:00:12 -0500
+Received: from mail-io1-xd2c.google.com (mail-io1-xd2c.google.com [IPv6:2607:f8b0:4864:20::d2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02F3AC0612F4;
+        Fri,  8 Jan 2021 05:59:32 -0800 (PST)
+Received: by mail-io1-xd2c.google.com with SMTP id i18so9866166ioa.1;
+        Fri, 08 Jan 2021 05:59:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=nyp1Y2onEbcYwJTPNCdZdClbb6AQgC+DkZVAjw0ozR8=;
+        b=LXeMOQn4g3/tfRh8x7CMKYz8CPTI1+pP7Llcf5XajSz8CM2P25BkqFKLzEDSkbA0zg
+         F1xAys9s6bb0NieajV86osEicFx5J4wlI2pyMeCcXL59rz3qxzETm1ICIPpa/OS04Tvy
+         vxff9M/U2V4E1qQlKWysLYEXk4c31AuwqI0I1yLfAK/KjSbKsEK7L22iODrxXGNLkcKL
+         fy9nARZQBZyNUnicJ7YGKFBerNvjNaVYMYCZjVG0/xjFcutSnvZsuCD05yaE9+I/y6bh
+         9S7ojgF+VzIrg2x4aaAgdq1/uzZV8lO4st6BHZEV4eaZjrwJRbbe1TJx751WervSroEF
+         T5/g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Z98Cd2/q2vk4PKmNKdE52oNoKy4mQtUfKoV21d500nM=;
-        b=eM4wv3vfZarA4M7cY+MvLt+wOUvydnmBRibqEldzzPOnLzXEzomCI5gGbDWmbX+ggt
-         r609hus830OkAEXtlHJaPiRSyFbm7l07DOmqkG8KI32zILIDXhlAjrC0K0a8s/RkGseL
-         Tj4WaDfiHkIVYwIYkikjHUqGakOoh6U9QuVbJnwJ/aMIXNEbsE5OAVvPdbry2fQEYUkz
-         oLXHkysx+DtN7hFEdVRTalYHXuSG/1rMLGCzAaewkit0Z+iudi5TC6ahi4zX2FqonxnG
-         EiDW1fkTXF53UE6pOw+Lo9XSAvTAiyZWkwglyul0dGc4RbEtrkrYToF4AUd0YHHIRprI
-         qlKw==
-X-Gm-Message-State: AOAM5300KUoscMQyKr6b327ohrz58RH8B7YRQvDJC1VHV2gYd8tn/7Dd
-        MzILsgVFXIYsf59MbI3mJwIft0tP7m42UHG7430=
-X-Google-Smtp-Source: ABdhPJy8s9cWkWVLvubXL5qgjHOkSLPTugK2fgLodKBV0ctBtVEj6eKy4znHg0OLjA1BM+hHQbhcpvj0KvBtL8mvrn4=
-X-Received: by 2002:aed:3064:: with SMTP id 91mr3495946qte.151.1610114311781;
- Fri, 08 Jan 2021 05:58:31 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=nyp1Y2onEbcYwJTPNCdZdClbb6AQgC+DkZVAjw0ozR8=;
+        b=fZvi968KWSXXC5Qwc9J8cdOtU4XEhuFsx0RoiCLP2ZdfzbwbLEoD/lTtd+d2Edd7jC
+         jo69iKClLol4ThQCSpgod17+5nB4XCTwcvu3dWUgDfyhRW1/qQ+7U/JbEqlDNfPkT6dP
+         EXMRxlcsKxKaB84LZrRNhThp8/sbZT9ANsQZ6n4X5BobSBLXAgEr90zg2BJtcqGHLwQQ
+         fmaP2bnDdxtMim3S0Enz10YSlrnLREmXBBYo/izREx8GN75+RUMo5MMsj0CWWrwuu6lx
+         4UJK1EA0wd8IXS9yGSEstuWAOM5AL5r+tzqMHa0S4dKiO2pjPsNkO0jdGUlYYM6dJaGR
+         X4FQ==
+X-Gm-Message-State: AOAM532GUpsdRyTSw524Uvt+PTLLJ5mWeJP9h4Pz8Hr2IsOXp06fBR/3
+        rnEjdiQ9+oygQHuesf3p8XvanzdpZTZYCpvQ
+X-Google-Smtp-Source: ABdhPJw+goSAMa6HMOrIAPdukTjXrBnBjqaAhawYG9QJjpQbABV6HDvRDSd3rHGNj0Vpm3tPVXx4jQ==
+X-Received: by 2002:a05:6602:2c4e:: with SMTP id x14mr5390290iov.58.1610114371325;
+        Fri, 08 Jan 2021 05:59:31 -0800 (PST)
+Received: from rockpro64.hsd1.md.comcast.net ([2601:153:900:7730::20])
+        by smtp.gmail.com with ESMTPSA id l6sm7570063ili.78.2021.01.08.05.59.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 08 Jan 2021 05:59:30 -0800 (PST)
+From:   Peter Geis <pgwipeout@gmail.com>
+To:     Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Peter De Schrijver <pdeschrijver@nvidia.com>,
+        Prashant Gaikwad <pgaikwad@nvidia.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Sameer Pujar <spujar@nvidia.com>,
+        Mohan Kumar <mkumard@nvidia.com>
+Cc:     linux-clk@vger.kernel.org, linux-tegra@vger.kernel.org,
+        linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
+        Peter Geis <pgwipeout@gmail.com>
+Subject: [PATCH v2 0/2] fix tegra-hda on tegra30 devices
+Date:   Fri,  8 Jan 2021 13:59:11 +0000
+Message-Id: <20210108135913.2421585-1-pgwipeout@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20201224170502.2254683-1-aford173@gmail.com> <20201224170502.2254683-8-aford173@gmail.com>
-In-Reply-To: <20201224170502.2254683-8-aford173@gmail.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Fri, 8 Jan 2021 14:58:19 +0100
-Message-ID: <CAMuHMdV1TVJyTGcLbYd=PK5FL2qKUQSKBPnZc7+jdF6pqn_=aA@mail.gmail.com>
-Subject: Re: [PATCH V2 8/9] arm64: dts: renesas: Introduce r8a774e1-beacon-rzg2h-kit
-To:     Adam Ford <aford173@gmail.com>
-Cc:     Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        Adam Ford-BE <aford@beaconembedded.com>,
-        Magnus Damm <magnus.damm@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 24, 2020 at 6:05 PM Adam Ford <aford173@gmail.com> wrote:
-> eacon EmebeddedWorks is introducing a new kit based on the
-> RZ/G2H SoC from Renesas.
->
-> The SOM supports eMMC, WiFi and Bluetooth, along with a Cat-M1
-> cellular radio.
->
-> The Baseboard has Ethernet, USB, HDMI, stereo audio in and out,
-> along with a variety of push buttons and LED's, and support for
-> a parallel RGB and an LVDS display.  It uses the same baseboard
-> and SOM files as the RZ/G2M and RZ/G2N kits.
->
-> Signed-off-by: Adam Ford <aford173@gmail.com>
+The following patches fix tegra-hda on legacy tegra devices.
+Two issues were discovered preventing tegra-hda from functioning:
+-The hda clocks on tegra30 were assigned to clk_m and running at too low
+of a rate to function.
+-The tegra-hda encounters an input/output error when opening a stream.
 
-Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
-i.e. will queue in renesas-devel for v5.12 (with the company name
-typos fixed, also in PATCH 7/9).
+Since the only mainline device that used tegra-hda until recently was the
+t124, it is unknown exactly when this was broken. Fortunately a recent
+patch was submitted that fixed the issue only on t194 devices. We can
+apply it to the tegra30-hda device to resolve the issue across the board.
+Note that downstream devices used the spdif device instead of hda for hdmi
+audio. The spdif device lacks a driver on mainline.
 
-Gr{oetje,eeting}s,
+-Checkpatch seems to have issues finding [1], but git show has no issue.
+[1] commit 60019d8c650d ("ALSA: hda/tegra: workaround playback failure on
+Tegra194")
 
-                        Geert
+Changelog:
+
+v2:
+-Added ack and reviewed-by from Jon
+-Updated fix to apply to tegra30-hda vice universally (Thanks Jon)
+-Updated commit to include comments from hardware team (Thanks Sameer)
+-Cleaned up commit messages
+
+Peter Geis (2):
+  clk: tegra30: Add hda clock default rates to clock driver
+  ALSA: hda/tegra: fix tegra-hda on tegra30 soc
+
+ drivers/clk/tegra/clk-tegra30.c | 2 ++
+ sound/pci/hda/hda_tegra.c       | 2 +-
+ 2 files changed, 3 insertions(+), 1 deletion(-)
 
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+2.25.1
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
