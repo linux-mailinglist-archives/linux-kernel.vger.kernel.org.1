@@ -2,85 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 680102EEC5F
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 05:22:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BFF4D2EEC6B
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 05:22:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727519AbhAHEUj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 23:20:39 -0500
-Received: from aserp2120.oracle.com ([141.146.126.78]:52402 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727330AbhAHEUh (ORCPT
+        id S1727760AbhAHEUw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 23:20:52 -0500
+Received: from aserp2130.oracle.com ([141.146.126.79]:49072 "EHLO
+        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727665AbhAHEUn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 23:20:37 -0500
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 108491t6096231;
-        Fri, 8 Jan 2021 04:19:53 GMT
+        Thu, 7 Jan 2021 23:20:43 -0500
+Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
+        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 10848rOc041264;
+        Fri, 8 Jan 2021 04:19:51 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
  subject : date : message-id : in-reply-to : references : mime-version :
  content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=DDuxeQBXo/1pfS790U9+UPR1ss0xHnQAZ3q/ZRc7iBA=;
- b=c2rrBPZqw5UNcoVFM8lq7UzInlZZF5ccQ9j0NWS608MYq0eJgKHMPGI564D2D1t2OJ+H
- HwgahoWSVqoEBSAR9Y4O8FyGaEqfDV+Y8VsxCa4Vrx1Gywm4+Oqi+VkkrBO6hJqN6RSR
- WSIsPZP3VcVX1GawEB3vkd/9kqpG6zHYm3pnHHJ8orDUw7XCyP8ELhqHZNO1zJYOH06k
- wemKtb6pLA0EjEQW/4dVHQKx9kBsILZN0117ncAaELxTzs4/rpsRuX5epVJ/QvjpAONl
- +hfWMU1M3QkT5q+iHzUdl2osBAWdxB7Z8waMskg/zlI/1JgrQ7WiaMDDGRf/TtAPpXIL 9Q== 
+ bh=H2NP67Vi8JOmj1ylLUkv1/MHg4MARLtdao26hCgGlHU=;
+ b=MDWjw8yn3PJ9CrUtV+VPaU7C2RbH7fuQlRejFiCjiqkN3okCU4DZkyOzxUdDBXRfaMBF
+ 17dyna89seVxStMbu08jrUbJ3UBG9dZBA0ek7nvgC4ckAVG3K15HXMr3fW2I9Kq6WVTj
+ ivOV5BqqCqU8UZyGUo7VEvFqmOIMTkbdHptzWEdg79/CXLLJoDbYzx9lNtuf5MgTGd97
+ ENZVM2e3YH1yz2lKUWzfQxBso/LSQgGF66xZ2efbfwEsa+H/q+kvl2miSbwv7VbpD8Fk
+ JfMMwvgV/iJUMRYHpP679oAVhtAHPmgTwSxTy7LU1D/TlrPVqn1Wi91wubBiWOAWrOG9 Tw== 
 Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by aserp2120.oracle.com with ESMTP id 35wepmfd96-1
+        by aserp2130.oracle.com with ESMTP id 35wcuxysa7-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 08 Jan 2021 04:19:53 +0000
+        Fri, 08 Jan 2021 04:19:51 +0000
 Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 1084Atka079230;
-        Fri, 8 Jan 2021 04:19:53 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by aserp3020.oracle.com with ESMTP id 35v1fc2x8a-1
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 1084AuSM079392;
+        Fri, 8 Jan 2021 04:19:51 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by aserp3020.oracle.com with ESMTP id 35v1fc2x7w-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 08 Jan 2021 04:19:53 +0000
-Received: from abhmp0015.oracle.com (abhmp0015.oracle.com [141.146.116.21])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 1084JmVB028921;
-        Fri, 8 Jan 2021 04:19:49 GMT
+        Fri, 08 Jan 2021 04:19:51 +0000
+Received: from abhmp0003.oracle.com (abhmp0003.oracle.com [141.146.116.9])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 1084JnUB018020;
+        Fri, 8 Jan 2021 04:19:50 GMT
 Received: from ca-mkp.ca.oracle.com (/10.156.108.201)
         by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Fri, 08 Jan 2021 04:19:47 +0000
+        with ESMTP ; Thu, 07 Jan 2021 20:19:49 -0800
 From:   "Martin K. Petersen" <martin.petersen@oracle.com>
-To:     Dinghao Liu <dinghao.liu@zju.edu.cn>, kjlu@umn.edu
+To:     linux-kernel@vger.kernel.org, kernel-team@android.com,
+        linux-scsi@vger.kernel.org, Jaegeuk Kim <jaegeuk@kernel.org>
 Cc:     "Martin K . Petersen" <martin.petersen@oracle.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org
-Subject: Re: [PATCH] [v2] scsi: scsi_debug: Fix memleak in scsi_debug_init
-Date:   Thu,  7 Jan 2021 23:19:33 -0500
-Message-Id: <161007949338.9892.4671065272962496715.b4-ty@oracle.com>
+        alim.akhtar@samsung.com, bvanassche@acm.org, cang@codeaurora.org,
+        avri.altman@wdc.com, stanley.chu@mediatek.com
+Subject: Re: [PATCH v5 0/2] Two UFS fixes
+Date:   Thu,  7 Jan 2021 23:19:35 -0500
+Message-Id: <161007949340.9892.1668899238099620205.b4-ty@oracle.com>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201226061503.20050-1-dinghao.liu@zju.edu.cn>
-References: <20201226061503.20050-1-dinghao.liu@zju.edu.cn>
+In-Reply-To: <20210107185316.788815-1-jaegeuk@kernel.org>
+References: <20210107185316.788815-1-jaegeuk@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9857 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=953 phishscore=0
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=833 phishscore=0
  suspectscore=0 spamscore=0 bulkscore=0 adultscore=0 mlxscore=0
  malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
  engine=8.12.0-2009150000 definitions=main-2101080021
 X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9857 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 bulkscore=0 spamscore=0
- impostorscore=0 phishscore=0 lowpriorityscore=0 suspectscore=0
- priorityscore=1501 mlxscore=0 malwarescore=0 clxscore=1011 mlxlogscore=978
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2101080021
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 bulkscore=0
+ clxscore=1015 spamscore=0 impostorscore=0 priorityscore=1501 mlxscore=0
+ adultscore=0 mlxlogscore=844 lowpriorityscore=0 phishscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2101080021
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 26 Dec 2020 14:15:03 +0800, Dinghao Liu wrote:
+On Thu, 7 Jan 2021 10:53:14 -0800, Jaegeuk Kim wrote:
 
-> When sdeb_zbc_model does not match BLK_ZONED_NONE,
-> BLK_ZONED_HA or BLK_ZONED_HM, we should free sdebug_q_arr
-> to prevent memleak. Also there is no need to execute
-> sdebug_erase_store() on failure of sdeb_zbc_model_str().
+> Change log from v4:
+>  - remove RESERVE tag for tm command
+>  - remove waiting IOs and let full reset handle it
+>  - avoid verbose error log which causes cpu lock up
 
 Applied to 5.11/scsi-fixes, thanks!
 
-[1/1] scsi: scsi_debug: Fix memleak in scsi_debug_init
-      https://git.kernel.org/mkp/scsi/c/3b01d7ea4dae
+[1/2] scsi: ufs: fix livelock of ufshcd_clear_ua_wluns
+      https://git.kernel.org/mkp/scsi/c/4ee7ee530bc2
+[2/2] scsi: ufs: fix tm request correctly when non-fatal error happens
+      https://git.kernel.org/mkp/scsi/c/eeb1b55b6e25
 
 -- 
 Martin K. Petersen	Oracle Linux Engineering
