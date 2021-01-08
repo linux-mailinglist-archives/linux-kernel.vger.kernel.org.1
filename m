@@ -2,59 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 170462EFBD6
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Jan 2021 00:49:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 682502EFBE3
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Jan 2021 00:55:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726488AbhAHXtr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Jan 2021 18:49:47 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52684 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726426AbhAHXto (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Jan 2021 18:49:44 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPS id 8D87B23A9B;
-        Fri,  8 Jan 2021 23:49:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610149743;
-        bh=BBgpMZt1TLqVaT1JH4+pvytqjDxH8kaUow4RNXlUHWI=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=cZNt04dEO86kE5zqUVPnz5pB4CFAKKU9oevc/u9PNhqUy4Gk6H+N1OjjW9zr6eXjW
-         iW+oi0Ki1fXgQgQhENhFSTLWjlz3tDdlU38kQP0W7VwdZkeycRO6e/Qm7h0tPG1ueM
-         SI78eEQ1rd6OhHinwU1ZpoCp4oUoMNiLf5Wb55FWrtieOW1A9yFS3OkZKo+3lTuxFb
-         DBw/uvzvDUK/F+pkIPKrGq7ReTpzWoQRQj+yaloajsXxv1QibukEK1GhoewtU6qeyI
-         XTyrPyc6H9n8Iefb3vMKq5EMVVvQXaCaFzRWz3E6h17Z34nStYiDLZutvAnTLTAr3m
-         1qo1u4HbrW7tw==
-Received: from pdx-korg-docbuild-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-1.ci.codeaurora.org (Postfix) with ESMTP id 893B960157;
-        Fri,  8 Jan 2021 23:49:03 +0000 (UTC)
-Subject: Re: [GIT PULL] KVM fixes for 5.11-rc3
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20210108162849.49465-1-pbonzini@redhat.com>
-References: <20210108162849.49465-1-pbonzini@redhat.com>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20210108162849.49465-1-pbonzini@redhat.com>
-X-PR-Tracked-Remote: https://git.kernel.org/pub/scm/virt/kvm/kvm.git tags/for-linus
-X-PR-Tracked-Commit-Id: 872f36eb0b0f4f0e3a81ea1e51a6bdf58ccfdc6e
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 2a190b22aa1149cda804527aa603db45f75439c3
-Message-Id: <161014974355.3246.12663082759589384162.pr-tracker-bot@kernel.org>
-Date:   Fri, 08 Jan 2021 23:49:03 +0000
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     torvalds@linux-foundation.org, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org
+        id S1725970AbhAHXzN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Jan 2021 18:55:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58164 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725306AbhAHXzM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 Jan 2021 18:55:12 -0500
+Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5F65C061573;
+        Fri,  8 Jan 2021 15:54:31 -0800 (PST)
+Received: by mail-lf1-x133.google.com with SMTP id u25so6223776lfc.2;
+        Fri, 08 Jan 2021 15:54:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=RKx8kUKUP9gXgJeIqsNauIlg2svK4cle8BTuxaul1L4=;
+        b=j3+J4bsxBMa6mvcascbCMtsK0BGll+Uy2kTy/nx1rhFsdKx9PUCGZduReTqRrpNWEM
+         YmiyhXX3uKBE73a2ndFA2XdHOTGt7fvL7zAA2g8fwnBRFy019OVXJtSSe9QXoviwxc/i
+         OLvs2hkQ6BZlOguANf/AsNdEtD4yx5OgUtfNKQ4+GUgcEUxNaftEp7P0t3gr3LkmZjXo
+         2pHvHjAEYYVSWm62m70bZNORb372sRjx1dYCtOByGABf5Ghx6C+RQKAtmOQrUOjwIcnq
+         Pgnh28B9yOtCgCWpktjn868VJf3s2NWNIvioyzu8B/M+bp3XXFdksli/tLZzyeN7r7nM
+         kLDA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=RKx8kUKUP9gXgJeIqsNauIlg2svK4cle8BTuxaul1L4=;
+        b=jgm68rm40HBWGStq/5Hj8AsckIazUxgD4EoX2j6Hx2h6VBrTz8FifMv68gxPYFUkud
+         l133UZ2l7t5V4r6zUKuHBqRzwwrivndc145DCMiQHAfz+Xr7mDo3ekTIfuQurHRUjDCL
+         QC8LxzRcvu0eh2uXp742S+AyInJNlvyob/liFHyxWgxve0OpW3vVtyoimfKRoKDeQ+/P
+         7jgSW+bQXiS45S6N2zBk1rtKaXL8Ds0IBuDyY5STMWKRZqNaaHgmxZSduI3uERFcv8Nx
+         bNIllNdTGAJs4G0Tb2JZGTpomX0Lkg897ZrgqR/BpbHKYSJ+uDGiKNHn5Q2Wmst6fa77
+         6izw==
+X-Gm-Message-State: AOAM533qGMfntdl2DKfyxOKq6C61vuA6rJpfKWup7tCXnG91fc6Q1a9C
+        WyIm0LEvm7E6SdCwCqVDN0g=
+X-Google-Smtp-Source: ABdhPJw/S/J4uMe65N85xENgKJoazdDz+2GutARLCI58dizOqBHHTyfZSGvejTMPM7BTmiNwLhx9Gw==
+X-Received: by 2002:a05:651c:2045:: with SMTP id t5mr2367084ljo.462.1610150070383;
+        Fri, 08 Jan 2021 15:54:30 -0800 (PST)
+Received: from localhost.localdomain (h-98-128-228-148.NA.cust.bahnhof.se. [98.128.228.148])
+        by smtp.gmail.com with ESMTPSA id c5sm2233743lfh.160.2021.01.08.15.54.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 08 Jan 2021 15:54:29 -0800 (PST)
+From:   Rikard Falkeborn <rikard.falkeborn@gmail.com>
+To:     Wu Hao <hao.wu@intel.com>, Tom Rix <trix@redhat.com>,
+        Moritz Fischer <mdf@kernel.org>
+Cc:     linux-fpga@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Rikard Falkeborn <rikard.falkeborn@gmail.com>
+Subject: [PATCH] fpga: dfl: fme: Constify static attribute_group structs
+Date:   Sat,  9 Jan 2021 00:54:14 +0100
+Message-Id: <20210108235414.48017-1-rikard.falkeborn@gmail.com>
+X-Mailer: git-send-email 2.30.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Fri,  8 Jan 2021 11:28:49 -0500:
+The only usage of these is to put their addresses in arrays of pointers
+to const attribute_groups. Make them const to allow the compiler to put
+them in read-only memory.
 
-> https://git.kernel.org/pub/scm/virt/kvm/kvm.git tags/for-linus
+Signed-off-by: Rikard Falkeborn <rikard.falkeborn@gmail.com>
+---
+ drivers/fpga/dfl-fme-perf.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/2a190b22aa1149cda804527aa603db45f75439c3
-
-Thank you!
-
+diff --git a/drivers/fpga/dfl-fme-perf.c b/drivers/fpga/dfl-fme-perf.c
+index 531266287eee..4299145ef347 100644
+--- a/drivers/fpga/dfl-fme-perf.c
++++ b/drivers/fpga/dfl-fme-perf.c
+@@ -192,7 +192,7 @@ static struct attribute *fme_perf_cpumask_attrs[] = {
+ 	NULL,
+ };
+ 
+-static struct attribute_group fme_perf_cpumask_group = {
++static const struct attribute_group fme_perf_cpumask_group = {
+ 	.attrs = fme_perf_cpumask_attrs,
+ };
+ 
+@@ -225,7 +225,7 @@ static struct attribute *fme_perf_format_attrs[] = {
+ 	NULL,
+ };
+ 
+-static struct attribute_group fme_perf_format_group = {
++static const struct attribute_group fme_perf_format_group = {
+ 	.name = "format",
+ 	.attrs = fme_perf_format_attrs,
+ };
+@@ -239,7 +239,7 @@ static struct attribute *fme_perf_events_attrs_empty[] = {
+ 	NULL,
+ };
+ 
+-static struct attribute_group fme_perf_events_group = {
++static const struct attribute_group fme_perf_events_group = {
+ 	.name = "events",
+ 	.attrs = fme_perf_events_attrs_empty,
+ };
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+2.30.0
+
