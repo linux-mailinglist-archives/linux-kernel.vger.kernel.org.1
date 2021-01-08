@@ -2,75 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C3B22EF3A6
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 15:04:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 74CCC2EF3B1
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 15:08:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726862AbhAHOEg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Jan 2021 09:04:36 -0500
-Received: from mail-qk1-f182.google.com ([209.85.222.182]:36119 "EHLO
-        mail-qk1-f182.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726254AbhAHOEf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Jan 2021 09:04:35 -0500
-Received: by mail-qk1-f182.google.com with SMTP id 186so8488709qkj.3;
-        Fri, 08 Jan 2021 06:04:19 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=E+kCGux/omP1yI0EiRCQI0501K+MWPCXiGLds36f5I4=;
-        b=RHPQe8WNABO3NZvKrOLaduFuY1Oa/eUVtZAP5nquYzd7TKYo2sZN5O0EpjGVTxmE0v
-         tRWsiBNhn6sjJ29BSLnCUF9MAvgbGA8Us2cV41LVqoOCDF1eqrY1gGXCAPBHcdimdLcJ
-         021iyxxN/ykh0zfDP0nLIeISVXy2r1dADt8CWnNSkCufETOl3m9SokpnrRW95coszous
-         Jc1Y0CypufBfFD8nUsxVBClosYc7G5rLElWPu2o1pG/tqcH16v2ohoPBslwlZLB0OvxL
-         qHhikmgnxog+HoA3MMw1FKkO14gcY5fnn1uCL4ZmES4eAHSf/qfyO+DRdGigW70BEzN2
-         Wllg==
-X-Gm-Message-State: AOAM533KfDFY2mnLMm/KKqKGbZHusDy+PrOtTnjWRLISbqLtRFAINce4
-        miTO0fSUVdhEqN8zUtTBH+AhtmMwFiIHZjMO5YA=
-X-Google-Smtp-Source: ABdhPJyzW+xd6B5A8MnR8V/ADzgjDX4F5c8RBsc79VqkeGnSeZA3MLKbo147FE7JDREZ21KFVRdD0jJUI/4jHflFzG8=
-X-Received: by 2002:a05:620a:11ad:: with SMTP id c13mr3866619qkk.134.1610114634225;
- Fri, 08 Jan 2021 06:03:54 -0800 (PST)
+        id S1727410AbhAHOID (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Jan 2021 09:08:03 -0500
+Received: from mx2.suse.de ([195.135.220.15]:53400 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725926AbhAHOIC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 Jan 2021 09:08:02 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 8DA8CAD11;
+        Fri,  8 Jan 2021 14:07:20 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 257EFDA6E9; Fri,  8 Jan 2021 15:05:30 +0100 (CET)
+Date:   Fri, 8 Jan 2021 15:05:30 +0100
+From:   David Sterba <dsterba@suse.cz>
+To:     Dmitry Vyukov <dvyukov@google.com>
+Cc:     syzbot <syzbot+6700bca07dff187809c4@syzkaller.appspotmail.com>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        LKML <linux-kernel@vger.kernel.org>, linux-btrfs@vger.kernel.org
+Subject: Re: KASAN: null-ptr-deref Write in start_transaction
+Message-ID: <20210108140529.GX6430@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Dmitry Vyukov <dvyukov@google.com>,
+        syzbot <syzbot+6700bca07dff187809c4@syzkaller.appspotmail.com>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
+        LKML <linux-kernel@vger.kernel.org>, linux-btrfs@vger.kernel.org
+References: <00000000000053e36405b3c538fc@google.com>
+ <0000000000008f60c505b84f2cd0@google.com>
+ <CACT4Y+YJCMyTDrUFWXEnZ-raQMos0+1F1O8k5eX998pqNUWKSw@mail.gmail.com>
 MIME-Version: 1.0
-References: <20201228202221.2327468-1-aford173@gmail.com>
-In-Reply-To: <20201228202221.2327468-1-aford173@gmail.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Fri, 8 Jan 2021 15:03:41 +0100
-Message-ID: <CAMuHMdVqEZQj8E_ZhS3G4hfLxtKiFG0muKW1+wu5oxyLE2UKeg@mail.gmail.com>
-Subject: Re: [PATCH 1/2] dt-bindings: clock: renesas: rcar-usb2-clock-sel: Add
- support for RZ/G2 M/N/H
-To:     Adam Ford <aford173@gmail.com>
-Cc:     Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        Adam Ford-BE <aford@beaconembedded.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Magnus Damm <magnus.damm@gmail.com>,
-        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CACT4Y+YJCMyTDrUFWXEnZ-raQMos0+1F1O8k5eX998pqNUWKSw@mail.gmail.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 28, 2020 at 9:22 PM Adam Ford <aford173@gmail.com> wrote:
-> The datasheet for the RZ/G2 Series show the bit for choosing between a crystal
-> oscillator and an external oscillator is present.  Add the bindings for
-> r8a774a1 (RZ/G2M), r8a774b1 (RZ/G2N), and r8a774e1 (RZ/G2H)
->
-> Signed-off-by: Adam Ford <aford173@gmail.com>
+On Fri, Jan 08, 2021 at 10:17:25AM +0100, Dmitry Vyukov wrote:
+> On Thu, Jan 7, 2021 at 2:11 PM syzbot
+> <syzbot+6700bca07dff187809c4@syzkaller.appspotmail.com> wrote:
+> >
+> > syzbot suspects this issue was fixed by commit:
+> >
+> > commit f30bed83426c5cb9fce6cabb3f7cc5a9d5428fcc
+> > Author: Filipe Manana <fdmanana@suse.com>
+> > Date:   Fri Nov 13 11:24:17 2020 +0000
+> >
+> >     btrfs: remove unnecessary attempt to drop extent maps after adding inline extent
+> >
+> > bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=13ddc30b500000
+> > start commit:   521b619a Merge tag 'linux-kselftest-kunit-fixes-5.10-rc3' ..
+> > git tree:       upstream
+> > kernel config:  https://syzkaller.appspot.com/x/.config?x=61033507391c77ff
+> > dashboard link: https://syzkaller.appspot.com/bug?extid=6700bca07dff187809c4
+> > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=14a07ab2500000
+> > C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=10fe69c6500000
+> >
+> > If the result looks correct, please mark the issue as fixed by replying with:
+> >
+> > #syz fix: btrfs: remove unnecessary attempt to drop extent maps after adding inline extent
+> >
+> > For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+> 
+> #syz fix: btrfs: remove unnecessary attempt to drop extent maps after
+> adding inline extent
 
-Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+I have looked at the report and suspected fix yestereday and was not
+sure that it's really the right fix.  The commit removes some call so it
+all looks like an accidental fix and something still might be going on.
+So I'm a bit surprised that you mark it as fixed. It will make the
+syzbot report go away so from that POV ok and we'll know if it happens
+again, but I'd expect at least some analysis before closing the report.
