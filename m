@@ -2,107 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 31E3B2EF10D
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 12:05:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5565B2EF10B
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 12:04:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727388AbhAHLFW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Jan 2021 06:05:22 -0500
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:57182 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725901AbhAHLFW (ORCPT
+        id S1727270AbhAHLEV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Jan 2021 06:04:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51210 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725901AbhAHLEU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Jan 2021 06:05:22 -0500
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 108B3cR3033815;
-        Fri, 8 Jan 2021 05:03:38 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1610103818;
-        bh=pTkr6cX3Rfvr6UWbjUenD9c78tNj8Bhz6DpQu5KGbis=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=bSUTE+15a8cQDmf1ChmDWERdufRrS8c+mtqZ1lsLqiHErQ+qFzhQXy+55qTdfXtqw
-         MgJYWz7XQSkxH6/WuYV+gQeK6GpbrbNYW4/kfZ61NRkFDynZqgb2v6JarfMS5XefSj
-         iAixPHRv7tL339TuwLT3p/3sCQFg+4l61NGeHvZ4=
-Received: from DLEE103.ent.ti.com (dlee103.ent.ti.com [157.170.170.33])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 108B3crr103576
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 8 Jan 2021 05:03:38 -0600
-Received: from DLEE113.ent.ti.com (157.170.170.24) by DLEE103.ent.ti.com
- (157.170.170.33) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Fri, 8 Jan
- 2021 05:03:38 -0600
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DLEE113.ent.ti.com
- (157.170.170.24) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Fri, 8 Jan 2021 05:03:38 -0600
-Received: from [10.250.235.36] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 108B3Zso052195;
-        Fri, 8 Jan 2021 05:03:36 -0600
-Subject: Re: [PATCH 4/7] dt-bindings: ti-serdes-mux: Add defines for AM64 SoC
-To:     Peter Rosin <peda@axentia.se>, Vinod Koul <vkoul@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>, Nishanth Menon <nm@ti.com>,
-        Swapnil Jakhade <sjakhade@cadence.com>
-CC:     <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>
-References: <20201224114250.1083-1-kishon@ti.com>
- <20201224114250.1083-5-kishon@ti.com>
- <cb53a07e-98ed-71df-7e0c-acd78484ab6e@axentia.se>
-From:   Kishon Vijay Abraham I <kishon@ti.com>
-Message-ID: <c5644863-cff5-6516-d7d1-42603fe1d0e3@ti.com>
-Date:   Fri, 8 Jan 2021 16:33:34 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Fri, 8 Jan 2021 06:04:20 -0500
+Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78E26C0612F5
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Jan 2021 03:03:40 -0800 (PST)
+Received: by mail-pf1-x429.google.com with SMTP id x126so6020854pfc.7
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Jan 2021 03:03:40 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=1sfWteEPIwPxsDCyxg0+qs2wloQ/QxrLcMBDTNFJ1uU=;
+        b=XgAv98TOhVy3rZvI/3cAfUw9tg6TR9jjQSrh2EknQrnA71XA6/hajQYrJNsAXRVX3q
+         SuDH7S8cyF8FBpn+OW8YSCNsR2BT0wtfkzqA4HNPn3ICQT8KGH1bC3M+yidkqJQCl2C4
+         tNvpxfg87nmUIHrWl/Q+aOsWcvK4aFcvCNFwqXhryCf/rTBTn4T/Anoyrh9GFbeY0KkM
+         zT9G+vJA7UViRruopx9ht/zeW7ZLEHUWBRk/Yl2F/Pnnmc6W9v77hCnFESXOi8yDi1IQ
+         IolYvcj6xwpWw54ehXNm6m6Ewaa9QQQsspkXIfyxTkHyjqakYdKtU3ldg6sLM/tWuFiC
+         28VQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=1sfWteEPIwPxsDCyxg0+qs2wloQ/QxrLcMBDTNFJ1uU=;
+        b=PTnxPO3WC7VN+cfaRt3yenBD6+0DaZbWrIEp3BfZj3w7JWEmj7NZBKiIaFSOKv65S0
+         f8bKnsN21ZXl7lP+qNJrP/oTbVzu6cPczQDziqQBpTsnUsv9ljPldJgXAe3NGcG/X22k
+         tkFJi2s9BHb+huGTlZerK6lzI6IDDWaMvEsLDrFUo8eh4tqyLC6FoK3ywTobDaHTMaGR
+         qjooH8JUbC4nUTQWl2gn83ilNrbYfrxPG4SXdPf0wJM8imh9daO1J5PD0T3E2PSA8TPR
+         smkWOfEncvokCtgSv4h9rmJqe11BGThkQ+WCaneLYhpMFmO78AUJj3RyYshvMyTDrXE0
+         G4RA==
+X-Gm-Message-State: AOAM530r0qWnGsUgEASjHZIkNKfiaGPS6IQenhGuJ3xL1j6Jah+VLkkr
+        0FmkSauVmqqiBbqSbONllv8d8w==
+X-Google-Smtp-Source: ABdhPJzJ7VA3hppVGJAZ3Pyh3Q7SgQosY0A5tMnbnP44dvavh6CSWhlpQ+AuP0tevZmuwBKMRlpr5w==
+X-Received: by 2002:aa7:8747:0:b029:19e:ac1:1e42 with SMTP id g7-20020aa787470000b029019e0ac11e42mr3204103pfo.3.1610103819581;
+        Fri, 08 Jan 2021 03:03:39 -0800 (PST)
+Received: from localhost ([122.172.20.109])
+        by smtp.gmail.com with ESMTPSA id 8sm8732417pfz.93.2021.01.08.03.03.37
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 08 Jan 2021 03:03:38 -0800 (PST)
+Date:   Fri, 8 Jan 2021 16:33:36 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Ionela Voinescu <ionela.voinescu@arm.com>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH V3 3/3] arm64: topology: Make AMUs work with modular
+ cpufreq drivers
+Message-ID: <20210108110336.udylbu6jkjc6mr55@vireshk-i7>
+References: <5ffc7b9ed03c6301ac2f710f609282959491b526.1608010334.git.viresh.kumar@linaro.org>
+ <8f0fe23d1c9effed71d5660c939472d43726a61b.1608010334.git.viresh.kumar@linaro.org>
+ <20201216000349.GA5299@arm.com>
+ <20201216043805.bx6laemhfm2eaufv@vireshk-i7>
+ <20201216193724.GA375@arm.com>
+ <20201217105049.z3aqhl4mo56hhqvk@vireshk-i7>
+ <20210108094416.GA19952@arm.com>
 MIME-Version: 1.0
-In-Reply-To: <cb53a07e-98ed-71df-7e0c-acd78484ab6e@axentia.se>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210108094416.GA19952@arm.com>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Peter,
+On 08-01-21, 09:44, Ionela Voinescu wrote:
+> Now that I think of it again (after spending 30 minutes trying to come
+> up with a more clear solution) I realised this is not actually a
+> problem :).
+> 
+> The only location that checks the invariance status is schedutil, but
+> what a cpufreq governor does becomes irrelevant if you remove the
+> cpufreq driver.
 
-On 08/01/21 4:16 pm, Peter Rosin wrote:
-> Hi!
-> 
-> On 2020-12-24 12:42, Kishon Vijay Abraham I wrote:
->> AM64 has a single lane SERDES which can be configured to be used
->> with either PCIe or USB. Define the possilbe values for the SERDES
->> function in AM64 SoC here.
->>
->> Signed-off-by: Kishon Vijay Abraham I <kishon@ti.com>
->> ---
->>  include/dt-bindings/mux/ti-serdes.h | 4 ++++
->>  1 file changed, 4 insertions(+)
->>
->> diff --git a/include/dt-bindings/mux/ti-serdes.h b/include/dt-bindings/mux/ti-serdes.h
->> index 9047ec6bd3cf..68e0f76deed1 100644
->> --- a/include/dt-bindings/mux/ti-serdes.h
->> +++ b/include/dt-bindings/mux/ti-serdes.h
->> @@ -90,4 +90,8 @@
->>  #define J7200_SERDES0_LANE3_USB			0x2
->>  #define J7200_SERDES0_LANE3_IP4_UNUSED		0x3
->>  
->> +/* AM64 */
-> 
-> In case you end up keeping these defines, despite the comment by Rob...
-> 
-> Nitpick, the J721E and J7200 sections have a blank line here, between the
-> header comment and the actual defines. But mehh...
-> 
-> Acked-by: Peter Rosin <peda@axentia.se>
-Sure, will fix it in the next revision.
+Good catch :)
 
-Thanks
-Kishon
+> The only potential problem is if one then inmods a
+> cpufreq driver that's not invariant. But I think that might be on "if"
+> too many to consider. What do you think?
 
-> 
-> Cheers,
-> Peter
-> 
->> +#define AM64_SERDES0_LANE0_PCIE0		0x0
->> +#define AM64_SERDES0_LANE0_USB			0x1
->> +
->>  #endif /* _DT_BINDINGS_MUX_TI_SERDES */
->>
+Yeah, there is no need to worry about this then I think.
+
+I will resend the patches soon.
+
+-- 
+viresh
