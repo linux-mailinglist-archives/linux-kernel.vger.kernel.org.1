@@ -2,134 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D39432EEEBC
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 09:44:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EF1A2EEEBE
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 09:44:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727831AbhAHInF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Jan 2021 03:43:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57510 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726784AbhAHInE (ORCPT
+        id S1727569AbhAHIoc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Jan 2021 03:44:32 -0500
+Received: from esa.microchip.iphmx.com ([68.232.154.123]:48918 "EHLO
+        esa.microchip.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725793AbhAHIoc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Jan 2021 03:43:04 -0500
-Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50E7AC0612F5;
-        Fri,  8 Jan 2021 00:42:24 -0800 (PST)
-Received: by mail-wr1-x42e.google.com with SMTP id 91so8172213wrj.7;
-        Fri, 08 Jan 2021 00:42:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=kM11/a2ZtU2lx1AuIWWMEnbQRiaILH2o+LlIumf/C84=;
-        b=XXtL7fEu/Ksu0rrgZA5ERDrn+Xhf93wjnUy+qG0X+g8c2EunbEUC2d9qgohzewOTP+
-         HAimR2Mk2dWpC0PwR1KnqMjyX/pMYeUgm6ZtTW/oA9je63niTNjKWAxO1Z8G8njrtxgT
-         pSSvNSuNa2aeEJZLromj3Nk/Gmji9whB9aZ9209rMLgJBbUsiE4EEMjePV7iKOZwwdSp
-         NDHTElADPBM0pTYcsneP+hxzx9zUoLoA8HhAffTvnglShXY5FDt3fvX8/phv1DrpgNYZ
-         qpojvr7y3sC2hSZidhVNypZ06asusVm3KO86AmbbpvvD2vz12CogR992CpWYHflXDfUH
-         FXZQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=kM11/a2ZtU2lx1AuIWWMEnbQRiaILH2o+LlIumf/C84=;
-        b=mQg8LPNOzkzLN4apyj/aAqtGu3Xmx79n6rN7m78d7RJy15RPMPbsIEoJmvWj9/uXak
-         tx+E2z1Yquz/WaxrQVVyrGCW13QjIT+dQDzzu7sdaP8xA/8c4MHiYKaN8d1THR0HLSxK
-         cHejDMGl0fcH5cSoglh1HiXAvfsTzJlfhUxnJAL0O/zk36aydNZUdFCOeRx8XoNmlF7e
-         a2T1SGDbjHaCfG6VTBijEOtE07Y3mYXrKzWmf8kvA4N4Tk/FKprp4Ttk+Oq6Eroo+WcT
-         wm/z/tLLKliQR5PpC1UQQgBBnCqf4DKuiApOulk3CoCETqevqW/AGYxfaPbRWqIRy83r
-         fCSQ==
-X-Gm-Message-State: AOAM530Xc3GMQXgaR/elmxT/9H57EeGxBGW/feh+leHVdqkrd8zHld0X
-        If7xhesR/4V3Ujz95oMRVjhVu2C5cVpW3FURM7A=
-X-Google-Smtp-Source: ABdhPJw3VWHrkBwWDmMELLOqnVEQrviRg3kFO5UETQiVyUdTvFBMQi7xzDd4+ApUwwsqUJNv4/EZQEwLQ5hYjmcgL4Q=
-X-Received: by 2002:adf:f891:: with SMTP id u17mr2536046wrp.253.1610095343093;
- Fri, 08 Jan 2021 00:42:23 -0800 (PST)
+        Fri, 8 Jan 2021 03:44:32 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1610095472; x=1641631472;
+  h=subject:to:cc:references:from:message-id:date:
+   mime-version:in-reply-to:content-transfer-encoding;
+  bh=wPUU4hxGZftqzKMbOXy5+qbuH+mXG/oBGd8Kkh7MHRw=;
+  b=s3+fNSC7H+l9W/Jtd8y2qy2FCwtDfy4l9+U02/YJzxIok6s9PLwSUDO/
+   GHdqQ9RNAoezC+zPGriyn8I98YCgx3I54+rA8YVk9EDSvf0bNvypCaScG
+   ZZXiruq4QnfuIbqzsrDwn7fGYo3+AruaoUIaP84G5fpb89CH39IkQNdE9
+   sg7mqqEm7gX2UFU3gR6dKpTE4P3xDCAxK/3w9fIBfkSF7FBODz76Fvban
+   3mbaTQ5KEm1ZoCuNSqXZXqvGTr0ksFxuMuVZTo+ARqqGMBypxkAoF15he
+   CUFNHGokABRWqPyN3qDJ8DSK6SseyuSYs9Yx5rZaqSDqa03Qpf3mWZl4f
+   w==;
+IronPort-SDR: I3KEiww94MEM0CgiaavhMTAjweX4p814HED3ZZmPd6QkGZaMUVTuUFLxRIzJb2MpzgJtnPI9+9
+ YsDx2eEJ0vMMS6AJeWcMC5F2HnCJ0gMOOysPEJ+yrpT6XmH+st4XnJkmksZKQpr7Un5oIb823b
+ 7m8muL47OK96I2NWOsL6eqpEa4ssJmjV6sxgJPU206LfvgHAcnGQ2mo2JB/6UuEzdjlsSadtwJ
+ ydooDX+SIo0Y3Jml0ZJlcv+Tk/zkeVZcxytp0judAFQSIwYYThLFP+oLm2p7wSbQly0B5ppRSz
+ el0=
+X-IronPort-AV: E=Sophos;i="5.79,330,1602572400"; 
+   d="scan'208";a="39761463"
+Received: from smtpout.microchip.com (HELO email.microchip.com) ([198.175.253.82])
+  by esa6.microchip.iphmx.com with ESMTP/TLS/AES256-SHA256; 08 Jan 2021 01:43:15 -0700
+Received: from chn-vm-ex01.mchp-main.com (10.10.85.143) by
+ chn-vm-ex01.mchp-main.com (10.10.85.143) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Fri, 8 Jan 2021 01:43:10 -0700
+Received: from [10.171.246.100] (10.10.115.15) by chn-vm-ex01.mchp-main.com
+ (10.10.85.143) with Microsoft SMTP Server id 15.1.1979.3 via Frontend
+ Transport; Fri, 8 Jan 2021 01:43:07 -0700
+Subject: Re: [PATCH 3/3] MAINTAINERS: add myself as maintainer for mcp16502
+To:     Claudiu Beznea <claudiu.beznea@microchip.com>,
+        <lgirdwood@gmail.com>, <broonie@kernel.org>, <robh+dt@kernel.org>
+CC:     <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>
+References: <1610028927-9842-1-git-send-email-claudiu.beznea@microchip.com>
+ <1610028927-9842-4-git-send-email-claudiu.beznea@microchip.com>
+From:   Nicolas Ferre <nicolas.ferre@microchip.com>
+Organization: microchip
+Message-ID: <922dcaa0-b845-7f91-6c5a-5aad1b4341c3@microchip.com>
+Date:   Fri, 8 Jan 2021 09:43:06 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20201130151231.GA24862@lst.de> <CAHmME9p4vFGWh7+CKF4f3dw5r+ru5PVG0-vP77JowX8sPhin1g@mail.gmail.com>
- <20201130165339.GE5364@mit.edu> <CAHmME9pksS8ec17RAwCNJimt4B0xZgd3qYHUPnaT4Bj4CF7n0A@mail.gmail.com>
- <20201218132519.kj3nz7swsx7vvlr5@valinor.lan> <20201223132851.55d19271@blackhole.lan>
- <20201223151014.57caf98b@ezekiel.suse.cz> <CAHmME9ooV1HRGO4bLsNKqv1EjDsUYsM6TcMbmEL=4CejTB+1ZQ@mail.gmail.com>
- <20201223170057.7c8fd710@ezekiel.suse.cz> <20201224191953.GD22388@amd>
-In-Reply-To: <20201224191953.GD22388@amd>
-From:   Sandy Harris <sandyinchina@gmail.com>
-Date:   Fri, 8 Jan 2021 16:42:11 +0800
-Message-ID: <CACXcFmknEkN7YZrG3uU7Ty35SDxxCwTSU1HcePWCa=xyuUUH+w@mail.gmail.com>
-Subject: Re: drivers/char/random.c needs a (new) maintainer
-To:     Pavel Machek <pavel@ucw.cz>
-Cc:     Petr Tesarik <ptesarik@suse.cz>,
-        "Jason A. Donenfeld" <Jason@zx2c4.com>, Torsten Duwe <duwe@lst.de>,
-        Marcelo Henrique Cerri <marcelo.cerri@canonical.com>,
-        "Theodore Y. Ts'o" <tytso@mit.edu>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        =?UTF-8?Q?Stephan_M=C3=BCller?= <smueller@chronox.de>,
-        Willy Tarreau <w@1wt.eu>,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
-        Nicolai Stange <nstange@suse.de>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        "Alexander E. Patrakov" <patrakov@gmail.com>,
-        "Ahmed S. Darwish" <darwish.07@gmail.com>,
-        Matthew Garrett <mjg59@srcf.ucam.org>,
-        Vito Caputo <vcaputo@pengaru.com>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Jan Kara <jack@suse.cz>, Ray Strode <rstrode@redhat.com>,
-        William Jon McCann <mccann@jhu.edu>,
-        zhangjs <zachary@baishancloud.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Florian Weimer <fweimer@redhat.com>,
-        Lennart Poettering <mzxreary@0pointer.de>,
-        Peter Matthias <matthias.peter@bsi.bund.de>,
-        Neil Horman <nhorman@redhat.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Julia Lawall <julia.lawall@inria.fr>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        And y Lavr <andy.lavr@gmail.com>,
-        Eric Biggers <ebiggers@kernel.org>,
-        Ard Biesheuvel <ardb@kernel.org>, simo@redhat.com
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <1610028927-9842-4-git-send-email-claudiu.beznea@microchip.com>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Pavel Machek <pavel@ucw.cz> wrote:
+On 07/01/2021 at 15:15, Claudiu Beznea wrote:
+> Andrei is no longer with Microchip. Add myself as maintainer for
+> MCP16502. Along with this change the status from maintained to
+> supported.
+> 
+> Signed-off-by: Claudiu Beznea <claudiu.beznea@microchip.com>
 
-> To play devil's advocate, does RNG subsystem need to evolve? Its task
-> is to get random numbers. Does it fail at the task?
->
-> Problem is, random subsystem is hard to verify, and big rewrite is
-> likely to cause security problems...
+For the record:
+Acked-by: Nicolas Ferre <nicolas.ferre@microchip.com>
 
-Parts of the problem, though, are dead easy in many of today's
-environments.
+Thanks Claudiu!
 
-Many CPUs, e,g. Intel, have an instruction that gives random
-numbers. Some systems have another hardware RNG. Some
-can add one using a USB device or Denker's Turbid
-(https://www.av8n.com/turbid/). Many Linux instances run on
-VMs so they have an emulated HWRNG using the host's
-/dev/random.
+Regards,
+   Nicolas
 
-None of those is necessarily 100% trustworthy, though the
-published analysis for Turbid & for (one version of) the Intel
-device seem adequate to me. However, if you use any
-of them to scribble over the entire 4k-bit input pool and/or
-a 512-bit Salsa context during initialisation, then it seems
-almost certain you'll get enough entropy to block attacks.
+> ---
+>   MAINTAINERS | 4 ++--
+>   1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index 6eff4f720c72..1cd9914b95eb 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -11690,9 +11690,9 @@ F:	drivers/video/fbdev/atmel_lcdfb.c
+>   F:	include/video/atmel_lcdc.h
+>   
+>   MICROCHIP MCP16502 PMIC DRIVER
+> -M:	Andrei Stefanescu <andrei.stefanescu@microchip.com>
+> +M:	Claudiu Beznea <claudiu.beznea@microchip.com>
+>   L:	linux-arm-kernel@lists.infradead.org (moderated for non-subscribers)
+> -S:	Maintained
+> +S:	Supported
+>   F:	Documentation/devicetree/bindings/regulator/mcp16502-regulator.txt
+>   F:	drivers/regulator/mcp16502.c
+>   
+> 
 
-They are all dirt cheap so doing that, and using them
-again later for incremental squirts of randomness, looks
-reasonable.
 
-In many cases you could go further. Consider a system
-with an intel CPU and another HWRNG, perhaps a VM.
-Get 128 bits from each source & combine them using
-the 128-bit finite field multiplication from the GSM
-authentication. Still cheap & it cannot be worse than
-the better of the two sources. If both sources are
-anywhere near reasonable, this should produce 128
-bits of very high grade random material, cheaply.
-
-I am not suggesting any of these should be used for
-output, but using them for initialisation whenever
-possible looks obvious to me.
+-- 
+Nicolas Ferre
