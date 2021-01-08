@@ -2,80 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F58C2EEA27
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 01:11:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 189862EEA2F
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 01:14:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729475AbhAHAKu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 19:10:50 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59058 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728416AbhAHAKu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 19:10:50 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPS id 489F02368A;
-        Fri,  8 Jan 2021 00:10:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610064609;
-        bh=/bl+dbUQLW5CaBdvmpIzjWmsxh0p83ugF1Vo+dLtI4U=;
-        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-        b=uWzA7PeycjLb4035QydEmCtOyAkyifDY/SsgqIUFsomS6J7UBqdsVuhT7C3Ddj5tR
-         yY4gKO/61/At/fOU2qBQh5pD8nFZm4ERxwL54dFGACjsk2oRISOpXicVvVAPImBEvc
-         H71k+VFK4S4nG8LnFBvf9yt1gV+byg5WD/iiCZfRjsRAY8aI5Ge4AAL007OIqsO05A
-         ApUt982gsAZYSALR6kYs/ov7Etpc3uzON+g8PGbt+ZrDnTBKSYOfNIsqzoOJ9HGphp
-         0VH8jrPkOttw9p+a7+eLmRW8Xl0uEOpG7rsWMikL6yZeiLz2hZAidvMKwfoCIMm4BL
-         6vF0kUunGfpOg==
-Received: from pdx-korg-docbuild-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-1.ci.codeaurora.org (Postfix) with ESMTP id 3807E605AC;
-        Fri,  8 Jan 2021 00:10:09 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+        id S1729477AbhAHAM7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 19:12:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35036 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727858AbhAHAM6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Jan 2021 19:12:58 -0500
+Received: from mail-ot1-x329.google.com (mail-ot1-x329.google.com [IPv6:2607:f8b0:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DA60C0612FD;
+        Thu,  7 Jan 2021 16:12:18 -0800 (PST)
+Received: by mail-ot1-x329.google.com with SMTP id w3so8054793otp.13;
+        Thu, 07 Jan 2021 16:12:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=7awMrrXbbRZlFjELQblbcca5XJ2hq7NWilko+Rp2Mb0=;
+        b=DGXV5RV9l4jRJAp6xgVc3M1ccE0Leq67iocEPUPYLDgXKV3gfw9D/Uq9oFmxEy8/IO
+         vzBizd3qtlCblnryvaMOzgesGExCF1JPvNAEqEoIFCRJMrpSz5uvZpLGK1nlR0JqINUC
+         rzn4XUDxNEItNY5nK+uFpih/5r6RCuZQ2OGdyKDlgFlt4ArYvbRmSN6Rm8bHrcrnRSDq
+         rEgajVQYzGeyCKXvvkAa8bR1H3SNPywOPi0cTLJEepv3WRMRPh+8LhB7W2DqunJNdU84
+         2inBVmSxMRgRP0iedGmcZfdfE9rxDwnuUPfGDq4IsTIxI8kXpNDYfWOK3epLMz9Ykgg1
+         NIxA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to:user-agent;
+        bh=7awMrrXbbRZlFjELQblbcca5XJ2hq7NWilko+Rp2Mb0=;
+        b=ntDTEXtUD1UXmGhcchQCN2YKY+uWMJlNgjs2rdOkaSb/GREb7T+XN43RXS92mPEx6S
+         tmOQPfy8119Ac39MX5c0HUqegY+VXioIaCO2XwoMQ0xW1DEJkM0Ja+x1chUBR/a9j8qv
+         75lcNvRxKOLVXkQk2fBL/XyiAGfw4gnxtW4e02a3r+pe5EKiuks50qrKc3/eIZS6fP9t
+         ffxcT3RyW/qYaw/3v4YLGan7r9SfszpPBY8ZzsnKzfnqJPEcvy7B4mJ6UhS3PEujpb2L
+         SUXN7Ayv82LPBH/II6Olso0IA8Tz2DDkpf+zhNAF5Ls2nERBvegWL/sGDo6Wkeae1pUl
+         8BLg==
+X-Gm-Message-State: AOAM5305r2407JX5SEl6crFWpncL/sEKw0xUqmyVINzlaLdGfvSAxnsl
+        zsKXyGoEX6dcvfALYY2ZdtU=
+X-Google-Smtp-Source: ABdhPJxBsX6DvU7jdYpHuJXQiBlJAgmVofzXk61M+Gm5CKWUf9GQ4YtLGlxNffvdrchFTTZPYkM0PQ==
+X-Received: by 2002:a05:6830:403a:: with SMTP id i26mr741161ots.111.1610064737867;
+        Thu, 07 Jan 2021 16:12:17 -0800 (PST)
+Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id g3sm1423611ooi.28.2021.01.07.16.12.16
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Thu, 07 Jan 2021 16:12:16 -0800 (PST)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Thu, 7 Jan 2021 16:12:15 -0800
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Tomas Winkler <tomas.winkler@intel.com>
+Cc:     Wim Van Sebroeck <wim@iguana.be>, linux-watchdog@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Alexander Usyskin <alexander.usyskin@intel.com>,
+        stable@vger.kernel.org
+Subject: Re: [watchdog] watchdog: mei_wdt: request stop on unregister
+Message-ID: <20210108001215.GA58926@roeck-us.net>
+References: <20210107195730.1660449-1-tomas.winkler@intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH v4 0/5] dwmac-meson8b: picosecond precision RX delay support
-From:   patchwork-bot+netdevbpf@kernel.org
-Message-Id: <161006460922.17100.14707302007622685350.git-patchwork-notify@kernel.org>
-Date:   Fri, 08 Jan 2021 00:10:09 +0000
-References: <20210106134251.45264-1-martin.blumenstingl@googlemail.com>
-In-Reply-To: <20210106134251.45264-1-martin.blumenstingl@googlemail.com>
-To:     Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Cc:     linux-amlogic@lists.infradead.org, devicetree@vger.kernel.org,
-        netdev@vger.kernel.org, davem@davemloft.net, kuba@kernel.org,
-        robh+dt@kernel.org, andrew@lunn.ch, f.fainelli@gmail.com,
-        jianxin.pan@amlogic.com, narmstrong@baylibre.com,
-        khilman@baylibre.com, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, jbrunet@baylibre.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210107195730.1660449-1-tomas.winkler@intel.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello:
+Hi,
 
-This series was applied to netdev/net-next.git (refs/heads/master):
-
-On Wed,  6 Jan 2021 14:42:46 +0100 you wrote:
-> Hello,
+On Thu, Jan 07, 2021 at 09:57:30PM +0200, Tomas Winkler wrote:
+> From: Alexander Usyskin <alexander.usyskin@intel.com>
 > 
-> with the help of Jianxin Pan (many thanks!) the meaning of the "new"
-> PRG_ETH1[19:16] register bits on Amlogic Meson G12A, G12B and SM1 SoCs
-> are finally known. These SoCs allow fine-tuning the RGMII RX delay in
-> 200ps steps (contrary to what I have thought in the past [0] these are
-> not some "calibration" values).
+> Send the stop command to the firmware on watchdog unregister
+> to eleminate false event on suspend.
 > 
-> [...]
 
-Here is the summary with links:
-  - [v4,1/5] dt-bindings: net: dwmac-meson: use picoseconds for the RGMII RX delay
-    https://git.kernel.org/netdev/net-next/c/6b5903f58df4
-  - [v4,2/5] net: stmmac: dwmac-meson8b: fix enabling the timing-adjustment clock
-    https://git.kernel.org/netdev/net-next/c/025822884a4f
-  - [v4,3/5] net: stmmac: dwmac-meson8b: use picoseconds for the RGMII RX delay
-    https://git.kernel.org/netdev/net-next/c/140ddf0633df
-  - [v4,4/5] net: stmmac: dwmac-meson8b: move RGMII delays into a separate function
-    https://git.kernel.org/netdev/net-next/c/7985244d10ea
-  - [v4,5/5] net: stmmac: dwmac-meson8b: add support for the RGMII RX delay on G12A
-    https://git.kernel.org/netdev/net-next/c/de94fc104d58
+Normally the watchdog driver would not be expected to unregister
+during suspend, only when the driver is manually unloaded.
+To support suspend/resume, other watchdog drivers implement
+suspend/resume functions to stop the watchdog on suspend and
+to restart it on resume. Unloading a watchdog driver on suspend
+would also have odd implications for userspace watchdog daemons.
 
-You are awesome, thank you!
---
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+On top of that, it should not actually be possible to unregister
+a watchdog while it is in use (because it is open in that case
+and should be marked as busy). watchdog_stop_on_unregister()
+only serves as backup in case someone actually manages to unload
+the driver while the watchdog is running. The function was
+implemented to avoid calls to stop the watchdog in the remove
+function because I can not mathematically prove that there are
+no situations where the watchdog is unloaded while running.
+However, I have not actually been able to do that.
 
+Are you sure this patch is doing what you expect it to do ?
 
+Thanks,
+Guenter
+
+> Cc: <stable@vger.kernel.org>
+> Signed-off-by: Alexander Usyskin <alexander.usyskin@intel.com>
+> Signed-off-by: Tomas Winkler <tomas.winkler@intel.com>
+> ---
+>  drivers/watchdog/mei_wdt.c | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/drivers/watchdog/mei_wdt.c b/drivers/watchdog/mei_wdt.c
+> index 5391bf3e6b11..c5967d8b4256 100644
+> --- a/drivers/watchdog/mei_wdt.c
+> +++ b/drivers/watchdog/mei_wdt.c
+> @@ -382,6 +382,7 @@ static int mei_wdt_register(struct mei_wdt *wdt)
+>  
+>  	watchdog_set_drvdata(&wdt->wdd, wdt);
+>  	watchdog_stop_on_reboot(&wdt->wdd);
+> +	watchdog_stop_on_unregister(&wdt->wdd);
+>  
+>  	ret = watchdog_register_device(&wdt->wdd);
+>  	if (ret)
+> -- 
+> 2.26.2
+> 
