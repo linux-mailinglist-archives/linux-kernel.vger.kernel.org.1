@@ -2,90 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B3DB12EF32D
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 14:39:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F9522EF325
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 14:36:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727762AbhAHNiB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Jan 2021 08:38:01 -0500
-Received: from a.mx.secunet.com ([62.96.220.36]:50492 "EHLO a.mx.secunet.com"
+        id S1727570AbhAHNgZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Jan 2021 08:36:25 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37292 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726059AbhAHNiA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Jan 2021 08:38:00 -0500
-Received: from localhost (localhost [127.0.0.1])
-        by a.mx.secunet.com (Postfix) with ESMTP id 741AC2057B;
-        Fri,  8 Jan 2021 14:36:50 +0100 (CET)
-X-Virus-Scanned: by secunet
-Received: from a.mx.secunet.com ([127.0.0.1])
-        by localhost (a.mx.secunet.com [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id ixpUgj6Iguuf; Fri,  8 Jan 2021 14:36:45 +0100 (CET)
-Received: from cas-essen-02.secunet.de (unknown [10.53.40.202])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by a.mx.secunet.com (Postfix) with ESMTPS id 995482049B;
-        Fri,  8 Jan 2021 14:35:04 +0100 (CET)
-Received: from mbx-dresden-01.secunet.de (10.53.40.199) by
- cas-essen-02.secunet.de (10.53.40.202) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Fri, 8 Jan 2021 14:35:04 +0100
-Received: from gauss2.secunet.de (10.182.7.193) by mbx-dresden-01.secunet.de
- (10.53.40.199) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2044.4; Fri, 8 Jan 2021
- 14:35:03 +0100
-Received: by gauss2.secunet.de (Postfix, from userid 1000)
-        id F3D0C3182BA9; Fri,  8 Jan 2021 14:35:02 +0100 (CET)
-Date:   Fri, 8 Jan 2021 14:35:02 +0100
-From:   Steffen Klassert <steffen.klassert@secunet.com>
-To:     Dongseok Yi <dseok.yi@samsung.com>
-CC:     "David S. Miller" <davem@davemloft.net>,
-        <namkyu78.kim@samsung.com>,
-        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Willem de Bruijn <willemb@google.com>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [RFC PATCH net] udp: check sk for UDP GRO fraglist
-Message-ID: <20210108133502.GZ3576117@gauss3.secunet.de>
-References: <CGME20210108130414epcas2p3217d7b6ac8a8094c5b3b6c5e52480134@epcas2p3.samsung.com>
- <1610110348-119768-1-git-send-email-dseok.yi@samsung.com>
+        id S1726060AbhAHNgY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 Jan 2021 08:36:24 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 34A9923998;
+        Fri,  8 Jan 2021 13:35:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1610112943;
+        bh=6xKInCD0XJ7fZUFJsDTLg+852XRKb0NnGLUbi6vsFTI=;
+        h=Date:From:To:cc:Subject:In-Reply-To:References:From;
+        b=Y9CBsSHbXMx4G/GUly+7ECb0uyh1+RPC9Q2HFNPVQK/GErC/kEIsI2aooewL/JcP5
+         Hf2bN18NLU6JjAbydNhz8hXIoV7iC2pFUQ0QL4IxYJDu9GdNyNWcCt6Px8l7DvHwcv
+         QbweRU8BNxUTqcZfcObrPiTRaRudZNnVAs1NfavebCJVofTB7QYGwtFEB6qR6KHgpU
+         V5UCX9idhxZPfr8JR28Y3PAGg5fdTOGLcBr+t5D6wvmh1dY8shxSxF/yBzAT2gF2BM
+         RFyDRRwW6ZGxBrKk3IR0vso9lXLJqxVA5qrSPqgGnBTq9j5XwG6USALYow9MbIR+E/
+         BEG/R5appBTGQ==
+Date:   Fri, 8 Jan 2021 14:35:40 +0100 (CET)
+From:   Jiri Kosina <jikos@kernel.org>
+To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>
+cc:     linux-input@vger.kernel.org, Rob Herring <robh@kernel.org>,
+        Paul Hollinsky <phollinsky@holtechnik.com>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] Input: gtco - remove driver
+In-Reply-To: <X9xR/wTjU1tLS5JV@google.com>
+Message-ID: <nycvar.YFH.7.76.2101081434550.13752@cbobk.fhfr.pm>
+References: <X8wbBtO5KidME17K@google.com> <nycvar.YFH.7.76.2012171221350.25826@cbobk.fhfr.pm> <X9xR/wTjU1tLS5JV@google.com>
+User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <1610110348-119768-1-git-send-email-dseok.yi@samsung.com>
-X-ClientProxiedBy: cas-essen-02.secunet.de (10.53.40.202) To
- mbx-dresden-01.secunet.de (10.53.40.199)
-X-EXCLAIMER-MD-CONFIG: 2c86f778-e09b-4440-8b15-867914633a10
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 08, 2021 at 09:52:28PM +0900, Dongseok Yi wrote:
-> It is a workaround patch.
-> 
-> UDP/IP header of UDP GROed frag_skbs are not updated even after NAT
-> forwarding. Only the header of head_skb from ip_finish_output_gso ->
-> skb_gso_segment is updated but following frag_skbs are not updated.
-> 
-> A call path skb_mac_gso_segment -> inet_gso_segment ->
-> udp4_ufo_fragment -> __udp_gso_segment -> __udp_gso_segment_list
-> does not try to update any UDP/IP header of the segment list.
-> 
-> It might make sense because each skb of frag_skbs is converted to a
-> list of regular packets. Header update with checksum calculation may
-> be not needed for UDP GROed frag_skbs.
-> 
-> But UDP GRO frag_list is started from udp_gro_receive, we don't know
-> whether the skb will be NAT forwarded at that time. For workaround,
-> try to get sock always when call udp4_gro_receive -> udp_gro_receive
-> to check if the skb is for local.
-> 
-> I'm still not sure if UDP GRO frag_list is really designed for local
-> session only. Can kernel support NAT forward for UDP GRO frag_list?
-> What am I missing?
+On Thu, 17 Dec 2020, Dmitry Torokhov wrote:
 
-The initial idea when I implemented this was to have a fast
-forwarding path for UDP. So forwarding is a usecase, but NAT
-is a problem, indeed. A quick fix could be to segment the
-skb before it gets NAT forwarded. Alternatively we could
-check for a header change in __udp_gso_segment_list and
-update the header of the frag_skbs accordingly in that case.
+> > > Note that our HID support has greatly improved over the last 10 years,
+> > > we may also consider reverting 6f8d9e26e7de ("hid-core.c: Adds all GTCO
+> > > CalComp Digitizers and InterWrite School Products to blacklist") and see
+> > > if GTCO devices actually work with normal HID drivers.
+> > 
+> > Sounds like a good plan to me. Perhaps you can do that in a series 
+> > together, and stage that for 5.12?
+> 
+> Sorry, I already zapped the driver in 5.11.
+> 
+> Unfortunately I do not have this hardware, so while we could remove
+> these devices from the blacklist we will have to do that blindly. Please
+> let me know if you still want to do that.
+
+We can also wait for the first person to potentially complain (if ever) 
+about the driver going away -- that'd mean that the person does actually 
+still have that hardware, and we could ask him to test with hid-generic.
+
+Thanks,
+
+-- 
+Jiri Kosina
+SUSE Labs
 
