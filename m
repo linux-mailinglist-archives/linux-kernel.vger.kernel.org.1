@@ -2,117 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 364432EF3AC
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 15:07:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 085602EF3B0
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 15:08:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727059AbhAHOGY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Jan 2021 09:06:24 -0500
-Received: from m43-15.mailgun.net ([69.72.43.15]:33432 "EHLO
-        m43-15.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725926AbhAHOGY (ORCPT
+        id S1726866AbhAHOHi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Jan 2021 09:07:38 -0500
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:36238 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725793AbhAHOHh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Jan 2021 09:06:24 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1610114765; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=NolXsxXc4LnP1hy9iZM7qEDax7wxHeKW7dI9mmmMmqw=;
- b=jWNY2ky9jhdKohXXxkQkgZlBMRnIYS+S0qUp52VwqhVGvK2pHXKK47/4gNCHLEtz0FH351aR
- CbxA6x9/LjfRgPX+4bKgRbSOQmu4ksWkIJtRcG+VPBsUzMC7ZqQbTYzbn6lXBs0Elg3CWtAH
- j67YsoWb0Mty97fjIXlgRve3L0U=
-X-Mailgun-Sending-Ip: 69.72.43.15
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n10.prod.us-west-2.postgun.com with SMTP id
- 5ff866ae4c4e6d4a2bc86c64 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 08 Jan 2021 14:05:34
- GMT
-Sender: saiprakash.ranjan=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 78D35C43465; Fri,  8 Jan 2021 14:05:34 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: saiprakash.ranjan)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 726EDC433C6;
-        Fri,  8 Jan 2021 14:05:33 +0000 (UTC)
+        Fri, 8 Jan 2021 09:07:37 -0500
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 108E5o22091577;
+        Fri, 8 Jan 2021 08:05:50 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1610114750;
+        bh=7QUxdJubf6npHB6XXysEgpQV+ARRLTU9YbZ45EDawGs=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=Wx+e8zAn/GaP9GFC8ofyKGFEDS1CiHHIFKyNMQmTjWyh7OD73Vmc2BVwqK/Z3iX78
+         otxF3oxkoc7ZZI3Lz4+WomzE6vCpwyi5TOXkaIGU9VPRICE2JZv6Ci2rjvyOVBvqdN
+         9+y3tHs3yLZWJP3jtdiRlCWMm1473CaLeTTyPzzc=
+Received: from DFLE102.ent.ti.com (dfle102.ent.ti.com [10.64.6.23])
+        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 108E5oh1058228
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 8 Jan 2021 08:05:50 -0600
+Received: from DFLE111.ent.ti.com (10.64.6.32) by DFLE102.ent.ti.com
+ (10.64.6.23) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Fri, 8 Jan
+ 2021 08:05:50 -0600
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE111.ent.ti.com
+ (10.64.6.32) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Fri, 8 Jan 2021 08:05:50 -0600
+Received: from [10.24.69.20] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 108E5lEi108720;
+        Fri, 8 Jan 2021 08:05:48 -0600
+Subject: Re: [PATCH v2 2/4] arm64: dts: ti: k3: squelch warnings regarding no
+ #address-cells for interrupt-controller
+To:     Nishanth Menon <nm@ti.com>, Sekhar Nori <nsekhar@ti.com>,
+        Device Tree Mailing List <devicetree@vger.kernel.org>,
+        Rob Herring <robh+dt@kernel.org>
+CC:     Grygorii Strashko <grygorii.strashko@ti.com>,
+        Linux ARM Mailing List <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, Faiz Abbas <faiz_abbas@ti.com>,
+        Andre Przywara <andre.przywara@arm.com>
+References: <20201117161942.38754-1-nsekhar@ti.com>
+ <20201117161942.38754-3-nsekhar@ti.com>
+ <ab9658ef-c8a7-155b-acb1-effa872132ca@ti.com>
+ <20201118151259.kpag44djji4ssiup@eldest>
+ <18e41dba-a3dd-308a-605e-63b76ca638e5@ti.com>
+ <20201119132829.sr435jf6s4275q4i@boxlike>
+ <313a9cd5-7411-4ae1-cde4-42a2c18d11e6@ti.com>
+ <20201124012100.fq7w7bjxvewuhbt2@shirt>
+ <8885dd79-061b-82e3-1aeb-a318f7d8256d@ti.com>
+ <20201127142340.ei7o4zkg5trwcspy@chevron>
+From:   Lokesh Vutla <lokeshvutla@ti.com>
+Message-ID: <2c6df02e-e7a8-fa48-27bc-140bfa500360@ti.com>
+Date:   Fri, 8 Jan 2021 19:35:46 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
+In-Reply-To: <20201127142340.ei7o4zkg5trwcspy@chevron>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-Date:   Fri, 08 Jan 2021 19:35:33 +0530
-From:   Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-To:     Konrad Dybcio <konrad.dybcio@somainline.org>
-Cc:     robdclark@gmail.com, airlied@linux.ie, airlied@redhat.com,
-        akhilpo@codeaurora.org, angelogioacchino.delregno@somainline.org,
-        bjorn.andersson@linaro.org, daniel@ffwll.ch,
-        dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
-        jcrouse@codeaurora.org, jonathan@marek.ca,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        marijn.suijten@somainline.org, martin.botka@somainline.org,
-        phone-devel@vger.kernel.org, sean@poorly.run, shawn.guo@linaro.org,
-        smasetty@codeaurora.org, ~postmarketos/upstreaming@lists.sr.ht
-Subject: Re: [PATCH] drm/msm: Only enable A6xx LLCC code on A6xx
-In-Reply-To: <fa091855-8096-6377-e173-ce1cd02f74ec@somainline.org>
-References: <CAF6AEGu0Sv6nYNDn0z61pXRjNyFLpLw5S4_O3opmrQ-UVNR_MA@mail.gmail.com>
- <20210108122601.14993-1-saiprakash.ranjan@codeaurora.org>
- <fa091855-8096-6377-e173-ce1cd02f74ec@somainline.org>
-Message-ID: <43c8779bc5f03be2e8072c6484dfcabb@codeaurora.org>
-X-Sender: saiprakash.ranjan@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-01-08 19:09, Konrad Dybcio wrote:
->> Konrad, can you please test this below change without your change?
-> 
-> This brings no difference, a BUG still happens. We're still calling
-> to_a6xx_gpu on ANY device that's probed! Too bad it won't turn my A330
-> into an A640..
-> 
-> Also, relying on disabling LLCC in the config is out of question as it
-> makes the arm32 kernel not compile with DRM/MSM and it just removes
-> the functionality on devices with a6xx.. (unless somebody removes the
-> dependency on it, which in my opinion is even worse and will cause
-> more problems for developers!).
-> 
+Hi Rob, Grygorii,
 
-Disabling LLCC is not the suggestion, I was under the impression that
-was the cause here for the smmu bug. Anyways, the check for llc slice
-in case llcc is disabled is not correct as well. I will send a patch for
-that as well.
+On 27/11/20 7:53 pm, Nishanth Menon wrote:
+> On 09:46-20201124, Sekhar Nori wrote:
+>> On 24/11/20 6:51 AM, Nishanth Menon wrote:
+>>> On 09:45-20201123, Sekhar Nori wrote:
+>>>>>> The main reason I commented - is hope to get some clarification from DT maintainers.
+>>>>>> 90% of interrupt-controller nodes do not have #address-cells and I never seen in in GPIO nodes
+>>>>>> (most often is present in PCI and GIC nodes).
+>>>>>> and nobody seems fixing it. So, if we are going to move this direction it's reasonable to get clarification to be sure.
+>>>>>>
+>>>>>> And there is no "never" here - #address-cells always can be added if really required.
+>>>>>
+>>>>>
+>>>>> OK - as a GPIO node, but as an interrupt-controller node, I was
+>>>>> looking at [1] and wondering if that was the precedence.
+>>>>>
+>>>>> Yes, will be good to get direction from the DT maintainers on this
+>>>>> topic.
+>>>>
 
-> The bigger question is how and why did that piece of code ever make it
-> to adreno_gpu.c and not a6xx_gpu.c?
-> 
+Is there a conclusion on this topic?  Without adding address-cells for interrupt
+controller we will be introducing new warning for all the new nodes we are adding.
 
-My mistake, I will move it.
-
-> To solve it in a cleaner way I propose to move it to an a6xx-specific
-> file, or if it's going to be used with next-gen GPUs, perhaps manage
-> calling of this code via an adreno quirk/feature in adreno_device.c.
-> Now that I think about it, A5xx GPMU en/disable could probably managed
-> like that, instead of using tons of if-statements for each GPU model
-> that has it..
-> 
-> While we're at it, do ALL (and I truly do mean ALL, including the
-> low-end ones, this will be important later on) A6xx GPUs make use of
-> that feature?
-> 
-
-I do not have a list of all A6XX GPUs with me currently, but from what
-I know, A618, A630, A640, A650 has the support.
-
-Thanks,
-Sai
-
--- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a 
-member
-of Code Aurora Forum, hosted by The Linux Foundation
+Thanks and regards,
+Lokesh
