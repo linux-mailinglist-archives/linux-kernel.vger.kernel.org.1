@@ -2,78 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 74CCC2EF3B1
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 15:08:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 364432EF3AC
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 15:07:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727410AbhAHOID (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Jan 2021 09:08:03 -0500
-Received: from mx2.suse.de ([195.135.220.15]:53400 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725926AbhAHOIC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Jan 2021 09:08:02 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 8DA8CAD11;
-        Fri,  8 Jan 2021 14:07:20 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 257EFDA6E9; Fri,  8 Jan 2021 15:05:30 +0100 (CET)
-Date:   Fri, 8 Jan 2021 15:05:30 +0100
-From:   David Sterba <dsterba@suse.cz>
-To:     Dmitry Vyukov <dvyukov@google.com>
-Cc:     syzbot <syzbot+6700bca07dff187809c4@syzkaller.appspotmail.com>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        LKML <linux-kernel@vger.kernel.org>, linux-btrfs@vger.kernel.org
-Subject: Re: KASAN: null-ptr-deref Write in start_transaction
-Message-ID: <20210108140529.GX6430@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Dmitry Vyukov <dvyukov@google.com>,
-        syzbot <syzbot+6700bca07dff187809c4@syzkaller.appspotmail.com>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        LKML <linux-kernel@vger.kernel.org>, linux-btrfs@vger.kernel.org
-References: <00000000000053e36405b3c538fc@google.com>
- <0000000000008f60c505b84f2cd0@google.com>
- <CACT4Y+YJCMyTDrUFWXEnZ-raQMos0+1F1O8k5eX998pqNUWKSw@mail.gmail.com>
+        id S1727059AbhAHOGY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Jan 2021 09:06:24 -0500
+Received: from m43-15.mailgun.net ([69.72.43.15]:33432 "EHLO
+        m43-15.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725926AbhAHOGY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 Jan 2021 09:06:24 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1610114765; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=NolXsxXc4LnP1hy9iZM7qEDax7wxHeKW7dI9mmmMmqw=;
+ b=jWNY2ky9jhdKohXXxkQkgZlBMRnIYS+S0qUp52VwqhVGvK2pHXKK47/4gNCHLEtz0FH351aR
+ CbxA6x9/LjfRgPX+4bKgRbSOQmu4ksWkIJtRcG+VPBsUzMC7ZqQbTYzbn6lXBs0Elg3CWtAH
+ j67YsoWb0Mty97fjIXlgRve3L0U=
+X-Mailgun-Sending-Ip: 69.72.43.15
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n10.prod.us-west-2.postgun.com with SMTP id
+ 5ff866ae4c4e6d4a2bc86c64 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 08 Jan 2021 14:05:34
+ GMT
+Sender: saiprakash.ranjan=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 78D35C43465; Fri,  8 Jan 2021 14:05:34 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: saiprakash.ranjan)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 726EDC433C6;
+        Fri,  8 Jan 2021 14:05:33 +0000 (UTC)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CACT4Y+YJCMyTDrUFWXEnZ-raQMos0+1F1O8k5eX998pqNUWKSw@mail.gmail.com>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Fri, 08 Jan 2021 19:35:33 +0530
+From:   Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+To:     Konrad Dybcio <konrad.dybcio@somainline.org>
+Cc:     robdclark@gmail.com, airlied@linux.ie, airlied@redhat.com,
+        akhilpo@codeaurora.org, angelogioacchino.delregno@somainline.org,
+        bjorn.andersson@linaro.org, daniel@ffwll.ch,
+        dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
+        jcrouse@codeaurora.org, jonathan@marek.ca,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        marijn.suijten@somainline.org, martin.botka@somainline.org,
+        phone-devel@vger.kernel.org, sean@poorly.run, shawn.guo@linaro.org,
+        smasetty@codeaurora.org, ~postmarketos/upstreaming@lists.sr.ht
+Subject: Re: [PATCH] drm/msm: Only enable A6xx LLCC code on A6xx
+In-Reply-To: <fa091855-8096-6377-e173-ce1cd02f74ec@somainline.org>
+References: <CAF6AEGu0Sv6nYNDn0z61pXRjNyFLpLw5S4_O3opmrQ-UVNR_MA@mail.gmail.com>
+ <20210108122601.14993-1-saiprakash.ranjan@codeaurora.org>
+ <fa091855-8096-6377-e173-ce1cd02f74ec@somainline.org>
+Message-ID: <43c8779bc5f03be2e8072c6484dfcabb@codeaurora.org>
+X-Sender: saiprakash.ranjan@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 08, 2021 at 10:17:25AM +0100, Dmitry Vyukov wrote:
-> On Thu, Jan 7, 2021 at 2:11 PM syzbot
-> <syzbot+6700bca07dff187809c4@syzkaller.appspotmail.com> wrote:
-> >
-> > syzbot suspects this issue was fixed by commit:
-> >
-> > commit f30bed83426c5cb9fce6cabb3f7cc5a9d5428fcc
-> > Author: Filipe Manana <fdmanana@suse.com>
-> > Date:   Fri Nov 13 11:24:17 2020 +0000
-> >
-> >     btrfs: remove unnecessary attempt to drop extent maps after adding inline extent
-> >
-> > bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=13ddc30b500000
-> > start commit:   521b619a Merge tag 'linux-kselftest-kunit-fixes-5.10-rc3' ..
-> > git tree:       upstream
-> > kernel config:  https://syzkaller.appspot.com/x/.config?x=61033507391c77ff
-> > dashboard link: https://syzkaller.appspot.com/bug?extid=6700bca07dff187809c4
-> > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=14a07ab2500000
-> > C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=10fe69c6500000
-> >
-> > If the result looks correct, please mark the issue as fixed by replying with:
-> >
-> > #syz fix: btrfs: remove unnecessary attempt to drop extent maps after adding inline extent
-> >
-> > For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+On 2021-01-08 19:09, Konrad Dybcio wrote:
+>> Konrad, can you please test this below change without your change?
 > 
-> #syz fix: btrfs: remove unnecessary attempt to drop extent maps after
-> adding inline extent
+> This brings no difference, a BUG still happens. We're still calling
+> to_a6xx_gpu on ANY device that's probed! Too bad it won't turn my A330
+> into an A640..
+> 
+> Also, relying on disabling LLCC in the config is out of question as it
+> makes the arm32 kernel not compile with DRM/MSM and it just removes
+> the functionality on devices with a6xx.. (unless somebody removes the
+> dependency on it, which in my opinion is even worse and will cause
+> more problems for developers!).
+> 
 
-I have looked at the report and suspected fix yestereday and was not
-sure that it's really the right fix.  The commit removes some call so it
-all looks like an accidental fix and something still might be going on.
-So I'm a bit surprised that you mark it as fixed. It will make the
-syzbot report go away so from that POV ok and we'll know if it happens
-again, but I'd expect at least some analysis before closing the report.
+Disabling LLCC is not the suggestion, I was under the impression that
+was the cause here for the smmu bug. Anyways, the check for llc slice
+in case llcc is disabled is not correct as well. I will send a patch for
+that as well.
+
+> The bigger question is how and why did that piece of code ever make it
+> to adreno_gpu.c and not a6xx_gpu.c?
+> 
+
+My mistake, I will move it.
+
+> To solve it in a cleaner way I propose to move it to an a6xx-specific
+> file, or if it's going to be used with next-gen GPUs, perhaps manage
+> calling of this code via an adreno quirk/feature in adreno_device.c.
+> Now that I think about it, A5xx GPMU en/disable could probably managed
+> like that, instead of using tons of if-statements for each GPU model
+> that has it..
+> 
+> While we're at it, do ALL (and I truly do mean ALL, including the
+> low-end ones, this will be important later on) A6xx GPUs make use of
+> that feature?
+> 
+
+I do not have a list of all A6XX GPUs with me currently, but from what
+I know, A618, A630, A640, A650 has the support.
+
+Thanks,
+Sai
+
+-- 
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a 
+member
+of Code Aurora Forum, hosted by The Linux Foundation
