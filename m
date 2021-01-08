@@ -2,116 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BAA3F2EF93C
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 21:32:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AFC092EF93D
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 21:33:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729176AbhAHUbc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Jan 2021 15:31:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54836 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727443AbhAHUbb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Jan 2021 15:31:31 -0500
-Received: from mail-ot1-x332.google.com (mail-ot1-x332.google.com [IPv6:2607:f8b0:4864:20::332])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF249C061380
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Jan 2021 12:30:50 -0800 (PST)
-Received: by mail-ot1-x332.google.com with SMTP id d20so10957762otl.3
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Jan 2021 12:30:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=8rX5uQHouoI4FRLqYNMC44Y4GpGcbHM8bJ4cljG7WHw=;
-        b=VxZNWixJ9jeyM+bRpStXCk4K+N3m4Y9Ybu9ZCvuqS+CqhTWY1XWogyftNuSMgnEt90
-         ZWXsoD5HgCuGbbR8yxZJm4DvSQUw17tQ6O0QsVdUjg45cjKPEYUpH1FCcejSkq6ORIYn
-         XAcAM/S0kVwh7zsTDEr8rAQB1UU1psvDMPg7jCpp5DSEHM2hpkMDDVQB/PW98ZIWMbr3
-         x67+sermSbPEUWP8Ar+zVI9n2jXRI9ynkgBaIV+S/4Y/Z7YxTxIg48Oxwai3JoCgj9Fm
-         ZUrwzATMTbL/qZ5Va1HBYi6CQAw6oGXcMbPgp9o4dnLqEELRyvGE4WLSrUCDARalPWOW
-         eIaw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=8rX5uQHouoI4FRLqYNMC44Y4GpGcbHM8bJ4cljG7WHw=;
-        b=K8kxLI5FsyaiP7++lz6w5ycHZ5PJjeeEKiBUDWzNGazm8OClK1xV7ivLt3aFwibrA0
-         X2OgGl7QV/YoaVpe2SW/qcbd3NTwvU8tQzSm4eIHq6e/N/TySFxoh9hGXssWEK9LEkpd
-         qfkyv0cqTUPmtOOds+OQdF/FAS7m9eEhWR88uN2WqUuJbrtr4MvBrl7NX8E+iiLhnx6K
-         Uji+otO2jb8uTK9XuXuU91qVJTv80Ww6f6IQi8AvBqgZ32Dcp1lQgOODo54aNxB9AxdT
-         hPoc5ZrvX5khHBep4fvgCqtua6BDt16jSshA40cDLnHE97UJIjmSqLlbgkmOOFZE3TZJ
-         GfKA==
-X-Gm-Message-State: AOAM532qg7/ZacLl1oySVv76VQTGKMSxBmrNH/Ut+bEc+kHzghDnnBWk
-        rxrYdgSNOwge8JJ4Ja7RYQBN7+lHGusdMOEyVwFlZlL9
-X-Google-Smtp-Source: ABdhPJz7Zw0UXJkV9YhbqEzt+3/lMNn51AX5yaKpxgYs2S9iN5GxGCnckdi3xe1/x6OJGrPsnJjXsOH6rXR/u32R+7A=
-X-Received: by 2002:a05:6830:1d66:: with SMTP id l6mr3782098oti.23.1610137850323;
- Fri, 08 Jan 2021 12:30:50 -0800 (PST)
+        id S1729195AbhAHUbw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Jan 2021 15:31:52 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47524 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727443AbhAHUbv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 Jan 2021 15:31:51 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7117023AC2
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Jan 2021 20:31:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1610137870;
+        bh=dN/vCuTfi01My7gqxrmbsoNneHB7mr8tZmJby3DM2Ts=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=CK8hMSmJlda2+nQd/elAbLb6PsPulkmBsfLI7uMcP/u5n2IrnaEt6BIOaRTYJxiwY
+         LBj5ATT03OE7SXXkvjFHc+eADEWghwWQKrpuKdFN3I/CzOpVcQan+Atg0NaHa47OtK
+         LmzxK/798PUNYHO/fGwACW0KH8Hi+652iL6SuDv9yndLXV2iiLwzJVi2Oz69n1Y4Sj
+         N4pQqvohaveCDIzjwey5Z4V1PB75s0hXmo0GQO22OxC/+55xIxTHx9KeACIS2j/3r9
+         ye3R2dyzshr3vWK4ht96ESK7jnEbEUFyFgrCrJjEFGnE/hffyiVcsF/VVMJslTZ68Y
+         379cIu9sAq4Gw==
+Received: by mail-oi1-f182.google.com with SMTP id x13so12768468oic.5
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Jan 2021 12:31:10 -0800 (PST)
+X-Gm-Message-State: AOAM5300g+PV0JmCDniIDvJgVaZOWUeFGJTXVahHEbiqL60fk8GQskVM
+        XkJoLDbBmlncBC44zJ08jvRUxF795rt/8iX7GPk=
+X-Google-Smtp-Source: ABdhPJwYZTJvr7kFzDF/qWiLnN5DYHOF+FSG0HkLBoXAW+tr4GMnTQfrliSZqYEPhR50hYyWxogqt+5hi3LKcOotPiU=
+X-Received: by 2002:aca:44d:: with SMTP id 74mr3515461oie.4.1610137869802;
+ Fri, 08 Jan 2021 12:31:09 -0800 (PST)
 MIME-Version: 1.0
-References: <20210108201457.3078600-1-lee.jones@linaro.org> <20210108201457.3078600-5-lee.jones@linaro.org>
-In-Reply-To: <20210108201457.3078600-5-lee.jones@linaro.org>
-From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Fri, 8 Jan 2021 15:30:38 -0500
-Message-ID: <CADnq5_M7R1rhP73iUWg+mcOTm_n+j8h2nh0ykLRUVda2xmNvMA@mail.gmail.com>
-Subject: Re: [PATCH 04/40] drm/amd/amdgpu/amdgpu_ih: Update
- 'amdgpu_ih_decode_iv_helper()'s function header
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     David Airlie <airlied@linux.ie>,
-        Felix Kuehling <Felix.Kuehling@amd.com>,
+References: <20210108040940.1138-1-walter-zh.wu@mediatek.com> <CAAeHK+wW3bTCvk=6v_vDQFYLC6=3kunmprXA-P=tWyXCTMZjhQ@mail.gmail.com>
+In-Reply-To: <CAAeHK+wW3bTCvk=6v_vDQFYLC6=3kunmprXA-P=tWyXCTMZjhQ@mail.gmail.com>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Fri, 8 Jan 2021 21:30:53 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a3FakV-Y9xkoy_fpYKBNkMvcO7DPOQC8R7ku7yPcgDw3g@mail.gmail.com>
+Message-ID: <CAK8P3a3FakV-Y9xkoy_fpYKBNkMvcO7DPOQC8R7ku7yPcgDw3g@mail.gmail.com>
+Subject: Re: [PATCH v3] kasan: remove redundant config option
+To:     Andrey Konovalov <andreyknvl@google.com>
+Cc:     Walter Wu <walter-zh.wu@mediatek.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Alexander Potapenko <glider@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        Linux Memory Management List <linux-mm@kvack.org>,
         LKML <linux-kernel@vger.kernel.org>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        Maling list - DRI developers 
-        <dri-devel@lists.freedesktop.org>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        wsd_upstream <wsd_upstream@mediatek.com>,
+        "moderated list:ARM/Mediatek SoC..." 
+        <linux-mediatek@lists.infradead.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 8, 2021 at 3:15 PM Lee Jones <lee.jones@linaro.org> wrote:
->
-> Fixes the following W=3D1 kernel build warning(s):
->
->  drivers/gpu/drm/amd/amdgpu/amdgpu_ih.c:220: warning: Function parameter =
-or member 'ih' not described in 'amdgpu_ih_decode_iv_helper'
->  drivers/gpu/drm/amd/amdgpu/amdgpu_ih.c:220: warning: Function parameter =
-or member 'entry' not described in 'amdgpu_ih_decode_iv_helper'
->
-> Cc: Alex Deucher <alexander.deucher@amd.com>
-> Cc: "Christian K=C3=B6nig" <christian.koenig@amd.com>
-> Cc: David Airlie <airlied@linux.ie>
-> Cc: Daniel Vetter <daniel@ffwll.ch>
-> Cc: Felix Kuehling <Felix.Kuehling@amd.com>
-> Cc: amd-gfx@lists.freedesktop.org
-> Cc: dri-devel@lists.freedesktop.org
-> Signed-off-by: Lee Jones <lee.jones@linaro.org>
+On Fri, Jan 8, 2021 at 7:56 PM Andrey Konovalov <andreyknvl@google.com> wrote:
+> On Fri, Jan 8, 2021 at 5:09 AM Walter Wu <walter-zh.wu@mediatek.com> wrote:
 
-Applied.  Thanks!
-
-Alex
-
-> ---
->  drivers/gpu/drm/amd/amdgpu/amdgpu_ih.c | 2 ++
->  1 file changed, 2 insertions(+)
+> > @@ -2,6 +2,12 @@
+> >  CFLAGS_KASAN_NOSANITIZE := -fno-builtin
+> >  KASAN_SHADOW_OFFSET ?= $(CONFIG_KASAN_SHADOW_OFFSET)
+> >
+> > +ifdef CONFIG_KASAN_STACK
+> > +       stack_enable := 1
+> > +else
+> > +       stack_enable := 0
+> > +endif
+> > +
 >
-> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_ih.c b/drivers/gpu/drm/amd=
-/amdgpu/amdgpu_ih.c
-> index 725a9c73d51f0..dc852af4f3b76 100644
-> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_ih.c
-> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_ih.c
-> @@ -209,6 +209,8 @@ int amdgpu_ih_process(struct amdgpu_device *adev, str=
-uct amdgpu_ih_ring *ih)
->   * amdgpu_ih_decode_iv_helper - decode an interrupt vector
->   *
->   * @adev: amdgpu_device pointer
-> + * @ih: ih ring to process
-> + * @entry: IV entry
->   *
->   * Decodes the interrupt vector at the current rptr
->   * position and also advance the position for for Vega10
-> --
-> 2.25.1
+> AFAIR, Arnd wanted to avoid having KASAN_STACK to be enabled by
+> default when compiling with Clang, since Clang instrumentation leads
+> to very large kernel stacks, which, in turn, lead to compile-time
+> warnings. What I don't remember is why there are two configs.
 >
-> _______________________________________________
-> dri-devel mailing list
-> dri-devel@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/dri-devel
+> Arnd, is that correct? What was the reason behind having two configs?
+
+I think I just considered it cleaner than defining the extra variable in the
+Makefile at the time, as this was the only place that referenced
+CONFIG_KASAN_STACK.
+
+The '#if CONFIG_KASAN_STACK' (rather than #ifdef) that got added
+later do make my version more confusing though, so I agree that
+Walter's second patch improves it.
+
+Acked-by: Arnd Bergmann <arnd@arndb.de>
+
+On a related note: do you have any hope that clang will ever fix
+https://bugs.llvm.org/show_bug.cgi?id=38809 and KASAN_STACK
+can be enabled by default on clang without risking stack
+overflows?
+
+       Arnd
