@@ -2,78 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 071632EF385
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 14:56:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BE7542EF38C
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 14:59:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726820AbhAHN4Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Jan 2021 08:56:25 -0500
-Received: from mga04.intel.com ([192.55.52.120]:60934 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726060AbhAHN4Z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Jan 2021 08:56:25 -0500
-IronPort-SDR: m9o5BIEI6jqaUe8iopAiO2Ti9hSaRjWIKVBBoHqdViJVZpwhmXDtfRg92OE6V717BaImQkicPt
- 6Zyheail05Eg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9857"; a="175018357"
-X-IronPort-AV: E=Sophos;i="5.79,331,1602572400"; 
-   d="scan'208";a="175018357"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jan 2021 05:55:44 -0800
-IronPort-SDR: WVLjkAa0469ZD84Vmr7HfBitILcZcwP+RB0lmkPmlq4wlP/uzoCcLeuj9ZoebEo8x1KWD2+m95
- MADmlj35EkiA==
-X-IronPort-AV: E=Sophos;i="5.79,331,1602572400"; 
-   d="scan'208";a="362337390"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jan 2021 05:55:42 -0800
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@intel.com>)
-        id 1kxsFw-006CqW-KN; Fri, 08 Jan 2021 15:56:44 +0200
-Date:   Fri, 8 Jan 2021 15:56:44 +0200
-From:   Andy Shevchenko <andriy.shevchenko@intel.com>
-To:     Zheng Yongjun <zhengyongjun3@huawei.com>
-Cc:     sathyanarayanan.kuppuswamy@linux.intel.com, andy@kernel.org,
-        linus.walleij@linaro.org, bgolaszewski@baylibre.com,
-        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 -next] gpio: wcove: convert comma to semicolon
-Message-ID: <20210108135644.GO4077@smile.fi.intel.com>
-References: <20210108092413.19354-1-zhengyongjun3@huawei.com>
+        id S1727362AbhAHN7N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Jan 2021 08:59:13 -0500
+Received: from mail-qt1-f174.google.com ([209.85.160.174]:35686 "EHLO
+        mail-qt1-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726612AbhAHN7N (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 Jan 2021 08:59:13 -0500
+Received: by mail-qt1-f174.google.com with SMTP id b9so6547151qtr.2;
+        Fri, 08 Jan 2021 05:58:57 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Z98Cd2/q2vk4PKmNKdE52oNoKy4mQtUfKoV21d500nM=;
+        b=eM4wv3vfZarA4M7cY+MvLt+wOUvydnmBRibqEldzzPOnLzXEzomCI5gGbDWmbX+ggt
+         r609hus830OkAEXtlHJaPiRSyFbm7l07DOmqkG8KI32zILIDXhlAjrC0K0a8s/RkGseL
+         Tj4WaDfiHkIVYwIYkikjHUqGakOoh6U9QuVbJnwJ/aMIXNEbsE5OAVvPdbry2fQEYUkz
+         oLXHkysx+DtN7hFEdVRTalYHXuSG/1rMLGCzAaewkit0Z+iudi5TC6ahi4zX2FqonxnG
+         EiDW1fkTXF53UE6pOw+Lo9XSAvTAiyZWkwglyul0dGc4RbEtrkrYToF4AUd0YHHIRprI
+         qlKw==
+X-Gm-Message-State: AOAM5300KUoscMQyKr6b327ohrz58RH8B7YRQvDJC1VHV2gYd8tn/7Dd
+        MzILsgVFXIYsf59MbI3mJwIft0tP7m42UHG7430=
+X-Google-Smtp-Source: ABdhPJy8s9cWkWVLvubXL5qgjHOkSLPTugK2fgLodKBV0ctBtVEj6eKy4znHg0OLjA1BM+hHQbhcpvj0KvBtL8mvrn4=
+X-Received: by 2002:aed:3064:: with SMTP id 91mr3495946qte.151.1610114311781;
+ Fri, 08 Jan 2021 05:58:31 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210108092413.19354-1-zhengyongjun3@huawei.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <20201224170502.2254683-1-aford173@gmail.com> <20201224170502.2254683-8-aford173@gmail.com>
+In-Reply-To: <20201224170502.2254683-8-aford173@gmail.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Fri, 8 Jan 2021 14:58:19 +0100
+Message-ID: <CAMuHMdV1TVJyTGcLbYd=PK5FL2qKUQSKBPnZc7+jdF6pqn_=aA@mail.gmail.com>
+Subject: Re: [PATCH V2 8/9] arm64: dts: renesas: Introduce r8a774e1-beacon-rzg2h-kit
+To:     Adam Ford <aford173@gmail.com>
+Cc:     Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        Adam Ford-BE <aford@beaconembedded.com>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 08, 2021 at 05:24:13PM +0800, Zheng Yongjun wrote:
-> Replace a comma between expression statements by a semicolon.
+On Thu, Dec 24, 2020 at 6:05 PM Adam Ford <aford173@gmail.com> wrote:
+> eacon EmebeddedWorks is introducing a new kit based on the
+> RZ/G2H SoC from Renesas.
+>
+> The SOM supports eMMC, WiFi and Bluetooth, along with a Cat-M1
+> cellular radio.
+>
+> The Baseboard has Ethernet, USB, HDMI, stereo audio in and out,
+> along with a variety of push buttons and LED's, and support for
+> a parallel RGB and an LVDS display.  It uses the same baseboard
+> and SOM files as the RZ/G2M and RZ/G2N kits.
+>
+> Signed-off-by: Adam Ford <aford173@gmail.com>
 
-Pushed to my review and testing queue, thanks!
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+i.e. will queue in renesas-devel for v5.12 (with the company name
+typos fixed, also in PATCH 7/9).
 
-> Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>
-> ---
->  drivers/gpio/gpio-wcove.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/gpio/gpio-wcove.c b/drivers/gpio/gpio-wcove.c
-> index b5fbba5a783a..97c5f1d01b62 100644
-> --- a/drivers/gpio/gpio-wcove.c
-> +++ b/drivers/gpio/gpio-wcove.c
-> @@ -434,7 +434,7 @@ static int wcove_gpio_probe(struct platform_device *pdev)
->  	wg->chip.get_direction = wcove_gpio_get_direction;
->  	wg->chip.get = wcove_gpio_get;
->  	wg->chip.set = wcove_gpio_set;
-> -	wg->chip.set_config = wcove_gpio_set_config,
-> +	wg->chip.set_config = wcove_gpio_set_config;
->  	wg->chip.base = -1;
->  	wg->chip.ngpio = WCOVE_VGPIO_NUM;
->  	wg->chip.can_sleep = true;
-> -- 
-> 2.22.0
-> 
+Gr{oetje,eeting}s,
+
+                        Geert
 
 -- 
-With Best Regards,
-Andy Shevchenko
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
-
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
