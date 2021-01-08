@@ -2,94 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D47FC2EEC60
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 05:22:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 14A882EEC5A
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 05:20:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727623AbhAHEUl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 23:20:41 -0500
-Received: from aserp2120.oracle.com ([141.146.126.78]:52452 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727471AbhAHEUk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 23:20:40 -0500
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 10849f67096788;
-        Fri, 8 Jan 2021 04:19:54 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=fJtX/x/q0BSrKpHUkhYtCo9igyPNRl3G/Q1ztLnzj0Q=;
- b=U9tseGlUFLP/vvV2g5YoM4hATBWrA6QsJ1ETiKTLhDA4ZDRWzTfoS69owYthMgcXdgH2
- RpaeGs2Hq18+aCNwITJFr2Ka8cr/nEOICBZoAPFo5F8Tg1wmWlq4HnmaFBUi0oxKVl6y
- olA0JAzLykgohFEwBgQh88jAExNkJ46u6u5rbpBy66qlfaKlhWDD6iLhq0uz/G7DHJzh
- xYS3whqhDP+oKgxRk1ARZ2NIlVLJJretuFKO/BYqUQNhbPGhRjnc4y/43W/ufoZh69J/
- MxKvk0r+Gee3Ofhax2NC1u7QDWwVPmEyfmKPGyoxJ43pLNR9WongIDvlZRM1Gt5UBJ/G tg== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by aserp2120.oracle.com with ESMTP id 35wepmfd97-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 08 Jan 2021 04:19:54 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 1084AuAi079282;
-        Fri, 8 Jan 2021 04:19:54 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by aserp3020.oracle.com with ESMTP id 35v1fc2x8h-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 08 Jan 2021 04:19:54 +0000
-Received: from abhmp0015.oracle.com (abhmp0015.oracle.com [141.146.116.21])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 1084Jqmp018065;
-        Fri, 8 Jan 2021 04:19:52 GMT
-Received: from ca-mkp.ca.oracle.com (/10.156.108.201)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Fri, 08 Jan 2021 04:19:52 +0000
-From:   "Martin K. Petersen" <martin.petersen@oracle.com>
-To:     Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-        linux-block@vger.kernel.org, Jens Axboe <axboe@kernel.dk>
-Cc:     "Martin K . Petersen" <martin.petersen@oracle.com>,
-        Christoph Hellwig <hch@lst.de>, linux-kernel@vger.kernel.org,
-        linux-scsi@vger.kernel.org,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        clang-built-linux@googlegroups.com, kernel-janitors@vger.kernel.org
-Subject: Re: [PATCH v2] scsi: sd: remove obsolete variable in sd_remove()
-Date:   Thu,  7 Jan 2021 23:19:37 -0500
-Message-Id: <161007949339.9892.18140869017043061616.b4-ty@oracle.com>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20201214095424.12479-1-lukas.bulwahn@gmail.com>
-References: <20201214095424.12479-1-lukas.bulwahn@gmail.com>
+        id S1727308AbhAHEUY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 23:20:24 -0500
+Received: from mail.kernel.org ([198.145.29.99]:58606 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726600AbhAHEUX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Jan 2021 23:20:23 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 57FAD207A8;
+        Fri,  8 Jan 2021 04:19:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1610079582;
+        bh=Eqg0B6FysIAYFiLN2zSH3ZM3MPe4wwlksK7heO64dro=;
+        h=From:To:Cc:Subject:Date:From;
+        b=YyDQVNjuFODVcNsSrwURVY1QiqLQSJyVYmzAWK0jFGH40IAO/hJJ3wHUPDeQapWB0
+         dXKBhTrj7P26c0+PhIQEzlTQoe36i+25/N5+fEB7S5pRYDvtmZdBzQiCPbgKMgBcft
+         Br4fm0fm9rrUH1tKPxT99uWiPmDR4jLeibKWr5MymlVD6vL9sxCX3C1zIOwe5c7g/M
+         BJX3f6QkD3Mn1Iu2VnbXMkL1Ud9vVx6D8Wd3JH/+mvTHG7sVAfZjz15K3egz+MsDRO
+         /NrQYh3+EUVD1yrIgrO55x16y8xaSYEbQl6iZgVZ9EbrLS52Re5Tf7J5LVlznTe1D8
+         ULwQ0TTVo24oA==
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     "Naveen N . Rao" <naveen.n.rao@linux.vnet.ibm.com>,
+        linux-kernel@vger.kernel.org, mhiramat@kernel.org
+Subject: [PATCH v2] tracing/kprobes: Do the notrace functions check without kprobes on ftrace
+Date:   Fri,  8 Jan 2021 13:19:38 +0900
+Message-Id: <161007957862.114704.4512260007555399463.stgit@devnote2>
+X-Mailer: git-send-email 2.25.1
+User-Agent: StGit/0.19
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9857 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=850 phishscore=0
- suspectscore=0 spamscore=0 bulkscore=0 adultscore=0 mlxscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2101080021
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9857 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 bulkscore=0 spamscore=0
- impostorscore=0 phishscore=0 lowpriorityscore=0 suspectscore=0
- priorityscore=1501 mlxscore=0 malwarescore=0 clxscore=1011 mlxlogscore=859
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2101080021
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 14 Dec 2020 10:54:24 +0100, Lukas Bulwahn wrote:
+Enable the notrace function check on the architecture which doesn't
+support kprobes on ftrace but support dynamic ftrace. This notrace
+function check is not only for the kprobes on ftrace but also
+sw-breakpoint based kprobes.
+Thus there is no reason to limit this check for the arch which
+supports kprobes on ftrace.
 
-> Commit 140ea3bbf39a ("sd: use __register_blkdev to avoid a modprobe for an
-> unregistered dev_t") removed blk_register_region(devt, ...) in sd_remove()
-> and since then, devt is unused in sd_remove().
-> 
-> Hence, make W=1 warns:
-> 
->   drivers/scsi/sd.c:3516:8:
->       warning: variable 'devt' set but not used [-Wunused-but-set-variable]
-> 
-> [...]
+This also changes the dependency of Kconfig. Because kprobe event
+uses the function tracer's address list for identifying notrace
+function, if the CONFIG_DYNAMIC_FTRACE=n, it can not check whether
+the target function is notrace or not.
 
-Applied to 5.11/scsi-fixes, thanks!
+Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
+Acked-by: Naveen N. Rao <naveen.n.rao@linux.vnet.ibm.com>
+---
+ Changes in v2:
+  - Depends on CONFIG_DYNAMIC_FTRACE instead of CONFIG_FUNCTION_TRACER
+---
+ kernel/trace/Kconfig        |    2 +-
+ kernel/trace/trace_kprobe.c |    2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-[1/1] scsi: sd: remove obsolete variable in sd_remove()
-      https://git.kernel.org/mkp/scsi/c/be2553358cd4
+diff --git a/kernel/trace/Kconfig b/kernel/trace/Kconfig
+index fe60f9d7a0e6..18da5e8e28fb 100644
+--- a/kernel/trace/Kconfig
++++ b/kernel/trace/Kconfig
+@@ -540,7 +540,7 @@ config KPROBE_EVENTS
+ config KPROBE_EVENTS_ON_NOTRACE
+ 	bool "Do NOT protect notrace function from kprobe events"
+ 	depends on KPROBE_EVENTS
+-	depends on KPROBES_ON_FTRACE
++	depends on DYNAMIC_FTRACE
+ 	default n
+ 	help
+ 	  This is only for the developers who want to debug ftrace itself
+diff --git a/kernel/trace/trace_kprobe.c b/kernel/trace/trace_kprobe.c
+index b29f92c51b1a..5fff39541b8a 100644
+--- a/kernel/trace/trace_kprobe.c
++++ b/kernel/trace/trace_kprobe.c
+@@ -434,7 +434,7 @@ static int disable_trace_kprobe(struct trace_event_call *call,
+ 	return 0;
+ }
+ 
+-#if defined(CONFIG_KPROBES_ON_FTRACE) && \
++#if defined(CONFIG_DYNAMIC_FTRACE) && \
+ 	!defined(CONFIG_KPROBE_EVENTS_ON_NOTRACE)
+ static bool __within_notrace_func(unsigned long addr)
+ {
 
--- 
-Martin K. Petersen	Oracle Linux Engineering
