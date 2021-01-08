@@ -2,93 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1EA62EEF5D
+	by mail.lfdr.de (Postfix) with ESMTP id 855492EEF5C
 	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 10:21:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728103AbhAHJVK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Jan 2021 04:21:10 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49738 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727478AbhAHJVJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Jan 2021 04:21:09 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 19BF323372;
-        Fri,  8 Jan 2021 09:20:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610097628;
-        bh=oiPKPwrLUTXmyxEg4htGUPgFpzc+ZSlNsGuIlmxZcHA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=FmG54POPm2c2tiKdpWlDe940ivqmckLWEjMutD1Z9iWCYSH1oOGMajQcbIW3dJMec
-         n9TFS+6rhKwqcvHge4pnOswKtWes6MxZUvil9oNN4hUhJyuCaofAqFpYXsdRw5Bjfy
-         a7lkb0cRHVP+PxTQy62P2GE/d3k7oCBGoOFbXSRdjbzX9YcRRTZmhsLY/fdzw+pDMP
-         HBtNNxb3lQEYayOFbkI7wAPEOuggq7xk3P2nSlM+c+P5n17w90rX9o5JJIUN8FE/KZ
-         pzVGRvRLjOM4zY99FjwjvuyGp9rX8XwxhtEZmg3e5gL4IaT+QS0ONb9h/CXJOyxfo7
-         cUblV5M4jCQoQ==
-Received: from johan by xi.lan with local (Exim 4.93.0.4)
-        (envelope-from <johan@kernel.org>)
-        id 1kxnwd-00019U-DK; Fri, 08 Jan 2021 10:20:31 +0100
-Date:   Fri, 8 Jan 2021 10:20:31 +0100
-From:   Johan Hovold <johan@kernel.org>
-To:     Anant Thazhemadam <anant.thazhemadam@gmail.com>
-Cc:     Johan Hovold <johan@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 05/15] usb: misc: emi26: update to use
- usb_control_msg_send()
-Message-ID: <X/gj3yFkLjuLxTZs@hovoldconsulting.com>
-References: <20201130011819.2576481-1-anant.thazhemadam@gmail.com>
- <20201130012847.2579463-1-anant.thazhemadam@gmail.com>
- <X8pKmmdvO0cIQXnL@localhost>
- <6806f8e4-c2f7-3c6a-b855-3f87ab8d9e22@gmail.com>
+        id S1727924AbhAHJVH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Jan 2021 04:21:07 -0500
+Received: from szxga05-in.huawei.com ([45.249.212.191]:10043 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727478AbhAHJVG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 Jan 2021 04:21:06 -0500
+Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4DByGl2PVszj5R8;
+        Fri,  8 Jan 2021 17:19:27 +0800 (CST)
+Received: from ubuntu.network (10.175.138.68) by
+ DGGEMS410-HUB.china.huawei.com (10.3.19.210) with Microsoft SMTP Server id
+ 14.3.498.0; Fri, 8 Jan 2021 17:20:16 +0800
+From:   Zheng Yongjun <zhengyongjun3@huawei.com>
+To:     <linux-kernel@vger.kernel.org>
+CC:     <lee.jones@linaro.org>, Zheng Yongjun <zhengyongjun3@huawei.com>
+Subject: [PATCH v2 -next] mfd: convert comma to semicolon
+Date:   Fri, 8 Jan 2021 17:20:58 +0800
+Message-ID: <20210108092058.18576-1-zhengyongjun3@huawei.com>
+X-Mailer: git-send-email 2.22.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <6806f8e4-c2f7-3c6a-b855-3f87ab8d9e22@gmail.com>
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.138.68]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 07, 2021 at 07:43:54PM +0530, Anant Thazhemadam wrote:
-> On 04/12/20 8:11 pm, Johan Hovold wrote:
-> > On Mon, Nov 30, 2020 at 06:58:47AM +0530, Anant Thazhemadam wrote:
-> >> The newer usb_control_msg_{send|recv}() API are an improvement on the
-> >> existing usb_control_msg() as it ensures that a short read/write is treated
-> >> as an error,
-> > Short writes have always been treated as an error. The new send helper
-> > only changes the return value from the transfer size to 0.
-> >
-> > And this driver never reads.
-> >
-> > Try to describe the motivation for changing this driver which is to
-> > avoid the explicit kmemdup().
+Replace a comma between expression statements by a semicolon.
 
-> >>  /* thanks to drivers/usb/serial/keyspan_pda.c code */
-> >> @@ -77,11 +67,7 @@ static int emi26_load_firmware (struct usb_device *dev)
-> >>  	int err = -ENOMEM;
-> >>  	int i;
-> >>  	__u32 addr;	/* Address to write */
-> >> -	__u8 *buf;
-> >> -
-> >> -	buf = kmalloc(FW_LOAD_SIZE, GFP_KERNEL);
-> >> -	if (!buf)
-> >> -		goto wraperr;
-> >> +	__u8 buf[FW_LOAD_SIZE];
-> > As the build bots reported, you must not put large structures like this
-> > on the stack.
-> 
-> Understood. 
-> But I'm considering dropping this change (and the one proposed for
-> emi62) altogether in v3 - since these would end up requiring memory to
-> dynamically allocated twice for the same purpose.  However, if you
-> still think the pros of updating this (and emi62) outweigh the cons,
-> please let me know, and I'll make sure to send in another version
-> fixing it.
+Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>
+---
+ drivers/mfd/88pm860x-core.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
-The redundant memdup() is already there for the firmware buffer and
-changing to usb_control_msg_send() will only make it slightly harder to
-get rid of that, if anyone would bother.
+diff --git a/drivers/mfd/88pm860x-core.c b/drivers/mfd/88pm860x-core.c
+index c9bae71f643a..a9e0855b4c66 100644
+--- a/drivers/mfd/88pm860x-core.c
++++ b/drivers/mfd/88pm860x-core.c
+@@ -916,7 +916,7 @@ static void device_power_init(struct pm860x_chip *chip,
+ 	power_devs[0].platform_data = pdata->power;
+ 	power_devs[0].pdata_size = sizeof(struct pm860x_power_pdata);
+ 	power_devs[0].num_resources = ARRAY_SIZE(battery_resources);
+-	power_devs[0].resources = &battery_resources[0],
++	power_devs[0].resources = &battery_resources[0];
+ 	ret = mfd_add_devices(chip->dev, 0, &power_devs[0], 1,
+ 			      &battery_resources[0], chip->irq_base, NULL);
+ 	if (ret < 0)
+@@ -925,7 +925,7 @@ static void device_power_init(struct pm860x_chip *chip,
+ 	power_devs[1].platform_data = pdata->power;
+ 	power_devs[1].pdata_size = sizeof(struct pm860x_power_pdata);
+ 	power_devs[1].num_resources = ARRAY_SIZE(charger_resources);
+-	power_devs[1].resources = &charger_resources[0],
++	power_devs[1].resources = &charger_resources[0];
+ 	ret = mfd_add_devices(chip->dev, 0, &power_devs[1], 1,
+ 			      &charger_resources[0], chip->irq_base, NULL);
+ 	if (ret < 0)
+@@ -942,7 +942,7 @@ static void device_power_init(struct pm860x_chip *chip,
+ 		pdata->chg_desc->charger_regulators =
+ 			&chg_desc_regulator_data[0];
+ 		pdata->chg_desc->num_charger_regulators	=
+-			ARRAY_SIZE(chg_desc_regulator_data),
++			ARRAY_SIZE(chg_desc_regulator_data);
+ 		power_devs[3].platform_data = pdata->chg_desc;
+ 		power_devs[3].pdata_size = sizeof(*pdata->chg_desc);
+ 		ret = mfd_add_devices(chip->dev, 0, &power_devs[3], 1,
+@@ -958,7 +958,7 @@ static void device_onkey_init(struct pm860x_chip *chip,
+ 	int ret;
+ 
+ 	onkey_devs[0].num_resources = ARRAY_SIZE(onkey_resources);
+-	onkey_devs[0].resources = &onkey_resources[0],
++	onkey_devs[0].resources = &onkey_resources[0];
+ 	ret = mfd_add_devices(chip->dev, 0, &onkey_devs[0],
+ 			      ARRAY_SIZE(onkey_devs), &onkey_resources[0],
+ 			      chip->irq_base, NULL);
+@@ -972,7 +972,7 @@ static void device_codec_init(struct pm860x_chip *chip,
+ 	int ret;
+ 
+ 	codec_devs[0].num_resources = ARRAY_SIZE(codec_resources);
+-	codec_devs[0].resources = &codec_resources[0],
++	codec_devs[0].resources = &codec_resources[0];
+ 	ret = mfd_add_devices(chip->dev, 0, &codec_devs[0],
+ 			      ARRAY_SIZE(codec_devs), &codec_resources[0], 0,
+ 			      NULL);
+-- 
+2.22.0
 
-But yeah, it's probably not worth switching usb_control_msg_send() for
-these drivers.
-
-Johan
