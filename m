@@ -2,125 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 337DE2EEB94
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 04:01:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C564A2EEB96
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 04:01:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726844AbhAHDA1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 22:00:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32880 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726113AbhAHDA1 (ORCPT
+        id S1727077AbhAHDAb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 22:00:31 -0500
+Received: from mail-io1-f52.google.com ([209.85.166.52]:41200 "EHLO
+        mail-io1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726099AbhAHDA1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 7 Jan 2021 22:00:27 -0500
-Received: from mail-qt1-x835.google.com (mail-qt1-x835.google.com [IPv6:2607:f8b0:4864:20::835])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBD38C0612F4;
-        Thu,  7 Jan 2021 18:59:40 -0800 (PST)
-Received: by mail-qt1-x835.google.com with SMTP id z9so5740766qtn.4;
-        Thu, 07 Jan 2021 18:59:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=jms.id.au; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=m1UOnZQlSUpnf6aKPwE+X4haOuAWzcolUyB8HXclKZk=;
-        b=hXyKJvBWO47USxHNP91v+gMyjfU65MiJCuufIGMJTAK222NvZmZlCtJt1Rzl/mycDM
-         Nf6XnQh73y7OiZqLNySBMgSDSqzmV+j7kIbNHCajVDqQnY13pPqMEIuFKjq67rTQq0xj
-         F5eNNsi3tEDYhNIFGi/ztmmRfOHrQty8CJ3/U=
+Received: by mail-io1-f52.google.com with SMTP id t8so8379193iov.8;
+        Thu, 07 Jan 2021 19:00:11 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=m1UOnZQlSUpnf6aKPwE+X4haOuAWzcolUyB8HXclKZk=;
-        b=pqq5WwSYnO45Xby/UhYdNTxv41IMgrc0u55rr+Stz+mG/0hSHJVuM38K+zENUhW2Qk
-         ztaqCO9JHaZcsU/laPjHJ9nN+KKayezGW/rI1hyfNJHEuwO+NyXvoUxQnZ3tbKoOCt8K
-         wactqjZQkA3UOpAo2taYt+OETdHin55pLH1y/zU71+oYedoaVAb4IyaoysvALoaFBW/K
-         QT2SYS1TiGRHIsKAjLKmdgDvORk/rxZ6jGX85FDZ/vb2DcgfhQLsuIKEw9ds8b0mZP16
-         d3NpV1n19dC48TSpyaHd3vBpgmq5n/BgeQ2t36Avm8RBeH0LC5NNPsuTbjkxa1aKE1oh
-         Hpxg==
-X-Gm-Message-State: AOAM530MB8Yiyh8IiZtHPV6Ph3jGgwkMkRCt6V9aEivJoM+aIEs4tZNk
-        rRa4dSXOIPrCpJq3sbGOgP2kSl2oC1IermqD0oA=
-X-Google-Smtp-Source: ABdhPJzgwxO1QYsS1AD103dGGMwHdDtcECTAh5zBmhiw0tIxXUY3pxQQ/nGQO979T5rDAeRPM0TxIO3GFuCFkyqwz0M=
-X-Received: by 2002:aed:2d65:: with SMTP id h92mr1632947qtd.263.1610074779999;
- Thu, 07 Jan 2021 18:59:39 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=aRDOzceSiC2MKPyin3oT66DoO1V8WX4nYOJ/ciyOtNA=;
+        b=mZVuw0b8yyD7nR4zZf67JxvrSgUyzLobR+OuRwrcFIT2C0EjUCNHrE+4Jm/Af9MvHK
+         RmnPt2E2YYN0TnT/iVB7OdpMZf4woVjzZDB8rVQ7t6V5ipVaiAumRZVrQMKJzt0+1kaq
+         fxAUSA/sr5RbTIXD+0dYaw9r2HTnJyDtd6QTVlX5Dw+zAYL9D+pR7JkTwI7PlfU3yfJ6
+         5ErryAFgT45wGZX1d7NNwnMYvfJPuzwAKv27N4/NYN5F7FFoMSZLNcdtsvdSrrKr9GfP
+         3KSWSkusrLzSI3EmyR880nZcp9hO11OF3nDNvS9HLwdNcmCVtYwr9Lz8b1AVpMezSVNE
+         ETcA==
+X-Gm-Message-State: AOAM532TsSefZ12Qh0GnJciSBO/5RRSrGRi7+3znh4cYNROG4Q8FwSW8
+        HezNrQdbpk6tpv8x37nTWg==
+X-Google-Smtp-Source: ABdhPJxAb6S26IEYN/ViRSvSZ5C+4V2OpFaOEzLulP5hBbFez4eCy7IT5x66JICgQAWjCUPAEn1eaA==
+X-Received: by 2002:a02:2a4f:: with SMTP id w76mr1497447jaw.50.1610074786553;
+        Thu, 07 Jan 2021 18:59:46 -0800 (PST)
+Received: from robh.at.kernel.org ([64.188.179.253])
+        by smtp.gmail.com with ESMTPSA id y5sm5686183ilj.35.2021.01.07.18.59.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 07 Jan 2021 18:59:45 -0800 (PST)
+Received: (nullmailer pid 1792516 invoked by uid 1000);
+        Fri, 08 Jan 2021 02:59:43 -0000
+Date:   Thu, 7 Jan 2021 19:59:43 -0700
+From:   Rob Herring <robh@kernel.org>
+To:     Kishon Vijay Abraham I <kishon@ti.com>
+Cc:     Vinod Koul <vkoul@kernel.org>, Nishanth Menon <nm@ti.com>,
+        Swapnil Jakhade <sjakhade@cadence.com>,
+        Peter Rosin <peda@axentia.se>, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH 2/7] dt-bindings: phy: ti,phy-j721e-wiz: Add binding for
+ phy_en_refclk
+Message-ID: <20210108025943.GA1790601@robh.at.kernel.org>
+References: <20201224114250.1083-1-kishon@ti.com>
+ <20201224114250.1083-3-kishon@ti.com>
 MIME-Version: 1.0
-References: <20210106055939.19386-1-chiawei_wang@aspeedtech.com>
- <20210106055939.19386-6-chiawei_wang@aspeedtech.com> <20210106153202.GA2258036@robh.at.kernel.org>
- <HK0PR06MB377987E19F57E53CC4F32FF991AF0@HK0PR06MB3779.apcprd06.prod.outlook.com>
-In-Reply-To: <HK0PR06MB377987E19F57E53CC4F32FF991AF0@HK0PR06MB3779.apcprd06.prod.outlook.com>
-From:   Joel Stanley <joel@jms.id.au>
-Date:   Fri, 8 Jan 2021 02:59:28 +0000
-Message-ID: <CACPK8XfCpUDXi-e1Sh1t+wm_-vXNihRchkmQby7fUXi0mCdMwA@mail.gmail.com>
-Subject: Re: [PATCH 5/6] soc: aspeed: Add eSPI driver
-To:     ChiaWei Wang <chiawei_wang@aspeedtech.com>,
-        Jeremy Kerr <jk@codeconstruct.com.au>
-Cc:     Rob Herring <robh@kernel.org>, "andrew@aj.id.au" <andrew@aj.id.au>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "maz@kernel.org" <maz@kernel.org>,
-        "p.zabel@pengutronix.de" <p.zabel@pengutronix.de>,
-        "linux-aspeed@lists.ozlabs.org" <linux-aspeed@lists.ozlabs.org>,
-        "openbmc@lists.ozlabs.org" <openbmc@lists.ozlabs.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        BMC-SW <BMC-SW@aspeedtech.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201224114250.1083-3-kishon@ti.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 7 Jan 2021 at 02:39, ChiaWei Wang <chiawei_wang@aspeedtech.com> wrote:
->
-> Hi Rob,
->
-> > -----Original Message-----
-> > From: Rob Herring <robh@kernel.org>
-> > Sent: Wednesday, January 6, 2021 11:32 PM
-> > To: ChiaWei Wang <chiawei_wang@aspeedtech.com>
-> > Subject: Re: [PATCH 5/6] soc: aspeed: Add eSPI driver
-> >
-> > On Wed, Jan 06, 2021 at 01:59:38PM +0800, Chia-Wei, Wang wrote:
-> > > The Aspeed eSPI controller is slave device to communicate with the
-> > > master through the Enhanced Serial Peripheral Interface (eSPI).
-> > > All of the four eSPI channels, namely peripheral, virtual wire,
-> > > out-of-band, and flash are supported.
-> > >
-> > > Signed-off-by: Chia-Wei, Wang <chiawei_wang@aspeedtech.com>
-> > > ---
-> > >  drivers/soc/aspeed/Kconfig                  |  49 ++
-> > >  drivers/soc/aspeed/Makefile                 |   5 +
-> > >  drivers/soc/aspeed/aspeed-espi-ctrl.c       | 197 ++++++
-> > >  drivers/soc/aspeed/aspeed-espi-flash.c      | 490 ++++++++++++++
-> > >  drivers/soc/aspeed/aspeed-espi-oob.c        | 706
-> > ++++++++++++++++++++
-> > >  drivers/soc/aspeed/aspeed-espi-peripheral.c | 613 +++++++++++++++++
-> > >  drivers/soc/aspeed/aspeed-espi-vw.c         | 211 ++++++
-> > >  include/uapi/linux/aspeed-espi.h            | 160 +++++
-> > >  8 files changed, 2431 insertions(+)
-> > >  create mode 100644 drivers/soc/aspeed/aspeed-espi-ctrl.c
-> > >  create mode 100644 drivers/soc/aspeed/aspeed-espi-flash.c
-> > >  create mode 100644 drivers/soc/aspeed/aspeed-espi-oob.c
-> > >  create mode 100644 drivers/soc/aspeed/aspeed-espi-peripheral.c
-> > >  create mode 100644 drivers/soc/aspeed/aspeed-espi-vw.c
-> >
-> > drivers/spi/ is the correct location for a SPI controller.
-> >
-> > >  create mode 100644 include/uapi/linux/aspeed-espi.h
-> >
-> > This userspace interface is not going to be accepted upstream.
-> >
-> > I'd suggest you look at similar SPI flash capable SPI controller drivers upstream
-> > and model your driver after them. This looks like it needs major reworking.
-> >
-> eSPI resues the timing and electrical specification of SPI but runs completely different protocol.
-> Only the flash channel is related to SPI and the other 3 channels are for EC/BMC/SIO.
-> Therefore, an eSPI driver might not fit into the SPI model.
+On Thu, Dec 24, 2020 at 05:12:45PM +0530, Kishon Vijay Abraham I wrote:
+> Add DT binding for phy_en_refclk used to route the refclk out of the
+> SERDES.
+> 
+> Signed-off-by: Kishon Vijay Abraham I <kishon@ti.com>
+> ---
+>  .../devicetree/bindings/phy/ti,phy-j721e-wiz.yaml   | 13 +++++++++++++
+>  1 file changed, 13 insertions(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/phy/ti,phy-j721e-wiz.yaml b/Documentation/devicetree/bindings/phy/ti,phy-j721e-wiz.yaml
+> index 4a1f9c27b5f0..14823588bc94 100644
+> --- a/Documentation/devicetree/bindings/phy/ti,phy-j721e-wiz.yaml
+> +++ b/Documentation/devicetree/bindings/phy/ti,phy-j721e-wiz.yaml
+> @@ -149,6 +149,19 @@ patternProperties:
+>        - assigned-clocks
+>        - assigned-clock-parents
+>  
+> +  "^phy-en-refclk$":
 
-I agree, the naming is confusing but eSPI doesn't belong in drivers/spi.
+Not really a pattern. Move to 'properties'.
 
-As it is a bus that is common to more than just the Aspeed BMC, we may
-want to implement it as a new bus type that has devices hanging off
-it, similar to FSI.
+> +    type: object
+> +    description: |
+> +      In order to drive the refclk out from the SERDES (Cadence Torrent),
+> +      PHY_EN_REFCLK should be set in SERDES_RST of WIZ. Model phy-en-refclk
+> +      as a clock so that it can be enabled directly or as a parent clock.
+> +    properties:
+> +      "#clock-cells":
+> +        const: 0
+> +
+> +    required:
+> +      - "#clock-cells"
 
-Cheers,
+Though not really any need for a child node here. Just add 
+'#clock-cells' to the parent node.
 
-Joel
+> +
+>    "^serdes@[0-9a-f]+$":
+>      type: object
+>      description: |
+> -- 
+> 2.17.1
+> 
