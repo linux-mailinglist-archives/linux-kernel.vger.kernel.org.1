@@ -2,153 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 08F1F2EF396
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 15:01:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C59682EF3A0
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 15:03:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727459AbhAHOAU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Jan 2021 09:00:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50250 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727176AbhAHOAP (ORCPT
+        id S1726738AbhAHOC5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Jan 2021 09:02:57 -0500
+Received: from mail-qk1-f180.google.com ([209.85.222.180]:45079 "EHLO
+        mail-qk1-f180.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726113AbhAHOC4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Jan 2021 09:00:15 -0500
-Received: from mail-io1-xd31.google.com (mail-io1-xd31.google.com [IPv6:2607:f8b0:4864:20::d31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6308DC0612F6;
-        Fri,  8 Jan 2021 05:59:35 -0800 (PST)
-Received: by mail-io1-xd31.google.com with SMTP id d9so9825930iob.6;
-        Fri, 08 Jan 2021 05:59:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=v3YUKh3Pg+3HEmWFEzA6lV+W8xXHYJpJ+0Kz0Ylu/I0=;
-        b=GOEfVOeF+iauU8s3f5xN+vySJJL75+qUxx13gPkp6BxYrf3ZpvDuz6iLgsQ+1qV84Y
-         TtTnmu9ZLNEj9fSZsIHZeBF7IRDWzLvLoRurqNKGEJ2Ys1OVUt4zntLQYChpTuk/ZTmy
-         lAXGAicWa/C9SFlDLPTWyNlMEm/xC1aKOhWguiaffn3r/eIe4vRr3aaAWUzMpUCa/qzl
-         eDLd8Z3d1uGg5HnPbFIa7IIJxTrR5KISNk/hOKd206XMfSPFHaLdLKhC88FsNtOTQs7x
-         qn/PK2LHIEMmjFm5mcRS5IBYY3rGX2Uxdom7V2KV4BEdclUtOEvMqx1laFL4vyDKAks8
-         5TsQ==
+        Fri, 8 Jan 2021 09:02:56 -0500
+Received: by mail-qk1-f180.google.com with SMTP id b64so8409773qkc.12;
+        Fri, 08 Jan 2021 06:02:40 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=v3YUKh3Pg+3HEmWFEzA6lV+W8xXHYJpJ+0Kz0Ylu/I0=;
-        b=HmfSXR5kkIBVgF/e0N9Uj3Qdjem4+ng+3p92KRpiyTK6v7eJFDo8RqL7cTu6ifKrDI
-         3ZqHarLnB/CYTEdNk8oaJtgmXV635XFo8Nyw/tzHPO4+k123oyfBGZk+V5nBmB0QB7PP
-         rx5rfCqQX/I50F0iqrUSiNl6/SAghFHdWJMHTX8+w5w665QUpy8TBeTomobjK4JyI7ln
-         3JifZ6QH7UuUEk97EpM2Wttxl/HcK5IteISUwam+7nPnm7cDTEHfgINXpU5WtCkZ8VGx
-         GmmezEA2xMZIjsSKdDFvuY/L/5c0p7xlz/g5gyAkVHriCgeePIuwEn7wEUUwEP7rVfMc
-         AZhw==
-X-Gm-Message-State: AOAM532aLAUctS5WOAOkX21dV0wPlywkk2+x7JX1pCsuKVGYT0y4v8zt
-        rnBa2wS2NYsKiezOxcDcZsQ=
-X-Google-Smtp-Source: ABdhPJyq3vyCn6Be2+obp8pxMdElBtgDGBCoHR8SfzvmL/r/TeRvqDvxO4BZCcIetZoFLBvygFklHg==
-X-Received: by 2002:a5d:8a1a:: with SMTP id w26mr5458680iod.112.1610114374783;
-        Fri, 08 Jan 2021 05:59:34 -0800 (PST)
-Received: from rockpro64.hsd1.md.comcast.net ([2601:153:900:7730::20])
-        by smtp.gmail.com with ESMTPSA id l6sm7570063ili.78.2021.01.08.05.59.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 08 Jan 2021 05:59:34 -0800 (PST)
-From:   Peter Geis <pgwipeout@gmail.com>
-To:     Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Peter De Schrijver <pdeschrijver@nvidia.com>,
-        Prashant Gaikwad <pgaikwad@nvidia.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Sameer Pujar <spujar@nvidia.com>,
-        Mohan Kumar <mkumard@nvidia.com>
-Cc:     linux-clk@vger.kernel.org, linux-tegra@vger.kernel.org,
-        linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
-        Peter Geis <pgwipeout@gmail.com>, Ion Agorria <ion@agorria.com>
-Subject: [PATCH v2 2/2] ALSA: hda/tegra: fix tegra-hda on tegra30 soc
-Date:   Fri,  8 Jan 2021 13:59:13 +0000
-Message-Id: <20210108135913.2421585-3-pgwipeout@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210108135913.2421585-1-pgwipeout@gmail.com>
-References: <20210108135913.2421585-1-pgwipeout@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=mDweryYeuggXhC0OuRMnobqg5ELRrYBSuHnqfXOjGVA=;
+        b=YSi+rwMRNrTs92KrQ8B2UdAV55zckcTNvziid8MZ5HrdEeloMqStZpcY2v6gxQAkrU
+         Bp4m5ZhE/ogfRGjU9seGGTC/Q1cL5xhapg9YF4tEGY96ufQdcBK2CMqb9yg9HYIflObe
+         xj1mn4bFgwwOXh3kJTwKnG1sfyP7sQMFGQVLm6McFnVs01c1KSNapjFhbHCxz2Ul9r1J
+         vGNmfIJpwk1m6wMIW1n9mLnOMl/m9w2IYM+C0vl9PghWwTw60qZdOsPurJhSh7exIg3h
+         y4PzErHwxq9NiHcLEYkFGCewKyDTVYk94bO0aGYnDq+rdu5Fra+MkFtRxFT3Ekj1rRHe
+         hgdg==
+X-Gm-Message-State: AOAM531fHaqc25WuqlcRK8A2DNrzGtt3H3/ouI5Ms0FyDCuTOgXeHiuG
+        DgPDC/JtsUIw5SmFXmS9ynF0iax3+ym62qe8JQVmXzrS0yg=
+X-Google-Smtp-Source: ABdhPJw7Wi0RXnPWX3AtBnXjSkwAnKyK40ylT7DEDTq6iuF6Zyzoc76yAbzx6dbjS879CCynMB/f2AixdfSwvQEcapI=
+X-Received: by 2002:a37:6c06:: with SMTP id h6mr3943141qkc.115.1610114534929;
+ Fri, 08 Jan 2021 06:02:14 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20201224170502.2254683-1-aford173@gmail.com> <20201224170502.2254683-9-aford173@gmail.com>
+In-Reply-To: <20201224170502.2254683-9-aford173@gmail.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Fri, 8 Jan 2021 15:02:03 +0100
+Message-ID: <CAMuHMdXf9iXvoDHDvx0fjx1yQx=5-cjDz_pECDjrXZn__z4cFA@mail.gmail.com>
+Subject: Re: [PATCH V2 9/9] arm64: dts: renesas: beacon: Increase sdhi speeds
+To:     Adam Ford <aford173@gmail.com>
+Cc:     Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        Adam Ford-BE <aford@beaconembedded.com>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently hda on tegra30 fails to open a stream with an input/output error.
+Hi Adam,
 
-For example:
-speaker-test -Dhw:0,3 -c 2
+On Thu, Dec 24, 2020 at 6:05 PM Adam Ford <aford173@gmail.com> wrote:
+> The eMMC can run at hs400 and the WiFi chip can run at sdr104.
+> Set the respective flags to push the sdhi faster.
+>
+> Signed-off-by: Adam Ford <aford173@gmail.com>
 
-speaker-test 1.2.2
+Thanks for your patch!
 
-Playback device is hw:0,3
-Stream parameters are 48000Hz, S16_LE, 2 channels
-Using 16 octaves of pink noise
-Rate set to 48000Hz (requested 48000Hz)
-Buffer size range from 64 to 16384
-Period size range from 32 to 8192
-Using max buffer size 16384
-Periods = 4
-was set period_size = 4096
-was set buffer_size = 16384
- 0 - Front Left
-Write error: -5,Input/output error
-xrun_recovery failed: -5,Input/output error
-Transfer failed: Input/output error
+> --- a/arch/arm64/boot/dts/renesas/beacon-renesom-som.dtsi
+> +++ b/arch/arm64/boot/dts/renesas/beacon-renesom-som.dtsi
+> @@ -271,8 +271,9 @@ &scif2 {
+>  };
+>
+>  &sdhi2 {
+> -       pinctrl-names = "default";
+>         pinctrl-0 = <&sdhi2_pins>;
+> +       pinctrl-1 = <&sdhi2_pins>;
+> +       pinctrl-names = "default", "state_uhs";
+>         bus-width = <4>;
+>         vmmc-supply = <&reg_3p3v>;
+>         vqmmc-supply = <&reg_1p8v>;
+> @@ -281,6 +282,8 @@ &sdhi2 {
+>         pm-ignore-notify;
+>         keep-power-in-suspend;
+>         mmc-pwrseq = <&wlan_pwrseq>;
+> +       sd-uhs-sdr50;
+> +       sd-uhs-sdr104;
+>         status = "okay";
+>         #address-cells = <1>;
+>         #size-cells = <0>;
 
-The tegra-hda device was introduced in tegra30 but only utilized in
-tegra124 until recent chips. Tegra210/186 work only due to a hardware
-change. For this reason it is unknown when this issue first manifested.
-Discussions with the hardware team show this applies to all current tegra
-chips. It has been resolved in the tegra234, which does not have hda
-support at this time.
+The HS400 change was accidentally part of "[PATCH V2 5/9] arm64: dts:
+renesas: beacon: Cleanup USB References":
 
-The explanation from the hardware team is this:
-Below is the striping formula referenced from HD audio spec.
-   { ((num_channels * bits_per_sample) / number of SDOs) >= 8 }
+| @@ -315,16 +306,12 @@ &sdhi3 {
+|   vmmc-supply = <&reg_3p3v>;
+|   vqmmc-supply = <&reg_1p8v>;
+|   bus-width = <8>;
+| - mmc-hs200-1_8v;
+| + mmc-hs400-1_8v;
+|   non-removable;
+|   fixed-emmc-driver-type = <1>;
+|   status = "okay";
 
-The current issue is seen because Tegra HW has a problem with boundary
-condition (= 8) for striping. The reason why it is not seen on
-Tegra210/Tegra186 is because it uses max 2SDO lines. Max SDO lines is
-read from GCAP register.
+You probably want to keep, not replace, the "mmc-hs200-1_8v" property,
+though.
 
-For the given stream (channels = 2, bps = 16);
-ratio = (channels * bps) / NSDO = 32 / NSDO;
+With that fixed:
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
 
-On Tegra30,      ratio = 32/4 = 8  (FAIL)
-On Tegra210/186, ratio = 32/2 = 16 (PASS)
-On Tegra194,     ratio = 32/4 = 8  (FAIL) ==> Earlier workaround was
-applied for it
+Gr{oetje,eeting}s,
 
-If Tegra210/186 is forced to use 4SDO, it fails there as well. So the
-behavior is consistent across all these chips.
+                        Geert
 
-Applying the fix in [1] universally resolves this issue on tegra30-hda.
-Tested on the Ouya game console and the tf201 tablet.
-
-[1] commit 60019d8c650d ("ALSA: hda/tegra: workaround playback failure on
-Tegra194")
-
-Reviewed-by: Jon Hunter <jonathanh@nvidia.com>
-Tested-by: Ion Agorria <ion@agorria.com>
-Signed-off-by: Peter Geis <pgwipeout@gmail.com>
----
- sound/pci/hda/hda_tegra.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/sound/pci/hda/hda_tegra.c b/sound/pci/hda/hda_tegra.c
-index 70164d1428d4..361cf2041911 100644
---- a/sound/pci/hda/hda_tegra.c
-+++ b/sound/pci/hda/hda_tegra.c
-@@ -388,7 +388,7 @@ static int hda_tegra_first_init(struct azx *chip, struct platform_device *pdev)
- 	 * in powers of 2, next available ratio is 16 which can be
- 	 * used as a limiting factor here.
- 	 */
--	if (of_device_is_compatible(np, "nvidia,tegra194-hda"))
-+	if (of_device_is_compatible(np, "nvidia,tegra30-hda"))
- 		chip->bus.core.sdo_limit = 16;
- 
- 	/* codec detection */
 -- 
-2.25.1
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
