@@ -2,119 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A9532EEB8B
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 03:59:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 519442EEB8D
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 03:59:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726929AbhAHC5T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 21:57:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60644 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726474AbhAHC5S (ORCPT
+        id S1727067AbhAHC6x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 21:58:53 -0500
+Received: from mail-io1-f52.google.com ([209.85.166.52]:34629 "EHLO
+        mail-io1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726528AbhAHC6w (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 21:57:18 -0500
-Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 464D8C0612F5
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Jan 2021 18:56:38 -0800 (PST)
-Received: by mail-pj1-x102b.google.com with SMTP id u4so3647740pjn.4
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Jan 2021 18:56:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=3O9zuZkl9ZCDWe21i1b+VXFMIgQt5YzM+o0I5kD2q18=;
-        b=EsLZpaTiHt45R+RX9vSof5hFiKU/thtsi7O0RCTnt7lezGkxOIc+1P6/BWbTv9yESI
-         p8CTkQQLqtCqTaS8bEbkrsgrOkCPgzXnm3odm7+DBejXM4P1aP388fNOcOrFZZMUuiYH
-         eiJqFXqS2CE+gC5m/PJv6Yjwm0TbnubxcYJ2U=
+        Thu, 7 Jan 2021 21:58:52 -0500
+Received: by mail-io1-f52.google.com with SMTP id i18so8404764ioa.1;
+        Thu, 07 Jan 2021 18:58:37 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=3O9zuZkl9ZCDWe21i1b+VXFMIgQt5YzM+o0I5kD2q18=;
-        b=Bj+zclVRLrVtTXiQASkQjshNWSYWmXR6pZJhQk+ulfPwMqxWGDbOepB7n/If2NuhrH
-         1eCfwfv/SSTa6A1nYkFLmV1yR12V0OrdAAg3+CZ6agkj9Mzv3IMZRq/il+/C7ZQZgUxC
-         07vbLzs20kuc1uercq657AXqbfXwcFnSpva/w4EDDdB0oafif0s2inikLM9SX81vonm5
-         k+yaf3VBTHnyVFr6gYUEtXQtVUcWPHSXEbpCqPKF/tRcul2u9f1K5pRsjgAeOTSijGxk
-         mDykscro8iQaT8yZwWH0LNl7HSi3oi7+rD9ZXDaSCoYZKDAqgivFpJPoq0TFhQZSKKL5
-         FTqQ==
-X-Gm-Message-State: AOAM5339EHeSKoI0IQIcDi6Xld84JiDcNnOeX00XcmM2EKLRVmoXthGj
-        Xgk8q/efQCravyCS1Jmt5Ic8PlOGV4DmK8Rn48VwLg==
-X-Google-Smtp-Source: ABdhPJzKGxYU6yAsvjkCKTP+2vQ3R7MIV+PsqPkURWLcF6PiijJ9ZVBxcWLGKVYSFjx9ws0RQhVHdLOmDDgsMI6i+zI=
-X-Received: by 2002:a17:90a:2e83:: with SMTP id r3mr1457895pjd.112.1610074597749;
- Thu, 07 Jan 2021 18:56:37 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=kdwvcSQe/BsoYAGJeSvP+ZzZ58dAp5TIxQnH80/cM+U=;
+        b=FTwa6W3SiMwA9y4r6y1rrIB4H5XMKpLuTsHSYvuCRKGeYPN28wjxHceYiCT1AvyZx9
+         RiYfKfCJCenoPkGjxVyGM/Dykf5JLUbFl2YClAgkz/hp2/OXQmzApC7YokWa/3Pjwexd
+         6V1KSADyCP45bxZnvCNoxEIAgEytmNdx7UoTJeCX6EZUS31RqqihNKqOgzeQt4ddwUVf
+         VhCGmJKwM+7yKJkps6keKSg89dLXI4wydkr22HhIzbvk/tr29JpEpNFk3dL6y94jhyiv
+         m/98Tg3x9DUsorpSgjd5zWvFeOokkZMkST3pxqmRFCy+lAlLdJ1IssiFT93x/SrgGx7A
+         uxgA==
+X-Gm-Message-State: AOAM530mKEHviR8nAwdG/HSJ6k7Tn2RxLazVTNFYD+1GoCWaSFV5oRc+
+        MTN8f9tvykfGPhwPG6xPFg==
+X-Google-Smtp-Source: ABdhPJzlRgt30XO/nkuOW39uOtokST2Sb2dRPM9GTcV/24xif96JYMGwg8NGprhFyFY6jGkcCZmkZw==
+X-Received: by 2002:a6b:7a09:: with SMTP id h9mr3778656iom.167.1610074691608;
+        Thu, 07 Jan 2021 18:58:11 -0800 (PST)
+Received: from robh.at.kernel.org ([64.188.179.253])
+        by smtp.gmail.com with ESMTPSA id p25sm4599947ioj.21.2021.01.07.18.58.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 07 Jan 2021 18:58:10 -0800 (PST)
+Received: (nullmailer pid 1790366 invoked by uid 1000);
+        Fri, 08 Jan 2021 02:58:08 -0000
+Date:   Thu, 7 Jan 2021 19:58:08 -0700
+From:   Rob Herring <robh@kernel.org>
+To:     Kishon Vijay Abraham I <kishon@ti.com>
+Cc:     Vinod Koul <vkoul@kernel.org>, Nishanth Menon <nm@ti.com>,
+        Swapnil Jakhade <sjakhade@cadence.com>,
+        Peter Rosin <peda@axentia.se>, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH 1/7] dt-bindings: phy: ti,phy-j721e-wiz: Add bindings for
+ AM64 SERDES Wrapper
+Message-ID: <20210108025808.GA1787492@robh.at.kernel.org>
+References: <20201224114250.1083-1-kishon@ti.com>
+ <20201224114250.1083-2-kishon@ti.com>
 MIME-Version: 1.0
-References: <20201229142406.v5.1.Id0d31b5f3ddf5e734d2ab11161ac5821921b1e1e@changeid>
- <2aea44f0-85e7-fd55-2c35-c1d994f20e03@linux.intel.com>
-In-Reply-To: <2aea44f0-85e7-fd55-2c35-c1d994f20e03@linux.intel.com>
-From:   Ikjoon Jang <ikjn@chromium.org>
-Date:   Fri, 8 Jan 2021 10:56:26 +0800
-Message-ID: <CAATdQgBSh+Rkfj5a=g=4LwoNYcG+87zTJJF-VdeaA4WH5ARhuA@mail.gmail.com>
-Subject: Re: [PATCH v5] usb: xhci-mtk: fix unreleased bandwidth data
-To:     Mathias Nyman <mathias.nyman@linux.intel.com>
-Cc:     "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>, linux-usb@vger.kernel.org,
-        Chunfeng Yun <chunfeng.yun@mediatek.com>,
-        Tianping Fang <tianping.fang@mediatek.com>,
-        Zhanyong Wang <zhanyong.wang@mediatek.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Mathias Nyman <mathias.nyman@intel.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-arm-kernel@lists.infradead.org>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201224114250.1083-2-kishon@ti.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 7, 2021 at 7:07 PM Mathias Nyman
-<mathias.nyman@linux.intel.com> wrote:
->
-> On 29.12.2020 8.24, Ikjoon Jang wrote:
-> > xhci-mtk has hooks on add_endpoint() and drop_endpoint() from xhci
-> > to handle its own sw bandwidth managements and stores bandwidth data
-> > into internal table every time add_endpoint() is called,
-> > so when bandwidth allocation fails at one endpoint, all earlier
-> > allocation from the same interface could still remain at the table.
-> >
-> > This patch adds two more hooks from check_bandwidth() and
-> > reset_bandwidth(), and make mtk-xhci to releases all failed endpoints
-> > from reset_bandwidth().
-> >
-> > Fixes: 08e469de87a2 ("usb: xhci-mtk: supports bandwidth scheduling with multi-TT")
-> > Signed-off-by: Ikjoon Jang <ikjn@chromium.org>
-> >
->
-> ...
->
-> >
-> > diff --git a/drivers/usb/host/xhci.c b/drivers/usb/host/xhci.c
-> > index d4a8d0efbbc4..e1fcd3cf723f 100644
-> > --- a/drivers/usb/host/xhci.c
-> > +++ b/drivers/usb/host/xhci.c
-> > @@ -2882,6 +2882,12 @@ static int xhci_check_bandwidth(struct usb_hcd *hcd, struct usb_device *udev)
-> >       xhci_dbg(xhci, "%s called for udev %p\n", __func__, udev);
-> >       virt_dev = xhci->devs[udev->slot_id];
-> >
-> > +     if (xhci->quirks & XHCI_MTK_HOST) {
-> > +             ret = xhci_mtk_check_bandwidth(hcd, udev);
-> > +             if (ret < 0)
-> > +                     return ret;
-> > +     }
-> > +
->
-> Just noticed that XHCI_MTK_HOST quirk is only set in xhci-mtk.c.
-> xhci-mtk.c calls xhci_init_driver(..., xhci_mtk_overrides) with a .reset override function.
->
-> why not add override functions for .check_bandwidth and .reset_bandwidth to xhci_mtk_overrides instead?
->
-> Another patch to add similar overrides for .add_endpoint and .drop_endpoint should probably be
-> done so that we can get rid of the xhci_mtk_add/drop_ep_quirk() calls in xhci.c as well
+On Thu, Dec 24, 2020 at 05:12:44PM +0530, Kishon Vijay Abraham I wrote:
+> Add bindings for AM64 SERDES Wrapper.
+> 
+> Signed-off-by: Kishon Vijay Abraham I <kishon@ti.com>
+> ---
+>  .../devicetree/bindings/phy/ti,phy-j721e-wiz.yaml      | 10 +++++++---
+>  1 file changed, 7 insertions(+), 3 deletions(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/phy/ti,phy-j721e-wiz.yaml b/Documentation/devicetree/bindings/phy/ti,phy-j721e-wiz.yaml
+> index c33e9bc79521..4a1f9c27b5f0 100644
+> --- a/Documentation/devicetree/bindings/phy/ti,phy-j721e-wiz.yaml
+> +++ b/Documentation/devicetree/bindings/phy/ti,phy-j721e-wiz.yaml
+> @@ -12,9 +12,13 @@ maintainers:
+>  
+>  properties:
+>    compatible:
+> -    enum:
+> -      - ti,j721e-wiz-16g
+> -      - ti,j721e-wiz-10g
+> +    oneOf:
+> +      - const: ti,j721e-wiz-16g
+> +      - const: ti,j721e-wiz-10g
 
-Yes, I agree.
-Let me submit another patch adding more overridables to xhci_driver_overrides.
-Thanks.
+Pick one. This:
 
->
-> Thanks
-> -Mathias
->
+> +      - const: ti,am64-wiz-10g
+
+Or this:
+
+> +      - items:
+> +          - const: ti,am64-wiz-10g
+> +          - const: ti,j721e-wiz-10g
+
+No reason to support both for ti,am64-wiz-10g.
+
+>  
+>    power-domains:
+>      maxItems: 1
+> -- 
+> 2.17.1
+> 
