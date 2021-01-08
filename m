@@ -2,109 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B7712EEB7C
+	by mail.lfdr.de (Postfix) with ESMTP id E858A2EEB7D
 	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 03:53:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726683AbhAHCwC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 21:52:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59822 "EHLO
+        id S1726751AbhAHCwr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 21:52:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59934 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726482AbhAHCwC (ORCPT
+        with ESMTP id S1726113AbhAHCwr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 21:52:02 -0500
-Received: from mail-pf1-x449.google.com (mail-pf1-x449.google.com [IPv6:2607:f8b0:4864:20::449])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2BB2C0612F4
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Jan 2021 18:51:21 -0800 (PST)
-Received: by mail-pf1-x449.google.com with SMTP id 15so5606310pfu.6
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Jan 2021 18:51:21 -0800 (PST)
+        Thu, 7 Jan 2021 21:52:47 -0500
+Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA4B8C0612F4
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Jan 2021 18:52:06 -0800 (PST)
+Received: by mail-pg1-x536.google.com with SMTP id g15so6706031pgu.9
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Jan 2021 18:52:06 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:message-id:mime-version:subject:from:to:cc;
-        bh=igBGrAi6Rm5zuPhj7f6tM3a6FH4jJ4t835DAUEG27WY=;
-        b=NkJg0hcph3kLiTW/09AU80ChiiYrzkV/MKO33Iako84r/B723quJq1qwiNUafzuDOc
-         1vYHMDLG+AGqgZi6UkYPxZHzAuRzj4ST71oWMmMm4xMR/Zfc9DTnfeNi+mayoHcncQKA
-         9xhwIdzrdTd5wNGA5KcXKF04SR1gaJtD/R1TCePFMrnTJy16eFXEn2BKueRCnEHXX2GA
-         Hxx50oPqGcPBFRyV/if7ErbMYwq4W19jBC1nR4t6UxCSoiLBJpnPUmD3E8w5cA/F0o6h
-         NrZTYFVHu9MEdmwQwrC3tfeMT+cMjs7VmHiTRrQFEsaQStJbquJZR5YT6kE/OuLpQlPm
-         qQXw==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=PQO8vJwSx7HHkUDB54L3o6TvWNWFoO4uiodcnxSDlcQ=;
+        b=X/AAyuJPU+5BF0P70BENerkQ7fsoiQwBujnVb/DQLxNbz1PPtMezpk5ReCf/OJKQQy
+         f4bPc1u3OHv/y4tYs6HpwW77XZvz3oaL8PpNPggwD9t7QroceJRn6aAT0DlpL3fKmt9m
+         Kc2eEwKEnuIJFw8ojiF0UiZqJeFc277BnZZPvWXczvmiW79m1x2MqcGq6I8lWYpS91L8
+         s3gZtJOUZD/CET29z2o6rPTikBdhxrk+Z3p2zjjQClk91guj9+5j2Oq7QEGLXsVaIwXK
+         uVznU6511s/FXwBle7HhugF3yj6NOEB2U6jJRJV8N4XJqnJW4oR7E/hb/gvJy4gDt+8R
+         WXvQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
-         :to:cc;
-        bh=igBGrAi6Rm5zuPhj7f6tM3a6FH4jJ4t835DAUEG27WY=;
-        b=Bow7qS3aGnWp4OH0s2lOTu8YpmNliO2h5xRh3VFYfrCcKMnHuBjHgJ/q9wy6hA2IxW
-         oqHR2IUsPH9hQnzUNtFy207kNgZMEftyktlK8IxF66OKCse+QXPv09g4kue+wZIta+j/
-         NfPAewKarlW/BUds9n5MT886Q5oija2SyqrWPRdSjvQ31wm1Y2i8rfMrV3BbVrLJenou
-         KML3iNxzCTpcEKc3s12B7xXsZLSUckZumQ2NIRLz4sxUMenQdobgCDfpxgbXLCNcPtqG
-         hdJ/dE2Do3W5EgCayj5RQ+WIQT07FXVWCAn0Qnm30xktWcnX9P7VkCNsr6RZMPkKfhql
-         VNpg==
-X-Gm-Message-State: AOAM53314EvfJZNwNI/OC97sJkFq1m10bW7CgD+s2GA15bcvN6P6Qunf
-        /cEExTQuoD9Bt3WBxqNnXoV3SZdzl7k=
-X-Google-Smtp-Source: ABdhPJwJ/hjL4qcB91A5Mt4uYQAf/7kFnz8+SYqM0DpYLT7O6zdyS6JzC1YkuIJ4kx5su6Y8jPmRqN2PkiQ=
-Sender: "baekhw via sendgmr" <baekhw@heavenly0xe8.kir.corp.google.com>
-X-Received: from heavenly0xe8.kir.corp.google.com ([2620:0:1008:11:f693:9fff:feea:d503])
- (user=baekhw job=sendgmr) by 2002:a17:902:7205:b029:db:d2d5:fe79 with SMTP id
- ba5-20020a1709027205b02900dbd2d5fe79mr4929950plb.30.1610074281228; Thu, 07
- Jan 2021 18:51:21 -0800 (PST)
-Date:   Thu,  7 Jan 2021 18:51:07 -0800
-Message-Id: <20210108025107.1223487-1-baekhw@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.29.2.729.g45daf8777d-goog
-Subject: [PATCH] x86/sev-es: Fix SEV-ES #VC handler for string port IO
-From:   "Hyunwook (Wooky) Baek" <baekhw@google.com>
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>
-Cc:     Joerg Roedel <jroedel@suse.de>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        David Rientjes <rientjes@google.com>,
-        Sean Christopherson <seanjc@google.com>,
-        linux-kernel@vger.kernel.org, x86@kernel.org,
-        "Hyunwook (Wooky) Baek" <baekhw@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=PQO8vJwSx7HHkUDB54L3o6TvWNWFoO4uiodcnxSDlcQ=;
+        b=Vg/jsGHSXhhLsVV4J8sTCHT3aIBAOsCAPQ5CjKEZbtkbXo8vv/KSXgQxs3aQa8iOvU
+         UIlsCfuyrQYVOAtv9j3RAT/aZw/o8jOIbcn5jHMOaigh3I5jWlFZWe3A4z9aGne+npYN
+         yS7tHcjnZnoo4g/OrfWXHHA/0i+qb+tDhgzCm1Bd+o4FFf5/M2KG+1op8LRDniPkIGkL
+         MbSSSD/snta2UjGGl5Omfp1jt16XvGK79V6Uk5CL1Voo4ISlZ7SGJlawBgYV+MAUHPbK
+         UOqY4yPdJOXcz1cFx+e/H2p2XoViwBX7QFif4GLPZBVtKp9lFeelwfnsCQFFm8fIfCMA
+         JL0g==
+X-Gm-Message-State: AOAM531nqTXudxt9G50Hw7/N8+TvKM9XlkyD4b37sKLdkhfzZQMAVTkz
+        LQvqPt1Sqpqvd3HBkF2pBHhh/A5pLQK10Bbi
+X-Google-Smtp-Source: ABdhPJyh26fX5mM3v76uqsyxr5vX4CHgh1u6pP0ycZZyqGqjd0a30WyALlIup4JtQsrUxrFORhFF2g==
+X-Received: by 2002:a63:3049:: with SMTP id w70mr4782475pgw.224.1610074326364;
+        Thu, 07 Jan 2021 18:52:06 -0800 (PST)
+Received: from container-ubuntu.lan ([171.211.28.197])
+        by smtp.gmail.com with ESMTPSA id z2sm7641230pgl.49.2021.01.07.18.51.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 07 Jan 2021 18:52:05 -0800 (PST)
+From:   DENG Qingfang <dqfext@gmail.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Sergio Paracuellos <sergio.paracuellos@gmail.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Chuanhong Guo <gch981213@gmail.com>,
+        NeilBrown <neil@brown.name>, devel@driverdev.osuosl.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     Rosen Penev <rosenp@gmail.com>
+Subject: [PATCH] staging: mt7621-dts: remove obsolete switch node
+Date:   Fri,  8 Jan 2021 10:51:55 +0800
+Message-Id: <20210108025155.31556-1-dqfext@gmail.com>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Don't assume dest/source buffers are userspace addresses when manually
-copying data for string I/O or MOVS MMIO, as {get,put}_user() will fail
-if handed a kernel address and ultimately lead to a kernel panic.
+This was for OpenWrt's swconfig driver, which never made it upstream,
+and was also superseded by MT7530 DSA driver.
 
-Signed-off-by: Hyunwook (Wooky) Baek <baekhw@google.com>
-Acked-by: David Rientjes <rientjes@google.com>
+Signed-off-by: DENG Qingfang <dqfext@gmail.com>
 ---
- arch/x86/kernel/sev-es.c | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
+ drivers/staging/mt7621-dts/mt7621.dtsi | 7 -------
+ 1 file changed, 7 deletions(-)
 
-diff --git a/arch/x86/kernel/sev-es.c b/arch/x86/kernel/sev-es.c
-index 0bd1a0fc587e..812494d216ba 100644
---- a/arch/x86/kernel/sev-es.c
-+++ b/arch/x86/kernel/sev-es.c
-@@ -286,6 +286,12 @@ static enum es_result vc_write_mem(struct es_em_ctxt *ctxt,
- 	u16 d2;
- 	u8  d1;
+diff --git a/drivers/staging/mt7621-dts/mt7621.dtsi b/drivers/staging/mt7621-dts/mt7621.dtsi
+index 5b9d3bf82cb1..42e8ec72c3cd 100644
+--- a/drivers/staging/mt7621-dts/mt7621.dtsi
++++ b/drivers/staging/mt7621-dts/mt7621.dtsi
+@@ -497,13 +497,6 @@ fixed-link {
+ 		};
+ 	};
  
-+	/* If instruction ran in kernel mode and the I/O buffer is in kernel space */
-+	if (!user_mode(ctxt->regs) && !access_ok(s, size)) {
-+		memcpy(dst, buf, size);
-+		return ES_OK;
-+	}
-+
- 	switch (size) {
- 	case 1:
- 		memcpy(&d1, buf, 1);
-@@ -335,6 +341,12 @@ static enum es_result vc_read_mem(struct es_em_ctxt *ctxt,
- 	u16 d2;
- 	u8  d1;
- 
-+	/* If instruction ran in kernel mode and the I/O buffer is in kernel space */
-+	if (!user_mode(ctxt->regs) && !access_ok(s, size)) {
-+		memcpy(buf, src, size);
-+		return ES_OK;
-+	}
-+
- 	switch (size) {
- 	case 1:
- 		if (get_user(d1, s))
+-	gsw: gsw@1e110000 {
+-		compatible = "mediatek,mt7621-gsw";
+-		reg = <0x1e110000 0x8000>;
+-		interrupt-parent = <&gic>;
+-		interrupts = <GIC_SHARED 23 IRQ_TYPE_LEVEL_HIGH>;
+-	};
+-
+ 	pcie: pcie@1e140000 {
+ 		compatible = "mediatek,mt7621-pci";
+ 		reg = <0x1e140000 0x100     /* host-pci bridge registers */
 -- 
-2.29.2.729.g45daf8777d-goog
-
+2.25.1
