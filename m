@@ -2,72 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF9DE2EF018
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 10:53:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BC182EF022
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 10:53:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728257AbhAHJwt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Jan 2021 04:52:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40122 "EHLO
+        id S1728355AbhAHJxF convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 8 Jan 2021 04:53:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40164 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727629AbhAHJws (ORCPT
+        with ESMTP id S1728299AbhAHJxE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Jan 2021 04:52:48 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CECCC0612F4
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Jan 2021 01:52:08 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=1PDtrbcaBPK2Go3OlTjgm02lDmV3mwof4pPUUTeO7Z4=; b=0uEJgH+66I5JaBymO9Gh0bMRwC
-        UITBv1j2qRhYCStpw8VpTopyJo6yv3ZOprk9DliwkJE3btxsYl0St71q7iEdB+9h4P39swUix3Hp1
-        ejf07vs2FQeafuQjw7kq6EOUuR0+wY4Pd4TSsxiIaSQDl6aMr36UsjCGvjedaS/P/7Yq/i/GmkzVr
-        Ao+mxPb/i/0U1ZsWWDpBKMxsd4jsqBa7ca3bPnDoBujTNqRwSNlgx93O1BfQO2JfqJP54/3rSdJBy
-        Cs4TH8To2KstXWc4HcHzGLTGe7/lFxsAW+ZLmuqmmcEZuadKFlmSqhIGpSDwLUPd4/1AjZBzhqeUh
-        Ud5VKs/A==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kxoR4-0000kL-6W; Fri, 08 Jan 2021 09:51:58 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 40E9D3003D8;
-        Fri,  8 Jan 2021 10:51:56 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 2FC322BC2B3D9; Fri,  8 Jan 2021 10:51:56 +0100 (CET)
-Date:   Fri, 8 Jan 2021 10:51:56 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     David Laight <David.Laight@aculab.com>
-Cc:     'Linus Torvalds' <torvalds@linux-foundation.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        kernel test robot <oliver.sang@intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@kernel.org>, Borislav Petkov <bp@alien8.de>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "lkp@lists.01.org" <lkp@lists.01.org>,
-        kernel test robot <lkp@intel.com>,
-        "Huang, Ying" <ying.huang@intel.com>,
-        Feng Tang <feng.tang@intel.com>,
-        "zhengjun.xing@intel.com" <zhengjun.xing@intel.com>
-Subject: Re: [x86] d55564cfc2: will-it-scale.per_thread_ops -5.8% regression
-Message-ID: <X/grPFTgOMvtqEVZ@hirez.programming.kicks-ass.net>
-References: <20210107134723.GA28532@xsang-OptiPlex-9020>
- <CAHk-=wgQ5EEH3-GTK9KDB5mBmWjP25YHXC6_-V_KfWd0UTDTDQ@mail.gmail.com>
- <20210107183358.GG3579531@ZenIV.linux.org.uk>
- <CAHk-=wiZaFRt9hGen9=eOr7LA+Q8o5f980eGEvtxBD6+os7nqA@mail.gmail.com>
- <20210107190445.GK3579531@ZenIV.linux.org.uk>
- <CAHk-=whneXU5Sr=iOOrzcqZt6q85zp-8CUSviOwGPj5ePBW4CQ@mail.gmail.com>
- <824461ae2cb642b1b2f82fac140a98da@AcuMS.aculab.com>
+        Fri, 8 Jan 2021 04:53:04 -0500
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 055ADC0612F6
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Jan 2021 01:52:23 -0800 (PST)
+Received: from lupine.hi.pengutronix.de ([2001:67c:670:100:3ad5:47ff:feaf:1a17] helo=lupine)
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <p.zabel@pengutronix.de>)
+        id 1kxoRH-0004kq-Nx; Fri, 08 Jan 2021 10:52:11 +0100
+Received: from pza by lupine with local (Exim 4.92)
+        (envelope-from <p.zabel@pengutronix.de>)
+        id 1kxoRD-0004Qd-Gi; Fri, 08 Jan 2021 10:52:07 +0100
+Message-ID: <a76a6d85f28834762ddb612706d6edc7c5a4b839.camel@pengutronix.de>
+Subject: Re: [PATCH v2 -next] media: hantro: convert comma to semicolon
+From:   Philipp Zabel <p.zabel@pengutronix.de>
+To:     Zheng Yongjun <zhengyongjun3@huawei.com>, ezequiel@collabora.com,
+        mchehab@kernel.org, linux-media@vger.kernel.org,
+        linux-rockchip@lists.infradead.org, devel@driverdev.osuosl.org,
+        linux-kernel@vger.kernel.org
+Cc:     gregkh@linuxfoundation.org
+Date:   Fri, 08 Jan 2021 10:52:07 +0100
+In-Reply-To: <20210108092230.18782-1-zhengyongjun3@huawei.com>
+References: <20210108092230.18782-1-zhengyongjun3@huawei.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+User-Agent: Evolution 3.30.5-1.1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <824461ae2cb642b1b2f82fac140a98da@AcuMS.aculab.com>
+X-SA-Exim-Connect-IP: 2001:67c:670:100:3ad5:47ff:feaf:1a17
+X-SA-Exim-Mail-From: p.zabel@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 08, 2021 at 09:37:45AM +0000, David Laight wrote:
-> The lack of spinlocks in userspace really kills you.
+On Fri, 2021-01-08 at 17:22 +0800, Zheng Yongjun wrote:
+> Replace a comma between expression statements by a semicolon.
+> 
+> Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>
+> ---
+>  drivers/staging/media/hantro/hantro_v4l2.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/staging/media/hantro/hantro_v4l2.c b/drivers/staging/media/hantro/hantro_v4l2.c
+> index b668a82d40ad..e1081c16f56a 100644
+> --- a/drivers/staging/media/hantro/hantro_v4l2.c
+> +++ b/drivers/staging/media/hantro/hantro_v4l2.c
+> @@ -316,7 +316,7 @@ hantro_reset_fmt(struct v4l2_pix_format_mplane *fmt,
+>  
+>  	fmt->pixelformat = vpu_fmt->fourcc;
+>  	fmt->field = V4L2_FIELD_NONE;
+> -	fmt->colorspace = V4L2_COLORSPACE_JPEG,
+> +	fmt->colorspace = V4L2_COLORSPACE_JPEG;
+>  	fmt->ycbcr_enc = V4L2_YCBCR_ENC_DEFAULT;
+>  	fmt->quantization = V4L2_QUANTIZATION_DEFAULT;
+>  	fmt->xfer_func = V4L2_XFER_FUNC_DEFAULT;
 
-Glibc has them, but please don't complain about lock holder preemption
-issues if you do actually use them ;-)
+Thank you,
+
+Reviewed-by: Philipp Zabel <p.zabel@pengutronix.de>
+
+regards
+Philipp
