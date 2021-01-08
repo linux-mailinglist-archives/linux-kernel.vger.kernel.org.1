@@ -2,85 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CFB532EED96
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 07:53:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 03D562EED93
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 07:52:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726863AbhAHGwx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Jan 2021 01:52:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40484 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726484AbhAHGww (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Jan 2021 01:52:52 -0500
-Received: from ZenIV.linux.org.uk (zeniv.linux.org.uk [IPv6:2002:c35c:fd02::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A4CEC0612F4;
-        Thu,  7 Jan 2021 22:52:12 -0800 (PST)
-Received: from viro by ZenIV.linux.org.uk with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kxld1-008Ges-Bm; Fri, 08 Jan 2021 06:52:07 +0000
-Date:   Fri, 8 Jan 2021 06:52:07 +0000
-From:   Al Viro <viro@zeniv.linux.org.uk>
-To:     Sedat Dilek <sedat.dilek@gmail.com>
-Cc:     Jens Axboe <axboe@kernel.dk>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Song Liu <songliubraving@fb.com>
-Subject: Re: [PATCH] fs: process fput task_work with TWA_SIGNAL
-Message-ID: <20210108065207.GP3579531@ZenIV.linux.org.uk>
-References: <d6ddf6c2-3789-2e10-ba71-668cba03eb35@kernel.dk>
- <20210108052651.GM3579531@ZenIV.linux.org.uk>
- <CA+icZUWZePRQ6h8TLekp3EMNvLG22o4stV7OaGVCnm9VeX6d=w@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CA+icZUWZePRQ6h8TLekp3EMNvLG22o4stV7OaGVCnm9VeX6d=w@mail.gmail.com>
-Sender: Al Viro <viro@ftp.linux.org.uk>
+        id S1727403AbhAHGu2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Jan 2021 01:50:28 -0500
+Received: from mga03.intel.com ([134.134.136.65]:46163 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725816AbhAHGu2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 Jan 2021 01:50:28 -0500
+IronPort-SDR: mVTmcVtFsfjJJtw+aRseR0F9czXDVMfqlEuyNGBvZ7lQCRCY4bvLCxrJcaDmGtv751AkUIpfFp
+ fPg9XqV78f0A==
+X-IronPort-AV: E=McAfee;i="6000,8403,9857"; a="177651207"
+X-IronPort-AV: E=Sophos;i="5.79,330,1602572400"; 
+   d="scan'208";a="177651207"
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Jan 2021 22:49:47 -0800
+IronPort-SDR: omaiBlQj54zYjHGgM7Rm1RYwdeAZc/4Esq6botwNKolqYYwitnetMeXoCYYLd+kP2U2e8YNBwd
+ yFRgDAOKcjhA==
+X-IronPort-AV: E=Sophos;i="5.79,330,1602572400"; 
+   d="scan'208";a="570659829"
+Received: from chenyi-pc.sh.intel.com ([10.239.159.137])
+  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Jan 2021 22:49:44 -0800
+From:   Chenyi Qiang <chenyi.qiang@intel.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Xiaoyao Li <xiaoyao.li@intel.com>
+Cc:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [RESEND v5 0/4] Add bus lock VM exit support
+Date:   Fri,  8 Jan 2021 14:52:37 +0800
+Message-Id: <20210108065241.2062-1-chenyi.qiang@intel.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 08, 2021 at 07:21:52AM +0100, Sedat Dilek wrote:
-> On Fri, Jan 8, 2021 at 6:30 AM Al Viro <viro@zeniv.linux.org.uk> wrote:
-> >
-> > On Tue, Jan 05, 2021 at 11:29:11AM -0700, Jens Axboe wrote:
-> > > Song reported a boot regression in a kvm image with 5.11-rc, and bisected
-> > > it down to the below patch. Debugging this issue, turns out that the boot
-> > > stalled when a task is waiting on a pipe being released. As we no longer
-> > > run task_work from get_signal() unless it's queued with TWA_SIGNAL, the
-> > > task goes idle without running the task_work. This prevents ->release()
-> > > from being called on the pipe, which another boot task is waiting on.
-> > >
-> > > Use TWA_SIGNAL for the file fput work to ensure it's run before the task
-> > > goes idle.
-> > >
-> > > Fixes: 98b89b649fce ("signal: kill JOBCTL_TASK_WORK")
-> > > Reported-by: Song Liu <songliubraving@fb.com>
-> > > Signed-off-by: Jens Axboe <axboe@kernel.dk>
-> > >
-> > > ---
-> > >
-> > > The other alternative here is obviously to re-instate the:
-> > >
-> > > if (unlikely(current->task_works))
-> > >       task_work_run();
-> > >
-> > > in get_signal() that we had before this change. Might be safer in case
-> > > there are other cases that need to ensure the work is run in a timely
-> > > fashion, though I do think it's cleaner to long term to correctly mark
-> > > task_work with the needed notification type. Comments welcome...
-> >
-> > Interesting...  I think I've missed the discussion of that thing; could
-> > you forward the relevant thread my way or give an archive link to it?
-> 
-> See [1].
-> 
-> - Sedat -
-> 
-> [1] https://marc.info/?t=160987156600001&r=1&w=2
+Hi all,
 
-Wait, that's this very thread, starting with the posting I'd been replying
-to.  Really confused now...  Was that a private bug report and an equally
-private discussion?  That's what I wanted to see...
+Resend a rebased version. Hope to receive your comments.
 
-Anyway, I'm more than half-asleep right now; will get back to that in the
-morning.
+---
+
+This patch series add the support for bus lock VM exit in KVM. It is a
+sub-feature of bus lock detection. When it is enabled by the VMM, the
+processor generates a "Bus Lock" VM exit following execution of an
+instruction if the processor detects that one or more bus locks were
+caused the instruction was being executed (due to either direct access
+by the instruction or stuffed accesses like through A/D updates).
+
+Bus lock VM exit will introduce a new modifier bit (bit 26) in
+exit_reason field in VMCS which indicates bus lock VM exit is preempted
+by a higher priority VM exit. The first patch is to apply Sean's
+refactor for vcpu_vmx.exit_reason as a preparation patch for bus lock
+VM exit support.
+
+The second patch is the refactor for vcpu->run->flags. Bus lock VM exit
+will introduce a new field in the flags to inform the userspace that
+there's a bus lock detected in guest. It's also a preparation patch.
+
+The third patch is the concrete enabling working for bus lock VM exit.
+Add the support to set the capability to enable bus lock VM exit. The
+current implementation is just exiting to userspace when handling the
+bus lock detected in guest.
+
+The detail of throttling policy in user space is still to be discussed.
+We may enforce ratelimit on bus lock in guest, inject some sleep time,
+or... We hope to get more ideas on this.
+
+Document for Bus Lock Detection is now available at the latest "Intel
+Architecture Instruction Set Extensions Programming Reference".
+
+Document Link:
+https://software.intel.com/content/www/us/en/develop/download/intel-architecture-instruction-set-extensions-programming-reference.html
+
+---
+
+Changelogs
+
+v5->v5:
+- rebase on top of v5.11-rc1
+- no difference compared with the last version
+- v5:https://lore.kernel.org/lkml/20201106090315.18606-1-chenyi.qiang@intel.com/
+
+v4->v5:
+- rebase on top on v5.10-rc2
+- add preparation patch that reset the vcpu->run->flags at the beginning
+  of the vcpu_run.(Suggested by Sean)
+- set the KVM_RUN_BUS_LOCK for all bus lock exit to avoid checking both
+  exit_reason and run->flags
+- add the document to introduce the new kvm capability
+  (KVM_CAP_X86_BUS_LOCK_EXIT)
+- v4:https://lore.kernel.org/lkml/20201012033542.4696-1-chenyi.qiang@intel.com/
+
+v3->v4:
+- rebase on top of v5.9
+- some code cleanup.
+- v3:https://lore.kernel.org/lkml/20200910083751.26686-1-chenyi.qiang@intel.com/
+
+v2->v3:
+- use a bitmap to get/set the capability of bus lock detection. we support
+  exit and off mode currently.
+- put the handle of exiting to userspace in vmx.c, thus no need to
+  define a shadow to track vmx->exit_reason.bus_lock_detected.
+- remove the vcpu->stats.bus_locks since every bus lock exits to userspace.
+- v2:https://lore.kernel.org/lkml/20200817033604.5836-1-chenyi.qiang@intel.com/ 
+
+v1->v2:
+- resolve Vitaly's comment to introduce the KVM_EXIT_BUS_LOCK and a
+  capability to enable it.
+- add the support to exit to user space when handling bus locks.
+- extend the vcpu->run->flags to indicate bus lock detected for other
+  exit reasons when exiting to user space.
+- v1:https://lore.kernel.org/lkml/20200628085341.5107-1-chenyi.qiang@intel.com/
+
+---
+
+Chenyi Qiang (3):
+  KVM: X86: Reset the vcpu->run->flags at the beginning of vcpu_run
+  KVM: VMX: Enable bus lock VM exit
+  KVM: X86: Add the Document for KVM_CAP_X86_BUS_LOCK_EXIT
+
+Sean Christopherson (1):
+  KVM: VMX: Convert vcpu_vmx.exit_reason to a union
+
+ Documentation/virt/kvm/api.rst     |  45 ++++++++++++-
+ arch/x86/include/asm/kvm_host.h    |   7 ++
+ arch/x86/include/asm/vmx.h         |   1 +
+ arch/x86/include/asm/vmxfeatures.h |   1 +
+ arch/x86/include/uapi/asm/kvm.h    |   1 +
+ arch/x86/include/uapi/asm/vmx.h    |   4 +-
+ arch/x86/kvm/vmx/capabilities.h    |   6 ++
+ arch/x86/kvm/vmx/nested.c          |  42 +++++++-----
+ arch/x86/kvm/vmx/vmx.c             | 105 +++++++++++++++++++----------
+ arch/x86/kvm/vmx/vmx.h             |  25 ++++++-
+ arch/x86/kvm/x86.c                 |  28 +++++++-
+ include/uapi/linux/kvm.h           |   5 ++
+ 12 files changed, 214 insertions(+), 56 deletions(-)
+
+-- 
+2.17.1
+
