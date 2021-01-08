@@ -2,56 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5774D2EF94D
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 21:36:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 85CE52EF955
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 21:37:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729278AbhAHUfS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Jan 2021 15:35:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55332 "EHLO
+        id S1729315AbhAHUg1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Jan 2021 15:36:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55646 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729018AbhAHUfR (ORCPT
+        with ESMTP id S1729018AbhAHUgZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Jan 2021 15:35:17 -0500
-Received: from mail-ot1-x334.google.com (mail-ot1-x334.google.com [IPv6:2607:f8b0:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4577CC0612EA
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Jan 2021 12:34:59 -0800 (PST)
-Received: by mail-ot1-x334.google.com with SMTP id d8so10931741otq.6
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Jan 2021 12:34:59 -0800 (PST)
+        Fri, 8 Jan 2021 15:36:25 -0500
+Received: from mail-oi1-x22d.google.com (mail-oi1-x22d.google.com [IPv6:2607:f8b0:4864:20::22d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 997E4C061380
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Jan 2021 12:35:45 -0800 (PST)
+Received: by mail-oi1-x22d.google.com with SMTP id 15so12780289oix.8
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Jan 2021 12:35:45 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc:content-transfer-encoding;
-        bh=7M0YCmEHu5CIrepeBj4TyE7lC8HZna8Bt9bEIhFkg+w=;
-        b=H16nH0qzvZKed06io439zey0XEwMylyF38K7O6aSNayFnhq35M1CchxnYvRGrDpegv
-         NtfcEndB2YssXdqOttI6BkZ5L4StlNAhqxDC5mJNyXVA2992QXsoc6E9kNN8tlrHckC0
-         /JcKFOF6uQNsw18JOefc8WrtopTBTvWEKMR8EMkeGenlnMYojTvo1NSFCtfj6TdvB6UX
-         4izxRDXqJT6T0Hg6R/H0s/DSO4vznyBbP1rekbdlFfHQpCGytv9O8tQxehoxOhOE2sam
-         FcjehcG9+feIVbxLhZgNd23OI2ADQO/M13+rppXreTSPJqF/ylh7TKkaqrngabA1Y3ql
-         4Rag==
+        bh=VpvD6PG1QgANsGGyog3b6p6+OIrJWW4ly0pJuf5vMsk=;
+        b=PIbDQGG2BRxwiOyEK90Lk0BubPYR57V/VUqFj8RxmDdqJke6LsBIOOq03Oi/Gr/gHH
+         TeoN89C3FxdsxzFrGXozyU9917pghuw30xgk6UBavCJe0sGzqmKU7Sy4hBRNMrVpAQQu
+         Yfj/vMK4a/LVFQ+MAO94MS8m5p4fn2BMp5erW9WKxUNhFVvOuDRuWXhBKMT356rNUB8e
+         LFmJB7im2jdh2x/vH7iYjsXCairkQLULvBWcliHRQso8NM+usxLOk1qUsQoWl15Npewd
+         JkCEHQfD24zlmsptpyOgGu9l3jz2zGYP1+xt9NsvxxUr6Bqh0oFDzO6OwNSdIG+YH9v/
+         Jm7w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc:content-transfer-encoding;
-        bh=7M0YCmEHu5CIrepeBj4TyE7lC8HZna8Bt9bEIhFkg+w=;
-        b=EAN07XkEdUbrVLoy70Id8uQ9yobtgA3um9C2JYO2sFWOHrDOsruFqapnM/ACAv/NUX
-         bQcl7tqP2pM7EQ/fOGInVqWAylM6sAKanM/2xwEtZ1nPJFQ8BAPtAKJCcBxzOHKU5F+0
-         DvLZrtwatQKczeW3oHR4+FlG6HuZAPuaTDzXX+mLVFbYXNJ0hYAZe1VRZYKeotGpaKH2
-         yDu8aM+sTALzd3GVjM9+XHrRRJpwgfndt+0mqBH5iy+44ZT6S+sJZVcSJfdexeH4Pdzq
-         6+eoxdS2m9ayz+vEcejMQSCiErXrx3g74fHwcuFehnfbIvbAF3iw+JJgOkPCpLSbnLsJ
-         ziuQ==
-X-Gm-Message-State: AOAM533wh48flClVjRbS9BfR5sXs/PflBh/rMHtX+GoJz4jP+8TuRtg2
-        jrG2WFjJ9svmJhvowJ+d87JNFxTqjqSFY/Dao6k=
-X-Google-Smtp-Source: ABdhPJx8SnzY5lS/rofxEhI+zgTdmQPyLxveqpi/jaQiaWQGAcqVTzqOKoMPs+UC4BHaEJZ7n4PW8NfhDOysRj/o0pM=
-X-Received: by 2002:a05:6830:1d66:: with SMTP id l6mr3791588oti.23.1610138098760;
- Fri, 08 Jan 2021 12:34:58 -0800 (PST)
+        bh=VpvD6PG1QgANsGGyog3b6p6+OIrJWW4ly0pJuf5vMsk=;
+        b=VKXM1Z9LaficycX1PXMTr9NuuFwBK/mL6yi9ReBPUxDmz6XO2QCStQ5m3zVY2Xmj+q
+         a/POM5qG6BrBIxlt4WDBGKzkSuSk6zIEc7LKlRrB47zI5YB6xlmNOmasvbWB6Ivt55rV
+         34RcMTCJixPm33kQlSPTXPdXy8Tz2f8pB3T9cSvfhIJCkVMAnYoVNk/aISE/fwIOHQmv
+         6SMShZg/1abeKQU3N3oSsqeoYOfTmP8icWwgitF5iYh9nv6K6PuFnUwsPHH1YF5dWcOI
+         r34EvWeGXOADjcMjSiKoDGHmY1pUuUb878aKGaXGwHAPpN20AjOUioFW9J09Bz3FJrUf
+         FiDA==
+X-Gm-Message-State: AOAM531lBw//rOqjE8oSvtS/rLZvzCJHV++auIiJT/xl19pw/LEnVYy5
+        c5J4tObIZJnN0/sOKbLHlUnGPT3ERmVRbbjlqDM=
+X-Google-Smtp-Source: ABdhPJwXn14xtfuj2gdLw5RyaClhmPybR2Gly+0Dzu2yc1H4BC6Jhn5Z19o/OFqCXKR0/5fKCx4+2eHJr5RXg9o93tQ=
+X-Received: by 2002:a54:4083:: with SMTP id i3mr3410414oii.120.1610138145109;
+ Fri, 08 Jan 2021 12:35:45 -0800 (PST)
 MIME-Version: 1.0
-References: <20210108201457.3078600-1-lee.jones@linaro.org> <20210108201457.3078600-10-lee.jones@linaro.org>
-In-Reply-To: <20210108201457.3078600-10-lee.jones@linaro.org>
+References: <20210108201457.3078600-1-lee.jones@linaro.org> <20210108201457.3078600-11-lee.jones@linaro.org>
+In-Reply-To: <20210108201457.3078600-11-lee.jones@linaro.org>
 From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Fri, 8 Jan 2021 15:34:47 -0500
-Message-ID: <CADnq5_N2PuJemMY71672+g7=maNFN2=Ab-JvAni3qOQhokNYBQ@mail.gmail.com>
-Subject: Re: [PATCH 09/40] drm/amd/pm/powerplay/hwmgr/vega20_hwmgr: Fix legacy
- function header formatting
+Date:   Fri, 8 Jan 2021 15:35:34 -0500
+Message-ID: <CADnq5_NHXUy4s962i2bNTJFjOahGLakuS29vxziKApPkMOo1Uw@mail.gmail.com>
+Subject: Re: [PATCH 10/40] drm/amd/pm/powerplay/hwmgr/smu7_hwmgr: Fix
+ formatting and spelling issues
 To:     Lee Jones <lee.jones@linaro.org>
 Cc:     David Airlie <airlied@linux.ie>,
         LKML <linux-kernel@vger.kernel.org>,
@@ -71,9 +71,15 @@ On Fri, Jan 8, 2021 at 3:15 PM Lee Jones <lee.jones@linaro.org> wrote:
 >
 > Fixes the following W=3D1 kernel build warning(s):
 >
->  drivers/gpu/drm/amd/amdgpu/../pm/powerplay/hwmgr/vega20_hwmgr.c:781: war=
-ning: Function parameter or member 'hwmgr' not described in 'vega20_init_sm=
-c_table'
+>  drivers/gpu/drm/amd/amdgpu/../pm/powerplay/hwmgr/smu7_hwmgr.c:242: warni=
+ng: Function parameter or member 'hwmgr' not described in 'smu7_enable_smc_=
+voltage_controller'
+>  drivers/gpu/drm/amd/amdgpu/../pm/powerplay/hwmgr/smu7_hwmgr.c:4508: warn=
+ing: Function parameter or member 'us_max_fan_rpm' not described in 'smu7_s=
+et_max_fan_rpm_output'
+>  drivers/gpu/drm/amd/amdgpu/../pm/powerplay/hwmgr/smu7_hwmgr.c:4508: warn=
+ing: Excess function parameter 'usMaxFanRpm' description in 'smu7_set_max_f=
+an_rpm_output'
 >
 > Cc: Evan Quan <evan.quan@amd.com>
 > Cc: Alex Deucher <alexander.deucher@amd.com>
@@ -90,33 +96,36 @@ Alex
 
 
 > ---
->  drivers/gpu/drm/amd/pm/powerplay/hwmgr/vega20_hwmgr.c | 11 +++++------
->  1 file changed, 5 insertions(+), 6 deletions(-)
+>  drivers/gpu/drm/amd/pm/powerplay/hwmgr/smu7_hwmgr.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
 >
-> diff --git a/drivers/gpu/drm/amd/pm/powerplay/hwmgr/vega20_hwmgr.c b/driv=
-ers/gpu/drm/amd/pm/powerplay/hwmgr/vega20_hwmgr.c
-> index da84012b7fd51..87811b005b85f 100644
-> --- a/drivers/gpu/drm/amd/pm/powerplay/hwmgr/vega20_hwmgr.c
-> +++ b/drivers/gpu/drm/amd/pm/powerplay/hwmgr/vega20_hwmgr.c
-> @@ -771,12 +771,11 @@ static int vega20_setup_default_dpm_tables(struct p=
+> diff --git a/drivers/gpu/drm/amd/pm/powerplay/hwmgr/smu7_hwmgr.c b/driver=
+s/gpu/drm/amd/pm/powerplay/hwmgr/smu7_hwmgr.c
+> index 82676c086ce46..c57dc9ae81f2f 100644
+> --- a/drivers/gpu/drm/amd/pm/powerplay/hwmgr/smu7_hwmgr.c
+> +++ b/drivers/gpu/drm/amd/pm/powerplay/hwmgr/smu7_hwmgr.c
+> @@ -235,7 +235,7 @@ static int smu7_get_current_pcie_lane_number(struct p=
 p_hwmgr *hwmgr)
->  }
->
 >  /**
-> -* Initializes the SMC table and uploads it
-> -*
-> -* @param    hwmgr  the address of the powerplay hardware manager.
-> -* @param    pInput  the pointer to input data (PowerState)
-> -* @return   always 0
-> -*/
-> + * Initializes the SMC table and uploads it
-> + *
+>   * smu7_enable_smc_voltage_controller - Enable voltage control
+>   *
+> - * @hwmgr  the address of the powerplay hardware manager.
 > + * @hwmgr:  the address of the powerplay hardware manager.
-> + * return:  always 0
-> + */
->  static int vega20_init_smc_table(struct pp_hwmgr *hwmgr)
->  {
->         int result;
+>   * Return:   always PP_Result_OK
+>   */
+>  static int smu7_enable_smc_voltage_controller(struct pp_hwmgr *hwmgr)
+> @@ -4501,7 +4501,7 @@ static int smu7_display_configuration_changed_task(=
+struct pp_hwmgr *hwmgr)
+>   * smu7_set_max_fan_rpm_output - Set maximum target operating fan output=
+ RPM
+>   *
+>   * @hwmgr:  the address of the powerplay hardware manager.
+> - * @usMaxFanRpm:  max operating fan RPM value.
+> + * @us_max_fan_rpm:  max operating fan RPM value.
+>   * Return:   The response that came from the SMC.
+>   */
+>  static int smu7_set_max_fan_rpm_output(struct pp_hwmgr *hwmgr, uint16_t =
+us_max_fan_rpm)
 > --
 > 2.25.1
 >
