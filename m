@@ -2,42 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 220142EF5B0
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 17:26:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C9642EF5B5
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 17:28:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728111AbhAHQ0i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Jan 2021 11:26:38 -0500
-Received: from mail-ot1-f51.google.com ([209.85.210.51]:40908 "EHLO
-        mail-ot1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728069AbhAHQ0h (ORCPT
+        id S1728179AbhAHQ1c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Jan 2021 11:27:32 -0500
+Received: from mail-oi1-f182.google.com ([209.85.167.182]:32886 "EHLO
+        mail-oi1-f182.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727333AbhAHQ1b (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Jan 2021 11:26:37 -0500
-Received: by mail-ot1-f51.google.com with SMTP id j12so10135438ota.7
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Jan 2021 08:26:22 -0800 (PST)
+        Fri, 8 Jan 2021 11:27:31 -0500
+Received: by mail-oi1-f182.google.com with SMTP id d203so11968827oia.0
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Jan 2021 08:27:16 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=4P0bI2KySEz7bF1VDbHcM0MRrhKTTvGeuLXsvdhijoA=;
-        b=E9w0OKEtQG3oeOFXSu7dpJylpVP0KO65kBXqcokPxH+w5mpDu9IRjHfxRWw4xALAY8
-         C2vom2zK+jm0cIE+Z0EV9GlvR6+pz8OsT51xX8DSj2ir240kSBEmaHU7oZ62YTa5/5c9
-         0fkMz++ZGUyOzpOxuHs56SD52gt5fQFtCxutrg65lXmALTSijoedGyb4b4gnppzrxgav
-         nqBARC55quTugSKi7Hk4ZQwPWFui8IqJPorQsFoIADFEvo5nKmabHyBnBPR+nFbZ4Af5
-         Sqhv48dDQyWZB/6S2/5AZ7FBxcD8PFtMTCqL1uc/I0gXo2aGbWrLQWgSGU1GM6VIEGEv
-         980w==
-X-Gm-Message-State: AOAM533YO3eBD4jaAu0Paw8Yvh3n49nHQ+LOutDJizCtYUnD3BqFgXqL
-        EVaeNiSwukQR/lO9yq0L+MXxmo5C23/clzGBSFI=
-X-Google-Smtp-Source: ABdhPJy3k6nmCGv0rEESlquxP7okt0veCEhpEnm7rMrWlbYyLr9vLqjY+vBqL0DWfMxahjb4O55awdynuAirNoyHknM=
-X-Received: by 2002:a05:6830:1f5a:: with SMTP id u26mr3135433oth.250.1610123156661;
- Fri, 08 Jan 2021 08:25:56 -0800 (PST)
+        bh=azXInPSYO1Sxr7q4l4v0RAEEyoV6Ow0CghP+JPok7j4=;
+        b=TbluwBQa9/+DY4M1SClgmDX/OuYaweAezVyJKUkGbfzP+trpuUChweZ2uToPgEue8e
+         lkwJCgR7aWdXZLSWOBmuoVDCdXZlRpg+yNCuG5DV7n0dqOHk4u46wRy5wKXw/OotLPg4
+         p9Ge8exprQ4bDi+8SoVfdr1h1S9lDJ8am8QDs5KROvXY+0rJeWc8Jr0PZDLlHIOQXJG2
+         17igcnapmeb4kOtf4y2nnlnEOgILMH0xG13HQag/cqfqiRS21cUQ1CPqxxQ9Q0ywhX5B
+         na4kxlTrWOQ1ha3KBaigPqjiH23ymE0N/WIb3DeuUDbdlaSsdAoX5Ernpy7zjpKlbD+W
+         EsdQ==
+X-Gm-Message-State: AOAM533I7HeP/dxGGg1G6/ix71btg6qMEARn6br2x147GwmbCYQNLsVw
+        zehMZVgwOou7AuftmAE1kMH6pgy3Id0b9F1h7Z2iWQvyt9w=
+X-Google-Smtp-Source: ABdhPJyPQ491YV55uOoMwNsIOAdkuPZquMI0Rs4CGfdDsvkg7QdkXk6frf8BGdsvk49jfEBjMSkoODf4qlj8pM19MjY=
+X-Received: by 2002:aca:3cc5:: with SMTP id j188mr2868502oia.54.1610123210752;
+ Fri, 08 Jan 2021 08:26:50 -0800 (PST)
 MIME-Version: 1.0
-References: <20210107092652.3438696-1-atish.patra@wdc.com> <20210107092652.3438696-2-atish.patra@wdc.com>
-In-Reply-To: <20210107092652.3438696-2-atish.patra@wdc.com>
+References: <20210107092652.3438696-1-atish.patra@wdc.com> <20210107092652.3438696-4-atish.patra@wdc.com>
+In-Reply-To: <20210107092652.3438696-4-atish.patra@wdc.com>
 From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Fri, 8 Jan 2021 17:25:45 +0100
-Message-ID: <CAMuHMdWf6K-5y02+WJ6Khu1cD6P0n5x1wYQikrECkuNtAA1pgg@mail.gmail.com>
-Subject: Re: [PATCH 1/4] RISC-V: Do not allocate memblock while iterating
- reserved memblocks
+Date:   Fri, 8 Jan 2021 17:26:39 +0100
+Message-ID: <CAMuHMdUYeBoFppRZzQm7GgqTvFW-sXKRG4RnTB+q0MrYMQOWfA@mail.gmail.com>
+Subject: Re: [PATCH 3/4] RISC-V: Fix L1_CACHE_BYTES for RV32
 To:     Atish Patra <atish.patra@wdc.com>
 Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
         Albert Ou <aou@eecs.berkeley.edu>,
@@ -54,66 +53,21 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Atish,
-
 On Thu, Jan 7, 2021 at 10:28 AM Atish Patra <atish.patra@wdc.com> wrote:
-> Currently, resource tree allocates memory blocks while iterating on the
-> list. It leads to following kernel warning because memblock allocation
-> also invokes memory block reservation API.
->
-> [    0.000000] ------------[ cut here ]------------
-> [    0.000000] WARNING: CPU: 0 PID: 0 at kernel/resource.c:795
-> __insert_resource+0x8e/0xd0
-> [    0.000000] Modules linked in:
-> [    0.000000] CPU: 0 PID: 0 Comm: swapper Not tainted
-> 5.10.0-00022-ge20097fb37e2-dirty #549
-> [    0.000000] epc: c00125c2 ra : c001262c sp : c1c01f50
-> [    0.000000]  gp : c1d456e0 tp : c1c0a980 t0 : ffffcf20
-> [    0.000000]  t1 : 00000000 t2 : 00000000 s0 : c1c01f60
-> [    0.000000]  s1 : ffffcf00 a0 : ffffff00 a1 : c1c0c0c4
-> [    0.000000]  a2 : 80c12b15 a3 : 80402000 a4 : 80402000
-> [    0.000000]  a5 : c1c0c0c4 a6 : 80c12b15 a7 : f5faf600
-> [    0.000000]  s2 : c1c0c0c4 s3 : c1c0e000 s4 : c1009a80
-> [    0.000000]  s5 : c1c0c000 s6 : c1d48000 s7 : c1613b4c
-> [    0.000000]  s8 : 00000fff s9 : 80000200 s10: c1613b40
-> [    0.000000]  s11: 00000000 t3 : c1d4a000 t4 : ffffffff
->
-> This is also unnecessary as we can pre-compute the total memblocks required
-> for each memory region and allocate it before the loop. It save precious
-> boot time not going through memblock allocation code every time.
->
-> Fixes: 00ab027a3b82 ("RISC-V: Add kernel image sections to the resource tree")
+> SMP_CACHE_BYTES/L1_CACHE_BYTES should be defined as 32 instead of
+> 64 for RV32. Otherwise, there will be hole of 32 bytes with each memblock
+> allocation if it is requested to be aligned with SMP_CACHE_BYTES.
 >
 > Signed-off-by: Atish Patra <atish.patra@wdc.com>
 
-Thanks for your patch!
-
-I never saw the warning (on linux-on-litex-vexriscv), but instead I got:
-
-    Failed to add a Kernel code resource at 40001000
-
-after Initmem setup. Adding some debug info to init_resources() showed
-that the memblock.reserved list kept on increasing, until memory
-corruption happened (pointers started to look like ASCII strings), the
-error message above is printed, and after which the boot continued.
-Changing L1_CACHE_SHIFT in arch/riscv/include/asm/cache.h to 5 fixed that.
-
-With this patch, the error message above is no longer printed, so
 Tested-by: Geert Uytterhoeven <geert@linux-m68k.org>
-
-Noted that the kernel still crashes later, with
-
-    Unable to handle kernel paging request at virtual address 61636473
-
-Again, 0x61636473 looks like ASCII, and your PATCH 3/4 for
-L1_CACHE_SHIFT fixes that, too.
+(on vexriscv)
 
 Gr{oetje,eeting}s,
 
                         Geert
 
-
---
+-- 
 Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
 In personal conversations with technical people, I call myself a hacker. But
