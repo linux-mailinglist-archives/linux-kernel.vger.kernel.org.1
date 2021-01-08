@@ -2,97 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E858A2EEB7D
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 03:53:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D89C12EEB7F
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 03:53:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726751AbhAHCwr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 21:52:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59934 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726113AbhAHCwr (ORCPT
+        id S1726918AbhAHCxQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 21:53:16 -0500
+Received: from mail-io1-f54.google.com ([209.85.166.54]:36351 "EHLO
+        mail-io1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726832AbhAHCxP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 21:52:47 -0500
-Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA4B8C0612F4
-        for <linux-kernel@vger.kernel.org>; Thu,  7 Jan 2021 18:52:06 -0800 (PST)
-Received: by mail-pg1-x536.google.com with SMTP id g15so6706031pgu.9
-        for <linux-kernel@vger.kernel.org>; Thu, 07 Jan 2021 18:52:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=PQO8vJwSx7HHkUDB54L3o6TvWNWFoO4uiodcnxSDlcQ=;
-        b=X/AAyuJPU+5BF0P70BENerkQ7fsoiQwBujnVb/DQLxNbz1PPtMezpk5ReCf/OJKQQy
-         f4bPc1u3OHv/y4tYs6HpwW77XZvz3oaL8PpNPggwD9t7QroceJRn6aAT0DlpL3fKmt9m
-         Kc2eEwKEnuIJFw8ojiF0UiZqJeFc277BnZZPvWXczvmiW79m1x2MqcGq6I8lWYpS91L8
-         s3gZtJOUZD/CET29z2o6rPTikBdhxrk+Z3p2zjjQClk91guj9+5j2Oq7QEGLXsVaIwXK
-         uVznU6511s/FXwBle7HhugF3yj6NOEB2U6jJRJV8N4XJqnJW4oR7E/hb/gvJy4gDt+8R
-         WXvQ==
+        Thu, 7 Jan 2021 21:53:15 -0500
+Received: by mail-io1-f54.google.com with SMTP id u26so8380610iof.3;
+        Thu, 07 Jan 2021 18:53:00 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=PQO8vJwSx7HHkUDB54L3o6TvWNWFoO4uiodcnxSDlcQ=;
-        b=Vg/jsGHSXhhLsVV4J8sTCHT3aIBAOsCAPQ5CjKEZbtkbXo8vv/KSXgQxs3aQa8iOvU
-         UIlsCfuyrQYVOAtv9j3RAT/aZw/o8jOIbcn5jHMOaigh3I5jWlFZWe3A4z9aGne+npYN
-         yS7tHcjnZnoo4g/OrfWXHHA/0i+qb+tDhgzCm1Bd+o4FFf5/M2KG+1op8LRDniPkIGkL
-         MbSSSD/snta2UjGGl5Omfp1jt16XvGK79V6Uk5CL1Voo4ISlZ7SGJlawBgYV+MAUHPbK
-         UOqY4yPdJOXcz1cFx+e/H2p2XoViwBX7QFif4GLPZBVtKp9lFeelwfnsCQFFm8fIfCMA
-         JL0g==
-X-Gm-Message-State: AOAM531nqTXudxt9G50Hw7/N8+TvKM9XlkyD4b37sKLdkhfzZQMAVTkz
-        LQvqPt1Sqpqvd3HBkF2pBHhh/A5pLQK10Bbi
-X-Google-Smtp-Source: ABdhPJyh26fX5mM3v76uqsyxr5vX4CHgh1u6pP0ycZZyqGqjd0a30WyALlIup4JtQsrUxrFORhFF2g==
-X-Received: by 2002:a63:3049:: with SMTP id w70mr4782475pgw.224.1610074326364;
-        Thu, 07 Jan 2021 18:52:06 -0800 (PST)
-Received: from container-ubuntu.lan ([171.211.28.197])
-        by smtp.gmail.com with ESMTPSA id z2sm7641230pgl.49.2021.01.07.18.51.59
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=j9BJOm6Gyl9YhJRZvOpzUQv+7D7nE5zdeZRpcSuRRBI=;
+        b=nHvSzXXNmC1EHWbEHPHEdXyP/qNfgNYYBB1ydgAKByLINvCkR/lCWurTvp/7RLAZ5O
+         4u/a/KJhpg+6AbIqu3QpaV0pABedjXcG6ezZRT6X6kDKa7+g7VIPKAfBg7wb5QHHxgre
+         U74EpbSGHCTCEJwGCyFyOdAAllmYVFhrc/F5RjQOplnoq+jyyv8oLYo12fIbRWIhN4/j
+         OTfGoHA78XfjUVF6YIlcaLJUgOCZavjdxDHFYw5nDdwhEEElz8AXJnUgSsrRR0khGwjy
+         0zv0qeIOzFpckt3GAKct8PiSB0SsnPNyjzFErDfQXKpkeqQ5uTvKpTYNnODArXr3RK1U
+         lQsA==
+X-Gm-Message-State: AOAM530fJR+bENNMxOOQzjG7o/IlA4CqsPtFuYSanhBRmBNftTDfyP2t
+        y7LgNzrjQ+pe0WBoa2R9NA==
+X-Google-Smtp-Source: ABdhPJxSj3GS6b8u4lJrqSge/6GnqMxaAVuJHdUXCdgq9UGMMZClQFUGQc3VppY2A5kzN6A5IQaUGQ==
+X-Received: by 2002:a05:6638:1a:: with SMTP id z26mr1500734jao.52.1610074354559;
+        Thu, 07 Jan 2021 18:52:34 -0800 (PST)
+Received: from robh.at.kernel.org ([64.188.179.253])
+        by smtp.gmail.com with ESMTPSA id b13sm4525239ils.54.2021.01.07.18.52.32
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 Jan 2021 18:52:05 -0800 (PST)
-From:   DENG Qingfang <dqfext@gmail.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Thu, 07 Jan 2021 18:52:33 -0800 (PST)
+Received: (nullmailer pid 1782876 invoked by uid 1000);
+        Fri, 08 Jan 2021 02:52:31 -0000
+Date:   Thu, 7 Jan 2021 19:52:31 -0700
+From:   Rob Herring <robh@kernel.org>
+To:     Yongqiang Niu <yongqiang.niu@mediatek.com>
+Cc:     dri-devel@lists.freedesktop.org,
         Matthias Brugger <matthias.bgg@gmail.com>,
-        Sergio Paracuellos <sergio.paracuellos@gmail.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Chuanhong Guo <gch981213@gmail.com>,
-        NeilBrown <neil@brown.name>, devel@driverdev.osuosl.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     Rosen Penev <rosenp@gmail.com>
-Subject: [PATCH] staging: mt7621-dts: remove obsolete switch node
-Date:   Fri,  8 Jan 2021 10:51:55 +0800
-Message-Id: <20210108025155.31556-1-dqfext@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        CK Hu <ck.hu@mediatek.com>, David Airlie <airlied@linux.ie>,
+        Project_Global_Chrome_Upstream_Group@mediatek.com,
+        linux-mediatek@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        Mark Rutland <mark.rutland@arm.com>
+Subject: Re: [PATCH v2, 1/3] dt-binding: gce: add gce header file for mt8192
+Message-ID: <20210108025231.GA1782839@robh.at.kernel.org>
+References: <1608770889-9403-1-git-send-email-yongqiang.niu@mediatek.com>
+ <1608770889-9403-2-git-send-email-yongqiang.niu@mediatek.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1608770889-9403-2-git-send-email-yongqiang.niu@mediatek.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This was for OpenWrt's swconfig driver, which never made it upstream,
-and was also superseded by MT7530 DSA driver.
+On Thu, 24 Dec 2020 08:48:07 +0800, Yongqiang Niu wrote:
+> Add documentation for the mt8192 gce.
+> 
+> Add gce header file defined the gce hardware event,
+> subsys number and constant for mt8192.
+> 
+> Signed-off-by: Yongqiang Niu <yongqiang.niu@mediatek.com>
+> ---
+>  .../devicetree/bindings/mailbox/mtk-gce.txt        |   7 +-
+>  include/dt-bindings/gce/mt8192-gce.h               | 419 +++++++++++++++++++++
+>  2 files changed, 423 insertions(+), 3 deletions(-)
+>  create mode 100644 include/dt-bindings/gce/mt8192-gce.h
+> 
 
-Signed-off-by: DENG Qingfang <dqfext@gmail.com>
----
- drivers/staging/mt7621-dts/mt7621.dtsi | 7 -------
- 1 file changed, 7 deletions(-)
-
-diff --git a/drivers/staging/mt7621-dts/mt7621.dtsi b/drivers/staging/mt7621-dts/mt7621.dtsi
-index 5b9d3bf82cb1..42e8ec72c3cd 100644
---- a/drivers/staging/mt7621-dts/mt7621.dtsi
-+++ b/drivers/staging/mt7621-dts/mt7621.dtsi
-@@ -497,13 +497,6 @@ fixed-link {
- 		};
- 	};
- 
--	gsw: gsw@1e110000 {
--		compatible = "mediatek,mt7621-gsw";
--		reg = <0x1e110000 0x8000>;
--		interrupt-parent = <&gic>;
--		interrupts = <GIC_SHARED 23 IRQ_TYPE_LEVEL_HIGH>;
--	};
--
- 	pcie: pcie@1e140000 {
- 		compatible = "mediatek,mt7621-pci";
- 		reg = <0x1e140000 0x100     /* host-pci bridge registers */
--- 
-2.25.1
+Reviewed-by: Rob Herring <robh@kernel.org>
