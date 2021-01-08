@@ -2,250 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3984B2EF798
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 19:42:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 28BAA2EF79C
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 19:44:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728645AbhAHSln (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Jan 2021 13:41:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37744 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728061AbhAHSlm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Jan 2021 13:41:42 -0500
-Received: from mail-oi1-x233.google.com (mail-oi1-x233.google.com [IPv6:2607:f8b0:4864:20::233])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99617C0612FE
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Jan 2021 10:41:02 -0800 (PST)
-Received: by mail-oi1-x233.google.com with SMTP id x13so12404946oic.5
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Jan 2021 10:41:02 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=AaJsOT+2dXsrzbmSUBlolWUy7wnqag5xMcaj6pqD4EU=;
-        b=q7O2eNwAg2X76k8sIS8g+BFeEIPJrVjsQ7AuInxl/sdsTrtgXwiCVQtdkkK6SMyuWS
-         9QmfA4AD56gDVyj3PJzXDEJM1cRYmtcBmUaDirFS7hI8BL+mWPyS6bEQ+x0Vm51JZRWU
-         bIdN5tvWEyUILKU9ReLpYPn7ZquSYhXv3dG4Hb7oTT9Gibgyu7EGLtFfPiwhlr6ohBwl
-         sVCUE3vHj7qKsiD7xIjZ5LdLezBQZeqeCXxIbqRS2qEDsdzsvFRio/0PharhbZwdMGW6
-         26+ruqNr6415J5cOeXdzj5dO6q9ISuTYQhpnBQ77VWkFN/RznSQaLa5EgV0o8QBNvISt
-         5Huw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=AaJsOT+2dXsrzbmSUBlolWUy7wnqag5xMcaj6pqD4EU=;
-        b=Vt4dHW/0SRAUn21VLOdH0XumA+PLHQZeri1CNQgT6+rg6EvpgjAgFq3HrNEPAp4msV
-         2mj3nj9XizwU1cIWpz70HPvbzwhPKa113nQra4HngnKPuB155ZRS9Bi03saNIwLAVhdE
-         iKyoGQgZI1y7u1rbQyUDcJoNkMroAQPEqTSOgyumQ8q/KqmwHDGLXXCmDmTQyXv/OtAf
-         FwhDg3UdbLtwmIIupXvib5y7XDQy84k6YozqnoFIBTl+hx2KUEF5ysaPKaMAIElAfMye
-         1XkE4ZxNzUp3rg3n0/Ce8PoRGi8ke8ltbei84EYIwaT+xZKjsQuTyycYVI9bvu34/Rfa
-         7/kg==
-X-Gm-Message-State: AOAM532I4ZY2dHf9YXD7G2VW55n6cHq+SDRJHZJWc+2o+iV0qgMY+sbe
-        rvYWWOhxmctfNGJFF0mNGhonmg==
-X-Google-Smtp-Source: ABdhPJwO6dayENaSus7KzZYfY/3OGpzNKmjKOSdXNbTiEYGBrKRj8PITuE0yRxMzTc7eaC9LeelgTA==
-X-Received: by 2002:aca:c756:: with SMTP id x83mr3029963oif.62.1610131261676;
-        Fri, 08 Jan 2021 10:41:01 -0800 (PST)
-Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id s66sm1862772ooa.37.2021.01.08.10.41.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 08 Jan 2021 10:41:01 -0800 (PST)
-Date:   Fri, 8 Jan 2021 12:40:59 -0600
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Vinod Koul <vkoul@kernel.org>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        linux-arm-msm@vger.kernel.org, Andy Gross <agross@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>, linux-gpio@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 1/2] dt-bindings: pinctrl: qcom: Add SM8350 pinctrl
- bindings
-Message-ID: <X/inO3hecPJTaKi+@builder.lan>
-References: <20210106054950.303244-1-vkoul@kernel.org>
- <20210106054950.303244-2-vkoul@kernel.org>
- <X/dCIuUR/El8Gxaa@builder.lan>
- <20210108075746.GV2771@vkoul-mobl>
+        id S1728719AbhAHSma (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Jan 2021 13:42:30 -0500
+Received: from mail.kernel.org ([198.145.29.99]:33310 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728321AbhAHSma (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 Jan 2021 13:42:30 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 46CA623A82
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Jan 2021 18:41:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1610131309;
+        bh=tkonPwlabkLXLyMxiiESIjCklszdN86fUImv8DVDBWE=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=IKNY7oVKNuPzRros5fM/7vBHlMCNd4HwHKfOex1gRPKTK/iE9/h3miejxLoeRK+hV
+         gov7ITt3IDhunwKV/Iz3vOI5SlXIaYPrwvIdhyRzrdYlw1XSozjVOc6qCP5P8WdLwI
+         7Lwz9a8ssTBS9ZW4gzUcskhNHOiS+arAsFVxq9eqJ1dI2JsFRaJdTSzH6EQEF1zkru
+         ysWcgcurunZxBLSj6LwtoTQN+67QHuwoH5st5XI1lCeR7qjxFv6ENJYmHY7wm5M8BB
+         ruvlLpCCbDMM0LhohoDGaL6NOOj+7OnHxIwwCeRItOgSALMPRJ+qb+Rj+Y1jIgWm7L
+         F4fr9OSbx+cxA==
+Received: by mail-oi1-f182.google.com with SMTP id 9so12408039oiq.3
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Jan 2021 10:41:49 -0800 (PST)
+X-Gm-Message-State: AOAM531UtJFlBhIw6B+CZfyJdwmp96sQUm7L4DktwqJJn6nzkfl+VVvx
+        oWlhe45xIcwckUlcUD8TeI1AC1VdSebic3ENNsY=
+X-Google-Smtp-Source: ABdhPJyF6RpCzxKa/lecY4GdxCfZbTUh3I+6FsPQwG/WCqXte4+mxyac9+wbRo4e2HSt3x5nd8cXBeC7aZkaX3l5ptc=
+X-Received: by 2002:aca:d98a:: with SMTP id q132mr3228281oig.33.1610131308441;
+ Fri, 08 Jan 2021 10:41:48 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210108075746.GV2771@vkoul-mobl>
+References: <20210103171137.153834-1-lecopzer@gmail.com> <CAAeHK+y=vEuSe-LFOhxkEu4x0Dy2jYts18R0V6Pbv1-5Cwg9_g@mail.gmail.com>
+In-Reply-To: <CAAeHK+y=vEuSe-LFOhxkEu4x0Dy2jYts18R0V6Pbv1-5Cwg9_g@mail.gmail.com>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Fri, 8 Jan 2021 19:41:37 +0100
+X-Gmail-Original-Message-ID: <CAMj1kXHFOQMV_4pYp9u9u++2jjQbHuLU95KeJTzrWXZWQTe_Tg@mail.gmail.com>
+Message-ID: <CAMj1kXHFOQMV_4pYp9u9u++2jjQbHuLU95KeJTzrWXZWQTe_Tg@mail.gmail.com>
+Subject: Re: [PATCH 0/3] arm64: kasan: support CONFIG_KASAN_VMALLOC
+To:     Andrey Konovalov <andreyknvl@google.com>
+Cc:     Lecopzer Chen <lecopzer@gmail.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Lecopzer Chen <lecopzer.chen@mediatek.com>,
+        yj.chiang@mediatek.com, linux-mediatek@lists.infradead.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        Alexander Potapenko <glider@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri 08 Jan 01:57 CST 2021, Vinod Koul wrote:
+On Fri, 8 Jan 2021 at 19:31, Andrey Konovalov <andreyknvl@google.com> wrote:
+>
+> On Sun, Jan 3, 2021 at 6:12 PM Lecopzer Chen <lecopzer@gmail.com> wrote:
+> >
+> > Linux supports KAsan for VMALLOC since commit 3c5c3cfb9ef4da9
+> > ("kasan: support backing vmalloc space with real shadow memory")
+> >
+> > Acroding to how x86 ported it [1], they early allocated p4d and pgd,
+> > but in arm64 I just simulate how KAsan supports MODULES_VADDR in arm64
+> > by not to populate the vmalloc area except for kimg address.
+> >
+> > Test environment:
+> >     4G and 8G Qemu virt,
+> >     39-bit VA + 4k PAGE_SIZE with 3-level page table,
+> >     test by lib/test_kasan.ko and lib/test_kasan_module.ko
+> >
+> > It also works in Kaslr with CONFIG_RANDOMIZE_MODULE_REGION_FULL,
+> > but not test for HW_TAG(I have no proper device), thus keep
+> > HW_TAG and KASAN_VMALLOC mutual exclusion until confirming
+> > the functionality.
+> >
+> >
+> > [1]: commit 0609ae011deb41c ("x86/kasan: support KASAN_VMALLOC")
+> >
+> > Signed-off-by: Lecopzer Chen <lecopzer.chen@mediatek.com>
+>
+> Hi Lecopzer,
+>
+> Thanks for working on this!
+>
+> Acked-by: Andrey Konovalov <andreyknvl@google.com>
+> Tested-by: Andrey Konovalov <andreyknvl@google.com>
+>
+> for the series along with the other two patches minding the nit in patch #3.
+>
+> Will, Catalin, could you please take a look at the arm changes?
+>
+> Thanks!
+>
 
-> Hi Bjorn,
-> 
-> On 07-01-21, 11:17, Bjorn Andersson wrote:
-> > On Tue 05 Jan 23:49 CST 2021, Vinod Koul wrote:
-> > > +#PIN CONFIGURATION NODES
-> > > +patternProperties:
-> > > +  '-pinmux$':
-> > 
-> > I believe that what Rob was asking for was the matter of describing the
-> > mux and config subnodes under this one. But I don't know really how to
-> > express this, because the following are all valid:
-> 
-> I looked at the pinmux-node.yaml which describes subnodes with function
-> and groups, this is a generic description and should be in
-> pinmux-node.yaml not in every device description.. said that I am not
-> sure why else should we add here :)
-> 
 
-Unfortunately I don't think I understand how the pinmux-node.yaml
-applies to the two possible levels of nodes.
+If vmalloc can now be backed with real shadow memory, we no longer
+have to keep the module region in its default location when KASLR and
+KASAN are both enabled.
 
-Also the description of our state nodes would have to be a mix of
-pinmux-node.yaml, pincfg-node.yaml and then the properties/constraints
-described here, plus something indicating that many of the common
-properties are not valid ones for this binding.
-
-
-Regardless of how to describe that though, I would like the
-patternProperties to be "-state$" :)
-
-Regards,
-Bjorn
-
-> > 
-> > default_state: default-state {
-> > 	pins = "gpio1";
-> > 	bias-disable;
-> > };
-> > 
-> > default_state: default-state {
-> > 	rx {
-> > 		pins = "gpio1";
-> > 		function = "gpio";
-> > 		bias-disable;
-> > 	};
-> > };
-> > 
-> > default_state: default-state {
-> > 	pinmux {
-> > 		pins = "gpio1";
-> > 		function = "gpio";
-> > 	};
-> > 
-> > 	pinconf {
-> > 		pins = "gpio1";
-> > 		bias-disable;
-> > 	};
-> > };
-> > 
-> > I.e. the properties described here applies either to this node directly,
-> > or any subnodes (1 level) down.
-> > 
-> > 
-> > Also we've been using different "patternProperties" for this node since
-> > the introduction of the binding 7 years ago. But to be "-state$" seems
-> > to best represent what the node actually describes.
-> > 
-> > Regards,
-> > Bjorn
-> > 
-> > > +    type: object
-> > > +    description:
-> > > +      Pinctrl node's client devices use subnodes for desired pin configuration.
-> > > +      Client device subnodes use below standard properties.
-> > > +    $ref: "/schemas/pinctrl/pincfg-node.yaml"
-> > > +
-> > > +    properties:
-> > > +      pins:
-> > > +        description:
-> > > +          List of gpio pins affected by the properties specified in this subnode.
-> > > +        items:
-> > > +          oneOf:
-> > > +            - pattern: "^gpio([0-9]|[1-9][0-9]|1[0-9][0-9]|20[0-3])$"
-> > > +            - enum: [ sdc1_clk, sdc1_cmd, sdc1_data, sdc2_clk, sdc2_cmd, sdc2_data ]
-> > > +        minItems: 1
-> > > +        maxItems: 36
-> > > +
-> > > +      function:
-> > > +        description:
-> > > +          Specify the alternative function to be configured for the specified
-> > > +          pins. Functions are only valid for gpio pins.
-> > > +        enum: [ atest_char, atest_usb, audio_ref, cam_mclk, cci_async,
-> > > +                cci_i2c, cci_timer, cmu_rng, coex_uart1, coex_uart2, cri_trng,
-> > > +                cri_trng0, cri_trng1, dbg_out, ddr_bist, ddr_pxi0, ddr_pxi1,
-> > > +                ddr_pxi2, ddr_pxi3, dp_hot, dp_lcd, gcc_gp1, gcc_gp2, gcc_gp3,
-> > > +                gpio, ibi_i3c, jitter_bist, lpass_slimbus, mdp_vsync, mdp_vsync0,
-> > > +                mdp_vsync1, mdp_vsync2, mdp_vsync3, mi2s0_data0, mi2s0_data1,
-> > > +                mi2s0_sck, mi2s0_ws, mi2s1_data0, mi2s1_data1, mi2s1_sck,
-> > > +                mi2s1_ws, mi2s2_data0, mi2s2_data1, mi2s2_sck, mi2s2_ws,
-> > > +                mss_grfc0, mss_grfc1, mss_grfc10, mss_grfc11, mss_grfc12,
-> > > +                mss_grfc2, mss_grfc3, mss_grfc4, mss_grfc5, mss_grfc6,
-> > > +                mss_grfc7, mss_grfc8, mss_grfc9, nav_gpio, pa_indicator,
-> > > +                pcie0_clkreqn, pcie1_clkreqn, phase_flag, pll_bist, pll_clk,
-> > > +                pri_mi2s, prng_rosc, qdss_cti, qdss_gpio, qlink0_enable,
-> > > +                qlink0_request, qlink0_wmss, qlink1_enable, qlink1_request,
-> > > +                qlink1_wmss, qlink2_enable, qlink2_request, qlink2_wmss, qspi0,
-> > > +                qspi1, qspi2, qspi3, qspi_clk, qspi_cs, qup0, qup1, qup10,
-> > > +                qup11, qup12, qup13, qup14, qup15, qup16, qup17, qup18, qup19,
-> > > +                qup2, qup3, qup4, qup5, qup6, qup7, qup8, qup9, qup_l4, qup_l5,
-> > > +                qup_l6, sd_write, sdc40, sdc41, sdc42, sdc43, sdc4_clk,
-> > > +                sdc4_cmd, sec_mi2s, tb_trig, tgu_ch0, tgu_ch1, tgu_ch2,
-> > > +                tgu_ch3, tsense_pwm1, tsense_pwm2, uim0_clk, uim0_data,
-> > > +                uim0_present, uim0_reset, uim1_clk, uim1_data, uim1_present,
-> > > +                uim1_reset, usb2phy_ac, usb_phy, vfr_0, vfr_1, vsense_trigger ]
-> > > +
-> > > +
-> > > +      drive-strength:
-> > > +        enum: [2, 4, 6, 8, 10, 12, 14, 16]
-> > > +        default: 2
-> > > +        description:
-> > > +          Selects the drive strength for the specified pins, in mA.
-> > > +
-> > > +      bias-pull-down: true
-> > > +
-> > > +      bias-pull-up: true
-> > > +
-> > > +      bias-disable: true
-> > > +
-> > > +      output-high: true
-> > > +
-> > > +      output-low: true
-> > > +
-> > > +    required:
-> > > +      - pins
-> > > +      - function
-> > > +
-> > > +    additionalProperties: false
-> > > +
-> > > +required:
-> > > +  - compatible
-> > > +  - reg
-> > > +  - interrupts
-> > > +  - interrupt-controller
-> > > +  - '#interrupt-cells'
-> > > +  - gpio-controller
-> > > +  - '#gpio-cells'
-> > > +  - gpio-ranges
-> > > +
-> > > +additionalProperties: false
-> > > +
-> > > +examples:
-> > > +  - |
-> > > +        #include <dt-bindings/interrupt-controller/arm-gic.h>
-> > > +        tlmm: pinctrl@f000000 {
-> > > +          compatible = "qcom,sm8350-tlmm";
-> > > +          reg = <0x0f100000 0x300000>;
-> > > +          interrupts = <GIC_SPI 208 IRQ_TYPE_LEVEL_HIGH>;
-> > > +          gpio-controller;
-> > > +          #gpio-cells = <2>;
-> > > +          interrupt-controller;
-> > > +          #interrupt-cells = <2>;
-> > > +          gpio-ranges = <&tlmm 0 0 203>;
-> > > +          serial-pinmux {
-> > > +            pins = "gpio18", "gpio19";
-> > > +            function = "qup3";
-> > > +            drive-strength = <8>;
-> > > +            bias-disable;
-> > > +          };
-> > > +        };
-> > > +
-> > > +...
-> > > -- 
-> > > 2.26.2
-> > > 
-> 
-> -- 
-> ~Vinod
+So the check on line 164 in arch/arm64/kernel/kaslr.c should probably
+be updated to reflect this change.
