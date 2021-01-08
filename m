@@ -2,108 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B8542EF3B9
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 15:10:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C2EC2EF3BD
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 15:11:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726653AbhAHOKS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Jan 2021 09:10:18 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43686 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725793AbhAHOKS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Jan 2021 09:10:18 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0268E22525;
-        Fri,  8 Jan 2021 14:09:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610114977;
-        bh=fjs87wmD1dhPTR3MDXSplx7dascsW/EY1STyOCAmXes=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=kmWvRbk9mV7sNidMTbEW/3w5cx8bPc12n+7n7z/hFgGQWU7aZmKrx++KoYtd4OaFX
-         taVIFEYO3Xz0sTR4zRGZ1qvBSEAYTYi70BtMlj9APaO5D0eJj4hjRVTNvrJRfEk+GJ
-         quAK16/5j1/lSq57NaGJo5GWgNukj+PD1LunPd08CFC4MfxlV9OuB4QedvuptGm9Q7
-         O4jGrscXHjgRms6vKJhc3twlp87R0ld3iT2zUiRmsST2eHpXzzNqSNpZK2s3w364YV
-         ODP4n9CsGhvvf7a7J/lY0cYk/vtVgMZQgqpivwFhwCRKk4FyYXePF18voOoLT0Tg9E
-         hEvJSMHxsZQFg==
-Date:   Fri, 8 Jan 2021 14:09:32 +0000
-From:   Will Deacon <will@kernel.org>
-To:     Lu Baolu <baolu.lu@linux.intel.com>
-Cc:     Joerg Roedel <joro@8bytes.org>, Ashok Raj <ashok.raj@intel.com>,
-        Jacob Pan <jacob.jun.pan@linux.intel.com>,
-        Guo Kaijie <Kaijie.Guo@intel.com>,
-        Liu Yi L <yi.l.liu@intel.com>,
-        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/5] iommu/vt-d: Fix unaligned addresses for
- intel_flush_svm_range_dev()
-Message-ID: <20210108140932.GA4811@willie-the-truck>
-References: <20201231005323.2178523-1-baolu.lu@linux.intel.com>
- <20201231005323.2178523-2-baolu.lu@linux.intel.com>
- <20210105190357.GA12182@willie-the-truck>
- <f8c7f124-48ab-f74f-a5cb-51b0ca4785ac@linux.intel.com>
- <9b26b7ac-b5c7-f38a-a078-b53a6b6bf375@linux.intel.com>
+        id S1727169AbhAHOLb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Jan 2021 09:11:31 -0500
+Received: from mail-ot1-f49.google.com ([209.85.210.49]:44643 "EHLO
+        mail-ot1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726869AbhAHOLa (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 Jan 2021 09:11:30 -0500
+Received: by mail-ot1-f49.google.com with SMTP id r9so9686475otk.11;
+        Fri, 08 Jan 2021 06:11:14 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=QeYk3Oi14lctPirOqDY+dvPIpxoFv7o5eCISNkjrmKg=;
+        b=EVmRBgqVIrCZ7Y1mtQG4+eAQpyejtbZ7IxegXIphV+XT7fQNnh9571Au708Rp29CFJ
+         1wHEW7J7ivb3qey5AGQySCdAzJS71v7MgYQm852jW1CLkcu1OdpUFLwARTWc7SapVhS9
+         ZHJ1BBQB9m0RekXIvp+5ydsvUaFW8+zwK/qE5XSkufMZyzqd0uv5/sBJYEn4puPd1vTr
+         yghHnGyrapWbiVT+w5nUfB7+YiqDpHJx9aWJ1Zt3SMilTBSfp3DM4/M9vYHjmzli1ExL
+         LTzwhHK3NgRRQLZO9pqPKmnQx4ZC+0A8gQmT+vd2q7du/XAMwwItJ+PETSBwvzJy+S/W
+         8uRQ==
+X-Gm-Message-State: AOAM532tA7DFJnpTPz4FAjF8tuEUiiPo7Ms485dEycKnjMDgPuSTI0My
+        eTA/m4mBiUFch35LWeyqunYzyk682WoFuIbWLG8=
+X-Google-Smtp-Source: ABdhPJzHiZt1utq1lccdOWmQYnL5Mc5DUdRNRxrJnu6txh7Iz61gKp+GH0w1UAnnj6w0XkTZhpWlZ1+O0WK8wCXdHY8=
+X-Received: by 2002:a9d:c01:: with SMTP id 1mr2664713otr.107.1610115049556;
+ Fri, 08 Jan 2021 06:10:49 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <9b26b7ac-b5c7-f38a-a078-b53a6b6bf375@linux.intel.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20201228202221.2327468-1-aford173@gmail.com> <20201228202221.2327468-2-aford173@gmail.com>
+In-Reply-To: <20201228202221.2327468-2-aford173@gmail.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Fri, 8 Jan 2021 15:10:38 +0100
+Message-ID: <CAMuHMdUz_Vi7AoM-3co3BvYW6ojEx5=1vg4X-=JGMpHkDFzocg@mail.gmail.com>
+Subject: Re: [PATCH 2/2] arm64: dts: renesas: Add usb2_clksel to RZ/G2 M/N/H
+To:     Adam Ford <aford173@gmail.com>
+Cc:     Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        Adam Ford-BE <aford@beaconembedded.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Lu,
+On Mon, Dec 28, 2020 at 9:22 PM Adam Ford <aford173@gmail.com> wrote:
+> Per the reference manal for the RZ/G Series, 2nd Generation,
 
-On Fri, Jan 08, 2021 at 07:52:47AM +0800, Lu Baolu wrote:
-> On 2021/1/6 9:09, Lu Baolu wrote:
-> > On 2021/1/6 3:03, Will Deacon wrote:
-> > > On Thu, Dec 31, 2020 at 08:53:20AM +0800, Lu Baolu wrote:
-> > > > @@ -170,6 +172,22 @@ static void intel_flush_svm_range_dev
-> > > > (struct intel_svm *svm, struct intel_svm_d
-> > > >       }
-> > > >   }
-> > > > +static void intel_flush_svm_range_dev(struct intel_svm *svm,
-> > > > +                      struct intel_svm_dev *sdev,
-> > > > +                      unsigned long address,
-> > > > +                      unsigned long pages, int ih)
-> > > > +{
-> > > > +    unsigned long shift = ilog2(__roundup_pow_of_two(pages));
-> > > > +    unsigned long align = (1ULL << (VTD_PAGE_SHIFT + shift));
-> > > > +    unsigned long start = ALIGN_DOWN(address, align);
-> > > > +    unsigned long end = ALIGN(address + (pages <<
-> > > > VTD_PAGE_SHIFT), align);
-> > > > +
-> > > > +    while (start < end) {
-> > > > +        __flush_svm_range_dev(svm, sdev, start, align >>
-> > > > VTD_PAGE_SHIFT, ih);
-> > > > +        start += align;
-> > > > +    }
-> > > > +}
-> > > 
-> > > Given that this only seems to be called from
-> > > intel_invalidate_range(), which
-> > > has to compute 'pages' only to have it pulled apart again here,
-> > > perhaps it
-> > > would be cleaner for intel_flush_svm_range() to take something like an
-> > > 'order' argument instead?
-> > > 
-> > > What do you think?
-> > 
-> > We need to clean up here. It's duplicate with the qi_flush_piotlb()
-> > helper. I have a patch under testing for this. I will post it for review
-> > later.
-> 
-> I'm sorry, above reply is a little vague.
-> 
-> I meant to say, let's take 'pages' as the argument. We are going to use
-> qi_flush_piotlb() here to avoid duplicate QI interactions. The
-> qi_flush_piotlb() helper also takes 'pages', so keep 'pages' here will
-> make things easier.
-> 
-> My cleanup patch is for v5.12. Can you please take this for v5.11?
+manual
 
-Ah sorry, I didn't realise that was your plan. Please just include this
-patch in a series of 2 when you post a fixed version of the trace event
-removal and then I'll queue them up next week, as I've already prepared
-the pull for today.
+> the RZ/G2M, RZ/G2N, and RZ/G2H have a bit that can be set to
+> choose between a crystal oscillator and an external oscillator.
+>
+> Because only boards that need this should enable it, it's marked
+> as disabled by default for backwards compatibility with existing
+> boards.
+>
+> Signed-off-by: Adam Ford <aford173@gmail.com>
 
-Apologies,
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+i.e. will queue in renesas-devel for v5.12 (with the typo fixed).
 
-Will
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
