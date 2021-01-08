@@ -2,147 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EBF892EEF5F
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 10:21:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F1EA62EEF5D
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 10:21:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728129AbhAHJVM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Jan 2021 04:21:12 -0500
-Received: from mail.kernel.org ([198.145.29.99]:49746 "EHLO mail.kernel.org"
+        id S1728103AbhAHJVK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Jan 2021 04:21:10 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49738 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728100AbhAHJVL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Jan 2021 04:21:11 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8F50C22BEA;
-        Fri,  8 Jan 2021 09:20:27 +0000 (UTC)
+        id S1727478AbhAHJVJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 Jan 2021 04:21:09 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 19BF323372;
+        Fri,  8 Jan 2021 09:20:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610097630;
-        bh=nRSp5uGK2zEc2nY08vnzMxXgCeuSyaQHH0R1e5xv5DU=;
-        h=From:To:Cc:Subject:Date:From;
-        b=f7AwRejYLfpb7SmYKpTW9Q3T3RU2Yi2KAgORsY6u2WBJYmhpwNulbIVUJZuqKhlz/
-         I1V1MCAccFoXgunOmRBA0AeDtZAzqFvvxL3BztP05tY9HECTff+PCeNn0ML3h6eoYV
-         ZswWBMlXl0PmojDj/c4jlyU92usIJUBseVjJgmjG2+4fKW/ZSJphemwozr6mbqnE14
-         4ydGdvNuAZD7Pob01Jkkbp3fyjqrsy6Mgb2TH4GOGWyyToQZYAAnYdX1dIzIa9E588
-         xSnMgXqm4pVhiVEV8t2X3eWeq242LDGOifn/DDPsuPhGqkxvDfwxJ4kqTiRf7Exg5b
-         n3DKRc2DWHv6A==
-From:   Arnd Bergmann <arnd@kernel.org>
-To:     Will Deacon <will@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Boqun Feng <boqun.feng@gmail.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-arch@vger.kernel.org, clang-built-linux@googlegroups.com
-Subject: [PATCH] arm64: make atomic helpers __always_inline
-Date:   Fri,  8 Jan 2021 10:19:56 +0100
-Message-Id: <20210108092024.4034860-1-arnd@kernel.org>
-X-Mailer: git-send-email 2.29.2
+        s=k20201202; t=1610097628;
+        bh=oiPKPwrLUTXmyxEg4htGUPgFpzc+ZSlNsGuIlmxZcHA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=FmG54POPm2c2tiKdpWlDe940ivqmckLWEjMutD1Z9iWCYSH1oOGMajQcbIW3dJMec
+         n9TFS+6rhKwqcvHge4pnOswKtWes6MxZUvil9oNN4hUhJyuCaofAqFpYXsdRw5Bjfy
+         a7lkb0cRHVP+PxTQy62P2GE/d3k7oCBGoOFbXSRdjbzX9YcRRTZmhsLY/fdzw+pDMP
+         HBtNNxb3lQEYayOFbkI7wAPEOuggq7xk3P2nSlM+c+P5n17w90rX9o5JJIUN8FE/KZ
+         pzVGRvRLjOM4zY99FjwjvuyGp9rX8XwxhtEZmg3e5gL4IaT+QS0ONb9h/CXJOyxfo7
+         cUblV5M4jCQoQ==
+Received: from johan by xi.lan with local (Exim 4.93.0.4)
+        (envelope-from <johan@kernel.org>)
+        id 1kxnwd-00019U-DK; Fri, 08 Jan 2021 10:20:31 +0100
+Date:   Fri, 8 Jan 2021 10:20:31 +0100
+From:   Johan Hovold <johan@kernel.org>
+To:     Anant Thazhemadam <anant.thazhemadam@gmail.com>
+Cc:     Johan Hovold <johan@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 05/15] usb: misc: emi26: update to use
+ usb_control_msg_send()
+Message-ID: <X/gj3yFkLjuLxTZs@hovoldconsulting.com>
+References: <20201130011819.2576481-1-anant.thazhemadam@gmail.com>
+ <20201130012847.2579463-1-anant.thazhemadam@gmail.com>
+ <X8pKmmdvO0cIQXnL@localhost>
+ <6806f8e4-c2f7-3c6a-b855-3f87ab8d9e22@gmail.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <6806f8e4-c2f7-3c6a-b855-3f87ab8d9e22@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+On Thu, Jan 07, 2021 at 07:43:54PM +0530, Anant Thazhemadam wrote:
+> On 04/12/20 8:11 pm, Johan Hovold wrote:
+> > On Mon, Nov 30, 2020 at 06:58:47AM +0530, Anant Thazhemadam wrote:
+> >> The newer usb_control_msg_{send|recv}() API are an improvement on the
+> >> existing usb_control_msg() as it ensures that a short read/write is treated
+> >> as an error,
+> > Short writes have always been treated as an error. The new send helper
+> > only changes the return value from the transfer size to 0.
+> >
+> > And this driver never reads.
+> >
+> > Try to describe the motivation for changing this driver which is to
+> > avoid the explicit kmemdup().
 
-With UBSAN enabled and building with clang, there are occasionally
-warnings like
+> >>  /* thanks to drivers/usb/serial/keyspan_pda.c code */
+> >> @@ -77,11 +67,7 @@ static int emi26_load_firmware (struct usb_device *dev)
+> >>  	int err = -ENOMEM;
+> >>  	int i;
+> >>  	__u32 addr;	/* Address to write */
+> >> -	__u8 *buf;
+> >> -
+> >> -	buf = kmalloc(FW_LOAD_SIZE, GFP_KERNEL);
+> >> -	if (!buf)
+> >> -		goto wraperr;
+> >> +	__u8 buf[FW_LOAD_SIZE];
+> > As the build bots reported, you must not put large structures like this
+> > on the stack.
+> 
+> Understood. 
+> But I'm considering dropping this change (and the one proposed for
+> emi62) altogether in v3 - since these would end up requiring memory to
+> dynamically allocated twice for the same purpose.  However, if you
+> still think the pros of updating this (and emi62) outweigh the cons,
+> please let me know, and I'll make sure to send in another version
+> fixing it.
 
-WARNING: modpost: vmlinux.o(.text+0xc533ec): Section mismatch in reference from the function arch_atomic64_or() to the variable .init.data:numa_nodes_parsed
-The function arch_atomic64_or() references
-the variable __initdata numa_nodes_parsed.
-This is often because arch_atomic64_or lacks a __initdata
-annotation or the annotation of numa_nodes_parsed is wrong.
+The redundant memdup() is already there for the firmware buffer and
+changing to usb_control_msg_send() will only make it slightly harder to
+get rid of that, if anyone would bother.
 
-for functions that end up not being inlined as intended but operating
-on __initdata variables. Mark these as __always_inline, along with
-the corresponding asm-generic wrappers.
+But yeah, it's probably not worth switching usb_control_msg_send() for
+these drivers.
 
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
- arch/arm64/include/asm/atomic.h     | 10 +++++-----
- include/asm-generic/bitops/atomic.h |  6 +++---
- 2 files changed, 8 insertions(+), 8 deletions(-)
-
-diff --git a/arch/arm64/include/asm/atomic.h b/arch/arm64/include/asm/atomic.h
-index 015ddffaf6ca..b56a4b2bc248 100644
---- a/arch/arm64/include/asm/atomic.h
-+++ b/arch/arm64/include/asm/atomic.h
-@@ -17,7 +17,7 @@
- #include <asm/lse.h>
- 
- #define ATOMIC_OP(op)							\
--static inline void arch_##op(int i, atomic_t *v)			\
-+static __always_inline void arch_##op(int i, atomic_t *v)		\
- {									\
- 	__lse_ll_sc_body(op, i, v);					\
- }
-@@ -32,7 +32,7 @@ ATOMIC_OP(atomic_sub)
- #undef ATOMIC_OP
- 
- #define ATOMIC_FETCH_OP(name, op)					\
--static inline int arch_##op##name(int i, atomic_t *v)			\
-+static __always_inline int arch_##op##name(int i, atomic_t *v)		\
- {									\
- 	return __lse_ll_sc_body(op##name, i, v);			\
- }
-@@ -56,7 +56,7 @@ ATOMIC_FETCH_OPS(atomic_sub_return)
- #undef ATOMIC_FETCH_OPS
- 
- #define ATOMIC64_OP(op)							\
--static inline void arch_##op(long i, atomic64_t *v)			\
-+static __always_inline void arch_##op(long i, atomic64_t *v)		\
- {									\
- 	__lse_ll_sc_body(op, i, v);					\
- }
-@@ -71,7 +71,7 @@ ATOMIC64_OP(atomic64_sub)
- #undef ATOMIC64_OP
- 
- #define ATOMIC64_FETCH_OP(name, op)					\
--static inline long arch_##op##name(long i, atomic64_t *v)		\
-+static __always_inline long arch_##op##name(long i, atomic64_t *v)	\
- {									\
- 	return __lse_ll_sc_body(op##name, i, v);			\
- }
-@@ -94,7 +94,7 @@ ATOMIC64_FETCH_OPS(atomic64_sub_return)
- #undef ATOMIC64_FETCH_OP
- #undef ATOMIC64_FETCH_OPS
- 
--static inline long arch_atomic64_dec_if_positive(atomic64_t *v)
-+static __always_inline long arch_atomic64_dec_if_positive(atomic64_t *v)
- {
- 	return __lse_ll_sc_body(atomic64_dec_if_positive, v);
- }
-diff --git a/include/asm-generic/bitops/atomic.h b/include/asm-generic/bitops/atomic.h
-index dd90c9792909..0e7316a86240 100644
---- a/include/asm-generic/bitops/atomic.h
-+++ b/include/asm-generic/bitops/atomic.h
-@@ -11,19 +11,19 @@
-  * See Documentation/atomic_bitops.txt for details.
-  */
- 
--static inline void set_bit(unsigned int nr, volatile unsigned long *p)
-+static __always_inline void set_bit(unsigned int nr, volatile unsigned long *p)
- {
- 	p += BIT_WORD(nr);
- 	atomic_long_or(BIT_MASK(nr), (atomic_long_t *)p);
- }
- 
--static inline void clear_bit(unsigned int nr, volatile unsigned long *p)
-+static __always_inline void clear_bit(unsigned int nr, volatile unsigned long *p)
- {
- 	p += BIT_WORD(nr);
- 	atomic_long_andnot(BIT_MASK(nr), (atomic_long_t *)p);
- }
- 
--static inline void change_bit(unsigned int nr, volatile unsigned long *p)
-+static __always_inline void change_bit(unsigned int nr, volatile unsigned long *p)
- {
- 	p += BIT_WORD(nr);
- 	atomic_long_xor(BIT_MASK(nr), (atomic_long_t *)p);
--- 
-2.29.2
-
+Johan
