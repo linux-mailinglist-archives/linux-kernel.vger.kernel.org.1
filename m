@@ -2,105 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB2592EF4B5
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 16:20:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B9E12EF4A3
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 16:15:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727610AbhAHPUe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Jan 2021 10:20:34 -0500
-Received: from foss.arm.com ([217.140.110.172]:52996 "EHLO foss.arm.com"
+        id S1727895AbhAHPOk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Jan 2021 10:14:40 -0500
+Received: from mail.kernel.org ([198.145.29.99]:55294 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726600AbhAHPUd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Jan 2021 10:20:33 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 41474113E;
-        Fri,  8 Jan 2021 07:19:48 -0800 (PST)
-Received: from e108754-lin.cambridge.arm.com (unknown [10.1.198.32])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 0B29C3F70D;
-        Fri,  8 Jan 2021 07:19:46 -0800 (PST)
-From:   Ionela Voinescu <ionela.voinescu@arm.com>
-To:     rjw@rjwysocki.net, viresh.kumar@linaro.org,
-        manivannan.sadhasivam@linaro.org, agross@kernel.org,
-        bjorn.andersson@linaro.org
-Cc:     amitk@kernel.org, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Ionela Voinescu <ionela.voinescu@arm.com>
-Subject: [PATCH] cpufreq: Revert "cpufreq: qcom-hw: Use devm_platform_ioremap_resource() to simplify code"
-Date:   Fri,  8 Jan 2021 15:14:06 +0000
-Message-Id: <20210108151406.23595-1-ionela.voinescu@arm.com>
-X-Mailer: git-send-email 2.29.2.dirty
+        id S1727686AbhAHPOj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 Jan 2021 10:14:39 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 991FB238EC;
+        Fri,  8 Jan 2021 15:13:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1610118839;
+        bh=FU6YJ6OzFzRwqjZwosAJf0qhhdxi/v39d2WUwr1YBnM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=fQvlOZqrO/hPxBalKwgIXr35TibRlvjk/YAd/x7pkZN8ZHuSSgT+r+aHdkWOcZD6q
+         VH+R5Bz5XhFTrbWEpJm7iY7/KpzjfuSvnbvNXJVhx6YjH/fkK3wTxbFeSF4ILBgh0M
+         yRoanJ8JhCe6skNHD9fNYHF09q6cbNpDdbTrD6kU=
+Date:   Fri, 8 Jan 2021 16:15:16 +0100
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     zhenwei pi <pizhenwei@bytedance.com>, arnd@arndb.de,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 2/2] misc: pvpanic: introduce module parameter 'events'
+Message-ID: <X/h3BAdea48p+L+p@kroah.com>
+References: <20210108135223.2924507-1-pizhenwei@bytedance.com>
+ <20210108135223.2924507-3-pizhenwei@bytedance.com>
+ <X/hnF0W+TMj36LDN@kroah.com>
+ <58eca97c-f72e-66a7-2696-611124ce0943@redhat.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <58eca97c-f72e-66a7-2696-611124ce0943@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This reverts commit f17b3e44320b4079e69135c63d1e416b0703a21e.
+On Fri, Jan 08, 2021 at 04:04:24PM +0100, Paolo Bonzini wrote:
+> On 08/01/21 15:07, Greg KH wrote:
+> > >   static void __iomem *base;
+> > > +static unsigned int events = PVPANIC_PANICKED | PVPANIC_CRASH_LOADED;
+> > > +module_param(events, uint, 0644);
+> > > +MODULE_PARM_DESC(events, "set event limitation of pvpanic device");
+> > I do not understand you wanting a module parameter as well as a sysfs
+> > file.  Why is this needed?  Why are you spreading this information out
+> > across different apis and locations?
+> 
+> It can be useful to disable some functionality, for example in case you want
+> to fake running on an older virtualization host.  This can be done for
+> debugging reasons, or to keep uniform handling across a fleet that is
+> running different versions of QEMU.
 
-This commit introduces a regression on platforms using the driver,
-by failing to initialise a policy, when one is created post hotplug.
+And where is this all going to be documented?
 
-When all the CPUs of a policy are hoptplugged out, the call to .exit()
-and later to devm_iounmap() does not release the memory region that was
-requested during devm_platform_ioremap_resource().
+And what's wrong with just making the sysfs attribute writable?
 
-Therefore, a subsequent call to .init() will result in the following
-error, which will prevent a new policy to be initialised:
+thanks,
 
-qcom-cpufreq-hw 17d43000.cpufreq: can't request region for resource
-[mem 0x17d43000-0x17d443ff]
-
-Signed-off-by: Ionela Voinescu <ionela.voinescu@arm.com>
----
-
-Hi guys,
-
-I noticed the issue described in the commit message on DB845c platforms
-on 5.11-rc2.
-
-I tried to fix this, rather than revert it, but I did not find any
-better way to fix this, other than possibly calling
-devm_release_mem_region() directly in the cpufreq driver or reworking
-some of the resource management functions. But in comparison, reverting
-the patch still seemed the cleaner solution to me.
-
-Hope it helps,
-Ionela.
-
- drivers/cpufreq/qcom-cpufreq-hw.c | 11 ++++++++---
- 1 file changed, 8 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/cpufreq/qcom-cpufreq-hw.c b/drivers/cpufreq/qcom-cpufreq-hw.c
-index 9ed5341dc515..79e637616856 100644
---- a/drivers/cpufreq/qcom-cpufreq-hw.c
-+++ b/drivers/cpufreq/qcom-cpufreq-hw.c
-@@ -280,6 +280,7 @@ static int qcom_cpufreq_hw_cpu_init(struct cpufreq_policy *policy)
- 	struct of_phandle_args args;
- 	struct device_node *cpu_np;
- 	struct device *cpu_dev;
-+	struct resource *res;
- 	void __iomem *base;
- 	struct qcom_cpufreq_data *data;
- 	int ret, index;
-@@ -303,9 +304,13 @@ static int qcom_cpufreq_hw_cpu_init(struct cpufreq_policy *policy)
- 
- 	index = args.args[0];
- 
--	base = devm_platform_ioremap_resource(pdev, index);
--	if (IS_ERR(base))
--		return PTR_ERR(base);
-+	res = platform_get_resource(pdev, IORESOURCE_MEM, index);
-+	if (!res)
-+		return -ENODEV;
-+
-+	base = devm_ioremap(dev, res->start, resource_size(res));
-+	if (!base)
-+		return -ENOMEM;
- 
- 	data = devm_kzalloc(dev, sizeof(*data), GFP_KERNEL);
- 	if (!data) {
-
-base-commit: e71ba9452f0b5b2e8dc8aa5445198cd9214a6a62
-prerequisite-patch-id: a6b26dcf2cc7750362150ced269bc05a6cbd0a05
--- 
-2.29.2.dirty
-
+greg k-h
