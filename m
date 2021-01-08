@@ -2,79 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 913542EEC59
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 05:20:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 14C3C2EEC5C
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 05:22:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727495AbhAHEUH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 23:20:07 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58558 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726600AbhAHEUG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 23:20:06 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 150732075A;
-        Fri,  8 Jan 2021 04:19:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610079566;
-        bh=C50ILe8XD3p5Fd6hL1LckWStWtHfeqxjGImfDKqrk38=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=AGmwRYrC9Var80OejosN1vXduVijQ2kr6gyalXmGwgfxpSGE20vXQbuWZb15KGE/G
-         JE+6NtMUiOIkxMMXypj3w2Sj7boNizR2zO8W9MSx7Bzi1Ga8dyycqh8figfugexW1L
-         vQPbEm77S/G4qFea4lZE7VNWmpOdFONIl0svTBK4lDUqAa3gA18ogC7JQdn1Vx2YbQ
-         DJZG/EQqyfws9yoyJkRt4uU2ydijwcy2aL8wYzPBMOH3ib0rUI4vwiSbW/qdisH38I
-         c6s2SA0yZ6E/Q3Aw68iV3z2pFjsQnytuiFIFWnVW9WS46W60yqZPuyzUIoHO+TpjgP
-         QFjrZwadYn6OA==
-Date:   Fri, 8 Jan 2021 13:19:22 +0900
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     "Naveen N . Rao" <naveen.n.rao@linux.vnet.ibm.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] tracing/kprobes: Do the notrace functions check without
- kprobes on ftrace
-Message-Id: <20210108131922.8db9746c27241dae4d4ea8b2@kernel.org>
-In-Reply-To: <20210107091330.3782789c@gandalf.local.home>
-References: <160990323982.16047.9136060149082849917.stgit@devnote2>
-        <20210107091330.3782789c@gandalf.local.home>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+        id S1727424AbhAHEUi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 23:20:38 -0500
+Received: from aserp2130.oracle.com ([141.146.126.79]:48984 "EHLO
+        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726600AbhAHEUh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Jan 2021 23:20:37 -0500
+Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
+        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 108492hk041340;
+        Fri, 8 Jan 2021 04:19:47 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : in-reply-to : references : mime-version :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=fHAvPMXMCfyTi7IpkD9krCOAmF83C+ske4aYaDdCGe0=;
+ b=znGqfx/FFGnccSpPSUvBx9MjOX9Zmpxc/EB7V/IdPOXklSa1zPQJnBe2cNdT0hyofOZx
+ LCgc5Vl8M6kK+w61xH6ny4a1b3Lihk0HlCSAgj9AUyWEnOVIGwNoxX4mYFrZr7y1ka9a
+ Bb6NSr5d+nkGgWN+DX7iqmA5oWoN/52NFsbCgV801kDp1jfiSNUR8WEkHPixQXt6z+Vt
+ fkd/SYSuf4D8agn2Zkr9K1nbRJfRKRHFEweukDnP7ntELZ/7Tb9udlUkB8KXi0wbJpcG
+ x5AC+HXUsWKBgEwS3jFKtp6/bisxTv3BdvBUA9u/S+nyfZRdFbo/t+Q/6zlAVySygjVj ZA== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by aserp2130.oracle.com with ESMTP id 35wcuxysa4-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 08 Jan 2021 04:19:47 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 10849SNH170537;
+        Fri, 8 Jan 2021 04:19:46 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by userp3030.oracle.com with ESMTP id 35w3g3r4kk-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 08 Jan 2021 04:19:46 +0000
+Received: from abhmp0004.oracle.com (abhmp0004.oracle.com [141.146.116.10])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 1084JhNM012389;
+        Fri, 8 Jan 2021 04:19:44 GMT
+Received: from ca-mkp.ca.oracle.com (/10.156.108.201)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Thu, 07 Jan 2021 20:19:42 -0800
+From:   "Martin K. Petersen" <martin.petersen@oracle.com>
+To:     Adrian Hunter <adrian.hunter@intel.com>,
+        "James E . J . Bottomley" <jejb@linux.ibm.com>
+Cc:     "Martin K . Petersen" <martin.petersen@oracle.com>,
+        Bean Huo <huobean@gmail.com>, linux-kernel@vger.kernel.org,
+        linux-scsi@vger.kernel.org, Can Guo <cang@codeaurora.org>,
+        Stanley Chu <stanley.chu@mediatek.com>,
+        Avri Altman <avri.altman@wdc.com>,
+        Alim Akhtar <alim.akhtar@samsung.com>
+Subject: Re: [PATCH V2] docs: ABI: sysfs-driver-ufs: Add DeepSleep power mode
+Date:   Thu,  7 Jan 2021 23:19:29 -0500
+Message-Id: <161007949339.9892.7688310606850148159.b4-ty@oracle.com>
+X-Mailer: git-send-email 2.29.2
+In-Reply-To: <20210104155026.16417-1-adrian.hunter@intel.com>
+References: <20210104155026.16417-1-adrian.hunter@intel.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9857 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 malwarescore=0 adultscore=0
+ phishscore=0 spamscore=0 mlxlogscore=873 suspectscore=0 bulkscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2101080021
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9857 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 bulkscore=0
+ clxscore=1015 spamscore=0 impostorscore=0 priorityscore=1501 mlxscore=0
+ adultscore=0 mlxlogscore=884 lowpriorityscore=0 phishscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2101080021
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 7 Jan 2021 09:13:30 -0500
-Steven Rostedt <rostedt@goodmis.org> wrote:
+On Mon, 4 Jan 2021 17:50:26 +0200, Adrian Hunter wrote:
 
-> On Wed,  6 Jan 2021 12:20:40 +0900
-> Masami Hiramatsu <mhiramat@kernel.org> wrote:
-> 
-> > Enable the notrace function check on the architecture which doesn't
-> > support kprobes on ftrace. This notrace function check is not only
-> > for the kprobes on ftrace but also sw-breakpoint based kprobes.
-> > Thus there is no reason to limit this check for the arch which
-> > supports kprobes on ftrace.
-> > 
-> > This also changes the dependency of Kconfig. Because kprobe event
-> > uses the function tracer's address list for identifying notrace
-> > function, if the CONFIG_FUNCTION_TRACER=n, it can not check whether
-> > the target function is notrace or not.
-> > 
-> > Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
-> > Acked-by: Naveen N. Rao <naveen.n.rao@linux.vnet.ibm.com>
-> > ---
-> 
-> Fails to build with:
-> 
-> kernel/trace/trace_kprobe.c: In function ‘__within_notrace_func’:
-> kernel/trace/trace_kprobe.c:453:10: error: implicit declaration of function ‘ftrace_location_range’; did you mean ‘ftrace_location’? [-Werror=implicit-function-declaration]
->   453 |  return !ftrace_location_range(addr, addr + size - 1);
->       |          ^~~~~~~~~~~~~~~~~~~~~
->       |          ftrace_location
-> 
+> Update sysfs documentation for addition of DeepSleep power mode.
 
-Oops, it depends on CONFIG_DYNAMIC_FTRACE=y instead of CONFIG_FUNCTION_TRACER.
+Applied to 5.11/scsi-fixes, thanks!
 
-Thank you,
+[1/1] docs: ABI: sysfs-driver-ufs: Add DeepSleep power mode
+      https://git.kernel.org/mkp/scsi/c/0b2894cd0fdf
 
 -- 
-Masami Hiramatsu <mhiramat@kernel.org>
+Martin K. Petersen	Oracle Linux Engineering
