@@ -2,174 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 862D52EF599
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 17:16:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 89D222EF598
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 17:15:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728005AbhAHQPl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Jan 2021 11:15:41 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:31088 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726654AbhAHQPl (ORCPT
+        id S1728108AbhAHQPA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Jan 2021 11:15:00 -0500
+Received: from outbound-smtp18.blacknight.com ([46.22.139.245]:49021 "EHLO
+        outbound-smtp18.blacknight.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727406AbhAHQO7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Jan 2021 11:15:41 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1610122454;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=pRRH40D7PJf5ztj9RQY9dDwF0hprU1QWQ/fBVT1LZ/Q=;
-        b=cM+oRbZYriWeA/Mi3AYGJxo6JWOXseWeFWYN6M4xJ3wMSnRQRjFCG6oATm0zB3WmUfgF+1
-        y+ZHNu8I1aqiBHa9oMGVACEULkAVhseEYZJpVOm87BO2j1vpxTR5w6/OzLK8N8Zduz83eF
-        56X6Z58Whu4TTJSPd1zjsrzXzS95eas=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-494-B75ffJ1IPjqUHfGGO9Hvig-1; Fri, 08 Jan 2021 11:14:12 -0500
-X-MC-Unique: B75ffJ1IPjqUHfGGO9Hvig-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id BF035801817;
-        Fri,  8 Jan 2021 16:14:09 +0000 (UTC)
-Received: from mail (ovpn-112-222.rdu2.redhat.com [10.10.112.222])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id B1BA160D11;
-        Fri,  8 Jan 2021 16:14:02 +0000 (UTC)
-Date:   Fri, 8 Jan 2021 11:14:02 -0500
-From:   Andrea Arcangeli <aarcange@redhat.com>
-To:     Will Deacon <will@kernel.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Yu Zhao <yuzhao@google.com>, Andy Lutomirski <luto@kernel.org>,
-        Peter Xu <peterx@redhat.com>,
-        Pavel Emelyanov <xemul@openvz.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Mike Rapoport <rppt@linux.vnet.ibm.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Hugh Dickins <hughd@google.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Oleg Nesterov <oleg@redhat.com>, Jann Horn <jannh@google.com>,
-        Kees Cook <keescook@chromium.org>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>, Jan Kara <jack@suse.cz>,
-        Kirill Tkhai <ktkhai@virtuozzo.com>,
-        Nadav Amit <nadav.amit@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [PATCH 2/2] mm: soft_dirty: userfaultfd: introduce
- wrprotect_tlb_flush_pending
-Message-ID: <X/iEyk0ijxhSvs9T@redhat.com>
-References: <20210107200402.31095-3-aarcange@redhat.com>
- <CAHk-=whg-91=EF=8=ayyDQGx_3iuWKp3aHUkDCDkgUb15Yh8AQ@mail.gmail.com>
- <X/d2DyLfXZmBIreY@redhat.com>
- <CAHk-=wjs9v-hp_7HV_TrTmisu7pNX=MwZ62ZV82i0evLhPwS1Q@mail.gmail.com>
- <X/eLwQPd5bi620Vt@redhat.com>
- <CAHk-=whjS3pUZRJLR_HdgB0_1Sd4gWXUbLLyShKxOg0ySCdnUA@mail.gmail.com>
- <CAHk-=wgRZ5o5pUqKC6cwTLU=V-G+rF5DTexGh1kCMGrgXDufew@mail.gmail.com>
- <X/edsWgguQDgsOtx@redhat.com>
- <CAHk-=whTCBa6Frpbveuy7Hnz17P+g03yQvynkApFbBjV5rVrsA@mail.gmail.com>
- <20210108124815.GA4512@willie-the-truck>
+        Fri, 8 Jan 2021 11:14:59 -0500
+Received: from mail.blacknight.com (pemlinmail04.blacknight.ie [81.17.254.17])
+        by outbound-smtp18.blacknight.com (Postfix) with ESMTPS id AE5201C3C6D
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Jan 2021 16:14:07 +0000 (GMT)
+Received: (qmail 21720 invoked from network); 8 Jan 2021 16:14:07 -0000
+Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.22.4])
+  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 8 Jan 2021 16:14:07 -0000
+Date:   Fri, 8 Jan 2021 16:14:06 +0000
+From:   Mel Gorman <mgorman@techsingularity.net>
+To:     Vincent Guittot <vincent.guittot@linaro.org>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        "Li, Aubrey" <aubrey.li@linux.intel.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Qais Yousef <qais.yousef@arm.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>,
+        Tim Chen <tim.c.chen@linux.intel.com>,
+        Jiang Biao <benbjiang@gmail.com>
+Subject: Re: [RFC][PATCH 1/5] sched/fair: Fix select_idle_cpu()s cost
+ accounting
+Message-ID: <20210108161405.GE3592@techsingularity.net>
+References: <20201214164822.402812729@infradead.org>
+ <20201214170017.877557652@infradead.org>
+ <c4e31235-e1fb-52ac-99a8-ae943ee0de54@linux.intel.com>
+ <20201215075911.GA3040@hirez.programming.kicks-ass.net>
+ <20210108102738.GB3592@techsingularity.net>
+ <CAKfTPtD5R1S=rwp9C-jyMg8bAB-37FCe3qrqad9KEeyR7mOmkw@mail.gmail.com>
+ <20210108144058.GD3592@techsingularity.net>
+ <CAKfTPtCGCmCv0yXSUmYUh6=8uzd0n9xFPqC0cW4sm-FqDvjvCQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-15
 Content-Disposition: inline
-In-Reply-To: <20210108124815.GA4512@willie-the-truck>
-User-Agent: Mutt/2.0.4 (2020-12-30)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+In-Reply-To: <CAKfTPtCGCmCv0yXSUmYUh6=8uzd0n9xFPqC0cW4sm-FqDvjvCQ@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello everyone,
-
-On Fri, Jan 08, 2021 at 12:48:16PM +0000, Will Deacon wrote:
-> On Thu, Jan 07, 2021 at 04:25:54PM -0800, Linus Torvalds wrote:
-> > Please. Why is the correct patch not the attached one (apart from the
-> > obvious fact that I haven't tested it and maybe just screwed up
-> > completely - but you get the idea)?
+On Fri, Jan 08, 2021 at 04:10:51PM +0100, Vincent Guittot wrote:
+> > > Trying to bias the avg_scan_cost with:  loops <<= 2;
+> > > will just make avg_scan_cost lost any kind of meaning because it
+> > > doesn't reflect the avg cost of scanning a rq anymore
+> > >
+> >
+> > Before the series, the avg_scan_cost also did not represent the cost of
+> > scanning a RQ before either. Treating scan failures and successes equally
 > 
-> It certainly looks simple and correct to me, although it means we're now
-> taking the mmap sem for write in the case where we only want to clear the
-> access flag, which should be fine with the thing only held for read, no?
+> I agree that the previous avg_scan_cost was not representing a RQ
+> because it was the avg cost of scanning the full domain.
 
-I'm curious, would you also suggest that fixing just the TLB flushing
-symptom is enough and we can forget about the ABI break coming from
-page_count used in do_wp_page?
+It was not even that. As the full domain was not necessarily scanned at
+all, it simply reflected how much time was spent scanning in general. It
+neither represented an rq scan cost (which is variable due to cache
+traffic) nor did it represent a full domain scan.
 
-One random example: clear_refs will still break all long term GUP
-pins, are you ok with that too?
+> And we were
+> comparing it with the average idle time (weighted by few factors).
+> And this cost was impacted by the fact that the scan can return early
+> because it found a cpu. This has advantage and drawback but at least
+> stays coherent in what we are comparing
+> 
 
-page_count in do_wp_page is a fix for the original security issue from
-vmsplice (where the child is fooling the parent in taking the
-exclusive page in do_wp_page), that appears worse than the bug itself.
+Not really because it represented the cost of a scan of some number of
+rqs from 1 to sd->span_weight.
 
-page_count in do_wp_page, instead of isolating as malicious when the
-parent is reusing the page queued in the vmsplice pipe, is treating as
-malicious also all legit cases that had to reliably reuse the page to
-avoid the secondary MMUs to go out of sync.
+> Peter's patch wants to move on per rq avg scan cost. And what you're
+> proposing is to add a magic heuristic to bias the per rq which at the
+> end makes this value just an opaque metric.
+> 
 
-page_count in do_wp_page is like a credit card provider blocking all
-credit cards of all customers, because one credit card may have been
-cloned (by vmsplice), but nobody can know which one was it. Of course
-this technique will work perfectly as security fix because it will
-treat all credit card users as malicious and it'll block them all
-("block as in preventing re-use of the anon page").
+The metric is a heuristic no matter what. The scan cost of a RQ is not
+fixed as it depends on whether cache data needs to be updated or not. Also
+bear in mind that the first round of results and the results that I posted
+showed that Peter's patch has significant corner cases that the patch
+mitigates. You also note that avg_idle is an unusual metric to compare
+against because it has numerous timing artifacts. At least one of them
+is that we are extrapolating the domain idle time from a single rq which
+is a poor proxy measure when a domain is only partially used. There just
+is not a better one available without heavy writes to sd_llc which causes
+its own set of problems.
 
-The problem are those other credit card users that weren't malicious
-that get their COW broken too. Those are the very long term GUP pins
-if any anon page can be still wrprotected anywhere in the VM.
+> If we really want to keep the impact of early return than IMO we
+> should stay on a full domain scan level instead of a per rq.
+> 
 
-At the same time the real hanging fruit (vmsplice) that, if taken care
-of, would have rendered the bug purely theoretical in security terms
-hasn't been fixed yet, despite those unprivileged long term GUP pins
-causes more reproducible security issues than just the COW, since they
-can still DoS the OOM killer and they bypass at least the mlock
-enforcement, even for non compound pages.
+That also has the same class of side-effects. Once the scan cost of
+a successful scan is strictly accounted for, there are problems. Even
+tracking the success scans is costly as the CPU clock has to be read and
+sd_llc has to be updated.
 
-Of course just fixing vmsplice to require some privilege won't fix the
-bug in full, so it's not suitable long term solution, but it has to
-happen orthogonality for other reason, and it'd at least remove the
-short term security concern.
+> Also, there is another problem (that I'm investigating)  which is that
+> this_rq()->avg_idle is stalled when your cpu is busy. Which means that
+> this avg_idle can just be a very old and meaningless value.
 
-In addition you're not experiencing the full fallout of the side
-effects of page_count used to decide if to re-use all anon COW pages
-because the bug is still there (with enterprise default config options
-at least). Not all credit cards are blocked yet with only
-09854ba94c6aad7886996bfbee2530b3d8a7f4f4 applied. Only after you will
-block them all, you will experience all the side effects of replacing
-the per-subpage finegrined mapcount with the compound-wide page count.
+Yes, avg_idle in itself is just the average inter-arrival time between
+a CPU going idle and receiving a wakeup partially bound roughly
+by 2*sysctl_sched_migration_cost. If avg_idle is traced for each
+select_idle_cpu(), it's obvious that it takes time to adjust when a
+load starts.
 
-The two statements above combined, result in my recommendation at this
-point to resolve this in userland by rendering the security issue
-theoretical by removing vmsplice from the OCI schema allowlist or by
-enforcing it fixing in userland by always using execve after drop
-privs (as crun always does when it starts the container of course).
+> I think
+> that we should decay it periodically to reflect there is less and less
+> idle time (in fact no more)  on this busy CPU that never goes to idle.
+> If a cpu was idle for a long period but then a long running task
+> starts, the avg_idle will stay stalled to the large value which is
+> becoming less and less relevant.
 
-For the long term, I can't see how using page_count in do_wp_page is a
-tenable proposition, unless we either drop all secondary MMUs from the
-kernel or VM features like clear_refs are dropped or unless the
-page_count is magically stabilized and the speculative pagecache
-lookups are also dropped.
+While I get what you're saying, it does not help extrapolate what the
+idleness of a domain is.
 
-If trying to manage the fallout by enforcing no anon page can ever be
-wrprotected in place (i.e. dropping clear_refs feature or rendering it
-unreliable by skipping elevated counts caused by spurious pagecache
-lookups), it'd still sounds a too fragile design and too prone to
-break to rely on that. There's random arch stuff even wrprotecting
-memory, even very vm86 does it under the hood (vm86 is unlikely it has
-a long term GUP pin on it of course, but still who knows?). I mean the
-VM core cannot make assumptions like: "this vm86 case can still
-wrprotect without worry because probably vm86 isn't used anymore with
-any advanced secondary MMU, so if there's a GUP pin it probably is a
-malicious vmsplice and not a RDMA or GPU or Virtualization secondary
-MMU".
+> At the opposite, a cpu with a short running/idle period task will have
+> a lower avg_idle whereas it is more often idle.
+> 
+> Another thing that worries me, is that we use the avg_idle of the
+> local cpu, which is obviously not idle otherwise it would have been
+> selected, to decide how much time we should spend on looking for
+> another idle CPU. I'm not sure that's the right metrics to use
+> especially with a possibly stalled value.
+> 
 
-Then there's the secondary concern of the inefficiency it introduces
-with extra unnecessary copies when a single GUP pin will prevent reuse
-of 512 or 262144 subpages, in the 512 case also potentially mapped in
-different processes. The TLB flushing discussions registers as the
-last concern in my view.
+A better estimate requires heavy writes to sd_llc. The cost of that will
+likely offset any benefit gained by a superior selection of a scan
+depth.
 
-Thanks,
-Andrea
+Treating a successful scan cost and a failed scan cost as being equal has
+too many corner cases. If we do not want to weight the successful scan
+cost, then the compromise is to keep the old behaviour that accounts for
+scan failures only (avoids an sd_llc write at least) but base it on the
+estimated scan cost for a single rq. The fact that we do not account for
+scan failures should be explicitly commented so we do not forget it
+again in the future.
 
+-- 
+Mel Gorman
+SUSE Labs
