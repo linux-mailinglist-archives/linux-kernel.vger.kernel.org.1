@@ -2,258 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D96622EF7C3
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 19:58:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B0472EF7C7
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 19:59:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728708AbhAHS5M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Jan 2021 13:57:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40158 "EHLO
+        id S1728683AbhAHS6j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Jan 2021 13:58:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40380 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726059AbhAHS5M (ORCPT
+        with ESMTP id S1727686AbhAHS6i (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Jan 2021 13:57:12 -0500
-Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2C90C061380
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Jan 2021 10:56:31 -0800 (PST)
-Received: by mail-pf1-x431.google.com with SMTP id q20so3538027pfu.8
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Jan 2021 10:56:31 -0800 (PST)
+        Fri, 8 Jan 2021 13:58:38 -0500
+Received: from mail-il1-x12d.google.com (mail-il1-x12d.google.com [IPv6:2607:f8b0:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86AC8C061380
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Jan 2021 10:57:58 -0800 (PST)
+Received: by mail-il1-x12d.google.com with SMTP id h3so3557607ils.4
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Jan 2021 10:57:58 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=GU+9P9R4Nfik1tMFFGFZP2iMEdTwiDCN49DQfnWs2Fg=;
-        b=rI9Nkb8RfNTcTNbl8NxZxLJ39gag+j+T/gQqjA5/GLP8/a6JWhmsyDjiHIujKO31pX
-         WexouWXBO2fBxlvSWK+GPUAusO6MvbVgF5lhXzUcQQQK21DNH/bM0KIQuT7kOcPn/zOt
-         BKyBvSIi3uajiYuS5vTWMdSzxaECBh3Hbhem3N44/iKt4+ok9fVmqu7JOmyOtrktI8/C
-         0hqcQ5cv7QqwytzTCvxrlktKxVqSoWQ6TRHOEYgqk5ooC3JeBTefaGAL0vg09qcg6mqC
-         2Ki51DivAFOtIZjQ34u2xZ/hLPodMNtEJMz5bLVkAwwromMV56RD0betFF9tXYDP/gTB
-         7J6w==
+        d=linuxfoundation.org; s=google;
+        h=to:cc:from:subject:message-id:date:user-agent:mime-version
+         :content-language;
+        bh=FNhZRCl91qEvqxJsjhVSSj1Ts2b8rnqLDD7r1EyJAFA=;
+        b=ItQp6/R2EJzmweVMsrMWWEOuirEkz1K9xP02oHPxakb1Fc3mrAQgSw+9bMuEoZPN7Z
+         09llnbVDZer4mEqnXEIsArGWvWG0PjPeSvM2MVo4f2tvR+Zb3GH/NI+3MAhmcle5BqNO
+         cbyDHKWtQqzrB7r0XUftZrcUIwgsIeXLF/Qw4=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=GU+9P9R4Nfik1tMFFGFZP2iMEdTwiDCN49DQfnWs2Fg=;
-        b=VJflRui/bknGpSWLVZAJEBtar7/7qk+nQaknUV7uoHAXRbVeaD/tTbBpO1pZOGEvHr
-         TZ6BSDXe/Gdj/nkE2SNOy9zDulmNlajVKE9/rWh50DfERUipCkyj6i/PzrVOjkDKXA0O
-         Q6C+9etrYl1hO7z+bEpxBIqbnaK6cLdtNfVXXn4wOWj0N4NcD6px1jx8Xl8efZ7XtrE+
-         npwqYTBrVmnr8rCwRysfuFQQ8qgTuD3G3CS46vhnu9yy14IpocFeqShC1cCvQdRNFP/Z
-         +sqYGS6iXD2eSoCO5OTSqzHX4uoXn9PR3st0rWZ8aqDI9HeJtYm2lHI9fZxrOnx/eByX
-         BckQ==
-X-Gm-Message-State: AOAM533qi0zcD8vf/9NrZJLcWaBpbiJy6h6oPiIrAIYEk+CldkK79SXs
-        z4eghv3NcD05UNva6hJ0/yxMDM8+Qcn9z2SHMZwGAg==
-X-Google-Smtp-Source: ABdhPJzSv6afZ0EsuX9maWLblEYV4pwfphAGS6Z+1iv8NySmwTPvb9LKqJ8cg1jJLjuw5hA9kjgLTMi0DmIsXpQ0JW4=
-X-Received: by 2002:a62:e309:0:b029:1ae:5b4a:3199 with SMTP id
- g9-20020a62e3090000b02901ae5b4a3199mr5032496pfh.24.1610132191222; Fri, 08 Jan
- 2021 10:56:31 -0800 (PST)
+        h=x-gm-message-state:to:cc:from:subject:message-id:date:user-agent
+         :mime-version:content-language;
+        bh=FNhZRCl91qEvqxJsjhVSSj1Ts2b8rnqLDD7r1EyJAFA=;
+        b=UbsqX03AoLvPM0ND5tkDfJ665dwf7yPJ34eCK6UjI0wuEzpR/teLNdeVLlVGEs/0xB
+         A5y+aAh8pZTqFcHCLyITAJ8Z7sPavGo2UHoX8AJ+9Pn7PDla9lO0RGPFdCxoHtEa5G+S
+         HvroO1Z+de98+IX5FhYfnbz4651LJCdh7aQFWBBs4gJW7GqlHSKiwOns2BWsE4kyvB/b
+         tNGCF65QtWAhzzSsIq2ZEjsA21iYFB1rTUL+SrppEFNhrnAxGlcaS+egLTOHH/pico44
+         EQUgMlRcIkGbeiWRAu2Bl7v2S2WqNb0vCVDtJHLv9pdb99jQtuVLdfdhmdqkVcTO0h5Z
+         3D8w==
+X-Gm-Message-State: AOAM531Rd5bbDi77gCxTcr99sBjTVCIzzO3lZ6go9uF6h6AHpTLVWQZk
+        CzKUQNjZ2S/Hq/eDNdOsu/0qZcSYei/Zgw==
+X-Google-Smtp-Source: ABdhPJxjdKnqcdmx9ql3JR8E49405vETqSaBMPiKBLaofz68h/A6BMdzHAGrgs+WU+e0/vwVqL2hUA==
+X-Received: by 2002:a92:444e:: with SMTP id a14mr5147436ilm.129.1610132277912;
+        Fri, 08 Jan 2021 10:57:57 -0800 (PST)
+Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
+        by smtp.gmail.com with ESMTPSA id y5sm7639901ilh.24.2021.01.08.10.57.56
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 08 Jan 2021 10:57:57 -0800 (PST)
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Shuah Khan <skhan@linuxfoundation.org>,
+        Brendan Higgins <brendanhiggins@google.com>,
+        David Gow <davidgow@google.com>,
+        Petr Mladek <pmladek@suse.com>, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org
+From:   Shuah Khan <skhan@linuxfoundation.org>
+Subject: [GIT PULL] KUnit update for Linux 5.11-rc3
+Message-ID: <7410da21-2442-1bb9-1dc9-0ec79483e9d3@linuxfoundation.org>
+Date:   Fri, 8 Jan 2021 11:57:56 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
 MIME-Version: 1.0
-References: <20210108040940.1138-1-walter-zh.wu@mediatek.com>
-In-Reply-To: <20210108040940.1138-1-walter-zh.wu@mediatek.com>
-From:   Andrey Konovalov <andreyknvl@google.com>
-Date:   Fri, 8 Jan 2021 19:56:20 +0100
-Message-ID: <CAAeHK+wW3bTCvk=6v_vDQFYLC6=3kunmprXA-P=tWyXCTMZjhQ@mail.gmail.com>
-Subject: Re: [PATCH v3] kasan: remove redundant config option
-To:     Walter Wu <walter-zh.wu@mediatek.com>,
-        Arnd Bergmann <arnd@arndb.de>
-Cc:     Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Alexander Potapenko <glider@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        wsd_upstream <wsd_upstream@mediatek.com>,
-        linux-mediatek@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/mixed;
+ boundary="------------A66FBD906777F4ADF664407D"
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 8, 2021 at 5:09 AM Walter Wu <walter-zh.wu@mediatek.com> wrote:
->
-> CONFIG_KASAN_STACK and CONFIG_KASAN_STACK_ENABLE both enable KASAN stack
-> instrumentation, but we should only need one config, so that we remove
-> CONFIG_KASAN_STACK_ENABLE and make CONFIG_KASAN_STACK workable. see [1].
->
-> When enable KASAN stack instrumentation, then for gcc we could do
-> no prompt and default value y, and for clang prompt and default
-> value n.
->
-> [1]: https://bugzilla.kernel.org/show_bug.cgi?id=210221
->
-> Signed-off-by: Walter Wu <walter-zh.wu@mediatek.com>
-> Suggested-by: Dmitry Vyukov <dvyukov@google.com>
-> Cc: Andrey Ryabinin <aryabinin@virtuozzo.com>
-> Cc: Dmitry Vyukov <dvyukov@google.com>
-> Cc: Andrey Konovalov <andreyknvl@google.com>
-> Cc: Alexander Potapenko <glider@google.com>
-> Cc: Andrew Morton <akpm@linux-foundation.org>
-> Cc: Nathan Chancellor <natechancellor@gmail.com>
-> ---
->
-> v2: make commit log to be more readable.
-> v3: remain CONFIG_KASAN_STACK_ENABLE setting
->     fix the pre-processors syntax
->
-> ---
->  arch/arm64/kernel/sleep.S        |  2 +-
->  arch/x86/kernel/acpi/wakeup_64.S |  2 +-
->  include/linux/kasan.h            |  2 +-
->  lib/Kconfig.kasan                |  8 ++------
->  mm/kasan/common.c                |  2 +-
->  mm/kasan/kasan.h                 |  2 +-
->  mm/kasan/report_generic.c        |  2 +-
->  scripts/Makefile.kasan           | 10 ++++++++--
->  8 files changed, 16 insertions(+), 14 deletions(-)
->
-> diff --git a/arch/arm64/kernel/sleep.S b/arch/arm64/kernel/sleep.S
-> index 6bdef7362c0e..7c44ede122a9 100644
-> --- a/arch/arm64/kernel/sleep.S
-> +++ b/arch/arm64/kernel/sleep.S
-> @@ -133,7 +133,7 @@ SYM_FUNC_START(_cpu_resume)
->          */
->         bl      cpu_do_resume
->
-> -#if defined(CONFIG_KASAN) && CONFIG_KASAN_STACK
-> +#if defined(CONFIG_KASAN) && defined(CONFIG_KASAN_STACK)
->         mov     x0, sp
->         bl      kasan_unpoison_task_stack_below
->  #endif
-> diff --git a/arch/x86/kernel/acpi/wakeup_64.S b/arch/x86/kernel/acpi/wakeup_64.S
-> index 5d3a0b8fd379..c7f412f4e07d 100644
-> --- a/arch/x86/kernel/acpi/wakeup_64.S
-> +++ b/arch/x86/kernel/acpi/wakeup_64.S
-> @@ -112,7 +112,7 @@ SYM_FUNC_START(do_suspend_lowlevel)
->         movq    pt_regs_r14(%rax), %r14
->         movq    pt_regs_r15(%rax), %r15
->
-> -#if defined(CONFIG_KASAN) && CONFIG_KASAN_STACK
-> +#if defined(CONFIG_KASAN) && defined(CONFIG_KASAN_STACK)
->         /*
->          * The suspend path may have poisoned some areas deeper in the stack,
->          * which we now need to unpoison.
-> diff --git a/include/linux/kasan.h b/include/linux/kasan.h
-> index 5e0655fb2a6f..35d1e9b2cbfa 100644
-> --- a/include/linux/kasan.h
-> +++ b/include/linux/kasan.h
-> @@ -302,7 +302,7 @@ static inline void kasan_kfree_large(void *ptr, unsigned long ip) {}
->
->  #endif /* CONFIG_KASAN */
->
-> -#if defined(CONFIG_KASAN) && CONFIG_KASAN_STACK
-> +#if defined(CONFIG_KASAN) && defined(CONFIG_KASAN_STACK)
->  void kasan_unpoison_task_stack(struct task_struct *task);
->  #else
->  static inline void kasan_unpoison_task_stack(struct task_struct *task) {}
-> diff --git a/lib/Kconfig.kasan b/lib/Kconfig.kasan
-> index f5fa4ba126bf..fde82ec85f8f 100644
-> --- a/lib/Kconfig.kasan
-> +++ b/lib/Kconfig.kasan
-> @@ -138,9 +138,10 @@ config KASAN_INLINE
->
->  endchoice
->
-> -config KASAN_STACK_ENABLE
-> +config KASAN_STACK
->         bool "Enable stack instrumentation (unsafe)" if CC_IS_CLANG && !COMPILE_TEST
->         depends on KASAN_GENERIC || KASAN_SW_TAGS
-> +       default y if CC_IS_GCC
->         help
->           The LLVM stack address sanitizer has a know problem that
->           causes excessive stack usage in a lot of functions, see
-> @@ -154,11 +155,6 @@ config KASAN_STACK_ENABLE
->           CONFIG_COMPILE_TEST.  On gcc it is assumed to always be safe
->           to use and enabled by default.
->
-> -config KASAN_STACK
-> -       int
-> -       default 1 if KASAN_STACK_ENABLE || CC_IS_GCC
-> -       default 0
-> -
->  config KASAN_SW_TAGS_IDENTIFY
->         bool "Enable memory corruption identification"
->         depends on KASAN_SW_TAGS
-> diff --git a/mm/kasan/common.c b/mm/kasan/common.c
-> index 38ba2aecd8f4..bf8b073eed62 100644
-> --- a/mm/kasan/common.c
-> +++ b/mm/kasan/common.c
-> @@ -63,7 +63,7 @@ void __kasan_unpoison_range(const void *address, size_t size)
->         unpoison_range(address, size);
->  }
->
-> -#if CONFIG_KASAN_STACK
-> +#ifdef CONFIG_KASAN_STACK
->  /* Unpoison the entire stack for a task. */
->  void kasan_unpoison_task_stack(struct task_struct *task)
->  {
-> diff --git a/mm/kasan/kasan.h b/mm/kasan/kasan.h
-> index cc4d9e1d49b1..bdfdb1cff653 100644
-> --- a/mm/kasan/kasan.h
-> +++ b/mm/kasan/kasan.h
-> @@ -224,7 +224,7 @@ void *find_first_bad_addr(void *addr, size_t size);
->  const char *get_bug_type(struct kasan_access_info *info);
->  void metadata_fetch_row(char *buffer, void *row);
->
-> -#if defined(CONFIG_KASAN_GENERIC) && CONFIG_KASAN_STACK
-> +#if defined(CONFIG_KASAN_GENERIC) && defined(CONFIG_KASAN_STACK)
->  void print_address_stack_frame(const void *addr);
->  #else
->  static inline void print_address_stack_frame(const void *addr) { }
-> diff --git a/mm/kasan/report_generic.c b/mm/kasan/report_generic.c
-> index 8a9c889872da..4e16518d9877 100644
-> --- a/mm/kasan/report_generic.c
-> +++ b/mm/kasan/report_generic.c
-> @@ -128,7 +128,7 @@ void metadata_fetch_row(char *buffer, void *row)
->         memcpy(buffer, kasan_mem_to_shadow(row), META_BYTES_PER_ROW);
->  }
->
-> -#if CONFIG_KASAN_STACK
-> +#ifdef CONFIG_KASAN_STACK
->  static bool __must_check tokenize_frame_descr(const char **frame_descr,
->                                               char *token, size_t max_tok_len,
->                                               unsigned long *value)
-> diff --git a/scripts/Makefile.kasan b/scripts/Makefile.kasan
-> index 1e000cc2e7b4..abf231d209b1 100644
-> --- a/scripts/Makefile.kasan
-> +++ b/scripts/Makefile.kasan
-> @@ -2,6 +2,12 @@
->  CFLAGS_KASAN_NOSANITIZE := -fno-builtin
->  KASAN_SHADOW_OFFSET ?= $(CONFIG_KASAN_SHADOW_OFFSET)
->
-> +ifdef CONFIG_KASAN_STACK
-> +       stack_enable := 1
-> +else
-> +       stack_enable := 0
-> +endif
-> +
->  ifdef CONFIG_KASAN_GENERIC
->
->  ifdef CONFIG_KASAN_INLINE
-> @@ -27,7 +33,7 @@ else
->         CFLAGS_KASAN := $(CFLAGS_KASAN_SHADOW) \
->          $(call cc-param,asan-globals=1) \
->          $(call cc-param,asan-instrumentation-with-call-threshold=$(call_threshold)) \
-> -        $(call cc-param,asan-stack=$(CONFIG_KASAN_STACK)) \
-> +        $(call cc-param,asan-stack=$(stack_enable)) \
->          $(call cc-param,asan-instrument-allocas=1)
->  endif
->
-> @@ -42,7 +48,7 @@ else
->  endif
->
->  CFLAGS_KASAN := -fsanitize=kernel-hwaddress \
-> -               -mllvm -hwasan-instrument-stack=$(CONFIG_KASAN_STACK) \
-> +               -mllvm -hwasan-instrument-stack=$(stack_enable) \
->                 -mllvm -hwasan-use-short-granules=0 \
->                 $(instrumentation_flags)
->
-> --
-> 2.18.0
+This is a multi-part message in MIME format.
+--------------A66FBD906777F4ADF664407D
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-AFAIR, Arnd wanted to avoid having KASAN_STACK to be enabled by
-default when compiling with Clang, since Clang instrumentation leads
-to very large kernel stacks, which, in turn, lead to compile-time
-warnings. What I don't remember is why there are two configs.
+Hi Linus,
 
-Arnd, is that correct? What was the reason behind having two configs?
+Please pull the following KUnit fixes update for Linux 5.11-rc3.
+
+This kunit update for Linux 5.11-rc3 consists one fix to force the use
+of the 'tty' console for UML. Given that kunit tool requires the console
+output, explicitly stating the dependency makes sense than relying on
+it being the default.
+
+diff is attached.
+
+thanks,
+-- Shuah
+
+----------------------------------------------------------------
+The following changes since commit e71ba9452f0b5b2e8dc8aa5445198cd9214a6a62:
+
+   Linux 5.11-rc2 (2021-01-03 15:55:30 -0800)
+
+are available in the Git repository at:
+
+   git://git.kernel.org/pub/scm/linux/kernel/git/shuah/linux-kselftest 
+tags/linux-kselftest-kunit-fixes-5.11-rc3
+
+for you to fetch changes up to 65a4e5299739abe0888cda0938d21f8ea3b5c606:
+
+   kunit: tool: Force the use of the 'tty' console for UML (2021-01-04 
+09:18:38 -0700)
+
+----------------------------------------------------------------
+linux-kselftest-kunit-fixes-5.11-rc3
+
+This kunit update for Linux 5.11-rc3 consists one fix to force the use
+of the 'tty' console for UML. Given that kunit tool requires the console
+output, explicitly stating the dependency makes sense than relying on
+it being the default.
+
+----------------------------------------------------------------
+David Gow (1):
+       kunit: tool: Force the use of the 'tty' console for UML
+
+  tools/testing/kunit/kunit_kernel.py | 2 +-
+  1 file changed, 1 insertion(+), 1 deletion(-)
+----------------------------------------------------------------
+
+--------------A66FBD906777F4ADF664407D
+Content-Type: text/x-patch; charset=UTF-8;
+ name="linux-kselftest-kunit-fixes-5.11-rc3.diff"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+ filename="linux-kselftest-kunit-fixes-5.11-rc3.diff"
+
+diff --git a/tools/testing/kunit/kunit_kernel.py b/tools/testing/kunit/kunit_kernel.py
+index 57c1724b7e5d..698358c9c0d6 100644
+--- a/tools/testing/kunit/kunit_kernel.py
++++ b/tools/testing/kunit/kunit_kernel.py
+@@ -198,7 +198,7 @@ class LinuxSourceTree(object):
+ 		return self.validate_config(build_dir)
+ 
+ 	def run_kernel(self, args=[], build_dir='', timeout=None):
+-		args.extend(['mem=1G'])
++		args.extend(['mem=1G', 'console=tty'])
+ 		self._ops.linux_bin(args, timeout, build_dir)
+ 		outfile = get_outfile_path(build_dir)
+ 		subprocess.call(['stty', 'sane'])
+
+--------------A66FBD906777F4ADF664407D--
