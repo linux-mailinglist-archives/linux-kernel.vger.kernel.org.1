@@ -2,89 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 14A882EEC5A
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 05:20:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 52FA32EEC6A
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 05:22:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727308AbhAHEUY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 23:20:24 -0500
-Received: from mail.kernel.org ([198.145.29.99]:58606 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726600AbhAHEUX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 23:20:23 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 57FAD207A8;
-        Fri,  8 Jan 2021 04:19:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610079582;
-        bh=Eqg0B6FysIAYFiLN2zSH3ZM3MPe4wwlksK7heO64dro=;
-        h=From:To:Cc:Subject:Date:From;
-        b=YyDQVNjuFODVcNsSrwURVY1QiqLQSJyVYmzAWK0jFGH40IAO/hJJ3wHUPDeQapWB0
-         dXKBhTrj7P26c0+PhIQEzlTQoe36i+25/N5+fEB7S5pRYDvtmZdBzQiCPbgKMgBcft
-         Br4fm0fm9rrUH1tKPxT99uWiPmDR4jLeibKWr5MymlVD6vL9sxCX3C1zIOwe5c7g/M
-         BJX3f6QkD3Mn1Iu2VnbXMkL1Ud9vVx6D8Wd3JH/+mvTHG7sVAfZjz15K3egz+MsDRO
-         /NrQYh3+EUVD1yrIgrO55x16y8xaSYEbQl6iZgVZ9EbrLS52Re5Tf7J5LVlznTe1D8
-         ULwQ0TTVo24oA==
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     "Naveen N . Rao" <naveen.n.rao@linux.vnet.ibm.com>,
-        linux-kernel@vger.kernel.org, mhiramat@kernel.org
-Subject: [PATCH v2] tracing/kprobes: Do the notrace functions check without kprobes on ftrace
-Date:   Fri,  8 Jan 2021 13:19:38 +0900
-Message-Id: <161007957862.114704.4512260007555399463.stgit@devnote2>
-X-Mailer: git-send-email 2.25.1
-User-Agent: StGit/0.19
+        id S1727726AbhAHEUq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 23:20:46 -0500
+Received: from aserp2120.oracle.com ([141.146.126.78]:52502 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727676AbhAHEUn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Jan 2021 23:20:43 -0500
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 10849j0g096801;
+        Fri, 8 Jan 2021 04:19:56 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : in-reply-to : references : mime-version :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=mhlu5DlX8TBsODbrNtircvmM16EzqJ5TdA/dACh+jGk=;
+ b=Q6EGHzgkmeJBQ8hRqGah/PFytVQxLqYh1KJMcCovgfiLUFxtPvy7/bfJB4YaBNl/uSCj
+ UlSPHFbnZCn5IWqMURqHkZ1IQl7+n1wCFW5kWKe6I3LAZniHxUkqV6yxE0n6wY0bCagA
+ yqwDnbfPKqRzRzF1G53yNMNitsrAGol/rmN+LzMmbPkBvU9vGlhFwuM335zbh9nUfHgR
+ JsFC9eOaOLoBfGvwTiR14BU1W5YSD1MHBx4qC7lLYipdS+Nb4eCJmCRspO+DUS16W3IW
+ 7ET4lfACUMhTgHoOEdXP5idExbThTHMdI/6MPxWMmXAUk6YhZxAT9pdn/NCMkPv27zsI MQ== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by aserp2120.oracle.com with ESMTP id 35wepmfd99-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 08 Jan 2021 04:19:56 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 1084Au7j079245;
+        Fri, 8 Jan 2021 04:19:56 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by aserp3020.oracle.com with ESMTP id 35v1fc2x8y-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 08 Jan 2021 04:19:55 +0000
+Received: from abhmp0003.oracle.com (abhmp0003.oracle.com [141.146.116.9])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 1084JsNb012503;
+        Fri, 8 Jan 2021 04:19:54 GMT
+Received: from ca-mkp.ca.oracle.com (/10.156.108.201)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Thu, 07 Jan 2021 20:19:54 -0800
+From:   "Martin K. Petersen" <martin.petersen@oracle.com>
+To:     Randy Dunlap <rdunlap@infradead.org>, linux-kernel@vger.kernel.org
+Cc:     "Martin K . Petersen" <martin.petersen@oracle.com>,
+        kernel test robot <lkp@intel.com>,
+        linux-scsi@vger.kernel.org,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        Avri Altman <avri.altman@wdc.com>,
+        Alim Akhtar <alim.akhtar@samsung.com>
+Subject: Re: [PATCH] scsi: ufs: ufshcd-pltfrm depends on HAS_IOMEM
+Date:   Thu,  7 Jan 2021 23:19:39 -0500
+Message-Id: <161007949339.9892.14233545766949320025.b4-ty@oracle.com>
+X-Mailer: git-send-email 2.29.2
+In-Reply-To: <20210106040822.933-1-rdunlap@infradead.org>
+References: <20210106040822.933-1-rdunlap@infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9857 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=883 phishscore=0
+ suspectscore=0 spamscore=0 bulkscore=0 adultscore=0 mlxscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2101080021
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9857 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 bulkscore=0 spamscore=0
+ impostorscore=0 phishscore=0 lowpriorityscore=0 suspectscore=0
+ priorityscore=1501 mlxscore=0 malwarescore=0 clxscore=1015 mlxlogscore=892
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2101080021
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Enable the notrace function check on the architecture which doesn't
-support kprobes on ftrace but support dynamic ftrace. This notrace
-function check is not only for the kprobes on ftrace but also
-sw-breakpoint based kprobes.
-Thus there is no reason to limit this check for the arch which
-supports kprobes on ftrace.
+On Tue, 5 Jan 2021 20:08:22 -0800, Randy Dunlap wrote:
 
-This also changes the dependency of Kconfig. Because kprobe event
-uses the function tracer's address list for identifying notrace
-function, if the CONFIG_DYNAMIC_FTRACE=n, it can not check whether
-the target function is notrace or not.
+> Building ufshcd-pltfrm.c on arch/s390/ has a linker error since
+> S390 does not support IOMEM, so add a dependency on HAS_IOMEM.
+> 
+> s390-linux-ld: drivers/scsi/ufs/ufshcd-pltfrm.o: in function `ufshcd_pltfrm_init':
+> ufshcd-pltfrm.c:(.text+0x38e): undefined reference to `devm_platform_ioremap_resource'
+> 
+> where that devm_ function is inside an #ifdef CONFIG_HAS_IOMEM/#endif block.
 
-Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
-Acked-by: Naveen N. Rao <naveen.n.rao@linux.vnet.ibm.com>
----
- Changes in v2:
-  - Depends on CONFIG_DYNAMIC_FTRACE instead of CONFIG_FUNCTION_TRACER
----
- kernel/trace/Kconfig        |    2 +-
- kernel/trace/trace_kprobe.c |    2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+Applied to 5.11/scsi-fixes, thanks!
 
-diff --git a/kernel/trace/Kconfig b/kernel/trace/Kconfig
-index fe60f9d7a0e6..18da5e8e28fb 100644
---- a/kernel/trace/Kconfig
-+++ b/kernel/trace/Kconfig
-@@ -540,7 +540,7 @@ config KPROBE_EVENTS
- config KPROBE_EVENTS_ON_NOTRACE
- 	bool "Do NOT protect notrace function from kprobe events"
- 	depends on KPROBE_EVENTS
--	depends on KPROBES_ON_FTRACE
-+	depends on DYNAMIC_FTRACE
- 	default n
- 	help
- 	  This is only for the developers who want to debug ftrace itself
-diff --git a/kernel/trace/trace_kprobe.c b/kernel/trace/trace_kprobe.c
-index b29f92c51b1a..5fff39541b8a 100644
---- a/kernel/trace/trace_kprobe.c
-+++ b/kernel/trace/trace_kprobe.c
-@@ -434,7 +434,7 @@ static int disable_trace_kprobe(struct trace_event_call *call,
- 	return 0;
- }
- 
--#if defined(CONFIG_KPROBES_ON_FTRACE) && \
-+#if defined(CONFIG_DYNAMIC_FTRACE) && \
- 	!defined(CONFIG_KPROBE_EVENTS_ON_NOTRACE)
- static bool __within_notrace_func(unsigned long addr)
- {
+[1/1] scsi: ufs: ufshcd-pltfrm depends on HAS_IOMEM
+      https://git.kernel.org/mkp/scsi/c/5e6ddadf7637
 
+-- 
+Martin K. Petersen	Oracle Linux Engineering
