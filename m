@@ -2,304 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3937E2EF60A
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 17:53:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 188A32EF60F
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 17:55:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728204AbhAHQxA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Jan 2021 11:53:00 -0500
-Received: from foss.arm.com ([217.140.110.172]:54126 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727530AbhAHQxA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Jan 2021 11:53:00 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 9941A11FB;
-        Fri,  8 Jan 2021 08:52:14 -0800 (PST)
-Received: from e120937-lin (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id CB9713F70D;
-        Fri,  8 Jan 2021 08:52:12 -0800 (PST)
-Date:   Fri, 8 Jan 2021 16:52:10 +0000
-From:   Cristian Marussi <cristian.marussi@arm.com>
-To:     Thara Gopinath <thara.gopinath@linaro.org>
-Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        sudeep.holla@arm.com, lukasz.luba@arm.com,
-        james.quinlan@broadcom.com, Jonathan.Cameron@Huawei.com,
-        f.fainelli@gmail.com, etienne.carriere@linaro.org,
-        vincent.guittot@linaro.org, souvik.chakravarty@arm.com
-Subject: Re: [PATCH v4 37/37] firmware: arm_scmi: add dynamic scmi devices
- creation
-Message-ID: <20210108165210.GF9138@e120937-lin>
-References: <20210106201610.26538-1-cristian.marussi@arm.com>
- <20210106201610.26538-38-cristian.marussi@arm.com>
- <50434a02-0fe0-50f3-1529-51ab8a0cc1f3@linaro.org>
- <20210108144257.GD9138@e120937-lin>
- <9d08fb9f-44e0-7f1d-9568-ebb499c91434@linaro.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <9d08fb9f-44e0-7f1d-9568-ebb499c91434@linaro.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+        id S1728257AbhAHQyl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Jan 2021 11:54:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49168 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728079AbhAHQyk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 Jan 2021 11:54:40 -0500
+Received: from mail-qt1-x84a.google.com (mail-qt1-x84a.google.com [IPv6:2607:f8b0:4864:20::84a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C97CEC061381
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Jan 2021 08:53:59 -0800 (PST)
+Received: by mail-qt1-x84a.google.com with SMTP id b8so8683670qtr.18
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Jan 2021 08:53:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=sender:date:message-id:mime-version:subject:from:to:cc;
+        bh=B4cmagUJvqsvM8KJ5vcfLLw3GzVKlYfhlZ7WKpaii2Q=;
+        b=g2ySYlslVFQEhuaHS7k+EtkU/c4zzrCRoDUa5ArebteqUm80XrjjPCM4k5ePja3PTf
+         qMSdK4AimLDRv70ypB97L9lzMmDlMKy8CQa20AuroYeZ77AgtpjzOVnSrBBIENWRCiRc
+         elogZg/UOmOgI7nNL130bYIZLGwLdXGrrlet16+9hTkz8+KIIm61s7BR7QTYN4jiyT4q
+         FKyIvCM9A5g8Pb3dSmMJ1wdl+FpqLtZSAmz+n+MOu9VkEs4exSOPOL2S0nyTe6ZpKd1G
+         4WrFtJwhRkmCU0w9t4p8S+zYE3EcshcBme0wKw0umqaH7oY8YeIYWFYShcjhV37gYQM+
+         RNhQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :to:cc;
+        bh=B4cmagUJvqsvM8KJ5vcfLLw3GzVKlYfhlZ7WKpaii2Q=;
+        b=dDEZttfES8uh9gsc48nDUd8Qpbabun05qsVGOZVNyRl1EVYHpHHAghjtVZiiMHoAGh
+         HjgJmIp0bpjelHOOCWeLRKHhRjQdPGGeOdmJQW69TnK0jEMnfZDEL8s7UncAjCisiQO0
+         W/FxXu9OLLX9C21pvwFp2LYYFIBXaMOKA9z3ODBvN6tR9RR+TH7Eo+Pnxn2HihCncpIo
+         uvOKborQ5qMGteOJjLPnYBzFkMaAY4DRLrppe3P/yYvIK8pnoLYivsiO1IErGRO9GCdk
+         YQTcVAi2K76pBLTwfGIpCvqFo94tWyQe+oYo9ai/+tK1Ccycn0bv+Ro+q/Mmpj51OcPp
+         1ZXQ==
+X-Gm-Message-State: AOAM530j+8WfYY2SWgI5t1jj+xxsXmZL3hL62rXD85vlPsBxoZr40N1e
+        Y9JKrCMKJKloQVXRz0i+B+i05jStvvOe
+X-Google-Smtp-Source: ABdhPJz0ATVlqOcvXwgcYlNfRWv/oEcTQtMpwLVM4J6J727f8fSNNP+cR7MOSfTNDQ2kHT21jmqtIgkIu85h
+Sender: "qperret via sendgmr" <qperret@r2d2-qp.c.googlers.com>
+X-Received: from r2d2-qp.c.googlers.com ([fda3:e722:ac3:cc00:28:9cb1:c0a8:1652])
+ (user=qperret job=sendgmr) by 2002:ad4:4f41:: with SMTP id
+ eu1mr4188454qvb.1.1610124838785; Fri, 08 Jan 2021 08:53:58 -0800 (PST)
+Date:   Fri,  8 Jan 2021 16:53:49 +0000
+Message-Id: <20210108165349.747359-1-qperret@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.30.0.284.gd98b1dd5eaa7-goog
+Subject: [PATCH] KVM: Documentation: Fix spec for KVM_CAP_ENABLE_CAP_VM
+From:   Quentin Perret <qperret@google.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        "open list:KERNEL VIRTUAL MACHINE (KVM)" <kvm@vger.kernel.org>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Cc:     android-kvm@google.com, kernel-team@android.com,
+        Quentin Perret <qperret@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 08, 2021 at 11:32:17AM -0500, Thara Gopinath wrote:
-> 
-> 
-> On 1/8/21 9:42 AM, Cristian Marussi wrote:
-> > On Thu, Jan 07, 2021 at 09:28:07AM -0500, Thara Gopinath wrote:
-> > > Hi Christian,
-> > > 
-> > > On 1/6/21 3:16 PM, Cristian Marussi wrote:
-> > > > Having added the support for SCMI protocols as modules in order to let
-> > > > vendors extend the SCMI core with their own additions it seems odd to
-> > > > then force SCMI drivers built on top to use a static device table to
-> > > > declare their devices since this way any new SCMI drivers addition
-> > > > would need the core SCMI device table to be updated too.
-> > > > 
-> > > > Remove the static core device table and let SCMI drivers to simply declare
-> > > > which device/protocol pair they need at initialization time: the core will
-> > > > then take care to generate such devices dynamically during platform
-> > > > initialization or at module loading time, as long as the requested
-> > > > underlying protocol is defined in the DT.
-> > > > 
-> > > > Signed-off-by: Cristian Marussi <cristian.marussi@arm.com>
-> > > > ---
-> > > 	
-> > > [snip]
-> > > 
-> > > > -static inline void
-> > > > -scmi_create_protocol_devices(struct device_node *np, struct scmi_info *info,
-> > > > -			     int prot_id)
-> > > > +	for (; rdev; rdev = rdev->next)
-> > > > +		scmi_create_protocol_device(np, info, prot_id,
-> > > > +					    rdev->id_table->name);
-> > > > +}
-> > > > +
-> > > > +/**
-> > > > + * scmi_request_protocol_device  - Helper to request a device
-> > > > + *
-> > > > + * @id_table: A protocol/name pair descriptor for the device to be created.
-> > > > + *
-> > > > + * This helper let an SCMI driver request specific devices identified by the
-> > > > + * @id_table to be created for each active SCMI instance.
-> > > > + *
-> > > > + * The requested device name MUST NOT be already existent for any protocol;
-> > > > + * at first the freshly requested @id_table is annotated in the IDR table
-> > > > + * @scmi_requested_devices, then a matching device is created for each already
-> > > > + * active SCMI instance. (if any)
-> > > > + *
-> > > > + * This way the requested device is created straight-away for all the already
-> > > > + * initialized(probed) SCMI instances (handles) but it remains instead pending
-> > > > + * for creation if the requesting SCMI driver is loaded before some instance
-> > > > + * and related transports was available: when such late SCMI instance is probed
-> > > > + * it will take care to scan the list of pending requested devices and create
-> > > > + * those on its own (see @scmi_create_protocol_devices and its enclosing loop)
-> > > > + *
-> > > > + * Return: 0 on Success
-> > > > + */
-> > > > +int scmi_request_protocol_device(const struct scmi_device_id *id_table)
-> > > >    {
-> > > > -	int loop, cnt;
-> > > > +	int ret = 0;
-> > > > +	unsigned int id = 0;
-> > > > +	struct scmi_requested_dev *rdev, *proto_rdev = NULL;
-> > > > +	struct scmi_info *info;
-> > > > -	for (loop = 0; loop < ARRAY_SIZE(devnames); loop++) {
-> > > > -		if (devnames[loop].protocol_id != prot_id)
-> > > > -			continue;
-> > > > +	pr_debug("Requesting SCMI device (%s) for protocol %x\n",
-> > > > +		 id_table->name, id_table->protocol_id);
-> > > > -		for (cnt = 0; cnt < ARRAY_SIZE(devnames[loop].names); cnt++) {
-> > > > -			const char *name = devnames[loop].names[cnt];
-> > > > +	/*
-> > > > +	 * Search for the matching protocol rdev list and then search
-> > > > +	 * of any existent equally named device...fails if any duplicate found.
-> > > > +	 */
-> > > > +	mutex_lock(&scmi_requested_devices_mutex);
-> > > > +	idr_for_each_entry(&scmi_requested_devices, rdev, id) {
-> > > > +		if (rdev->id_table->protocol_id == id_table->protocol_id)
-> > > > +			proto_rdev = rdev;
-> > > > +		for (; rdev; rdev = rdev->next) {
-> > > > +			if (!strcmp(rdev->id_table->name, id_table->name)) {
-> > > > +				pr_err("Ignoring duplicate request [%d] %s\n",
-> > > > +				       rdev->id_table->protocol_id,
-> > > > +				       rdev->id_table->name);
-> > > > +				ret = -EINVAL;
-> > > > +				goto out;
-> > > > +			}
-> > > 	Shouldn't there be proto_rdev = rdev here as well ?
-> > > 
-> > 
-> > No, because each IDR entry points to one or more linked rdev descriptors
-> > for the same protocol: while scanning each list in the IDR table I'm
-> > searching for the proto_rdev representing the head of that protocol list
-> > (if any already exist) and also scan all the lists fully to check for
-> > duplicates, in such a case we give up.
-> > The IDR map containing list resembles a lot a Linux hash implementation
-> > but I decided not to use it because it seemed cumbersome to use an
-> > hash given most of the time each IDR entry will contain just one single
-> > element and this lookup happens really very infrequently (just at driver
-> > loading time)
-> 
-> I agree that using hash might be overkill here.
-> I still think you need proto_rdev = rdev so that proto_rdev points to the
-> last element and not the head. Else later on, below when you do
-> 	proto_rdev->next = rdev;
-> you will lose devices.
-> 
-> Basically in the current implementation if there are more than two devices
-> for a protocol, you will end up losing devices since you are adding the new
-> device as the second device always.
-> 
-Ah right I missed that sorry...now I'm definitely convinced to use klist heads
-in the IDRs and avoid all of this :D
+The documentation classifies KVM_ENABLE_CAP with KVM_CAP_ENABLE_CAP_VM
+as a vcpu ioctl, which is incorrect. Fix it by specifying it as a VM
+ioctl.
 
-> I think like you mentioned this should be a klist instead of a custom linked
-> list. And idr can keep track of head of each list.
-> 
-> > 
-> > > > +		}
-> > > > +	}
-> > > > +
-> > > > +	/*
-> > > > +	 * No duplicate found for requested id_table, so let's create a new
-> > > > +	 * requested device entry for this new valid request.
-> > > > +	 */
-> > > > +	rdev = kzalloc(sizeof(*rdev), GFP_KERNEL);
-> > > > +	if (!rdev) {
-> > > > +		ret = -ENOMEM;
-> > > > +		goto out;
-> > > > +	}
-> > > > +	rdev->id_table = id_table;
-> > > > +
-> > > > +	/*
-> > > > +	 * Append the new requested device table descriptor to the head of the
-> > > > +	 * related protocol chain, eventually creating such chain if not already
-> > > > +	 * there.
-> > > > +	 */
-> > > > +	if (!proto_rdev) {
-> > > > +		ret = idr_alloc(&scmi_requested_devices, (void *)rdev,
-> > > > +				rdev->id_table->protocol_id,
-> > > > +				rdev->id_table->protocol_id + 1, GFP_KERNEL);
-> > > > +		if (ret != rdev->id_table->protocol_id) {
-> > > > +			pr_err("Failed to save SCMI device - ret:%d\n", ret);
-> > > > +			kfree(rdev);
-> > > > +			ret = -EINVAL;
-> > > > +			goto out;
-> > > > +		}
-> > > > +		ret = 0;
-> > > > +	} else {
-> > > > +		proto_rdev->next = rdev;
-> > > > +	}
-> > > > +
-> > > > +	/*
-> > > > +	 * Now effectively create and initialize the requested device for every
-> > > > +	 * already initialized SCMI instance which has registered the requested
-> > > > +	 * protocol as a valid active one: i.e. defined in DT and supported by
-> > > > +	 * current platform FW.
-> > > > +	 */
-> > > > +	mutex_lock(&scmi_list_mutex);
-> > > > +	list_for_each_entry(info, &scmi_list, node) {
-> > > > +		struct device_node *child;
-> > > > +
-> > > > +		child = idr_find(&info->active_protocols,
-> > > > +				 id_table->protocol_id);
-> > > > +		if (child) {
-> > > > +			struct scmi_device *sdev;
-> > > > +
-> > > > +			sdev = scmi_get_protocol_device(child, info,
-> > > > +							id_table->protocol_id,
-> > > > +							id_table->name);
-> > > > +			/* Set handle if not already set (device existed) */
-> > > > +			if (sdev && !sdev->handle)
-> > > > +				sdev->handle = scmi_handle_get_from_info(info);
-> > > > +		} else {
-> > > > +			dev_err(info->dev,
-> > > > +				"Failed. SCMI protocol %d not active.\n",
-> > > > +				id_table->protocol_id);
-> > > > +		}
-> > > > +	}
-> > > > +	mutex_unlock(&scmi_list_mutex);
-> > > > +
-> > > > +out:
-> > > > +	mutex_unlock(&scmi_requested_devices_mutex);
-> > > > +
-> > > > +	return ret;
-> > > > +}
-> > > > +
-> > > > +/**
-> > > > + * scmi_unrequest_protocol_device  - Helper to unrequest a device
-> > > > + *
-> > > > + * @id_table: A protocol/name pair descriptor for the device to be unrequested.
-> > > > + *
-> > > > + * An helper to let an SCMI driver release its request about devices; note that
-> > > > + * devices are created and initialized once the first SCMI driver request them
-> > > > + * but they destroyed only on SCMI core unloading/unbinding.
-> > > > + *
-> > > > + * The current SCMI transport layer uses such devices as internal references and
-> > > > + * as such they could be shared as same transport between multiple drivers so
-> > > > + * that cannot be safely destroyed till the whole SCMI stack is removed.
-> > > > + * (unless adding further burden of refcounting.)
-> > > > + */
-> > > > +void scmi_unrequest_protocol_device(const struct scmi_device_id *id_table)
-> > > > +{
-> > > > +	struct scmi_requested_dev *victim, *prev, *head;
-> > > > +
-> > > > +	pr_debug("Unrequesting SCMI device (%s) for protocol %x\n",
-> > > > +		 id_table->name, id_table->protocol_id);
-> > > > -			if (name)
-> > > > -				scmi_create_protocol_device(np, info, prot_id,
-> > > > -							    name);
-> > > > +	head = idr_find(&scmi_requested_devices, id_table->protocol_id);
-> > > > +	if (!head)
-> > > > +		return;
-> > > > +
-> > > > +	/*
-> > > > +	 * Scan the protocol list of requested device name searching
-> > > > +	 * for the victim.
-> > > > +	 */
-> > > > +	victim = head;
-> > > > +	for (prev = victim; victim; prev = victim, victim = victim->next)
-> > > 
-> > > 	The initial assignment for the for loop is wrong. With this when you break
-> > > prev will be equal to victim. You want prev to be the one pointing to the
-> > > victim. Or am I missing something?
-> > > 
-> > 
-> > Yes prev is the one preceding the victim, if any, but if it was the head
-> > I'll remove the head and not use at all the prev really.
-> > I think is right as it is, it is the naming that is misleading, because
-> > yes in the initial assignment prev = victim BUT victim = head, so if I bail
-> > out immediately I'm really removing the head.
-> > It would be clearer like
-> > 
-> >           prev = victim = head;
-> >           for (; victim; prev = victim, victim = victim->next)
-> > 	 ...
-> > 
-> > But it's better that I review this whole loop in deep to simplify it; I
-> > avoided using klist because seemed easier enough to handle a singly
-> > linked list which most of the time is one element deep, buut maybe I
-> > should just stick with well known and proven kists.
-> 
-> Yes you are right. No bug here. Like I mentioned above, klists are something
-> to consider here.
-> 
+Fixes: e5d83c74a580 ("kvm: make KVM_CAP_ENABLE_CAP_VM architecture agnostic")
+Signed-off-by: Quentin Perret <qperret@google.com>
+---
+ Documentation/virt/kvm/api.rst | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Thanks, I'll switch to klist.
+diff --git a/Documentation/virt/kvm/api.rst b/Documentation/virt/kvm/api.rst
+index 70254eaa5229..68898b623d86 100644
+--- a/Documentation/virt/kvm/api.rst
++++ b/Documentation/virt/kvm/api.rst
+@@ -1328,7 +1328,7 @@ documentation when it pops into existence).
+ 
+ :Capability: KVM_CAP_ENABLE_CAP_VM
+ :Architectures: all
+-:Type: vcpu ioctl
++:Type: vm ioctl
+ :Parameters: struct kvm_enable_cap (in)
+ :Returns: 0 on success; -1 on error
+ 
+-- 
+2.30.0.284.gd98b1dd5eaa7-goog
 
-Cristian
-
-> > 
-> > Thanks
-> > 
-> > Cristian
-> > 
-> > > 
-> > > -- 
-> > > Warm Regards
-> > > Thara
-> 
-> -- 
-> Warm Regards
-> Thara
