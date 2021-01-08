@@ -2,102 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 85FBE2EEAE4
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 02:28:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C2E62EEAEC
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 02:29:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729735AbhAHB00 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 20:26:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46540 "EHLO
+        id S1729819AbhAHB3k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 20:29:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47058 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729762AbhAHB00 (ORCPT
+        with ESMTP id S1729667AbhAHB3k (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 20:26:26 -0500
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CDF49C0612F4;
-        Thu,  7 Jan 2021 17:25:45 -0800 (PST)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4DBlm56rYNz9sRR;
-        Fri,  8 Jan 2021 12:25:41 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1610069143;
-        bh=ABTHMIc4R0Kwf7yGnAmGvgl/NcOc9dGiP5Xyj02DzsE=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=ot8h6L6ULexS+HiSagRc+G5duAqtlnHlVFwjn5velbqwKZTNx0ECFENAd53d9MewK
-         vKoD4B86XkSCEPNwb2eC0ED8jgaTH8apqdkBBr6MnOXvHD7fZ+MJ/SjUyQtniM55vm
-         I3ad7aNjkfHT4Agf/TG0aFQJGHYHPXhoWLFd3lZM5dreuPpqU2U51VYVRNYjUTqNX7
-         yWJqiuUF+xqc+a8dh+czAWUpew5AFXin5lksI5OI0z0r8fRQDflkqBbMlvALi54cyM
-         /ei3kH6CZXZtwOEmiIo4LFwRcSClWpuIJxZjp6fbZK7eWTGC4dN403eEa8zK0oz4VV
-         Zj9r67lvZIMYg==
-Date:   Fri, 8 Jan 2021 12:25:40 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Intel Graphics <intel-gfx@lists.freedesktop.org>
-Cc:     Dave Airlie <airlied@linux.ie>,
-        DRI <dri-devel@lists.freedesktop.org>,
-        Sebastian Reichel <sebastian.reichel@collabora.com>,
-        Tomi Valkeinen <tomi.valkeinen@ti.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: build failure after merge of the drm tree
-Message-ID: <20210108122540.657501b2@canb.auug.org.au>
-In-Reply-To: <20210108115518.2b3fdf58@canb.auug.org.au>
-References: <20210108115518.2b3fdf58@canb.auug.org.au>
-MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/S/gy4U=EE40dCLQCVBFtyDN";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+        Thu, 7 Jan 2021 20:29:40 -0500
+Received: from mail-pf1-x44a.google.com (mail-pf1-x44a.google.com [IPv6:2607:f8b0:4864:20::44a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5557BC0612FA
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Jan 2021 17:29:00 -0800 (PST)
+Received: by mail-pf1-x44a.google.com with SMTP id e4so5452875pfc.11
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Jan 2021 17:29:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=sender:date:message-id:mime-version:subject:from:to:cc;
+        bh=UMAjKymYTdkz3wAZcW0ar3R52PKBGQEKlAaIA5W8JIc=;
+        b=VkP6PA7UE9/mTi1zArELyLAnbHzFz9zmWujz5LV472BF45d0K+LOCwmZjUewY/CnlL
+         5p08Q87+7zDNT2cVA3FY2+GOOoMq399zFzY5srDg8xvmG+GEeACkNboVC/dBsSlAKIP/
+         Tr3OBHba424Ambsx8muEqncyjt6Rcs56TQ7LAs9usMK5Y9Bh6eRMyWUSTwYvbRufYK5d
+         btoxwHV6D1NXm3145EaHKhuIZzt3l9zAbeetJaubCXA43wZx7xdjgpSDCQvPlIDI9czw
+         inPhXzb6umDZQYFrj1YJPJqlloNBcrEflq1i7le/blUzlVf0QOo9X+I9bdi0wQXQk95l
+         mGew==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :to:cc;
+        bh=UMAjKymYTdkz3wAZcW0ar3R52PKBGQEKlAaIA5W8JIc=;
+        b=RwMSYEfSs1+DomLQ9uy8tleFk5pe8QaZVk7RzXasH0t09bvrmP5deTtMpb2RIyrLaj
+         Q+JCbV7LuFTuNgGso0u9I+aqO7N4rCdnLFuWJmJWvkypXlBZLUT9UfWV+qX/X2ryNTC1
+         3cNBFcYgEtY+MPHUEBi6PEQJUKz2J9QMDNqOQmkfEdE9GiEb4hd6H0n1bxCoSNQGdY9X
+         VQxdiWcbS2xuMnexAxY2yPF6y7lrd5hexCrWM/55zBR6H+PLTwtpgJPeFDObZXE3991k
+         POOt6dHgnxtzUuFywKDDmprFh8paXn0MesdlKSzLTbQAqnfDVL1c+qD19NugcVnDPpOZ
+         zyog==
+X-Gm-Message-State: AOAM5323XuqcjUtLYfCk6iISVanUNdQwADKHkiFSaCMB98MeGq5IJQ41
+        4RL+pHGd8TLPoOg+huDWSb3tQC+Mf/9R
+X-Google-Smtp-Source: ABdhPJywgrK9jyMUDKCNz3m0wFnLKznB0xVRQSlCqGFsJdE96eJQiXYDVSV4yV82EEY/h+cPxsoBC4cwL/qw
+Sender: "vipinsh via sendgmr" <vipinsh@vipinsh.kir.corp.google.com>
+X-Received: from vipinsh.kir.corp.google.com ([2620:0:1008:10:1ea0:b8ff:fe75:b885])
+ (user=vipinsh job=sendgmr) by 2002:aa7:8813:0:b029:19d:cd3b:6f89 with SMTP id
+ c19-20020aa788130000b029019dcd3b6f89mr1241032pfo.42.1610069339726; Thu, 07
+ Jan 2021 17:28:59 -0800 (PST)
+Date:   Thu,  7 Jan 2021 17:28:44 -0800
+Message-Id: <20210108012846.4134815-1-vipinsh@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.29.2.729.g45daf8777d-goog
+Subject: [Patch v4 0/2] cgroup: KVM: New Encryption IDs cgroup controller
+From:   Vipin Sharma <vipinsh@google.com>
+To:     thomas.lendacky@amd.com, brijesh.singh@amd.com, jon.grimm@amd.com,
+        eric.vantassell@amd.com, pbonzini@redhat.com, seanjc@google.com,
+        tj@kernel.org, lizefan@huawei.com, hannes@cmpxchg.org,
+        frankja@linux.ibm.com, borntraeger@de.ibm.com, corbet@lwn.net
+Cc:     joro@8bytes.org, vkuznets@redhat.com, wanpengli@tencent.com,
+        jmattson@google.com, tglx@linutronix.de, mingo@redhat.com,
+        bp@alien8.de, hpa@zytor.com, gingell@google.com,
+        rientjes@google.com, dionnaglaze@google.com, kvm@vger.kernel.org,
+        x86@kernel.org, cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Vipin Sharma <vipinsh@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/S/gy4U=EE40dCLQCVBFtyDN
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Hello,
 
-Hi all,
+This patch adds a new cgroup controller, Encryption IDs, to track and
+limit the usage of encryption IDs on a host.
 
-On Fri, 8 Jan 2021 11:55:18 +1100 Stephen Rothwell <sfr@canb.auug.org.au> w=
-rote:
->
-> Hi all,
->=20
-> After merging the drm tree, today's linux-next build (x86_64 allmodconfig)
-> failed like this:
->=20
-> error: the following would cause module name conflict:
->   drivers/video/fbdev/omap2/omapfb/displays/panel-dsi-cm.ko
->   drivers/gpu/drm/panel/panel-dsi-cm.ko
->=20
-> Maybe caused by commit
->=20
->   cf64148abcfd ("drm/panel: Move OMAP's DSI command mode panel driver")
->=20
-> I have used the drm tree from next-20210107 for today.
+AMD provides Secure Encrypted Virtualization (SEV) and SEV with
+Encrypted State (SEV-ES) to encrypt the guest OS's memory using limited
+number of Address Space Identifiers (ASIDs).
 
-This has affected the drm-misc tree as well (since it merged in the drm
-tree).
+This limited number of ASIDs creates issues like SEV ASID starvation and
+unoptimized scheduling in the cloud infrastucture.
 
-I have used the drm-misc tree from next-20210107 for today.
---=20
-Cheers,
-Stephen Rothwell
+In the RFC patch v1, I provided only SEV cgroup controller but based
+on the feedback and discussion it became clear that this cgroup
+controller can be extended to be used by Intel's Trusted Domain
+Extension (TDX) and s390's protected virtualization Secure Execution IDs
+(SEID)
 
---Sig_/S/gy4U=EE40dCLQCVBFtyDN
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+This patch series provides a generic Encryption IDs controller with
+tracking support of the SEV and SEV-ES ASIDs.
 
------BEGIN PGP SIGNATURE-----
+Changes in v4:
+- The max value can be set lower than the current.
+- Added SEV-ES support.
 
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl/3tJUACgkQAVBC80lX
-0GxC3gf/cT3tsaL/DIHXdAi/gnaxWdmBLyRBRvGTGqsqCI7pl2OFZg50HPMB3MYJ
-UsA0ZXF70tiSJmxcrmMzTqEWQB/3ybcYe3w7ozTzcFlYcaskRI9Trnq+JTYBfHwD
-yGY6Qb/t3zHpQqE/7TV/V2YGXXIRG7FI8IrSEFKWXJyyRf224mSyIrFC+iF9HBFH
-J3dJRURZEL7n0IrTzqiFcwUuUesiLVhH8WhUzZrG8pp5mwBtBSeRnl9Rm1Mv6DSz
-6TCvc7jZmQLQMCRwN6D4uanfjyDKrkDfXYWQGqtr/gCygm59OGq8sEopAQbWLOSd
-l/1yb7ce0PqDbsig+g2IIGg06sf+nQ==
-=DWQs
------END PGP SIGNATURE-----
+Changes in v3:
+- Fixes a build error when CONFIG_CGROUP is disabled.
 
---Sig_/S/gy4U=EE40dCLQCVBFtyDN--
+Changes in v2:
+- Changed cgroup name from sev to encryption_ids.
+- Replaced SEV specific names in APIs and documentations with generic
+  encryption IDs.
+- Providing 3 cgroup files per encryption ID type. For example in SEV,
+  - encryption_ids.sev.stat (only in the root cgroup directory).
+  - encryption_ids.sev.max
+  - encryption_ids.sev.current
+
+[1] https://lore.kernel.org/lkml/20200922004024.3699923-1-vipinsh@google.com/
+[2] https://lore.kernel.org/lkml/20201208213531.2626955-1-vipinsh@google.com/
+[3] https://lore.kernel.org/lkml/20201209205413.3391139-1-vipinsh@google.com/
+
+Vipin Sharma (2):
+  cgroup: svm: Add Encryption ID controller
+  cgroup: svm: Encryption IDs cgroup documentation.
+
+ .../admin-guide/cgroup-v1/encryption_ids.rst  | 108 +++++
+ Documentation/admin-guide/cgroup-v2.rst       |  78 +++-
+ arch/x86/kvm/svm/sev.c                        |  52 ++-
+ include/linux/cgroup_subsys.h                 |   4 +
+ include/linux/encryption_ids_cgroup.h         |  72 +++
+ include/linux/kvm_host.h                      |   4 +
+ init/Kconfig                                  |  14 +
+ kernel/cgroup/Makefile                        |   1 +
+ kernel/cgroup/encryption_ids.c                | 422 ++++++++++++++++++
+ 9 files changed, 741 insertions(+), 14 deletions(-)
+ create mode 100644 Documentation/admin-guide/cgroup-v1/encryption_ids.rst
+ create mode 100644 include/linux/encryption_ids_cgroup.h
+ create mode 100644 kernel/cgroup/encryption_ids.c
+
+-- 
+2.29.2.729.g45daf8777d-goog
+
