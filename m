@@ -2,124 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FBBA2EF06D
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 11:09:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B0AD92EF069
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 11:07:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726929AbhAHKHd convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 8 Jan 2021 05:07:33 -0500
-Received: from eu-smtp-delivery-151.mimecast.com ([207.82.80.151]:60074 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726205AbhAHKHc (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Jan 2021 05:07:32 -0500
-Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-164-B6UsFJH8P-uef6L30UKDVQ-1; Fri, 08 Jan 2021 10:05:53 +0000
-X-MC-Unique: B6UsFJH8P-uef6L30UKDVQ-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
- Server (TLS) id 15.0.1347.2; Fri, 8 Jan 2021 10:05:52 +0000
-Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
- AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
- Fri, 8 Jan 2021 10:05:52 +0000
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Joe Perches' <joe@perches.com>, Kees Cook <keescook@chromium.org>
-CC:     Dwaipayan Ray <dwaipayanray1@gmail.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        "linux-kernel-mentees@lists.linuxfoundation.org" 
-        <linux-kernel-mentees@lists.linuxfoundation.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: RE: deprecated.rst: deprecated strcpy ? (was: [PATCH] checkpatch: add
- a new check for strcpy/strlcpy uses)
-Thread-Topic: deprecated.rst: deprecated strcpy ? (was: [PATCH] checkpatch:
- add a new check for strcpy/strlcpy uses)
-Thread-Index: AQHW5Vix10kkBz1uN0KCdEjPICQLQ6odf7Ew
-Date:   Fri, 8 Jan 2021 10:05:52 +0000
-Message-ID: <05733c9670a14463bec36b2cf0eeeede@AcuMS.aculab.com>
-References: <20210105082303.15310-1-dwaipayanray1@gmail.com>
-         <50cc861121b62b3c1518222f24f679c3f72b868d.camel@perches.com>
-         <CABJPP5DQ0Y42z9ej_j06+KaQevT3ztWcwGMkismj4qv5EHvnxA@mail.gmail.com>
-         <3ffe616d8c3fb54833bfc4d86cb73427cf6c7add.camel@perches.com>
-         <202101071310.3AC5F0C4@keescook>
- <9e111f0f673ae6ced12efc01d32eefe8402c7f72.camel@perches.com>
-In-Reply-To: <9e111f0f673ae6ced12efc01d32eefe8402c7f72.camel@perches.com>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        id S1726794AbhAHKHP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Jan 2021 05:07:15 -0500
+Received: from mail.kernel.org ([198.145.29.99]:57350 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726120AbhAHKHO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 Jan 2021 05:07:14 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0A008235FA;
+        Fri,  8 Jan 2021 10:06:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1610100393;
+        bh=0seG1qL20nPxGrYmWcmVzd36Vq7VdNi0HGCeEa/IXx8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ugUrqP8e3xpsSeS41GNHnQitoUH1xd+2b3XfGcvpvtTlYBVLUQ35ZZed6g81SOXqk
+         WAcWhX4i7DuClqJrpksigj0/TnCyWhSkVaAqIpfzvp2IxsxjUf7x3W+yQC9BtaMfuR
+         S1JUL+acrLSjoYhdfpRp8wSEszOOkZhpznkUFvZEh1aPcaDVHR21RKmESmGEoeCmGN
+         Fhui58VwJuH7enKjDbppKcUoy9VtMARgW5VfGQzp8obdOQcreMkvZDSMuwj0w22M+I
+         F/IUSOI/gcxbuwmXgQXg215+ry8MCutM4cmVXUHcatPjcdIQVZ8R1vdX6tP2LuG9Mk
+         dVQsVlaQnHGdA==
+Date:   Fri, 8 Jan 2021 11:06:30 +0100
+From:   Wolfram Sang <wsa@kernel.org>
+To:     rojay@codeaurora.org
+Cc:     swboyd@chromium.org, dianders@chromium.org,
+        saiprakash.ranjan@codeaurora.org, gregkh@linuxfoundation.org,
+        mka@chromium.org, akashast@codeaurora.org,
+        msavaliy@qti.qualcomm.com, skakit@codeaurora.org,
+        pyarlaga@codeaurora.org, rnayak@codeaurora.org, agross@kernel.org,
+        bjorn.andersson@linaro.org, linux-arm-msm@vger.kernel.org,
+        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
+        sumit.semwal@linaro.org, linux-media@vger.kernel.org
+Subject: Re: [PATCH V7 2/2] i2c: i2c-qcom-geni: Add shutdown callback for i2c
+Message-ID: <20210108100630.GC1223@kunai>
+Mail-Followup-To: Wolfram Sang <wsa@kernel.org>, rojay@codeaurora.org,
+        swboyd@chromium.org, dianders@chromium.org,
+        saiprakash.ranjan@codeaurora.org, gregkh@linuxfoundation.org,
+        mka@chromium.org, akashast@codeaurora.org,
+        msavaliy@qti.qualcomm.com, skakit@codeaurora.org,
+        pyarlaga@codeaurora.org, rnayak@codeaurora.org, agross@kernel.org,
+        bjorn.andersson@linaro.org, linux-arm-msm@vger.kernel.org,
+        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
+        sumit.semwal@linaro.org, linux-media@vger.kernel.org
+References: <20201221123801.26643-1-rojay@codeaurora.org>
+ <20201221123801.26643-3-rojay@codeaurora.org>
+ <20210105152747.GB1842@ninjato>
+ <d3e53aabf39e888d8184faa2981f7837@codeaurora.org>
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="96YOpH+ONegL0A3E"
+Content-Disposition: inline
+In-Reply-To: <d3e53aabf39e888d8184faa2981f7837@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Joe Perches
-> Sent: 08 January 2021 00:52
+
+--96YOpH+ONegL0A3E
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+
+> > The use of 'goto' is not needed here IMHO. I think:
 ...
-> > The original goal was to use another helper that worked on static
-> > strings like this. Linus rejected that idea, so we're in a weird place.
-> > I think we could perhaps build a strcpy() replacement that requires
-> > compile-time validated arguments, and to break the build if not.
-> >
-> > i.e.
-> >
-> > given:
-> > 	char array[8];
-> > 	char *ptr;
-> >
-> > allow:
-> >
-> >
-> > 	strcpy(array, "1234567");
-> >
-> > disallow:
-> >
-> > 	strcpy(array, "12345678");	/* too long */
-> > 	strcpy(array, src);		/* not optimized, so use strscpy? */
-> > 	strcpy(ptr, "1234567");		/* unknown destination size */
-> > 	strcpy(ptr, src);		/* unknown destination size */
-> 
-> I think that's not a good idea as it's not a generic equivalent of the
-> string.h code.
-> 
-> I still like the stracpy variant I proposed:
-> 
-> https://lore.kernel.org/lkml/24bb53c57767c1c2a8f266c305a670f7@sk2.org/T/#m0627aa770a076af1937cb5c610ed
-> 71dab3f1da72
-> https://lore.kernel.org/lkml/CAHk-=wgqQKoAnhmhGE-2PBFt7oQs9LLAATKbYa573UO=DPBE0Q@mail.gmail.com/
-> 
-> Linus liked a variant he called copy_string:
-> 
-> https://lore.kernel.org/lkml/CAHk-=wg8vLmmwTGhXM51NpSWJW8RFEAKoXxG0Hu_Q9Uwbjj8kw@mail.gmail.com/
-> 
-> I think the cocci scripts that convert:
-> 
-> 	strlcpy -> strscpy (only when return value unused)
-> 	str<sln>cpy(array, "string") -> stracpy(foo, "string")
-> 	s[cn]printf -> sysfs_emit
-> 
-> would leave relatively few uses of strcpy and sprintf variants and would
-> make it much easier to analyze the remainder uses for potential overflows.
+> In context to the previous comment [1], I have implemented this way.
+> But, yeah anything is fine for me.
 
-The advantage of allowing strcpy() but only when the when it can be
-converted into a non-overflowing memcpy() is that you know that the
-copies never get truncated.
+Thanks, I really think it is better.
 
-The next round of string copy errors could easily by the 'silent truncation'
-ones - so using such a strcpy() will cut down the next audit.
+> In geni_i2c_abort_xfer() function gi2c->cur will be made NULL, so copying it
+> before to "cur" is needed here.
 
-	David
+Okay then, thanks for the heads up!
 
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-Registration No: 1397386 (Wales)
 
+--96YOpH+ONegL0A3E
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAl/4LqYACgkQFA3kzBSg
+Kbbwag/6A5M3A+2Q2jivtmmhNGGh4pVc1ok5Joih+D1lZqAQVbSKjqPPZNyAeuOu
+0a2ouMt6rjzDrKgZ8rWDcuH6PTbFwtSKcwK1vyLK10ehhP8/lr2uVK5MqWJ8ydXS
+PcTBZI1NXLdK+cf6fIpfhcCYZG7mBf6Pc+riFDPNIgRv2Gs8sXz7/qNKrOE98XAv
+mqGuAbKTu6GqvfkFA5aRrT2hK/+p5XGzzAMX1zW7Gei+XyicABSko+aY1UExv/Bn
+uZrBYlG4xwW89gKNeqBDibZcXd1vPVhhqA8FVRGarwoJAQ09x9LN5G9iHnrZn1AW
+ID5BIu243HenHQkMDlOCVutNxEIFB7FohEK3UYY1uPR88VXunnMsaIcQWt1uoAHg
+IiS8AxZ+cEnePxzJC1HP1IjnisT3SP37KXSZyXzLpRhWk8P2rUOWIClEsVslSC6y
+uVLUpDiSc93lgQ1zmPYp8RUYrOeYq+tEmNnuSTC5JydlmjiaH0gVrl5769Kar8SK
+RdNB4LYPOG5+BtatssGfLzsMLN0vBiOV2GUxSWktCR3Xx179VNkd0ftyqJvUK4XE
+e8SeeqqvQJLAbSlE3UC5EurheaKN6dOXhvnjfh9zVDNh3swfQ0fYl4dbINnGaORr
+Sywbt3JRJ41iEaOvTy0QJ6kcEuV6qh6oXPjMgrsUednm8zpmJdQ=
+=3G2X
+-----END PGP SIGNATURE-----
+
+--96YOpH+ONegL0A3E--
