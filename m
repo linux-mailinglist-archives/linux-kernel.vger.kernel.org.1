@@ -2,180 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50DEF2EFB1A
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 23:24:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 914FF2EFB1F
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 23:24:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726469AbhAHWXa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Jan 2021 17:23:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44014 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726433AbhAHWX2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Jan 2021 17:23:28 -0500
-Received: from mail-qt1-x849.google.com (mail-qt1-x849.google.com [IPv6:2607:f8b0:4864:20::849])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DE1CC061786
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Jan 2021 14:22:34 -0800 (PST)
-Received: by mail-qt1-x849.google.com with SMTP id b11so9297621qtj.11
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Jan 2021 14:22:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:in-reply-to:message-id:mime-version:references:subject
-         :from:to:cc;
-        bh=Cge7zJHdUeDRqJYsTUJX6Q9Nj8WIU/VuWZZ/mr14Zmg=;
-        b=v+yhPZ9NrwpjtqFQ7CSlkBzImFQFcSd4kKZnF9rH26V1lt8Qg5cxRh9hRixcXcfRMw
-         0Lf4CGMVNWArdhaWV7eqSVrmfWNHHTG2GqQUTUsKER8HcbWrgI4EsRu5u2xMbMBOLdZG
-         enbMJD0O3lLJC5+hBXKZ8fQwnsqWrrT2xzKwjSR7ktKRt3ZgfCjPaIhCFd40+Q/Q1AXX
-         duBQJXo4lJu5e1RWyxAFuv8sOpAPa3wlcLbISobyv2qg71lRq319UEt7shp1nVAZunCT
-         B4okVewDiZl6jt55qYk8Q7SKQwfY2JZURmXUoti7gE+lMfdtRPy3fxppwAJ6HgysnKOH
-         2xPw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=Cge7zJHdUeDRqJYsTUJX6Q9Nj8WIU/VuWZZ/mr14Zmg=;
-        b=dZISmtHTq5vif4yOxyjjlXZ7JumH/W4l3Fzjnr1hZFOcb13MdfvqfuhBqyFy391TyH
-         hF/yAMBSqzT2e08Yj/w3BNQ3a9QoSyVDZayB0jB+OdPzoD2EEQf0LCyxzWb7ISTuqYw2
-         GGDDdlERq1OqgleEgX6gfODX2f65F8Kan+aj4vFmPHAPGpbCXKIpBLZaPEDPhaMeUF8a
-         TsBMsavXaaIpAEKW67/kRctMQyXC0OesYF7ibJmil5WHWlty2xrDAkvYpnEr05xgBfkf
-         RZdc5SwsZK5mdWtpAyjGEN9BrHAMuRJjkXmTdSkdy0rjhkEmXQtEU8IYPMGHlqZ2xYP1
-         uEHg==
-X-Gm-Message-State: AOAM533Kh3aFqSuQzFV2u9eyGiu5bBGgNr6kfBbXbQHY9EoY68E/8LC9
-        yfV1NbPaB+Lq25kS0nCA60+s8zCjXr4gRxHTMw==
-X-Google-Smtp-Source: ABdhPJxrcozKHrR0xcQ3FM8Iv9GH5ysTauNVEag5mDoPrcF3rxvRgJusdDawbqRfPuHDtVtP8Oko7A7c/uJcaebjSA==
-Sender: "lokeshgidra via sendgmr" <lokeshgidra@lg.mtv.corp.google.com>
-X-Received: from lg.mtv.corp.google.com ([2620:15c:211:202:f693:9fff:fef4:29dd])
- (user=lokeshgidra job=sendgmr) by 2002:a05:6214:13e2:: with SMTP id
- ch2mr5888288qvb.57.1610144553679; Fri, 08 Jan 2021 14:22:33 -0800 (PST)
-Date:   Fri,  8 Jan 2021 14:22:23 -0800
-In-Reply-To: <20210108222223.952458-1-lokeshgidra@google.com>
-Message-Id: <20210108222223.952458-5-lokeshgidra@google.com>
-Mime-Version: 1.0
-References: <20210108222223.952458-1-lokeshgidra@google.com>
-X-Mailer: git-send-email 2.30.0.284.gd98b1dd5eaa7-goog
-Subject: [PATCH v15 4/4] userfaultfd: use secure anon inodes for userfaultfd
-From:   Lokesh Gidra <lokeshgidra@google.com>
-To:     Andrea Arcangeli <aarcange@redhat.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        James Morris <jmorris@namei.org>,
-        Stephen Smalley <stephen.smalley.work@gmail.com>,
-        Casey Schaufler <casey@schaufler-ca.com>,
-        Eric Biggers <ebiggers@kernel.org>,
-        Paul Moore <paul@paul-moore.com>
-Cc:     "Serge E. Hallyn" <serge@hallyn.com>,
-        Eric Paris <eparis@parisplace.org>,
-        Lokesh Gidra <lokeshgidra@google.com>,
-        Daniel Colascione <dancol@dancol.org>,
-        Kees Cook <keescook@chromium.org>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        KP Singh <kpsingh@google.com>,
-        David Howells <dhowells@redhat.com>,
-        Anders Roxell <anders.roxell@linaro.org>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Matthew Garrett <matthewgarrett@google.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        "Joel Fernandes (Google)" <joel@joelfernandes.org>,
-        YueHaibing <yuehaibing@huawei.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Adrian Reber <areber@redhat.com>,
-        Aleksa Sarai <cyphar@cyphar.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-security-module@vger.kernel.org, selinux@vger.kernel.org,
-        kaleshsingh@google.com, calin@google.com, surenb@google.com,
-        jeffv@google.com, kernel-team@android.com, linux-mm@kvack.org,
-        Andrew Morton <akpm@linux-foundation.org>, hch@infradead.org
-Content-Type: text/plain; charset="UTF-8"
+        id S1726584AbhAHWXl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Jan 2021 17:23:41 -0500
+Received: from mga09.intel.com ([134.134.136.24]:1525 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726535AbhAHWXk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 Jan 2021 17:23:40 -0500
+IronPort-SDR: JmqZjCqzXYq4jjLV3aRuy08R+2eAjGXnDe1rTuK6zHDBgJsbkr2yzAMaKFDCsh2Lz7t6BW87mU
+ axc98tB0IYnA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9858"; a="177810716"
+X-IronPort-AV: E=Sophos;i="5.79,332,1602572400"; 
+   d="scan'208";a="177810716"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jan 2021 14:22:58 -0800
+IronPort-SDR: inne7I/ttTGlK6FhJGrjlSnCkt68DVMtrUoWr9UxVXLC1ADl9ukwd2+bA27atxUv7mcL4Y7SBK
+ PWIOzmEuBpLA==
+X-IronPort-AV: E=Sophos;i="5.79,332,1602572400"; 
+   d="scan'208";a="423091290"
+Received: from agluck-desk2.sc.intel.com ([10.3.52.68])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jan 2021 14:22:58 -0800
+From:   Tony Luck <tony.luck@intel.com>
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     Tony Luck <tony.luck@intel.com>, x86@kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Darren Hart <dvhart@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        linux-kernel@vger.kernel.org, linux-edac@vger.kernel.org,
+        linux-mm@kvack.org
+Subject: [PATCH 0/2] Fix infinite machine check loop in futex_wait_setup()
+Date:   Fri,  8 Jan 2021 14:22:49 -0800
+Message-Id: <20210108222251.14391-1-tony.luck@intel.com>
+X-Mailer: git-send-email 2.21.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Daniel Colascione <dancol@google.com>
+Linux can now recover from machine checks where kernel code is
+doing get_user() to access application memory. But there isn't
+a way to distinguish whether get_user() failed because of a page
+fault or a machine check.
 
-This change gives userfaultfd file descriptors a real security
-context, allowing policy to act on them.
+Thus there is a problem if any kernel code thinks it can retry
+an access after doing something that would fix the page fault.
 
-Signed-off-by: Daniel Colascione <dancol@google.com>
+One such example (I'm sure there are more) is in futex_wait_setup()
+where an attempt to read the futex with page faults disabled. Then
+a retry (after dropping a lock so page faults are safe):
 
-[LG: Remove owner inode from userfaultfd_ctx]
-[LG: Use anon_inode_getfd_secure() instead of anon_inode_getfile_secure()
- in userfaultfd syscall]
-[LG: Use inode of file in userfaultfd_read() in resolve_userfault_fork()]
 
-Signed-off-by: Lokesh Gidra <lokeshgidra@google.com>
-Reviewed-by: Eric Biggers <ebiggers@google.com>
----
- fs/userfaultfd.c | 19 ++++++++++---------
- 1 file changed, 10 insertions(+), 9 deletions(-)
+        ret = get_futex_value_locked(&uval, uaddr);
 
-diff --git a/fs/userfaultfd.c b/fs/userfaultfd.c
-index 894cc28142e7..0be8cdd4425a 100644
---- a/fs/userfaultfd.c
-+++ b/fs/userfaultfd.c
-@@ -979,14 +979,14 @@ static __poll_t userfaultfd_poll(struct file *file, poll_table *wait)
- 
- static const struct file_operations userfaultfd_fops;
- 
--static int resolve_userfault_fork(struct userfaultfd_ctx *ctx,
--				  struct userfaultfd_ctx *new,
-+static int resolve_userfault_fork(struct userfaultfd_ctx *new,
-+				  struct inode *inode,
- 				  struct uffd_msg *msg)
- {
- 	int fd;
- 
--	fd = anon_inode_getfd("[userfaultfd]", &userfaultfd_fops, new,
--			      O_RDWR | (new->flags & UFFD_SHARED_FCNTL_FLAGS));
-+	fd = anon_inode_getfd_secure("[userfaultfd]", &userfaultfd_fops, new,
-+			O_RDWR | (new->flags & UFFD_SHARED_FCNTL_FLAGS), inode);
- 	if (fd < 0)
- 		return fd;
- 
-@@ -996,7 +996,7 @@ static int resolve_userfault_fork(struct userfaultfd_ctx *ctx,
- }
- 
- static ssize_t userfaultfd_ctx_read(struct userfaultfd_ctx *ctx, int no_wait,
--				    struct uffd_msg *msg)
-+				    struct uffd_msg *msg, struct inode *inode)
- {
- 	ssize_t ret;
- 	DECLARE_WAITQUEUE(wait, current);
-@@ -1107,7 +1107,7 @@ static ssize_t userfaultfd_ctx_read(struct userfaultfd_ctx *ctx, int no_wait,
- 	spin_unlock_irq(&ctx->fd_wqh.lock);
- 
- 	if (!ret && msg->event == UFFD_EVENT_FORK) {
--		ret = resolve_userfault_fork(ctx, fork_nctx, msg);
-+		ret = resolve_userfault_fork(fork_nctx, inode, msg);
- 		spin_lock_irq(&ctx->event_wqh.lock);
- 		if (!list_empty(&fork_event)) {
- 			/*
-@@ -1167,6 +1167,7 @@ static ssize_t userfaultfd_read(struct file *file, char __user *buf,
- 	ssize_t _ret, ret = 0;
- 	struct uffd_msg msg;
- 	int no_wait = file->f_flags & O_NONBLOCK;
-+	struct inode *inode = file_inode(file);
- 
- 	if (ctx->state == UFFD_STATE_WAIT_API)
- 		return -EINVAL;
-@@ -1174,7 +1175,7 @@ static ssize_t userfaultfd_read(struct file *file, char __user *buf,
- 	for (;;) {
- 		if (count < sizeof(msg))
- 			return ret ? ret : -EINVAL;
--		_ret = userfaultfd_ctx_read(ctx, no_wait, &msg);
-+		_ret = userfaultfd_ctx_read(ctx, no_wait, &msg, inode);
- 		if (_ret < 0)
- 			return ret ? ret : _ret;
- 		if (copy_to_user((__u64 __user *) buf, &msg, sizeof(msg)))
-@@ -1999,8 +2000,8 @@ SYSCALL_DEFINE1(userfaultfd, int, flags)
- 	/* prevent the mm struct to be freed */
- 	mmgrab(ctx->mm);
- 
--	fd = anon_inode_getfd("[userfaultfd]", &userfaultfd_fops, ctx,
--			      O_RDWR | (flags & UFFD_SHARED_FCNTL_FLAGS));
-+	fd = anon_inode_getfd_secure("[userfaultfd]", &userfaultfd_fops, ctx,
-+			O_RDWR | (flags & UFFD_SHARED_FCNTL_FLAGS), NULL);
- 	if (fd < 0) {
- 		mmdrop(ctx->mm);
- 		kmem_cache_free(userfaultfd_ctx_cachep, ctx);
+        if (ret) {
+                queue_unlock(*hb);
+
+                ret = get_user(uval, uaddr);
+
+It would be good to avoid deliberately taking a second machine
+check (especially as the recovery code does really bad things
+and ends up in an infinite loop!).
+
+My proposal is to add a new function arch_memory_failure()
+that can be called after get_user() returns -EFAULT to allow
+graceful recovery.
+
+Futex reviewers: I just have one new call (that fixes my test
+case). If you could point out other places this is needed,
+that would be most helpful.
+
+Patch roadmap:
+
+Part 1: Add code to avoid the infinite loop in the machine check
+code. Just panic if code runs into the same machine check a second
+time. This should make it much easier to debug other places where
+this happens.
+
+Part 2: Add arch_memory_failure() and use it in futex_wait_setup().
+[Suggestions gladly accepted for the current best way to handle the
+#defines etc. to define an arch specific function to be used in
+generic code]
+
+Tony Luck (2):
+  x86/mce: Avoid infinite loop for copy from user recovery
+  futex, x86/mce: Avoid double machine checks
+
+ arch/x86/include/asm/mmu.h     |  7 +++++++
+ arch/x86/kernel/cpu/mce/core.c | 17 ++++++++++++++++-
+ include/linux/mm.h             |  4 ++++
+ include/linux/sched.h          |  3 ++-
+ kernel/futex.c                 |  3 +++
+ 5 files changed, 32 insertions(+), 2 deletions(-)
+
 -- 
-2.30.0.284.gd98b1dd5eaa7-goog
+2.21.1
 
