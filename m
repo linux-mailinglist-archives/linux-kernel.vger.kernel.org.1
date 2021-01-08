@@ -2,183 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1B222EEE3A
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 09:01:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 492662EEE3F
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 09:01:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727239AbhAHIAw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Jan 2021 03:00:52 -0500
-Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:9873 "EHLO
-        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725791AbhAHIAw (ORCPT
+        id S1727614AbhAHIBJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Jan 2021 03:01:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51050 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727265AbhAHIBI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Jan 2021 03:00:52 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5ff8110b0003>; Fri, 08 Jan 2021 00:00:11 -0800
-Received: from [10.25.98.33] (172.20.145.6) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 8 Jan
- 2021 08:00:06 +0000
-Subject: Re: [PATCH 2/2] ALSA: hda/tegra: fix tegra-hda on tegra30 soc
-To:     Peter Geis <pgwipeout@gmail.com>
-CC:     Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Peter De Schrijver <pdeschrijver@nvidia.com>,
-        "Prashant Gaikwad" <pgaikwad@nvidia.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Mohan Kumar <mkumard@nvidia.com>, <linux-clk@vger.kernel.org>,
-        <linux-tegra@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <alsa-devel@alsa-project.org>, Ion Agorria <ion@agorria.com>
-References: <20201225012025.507803-1-pgwipeout@gmail.com>
- <20201225012025.507803-3-pgwipeout@gmail.com>
- <0c3665b2-bac6-546a-bdd4-0ab7a90adf7c@nvidia.com>
- <CAMdYzYraT5AXzyscN3Pa+0FWZwHFsD-4ZwbA80kNxgtn7Y1PXw@mail.gmail.com>
-From:   Sameer Pujar <spujar@nvidia.com>
-Message-ID: <b3a3ede2-22d5-b13d-f245-7c3b40ea411a@nvidia.com>
-Date:   Fri, 8 Jan 2021 13:30:02 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        Fri, 8 Jan 2021 03:01:08 -0500
+Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E42AC0612F5
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Jan 2021 00:00:28 -0800 (PST)
+Received: by mail-ej1-x62d.google.com with SMTP id jx16so13284035ejb.10
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Jan 2021 00:00:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=QXjysu6y0pGBnxc+e5HtoTW8YRit8L8xxCUW1SnHWis=;
+        b=YJsOhxKAndTG3Dz8uozNhqu+W/BGhCDkUbG8Ms/578ZrIe91qUSXkMNWhDl/hg++FC
+         wFofv6qFygRjAqH+WB43k18Ce6J1W5jd4kF6zXgU8oo4U4WoMRHD6WqQKydaKxpOC8ZK
+         /Ei+lUSQYOuHp/mjhRzWpsKAxlbdtbJAiKvl7kZCy4ZZHLHYQU1HN8e69mXINI049fMe
+         CSR1akzqP4+Sja4Mlnvh44VYjXk3UFxKi+rFWUzYwYWcovCN1Y7ZClZabcQvXn1lSkrt
+         aIlRZpF9uHPQXZtTPbbp4cK+zGOvTZE/3EBB7jxqbOv9lw7GoyuVr/UQpO7LnNxwFZ9A
+         Zm6w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=QXjysu6y0pGBnxc+e5HtoTW8YRit8L8xxCUW1SnHWis=;
+        b=k92rLu12qt22cQL5XuWu8rIaGjb7teLBlaPTFaS6AG+0/LtdmjLzAZn9nj+S+pFk1S
+         sMjQBxw4GEGYLC1QDP3+8ADCmXi+fr0FJBrSxFshDEhvOFW+7HVxB6YyZNdeku+9GCHY
+         tcf2EqNh+CmTnUF/N4Y3rwIhO/8orWk9d8CUz9YnDXcY8o+LgO3FAXlt6yfSUW4kPloy
+         PEZU7myqZsE+729x3nk8G6iedh8VVxS6tygzXrijAPm1XYn0FxxkxWwbLmCY+g05erfg
+         94QkdQN6xqxKS4ib1bNajm9E86AsxpqN5Xr+FCJ2qgknjt0xixwfJlxXdti8Fb+8XSDn
+         YrxA==
+X-Gm-Message-State: AOAM532FttHbS/gModO1qM/fE5meAcHdXb9rUtoW9EEiPXmwbwnCww0L
+        7ba5G7BD+M6s2Y+ZFEden2ukr88TwWYWvzotZk33nA==
+X-Google-Smtp-Source: ABdhPJydtj2gBY0mQI+kfryVYq/vLMXDNsLBua2nwHP3pFitqpA7AiSUork7THEMxK0RzhX+AHQ5zssiRg78cyZ01KE=
+X-Received: by 2002:a17:906:4c85:: with SMTP id q5mr1840518eju.375.1610092826861;
+ Fri, 08 Jan 2021 00:00:26 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <CAMdYzYraT5AXzyscN3Pa+0FWZwHFsD-4ZwbA80kNxgtn7Y1PXw@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
+References: <20210107143053.692614974@linuxfoundation.org>
+In-Reply-To: <20210107143053.692614974@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Fri, 8 Jan 2021 13:30:15 +0530
+Message-ID: <CA+G9fYsB27gO+wQR6nJmNAXMy-xW4zja381RKZHJCuwJZWtbbg@mail.gmail.com>
+Subject: Re: [PATCH 4.9 00/33] 4.9.250-rc2 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
+        lkft-triage@lists.linaro.org,
+        linux-stable <stable@vger.kernel.org>, pavel@denx.de,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-Content-Language: en-GB
-X-Originating-IP: [172.20.145.6]
-X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
- HQMAIL107.nvidia.com (172.20.187.13)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1610092811; bh=tAX7+nwrhbWHTaFDYsrLY7TV7AsIei6JzO5pznTK/EY=;
-        h=Subject:To:CC:References:From:Message-ID:Date:User-Agent:
-         MIME-Version:In-Reply-To:Content-Type:Content-Transfer-Encoding:
-         Content-Language:X-Originating-IP:X-ClientProxiedBy;
-        b=bVvAn6XMiAZ7FoTF4OYFwB8L3AnCfRZgNwnpAWTwq9iSt9JPgLv0hKIvDEi8xr8lQ
-         laUYCy+WEWqF1ED0lhDotEwuMGmsiMEXe4bD6D7pLqVems6d7NQ1MaoceT9HHi6S28
-         v9peEUWyStRs/KnaepmCvucDQ6yfUdK7HadQ3Sj4Ahyk7ma4QxN3eH21eoUd6zilMn
-         Z95vNauSua3gmlKEuJEUMk2qj+ChuLK0NS9bRnPgN/IC3LE7KRH5MMpKmnn/Dkcs81
-         C6hDOkSU+Xhj4hJldLe5pFoBhGdHHsqS9y9gOWy1mTyd1SebKlo/bjI5KTdVg9z9NU
-         ecaVWzLmv8wmw==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 1/7/2021 2:51 AM, Peter Geis wrote:
-> External email: Use caution opening links or attachments
+On Thu, 7 Jan 2021 at 20:00, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
 >
+> This is the start of the stable review cycle for the 4.9.250 release.
+> There are 33 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 >
-> On Tue, Jan 5, 2021 at 1:30 AM Sameer Pujar <spujar@nvidia.com> wrote:
->>
->>
->> On 12/25/2020 6:50 AM, Peter Geis wrote:
->>> External email: Use caution opening links or attachments
->>>
->>>
->>> Currently hda on tegra30 fails to open a stream with an input/output er=
-ror.
->>> This is similar to the issue referenced in [1].
->>>
->>> For example:
->>> speaker-test -Dhw:0,3 -c 2
->>>
->>> speaker-test 1.2.2
->>>
->>> Playback device is hw:0,3
->>> Stream parameters are 48000Hz, S16_LE, 2 channels
->>> Using 16 octaves of pink noise
->>> Rate set to 48000Hz (requested 48000Hz)
->>> Buffer size range from 64 to 16384
->>> Period size range from 32 to 8192
->>> Using max buffer size 16384
->>> Periods =3D 4
->>> was set period_size =3D 4096
->>> was set buffer_size =3D 16384
->>>    0 - Front Left
->>> Write error: -5,Input/output error
->>> xrun_recovery failed: -5,Input/output error
->>> Transfer failed: Input/output error
->>>
->>> [1] states "Due to a legacy HW design problem", implying the issue appl=
-ies to all previous tegra-hda devices.
->>> The tegra-hda device was introduced in tegra30 but only utilized in teg=
-ra124 until now.
->>> For this reason it is unknown when this issue first manifested.
->>>
->>> Applying the fix in [1] universally resolves this issue on tegra30.
->>> Tested on the Ouya game console and the tf201 tablet.
->>>
->>> [1] 60019d8c650d ("ALSA: hda/tegra: workaround playback failure on Tegr=
-a194")
->> This issue was never seen on Tegra210/Tegra186 and hence at that time it
->> was thought to be specific to Tegra194. I never tested this on Tegra30
->> since I don't have this device. I will clarify this with HW folks if
->> workaround is safer for all chips.
-> So this is confirmed to not affect Tegra210 and Tegra186, but it does
-> affect Tegra194 and Tegra30.
-> Is it possible for the hardware team to pitch on on where the fix was
-> implemented?
+> Responses should be made by Sat, 09 Jan 2021 14:30:35 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-=
+4.9.250-rc2.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-4.9.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
-I discussed this with HW team. The issue is applicable to all Tegra chips.
+Results from Linaro=E2=80=99s test farm.
+No regressions on arm64, arm, x86_64, and i386.
 
-Below is the striping formula referenced from HD audio spec.
- =C2=A0 { ((num_channels * bits_per_sample) / number of SDOs) >=3D 8 }
+Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
-The current issue is seen because Tegra HW has a problem with boundary=20
-condition (=3D 8) for striping. The reason why it is not seen on=20
-Tegra210/Tegra186 is because it uses max 2SDO lines. Max SDO lines is=20
-read from GCAP register.
+Summary
+------------------------------------------------------------------------
 
-For the given stream (channels =3D 2, bps =3D 16);
-ratio =3D (channels * bps) / NSDO =3D 32 / NSDO;
+kernel: 4.9.250-rc2
+git repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stab=
+le-rc.git
+git branch: linux-4.9.y
+git commit: 15b2e80c9e2bc3a803caae7dca549cb7c9233ba2
+git describe: v4.9.249-34-g15b2e80c9e2b
+Test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-4.9.=
+y/build/v4.9.249-34-g15b2e80c9e2b
 
-On Tegra30,=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ratio =3D 32/4 =3D 8=C2=A0 (FAIL)
-On Tegra210/186, ratio =3D 32/2 =3D 16 (PASS)
-On Tegra194,=C2=A0=C2=A0=C2=A0=C2=A0 ratio =3D 32/4 =3D 8=C2=A0 (FAIL) =3D=
-=3D> Earlier workaround was=20
-applied for it
+No regressions (compared to build v4.9.249)
 
-If Tegra210/186 is forced to use 4SDO, it fails there as well. So the=20
-behavior is consistent across all these chips.
+No fixes (compared to build v4.9.249)
 
->>> Signed-off-by: Peter Geis <pgwipeout@gmail.com>
->>> Tested-by: Ion Agorria <ion@agorria.com>
->>> ---
->>>    sound/pci/hda/hda_tegra.c | 3 +--
->>>    1 file changed, 1 insertion(+), 2 deletions(-)
->>>
->>> diff --git a/sound/pci/hda/hda_tegra.c b/sound/pci/hda/hda_tegra.c
->>> index 70164d1428d4..f8d61e677a09 100644
->>> --- a/sound/pci/hda/hda_tegra.c
->>> +++ b/sound/pci/hda/hda_tegra.c
->>> @@ -388,8 +388,7 @@ static int hda_tegra_first_init(struct azx *chip, s=
-truct platform_device *pdev)
->>>            * in powers of 2, next available ratio is 16 which can be
->>>            * used as a limiting factor here.
->>>            */
->>> -       if (of_device_is_compatible(np, "nvidia,tegra194-hda"))
->>> -               chip->bus.core.sdo_limit =3D 16;
->>> +       chip->bus.core.sdo_limit =3D 16;
->> Future Tegra chips address this problem and hence cannot be enforced by
->> default. May be we can have like below:
->>
->> if (of_device_is_compatible(np, "nvidia,tegra30-hda"))
->> chip->bus.core.sdo_limit =3D 16;
->>
-> It will need to be a bit more complicated than that, since the
-> tegra186 and tegra210 device trees have "nvidia,tegra30-hda" as a
-> fallback.
-> Looking at the generation map, tegra30-hda can be the fallback for the
-> broken implementation and tegra210-hda can be the fallback for the
-> working implementation.
-> Does that work for you?
+Ran 38960 total tests in the following environments and test suites.
 
-As per above explanation, it is fine to apply the workaround for=20
-Tegra210/186 as well. So it simplifies things for all existing chips.
+Environments
+--------------
+- arm
+- arm64
+- dragonboard-410c - arm64
+- hi6220-hikey - arm64
+- i386
+- juno-r2 - arm64
+- juno-r2-compat
+- juno-r2-kasan
+- mips
+- qemu-arm64-kasan
+- qemu-x86_64-kasan
+- qemu_arm
+- qemu_arm64
+- qemu_arm64-compat
+- qemu_i386
+- qemu_x86_64
+- qemu_x86_64-compat
+- sparc
+- x15 - arm
+- x86_64
+- x86-kasan
 
->>>           /* codec detection */
->>>           if (!bus->codec_mask) {
->>> --
->>> 2.25.1
->>>
+Test Suites
+-----------
+* build
+* linux-log-parser
+* install-android-platform-tools-r2600
+* ltp-commands-tests
+* ltp-containers-tests
+* ltp-controllers-tests
+* ltp-cve-tests
+* ltp-dio-tests
+* ltp-fcntl-locktests-tests
+* ltp-filecaps-tests
+* ltp-fs-tests
+* ltp-fs_bind-tests
+* ltp-fs_perms_simple-tests
+* ltp-fsx-tests
+* ltp-hugetlb-tests
+* ltp-io-tests
+* ltp-ipc-tests
+* ltp-math-tests
+* ltp-mm-tests
+* ltp-tracing-tests
+* fwts
+* ltp-cap_bounds-tests
+* ltp-cpuhotplug-tests
+* ltp-crypto-tests
+* ltp-nptl-tests
+* ltp-pty-tests
+* ltp-sched-tests
+* ltp-securebits-tests
+* ltp-syscalls-tests
+* network-basic-tests
+* perf
+* libhugetlbfs
+* ltp-open-posix-tests
+* v4l2-compliance
+* kvm-unit-tests
 
+--=20
+Linaro LKFT
+https://lkft.linaro.org
