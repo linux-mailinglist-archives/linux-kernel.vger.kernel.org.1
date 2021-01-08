@@ -2,152 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DD0E2EF9CB
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 22:01:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A48A2EF9E2
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 22:05:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729666AbhAHVBE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Jan 2021 16:01:04 -0500
-Received: from mail106.syd.optusnet.com.au ([211.29.132.42]:60828 "EHLO
-        mail106.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728511AbhAHVBD (ORCPT
+        id S1729657AbhAHVEA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Jan 2021 16:04:00 -0500
+Received: from so254-31.mailgun.net ([198.61.254.31]:29484 "EHLO
+        so254-31.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729069AbhAHVEA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Jan 2021 16:01:03 -0500
-Received: from dread.disaster.area (pa49-179-167-107.pa.nsw.optusnet.com.au [49.179.167.107])
-        by mail106.syd.optusnet.com.au (Postfix) with ESMTPS id 3438676566F;
-        Sat,  9 Jan 2021 08:00:17 +1100 (AEDT)
-Received: from dave by dread.disaster.area with local (Exim 4.92.3)
-        (envelope-from <david@fromorbit.com>)
-        id 1kxyrp-004RRw-51; Sat, 09 Jan 2021 08:00:17 +1100
-Date:   Sat, 9 Jan 2021 08:00:17 +1100
-From:   Dave Chinner <david@fromorbit.com>
-To:     Ming Lei <ming.lei@redhat.com>
-Cc:     Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>,
-        linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        "Darrick J . Wong" <darrick.wong@oracle.com>,
-        linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Subject: Re: [RFC PATCH] fs: block_dev: compute nr_vecs hint for improving
- writeback bvecs allocation
-Message-ID: <20210108210017.GK331610@dread.disaster.area>
-References: <20210105132647.3818503-1-ming.lei@redhat.com>
- <20210105183938.GA3878@lst.de>
- <20210106084548.GA3845805@T590>
- <20210106222111.GE331610@dread.disaster.area>
- <20210108075922.GB3982620@T590>
+        Fri, 8 Jan 2021 16:04:00 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1610139814; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=P2i/w2NGM6kNbgN8vyY6XxmXd+fcd/x2L+FLno+MqfE=;
+ b=Mm+SvarPs81VykYyb7bm2LQMLjJk5u06n1PH72NvZe+mtFc3aPHN2Cgc9Tuw1D0cVXiq5TDk
+ Ldr0xQEoL1c6HhPSFeHpbfXFPZ2yob8wtYgDvVEdaLo/hjjRZ3EJeXIu8kKlSgmlvFUK0pfl
+ 8M1SbRwkVeVmZetXZpstvf8N8+s=
+X-Mailgun-Sending-Ip: 198.61.254.31
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n05.prod.us-west-2.postgun.com with SMTP id
+ 5ff8c888415a6293c51dd1ce (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 08 Jan 2021 21:03:04
+ GMT
+Sender: rishabhb=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id B0D3AC433CA; Fri,  8 Jan 2021 21:03:03 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: rishabhb)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id DD5FBC433C6;
+        Fri,  8 Jan 2021 21:03:02 +0000 (UTC)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210108075922.GB3982620@T590>
-X-Optus-CM-Score: 0
-X-Optus-CM-Analysis: v=2.3 cv=F8MpiZpN c=1 sm=1 tr=0 cx=a_idp_d
-        a=+wqVUQIkAh0lLYI+QRsciw==:117 a=+wqVUQIkAh0lLYI+QRsciw==:17
-        a=kj9zAlcOel0A:10 a=EmqxpYm9HcoA:10 a=7-415B0cAAAA:8
-        a=0TDAt5E3tB6VCO8953IA:9 a=qZgZfBh61L_KZ1-l:21 a=JzxU2LrYxQ7o857g:21
-        a=CjuIK1q_8ugA:10 a=biEYGPWJfzWAr4FL6Ov7:22
+Content-Type: text/plain; charset=UTF-8;
+ format=flowed
+Content-Transfer-Encoding: 8bit
+Date:   Fri, 08 Jan 2021 13:03:02 -0800
+From:   rishabhb@codeaurora.org
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     Alex Elder <elder@linaro.org>, linux-remoteproc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, tsoni@codeaurora.org,
+        psodagud@codeaurora.org, sidgup@codeaurora.org
+Subject: Re: [PATCH] remoteproc: Create a separate workqueue for recovery
+ tasks
+In-Reply-To: <X+E/W2Sf6fkNaiTC@builder.lan>
+References: <1607806087-27244-1-git-send-email-rishabhb@codeaurora.org>
+ <X9k+xmg9SULEbJXe@builder.lan>
+ <dc9940f0-7fe3-d1da-acb5-580ae7366c9b@linaro.org>
+ <87c3f902b94bc243fc28e0ce79303dd4@codeaurora.org>
+ <35e2106f-d738-4018-50f2-17afcbc627f7@linaro.org>
+ <X+E/W2Sf6fkNaiTC@builder.lan>
+Message-ID: <65cb9eb0837cd4edee2f2902055f412c@codeaurora.org>
+X-Sender: rishabhb@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 08, 2021 at 03:59:22PM +0800, Ming Lei wrote:
-> On Thu, Jan 07, 2021 at 09:21:11AM +1100, Dave Chinner wrote:
-> > On Wed, Jan 06, 2021 at 04:45:48PM +0800, Ming Lei wrote:
-> > > On Tue, Jan 05, 2021 at 07:39:38PM +0100, Christoph Hellwig wrote:
-> > > > At least for iomap I think this is the wrong approach.  Between the
-> > > > iomap and writeback_control we know the maximum size of the writeback
-> > > > request and can just use that.
-> > > 
-> > > I think writeback_control can tell us nothing about max pages in single
-> > > bio:
-> > 
-> > By definition, the iomap tells us exactly how big the IO is going to
-> > be. i.e. an iomap spans a single contiguous range that we are going
-> > to issue IO on. Hence we can use that to size the bio exactly
-> > right for direct IO.
+On 2020-12-21 16:35, Bjorn Andersson wrote:
+> On Thu 17 Dec 12:49 CST 2020, Alex Elder wrote:
 > 
-> When I trace wpc->iomap.length in iomap_add_to_ioend() on the following fio
-> randwrite/write, the length is 1GB most of times, maybe because it is
-> one fresh XFS.
-
-Yes, that's exactly what I said it would do.
-
-> Another reason is that pages in the range may be contiguous physically,
-> so lots of pages may share one single bvec.
-
-The iomap layer does not care about this, and there's no way this
-can be detected ahead of time, anyway, because we are only passed a
-single page at a time. When we get large pages from the page cache,
-we'll still only get one page at a time, but we'll get physically
-contiguous pages and so it will still be a 1 page : 1 bvec
-relationship at the iomap layer.
-
-> > > - wbc->nr_to_write controls how many pages to writeback, this pages
-> > >   usually don't belong to same bio. Also this number is often much
-> > >   bigger than BIO_MAX_PAGES.
-> > > 
-> > > - wbc->range_start/range_end is similar too, which is often much more
-> > >   bigger than BIO_MAX_PAGES.
-> > > 
-> > > Also page/blocks_in_page can be mapped to different extent too, which is
-> > > only available when wpc->ops->map_blocks() is returned,
-> > 
-> > We only allocate the bio -after- calling ->map_blocks() to obtain
-> > the iomap for the given writeback range request. Hence we
-> > already know how large the BIO could be before we allocate it.
-> > 
-> > > which looks not
-> > > different with mpage_writepages(), in which bio is allocated with
-> > > BIO_MAX_PAGES vecs too.
-> > 
-> > __mpage_writepage() only maps a page at a time, so it can't tell
-> > ahead of time how big the bio is going to need to be as it doesn't
-> > return/cache a contiguous extent range. So it's actually very
-> > different to the iomap writeback code, and effectively does require
-> > a BIO_MAX_PAGES vecs allocation all the time...
-> > 
-> > > Or you mean we can use iomap->length for this purpose? But iomap->length
-> > > still is still too big in case of xfs.
-> > 
-> > if we are doing small random writeback into large extents (i.e.
-> > iomap->length is large), then it is trivial to detect that we are
-> > doing random writes rather than sequential writes by checking if the
-> > current page is sequential to the last sector in the current bio.
-> > We already do this non-sequential IO checking to determine if a new
-> > bio needs to be allocated in iomap_can_add_to_ioend(), and we also
-> > know how large the current contiguous range mapped into the current
-> > bio chain is (ioend->io_size). Hence we've got everything we need to
-> > determine whether we should do a large or small bio vec allocation
-> > in the iomap writeback path...
+>> On 12/17/20 12:21 PM, rishabhb@codeaurora.org wrote:
+>> > On 2020-12-17 08:12, Alex Elder wrote:
+>> > > On 12/15/20 4:55 PM, Bjorn Andersson wrote:
+>> > > > On Sat 12 Dec 14:48 CST 2020, Rishabh Bhatnagar wrote:
+>> > > >
+>> > > > > Create an unbound high priority workqueue for recovery tasks.
+>> > >
+>> > > I have been looking at a different issue that is caused by
+>> > > crash notification.
+>> > >
+>> > > What happened was that the modem crashed while the AP was
+>> > > in system suspend (or possibly even resuming) state.  And
+>> > > there is no guarantee that the system will have called a
+>> > > driver's ->resume callback when the crash notification is
+>> > > delivered.
+>> > >
+>> > > In my case (in the IPA driver), handling a modem crash
+>> > > cannot be done while the driver is suspended; i.e. the
+>> > > activities in its ->resume callback must be completed
+>> > > before we can recover from the crash.
+>> > >
+>> > > For this reason I might like to change the way the
+>> > > crash notification is handled, but what I'd rather see
+>> > > is to have the work queue not run until user space
+>> > > is unfrozen, which would guarantee that all drivers
+>> > > that have registered for a crash notification will
+>> > > be resumed when the notification arrives.
+>> > >
+>> > > I'm not sure how that interacts with what you are
+>> > > looking for here.  I think the workqueue could still
+>> > > be unbound, but its work would be delayed longer before
+>> > > any notification (and recovery) started.
+>> > >
+>> > >                     -Alex
+>> > >
+>> > >
+>> > In that case, maybe adding a "WQ_FREEZABLE" flag might help?
+>> 
+>> Yes, exactly.  But how does that affect whatever you were
+>> trying to do with your patch?
+>> 
 > 
-> page->index should tell us if the workload is random or sequential, however
-> still not easy to decide how many pages there will be in the next bio
-> when iomap->length is large.
-
-page->index doesn't tell us anything about what type of IO is being
-done - it just tells us where in the file we need to map to find the
-physical block we need to write it to. OTOH, the iomap writeback
-context contains all the information about current IO being build -
-offset, size, current bio, etc - and the page->index gets compared
-against the state in the iomap writepage context.
-
-So, if the wpc->iomap.length is large, current page->index does not
-map sequentially to the end of wpc->ioend->io_bio (or
-wpc->io_end->io_offset + wpc->ioend->io_size) and
-wpc->io_end->io_size == page_size(page) for the currently held bio,
-then we are clearly doing random single page writeback into a large
-allocated extent. Hence in that case we can do small bvec
-allocations for the new bio.
-
-Sure, the first bio in a ->writepages invocation doesn't have this
-information, so we've going to have to assume BIO_MAX_PAGES for the
-first bio. But for every bio after that in the ->writepages
-invocation we have the state of the previous contiguous writeback
-range held in the wpc structure and can use that info to optimise
-the thousands of random single pages that are written after then
-first one...
-
-Cheers,
-
-Dave.
--- 
-Dave Chinner
-david@fromorbit.com
+> I don't see any impact on Rishabh's change in particular, syntactically
+> it would just be a matter of adding another flag and the impact would 
+> be
+> separate from his patch.
+> 
+> In other words, creating a separate work queue to get the long running
+> work off the system_wq and making sure that these doesn't run during
+> suspend & resume seems very reasonable to me.
+> 
+> The one piece that I'm still contemplating is the HIPRIO, I would like
+> to better understand the actual impact - or perhaps is this a result of
+> everyone downstream moving all their work to HIPRIO work queues,
+> starving the recovery?
+> 
+Hi Bjorn,
+You are right, this is a result of downstream having HIPRIO workqueues
+therefore starving recovery. I don't have actual data to support the 
+flag
+as of now. If needed for now we can skip this flag and add it later with
+sufficient data?
+> Regards,
+> Bjorn
