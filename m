@@ -2,119 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 246292EEC03
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 04:50:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DA632EEC08
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 04:53:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726890AbhAHDt2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 22:49:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40422 "EHLO
+        id S1726789AbhAHDxF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 22:53:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40986 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725965AbhAHDt0 (ORCPT
+        with ESMTP id S1726474AbhAHDxF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 22:49:26 -0500
-Received: from mail-pl1-x62e.google.com (mail-pl1-x62e.google.com [IPv6:2607:f8b0:4864:20::62e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89B50C0612F4;
-        Thu,  7 Jan 2021 19:48:46 -0800 (PST)
-Received: by mail-pl1-x62e.google.com with SMTP id t6so4992871plq.1;
-        Thu, 07 Jan 2021 19:48:46 -0800 (PST)
+        Thu, 7 Jan 2021 22:53:05 -0500
+Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E25B9C0612F4
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Jan 2021 19:52:24 -0800 (PST)
+Received: by mail-pg1-x529.google.com with SMTP id c22so6767069pgg.13
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Jan 2021 19:52:24 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=pvFJBy06CLz3+t4PqJc62iFp4e7lY1y9gXn28qJswE4=;
-        b=H4e7W7/jBppjt29pWS9EOOptTbmFaGg3EJpqr1ISOxtqkA5hrOj5eWjS6Y9b8Uzv0a
-         PljjkLdumX6b3D5+oLzvdS1CAzmDevN2bvVJfp6w9f8EHFhwvR7Ra6cL5NydOoNJdle9
-         YS2J2qPYZerQjJ0vPlZziA0zwa/iEP8GPuglhZUaR7nKP13ieai9Kr803MhIYHhPCsVU
-         vz6oUGjVQ/yFYKmHCUCJxZd+gINoWyaB9vSihX6A013YOZ7VElpIiPiqYfgurZcl60HZ
-         MVX7fSVDmovetAG5yKQ45fRkbbvUvnwoU0aBe0lUv+j4KqAIZmrlchKMKksyJ1tQgd2Y
-         QGcw==
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=HiGLLfAjEAR8On+QKrY3j3HfRNusrkUwxaBKD2WhMIY=;
+        b=nhj/PEcH3hPyhteiZrCIGv25mArSLWZVLSTZIxhYkKZSbus/kbnaWPpxjE426s0GoV
+         HoeSVKw1dD5JH+mG0ZTb5XgeBNe4k2yuQrXrWDhygYlmX9fODeRS4Dl8y3bFMRxgEfIC
+         5VYbyjQrpCkn8wSUDNs/sfLQEmZV1xcqfcIio23kUS1PJMZ7+zOCtMO71wdIlU0lRFF4
+         4U0bHPsopTWTWiGuPwRXYUEDUNLuWtQ9QRl+72cBhYg8i4opH6dj380UGOYZZWcmqV5A
+         siDO/BmzDv8rEFGnsKlPfG+l7Mxrq5eHMjJV+AXtDCl2d+hWC6FKeGmjV2C1C6u/dHgw
+         Wssg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=pvFJBy06CLz3+t4PqJc62iFp4e7lY1y9gXn28qJswE4=;
-        b=WML/h3WqQiHr5ud0//5+2y0VWN7MZzbq9x0qjM8mN4pSKCVI8wmu097Wz9gQVcJQ/L
-         YOXmOa1fL6hN6934OF2XL9RVXWm23nFQTpkXB2XrQdldsAXch8qf/Erv6XahdyX2uLjC
-         l4rh19gqgnK9bnj14wytVsUNVHvCAOJDkvlyxHAAJUKGG4YKkGdLLycP7CawX+N0Q66d
-         1PvZMNOkGzeCKP/AH4VBfNw+b9WEOv0j6YS5IWxB7QQh4C0BX4gAYxIBDekIxPUxXudA
-         p7zfjFRL686yCbf31wuoTaLyUUrvfY4qXc99nDc/S1r1slH/vSweiM6o5lBJ4H03SKhL
-         kHdw==
-X-Gm-Message-State: AOAM532st6hmd9CmUOamCDb+REXAgwOLLELnyTccIJXyx7n8GtUg+3k6
-        ig7orLWLpl4dunCxeC8F1xI=
-X-Google-Smtp-Source: ABdhPJzamCNlkOjHaM4E4P/X1nySTrEpI7Nd5nS7fK80jAWW++uws3uB1b+uFqI4FDVD7Y+3hqMDRg==
-X-Received: by 2002:a17:90a:6f01:: with SMTP id d1mr1668731pjk.155.1610077726066;
-        Thu, 07 Jan 2021 19:48:46 -0800 (PST)
-Received: from localhost ([2409:10:2e40:5100:6e29:95ff:fe2d:8f34])
-        by smtp.gmail.com with ESMTPSA id v10sm3253257pjr.47.2021.01.07.19.48.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 Jan 2021 19:48:44 -0800 (PST)
-Date:   Fri, 8 Jan 2021 12:48:42 +0900
-From:   Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
-To:     Vineet Gupta <vgupta@synopsys.com>
-Cc:     Petr Mladek <pmladek@suse.com>,
-        John Ogness <john.ogness@linutronix.de>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Shreyas Joshi <shreyas.joshi@biamp.com>,
-        shreyasjoshi15@gmail.com,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
-        linux-kernel@vger.kernel.org, buildroot@busybox.net,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        linux-arch@vger.kernel.org,
-        arcml <linux-snps-arc@lists.infradead.org>
-Subject: Re: ARC no console output (was Re: [PATCH 1/2] init/console: Use
- ttynull as a fallback when there is no console)
-Message-ID: <X/fWGjYI5LapMdGW@jagdpanzerIV.localdomain>
-References: <20201111135450.11214-1-pmladek@suse.com>
- <20201111135450.11214-2-pmladek@suse.com>
- <d2a3b3c0-e548-7dd1-730f-59bc5c04e191@synopsys.com>
- <8735zdm86m.fsf@jogness.linutronix.de>
- <50ade852-c598-6476-1f4b-9a3f8d11d143@synopsys.com>
- <X/c/ONCYz2QQdvOP@alley>
- <466644f5-bed7-caef-9fcd-e66208f65545@synopsys.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=HiGLLfAjEAR8On+QKrY3j3HfRNusrkUwxaBKD2WhMIY=;
+        b=S5Nvy1soB9NSis1pkGvHkzRRin8iL/JL/1pYrBRF/0cAgga4pRJQITWbYtWx4CSaHk
+         IIdPSEc9lpFBrpaBzJ23PMvCQAZHCaw8BiGx+d/ukn77A6mIwdIQvkhbzVdx/nxA0Lqg
+         /LJQx8GCQlWhI3FlXYgqNXIGMLK47/F4yCyIaAhPfzwWyBK5YNdBZXKay3Okh/aOIWgK
+         xWoohiLX8CmPs4S2S7LYna9lUcNqH32RU6ubhyZbB6ckVc2wK5vyH5e9gAEnJO4us5YM
+         f99sCIp7YwnVq64hDoNbpk36G0v7H2AnHtunkE1S4NtJ0kW/aAvfJZufRzkf3F8qhN95
+         I1vQ==
+X-Gm-Message-State: AOAM533ad1wNMh3l/BQVJ76zvztWYF7C0eKg7VY7gDe2u/NoxM3tKkRe
+        GWXL2RPnYkJzdurA1/Uq7/n68/VDnk7Xjw==
+X-Google-Smtp-Source: ABdhPJykzR/yNkFwQof7rEfk4PolELnvPOEL9jCEBYC2w5Vd/AKL2rEYYJapcEWygpxrhJCVX0tm+A==
+X-Received: by 2002:a63:174f:: with SMTP id 15mr5064327pgx.49.1610077944403;
+        Thu, 07 Jan 2021 19:52:24 -0800 (PST)
+Received: from [192.168.1.134] ([66.219.217.173])
+        by smtp.gmail.com with ESMTPSA id b10sm7796209pgh.15.2021.01.07.19.52.23
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 07 Jan 2021 19:52:23 -0800 (PST)
+Subject: Re: [PATCH] fs: process fput task_work with TWA_SIGNAL
+To:     Doug Anderson <dianders@chromium.org>
+Cc:     linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Song Liu <songliubraving@fb.com>
+References: <d6ddf6c2-3789-2e10-ba71-668cba03eb35@kernel.dk>
+ <CAD=FV=WJzNEf+=H2_Eyz3HRnv+0hW5swikg=hFMkHxGb569Bpw@mail.gmail.com>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <6fdffaf6-2a40-da4f-217d-157f163111cb@kernel.dk>
+Date:   Thu, 7 Jan 2021 20:52:22 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <466644f5-bed7-caef-9fcd-e66208f65545@synopsys.com>
+In-Reply-To: <CAD=FV=WJzNEf+=H2_Eyz3HRnv+0hW5swikg=hFMkHxGb569Bpw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On (21/01/07 09:58), Vineet Gupta wrote:
-> On 1/7/21 9:04 AM, Petr Mladek wrote:
-> > On Thu 2021-01-07 08:43:16, Vineet Gupta wrote:
-> > > Hi John,
-> > > 
-> > > On 1/7/21 1:02 AM, John Ogness wrote:
-> > > > Hi Vineet,
-> > > > 
-> > > > On 2021-01-06, Vineet Gupta <vgupta@synopsys.com> wrote:
-> > > > > This breaks ARC booting (no output on console).
-> > > > 
-> > > > Could you provide the kernel boot arguments that you use? This series is
-> > > > partly about addressing users that have used boot arguments that are
-> > > > technically incorrect (even if had worked). Seeing the boot arguments of
-> > > > users that are not experiencing problems may help to reveal some of the
-> > > > unusual console usages until now.
-> > > 
-> > > 
-> > > Kernel command line: earlycon=uart8250,mmio32,0xf0005000,115200n8
-> > > console=ttyS0,115200n8 debug print-fatal-signals=1
-> > 
-> > This is strange, the problematic patch should use ttynull
-> > only as a fallback. It should not be used when a particular console
-> > is defined on the command line.
+On 1/7/21 3:17 PM, Doug Anderson wrote:
+> Hi,
 > 
-> What happens in my case is console_on_rootfs() doesn't find /dev/console and
-> switching to ttynull. /dev is not present because devtmpfs doesn't automount
-> for initramfs.
+> On Tue, Jan 5, 2021 at 10:30 AM Jens Axboe <axboe@kernel.dk> wrote:
+>>
+>> Song reported a boot regression in a kvm image with 5.11-rc, and bisected
+>> it down to the below patch. Debugging this issue, turns out that the boot
+>> stalled when a task is waiting on a pipe being released. As we no longer
+>> run task_work from get_signal() unless it's queued with TWA_SIGNAL, the
+>> task goes idle without running the task_work. This prevents ->release()
+>> from being called on the pipe, which another boot task is waiting on.
+>>
+>> Use TWA_SIGNAL for the file fput work to ensure it's run before the task
+>> goes idle.
+>>
+>> Fixes: 98b89b649fce ("signal: kill JOBCTL_TASK_WORK")
+>> Reported-by: Song Liu <songliubraving@fb.com>
+>> Signed-off-by: Jens Axboe <axboe@kernel.dk>
+> 
+> I just spend a bit of time bisecting and landed on commit 98b89b649fce
+> ("signal: kill JOBCTL_TASK_WORK") causing my failure to bootup
+> mainline.  Your patch fixes my problem.  I haven't done any analysis
+> of the code--just testing, thus:
+> 
+> Tested-by: Douglas Anderson <dianders@chromium.org>
 
-I wonder if we'll move the nulltty fallback logic into printk code [1]
-will it fix the problem?
+Thanks, adding your Tested-by.
 
-[1] https://lore.kernel.org/lkml/X6x%2FAxD1qanC6evJ@jagdpanzerIV.localdomain/
+-- 
+Jens Axboe
 
-	-ss
