@@ -2,132 +2,215 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D24A82EEE44
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 09:03:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D032B2EEE3C
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 09:01:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727678AbhAHIBR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Jan 2021 03:01:17 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:48859 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727566AbhAHIBM (ORCPT
+        id S1727536AbhAHIA7 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 8 Jan 2021 03:00:59 -0500
+Received: from rtits2.realtek.com ([211.75.126.72]:47103 "EHLO
+        rtits2.realtek.com.tw" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727265AbhAHIA7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Jan 2021 03:01:12 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1610092785;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=t2Uqdb9txLxEPVkApRsygTFUuNyR++VCv2wK5tWRd0Q=;
-        b=XhOupzEYT/d4yG4GJaISeW4PeOg3eZIHybGr4q77Bl18cS/4ZRNGnXS8fM6aDpnLtpZlNn
-        OYKtyJlQZfekY+UU6jWJeI31bo+PlllZ6B46Al1ga4A8i0/GDX7i1lw1r4xSsEUd5Uy1Yr
-        yQJRr6PynPf6xYJ/8DecmqbHQ9WHVTU=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-515-FVuK9KCNNw61Br6hOlN66Q-1; Fri, 08 Jan 2021 02:59:40 -0500
-X-MC-Unique: FVuK9KCNNw61Br6hOlN66Q-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C2A8418C9F40;
-        Fri,  8 Jan 2021 07:59:38 +0000 (UTC)
-Received: from T590 (ovpn-13-115.pek2.redhat.com [10.72.13.115])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id A8EA060C17;
-        Fri,  8 Jan 2021 07:59:28 +0000 (UTC)
-Date:   Fri, 8 Jan 2021 15:59:22 +0800
-From:   Ming Lei <ming.lei@redhat.com>
-To:     Dave Chinner <david@fromorbit.com>
-Cc:     Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>,
-        linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        "Darrick J . Wong" <darrick.wong@oracle.com>,
-        linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Subject: Re: [RFC PATCH] fs: block_dev: compute nr_vecs hint for improving
- writeback bvecs allocation
-Message-ID: <20210108075922.GB3982620@T590>
-References: <20210105132647.3818503-1-ming.lei@redhat.com>
- <20210105183938.GA3878@lst.de>
- <20210106084548.GA3845805@T590>
- <20210106222111.GE331610@dread.disaster.area>
+        Fri, 8 Jan 2021 03:00:59 -0500
+Authenticated-By: 
+X-SpamFilter-By: ArmorX SpamTrap 5.73 with qID 1087xlwJ7020174, This message is accepted by code: ctloc85258
+Received: from mail.realtek.com (rtexmbs03.realtek.com.tw[172.21.6.96])
+        by rtits2.realtek.com.tw (8.15.2/2.70/5.88) with ESMTPS id 1087xlwJ7020174
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Fri, 8 Jan 2021 15:59:47 +0800
+Received: from RTEXMBS03.realtek.com.tw (172.21.6.96) by
+ RTEXMBS03.realtek.com.tw (172.21.6.96) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Fri, 8 Jan 2021 15:59:46 +0800
+Received: from RTEXMBS03.realtek.com.tw ([fe80::d4dd:5c6:e3c2:8a2f]) by
+ RTEXMBS03.realtek.com.tw ([fe80::d4dd:5c6:e3c2:8a2f%2]) with mapi id
+ 15.01.2106.006; Fri, 8 Jan 2021 15:59:46 +0800
+From:   Max Chou <max.chou@realtek.com>
+To:     "marcel@holtmann.org" <marcel@holtmann.org>,
+        "johan.hedberg@gmail.com" <johan.hedberg@gmail.com>,
+        "luiz.dentz@gmail.com" <luiz.dentz@gmail.com>,
+        "matthias.bgg@gmail.com" <matthias.bgg@gmail.com>
+CC:     "linux-bluetooth@vger.kernel.org" <linux-bluetooth@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-mediatek@lists.infradead.org" 
+        <linux-mediatek@lists.infradead.org>,
+        "alex_lu@realsil.com.cn" <alex_lu@realsil.com.cn>,
+        Hilda Wu <hildawu@realtek.com>, KidmanLee <kidman@realtek.com>,
+        "abhishekpandit@chromium.org" <abhishekpandit@chromium.org>
+Subject: RE: [PATCH] Bluetooth: btusb: Add a Kconfig option to disable USB wakeup by default
+Thread-Topic: [PATCH] Bluetooth: btusb: Add a Kconfig option to disable USB
+ wakeup by default
+Thread-Index: AQHW3nio3fON8c/V1E6p96jd8CAkbaodakyw
+Date:   Fri, 8 Jan 2021 07:59:46 +0000
+Message-ID: <dbef7b41f00a406293c57f561082b9df@realtek.com>
+References: <20201230065441.1179-1-max.chou@realtek.com>
+In-Reply-To: <20201230065441.1179-1-max.chou@realtek.com>
+Accept-Language: zh-TW, en-US
+Content-Language: zh-TW
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [172.21.132.163]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210106222111.GE331610@dread.disaster.area>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 07, 2021 at 09:21:11AM +1100, Dave Chinner wrote:
-> On Wed, Jan 06, 2021 at 04:45:48PM +0800, Ming Lei wrote:
-> > On Tue, Jan 05, 2021 at 07:39:38PM +0100, Christoph Hellwig wrote:
-> > > At least for iomap I think this is the wrong approach.  Between the
-> > > iomap and writeback_control we know the maximum size of the writeback
-> > > request and can just use that.
-> > 
-> > I think writeback_control can tell us nothing about max pages in single
-> > bio:
-> 
-> By definition, the iomap tells us exactly how big the IO is going to
-> be. i.e. an iomap spans a single contiguous range that we are going
-> to issue IO on. Hence we can use that to size the bio exactly
-> right for direct IO.
-
-When I trace wpc->iomap.length in iomap_add_to_ioend() on the following fio
-randwrite/write, the length is 1GB most of times, maybe because it is
-one fresh XFS.
-
-fio --size=1G --bsrange=4k-4k --runtime=30 --numjobs=2 --ioengine=psync --iodepth=32 \
-	--directory=$DIR --group_reporting=1 --unlink=0 --direct=0 --fsync=0 --name=f1 \
-	--stonewall --rw=$RW
-sync
-
-Another reason is that pages in the range may be contiguous physically,
-so lots of pages may share one single bvec.
-
-> 
-> > - wbc->nr_to_write controls how many pages to writeback, this pages
-> >   usually don't belong to same bio. Also this number is often much
-> >   bigger than BIO_MAX_PAGES.
-> > 
-> > - wbc->range_start/range_end is similar too, which is often much more
-> >   bigger than BIO_MAX_PAGES.
-> > 
-> > Also page/blocks_in_page can be mapped to different extent too, which is
-> > only available when wpc->ops->map_blocks() is returned,
-> 
-> We only allocate the bio -after- calling ->map_blocks() to obtain
-> the iomap for the given writeback range request. Hence we
-> already know how large the BIO could be before we allocate it.
-> 
-> > which looks not
-> > different with mpage_writepages(), in which bio is allocated with
-> > BIO_MAX_PAGES vecs too.
-> 
-> __mpage_writepage() only maps a page at a time, so it can't tell
-> ahead of time how big the bio is going to need to be as it doesn't
-> return/cache a contiguous extent range. So it's actually very
-> different to the iomap writeback code, and effectively does require
-> a BIO_MAX_PAGES vecs allocation all the time...
-> 
-> > Or you mean we can use iomap->length for this purpose? But iomap->length
-> > still is still too big in case of xfs.
-> 
-> if we are doing small random writeback into large extents (i.e.
-> iomap->length is large), then it is trivial to detect that we are
-> doing random writes rather than sequential writes by checking if the
-> current page is sequential to the last sector in the current bio.
-> We already do this non-sequential IO checking to determine if a new
-> bio needs to be allocated in iomap_can_add_to_ioend(), and we also
-> know how large the current contiguous range mapped into the current
-> bio chain is (ioend->io_size). Hence we've got everything we need to
-> determine whether we should do a large or small bio vec allocation
-> in the iomap writeback path...
-
-page->index should tell us if the workload is random or sequential, however
-still not easy to decide how many pages there will be in the next bio
-when iomap->length is large.
+// add Abhishek to CC list
 
 
-Thanks,
-Ming
+
+BRs,
+Max
+
+-----Original Message-----
+From: Max Chou <max.chou@realtek.com> 
+Sent: Wednesday, December 30, 2020 2:55 PM
+To: marcel@holtmann.org; johan.hedberg@gmail.com; luiz.dentz@gmail.com; matthias.bgg@gmail.com
+Cc: linux-bluetooth@vger.kernel.org; linux-kernel@vger.kernel.org; linux-arm-kernel@lists.infradead.org; linux-mediatek@lists.infradead.org; alex_lu@realsil.com.cn; Hilda Wu <hildawu@realtek.com>; KidmanLee <kidman@realtek.com>; Max Chou <max.chou@realtek.com>
+Subject: [PATCH] Bluetooth: btusb: Add a Kconfig option to disable USB wakeup by default
+
+From: Max Chou <max.chou@realtek.com>
+
+For the original commit of 9e45524a011107a73bc2cdde8370c61e82e93a4d,
+wakeup is always disabled for Realtek Bluetooth devices.
+However, there's the capability for Realtek Bluetooth devices to apply USB wakeup. Otherwise, there's the better power consumption without USB wakeup during suspending.
+In this commit, divide the original commit into two parts.
+1. Redefine the feature that Realtek devices should be enabled wakeup on auto-suspend as BTUSB_WAKEUP_AUTOSUSPEND.
+2. Add a Kconfig option to switch disable_wakeup for Bluetooth USB devices by default as CONFIG_BT_HCIBTUSB_DISABLEWAKEUP.
+
+Signed-off-by: Max Chou <max.chou@realtek.com>
+---
+ drivers/bluetooth/Kconfig | 11 +++++++++++  drivers/bluetooth/btusb.c | 41 ++++++++++++++++++++++++++-------------
+ 2 files changed, 38 insertions(+), 14 deletions(-)
+
+diff --git a/drivers/bluetooth/Kconfig b/drivers/bluetooth/Kconfig index 4e73a531b377..7af10897a248 100644
+--- a/drivers/bluetooth/Kconfig
++++ b/drivers/bluetooth/Kconfig
+@@ -41,6 +41,17 @@ config BT_HCIBTUSB_AUTOSUSPEND
+ 	  This can be overridden by passing btusb.enable_autosuspend=[y|n]
+ 	  on the kernel commandline.
+ 
++config BT_HCIBTUSB_DISABLEWAKEUP
++	bool "Disable USB wakeup for Bluetooth USB devices by default"
++	depends on BT_HCIBTUSB
++	default n
++	help
++	  Say Y here to disable USB wakeup for Bluetooth USB devices by
++	  default.
++
++	  This can be overridden by passing btusb.disable_wakeup=[y|n]
++	  on the kernel commandline.
++
+ config BT_HCIBTUSB_BCM
+ 	bool "Broadcom protocol support"
+ 	depends on BT_HCIBTUSB
+diff --git a/drivers/bluetooth/btusb.c b/drivers/bluetooth/btusb.c index b630a1d54c02..5f55111849b5 100644
+--- a/drivers/bluetooth/btusb.c
++++ b/drivers/bluetooth/btusb.c
+@@ -30,6 +30,7 @@
+ static bool disable_scofix;
+ static bool force_scofix;
+ static bool enable_autosuspend = IS_ENABLED(CONFIG_BT_HCIBTUSB_AUTOSUSPEND);
++static bool disable_wakeup = 
++IS_ENABLED(CONFIG_BT_HCIBTUSB_DISABLEWAKEUP);
+ 
+ static bool reset = true;
+ 
+@@ -505,7 +506,7 @@ static const struct dmi_system_id btusb_needs_reset_resume_table[] = {
+ #define BTUSB_OOB_WAKE_ENABLED	11
+ #define BTUSB_HW_RESET_ACTIVE	12
+ #define BTUSB_TX_WAIT_VND_EVT	13
+-#define BTUSB_WAKEUP_DISABLE	14
++#define BTUSB_WAKEUP_AUTOSUSPEND	14
+ 
+ struct btusb_data {
+ 	struct hci_dev       *hdev;
+@@ -1330,7 +1331,7 @@ static int btusb_open(struct hci_dev *hdev)
+ 	 * For Realtek chips, global suspend without
+ 	 * SET_FEATURE (DEVICE_REMOTE_WAKEUP) can save more power in device.
+ 	 */
+-	if (test_bit(BTUSB_WAKEUP_DISABLE, &data->flags))
++	if (disable_wakeup)
+ 		device_wakeup_disable(&data->udev->dev);
+ 
+ 	if (test_and_set_bit(BTUSB_INTR_RUNNING, &data->flags)) @@ -1399,7 +1400,7 @@ static int btusb_close(struct hci_dev *hdev)
+ 	data->intf->needs_remote_wakeup = 0;
+ 
+ 	/* Enable remote wake up for auto-suspend */
+-	if (test_bit(BTUSB_WAKEUP_DISABLE, &data->flags))
++	if (test_bit(BTUSB_WAKEUP_AUTOSUSPEND, &data->flags))
+ 		data->intf->needs_remote_wakeup = 1;
+ 
+ 	usb_autopm_put_interface(data->intf);
+@@ -4257,7 +4258,7 @@ static bool btusb_prevent_wake(struct hci_dev *hdev)  {
+ 	struct btusb_data *data = hci_get_drvdata(hdev);
+ 
+-	if (test_bit(BTUSB_WAKEUP_DISABLE, &data->flags))
++	if (disable_wakeup)
+ 		return true;
+ 
+ 	return !device_may_wakeup(&data->udev->dev);
+@@ -4557,11 +4558,8 @@ static int btusb_probe(struct usb_interface *intf,
+ 		hdev->shutdown = btrtl_shutdown_realtek;
+ 		hdev->cmd_timeout = btusb_rtl_cmd_timeout;
+ 
+-		/* Realtek devices lose their updated firmware over global
+-		 * suspend that means host doesn't send SET_FEATURE
+-		 * (DEVICE_REMOTE_WAKEUP)
+-		 */
+-		set_bit(BTUSB_WAKEUP_DISABLE, &data->flags);
++		/* Realtek devices need to set USB remote wakeup on auto-suspend */
++		set_bit(BTUSB_WAKEUP_AUTOSUSPEND, &data->flags);
+ 	}
+ 
+ 	if (!reset)
+@@ -4731,17 +4729,29 @@ static int btusb_suspend(struct usb_interface *intf, pm_message_t message)
+ 		enable_irq(data->oob_wake_irq);
+ 	}
+ 
+-	/* For global suspend, Realtek devices lose the loaded fw
+-	 * in them. But for autosuspend, firmware should remain.
++	/* For suspend(S3), Realtek devices lose the loaded fw
++	 * if USB wakeup is disabled.
++	 * It can meet better power consumption.
++	 * Otherwise, the fw is alive if USB wakeup is enabled.
++	 * It's able to wake Host up by the paired devices.
++	 * Note that disable_wakeup should be false,
++	 * and device_may_wakeup() should return true.
++	 *
++	 * For autosuspend, firmware should remain.
+ 	 * Actually, it depends on whether the usb host sends
+ 	 * set feature (enable wakeup) or not.
+ 	 */
+-	if (test_bit(BTUSB_WAKEUP_DISABLE, &data->flags)) {
++	if (test_bit(BTUSB_WAKEUP_AUTOSUSPEND, &data->flags)) {
+ 		if (PMSG_IS_AUTO(message) &&
+ 		    device_can_wakeup(&data->udev->dev))
+ 			data->udev->do_remote_wakeup = 1;
+-		else if (!PMSG_IS_AUTO(message))
+-			data->udev->reset_resume = 1;
++		else if (!PMSG_IS_AUTO(message)) {
++			if (disable_wakeup ||
++			    !device_may_wakeup(&data->udev->dev)) {
++				data->udev->do_remote_wakeup = 0;
++				data->udev->reset_resume = 1;
++			}
++		}
+ 	}
+ 
+ 	return 0;
+@@ -4865,6 +4875,9 @@ MODULE_PARM_DESC(force_scofix, "Force fixup of wrong SCO buffers size");  module_param(enable_autosuspend, bool, 0644);  MODULE_PARM_DESC(enable_autosuspend, "Enable USB autosuspend by default");
+ 
++module_param(disable_wakeup, bool, 0644); 
++MODULE_PARM_DESC(disable_wakeup, "Disable USB wakeup by default");
++
+ module_param(reset, bool, 0644);
+ MODULE_PARM_DESC(reset, "Send HCI reset command on initialization");
+ 
+--
+2.17.1
 
