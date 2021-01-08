@@ -2,172 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 95A122EFB62
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 23:52:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E56592EFB67
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 23:52:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726364AbhAHWuQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Jan 2021 17:50:16 -0500
-Received: from hostingweb31-40.netsons.net ([89.40.174.40]:54181 "EHLO
-        hostingweb31-40.netsons.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725813AbhAHWuP (ORCPT
+        id S1726249AbhAHWvd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Jan 2021 17:51:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48378 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725792AbhAHWvd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Jan 2021 17:50:15 -0500
-Received: from [77.244.183.192] (port=64830 helo=[192.168.178.24])
-        by hostingweb31.netsons.net with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <luca@lucaceresoli.net>)
-        id 1ky0ZY-00DrM1-Gb; Fri, 08 Jan 2021 23:49:32 +0100
-Subject: Re: [RFC 2/2] clk: vc5: Add support for optional load capacitance
-To:     Adam Ford <aford173@gmail.com>, linux-clk@vger.kernel.org
-Cc:     aford@beaconembedded.com,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20210106173900.388758-1-aford173@gmail.com>
- <20210106173900.388758-2-aford173@gmail.com>
-From:   Luca Ceresoli <luca@lucaceresoli.net>
-Message-ID: <c5a97aca-ce74-bbd3-e99d-358e079c4c4a@lucaceresoli.net>
-Date:   Fri, 8 Jan 2021 23:49:32 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Fri, 8 Jan 2021 17:51:33 -0500
+Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89C08C061574;
+        Fri,  8 Jan 2021 14:50:52 -0800 (PST)
+Received: by mail-wr1-x434.google.com with SMTP id t30so10446629wrb.0;
+        Fri, 08 Jan 2021 14:50:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=vHMGewOKbQWHQFGRFUDVMlrfBQIw1GErq0N8ygK7hTc=;
+        b=mRMIFrbcuLGC7NdTdfKN26wVTSg1919Asj+k77GR+JpCwBoD2ZJzgkbC/5hm2A0ZvE
+         k0rD6jqznc6EsSCaAHhucYkIUTRIbjdjKxHiip9KoXI5oaz1qbIiqDjQRwVUDz9UhVZR
+         e88fiuV/agsha5LRduRTfmm5RogH9NslCQIA92yzeNEipCFMxDfTFdytp9wdv5r1nzEa
+         7zMidyyaoF+8QaYV6Gj3iMMToiQg6NdNFW1wRvniY2Osm3IgJKYVfysEtCx5SjcPO05k
+         +Z7nuJiMM0gRVrtWbg4x2Jw5Jyy5tOOnF++VeekUEvRujkheL3YOLCOWXn8QegZADPUU
+         +/5w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=vHMGewOKbQWHQFGRFUDVMlrfBQIw1GErq0N8ygK7hTc=;
+        b=bDiZsbluGnjWTGKAnaB5Csn+O/+37VJ9SRlYUWQXd1D4gwjoixDlsty1AU8TrOwD6M
+         ILHBPDHs4TofdiSzsFUWqY34IRR3qm36Cff953tS4v4VVsrZFkJwKq1G2a5jlPUJirjg
+         NnKhPCsePr0TgNMaRXfbkWdNDT5hr5TP4i/P17VIsFPljk+L4nuR/yxyxzRTgEi0/5Fi
+         7VbEAGtgoVB2WebL8GdqHLNQtKlfR8FQbYWQbCGAz9kl+z0mRQX9J1teB7qxJ+419Nbo
+         tKlordzP53W/LLAHdPIlpQJ5U7A7jT8DGCmS2E19bIne7/SiDxqNvtaDeUKcF0eWCZHP
+         X2RQ==
+X-Gm-Message-State: AOAM530URKkQOaPoGam4VP0UMxD/3pX+cIDZ0ORm3//HyPvRQ/TbJkSC
+        7DBGYng6HyaQiyHTyR0ty74=
+X-Google-Smtp-Source: ABdhPJzQuHTeXjaaQXYaSDgw0y+xPieV0Q/1jOYZb2k2rTdizEdUsC53mkkXNLET6zhwKL8igJ4UtQ==
+X-Received: by 2002:a5d:5917:: with SMTP id v23mr5839464wrd.308.1610146251279;
+        Fri, 08 Jan 2021 14:50:51 -0800 (PST)
+Received: from adgra-XPS-15-9570.home (2a01cb0008bd270094076597458eade1.ipv6.abo.wanadoo.fr. [2a01:cb00:8bd:2700:9407:6597:458e:ade1])
+        by smtp.gmail.com with ESMTPSA id o23sm15900644wro.57.2021.01.08.14.50.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 08 Jan 2021 14:50:50 -0800 (PST)
+From:   Adrien Grassein <adrien.grassein@gmail.com>
+Cc:     broonie@kernel.org, jagan@amarulasolutions.com,
+        lgirdwood@gmail.com, robh+dt@kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        Adrien Grassein <adrien.grassein@gmail.com>
+Subject: [PATCH v3 0/6] Fix issues on pf8x00 driver
+Date:   Fri,  8 Jan 2021 23:50:00 +0100
+Message-Id: <20210108225006.153700-1-adrien.grassein@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <20210106173900.388758-2-aford173@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: it-IT
-Content-Transfer-Encoding: 7bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - hostingweb31.netsons.net
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - lucaceresoli.net
-X-Get-Message-Sender-Via: hostingweb31.netsons.net: authenticated_id: luca@lucaceresoli.net
-X-Authenticated-Sender: hostingweb31.netsons.net: luca@lucaceresoli.net
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
+Content-Transfer-Encoding: 8bit
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Adam,
+Hello,
 
-On 06/01/21 18:39, Adam Ford wrote:
-> There are two registers which can set the load capacitance for
-> XTAL1 and XTAL2. These are optional registers when using an
-> external crystal.  Parse the device tree and set the
-> corresponding registers accordingly.
+this patch set aims is to fix some issues contains in the pf8x00 driver.
+Some issues are documentation ones, some others are in code.
 
-No need to repeat the first 2 sentences, they are already in patch 1.
+These issues where found while developing another version of the same
+driver. I prefer to share with you the patch for it.
 
-> 
-> Signed-off-by: Adam Ford <aford173@gmail.com>
-> ---
->  drivers/clk/clk-versaclock5.c | 64 +++++++++++++++++++++++++++++++++++
->  1 file changed, 64 insertions(+)
-> 
-> diff --git a/drivers/clk/clk-versaclock5.c b/drivers/clk/clk-versaclock5.c
-> index 43db67337bc0..445abc3731fb 100644
-> --- a/drivers/clk/clk-versaclock5.c
-> +++ b/drivers/clk/clk-versaclock5.c
-> @@ -759,6 +759,63 @@ static int vc5_update_power(struct device_node *np_output,
->  	return 0;
->  }
->  
-> +static int vc5_map_cap_value(u32 femtofarads)
-> +{
-> +	int mapped_value;
-> +
-> +	/* The datasheet explicitly states 9000 - 25000 */
-> +	if ((femtofarads < 9000) || (femtofarads > 25000))
-> +		return -EINVAL;
-> +
-> +	/* The lowest target we can hit is 9430, so exit if it's less */
-> +	if (femtofarads < 9430)
-> +		return 0;
-> +
-> +	/*
-> +	 * According to VersaClock 6E Programming Guide, there are 6
-> +	 * bits which translate to 64 entries in XTAL registers 12 and
-> +	 * 13. Because bits 0 and 1 increase the capacitance the
-> +	 * same, some of the values can be repeated.  Plugging this
-> +	 * into a spreadsheet and generating a trendline, the output
-> +	 * equation becomes x = (y-9098.29) / 216.44, where 'y' is
-> +	 * the desired capacitance in femtofarads, and x is the value
-> +	 * of XTAL[5:0].
-> +	 * To help with rounding, do fixed point math
-> +	 */
-> +	femtofarads *= 100;
-> +	mapped_value = (femtofarads - 909829) / 21644;
+I do these patches on the master branch of the linux-next repository.
 
-Thanks for the extensive comment, but I am confused. Not by your code
-which is very clean and readable, but by the chip documentation
-(disclaimer: I haven't read it in full depth).
+1: there is a missing documentation when we build the driver as a
+module.
 
-The 5P49V6965 datasheet at page 17 clearly states capacitance can be
-increased in 0.5 pF steps. The "VersaClock 6E Family Register
-Descriptions and Programming Guide" at page 18 shows a table that allows
-0.43 pF. Can you clarify how the thing works?
+2: nxp,phase-shift documentation was not optimal.
 
-> +
-> +	/*
-> +	 * The datasheet states, the maximum capacitance is 25000,
-> +	 * but the programmer guide shows a max value is 22832,
-> +	 * so values higher values could overflow, so cap it.
-> +	 */
+3: nxp,ilim-ma is useless since another property does (nearly) the same.
 
-The 22832 limit is if you assume 0.43 pF steps. Assuming 0.5 pF steps
-leads to 25000. Now I am more confused than before.
+4: Same than 4, in driver code.
 
-> +	mapped_value = max(mapped_value/100, 0x3f);
+5: It's better to use a linear_range to describe the voltage of bucks.
 
-Uhm, min()?
+6: Fix several mistakes in the handle of nxp,phase-shift property.
 
-> +
-> +	return mapped_value;
-> +}
-> +static int vc5_update_cap_load(struct device_node *node, struct vc5_driver_data *vc5)
-> +{
-> +	u32 value, mapped_value;
-> +
-> +	if (!of_property_read_u32(node, "idt,xtal1-load-femtofarads", &value)) {
-> +		mapped_value = vc5_map_cap_value(value);
-> +		if (mapped_value < 0)
-> +			return mapped_value;
-> +
-> +		regmap_write(vc5->regmap, VC5_XTAL_X1_LOAD_CAP, (mapped_value << 2));
-> +	}
-> +
-> +	if (!of_property_read_u32(node, "idt,xtal2-load-femtofarads", &value)) {
-> +		mapped_value = vc5_map_cap_value(value);
-> +		if (mapped_value < 0)
-> +			return mapped_value;
-> +		regmap_write(vc5->regmap, VC5_XTAL_X2_LOAD_CAP, (mapped_value << 2));
-> +	}
-> +
-> +	return 0;
-> +}
-> +
->  static int vc5_update_slew(struct device_node *np_output,
->  			   struct vc5_out_data *clk_out)
->  {
-> @@ -884,6 +941,13 @@ static int vc5_probe(struct i2c_client *client, const struct i2c_device_id *id)
->  		return -EINVAL;
->  	}
->  
-> +	/* Configure Optional Loading Capacitance for external XTAL */
-> +	if (!(vc5->chip_info->flags & VC5_HAS_INTERNAL_XTAL)) {
-> +		ret = vc5_update_cap_load(client->dev.of_node, vc5);
-> +		if (ret)
-> +			goto err_clk_register;
-> +	}
-> +
->  	init.name = kasprintf(GFP_KERNEL, "%pOFn.mux", client->dev.of_node);
->  	init.ops = &vc5_mux_ops;
->  	init.flags = 0;
-> 
+Changes introduced in v2:
+Some patches were mixed (and did not compile separately);
+Add path 7 for the handle of nxp,phase-shift property.
 
-Overall LGTM.
+Changes introduced in v3:
+Remove useless patch 0;
+Do requested fixes in patches.
+
+Thanks,
+
+Adrien Grassein (6):
+  regulator: pf8x00: add a doc for the module
+  regulator: dt-bindings: pf8x00: fix nxp,phase-shift doc
+  regulator: dt-bindings: pf8x00: remove nxp,ilim-ma property
+  regulator: pf8x00: remove nxp,ilim-ma property
+  regulator: pf8x00: use linear range for buck 1-6
+  regulator: pf8x00: fix nxp,phase-shift
+
+ .../regulator/nxp,pf8x00-regulator.yaml       |  27 +--
+ drivers/regulator/Kconfig                     |   4 +
+ drivers/regulator/pf8x00-regulator.c          | 174 ++++++++----------
+ 3 files changed, 79 insertions(+), 126 deletions(-)
 
 -- 
-Luca
+2.25.1
+
