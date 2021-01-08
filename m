@@ -2,215 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D032B2EEE3C
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 09:01:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C1B222EEE3A
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 09:01:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727536AbhAHIA7 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 8 Jan 2021 03:00:59 -0500
-Received: from rtits2.realtek.com ([211.75.126.72]:47103 "EHLO
-        rtits2.realtek.com.tw" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727265AbhAHIA7 (ORCPT
+        id S1727239AbhAHIAw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Jan 2021 03:00:52 -0500
+Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:9873 "EHLO
+        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725791AbhAHIAw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Jan 2021 03:00:59 -0500
-Authenticated-By: 
-X-SpamFilter-By: ArmorX SpamTrap 5.73 with qID 1087xlwJ7020174, This message is accepted by code: ctloc85258
-Received: from mail.realtek.com (rtexmbs03.realtek.com.tw[172.21.6.96])
-        by rtits2.realtek.com.tw (8.15.2/2.70/5.88) with ESMTPS id 1087xlwJ7020174
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Fri, 8 Jan 2021 15:59:47 +0800
-Received: from RTEXMBS03.realtek.com.tw (172.21.6.96) by
- RTEXMBS03.realtek.com.tw (172.21.6.96) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Fri, 8 Jan 2021 15:59:46 +0800
-Received: from RTEXMBS03.realtek.com.tw ([fe80::d4dd:5c6:e3c2:8a2f]) by
- RTEXMBS03.realtek.com.tw ([fe80::d4dd:5c6:e3c2:8a2f%2]) with mapi id
- 15.01.2106.006; Fri, 8 Jan 2021 15:59:46 +0800
-From:   Max Chou <max.chou@realtek.com>
-To:     "marcel@holtmann.org" <marcel@holtmann.org>,
-        "johan.hedberg@gmail.com" <johan.hedberg@gmail.com>,
-        "luiz.dentz@gmail.com" <luiz.dentz@gmail.com>,
-        "matthias.bgg@gmail.com" <matthias.bgg@gmail.com>
-CC:     "linux-bluetooth@vger.kernel.org" <linux-bluetooth@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-mediatek@lists.infradead.org" 
-        <linux-mediatek@lists.infradead.org>,
-        "alex_lu@realsil.com.cn" <alex_lu@realsil.com.cn>,
-        Hilda Wu <hildawu@realtek.com>, KidmanLee <kidman@realtek.com>,
-        "abhishekpandit@chromium.org" <abhishekpandit@chromium.org>
-Subject: RE: [PATCH] Bluetooth: btusb: Add a Kconfig option to disable USB wakeup by default
-Thread-Topic: [PATCH] Bluetooth: btusb: Add a Kconfig option to disable USB
- wakeup by default
-Thread-Index: AQHW3nio3fON8c/V1E6p96jd8CAkbaodakyw
-Date:   Fri, 8 Jan 2021 07:59:46 +0000
-Message-ID: <dbef7b41f00a406293c57f561082b9df@realtek.com>
-References: <20201230065441.1179-1-max.chou@realtek.com>
-In-Reply-To: <20201230065441.1179-1-max.chou@realtek.com>
-Accept-Language: zh-TW, en-US
-Content-Language: zh-TW
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [172.21.132.163]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        Fri, 8 Jan 2021 03:00:52 -0500
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5ff8110b0003>; Fri, 08 Jan 2021 00:00:11 -0800
+Received: from [10.25.98.33] (172.20.145.6) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 8 Jan
+ 2021 08:00:06 +0000
+Subject: Re: [PATCH 2/2] ALSA: hda/tegra: fix tegra-hda on tegra30 soc
+To:     Peter Geis <pgwipeout@gmail.com>
+CC:     Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Peter De Schrijver <pdeschrijver@nvidia.com>,
+        "Prashant Gaikwad" <pgaikwad@nvidia.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Mohan Kumar <mkumard@nvidia.com>, <linux-clk@vger.kernel.org>,
+        <linux-tegra@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <alsa-devel@alsa-project.org>, Ion Agorria <ion@agorria.com>
+References: <20201225012025.507803-1-pgwipeout@gmail.com>
+ <20201225012025.507803-3-pgwipeout@gmail.com>
+ <0c3665b2-bac6-546a-bdd4-0ab7a90adf7c@nvidia.com>
+ <CAMdYzYraT5AXzyscN3Pa+0FWZwHFsD-4ZwbA80kNxgtn7Y1PXw@mail.gmail.com>
+From:   Sameer Pujar <spujar@nvidia.com>
+Message-ID: <b3a3ede2-22d5-b13d-f245-7c3b40ea411a@nvidia.com>
+Date:   Fri, 8 Jan 2021 13:30:02 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
+In-Reply-To: <CAMdYzYraT5AXzyscN3Pa+0FWZwHFsD-4ZwbA80kNxgtn7Y1PXw@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: quoted-printable
+Content-Language: en-GB
+X-Originating-IP: [172.20.145.6]
+X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1610092811; bh=tAX7+nwrhbWHTaFDYsrLY7TV7AsIei6JzO5pznTK/EY=;
+        h=Subject:To:CC:References:From:Message-ID:Date:User-Agent:
+         MIME-Version:In-Reply-To:Content-Type:Content-Transfer-Encoding:
+         Content-Language:X-Originating-IP:X-ClientProxiedBy;
+        b=bVvAn6XMiAZ7FoTF4OYFwB8L3AnCfRZgNwnpAWTwq9iSt9JPgLv0hKIvDEi8xr8lQ
+         laUYCy+WEWqF1ED0lhDotEwuMGmsiMEXe4bD6D7pLqVems6d7NQ1MaoceT9HHi6S28
+         v9peEUWyStRs/KnaepmCvucDQ6yfUdK7HadQ3Sj4Ahyk7ma4QxN3eH21eoUd6zilMn
+         Z95vNauSua3gmlKEuJEUMk2qj+ChuLK0NS9bRnPgN/IC3LE7KRH5MMpKmnn/Dkcs81
+         C6hDOkSU+Xhj4hJldLe5pFoBhGdHHsqS9y9gOWy1mTyd1SebKlo/bjI5KTdVg9z9NU
+         ecaVWzLmv8wmw==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-// add Abhishek to CC list
 
 
+On 1/7/2021 2:51 AM, Peter Geis wrote:
+> External email: Use caution opening links or attachments
+>
+>
+> On Tue, Jan 5, 2021 at 1:30 AM Sameer Pujar <spujar@nvidia.com> wrote:
+>>
+>>
+>> On 12/25/2020 6:50 AM, Peter Geis wrote:
+>>> External email: Use caution opening links or attachments
+>>>
+>>>
+>>> Currently hda on tegra30 fails to open a stream with an input/output er=
+ror.
+>>> This is similar to the issue referenced in [1].
+>>>
+>>> For example:
+>>> speaker-test -Dhw:0,3 -c 2
+>>>
+>>> speaker-test 1.2.2
+>>>
+>>> Playback device is hw:0,3
+>>> Stream parameters are 48000Hz, S16_LE, 2 channels
+>>> Using 16 octaves of pink noise
+>>> Rate set to 48000Hz (requested 48000Hz)
+>>> Buffer size range from 64 to 16384
+>>> Period size range from 32 to 8192
+>>> Using max buffer size 16384
+>>> Periods =3D 4
+>>> was set period_size =3D 4096
+>>> was set buffer_size =3D 16384
+>>>    0 - Front Left
+>>> Write error: -5,Input/output error
+>>> xrun_recovery failed: -5,Input/output error
+>>> Transfer failed: Input/output error
+>>>
+>>> [1] states "Due to a legacy HW design problem", implying the issue appl=
+ies to all previous tegra-hda devices.
+>>> The tegra-hda device was introduced in tegra30 but only utilized in teg=
+ra124 until now.
+>>> For this reason it is unknown when this issue first manifested.
+>>>
+>>> Applying the fix in [1] universally resolves this issue on tegra30.
+>>> Tested on the Ouya game console and the tf201 tablet.
+>>>
+>>> [1] 60019d8c650d ("ALSA: hda/tegra: workaround playback failure on Tegr=
+a194")
+>> This issue was never seen on Tegra210/Tegra186 and hence at that time it
+>> was thought to be specific to Tegra194. I never tested this on Tegra30
+>> since I don't have this device. I will clarify this with HW folks if
+>> workaround is safer for all chips.
+> So this is confirmed to not affect Tegra210 and Tegra186, but it does
+> affect Tegra194 and Tegra30.
+> Is it possible for the hardware team to pitch on on where the fix was
+> implemented?
 
-BRs,
-Max
+I discussed this with HW team. The issue is applicable to all Tegra chips.
 
------Original Message-----
-From: Max Chou <max.chou@realtek.com> 
-Sent: Wednesday, December 30, 2020 2:55 PM
-To: marcel@holtmann.org; johan.hedberg@gmail.com; luiz.dentz@gmail.com; matthias.bgg@gmail.com
-Cc: linux-bluetooth@vger.kernel.org; linux-kernel@vger.kernel.org; linux-arm-kernel@lists.infradead.org; linux-mediatek@lists.infradead.org; alex_lu@realsil.com.cn; Hilda Wu <hildawu@realtek.com>; KidmanLee <kidman@realtek.com>; Max Chou <max.chou@realtek.com>
-Subject: [PATCH] Bluetooth: btusb: Add a Kconfig option to disable USB wakeup by default
+Below is the striping formula referenced from HD audio spec.
+ =C2=A0 { ((num_channels * bits_per_sample) / number of SDOs) >=3D 8 }
 
-From: Max Chou <max.chou@realtek.com>
+The current issue is seen because Tegra HW has a problem with boundary=20
+condition (=3D 8) for striping. The reason why it is not seen on=20
+Tegra210/Tegra186 is because it uses max 2SDO lines. Max SDO lines is=20
+read from GCAP register.
 
-For the original commit of 9e45524a011107a73bc2cdde8370c61e82e93a4d,
-wakeup is always disabled for Realtek Bluetooth devices.
-However, there's the capability for Realtek Bluetooth devices to apply USB wakeup. Otherwise, there's the better power consumption without USB wakeup during suspending.
-In this commit, divide the original commit into two parts.
-1. Redefine the feature that Realtek devices should be enabled wakeup on auto-suspend as BTUSB_WAKEUP_AUTOSUSPEND.
-2. Add a Kconfig option to switch disable_wakeup for Bluetooth USB devices by default as CONFIG_BT_HCIBTUSB_DISABLEWAKEUP.
+For the given stream (channels =3D 2, bps =3D 16);
+ratio =3D (channels * bps) / NSDO =3D 32 / NSDO;
 
-Signed-off-by: Max Chou <max.chou@realtek.com>
----
- drivers/bluetooth/Kconfig | 11 +++++++++++  drivers/bluetooth/btusb.c | 41 ++++++++++++++++++++++++++-------------
- 2 files changed, 38 insertions(+), 14 deletions(-)
+On Tegra30,=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ratio =3D 32/4 =3D 8=C2=A0 (FAIL)
+On Tegra210/186, ratio =3D 32/2 =3D 16 (PASS)
+On Tegra194,=C2=A0=C2=A0=C2=A0=C2=A0 ratio =3D 32/4 =3D 8=C2=A0 (FAIL) =3D=
+=3D> Earlier workaround was=20
+applied for it
 
-diff --git a/drivers/bluetooth/Kconfig b/drivers/bluetooth/Kconfig index 4e73a531b377..7af10897a248 100644
---- a/drivers/bluetooth/Kconfig
-+++ b/drivers/bluetooth/Kconfig
-@@ -41,6 +41,17 @@ config BT_HCIBTUSB_AUTOSUSPEND
- 	  This can be overridden by passing btusb.enable_autosuspend=[y|n]
- 	  on the kernel commandline.
- 
-+config BT_HCIBTUSB_DISABLEWAKEUP
-+	bool "Disable USB wakeup for Bluetooth USB devices by default"
-+	depends on BT_HCIBTUSB
-+	default n
-+	help
-+	  Say Y here to disable USB wakeup for Bluetooth USB devices by
-+	  default.
-+
-+	  This can be overridden by passing btusb.disable_wakeup=[y|n]
-+	  on the kernel commandline.
-+
- config BT_HCIBTUSB_BCM
- 	bool "Broadcom protocol support"
- 	depends on BT_HCIBTUSB
-diff --git a/drivers/bluetooth/btusb.c b/drivers/bluetooth/btusb.c index b630a1d54c02..5f55111849b5 100644
---- a/drivers/bluetooth/btusb.c
-+++ b/drivers/bluetooth/btusb.c
-@@ -30,6 +30,7 @@
- static bool disable_scofix;
- static bool force_scofix;
- static bool enable_autosuspend = IS_ENABLED(CONFIG_BT_HCIBTUSB_AUTOSUSPEND);
-+static bool disable_wakeup = 
-+IS_ENABLED(CONFIG_BT_HCIBTUSB_DISABLEWAKEUP);
- 
- static bool reset = true;
- 
-@@ -505,7 +506,7 @@ static const struct dmi_system_id btusb_needs_reset_resume_table[] = {
- #define BTUSB_OOB_WAKE_ENABLED	11
- #define BTUSB_HW_RESET_ACTIVE	12
- #define BTUSB_TX_WAIT_VND_EVT	13
--#define BTUSB_WAKEUP_DISABLE	14
-+#define BTUSB_WAKEUP_AUTOSUSPEND	14
- 
- struct btusb_data {
- 	struct hci_dev       *hdev;
-@@ -1330,7 +1331,7 @@ static int btusb_open(struct hci_dev *hdev)
- 	 * For Realtek chips, global suspend without
- 	 * SET_FEATURE (DEVICE_REMOTE_WAKEUP) can save more power in device.
- 	 */
--	if (test_bit(BTUSB_WAKEUP_DISABLE, &data->flags))
-+	if (disable_wakeup)
- 		device_wakeup_disable(&data->udev->dev);
- 
- 	if (test_and_set_bit(BTUSB_INTR_RUNNING, &data->flags)) @@ -1399,7 +1400,7 @@ static int btusb_close(struct hci_dev *hdev)
- 	data->intf->needs_remote_wakeup = 0;
- 
- 	/* Enable remote wake up for auto-suspend */
--	if (test_bit(BTUSB_WAKEUP_DISABLE, &data->flags))
-+	if (test_bit(BTUSB_WAKEUP_AUTOSUSPEND, &data->flags))
- 		data->intf->needs_remote_wakeup = 1;
- 
- 	usb_autopm_put_interface(data->intf);
-@@ -4257,7 +4258,7 @@ static bool btusb_prevent_wake(struct hci_dev *hdev)  {
- 	struct btusb_data *data = hci_get_drvdata(hdev);
- 
--	if (test_bit(BTUSB_WAKEUP_DISABLE, &data->flags))
-+	if (disable_wakeup)
- 		return true;
- 
- 	return !device_may_wakeup(&data->udev->dev);
-@@ -4557,11 +4558,8 @@ static int btusb_probe(struct usb_interface *intf,
- 		hdev->shutdown = btrtl_shutdown_realtek;
- 		hdev->cmd_timeout = btusb_rtl_cmd_timeout;
- 
--		/* Realtek devices lose their updated firmware over global
--		 * suspend that means host doesn't send SET_FEATURE
--		 * (DEVICE_REMOTE_WAKEUP)
--		 */
--		set_bit(BTUSB_WAKEUP_DISABLE, &data->flags);
-+		/* Realtek devices need to set USB remote wakeup on auto-suspend */
-+		set_bit(BTUSB_WAKEUP_AUTOSUSPEND, &data->flags);
- 	}
- 
- 	if (!reset)
-@@ -4731,17 +4729,29 @@ static int btusb_suspend(struct usb_interface *intf, pm_message_t message)
- 		enable_irq(data->oob_wake_irq);
- 	}
- 
--	/* For global suspend, Realtek devices lose the loaded fw
--	 * in them. But for autosuspend, firmware should remain.
-+	/* For suspend(S3), Realtek devices lose the loaded fw
-+	 * if USB wakeup is disabled.
-+	 * It can meet better power consumption.
-+	 * Otherwise, the fw is alive if USB wakeup is enabled.
-+	 * It's able to wake Host up by the paired devices.
-+	 * Note that disable_wakeup should be false,
-+	 * and device_may_wakeup() should return true.
-+	 *
-+	 * For autosuspend, firmware should remain.
- 	 * Actually, it depends on whether the usb host sends
- 	 * set feature (enable wakeup) or not.
- 	 */
--	if (test_bit(BTUSB_WAKEUP_DISABLE, &data->flags)) {
-+	if (test_bit(BTUSB_WAKEUP_AUTOSUSPEND, &data->flags)) {
- 		if (PMSG_IS_AUTO(message) &&
- 		    device_can_wakeup(&data->udev->dev))
- 			data->udev->do_remote_wakeup = 1;
--		else if (!PMSG_IS_AUTO(message))
--			data->udev->reset_resume = 1;
-+		else if (!PMSG_IS_AUTO(message)) {
-+			if (disable_wakeup ||
-+			    !device_may_wakeup(&data->udev->dev)) {
-+				data->udev->do_remote_wakeup = 0;
-+				data->udev->reset_resume = 1;
-+			}
-+		}
- 	}
- 
- 	return 0;
-@@ -4865,6 +4875,9 @@ MODULE_PARM_DESC(force_scofix, "Force fixup of wrong SCO buffers size");  module_param(enable_autosuspend, bool, 0644);  MODULE_PARM_DESC(enable_autosuspend, "Enable USB autosuspend by default");
- 
-+module_param(disable_wakeup, bool, 0644); 
-+MODULE_PARM_DESC(disable_wakeup, "Disable USB wakeup by default");
-+
- module_param(reset, bool, 0644);
- MODULE_PARM_DESC(reset, "Send HCI reset command on initialization");
- 
---
-2.17.1
+If Tegra210/186 is forced to use 4SDO, it fails there as well. So the=20
+behavior is consistent across all these chips.
+
+>>> Signed-off-by: Peter Geis <pgwipeout@gmail.com>
+>>> Tested-by: Ion Agorria <ion@agorria.com>
+>>> ---
+>>>    sound/pci/hda/hda_tegra.c | 3 +--
+>>>    1 file changed, 1 insertion(+), 2 deletions(-)
+>>>
+>>> diff --git a/sound/pci/hda/hda_tegra.c b/sound/pci/hda/hda_tegra.c
+>>> index 70164d1428d4..f8d61e677a09 100644
+>>> --- a/sound/pci/hda/hda_tegra.c
+>>> +++ b/sound/pci/hda/hda_tegra.c
+>>> @@ -388,8 +388,7 @@ static int hda_tegra_first_init(struct azx *chip, s=
+truct platform_device *pdev)
+>>>            * in powers of 2, next available ratio is 16 which can be
+>>>            * used as a limiting factor here.
+>>>            */
+>>> -       if (of_device_is_compatible(np, "nvidia,tegra194-hda"))
+>>> -               chip->bus.core.sdo_limit =3D 16;
+>>> +       chip->bus.core.sdo_limit =3D 16;
+>> Future Tegra chips address this problem and hence cannot be enforced by
+>> default. May be we can have like below:
+>>
+>> if (of_device_is_compatible(np, "nvidia,tegra30-hda"))
+>> chip->bus.core.sdo_limit =3D 16;
+>>
+> It will need to be a bit more complicated than that, since the
+> tegra186 and tegra210 device trees have "nvidia,tegra30-hda" as a
+> fallback.
+> Looking at the generation map, tegra30-hda can be the fallback for the
+> broken implementation and tegra210-hda can be the fallback for the
+> working implementation.
+> Does that work for you?
+
+As per above explanation, it is fine to apply the workaround for=20
+Tegra210/186 as well. So it simplifies things for all existing chips.
+
+>>>           /* codec detection */
+>>>           if (!bus->codec_mask) {
+>>> --
+>>> 2.25.1
+>>>
 
