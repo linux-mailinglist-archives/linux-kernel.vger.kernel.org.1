@@ -2,53 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2D3D2EF7B0
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 19:52:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C2C342EF7B8
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 19:53:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728783AbhAHSwC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Jan 2021 13:52:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39338 "EHLO
+        id S1728829AbhAHSwm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Jan 2021 13:52:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39456 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728612AbhAHSwB (ORCPT
+        with ESMTP id S1728429AbhAHSwl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Jan 2021 13:52:01 -0500
-Received: from mail-oi1-x231.google.com (mail-oi1-x231.google.com [IPv6:2607:f8b0:4864:20::231])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65C8DC061381
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Jan 2021 10:51:21 -0800 (PST)
-Received: by mail-oi1-x231.google.com with SMTP id 15so12434345oix.8
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Jan 2021 10:51:21 -0800 (PST)
+        Fri, 8 Jan 2021 13:52:41 -0500
+Received: from mail-oi1-x22e.google.com (mail-oi1-x22e.google.com [IPv6:2607:f8b0:4864:20::22e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3B203C06129E
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Jan 2021 10:51:57 -0800 (PST)
+Received: by mail-oi1-x22e.google.com with SMTP id s75so12462542oih.1
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Jan 2021 10:51:57 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=yw5HNg0k9iL0QHuBnpeVEeXpmsT4zEnK0I09kWNg4VE=;
-        b=spizBsCeh+YYB8W/IjGWwKrI/pXPx7LjOWGRXUcobQCpcJMuzvvYSXwo/EUa60JsKT
-         xqqpQg4cjhZTH3RiJqykwYB5TPKMG3wEe0UkatR6OMwlSzLhFhWQ7C5dtU48nbJrSKuA
-         i12Iez9VdRCHBrGjzjmgpQVRFfYvRqKSjMbLJJ0VzJpMcDzFPeXDsaOveDGSICugouUo
-         Z+sIbi1pyYQzxa8XJBt2RvP06WF+GlIikHxSNNWOfi2IN9S8N9GIYZsKyBs/rk+OLHrS
-         OWaqkXnzAY57hM6ps5KH9eaPJDojhSVPE7TJduuFCQ8KoUOUFfaqlRYYdoJZaO+x0q4B
-         NzXQ==
+        bh=r/MkUW0GRmJuadWQznL86MSa13giPqtJ7KC4WPcx3H8=;
+        b=SG56FlHl9zrGZL4NLGk3Ea4wab6oxPXQUnoQlBoEgUQkHEZ0UdjLTCbjnarK1CWIiI
+         5+oYaMOyd4eKHwHWxs1RKiWb/7ARF1nQ3ycUSXWWTOKD3feLcSQxn3TgaRAOWDYix2Fw
+         ox0CFKO5twH2hw3bbTKfBXz4P8dQpo/vEvSlPoDGNVU2KFbsVN3rYKUOYjNwFpDUDQYC
+         XMUe6xONrPgyxrH12pBtQvdaHQax9ccrbTyXVxbr4vix0887Mw97NPgOYoCCOZ8CK0Qm
+         kbDZN+9jA2NvhyVKHIGOJ1VK4yxVY3wv0Mw6tjPuxvPSxQdRIeXdkChEuma3DiCgnCxw
+         3BNA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=yw5HNg0k9iL0QHuBnpeVEeXpmsT4zEnK0I09kWNg4VE=;
-        b=Ep4/AlhywjQiLomIE986C6RTmF+XH7Jlnk4k2cnD0ojlcr6AKIPOmqLP1glv0nrytS
-         vxlSQ/kTbN5q87l2/Jdd4i0BafuuOxthQmlXex19AtyzvcpBKb2+S76fuL1/4RCJOdX3
-         iN+gZW+2D/lwiYtegnTXBihBTQot707y886To41Ec4QtnjuHLQb+fJOHhv2u+EhVZQ0Y
-         yzr426UaW3avsaFhqVXW3T6tGwkdplP4eM64EfmIlB2MWgKg1enyhB3SovHjewv5fTC0
-         ix8tL2aJnab5djIqIyYVptt6dFzOUqr1VqHr+9xRcyiiy9tk7BDpa9jctN12iKtXeYZJ
-         XbkA==
-X-Gm-Message-State: AOAM533jv2Xr/REqa+CoaL2WNyZ/XusVZw4NmcrwHv3uSgUwAs93zIBF
-        MM/8j2dDP/h8sd1COfioZJn61w==
-X-Google-Smtp-Source: ABdhPJxR70l+gieQE6A1jIIhmWfNLp4ron556Hy+l+ahoezA8S0Np6gHH+AXBp6x7HPJr+JKligh/g==
-X-Received: by 2002:aca:b657:: with SMTP id g84mr3289190oif.86.1610131880733;
-        Fri, 08 Jan 2021 10:51:20 -0800 (PST)
+        bh=r/MkUW0GRmJuadWQznL86MSa13giPqtJ7KC4WPcx3H8=;
+        b=mTRV5nJvgDFa7q85YRwO9TAOQJlI/csmUuDWCyH3q6RcJrDvPCDC/+pMUtbr0ctWhw
+         Spy4WDXiyK1sk3po1WcxgoY3r3MpIjrPGOXQ527ZgnDwoknM83oX5gxASKV5c+78PMPa
+         PePLE1HvV+flxx7XJ6CKKY+QkyZsC1gumuRvytK4OBptok5gAKEd9eXWkSAmy50D+YVQ
+         RBy1AyazYqBlNXl8NEYft0MOe8a9weid8SEThzPXtFBmcGK/xIhBkKIf6MQ1h+rEpI7y
+         Ev7yJEMMSM25PoaYrnYCKOqbJ+vxY3nnvtf7/M12lZkRMt0SbwjBCAqzJ1RpdFrM5/8Y
+         yaIA==
+X-Gm-Message-State: AOAM533LXZuw57aTwKeBQQMcLfVHahHiYMx9YbTDEW56YGS6sfbDiArv
+        f414SMbQvqsJjCtYoS4QwaOS4Q==
+X-Google-Smtp-Source: ABdhPJxeR5gyMZKDUewB93nitF60K0EHeRnBK4DSVOtQgbI32pduVowsTp4hJw1NQuyPi+l0b6PjSQ==
+X-Received: by 2002:aca:d406:: with SMTP id l6mr3190690oig.26.1610131916162;
+        Fri, 08 Jan 2021 10:51:56 -0800 (PST)
 Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id h11sm1907017ooj.36.2021.01.08.10.51.19
+        by smtp.gmail.com with ESMTPSA id a15sm2124904oii.50.2021.01.08.10.51.54
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 08 Jan 2021 10:51:19 -0800 (PST)
-Date:   Fri, 8 Jan 2021 12:51:18 -0600
+        Fri, 08 Jan 2021 10:51:55 -0800 (PST)
+Date:   Fri, 8 Jan 2021 12:51:53 -0600
 From:   Bjorn Andersson <bjorn.andersson@linaro.org>
 To:     Robert Foss <robert.foss@linaro.org>
 Cc:     agross@kernel.org, todor.too@gmail.com, mchehab@kernel.org,
@@ -65,55 +65,61 @@ Cc:     agross@kernel.org, todor.too@gmail.com, mchehab@kernel.org,
         Azam Sadiq Pasha Kapatrala Syed <akapatra@quicinc.com>,
         Sarvesh Sridutt <Sarvesh.Sridutt@smartwirelesscompute.com>,
         Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Subject: Re: [PATCH v1 01/17] media: camss: Fix comment using wrong function
- name
-Message-ID: <X/ippoemGT9d28Sd@builder.lan>
+Subject: Re: [PATCH v1 02/17] media: camss: Fix vfe_isr comment typo
+Message-ID: <X/ipyY7o+Grx+lkL@builder.lan>
 References: <20210108120429.895046-1-robert.foss@linaro.org>
- <20210108120429.895046-2-robert.foss@linaro.org>
+ <20210108120429.895046-3-robert.foss@linaro.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210108120429.895046-2-robert.foss@linaro.org>
+In-Reply-To: <20210108120429.895046-3-robert.foss@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 On Fri 08 Jan 06:04 CST 2021, Robert Foss wrote:
 
-> Function name is comment is wrong, and was changed to be
-> the same as the actual function name.
+> Comment refers to ISPIF, but this is incorrect. Only
+> the VFE interrupts are handled by this function.
 > 
 > Signed-off-by: Robert Foss <robert.foss@linaro.org>
-> ---
->  drivers/media/platform/qcom/camss/camss-vfe.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/media/platform/qcom/camss/camss-vfe.c b/drivers/media/platform/qcom/camss/camss-vfe.c
-> index fae2b513b2f9..478be4f0cab5 100644
-> --- a/drivers/media/platform/qcom/camss/camss-vfe.c
-> +++ b/drivers/media/platform/qcom/camss/camss-vfe.c
-> @@ -1077,7 +1077,7 @@ static void vfe_isr_wm_done(struct vfe_device *vfe, u8 wm)
->  }
->  
->  /*
-> - * vfe_isr_wm_done - Process composite image done interrupt
-> + * vfe_isr_comp_done - Process composite image done interrupt
 
-It's a function, so it should be "vfe_isr_comp_done()", but unless the
-comment is denoted kerneldoc by starting with '/' followed by two '*' it
-"doesn't matter".
-
-As a matter of fact, none of the kerneldoc in this file has the proper
-'/**' start, so this file is "undocumented".
-
-So please add another '*' and some () throughout the file.
+Reviewed-by: Bjorn Andersson <bjorn.andersson@linaro.org>
 
 Regards,
 Bjorn
 
->   * @vfe: VFE Device
->   * @comp: Composite image id
->   */
+> ---
+>  drivers/media/platform/qcom/camss/camss-vfe-4-1.c | 2 +-
+>  drivers/media/platform/qcom/camss/camss-vfe-4-7.c | 2 +-
+>  2 files changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/media/platform/qcom/camss/camss-vfe-4-1.c b/drivers/media/platform/qcom/camss/camss-vfe-4-1.c
+> index 174a36be6f5d..a1b56b89130d 100644
+> --- a/drivers/media/platform/qcom/camss/camss-vfe-4-1.c
+> +++ b/drivers/media/platform/qcom/camss/camss-vfe-4-1.c
+> @@ -922,7 +922,7 @@ static void vfe_violation_read(struct vfe_device *vfe)
+>  }
+>  
+>  /*
+> - * vfe_isr - ISPIF module interrupt handler
+> + * vfe_isr - VFE module interrupt handler
+>   * @irq: Interrupt line
+>   * @dev: VFE device
+>   *
+> diff --git a/drivers/media/platform/qcom/camss/camss-vfe-4-7.c b/drivers/media/platform/qcom/camss/camss-vfe-4-7.c
+> index b5704a2f119b..84c33b8f9fe3 100644
+> --- a/drivers/media/platform/qcom/camss/camss-vfe-4-7.c
+> +++ b/drivers/media/platform/qcom/camss/camss-vfe-4-7.c
+> @@ -1055,7 +1055,7 @@ static void vfe_violation_read(struct vfe_device *vfe)
+>  }
+>  
+>  /*
+> - * vfe_isr - ISPIF module interrupt handler
+> + * vfe_isr - VFE module interrupt handler
+>   * @irq: Interrupt line
+>   * @dev: VFE device
+>   *
 > -- 
 > 2.27.0
 > 
