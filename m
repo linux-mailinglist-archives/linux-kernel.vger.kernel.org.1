@@ -2,59 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 28FAE2EF37E
+	by mail.lfdr.de (Postfix) with ESMTP id 961952EF37F
 	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 14:53:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727811AbhAHNxP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Jan 2021 08:53:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49168 "EHLO
+        id S1727856AbhAHNxS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Jan 2021 08:53:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49176 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727373AbhAHNxO (ORCPT
+        with ESMTP id S1727373AbhAHNxQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Jan 2021 08:53:14 -0500
-Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB12FC0612F6
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Jan 2021 05:52:33 -0800 (PST)
-Received: by mail-pf1-x42e.google.com with SMTP id s21so6256420pfu.13
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Jan 2021 05:52:33 -0800 (PST)
+        Fri, 8 Jan 2021 08:53:16 -0500
+Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8493FC0612F8
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Jan 2021 05:52:36 -0800 (PST)
+Received: by mail-pg1-x52b.google.com with SMTP id 30so7704580pgr.6
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Jan 2021 05:52:36 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=bytedance-com.20150623.gappssmtp.com; s=20150623;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=7A7ZRyd8bM3EbD8yBbdrSHoI1I4U21dIzleuZWsUhdE=;
-        b=lBZ/Tet2lEVBUJ6cn4rsZbF+EY1AQcZQEpBf7soVZUe6i7b6lEuy+OSzzvL4YBeTWE
-         pi4OPzIY2RBCO4eq7ftPUsq4ajL64mfsbLagIW+J/e18ffX9zpKlhlYVNJIlLbEDpsr3
-         iA6mioH26s3MZOBuj3xWQsoLC+orgN++HvuN/QwzItdKH1are7mu3PMsbWnWpuQE/GSN
-         Zt6wSBAw8d1XbXwDHuYft1Wb5YfyfMJfrBi32xY2SU0QKMflqwJG07+BeiRFAXMY5oKE
-         0l4f5L/oXJrRC3COE9dlCRJrapcqSgRRtp/bFxfXvwTEi3HIe7sWpTWFNEF2ZM6tQ0If
-         +KKQ==
+        bh=N80gZSJtD3sqRIKTg0+kuHqupK03C+4GqJPUMKGxVjo=;
+        b=RjwwxxG9RdsovLTHrqvuicORcNaP2zRywzjXwm0T+Y+HV+uiIBdz7BoPUptz6Agvkv
+         Zz9zkKx0LnoYw4pSfcY5DJymuoSxKL6aWqjllMuR37m0g8YIXPiK9jb3SsbDyohIK9Jg
+         GIhbI0KUxy+fGwAmA62WHgW7lu5ygXM44s5PNMWHEbIyKAEQEVn1oiDM4q1Q7amXaZha
+         v2Kz/HeM8X0GlfTUXvMFd+pAe540+LtDg3lsFFAko5g19bT6TImZuHadkKiwqS06UTvc
+         TZP8p9aRye7ADNEwnj9aaj9DZiVvuSJvMiQ7lKp+dQG2bGm0e/hMdDeF8n48yEmJdZ73
+         WoNA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=7A7ZRyd8bM3EbD8yBbdrSHoI1I4U21dIzleuZWsUhdE=;
-        b=RUavqsXIWq7CQmzpL15wiZRc7sf1ot3bD4Qx7qXNOTBWHqE150pXFOLyALvSJUNAfO
-         4pLnSb60Cq+TM134q8v+VBYpAz3BLvbL7B4ljdvqlgP3FCEFUKxsfrLFCOA/R8AMOIDJ
-         cOdaGCzN/+mTdg6v4ysAe/LAtHmrV/gHAsh6DRVk52WTZMmLr1MZgizRGpx3sAXL3L3B
-         LFil7tALr2VthQQFNlqYi2JChhrgeFvvyWDOuqryxOSx3Fhj18F0b8jhJN7WQjZmvR7i
-         Wvna8IgBLqCxctd/nVcx2Dj+h6rUggF1mpdwaEtytItn/0D0nYiw2xhZb5vi/NImo+52
-         bCQw==
-X-Gm-Message-State: AOAM530fD6IOX8tRFtUl9d5/CN8Ike6N7a4lLYs4Q0xtCMRsBe/EwZaa
-        IbmOmyKVHDCTDCg4SVJlqgszjA==
-X-Google-Smtp-Source: ABdhPJyIM/gZGveg3Ott3VbKrIOIO48KhY6FTrtWhfsUMn4YoBG+fUPNR6EqaujWOqbBL57BNjeY2Q==
-X-Received: by 2002:a63:f512:: with SMTP id w18mr7191303pgh.154.1610113953427;
-        Fri, 08 Jan 2021 05:52:33 -0800 (PST)
+        bh=N80gZSJtD3sqRIKTg0+kuHqupK03C+4GqJPUMKGxVjo=;
+        b=FQLOvsB9/9mXrSxsIZvP2rew9UBRXYZQNucm6ibQfITlJDg4dVD4sFpcXxvbsGTJa+
+         QtwCjX56C9wL9L63sE4qfgdGHdhWJK0ewwalV/jTknDBIC3iEADdJW/JbZf/JoMsVXdz
+         dXgWQIylNEg753RAHFW2+Cu3gJOwSsHeK7ht+GNlfWvyAGTIb/0l330t0HHgNJiwHXCL
+         TVlWdNyScPEoYNxyVlr2TMrhH8M/y+OTAeu/Ium6Q/1hLuoztjgSvatrokKfsIqNxvBf
+         QR5JO7qWzaZNyASO3jLNIhx7hvdMISqg8epZ6ZsdlHA2EXilzhQ86PhAJEZyhIFTSTlE
+         zhoQ==
+X-Gm-Message-State: AOAM530pAD3/QXuYIjdNoO5PzAi18UHTmU59IbhQHbnZtmqLSOSwc2cS
+        oXdM4aXND4TFm5Y59gOSRAl1og==
+X-Google-Smtp-Source: ABdhPJwPMpwFfv9We2pWiH5vl2GZqYcxbmkp7GhhGclLrujLse7jwrz7ilEjL3gqatP5ymUO/o2JeQ==
+X-Received: by 2002:a65:608e:: with SMTP id t14mr7135630pgu.436.1610113956080;
+        Fri, 08 Jan 2021 05:52:36 -0800 (PST)
 Received: from always-libai.bytedance.net ([153.254.110.96])
-        by smtp.gmail.com with ESMTPSA id k64sm9401184pfd.75.2021.01.08.05.52.31
+        by smtp.gmail.com with ESMTPSA id k64sm9401184pfd.75.2021.01.08.05.52.33
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 08 Jan 2021 05:52:32 -0800 (PST)
+        Fri, 08 Jan 2021 05:52:35 -0800 (PST)
 From:   zhenwei pi <pizhenwei@bytedance.com>
 To:     arnd@arndb.de, gregkh@linuxfoundation.org
 Cc:     pbonzini@redhat.com, linux-kernel@vger.kernel.org,
         pizhenwei@bytedance.com
-Subject: [PATCH v3 1/2] misc: pvpanic: introduce device capability
-Date:   Fri,  8 Jan 2021 21:52:22 +0800
-Message-Id: <20210108135223.2924507-2-pizhenwei@bytedance.com>
+Subject: [PATCH v3 2/2] misc: pvpanic: introduce module parameter 'events'
+Date:   Fri,  8 Jan 2021 21:52:23 +0800
+Message-Id: <20210108135223.2924507-3-pizhenwei@bytedance.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210108135223.2924507-1-pizhenwei@bytedance.com>
 References: <20210108135223.2924507-1-pizhenwei@bytedance.com>
@@ -64,109 +64,41 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-According to pvpanic spec:
-https://git.qemu.org/?p=qemu.git;a=blob_plain;f=docs/specs/pvpanic.txt
+Suggested by Paolo, add a module parameter that can be used to limit
+which capabilities the driver uses.
 
-The guest should determine pvpanic capability by RDPT, so initialize
-capability during device probing. There is no need to register panic
-notifier callback function if no events supported.
-
-Before sending event to host side, check capability firstly.
-
-Suggested by Greg KH, use sysfs to expose capability to user space.
+Finally, the pvpanic guest driver works by the limitation of both
+device capability and user setting.
 
 Signed-off-by: zhenwei pi <pizhenwei@bytedance.com>
 ---
- .../ABI/testing/sysfs-bus-pci-devices-pvpanic |  7 ++++
- drivers/misc/pvpanic.c                        | 41 ++++++++++++++++---
- 2 files changed, 42 insertions(+), 6 deletions(-)
- create mode 100644 Documentation/ABI/testing/sysfs-bus-pci-devices-pvpanic
+ drivers/misc/pvpanic.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
-diff --git a/Documentation/ABI/testing/sysfs-bus-pci-devices-pvpanic b/Documentation/ABI/testing/sysfs-bus-pci-devices-pvpanic
-new file mode 100644
-index 000000000000..5daf1167b1c1
---- /dev/null
-+++ b/Documentation/ABI/testing/sysfs-bus-pci-devices-pvpanic
-@@ -0,0 +1,7 @@
-+What:		/sys/devices/pci0000:00/*/QEMU0001:00/capability
-+Date:		Jan 2021
-+Contact:	zhenwei pi <pizhenwei@bytedance.com>
-+Description:
-+		Capabilities of pvpanic device which are supported by
-+		QEMU.
-+		Format: %s.
 diff --git a/drivers/misc/pvpanic.c b/drivers/misc/pvpanic.c
-index 951b37da5e3c..e1023c7b8fb0 100644
+index e1023c7b8fb0..417f1086e764 100644
 --- a/drivers/misc/pvpanic.c
 +++ b/drivers/misc/pvpanic.c
-@@ -19,6 +19,27 @@
+@@ -19,6 +19,10 @@
  #include <uapi/misc/pvpanic.h>
  
  static void __iomem *base;
-+static unsigned int capability = PVPANIC_PANICKED | PVPANIC_CRASH_LOADED;
++static unsigned int events = PVPANIC_PANICKED | PVPANIC_CRASH_LOADED;
++module_param(events, uint, 0644);
++MODULE_PARM_DESC(events, "set event limitation of pvpanic device");
 +
-+static ssize_t capability_show(struct device *dev,
-+			       struct device_attribute *attr, char *buf)
-+{
-+	return sprintf(buf, "%s%s\n",
-+		capability & PVPANIC_PANICKED ? "PANICKED " : "",
-+		capability & PVPANIC_CRASH_LOADED ? "CRASH_LOADED" : "");
-+}
-+static DEVICE_ATTR_RO(capability);
-+
-+static struct attribute *pvpanic_sysfs_entries[] = {
-+	&dev_attr_capability.attr,
-+	NULL
-+};
-+
-+static const struct attribute_group pvpanic_attribute_group = {
-+	.name = NULL,
-+	.attrs = pvpanic_sysfs_entries,
-+};
-+
+ static unsigned int capability = PVPANIC_PANICKED | PVPANIC_CRASH_LOADED;
  
- MODULE_AUTHOR("Hu Tao <hutao@cn.fujitsu.com>");
- MODULE_DESCRIPTION("pvpanic device driver");
-@@ -27,7 +48,8 @@ MODULE_LICENSE("GPL");
+ static ssize_t capability_show(struct device *dev,
+@@ -48,7 +52,7 @@ MODULE_LICENSE("GPL");
  static void
  pvpanic_send_event(unsigned int event)
  {
--	iowrite8(event, base);
-+	if (event & capability)
-+		iowrite8(event, base);
+-	if (event & capability)
++	if (event & capability & events)
+ 		iowrite8(event, base);
  }
  
- static int
-@@ -62,17 +84,24 @@ static int pvpanic_mmio_probe(struct platform_device *pdev)
- 	if (IS_ERR(base))
- 		return PTR_ERR(base);
- 
--	atomic_notifier_chain_register(&panic_notifier_list,
--				       &pvpanic_panic_nb);
-+	/* initlize capability by RDPT */
-+	capability &= ioread8(base);
- 
--	return 0;
-+	if (capability)
-+		atomic_notifier_chain_register(&panic_notifier_list,
-+					       &pvpanic_panic_nb);
-+
-+	return sysfs_create_group(&dev->kobj, &pvpanic_attribute_group);
- }
- 
- static int pvpanic_mmio_remove(struct platform_device *pdev)
- {
- 
--	atomic_notifier_chain_unregister(&panic_notifier_list,
--					 &pvpanic_panic_nb);
-+	if (capability)
-+		atomic_notifier_chain_unregister(&panic_notifier_list,
-+						 &pvpanic_panic_nb);
-+
-+	sysfs_remove_group(&pdev->dev.kobj, &pvpanic_attribute_group);
- 
- 	return 0;
- }
 -- 
 2.25.1
 
