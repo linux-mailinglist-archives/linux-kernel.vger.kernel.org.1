@@ -2,85 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B31C02EF575
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 17:07:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FBB92EF58C
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 17:12:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727948AbhAHQF7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Jan 2021 11:05:59 -0500
-Received: from mail.kernel.org ([198.145.29.99]:34698 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726386AbhAHQF6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Jan 2021 11:05:58 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F0F1E23A03;
-        Fri,  8 Jan 2021 16:05:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610121918;
-        bh=T71b0NrTSD0U1OUuRL9Xy7ztlZRyqZ9ouP02YGOs214=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=knZsnjTYf+Dv6l52BBfnOkK8IgNeHXCWDHxUXSF27IxEV7SPu5esSZ60HlOehEU8E
-         B8cGDEyu/AkE1tAOdicVGOdZ1eKIiJtxD9wF8slY9RoBNbljvb41bqnKNrpu+SHjq5
-         itdffdXz6V97kEkoCBYwsVUgVzowNtHzH28QeIYU=
-Date:   Fri, 8 Jan 2021 17:06:35 +0100
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     John Garry <john.garry@huawei.com>, rafael@kernel.org,
-        tglx@linutronix.de, linux-kernel@vger.kernel.org,
-        dan.carpenter@oracle.com
-Subject: Re: [PATCH] Driver core: platform: Add extra error check in
- devm_platform_get_irqs_affinity()
-Message-ID: <X/iDC9T1LYgcB3LM@kroah.com>
-References: <1608561055-231244-1-git-send-email-john.garry@huawei.com>
- <X/h9vy/1h0E1hyN0@kroah.com>
- <e10af177-583b-636a-be14-6f781baaa61a@huawei.com>
- <68e22d9cd4cc631201f06300205bafb6@kernel.org>
+        id S1727979AbhAHQLF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Jan 2021 11:11:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42474 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726906AbhAHQLF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 Jan 2021 11:11:05 -0500
+Received: from mail-il1-x134.google.com (mail-il1-x134.google.com [IPv6:2607:f8b0:4864:20::134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22425C061380
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Jan 2021 08:10:25 -0800 (PST)
+Received: by mail-il1-x134.google.com with SMTP id h3so3047510ils.4
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Jan 2021 08:10:25 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=0QGPFasA/mlJ8O6Agjy43TljTX1e0tfJqweWTwBQCFU=;
+        b=n9S3cb75C6AQyMA3YNYpDX2VpVNFC6yHQsWvikKFoDKLrApx61lf6wW7LIF2BUx3I6
+         Rs059J9SohrXtAHaw5hh5XYS9f3qxdyHPKfYIDwS6Gj9pEzyntLiTWuGCX+fVjJ+OrfC
+         /jZQW66aEXGJWXsD76p46GW2DD8X4jewww30FSG7RYD4SHc8gQtVLyKxpTTxhbCvK4GK
+         jnZylauIPgRxAJVEVhZlwsS8lpocW7nQUJL47YyG1w+4B7Rcrt45l7ItLVYoU5R4nFUK
+         GHrWSAbZru6d7oPHyOZCwCFrgn/g5nA2LU7hdmWUZD7ndB7FgKdlx+Df/zbfYFst7qIy
+         iVAw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=0QGPFasA/mlJ8O6Agjy43TljTX1e0tfJqweWTwBQCFU=;
+        b=KaBcUyGwjFMuLPJPHP8vYAPvuwZlUsXnlKnp7nLTfSEnqmJsp/ALwWknJOoT87Yw5Y
+         cp2zlbQKbEQYYtDPCt9iBEIA4Scp9mSAKroflw5fOgmq7610yTb32nkctoqpeS9MfM6s
+         sK1oUbEboz6RV7KPf0ZKJ/zccwm5sdZOqCckfrf8TFU35RgDJoHtIWmf1yjdyCcIob8e
+         yNWfjw1rtD37ZTxrWU8yGt9+EpVT/2yDoebjwfR4KUYtsCC6Afl/t4KNn53cPtv0n27T
+         gohIZ5OSCGgrbzPa+YjbnWLKBJjMHtUx/oK50/1VRHzdQCsef72mPYRRnCd31B9F+NPO
+         2dyw==
+X-Gm-Message-State: AOAM533ezMVyPpsFbZC/5lN+iP/aJ2s/FVxkphLn7/farDQFJha9zigS
+        RnFjBpYN6TfGbDPLpfck75BsEQ==
+X-Google-Smtp-Source: ABdhPJxASBZFtWw19rWt+faqaOwMIaJNr1uVa5XJI4wu80lPXkgBxPOg236tQ7Bv5zcnoHLcv1VhKQ==
+X-Received: by 2002:a92:4002:: with SMTP id n2mr4341557ila.293.1610122224353;
+        Fri, 08 Jan 2021 08:10:24 -0800 (PST)
+Received: from [192.168.1.30] ([65.144.74.34])
+        by smtp.gmail.com with ESMTPSA id d5sm7419122ilf.33.2021.01.08.08.10.23
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 08 Jan 2021 08:10:23 -0800 (PST)
+Subject: Re: [PATCH] fs: process fput task_work with TWA_SIGNAL
+To:     Al Viro <viro@zeniv.linux.org.uk>
+Cc:     linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Song Liu <songliubraving@fb.com>
+References: <d6ddf6c2-3789-2e10-ba71-668cba03eb35@kernel.dk>
+ <20210108052651.GM3579531@ZenIV.linux.org.uk>
+ <20210108064639.GN3579531@ZenIV.linux.org.uk>
+ <245fba32-76cc-c4e1-6007-0b1f8a22a86b@kernel.dk>
+ <20210108155807.GQ3579531@ZenIV.linux.org.uk>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <41e33492-7b01-6801-cbb1-78ecef0c9fc0@kernel.dk>
+Date:   Fri, 8 Jan 2021 09:10:23 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <68e22d9cd4cc631201f06300205bafb6@kernel.org>
+In-Reply-To: <20210108155807.GQ3579531@ZenIV.linux.org.uk>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 08, 2021 at 03:48:24PM +0000, Marc Zyngier wrote:
-> On 2021-01-08 15:43, John Garry wrote:
-> > On 08/01/2021 15:43, Greg KH wrote:
-> > > On Mon, Dec 21, 2020 at 10:30:55PM +0800, John Garry wrote:
-> > > > The current check of nvec < minvec for nvec returned from
-> > > > platform_irq_count() will not detect a negative error code in nvec.
-> > > > 
-> > > > This is because minvec is unsigned, and, as such, nvec is promoted to
-> > > > unsigned in that check, which will make it a huge number (if it
-> > > > contained
-> > > > -EPROBE_DEFER).
-> > > > 
-> > > > In practice, an error should not occur in nvec for the only in-tree
-> > > > user, but add a check anyway.
-> > > > 
-> > > > Fixes: e15f2fa959f2 ("driver core: platform: Add
-> > > > devm_platform_get_irqs_affinity()")
-> > > > Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
-> > > > Signed-off-by: John Garry <john.garry@huawei.com>
-> > > > ---
-> > > > I hope that this can go through either irqchip or driver/core
-> > > > trees, thanks!
-> > > 
-> > > I'll take it, thanks.
-> > > 
-> > 
-> > Hi Greg,
-> > 
-> > I think that Marc already has taken it:
-> > 
-> > https://lore.kernel.org/lkml/X%2Fh9vy%2F1h0E1hyN0@kroah.com/T/#m95ef1736dbbd801cd85a4144c8f13c2afe33bc2c
-> > 
-> > I hope it doesn't cause hassle.
+On 1/8/21 8:58 AM, Al Viro wrote:
+> On Fri, Jan 08, 2021 at 08:13:25AM -0700, Jens Axboe wrote:
+>>> Anyway, bedtime for me; right now it looks like at least for task ==
+>>> current we always want TWA_SIGNAL.  I'll look into that more tomorrow
+>>> when I get up, but so far it smells like switching everything to
+>>> TWA_SIGNAL would be the right thing to do, if not going back to bool
+>>> notify for task_work_add()...
+>>
+>> Before the change, the fact that we ran task_work off get_signal() and
+>> thus processed even non-notify work in that path was a bit of a mess,
+>> imho. If you have work that needs processing now, in the same manner as
+>> signals, then you really should be using TWA_SIGNAL. For this pipe case,
+>> and I'd need to setup and reproduce it again, the task must have a
+>> signal pending and that would have previously caused the task_work to
+>> run, and now it does not. TWA_RESUME technically didn't change its
+>> behavior, it's still the same notification type, we just don't run
+>> task_work unconditionally (regardless of notification type) from
+>> get_signal().
 > 
-> I was about to send tglx a pull request.
+> It sure as hell did change behaviour.  Think of the effect of getting
+> hit with SIGSTOP.  That's what that "bit of a mess" had been about.
+> Work done now vs. possibly several days later when SIGCONT finally
+> gets sent.
 > 
-> Greg, let me know if you want me to drop it.
+>> I think the main question here is if we want to re-instate the behavior
+>> of running task_work off get_signal(). I'm leaning towards not doing
+>> that and ensuring that callers that DO need that are using TWA_SIGNAL.
+> 
+> Can you show the callers that DO NOT need it?
 
-Nope, no worries, git will handle this coming in multiple places :)
+OK, so here's my suggestion:
 
-thanks,
+1) For 5.11, we just re-instate the task_work run in get_signal(). This
+   will make TWA_RESUME have the exact same behavior as before.
 
-greg k-h
+2) For 5.12, I'll prepare a patch that collapses TWA_RESUME and TWA_SIGNAL,
+   turning it into a bool again (notify or no notify).
+
+How does that sound?
+
+-- 
+Jens Axboe
+
