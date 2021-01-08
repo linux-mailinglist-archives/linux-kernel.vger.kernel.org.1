@@ -2,120 +2,206 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9660F2EF728
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 19:17:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 24AA02EF732
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 19:17:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728346AbhAHSQI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Jan 2021 13:16:08 -0500
-Received: from aserp2130.oracle.com ([141.146.126.79]:43920 "EHLO
-        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727429AbhAHSQH (ORCPT
+        id S1728586AbhAHSQv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Jan 2021 13:16:51 -0500
+Received: from m43-15.mailgun.net ([69.72.43.15]:26822 "EHLO
+        m43-15.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728530AbhAHSQu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Jan 2021 13:16:07 -0500
-Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
-        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 108HwwOY004690;
-        Fri, 8 Jan 2021 18:15:09 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=KiTw25sQnwXSQX+0iRD1HBB4uXxJXhd7Tk5XQ9JUJTE=;
- b=gTJvSGLjyueTzS8vgNsV+rpKJmQFk8fY+zb3p5ZDQqfAWD0TXtxr0+zcwpk/Z5f9BG5e
- VwNDwsqFMNUcseD6IEwkpfpSHYOITZNUp5dTFJF3GZJlV0Qbvj5cXNFfUWQ4mhZbb6Kh
- 7t601GM0mXU18dnI2cVo1qytEC2sUIBJA6/fu4DmcG+wxp0PxPmrBAwkqYTHm9KeCfXv
- FqcIB4Ec7M+DYaIHNVo1oCCjPzOaZ1lgAMjgQF/f8urKsNVcjV12MvAhvgmFwrWXDi2x
- SFEINWClUGqtHlOWAU9dapkOdg1gHd2jiFKW+9gf1IC+ZJpceqxWihAQYrpFIpewNTLj zg== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by aserp2130.oracle.com with ESMTP id 35wcuy2pbg-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 08 Jan 2021 18:15:08 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 108I0wFn081682;
-        Fri, 8 Jan 2021 18:15:08 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by aserp3020.oracle.com with ESMTP id 35v1fcvpaa-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 08 Jan 2021 18:15:08 +0000
-Received: from abhmp0016.oracle.com (abhmp0016.oracle.com [141.146.116.22])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 108IF6J1019818;
-        Fri, 8 Jan 2021 18:15:06 GMT
-Received: from [10.159.230.21] (/10.159.230.21)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Fri, 08 Jan 2021 18:15:05 +0000
-Subject: Re: [RFC PATCH v3 0/9] fsdax: introduce fs query to support reflink
-To:     Ruan Shiyang <ruansy.fnst@cn.fujitsu.com>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>
-Cc:     linux-kernel@vger.kernel.org, linux-xfs@vger.kernel.org,
-        linux-nvdimm@lists.01.org, linux-mm@kvack.org,
-        linux-fsdevel@vger.kernel.org, linux-raid@vger.kernel.org,
-        dan.j.williams@intel.com, david@fromorbit.com, hch@lst.de,
-        song@kernel.org, rgoldwyn@suse.de, qi.fuli@fujitsu.com,
-        y-goto@fujitsu.com
-References: <20201215121414.253660-1-ruansy.fnst@cn.fujitsu.com>
- <7fc7ba7c-f138-4944-dcc7-ce4b3f097528@oracle.com>
- <a57c44dd-127a-3bd2-fcb3-f1373572de27@cn.fujitsu.com>
- <20201218034907.GG6918@magnolia>
- <16ac8000-2892-7491-26a0-84de4301f168@cn.fujitsu.com>
-From:   Jane Chu <jane.chu@oracle.com>
-Organization: Oracle Corporation
-Message-ID: <f3f93809-ba68-521f-70d8-27f1ba5d0036@oracle.com>
-Date:   Fri, 8 Jan 2021 10:14:58 -0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
-MIME-Version: 1.0
-In-Reply-To: <16ac8000-2892-7491-26a0-84de4301f168@cn.fujitsu.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9858 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 phishscore=0
- suspectscore=0 spamscore=0 bulkscore=0 adultscore=0 mlxscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2101080099
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9858 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 bulkscore=0
- clxscore=1011 spamscore=0 impostorscore=0 priorityscore=1501 mlxscore=0
- adultscore=0 mlxlogscore=999 lowpriorityscore=0 phishscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2101080099
+        Fri, 8 Jan 2021 13:16:50 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1610129786; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=FenJNrq6oARj7QIk122RbRfflhXOjoSYWRYsI0s5h5A=; b=niPnjQItlkeycpFq+r1k+fT5XncDe0q7H+Bxsc/8E/jklagTUkN31UhOM43d5R9w2aLJ5fU2
+ Irm42uysr+iUtqc3Y4fCpgOPWjA9yBqXFCYDRamZO47oRLqumnQ2nfdY6u1LyULldWgnrROa
+ XRgo6csgIIe23qupFkOWBDMgOx8=
+X-Mailgun-Sending-Ip: 69.72.43.15
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n09.prod.us-west-2.postgun.com with SMTP id
+ 5ff8a1540699456d2100544a (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 08 Jan 2021 18:15:48
+ GMT
+Sender: akhilpo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id A76B5C43461; Fri,  8 Jan 2021 18:15:47 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from akhilpo-linux.qualcomm.com (unknown [202.46.22.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: akhilpo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id A4F4AC433CA;
+        Fri,  8 Jan 2021 18:15:44 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org A4F4AC433CA
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=akhilpo@codeaurora.org
+From:   Akhil P Oommen <akhilpo@codeaurora.org>
+To:     freedreno@lists.freedesktop.org
+Cc:     dri-devel@freedesktop.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        jcrouse@codeaurora.org, robdclark@gmail.com, mka@chromium.org
+Subject: [PATCH v4 1/2] drm/msm: Add speed-bin support to a618 gpu
+Date:   Fri,  8 Jan 2021 23:45:30 +0530
+Message-Id: <1610129731-4875-1-git-send-email-akhilpo@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Shiyang,
+Some GPUs support different max frequencies depending on the platform.
+To identify the correct variant, we should check the gpu speedbin
+fuse value. Add support for this speedbin detection to a6xx family
+along with the required fuse details for a618 gpu.
 
-On 12/18/2020 1:13 AM, Ruan Shiyang wrote:
->>>>
->>>> So I tried the patchset with pmem error injection, the SIGBUS payload
->>>> does not look right -
->>>>
->>>> ** SIGBUS(7): **
->>>> ** si_addr(0x(nil)), si_lsb(0xC), si_code(0x4, BUS_MCEERR_AR) **
->>>>
->>>> I expect the payload looks like
->>>>
->>>> ** si_addr(0x7f3672e00000), si_lsb(0x15), si_code(0x4, 
->>>> BUS_MCEERR_AR) **
->>>
->>> Thanks for testing.  I test the SIGBUS by writing a program which calls
->>> madvise(... ,MADV_HWPOISON) to inject memory-failure.  It just shows 
->>> that
->>> the program is killed by SIGBUS.  I cannot get any detail from it.  So,
->>> could you please show me the right way(test tools) to test it?
->>
->> I'm assuming that Jane is using a program that calls sigaction to
->> install a SIGBUS handler, and dumps the entire siginfo_t structure
->> whenever it receives one...
+Signed-off-by: Akhil P Oommen <akhilpo@codeaurora.org>
+---
+Changes from v2:
+	1. Made the changes a6xx specific to save space.
+Changes from v1:
+	1. Added the changes to support a618 sku to the series.
+	2. Avoid failing probe in case of an unsupported sku. (Rob)
+Changes from v3:
+	1. Replace a618_speedbins[] with a function. (Jordan)
 
-Yes, thanks Darrick.
+ drivers/gpu/drm/msm/adreno/a6xx_gpu.c | 83 +++++++++++++++++++++++++++++++++++
+ drivers/gpu/drm/msm/adreno/a6xx_gpu.h |  2 +
+ 2 files changed, 85 insertions(+)
 
-> 
-> OK.  Let me try it and figure out what's wrong in it.
-
-I injected poison via "ndctl inject-error",  not expecting it made any 
-difference though.
-
-Any luck?
-
-thanks,
--jane
+diff --git a/drivers/gpu/drm/msm/adreno/a6xx_gpu.c b/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
+index 1306618..499d134 100644
+--- a/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
++++ b/drivers/gpu/drm/msm/adreno/a6xx_gpu.c
+@@ -10,6 +10,7 @@
+ 
+ #include <linux/bitfield.h>
+ #include <linux/devfreq.h>
++#include <linux/nvmem-consumer.h>
+ #include <linux/soc/qcom/llcc-qcom.h>
+ 
+ #define GPU_PAS_ID 13
+@@ -1208,6 +1209,10 @@ static void a6xx_destroy(struct msm_gpu *gpu)
+ 	a6xx_gmu_remove(a6xx_gpu);
+ 
+ 	adreno_gpu_cleanup(adreno_gpu);
++
++	if (a6xx_gpu->opp_table)
++		dev_pm_opp_put_supported_hw(a6xx_gpu->opp_table);
++
+ 	kfree(a6xx_gpu);
+ }
+ 
+@@ -1264,6 +1269,78 @@ static uint32_t a6xx_get_rptr(struct msm_gpu *gpu, struct msm_ringbuffer *ring)
+ 	return ring->memptrs->rptr = gpu_read(gpu, REG_A6XX_CP_RB_RPTR);
+ }
+ 
++static u32 a618_get_speed_bin(u32 fuse)
++{
++	if (fuse == 0)
++		return 0;
++	else if (fuse == 169)
++		return 1;
++	else if (fuse == 174)
++		return 2;
++
++	return UINT_MAX;
++}
++
++static u32 fuse_to_supp_hw(struct device *dev, u32 revn, u32 fuse)
++{
++	u32 val = UINT_MAX;
++
++	if (revn == 618)
++		val = a618_get_speed_bin(fuse);
++
++	if (val == UINT_MAX) {
++		DRM_DEV_ERROR(dev,
++			"missing support for speed-bin: %u. Some OPPs may not be supported by hardware",
++			fuse);
++		return UINT_MAX;
++	}
++
++	return (1 << val);
++}
++
++static int a6xx_set_supported_hw(struct device *dev, struct a6xx_gpu *a6xx_gpu,
++		u32 revn)
++{
++	struct opp_table *opp_table;
++	struct nvmem_cell *cell;
++	u32 supp_hw = UINT_MAX;
++	void *buf;
++
++	cell = nvmem_cell_get(dev, "speed_bin");
++	/*
++	 * -ENOENT means that the platform doesn't support speedbin which is
++	 * fine
++	 */
++	if (PTR_ERR(cell) == -ENOENT)
++		return 0;
++	else if (IS_ERR(cell)) {
++		DRM_DEV_ERROR(dev,
++				"failed to read speed-bin. Some OPPs may not be supported by hardware");
++		goto done;
++	}
++
++	buf = nvmem_cell_read(cell, NULL);
++	if (IS_ERR(buf)) {
++		nvmem_cell_put(cell);
++		DRM_DEV_ERROR(dev,
++				"failed to read speed-bin. Some OPPs may not be supported by hardware");
++		goto done;
++	}
++
++	supp_hw = fuse_to_supp_hw(dev, revn, *((u32 *) buf));
++
++	kfree(buf);
++	nvmem_cell_put(cell);
++
++done:
++	opp_table = dev_pm_opp_set_supported_hw(dev, &supp_hw, 1);
++	if (IS_ERR(opp_table))
++		return PTR_ERR(opp_table);
++
++	a6xx_gpu->opp_table = opp_table;
++	return 0;
++}
++
+ static const struct adreno_gpu_funcs funcs = {
+ 	.base = {
+ 		.get_param = adreno_get_param,
+@@ -1325,6 +1402,12 @@ struct msm_gpu *a6xx_gpu_init(struct drm_device *dev)
+ 
+ 	a6xx_llc_slices_init(pdev, a6xx_gpu);
+ 
++	ret = a6xx_set_supported_hw(&pdev->dev, a6xx_gpu, info->revn);
++	if (ret) {
++		a6xx_destroy(&(a6xx_gpu->base.base));
++		return ERR_PTR(ret);
++	}
++
+ 	ret = adreno_gpu_init(dev, pdev, adreno_gpu, &funcs, 1);
+ 	if (ret) {
+ 		a6xx_destroy(&(a6xx_gpu->base.base));
+diff --git a/drivers/gpu/drm/msm/adreno/a6xx_gpu.h b/drivers/gpu/drm/msm/adreno/a6xx_gpu.h
+index e793d32..ce0610c 100644
+--- a/drivers/gpu/drm/msm/adreno/a6xx_gpu.h
++++ b/drivers/gpu/drm/msm/adreno/a6xx_gpu.h
+@@ -33,6 +33,8 @@ struct a6xx_gpu {
+ 	void *llc_slice;
+ 	void *htw_llc_slice;
+ 	bool have_mmu500;
++
++	struct opp_table *opp_table;
+ };
+ 
+ #define to_a6xx_gpu(x) container_of(x, struct a6xx_gpu, base)
+-- 
+2.7.4
 
