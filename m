@@ -2,71 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E30B2EF5B1
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 17:26:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 220142EF5B0
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 17:26:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728064AbhAHQ0X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Jan 2021 11:26:23 -0500
-Received: from youngberry.canonical.com ([91.189.89.112]:50853 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727213AbhAHQ0X (ORCPT
+        id S1728111AbhAHQ0i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Jan 2021 11:26:38 -0500
+Received: from mail-ot1-f51.google.com ([209.85.210.51]:40908 "EHLO
+        mail-ot1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728069AbhAHQ0h (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Jan 2021 11:26:23 -0500
-Received: from mail-lf1-f71.google.com ([209.85.167.71])
-        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <kai.heng.feng@canonical.com>)
-        id 1kxua4-000422-SY
-        for linux-kernel@vger.kernel.org; Fri, 08 Jan 2021 16:25:40 +0000
-Received: by mail-lf1-f71.google.com with SMTP id a19so8534518lfd.8
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Jan 2021 08:25:40 -0800 (PST)
+        Fri, 8 Jan 2021 11:26:37 -0500
+Received: by mail-ot1-f51.google.com with SMTP id j12so10135438ota.7
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Jan 2021 08:26:22 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=4ysF699gum20ke/f8RjKaFSvgbRhAZM2ouyRt7X4Sec=;
-        b=WFmeJZwtT+qxx4L+WxJZOOwB3yAT7XGjezfBMMeyRjQpXYAnTJpCqW8yh/cHdOl2kt
-         O+8TqhtBr1ZYMYdxT2JuKvUs4fgjZfwMaXL3YUW1nYD1i69k0iy/lTDnzUW0QQ/wYqXh
-         JlpO3ALYdT1wOBQ7I8zEPHdQopGY6aYM2bDH2mNMisBswB5i7IxkGKGt2V9l2U4USv+C
-         aCPsRgHGf5EbSrvg99ZXXzYvQGWdVbiT2SDCxZmvSX1s1Lk98qwbgYIJhv09CLIPMhfV
-         Ktf8DpJ6ANd0xXc7VtAstkFYlp3f3ha7bzMoEDRWkrNSZ3nb3zGIKMFSn2IjzfRO8nzw
-         qiXA==
-X-Gm-Message-State: AOAM531OQVh0rOM5XiOgi5O02jX7+xQG6T4J7s+IVpyB8uALdFo4OsY4
-        ljxi7wMCtDpe/j4QcOE3D9VaJDoLHkWtvr4cvhHiNFAtMIsxnwgvDUnoYoxX8MYxCTLAkDhWzKJ
-        s1S8US9bKSxB+zdWyKTocWxkKAQqoNW9vubytB9P8FjSVpIGh1wrpOgFOUw==
-X-Received: by 2002:a2e:6c0a:: with SMTP id h10mr1936317ljc.149.1610123140339;
-        Fri, 08 Jan 2021 08:25:40 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJwKx6HpdNkM3sZ0PdAhD2aJSAg9xbk+QEeabuLyBIv/0NMYrhLvBkVH1TueHAuvhIV8BPYPhzkdpLT7hrF+25Y=
-X-Received: by 2002:a2e:6c0a:: with SMTP id h10mr1936310ljc.149.1610123140107;
- Fri, 08 Jan 2021 08:25:40 -0800 (PST)
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=4P0bI2KySEz7bF1VDbHcM0MRrhKTTvGeuLXsvdhijoA=;
+        b=E9w0OKEtQG3oeOFXSu7dpJylpVP0KO65kBXqcokPxH+w5mpDu9IRjHfxRWw4xALAY8
+         C2vom2zK+jm0cIE+Z0EV9GlvR6+pz8OsT51xX8DSj2ir240kSBEmaHU7oZ62YTa5/5c9
+         0fkMz++ZGUyOzpOxuHs56SD52gt5fQFtCxutrg65lXmALTSijoedGyb4b4gnppzrxgav
+         nqBARC55quTugSKi7Hk4ZQwPWFui8IqJPorQsFoIADFEvo5nKmabHyBnBPR+nFbZ4Af5
+         Sqhv48dDQyWZB/6S2/5AZ7FBxcD8PFtMTCqL1uc/I0gXo2aGbWrLQWgSGU1GM6VIEGEv
+         980w==
+X-Gm-Message-State: AOAM533YO3eBD4jaAu0Paw8Yvh3n49nHQ+LOutDJizCtYUnD3BqFgXqL
+        EVaeNiSwukQR/lO9yq0L+MXxmo5C23/clzGBSFI=
+X-Google-Smtp-Source: ABdhPJy3k6nmCGv0rEESlquxP7okt0veCEhpEnm7rMrWlbYyLr9vLqjY+vBqL0DWfMxahjb4O55awdynuAirNoyHknM=
+X-Received: by 2002:a05:6830:1f5a:: with SMTP id u26mr3135433oth.250.1610123156661;
+ Fri, 08 Jan 2021 08:25:56 -0800 (PST)
 MIME-Version: 1.0
-From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
-Date:   Sat, 9 Jan 2021 00:25:28 +0800
-Message-ID: <CAAd53p6aURhfFp1RFQxEPtGfzSdUfe4=N=P2rP27ULxp-D4GCg@mail.gmail.com>
-Subject: Multiple MODALIAS= in uevent file confuses userspace
-To:     "Rafael J. Wysocki" <rafael@kernel.org>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        lennart@poettering.net,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
+References: <20210107092652.3438696-1-atish.patra@wdc.com> <20210107092652.3438696-2-atish.patra@wdc.com>
+In-Reply-To: <20210107092652.3438696-2-atish.patra@wdc.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Fri, 8 Jan 2021 17:25:45 +0100
+Message-ID: <CAMuHMdWf6K-5y02+WJ6Khu1cD6P0n5x1wYQikrECkuNtAA1pgg@mail.gmail.com>
+Subject: Re: [PATCH 1/4] RISC-V: Do not allocate memblock while iterating
+ reserved memblocks
+To:     Atish Patra <atish.patra@wdc.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Anup Patel <anup.patel@wdc.com>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Nick Kossifidis <mick@ics.forth.gr>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Mike Rapoport <rppt@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit 8765c5ba19490 ("ACPI / scan: Rework modalias creation when
-"compatible" is present") creates two modaliases for certain ACPI
-devices. However userspace (systemd-udevd in this case) assumes uevent
-file doesn't have duplicated keys, so two "MODALIAS=" breaks the
-assumption.
+Hi Atish,
 
-Based on the assumption, systemd-udevd internally uses hashmap to
-store each line of uevent file, so the second modalias always replaces
-the first modalias.
+On Thu, Jan 7, 2021 at 10:28 AM Atish Patra <atish.patra@wdc.com> wrote:
+> Currently, resource tree allocates memory blocks while iterating on the
+> list. It leads to following kernel warning because memblock allocation
+> also invokes memory block reservation API.
+>
+> [    0.000000] ------------[ cut here ]------------
+> [    0.000000] WARNING: CPU: 0 PID: 0 at kernel/resource.c:795
+> __insert_resource+0x8e/0xd0
+> [    0.000000] Modules linked in:
+> [    0.000000] CPU: 0 PID: 0 Comm: swapper Not tainted
+> 5.10.0-00022-ge20097fb37e2-dirty #549
+> [    0.000000] epc: c00125c2 ra : c001262c sp : c1c01f50
+> [    0.000000]  gp : c1d456e0 tp : c1c0a980 t0 : ffffcf20
+> [    0.000000]  t1 : 00000000 t2 : 00000000 s0 : c1c01f60
+> [    0.000000]  s1 : ffffcf00 a0 : ffffff00 a1 : c1c0c0c4
+> [    0.000000]  a2 : 80c12b15 a3 : 80402000 a4 : 80402000
+> [    0.000000]  a5 : c1c0c0c4 a6 : 80c12b15 a7 : f5faf600
+> [    0.000000]  s2 : c1c0c0c4 s3 : c1c0e000 s4 : c1009a80
+> [    0.000000]  s5 : c1c0c000 s6 : c1d48000 s7 : c1613b4c
+> [    0.000000]  s8 : 00000fff s9 : 80000200 s10: c1613b40
+> [    0.000000]  s11: 00000000 t3 : c1d4a000 t4 : ffffffff
+>
+> This is also unnecessary as we can pre-compute the total memblocks required
+> for each memory region and allocate it before the loop. It save precious
+> boot time not going through memblock allocation code every time.
+>
+> Fixes: 00ab027a3b82 ("RISC-V: Add kernel image sections to the resource tree")
+>
+> Signed-off-by: Atish Patra <atish.patra@wdc.com>
 
-My attempt [1] is to add a new key, "MODALIAS1" for the second
-modalias. This brings up the question of whether each key in uevent
-file is unique. If it's no unique, this may break may userspace.
+Thanks for your patch!
 
-[1] https://github.com/systemd/systemd/pull/18163
+I never saw the warning (on linux-on-litex-vexriscv), but instead I got:
 
-Kai-Heng
+    Failed to add a Kernel code resource at 40001000
+
+after Initmem setup. Adding some debug info to init_resources() showed
+that the memblock.reserved list kept on increasing, until memory
+corruption happened (pointers started to look like ASCII strings), the
+error message above is printed, and after which the boot continued.
+Changing L1_CACHE_SHIFT in arch/riscv/include/asm/cache.h to 5 fixed that.
+
+With this patch, the error message above is no longer printed, so
+Tested-by: Geert Uytterhoeven <geert@linux-m68k.org>
+
+Noted that the kernel still crashes later, with
+
+    Unable to handle kernel paging request at virtual address 61636473
+
+Again, 0x61636473 looks like ASCII, and your PATCH 3/4 for
+L1_CACHE_SHIFT fixes that, too.
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
