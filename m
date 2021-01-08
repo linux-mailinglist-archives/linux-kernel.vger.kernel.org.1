@@ -2,344 +2,229 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C24A2EEC48
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 05:09:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E1CE02EEC4E
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 05:12:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727599AbhAHEIt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 23:08:49 -0500
-Received: from linux.microsoft.com ([13.77.154.182]:59258 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727455AbhAHEIr (ORCPT
+        id S1727131AbhAHEKa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 23:10:30 -0500
+Received: from mailgw01.mediatek.com ([210.61.82.183]:48986 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726600AbhAHEKa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 23:08:47 -0500
-Received: from tusharsu-Ubuntu.lan (c-71-197-163-6.hsd1.wa.comcast.net [71.197.163.6])
-        by linux.microsoft.com (Postfix) with ESMTPSA id B16DC20B6C47;
-        Thu,  7 Jan 2021 20:07:26 -0800 (PST)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com B16DC20B6C47
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1610078847;
-        bh=AgvYAJJjP1R66s0Ox9IE0VuR3xlSiEzYCYXqnGjJ/8U=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=QLv36zaq28Y7t/lSyM5Y79XKQ7tjLhsjhqsaBeIaR8Ja0sjKtILfSYB0W/5tLMuNY
-         nK4j9LuuX5W9KtmjqwhwHfYx2Sgu7/i6jwJLIwROs9p9juXr/YaXGs6t3KulJnso15
-         zqvmuqBEXlGZQJD/OUgkx/zyrh0y0patvMKFnn2M=
-From:   Tushar Sugandhi <tusharsu@linux.microsoft.com>
-To:     zohar@linux.ibm.com, stephen.smalley.work@gmail.com,
-        casey@schaufler-ca.com, agk@redhat.com, snitzer@redhat.com,
-        gmazyland@gmail.com, paul@paul-moore.com
-Cc:     tyhicks@linux.microsoft.com, sashal@kernel.org, jmorris@namei.org,
-        nramas@linux.microsoft.com, linux-integrity@vger.kernel.org,
-        selinux@vger.kernel.org, linux-security-module@vger.kernel.org,
-        linux-kernel@vger.kernel.org, dm-devel@redhat.com
-Subject: [PATCH v10 8/8] selinux: include a consumer of the new IMA critical data hook
-Date:   Thu,  7 Jan 2021 20:07:08 -0800
-Message-Id: <20210108040708.8389-9-tusharsu@linux.microsoft.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210108040708.8389-1-tusharsu@linux.microsoft.com>
-References: <20210108040708.8389-1-tusharsu@linux.microsoft.com>
+        Thu, 7 Jan 2021 23:10:30 -0500
+X-UUID: 95460ae080ac436fa08532eb34eb7458-20210108
+X-UUID: 95460ae080ac436fa08532eb34eb7458-20210108
+Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw01.mediatek.com
+        (envelope-from <walter-zh.wu@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 438929673; Fri, 08 Jan 2021 12:09:44 +0800
+Received: from mtkcas07.mediatek.inc (172.21.101.84) by
+ mtkmbs01n2.mediatek.inc (172.21.101.79) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Fri, 8 Jan 2021 12:09:41 +0800
+Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas07.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Fri, 8 Jan 2021 12:09:41 +0800
+From:   Walter Wu <walter-zh.wu@mediatek.com>
+To:     Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Alexander Potapenko <glider@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Andrey Konovalov <andreyknvl@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Nathan Chancellor <natechancellor@gmail.com>
+CC:     <kasan-dev@googlegroups.com>, <linux-mm@kvack.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        wsd_upstream <wsd_upstream@mediatek.com>,
+        <linux-mediatek@lists.infradead.org>,
+        Walter Wu <walter-zh.wu@mediatek.com>
+Subject: [PATCH v3] kasan: remove redundant config option
+Date:   Fri, 8 Jan 2021 12:09:40 +0800
+Message-ID: <20210108040940.1138-1-walter-zh.wu@mediatek.com>
+X-Mailer: git-send-email 2.18.0
+MIME-Version: 1.0
+Content-Type: text/plain
+X-TM-SNTS-SMTP: A0BC49EDB6B8B99BD15B778B5C0058C077F8B25104FB38FF69F13199E1903C002000:8
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
+CONFIG_KASAN_STACK and CONFIG_KASAN_STACK_ENABLE both enable KASAN stack
+instrumentation, but we should only need one config, so that we remove
+CONFIG_KASAN_STACK_ENABLE and make CONFIG_KASAN_STACK workable. see [1].
 
-SELinux stores the active policy in memory, so the changes to this data
-at runtime would have an impact on the security guarantees provided
-by SELinux.  Measuring in-memory SELinux policy through IMA subsystem
-provides a secure way for the attestation service to remotely validate
-the policy contents at runtime.
+When enable KASAN stack instrumentation, then for gcc we could do
+no prompt and default value y, and for clang prompt and default
+value n.
 
-Measure the hash of the loaded policy by calling the IMA hook
-ima_measure_critical_data().  Since the size of the loaded policy
-can be large (several MB), measure the hash of the policy instead of
-the entire policy to avoid bloating the IMA log entry.
+[1]: https://bugzilla.kernel.org/show_bug.cgi?id=210221
 
-To enable SELinux data measurement, the following steps are required:
-
-1, Add "ima_policy=critical_data" to the kernel command line arguments
-   to enable measuring SELinux data at boot time.
-For example,
-  BOOT_IMAGE=/boot/vmlinuz-5.10.0-rc1+ root=UUID=fd643309-a5d2-4ed3-b10d-3c579a5fab2f ro nomodeset security=selinux ima_policy=critical_data
-
-2, Add the following rule to /etc/ima/ima-policy
-   measure func=CRITICAL_DATA label=selinux
-
-Sample measurement of the hash of SELinux policy:
-
-To verify the measured data with the current SELinux policy run
-the following commands and verify the output hash values match.
-
-  sha256sum /sys/fs/selinux/policy | cut -d' ' -f 1
-
-  grep "selinux-policy-hash" /sys/kernel/security/integrity/ima/ascii_runtime_measurements | tail -1 | cut -d' ' -f 6
-
-Note that the actual verification of SELinux policy would require loading
-the expected policy into an identical kernel on a pristine/known-safe
-system and run the sha256sum /sys/kernel/selinux/policy there to get
-the expected hash.
-
-Signed-off-by: Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
-Suggested-by: Stephen Smalley <stephen.smalley.work@gmail.com>
-Reviewed-by: Tyler Hicks <tyhicks@linux.microsoft.com>
+Signed-off-by: Walter Wu <walter-zh.wu@mediatek.com>
+Suggested-by: Dmitry Vyukov <dvyukov@google.com>
+Cc: Andrey Ryabinin <aryabinin@virtuozzo.com>
+Cc: Dmitry Vyukov <dvyukov@google.com>
+Cc: Andrey Konovalov <andreyknvl@google.com>
+Cc: Alexander Potapenko <glider@google.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: Nathan Chancellor <natechancellor@gmail.com>
 ---
- Documentation/ABI/testing/ima_policy |  3 +-
- security/selinux/Makefile            |  2 +
- security/selinux/ima.c               | 64 ++++++++++++++++++++++++++++
- security/selinux/include/ima.h       | 24 +++++++++++
- security/selinux/include/security.h  |  3 +-
- security/selinux/ss/services.c       | 64 ++++++++++++++++++++++++----
- 6 files changed, 149 insertions(+), 11 deletions(-)
- create mode 100644 security/selinux/ima.c
- create mode 100644 security/selinux/include/ima.h
 
-diff --git a/Documentation/ABI/testing/ima_policy b/Documentation/ABI/testing/ima_policy
-index 54fe1c15ed50..8365596cb42b 100644
---- a/Documentation/ABI/testing/ima_policy
-+++ b/Documentation/ABI/testing/ima_policy
-@@ -52,8 +52,9 @@ Description:
- 			template:= name of a defined IMA template type
- 			(eg, ima-ng). Only valid when action is "measure".
- 			pcr:= decimal value
--			label:= [data_label]
-+			label:= [selinux]|[data_label]
- 			data_label:= a unique string used for grouping and limiting critical data.
-+			For example, "selinux" to measure critical data for SELinux.
+v2: make commit log to be more readable.
+v3: remain CONFIG_KASAN_STACK_ENABLE setting
+    fix the pre-processors syntax
+
+---
+ arch/arm64/kernel/sleep.S        |  2 +-
+ arch/x86/kernel/acpi/wakeup_64.S |  2 +-
+ include/linux/kasan.h            |  2 +-
+ lib/Kconfig.kasan                |  8 ++------
+ mm/kasan/common.c                |  2 +-
+ mm/kasan/kasan.h                 |  2 +-
+ mm/kasan/report_generic.c        |  2 +-
+ scripts/Makefile.kasan           | 10 ++++++++--
+ 8 files changed, 16 insertions(+), 14 deletions(-)
+
+diff --git a/arch/arm64/kernel/sleep.S b/arch/arm64/kernel/sleep.S
+index 6bdef7362c0e..7c44ede122a9 100644
+--- a/arch/arm64/kernel/sleep.S
++++ b/arch/arm64/kernel/sleep.S
+@@ -133,7 +133,7 @@ SYM_FUNC_START(_cpu_resume)
+ 	 */
+ 	bl	cpu_do_resume
  
- 		  default policy:
- 			# PROC_SUPER_MAGIC
-diff --git a/security/selinux/Makefile b/security/selinux/Makefile
-index 4d8e0e8adf0b..776162444882 100644
---- a/security/selinux/Makefile
-+++ b/security/selinux/Makefile
-@@ -16,6 +16,8 @@ selinux-$(CONFIG_NETLABEL) += netlabel.o
+-#if defined(CONFIG_KASAN) && CONFIG_KASAN_STACK
++#if defined(CONFIG_KASAN) && defined(CONFIG_KASAN_STACK)
+ 	mov	x0, sp
+ 	bl	kasan_unpoison_task_stack_below
+ #endif
+diff --git a/arch/x86/kernel/acpi/wakeup_64.S b/arch/x86/kernel/acpi/wakeup_64.S
+index 5d3a0b8fd379..c7f412f4e07d 100644
+--- a/arch/x86/kernel/acpi/wakeup_64.S
++++ b/arch/x86/kernel/acpi/wakeup_64.S
+@@ -112,7 +112,7 @@ SYM_FUNC_START(do_suspend_lowlevel)
+ 	movq	pt_regs_r14(%rax), %r14
+ 	movq	pt_regs_r15(%rax), %r15
  
- selinux-$(CONFIG_SECURITY_INFINIBAND) += ibpkey.o
+-#if defined(CONFIG_KASAN) && CONFIG_KASAN_STACK
++#if defined(CONFIG_KASAN) && defined(CONFIG_KASAN_STACK)
+ 	/*
+ 	 * The suspend path may have poisoned some areas deeper in the stack,
+ 	 * which we now need to unpoison.
+diff --git a/include/linux/kasan.h b/include/linux/kasan.h
+index 5e0655fb2a6f..35d1e9b2cbfa 100644
+--- a/include/linux/kasan.h
++++ b/include/linux/kasan.h
+@@ -302,7 +302,7 @@ static inline void kasan_kfree_large(void *ptr, unsigned long ip) {}
  
-+selinux-$(CONFIG_IMA) += ima.o
-+
- ccflags-y := -I$(srctree)/security/selinux -I$(srctree)/security/selinux/include
+ #endif /* CONFIG_KASAN */
  
- $(addprefix $(obj)/,$(selinux-y)): $(obj)/flask.h
-diff --git a/security/selinux/ima.c b/security/selinux/ima.c
-new file mode 100644
-index 000000000000..0b835bdc3aa9
---- /dev/null
-+++ b/security/selinux/ima.c
-@@ -0,0 +1,64 @@
-+// SPDX-License-Identifier: GPL-2.0+
-+/*
-+ * Copyright (C) 2021 Microsoft Corporation
-+ *
-+ * Author: Lakshmi Ramasubramanian (nramas@linux.microsoft.com)
-+ *
-+ * Measure critical data structures maintainted by SELinux
-+ * using IMA subsystem.
-+ */
-+#include <linux/vmalloc.h>
-+#include <linux/ktime.h>
-+#include <linux/ima.h>
-+#include "security.h"
-+#include "ima.h"
-+
-+/*
-+ * selinux_ima_measure_state - Measure hash of the SELinux policy
-+ *
-+ * @state: selinux state struct
-+ *
-+ * NOTE: This function must be called with policy_mutex held.
-+ */
-+void selinux_ima_measure_state(struct selinux_state *state)
-+{
-+	struct timespec64 cur_time;
-+	void *policy = NULL;
-+	char *policy_event_name = NULL;
-+	size_t policy_len;
-+	int rc = 0;
-+
-+	/*
-+	 * Measure SELinux policy only after initialization is completed.
-+	 */
-+	if (!selinux_initialized(state))
-+		return;
-+
-+	/*
-+	 * Pass a unique "event_name" to the IMA hook so that IMA subsystem
-+	 * will always measure the given data.
-+	 */
-+	ktime_get_real_ts64(&cur_time);
-+	policy_event_name = kasprintf(GFP_KERNEL, "%s-%lld:%09ld",
-+				      "selinux-policy-hash",
-+				      cur_time.tv_sec, cur_time.tv_nsec);
-+	if (!policy_event_name) {
-+		pr_err("SELinux: %s: event name for policy not allocated.\n",
-+		       __func__);
-+		goto out;
-+	}
-+
-+	rc = security_read_state_kernel(state, &policy, &policy_len);
-+	if (rc) {
-+		pr_err("SELinux: %s: failed to read policy %d.\n", __func__, rc);
-+		goto out;
-+	}
-+
-+	ima_measure_critical_data("selinux", policy_event_name,
-+				  policy, policy_len, true);
-+
-+	vfree(policy);
-+
-+out:
-+	kfree(policy_event_name);
-+}
-diff --git a/security/selinux/include/ima.h b/security/selinux/include/ima.h
-new file mode 100644
-index 000000000000..d69c36611423
---- /dev/null
-+++ b/security/selinux/include/ima.h
-@@ -0,0 +1,24 @@
-+/* SPDX-License-Identifier: GPL-2.0+ */
-+/*
-+ * Copyright (C) 2021 Microsoft Corporation
-+ *
-+ * Author: Lakshmi Ramasubramanian (nramas@linux.microsoft.com)
-+ *
-+ * Measure critical data structures maintainted by SELinux
-+ * using IMA subsystem.
-+ */
-+
-+#ifndef _SELINUX_IMA_H_
-+#define _SELINUX_IMA_H_
-+
-+#include "security.h"
-+
-+#ifdef CONFIG_IMA
-+extern void selinux_ima_measure_state(struct selinux_state *selinux_state);
-+#else
-+static inline void selinux_ima_measure_state(struct selinux_state *selinux_state)
-+{
-+}
-+#endif
-+
-+#endif	/* _SELINUX_IMA_H_ */
-diff --git a/security/selinux/include/security.h b/security/selinux/include/security.h
-index 3cc8bab31ea8..29cae32d3fc5 100644
---- a/security/selinux/include/security.h
-+++ b/security/selinux/include/security.h
-@@ -229,7 +229,8 @@ void selinux_policy_cancel(struct selinux_state *state,
- 			struct selinux_policy *policy);
- int security_read_policy(struct selinux_state *state,
- 			 void **data, size_t *len);
+-#if defined(CONFIG_KASAN) && CONFIG_KASAN_STACK
++#if defined(CONFIG_KASAN) && defined(CONFIG_KASAN_STACK)
+ void kasan_unpoison_task_stack(struct task_struct *task);
+ #else
+ static inline void kasan_unpoison_task_stack(struct task_struct *task) {}
+diff --git a/lib/Kconfig.kasan b/lib/Kconfig.kasan
+index f5fa4ba126bf..fde82ec85f8f 100644
+--- a/lib/Kconfig.kasan
++++ b/lib/Kconfig.kasan
+@@ -138,9 +138,10 @@ config KASAN_INLINE
+ 
+ endchoice
+ 
+-config KASAN_STACK_ENABLE
++config KASAN_STACK
+ 	bool "Enable stack instrumentation (unsafe)" if CC_IS_CLANG && !COMPILE_TEST
+ 	depends on KASAN_GENERIC || KASAN_SW_TAGS
++	default y if CC_IS_GCC
+ 	help
+ 	  The LLVM stack address sanitizer has a know problem that
+ 	  causes excessive stack usage in a lot of functions, see
+@@ -154,11 +155,6 @@ config KASAN_STACK_ENABLE
+ 	  CONFIG_COMPILE_TEST.	On gcc it is assumed to always be safe
+ 	  to use and enabled by default.
+ 
+-config KASAN_STACK
+-	int
+-	default 1 if KASAN_STACK_ENABLE || CC_IS_GCC
+-	default 0
 -
-+int security_read_state_kernel(struct selinux_state *state,
-+			       void **data, size_t *len);
- int security_policycap_supported(struct selinux_state *state,
- 				 unsigned int req_cap);
- 
-diff --git a/security/selinux/ss/services.c b/security/selinux/ss/services.c
-index 9704c8a32303..cc8dbc4ed8db 100644
---- a/security/selinux/ss/services.c
-+++ b/security/selinux/ss/services.c
-@@ -65,6 +65,7 @@
- #include "ebitmap.h"
- #include "audit.h"
- #include "policycap_names.h"
-+#include "ima.h"
- 
- /* Forward declaration. */
- static int context_struct_to_string(struct policydb *policydb,
-@@ -2180,6 +2181,7 @@ static void selinux_notify_policy_change(struct selinux_state *state,
- 	selinux_status_update_policyload(state, seqno);
- 	selinux_netlbl_cache_invalidate();
- 	selinux_xfrm_notify_policyload();
-+	selinux_ima_measure_state(state);
+ config KASAN_SW_TAGS_IDENTIFY
+ 	bool "Enable memory corruption identification"
+ 	depends on KASAN_SW_TAGS
+diff --git a/mm/kasan/common.c b/mm/kasan/common.c
+index 38ba2aecd8f4..bf8b073eed62 100644
+--- a/mm/kasan/common.c
++++ b/mm/kasan/common.c
+@@ -63,7 +63,7 @@ void __kasan_unpoison_range(const void *address, size_t size)
+ 	unpoison_range(address, size);
  }
  
- void selinux_policy_commit(struct selinux_state *state,
-@@ -3875,8 +3877,33 @@ int security_netlbl_sid_to_secattr(struct selinux_state *state,
- }
- #endif /* CONFIG_NETLABEL */
- 
-+/**
-+ * __security_read_policy - read the policy.
-+ * @policy: SELinux policy
-+ * @data: binary policy data
-+ * @len: length of data in bytes
-+ *
-+ */
-+static int __security_read_policy(struct selinux_policy *policy,
-+				  void *data, size_t *len)
-+{
-+	int rc;
-+	struct policy_file fp;
-+
-+	fp.data = data;
-+	fp.len = *len;
-+
-+	rc = policydb_write(&policy->policydb, &fp);
-+	if (rc)
-+		return rc;
-+
-+	*len = (unsigned long)fp.data - (unsigned long)data;
-+	return 0;
-+}
-+
- /**
-  * security_read_policy - read the policy.
-+ * @state: selinux_state
-  * @data: binary policy data
-  * @len: length of data in bytes
-  *
-@@ -3885,8 +3912,6 @@ int security_read_policy(struct selinux_state *state,
- 			 void **data, size_t *len)
+-#if CONFIG_KASAN_STACK
++#ifdef CONFIG_KASAN_STACK
+ /* Unpoison the entire stack for a task. */
+ void kasan_unpoison_task_stack(struct task_struct *task)
  {
- 	struct selinux_policy *policy;
--	int rc;
--	struct policy_file fp;
+diff --git a/mm/kasan/kasan.h b/mm/kasan/kasan.h
+index cc4d9e1d49b1..bdfdb1cff653 100644
+--- a/mm/kasan/kasan.h
++++ b/mm/kasan/kasan.h
+@@ -224,7 +224,7 @@ void *find_first_bad_addr(void *addr, size_t size);
+ const char *get_bug_type(struct kasan_access_info *info);
+ void metadata_fetch_row(char *buffer, void *row);
  
- 	policy = rcu_dereference_protected(
- 			state->policy, lockdep_is_held(&state->policy_mutex));
-@@ -3898,14 +3923,35 @@ int security_read_policy(struct selinux_state *state,
- 	if (!*data)
- 		return -ENOMEM;
- 
--	fp.data = *data;
--	fp.len = *len;
-+	return __security_read_policy(policy, *data, len);
-+}
- 
--	rc = policydb_write(&policy->policydb, &fp);
--	if (rc)
--		return rc;
-+/**
-+ * security_read_state_kernel - read the policy.
-+ * @state: selinux_state
-+ * @data: binary policy data
-+ * @len: length of data in bytes
-+ *
-+ * Allocates kernel memory for reading SELinux policy.
-+ * This function is for internal use only and should not
-+ * be used for returning data to user space.
-+ *
-+ * This function must be called with policy_mutex held.
-+ */
-+int security_read_state_kernel(struct selinux_state *state,
-+			       void **data, size_t *len)
-+{
-+	struct selinux_policy *policy;
- 
--	*len = (unsigned long)fp.data - (unsigned long)*data;
--	return 0;
-+	policy = rcu_dereference_protected(
-+			state->policy, lockdep_is_held(&state->policy_mutex));
-+	if (!policy)
-+		return -EINVAL;
-+
-+	*len = policy->policydb.len;
-+	*data = vmalloc(*len);
-+	if (!*data)
-+		return -ENOMEM;
- 
-+	return __security_read_policy(policy, *data, len);
+-#if defined(CONFIG_KASAN_GENERIC) && CONFIG_KASAN_STACK
++#if defined(CONFIG_KASAN_GENERIC) && defined(CONFIG_KASAN_STACK)
+ void print_address_stack_frame(const void *addr);
+ #else
+ static inline void print_address_stack_frame(const void *addr) { }
+diff --git a/mm/kasan/report_generic.c b/mm/kasan/report_generic.c
+index 8a9c889872da..4e16518d9877 100644
+--- a/mm/kasan/report_generic.c
++++ b/mm/kasan/report_generic.c
+@@ -128,7 +128,7 @@ void metadata_fetch_row(char *buffer, void *row)
+ 	memcpy(buffer, kasan_mem_to_shadow(row), META_BYTES_PER_ROW);
  }
+ 
+-#if CONFIG_KASAN_STACK
++#ifdef CONFIG_KASAN_STACK
+ static bool __must_check tokenize_frame_descr(const char **frame_descr,
+ 					      char *token, size_t max_tok_len,
+ 					      unsigned long *value)
+diff --git a/scripts/Makefile.kasan b/scripts/Makefile.kasan
+index 1e000cc2e7b4..abf231d209b1 100644
+--- a/scripts/Makefile.kasan
++++ b/scripts/Makefile.kasan
+@@ -2,6 +2,12 @@
+ CFLAGS_KASAN_NOSANITIZE := -fno-builtin
+ KASAN_SHADOW_OFFSET ?= $(CONFIG_KASAN_SHADOW_OFFSET)
+ 
++ifdef CONFIG_KASAN_STACK
++	stack_enable := 1
++else
++	stack_enable := 0
++endif
++
+ ifdef CONFIG_KASAN_GENERIC
+ 
+ ifdef CONFIG_KASAN_INLINE
+@@ -27,7 +33,7 @@ else
+ 	CFLAGS_KASAN := $(CFLAGS_KASAN_SHADOW) \
+ 	 $(call cc-param,asan-globals=1) \
+ 	 $(call cc-param,asan-instrumentation-with-call-threshold=$(call_threshold)) \
+-	 $(call cc-param,asan-stack=$(CONFIG_KASAN_STACK)) \
++	 $(call cc-param,asan-stack=$(stack_enable)) \
+ 	 $(call cc-param,asan-instrument-allocas=1)
+ endif
+ 
+@@ -42,7 +48,7 @@ else
+ endif
+ 
+ CFLAGS_KASAN := -fsanitize=kernel-hwaddress \
+-		-mllvm -hwasan-instrument-stack=$(CONFIG_KASAN_STACK) \
++		-mllvm -hwasan-instrument-stack=$(stack_enable) \
+ 		-mllvm -hwasan-use-short-granules=0 \
+ 		$(instrumentation_flags)
+ 
 -- 
-2.17.1
+2.18.0
 
