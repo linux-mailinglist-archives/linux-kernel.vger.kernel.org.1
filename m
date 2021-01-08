@@ -2,54 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A3EA62EF111
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 12:08:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A74CB2EF116
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 12:09:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727700AbhAHLIT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Jan 2021 06:08:19 -0500
-Received: from smtprelay0061.hostedemail.com ([216.40.44.61]:60656 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727373AbhAHLIT (ORCPT
+        id S1727860AbhAHLI4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Jan 2021 06:08:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51910 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726723AbhAHLIy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Jan 2021 06:08:19 -0500
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay08.hostedemail.com (Postfix) with ESMTP id 3EBF1182CED2A;
-        Fri,  8 Jan 2021 11:07:38 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:960:982:988:989:1260:1261:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1537:1560:1593:1594:1711:1714:1730:1747:1777:1792:2393:2553:2559:2562:2828:3138:3139:3140:3141:3142:3622:3865:3872:3873:4321:5007:7652:10004:10400:10848:11232:11658:11914:12297:12679:12740:12895:13069:13311:13357:13439:13894:14659:21080:21451:21627:30054:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
-X-HE-Tag: songs02_1111c47274f2
-X-Filterd-Recvd-Size: 1072
-Received: from [192.168.1.159] (unknown [47.151.137.21])
-        (Authenticated sender: joe@perches.com)
-        by omf07.hostedemail.com (Postfix) with ESMTPA;
-        Fri,  8 Jan 2021 11:07:37 +0000 (UTC)
-Message-ID: <ec135fa05918f7a2e34e5b6364c691ce0d3d8287.camel@perches.com>
-Subject: Re: [PATCH v2 -next] mfd: convert comma to semicolon
-From:   Joe Perches <joe@perches.com>
-To:     Lee Jones <lee.jones@linaro.org>,
-        Zheng Yongjun <zhengyongjun3@huawei.com>
-Cc:     linux-kernel@vger.kernel.org
-Date:   Fri, 08 Jan 2021 03:07:35 -0800
-In-Reply-To: <20210108105355.GE1592923@dell>
-References: <20210108092058.18576-1-zhengyongjun3@huawei.com>
-         <20210108105355.GE1592923@dell>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.38.1-1 
+        Fri, 8 Jan 2021 06:08:54 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09345C0612F5;
+        Fri,  8 Jan 2021 03:08:13 -0800 (PST)
+Date:   Fri, 08 Jan 2021 11:08:10 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1610104091;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Pnteh0V3q9k3AFupSxdyS6az816Sj1h5uCUKQzz+Ydk=;
+        b=EkfTnvimciGC1iBifEz3P9yphCmvnuEytWrYRnFEA7NRbCf39HGZZ2tltKgavftUuFwjXy
+        nL4KvbcAsujIKcRUwEqOhmuasL1hxCJbcGAxBErJOeeM6IHZeW2VTQVcxxl+JpYe4KtFEJ
+        QdV7hMWek83eicQKpH+h/ViAqStjan1Se9OnYgDjQaoSDuQzyCHHYSzIk4KdTBBBl63GOg
+        Hz3+RXJQHsLjUGFnJ6b1GF704qZnsUo7SeZCjqanFNGn6Y0VI98J2KSEkt+CtErDM00kC5
+        AU6TPNc/d52mLdEktV0ys/RJeOosGyuWAOANBuFNDYEAqYypE6Rha5hLc5qYwQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1610104091;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Pnteh0V3q9k3AFupSxdyS6az816Sj1h5uCUKQzz+Ydk=;
+        b=A+aZMs5I9vXgCjJcChxNBlOeaDyokTi1IwyItrTzLnyEHqJdAWRBs66u1mHWrbZS3m0z45
+        RF+zNnz+u0XcDXBw==
+From:   "tip-bot2 for Dave Jiang" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/asm] x86/asm: Add a missing __iomem annotation in enqcmds()
+Cc:     kernel test robot <lkp@intel.com>,
+        Dave Jiang <dave.jiang@intel.com>,
+        Borislav Petkov <bp@suse.de>,
+        Ben Widawsky <ben.widawsky@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <161003789741.4062451.14362269365703761223.stgit@djiang5-desk3.ch.intel.com>
+References: <161003789741.4062451.14362269365703761223.stgit@djiang5-desk3.ch.intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Message-ID: <161010409071.414.17403934197429773851.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2021-01-08 at 10:53 +0000, Lee Jones wrote:
-> On Fri, 08 Jan 2021, Zheng Yongjun wrote:
-> 
-> You're still not using the correct subject format.
-> 
-> It should be:
-> 
->  "mfd: <driver>: Description starting with an uppercase char"
+The following commit has been merged into the x86/asm branch of tip:
 
-IMO: overly pedantic
+Commit-ID:     5c99720b28381bb400d4f546734c34ddaf608761
+Gitweb:        https://git.kernel.org/tip/5c99720b28381bb400d4f546734c34ddaf608761
+Author:        Dave Jiang <dave.jiang@intel.com>
+AuthorDate:    Thu, 07 Jan 2021 09:45:21 -07:00
+Committer:     Borislav Petkov <bp@suse.de>
+CommitterDate: Fri, 08 Jan 2021 11:57:37 +01:00
 
+x86/asm: Add a missing __iomem annotation in enqcmds()
 
+Add a missing __iomem annotation to address a sparse warning. The caller
+is expected to pass an __iomem annotated pointer to this function. The
+current usages send a 64-bytes command descriptor to an MMIO location
+(portal) on a device for consumption.
+
+Also, from the comment in movdir64b(), which also applies to enqcmds(),
+@__dst must be supplied as an lvalue because this tells the compiler
+what the object is (its size) the instruction accesses. I.e., not the
+pointers but what they point to, thus the deref'ing '*'."
+
+The actual sparse warning is:
+
+  drivers/dma/idxd/submit.c: note: in included file (through arch/x86/include/asm/processor.h, \
+	arch/x86/include/asm/timex.h, include/linux/timex.h, include/linux/time32.h, \
+	include/linux/time.h, include/linux/stat.h, ...):
+  ./arch/x86/include/asm/special_insns.h:289:41: warning: incorrect type in initializer (different address spaces)
+  ./arch/x86/include/asm/special_insns.h:289:41:    expected struct <noident> *__dst
+  ./arch/x86/include/asm/special_insns.h:289:41:    got void [noderef] __iomem *dst
+
+ [ bp: Massage commit message. ]
+
+Fixes: 7f5933f81bd8 ("x86/asm: Add an enqcmds() wrapper for the ENQCMDS instruction")
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Dave Jiang <dave.jiang@intel.com>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Reviewed-by: Ben Widawsky <ben.widawsky@intel.com>
+Reviewed-by: Dan Williams <dan.j.williams@intel.com>
+Link: https://lkml.kernel.org/r/161003789741.4062451.14362269365703761223.stgit@djiang5-desk3.ch.intel.com
+---
+ arch/x86/include/asm/special_insns.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/arch/x86/include/asm/special_insns.h b/arch/x86/include/asm/special_insns.h
+index 4e23464..1d3cbae 100644
+--- a/arch/x86/include/asm/special_insns.h
++++ b/arch/x86/include/asm/special_insns.h
+@@ -286,7 +286,7 @@ static inline void movdir64b(void __iomem *dst, const void *src)
+ static inline int enqcmds(void __iomem *dst, const void *src)
+ {
+ 	const struct { char _[64]; } *__src = src;
+-	struct { char _[64]; } *__dst = dst;
++	struct { char _[64]; } __iomem *__dst = dst;
+ 	int zf;
+ 
+ 	/*
