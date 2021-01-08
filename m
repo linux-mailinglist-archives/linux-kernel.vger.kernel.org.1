@@ -2,199 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D0A742EF0DD
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 11:51:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C67A2EF0E3
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 11:52:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727617AbhAHKui convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 8 Jan 2021 05:50:38 -0500
-Received: from gloria.sntech.de ([185.11.138.130]:56350 "EHLO gloria.sntech.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726901AbhAHKui (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Jan 2021 05:50:38 -0500
-Received: from ip5f5aa64a.dynamic.kabel-deutschland.de ([95.90.166.74] helo=diego.localnet)
-        by gloria.sntech.de with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <heiko@sntech.de>)
-        id 1kxpL9-0002KQ-F4; Fri, 08 Jan 2021 11:49:55 +0100
-From:   Heiko =?ISO-8859-1?Q?St=FCbner?= <heiko@sntech.de>
-To:     Ezequiel Garcia <ezequiel@collabora.com>,
-        Paul Kocialkowski <paul.kocialkowski@bootlin.com>
-Cc:     linux-media@vger.kernel.org, linux-rockchip@lists.infradead.org,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, Jacob Chen <jacob-chen@iotwrt.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-Subject: Re: [PATCH 5/5] media: hantro: Add support for the Rockchip PX30
-Date:   Fri, 08 Jan 2021 11:49:54 +0100
-Message-ID: <5671105.lOV4Wx5bFT@diego>
-In-Reply-To: <11669141.O9o76ZdvQC@diego>
-References: <20210107134101.195426-1-paul.kocialkowski@bootlin.com> <X/ggTOOTBhGoFDpW@aptenodytes> <11669141.O9o76ZdvQC@diego>
+        id S1727872AbhAHKvV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Jan 2021 05:51:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49216 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726752AbhAHKvV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 Jan 2021 05:51:21 -0500
+Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39E5AC0612F5
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Jan 2021 02:50:41 -0800 (PST)
+Received: by mail-pg1-x52e.google.com with SMTP id i5so7459406pgo.1
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Jan 2021 02:50:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=hUYexvGQkq4ls/OimwsO5Jd0RZqGFOW3s7MoFq9zFTo=;
+        b=YJkyuQWXhbFLgxwObjUfAmF83zKljdj7aMi/D0QeB/d+QLVbsGCvwyase5VS/GWSpg
+         Es1unRr4cp3Fvy24ZBffOLz0Lfh11nBkmofiM2flPrgjewamfaSpMXKulclYD2Pltylo
+         jrH2DnIwA96hZC5n+910xx3mFFG4aCgPnl1+Q=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=hUYexvGQkq4ls/OimwsO5Jd0RZqGFOW3s7MoFq9zFTo=;
+        b=ac8o1aZlTK+zWGmvYo4Il22CCPsJ6GPnYBWnP8DF5TFpU3gW9Hn68hHihWziNsjA0R
+         ranzAOdB33dX1dnGLHCrK4Mc17qyd+9h9Fpo40B+1tkdlO0eP8eJz51MyZVzSfGgkh+d
+         Yi/QXabcapcb/ElfOxp+ztCilFelFg6ni55hSgCaqp/q/r87FSWSl/djIrofXqnSLh9B
+         czRN4FWLmP0LOIfNa14Pu3vjVEZzazXzN8O+dsd7RsYV8TAx4cO+vSx8lS6+9HDkA8lH
+         7sCxMbtF5Dk4Cz86MM0unFMoFxBtMFfrZPVHTNogigNsPKUA72QlwVzAue2dhvgy94Px
+         qhiw==
+X-Gm-Message-State: AOAM533CEmwHYjAIK9vPeNRRN1FQsaGuce9L7QPtbf44pcemr+yOMLca
+        xV5JRXu7hi6GT/TUG+9BFlIO3A4zCJqnpFcUh4GorA==
+X-Google-Smtp-Source: ABdhPJznWhv1cTUN3HY6O/t1DpDD7sg3cxH33OEwBKtFZhXYshd0vUiYpemVN8VSwVvSOQqG6eW9FQ92uaiCom4uJ+4=
+X-Received: by 2002:aa7:8813:0:b029:19d:cd3b:6f89 with SMTP id
+ c19-20020aa788130000b029019dcd3b6f89mr3048408pfo.42.1610103039797; Fri, 08
+ Jan 2021 02:50:39 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-Content-Type: text/plain; charset="iso-8859-1"
+References: <20201229142406.v5.1.Id0d31b5f3ddf5e734d2ab11161ac5821921b1e1e@changeid>
+ <1610087648.24856.41.camel@mhfsdcap03>
+In-Reply-To: <1610087648.24856.41.camel@mhfsdcap03>
+From:   Ikjoon Jang <ikjn@chromium.org>
+Date:   Fri, 8 Jan 2021 18:50:29 +0800
+Message-ID: <CAATdQgAfRTxbzG4tJ-ftX7M6wrYFR6v+ji+-nSk_dTRTMXzXwQ@mail.gmail.com>
+Subject: Re: [PATCH v5] usb: xhci-mtk: fix unreleased bandwidth data
+To:     Chunfeng Yun <chunfeng.yun@mediatek.com>
+Cc:     "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>, linux-usb@vger.kernel.org,
+        Tianping Fang <tianping.fang@mediatek.com>,
+        Zhanyong Wang <zhanyong.wang@mediatek.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Mathias Nyman <mathias.nyman@intel.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-arm-kernel@lists.infradead.org>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am Freitag, 8. Januar 2021, 11:48:26 CET schrieb Heiko Stübner:
-> Am Freitag, 8. Januar 2021, 10:05:16 CET schrieb Paul Kocialkowski:
-> > Hi Ezequiel,
-> > 
-> > On Thu 07 Jan 21, 16:08, Ezequiel Garcia wrote:
-> > > Happy to see this patch. It was on my TODO list,
-> > > but I hadn't had time to bringup my rk3326 device.
-> > 
-> > Same here, I just had an occasion to use it again these days so I jumped
-> > on it!
-> > 
-> > > A few comments.
-> > > 
-> > > On Thu, 2021-01-07 at 14:41 +0100, Paul Kocialkowski wrote:
-> > > > The PX30 SoC includes both the VDPU2 and VEPU2 blocks which are similar
-> > > > to the RK3399 (Hantro G1/H1 with shuffled registers).
-> > > > 
-> > > > Besides taking an extra clock, it also shares an interrupt with the IOMMU
-> > > > so it's necessary to request the interrupt shared.
-> > > > 
-> > > 
-> > > Could you clarify on the commit description which iommu device interrupt
-> > > line is being shared?
-> > 
-> > Sure! It's IRQ 79 of the GIC that's shared with vopl_mmu.
-> > It's not very obvious in the dt commit.
-> 
-> Having looked through the docs again, I think that the vopl_mmu using
-> irq 79 is just a mistake:
-> 
-> (1) in general vop and vop-mmu use the same irq (78 in that case)
-> (2) Rockchip does seem to have fixed that in their 4.19 tree as well:
-> https://github.com/rockchip-linux/kernel/blob/develop-4.19/arch/arm64/boot/dts/rockchip/px30.dtsi#L1598
+On Fri, Jan 8, 2021 at 2:34 PM Chunfeng Yun <chunfeng.yun@mediatek.com> wrote:
+>
+> On Tue, 2020-12-29 at 14:24 +0800, Ikjoon Jang wrote:
+> > xhci-mtk has hooks on add_endpoint() and drop_endpoint() from xhci
+> > to handle its own sw bandwidth managements and stores bandwidth data
+> > into internal table every time add_endpoint() is called,
+> > so when bandwidth allocation fails at one endpoint, all earlier
+> > allocation from the same interface could still remain at the table.
+> If failed to add an endpoint, will cause failure of its interface
+> config, then the other endpoints in the same interface will be dropped
+> later? you mean some endpoints in an interface may fail but without
+> affecting its function?
 
-(3) https://github.com/rockchip-linux/kernel/commit/391a5c5f96d177896f9fe92ca1c83e00f4352191 ;-)
+Yes, drop_endpoint() is called for a failed interface when set_interface()
+fails to switch alt settings, but set_configuration() does not call
+drop_endpoint().
+TT data seems to remain allocated until a device gets removed.
 
-> 
-> So to me it looks like this doesn't need to be shared and instead
-> "simply" the px30 dtsi fixed ;-)
-> 
-> 
-> Heiko
-> 
-> 
-> > > > Signed-off-by: Paul Kocialkowski <paul.kocialkowski@bootlin.com>
-> > > > ---
-> > > >  drivers/staging/media/hantro/hantro_drv.c    |  5 +++--
-> > > >  drivers/staging/media/hantro/hantro_hw.h     |  1 +
-> > > >  drivers/staging/media/hantro/rk3399_vpu_hw.c | 21 ++++++++++++++++++++
-> > > >  3 files changed, 25 insertions(+), 2 deletions(-)
-> > > > 
-> > > > diff --git a/drivers/staging/media/hantro/hantro_drv.c b/drivers/staging/media/hantro/hantro_drv.c
-> > > > index e5f200e64993..076a7782b476 100644
-> > > > --- a/drivers/staging/media/hantro/hantro_drv.c
-> > > > +++ b/drivers/staging/media/hantro/hantro_drv.c
-> > > > @@ -472,6 +472,7 @@ static const struct v4l2_file_operations hantro_fops = {
-> > > >  
-> > > >  static const struct of_device_id of_hantro_match[] = {
-> > > >  #ifdef CONFIG_VIDEO_HANTRO_ROCKCHIP
-> > > > +       { .compatible = "rockchip,px30-vpu", .data = &px30_vpu_variant, },
-> > > >         { .compatible = "rockchip,rk3399-vpu", .data = &rk3399_vpu_variant, },
-> > > >         { .compatible = "rockchip,rk3328-vpu", .data = &rk3328_vpu_variant, },
-> > > >         { .compatible = "rockchip,rk3288-vpu", .data = &rk3288_vpu_variant, },
-> > > > @@ -796,8 +797,8 @@ static int hantro_probe(struct platform_device *pdev)
-> > > >                         return -ENXIO;
-> > > >  
-> > > >                 ret = devm_request_irq(vpu->dev, irq,
-> > > > -                                      vpu->variant->irqs[i].handler, 0,
-> > > > -                                      dev_name(vpu->dev), vpu);
-> > > > +                                      vpu->variant->irqs[i].handler,
-> > > > +                                      IRQF_SHARED, dev_name(vpu->dev), vpu);
-> > > 
-> > > Maybe this irq flag should be part of vpu->variant? It sounds like an IP block
-> > > integration specific thing.
-> > 
-> > Ah right, I agree that it would be justified. But it would also be simple to
-> > just fix the irq handlers and assume this can generally be the case, because it
-> > feels like a bit of a detail to justify a flag.
-> > 
-> > Do you think this could be a safe/workable assumption?
-> > 
-> > > Also, you will need a px30-specific interrupt handler now,
-> > > since the rk3399 one is not shared-friendly.
-> > 
-> > Yeah I realize I haven't been very careful there and didn't really check that
-> > the IOMMU driver is really safe to handle shared interrupts either. I'll take
-> > a look a that when crafting v2.
-> > 
-> > > >                 if (ret) {
-> > > >                         dev_err(vpu->dev, "Could not request %s IRQ.\n",
-> > > >                                 irq_name);
-> > > > diff --git a/drivers/staging/media/hantro/hantro_hw.h b/drivers/staging/media/hantro/hantro_hw.h
-> > > > index 34c9e4649a25..07f516fd7a2e 100644
-> > > > --- a/drivers/staging/media/hantro/hantro_hw.h
-> > > > +++ b/drivers/staging/media/hantro/hantro_hw.h
-> > > > @@ -148,6 +148,7 @@ enum hantro_enc_fmt {
-> > > >         RK3288_VPU_ENC_FMT_UYVY422 = 3,
-> > > >  };
-> > > >  
-> > > > +extern const struct hantro_variant px30_vpu_variant;
-> > > >  extern const struct hantro_variant rk3399_vpu_variant;
-> > > >  extern const struct hantro_variant rk3328_vpu_variant;
-> > > >  extern const struct hantro_variant rk3288_vpu_variant;
-> > > > diff --git a/drivers/staging/media/hantro/rk3399_vpu_hw.c b/drivers/staging/media/hantro/rk3399_vpu_hw.c
-> > > > index 7a7962cf771e..4112f98baa60 100644
-> > > > --- a/drivers/staging/media/hantro/rk3399_vpu_hw.c
-> > > > +++ b/drivers/staging/media/hantro/rk3399_vpu_hw.c
-> > > 
-> > > Perhaps it's time to rename this to rockchip_vpu_hw.c,
-> > > and merge rk3288 and rk3399? It's a nitpick, though.
-> > 
-> > Haha, I was thinking the exact same thing but wasn't sure it would be welcome!
-> > 
-> > I was thinking of rockchip_vpu2_hw.c or rockchip_vdpu2_hw.c since that's
-> > apparently how it's called in Rockchip terminology: VDPU2 and VEPU2 for the
-> > Hantro G1 and H1 with the shuffled register layout. The rk3288 stuff is
-> > probably VDPU1/VEPU1 and we might want to rename it accordingly as well.
-> > 
-> > Cheers and thanks for the review!
-> > 
-> > Paul
-> > 
-> > > > @@ -220,3 +220,24 @@ const struct hantro_variant rk3328_vpu_variant = {
-> > > >         .clk_names = rk3399_clk_names,
-> > > >         .num_clocks = ARRAY_SIZE(rk3399_clk_names),
-> > > >  };
-> > > > +
-> > > > +static const char * const px30_clk_names[] = {
-> > > > +       "aclk", "hclk", "sclk"
-> > > > +};
-> > > > +
-> > > > +const struct hantro_variant px30_vpu_variant = {
-> > > > +       .enc_offset = 0x0,
-> > > > +       .enc_fmts = rk3399_vpu_enc_fmts,
-> > > > +       .num_enc_fmts = ARRAY_SIZE(rk3399_vpu_enc_fmts),
-> > > > +       .dec_offset = 0x400,
-> > > > +       .dec_fmts = rk3399_vpu_dec_fmts,
-> > > > +       .num_dec_fmts = ARRAY_SIZE(rk3399_vpu_dec_fmts),
-> > > > +       .codec = HANTRO_JPEG_ENCODER | HANTRO_MPEG2_DECODER |
-> > > > +                HANTRO_VP8_DECODER,
-> > > > +       .codec_ops = rk3399_vpu_codec_ops,
-> > > > +       .irqs = rk3399_irqs,
-> > > > +       .num_irqs = ARRAY_SIZE(rk3399_irqs),
-> > > > +       .init = rk3399_vpu_hw_init,
-> > > > +       .clk_names = px30_clk_names,
-> > > > +       .num_clocks = ARRAY_SIZE(px30_clk_names)
-> > > > +};
-> > > 
-> > > Thanks,
-> > > Ezequiel
-> > > 
-> > 
-> > 
-> 
-> 
-
-
-
-
+>
+> >
+> > This patch adds two more hooks from check_bandwidth() and
+> > reset_bandwidth(), and make mtk-xhci to releases all failed endpoints
+> > from reset_bandwidth().
+> >
+> > Fixes: 08e469de87a2 ("usb: xhci-mtk: supports bandwidth scheduling with multi-TT")
+> > Signed-off-by: Ikjoon Jang <ikjn@chromium.org>
+>
