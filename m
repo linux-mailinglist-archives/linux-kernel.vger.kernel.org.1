@@ -2,98 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 440CE2EF2E5
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 14:13:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 03D572EF2EA
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 14:15:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727219AbhAHNNl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Jan 2021 08:13:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43058 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726901AbhAHNNk (ORCPT
+        id S1727414AbhAHNO3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Jan 2021 08:14:29 -0500
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:51426 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726992AbhAHNO2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Jan 2021 08:13:40 -0500
-Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1006C0612F4
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Jan 2021 05:12:59 -0800 (PST)
-Received: by mail-ed1-x534.google.com with SMTP id g24so11101444edw.9
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Jan 2021 05:12:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=resnulli-us.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=9umxs0z1CG9c3LHm6Wmk0CDSP9uDdkoc9g2I+fPg5mI=;
-        b=IkYgxW89vAoa4h2gFyJjCChzRstA+SSgaZw73Y7OuiKmux5PPZ+T5SUJSb1y8BbDnr
-         yKXd3cFJH703XQCGCWNwfqNAb3+3QroxBfkE7kNZdxMMOt0Smcsf/QfXoIuGN95TS+cf
-         hkpq90nmauCTnsGmRT/i1eAihpDwiMkFwaIc/lUknTu7T1ynRfPhtJZOD0ngYtJ0/wgG
-         1Di093q+t8X4w8TSq55FHQhtmc2K1yOp+g6NgdmBRpamskZdiLljVJH43h2UZL/3eUhH
-         +VPhSYh3df9ZXPxqpeDbe3Lt8r/1b4qeCJH4XtE7nZYdht6KXm7amBrUjp6wnmIQIYZH
-         7JIA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=9umxs0z1CG9c3LHm6Wmk0CDSP9uDdkoc9g2I+fPg5mI=;
-        b=ilHKpLpbiySqJDBmBOhAROPbI835xEJp0FmZj8TNvF/Le8fNoCvLhDZpRidJ3A0w4k
-         O5qskEtwZc34KZOqsU9PBeBu/NKSKL5UQsUnIr/GvPcMEy2UsQBwPmF28gx2/nxU1v/l
-         mdpZo/9YK2uUJ7YIaxpcqmSP2PdsZeS6m7P7ct9A3Zk3xNsaUG/P7WWBTT6CGIpKWQso
-         slr4LVichKcv8Mv7JTtdPoYlZ8e/Sw0xlld0e5+h8n5a6y6vdK7q3gqKI3m3Xi4NwJyp
-         QUjOIMTQsEZWq69tfUV7IVcKg+mgIg0y7kw5ZLJIGvCaYJ9kQ7F1F+XlbeVcgMtR51dl
-         /p1A==
-X-Gm-Message-State: AOAM531o22J8IciCFc0EhWYCERgF35AQLhz0nwTAo4H5Jy9vZyjifiT8
-        bvaEp6MClyaA1EKymNMY9Ds1ShwyUNK5NMz1
-X-Google-Smtp-Source: ABdhPJxji9WZBQI5p1nYXpTJj5Ydv9otkPUCIfGHhAVHbuDh0z1ydork1JbeshH+AbeGMAhvOrWrUw==
-X-Received: by 2002:a05:6402:1a30:: with SMTP id be16mr5381083edb.124.1610111578400;
-        Fri, 08 Jan 2021 05:12:58 -0800 (PST)
-Received: from localhost ([86.61.181.4])
-        by smtp.gmail.com with ESMTPSA id i13sm3764109edu.22.2021.01.08.05.12.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 08 Jan 2021 05:12:57 -0800 (PST)
-Date:   Fri, 8 Jan 2021 14:12:56 +0100
-From:   Jiri Pirko <jiri@resnulli.us>
-To:     Jarod Wilson <jarod@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, Jay Vosburgh <j.vosburgh@gmail.com>,
-        Veaceslav Falico <vfalico@gmail.com>,
-        Andy Gospodarek <andy@greyhouse.net>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Thomas Davis <tadavis@lbl.gov>, netdev@vger.kernel.org
-Subject: Re: [RFC PATCH net-next] bonding: add a vlan+srcmac tx hashing option
-Message-ID: <20210108131256.GG3565223@nanopsycho.orion>
-References: <20201218193033.6138-1-jarod@redhat.com>
- <20201228101145.GC3565223@nanopsycho.orion>
- <20210107235813.GB29828@redhat.com>
+        Fri, 8 Jan 2021 08:14:28 -0500
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: ezequiel)
+        with ESMTPSA id B596C1F469E7
+Message-ID: <f9a163675ae05cc77b2d527ea5d68064fbbeead9.camel@collabora.com>
+Subject: Re: [PATCH 5/5] media: hantro: Add support for the Rockchip PX30
+From:   Ezequiel Garcia <ezequiel@collabora.com>
+To:     Paul Kocialkowski <paul.kocialkowski@bootlin.com>
+Cc:     linux-media@vger.kernel.org, linux-rockchip@lists.infradead.org,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, Jacob Chen <jacob-chen@iotwrt.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Heiko Stuebner <heiko@sntech.de>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>
+Date:   Fri, 08 Jan 2021 10:13:36 -0300
+In-Reply-To: <X/ggTOOTBhGoFDpW@aptenodytes>
+References: <20210107134101.195426-1-paul.kocialkowski@bootlin.com>
+         <20210107134101.195426-6-paul.kocialkowski@bootlin.com>
+         <f7291b83fe39d71c3192ea58ebf71e3909bd38af.camel@collabora.com>
+         <X/ggTOOTBhGoFDpW@aptenodytes>
+Organization: Collabora
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.2-1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210107235813.GB29828@redhat.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fri, Jan 08, 2021 at 12:58:13AM CET, jarod@redhat.com wrote:
->On Mon, Dec 28, 2020 at 11:11:45AM +0100, Jiri Pirko wrote:
->> Fri, Dec 18, 2020 at 08:30:33PM CET, jarod@redhat.com wrote:
->> >This comes from an end-user request, where they're running multiple VMs on
->> >hosts with bonded interfaces connected to some interest switch topologies,
->> >where 802.3ad isn't an option. They're currently running a proprietary
->> >solution that effectively achieves load-balancing of VMs and bandwidth
->> >utilization improvements with a similar form of transmission algorithm.
->> >
->> >Basically, each VM has it's own vlan, so it always sends its traffic out
->> >the same interface, unless that interface fails. Traffic gets split
->> >between the interfaces, maintaining a consistent path, with failover still
->> >available if an interface goes down.
->> >
->> >This has been rudimetarily tested to provide similar results, suitable for
->> >them to use to move off their current proprietary solution.
->> >
->> >Still on the TODO list, if these even looks sane to begin with, is
->> >fleshing out Documentation/networking/bonding.rst.
->> 
->> Jarod, did you consider using team driver instead ? :)
->
->That's actually one of the things that was suggested, since team I believe
->already has support for this, but the user really wants to use bonding.
->We're finding that a lot of users really still prefer bonding over team.
+On Fri, 2021-01-08 at 10:05 +0100, Paul Kocialkowski wrote:
+> Hi Ezequiel,
+> 
+> On Thu 07 Jan 21, 16:08, Ezequiel Garcia wrote:
+> > Happy to see this patch. It was on my TODO list,
+> > but I hadn't had time to bringup my rk3326 device.
+> 
+> Same here, I just had an occasion to use it again these days so I jumped
+> on it!
+> 
+> > A few comments.
+> > 
+> > On Thu, 2021-01-07 at 14:41 +0100, Paul Kocialkowski wrote:
+> > > The PX30 SoC includes both the VDPU2 and VEPU2 blocks which are similar
+> > > to the RK3399 (Hantro G1/H1 with shuffled registers).
+> > > 
+> > > Besides taking an extra clock, it also shares an interrupt with the IOMMU
+> > > so it's necessary to request the interrupt shared.
+> > > 
+> > 
+[..]
+> > > diff --git a/drivers/staging/media/hantro/hantro_hw.h b/drivers/staging/media/hantro/hantro_hw.h
+> > > index 34c9e4649a25..07f516fd7a2e 100644
+> > > --- a/drivers/staging/media/hantro/hantro_hw.h
+> > > +++ b/drivers/staging/media/hantro/hantro_hw.h
+> > > @@ -148,6 +148,7 @@ enum hantro_enc_fmt {
+> > >         RK3288_VPU_ENC_FMT_UYVY422 = 3,
+> > >  };
+> > >  
+> > > +extern const struct hantro_variant px30_vpu_variant;
+> > >  extern const struct hantro_variant rk3399_vpu_variant;
+> > >  extern const struct hantro_variant rk3328_vpu_variant;
+> > >  extern const struct hantro_variant rk3288_vpu_variant;
+> > > diff --git a/drivers/staging/media/hantro/rk3399_vpu_hw.c b/drivers/staging/media/hantro/rk3399_vpu_hw.c
+> > > index 7a7962cf771e..4112f98baa60 100644
+> > > --- a/drivers/staging/media/hantro/rk3399_vpu_hw.c
+> > > +++ b/drivers/staging/media/hantro/rk3399_vpu_hw.c
+> > 
+> > Perhaps it's time to rename this to rockchip_vpu_hw.c,
+> > and merge rk3288 and rk3399? It's a nitpick, though.
+> 
+> Haha, I was thinking the exact same thing but wasn't sure it would be welcome!
+> 
+> I was thinking of rockchip_vpu2_hw.c or rockchip_vdpu2_hw.c since that's
+> apparently how it's called in Rockchip terminology: VDPU2 and VEPU2 for the
+> Hantro G1 and H1 with the shuffled register layout. The rk3288 stuff is
+> probably VDPU1/VEPU1 and we might want to rename it accordingly as well.
+> 
 
-Do you know the reason, other than "nostalgia"?
+I'd rather keep it simple as rockchip_vpu_hw.c and just throw in there
+all the rockchip stuff.
+
+Thanks,
+Ezequiel
+
