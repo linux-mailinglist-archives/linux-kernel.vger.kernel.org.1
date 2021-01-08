@@ -2,67 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD7372EF6D9
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 18:58:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B6B22EF6FD
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 19:07:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728506AbhAHR6H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Jan 2021 12:58:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59056 "EHLO
+        id S1728701AbhAHSGe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Jan 2021 13:06:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60380 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728306AbhAHR6G (ORCPT
+        with ESMTP id S1728442AbhAHSGd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Jan 2021 12:58:06 -0500
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9780AC061380
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Jan 2021 09:57:26 -0800 (PST)
-Date:   Fri, 8 Jan 2021 18:57:23 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1610128645;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
-        bh=C2y4+ecKpsmHcb/3eNFWG1CKXZN48EwfB8bnapJyrW0=;
-        b=rvlPk4NZ3Z04WeurV7XZLAhWnp5l5D2U0jr69C/hTBA4Utz5o6sppQGx12iG0r0GXg9cA6
-        oHZwjilWYu9rlj9zDt4baCETXxv00vn1iy8N4yyhxt4qVdOwRTQ1K/Adv9SvK38gTj28uY
-        HjpUKnHKQlWY7PSo7JhcHKRrW/ZsINk5rzRkIKLY5l7mCYePb3PqxYx9p6N56yH2Rzv2Lr
-        niHmlfS4VrqnMYoXxsSu9WhKSUZM605tkmGTkiI4HtibWgMSc7Yp1+ZZDWiH0wuOAyRfKS
-        sEyQGtygu5on5rz2Ivloyaa76Me7CemjwxMH6oP438mGSpEwcaND7L7BLDDj5w==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1610128645;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
-        bh=C2y4+ecKpsmHcb/3eNFWG1CKXZN48EwfB8bnapJyrW0=;
-        b=oWdB8WKCFDDUGKwK3BhuvX7CaLQ/aYJceO44Sd18msi998myRq86qgSx23bGTLWVtuT1Jw
-        MrhG4qr6H0ifTQCw==
-From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        linux-kernel@vger.kernel.org
-Subject: [RFC] The purpose of raw_spin_lock_bh()
-Message-ID: <20210108175723.d6r7omgoq3qv5wb7@linutronix.de>
+        Fri, 8 Jan 2021 13:06:33 -0500
+Received: from ZenIV.linux.org.uk (zeniv.linux.org.uk [IPv6:2002:c35c:fd02::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 705BFC061381;
+        Fri,  8 Jan 2021 10:05:53 -0800 (PST)
+Received: from viro by ZenIV.linux.org.uk with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kxw8l-008PGL-MG; Fri, 08 Jan 2021 18:05:35 +0000
+Date:   Fri, 8 Jan 2021 18:05:35 +0000
+From:   Al Viro <viro@zeniv.linux.org.uk>
+To:     Jens Axboe <axboe@kernel.dk>
+Cc:     linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Song Liu <songliubraving@fb.com>
+Subject: Re: [PATCH] fs: process fput task_work with TWA_SIGNAL
+Message-ID: <20210108180535.GR3579531@ZenIV.linux.org.uk>
+References: <d6ddf6c2-3789-2e10-ba71-668cba03eb35@kernel.dk>
+ <20210108052651.GM3579531@ZenIV.linux.org.uk>
+ <20210108064639.GN3579531@ZenIV.linux.org.uk>
+ <245fba32-76cc-c4e1-6007-0b1f8a22a86b@kernel.dk>
+ <20210108155807.GQ3579531@ZenIV.linux.org.uk>
+ <41e33492-7b01-6801-cbb1-78ecef0c9fc0@kernel.dk>
+ <2cdd6d47-7eb1-3ab1-7aa8-80c54819009b@kernel.dk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <2cdd6d47-7eb1-3ab1-7aa8-80c54819009b@kernel.dk>
+Sender: Al Viro <viro@ftp.linux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I just noticed that we have raw_spin_lock_bh() and it has a few users.
-My guess is that the API should be removed and the existing user(s)
-should be moved to spin_lock_bh() / spinlock_t instead.
-On !RT it works as expected and there is no difference compared to
-spinlock_t.
-On RT it is kind of broken: It uses a raw_spinlock_t, disables BH but
-does not disable preemption. So it will spin on the lock but the owner
-could be scheduled out.
+On Fri, Jan 08, 2021 at 09:26:40AM -0700, Jens Axboe wrote:
+> >> Can you show the callers that DO NOT need it?
+> > 
+> > OK, so here's my suggestion:
+> > 
+> > 1) For 5.11, we just re-instate the task_work run in get_signal(). This
+> >    will make TWA_RESUME have the exact same behavior as before.
+> > 
+> > 2) For 5.12, I'll prepare a patch that collapses TWA_RESUME and TWA_SIGNAL,
+> >    turning it into a bool again (notify or no notify).
+> > 
+> > How does that sound?
+> 
+> Attached the patches - #1 is proposed for 5.11 to fix the current issue,
+> and then 2-4 can get queued for 5.12 to totally remove the difference
+> between TWA_RESUME and TWA_SIGNAL.
+> 
+> Totally untested, but pretty straight forward.
 
-I could (of course) make raw_spin_lock_bh() do the right thing on RT
-but from a quick look in sock_map_update_common() there is at least
-  raw_spin_lock_bh(&stab->lock);
-    -> sock_map_add_link()
-       -> spin_lock_bh(&psock->link_lock);
+	Umm...  I'm looking at the callers of get_signal() and I really wonder
+how your support for TIF_NOTIFY_SIGNAL interacts with saved sigmask handling
+by various do_signal() (calls of restore_saved_sigmask()).  Could you give
+pointers to relevant discussion or a braindump on the same?  I realize that
+it had been months ago, but...
 
-which would then trigger a might_sleep().
+	Do we even need restore_saved_sigmask_unless() now?  Could
+set_user_sigmask() simply set TIF_NOTIFY_SIGNAL?  Oleg, could you comment
+on that?
 
-Sebastian
+	Another fun question is how does that thing interact with
+single-stepping logics; it's been about 8 years since I looked into
+those horrors, but they used to be bloody awful...
+
+	What I'm trying to figure out is how costly TIF_NOTIFY_SIGNAL is
+on the work execution side; task_work_add() side is cheap enough, it's
+delivery that is interesting.
