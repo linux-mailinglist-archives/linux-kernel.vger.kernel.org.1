@@ -2,351 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 310E52EF7E7
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 20:10:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 49BA22EF7DF
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 20:08:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728837AbhAHTIp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Jan 2021 14:08:45 -0500
-Received: from userp2130.oracle.com ([156.151.31.86]:44178 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728539AbhAHTIo (ORCPT
+        id S1728773AbhAHTID (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Jan 2021 14:08:03 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41834 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728539AbhAHTIC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Jan 2021 14:08:44 -0500
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 108J3uhx137700;
-        Fri, 8 Jan 2021 19:07:33 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- content-transfer-encoding : in-reply-to; s=corp-2020-01-29;
- bh=gTWNh4yAjiGfRbnekPKUs3nwesv1+4so7sLkT0tKLdk=;
- b=jBtRaw+/CWQFKX8HElrE6u7EFhoI/GD7hrSfD+WIAKiDASf4rXEZYcb0jLSAtnDHPwTZ
- 1DNYYUCXB7SaQVVB9HHSb86FhIA6QSn4IhEPTXbSZCGsCIxM2FBlAdkPPIrwRJEGnkac
- FKSigVSi6pvz10rAkvmJhs/dzySw8nSWu+7zvO4qDx1OfzJQXYRbhM/BLyTyr6G2XeQz
- UeuFKWrE3LWBQ+O5IaI3NTjMxuMuvaTXCtrieocLZFQdNINPJfvATswlCY7gj3kw3k8B
- gqgCejhzE1IYAO3kjJ/dLeWW5I7fh/YerS94hAxKSR6nS1l11OVSsdtdOj25NskHY5Wk Gg== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by userp2130.oracle.com with ESMTP id 35wftxj2eu-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 08 Jan 2021 19:07:33 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 108J5V6j013394;
-        Fri, 8 Jan 2021 19:05:33 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by userp3030.oracle.com with ESMTP id 35w3g4t0t8-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 08 Jan 2021 19:05:33 +0000
-Received: from abhmp0005.oracle.com (abhmp0005.oracle.com [141.146.116.11])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 108J5L04021299;
-        Fri, 8 Jan 2021 19:05:21 GMT
-Received: from localhost (/67.169.218.210)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Fri, 08 Jan 2021 11:05:21 -0800
-Date:   Fri, 8 Jan 2021 11:05:19 -0800
-From:   "Darrick J. Wong" <darrick.wong@oracle.com>
-To:     Ruan Shiyang <ruansy.fnst@cn.fujitsu.com>
-Cc:     linux-kernel@vger.kernel.org, linux-xfs@vger.kernel.org,
-        linux-nvdimm@lists.01.org, linux-mm@kvack.org,
-        linux-fsdevel@vger.kernel.org, linux-raid@vger.kernel.org,
-        dan.j.williams@intel.com, david@fromorbit.com, hch@lst.de,
-        song@kernel.org, rgoldwyn@suse.de, qi.fuli@fujitsu.com,
-        y-goto@fujitsu.com, "Theodore Ts'o" <tytso@mit.edu>
-Subject: Re: [RFC PATCH v3 8/9] md: Implement ->corrupted_range()
-Message-ID: <20210108190519.GQ6918@magnolia>
-References: <20201215121414.253660-1-ruansy.fnst@cn.fujitsu.com>
- <20201215121414.253660-9-ruansy.fnst@cn.fujitsu.com>
- <20201215205102.GB6918@magnolia>
- <cc48c42d-d8af-c915-5aef-17b7d4853c3c@cn.fujitsu.com>
- <20210104233423.GR6918@magnolia>
- <77ecf385-0edc-6576-8963-867adbb9405b@cn.fujitsu.com>
+        Fri, 8 Jan 2021 14:08:02 -0500
+Received: from mail-ot1-x32d.google.com (mail-ot1-x32d.google.com [IPv6:2607:f8b0:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3428C0612FD
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Jan 2021 11:07:21 -0800 (PST)
+Received: by mail-ot1-x32d.google.com with SMTP id r9so10622512otk.11
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Jan 2021 11:07:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=ZUAethWNhH5AHx5KYoc6HZtfXoHcLGcf1uweSJlTtuQ=;
+        b=HIYSnkY6Q7NycBEnnzZTwlknao8S/k+ofvs35eTg12dgKAGFrf4QPFQxMY6E1SIgnx
+         v4QZHpNSykgXpIWURlxkqeUK+hK5WQe6/LeKsJ03BpDbXhaO4a17+4ebdvVbKCiei8+m
+         JRobCWgFbKwMMrEso6/h1ZN86HrDAtZk0ChgT/gJ2CuWElTkCZXLfIclf20+pmdTLNZb
+         DwrZOyqNMlzbEEcyV+DKY27yQ31lDOQ6h0BSDNM0/OBmo5kVHt/ka4zs2MaXzl4PjhW6
+         +vhP23PRPuv2xZvwZTpuEeKehk58fssuGFnMH6UurAqg/Aa2T10znWt0sirPaDukiYHv
+         V5Vg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=ZUAethWNhH5AHx5KYoc6HZtfXoHcLGcf1uweSJlTtuQ=;
+        b=UperInwFI8tYAGe//rEA0AUf1zE97FimNd3EPPezZozA/ZmL1oA1VxJbeVgnRzcrfp
+         1G68cm1bCJiKabfZL4V9uwKKBPlJ5o7WUxamYHpUB1lnKJKg3MzPZRxmzB2h+ADmMVgG
+         JR0ziVY4LCjHuQBCn/RAdnb5Rv9rR6KxTtfvOOmze27+tXnLkjPuOer9CJP6OcUhDwLp
+         Q90epIWZrtqTFWQ+/d6I2ZQV7o0wN2e0dhdzW7/OdsJlxd4c3iwels/IKtc3nPzkfJXA
+         WEii3eE0v99DkN068lVNFi9zpywRHsFFRdlTvsvRaH9a+P0tJHKufRL6uLKZq8/8pOZq
+         dHgg==
+X-Gm-Message-State: AOAM532z9xvz57PEHHPyKR7xARfHgYdzSjIiqFoxYj1UkWFnETjs+T3+
+        +E4nRDy7cvnO/hPD3rzqFlGNkQ==
+X-Google-Smtp-Source: ABdhPJwN6edFPoEXuLXbsc15EfSSsy2/6NGLVvzgZzPWVaB9Jywig4wbVCFey3P93N2p9vvNRyHHTg==
+X-Received: by 2002:a9d:d6b:: with SMTP id 98mr3578384oti.227.1610132840865;
+        Fri, 08 Jan 2021 11:07:20 -0800 (PST)
+Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id q18sm1890780ood.35.2021.01.08.11.07.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 08 Jan 2021 11:07:19 -0800 (PST)
+Date:   Fri, 8 Jan 2021 13:07:17 -0600
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Robert Foss <robert.foss@linaro.org>
+Cc:     agross@kernel.org, todor.too@gmail.com, mchehab@kernel.org,
+        robh+dt@kernel.org, catalin.marinas@arm.com, will@kernel.org,
+        shawnguo@kernel.org, leoyang.li@nxp.com, geert+renesas@glider.be,
+        arnd@arndb.de, Anson.Huang@nxp.com, michael@walle.cc,
+        agx@sigxcpu.org, max.oss.09@gmail.com,
+        linux-arm-msm@vger.kernel.org, linux-media@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        AngeloGioacchino Del Regno <kholk11@gmail.com>,
+        Andrey Konovalov <andrey.konovalov@linaro.org>,
+        Tomasz Figa <tfiga@chromium.org>,
+        Azam Sadiq Pasha Kapatrala Syed <akapatra@quicinc.com>,
+        Sarvesh Sridutt <Sarvesh.Sridutt@smartwirelesscompute.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Subject: Re: [PATCH v1 04/17] media: camss: Make ISPIF subdevice optional
+Message-ID: <X/itZVFeM0XeV9Sx@builder.lan>
+References: <20210108120429.895046-1-robert.foss@linaro.org>
+ <20210108120429.895046-5-robert.foss@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <77ecf385-0edc-6576-8963-867adbb9405b@cn.fujitsu.com>
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9858 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 malwarescore=0 adultscore=0
- phishscore=0 spamscore=0 mlxlogscore=999 suspectscore=0 bulkscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2101080102
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9858 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 suspectscore=0 mlxscore=0
- bulkscore=0 priorityscore=1501 impostorscore=0 clxscore=1015
- lowpriorityscore=0 mlxlogscore=999 malwarescore=0 spamscore=0 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2101080102
+In-Reply-To: <20210108120429.895046-5-robert.foss@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 08, 2021 at 05:52:11PM +0800, Ruan Shiyang wrote:
-> 
-> 
-> On 2021/1/5 上午7:34, Darrick J. Wong wrote:
-> > On Fri, Dec 18, 2020 at 10:11:54AM +0800, Ruan Shiyang wrote:
-> > > 
-> > > 
-> > > On 2020/12/16 上午4:51, Darrick J. Wong wrote:
-> > > > On Tue, Dec 15, 2020 at 08:14:13PM +0800, Shiyang Ruan wrote:
-> > > > > With the support of ->rmap(), it is possible to obtain the superblock on
-> > > > > a mapped device.
-> > > > > 
-> > > > > If a pmem device is used as one target of mapped device, we cannot
-> > > > > obtain its superblock directly.  With the help of SYSFS, the mapped
-> > > > > device can be found on the target devices.  So, we iterate the
-> > > > > bdev->bd_holder_disks to obtain its mapped device.
-> > > > > 
-> > > > > Signed-off-by: Shiyang Ruan <ruansy.fnst@cn.fujitsu.com>
-> > > > > ---
-> > > > >    drivers/md/dm.c       | 66 +++++++++++++++++++++++++++++++++++++++++++
-> > > > >    drivers/nvdimm/pmem.c |  9 ++++--
-> > > > >    fs/block_dev.c        | 21 ++++++++++++++
-> > > > >    include/linux/genhd.h |  7 +++++
-> > > > >    4 files changed, 100 insertions(+), 3 deletions(-)
-> > > > > 
-> > > > > diff --git a/drivers/md/dm.c b/drivers/md/dm.c
-> > > > > index 4e0cbfe3f14d..9da1f9322735 100644
-> > > > > --- a/drivers/md/dm.c
-> > > > > +++ b/drivers/md/dm.c
-> > > > > @@ -507,6 +507,71 @@ static int dm_blk_report_zones(struct gendisk *disk, sector_t sector,
-> > > > >    #define dm_blk_report_zones		NULL
-> > > > >    #endif /* CONFIG_BLK_DEV_ZONED */
-> > > > > +struct dm_blk_corrupt {
-> > > > > +	struct block_device *bdev;
-> > > > > +	sector_t offset;
-> > > > > +};
-> > > > > +
-> > > > > +static int dm_blk_corrupt_fn(struct dm_target *ti, struct dm_dev *dev,
-> > > > > +				sector_t start, sector_t len, void *data)
-> > > > > +{
-> > > > > +	struct dm_blk_corrupt *bc = data;
-> > > > > +
-> > > > > +	return bc->bdev == (void *)dev->bdev &&
-> > > > > +			(start <= bc->offset && bc->offset < start + len);
-> > > > > +}
-> > > > > +
-> > > > > +static int dm_blk_corrupted_range(struct gendisk *disk,
-> > > > > +				  struct block_device *target_bdev,
-> > > > > +				  loff_t target_offset, size_t len, void *data)
-> > > > > +{
-> > > > > +	struct mapped_device *md = disk->private_data;
-> > > > > +	struct block_device *md_bdev = md->bdev;
-> > > > > +	struct dm_table *map;
-> > > > > +	struct dm_target *ti;
-> > > > > +	struct super_block *sb;
-> > > > > +	int srcu_idx, i, rc = 0;
-> > > > > +	bool found = false;
-> > > > > +	sector_t disk_sec, target_sec = to_sector(target_offset);
-> > > > > +
-> > > > > +	map = dm_get_live_table(md, &srcu_idx);
-> > > > > +	if (!map)
-> > > > > +		return -ENODEV;
-> > > > > +
-> > > > > +	for (i = 0; i < dm_table_get_num_targets(map); i++) {
-> > > > > +		ti = dm_table_get_target(map, i);
-> > > > > +		if (ti->type->iterate_devices && ti->type->rmap) {
-> > > > > +			struct dm_blk_corrupt bc = {target_bdev, target_sec};
-> > > > > +
-> > > > > +			found = ti->type->iterate_devices(ti, dm_blk_corrupt_fn, &bc);
-> > > > > +			if (!found)
-> > > > > +				continue;
-> > > > > +			disk_sec = ti->type->rmap(ti, target_sec);
-> > > > 
-> > > > What happens if the dm device has multiple reverse mappings because the
-> > > > physical storage is being shared at multiple LBAs?  (e.g. a
-> > > > deduplication target)
-> > > 
-> > > I thought that the dm device knows the mapping relationship, and it can be
-> > > done by implementation of ->rmap() in each target.  Did I understand it
-> > > wrong?
-> > 
-> > The dm device /does/ know the mapping relationship.  I'm asking what
-> > happens if there are *multiple* mappings.  For example, a deduplicating
-> > dm device could observe that the upper level code wrote some data to
-> > sector 200 and now it wants to write the same data to sector 500.
-> > Instead of writing twice, it simply maps sector 500 in its LBA space to
-> > the same space that it mapped sector 200.
-> > 
-> > Pretend that sector 200 on the dm-dedupe device maps to sector 64 on the
-> > underlying storage (call it /dev/pmem1 and let's say it's the only
-> > target sitting underneath the dm-dedupe device).
-> > 
-> > If /dev/pmem1 then notices that sector 64 has gone bad, it will start
-> > calling ->corrupted_range handlers until it calls dm_blk_corrupted_range
-> > on the dm-dedupe device.  At least in theory, the dm-dedupe driver's
-> > rmap method ought to return both (64 -> 200) and (64 -> 500) so that
-> > dm_blk_corrupted_range can pass on both corruption notices to whatever's
-> > sitting atop the dedupe device.
-> > 
-> > At the moment, your ->rmap prototype is only capable of returning one
-> > sector_t mapping per target, and there's only the one target under the
-> > dedupe device, so we cannot report the loss of sectors 200 and 500 to
-> > whatever device is sitting on top of dm-dedupe.
-> 
-> Got it.  I didn't know there is a kind of dm device called dm-dedupe. Thanks
-> for the guidance.
+On Fri 08 Jan 06:04 CST 2021, Robert Foss wrote:
 
-There isn't one upstream, but there are out of tree deduplication
-drivers (VDO) and in principle any dm target can have multiple forward
-mappings to a single block on the lower device.
+> This driver supports multiple architecture versions of the Qualcomm ISP.
+> The CAMSS architecure which this driver is name after, and with the
+> introduction of this series, the Titan architecture.
+> 
+> The ISPIF is IP-block that is only present in the CAMSS architecture.
 
---D
+"is an IP-block"
 
+> In order to support the Titan architecture, make the ISPIF an optional
+> subdevice.
 > 
-> --
-> Thanks,
-> Ruan Shiyang.
+> Signed-off-by: Robert Foss <robert.foss@linaro.org>
+> ---
+>  .../media/platform/qcom/camss/camss-ispif.c   | 144 ++++++++++--------
+>  .../media/platform/qcom/camss/camss-ispif.h   |   3 +-
+>  drivers/media/platform/qcom/camss/camss.c     | 113 +++++++++-----
+>  drivers/media/platform/qcom/camss/camss.h     |   2 +-
+>  4 files changed, 160 insertions(+), 102 deletions(-)
 > 
-> > 
-> > --D
-> > 
-> > > > 
-> > > > > +			break;
-> > > > > +		}
-> > > > > +	}
-> > > > > +
-> > > > > +	if (!found) {
-> > > > > +		rc = -ENODEV;
-> > > > > +		goto out;
-> > > > > +	}
-> > > > > +
-> > > > > +	sb = get_super(md_bdev);
-> > > > > +	if (!sb) {
-> > > > > +		rc = bd_disk_holder_corrupted_range(md_bdev, to_bytes(disk_sec), len, data);
-> > > > > +		goto out;
-> > > > > +	} else if (sb->s_op->corrupted_range) {
-> > > > > +		loff_t off = to_bytes(disk_sec - get_start_sect(md_bdev));
-> > > > > +
-> > > > > +		rc = sb->s_op->corrupted_range(sb, md_bdev, off, len, data);
-> > > > 
-> > > > This "call bd_disk_holder_corrupted_range or sb->s_op->corrupted_range"
-> > > > logic appears twice; should it be refactored into a common helper?
-> > > > 
-> > > > Or, should the superblock dispatch part move to
-> > > > bd_disk_holder_corrupted_range?
-> > > 
-> > > bd_disk_holder_corrupted_range() requires SYSFS configuration.  I introduce
-> > > it to handle those block devices that can not obtain superblock by
-> > > `get_super()`.
-> > > 
-> > > Usually, if we create filesystem directly on a pmem device, or make some
-> > > partitions at first, we can use `get_super()` to get the superblock.  In
-> > > other case, such as creating a LVM on pmem device, `get_super()` does not
-> > > work.
-> > > 
-> > > So, I think refactoring it into a common helper looks better.
-> > > 
-> > > 
-> > > --
-> > > Thanks,
-> > > Ruan Shiyang.
-> > > 
-> > > > 
-> > > > > +	}
-> > > > > +	drop_super(sb);
-> > > > > +
-> > > > > +out:
-> > > > > +	dm_put_live_table(md, srcu_idx);
-> > > > > +	return rc;
-> > > > > +}
-> > > > > +
-> > > > >    static int dm_prepare_ioctl(struct mapped_device *md, int *srcu_idx,
-> > > > >    			    struct block_device **bdev)
-> > > > >    {
-> > > > > @@ -3084,6 +3149,7 @@ static const struct block_device_operations dm_blk_dops = {
-> > > > >    	.getgeo = dm_blk_getgeo,
-> > > > >    	.report_zones = dm_blk_report_zones,
-> > > > >    	.pr_ops = &dm_pr_ops,
-> > > > > +	.corrupted_range = dm_blk_corrupted_range,
-> > > > >    	.owner = THIS_MODULE
-> > > > >    };
-> > > > > diff --git a/drivers/nvdimm/pmem.c b/drivers/nvdimm/pmem.c
-> > > > > index 4688bff19c20..e8cfaf860149 100644
-> > > > > --- a/drivers/nvdimm/pmem.c
-> > > > > +++ b/drivers/nvdimm/pmem.c
-> > > > > @@ -267,11 +267,14 @@ static int pmem_corrupted_range(struct gendisk *disk, struct block_device *bdev,
-> > > > >    	bdev_offset = (disk_sector - get_start_sect(bdev)) << SECTOR_SHIFT;
-> > > > >    	sb = get_super(bdev);
-> > > > > -	if (sb && sb->s_op->corrupted_range) {
-> > > > > +	if (!sb) {
-> > > > > +		rc = bd_disk_holder_corrupted_range(bdev, bdev_offset, len, data);
-> > > > > +		goto out;
-> > > > > +	} else if (sb->s_op->corrupted_range)
-> > > > >    		rc = sb->s_op->corrupted_range(sb, bdev, bdev_offset, len, data);
-> > > > > -		drop_super(sb);
-> > > > 
-> > > > This is out of scope for this patch(set) but do you think that the scsi
-> > > > disk driver should intercept media errors from sense data and call
-> > > > ->corrupted_range too?  ISTR Ted muttering that one of his employers had
-> > > > a patchset to do more with sense data than the upstream kernel currently
-> > > > does...
-> > > > 
-> > > > > -	}
-> > > > > +	drop_super(sb);
-> > > > > +out:
-> > > > >    	bdput(bdev);
-> > > > >    	return rc;
-> > > > >    }
-> > > > > diff --git a/fs/block_dev.c b/fs/block_dev.c
-> > > > > index 9e84b1928b94..d3e6bddb8041 100644
-> > > > > --- a/fs/block_dev.c
-> > > > > +++ b/fs/block_dev.c
-> > > > > @@ -1171,6 +1171,27 @@ struct bd_holder_disk {
-> > > > >    	int			refcnt;
-> > > > >    };
-> > > > > +int bd_disk_holder_corrupted_range(struct block_device *bdev, loff_t off, size_t len, void *data)
-> > > > > +{
-> > > > > +	struct bd_holder_disk *holder;
-> > > > > +	struct gendisk *disk;
-> > > > > +	int rc = 0;
-> > > > > +
-> > > > > +	if (list_empty(&(bdev->bd_holder_disks)))
-> > > > > +		return -ENODEV;
-> > > > > +
-> > > > > +	list_for_each_entry(holder, &bdev->bd_holder_disks, list) {
-> > > > > +		disk = holder->disk;
-> > > > > +		if (disk->fops->corrupted_range) {
-> > > > > +			rc = disk->fops->corrupted_range(disk, bdev, off, len, data);
-> > > > > +			if (rc != -ENODEV)
-> > > > > +				break;
-> > > > > +		}
-> > > > > +	}
-> > > > > +	return rc;
-> > > > > +}
-> > > > > +EXPORT_SYMBOL_GPL(bd_disk_holder_corrupted_range);
-> > > > > +
-> > > > >    static struct bd_holder_disk *bd_find_holder_disk(struct block_device *bdev,
-> > > > >    						  struct gendisk *disk)
-> > > > >    {
-> > > > > diff --git a/include/linux/genhd.h b/include/linux/genhd.h
-> > > > > index ed06209008b8..fba247b852fa 100644
-> > > > > --- a/include/linux/genhd.h
-> > > > > +++ b/include/linux/genhd.h
-> > > > > @@ -382,9 +382,16 @@ int blkdev_ioctl(struct block_device *, fmode_t, unsigned, unsigned long);
-> > > > >    long compat_blkdev_ioctl(struct file *, unsigned, unsigned long);
-> > > > >    #ifdef CONFIG_SYSFS
-> > > > > +int bd_disk_holder_corrupted_range(struct block_device *bdev, loff_t off,
-> > > > > +				   size_t len, void *data);
-> > > > >    int bd_link_disk_holder(struct block_device *bdev, struct gendisk *disk);
-> > > > >    void bd_unlink_disk_holder(struct block_device *bdev, struct gendisk *disk);
-> > > > >    #else
-> > > > > +int bd_disk_holder_corrupted_range(struct block_device *bdev, loff_t off,
-> > > > > +				   size_t len, void *data)
-> > > > > +{
-> > > > > +	return 0;
-> > > > > +}
-> > > > >    static inline int bd_link_disk_holder(struct block_device *bdev,
-> > > > >    				      struct gendisk *disk)
-> > > > >    {
-> > > > > -- 
-> > > > > 2.29.2
-> > > > > 
-> > > > > 
-> > > > > 
-> > > > 
-> > > > 
-> > > 
-> > > 
-> > 
-> > 
-> 
-> 
+> diff --git a/drivers/media/platform/qcom/camss/camss-ispif.c b/drivers/media/platform/qcom/camss/camss-ispif.c
+[..]
+> -int msm_ispif_subdev_init(struct ispif_device *ispif,
+> +int msm_ispif_subdev_init(struct camss *camss,
+>  			  const struct resources_ispif *res)
+>  {
+> -	struct device *dev = to_device(ispif);
+> -	struct platform_device *pdev = to_platform_device(dev);
+> +	struct ispif_device *ispif = camss->ispif;
+> +	struct platform_device *pdev = to_platform_device(camss->dev);
+
+It seems like several of the changes in this function is replacing
+dev with camss->dev. If you retained a struct device *dev = camss->dev;
+you would avoid this.
+
+>  	struct resource *r;
+>  	int i;
+>  	int ret;
+>  
+> +	if (res == NULL && ispif == NULL)
+
+Afaict this function is called conditional on camss->ispif != NULL, and
+I don't see anything that would cause res to becomes NULL if is hasn't
+been before this change.
+
+So I think this check is unnecessary?
+
+> +		return 0;
+> +
+> +	ispif->camss = camss;
+> +
+>  	/* Number of ISPIF lines - same as number of CSID hardware modules */
+> -	if (to_camss(ispif)->version == CAMSS_8x16)
+> +	if (camss->version == CAMSS_8x16)
+>  		ispif->line_num = 2;
+> -	else if (to_camss(ispif)->version == CAMSS_8x96 ||
+> -		 to_camss(ispif)->version == CAMSS_660)
+> +	else if (camss->version == CAMSS_8x96 ||
+> +		 camss->version == CAMSS_660)
+>  		ispif->line_num = 4;
+>  	else
+>  		return -EINVAL;
+>  
+> -	ispif->line = devm_kcalloc(dev, ispif->line_num, sizeof(*ispif->line),
+> -				   GFP_KERNEL);
+> +	ispif->line = devm_kcalloc(camss->dev, ispif->line_num,
+> +			sizeof(*ispif->line), GFP_KERNEL);
+>  	if (!ispif->line)
+>  		return -ENOMEM;
+>  
+[..]
+> @@ -1393,6 +1410,9 @@ void msm_ispif_unregister_entities(struct ispif_device *ispif)
+>  {
+>  	int i;
+>  
+> +	if (!ispif)
+> +		return;
+
+I like this, but later in the patch you make the calls to this function
+conditional on ispif != NULL. You should only need one of the checks.
+
+Regards,
+Bjorn
