@@ -2,142 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B08C2EED45
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 06:48:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 39AB22EED48
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 06:50:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727363AbhAHFsU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Jan 2021 00:48:20 -0500
-Received: from m43-15.mailgun.net ([69.72.43.15]:11489 "EHLO
-        m43-15.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726120AbhAHFsT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Jan 2021 00:48:19 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1610084873; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=b3qHEdqVQIrYl8B+o2/ETyJYY6e+1aZCCdqjvRVd45k=;
- b=nW4lVDGdG9ow7anRGyzzx6rRmwVaScTSy/Rw2yZcShUH/5wHto67X+f5kwRoBdehYsmcjeqJ
- 1s21M8iaIssfbtXuCiigGIRJikL0qhuaYdAmI6AyEJ8pG8J3soMZTahxb+fK2uRYkL9FGeST
- EYoTf4Rf8BMnd0xM8KyRXB5+s04=
-X-Mailgun-Sending-Ip: 69.72.43.15
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n05.prod.us-west-2.postgun.com with SMTP id
- 5ff7f1eefc3778927e4b3a5a (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 08 Jan 2021 05:47:26
- GMT
-Sender: saiprakash.ranjan=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id A5872C433CA; Fri,  8 Jan 2021 05:47:26 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: saiprakash.ranjan)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 6AA3FC433C6;
-        Fri,  8 Jan 2021 05:47:25 +0000 (UTC)
+        id S1727441AbhAHFt5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Jan 2021 00:49:57 -0500
+Received: from mail-mw2nam12on2086.outbound.protection.outlook.com ([40.107.244.86]:5312
+        "EHLO NAM12-MW2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725844AbhAHFt4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 Jan 2021 00:49:56 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=NbqhmFMakf844J/ysjxUxTW3xhbAfPEJKOWScFuq5RUwHFCuINoO+dBlMYInbq3CmT4RkeNgYqOpV3oFkzNVp7wNQA6mUAJfGwa/VpfCEkCxCT0QfcU+AZoSig3+i66V3S2xCloMlkODB7Y8lSrXlU+usK5loaaPlWf83wJ9oHE9aZHjlJoXO6UMTVFXSgqmeUtg7pIk545rH2AqowtKJjRACcXuzaHtA0Cr0RsyNaH+1PqLnPoySunQOpzNwAqEerhg6BBa9+kWnUBQyooTzo4T4iUpxXD/MQGE+U2TfiyxV8sqEURNBbsRZo7jAmnu4DGOw6zf/6LRNQeY+RO7GQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=3xcleXbDGsR7WUTislfp+brWYCR/8Ir+gpVQE0qIx80=;
+ b=RO8UB0jwZTAPlQeemQ4q9KjwmRbsx+Uvw8LazlQb6fOIan5sDR+ohFwrrs/rQXAx3SRlIlohUH7lzM3rDnkAr9ZCtldKVqaApW3m7cPGmNzfba5d8ZU5o4tp4+NwkygZeMWK7xE2pbKJEoS+3IUza7o5R6lpbAZhQOEIqr0RSazL50zThf7lZTUy6V8At4lTf5hWwreLOX5p/vkFSXJ0IdsdEUawW7/o5vAMONuYgx17f8gM8TyGLnn4Eoa+rb0/Io5+8WlucYQ/Q5NyCJteVBtYek9fZogwdeA6NWvHZcf3ffIAMhXWsR8YwDhC4TRkxrJ2xr59sh6vtRYfc12edQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=3xcleXbDGsR7WUTislfp+brWYCR/8Ir+gpVQE0qIx80=;
+ b=jF9OlIOEesm7+63PmoAyIA5XuMZ1DRXAAOfYFMdp3z5V/jM/nr6MA4dIMtFOYHlpq3sEoJN+o7QLvnkxLlwpiUnd/Sbt5fHCeAIotMSYA73zPYjfL2aUQUI9bjYfDjqp1uh8nShHw7yInPq83K2R2GOvamJON0eTMKlIUBTS+KU=
+Received: from DM6PR12MB4388.namprd12.prod.outlook.com (2603:10b6:5:2a9::10)
+ by DM5PR12MB1833.namprd12.prod.outlook.com (2603:10b6:3:111::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3742.6; Fri, 8 Jan
+ 2021 05:49:03 +0000
+Received: from DM6PR12MB4388.namprd12.prod.outlook.com
+ ([fe80::84e9:dd44:12cf:bdb3]) by DM6PR12MB4388.namprd12.prod.outlook.com
+ ([fe80::84e9:dd44:12cf:bdb3%6]) with mapi id 15.20.3742.006; Fri, 8 Jan 2021
+ 05:49:03 +0000
+From:   "Chatradhi, Naveen Krishna" <NaveenKrishna.Chatradhi@amd.com>
+To:     David Arcari <darcari@redhat.com>,
+        "linux-hwmon@vger.kernel.org" <linux-hwmon@vger.kernel.org>
+CC:     Jean Delvare <jdelvare@suse.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "stable@vger.kernel.org" <stable@vger.kernel.org>
+Subject: RE: [PATCH] hwmon: (amd_energy) fix allocation of hwmon_channel_info
+ config
+Thread-Topic: [PATCH] hwmon: (amd_energy) fix allocation of hwmon_channel_info
+ config
+Thread-Index: AQHW5QQZdSyCjckTx0WGIHiGz4uxF6odMEOA
+Date:   Fri, 8 Jan 2021 05:49:03 +0000
+Message-ID: <DM6PR12MB4388220A9F55F5DDC984B91FE8AE0@DM6PR12MB4388.namprd12.prod.outlook.com>
+References: <20210107144707.6927-1-darcari@redhat.com>
+In-Reply-To: <20210107144707.6927-1-darcari@redhat.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+msip_labels: MSIP_Label_c3918902-4ff3-42f6-8eb5-e5d9c71daf16_Enabled=true;
+ MSIP_Label_c3918902-4ff3-42f6-8eb5-e5d9c71daf16_SetDate=2021-01-08T05:48:07Z;
+ MSIP_Label_c3918902-4ff3-42f6-8eb5-e5d9c71daf16_Method=Privileged;
+ MSIP_Label_c3918902-4ff3-42f6-8eb5-e5d9c71daf16_Name=Internal Use Only -
+ Restricted;
+ MSIP_Label_c3918902-4ff3-42f6-8eb5-e5d9c71daf16_SiteId=3dd8961f-e488-4e60-8e11-a82d994e183d;
+ MSIP_Label_c3918902-4ff3-42f6-8eb5-e5d9c71daf16_ActionId=fa637c64-fb07-47e6-b07b-000052bed65a;
+ MSIP_Label_c3918902-4ff3-42f6-8eb5-e5d9c71daf16_ContentBits=1
+msip_label_c3918902-4ff3-42f6-8eb5-e5d9c71daf16_enabled: true
+msip_label_c3918902-4ff3-42f6-8eb5-e5d9c71daf16_setdate: 2021-01-08T05:48:59Z
+msip_label_c3918902-4ff3-42f6-8eb5-e5d9c71daf16_method: Privileged
+msip_label_c3918902-4ff3-42f6-8eb5-e5d9c71daf16_name: Internal Use Only -
+ Restricted
+msip_label_c3918902-4ff3-42f6-8eb5-e5d9c71daf16_siteid: 3dd8961f-e488-4e60-8e11-a82d994e183d
+msip_label_c3918902-4ff3-42f6-8eb5-e5d9c71daf16_actionid: 18486720-8e3c-4f38-a78a-0000883627e9
+msip_label_c3918902-4ff3-42f6-8eb5-e5d9c71daf16_contentbits: 0
+dlp-product: dlpe-windows
+dlp-version: 11.5.0.60
+dlp-reaction: no-action
+authentication-results: redhat.com; dkim=none (message not signed)
+ header.d=none;redhat.com; dmarc=none action=none header.from=amd.com;
+x-originating-ip: [175.101.104.147]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: 30c39e59-f83c-4e26-8332-08d8b3991ab3
+x-ms-traffictypediagnostic: DM5PR12MB1833:
+x-microsoft-antispam-prvs: <DM5PR12MB1833826426878B732C1D1499E8AE0@DM5PR12MB1833.namprd12.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:454;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: QuovBIt3pMtuMbuUSp8tQZ1djdFJecodZKhwwPY7Znh+bEpZtRbIJ3nCyqHHTqSrTLJcnKVaRwLoviFoaaDiq43daNGcHNBHH2/7XMOrJSC5HWLpV1cDsS2PzbUQwaJRfHMzyW5lmgKwJ5ojeOp1IV9j2PnVoiUtbKDjvhXOYtf+z6iqiECV6Rhadfy+xq5kdKYJM/MMFYdVtJH5olXhCGf5+2jgXH3j8kX2nUZ1+BhqQaM2JyeSf12d0Q9K+8o3QLSL0tGCXJphX9UhgGvWVjNydS5wN6Z1TRXcdrB8wnI65Ii3fJ/0QwFsQMaAWMxtKu2JA4d40LPmPB8/6yUCZppkl24bt8mr5cimOX4hT1IOdpEhtIxjqsMVULyp8JTj
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB4388.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(136003)(346002)(396003)(39860400002)(376002)(26005)(83380400001)(86362001)(6506007)(55016002)(4326008)(186003)(9686003)(7696005)(8676002)(66556008)(54906003)(8936002)(53546011)(110136005)(316002)(33656002)(66946007)(478600001)(5660300002)(76116006)(66446008)(66476007)(52536014)(71200400001)(64756008)(2906002);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: =?us-ascii?Q?CTPRpXYVMR4M670j+lMAkqeqJR+LEqDI3JzeUuoq6O+l5dXmbObqESK1eT9R?=
+ =?us-ascii?Q?a6Di7GrcVgTAvRjgcT2E0lSSFADR8S18FnsNAWvuGpEuiS7ctJKlwIIFBEVK?=
+ =?us-ascii?Q?MNpPxhjA0Vf3h2T/1BFVg7ZcVL+kup9P24A6Nt6jrbey2NE9jnWmuUcdY1xR?=
+ =?us-ascii?Q?6vXXxCR2gfbMR9f5wJiGXKn67AUHnPa3Kmzbhoce5CLPqeyFRr8U++icfDzh?=
+ =?us-ascii?Q?WgsT4a6/7gXf4scRwGhvAG287JV94vLRwCOsQe83Q/osXjglizzZxjZahBQd?=
+ =?us-ascii?Q?uXWiBEwZEPwybtOcDUlPGaIytm6708WHLBzLkovsltaLHihDBHGvTdXVUEIm?=
+ =?us-ascii?Q?BOQ4OBL02k6pMtHZJSL5e1MwfThW5C1YoUm0fy6nxabhYgFNxzHA0QAQI+Tc?=
+ =?us-ascii?Q?2cYMPdGtiSkH1zH80ErElz3JVA/ddSbIa4GX6tMaDeV8jmx3LVBJHK5N5K/G?=
+ =?us-ascii?Q?MnSAC0Tf5oRFHoNZ1+zJd3TeAOZO9TfTG6Rl1w4D+n6AgMluQKKG0kRpWcL0?=
+ =?us-ascii?Q?MBliTMqR+B127IRKB7QCwti1YRX4aim9RBxFXHoACAhRfiGbiRjnKH/HVBCY?=
+ =?us-ascii?Q?tnTDoqmyiuJc0tbH/8EeRKeOJDGheNGZ4kLzKJUnOIDWFUf2tz/kmi6yXi0u?=
+ =?us-ascii?Q?8/EctCUC+73MAqegdaAoTIj8+4nF9K6YQkXcU4RpgxI3qEAjuNwLw8vVK4Gn?=
+ =?us-ascii?Q?cCSdqBjcfx1dIqwrLIwt7Cfh3XuiykVNKFv6Dnk/bP6ABX39zIN6RhZpuFNQ?=
+ =?us-ascii?Q?s+XuiDvAmBO5s7cjyUlRGRt4BoQWiYVCXz+ZVYhHE64C+fqwk7P6s6fUzq2n?=
+ =?us-ascii?Q?O+UAelU4DYaqBn98pBJdLA2b7GNkulT0WShrvybKOLkpclv+vXw9Y3TH8tJZ?=
+ =?us-ascii?Q?hXlAlEDCBqS4Dac8BOXIWPb7YbiH7L37jvNAORbQCI7xHO3i3heT2sDCq3eN?=
+ =?us-ascii?Q?43EJRJnL4VZwRs1WmgiBs4Fc01nT+DrWNf2oQ/KT+m4=3D?=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Fri, 08 Jan 2021 11:17:25 +0530
-From:   Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-To:     isaacm@codeaurora.org
-Cc:     Will Deacon <will@kernel.org>, Rob Clark <robdclark@gmail.com>,
-        Jordan Crouse <jcrouse@codeaurora.org>,
-        linux-arm-msm@vger.kernel.org, Joerg Roedel <joro@8bytes.org>,
-        linux-kernel@vger.kernel.org,
-        Akhil P Oommen <akhilpo@codeaurora.org>,
-        iommu@lists.linux-foundation.org,
-        Robin Murphy <robin.murphy@arm.com>,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH] iommu/io-pgtable-arm: Allow non-coherent masters to use
- system cache
-In-Reply-To: <cfced52002337025088a64aa159760b2@codeaurora.org>
-References: <20201224064007.2339-1-saiprakash.ranjan@codeaurora.org>
- <20210106115615.GA1763@willie-the-truck>
- <cfced52002337025088a64aa159760b2@codeaurora.org>
-Message-ID: <8cfefbff135a5287d177b6ab2ccc3304@codeaurora.org>
-X-Sender: saiprakash.ranjan@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB4388.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 30c39e59-f83c-4e26-8332-08d8b3991ab3
+X-MS-Exchange-CrossTenant-originalarrivaltime: 08 Jan 2021 05:49:03.1090
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: sbG+x4IxTzS8QiIML4FoziEUW6Np4mxRKLvRxUvq8mxwHyArI1oCSoA6wlMGX9jh9kVxWUzdOdivWzOaQ8cVqg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR12MB1833
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-01-07 22:27, isaacm@codeaurora.org wrote:
-> On 2021-01-06 03:56, Will Deacon wrote:
->> On Thu, Dec 24, 2020 at 12:10:07PM +0530, Sai Prakash Ranjan wrote:
->>> commit ecd7274fb4cd ("iommu: Remove unused IOMMU_SYS_CACHE_ONLY 
->>> flag")
->>> removed unused IOMMU_SYS_CACHE_ONLY prot flag and along with it went
->>> the memory type setting required for the non-coherent masters to use
->>> system cache. Now that system cache support for GPU is added, we will
->>> need to mark the memory as normal sys-cached for GPU to use system 
->>> cache.
->>> Without this, the system cache lines are not allocated for GPU. We 
->>> use
->>> the IO_PGTABLE_QUIRK_ARM_OUTER_WBWA quirk instead of a page 
->>> protection
->>> flag as the flag cannot be exposed via DMA api because of no in-tree
->>> users.
->>> 
->>> Signed-off-by: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
->>> ---
->>>  drivers/iommu/io-pgtable-arm.c | 3 +++
->>>  1 file changed, 3 insertions(+)
->>> 
->>> diff --git a/drivers/iommu/io-pgtable-arm.c 
->>> b/drivers/iommu/io-pgtable-arm.c
->>> index 7c9ea9d7874a..3fb7de8304a2 100644
->>> --- a/drivers/iommu/io-pgtable-arm.c
->>> +++ b/drivers/iommu/io-pgtable-arm.c
->>> @@ -415,6 +415,9 @@ static arm_lpae_iopte arm_lpae_prot_to_pte(struct 
->>> arm_lpae_io_pgtable *data,
->>>  		else if (prot & IOMMU_CACHE)
->>>  			pte |= (ARM_LPAE_MAIR_ATTR_IDX_CACHE
->>>  				<< ARM_LPAE_PTE_ATTRINDX_SHIFT);
->>> +		else if (data->iop.cfg.quirks & IO_PGTABLE_QUIRK_ARM_OUTER_WBWA)
->>> +			pte |= (ARM_LPAE_MAIR_ATTR_IDX_INC_OCACHE
->>> +				<< ARM_LPAE_PTE_ATTRINDX_SHIFT);
->>>  	}
->> 
-> While this approach of enabling system cache globally for both page
-> tables and other buffers
-> works for the GPU usecase, this isn't ideal for other clients that use
-> system cache. For example,
-> video clients only want to cache a subset of their buffers in the
-> system cache, due to the sizing constraint
-> imposed by how much of the system cache they can use. So, it would be
-> ideal to have
-> a way of expressing the desire to use the system cache on a per-buffer
-> basis. Additionally,
-> our video clients use the DMA layer, and since the requirement is for
-> caching in the system cache
-> to be a per buffer attribute, it seems like we would have to have a
-> DMA attribute to express
-> this on a per-buffer basis.
-> 
+[AMD Official Use Only - Approved for External Use]
 
-I did bring this up initially [1], also where is this video client
-in upstream? AFAIK, only system cache user in upstream is GPU.
-We cannot add any DMA attribute unless there is any user upstream
-as per [2], so when the support for such a client is added, wouldn't
-((data->iop.cfg.quirks & IO_PGTABLE_QUIRK_ARM_OUTER_WBWA) || PROT_FLAG)
-work?
+Hi David,
 
-[1] 
-https://lore.kernel.org/dri-devel/ecfda7ca80f6d7b4ff3d89b8758f4dc9@codeaurora.org/
-[2] https://lore.kernel.org/linux-iommu/20191026053026.GA14545@lst.de/T/
+Thank you for noticing and submitting a fix. You may use
+Signed-off-by: Naveen Krishna Chatradhi <nchatrad@amd.com>
 
-Thanks,
-Sai
+Regards,
+Naveenk
 
--- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a 
-member
-of Code Aurora Forum, hosted by The Linux Foundation
+-----Original Message-----
+From: David Arcari <darcari@redhat.com>=20
+Sent: Thursday, January 7, 2021 8:17 PM
+To: linux-hwmon@vger.kernel.org
+Cc: David Arcari <darcari@redhat.com>; Chatradhi, Naveen Krishna <NaveenKri=
+shna.Chatradhi@amd.com>; Jean Delvare <jdelvare@suse.com>; Guenter Roeck <l=
+inux@roeck-us.net>; linux-kernel@vger.kernel.org; stable@vger.kernel.org
+Subject: [PATCH] hwmon: (amd_energy) fix allocation of hwmon_channel_info c=
+onfig
+
+[CAUTION: External Email]
+
+hwmon, specifically hwmon_num_channel_attrs, expects the config array in th=
+e hwmon_channel_info structure to be terminated by a zero entry.  amd_energ=
+y does not honor this convention.  As result, a KASAN warning is possible. =
+ Fix this by adding an additional entry and setting it to zero.
+
+Fixes: 8abee9566b7e ("hwmon: Add amd_energy driver to report energy counter=
+s")
+
+Signed-off-by: David Arcari <darcari@redhat.com>
+Cc: Naveen Krishna Chatradhi <nchatrad@amd.com>
+[naveenk:] Signed-off-by: Naveen Krishna Chatradhi <nchatrad@amd.com>
+Cc: Jean Delvare <jdelvare@suse.com>
+Cc: Guenter Roeck <linux@roeck-us.net>
+Cc: linux-kernel@vger.kernel.org
+Cc: stable@vger.kernel.org
+---
+ drivers/hwmon/amd_energy.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/hwmon/amd_energy.c b/drivers/hwmon/amd_energy.c index =
+9b306448b7a0..822c2e74b98d 100644
+--- a/drivers/hwmon/amd_energy.c
++++ b/drivers/hwmon/amd_energy.c
+@@ -222,7 +222,7 @@ static int amd_create_sensor(struct device *dev,
+         */
+        cpus =3D num_present_cpus() / num_siblings;
+
+-       s_config =3D devm_kcalloc(dev, cpus + sockets,
++       s_config =3D devm_kcalloc(dev, cpus + sockets + 1,
+                                sizeof(u32), GFP_KERNEL);
+        if (!s_config)
+                return -ENOMEM;
+@@ -254,6 +254,7 @@ static int amd_create_sensor(struct device *dev,
+                        scnprintf(label_l[i], 10, "Esocket%u", (i - cpus));
+        }
+
++       s_config[i] =3D 0;
+        return 0;
+ }
+
+--
+2.18.1
