@@ -2,102 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 998CE2EFB99
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Jan 2021 00:12:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 378112EFB9C
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Jan 2021 00:16:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725905AbhAHXMf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Jan 2021 18:12:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51590 "EHLO
+        id S1726005AbhAHXP6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Jan 2021 18:15:58 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52100 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725775AbhAHXMe (ORCPT
+        with ESMTP id S1725306AbhAHXP5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Jan 2021 18:12:34 -0500
-Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A58BC061574
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Jan 2021 15:11:53 -0800 (PST)
-Received: by mail-lf1-x12a.google.com with SMTP id o19so26856171lfo.1
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Jan 2021 15:11:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=gLt4ztLxzVBHshNZl1/x/vV1CQvxUEjisAgP7AfDZBo=;
-        b=XIehVx9ar1bvUZcK9N6s3NjOLf3uSoE6MkC8KWzFKBDSbgSLvAQkiBmrpp2iNPGCf5
-         vUcdf0Fh236uTTrTWIV9fUYOOhbi3ClgEeI/M4xmmWYlV1So+s+pfRj3HNU944AGelrC
-         ltMwAtMkw4tk+3hYWHD4AeNYY1/ZLuk6SREco=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=gLt4ztLxzVBHshNZl1/x/vV1CQvxUEjisAgP7AfDZBo=;
-        b=glTk8v/sHxEYfz0Q79kCzA592wghoGCl2heGbaHrYbHf1+AlEscKg6uAXXazRS0lug
-         FSa2DjW4/BZmdvOD2d4L00BugzQqM6pGAhe86gDpLtbNTTRxoh5+VWeFJx6+I8R7hUA8
-         0lPtML6zuO/7UXcOFG1L89//1NTHnv9Wre+fX7F9voYPW8IzACHYbvDuXFJKnJQG5mmr
-         p9sJXedGhAzL/8Ja5hokn4WfCLNxy4spU75GMRyV/tQ2257FYj2iSEjRS+FmyuJWmlde
-         pwsZfWh+yBwF8HffTzyxZE/yxY/aKdMD7nnq+hvq7jjNMJZynV4C/fWUCGuCLBrm83OM
-         Frtw==
-X-Gm-Message-State: AOAM530cP3wKed1cl7q/uWFRDj1KQxVHIPj1y0YSMidvypj9tVdJaXTU
-        30HEHZ9/mbzjGpDS5TWQ3ogr7pG03Ecu8Q==
-X-Google-Smtp-Source: ABdhPJxPPO6hLLjwtqf/W/3YOEsvGjhr7o3PIkzVwYnTVraloVNHSJdIX36ytqTmw6ah5ucaRnva0Q==
-X-Received: by 2002:a05:6512:3253:: with SMTP id c19mr2450421lfr.631.1610147511591;
-        Fri, 08 Jan 2021 15:11:51 -0800 (PST)
-Received: from mail-lf1-f47.google.com (mail-lf1-f47.google.com. [209.85.167.47])
-        by smtp.gmail.com with ESMTPSA id w6sm2177637lfn.222.2021.01.08.15.11.50
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 08 Jan 2021 15:11:50 -0800 (PST)
-Received: by mail-lf1-f47.google.com with SMTP id u25so6050791lfc.2
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Jan 2021 15:11:50 -0800 (PST)
-X-Received: by 2002:a2e:9ad7:: with SMTP id p23mr2320850ljj.465.1610147509949;
- Fri, 08 Jan 2021 15:11:49 -0800 (PST)
+        Fri, 8 Jan 2021 18:15:57 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D3CEC061574;
+        Fri,  8 Jan 2021 15:15:17 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=TmO09cObcPohwfcznvarkJ3GaxSuxbSBMS5Y5aaVzdk=; b=TyXKOGDk9E8YintME3xbAqr/B9
+        K+tYo9PPw3b3nuqfZ1us1zZLL7vIzv0mkZbT9jkIetntI8a0A/SRNJ12IlxJZgEeA6O9ieAa1ClrH
+        61WReUB0glKhhrH33J4teA1L77tLr8VzY+HQvewUAqesj0rUIqgb+E91EYKhNuGZmfm7cOzmNqzEE
+        KOYZfImxWooGC26vkLSXNU05SkgqezmppqCDEt8XJSNnO9Kr6glaka/Y8Y6Osoz+If7t4DLqntkO9
+        Q6fbLpuHyCmW672fn/PAoYFMQcrjsoPrJZArUbhYCSbVp6HnOSanMwRo016uKcqCh9MFKPS2Tl7u6
+        uHVGhTbg==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1ky0yF-0005sk-M4; Fri, 08 Jan 2021 23:15:04 +0000
+Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 9605A9866B2; Sat,  9 Jan 2021 00:14:59 +0100 (CET)
+Date:   Sat, 9 Jan 2021 00:14:59 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     "Luck, Tony" <tony.luck@intel.com>
+Cc:     Borislav Petkov <bp@alien8.de>, "x86@kernel.org" <x86@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Darren Hart <dvhart@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-edac@vger.kernel.org" <linux-edac@vger.kernel.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>
+Subject: Re: [PATCH 2/2] futex, x86/mce: Avoid double machine checks
+Message-ID: <20210108231459.GC2453@worktop.programming.kicks-ass.net>
+References: <20210108222251.14391-1-tony.luck@intel.com>
+ <20210108222251.14391-3-tony.luck@intel.com>
+ <20210108224715.GB2453@worktop.programming.kicks-ass.net>
+ <4493a015ffcd4d82bbea7d1e5c2e73e4@intel.com>
 MIME-Version: 1.0
-References: <20200916205434.GA10389@duo.ucw.cz> <87czyf5jjp.fsf@vps.thesusis.net>
-In-Reply-To: <87czyf5jjp.fsf@vps.thesusis.net>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Fri, 8 Jan 2021 15:11:34 -0800
-X-Gmail-Original-Message-ID: <CAHk-=wjsjC1h7fskwYaaRLykN1ms6ZtxGvucQgmL-zZTfxPdBA@mail.gmail.com>
-Message-ID: <CAHk-=wjsjC1h7fskwYaaRLykN1ms6ZtxGvucQgmL-zZTfxPdBA@mail.gmail.com>
-Subject: Re: fbcon: remove soft scrollback code (missing Doc. patch)
-To:     Phillip Susi <phill@thesusis.net>
-Cc:     Pavel Machek <pavel@ucw.cz>, Randy Dunlap <rdunlap@infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Daniel Vetter <daniel@ffwll.ch>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <4493a015ffcd4d82bbea7d1e5c2e73e4@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 8, 2021 at 11:13 AM Phillip Susi <phill@thesusis.net> wrote:
->
-> > Could we pause this madness? Scrollback is still useful. I needed it
-> > today... it was too small, so command results I was looking for
-> > already scrolled away, but... life will be really painful with 0
-> > scrollback.
->
-> > You'll need it, too... as soon as you get oops and will want to see
-> > errors just prior to that oops.
->
-> > If it means I get to maintain it... I'm not happy about it but that's
-> > better than no scrollback.
->
-> Amen!  What self respecting admin installs a gui on servers?  What do we
-> have to do to get this back in?  What was so buggy with this code that
-> it needed to be removed?  Why was it such a burden to just leave it be?
+On Fri, Jan 08, 2021 at 11:08:58PM +0000, Luck, Tony wrote:
+> > I think this is horrid; why can't we have it return something different
+> > then -EFAULT instead?
+> 
+> I did consider this ... but it appears that architectures aren't unified in the
+> return value from get_user()
 
-It really was buggy, with security implications. And we have no maintainers.
+But surely none are currently returning -EMEMERR or whatever name we
+come up with.
 
-So the scroll-back code can't come back until we have a maintainer and
-a cleaner and simpler implementation.
+> Here's another function involved in the futex call chain leading to this:
+> 
+> static int get_futex_value_locked(u32 *dest, u32 __user *from)
+> {
+>         int ret;
+> 
+>         pagefault_disable();
+>         ret = __get_user(*dest, from);
+>         pagefault_enable();
+> 
+>         return ret ? -EFAULT : 0;
+> }
+> 
+> It seems like the expectation here is just "zero or not" and we
+> don't care what the "not" value is ... just turn it into -EFAULT.
 
-And no, maintaining it really doesn't mean "just get it back to the
-old broken state".
-
-So far I haven't actually seen any patches, which means that it's not
-coming back.
-
-The good news? If you have an actual text VGA console, that should
-still work just fine.
-
-                 Linus
+Yeah, saw that, but that should be trivially fixable I'm thinking.
