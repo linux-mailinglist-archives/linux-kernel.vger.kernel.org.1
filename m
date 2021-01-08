@@ -2,164 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 444F02EEB86
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 03:56:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A9532EEB8B
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 03:59:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727100AbhAHCzd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 21:55:33 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60368 "EHLO
+        id S1726929AbhAHC5T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 21:57:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60644 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726113AbhAHCzc (ORCPT
+        with ESMTP id S1726474AbhAHC5S (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 21:55:32 -0500
-Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94844C0612F4;
-        Thu,  7 Jan 2021 18:54:52 -0800 (PST)
-Received: by mail-pj1-x1044.google.com with SMTP id lj6so2885512pjb.0;
-        Thu, 07 Jan 2021 18:54:52 -0800 (PST)
+        Thu, 7 Jan 2021 21:57:18 -0500
+Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 464D8C0612F5
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Jan 2021 18:56:38 -0800 (PST)
+Received: by mail-pj1-x102b.google.com with SMTP id u4so3647740pjn.4
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Jan 2021 18:56:38 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=y35UHLlMiYde51iVKR+n3JoxvCegZU0uBAWABZsfWpo=;
-        b=eQCBTdA+Ch3bNPD2oGxk0hSRW0ovBl0Rm0wBdTk4EF9lFur536Q3u8Bz4+dKmSdnD/
-         gUbomYCApSVyXY1zOsWUrhc4oeqfl1+G1OZq40rz40oQeia16ACoHKNQvQETD5cwHPc1
-         y5RaYEciKf2BXwKgAJX7j943LUu5EmFf/3LSTRmAG16s9nyBpVdLJXiKP/GzcRksI000
-         QwVNOTwpmmfvL9/Ki+sc0Y75e4OqW+rHVb//19GumefJaqE9iOtFf9RPJayGRY5mtFB2
-         J2ZrkqBPVnfZccL8vjU5y9ebewsKeGhwUE82pVOeHDOo0Bvd8SUfd/JvSwOaJ1uoc1HB
-         qpJA==
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=3O9zuZkl9ZCDWe21i1b+VXFMIgQt5YzM+o0I5kD2q18=;
+        b=EsLZpaTiHt45R+RX9vSof5hFiKU/thtsi7O0RCTnt7lezGkxOIc+1P6/BWbTv9yESI
+         p8CTkQQLqtCqTaS8bEbkrsgrOkCPgzXnm3odm7+DBejXM4P1aP388fNOcOrFZZMUuiYH
+         eiJqFXqS2CE+gC5m/PJv6Yjwm0TbnubxcYJ2U=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=y35UHLlMiYde51iVKR+n3JoxvCegZU0uBAWABZsfWpo=;
-        b=D0w8jGUdQMZZf9/jgGTaScD/Gvofn+NK/kMbHvxBAvFtu9OBZ7V9XccMU6XrcRAaBA
-         BqpI1rEcg9JJKmFBjPoej0fCz1cgN+ZZEX24/wG7ms59WIjOro4elT19OjNE5zs3Dg1S
-         P4VdaxUB+Dkp3yso6wUcLVDek7yRf5FiGKwiUUaKU6zv/AEjiNCBiDbY0kurNrVAkdBV
-         0doKW7H7cEo4M5instXmld3HyxEnA3lVD8EaDUtfokxRY3b8VGlwZS947OMhJLHFl+87
-         aVHS6GUCbjpSxkmbOb1LqbOWvSmyhhR3wHJcFGHJkA6ytUaFxtJ9KuYGbnOjdOb1xS/5
-         lfdQ==
-X-Gm-Message-State: AOAM5312p+RWDQM/gV7DFRkQozFZnaBrguQhMe6c0srh+XGwzXbqgK2j
-        kZTK36IMTSSAEtgIQIHK2bs=
-X-Google-Smtp-Source: ABdhPJxVfmfr+RHqVf5h9a5LvsLpxM5Y7ikc00Qn8MOC5QdyoX2BQ+qNspWHuU0k2Cumc090gMjtaQ==
-X-Received: by 2002:a17:90a:a10e:: with SMTP id s14mr1417416pjp.133.1610074491116;
-        Thu, 07 Jan 2021 18:54:51 -0800 (PST)
-Received: from localhost.localdomain ([178.236.46.205])
-        by smtp.gmail.com with ESMTPSA id f193sm7444219pfa.81.2021.01.07.18.54.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 Jan 2021 18:54:50 -0800 (PST)
-From:   menglong8.dong@gmail.com
-X-Google-Original-From: dong.menglong@zte.com.cn
-To:     roopa@nvidia.com
-Cc:     nikolay@nvidia.com, davem@davemloft.net, kuba@kernel.org,
-        bridge@lists.linux-foundation.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Menglong Dong <dong.menglong@zte.com.cn>
-Subject: [PATCH net-next] net/bridge: fix misspellings using codespell tool
-Date:   Thu,  7 Jan 2021 18:53:32 -0800
-Message-Id: <20210108025332.52480-1-dong.menglong@zte.com.cn>
-X-Mailer: git-send-email 2.25.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=3O9zuZkl9ZCDWe21i1b+VXFMIgQt5YzM+o0I5kD2q18=;
+        b=Bj+zclVRLrVtTXiQASkQjshNWSYWmXR6pZJhQk+ulfPwMqxWGDbOepB7n/If2NuhrH
+         1eCfwfv/SSTa6A1nYkFLmV1yR12V0OrdAAg3+CZ6agkj9Mzv3IMZRq/il+/C7ZQZgUxC
+         07vbLzs20kuc1uercq657AXqbfXwcFnSpva/w4EDDdB0oafif0s2inikLM9SX81vonm5
+         k+yaf3VBTHnyVFr6gYUEtXQtVUcWPHSXEbpCqPKF/tRcul2u9f1K5pRsjgAeOTSijGxk
+         mDykscro8iQaT8yZwWH0LNl7HSi3oi7+rD9ZXDaSCoYZKDAqgivFpJPoq0TFhQZSKKL5
+         FTqQ==
+X-Gm-Message-State: AOAM5339EHeSKoI0IQIcDi6Xld84JiDcNnOeX00XcmM2EKLRVmoXthGj
+        Xgk8q/efQCravyCS1Jmt5Ic8PlOGV4DmK8Rn48VwLg==
+X-Google-Smtp-Source: ABdhPJzKGxYU6yAsvjkCKTP+2vQ3R7MIV+PsqPkURWLcF6PiijJ9ZVBxcWLGKVYSFjx9ws0RQhVHdLOmDDgsMI6i+zI=
+X-Received: by 2002:a17:90a:2e83:: with SMTP id r3mr1457895pjd.112.1610074597749;
+ Thu, 07 Jan 2021 18:56:37 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20201229142406.v5.1.Id0d31b5f3ddf5e734d2ab11161ac5821921b1e1e@changeid>
+ <2aea44f0-85e7-fd55-2c35-c1d994f20e03@linux.intel.com>
+In-Reply-To: <2aea44f0-85e7-fd55-2c35-c1d994f20e03@linux.intel.com>
+From:   Ikjoon Jang <ikjn@chromium.org>
+Date:   Fri, 8 Jan 2021 10:56:26 +0800
+Message-ID: <CAATdQgBSh+Rkfj5a=g=4LwoNYcG+87zTJJF-VdeaA4WH5ARhuA@mail.gmail.com>
+Subject: Re: [PATCH v5] usb: xhci-mtk: fix unreleased bandwidth data
+To:     Mathias Nyman <mathias.nyman@linux.intel.com>
+Cc:     "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>, linux-usb@vger.kernel.org,
+        Chunfeng Yun <chunfeng.yun@mediatek.com>,
+        Tianping Fang <tianping.fang@mediatek.com>,
+        Zhanyong Wang <zhanyong.wang@mediatek.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Mathias Nyman <mathias.nyman@intel.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-arm-kernel@lists.infradead.org>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Menglong Dong <dong.menglong@zte.com.cn>
+On Thu, Jan 7, 2021 at 7:07 PM Mathias Nyman
+<mathias.nyman@linux.intel.com> wrote:
+>
+> On 29.12.2020 8.24, Ikjoon Jang wrote:
+> > xhci-mtk has hooks on add_endpoint() and drop_endpoint() from xhci
+> > to handle its own sw bandwidth managements and stores bandwidth data
+> > into internal table every time add_endpoint() is called,
+> > so when bandwidth allocation fails at one endpoint, all earlier
+> > allocation from the same interface could still remain at the table.
+> >
+> > This patch adds two more hooks from check_bandwidth() and
+> > reset_bandwidth(), and make mtk-xhci to releases all failed endpoints
+> > from reset_bandwidth().
+> >
+> > Fixes: 08e469de87a2 ("usb: xhci-mtk: supports bandwidth scheduling with multi-TT")
+> > Signed-off-by: Ikjoon Jang <ikjn@chromium.org>
+> >
+>
+> ...
+>
+> >
+> > diff --git a/drivers/usb/host/xhci.c b/drivers/usb/host/xhci.c
+> > index d4a8d0efbbc4..e1fcd3cf723f 100644
+> > --- a/drivers/usb/host/xhci.c
+> > +++ b/drivers/usb/host/xhci.c
+> > @@ -2882,6 +2882,12 @@ static int xhci_check_bandwidth(struct usb_hcd *hcd, struct usb_device *udev)
+> >       xhci_dbg(xhci, "%s called for udev %p\n", __func__, udev);
+> >       virt_dev = xhci->devs[udev->slot_id];
+> >
+> > +     if (xhci->quirks & XHCI_MTK_HOST) {
+> > +             ret = xhci_mtk_check_bandwidth(hcd, udev);
+> > +             if (ret < 0)
+> > +                     return ret;
+> > +     }
+> > +
+>
+> Just noticed that XHCI_MTK_HOST quirk is only set in xhci-mtk.c.
+> xhci-mtk.c calls xhci_init_driver(..., xhci_mtk_overrides) with a .reset override function.
+>
+> why not add override functions for .check_bandwidth and .reset_bandwidth to xhci_mtk_overrides instead?
+>
+> Another patch to add similar overrides for .add_endpoint and .drop_endpoint should probably be
+> done so that we can get rid of the xhci_mtk_add/drop_ep_quirk() calls in xhci.c as well
 
-Some typos are found out by codespell tool:
+Yes, I agree.
+Let me submit another patch adding more overridables to xhci_driver_overrides.
+Thanks.
 
-$ codespell ./net/bridge/
-./net/bridge/br_stp.c:604: permanant  ==> permanent
-./net/bridge/br_stp.c:605: persistance  ==> persistence
-./net/bridge/br.c:125: underlaying  ==> underlying
-./net/bridge/br_input.c:43: modue  ==> mode
-./net/bridge/br_mrp.c:828: Determin  ==> Determine
-./net/bridge/br_mrp.c:848: Determin  ==> Determine
-./net/bridge/br_mrp.c:897: Determin  ==> Determine
-
-Fix typos found by codespell.
-
-Signed-off-by: Menglong Dong <dong.menglong@zte.com.cn>
----
- net/bridge/br.c       | 2 +-
- net/bridge/br_input.c | 2 +-
- net/bridge/br_mrp.c   | 6 +++---
- net/bridge/br_stp.c   | 4 ++--
- 4 files changed, 7 insertions(+), 7 deletions(-)
-
-diff --git a/net/bridge/br.c b/net/bridge/br.c
-index 1b169f8e7491..ef743f94254d 100644
---- a/net/bridge/br.c
-+++ b/net/bridge/br.c
-@@ -122,7 +122,7 @@ static int br_device_event(struct notifier_block *unused, unsigned long event, v
- 		break;
- 
- 	case NETDEV_PRE_TYPE_CHANGE:
--		/* Forbid underlaying device to change its type. */
-+		/* Forbid underlying device to change its type. */
- 		return NOTIFY_BAD;
- 
- 	case NETDEV_RESEND_IGMP:
-diff --git a/net/bridge/br_input.c b/net/bridge/br_input.c
-index 8ca1f1bc6d12..222285d9dae2 100644
---- a/net/bridge/br_input.c
-+++ b/net/bridge/br_input.c
-@@ -40,7 +40,7 @@ static int br_pass_frame_up(struct sk_buff *skb)
- 
- 	vg = br_vlan_group_rcu(br);
- 	/* Bridge is just like any other port.  Make sure the
--	 * packet is allowed except in promisc modue when someone
-+	 * packet is allowed except in promisc mode when someone
- 	 * may be running packet capture.
- 	 */
- 	if (!(brdev->flags & IFF_PROMISC) &&
-diff --git a/net/bridge/br_mrp.c b/net/bridge/br_mrp.c
-index cec2c4e4561d..fc0a98874bfc 100644
---- a/net/bridge/br_mrp.c
-+++ b/net/bridge/br_mrp.c
-@@ -825,7 +825,7 @@ int br_mrp_start_in_test(struct net_bridge *br,
- 	return 0;
- }
- 
--/* Determin if the frame type is a ring frame */
-+/* Determine if the frame type is a ring frame */
- static bool br_mrp_ring_frame(struct sk_buff *skb)
- {
- 	const struct br_mrp_tlv_hdr *hdr;
-@@ -845,7 +845,7 @@ static bool br_mrp_ring_frame(struct sk_buff *skb)
- 	return false;
- }
- 
--/* Determin if the frame type is an interconnect frame */
-+/* Determine if the frame type is an interconnect frame */
- static bool br_mrp_in_frame(struct sk_buff *skb)
- {
- 	const struct br_mrp_tlv_hdr *hdr;
-@@ -894,7 +894,7 @@ static void br_mrp_mrm_process(struct br_mrp *mrp, struct net_bridge_port *port,
- 		br_mrp_ring_port_open(port->dev, false);
- }
- 
--/* Determin if the test hdr has a better priority than the node */
-+/* Determine if the test hdr has a better priority than the node */
- static bool br_mrp_test_better_than_own(struct br_mrp *mrp,
- 					struct net_bridge *br,
- 					const struct br_mrp_ring_test_hdr *hdr)
-diff --git a/net/bridge/br_stp.c b/net/bridge/br_stp.c
-index 3e88be7aa269..a3a5745660dd 100644
---- a/net/bridge/br_stp.c
-+++ b/net/bridge/br_stp.c
-@@ -601,8 +601,8 @@ int __set_ageing_time(struct net_device *dev, unsigned long t)
- /* Set time interval that dynamic forwarding entries live
-  * For pure software bridge, allow values outside the 802.1
-  * standard specification for special cases:
-- *  0 - entry never ages (all permanant)
-- *  1 - entry disappears (no persistance)
-+ *  0 - entry never ages (all permanent)
-+ *  1 - entry disappears (no persistence)
-  *
-  * Offloaded switch entries maybe more restrictive
-  */
--- 
-2.25.1
-
+>
+> Thanks
+> -Mathias
+>
