@@ -2,84 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AFC842EEB9F
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 04:06:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 321EA2EEBA0
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 04:06:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727067AbhAHDEK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 22:04:10 -0500
-Received: from mail-io1-f44.google.com ([209.85.166.44]:34055 "EHLO
-        mail-io1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726281AbhAHDEJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 22:04:09 -0500
-Received: by mail-io1-f44.google.com with SMTP id i18so8415814ioa.1;
-        Thu, 07 Jan 2021 19:03:54 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=7AhJtVW3hdKiTBxP5hqSzO8QFcAILtgkgTjKoMoo8qc=;
-        b=fnm3NLJVq3CnzzsZLM90au918LYQF9HxMlDqJ8ognemTV6/EnGZpPP4in9kQqKSnSz
-         h9C8CyHrz0Y5klqbHohOboNpH2qYFQfauWNm5r4r7MhEx2q+XXTbd/WfPyHjgleuE1bc
-         I0ILJKBsol1Pal8rSKH0n4KryNik2yjay54N2VLCGmJb+Y/z/TgpcrmhnlkUVzkNT/ED
-         0Hjoz0+d5BjyPMPO6kC2FzjEnls1HqhoUmScX/Ty1nfZQqKngsysqvs/jLt44IX2Z9R6
-         UCHw7EbFzAZcDcfE44YDNV1c2Eneqk+3samBUpqMASvspXaIbrCj4VRT2oHkkdWravWX
-         ZUAw==
-X-Gm-Message-State: AOAM531UxwnRDvP1Mv3V5Q5b+G7CB4RpX8mD9sLShrWAeB57vfA++Kr3
-        UeNxgNZGnYmPc5VtxjRzxw==
-X-Google-Smtp-Source: ABdhPJzSrYmiVrZyU+/Rs5g/4+aHh390qkWNVyuKhoFsJ8B5qS6fOFZ40uBapmh9FrAfdGL+I3KT0w==
-X-Received: by 2002:a6b:f202:: with SMTP id q2mr3737128ioh.87.1610075008863;
-        Thu, 07 Jan 2021 19:03:28 -0800 (PST)
-Received: from robh.at.kernel.org ([64.188.179.253])
-        by smtp.gmail.com with ESMTPSA id v5sm4526754iob.26.2021.01.07.19.03.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 Jan 2021 19:03:28 -0800 (PST)
-Received: (nullmailer pid 1797545 invoked by uid 1000);
-        Fri, 08 Jan 2021 03:03:25 -0000
-Date:   Thu, 7 Jan 2021 20:03:25 -0700
-From:   Rob Herring <robh@kernel.org>
-To:     Kishon Vijay Abraham I <kishon@ti.com>
-Cc:     Vinod Koul <vkoul@kernel.org>, Nishanth Menon <nm@ti.com>,
-        Swapnil Jakhade <sjakhade@cadence.com>,
-        Peter Rosin <peda@axentia.se>, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH 4/7] dt-bindings: ti-serdes-mux: Add defines for AM64 SoC
-Message-ID: <20210108030325.GA1794594@robh.at.kernel.org>
-References: <20201224114250.1083-1-kishon@ti.com>
- <20201224114250.1083-5-kishon@ti.com>
+        id S1726871AbhAHDGA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 22:06:00 -0500
+Received: from mga05.intel.com ([192.55.52.43]:17920 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726113AbhAHDGA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Jan 2021 22:06:00 -0500
+IronPort-SDR: VsFnLbYZE+yJvkCFO2/MLqDhUJdxmYgerXBSspUzxGfrh4qU5QLJ833betKphS2GQ05vSFXMaU
+ hrzoKOV5Bc5A==
+X-IronPort-AV: E=McAfee;i="6000,8403,9857"; a="262301961"
+X-IronPort-AV: E=Sophos;i="5.79,330,1602572400"; 
+   d="scan'208";a="262301961"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Jan 2021 19:05:19 -0800
+IronPort-SDR: a+KB6jKswdvMiDMNThNVT9k3PAzkVkxo/c7iT8fS6bNzGCPzfkNyl5RSgUxUx5ugh+RLkm9/zp
+ QQEsdbzX7rtA==
+X-IronPort-AV: E=Sophos;i="5.79,330,1602572400"; 
+   d="scan'208";a="379965243"
+Received: from likexu-mobl1.ccr.corp.intel.com (HELO [10.238.4.93]) ([10.238.4.93])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Jan 2021 19:05:13 -0800
+Subject: Re: [PATCH v3 07/17] KVM: x86/pmu: Add IA32_DS_AREA MSR emulation to
+ manage guest DS buffer
+To:     Sean Christopherson <seanjc@google.com>,
+        Like Xu <like.xu@linux.intel.com>,
+        Andi Kleen <andi@firstfloor.org>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Paolo Bonzini <pbonzini@redhat.com>, eranian@google.com,
+        kvm@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Kan Liang <kan.liang@linux.intel.com>, wei.w.wang@intel.com,
+        luwei.kang@intel.com, linux-kernel@vger.kernel.org
+References: <20210104131542.495413-1-like.xu@linux.intel.com>
+ <20210104131542.495413-8-like.xu@linux.intel.com>
+ <X/TXGylLUVLHNIC7@google.com>
+From:   "Xu, Like" <like.xu@intel.com>
+Message-ID: <961e6135-ff6d-86d1-3b7b-a1846ad0e4c4@intel.com>
+Date:   Fri, 8 Jan 2021 11:05:11 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201224114250.1083-5-kishon@ti.com>
+In-Reply-To: <X/TXGylLUVLHNIC7@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 24, 2020 at 05:12:47PM +0530, Kishon Vijay Abraham I wrote:
-> AM64 has a single lane SERDES which can be configured to be used
-> with either PCIe or USB. Define the possilbe values for the SERDES
-> function in AM64 SoC here.
+Hi Sean,
 
-Doesn't look like this is used? Would the common phy modes work?
-> 
-> Signed-off-by: Kishon Vijay Abraham I <kishon@ti.com>
-> ---
->  include/dt-bindings/mux/ti-serdes.h | 4 ++++
->  1 file changed, 4 insertions(+)
-> 
-> diff --git a/include/dt-bindings/mux/ti-serdes.h b/include/dt-bindings/mux/ti-serdes.h
-> index 9047ec6bd3cf..68e0f76deed1 100644
-> --- a/include/dt-bindings/mux/ti-serdes.h
-> +++ b/include/dt-bindings/mux/ti-serdes.h
-> @@ -90,4 +90,8 @@
->  #define J7200_SERDES0_LANE3_USB			0x2
->  #define J7200_SERDES0_LANE3_IP4_UNUSED		0x3
->  
-> +/* AM64 */
-> +#define AM64_SERDES0_LANE0_PCIE0		0x0
-> +#define AM64_SERDES0_LANE0_USB			0x1
-> +
->  #endif /* _DT_BINDINGS_MUX_TI_SERDES */
-> -- 
-> 2.17.1
-> 
+On 2021/1/6 5:16, Sean Christopherson wrote:
+>> diff --git a/arch/x86/events/intel/core.c b/arch/x86/events/intel/core.c
+>> index 6453b8a6834a..ccddda455bec 100644
+>> --- a/arch/x86/events/intel/core.c
+>> +++ b/arch/x86/events/intel/core.c
+>> @@ -3690,6 +3690,7 @@ static struct perf_guest_switch_msr *intel_guest_get_msrs(int *nr)
+>>   {
+>>   	struct cpu_hw_events *cpuc = this_cpu_ptr(&cpu_hw_events);
+>>   	struct perf_guest_switch_msr *arr = cpuc->guest_switch_msrs;
+>> +	struct debug_store *ds = __this_cpu_read(cpu_hw_events.ds);
+>>   
+>>   	arr[0].msr = MSR_CORE_PERF_GLOBAL_CTRL;
+>>   	arr[0].host = x86_pmu.intel_ctrl & ~cpuc->intel_ctrl_guest_mask;
+>> @@ -3735,6 +3736,18 @@ static struct perf_guest_switch_msr *intel_guest_get_msrs(int *nr)
+>>   		*nr = 2;
+>>   	}
+>>   
+>> +	if (arr[1].guest) {
+>> +		arr[2].msr = MSR_IA32_DS_AREA;
+>> +		arr[2].host = (unsigned long)ds;
+>> +		/* KVM will update MSR_IA32_DS_AREA with the trapped guest value. */
+>> +		arr[2].guest = 0ull;
+>> +		*nr = 3;
+>> +	} else if (*nr == 2) {
+>> +		arr[2].msr = MSR_IA32_DS_AREA;
+>> +		arr[2].host = arr[2].guest = 0;
+>> +		*nr = 3;
+>> +	}
+> Similar comments as the previous patch, please figure out a way to properly
+> integrate this into the PEBS logic instead of querying arr/nr.
+
+To address your comment, please help confirm whether you are
+fine or happy with the streamlined logic of intel_guest_get_msrs():
+
+static struct perf_guest_switch_msr *intel_guest_get_msrs(int *nr)
+{
+     struct cpu_hw_events *cpuc = this_cpu_ptr(&cpu_hw_events);
+     struct perf_guest_switch_msr *arr = cpuc->guest_switch_msrs;
+     struct debug_store *ds = __this_cpu_read(cpu_hw_events.ds);
+
+     arr[0].msr = MSR_CORE_PERF_GLOBAL_CTRL;
+     arr[0].host = x86_pmu.intel_ctrl & ~cpuc->intel_ctrl_guest_mask;
+     arr[0].guest = x86_pmu.intel_ctrl & ~cpuc->intel_ctrl_host_mask;
+
+     /*
+      * Disable PEBS in the guest if PEBS is used by the host; enabling PEBS
+      * in both will lead to unexpected PMIs in the host and/or missed PMIs
+      * in the guest.
+      */
+     if (cpuc->pebs_enabled & ~cpuc->intel_ctrl_host_mask) {
+         if (x86_pmu.flags & PMU_FL_PEBS_ALL)
+             arr[0].guest &= ~cpuc->pebs_enabled;
+         else
+             arr[0].guest &= ~(cpuc->pebs_enabled & PEBS_COUNTER_MASK);
+     }
+     *nr = 1;
+
+     if (x86_pmu.pebs) {
+         arr[1].msr = MSR_IA32_PEBS_ENABLE;
+         arr[2].msr = MSR_IA32_DS_AREA;
+         if (x86_pmu.intel_cap.pebs_baseline)
+             arr[3].msr = MSR_PEBS_DATA_CFG;
+
+         /* Skip the MSR loads by stuffing guest=host (KVM will remove the 
+entry). */
+         arr[1].guest = arr[1].host = cpuc->pebs_enabled & 
+~cpuc->intel_ctrl_guest_mask;
+         arr[2].guest = arr[2].host = (unsigned long)ds;
+         if (x86_pmu.intel_cap.pebs_baseline)
+             arr[3].guest = arr[3].host = cpuc->pebs_data_cfg;
+
+         /*
+          * Host and guest PEBS are mutually exclusive. Load the guest
+          * value iff PEBS is disabled in the host.
+          *
+          * If PEBS is enabled in the host and the CPU supports PEBS isolation,
+          * disabling the counters is sufficient (see commit 9b545c04abd4);
+          * Without isolation, PEBS must be explicitly disabled prior to
+          * VM-Enter to prevent PEBS writes from overshooting VM-Enter.
+          *
+          * KVM will update arr[2|3].guest with the trapped guest values
+          * iff guest PEBS is allowed to be enabled.
+          */
+         if (!arr[1].host) {
+             arr[1].guest = cpuc->pebs_enabled & ~cpuc->intel_ctrl_host_mask;
+             arr[0].guest |= arr[1].guest;
+         } else if (x86_pmu.pebs_no_isolation)
+             arr[1].guest = 0;
+
+         *nr = x86_pmu.intel_cap.pebs_baseline ? 4 : 3;
+     }
+
+     return arr;
+}
+
+---
+thx,likexu
+
+>
+>> +
+>>   	return arr;
+>>   }
+
