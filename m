@@ -2,57 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BAA02EF264
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 13:19:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E2502EF25C
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 13:19:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728342AbhAHMSx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Jan 2021 07:18:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34292 "EHLO
+        id S1726612AbhAHMSM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Jan 2021 07:18:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34268 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728018AbhAHMRZ (ORCPT
+        with ESMTP id S1728015AbhAHMRf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Jan 2021 07:17:25 -0500
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2B63C0612F9
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Jan 2021 04:16:14 -0800 (PST)
-Received: by mail-yb1-xb4a.google.com with SMTP id o8so15318632ybq.22
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Jan 2021 04:16:14 -0800 (PST)
+        Fri, 8 Jan 2021 07:17:35 -0500
+Received: from mail-qt1-x849.google.com (mail-qt1-x849.google.com [IPv6:2607:f8b0:4864:20::849])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54207C06125C
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Jan 2021 04:16:17 -0800 (PST)
+Received: by mail-qt1-x849.google.com with SMTP id e14so8139016qtr.8
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Jan 2021 04:16:17 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=sender:date:in-reply-to:message-id:mime-version:references:subject
          :from:to:cc;
-        bh=UneVgNM1tyQijhnQQmLMVb1v446RL4t+C96eG3CaS6s=;
-        b=sjy+Rq4XVFYrNu/u8dYKqV5xzTkxrsryfinUxE4vTpQxNEMUawE0WVAXTYAxrZrRxK
-         3AQucel0UXMfP6Z1Fpjunu5VnUt1x7FYQpkVARaMlEMqOoPg0rEpkTKfdvwdD4PNY1ho
-         lP9zsxTHuFqSVVGhBMwFWckCWtFWKgAs+clmqF5nYdn1Tix2xYcJIfcboKppux/K+q6g
-         0f9UzpCDoWW2Drr/z5io3pGP2/80Wr2zCw//2zx2HfLq17hY58yPvumPXSHa44HUbFM3
-         Zm6CqmHh74BUuZd0yCaychVURrioQxlyJilhlVhE/sUyuEzx8GXENr6x9SEOLk/jOx8p
-         kQlw==
+        bh=pSI0R0y0LyZ0MvEgT/8TLG9r/LMGz98d06c78ikqYMM=;
+        b=ncicFESs3ffoWFoGIrRaXV+UDl8OOBsRzdKG5EpyzwDsT0yV7/eDINZFH8YAYdLFQh
+         Y9TheqAFWLGOdu5Ma12BYM5IyqUHQAiuEm03eYEc1djPhUHUt+GW5V+HRmWrfKSK6PFG
+         OnQkRt6iTH4FfGnyGLVzO+Hhvsauj/Z1MiAePgkHI9jvmc0XEJ5bFXuE23HXRU5lNRY8
+         /bH/4yf2JeHIynsSwkiZuJFYhDGSVNoub55OTznCHT6ga1UcI3TVJsV9yzVZ4EFAl5RS
+         dUVWi7djxRQN8R6/wJHxV2dByH4KaC4+SmMuujY+2acUKwtQOZnmnJyoO2sgaxMrN5ms
+         k35w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=UneVgNM1tyQijhnQQmLMVb1v446RL4t+C96eG3CaS6s=;
-        b=ig0Mj4g72MI8ZU24r3kzY79e0lq9UG5YMIeYWYi8n7rK+mpZEi5nt0bbpXQE65IH7p
-         SEwDnGv2JFqaSj/6kDUpH5EGnfCvPDrzcWAIC9rnO3Vk4XpeIdNNzCH6/VqrQTagdpdJ
-         ekIhseZ8ImKo/a9YmXQCOZgAUlWbeae+Nvs1LCbHLzqeJ/wu97Q2wDQLzl6+Y9oKkj/S
-         WTgGWphDXM1gVT70D09PPfEnNIWIy9AWIqBMiwYnwfX7ClgY+W3KXOeUKLJ4Vf3DzFW8
-         9OOyRKP1yJqXiYAh4SQM8vBByWwIoDoVOcO6ek/z0TJfd3MUfsdfPiLBaqHAOnXhWP9R
-         Ydnw==
-X-Gm-Message-State: AOAM532OcsTcx7eaAWesXr6k3fxX9yX8dE5ys+DgnRkZuLiPFup3bZ7e
-        yRYw/jFslw4stFog8GS2Z0Z0RxPQOIJb
-X-Google-Smtp-Source: ABdhPJx2tvQM5pHxJ1110zxDP3Dc7/b7XCKfM0MD28OR/73itm2z2W+f9Cz7ihMgWsQ1O6tYqWDGlPIiIyMg
+        bh=pSI0R0y0LyZ0MvEgT/8TLG9r/LMGz98d06c78ikqYMM=;
+        b=dVDV7jjSsIH37/Uu7lISslVof7cyRbNHjE5gSDhF94Y0ywsdEniEua5l0v+hmV+i20
+         OWiyih/8iGpttISXdWsWK7WE9Yl1St4lNuT+qmJlpmXuT7ZTRoxn9csN+81Tal8lUsd6
+         mbhyxmg6ZF/8GztzKntk0PpDzWUo0ZlnHNBFkhlFfpay+6TRh0OYXJH+I0oyxsHS0PLd
+         FxhVtUOhYWlne+hIaVQ93raA9cVNp+y9+v+Dnrgf1sVGfkRLtbOOUnLlVAO1CWEI6Av6
+         rqbBJ1qrqfmmjmiv8LTBwdsoClzN62wL1Zy4A3B4e3n8yoO1Lj7Fvi6TYzV1aZuc/xAg
+         kc0A==
+X-Gm-Message-State: AOAM531w+Hvaav4hR0tOhVtJ5e5UMsa0z6qDp584j6q4ljudvb9yr7eN
+        uLNJciXYmwc+JqBc7Ra88uPn19VrbAoG
+X-Google-Smtp-Source: ABdhPJznjaU0Yun87ow+H6KZ/LD9kUqsdbc9elNbI5loy7zUnacmNP+CBQyMkz84xwCbZHRBZ8tbgygT96wL
 Sender: "qperret via sendgmr" <qperret@r2d2-qp.c.googlers.com>
 X-Received: from r2d2-qp.c.googlers.com ([fda3:e722:ac3:10:28:9cb1:c0a8:1652])
- (user=qperret job=sendgmr) by 2002:a25:6405:: with SMTP id
- y5mr5295727ybb.328.1610108174241; Fri, 08 Jan 2021 04:16:14 -0800 (PST)
-Date:   Fri,  8 Jan 2021 12:15:20 +0000
+ (user=qperret job=sendgmr) by 2002:a0c:90ee:: with SMTP id
+ p101mr3023584qvp.29.1610108176503; Fri, 08 Jan 2021 04:16:16 -0800 (PST)
+Date:   Fri,  8 Jan 2021 12:15:21 +0000
 In-Reply-To: <20210108121524.656872-1-qperret@google.com>
-Message-Id: <20210108121524.656872-23-qperret@google.com>
+Message-Id: <20210108121524.656872-24-qperret@google.com>
 Mime-Version: 1.0
 References: <20210108121524.656872-1-qperret@google.com>
 X-Mailer: git-send-email 2.30.0.284.gd98b1dd5eaa7-goog
-Subject: [RFC PATCH v2 22/26] KVM: arm64: Refactor __load_guest_stage2()
+Subject: [RFC PATCH v2 23/26] KVM: arm64: Refactor __populate_fault_info()
 From:   Quentin Perret <qperret@google.com>
 To:     Catalin Marinas <catalin.marinas@arm.com>,
         Will Deacon <will@kernel.org>, Marc Zyngier <maz@kernel.org>,
@@ -72,42 +72,73 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Refactor __load_guest_stage2() to introduce __load_stage2() which will
-be re-used when loading the host stage 2.
+Refactor __populate_fault_info() to introduce __get_fault_info() which
+will be used once the host is wrapped in a stage 2.
 
 Signed-off-by: Quentin Perret <qperret@google.com>
 ---
- arch/arm64/include/asm/kvm_mmu.h | 9 +++++++--
- 1 file changed, 7 insertions(+), 2 deletions(-)
+ arch/arm64/kvm/hyp/include/hyp/switch.h | 36 +++++++++++++++----------
+ 1 file changed, 22 insertions(+), 14 deletions(-)
 
-diff --git a/arch/arm64/include/asm/kvm_mmu.h b/arch/arm64/include/asm/kvm_mmu.h
-index 83b4c5cf4768..8d37d6d1ed29 100644
---- a/arch/arm64/include/asm/kvm_mmu.h
-+++ b/arch/arm64/include/asm/kvm_mmu.h
-@@ -345,9 +345,9 @@ static __always_inline u64 kvm_get_vttbr(struct kvm_s2_mmu *mmu)
-  * Must be called from hyp code running at EL2 with an updated VTTBR
-  * and interrupts disabled.
-  */
--static __always_inline void __load_guest_stage2(struct kvm_s2_mmu *mmu)
-+static __always_inline void __load_stage2(struct kvm_s2_mmu *mmu, unsigned long vtcr)
- {
--	write_sysreg(kern_hyp_va(mmu->arch)->vtcr, vtcr_el2);
-+	write_sysreg(vtcr, vtcr_el2);
- 	write_sysreg(kvm_get_vttbr(mmu), vttbr_el2);
- 
- 	/*
-@@ -358,6 +358,11 @@ static __always_inline void __load_guest_stage2(struct kvm_s2_mmu *mmu)
- 	asm(ALTERNATIVE("nop", "isb", ARM64_WORKAROUND_SPECULATIVE_AT));
+diff --git a/arch/arm64/kvm/hyp/include/hyp/switch.h b/arch/arm64/kvm/hyp/include/hyp/switch.h
+index 84473574c2e7..e9005255d639 100644
+--- a/arch/arm64/kvm/hyp/include/hyp/switch.h
++++ b/arch/arm64/kvm/hyp/include/hyp/switch.h
+@@ -157,19 +157,9 @@ static inline bool __translate_far_to_hpfar(u64 far, u64 *hpfar)
+ 	return true;
  }
  
-+static __always_inline void __load_guest_stage2(struct kvm_s2_mmu *mmu)
-+{
-+	__load_stage2(mmu, kern_hyp_va(mmu->arch)->vtcr);
+-static inline bool __populate_fault_info(struct kvm_vcpu *vcpu)
++static inline bool __get_fault_info(u64 esr, u64 *far, u64 *hpfar)
+ {
+-	u8 ec;
+-	u64 esr;
+-	u64 hpfar, far;
+-
+-	esr = vcpu->arch.fault.esr_el2;
+-	ec = ESR_ELx_EC(esr);
+-
+-	if (ec != ESR_ELx_EC_DABT_LOW && ec != ESR_ELx_EC_IABT_LOW)
+-		return true;
+-
+-	far = read_sysreg_el2(SYS_FAR);
++	*far = read_sysreg_el2(SYS_FAR);
+ 
+ 	/*
+ 	 * The HPFAR can be invalid if the stage 2 fault did not
+@@ -185,12 +175,30 @@ static inline bool __populate_fault_info(struct kvm_vcpu *vcpu)
+ 	if (!(esr & ESR_ELx_S1PTW) &&
+ 	    (cpus_have_final_cap(ARM64_WORKAROUND_834220) ||
+ 	     (esr & ESR_ELx_FSC_TYPE) == FSC_PERM)) {
+-		if (!__translate_far_to_hpfar(far, &hpfar))
++		if (!__translate_far_to_hpfar(*far, hpfar))
+ 			return false;
+ 	} else {
+-		hpfar = read_sysreg(hpfar_el2);
++		*hpfar = read_sysreg(hpfar_el2);
+ 	}
+ 
++	return true;
 +}
 +
- static inline struct kvm *kvm_s2_mmu_to_kvm(struct kvm_s2_mmu *mmu)
- {
- 	return container_of(mmu->arch, struct kvm, arch);
++static inline bool __populate_fault_info(struct kvm_vcpu *vcpu)
++{
++	u8 ec;
++	u64 esr;
++	u64 hpfar, far;
++
++	esr = vcpu->arch.fault.esr_el2;
++	ec = ESR_ELx_EC(esr);
++
++	if (ec != ESR_ELx_EC_DABT_LOW && ec != ESR_ELx_EC_IABT_LOW)
++		return true;
++
++	if (!__get_fault_info(esr, &far, &hpfar))
++		return false;
++
+ 	vcpu->arch.fault.far_el2 = far;
+ 	vcpu->arch.fault.hpfar_el2 = hpfar;
+ 	return true;
 -- 
 2.30.0.284.gd98b1dd5eaa7-goog
 
