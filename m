@@ -2,104 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BCE2B2EF6FB
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 19:07:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0466F2EF704
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 19:10:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728718AbhAHSGo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Jan 2021 13:06:44 -0500
-Received: from cloudserver094114.home.pl ([79.96.170.134]:43634 "EHLO
-        cloudserver094114.home.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728442AbhAHSGn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Jan 2021 13:06:43 -0500
-Received: from 89-64-81-105.dynamic.chello.pl (89.64.81.105) (HELO kreacher.localnet)
- by serwer1319399.home.pl (79.96.170.134) with SMTP (IdeaSmtpServer 0.83.537)
- id f8e5a3c0ad700087; Fri, 8 Jan 2021 19:06:01 +0100
-From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Linux PM <linux-pm@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        x86 Maintainers <x86@kernel.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        Giovanni Gherdovich <ggherdovich@suse.com>,
-        Giovanni Gherdovich <ggherdovich@suse.cz>
-Subject: [PATCH] x86: PM: Register syscore_ops for scale invariance
-Date:   Fri, 08 Jan 2021 19:05:59 +0100
-Message-ID: <1803209.Mvru99baaF@kreacher>
+        id S1728602AbhAHSIS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Jan 2021 13:08:18 -0500
+Received: from mx2.suse.de ([195.135.220.15]:56354 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727648AbhAHSIS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 Jan 2021 13:08:18 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id A12F2AD1E;
+        Fri,  8 Jan 2021 18:07:36 +0000 (UTC)
+Date:   Fri, 8 Jan 2021 19:07:23 +0100
+From:   Borislav Petkov <bp@suse.de>
+To:     "Chang S. Bae" <chang.seok.bae@intel.com>
+Cc:     tglx@linutronix.de, mingo@kernel.org, luto@kernel.org,
+        x86@kernel.org, len.brown@intel.com, dave.hansen@intel.com,
+        hjl.tools@gmail.com, Dave.Martin@arm.com, jannh@google.com,
+        mpe@ellerman.id.au, tony.luck@intel.com, ravi.v.shankar@intel.com,
+        libc-alpha@sourceware.org, linux-arch@vger.kernel.org,
+        linux-api@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Borislav Petkov <bp@alien8.de>, linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH v3 4/4] selftest/x86/signal: Include test cases for
+ validating sigaltstack
+Message-ID: <20210108180716.GA12995@zn.tnic>
+References: <20201223015312.4882-1-chang.seok.bae@intel.com>
+ <20201223015312.4882-5-chang.seok.bae@intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201223015312.4882-5-chang.seok.bae@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+On Tue, Dec 22, 2020 at 05:53:12PM -0800, Chang S. Bae wrote:
+> +static int setup_altstack(void *start, unsigned long size)
+> +{
+> +	stack_t ss;
+> +
+> +	memset(&ss, 0, sizeof(ss));
+> +	ss.ss_size = size;
+> +	ss.ss_sp = start;
+> +
+> +	return sigaltstack(&ss, NULL);
+> +}
+> +
+> +static jmp_buf jmpbuf;
+> +
+> +static void sigsegv(int sig, siginfo_t *info, void *ctx_void)
+> +{
+> +	if (sigalrm_expected) {
+> +		printf("[FAIL]\tSIGSEGV signal delivery is wrong.\n");
 
-On x86 scale invariace tends to be disabled during resume from
-suspend-to-RAM, because the MPERF or APERF MSR values are not as
-expected then due to updates taking place after the platform
-firmware has been invoked to complete the suspend transition.
+			 	"Wrong signal delivered: SIGSEGV (expected SIGALRM)."
 
-That, of course, is not desirable, especially if the schedutil
-scaling governor is in use, because the lack of scale invariance
-causes it to be less reliable.
+> +		nerrs++;
+> +	} else {
+> +		printf("[OK]\tSIGSEGV signal is delivered.\n");
 
-To counter that effect, modify init_freq_invariance() to register
-a syscore_ops object for scale invariance with the ->resume callback
-pointing to init_counter_refs() which will run on the CPU starting
-the resume transition (the other CPUs will be taken care of the
-"online" operations taking place later).
+					s/is //
 
-Fixes: e2b0d619b400 ("x86, sched: check for counters overflow in frequency invariant accounting")
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
----
- arch/x86/kernel/smpboot.c |   19 +++++++++++++++++++
- 1 file changed, 19 insertions(+)
+> +	}
+> +
+> +	siglongjmp(jmpbuf, 1);
+> +}
+> +
+> +static void sigalrm(int sig, siginfo_t *info, void *ctx_void)
+> +{
+> +	if (!sigalrm_expected) {
+> +		printf("[FAIL]\tSIGALRM sigal delivery is wrong.\n");
 
-Index: linux-pm/arch/x86/kernel/smpboot.c
-===================================================================
---- linux-pm.orig/arch/x86/kernel/smpboot.c
-+++ linux-pm/arch/x86/kernel/smpboot.c
-@@ -56,6 +56,7 @@
- #include <linux/numa.h>
- #include <linux/pgtable.h>
- #include <linux/overflow.h>
-+#include <linux/syscore_ops.h>
- 
- #include <asm/acpi.h>
- #include <asm/desc.h>
-@@ -2083,6 +2084,23 @@ static void init_counter_refs(void)
- 	this_cpu_write(arch_prev_mperf, mperf);
- }
- 
-+#ifdef CONFIG_PM_SLEEP
-+static struct syscore_ops freq_invariance_syscore_ops = {
-+	.resume = init_counter_refs,
-+};
-+
-+static void register_freq_invariance_syscore_ops(void)
-+{
-+	/* Bail out if registered already. */
-+	if (freq_invariance_syscore_ops.node.prev)
-+		return;
-+
-+	register_syscore_ops(&freq_invariance_syscore_ops);
-+}
-+#else
-+static inline void register_freq_invariance_syscore_ops(void) {}
-+#endif
-+
- static void init_freq_invariance(bool secondary, bool cppc_ready)
- {
- 	bool ret = false;
-@@ -2109,6 +2127,7 @@ static void init_freq_invariance(bool se
- 	if (ret) {
- 		init_counter_refs();
- 		static_branch_enable(&arch_scale_freq_key);
-+		register_freq_invariance_syscore_ops();
- 		pr_info("Estimated ratio of average max frequency by base frequency (times 1024): %llu\n", arch_max_freq_ratio);
- 	} else {
- 		pr_debug("Couldn't determine max cpu frequency, necessary for scale-invariant accounting.\n");
+See above.
 
+> +		nerrs++;
+> +	} else {
+> +		printf("[OK]\tSIGALRM signal is delivered.\n");
 
+Ditto.
 
+> +	}
+> +}
+> +
+> +static void test_sigaltstack(void *altstack, unsigned long size)
+> +{
+> +	if (setup_altstack(altstack, size))
+> +		err(1, "sigaltstack()");
+> +
+> +	sigalrm_expected = (size > at_minstack_size) ? true : false;
+> +
+> +	sethandler(SIGSEGV, sigsegv, 0);
+> +	sethandler(SIGALRM, sigalrm, SA_ONSTACK);
+> +
+> +	if (sigsetjmp(jmpbuf, 1) == 0) {
+
+	if (!sigsetjmp...)
+
+> +		printf("[RUN]\tTest an (%s) alternate signal stack\n",
+
+			"Test an alternate signal stack of %ssufficient size.\n"
+
+> +		       sigalrm_expected ? "enough" : "too-small");
+
+					 "" : "in");
+
+> +		printf("\tRaise SIGALRM. %s is expected to be delivered.\n",
+> +		       sigalrm_expected ? "It" : "But SIGSEGV");
+
+					"It" : "SIGSEGV"
+
+Drop "But".
+
+Ask if something's not clear.
+
+-- 
+Regards/Gruss,
+    Boris.
+
+SUSE Software Solutions Germany GmbH, GF: Felix Imendörffer, HRB 36809, AG Nürnberg
