@@ -2,94 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 75F702EF8FD
+	by mail.lfdr.de (Postfix) with ESMTP id E23D02EF8FE
 	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 21:23:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729124AbhAHUWp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Jan 2021 15:22:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53492 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728694AbhAHUWo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Jan 2021 15:22:44 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3EDFFC061380
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Jan 2021 12:22:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=bw5Xer4Ybhizh77HcltjwUcBtD+6iJDpHkeVTArX14A=; b=VXo4Yifl3CsWRfWJ99e4iYVfN+
-        JzhCTJJzJVXf6vACcrcIL9Znm+si25hhZ8imrJHmkUrWagPm9qZKLOI4UO3/LLLFe18yWsrVKBNHg
-        KByMjJe2z12RCtBn3wcIxA68vyr+lZh2Duft/lkHZhfEqNyLhlJ+0y4vyXFVd3uWXXWTwahB09yOm
-        ZviviUCTC0U21S3ZZzuuSdTKZ8FZhOlnw8OeDBAPNBHLbklSidyY49pkpQF9lTF6dSRBBW/ozXkzB
-        /vOP0p/N6OhHKGOgGkqUZJXEaAzgD8xHK3hsK+sUxD3lhUYYwQtsLNzBR8XYzrhmp7ZW93Sy/ylBL
-        ceApNzJA==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kxyGc-0003Hu-Ik; Fri, 08 Jan 2021 20:21:50 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 648A83013E5;
-        Fri,  8 Jan 2021 21:21:48 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 460762C7BCF2D; Fri,  8 Jan 2021 21:21:48 +0100 (CET)
-Date:   Fri, 8 Jan 2021 21:21:48 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Mel Gorman <mgorman@techsingularity.net>
-Cc:     "Li, Aubrey" <aubrey.li@linux.intel.com>,
-        vincent.guittot@linaro.org, linux-kernel@vger.kernel.org,
-        mingo@redhat.com, juri.lelli@redhat.com,
-        valentin.schneider@arm.com, qais.yousef@arm.com,
-        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
-        tim.c.chen@linux.intel.com, benbjiang@gmail.com
-Subject: Re: [RFC][PATCH 1/5] sched/fair: Fix select_idle_cpu()s cost
- accounting
-Message-ID: <X/i+3G53+AH4FfM2@hirez.programming.kicks-ass.net>
-References: <20201214164822.402812729@infradead.org>
- <20201214170017.877557652@infradead.org>
- <c4e31235-e1fb-52ac-99a8-ae943ee0de54@linux.intel.com>
- <20201215075911.GA3040@hirez.programming.kicks-ass.net>
- <20210108102738.GB3592@techsingularity.net>
+        id S1729286AbhAHUXR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Jan 2021 15:23:17 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46330 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729017AbhAHUXQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 Jan 2021 15:23:16 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A3FC723AC2;
+        Fri,  8 Jan 2021 20:22:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1610137355;
+        bh=eaVy/h1sqS72eojXpxZdrAkyp/2+sHG6P9GrVWKTzf0=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=jDtcPFPT0sAh3JVCRwf39s1NaB8Sw80GSm3jJCWgg+Qiv8paW/ZpBb2arPhI2wrA2
+         Z7aRP6OfCwaFuRJp0PxaG9pa8+mJt+zeJJlFZaTUU3vAursh8I1Bo7skbLBgQ3tdqs
+         ubvSITIFfNJLZzEYTr7scbKMKnmtD9qJ9bM7udSotn/pIo2isSJH2kuQAWhTxgomVw
+         3e5ZUeU7XzoTk/C7GXeQl5Z1Xtg6F33Qy9o+PktmY1po4X11WzEfHrjdYcwQaID5Ch
+         Qpcwtq1RtGGb/NlZ2W4z7IHqbsuCBRUemTSMHvRvBBwYnWg37kxKsSmBJGa3w/n4lQ
+         TTIIW5OFOuNtg==
+Received: by mail-oi1-f170.google.com with SMTP id p5so12732154oif.7;
+        Fri, 08 Jan 2021 12:22:35 -0800 (PST)
+X-Gm-Message-State: AOAM5309mQGJFCtHtMvOihiPQfANNluwAi3kPo16x9Ddsinz8PDxo/iv
+        OzD/jhdipklGv7j1hVFdfRr87ZCAAOOCG4QgDyo=
+X-Google-Smtp-Source: ABdhPJwVTMd3FygXgJ3u5lYNHsXmgTpMPMS6Ohlq8w/Sp951W2jKYng2WW7Hs1gngp0AbUAXySzAfu0RQUSAdgliM64=
+X-Received: by 2002:aca:e103:: with SMTP id y3mr3288783oig.11.1610137355049;
+ Fri, 08 Jan 2021 12:22:35 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210108102738.GB3592@techsingularity.net>
+References: <20210106115359.GB26994@C02TD0UTHF1T.local> <20210106135253.GJ1551@shell.armlinux.org.uk>
+ <20210106172033.GA2165@willie-the-truck> <20210106223223.GM1551@shell.armlinux.org.uk>
+ <20210107111841.GN1551@shell.armlinux.org.uk> <20210107124506.GO1551@shell.armlinux.org.uk>
+ <CAK8P3a2TXPfFpgy+XjpDzOqt1qpDxufwiD-BLNbn4W_jpGp98g@mail.gmail.com>
+ <20210107133747.GP1551@shell.armlinux.org.uk> <CAK8P3a2J8fLjPhyV0XUeuRBdSo6rz1gU4wrQRyfzKQvwhf22ag@mail.gmail.com>
+ <X/gkMmObbkI4+ip/@hirez.programming.kicks-ass.net> <20210108092655.GA4031@willie-the-truck>
+ <CAHk-=whnKkj5CSbj-uG_MVVUsPZ6ppd_MFhZf_kpXDkh2MAVRA@mail.gmail.com>
+In-Reply-To: <CAHk-=whnKkj5CSbj-uG_MVVUsPZ6ppd_MFhZf_kpXDkh2MAVRA@mail.gmail.com>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Fri, 8 Jan 2021 21:22:18 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a2w2u8pcQJue3OveDckJNkGmwzVdfOM-VEXShQEw8EOzw@mail.gmail.com>
+Message-ID: <CAK8P3a2w2u8pcQJue3OveDckJNkGmwzVdfOM-VEXShQEw8EOzw@mail.gmail.com>
+Subject: Re: Aarch64 EXT4FS inode checksum failures - seems to be weak memory
+ ordering issues
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Will Deacon <will@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Russell King - ARM Linux admin <linux@armlinux.org.uk>,
+        linux-toolchains@vger.kernel.org,
+        Mark Rutland <mark.rutland@arm.com>,
+        "Theodore Ts'o" <tytso@mit.edu>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Ext4 Developers List <linux-ext4@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 08, 2021 at 10:27:38AM +0000, Mel Gorman wrote:
+On Fri, Jan 8, 2021 at 9:02 PM Linus Torvalds
+<torvalds@linux-foundation.org> wrote:
+> On Fri, Jan 8, 2021 at 1:27 AM Will Deacon <will@kernel.org> wrote:
+> >
+> > On Fri, Jan 08, 2021 at 10:21:54AM +0100, Peter Zijlstra wrote:
+> > > On Thu, Jan 07, 2021 at 10:20:38PM +0100, Arnd Bergmann wrote:
+> > > > On Thu, Jan 7, 2021 at 2:37 PM Russell King - ARM Linux admin
+>
+> I appreciate Arnd pointing out "--std=gnu11", though. What are the
+> actual relevant language improvements?
+>
+> Variable declarations in for-loops is the only one I can think of. I
+> think that would clean up some code (and some macros), but might not
+> be compelling on its own.
 
-> 1. avg_scan_cost is now based on the average scan cost of a rq but
->    avg_idle is still scaled to the domain size. This is a bit problematic
->    because it's comparing scan cost of a single rq with the estimated
->    average idle time of a domain. As a result, the scan depth can be much
->    larger than it was before the patch and led to some regressions.
+I think that was the main one, as most of --std=c11 is already part
+of --std=gnu89 as a gnu extension. There were a few things that
+came up with clang porting, as clang is somewhat closer to gnu11
+than to gnu89, but I don't remember exactly what that was.
 
-> @@ -6164,25 +6164,25 @@ static int select_idle_cpu(struct task_struct *p, struct sched_domain *sd, int t
->  		 */
->  		avg_idle = this_rq()->avg_idle / 512;
->  		avg_cost = this_sd->avg_scan_cost + 1;
-> -
-> -		span_avg = sd->span_weight * avg_idle;
-> -		if (span_avg > 4*avg_cost)
-> -			nr = div_u64(span_avg, avg_cost);
-> -		else
-> +		nr = div_u64(avg_idle, avg_cost);
-> +		if (nr < 4)
->  			nr = 4;
+I would still like to improve READ_ONCE()/get_user()/cmpxchg()
+further using __auto_type and _Generic where possible, but I think
+that was already supported in gcc-4.9, and does not require gcc-5.
 
-Oooh, could it be I simply didn't remember how that code was supposed to
-work and should kick my (much) younger self for not writing a comment?
-
-Consider:
-
-       span_weight * avg_idle               avg_cost
-  nr = ---------------------- = avg_idle / ----------
-               avg_cost                    span_weigt
-
-Where: avg_cost / span_weight ~= cost-per-rq
-
-
+       Arnd
