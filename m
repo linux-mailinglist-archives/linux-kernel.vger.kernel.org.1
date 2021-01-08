@@ -2,150 +2,212 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB0702EF0D8
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 11:47:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7516A2EF0D5
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 11:47:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727881AbhAHKq7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Jan 2021 05:46:59 -0500
-Received: from mail-eopbgr30129.outbound.protection.outlook.com ([40.107.3.129]:23463
-        "EHLO EUR03-AM5-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726752AbhAHKq6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Jan 2021 05:46:58 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=KGYxlV81NTo3m1SU+meKM07GZg+b77ppUg/12dWbyWMbj6cSi+eaqgs/kTK/vYu8f26JO/Pl5jc6SV8p8RWtfVqsTtw0+GhpmLziQyrkfXXB+IW1Ds0sexum3egrKdOGvTin+89MvIPPjwKdVDT+eSVyDUs1ffuNnFg086+ySYdcHO5iaMrOQrBLr7rMZVUy2O9ZhdSt49i0/YCLd19tmI350zdc/JKgVxpXcTckXMvFdCTRfRRIB6CU5M5x1fXLTyqaAmpCer+tVgyKTsGUNQoPzqg0A4zIBjc+f7R5rhnrTGNvTAAu27d0/S9bUjU5fdfG0XbAKSnyAY4Xx1u7Ng==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=UO/aCiXdxMzWTyk9oDBCnkAaDye+mkd073k2w0ngrIY=;
- b=LDMBO5auX4XD4loAJtQqKS2Yf1R5o5vNqa+DREH0h/Hz4QSsuWPhMlcQCttsn8PPLAxwD5shFYq9jcn3jRUTrPTVmKTxXmVUD2h6WtvG3bld8LGo/QgkIxBJiyOLkoa/MpA9u93dtuOiCAaGoeU2Coc9l8uVmpyvq7mNSVhpkx+JQ6Nohw4aB97e2nH+vR49JQVB8D92kdlnoWHeUtrZDz9BRdByXTLGteksUKG59L3VuiB9/HT5Aptdtcp/n77rZsQsdYoP6warZyo7N8Y3REanlRwgfr0dJ4UiDjw7ZPFABhlG2mPrt9YEBCebh/SYJl3/LRAIXXcKQDNMSrsXoQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=axentia.se; dmarc=pass action=none header.from=axentia.se;
- dkim=pass header.d=axentia.se; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=axentia.se;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=UO/aCiXdxMzWTyk9oDBCnkAaDye+mkd073k2w0ngrIY=;
- b=ZJKBiodxxddZePebG7iQ8m8nLS2MNAbsbIgWFC/9L8AFr83/OyQNUkO8sGJyW14ydw6QaT4fNGjP7FfDs4ZsCrPTkKJdROpgiSeglkHNcN32AhhFRqjFwjrhdMNpjsRtS+oZ9OSfiS642cs7W2mtaCy3mzwlVJTBSoAA2YtGwPM=
-Authentication-Results: lists.infradead.org; dkim=none (message not signed)
- header.d=none;lists.infradead.org; dmarc=none action=none
- header.from=axentia.se;
-Received: from DB8PR02MB5482.eurprd02.prod.outlook.com (2603:10a6:10:eb::29)
- by DBAPR02MB5992.eurprd02.prod.outlook.com (2603:10a6:10:187::15) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3742.6; Fri, 8 Jan
- 2021 10:46:09 +0000
-Received: from DB8PR02MB5482.eurprd02.prod.outlook.com
- ([fe80::7975:bb50:c24:9e4f]) by DB8PR02MB5482.eurprd02.prod.outlook.com
- ([fe80::7975:bb50:c24:9e4f%6]) with mapi id 15.20.3742.009; Fri, 8 Jan 2021
- 10:46:09 +0000
-Subject: Re: [PATCH 4/7] dt-bindings: ti-serdes-mux: Add defines for AM64 SoC
-To:     Kishon Vijay Abraham I <kishon@ti.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>, Nishanth Menon <nm@ti.com>,
-        Swapnil Jakhade <sjakhade@cadence.com>
-Cc:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-References: <20201224114250.1083-1-kishon@ti.com>
- <20201224114250.1083-5-kishon@ti.com>
-From:   Peter Rosin <peda@axentia.se>
-Organization: Axentia Technologies AB
-Message-ID: <cb53a07e-98ed-71df-7e0c-acd78484ab6e@axentia.se>
-Date:   Fri, 8 Jan 2021 11:46:05 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
-In-Reply-To: <20201224114250.1083-5-kishon@ti.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: sv-SE
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [85.229.94.233]
-X-ClientProxiedBy: HE1PR0402CA0013.eurprd04.prod.outlook.com
- (2603:10a6:3:d0::23) To DB8PR02MB5482.eurprd02.prod.outlook.com
- (2603:10a6:10:eb::29)
+        id S1727757AbhAHKqv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Jan 2021 05:46:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48504 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726752AbhAHKqu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 Jan 2021 05:46:50 -0500
+Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF1A5C0612F4
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Jan 2021 02:46:09 -0800 (PST)
+Received: by mail-lf1-x136.google.com with SMTP id l11so21973720lfg.0
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Jan 2021 02:46:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=p+waloq0fk/MGdpK82nCZe9TIaeg5dnHeMElfg7ryM4=;
+        b=BKpjsFphvWdKBCHkA4RhemDDINeDoPUwbMlWozZMEDjYKYz3sh+JQclxys0m1+XuBa
+         /4wzP5ULgApjOCKj1Yj/SnkVAcmbQxg/z+piNUuZFMXnxvl/LXgrjrGPJIONoRNGP3zq
+         kaq3n+jRGjg3c5T5aPU+gtXdJlY+4PzERzZMRmPH2xnCbBugiLGgeXO3svaK/5Xnlfd+
+         Zlpd7vz3SVh+bkAWO0NvLK7Yg+f581MV8OX0R4eyjxAYzD5rF3UJy84HesNTYrYk3mxK
+         uAfSm2h9Y9PjEUYzZ56eGgJ18xsRv49HxBI+U7SAw5Cwak8pZmywGwnO6PSO/4UICsFD
+         ZMxQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=p+waloq0fk/MGdpK82nCZe9TIaeg5dnHeMElfg7ryM4=;
+        b=cBhEEhIcW3mi/5rTuKCjB/ccQU8tfuqeatCm7PZ8V2sB4v+TPQK7vFcS0o6bdX4x+l
+         K/CRZ38INmwzYxKqNJ9s/lUylFBsMLzWZPjTOEXKXkymEehNu8XXktQwEWeL8886ALHD
+         wjwGj/T0N+QfdDigqtCPRa0SdnsVcpxcmZKCkc8oGkpWpiHTiqXx6XbQXxC+/CByuNBH
+         vwaZx867+8H/ylQcY4fzmRY52ChdXYg2n0junBoKPaBlBs5H/TkxPd9l6UcGVyLyju4s
+         9be/O4HKEFcvAG0gknN5pbrm6rUvCP12Ncn+gIGW7bgsxBJvd94GDAMt23Pznc0t9n3l
+         QEqA==
+X-Gm-Message-State: AOAM530j+F7uImtEYQ7S01MkEhr3jLAgXzQ8SLT2Uqy6DZoHgcgx9RZQ
+        SUV5VgW7y0jgDHjYC41eaZgAbg==
+X-Google-Smtp-Source: ABdhPJxyd5pjnYXDovgitsQk+ePH2PwRGsbg5/X5D8xjJRjKtyVtA+LosBWIyYGCr+TskuNhZ3AOZw==
+X-Received: by 2002:ac2:5042:: with SMTP id a2mr1322451lfm.42.1610102768460;
+        Fri, 08 Jan 2021 02:46:08 -0800 (PST)
+Received: from [192.168.118.216] ([85.249.43.69])
+        by smtp.gmail.com with ESMTPSA id a15sm1983948lji.105.2021.01.08.02.46.07
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 08 Jan 2021 02:46:07 -0800 (PST)
+Subject: Re: [PATCH v2] media: ov8856: Fix Bayer format dependance on mode
+To:     Tomasz Figa <tfiga@google.com>,
+        Robert Foss <robert.foss@linaro.org>
+Cc:     Dongchun Zhu <dongchun.zhu@mediatek.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Bingbu Cao <bingbu.cao@linux.intel.com>
+References: <20210107142123.639477-1-robert.foss@linaro.org>
+ <CAAFQd5BVSNGDV7ZkiVpZwbfTfRLJmNvopMQFnQno+CDs+bo3Gg@mail.gmail.com>
+From:   Andrey Konovalov <andrey.konovalov@linaro.org>
+Message-ID: <6ec75d88-0cd5-79cc-6413-81f169b5e976@linaro.org>
+Date:   Fri, 8 Jan 2021 13:46:06 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [192.168.13.3] (85.229.94.233) by HE1PR0402CA0013.eurprd04.prod.outlook.com (2603:10a6:3:d0::23) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3742.6 via Frontend Transport; Fri, 8 Jan 2021 10:46:08 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: b7a6513c-d111-43f0-5371-08d8b3c29bbf
-X-MS-TrafficTypeDiagnostic: DBAPR02MB5992:
-X-Microsoft-Antispam-PRVS: <DBAPR02MB5992422500E091E55C9C1ADABCAE0@DBAPR02MB5992.eurprd02.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:3513;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: iGIaitB8PVKMdtjQx4m6GJQ3u7H1GaCJTZG33vh/+0QK3UHRmJZ3fmZfnMix8gcLgyiuxfmMyCrnnL99lBywgtqEup8VgQRdzf1o40PKtf3nf9SWAPSGn4GAPRqjTN6a6JG6osIaWRdxR67kSUB4Wq57+GUt7WT1+Rhw1SePrGpoUEgnWlrzbBPWkQ8DvC7nYzqU9RmZ3OjLIp3rQtiD1V9h03sTvE5Cb9caeq2rrWdXPBpBfkiF9SR7GI8u2FUcW9ZQhiGEmg0Sjw+6/NOaHgNQ2ncveCjOTbiUmKLI4JhfUT89+OzdMjxL566/FrCmYCS1L/zF9bdtJbGH3YHAzlshm1RB7BGayzxRF6/BtMQTC7L0qpWZSRj22PdHDBzziubeiKfIUPfLFFCkRPNQHnhOYYSdWwXolFjw4VcAvVm4gmW1N/fU+knR599HxBem2LOWPzaJjgson7KGWa5i2Khym0PcIxRapsocbXknj98=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB8PR02MB5482.eurprd02.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(39830400003)(346002)(396003)(136003)(376002)(2906002)(16526019)(956004)(8676002)(4001150100001)(6486002)(26005)(53546011)(31696002)(2616005)(5660300002)(36916002)(66556008)(6666004)(316002)(66476007)(66946007)(16576012)(31686004)(186003)(8936002)(4326008)(478600001)(110136005)(36756003)(86362001)(45980500001)(43740500002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?UndLTElObk9ld3pMTERKSkgzeTdvUk5ML21YODQ1TW9hVTZNeE42dlc0alM1?=
- =?utf-8?B?WUpHekp6R1lmYjFpTzd3K3Z5b1pRU1NVNnNTcWZVNm5TaWc4bGE5dm1qUHRl?=
- =?utf-8?B?eC8xT1FWOVI4SVFuTFpVWWk1aW5IVWdlcVFYQjNoV1diWkI5REh5NVRnV25z?=
- =?utf-8?B?aWZCaHBPcXNOQmQ1djZjNjFzZ2IvUUtsU1NDWVlWL0ZVNFRpaWNKTk9NYk95?=
- =?utf-8?B?V3Rla0dqanRnVkVwL0VPakNUVEJpN1lyS3ZJK203WGhOcWVJb1NEWnRwY2gw?=
- =?utf-8?B?UThPdzlIc2dPRmVPM2NWblFpcmZmTEhKc3JxdUlyY2ppZjAvaDUzQVd5N0JX?=
- =?utf-8?B?b2VhR2dZYTUrOE9XRlFFZ011TzNaRDlPSTgwZ3JERjQyenRzNlNWNCtFOTky?=
- =?utf-8?B?TkVHVzBCTmdpSWpaUXBDaUhpcWc2c25DbUoyRzM3U1R0TmJmOWJDUXFSUXhG?=
- =?utf-8?B?ZlM0dmZFcTh5cjljMW1qaGp6TUwxZis4SVZyZzlZMEtXdFlBM2xrRllQYWZC?=
- =?utf-8?B?K2RLbVo5NHFkSFJPUVcrQmZVZERoT1cvVWVnRDRRaE5UM2dmeUpzSHZuQzNn?=
- =?utf-8?B?UUFGbGxvVk9ZWHlRYTh1VFBCeW84NE1ObFA1TzFmeFFrcHViMkZ5WXZrcTlU?=
- =?utf-8?B?QUQvYjg2NnNjNjUyQndBM3ZqRVZhaTE1NmF6RWxsN0RFSUNIN0pYVitkYTNN?=
- =?utf-8?B?RmJheS9XYjFWWExyODRpZVk0VEhnb3JLSmtSQzh1ZHUzWVRLQjJRWi8wNGpS?=
- =?utf-8?B?K2lxeUVGLzZvQnpSZWpaeUJKRzhuYUNJTWh1ZjliWjRUR1l4NnIvYVU1MkdJ?=
- =?utf-8?B?S1p2UjhmTU0xeFJPY0VNWWtTSlovT2RVU210bmlPR0ltOGoxNHRsemFvRVBK?=
- =?utf-8?B?QlVxaHpPNTRHZ1hTS0lGMTE0bkVreldVTzd5M1JBdGlDM1pYaGhaR1l3dUlO?=
- =?utf-8?B?VFRYVjRwcWlMRmZwbVBvQ254dU56NVQzSEdDWHRKWkFEWE00ei9RT2VvWUZ0?=
- =?utf-8?B?NE5DaUFWYUJMaUpaT0JhT1pXOWlaMzdWd0NQeGNOS2JiZW41WmVubnJUUFlT?=
- =?utf-8?B?R0ZLekVOVmcwSU5oL0tIWCtUNXlsQ1lIUEI1R0dweG9rMmlNNzVUTGN3Uitj?=
- =?utf-8?B?cmVyRXl1d2RpcmJaSEVFaHcyZEVSRXhGUXExNmQ1SVJDUElnUFBrSHRSODgy?=
- =?utf-8?B?UjdXL0FXWWpBUWtNNjQ4NzFPYzJCYjZ3N0N6SG1LeDg4VFgyVjNZbHlFR3E3?=
- =?utf-8?B?dURtSHVkMitxdXJaaTFJdFNHWDdvNkJ0ek5XNzZEZDJTOXdacUIxY3RxZlg5?=
- =?utf-8?Q?xSjP7lpTlqF/yXLOt8Icp4pC22cyGWDxfY?=
-X-OriginatorOrg: axentia.se
-X-MS-Exchange-CrossTenant-AuthSource: DB8PR02MB5482.eurprd02.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Jan 2021 10:46:09.0080
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4ee68585-03e1-4785-942a-df9c1871a234
-X-MS-Exchange-CrossTenant-Network-Message-Id: b7a6513c-d111-43f0-5371-08d8b3c29bbf
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: Cp0WuvvNt6BvZXEAMF3VlonQEDsgd6p9S0rLRRROaavvDPbYjIiakpzuNQZZXJOx
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DBAPR02MB5992
+In-Reply-To: <CAAFQd5BVSNGDV7ZkiVpZwbfTfRLJmNvopMQFnQno+CDs+bo3Gg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi!
+Hi Robert and Tomasz,
 
-On 2020-12-24 12:42, Kishon Vijay Abraham I wrote:
-> AM64 has a single lane SERDES which can be configured to be used
-> with either PCIe or USB. Define the possilbe values for the SERDES
-> function in AM64 SoC here.
+On 08.01.2021 12:49, Tomasz Figa wrote:
+> Hi Robert,
 > 
-> Signed-off-by: Kishon Vijay Abraham I <kishon@ti.com>
-> ---
->  include/dt-bindings/mux/ti-serdes.h | 4 ++++
->  1 file changed, 4 insertions(+)
+> On Thu, Jan 7, 2021 at 11:21 PM Robert Foss <robert.foss@linaro.org> wrote:
+>>
+>> The Bayer GRBG10 mode used for earlier modes 3280x2460 and
+>> 1640x1232 isn't the mode output by the sensor for the
+>> 3264x2448 and 1632x1224 modes.
+>>
+>> Switch from MEDIA_BUS_FMT_SGRBG10_1X10 to MEDIA_BUS_FMT_SBGGR10_1X10
+>> for 3264x2448 & 1632x1224 modes.
+>>
+>> Signed-off-by: Robert Foss <robert.foss@linaro.org>
+>> ---
+>>
+>> Changes since v1:
+>>   - Sakari: Added mode information to ov8856_mode struct
+>>   - Sakari: enum_mbus_code updated
+>>
+>>   drivers/media/i2c/ov8856.c | 24 ++++++++++++++++++------
+>>   1 file changed, 18 insertions(+), 6 deletions(-)
+>>
+>> diff --git a/drivers/media/i2c/ov8856.c b/drivers/media/i2c/ov8856.c
+>> index 2f4ceaa80593..7cd83564585c 100644
+>> --- a/drivers/media/i2c/ov8856.c
+>> +++ b/drivers/media/i2c/ov8856.c
+>> @@ -126,6 +126,9 @@ struct ov8856_mode {
+>>
+>>          /* Sensor register settings for this resolution */
+>>          const struct ov8856_reg_list reg_list;
+>> +
+>> +       /* MEDIA_BUS_FMT for this mode */
+>> +       u32 code;
+>>   };
+>>
+>>   static const struct ov8856_reg mipi_data_rate_720mbps[] = {
+>> @@ -942,6 +945,11 @@ static const char * const ov8856_test_pattern_menu[] = {
+>>          "Bottom-Top Darker Color Bar"
+>>   };
+>>
+>> +static const u32 ov8856_formats[] = {
+>> +       MEDIA_BUS_FMT_SBGGR10_1X10,
+>> +       MEDIA_BUS_FMT_SGRBG10_1X10,
+>> +};
+>> +
+>>   static const s64 link_freq_menu_items[] = {
+>>          OV8856_LINK_FREQ_360MHZ,
+>>          OV8856_LINK_FREQ_180MHZ
+>> @@ -974,6 +982,7 @@ static const struct ov8856_mode supported_modes[] = {
+>>                          .regs = mode_3280x2464_regs,
+>>                  },
+>>                  .link_freq_index = OV8856_LINK_FREQ_720MBPS,
+>> +               .code = MEDIA_BUS_FMT_SGRBG10_1X10,
+>>          },
+>>          {
+>>                  .width = 3264,
+>> @@ -986,6 +995,7 @@ static const struct ov8856_mode supported_modes[] = {
+>>                          .regs = mode_3264x2448_regs,
+>>                  },
+>>                  .link_freq_index = OV8856_LINK_FREQ_720MBPS,
+>> +               .code = MEDIA_BUS_FMT_SBGGR10_1X10,
+>>          },
+>>          {
+>>                  .width = 1640,
+>> @@ -998,6 +1008,7 @@ static const struct ov8856_mode supported_modes[] = {
+>>                          .regs = mode_1640x1232_regs,
+>>                  },
+>>                  .link_freq_index = OV8856_LINK_FREQ_360MBPS,
+>> +               .code = MEDIA_BUS_FMT_SGRBG10_1X10,
+>>          },
+>>          {
+>>                  .width = 1632,
+>> @@ -1010,6 +1021,7 @@ static const struct ov8856_mode supported_modes[] = {
+>>                          .regs = mode_1632x1224_regs,
+>>                  },
+>>                  .link_freq_index = OV8856_LINK_FREQ_360MBPS,
+>> +               .code = MEDIA_BUS_FMT_SBGGR10_1X10,
+>>          }
+>>   };
+>>
+>> @@ -1281,8 +1293,8 @@ static void ov8856_update_pad_format(const struct ov8856_mode *mode,
+>>   {
+>>          fmt->width = mode->width;
+>>          fmt->height = mode->height;
+>> -       fmt->code = MEDIA_BUS_FMT_SGRBG10_1X10;
+>>          fmt->field = V4L2_FIELD_NONE;
+>> +       fmt->code = mode->code;
+>>   }
+>>
+>>   static int ov8856_start_streaming(struct ov8856 *ov8856)
+>> @@ -1519,11 +1531,10 @@ static int ov8856_enum_mbus_code(struct v4l2_subdev *sd,
+>>                                   struct v4l2_subdev_pad_config *cfg,
+>>                                   struct v4l2_subdev_mbus_code_enum *code)
+>>   {
+>> -       /* Only one bayer order GRBG is supported */
+>> -       if (code->index > 0)
+>> +       if (code->index >= ARRAY_SIZE(ov8856_formats))
+>>                  return -EINVAL;
+>>
+>> -       code->code = MEDIA_BUS_FMT_SGRBG10_1X10;
+>> +       code->code = ov8856_formats[code->index];
+>>
+>>          return 0;
+>>   }
+>> @@ -1532,10 +1543,11 @@ static int ov8856_enum_frame_size(struct v4l2_subdev *sd,
+>>                                    struct v4l2_subdev_pad_config *cfg,
+>>                                    struct v4l2_subdev_frame_size_enum *fse)
+>>   {
+>> -       if (fse->index >= ARRAY_SIZE(supported_modes))
+>> +       if ((fse->code != ov8856_formats[0]) &&
+>> +           (fse->code != ov8856_formats[1]))
 > 
-> diff --git a/include/dt-bindings/mux/ti-serdes.h b/include/dt-bindings/mux/ti-serdes.h
-> index 9047ec6bd3cf..68e0f76deed1 100644
-> --- a/include/dt-bindings/mux/ti-serdes.h
-> +++ b/include/dt-bindings/mux/ti-serdes.h
-> @@ -90,4 +90,8 @@
->  #define J7200_SERDES0_LANE3_USB			0x2
->  #define J7200_SERDES0_LANE3_IP4_UNUSED		0x3
->  
-> +/* AM64 */
+> Shouldn't this be validated against the current mode? I guess it's the
+> question about which part of the state takes precedence - the mbus
+> code or the frame size.
 
-In case you end up keeping these defines, despite the comment by Rob...
+The docs [1] say "enumerate all frame sizes supported by a sub-device on the given pad
+for the given media bus format". It doesn't seem to mention the current mode. But the
+frame sizes reported should be filtered by the mbus code, and this patch misses that
+if I read it correct.
 
-Nitpick, the J721E and J7200 sections have a blank line here, between the
-header comment and the actual defines. But mehh...
+But this situation when the mbus code depends on the mode (on the resolution in fact)...
+Yes, if we read the pixels from a rectangle smaller than the active area, we can change
+the bayer order by moving this "read-out" rectangle by one pixel along x, y, or both x
+and y axes. But wouldn't it be better if we try to review the register setting for the
+current modes so that the bayer order would be the same for all the modes?
 
-Acked-by: Peter Rosin <peda@axentia.se>
+Thanks,
+Andrey
 
-Cheers,
-Peter
-
-> +#define AM64_SERDES0_LANE0_PCIE0		0x0
-> +#define AM64_SERDES0_LANE0_USB			0x1
-> +
->  #endif /* _DT_BINDINGS_MUX_TI_SERDES */
+> Best regards,
+> Tomasz
 > 
+
+[1] https://linuxtv.org/downloads/v4l-dvb-apis-new/userspace-api/v4l/vidioc-subdev-enum-frame-size.html
