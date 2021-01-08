@@ -2,64 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C9A912EF95A
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 21:37:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 42B412EF95B
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 21:37:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729381AbhAHUgx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Jan 2021 15:36:53 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48160 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729342AbhAHUgr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Jan 2021 15:36:47 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPS id 1B25D23AC0;
-        Fri,  8 Jan 2021 20:36:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610138167;
-        bh=suKmYRChMg59UeP8h5ovz4ks+SbFS4gN8LXaH+t3mpc=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=s2Zz0Ql0WP00aQbR4ydcsZh6+iX0pRZriHcgB7+n9tCdCH/Amx9NyotwORYa0YrLX
-         jGGEHPS17/lkLXvBTrWu/TcCnGpu0/7NQ53qj4sEHvs7g0EZBSGB9sarKBsWdMzdb+
-         8apfZadqYfmwqNeNaCWEaCBdJZo5sOQzKxnDKmMOLW6lHM3HjY+iKpWnUXnQArgbHF
-         1jBS7Zki7obNGlkaUiN64uKr/R12kZEpxerEvfaSDCDDIuPxilOTU7fdkyiVfqRjGW
-         NJZgjToZ3J/fS26PbLgfM0HnK8TFZ0D07cncRQ7/tRwflZUVOBbS1UR0Q6iGj0wfow
-         6GmeA7GKk5FtA==
-Received: from pdx-korg-docbuild-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-1.ci.codeaurora.org (Postfix) with ESMTP id 184B760597;
-        Fri,  8 Jan 2021 20:36:07 +0000 (UTC)
-Subject: Re: [GIT PULL] Crypto Fixes for 5.11
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20210108035450.GA6191@gondor.apana.org.au>
-References: <20200803044024.GA6429@gondor.apana.org.au>
- <20200830223304.GA16882@gondor.apana.org.au>
- <20201026011159.GA2428@gondor.apana.org.au>
- <20201227113221.GA28744@gondor.apana.org.au> <20210108035450.GA6191@gondor.apana.org.au>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20210108035450.GA6191@gondor.apana.org.au>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/herbert/crypto-2.6.git linus
-X-PR-Tracked-Commit-Id: 0aa171e9b267ce7c52d3a3df7bc9c1fc0203dec5
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: ea1c87c156d94dd78b4f5267ec40c403b2da7e14
-Message-Id: <161013816709.21693.17874596360461078655.pr-tracker-bot@kernel.org>
-Date:   Fri, 08 Jan 2021 20:36:07 +0000
-To:     Herbert Xu <herbert@gondor.apana.org.au>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>
+        id S1729401AbhAHUhU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Jan 2021 15:37:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55784 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729340AbhAHUhT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 Jan 2021 15:37:19 -0500
+Received: from mail-oi1-x230.google.com (mail-oi1-x230.google.com [IPv6:2607:f8b0:4864:20::230])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 278FCC061380
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Jan 2021 12:36:39 -0800 (PST)
+Received: by mail-oi1-x230.google.com with SMTP id l200so12750532oig.9
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Jan 2021 12:36:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=b9Rt82GW8KWAByvkk9obV3ZIpw1Casv9Xpm9XTSxgNs=;
+        b=HXrJtALQglLUwlcIYLv0Pbm6fo7Eqd5MwfW8CipxsdU4Phc62azLX0mGKOTknkBc/k
+         7nTbukE/fL/3jZWuGVCFK23DE6Bs8lb5ijmbBRkbpo6h0KJuwY01vKWaf0eV298hCOGD
+         5Saz1R/TcjwL/wK27pWBeCgCFctg9UDdZMo50o+gBqxzKc4o7E0OqqvgDIIP0s6MCif/
+         IZBAs/4GLJR3cO9yPbThH0DuyP53X3e59xxdYb2aAzt0NLBeGebTEWInG3o5L8eWC/AR
+         N+pWh3ZkvPhhb7dpwzUXakp0m7CNBw38hTLwYQgyIiC+p0ldApfPE7DKR7KOdIik8Plq
+         0Mlg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=b9Rt82GW8KWAByvkk9obV3ZIpw1Casv9Xpm9XTSxgNs=;
+        b=Zv6z4m7IIFZVIUhoKrO0qI1H73wJ3iXb9Tt39dYiFYl6mmZYRcPQ+KPmAY3REAYWBs
+         6Dv8ospVVUFT7qt5DulO1SvSoy+XkRBf9TXUAiVdjSq29FJ+OkKdmoJn6CkPw+U2cWHx
+         jop1cIJ3S1jdFT6g84LMoO+2YUfST4j7RBWxwS3RvpI1Y5iniQfdxzU5J0SwzopKjhgR
+         wuRWEUnjzBzLwGmFmzB/zqenI21wlUmX1I41E4HhochcwbnbWd0L4Gdz+Dobgo/Pb0g2
+         Eq17kt2fsJBVf3LZIPWrbTIL8oECUwFycuS9qZkbJ0ZwPw1Hy+DKYtAQ44+xkmeLuWwx
+         1CjA==
+X-Gm-Message-State: AOAM530Ii3yW5LGv1221OGJhlEthiBPk4D3vES6tDe/5B7rkj8Q1eOu7
+        WeiIEHQy7M4v2jz2NWxbeYX1tNGHaB33uFV2wLU=
+X-Google-Smtp-Source: ABdhPJybhF2d2ICidbN92E2NRo7ryVGnG5mjIKZVjTCsffYlCCozzKgjlHnZjBK0989Ey5syJ6aNgkcI9BG8WFHkcz0=
+X-Received: by 2002:aca:6202:: with SMTP id w2mr3296602oib.5.1610138198672;
+ Fri, 08 Jan 2021 12:36:38 -0800 (PST)
+MIME-Version: 1.0
+References: <20210108201457.3078600-1-lee.jones@linaro.org> <20210108201457.3078600-12-lee.jones@linaro.org>
+In-Reply-To: <20210108201457.3078600-12-lee.jones@linaro.org>
+From:   Alex Deucher <alexdeucher@gmail.com>
+Date:   Fri, 8 Jan 2021 15:36:27 -0500
+Message-ID: <CADnq5_M=FvTBgvVkU5-s8A8-wd8APyRETdR-M__6hD=Mmnp5eg@mail.gmail.com>
+Subject: Re: [PATCH 11/40] drm/amd/pm/powerplay/hwmgr/hwmgr: Move prototype
+ into shared header
+To:     Lee Jones <lee.jones@linaro.org>
+Cc:     David Airlie <airlied@linux.ie>,
+        LKML <linux-kernel@vger.kernel.org>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        Maling list - DRI developers 
+        <dri-devel@lists.freedesktop.org>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Evan Quan <evan.quan@amd.com>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Fri, 8 Jan 2021 14:54:50 +1100:
+On Fri, Jan 8, 2021 at 3:15 PM Lee Jones <lee.jones@linaro.org> wrote:
+>
+> Fixes the following W=3D1 kernel build warning(s):
+>
+>  drivers/gpu/drm/amd/amdgpu/../pm/powerplay/hwmgr/vega10_hwmgr.c:5474:5: =
+warning: no previous prototype for =E2=80=98vega10_hwmgr_init=E2=80=99 [-Wm=
+issing-prototypes]
+>
+> Cc: Evan Quan <evan.quan@amd.com>
+> Cc: Alex Deucher <alexander.deucher@amd.com>
+> Cc: "Christian K=C3=B6nig" <christian.koenig@amd.com>
+> Cc: David Airlie <airlied@linux.ie>
+> Cc: Daniel Vetter <daniel@ffwll.ch>
+> Cc: amd-gfx@lists.freedesktop.org
+> Cc: dri-devel@lists.freedesktop.org
+> Signed-off-by: Lee Jones <lee.jones@linaro.org>
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/herbert/crypto-2.6.git linus
+Applied.  Thanks!
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/ea1c87c156d94dd78b4f5267ec40c403b2da7e14
+Alex
 
-Thank you!
-
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+> ---
+>  drivers/gpu/drm/amd/pm/powerplay/hwmgr/hwmgr.c        | 2 +-
+>  drivers/gpu/drm/amd/pm/powerplay/hwmgr/vega10_hwmgr.h | 1 +
+>  2 files changed, 2 insertions(+), 1 deletion(-)
+>
+> diff --git a/drivers/gpu/drm/amd/pm/powerplay/hwmgr/hwmgr.c b/drivers/gpu=
+/drm/amd/pm/powerplay/hwmgr/hwmgr.c
+> index 6a7de8b898faf..f2cef0930aa96 100644
+> --- a/drivers/gpu/drm/amd/pm/powerplay/hwmgr/hwmgr.c
+> +++ b/drivers/gpu/drm/amd/pm/powerplay/hwmgr/hwmgr.c
+> @@ -33,6 +33,7 @@
+>  #include "ppsmc.h"
+>  #include "amd_acpi.h"
+>  #include "pp_psm.h"
+> +#include "vega10_hwmgr.h"
+>
+>  extern const struct pp_smumgr_func ci_smu_funcs;
+>  extern const struct pp_smumgr_func smu8_smu_funcs;
+> @@ -46,7 +47,6 @@ extern const struct pp_smumgr_func vega12_smu_funcs;
+>  extern const struct pp_smumgr_func smu10_smu_funcs;
+>  extern const struct pp_smumgr_func vega20_smu_funcs;
+>
+> -extern int vega10_hwmgr_init(struct pp_hwmgr *hwmgr);
+>  extern int smu10_init_function_pointers(struct pp_hwmgr *hwmgr);
+>
+>  static int polaris_set_asic_special_caps(struct pp_hwmgr *hwmgr);
+> diff --git a/drivers/gpu/drm/amd/pm/powerplay/hwmgr/vega10_hwmgr.h b/driv=
+ers/gpu/drm/amd/pm/powerplay/hwmgr/vega10_hwmgr.h
+> index f752b4ad0c8ae..07c06f8c90b09 100644
+> --- a/drivers/gpu/drm/amd/pm/powerplay/hwmgr/vega10_hwmgr.h
+> +++ b/drivers/gpu/drm/amd/pm/powerplay/hwmgr/vega10_hwmgr.h
+> @@ -442,5 +442,6 @@ int vega10_update_uvd_dpm(struct pp_hwmgr *hwmgr, boo=
+l bgate);
+>  int vega10_update_samu_dpm(struct pp_hwmgr *hwmgr, bool bgate);
+>  int vega10_update_acp_dpm(struct pp_hwmgr *hwmgr, bool bgate);
+>  int vega10_enable_disable_vce_dpm(struct pp_hwmgr *hwmgr, bool enable);
+> +int vega10_hwmgr_init(struct pp_hwmgr *hwmgr);
+>
+>  #endif /* _VEGA10_HWMGR_H_ */
+> --
+> 2.25.1
+>
+> _______________________________________________
+> dri-devel mailing list
+> dri-devel@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/dri-devel
