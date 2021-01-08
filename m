@@ -2,70 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D244E2EEFBA
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 10:34:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 56A342EEFBB
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 10:34:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728367AbhAHJdp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S1728393AbhAHJdr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Jan 2021 04:33:47 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52774 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727661AbhAHJdp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 8 Jan 2021 04:33:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37182 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727300AbhAHJdo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Jan 2021 04:33:44 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBC63C0612F4;
-        Fri,  8 Jan 2021 01:33:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=AFhQ5m4QRya/SI/e/ihcUh2OxTirSzfuPrKOq59dUp0=; b=BUn3OEaiG3IFlZ7EeATceuIIPf
-        GORD2Eo5wkYEH4pjMYOkOUtLBCkZ+gvrK47gjrcE/+8gLy+BaCosjOEWFCbN/M1Q23PL3fmnIXwqU
-        Lq0AnxNPhY92ADQ+GAbXcyAs316UqJgAAQWfVKwhChFOOPb+OOhin9CaxtzmnlzYyTlpSzi3vmbSZ
-        pfvbJKRtg8Vq/0QtiZaMejMyvXSOF1jKy4+Es9g3zPkbw9ovWOGmWpovazPkP4d5kIiPJD0oJSk7W
-        r44ZHIp7vuFhrJ3/vOpgXPx8rpeFNvcfVOXYPWFornI8tWgBSyUJoBXlAX11UP7ZP6rErjmAFsSbq
-        KJ0cxvKw==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kxo8O-0005tk-40; Fri, 08 Jan 2021 09:32:40 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id A5A0F3003D8;
-        Fri,  8 Jan 2021 10:32:36 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 8E7EE2BB7DCD2; Fri,  8 Jan 2021 10:32:36 +0100 (CET)
-Date:   Fri, 8 Jan 2021 10:32:36 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Sebastian Siewior <bigeasy@linutronix.de>
-Cc:     Ran Wang <ran.wang_1@nxp.com>,
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 365F822BE8;
+        Fri,  8 Jan 2021 09:33:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1610098384;
+        bh=FbhPcDUndjAB6/H1OTOUBoWyx4YiqVFJQbRKF5EZ9PY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=XBAh5ke3xFCC21/4t0+IO8+LeZnsYAEC0R6ItjiQSI7InY6o3dZRqrB4iiupGt7xa
+         VYRiwYGWeMJFUUAxhz6+aGGlbLR2fxRptKjEUvT+9B9ta2H2G8SAyyRyywBFORV95q
+         7fpkthtWE/KXuIuVGS0coDDfUjusg8xw4Wtq2GjR0LOysKvcKrBpuhcGhqg3gQFkdg
+         Xw1rQ87+TsGU6Q5IYIZYAQ5uomGTZx8dm7azSnrtMtxXCb2VMZjol2G2bnoduru3sq
+         mX4I8xjmuHXxzuBIDzGbU3KTabtbfybdZH8YXCOc4YS0tqsPKQBssXmR8NW81RIG9f
+         rDTMfigP4y5mw==
+Date:   Fri, 8 Jan 2021 09:32:58 +0000
+From:   Will Deacon <will@kernel.org>
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
         Thomas Gleixner <tglx@linutronix.de>,
-        Jiafei Pan <jiafei.pan@nxp.com>,
-        linux-rt-users@vger.kernel.org, Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] [RFC] rt: kernel/sched/core: fix kthread_park() pending
- too long when CPU un-plugged
-Message-ID: <X/gmtIqgT27OvDX6@hirez.programming.kicks-ass.net>
-References: <20210107091841.19798-1-ran.wang_1@nxp.com>
- <X/bmU4byS7k46zWM@hirez.programming.kicks-ass.net>
- <20210107152843.gyljmpctkwybfewh@linutronix.de>
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-arch@vger.kernel.org, clang-built-linux@googlegroups.com
+Subject: Re: [PATCH] arm64: make atomic helpers __always_inline
+Message-ID: <20210108093258.GB4031@willie-the-truck>
+References: <20210108092024.4034860-1-arnd@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210107152843.gyljmpctkwybfewh@linutronix.de>
+In-Reply-To: <20210108092024.4034860-1-arnd@kernel.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 07, 2021 at 04:28:43PM +0100, Sebastian Siewior wrote:
-> This sleep can be triggered by ptrace/strace() and with brief testing I
-> can trigger the sleep there but I don't get it anywhere near where I
-> would notice it with cyclictest.
+Hi Arnd,
 
-It's a single task wakeup (the caller), doing that from hardirq context
-really should not be a problem, we do lots of that in RT already.
+On Fri, Jan 08, 2021 at 10:19:56AM +0100, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
+> 
+> With UBSAN enabled and building with clang, there are occasionally
+> warnings like
+> 
+> WARNING: modpost: vmlinux.o(.text+0xc533ec): Section mismatch in reference from the function arch_atomic64_or() to the variable .init.data:numa_nodes_parsed
+> The function arch_atomic64_or() references
+> the variable __initdata numa_nodes_parsed.
+> This is often because arch_atomic64_or lacks a __initdata
+> annotation or the annotation of numa_nodes_parsed is wrong.
+> 
+> for functions that end up not being inlined as intended but operating
+> on __initdata variables. Mark these as __always_inline, along with
+> the corresponding asm-generic wrappers.
+
+Hmm, I don't fully grok this. Why does it matter if a non '__init' function
+is called with a pointer to some '__initdata'? Or is the reference coming
+from somewhere else? (where?).
+
+Will
