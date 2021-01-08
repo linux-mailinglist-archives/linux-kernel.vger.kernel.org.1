@@ -2,227 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 893FE2EF885
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 21:05:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 10EF62EF88D
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 21:11:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729134AbhAHUFP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Jan 2021 15:05:15 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42758 "EHLO mail.kernel.org"
+        id S1729075AbhAHULR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Jan 2021 15:11:17 -0500
+Received: from mx2.suse.de ([195.135.220.15]:43782 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728591AbhAHUFN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Jan 2021 15:05:13 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EC7BD23AC1;
-        Fri,  8 Jan 2021 20:04:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610136272;
-        bh=T47xtOEvTBHFkDBTqXburOGKEuBqJ+GKMtIQp3kkTNY=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=u416JfembgemnbQkoIWkdxx5ZHHdtNAOGt7/pTfFlk/cy/X4qzRaT+GMJveRaG1EC
-         ekeVlUsf/P6hOz7oQ1AYlvbhtl7hcwbBcgdvtqXZs5YoIgTghEqIUU760hBI/4MDqG
-         EcqHBQLrJdwIVANM+//WMmG7LGQaRuTLhow+JbSN5kidmT5YhtJiufKT4LqOvPtLxI
-         v/lAmRkKn0BtCZ6KDkq4YaF4n1fJSTGfhNzc2izW0DzlYielG09q7mjM4rO91TNe3h
-         DKV8JxtZVzAWTK2oC0cs4D56JUFTS+PZyqoOp/4OtJKxvRgI2F+FT+lzLj/pg69UI0
-         3L8CrHcVZP5rw==
-Received: by mail-oi1-f178.google.com with SMTP id d203so12742055oia.0;
-        Fri, 08 Jan 2021 12:04:31 -0800 (PST)
-X-Gm-Message-State: AOAM532BsWdwXBNAg5TSpba0edTOwsHiv/L9Zg/5gMeUbi8+YrYGPvFI
-        vXUwSNnQTIziBavw9qkaNZ36IybF0qQkYkqQYMM=
-X-Google-Smtp-Source: ABdhPJxATZPVdRGw1Y77MsH/MzYIApYMZo97oQswnKgdRlnEmvjHBpySt2ml5Cwi7JuuWKd5G8aDQOgtoh+EFcUDiKE=
-X-Received: by 2002:aca:fd91:: with SMTP id b139mr3239039oii.67.1610136271246;
- Fri, 08 Jan 2021 12:04:31 -0800 (PST)
+        id S1728591AbhAHULQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 Jan 2021 15:11:16 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1610136629; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=jpN2XHOfI+5i4/irHAZ+yP7q0CrhjpzZCnfdvwK9pF8=;
+        b=YJTADqcN0A+aZ9L/U8i1CKbhkGTFW24RqAIbe7fo0M4Hxi682yIGAYKsFPCzTohyH/fasx
+        QtZfLj7y0bXmF8djZ2V2mHHAxB3YUyDd7PkNMqJwjN0rXgz58ziZKPsmcv2FEAs0+c3cN+
+        SIggXRVG1Lia4KuxdDz7kD0LuOV204I=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 48DADB726;
+        Fri,  8 Jan 2021 20:10:29 +0000 (UTC)
+Date:   Fri, 8 Jan 2021 21:10:25 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Xiaoming Ni <nixiaoming@huawei.com>, linux-kernel@vger.kernel.org,
+        mcgrof@kernel.org, yzaikin@google.com, adobriyan@gmail.com,
+        linux-fsdevel@vger.kernel.org, vbabka@suse.cz,
+        akpm@linux-foundation.org, wangle6@huawei.com
+Subject: Re: [PATCH v2] proc_sysctl: fix oops caused by incorrect command
+ parameters.
+Message-ID: <20210108201025.GA17019@dhcp22.suse.cz>
+References: <20210108023339.55917-1-nixiaoming@huawei.com>
+ <20210108092145.GX13207@dhcp22.suse.cz>
+ <829bbba0-d3bb-a114-af81-df7390082958@huawei.com>
+ <20210108114718.GA13207@dhcp22.suse.cz>
+ <202101081152.0CB22390@keescook>
 MIME-Version: 1.0
-References: <20210108092024.4034860-1-arnd@kernel.org> <20210108093258.GB4031@willie-the-truck>
- <CAK8P3a27y_EM6s3SwH1e6FR7bqeT3PEoLbxSWPyZ=4BzqAjceg@mail.gmail.com> <20210108185047.GB5457@willie-the-truck>
-In-Reply-To: <20210108185047.GB5457@willie-the-truck>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Fri, 8 Jan 2021 21:04:14 +0100
-X-Gmail-Original-Message-ID: <CAK8P3a2CfL5CsLcqtb8mOjUmZyRu_RPLj-qHOV3yfwmHHcO+5Q@mail.gmail.com>
-Message-ID: <CAK8P3a2CfL5CsLcqtb8mOjUmZyRu_RPLj-qHOV3yfwmHHcO+5Q@mail.gmail.com>
-Subject: Re: [PATCH] arm64: make atomic helpers __always_inline
-To:     Will Deacon <will@kernel.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Boqun Feng <boqun.feng@gmail.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <202101081152.0CB22390@keescook>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 8, 2021 at 7:50 PM Will Deacon <will@kernel.org> wrote:
-> On Fri, Jan 08, 2021 at 11:26:53AM +0100, Arnd Bergmann wrote:
-> >
-> > a) fully inline it as the __always_inline attribute does
-> > b) not inline it at all, treating it as a regular static function
-> > c) create a specialized version with different calling conventions
-> >
-> > In this case, clang goes with option c when it notices that all
-> > callers pass the same constant pointer. This means we have a
-> > synthetic
-> >
-> > static noinline long arch_atomic64_or(long i)
-> > {
-> >         return __lse_ll_sc_body(atomic64_fetch_or, i, &numa_nodes_parsed);
-> > }
-> >
-> > which is a few bytes shorter than option b as it saves a load in the
-> > caller. This function definition however violates the kernel's rules
-> > for section references, as the synthetic version is not marked __init.
->
-> Ah, I was hoping the compiler would've sorted that out, but then again, how
-> would it know? But doesn't this mean that whenever we get one caller passing
-> something like an __initdata pointer to a function, then that function needs
-> to be __always_inline for everybody? It feels like a slippery slope
-> considering the incentive to go back and replace it with 'inline' if the
-> caller goes away is very small.
+On Fri 08-01-21 11:56:33, Kees Cook wrote:
+> On Fri, Jan 08, 2021 at 12:47:18PM +0100, Michal Hocko wrote:
+> > On Fri 08-01-21 18:01:52, Xiaoming Ni wrote:
+> > > On 2021/1/8 17:21, Michal Hocko wrote:
+> > > > On Fri 08-01-21 10:33:39, Xiaoming Ni wrote:
+> > > > > The process_sysctl_arg() does not check whether val is empty before
+> > > > >   invoking strlen(val). If the command line parameter () is incorrectly
+> > > > >   configured and val is empty, oops is triggered.
+> > > > > 
+> > > > > For example, "hung_task_panic=1" is incorrectly written as "hung_task_panic".
+> > > > > 
+> > > > > log:
+> > > > > 	Kernel command line: .... hung_task_panic
+> > > > > 	....
+> > > > > 	[000000000000000n] user address but active_mm is swapper
+> > > > > 	Internal error: Oops: 96000005 [#1] SMP
+> > > > > 	Modules linked in:
+> > > > > 	CPU: 0 PID: 1 Comm: swapper/0 Not tainted 5.10.1 #1
+> > > > > 	Hardware name: linux,dummy-virt (DT)
+> > > > > 	pstate: 40000005 (nZcv daif -PAN -UAO -TCO BTYPE=--)
+> > > > > 	pc : __pi_strlen+0x10/0x98
+> > > > > 	lr : process_sysctl_arg+0x1e4/0x2ac
+> > > > > 	sp : ffffffc01104bd40
+> > > > > 	x29: ffffffc01104bd40 x28: 0000000000000000
+> > > > > 	x27: ffffff80c0a4691e x26: ffffffc0102a7c8c
+> > > > > 	x25: 0000000000000000 x24: ffffffc01104be80
+> > > > > 	x23: ffffff80c22f0b00 x22: ffffff80c02e28c0
+> > > > > 	x21: ffffffc0109f9000 x20: 0000000000000000
+> > > > > 	x19: ffffffc0107c08de x18: 0000000000000003
+> > > > > 	x17: ffffffc01105d000 x16: 0000000000000054
+> > > > > 	x15: ffffffffffffffff x14: 3030253078413830
+> > > > > 	x13: 000000000000ffff x12: 0000000000000000
+> > > > > 	x11: 0101010101010101 x10: 0000000000000005
+> > > > > 	x9 : 0000000000000003 x8 : ffffff80c0980c08
+> > > > > 	x7 : 0000000000000000 x6 : 0000000000000002
+> > > > > 	x5 : ffffff80c0235000 x4 : ffffff810f7c7ee0
+> > > > > 	x3 : 000000000000043a x2 : 00bdcc4ebacf1a54
+> > > > > 	x1 : 0000000000000000 x0 : 0000000000000000
+> > > > > 	Call trace:
+> > > > > 	 __pi_strlen+0x10/0x98
+> > > > > 	 parse_args+0x278/0x344
+> > > > > 	 do_sysctl_args+0x8c/0xfc
+> > > > > 	 kernel_init+0x5c/0xf4
+> > > > > 	 ret_from_fork+0x10/0x30
+> > > > > 	Code: b200c3eb 927cec01 f2400c07 54000301 (a8c10c22)
+> > > > > 
+> > > > > Fixes: 3db978d480e2843 ("kernel/sysctl: support setting sysctl parameters
+> > > > >   from kernel command line")
+> > > > > Signed-off-by: Xiaoming Ni <nixiaoming@huawei.com>
+> > > > 
+> > > > Thanks for catching this!
+> > > > 
+> > > > > ---------
+> > > > > v2:
+> > > > >     Added log output of the failure branch based on the review comments of Kees Cook.
+> > > > > v1: https://lore.kernel.org/lkml/20201224074256.117413-1-nixiaoming@huawei.com/
+> > > > > ---------
+> > > > > ---
+> > > > >   fs/proc/proc_sysctl.c | 5 +++++
+> > > > >   1 file changed, 5 insertions(+)
+> > > > > 
+> > > > > diff --git a/fs/proc/proc_sysctl.c b/fs/proc/proc_sysctl.c
+> > > > > index 317899222d7f..dc1a56515e86 100644
+> > > > > --- a/fs/proc/proc_sysctl.c
+> > > > > +++ b/fs/proc/proc_sysctl.c
+> > > > > @@ -1757,6 +1757,11 @@ static int process_sysctl_arg(char *param, char *val,
+> > > > >   	loff_t pos = 0;
+> > > > >   	ssize_t wret;
+> > > > > +	if (!val) {
+> > > > > +		pr_err("Missing param value! Expected '%s=...value...'\n", param);
+> > > > > +		return 0;
+> > > I may need to move the validation code for val to the end of the validation
+> > > code for param to prevent non-sysctl arguments from triggering the current
+> > > print.
+> > 
+> > Why would that matter? A missing value is clearly a error path and it
+> > should be reported.
+> 
+> This test is in the correct place. I think it's just a question of the
+> return values.
 
-It showed up after UBSAN was enabled, which changed in the inlining rules.
-I think we've had similar cases in the past, and worked around them in the
-same way. IIRC there were two or three such instances this time, and only
-in functions that are supposed to be only a handful of instructions long.
-
-One thing I did not try though was to look at the object file to find
-out why it has done this. Here is the generated assembler code for reference:
-
-        .p2align        2                               // -- Begin
-function arch_atomic64_or
-        .type   arch_atomic64_or,@function
-arch_atomic64_or:                       // @arch_atomic64_or
-// %bb.0:
-        hint    #25
-        stp     x29, x30, [sp, #-48]!           // 16-byte Folded Spill
-        stp     x20, x19, [sp, #32]             // 16-byte Folded Spill
-        mov     x19, x1
-        mov     x20, x0
-        str     x21, [sp, #16]                  // 8-byte Folded Spill
-        mov     x29, sp
-        //APP
-        1:      b               .Ltmp2
-                .pushsection    __jump_table, "aw"
-                .align          3
-                .long           1b - ., .Ltmp2 - .
-                .quad           arm64_const_caps_ready+1 - .
-                .popsection
-
-        //NO_APP
-// %bb.1:
-        mov     w21, wzr
-.LBB19_2:
-        adrp    x0, system_uses_lse_atomics.______f
-        eor     w1, w21, #0x1
-        add     x0, x0, :lo12:system_uses_lse_atomics.______f
-        mov     w2, #1
-        mov     w3, wzr
-        bl      ftrace_likely_update
-        tbnz    w21, #0, .LBB19_7
-// %bb.3:
-        //APP
-        1:      b               .Ltmp3
-                .pushsection    __jump_table, "aw"
-                .align          3
-                .long           1b - ., .Ltmp3 - .
-                .quad           cpu_hwcap_keys+81 - .
-                .popsection
-
-        //NO_APP
-// %bb.4:
-        mov     w21, #1
-.LBB19_5:
-        adrp    x0, system_uses_lse_atomics.______f.20
-        add     x0, x0, :lo12:system_uses_lse_atomics.______f.20
-        mov     w2, #1
-        mov     w1, w21
-        mov     w3, wzr
-        bl      ftrace_likely_update
-        cbz     w21, .LBB19_7
-// %bb.6:
-        //APP
-        .arch_extension lse
-        stset   x20, [x19]
-
-        //NO_APP
-        b       .LBB19_8
-.LBB19_7:
-        //APP
-        // atomic64_or
-        b       3f
-        .subsection     1
-3:
-        prfm    pstl1strm, [x19]
-1:      ldxr    x8, [x19]
-        orr     x8, x8, x20
-        stxr    w9, x8, [x19]
-        cbnz    w9, 1b
-        b       4f
-        .previous
-4:
-
-        //NO_APP
-.LBB19_8:
-        ldp     x20, x19, [sp, #32]             // 16-byte Folded Reload
-        ldr     x21, [sp, #16]                  // 8-byte Folded Reload
-        ldp     x29, x30, [sp], #48             // 16-byte Folded Reload
-        hint    #29
-        ret
-.Ltmp2:                                 // Block address taken
-.LBB19_9:
-        mov     w21, #1
-        b       .LBB19_2
-.Ltmp3:                                 // Block address taken
-.LBB19_10:
-        mov     w21, wzr
-        b       .LBB19_5
-.Lfunc_end19:
-        .size   arch_atomic64_or, .Lfunc_end19-arch_atomic64_or
-                                        // -- End function
-        .section        .init.text,"ax",@progbits
-        .p2align        2                               // -- Begin
-function early_cpu_to_node
-
-
-Admittedly, now that I look at the output, I tend to agree with the
-compiler that it should not be inlined and my approach was wrong!
-
-And indeed, CONFIG_UBSAN does not even change the contents of
-the function, but it does reduce the amount of inlining overall, so
-without UBSAN it does not happen.
-
-This patch actually avoids the out-of-line version as well
-and also produces simpler code, leaving the effect of static_branch
-working, though still suffering from the ftrace_likely_update()
-update.
-
-diff --git a/arch/arm64/include/asm/lse.h b/arch/arm64/include/asm/lse.h
-index 5d10051c3e62..2b83b66d8767 100644
---- a/arch/arm64/include/asm/lse.h
-+++ b/arch/arm64/include/asm/lse.h
-@@ -19,7 +19,7 @@
- extern struct static_key_false cpu_hwcap_keys[ARM64_NCAPS];
- extern struct static_key_false arm64_const_caps_ready;
-
--static inline bool system_uses_lse_atomics(void)
-+static __always_inline bool system_uses_lse_atomics(void)
- {
-        return (static_branch_likely(&arm64_const_caps_ready)) &&
-                static_branch_likely(&cpu_hwcap_keys[ARM64_HAS_LSE_ATOMICS]);
-
-> Didn't we used to #define inline as __always_inline to avoid this situation?
-
-Yes, that was the case in the past, except on x86, which had
-CONFIG_OPTIMIZE_INLINING as an option. These two commits
-subsequently changed the behavior to let the compiler make the
-decision instead:
-
-889b3c1245de ("compiler: remove CONFIG_OPTIMIZE_INLINING entirely")
-ac7c3e4ff401 ("compiler: enable CONFIG_OPTIMIZE_INLINING forcibly")
-
-      Arnd
+I was probably not clear. The test for val is at the right place. I
+would just expect -EINVAL and have the generic code to report.
+-- 
+Michal Hocko
+SUSE Labs
