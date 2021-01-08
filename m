@@ -2,182 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC9D82EF6CE
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 18:54:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 90D0F2EF6D5
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 18:56:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728517AbhAHRyW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Jan 2021 12:54:22 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:39548 "EHLO
+        id S1728564AbhAHRy5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Jan 2021 12:54:57 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:42268 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728479AbhAHRyV (ORCPT
+        by vger.kernel.org with ESMTP id S1728480AbhAHRy4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Jan 2021 12:54:21 -0500
+        Fri, 8 Jan 2021 12:54:56 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1610128374;
+        s=mimecast20190719; t=1610128410;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=ApjdY65NLh4ukaTTHH8c86uuWfyLWMuFPHofhf/ZJ0I=;
-        b=Nxr3VzAzurwoTMb1LnSfU2p9AzdQ++owVF1puBJ8HmLvjEjSmP+sSOmDpchUSAwwt2i99M
-        YIBSTm7yYT+uX/+5pdXAeJAV9Pm1XxLHyz0eKRcnw+xMhLjnIGpRMzjI8IRkq/1Ljab01p
-        5dxOVMzGemAgacpX8P9hjThluZK3D3Q=
-Received: from mail-pl1-f198.google.com (mail-pl1-f198.google.com
- [209.85.214.198]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-289-3V83fFUePwuu1OnC-a_SJQ-1; Fri, 08 Jan 2021 12:52:53 -0500
-X-MC-Unique: 3V83fFUePwuu1OnC-a_SJQ-1
-Received: by mail-pl1-f198.google.com with SMTP id c5so6770664plr.4
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Jan 2021 09:52:53 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ApjdY65NLh4ukaTTHH8c86uuWfyLWMuFPHofhf/ZJ0I=;
-        b=mDZAo1UaVUfFO75XvIB1EHHhLlwvXuvpuAs6mChKaLUlF+795IKzl0rwXa5YNv0Vlr
-         GpagomNvQ5OWYO2Pe6qyFgKATM8lW3TmyDfvFUNPlV2ci6WTIWgRDCH/1fkoEwc5YTzd
-         rxdumaL4BRLibAl4TR0/GOO1Yq69HYKvsye8hKJ3pHjR9PEZhH6PCbpf9bwXcP67qTOA
-         3RkPkfHdjd1R0+Av0d5A4wFlFS09UliAtPXPCXnZ38WmSHol5scLO1EStE5i+HK2vicX
-         ldJ56K5N3DG/OVBWK772Ni6ZjCLNMSH6gxmc2D+6J3cnTOCEkR7F6zGksf09/1BXf3bF
-         2OqQ==
-X-Gm-Message-State: AOAM533muWzdFebxKdg3qk7eiY/sz0nHIZ4LtWbFuUOiGwu6AXYbu37M
-        NKEECYrmJivXe/GL1qRoQ6R3XK9DCPaQrcfC4ebzxzdOoM/AqcdQoMMf9lXOUAjS1V6cd/E9VY1
-        t44nGWsWdAr4gIhrRHJTbrF+y447Nxc7j5mgGaO9C
-X-Received: by 2002:aa7:8641:0:b029:1a1:e2f5:23de with SMTP id a1-20020aa786410000b02901a1e2f523demr4697939pfo.35.1610128372069;
-        Fri, 08 Jan 2021 09:52:52 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJy9ULWofreNDD91DUrkxShVGr1ZmP4TBmQxtimlVwbZObVFp63Ht0t6i8P+fj0Epj5Me2AF1+DolTtFy7YXtb4=
-X-Received: by 2002:aa7:8641:0:b029:1a1:e2f5:23de with SMTP id
- a1-20020aa786410000b02901a1e2f523demr4697894pfo.35.1610128371787; Fri, 08 Jan
- 2021 09:52:51 -0800 (PST)
+        bh=Nxq9Vs4PPNDPrpqL+JjGyYANEQaSFuCmNckkWvxfyR0=;
+        b=d5Jew1ijpEqOLTsGfc9o1KHs2GmDqAlQ9eaS20AgG3iA7fQerbg6NoJMSRZp0FxjR8+TdY
+        +/pu1N0DewMBM3QJNrvVbL2Y95yBxx/4ekARR45oG6LJEM7onv0EJ+zC6xkJYrXPaG8emX
+        0uxZppunnqTwKFBFxAXUtRO7nRx10Mw=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-233-W5TVzRJbOum_izCrlNcgXQ-1; Fri, 08 Jan 2021 12:53:25 -0500
+X-MC-Unique: W5TVzRJbOum_izCrlNcgXQ-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4D0EE107ACE4;
+        Fri,  8 Jan 2021 17:53:21 +0000 (UTC)
+Received: from mail (ovpn-112-222.rdu2.redhat.com [10.10.112.222])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id DD21A19C48;
+        Fri,  8 Jan 2021 17:53:08 +0000 (UTC)
+Date:   Fri, 8 Jan 2021 12:53:08 -0500
+From:   Andrea Arcangeli <aarcange@redhat.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Will Deacon <will@kernel.org>, Linux-MM <linux-mm@kvack.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Yu Zhao <yuzhao@google.com>, Andy Lutomirski <luto@kernel.org>,
+        Peter Xu <peterx@redhat.com>,
+        Pavel Emelyanov <xemul@openvz.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Hugh Dickins <hughd@google.com>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Oleg Nesterov <oleg@redhat.com>, Jann Horn <jannh@google.com>,
+        Kees Cook <keescook@chromium.org>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>, Jan Kara <jack@suse.cz>,
+        Kirill Tkhai <ktkhai@virtuozzo.com>,
+        Nadav Amit <nadav.amit@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [PATCH 2/2] mm: soft_dirty: userfaultfd: introduce
+ wrprotect_tlb_flush_pending
+Message-ID: <X/icBLF59bREm97b@redhat.com>
+References: <X/d2DyLfXZmBIreY@redhat.com>
+ <CAHk-=wjs9v-hp_7HV_TrTmisu7pNX=MwZ62ZV82i0evLhPwS1Q@mail.gmail.com>
+ <X/eLwQPd5bi620Vt@redhat.com>
+ <CAHk-=whjS3pUZRJLR_HdgB0_1Sd4gWXUbLLyShKxOg0ySCdnUA@mail.gmail.com>
+ <CAHk-=wgRZ5o5pUqKC6cwTLU=V-G+rF5DTexGh1kCMGrgXDufew@mail.gmail.com>
+ <X/edsWgguQDgsOtx@redhat.com>
+ <CAHk-=whTCBa6Frpbveuy7Hnz17P+g03yQvynkApFbBjV5rVrsA@mail.gmail.com>
+ <20210108124815.GA4512@willie-the-truck>
+ <X/iEyk0ijxhSvs9T@redhat.com>
+ <CAHk-=wizOEqJTomh=K5CR300mtTCwWdj+QYYCXKHaiU-R0YE9Q@mail.gmail.com>
 MIME-Version: 1.0
-References: <20201211222448.2115188-1-dianders@chromium.org> <CAD=FV=Ve4wGJ=KxQjraYsiAQZHG_5qEeFW0ZhmBBkRmtdm7Gwg@mail.gmail.com>
-In-Reply-To: <CAD=FV=Ve4wGJ=KxQjraYsiAQZHG_5qEeFW0ZhmBBkRmtdm7Gwg@mail.gmail.com>
-From:   Benjamin Tissoires <benjamin.tissoires@redhat.com>
-Date:   Fri, 8 Jan 2021 18:52:40 +0100
-Message-ID: <CAO-hwJK+=537C-EbgNXPY3=m5LvM8SVKCDB5X145BfSMHgUMdw@mail.gmail.com>
-Subject: Re: [PATCH v8 0/4] HID: i2c-hid: Reorganize to allow supporting goodix,gt7375p
-To:     Doug Anderson <dianders@chromium.org>
-Cc:     Jiri Kosina <jkosina@suse.cz>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        "open list:HID CORE LAYER" <linux-input@vger.kernel.org>,
-        Kai-Heng Feng <kai.heng.feng@canonical.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Andrea Borgia <andrea@borgia.bo.it>,
-        Anson Huang <Anson.Huang@nxp.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Daniel Playfair Cal <daniel.playfair.cal@gmail.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        =?UTF-8?Q?Guido_G=C3=BCnther?= <agx@sigxcpu.org>,
-        Jiri Kosina <jikos@kernel.org>, Li Yang <leoyang.li@nxp.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Max Krummenacher <max.oss.09@gmail.com>,
-        Michael Walle <michael@walle.cc>,
-        Pavel Balan <admin@kryma.net>, Shawn Guo <shawnguo@kernel.org>,
-        Vinod Koul <vkoul@kernel.org>, Will Deacon <will@kernel.org>,
-        Xiaofei Tan <tanxiaofei@huawei.com>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHk-=wizOEqJTomh=K5CR300mtTCwWdj+QYYCXKHaiU-R0YE9Q@mail.gmail.com>
+User-Agent: Mutt/2.0.4 (2020-12-30)
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Doug,
+On Fri, Jan 08, 2021 at 09:39:56AM -0800, Linus Torvalds wrote:
+> page_count() is simply the right and efficient thing to do.
+> 
+> You talk about all these theoretical inefficiencies for cases like
+> zygote and page pinning, which have never ever been seen except as a
+> possible attack vector.
 
-On Wed, Jan 6, 2021 at 2:35 AM Doug Anderson <dianders@chromium.org> wrote:
->
-> Benjamin,
->
-> On Fri, Dec 11, 2020 at 2:24 PM Douglas Anderson <dianders@chromium.org> wrote:
-> >
-> > The goal of this series is to support the Goodix GT7375P touchscreen.
-> > This touchscreen is special because it has power sequencing
-> > requirements that necessitate driving a reset GPIO.
-> >
-> > To do this, we totally rejigger the way i2c-hid is organized so that
-> > it's easier to jam the Goodix support in there.
-> >
-> > This series was:
-> > - Tested on a device that uses normal i2c-hid.
-> > - Tested on a device that has a Goodix i2c-hid device.
-> > - Tested on an ACPI device, but an earlier version of the series.
-> >
-> > I believe the plan is for Benjamin to land the whole series.  Will
-> > said this about the arm64 defconfig change (and provided his Ack):
-> > > ...there are a few things I really care about
-> > > in defconfig (e.g. things like page size!), generally speaking we don't
-> > > need to Ack everything that changes in there.
-> > >
-> > > That said, might be worth checking whether arm-soc have any defconfig
-> > > changes queued in -next so you don't end up with conflicts.
-> >
-> > Changes in v8:
-> > - Mark suspend/resume as static as per patches robot.
-> >
-> > Changes in v7:
-> > - Rebase atop commit afdd34c5fa40 ("HID: i2c-hid: show the error ...")
-> >
-> > Changes in v6:
-> > - ACPI probe function should have been "static"
-> > - Don't export suspend/resume, just export dev_pm_ops from core.
-> > - Fixed crash in ACPI module (missing init of "client")
-> > - No need for regulator include in the core.
-> > - Removed i2c_device_id table from ACPI module.
-> > - Suspend/resume are no longer exported from the core.
-> >
-> > Changes in v5:
-> > - Add shutdown_tail op and use it in ACPI.
-> > - Added mention of i2c-hid in the yaml itself as per Rob.
-> > - Adjusted subject as per Rob.
-> > - i2chid_subclass_data => i2chid_ops.
-> > - power_up_device => power_up (same with power_down).
-> > - subclass => ops.
-> >
-> > Changes in v4:
-> > - ("arm64: defconfig: Update config names for i2c-hid rejigger") new for v4.
-> > - Fully rejigger so ACPI and OF are full subclasses.
-> > - Totally redid based on the new subclass system.
-> >
-> > Changes in v3:
-> > - Fixed compatible in example.
-> > - Removed Benjamin as a maintainer.
-> > - Rework to use subclassing.
-> > - Updated description.
-> >
-> > Changes in v2:
-> > - ("dt-bindings: HID: i2c-hid: Introduce bindings for the Goodix GT7375P") new in v2.
-> > - Get timings based on the compatible string.
-> > - Use a separate compatible string for this new touchscreen.
-> >
-> > Douglas Anderson (4):
-> >   HID: i2c-hid: Reorganize so ACPI and OF are separate modules
-> >   arm64: defconfig: Update config names for i2c-hid rejigger
-> >   dt-bindings: input: HID: i2c-hid: Introduce bindings for the Goodix
-> >     GT7375P
-> >   HID: i2c-hid: Introduce goodix-i2c-hid using i2c-hid core
->
-> I think this series is ready to land.  The "defconfig" has a trivial
-> conflict with commit 74b87103b3d0 ("arm64: defconfig: Enable HID
-> multitouch") against linuxnext, but it's so simple that hopefully
-> folks will be OK with that when it lands.
->
-> Please let me know if there's anything else you need me to do.  :-)
->
+Do you intend to eventually fix the zygote vmsplice case or not?
+Because in current upstream it's not fixed currently using the
+enterprise default config.
 
-I wanted to apply the series yesterday, but for these kinds of changes
-I like giving it a spin on actual hardware. Turns out that my XPS-13
-can not boot to v5.11-rc2, which makes testing the new branch slightly
-more difficult.
+> Stop talking about irrelevant things. Stop trying to "optimize" things
+> that never happen and don't matter.
+> 
+> Instead, what matters is the *NORMAL* VM flow.
+> 
+> Things like COW.
+> 
+> Things like "oh, now that we check just the page count, we don't even
+> need the page lock for the common case any more".
+> 
+> > For the long term, I can't see how using page_count in do_wp_page is a
+> > tenable proposition,
+> 
+> I think you should re-calibrate your expectations, and accept that
+> page_count() is the right thing to do, and live with it.
+> 
+> And instead of worrying about irrelevant special-case code, start
 
-I'll give it a spin next week, but I think I should be able to land it for 5.12.
+Irrelevant special case as in: long term GUP pin on the memory?
 
-Regarding the defconfig conflict, no worries, we can handle it with
-Stephen and Linus.
+Or irrelevant special case as in: causing secondary MMU to hit silent
+data loss if a pte is ever wrprotected (arch code, vm86, whatever, all
+under mmap_write_lock of course).
 
-Cheers,
-Benjamin
+> worrying about the code that gets triggered tens of thousands of times
+> a second, on regular loads, without anybody doing anything odd or
+> special at all, just running plain and normal shell scripts or any
+> other normal traditional load.
+> 
+> Those irrelevant special cases should be simple and work, not badly
+> optimized to the point where they are buggy. And they are MUCH LESS
+> IMPORTANT than the normal VM code, so if somebody does something odd,
+> and it's slow, then that is the problem for the _odd_ case, not for
+> the normal codepaths.
+> 
+> This is why I refuse to add crazy new special cases to core code. Make
+> the rules simple and straightforward, and make the code VM work well.
+
+New special cases? which new cases?
+
+There's nothing new here besides the zygote that wasn't fully fixed
+with 09854ba94c6aad7886996bfbee2530b3d8a7f4f4 and is actually the only
+new case I can imagine where page_count actually isn't a regression.
+
+All old cases that you seem to refer as irrelevant and are in
+production in v4.18, I don't see anything new here.
+
+Even for the pure COW case with zero GUP involvement an hugepage with
+cows happening in different processes, would forever hit wp_copy_page
+since count is always > 1 despite mapcount can be 1 for all
+subpages. A simple app doing fork/exec would forever copy all memory
+in the parent even after the exec is finished.
+
+Thanks,
+Andrea
 
