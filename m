@@ -2,100 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 583C02EF51F
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 16:50:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3AD692EF521
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 16:50:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727815AbhAHPul (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Jan 2021 10:50:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39176 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727570AbhAHPuk (ORCPT
+        id S1727898AbhAHPuu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Jan 2021 10:50:50 -0500
+Received: from mail-ot1-f43.google.com ([209.85.210.43]:46593 "EHLO
+        mail-ot1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727858AbhAHPuu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Jan 2021 10:50:40 -0500
-Received: from cc-smtpout3.netcologne.de (cc-smtpout3.netcologne.de [IPv6:2001:4dd0:100:1062:25:2:0:3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39754C061380
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Jan 2021 07:50:00 -0800 (PST)
-Received: from cc-smtpin2.netcologne.de (cc-smtpin2.netcologne.de [89.1.8.202])
-        by cc-smtpout3.netcologne.de (Postfix) with ESMTP id 5585D12704;
-        Fri,  8 Jan 2021 16:49:58 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-        by cc-smtpin2.netcologne.de (Postfix) with ESMTP id 5206811E94;
-        Fri,  8 Jan 2021 16:49:58 +0100 (CET)
-Received: from [213.196.221.66] (helo=cc-smtpin2.netcologne.de)
-        by localhost with ESMTP (eXpurgate 4.11.6)
-        (envelope-from <kurt@garloff.de>)
-        id 5ff87f26-024d-7f0000012729-7f000001ce8a-1
-        for <multiple-recipients>; Fri, 08 Jan 2021 16:49:58 +0100
-Received: from nas2.garloff.de (xdsl-213-196-221-66.nc.de [213.196.221.66])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by cc-smtpin2.netcologne.de (Postfix) with ESMTPSA;
-        Fri,  8 Jan 2021 16:49:54 +0100 (CET)
-Received: from [192.168.155.24] (ap4.garloff.de [192.168.155.15])
-        by nas2.garloff.de (Postfix) with ESMTPSA id A2510B3B13A5;
-        Fri,  8 Jan 2021 16:49:53 +0100 (CET)
-Subject: Re: NFS 4.2 client support broken on 5.10.5
-From:   Kurt Garloff <kurt@garloff.de>
-To:     Trond Myklebust <trondmy@hammerspace.com>,
-        "NeilB@suse.de" <NeilB@suse.de>,
-        "Anna.Schumaker@Netapp.com" <Anna.Schumaker@Netapp.com>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <ee320885-9a78-80b8-9341-7c631df60d3a@garloff.de>
- <2f401e0a738b7acb926bd2375012e6384a2cd9b6.camel@hammerspace.com>
- <927fcf61-7992-1b9f-ae39-c71d96323fbc@garloff.de>
-Message-ID: <85cd2357-b835-c8b4-ef98-e6b486abbbdc@garloff.de>
-Date:   Fri, 8 Jan 2021 16:49:53 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        Fri, 8 Jan 2021 10:50:50 -0500
+Received: by mail-ot1-f43.google.com with SMTP id w3so9988408otp.13;
+        Fri, 08 Jan 2021 07:50:34 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=FvJeCYxadcyoAzF1SiLwwloKn8yQ7/+aj8/jI72xI9s=;
+        b=b8sZGAqvJ/qxWP+m2lXjb6XKZpoe00SQFwfGUZ3/y/fAzr74BHHKg8aycCdYnQkzLl
+         OeDqcQR1sVIUO5jJ03gH50moiNFcaa2TGRDDU7YcMAjzmOvTnESDFqKp512X1VY4tpck
+         bblba2EEBdF/tVVMX9BFx/Ka8ieZ6dKhxc1uIw19oyvwQtof652B3UimfxOuF9hUzkXr
+         d/LM7o+NmK5POexMYr7Y+OUXR0fMQZOWtcUf461TMf7nIfRRpx8A3j19qf+xRkQb7Clv
+         FtDc7yKsf/zsokDf4iLhg8ARfWmOQp60LgTRs5auXJLbA2Z7jnWY50BsjmZwgwkKIFYq
+         w2zw==
+X-Gm-Message-State: AOAM5320+zuL4yZ6pxjhHE4bqGzkQ7gBVDI50mn6Tuh9zYhL/jGeK9l9
+        RcsTC5WtqDRC8PCp+Mg+lgwz+pQQnJ9YxdWrPfk=
+X-Google-Smtp-Source: ABdhPJzhk6ZttQly8yx3EcnFBoo7Ui0FTYZ13DKb90t5youTBK4XgR/5mhjcA8VYl4AZruQiGjUNPWY4zcsHXs0eF70=
+X-Received: by 2002:a9d:7191:: with SMTP id o17mr2106178otj.321.1610121009033;
+ Fri, 08 Jan 2021 07:50:09 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <927fcf61-7992-1b9f-ae39-c71d96323fbc@garloff.de>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+References: <20201201213019.1558738-1-furquan@google.com> <CAEGmHFGZM0mADs-Eiz780RHzyf3emJinSAMT6ipRMpOvb+HGjg@mail.gmail.com>
+ <X/h9+1YUj49qQcil@kroah.com>
+In-Reply-To: <X/h9+1YUj49qQcil@kroah.com>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Fri, 8 Jan 2021 16:49:58 +0100
+Message-ID: <CAJZ5v0j0wmV5tMuZDpRvELNcd=4aR-=D-KVnX1wEmoE-oJeFnA@mail.gmail.com>
+Subject: Re: [PATCH] drivers: core: Detach device from power domain on shutdown
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Furquan Shaikh <furquan@google.com>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Trond,
-
-Am 08.01.21 um 15:39 schrieb Kurt Garloff:
-> Hi Trond,
+On Fri, Jan 8, 2021 at 4:43 PM Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
 >
-> On 08/01/2021 12:58, Trond Myklebust wrote:
->> On Fri, 2021-01-08 at 12:41 +0100, Kurt Garloff wrote:
->>> [...]
->>> The kernel tree is on an NFS share, and I run 5.10.5 client kernel
->>> against the kernel NFS (4.2) server, running a 5.10.3 kernel.
->>>
->>> The issue does NOT occur on a 5.10.3 client kernel, but is easily
->>> reproducible on 5.10.5. Note that 5.10.5 on a local file system or
->>> against an NFSv3 server does not show the issue.
->>>
->>> Test program that reproduces this on the first pwrite64() is
->>> attached.
->>> Note that the call to ftruncate() is required to make the problem
->>> happen.
->>>
->>> I could go on bisecting this to a particular patch, but you'll
->>> probably be able to see right away what's wrong.
->>>
->> Hmm... If this is NFSv4.2 do you have READ_PLUS turned on or off in
->> .config? It really is not safe to enable READ_PLUS on 5.10 kernels
->> since that can cause random memory corruption.
-> OK, it is turned on in my kernel -- looks like I have not read the
-> warning in the config option help text carefully enough ...
+> On Mon, Dec 14, 2020 at 08:56:48PM -0800, Furquan Shaikh wrote:
+> > On Tue, Dec 1, 2020 at 1:30 PM Furquan Shaikh <furquan@google.com> wrote:
+> > >
+> > > When the system is powered off or rebooted, devices are not detached
+> > > from their PM domain. This results in ACPI PM not being invoked and
+> > > hence PowerResouce _OFF method not being invoked for any of the
+> > > devices. Because the ACPI power resources are not turned off in case
+> > > of poweroff and reboot, it violates the power sequencing requirements
+> > > which impacts the reliability of the devices over the lifetime of the
+> > > platform. This is currently observed on all Chromebooks using ACPI.
+> > >
+> > > In order to solve the above problem, this change detaches a device
+> > > from its PM domain whenever it is shutdown. This action is basically
+> > > analogous to ->remove() from driver model perspective. Detaching the
+> > > device from its PM domain ensures that the ACPI PM gets a chance to
+> > > turn off the power resources for the device thus complying with its
+> > > power sequencing requirements.
+> > >
+> > > Signed-off-by: Furquan Shaikh <furquan@google.com>
+> > > ---
+> > >  drivers/base/core.c | 3 +++
+> > >  1 file changed, 3 insertions(+)
+> > >
+> > > diff --git a/drivers/base/core.c b/drivers/base/core.c
+> > > index d661ada1518f..5823f1d719e1 100644
+> > > --- a/drivers/base/core.c
+> > > +++ b/drivers/base/core.c
+> > > @@ -23,6 +23,7 @@
+> > >  #include <linux/of_device.h>
+> > >  #include <linux/genhd.h>
+> > >  #include <linux/mutex.h>
+> > > +#include <linux/pm_domain.h>
+> > >  #include <linux/pm_runtime.h>
+> > >  #include <linux/netdevice.h>
+> > >  #include <linux/sched/signal.h>
+> > > @@ -4057,6 +4058,8 @@ void device_shutdown(void)
+> > >                         dev->driver->shutdown(dev);
+> > >                 }
+> > >
+> > > +               dev_pm_domain_detach(dev, true);
+> > > +
+> > >                 device_unlock(dev);
+> > >                 if (parent)
+> > >                         device_unlock(parent);
+> > > --
+> > > 2.29.2.454.gaff20da3a2-goog
+> > >
+> >
+> > Hello,
+> >
+> > Gentle ping. Just checking if there are any comments.
 >
-> I'll test what happens if I switch it off and report back.
+> I'll wait for Rafael to ack this before taking it...
 
-OK, I compiled a kernel without support for READ_PLUS
-and the test program magically succeeds.
+Done.
 
-So take my report as input to the developers that work
-on making READ_PLUS work. Maybe they want to add
-my little program to their CI suite.
-
-Thanks,
-
--- 
-Kurt Garloff <kurt@garloff.de>, Cologne, Germany
-
+Cheers!
