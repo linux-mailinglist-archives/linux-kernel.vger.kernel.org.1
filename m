@@ -2,133 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 480BE2EF97A
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 21:42:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DD062EF97C
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 21:42:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729356AbhAHUkf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Jan 2021 15:40:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56278 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729224AbhAHUkc (ORCPT
+        id S1729379AbhAHUk4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Jan 2021 15:40:56 -0500
+Received: from so254-31.mailgun.net ([198.61.254.31]:47658 "EHLO
+        so254-31.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729080AbhAHUkz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Jan 2021 15:40:32 -0500
-Received: from mail-ot1-x32a.google.com (mail-ot1-x32a.google.com [IPv6:2607:f8b0:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 592B8C061381
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Jan 2021 12:39:52 -0800 (PST)
-Received: by mail-ot1-x32a.google.com with SMTP id x13so10931553oto.8
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Jan 2021 12:39:52 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=iac5XmZ0aSrPS3x4buC8VUJtjwj44d0E1FKt4htO0mc=;
-        b=HCXOX5LQSKc9wfoXyQF3/5NqcGdNl4Axz0ovvQqyj6BWLBT0FYt2ARefLwylGulsmv
-         9W1TgXQ7BoXD+VtEohi2qrje+a34upCTUiEPZhUbq/cJxBcm3N7ONmZI2I+0YWBP6SmN
-         p3ffNs35srwJf8PrWLXssWyImz4o98fJPfExrWDtPmQxoo/s6hkf3tpAyIqo/Vu/ICZC
-         hWKqsWdBLlOW9E4VutNpmsTDgd6uZtV95f2Led0rcUmJudz5QoO4H+Be2EvIHe9AhzO3
-         yOj7lC/RPToR3aW4DB66gEeKV7gT8VY7qUXWkf0hB+OQP+QPkxbj0gQRjXPKFCnoquln
-         nGrw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=iac5XmZ0aSrPS3x4buC8VUJtjwj44d0E1FKt4htO0mc=;
-        b=IU6pAwvkgfNeow+Tf+Uvz9pLSVjJnvn2NrqyvdmtbJJ9UkLR5eQe0eXSr+O36LCuK3
-         4gXrTdh2IqEwN4fz8bEVsn5/dWcEKwBc7Q/A1jN6LNeCEdsLqyHanT8me/XpYaW/iDUa
-         mVtJqEJkocYQ6+dUoPvrTvuiltKzGOdjST2OQAOAMJqaY4fFc+gDTK2pyETbJEw62nL5
-         pHchUkxkUD9YWnScVnRL30LlcoXjrZrz5eWgaI+ak2B2iPcv/hMfvTEYnABHnogqNvEh
-         Y/3Soal5GO7OQyGu6e/OIgkPmb4Nq/KT/fKhcVROtLaIe2BcUMA79+XR6olJJUtES2XU
-         4xqQ==
-X-Gm-Message-State: AOAM531+Tj68ZHbkkNIioreGQPJEkTHP6hH/U9bSQYCo9qlqYj2mRDMT
-        aE7fBW+tyl8SrX+wxRkrJKBRBzyFU7RdOwLUm5NreuSc
-X-Google-Smtp-Source: ABdhPJxGTk80mgwAzb1wy8whX7yzl4+b5mretNLGSn18GjLOVwMurYgzStVlo5sqtojIZQZSIGyfqYYhRZhlk4tB8Fo=
-X-Received: by 2002:a05:6830:1d66:: with SMTP id l6mr3802145oti.23.1610138391838;
- Fri, 08 Jan 2021 12:39:51 -0800 (PST)
-MIME-Version: 1.0
-References: <20210108201457.3078600-1-lee.jones@linaro.org> <20210108201457.3078600-16-lee.jones@linaro.org>
-In-Reply-To: <20210108201457.3078600-16-lee.jones@linaro.org>
-From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Fri, 8 Jan 2021 15:39:40 -0500
-Message-ID: <CADnq5_Odv9EXFfi5TGVDrdDnLrtJs4sH4E4Om-oFw4TsLdBV8w@mail.gmail.com>
-Subject: Re: [PATCH 15/40] drm/amd/display/dc/bios/command_table_helper: Fix
- kernel-doc formatting
-To:     Lee Jones <lee.jones@linaro.org>
-Cc:     Leo Li <sunpeng.li@amd.com>, Mauro Rossi <issor.oruam@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        David Airlie <airlied@linux.ie>,
-        Maling list - DRI developers 
-        <dri-devel@lists.freedesktop.org>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        Fri, 8 Jan 2021 15:40:55 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1610138436; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=qLA3LpoWylWR06vLJtM3NiGDbgNo/hzbOnZhqJLxv1Y=; b=shQFbESIlqDndwViXElbAfwDjhFel4O8RThD0yfIoIS9iaCPUmtlCsxe7pvUar2nokx2vjlj
+ GoKb/7rBVWudm87NXGYKTyOnvRhTXeEyBMUHTFgAFoFSLcBGJcGeEGaFS+4x69LAviDHfHMu
+ v+UUw8+dLkV+Kusmr4cvpwD3/Xg=
+X-Mailgun-Sending-Ip: 198.61.254.31
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n03.prod.us-west-2.postgun.com with SMTP id
+ 5ff8c3264104d9478d2c2a26 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 08 Jan 2021 20:40:06
+ GMT
+Sender: bbhatt=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id A6F58C43462; Fri,  8 Jan 2021 20:40:05 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from malabar-linux.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: bbhatt)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 6E726C433CA;
+        Fri,  8 Jan 2021 20:40:04 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 6E726C433CA
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=bbhatt@codeaurora.org
+From:   Bhaumik Bhatt <bbhatt@codeaurora.org>
+To:     manivannan.sadhasivam@linaro.org
+Cc:     linux-arm-msm@vger.kernel.org, hemantk@codeaurora.org,
+        jhugo@codeaurora.org, linux-kernel@vger.kernel.org,
+        loic.poulain@linaro.org, Bhaumik Bhatt <bbhatt@codeaurora.org>
+Subject: [RESEND PATCH v4 0/8] Updates to MHI channel handling
+Date:   Fri,  8 Jan 2021 12:39:48 -0800
+Message-Id: <1610138396-25811-1-git-send-email-bbhatt@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Applied.  Thanks!
+MHI specification shows a state machine with support for STOP channel command
+and the validity of certain state transitions. MHI host currently does not
+provide any mechanism to stop a channel and restart it without resetting it.
+There are also times when the device moves on to a different execution
+environment while client drivers on the host are unaware of it and still
+attempt to reset the channels facing unnecessary timeouts.
 
-Alex
+This series addresses the above areas to provide support for stopping an MHI
+channel, resuming it back, improved documentation and improving upon channel
+state machine handling in general.
 
-On Fri, Jan 8, 2021 at 3:15 PM Lee Jones <lee.jones@linaro.org> wrote:
->
-> Fixes the following W=3D1 kernel build warning(s):
->
->  drivers/gpu/drm/amd/amdgpu/../display/dc/bios/command_table_helper.c:131=
-: warning: Function parameter or member 't' not described in 'dal_cmd_table=
-_helper_transmitter_bp_to_atom'
->
-> Cc: Harry Wentland <harry.wentland@amd.com>
-> Cc: Leo Li <sunpeng.li@amd.com>
-> Cc: Alex Deucher <alexander.deucher@amd.com>
-> Cc: "Christian K=C3=B6nig" <christian.koenig@amd.com>
-> Cc: David Airlie <airlied@linux.ie>
-> Cc: Daniel Vetter <daniel@ffwll.ch>
-> Cc: Mauro Rossi <issor.oruam@gmail.com>
-> Cc: amd-gfx@lists.freedesktop.org
-> Cc: dri-devel@lists.freedesktop.org
-> Signed-off-by: Lee Jones <lee.jones@linaro.org>
-> ---
->  .../display/dc/bios/command_table_helper.c    | 20 ++++++++-----------
->  1 file changed, 8 insertions(+), 12 deletions(-)
->
-> diff --git a/drivers/gpu/drm/amd/display/dc/bios/command_table_helper.c b=
-/drivers/gpu/drm/amd/display/dc/bios/command_table_helper.c
-> index 48b4ef03fc8f8..5b77251e05909 100644
-> --- a/drivers/gpu/drm/amd/display/dc/bios/command_table_helper.c
-> +++ b/drivers/gpu/drm/amd/display/dc/bios/command_table_helper.c
-> @@ -114,18 +114,14 @@ bool dal_cmd_table_helper_controller_id_to_atom(
->  }
->
->  /**
-> -* translate_transmitter_bp_to_atom
-> -*
-> -* @brief
-> -*  Translate the Transmitter to the corresponding ATOM BIOS value
-> -*
-> -* @param
-> -*   input transmitter
-> -*   output digitalTransmitter
-> -*    // =3D00: Digital Transmitter1 ( UNIPHY linkAB )
-> -*    // =3D01: Digital Transmitter2 ( UNIPHY linkCD )
-> -*    // =3D02: Digital Transmitter3 ( UNIPHY linkEF )
-> -*/
-> + * translate_transmitter_bp_to_atom - Translate the Transmitter to the
-> + *                                    corresponding ATOM BIOS value
-> + * @t: transmitter
-> + * returns: output digitalTransmitter
-> + *    // =3D00: Digital Transmitter1 ( UNIPHY linkAB )
-> + *    // =3D01: Digital Transmitter2 ( UNIPHY linkCD )
-> + *    // =3D02: Digital Transmitter3 ( UNIPHY linkEF )
-> + */
->  uint8_t dal_cmd_table_helper_transmitter_bp_to_atom(
->         enum transmitter t)
->  {
-> --
-> 2.25.1
->
-> _______________________________________________
-> dri-devel mailing list
-> dri-devel@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/dri-devel
+This set of patches was tested on arm64 architecture.
+
+v4:
+-Updated commit text/descriptions and addressed checkpatch checks
+-Added context validity check before starting/stopping channels from new API
+-Added patch to clear channel context configuration after reset/unprepare
+
+v3:
+-Updated documentation for channel transfer APIs to highlight differences
+-Create separate patch for "allowing channel to be disabled from stopped state"
+
+v2:
+-Renamed the newly introduced APIs to mhi_start_transfer() / mhi_stop_transfer()
+-Added improved documentation to avoid confusion with the new APIs
+-Removed the __ prefix from mhi_unprepare_channel() API for consistency.
+
+Bhaumik Bhatt (8):
+  bus: mhi: core: Allow sending the STOP channel command
+  bus: mhi: core: Allow channel to be disabled from stopped state
+  bus: mhi: core: Improvements to the channel handling state machine
+  bus: mhi: core: Clear configuration from channel context during reset
+  bus: mhi: core: Add support to stop or start channel data transfers
+  bus: mhi: core: Check channel execution environment before issuing
+    reset
+  bus: mhi: core: Remove __ prefix for MHI channel unprepare function
+  bus: mhi: Improve documentation on channel transfer setup APIs
+
+ drivers/bus/mhi/core/init.c     |  22 +++-
+ drivers/bus/mhi/core/internal.h |  12 ++
+ drivers/bus/mhi/core/main.c     | 238 ++++++++++++++++++++++++++++------------
+ include/linux/mhi.h             |  45 +++++++-
+ 4 files changed, 242 insertions(+), 75 deletions(-)
+
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
+
