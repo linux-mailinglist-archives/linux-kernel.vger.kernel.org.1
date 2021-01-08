@@ -2,87 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DE1C2EF37C
+	by mail.lfdr.de (Postfix) with ESMTP id A599D2EF37D
 	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 14:53:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727518AbhAHNwz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Jan 2021 08:52:55 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41498 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725793AbhAHNwz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Jan 2021 08:52:55 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3DD32239EB;
-        Fri,  8 Jan 2021 13:52:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610113934;
-        bh=LBVqpp59oazR+XXSXEg2T0WByDOyqaIigbRhTWw/8ts=;
-        h=Date:From:To:cc:Subject:In-Reply-To:References:From;
-        b=A/gZfHwh59YAAQfXYrIx3qpK37jgzAvd0kegt5+VGRhq4U0mGr3jyRNvwcGbDE6hT
-         YjQWwRao1Ev5QKnmi/hMsrdUXYd+w8Q5yBO8BtuOEDNRBZKqXkw9VCD/N+YUrlfmqJ
-         7kVEwdgyrgeDvLcIH8OJqt+MwZkL9IxIZOJ1bMzjOuy3tKiTFS0fr8Yae6oKVjgENF
-         NLnQXUA0aQO70s4CoOrr4xudvHfp9DkjgTALuxb501si2iaXoqevly+FUUVLwNESaO
-         FQhAkkWLsNEs4So7oLJGlv84504xc++35pcIIyiXLMq9lbXqY2eQjaL7kvqpJsC2nO
-         rnn9V6oMhVPQA==
-Date:   Fri, 8 Jan 2021 14:52:09 +0100 (CET)
-From:   Jiri Kosina <jikos@kernel.org>
-To:     Randy Dunlap <rdunlap@infradead.org>
-cc:     linux-kernel@vger.kernel.org,
-        syzbot+1e911ad71dd4ea72e04a@syzkaller.appspotmail.com,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        linux-input@vger.kernel.org
-Subject: Re: [PATCH] HID: core: detect and skip invalid inputs to snto32()
-In-Reply-To: <20201217011221.25678-1-rdunlap@infradead.org>
-Message-ID: <nycvar.YFH.7.76.2101081450590.13752@cbobk.fhfr.pm>
-References: <20201217011221.25678-1-rdunlap@infradead.org>
-User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
+        id S1727757AbhAHNxN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Jan 2021 08:53:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49158 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727584AbhAHNxL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 Jan 2021 08:53:11 -0500
+Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37315C0612F5
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Jan 2021 05:52:31 -0800 (PST)
+Received: by mail-pf1-x42c.google.com with SMTP id t22so6289489pfl.3
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Jan 2021 05:52:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ZriopB/bdJEjTnXaU/KpXNok7U4qP0rkhbQb5Rep6U8=;
+        b=G9LZhqtMEc2/AM4ybrAjwFxFPA372JpB4FsOnbrLLKQB6fcwIoOwjZcaATWWbiRpHc
+         WMwsaXe0+xn6lWrN+GbF0+psGsaKArhM3SO4/DnHMThypMG1fsURabMyXyNIhqs4hdUM
+         M22/ET309DE0SiW3QqUolfWTr798gTmKHk8dWSVd5Q+G6s2DBN8SispckPG+PZGTOqy2
+         dUtHjXDN4dgagO3AJdM67LAF6z+IF5PD1nJyzYZA4rRrxzsZUTup6H9oh8mnrlmegIbs
+         QOHbdbnUd0Jxr/pSYz5LNC5WhSH8Rqnpv8c33mSV/IXyMN3He3Nou+ZY3sprDEvWjHGS
+         stgQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ZriopB/bdJEjTnXaU/KpXNok7U4qP0rkhbQb5Rep6U8=;
+        b=Ak+MsIlMYUf3Ulyysn79JN8Z8Fj9KlDSYrUaVV2735a1l1v6tILSEZiZ5/k4uFSo0B
+         DTHdGVkm71yv/H1ZTzwDHJvjlluAHB/7lPnkqvwA2dfxJPW1ltnQ6BZnSIfSy80i9jl8
+         3GjJ92FDzR+AwS7nhGsu1vgGxJPMivZaKHz+w4r9wQXTxhPvAERV3L/VXq+QX+WT0Vn+
+         efU5Eos4T3knBPmd7B28hldmHsylsan0nKqrpFcgsdXG7e3ZnemewKG9RTKBkkUPL8qv
+         QDk8NLH8p3NsjaCwEwFTpdwjgVC1sbgpZ3qVB9XLytyqCmAuF+tdlrVg6eBmYUnSxtAm
+         iR3w==
+X-Gm-Message-State: AOAM532eLp8eecp7obX4L4osEAJ+D33OLnnizsy7igduVnpKYw6OYE9s
+        19xomz5yAC95QGeyp7ZEnrr4uQ==
+X-Google-Smtp-Source: ABdhPJyVmuMi5NGZ40cwNsbMW34wCWx+4Sc1t31BpImK7Tns7Bn7YfNORL79bBjKrvUSlewfPSDNxA==
+X-Received: by 2002:a63:4b54:: with SMTP id k20mr7275165pgl.290.1610113950832;
+        Fri, 08 Jan 2021 05:52:30 -0800 (PST)
+Received: from always-libai.bytedance.net ([153.254.110.96])
+        by smtp.gmail.com with ESMTPSA id k64sm9401184pfd.75.2021.01.08.05.52.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 08 Jan 2021 05:52:30 -0800 (PST)
+From:   zhenwei pi <pizhenwei@bytedance.com>
+To:     arnd@arndb.de, gregkh@linuxfoundation.org
+Cc:     pbonzini@redhat.com, linux-kernel@vger.kernel.org,
+        pizhenwei@bytedance.com
+Subject: [PATCH v3 0/2] misc: pvpanic: introduce capability & module parameter
+Date:   Fri,  8 Jan 2021 21:52:21 +0800
+Message-Id: <20210108135223.2924507-1-pizhenwei@bytedance.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 16 Dec 2020, Randy Dunlap wrote:
+v2 -> v3:
+Seperate the function to 2 parts:
+    1, use sysfs to expose device capability.
+    2, add a module parameter to set limitation by user.
 
-> Prevent invalid (0, 0) inputs to hid-core's snto32() function.
-> 
-> Maybe it is just the dummy device here that is causing this, but
-> there are hundreds of calls to snto32(0, 0). Having n (bits count)
-> of 0 is causing the current UBSAN trap with a shift value of
-> 0xffffffff (-1, or n - 1 in this function).
-> 
-> Either of the value to shift being 0 or the bits count being 0 can be
-> handled by just returning 0 to the caller, avoiding the following
-> complex shift + OR operations:
-> 
-> 	return value & (1 << (n - 1)) ? value | (~0U << n) : value;
-> 
-> Fixes: dde5845a529f ("[PATCH] Generic HID layer - code split")
-> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-> Reported-by: syzbot+1e911ad71dd4ea72e04a@syzkaller.appspotmail.com
-> Cc: Jiri Kosina <jikos@kernel.org>
-> Cc: Benjamin Tissoires <benjamin.tissoires@redhat.com>
-> Cc: linux-input@vger.kernel.org
-> ---
->  drivers/hid/hid-core.c |    3 +++
->  1 file changed, 3 insertions(+)
-> 
-> --- lnx-510.orig/drivers/hid/hid-core.c
-> +++ lnx-510/drivers/hid/hid-core.c
-> @@ -1307,6 +1307,9 @@ EXPORT_SYMBOL_GPL(hid_open_report);
->  
->  static s32 snto32(__u32 value, unsigned n)
->  {
-> +	if (!value || !n)
-> +		return 0;
-> +
+v1 -> v2:
+Remove device info log, use module parameter to expose capability.
 
-Given the fact that this has been in the code basically since ever, we're 
-probably fine, but it's good to have this fixed nevertheless. Applied 
-conservatively to hid.git#for-5.12/core.
+v1:
+The guest sides determines pvpanic capability by RDPT, before kicking
+host side, check the event is supported or not.
 
-Thanks,
+zhenwei pi (2):
+  misc: pvpanic: introduce device capability
+  misc: pvpanic: introduce module parameter 'events'
+
+ drivers/misc/pvpanic.c | 45 ++++++++++++++++++++++++++++++++++++------
+ 1 file changed, 39 insertions(+), 6 deletions(-)
 
 -- 
-Jiri Kosina
-SUSE Labs
+2.25.1
 
