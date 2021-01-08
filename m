@@ -2,143 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B82F62EFB3E
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 23:32:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 485CC2EFB47
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 23:42:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726060AbhAHWb0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Jan 2021 17:31:26 -0500
-Received: from mail.kernel.org ([198.145.29.99]:38628 "EHLO mail.kernel.org"
+        id S1726088AbhAHWl6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Jan 2021 17:41:58 -0500
+Received: from mout.gmx.net ([212.227.17.22]:36005 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725763AbhAHWb0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Jan 2021 17:31:26 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CCB4723A74;
-        Fri,  8 Jan 2021 22:30:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610145045;
-        bh=RfrNnUxqpgdg1FN3ZSwdDVqxQrDShq6i7TaVpK5s6fI=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=u5giCa9cMNCemfl6FJRL3u4N3DIeFrNlRs4AT9+Y33JJaVr3knEQVJkPlAgRMpwse
-         sjHkr+CUPTsEj4Qrxwl03PcqAd6UOpjmSbMFsSNgGHabmVbUHKEPLXndRhWzuS5nhk
-         idYoXAoloRofb6fJ1bj/BXGiYk/FvpC5Lcr6+25wYMDDZBv57z0yOKjKxTVkProvce
-         VgZB2vlQ5B6+9b5901/Y2UHw4CXTYkCOyHb+eSGh7QjmjUzDi4riClHnl19R+g3x31
-         b+WCBI5/D+j5LiAlruaa9x6y8RlhzJGWdzoAeEQzx1cVGx5R3a3OdK377WXuOylPSO
-         GwAhtaopMia7w==
-Date:   Fri, 8 Jan 2021 16:30:43 -0600
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Hedi Berriche <hedi.berriche@hpe.com>
-Cc:     Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>,
-        Ashok Raj <ashok.raj@intel.com>,
-        Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Sinan Kaya <okaya@kernel.org>,
-        Russ Anderson <rja@hpe.com>, Joerg Roedel <jroedel@suse.com>,
-        stable@kernel.org, Keith Busch <kbusch@kernel.org>
-Subject: Re: [PATCH v4 1/1] PCI/ERR: don't clobber status after reset_link()
-Message-ID: <20210108223043.GA1477254@bjorn-Precision-5520>
+        id S1725775AbhAHWl6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 Jan 2021 17:41:58 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1610145619;
+        bh=NJp+hbPNk37tII+LPOXGY8ODHY3S8sdf4Zgnfzeqzds=;
+        h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
+        b=lGuKEA9ik4wVcmkHJe/9j3tiy12BzGRnn8WUZE/cig+A0NNMoyn6eF8LnCKLH6HNy
+         s09OJgbSjmBpIuLXnFDWDTReOAHoYeAqK00OUNEA01080JGvFrmQRYMFEvp9+idxZv
+         fLzm/B1e5Nz9Qea5FZvCsYFSBWjCPN8U+MZGcY70=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from longitude ([37.201.215.57]) by mail.gmx.com (mrgmx104
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1M7sDq-1ku8XZ1EBu-0054Cb; Fri, 08
+ Jan 2021 23:40:19 +0100
+From:   =?UTF-8?q?Jonathan=20Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>
+To:     devicetree@vger.kernel.org
+Cc:     =?UTF-8?q?Jonathan=20Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>,
+        Avi Fishman <avifishman70@gmail.com>,
+        Tomer Maimon <tmaimon77@gmail.com>,
+        Tali Perry <tali.perry1@gmail.com>,
+        Patrick Venture <venture@google.com>,
+        Nancy Yuen <yuenn@google.com>,
+        Benjamin Fair <benjaminfair@google.com>,
+        Rob Herring <robh+dt@kernel.org>, openbmc@lists.ozlabs.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 1/2] dt-bindings: arm: Convert nuvoton,npcm750 binding to YAML
+Date:   Fri,  8 Jan 2021 23:40:06 +0100
+Message-Id: <20210108224008.705687-1-j.neuschaefer@gmx.net>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201210224142.GA58424@bjorn-Precision-5520>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:WWz1zPPZWYzoDcE8qrMIoeq4BF0tEdmNQs+psVnXi/ZQ5uwWwM7
+ KwPuFz1+G7rvnQdbyQSaNZwugq77f481UJujPnBAIVhgB1S/TYpUMmdl9MOAgYFGEdrMEs/
+ 4T+m0C3D18rePH25Sy267SDxK2tizRc7XSZemYts+NI7pMf5jgZ9gWLV8G6lPnhPZMDkqco
+ sf11uyGfiMIuOwdNYq7PQ==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:xr89JIx1Uqo=:LezS2WenVd1CcciZkzRgyt
+ GggwgryMBhsDN3/3AiwgzcMyMtE04dY203G92SX7lQ9SYPgQOKKxiYdF+9zQtjTWaABm5x9LY
+ ydumC6I8dgvL7Fby8oLREAiz+feoLTcsorCILF2tDe0d4Li3WN2dwp6GP0naRIeUM6ar53T5Q
+ +CHDW/7R+6AyFmrbZBWlPFWplbp1xUvSiHIa254EdyYjYj3OHBxIRUZuf3Ntck9U/3ha2yE/S
+ sp+yrT36kQdmbIrbp3AkvxASr5yfXdTOspGt1ypCLAEDJ3k1MfZWeIhNW4uw/ndKzT5tkXHd2
+ x07VZ8M8gjqD9vwdH0Go/fD+YF1yTMttzDyOSsL26W5maCdNHGJgUfzNeS8UEDGzMeWKeQ8cg
+ eXr2E1GwRfVA1N+yI7UesZjaRxdwbE7GY4imy8vDgKa1h5kEFHacO7zMmeexWGMVOG92lZxfJ
+ O+m4XejC/vc6l/xYlp4FaYuIMxfK2O2isFmx/+6XMNYa37L5DNDVQ4teMjkuyuQyYAC9pnEUg
+ pXHHCIlEtpTLE4JAmWL+woj84u9oWh0I3Bs+6aXe1ZdCD4knzTQjNA6j37Jja4VkbHNmXkpH6
+ krlr0wb0m93lbCy7q09S6IMhFfUWso3jtoo+wXMdo93W70aNqXhLrKoMPG7mN1PWf0kYkuolQ
+ tCOIMbiSfAGHi7/sjPBG2Nbtvn94PmupvVoEdq4qyvKWwztOWBFMhbSfX7Mp+XJP/4fyGnODl
+ c34uk0OVGpcyCIAO6hoYgpwgdkLzwAkGMOGVSXC9hP5+XUxNJZNBUnFOrrJSsUUPAc29S/cq9
+ fJyVvbaVMtVp0N/7t8Ki0WnJTgfnwawwKBwVViVkANDyHEIbTzdOInPIx1QBo2AjZEb6a0Exy
+ Qlz0XHM/HB+utJzi9jww==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[+cc Keith]
+The general trend is to have devicetree bindings in YAML format, to
+allow automatic validation of bindings and devicetrees.
 
-On Thu, Dec 10, 2020 at 04:41:42PM -0600, Bjorn Helgaas wrote:
-> On Mon, Nov 02, 2020 at 03:09:51PM +0000, Hedi Berriche wrote:
-> > Commit 6d2c89441571 ("PCI/ERR: Update error status after reset_link()")
-> > broke pcie_do_recovery(): updating status after reset_link() has the ill
-> > side effect of causing recovery to fail if the error status is
-> > PCI_ERS_RESULT_CAN_RECOVER or PCI_ERS_RESULT_NEED_RESET as the following
-> > code will *never* run in the case of a successful reset_link()
-> > 
-> >    177         if (status == PCI_ERS_RESULT_CAN_RECOVER) {
-> >    ...
-> >    181         }
-> > 
-> >    183         if (status == PCI_ERS_RESULT_NEED_RESET) {
-> >    ...
-> >    192         }
-> 
-> The line numbers are basically useless because they depend on some
-> particular version of the file.
-> 
-> > For instance in the case of PCI_ERS_RESULT_NEED_RESET we end up not
-> > calling ->slot_reset() (because we skip report_slot_reset()) thus
-> > breaking driver (re)initialisation.
-> > 
-> > Don't clobber status with the return value of reset_link(); set status
-> > to PCI_ERS_RESULT_RECOVERED, in case of successful link reset, if and
-> > only if the initial value of error status is PCI_ERS_RESULT_DISCONNECT
-> > or PCI_ERS_RESULT_NO_AER_DRIVER.
-> >
-> > Fixes: 6d2c89441571 ("PCI/ERR: Update error status after reset_link()")
-> > Signed-off-by: Hedi Berriche <hedi.berriche@hpe.com>
-> > 
-> > Reviewed-by: Sinan Kaya <okaya@kernel.org>
-> > Cc: Russ Anderson <rja@hpe.com>
-> > Cc: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
-> > Cc: Bjorn Helgaas <bhelgaas@google.com>
-> > Cc: Ashok Raj <ashok.raj@intel.com>
-> > Cc: Joerg Roedel <jroedel@suse.com>
-> > 
-> > Cc: stable@kernel.org # v5.7+
-> > ---
-> >  drivers/pci/pcie/err.c | 7 +++++--
-> >  1 file changed, 5 insertions(+), 2 deletions(-)
-> > 
-> > diff --git a/drivers/pci/pcie/err.c b/drivers/pci/pcie/err.c
-> > index c543f419d8f9..2730826cfd8a 100644
-> > --- a/drivers/pci/pcie/err.c
-> > +++ b/drivers/pci/pcie/err.c
-> > @@ -165,10 +165,13 @@ pci_ers_result_t pcie_do_recovery(struct pci_dev *dev,
-> >  	pci_dbg(dev, "broadcast error_detected message\n");
-> >  	if (state == pci_channel_io_frozen) {
-> >  		pci_walk_bus(bus, report_frozen_detected, &status);
-> > -		status = reset_link(dev);
-> > -		if (status != PCI_ERS_RESULT_RECOVERED) {
-> > +		if (reset_link(dev) != PCI_ERS_RESULT_RECOVERED) {
-> >  			pci_warn(dev, "link reset failed\n");
-> >  			goto failed;
-> > +		} else {
-> > +			if (status == PCI_ERS_RESULT_DISCONNECT ||
-> > +			    status == PCI_ERS_RESULT_NO_AER_DRIVER)
-> > +				status = PCI_ERS_RESULT_RECOVERED;
-> 
-> This code (even before your patch) doesn't match
-> Documentation/PCI/pci-error-recovery.rst very well.  The code handles
-> pci_channel_io_frozen specially, but I don't think this is mentioned
-> in the doc.
-> 
-> The doc says we call ->error_detected() for all affected drivers.
-> Then we're supposed to do a slot reset if any driver returned
-> NEED_RESET.  But in fact, we always do a reset for the
-> pci_channel_io_frozen case and never do one otherwise, regardless of
-> what ->error_detected() returned.
-> 
-> The doc says DISCONNECT means "Driver ... doesn't want to recover at
-> all." Many drivers can return either NEED_RESET or DISCONNECT, and I
-> assume they expect them to be handled differently.  But I'm not sure
-> what DISCONNECT really means.  Do we reset the device?  Do we not
-> attempt recovery at all?
-> 
-> After your patch, if the reset_link() succeeded, we convert DISCONNECT
-> and NO_AER_DRIVER to RECOVERED.  IIUC, that means we do exactly the
-> same thing if the consensus of the ->error_detected() functions was
-> RECOVERED, DISCONNECT, or NO_AER_DRIVER: we call reset_link() and
-> continue with "status = PCI_ERS_RESULT_RECOVERED".
-> 
-> (I'd reverse the sense of the "if (reset_link())" to make this easier
-> to read)
+Convert the NPCM SoC family's binding to YAML before it accumulates more
+entries.
 
-Can we push this forward now?  There are several pending patches in
-this area from Keith and Sathyanarayanan; I haven't gotten to them
-yet, so not sure whether they help address any of this.
+The nuvoton,npcm750-evb compatible string is introduced to keep the
+structure of the binding a little simpler.
 
-> >  		}
-> >  	} else {
-> >  		pci_walk_bus(bus, report_normal_detected, &status);
-> > -- 
-> > 2.28.0
-> > 
+Signed-off-by: Jonathan Neusch=C3=A4fer <j.neuschaefer@gmx.net>
+=2D--
+
+If someone else wants to be listed as the maintainer, please let me
+know.
+=2D--
+ .../devicetree/bindings/arm/npcm/npcm.txt     |  6 -----
+ .../devicetree/bindings/arm/npcm/npcm.yaml    | 23 +++++++++++++++++++
+ 2 files changed, 23 insertions(+), 6 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/arm/npcm/npcm.txt
+ create mode 100644 Documentation/devicetree/bindings/arm/npcm/npcm.yaml
+
+diff --git a/Documentation/devicetree/bindings/arm/npcm/npcm.txt b/Documen=
+tation/devicetree/bindings/arm/npcm/npcm.txt
+deleted file mode 100644
+index 2d87d9ecea85b..0000000000000
+=2D-- a/Documentation/devicetree/bindings/arm/npcm/npcm.txt
++++ /dev/null
+@@ -1,6 +0,0 @@
+-NPCM Platforms Device Tree Bindings
+=2D-----------------------------------
+-NPCM750 SoC
+-Required root node properties:
+-	- compatible =3D "nuvoton,npcm750";
+-
+diff --git a/Documentation/devicetree/bindings/arm/npcm/npcm.yaml b/Docume=
+ntation/devicetree/bindings/arm/npcm/npcm.yaml
+new file mode 100644
+index 0000000000000..e2cf790a2c63e
+=2D-- /dev/null
++++ b/Documentation/devicetree/bindings/arm/npcm/npcm.yaml
+@@ -0,0 +1,23 @@
++# SPDX-License-Identifier: GPL-2.0-only OR BSD-2-Clause
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/arm/npcm.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: NPCM Platforms Device Tree Bindings
++
++maintainers:
++  - Jonathan Neusch=C3=A4fer <j.neuschaefer@gmx.net>
++
++properties:
++  $nodename:
++    const: '/'
++  compatible:
++    oneOf:
++      - description: NPCM750 based boards
++        items:
++          - enum:
++            - nuvoton,npcm750-evb           # NPCM750 evaluation board
++          - const: nuvoton,npcm750
++
++additionalProperties: true
+=2D-
+2.29.2
+
