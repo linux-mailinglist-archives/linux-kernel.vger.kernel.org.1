@@ -2,55 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C3F602EF94E
+	by mail.lfdr.de (Postfix) with ESMTP id 5774D2EF94D
 	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 21:36:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729222AbhAHUfS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S1729278AbhAHUfS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Fri, 8 Jan 2021 15:35:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55334 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55332 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727443AbhAHUfR (ORCPT
+        with ESMTP id S1729018AbhAHUfR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 8 Jan 2021 15:35:17 -0500
-Received: from mail-oo1-xc2c.google.com (mail-oo1-xc2c.google.com [IPv6:2607:f8b0:4864:20::c2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B036C061380
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Jan 2021 12:34:22 -0800 (PST)
-Received: by mail-oo1-xc2c.google.com with SMTP id x23so2699209oop.1
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Jan 2021 12:34:22 -0800 (PST)
+Received: from mail-ot1-x334.google.com (mail-ot1-x334.google.com [IPv6:2607:f8b0:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4577CC0612EA
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Jan 2021 12:34:59 -0800 (PST)
+Received: by mail-ot1-x334.google.com with SMTP id d8so10931741otq.6
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Jan 2021 12:34:59 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc:content-transfer-encoding;
-        bh=Nn5Yj71tkKIVrulq1WIDxZxckjqVz9PFKak3TcGJVF0=;
-        b=moUBx6E02X34CiH2aZUlZWkIkglOKoDjtYh17GXYyicOZbLSi9/7jas14rvX8JC7Jm
-         d20hG0sgrjmOh1mN1ukeRuluOMuoGTUtfeV+hSOIGsIB4pbCI0dKyeX1q2D9c7BIMvq8
-         mo/WdUUymM0x+y1+YBq8yZ9dxvyrfJCBzu+jEORkqGkIr707jgDMnK5/1p4C7XQi0Bz9
-         Zg0VkXuYhdNoXRW4uARrdSAhDtIgMffhHmSw/FpwElhVLYFGcoXX3ZCNyfIgCIrgD51P
-         EFV3y68F3p7vJEdxRdnTZndxVbMSebvqu2xhuFfUZGNf5Ps1ZJ6CfD/1tkA4YtDxF4sC
-         4o3w==
+        bh=7M0YCmEHu5CIrepeBj4TyE7lC8HZna8Bt9bEIhFkg+w=;
+        b=H16nH0qzvZKed06io439zey0XEwMylyF38K7O6aSNayFnhq35M1CchxnYvRGrDpegv
+         NtfcEndB2YssXdqOttI6BkZ5L4StlNAhqxDC5mJNyXVA2992QXsoc6E9kNN8tlrHckC0
+         /JcKFOF6uQNsw18JOefc8WrtopTBTvWEKMR8EMkeGenlnMYojTvo1NSFCtfj6TdvB6UX
+         4izxRDXqJT6T0Hg6R/H0s/DSO4vznyBbP1rekbdlFfHQpCGytv9O8tQxehoxOhOE2sam
+         FcjehcG9+feIVbxLhZgNd23OI2ADQO/M13+rppXreTSPJqF/ylh7TKkaqrngabA1Y3ql
+         4Rag==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc:content-transfer-encoding;
-        bh=Nn5Yj71tkKIVrulq1WIDxZxckjqVz9PFKak3TcGJVF0=;
-        b=bp08TNpem4Pne6V2l7xcUxUoSAAu+U+4frHLuzAV158A6HDmnpkZhNyzGiQ4k/JjLa
-         Rx6Zt8XPGr5jtQAjQpa1EsF1iVlMZ0VvlGUq2ZsAZIeOp+Q2yC/p0oEplZbiZs+fF+zM
-         9SQ+BV0g2eKPyFDeTRfWqqy32RPfp4AeCkZV10p1pMqa2a3F7p3BqWWIxrO4DwYN9Q9w
-         2l9PIJhMnsNFTLL2ikRg5haXqVuptmoBFtNntzphputzt0DuQLQpadoYkY2kq51AdWKQ
-         1KPERIl6qGUpppbrCX2iVyTGj0+6v0aciucpLJyQ+dlAY2GxlJKyIEjwnTWVC0LS1UlM
-         i0Tg==
-X-Gm-Message-State: AOAM531oOwCMom6RPTwWx5zetCY4PprwSD+44fv4VE2sjsTOtqNiGtUc
-        KeeshjmHBor9FsQqCoiENagxJCWQ15NZxmAT6qw=
-X-Google-Smtp-Source: ABdhPJzS2GpG+PF4XXrf90up0wn3fJ1R8B3W9Fo+t+b0+7NVShJkdDQdv1Rqlv//xNl4nKVcjrFVwLkoPl7y0nM9h4E=
-X-Received: by 2002:a4a:6c45:: with SMTP id u5mr5577304oof.61.1610138062004;
- Fri, 08 Jan 2021 12:34:22 -0800 (PST)
+        bh=7M0YCmEHu5CIrepeBj4TyE7lC8HZna8Bt9bEIhFkg+w=;
+        b=EAN07XkEdUbrVLoy70Id8uQ9yobtgA3um9C2JYO2sFWOHrDOsruFqapnM/ACAv/NUX
+         bQcl7tqP2pM7EQ/fOGInVqWAylM6sAKanM/2xwEtZ1nPJFQ8BAPtAKJCcBxzOHKU5F+0
+         DvLZrtwatQKczeW3oHR4+FlG6HuZAPuaTDzXX+mLVFbYXNJ0hYAZe1VRZYKeotGpaKH2
+         yDu8aM+sTALzd3GVjM9+XHrRRJpwgfndt+0mqBH5iy+44ZT6S+sJZVcSJfdexeH4Pdzq
+         6+eoxdS2m9ayz+vEcejMQSCiErXrx3g74fHwcuFehnfbIvbAF3iw+JJgOkPCpLSbnLsJ
+         ziuQ==
+X-Gm-Message-State: AOAM533wh48flClVjRbS9BfR5sXs/PflBh/rMHtX+GoJz4jP+8TuRtg2
+        jrG2WFjJ9svmJhvowJ+d87JNFxTqjqSFY/Dao6k=
+X-Google-Smtp-Source: ABdhPJx8SnzY5lS/rofxEhI+zgTdmQPyLxveqpi/jaQiaWQGAcqVTzqOKoMPs+UC4BHaEJZ7n4PW8NfhDOysRj/o0pM=
+X-Received: by 2002:a05:6830:1d66:: with SMTP id l6mr3791588oti.23.1610138098760;
+ Fri, 08 Jan 2021 12:34:58 -0800 (PST)
 MIME-Version: 1.0
-References: <20210108201457.3078600-1-lee.jones@linaro.org> <20210108201457.3078600-9-lee.jones@linaro.org>
-In-Reply-To: <20210108201457.3078600-9-lee.jones@linaro.org>
+References: <20210108201457.3078600-1-lee.jones@linaro.org> <20210108201457.3078600-10-lee.jones@linaro.org>
+In-Reply-To: <20210108201457.3078600-10-lee.jones@linaro.org>
 From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Fri, 8 Jan 2021 15:34:11 -0500
-Message-ID: <CADnq5_PMi=7n+7McEhm23ZjhjYQNpJYqRknYj8d=0J-d7wWvAA@mail.gmail.com>
-Subject: Re: [PATCH 08/40] drm/amd/pm/powerplay/hwmgr/vega12_hwmgr: Fix legacy
+Date:   Fri, 8 Jan 2021 15:34:47 -0500
+Message-ID: <CADnq5_N2PuJemMY71672+g7=maNFN2=Ab-JvAni3qOQhokNYBQ@mail.gmail.com>
+Subject: Re: [PATCH 09/40] drm/amd/pm/powerplay/hwmgr/vega20_hwmgr: Fix legacy
  function header formatting
 To:     Lee Jones <lee.jones@linaro.org>
 Cc:     David Airlie <airlied@linux.ie>,
@@ -71,8 +71,8 @@ On Fri, Jan 8, 2021 at 3:15 PM Lee Jones <lee.jones@linaro.org> wrote:
 >
 > Fixes the following W=3D1 kernel build warning(s):
 >
->  drivers/gpu/drm/amd/amdgpu/../pm/powerplay/hwmgr/vega12_hwmgr.c:728: war=
-ning: Function parameter or member 'hwmgr' not described in 'vega12_init_sm=
+>  drivers/gpu/drm/amd/amdgpu/../pm/powerplay/hwmgr/vega20_hwmgr.c:781: war=
+ning: Function parameter or member 'hwmgr' not described in 'vega20_init_sm=
 c_table'
 >
 > Cc: Evan Quan <evan.quan@amd.com>
@@ -88,18 +88,19 @@ Applied.  Thanks!
 
 Alex
 
+
 > ---
->  drivers/gpu/drm/amd/pm/powerplay/hwmgr/vega12_hwmgr.c | 11 +++++------
+>  drivers/gpu/drm/amd/pm/powerplay/hwmgr/vega20_hwmgr.c | 11 +++++------
 >  1 file changed, 5 insertions(+), 6 deletions(-)
 >
-> diff --git a/drivers/gpu/drm/amd/pm/powerplay/hwmgr/vega12_hwmgr.c b/driv=
-ers/gpu/drm/amd/pm/powerplay/hwmgr/vega12_hwmgr.c
-> index dc206fa88c5e5..c0753029a8e2a 100644
-> --- a/drivers/gpu/drm/amd/pm/powerplay/hwmgr/vega12_hwmgr.c
-> +++ b/drivers/gpu/drm/amd/pm/powerplay/hwmgr/vega12_hwmgr.c
-> @@ -718,12 +718,11 @@ static int vega12_save_default_power_profile(struct=
- pp_hwmgr *hwmgr)
->  #endif
+> diff --git a/drivers/gpu/drm/amd/pm/powerplay/hwmgr/vega20_hwmgr.c b/driv=
+ers/gpu/drm/amd/pm/powerplay/hwmgr/vega20_hwmgr.c
+> index da84012b7fd51..87811b005b85f 100644
+> --- a/drivers/gpu/drm/amd/pm/powerplay/hwmgr/vega20_hwmgr.c
+> +++ b/drivers/gpu/drm/amd/pm/powerplay/hwmgr/vega20_hwmgr.c
+> @@ -771,12 +771,11 @@ static int vega20_setup_default_dpm_tables(struct p=
+p_hwmgr *hwmgr)
+>  }
 >
 >  /**
 > -* Initializes the SMC table and uploads it
@@ -113,7 +114,7 @@ ers/gpu/drm/amd/pm/powerplay/hwmgr/vega12_hwmgr.c
 > + * @hwmgr:  the address of the powerplay hardware manager.
 > + * return:  always 0
 > + */
->  static int vega12_init_smc_table(struct pp_hwmgr *hwmgr)
+>  static int vega20_init_smc_table(struct pp_hwmgr *hwmgr)
 >  {
 >         int result;
 > --
