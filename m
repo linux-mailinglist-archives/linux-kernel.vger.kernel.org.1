@@ -2,79 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A413E2EFB57
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 23:48:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DB2D2EFB61
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 23:52:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726272AbhAHWsS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Jan 2021 17:48:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47872 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725763AbhAHWsR (ORCPT
+        id S1726304AbhAHWuO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Jan 2021 17:50:14 -0500
+Received: from hostingweb31-40.netsons.net ([89.40.174.40]:44721 "EHLO
+        hostingweb31-40.netsons.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725775AbhAHWuN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Jan 2021 17:48:17 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36A59C061757;
-        Fri,  8 Jan 2021 14:47:37 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=y6utkV8+rnLd3kCaXRS1gntJ/Qt+RxB06NgyDB05tsQ=; b=cWZ2NApOkgotnnOjxHpSpSy41f
-        QBDtpEdN6cXwaoS+nil5TbeOvdq7tGHv0fAA5n+xeWL4divsAEgYZuT9I3hjz7AsLMYZKv2VuwTdu
-        EdtYBgK0jHYipoTeq3UvKbLlStfuTVu+b4OgnnmDI2ika+Ee7+a2dZg6Gfij4xdofckqeD5EOxjOb
-        93vnwdD/6UnmcHpBPnSKgDcX3f9vpqqtDT4/iE5sBWH+Jkyney2V7HACZeK7VWa4A5BqdoYMnXsGN
-        eWto8aD02c5iegGv1szt7ghMaD7SmGYctTFWTc3u83YnlcU2xu/EoFN1rjM85EUrEVohihkEfjMk0
-        mpzXX7kw==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1ky0XR-0003Uq-KF; Fri, 08 Jan 2021 22:47:21 +0000
-Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 05F819866B1; Fri,  8 Jan 2021 23:47:15 +0100 (CET)
-Date:   Fri, 8 Jan 2021 23:47:15 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Tony Luck <tony.luck@intel.com>
-Cc:     Borislav Petkov <bp@alien8.de>, x86@kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Darren Hart <dvhart@infradead.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-edac@vger.kernel.org,
-        linux-mm@kvack.org
-Subject: Re: [PATCH 2/2] futex, x86/mce: Avoid double machine checks
-Message-ID: <20210108224715.GB2453@worktop.programming.kicks-ass.net>
-References: <20210108222251.14391-1-tony.luck@intel.com>
- <20210108222251.14391-3-tony.luck@intel.com>
+        Fri, 8 Jan 2021 17:50:13 -0500
+Received: from [77.244.183.192] (port=64828 helo=[192.168.178.24])
+        by hostingweb31.netsons.net with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <luca@lucaceresoli.net>)
+        id 1ky0ZW-00DrLE-Eb; Fri, 08 Jan 2021 23:49:30 +0100
+Subject: Re: [RFC 1/2] dt-bindings: clk: versaclock5: Add load capacitance
+ properties
+To:     Adam Ford <aford173@gmail.com>, linux-clk@vger.kernel.org
+Cc:     aford@beaconembedded.com,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210106173900.388758-1-aford173@gmail.com>
+From:   Luca Ceresoli <luca@lucaceresoli.net>
+Message-ID: <833e228f-6fb5-ae98-a367-9566cf5fcf69@lucaceresoli.net>
+Date:   Fri, 8 Jan 2021 23:49:29 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210108222251.14391-3-tony.luck@intel.com>
+In-Reply-To: <20210106173900.388758-1-aford173@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - hostingweb31.netsons.net
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - lucaceresoli.net
+X-Get-Message-Sender-Via: hostingweb31.netsons.net: authenticated_id: luca@lucaceresoli.net
+X-Authenticated-Sender: hostingweb31.netsons.net: luca@lucaceresoli.net
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 08, 2021 at 02:22:51PM -0800, Tony Luck wrote:
-> futex_wait_setup() first tries to read the user value with page faults
-> disabled (because it holds a lock, and so cannot sleep). If that read
-> fails it drops the lock and tries again.
-> 
-> But there are now two reasons why the user space read can fail. Either:
-> 1) legacy case of a page fault, in which case it is reasonable to retry
-> 2) machine check on the user address, bad idea to re-read
-> 
-> Add some infrastructure to differentiate these cases.
+Hi Adam,
 
-> --- a/kernel/futex.c
-> +++ b/kernel/futex.c
-> @@ -2658,6 +2658,9 @@ static int futex_wait_setup(u32 __user *uaddr, u32 val, unsigned int flags,
->  	if (ret) {
->  		queue_unlock(*hb);
+On 06/01/21 18:38, Adam Ford wrote:
+> There are two registers which can set the load capacitance for
+> XTAL1 and XTAL2. These are optional registers when using an
+> external crystal.  Update the bindings to support them.
+> 
+> Signed-off-by: Adam Ford <aford173@gmail.com>
+> ---
+>  .../devicetree/bindings/clock/idt,versaclock5.yaml   | 12 ++++++++++++
+>  1 file changed, 12 insertions(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/clock/idt,versaclock5.yaml b/Documentation/devicetree/bindings/clock/idt,versaclock5.yaml
+> index 2ac1131fd922..e5e55ffb266e 100644
+> --- a/Documentation/devicetree/bindings/clock/idt,versaclock5.yaml
+> +++ b/Documentation/devicetree/bindings/clock/idt,versaclock5.yaml
+> @@ -59,6 +59,18 @@ properties:
+>      minItems: 1
+>      maxItems: 2
 >  
-> +		if (arch_memory_failure(uaddr))
-> +			return ret;
-> +
->  		ret = get_user(uval, uaddr);
->  		if (ret)
->  			return ret;
+> +  idt,xtal1-load-femtofarads:
 
+I wonder whether we should have a common, vendor independent property.
+In mainline we have xtal-load-pf (ti,cdce925.txt bindings) which has no
+vendor prefix. However I don't know how much common it is to need
+different loads for x1 and x2. Any hardware engineer around?
 
-I think this is horrid; why can't we have it return something different
-then -EFAULT instead?
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +    minimum: 9000
+> +    maximum: 25000
+> +    description: Optional loading capacitor for XTAL1
+
+Nit: I think the common wording is "load capacitor", not "loading
+capacitor".
+
+-- 
+Luca
