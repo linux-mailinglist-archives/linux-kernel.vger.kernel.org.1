@@ -2,177 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 492662EEE3F
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 09:01:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4443B2EEE47
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 09:03:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727614AbhAHIBJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Jan 2021 03:01:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51050 "EHLO
+        id S1727416AbhAHICT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Jan 2021 03:02:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51230 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727265AbhAHIBI (ORCPT
+        with ESMTP id S1726817AbhAHICS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Jan 2021 03:01:08 -0500
-Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E42AC0612F5
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Jan 2021 00:00:28 -0800 (PST)
-Received: by mail-ej1-x62d.google.com with SMTP id jx16so13284035ejb.10
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Jan 2021 00:00:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=QXjysu6y0pGBnxc+e5HtoTW8YRit8L8xxCUW1SnHWis=;
-        b=YJsOhxKAndTG3Dz8uozNhqu+W/BGhCDkUbG8Ms/578ZrIe91qUSXkMNWhDl/hg++FC
-         wFofv6qFygRjAqH+WB43k18Ce6J1W5jd4kF6zXgU8oo4U4WoMRHD6WqQKydaKxpOC8ZK
-         /Ei+lUSQYOuHp/mjhRzWpsKAxlbdtbJAiKvl7kZCy4ZZHLHYQU1HN8e69mXINI049fMe
-         CSR1akzqP4+Sja4Mlnvh44VYjXk3UFxKi+rFWUzYwYWcovCN1Y7ZClZabcQvXn1lSkrt
-         aIlRZpF9uHPQXZtTPbbp4cK+zGOvTZE/3EBB7jxqbOv9lw7GoyuVr/UQpO7LnNxwFZ9A
-         Zm6w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=QXjysu6y0pGBnxc+e5HtoTW8YRit8L8xxCUW1SnHWis=;
-        b=k92rLu12qt22cQL5XuWu8rIaGjb7teLBlaPTFaS6AG+0/LtdmjLzAZn9nj+S+pFk1S
-         sMjQBxw4GEGYLC1QDP3+8ADCmXi+fr0FJBrSxFshDEhvOFW+7HVxB6YyZNdeku+9GCHY
-         tcf2EqNh+CmTnUF/N4Y3rwIhO/8orWk9d8CUz9YnDXcY8o+LgO3FAXlt6yfSUW4kPloy
-         PEZU7myqZsE+729x3nk8G6iedh8VVxS6tygzXrijAPm1XYn0FxxkxWwbLmCY+g05erfg
-         94QkdQN6xqxKS4ib1bNajm9E86AsxpqN5Xr+FCJ2qgknjt0xixwfJlxXdti8Fb+8XSDn
-         YrxA==
-X-Gm-Message-State: AOAM532FttHbS/gModO1qM/fE5meAcHdXb9rUtoW9EEiPXmwbwnCww0L
-        7ba5G7BD+M6s2Y+ZFEden2ukr88TwWYWvzotZk33nA==
-X-Google-Smtp-Source: ABdhPJydtj2gBY0mQI+kfryVYq/vLMXDNsLBua2nwHP3pFitqpA7AiSUork7THEMxK0RzhX+AHQ5zssiRg78cyZ01KE=
-X-Received: by 2002:a17:906:4c85:: with SMTP id q5mr1840518eju.375.1610092826861;
- Fri, 08 Jan 2021 00:00:26 -0800 (PST)
+        Fri, 8 Jan 2021 03:02:18 -0500
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39C3FC0612F5;
+        Fri,  8 Jan 2021 00:01:38 -0800 (PST)
+Date:   Fri, 08 Jan 2021 08:01:34 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1610092895;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=c2DTisWit8OV2tHztEcM+aLYzs9o7pwomLKcEqJtNgI=;
+        b=WhI5txmq/6XQINA/PvaO4q10ClL6mwpT+H89i62InwA4KgnXyYH2ZL4b3W6Oe6PTZjSsRf
+        Nj/+czbD61vVNwjOSWRI9URkuwNVkawV1U/pzld+2BD3Ph/1rFmuplpaPE0OEFztJBQld1
+        2mnorLRWqULRPKNr4Mmjhdk3vvlHC8LJ2adCg75B1InLo9y/xI3SN4Q/Q2jXelmiRMc+wz
+        M+MrYc8xh7stlZ4iJUo8wdoOyy+0+zCrOCO3i6zeelNjK/KYP48xVmaw5NT8kfM2dGC1HY
+        IyghmcX3X/zllmHnBh0P17K4l9QOpX6S0XpmXN4G6ir5xu4Y649ccBSBqkk2JA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1610092895;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=c2DTisWit8OV2tHztEcM+aLYzs9o7pwomLKcEqJtNgI=;
+        b=ZKJOAq6ijCehZb0BwtOKy0NmbUkf/XEiVHhX1I370i5gTk3HpqkEW73OyICGEkXABm+l9Z
+        m38H406GIEJdHrBg==
+From:   "tip-bot2 for Tom Rix" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/cache] x86/resctrl: Add printf attribute to log function
+Cc:     Tom Rix <trix@redhat.com>, Borislav Petkov <bp@suse.de>,
+        Reinette Chatre <reinette.chatre@intel.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <20201221160009.3752017-1-trix@redhat.com>
+References: <20201221160009.3752017-1-trix@redhat.com>
 MIME-Version: 1.0
-References: <20210107143053.692614974@linuxfoundation.org>
-In-Reply-To: <20210107143053.692614974@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Fri, 8 Jan 2021 13:30:15 +0530
-Message-ID: <CA+G9fYsB27gO+wQR6nJmNAXMy-xW4zja381RKZHJCuwJZWtbbg@mail.gmail.com>
-Subject: Re: [PATCH 4.9 00/33] 4.9.250-rc2 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
-        lkft-triage@lists.linaro.org,
-        linux-stable <stable@vger.kernel.org>, pavel@denx.de,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Message-ID: <161009289493.414.10503732751311581962.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 7 Jan 2021 at 20:00, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> This is the start of the stable review cycle for the 4.9.250 release.
-> There are 33 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Sat, 09 Jan 2021 14:30:35 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-=
-4.9.250-rc2.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-4.9.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
+The following commit has been merged into the x86/cache branch of tip:
 
-Results from Linaro=E2=80=99s test farm.
-No regressions on arm64, arm, x86_64, and i386.
+Commit-ID:     91031e096e1fa0216027bfb7fdca931225aebbf0
+Gitweb:        https://git.kernel.org/tip/91031e096e1fa0216027bfb7fdca931225aebbf0
+Author:        Tom Rix <trix@redhat.com>
+AuthorDate:    Mon, 21 Dec 2020 08:00:09 -08:00
+Committer:     Borislav Petkov <bp@suse.de>
+CommitterDate: Fri, 08 Jan 2021 08:55:02 +01:00
 
-Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
+x86/resctrl: Add printf attribute to log function
 
-Summary
-------------------------------------------------------------------------
+Mark the function with the __printf attribute to allow the compiler to
+more thoroughly typecheck its arguments against a format string with
+-Wformat and similar flags.
 
-kernel: 4.9.250-rc2
-git repo: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stab=
-le-rc.git
-git branch: linux-4.9.y
-git commit: 15b2e80c9e2bc3a803caae7dca549cb7c9233ba2
-git describe: v4.9.249-34-g15b2e80c9e2b
-Test details: https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-4.9.=
-y/build/v4.9.249-34-g15b2e80c9e2b
+ [ bp: Massage commit message. ]
 
-No regressions (compared to build v4.9.249)
+Signed-off-by: Tom Rix <trix@redhat.com>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Acked-by: Reinette Chatre <reinette.chatre@intel.com>
+Link: https://lkml.kernel.org/r/20201221160009.3752017-1-trix@redhat.com
+---
+ arch/x86/kernel/cpu/resctrl/internal.h | 1 +
+ 1 file changed, 1 insertion(+)
 
-No fixes (compared to build v4.9.249)
-
-Ran 38960 total tests in the following environments and test suites.
-
-Environments
---------------
-- arm
-- arm64
-- dragonboard-410c - arm64
-- hi6220-hikey - arm64
-- i386
-- juno-r2 - arm64
-- juno-r2-compat
-- juno-r2-kasan
-- mips
-- qemu-arm64-kasan
-- qemu-x86_64-kasan
-- qemu_arm
-- qemu_arm64
-- qemu_arm64-compat
-- qemu_i386
-- qemu_x86_64
-- qemu_x86_64-compat
-- sparc
-- x15 - arm
-- x86_64
-- x86-kasan
-
-Test Suites
------------
-* build
-* linux-log-parser
-* install-android-platform-tools-r2600
-* ltp-commands-tests
-* ltp-containers-tests
-* ltp-controllers-tests
-* ltp-cve-tests
-* ltp-dio-tests
-* ltp-fcntl-locktests-tests
-* ltp-filecaps-tests
-* ltp-fs-tests
-* ltp-fs_bind-tests
-* ltp-fs_perms_simple-tests
-* ltp-fsx-tests
-* ltp-hugetlb-tests
-* ltp-io-tests
-* ltp-ipc-tests
-* ltp-math-tests
-* ltp-mm-tests
-* ltp-tracing-tests
-* fwts
-* ltp-cap_bounds-tests
-* ltp-cpuhotplug-tests
-* ltp-crypto-tests
-* ltp-nptl-tests
-* ltp-pty-tests
-* ltp-sched-tests
-* ltp-securebits-tests
-* ltp-syscalls-tests
-* network-basic-tests
-* perf
-* libhugetlbfs
-* ltp-open-posix-tests
-* v4l2-compliance
-* kvm-unit-tests
-
---=20
-Linaro LKFT
-https://lkft.linaro.org
+diff --git a/arch/x86/kernel/cpu/resctrl/internal.h b/arch/x86/kernel/cpu/resctrl/internal.h
+index ee71c47..c4d320d 100644
+--- a/arch/x86/kernel/cpu/resctrl/internal.h
++++ b/arch/x86/kernel/cpu/resctrl/internal.h
+@@ -572,6 +572,7 @@ union cpuid_0x10_x_edx {
+ 
+ void rdt_last_cmd_clear(void);
+ void rdt_last_cmd_puts(const char *s);
++__printf(1, 2)
+ void rdt_last_cmd_printf(const char *fmt, ...);
+ 
+ void rdt_ctrl_update(void *arg);
