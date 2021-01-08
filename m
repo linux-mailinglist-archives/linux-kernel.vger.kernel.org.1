@@ -2,108 +2,247 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA97B2EFB2F
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 23:24:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BCDF2EFB16
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 23:24:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726718AbhAHWYF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Jan 2021 17:24:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44166 "EHLO
+        id S1726402AbhAHWXO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Jan 2021 17:23:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44012 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725763AbhAHWYD (ORCPT
+        with ESMTP id S1725890AbhAHWXN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Jan 2021 17:24:03 -0500
-Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 25796C061793;
-        Fri,  8 Jan 2021 14:23:23 -0800 (PST)
-Received: by mail-ej1-x631.google.com with SMTP id w1so16450596ejf.11;
-        Fri, 08 Jan 2021 14:23:23 -0800 (PST)
+        Fri, 8 Jan 2021 17:23:13 -0500
+Received: from mail-qt1-x849.google.com (mail-qt1-x849.google.com [IPv6:2607:f8b0:4864:20::849])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6AB69C061799
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Jan 2021 14:22:26 -0800 (PST)
+Received: by mail-qt1-x849.google.com with SMTP id i13so9303073qtp.10
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Jan 2021 14:22:26 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=f5HlVwGmEaxhTQyG4FNbXTgYnZHiHajqT5VVUSQdd/4=;
-        b=cUenYSvKiZVEllkpPl1aeRmd76kOwmbPnluHHIHb5MJxrnZMsIw+Pppe7tPSC7+E5Z
-         zCfFTCPxKKgHn3B1rFQPaD34gRw2v30Oc5pCCyko1+qhYsDQV8FEmwWxubNuWeMPaR4y
-         SXEC8Jlf3wBYVWFRV/hOUg6Ro035HKQ/zkQemkC8i+d730x/v+w/mtfWZI4zQ2r+z6e7
-         wsSxu1DjUUby4sIGWkHY0o+qMcD942dwUKIUc7Mh2hwib2mguLvsVJpeIej6UH3A2beJ
-         ZTBQlYUXUnU3SY7JUmFz9NnGfkugcxlKaPkTZKtoz7tATxvxeKRG1luAAH5OkEph05Vt
-         yZYQ==
+        d=google.com; s=20161025;
+        h=sender:date:message-id:mime-version:subject:from:to:cc;
+        bh=LdaCO9PuI/GJnppuVvwg+RGHm8M5CHk4YUsuvcElhEI=;
+        b=Y37jVPhu7aFRi1H7jZYqdKPFCRwJaJshzfDxyFVi17KLBBtq81c3VrKnsmLu39NrRH
+         1JGrgnKDiWEUiBKFEjddkAfSg1GOWSpdeEO5oCDCWC54677U4FhLkB1uLGm4Sf6M2KEV
+         Oe+7whKCYR0dDOf2vddxVmfOzbpG75VhrZA/oc7cy7Zgb6uvbDxa+3cL0aefOUaD41Kb
+         926yrz6I/MSSdvCDUzdqcFQO6ZF/eL6jOOkdY5Is5UTOD12zzZEOiHx2XMghE/CfLzKh
+         B4jgx++MnQo+V1172WX55+C7LpkCndS6LHOo4wDFT9/DnxqW9GwrkwrKUGeEfuB3j13j
+         cW0A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=f5HlVwGmEaxhTQyG4FNbXTgYnZHiHajqT5VVUSQdd/4=;
-        b=ib65j4psopE6LyBqFG2D6U9CnPMZ0G9KQzS01IRnHei+aCS5CAIj+x7RGRrbcRdiI/
-         Itn+qXuyWaeKLnY0ak+tbyck4fjIEBTZhzumEvtQve0kUb5Zt8SGgvceJAdY5tED8vcc
-         04px9ZSt9PE+H4Iqyx7fZ46vz47piOn0SNyHnDDCS7UEOLoaEYxIz4qXWkZ5S0jjiA6Y
-         X2xXFiCcEuF2TDEq+RwJ0H40sN2UjI6e4tUCTBh8ZRnhtR+AA5B36mtBV4imsY2cTtNH
-         w39pDIbmQfYZHpQ9rusm722U0d9L+DDR1vDm5HOkxdK5O51A2B7/yQUOMBQBuT++zToA
-         rbdw==
-X-Gm-Message-State: AOAM533sr+96/4kbek8MEYXNWogNwJIrYGhQH78MPUGchGMserbRO9yM
-        GqY7JysKxJvhMT1WXfcEeOU=
-X-Google-Smtp-Source: ABdhPJzq1egExRS/sXEbYTW/ThPQDaDiRP5Ulpo+VCbyu6MotPWMN/2BXjRaoIo+YVacr554Iu1w0w==
-X-Received: by 2002:a17:906:3881:: with SMTP id q1mr4069379ejd.490.1610144601832;
-        Fri, 08 Jan 2021 14:23:21 -0800 (PST)
-Received: from localhost (ipv6-8dfc3ce26bc50b06.ost.clients.hamburg.freifunk.net. [2a03:2267:4:0:8dfc:3ce2:6bc5:b06])
-        by smtp.gmail.com with ESMTPSA id c23sm4254426eds.88.2021.01.08.14.23.21
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 08 Jan 2021 14:23:21 -0800 (PST)
-From:   Oliver Graute <oliver.graute@gmail.com>
-To:     shawnguo@kernel.org
-Cc:     m.felsch@pengutronix.de, narmstrong@baylibre.com,
-        parthitce@gmail.com, Oliver Graute <oliver.graute@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Stefan Riedmueller <s.riedmueller@phytec.de>,
-        Michael Walle <michael@walle.cc>,
-        Robert Jones <rjones@gateworks.com>,
-        =?UTF-8?q?S=C3=A9bastien=20Szymanski?= 
-        <sebastien.szymanski@armadeus.com>, Li Yang <leoyang.li@nxp.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Subject: [PATCH v3 3/3] dt-bindings: arm: fsl: Add Variscite i.MX6UL compatibles
-Date:   Fri,  8 Jan 2021 23:21:46 +0100
-Message-Id: <1610144511-19018-4-git-send-email-oliver.graute@gmail.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1610144511-19018-1-git-send-email-oliver.graute@gmail.com>
-References: <1610144511-19018-1-git-send-email-oliver.graute@gmail.com>
-X-Patchwork-Bot: notify
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :to:cc;
+        bh=LdaCO9PuI/GJnppuVvwg+RGHm8M5CHk4YUsuvcElhEI=;
+        b=t7BP6IV7otH9SosAVUNl09JZipOq/N2MPgzerM2Lnw5tOo9DIzCgPvLV1kZSxkgvhS
+         9yaC1p8TxXgaUz/i2fuufV+txqpywa85NeW0mPN1THEI9wFUHY7ObT1B7T0URZTFFIhZ
+         kOA3hKAAPPYyUk9agBw1et4PzxxfYs9ZG+A0wBWDkQOWjokALxdMA3qJlARlyLcIcmpB
+         gvAapw76akBAVcIc/SRx5B6N8FEFSKgfB62ALn6m+XuQg50rvrjMVu17zn3GffO3zv+n
+         HUxTVovYnXFWbLolIRzO1b5HrnQeyXvojU036FB7PFPV8Hfzs3qD2G4d9Z6TubhmVRhK
+         0G8w==
+X-Gm-Message-State: AOAM532fHc/X/UUlw/HeEAeOijX0TtVyk9I6sscWB3RgSlsNPZouFwDI
+        uqjtTr4Lz33e13oW2y8wKPOkLB4z/v++MfNIRA==
+X-Google-Smtp-Source: ABdhPJzuehlSHqXC0dYeg+sgwDnbppsK5jICXYtzQLJuIT905cAObqEyTR7RhOpE4WQYOVahKCR1YxRoCuZXK7T2Lw==
+Sender: "lokeshgidra via sendgmr" <lokeshgidra@lg.mtv.corp.google.com>
+X-Received: from lg.mtv.corp.google.com ([2620:15c:211:202:f693:9fff:fef4:29dd])
+ (user=lokeshgidra job=sendgmr) by 2002:a05:6214:6af:: with SMTP id
+ s15mr5740563qvz.34.1610144545425; Fri, 08 Jan 2021 14:22:25 -0800 (PST)
+Date:   Fri,  8 Jan 2021 14:22:19 -0800
+Message-Id: <20210108222223.952458-1-lokeshgidra@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.30.0.284.gd98b1dd5eaa7-goog
+Subject: [PATCH v15 0/4] SELinux support for anonymous inodes and UFFD
+From:   Lokesh Gidra <lokeshgidra@google.com>
+To:     Andrea Arcangeli <aarcange@redhat.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        James Morris <jmorris@namei.org>,
+        Stephen Smalley <stephen.smalley.work@gmail.com>,
+        Casey Schaufler <casey@schaufler-ca.com>,
+        Eric Biggers <ebiggers@kernel.org>,
+        Paul Moore <paul@paul-moore.com>
+Cc:     "Serge E. Hallyn" <serge@hallyn.com>,
+        Eric Paris <eparis@parisplace.org>,
+        Lokesh Gidra <lokeshgidra@google.com>,
+        Daniel Colascione <dancol@dancol.org>,
+        Kees Cook <keescook@chromium.org>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        KP Singh <kpsingh@google.com>,
+        David Howells <dhowells@redhat.com>,
+        Anders Roxell <anders.roxell@linaro.org>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Matthew Garrett <matthewgarrett@google.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        "Joel Fernandes (Google)" <joel@joelfernandes.org>,
+        YueHaibing <yuehaibing@huawei.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Adrian Reber <areber@redhat.com>,
+        Aleksa Sarai <cyphar@cyphar.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-security-module@vger.kernel.org, selinux@vger.kernel.org,
+        kaleshsingh@google.com, calin@google.com, surenb@google.com,
+        jeffv@google.com, kernel-team@android.com, linux-mm@kvack.org,
+        Andrew Morton <akpm@linux-foundation.org>, hch@infradead.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add the compatibles for Variscite i.MX6UL compatibles
+Userfaultfd in unprivileged contexts could be potentially very
+useful. We'd like to harden userfaultfd to make such unprivileged use
+less risky. This patch series allows SELinux to manage userfaultfd
+file descriptors and in the future, other kinds of
+anonymous-inode-based file descriptor.  SELinux policy authors can
+apply policy types to anonymous inodes by providing name-based
+transition rules keyed off the anonymous inode internal name (
+"[userfaultfd]" in the case of userfaultfd(2) file descriptors) and
+applying policy to the new SIDs thus produced.
 
-Signed-off-by: Oliver Graute <oliver.graute@gmail.com>
----
+With SELinux managed userfaultfd, an admin can control creation and
+movement of the file descriptors. In particular, handling of
+a userfaultfd descriptor by a different process is essentially a
+ptrace access into the process, without any of the corresponding
+security_ptrace_access_check() checks. For privacy, the admin may
+want to deny such accesses, which is possible with SELinux support.
 
-Changelog:
+Inside the kernel, a new anon_inode interface, anon_inode_getfd_secure,
+allows callers to opt into this SELinux management. In this new "secure"
+mode, anon_inodes create new ephemeral inodes for anonymous file objects
+instead of reusing the normal anon_inodes singleton dummy inode. A new
+LSM hook gives security modules an opportunity to configure and veto
+these ephemeral inodes.
 
- v3:
- - rebased
+This patch series is one of two fork of [1] and is an
+alternative to [2].
 
- v2:
- - renamed binding
- - removed superflous "
+The primary difference between the two patch series is that this
+partch series creates a unique inode for each "secure" anonymous
+inode, while the other patch series ([2]) continues using the
+singleton dummy anonymous inode and adds a way to attach SELinux
+security information directly to file objects.
 
- Documentation/devicetree/bindings/arm/fsl.yaml | 1 +
- 1 file changed, 1 insertion(+)
+I prefer the approach in this patch series because 1) it's a smaller
+patch than [2], and 2) it produces a more regular security
+architecture: in this patch series, secure anonymous inodes aren't
+S_PRIVATE and they maintain the SELinux property that the label for a
+file is in its inode. We do need an additional inode per anonymous
+file, but per-struct-file inode creation doesn't seem to be a problem
+for pipes and sockets.
 
-diff --git a/Documentation/devicetree/bindings/arm/fsl.yaml b/Documentation/devicetree/bindings/arm/fsl.yaml
-index 05906e2..5f74d78 100644
---- a/Documentation/devicetree/bindings/arm/fsl.yaml
-+++ b/Documentation/devicetree/bindings/arm/fsl.yaml
-@@ -240,6 +240,7 @@ properties:
-               - technexion,imx6ul-pico-dwarf   # TechNexion i.MX6UL Pico-Dwarf
-               - technexion,imx6ul-pico-hobbit  # TechNexion i.MX6UL Pico-Hobbit
-               - technexion,imx6ul-pico-pi      # TechNexion i.MX6UL Pico-Pi
-+              - variscite,imx6ul-var-6ulcustomboard # i.MX UltraLite Carrier-board
-           - const: fsl,imx6ul
- 
-       - description: i.MX6UL PHYTEC phyBOARD-Segin
+The previous version of this feature ([1]) created a new SELinux
+security class for userfaultfd file descriptors. This version adopts
+the generic transition-based approach of [2].
+
+This patch series also differs from [2] in that it doesn't affect all
+anonymous inodes right away --- instead requiring anon_inodes callers
+to opt in --- but this difference isn't one of basic approach. The
+important question to resolve is whether we should be creating new
+inodes or enhancing per-file data.
+
+Changes from the first version of the patch:
+
+  - Removed some error checks
+  - Defined a new anon_inode SELinux class to resolve the
+    ambiguity in [3]
+  - Inherit sclass as well as descriptor from context inode
+
+Changes from the second version of the patch:
+
+  - Fixed example policy in the commit message to reflect the use of
+    the new anon_inode class.
+
+Changes from the third version of the patch:
+
+  - Dropped the fops parameter to the LSM hook
+  - Documented hook parameters
+  - Fixed incorrect class used for SELinux transition
+  - Removed stray UFFD changed early in the series
+  - Removed a redundant ERR_PTR(PTR_ERR())
+
+Changes from the fourth version of the patch:
+
+  - Removed an unused parameter from an internal function
+  - Fixed function documentation
+
+Changes from the fifth version of the patch:
+
+  - Fixed function documentation in fs/anon_inodes.c and
+    include/linux/lsm_hooks.h
+  - Used anon_inode_getfd_secure() in userfaultfd() syscall and removed
+    owner from userfaultfd_ctx.
+
+Changes from the sixth version of the patch:
+
+  - Removed definition of anon_inode_getfile_secure() as there are no
+    callers.
+  - Simplified function description of anon_inode_getfd_secure().
+  - Elaborated more on the purpose of 'context_inode' in commit message.
+
+Changes from the seventh version of the patch:
+
+  - Fixed error handling in _anon_inode_getfile().
+  - Fixed minor comment and indentation related issues.
+
+Changes from the eighth version of the patch:
+
+  - Replaced selinux_state.initialized with selinux_state.initialized
+
+Changes from the ninth version of the patch:
+
+  - Fixed function names in fs/anon_inodes.c
+  - Fixed comment of anon_inode_getfd_secure()
+  - Fixed name of the patch wherein userfaultfd code uses
+    anon_inode_getfd_secure()
+
+Changes from the tenth version of the patch:
+
+  - Split first patch into VFS and LSM specific patches
+  - Fixed comments in fs/anon_inodes.c
+  - Fixed comment of alloc_anon_inode()
+
+Changes from the eleventh version of the patch:
+
+  - Removed comment of alloc_anon_inode() for consistency with the code
+  - Fixed explanation of LSM hook in the commit message
+
+Changes from the twelfth version of the patch:
+  - Replaced FILE__CREATE with ANON_INODE__CREATE while initializing
+    anon-inode's SELinux security struct.
+  - Check context_inode's SELinux label and return -EACCES if it's
+    invalid.
+
+Changes from the thirteenth version of the patch:
+  - Initialize anon-inode's sclass with SECCLASS_ANON_INODE.
+  - Check if context_inode has sclass set to SECCLASS_ANON_INODE.
+
+Changes from the forteenth version of the patch:
+  - Revert changes of v14.
+  - Use FILE__CREATE (instead of ANON_INODE__CREATE) while initializing
+    anon-inode's SELinux security struct.
+  - Added a pr_err() message if context_inode is not initialized.
+
+[1] https://lore.kernel.org/lkml/20200211225547.235083-1-dancol@google.com/
+[2] https://lore.kernel.org/linux-fsdevel/20200213194157.5877-1-sds@tycho.nsa.gov/
+[3] https://lore.kernel.org/lkml/23f725ca-5b5a-5938-fcc8-5bbbfc9ba9bc@tycho.nsa.gov/
+
+Daniel Colascione (3):
+  fs: add LSM-supporting anon-inode interface
+  selinux: teach SELinux about anonymous inodes
+  userfaultfd: use secure anon inodes for userfaultfd
+
+Lokesh Gidra (1):
+  security: add inode_init_security_anon() LSM hook
+
+ fs/anon_inodes.c                    | 150 ++++++++++++++++++++--------
+ fs/libfs.c                          |   5 -
+ fs/userfaultfd.c                    |  19 ++--
+ include/linux/anon_inodes.h         |   5 +
+ include/linux/lsm_hook_defs.h       |   2 +
+ include/linux/lsm_hooks.h           |   9 ++
+ include/linux/security.h            |  10 ++
+ security/security.c                 |   8 ++
+ security/selinux/hooks.c            |  57 +++++++++++
+ security/selinux/include/classmap.h |   2 +
+ 10 files changed, 213 insertions(+), 54 deletions(-)
+
 -- 
-2.7.4
+2.30.0.284.gd98b1dd5eaa7-goog
 
