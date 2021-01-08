@@ -2,176 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 438CE2EEBBA
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 04:13:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DFFE2EEBC3
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 04:14:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727077AbhAHDLZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 22:11:25 -0500
-Received: from mail-eopbgr1320133.outbound.protection.outlook.com ([40.107.132.133]:31355
-        "EHLO APC01-PU1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726474AbhAHDLY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 22:11:24 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=acSWBhDWTMCs69nNdMCEiQEg2L/3f7IiEuvyMJNIWx8Ovsd6OIgzJ7ARs3oxblci28bhFTaw2+rfWkUASDbvUGvLmO0TypOWOls3c/CbWLzQSXOxB0PgoWlGr42JzmpYP/5ujwQZxBA81JL8qlwL96B0VBnopXB0v5O8nNQkzr1Itm4TZJNV1mmWZsw7iyJezl+7h6S/s4YbeKDM3ZdRo+J5wPPgPhnmT4ZJ2WjqSgGrGIErnNTNIafv1b3biIuNeAAkCeE60gyUJ2QU40funwYYwOUvbhufBG/2BLJ1NXIQ7xHVWzJvqoZ9Xwqp8q5KkpxekpJdxxdCBpR0mWK6bQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=fC+g1bYci61JGoZRWR/JfMHXoffaLuyFKlB4y2aD4D8=;
- b=IHmRBg5VHlZfOFq6gLrRqOOOGmWCUVr5cnyiyJdattJcn1PDg/YM8RuTgPe3DJwhtT8bKp8eKKax8Jz5tSux3Phoz3PXY2bukMs4SmUiRflANyHOVZC3OlCMB9n3pz53g4Y1kDb0awyFP2LxNM1KEzvhhifrkernK58Egmju60OIQp5cSCMjN7D2ZlQaj0OjHdXT6T+41XQBu8khoCPj9LHjVjGZeXeIXZDtptAkCrokXzfwp3leFm3YEs7N5Q8Q2nRVdabB7ugSnOCF8xYgvjxLX5o+kKr8NwDL2mz7RDgRU/VWLr6goBJ7dKvXDtLadxY7I98mU+7XDzZ5tas/SA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=aspeedtech.com; dmarc=pass action=none
- header.from=aspeedtech.com; dkim=pass header.d=aspeedtech.com; arc=none
-Received: from HK0PR06MB3380.apcprd06.prod.outlook.com (2603:1096:203:82::18)
- by HK2PR06MB3316.apcprd06.prod.outlook.com (2603:1096:202:35::15) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3742.6; Fri, 8 Jan
- 2021 03:09:41 +0000
-Received: from HK0PR06MB3380.apcprd06.prod.outlook.com
- ([fe80::116:1437:5d9a:16e9]) by HK0PR06MB3380.apcprd06.prod.outlook.com
- ([fe80::116:1437:5d9a:16e9%6]) with mapi id 15.20.3721.024; Fri, 8 Jan 2021
- 03:09:40 +0000
-From:   Ryan Chen <ryan_chen@aspeedtech.com>
-To:     Joel Stanley <joel@jms.id.au>,
-        ChiaWei Wang <chiawei_wang@aspeedtech.com>,
-        Jeremy Kerr <jk@codeconstruct.com.au>
-CC:     Rob Herring <robh@kernel.org>, "andrew@aj.id.au" <andrew@aj.id.au>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "maz@kernel.org" <maz@kernel.org>,
-        "p.zabel@pengutronix.de" <p.zabel@pengutronix.de>,
-        "linux-aspeed@lists.ozlabs.org" <linux-aspeed@lists.ozlabs.org>,
-        "openbmc@lists.ozlabs.org" <openbmc@lists.ozlabs.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        BMC-SW <BMC-SW@aspeedtech.com>
-Subject: RE: [PATCH 5/6] soc: aspeed: Add eSPI driver
-Thread-Topic: [PATCH 5/6] soc: aspeed: Add eSPI driver
-Thread-Index: AQHW4/EGo2juxEGsxECEBhTTs+UwgqoaukYAgAC5fYCAAZjpAIAAAiZw
-Date:   Fri, 8 Jan 2021 03:09:40 +0000
-Message-ID: <HK0PR06MB3380BD8A5BB1B1E7CB466C9BF2AE0@HK0PR06MB3380.apcprd06.prod.outlook.com>
-References: <20210106055939.19386-1-chiawei_wang@aspeedtech.com>
- <20210106055939.19386-6-chiawei_wang@aspeedtech.com>
- <20210106153202.GA2258036@robh.at.kernel.org>
- <HK0PR06MB377987E19F57E53CC4F32FF991AF0@HK0PR06MB3779.apcprd06.prod.outlook.com>
- <CACPK8XfCpUDXi-e1Sh1t+wm_-vXNihRchkmQby7fUXi0mCdMwA@mail.gmail.com>
-In-Reply-To: <CACPK8XfCpUDXi-e1Sh1t+wm_-vXNihRchkmQby7fUXi0mCdMwA@mail.gmail.com>
-Accept-Language: zh-TW, en-US
-Content-Language: zh-TW
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: jms.id.au; dkim=none (message not signed)
- header.d=none;jms.id.au; dmarc=none action=none header.from=aspeedtech.com;
-x-originating-ip: [211.20.114.70]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 7bf9564c-645f-48db-887d-08d8b382d70d
-x-ms-traffictypediagnostic: HK2PR06MB3316:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <HK2PR06MB3316AB505A233E33403FDADFF2AE0@HK2PR06MB3316.apcprd06.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:6430;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: lfTOqR8kE8RBAu/slFWHstr77DuuKrWCRsvmdf8APwEdEXNtd8sQTxgXknJt61FYZmnTrl8UxQ7/WS6LO/ayGDDSZTqU88uKQuRVIYSpYiBDwCnyhL03xhBi6HIETHgDlabRywwBW0j7hgAZwMBrUoY//9dZreYkQ/Of63q+WCzuiQDXqNxi5q7rruRhwaic6Z8wINQsGoI32A+tr1sZaN4F+P966xYurbtJfht3sXJr4UAo5sbSQGaGjgZEAiqGokly0vRGIPlycKlRxcM9HK2/jl9ItjYjFZ/QxmDZXHTcQTaRrf7FNXGljkZuf5yUEReSA5soZy6uMf1Th1H3imoZpRZVLCDXboZehyIfivSzUDeJg6EfHhigZmL1yM8T5sNVDLDuJudsvIPqL+pGpw==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:HK0PR06MB3380.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(396003)(366004)(346002)(376002)(136003)(39840400004)(316002)(7696005)(54906003)(52536014)(110136005)(66446008)(83380400001)(478600001)(5660300002)(66476007)(64756008)(33656002)(66946007)(66556008)(8936002)(76116006)(86362001)(2906002)(26005)(55016002)(55236004)(107886003)(71200400001)(4326008)(53546011)(6506007)(8676002)(9686003)(7416002)(186003);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: =?utf-8?B?a0ZqUGhoSjE5TkU0ZDU4TWVDNjUxRmdmdlFJR2VTc2RubzNwMmk5Q3c3Z3NF?=
- =?utf-8?B?WUh2UmQvdm8vbkZxekJvQlMrOFJZWXB6ejBvR3JnRktvSUJHUnBvMnFCOVBz?=
- =?utf-8?B?VUVqcE5JS2h4ZkFkblZVQU1mbmVEa3ZySDdvYk9Td1hEUlJLMnQ0bU9KazEy?=
- =?utf-8?B?YWJYR1BGeVN1M3o3ODZNSTF1VVBBdzBQQnMrNHRWOHVOekk0VkVuVWtPQURV?=
- =?utf-8?B?clp5YTN6TmxETklmUnZmSU1jT3BzTzRhSUQ2MkQ0QmtCaFJaYWdkdFFjbEZn?=
- =?utf-8?B?OEVUTVRWQklQNUhqM1dRQjBuSDZodmx1TERVQVRSRGhCRktTQW82MmdxaVcy?=
- =?utf-8?B?azA3dmc4ckkvcEVlTWtpVFVPSE81RVdCcXhXZmx0RHllR0M4ZnJVR2IxTmE5?=
- =?utf-8?B?dytKWmZJdTF2ZnJvcEFmaWtlTWlWYldqTTBDVzlvbFE5cGhVK05JaGNWSEFz?=
- =?utf-8?B?UE9VZ1lDa2hHMlB0SExlUW5hN0wrenZQVzYrMmlhNTR4bWpZNlJLV0xuakNF?=
- =?utf-8?B?MVNkYndSZVhBS1dnN2ZLTXZHTURSU2tDbkJtMWlUT3U0ZEREUFFMMDEvdzZG?=
- =?utf-8?B?VW8xSGUyWTlJSy9PeGcyR1VGN0JMeTZrUXdTMWJJZEpMbTBNMzVlZUNmV0Fw?=
- =?utf-8?B?Tm5lTFhhOS9aREdCYVlFZUlWd2k3bkNXUTZ5VUp6cXQzR0pVRjdMa3p2dThp?=
- =?utf-8?B?eE1yRjVYcWlPTG5QNmNkYUtyVCtGUXR2dDN0WUs3U0ZwSWFWd3NJMlJMMUZy?=
- =?utf-8?B?a0w2VlJBcVhXeU1nbWhpK2svNERWQUJUVmNUTWRjb0V4bWhrTFpiYlNYaE9w?=
- =?utf-8?B?QXM4Q3lPMFg2d0UrVWIwZ0FRNWFXNThqQjQ2aE9RTVpqVzVyRm1FTTBEZm81?=
- =?utf-8?B?MVErVXczdmk3ZHRFRUhEMjc2aGFJV2p3ak82SVQ3RWI2M2JNWG1OVmNBTk1u?=
- =?utf-8?B?cU1zY2ZxcE5jN09IRVNtZWtuL1ltZVJGWjc0SWZ1TCtpVkNzYmc1Zkh4bjcw?=
- =?utf-8?B?MmJsbHhPOUsxYkU0SEFyaEdLWXBIa1g1U3V4cGpreGdtSHU3eDUrNEhaNHR0?=
- =?utf-8?B?Vk1iMGNBOHNlaUYrSFlnUE5PSkd6MWhyN3IvV1JlenFVRVlZRThZc1FtTTZT?=
- =?utf-8?B?REdVQXNFR1V1dlgyTm9KT0wzRENXb1dKWUdpNjZBV0k0bEt6Nk5NalMzblRn?=
- =?utf-8?B?aDJUcmdLNHBkZllLUG5VMEx1aWM5TzdXMFc5RnE5VU9jcWRkeCtGbWg3c2h5?=
- =?utf-8?B?R05YNmdYczFIQ0tvcEJnTjFESloxYTUzTWUwKzVpalpGVjA1eWdTR1hZZ2ZQ?=
- =?utf-8?Q?zykcE2dpGLXp0=3D?=
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-MIME-Version: 1.0
-X-OriginatorOrg: aspeedtech.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: HK0PR06MB3380.apcprd06.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 7bf9564c-645f-48db-887d-08d8b382d70d
-X-MS-Exchange-CrossTenant-originalarrivaltime: 08 Jan 2021 03:09:40.7304
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 43d4aa98-e35b-4575-8939-080e90d5a249
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: ZoWLovnHeet+iaKpSYu8aHj+wmG93PWGZ5S/OLPvm5fg21ohEh0Yxb8UlgxIlQ0VxSeiKEF4/aJ9sxSqVXGMRkxE8MAZEJ84Y6CGUHzvoBg=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: HK2PR06MB3316
+        id S1727369AbhAHDNs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 22:13:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34934 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726281AbhAHDNs (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Jan 2021 22:13:48 -0500
+Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2677FC0612FA
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Jan 2021 19:12:28 -0800 (PST)
+Received: by mail-pf1-x434.google.com with SMTP id h10so5343899pfo.9
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Jan 2021 19:12:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=dabbelt-com.20150623.gappssmtp.com; s=20150623;
+        h=date:subject:in-reply-to:cc:from:to:message-id:mime-version
+         :content-transfer-encoding;
+        bh=SjIxw593j/BG7x2X3ksVVnxB2uu71tEZmxrMsCj4BiM=;
+        b=h2ktI7s4n8xCoqkoSVH4EHqwEk9bp/enKaHzfXG4daTjSVem3smhzGjWZOERytTBt1
+         uct1LT+TzDwe1P+tWsKICLXw/a9f1Y5NGttqGWBIlq7W0terFsRHlavDYV15Cf8egItt
+         ssfplpyFYDBmZLa4Bss7IeleNkqZcrj7JtyEEWkZPzvoHbtHiUCt9ectPN4fr1muZPpM
+         ywgRFdcUijDEgD1cnBXSpdui63N7Pur/ocDaLM3e7YxpSFI76doqdNO0TUcSv7NbVbUQ
+         egGDX7XIhDuYYpHZ5nnBoNW06xDqi3t8gF0kGVKM7WpiLVNcmrFR1T8datur+4zctrQd
+         fHgw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id
+         :mime-version:content-transfer-encoding;
+        bh=SjIxw593j/BG7x2X3ksVVnxB2uu71tEZmxrMsCj4BiM=;
+        b=SAypzb1SqTa2pILmqZem4fjEA8opO5/rCUXIGudG3iJF+DT8mnBqTiB56SjaKXYplk
+         ZOwHRuklm4KJ+TJTnfkFqRUWEZmhl4FOeafQc8+JmKCF9ffDdzEHVl9jXPs55djuqHMv
+         6zkeLf5oq73Bc82Oauq95okJ+ohWnTQzcKwK3hF5VJJp0Ipjoz64ehXZe/tZqczzTrSh
+         4uTTSVFHJVC7UWUPLYiVXZ/t8GiVc8XwMJQqFOWGuQUy+MyBuiVVC5QBHXVbRieEtCye
+         lCMvwCUHU+1OQlBr8+n50wtDwpuVeyPvCKKsCKzp2XdmuRGHI2e6wdhUDwEhENPP4nPW
+         DqDw==
+X-Gm-Message-State: AOAM531fj+rUXV3PiELvf18aRyo7AAm9FS4pJVnZKYiULddRFtVaAnvw
+        QnrzRqi7O+8JiVNUYePLpWV2bQ==
+X-Google-Smtp-Source: ABdhPJxeTiUgNKGaw5qtkvFU0vf1c4xAKljKlMnfqJb88DCjQRxBowLvlBQ4gqSHPM+ucT8Xlx08sQ==
+X-Received: by 2002:a63:1f47:: with SMTP id q7mr4962672pgm.10.1610075547296;
+        Thu, 07 Jan 2021 19:12:27 -0800 (PST)
+Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
+        by smtp.gmail.com with ESMTPSA id r185sm6938981pfc.53.2021.01.07.19.12.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 07 Jan 2021 19:12:26 -0800 (PST)
+Date:   Thu, 07 Jan 2021 19:12:26 -0800 (PST)
+X-Google-Original-Date: Thu, 07 Jan 2021 17:52:56 PST (-0800)
+Subject:     Re: [PATCH v2 0/9] arch: riscv: add board and SoC DT file support
+In-Reply-To: <1607403341-57214-1-git-send-email-yash.shah@sifive.com>
+CC:     linux-spi@vger.kernel.org, linux-serial@vger.kernel.org,
+        linux-pwm@vger.kernel.org, linux-i2c@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
+        devicetree@vger.kernel.org, linux-gpio@vger.kernel.org,
+        broonie@kernel.org, Greg KH <gregkh@linuxfoundation.org>,
+        aou@eecs.berkeley.edu, lee.jones@linaro.org,
+        u.kleine-koenig@pengutronix.de, thierry.reding@gmail.com,
+        andrew@lunn.ch, peter@korsgaard.com,
+        Paul Walmsley <paul.walmsley@sifive.com>, robh+dt@kernel.org,
+        bgolaszewski@baylibre.com, linus.walleij@linaro.org,
+        yash.shah@sifive.com
+From:   Palmer Dabbelt <palmer@dabbelt.com>
+To:     yash.shah@sifive.com
+Message-ID: <mhng-abbd57b3-7d81-4c66-9883-67bc11f1f3a3@palmerdabbelt-glaptop>
+Mime-Version: 1.0 (MHng)
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-PiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPiBGcm9tOiBKb2VsIFN0YW5sZXkgPGpvZWxA
-am1zLmlkLmF1Pg0KPiBTZW50OiBGcmlkYXksIEphbnVhcnkgOCwgMjAyMSAxMDo1OSBBTQ0KPiBU
-bzogQ2hpYVdlaSBXYW5nIDxjaGlhd2VpX3dhbmdAYXNwZWVkdGVjaC5jb20+OyBKZXJlbXkgS2Vy
-cg0KPiA8amtAY29kZWNvbnN0cnVjdC5jb20uYXU+DQo+IENjOiBSb2IgSGVycmluZyA8cm9iaEBr
-ZXJuZWwub3JnPjsgYW5kcmV3QGFqLmlkLmF1OyB0Z2x4QGxpbnV0cm9uaXguZGU7DQo+IG1hekBr
-ZXJuZWwub3JnOyBwLnphYmVsQHBlbmd1dHJvbml4LmRlOyBsaW51eC1hc3BlZWRAbGlzdHMub3ps
-YWJzLm9yZzsNCj4gb3BlbmJtY0BsaXN0cy5vemxhYnMub3JnOyBkZXZpY2V0cmVlQHZnZXIua2Vy
-bmVsLm9yZzsNCj4gbGludXgtYXJtLWtlcm5lbEBsaXN0cy5pbmZyYWRlYWQub3JnOyBsaW51eC1r
-ZXJuZWxAdmdlci5rZXJuZWwub3JnOyBCTUMtU1cNCj4gPEJNQy1TV0Bhc3BlZWR0ZWNoLmNvbT4N
-Cj4gU3ViamVjdDogUmU6IFtQQVRDSCA1LzZdIHNvYzogYXNwZWVkOiBBZGQgZVNQSSBkcml2ZXIN
-Cj4gDQo+IE9uIFRodSwgNyBKYW4gMjAyMSBhdCAwMjozOSwgQ2hpYVdlaSBXYW5nDQo+IDxjaGlh
-d2VpX3dhbmdAYXNwZWVkdGVjaC5jb20+IHdyb3RlOg0KPiA+DQo+ID4gSGkgUm9iLA0KPiA+DQo+
-ID4gPiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPiA+ID4gRnJvbTogUm9iIEhlcnJpbmcg
-PHJvYmhAa2VybmVsLm9yZz4NCj4gPiA+IFNlbnQ6IFdlZG5lc2RheSwgSmFudWFyeSA2LCAyMDIx
-IDExOjMyIFBNDQo+ID4gPiBUbzogQ2hpYVdlaSBXYW5nIDxjaGlhd2VpX3dhbmdAYXNwZWVkdGVj
-aC5jb20+DQo+ID4gPiBTdWJqZWN0OiBSZTogW1BBVENIIDUvNl0gc29jOiBhc3BlZWQ6IEFkZCBl
-U1BJIGRyaXZlcg0KPiA+ID4NCj4gPiA+IE9uIFdlZCwgSmFuIDA2LCAyMDIxIGF0IDAxOjU5OjM4
-UE0gKzA4MDAsIENoaWEtV2VpLCBXYW5nIHdyb3RlOg0KPiA+ID4gPiBUaGUgQXNwZWVkIGVTUEkg
-Y29udHJvbGxlciBpcyBzbGF2ZSBkZXZpY2UgdG8gY29tbXVuaWNhdGUgd2l0aCB0aGUNCj4gPiA+
-ID4gbWFzdGVyIHRocm91Z2ggdGhlIEVuaGFuY2VkIFNlcmlhbCBQZXJpcGhlcmFsIEludGVyZmFj
-ZSAoZVNQSSkuDQo+ID4gPiA+IEFsbCBvZiB0aGUgZm91ciBlU1BJIGNoYW5uZWxzLCBuYW1lbHkg
-cGVyaXBoZXJhbCwgdmlydHVhbCB3aXJlLA0KPiA+ID4gPiBvdXQtb2YtYmFuZCwgYW5kIGZsYXNo
-IGFyZSBzdXBwb3J0ZWQuDQo+ID4gPiA+DQo+ID4gPiA+IFNpZ25lZC1vZmYtYnk6IENoaWEtV2Vp
-LCBXYW5nIDxjaGlhd2VpX3dhbmdAYXNwZWVkdGVjaC5jb20+DQo+ID4gPiA+IC0tLQ0KPiA+ID4g
-PiAgZHJpdmVycy9zb2MvYXNwZWVkL0tjb25maWcgICAgICAgICAgICAgICAgICB8ICA0OSArKw0K
-PiA+ID4gPiAgZHJpdmVycy9zb2MvYXNwZWVkL01ha2VmaWxlICAgICAgICAgICAgICAgICB8ICAg
-NSArDQo+ID4gPiA+ICBkcml2ZXJzL3NvYy9hc3BlZWQvYXNwZWVkLWVzcGktY3RybC5jICAgICAg
-IHwgMTk3ICsrKysrKw0KPiA+ID4gPiAgZHJpdmVycy9zb2MvYXNwZWVkL2FzcGVlZC1lc3BpLWZs
-YXNoLmMgICAgICB8IDQ5MCArKysrKysrKysrKysrKw0KPiA+ID4gPiAgZHJpdmVycy9zb2MvYXNw
-ZWVkL2FzcGVlZC1lc3BpLW9vYi5jICAgICAgICB8IDcwNg0KPiA+ID4gKysrKysrKysrKysrKysr
-KysrKysNCj4gPiA+ID4gIGRyaXZlcnMvc29jL2FzcGVlZC9hc3BlZWQtZXNwaS1wZXJpcGhlcmFs
-LmMgfCA2MTMNCj4gKysrKysrKysrKysrKysrKysNCj4gPiA+ID4gIGRyaXZlcnMvc29jL2FzcGVl
-ZC9hc3BlZWQtZXNwaS12dy5jICAgICAgICAgfCAyMTEgKysrKysrDQo+ID4gPiA+ICBpbmNsdWRl
-L3VhcGkvbGludXgvYXNwZWVkLWVzcGkuaCAgICAgICAgICAgIHwgMTYwICsrKysrDQo+ID4gPiA+
-ICA4IGZpbGVzIGNoYW5nZWQsIDI0MzEgaW5zZXJ0aW9ucygrKSAgY3JlYXRlIG1vZGUgMTAwNjQ0
-DQo+ID4gPiA+IGRyaXZlcnMvc29jL2FzcGVlZC9hc3BlZWQtZXNwaS1jdHJsLmMNCj4gPiA+ID4g
-IGNyZWF0ZSBtb2RlIDEwMDY0NCBkcml2ZXJzL3NvYy9hc3BlZWQvYXNwZWVkLWVzcGktZmxhc2gu
-Yw0KPiA+ID4gPiAgY3JlYXRlIG1vZGUgMTAwNjQ0IGRyaXZlcnMvc29jL2FzcGVlZC9hc3BlZWQt
-ZXNwaS1vb2IuYw0KPiA+ID4gPiAgY3JlYXRlIG1vZGUgMTAwNjQ0IGRyaXZlcnMvc29jL2FzcGVl
-ZC9hc3BlZWQtZXNwaS1wZXJpcGhlcmFsLmMNCj4gPiA+ID4gIGNyZWF0ZSBtb2RlIDEwMDY0NCBk
-cml2ZXJzL3NvYy9hc3BlZWQvYXNwZWVkLWVzcGktdncuYw0KPiA+ID4NCj4gPiA+IGRyaXZlcnMv
-c3BpLyBpcyB0aGUgY29ycmVjdCBsb2NhdGlvbiBmb3IgYSBTUEkgY29udHJvbGxlci4NCj4gPiA+
-DQo+ID4gPiA+ICBjcmVhdGUgbW9kZSAxMDA2NDQgaW5jbHVkZS91YXBpL2xpbnV4L2FzcGVlZC1l
-c3BpLmgNCj4gPiA+DQo+ID4gPiBUaGlzIHVzZXJzcGFjZSBpbnRlcmZhY2UgaXMgbm90IGdvaW5n
-IHRvIGJlIGFjY2VwdGVkIHVwc3RyZWFtLg0KPiA+ID4NCj4gPiA+IEknZCBzdWdnZXN0IHlvdSBs
-b29rIGF0IHNpbWlsYXIgU1BJIGZsYXNoIGNhcGFibGUgU1BJIGNvbnRyb2xsZXINCj4gPiA+IGRy
-aXZlcnMgdXBzdHJlYW0gYW5kIG1vZGVsIHlvdXIgZHJpdmVyIGFmdGVyIHRoZW0uIFRoaXMgbG9v
-a3MgbGlrZSBpdCBuZWVkcw0KPiBtYWpvciByZXdvcmtpbmcuDQo+ID4gPg0KPiA+IGVTUEkgcmVz
-dWVzIHRoZSB0aW1pbmcgYW5kIGVsZWN0cmljYWwgc3BlY2lmaWNhdGlvbiBvZiBTUEkgYnV0IHJ1
-bnMgY29tcGxldGVseQ0KPiBkaWZmZXJlbnQgcHJvdG9jb2wuDQo+ID4gT25seSB0aGUgZmxhc2gg
-Y2hhbm5lbCBpcyByZWxhdGVkIHRvIFNQSSBhbmQgdGhlIG90aGVyIDMgY2hhbm5lbHMgYXJlIGZv
-cg0KPiBFQy9CTUMvU0lPLg0KPiA+IFRoZXJlZm9yZSwgYW4gZVNQSSBkcml2ZXIgbWlnaHQgbm90
-IGZpdCBpbnRvIHRoZSBTUEkgbW9kZWwuDQo+IA0KPiBJIGFncmVlLCB0aGUgbmFtaW5nIGlzIGNv
-bmZ1c2luZyBidXQgZVNQSSBkb2Vzbid0IGJlbG9uZyBpbiBkcml2ZXJzL3NwaS4NCj4gDQo+IEFz
-IGl0IGlzIGEgYnVzIHRoYXQgaXMgY29tbW9uIHRvIG1vcmUgdGhhbiBqdXN0IHRoZSBBc3BlZWQg
-Qk1DLCB3ZSBtYXkgd2FudA0KPiB0byBpbXBsZW1lbnQgaXQgYXMgYSBuZXcgYnVzIHR5cGUgdGhh
-dCBoYXMgZGV2aWNlcyBoYW5naW5nIG9mZiBpdCwgc2ltaWxhciB0bw0KPiBGU0kuDQo+IA0KVGhl
-IEFTUEVFRCBlU1BJIGNvbnRyb2xsZXIgZHJpdmVyIGlzIHNsYXZlIHNpZGUgZGV2aWNlLCBub3Qg
-bWFzdGVyIHNpZGUuIEkgdGhpbmsgaXQgd2lsbCBiZSBzdGF5IHNvYy9hc3BlZWQgZmlyc3QuIA0K
-QmVjYXVzZSBpcyBtb3N0IFNvQyBDaGlwIHJlbGF0ZWQuIA0KDQpDaGVlcnMsDQoNClJ5YW4NCg==
+On Mon, 07 Dec 2020 20:55:32 PST (-0800), yash.shah@sifive.com wrote:
+> Start board support by adding initial support for the SiFive FU740 SoC
+> and the first development board that uses it, the SiFive HiFive
+> Unmatched A00.
+>
+> Boot-tested on Linux 5.10-rc4 on a HiFive Unmatched A00 board using the
+> U-boot and OpenSBI.
+>
+> This patch series is dependent on Zong's Patchset[0]. The patchset also
+> adds two new nodes in dtsi file. The binding documentation patch
+> for these nodes are already posted on the mailing list[1][2].
+>
+> [0]: https://lore.kernel.org/linux-riscv/20201130082330.77268-4-zong.li@sifive.com/T/#u
+> [1]: https://lore.kernel.org/linux-riscv/1606714984-16593-1-git-send-email-yash.shah@sifive.com/T/#t
+> [2]: https://lore.kernel.org/linux-riscv/20201126030043.67390-1-zong.li@sifive.com/T/#u
+>
+> Changes in v2:
+> - The dt bindings patch is split into several individual patches.
+> - Expand the full list for compatible strings in i2c-ocores.txt
+>
+> Yash Shah (9):
+>   dt-bindings: riscv: Update DT binding docs to support SiFive FU740 SoC
+>   dt-bindings: spi: Update DT binding docs to support SiFive FU740 SoC
+>   dt-bindings: pwm: Update DT binding docs to support SiFive FU740 SoC
+>   dt-bindings: serial: Update DT binding docs to support SiFive FU740
+>     SoC
+>   dt-bindings: gpio: Update DT binding docs to support SiFive FU740 SoC
+>   dt-bindings: i2c: Update DT binding docs to support SiFive FU740 SoC
+>   riscv: dts: add initial support for the SiFive FU740-C000 SoC
+>   dt-bindings: riscv: Update YAML doc to support SiFive HiFive Unmatched
+>     board
+>   riscv: dts: add initial board data for the SiFive HiFive Unmatched
+>
+>  .../devicetree/bindings/gpio/sifive,gpio.yaml      |   4 +-
+>  .../devicetree/bindings/i2c/i2c-ocores.txt         |   8 +-
+>  .../devicetree/bindings/pwm/pwm-sifive.yaml        |   9 +-
+>  Documentation/devicetree/bindings/riscv/cpus.yaml  |   6 +
+>  .../devicetree/bindings/riscv/sifive.yaml          |  17 +-
+>  .../devicetree/bindings/serial/sifive-serial.yaml  |   4 +-
+>  .../devicetree/bindings/spi/spi-sifive.yaml        |  10 +-
+>  arch/riscv/boot/dts/sifive/Makefile                |   3 +-
+>  arch/riscv/boot/dts/sifive/fu740-c000.dtsi         | 293 +++++++++++++++++++++
+>  .../riscv/boot/dts/sifive/hifive-unmatched-a00.dts | 253 ++++++++++++++++++
+>  10 files changed, 590 insertions(+), 17 deletions(-)
+>  create mode 100644 arch/riscv/boot/dts/sifive/fu740-c000.dtsi
+>  create mode 100644 arch/riscv/boot/dts/sifive/hifive-unmatched-a00.dts
+
+Thanks, these are on for-next.  There was one checkpatch warning about the
+missing ISSI device tree entry, but we already had that in the FU540 so I'm OK
+letting it slide.
+
+I'm also not really sure this is the right way to do this sort of thing: most
+of the patches here really aren't RISC-V things, they're SiFive SOC things.
+Some of these patches have been picked up by other trees, but I just took the
+rest.  I'm not all that happy about taking DT bindings for things like GPIO or
+PWM bindings, but as they're pretty small I'm OK doing it in this instance.
+
+In the future it would really be better to split these up and land them via
+their respectitve trees, rather than trying to do all the SOC stuff over here.
+I know that can be a headache, but we have that SOC group for this purpose to
+try and keep things a bit more together -- I know it was a while ago and there
+really hasn't been much SOC activity on the RISC-V side of things so maybe it
+hasn't been that widley discussed, but that was really designed to solve these
+sorts of problems.
