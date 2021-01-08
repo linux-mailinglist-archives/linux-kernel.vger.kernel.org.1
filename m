@@ -2,95 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 377F62EF47C
+	by mail.lfdr.de (Postfix) with ESMTP id A419C2EF47D
 	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 16:06:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727511AbhAHPF4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Jan 2021 10:05:56 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:25303 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726992AbhAHPFz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Jan 2021 10:05:55 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1610118269;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=01heFlGRaoDcUJftD8M53lD9T5to+ZsFBn4cIvRXGIA=;
-        b=iTBwGRmzDl1+ifeby5e3jZwhpQfdgnIoRi4gyVIem49fVDhs7jMri8fiBV0qmpgIfGVonx
-        Ls7cen8ROdPWlSL5CMjhIUQupFLF/Lg4PqEu+fFHmqLcn5CZCp07gB/BIetw219EHv4WVx
-        Fdb2cf05FDepfoPiklu0jdBpa2hbUGU=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-510-xWR2JvAkMMGSj4bL4oCVDA-1; Fri, 08 Jan 2021 10:04:27 -0500
-X-MC-Unique: xWR2JvAkMMGSj4bL4oCVDA-1
-Received: by mail-wr1-f72.google.com with SMTP id 4so4274033wrb.16
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Jan 2021 07:04:27 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=01heFlGRaoDcUJftD8M53lD9T5to+ZsFBn4cIvRXGIA=;
-        b=hBfUG1gTFFB88hsFcqWtDRdfVqOvw/7QXwCvR3muAnl0RUC7O4EdU/3ps9xtE+qH5i
-         qIp5mMOxG5jo02Ek1zq9FqLplVOeYE6rz+ClTjmpLEbxnZGRyHowWSz7qX5W7RVVXhdR
-         SKYQAb2TDbkctXJQclMJP/wecs12AQHlTQx3tgjVZGvRw382OiQdLJrp/7QD6cUBqk6i
-         emjvg8YL/I1iYSCJ2PSDQd1QHRAT9t8jKybEFvot0CRQTTTxSk14KarCEoHJ+GeqWVp2
-         UDrKk3xwlg8EuzwNzoDWgFbaMKqibiFNN3QJ/zv7SSAoxDMHJEMhwwJq/Y2KutuCmpKQ
-         CiZQ==
-X-Gm-Message-State: AOAM530/DHSeTodVYSrINhY+8v0esDrM6tU4hNmFsNLocHoD+/CR893O
-        ahfMZbIHB+E/O9DofIFKmBeGqaYmyoOtYAGS+RMHNCG8v39YHREiGWujZa2dLcMd0F8665uZeI1
-        zDJtjDrmoXo2E3qvzrwp9XCm7bQL9rrOctQyhwfnmLKKoN1moPr7QYybp10BPNN+41SQxhKnqTw
-        IG
-X-Received: by 2002:a05:6000:23c:: with SMTP id l28mr4104964wrz.193.1610118266074;
-        Fri, 08 Jan 2021 07:04:26 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJxNXm6WNv+I3PQkV0OnoM7kHg0U814RUd7wDnpf+pOn02YAB/bkxyhwVKJGWc9/4phv/n+SwA==
-X-Received: by 2002:a05:6000:23c:: with SMTP id l28mr4104926wrz.193.1610118265880;
-        Fri, 08 Jan 2021 07:04:25 -0800 (PST)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id d9sm15003430wrc.87.2021.01.08.07.04.24
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 08 Jan 2021 07:04:25 -0800 (PST)
-Subject: Re: [PATCH v3 2/2] misc: pvpanic: introduce module parameter 'events'
-To:     Greg KH <gregkh@linuxfoundation.org>,
-        zhenwei pi <pizhenwei@bytedance.com>
-Cc:     arnd@arndb.de, linux-kernel@vger.kernel.org
-References: <20210108135223.2924507-1-pizhenwei@bytedance.com>
- <20210108135223.2924507-3-pizhenwei@bytedance.com>
- <X/hnF0W+TMj36LDN@kroah.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <58eca97c-f72e-66a7-2696-611124ce0943@redhat.com>
-Date:   Fri, 8 Jan 2021 16:04:24 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.5.0
+        id S1727700AbhAHPGH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Jan 2021 10:06:07 -0500
+Received: from mga01.intel.com ([192.55.52.88]:51806 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726992AbhAHPGG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 Jan 2021 10:06:06 -0500
+IronPort-SDR: pN1I6WAH9H8ZNi8UpDU33Vdd3zN2WkCj/nSdmMiGz8mnNz0qgjLmuaXEmRI8GqA27k4bC3+ArN
+ ejf0fncENA7Q==
+X-IronPort-AV: E=McAfee;i="6000,8403,9857"; a="196175257"
+X-IronPort-AV: E=Sophos;i="5.79,331,1602572400"; 
+   d="scan'208";a="196175257"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jan 2021 07:05:25 -0800
+IronPort-SDR: FBGvmLPT5HSVhtytI3cq7+A5YKhYUjPW1QrEXXZd6v7ffAr9zUF8C6P3SKZ9mV8aAMq6BIp56C
+ U8VUwjYChQOg==
+X-IronPort-AV: E=Sophos;i="5.79,331,1602572400"; 
+   d="scan'208";a="380147241"
+Received: from rgwhiteh-mobl.ger.corp.intel.com (HELO localhost) ([10.213.205.160])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jan 2021 07:05:18 -0800
+From:   Jani Nikula <jani.nikula@linux.intel.com>
+To:     Lyude Paul <lyude@redhat.com>, intel-gfx@lists.freedesktop.org
+Cc:     thaytan@noraisin.net, Vasily Khoruzhick <anarsoul@gmail.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Ville =?utf-8?B?U3lyasOkbMOk?= <ville.syrjala@linux.intel.com>,
+        Imre Deak <imre.deak@intel.com>,
+        Manasi Navare <manasi.d.navare@intel.com>,
+        Dave Airlie <airlied@redhat.com>,
+        Sean Paul <seanpaul@chromium.org>,
+        Lucas De Marchi <lucas.demarchi@intel.com>,
+        Chris Wilson <chris@chris-wilson.co.uk>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        "open list\:DRM DRIVERS" <dri-devel@lists.freedesktop.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v5 1/4] drm/i915: Keep track of pwm-related backlight hooks separately
+In-Reply-To: <20210107225207.28091-2-lyude@redhat.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <20210107225207.28091-1-lyude@redhat.com> <20210107225207.28091-2-lyude@redhat.com>
+Date:   Fri, 08 Jan 2021 17:05:16 +0200
+Message-ID: <87r1mvxydv.fsf@intel.com>
 MIME-Version: 1.0
-In-Reply-To: <X/hnF0W+TMj36LDN@kroah.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 08/01/21 15:07, Greg KH wrote:
->>   
->>   static void __iomem *base;
->> +static unsigned int events = PVPANIC_PANICKED | PVPANIC_CRASH_LOADED;
->> +module_param(events, uint, 0644);
->> +MODULE_PARM_DESC(events, "set event limitation of pvpanic device");
-> I do not understand you wanting a module parameter as well as a sysfs
-> file.  Why is this needed?  Why are you spreading this information out
-> across different apis and locations?
+On Thu, 07 Jan 2021, Lyude Paul <lyude@redhat.com> wrote:
+> @@ -1628,37 +1633,32 @@ static int lpt_setup_backlight(struct intel_connector *connector, enum pipe unus
+>  	panel->backlight.active_low_pwm = pch_ctl1 & BLM_PCH_POLARITY;
+>  
+>  	pch_ctl2 = intel_de_read(dev_priv, BLC_PWM_PCH_CTL2);
+> -	panel->backlight.max = pch_ctl2 >> 16;
+> +	panel->backlight.pwm_level_max = pch_ctl2 >> 16;
+>  
+>  	cpu_ctl2 = intel_de_read(dev_priv, BLC_PWM_CPU_CTL2);
+>  
+> -	if (!panel->backlight.max)
+> -		panel->backlight.max = get_backlight_max_vbt(connector);
+> +	if (!panel->backlight.pwm_level_max)
+> +		panel->backlight.pwm_level_max = get_backlight_max_vbt(connector);
+>  
+> -	if (!panel->backlight.max)
+> +	if (!panel->backlight.pwm_level_max)
+>  		return -ENODEV;
+>  
+> -	panel->backlight.min = get_backlight_min_vbt(connector);
+> +	panel->backlight.pwm_level_min = get_backlight_min_vbt(connector);
+>  
+> -	panel->backlight.enabled = pch_ctl1 & BLM_PCH_PWM_ENABLE;
+> +	panel->backlight.pwm_enabled = pch_ctl1 & BLM_PCH_PWM_ENABLE;
+>  
+> -	cpu_mode = panel->backlight.enabled && HAS_PCH_LPT(dev_priv) &&
+> +	cpu_mode = panel->backlight.pwm_enabled && HAS_PCH_LPT(dev_priv) &&
+>  		   !(pch_ctl1 & BLM_PCH_OVERRIDE_ENABLE) &&
+>  		   (cpu_ctl2 & BLM_PWM_ENABLE);
+> -	if (cpu_mode)
+> -		val = pch_get_backlight(connector);
+> -	else
+> -		val = lpt_get_backlight(connector);
+> -	val = intel_panel_compute_brightness(connector, val);
+> -	panel->backlight.level = clamp(val, panel->backlight.min,
+> -				       panel->backlight.max);
+>  
+>  	if (cpu_mode) {
+> +		val = intel_panel_sanitize_pwm_level(connector, pch_get_backlight(connector));
+> +
 
-It can be useful to disable some functionality, for example in case you 
-want to fake running on an older virtualization host.  This can be done 
-for debugging reasons, or to keep uniform handling across a fleet that 
-is running different versions of QEMU.
+(This really is a PITA to review, not because of how you do it but
+because of the hardware and the code itself. I'm just pointing out one
+thing here, but I'm not finished yet.)
 
-Paolo
+I think this sanitize call is wrong here. It should be called only when
+converting to and from the hw register. Here, we read directly from one
+hw register and write back to another hw register.
 
-> Again, adding module parameters is almost never a good idea anymore,
-> they are a pain to manage and use.
+Now, looking at the history, I think it's been wrong all the way since
+commit 5b1ec9ac7ab5 ("drm/i915/backlight: Fix backlight takeover on LPT,
+v3."). Probably nobody noticed, because AFAIK inverted brightness
+control has only ever been an issue on some gen4 platforms...
 
+*facepalm*
+
+BR,
+Jani.
+
+>  		drm_dbg_kms(&dev_priv->drm,
+>  			    "CPU backlight register was enabled, switching to PCH override\n");
+>  
+>  		/* Write converted CPU PWM value to PCH override register */
+> -		lpt_set_backlight(connector->base.state, panel->backlight.level);
+> +		lpt_set_backlight(connector->base.state, val);
+>  		intel_de_write(dev_priv, BLC_PWM_PCH_CTL1,
+>  			       pch_ctl1 | BLM_PCH_OVERRIDE_ENABLE);
+>  
+
+-- 
+Jani Nikula, Intel Open Source Graphics Center
