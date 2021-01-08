@@ -2,85 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA4442EEA0D
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 01:01:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C8AE82EEA14
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 01:04:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729184AbhAGX7r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 18:59:47 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:58041 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727300AbhAGX7r (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 18:59:47 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1610063901;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=rac20jbc+HZUTIRq8HeTeM5nvA7TtlA4vvI9RN7mu6Q=;
-        b=XtfeY0bYv3XYC/MFXOTPdHf40L8JDawaDzGUGi+/5DH6vlJX1m/2pQTjDTjZPC40N9Y3Li
-        tKGW/Eo0j27piniyTSA9ONnLMciaJnPObMD0wi68GU7V++CUZNyXwmVCHGlof91Kg8M9kV
-        VDGXfBnvoU+DxehiYz20+VZeNBfSKPs=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-445-Pac8vphWMPqgQbeoQ6I6ew-1; Thu, 07 Jan 2021 18:58:19 -0500
-X-MC-Unique: Pac8vphWMPqgQbeoQ6I6ew-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 5D13D180A094;
-        Thu,  7 Jan 2021 23:58:17 +0000 (UTC)
-Received: from redhat.com (dhcp-17-185.bos.redhat.com [10.18.17.185])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id E09365C8AA;
-        Thu,  7 Jan 2021 23:58:15 +0000 (UTC)
-Date:   Thu, 7 Jan 2021 18:58:13 -0500
-From:   Jarod Wilson <jarod@redhat.com>
-To:     Jiri Pirko <jiri@resnulli.us>
-Cc:     linux-kernel@vger.kernel.org, Jay Vosburgh <j.vosburgh@gmail.com>,
-        Veaceslav Falico <vfalico@gmail.com>,
-        Andy Gospodarek <andy@greyhouse.net>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Thomas Davis <tadavis@lbl.gov>, netdev@vger.kernel.org
-Subject: Re: [RFC PATCH net-next] bonding: add a vlan+srcmac tx hashing option
-Message-ID: <20210107235813.GB29828@redhat.com>
-References: <20201218193033.6138-1-jarod@redhat.com>
- <20201228101145.GC3565223@nanopsycho.orion>
+        id S1729462AbhAHABv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 19:01:51 -0500
+Received: from mga18.intel.com ([134.134.136.126]:14571 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727300AbhAHABu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 7 Jan 2021 19:01:50 -0500
+IronPort-SDR: y3pvJRvcja4b/As7ZPsneiUrehH6aiaXGFLUjlT5pbr7bVCau3opOL5A3HNSPg4nPQi1ZHhe+0
+ lfaOQgaz+kZg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9857"; a="165206445"
+X-IronPort-AV: E=Sophos;i="5.79,330,1602572400"; 
+   d="scan'208";a="165206445"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Jan 2021 16:00:04 -0800
+IronPort-SDR: 6JFQMRWF/KBXXX0hd/QgIrgA7QCfQXw80JWsEERH3iTsHJHY72M1OCYy4cu7O0i0qi74F2aSQI
+ XHWEnKaPTtcA==
+X-IronPort-AV: E=Sophos;i="5.79,330,1602572400"; 
+   d="scan'208";a="379909949"
+Received: from blu2-mobl3.ccr.corp.intel.com (HELO [10.255.31.120]) ([10.255.31.120])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Jan 2021 16:00:02 -0800
+Cc:     baolu.lu@linux.intel.com, Joerg Roedel <joro@8bytes.org>,
+        Ashok Raj <ashok.raj@intel.com>,
+        Jacob Pan <jacob.jun.pan@linux.intel.com>,
+        Guo Kaijie <Kaijie.Guo@intel.com>,
+        Liu Yi L <yi.l.liu@intel.com>,
+        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 3/5] iommu/vt-d: Remove unused dma map/unmap trace events
+To:     Will Deacon <will@kernel.org>
+References: <20201231005323.2178523-1-baolu.lu@linux.intel.com>
+ <20201231005323.2178523-3-baolu.lu@linux.intel.com>
+ <20210105190443.GB12182@willie-the-truck>
+ <8bf33c93-3154-e832-1197-891c684d6ded@linux.intel.com>
+ <20210107144049.GB3413@willie-the-truck>
+From:   Lu Baolu <baolu.lu@linux.intel.com>
+Message-ID: <ab546a36-2403-f400-a354-edfd21795e0d@linux.intel.com>
+Date:   Fri, 8 Jan 2021 08:00:00 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201228101145.GC3565223@nanopsycho.orion>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+In-Reply-To: <20210107144049.GB3413@willie-the-truck>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Dec 28, 2020 at 11:11:45AM +0100, Jiri Pirko wrote:
-> Fri, Dec 18, 2020 at 08:30:33PM CET, jarod@redhat.com wrote:
-> >This comes from an end-user request, where they're running multiple VMs on
-> >hosts with bonded interfaces connected to some interest switch topologies,
-> >where 802.3ad isn't an option. They're currently running a proprietary
-> >solution that effectively achieves load-balancing of VMs and bandwidth
-> >utilization improvements with a similar form of transmission algorithm.
-> >
-> >Basically, each VM has it's own vlan, so it always sends its traffic out
-> >the same interface, unless that interface fails. Traffic gets split
-> >between the interfaces, maintaining a consistent path, with failover still
-> >available if an interface goes down.
-> >
-> >This has been rudimetarily tested to provide similar results, suitable for
-> >them to use to move off their current proprietary solution.
-> >
-> >Still on the TODO list, if these even looks sane to begin with, is
-> >fleshing out Documentation/networking/bonding.rst.
+Hi Will,
+
+On 2021/1/7 22:40, Will Deacon wrote:
+> On Wed, Jan 06, 2021 at 09:14:22AM +0800, Lu Baolu wrote:
+>> On 2021/1/6 3:04, Will Deacon wrote:
+>>> On Thu, Dec 31, 2020 at 08:53:21AM +0800, Lu Baolu wrote:
+>>>> With commit c588072bba6b5 ("iommu/vt-d: Convert intel iommu driver to
+>>>> the iommu ops"), the trace events for dma map/unmap have no users any
+>>>> more. Remove them so that they don't show up under
+>>>> /sys/kernel/debug/tracing/events/intel_iommu. The users should use the
+>>>> map/unmap traces defined in the iommu core from now on.
+>>>>
+>>>> Fixes: c588072bba6b5 ("iommu/vt-d: Convert intel iommu driver to the iommu ops")
+>>>> Signed-off-by: Lu Baolu <baolu.lu@linux.intel.com>
+>>>> ---
+>>>>    include/trace/events/intel_iommu.h | 119 -----------------------------
+>>>>    1 file changed, 119 deletions(-)
+>>>
+>>> Is this needed in 5.11, or can it wait until 5.12?
+>>
+>> It's necessary for 5.11 as far as I can see. Without this, users still
+>> see the events under /sys/kernel/debug/tracing/events/intel_iommu, but
+>> they will get nothing traced even they enable the events.
 > 
-> Jarod, did you consider using team driver instead ? :)
+> I'm just a bit wary about breaking userspace by removing them altogether,
+> although I see that there's plenty of precedent for removing events from
+> the include/trace/events directory, so it's probably fine.
+> 
+> However, the patch as-is results in this warning for me:
+> 
+>   | In file included from include/trace/define_trace.h:102,
+>   |                  from include/trace/events/intel_iommu.h:22,
+>   |                  from drivers/iommu/intel/trace.c:14:
+>   | include/trace/trace_events.h:27:23: warning: ‘str__intel_iommu__trace_system_name’ defined but not used [-Wunused-const-variable=]
+>   |    27 | #define __app__(x, y) str__##x##y
+>   |       |                       ^~~~~
+>   | include/trace/trace_events.h:28:21: note: in expansion of macro ‘__app__’
+>   |    28 | #define __app(x, y) __app__(x, y)
+>   |       |                     ^~~~~~~
+>   | include/trace/trace_events.h:30:29: note: in expansion of macro ‘__app’
+>   |    30 | #define TRACE_SYSTEM_STRING __app(TRACE_SYSTEM_VAR,__trace_system_name)
+>   |       |                             ^~~~~
+>   | include/trace/trace_events.h:33:20: note: in expansion of macro ‘TRACE_SYSTEM_STRING’
+>   |    33 |  static const char TRACE_SYSTEM_STRING[] = \
+>   |       |                    ^~~~~~~~~~~~~~~~~~~
+>   | include/trace/trace_events.h:36:1: note: in expansion of macro ‘TRACE_MAKE_SYSTEM_STR’
+>   |    36 | TRACE_MAKE_SYSTEM_STR();
+>   |       | ^~~~~~~~~~~~~~~~~~~~~
+> 
+> so I'll drop this for now.
 
-That's actually one of the things that was suggested, since team I believe
-already has support for this, but the user really wants to use bonding.
-We're finding that a lot of users really still prefer bonding over team.
+Okay, I will rework this. Thanks!
 
--- 
-Jarod Wilson
-jarod@redhat.com
+> 
+> Will
+> 
 
+Best regards,
+baolu
