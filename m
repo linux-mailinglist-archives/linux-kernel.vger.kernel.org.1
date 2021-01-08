@@ -2,155 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 302BC2EF16D
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 12:35:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 27E402EF164
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 12:35:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727395AbhAHLfC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Jan 2021 06:35:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55930 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727132AbhAHLer (ORCPT
+        id S1727119AbhAHLeZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Jan 2021 06:34:25 -0500
+Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:16493 "EHLO
+        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725817AbhAHLeT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Jan 2021 06:34:47 -0500
-Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B68B0C0612F4;
-        Fri,  8 Jan 2021 03:34:01 -0800 (PST)
-Received: by mail-wr1-x433.google.com with SMTP id r7so8669023wrc.5;
-        Fri, 08 Jan 2021 03:34:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=nEc5wG3dILAGk32bL1jujPzJlzS0QKkC1c/kQMfY5N8=;
-        b=hIFrMTB3S+rVuuFdrk8zk/CaNWPHJfeNY7BFvbSSacGai+bOhV7u6eN3HpUjKSV127
-         iBBmZipZMLFv0uk96RlbxHnSqrGgR4vDmowkKeHwD3Q+BN4nvNrVaGMCncTjK+b4OK7z
-         gl09CRyJ6oCv0zdGqkPx+na5S0dR0YoWaZrgfwWj7fDjnMES7OF8E13zV505q0IyRlwy
-         tNyI8+P/Dwylvr92HvYe6+tIIt0WPIM5OEf9k9Nspok89WAZpA3ZZ1S5CxK8c3x6gRjr
-         c0P7AghE0+VK/I9JDCCsakvYJgTTqpo4CdzCuBGr2Qbc8DWzrSrD3GS4vOrSNi3ircrt
-         Tv9A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=nEc5wG3dILAGk32bL1jujPzJlzS0QKkC1c/kQMfY5N8=;
-        b=WGIpptkeN/yeoIPr9adxfpAaVcK01J6a6vSEt0BgCmQxG088HC3sEv1DP2hd0EHgu/
-         Pe1neaDzu2YeT1Vmz+0z6DZh8esw96sspLdyOmCtPeuro0ZAowz7WV/DNMDp+iv4RHmK
-         RIQ06OLIQSzEF4wCqOqX+w9YDQp/AEPRBAOHms/belNEt1FPXxMMDwn5J/TieleB3BWM
-         Wad522Kf1EJKcJCo/7Vf025C3ZRWVO1a6npA+5AIYTgZ1XO21+9Q4UNPV1L9cYDur7GA
-         E8g3+5jyvaahCp8tSUTJtPIuKsXWM4w23nFCmbDgc1NpT7oHy/Xkg0i8obBTK+0MmkFm
-         t1JA==
-X-Gm-Message-State: AOAM532Uw2uII13eznVVCgsddCFBS2vFMonPVu+tZ7fONSlu0url5saV
-        OixMaR5uxb8/iVJ7ujo6B5OvnKYbmQMoXR7ICp8=
-X-Google-Smtp-Source: ABdhPJxoWjNkep0c2aYKAL7kFh3Z7DoXzlAjVZ7GuVFKaPKYi0xepL6M9O6IiOMlXmnqZPyeYImKYuC4797dnlCDJ60=
-X-Received: by 2002:a5d:60c1:: with SMTP id x1mr3214644wrt.271.1610105640518;
- Fri, 08 Jan 2021 03:34:00 -0800 (PST)
+        Fri, 8 Jan 2021 06:34:19 -0500
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5ff843120001>; Fri, 08 Jan 2021 03:33:38 -0800
+Received: from [10.26.72.150] (172.20.145.6) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 8 Jan
+ 2021 11:33:33 +0000
+Subject: Re: [PATCH 2/2] ALSA: hda/tegra: fix tegra-hda on tegra30 soc
+From:   Jon Hunter <jonathanh@nvidia.com>
+To:     Sameer Pujar <spujar@nvidia.com>, Peter Geis <pgwipeout@gmail.com>
+CC:     Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Peter De Schrijver <pdeschrijver@nvidia.com>,
+        "Prashant Gaikwad" <pgaikwad@nvidia.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Mohan Kumar <mkumard@nvidia.com>, <linux-clk@vger.kernel.org>,
+        <linux-tegra@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <alsa-devel@alsa-project.org>, Ion Agorria <ion@agorria.com>
+References: <20201225012025.507803-1-pgwipeout@gmail.com>
+ <20201225012025.507803-3-pgwipeout@gmail.com>
+ <0c3665b2-bac6-546a-bdd4-0ab7a90adf7c@nvidia.com>
+ <CAMdYzYraT5AXzyscN3Pa+0FWZwHFsD-4ZwbA80kNxgtn7Y1PXw@mail.gmail.com>
+ <b3a3ede2-22d5-b13d-f245-7c3b40ea411a@nvidia.com>
+ <a2c5c1d4-500b-6dad-d4ab-339154624c43@nvidia.com>
+Message-ID: <18f44f67-ba81-98d6-67d9-c6ddbb3c9302@nvidia.com>
+Date:   Fri, 8 Jan 2021 11:33:31 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20201223111633.1711477-1-zhang.lyra@gmail.com> <20210108022545.GA1744725@robh.at.kernel.org>
-In-Reply-To: <20210108022545.GA1744725@robh.at.kernel.org>
-From:   Chunyan Zhang <zhang.lyra@gmail.com>
-Date:   Fri, 8 Jan 2021 19:33:24 +0800
-Message-ID: <CAAfSe-svn4ACvhk3McO7APLLSKdC=9ei7bvmD9ZhnSosnLQ1AA@mail.gmail.com>
-Subject: Re: [RFC PATCH 1/2] dt-bindings: iommu: add bindings for sprd iommu
-To:     Rob Herring <robh@kernel.org>
-Cc:     Joerg Roedel <joro@8bytes.org>, iommu@lists.linux-foundation.org,
-        DTML <devicetree@vger.kernel.org>,
-        Baolin Wang <baolin.wang7@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Orson Zhai <orsonzhai@gmail.com>,
-        Sheng Xu <sheng.xu@unisoc.com>,
-        Kevin Tang <kevin.tang@unisoc.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <a2c5c1d4-500b-6dad-d4ab-339154624c43@nvidia.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
+X-Originating-IP: [172.20.145.6]
+X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1610105618; bh=E2T06x4spWYNF2pWJ3DV1KaBnD+2MtnlPvmF7IoJDAA=;
+        h=Subject:From:To:CC:References:Message-ID:Date:User-Agent:
+         MIME-Version:In-Reply-To:Content-Type:Content-Language:
+         Content-Transfer-Encoding:X-Originating-IP:X-ClientProxiedBy;
+        b=HNx7oyBTuCOKaDcKlAYfoNqMi3K8AqdYOh13qQ9jY66wuomGM+ECLZq2pay8AJMQI
+         AndHThEOXUqONBPEAA2+DjPOln6xTxqGn/h6BkIzvzgLxy4MKET6EnPfNU3DOdkuoO
+         /g4sJbjPNAaAbJbD344Ozu0iLSK0w+OFyORjbhhuuKLZU5NMtOly2Y49hjhJGwuUWn
+         eKWVMlM9gl4pOCDMlalNnuOJPTx0PP1CCpwNtaxkTyf1yzXHCLRHqpxue1S35rvyss
+         uzP6eN73+n+Hn5r65yXlv3+uXmM/K5ziyK1g03/DS+lPZuN5CPxObUxcP2lhk55oPj
+         L5VHv/U7u0lYA==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 8 Jan 2021 at 10:25, Rob Herring <robh@kernel.org> wrote:
->
-> On Wed, Dec 23, 2020 at 07:16:32PM +0800, Chunyan Zhang wrote:
-> > From: Chunyan Zhang <chunyan.zhang@unisoc.com>
-> >
-> > This patch only adds bindings to support display iommu, support for others
-> > would be added once finished tests with those devices, such as Image
-> > codec(jpeg) processor, a few signal processors, including VSP(video),
-> > GSP(graphic), ISP(image), and camera CPP, etc.
-> >
-> > Signed-off-by: Chunyan Zhang <chunyan.zhang@unisoc.com>
-> > ---
-> >  .../devicetree/bindings/iommu/sprd,iommu.yaml | 44 +++++++++++++++++++
-> >  1 file changed, 44 insertions(+)
-> >  create mode 100644 Documentation/devicetree/bindings/iommu/sprd,iommu.yaml
-> >
-> > diff --git a/Documentation/devicetree/bindings/iommu/sprd,iommu.yaml b/Documentation/devicetree/bindings/iommu/sprd,iommu.yaml
-> > new file mode 100644
-> > index 000000000000..4d9a578a7cc9
-> > --- /dev/null
-> > +++ b/Documentation/devicetree/bindings/iommu/sprd,iommu.yaml
-> > @@ -0,0 +1,44 @@
-> > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> > +# Copyright 2020 Unisoc Inc.
-> > +%YAML 1.2
-> > +---
-> > +$id: http://devicetree.org/schemas/iommu/sprd,iommu.yaml#
-> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> > +
-> > +title: Unisoc IOMMU and Multi-media MMU
-> > +
-> > +maintainers:
-> > +  - Chunyan Zhang <zhang.lyra@gmail.com>
-> > +
-> > +properties:
-> > +  compatible:
-> > +    enum:
-> > +      - sprd,iommu-disp
->
-> Needs to be Soc specific.
 
-All SoCs so far use the same iommu IP, there's a little different
-among different iommu users.
+On 08/01/2021 10:54, Jon Hunter wrote:
+>=20
+> On 08/01/2021 08:00, Sameer Pujar wrote:
+>=20
+> ...
+>=20
+>>>>> Signed-off-by: Peter Geis <pgwipeout@gmail.com>
+>>>>> Tested-by: Ion Agorria <ion@agorria.com>
+>>>>> ---
+>>>>> =C2=A0=C2=A0 sound/pci/hda/hda_tegra.c | 3 +--
+>>>>> =C2=A0=C2=A0 1 file changed, 1 insertion(+), 2 deletions(-)
+>>>>>
+>>>>> diff --git a/sound/pci/hda/hda_tegra.c b/sound/pci/hda/hda_tegra.c
+>>>>> index 70164d1428d4..f8d61e677a09 100644
+>>>>> --- a/sound/pci/hda/hda_tegra.c
+>>>>> +++ b/sound/pci/hda/hda_tegra.c
+>>>>> @@ -388,8 +388,7 @@ static int hda_tegra_first_init(struct azx
+>>>>> *chip, struct platform_device *pdev)
+>>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * in pow=
+ers of 2, next available ratio is 16 which can be
+>>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * used a=
+s a limiting factor here.
+>>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 */
+>>>>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (of_device_is_compatible(np,=
+ "nvidia,tegra194-hda"))
+>>>>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0 chip->bus.core.sdo_limit =3D 16;
+>>>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 chip->bus.core.sdo_limit =3D 16=
+;
+>>>> Future Tegra chips address this problem and hence cannot be enforced b=
+y
+>>>> default. May be we can have like below:
+>>>>
+>>>> if (of_device_is_compatible(np, "nvidia,tegra30-hda"))
+>>>> chip->bus.core.sdo_limit =3D 16;
+>>>>
+>>> It will need to be a bit more complicated than that, since the
+>>> tegra186 and tegra210 device trees have "nvidia,tegra30-hda" as a
+>>> fallback.
+>>> Looking at the generation map, tegra30-hda can be the fallback for the
+>>> broken implementation and tegra210-hda can be the fallback for the
+>>> working implementation.
+>>> Does that work for you?
+>>
+>> As per above explanation, it is fine to apply the workaround for
+>> Tegra210/186 as well. So it simplifies things for all existing chips.
+>=20
+>=20
+> FYI ... we now have minimal support for Tegra234 in upstream that should
+> not require this. Given that the Tegra234 device-tree does not include
+> support for HDA yet, I think it is fine to apply this as-is. However,
+> once we do add support for Tegra234 HDA, then we should ensure that this
+> is not applied. So that said ...
+>=20
+> Reviewed-by: Jon Hunter <jonathanh@nvidia.com>
 
-> Is this block specific to display subsys or
-> that just happens to be where the instance is?
 
-This iommu driver can serve many subsystem devices, such as Video,
-Camera, Image, etc., but they have their own iommu module which looks
-like a subdevice embedded in the master devices.
-I will add more compatible strings for those devices when needed.
-For now, only this one was listed here because I just tested this
-iommu driver with DPU only.
+Sorry I was chatting with Sameer offline and we think if we just switch
+the test to the following then this will take care of Tegra234 when we
+add it ...
 
-Thanks for the review.
+    if (of_device_is_compatible(np, "nvidia,tegra30-hda"))
 
-Chunyan
+Peter, would you be able to send a V2 with this?
 
->
-> > +
-> > +  reg:
-> > +    maxItems: 1
-> > +
-> > +  "#iommu-cells":
-> > +    const: 0
-> > +    description:
-> > +      Unisoc IOMMUs are all single-master IOMMU devices, therefore no
-> > +      additional information needs to associate with its master device.
-> > +      Please refer to the generic bindings document for more details,
-> > +      Documentation/devicetree/bindings/iommu/iommu.txt
-> > +
-> > +required:
-> > +  - compatible
-> > +  - reg
-> > +  - "#iommu-cells"
-> > +
-> > +additionalProperties: false
-> > +
-> > +examples:
-> > +  - |
-> > +    iommu_disp: iommu@63000000 {
-> > +      compatible = "sprd,iommu-disp";
-> > +      reg = <0x63000000 0x880>;
-> > +      #iommu-cells = <0>;
-> > +    };
-> > +
-> > +...
-> > --
-> > 2.25.1
-> >
+Thanks!
+Jon
+
+--=20
+nvpublic
