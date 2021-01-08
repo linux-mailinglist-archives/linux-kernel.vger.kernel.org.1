@@ -2,111 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 66F512EF84F
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 20:42:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B8AEE2EF856
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 20:44:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729002AbhAHTmD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Jan 2021 14:42:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47120 "EHLO
+        id S1729039AbhAHTmh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Jan 2021 14:42:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47208 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727102AbhAHTmD (ORCPT
+        with ESMTP id S1727102AbhAHTmg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Jan 2021 14:42:03 -0500
-Received: from mail-oi1-x230.google.com (mail-oi1-x230.google.com [IPv6:2607:f8b0:4864:20::230])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF6A4C061380;
-        Fri,  8 Jan 2021 11:41:22 -0800 (PST)
-Received: by mail-oi1-x230.google.com with SMTP id d203so12666597oia.0;
-        Fri, 08 Jan 2021 11:41:22 -0800 (PST)
+        Fri, 8 Jan 2021 14:42:36 -0500
+Received: from mail-io1-xd36.google.com (mail-io1-xd36.google.com [IPv6:2607:f8b0:4864:20::d36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02432C061381;
+        Fri,  8 Jan 2021 11:41:56 -0800 (PST)
+Received: by mail-io1-xd36.google.com with SMTP id t8so10881709iov.8;
+        Fri, 08 Jan 2021 11:41:55 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=sender:subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=bloxaOqCPwKMlXiotLGhy7r42MyPMqUNsVDO+0panUs=;
-        b=Q2DzmpC6G2Ho+ySgesuMl1NfH6wgvOBvMZMqDPTmWwZwzJaVdGXpVMAhro6CX4tRcq
-         S9Uvu5qVrQ/H86tGDUh4OAoxNSYhEsNukqWtRGZ9R8aHSiXu8VIMWeFoTRXGow6ffZYO
-         H3ydzODDh6Llg7GAsQqLjX8Ad7ShyJo8bDPR87i47yAiQ+TdVEkjKn97oWC++DecWqjD
-         WZdSuHbhf1HRiVX1as76/AbKbRp67ExuQ29fvyeoRJW9+W/qUyy3Xy/HFDCedjQ7HZEb
-         e87xvAR18pSwDwvbalm6HE8whTUkkO7n5G5aTYj4nBichdWM9DZ2m6NuJiaBPTHMNIgb
-         Q6Tw==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=zSmK740YSdua1TBiaZGc3pU7A4XjUf+hqO+Eu7pIgDI=;
+        b=LW6/Fu2oT4YXtfLepXFJm6iCV4xwMhI8o0+4ymU9z0ZZhfz0bHubL5e/n0vVs9C1DD
+         OfqvuNTha/IcdyfYhNfDvqYmqp3n/nZhU8nJ/+fDuaqCDIeTiby1x8eZf2wwXGFQr0p5
+         S6oNr3FTpIETmHLW+AI56KVw+ZuNKFafn3+YYZs88E5s0281PKCBQ9B8AtzSkoX7lYPn
+         PTnfRhFqMHqXYi1UZ0fw38Fs8Rda9m2GwSkmD92yI2xQWz9m4io0dQlsuHKfY6HqfTps
+         ZetEqqVa/j94gAns0YWmalgVswJErJaqZ1fX92ES0o+PJClXex8JBYGrkYwdUiAGBItN
+         tUcg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:subject:to:cc:references:from:message-id
-         :date:user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=bloxaOqCPwKMlXiotLGhy7r42MyPMqUNsVDO+0panUs=;
-        b=SEt5UUEIG0D3555jaL2+NrkXfm69PdCwH4yVcFKe5qFHWEfE00RxwNA21gBnTKoaa9
-         03FTyQr7T/XBKrZCm695e8N0P3MDeooUDz9DTcaZf9pO9wfLUbR1YVnfElBdJNzudE8+
-         hzDR+PBygAUfH+JGuQDSI1GWenMEJp5MA3K1mV1Tnko7WOOyFyVk9EOHDi15fFRf7Es+
-         RS0USW2B7qc41D4N6+/jQ6ZsYQXbQij+wbkTho686KeqhvwTC7w9zlZlfL+kKaB6nmOz
-         C23aL5wlg2ShI0fbEbfAlKa3CZZpP4T+mjd5NmHqJHXF2UP/sSWHtYQQJl+Vnha1911W
-         PVcQ==
-X-Gm-Message-State: AOAM533WHyGmHyQu6I0PQ5Z4Kpv+Ji7kfPutXseBmeXaXEJz2qAl6/cS
-        viVkb4u4xo8HWyYIMDpfPPM=
-X-Google-Smtp-Source: ABdhPJxbMX6pytlq+5CKW1fXJu7TJe79uCuJJ3Ws0aKgQt7kTLqX8B6mwICmkpDxQwsivSHS4Qg0dg==
-X-Received: by 2002:aca:3784:: with SMTP id e126mr3332568oia.170.1610134882338;
-        Fri, 08 Jan 2021 11:41:22 -0800 (PST)
-Received: from localhost.localdomain (cpe-24-31-245-230.kc.res.rr.com. [24.31.245.230])
-        by smtp.gmail.com with ESMTPSA id t72sm2130001oie.47.2021.01.08.11.41.20
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 08 Jan 2021 11:41:21 -0800 (PST)
-Sender: Larry Finger <larry.finger@gmail.com>
-Subject: Re: [PATCH] drivers: net: wireless: rtlwifi: fix bool comparison in
- expressions
-To:     Aditya Srivastava <yashsri421@gmail.com>,
-        linux-wireless@vger.kernel.org
-Cc:     pkshih@realtek.com, kvalo@codeaurora.org, davem@davemloft.net,
-        kuba@kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        lukas.bulwahn@gmail.com
-References: <20210108153208.24065-1-yashsri421@gmail.com>
-From:   Larry Finger <Larry.Finger@lwfinger.net>
-Message-ID: <3c121981-1468-fc9d-7813-483246066cc4@lwfinger.net>
-Date:   Fri, 8 Jan 2021 13:41:20 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=zSmK740YSdua1TBiaZGc3pU7A4XjUf+hqO+Eu7pIgDI=;
+        b=awma8rxQWEy46NL4IuEzt+c5O9N590ZA9nOHRRBSDvCA6iYuLM15VGSLdK/QmKj/yP
+         3gKzyazhzLkGaZOURIEr2WNv+T06QL6Qouz8JLkw3A3HH+wC36qQOz/+2hj8tz0b80h4
+         PscU2Qujoi4IhSA7EHNUC5T3t1M/u5uU253ObT7wt13pUIbGvjSQS8ZKQl/h/n2e8NDC
+         jnYzS6o4xHVWCgjdn8kvw878hizfohO61RAioZgxBOBs+kfV5XJk/WjQ0ei05z85lcz0
+         +glgjClUMRT3FBzgU6GYyLqtqzd3YVtIit5Qu4jfLbs5boRqKQCgGyoPWlQDxLQIL7RR
+         9vXQ==
+X-Gm-Message-State: AOAM531XAzEqbgaQSIHVxZIcyVGo8Vfy5c/ViA877PNhPPL8VtcNDkjG
+        iGgcWSfYDVBQl5h2obpOM+5lXKYWBtabNJRBr00=
+X-Google-Smtp-Source: ABdhPJwq1Rd1SbLe6o1CWs/FYa17fyAKdBlHca8n7J8SjDNBccWpz4vD4mILV6JXy3UkMSr+b1ePjmNtmW5XC/q8MZ0=
+X-Received: by 2002:a05:6638:296:: with SMTP id c22mr4786311jaq.65.1610134915220;
+ Fri, 08 Jan 2021 11:41:55 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20210108153208.24065-1-yashsri421@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20201230084338.19410-1-tony@atomide.com> <CAHCN7xJmwcUOpoza-LNxTAbRNb9ToERnBNuKboP86DSBdtS61A@mail.gmail.com>
+ <7C9106E0-FC75-4056-AD5F-16CCFA9C24E5@goldelico.com> <X/gIO9Ta3JPDaeV3@atomide.com>
+ <CAHCN7xKzeqabm5YJbNS_jcENnhxdU9tAuhWZv81xJA7VbaW6NA@mail.gmail.com> <CAHCN7xJNk=2_Kx4XS3asxcxVGZXaTZgmCkpoFGFHdOQuM3aKCQ@mail.gmail.com>
+In-Reply-To: <CAHCN7xJNk=2_Kx4XS3asxcxVGZXaTZgmCkpoFGFHdOQuM3aKCQ@mail.gmail.com>
+From:   Adam Ford <aford173@gmail.com>
+Date:   Fri, 8 Jan 2021 13:41:44 -0600
+Message-ID: <CAHCN7xJkA1yi_AM-VjmsVC-cRCF4HX7byP2K1vUHAmDuiGAH_A@mail.gmail.com>
+Subject: Re: [PATCH 1/3] thermal: ti-soc-thermal: Fix stuck sensor with
+ continuous mode for 4430
+To:     Tony Lindgren <tony@atomide.com>
+Cc:     "H. Nikolaus Schaller" <hns@goldelico.com>,
+        Amit Kucheria <amitk@kernel.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Eduardo Valentin <edubezval@gmail.com>,
+        Keerthy <j-keerthy@ti.com>, linux-pm@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux-OMAP <linux-omap@vger.kernel.org>,
+        Carl Philipp Klemm <philipp@uvos.xyz>,
+        Merlijn Wajer <merlijn@wizzup.org>,
+        Pavel Machek <pavel@ucw.cz>,
+        Peter Ujfalusi <peter.ujfalusi@gmail.com>,
+        Sebastian Reichel <sre@kernel.org>,
+        Andreas Kemnade <andreas@kemnade.info>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 1/8/21 9:32 AM, Aditya Srivastava wrote:
-> There are certain conditional expressions in rtlwifi, where a boolean
-> variable is compared with true/false, in forms such as (foo == true) or
-> (false != bar), which does not comply with checkpatch.pl (CHECK:
-> BOOL_COMPARISON), according to which boolean variables should be
-> themselves used in the condition, rather than comparing with true/false
-> 
-> E.g., in drivers/net/wireless/realtek/rtlwifi/ps.c,
-> "if (find_p2p_ie == true)" can be replaced with "if (find_p2p_ie)"
-> 
-> Replace all such expressions with the bool variables appropriately
-> 
-> Signed-off-by: Aditya Srivastava<yashsri421@gmail.com>
-> ---
-> - The changes made are compile tested
-> - Applies perfecly on next-20210108
-> 
->   drivers/net/wireless/realtek/rtlwifi/ps.c                 | 4 ++--
->   drivers/net/wireless/realtek/rtlwifi/rtl8188ee/dm.c       | 8 ++++----
->   drivers/net/wireless/realtek/rtlwifi/rtl8188ee/hw.c       | 4 ++--
->   drivers/net/wireless/realtek/rtlwifi/rtl8192c/dm_common.c | 4 ++--
->   drivers/net/wireless/realtek/rtlwifi/rtl8192se/hw.c       | 4 ++--
->   drivers/net/wireless/realtek/rtlwifi/rtl8821ae/phy.c      | 8 ++++----
->   6 files changed, 16 insertions(+), 16 deletions(-)
+On Fri, Jan 8, 2021 at 12:31 PM Adam Ford <aford173@gmail.com> wrote:
+>
+> On Fri, Jan 8, 2021 at 7:45 AM Adam Ford <aford173@gmail.com> wrote:
+> >
+> > On Fri, Jan 8, 2021 at 1:22 AM Tony Lindgren <tony@atomide.com> wrote:
+> > >
+> > > * H. Nikolaus Schaller <hns@goldelico.com> [201230 13:29]:
+> > > > > Am 30.12.2020 um 13:55 schrieb Adam Ford <aford173@gmail.com>:
+> > > > > On Wed, Dec 30, 2020 at 2:43 AM Tony Lindgren <tony@atomide.com> wrote:
+> > > > >>
+> > > > >> At least for 4430, trying to use the single conversion mode eventually
+> > > > >> hangs the thermal sensor. This can be quite easily seen with errors:
+> > > > >>
+> > > > >> thermal thermal_zone0: failed to read out thermal zone (-5)
+> > > ...
+> > >
+> > > > > I don't have an OMAP4, but if you want, I can test a DM3730.
+> > > >
+> > > > Indeed I remember a similar discussion from the DM3730 [1]. temp values were
+> > > > always those from the last measurement. E.g. the first one was done
+> > > > during (cold) boot and the first request after 10 minutes did show a
+> > > > quite cold system... The next one did show a hot system independent
+> > > > of what had been between (suspend or high activity).
+> > > >
+> > > > It seems as if it was even reproducible with a very old kernel on a BeagleBoard.
+> > > > So it is quite fundamental.
+> > > >
+> > > > We tried to fix it but did not come to a solution [2]. So we opened an issue
+> > > > in our tracker [3] and decided to stay with continuous conversion although this
+> > > > raises idle mode processor load.
+> > >
+> > > Hmm so maybe eocz high always times out in single mode since it also
+> > > triggers at least on dra7?
+> > >
+> > > Yes it would be great if you guys can the $subject patch a try at
+> > > least on your omap36xx and omap5 boards and see if you see eocz
+> > > time out warnings in dmesg.
 
-As has been stated several times, this form of the subject is incorrect. It 
-should be: "rtlwifi: <driver_name>: <subject>
 
-I would prefer that there be separate patches for each driver, not that the 
-changes be lumped into a single patch as was done here. Such organization makes 
-it a lot easier to find the patches for a given driver in case something goes 
-wrong.Note: The driver for ps is rtl_pci, and that for rtl8192c is 
-rtl8192c-common. The other driver names match their directory.
+I do see chatter.
 
-Larry
+[   15.531005] ti-soc-thermal 48002524.bandgap: eocz timed out waiting low
+[   16.571075] ti-soc-thermal 48002524.bandgap: eocz timed out waiting low
+[   17.610961] ti-soc-thermal 48002524.bandgap: eocz timed out waiting low
 
+and it repeats quite often.
+
+I would say this patch series would cause a regression on the DM3730.
+
+adam
+
+
+> >
+> > I should be able to try it on the dm3730 logicpd-torpedo kit this weekend.
+>
+> I am going to be a bit delayed testing this.  I cannot boot omap2plus
+> using Linux version 5.11.0-rc2.
+>
+> [    2.666748] nand: device found, Manufacturer ID: 0x2c, Chip ID: 0xbc
+> [    2.673309] nand: Micron MT29F4G16ABBDA3W
+> [    2.677368] nand: 512 MiB, SLC, erase size: 128 KiB, page size:
+> 2048, OOB size: 64
+> [    2.685119] nand: using OMAP_ECC_BCH8_CODE_HW_DETECTION_SW
+> [    2.693237] Invalid ECC layout
+> [    2.696350] omap2-nand 30000000.nand: unable to use BCH library
+> [    2.702575] omap2-nand: probe of 30000000.nand failed with error -22
+> [    2.716094] 8<--- cut here ---
+> [    2.719207] Unable to handle kernel NULL pointer dereference at
+> virtual address 00000018
+> [    2.727600] pgd = (ptrval)
+> ...
+> [    3.050933] ---[ end trace 59640c7399a80a07 ]---
+> [    3.055603] Kernel panic - not syncing: Attempted to kill init!
+> exitcode=0x0000000b
+> [    3.063323] ---[ end Kernel panic - not syncing: Attempted to kill
+> init! exitcode=0x0000000b ]---
+>
+> Once I get past this, I'll try to test the thermal stuff.
+>
+> adam
+>
+> >
+> > adam
+> > >
+> > > Regards,
+> > >
+> > > Tony
