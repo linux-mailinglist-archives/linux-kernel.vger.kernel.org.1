@@ -2,201 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2A792EFB91
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Jan 2021 00:09:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 019DE2EFB93
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Jan 2021 00:09:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726216AbhAHXJN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Jan 2021 18:09:13 -0500
+        id S1726319AbhAHXJ3 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 8 Jan 2021 18:09:29 -0500
 Received: from mga06.intel.com ([134.134.136.31]:9024 "EHLO mga06.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725792AbhAHXJN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Jan 2021 18:09:13 -0500
-IronPort-SDR: Dd62keH5wgGBUts/P7MxkAPxHBjbypi7stBYS/4xZ9INZkKuRaz2i9MumxnfZhC5mHChXXsgvT
- Hyu1yTL3VYgw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9858"; a="239215278"
+        id S1725792AbhAHXJ2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 Jan 2021 18:09:28 -0500
+IronPort-SDR: 1zAMVA1Q2xSzCU18L2qOrgDzGvN9sh+v7fPIFxiKui49eIG7/ImSecpa3Jd564KK/xfceXCjSt
+ TY1XRZbcuyZw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9858"; a="239215312"
 X-IronPort-AV: E=Sophos;i="5.79,333,1602572400"; 
-   d="scan'208";a="239215278"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jan 2021 15:08:32 -0800
-IronPort-SDR: JZ33hczM9onetPVKLBDrZmdhvcv4GF2L/26Jy7q1oFglPzsD5lsTIXbx5zwyir4Y7BEJPsNPD0
- I0SJizQRIxiQ==
+   d="scan'208";a="239215312"
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jan 2021 15:08:59 -0800
+IronPort-SDR: +ofVZIE9INDn8Rs02famlryxSS4bKsPILtr6un1eWfK1B2Zc3b2OGsDZ7fD8E6NxUSpLZ/XztJ
+ TgONT3kizRvQ==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.79,333,1602572400"; 
-   d="scan'208";a="423101009"
-Received: from lkp-server01.sh.intel.com (HELO 412602b27703) ([10.239.97.150])
-  by orsmga001.jf.intel.com with ESMTP; 08 Jan 2021 15:08:22 -0800
-Received: from kbuild by 412602b27703 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1ky0rm-0000jZ-7f; Fri, 08 Jan 2021 23:08:22 +0000
-Date:   Sat, 09 Jan 2021 07:07:48 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:x86/asm] BUILD SUCCESS
- 5c99720b28381bb400d4f546734c34ddaf608761
-Message-ID: <5ff8e5c4.tiRbLPPqVxEQDJch%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+   d="scan'208";a="568217572"
+Received: from fmsmsx605.amr.corp.intel.com ([10.18.126.85])
+  by fmsmga006.fm.intel.com with ESMTP; 08 Jan 2021 15:08:59 -0800
+Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
+ fmsmsx605.amr.corp.intel.com (10.18.126.85) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Fri, 8 Jan 2021 15:08:59 -0800
+Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
+ fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Fri, 8 Jan 2021 15:08:58 -0800
+Received: from fmsmsx610.amr.corp.intel.com ([10.18.126.90]) by
+ fmsmsx610.amr.corp.intel.com ([10.18.126.90]) with mapi id 15.01.1713.004;
+ Fri, 8 Jan 2021 15:08:58 -0800
+From:   "Luck, Tony" <tony.luck@intel.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+CC:     Borislav Petkov <bp@alien8.de>, "x86@kernel.org" <x86@kernel.org>,
+        "Andrew Morton" <akpm@linux-foundation.org>,
+        Darren Hart <dvhart@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-edac@vger.kernel.org" <linux-edac@vger.kernel.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>
+Subject: RE: [PATCH 2/2] futex, x86/mce: Avoid double machine checks
+Thread-Topic: [PATCH 2/2] futex, x86/mce: Avoid double machine checks
+Thread-Index: AQHW5gzS994+pBz0+EqmRhsWwoX/Iaoe2m6A//9/AZA=
+Date:   Fri, 8 Jan 2021 23:08:58 +0000
+Message-ID: <4493a015ffcd4d82bbea7d1e5c2e73e4@intel.com>
+References: <20210108222251.14391-1-tony.luck@intel.com>
+ <20210108222251.14391-3-tony.luck@intel.com>
+ <20210108224715.GB2453@worktop.programming.kicks-ass.net>
+In-Reply-To: <20210108224715.GB2453@worktop.programming.kicks-ass.net>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+dlp-product: dlpe-windows
+dlp-reaction: no-action
+dlp-version: 11.5.1.3
+x-originating-ip: [10.1.200.100]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git  x86/asm
-branch HEAD: 5c99720b28381bb400d4f546734c34ddaf608761  x86/asm: Add a missing __iomem annotation in enqcmds()
+> I think this is horrid; why can't we have it return something different
+> then -EFAULT instead?
 
-elapsed time: 722m
+I did consider this ... but it appears that architectures aren't unified in the
+return value from get_user()
 
-configs tested: 139
-configs skipped: 79
+Here's another function involved in the futex call chain leading to this:
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+static int get_futex_value_locked(u32 *dest, u32 __user *from)
+{
+        int ret;
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-powerpc                 xes_mpc85xx_defconfig
-powerpc                 mpc832x_rdb_defconfig
-arm                       imx_v6_v7_defconfig
-x86_64                              defconfig
-openrisc                            defconfig
-powerpc                      arches_defconfig
-mips                        qi_lb60_defconfig
-powerpc                     sbc8548_defconfig
-openrisc                 simple_smp_defconfig
-sh                           se7780_defconfig
-powerpc                      mgcoge_defconfig
-mips                      malta_kvm_defconfig
-m68k                        mvme16x_defconfig
-powerpc                         wii_defconfig
-riscv                          rv32_defconfig
-m68k                             alldefconfig
-openrisc                  or1klitex_defconfig
-parisc                generic-32bit_defconfig
-powerpc                        warp_defconfig
-arm                         socfpga_defconfig
-powerpc                       ebony_defconfig
-mips                         bigsur_defconfig
-arm                        realview_defconfig
-sh                            migor_defconfig
-powerpc                    sam440ep_defconfig
-mips                         tb0219_defconfig
-mips                      bmips_stb_defconfig
-powerpc                      ppc6xx_defconfig
-mips                  decstation_64_defconfig
-mips                        workpad_defconfig
-mips                        omega2p_defconfig
-sh                            titan_defconfig
-powerpc                      ppc64e_defconfig
-sh                        dreamcast_defconfig
-powerpc                           allnoconfig
-m68k                         apollo_defconfig
-powerpc64                           defconfig
-arm                       cns3420vb_defconfig
-m68k                        mvme147_defconfig
-sh                            shmin_defconfig
-powerpc                  iss476-smp_defconfig
-m68k                          hp300_defconfig
-sh                          polaris_defconfig
-mips                           ip27_defconfig
-mips                     loongson1c_defconfig
-ia64                        generic_defconfig
-arm                          pxa3xx_defconfig
-riscv                    nommu_virt_defconfig
-sh                           se7619_defconfig
-mips                           ip22_defconfig
-powerpc                  mpc885_ads_defconfig
-mips                malta_kvm_guest_defconfig
-powerpc                       ppc64_defconfig
-powerpc                     tqm8560_defconfig
-mips                         cobalt_defconfig
-powerpc                     pseries_defconfig
-arm                         lpc32xx_defconfig
-powerpc                     kilauea_defconfig
-m68k                             allyesconfig
-arc                          axs101_defconfig
-mips                           gcw0_defconfig
-mips                      pic32mzda_defconfig
-powerpc                mpc7448_hpc2_defconfig
-mips                      pistachio_defconfig
-arm                    vt8500_v6_v7_defconfig
-powerpc                      chrp32_defconfig
-arm                          lpd270_defconfig
-mips                           ci20_defconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-c6x                              allyesconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                               tinyconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-x86_64               randconfig-a004-20210108
-x86_64               randconfig-a006-20210108
-x86_64               randconfig-a001-20210108
-x86_64               randconfig-a002-20210108
-x86_64               randconfig-a003-20210108
-x86_64               randconfig-a005-20210108
-i386                 randconfig-a005-20210108
-i386                 randconfig-a002-20210108
-i386                 randconfig-a001-20210108
-i386                 randconfig-a003-20210108
-i386                 randconfig-a006-20210108
-i386                 randconfig-a004-20210108
-i386                 randconfig-a016-20210108
-i386                 randconfig-a011-20210108
-i386                 randconfig-a014-20210108
-i386                 randconfig-a015-20210108
-i386                 randconfig-a013-20210108
-i386                 randconfig-a012-20210108
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                            allmodconfig
-x86_64                                   rhel
-x86_64                           allyesconfig
-x86_64                    rhel-7.6-kselftests
-x86_64                               rhel-8.3
-x86_64                      rhel-8.3-kbuiltin
-x86_64                                  kexec
+        pagefault_disable();
+        ret = __get_user(*dest, from);
+        pagefault_enable();
 
-clang tested configs:
-x86_64               randconfig-a013-20210108
-x86_64               randconfig-a011-20210108
-x86_64               randconfig-a012-20210108
-x86_64               randconfig-a016-20210108
-x86_64               randconfig-a014-20210108
-x86_64               randconfig-a015-20210108
+        return ret ? -EFAULT : 0;
+}
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+It seems like the expectation here is just "zero or not" and we
+don't care what the "not" value is ... just turn it into -EFAULT.
+
+-Tony
