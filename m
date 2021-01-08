@@ -2,156 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB0642EF258
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 13:19:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7AA772EF272
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 13:21:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727790AbhAHMRx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Jan 2021 07:17:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34292 "EHLO
+        id S1727757AbhAHMUn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Jan 2021 07:20:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34900 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728156AbhAHMRn (ORCPT
+        with ESMTP id S1726133AbhAHMUl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Jan 2021 07:17:43 -0500
-Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81B17C0612FA;
-        Fri,  8 Jan 2021 04:17:01 -0800 (PST)
-Received: by mail-pj1-x102f.google.com with SMTP id z12so3552078pjn.1;
-        Fri, 08 Jan 2021 04:17:01 -0800 (PST)
+        Fri, 8 Jan 2021 07:20:41 -0500
+Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A07AC0612F4;
+        Fri,  8 Jan 2021 04:20:01 -0800 (PST)
+Received: by mail-ej1-x634.google.com with SMTP id w1so14149350ejf.11;
+        Fri, 08 Jan 2021 04:20:01 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=QJpmPSXBMkDyRpOAie8nEtiKxW2diZukk9pipJ57ovs=;
-        b=APSTOjBSR9NIMt2G+tAKvfWj2tZ4hY4e3e1aiF7JekWmZUQuDSiZ5IbRXu1/KhIooQ
-         J/HcWQyXi3KQ8+D3KlBShkw+3DV6P4O1wxDFt0b6FOjSvZOjWafWoGAE5gPV76cBRJEm
-         Trby4n2kGLMcOmuVcRt+XtceGuTyFfThWFR/vn0PxK22wx1n4JN5HZUiXRxrbyd94B1R
-         vwNFtlu1wjAJNAzTBHWOysPbZxTNUDeohmI4FYAlxbyEXEsJR4qwQI7U+VJiK8rIce49
-         UCcCgQVlofROPknaFgODvIv6KE0B/8oLY3ZGWbI6odx41TeD/9kCPg7pBagojBWs0pX9
-         gmyw==
+        bh=CMT5dGsMHSLpkqrgbCQ5MwkgGYzbIuBCTAWpR0U9n6c=;
+        b=n1nr2iFJPn1w+0Ja3QZrUJnxHYlJys9dJUs5U992Myoh7A1dKmrBZA6HbJpCptHX1e
+         VefhqYhXjgQBI5QQKz/SbHw61wAa4br6gd0Q+9YnCZis7j0El4asyOn7eKH2Wh8DMuj1
+         KFP6gdpZdi7xclj9b91TOyTFIGIlMPcSPXqpjm5bGD1DgxEjJGJU8eZThibDT6iQSJpj
+         wwMik0mpgBr6g2d5CgbuRswdQXOJ1ycnEk6GJ7pPPYlqW/4tMWWi68WqIFFp1BfuXkuw
+         3z9lnUTQJSwlaO3jGdlOR9wbYvDedQFzb8MtxJoYo+5ESpo/UWWN2NWq9g6F3QVSWr6z
+         c1rw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=QJpmPSXBMkDyRpOAie8nEtiKxW2diZukk9pipJ57ovs=;
-        b=kzWJdXbWtSVdYF6un2pC2l5x5uFmu+iPWhmo4sNz5Ad5uIB7syYNEMUVHno8CSedOQ
-         s5Re3PrCE2EXBrz+vl8Mvq7v5+iPL23Ilx4BXYhaMzSHQZVTxErhaHsYO2eE/93ATJQe
-         JLWkKnodJ8HWtqW1AToeCE66JfK2mGGYQXslo/cO7NDKCfxxS8SETU1obiEtY06/iZhX
-         2fQB4bfNaa7iwHpyUa3Be7Cmz2SIRgJC8xYPVJjx1OxMZiP1GfQR10NYs2lKx7ZQiEHA
-         XgzM8UT0edGCs+aIsn4YC5SVb5ucidiLKTvwUnJ9BqTLQz9W/H6ZQ1pIxgeqDvSJzAEl
-         ZYZA==
-X-Gm-Message-State: AOAM531yOEuXnIZwoycRCf0pjkNvWPzX+lXiQPOyUTXSUBQ+3M0eQtUv
-        HC4ZhwlTMDqxJRnzf6XuRRRlz2cEUJbJf0odauw=
-X-Google-Smtp-Source: ABdhPJyldR1piNAeKj9uIZ1Le/5wxh9TOr537qIrpxGvyxjo1onN4F4oe8SR/CXSTDkdvSzMQ7bZigw9hkKUqlRE4vo=
-X-Received: by 2002:a17:90a:c592:: with SMTP id l18mr3486365pjt.228.1610108221001;
- Fri, 08 Jan 2021 04:17:01 -0800 (PST)
+        bh=CMT5dGsMHSLpkqrgbCQ5MwkgGYzbIuBCTAWpR0U9n6c=;
+        b=XEJPYR++H3y0o7vP44hpFJn5I92DqxJw9ncebsbpNGpz/onrdzJ53vBq0FCXFujxWJ
+         m6SVHmG9MTflKYh84C2cwp6k0YAUhu5oG5u9BRXIZuy9xpXsQTnQxAw/iXkS+9fwtW6I
+         KW2Rg4ELBXI+dwobGzf7zpZf5IGm8yEeRL2I4x+bV+65NG8scpY78Mn0KMjyjpKI6t5p
+         Q89eGH6CHzYb0aeyDAuchrTrFHCGb7fkv6MHix1P3Hx1gk5/2Igf5xfHuaxc6JDAP93l
+         326/n9TisP0aDXh/RCjHUn9eol5XOu1LvfJCaKUW3spl6JIeRtWyDWQV5WE12YB6hxvi
+         x2WQ==
+X-Gm-Message-State: AOAM531p9FL7cUiFF0QIJY37PHhxUIQNgd9vuxxKzlP2V+leEoOL4hpI
+        bv4X3VlBwabIVJD38djDM3AYluGWMee5Y8k7ODw=
+X-Google-Smtp-Source: ABdhPJzRAJo80XQXhGAdeCbnNuTvVN6JmbxywmfM4xmGGorpYrDXJWue8z/2SCkfVT5smUpa5bvm3IdZrPo7A9ce8AU=
+X-Received: by 2002:a17:906:e250:: with SMTP id gq16mr2390315ejb.382.1610108399899;
+ Fri, 08 Jan 2021 04:19:59 -0800 (PST)
 MIME-Version: 1.0
-References: <20201130133129.1024662-1-djrscally@gmail.com> <20201130133129.1024662-19-djrscally@gmail.com>
- <20201130200719.GB4077@smile.fi.intel.com> <778f23fc-b99c-33a2-642d-ca0e47fd4ed5@gmail.com>
-In-Reply-To: <778f23fc-b99c-33a2-642d-ca0e47fd4ed5@gmail.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Fri, 8 Jan 2021 14:17:49 +0200
-Message-ID: <CAHp75VeYOqJt9iKaGPA4=dkb2kYUbqUV4PGTn8uSsnUt_kSGSw@mail.gmail.com>
-Subject: Re: [PATCH 18/18] ipu3: Add driver for dummy INT3472 ACPI device
-To:     Daniel Scally <djrscally@gmail.com>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        linux-i2c <linux-i2c@vger.kernel.org>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        devel@acpica.org, "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <lenb@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Wolfram Sang <wsa@kernel.org>, Yong Zhi <yong.zhi@intel.com>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Bingbu Cao <bingbu.cao@intel.com>,
-        Tian Shu Qiu <tian.shu.qiu@intel.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Robert Moore <robert.moore@intel.com>,
-        Erik Kaneda <erik.kaneda@intel.com>,
-        Petr Mladek <pmladek@suse.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        kieran.bingham+renesas@ideasonboard.com,
-        Jacopo Mondi <jacopo+renesas@jmondi.org>,
-        Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
-        Jordan Hand <jorhand@linux.microsoft.com>,
-        Tsuchiya Yuto <kitakar@gmail.com>,
-        "Krogerus, Heikki" <heikki.krogerus@linux.intel.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+References: <20201225012025.507803-1-pgwipeout@gmail.com> <20201225012025.507803-3-pgwipeout@gmail.com>
+ <0c3665b2-bac6-546a-bdd4-0ab7a90adf7c@nvidia.com> <CAMdYzYraT5AXzyscN3Pa+0FWZwHFsD-4ZwbA80kNxgtn7Y1PXw@mail.gmail.com>
+ <b3a3ede2-22d5-b13d-f245-7c3b40ea411a@nvidia.com> <a2c5c1d4-500b-6dad-d4ab-339154624c43@nvidia.com>
+ <18f44f67-ba81-98d6-67d9-c6ddbb3c9302@nvidia.com>
+In-Reply-To: <18f44f67-ba81-98d6-67d9-c6ddbb3c9302@nvidia.com>
+From:   Peter Geis <pgwipeout@gmail.com>
+Date:   Fri, 8 Jan 2021 07:19:48 -0500
+Message-ID: <CAMdYzYqwL32_=b3fFKFiOoXkDxZYyHsU68LxxzPSRbgPCeh+Mw@mail.gmail.com>
+Subject: Re: [PATCH 2/2] ALSA: hda/tegra: fix tegra-hda on tegra30 soc
+To:     Jon Hunter <jonathanh@nvidia.com>
+Cc:     Sameer Pujar <spujar@nvidia.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Peter De Schrijver <pdeschrijver@nvidia.com>,
+        Prashant Gaikwad <pgaikwad@nvidia.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Mohan Kumar <mkumard@nvidia.com>, linux-clk@vger.kernel.org,
+        linux-tegra@vger.kernel.org, linux-kernel@vger.kernel.org,
+        alsa-devel@alsa-project.org, Ion Agorria <ion@agorria.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 8, 2021 at 1:56 AM Daniel Scally <djrscally@gmail.com> wrote:
-> On 30/11/2020 20:07, Andy Shevchenko wrote:
-> > On Mon, Nov 30, 2020 at 01:31:29PM +0000, Daniel Scally wrote:
-
-...
-
-> > It's solely Windows driver design...
-> > Luckily I found some information and can clarify above table:
-> >
-> > 0x00 Reset
-> > 0x01 Power down
-> > 0x0b Power enable
-> > 0x0c Clock enable
-> > 0x0d LED (active high)
-> >
-> > The above text perhaps should go somewhere under Documentation.
+On Fri, Jan 8, 2021 at 6:33 AM Jon Hunter <jonathanh@nvidia.com> wrote:
 >
-> Coming back to this; there's a bit of an anomaly with the 0x01 Power
-> Down pin for at least one platform.  As listed above, the OV2680 on one
-> of my platforms has 3 GPIOs defined, and the table above gives them as
-> type Reset, Power down and Clock enable. I'd assumed from this table
-> that "power down" meant a powerdown GPIO (I.E. the one usually called
-> PWDNB in Omnivision datasheets and "powerdown" in drivers), but the
-> datasheet for the OV2680 doesn't list a separate reset and powerdown
-> pin, but rather a single pin that performs both functions.
+>
+> On 08/01/2021 10:54, Jon Hunter wrote:
+> >
+> > On 08/01/2021 08:00, Sameer Pujar wrote:
+> >
+> > ...
+> >
+> >>>>> Signed-off-by: Peter Geis <pgwipeout@gmail.com>
+> >>>>> Tested-by: Ion Agorria <ion@agorria.com>
+> >>>>> ---
+> >>>>>    sound/pci/hda/hda_tegra.c | 3 +--
+> >>>>>    1 file changed, 1 insertion(+), 2 deletions(-)
+> >>>>>
+> >>>>> diff --git a/sound/pci/hda/hda_tegra.c b/sound/pci/hda/hda_tegra.c
+> >>>>> index 70164d1428d4..f8d61e677a09 100644
+> >>>>> --- a/sound/pci/hda/hda_tegra.c
+> >>>>> +++ b/sound/pci/hda/hda_tegra.c
+> >>>>> @@ -388,8 +388,7 @@ static int hda_tegra_first_init(struct azx
+> >>>>> *chip, struct platform_device *pdev)
+> >>>>>            * in powers of 2, next available ratio is 16 which can be
+> >>>>>            * used as a limiting factor here.
+> >>>>>            */
+> >>>>> -       if (of_device_is_compatible(np, "nvidia,tegra194-hda"))
+> >>>>> -               chip->bus.core.sdo_limit = 16;
+> >>>>> +       chip->bus.core.sdo_limit = 16;
+> >>>> Future Tegra chips address this problem and hence cannot be enforced by
+> >>>> default. May be we can have like below:
+> >>>>
+> >>>> if (of_device_is_compatible(np, "nvidia,tegra30-hda"))
+> >>>> chip->bus.core.sdo_limit = 16;
+> >>>>
+> >>> It will need to be a bit more complicated than that, since the
+> >>> tegra186 and tegra210 device trees have "nvidia,tegra30-hda" as a
+> >>> fallback.
+> >>> Looking at the generation map, tegra30-hda can be the fallback for the
+> >>> broken implementation and tegra210-hda can be the fallback for the
+> >>> working implementation.
+> >>> Does that work for you?
+> >>
+> >> As per above explanation, it is fine to apply the workaround for
+> >> Tegra210/186 as well. So it simplifies things for all existing chips.
+> >
+> >
+> > FYI ... we now have minimal support for Tegra234 in upstream that should
+> > not require this. Given that the Tegra234 device-tree does not include
+> > support for HDA yet, I think it is fine to apply this as-is. However,
+> > once we do add support for Tegra234 HDA, then we should ensure that this
+> > is not applied. So that said ...
+> >
+> > Reviewed-by: Jon Hunter <jonathanh@nvidia.com>
+>
+>
+> Sorry I was chatting with Sameer offline and we think if we just switch
+> the test to the following then this will take care of Tegra234 when we
+> add it ...
+>
+>     if (of_device_is_compatible(np, "nvidia,tegra30-hda"))
+>
+> Peter, would you be able to send a V2 with this?
+>
+> Thanks!
+> Jon
+>
+> --
+> nvpublic
 
-All of them are GPIOs, the question here is how they are actually
-connected on PCB level and I have no answer to that. You have to find
-schematics somewhere.
-
-> Am I wrong to treat that as something that ought to be mapped as a
-> powerdown GPIO to the sensors? Or do you know of any other way to
-> reconcile that discrepancy?
-
-The GPIOs can go directly to the sensors or be a control pin for
-separate discrete power gates.
-So, we can do one of the following:
- a) present PD GPIO as fixed regulator;
- b) present PD & Reset GPIOs as regulator;
- c) provide them as is to the sensor and sensor driver must do what it
-considers right.
-
-Since we don't have schematics (yet?) and we have plenty of variations
-of sensors, I would go to c) and update the driver of the affected
-sensor as needed. Because even if you have separate discrete PD for
-one sensor on one platform there is no guarantee that it will be the
-same on another. Providing a "virtual" PD in a sensor that doesn't
-support it is the best choice I think. Let's hear what Sakari and
-other experienced camera sensor developers say.
-
-My vision is purely based on electrical engineering background,
-experience with existing (not exactly camera) sensor drivers and
-generic cases.
-
-> Failing that; the only way I can think to handle this is to register
-> proxy GPIO pins assigned to the sensors as you suggested previously, and
-> have them toggle the GPIO's assigned to the INT3472 based on platform
-> specific mapping data (I.E. we register a pin called "reset", which on
-> most platforms just toggles the 0x00 pin, but on this specific platform
-> would drive both 0x00 and 0x01 together. We're already heading that way
-> for the regulator consumer supplies so it's sort of nothing new, but I'd
-> still rather not if it can be avoided.
-
-
--- 
-With Best Regards,
-Andy Shevchenko
+Certainly, thank you all!
