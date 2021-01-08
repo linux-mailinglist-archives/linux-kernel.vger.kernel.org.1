@@ -2,70 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D00C92EF4CD
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 16:28:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 34A662EF4C7
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 16:26:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727611AbhAHP1R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Jan 2021 10:27:17 -0500
-Received: from smtp.asem.it ([151.1.184.197]:54745 "EHLO smtp.asem.it"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726683AbhAHP1Q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Jan 2021 10:27:16 -0500
-Received: from webmail.asem.it
-        by asem.it (smtp.asem.it)
-        (SecurityGateway 6.5.2)
-        with ESMTP id SG000699523.MSG 
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Jan 2021 16:26:02 +0100S
-Received: from ASAS044.asem.intra (172.16.16.44) by ASAS044.asem.intra
- (172.16.16.44) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Fri, 8 Jan
- 2021 16:26:00 +0100
-Received: from flavio-x.asem.intra (172.16.17.208) by ASAS044.asem.intra
- (172.16.16.44) with Microsoft SMTP Server id 15.1.1979.3 via Frontend
- Transport; Fri, 8 Jan 2021 16:26:00 +0100
-From:   Flavio Suligoi <f.suligoi@asem.it>
-To:     Mika Westerberg <mika.westerberg@linux.intel.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <lenb@kernel.org>
-CC:     <linux-gpio@vger.kernel.org>, <linux-acpi@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, Flavio Suligoi <f.suligoi@asem.it>
-Subject: [PATCH v1] Documentation: ACPI: add new rule for gpio-line-names
-Date:   Fri, 8 Jan 2021 16:24:47 +0100
-Message-ID: <20210108152447.116871-1-f.suligoi@asem.it>
-X-Mailer: git-send-email 2.25.1
+        id S1727482AbhAHP0e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Jan 2021 10:26:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35470 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726683AbhAHP0d (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 Jan 2021 10:26:33 -0500
+Received: from mail-yb1-xb33.google.com (mail-yb1-xb33.google.com [IPv6:2607:f8b0:4864:20::b33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1B82C061380;
+        Fri,  8 Jan 2021 07:25:52 -0800 (PST)
+Received: by mail-yb1-xb33.google.com with SMTP id x2so9657905ybt.11;
+        Fri, 08 Jan 2021 07:25:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=juapD2gtXExys3xTOoCmR/j5jceLJmjFhmJC+0q/QLc=;
+        b=RRtwjoIZsFWg2U+BKYYiija5PT1VcgximBT5SGO95WAYb92Jvxv8+/WvCaKgEdBESA
+         cdtt8MZvSelYKjQCIuuzi0GBe1V7usPmkADrAsjiqv3g1Lwz+TnXBHXdOJtpROUk3A3K
+         IbL0DCvQYtd+GD8tla7gOA1wJEJnhr7ZvzpVhykH88efwWFQc4C3Em6cPUSSETdhyRIN
+         ugBxD7R4xjKwDPgETz7W7CuCMIKlpJflQ12rJnprWh3DCHNB65ZOuGWZcv9dZ8RjVOQO
+         3wLq0gyt1ka/XnN3RO/6n76O1reEIjj5gR0CdD2oK/3C4oNZe7Dc3rQEYvmIHiCCUiBW
+         LHQQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=juapD2gtXExys3xTOoCmR/j5jceLJmjFhmJC+0q/QLc=;
+        b=Z+LK8T+UQM+SuaGtPyeV01Fu8P4TYAW2IjCypcLEVQDcR3WCBCDmlWwM8zF2eR1l7I
+         1n6Zj9HrtOlS6nvI9sYZSWphOq/ETY01rdXP7MXTtxApwcvKPjXydkTYbkoa4RarGoRS
+         ujSHaXrIlXnyZ/Z2POGWWZ+YhWUI+GviPQjnOoGS/zgQOGtzhjt8VIiiUK3TlAYfxlT+
+         BpML4rMhJnoxYAX83VO9aU0Xwt+DpAd5V34d5FtCs+SGf/xYmQU1g9tOduyTyMbVyI/G
+         SS4YG95m6preK5VbE66+tDK+iHMIcKgWTvl/lfFZM24aU7r8DasO/z5voeMqIZVxijYM
+         HbDg==
+X-Gm-Message-State: AOAM532xdLQxDLCbHOp97zOkD2IhY5lJYt9anNWyeFgKg1MDrYjWO2Ri
+        2e4oLJmkoKIX23QE7bgrq3xSDe8wWK3qo6HaoEQ=
+X-Google-Smtp-Source: ABdhPJzCcjH5HbBDMuYcsN+w+ydFlIO0VWc9zAfr0hfjXlE627jkbTSmTtMW94GclQrGSLZtzZgoneWgNpQFdlZth88=
+X-Received: by 2002:a25:40d:: with SMTP id 13mr6631073ybe.422.1610119552284;
+ Fri, 08 Jan 2021 07:25:52 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-SGHeloLookup-Result: pass smtp.helo=webmail.asem.it (ip=172.16.16.44)
-X-SGSPF-Result: none (smtp.asem.it)
-X-SGOP-RefID: str=0001.0A782F26.5FF87988.008D,ss=1,re=0.000,recu=0.000,reip=0.000,cl=1,cld=1,fgs=0 (_st=1 _vt=0 _iwf=0)
+References: <1610099389-28329-1-git-send-email-pnagar@codeaurora.org>
+In-Reply-To: <1610099389-28329-1-git-send-email-pnagar@codeaurora.org>
+From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Date:   Fri, 8 Jan 2021 16:25:41 +0100
+Message-ID: <CANiq72=y7gapKpVKFwu30jDpv4qswgo5K3+u5QMOY4dtacKX=Q@mail.gmail.com>
+Subject: Re: [RFC PATCH v2] selinux: security: Move selinux_state to a
+ separate page
+To:     Preeti Nagar <pnagar@codeaurora.org>
+Cc:     Arnd Bergmann <arnd@arndb.de>, jmorris@namei.org, serge@hallyn.com,
+        paul@paul-moore.com, stephen.smalley.work@gmail.com,
+        eparis@parisplace.org,
+        linux-security-module <linux-security-module@vger.kernel.org>,
+        selinux@vger.kernel.org, linux-arch <linux-arch@vger.kernel.org>,
+        psodagud@codeaurora.org, nmardana@codeaurora.org,
+        dsule@codeaurora.org, Joe Perches <joe@perches.com>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Nick Desaulniers <ndesaulniers@gooogle.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The gpio-line-names lists must respect some rules.
+On Fri, Jan 8, 2021 at 10:52 AM Preeti Nagar <pnagar@codeaurora.org> wrote:
+>
+> We want to seek your suggestions and comments on the idea and the changes
+> in the patch.
 
-This patch adds a new rule in documentation, to avoid
-the use of duplicate names in the same gpiochip.
+Not sure why I was Cc'd, but I have a quick comment nevertheless.
 
-Signed-off-by: Flavio Suligoi <f.suligoi@asem.it>
----
- Documentation/firmware-guide/acpi/gpio-properties.rst | 1 +
- 1 file changed, 1 insertion(+)
+> +#ifdef CONFIG_SECURITY_RTIC
+> +struct selinux_state selinux_state __rticdata;
+> +#else
+>  struct selinux_state selinux_state;
+> +#endif
 
-diff --git a/Documentation/firmware-guide/acpi/gpio-properties.rst b/Documentation/firmware-guide/acpi/gpio-properties.rst
-index b36aa3e743d8..4e264c16ddff 100644
---- a/Documentation/firmware-guide/acpi/gpio-properties.rst
-+++ b/Documentation/firmware-guide/acpi/gpio-properties.rst
-@@ -146,6 +146,7 @@ following rules (see also the examples):
-     other words, it is not mandatory to fill all the GPIO lines
-   - empty names are allowed (two quotation marks ``""`` correspond to an empty
-     name)
-+  - names inside one GPIO controller/expander must be unique
- 
- Example of a GPIO controller of 16 lines, with an incomplete list with two
- empty names::
--- 
-2.25.1
+If you define an empty __rticdata for the !CONFIG case, then we don't
+need #ifdefs for uses like this.
 
+Cheers,
+Miguel
