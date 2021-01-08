@@ -2,71 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B8172EF3AE
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 15:07:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B8542EF3B9
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 15:10:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727203AbhAHOGn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Jan 2021 09:06:43 -0500
-Received: from mail.kernel.org ([198.145.29.99]:43182 "EHLO mail.kernel.org"
+        id S1726653AbhAHOKS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Jan 2021 09:10:18 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43686 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726060AbhAHOGm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Jan 2021 09:06:42 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6804B22A99;
-        Fri,  8 Jan 2021 14:06:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610114761;
-        bh=3jX5hXs7jiG9pGlKdnhF/TF5Ic2HHIzfttWP/hld82Q=;
+        id S1725793AbhAHOKS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 Jan 2021 09:10:18 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0268E22525;
+        Fri,  8 Jan 2021 14:09:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1610114977;
+        bh=fjs87wmD1dhPTR3MDXSplx7dascsW/EY1STyOCAmXes=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=q9G0/kwesF/MXdw2x7sY0I6PyqyAp+Ndszsc99mblp4vCTP2HFCedHlLn2cZ9K2CM
-         idg9Qu7/ZnxbhTbPfGZ+A3IGHn23VhNbY1G5lLhsepYECjn3YHgKKr1wquwbfGZuuo
-         bo3+Sm9liGVQtdmCTLbEQIezUcuhREGGvItd+Kug=
-Date:   Fri, 8 Jan 2021 15:07:19 +0100
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     zhenwei pi <pizhenwei@bytedance.com>
-Cc:     arnd@arndb.de, pbonzini@redhat.com, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 2/2] misc: pvpanic: introduce module parameter 'events'
-Message-ID: <X/hnF0W+TMj36LDN@kroah.com>
-References: <20210108135223.2924507-1-pizhenwei@bytedance.com>
- <20210108135223.2924507-3-pizhenwei@bytedance.com>
+        b=kmWvRbk9mV7sNidMTbEW/3w5cx8bPc12n+7n7z/hFgGQWU7aZmKrx++KoYtd4OaFX
+         taVIFEYO3Xz0sTR4zRGZ1qvBSEAYTYi70BtMlj9APaO5D0eJj4hjRVTNvrJRfEk+GJ
+         quAK16/5j1/lSq57NaGJo5GWgNukj+PD1LunPd08CFC4MfxlV9OuB4QedvuptGm9Q7
+         O4jGrscXHjgRms6vKJhc3twlp87R0ld3iT2zUiRmsST2eHpXzzNqSNpZK2s3w364YV
+         ODP4n9CsGhvvf7a7J/lY0cYk/vtVgMZQgqpivwFhwCRKk4FyYXePF18voOoLT0Tg9E
+         hEvJSMHxsZQFg==
+Date:   Fri, 8 Jan 2021 14:09:32 +0000
+From:   Will Deacon <will@kernel.org>
+To:     Lu Baolu <baolu.lu@linux.intel.com>
+Cc:     Joerg Roedel <joro@8bytes.org>, Ashok Raj <ashok.raj@intel.com>,
+        Jacob Pan <jacob.jun.pan@linux.intel.com>,
+        Guo Kaijie <Kaijie.Guo@intel.com>,
+        Liu Yi L <yi.l.liu@intel.com>,
+        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/5] iommu/vt-d: Fix unaligned addresses for
+ intel_flush_svm_range_dev()
+Message-ID: <20210108140932.GA4811@willie-the-truck>
+References: <20201231005323.2178523-1-baolu.lu@linux.intel.com>
+ <20201231005323.2178523-2-baolu.lu@linux.intel.com>
+ <20210105190357.GA12182@willie-the-truck>
+ <f8c7f124-48ab-f74f-a5cb-51b0ca4785ac@linux.intel.com>
+ <9b26b7ac-b5c7-f38a-a078-b53a6b6bf375@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20210108135223.2924507-3-pizhenwei@bytedance.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <9b26b7ac-b5c7-f38a-a078-b53a6b6bf375@linux.intel.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 08, 2021 at 09:52:23PM +0800, zhenwei pi wrote:
-> Suggested by Paolo, add a module parameter that can be used to limit
-> which capabilities the driver uses.
+Hi Lu,
+
+On Fri, Jan 08, 2021 at 07:52:47AM +0800, Lu Baolu wrote:
+> On 2021/1/6 9:09, Lu Baolu wrote:
+> > On 2021/1/6 3:03, Will Deacon wrote:
+> > > On Thu, Dec 31, 2020 at 08:53:20AM +0800, Lu Baolu wrote:
+> > > > @@ -170,6 +172,22 @@ static void intel_flush_svm_range_dev
+> > > > (struct intel_svm *svm, struct intel_svm_d
+> > > >       }
+> > > >   }
+> > > > +static void intel_flush_svm_range_dev(struct intel_svm *svm,
+> > > > +                      struct intel_svm_dev *sdev,
+> > > > +                      unsigned long address,
+> > > > +                      unsigned long pages, int ih)
+> > > > +{
+> > > > +    unsigned long shift = ilog2(__roundup_pow_of_two(pages));
+> > > > +    unsigned long align = (1ULL << (VTD_PAGE_SHIFT + shift));
+> > > > +    unsigned long start = ALIGN_DOWN(address, align);
+> > > > +    unsigned long end = ALIGN(address + (pages <<
+> > > > VTD_PAGE_SHIFT), align);
+> > > > +
+> > > > +    while (start < end) {
+> > > > +        __flush_svm_range_dev(svm, sdev, start, align >>
+> > > > VTD_PAGE_SHIFT, ih);
+> > > > +        start += align;
+> > > > +    }
+> > > > +}
+> > > 
+> > > Given that this only seems to be called from
+> > > intel_invalidate_range(), which
+> > > has to compute 'pages' only to have it pulled apart again here,
+> > > perhaps it
+> > > would be cleaner for intel_flush_svm_range() to take something like an
+> > > 'order' argument instead?
+> > > 
+> > > What do you think?
+> > 
+> > We need to clean up here. It's duplicate with the qi_flush_piotlb()
+> > helper. I have a patch under testing for this. I will post it for review
+> > later.
 > 
-> Finally, the pvpanic guest driver works by the limitation of both
-> device capability and user setting.
+> I'm sorry, above reply is a little vague.
 > 
-> Signed-off-by: zhenwei pi <pizhenwei@bytedance.com>
-> ---
->  drivers/misc/pvpanic.c | 6 +++++-
->  1 file changed, 5 insertions(+), 1 deletion(-)
+> I meant to say, let's take 'pages' as the argument. We are going to use
+> qi_flush_piotlb() here to avoid duplicate QI interactions. The
+> qi_flush_piotlb() helper also takes 'pages', so keep 'pages' here will
+> make things easier.
 > 
-> diff --git a/drivers/misc/pvpanic.c b/drivers/misc/pvpanic.c
-> index e1023c7b8fb0..417f1086e764 100644
-> --- a/drivers/misc/pvpanic.c
-> +++ b/drivers/misc/pvpanic.c
-> @@ -19,6 +19,10 @@
->  #include <uapi/misc/pvpanic.h>
->  
->  static void __iomem *base;
-> +static unsigned int events = PVPANIC_PANICKED | PVPANIC_CRASH_LOADED;
-> +module_param(events, uint, 0644);
-> +MODULE_PARM_DESC(events, "set event limitation of pvpanic device");
+> My cleanup patch is for v5.12. Can you please take this for v5.11?
 
-I do not understand you wanting a module parameter as well as a sysfs
-file.  Why is this needed?  Why are you spreading this information out
-across different apis and locations?
+Ah sorry, I didn't realise that was your plan. Please just include this
+patch in a series of 2 when you post a fixed version of the trace event
+removal and then I'll queue them up next week, as I've already prepared
+the pull for today.
 
-Again, adding module parameters is almost never a good idea anymore,
-they are a pain to manage and use.
+Apologies,
 
-thanks,
-
-greg k-h
+Will
