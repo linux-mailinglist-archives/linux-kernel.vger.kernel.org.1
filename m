@@ -2,129 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D0A82EF1AB
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 12:54:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 669C02EF1B6
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 13:00:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726712AbhAHLyQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Jan 2021 06:54:16 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58984 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725884AbhAHLyP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Jan 2021 06:54:15 -0500
-Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 754D5C0612F4
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Jan 2021 03:53:35 -0800 (PST)
-Received: by mail-pj1-x102c.google.com with SMTP id v1so3518321pjr.2
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Jan 2021 03:53:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=GW5q2722koIbZXnDnSvwWdTVIWeItYho+2jBeLd21CQ=;
-        b=H2kYfvBdyX/hs0s4f/V4SVCbXiBDZvNV7nHlCFFj9Hivaz3hVXYb6c8D9A7NkS4+a+
-         GVrJmBTOwgLbI1Dyd1b+ixHcAiZoJbl8/4V/Y+WQ47gAK7ji8aAReFpnMhKOa2bbZ8z5
-         M4V5a1k0MGdrkeRXhOrauoTX82PlcHg0kQ3hxOIr0gjvakcNfBcfOcC3fO9TKGxyGn7r
-         yrPasq5bmubbz5KbAWqFIO/6SdGbEajkp4+MCkaTxs6Cu7rKj3BA/bhTz++qqtLkrixF
-         8oWV72jWjyE3dPvd+Pw/hCd2sXD3mJGm4QkSE4M38cqIkLPnEpQZgmFSfAVd3dVfA2Eg
-         i2Rg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=GW5q2722koIbZXnDnSvwWdTVIWeItYho+2jBeLd21CQ=;
-        b=nPVs9v2SJQTsZldHglCjnMAJZ3gJGJBiRWojTEzDftu4H32JZ+EcnQOUjOUu4DHAaQ
-         nCCnaVYTdUlzGPqwdGeWl9fXad39YcWGfw4WRJJc/oOissxENxo13mtnlnh4v6IZrReP
-         J4l6fTP79OqTcR2ssfju654eJXwcW7LbA3bFDMO/AUp/RcLsChuZMJcTNwPrk5xEHeRC
-         CscknnYrEWsR/VQSc0twLqlZS1u6wyNKYrFdgS0ln5xxg/4Sxya4aXm8/oODL3ImrP59
-         DW+JmRftOFoewvqiEeKmlfhSTHhEqPWP83825dTVPChtKcmktncWyWZoalfsqYlt8jK4
-         fMjA==
-X-Gm-Message-State: AOAM533Y69OJmr0rMrv/8c+toP8JlcSv7gSg5KABpUl9PnCVpNovdPil
-        uaRJlr+lOno4tDgA7kTkN8LyQrkMdfLt0xvQ+EuEzaeTRV5LDGuzfC0=
-X-Google-Smtp-Source: ABdhPJyYEuk6apHjhRQbzXazmjDwQQiU+D+mGB6hMBDpiuuuIqjPZIey46A90m26h64vrzoVndUSWOOV0CgSG4xhypI=
-X-Received: by 2002:a17:90a:5405:: with SMTP id z5mr3456077pjh.13.1610106814984;
- Fri, 08 Jan 2021 03:53:34 -0800 (PST)
+        id S1726500AbhAHL7r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Jan 2021 06:59:47 -0500
+Received: from mail-eopbgr760105.outbound.protection.outlook.com ([40.107.76.105]:29238
+        "EHLO NAM02-CY1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725791AbhAHL7q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 Jan 2021 06:59:46 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Ti2GM6vaooXLu+pTf25/5n5ZJOxCJRnFeQ1gquEM6dVCrG90pBdNf3rp/uqbhdgJOBbHDdv/2Obd1ZcE5lht9JcXVLXEXFDd0VMoiTDdqQAtlP+/WG73Y0nWPHmKlv4Lsp7/2SVYHP0Pkr0Ts1mzyEyL5JgDY32Y14/bW5YOI16IF9aGra3kU8Y0muI/n7bWUhndV+/Fqm9/6iiLweUGUd99QCxp32glbCXpklF8FdLKVfNpvse1bW35Jx1gGmPPq1nXZASY2LyDyYsEYXmO2OJxgYSL38hktoltiYUW+Vs6VwyXW7OZgzzGc6P7Fny5zSGKY3pp+v1xVOo8WZ0REg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=qBNz3RX153y95EpXqPj7nfxa9ELZ3AyYwuC02FkGcRc=;
+ b=hriShjjYGcgywY8tdAQtA9L8k/EyN1jk8p1F7ADXedHSsnvW2J63QIMp3mqxrKn6yHQgzOaqMxCfWJFsTXeqrkPTMrYabDh5MGXdj+r7zDj2zwRqsP6DZdHQHGIPV8bIoy5PBgy3yofq1Nw4TgkOP9BfmRGz0xii7FMYqDJcRbnd2V6hP9yOW/RUiyn2R45k44la9bGn0wjd/6M2MsqsaygFWmAbuGYOJ1FDCe2oySsNmtxt0DNHKy5Fl5N0ds0hvUO96FhaNfb4h9z4BDfRP2g/Zt2Mi/oDaLOFHvdtB9wCsJBPKiwjSKarc0QP473msuGzEwpLvPvjl6LiWz0FBQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=hammerspace.com; dmarc=pass action=none
+ header.from=hammerspace.com; dkim=pass header.d=hammerspace.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hammerspace.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=qBNz3RX153y95EpXqPj7nfxa9ELZ3AyYwuC02FkGcRc=;
+ b=EdqbJnTVNUXWn4yPbWKU20H4CNdZQ2wV0NRAy7wYB0AeB2QsTUWTWiAopk4n90T+6iYU2skUZpTlBQ4OUdh4n0uGj0zCGMOxYs326XSsdIVoFCAzLwRdU34fh1B+RDR6/+GFkzDb7dES2pE29B05uEstP+MgYcJ2aohLKEWkwkM=
+Received: from CH2PR13MB3525.namprd13.prod.outlook.com (2603:10b6:610:21::29)
+ by CH2PR13MB3479.namprd13.prod.outlook.com (2603:10b6:610:2a::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3763.5; Fri, 8 Jan
+ 2021 11:58:57 +0000
+Received: from CH2PR13MB3525.namprd13.prod.outlook.com
+ ([fe80::f9a6:6c23:4015:b7fc]) by CH2PR13MB3525.namprd13.prod.outlook.com
+ ([fe80::f9a6:6c23:4015:b7fc%6]) with mapi id 15.20.3763.004; Fri, 8 Jan 2021
+ 11:58:57 +0000
+From:   Trond Myklebust <trondmy@hammerspace.com>
+To:     "kurt@garloff.de" <kurt@garloff.de>,
+        "NeilB@suse.de" <NeilB@suse.de>,
+        "Anna.Schumaker@Netapp.com" <Anna.Schumaker@Netapp.com>
+CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: NFS 4.2 client support broken on 5.10.5
+Thread-Topic: NFS 4.2 client support broken on 5.10.5
+Thread-Index: AQHW5bMpS0fYxbhnbEqIMGUjjRkIfKodn96A
+Date:   Fri, 8 Jan 2021 11:58:57 +0000
+Message-ID: <2f401e0a738b7acb926bd2375012e6384a2cd9b6.camel@hammerspace.com>
+References: <ee320885-9a78-80b8-9341-7c631df60d3a@garloff.de>
+In-Reply-To: <ee320885-9a78-80b8-9341-7c631df60d3a@garloff.de>
+Accept-Language: en-US, en-GB
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: garloff.de; dkim=none (message not signed)
+ header.d=none;garloff.de; dmarc=none action=none header.from=hammerspace.com;
+x-originating-ip: [68.36.133.222]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: e853809a-3e53-4817-7f8e-08d8b3ccc7a2
+x-ms-traffictypediagnostic: CH2PR13MB3479:
+x-microsoft-antispam-prvs: <CH2PR13MB347999F025C35BE2AB809589B8AE0@CH2PR13MB3479.namprd13.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:8882;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: aAt2vHkZ9Ap59ZWgu5R0Jeq6KMzNdIPF4wNUG4Pi6zUkLTvko8gRFKDSLBCWuA51L+Ylxl4cnlKpXCuPd2XfSTvSwW02atqtWiHm3vI3fxYPBCYb1qFu2jQLdN/WBiaa/fn7CGRPhIkOvWUDfIbHtUNPEk4kFDwQ/RlNr/5uYibLzQ8vwfhVX/dbNF/9iDpzsVdKsnnylmxnSAb8OeprvuEZzdnar9Da70lYsLR6tcbIH3dvGINLcMx4MODq6TWDR2yzcjRgGMuvS7+q7E+WD60NkHjE8qG+UgAzBhWvnxES/MHTG/m0aspFwPlDGrXakbY+PdP/6RkxrW6ZEUCqpGv9qmCabcnAnslI89WCNQSvlTIv4a3yfRfin6oVFaqM2pmbyOk5EmC0m+Me2sJT+Q==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CH2PR13MB3525.namprd13.prod.outlook.com;PTR:;CAT:NONE;SFS:(136003)(396003)(39840400004)(376002)(366004)(346002)(66946007)(66476007)(110136005)(64756008)(5660300002)(66556008)(66446008)(36756003)(76116006)(83380400001)(316002)(8676002)(186003)(26005)(6486002)(2906002)(71200400001)(86362001)(8936002)(6512007)(478600001)(2616005)(4326008)(6506007);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: =?utf-8?B?YkpmREZQd2xUSzNjbFZvcjdHNEd1TUhoWnV6OFRtZzVVUDJEazh6bFdOakVy?=
+ =?utf-8?B?VkhVRWUzeHRreGUwQ2FpeDgzeG05ZElEazNKQm5objJYc0RZWmJoY0NYTXlu?=
+ =?utf-8?B?Ynh3eVFOOGFVZ1FuT3Nmcks4NmpFUGxJN1ZIS0tyY3cySWJobEgzYXZRWU9u?=
+ =?utf-8?B?emV2eDlFajBoSWNUQU9rQW5aSE1MUU9NQ1dKclJRdjVCaXV4c3Y0SnBvWnBB?=
+ =?utf-8?B?ZE1DNzJXVllzdjZEd1NtVkRSTEtkR3pYMmhBVE9ud3Q0dXVGU0JjV0JYa3RS?=
+ =?utf-8?B?b3R5RFVicWlmRGJyamVWcHRTTCtMV0lPSlB4cDl6eWE0Mk4vSEhFSFE3RDZV?=
+ =?utf-8?B?WTAvVVJpYmhpNlNCczA1OFdKQkhhYS9TamY1ZExac3RMWVFOVUdJOE1keTlt?=
+ =?utf-8?B?dnVLTDVxNDRIM3AzcVhLVHZWZWVEWGExRENwd2dWc3hsOXVCZTJvck9odXBQ?=
+ =?utf-8?B?bjBvR0c3NVJ5TG1WK2NpYW1JSXlSamhrbXYzVXlDMlhSWXNmaWVpT0hUY0Y0?=
+ =?utf-8?B?cUs1U0JBMmhncnczakd6V0R3NGo0eFJwVFVZQzNxLzRaWDlxWllSeE4wYVRs?=
+ =?utf-8?B?enVxYTY5Ynp0Q0s3TTU2NzNReGdnL3RNRmc5dHJoaUtJSGt3WSthSE9BRGts?=
+ =?utf-8?B?OXZxSHZHVlo3dkI0dXFjSk12NzdxOWx3Mld1UkR2K1c5S3ZoQ1RGRkRSWk5q?=
+ =?utf-8?B?cGZqQm55NHEzMXVpbkV2ZGsvWU9pMWJYNThHUFFzWVRyT0ZyRU9CZ1RhL05r?=
+ =?utf-8?B?RGJuUUplOHVlRzl6WEN5OVBoVEw2R0p6UTJNRG5pQ1RvVFIrOVBoUXZpdmkz?=
+ =?utf-8?B?MlljWkJtdjZMdUtXUFlMZ0wyYXNiOWRMRER1UXE1bnIzN0Jrc2RHRERzbHhG?=
+ =?utf-8?B?NERKME4yd0ZLcnFrL1hmQUIvRitiWlljZk5mYXZGOVErVXNKbHQ5UGEvWmpV?=
+ =?utf-8?B?S1psUWw0ZnlJYXdwOUErVkZScWh5b0xMMXduZkZxckJka3pYbzBOV05vaVdx?=
+ =?utf-8?B?K1NGbldlQVgvd084OTNQbDZ6NDg5R0JRRVlxSmw4SjZtbnpQcE9MSlhiN240?=
+ =?utf-8?B?WE1yUUY3dmxDMmUxbXJ2cFV4NW95OW9mcy9KWHNnWWtDSG9pYlE2UmtIQ1Zj?=
+ =?utf-8?B?ZHZXM3FIcnJLZjFtd0x0bWZiODNQN1grMWJQRWdyTjN1ODRDT1Y3SGZqZGFP?=
+ =?utf-8?B?L2NlUy95RExoV0VQdEwrYTVkREZ5TUUxbVpnekFqUmNoV0JCSUVzWVgvMEF4?=
+ =?utf-8?B?ajlkeVF4RCs2ejRFMVFRcUhQQ0ZXOTdzaGNHSWxSMGJ1aFlVT0lvZHYyNWJM?=
+ =?utf-8?Q?FbGApAoYjD5JV5LL3EJSixmLO5Yf1L57ZC?=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <9AC8EAF27667A04ABF7DCE35D7230527@namprd13.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-References: <20210107111827.GG13207@dhcp22.suse.cz> <CAMZfGtV_k=FxcWfazpuT=3ByXSqK-CH-E3yRQUE_dG6JMnAZeg@mail.gmail.com>
- <20210107123854.GJ13207@dhcp22.suse.cz> <CAMZfGtWUP1H47ZGcczsmqsQvxYP=FK9vYVr8WbOY_9UG2SCv0A@mail.gmail.com>
- <20210107141130.GL13207@dhcp22.suse.cz> <CAMZfGtW8hDxV_5isGTNLQMFttoymRwxc2N7nEgqxLLj6t5oN3g@mail.gmail.com>
- <20210108084330.GW13207@dhcp22.suse.cz> <CAMZfGtUy740SbsCW_h1NaP5O=ahSZniezkC+62pxZ5bW+vZpBg@mail.gmail.com>
- <20210108093136.GY13207@dhcp22.suse.cz> <CAMZfGtXhMDjw=C8XBUwsQLD7ZLv5osoLWy+RJzqY11WFm07GwQ@mail.gmail.com>
- <20210108114411.GZ13207@dhcp22.suse.cz>
-In-Reply-To: <20210108114411.GZ13207@dhcp22.suse.cz>
-From:   Muchun Song <songmuchun@bytedance.com>
-Date:   Fri, 8 Jan 2021 19:52:54 +0800
-Message-ID: <CAMZfGtVc5dAYY_sPywi=BzfA92erqNn6O0X=0_k7sX2Xh1NC=w@mail.gmail.com>
-Subject: Re: [External] Re: [PATCH v2 3/6] mm: hugetlb: fix a race between
- freeing and dissolving the page
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Mike Kravetz <mike.kravetz@oracle.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Naoya Horiguchi <n-horiguchi@ah.jp.nec.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+X-OriginatorOrg: hammerspace.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: CH2PR13MB3525.namprd13.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: e853809a-3e53-4817-7f8e-08d8b3ccc7a2
+X-MS-Exchange-CrossTenant-originalarrivaltime: 08 Jan 2021 11:58:57.6561
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 0d4fed5c-3a70-46fe-9430-ece41741f59e
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 4Jd9IEdXjYsDD+pA0myc6S+Ktx8jxWKdLP38mTsuQyFTrhmvWkfPDNZ5aSzLv4hPw7EMPyGnj6SyOaxgz1h9nA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH2PR13MB3479
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 8, 2021 at 7:44 PM Michal Hocko <mhocko@suse.com> wrote:
->
-> On Fri 08-01-21 18:08:57, Muchun Song wrote:
-> > On Fri, Jan 8, 2021 at 5:31 PM Michal Hocko <mhocko@suse.com> wrote:
-> > >
-> > > On Fri 08-01-21 17:01:03, Muchun Song wrote:
-> > > > On Fri, Jan 8, 2021 at 4:43 PM Michal Hocko <mhocko@suse.com> wrote:
-> > > > >
-> > > > > On Thu 07-01-21 23:11:22, Muchun Song wrote:
-> > > [..]
-> > > > > > But I find a tricky problem to solve. See free_huge_page().
-> > > > > > If we are in non-task context, we should schedule a work
-> > > > > > to free the page. We reuse the page->mapping. If the page
-> > > > > > is already freed by the dissolve path. We should not touch
-> > > > > > the page->mapping. So we need to check PageHuge().
-> > > > > > The check and llist_add() should be protected by
-> > > > > > hugetlb_lock. But we cannot do that. Right? If dissolve
-> > > > > > happens after it is linked to the list. We also should
-> > > > > > remove it from the list (hpage_freelist). It seems to make
-> > > > > > the thing more complex.
-> > > > >
-> > > > > I am not sure I follow you here but yes PageHuge under hugetlb_lock
-> > > > > should be the reliable way to check for the race. I am not sure why we
-> > > > > really need to care about mapping or other state.
-> > > >
-> > > > CPU0:                               CPU1:
-> > > > free_huge_page(page)
-> > > >   if (PageHuge(page))
-> > > >                                     dissolve_free_huge_page(page)
-> > > >                                       spin_lock(&hugetlb_lock)
-> > > >                                       update_and_free_page(page)
-> > > >                                       spin_unlock(&hugetlb_lock)
-> > > >     llist_add(page->mapping)
-> > > >     // the mapping is corrupted
-> > > >
-> > > > The PageHuge(page) and llist_add() should be protected by
-> > > > hugetlb_lock. Right? If so, we cannot hold hugetlb_lock
-> > > > in free_huge_page() path.
-> > >
-> > > OK, I see. I completely forgot about this snowflake. I thought that
-> > > free_huge_page was a typo missing initial __. Anyway you are right that
-> > > this path needs a check as well. But I don't see why we couldn't use the
-> > > lock here. The lock can be held only inside the !in_task branch.
-> >
-> > Because we hold the hugetlb_lock without disable irq. So if an interrupt
-> > occurs after we hold the lock. And we also free a HugeTLB page. Then
-> > it leads to deadlock.
->
-> There is nothing really to prevent making hugetlb_lock irq safe, isn't
-> it?
-
-Yeah. We can make the hugetlb_lock irq safe. But why have we not
-done this? Maybe the commit changelog can provide more information.
-
-See https://github.com/torvalds/linux/commit/c77c0a8ac4c522638a8242fcb9de9496e3cdbb2d
-
-> --
-> Michal Hocko
-> SUSE Labs
+T24gRnJpLCAyMDIxLTAxLTA4IGF0IDEyOjQxICswMTAwLCBLdXJ0IEdhcmxvZmYgd3JvdGU6DQo+
+IEhpIE5laWwsIEFubmEsIFRyb25kLA0KPiANCj4gY29tcGlsaW5nIGEga2VybmVsLCBJIHN1ZGRl
+bmx5IHN0YXJ0ZWQgZ2V0dGluZyBlcnJvcnMgZnJvbSBvYmp0b29sDQo+IG9yYy4NCj4gKFRoaXMg
+Zmlyc3Qgb2NjdXJzIG9uIGluaXQvbWFpbi5vLikNCj4gDQo+IEkgbG9va2VkIGF0IGFsbCBraW5k
+IG9mIHRoaW5ncywgYmVmb3JlIEkgbm90aWNlZCB0aGF0IHRoaXMgd2FzIG5vdCBhDQo+IHRvb2xj
+aGFpbiBpc3N1ZSAoZ2NjLTEwLjIuMSBzZWxmIGNvbXBpbGVkKSwgZ2NjIHBsdWdpbnMgKEkgdXNl
+DQo+IHN0cnVjdGxlYWsgYW5kIHN0YWNrbGVhaykgbm9yIGFuIGlzc3VlIHdpdGggb2JqdG9vbCBv
+ciBsaWJlbGYsDQo+IGJ1dCB0aGF0IHRoZXJlIHdhcyBhbiAtRUlPIGVycm9yLg0KPiANCj4gVGhl
+IGtlcm5lbCB0cmVlIGlzIG9uIGFuIE5GUyBzaGFyZSwgYW5kIEkgcnVuIDUuMTAuNSBjbGllbnQg
+a2VybmVsDQo+IGFnYWluc3QgdGhlIGtlcm5lbCBORlMgKDQuMikgc2VydmVyLCBydW5uaW5nIGEg
+NS4xMC4zIGtlcm5lbC4NCj4gDQo+IFRoZSBpc3N1ZSBkb2VzIE5PVCBvY2N1ciBvbiBhIDUuMTAu
+MyBjbGllbnQga2VybmVsLCBidXQgaXMgZWFzaWx5DQo+IHJlcHJvZHVjaWJsZSBvbiA1LjEwLjUu
+IE5vdGUgdGhhdCA1LjEwLjUgb24gYSBsb2NhbCBmaWxlIHN5c3RlbSBvcg0KPiBhZ2FpbnN0IGFu
+IE5GU3YzIHNlcnZlciBkb2VzIG5vdCBzaG93IHRoZSBpc3N1ZS4NCj4gDQo+IFRlc3QgcHJvZ3Jh
+bSB0aGF0IHJlcHJvZHVjZXMgdGhpcyBvbiB0aGUgZmlyc3QgcHdyaXRlNjQoKSBpcw0KPiBhdHRh
+Y2hlZC4NCj4gTm90ZSB0aGF0IHRoZSBjYWxsIHRvIGZ0cnVuY2F0ZSgpIGlzIHJlcXVpcmVkIHRv
+IG1ha2UgdGhlIHByb2JsZW0NCj4gaGFwcGVuLg0KPiANCj4gSSBjb3VsZCBnbyBvbiBiaXNlY3Rp
+bmcgdGhpcyB0byBhIHBhcnRpY3VsYXIgcGF0Y2gsIGJ1dCB5b3UnbGwNCj4gcHJvYmFibHkgYmUg
+YWJsZSB0byBzZWUgcmlnaHQgYXdheSB3aGF0J3Mgd3JvbmcuDQo+IA0KPiBCZXN0LA0KPiANCg0K
+SG1tLi4uIElmIHRoaXMgaXMgTkZTdjQuMiBkbyB5b3UgaGF2ZSBSRUFEX1BMVVMgdHVybmVkIG9u
+IG9yIG9mZiBpbg0KLmNvbmZpZz8gSXQgcmVhbGx5IGlzIG5vdCBzYWZlIHRvIGVuYWJsZSBSRUFE
+X1BMVVMgb24gNS4xMCBrZXJuZWxzDQpzaW5jZSB0aGF0IGNhbiBjYXVzZSByYW5kb20gbWVtb3J5
+IGNvcnJ1cHRpb24uDQoNCi0tIA0KVHJvbmQgTXlrbGVidXN0DQpMaW51eCBORlMgY2xpZW50IG1h
+aW50YWluZXIsIEhhbW1lcnNwYWNlDQp0cm9uZC5teWtsZWJ1c3RAaGFtbWVyc3BhY2UuY29tDQoN
+Cg0K
