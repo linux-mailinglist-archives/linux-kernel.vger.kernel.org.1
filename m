@@ -2,57 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 772E92EFBDF
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Jan 2021 00:52:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 170462EFBD6
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Jan 2021 00:49:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726541AbhAHXuY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Jan 2021 18:50:24 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53124 "EHLO mail.kernel.org"
+        id S1726488AbhAHXtr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Jan 2021 18:49:47 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52684 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725817AbhAHXuW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Jan 2021 18:50:22 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPS id B41B923AA3;
+        id S1726426AbhAHXto (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 Jan 2021 18:49:44 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPS id 8D87B23A9B;
         Fri,  8 Jan 2021 23:49:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1610149743;
-        bh=jdTHaiixay+OFIzCJSGsnlb6HAptIR3pm3TXn6UoUcE=;
+        bh=BBgpMZt1TLqVaT1JH4+pvytqjDxH8kaUow4RNXlUHWI=;
         h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=l+rESUh9kzqJJJtG6UvUATDigxgjCXK1cifcoXs15swhHRPfPqhXCJi2MmpBlV8zc
-         EciCt8ZWeENd5o3QJT0cuiOO0tAB29Y0Y6wm8xO2xO4w8w8LokqcjtbjKcxOI3DSDw
-         d3JRGwUaTvhDuQcG9RHl9M/1DxGKh1ipq0OQiJ+boQyZpUIbOoRf2OaBgOlvAcu12m
-         oPGMzn+v07v6W+CUxtK+aIMr9x1NRJwnCek4rHee0nO4P86BC0n+5OuWOsICHl2dsN
-         qStBy3m4sT0o6U+hJR+9Z81iC8TdP0kaAVzmCD05j/cHDSGrjhq226hQ6FimybzTZv
-         PXcbCjL5Kvyfw==
+        b=cZNt04dEO86kE5zqUVPnz5pB4CFAKKU9oevc/u9PNhqUy4Gk6H+N1OjjW9zr6eXjW
+         iW+oi0Ki1fXgQgQhENhFSTLWjlz3tDdlU38kQP0W7VwdZkeycRO6e/Qm7h0tPG1ueM
+         SI78eEQ1rd6OhHinwU1ZpoCp4oUoMNiLf5Wb55FWrtieOW1A9yFS3OkZKo+3lTuxFb
+         DBw/uvzvDUK/F+pkIPKrGq7ReTpzWoQRQj+yaloajsXxv1QibukEK1GhoewtU6qeyI
+         XTyrPyc6H9n8Iefb3vMKq5EMVVvQXaCaFzRWz3E6h17Z34nStYiDLZutvAnTLTAr3m
+         1qo1u4HbrW7tw==
 Received: from pdx-korg-docbuild-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-1.ci.codeaurora.org (Postfix) with ESMTP id AF54160157;
+        by pdx-korg-docbuild-1.ci.codeaurora.org (Postfix) with ESMTP id 893B960157;
         Fri,  8 Jan 2021 23:49:03 +0000 (UTC)
-Subject: Re: [GIT PULL] Device properties framework fixes for v5.11-rc3
+Subject: Re: [GIT PULL] KVM fixes for 5.11-rc3
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <CAJZ5v0h0kagZ6n+xC0wcCN5Zg3=HQ0NS_HO6fC0do8H5BqbD-w@mail.gmail.com>
-References: <CAJZ5v0h0kagZ6n+xC0wcCN5Zg3=HQ0NS_HO6fC0do8H5BqbD-w@mail.gmail.com>
+In-Reply-To: <20210108162849.49465-1-pbonzini@redhat.com>
+References: <20210108162849.49465-1-pbonzini@redhat.com>
 X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <CAJZ5v0h0kagZ6n+xC0wcCN5Zg3=HQ0NS_HO6fC0do8H5BqbD-w@mail.gmail.com>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git devprop-5.11-rc3
-X-PR-Tracked-Commit-Id: 3f7bddaf5d5a83aa2eb1e6d72db221d3ec43c813
+X-PR-Tracked-Message-Id: <20210108162849.49465-1-pbonzini@redhat.com>
+X-PR-Tracked-Remote: https://git.kernel.org/pub/scm/virt/kvm/kvm.git tags/for-linus
+X-PR-Tracked-Commit-Id: 872f36eb0b0f4f0e3a81ea1e51a6bdf58ccfdc6e
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 78d42025e5bb83f9071e4a60edf1567dd12ed9dc
-Message-Id: <161014974371.3246.9793485382844941356.pr-tracker-bot@kernel.org>
+X-PR-Merge-Commit-Id: 2a190b22aa1149cda804527aa603db45f75439c3
+Message-Id: <161014974355.3246.12663082759589384162.pr-tracker-bot@kernel.org>
 Date:   Fri, 08 Jan 2021 23:49:03 +0000
-To:     "Rafael J. Wysocki" <rafael@kernel.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     torvalds@linux-foundation.org, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Fri, 8 Jan 2021 18:54:38 +0100:
+The pull request you sent on Fri,  8 Jan 2021 11:28:49 -0500:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git devprop-5.11-rc3
+> https://git.kernel.org/pub/scm/virt/kvm/kvm.git tags/for-linus
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/78d42025e5bb83f9071e4a60edf1567dd12ed9dc
+https://git.kernel.org/torvalds/c/2a190b22aa1149cda804527aa603db45f75439c3
 
 Thank you!
 
