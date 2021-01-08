@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF4E02EFA9B
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 22:32:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 19F252EFA95
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 22:32:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730011AbhAHVaj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Jan 2021 16:30:39 -0500
-Received: from mga04.intel.com ([192.55.52.120]:25649 "EHLO mga04.intel.com"
+        id S1729961AbhAHV3w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Jan 2021 16:29:52 -0500
+Received: from mga18.intel.com ([134.134.136.126]:42225 "EHLO mga18.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728422AbhAHVad (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Jan 2021 16:30:33 -0500
-IronPort-SDR: 0RJFaRroVBghCHjDI1LGkz8nZwTOZrakPrb1TvnA26E/eorLr48AZm6FVzo/kRoMOl90UF6fsn
- 1sQNCErFuDIA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9858"; a="175079544"
+        id S1727422AbhAHV3u (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 Jan 2021 16:29:50 -0500
+IronPort-SDR: ud9bxHwSMIVka597W3hljn3cQJfZXgrcOZnIXu2cxJ158VtrfBQuAbOHeebBgli2Orq1L6TUk8
+ Q13BznOet+Zg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9858"; a="165344236"
 X-IronPort-AV: E=Sophos;i="5.79,332,1602572400"; 
-   d="scan'208";a="175079544"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jan 2021 13:26:07 -0800
-IronPort-SDR: 0/inTGWtkdQYt5Lf8q29J6CpbMYM3RcVbNtjG7SWur02J6C2yHsdJiynIz6LsNMA+Fx9Jk8qlS
- Kt37w2vREkSA==
+   d="scan'208";a="165344236"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jan 2021 13:26:06 -0800
+IronPort-SDR: 3YcuOSNJK0F4Q6E7IxdDixk/UUZQSMB1f/tI7oCZMOpwJ5TZLWoE9msh7R5qWkt9PxH6dkjil5
+ KCbi87+1gVFQ==
 X-IronPort-AV: E=Sophos;i="5.79,332,1602572400"; 
-   d="scan'208";a="403469870"
+   d="scan'208";a="380257714"
 Received: from smtp.ostc.intel.com ([10.54.29.231])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jan 2021 13:26:06 -0800
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jan 2021 13:26:06 -0800
 Received: from mtg-dev (mtg-dev.jf.intel.com [10.54.74.10])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by smtp.ostc.intel.com (Postfix) with ESMTPS id 8E8936365;
+        by smtp.ostc.intel.com (Postfix) with ESMTPS id AA4E26368;
         Fri,  8 Jan 2021 13:26:06 -0800 (PST)
 Received: from mgross by mtg-dev with local (Exim 4.90_1)
         (envelope-from <mgross@linux.intel.com>)
-        id 1kxzGo-0009dH-EP; Fri, 08 Jan 2021 13:26:06 -0800
+        id 1kxzGo-0009dK-I5; Fri, 08 Jan 2021 13:26:06 -0800
 From:   mgross@linux.intel.com
 To:     markgross@kernel.org, mgross@linux.intel.com, arnd@arndb.de,
         bp@suse.de, damien.lemoal@wdc.com, dragan.cvetic@xilinx.com,
@@ -41,22 +41,19 @@ To:     markgross@kernel.org, mgross@linux.intel.com, arnd@arndb.de,
         shawnguo@kernel.org, jassisinghbrar@gmail.com
 Cc:     linux-kernel@vger.kernel.org,
         "C, Udhayakumar" <udhayakumar.c@intel.com>, C@linux.intel.com
-Subject: [PATCH v2 33/34] misc: Hddl device management for local host
-Date:   Fri,  8 Jan 2021 13:25:59 -0800
-Message-Id: <20210108212600.36850-34-mgross@linux.intel.com>
+Subject: [PATCH v2 34/34] misc: HDDL device management for IA host
+Date:   Fri,  8 Jan 2021 13:26:00 -0800
+Message-Id: <20210108212600.36850-35-mgross@linux.intel.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20210108212600.36850-1-mgross@linux.intel.com>
 References: <20210108212600.36850-1-mgross@linux.intel.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: "C, Udhayakumar" <udhayakumar.c@intel.com>
 
-Add local host hddl device management for Intel Edge.AI Computer Vision
+Add IA host hddl device management driver for Intel Edge.AI Computer Vision
 platforms.
 
 About Intel Edge.AI Computer Vision platforms:
@@ -90,46 +87,35 @@ This driver also handles device connect/disconnect events and
 identifies board id and soc id using gpio's, based on platform
 configuration.
 
-- Local Host driver
-  * Intended for ARM CPU
+- Remote Host driver
+  * Intended for IA CPU
   * It is based on xlink Framework
   * Driver path:
-  {tree}/drivers/misc/hddl_device/hddl_device_client.c
+  {tree}/drivers/misc/hddl_device/hddl_device_server.c
 
 Local arm host and Remote IA host drivers communicates using
 XLINK protocol.
 
 Signed-off-by: C, Udhayakumar <udhayakumar.c@intel.com>
 ---
- .../misc-devices/hddl_device_client.rst       | 212 +++++
+ .../misc-devices/hddl_device_server.rst       | 205 +++++
  Documentation/misc-devices/index.rst          |   1 +
- Documentation/vpu/index.rst                   |   1 +
- MAINTAINERS                                   |   1 +
- drivers/misc/Kconfig                          |   1 +
- drivers/misc/Makefile                         |   1 +
- drivers/misc/hddl_device/Kconfig              |  14 +
- drivers/misc/hddl_device/Makefile             |   5 +
- drivers/misc/hddl_device/hddl_device.c        | 565 +++++++++++++
- drivers/misc/hddl_device/hddl_device_lh.c     | 764 ++++++++++++++++++
- drivers/misc/hddl_device/hddl_device_util.h   |  52 ++
- 11 files changed, 1617 insertions(+)
- create mode 100644 Documentation/misc-devices/hddl_device_client.rst
- create mode 100644 drivers/misc/hddl_device/Kconfig
- create mode 100644 drivers/misc/hddl_device/Makefile
- create mode 100644 drivers/misc/hddl_device/hddl_device.c
- create mode 100644 drivers/misc/hddl_device/hddl_device_lh.c
- create mode 100644 drivers/misc/hddl_device/hddl_device_util.h
+ drivers/misc/hddl_device/Kconfig              |  12 +
+ drivers/misc/hddl_device/Makefile             |   2 +
+ drivers/misc/hddl_device/hddl_device_rh.c     | 837 ++++++++++++++++++
+ 5 files changed, 1057 insertions(+)
+ create mode 100644 Documentation/misc-devices/hddl_device_server.rst
+ create mode 100644 drivers/misc/hddl_device/hddl_device_rh.c
 
-diff --git a/Documentation/misc-devices/hddl_device_client.rst b/Documentation/misc-devices/hddl_device_client.rst
+diff --git a/Documentation/misc-devices/hddl_device_server.rst b/Documentation/misc-devices/hddl_device_server.rst
 new file mode 100644
-index 000000000000..413643b6b500
+index 000000000000..0be37973d1fe
 --- /dev/null
-+++ b/Documentation/misc-devices/hddl_device_client.rst
-@@ -0,0 +1,212 @@
++++ b/Documentation/misc-devices/hddl_device_server.rst
+@@ -0,0 +1,205 @@
 +.. SPDX-License-Identifier: GPL-2.0
 +
-+=================================
-+Kernel driver: hddl_device_client
++Kernel driver: hddl_device_server
 +=================================
 +
 +Supported chips:
@@ -139,21 +125,35 @@ index 000000000000..413643b6b500
 +    - Thalaiappan, Rathina <rathina.thalaiappan@intel.com>
 +    - Udhayakumar C <udhayakumar.c@intel.com>
 +
++High-level architecture
++=======================
++::
++
++        Remote Host IA CPU                          Local Host ARM CPU
++        -------------------------------         ----------------------------
++        | * Send time as xlink packet |         |* Sync time with IA host  |
++        | * receive sensor details    |         |* Prepare and share sensor|
++        |   and register as i2c or    |         |  details to IA host as   |
++        |   xlink smbus slaves        |         |  xlink packets           |
++        -------------------------------         ----------------------------
++        |       hddl server           | <=====> |     hddl client          |
++        -------------------------------  xlink  ----------------------------
 +
 +Overview
 +========
 +
 +This driver supports hddl device management for Intel Edge.AI Computer Vision
-+platforms.
++platforms. This driver runs in IA host
 +
 +This driver supports the following features:
 +
-+  - Exports deatils of temperature sensor, current sensor and fan controller
-+    present in Intel Edge.AI Computer Vision platforms to IA host.
-+  - Enable Time sync of Intel Edge.AI Computer Vision platform with IA host.
++  - Receives deatils of temperature sensor, current sensor and fan controller
++    present in Intel Edge.AI Computer Vision platforms.
++  - Send Time sync data to Intel Edge.AI Computer Vision platform.
 +  - Handles device connect and disconnect events.
-+  - Receives slave address from the IA host for memory mapped thermal sensors
-+    present in SoC (Documentation/hwmon/intel_tsens_sensors.rst).
++  - Get free slave address for memory mapped thermal sensors present in SoC
++    (Documentation/hwmon/intel_tsens_sensors.rst) and share it with Intel
++    Edge.AI Computer Vision platform.
 +  - Registers i2c slave device for slaves present in Intel Edge.AI Computer
 +    Vision platform
 +
@@ -171,239 +171,179 @@ index 000000000000..413643b6b500
 +  - emc2103 fan controller
 +  - ina3221 current sensor
 +
-+High-level architecture
-+=======================
-+::
-+
-+        Remote Host IA CPU                          Local Host ARM CPU
-+        -------------------------------         ----------------------------
-+        | * Send time as xlink packet |         |* Sync time with IA host  |
-+        | * receive sensor details    |         |* Prepare and share sensor|
-+        |   and register as i2c or    |         |  details to IA host as   |
-+        |   xlink smbus slaves        |         |  xlink packets           |
-+        -------------------------------         ----------------------------
-+        |       hddl server           | <=====> |     hddl client          |
-+        -------------------------------  xlink  ----------------------------
-+
 +Driver Structure
 +================
 +
 +The driver provides a platform device where the ``probe`` and ``remove``
 +operations are provided.
 +
-+  - probe: Gets list of external sensors from device-tree entries, identify
-+    board id and soc id based on configuration from device-tree entries and
-+    spawn kernel thread to monitor new PCIE devices.
++  - probe: spawn kernel thread to monitor new PCIE devices.
 +
 +  - init task: Poll for new PCIE device with time interval of 5 seconds and
 +    creates connect task to setup new device.
 +
 +  - connect task: Connect task is the main entity which connects to hddl
-+    device server using xlink and does the basic initialisation and handshaking.
-+    Additionally it also monitors the hddl device server link down/link up
-+    events and reinitialise the drivers accordingly in the client side.
++    device client using xlink and does the basic initialisation and handshaking.
++    Additionally it also monitors the hddl device client link down/link up
++    events and reinitialise the drivers accordingly in the server side.
 +
 +  - remove: unregister i2c client devices, i2c adapters and close xlink
 +    channel.
 +
-+HDDL Client Sequence – Basic Setup and handshaking with HDDL Device Server
++HDDL Server Sequence - Basic Setup and handshaking with HDDL Device Client
 +==========================================================================
 +::
 +
-+        ,-----.                ,---------.          ,------------.           ,------------------.
-+        |probe|                |Init task|          |connect task|           |hddl device server|
-+        `--+--'                `----+----'          `-----+------'           `--------+---------'
-+           ----.                    |                     |                           |
-+               | "Parse DT"         |                     |                           |
-+           <---'                    |                     |                           |
-+           |                        |                     |                           |
-+           | ,------------------!.  |                     |                           |
-+           | |Get sensor details|_\ |                     |                           |
-+           | |from device tree    | |                     |                           |
-+           | `--------------------' |                     |                           |
-+           ----.                    |                     |                           |
-+               | "Identify Board Id"|                     |                           |
-+           <---'                    |                     |                           |
-+           |                        |                     |                           |
-+           |   "Creates kthread"    |                     |                           |
-+           |----------------------->|                     |                           |
-+           |                        |                     |                           |
-+           | ,-----------------------!.                   |                           |
-+           | |creates kernel thread  |_\                  |                           |
-+           | |to check for new device  |                  |                           |
-+           | `-------------------------'                  |                           |
-+          ,---------------------!.  ----.                 |                           |
-+          |check for new device |_\     |                 |                           |
-+          |with time interval of  | <---'                 |                           |
-+          |5 seconds              | |                     |                           |
-+          `-----------------------' |                     |                           |
-+          ,---------------------!.  |                     |                           |
-+          |if new device found?.|_\ |                     |                           |
-+          |creates connect task   | |-------------------->|                           |
-+          |to setup new device    | |                     |                           |
-+          `-----------------------' |                     |                           |
-+           |                       ,-------------------!. |----.                      |
-+           |                       |setup xlink channel|_\|    |                      |
-+           |                       |to communicate with  ||<---'                      |
-+           |                       |server               ||                           |
-+           |                       `---------------------'|                           |
-+           |                        |                     |       Get time data       |
-+           |                        |                     |       from server         |
-+           |                        |                     | <--------------------------
-+           |                        |                     |                           |
-+           |                        |                     |       share board id      |
-+           |                        |                     | -------------------------->
-+           |                        |                     |                           |
-+           |                        |                     |  share total number of    |
-+           |                        |                     |  sensors available in SoC |
-+           |                        |                     | -------------------------->
-+           |                        |                     |                           |
-+           |                   ,-----------------------!. |                           |
-+           |                   |For each sensors share |_\|                           |
-+           |                   |sensor type, name, trip  || -------------------------->
-+           |                   |temp, trip type          ||                           |
-+           |                   `-------------------------'|                           |
-+           |                        |                     |  Receives Send complete.  |
-+           |                        |                     | <--------------------------
-+           |                        |                     |                           |
-+           |                        |                     |----.                      |
-+           |                        |                     |    | Register xlink i2c   |
-+           |                        |                     |<---' adapters.            |
-+           |                        |                     |                           |
-+           |                        |                     |                           |
-+           |                        |                     |  Receives slave addr for  |
-+           |                        |                     |   each salve in SoC       |
-+           |                        |                     | <--------------------------
-+           |                        |                     |                           |
-+           |                        |                     |----.                      |
-+           |                        |                     |    | Register i2c clients.|
-+           |                        |                     |<---'                      |
-+           |                        |                     |                           |
-+           |                        |                     |----.
-+           |                        |                     |    | poll for device status
-+           |                        |                     |<---'
-+        ,--+--.                ,----+----.          ,-----+------.           ,--------+---------.
-+        |probe|                |Init task|          |connect task|           |hddl device server|
-+        `-----'                `---------'          `------------'           `------------------'
++          ,-----.            ,---------.          ,------------.           ,------------------.
++          |probe|            |Init task|          |connect task|           |hddl device client|
++          `--+--'            `----+----'          `-----+------'           `--------+---------'
++             ----.                |                     |                           |
++                 | "Init char dev"|                     |                           |
++             <---'                |                     |                           |
++             |                    |                     |                           |
++             | ,----------------------!.                |                           |
++             | |Initialize char device|_\               |                           |
++             | |for ioctls              |               |                           |
++             | `------------------------'               |                           |
++             | "Creates kthread"  |                     |                           |
++             |------------------->|                     |                           |
++             |                    |                     |                           |
++             | ,-----------------------!.               |                           |
++             | |creates kernel thread  |_\              |                           |
++             | |to check for new device  |              |                           |
++             | `-------------------------'              |                           |
++        ,---------------------!.  ----.                 |                           |
++        |check for new device |_\     |                 |                           |
++        |with time interval of  | <---'                 |                           |
++        |5 seconds              | |                     |                           |
++        `-----------------------' |                     |                           |
++        ,---------------------!.  |                     |                           |
++        |if new device found?.|_\ |                     |                           |
++        |creates connect task   | |-------------------->|                           |
++        |to setup new device    | |                     |                           |
++        `-----------------------' |                     |                           |
++             |                   ,-------------------!. |----.                      |
++             |                   |setup xlink channel|_\|    |                      |
++             |                   |to communicate with  ||<---'                      |
++             |                   |client               ||                           |
++             |                   `---------------------'|                           |
++             |                    |                     |      share time data      |
++             |                    |                     |      to client            |
++             |                    |                     | -------------------------->
++             |                    |                     |                           |
++             |                    |                     |     receives board id     |
++             |                    |                     | <--------------------------
++             |                    |                     |                           |
++             |                    |                     |  Gets total number of     |
++             |                    |                     |  sensors available in SoC |
++             |                    |                     | <--------------------------
++             |                    |                     |                           |
++             |               ,-----------------------!. |                           |
++             |               |For each sensors get   |_\|                           |
++             |               |sensor type, name, trip  || <--------------------------
++             |               |temp, trip type          ||                           |
++             |               `-------------------------'|                           |
++             |                    |                     |       Send complete.      |
++             |                    |                     | -------------------------->
++             |                    |                     |                           |
++             |                    |                     |----.                      |
++             |                    |                     |    | Register xlink i2c   |
++             |                    |                     |<---' adapters.            |
++             |                    |                     |                           |
++             |                    |                     |                           |
++             |                    |                     |    send slave addr for    |
++             |                    |                     |     each salve in SoC     |
++             |                    |                     | -------------------------->
++             |                    |                     |                           |
++             |                    |                     |----.                      |
++             |                    |                     |    | Register i2c clients.|
++             |                    |                     |<---'                      |
++             |                    |                     |                           |
++             |                    |                     |----.
++             |                    |                     |    | poll for device status
++             |                    |                     |<---'
++          ,--+--.            ,----+----.          ,-----+------.           ,--------+---------.
++          |probe|            |Init task|          |connect task|           |hddl device client|
++          `-----'            `---------'          `------------'           `------------------'
 +
 +
 +XLINK i2c sequence:
 +===================
 +::
 +
-+        ,-----------------.          ,--------.          ,-----.          ,---------.
-+        |xlink-i2c-adapter|          |I2C core|          |xlink|          |i2c-slave|
-+        `--------+--------'          `---+----'          `--+--'          `----+----'
-+                 |                       |                  |                  |
-+                 |---------------------->|                  |                  |
-+                 |                       |                  |                  |
-+                 | ,--------------------------!.            |                  |
-+                 | |Initialize xlink based i2c|_\           |                  |
-+                 | |adapters.                   |           |                  |
-+                 | `----------------------------'           |                  |
-+                 |                       |                  |                  |
-+                 |<-----------------------------------------|                  |
-+                 |                       |                  |                  |
-+                 | ,--------------------------------!.      |                  |
-+                 | |I2C request is received as xlink|_\     |                  |
-+                 | |packet from IA host               |     |                  |
-+                 | `----------------------------------'     |                  |
-+                 |                       |                  |                  |
-+                 |---------------------->|                  |                  |
-+                 |                       |                  |                  |
-+                 |                       |  ,---------------------------------!.
-+                 |                       |  |xlink I2C request is converted to|_\
-+                 |                       |  |standard i2c request               |
-+                 |                       |  `-----------------------------------'
-+                 |                       |                  |                  |
-+                 |                       | ----------------------------------->|
-+                 |                       |                  |                  |
-+                 |                       |  ,----------------------!.          |
-+                 |                       |  |Linux i2c slave device|_\         |
-+                 |                       |  |standard request        |         |
-+                 |                       |  `------------------------'         |
-+                 |                       |                  |                  |
-+                 |                       | <-----------------------------------|
-+                 |                       |                  |                  |
-+                 |                       |  ,----------------------!.          |
-+                 |                       |  |Linux i2c slave device|_\         |
-+                 |                       |  |standard response       |         |
-+                 |                       |  `------------------------'         |
-+                 |     I2C response      |                  |                  |
-+                 |<----------------------|                  |                  |
-+                 |                       |                  |                  |
-+                 |                       |                  | ,-------------------------!.
-+                 |----------------------------------------->| |I2C response is converted|_\
-+                 |                       |                  | |to xlink packet            |
-+        ,--------+--------.          ,---+----.          ,--+-`---------------------------'
-+        |xlink-i2c-adapter|          |I2C core|          |xlink|          |i2c-slave|
-+        `-----------------'          `--------'          `-----'          `---------'
++        ,-----------------.          ,--------.          ,---------.          ,-----.
++        |xlink-i2c-adapter|          |I2C core|          |i2c-slave|          |xlink|
++        `--------+--------'          `---+----'          `----+----'          `--+--'
++                 |                       |                    |                  |
++                 |---------------------->|                    |                  |
++                 |                       |                    |                  |
++                 | ,--------------------------!.              |                  |
++                 | |Initialize xlink based i2c|_\             |                  |
++                 | |adapters.                   |             |                  |
++                 | `----------------------------'             |                  |
++                 |                       |                    |                  |
++                 |                       | <------------------|                  |
++                 |                       |                    |                  |
++                 |                       |  ,----------------------!.            |
++                 |                       |  |Linux i2c slave device|_\           |
++                 |                       |  |standard request        |           |
++                 |                       |  `------------------------'           |
++                 |   i2c request from    |                    |                  |
++                 |   clients.            |                    |                  |
++                 |<----------------------|                    |                  |
++                 |                       |                    |                  |
++                 |                       |                    |                  |
++                 |-------------------------------------------------------------->|
++                 |                       |                    |                  |
++                 |                       |  ,----------------------------!.      |
++                 |                       |  |I2C request is sent as xlink|_\     |
++                 |                       |  |packet to SoC                 |     |
++                 |                       |  `------------------------------'     |
++                 |                       |                    |                  |
++                 |<--------------------------------------------------------------|
++                 |                       |                    |                  |
++                 |                       |  ,------------------------------!.    |
++                 |                       |  |I2C response from SoC as xlink|_\   |
++                 |                       |  |packet                          |   |
++                 |                       |  `--------------------------------'   |
++                 |                       |                    |                  |
++                 |---------------------->|                    |                  |
++                 |                       |                    |                  |
++                 | ,---------------------------!.             |                  |
++                 | |xlink response is converted|_\            |                  |
++                 | |to standard i2c response.    |            |                  |
++                 | `-----------------------------'            |                  |
++                 |                       |    i2c response    |                  |
++                 |                       | ------------------>|                  |
++        ,--------+--------.          ,---+----.          ,----+----.          ,--+--.
++        |xlink-i2c-adapter|          |I2C core|          |i2c-slave|          |xlink|
++        `-----------------'          `--------'          `---------'          `-----'
 diff --git a/Documentation/misc-devices/index.rst b/Documentation/misc-devices/index.rst
-index 64420b3314fe..102f7f9dea87 100644
+index 102f7f9dea87..5a77a86261b7 100644
 --- a/Documentation/misc-devices/index.rst
 +++ b/Documentation/misc-devices/index.rst
-@@ -19,6 +19,7 @@ fit into other categories.
-    bh1770glc
+@@ -20,6 +20,7 @@ fit into other categories.
     eeprom
     c2port
-+   hddl_device_client.rst
+    hddl_device_client.rst
++   hddl_device_server.rst
     ibmvmc
     ics932s401
     isl29003
-diff --git a/Documentation/vpu/index.rst b/Documentation/vpu/index.rst
-index cd4272e089ec..b50b1376b591 100644
---- a/Documentation/vpu/index.rst
-+++ b/Documentation/vpu/index.rst
-@@ -17,3 +17,4 @@ This documentation contains information for the Intel VPU stack.
-    xlink-pcie
-    xlink-ipc
-    xlink-core
-+   hddl_device_client
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 0dfbe892d852..e35fa595c2d5 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -1989,6 +1989,7 @@ F:	drivers/misc/intel_tsens/
- ARM/INTEL TSENS SUPPORT
- M:	Udhayakumar C <udhayakumar.c@intel.com>
- S:	Supported
-+F:	drivers/misc/hddl_device/
- F:	drivers/misc/intel_tsens/
- 
- ARM/INTEL RESEARCH IMOTE/STARGATE 2 MACHINE SUPPORT
-diff --git a/drivers/misc/Kconfig b/drivers/misc/Kconfig
-index f6229dd8ba9e..f9f3d4d89e7b 100644
---- a/drivers/misc/Kconfig
-+++ b/drivers/misc/Kconfig
-@@ -487,4 +487,5 @@ source "drivers/misc/xlink-core/Kconfig"
- source "drivers/misc/vpumgr/Kconfig"
- source "drivers/misc/intel_tsens/Kconfig"
- source "drivers/misc/xlink-smbus/Kconfig"
-+source "drivers/misc/hddl_device/Kconfig"
- endmenu
-diff --git a/drivers/misc/Makefile b/drivers/misc/Makefile
-index 0ed8a62cbb20..350618dbe678 100644
---- a/drivers/misc/Makefile
-+++ b/drivers/misc/Makefile
-@@ -63,3 +63,4 @@ obj-$(CONFIG_XLINK_CORE)	+= xlink-core/
- obj-$(CONFIG_VPUMGR)		+= vpumgr/
- obj-y                           += intel_tsens/
- obj-$(CONFIG_XLINK_SMBUS)	+= xlink-smbus/
-+obj-y				+= hddl_device/
 diff --git a/drivers/misc/hddl_device/Kconfig b/drivers/misc/hddl_device/Kconfig
-new file mode 100644
-index 000000000000..e1ae81fdf177
---- /dev/null
+index e1ae81fdf177..7f9a6a685275 100644
+--- a/drivers/misc/hddl_device/Kconfig
 +++ b/drivers/misc/hddl_device/Kconfig
-@@ -0,0 +1,14 @@
-+# Copyright (C) 2020 Intel Corporation
-+# SPDX-License-Identifier: GPL-2.0-only
+@@ -12,3 +12,15 @@ config HDDL_DEVICE_CLIENT
+ 	  the device connect/disconnect programming sequence.
+ 	  Say Y if using a processor that includes the Intel VPU such as
+ 	  Keem Bay.  If unsure, say N.
 +
-+config HDDL_DEVICE_CLIENT
-+	tristate "Support for hddl device client"
-+	depends on XLINK_CORE && INTEL_TSENS_LOCAL_HOST
++config HDDL_DEVICE_SERVER
++	tristate "Support for hddl device server"
++	depends on XLINK_CORE && !HDDL_DEVICE_CLIENT
 +	help
-+	  This option enables HDDL device client module.
++	  This option enables HDDL device server module.
 +
 +	  This driver is used for sharing time sync data to local host and
 +	  retrives the sensors available on the platform. This also handles
@@ -411,593 +351,21 @@ index 000000000000..e1ae81fdf177
 +	  Say Y if using a processor that includes the Intel VPU such as
 +	  Keem Bay.  If unsure, say N.
 diff --git a/drivers/misc/hddl_device/Makefile b/drivers/misc/hddl_device/Makefile
-new file mode 100644
-index 000000000000..dca381660baa
---- /dev/null
+index dca381660baa..0e9a4cd2cef3 100644
+--- a/drivers/misc/hddl_device/Makefile
 +++ b/drivers/misc/hddl_device/Makefile
-@@ -0,0 +1,5 @@
-+# Copyright (C) 2020 Intel Corporation
-+# SPDX-License-Identifier: GPL-2.0-only
-+
-+obj-$(CONFIG_HDDL_DEVICE_CLIENT)	+= hddl_device_client.o
-+hddl_device_client-objs			+= hddl_device_lh.o hddl_device.o
-diff --git a/drivers/misc/hddl_device/hddl_device.c b/drivers/misc/hddl_device/hddl_device.c
+@@ -3,3 +3,5 @@
+ 
+ obj-$(CONFIG_HDDL_DEVICE_CLIENT)	+= hddl_device_client.o
+ hddl_device_client-objs			+= hddl_device_lh.o hddl_device.o
++obj-$(CONFIG_HDDL_DEVICE_SERVER)	+= hddl_device_server.o
++hddl_device_server-objs			+= hddl_device_rh.o hddl_device.o
+diff --git a/drivers/misc/hddl_device/hddl_device_rh.c b/drivers/misc/hddl_device/hddl_device_rh.c
 new file mode 100644
-index 000000000000..89e22adc3a03
+index 000000000000..78546ea64356
 --- /dev/null
-+++ b/drivers/misc/hddl_device/hddl_device.c
-@@ -0,0 +1,565 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/*
-+ *
-+ * High Density Deep Learning HELPER module.
-+ *
-+ * Copyright (C) 2020 Intel Corporation
-+ *
-+ */
-+
-+#include <asm/page.h>
-+#include <linux/cdev.h>
-+#include <linux/delay.h>
-+#include <linux/fs.h>
-+#include <linux/gpio/consumer.h>
-+#include <linux/hddl_device.h>
-+#include <linux/i2c.h>
-+#include <linux/ioctl.h>
-+#include <linux/kernel.h>
-+#include <linux/kmod.h>
-+#include <linux/kthread.h>
-+#include <linux/module.h>
-+#include <linux/mutex.h>
-+#include <linux/of_address.h>
-+#include <linux/of_device.h>
-+#include <linux/of_reserved_mem.h>
-+#include <linux/platform_device.h>
-+#include <linux/printk.h>
-+#include <linux/sched.h>
-+#include <linux/sched/mm.h>
-+#include <linux/sched/task.h>
-+#include <linux/slab.h>
-+#include <linux/time.h>
-+#include <linux/uaccess.h>
-+#include <linux/wait.h>
-+#include <linux/workqueue.h>
-+#include <linux/xlink.h>
-+#include <uapi/linux/stat.h>
-+#include "hddl_device_util.h"
-+
-+#define HDDL_XLINK_OPEN_TIMEOUT		1000
-+#define HDDL_I2C_CLIENT_INIT_TIME		1000
-+
-+enum hddl_device_event_type {
-+	HDDL_NOTIFY_DEVICE_DISCONNECTED,
-+	HDDL_NOTIFY_DEVICE_CONNECTED,
-+	HDDL_NUM_EVENT_TYPE,
-+};
-+
-+/*
-+ * Register callback for device
-+ * connect and disconnect events.
-+ */
-+static u32 hddl_device_events[] = {
-+	HDDL_NOTIFY_DEVICE_DISCONNECTED,
-+	HDDL_NOTIFY_DEVICE_CONNECTED,
-+	HDDL_NUM_EVENT_TYPE
-+};
-+
-+/**
-+ * intel_hddl_new_device - check for new hddl device
-+ * @dev: The hddl device.
-+ * @hddl_clients: list of existing client devices.
-+ * @sw_device_id_list: list of software device id's to check for new device.
-+ * @num_devices: number of id's present in sw_device_id_list.
-+ * @n_devs: number of existing client devices in hddl_clients list.
-+ *
-+ * Returns list of client devices by comapring the device id's with device id's
-+ * present in existing client devices list. If any software id which is not
-+ * matching with id's in existing client devices, it allocates new list to
-+ * accommodate new client device and copies the existing client devices to
-+ * new list and free's up the older list.
-+ * If no new device id found in sw_device_id_list, it returns list of existing
-+ * client devices.
-+ */
-+static struct intel_hddl_clients **
-+		intel_hddl_new_device(struct device *dev,
-+				      struct intel_hddl_clients **hddl_clients,
-+				      u32 *sw_device_id_list,
-+				      u32 num_devices,
-+				      u32 *n_devs)
-+{
-+	struct intel_hddl_clients **cls;
-+	bool match_found, new_dev = false;
-+	int i, j;
-+
-+	/*
-+	 * Check is there any new device by comparing id's with
-+	 * existing list.
-+	 */
-+	for (i = 0; i < num_devices; i++) {
-+		match_found = false;
-+		for (j = 0; j < (*n_devs); j++) {
-+			if (sw_device_id_list[i] ==
-+				hddl_clients[j]->xlink_dev.sw_device_id) {
-+				match_found = true;
-+				break;
-+			}
-+		}
-+		if (!match_found) {
-+			new_dev = true;
-+			break;
-+		}
-+	}
-+	if (!new_dev)
-+		return hddl_clients;
-+	/*
-+	 * Allocate memory for new list
-+	 */
-+	cls = kcalloc(num_devices,
-+		      sizeof(struct intel_hddl_clients *),
-+		      GFP_KERNEL);
-+	if (!cls)
-+		return hddl_clients;
-+	/*
-+	 * copy hddl client devices to new list.
-+	 */
-+	for (i = 0; i < num_devices; i++) {
-+		for (j = 0; j < *n_devs; j++) {
-+			if (sw_device_id_list[i] ==
-+				hddl_clients[j]->xlink_dev.sw_device_id) {
-+				cls[i] = hddl_clients[j];
-+				break;
-+			}
-+		}
-+	}
-+	/*
-+	 * update number of devices to include new device and free up existing
-+	 * list.
-+	 */
-+	*n_devs = num_devices;
-+	kfree(hddl_clients);
-+	return cls;
-+}
-+
-+/**
-+ * intel_hddl_setup_device - Initialize new client device
-+ * @dev: The hddl device.
-+ * @task: Thread function to setup and connect to host/device.
-+ * @n_devs: number of client devices in hddl_clients list.
-+ * @hddl_clients: list of existing client devices.
-+ * @pdata: platform data.
-+ *
-+ * Returns list of client devices. It also initialize the device and creates
-+ * kernel thread to initiate communication over xlink.
-+ */
-+
-+struct intel_hddl_clients **
-+	intel_hddl_setup_device(struct device *dev,
-+				intel_hddl_connect_task task, u32 *n_devs,
-+				struct intel_hddl_clients **hddl_clients,
-+				void *pdata)
-+{
-+	u32 sw_device_id_list[XLINK_MAX_DEVICE_LIST_SIZE];
-+	char device_name[XLINK_MAX_DEVICE_NAME_SIZE];
-+	struct intel_hddl_clients **cls;
-+	u32 num_devices = 0;
-+	u32 i = 0;
-+
-+	xlink_get_device_list(sw_device_id_list, &num_devices);
-+	if (num_devices == 0) {
-+		dev_err(dev, "HDDL:No devices found\n");
-+		return NULL;
-+	}
-+
-+	/*
-+	 * If list available, add new device to the existing client devices
-+	 * list, if list is not available create new list.
-+	 */
-+	if (hddl_clients) {
-+		cls = intel_hddl_new_device(dev,
-+					    hddl_clients,
-+					    sw_device_id_list,
-+					    num_devices, n_devs);
-+		if (!cls)
-+			return NULL;
-+	} else {
-+		cls = devm_kcalloc(dev, num_devices,
-+				   sizeof(struct intel_hddl_clients *),
-+				   GFP_KERNEL);
-+		if (!cls)
-+			return NULL;
-+		/*
-+		 * update number of devices in client devices list
-+		 */
-+		*n_devs = num_devices;
-+	}
-+	hddl_clients = cls;
-+	for (i = 0; i < num_devices; i++) {
-+		struct intel_hddl_clients *c = hddl_clients[i];
-+		int rc;
-+
-+		/*
-+		 * Initialize new client device.
-+		 */
-+		if (c)
-+			continue;
-+		c = devm_kzalloc(dev,
-+				 sizeof(struct intel_hddl_clients),
-+				 GFP_KERNEL);
-+		if (!c)
-+			return hddl_clients;
-+		c->pdata = pdata;
-+		c->xlink_dev.dev_type = HOST_DEVICE;
-+		c->xlink_dev.sw_device_id = sw_device_id_list[i];
-+		rc = xlink_get_device_name((&c->xlink_dev),
-+					   device_name,
-+					   XLINK_MAX_DEVICE_NAME_SIZE);
-+		if (rc > 0) {
-+			dev_err(dev,
-+				"HDDL:Failed to get device name [EC%d] %x\n",
-+				rc, c->xlink_dev.sw_device_id);
-+			return hddl_clients;
-+		}
-+		dev_info(dev, "HDDL:Device name: %x %s\n",
-+			 c->xlink_dev.sw_device_id, device_name);
-+		if (GET_INTERFACE_FROM_SW_DEVICE_ID(sw_device_id_list[i]) ==
-+		    SW_DEVICE_ID_PCIE_INTERFACE) {
-+			/*
-+			 * Start kernel thread to initialize
-+			 * xlink communication.
-+			 */
-+			c->hddl_dev_connect_task = kthread_run(task,
-+							       (void *)c,
-+							       device_name);
-+			if (!c->hddl_dev_connect_task) {
-+				dev_err(dev, "failed to create thread\n");
-+				return hddl_clients;
-+			}
-+			c->task = (void *)task;
-+		}
-+		hddl_clients[i] = c;
-+	}
-+
-+	return hddl_clients;
-+}
-+
-+int intel_hddl_xlink_remove_i2c_adap(struct device *dev,
-+				     struct intel_hddl_clients *c)
-+{
-+	int i;
-+
-+	for (i = 0; i < HDDL_XLINK_I2C_END; i++) {
-+		if (c->xlink_i2c_plt_dev[i]) {
-+			dev_info(dev,
-+				 "HDDL : platform_device_unregister = %d\n",
-+				 i);
-+			platform_device_unregister(c->xlink_i2c_plt_dev[i]);
-+			c->xlink_i2c_plt_dev[i] = NULL;
-+		}
-+	}
-+	return 0;
-+}
-+
-+static void hddl_register_remote_smbus_client(struct device *dev,
-+					      struct intel_hddl_clients *c,
-+					      struct intel_hddl_i2c_devs *i2c)
-+{
-+	struct platform_device *xlink_pdev =
-+			c->xlink_i2c_plt_dev[HDDL_XLINK_I2C_MASTER];
-+	struct i2c_adapter *adap;
-+
-+	if (!xlink_pdev)
-+		return;
-+	adap = (struct i2c_adapter *)platform_get_drvdata(xlink_pdev);
-+	if (!adap)
-+		return;
-+	c->adap[HDDL_XLINK_I2C_MASTER] = adap;
-+	i2c->smbus_client =
-+		i2c_new_client_device(adap,
-+				      &i2c->board_info);
-+	msleep_interruptible(HDDL_I2C_CLIENT_INIT_TIME);
-+}
-+
-+static void hddl_register_remote_i2c_client(struct device *dev,
-+					    struct intel_hddl_clients *c,
-+					    struct intel_hddl_i2c_devs *i2c)
-+{
-+	if (c->smbus_adap) {
-+		i2c->board_info.platform_data = c;
-+		i2c->i2c_client = i2c_new_client_device(c->smbus_adap,
-+							&i2c->board_info);
-+		msleep_interruptible(HDDL_I2C_CLIENT_INIT_TIME);
-+	}
-+}
-+
-+static void hddl_register_remote_xlink_client(struct device *dev,
-+					      struct intel_hddl_clients *c,
-+					      struct intel_hddl_i2c_devs *i2c)
-+{
-+	struct platform_device *xlink_pdev =
-+			c->xlink_i2c_plt_dev[HDDL_XLINK_I2C_SLAVE];
-+	struct i2c_adapter *adap;
-+
-+	if (!xlink_pdev)
-+		return;
-+	adap = (struct i2c_adapter *)platform_get_drvdata(xlink_pdev);
-+	if (!adap)
-+		return;
-+	c->adap[HDDL_XLINK_I2C_SLAVE] = adap;
-+	i2c->board_info.platform_data = c;
-+	i2c->xlk_client = i2c_new_client_device(adap, &i2c->board_info);
-+	msleep_interruptible(HDDL_I2C_CLIENT_INIT_TIME);
-+}
-+
-+static void intel_hddl_add_remote_clients(struct device *dev,
-+					  struct intel_hddl_clients *c,
-+					  struct intel_hddl_i2c_devs *i2c_devs)
-+{
-+	if (!i2c_devs->enabled)
-+		return;
-+	/*
-+	 * Register this device as xlink i2c client.
-+	 */
-+	if (i2c_devs->remote_host & HDDL_XLINK_CLIENT)
-+		hddl_register_remote_xlink_client(dev, c, i2c_devs);
-+	/*
-+	 * Register this device as i2c smbbus client.
-+	 */
-+	if (i2c_devs->remote_host & HDDL_I2C_CLIENT)
-+		hddl_register_remote_i2c_client(dev, c, i2c_devs);
-+	/*
-+	 * Register this device as xlink smbus i2c client.
-+	 * Based on the bit mask of remote_host, It is possible that same
-+	 * device can be registered as xlink i2c client and smbus i2c client.
-+	 */
-+	if (i2c_devs->remote_host & HDDL_XLINK_SMBUS_CLIENT)
-+		hddl_register_remote_smbus_client(dev, c, i2c_devs);
-+}
-+
-+static void intel_hddl_add_localhost_clients(struct device *dev,
-+					     struct intel_hddl_clients *c,
-+					     struct intel_hddl_i2c_devs *i2c)
-+{
-+	if (!i2c->enabled)
-+		return;
-+	/*
-+	 * Register this device as xlink i2c client.
-+	 */
-+	if (i2c->local_host & HDDL_XLINK_CLIENT) {
-+		struct platform_device *xlink_pdev =
-+			c->xlink_i2c_plt_dev[HDDL_XLINK_I2C_SLAVE];
-+		struct i2c_adapter *adap;
-+
-+		if (!xlink_pdev)
-+			return;
-+		adap = (struct i2c_adapter *)platform_get_drvdata(xlink_pdev);
-+		if (!adap)
-+			return;
-+		c->adap[HDDL_XLINK_I2C_SLAVE] = adap;
-+		i2c->xlk_client =
-+			i2c_new_client_device(adap,
-+					      &i2c->board_info);
-+		msleep_interruptible(HDDL_I2C_CLIENT_INIT_TIME);
-+	}
-+	/*
-+	 * Register this device as smbus i2c client.
-+	 * Based on the bit mask of local_host, It is possible that same
-+	 * device can be registered as xlink i2c client and smbus i2c client.
-+	 */
-+	if (i2c->local_host & HDDL_I2C_CLIENT) {
-+		i2c->i2c_client =
-+			i2c_new_client_device(i2c_get_adapter(i2c->bus),
-+					      &i2c->board_info);
-+		msleep_interruptible(HDDL_I2C_CLIENT_INIT_TIME);
-+	}
-+}
-+
-+void intel_hddl_add_xlink_i2c_clients(struct device *dev,
-+				      struct intel_hddl_clients *c,
-+				      struct intel_hddl_i2c_devs **i2c_devs,
-+				      int n_clients, int remote)
-+{
-+	int i;
-+
-+	for (i = 0; i < n_clients; i++) {
-+		if (remote)
-+			intel_hddl_add_remote_clients(dev, c, i2c_devs[i]);
-+		else
-+			intel_hddl_add_localhost_clients(dev, c, i2c_devs[i]);
-+	}
-+}
-+
-+int intel_hddl_register_xlink_i2c_adap(struct device *dev,
-+				       struct intel_hddl_clients *c)
-+{
-+	int i;
-+
-+	for (i = 0; i < HDDL_XLINK_I2C_END; i++) {
-+		struct platform_device_info xlink_i2c_info;
-+		int soc_id = c->board_info.soc_id;
-+
-+		memset(&xlink_i2c_info, 0, sizeof(xlink_i2c_info));
-+		xlink_i2c_info.name = "i2c_xlink";
-+		xlink_i2c_info.id = c->board_info.board_id << 4 |
-+					soc_id << 2 | i;
-+		c->xlink_i2c_ch[i] =
-+			c->i2c_chan_num + (soc_id * 2) + i;
-+		xlink_i2c_info.data = c;
-+		xlink_i2c_info.size_data =
-+			sizeof(struct intel_hddl_clients);
-+		c->xlink_i2c_plt_dev[i] =
-+			platform_device_register_full(&xlink_i2c_info);
-+		if (!c->xlink_i2c_plt_dev[i]) {
-+			dev_err(dev, "platform device register failed\n");
-+			return -EFAULT;
-+		}
-+	}
-+	return 0;
-+}
-+
-+static int intel_hddl_device_probe(struct intel_hddl_clients *d)
-+{
-+	char device_name[XLINK_MAX_DEVICE_NAME_SIZE];
-+	int rc;
-+
-+	if (d->status == HDDL_DEV_STATUS_CONNECTED)
-+		return 0;
-+	rc = xlink_get_device_name(&d->xlink_dev,
-+				   device_name, XLINK_MAX_DEVICE_NAME_SIZE);
-+	if (rc > 0) {
-+		dev_err(&d->pdev->dev,
-+			"HDDL:Failed to get device name of id [EC%d] %x\n",
-+			rc, d->xlink_dev.sw_device_id);
-+		return -ENODEV;
-+	}
-+
-+	d->hddl_dev_connect_task =
-+		kthread_run((intel_hddl_connect_task)d->task,
-+			    (void *)d,
-+			    device_name);
-+	if (!d->hddl_dev_connect_task) {
-+		dev_err(&d->pdev->dev, "failed to create thread\n");
-+		return -EFAULT;
-+	}
-+	d->status = HDDL_DEV_STATUS_CONNECTED;
-+
-+	return 0;
-+}
-+
-+void intel_hddl_device_remove(struct intel_hddl_clients *d)
-+{
-+	int i;
-+
-+	/** lock device removal.
-+	 * xlink core gives multiple device disconnected notifications,
-+	 * so add lock to diconnect the device and update the status as
-+	 * disconnected. subsequent notificatios will check the status
-+	 * and returs if the device is already disconnected.
-+	 */
-+	mutex_lock(&d->lock);
-+	if (d->status == HDDL_DEV_STATUS_DISCONNECTED) {
-+		mutex_unlock(&d->lock);
-+		return;
-+	}
-+
-+	for (i = 0; i < d->n_clients; i++)
-+		intel_hddl_free_i2c_client(d, d->i2c_devs[i]);
-+	intel_hddl_unregister_pdev(d);
-+	xlink_close_channel(&d->xlink_dev, d->chan_num);
-+	xlink_disconnect(&d->xlink_dev);
-+	kthread_stop(d->hddl_dev_connect_task);
-+	d->status = HDDL_DEV_STATUS_DISCONNECTED;
-+	mutex_unlock(&d->lock);
-+}
-+
-+static int intel_hddl_device_event_notify(u32 sw_device_id,
-+					  uint32_t event_type)
-+{
-+	struct intel_hddl_clients **clients;
-+	struct intel_hddl_clients *client;
-+	int i, ret = 0;
-+	int ndevs = 0;
-+
-+	clients = intel_hddl_get_clients(&ndevs);
-+	if (!clients)
-+		return 0;
-+	for (i = 0; i < ndevs; i++) {
-+		if (clients[i]->xlink_dev.sw_device_id == sw_device_id) {
-+			client = clients[i];
-+			break;
-+		}
-+	}
-+	if (!client)
-+		return -EINVAL;
-+	switch (event_type) {
-+	case HDDL_NOTIFY_DEVICE_DISCONNECTED:
-+		intel_hddl_device_remove(client);
-+		break;
-+
-+	case HDDL_NOTIFY_DEVICE_CONNECTED:
-+		ret = intel_hddl_device_probe(client);
-+		break;
-+
-+	default:
-+		dev_err(&client->pdev->dev,
-+			"HDDL:xlink pcie notify - Error[%x]: [%d]\n",
-+			sw_device_id, event_type);
-+		ret = -EINVAL;
-+		break;
-+	}
-+	return ret;
-+}
-+
-+void intel_hddl_close_xlink_device(struct device *dev,
-+				   struct intel_hddl_clients *d)
-+{
-+	xlink_close_channel(&d->xlink_dev, d->chan_num);
-+	xlink_disconnect(&d->xlink_dev);
-+	kthread_stop(d->hddl_dev_connect_task);
-+	d->status = HDDL_DEV_STATUS_DISCONNECTED;
-+}
-+
-+int intel_hddl_open_xlink_device(struct device *dev,
-+				 struct intel_hddl_clients *d)
-+{
-+	char device_name[XLINK_MAX_DEVICE_NAME_SIZE];
-+	u32 device_status = 0xFF;
-+	int rc;
-+
-+	rc = xlink_get_device_name(&d->xlink_dev,
-+				   device_name, XLINK_MAX_DEVICE_NAME_SIZE);
-+	if (rc > 0) {
-+		dev_err(dev,
-+			"HDDL:Failed to get device name of id [EC%d] %x\n",
-+			rc, d->xlink_dev.sw_device_id);
-+		return -ENODEV;
-+	}
-+	if (xlink_boot_device(&d->xlink_dev, device_name) !=
-+	       X_LINK_SUCCESS) {
-+		dev_err(dev, "xlink_boot_device failed\n");
-+		return -ENODEV;
-+	}
-+	if (xlink_get_device_status(&d->xlink_dev, &device_status) !=
-+	       X_LINK_SUCCESS) {
-+		dev_err(dev, "xlink_get_device_status failed\n");
-+		return -ENODEV;
-+	}
-+	if (xlink_connect(&d->xlink_dev) != X_LINK_SUCCESS) {
-+		dev_err(dev, "xlink_connect failed\n");
-+		return -ENODEV;
-+	}
-+	mutex_init(&d->lock);
-+	xlink_register_device_event(&d->xlink_dev,
-+				    hddl_device_events,
-+				    HDDL_NUM_EVENT_TYPE,
-+				    intel_hddl_device_event_notify);
-+
-+	d->status = HDDL_DEV_STATUS_CONNECTED;
-+	/*
-+	 * Try opening xlink channel, open channel will fail till host/client
-+	 * initilaizes the channel. intel_hddl_open_xlink_device is invoked
-+	 * from kernel thread. so it is safe to try indefinitely.
-+	 */
-+	while (xlink_open_channel(&d->xlink_dev,
-+				  d->chan_num, RXB_TXB,
-+				  64 * 1024, 0 /* timeout */) !=
-+				  X_LINK_SUCCESS) {
-+		if (kthread_should_stop()) {
-+			xlink_disconnect(&d->xlink_dev);
-+			return -ENODEV;
-+		}
-+	}
-+
-+	return 0;
-+}
-diff --git a/drivers/misc/hddl_device/hddl_device_lh.c b/drivers/misc/hddl_device/hddl_device_lh.c
-new file mode 100644
-index 000000000000..e44c480379bc
---- /dev/null
-+++ b/drivers/misc/hddl_device/hddl_device_lh.c
-@@ -0,0 +1,764 @@
++++ b/drivers/misc/hddl_device/hddl_device_rh.c
+@@ -0,0 +1,837 @@
 +// SPDX-License-Identifier: GPL-2.0-only
 +/*
 + *
@@ -1011,57 +379,84 @@ index 000000000000..e44c480379bc
 +#include <linux/cdev.h>
 +#include <linux/delay.h>
 +#include <linux/fs.h>
-+#include <linux/gpio/consumer.h>
 +#include <linux/hddl_device.h>
 +#include <linux/i2c.h>
++#include <linux/intel_tsens_host.h>
 +#include <linux/ioctl.h>
 +#include <linux/kernel.h>
 +#include <linux/kmod.h>
 +#include <linux/kthread.h>
 +#include <linux/module.h>
 +#include <linux/mutex.h>
-+#include <linux/of_address.h>
-+#include <linux/of_device.h>
-+#include <linux/of_reserved_mem.h>
 +#include <linux/platform_device.h>
 +#include <linux/printk.h>
 +#include <linux/sched.h>
 +#include <linux/sched/mm.h>
 +#include <linux/sched/task.h>
 +#include <linux/slab.h>
++#include <linux/thermal.h>
 +#include <linux/time.h>
 +#include <linux/uaccess.h>
 +#include <linux/wait.h>
 +#include <linux/workqueue.h>
 +#include <linux/xlink.h>
++
 +#include <uapi/linux/stat.h>
++
 +#include "hddl_device_util.h"
 +
-+#define DRIVER_NAME "hddl_device_client"
++#define DRIVER_NAME "hddl_device_server"
 +
-+struct intel_tsens {
-+	struct intel_tsens_data data;
-+	struct intel_tsens_trip_info **trip_info;
++/*
++ * I2C client Reserved addr: 0x00 - 0x0f
++ *			     0xf0 - 0xff
++ */
++#define HDDL_FREE_CLIENT_ADDR_START	0x10
++#define HDDL_FREE_CLIENT_ADDR_END	0xf0
++#define HDDL_FREE_CLIENT_ADDR_SIZE	(HDDL_FREE_CLIENT_ADDR_END - \
++					HDDL_FREE_CLIENT_ADDR_START)
++/* Xlink channel reserved for HDDL device management
++ * HDDL_NODE_XLINK_CHANNEL - Default channel for HDDL device
++ *				Management communication.
++ * HDDL_I2C_XLINK_CHANNEL - channel used for xlink I2C
++ *				communication.
++ */
++#define HDDL_NODE_XLINK_CHANNEL	1080
++#define HDDL_I2C_XLINK_CHANNEL		1081
++
++#define HDDL_RESET_SUCCESS	1
++#define HDDL_RESET_FAILED	0
++
++static const int hddl_host_reserved_addrs[] = {
++	0x42,
++	0x52,
++	0x54,
++	0x60
 +};
 +
-+struct intel_hddl_client_priv {
-+	void __iomem *base_addr;
-+	int board_id;
-+	int soc_id;
-+	int n_clients;
-+	u32 nsens;
++struct intel_hddl_server_plat_data {
 +	u32 xlink_chan;
 +	u32 i2c_xlink_chan;
-+	u32 n_hddl_devs;
++};
++
++struct intel_hddl_device_priv {
++	u32 xlink_chan;
++	u32 i2c_xlink_chan;
++	u32 ndevs;
++	DECLARE_BITMAP(client_addr, HDDL_FREE_CLIENT_ADDR_SIZE);
++	/* HDDL device lock */
++	struct mutex lock;
 +	struct platform_device *pdev;
 +	struct intel_hddl_clients **hddl_client;
 +	struct task_struct *hddl_dev_init_task;
-+	struct intel_hddl_i2c_devs **i2c_devs;
-+	struct intel_tsens **tsens;
-+	struct intel_hddl_board_info board_info;
++	struct intel_hddl_server_plat_data *plat_data;
++	struct i2c_adapter *smbus_adap;
++	struct class *dev_class;
++	struct cdev hddl_cdev;
++	dev_t cdev;
 +};
 +
-+static struct intel_hddl_client_priv *g_priv;
++static struct intel_hddl_device_priv *g_priv;
 +
 +static inline int intel_hddl_get_xlink_data(struct device *dev,
 +					    struct xlink_handle *xlink,
@@ -1088,9 +483,185 @@ index 000000000000..e44c480379bc
 +	return rc;
 +}
 +
++struct intel_hddl_clients **intel_hddl_get_clients(int *n_devs)
++{
++	if (!g_priv)
++		return NULL;
++	*n_devs = g_priv->ndevs;
++	return g_priv->hddl_client;
++}
++
++static long hddl_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
++{
++	struct intel_hddl_device_priv *priv = file->private_data;
++	u32 __user *user_ptr = (u32 __user *)arg;
++	struct device *dev = &priv->pdev->dev;
++	struct sw_id_soft_reset soft_reset;
++	struct sw_id_hddl_data swid_data;
++	struct intel_hddl_clients **clients;
++	struct intel_hddl_clients *client;
++	int i, rc;
++
++	if (!user_ptr) {
++		dev_err(dev, "Null pointer from user\n");
++		return -EINVAL;
++	}
++	if (!priv) {
++		dev_err(dev, "Device ioctl failed\n");
++		return -ENODEV;
++	}
++	clients = priv->hddl_client;
++	if (!clients) {
++		dev_err(dev, "Device ioctl failed\n");
++		return -ENODEV;
++	}
++	switch (cmd) {
++	case HDDL_SOFT_RESET:
++		if (copy_from_user(&soft_reset,
++				   user_ptr,
++				   sizeof(struct sw_id_soft_reset)))
++			return -EFAULT;
++		for (i = 0; i < priv->ndevs; i++) {
++			if (clients[i]->xlink_dev.sw_device_id ==
++					soft_reset.sw_id) {
++				client = clients[i];
++				break;
++			}
++		}
++
++		if (!client) {
++			dev_err(dev, "target device to reset not found %d",
++				soft_reset.sw_id);
++			return -ENODEV;
++		}
++		/* xlink-reset */
++		rc =  xlink_reset_device(&client->xlink_dev);
++		if (rc > 0) {
++			dev_err(dev, "xlink_reset_device failed");
++			soft_reset.return_id = HDDL_RESET_FAILED;
++		} else {
++			soft_reset.return_id = HDDL_RESET_SUCCESS;
++		}
++		if (copy_to_user(user_ptr,
++				 &soft_reset, sizeof(struct sw_id_soft_reset)))
++			return -EFAULT;
++		/* xlink-rest */
++		break;
++	case HDDL_READ_SW_ID_DATA:
++		if (copy_from_user(&swid_data, user_ptr,
++				   sizeof(struct sw_id_hddl_data)))
++			return -EFAULT;
++		for (i = 0; i < priv->ndevs; i++) {
++			if (clients[i]->xlink_dev.sw_device_id ==
++					swid_data.sw_id) {
++				client = clients[i];
++				break;
++			}
++		}
++
++		if (!client) {
++			dev_err(dev, "target device to reset not found %d",
++				swid_data.sw_id);
++			return -ENODEV;
++		}
++		swid_data.board_id = client->board_info.board_id;
++		swid_data.soc_id = client->board_info.soc_id;
++		if (client->adap[0])
++			swid_data.soc_adaptor_no[0] = client->adap[0]->nr;
++		if (client->adap[1])
++			swid_data.soc_adaptor_no[1] = client->adap[1]->nr;
++		swid_data.return_id = 1;
++		if (copy_to_user(user_ptr,
++				 &swid_data, sizeof(struct sw_id_hddl_data)))
++			return -EFAULT;
++		break;
++	default:
++		return -EINVAL;
++	}
++	return 0;
++}
++
++static int hddl_open(struct inode *inode, struct file *filp)
++{
++	struct intel_hddl_device_priv *priv;
++
++	priv = container_of(inode->i_cdev,
++			    struct intel_hddl_device_priv, hddl_cdev);
++	if (!priv) {
++		dev_err(&priv->pdev->dev, "Device open failed\n");
++		return -ENODEV;
++	}
++	filp->private_data = priv;
++	return 0;
++}
++
++static const struct file_operations hddl_fops = {
++	.owner	= THIS_MODULE,
++	.open = hddl_open,
++	.unlocked_ioctl = hddl_ioctl,
++};
++
++static int intel_hddl_cdev_init(struct intel_hddl_device_priv *priv)
++{
++	/*Allocating Major number*/
++	if ((alloc_chrdev_region(&priv->cdev, 0, 1, "hddl_dev")) < 0) {
++		dev_err(&priv->pdev->dev, "Cannot allocate major number\n");
++		return -EINVAL;
++	}
++	dev_err(&priv->pdev->dev, "Major = %d Minor = %d\n", MAJOR(priv->cdev),
++		MINOR(priv->cdev));
++	/*Creating cdev structure*/
++	cdev_init(&priv->hddl_cdev, &hddl_fops);
++	/*Adding character device to the system*/
++	if ((cdev_add(&priv->hddl_cdev, priv->cdev, 1)) < 0) {
++		dev_err(&priv->pdev->dev,
++			"Cannot add the device to the system\n");
++		goto r_region;
++	}
++	/*Creating struct class*/
++	priv->dev_class = class_create(THIS_MODULE, "hddl_class");
++	if (!priv->dev_class) {
++		dev_err(&priv->pdev->dev, "Cannot create the struct class\n");
++		goto r_device;
++	}
++	/*Creating device*/
++	if (!(device_create(priv->dev_class, NULL, priv->cdev, NULL,
++			    "hddl_device"))) {
++		dev_err(&priv->pdev->dev, "Cannot create the Device\n");
++		goto r_class;
++	}
++	return 0;
++
++r_class:
++	class_destroy(priv->dev_class);
++r_device:
++	cdev_del(&priv->hddl_cdev);
++r_region:
++	unregister_chrdev_region(priv->cdev, 1);
++	return -EINVAL;
++}
++
++static void intel_hddl_cdev_remove(struct intel_hddl_device_priv *priv)
++{
++	device_destroy(priv->dev_class, priv->cdev);
++	class_destroy(priv->dev_class);
++	cdev_del(&priv->hddl_cdev);
++	unregister_chrdev_region(priv->cdev, 1);
++}
++
++void intel_hddl_unregister_pdev(struct intel_hddl_clients *c)
++{
++	struct intel_hddl_device_priv *priv = c->pdata;
++
++	intel_hddl_xlink_remove_i2c_adap(&priv->pdev->dev, c);
++}
++
 +void intel_hddl_free_i2c_client(struct intel_hddl_clients *d,
 +				struct intel_hddl_i2c_devs *i2c_dev)
 +{
++	struct intel_hddl_device_priv *priv = d->pdata;
++	int bit_pos = i2c_dev->addr - HDDL_FREE_CLIENT_ADDR_START;
++
 +	if (i2c_dev->xlk_client)
 +		i2c_unregister_device(i2c_dev->xlk_client);
 +	if (i2c_dev->i2c_client)
@@ -1100,153 +671,217 @@ index 000000000000..e44c480379bc
 +	i2c_dev->xlk_client = NULL;
 +	i2c_dev->i2c_client = NULL;
 +	i2c_dev->smbus_client = NULL;
++	mutex_lock(&priv->lock);
++	clear_bit(bit_pos, priv->client_addr);
++	mutex_unlock(&priv->lock);
 +}
 +
-+struct intel_hddl_clients **intel_hddl_get_clients(int *n_devs)
++/** hddl_get_free_client - get free client address,
++ *
++ * https://i2c.info/i2c-bus-specification
++ * below client address are reserved as per i2c bus specification.
++ * I2C client Reserved addr: 0x00 - 0x0f
++ *			     0xf0 - 0xff
++ *
++ * Get free client address other than standard i2c clients reserved and
++ * i2c client address used by host. If any free client address found,
++ * mark it as reserved by setting the bit corresponding to the address,
++ * and return client address.
++ */
++static int hddl_get_free_client(struct intel_hddl_device_priv *priv)
 +{
-+	if (!g_priv || !n_devs)
-+		return NULL;
-+	*n_devs = g_priv->n_hddl_devs;
-+	return g_priv->hddl_client;
-+}
++	unsigned long bit_pos;
++	int client_addr;
 +
-+void intel_hddl_unregister_pdev(struct intel_hddl_clients *c)
-+{
-+	struct intel_hddl_client_priv *priv = c->pdata;
-+
-+	intel_hddl_xlink_remove_i2c_adap(&priv->pdev->dev, c);
-+}
-+
-+static u8 *intel_tsens_thermal_msg(struct intel_hddl_clients *c,
-+				   struct intel_hddl_tsens_msg *msg,
-+					u32 *size)
-+{
-+	struct intel_hddl_client_priv *priv = c->pdata;
-+	struct intel_tsens **tsens = priv->tsens;
-+
-+	switch (msg->msg_type) {
-+	case HDDL_GET_NSENS:
-+	{
-+		u32 *data;
-+		*size = sizeof(int);
-+		data = kzalloc(*size, GFP_KERNEL);
-+		if (!data)
-+			return NULL;
-+		*data = priv->nsens;
-+		return (u8 *)data;
-+	}
-+	case HDDL_GET_SENS_DETAILS:
-+	{
-+		struct intel_tsens_data *data;
-+		u32 sensor_type = msg->sensor_type;
-+		struct intel_tsens_data *tsens_data =
-+				&tsens[sensor_type]->data;
-+
-+		*size = sizeof(struct intel_tsens_data);
-+		data = kzalloc(*size, GFP_KERNEL);
-+		if (!data)
-+			return NULL;
-+		strcpy(data->name, tsens_data->name);
-+		data->n_trips = tsens_data->n_trips;
-+		data->passive_delay = tsens_data->passive_delay;
-+		data->polling_delay = tsens_data->polling_delay;
-+		data->sensor_type = tsens_data->sensor_type;
-+		return (u8 *)data;
-+	}
-+	case HDDL_GET_SENS_TRIP_INFO:
-+	{
-+		struct intel_tsens_trip_info *data;
-+		u32 sensor_type = msg->sensor_type;
-+		u32 trip_info_idx = msg->trip_info_idx;
-+
-+		*size = sizeof(struct intel_tsens_trip_info);
-+		data = kzalloc(*size, GFP_KERNEL);
-+		if (!data)
-+			return NULL;
-+		memcpy(data, tsens[sensor_type]->trip_info[trip_info_idx],
-+		       sizeof(struct intel_tsens_trip_info));
-+		return (u8 *)data;
-+	}
-+	default:
-+		break;
-+	}
-+	return NULL;
++	bit_pos = find_first_zero_bit(priv->client_addr,
++				      HDDL_FREE_CLIENT_ADDR_SIZE);
++	if (bit_pos >= HDDL_FREE_CLIENT_ADDR_SIZE)
++		return -EINVAL;
++	client_addr = bit_pos + HDDL_FREE_CLIENT_ADDR_START;
++	set_bit(bit_pos, priv->client_addr);
++	return client_addr;
 +}
 +
 +static int intel_hddl_i2c_register_clients(struct device *dev,
 +					   struct intel_hddl_clients *c)
 +{
-+	struct intel_hddl_client_priv *priv = c->pdata;
++	struct intel_hddl_device_priv *priv = c->pdata;
 +	struct xlink_handle *xlink = &c->xlink_dev;
++	struct intel_hddl_i2c_devs **i2c_devs;
 +	struct intel_hddl_tsens_msg msg;
-+	int rc, i;
-+	int size;
++	int rc, ndevs, size, i;
++
++	/* Get N I2C devices */
++	msg.msg_type = HDDL_GET_N_I2C_DEVS;
++	rc = xlink_write_volatile(xlink, c->chan_num,
++				  (u8 *)&msg, sizeof(msg));
++	if (rc) {
++		dev_err(dev,
++			"xlink write data failed rc = %d\n",
++			rc);
++		return rc;
++	}
++	rc = intel_hddl_get_xlink_data(dev,
++				       xlink, c->chan_num,
++				       (u8 *)&ndevs, &size);
++	if (rc)
++		return rc;
++	c->n_clients = ndevs;
++	i2c_devs = devm_kcalloc(dev, ndevs,
++				sizeof(struct intel_hddl_i2c_devs *),
++				GFP_KERNEL);
++	if (!i2c_devs)
++		return -ENOMEM;
++	c->i2c_devs = i2c_devs;
++	for (i = 0; i < ndevs; i++) {
++		struct intel_hddl_i2c_devs *i2c;
++		struct intel_hddl_i2c_devs_data i2c_data;
++
++		i2c = devm_kzalloc(dev,
++				   sizeof(struct intel_hddl_i2c_devs),
++				   GFP_KERNEL);
++		if (!i2c)
++			return -ENOMEM;
++		i2c_devs[i] = i2c;
++
++		/* Get Details*/
++		msg.msg_type = HDDL_GET_I2C_DEVS;
++		msg.sensor_type = i;
++		rc = xlink_write_volatile(xlink, c->chan_num,
++					  (u8 *)&msg, sizeof(msg));
++		if (rc) {
++			dev_err(dev, "xlink write data failed rc = %d\n", rc);
++			return rc;
++		}
++		rc = intel_hddl_get_xlink_data(dev,
++					       xlink, c->chan_num,
++					       (u8 *)&i2c_data, &size);
++		if (rc)
++			return rc;
++
++		strcpy(i2c->name, i2c_data.name);
++		i2c->addr = i2c_data.addr;
++		i2c->bus = i2c_data.bus;
++		i2c->enabled = i2c_data.enabled;
++		i2c->local_host = i2c_data.local_host;
++		i2c->remote_host = i2c_data.remote_host;
++	}
++
++	mutex_lock(&priv->lock);
++	for (i = 0; i < ndevs; i++) {
++		if (i2c_devs[i]->addr & (1 << 30))
++			i2c_devs[i]->addr = hddl_get_free_client(priv);
++
++		strcpy(i2c_devs[i]->board_info.type,
++		       i2c_devs[i]->name);
++		i2c_devs[i]->board_info.addr = i2c_devs[i]->addr;
++	}
++	mutex_unlock(&priv->lock);
++	/* Send Complete */
++	msg.msg_type = HDDL_GET_SENS_COMPLETE;
++	rc = xlink_write_volatile(xlink, c->chan_num,
++				  (u8 *)&msg, sizeof(msg));
++	if (rc) {
++		dev_err(dev, "xlink write data failed rc = %d\n", rc);
++		return rc;
++	}
++
++	mutex_lock(&priv->lock);
 +
 +	/* Get msg type */
-+	rc = intel_hddl_get_xlink_data(&priv->pdev->dev,
++	rc = intel_hddl_get_xlink_data(dev,
 +				       xlink, c->chan_num,
 +				       (u8 *)&msg, &size);
++	if (rc) {
++		mutex_unlock(&priv->lock);
++		return rc;
++	}
++
++	while (msg.msg_type != HDDL_GET_SENS_COMPLETE) {
++		switch (msg.msg_type) {
++		case HDDL_GET_I2C_DEV_ADDR:
++		{
++			i = msg.sensor_type;
++			rc = xlink_write_volatile(xlink, c->chan_num,
++						  (u8 *)&i2c_devs[i]->addr,
++						  sizeof(i2c_devs[i]->addr));
++			if (rc) {
++				dev_err(dev,
++					"xlink write data failed rc = %d\n",
++					rc);
++				mutex_unlock(&priv->lock);
++				return rc;
++			}
++		}
++		break;
++		default:
++			break;
++		}
++		rc = intel_hddl_get_xlink_data(dev,
++					       xlink, c->chan_num,
++					       (u8 *)&msg, &size);
++		if (rc) {
++			mutex_unlock(&priv->lock);
++			return rc;
++		}
++	}
++	intel_hddl_add_xlink_i2c_clients(dev, c, c->i2c_devs,
++					 c->n_clients, 1);
++	mutex_unlock(&priv->lock);
++	return 0;
++}
++
++static int intel_hddl_tsens_data(struct intel_hddl_clients *c)
++{
++	struct intel_hddl_device_priv *priv = c->pdata;
++	struct xlink_handle *xlink = &c->xlink_dev;
++	struct intel_tsens_host **p_tsens;
++	struct intel_hddl_tsens_msg msg;
++	u32 size, i, j;
++	u32 nsens;
++	int rc;
++
++	/* Get Nsens */
++	msg.msg_type = HDDL_GET_NSENS;
++	rc = xlink_write_volatile(xlink, c->chan_num,
++				  (u8 *)&msg, sizeof(msg));
++	if (rc) {
++		dev_err(&priv->pdev->dev,
++			"xlink write data failed rc = %d\n",
++			rc);
++			return rc;
++	}
++	rc = intel_hddl_get_xlink_data(&priv->pdev->dev,
++				       xlink, c->chan_num,
++				       (u8 *)&nsens, &size);
 +	if (rc)
 +		return rc;
 +
-+	while (msg.msg_type != HDDL_GET_SENS_COMPLETE) {
-+		u32 *data;
++	c->nsens = nsens;
++	p_tsens = devm_kcalloc(&priv->pdev->dev, nsens,
++			       sizeof(struct intel_tsens_host *),
++			       GFP_KERNEL);
++	if (!p_tsens)
++		return -ENOMEM;
++	c->tsens = (void **)p_tsens;
++	for (i = 0; i < nsens; i++) {
++		struct intel_tsens_host *tsens;
++		struct intel_tsens_data *tsens_data;
 +
-+		switch (msg.msg_type) {
-+		case HDDL_GET_N_I2C_DEVS:
-+		{
-+			size = sizeof(int);
-+			data = kzalloc(size, GFP_KERNEL);
-+			if (!data)
-+				return -ENOMEM;
-+			*data = priv->n_clients;
-+			break;
-+		}
-+		case HDDL_GET_I2C_DEVS:
-+		{
-+			struct intel_hddl_i2c_devs_data *i2c_dev;
-+			int sensor_type = msg.sensor_type;
++		tsens = devm_kzalloc(&priv->pdev->dev,
++				     sizeof(struct intel_tsens_host),
++				     GFP_KERNEL);
++		if (!tsens)
++			return -ENOMEM;
++		tsens_data = devm_kzalloc(&priv->pdev->dev,
++					  sizeof(struct intel_tsens_data),
++					  GFP_KERNEL);
++		if (!tsens_data)
++			return -ENOMEM;
++		tsens->t_data = tsens_data;
 +
-+			size = sizeof(struct intel_hddl_i2c_devs_data);
-+			i2c_dev = kzalloc(size, GFP_KERNEL);
-+			if (!i2c_dev)
-+				return -ENOMEM;
-+			strcpy(i2c_dev->name,
-+			       priv->i2c_devs[sensor_type]->name);
-+			i2c_dev->addr = priv->i2c_devs[sensor_type]->addr;
-+			i2c_dev->bus = priv->i2c_devs[sensor_type]->bus;
-+			i2c_dev->enabled =
-+				priv->i2c_devs[sensor_type]->enabled;
-+			i2c_dev->local_host =
-+				priv->i2c_devs[sensor_type]->local_host;
-+			i2c_dev->remote_host =
-+				priv->i2c_devs[sensor_type]->remote_host;
-+			data = (u32 *)i2c_dev;
-+			break;
-+		}
-+		default:
-+			dev_err(&priv->pdev->dev,
-+				"HDDL: Invalid msg received\n");
-+			return -EINVAL;
-+		}
-+		rc = xlink_write_volatile(xlink, c->chan_num,
-+					  (u8 *)data, size);
-+		if (rc) {
-+			dev_err(&priv->pdev->dev,
-+				"xlink write data failed rc = %d\n",
-+				rc);
-+			return rc;
-+		}
-+		kfree(data);
-+		rc = intel_hddl_get_xlink_data(&priv->pdev->dev,
-+					       xlink, c->chan_num,
-+					       (u8 *)&msg, &size);
-+		if (rc)
-+			return rc;
-+	}
-+
-+	for (i = 0; i < priv->n_clients; i++) {
-+		msg.msg_type = HDDL_GET_I2C_DEV_ADDR;
++		/* Get Details*/
++		msg.msg_type = HDDL_GET_SENS_DETAILS;
 +		msg.sensor_type = i;
 +		rc = xlink_write_volatile(xlink, c->chan_num,
 +					  (u8 *)&msg, sizeof(msg));
@@ -1258,11 +893,45 @@ index 000000000000..e44c480379bc
 +		}
 +		rc = intel_hddl_get_xlink_data(&priv->pdev->dev,
 +					       xlink, c->chan_num,
-+					       (u8 *)&priv->i2c_devs[i]->addr,
-+					       &size);
++					       (u8 *)tsens_data, &size);
 +		if (rc)
 +			return rc;
-+		priv->i2c_devs[i]->board_info.addr = priv->i2c_devs[i]->addr;
++
++		/* Get trip info*/
++		tsens->trip_info =
++		devm_kcalloc(&priv->pdev->dev, tsens_data->n_trips,
++			     sizeof(struct intel_tsens_host_trip_info *),
++			     GFP_KERNEL);
++		if (!tsens->trip_info)
++			return -ENOMEM;
++		for (j = 0; j < tsens_data->n_trips; j++) {
++			struct intel_tsens_host_trip_info *t_info;
++
++			t_info =
++			devm_kzalloc(&priv->pdev->dev,
++				     sizeof(struct intel_tsens_host_trip_info),
++				     GFP_KERNEL);
++			if (!t_info)
++				return -ENOMEM;
++			tsens->trip_info[j] = t_info;
++			msg.msg_type = HDDL_GET_SENS_TRIP_INFO;
++			msg.sensor_type = i;
++			msg.trip_info_idx = j;
++			rc = xlink_write_volatile(xlink, c->chan_num,
++						  (u8 *)&msg, sizeof(msg));
++			if (rc) {
++				dev_err(&priv->pdev->dev,
++					"xlink write data failed rc = %d\n",
++					rc);
++				return rc;
++			}
++			rc = intel_hddl_get_xlink_data(&priv->pdev->dev,
++						       xlink, c->chan_num,
++						       (u8 *)t_info, &size);
++			if (rc)
++				return rc;
++		}
++		p_tsens[i] = tsens;
 +	}
 +	/* Send Complete */
 +	msg.msg_type = HDDL_GET_SENS_COMPLETE;
@@ -1275,106 +944,62 @@ index 000000000000..e44c480379bc
 +		return rc;
 +	}
 +
-+	intel_hddl_add_xlink_i2c_clients(&priv->pdev->dev, c, priv->i2c_devs,
-+					 priv->n_clients, 0);
-+	return 0;
-+}
-+
-+static int intel_hddl_send_tsens_data(struct intel_hddl_clients *c)
-+{
-+	struct intel_hddl_client_priv *priv = c->pdata;
-+	struct xlink_handle *xlink = &c->xlink_dev;
-+	struct intel_hddl_tsens_msg msg;
-+	u32 size;
-+	u8 *data;
-+	int rc;
-+
-+	/* Get msg type */
-+	rc = intel_hddl_get_xlink_data(&priv->pdev->dev,
-+				       xlink, c->chan_num,
-+				       (u8 *)&msg, &size);
-+	if (rc)
-+		return rc;
-+
-+	while (msg.msg_type != HDDL_GET_SENS_COMPLETE) {
-+		data = intel_tsens_thermal_msg(c, &msg, &size);
-+		if (!data) {
-+			dev_err(&priv->pdev->dev, "HDDL: failed to get details\n");
-+			return -EINVAL;
-+		}
-+		rc = xlink_write_volatile(xlink, c->chan_num,
-+					  (u8 *)data, size);
-+		if (rc) {
-+			dev_err(&priv->pdev->dev,
-+				"xlink write data failed rc = %d\n",
-+				rc);
-+			return rc;
-+		}
-+		kfree(data);
-+		rc = intel_hddl_get_xlink_data(&priv->pdev->dev,
-+					       xlink, c->chan_num,
-+					       (u8 *)&msg, &size);
-+		if (rc)
-+			return rc;
-+	}
-+
 +	return 0;
 +}
 +
 +static int intel_hddl_device_connect_task(void *data)
 +{
 +	struct intel_hddl_clients *c = (struct intel_hddl_clients *)data;
-+	struct intel_hddl_client_priv *priv = c->pdata;
++	struct intel_hddl_device_priv *priv = c->pdata;
 +	struct intel_hddl_board_info board_info_rcvd;
 +	struct xlink_handle *xlink = &c->xlink_dev;
 +	struct timespec64 ts;
 +	u32 size, rc;
 +
-+	memcpy(&c->board_info, &priv->board_info,
-+	       sizeof(struct intel_hddl_board_info));
 +	c->chan_num = priv->xlink_chan;
 +	c->i2c_chan_num = priv->i2c_xlink_chan;
-+	c->i2c_devs = priv->i2c_devs;
-+	c->n_clients = priv->n_clients;
++	c->smbus_adap = priv->smbus_adap;
 +	if (intel_hddl_open_xlink_device(&priv->pdev->dev, c)) {
 +		dev_err(&priv->pdev->dev, "HDDL open xlink dev failed\n");
-+		return -EINVAL;
++		return -ENODEV;
 +	}
-+	size = sizeof(ts);
-+	rc = intel_hddl_get_xlink_data(&priv->pdev->dev,
-+				       xlink, c->chan_num,
-+				       (u8 *)&ts, &size);
-+	if (rc)
-+		goto close_xlink_dev;
-+	do_settimeofday64(&ts);
-+
-+	rc = xlink_write_volatile(xlink, c->chan_num,
-+				  (u8 *)&c->board_info,
-+				  sizeof(struct intel_hddl_board_info));
++	ktime_get_real_ts64(&ts);
++	rc = xlink_write_volatile(xlink, c->chan_num, (u8 *)&ts,
++				  sizeof(struct timespec64));
 +	if (rc) {
 +		dev_err(&priv->pdev->dev,
 +			"xlink write data failed rc = %d\n",
 +			rc);
-+		goto close_xlink_dev;
++		return rc;
 +	}
 +
-+	size = sizeof(board_info_rcvd);
++	size = sizeof(c->board_info);
 +	rc = intel_hddl_get_xlink_data(&priv->pdev->dev,
 +				       xlink, c->chan_num,
-+				       (u8 *)&board_info_rcvd,
-+				       &size);
++				       (u8 *)&c->board_info, &size);
 +	if (rc)
-+		goto close_xlink_dev;
-+	rc = intel_hddl_send_tsens_data(c);
++		return rc;
++	board_info_rcvd.board_id = ~(c->board_info.board_id);
++	rc = xlink_write_volatile(xlink, c->chan_num,
++				  (u8 *)&board_info_rcvd,
++				  sizeof(board_info_rcvd));
 +	if (rc) {
-+		dev_err(&priv->pdev->dev, "HDDL: tsens data not sent\n");
++		dev_err(&priv->pdev->dev,
++			"xlink write data failed rc = %d\n",
++			rc);
++		return rc;
++	}
++
++	rc = intel_hddl_tsens_data(c);
++	if (rc) {
++		dev_err(&priv->pdev->dev, "HDDL: tsens data not rcvd\n");
 +		goto close_xlink_dev;
 +	}
 +	rc = intel_hddl_register_xlink_i2c_adap(&priv->pdev->dev, c);
 +	if (rc) {
 +		dev_err(&priv->pdev->dev,
 +			"HDDL: register xlink i2c adapter failed\n");
-+		goto remove_xlink_i2c_adap;
++		goto close_xlink_dev;
 +	}
 +	rc = intel_hddl_i2c_register_clients(&priv->pdev->dev, c);
 +	if (rc) {
@@ -1382,8 +1007,11 @@ index 000000000000..e44c480379bc
 +			"HDDL: register i2c clients failed\n");
 +		goto remove_xlink_i2c_adap;
 +	}
++	while (!kthread_should_stop())
++		msleep_interruptible(HDDL_NEW_DEV_POLL_TIME);
 +
 +	return 0;
++
 +remove_xlink_i2c_adap:
 +	intel_hddl_xlink_remove_i2c_adap(&priv->pdev->dev, c);
 +close_xlink_dev:
@@ -1391,15 +1019,16 @@ index 000000000000..e44c480379bc
 +	return rc;
 +}
 +
-+static int intel_hddl_check_for_new_device(struct intel_hddl_client_priv *priv)
++static int intel_hddl_check_for_new_device(struct intel_hddl_device_priv *priv)
 +{
 +	struct intel_hddl_clients **hddl_clients;
 +
 +	hddl_clients =
 +		intel_hddl_setup_device(&priv->pdev->dev,
 +					intel_hddl_device_connect_task,
-+					&priv->n_hddl_devs, priv->hddl_client,
++					&priv->ndevs, priv->hddl_client,
 +					priv);
++
 +	if (!hddl_clients) {
 +		dev_err(&priv->pdev->dev,
 +			"intel_hddl_setup_device returned NULL\n");
@@ -1411,8 +1040,8 @@ index 000000000000..e44c480379bc
 +
 +static int intel_hddl_device_init_task(void *data)
 +{
-+	struct intel_hddl_client_priv *priv =
-+		(struct intel_hddl_client_priv *)data;
++	struct intel_hddl_device_priv *priv =
++		(struct intel_hddl_device_priv *)data;
 +
 +	while (!kthread_should_stop()) {
 +		if (!intel_hddl_check_for_new_device(priv)) {
@@ -1426,8 +1055,17 @@ index 000000000000..e44c480379bc
 +	return 0;
 +}
 +
-+static int intel_hddl_device_init(struct intel_hddl_client_priv *priv)
++static int intel_hddl_device_init(struct intel_hddl_device_priv *priv)
 +{
++	struct i2c_adapter *temp;
++	int j = 0;
++
++	while ((temp = i2c_get_adapter(j))) {
++		if (strstr(temp->name, "SMBus I801"))
++			priv->smbus_adap = temp;
++		i2c_put_adapter(temp);
++		j++;
++	}
 +	priv->hddl_dev_init_task = kthread_run(intel_hddl_device_init_task,
 +					       (void *)priv,
 +					       "hddl_device_init");
@@ -1439,387 +1077,132 @@ index 000000000000..e44c480379bc
 +	return 0;
 +}
 +
-+static int hddl_tsens_config_sensors(struct device_node *s_node,
-+				     struct intel_hddl_client_priv *priv,
-+				     int sensor_type)
++static int intel_hddl_server_probe(struct platform_device *pdev)
 +{
-+	struct intel_tsens *tsens = priv->tsens[sensor_type];
-+	struct platform_device *pdev = priv->pdev;
-+	s32 trip_temp_count, trip_temp_type_c, i;
-+	int ret;
++	struct intel_hddl_server_plat_data *plat_data;
++	struct intel_hddl_device_priv *priv;
++	int ret, i;
 +
-+	tsens->data.sensor_type = sensor_type;
-+	if (of_property_read_u32(s_node, "passive_delay_rh",
-+				 &tsens->data.passive_delay)) {
-+		dev_err(&pdev->dev,
-+			"passive_delay missing in dt for %s\n",
-+			tsens->data.name);
++	plat_data = pdev->dev.platform_data;
++	if (!plat_data) {
++		dev_err(&pdev->dev, "Platform data not found\n");
 +		return -EINVAL;
 +	}
-+	if (of_property_read_u32(s_node, "polling_delay_rh",
-+				 &tsens->data.polling_delay)) {
-+		dev_err(&pdev->dev,
-+			"polling_delay missing in dt for %s\n",
-+			tsens->data.name);
-+		return -EINVAL;
-+	}
-+	trip_temp_count = of_property_count_u32_elems(s_node, "trip_temp_rh");
-+	trip_temp_type_c = of_property_count_strings(s_node, "trip_type_rh");
-+	if (trip_temp_count != trip_temp_type_c ||
-+	    trip_temp_count <= 0 || trip_temp_type_c <= 0) {
-+		dev_err(&pdev->dev,
-+			"trip temp config is missing in dt for %s\n",
-+			tsens->data.name);
-+		return -EINVAL;
-+	}
-+
-+	tsens->trip_info =
-+		devm_kcalloc(&pdev->dev, trip_temp_count,
-+			     sizeof(struct intel_tsens_trip_info *),
-+			     GFP_KERNEL);
-+	if (!tsens->trip_info)
-+		return -ENOMEM;
-+	tsens->data.n_trips = trip_temp_count;
-+	for (i = 0; i < trip_temp_count; i++) {
-+		const char *trip_name;
-+
-+		tsens->trip_info[i] =
-+			devm_kzalloc(&pdev->dev,
-+				     sizeof(struct intel_tsens_trip_info),
-+				     GFP_KERNEL);
-+		if (!tsens->trip_info[i])
-+			return -ENOMEM;
-+		ret = of_property_read_u32_index(s_node, "trip_temp_rh", i,
-+						 &tsens->trip_info[i]->temp);
-+		if (ret) {
-+			dev_err(&pdev->dev, "Invalid trip temp");
-+			return ret;
-+		}
-+		ret = of_property_read_string_index(s_node, "trip_type_rh", i,
-+						    &trip_name);
-+		if (ret) {
-+			dev_err(&pdev->dev, "Invalid trip type");
-+			return ret;
-+		}
-+		if (!strcmp(trip_name, "passive"))
-+			tsens->trip_info[i]->trip_type = THERMAL_TRIP_PASSIVE;
-+		else if (!strcmp(trip_name, "critical"))
-+			tsens->trip_info[i]->trip_type = THERMAL_TRIP_CRITICAL;
-+		else if (!strcmp(trip_name, "hot"))
-+			tsens->trip_info[i]->trip_type = THERMAL_TRIP_HOT;
-+		else
-+			tsens->trip_info[i]->trip_type = THERMAL_TRIP_ACTIVE;
-+	}
-+
-+	return 0;
-+}
-+
-+static int hddl_get_onchip_sensors(struct platform_device *pdev,
-+				   struct intel_hddl_client_priv *priv)
-+{
-+	struct device_node *s_node;
-+	struct device_node *np = NULL;
-+	int i = 0;
-+
-+	s_node = of_parse_phandle(pdev->dev.of_node, "soc-sensors", 0);
-+	if (!s_node)
-+		return -EINVAL;
-+	priv->nsens = of_get_child_count(s_node);
-+	if (priv->nsens == 0) {
-+		dev_err(&pdev->dev, "No onchip sensors configured in dt\n");
-+		return -EINVAL;
-+	}
-+	priv->tsens =
-+		devm_kcalloc(&pdev->dev, priv->nsens,
-+			     sizeof(struct intel_tsens *),
-+			     GFP_KERNEL);
-+	if (!priv->tsens)
-+		return -ENOMEM;
-+	for_each_child_of_node(s_node, np) {
-+		struct intel_tsens *tsens;
-+
-+		tsens = devm_kzalloc(&pdev->dev,
-+				     sizeof(struct intel_tsens),
-+				     GFP_KERNEL);
-+		if (!tsens)
-+			return -ENOMEM;
-+		priv->tsens[i] = tsens;
-+		strcpy(tsens->data.name, np->name);
-+		if (hddl_tsens_config_sensors(np, priv, i)) {
-+			dev_err(&pdev->dev,
-+				"Missing sensor info in dts for %s\n",
-+				tsens->data.name);
-+			return -EINVAL;
-+		}
-+		i++;
-+	}
-+
-+	return 0;
-+}
-+
-+static int intel_hddl_get_ids(struct platform_device *pdev,
-+			      struct intel_hddl_client_priv *priv)
-+{
-+	int ret;
-+	struct gpio_descs *board_id_gpios;
-+	struct gpio_descs *soc_id_gpios;
-+	unsigned long values = 0;
-+
-+	board_id_gpios =
-+		gpiod_get_array_optional(&pdev->dev, "board-id",
-+					 GPIOD_IN);
-+	if (board_id_gpios) {
-+		ret = gpiod_get_array_value(board_id_gpios->ndescs,
-+					    board_id_gpios->desc,
-+					    NULL, &values);
-+		if (ret) {
-+			dev_err(&pdev->dev,
-+				"failed to get boardid values %d",
-+				ret);
-+			return ret;
-+		}
-+		priv->board_info.board_id = values;
-+		priv->board_id = priv->board_info.board_id;
-+	}
-+	soc_id_gpios =
-+		gpiod_get_array_optional(&pdev->dev, "soc-id",
-+					 GPIOD_IN);
-+	if (soc_id_gpios) {
-+		values = 0;
-+		ret = gpiod_get_array_value(soc_id_gpios->ndescs,
-+					    soc_id_gpios->desc,
-+					    NULL, &values);
-+		if (ret) {
-+			dev_err(&pdev->dev,
-+				"failed to get soc-id values %d",
-+				ret);
-+			return ret;
-+		}
-+		priv->board_info.soc_id = values;
-+		priv->soc_id = priv->board_info.soc_id;
-+	}
-+
-+	return 0;
-+}
-+
-+static int intel_hddl_config_dt(struct intel_hddl_client_priv *priv)
-+{
-+	struct platform_device *pdev = priv->pdev;
-+	struct device_node *np = pdev->dev.of_node;
-+	struct device_node *s_node = NULL;
-+	struct resource *res;
-+	int i, ret;
-+
-+	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-+	if (res) {
-+		priv->base_addr = ioremap(res->start,
-+					  (res->end - res->start));
-+	}
-+	priv->board_info.soc_id = 0;
-+	priv->board_info.board_id = 0;
-+	ret = of_property_read_u32(np, "xlink_chan",
-+				   &priv->xlink_chan);
-+	if (ret) {
-+		dev_err(&pdev->dev, "xlink channel not available in dt");
-+		return ret;
-+	}
-+	ret = of_property_read_u32(np, "i2c_xlink_chan",
-+				   &priv->i2c_xlink_chan);
-+	if (ret) {
-+		dev_err(&pdev->dev, "i2c xlink channel not available in dt");
-+		return ret;
-+	}
-+	ret = intel_hddl_get_ids(pdev, priv);
-+	if (ret) {
-+		dev_err(&pdev->dev, "Unable to get board/soc id");
-+		return ret;
-+	}
-+	ret = hddl_get_onchip_sensors(pdev, priv);
-+	if (ret) {
-+		dev_err(&pdev->dev, "Onchip sensor config failed");
-+		return ret;
-+	}
-+	priv->n_clients = of_get_child_count(np);
-+	priv->i2c_devs = devm_kcalloc(&pdev->dev, priv->n_clients,
-+				      sizeof(struct intel_hddl_i2c_devs *),
-+				      GFP_KERNEL);
-+	if (!priv->i2c_devs)
-+		return -ENOMEM;
-+	i = 0;
-+	for_each_child_of_node(np, s_node) {
-+		const char *status;
-+		struct intel_hddl_i2c_devs *i2c_dev;
-+
-+		i2c_dev = devm_kzalloc(&pdev->dev,
-+				       sizeof(struct intel_hddl_i2c_devs),
-+				       GFP_KERNEL);
-+		if (!i2c_dev)
-+			return -ENOMEM;
-+		of_property_read_string_index(s_node, "status", 0,
-+					      &status);
-+		if (!strcmp(status, "okay")) {
-+			u32 addr;
-+			const char *name = NULL;
-+
-+			i2c_dev->enabled = 1;
-+			of_property_read_string_index(s_node, "compatible", 0,
-+						      &name);
-+			if (name) {
-+				strcpy(i2c_dev->name, name);
-+				strcpy(i2c_dev->board_info.type,
-+				       i2c_dev->name);
-+			}
-+			/**
-+			 * below dt params are optional.
-+			 */
-+			of_property_read_u32(s_node, "reg", &addr);
-+			i2c_dev->board_info.addr = addr;
-+			i2c_dev->addr = addr;
-+			of_property_read_u32(s_node, "bus",
-+					     &i2c_dev->bus);
-+			of_property_read_u32(s_node, "remote-host",
-+					     &i2c_dev->remote_host);
-+			of_property_read_u32(s_node, "local-host",
-+					     &i2c_dev->local_host);
-+		}
-+		priv->i2c_devs[i] = i2c_dev;
-+		i++;
-+	}
-+	return 0;
-+}
-+
-+static int intel_hddl_client_probe(struct platform_device *pdev)
-+{
-+	struct intel_hddl_client_priv *priv;
-+	int ret;
 +
 +	priv = devm_kzalloc(&pdev->dev,
-+			    sizeof(struct intel_hddl_client_priv),
++			    sizeof(struct intel_hddl_device_priv),
 +			    GFP_KERNEL);
 +	if (!priv)
 +		return -ENOMEM;
 +	priv->pdev = pdev;
-+	if (pdev->dev.of_node) {
-+		ret = intel_hddl_config_dt(priv);
-+		if (ret) {
-+			dev_err(&pdev->dev, "dt configuration failed\n");
-+			devm_kfree(&pdev->dev, priv);
-+			return ret;
-+		}
-+	} else {
-+		dev_err(&pdev->dev,
-+			"Non Device Tree build is not supported\n");
-+		devm_kfree(&pdev->dev, priv);
++	priv->plat_data = plat_data;
++	priv->xlink_chan = plat_data->xlink_chan;
++	priv->i2c_xlink_chan = plat_data->i2c_xlink_chan;
++	mutex_init(&priv->lock);
++	g_priv = priv;
++	ret = intel_hddl_cdev_init(priv);
++	if (ret) {
++		dev_err(&pdev->dev, "HDDL char device init failed\n");
 +		return -EINVAL;
++	}
++	/*
++	 * https://i2c.info/i2c-bus-specification
++	 * below client address are reserved as per i2c bus specification.
++	 * I2C client Reserved addr: 0x00 - 0x0f
++	 *			     0xf0 - 0xff
++	 *
++	 * hddl_get_free_client will not use standard i2c client
++	 * reserved address, so no need to mark them as reserved.
++	 * mark the address used by i2c clients connected to the host
++	 * as used.
++	 */
++	for (i = 0; i < ARRAY_SIZE(hddl_host_reserved_addrs); i++) {
++		int bit_pos = hddl_host_reserved_addrs[i] -
++				HDDL_FREE_CLIENT_ADDR_START;
++		set_bit(bit_pos, priv->client_addr);
 +	}
 +	ret = intel_hddl_device_init(priv);
 +	if (ret) {
 +		dev_err(&pdev->dev, "HDDL device init failed\n");
-+		devm_kfree(&pdev->dev, priv);
-+		return -EINVAL;
++		ret = -EINVAL;
++		goto free_cdev;
 +	}
-+	g_priv = priv;
 +	platform_set_drvdata(pdev, priv);
++
 +	return 0;
++free_cdev:
++	intel_hddl_cdev_remove(priv);
++	return ret;
 +}
 +
 +/* Device Exit */
-+static int intel_hddl_client_exit(struct platform_device *pdev)
++static int intel_hddl_server_remove(struct platform_device *pdev)
 +{
-+	int k;
-+	struct intel_hddl_client_priv *priv = platform_get_drvdata(pdev);
++	struct intel_hddl_device_priv *priv = platform_get_drvdata(pdev);
++	int i;
 +
 +	if (!priv)
 +		return -EINVAL;
-+	for (k = 0; k < priv->n_hddl_devs; k++) {
-+		struct intel_hddl_clients *d = priv->hddl_client[k];
-+
-+		intel_hddl_device_remove(d);
-+	}
++	intel_hddl_cdev_remove(priv);
++	for (i = 0; i < priv->ndevs; i++)
++		intel_hddl_device_remove(priv->hddl_client[i]);
++	kthread_stop(priv->hddl_dev_init_task);
 +
 +	return 0;
 +}
 +
-+static const struct of_device_id intel_hddl_client_id_table[] = {
-+	{ .compatible = "intel,hddl-client" },
-+	{}
-+};
-+MODULE_DEVICE_TABLE(of, intel_hddl_client_id_table);
-+
-+static struct platform_driver intel_hddl_client_driver = {
-+	.probe = intel_hddl_client_probe,
-+	.remove = intel_hddl_client_exit,
++static struct platform_driver intel_hddl_server_driver = {
++	.probe = intel_hddl_server_probe,
++	.remove = intel_hddl_server_remove,
 +	.driver = {
-+		.name = "intel_hddl_client",
-+		.of_match_table = intel_hddl_client_id_table,
++		.name = "intel_hddl_server",
 +	},
 +};
 +
-+module_platform_driver(intel_hddl_client_driver);
++static struct platform_device *intel_hddl_server_pdev;
 +
-+MODULE_DESCRIPTION("Intel HDDL Device driver");
++static void intel_hddl_server_exit(void)
++{
++	platform_driver_unregister(&intel_hddl_server_driver);
++	platform_device_unregister(intel_hddl_server_pdev);
++}
++
++static int __init intel_hddl_server_init(void)
++{
++	struct intel_hddl_server_plat_data plat;
++	struct platform_device_info pdevinfo;
++	struct platform_device *dd;
++	int ret;
++
++	ret = platform_driver_register(&intel_hddl_server_driver);
++	if (ret) {
++		pr_err("HDDL SERVER: platform_driver_register failed %d", ret);
++		return ret;
++	}
++	memset(&pdevinfo, 0, sizeof(pdevinfo));
++	pdevinfo.name = "intel_hddl_server";
++	pdevinfo.data = &plat;
++	plat.xlink_chan = HDDL_NODE_XLINK_CHANNEL;
++	plat.i2c_xlink_chan = HDDL_I2C_XLINK_CHANNEL;
++	pdevinfo.size_data = sizeof(struct  intel_hddl_server_plat_data);
++	dd = platform_device_register_full(&pdevinfo);
++	if (IS_ERR(dd)) {
++		pr_err("HDDL SERVER: platform device register failed\n");
++		platform_driver_unregister(&intel_hddl_server_driver);
++		return -EINVAL;
++	}
++	intel_hddl_server_pdev = dd;
++	return 0;
++}
++
++module_init(intel_hddl_server_init);
++module_exit(intel_hddl_server_exit);
++
++MODULE_DESCRIPTION("Intel HDDL Device host driver");
 +MODULE_AUTHOR("Sandeep Singh <sandeep1.singh@intel.com>");
 +MODULE_AUTHOR("Vaidya, Mahesh R <mahesh.r.vaidya@intel.com>");
 +MODULE_AUTHOR("Udhayakumar C <udhayakumar.c@intel.com>");
 +MODULE_LICENSE("GPL v2");
-diff --git a/drivers/misc/hddl_device/hddl_device_util.h b/drivers/misc/hddl_device/hddl_device_util.h
-new file mode 100644
-index 000000000000..628619e0cdb9
---- /dev/null
-+++ b/drivers/misc/hddl_device/hddl_device_util.h
-@@ -0,0 +1,52 @@
-+/* SPDX-License-Identifier: GPL-2.0-only */
-+/*
-+ *
-+ * High Density Deep Learning utils.
-+ *
-+ * Copyright (C) 2020 Intel Corporation
-+ *
-+ */
-+
-+#ifndef _LINUX_HDDL_DEVICE_UTIL_H
-+#define _LINUX_HDDL_DEVICE_UTIL_H
-+
-+#include <linux/xlink_drv_inf.h>
-+#include "../xlink-core/xlink-defs.h"
-+
-+#define HDDL_NEW_DEV_POLL_TIME 2000
-+
-+typedef int (*intel_hddl_connect_task)(void *);
-+
-+struct intel_hddl_clients **
-+	intel_hddl_setup_device(struct device *dev,
-+				intel_hddl_connect_task task, u32 *n_devs,
-+				struct intel_hddl_clients **hddl_clients,
-+				void *pdata);
-+
-+int intel_hddl_xlink_remove_i2c_adap(struct device *dev,
-+				     struct intel_hddl_clients *c);
-+
-+void intel_hddl_add_xlink_i2c_clients(struct device *dev,
-+				      struct intel_hddl_clients *c,
-+				      struct intel_hddl_i2c_devs **i2c_devs,
-+				      int n_clients, int remote);
-+
-+int intel_hddl_register_xlink_i2c_adap(struct device *dev,
-+				       struct intel_hddl_clients *c);
-+
-+struct intel_hddl_clients **intel_hddl_get_clients(int *n_devs);
-+
-+void intel_hddl_device_remove(struct intel_hddl_clients *d);
-+
-+void intel_hddl_unregister_pdev(struct intel_hddl_clients *c);
-+
-+void intel_hddl_close_xlink_device(struct device *dev,
-+				   struct intel_hddl_clients *d);
-+
-+int intel_hddl_open_xlink_device(struct device *dev,
-+				 struct intel_hddl_clients *d);
-+
-+void intel_hddl_free_i2c_client(struct intel_hddl_clients *d,
-+				struct intel_hddl_i2c_devs *i2c_dev);
-+
-+#endif /* _LINUX_HDDL_DEVICE_UTIL_H */
 -- 
 2.17.1
 
