@@ -2,162 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 49BA22EF7DF
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 20:08:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 828962EF7EA
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 20:10:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728773AbhAHTID (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Jan 2021 14:08:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41834 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728539AbhAHTIC (ORCPT
+        id S1728867AbhAHTKM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Jan 2021 14:10:12 -0500
+Received: from aserp2130.oracle.com ([141.146.126.79]:33240 "EHLO
+        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727376AbhAHTKL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Jan 2021 14:08:02 -0500
-Received: from mail-ot1-x32d.google.com (mail-ot1-x32d.google.com [IPv6:2607:f8b0:4864:20::32d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3428C0612FD
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Jan 2021 11:07:21 -0800 (PST)
-Received: by mail-ot1-x32d.google.com with SMTP id r9so10622512otk.11
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Jan 2021 11:07:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=ZUAethWNhH5AHx5KYoc6HZtfXoHcLGcf1uweSJlTtuQ=;
-        b=HIYSnkY6Q7NycBEnnzZTwlknao8S/k+ofvs35eTg12dgKAGFrf4QPFQxMY6E1SIgnx
-         v4QZHpNSykgXpIWURlxkqeUK+hK5WQe6/LeKsJ03BpDbXhaO4a17+4ebdvVbKCiei8+m
-         JRobCWgFbKwMMrEso6/h1ZN86HrDAtZk0ChgT/gJ2CuWElTkCZXLfIclf20+pmdTLNZb
-         DwrZOyqNMlzbEEcyV+DKY27yQ31lDOQ6h0BSDNM0/OBmo5kVHt/ka4zs2MaXzl4PjhW6
-         +vhP23PRPuv2xZvwZTpuEeKehk58fssuGFnMH6UurAqg/Aa2T10znWt0sirPaDukiYHv
-         V5Vg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ZUAethWNhH5AHx5KYoc6HZtfXoHcLGcf1uweSJlTtuQ=;
-        b=UperInwFI8tYAGe//rEA0AUf1zE97FimNd3EPPezZozA/ZmL1oA1VxJbeVgnRzcrfp
-         1G68cm1bCJiKabfZL4V9uwKKBPlJ5o7WUxamYHpUB1lnKJKg3MzPZRxmzB2h+ADmMVgG
-         JR0ziVY4LCjHuQBCn/RAdnb5Rv9rR6KxTtfvOOmze27+tXnLkjPuOer9CJP6OcUhDwLp
-         Q90epIWZrtqTFWQ+/d6I2ZQV7o0wN2e0dhdzW7/OdsJlxd4c3iwels/IKtc3nPzkfJXA
-         WEii3eE0v99DkN068lVNFi9zpywRHsFFRdlTvsvRaH9a+P0tJHKufRL6uLKZq8/8pOZq
-         dHgg==
-X-Gm-Message-State: AOAM532z9xvz57PEHHPyKR7xARfHgYdzSjIiqFoxYj1UkWFnETjs+T3+
-        +E4nRDy7cvnO/hPD3rzqFlGNkQ==
-X-Google-Smtp-Source: ABdhPJwN6edFPoEXuLXbsc15EfSSsy2/6NGLVvzgZzPWVaB9Jywig4wbVCFey3P93N2p9vvNRyHHTg==
-X-Received: by 2002:a9d:d6b:: with SMTP id 98mr3578384oti.227.1610132840865;
-        Fri, 08 Jan 2021 11:07:20 -0800 (PST)
-Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id q18sm1890780ood.35.2021.01.08.11.07.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 08 Jan 2021 11:07:19 -0800 (PST)
-Date:   Fri, 8 Jan 2021 13:07:17 -0600
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Robert Foss <robert.foss@linaro.org>
-Cc:     agross@kernel.org, todor.too@gmail.com, mchehab@kernel.org,
-        robh+dt@kernel.org, catalin.marinas@arm.com, will@kernel.org,
-        shawnguo@kernel.org, leoyang.li@nxp.com, geert+renesas@glider.be,
-        arnd@arndb.de, Anson.Huang@nxp.com, michael@walle.cc,
-        agx@sigxcpu.org, max.oss.09@gmail.com,
-        linux-arm-msm@vger.kernel.org, linux-media@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        AngeloGioacchino Del Regno <kholk11@gmail.com>,
-        Andrey Konovalov <andrey.konovalov@linaro.org>,
-        Tomasz Figa <tfiga@chromium.org>,
-        Azam Sadiq Pasha Kapatrala Syed <akapatra@quicinc.com>,
-        Sarvesh Sridutt <Sarvesh.Sridutt@smartwirelesscompute.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Subject: Re: [PATCH v1 04/17] media: camss: Make ISPIF subdevice optional
-Message-ID: <X/itZVFeM0XeV9Sx@builder.lan>
-References: <20210108120429.895046-1-robert.foss@linaro.org>
- <20210108120429.895046-5-robert.foss@linaro.org>
+        Fri, 8 Jan 2021 14:10:11 -0500
+Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
+        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 108J52fv008954;
+        Fri, 8 Jan 2021 19:09:14 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=mM6AT4VIgyY77kqNzTjiuApzWT+pAy7YDdIiGpktXDY=;
+ b=NUGl9vvCjI+srkXa647I47YdrcKV2Ohfi8KN8TwzR3PkJyYM8+ogxpVnJ2Vb3puq6ggm
+ IZuQSXVkttwfPd+9bwh0Ip5NzH4c3cVtIEGb39a3Djzt9bSTJOt3iIJnUKq8+oFPC6NA
+ 0rIlcKB4tUTvuZhsNhdRiEQqW3LksF1gGN8M7ZW8Iu5gvQn9bHJZCNPvYSzcfJKGntqH
+ 9Vxu01RchOtrRygQDQFoyBP30dNwcqJKCHjPr8JfbiAaYDT9jlkKf8PYAEYPn9ZIlNZL
+ 6IEHavuS77KAZU4aMx20TZu/QV9eP4l7wl+DAMCD44jJr5H/85TCcjCu+nm7cT1fGmZ1 Aw== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by aserp2130.oracle.com with ESMTP id 35wcuy2ve2-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 08 Jan 2021 19:09:14 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 108J4Xsu055993;
+        Fri, 8 Jan 2021 19:09:14 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by userp3020.oracle.com with ESMTP id 35w3qvtm49-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 08 Jan 2021 19:09:13 +0000
+Received: from abhmp0014.oracle.com (abhmp0014.oracle.com [141.146.116.20])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 108J9C96013451;
+        Fri, 8 Jan 2021 19:09:12 GMT
+Received: from localhost (/67.169.218.210)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Fri, 08 Jan 2021 19:09:12 +0000
+Date:   Fri, 8 Jan 2021 11:09:10 -0800
+From:   "Darrick J. Wong" <darrick.wong@oracle.com>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Shiyang Ruan <ruansy.fnst@cn.fujitsu.com>,
+        linux-kernel@vger.kernel.org, linux-xfs@vger.kernel.org,
+        linux-nvdimm@lists.01.org, linux-mm@kvack.org,
+        linux-fsdevel@vger.kernel.org, linux-raid@vger.kernel.org,
+        dan.j.williams@intel.com, david@fromorbit.com, song@kernel.org,
+        rgoldwyn@suse.de, qi.fuli@fujitsu.com, y-goto@fujitsu.com
+Subject: Re: [PATCH 02/10] blk: Introduce ->corrupted_range() for block device
+Message-ID: <20210108190910.GR6918@magnolia>
+References: <20201230165601.845024-1-ruansy.fnst@cn.fujitsu.com>
+ <20201230165601.845024-3-ruansy.fnst@cn.fujitsu.com>
+ <20210108095500.GA5647@lst.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210108120429.895046-5-robert.foss@linaro.org>
+In-Reply-To: <20210108095500.GA5647@lst.de>
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9858 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 malwarescore=0 mlxscore=0
+ spamscore=0 mlxlogscore=999 phishscore=0 bulkscore=0 suspectscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2101080102
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9858 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 bulkscore=0
+ clxscore=1015 spamscore=0 impostorscore=0 priorityscore=1501 mlxscore=0
+ adultscore=0 mlxlogscore=999 lowpriorityscore=0 phishscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2101080102
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri 08 Jan 06:04 CST 2021, Robert Foss wrote:
+On Fri, Jan 08, 2021 at 10:55:00AM +0100, Christoph Hellwig wrote:
+> It happens on a dax_device.  We should not interwind dax and block_device
+> even more after a lot of good work has happened to detangle them.
 
-> This driver supports multiple architecture versions of the Qualcomm ISP.
-> The CAMSS architecure which this driver is name after, and with the
-> introduction of this series, the Titan architecture.
-> 
-> The ISPIF is IP-block that is only present in the CAMSS architecture.
+I agree that the dax device should not be implied from the block device,
+but what happens if regular block device drivers grow the ability to
+(say) perform a background integrity scan and want to ->corrupted_range?
 
-"is an IP-block"
-
-> In order to support the Titan architecture, make the ISPIF an optional
-> subdevice.
-> 
-> Signed-off-by: Robert Foss <robert.foss@linaro.org>
-> ---
->  .../media/platform/qcom/camss/camss-ispif.c   | 144 ++++++++++--------
->  .../media/platform/qcom/camss/camss-ispif.h   |   3 +-
->  drivers/media/platform/qcom/camss/camss.c     | 113 +++++++++-----
->  drivers/media/platform/qcom/camss/camss.h     |   2 +-
->  4 files changed, 160 insertions(+), 102 deletions(-)
-> 
-> diff --git a/drivers/media/platform/qcom/camss/camss-ispif.c b/drivers/media/platform/qcom/camss/camss-ispif.c
-[..]
-> -int msm_ispif_subdev_init(struct ispif_device *ispif,
-> +int msm_ispif_subdev_init(struct camss *camss,
->  			  const struct resources_ispif *res)
->  {
-> -	struct device *dev = to_device(ispif);
-> -	struct platform_device *pdev = to_platform_device(dev);
-> +	struct ispif_device *ispif = camss->ispif;
-> +	struct platform_device *pdev = to_platform_device(camss->dev);
-
-It seems like several of the changes in this function is replacing
-dev with camss->dev. If you retained a struct device *dev = camss->dev;
-you would avoid this.
-
->  	struct resource *r;
->  	int i;
->  	int ret;
->  
-> +	if (res == NULL && ispif == NULL)
-
-Afaict this function is called conditional on camss->ispif != NULL, and
-I don't see anything that would cause res to becomes NULL if is hasn't
-been before this change.
-
-So I think this check is unnecessary?
-
-> +		return 0;
-> +
-> +	ispif->camss = camss;
-> +
->  	/* Number of ISPIF lines - same as number of CSID hardware modules */
-> -	if (to_camss(ispif)->version == CAMSS_8x16)
-> +	if (camss->version == CAMSS_8x16)
->  		ispif->line_num = 2;
-> -	else if (to_camss(ispif)->version == CAMSS_8x96 ||
-> -		 to_camss(ispif)->version == CAMSS_660)
-> +	else if (camss->version == CAMSS_8x96 ||
-> +		 camss->version == CAMSS_660)
->  		ispif->line_num = 4;
->  	else
->  		return -EINVAL;
->  
-> -	ispif->line = devm_kcalloc(dev, ispif->line_num, sizeof(*ispif->line),
-> -				   GFP_KERNEL);
-> +	ispif->line = devm_kcalloc(camss->dev, ispif->line_num,
-> +			sizeof(*ispif->line), GFP_KERNEL);
->  	if (!ispif->line)
->  		return -ENOMEM;
->  
-[..]
-> @@ -1393,6 +1410,9 @@ void msm_ispif_unregister_entities(struct ispif_device *ispif)
->  {
->  	int i;
->  
-> +	if (!ispif)
-> +		return;
-
-I like this, but later in the patch you make the calls to this function
-conditional on ispif != NULL. You should only need one of the checks.
-
-Regards,
-Bjorn
+--D
