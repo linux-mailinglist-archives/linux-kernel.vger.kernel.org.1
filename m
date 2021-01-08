@@ -2,135 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 27E402EF164
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 12:35:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B4D02EF17C
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 12:40:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727119AbhAHLeZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Jan 2021 06:34:25 -0500
-Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:16493 "EHLO
-        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725817AbhAHLeT (ORCPT
+        id S1726819AbhAHLkA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Jan 2021 06:40:00 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56724 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726430AbhAHLj7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Jan 2021 06:34:19 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5ff843120001>; Fri, 08 Jan 2021 03:33:38 -0800
-Received: from [10.26.72.150] (172.20.145.6) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 8 Jan
- 2021 11:33:33 +0000
-Subject: Re: [PATCH 2/2] ALSA: hda/tegra: fix tegra-hda on tegra30 soc
-From:   Jon Hunter <jonathanh@nvidia.com>
-To:     Sameer Pujar <spujar@nvidia.com>, Peter Geis <pgwipeout@gmail.com>
-CC:     Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Peter De Schrijver <pdeschrijver@nvidia.com>,
-        "Prashant Gaikwad" <pgaikwad@nvidia.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Mohan Kumar <mkumard@nvidia.com>, <linux-clk@vger.kernel.org>,
-        <linux-tegra@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <alsa-devel@alsa-project.org>, Ion Agorria <ion@agorria.com>
-References: <20201225012025.507803-1-pgwipeout@gmail.com>
- <20201225012025.507803-3-pgwipeout@gmail.com>
- <0c3665b2-bac6-546a-bdd4-0ab7a90adf7c@nvidia.com>
- <CAMdYzYraT5AXzyscN3Pa+0FWZwHFsD-4ZwbA80kNxgtn7Y1PXw@mail.gmail.com>
- <b3a3ede2-22d5-b13d-f245-7c3b40ea411a@nvidia.com>
- <a2c5c1d4-500b-6dad-d4ab-339154624c43@nvidia.com>
-Message-ID: <18f44f67-ba81-98d6-67d9-c6ddbb3c9302@nvidia.com>
-Date:   Fri, 8 Jan 2021 11:33:31 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Fri, 8 Jan 2021 06:39:59 -0500
+Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3452C0612F8;
+        Fri,  8 Jan 2021 03:39:19 -0800 (PST)
+Received: by mail-pl1-x62a.google.com with SMTP id q4so5521916plr.7;
+        Fri, 08 Jan 2021 03:39:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=zqhNu7rpIl9rLybT73zELGUOuCv+WJC3uqUOvsWqqA0=;
+        b=eqfwQ3Fp762qCIok60TM5s2O/Sr5NX1OOSHYUTd/Pn+A8pGLVj1V6pRRB2LXSVUJlr
+         gU1bweZFHACXbd5FgP/+NndsOZW9eTeev4wiFC0cSzXGk8z+jFzY0mSbmseFZb/++Stn
+         H05bgYKavXqxY2g+4mVVBdPDws4P8YEzevsSvlJUzRmlqn8He9k4a4X/T/ZRwwrMOPOA
+         vVG6SdtiziVm/dVbB+goHJFPRybzlNpxwc+Q3jXZJRrvki3y7Ez7pcln05Id65JGau+i
+         lXG4Ulf3qpfGNL+7N5HCRSXGJdhAsapzuxGU50XhpLeN7JSfbb2wx44YTqA6ua9j/wsm
+         m6pQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=zqhNu7rpIl9rLybT73zELGUOuCv+WJC3uqUOvsWqqA0=;
+        b=faTXEEcfpyZVOAqaI6vSm1NZ4Nse8R9Y51nhdGrPrrOuD5PK3XDVHCajkymh3N+DX1
+         5EwSdwN1KnD5ijsBwBz4e5xRq0UTepEFo3YFpOB21cDJc9HSt0J1e4SOuI8Zc4QSG34/
+         ljR1kkGxOB4jzEd2oCACkxm8JSCXiXnGSCJiiCdJEBc5T3A+RudZhfG04IOuFe507Xwy
+         cjpYe2bbt8/UFLEtOK4KUc4n+nSw5oMuQfvKQByKKCdH+/mpLkio3wxWxtKar607QbxA
+         QzjDlruRlB3DuKnYRF1VEm+BO92SmAOESJzE1a+GkkzkGYpb6r1GX8qvCGSTwQrfRel/
+         o5bQ==
+X-Gm-Message-State: AOAM533BOSesmAy2+RNWgJTvzhEOoTguM2e5OGAbv60DrnNsiLsFp0WG
+        gSRwmf1PNHjopLHPPEXb+sI=
+X-Google-Smtp-Source: ABdhPJzrdL2ounVef6ajtJjfdM7Td6F/cZRbaDKql8n+e0SLpSuJYPUM19pG3R5DiYRHqBhjdpixCg==
+X-Received: by 2002:a17:902:bf44:b029:da:d140:6f91 with SMTP id u4-20020a170902bf44b02900dad1406f91mr6594936pls.51.1610105959252;
+        Fri, 08 Jan 2021 03:39:19 -0800 (PST)
+Received: from ubt.spreadtrum.com ([117.18.48.82])
+        by smtp.gmail.com with ESMTPSA id gm18sm4589136pjb.55.2021.01.08.03.39.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 08 Jan 2021 03:39:18 -0800 (PST)
+From:   Chunyan Zhang <zhang.lyra@gmail.com>
+To:     Joerg Roedel <joro@8bytes.org>, Rob Herring <robh+dt@kernel.org>
+Cc:     iommu@lists.linux-foundation.org, devicetree@vger.kernel.org,
+        Baolin Wang <baolin.wang7@gmail.com>,
+        linux-kernel@vger.kernel.org, Orson Zhai <orsonzhai@gmail.com>,
+        Chunyan Zhang <zhang.lyra@gmail.com>,
+        Sheng Xu <sheng.xu@unisoc.com>,
+        Kevin Tang <kevin.tang@unisoc.com>,
+        Chunyan Zhang <chunyan.zhang@unisoc.com>
+Subject: [RFC PATCH V2 0/2] Add Unisoc iommu basic driver
+Date:   Fri,  8 Jan 2021 19:38:49 +0800
+Message-Id: <20210108113851.354947-1-zhang.lyra@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <a2c5c1d4-500b-6dad-d4ab-339154624c43@nvidia.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
-X-Originating-IP: [172.20.145.6]
-X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
- HQMAIL107.nvidia.com (172.20.187.13)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1610105618; bh=E2T06x4spWYNF2pWJ3DV1KaBnD+2MtnlPvmF7IoJDAA=;
-        h=Subject:From:To:CC:References:Message-ID:Date:User-Agent:
-         MIME-Version:In-Reply-To:Content-Type:Content-Language:
-         Content-Transfer-Encoding:X-Originating-IP:X-ClientProxiedBy;
-        b=HNx7oyBTuCOKaDcKlAYfoNqMi3K8AqdYOh13qQ9jY66wuomGM+ECLZq2pay8AJMQI
-         AndHThEOXUqONBPEAA2+DjPOln6xTxqGn/h6BkIzvzgLxy4MKET6EnPfNU3DOdkuoO
-         /g4sJbjPNAaAbJbD344Ozu0iLSK0w+OFyORjbhhuuKLZU5NMtOly2Y49hjhJGwuUWn
-         eKWVMlM9gl4pOCDMlalNnuOJPTx0PP1CCpwNtaxkTyf1yzXHCLRHqpxue1S35rvyss
-         uzP6eN73+n+Hn5r65yXlv3+uXmM/K5ziyK1g03/DS+lPZuN5CPxObUxcP2lhk55oPj
-         L5VHv/U7u0lYA==
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Chunyan Zhang <chunyan.zhang@unisoc.com>
 
-On 08/01/2021 10:54, Jon Hunter wrote:
->=20
-> On 08/01/2021 08:00, Sameer Pujar wrote:
->=20
-> ...
->=20
->>>>> Signed-off-by: Peter Geis <pgwipeout@gmail.com>
->>>>> Tested-by: Ion Agorria <ion@agorria.com>
->>>>> ---
->>>>> =C2=A0=C2=A0 sound/pci/hda/hda_tegra.c | 3 +--
->>>>> =C2=A0=C2=A0 1 file changed, 1 insertion(+), 2 deletions(-)
->>>>>
->>>>> diff --git a/sound/pci/hda/hda_tegra.c b/sound/pci/hda/hda_tegra.c
->>>>> index 70164d1428d4..f8d61e677a09 100644
->>>>> --- a/sound/pci/hda/hda_tegra.c
->>>>> +++ b/sound/pci/hda/hda_tegra.c
->>>>> @@ -388,8 +388,7 @@ static int hda_tegra_first_init(struct azx
->>>>> *chip, struct platform_device *pdev)
->>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * in pow=
-ers of 2, next available ratio is 16 which can be
->>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * used a=
-s a limiting factor here.
->>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 */
->>>>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (of_device_is_compatible(np,=
- "nvidia,tegra194-hda"))
->>>>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0 chip->bus.core.sdo_limit =3D 16;
->>>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 chip->bus.core.sdo_limit =3D 16=
-;
->>>> Future Tegra chips address this problem and hence cannot be enforced b=
-y
->>>> default. May be we can have like below:
->>>>
->>>> if (of_device_is_compatible(np, "nvidia,tegra30-hda"))
->>>> chip->bus.core.sdo_limit =3D 16;
->>>>
->>> It will need to be a bit more complicated than that, since the
->>> tegra186 and tegra210 device trees have "nvidia,tegra30-hda" as a
->>> fallback.
->>> Looking at the generation map, tegra30-hda can be the fallback for the
->>> broken implementation and tegra210-hda can be the fallback for the
->>> working implementation.
->>> Does that work for you?
->>
->> As per above explanation, it is fine to apply the workaround for
->> Tegra210/186 as well. So it simplifies things for all existing chips.
->=20
->=20
-> FYI ... we now have minimal support for Tegra234 in upstream that should
-> not require this. Given that the Tegra234 device-tree does not include
-> support for HDA yet, I think it is fine to apply this as-is. However,
-> once we do add support for Tegra234 HDA, then we should ensure that this
-> is not applied. So that said ...
->=20
-> Reviewed-by: Jon Hunter <jonathanh@nvidia.com>
+Changes since RFC v1:
+* Rebased on v5.11-rc1;
+* Changed sprd-iommu to tristate;
+* Removed check for args_count of iommu OF node, since there's no args
+  for sprd-iommu device node;
+* Added another IP version (i.e. vau);
+* Removed unnecessary configs selection from CONFIG_SPRD_IOMMU;
+* Changed to get zeroed pages.
 
+Chunyan Zhang (2):
+  dt-bindings: iommu: add bindings for sprd iommu
+  iommu: add Unisoc iommu basic driver
 
-Sorry I was chatting with Sameer offline and we think if we just switch
-the test to the following then this will take care of Tegra234 when we
-add it ...
+ .../devicetree/bindings/iommu/sprd,iommu.yaml |  44 ++
+ drivers/iommu/Kconfig                         |  12 +
+ drivers/iommu/Makefile                        |   1 +
+ drivers/iommu/sprd-iommu.c                    | 546 ++++++++++++++++++
+ 4 files changed, 603 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/iommu/sprd,iommu.yaml
+ create mode 100644 drivers/iommu/sprd-iommu.c
 
-    if (of_device_is_compatible(np, "nvidia,tegra30-hda"))
+-- 
+2.25.1
 
-Peter, would you be able to send a V2 with this?
-
-Thanks!
-Jon
-
---=20
-nvpublic
