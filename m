@@ -2,186 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C44052EF867
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 20:52:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C41252EF872
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 20:58:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729041AbhAHTvW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Jan 2021 14:51:22 -0500
-Received: from m43-15.mailgun.net ([69.72.43.15]:40205 "EHLO
-        m43-15.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728859AbhAHTvV (ORCPT
+        id S1728978AbhAHT5R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Jan 2021 14:57:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49474 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728883AbhAHT5Q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Jan 2021 14:51:21 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1610135454; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=T2uh9AeFM10VoIKSVHPj8L+vw1fuCcA0NuLk11mz8yo=;
- b=ug47ZmQaIFCbdd3bO7a36PuAFekeLl4hAtVsfxwrRtk4+X8VKLCbrWo4zMiErCiXHoVwHwYP
- qffU5sVtSDU8uSAEGUyJHivPqhgv1JaSM3iinJMTn/8/M85bYd3Rx3TxnkRDVAzmdbd7a03G
- ShmywAk6rEewYoFB9ihH6QgCLms=
-X-Mailgun-Sending-Ip: 69.72.43.15
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
- 5ff8b780c88af061071c1beb (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 08 Jan 2021 19:50:24
- GMT
-Sender: isaacm=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id E6189C433C6; Fri,  8 Jan 2021 19:50:23 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: isaacm)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 13A61C433CA;
-        Fri,  8 Jan 2021 19:50:22 +0000 (UTC)
+        Fri, 8 Jan 2021 14:57:16 -0500
+Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C6CEC061380
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Jan 2021 11:56:36 -0800 (PST)
+Received: by mail-pl1-x62c.google.com with SMTP id v3so6200655plz.13
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Jan 2021 11:56:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=R4SPTHSIUd+VlaCh32aVSBkToD1GOPyHGJmjtMY2nAc=;
+        b=S7LvBMBESxvowA//Ymxnxlz5W5RNEDsPW26b6jwpZbxfGlMZfqYOjqg5jLGglciuIr
+         a980IiucU+skQrBdthDD1xK/bePVGH3h34OnGQRTV1e+E+F9LV+b0K/jrGywWvW24xie
+         /l+FC4c32K4+xqdOpb6Jq54hH2OFSfx0r/P8Q=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=R4SPTHSIUd+VlaCh32aVSBkToD1GOPyHGJmjtMY2nAc=;
+        b=eEZ8it9Tc0IpZ+9OD0J6npuOg+ay08rcl+gPCp88tZ5u15KYTVb1pkRAQpG8NdBfba
+         OjnYLPhspyeIrkun9phtunpVBPbpCPhFXeFUuKhm5J7pXfzlZQ7vl5wNRZ2sRvT563zQ
+         7dSg1rOW4h7H3qgLZjm1nsPhxlI+2AyvGGNVsB1g7gEQYY12C2VGWcN2wlMgL8rFfgK5
+         QA4mqr5f3DEc10y9JmzXLDwVySm91xORRNn7UVX5egAzRcxnvpEiWZ7OoGIZuEoiWC3S
+         E7I8fo/OzNgdTfSgnzP3udxs8FfNXHI1KffCgDlMIDDJv863sX/DAN3xanA/eGCP3g4H
+         mlOg==
+X-Gm-Message-State: AOAM533mJii9lj97saBuJ+R2Uoexsm70TCHePksVOb3VqOB0tBMlZyV9
+        6IQwpYyCoZPN/O6K7GkW7szfvA==
+X-Google-Smtp-Source: ABdhPJwNfsCsgsNiBAlvV6/M/HnULmqUZTkWD35XvXYJbvquqAE4dzZDChGgGLvbXOpsF7AcC53+Cw==
+X-Received: by 2002:a17:902:bcc6:b029:db:e257:9050 with SMTP id o6-20020a170902bcc6b02900dbe2579050mr5413933pls.22.1610135795867;
+        Fri, 08 Jan 2021 11:56:35 -0800 (PST)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id 19sm9669252pfu.85.2021.01.08.11.56.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 08 Jan 2021 11:56:35 -0800 (PST)
+Date:   Fri, 8 Jan 2021 11:56:33 -0800
+From:   Kees Cook <keescook@chromium.org>
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Xiaoming Ni <nixiaoming@huawei.com>, linux-kernel@vger.kernel.org,
+        mcgrof@kernel.org, yzaikin@google.com, adobriyan@gmail.com,
+        linux-fsdevel@vger.kernel.org, vbabka@suse.cz,
+        akpm@linux-foundation.org, wangle6@huawei.com
+Subject: Re: [PATCH v2] proc_sysctl: fix oops caused by incorrect command
+ parameters.
+Message-ID: <202101081152.0CB22390@keescook>
+References: <20210108023339.55917-1-nixiaoming@huawei.com>
+ <20210108092145.GX13207@dhcp22.suse.cz>
+ <829bbba0-d3bb-a114-af81-df7390082958@huawei.com>
+ <20210108114718.GA13207@dhcp22.suse.cz>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Fri, 08 Jan 2021 11:50:21 -0800
-From:   isaacm@codeaurora.org
-To:     Will Deacon <will@kernel.org>
-Cc:     Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
-        linux-arm-msm@vger.kernel.org, Joerg Roedel <joro@8bytes.org>,
-        Jordan Crouse <jcrouse@codeaurora.org>,
-        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
-        Rob Clark <robdclark@gmail.com>,
-        Akhil P Oommen <akhilpo@codeaurora.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH] iommu/io-pgtable-arm: Allow non-coherent masters to use
- system cache
-In-Reply-To: <20210108181830.GA5457@willie-the-truck>
-References: <20201224064007.2339-1-saiprakash.ranjan@codeaurora.org>
- <20210106115615.GA1763@willie-the-truck>
- <cfced52002337025088a64aa159760b2@codeaurora.org>
- <8cfefbff135a5287d177b6ab2ccc3304@codeaurora.org>
- <20210108181830.GA5457@willie-the-truck>
-Message-ID: <ed15cd8000795dc5effbce48e49e1f26@codeaurora.org>
-X-Sender: isaacm@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210108114718.GA13207@dhcp22.suse.cz>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-01-08 10:18, Will Deacon wrote:
-> On Fri, Jan 08, 2021 at 11:17:25AM +0530, Sai Prakash Ranjan wrote:
->> On 2021-01-07 22:27, isaacm@codeaurora.org wrote:
->> > On 2021-01-06 03:56, Will Deacon wrote:
->> > > On Thu, Dec 24, 2020 at 12:10:07PM +0530, Sai Prakash Ranjan wrote:
->> > > > commit ecd7274fb4cd ("iommu: Remove unused IOMMU_SYS_CACHE_ONLY
->> > > > flag")
->> > > > removed unused IOMMU_SYS_CACHE_ONLY prot flag and along with it went
->> > > > the memory type setting required for the non-coherent masters to use
->> > > > system cache. Now that system cache support for GPU is added, we will
->> > > > need to mark the memory as normal sys-cached for GPU to use
->> > > > system cache.
->> > > > Without this, the system cache lines are not allocated for GPU.
->> > > > We use
->> > > > the IO_PGTABLE_QUIRK_ARM_OUTER_WBWA quirk instead of a page
->> > > > protection
->> > > > flag as the flag cannot be exposed via DMA api because of no in-tree
->> > > > users.
->> > > >
->> > > > Signed-off-by: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
->> > > > ---
->> > > >  drivers/iommu/io-pgtable-arm.c | 3 +++
->> > > >  1 file changed, 3 insertions(+)
->> > > >
->> > > > diff --git a/drivers/iommu/io-pgtable-arm.c
->> > > > b/drivers/iommu/io-pgtable-arm.c
->> > > > index 7c9ea9d7874a..3fb7de8304a2 100644
->> > > > --- a/drivers/iommu/io-pgtable-arm.c
->> > > > +++ b/drivers/iommu/io-pgtable-arm.c
->> > > > @@ -415,6 +415,9 @@ static arm_lpae_iopte
->> > > > arm_lpae_prot_to_pte(struct arm_lpae_io_pgtable *data,
->> > > >  		else if (prot & IOMMU_CACHE)
->> > > >  			pte |= (ARM_LPAE_MAIR_ATTR_IDX_CACHE
->> > > >  				<< ARM_LPAE_PTE_ATTRINDX_SHIFT);
->> > > > +		else if (data->iop.cfg.quirks & IO_PGTABLE_QUIRK_ARM_OUTER_WBWA)
->> > > > +			pte |= (ARM_LPAE_MAIR_ATTR_IDX_INC_OCACHE
->> > > > +				<< ARM_LPAE_PTE_ATTRINDX_SHIFT);
->> > > >  	}
->> > >
->> > While this approach of enabling system cache globally for both page
->> > tables and other buffers
->> > works for the GPU usecase, this isn't ideal for other clients that use
->> > system cache. For example,
->> > video clients only want to cache a subset of their buffers in the
->> > system cache, due to the sizing constraint
->> > imposed by how much of the system cache they can use. So, it would be
->> > ideal to have
->> > a way of expressing the desire to use the system cache on a per-buffer
->> > basis. Additionally,
->> > our video clients use the DMA layer, and since the requirement is for
->> > caching in the system cache
->> > to be a per buffer attribute, it seems like we would have to have a
->> > DMA attribute to express
->> > this on a per-buffer basis.
->> >
->> 
->> I did bring this up initially [1], also where is this video client
->> in upstream? AFAIK, only system cache user in upstream is GPU.
->> We cannot add any DMA attribute unless there is any user upstream
->> as per [2], so when the support for such a client is added, wouldn't
->> ((data->iop.cfg.quirks & IO_PGTABLE_QUIRK_ARM_OUTER_WBWA) || 
->> PROT_FLAG)
->> work?
+On Fri, Jan 08, 2021 at 12:47:18PM +0100, Michal Hocko wrote:
+> On Fri 08-01-21 18:01:52, Xiaoming Ni wrote:
+> > On 2021/1/8 17:21, Michal Hocko wrote:
+> > > On Fri 08-01-21 10:33:39, Xiaoming Ni wrote:
+> > > > The process_sysctl_arg() does not check whether val is empty before
+> > > >   invoking strlen(val). If the command line parameter () is incorrectly
+> > > >   configured and val is empty, oops is triggered.
+> > > > 
+> > > > For example, "hung_task_panic=1" is incorrectly written as "hung_task_panic".
+> > > > 
+> > > > log:
+> > > > 	Kernel command line: .... hung_task_panic
+> > > > 	....
+> > > > 	[000000000000000n] user address but active_mm is swapper
+> > > > 	Internal error: Oops: 96000005 [#1] SMP
+> > > > 	Modules linked in:
+> > > > 	CPU: 0 PID: 1 Comm: swapper/0 Not tainted 5.10.1 #1
+> > > > 	Hardware name: linux,dummy-virt (DT)
+> > > > 	pstate: 40000005 (nZcv daif -PAN -UAO -TCO BTYPE=--)
+> > > > 	pc : __pi_strlen+0x10/0x98
+> > > > 	lr : process_sysctl_arg+0x1e4/0x2ac
+> > > > 	sp : ffffffc01104bd40
+> > > > 	x29: ffffffc01104bd40 x28: 0000000000000000
+> > > > 	x27: ffffff80c0a4691e x26: ffffffc0102a7c8c
+> > > > 	x25: 0000000000000000 x24: ffffffc01104be80
+> > > > 	x23: ffffff80c22f0b00 x22: ffffff80c02e28c0
+> > > > 	x21: ffffffc0109f9000 x20: 0000000000000000
+> > > > 	x19: ffffffc0107c08de x18: 0000000000000003
+> > > > 	x17: ffffffc01105d000 x16: 0000000000000054
+> > > > 	x15: ffffffffffffffff x14: 3030253078413830
+> > > > 	x13: 000000000000ffff x12: 0000000000000000
+> > > > 	x11: 0101010101010101 x10: 0000000000000005
+> > > > 	x9 : 0000000000000003 x8 : ffffff80c0980c08
+> > > > 	x7 : 0000000000000000 x6 : 0000000000000002
+> > > > 	x5 : ffffff80c0235000 x4 : ffffff810f7c7ee0
+> > > > 	x3 : 000000000000043a x2 : 00bdcc4ebacf1a54
+> > > > 	x1 : 0000000000000000 x0 : 0000000000000000
+> > > > 	Call trace:
+> > > > 	 __pi_strlen+0x10/0x98
+> > > > 	 parse_args+0x278/0x344
+> > > > 	 do_sysctl_args+0x8c/0xfc
+> > > > 	 kernel_init+0x5c/0xf4
+> > > > 	 ret_from_fork+0x10/0x30
+> > > > 	Code: b200c3eb 927cec01 f2400c07 54000301 (a8c10c22)
+> > > > 
+> > > > Fixes: 3db978d480e2843 ("kernel/sysctl: support setting sysctl parameters
+> > > >   from kernel command line")
+> > > > Signed-off-by: Xiaoming Ni <nixiaoming@huawei.com>
+> > > 
+> > > Thanks for catching this!
+> > > 
+> > > > ---------
+> > > > v2:
+> > > >     Added log output of the failure branch based on the review comments of Kees Cook.
+> > > > v1: https://lore.kernel.org/lkml/20201224074256.117413-1-nixiaoming@huawei.com/
+> > > > ---------
+> > > > ---
+> > > >   fs/proc/proc_sysctl.c | 5 +++++
+> > > >   1 file changed, 5 insertions(+)
+> > > > 
+> > > > diff --git a/fs/proc/proc_sysctl.c b/fs/proc/proc_sysctl.c
+> > > > index 317899222d7f..dc1a56515e86 100644
+> > > > --- a/fs/proc/proc_sysctl.c
+> > > > +++ b/fs/proc/proc_sysctl.c
+> > > > @@ -1757,6 +1757,11 @@ static int process_sysctl_arg(char *param, char *val,
+> > > >   	loff_t pos = 0;
+> > > >   	ssize_t wret;
+> > > > +	if (!val) {
+> > > > +		pr_err("Missing param value! Expected '%s=...value...'\n", param);
+> > > > +		return 0;
+> > I may need to move the validation code for val to the end of the validation
+> > code for param to prevent non-sysctl arguments from triggering the current
+> > print.
 > 
-> Hmm, I think this is another case where we need to separate out the
-> page-table walker attributes from the access attributes. Currently,
-> IO_PGTABLE_QUIRK_ARM_OUTER_WBWA applies _only_ to the page-table walker
-> and I don't think it makes any sense for that to be per-buffer (how 
-> would
-> you even manage that?). However, if we want to extend this to data 
-> accesses
-> and we know that there are valid use-cases where this should be 
-> per-buffer,
-> then shoe-horning it in with the walker quirk does not feel like the 
-> best
-> thing to do.
-Right, I agree that this seems something that merits the same level of 
-separation
-that exists for the page table walker attributes with respect to 
-coherency, and
-data buffer attributes with respect to coherency (i.e page table walker 
-coherency
-does not imply data buffer coherency--that is driven through 
-IOMMU_CACHE).
-> 
-> As a starting point, we could:
-> 
->   1. Rename IO_PGTABLE_QUIRK_ARM_OUTER_WBWA to IO_PGTABLE_QUIRK_PTW_LLC
->   2. Add a new prot flag IOMMU_LLC
->   3. Have the GPU pass the new prot for its buffer mappings
-> 
-> Does that work? One thing I'm not sure about is whether IOMMU_CACHE 
-> should
-Yes, that should work, as that'll leave the door open for there to be a 
-DMA attribute
-that can be wired up to IOMMU_LLC.
-> imply IOMMU_LLC, or whether there is a use-case for inner-cacheable, 
-> outer
-> non-cacheable mappings for a coherent device. Have you ever seen that 
-> sort
-I'm not aware of such a usecase, but I believe that a coherent device 
-will
-have their buffers cached in the system cache anyway, as well as the CPU 
-caches.
+> Why would that matter? A missing value is clearly a error path and it
+> should be reported.
 
---Isaac
-> of thing before?
+This test is in the correct place. I think it's just a question of the
+return values.
+
+> > Or delete the print and keep it silent for a little better performance.
+> > Which is better?
 > 
-> Will
-> 
-> _______________________________________________
-> linux-arm-kernel mailing list
-> linux-arm-kernel@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+> I do not think there is a performance argument on the table. The generic
+> code is returning EINVAL on a missing value where it is needed. Sysctl
+> all require a value IIRC so EINVAL would be the right way to report
+> this and let the generic code to complain.
+
+The reason the others do a "return 0" is because other error conditions
+will end up double-reporting:
+
+                switch (ret) {
+                case 0:
+                        continue;
+                case -ENOENT:
+                        pr_err("%s: Unknown parameter `%s'\n", doing, param);
+                        break;
+                case -ENOSPC:
+                        pr_err("%s: `%s' too large for parameter `%s'\n",
+                               doing, val ?: "", param);
+                        break;
+                default:
+                        pr_err("%s: `%s' invalid for parameter `%s'\n",
+                               doing, val ?: "", param);
+                        break;
+                }
+
+Also note that where the sysctl parsing happens, it calls parse_args()
+without checking return codes, so that doesn't matter either.
+
+It's possible that doing this would be sufficient, though:
+
++	if (!val)
++		return -EINVAL;
+
+Since that would hit the "default" error report which looks reasonable.
+
+-- 
+Kees Cook
