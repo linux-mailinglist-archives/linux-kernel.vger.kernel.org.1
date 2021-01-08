@@ -2,139 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C69BE2EEA22
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 01:08:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 25D542EEA25
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 01:08:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729497AbhAHAFQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 19:05:16 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:44325 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728698AbhAHAFP (ORCPT
+        id S1729478AbhAHAIK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 19:08:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34206 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729305AbhAHAIK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 19:05:15 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1610064229;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=L4HO0Yj29jyCFpzT2x1n0U+73ImIUkhV6HJs7/htSCA=;
-        b=U+/uFAdtIvCmbLPAKNrDo5lwv98DL57Cplh5TJPba2K06ycIVnM1UHn54SdjWuTf/PwY82
-        yfijqDV8jrI+E4H7IOR91LOA3Svntqg5cIwDdiGGRvwdmTPdTdc+BrQyV9EOoom88Ar1XD
-        5gzDZ3XdIHWKqrdKVvsJgsnVA2cFfRg=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-151-uCmgvnO7PvSKOd1nT75pMw-1; Thu, 07 Jan 2021 19:03:45 -0500
-X-MC-Unique: uCmgvnO7PvSKOd1nT75pMw-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A67FB801817;
-        Fri,  8 Jan 2021 00:03:43 +0000 (UTC)
-Received: from redhat.com (dhcp-17-185.bos.redhat.com [10.18.17.185])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 893ED19809;
-        Fri,  8 Jan 2021 00:03:42 +0000 (UTC)
-Date:   Thu, 7 Jan 2021 19:03:40 -0500
-From:   Jarod Wilson <jarod@redhat.com>
-To:     Jay Vosburgh <jay.vosburgh@canonical.com>
-Cc:     linux-kernel@vger.kernel.org, Veaceslav Falico <vfalico@gmail.com>,
-        Andy Gospodarek <andy@greyhouse.net>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Thomas Davis <tadavis@lbl.gov>, netdev@vger.kernel.org
-Subject: Re: [RFC PATCH net-next] bonding: add a vlan+srcmac tx hashing option
-Message-ID: <20210108000340.GC29828@redhat.com>
-References: <20201218193033.6138-1-jarod@redhat.com>
- <21784.1608337139@famine>
+        Thu, 7 Jan 2021 19:08:10 -0500
+Received: from mail-oi1-x235.google.com (mail-oi1-x235.google.com [IPv6:2607:f8b0:4864:20::235])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 035D5C0612F4
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Jan 2021 16:07:29 -0800 (PST)
+Received: by mail-oi1-x235.google.com with SMTP id f132so9404201oib.12
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Jan 2021 16:07:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=/+e7mJ1mrcrNXilPv4TPaogW9Nw3A2mzcQj+9eVwG/Q=;
+        b=bbYGAE/b+oEutRi1w4PJfRLGhGMm1Iii6kPJliriSbZCFYn0zdpqoObnarD1SdQdKg
+         MKvZlSc6cKj24gykJuPXUvd3vMZ5omYddXS0qpymc1nohnVKm0k53HNJzA5vPXMKDRqA
+         p8S9m1OPgXGbD1vahZEY1tmZfWBfuoyObRkknk4CygwqDmBIVP51l5GwyM2eTmCJjfbv
+         rUH4hY9m+tWe9H+bLg5og3CGGepX6kxKvjHGGzcGjZxb65XtOz7tmqBdc6LxWtpjkieW
+         NVk5LmfAmTSjAHXwEk6Lmv5HBIvRP+Emf97ELyI3ToqUxW0zTY8i0aWxq1WxDVqtGEaZ
+         XJag==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=/+e7mJ1mrcrNXilPv4TPaogW9Nw3A2mzcQj+9eVwG/Q=;
+        b=o8F+7FgijmTLBfQd/eOIUC7UAoFL3KF2ig4ZajE+DB4qzEt4CC+JeJJ+gEMBJc7Qeh
+         i4z/jNJGEO3V3XC7/FFvY4y/dkK1peRe0nkGAO9wRUfmhcJ9MMDQPqInPmXzvxfNfd7L
+         ClKskITXoM58AiEz92z9c5brq7jjPVDK96usVHxv8a+qqpmBwQM3T6jHyjhwZiG/LPNH
+         XUeWjFLGRH5IE85SVaf7hDkcPJ8RBDmP7vdHN/XphrVdfjqNyEAHAQcu84L7V8bXnWC0
+         fek3Trks5GmWoz5Sf2R30vJ+adVyy3BO8oyXNHT4hm3tjOJ7wFV2Ngvm9u0t5fGBUUwC
+         +ekw==
+X-Gm-Message-State: AOAM532Vod52uCWeEjmYacQNx2Tg6BLrDklm1jwm+bSz+Og8qJY0TFbb
+        Go/RTHdjw2PGeYoYCgLtC3jh0A==
+X-Google-Smtp-Source: ABdhPJzElVHYfLpQXn0s3vAI3qEWrpr99Z32Ydud32Yg8jcEaa4sXjihYljuzVevqbyQ8VO9Rd/6WA==
+X-Received: by 2002:aca:4dc3:: with SMTP id a186mr681591oib.107.1610064449329;
+        Thu, 07 Jan 2021 16:07:29 -0800 (PST)
+Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id u3sm1424640otk.31.2021.01.07.16.07.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 07 Jan 2021 16:07:28 -0800 (PST)
+Date:   Thu, 7 Jan 2021 18:07:27 -0600
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Siddharth Gupta <sidgup@codeaurora.org>
+Cc:     agross@kernel.org, ohad@wizery.com, linux-arm-msm@vger.kernel.org,
+        linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        psodagud@codeaurora.org, rishabhb@codeaurora.org
+Subject: Re: [PATCH 2/3] soc: qcom: mdt_loader: Handle split bins correctly
+Message-ID: <X/eiP/81jupdptf7@builder.lan>
+References: <1609968211-7579-1-git-send-email-sidgup@codeaurora.org>
+ <1609968211-7579-3-git-send-email-sidgup@codeaurora.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <21784.1608337139@famine>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+In-Reply-To: <1609968211-7579-3-git-send-email-sidgup@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Dec 18, 2020 at 04:18:59PM -0800, Jay Vosburgh wrote:
-> Jarod Wilson <jarod@redhat.com> wrote:
+On Wed 06 Jan 15:23 CST 2021, Siddharth Gupta wrote:
+
+> It may be that the offset of the first program header lies inside the mdt's
+> filesize, in this case the loader would incorrectly assume that the bins
+> were not split. The loading would then continue on to fail for split bins.
+> This change updates the logic used by the mdt loader to understand whether
+> the firmware images are split or not. It figures this out by checking if
+> each program header's segment lies within the file or not.
 > 
-> >This comes from an end-user request, where they're running multiple VMs on
-> >hosts with bonded interfaces connected to some interest switch topologies,
-> >where 802.3ad isn't an option. They're currently running a proprietary
-> >solution that effectively achieves load-balancing of VMs and bandwidth
-> >utilization improvements with a similar form of transmission algorithm.
-> >
-> >Basically, each VM has it's own vlan, so it always sends its traffic out
-> >the same interface, unless that interface fails. Traffic gets split
-> >between the interfaces, maintaining a consistent path, with failover still
-> >available if an interface goes down.
-> >
-> >This has been rudimetarily tested to provide similar results, suitable for
-> >them to use to move off their current proprietary solution.
-> >
-> >Still on the TODO list, if these even looks sane to begin with, is
-> >fleshing out Documentation/networking/bonding.rst.
+> Signed-off-by: Siddharth Gupta <sidgup@codeaurora.org>
+> ---
+>  drivers/soc/qcom/mdt_loader.c | 60 +++++++++++++++++++++++++++----------------
+>  1 file changed, 38 insertions(+), 22 deletions(-)
 > 
-> 	I'm sure you're aware, but any final submission will also need
-> to include netlink and iproute2 support.
+> diff --git a/drivers/soc/qcom/mdt_loader.c b/drivers/soc/qcom/mdt_loader.c
+> index 813216d..c9bbd8c 100644
+> --- a/drivers/soc/qcom/mdt_loader.c
+> +++ b/drivers/soc/qcom/mdt_loader.c
+> @@ -31,6 +31,26 @@ static bool mdt_phdr_valid(const struct elf32_phdr *phdr)
+>  	return true;
+>  }
+>  
+> +static bool qcom_mdt_bins_are_split(const struct firmware *fw)
+> +{
+> +	const struct elf32_phdr *phdrs;
+> +	const struct elf32_hdr *ehdr;
+> +	uint64_t seg_start, seg_end;
+> +	int i;
+> +
+> +	ehdr = (struct elf32_hdr *)fw->data;
+> +	phdrs = (struct elf32_phdr *)(ehdr + 1);
+> +
+> +	for (i = 0; i < ehdr->e_phnum; i++) {
+> +		seg_start = phdrs[i].p_offset;
+> +		seg_end = phdrs[i].p_offset + phdrs[i].p_filesz;
+> +		if (seg_start > fw->size || seg_end > fw->size)
+> +			return true;
+> +	}
+> +
+> +	return false;
+> +}
+> +
+>  /**
+>   * qcom_mdt_get_size() - acquire size of the memory region needed to load mdt
+>   * @fw:		firmware object for the mdt file
+> @@ -118,7 +138,7 @@ void *qcom_mdt_read_metadata(const struct firmware *fw, size_t *data_len)
+>  		return ERR_PTR(-ENOMEM);
+>  
+>  	/* Is the header and hash already packed */
+> -	if (ehdr_size + hash_size == fw->size)
+> +	if (qcom_mdt_bins_are_split(fw))
+>  		hash_offset = phdrs[0].p_filesz;
+>  	else
+>  		hash_offset = phdrs[hash_index].p_offset;
+> @@ -150,6 +170,7 @@ static int __qcom_mdt_load(struct device *dev, const struct firmware *fw,
+>  	void *metadata;
+>  	char *fw_name;
+>  	bool relocate = false;
+> +	bool is_split;
+>  	void *ptr;
+>  	int ret = 0;
+>  	int i;
+> @@ -157,6 +178,7 @@ static int __qcom_mdt_load(struct device *dev, const struct firmware *fw,
+>  	if (!fw || !mem_region || !mem_phys || !mem_size)
+>  		return -EINVAL;
+>  
+> +	is_split = qcom_mdt_bins_are_split(fw);
+>  	ehdr = (struct elf32_hdr *)fw->data;
+>  	phdrs = (struct elf32_phdr *)(ehdr + 1);
+>  
+> @@ -238,28 +260,22 @@ static int __qcom_mdt_load(struct device *dev, const struct firmware *fw,
+>  
+>  		ptr = mem_region + offset;
+>  
+> -		if (phdr->p_filesz && phdr->p_offset < fw->size) {
+> -			/* Firmware is large enough to be non-split */
+> -			if (phdr->p_offset + phdr->p_filesz > fw->size) {
+> -				dev_err(dev,
+> -					"failed to load segment %d from truncated file %s\n",
+> -					i, firmware);
+> -				ret = -EINVAL;
+> -				break;
+> +		if (phdr->p_filesz) {
+> +			if (!is_split) {
 
-I believe everything for netlink support is already included, but I'll
-double-check that before submitting something for inclusion consideration.
+In an effort to reduce the diff size and avoid adding another level of
+indentation, how about making the conditionals:
 
-> >diff --git a/drivers/net/bonding/bond_main.c b/drivers/net/bonding/bond_main.c
-> >index 5fe5232cc3f3..151ce8c7a56f 100644
-> >--- a/drivers/net/bonding/bond_main.c
-> >+++ b/drivers/net/bonding/bond_main.c
-> >@@ -164,7 +164,7 @@ module_param(xmit_hash_policy, charp, 0);
-> > MODULE_PARM_DESC(xmit_hash_policy, "balance-alb, balance-tlb, balance-xor, 802.3ad hashing method; "
-> > 				   "0 for layer 2 (default), 1 for layer 3+4, "
-> > 				   "2 for layer 2+3, 3 for encap layer 2+3, "
-> >-				   "4 for encap layer 3+4");
-> >+				   "4 for encap layer 3+4, 5 for vlan+srcmac");
-> > module_param(arp_interval, int, 0);
-> > MODULE_PARM_DESC(arp_interval, "arp interval in milliseconds");
-> > module_param_array(arp_ip_target, charp, NULL, 0);
-> >@@ -1434,6 +1434,8 @@ static enum netdev_lag_hash bond_lag_hash_type(struct bonding *bond,
-> > 		return NETDEV_LAG_HASH_E23;
-> > 	case BOND_XMIT_POLICY_ENCAP34:
-> > 		return NETDEV_LAG_HASH_E34;
-> >+	case BOND_XMIT_POLICY_VLAN_SRCMAC:
-> >+		return NETDEV_LAG_HASH_VLAN_SRCMAC;
-> > 	default:
-> > 		return NETDEV_LAG_HASH_UNKNOWN;
-> > 	}
-> >@@ -3494,6 +3496,20 @@ static bool bond_flow_ip(struct sk_buff *skb, struct flow_keys *fk,
-> > 	return true;
-> > }
-> > 
-> >+static inline u32 bond_vlan_srcmac_hash(struct sk_buff *skb)
-> >+{
-> >+	struct ethhdr *mac_hdr = (struct ethhdr *)skb_mac_header(skb);
-> >+	u32 srcmac = mac_hdr->h_source[5];
-> >+	u16 vlan;
-> >+
-> >+	if (!skb_vlan_tag_present(skb))
-> >+		return srcmac;
-> >+
-> >+	vlan = skb_vlan_tag_get(skb);
-> >+
-> >+	return srcmac ^ vlan;
+		if (is_split && phdr->p_filesz) {
+			memcpy();
+		} else if (phdr->p_filesz) {
+			...
+		}
+
+Apart from that I think this patch looks good!
+
+Regards,
+Bjorn
+
+> +				/* Firmware is large enough to be non-split */
+> +				memcpy(ptr, fw->data + phdr->p_offset, phdr->p_filesz);
+> +			} else {
+> +				/* Firmware not large enough, load split-out segments */
+> +				snprintf(fw_name + fw_name_len - 3, 4, "b%02d", i);
+> +				ret = request_firmware_into_buf(&seg_fw, fw_name, dev,
+> +								ptr, phdr->p_filesz);
+> +				if (ret) {
+> +					dev_err(dev, "failed to load %s\n", fw_name);
+> +					break;
+> +				}
+> +
+> +				release_firmware(seg_fw);
+>  			}
+> -
+> -			memcpy(ptr, fw->data + phdr->p_offset, phdr->p_filesz);
+> -		} else if (phdr->p_filesz) {
+> -			/* Firmware not large enough, load split-out segments */
+> -			sprintf(fw_name + fw_name_len - 3, "b%02d", i);
+> -			ret = request_firmware_into_buf(&seg_fw, fw_name, dev,
+> -							ptr, phdr->p_filesz);
+> -			if (ret) {
+> -				dev_err(dev, "failed to load %s\n", fw_name);
+> -				break;
+> -			}
+> -
+> -			release_firmware(seg_fw);
+>  		}
+>  
+>  		if (phdr->p_memsz > phdr->p_filesz)
+> -- 
+> Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+> a Linux Foundation Collaborative Project
 > 
-> 	For the common configuration wherein multiple VLANs are
-> configured atop a single interface (and thus by default end up with the
-> same MAC address), this seems like a fairly weak hash.  The TCI is 16
-> bits (12 of which are the VID), but only 8 are used from the MAC, which
-> will be a constant.
-> 
-> 	Is this algorithm copying the proprietary solution you mention?
-
-I've not actually seen the code in question, so I can't be 100% certain,
-but this is exactly how it was described to me, and testing seems to bear
-out that it behaves at least similarly enough for the user. They like
-simplicity, and the very basic hash suits their needs, which are basically
-just getting some load-balancing with failover w/o having to have lacp,
-running on some older switches that can't do lacp.
-
--- 
-Jarod Wilson
-jarod@redhat.com
-
