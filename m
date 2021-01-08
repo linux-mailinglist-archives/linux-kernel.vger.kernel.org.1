@@ -2,108 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D536B2EF3D0
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 15:16:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E47E2EF3D6
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 15:22:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727235AbhAHOQU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Jan 2021 09:16:20 -0500
-Received: from foss.arm.com ([217.140.110.172]:51872 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725817AbhAHOQT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Jan 2021 09:16:19 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 88A0FED1;
-        Fri,  8 Jan 2021 06:15:33 -0800 (PST)
-Received: from [10.57.37.195] (unknown [10.57.37.195])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C455A3F70D;
-        Fri,  8 Jan 2021 06:15:29 -0800 (PST)
-Subject: Re: [PATCH v6 00/26] coresight: etm4x: Support for system
- instructions
-From:   Suzuki K Poulose <suzuki.poulose@arm.com>
-To:     Mathieu Poirier <mathieu.poirier@linaro.org>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        coresight@lists.linaro.org, leo.yan@linaro.org,
-        mike.leach@linaro.org, anshuman.khandual@arm.com
-References: <20210107123859.674252-1-suzuki.poulose@arm.com>
- <20210108010907.GJ43045@xps15> <7f3304f7-8c68-3a61-48da-553de87c027d@arm.com>
-Message-ID: <2f9d4b4e-4382-ab2a-5156-26fb9275d0f2@arm.com>
-Date:   Fri, 8 Jan 2021 14:15:22 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        id S1726603AbhAHOV1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Jan 2021 09:21:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53470 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725901AbhAHOV1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 Jan 2021 09:21:27 -0500
+Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7333CC0612F4
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Jan 2021 06:20:46 -0800 (PST)
+Received: by mail-wr1-x435.google.com with SMTP id y17so9156227wrr.10
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Jan 2021 06:20:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=D55vHgGqjN7EQYtgxDZVb7zOdCKWN0/YBCv3BZrkd+g=;
+        b=DTAy8mSzjx6zd8aZdBqYN0ryA5xq/t7FQYSI7E4P0+PQcw2tirQgJsbg0+FawEGThV
+         iYMQzXpitQgbrVYCirOntjKSFHkUJv4lAPgG+iZn36ghQeqQvrHHhOUJFKJqAr0TCXpT
+         FTWMhDeIlNNP2bmVOvJSCyRENHa0Ot0UVAiWGA8E78LOiburbIw+X9v+nn1kaa5wHv7I
+         EH91TWBP06fzOQmY5Trp8AMZ+3b8qs1SZo8Pb3pVedWYfiGofeEB8IJGw3ypM+R40MwL
+         ArTi/nP51p3MQx4FlmJqvZS8GcXv2Vb2OMfDpysel+A6FEKlTjcS/qS1+4CEEXnGYr3s
+         1UCg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=D55vHgGqjN7EQYtgxDZVb7zOdCKWN0/YBCv3BZrkd+g=;
+        b=VFkfev5ruwd85bQ1Ywy5gRGHu9FwxG3PiYN3mOVByxHysS8CJD5XjuJXamK/2iLXl7
+         YWaSNjiZwM5nBITJmMmEktdCshx9WaaPe2cE6nxnJFFetEOdS18WPdGWSsI8f6jjywGw
+         YnIK5S5SvLSRDNT8gUozXLZmKzp9tePWKyo+fPEOcVMOYxHCCTrcdfuL/GC0feZF8oKu
+         +9Fcssksetw8wnPGOGhO3m6I6HcNTBYTlVnUZz4djmiZqIHwNIQt/FlXvA2jHkvAYmsx
+         fG4eSf7TtWpWV3nvro2f5Erm+D8VS7vH67l0lC+A46kgBXBC0KXXbgDaBald5hHJfrSv
+         8tYw==
+X-Gm-Message-State: AOAM533UmpvEyKS995afvLAVf2KHbB+w0ARPFk0ho+9nD3/ZgNOn82WP
+        UToUwDBjapKJ2+WNTmORGUKjBl1Wt0JrrMAj
+X-Google-Smtp-Source: ABdhPJznbNn6QkzEeZCqzzzLhGkmwCv28JyCQ5JMAJE49g+AtiL5HrPK1IQggUqJf7cwU30sU+WuYA==
+X-Received: by 2002:adf:ee10:: with SMTP id y16mr3962148wrn.296.1610115645077;
+        Fri, 08 Jan 2021 06:20:45 -0800 (PST)
+Received: from dell ([91.110.221.156])
+        by smtp.gmail.com with ESMTPSA id u9sm12585159wmb.32.2021.01.08.06.20.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 08 Jan 2021 06:20:44 -0800 (PST)
+Date:   Fri, 8 Jan 2021 14:20:42 +0000
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Joe Perches <joe@perches.com>
+Cc:     Zheng Yongjun <zhengyongjun3@huawei.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 -next] mfd: convert comma to semicolon
+Message-ID: <20210108142042.GF1592923@dell>
+References: <20210108092058.18576-1-zhengyongjun3@huawei.com>
+ <20210108105355.GE1592923@dell>
+ <ec135fa05918f7a2e34e5b6364c691ce0d3d8287.camel@perches.com>
 MIME-Version: 1.0
-In-Reply-To: <7f3304f7-8c68-3a61-48da-553de87c027d@arm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <ec135fa05918f7a2e34e5b6364c691ce0d3d8287.camel@perches.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mathieu,
+On Fri, 08 Jan 2021, Joe Perches wrote:
 
-Please hold on with this series, I will update the series, fixing the
-issues you have spotted and some additional patches to prevent accesses
-to all the system registers that may not be available via system instructions.
-
-Apologies for the inconvenience
-
-Kind regards
-Suzuki
-
-On 1/8/21 9:08 AM, Suzuki K Poulose wrote:
-> Hi Mathieu
+> On Fri, 2021-01-08 at 10:53 +0000, Lee Jones wrote:
+> > On Fri, 08 Jan 2021, Zheng Yongjun wrote:
+> > 
+> > You're still not using the correct subject format.
+> > 
+> > It should be:
+> > 
+> >  "mfd: <driver>: Description starting with an uppercase char"
 > 
-> On 1/8/21 1:09 AM, Mathieu Poirier wrote:
->> Hi Suzuki,
->>
->> On Thu, Jan 07, 2021 at 12:38:33PM +0000, Suzuki K Poulose wrote:
->>> CoreSight ETMv4.4 obsoletes memory mapped access to ETM and
->>> mandates the system instructions for registers.
->>> This also implies that they may not be on the amba bus.
->>> Right now all the CoreSight components are accessed via memory
->>> map. Also, we have some common routines in coresight generic
->>> code driver (e.g, CS_LOCK, claim/disclaim), which assume the
->>> mmio. In order to preserve the generic algorithms at a single
->>> place and to allow dynamic switch for ETMs, this series introduces
->>> an abstraction layer for accessing a coresight device. It is
->>> designed such that the mmio access are fast tracked (i.e, without
->>> an indirect function call).
->>>
->>> This will also help us to get rid of the driver+attribute specific
->>> sysfs show/store routines and replace them with a single routine
->>> to access a given register offset (which can be embedded in the
->>> dev_ext_attribute). This is not currently implemented in the series,
->>> but can be achieved.
->>>
->>> Further we switch the generic routines to work with the abstraction.
->>> With this in place, we refactor the etm4x code a bit to allow for
->>> supporting the system instructions with very little new code.
->>>
->>> We use TRCDEVARCH for the detection of the ETM component, which
->>> is a standard register as per CoreSight architecture, rather than
->>> the etm specific id register TRCIDR1. This is for making sure
->>> that we are able to detect the ETM via system instructions accurately,
->>> when the the trace unit could be anything (etm or a custom trace unit).
->>> To keep the backward compatibility for any existing broken
->>> impelementation which may not implement TRCDEVARCH, we fall back to TRCIDR1.
->>> Also this covers us for the changes in the future architecture [0].
->>>
->>> Also, v8.4 self-hosted tracing extensions (coupled with ETMv4.4) adds
->>> new filtering registers for trace by exception level. So on a v8.4
->>> system, with Trace Filtering support, without the appropriate
->>> programming of the Trace filter registers (TRFCR_ELx), tracing
->>> will not be enabled. This series also includes the TraceFiltering
->>> support to cover the ETM-v4.4 support.
->>>
->>> The series has been mildly tested on a model for system instructions.
->>> I would really appreciate any testing on real hardware.
->>
->> I have queued your work in my local tree.  I will have a final pass before
->> pushing to coresight-next tomorrow or on Monday.
->>
-> 
-> Thanks for the review and fixups. Please let me know if you need a respin.
-> 
-> Cheers
-> Suzuki
+> IMO: overly pedantic
 
+Duly noted.
+
+This is something I usually fix-up myself.  However, since this is
+something I already mentioned when reviewing the first iteration of
+this patch (with proper feedback) and it seems to have been ignored,
+I'm going to ask for a v3.
+
+-- 
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
