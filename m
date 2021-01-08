@@ -2,117 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 43DB12EF1F6
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 13:08:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FAD02EF1C0
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 13:06:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727949AbhAHMHS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Jan 2021 07:07:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60970 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727887AbhAHMHJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Jan 2021 07:07:09 -0500
-Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF4A2C06123C
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Jan 2021 04:05:27 -0800 (PST)
-Received: by mail-ej1-x630.google.com with SMTP id x16so14194079ejj.7
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Jan 2021 04:05:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=JiPADPqpi1TRGFTQtXGKOKkcLtBBeVBMJJcpBBX75Jc=;
-        b=Zih668ZsAFh4a35FiyenhxLDOf1WnU1F1CGqxfUvcooA4HS8NOJ3LYMwjI0epR9EBL
-         eXNqM3a0DxZo5xijsY75HpjGB3yHeYA9iXTfKnpM4cmy9C2Sulpe59z7IixQLoG1olmF
-         Q3OBdiAvKiY+G1dSxZLJ30Ai6ESTDe9VFWdXoqpcC5GGafJr8beGPAo1nBhhjX8zkjNC
-         4VbPZQX9uxzcrr1tuQxUnHZs+gnNAPXOqa/R/8/Cgqh10udams9zTdhybpdTf8u2+amV
-         51du/dYkpGjF8NrbWnL6AOV8ibnqMMKBUEZQelcYyVCBFnjr3xERjcjcwT7cl5elc3U6
-         gW+A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=JiPADPqpi1TRGFTQtXGKOKkcLtBBeVBMJJcpBBX75Jc=;
-        b=BjHEFDDTb8J4UZQ8XcX8qqbkpD+xMH0TYbH3Ow3b6WNhCns86bsmnJ2LE35oUFGXrc
-         wDASOusOXbNw+LC4qew8IuPa+5n2lIVpngreFBv6WkCf4DuwlaXrWgA3e7m96Dha9foV
-         V6S5Is2cCzq3G9hnXGASA6Gr38DoH84EFjaW0V6g1xrzurt/r3lj57769ZeMbEJttY0R
-         fexPvIAagBdUiH96wQDq77rZEbwl6U0RAZnmdaiiEgSBnLdLf28N8ci0u5vbXcjMDg63
-         /OQWrWUuhFHtTVsvdbE2lY+eDKEgr6JibopfGC5q01w09BftJfFe6xdpdtPU0ADNV3mj
-         WTHw==
-X-Gm-Message-State: AOAM530vxH8QQzahM48h22tX3j1uEL61aHwlcGRMh9Z2p1Sh6X+YjpnG
-        3mIxDSi17iip2QpjUFMOTLgRMQ==
-X-Google-Smtp-Source: ABdhPJytmqOnkAPiWJ4RDajeCv0dL/dM6swMndUhDE19gIayP0PkAwa+D228FpmL+AXUxMJ7WiB22w==
-X-Received: by 2002:a17:906:4d47:: with SMTP id b7mr2364303ejv.420.1610107526705;
-        Fri, 08 Jan 2021 04:05:26 -0800 (PST)
-Received: from localhost.localdomain ([2a02:2450:102f:d6a:bb2e:8b50:322a:1b9a])
-        by smtp.gmail.com with ESMTPSA id i18sm3674498edt.68.2021.01.08.04.05.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 08 Jan 2021 04:05:26 -0800 (PST)
-From:   Robert Foss <robert.foss@linaro.org>
-To:     agross@kernel.org, bjorn.andersson@linaro.org,
-        robert.foss@linaro.org, todor.too@gmail.com, mchehab@kernel.org,
-        robh+dt@kernel.org, catalin.marinas@arm.com, will@kernel.org,
-        shawnguo@kernel.org, leoyang.li@nxp.com, geert+renesas@glider.be,
-        arnd@arndb.de, Anson.Huang@nxp.com, michael@walle.cc,
-        agx@sigxcpu.org, max.oss.09@gmail.com,
-        linux-arm-msm@vger.kernel.org, linux-media@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        AngeloGioacchino Del Regno <kholk11@gmail.com>,
-        Andrey Konovalov <andrey.konovalov@linaro.org>
-Cc:     Tomasz Figa <tfiga@chromium.org>,
-        Azam Sadiq Pasha Kapatrala Syed <akapatra@quicinc.com>,
-        Sarvesh Sridutt <Sarvesh.Sridutt@smartwirelesscompute.com>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Subject: [PATCH v1 16/17] arm64: dts: sdm845-db845c: Add CAMSS ISP node
-Date:   Fri,  8 Jan 2021 13:04:28 +0100
-Message-Id: <20210108120429.895046-17-robert.foss@linaro.org>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20210108120429.895046-1-robert.foss@linaro.org>
-References: <20210108120429.895046-1-robert.foss@linaro.org>
+        id S1726720AbhAHMFU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Jan 2021 07:05:20 -0500
+Received: from foss.arm.com ([217.140.110.172]:49854 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725791AbhAHMFT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 Jan 2021 07:05:19 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B258431B;
+        Fri,  8 Jan 2021 04:04:33 -0800 (PST)
+Received: from e120937-lin (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D95ED3F719;
+        Fri,  8 Jan 2021 04:04:31 -0800 (PST)
+Date:   Fri, 8 Jan 2021 12:04:28 +0000
+From:   Cristian Marussi <cristian.marussi@arm.com>
+To:     Thara Gopinath <thara.gopinath@linaro.org>
+Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        sudeep.holla@arm.com, lukasz.luba@arm.com,
+        james.quinlan@broadcom.com, Jonathan.Cameron@Huawei.com,
+        f.fainelli@gmail.com, etienne.carriere@linaro.org,
+        vincent.guittot@linaro.org, souvik.chakravarty@arm.com
+Subject: Re: [PATCH v4 02/37] firmware: arm_scmi: introduce protocol handle
+ definitions
+Message-ID: <20210108120428.GB9138@e120937-lin>
+References: <20210106201610.26538-1-cristian.marussi@arm.com>
+ <20210106201610.26538-3-cristian.marussi@arm.com>
+ <19054e89-c117-ef85-444e-8e126a8a9efb@linaro.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <19054e89-c117-ef85-444e-8e126a8a9efb@linaro.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add regulators and camss DT node.
+Hi Thara
 
-Signed-off-by: Robert Foss <robert.foss@linaro.org>
----
- arch/arm64/boot/dts/qcom/sdm845-db845c.dts | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
+thanks for reviewing.
 
-diff --git a/arch/arm64/boot/dts/qcom/sdm845-db845c.dts b/arch/arm64/boot/dts/qcom/sdm845-db845c.dts
-index a943b3f353ce..7bad0515345e 100644
---- a/arch/arm64/boot/dts/qcom/sdm845-db845c.dts
-+++ b/arch/arm64/boot/dts/qcom/sdm845-db845c.dts
-@@ -294,6 +294,9 @@ vreg_s7a_1p025: smps7 {
- 			regulator-max-microvolt = <1028000>;
- 		};
- 
-+		vdda_mipi_csi0_0p9:
-+		vdda_mipi_csi1_0p9:
-+		vdda_mipi_csi2_0p9:
- 		vreg_l1a_0p875: ldo1 {
- 			regulator-min-microvolt = <880000>;
- 			regulator-max-microvolt = <880000>;
-@@ -1106,6 +1109,15 @@ &cci {
- 	status = "okay";
- };
- 
-+&camss {
-+	vdda-csi0-supply = <&vdda_mipi_csi0_0p9>;
-+	vdda-csi1-supply = <&vdda_mipi_csi1_0p9>;
-+	vdda-csi2-supply = <&vdda_mipi_csi2_0p9>;
-+
-+	status = "disabled";
-+
-+};
-+
- &cci_i2c0 {
- 	camera@10 {
- 		compatible = "ovti,ov8856";
--- 
-2.27.0
+On Thu, Jan 07, 2021 at 09:29:17AM -0500, Thara Gopinath wrote:
+> 
+> 
+> On 1/6/21 3:15 PM, Cristian Marussi wrote:
+> > Add basic protocol handles definitions and private data helpers support.
+> > 
+> > A protocol handle identifies a protocol instance initialized against a
+> > specific handle; it embeds all the references to the core SCMI xfer methods
+> > that will be needed by a protocol implementation to build and send its own
+> > protocol specific messages using common core methods.
+> > 
+> > As such, in the interface, a protocol handle will be passed down from the
+> > core to the protocol specific initialization callback at init time.
+> > 
+> > Anyway at this point only definitions are introduced, all protocols
+> > initialization code and SCMI drivers probing is still based on the old
+> > interface, so no functional change.
+> > 
+> > Signed-off-by: Cristian Marussi <cristian.marussi@arm.com>
+> > ---
+> >   drivers/firmware/arm_scmi/common.h | 59 ++++++++++++++++++++++++++++++
+> >   drivers/firmware/arm_scmi/driver.c | 45 +++++++++++++++++++++++
+> >   2 files changed, 104 insertions(+)
+> > 
+> > diff --git a/drivers/firmware/arm_scmi/common.h b/drivers/firmware/arm_scmi/common.h
+> > index e052507dc918..977e31224efe 100644
+> > --- a/drivers/firmware/arm_scmi/common.h
+> > +++ b/drivers/firmware/arm_scmi/common.h
+> > @@ -149,6 +149,65 @@ int scmi_xfer_get_init(const struct scmi_handle *h, u8 msg_id, u8 prot_id,
+> >   		       size_t tx_size, size_t rx_size, struct scmi_xfer **p);
+> >   void scmi_reset_rx_to_maxsz(const struct scmi_handle *handle,
+> >   			    struct scmi_xfer *xfer);
+> > +
+> > +struct scmi_xfer_ops;
+> > +
+> > +/**
+> > + * struct scmi_protocol_handle  - Reference to an initialized protocol instance
+> > + *
+> > + * @dev: A reference to the associated SCMI instance device (handle->dev).
+> > + * @xops: A reference to a struct holding refs to the core xfer operations that
+> > + *	  can be used by the protocol implementation to generate SCMI messages.
+> > + * @set_priv: A method to set protocol private data for this instance.
+> > + * @get_priv: A method to get protocol private data previously set.
+> > + *
+> > + * This structure represents a protocol initialized against specific SCMI
+> > + * instance and it will be used as follows:
+> > + * - as a parameter fed from the core to the protocol initialization code so
+> > + *   that it can access the core xfer operations to build and generate SCMI
+> > + *   messages exclusively for the specific underlying protocol instance.
+> > + * - as an opaque handle fed by an SCMI driver user when it tries to access
+> > + *   this protocol through its own protocol operations.
+> > + *   In this case this handle will be returned as an opaque object together
+> > + *   with the related protocol operations when the SCMI driver tries to access
+> > + *   the protocol.
+> > + */
+> > +struct scmi_protocol_handle {
+> > +	struct device *dev;
+> > +	const struct scmi_xfer_ops *xops;
+> > +	int (*set_priv)(const struct scmi_protocol_handle *ph, void *priv);
+> > +	void *(*get_priv)(const struct scmi_protocol_handle *ph);
+> > +};
+> > +
+> > +/**
+> > + * struct scmi_xfer_ops  - References to the core SCMI xfer operations.
+> > + * @version_get: Get this version protocol.
+> > + * @xfer_get_init: Initialize one struct xfer if any xfer slot is free.
+> > + * @reset_rx_to_maxsz: Reset rx size to max transport size.
+> > + * @do_xfer: Do the SCMI transfer.
+> > + * @do_xfer_with_response: Do the SCMI transfer waiting for a response.
+> > + * @xfer_put: Free the xfer slot.
+> > + *
+> > + * Note that all this operations expect a protocol handle as first parameter;
+> > + * they then internally use it to infer the underlying protocol number: this
+> > + * way is not possible for a protocol implementation to forge messages for
+> > + * another protocol.
+> > + */
+> > +struct scmi_xfer_ops {
+> 
+> Maybe move the definition above struct scmi_protocol_handle to avoid a
+> declaration ?
+> 
 
+But all the ops defined inside scmi_xfer_ops refers then to a param
+struct scmi_protocol_handle, so I'd need anyway a similar declaration
+the other way around.
+
+If not:
+
+linux/drivers/firmware/arm_scmi/common.h:178:32: warning: ‘struct scmi_protocol_handle’ declared inside parameter list will not be visible outside of this definition or declaration
+
+Thanks
+
+Cristian
+> 
+> -- 
+> Warm Regards
+> Thara
