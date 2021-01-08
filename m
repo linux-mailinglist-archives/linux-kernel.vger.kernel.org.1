@@ -2,483 +2,236 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B12FE2EF4D8
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 16:32:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C9482EF4E1
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 16:33:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726981AbhAHPa7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Jan 2021 10:30:59 -0500
-Received: from mail.kernel.org ([198.145.29.99]:57474 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726430AbhAHPa6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Jan 2021 10:30:58 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DD9BF239A1;
-        Fri,  8 Jan 2021 15:30:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610119817;
-        bh=+4gVSTiezEIIk1legZlBMMgPTYYoic+LUtxmuDvhRtc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=CcBtNP5ijerMn+4SHl//WQdqHrZCNQoffKtZAF+pqG0bMp0QXCDiqd0n9Wh6Qe9dS
-         ocg7MLIMAC0wSLCMO9UTYqf+t2YjQGX0u85JsrcXo8P8jfGqKbbJUsov3KII6K8Bft
-         UWqGa6DWrk7A4lHodUjXW7YycMDOtMbMMc+ayVqU=
-Date:   Fri, 8 Jan 2021 16:31:34 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     shuo.a.liu@intel.com
-Cc:     linux-kernel@vger.kernel.org, x86@kernel.org,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Yu Wang <yu1.wang@intel.com>,
-        Reinette Chatre <reinette.chatre@intel.com>,
-        Zhi Wang <zhi.a.wang@intel.com>,
-        Zhenyu Wang <zhenyuw@linux.intel.com>
-Subject: Re: [PATCH v7 06/18] virt: acrn: Introduce VM management interfaces
-Message-ID: <X/h61gfQlBW+yH/M@kroah.com>
-References: <20210106075055.47226-1-shuo.a.liu@intel.com>
- <20210106075055.47226-7-shuo.a.liu@intel.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210106075055.47226-7-shuo.a.liu@intel.com>
+        id S1727889AbhAHPdC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Jan 2021 10:33:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36456 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725806AbhAHPdB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 Jan 2021 10:33:01 -0500
+Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B7ACC061380;
+        Fri,  8 Jan 2021 07:32:21 -0800 (PST)
+Received: by mail-pl1-x62d.google.com with SMTP id q4so5827807plr.7;
+        Fri, 08 Jan 2021 07:32:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=spFCEPnVm9qff+fH1Wbln13XJIpHbyb+5Fw9GfNHu/4=;
+        b=VgPpzcQ4hoBpx9OQaVDkhRHyJEBfJl53Ds4R/whOhJ/ugwxFoHOTMA3N0WLtrzLMMi
+         YSyAQuVCi2eW2AXNc2LtH0oqWiJ8a95tcXZnoaMwQwhVPrlh1PXK8mmC55n68gUWIfax
+         /28Ji49xo14MuuVldvwl3FjuGR5WkDxmkJ+m/NYaccaJvaVcgACLIDRMx5QpHXkrPzRm
+         xOhoP4IisH7kF5qJZ1Aa/EyiGSmKN7pKvVU5Kjkx4Z+I7TCqnuiuPd9ZPgelc20t1WRO
+         z3IKIm4TE4q5YWds8dWz9tm9pkHHMSKI9x4Q6l9Whw/SxMQoalXqiffNoU4ESEuOM0EK
+         CG9A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=spFCEPnVm9qff+fH1Wbln13XJIpHbyb+5Fw9GfNHu/4=;
+        b=l7bmP5CJwTTaMbUEpUjqCQKYqVsjt9dXWO/BGxLUZFoX6KI0xK49ImSdCfAo7eChkJ
+         JyfGaQq03X11lo/AU9Pv/l9F/BYmyqnRNDTXJ7GRFElUT0mPI8NHwpQ9VzOOYaocUvd4
+         tkPYDHill4AUWQvlnVOvdWsKs0DvfM/S42BoiNdOhV7nRbLG1ANDvXCWnWavTzpFZ8Om
+         PSDz4pRInPJeuzgyzdcLMq1OoYzE3LJLFWMG0R+8ff3FjtN0EjoRKn7sP2g1xA9FhhLI
+         djhRurS+JZrqZlVZD14g1VwZ8QNyMOzuKaHbgh+D1i5oLmGtso4kvcxiwen0q4J9ngFm
+         hMKg==
+X-Gm-Message-State: AOAM532mnm0YmWf9Vx/gjITydiwtf92aTh25kDh066uiyYWTKVIdHABL
+        kuQ5Wm+9+wMwOGN/u/eAwc2X7KQcr77EjlvF
+X-Google-Smtp-Source: ABdhPJwC2wTfVVR8u5R/Lw33ammfmy4vuPocjr63UnBeehn8Nq4AYnbFGi9IriLCRavN4e/4FcNbvA==
+X-Received: by 2002:a17:90a:c592:: with SMTP id l18mr4400319pjt.212.1610119940149;
+        Fri, 08 Jan 2021 07:32:20 -0800 (PST)
+Received: from localhost.localdomain ([2405:201:600d:a089:9d25:60e2:6f4:74f8])
+        by smtp.googlemail.com with ESMTPSA id 129sm9048265pfw.86.2021.01.08.07.32.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 08 Jan 2021 07:32:19 -0800 (PST)
+From:   Aditya Srivastava <yashsri421@gmail.com>
+To:     linux-wireless@vger.kernel.org
+Cc:     pkshih@realtek.com, kvalo@codeaurora.org, davem@davemloft.net,
+        kuba@kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        lukas.bulwahn@gmail.com, yashsri421@gmail.com
+Subject: [PATCH] drivers: net: wireless: rtlwifi: fix bool comparison in expressions
+Date:   Fri,  8 Jan 2021 21:02:08 +0530
+Message-Id: <20210108153208.24065-1-yashsri421@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 06, 2021 at 03:50:43PM +0800, shuo.a.liu@intel.com wrote:
-> From: Shuo Liu <shuo.a.liu@intel.com>
-> 
-> The VM management interfaces expose several VM operations to ACRN
-> userspace via ioctls. For example, creating VM, starting VM, destroying
-> VM and so on.
-> 
-> The ACRN Hypervisor needs to exchange data with the ACRN userspace
-> during the VM operations. HSM provides VM operation ioctls to the ACRN
-> userspace and communicates with the ACRN Hypervisor for VM operations
-> via hypercalls.
-> 
-> HSM maintains a list of User VM. Each User VM will be bound to an
-> existing file descriptor of /dev/acrn_hsm. The User VM will be
-> destroyed when the file descriptor is closed.
-> 
-> Signed-off-by: Shuo Liu <shuo.a.liu@intel.com>
-> Reviewed-by: Zhi Wang <zhi.a.wang@intel.com>
-> Reviewed-by: Reinette Chatre <reinette.chatre@intel.com>
-> Cc: Zhi Wang <zhi.a.wang@intel.com>
-> Cc: Zhenyu Wang <zhenyuw@linux.intel.com>
-> Cc: Yu Wang <yu1.wang@intel.com>
-> Cc: Reinette Chatre <reinette.chatre@intel.com>
-> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> ---
->  .../userspace-api/ioctl/ioctl-number.rst      |  1 +
->  MAINTAINERS                                   |  1 +
->  drivers/virt/acrn/Makefile                    |  2 +-
->  drivers/virt/acrn/acrn_drv.h                  | 21 ++++-
->  drivers/virt/acrn/hsm.c                       | 76 +++++++++++++++++-
->  drivers/virt/acrn/hypercall.h                 | 78 +++++++++++++++++++
->  drivers/virt/acrn/vm.c                        | 68 ++++++++++++++++
->  include/uapi/linux/acrn.h                     | 55 +++++++++++++
->  8 files changed, 298 insertions(+), 4 deletions(-)
->  create mode 100644 drivers/virt/acrn/hypercall.h
->  create mode 100644 drivers/virt/acrn/vm.c
->  create mode 100644 include/uapi/linux/acrn.h
-> 
-> diff --git a/Documentation/userspace-api/ioctl/ioctl-number.rst b/Documentation/userspace-api/ioctl/ioctl-number.rst
-> index a4c75a28c839..0aec83c01368 100644
-> --- a/Documentation/userspace-api/ioctl/ioctl-number.rst
-> +++ b/Documentation/userspace-api/ioctl/ioctl-number.rst
-> @@ -319,6 +319,7 @@ Code  Seq#    Include File                                           Comments
->  0xA0  all    linux/sdp/sdp.h                                         Industrial Device Project
->                                                                       <mailto:kenji@bitgate.com>
->  0xA1  0      linux/vtpm_proxy.h                                      TPM Emulator Proxy Driver
-> +0xA2  all    uapi/linux/acrn.h                                       ACRN hypervisor
->  0xA3  80-8F                                                          Port ACL  in development:
->                                                                       <mailto:tlewis@mindspring.com>
->  0xA3  90-9F  linux/dtlk.h
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index f1c481c829cf..69f3cefed7e5 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -443,6 +443,7 @@ S:	Supported
->  W:	https://projectacrn.org
->  F:	Documentation/virt/acrn/
->  F:	drivers/virt/acrn/
-> +F:	include/uapi/linux/acrn.h
->  
->  AD1889 ALSA SOUND DRIVER
->  L:	linux-parisc@vger.kernel.org
-> diff --git a/drivers/virt/acrn/Makefile b/drivers/virt/acrn/Makefile
-> index 6920ed798aaf..cf8b4ed5e74e 100644
-> --- a/drivers/virt/acrn/Makefile
-> +++ b/drivers/virt/acrn/Makefile
-> @@ -1,3 +1,3 @@
->  # SPDX-License-Identifier: GPL-2.0
->  obj-$(CONFIG_ACRN_HSM)	:= acrn.o
-> -acrn-y := hsm.o
-> +acrn-y := hsm.o vm.o
-> diff --git a/drivers/virt/acrn/acrn_drv.h b/drivers/virt/acrn/acrn_drv.h
-> index 29eedd696327..e5aba86cad8c 100644
-> --- a/drivers/virt/acrn/acrn_drv.h
-> +++ b/drivers/virt/acrn/acrn_drv.h
-> @@ -3,16 +3,35 @@
->  #ifndef __ACRN_HSM_DRV_H
->  #define __ACRN_HSM_DRV_H
->  
-> +#include <linux/acrn.h>
-> +#include <linux/dev_printk.h>
-> +#include <linux/miscdevice.h>
->  #include <linux/types.h>
->  
-> +#include "hypercall.h"
-> +
-> +extern struct miscdevice acrn_dev;
-> +
->  #define ACRN_INVALID_VMID (0xffffU)
->  
-> +#define ACRN_VM_FLAG_DESTROYED		0U
->  /**
->   * struct acrn_vm - Properties of ACRN User VM.
-> + * @list:	Entry within global list of all VMs
->   * @vmid:	User VM ID
-> + * @vcpu_num:	Number of virtual CPUs in the VM
-> + * @flags:	Flags (ACRN_VM_FLAG_*) of the VM. This is VM flag management
-> + *		in HSM which is different from the &acrn_vm_creation.vm_flag.
->   */
->  struct acrn_vm {
-> -	u16	vmid;
-> +	struct list_head	list;
-> +	u16			vmid;
-> +	int			vcpu_num;
-> +	unsigned long		flags;
->  };
->  
-> +struct acrn_vm *acrn_vm_create(struct acrn_vm *vm,
-> +			       struct acrn_vm_creation *vm_param);
-> +int acrn_vm_destroy(struct acrn_vm *vm);
-> +
->  #endif /* __ACRN_HSM_DRV_H */
-> diff --git a/drivers/virt/acrn/hsm.c b/drivers/virt/acrn/hsm.c
-> index a8dcb250649d..5fd933471683 100644
-> --- a/drivers/virt/acrn/hsm.c
-> +++ b/drivers/virt/acrn/hsm.c
-> @@ -9,7 +9,6 @@
->   *	Yakui Zhao <yakui.zhao@intel.com>
->   */
->  
-> -#include <linux/miscdevice.h>
->  #include <linux/mm.h>
->  #include <linux/module.h>
->  #include <linux/slab.h>
-> @@ -38,10 +37,82 @@ static int acrn_dev_open(struct inode *inode, struct file *filp)
->  	return 0;
->  }
->  
-> +/*
-> + * HSM relies on hypercall layer of the ACRN hypervisor to do the
-> + * sanity check against the input parameters.
-> + */
-> +static long acrn_dev_ioctl(struct file *filp, unsigned int cmd,
-> +			   unsigned long ioctl_param)
-> +{
-> +	struct acrn_vm *vm = filp->private_data;
-> +	struct acrn_vm_creation *vm_param;
-> +	int ret = 0;
-> +
-> +	if (vm->vmid == ACRN_INVALID_VMID && cmd != ACRN_IOCTL_CREATE_VM) {
-> +		dev_dbg(acrn_dev.this_device,
-> +			"ioctl 0x%x: Invalid VM state!\n", cmd);
-> +		return -EINVAL;
-> +	}
-> +
-> +	switch (cmd) {
-> +	case ACRN_IOCTL_CREATE_VM:
-> +		vm_param = memdup_user((void __user *)ioctl_param,
-> +				       sizeof(struct acrn_vm_creation));
-> +		if (IS_ERR(vm_param))
-> +			return PTR_ERR(vm_param);
-> +
-> +		if ((vm_param->reserved0 | vm_param->reserved1) != 0)
-> +			return -EINVAL;
-> +
-> +		vm = acrn_vm_create(vm, vm_param);
-> +		if (!vm) {
-> +			ret = -EINVAL;
-> +			kfree(vm_param);
-> +			break;
-> +		}
-> +
-> +		if (copy_to_user((void __user *)ioctl_param, vm_param,
-> +				 sizeof(struct acrn_vm_creation))) {
-> +			acrn_vm_destroy(vm);
-> +			ret = -EFAULT;
-> +		}
-> +
-> +		kfree(vm_param);
-> +		break;
-> +	case ACRN_IOCTL_START_VM:
-> +		ret = hcall_start_vm(vm->vmid);
-> +		if (ret < 0)
-> +			dev_dbg(acrn_dev.this_device,
-> +				"Failed to start VM %u!\n", vm->vmid);
-> +		break;
-> +	case ACRN_IOCTL_PAUSE_VM:
-> +		ret = hcall_pause_vm(vm->vmid);
-> +		if (ret < 0)
-> +			dev_dbg(acrn_dev.this_device,
-> +				"Failed to pause VM %u!\n", vm->vmid);
-> +		break;
-> +	case ACRN_IOCTL_RESET_VM:
-> +		ret = hcall_reset_vm(vm->vmid);
-> +		if (ret < 0)
-> +			dev_dbg(acrn_dev.this_device,
-> +				"Failed to restart VM %u!\n", vm->vmid);
-> +		break;
-> +	case ACRN_IOCTL_DESTROY_VM:
-> +		ret = acrn_vm_destroy(vm);
-> +		break;
-> +	default:
-> +		dev_dbg(acrn_dev.this_device, "Unknown IOCTL 0x%x!\n", cmd);
-> +		ret = -ENOTTY;
-> +	}
-> +
-> +	return ret;
-> +}
-> +
->  static int acrn_dev_release(struct inode *inode, struct file *filp)
->  {
->  	struct acrn_vm *vm = filp->private_data;
->  
-> +	acrn_vm_destroy(vm);
->  	kfree(vm);
->  	return 0;
->  }
-> @@ -50,9 +121,10 @@ static const struct file_operations acrn_fops = {
->  	.owner		= THIS_MODULE,
->  	.open		= acrn_dev_open,
->  	.release	= acrn_dev_release,
-> +	.unlocked_ioctl = acrn_dev_ioctl,
->  };
->  
-> -static struct miscdevice acrn_dev = {
-> +struct miscdevice acrn_dev = {
->  	.minor	= MISC_DYNAMIC_MINOR,
->  	.name	= "acrn_hsm",
->  	.fops	= &acrn_fops,
-> diff --git a/drivers/virt/acrn/hypercall.h b/drivers/virt/acrn/hypercall.h
-> new file mode 100644
-> index 000000000000..426b66cadb1f
-> --- /dev/null
-> +++ b/drivers/virt/acrn/hypercall.h
-> @@ -0,0 +1,78 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +/*
-> + * ACRN HSM: hypercalls of ACRN Hypervisor
-> + */
-> +#ifndef __ACRN_HSM_HYPERCALL_H
-> +#define __ACRN_HSM_HYPERCALL_H
-> +#include <asm/acrn.h>
-> +
-> +/*
-> + * Hypercall IDs of the ACRN Hypervisor
-> + */
-> +#define _HC_ID(x, y) (((x) << 24) | (y))
-> +
-> +#define HC_ID 0x80UL
-> +
-> +#define HC_ID_VM_BASE			0x10UL
-> +#define HC_CREATE_VM			_HC_ID(HC_ID, HC_ID_VM_BASE + 0x00)
-> +#define HC_DESTROY_VM			_HC_ID(HC_ID, HC_ID_VM_BASE + 0x01)
-> +#define HC_START_VM			_HC_ID(HC_ID, HC_ID_VM_BASE + 0x02)
-> +#define HC_PAUSE_VM			_HC_ID(HC_ID, HC_ID_VM_BASE + 0x03)
-> +#define HC_RESET_VM			_HC_ID(HC_ID, HC_ID_VM_BASE + 0x05)
-> +
-> +/**
-> + * hcall_create_vm() - Create a User VM
-> + * @vminfo:	Service VM GPA of info of User VM creation
-> + *
-> + * Return: 0 on success, <0 on failure
-> + */
-> +static inline long hcall_create_vm(u64 vminfo)
-> +{
-> +	return acrn_hypercall1(HC_CREATE_VM, vminfo);
-> +}
-> +
-> +/**
-> + * hcall_start_vm() - Start a User VM
-> + * @vmid:	User VM ID
-> + *
-> + * Return: 0 on success, <0 on failure
-> + */
-> +static inline long hcall_start_vm(u64 vmid)
-> +{
-> +	return acrn_hypercall1(HC_START_VM, vmid);
-> +}
-> +
-> +/**
-> + * hcall_pause_vm() - Pause a User VM
-> + * @vmid:	User VM ID
-> + *
-> + * Return: 0 on success, <0 on failure
-> + */
-> +static inline long hcall_pause_vm(u64 vmid)
-> +{
-> +	return acrn_hypercall1(HC_PAUSE_VM, vmid);
-> +}
-> +
-> +/**
-> + * hcall_destroy_vm() - Destroy a User VM
-> + * @vmid:	User VM ID
-> + *
-> + * Return: 0 on success, <0 on failure
-> + */
-> +static inline long hcall_destroy_vm(u64 vmid)
-> +{
-> +	return acrn_hypercall1(HC_DESTROY_VM, vmid);
-> +}
-> +
-> +/**
-> + * hcall_reset_vm() - Reset a User VM
-> + * @vmid:	User VM ID
-> + *
-> + * Return: 0 on success, <0 on failure
-> + */
-> +static inline long hcall_reset_vm(u64 vmid)
-> +{
-> +	return acrn_hypercall1(HC_RESET_VM, vmid);
-> +}
-> +
-> +#endif /* __ACRN_HSM_HYPERCALL_H */
-> diff --git a/drivers/virt/acrn/vm.c b/drivers/virt/acrn/vm.c
-> new file mode 100644
-> index 000000000000..3f667ac8ac1e
-> --- /dev/null
-> +++ b/drivers/virt/acrn/vm.c
-> @@ -0,0 +1,68 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * ACRN_HSM: Virtual Machine management
-> + *
-> + * Copyright (C) 2020 Intel Corporation. All rights reserved.
-> + *
-> + * Authors:
-> + *	Jason Chen CJ <jason.cj.chen@intel.com>
-> + *	Yakui Zhao <yakui.zhao@intel.com>
-> + */
-> +#include <linux/io.h>
-> +#include <linux/mm.h>
-> +#include <linux/slab.h>
-> +
-> +#include "acrn_drv.h"
-> +
-> +/* List of VMs */
-> +static LIST_HEAD(acrn_vm_list);
-> +/* To protect acrn_vm_list */
-> +static DEFINE_MUTEX(acrn_vm_list_lock);
-> +
-> +struct acrn_vm *acrn_vm_create(struct acrn_vm *vm,
-> +			       struct acrn_vm_creation *vm_param)
-> +{
-> +	int ret;
-> +
-> +	ret = hcall_create_vm(virt_to_phys(vm_param));
-> +	if (ret < 0 || vm_param->vmid == ACRN_INVALID_VMID) {
-> +		dev_err(acrn_dev.this_device,
-> +			"Failed to create VM! Error: %d\n", ret);
-> +		return NULL;
-> +	}
-> +
-> +	vm->vmid = vm_param->vmid;
-> +	vm->vcpu_num = vm_param->vcpu_num;
-> +
-> +	mutex_lock(&acrn_vm_list_lock);
-> +	list_add(&vm->list, &acrn_vm_list);
-> +	mutex_unlock(&acrn_vm_list_lock);
-> +
-> +	dev_dbg(acrn_dev.this_device, "VM %u created.\n", vm->vmid);
-> +	return vm;
-> +}
-> +
-> +int acrn_vm_destroy(struct acrn_vm *vm)
-> +{
-> +	int ret;
-> +
-> +	if (vm->vmid == ACRN_INVALID_VMID ||
-> +	    test_and_set_bit(ACRN_VM_FLAG_DESTROYED, &vm->flags))
-> +		return 0;
-> +
-> +	/* Remove from global VM list */
-> +	mutex_lock(&acrn_vm_list_lock);
-> +	list_del_init(&vm->list);
-> +	mutex_unlock(&acrn_vm_list_lock);
-> +
-> +	ret = hcall_destroy_vm(vm->vmid);
-> +	if (ret < 0) {
-> +		dev_err(acrn_dev.this_device,
-> +			"Failed to destroy VM %u\n", vm->vmid);
-> +		clear_bit(ACRN_VM_FLAG_DESTROYED, &vm->flags);
-> +		return ret;
-> +	}
-> +	dev_dbg(acrn_dev.this_device, "VM %u destroyed.\n", vm->vmid);
-> +	vm->vmid = ACRN_INVALID_VMID;
-> +	return 0;
-> +}
-> diff --git a/include/uapi/linux/acrn.h b/include/uapi/linux/acrn.h
-> new file mode 100644
-> index 000000000000..e1608b8a50a2
-> --- /dev/null
-> +++ b/include/uapi/linux/acrn.h
-> @@ -0,0 +1,55 @@
-> +/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
-> +/*
-> + * Userspace interface for /dev/acrn_hsm - ACRN Hypervisor Service Module
-> + *
-> + * This file can be used by applications that need to communicate with the HSM
-> + * via the ioctl interface.
+There are certain conditional expressions in rtlwifi, where a boolean
+variable is compared with true/false, in forms such as (foo == true) or
+(false != bar), which does not comply with checkpatch.pl (CHECK:
+BOOL_COMPARISON), according to which boolean variables should be
+themselves used in the condition, rather than comparing with true/false
 
-No copyright notice on this file?  Intel is being brave :)
+E.g., in drivers/net/wireless/realtek/rtlwifi/ps.c,
+"if (find_p2p_ie == true)" can be replaced with "if (find_p2p_ie)"
 
+Replace all such expressions with the bool variables appropriately
 
-> + */
-> +
-> +#ifndef _UAPI_ACRN_H
-> +#define _UAPI_ACRN_H
-> +
-> +#include <linux/types.h>
-> +#include <linux/uuid.h>
-> +
-> +/**
-> + * struct acrn_vm_creation - Info to create a User VM
-> + * @vmid:		User VM ID returned from the hypervisor
-> + * @reserved0:		Reserved and must be 0
+Signed-off-by: Aditya Srivastava <yashsri421@gmail.com>
+---
+- The changes made are compile tested
+- Applies perfecly on next-20210108
 
-That's good, but you are not checking this.  Why not?
+ drivers/net/wireless/realtek/rtlwifi/ps.c                 | 4 ++--
+ drivers/net/wireless/realtek/rtlwifi/rtl8188ee/dm.c       | 8 ++++----
+ drivers/net/wireless/realtek/rtlwifi/rtl8188ee/hw.c       | 4 ++--
+ drivers/net/wireless/realtek/rtlwifi/rtl8192c/dm_common.c | 4 ++--
+ drivers/net/wireless/realtek/rtlwifi/rtl8192se/hw.c       | 4 ++--
+ drivers/net/wireless/realtek/rtlwifi/rtl8821ae/phy.c      | 8 ++++----
+ 6 files changed, 16 insertions(+), 16 deletions(-)
 
-> + * @vcpu_num:		Number of vCPU in the VM. Return from hypervisor.
-> + * @reserved1:		Reserved and must be 0
+diff --git a/drivers/net/wireless/realtek/rtlwifi/ps.c b/drivers/net/wireless/realtek/rtlwifi/ps.c
+index f99882255d48..629c03271bde 100644
+--- a/drivers/net/wireless/realtek/rtlwifi/ps.c
++++ b/drivers/net/wireless/realtek/rtlwifi/ps.c
+@@ -798,9 +798,9 @@ static void rtl_p2p_noa_ie(struct ieee80211_hw *hw, void *data,
+ 		ie += 3 + noa_len;
+ 	}
+ 
+-	if (find_p2p_ie == true) {
++	if (find_p2p_ie) {
+ 		if ((p2pinfo->p2p_ps_mode > P2P_PS_NONE) &&
+-		    (find_p2p_ps_ie == false))
++		    (!find_p2p_ps_ie))
+ 			rtl_p2p_ps_cmd(hw, P2P_PS_DISABLE);
+ 	}
+ }
+diff --git a/drivers/net/wireless/realtek/rtlwifi/rtl8188ee/dm.c b/drivers/net/wireless/realtek/rtlwifi/rtl8188ee/dm.c
+index d10c14c694da..6f61d6a10627 100644
+--- a/drivers/net/wireless/realtek/rtlwifi/rtl8188ee/dm.c
++++ b/drivers/net/wireless/realtek/rtlwifi/rtl8188ee/dm.c
+@@ -474,11 +474,11 @@ static void rtl88e_dm_dig(struct ieee80211_hw *hw)
+ 	u8 dm_dig_max, dm_dig_min;
+ 	u8 current_igi = dm_dig->cur_igvalue;
+ 
+-	if (rtlpriv->dm.dm_initialgain_enable == false)
++	if (!rtlpriv->dm.dm_initialgain_enable)
+ 		return;
+-	if (dm_dig->dig_enable_flag == false)
++	if (!dm_dig->dig_enable_flag)
+ 		return;
+-	if (mac->act_scanning == true)
++	if (mac->act_scanning)
+ 		return;
+ 
+ 	if (mac->link_state >= MAC80211_LINKED)
+@@ -1637,7 +1637,7 @@ static void rtl88e_dm_fast_ant_training(struct ieee80211_hw *hw)
+ 			}
+ 		}
+ 
+-		if (bpkt_filter_match == false) {
++		if (!bpkt_filter_match) {
+ 			rtl_set_bbreg(hw, DM_REG_TXAGC_A_1_MCS32_11N,
+ 				      BIT(16), 0);
+ 			rtl_set_bbreg(hw, DM_REG_IGI_A_11N, BIT(7), 0);
+diff --git a/drivers/net/wireless/realtek/rtlwifi/rtl8188ee/hw.c b/drivers/net/wireless/realtek/rtlwifi/rtl8188ee/hw.c
+index bd9160b166c5..861cc663ca93 100644
+--- a/drivers/net/wireless/realtek/rtlwifi/rtl8188ee/hw.c
++++ b/drivers/net/wireless/realtek/rtlwifi/rtl8188ee/hw.c
+@@ -1269,12 +1269,12 @@ void rtl88ee_set_check_bssid(struct ieee80211_hw *hw, bool check_bssid)
+ 	if (rtlpriv->psc.rfpwr_state != ERFON)
+ 		return;
+ 
+-	if (check_bssid == true) {
++	if (check_bssid) {
+ 		reg_rcr |= (RCR_CBSSID_DATA | RCR_CBSSID_BCN);
+ 		rtlpriv->cfg->ops->set_hw_reg(hw, HW_VAR_RCR,
+ 					      (u8 *)(&reg_rcr));
+ 		_rtl88ee_set_bcn_ctrl_reg(hw, 0, BIT(4));
+-	} else if (check_bssid == false) {
++	} else if (!check_bssid) {
+ 		reg_rcr &= (~(RCR_CBSSID_DATA | RCR_CBSSID_BCN));
+ 		_rtl88ee_set_bcn_ctrl_reg(hw, BIT(4), 0);
+ 		rtlpriv->cfg->ops->set_hw_reg(hw,
+diff --git a/drivers/net/wireless/realtek/rtlwifi/rtl8192c/dm_common.c b/drivers/net/wireless/realtek/rtlwifi/rtl8192c/dm_common.c
+index 265a1a336304..0b6a15c2e5cc 100644
+--- a/drivers/net/wireless/realtek/rtlwifi/rtl8192c/dm_common.c
++++ b/drivers/net/wireless/realtek/rtlwifi/rtl8192c/dm_common.c
+@@ -380,7 +380,7 @@ static void rtl92c_dm_initial_gain_multi_sta(struct ieee80211_hw *hw)
+ 		initialized = false;
+ 		dm_digtable->dig_ext_port_stage = DIG_EXT_PORT_STAGE_MAX;
+ 		return;
+-	} else if (initialized == false) {
++	} else if (!initialized) {
+ 		initialized = true;
+ 		dm_digtable->dig_ext_port_stage = DIG_EXT_PORT_STAGE_0;
+ 		dm_digtable->cur_igvalue = 0x20;
+@@ -509,7 +509,7 @@ static void rtl92c_dm_dig(struct ieee80211_hw *hw)
+ {
+ 	struct rtl_priv *rtlpriv = rtl_priv(hw);
+ 
+-	if (rtlpriv->dm.dm_initialgain_enable == false)
++	if (!rtlpriv->dm.dm_initialgain_enable)
+ 		return;
+ 	if (!(rtlpriv->dm.dm_flag & DYNAMIC_FUNC_DIG))
+ 		return;
+diff --git a/drivers/net/wireless/realtek/rtlwifi/rtl8192se/hw.c b/drivers/net/wireless/realtek/rtlwifi/rtl8192se/hw.c
+index 47fabce5c235..73a5d8a068fc 100644
+--- a/drivers/net/wireless/realtek/rtlwifi/rtl8192se/hw.c
++++ b/drivers/net/wireless/realtek/rtlwifi/rtl8192se/hw.c
+@@ -458,7 +458,7 @@ static u8 _rtl92se_halset_sysclk(struct ieee80211_hw *hw, u8 data)
+ 	tmpvalue = rtl_read_byte(rtlpriv, SYS_CLKR + 1);
+ 	bresult = ((tmpvalue & BIT(7)) == (data & BIT(7)));
+ 
+-	if ((data & (BIT(6) | BIT(7))) == false) {
++	if (!(data & (BIT(6) | BIT(7)))) {
+ 		waitcount = 100;
+ 		tmpvalue = 0;
+ 
+@@ -1268,7 +1268,7 @@ static u8 _rtl92s_set_sysclk(struct ieee80211_hw *hw, u8 data)
+ 	tmp = rtl_read_byte(rtlpriv, SYS_CLKR + 1);
+ 	result = ((tmp & BIT(7)) == (data & BIT(7)));
+ 
+-	if ((data & (BIT(6) | BIT(7))) == false) {
++	if (!(data & (BIT(6) | BIT(7)))) {
+ 		waitcnt = 100;
+ 		tmp = 0;
+ 
+diff --git a/drivers/net/wireless/realtek/rtlwifi/rtl8821ae/phy.c b/drivers/net/wireless/realtek/rtlwifi/rtl8821ae/phy.c
+index 372d6f8caf06..e214b9062cc1 100644
+--- a/drivers/net/wireless/realtek/rtlwifi/rtl8821ae/phy.c
++++ b/drivers/net/wireless/realtek/rtlwifi/rtl8821ae/phy.c
+@@ -1812,7 +1812,7 @@ static bool _rtl8821ae_phy_bb8821a_config_parafile(struct ieee80211_hw *hw)
+ 		return false;
+ 	}
+ 	_rtl8821ae_phy_init_tx_power_by_rate(hw);
+-	if (rtlefuse->autoload_failflag == false) {
++	if (!rtlefuse->autoload_failflag) {
+ 		rtstatus = _rtl8821ae_phy_config_bb_with_pgheaderfile(hw,
+ 						    BASEBAND_CONFIG_PHY_REG);
+ 	}
+@@ -3980,7 +3980,7 @@ static void _rtl8821ae_iqk_tx(struct ieee80211_hw *hw, enum radio_path path)
+ 				}
+ 			}
+ 
+-			if (tx0iqkok == false)
++			if (!tx0iqkok)
+ 				break;				/* TXK fail, Don't do RXK */
+ 
+ 			if (vdf_enable == 1) {
+@@ -4090,7 +4090,7 @@ static void _rtl8821ae_iqk_tx(struct ieee80211_hw *hw, enum radio_path path)
+ 						}
+ 					}
+ 
+-					if (tx0iqkok == false) {   /* If RX mode TXK fail, then take TXK Result */
++					if (!tx0iqkok) {   /* If RX mode TXK fail, then take TXK Result */
+ 						tx_x0_rxk[cal] = tx_x0[cal];
+ 						tx_y0_rxk[cal] = tx_y0[cal];
+ 						tx0iqkok = true;
+@@ -4249,7 +4249,7 @@ static void _rtl8821ae_iqk_tx(struct ieee80211_hw *hw, enum radio_path path)
+ 					}
+ 				}
+ 
+-				if (tx0iqkok == false) {   /* If RX mode TXK fail, then take TXK Result */
++				if (!tx0iqkok) {   /* If RX mode TXK fail, then take TXK Result */
+ 					tx_x0_rxk[cal] = tx_x0[cal];
+ 					tx_y0_rxk[cal] = tx_y0[cal];
+ 					tx0iqkok = true;
+-- 
+2.17.1
 
-Again, I failed to see a check, so this "must be" is not true.
-
-> + * @uuid:		UUID of the VM. Pass to hypervisor directly.
-> + * @vm_flag:		Flag of the VM creating. Pass to hypervisor directly.
-> + * @ioreq_buf:		Service VM GPA of I/O request buffer. Pass to
-> + *			hypervisor directly.
-> + * @cpu_affinity:	CPU affinity of the VM. Pass to hypervisor directly.
-
-What format is this affinity?
-
-> + */
-> +struct acrn_vm_creation {
-> +	__u16	vmid;
-> +	__u16	reserved0;
-> +	__u16	vcpu_num;
-> +	__u16	reserved1;
-> +	guid_t	uuid;
-> +	__u64	vm_flag;
-> +	__u64	ioreq_buf;
-> +	__u64	cpu_affinity;
-> +};
-
-As these values go outside the kernel, you need to specify the endian of
-them.  You do that for other ioctl structures, but not this one, why?
-
-thanks,
-
-greg k-h
