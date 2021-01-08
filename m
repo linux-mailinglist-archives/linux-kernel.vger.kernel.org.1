@@ -2,98 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 085602EF3B0
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 15:08:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1677E2EF3AB
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 15:06:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726866AbhAHOHi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Jan 2021 09:07:38 -0500
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:36238 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725793AbhAHOHh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Jan 2021 09:07:37 -0500
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 108E5o22091577;
-        Fri, 8 Jan 2021 08:05:50 -0600
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1610114750;
-        bh=7QUxdJubf6npHB6XXysEgpQV+ARRLTU9YbZ45EDawGs=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=Wx+e8zAn/GaP9GFC8ofyKGFEDS1CiHHIFKyNMQmTjWyh7OD73Vmc2BVwqK/Z3iX78
-         otxF3oxkoc7ZZI3Lz4+WomzE6vCpwyi5TOXkaIGU9VPRICE2JZv6Ci2rjvyOVBvqdN
-         9+y3tHs3yLZWJP3jtdiRlCWMm1473CaLeTTyPzzc=
-Received: from DFLE102.ent.ti.com (dfle102.ent.ti.com [10.64.6.23])
-        by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 108E5oh1058228
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 8 Jan 2021 08:05:50 -0600
-Received: from DFLE111.ent.ti.com (10.64.6.32) by DFLE102.ent.ti.com
- (10.64.6.23) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Fri, 8 Jan
- 2021 08:05:50 -0600
-Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE111.ent.ti.com
- (10.64.6.32) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Fri, 8 Jan 2021 08:05:50 -0600
-Received: from [10.24.69.20] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 108E5lEi108720;
-        Fri, 8 Jan 2021 08:05:48 -0600
-Subject: Re: [PATCH v2 2/4] arm64: dts: ti: k3: squelch warnings regarding no
- #address-cells for interrupt-controller
-To:     Nishanth Menon <nm@ti.com>, Sekhar Nori <nsekhar@ti.com>,
-        Device Tree Mailing List <devicetree@vger.kernel.org>,
-        Rob Herring <robh+dt@kernel.org>
-CC:     Grygorii Strashko <grygorii.strashko@ti.com>,
-        Linux ARM Mailing List <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, Faiz Abbas <faiz_abbas@ti.com>,
-        Andre Przywara <andre.przywara@arm.com>
-References: <20201117161942.38754-1-nsekhar@ti.com>
- <20201117161942.38754-3-nsekhar@ti.com>
- <ab9658ef-c8a7-155b-acb1-effa872132ca@ti.com>
- <20201118151259.kpag44djji4ssiup@eldest>
- <18e41dba-a3dd-308a-605e-63b76ca638e5@ti.com>
- <20201119132829.sr435jf6s4275q4i@boxlike>
- <313a9cd5-7411-4ae1-cde4-42a2c18d11e6@ti.com>
- <20201124012100.fq7w7bjxvewuhbt2@shirt>
- <8885dd79-061b-82e3-1aeb-a318f7d8256d@ti.com>
- <20201127142340.ei7o4zkg5trwcspy@chevron>
-From:   Lokesh Vutla <lokeshvutla@ti.com>
-Message-ID: <2c6df02e-e7a8-fa48-27bc-140bfa500360@ti.com>
-Date:   Fri, 8 Jan 2021 19:35:46 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        id S1726987AbhAHOFc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Jan 2021 09:05:32 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43064 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725926AbhAHOFb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 Jan 2021 09:05:31 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EFD6422A99;
+        Fri,  8 Jan 2021 14:04:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1610114690;
+        bh=dh5AcKItP/thzhpAhb2qn1EWSQN4tGOASKoRBeeHar4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=EnWx2tnClfbl5em5LtQDrvSywyJmJ3426Q7Zt6AMTMd98m/R5yPNZAA6rVfIIEL+Z
+         tBKoXiljEQOGiNdsnbrvJ7q/+3EuOzCXYtpABHzeArDwvY1iZBrTZI24EM862YvYV2
+         mZOZ72OCZ4M97F6gmTT1yUUGDo3beacATrDXd98o=
+Date:   Fri, 8 Jan 2021 15:06:07 +0100
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     zhenwei pi <pizhenwei@bytedance.com>
+Cc:     arnd@arndb.de, pbonzini@redhat.com, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 1/2] misc: pvpanic: introduce device capability
+Message-ID: <X/hmz0ZdKyvwtq5z@kroah.com>
+References: <20210108135223.2924507-1-pizhenwei@bytedance.com>
+ <20210108135223.2924507-2-pizhenwei@bytedance.com>
 MIME-Version: 1.0
-In-Reply-To: <20201127142340.ei7o4zkg5trwcspy@chevron>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210108135223.2924507-2-pizhenwei@bytedance.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rob, Grygorii,
+On Fri, Jan 08, 2021 at 09:52:22PM +0800, zhenwei pi wrote:
+> According to pvpanic spec:
+> https://git.qemu.org/?p=qemu.git;a=blob_plain;f=docs/specs/pvpanic.txt
+> 
+> The guest should determine pvpanic capability by RDPT, so initialize
+> capability during device probing. There is no need to register panic
+> notifier callback function if no events supported.
+> 
+> Before sending event to host side, check capability firstly.
+> 
+> Suggested by Greg KH, use sysfs to expose capability to user space.
+> 
+> Signed-off-by: zhenwei pi <pizhenwei@bytedance.com>
+> ---
+>  .../ABI/testing/sysfs-bus-pci-devices-pvpanic |  7 ++++
+>  drivers/misc/pvpanic.c                        | 41 ++++++++++++++++---
+>  2 files changed, 42 insertions(+), 6 deletions(-)
+>  create mode 100644 Documentation/ABI/testing/sysfs-bus-pci-devices-pvpanic
+> 
+> diff --git a/Documentation/ABI/testing/sysfs-bus-pci-devices-pvpanic b/Documentation/ABI/testing/sysfs-bus-pci-devices-pvpanic
+> new file mode 100644
+> index 000000000000..5daf1167b1c1
+> --- /dev/null
+> +++ b/Documentation/ABI/testing/sysfs-bus-pci-devices-pvpanic
+> @@ -0,0 +1,7 @@
+> +What:		/sys/devices/pci0000:00/*/QEMU0001:00/capability
+> +Date:		Jan 2021
+> +Contact:	zhenwei pi <pizhenwei@bytedance.com>
+> +Description:
+> +		Capabilities of pvpanic device which are supported by
+> +		QEMU.
+> +		Format: %s.
 
-On 27/11/20 7:53 pm, Nishanth Menon wrote:
-> On 09:46-20201124, Sekhar Nori wrote:
->> On 24/11/20 6:51 AM, Nishanth Menon wrote:
->>> On 09:45-20201123, Sekhar Nori wrote:
->>>>>> The main reason I commented - is hope to get some clarification from DT maintainers.
->>>>>> 90% of interrupt-controller nodes do not have #address-cells and I never seen in in GPIO nodes
->>>>>> (most often is present in PCI and GIC nodes).
->>>>>> and nobody seems fixing it. So, if we are going to move this direction it's reasonable to get clarification to be sure.
->>>>>>
->>>>>> And there is no "never" here - #address-cells always can be added if really required.
->>>>>
->>>>>
->>>>> OK - as a GPIO node, but as an interrupt-controller node, I was
->>>>> looking at [1] and wondering if that was the precedence.
->>>>>
->>>>> Yes, will be good to get direction from the DT maintainers on this
->>>>> topic.
->>>>
+This really can be 2 values in the string, shouldn't you list what the
+file can contain here so that people know what to expect?
 
-Is there a conclusion on this topic?  Without adding address-cells for interrupt
-controller we will be introducing new warning for all the new nodes we are adding.
+> diff --git a/drivers/misc/pvpanic.c b/drivers/misc/pvpanic.c
+> index 951b37da5e3c..e1023c7b8fb0 100644
+> --- a/drivers/misc/pvpanic.c
+> +++ b/drivers/misc/pvpanic.c
+> @@ -19,6 +19,27 @@
+>  #include <uapi/misc/pvpanic.h>
+>  
+>  static void __iomem *base;
+> +static unsigned int capability = PVPANIC_PANICKED | PVPANIC_CRASH_LOADED;
+> +
+> +static ssize_t capability_show(struct device *dev,
+> +			       struct device_attribute *attr, char *buf)
+> +{
+> +	return sprintf(buf, "%s%s\n",
+> +		capability & PVPANIC_PANICKED ? "PANICKED " : "",
+> +		capability & PVPANIC_CRASH_LOADED ? "CRASH_LOADED" : "");
+> +}
+> +static DEVICE_ATTR_RO(capability);
+> +
+> +static struct attribute *pvpanic_sysfs_entries[] = {
+> +	&dev_attr_capability.attr,
+> +	NULL
+> +};
+> +
+> +static const struct attribute_group pvpanic_attribute_group = {
+> +	.name = NULL,
+> +	.attrs = pvpanic_sysfs_entries,
+> +};
+> +
+>  
+>  MODULE_AUTHOR("Hu Tao <hutao@cn.fujitsu.com>");
+>  MODULE_DESCRIPTION("pvpanic device driver");
+> @@ -27,7 +48,8 @@ MODULE_LICENSE("GPL");
+>  static void
+>  pvpanic_send_event(unsigned int event)
+>  {
+> -	iowrite8(event, base);
+> +	if (event & capability)
+> +		iowrite8(event, base);
+>  }
+>  
+>  static int
+> @@ -62,17 +84,24 @@ static int pvpanic_mmio_probe(struct platform_device *pdev)
+>  	if (IS_ERR(base))
+>  		return PTR_ERR(base);
+>  
+> -	atomic_notifier_chain_register(&panic_notifier_list,
+> -				       &pvpanic_panic_nb);
+> +	/* initlize capability by RDPT */
+> +	capability &= ioread8(base);
+>  
+> -	return 0;
+> +	if (capability)
+> +		atomic_notifier_chain_register(&panic_notifier_list,
+> +					       &pvpanic_panic_nb);
+> +
+> +	return sysfs_create_group(&dev->kobj, &pvpanic_attribute_group);
 
-Thanks and regards,
-Lokesh
+You just raced with userspace and lost :(
+
+If you ever find yourself calling a sysfs_* function in a driver, that
+is a huge hint that you are not doing something correctly.  Please just
+set the default groups of your platform driver to this group, and the
+driver core will handle all of the file creation/removal automatically
+for you, in a race-free way.
+
+thanks,
+
+greg k-h
