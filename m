@@ -2,56 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EEAC52EFA55
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 22:22:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 19F072EFA5C
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 22:25:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729720AbhAHVWp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Jan 2021 16:22:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34676 "EHLO
+        id S1729696AbhAHVXf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Jan 2021 16:23:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34802 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729348AbhAHVWp (ORCPT
+        with ESMTP id S1727415AbhAHVXd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Jan 2021 16:22:45 -0500
-Received: from mail-ot1-x336.google.com (mail-ot1-x336.google.com [IPv6:2607:f8b0:4864:20::336])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D508C061574
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Jan 2021 13:22:04 -0800 (PST)
-Received: by mail-ot1-x336.google.com with SMTP id 11so11038057oty.9
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Jan 2021 13:22:04 -0800 (PST)
+        Fri, 8 Jan 2021 16:23:33 -0500
+Received: from mail-oi1-x235.google.com (mail-oi1-x235.google.com [IPv6:2607:f8b0:4864:20::235])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD4B8C061574
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Jan 2021 13:22:53 -0800 (PST)
+Received: by mail-oi1-x235.google.com with SMTP id q205so12870305oig.13
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Jan 2021 13:22:53 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc:content-transfer-encoding;
-        bh=eGoGEbM4Kuo4zDKdZ7Y5vJVMzPL1lbpTN9+vCSCS16Y=;
-        b=iwgkCp5hNYL1jru7mK9Ou7L5GkRKbtipDjwKYGPzk4a4qAwyUL2PrPsLNDLFOex9zc
-         gEKa0JBfxIgeE5Es8l4100o8QLpAqEkNvhZox/Z9jeii05W7PxPF4kZDCPQqxREICK4g
-         FkPWS/cj25HLzAPM+N8dn1MRs7ycXGpV0o5VEy/0y/3DT74/mLQYDXAFIb0a6cfUcfAC
-         pul8pVNAKx+OE0RFN7qkNnMmG6fuw+acWnP9Py5PNOcAcwI3f+SVgW4BKUIaCSYHJD8K
-         P69NB3K1QyIX/3nn6Iqpuim50W2B9TGem6u6yDsidSPa9dcpzF/b+goUjA9OBj7TodAW
-         OsMA==
+        bh=jtF04qvq/VTbhIf0eAtTSUNgk9E967muFMcFI2z2Cw0=;
+        b=tljPaZFs2W2BXoVm3Xs7iAmWJxMVOvITPidmLE68nl/DJTH/iUMLhy6FY1FnfpP6TY
+         DYI8oE9bXAA8BP+qU8Rg9GQrl6vpaK+ZjghdVDpz8i/z/zfe5mluyX/XJ6x86Nic6Dcw
+         ZFRed+I0t7J0exHQjxqSCRnEYQC9WU2kDe0RrnSorfAXaBgsfnArxtACVstfrwNtVcdI
+         j1Xy0okQMj8OQATomAAwiBR0Q2ASsa0GNQD2YAFsMyKE+L67xpV5TYxWJVowk1ZRi8Dk
+         qCHduc9oHDfcqFxicsjqEqoe8iXrgrV28ISGQ7Y2X0EZ6oTwALwT1Y/0lNbY/W2r5Ogg
+         bPcg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc:content-transfer-encoding;
-        bh=eGoGEbM4Kuo4zDKdZ7Y5vJVMzPL1lbpTN9+vCSCS16Y=;
-        b=C+GVczw4IsXIJVlZgGMu0e7/wlJsezZOivN3IEwFc99Jp7+95neM7M74fhbfAlBDMv
-         BeV+/88tmcknTw2Zd6BqL480zOiun+q+Bltvd/q5DPq67NVMUDVRZcgjkz1++3wDW1pG
-         rs1C4RvRiyeUiuLxq3OHeWCxFtT3ULWpqpo181y+Z0a2CxPZZGPQ6g7QEc1A7Upp8KCX
-         rz6WQLj7aXfJ6l++QRObiVCwks1aeiLZLgI5sgKt28Ogh7dxPuZCzrIbf34moVFAxvGA
-         dzW/2Q/Qq07Bm5uApxFki5WPi+jBfxbqxmlYtrox6uoOy3E96gdeMQTrmsfWyP45DoYe
-         GqWQ==
-X-Gm-Message-State: AOAM531K21sbV4ypgH5C3gLk5p2gQcfCG4ypAXyLaJJghWfFayZwIiq7
-        3msOyEnt0dE3Q9RbD2oU4UTHNCPPRXNxjl3txN9lNsr8
-X-Google-Smtp-Source: ABdhPJzNSx+QP7P1tQILmHjAf4YBlXWsFGbapGW8eMFnXAyLPIsTBSUZOrAvKt3jszCLUeWHSpuHYBsbvZakkhIO9rw=
-X-Received: by 2002:a05:6830:1d66:: with SMTP id l6mr3898666oti.23.1610140924362;
- Fri, 08 Jan 2021 13:22:04 -0800 (PST)
+        bh=jtF04qvq/VTbhIf0eAtTSUNgk9E967muFMcFI2z2Cw0=;
+        b=A4Fc6JUhQYZOQ4OANf9bkTl5/Z+aNjeQBbfwNaXK9s4LRPzC5Q67JtLQGzYCXF3D9x
+         28NCBTgpZmp8ahmNf317A5Up0pY7A4Mldecy5SYm8vUosz5Dikqdr/m2W9FiEKqajJ2p
+         AtOzXdLjGon2yWeyy4fuq3xDAxXkc+MEzIIndTYA/4qgVKi7adz6l0PELbVfDbOQqsFU
+         oGqNlpeFnXpL5C/NCRDmJU8ulsQmsC8vYacbkgv8T/fmeQEqBwYhE1tUPx4BlVPkkh64
+         ZQwueCHLC2Cc+d8n+LncL8vp8gIS9oY/e5b/ug7MzOU2OwFRQv9mdx4WHkWGCodtkRVz
+         alYQ==
+X-Gm-Message-State: AOAM530jcpufpmNiW/vc0/9q3X9bJ2X8nWQxOUMehPqR69QI8Pomo/R8
+        McBdjPZJrox6jq3esNM9jZxkNocWoGz9Ug10dZRhue+B
+X-Google-Smtp-Source: ABdhPJxxkc06PglmJmBDo80ggNi/XLoKHTp3G235Rou/iW9z9tfX3OBsARCyjKgT7gbYkPskt7IdEks+wbLApfnH9XE=
+X-Received: by 2002:a54:4083:: with SMTP id i3mr3500886oii.120.1610140973145;
+ Fri, 08 Jan 2021 13:22:53 -0800 (PST)
 MIME-Version: 1.0
-References: <20210108201457.3078600-1-lee.jones@linaro.org> <20210108201457.3078600-35-lee.jones@linaro.org>
-In-Reply-To: <20210108201457.3078600-35-lee.jones@linaro.org>
+References: <20210108201457.3078600-1-lee.jones@linaro.org> <20210108201457.3078600-36-lee.jones@linaro.org>
+In-Reply-To: <20210108201457.3078600-36-lee.jones@linaro.org>
 From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Fri, 8 Jan 2021 16:21:53 -0500
-Message-ID: <CADnq5_MkQRnX+KJkhmJ2-07iXG8TcLS9nq9jpqmRFpm5D=ydgA@mail.gmail.com>
-Subject: Re: [PATCH 34/40] drm/amd/display/dc/bios/bios_parser: Fix
- misspelling of function parameter
+Date:   Fri, 8 Jan 2021 16:22:42 -0500
+Message-ID: <CADnq5_MmsvvxTMTWZn0EPeFn54=JBq3q1UbbPC91VGfbXQTFGQ@mail.gmail.com>
+Subject: Re: [PATCH 35/40] drm/amd/display/dc/bios/command_table: Remove
+ unused variable and associated comment
 To:     Lee Jones <lee.jones@linaro.org>
 Cc:     Leo Li <sunpeng.li@amd.com>, LKML <linux-kernel@vger.kernel.org>,
         amd-gfx list <amd-gfx@lists.freedesktop.org>,
@@ -70,11 +70,11 @@ On Fri, Jan 8, 2021 at 3:16 PM Lee Jones <lee.jones@linaro.org> wrote:
 >
 > Fixes the following W=3D1 kernel build warning(s):
 >
->  drivers/gpu/drm/amd/amdgpu/../display/dc/bios/bios_parser.c:997: warning=
-: Function parameter or member 'ss_info' not described in 'get_ss_info_from=
-_tbl'
->  drivers/gpu/drm/amd/amdgpu/../display/dc/bios/bios_parser.c:997: warning=
-: Excess function parameter 'ssinfo' description in 'get_ss_info_from_tbl'
+>  drivers/gpu/drm/amd/amdgpu/../display/dc/bios/command_table.c: In functi=
+on =E2=80=98adjust_display_pll_v2=E2=80=99:
+>  drivers/gpu/drm/amd/amdgpu/../display/dc/bios/command_table.c:1462:11: w=
+arning: unused variable =E2=80=98pixel_clock_10KHz_in=E2=80=99 [-Wunused-va=
+riable]
 >
 > Cc: Harry Wentland <harry.wentland@amd.com>
 > Cc: Leo Li <sunpeng.li@amd.com>
@@ -87,32 +87,33 @@ _tbl'
 > Cc: dri-devel@lists.freedesktop.org
 > Signed-off-by: Lee Jones <lee.jones@linaro.org>
 
-Applied.  Thanks!
+See my comment on the other patch for this function.
 
 Alex
 
-
 > ---
->  drivers/gpu/drm/amd/display/dc/bios/bios_parser.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
+>  drivers/gpu/drm/amd/display/dc/bios/command_table.c | 4 ----
+>  1 file changed, 4 deletions(-)
 >
-> diff --git a/drivers/gpu/drm/amd/display/dc/bios/bios_parser.c b/drivers/=
-gpu/drm/amd/display/dc/bios/bios_parser.c
-> index d2654c50b0b20..c67d21a5ee52f 100644
-> --- a/drivers/gpu/drm/amd/display/dc/bios/bios_parser.c
-> +++ b/drivers/gpu/drm/amd/display/dc/bios/bios_parser.c
-> @@ -987,8 +987,8 @@ static enum bp_result get_ss_info_from_internal_ss_in=
-fo_tbl_V2_1(
->   *
->   * @bp:      pointer to the BIOS parser
->   * @id:      spread sprectrum info index
-> - * @ssinfo:  sprectrum information structure,
-> - * return::  BIOS parser result code
-> + * @ss_info: sprectrum information structure,
-> + * return:   BIOS parser result code
->   */
->  static enum bp_result get_ss_info_from_tbl(
->         struct bios_parser *bp,
+> diff --git a/drivers/gpu/drm/amd/display/dc/bios/command_table.c b/driver=
+s/gpu/drm/amd/display/dc/bios/command_table.c
+> index dd893a1176979..66fe1d1810789 100644
+> --- a/drivers/gpu/drm/amd/display/dc/bios/command_table.c
+> +++ b/drivers/gpu/drm/amd/display/dc/bios/command_table.c
+> @@ -1457,10 +1457,6 @@ static enum bp_result adjust_display_pll_v2(
+>  {
+>         enum bp_result result =3D BP_RESULT_FAILURE;
+>
+> -       /* We need to convert from KHz units into 10KHz units and then co=
+nvert
+> -        * output pixel clock back 10KHz-->KHz */
+> -       uint32_t pixel_clock_10KHz_in =3D bp_params->pixel_clock / 10;
+> -
+>         bp->cmd_helper->encoder_id_to_atom(
+>                 dal_graphics_object_id_get_encoder_id(bp_params->encoder_=
+object_id));
+>         bp->cmd_helper->encoder_mode_bp_to_atom(bp_params->signal_type, f=
+alse);
 > --
 > 2.25.1
 >
