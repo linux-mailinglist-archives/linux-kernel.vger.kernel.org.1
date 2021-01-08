@@ -2,162 +2,222 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B8AEE2EF856
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 20:44:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 42EE42EF853
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 20:44:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729039AbhAHTmh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Jan 2021 14:42:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47208 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727102AbhAHTmg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S1729026AbhAHTmg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Fri, 8 Jan 2021 14:42:36 -0500
-Received: from mail-io1-xd36.google.com (mail-io1-xd36.google.com [IPv6:2607:f8b0:4864:20::d36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02432C061381;
-        Fri,  8 Jan 2021 11:41:56 -0800 (PST)
-Received: by mail-io1-xd36.google.com with SMTP id t8so10881709iov.8;
-        Fri, 08 Jan 2021 11:41:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=zSmK740YSdua1TBiaZGc3pU7A4XjUf+hqO+Eu7pIgDI=;
-        b=LW6/Fu2oT4YXtfLepXFJm6iCV4xwMhI8o0+4ymU9z0ZZhfz0bHubL5e/n0vVs9C1DD
-         OfqvuNTha/IcdyfYhNfDvqYmqp3n/nZhU8nJ/+fDuaqCDIeTiby1x8eZf2wwXGFQr0p5
-         S6oNr3FTpIETmHLW+AI56KVw+ZuNKFafn3+YYZs88E5s0281PKCBQ9B8AtzSkoX7lYPn
-         PTnfRhFqMHqXYi1UZ0fw38Fs8Rda9m2GwSkmD92yI2xQWz9m4io0dQlsuHKfY6HqfTps
-         ZetEqqVa/j94gAns0YWmalgVswJErJaqZ1fX92ES0o+PJClXex8JBYGrkYwdUiAGBItN
-         tUcg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=zSmK740YSdua1TBiaZGc3pU7A4XjUf+hqO+Eu7pIgDI=;
-        b=awma8rxQWEy46NL4IuEzt+c5O9N590ZA9nOHRRBSDvCA6iYuLM15VGSLdK/QmKj/yP
-         3gKzyazhzLkGaZOURIEr2WNv+T06QL6Qouz8JLkw3A3HH+wC36qQOz/+2hj8tz0b80h4
-         PscU2Qujoi4IhSA7EHNUC5T3t1M/u5uU253ObT7wt13pUIbGvjSQS8ZKQl/h/n2e8NDC
-         jnYzS6o4xHVWCgjdn8kvw878hizfohO61RAioZgxBOBs+kfV5XJk/WjQ0ei05z85lcz0
-         +glgjClUMRT3FBzgU6GYyLqtqzd3YVtIit5Qu4jfLbs5boRqKQCgGyoPWlQDxLQIL7RR
-         9vXQ==
-X-Gm-Message-State: AOAM531XAzEqbgaQSIHVxZIcyVGo8Vfy5c/ViA877PNhPPL8VtcNDkjG
-        iGgcWSfYDVBQl5h2obpOM+5lXKYWBtabNJRBr00=
-X-Google-Smtp-Source: ABdhPJwq1Rd1SbLe6o1CWs/FYa17fyAKdBlHca8n7J8SjDNBccWpz4vD4mILV6JXy3UkMSr+b1ePjmNtmW5XC/q8MZ0=
-X-Received: by 2002:a05:6638:296:: with SMTP id c22mr4786311jaq.65.1610134915220;
- Fri, 08 Jan 2021 11:41:55 -0800 (PST)
+Received: from mx2.suse.de ([195.135.220.15]:34282 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727102AbhAHTmf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 Jan 2021 14:42:35 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id CF86CADA2;
+        Fri,  8 Jan 2021 19:41:52 +0000 (UTC)
+To:     paulmck@kernel.org
+Cc:     linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
+        linux-mm@kvack.org, cl@linux.com, penberg@kernel.org,
+        rientjes@google.com, iamjoonsoo.kim@lge.com,
+        akpm@linux-foundation.org, ming.lei@redhat.com, axboe@kernel.dk,
+        kernel-team@fb.com
+References: <20210106011603.GA13180@paulmck-ThinkPad-P72>
+ <20210106011750.13709-1-paulmck@kernel.org>
+ <39e1bbd5-2766-d709-d932-bf66d11e244f@suse.cz>
+ <20210108190142.GU2743@paulmck-ThinkPad-P72>
+From:   Vlastimil Babka <vbabka@suse.cz>
+Subject: Re: [PATCH mm,percpu_ref,rcu 1/6] mm: Add mem_dump_obj() to print
+ source of memory block
+Message-ID: <15bbf8db-069b-50f7-051c-449a541ffbe5@suse.cz>
+Date:   Fri, 8 Jan 2021 20:41:49 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
-References: <20201230084338.19410-1-tony@atomide.com> <CAHCN7xJmwcUOpoza-LNxTAbRNb9ToERnBNuKboP86DSBdtS61A@mail.gmail.com>
- <7C9106E0-FC75-4056-AD5F-16CCFA9C24E5@goldelico.com> <X/gIO9Ta3JPDaeV3@atomide.com>
- <CAHCN7xKzeqabm5YJbNS_jcENnhxdU9tAuhWZv81xJA7VbaW6NA@mail.gmail.com> <CAHCN7xJNk=2_Kx4XS3asxcxVGZXaTZgmCkpoFGFHdOQuM3aKCQ@mail.gmail.com>
-In-Reply-To: <CAHCN7xJNk=2_Kx4XS3asxcxVGZXaTZgmCkpoFGFHdOQuM3aKCQ@mail.gmail.com>
-From:   Adam Ford <aford173@gmail.com>
-Date:   Fri, 8 Jan 2021 13:41:44 -0600
-Message-ID: <CAHCN7xJkA1yi_AM-VjmsVC-cRCF4HX7byP2K1vUHAmDuiGAH_A@mail.gmail.com>
-Subject: Re: [PATCH 1/3] thermal: ti-soc-thermal: Fix stuck sensor with
- continuous mode for 4430
-To:     Tony Lindgren <tony@atomide.com>
-Cc:     "H. Nikolaus Schaller" <hns@goldelico.com>,
-        Amit Kucheria <amitk@kernel.org>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Eduardo Valentin <edubezval@gmail.com>,
-        Keerthy <j-keerthy@ti.com>, linux-pm@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux-OMAP <linux-omap@vger.kernel.org>,
-        Carl Philipp Klemm <philipp@uvos.xyz>,
-        Merlijn Wajer <merlijn@wizzup.org>,
-        Pavel Machek <pavel@ucw.cz>,
-        Peter Ujfalusi <peter.ujfalusi@gmail.com>,
-        Sebastian Reichel <sre@kernel.org>,
-        Andreas Kemnade <andreas@kemnade.info>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210108190142.GU2743@paulmck-ThinkPad-P72>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 8, 2021 at 12:31 PM Adam Ford <aford173@gmail.com> wrote:
->
-> On Fri, Jan 8, 2021 at 7:45 AM Adam Ford <aford173@gmail.com> wrote:
-> >
-> > On Fri, Jan 8, 2021 at 1:22 AM Tony Lindgren <tony@atomide.com> wrote:
-> > >
-> > > * H. Nikolaus Schaller <hns@goldelico.com> [201230 13:29]:
-> > > > > Am 30.12.2020 um 13:55 schrieb Adam Ford <aford173@gmail.com>:
-> > > > > On Wed, Dec 30, 2020 at 2:43 AM Tony Lindgren <tony@atomide.com> wrote:
-> > > > >>
-> > > > >> At least for 4430, trying to use the single conversion mode eventually
-> > > > >> hangs the thermal sensor. This can be quite easily seen with errors:
-> > > > >>
-> > > > >> thermal thermal_zone0: failed to read out thermal zone (-5)
-> > > ...
-> > >
-> > > > > I don't have an OMAP4, but if you want, I can test a DM3730.
-> > > >
-> > > > Indeed I remember a similar discussion from the DM3730 [1]. temp values were
-> > > > always those from the last measurement. E.g. the first one was done
-> > > > during (cold) boot and the first request after 10 minutes did show a
-> > > > quite cold system... The next one did show a hot system independent
-> > > > of what had been between (suspend or high activity).
-> > > >
-> > > > It seems as if it was even reproducible with a very old kernel on a BeagleBoard.
-> > > > So it is quite fundamental.
-> > > >
-> > > > We tried to fix it but did not come to a solution [2]. So we opened an issue
-> > > > in our tracker [3] and decided to stay with continuous conversion although this
-> > > > raises idle mode processor load.
-> > >
-> > > Hmm so maybe eocz high always times out in single mode since it also
-> > > triggers at least on dra7?
-> > >
-> > > Yes it would be great if you guys can the $subject patch a try at
-> > > least on your omap36xx and omap5 boards and see if you see eocz
-> > > time out warnings in dmesg.
+On 1/8/21 8:01 PM, Paul E. McKenney wrote:
+> 
+> Andrew pushed this to an upstream maintainer, but I have not seen these
+> patches appear anywhere.  So if that upstream maintainer was Linus, I can
+> send a follow-up patch once we converge.  If the upstream maintainer was
+> in fact me, I can of course update the commit directly.  If the upstream
+> maintainer was someone else, please let me know who it is.  ;-)
+> 
+> (Linus does not appear to have pushed anything out since before Andrew's
+> email, hence my uncertainty.)
 
+I've wondered about the mm-commits messages too, and concluded that the most probable explanation is that Andrew tried to add your series to mmotm and then tried mmotm merge to linux-next and found out the series is already there via your rcu tree :)
+ 
+>> > --- a/mm/slab.c
+>> > +++ b/mm/slab.c
+>> > @@ -3635,6 +3635,26 @@ void *__kmalloc_node_track_caller(size_t size, gfp_t flags,
+>> >  EXPORT_SYMBOL(__kmalloc_node_track_caller);
+>> >  #endif /* CONFIG_NUMA */
+>> >  
+>> > +void kmem_obj_info(struct kmem_obj_info *kpp, void *object, struct page *page)
+>> > +{
+>> > +	struct kmem_cache *cachep;
+>> > +	unsigned int objnr;
+>> > +	void *objp;
+>> > +
+>> > +	kpp->kp_ptr = object;
+>> > +	kpp->kp_page = page;
+>> > +	cachep = page->slab_cache;
+>> > +	kpp->kp_slab_cache = cachep;
+>> > +	objp = object - obj_offset(cachep);
+>> > +	kpp->kp_data_offset = obj_offset(cachep);
+>> > +	page = virt_to_head_page(objp);
+>> 
+>> Hm when can this page be different from the "page" we got as function parameter?
+>> I guess only if "object" was so close to the beginning of page that "object -
+>> obj_offset(cachep)" underflowed it. So either "object" pointed to the
+>> padding/redzone, or even below page->s_mem. Both situations sounds like we
+>> should handle them differently than continuing with an unrelated page that's
+>> below our slab page?
+> 
+> I examined other code to obtain this.  I have been assuming that the
+> point was to be able to handle multipage slabs, but I freely confess to
+> having no idea.  But I am reluctant to change this sequence unless the
+> other code translating from pointer to in-slab object is also changed.
 
-I do see chatter.
+OK, I will check the other code.
 
-[   15.531005] ti-soc-thermal 48002524.bandgap: eocz timed out waiting low
-[   16.571075] ti-soc-thermal 48002524.bandgap: eocz timed out waiting low
-[   17.610961] ti-soc-thermal 48002524.bandgap: eocz timed out waiting low
+>> > +	objnr = obj_to_index(cachep, page, objp);
+>> 
+>> Related, this will return bogus value for objp below page->s_mem.
+>> And if our "object" pointer pointed beyond last valid object, this will give us
+>> too large index.
+>> 
+>> 
+>> > +	objp = index_to_obj(cachep, page, objnr);
+>> 
+>> Too large index can cause dbg_userword to be beyond our page.
+>> In SLUB version you have the WARN_ON_ONCE that catches such invalid pointers
+>> (before first valid object or after last valid object) and skips getting the
+>> backtrace for those, so analogical thing should probably be done here?
+> 
+> Like this, just before the "objp =" statement?
+> 
+> 	WARN_ON_ONCE(objnr >= cachep->num);
 
-and it repeats quite often.
+Yeah, that should do the trick to prevent accessing garbage dbg_userword.
 
-I would say this patch series would cause a regression on the DM3730.
+But I wrote the comments about SLAB first and only in the SLUB part I realized
+about the larger picture. So now I would consider something like below, which
+should find the closest valid object index and resulting pointer offset in
+kmem_dump_obj() might become negative. Pointers to padding, below page->s_mem or
+beyond last object just become respectively large negative or positive pointer
+offsets and we probably don't need to warn for them specially unless we warn
+also for all other pointers that are not within the "data area" of the object.
 
-adam
+void kmem_obj_info(struct kmem_obj_info *kpp, void *object, struct page *page)
+{
+        struct kmem_cache *cachep;
+        unsigned int objnr;
+        void *objp;
 
+        kpp->kp_ptr = object;
+        kpp->kp_page = page;
+        cachep = page->slab_cache;
+        kpp->kp_slab_cache = cachep;
+        kpp->kp_data_offset = obj_offset(cachep);
+	if (object < page->s_mem)
+		objnr = 0;
+	else
+        	objnr = obj_to_index(cachep, page, object);
+	if (objnr >= cachep->num)
+		objnr = cachep->num - 1;
+        objp = index_to_obj(cachep, page, objnr);
+        kpp->kp_objp = objp;
+        if (DEBUG && cachep->flags & SLAB_STORE_USER)
+                kpp->kp_ret = *dbg_userword(cachep, objp);
+}
 
-> >
-> > I should be able to try it on the dm3730 logicpd-torpedo kit this weekend.
->
-> I am going to be a bit delayed testing this.  I cannot boot omap2plus
-> using Linux version 5.11.0-rc2.
->
-> [    2.666748] nand: device found, Manufacturer ID: 0x2c, Chip ID: 0xbc
-> [    2.673309] nand: Micron MT29F4G16ABBDA3W
-> [    2.677368] nand: 512 MiB, SLC, erase size: 128 KiB, page size:
-> 2048, OOB size: 64
-> [    2.685119] nand: using OMAP_ECC_BCH8_CODE_HW_DETECTION_SW
-> [    2.693237] Invalid ECC layout
-> [    2.696350] omap2-nand 30000000.nand: unable to use BCH library
-> [    2.702575] omap2-nand: probe of 30000000.nand failed with error -22
-> [    2.716094] 8<--- cut here ---
-> [    2.719207] Unable to handle kernel NULL pointer dereference at
-> virtual address 00000018
-> [    2.727600] pgd = (ptrval)
-> ...
-> [    3.050933] ---[ end trace 59640c7399a80a07 ]---
-> [    3.055603] Kernel panic - not syncing: Attempted to kill init!
-> exitcode=0x0000000b
-> [    3.063323] ---[ end Kernel panic - not syncing: Attempted to kill
-> init! exitcode=0x0000000b ]---
->
-> Once I get past this, I'll try to test the thermal stuff.
->
-> adam
->
-> >
-> > adam
-> > >
-> > > Regards,
-> > >
-> > > Tony
+ 
+>> > +	kpp->kp_objp = objp;
+>> > +	if (DEBUG && cachep->flags & SLAB_STORE_USER)
+>> > +		kpp->kp_ret = *dbg_userword(cachep, objp);
+>> > +}
+>> > +
+>> > diff --git a/mm/slub.c b/mm/slub.c
+>> > index 0c8b43a..3c1a843 100644
+>> > --- a/mm/slub.c
+>> > +++ b/mm/slub.c
+>> > @@ -3919,6 +3919,46 @@ int __kmem_cache_shutdown(struct kmem_cache *s)
+>> >  	return 0;
+>> >  }
+>> >  
+>> > +void kmem_obj_info(struct kmem_obj_info *kpp, void *object, struct page *page)
+>> > +{
+>> > +	void *base;
+>> > +	int __maybe_unused i;
+>> > +	unsigned int objnr;
+>> > +	void *objp;
+>> > +	void *objp0;
+>> > +	struct kmem_cache *s = page->slab_cache;
+>> > +	struct track __maybe_unused *trackp;
+>> > +
+>> > +	kpp->kp_ptr = object;
+>> > +	kpp->kp_page = page;
+>> > +	kpp->kp_slab_cache = s;
+>> > +	base = page_address(page);
+>> > +	objp0 = kasan_reset_tag(object);
+>> > +#ifdef CONFIG_SLUB_DEBUG
+>> > +	objp = restore_red_left(s, objp0);
+>> > +#else
+>> > +	objp = objp0;
+>> > +#endif
+>> > +	objnr = obj_to_index(s, page, objp);
+>> 
+>> It would be safer to use objp0 instead of objp here I think. In case "object"
+>> was pointer to the first object's left red zone, then we would not have "objp"
+>> underflow "base" and get a bogus objnr. The WARN_ON_ONCE below could then be
+>> less paranoid? Basically just the "objp >= base + page->objects * s->size"
+>> should be possible if "object" points beyond the last valid object. But
+>> otherwise we should get valid index and thus valid "objp = base + s->size *
+>> objnr;" below, and "objp < base" and "(objp - base) % s->size)" should be
+>> impossible?
+>> 
+>> Hmm but since it would then be possible to get a negative pointer offset (into
+>> the left padding/redzone), kmem_dump_obj() should calculate and print it as signed?
+>> But it's not obvious if a pointer to left red zone is a pointer that was an
+>> overflow of object N-1 or underflow of object N, and which one to report (unless
+>> it's the very first object). AFAICS your current code will report all as
+>> overflows of object N-1, which is problematic with N=0 (as described above) so
+>> changing it to report underflows of object N would make more sense?
+> 
+> Doesn't the "WARN_ON_ONCE(objp < base" further down report underflows?
+
+I don't think it could be possible, could you describe the conditions?
+
+> Or am I missing something subtle here?
+
+A version analogical to the SLAB one above could AFAICS look like this:
+
+...
+        kpp->kp_ptr = object;
+        kpp->kp_page = page;
+        kpp->kp_slab_cache = s;
+        base = page_address(page);
+        objp0 = kasan_reset_tag(object);
+#ifdef CONFIG_SLUB_DEBUG
+        objp = restore_red_left(s, objp0);
+#else
+        objp = objp0;
+#endif
+        kpp->kp_data_offset = (unsigned long)((char *)objp0 - (char *)objp);
+        objnr = obj_to_index(s, page, objp0); // unlike SLAB this can't underflow
+	if (objnr >= page->objects)
+		objnr = page->objects - 1;
+        objp = base + s->size * objnr;
+        kpp->kp_objp = objp;
+	// no WARN_ON_ONCE() needed, objp has to be valid, we just might have negative
+	// offset to it, or a larger than s->size positive offset
+#ifdef CONFIG_SLUB_DEBUG
+	// etc, no changes below
