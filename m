@@ -2,92 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 165EF2EFB08
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 23:21:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D28932EFB0E
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 23:24:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725916AbhAHWVU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Jan 2021 17:21:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43710 "EHLO
+        id S1726222AbhAHWWd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Jan 2021 17:22:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43902 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725812AbhAHWVU (ORCPT
+        with ESMTP id S1725941AbhAHWWc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Jan 2021 17:21:20 -0500
-Received: from mail-ua1-x935.google.com (mail-ua1-x935.google.com [IPv6:2607:f8b0:4864:20::935])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B595BC061757
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Jan 2021 14:20:39 -0800 (PST)
-Received: by mail-ua1-x935.google.com with SMTP id 73so3930981uac.8
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Jan 2021 14:20:39 -0800 (PST)
+        Fri, 8 Jan 2021 17:22:32 -0500
+Received: from mail-wm1-x34a.google.com (mail-wm1-x34a.google.com [IPv6:2a00:1450:4864:20::34a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 874B8C061786
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Jan 2021 14:21:52 -0800 (PST)
+Received: by mail-wm1-x34a.google.com with SMTP id w204so3753769wmb.1
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Jan 2021 14:21:52 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=+28rernzc3C0mjkmB3xMJvm5PiyDyFYwes4MhAeT590=;
-        b=miY99HtjMOqHsXPkemocimuS3wuxQX+VapsXPQMV4KxnP8YjfU5ngb/avj8ZdrErJd
-         5ECUo9eLuD54ehNvBzHxwTqRQ9/GABakXuA81do99rbJqsKVLS8w6hBIGgz75eeVap9B
-         tdylz0rZ0+h7lHAFNkDFeH6OutxCiexkTkXPg=
+        d=google.com; s=20161025;
+        h=sender:date:message-id:mime-version:subject:from:to:cc;
+        bh=0mTBQDZkuLh9ZxzNAwIh5jWhJFjVYDUnsJ+nm65pzXQ=;
+        b=CM6XbtNWOwi9ZW4bM5s0kwhLP2WttFHKVCIGezPIcmAc7Bb0hVk5rYZ/6oqmnoXHbF
+         08BwkpTancjwvNQtIGyT+1s3GFLu1QGMSKiRTEvZTNGyet/WqsbmD/dXCwiUvC/3MmT9
+         fkq+CM3ZPGWbqI4fLPSbUIKDFSj4D0W5bWFiCpD4EAieunRDwNqd/WR37f5fOXzHC1g2
+         Cc/XEsz/hsqbRt4c5znEZO4JAIwbjEtwk16Fc9XfOKZe6kEJln6b4Td0/N4cLf57qjKs
+         xTtjRSldik3uqciXvDwEysyHLG8YHyknE2W1zoz6nNIxehkYcw7u6iZa+ZYDmmuEx3Wi
+         cb6Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=+28rernzc3C0mjkmB3xMJvm5PiyDyFYwes4MhAeT590=;
-        b=mvPwVHE1HAOEWbpAhBdjY2PRu8XKz+cRvdP6qxw0Zru6qcU/4lhZYcpn8GA/KWXeVo
-         9cjvTmy6lN8r3+ViUDaEr4vKVgxle1npTkFnoH0k0BKvlaOHBKvor4A9EXudBmxpxSi+
-         aB2Kj8IrXCKD3wHRzG7XdiFFwYK1/D4v30nl1KP0BLEEqEF7xsdaTFeEyBkR7vXMZgxC
-         GvRBeSFRTcyiAzcFvNNp4a7s5SmNjmcjqXhF/KNF1NUULC8/pyETByzBZ6YpyJCdK9Bc
-         Snk7tqMSHzJ028dGGSsXRcDPX+pri9g4ajVL7d93IbZtAL6ivq/0hsmVu8946G7XyUps
-         KUZw==
-X-Gm-Message-State: AOAM5315l7gQwcXDmEYAR0SMKm6ymv3C8wvLh2iyIFnbYwJMLr63A+/y
-        ikgU7kBeKxND5mixjK1Le0dGJCuID9tPbA==
-X-Google-Smtp-Source: ABdhPJxEY+MFWLDmDWPigcOdZQbASJ/DpVQk8ukzbQg92GS0NIXfGC17K4/HWl82FIPcv+PXwFkjgg==
-X-Received: by 2002:ab0:184c:: with SMTP id j12mr4996992uag.29.1610144438503;
-        Fri, 08 Jan 2021 14:20:38 -0800 (PST)
-Received: from mail-vs1-f47.google.com (mail-vs1-f47.google.com. [209.85.217.47])
-        by smtp.gmail.com with ESMTPSA id u69sm1317301uau.1.2021.01.08.14.20.37
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 08 Jan 2021 14:20:37 -0800 (PST)
-Received: by mail-vs1-f47.google.com with SMTP id q10so6394887vsr.13
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Jan 2021 14:20:37 -0800 (PST)
-X-Received: by 2002:a67:32c5:: with SMTP id y188mr4644914vsy.4.1610144436974;
- Fri, 08 Jan 2021 14:20:36 -0800 (PST)
-MIME-Version: 1.0
-References: <20210108141648.1.Ia8019b8b303ca31a06752ed6ceb5c3ac50bd1d48@changeid>
-In-Reply-To: <20210108141648.1.Ia8019b8b303ca31a06752ed6ceb5c3ac50bd1d48@changeid>
-From:   Doug Anderson <dianders@chromium.org>
-Date:   Fri, 8 Jan 2021 14:20:25 -0800
-X-Gmail-Original-Message-ID: <CAD=FV=Wn3rqgu5fLYuJRQFU1s221VNvsk6voSY=_ye24HbMH4w@mail.gmail.com>
-Message-ID: <CAD=FV=Wn3rqgu5fLYuJRQFU1s221VNvsk6voSY=_ye24HbMH4w@mail.gmail.com>
-Subject: Re: [PATCH] arm64: dts: qcom: sc7180: Add labels for cpuN-thermal nodes
-To:     Matthias Kaehlcke <mka@chromium.org>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :to:cc;
+        bh=0mTBQDZkuLh9ZxzNAwIh5jWhJFjVYDUnsJ+nm65pzXQ=;
+        b=QOjsr0IpxPAiucZI/oQk2UoUGV8EtCwMOHQnuERJvffRg4rmvVtf8cc82zwDGPOY5L
+         FQdv4nlfmtTwVHA9ysLmT1hdMl1tkQywmrFC78G6iVIDAeV8vBiTlIEKVNZ8caXTHH81
+         6fsrnPM3kJIuhs/geJFFia0dK+Uchyn2fEw73fVUQW5bFb730YU8PAZiOdykuf6IwVGe
+         oc3ygynB2/dnf8JIjnxB6lnjj432TqQZNVCeB8cpFAsOj74/7EEEGwLfa9l4cTjN2Mso
+         +/6JdND79a2iUKH9PHXQQJ+nrapwE0SsyHa+oQU0AuaNhtfb69nw7R2aUD8QlmSlAm53
+         k31Q==
+X-Gm-Message-State: AOAM532Prt7qtAFadlAPsMT4MbsO0Icru65g577nE4MYJ539EqFIvw7a
+        LlcuU3aVgWeHcBiLih2WV8mtsH8O
+X-Google-Smtp-Source: ABdhPJw1cU7e4agOc1E9Gf9WE5RtShAAUI12aL5UvVt7pm0ivyDd/e7bw4lx27nlAqozLcbk4Hwt59Oe
+Sender: "doak via sendgmr" <doak@haruspex.c.googlers.com>
+X-Received: from haruspex.c.googlers.com ([fda3:e722:ac3:cc00:28:9cb1:c0a8:11a0])
+ (user=doak job=sendgmr) by 2002:a1c:a1c1:: with SMTP id k184mr4781570wme.101.1610144510990;
+ Fri, 08 Jan 2021 14:21:50 -0800 (PST)
+Date:   Fri,  8 Jan 2021 22:21:04 +0000
+Message-Id: <20210108222104.2079472-1-doak@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.30.0.284.gd98b1dd5eaa7-goog
+Subject: [PATCH] Fix whitespace in uapi/linux/tcp.h.
+From:   Danilo Martins <doak@google.com>
+To:     edumazet@google.com
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Danilo Carvalho <doak@google.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+From: Danilo Carvalho <doak@google.com>
 
-On Fri, Jan 8, 2021 at 2:17 PM Matthias Kaehlcke <mka@chromium.org> wrote:
->
-> Add labels to the cpuN-thermal nodes to allow board files to use
-> a phandle instead replicating the node hierarchy when adjusting
-> certain properties.
->
-> Due to the 'sustainable-power' property CPU thermal zones are
-> more likely to need property updates than other SC7180 zones,
-> hence only labels for CPU zones are added for now.
->
-> Signed-off-by: Matthias Kaehlcke <mka@chromium.org>
-> ---
->
->  arch/arm64/boot/dts/qcom/sc7180.dtsi | 20 ++++++++++----------
->  1 file changed, 10 insertions(+), 10 deletions(-)
+List of things fixed:
+  - Two of the socket options were idented with spaces instead of tabs.
+  - Trailing whitespace in some lines.
+  - Improper spacing around parenthesis caught by checkpatch.pl.
+  - Mix of space and tabs in tcp_word_hdr union.
 
-Reviewed-by: Douglas Anderson <dianders@chromium.org>
+Signed-off-by: Danilo Carvalho <doak@google.com>
+---
+ include/uapi/linux/tcp.h | 18 +++++++++---------
+ 1 file changed, 9 insertions(+), 9 deletions(-)
+
+diff --git a/include/uapi/linux/tcp.h b/include/uapi/linux/tcp.h
+index 13ceeb395eb8..768e93bd5b51 100644
+--- a/include/uapi/linux/tcp.h
++++ b/include/uapi/linux/tcp.h
+@@ -51,7 +51,7 @@ struct tcphdr {
+ 		fin:1;
+ #else
+ #error	"Adjust your <asm/byteorder.h> defines"
+-#endif	
++#endif
+ 	__be16	window;
+ 	__sum16	check;
+ 	__be16	urg_ptr;
+@@ -62,14 +62,14 @@ struct tcphdr {
+  *  (union is compatible to any of its members)
+  *  This means this part of the code is -fstrict-aliasing safe now.
+  */
+-union tcp_word_hdr { 
++union tcp_word_hdr {
+ 	struct tcphdr hdr;
+-	__be32 		  words[5];
+-}; 
++	__be32        words[5];
++};
+ 
+-#define tcp_flag_word(tp) ( ((union tcp_word_hdr *)(tp))->words [3]) 
++#define tcp_flag_word(tp) (((union tcp_word_hdr *)(tp))->words[3])
+ 
+-enum { 
++enum {
+ 	TCP_FLAG_CWR = __constant_cpu_to_be32(0x00800000),
+ 	TCP_FLAG_ECE = __constant_cpu_to_be32(0x00400000),
+ 	TCP_FLAG_URG = __constant_cpu_to_be32(0x00200000),
+@@ -80,7 +80,7 @@ enum {
+ 	TCP_FLAG_FIN = __constant_cpu_to_be32(0x00010000),
+ 	TCP_RESERVED_BITS = __constant_cpu_to_be32(0x0F000000),
+ 	TCP_DATA_OFFSET = __constant_cpu_to_be32(0xF0000000)
+-}; 
++};
+ 
+ /*
+  * TCP general constants
+@@ -103,8 +103,8 @@ enum {
+ #define TCP_QUICKACK		12	/* Block/reenable quick acks */
+ #define TCP_CONGESTION		13	/* Congestion control algorithm */
+ #define TCP_MD5SIG		14	/* TCP MD5 Signature (RFC2385) */
+-#define TCP_THIN_LINEAR_TIMEOUTS 16      /* Use linear timeouts for thin streams*/
+-#define TCP_THIN_DUPACK         17      /* Fast retrans. after 1 dupack */
++#define TCP_THIN_LINEAR_TIMEOUTS 16	/* Use linear timeouts for thin streams*/
++#define TCP_THIN_DUPACK		17	/* Fast retrans. after 1 dupack */
+ #define TCP_USER_TIMEOUT	18	/* How long for loss retry before timeout */
+ #define TCP_REPAIR		19	/* TCP sock is under repair right now */
+ #define TCP_REPAIR_QUEUE	20
+-- 
+2.30.0.284.gd98b1dd5eaa7-goog
+
