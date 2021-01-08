@@ -2,56 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 42B412EF95B
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 21:37:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DBD892EF962
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 21:40:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729401AbhAHUhU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Jan 2021 15:37:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55784 "EHLO
+        id S1729512AbhAHUiU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Jan 2021 15:38:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55936 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729340AbhAHUhT (ORCPT
+        with ESMTP id S1729482AbhAHUiS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Jan 2021 15:37:19 -0500
-Received: from mail-oi1-x230.google.com (mail-oi1-x230.google.com [IPv6:2607:f8b0:4864:20::230])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 278FCC061380
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Jan 2021 12:36:39 -0800 (PST)
-Received: by mail-oi1-x230.google.com with SMTP id l200so12750532oig.9
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Jan 2021 12:36:39 -0800 (PST)
+        Fri, 8 Jan 2021 15:38:18 -0500
+Received: from mail-oi1-x235.google.com (mail-oi1-x235.google.com [IPv6:2607:f8b0:4864:20::235])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BEA9C061380
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Jan 2021 12:37:38 -0800 (PST)
+Received: by mail-oi1-x235.google.com with SMTP id d203so12848081oia.0
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Jan 2021 12:37:38 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc:content-transfer-encoding;
-        bh=b9Rt82GW8KWAByvkk9obV3ZIpw1Casv9Xpm9XTSxgNs=;
-        b=HXrJtALQglLUwlcIYLv0Pbm6fo7Eqd5MwfW8CipxsdU4Phc62azLX0mGKOTknkBc/k
-         7nTbukE/fL/3jZWuGVCFK23DE6Bs8lb5ijmbBRkbpo6h0KJuwY01vKWaf0eV298hCOGD
-         5Saz1R/TcjwL/wK27pWBeCgCFctg9UDdZMo50o+gBqxzKc4o7E0OqqvgDIIP0s6MCif/
-         IZBAs/4GLJR3cO9yPbThH0DuyP53X3e59xxdYb2aAzt0NLBeGebTEWInG3o5L8eWC/AR
-         N+pWh3ZkvPhhb7dpwzUXakp0m7CNBw38hTLwYQgyIiC+p0ldApfPE7DKR7KOdIik8Plq
-         0Mlg==
+        bh=eGOb98i7o2zJ0bnOyOrSdndd1nmTnVJpy9/37zLk/NY=;
+        b=imC0H0g1+jDCg2Ic2cz+9QrvQKcAUzYnHjJ+jD8mqb5az3x1cosHlxPa0QJF7xZIe9
+         hbdsPjR8Ok87hGcpLEtkv1hy36kqPCXfSMJF+PJyNTKK+yiiW4Mc9PQZjvokFA1deInH
+         U8n7aHYStps2vGsY1uynXmOtWl1dvWwAIWTRP9Y0qxzsDDJCzHf8DqIl2Dp6JdIdeAjM
+         tAS69nBEmXJezHmGzJNKsePJlSfMrAMpi+nTCk5pmWLLvOaU4uK3nyWVN0D/OSwsCtKU
+         eSHbk5dRm5wwUNhZlT/oTGPsuCbQKbcOfevLu59WmG+ZdVsphEhwp+kligmlLJ1vfKV3
+         zp3w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc:content-transfer-encoding;
-        bh=b9Rt82GW8KWAByvkk9obV3ZIpw1Casv9Xpm9XTSxgNs=;
-        b=Zv6z4m7IIFZVIUhoKrO0qI1H73wJ3iXb9Tt39dYiFYl6mmZYRcPQ+KPmAY3REAYWBs
-         6Dv8ospVVUFT7qt5DulO1SvSoy+XkRBf9TXUAiVdjSq29FJ+OkKdmoJn6CkPw+U2cWHx
-         jop1cIJ3S1jdFT6g84LMoO+2YUfST4j7RBWxwS3RvpI1Y5iniQfdxzU5J0SwzopKjhgR
-         wuRWEUnjzBzLwGmFmzB/zqenI21wlUmX1I41E4HhochcwbnbWd0L4Gdz+Dobgo/Pb0g2
-         Eq17kt2fsJBVf3LZIPWrbTIL8oECUwFycuS9qZkbJ0ZwPw1Hy+DKYtAQ44+xkmeLuWwx
-         1CjA==
-X-Gm-Message-State: AOAM530Ii3yW5LGv1221OGJhlEthiBPk4D3vES6tDe/5B7rkj8Q1eOu7
-        WeiIEHQy7M4v2jz2NWxbeYX1tNGHaB33uFV2wLU=
-X-Google-Smtp-Source: ABdhPJybhF2d2ICidbN92E2NRo7ryVGnG5mjIKZVjTCsffYlCCozzKgjlHnZjBK0989Ey5syJ6aNgkcI9BG8WFHkcz0=
-X-Received: by 2002:aca:6202:: with SMTP id w2mr3296602oib.5.1610138198672;
- Fri, 08 Jan 2021 12:36:38 -0800 (PST)
+        bh=eGOb98i7o2zJ0bnOyOrSdndd1nmTnVJpy9/37zLk/NY=;
+        b=GAIdoH6PmUuR6XMDuuQkcV+WzMESz+PT9csZGl9L6XYiZsyov44E3E4me7ILGX0GtL
+         QeNYy+11PJGID9ViWZ1F8UzyfZ8GHWFrEYrZjkAF+JfrXZlqJs6aW3XJGyr/QDoCEnPC
+         FwVjnV4nZYe26IJnuVczCtdd/TMl0hIsq2KMkt2+elLBWvrhvHq7Ci/uTENwY1VR0pL5
+         /PpMx16RW+wGR5F5wK34o2gVx6aMrkn2Bf6GTkvxMGdNNkPPNu1HHqEHkHPcqJlLLox/
+         qTkBOH4bIkTEj2nfyDhudmJM18Q6j1pU09gWfssCZKSnw2Atcv30ZAR/EFchIwl62uYB
+         MrBw==
+X-Gm-Message-State: AOAM533Z2QoLw0jlorZRTnE3bwVd7C9TW5KxGcnbprthXdwKzZwE7kVN
+        keSlmroJtTAU86uCeDXWfwm+8UEYNkrfNqY3M3k=
+X-Google-Smtp-Source: ABdhPJyi8NwTAK4/oU4ywOuCERRtjdXhWFk8tqkf8kMDLGdMeymyL6f7sqG4XdoOCdG2EWwmR3/e4bnZ0AM82vbJ7xo=
+X-Received: by 2002:a54:4083:: with SMTP id i3mr3414002oii.120.1610138257944;
+ Fri, 08 Jan 2021 12:37:37 -0800 (PST)
 MIME-Version: 1.0
-References: <20210108201457.3078600-1-lee.jones@linaro.org> <20210108201457.3078600-12-lee.jones@linaro.org>
-In-Reply-To: <20210108201457.3078600-12-lee.jones@linaro.org>
+References: <20210108201457.3078600-1-lee.jones@linaro.org> <20210108201457.3078600-13-lee.jones@linaro.org>
+In-Reply-To: <20210108201457.3078600-13-lee.jones@linaro.org>
 From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Fri, 8 Jan 2021 15:36:27 -0500
-Message-ID: <CADnq5_M=FvTBgvVkU5-s8A8-wd8APyRETdR-M__6hD=Mmnp5eg@mail.gmail.com>
-Subject: Re: [PATCH 11/40] drm/amd/pm/powerplay/hwmgr/hwmgr: Move prototype
- into shared header
+Date:   Fri, 8 Jan 2021 15:37:26 -0500
+Message-ID: <CADnq5_Pgk_XCTthA+Eq018EiT1kvh2UFCBZs3gB6x0xfzSA36g@mail.gmail.com>
+Subject: Re: [PATCH 12/40] drm/amd/pm/powerplay/hwmgr/vega10_hwmgr: Fix a
+ bunch of kernel-doc formatting issues
 To:     Lee Jones <lee.jones@linaro.org>
 Cc:     David Airlie <airlied@linux.ie>,
         LKML <linux-kernel@vger.kernel.org>,
@@ -74,6 +74,65 @@ On Fri, Jan 8, 2021 at 3:15 PM Lee Jones <lee.jones@linaro.org> wrote:
 >  drivers/gpu/drm/amd/amdgpu/../pm/powerplay/hwmgr/vega10_hwmgr.c:5474:5: =
 warning: no previous prototype for =E2=80=98vega10_hwmgr_init=E2=80=99 [-Wm=
 issing-prototypes]
+>  drivers/gpu/drm/amd/amdgpu/../pm/powerplay/hwmgr/vega10_hwmgr.c:551: war=
+ning: Function parameter or member 'hwmgr' not described in 'vega10_get_evv=
+_voltages'
+>  drivers/gpu/drm/amd/amdgpu/../pm/powerplay/hwmgr/vega10_hwmgr.c:609: war=
+ning: Function parameter or member 'hwmgr' not described in 'vega10_patch_w=
+ith_vdd_leakage'
+>  drivers/gpu/drm/amd/amdgpu/../pm/powerplay/hwmgr/vega10_hwmgr.c:609: war=
+ning: Function parameter or member 'voltage' not described in 'vega10_patch=
+_with_vdd_leakage'
+>  drivers/gpu/drm/amd/amdgpu/../pm/powerplay/hwmgr/vega10_hwmgr.c:609: war=
+ning: Function parameter or member 'leakage_table' not described in 'vega10=
+_patch_with_vdd_leakage'
+>  drivers/gpu/drm/amd/amdgpu/../pm/powerplay/hwmgr/vega10_hwmgr.c:637: war=
+ning: Function parameter or member 'hwmgr' not described in 'vega10_patch_l=
+ookup_table_with_leakage'
+>  drivers/gpu/drm/amd/amdgpu/../pm/powerplay/hwmgr/vega10_hwmgr.c:637: war=
+ning: Function parameter or member 'lookup_table' not described in 'vega10_=
+patch_lookup_table_with_leakage'
+>  drivers/gpu/drm/amd/amdgpu/../pm/powerplay/hwmgr/vega10_hwmgr.c:637: war=
+ning: Function parameter or member 'leakage_table' not described in 'vega10=
+_patch_lookup_table_with_leakage'
+>  drivers/gpu/drm/amd/amdgpu/../pm/powerplay/hwmgr/vega10_hwmgr.c:1013: wa=
+rning: Function parameter or member 'hwmgr' not described in 'vega10_trim_v=
+oltage_table'
+>  drivers/gpu/drm/amd/amdgpu/../pm/powerplay/hwmgr/vega10_hwmgr.c:1013: wa=
+rning: Function parameter or member 'vol_table' not described in 'vega10_tr=
+im_voltage_table'
+>  drivers/gpu/drm/amd/amdgpu/../pm/powerplay/hwmgr/vega10_hwmgr.c:1160: wa=
+rning: Function parameter or member 'hwmgr' not described in 'vega10_constr=
+uct_voltage_tables'
+>  drivers/gpu/drm/amd/amdgpu/../pm/powerplay/hwmgr/vega10_hwmgr.c:1558: wa=
+rning: Function parameter or member 'hwmgr' not described in 'vega10_popula=
+te_single_gfx_level'
+>  drivers/gpu/drm/amd/amdgpu/../pm/powerplay/hwmgr/vega10_hwmgr.c:1558: wa=
+rning: Function parameter or member 'gfx_clock' not described in 'vega10_po=
+pulate_single_gfx_level'
+>  drivers/gpu/drm/amd/amdgpu/../pm/powerplay/hwmgr/vega10_hwmgr.c:1558: wa=
+rning: Function parameter or member 'current_gfxclk_level' not described in=
+ 'vega10_populate_single_gfx_level'
+>  drivers/gpu/drm/amd/amdgpu/../pm/powerplay/hwmgr/vega10_hwmgr.c:1558: wa=
+rning: Function parameter or member 'acg_freq' not described in 'vega10_pop=
+ulate_single_gfx_level'
+>  drivers/gpu/drm/amd/amdgpu/../pm/powerplay/hwmgr/vega10_hwmgr.c:1613: wa=
+rning: Cannot understand  * @brief Populates single SMC SOCCLK structure us=
+ing the provided clock.
+>  drivers/gpu/drm/amd/amdgpu/../pm/powerplay/hwmgr/vega10_hwmgr.c:1667: wa=
+rning: Function parameter or member 'hwmgr' not described in 'vega10_popula=
+te_all_graphic_levels'
+>  drivers/gpu/drm/amd/amdgpu/../pm/powerplay/hwmgr/vega10_hwmgr.c:1750: wa=
+rning: Cannot understand  * @brief Populates single SMC GFXCLK structure us=
+ing the provided clock.
+>  drivers/gpu/drm/amd/amdgpu/../pm/powerplay/hwmgr/vega10_hwmgr.c:1811: wa=
+rning: Cannot understand  * @brief Populates all SMC MCLK levels' structure=
+ based on the trimmed allowed dpm memory clock states.
+>  drivers/gpu/drm/amd/amdgpu/../pm/powerplay/hwmgr/vega10_hwmgr.c:2496: wa=
+rning: Function parameter or member 'hwmgr' not described in 'vega10_init_s=
+mc_table'
+>  drivers/gpu/drm/amd/amdgpu/../pm/powerplay/hwmgr/vega10_hwmgr.c:2867: wa=
+rning: Cannot understand  * @brief Tell SMC to enabled the supported DPMs.
 >
 > Cc: Evan Quan <evan.quan@amd.com>
 > Cc: Alex Deucher <alexander.deucher@amd.com>
@@ -88,45 +147,283 @@ Applied.  Thanks!
 
 Alex
 
+
 > ---
->  drivers/gpu/drm/amd/pm/powerplay/hwmgr/hwmgr.c        | 2 +-
->  drivers/gpu/drm/amd/pm/powerplay/hwmgr/vega10_hwmgr.h | 1 +
->  2 files changed, 2 insertions(+), 1 deletion(-)
+>  .../drm/amd/pm/powerplay/hwmgr/vega10_hwmgr.c | 133 +++++++++---------
+>  1 file changed, 65 insertions(+), 68 deletions(-)
 >
-> diff --git a/drivers/gpu/drm/amd/pm/powerplay/hwmgr/hwmgr.c b/drivers/gpu=
-/drm/amd/pm/powerplay/hwmgr/hwmgr.c
-> index 6a7de8b898faf..f2cef0930aa96 100644
-> --- a/drivers/gpu/drm/amd/pm/powerplay/hwmgr/hwmgr.c
-> +++ b/drivers/gpu/drm/amd/pm/powerplay/hwmgr/hwmgr.c
-> @@ -33,6 +33,7 @@
->  #include "ppsmc.h"
->  #include "amd_acpi.h"
->  #include "pp_psm.h"
-> +#include "vega10_hwmgr.h"
+> diff --git a/drivers/gpu/drm/amd/pm/powerplay/hwmgr/vega10_hwmgr.c b/driv=
+ers/gpu/drm/amd/pm/powerplay/hwmgr/vega10_hwmgr.c
+> index 1b47f94e03317..da470462d6e2c 100644
+> --- a/drivers/gpu/drm/amd/pm/powerplay/hwmgr/vega10_hwmgr.c
+> +++ b/drivers/gpu/drm/amd/pm/powerplay/hwmgr/vega10_hwmgr.c
+> @@ -542,11 +542,11 @@ static int vega10_get_socclk_for_voltage_evv(struct=
+ pp_hwmgr *hwmgr,
 >
->  extern const struct pp_smumgr_func ci_smu_funcs;
->  extern const struct pp_smumgr_func smu8_smu_funcs;
-> @@ -46,7 +47,6 @@ extern const struct pp_smumgr_func vega12_smu_funcs;
->  extern const struct pp_smumgr_func smu10_smu_funcs;
->  extern const struct pp_smumgr_func vega20_smu_funcs;
+>  #define ATOM_VIRTUAL_VOLTAGE_ID0             0xff01
+>  /**
+> -* Get Leakage VDDC based on leakage ID.
+> -*
+> -* @param    hwmgr  the address of the powerplay hardware manager.
+> -* @return   always 0.
+> -*/
+> + * Get Leakage VDDC based on leakage ID.
+> + *
+> + * @hwmgr:  the address of the powerplay hardware manager.
+> + * return:  always 0.
+> + */
+>  static int vega10_get_evv_voltages(struct pp_hwmgr *hwmgr)
+>  {
+>         struct vega10_hwmgr *data =3D hwmgr->backend;
+> @@ -600,9 +600,9 @@ static int vega10_get_evv_voltages(struct pp_hwmgr *h=
+wmgr)
+>  /**
+>   * Change virtual leakage voltage to actual value.
+>   *
+> - * @param     hwmgr  the address of the powerplay hardware manager.
+> - * @param     pointer to changing voltage
+> - * @param     pointer to leakage table
+> + * @hwmgr:         the address of the powerplay hardware manager.
+> + * @voltage:       pointer to changing voltage
+> + * @leakage_table: pointer to leakage table
+>   */
+>  static void vega10_patch_with_vdd_leakage(struct pp_hwmgr *hwmgr,
+>                 uint16_t *voltage, struct vega10_leakage_voltage *leakage=
+_table)
+> @@ -624,13 +624,13 @@ static void vega10_patch_with_vdd_leakage(struct pp=
+_hwmgr *hwmgr,
+>  }
 >
-> -extern int vega10_hwmgr_init(struct pp_hwmgr *hwmgr);
->  extern int smu10_init_function_pointers(struct pp_hwmgr *hwmgr);
+>  /**
+> -* Patch voltage lookup table by EVV leakages.
+> -*
+> -* @param     hwmgr  the address of the powerplay hardware manager.
+> -* @param     pointer to voltage lookup table
+> -* @param     pointer to leakage table
+> -* @return     always 0
+> -*/
+> + * Patch voltage lookup table by EVV leakages.
+> + *
+> + * @hwmgr:         the address of the powerplay hardware manager.
+> + * @lookup_table:  pointer to voltage lookup table
+> + * @leakage_table: pointer to leakage table
+> + * return:         always 0
+> + */
+>  static int vega10_patch_lookup_table_with_leakage(struct pp_hwmgr *hwmgr=
+,
+>                 phm_ppt_v1_voltage_lookup_table *lookup_table,
+>                 struct vega10_leakage_voltage *leakage_table)
+> @@ -1001,13 +1001,12 @@ static int vega10_setup_asic_task(struct pp_hwmgr=
+ *hwmgr)
+>  }
 >
->  static int polaris_set_asic_special_caps(struct pp_hwmgr *hwmgr);
-> diff --git a/drivers/gpu/drm/amd/pm/powerplay/hwmgr/vega10_hwmgr.h b/driv=
-ers/gpu/drm/amd/pm/powerplay/hwmgr/vega10_hwmgr.h
-> index f752b4ad0c8ae..07c06f8c90b09 100644
-> --- a/drivers/gpu/drm/amd/pm/powerplay/hwmgr/vega10_hwmgr.h
-> +++ b/drivers/gpu/drm/amd/pm/powerplay/hwmgr/vega10_hwmgr.h
-> @@ -442,5 +442,6 @@ int vega10_update_uvd_dpm(struct pp_hwmgr *hwmgr, boo=
-l bgate);
->  int vega10_update_samu_dpm(struct pp_hwmgr *hwmgr, bool bgate);
->  int vega10_update_acp_dpm(struct pp_hwmgr *hwmgr, bool bgate);
->  int vega10_enable_disable_vce_dpm(struct pp_hwmgr *hwmgr, bool enable);
-> +int vega10_hwmgr_init(struct pp_hwmgr *hwmgr);
+>  /**
+> -* Remove repeated voltage values and create table with unique values.
+> -*
+> -* @param    hwmgr  the address of the powerplay hardware manager.
+> -* @param    vol_table  the pointer to changing voltage table
+> -* @return    0 in success
+> -*/
+> -
+> + * Remove repeated voltage values and create table with unique values.
+> + *
+> + * @hwmgr:      the address of the powerplay hardware manager.
+> + * @vol_table:  the pointer to changing voltage table
+> + * return:      0 in success
+> + */
+>  static int vega10_trim_voltage_table(struct pp_hwmgr *hwmgr,
+>                 struct pp_atomfwctrl_voltage_table *vol_table)
+>  {
+> @@ -1151,11 +1150,11 @@ static void vega10_trim_voltage_table_to_fit_stat=
+e_table(
+>  }
 >
->  #endif /* _VEGA10_HWMGR_H_ */
+>  /**
+> -* Create Voltage Tables.
+> -*
+> -* @param    hwmgr  the address of the powerplay hardware manager.
+> -* @return   always 0
+> -*/
+> + * Create Voltage Tables.
+> + *
+> + * @hwmgr:  the address of the powerplay hardware manager.
+> + * return:  always 0
+> + */
+>  static int vega10_construct_voltage_tables(struct pp_hwmgr *hwmgr)
+>  {
+>         struct vega10_hwmgr *data =3D hwmgr->backend;
+> @@ -1212,11 +1211,11 @@ static int vega10_construct_voltage_tables(struct=
+ pp_hwmgr *hwmgr)
+>  }
+>
+>  /*
+> - * @fn vega10_init_dpm_state
+> - * @brief Function to initialize all Soft Min/Max and Hard Min/Max to 0x=
+ff.
+> + * vega10_init_dpm_state
+> + * Function to initialize all Soft Min/Max and Hard Min/Max to 0xff.
+>   *
+> - * @param    dpm_state - the address of the DPM Table to initiailize.
+> - * @return   None.
+> + * @dpm_state: - the address of the DPM Table to initiailize.
+> + * return:   None.
+>   */
+>  static void vega10_init_dpm_state(struct vega10_dpm_state *dpm_state)
+>  {
+> @@ -1460,11 +1459,11 @@ static int vega10_setup_default_dpm_tables(struct=
+ pp_hwmgr *hwmgr)
+>  }
+>
+>  /*
+> - * @fn vega10_populate_ulv_state
+> - * @brief Function to provide parameters for Utral Low Voltage state to =
+SMC.
+> + * vega10_populate_ulv_state
+> + * Function to provide parameters for Utral Low Voltage state to SMC.
+>   *
+> - * @param    hwmgr - the address of the hardware manager.
+> - * @return   Always 0.
+> + * @hwmgr: - the address of the hardware manager.
+> + * return:   Always 0.
+>   */
+>  static int vega10_populate_ulv_state(struct pp_hwmgr *hwmgr)
+>  {
+> @@ -1545,13 +1544,12 @@ static int vega10_populate_smc_link_levels(struct=
+ pp_hwmgr *hwmgr)
+>  }
+>
+>  /**
+> -* Populates single SMC GFXSCLK structure using the provided engine clock
+> -*
+> -* @param    hwmgr      the address of the hardware manager
+> -* @param    gfx_clock  the GFX clock to use to populate the structure.
+> -* @param    current_gfxclk_level  location in PPTable for the SMC GFXCLK=
+ structure.
+> -*/
+> -
+> + * Populates single SMC GFXSCLK structure using the provided engine cloc=
+k
+> + *
+> + * @hwmgr:      the address of the hardware manager
+> + * @gfx_clock:  the GFX clock to use to populate the structure.
+> + * @current_gfxclk_level:  location in PPTable for the SMC GFXCLK struct=
+ure.
+> + */
+>  static int vega10_populate_single_gfx_level(struct pp_hwmgr *hwmgr,
+>                 uint32_t gfx_clock, PllSetting_t *current_gfxclk_level,
+>                 uint32_t *acg_freq)
+> @@ -1610,12 +1608,12 @@ static int vega10_populate_single_gfx_level(struc=
+t pp_hwmgr *hwmgr,
+>  }
+>
+>  /**
+> - * @brief Populates single SMC SOCCLK structure using the provided clock=
+.
+> + * Populates single SMC SOCCLK structure using the provided clock.
+>   *
+> - * @param    hwmgr - the address of the hardware manager.
+> - * @param    soc_clock - the SOC clock to use to populate the structure.
+> - * @param    current_socclk_level - location in PPTable for the SMC SOCC=
+LK structure.
+> - * @return   0 on success..
+> + * @hwmgr:     the address of the hardware manager.
+> + * @soc_clock: the SOC clock to use to populate the structure.
+> + * @current_socclk_level: location in PPTable for the SMC SOCCLK structu=
+re.
+> + * return:      0 on success
+>   */
+>  static int vega10_populate_single_soc_level(struct pp_hwmgr *hwmgr,
+>                 uint32_t soc_clock, uint8_t *current_soc_did,
+> @@ -1659,10 +1657,10 @@ static int vega10_populate_single_soc_level(struc=
+t pp_hwmgr *hwmgr,
+>  }
+>
+>  /**
+> -* Populates all SMC SCLK levels' structure based on the trimmed allowed =
+dpm engine clock states
+> -*
+> -* @param    hwmgr      the address of the hardware manager
+> -*/
+> + * Populates all SMC SCLK levels' structure based on the trimmed allowed=
+ dpm engine clock states
+> + *
+> + * @hwmgr:      the address of the hardware manager
+> + */
+>  static int vega10_populate_all_graphic_levels(struct pp_hwmgr *hwmgr)
+>  {
+>         struct vega10_hwmgr *data =3D hwmgr->backend;
+> @@ -1747,11 +1745,11 @@ static void vega10_populate_vddc_soc_levels(struc=
+t pp_hwmgr *hwmgr)
+>  }
+>
+>  /**
+> - * @brief Populates single SMC GFXCLK structure using the provided clock=
+.
+> + * Populates single SMC GFXCLK structure using the provided clock.
+>   *
+> - * @param    hwmgr - the address of the hardware manager.
+> - * @param    mem_clock - the memory clock to use to populate the structu=
+re.
+> - * @return   0 on success..
+> + * @hwmgr:     the address of the hardware manager.
+> + * @mem_clock: the memory clock to use to populate the structure.
+> + * return:     0 on success..
+>   */
+>  static int vega10_populate_single_memory_level(struct pp_hwmgr *hwmgr,
+>                 uint32_t mem_clock, uint8_t *current_mem_vid,
+> @@ -1808,10 +1806,10 @@ static int vega10_populate_single_memory_level(st=
+ruct pp_hwmgr *hwmgr,
+>  }
+>
+>  /**
+> - * @brief Populates all SMC MCLK levels' structure based on the trimmed =
+allowed dpm memory clock states.
+> + * Populates all SMC MCLK levels' structure based on the trimmed allowed=
+ dpm memory clock states.
+>   *
+> - * @param    pHwMgr - the address of the hardware manager.
+> - * @return   PP_Result_OK on success.
+> + * @hwmgr:  the address of the hardware manager.
+> + * return:   PP_Result_OK on success.
+>   */
+>  static int vega10_populate_all_memory_levels(struct pp_hwmgr *hwmgr)
+>  {
+> @@ -2486,12 +2484,11 @@ static void vega10_check_dpm_table_updated(struct=
+ pp_hwmgr *hwmgr)
+>  }
+>
+>  /**
+> -* Initializes the SMC table and uploads it
+> -*
+> -* @param    hwmgr  the address of the powerplay hardware manager.
+> -* @param    pInput  the pointer to input data (PowerState)
+> -* @return   always 0
+> -*/
+> + * Initializes the SMC table and uploads it
+> + *
+> + * @hwmgr:  the address of the powerplay hardware manager.
+> + * return:  always 0
+> + */
+>  static int vega10_init_smc_table(struct pp_hwmgr *hwmgr)
+>  {
+>         int result;
+> @@ -2864,11 +2861,11 @@ static int vega10_stop_dpm(struct pp_hwmgr *hwmgr=
+, uint32_t bitmap)
+>  }
+>
+>  /**
+> - * @brief Tell SMC to enabled the supported DPMs.
+> + * Tell SMC to enabled the supported DPMs.
+>   *
+> - * @param    hwmgr - the address of the powerplay hardware manager.
+> - * @Param    bitmap - bitmap for the features to enabled.
+> - * @return   0 on at least one DPM is successfully enabled.
+> + * @hwmgr:  the address of the powerplay hardware manager.
+> + * @bitmap  bitmap for the features to enabled.
+> + * return:  0 on at least one DPM is successfully enabled.
+>   */
+>  static int vega10_start_dpm(struct pp_hwmgr *hwmgr, uint32_t bitmap)
+>  {
 > --
 > 2.25.1
 >
