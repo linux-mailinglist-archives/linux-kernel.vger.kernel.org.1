@@ -2,173 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA8D42EF75C
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 19:31:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B44232EF75A
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 19:31:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728568AbhAHSat (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Jan 2021 13:30:49 -0500
-Received: from mga05.intel.com ([192.55.52.43]:32757 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726312AbhAHSat (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Jan 2021 13:30:49 -0500
-IronPort-SDR: Z2YlKz877TFbqVfy06LELJWmZyuruWObHTn1u6FD92g46XTQP722Hyb3JNvGEubJZxrUNP8Wbc
- PWyQR2HbcBaQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9858"; a="262412685"
-X-IronPort-AV: E=Sophos;i="5.79,332,1602572400"; 
-   d="scan'208";a="262412685"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jan 2021 10:30:08 -0800
-IronPort-SDR: R+04RPHWkAz6wDNy/vRZS14BKcdVneU5UNtCdHv6mtT0YYl07GZkiHzHBmWjNwpJVCEzzLwDRb
- SfDYXju6aYQA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.79,332,1602572400"; 
-   d="scan'208";a="347434000"
-Received: from lkp-server01.sh.intel.com (HELO 412602b27703) ([10.239.97.150])
-  by orsmga003.jf.intel.com with ESMTP; 08 Jan 2021 10:30:07 -0800
-Received: from kbuild by 412602b27703 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1kxwWU-0000bU-9W; Fri, 08 Jan 2021 18:30:06 +0000
-Date:   Sat, 09 Jan 2021 02:29:16 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:x86/platform] BUILD SUCCESS
- 2b29eed3f201b49feb92fdd0178b10825a5528f4
-Message-ID: <5ff8a47c.NfWDoTtDs9UBISvk%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S1728306AbhAHSa1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Jan 2021 13:30:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35972 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727648AbhAHSa1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 Jan 2021 13:30:27 -0500
+Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E62CEC061380
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Jan 2021 10:29:46 -0800 (PST)
+Received: by mail-pg1-x52a.google.com with SMTP id q7so6238681pgm.5
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Jan 2021 10:29:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ImNmyS8KVcMriGTOlK4oD0X1A4b7wVMix0T8JHsJDBw=;
+        b=Y0K7rPxt7Xxsk60fVNg19jFZvTgygV+/JV0g08lleOn3I3xFx3/pVCAHl2K20exays
+         bgRQx37jUuscIru6TAY1YUB2MKnooMRFygwz/6ktZwf+kkg0C/SQON+OfJ/oW7W2WStE
+         JrKrTtAiBZ7Y8ECm9juQWdQftv9s19Paay+kdH2j7DBXXHhQAmtvnmCjJUZc5zzRxONO
+         nPGaC3wuxqbMV0eV2bCZtiHWCCJ46Nh2RHPMv8f7Il+0yQw+vDeyKJtnEhu/3+gFdvWl
+         Fej5Denqp+sQyYl++MVYFHzquIrTUG6S36GHtVpIR744TONmjxbFaHGGsKk9DLgeXNOM
+         cObA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ImNmyS8KVcMriGTOlK4oD0X1A4b7wVMix0T8JHsJDBw=;
+        b=YCWegXIiJ8Cgw6wiRN3thsPrP6E9CGMJz9STwMb1F6lWq1QVnM0nagorRgdO4Ff/le
+         MjKHqWKIrkXwy8p843lcAVWdeYffF9d7gEBceggUx/WFPCWYs0uB/sVAVtAruan2fPPd
+         puoYmtRftNjeFdPfFfy3tdIpd3lwx4UPsFDzM842zpA2GRacwEfpwnSxR7+UYGHcGnYu
+         khP9SgzfsBBxtHhlpU3fPYMYPu+T2ZI3uQ6xfD4bmt/SlJKw0CBxU9b8HiM+YqRzTp+0
+         1WaM36AVuVrdE2/Osg2lzLV08kYbSGgkaan4erKG8Q4/lP/bygiLEkw7TWNgqAhW6NSG
+         0v5w==
+X-Gm-Message-State: AOAM531vVefQPV8A6V/JuGnw5qh7U90rxvgfe5dD6jYfpAGheyv7ysta
+        3FOufDyp7VX8aqvvJA8u/y03DOvUMTVK5x/h8hAq8Q==
+X-Google-Smtp-Source: ABdhPJwRVQkqjw+eGZx3kmV8ynRpiyG2GnMECRiKr0qdFfd6rO/yKeaxlSxN3DB3SIBtCjRla8iMWhyfoyRubShuGWM=
+X-Received: by 2002:a62:14c4:0:b029:19d:d3f5:c304 with SMTP id
+ 187-20020a6214c40000b029019dd3f5c304mr4738308pfu.55.1610130586296; Fri, 08
+ Jan 2021 10:29:46 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+References: <20210103171137.153834-1-lecopzer@gmail.com> <20210103171137.153834-4-lecopzer@gmail.com>
+In-Reply-To: <20210103171137.153834-4-lecopzer@gmail.com>
+From:   Andrey Konovalov <andreyknvl@google.com>
+Date:   Fri, 8 Jan 2021 19:29:35 +0100
+Message-ID: <CAAeHK+wc-DU2pUma43JtomOSy0Z6smGKwQoG_R+uKzByu3oZ9w@mail.gmail.com>
+Subject: Re: [PATCH 3/3] arm64: Kconfig: support CONFIG_KASAN_VMALLOC
+To:     Lecopzer Chen <lecopzer@gmail.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Alexander Potapenko <glider@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-mediatek@lists.infradead.org, yj.chiang@mediatek.com,
+        Will Deacon <will@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Lecopzer Chen <lecopzer.chen@mediatek.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git  x86/platform
-branch HEAD: 2b29eed3f201b49feb92fdd0178b10825a5528f4  x86/platform: Retire arch/x86/platform/goldfish
+On Sun, Jan 3, 2021 at 6:13 PM Lecopzer Chen <lecopzer@gmail.com> wrote:
+>
+> Now I have no device to test for HW_TAG, so keep it not selected
+> until someone can test this.
+>
+> Signed-off-by: Lecopzer Chen <lecopzer.chen@mediatek.com>
+> ---
+>  arch/arm64/Kconfig | 1 +
+>  1 file changed, 1 insertion(+)
+>
+> diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
+> index 05e17351e4f3..29ab35aab59e 100644
+> --- a/arch/arm64/Kconfig
+> +++ b/arch/arm64/Kconfig
+> @@ -136,6 +136,7 @@ config ARM64
+>         select HAVE_ARCH_JUMP_LABEL
+>         select HAVE_ARCH_JUMP_LABEL_RELATIVE
+>         select HAVE_ARCH_KASAN if !(ARM64_16K_PAGES && ARM64_VA_BITS_48)
+> +       select HAVE_ARCH_KASAN_VMALLOC if (HAVE_ARCH_KASAN && !KASAN_HW_TAGS)
 
-elapsed time: 1007m
+KASAN_VMALLOC currently "depends on" KASAN_GENERIC. I think we should
+either do "HAVE_ARCH_KASAN && KASAN_GENERIC" here as well, or just do
+"if HAVE_ARCH_KASAN".
 
-configs tested: 111
-configs skipped: 132
-
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-gcc tested configs:
-arm64                            allyesconfig
-arm64                               defconfig
-arm                                 defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-nios2                            alldefconfig
-c6x                         dsk6455_defconfig
-arm                        mini2440_defconfig
-mips                          rb532_defconfig
-mips                       rbtx49xx_defconfig
-nios2                            allyesconfig
-powerpc                    mvme5100_defconfig
-mips                          ath25_defconfig
-sh                             shx3_defconfig
-m68k                          multi_defconfig
-sh                          lboxre2_defconfig
-arm                       aspeed_g4_defconfig
-arm                         vf610m4_defconfig
-arm                          badge4_defconfig
-arm                        neponset_defconfig
-arm                       imx_v4_v5_defconfig
-sh                         ap325rxa_defconfig
-m68k                         amcore_defconfig
-ia64                             alldefconfig
-sh                        sh7785lcr_defconfig
-nds32                            alldefconfig
-sh                         microdev_defconfig
-powerpc                      arches_defconfig
-powerpc                mpc7448_hpc2_defconfig
-powerpc                 xes_mpc85xx_defconfig
-mips                          rm200_defconfig
-powerpc                        cell_defconfig
-x86_64                              defconfig
-ia64                            zx1_defconfig
-powerpc                     ppa8548_defconfig
-mips                           ip22_defconfig
-openrisc                    or1ksim_defconfig
-sh                           se7724_defconfig
-powerpc                      cm5200_defconfig
-arm                         lpc32xx_defconfig
-ia64                         bigsur_defconfig
-arm                        vexpress_defconfig
-mips                            gpr_defconfig
-sh                            hp6xx_defconfig
-arm                      integrator_defconfig
-sh                   rts7751r2dplus_defconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-nds32                               defconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-c6x                              allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                               tinyconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-x86_64               randconfig-a004-20210108
-x86_64               randconfig-a006-20210108
-x86_64               randconfig-a001-20210108
-x86_64               randconfig-a002-20210108
-x86_64               randconfig-a003-20210108
-x86_64               randconfig-a005-20210108
-i386                 randconfig-a005-20210108
-i386                 randconfig-a002-20210108
-i386                 randconfig-a001-20210108
-i386                 randconfig-a003-20210108
-i386                 randconfig-a006-20210108
-i386                 randconfig-a004-20210108
-i386                 randconfig-a016-20210108
-i386                 randconfig-a011-20210108
-i386                 randconfig-a014-20210108
-i386                 randconfig-a015-20210108
-i386                 randconfig-a013-20210108
-i386                 randconfig-a012-20210108
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-x86_64                                   rhel
-x86_64                           allyesconfig
-x86_64                    rhel-7.6-kselftests
-x86_64                               rhel-8.3
-x86_64                      rhel-8.3-kbuiltin
-x86_64                                  kexec
-
-clang tested configs:
-x86_64               randconfig-a013-20210108
-x86_64               randconfig-a011-20210108
-x86_64               randconfig-a012-20210108
-x86_64               randconfig-a016-20210108
-x86_64               randconfig-a014-20210108
-x86_64               randconfig-a015-20210108
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+>         select HAVE_ARCH_KASAN_SW_TAGS if HAVE_ARCH_KASAN
+>         select HAVE_ARCH_KASAN_HW_TAGS if (HAVE_ARCH_KASAN && ARM64_MTE)
+>         select HAVE_ARCH_KGDB
+> --
+> 2.25.1
+>
+> --
+> You received this message because you are subscribed to the Google Groups "kasan-dev" group.
+> To unsubscribe from this group and stop receiving emails from it, send an email to kasan-dev+unsubscribe@googlegroups.com.
+> To view this discussion on the web visit https://groups.google.com/d/msgid/kasan-dev/20210103171137.153834-4-lecopzer%40gmail.com.
