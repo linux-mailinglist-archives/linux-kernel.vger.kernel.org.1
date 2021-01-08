@@ -2,189 +2,723 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 39AB22EED48
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 06:50:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 15FCB2EED4A
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 06:52:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727441AbhAHFt5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Jan 2021 00:49:57 -0500
-Received: from mail-mw2nam12on2086.outbound.protection.outlook.com ([40.107.244.86]:5312
-        "EHLO NAM12-MW2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725844AbhAHFt4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Jan 2021 00:49:56 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=NbqhmFMakf844J/ysjxUxTW3xhbAfPEJKOWScFuq5RUwHFCuINoO+dBlMYInbq3CmT4RkeNgYqOpV3oFkzNVp7wNQA6mUAJfGwa/VpfCEkCxCT0QfcU+AZoSig3+i66V3S2xCloMlkODB7Y8lSrXlU+usK5loaaPlWf83wJ9oHE9aZHjlJoXO6UMTVFXSgqmeUtg7pIk545rH2AqowtKJjRACcXuzaHtA0Cr0RsyNaH+1PqLnPoySunQOpzNwAqEerhg6BBa9+kWnUBQyooTzo4T4iUpxXD/MQGE+U2TfiyxV8sqEURNBbsRZo7jAmnu4DGOw6zf/6LRNQeY+RO7GQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=3xcleXbDGsR7WUTislfp+brWYCR/8Ir+gpVQE0qIx80=;
- b=RO8UB0jwZTAPlQeemQ4q9KjwmRbsx+Uvw8LazlQb6fOIan5sDR+ohFwrrs/rQXAx3SRlIlohUH7lzM3rDnkAr9ZCtldKVqaApW3m7cPGmNzfba5d8ZU5o4tp4+NwkygZeMWK7xE2pbKJEoS+3IUza7o5R6lpbAZhQOEIqr0RSazL50zThf7lZTUy6V8At4lTf5hWwreLOX5p/vkFSXJ0IdsdEUawW7/o5vAMONuYgx17f8gM8TyGLnn4Eoa+rb0/Io5+8WlucYQ/Q5NyCJteVBtYek9fZogwdeA6NWvHZcf3ffIAMhXWsR8YwDhC4TRkxrJ2xr59sh6vtRYfc12edQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
+        id S1727502AbhAHFwL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Jan 2021 00:52:11 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59380 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725791AbhAHFv5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 Jan 2021 00:51:57 -0500
+Received: from mail-qk1-x74a.google.com (mail-qk1-x74a.google.com [IPv6:2607:f8b0:4864:20::74a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83E07C0612F4
+        for <linux-kernel@vger.kernel.org>; Thu,  7 Jan 2021 21:51:17 -0800 (PST)
+Received: by mail-qk1-x74a.google.com with SMTP id e25so8436821qka.3
+        for <linux-kernel@vger.kernel.org>; Thu, 07 Jan 2021 21:51:17 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=3xcleXbDGsR7WUTislfp+brWYCR/8Ir+gpVQE0qIx80=;
- b=jF9OlIOEesm7+63PmoAyIA5XuMZ1DRXAAOfYFMdp3z5V/jM/nr6MA4dIMtFOYHlpq3sEoJN+o7QLvnkxLlwpiUnd/Sbt5fHCeAIotMSYA73zPYjfL2aUQUI9bjYfDjqp1uh8nShHw7yInPq83K2R2GOvamJON0eTMKlIUBTS+KU=
-Received: from DM6PR12MB4388.namprd12.prod.outlook.com (2603:10b6:5:2a9::10)
- by DM5PR12MB1833.namprd12.prod.outlook.com (2603:10b6:3:111::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3742.6; Fri, 8 Jan
- 2021 05:49:03 +0000
-Received: from DM6PR12MB4388.namprd12.prod.outlook.com
- ([fe80::84e9:dd44:12cf:bdb3]) by DM6PR12MB4388.namprd12.prod.outlook.com
- ([fe80::84e9:dd44:12cf:bdb3%6]) with mapi id 15.20.3742.006; Fri, 8 Jan 2021
- 05:49:03 +0000
-From:   "Chatradhi, Naveen Krishna" <NaveenKrishna.Chatradhi@amd.com>
-To:     David Arcari <darcari@redhat.com>,
-        "linux-hwmon@vger.kernel.org" <linux-hwmon@vger.kernel.org>
-CC:     Jean Delvare <jdelvare@suse.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>
-Subject: RE: [PATCH] hwmon: (amd_energy) fix allocation of hwmon_channel_info
- config
-Thread-Topic: [PATCH] hwmon: (amd_energy) fix allocation of hwmon_channel_info
- config
-Thread-Index: AQHW5QQZdSyCjckTx0WGIHiGz4uxF6odMEOA
-Date:   Fri, 8 Jan 2021 05:49:03 +0000
-Message-ID: <DM6PR12MB4388220A9F55F5DDC984B91FE8AE0@DM6PR12MB4388.namprd12.prod.outlook.com>
-References: <20210107144707.6927-1-darcari@redhat.com>
-In-Reply-To: <20210107144707.6927-1-darcari@redhat.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-msip_labels: MSIP_Label_c3918902-4ff3-42f6-8eb5-e5d9c71daf16_Enabled=true;
- MSIP_Label_c3918902-4ff3-42f6-8eb5-e5d9c71daf16_SetDate=2021-01-08T05:48:07Z;
- MSIP_Label_c3918902-4ff3-42f6-8eb5-e5d9c71daf16_Method=Privileged;
- MSIP_Label_c3918902-4ff3-42f6-8eb5-e5d9c71daf16_Name=Internal Use Only -
- Restricted;
- MSIP_Label_c3918902-4ff3-42f6-8eb5-e5d9c71daf16_SiteId=3dd8961f-e488-4e60-8e11-a82d994e183d;
- MSIP_Label_c3918902-4ff3-42f6-8eb5-e5d9c71daf16_ActionId=fa637c64-fb07-47e6-b07b-000052bed65a;
- MSIP_Label_c3918902-4ff3-42f6-8eb5-e5d9c71daf16_ContentBits=1
-msip_label_c3918902-4ff3-42f6-8eb5-e5d9c71daf16_enabled: true
-msip_label_c3918902-4ff3-42f6-8eb5-e5d9c71daf16_setdate: 2021-01-08T05:48:59Z
-msip_label_c3918902-4ff3-42f6-8eb5-e5d9c71daf16_method: Privileged
-msip_label_c3918902-4ff3-42f6-8eb5-e5d9c71daf16_name: Internal Use Only -
- Restricted
-msip_label_c3918902-4ff3-42f6-8eb5-e5d9c71daf16_siteid: 3dd8961f-e488-4e60-8e11-a82d994e183d
-msip_label_c3918902-4ff3-42f6-8eb5-e5d9c71daf16_actionid: 18486720-8e3c-4f38-a78a-0000883627e9
-msip_label_c3918902-4ff3-42f6-8eb5-e5d9c71daf16_contentbits: 0
-dlp-product: dlpe-windows
-dlp-version: 11.5.0.60
-dlp-reaction: no-action
-authentication-results: redhat.com; dkim=none (message not signed)
- header.d=none;redhat.com; dmarc=none action=none header.from=amd.com;
-x-originating-ip: [175.101.104.147]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 30c39e59-f83c-4e26-8332-08d8b3991ab3
-x-ms-traffictypediagnostic: DM5PR12MB1833:
-x-microsoft-antispam-prvs: <DM5PR12MB1833826426878B732C1D1499E8AE0@DM5PR12MB1833.namprd12.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:454;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: QuovBIt3pMtuMbuUSp8tQZ1djdFJecodZKhwwPY7Znh+bEpZtRbIJ3nCyqHHTqSrTLJcnKVaRwLoviFoaaDiq43daNGcHNBHH2/7XMOrJSC5HWLpV1cDsS2PzbUQwaJRfHMzyW5lmgKwJ5ojeOp1IV9j2PnVoiUtbKDjvhXOYtf+z6iqiECV6Rhadfy+xq5kdKYJM/MMFYdVtJH5olXhCGf5+2jgXH3j8kX2nUZ1+BhqQaM2JyeSf12d0Q9K+8o3QLSL0tGCXJphX9UhgGvWVjNydS5wN6Z1TRXcdrB8wnI65Ii3fJ/0QwFsQMaAWMxtKu2JA4d40LPmPB8/6yUCZppkl24bt8mr5cimOX4hT1IOdpEhtIxjqsMVULyp8JTj
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB4388.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(136003)(346002)(396003)(39860400002)(376002)(26005)(83380400001)(86362001)(6506007)(55016002)(4326008)(186003)(9686003)(7696005)(8676002)(66556008)(54906003)(8936002)(53546011)(110136005)(316002)(33656002)(66946007)(478600001)(5660300002)(76116006)(66446008)(66476007)(52536014)(71200400001)(64756008)(2906002);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: =?us-ascii?Q?CTPRpXYVMR4M670j+lMAkqeqJR+LEqDI3JzeUuoq6O+l5dXmbObqESK1eT9R?=
- =?us-ascii?Q?a6Di7GrcVgTAvRjgcT2E0lSSFADR8S18FnsNAWvuGpEuiS7ctJKlwIIFBEVK?=
- =?us-ascii?Q?MNpPxhjA0Vf3h2T/1BFVg7ZcVL+kup9P24A6Nt6jrbey2NE9jnWmuUcdY1xR?=
- =?us-ascii?Q?6vXXxCR2gfbMR9f5wJiGXKn67AUHnPa3Kmzbhoce5CLPqeyFRr8U++icfDzh?=
- =?us-ascii?Q?WgsT4a6/7gXf4scRwGhvAG287JV94vLRwCOsQe83Q/osXjglizzZxjZahBQd?=
- =?us-ascii?Q?uXWiBEwZEPwybtOcDUlPGaIytm6708WHLBzLkovsltaLHihDBHGvTdXVUEIm?=
- =?us-ascii?Q?BOQ4OBL02k6pMtHZJSL5e1MwfThW5C1YoUm0fy6nxabhYgFNxzHA0QAQI+Tc?=
- =?us-ascii?Q?2cYMPdGtiSkH1zH80ErElz3JVA/ddSbIa4GX6tMaDeV8jmx3LVBJHK5N5K/G?=
- =?us-ascii?Q?MnSAC0Tf5oRFHoNZ1+zJd3TeAOZO9TfTG6Rl1w4D+n6AgMluQKKG0kRpWcL0?=
- =?us-ascii?Q?MBliTMqR+B127IRKB7QCwti1YRX4aim9RBxFXHoACAhRfiGbiRjnKH/HVBCY?=
- =?us-ascii?Q?tnTDoqmyiuJc0tbH/8EeRKeOJDGheNGZ4kLzKJUnOIDWFUf2tz/kmi6yXi0u?=
- =?us-ascii?Q?8/EctCUC+73MAqegdaAoTIj8+4nF9K6YQkXcU4RpgxI3qEAjuNwLw8vVK4Gn?=
- =?us-ascii?Q?cCSdqBjcfx1dIqwrLIwt7Cfh3XuiykVNKFv6Dnk/bP6ABX39zIN6RhZpuFNQ?=
- =?us-ascii?Q?s+XuiDvAmBO5s7cjyUlRGRt4BoQWiYVCXz+ZVYhHE64C+fqwk7P6s6fUzq2n?=
- =?us-ascii?Q?O+UAelU4DYaqBn98pBJdLA2b7GNkulT0WShrvybKOLkpclv+vXw9Y3TH8tJZ?=
- =?us-ascii?Q?hXlAlEDCBqS4Dac8BOXIWPb7YbiH7L37jvNAORbQCI7xHO3i3heT2sDCq3eN?=
- =?us-ascii?Q?43EJRJnL4VZwRs1WmgiBs4Fc01nT+DrWNf2oQ/KT+m4=3D?=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-MIME-Version: 1.0
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB4388.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 30c39e59-f83c-4e26-8332-08d8b3991ab3
-X-MS-Exchange-CrossTenant-originalarrivaltime: 08 Jan 2021 05:49:03.1090
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: sbG+x4IxTzS8QiIML4FoziEUW6Np4mxRKLvRxUvq8mxwHyArI1oCSoA6wlMGX9jh9kVxWUzdOdivWzOaQ8cVqg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR12MB1833
+        d=google.com; s=20161025;
+        h=sender:date:message-id:mime-version:subject:from:to:cc;
+        bh=4AgPW6qwdhamOL2mtlNZjO/PPsvKL0XnXuAeE+w3MDE=;
+        b=ArjAsKkE8kJQf21wuArfPpOIeIw1bUkoS69VdDPwjQy1iYKheqSD0Y0lJ4Cx6y43sg
+         hsBODMh9F7Y8EzThTCuY+EUP2gg9gLh3lw3Z+l9STuYfTYhljmA1RXTdV2qk9GgdCEm6
+         emXi0XyGeaqkdP7f0z1+zPOEGLoVbi26YPRnlpEFutUlHqkv+8gbJOCGsIireAo6MeI4
+         Eoe1O4vDc3dxWjOvYc9ZjgUo9PFLs1GxWOQTp7wLkVVNlgC2iRZQGRtODg9gQLDtvstP
+         Asy5mnB/bDh8+twXm/iNGTCX5DcCL3nnA1+J2Ft/w/5xgAFoR7siTNUXeOXsxCEzKZpB
+         Eh4w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :to:cc;
+        bh=4AgPW6qwdhamOL2mtlNZjO/PPsvKL0XnXuAeE+w3MDE=;
+        b=Hd22iUyajlJdJ4/Y9+xZ6sm6J5jI2s9NuarSgFXi2FdAFwObgQFPEkE4y1Sq41TGow
+         3e96U5gYeLMndxgPBfWeMLKFih5SqM9xE3bBb70mnztxG8NAR9pWwWEU3r7iE/5Z7Ecc
+         OfEdDqwtf4PW2Dv9RxNAdK7FjZN1USAv60lP7an63hycA09BsaRfrY47iHfZdWMETyKb
+         Mvn5wzwJJk3fBULiU5jx+5TIWmnV0zo9UBJGUD/39FtPi+K4/ZsAvUueyN8XTGr4EF60
+         6J03gT0A3lXXouU96LUoJ0UO+Sh/WBhXYWtA2w86/oHILR6aHg7bqbZfvrHkFLJjA+/7
+         A3OA==
+X-Gm-Message-State: AOAM531mO+5wTf9MiVtp8eh7NJLfx5tVa7eXzyA0us926DG0ot6Oi2p3
+        mAvG6Bo4LsxL+3n+ijjp0tzItjb5IkEjOOiX
+X-Google-Smtp-Source: ABdhPJxce/lsSsph+CNvhlwiTpQqwp0UBlYwE033pF7excLlOBzVn0eOgE/hQ8wHHmnJqatwtBFT2iEC2bPgnNiw
+Sender: "josephjang via sendgmr" 
+        <josephjang@josephjang-p920.ntc.corp.google.com>
+X-Received: from josephjang-p920.ntc.corp.google.com ([2401:fa00:fc:1:7220:84ff:fe09:41e0])
+ (user=josephjang job=sendgmr) by 2002:a0c:fe91:: with SMTP id
+ d17mr2073157qvs.50.1610085076652; Thu, 07 Jan 2021 21:51:16 -0800 (PST)
+Date:   Fri,  8 Jan 2021 13:51:11 +0800
+Message-Id: <20210108055111.931543-1-josephjang@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.29.2.729.g45daf8777d-goog
+Subject: [PATCH v5] power: suspend: Move dpm_watchdog to suspend.c and enhance it
+From:   Joseph Jang <josephjang@google.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Pavel Machek <pavel@ucw.cz>, Len Brown <len.brown@intel.com>,
+        Petr Mladek <pmladek@suse.com>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Kees Cook <keescook@chromium.org>,
+        Anton Vorontsov <anton@enomsg.org>,
+        Colin Cross <ccross@android.com>,
+        Tony Luck <tony.luck@intel.com>,
+        "David S . Miller " <davem@davemloft.net>,
+        Rob Herring <robh@kernel.org>,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+        jonglin@google.com, woodylin@google.com, markcheng@google.com,
+        josephjang@google.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[AMD Official Use Only - Approved for External Use]
+Since dpm_watchdog just cover two functions __device_suspend() and
+device_resume(), we proposed to move it to core power suspend.c to extend
+its coverage and monitor more devices suspend hand issues.
 
-Hi David,
+We propose to use new name suspend watchdog and new timeout handler to
+cover more sleep hang issues. The new timeout handler will dump disk
+sleep task call trace at first round timeout and trigger kernel panic
+at second round timeout.
+The default timer for each round is defined in
+CONFIG_PM_SUSPEND_WATCHDOG_TIMEOUT.
 
-Thank you for noticing and submitting a fix. You may use
-Signed-off-by: Naveen Krishna Chatradhi <nchatrad@amd.com>
-
-Regards,
-Naveenk
-
------Original Message-----
-From: David Arcari <darcari@redhat.com>=20
-Sent: Thursday, January 7, 2021 8:17 PM
-To: linux-hwmon@vger.kernel.org
-Cc: David Arcari <darcari@redhat.com>; Chatradhi, Naveen Krishna <NaveenKri=
-shna.Chatradhi@amd.com>; Jean Delvare <jdelvare@suse.com>; Guenter Roeck <l=
-inux@roeck-us.net>; linux-kernel@vger.kernel.org; stable@vger.kernel.org
-Subject: [PATCH] hwmon: (amd_energy) fix allocation of hwmon_channel_info c=
-onfig
-
-[CAUTION: External Email]
-
-hwmon, specifically hwmon_num_channel_attrs, expects the config array in th=
-e hwmon_channel_info structure to be terminated by a zero entry.  amd_energ=
-y does not honor this convention.  As result, a KASAN warning is possible. =
- Fix this by adding an additional entry and setting it to zero.
-
-Fixes: 8abee9566b7e ("hwmon: Add amd_energy driver to report energy counter=
-s")
-
-Signed-off-by: David Arcari <darcari@redhat.com>
-Cc: Naveen Krishna Chatradhi <nchatrad@amd.com>
-[naveenk:] Signed-off-by: Naveen Krishna Chatradhi <nchatrad@amd.com>
-Cc: Jean Delvare <jdelvare@suse.com>
-Cc: Guenter Roeck <linux@roeck-us.net>
-Cc: linux-kernel@vger.kernel.org
-Cc: stable@vger.kernel.org
+Signed-off-by: Joseph Jang <josephjang@google.com>
 ---
- drivers/hwmon/amd_energy.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+Changes since v4:
+ - Change #define PM_SUSPEND_WATCHDOG to CONFIG_PM_SUSPEND_WATCHDOG in suspend_watchdog.c
+   to make sure we compile all suspend watchdog functions.
+ - Add suspend watchdog functions declared in suspend_watchdog.h to prevent compile errors.
 
-diff --git a/drivers/hwmon/amd_energy.c b/drivers/hwmon/amd_energy.c index =
-9b306448b7a0..822c2e74b98d 100644
---- a/drivers/hwmon/amd_energy.c
-+++ b/drivers/hwmon/amd_energy.c
-@@ -222,7 +222,7 @@ static int amd_create_sensor(struct device *dev,
-         */
-        cpus =3D num_present_cpus() / num_siblings;
+Changes since v3:
+ - Change the naming from sleep timer to suspend watchdog.
+ - Remove console_is_suspended() from console.h and printk.c
+ - Add static declaration for suspend_watchdog struct since we use it in suspend.c only.
+ - Move suspend watchdog real logic to suspend_watchdog.c.
+ - Put the function prototypes in suspend_watchdog.h
+ - Use inline functions for function prototypes definition.
 
--       s_config =3D devm_kcalloc(dev, cpus + sockets,
-+       s_config =3D devm_kcalloc(dev, cpus + sockets + 1,
-                                sizeof(u32), GFP_KERNEL);
-        if (!s_config)
-                return -ENOMEM;
-@@ -254,6 +254,7 @@ static int amd_create_sensor(struct device *dev,
-                        scnprintf(label_l[i], 10, "Esocket%u", (i - cpus));
-        }
+Changes since v2:
+ - Add kernel/power/suspend_timer.h in MAINTAINERS
+ - Share some corner cases that dpm_watchdog cannot cover.
+  Case#A: dpm_watchdog cannot cover suspend hang in suspend_enter().
+  File: kernel/power/suspend.c
+  int suspend_devices_and_enter(suspend_state_t state)
+  {
+   ... <SNIP>
 
-+       s_config[i] =3D 0;
-        return 0;
+         suspend_test_start();
+         error = dpm_suspend_start(PMSG_SUSPEND);  <== dpm_watchdog will be enabled/disabled in this fucntion ...
+         if (error) {
+                 pr_err("Some devices failed to suspend, or early wake event detected\n");
+                 goto Recover_platform;
+         }
+         suspend_test_finish("suspend devices");
+         if (suspend_test(TEST_DEVICES))
+                 goto Recover_platform;
+
+         do {
+                 error = suspend_enter(state, &wakeup);  <== but we encounter hang inside function suspend_enter() ...
+         } while (!error && !wakeup && platform_suspend_again(state));
+
+  Case#B: dpm_watchdog cannot cover resume hang in dpm_resume_early() because it enable/disable in device_resume().
+  Call trace:
+   __switch_to+0x174/0x194
+   __schedule+0xa60/0x1464
+   __cancel_work_timer+0x120/0x234
+   chg_pm_resume+0x2c/0xd8
+   dpm_run_callback+0x27c/0x624
+   device_resume_early+0x1e4/0x1f8
+   dpm_resume_early+0x350/0x8f4
+   suspend_devices_and_enter+0xffc/0x168c
+   pm_suspend+0xb54/0xdac
+
+  File: drivers/base/power/main.c.
+  static int device_resume(struct device *dev, pm_message_t state, bool async)
+      if (!dpm_wait_for_superior(dev, async))
+          goto Complete;
+  
+      dpm_watchdog_set(&wd, dev);
+      device_lock(dev);
+  
+      /*
+   ... <SNIP>
+ 
+      Unlock:
+          device_unlock(dev);
+          dpm_watchdog_clear(&wd);
+
+  Case#C: dpm_watchdog cannot cover suspend hang in ksys_sync().
+   Call trace:
+    __switch_to+0x1b0/0x1cc
+    __schedule+0xac8/0x1314
+    io_schedule+0x94/0xc8
+    wait_on_page_bit+0x1f8/0x3a4
+    __filemap_fdatawait_range+0x134/0x150
+    sync_inodes_sb+0x368/0x584
+    sync_inodes_one_sb+0x18/0x24
+    iterate_supers+0x12c/0x2b8
+    ksys_sync+0x48/0x12c
+    enter_state+0x294/0x7bc
+    pm_suspend+0x164/0x2a8
+
+ - Explain some enhancement by following.
+  Q1: Why not use the existing one?
+  struct dpm_watchdog {
+      struct device           *dev;
+      struct task_struct      *tsk;
+      struct timer_list       timer;
+  };
+  
+  A1: In kernel/power/suspend.c, we don't have "struct device " because suspend.c is for core PM instead of device PM.
+  So we propose to use sleep_timer struct.
+  
+  struct sleep_timer {
+      struct task_struct	*tsk;
+      struct timer_list	timer;
+  };
+  
+  
+  Q2: Why not use stack memory for timer struct?
+  static void dpm_watchdog_set(struct dpm_watchdog *wd, struct device *dev)
+  {
+      ... <SNIP>  
+      timer_setup_on_stack(timer, dpm_watchdog_handler, 0);  <== dpm_watchdog use stack memory for timer struct.
+      /* use same timeout value for both suspend and resume */
+      timer->expires = jiffies + HZ * CONFIG_DPM_WATCHDOG_TIMEOUT;
+      add_timer(timer);
+  }
+  
+  A2: dpm_watchdog use stack memory has limitation.
+  It cannot support starting watchdog at end of function like s2idle_enter().
+  We cannot use stack memory for this case because the timer struct will be free when go back to caller.
+  
+  File: kernel/power/suspend.c
+  static void s2idle_enter(void)
+    {
+          trace_suspend_resume(TPS("machine_suspend"), PM_SUSPEND_TO_IDLE, true);
+  
+  +       stop_sleep_timer(&st);
+  +
+          raw_spin_lock_irq(&s2idle_lock);
+          if (pm_wakeup_pending())
+                  goto out;
+  ... <SNIP>
+          s2idle_state = S2IDLE_STATE_NONE;
+          raw_spin_unlock_irq(&s2idle_lock);
+  
+  +       start_sleep_timer(&st);
+  +
+          trace_suspend_resume(TPS("machine_suspend"), PM_SUSPEND_TO_IDLE, false);
+    }
+  
+  So we propose to declare a global sleep timer struct in suspend.c like following.
+  
+  File: kernel/power/suspend.c
+   static DEFINE_RAW_SPINLOCK(s2idle_lock);
+   
+  +DECLARE_SLEEP_TIMER(st);
+  +
+   /**
+    * pm_suspend_default_s2idle - Check if suspend-to-idle is the default suspend.
+  
+  Using global timer has another advantage is we could support double calling add_timer()
+  because add_timer() can easily to delete pending timer and add new timer by using the
+  same timer struct.
+
+  Q3: Why do you need to change the timeout handler?
+  A3: dpm_watchdog_handler() need device struct to get device information, but suspend.c doesn't have it.
+  In most of cases, we could know which device driver hang by tracing the suspend thread call stack logs
+  without device struct information for debugging. So we propose to remove device struct and related
+  information like "dev_driver_string(wd->dev)" and "dev_name(wd->dev)" from timeout handler.
+  
+   static void dpm_watchdog_handler(struct timer_list *t)
+   {
+       struct dpm_watchdog *wd = from_timer(wd, t, timer);
+  
+       dev_emerg(wd->dev, "**** DPM device timeout ****\n");
+       show_stack(wd->tsk, NULL, KERN_EMERG);
+       panic("%s %s: unrecoverable failure\n",
+           dev_driver_string(wd->dev), dev_name(wd->dev));  <== we don't need it.
+   }
+  
+   We propose to dump all disk sleep tasks call stack log twice to double confirm suspend thread hang at
+   the same function and make sure other sleep tasks were stuck at the same function for a long time.
+   We also try to resume conole if the console is suspended.
+   At the end of watchdog timeout handler, we propose to trigger kernel panic to prevent system hang like
+   dpm_watchdog.
+  
+  
+  static void sleep_timeout_handler(struct timer_list *t)
+  {
+      struct sleep_timer *st = from_timer(st, t, timer);
+      static int timeout_count;
+  
+      pr_info("Sleep timeout (timer is %d seconds)\n",
+          (CONFIG_PM_SLEEP_TIMER_TIMEOUT));
+      show_stack(st->tsk, NULL, KERN_EMERG);
+      show_state_filter(TASK_UNINTERRUPTIBLE);
+  
+      if (timeout_count < 1) {
+          timeout_count++;
+          start_sleep_timer(st);
+          return;
+      }
+  
+      if (console_is_suspended())
+          resume_console();
+  
+      panic("Sleep timeout and panic\n");
+  }
+
+Changes since v1:
+  - Add commit message to explain why move dpm_watchdog to kernel/power/suspend.c.
+  - Remove dpm_watchdog related functions in drivers/base/power/main.c.
+  - Move suspend_timer.h from include/linux/ to kernel/power/.
+---
+ MAINTAINERS                     |  4 ++
+ drivers/base/power/main.c       | 69 ---------------------------
+ kernel/power/Kconfig            | 27 +++++------
+ kernel/power/Makefile           |  1 +
+ kernel/power/suspend.c          | 19 ++++++++
+ kernel/power/suspend_watchdog.c | 84 +++++++++++++++++++++++++++++++++
+ kernel/power/suspend_watchdog.h | 40 ++++++++++++++++
+ kernel/printk/printk.c          |  2 +-
+ 8 files changed, 162 insertions(+), 84 deletions(-)
+ create mode 100644 kernel/power/suspend_watchdog.c
+ create mode 100644 kernel/power/suspend_watchdog.h
+
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 867157311dc8..ecd988b4a838 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -7788,6 +7788,8 @@ F:	include/linux/freezer.h
+ F:	include/linux/pm.h
+ F:	include/linux/suspend.h
+ F:	kernel/power/
++F:	kernel/power/suspend_watchdog.c
++F:	kernel/power/suspend_watchdog.h
+ 
+ HID CORE LAYER
+ M:	Jiri Kosina <jikos@kernel.org>
+@@ -16630,6 +16632,8 @@ F:	include/linux/freezer.h
+ F:	include/linux/pm.h
+ F:	include/linux/suspend.h
+ F:	kernel/power/
++F:	kernel/power/suspend_watchdog.c
++F:	kernel/power/suspend_watchdog.h
+ 
+ SVGA HANDLING
+ M:	Martin Mares <mj@ucw.cz>
+diff --git a/drivers/base/power/main.c b/drivers/base/power/main.c
+index 205a06752ca9..b08f91e31a70 100644
+--- a/drivers/base/power/main.c
++++ b/drivers/base/power/main.c
+@@ -496,69 +496,6 @@ static int dpm_run_callback(pm_callback_t cb, struct device *dev,
+ 	return error;
  }
+ 
+-#ifdef CONFIG_DPM_WATCHDOG
+-struct dpm_watchdog {
+-	struct device		*dev;
+-	struct task_struct	*tsk;
+-	struct timer_list	timer;
+-};
+-
+-#define DECLARE_DPM_WATCHDOG_ON_STACK(wd) \
+-	struct dpm_watchdog wd
+-
+-/**
+- * dpm_watchdog_handler - Driver suspend / resume watchdog handler.
+- * @t: The timer that PM watchdog depends on.
+- *
+- * Called when a driver has timed out suspending or resuming.
+- * There's not much we can do here to recover so panic() to
+- * capture a crash-dump in pstore.
+- */
+-static void dpm_watchdog_handler(struct timer_list *t)
+-{
+-	struct dpm_watchdog *wd = from_timer(wd, t, timer);
+-
+-	dev_emerg(wd->dev, "**** DPM device timeout ****\n");
+-	show_stack(wd->tsk, NULL, KERN_EMERG);
+-	panic("%s %s: unrecoverable failure\n",
+-		dev_driver_string(wd->dev), dev_name(wd->dev));
+-}
+-
+-/**
+- * dpm_watchdog_set - Enable pm watchdog for given device.
+- * @wd: Watchdog. Must be allocated on the stack.
+- * @dev: Device to handle.
+- */
+-static void dpm_watchdog_set(struct dpm_watchdog *wd, struct device *dev)
+-{
+-	struct timer_list *timer = &wd->timer;
+-
+-	wd->dev = dev;
+-	wd->tsk = current;
+-
+-	timer_setup_on_stack(timer, dpm_watchdog_handler, 0);
+-	/* use same timeout value for both suspend and resume */
+-	timer->expires = jiffies + HZ * CONFIG_DPM_WATCHDOG_TIMEOUT;
+-	add_timer(timer);
+-}
+-
+-/**
+- * dpm_watchdog_clear - Disable suspend/resume watchdog.
+- * @wd: Watchdog to disable.
+- */
+-static void dpm_watchdog_clear(struct dpm_watchdog *wd)
+-{
+-	struct timer_list *timer = &wd->timer;
+-
+-	del_timer_sync(timer);
+-	destroy_timer_on_stack(timer);
+-}
+-#else
+-#define DECLARE_DPM_WATCHDOG_ON_STACK(wd)
+-#define dpm_watchdog_set(x, y)
+-#define dpm_watchdog_clear(x)
+-#endif
+-
+ /*------------------------- Resume routines -------------------------*/
+ 
+ /**
+@@ -899,7 +836,6 @@ static int device_resume(struct device *dev, pm_message_t state, bool async)
+ 	pm_callback_t callback = NULL;
+ 	const char *info = NULL;
+ 	int error = 0;
+-	DECLARE_DPM_WATCHDOG_ON_STACK(wd);
+ 
+ 	TRACE_DEVICE(dev);
+ 	TRACE_RESUME(0);
+@@ -916,7 +852,6 @@ static int device_resume(struct device *dev, pm_message_t state, bool async)
+ 	if (!dpm_wait_for_superior(dev, async))
+ 		goto Complete;
+ 
+-	dpm_watchdog_set(&wd, dev);
+ 	device_lock(dev);
+ 
+ 	/*
+@@ -969,7 +904,6 @@ static int device_resume(struct device *dev, pm_message_t state, bool async)
+ 
+  Unlock:
+ 	device_unlock(dev);
+-	dpm_watchdog_clear(&wd);
+ 
+  Complete:
+ 	complete_all(&dev->power.completion);
+@@ -1593,7 +1527,6 @@ static int __device_suspend(struct device *dev, pm_message_t state, bool async)
+ 	pm_callback_t callback = NULL;
+ 	const char *info = NULL;
+ 	int error = 0;
+-	DECLARE_DPM_WATCHDOG_ON_STACK(wd);
+ 
+ 	TRACE_DEVICE(dev);
+ 	TRACE_SUSPEND(0);
+@@ -1647,7 +1580,6 @@ static int __device_suspend(struct device *dev, pm_message_t state, bool async)
+ 	dev->power.may_skip_resume = true;
+ 	dev->power.must_resume = false;
+ 
+-	dpm_watchdog_set(&wd, dev);
+ 	device_lock(dev);
+ 
+ 	if (dev->pm_domain) {
+@@ -1699,7 +1631,6 @@ static int __device_suspend(struct device *dev, pm_message_t state, bool async)
+ 	}
+ 
+ 	device_unlock(dev);
+-	dpm_watchdog_clear(&wd);
+ 
+  Complete:
+ 	if (error)
+diff --git a/kernel/power/Kconfig b/kernel/power/Kconfig
+index a7320f07689d..c1154e53d834 100644
+--- a/kernel/power/Kconfig
++++ b/kernel/power/Kconfig
+@@ -207,21 +207,20 @@ config PM_SLEEP_DEBUG
+ 	def_bool y
+ 	depends on PM_DEBUG && PM_SLEEP
+ 
+-config DPM_WATCHDOG
+-	bool "Device suspend/resume watchdog"
+-	depends on PM_DEBUG && PSTORE && EXPERT
++config PM_SUSPEND_WATCHDOG
++	bool "Watchdog for linux kernel suspend/resume process"
++	depends on PM_SLEEP
+ 	help
+-	  Sets up a watchdog timer to capture drivers that are
+-	  locked up attempting to suspend/resume a device.
+-	  A detected lockup causes system panic with message
+-	  captured in pstore device for inspection in subsequent
+-	  boot session.
+-
+-config DPM_WATCHDOG_TIMEOUT
+-	int "Watchdog timeout in seconds"
+-	range 1 120
+-	default 120
+-	depends on DPM_WATCHDOG
++	This option will enable suspend watchdog to prevent device stuck
++	during suspend/resume process. Suspend watchdog timeout handler
++	will dump disk sleep task at first round timeout and trigger
++	kernel panic at second round timeout. The timer for each round
++	is defined in CONFIG_PM_SUSPEND_WATCHDOG_TIMEOUT.
++
++config PM_SUSPEND_WATCHDOG_TIMEOUT
++	int "Suspend watchdog timeout in seconds"
++	range 30 120
++	depends on PM_SUSPEND_WATCHDOG
+ 
+ config PM_TRACE
+ 	bool
+diff --git a/kernel/power/Makefile b/kernel/power/Makefile
+index 5899260a8bef..f711e391004b 100644
+--- a/kernel/power/Makefile
++++ b/kernel/power/Makefile
+@@ -9,6 +9,7 @@ obj-$(CONFIG_PM)		+= main.o
+ obj-$(CONFIG_VT_CONSOLE_SLEEP)	+= console.o
+ obj-$(CONFIG_FREEZER)		+= process.o
+ obj-$(CONFIG_SUSPEND)		+= suspend.o
++obj-$(CONFIG_PM_SUSPEND_WATCHDOG)	+= suspend_watchdog.o
+ obj-$(CONFIG_PM_TEST_SUSPEND)	+= suspend_test.o
+ obj-$(CONFIG_HIBERNATION)	+= hibernate.o snapshot.o swap.o
+ obj-$(CONFIG_HIBERNATION_SNAPSHOT_DEV) += user.o
+diff --git a/kernel/power/suspend.c b/kernel/power/suspend.c
+index 8b1bb5ee7e5d..a0e3dfb39f6e 100644
+--- a/kernel/power/suspend.c
++++ b/kernel/power/suspend.c
+@@ -32,6 +32,7 @@
+ #include <linux/moduleparam.h>
+ 
+ #include "power.h"
++#include "suspend_watchdog.h"
+ 
+ const char * const pm_labels[] = {
+ 	[PM_SUSPEND_TO_IDLE] = "freeze",
+@@ -61,6 +62,8 @@ static DECLARE_SWAIT_QUEUE_HEAD(s2idle_wait_head);
+ enum s2idle_states __read_mostly s2idle_state;
+ static DEFINE_RAW_SPINLOCK(s2idle_lock);
+ 
++static DECLARE_SUSPEND_WATCHDOG(suspend_wd);
++
+ /**
+  * pm_suspend_default_s2idle - Check if suspend-to-idle is the default suspend.
+  *
+@@ -89,6 +92,8 @@ static void s2idle_enter(void)
+ {
+ 	trace_suspend_resume(TPS("machine_suspend"), PM_SUSPEND_TO_IDLE, true);
+ 
++	stop_suspend_watchdog(&suspend_wd);
++
+ 	raw_spin_lock_irq(&s2idle_lock);
+ 	if (pm_wakeup_pending())
+ 		goto out;
+@@ -114,6 +119,8 @@ static void s2idle_enter(void)
+ 	s2idle_state = S2IDLE_STATE_NONE;
+ 	raw_spin_unlock_irq(&s2idle_lock);
+ 
++	start_suspend_watchdog(&suspend_wd);
++
+ 	trace_suspend_resume(TPS("machine_suspend"), PM_SUSPEND_TO_IDLE, false);
+ }
+ 
+@@ -179,6 +186,8 @@ void __init pm_states_init(void)
+ 	 * initialize mem_sleep_states[] accordingly here.
+ 	 */
+ 	mem_sleep_states[PM_SUSPEND_TO_IDLE] = mem_sleep_labels[PM_SUSPEND_TO_IDLE];
++
++	init_suspend_watchdog(&suspend_wd, suspend_timeout_handler);
+ }
+ 
+ static int __init mem_sleep_default_setup(char *str)
+@@ -426,6 +435,8 @@ static int suspend_enter(suspend_state_t state, bool *wakeup)
+ 	if (error || suspend_test(TEST_CPUS))
+ 		goto Enable_cpus;
+ 
++	stop_suspend_watchdog(&suspend_wd);
++
+ 	arch_suspend_disable_irqs();
+ 	BUG_ON(!irqs_disabled());
+ 
+@@ -451,6 +462,8 @@ static int suspend_enter(suspend_state_t state, bool *wakeup)
+ 	arch_suspend_enable_irqs();
+ 	BUG_ON(irqs_disabled());
+ 
++	start_suspend_watchdog(&suspend_wd);
++
+  Enable_cpus:
+ 	suspend_enable_secondary_cpus();
+ 
+@@ -610,6 +623,9 @@ int pm_suspend(suspend_state_t state)
+ 		return -EINVAL;
+ 
+ 	pr_info("suspend entry (%s)\n", mem_sleep_labels[state]);
++
++	start_suspend_watchdog(&suspend_wd);
++
+ 	error = enter_state(state);
+ 	if (error) {
+ 		suspend_stats.fail++;
+@@ -617,6 +633,9 @@ int pm_suspend(suspend_state_t state)
+ 	} else {
+ 		suspend_stats.success++;
+ 	}
++
++	stop_suspend_watchdog(&suspend_wd);
++
+ 	pr_info("suspend exit\n");
+ 	return error;
+ }
+diff --git a/kernel/power/suspend_watchdog.c b/kernel/power/suspend_watchdog.c
+new file mode 100644
+index 000000000000..e6828f8dfb54
+--- /dev/null
++++ b/kernel/power/suspend_watchdog.c
+@@ -0,0 +1,84 @@
++// SPDX-License-Identifier: GPL-2.0-only
++/*
++ * kernel/power/suspend_watchdog.c - Suspend watchdog functionality.
++ *
++ * Copyright (c) 2020 Joseph Jang
++ */
++
++#define pr_fmt(fmt) "SWD: " fmt
++
++#include <linux/mm.h>
++#include <linux/sched/debug.h>
++#include <linux/console.h>
++
++#include "suspend_watchdog.h"
++
++#ifdef CONFIG_PM_SUSPEND_WATCHDOG
++
++/**
++ * init_suspend_watchdog - Initialize suspend watchdog timer.
++ * @suspend_wd: Suspend watchdog to initialize.
++ * @func: Suspend watchdog timeout handler.
++ */
++inline void init_suspend_watchdog(struct suspend_watchdog *suspend_wd, void *func)
++{
++	struct timer_list *timer = &suspend_wd->timer;
++
++	timer_setup(timer, func, 0);
++}
++
++/**
++ * start_suspend_watchdog - Enable suspend watchdog to monitor suspend thread.
++ * @suspend_wd: Suspend watchdog to enable.
++ */
++inline void start_suspend_watchdog(struct suspend_watchdog *suspend_wd)
++{
++	struct timer_list *timer = &suspend_wd->timer;
++
++	suspend_wd->tsk = current;
++
++	/* use same timeout value for both suspend and resume */
++	timer->expires = jiffies + HZ * CONFIG_PM_SUSPEND_WATCHDOG_TIMEOUT;
++	add_timer(timer);
++}
++
++/**
++ * stop_suspend_watchdog - Disable suspend watchdog.
++ * @suspend_wd: Suspend watchdog to disable.
++ */
++inline void stop_suspend_watchdog(struct suspend_watchdog *suspend_wd)
++{
++	struct timer_list *timer = &suspend_wd->timer;
++
++	del_timer_sync(timer);
++}
++
++/**
++ * suspend_timeout_handler - suspend watchdog timeout handler.
++ * @t: The timer list that suspend watchdog timer depends on.
++ *
++ * Called when suspend thread has timeout suspending or resuming.
++ * Dump all uninterruptible tasks' call stack and call panic() to
++ * reboot system in second round timeout.
++ */
++inline void suspend_timeout_handler(struct timer_list *t)
++{
++	struct suspend_watchdog *suspend_wd = from_timer(suspend_wd, t, timer);
++	static int timeout_count;
++
++	pr_info("Suspend watchdog timeout (timer is %d seconds)\n",
++		(CONFIG_PM_SUSPEND_WATCHDOG_TIMEOUT));
++	show_stack(suspend_wd->tsk, NULL, KERN_EMERG);
++	show_state_filter(TASK_UNINTERRUPTIBLE);
++
++	if (timeout_count < 1) {
++		timeout_count++;
++		start_suspend_watchdog(suspend_wd);
++		return;
++	}
++
++	resume_console();
++
++	panic("Sleep timeout and panic\n");
++}
++#endif
+diff --git a/kernel/power/suspend_watchdog.h b/kernel/power/suspend_watchdog.h
+new file mode 100644
+index 000000000000..18037445a77b
+--- /dev/null
++++ b/kernel/power/suspend_watchdog.h
+@@ -0,0 +1,40 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++#ifndef _LINUX_SUSPEND_WATCHDOG_H
++#define _LINUX_SUSPEND_WATCHDOG_H
++
++#include <linux/sched/debug.h>
++
++struct suspend_watchdog {
++	struct task_struct *tsk;
++	struct timer_list timer;
++};
++
++#define DECLARE_SUSPEND_WATCHDOG(suspend_wd) \
++	struct suspend_watchdog suspend_wd
++
++#ifdef CONFIG_PM_SUSPEND_WATCHDOG
++inline void init_suspend_watchdog(struct suspend_watchdog *suspend_wd,
++					 void *func);
++
++inline void start_suspend_watchdog(struct suspend_watchdog *suspend_wd);
++
++inline void stop_suspend_watchdog(struct suspend_watchdog *suspend_wd);
++
++inline void suspend_timeout_handler(struct timer_list *t);
++#else
++static inline void init_suspend_watchdog(struct suspend_watchdog *suspend_wd,
++					 void *func)
++{
++}
++static inline void start_suspend_watchdog(struct suspend_watchdog *suspend_wd)
++{
++}
++static inline void stop_suspend_watchdog(struct suspend_watchdog *suspend_wd)
++{
++}
++static inline void suspend_timeout_handler(struct timer_list *t)
++{
++}
++#endif
++
++#endif /* _LINUX_SUSPEND_WATCHDOG_H */
+diff --git a/kernel/printk/printk.c b/kernel/printk/printk.c
+index 9b75f6bfc333..168cb7b3148b 100644
+--- a/kernel/printk/printk.c
++++ b/kernel/printk/printk.c
+@@ -2276,7 +2276,7 @@ void suspend_console(void)
+ 
+ void resume_console(void)
+ {
+-	if (!console_suspend_enabled)
++	if ((!console_suspend_enabled) || (!console_suspended))
+ 		return;
+ 	down_console_sem();
+ 	console_suspended = 0;
+-- 
+2.29.2.729.g45daf8777d-goog
 
---
-2.18.1
