@@ -2,201 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D32F2EFAA1
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 22:32:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AF8B92EFAA7
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 22:34:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729657AbhAHVbY convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 8 Jan 2021 16:31:24 -0500
-Received: from frasgout.his.huawei.com ([185.176.79.56]:2301 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726932AbhAHVbU (ORCPT
+        id S1729225AbhAHVc0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Jan 2021 16:32:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36180 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728420AbhAHVcX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Jan 2021 16:31:20 -0500
-Received: from fraeml714-chm.china.huawei.com (unknown [172.18.147.201])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4DCGQ64N4hz67XP8;
-        Sat,  9 Jan 2021 05:26:54 +0800 (CST)
-Received: from lhreml715-chm.china.huawei.com (10.201.108.66) by
- fraeml714-chm.china.huawei.com (10.206.15.33) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Fri, 8 Jan 2021 22:30:37 +0100
-Received: from dggemi761-chm.china.huawei.com (10.1.198.147) by
- lhreml715-chm.china.huawei.com (10.201.108.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2106.2; Fri, 8 Jan 2021 21:30:36 +0000
-Received: from dggemi761-chm.china.huawei.com ([10.9.49.202]) by
- dggemi761-chm.china.huawei.com ([10.9.49.202]) with mapi id 15.01.2106.002;
- Sat, 9 Jan 2021 05:30:34 +0800
-From:   "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>
-To:     Morten Rasmussen <morten.rasmussen@arm.com>,
-        Tim Chen <tim.c.chen@linux.intel.com>
-CC:     "valentin.schneider@arm.com" <valentin.schneider@arm.com>,
-        "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
-        "will@kernel.org" <will@kernel.org>,
-        "rjw@rjwysocki.net" <rjw@rjwysocki.net>,
-        "vincent.guittot@linaro.org" <vincent.guittot@linaro.org>,
-        "lenb@kernel.org" <lenb@kernel.org>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        Jonathan Cameron <jonathan.cameron@huawei.com>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "peterz@infradead.org" <peterz@infradead.org>,
-        "juri.lelli@redhat.com" <juri.lelli@redhat.com>,
-        "dietmar.eggemann@arm.com" <dietmar.eggemann@arm.com>,
-        "rostedt@goodmis.org" <rostedt@goodmis.org>,
-        "bsegall@google.com" <bsegall@google.com>,
-        "mgorman@suse.de" <mgorman@suse.de>,
-        "mark.rutland@arm.com" <mark.rutland@arm.com>,
-        "sudeep.holla@arm.com" <sudeep.holla@arm.com>,
-        "aubrey.li@linux.intel.com" <aubrey.li@linux.intel.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
-        "linuxarm@openeuler.org" <linuxarm@openeuler.org>,
-        "xuwei (O)" <xuwei5@huawei.com>,
-        "Zengtao (B)" <prime.zeng@hisilicon.com>,
-        "tiantao (H)" <tiantao6@hisilicon.com>
-Subject: RE: [RFC PATCH v3 0/2] scheduler: expose the topology of clusters and
- add cluster scheduler
-Thread-Topic: [RFC PATCH v3 0/2] scheduler: expose the topology of clusters
- and add cluster scheduler
-Thread-Index: AQHW5AbteiV+M51D3k+7bMDug+Sb86ocSCyAgAELFICAAOgS8A==
-Date:   Fri, 8 Jan 2021 21:30:34 +0000
-Message-ID: <f15f8feb4e764c11a078ffd74f002a8d@hisilicon.com>
-References: <20210106083026.40444-1-song.bao.hua@hisilicon.com>
- <737932c9-846a-0a6b-08b8-e2d2d95b67ce@linux.intel.com>
- <20210108151241.GA47324@e123083-lin>
-In-Reply-To: <20210108151241.GA47324@e123083-lin>
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.126.202.246]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        Fri, 8 Jan 2021 16:32:23 -0500
+Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDE2EC061786
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Jan 2021 13:31:42 -0800 (PST)
+Received: by mail-ed1-x52b.google.com with SMTP id v26so3653940eds.13
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Jan 2021 13:31:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=usABmZbPBqvxIY7U6EdGtDSIYnBKPUAxoopqfJsbtF4=;
+        b=pBGi9wERfXy2hax+45WV3pYPQR65fOvZkuo+5mJBYJm6oCBXdlsNQ8MLB2BBZJghLV
+         krg0LeT8dDbheD2uijN7Xt+GmkSuJtHYSwgxWq/ZMwJHgwuur7rw2L4h0Q84fHnxuYNJ
+         BqLkmzGllNp9DvPfiijxoam7DIejfT06c3wqhBqPdvllpbzncL7z7xc3zfkeYvEFM0/y
+         wLRqioz1SjBMUYCnZJZfs2GaQIr7j9B/ZvO5kT1xaSSlgo1x8DGIuqaPmbr921IxGow9
+         VT3idPThY7BJWa/DhX2K/205uPggSR1O8exx7M439p7jP5pUTCEm50o6MJ2bZAPGa1i1
+         9JFw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=usABmZbPBqvxIY7U6EdGtDSIYnBKPUAxoopqfJsbtF4=;
+        b=i0bvVJWVcfRWMubS0XexXJijhTOJdq4lS89QMEds3zBAxUq+yFdtn/PnsF0Qql2d02
+         886NZK30pQPvYOW44IgP1o0OLSOjBgYsgWLygG60oThTBjTvQKmy2X7mSd07uCcBYhOh
+         4mMVYHxexe/gzewgmkENWGciN7xAaFBEvKnEyNY0pRytFl33A3Cida7JfT7Fyyn7crNe
+         lnLoBVOOr1zLknqm+OoP0C7xOjyvsz+2UpfHzGsD+p+fgJJPV/02k2VQs1neVUo7+6OI
+         H5fshNWX1jZCHqtpSbT8fVrOI+yTy/829b3ZR7inc511CeohLNgrf/cL0Ev/gaEva+qW
+         Qe2Q==
+X-Gm-Message-State: AOAM532Im6vUNntI6909irEwNeZCPHNFajCvVDtRwD0z9IC7D17/f7eM
+        7s5jvmNHgfxeX6Efgt8bZWM1CfkQc1bwt6hfB9+oRA==
+X-Google-Smtp-Source: ABdhPJw2qYeDr60GGb3HJnbXtjHALUnLnnC8WnJbfhBCDpJkWDyszY9IxAR+lhJgwDJyVCmFAUsAet6wSO0g94hykG0=
+X-Received: by 2002:aa7:da03:: with SMTP id r3mr6546470eds.155.1610141501281;
+ Fri, 08 Jan 2021 13:31:41 -0800 (PST)
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
+References: <20201112015359.1103333-1-lokeshgidra@google.com>
+ <20201112015359.1103333-4-lokeshgidra@google.com> <CAHC9VhS2WNXn2cVAUcAY5AmmBv+=XsthCevofNNuEOU3=jtLrg@mail.gmail.com>
+ <CAEjxPJ6TA_nXrUJ6CjhG-j0_oAj9WU1vRn5pGvjDqQ2Bk9VVag@mail.gmail.com>
+ <CA+EESO45ezOtg1-MHfwSk3YNYRS7cYnH+kMz-T_MdaSpyW=8Yw@mail.gmail.com> <CAEjxPJ7CL0WbEeooyh=d_LggZ7xTtcqsLY3TSunJ6oXWNxBOuw@mail.gmail.com>
+In-Reply-To: <CAEjxPJ7CL0WbEeooyh=d_LggZ7xTtcqsLY3TSunJ6oXWNxBOuw@mail.gmail.com>
+From:   Lokesh Gidra <lokeshgidra@google.com>
+Date:   Fri, 8 Jan 2021 13:31:30 -0800
+Message-ID: <CA+EESO56RQdB3vV4_BKHT6rhGnbyT07HvrfPcR5s5OFMh1XURw@mail.gmail.com>
+Subject: Re: [PATCH v13 3/4] selinux: teach SELinux about anonymous inodes
+To:     Stephen Smalley <stephen.smalley.work@gmail.com>
+Cc:     Paul Moore <paul@paul-moore.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        James Morris <jmorris@namei.org>,
+        Casey Schaufler <casey@schaufler-ca.com>,
+        Eric Biggers <ebiggers@kernel.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        Eric Paris <eparis@parisplace.org>,
+        Daniel Colascione <dancol@dancol.org>,
+        Kees Cook <keescook@chromium.org>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        KP Singh <kpsingh@google.com>,
+        David Howells <dhowells@redhat.com>,
+        Anders Roxell <anders.roxell@linaro.org>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Matthew Garrett <matthewgarrett@google.com>,
+        Aaron Goidel <acgoide@tycho.nsa.gov>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        "Joel Fernandes (Google)" <joel@joelfernandes.org>,
+        YueHaibing <yuehaibing@huawei.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Alexey Budankov <alexey.budankov@linux.intel.com>,
+        Adrian Reber <areber@redhat.com>,
+        Aleksa Sarai <cyphar@cyphar.com>,
+        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        LSM List <linux-security-module@vger.kernel.org>,
+        SElinux list <selinux@vger.kernel.org>,
+        Kalesh Singh <kaleshsingh@google.com>,
+        Calin Juravle <calin@google.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Jeffrey Vander Stoep <jeffv@google.com>,
+        "Cc: Android Kernel" <kernel-team@android.com>,
+        "open list:MEMORY MANAGEMENT" <linux-mm@kvack.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Christoph Hellwig <hch@infradead.org>,
+        Daniel Colascione <dancol@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-> -----Original Message-----
-> From: Morten Rasmussen [mailto:morten.rasmussen@arm.com]
-> Sent: Saturday, January 9, 2021 4:13 AM
-> To: Tim Chen <tim.c.chen@linux.intel.com>
-> Cc: Song Bao Hua (Barry Song) <song.bao.hua@hisilicon.com>;
-> valentin.schneider@arm.com; catalin.marinas@arm.com; will@kernel.org;
-> rjw@rjwysocki.net; vincent.guittot@linaro.org; lenb@kernel.org;
-> gregkh@linuxfoundation.org; Jonathan Cameron <jonathan.cameron@huawei.com>;
-> mingo@redhat.com; peterz@infradead.org; juri.lelli@redhat.com;
-> dietmar.eggemann@arm.com; rostedt@goodmis.org; bsegall@google.com;
-> mgorman@suse.de; mark.rutland@arm.com; sudeep.holla@arm.com;
-> aubrey.li@linux.intel.com; linux-arm-kernel@lists.infradead.org;
-> linux-kernel@vger.kernel.org; linux-acpi@vger.kernel.org;
-> linuxarm@openeuler.org; xuwei (O) <xuwei5@huawei.com>; Zengtao (B)
-> <prime.zeng@hisilicon.com>; tiantao (H) <tiantao6@hisilicon.com>
-> Subject: Re: [RFC PATCH v3 0/2] scheduler: expose the topology of clusters and
-> add cluster scheduler
-> 
-> On Thu, Jan 07, 2021 at 03:16:47PM -0800, Tim Chen wrote:
-> > On 1/6/21 12:30 AM, Barry Song wrote:
-> > > ARM64 server chip Kunpeng 920 has 6 clusters in each NUMA node, and each
-> > > cluster has 4 cpus. All clusters share L3 cache data while each cluster
-> > > has local L3 tag. On the other hand, each cluster will share some
-> > > internal system bus. This means cache is much more affine inside one cluster
-> > > than across clusters.
+On Fri, Jan 8, 2021 at 1:24 PM Stephen Smalley
+<stephen.smalley.work@gmail.com> wrote:
+>
+> On Fri, Jan 8, 2021 at 3:17 PM Lokesh Gidra <lokeshgidra@google.com> wrote:
 > >
-> > There is a similar need for clustering in x86.  Some x86 cores could share
-> L2 caches that
-> > is similar to the cluster in Kupeng 920 (e.g. on Jacobsville there are 6 clusters
-> > of 4 Atom cores, each cluster sharing a separate L2, and 24 cores sharing
-> L3).
-> > Having a sched domain at the L2 cluster helps spread load among
-> > L2 domains.  This will reduce L2 cache contention and help with
-> > performance for low to moderate load scenarios.
-> 
-> IIUC, you are arguing for the exact opposite behaviour, i.e. balancing
-> between L2 caches while Barry is after consolidating tasks within the
-> boundaries of a L3 tag cache. One helps cache utilization, the other
-> communication latency between tasks. Am I missing something?
+> > On Fri, Jan 8, 2021 at 11:35 AM Stephen Smalley
+> > <stephen.smalley.work@gmail.com> wrote:
+> > >
+> > > On Wed, Jan 6, 2021 at 10:03 PM Paul Moore <paul@paul-moore.com> wrote:
+> > > >
+> > > > On Wed, Nov 11, 2020 at 8:54 PM Lokesh Gidra <lokeshgidra@google.com> wrote:
+> > > > > From: Daniel Colascione <dancol@google.com>
+> > > > >
+> > > > > This change uses the anon_inodes and LSM infrastructure introduced in
+> > > > > the previous patches to give SELinux the ability to control
+> > > > > anonymous-inode files that are created using the new
+> > > > > anon_inode_getfd_secure() function.
+> > > > >
+> > > > > A SELinux policy author detects and controls these anonymous inodes by
+> > > > > adding a name-based type_transition rule that assigns a new security
+> > > > > type to anonymous-inode files created in some domain. The name used
+> > > > > for the name-based transition is the name associated with the
+> > > > > anonymous inode for file listings --- e.g., "[userfaultfd]" or
+> > > > > "[perf_event]".
+> > > > >
+> > > > > Example:
+> > > > >
+> > > > > type uffd_t;
+> > > > > type_transition sysadm_t sysadm_t : anon_inode uffd_t "[userfaultfd]";
+> > > > > allow sysadm_t uffd_t:anon_inode { create };
+> > > > >
+> > > > > (The next patch in this series is necessary for making userfaultfd
+> > > > > support this new interface.  The example above is just
+> > > > > for exposition.)
+> > > > >
+> > > > > Signed-off-by: Daniel Colascione <dancol@google.com>
+> > > > > Signed-off-by: Lokesh Gidra <lokeshgidra@google.com>
+> > > > > ---
+> > > > >  security/selinux/hooks.c            | 56 +++++++++++++++++++++++++++++
+> > > > >  security/selinux/include/classmap.h |  2 ++
+> > > > >  2 files changed, 58 insertions(+)
+> > > > >
+> > > > > diff --git a/security/selinux/hooks.c b/security/selinux/hooks.c
+> > > > > index 6b1826fc3658..d092aa512868 100644
+> > > > > --- a/security/selinux/hooks.c
+> > > > > +++ b/security/selinux/hooks.c
+> > > > > @@ -2927,6 +2927,61 @@ static int selinux_inode_init_security(struct inode *inode, struct inode *dir,
+> > > > >         return 0;
+> > > > >  }
+> > > > >
+> > > > > +static int selinux_inode_init_security_anon(struct inode *inode,
+> > > > > +                                           const struct qstr *name,
+> > > > > +                                           const struct inode *context_inode)
+> > > > > +{
+> > > > > +       const struct task_security_struct *tsec = selinux_cred(current_cred());
+> > > > > +       struct common_audit_data ad;
+> > > > > +       struct inode_security_struct *isec;
+> > > > > +       int rc;
+> > > > > +
+> > > > > +       if (unlikely(!selinux_initialized(&selinux_state)))
+> > > > > +               return 0;
+> > > > > +
+> > > > > +       isec = selinux_inode(inode);
+> > > > > +
+> > > > > +       /*
+> > > > > +        * We only get here once per ephemeral inode.  The inode has
+> > > > > +        * been initialized via inode_alloc_security but is otherwise
+> > > > > +        * untouched.
+> > > > > +        */
+> > > > > +
+> > > > > +       if (context_inode) {
+> > > > > +               struct inode_security_struct *context_isec =
+> > > > > +                       selinux_inode(context_inode);
+> > > > > +               if (context_isec->initialized != LABEL_INITIALIZED)
+> > > > > +                       return -EACCES;
+> > Stephen, as per your explanation below, is this check also
+> > problematic? I mean is it possible that /dev/kvm context_inode may not
+> > have its label initialized? If so, then v12 of the patch series can be
+> > used as is. Otherwise, I will send the next version which rollbacks
+> > v14 and v13, except for this check. Kindly confirm.
+>
+> The context_inode should always be initialized already.  I'm not fond
+> though of silently returning -EACCES here.  At the least we should
+> have a pr_err() or pr_warn() here.  In reality, this could only occur
+> in the case of a kernel bug or memory corruption so it used to be a
+> candidate for WARN_ON() or BUG_ON() or similar but I know that
+> BUG_ON() at least is frowned upon these days.
 
-Morten, this is not true.
-
-we are both actually looking for the same behavior. My patch also
-has done the exact same behavior of spreading with Tim's patch.
-
-Considering the below two cases:
-Case 1. we have two tasks without any relationship running in a system with 2 clusters and 8 cpus.
-
-Without the sched_domain of cluster, these two tasks might be put as below:
-+-------------------+            +-----------------+
-| +----+   +----+   |            |                 |
-| |task|   |task|   |            |                 |
-| |1   |   |2   |   |            |                 |
-| +----+   +----+   |            |                 |
-|                   |            |                 |
-|       cluster1    |            |     cluster2    |
-+-------------------+            +-----------------+
-With the sched_domain of cluster, load balance will spread them as below:
-+-------------------+            +-----------------+
-| +----+            |            | +----+          |
-| |task|            |            | |task|          |
-| |1   |            |            | |2   |          |
-| +----+            |            | +----+          |
-|                   |            |                 |
-|       cluster1    |            |     cluster2    |
-+-------------------+            +-----------------+
-
-Then task1 and tasks2 get more cache and decrease cache contention.
-They will get better performance.
-
-That is what my original patch also can make. And tim's patch
-is also doing. Once we add a sched_domain, load balance will
-get involved.
-
-
-Case 2. we have 8 tasks, running in a system with 2 clusters and 8 cpus.
-But they are working in 4 groups:
-Task1 wakes up task4
-Task2 wakes up task5
-Task3 wakes up task6
-Task4 wakes up task7
-
-With my changing in select_idle_sibling, the WAKE_AFFINE mechanism will
-try to put task1 and 4, task2 and 5, task3 and 6, task4 and 7 in same clusters rather
-than putting all of them in the random one of the 8 cpus. However, the 8 tasks
-are still spreading among the 8 cpus with my change in select_idle_sibling
-as load balance is still working.
-
-+---------------------------+    +----------------------+
-| +----+        +-----+     |    | +----+      +-----+  |
-| |task|        |task |     |    | |task|      |task |  |
-| |1   |        | 4   |     |    | |2   |      |5    |  |
-| +----+        +-----+     |    | +----+      +-----+  |
-|                           |    |                      |
-|       cluster1            |    |     cluster2         |
-|                           |    |                      |
-|                           |    |                      |
-| +-----+       +------+    |    | +-----+     +------+ |
-| |task |       | task |    |    | |task |     |task  | |
-| |3    |       |  6   |    |    | |4    |     |8     | |
-| +-----+       +------+    |    | +-----+     +------+ |
-+---------------------------+    +----------------------+
-
-Let's consider the 3rd case, that one would be more tricky:
-
-task1 and task2 have close relationship and they are waker-wakee pair.
-With my current patch, select_idle_sidling() wants to put them in one
-cluster, load balance wants to put them in two clusters. Load balance will win. 
-Then maybe we need some same mechanism like adjusting numa imbalance:
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/kernel/sched/fair.c?id=b396f52326de20
-if we permit a light imbalance between clusters, select_idle_sidling()
-will win. And task1 and task2 get better cache affinity.
-
-The 3rd case could be our goal for next step.
-
-
-Thanks
-Barry
-
+Got it. I'll add a pr_err(). Thanks a lot.
