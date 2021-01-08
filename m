@@ -2,110 +2,247 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4863C2EF4BE
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 16:24:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3064D2EF4C0
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 16:24:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727763AbhAHPWz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Jan 2021 10:22:55 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:43976 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726977AbhAHPWy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Jan 2021 10:22:54 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1610119287;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=/aeFvJpJFMTwfZ7/vJ01xGc8codi2ZIp83v/Ajx1hj0=;
-        b=MCopq8l26+2IMzUgEB01vLTbR+2+38HEyMzunJLn5irx6KfWXb2MVNHixktbIeCM4gT9jv
-        aC5Edbmw4yPFekOCCjrPMnNnWA3teO0pz3S6MP5OZf8Qxh7MlLdmJHZi/G8kYvrBA8bbQZ
-        /qsqDqB/zePx76DoL6oci+oHbNL2UNA=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-116-4dDv4JWPP7aKlhsYflMGiA-1; Fri, 08 Jan 2021 10:21:23 -0500
-X-MC-Unique: 4dDv4JWPP7aKlhsYflMGiA-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9252C803621;
-        Fri,  8 Jan 2021 15:21:21 +0000 (UTC)
-Received: from redhat.com (dhcp-17-185.bos.redhat.com [10.18.17.185])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 1A1205D9C0;
-        Fri,  8 Jan 2021 15:21:19 +0000 (UTC)
-Date:   Fri, 8 Jan 2021 10:21:17 -0500
-From:   Jarod Wilson <jarod@redhat.com>
-To:     Jiri Pirko <jiri@resnulli.us>
-Cc:     linux-kernel@vger.kernel.org, Jay Vosburgh <j.vosburgh@gmail.com>,
-        Veaceslav Falico <vfalico@gmail.com>,
-        Andy Gospodarek <andy@greyhouse.net>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Thomas Davis <tadavis@lbl.gov>, netdev@vger.kernel.org
-Subject: Re: [RFC PATCH net-next] bonding: add a vlan+srcmac tx hashing option
-Message-ID: <20210108152117.GC63172@redhat.com>
-References: <20201218193033.6138-1-jarod@redhat.com>
- <20201228101145.GC3565223@nanopsycho.orion>
- <20210107235813.GB29828@redhat.com>
- <20210108131256.GG3565223@nanopsycho.orion>
+        id S1727834AbhAHPXE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Jan 2021 10:23:04 -0500
+Received: from mail.kernel.org ([198.145.29.99]:56438 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726751AbhAHPXD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 Jan 2021 10:23:03 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 328ED2399A;
+        Fri,  8 Jan 2021 15:22:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1610119341;
+        bh=tPW5bEpr0HqmvYnvrUcfD/JhFnM30ms0uYvuur4C/dA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=TXB0d0Rg4e9denrKlcQmt1bttQK1VJX/EHrAseDYIEzW0i8f4S+cSyL+QI8C+zfWI
+         kLD+pghsys5E1NaUSHYaTTRmIgl0/FXcx/e3HZBYaZzYY2N8NuQVfRUrxzI4KkABzR
+         VGC/lkQr8aj5eN+33Z6nm9z63AKAgfW1ow78MWeNbFwh4PjUEnmeOF9WAwUTkDTcgY
+         9phTWBhCxxPwx9jRtyQfuGKE8uO1JOQlBmeA/WVkDAFoc2UrtEzByoQT0UWwdwyvWm
+         18qbmks5AcTi20wNk167tzNZk0bKuANaVnnWiIg9XWFvF49cz7AkiPhrpLuUnkhjUW
+         AdFwp1FliZPbA==
+Date:   Fri, 8 Jan 2021 10:22:20 -0500
+From:   Sasha Levin <sashal@kernel.org>
+To:     Michael Kelley <mikelley@microsoft.com>
+Cc:     Wei Liu <wei.liu@kernel.org>, vkuznets <vkuznets@redhat.com>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "bp@alien8.de" <bp@alien8.de>, "x86@kernel.org" <x86@kernel.org>,
+        "hpa@zytor.com" <hpa@zytor.com>,
+        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "stable@kernel.org" <stable@kernel.org>,
+        KY Srinivasan <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>
+Subject: Re: [PATCH] x86/hyper-v: guard against cpu mask changes in
+ hyperv_flush_tlb_others()
+Message-ID: <20210108152220.GC4035784@sasha-vm>
+References: <20201001013814.2435935-1-sashal@kernel.org>
+ <87o8lm9te3.fsf@vitty.brq.redhat.com>
+ <20201001115359.6jhhrybemnhizgok@liuwe-devbox-debian-v2>
+ <20201001130400.GE2415204@sasha-vm>
+ <MW2PR2101MB105242653A8D5C7DD9DF1062D70E0@MW2PR2101MB1052.namprd21.prod.outlook.com>
+ <20201005145851.hdyaeqo3celt2wtr@liuwe-devbox-debian-v2>
+ <MWHPR21MB1593B4387204C522536F80CCD7D19@MWHPR21MB1593.namprd21.prod.outlook.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Disposition: inline
-In-Reply-To: <20210108131256.GG3565223@nanopsycho.orion>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+In-Reply-To: <MWHPR21MB1593B4387204C522536F80CCD7D19@MWHPR21MB1593.namprd21.prod.outlook.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 08, 2021 at 02:12:56PM +0100, Jiri Pirko wrote:
-> Fri, Jan 08, 2021 at 12:58:13AM CET, jarod@redhat.com wrote:
-> >On Mon, Dec 28, 2020 at 11:11:45AM +0100, Jiri Pirko wrote:
-> >> Fri, Dec 18, 2020 at 08:30:33PM CET, jarod@redhat.com wrote:
-> >> >This comes from an end-user request, where they're running multiple VMs on
-> >> >hosts with bonded interfaces connected to some interest switch topologies,
-> >> >where 802.3ad isn't an option. They're currently running a proprietary
-> >> >solution that effectively achieves load-balancing of VMs and bandwidth
-> >> >utilization improvements with a similar form of transmission algorithm.
-> >> >
-> >> >Basically, each VM has it's own vlan, so it always sends its traffic out
-> >> >the same interface, unless that interface fails. Traffic gets split
-> >> >between the interfaces, maintaining a consistent path, with failover still
-> >> >available if an interface goes down.
-> >> >
-> >> >This has been rudimetarily tested to provide similar results, suitable for
-> >> >them to use to move off their current proprietary solution.
-> >> >
-> >> >Still on the TODO list, if these even looks sane to begin with, is
-> >> >fleshing out Documentation/networking/bonding.rst.
-> >> 
-> >> Jarod, did you consider using team driver instead ? :)
-> >
-> >That's actually one of the things that was suggested, since team I believe
-> >already has support for this, but the user really wants to use bonding.
-> >We're finding that a lot of users really still prefer bonding over team.
-> 
-> Do you know the reason, other than "nostalgia"?
+On Tue, Jan 05, 2021 at 04:59:10PM +0000, Michael Kelley wrote:
+>From: Wei Liu <wei.liu@kernel.org> Sent: Monday, October 5, 2020 7:59 AM
+>>
+>> On Sat, Oct 03, 2020 at 05:40:15PM +0000, Michael Kelley wrote:
+>> > From: Sasha Levin <sashal@kernel.org>  Sent: Thursday, October 1, 2020 6:04 AM
+>> > >
+>> > > On Thu, Oct 01, 2020 at 11:53:59AM +0000, Wei Liu wrote:
+>> > > >On Thu, Oct 01, 2020 at 11:40:04AM +0200, Vitaly Kuznetsov wrote:
+>> > > >> Sasha Levin <sashal@kernel.org> writes:
+>> > > >>
+>> > > >> > cpumask can change underneath us, which is generally safe except when we
+>> > > >> > call into hv_cpu_number_to_vp_number(): if cpumask ends up empty we pass
+>> > > >> > num_cpu_possible() into hv_cpu_number_to_vp_number(), causing it to read
+>> > > >> > garbage. As reported by KASAN:
+>> > > >> >
+>> > > >> > [   83.504763] BUG: KASAN: slab-out-of-bounds in hyperv_flush_tlb_others
+>> > > (include/asm-generic/mshyperv.h:128 arch/x86/hyperv/mmu.c:112)
+>> > > >> > [   83.908636] Read of size 4 at addr ffff888267c01370 by task kworker/u8:2/106
+>> > > >> > [   84.196669] CPU: 0 PID: 106 Comm: kworker/u8:2 Tainted: G        W         5.4.60 #1
+>> > > >> > [   84.196669] Hardware name: Microsoft Corporation Virtual Machine/Virtual
+>> Machine,
+>> > > BIOS 090008  12/07/2018
+>> > > >> > [   84.196669] Workqueue: writeback wb_workfn (flush-8:0)
+>> > > >> > [   84.196669] Call Trace:
+>> > > >> > [   84.196669] dump_stack (lib/dump_stack.c:120)
+>> > > >> > [   84.196669] print_address_description.constprop.0 (mm/kasan/report.c:375)
+>> > > >> > [   84.196669] __kasan_report.cold (mm/kasan/report.c:507)
+>> > > >> > [   84.196669] kasan_report (arch/x86/include/asm/smap.h:71
+>> > > mm/kasan/common.c:635)
+>> > > >> > [   84.196669] hyperv_flush_tlb_others (include/asm-generic/mshyperv.h:128
+>> > > arch/x86/hyperv/mmu.c:112)
+>> > > >> > [   84.196669] flush_tlb_mm_range (arch/x86/include/asm/paravirt.h:68
+>> > > arch/x86/mm/tlb.c:798)
+>> > > >> > [   84.196669] ptep_clear_flush (arch/x86/include/asm/tlbflush.h:586 mm/pgtable-
+>> > > generic.c:88)
+>> > > >> >
+>> > > >> > Fixes: 0e4c88f37693 ("x86/hyper-v: Use cheaper
+>> > > HVCALL_FLUSH_VIRTUAL_ADDRESS_{LIST,SPACE} hypercalls when possible")
+>> > > >> > Cc: Vitaly Kuznetsov <vkuznets@redhat.com>
+>> > > >> > Cc: stable@kernel.org
+>> > > >> > Signed-off-by: Sasha Levin <sashal@kernel.org>
+>> > > >> > ---
+>> > > >> >  arch/x86/hyperv/mmu.c | 4 +++-
+>> > > >> >  1 file changed, 3 insertions(+), 1 deletion(-)
+>> > > >> >
+>> > > >> > diff --git a/arch/x86/hyperv/mmu.c b/arch/x86/hyperv/mmu.c
+>> > > >> > index 5208ba49c89a9..b1d6afc5fc4a3 100644
+>> > > >> > --- a/arch/x86/hyperv/mmu.c
+>> > > >> > +++ b/arch/x86/hyperv/mmu.c
+>> > > >> > @@ -109,7 +109,9 @@ static void hyperv_flush_tlb_others(const struct cpumask
+>> > > *cpus,
+>> > > >> >  		 * must. We will also check all VP numbers when walking the
+>> > > >> >  		 * supplied CPU set to remain correct in all cases.
+>> > > >> >  		 */
+>> > > >> > -		if (hv_cpu_number_to_vp_number(cpumask_last(cpus)) >= 64)
+>> > > >> > +		int last = cpumask_last(cpus);
+>> > > >> > +
+>> > > >> > +		if (last < num_possible_cpus() &&
+>> hv_cpu_number_to_vp_number(last) >=
+>> > > 64)
+>> > > >> >  			goto do_ex_hypercall;
+>> > > >>
+>> > > >> In case 'cpus' can end up being empty (I'm genuinely suprised it can)
+>> > >
+>> > > I was just as surprised as you and spent the good part of a day
+>> > > debugging this. However, a:
+>> > >
+>> > > 	WARN_ON(cpumask_empty(cpus));
+>> > >
+>> > > triggers at that line of code even though we check for cpumask_empty()
+>> > > at the entry of the function.
+>> >
+>> > What does the call stack look like when this triggers?  I'm curious about
+>> > the path where the 'cpus' could be changing while the flush call is in
+>> > progress.
+>> >
+>> > I wonder if CPUs could ever be added to the mask?  Removing CPUs can
+>> > be handled with some care because an unnecessary flush doesn't hurt
+>> > anything.   But adding CPUs has serious correctness problems.
+>> >
+>>
+>> The cpumask_empty check is done before disabling irq. Is it possible
+>> the mask is modified by an interrupt?
+>>
+>> If there is a reliable way to trigger this bug, we may be able to test
+>> the following patch.
+>>
+>> diff --git a/arch/x86/hyperv/mmu.c b/arch/x86/hyperv/mmu.c
+>> index 5208ba49c89a..23fa08d24c1a 100644
+>> --- a/arch/x86/hyperv/mmu.c
+>> +++ b/arch/x86/hyperv/mmu.c
+>> @@ -66,11 +66,13 @@ static void hyperv_flush_tlb_others(const struct cpumask *cpus,
+>>         if (!hv_hypercall_pg)
+>>                 goto do_native;
+>>
+>> -       if (cpumask_empty(cpus))
+>> -               return;
+>> -
+>>         local_irq_save(flags);
+>>
+>> +       if (cpumask_empty(cpus)) {
+>> +               local_irq_restore(flags);
+>> +               return;
+>> +       }
+>> +
+>>         flush_pcpu = (struct hv_tlb_flush **)
+>>                      this_cpu_ptr(hyperv_pcpu_input_arg);
+>
+>This thread died out 3 months ago without any patches being taken.
+>I recently hit the problem again at random, though not in a
+>reproducible way.
+>
+>I'd like to take Wei Liu's latest proposal to check for an empty
+>cpumask *after* interrupts are disabled.   I think this will almost
+>certainly solve the problem, and in a cleaner way than Sasha's
+>proposal.  I'd also suggest adding a comment in the code to note
+>the importance of the ordering.
 
-I've heard a few different reasons that come to mind:
+I found that this syzbot reproducer:
+https://syzkaller.appspot.com//bug?id=47befb59c610a69f024db20b927dea80c88fc045
+is pretty good at reproducing the issue too:
 
-1) nostalgia is definitely one -- "we know bonding here"
-2) support -- "the things I'm running say I need bonding to properly
-support failover in their environment". How accurate this is, I don't
-actually know.
-3) monitoring -- "my monitoring solution knows about bonding, but not
-about team". This is probably easily fixed, but may or may not be in the
-user's direct control.
-4) footprint -- "bonding does the job w/o team's userspace footprint".
-I think this one is kind of hard for team to do anything about, bonding
-really does have a smaller userspace footprint, which is a plus for
-embedded type applications and high-security environments looking to keep
-things as minimal as possible.
+BUG: KASAN: slab-out-of-bounds in hyperv_flush_tlb_others+0x11ea/0x17c0
+Read of size 4 at addr ffff88810005db20 by task 3.c.exe/13007
 
-I think I've heard a few "we tried team years ago and it didn't work" as
-well, which of course is ridiculous as a reason not to try something again,
-since a lot can change in a few years in this world.
+CPU: 4 PID: 13007 Comm: 3.c.exe Not tainted 5.10.5 #1
+Hardware name: Microsoft Corporation Virtual Machine/Virtual Machine, BIOS Hyper-V UEFI Release v4.1 06/17/2020
+Call Trace:
+  dump_stack+0xa4/0xd9
+  print_address_description.constprop.0.cold+0xd4/0x509
+  kasan_report.cold+0x20/0x37
+  __asan_report_load4_noabort+0x14/0x20
+  hyperv_flush_tlb_others+0x11ea/0x17c0
+  flush_tlb_mm_range+0x1fd/0x360
+  tlb_flush_mmu+0x1b5/0x510
+  tlb_finish_mmu+0x89/0x360
+  exit_mmap+0x24f/0x450
+  mmput+0x121/0x400
+  do_exit+0x8cf/0x2a70
+  do_group_exit+0x100/0x300
+  get_signal+0x3d7/0x1e70
+  arch_do_signal+0x8c/0x2670
+  exit_to_user_mode_prepare+0x154/0x1f0
+  syscall_exit_to_user_mode+0x42/0x280
+  do_syscall_64+0x45/0x90
+  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x450c2d
+Code: Unable to access opcode bytes at RIP 0x450c03.
+RSP: 002b:00007f6c81711d68 EFLAGS: 00000246 ORIG_RAX: 00000000000000ca
+RAX: fffffffffffffe00 RBX: 0000000000000000 RCX: 0000000000450c2d
+RDX: 0000000000000000 RSI: 0000000000000080 RDI: 00000000004e0428
+RBP: 00007f6c81711d80 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 00007ffeeef33d2e
+R13: 00007ffeeef33d2f R14: 00007ffeeef33dd0 R15: 00007f6c81711e80
+
+Allocated by task 0:
+  kasan_save_stack+0x23/0x50
+  __kasan_kmalloc.constprop.0+0xcf/0xe0
+  kasan_kmalloc+0x9/0x10
+  __kmalloc+0x1c8/0x3b0
+  kmalloc_array+0x12/0x14
+  hyperv_init+0xd4/0x3a0
+  apic_intr_mode_init+0xbb/0x1e8
+  x86_late_time_init+0x96/0xa7
+  start_kernel+0x317/0x3d3
+  x86_64_start_reservations+0x24/0x26
+  x86_64_start_kernel+0x7a/0x7e
+  secondary_startup_64_no_verify+0xb0/0xbb
+
+The buggy address belongs to the object at ffff88810005db00
+  which belongs to the cache kmalloc-32 of size 32
+The buggy address is located 0 bytes to the right of
+  32-byte region [ffff88810005db00, ffff88810005db20)
+The buggy address belongs to the page:
+page:0000000065310ff0 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x10005d
+flags: 0x17ffffc0000200(slab)
+raw: 0017ffffc0000200 0000000000000000 0000000100000001 ffff888100043a40
+raw: 0000000000000000 0000000000400040 00000001ffffffff 0000000000000000
+page dumped because: kasan: bad access detected
+
+Memory state around the buggy address:
+  ffff88810005da00: 00 00 00 00 fc fc fc fc 00 00 00 00 fc fc fc fc
+  ffff88810005da80: 00 00 00 00 fc fc fc fc 00 00 00 00 fc fc fc fc
+>ffff88810005db00: 00 00 00 00 fc fc fc fc 00 00 00 fc fc fc fc fc
+                                ^
+  ffff88810005db80: 00 00 00 fc fc fc fc fc 00 00 00 fc fc fc fc fc
+  ffff88810005dc00: 00 00 00 fc fc fc fc fc 00 00 00 fc fc fc fc fc
 
 -- 
-Jarod Wilson
-jarod@redhat.com
-
+Thanks,
+Sasha
