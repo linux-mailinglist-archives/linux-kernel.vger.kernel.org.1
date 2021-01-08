@@ -2,135 +2,297 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 130122EF054
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 11:00:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E71632EF058
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 11:02:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728456AbhAHJ7r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Jan 2021 04:59:47 -0500
-Received: from mail-eopbgr70133.outbound.protection.outlook.com ([40.107.7.133]:52228
-        "EHLO EUR04-HE1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727569AbhAHJ7q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Jan 2021 04:59:46 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=S9TdOEy9+QaBhkfVHnW+ufuSJtHjcmhFXstNAOIs3EFWeWtWEv6u2s/myDMF2TqcbJjkc2DthfKB3oHLdaRefy2azfDjLJ0kH3d5em5nwiV9HPtA3IxREj08l49PLzhG17vzQokLcro6jHfCO+ZnuLxnTedjrKNv+M27GwXBW5Y7jGwB9shq9/UHG9ffNrqcsKOz1fCV573JsT2dBtRaEx1MgJYCVVKLxkkykrXKjcazkSvUB/p+zqZEImWfnfpR91f+EL7/q5CNKB1r5LkNRRXUjkzV3T85kEtMhX6U3UTvntjAeEDJztg2wqey1l8ZzNDJceZuvS2Bf8GVpHDS/A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=zkLDI1hh0P4FmHwbQNp6zpHxl14a+Ul8WJKWcVq6xsw=;
- b=KP16KpG07EpSFPXDKDVZfL3J4PzZGtrT0RvKR3dOrpi4Dz+SXxJ4F9erAm/PPkA8QZ9x6AwWg7zwyM+LX94TqgNCB89rliseUOet1WHlvLKoREfl8sw/Dpw4o9s3JuWdMEkZ3N/UKPiNAja49ORxM2hGAabz/s/w7iDWiGyloqeZTL5IYbmJsyYIB0nP40bfRLuILQcN/t/nNdKE8+FWRwlSJWgVao8gy7EAhbvKGTs6SJxEhHUL3adf1jFlybpjG+40eXp0UJYF26M/M/K2BeJ1+g3y4uZHNwru853EBUa+qORJ6suq8Uwm7EQ2zevgc5PCn8/TkgE/BCpsgUrtKQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=leica-geosystems.com; dmarc=pass action=none
- header.from=leica-geosystems.com; dkim=pass header.d=leica-geosystems.com;
- arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=leica-geosystems.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=zkLDI1hh0P4FmHwbQNp6zpHxl14a+Ul8WJKWcVq6xsw=;
- b=cKwpkO/+36RGX9V6QsmA/tZgrUezHjlGXkOIrNs1xPGkuUtIceWrRQ24qSoSpCxvwNE9FKJthyyMHF6+LXl2avtEX3Oh2m3tXdsjRZAUv18GF/4NYbjrcHkbm6kn3VWJc0QsTD0rQ+4ckZa7V4beIhbWuREMuoze9YLYBuFMP6M=
-Authentication-Results: davemloft.net; dkim=none (message not signed)
- header.d=none;davemloft.net; dmarc=none action=none
- header.from=leica-geosystems.com;
-Received: from DB6PR0602MB2886.eurprd06.prod.outlook.com (2603:10a6:4:9b::11)
- by DB7PR06MB5354.eurprd06.prod.outlook.com (2603:10a6:10:30::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3742.6; Fri, 8 Jan
- 2021 09:58:56 +0000
-Received: from DB6PR0602MB2886.eurprd06.prod.outlook.com
- ([fe80::39bd:12df:e0c6:4aee]) by DB6PR0602MB2886.eurprd06.prod.outlook.com
- ([fe80::39bd:12df:e0c6:4aee%11]) with mapi id 15.20.3742.006; Fri, 8 Jan 2021
- 09:58:56 +0000
-From:   Andrey Zhizhikin <andrey.zhizhikin@leica-geosystems.com>
-To:     davem@davemloft.net, kuba@kernel.org, jussi.kivilinna@mbnet.fi,
-        dbrownell@users.sourceforge.net, linville@tuxdriver.com,
-        linux-usb@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Andrey Zhizhikin <andrey.zhizhikin@leica-geosystems.com>
-Subject: [PATCH] rndis_host: set proper input size for OID_GEN_PHYSICAL_MEDIUM request
-Date:   Fri,  8 Jan 2021 09:58:39 +0000
-Message-Id: <20210108095839.3335-1-andrey.zhizhikin@leica-geosystems.com>
-X-Mailer: git-send-email 2.25.1
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [193.8.40.112]
-X-ClientProxiedBy: FRYP281CA0002.DEUP281.PROD.OUTLOOK.COM (2603:10a6:d10::12)
- To DB6PR0602MB2886.eurprd06.prod.outlook.com (2603:10a6:4:9b::11)
+        id S1728194AbhAHKBQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Jan 2021 05:01:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41426 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727569AbhAHKBP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 Jan 2021 05:01:15 -0500
+Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73627C0612F4
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Jan 2021 02:00:35 -0800 (PST)
+Received: by mail-ej1-x636.google.com with SMTP id 6so13768786ejz.5
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Jan 2021 02:00:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=RIPDrybHYDhrvRvtrv7fNkrHahASlP6RR/P3/LW+RDQ=;
+        b=VLn2tfq+cDp5QXVPJu7O9dnF40qGvvxBpHn0n6yOHOwnNP+XP8cT6kPTUe1T23K+is
+         OKV3bhfEzVswtI+ATO28Ul3IpAdT9JUzOSA+9XD9Q9oDn0GYgSAHWF4XuYp548lt6on4
+         J3QLISt2daUJJhWALz5NzsT3tqkTLp0OKVG18=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=RIPDrybHYDhrvRvtrv7fNkrHahASlP6RR/P3/LW+RDQ=;
+        b=CJfTPqchpshjfJzqbeYORZFUw/qsp7LHnn4tx/iXW8/PJhIjVzz4oUBet/wzcjuY4u
+         7XcmjkkbZh/XtM3qCOFnRHm/1O+ybEbg3XWq2iLo/5Y/HtUYw47VQ3fD3jyqRQlYUxP0
+         YU7fWGWjTHkRmnqKPknrMlg9c5V336NBvSpnCmNEZQGV6fmtp6iKTWElYC1ZhVWhNTp1
+         vonRsmoyxbJSna5BMoPquOUn4PwjkmTtfOBOn/20wn2HxU2OofVRrRk7gorsWx0x32lI
+         bP4SUkmsnVTfz0r55p4sFDcpTsoddoETP+btXFJ7mRfcevRPVdpb89hlWrChcylPktq1
+         mqdw==
+X-Gm-Message-State: AOAM532ooIVPY4vf/LhJzkBomKjdKqoI0FTfygOmnRgRkgzXt06vbs/j
+        VaDFGznLIsM6eZRzdZlC5Yw8B2tuUFi2Tg==
+X-Google-Smtp-Source: ABdhPJxn59rLZOxhPreENmFFdLg8Hx0NxQE6w7MoifCgJyrWBDHAKw0A9uvJlRB+1QwDIdwDcK/UxQ==
+X-Received: by 2002:a17:906:b24c:: with SMTP id ce12mr2143466ejb.89.1610100034267;
+        Fri, 08 Jan 2021 02:00:34 -0800 (PST)
+Received: from mail-wm1-f41.google.com (mail-wm1-f41.google.com. [209.85.128.41])
+        by smtp.gmail.com with ESMTPSA id b21sm3611514edr.53.2021.01.08.02.00.33
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 08 Jan 2021 02:00:34 -0800 (PST)
+Received: by mail-wm1-f41.google.com with SMTP id c133so7316620wme.4
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Jan 2021 02:00:33 -0800 (PST)
+X-Received: by 2002:a1c:c308:: with SMTP id t8mr2392160wmf.22.1610100033143;
+ Fri, 08 Jan 2021 02:00:33 -0800 (PST)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from aherlnxbspsrv02.lgs-net.com (193.8.40.112) by FRYP281CA0002.DEUP281.PROD.OUTLOOK.COM (2603:10a6:d10::12) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3763.2 via Frontend Transport; Fri, 8 Jan 2021 09:58:55 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: 23fd21ae-34b7-4b29-ff4d-08d8b3bc0346
-X-MS-TrafficTypeDiagnostic: DB7PR06MB5354:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <DB7PR06MB535452133C7D0DE0BCAE4804A6AE0@DB7PR06MB5354.eurprd06.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:4502;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: rj99BSIsNdqPs2cBO1iHxRUgbE/fOgTuxWN77MNome6LNpeLBdxnuVQ8+s3Dtvlomj4kSR2Utqbl2GLqgD3Zk+P2su7wIF28GEgJUI8olAx7tzTLal5UYWIjCE9sywSFtIJna+nnVGZcBkHC+FIIneykkThpssk/hV5B8n9AfinS9gnPgZHtOmxJb6qanf5lsDR1j/bHBnVsvR7dpv29Fh5Mijqs2gCCVLMFTUEK9m2Hqd6YcJ2j56T+oNTZsFyhsFDEm0wDbdNofqvyFg+VluctKOjqWyxFR90MVE6UqAwl0iDxMtzV5srN+Xn7pBC2KKgCs+Dw9oX116ai+VYqtlkdFZ5Wai4tmrQHOVEVPTqMVAEpDm2EFW9qWjZHgmsZHNVHKjHfuxeX1haLNJtWyQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB6PR0602MB2886.eurprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(376002)(136003)(39850400004)(396003)(346002)(4326008)(2616005)(8936002)(8676002)(36756003)(956004)(6486002)(316002)(107886003)(1076003)(16526019)(86362001)(5660300002)(6512007)(83380400001)(186003)(6506007)(66946007)(66476007)(52116002)(66556008)(478600001)(26005)(6666004)(44832011)(2906002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?02OBKWpkNGbg37PWdOHiBWCQW3DdRw7Dodd4ug8NdulTKbT/i4HLllW0Z/pF?=
- =?us-ascii?Q?BgXg++Y+ZpLYPgL38GfTXrDu2SPFL0sQPQ0flG/4rVCL9cEv2iCKPkB2d3/n?=
- =?us-ascii?Q?BYW0mEWd41gr06e9TGDVwmMFoNRjZiLs2eI8MeHpVfShFECo4BiiGGha4x6H?=
- =?us-ascii?Q?+wrWck6+Q6OVK/eVgbCVJjHVCbK2aNqv7qDD8d4Qj1TufZ3du8/qgJVMeTW5?=
- =?us-ascii?Q?gf8/obOQBQCjgrDmR/C/NrNK5WB85wYlc4/z/anlg8Pn3uiws/XJ7f1fINSN?=
- =?us-ascii?Q?DH3cXEumDzWuneUOLYsn90umtmYlcoX2PASInGOQd9gPgqX39Neo0DhswD6G?=
- =?us-ascii?Q?ueTqamVACvjD4T3KUYv6fsGoT23GViI/mJD+wGVXBubGiLbFAYQC6p2EjgWD?=
- =?us-ascii?Q?CCzdk5BQp7oLkED7UC7MmhAMF6jAI11JWOANFmEet2pO0apkfH3vyfEZJUqm?=
- =?us-ascii?Q?xrMFDvWWpbenzOFIyWV7NseH7yf4tLPEChon5xGUjNliRUsMRm0G6WUXKc6Q?=
- =?us-ascii?Q?ZPtSNB7jc7hYKdi4BpOxUfG45xUdKtm2XbSo+WT1lW9I5A+3l/rHYnS6LEBE?=
- =?us-ascii?Q?RJ8kLcfQQFZ27Rzp7UMqwvgw8W4jTUjHb0LE3dxpBMz1oAgKSiVGwmBJ0B21?=
- =?us-ascii?Q?nHiTvsjJc0aPxgj5fb4ftgLBhSnr9I7YuTJYDUSVqgAz6BZ6QIyY9aNrAIe6?=
- =?us-ascii?Q?N8PRFqAE8B6TRJ19aQpoTv6WKdH5hWbJOVjvRUA5W7hkGqmg78EdNB0gOjd6?=
- =?us-ascii?Q?1wlyUaFfpPMN3owPvCizte4761zH6BzPXNYt6NW1IZy9lMuhd+duAUH4+GUb?=
- =?us-ascii?Q?UA9MDgsrza+BbRH3Sv9+CPtGLdcLcANl5ZChk1a36MzxIgdrdXr5VLayGKBE?=
- =?us-ascii?Q?5t3RlmFzeSIwQ0ouVB88UFIhGngulDX23k8vnrs5IbxgjPtwo1l4TmHJuPqP?=
- =?us-ascii?Q?0b+8ocIFZbDntpwUF8uOqOt61oEBGAgXVa3A5lphcKqXoIBWhbiNo04URmJP?=
- =?us-ascii?Q?jhkq?=
-X-OriginatorOrg: leica-geosystems.com
-X-MS-Exchange-CrossTenant-AuthSource: DB6PR0602MB2886.eurprd06.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Jan 2021 09:58:56.2593
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 1b16ab3e-b8f6-4fe3-9f3e-2db7fe549f6a
-X-MS-Exchange-CrossTenant-Network-Message-Id: 23fd21ae-34b7-4b29-ff4d-08d8b3bc0346
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: ysurkkUAsacbR4s9X8KpisMDtkiVkbJSSq2g/L0AirQkJ8ZgTruwAKcnK3PBG2KdPnYscQrXAgdTWCiTDZZWWdhR8YaAZJG90B+KL2t5UZQ=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB7PR06MB5354
+References: <20200804192939.2251988-1-helen.koike@collabora.com>
+ <20200804192939.2251988-3-helen.koike@collabora.com> <b8a08145-c54e-3d06-dd61-78ce99a812d5@xs4all.nl>
+ <3ac23162-ce59-6cc3-da48-90f26c618345@collabora.com> <CAAFQd5A1F7g=LSJrtqwF+KEUq-QXmi0__-mbebsN27xFA0rQCQ@mail.gmail.com>
+ <b14809a5-e471-73da-efde-1d0d6f54e485@collabora.com> <de781845-7192-df0b-26c4-36b981237735@xs4all.nl>
+ <f565c17a-e6ef-e875-bc01-1122ba59a50a@collabora.com> <CAAFQd5C=+0YYNHrk+B3-zUTLT8rfBg3iC9Jn7nXzFccC0JW79Q@mail.gmail.com>
+ <a41fe519-8835-97a0-ef8a-ad5b5efcb449@collabora.com> <CAAFQd5DKE=xVf9tX6J6RaVR0M4udK9JDnMESdBSa8aKLwQsvfQ@mail.gmail.com>
+ <4fec6e91-a19b-b0be-d4b6-72a333451d9b@collabora.com> <CAAFQd5Ds5DQ0V+c_Oapwg9CQ0ADkjtML6w6H5Ad4hwMz9Rg9YQ@mail.gmail.com>
+ <79f59368-2295-c9d9-b09a-9d1256c7b0f2@collabora.com>
+In-Reply-To: <79f59368-2295-c9d9-b09a-9d1256c7b0f2@collabora.com>
+From:   Tomasz Figa <tfiga@chromium.org>
+Date:   Fri, 8 Jan 2021 19:00:21 +0900
+X-Gmail-Original-Message-ID: <CAAFQd5A5jQWd3Vt+M9ft4npQyV72TJRhdyn6F7OVdhZrFmnkyw@mail.gmail.com>
+Message-ID: <CAAFQd5A5jQWd3Vt+M9ft4npQyV72TJRhdyn6F7OVdhZrFmnkyw@mail.gmail.com>
+Subject: Re: [PATCH v5 2/7] media: v4l2: Add extended buffer operations
+To:     Helen Koike <helen.koike@collabora.com>
+Cc:     Hans Verkuil <hverkuil@xs4all.nl>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Hans Verkuil <hans.verkuil@cisco.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Sakari Ailus <sakari.ailus@iki.fi>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        Boris Brezillon <boris.brezillon@collabora.com>,
+        Hirokazu Honda <hiroh@chromium.org>,
+        Nicolas Dufresne <nicolas@ndufresne.ca>,
+        Brian Starkey <Brian.Starkey@arm.com>, kernel@collabora.com,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Fritz Koenig <frkoenig@chromium.org>,
+        Maxime Jourdan <mjourdan@baylibre.com>,
+        Stanimir Varbanov <stanimir.varbanov@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-MSFT ActiveSync implementation requires that the size of the response for
-incoming query is to be provided in the request input length. Failure to
-set the input size proper results in failed request transfer, where the
-ActiveSync counterpart reports the NDIS_STATUS_INVALID_LENGTH (0xC0010014L)
-error.
+On Wed, Dec 23, 2020 at 9:04 PM Helen Koike <helen.koike@collabora.com> wrote:
+>
+> Hi Tomasz,
+>
+> On 12/21/20 12:13 AM, Tomasz Figa wrote:
+> > On Thu, Dec 17, 2020 at 10:20 PM Helen Koike <helen.koike@collabora.com> wrote:
+> >>
+> >> Hi Tomasz,
+> >>
+> >> Thanks for your comments, I have a few questions below.
+> >>
+> >> On 12/16/20 12:13 AM, Tomasz Figa wrote:
+> >>> On Tue, Dec 15, 2020 at 11:37 PM Helen Koike <helen.koike@collabora.com> wrote:
+> >>>>
+> >>>> Hi Tomasz,
+> >>>>
+> >>>> On 12/14/20 7:46 AM, Tomasz Figa wrote:
+> >>>>> On Fri, Dec 4, 2020 at 4:52 AM Helen Koike <helen.koike@collabora.com> wrote:
+> >>>>>>
+> >>>>>> Hi,
+> >>>>>>
+> >>>>>> Please see my 2 points below (about v4l2_ext_buffer and another about timestamp).
+> >>>>>>
+> >>>>>> On 12/3/20 12:11 PM, Hans Verkuil wrote:
+> >>>>>>> On 23/11/2020 18:40, Helen Koike wrote:
+> >>>>>>>>
+> >>>>>>>>
+> >>>>>>>> On 11/23/20 12:46 PM, Tomasz Figa wrote:
+> >>>>>>>>> On Tue, Nov 24, 2020 at 12:08 AM Helen Koike <helen.koike@collabora.com> wrote:
+> >>>>>>>>>>
+> >>>>>>>>>> Hi Hans,
+> >>>>>>>>>>
+> >>>>>>>>>> Thank you for your review.
+> >>>>>>>>>>
+> >>>>>>>>>> On 9/9/20 9:27 AM, Hans Verkuil wrote:
+> >>>>>>>>>>> Hi Helen,
+> >>>>>>>>>>>
+> >>>>>>>>>>> Again I'm just reviewing the uAPI.
+> >>>>>>>>>>>
+> >>>>>>>>>>> On 04/08/2020 21:29, Helen Koike wrote:
+> > [snip]
+> >>>
+> >>>>
+> >>>> Output: userspace fills plane information, informing in which memory buffer each
+> >>>>         plane was placed (Or should this be pre-determined by the driver?)
+> >>>>
+> >>>> For MMAP
+> >>>> -----------------------
+> >>>> userspace performs EXT_CREATE_BUF ioctl to reserve a buffer "index" range in
+> >>>> that mode, to be used in EXT_QBUF and EXT_DQBUF
+> >>>>
+> >>>> Should the API allow userspace to select how many memory buffers it wants?
+> >>>> (maybe not)
+> >>>
+> >>> I think it does allow that - it accepts the v4l2_ext_format struct.
+> >>
+> >> hmmm, I thought v4l2_ext_format would describe color planes, and not memory planes.
+> >> Should it describe memory planes instead? Since planes are defined by the pixelformat.
+> >> But is this information relevant to ext_{set/get/try} format?
+> >>
+> >
+> > Good point. I ended up assuming the current convention, where giving
+> > an M format would imply num_memory_planes == num_color_planes and
+> > non-M format num_memory_planes == 1. Sounds like we might want
+> > something like a flags field and that could have bits defined to
+> > select that. I think it would actually be useful for S_FMT as well,
+> > because that's what REQBUFS would use.
+>
+> Would this flag select between memory and color planes?
+> I didn't understand how this flag would be useful to S_FMT, could you
+> please clarify?
 
-Set the input size for OID_GEN_PHYSICAL_MEDIUM query to the expected size
-of the response in order for the ActiveSync to properly respond to the
-request.
+I mean a flag that decides the plane layout between the 2 possible
+options (all planes in their own buffers at offsets 0 vs all planes in
+one buffer one after another), rather than giving too much flexibility
+for MMAP buffers, which isn't necessary any way, because DMABUF can be
+used if more flexibility is needed.
 
-Fixes: 039ee17d1baa ("rndis_host: Add RNDIS physical medium checking into generic_rndis_bind()")
-Signed-off-by: Andrey Zhizhikin <andrey.zhizhikin@leica-geosystems.com>
----
- drivers/net/usb/rndis_host.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Best regards,
+Tomasz
 
-diff --git a/drivers/net/usb/rndis_host.c b/drivers/net/usb/rndis_host.c
-index 6609d21ef894..f813ca9dec53 100644
---- a/drivers/net/usb/rndis_host.c
-+++ b/drivers/net/usb/rndis_host.c
-@@ -387,7 +387,7 @@ generic_rndis_bind(struct usbnet *dev, struct usb_interface *intf, int flags)
- 	reply_len = sizeof *phym;
- 	retval = rndis_query(dev, intf, u.buf,
- 			     RNDIS_OID_GEN_PHYSICAL_MEDIUM,
--			     0, (void **) &phym, &reply_len);
-+			     reply_len, (void **)&phym, &reply_len);
- 	if (retval != 0 || !phym) {
- 		/* OID is optional so don't fail here. */
- 		phym_unspec = cpu_to_le32(RNDIS_PHYSICAL_MEDIUM_UNSPECIFIED);
--- 
-2.25.1
-
+>
+> Thanks
+> Helen
+>
+> >
+> >>>
+> >>>>
+> >>>> userspace performs EXT_QUERY_MMAP_BUF to get the mmap offset/cookie and length
+> >>>> for each memory buffer.
+> >>>>
+> >>>> On EXT_QBUF, userspace doesn't need to fill membuf information. Should the
+> >>>> mmap offset and length be filled by the kernel and returned to userspace here
+> >>>> as well? I'm leaning towards: no.
+> >>>
+> >>> Yeah, based on my comment above, I think the answer should be no.
+> >>>
+> >>>>
+> >>>> If the answer is no, then here is my proposal:
+> >>>> ----------------------------------------------
+> >>>>
+> >>>> /* If MMAP, drivers decide how many memory buffers to allocate */
+> >>>> int ioctl( int fd, VIDIOC_EXT_CREATE_BUFS, struct v4l2_ext_buffer *argp )
+> >>>>
+> >>>> /* Returns -EINVAL if not MMAP */
+> >>>> int ioctl( int fd, VIDIOC_EXT_MMAP_QUERYBUF, struct v4l2_ext_mmap_querybuf *argp )
+> >>>>
+> >>>> /* userspace fills v4l2_ext_buffer.membufs if DMA-fd or Userptr, leave it zero for MMAP
+> >>>>  * Should userspace also fill v4l2_ext_buffer.planes?
+> >>>>  */
+> >>>> int ioctl( int fd, VIDIOC_EXT_QBUF, struct v4l2_ext_buffer *argp )
+> >>>>
+> >>>> /* v4l2_ext_buffer.membufs is set to zero by the driver */
+> >>>> int ioctl( int fd, VIDIOC_EXT_DBUF, struct v4l2_ext_buffer *argp )
+> >>>>
+> >>>> (I omitted reserved fields below)
+> >>>>
+> >>>> struct v4l2_ext_create_buffers {
+> >>>>         __u32                           index;
+> >>>>         __u32                           count;
+> >>>>         __u32                           memory;
+> >>>>         __u32                           capabilities;
+> >>>>         struct v4l2_ext_pix_format      format;
+> >>>> };
+> >>>>
+> >>>> struct v4l2_ext_mmap_membuf {
+> >>>>         __u32 offset;
+> >>>>         __u32 length;
+> >>>> }
+> >>>>
+> >>>> struct v4l2_ext_mmap_querybuf {
+> >>>>         __u32 index;
+> >>>>         struct v4l2_ext_mmap_membuf membufs[VIDEO_MAX_PLANES];
+> >>>> }
+> >>>>
+> >>>> struct v4l2_ext_membuf {
+> >>>>         __u32 memory;
+> >>>>         union {
+> >>>>                 __u64 userptr;
+> >>>>                 __s32 dmabuf_fd;
+> >>>>         } m;
+> >>>>         // Can't we just remove the union and "memory" field, and the non-zero
+> >>>>         // is the one we should use?
+> >>>
+> >>> I think that would lead to an equivalent result in this case. That
+> >>> said, I'm not sure if there would be any significant enough benefit to
+> >>> justify moving away from the current convention. Having the memory
+> >>> field might also make the structure a bit less error prone, e.g.
+> >>> resilient to missing memset().
+> >>>
+> >>>> };
+> >>>>
+> >>>> struct v4l2_ext_plane {
+> >>>>         __u32 membuf_index;
+> >>>>         __u32 offset;
+> >>>>         __u32 bytesused;
+> >>>> };
+> >>>>
+> >>>> struct v4l2_ext_buffer {
+> >>>>         __u32 index;
+> >>>>         __u32 type;
+> >>>>         __u32 field;
+> >>>>         __u32 sequence;
+> >>>>         __u64 flags;
+> >>>>         __u64 timestamp;
+> >>>>         struct v4l2_ext_membuf membufs[VIDEO_MAX_PLANES];
+> >>>>         struct v4l2_ext_plane planes[VIDEO_MAX_PLANES];
+> >>>
+> >>> Do we actually need this split into membufs and planes here? After
+> >>> all, all we want to pass to the kernel here is in what buffer the
+> >>> plane is in.
+> >>
+> >> You are right, we don't.
+> >>
+> >>>
+> >>> struct v4l2_ext_plane {
+> >>>         __u32 memory;
+> >>
+> >> Should we design the API to allow a buffer to contain multiple memory planes
+> >> of different types? Lets say one memplane is DMA-fd, the other is userptr.
+> >> If the answer is yes, then struct v4l2_ext_create_buffers requires some changes.
+> >> If not, then there is no need a "memory" field per memory plane in a buffer.
+> >>
+> >
+> > That's a good question. I haven't seen any practical need to do that.
+> > Moreover, I suspect that the API might be going towards the DMA-buf
+> > centric model, with DMA-buf heaps getting upstream acceptance, so
+> > maybe we would be fine moving the memory field to the buffer struct
+> > indeed.
+> >
+> >>>         union {
+> >>>                 __u32 membuf_index;
+> >>>                 __u64 userptr;
+> >>>                 __s32 dmabuf_fd;
+> >>>         } m;
+> >>>         __u32 offset;
+> >>>         __u32 bytesused;
+> >>
+> >> We also need userptr_length right?
+> >
+> > Is it actually needed? The length of the plane is determined by the
+> > current format. I can only see as it being an extra sanity check
+> > before accessing the process memory, but is it necessary? I think I
+> > want to hear others's opinion on this.
+> >
+> > [snip]
+> >
+> > Best regards,
+> > Tomasz
+> >
