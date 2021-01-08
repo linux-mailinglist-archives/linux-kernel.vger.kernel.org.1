@@ -2,158 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 917D92EF292
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 13:33:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 964C82EF297
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 13:37:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726884AbhAHMcm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Jan 2021 07:32:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36766 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726205AbhAHMcl (ORCPT
+        id S1726661AbhAHMgj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Jan 2021 07:36:39 -0500
+Received: from youngberry.canonical.com ([91.189.89.112]:44625 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725816AbhAHMgj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Jan 2021 07:32:41 -0500
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02A02C0612F4;
-        Fri,  8 Jan 2021 04:32:00 -0800 (PST)
-Received: from zn.tnic (p200300ec2f0a310099313965888db647.dip0.t-ipconnect.de [IPv6:2003:ec:2f0a:3100:9931:3965:888d:b647])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 299391EC0513;
-        Fri,  8 Jan 2021 13:31:58 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1610109118;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=Tu3Nlta5RSVpZXD0IzNaB9PfxGBdsgfgwf9n2ihbJ5s=;
-        b=mwNt3ZDcB15d1hOhWbgNDdzHmhwWG77Rr++kNPKmRlmRWYRtKntFCoUpjblGgUnid45+r8
-        4JDPtK5Whas6L59xllXlVBuz1Dmj5INXz5pfmIXKA7UaH/Pe0gIEGzHufB/48ucG7MO/zo
-        0SPEoQAp5Mb0HsVaosIpH8C3S9oS4Ok=
-Date:   Fri, 8 Jan 2021 13:31:56 +0100
-From:   Borislav Petkov <bp@alien8.de>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, x86@kernel.org,
-        linux-edac@vger.kernel.org, tony.luck@intel.com,
-        tglx@linutronix.de, mingo@redhat.com, hpa@zytor.com,
-        kernel-team@fb.com
-Subject: Re: [PATCH RFC x86/mce] Make mce_timed_out() identify holdout CPUs
-Message-ID: <20210108123156.GD4042@zn.tnic>
-References: <20210106174102.GA23874@paulmck-ThinkPad-P72>
- <20210106183244.GA24607@zn.tnic>
- <20210106191353.GA2743@paulmck-ThinkPad-P72>
- <20210107070724.GC14697@zn.tnic>
- <20210107170844.GM2743@paulmck-ThinkPad-P72>
+        Fri, 8 Jan 2021 07:36:39 -0500
+Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <colin.king@canonical.com>)
+        id 1kxqza-0005Ut-MN; Fri, 08 Jan 2021 12:35:46 +0000
+From:   Colin King <colin.king@canonical.com>
+To:     Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        =?UTF-8?q?=E6=9C=B1=E7=81=BF=E7=81=BF?= <zhucancan@vivo.com>,
+        alsa-devel@alsa-project.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH][next] ASoC: soc-pcm: Fix uninitialised return value in variable ret
+Date:   Fri,  8 Jan 2021 12:35:46 +0000
+Message-Id: <20210108123546.19601-1-colin.king@canonical.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210107170844.GM2743@paulmck-ThinkPad-P72>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 07, 2021 at 09:08:44AM -0800, Paul E. McKenney wrote:
-> Some information is usually better than none.  And I bet that failing
-> hardware is capable of all sorts of tricks at all sorts of levels.  ;-)
+From: Colin Ian King <colin.king@canonical.com>
 
-Tell me about it.
+Currently when attempting to start the BE fails because the
+FE is not started the error return variable ret is not initialized
+and garbage is returned.  Fix this by setting it to 0 so the
+caller does not report the error "ASoC: failed to shutdown some BEs"
+and because this failure path has already reported the reason for
+the early return.
 
-> Updated patch below.  Is this what you had in mind?
-
-Ok, so I've massaged it into the below locally while taking another
-detailed look. Made the pr_info pr_emerg and poked at the text more, as
-I do. :)
-
-Lemme know if something else needs to be adjusted, otherwise I'll queue
-it.
-
-Thx.
-
+Addresses-Coverity: ("Uninitialized scalar variable")
+Fixes: 2c1382840c19 ("ASoC: soc-pcm: disconnect BEs if the FE is not ready")
+Signed-off-by: Colin Ian King <colin.king@canonical.com>
 ---
-Author: Paul E. McKenney <paulmck@kernel.org>
-Date:   Wed Dec 23 17:04:19 2020 -0800
+ sound/soc/soc-pcm.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-    x86/mce: Make mce_timed_out() identify holdout CPUs
-    
-    The
-    
-      "Timeout: Not all CPUs entered broadcast exception handler"
-    
-    message will appear from time to time given enough systems, but this
-    message does not identify which CPUs failed to enter the broadcast
-    exception handler. This information would be valuable if available,
-    for example, in order to correlate with other hardware-oriented error
-    messages.
-    
-    Add a cpumask of CPUs which maintains which CPUs have entered this
-    handler, and print out which ones failed to enter in the event of a
-    timeout.
-    
-     [ bp: Massage. ]
-    
-    Reported-by: Jonathan Lemon <bsd@fb.com>
-    Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-    Signed-off-by: Borislav Petkov <bp@suse.de>
-    Tested-by: Tony Luck <tony.luck@intel.com>
-    Link: https://lkml.kernel.org/r/20210106174102.GA23874@paulmck-ThinkPad-P72
-
-diff --git a/arch/x86/kernel/cpu/mce/core.c b/arch/x86/kernel/cpu/mce/core.c
-index 13d3f1cbda17..6c81d0998e0a 100644
---- a/arch/x86/kernel/cpu/mce/core.c
-+++ b/arch/x86/kernel/cpu/mce/core.c
-@@ -877,6 +877,12 @@ static atomic_t mce_executing;
-  */
- static atomic_t mce_callin;
- 
-+/*
-+ * Track which CPUs entered the MCA broadcast synchronization and which not in
-+ * order to print holdouts.
-+ */
-+static cpumask_t mce_missing_cpus = CPU_MASK_ALL;
-+
- /*
-  * Check if a timeout waiting for other CPUs happened.
-  */
-@@ -894,8 +900,12 @@ static int mce_timed_out(u64 *t, const char *msg)
- 	if (!mca_cfg.monarch_timeout)
- 		goto out;
- 	if ((s64)*t < SPINUNIT) {
--		if (mca_cfg.tolerant <= 1)
-+		if (mca_cfg.tolerant <= 1) {
-+			if (cpumask_and(&mce_missing_cpus, cpu_online_mask, &mce_missing_cpus))
-+				pr_emerg("CPUs not responding to MCE broadcast (may include false positives): %*pbl\n",
-+					 cpumask_pr_args(&mce_missing_cpus));
- 			mce_panic(msg, NULL, NULL);
-+		}
- 		cpu_missing = 1;
- 		return 1;
+diff --git a/sound/soc/soc-pcm.c b/sound/soc/soc-pcm.c
+index 481a4a25acb0..b787ce4ceb5a 100644
+--- a/sound/soc/soc-pcm.c
++++ b/sound/soc/soc-pcm.c
+@@ -2443,6 +2443,7 @@ static int dpcm_run_update_startup(struct snd_soc_pcm_runtime *fe, int stream)
+ 		fe->dpcm[stream].state == SND_SOC_DPCM_STATE_CLOSE) {
+ 		dev_err(fe->dev, "ASoC: FE %s is not ready %d\n",
+ 			fe->dai_link->name, fe->dpcm[stream].state);
++		ret = 0;
+ 		goto disconnect;
  	}
-@@ -1006,6 +1016,7 @@ static int mce_start(int *no_way_out)
- 	 * is updated before mce_callin.
- 	 */
- 	order = atomic_inc_return(&mce_callin);
-+	cpumask_clear_cpu(smp_processor_id(), &mce_missing_cpus);
  
- 	/*
- 	 * Wait for everyone.
-@@ -1114,6 +1125,7 @@ static int mce_end(int order)
- reset:
- 	atomic_set(&global_nwo, 0);
- 	atomic_set(&mce_callin, 0);
-+	cpumask_setall(&mce_missing_cpus);
- 	barrier();
- 
- 	/*
-@@ -2712,6 +2724,7 @@ static void mce_reset(void)
- 	atomic_set(&mce_executing, 0);
- 	atomic_set(&mce_callin, 0);
- 	atomic_set(&global_nwo, 0);
-+	cpumask_setall(&mce_missing_cpus);
- }
- 
- static int fake_panic_get(void *data, u64 *val)
-
 -- 
-Regards/Gruss,
-    Boris.
+2.29.2
 
-https://people.kernel.org/tglx/notes-about-netiquette
