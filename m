@@ -2,82 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 36F812EF0C7
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 11:40:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F7952EF0CB
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 11:42:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727442AbhAHKjc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Jan 2021 05:39:32 -0500
-Received: from server.20disenoweb.com ([185.195.98.159]:57122 "EHLO
-        server.20disenoweb.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727016AbhAHKjc (ORCPT
+        id S1727525AbhAHKlz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Jan 2021 05:41:55 -0500
+Received: from szxga06-in.huawei.com ([45.249.212.32]:10422 "EHLO
+        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727293AbhAHKly (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Jan 2021 05:39:32 -0500
-Received: from localhost (localhost [127.0.0.1])
-        by server.20disenoweb.com (Postfix) with ESMTP id 5FD67F60;
-        Fri,  8 Jan 2021 11:38:49 +0100 (CET)
-X-Virus-Scanned: amavisd-new at server.20disenoweb.com
-Received: from server.20disenoweb.com ([127.0.0.1])
-        by localhost (server.20disenoweb.com [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id 0fNMQ4-cCF3b; Fri,  8 Jan 2021 11:38:48 +0100 (CET)
-Received: from localhost.localdomain (195.red-95-124-155.dynamicip.rima-tde.net [95.124.155.195])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        (Authenticated sender: sergiosota@fanamoel.com)
-        by server.20disenoweb.com (Postfix) with ESMTPSA id 2E4D2F5E;
-        Fri,  8 Jan 2021 11:38:31 +0100 (CET)
-From:   Sergio Sota <sergiosota@fanamoel.com>
-To:     robh+dt@kernel.org
-Cc:     mripard@kernel.org, wens@csie.org, jernej.skrabec@siol.net,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, Sergio Sota <sergiosota@fanamoel.com>
-Subject: [PATCH v2] ARM: dts: sun5i: add A10s/A13 mali gpu support fallback
-Date:   Fri,  8 Jan 2021 11:38:19 +0100
-Message-Id: <20210108103819.322901-1-sergiosota@fanamoel.com>
-X-Mailer: git-send-email 2.25.1
+        Fri, 8 Jan 2021 05:41:54 -0500
+Received: from DGGEMS414-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4DC04B5Hr5zj46B;
+        Fri,  8 Jan 2021 18:40:26 +0800 (CST)
+Received: from localhost.localdomain (10.69.192.56) by
+ DGGEMS414-HUB.china.huawei.com (10.3.19.214) with Microsoft SMTP Server id
+ 14.3.498.0; Fri, 8 Jan 2021 18:41:11 +0800
+From:   Tian Tao <tiantao6@hisilicon.com>
+To:     <airlied@linux.ie>, <daniel@ffwll.ch>, <tzimmermann@suse.de>,
+        <kraxel@redhat.com>, <alexander.deucher@amd.com>,
+        <tglx@linutronix.de>, <dri-devel@lists.freedesktop.org>,
+        <xinliang.liu@linaro.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH] drm/hisilicon: Delete the empty function mode_valid
+Date:   Fri, 8 Jan 2021 18:41:05 +0800
+Message-ID: <1610102465-36501-1-git-send-email-tiantao6@hisilicon.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.69.192.56]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The A10s/A13 mali gpu was not defined in device tree
-Add A10 mali gpu as a fallback for A10s/A13
-Tested with Olimex-A13-SOM / Olimex-A13-OlinuXino-MICRO
-"kmscube" 3d cube on screen (60fps / 10%cpu)
-Versions: Lima:1.1.0 EGL:1.4 OpenGLES:2.0 Mesa:20.2.2
+Based on the drm_connector_mode_valid, if the hibmc implementation
+of mode_valid only returns MODE_OK, then we can not implement the
+mode_valid function.
 
-Signed-off-by: Sergio Sota <sergiosota@fanamoel.com>
+Signed-off-by: Tian Tao <tiantao6@hisilicon.com>
 ---
-Changes in v2:
- - Add testing versions to changelog
+ drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_vdac.c | 7 -------
+ 1 file changed, 7 deletions(-)
 
- arch/arm/boot/dts/sun5i.dtsi | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
-
-diff --git a/arch/arm/boot/dts/sun5i.dtsi b/arch/arm/boot/dts/sun5i.dtsi
-index 4ef14a8695ef..b4d46ecdf7ad 100644
---- a/arch/arm/boot/dts/sun5i.dtsi
-+++ b/arch/arm/boot/dts/sun5i.dtsi
-@@ -726,6 +726,18 @@ i2c2: i2c@1c2b400 {
- 			#size-cells = <0>;
- 		};
+diff --git a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_vdac.c b/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_vdac.c
+index c76f996..c74a35b 100644
+--- a/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_vdac.c
++++ b/drivers/gpu/drm/hisilicon/hibmc/hibmc_drm_vdac.c
+@@ -43,12 +43,6 @@ static int hibmc_connector_get_modes(struct drm_connector *connector)
+ 	return count;
+ }
  
-+		mali: gpu@1c40000 {
-+			compatible = "allwinner,sun4i-a10-mali", "arm,mali-400";
-+			reg = <0x01c40000 0x10000>;
-+			interrupts = <69>, <70>, <71>, <72>,  <73>;
-+			interrupt-names = "gp", "gpmmu", "pp0", "ppmmu0", "pmu";
-+			clocks = <&ccu CLK_AHB_GPU>, <&ccu CLK_GPU>;
-+			clock-names = "bus", "core";
-+			resets = <&ccu RST_GPU>;
-+			assigned-clocks = <&ccu CLK_GPU>;
-+			assigned-clock-rates = <320000000>;
-+		};
-+
- 		timer@1c60000 {
- 			compatible = "allwinner,sun5i-a13-hstimer";
- 			reg = <0x01c60000 0x1000>;
+-static enum drm_mode_status hibmc_connector_mode_valid(struct drm_connector *connector,
+-						       struct drm_display_mode *mode)
+-{
+-	return MODE_OK;
+-}
+-
+ static void hibmc_connector_destroy(struct drm_connector *connector)
+ {
+ 	struct hibmc_connector *hibmc_connector = to_hibmc_connector(connector);
+@@ -60,7 +54,6 @@ static void hibmc_connector_destroy(struct drm_connector *connector)
+ static const struct drm_connector_helper_funcs
+ 	hibmc_connector_helper_funcs = {
+ 	.get_modes = hibmc_connector_get_modes,
+-	.mode_valid = hibmc_connector_mode_valid,
+ };
+ 
+ static const struct drm_connector_funcs hibmc_connector_funcs = {
 -- 
-2.25.1
+2.7.4
 
