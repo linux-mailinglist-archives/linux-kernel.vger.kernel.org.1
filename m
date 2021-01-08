@@ -2,77 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D8C402EF117
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 12:11:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CEC512EF11F
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 12:15:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726823AbhAHLLL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Jan 2021 06:11:11 -0500
-Received: from wout5-smtp.messagingengine.com ([64.147.123.21]:51339 "EHLO
-        wout5-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726011AbhAHLLK (ORCPT
+        id S1727058AbhAHLPT convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 8 Jan 2021 06:15:19 -0500
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:49284 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726397AbhAHLPR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Jan 2021 06:11:10 -0500
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
-        by mailout.west.internal (Postfix) with ESMTP id D59971AD2
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Jan 2021 06:10:24 -0500 (EST)
-Received: from imap6 ([10.202.2.56])
-  by compute2.internal (MEProxy); Fri, 08 Jan 2021 06:10:24 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kode54.net; h=
-        mime-version:message-id:date:from:to:subject:content-type; s=
-        fm2; bh=awxeo4GTIfDddgqljasaQcdCXWQGMfj8+WQBFFo7+TY=; b=ACHhbB/6
-        CKrMVNZZkSM1paCxbVFRWSIXr0HoTeyjy7v17sJSxNV6Qkr4QY2wJrxWLBNKeOp0
-        mbSTOcNWqWFEVgXwG0UPZKQjAPGoA3tTBP5VVCVKjo1oepa2qEZ8uIf/cokenxHN
-        Yq1yuyoWpsKqE9E2xsmnjQA49AL5UzFfBPhWabL/9/xKolqq0D1qVCcnAkFtRVLK
-        GH5d2RJzTRmcAyAn64tYVoKleNqqRfz8+FnhMDsNNpYLEH1z0eYnfUmSj3SM3aXd
-        iwwtC8IsxAYEG4DQBTKCN1vZwmkMRXs0z3maGJVXrBJL/pGzTOMNGtpv87P1QFrX
-        /kaLhfAWwmr2+Q==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=content-type:date:from:message-id
-        :mime-version:subject:to:x-me-proxy:x-me-proxy:x-me-sender
-        :x-me-sender:x-sasl-enc; s=fm1; bh=awxeo4GTIfDddgqljasaQcdCXWQGM
-        fj8+WQBFFo7+TY=; b=M+VTNoX/ENnrgkCgZ7yyBENbTuPh4F838k8BWcr9GeTSa
-        8mwDEXLGeMfOQv7Nq25xg5BFHBRml26edMzcliCO6z+VJ9JP+B5dyLKT7vad/0Bt
-        HIQvwpgedZA8iw71COjGyrmo37QPzIV3fKEWEbeX5XExB08RJ0bKqweWmom1G1/W
-        P26xo/GcDqFe66YVh60QgFxNlSCvMgqRP2lawhdcSEj+QT2v3hfykAl8NibHGjL7
-        nigbwx8VnMm9eiCqkgcVKGdyCnTm3lYOqhBZveh878VpzTnL/IzrldR8rdK5coNJ
-        nGqlGpN4Q32FL38kI2r1fKcmC6Oga+qpO3K+OX+kw==
-X-ME-Sender: <xms:oD34X9aoNH5BgXqaFFz4C5Z_5rxdbFfjInRW6AV3GwTNVXL6Wiz1YA>
-    <xme:oD34X0ZDWo2R7x2MsFugSRZSnvZyDP39DKPu2kq-jlaE_SAXlEzRsqSYLTVN8QmPt
-    SNBlI2fOemGSOrRNyg>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrvdeggedgvdehucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucenucfjughrpefofgggkfffhffvufgtsehttdertd
-    erredtnecuhfhrohhmpedfvehhrhhishhtohhphhgvrhcuhghilhhlihgrmhcuufhnohif
-    hhhilhhlfdcuoegthhhrihhssehkohguvgehgedrnhgvtheqnecuggftrfgrthhtvghrnh
-    epleduvddtteduhedvuefhhfehkeetlefhjeefvddtffdugfeikedtueetgeffgfehnecu
-    vehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheptghhrhhish
-    eskhhouggvheegrdhnvght
-X-ME-Proxy: <xmx:oD34X__gx_dgkoc1Z0aRH5Uph5oiki1az27rMk3DwPc6EBeWP9-d3A>
-    <xmx:oD34X7pSN-a619e8HsVSxghnmAdVaiD7w9iesRdssORa2KyOqU07Ug>
-    <xmx:oD34X4oZnYWBIccsORdmb5b9mEFHCrvMNju3_3E9blQjnI8UBOApXA>
-    <xmx:oD34X10Y5dY6DvJyWLPDBJ5DNAIe9Si-YBi85VAaTaiuGp19_ZWJ3A>
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id 969931400A1; Fri,  8 Jan 2021 06:10:31 -0500 (EST)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.3.1-61-gb52c239-fm-20201210.001-gb52c2396
-Mime-Version: 1.0
-Message-Id: <90b1b5c8-36d5-4094-add4-3a2d211085c2@www.fastmail.com>
-Date:   Fri, 08 Jan 2021 03:10:03 -0800
-From:   "Christopher William Snowhill" <chris@kode54.net>
-To:     linux-kernel@vger.kernel.org
-Subject: Re: Linux 5.11-rc2
-Content-Type: text/plain
+        Fri, 8 Jan 2021 06:15:17 -0500
+Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-175-sD4VRU_TPyetWiPTPnISpQ-1; Fri, 08 Jan 2021 11:13:38 +0000
+X-MC-Unique: sD4VRU_TPyetWiPTPnISpQ-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
+ Server (TLS) id 15.0.1347.2; Fri, 8 Jan 2021 11:13:37 +0000
+Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
+ AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
+ Fri, 8 Jan 2021 11:13:37 +0000
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Christoph Hellwig' <hch@infradead.org>
+CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "io-uring@vger.kernel.org" <io-uring@vger.kernel.org>,
+        Jens Axboe <axboe@kernel.dk>,
+        "David S. Miller" <davem@davemloft.net>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>
+Subject: RE: [PATCH 5/9 next] scsi: Use iovec_import() instead of
+ import_iovec().
+Thread-Topic: [PATCH 5/9 next] scsi: Use iovec_import() instead of
+ import_iovec().
+Thread-Index: AdaLbdBrrJnvb+q4Sa6RtPibF1KBcwErGHIAFWTS8sA=
+Date:   Fri, 8 Jan 2021 11:13:37 +0000
+Message-ID: <881cc102501e4c1a93785f0906dbd650@AcuMS.aculab.com>
+References: <27be46ece36c42d6a7dabf62c6ac7a98@AcuMS.aculab.com>
+ <20200921142204.GE24515@infradead.org>
+In-Reply-To: <20200921142204.GE24515@infradead.org>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
+MIME-Version: 1.0
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There appears to be a regression with the filesystem NLS modules. I cannot load any of them. They all produce:
+From: Christoph Hellwig
+> Sent: 21 September 2020 15:22
+> 
+> So looking at the various callers I'm not sure this API is the
+> best.  If we want to do something fancy I'd hide the struct iovec
+> instances entirely with something like:
+> 
+> struct iov_storage {
+> 	struct iovec stack[UIO_FASTIOV], *vec;
+> }
+> 
+> int iov_iter_import_iovec(struct iov_iter *iter, struct iov_storage *s,
+> 		const struct iovec __user *vec, unsigned long nr_segs,
+> 		int type);
+> 
+> and then add a new helper to free the thing if needed:
+> 
+> void iov_iter_release_iovec(struct iov_storage *s)
+> {
+> 	if (s->vec != s->stack)
+> 		kfree(s->vec);
+> }
 
-modprobe: ERROR: could not insert 'nls_cp437': Invalid argument
+I've been looking at this code again now most of the pending changes
+are in Linus's tree.
 
-The system journal reports:
+I was actually looking at going one stage further.
+The 'iov_iter' is always allocated with the 'iov_storage' *above).
+Usually both are on the callers stack - possibly in different functions.
 
-Jan 08 02:04:56 mrgency kernel: BPF:No data
-Jan 08 02:04:56 mrgency kernel: failed to validate module [nls_cp437] BTF: -22
+So add:
+struct iovec_iter {
+	struct iov_iter iter;
+	struct iovec to_free;
+	struct iovec stack[UIO_FASTIOV];
+};
 
-As a result, I cannot mount vfat filesystems with the usual CP437 default. Or any other code page, for that matter.
+int __iovec_import(struct iovec_iter *, const struct iovec __user *vec,
+	unsigned long nr_segs, int type, bool compat);
+
+And a 'clean' function to do kfree(iovec->to_free);
+
+This reduces the complexity of most of the callers.
+
+I started doing the changes, but got in a mess in io_uring.c (as usual).
+I think I've got a patch pending (in my brain) to simplify the io_uring code.
+
+The plan is to add:
+	if (iter->iov != xxx->to_free)
+		iter->iov = xxx->stack;
+Prior to every use of the iter.
+This fixes up anything that got broken by a memcpy() of the fields.
+The tidyup code is then always kfree(xxx->to_free).
+
+	David
+
+	
+
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+Registration No: 1397386 (Wales)
+
