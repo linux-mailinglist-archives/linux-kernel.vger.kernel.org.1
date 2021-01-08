@@ -2,71 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC97B2EEDD8
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 08:26:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DDF522EEDDF
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 08:30:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727449AbhAHH0M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Jan 2021 02:26:12 -0500
-Received: from muru.com ([72.249.23.125]:41204 "EHLO muru.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726763AbhAHH0L (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Jan 2021 02:26:11 -0500
-Received: from atomide.com (localhost [127.0.0.1])
-        by muru.com (Postfix) with ESMTPS id A75A680B4;
-        Fri,  8 Jan 2021 07:25:52 +0000 (UTC)
-Date:   Fri, 8 Jan 2021 09:25:27 +0200
-From:   Tony Lindgren <tony@atomide.com>
-To:     Sebastian Reichel <sre@kernel.org>
-Cc:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-omap@vger.kernel.org,
-        Arthur Demchenkov <spinal.by@gmail.com>,
-        Carl Philipp Klemm <philipp@uvos.xyz>,
-        Merlijn Wajer <merlijn@wizzup.org>,
-        Pavel Machek <pavel@ucw.cz>, ruleh <ruleh@gmx.de>
-Subject: Re: [PATCH 4/4] Input: omap4-keypad - simplify probe with devm
-Message-ID: <X/gI55MjYj5ImKwi@atomide.com>
-References: <20210106125822.31315-1-tony@atomide.com>
- <20210106125822.31315-5-tony@atomide.com>
- <20210106134336.lmbaywvn7aqohsj5@earth.universe>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210106134336.lmbaywvn7aqohsj5@earth.universe>
+        id S1727146AbhAHH3g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Jan 2021 02:29:36 -0500
+Received: from alexa-out-tai-02.qualcomm.com ([103.229.16.227]:56074 "EHLO
+        alexa-out-tai-02.qualcomm.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726027AbhAHH3f (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 Jan 2021 02:29:35 -0500
+Received: from ironmsg01-tai.qualcomm.com ([10.249.140.6])
+  by alexa-out-tai-02.qualcomm.com with ESMTP; 08 Jan 2021 15:28:53 +0800
+X-QCInternal: smtphost
+Received: from cbsp-sh-gv.ap.qualcomm.com (HELO cbsp-sh-gv.qualcomm.com) ([10.231.249.68])
+  by ironmsg01-tai.qualcomm.com with ESMTP; 08 Jan 2021 15:28:47 +0800
+Received: by cbsp-sh-gv.qualcomm.com (Postfix, from userid 393357)
+        id 7CCEA26B7; Fri,  8 Jan 2021 15:28:46 +0800 (CST)
+From:   Ziqi Chen <ziqichen@codeaurora.org>
+To:     asutoshd@codeaurora.org, nguyenb@codeaurora.org,
+        cang@codeaurora.org, hongwus@codeaurora.org, rnayak@codeaurora.org,
+        vinholikatti@gmail.com, jejb@linux.vnet.ibm.com,
+        martin.petersen@oracle.com, linux-scsi@vger.kernel.org,
+        kernel-team@android.com, saravanak@google.com, salyzyn@google.com,
+        ziqichen@codeaurora.org, kwmad.kim@samsung.com,
+        stanley.chu@mediatek.com
+Cc:     Alim Akhtar <alim.akhtar@samsung.com>,
+        Avri Altman <avri.altman@wdc.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        Bean Huo <beanhuo@micron.com>,
+        linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH v5 1/2] scsi: ufs: Fix ufs clk specs violation
+Date:   Fri,  8 Jan 2021 15:28:03 +0800
+Message-Id: <1610090885-50099-2-git-send-email-ziqichen@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
+In-Reply-To: <1610090885-50099-1-git-send-email-ziqichen@codeaurora.org>
+References: <1610090885-50099-1-git-send-email-ziqichen@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-* Sebastian Reichel <sre@kernel.org> [210106 13:44]:
-> On Wed, Jan 06, 2021 at 02:58:22PM +0200, Tony Lindgren wrote:
-> > -	struct resource *res;
-> >  
-> >  	dev_pm_clear_wake_irq(&pdev->dev);
-> > -
-> > -	free_irq(keypad_data->irq, keypad_data);
-> > -
-> >  	pm_runtime_dont_use_autosuspend(&pdev->dev);
-> >  	pm_runtime_disable(&pdev->dev);
-> > -
-> >  	input_unregister_device(keypad_data->input);
-> 
-> not needed:
-> 
->  * devm_input_allocate_device - allocate managed input device
->  * @dev: device owning the input device being created
->  *
->  * Returns prepared struct input_dev or %NULL.
->  *
->  * Managed input devices do not need to be explicitly unregistered or
->  * freed as it will be done automatically when owner device unbinds from
->  * its driver (or binding fails). [...]
+As per specs, e.g, JESD220E chapter 7.2, while powering
+off/on the ufs device, REF_CLK signal should be between
+VSS(Ground) and VCCQ/VCCQ2.
 
-OK thanks will drop and fix up the reported autobuild warnings
-and repost. Looks like also the OMAP4_KEYPAD_AUTOIDLE_MS value
-of 50 is too long, I recently changed it from 30 but now have
-seen few stuck last pressed keys.
+Signed-off-by: Ziqi Chen <ziqichen@codeaurora.org>
+---
+ drivers/scsi/ufs/ufshcd.c | 20 ++++++++++----------
+ 1 file changed, 10 insertions(+), 10 deletions(-)
 
-Regards,
-
-Tony
+diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
+index e221add..3f807f7 100644
+--- a/drivers/scsi/ufs/ufshcd.c
++++ b/drivers/scsi/ufs/ufshcd.c
+@@ -8686,8 +8686,6 @@ static int ufshcd_suspend(struct ufs_hba *hba, enum ufs_pm_op pm_op)
+ 	if (ret)
+ 		goto set_dev_active;
+ 
+-	ufshcd_vreg_set_lpm(hba);
+-
+ disable_clks:
+ 	/*
+ 	 * Call vendor specific suspend callback. As these callbacks may access
+@@ -8711,6 +8709,8 @@ static int ufshcd_suspend(struct ufs_hba *hba, enum ufs_pm_op pm_op)
+ 					hba->clk_gating.state);
+ 	}
+ 
++	ufshcd_vreg_set_lpm(hba);
++
+ 	/* Put the host controller in low power mode if possible */
+ 	ufshcd_hba_vreg_set_lpm(hba);
+ 	goto out;
+@@ -8778,18 +8778,18 @@ static int ufshcd_resume(struct ufs_hba *hba, enum ufs_pm_op pm_op)
+ 	old_link_state = hba->uic_link_state;
+ 
+ 	ufshcd_hba_vreg_set_hpm(hba);
++	ret = ufshcd_vreg_set_hpm(hba);
++	if (ret)
++		goto out;
++
+ 	/* Make sure clocks are enabled before accessing controller */
+ 	ret = ufshcd_setup_clocks(hba, true);
+ 	if (ret)
+-		goto out;
++		goto disable_vreg;
+ 
+ 	/* enable the host irq as host controller would be active soon */
+ 	ufshcd_enable_irq(hba);
+ 
+-	ret = ufshcd_vreg_set_hpm(hba);
+-	if (ret)
+-		goto disable_irq_and_vops_clks;
+-
+ 	/*
+ 	 * Call vendor specific resume callback. As these callbacks may access
+ 	 * vendor specific host controller register space call them when the
+@@ -8797,7 +8797,7 @@ static int ufshcd_resume(struct ufs_hba *hba, enum ufs_pm_op pm_op)
+ 	 */
+ 	ret = ufshcd_vops_resume(hba, pm_op);
+ 	if (ret)
+-		goto disable_vreg;
++		goto disable_irq_and_vops_clks;
+ 
+ 	/* For DeepSleep, the only supported option is to have the link off */
+ 	WARN_ON(ufshcd_is_ufs_dev_deepsleep(hba) && !ufshcd_is_link_off(hba));
+@@ -8864,8 +8864,6 @@ static int ufshcd_resume(struct ufs_hba *hba, enum ufs_pm_op pm_op)
+ 	ufshcd_link_state_transition(hba, old_link_state, 0);
+ vendor_suspend:
+ 	ufshcd_vops_suspend(hba, pm_op);
+-disable_vreg:
+-	ufshcd_vreg_set_lpm(hba);
+ disable_irq_and_vops_clks:
+ 	ufshcd_disable_irq(hba);
+ 	if (hba->clk_scaling.is_allowed)
+@@ -8876,6 +8874,8 @@ static int ufshcd_resume(struct ufs_hba *hba, enum ufs_pm_op pm_op)
+ 		trace_ufshcd_clk_gating(dev_name(hba->dev),
+ 					hba->clk_gating.state);
+ 	}
++disable_vreg:
++	ufshcd_vreg_set_lpm(hba);
+ out:
+ 	hba->pm_op_in_progress = 0;
+ 	if (ret)
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
 
