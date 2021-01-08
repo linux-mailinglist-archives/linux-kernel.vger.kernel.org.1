@@ -2,120 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA6592EEC17
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 05:02:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CA37D2EEC1B
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 05:05:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726823AbhAHECI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 7 Jan 2021 23:02:08 -0500
-Received: from m43-15.mailgun.net ([69.72.43.15]:44983 "EHLO
-        m43-15.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726113AbhAHECI (ORCPT
+        id S1726934AbhAHEEr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 7 Jan 2021 23:04:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42774 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725965AbhAHEEq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 7 Jan 2021 23:02:08 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1610078507; h=In-Reply-To: Content-Type: MIME-Version:
- References: Message-ID: Subject: Cc: To: From: Date: Sender;
- bh=VucVYXBppIslG52iPfELeNHNg0r2vx8lWfv0KROfEoM=; b=p/vYnrBQbWlx+Uxiy7O8NbgY2mqNiN/9pObijAzoCdeLIWRfjuOVxo4D1X7cBgKlPiKUUBnG
- ygMWlxVlerNfIm6rh/Guf9hSLoft1wNVlwnczUGJf+BDChT0Ft6UuuWL/1aUCFCgXdZj4Fj/
- zk1zdi/yzsRajr6zIavRh4DlC/M=
-X-Mailgun-Sending-Ip: 69.72.43.15
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n10.prod.us-west-2.postgun.com with SMTP id
- 5ff7d901b00f200123cf9f70 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 08 Jan 2021 04:01:05
- GMT
-Sender: tingweiz=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id F1D45C433CA; Fri,  8 Jan 2021 04:01:04 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from codeaurora.org (unknown [180.166.53.21])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: tingwei)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id E1EA9C433CA;
-        Fri,  8 Jan 2021 04:01:02 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org E1EA9C433CA
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=tingweiz@codeaurora.org
-Date:   Fri, 8 Jan 2021 12:00:55 +0800
-From:   Tingwei Zhang <tingweiz@codeaurora.org>
-To:     Mark Rutland <mark.rutland@arm.com>
-Cc:     tingwei@codeaurora.org, Will Deacon <will@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: Set DBGCLAIM when self-host debug is enabled
-Message-ID: <20210108040055.GA11529@codeaurora.org>
-References: <512a30e6cc6877687c10c0f9ccc3c4c5@codeaurora.org>
- <20210106122356.GC26994@C02TD0UTHF1T.local>
+        Thu, 7 Jan 2021 23:04:46 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3EE5C0612F5;
+        Thu,  7 Jan 2021 20:04:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description;
+        bh=yIAE2JvjrEcvgRGTFdqvtdjqYhZLL3+YzzRkNV3NO7s=; b=TD4OnrYAcyOrinAUpDgkqivEnC
+        Tjw8sn1KpLn4OwZ6I+xx2M0TxDOxhiNC5VFdCflj0J519FmhYDuAagUw1EtRvtb482Cfb2KQRMdo7
+        YrkT5vHkkmGGVmm/sMvnmk4hoqfPQbFkJqEtuxG/XMG1T+X09oNYgccGej1m4HTyMSBooxfbT8Y1a
+        QaAlPUWys937eBMtXTenrFQCkvqpqX9YA5HEKe0fh6ye8E1in4Rva/MjOgCMPI1X+MdriUxnOcDd3
+        NtPIH9Vyv/vZWyoyvoYHyFc/dsxhNAnk3dKToFsdC9dkicXfLqaaJua/+/sx8ANJZ42heaNaDznMu
+        UvLFLiyQ==;
+Received: from [2601:1c0:6280:3f0::79df]
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kxj0I-00078D-AZ; Fri, 08 Jan 2021 04:03:58 +0000
+Subject: Re: [PATCH net-next] net/bridge: fix misspellings using codespell
+ tool
+To:     menglong8.dong@gmail.com, roopa@nvidia.com
+Cc:     nikolay@nvidia.com, davem@davemloft.net, kuba@kernel.org,
+        bridge@lists.linux-foundation.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Menglong Dong <dong.menglong@zte.com.cn>
+References: <20210108025332.52480-1-dong.menglong@zte.com.cn>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <295b1d84-a49c-cdaa-e7fa-bbe492aa1496@infradead.org>
+Date:   Thu, 7 Jan 2021 20:03:49 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210106122356.GC26994@C02TD0UTHF1T.local>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+In-Reply-To: <20210108025332.52480-1-dong.menglong@zte.com.cn>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 06, 2021 at 08:23:56PM +0800, Mark Rutland wrote:
-> On Wed, Jan 06, 2021 at 06:29:53PM +0800, tingwei@codeaurora.org wrote:
-> > Hi Will and Mark,
+On 1/7/21 6:53 PM, menglong8.dong@gmail.com wrote:
+> From: Menglong Dong <dong.menglong@zte.com.cn>
 > 
-> Hi Tingwei,
+> Some typos are found out by codespell tool:
 > 
-> > In recent implementation of save/restore ARM debug registers in
-> > EL2/EL3, we found it's necessary to know whether self-host debug is
-> > enabled so EL2/EL3 can avoid saving/restoring debug registers but no
-> > one is using debug.
+> $ codespell ./net/bridge/
+> ./net/bridge/br_stp.c:604: permanant  ==> permanent
+> ./net/bridge/br_stp.c:605: persistance  ==> persistence
+> ./net/bridge/br.c:125: underlaying  ==> underlying
+> ./net/bridge/br_input.c:43: modue  ==> mode
+> ./net/bridge/br_mrp.c:828: Determin  ==> Determine
+> ./net/bridge/br_mrp.c:848: Determin  ==> Determine
+> ./net/bridge/br_mrp.c:897: Determin  ==> Determine
 > 
-> In what situation are you considering? I assume you mean idle sequences
-> using CPU_SUSPEND?
+> Fix typos found by codespell.
 > 
-> Generally our expectation for CPU_SUSPEND is:
-> 
-> * Where StateType==0, the debug state is preserved with all other
->   PE state.
-> 
-> * Where StateType==1 and the PE returns "warm" without having entered a
->   powerdown state, the debug state is preserved along with all other PE
->   state.
-> 
-> * Where StateType==1, and the PE returns "cold" after having entered a
->   powerdown state (i.e. we return via the entry point address), the
->   debug state is not preserved.
-> 
-> ... and I'm missing where you could avoid saving the state. What
-> situation(s) did you have in mind?
-> 
-In StateType==1 case, EL2/EL3 can save debug registers before PE suspend
-and restore them after PE resume. If EL2/EL3 doesn't know whether external
-debugger or self-host debugger is using debug registers, it can save and
-restore bindly everytime. However, if EL2/EL3 can get the information from
-DBGCLAIM, it can only save/restore debug registers when debug is ongoing
-which means DGBCLAIM[0] is set by external debugger or DGBCLAIM[1] is set
-by self-host debugger.
+> Signed-off-by: Menglong Dong <dong.menglong@zte.com.cn>
 
-> > In ARM PSCI, it has one option to set DBGCLAIM[1] to 1 to indicate
-> > that debug is in use by a self-host debugger. Do you think it's
-> > resonable to add this to Kernel?
-> > 
-> > For example, can we set DBGCLAIM[1] to 1 in enable_debug_monitors()
-> > and clear it in disable_debug_monitors().
-> 
-> I was under the impression that this was solely for the benefit of an
-> external debugger, and should have no functional impact on the PSCI
-> implementation from the kernel's PoV, so as above I think we need a
-> better description of the case you're trying to address.
+LGTM. Thanks.
 
-If self-host debugger like gdb/kgdb is used for debug, Kernel can set
-DBGCLAIM[1] to inform EL2/EL3.
+Acked-by: Randy Dunlap <rdunlap@infradead.org>
 
-Thanks,
-Tingwei
+> ---
+>  net/bridge/br.c       | 2 +-
+>  net/bridge/br_input.c | 2 +-
+>  net/bridge/br_mrp.c   | 6 +++---
+>  net/bridge/br_stp.c   | 4 ++--
+>  4 files changed, 7 insertions(+), 7 deletions(-)
 > 
-> Thanks,
-> Mark.
+> diff --git a/net/bridge/br.c b/net/bridge/br.c
+> index 1b169f8e7491..ef743f94254d 100644
+> --- a/net/bridge/br.c
+> +++ b/net/bridge/br.c
+> @@ -122,7 +122,7 @@ static int br_device_event(struct notifier_block *unused, unsigned long event, v
+>  		break;
+>  
+>  	case NETDEV_PRE_TYPE_CHANGE:
+> -		/* Forbid underlaying device to change its type. */
+> +		/* Forbid underlying device to change its type. */
+>  		return NOTIFY_BAD;
+>  
+>  	case NETDEV_RESEND_IGMP:
+> diff --git a/net/bridge/br_input.c b/net/bridge/br_input.c
+> index 8ca1f1bc6d12..222285d9dae2 100644
+> --- a/net/bridge/br_input.c
+> +++ b/net/bridge/br_input.c
+> @@ -40,7 +40,7 @@ static int br_pass_frame_up(struct sk_buff *skb)
+>  
+>  	vg = br_vlan_group_rcu(br);
+>  	/* Bridge is just like any other port.  Make sure the
+> -	 * packet is allowed except in promisc modue when someone
+> +	 * packet is allowed except in promisc mode when someone
+>  	 * may be running packet capture.
+>  	 */
+>  	if (!(brdev->flags & IFF_PROMISC) &&
+> diff --git a/net/bridge/br_mrp.c b/net/bridge/br_mrp.c
+> index cec2c4e4561d..fc0a98874bfc 100644
+> --- a/net/bridge/br_mrp.c
+> +++ b/net/bridge/br_mrp.c
+> @@ -825,7 +825,7 @@ int br_mrp_start_in_test(struct net_bridge *br,
+>  	return 0;
+>  }
+>  
+> -/* Determin if the frame type is a ring frame */
+> +/* Determine if the frame type is a ring frame */
+>  static bool br_mrp_ring_frame(struct sk_buff *skb)
+>  {
+>  	const struct br_mrp_tlv_hdr *hdr;
+> @@ -845,7 +845,7 @@ static bool br_mrp_ring_frame(struct sk_buff *skb)
+>  	return false;
+>  }
+>  
+> -/* Determin if the frame type is an interconnect frame */
+> +/* Determine if the frame type is an interconnect frame */
+>  static bool br_mrp_in_frame(struct sk_buff *skb)
+>  {
+>  	const struct br_mrp_tlv_hdr *hdr;
+> @@ -894,7 +894,7 @@ static void br_mrp_mrm_process(struct br_mrp *mrp, struct net_bridge_port *port,
+>  		br_mrp_ring_port_open(port->dev, false);
+>  }
+>  
+> -/* Determin if the test hdr has a better priority than the node */
+> +/* Determine if the test hdr has a better priority than the node */
+>  static bool br_mrp_test_better_than_own(struct br_mrp *mrp,
+>  					struct net_bridge *br,
+>  					const struct br_mrp_ring_test_hdr *hdr)
+> diff --git a/net/bridge/br_stp.c b/net/bridge/br_stp.c
+> index 3e88be7aa269..a3a5745660dd 100644
+> --- a/net/bridge/br_stp.c
+> +++ b/net/bridge/br_stp.c
+> @@ -601,8 +601,8 @@ int __set_ageing_time(struct net_device *dev, unsigned long t)
+>  /* Set time interval that dynamic forwarding entries live
+>   * For pure software bridge, allow values outside the 802.1
+>   * standard specification for special cases:
+> - *  0 - entry never ages (all permanant)
+> - *  1 - entry disappears (no persistance)
+> + *  0 - entry never ages (all permanent)
+> + *  1 - entry disappears (no persistence)
+>   *
+>   * Offloaded switch entries maybe more restrictive
+>   */
+> 
+
+
+-- 
+~Randy
+https://people.kernel.org/tglx/notes-about-netiquette
+https://www.kernel.org/doc/html/latest/process/submit-checklist.html
