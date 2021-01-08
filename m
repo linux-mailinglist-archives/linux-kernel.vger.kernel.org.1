@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 821F92EF8F3
-	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 21:22:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A5EE22EF8D8
+	for <lists+linux-kernel@lfdr.de>; Fri,  8 Jan 2021 21:19:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729641AbhAHUT3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Jan 2021 15:19:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52488 "EHLO
+        id S1729440AbhAHURQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Jan 2021 15:17:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52614 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729259AbhAHUQl (ORCPT
+        with ESMTP id S1729357AbhAHURG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Jan 2021 15:16:41 -0500
-Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCA52C061240
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Jan 2021 12:15:37 -0800 (PST)
-Received: by mail-wm1-x335.google.com with SMTP id e25so9469639wme.0
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Jan 2021 12:15:37 -0800 (PST)
+        Fri, 8 Jan 2021 15:17:06 -0500
+Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84345C061241
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Jan 2021 12:15:39 -0800 (PST)
+Received: by mail-wr1-x42d.google.com with SMTP id r7so10142223wrc.5
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Jan 2021 12:15:39 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=R1cIGcueVpiwKXCsXAGeLOrVeaRuSdzc2IFkwmNetFo=;
-        b=l0LVv8Yv2qqohE+nDbzioDjwD7IumU3x0mYo0uB5VLZL4cfV3nC1+PdifOuff89qz3
-         WBcqrZJc0UxjoiglM15XpESfKjFG9UtPvNDMIoflEAsBeMJibYgpd4gebN/tASO3ncme
-         9zY3Wwt3gC6Lss/3zX/gE1z6x3mvKqC/W5ebaBBbSiRJ0LahhPvFcxkb1gj2xAfeQ5xa
-         lon5sbPe+45qR9l6juUzf/JmQ/aOJyAidvclSUOZtTTxnZi5Wu3locXDnSeq+R4XWUbP
-         Mru96URrGOFc3ri9j7RrGYKAvUcGQAvyWv9m9ciIxq+jCERzMETtgm5KddxjOnIb6WGb
-         QEsQ==
+        bh=J9hwKoCUKPkAVEJG7PdvhZlNWecZ9XZq8Q6EZdE3uyc=;
+        b=hEJFVXCVtwgK4Ggr5Yq+CnblBWyx906VjOGVxfnc2I9GwMfjxBlYdIufR3N0PgPmBh
+         XzeWu1y/95DEw+MOBpoPJmeUkjIhV59SsQ5YxzenvG+XvqtqIm9DYK5uwVwZrkNxwvaZ
+         NKLeliZDCZwVeb+sL1YknAuu5Yl58Xur2WNTqAvK9qCl2Ah4T8B89/oNpVFMdiFAjujM
+         4NYnKhCsW75iuMfCwW+XALsrF5a2GYVf8fileLh0IXeaofih5iiHhDxa4h9uis5rYEc1
+         yloX+0Z9EgB6LqnVve8JF5u9cDXP/Ol28Ax5Xno8C5kNyHSO2N0AzqVZPpSBsMxQ7sGQ
+         1YdQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=R1cIGcueVpiwKXCsXAGeLOrVeaRuSdzc2IFkwmNetFo=;
-        b=TYxSzWLOsPvu6UEFd/J/ZdqenSeNLCJtXzRRVd8J7B4VbsB0h32lv+VtyzLQddE+IR
-         Rkd/lVS14VP2jD14yfx6Wz6ohhZgJ9UD+ZqdnEdm0wbgsy9NFR4/RFajzqdRCKaBWmES
-         E/IfjMMKHfGWCYt9Sm2pspSMSu8RyP2KHlxCVa0/4i4XFt6ofJakcFUpv/A5Hu65iqjT
-         MRWEwwlOGd1qc0T181kSoNmQSYHKbxaSPKqcVwRO6blVpm5/aTRxY5QV5Pp6iB90whUS
-         V9RD4bjcOxnLk/RQLbHQG79j62kfke4e68D+ubv8sBVAsXZ5dSF8Y1j1sFr2NewOSWhg
-         kX3w==
-X-Gm-Message-State: AOAM532Ne4AhILv2NHXUstr9QLvE7FyEe9EJuUtmtQR24G2767j8CGIi
-        NtmlwbDGq8N8VRLGhuM4LzXX+on9d/BTI6FG
-X-Google-Smtp-Source: ABdhPJwhybeKl0LYglGwkXx8NfCZ7mEYtL7SSGIFExzb1Ne+RU+Jge2WH9CSadOH5VqEQ698MQ2nsw==
-X-Received: by 2002:a1c:c308:: with SMTP id t8mr4595425wmf.22.1610136936655;
-        Fri, 08 Jan 2021 12:15:36 -0800 (PST)
+        bh=J9hwKoCUKPkAVEJG7PdvhZlNWecZ9XZq8Q6EZdE3uyc=;
+        b=twb7iiNO0WuHnpv1jg0gBJsWkXul600pUmWdRlx4wNFf6pkxjnm1O3+Td4fGXjTOvi
+         ZE9QXdSfZxAaeCUq4xR5p1eK+bKasV7kdnxO4BD4HrugBZDX8YK3KFpjghy60mgp8kaj
+         jDv95weA7ApFBk+onAgBDy/AynZCqHmhwBaehJj5YGR590anJbn0K8AB+ZZgDh+3PDMe
+         1k0PeMzeK0Mj32SjsErM964ZTHHb7NQzyRkTL900fbqiNuZgb2A44gin8YrsCvov/eC3
+         9PwR1N6p6efRN0W6urvpGFdFnEnNPbLONXDRv6V/ClIjQhD5OrKvr8ootJ41LF7hH2xW
+         oMyA==
+X-Gm-Message-State: AOAM532gtberlPV0jZwYrMxrptMNEqJH4IZtvYCWC4f3XIwy40kTMYN+
+        ClCKtdlBduerwDAnjrVJxBaypw==
+X-Google-Smtp-Source: ABdhPJzWWkh1l8v/XVzgOhfkoK44n4cUyCHmhMl1lDPjo2mxR+9aIqk4vVLNoAYoABBXMiS+99NELA==
+X-Received: by 2002:adf:dec7:: with SMTP id i7mr5279212wrn.373.1610136938211;
+        Fri, 08 Jan 2021 12:15:38 -0800 (PST)
 Received: from dell.default ([91.110.221.229])
-        by smtp.gmail.com with ESMTPSA id l8sm15598671wrb.73.2021.01.08.12.15.35
+        by smtp.gmail.com with ESMTPSA id l8sm15598671wrb.73.2021.01.08.12.15.36
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 08 Jan 2021 12:15:36 -0800 (PST)
+        Fri, 08 Jan 2021 12:15:37 -0800 (PST)
 From:   Lee Jones <lee.jones@linaro.org>
 To:     lee.jones@linaro.org
 Cc:     linux-kernel@vger.kernel.org,
@@ -56,11 +56,13 @@ Cc:     linux-kernel@vger.kernel.org,
         Alex Deucher <alexander.deucher@amd.com>,
         =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
         David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>, amd-gfx@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org
-Subject: [PATCH 22/40] drm/amd/display/dc/bios/bios_parser2: Fix some formatting issues and missing parameter docs
-Date:   Fri,  8 Jan 2021 20:14:39 +0000
-Message-Id: <20210108201457.3078600-23-lee.jones@linaro.org>
+        Daniel Vetter <daniel@ffwll.ch>,
+        Mauro Rossi <issor.oruam@gmail.com>,
+        Charlene Liu <Charlene.Liu@amd.com>,
+        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org
+Subject: [PATCH 23/40] drm/amd/display/dc/dce/dce_audio: Make function invoked by reference static
+Date:   Fri,  8 Jan 2021 20:14:40 +0000
+Message-Id: <20210108201457.3078600-24-lee.jones@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210108201457.3078600-1-lee.jones@linaro.org>
 References: <20210108201457.3078600-1-lee.jones@linaro.org>
@@ -73,15 +75,7 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Fixes the following W=1 kernel build warning(s):
 
- drivers/gpu/drm/amd/amdgpu/../display/dc/bios/bios_parser2.c:501: warning: Function parameter or member 'dcb' not described in 'bios_parser_get_gpio_pin_info'
- drivers/gpu/drm/amd/amdgpu/../display/dc/bios/bios_parser2.c:501: warning: Function parameter or member 'gpio_id' not described in 'bios_parser_get_gpio_pin_info'
- drivers/gpu/drm/amd/amdgpu/../display/dc/bios/bios_parser2.c:501: warning: Function parameter or member 'info' not described in 'bios_parser_get_gpio_pin_info'
- drivers/gpu/drm/amd/amdgpu/../display/dc/bios/bios_parser2.c:815: warning: Function parameter or member 'dcb' not described in 'bios_parser_get_spread_spectrum_info'
- drivers/gpu/drm/amd/amdgpu/../display/dc/bios/bios_parser2.c:815: warning: Function parameter or member 'signal' not described in 'bios_parser_get_spread_spectrum_info'
- drivers/gpu/drm/amd/amdgpu/../display/dc/bios/bios_parser2.c:815: warning: Function parameter or member 'index' not described in 'bios_parser_get_spread_spectrum_info'
- drivers/gpu/drm/amd/amdgpu/../display/dc/bios/bios_parser2.c:815: warning: Function parameter or member 'ss_info' not described in 'bios_parser_get_spread_spectrum_info'
- drivers/gpu/drm/amd/amdgpu/../display/dc/bios/bios_parser2.c:1210: warning: Function parameter or member 'dcb' not described in 'bios_parser_set_scratch_critical_state'
- drivers/gpu/drm/amd/amdgpu/../display/dc/bios/bios_parser2.c:1210: warning: Function parameter or member 'state' not described in 'bios_parser_set_scratch_critical_state'
+ drivers/gpu/drm/amd/amdgpu/../display/dc/dce/dce_audio.c:871:6: warning: no previous prototype for ‘dce60_aud_wall_dto_setup’ [-Wmissing-prototypes]
 
 Cc: Harry Wentland <harry.wentland@amd.com>
 Cc: Leo Li <sunpeng.li@amd.com>
@@ -89,68 +83,28 @@ Cc: Alex Deucher <alexander.deucher@amd.com>
 Cc: "Christian König" <christian.koenig@amd.com>
 Cc: David Airlie <airlied@linux.ie>
 Cc: Daniel Vetter <daniel@ffwll.ch>
+Cc: Mauro Rossi <issor.oruam@gmail.com>
+Cc: Charlene Liu <Charlene.Liu@amd.com>
 Cc: amd-gfx@lists.freedesktop.org
 Cc: dri-devel@lists.freedesktop.org
 Signed-off-by: Lee Jones <lee.jones@linaro.org>
 ---
- .../drm/amd/display/dc/bios/bios_parser2.c    | 29 +++++++++----------
- 1 file changed, 14 insertions(+), 15 deletions(-)
+ drivers/gpu/drm/amd/display/dc/dce/dce_audio.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/amd/display/dc/bios/bios_parser2.c b/drivers/gpu/drm/amd/display/dc/bios/bios_parser2.c
-index 670c265838178..9f9fda3118d1f 100644
---- a/drivers/gpu/drm/amd/display/dc/bios/bios_parser2.c
-+++ b/drivers/gpu/drm/amd/display/dc/bios/bios_parser2.c
-@@ -485,10 +485,11 @@ static struct atom_hpd_int_record *get_hpd_record(
-  * bios_parser_get_gpio_pin_info
-  * Get GpioPin information of input gpio id
-  *
-- * @param gpio_id, GPIO ID
-- * @param info, GpioPin information structure
-- * @return Bios parser result code
-- * @note
-+ * @dcb:     pointer to the DC BIOS
-+ * @gpio_id: GPIO ID
-+ * @info:    GpioPin information structure
-+ * return: Bios parser result code
-+ * note:
-  *  to get the GPIO PIN INFO, we need:
-  *  1. get the GPIO_ID from other object table, see GetHPDInfo()
-  *  2. in DATA_TABLE.GPIO_Pin_LUT, search all records,
-@@ -801,11 +802,11 @@ static enum bp_result get_ss_info_v4_2(
-  * ver 3.1,
-  * there is only one entry for each signal /ss id.  However, there is
-  * no planning of supporting multiple spread Sprectum entry for EverGreen
-- * @param [in] this
-- * @param [in] signal, ASSignalType to be converted to info index
-- * @param [in] index, number of entries that match the converted info index
-- * @param [out] ss_info, sprectrum information structure,
-- * @return Bios parser result code
-+ * @dcb:     pointer to the DC BIOS
-+ * @signal:  ASSignalType to be converted to info index
-+ * @index:   number of entries that match the converted info index
-+ * @ss_info: sprectrum information structure,
-+ * return: Bios parser result code
-  */
- static enum bp_result bios_parser_get_spread_spectrum_info(
- 	struct dc_bios *dcb,
-@@ -1196,13 +1197,11 @@ static bool bios_parser_is_accelerated_mode(
+diff --git a/drivers/gpu/drm/amd/display/dc/dce/dce_audio.c b/drivers/gpu/drm/amd/display/dc/dce/dce_audio.c
+index 2a2a0fdb92539..7866cf2a668fa 100644
+--- a/drivers/gpu/drm/amd/display/dc/dce/dce_audio.c
++++ b/drivers/gpu/drm/amd/display/dc/dce/dce_audio.c
+@@ -868,7 +868,7 @@ void dce_aud_wall_dto_setup(
  }
  
- /**
-- * bios_parser_set_scratch_critical_state
-+ * bios_parser_set_scratch_critical_state - update critical state bit
-+ *                                          in VBIOS scratch register
-  *
-- * @brief
-- *  update critical state bit in VBIOS scratch register
-- *
-- * @param
-- *  bool - to set or reset state
-+ * @dcb:   pointer to the DC BIO
-+ * @state: set or reset state
-  */
- static void bios_parser_set_scratch_critical_state(
- 	struct dc_bios *dcb,
+ #if defined(CONFIG_DRM_AMD_DC_SI)
+-void dce60_aud_wall_dto_setup(
++static void dce60_aud_wall_dto_setup(
+ 	struct audio *audio,
+ 	enum signal_type signal,
+ 	const struct audio_crtc_info *crtc_info,
 -- 
 2.25.1
 
