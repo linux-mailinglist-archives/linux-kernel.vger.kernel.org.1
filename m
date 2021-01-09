@@ -2,77 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67F3C2F0443
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Jan 2021 00:16:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 87EF32F0457
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Jan 2021 00:16:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726375AbhAIXNQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Jan 2021 18:13:16 -0500
-Received: from vps0.lunn.ch ([185.16.172.187]:59204 "EHLO vps0.lunn.ch"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726305AbhAIXNQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Jan 2021 18:13:16 -0500
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
-        (envelope-from <andrew@lunn.ch>)
-        id 1kyNPB-00HBcJ-NF; Sun, 10 Jan 2021 00:12:21 +0100
-Date:   Sun, 10 Jan 2021 00:12:21 +0100
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Baruch Siach <baruch@tkos.co.il>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Daniel Tang <dt.tangr@gmail.com>,
-        Jamie Iles <jamie@jamieiles.com>,
-        Krzysztof Adamski <krzysztof.adamski@nokia.com>,
-        Alexander Shiyan <shc_work@mail.ru>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Russell King - ARM Linux <linux@armlinux.org.uk>,
-        Wei Xu <xuwei5@hisilicon.com>,
-        Oleksij Rempel <o.rempel@pengutronix.de>,
-        Alex Elder <elder@linaro.org>,
-        Marc Gonzalez <marc.w.gonzalez@free.fr>,
-        Hans Ulli Kroll <ulli.kroll@googlemail.com>,
-        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Vladimir Zapolskiy <vz@mleia.com>,
-        Lubomir Rintel <lkundrak@v3.sk>,
-        Koen Vandeputte <koen.vandeputte@ncentric.com>,
-        Barry Song <song.bao.hua@hisilicon.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Jonas Jensen <jonas.jensen@gmail.com>,
-        Hartley Sweeten <hsweeten@visionengravers.com>,
-        Mark Salter <msalter@redhat.com>,
-        Shawn Guo <shawnguo@kernel.org>
-Subject: Re: Old platforms: bring out your dead
-Message-ID: <X/o4VZzW4m77AYDB@lunn.ch>
-References: <CAK8P3a2VW8T+yYUG1pn1yR-5eU4jJXe1+M_ot6DAvfr2KyXCzQ@mail.gmail.com>
+        id S1726623AbhAIXNh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Jan 2021 18:13:37 -0500
+Received: from relay08.th.seeweb.it ([5.144.164.169]:50821 "EHLO
+        relay08.th.seeweb.it" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726454AbhAIXNh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 9 Jan 2021 18:13:37 -0500
+Received: from IcarusMOD.eternityproject.eu (unknown [2.237.20.237])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by m-r2.th.seeweb.it (Postfix) with ESMTPSA id 064093F32A;
+        Sun, 10 Jan 2021 00:12:40 +0100 (CET)
+Subject: Re: [PATCH 1/2] pinctrl: Add driver for Awinic AW9523/B I2C GPIO
+ Expander
+To:     Linus Walleij <linus.walleij@linaro.org>,
+        kernel test robot <lkp@intel.com>
+Cc:     "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        kbuild-all@lists.01.org, konrad.dybcio@somainline.org,
+        marijn.suijten@somainline.org, martin.botka@somainline.org,
+        phone-devel@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, Rob Herring <robh+dt@kernel.org>
+References: <20210109140204.151340-2-angelogioacchino.delregno@somainline.org>
+ <202101100151.3ojnIrPg-lkp@intel.com>
+ <CACRpkdbT6tv5ArKRLPh3hE-3fuYHotqG5tNwkF4vftSQ1T=wNA@mail.gmail.com>
+From:   AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@somainline.org>
+Message-ID: <7fff4833-7bb1-a721-7017-4cfef9cd4d61@somainline.org>
+Date:   Sun, 10 Jan 2021 00:12:39 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.5.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAK8P3a2VW8T+yYUG1pn1yR-5eU4jJXe1+M_ot6DAvfr2KyXCzQ@mail.gmail.com>
+In-Reply-To: <CACRpkdbT6tv5ArKRLPh3hE-3fuYHotqG5tNwkF4vftSQ1T=wNA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> Then there are ARM platforms that are old but have still seen some work
-> in the past years. If I hear nothing, these will all stay, but if maintainers
-> may want to drop them anyway, I can help with that:
+Il 09/01/21 23:12, Linus Walleij ha scritto:
+> On Sat, Jan 9, 2021 at 6:24 PM kernel test robot <lkp@intel.com> wrote:
+> 
+>>   > 880          gpioirq->parent_domain = NULL;
+> 
+> The autobuilder is complaining because your irq chip is not
+> hierarchical and this is only used for hierarchical irqchips.
+> I think you can just delete this line.
+> 
+That's a development leftover. Big oops! Removed in V2 :)
 
-Hi Arnd
+> Yours,
+> Linus Walleij
+> 
 
-I notice orion5x is not on this list. Is that because of Debian still
-building for it?
-
-I just blew the dust out of my orion5x RDK and booted 5.11-rc2 on it.
-orion5x_defconfig needs a few updates, but otherwise it seems to work
-O.K.
-
-But i have no idea if there are any real users out there running
-modern kernels.
-
-       Andrew
