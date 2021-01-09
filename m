@@ -2,97 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E45EC2F020C
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Jan 2021 18:08:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D210D2F020E
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Jan 2021 18:08:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726578AbhAIRHf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Jan 2021 12:07:35 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:48492 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726265AbhAIRHe (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Jan 2021 12:07:34 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1610211968;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=joUlfz99h/FvbQhyQ1sXKa4tTuoivxwQKiFtAkkLoGE=;
-        b=S4/Yeg+xUxWPxccd5/Zr1OD0OeoJeEml8KhPTKNp5Gh059lluMNWm3fe/B3MT9XqIHoh4G
-        QBOpX5mMFJtKAR1DV1/uoxXbn/71iqjzUSV5EDKMBLb16QKHlH33ebDudLROqAJI0qtIm/
-        xd3YbCyDVfRdGhg1gCvlefWyW+8xxRY=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-254-s4qYlsTrNKOXjyTgnesYQQ-1; Sat, 09 Jan 2021 12:06:04 -0500
-X-MC-Unique: s4qYlsTrNKOXjyTgnesYQQ-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 56322180A093;
-        Sat,  9 Jan 2021 17:06:02 +0000 (UTC)
-Received: from treble (ovpn-120-156.rdu2.redhat.com [10.10.120.156])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 96EEA19C45;
-        Sat,  9 Jan 2021 17:06:00 +0000 (UTC)
-Date:   Sat, 9 Jan 2021 11:05:58 -0600
-From:   Josh Poimboeuf <jpoimboe@redhat.com>
-To:     Sedat Dilek <sedat.dilek@gmail.com>
-Cc:     Sami Tolvanen <samitolvanen@google.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Will Deacon <will@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Clang-Built-Linux ML <clang-built-linux@googlegroups.com>,
-        kernel-hardening@lists.openwall.com, linux-arch@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kbuild@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org
-Subject: Re: [PATCH v9 00/16] Add support for Clang LTO
-Message-ID: <20210109170558.meufvgwrjtqo5v3i@treble>
-References: <20201211184633.3213045-1-samitolvanen@google.com>
- <CA+icZUWYxO1hHW-_vrJid7EstqQRYQphjO3Xn6pj6qfEYEONbA@mail.gmail.com>
- <20210109153646.zrmglpvr27f5zd7m@treble>
- <CA+icZUUiucbsQZtJKYdD7Y7Cq8hJZdBwsF0U0BFbaBtnLY3Nsw@mail.gmail.com>
- <20210109160709.kqqpf64klflajarl@treble>
- <CA+icZUU=sS2xfzo9qTUTPQ0prbbQcj29tpDt1qK5cYZxarXuxg@mail.gmail.com>
- <20210109163256.3sv3wbgrshbj72ik@treble>
- <CA+icZUUszOHkJ8Acx2mDowg3StZw9EureDQ7YYkJkcAnpLBA+g@mail.gmail.com>
- <20210109170353.litivfvc4zotnimv@treble>
+        id S1726661AbhAIRIA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Jan 2021 12:08:00 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38222 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726108AbhAIRIA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 9 Jan 2021 12:08:00 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9538A23372;
+        Sat,  9 Jan 2021 17:07:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1610212039;
+        bh=X/xyGoEV3hRU/aFtBlpc25ND+vaJ6PXHSDMhHK9mLw8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=mvYSHIwcl5LtK+BxV4glHaMYBtbSbooghubbZms1gBzKFJXVZi9XPOSUc4GUYQOZv
+         CiGMwybVMOyPpXMIiBS9KrXshbRQ8LgiCU4MPsg6HtjflwqLNljBxHHbNh7aAvGogE
+         8EJ8epcP8SmiQTeEJp4G9sauOZ1do9tOVrS/CQ/eBw5Fg0J9r5bQ7XO4j3BmvINVHP
+         gbL7yH8kpge2RXpmW/2ub3tCKVG9d8ArEj6bTBuK637lMI9E92rQ0ohM3l4fnu5i+t
+         f4TMSodHuOGEGMjtxflFveAeCOoajQRdKXcoTj3cr3af2hS3DBsrnFDP7IHeA8j5Hy
+         Iu9NXFIzHLxJg==
+Date:   Sat, 9 Jan 2021 09:07:16 -0800
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Dinghao Liu <dinghao.liu@zju.edu.cn>
+Cc:     kjlu@umn.edu, Mimi Zohar <zohar@linux.ibm.com>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        Dmitry Kasatkin <dmitry.kasatkin@nokia.com>,
+        linux-integrity@vger.kernel.org,
+        linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] evm: Fix memleak in init_desc
+Message-ID: <X/nixOkNqQdWUAv8@sol.localdomain>
+References: <20210109113305.11035-1-dinghao.liu@zju.edu.cn>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210109170353.litivfvc4zotnimv@treble>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+In-Reply-To: <20210109113305.11035-1-dinghao.liu@zju.edu.cn>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jan 09, 2021 at 11:03:57AM -0600, Josh Poimboeuf wrote:
-> On Sat, Jan 09, 2021 at 05:45:47PM +0100, Sedat Dilek wrote:
-> > I tried merging with clang-cfi Git which is based on Linux v5.11-rc2+
-> > with a lot of merge conflicts.
-> > 
-> > Did you try on top of cfi-10 Git tag which is based on Linux v5.10?
-> > 
-> > Whatever you successfully did... Can you give me a step-by-step instruction?
+On Sat, Jan 09, 2021 at 07:33:05PM +0800, Dinghao Liu wrote:
+> When kmalloc() fails, tmp_tfm allocated by
+> crypto_alloc_shash() has not been freed, which
+> leads to memleak.
 > 
-> Oops, my bad.  My last three commits (which I just added) do conflict.
-> Sorry for the confusion.
+> Fixes: d46eb3699502b ("evm: crypto hash replaced by shash")
+> Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
+> ---
+>  security/integrity/evm/evm_crypto.c | 9 +++++++--
+>  1 file changed, 7 insertions(+), 2 deletions(-)
 > 
-> Just drop my last three commits:
-> 
-> git fetch https://git.kernel.org/pub/scm/linux/kernel/git/jpoimboe/linux.git objtool-vmlinux
-> git checkout -B tmp FETCH_HEAD
-> git reset --hard HEAD~~~
-> git fetch https://github.com/samitolvanen/linux clang-lto
-> git rebase --onto FETCH_HEAD 79881bfc57be
+> diff --git a/security/integrity/evm/evm_crypto.c b/security/integrity/evm/evm_crypto.c
+> index 168c3b78ac47..39fb31a638ac 100644
+> --- a/security/integrity/evm/evm_crypto.c
+> +++ b/security/integrity/evm/evm_crypto.c
+> @@ -73,7 +73,7 @@ static struct shash_desc *init_desc(char type, uint8_t hash_algo)
+>  {
+>  	long rc;
+>  	const char *algo;
+> -	struct crypto_shash **tfm, *tmp_tfm;
+> +	struct crypto_shash **tfm, *tmp_tfm = NULL;
+>  	struct shash_desc *desc;
+>  
+>  	if (type == EVM_XATTR_HMAC) {
+> @@ -118,13 +118,18 @@ static struct shash_desc *init_desc(char type, uint8_t hash_algo)
+>  alloc:
+>  	desc = kmalloc(sizeof(*desc) + crypto_shash_descsize(*tfm),
+>  			GFP_KERNEL);
+> -	if (!desc)
+> +	if (!desc) {
+> +		if (tmp_tfm)
+> +			crypto_free_shash(tmp_tfm);
+>  		return ERR_PTR(-ENOMEM);
+> +	}
+>  
+>  	desc->tfm = *tfm;
+>  
+>  	rc = crypto_shash_init(desc);
+>  	if (rc) {
+> +		if (tmp_tfm)
+> +			crypto_free_shash(tmp_tfm);
+>  		kfree(desc);
+>  		return ERR_PTR(rc);
+>  	}
 
-Last one should be:
+There's no need to check for NULL before calling crypto_free_shash().
 
-git rebase --onto FETCH_HEAD 2c85ebc57b3e
-
--- 
-Josh
-
+- Eric
