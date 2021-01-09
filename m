@@ -2,74 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CC172F000B
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Jan 2021 14:41:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DA632F000C
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Jan 2021 14:42:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726702AbhAINlt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Jan 2021 08:41:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34996 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726457AbhAINlo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Jan 2021 08:41:44 -0500
-Received: from m-r2.th.seeweb.it (m-r2.th.seeweb.it [IPv6:2001:4b7a:2000:18::171])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 269AEC06179F
-        for <linux-kernel@vger.kernel.org>; Sat,  9 Jan 2021 05:40:49 -0800 (PST)
-Received: from IcarusMOD.eternityproject.eu (unknown [2.237.20.237])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by m-r2.th.seeweb.it (Postfix) with ESMTPSA id 74CEC3F0A3;
-        Sat,  9 Jan 2021 14:40:47 +0100 (CET)
-From:   AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@somainline.org>
-To:     linux-arm-msm@vger.kernel.org
-Cc:     konrad.dybcio@somainline.org, marijn.suijten@somainline.org,
-        martin.botka@somainline.org, phone-devel@vger.kernel.org,
-        robdclark@gmail.com, sean@poorly.run, jcrouse@codeaurora.org,
-        dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
+        id S1726298AbhAINll (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Jan 2021 08:41:41 -0500
+Received: from gloria.sntech.de ([185.11.138.130]:35794 "EHLO gloria.sntech.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726108AbhAINlk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 9 Jan 2021 08:41:40 -0500
+Received: from ip5f5aa64a.dynamic.kabel-deutschland.de ([95.90.166.74] helo=diego.localnet)
+        by gloria.sntech.de with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <heiko@sntech.de>)
+        id 1kyEUC-0000GE-1w; Sat, 09 Jan 2021 14:40:56 +0100
+From:   Heiko =?ISO-8859-1?Q?St=FCbner?= <heiko@sntech.de>
+To:     Rob Herring <robh+dt@kernel.org>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@somainline.org>
-Subject: [PATCH] drm/msm/a5xx: Allow all patchid for A540 chip
-Date:   Sat,  9 Jan 2021 14:40:44 +0100
-Message-Id: <20210109134044.144458-1-angelogioacchino.delregno@somainline.org>
-X-Mailer: git-send-email 2.29.2
+        Demetris Ierokipides <ierokipides.dem@gmail.com>
+Cc:     Demetris Ierokipides <ierokipides.dem@gmail.com>
+Subject: Re: [PATCH 2/2] ARM: dts: rockchip: add extra cpu opp points to rk3288-miqi
+Date:   Sat, 09 Jan 2021 14:40:55 +0100
+Message-ID: <1680769.VLH7GnMWUR@diego>
+In-Reply-To: <20210108151036.36434-3-ierokipides.dem@gmail.com>
+References: <20210108151036.36434-1-ierokipides.dem@gmail.com> <20210108151036.36434-3-ierokipides.dem@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On at least MSM8998 it's possible to find Adreno 540.0 and 540.1
-but I have never found any 540.2. In any case, the patchids 0-1
-for A540 are completely supported by this driver and there is no
-reason to disallow probing them (as they also share the same
-firmware names).
+Hi Demetris,
 
-Besides that, the patchid number is also used in the a5xx_power.c
-function a540_lm_setup to disable the battery current limiter,
-which makes faking the Adreno patchid to .2 (which would anyway
-be sad) useless and even producing breakages.
+Am Freitag, 8. Januar 2021, 16:10:36 CET schrieb Demetris Ierokipides:
+> Add extra 1.7GHz and 1.8GHz opp points to the MiQi device-tree to improve
+> performance.
+> 
+> Signed-off-by: Demetris Ierokipides <ierokipides.dem@gmail.com>
+> ---
+>  arch/arm/boot/dts/rk3288-miqi.dts | 12 ++++++++++++
+>  1 file changed, 12 insertions(+)
+> 
+> diff --git a/arch/arm/boot/dts/rk3288-miqi.dts b/arch/arm/boot/dts/rk3288-miqi.dts
+> index 713f55e143c6..1b48855db6ff 100644
+> --- a/arch/arm/boot/dts/rk3288-miqi.dts
+> +++ b/arch/arm/boot/dts/rk3288-miqi.dts
+> @@ -96,6 +96,18 @@ &cpu3 {
+>  	cpu-supply = <&vdd_cpu>;
+>  };
+>  
+> +&cpu_opp_table {
+> +	opp-1704000000 {
+> +		opp-hz = /bits/ 64 <1704000000>;
+> +		opp-microvolt = <1350000>;
+> +	};
+> +
+> +	opp-1800000000 {
+> +		opp-hz = /bits/ 64 <1800000000>;
+> +		opp-microvolt = <1350000>;
+> +	};
+> +};
+> +
 
-Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>
----
- drivers/gpu/drm/msm/adreno/adreno_device.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+sorry, but no .
 
-diff --git a/drivers/gpu/drm/msm/adreno/adreno_device.c b/drivers/gpu/drm/msm/adreno/adreno_device.c
-index 76a89a8175f8..133e3c15a1b7 100644
---- a/drivers/gpu/drm/msm/adreno/adreno_device.c
-+++ b/drivers/gpu/drm/msm/adreno/adreno_device.c
-@@ -216,7 +216,7 @@ static const struct adreno_info gpulist[] = {
- 		.init = a5xx_gpu_init,
- 		.zapfw = "a530_zap.mdt",
- 	}, {
--		.rev = ADRENO_REV(5, 4, 0, 2),
-+		.rev = ADRENO_REV(5, 4, 0, ANY_ID),
- 		.revn = 540,
- 		.name = "A540",
- 		.fw = {
--- 
-2.29.2
+The OPPs in the mainline kernel match the specifications released by the
+soc vendor. Going outside these specs _may_ affect things like stability
+on some boards or in general simply the lifetime of the chip itself.
+
+So yes, while boards may generally work with these higher frequencies
+I don't think this should be the default coming from the mainline kernel.
+
+If board-owners feel the need to exceed the specs they can still modify
+the dts, but we shouldn't force this decision on everyone.
+
+
+Heiko
+
 
