@@ -2,142 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7842A2F017E
+	by mail.lfdr.de (Postfix) with ESMTP id E433E2F017F
 	for <lists+linux-kernel@lfdr.de>; Sat,  9 Jan 2021 17:28:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726569AbhAIQ2Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Jan 2021 11:28:16 -0500
-Received: from mail-io1-f71.google.com ([209.85.166.71]:56497 "EHLO
-        mail-io1-f71.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726005AbhAIQ2E (ORCPT
+        id S1726673AbhAIQ2r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Jan 2021 11:28:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42428 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726011AbhAIQ2q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Jan 2021 11:28:04 -0500
-Received: by mail-io1-f71.google.com with SMTP id m2so9078715iow.23
-        for <linux-kernel@vger.kernel.org>; Sat, 09 Jan 2021 08:27:48 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=dVaLjIzyuJ0IlWE1M+hdDEBSon/4QDEoUFhuTYAoyBY=;
-        b=F7oh/+910Fjz3odft9SZIVxJlGU+7687wg6rOAe3lKlvycZykwy1AlxaFnsNYwPNjQ
-         +ON4++x9xbOJD4f+KDuXobY+YIcdH89SHGjlAGwIdB4fbsOVrDwDf2xRWC5Db+yvmdiV
-         VWcbstlHRGITvrb8cyld8XX2Klaprul6cr8xLVMNLu5mkN5hYqBXUGqVhfbcNxXzd1k5
-         BLRv/xacGR5YA5LwhYkZM4LPc00X+eYOca5HAE0B+j1oY0v1hIb2+w17WCbvKQ0rYSe7
-         QGU0usugsvEo5RsxwM2aIY0HkZK4A8CJX5iLVA0MRgD4NjZ+/P3WQu16YB/ODVpsemJG
-         ar0w==
-X-Gm-Message-State: AOAM5320gWgSbFgKBYbKJYD2Yi8toOKjDSBZIhLwj845i9cWRdBJRNUN
-        yVTazXZG+gbKl8nKKosBlEkMPDSHGIU6RdB80l0I3ZjdRu2Q
-X-Google-Smtp-Source: ABdhPJy3Xl/EoqJBjWqXZRQBBKOPUcbmEKkuzKWk+JCzM+kH8g3QlayNFKTev/vSVR9KBo6UgIMQAOdEEyP6/FqbXMHeUK4MtkSW
+        Sat, 9 Jan 2021 11:28:46 -0500
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A448C061786;
+        Sat,  9 Jan 2021 08:27:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:
+        Content-Transfer-Encoding:Content-Type:MIME-Version:References:Message-ID:
+        Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=O/XD7xJpa0JpoEabIf++Vso8fJLTJb9fbYKc1Swo5w8=; b=mG9EFIRX3l3qITkxxx8NZ/GM4
+        nx/KH5hc9L5ZMjUyGgC4bOYRQWliOq0odWK/go8E/QyXz/8nfbl44xmLfmF1zdMCjzxvCK6CrMV9N
+        0Uh6/JfFlVQaS1o0mmQkqerOdy83XACMKJmE0Elgx5/4dwLFKNPAhyGSboHwwqoNfyrWR/XXpUv2M
+        vkm1U4veiJ8W1UJlcgBdmSq+KK+zJQoEAftDdlx99TmSAntcEAgDXtV1TbjWp06hu55SSDfrvBLOe
+        o0BsHjBtmHgvExuhKdEpR8Y/L0HqmolFTXKDIQ4p65pFJO1kMQH2+mTJm1xdmkCNwrex6LRI+XhVg
+        nyLI3RbJQ==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:45782)
+        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1kyH5d-0005CN-G8; Sat, 09 Jan 2021 16:27:45 +0000
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1kyH5c-0003Jy-5Q; Sat, 09 Jan 2021 16:27:44 +0000
+Date:   Sat, 9 Jan 2021 16:27:44 +0000
+From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
+To:     Andrew Lunn <andrew@lunn.ch>
+Cc:     Pali =?iso-8859-1?Q?Roh=E1r?= <pali@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Thomas Schreiber <tschreibe@gmail.com>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Marek =?iso-8859-1?Q?Beh=FAn?= <kabel@kernel.org>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 2/3] net: sfp: assume that LOS is not implemented if
+ both LOS normal and inverted is set
+Message-ID: <20210109162744.GA1551@shell.armlinux.org.uk>
+References: <20201230154755.14746-1-pali@kernel.org>
+ <20210106153749.6748-1-pali@kernel.org>
+ <20210106153749.6748-3-pali@kernel.org>
+ <X/c8xJcwj8Y1t3u4@lunn.ch>
+ <20210109154601.GZ1551@shell.armlinux.org.uk>
+ <X/nRrgR12bETcMEO@lunn.ch>
 MIME-Version: 1.0
-X-Received: by 2002:a92:cec4:: with SMTP id z4mr8992518ilq.217.1610209643452;
- Sat, 09 Jan 2021 08:27:23 -0800 (PST)
-Date:   Sat, 09 Jan 2021 08:27:23 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000cfdf1c05b87a25e8@google.com>
-Subject: BUG: unable to handle kernel paging request in percpu_ref_exit
-From:   syzbot <syzbot+99ed55100402022a6276@syzkaller.appspotmail.com>
-To:     axboe@kernel.dk, io-uring@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        mingo@kernel.org, mingo@redhat.com, peterz@infradead.org,
-        rostedt@goodmis.org, syzkaller-bugs@googlegroups.com,
-        viro@zeniv.linux.org.uk, will@kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <X/nRrgR12bETcMEO@lunn.ch>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Sender: Russell King - ARM Linux admin <linux@armlinux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Sat, Jan 09, 2021 at 04:54:22PM +0100, Andrew Lunn wrote:
+> On Sat, Jan 09, 2021 at 03:46:01PM +0000, Russell King - ARM Linux admin wrote:
+> > On Thu, Jan 07, 2021 at 05:54:28PM +0100, Andrew Lunn wrote:
+> > > On Wed, Jan 06, 2021 at 04:37:48PM +0100, Pali Rohár wrote:
+> > > > From: Russell King <rmk+kernel@armlinux.org.uk>
+> > > > 
+> > > > Some GPON SFP modules (e.g. Ubiquiti U-Fiber Instant) have set both
+> > > > SFP_OPTIONS_LOS_INVERTED and SFP_OPTIONS_LOS_NORMAL bits in their EEPROM.
+> > > > 
+> > > > Such combination of bits is meaningless so assume that LOS signal is not
+> > > > implemented.
+> > > > 
+> > > > This patch fixes link carrier for GPON SFP module Ubiquiti U-Fiber Instant.
+> > > > 
+> > > > Signed-off-by: Russell King <rmk+kernel@armlinux.org.uk>
+> > > > Signed-off-by: Pali Rohár <pali@kernel.org>
+> > > 
+> > > Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+> > 
+> > I'd like to send this patch irrespective of discussion on the other
+> > patches - I already have it committed in my repository with a different
+> > description, but the patch content is the same.
+> > 
+> > Are you happy if I transfer Andrew's r-b tag
+> 
+> Hi Russell
+> 
+> If it is the same contest, no problem. I can always NACK it later...
 
-syzbot found the following issue on:
+The commit message is different:
 
-HEAD commit:    36bbbd0e Merge branch 'rcu/urgent' of git://git.kernel.org..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=149afeeb500000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=8aa30b9da402d224
-dashboard link: https://syzkaller.appspot.com/bug?extid=99ed55100402022a6276
-compiler:       gcc (GCC) 10.1.0-syz 20200507
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=10496f70d00000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=10cedf70d00000
+   net: sfp: cope with SFPs that set both LOS normal and LOS inverted
 
-The issue was bisected to:
+   The SFP MSA defines two option bits in byte 65 to indicate how the
+   Rx_LOS signal on SFP pin 8 behaves:
 
-commit 4d004099a668c41522242aa146a38cc4eb59cb1e
-Author: Peter Zijlstra <peterz@infradead.org>
-Date:   Fri Oct 2 09:04:21 2020 +0000
+   bit 2 - Loss of Signal implemented, signal inverted from standard
+           definition in SFP MSA (often called "Signal Detect").
+   bit 1 - Loss of Signal implemented, signal as defined in SFP MSA
+           (often called "Rx_LOS").
 
-    lockdep: Fix lockdep recursion
+   Clearly, setting both bits results in a meaningless situation: it would
+   mean that LOS is implemented in both the normal sense (1 = signal loss)
+   and inverted sense (0 = signal loss).
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=106238f7500000
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=126238f7500000
-console output: https://syzkaller.appspot.com/x/log.txt?x=146238f7500000
+   Unfortunately, there are modules out there which set both bits, which
+   will be initially interpret as "inverted" sense, and then, if the LOS
+   signal changes state, we will toggle between LINK_UP and WAIT_LOS
+   states.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+99ed55100402022a6276@syzkaller.appspotmail.com
-Fixes: 4d004099a668 ("lockdep: Fix lockdep recursion")
+   Change our LOS handling to give well defined behaviour: only interpret
+   these bits as meaningful if exactly one is set, otherwise treat it as
+   if LOS is not implemented.
 
-RBP: 0000000000000005 R08: 0000000000000001 R09: 0000000000401140
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000402860
-R13: 00000000004028f0 R14: 0000000000000000 R15: 0000000000000000
-BUG: unable to handle page fault for address: fffffffffffffffc
-#PF: supervisor read access in kernel mode
-#PF: error_code(0x0000) - not-present page
-PGD b08f067 P4D b08f067 PUD b091067 PMD 0 
-Oops: 0000 [#1] PREEMPT SMP KASAN
-CPU: 0 PID: 8500 Comm: syz-executor191 Not tainted 5.11.0-rc2-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:percpu_ref_exit+0x2f/0x140 lib/percpu-refcount.c:130
-Code: 54 55 53 48 89 fb e8 f0 fc b6 fd 48 8d 6b 08 48 b8 00 00 00 00 00 fc ff df 48 89 ea 48 c1 ea 03 80 3c 02 00 0f 85 d5 00 00 00 <4c> 8b 73 08 48 89 df e8 c5 fe ff ff 4d 85 f6 0f 84 b3 00 00 00 e8
-RSP: 0018:ffffc9000126fcc8 EFLAGS: 00010246
-RAX: dffffc0000000000 RBX: fffffffffffffff4 RCX: 0000000000000000
-RDX: 1fffffffffffffff RSI: ffffffff83bb78b0 RDI: fffffffffffffff4
-RBP: fffffffffffffffc R08: 0000000000000001 R09: ffffffff8ebda867
-R10: fffffbfff1d7b50c R11: 0000000000000000 R12: 0000000000000000
-R13: ffff88801adee000 R14: 0000000000000002 R15: fffffffffffffff4
-FS:  000000000179f940(0000) GS:ffff8880b9e00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: fffffffffffffffc CR3: 0000000020270000 CR4: 00000000001506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- destroy_fixed_file_ref_node fs/io_uring.c:7703 [inline]
- io_sqe_files_unregister+0x30b/0x770 fs/io_uring.c:7293
- __io_uring_register fs/io_uring.c:9916 [inline]
- __do_sys_io_uring_register+0x1185/0x4080 fs/io_uring.c:10000
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x444df9
-Code: 18 89 d0 c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 db d5 fb ff c3 66 2e 0f 1f 84 00 00 00 00
-RSP: 002b:00007ffeb192ade8 EFLAGS: 00000246 ORIG_RAX: 00000000000001ab
-RAX: ffffffffffffffda RBX: 00007ffeb192ae90 RCX: 0000000000444df9
-RDX: 0000000000000000 RSI: 0000000000000003 RDI: 0000000000000004
-RBP: 0000000000000005 R08: 0000000000000001 R09: 0000000000401140
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000402860
-R13: 00000000004028f0 R14: 0000000000000000 R15: 0000000000000000
-Modules linked in:
-CR2: fffffffffffffffc
----[ end trace ed34d5d65a155c02 ]---
-RIP: 0010:percpu_ref_exit+0x2f/0x140 lib/percpu-refcount.c:130
-Code: 54 55 53 48 89 fb e8 f0 fc b6 fd 48 8d 6b 08 48 b8 00 00 00 00 00 fc ff df 48 89 ea 48 c1 ea 03 80 3c 02 00 0f 85 d5 00 00 00 <4c> 8b 73 08 48 89 df e8 c5 fe ff ff 4d 85 f6 0f 84 b3 00 00 00 e8
-RSP: 0018:ffffc9000126fcc8 EFLAGS: 00010246
-RAX: dffffc0000000000 RBX: fffffffffffffff4 RCX: 0000000000000000
-RDX: 1fffffffffffffff RSI: ffffffff83bb78b0 RDI: fffffffffffffff4
-RBP: fffffffffffffffc R08: 0000000000000001 R09: ffffffff8ebda867
-R10: fffffbfff1d7b50c R11: 0000000000000000 R12: 0000000000000000
-R13: ffff88801adee000 R14: 0000000000000002 R15: fffffffffffffff4
-FS:  000000000179f940(0000) GS:ffff8880b9e00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: fffffffffffffffc CR3: 0000000020270000 CR4: 00000000001506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+   Signed-off-by: Russell King <rmk+kernel@armlinux.org.uk>
 
+As I say, the actual patch is the same.
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
