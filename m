@@ -2,140 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DFFFE2F015B
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Jan 2021 17:10:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A3672F015E
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Jan 2021 17:10:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727091AbhAIQI5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Jan 2021 11:08:57 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:48339 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727071AbhAIQIz (ORCPT
+        id S1727105AbhAIQJp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Jan 2021 11:09:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38346 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726293AbhAIQJo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Jan 2021 11:08:55 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1610208448;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=/4tZTudWMHL9XHsahjxKGAOBjt0qYTZ11jrT8O8TLnA=;
-        b=aDE2r7+Yko7OcKgq832KjC+4bSKckr5S2XeNUktMywHpMq4J3uegw6B0wNaVT+Y91RCpEf
-        jbnwih1pbd50S4mRaMnPTYs0Ehfiiw1tPs/BQ9FE/3OTCdthGZTB45NH/1Y+6co0Xt1CFY
-        MBLDay0BZmiXRBt79qRoonkH5SK87xs=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-405-ZQW85TisMNyB3WjeOrGOXw-1; Sat, 09 Jan 2021 11:07:24 -0500
-X-MC-Unique: ZQW85TisMNyB3WjeOrGOXw-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        Sat, 9 Jan 2021 11:09:44 -0500
+Received: from m-r2.th.seeweb.it (m-r2.th.seeweb.it [IPv6:2001:4b7a:2000:18::171])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92D05C06179F;
+        Sat,  9 Jan 2021 08:08:48 -0800 (PST)
+Received: from IcarusMOD.eternityproject.eu (unknown [2.237.20.237])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 99F22801817;
-        Sat,  9 Jan 2021 16:07:21 +0000 (UTC)
-Received: from treble (ovpn-120-156.rdu2.redhat.com [10.10.120.156])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 8833C10013BD;
-        Sat,  9 Jan 2021 16:07:16 +0000 (UTC)
-Date:   Sat, 9 Jan 2021 10:07:09 -0600
-From:   Josh Poimboeuf <jpoimboe@redhat.com>
-To:     Sedat Dilek <sedat.dilek@gmail.com>
-Cc:     Sami Tolvanen <samitolvanen@google.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Will Deacon <will@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Clang-Built-Linux ML <clang-built-linux@googlegroups.com>,
-        kernel-hardening@lists.openwall.com, linux-arch@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kbuild@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org
-Subject: Re: [PATCH v9 00/16] Add support for Clang LTO
-Message-ID: <20210109160709.kqqpf64klflajarl@treble>
-References: <20201211184633.3213045-1-samitolvanen@google.com>
- <CA+icZUWYxO1hHW-_vrJid7EstqQRYQphjO3Xn6pj6qfEYEONbA@mail.gmail.com>
- <20210109153646.zrmglpvr27f5zd7m@treble>
- <CA+icZUUiucbsQZtJKYdD7Y7Cq8hJZdBwsF0U0BFbaBtnLY3Nsw@mail.gmail.com>
+        by m-r2.th.seeweb.it (Postfix) with ESMTPSA id 914EA3EF2C;
+        Sat,  9 Jan 2021 17:08:46 +0100 (CET)
+From:   AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@somainline.org>
+To:     linux-arm-msm@vger.kernel.org
+Cc:     konrad.dybcio@somainline.org, marijn.suijten@somainline.org,
+        martin.botka@somainline.org, phone-devel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, agross@kernel.org,
+        bjorn.andersson@linaro.org, robh+dt@kernel.org,
+        devicetree@vger.kernel.org,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@somainline.org>
+Subject: [PATCH] arm64: dts: msm8998: Use rpmpd definitions for opp table levels
+Date:   Sat,  9 Jan 2021 17:07:59 +0100
+Message-Id: <20210109160759.186990-1-angelogioacchino.delregno@somainline.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CA+icZUUiucbsQZtJKYdD7Y7Cq8hJZdBwsF0U0BFbaBtnLY3Nsw@mail.gmail.com>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jan 09, 2021 at 04:46:21PM +0100, Sedat Dilek wrote:
-> On Sat, Jan 9, 2021 at 4:36 PM Josh Poimboeuf <jpoimboe@redhat.com> wrote:
-> >
-> > On Sat, Jan 09, 2021 at 03:54:20PM +0100, Sedat Dilek wrote:
-> > > I am interested in having Clang LTO (Clang-CFI) for x86-64 working and
-> > > help with testing.
-> > >
-> > > I tried the Git tree mentioned in [3] <jpoimboe.git#objtool-vmlinux>
-> > > (together with changes from <peterz.git#x86/urgent>).
-> > >
-> > > I only see in my build-log...
-> > >
-> > > drivers/gpu/drm/i915/gem/i915_gem_execbuffer.o: warning: objtool:
-> > > eb_relocate_parse_slow()+0x3d0: stack state mismatch: cfa1=7+120
-> > > cfa2=-1+0
-> > > drivers/gpu/drm/i915/gem/i915_gem_execbuffer.o: warning: objtool:
-> > > eb_copy_relocations()+0x229: stack state mismatch: cfa1=7+120
-> > > cfa2=-1+0
-> > >
-> > > ...which was reported and worked on in [1].
-> > >
-> > > This is with Clang-IAS version 11.0.1.
-> > >
-> > > Unfortunately, the recent changes in <samitolvanen.github#clang-cfi>
-> > > do not cleanly apply with Josh stuff.
-> > > My intention/wish was to report this combination of patchsets "heals"
-> > > a lot of objtool-warnings for vmlinux.o I observed with Clang-CFI.
-> > >
-> > > Is it possible to have a Git branch where Josh's objtool-vmlinux is
-> > > working together with Clang-LTO?
-> > > For testing purposes.
-> >
-> > I updated my branch with my most recent work from before the holidays,
-> > can you try it now?  It still doesn't fix any of the crypto warnings,
-> > but I'll do that in a separate set after posting these next week.
-> >
-> 
-> Thanks, Josh.
-> 
-> Did you push it (oh ah push it push it really really really good...)
-> to your remote Git please :-).
+The dt-bindings/power/qcom-rpmpd.h header is being included in this
+DT but the RPMPD OPP table declarations were using open-coded values:
+use the definitions found in the aforementioned header.
 
-I thought I already pushed it pretty good ;-) do you not see it?
+Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>
+---
+ arch/arm64/boot/dts/qcom/msm8998.dtsi | 20 ++++++++++----------
+ 1 file changed, 10 insertions(+), 10 deletions(-)
 
-git://git.kernel.org/pub/scm/linux/kernel/git/jpoimboe/linux.git objtool-vmlinux
-
-d6baee244f2d — objtool: Alphabetize usage option list (3 weeks ago)
-c0b2a6a625ac — objtool: Separate vmlinux/noinstr validation config options (3 weeks ago)
-84c53551ad17 — objtool: Enable full vmlinux validation (3 weeks ago)
-e518ac0801cd — x86/power: Support objtool validation in hibernate_asm_64.S (3 weeks ago)
-d0ac4c7301c1 — x86/power: Move restore_registers() to top of the file (3 weeks ago)
-d3389bc83538 — x86/power: Convert indirect jumps to retpolines (3 weeks ago)
-7a974d90aa40 — x86/acpi: Support objtool validation in wakeup_64.S (3 weeks ago)
-6693e26cd6cc — x86/acpi: Convert indirect jump to retpoline (3 weeks ago)
-0dfb760c74d1 — x86/ftrace: Support objtool vmlinux.o validation in ftrace_64.S (3 weeks ago)
-89a4febfd7bf — x86/xen/pvh: Convert indirect jump to retpoline (3 weeks ago)
-b62837092140 — x86/xen: Support objtool vmlinux.o validation in xen-head.S (3 weeks ago)
-705e18481ed9 — x86/xen: Support objtool validation in xen-asm.S (3 weeks ago)
-3548319e21b9 — objtool: Add xen_start_kernel() to noreturn list (3 weeks ago)
-6016e8da8c3d — objtool: Combine UNWIND_HINT_RET_OFFSET and UNWIND_HINT_FUNC (3 weeks ago)
-56d6a7aee8b1 — objtool: Add asm version of STACK_FRAME_NON_STANDARD (3 weeks ago)
-68259d951f1a — objtool: Assume only ELF functions do sibling calls (3 weeks ago)
-0d6c8816cf91 — x86/ftrace: Add UNWIND_HINT_FUNC annotation for ftrace_stub (3 weeks ago)
-24d6ce8cd8f6 — objtool: Support retpoline jump detection for vmlinux.o (3 weeks ago)
-8145ea268f16 — objtool: Fix ".cold" section suffix check for newer versions of GCC (3 weeks ago)
-b3dfca472514 — objtool: Fix retpoline detection in asm code (3 weeks ago)
-b82402fa5211 — objtool: Fix error handling for STD/CLD warnings (3 weeks ago)
-1f02defb4b79 — objtool: Fix seg fault in BT_FUNC() with fake jump (3 weeks ago)
-2c85ebc57b3e — Linux 5.10 (4 weeks ago)
-
+diff --git a/arch/arm64/boot/dts/qcom/msm8998.dtsi b/arch/arm64/boot/dts/qcom/msm8998.dtsi
+index c45870600909..807fad2b14f0 100644
+--- a/arch/arm64/boot/dts/qcom/msm8998.dtsi
++++ b/arch/arm64/boot/dts/qcom/msm8998.dtsi
+@@ -379,43 +379,43 @@ rpmpd_opp_table: opp-table {
+ 					compatible = "operating-points-v2";
+ 
+ 					rpmpd_opp_ret: opp1 {
+-						opp-level = <16>;
++						opp-level = <RPM_SMD_LEVEL_RETENTION>;
+ 					};
+ 
+ 					rpmpd_opp_ret_plus: opp2 {
+-						opp-level = <32>;
++						opp-level = <RPM_SMD_LEVEL_RETENTION_PLUS>;
+ 					};
+ 
+ 					rpmpd_opp_min_svs: opp3 {
+-						opp-level = <48>;
++						opp-level = <RPM_SMD_LEVEL_MIN_SVS>;
+ 					};
+ 
+ 					rpmpd_opp_low_svs: opp4 {
+-						opp-level = <64>;
++						opp-level = <RPM_SMD_LEVEL_LOW_SVS>;
+ 					};
+ 
+ 					rpmpd_opp_svs: opp5 {
+-						opp-level = <128>;
++						opp-level = <RPM_SMD_LEVEL_SVS>;
+ 					};
+ 
+ 					rpmpd_opp_svs_plus: opp6 {
+-						opp-level = <192>;
++						opp-level = <RPM_SMD_LEVEL_SVS_PLUS>;
+ 					};
+ 
+ 					rpmpd_opp_nom: opp7 {
+-						opp-level = <256>;
++						opp-level = <RPM_SMD_LEVEL_NOM>;
+ 					};
+ 
+ 					rpmpd_opp_nom_plus: opp8 {
+-						opp-level = <320>;
++						opp-level = <RPM_SMD_LEVEL_NOM_PLUS>;
+ 					};
+ 
+ 					rpmpd_opp_turbo: opp9 {
+-						opp-level = <384>;
++						opp-level = <RPM_SMD_LEVEL_TURBO>;
+ 					};
+ 
+ 					rpmpd_opp_turbo_plus: opp10 {
+-						opp-level = <512>;
++						opp-level = <RPM_SMD_LEVEL_BINNING>;
+ 					};
+ 				};
+ 			};
 -- 
-Josh
+2.29.2
 
