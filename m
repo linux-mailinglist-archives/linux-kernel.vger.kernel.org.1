@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B84B2EFC32
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Jan 2021 01:32:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BE85A2EFC2F
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Jan 2021 01:32:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726463AbhAIAap (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Jan 2021 19:30:45 -0500
-Received: from m43-15.mailgun.net ([69.72.43.15]:42438 "EHLO
-        m43-15.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726429AbhAIAao (ORCPT
+        id S1726418AbhAIAan (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Jan 2021 19:30:43 -0500
+Received: from so254-31.mailgun.net ([198.61.254.31]:64204 "EHLO
+        so254-31.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726195AbhAIAan (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Jan 2021 19:30:44 -0500
+        Fri, 8 Jan 2021 19:30:43 -0500
 DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1610152221; h=References: In-Reply-To: Message-Id: Date:
+ s=smtp; t=1610152224; h=References: In-Reply-To: Message-Id: Date:
  Subject: Cc: To: From: Sender;
- bh=xy5glqBJuubC1mKDX0iVSGthVCjNQpvfd4mP/Wv3hJ4=; b=aFIbKny9mEuvAbq0ODo33wP4thJ2mpih3JN142H6BdvYVC98OrJTf7bhIBxhWqFqH9QjDfqK
- CF5w6gyX4bqBmYrqyPtTW4BX1cPBMxpZALs/ttuP4srQ1+prZrzuF5Pn53+YZk3HYNU0lOyk
- AKt96sB0kLcKW1/12IPfm2QTQck=
-X-Mailgun-Sending-Ip: 69.72.43.15
+ bh=/UzpSUzQlXPBPQkn7Vw+DS3IUNoOjIx7BnHc/ReGtgc=; b=fhKOBEPor+f+ubOO/lSgB47gDNE+fQQurL70LWQJxpoRy9ZoC/vgkHMkEdAt7fOfvpMgMqzh
+ uLsHZEZ0CKWDhPRFSQHr6ypdlnMdVxvSqSB3pT/u8Wsqik9u5Qr4RBhnzTOmV9tvl/1MZeE9
+ BJM0YCicrxUt04ULrFKoUnLRDqw=
+X-Mailgun-Sending-Ip: 198.61.254.31
 X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
 Received: from smtp.codeaurora.org
  (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
- 5ff8f8f6c88af06107c030e9 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Sat, 09 Jan 2021 00:29:42
+ smtp-out-n09.prod.us-east-1.postgun.com with SMTP id
+ 5ff8f8f98fb3cda82f53733f (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Sat, 09 Jan 2021 00:29:45
  GMT
 Sender: sramana=codeaurora.org@mg.codeaurora.org
 Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 6733BC43461; Sat,  9 Jan 2021 00:29:41 +0000 (UTC)
+        id 3C224C433ED; Sat,  9 Jan 2021 00:29:45 +0000 (UTC)
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
         aws-us-west-2-caf-mail-1.web.codeaurora.org
 X-Spam-Level: 
@@ -38,9 +38,9 @@ Received: from sramana-linux1.qualcomm.com (i-global254.qualcomm.com [199.106.10
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
         (No client certificate requested)
         (Authenticated sender: sramana)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 8C2E8C433CA;
-        Sat,  9 Jan 2021 00:29:39 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 8C2E8C433CA
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 7818BC433ED;
+        Sat,  9 Jan 2021 00:29:42 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 7818BC433ED
 Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
 Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=sramana@codeaurora.org
 From:   Srinivas Ramana <sramana@codeaurora.org>
@@ -49,9 +49,9 @@ Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         linux-doc@vger.kernel.org, linux-arm-msm@vger.kernel.org,
         Srinivas Ramana <sramana@codeaurora.org>,
         Prasad Sodagudi <psodagud@codeaurora.org>
-Subject: [PATCH 1/3] arm64: Defer enabling pointer authentication on boot core
-Date:   Fri,  8 Jan 2021 16:29:21 -0800
-Message-Id: <1610152163-16554-2-git-send-email-sramana@codeaurora.org>
+Subject: [PATCH 2/3] arm64: cpufeature: Add a filter function to cpufeature
+Date:   Fri,  8 Jan 2021 16:29:22 -0800
+Message-Id: <1610152163-16554-3-git-send-email-sramana@codeaurora.org>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <1610152163-16554-1-git-send-email-sramana@codeaurora.org>
 References: <1610152163-16554-1-git-send-email-sramana@codeaurora.org>
@@ -59,75 +59,81 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Defer enabling pointer authentication on boot core until
-after its required to be enabled by cpufeature framework.
-This will help in controlling the feature dynamically
-with a boot parameter.
+Add a filter function to cpufeature so that it can be used
+when dynamic control of the feature is required.
 
 Signed-off-by: Ajay Patil <pajay@qti.qualcomm.com>
 Signed-off-by: Prasad Sodagudi <psodagud@codeaurora.org>
 Signed-off-by: Srinivas Ramana <sramana@codeaurora.org>
 ---
- arch/arm64/include/asm/pointer_auth.h   | 10 ++++++++++
- arch/arm64/include/asm/stackprotector.h |  1 +
- arch/arm64/kernel/head.S                |  4 ----
- 3 files changed, 11 insertions(+), 4 deletions(-)
+ arch/arm64/include/asm/cpufeature.h |  8 +++++++-
+ arch/arm64/kernel/cpufeature.c      | 15 ++++++++++-----
+ 2 files changed, 17 insertions(+), 6 deletions(-)
 
-diff --git a/arch/arm64/include/asm/pointer_auth.h b/arch/arm64/include/asm/pointer_auth.h
-index c6b4f0603024..b112a11e9302 100644
---- a/arch/arm64/include/asm/pointer_auth.h
-+++ b/arch/arm64/include/asm/pointer_auth.h
-@@ -76,6 +76,15 @@ static inline unsigned long ptrauth_strip_insn_pac(unsigned long ptr)
- 	return ptrauth_clear_pac(ptr);
- }
+diff --git a/arch/arm64/include/asm/cpufeature.h b/arch/arm64/include/asm/cpufeature.h
+index 9a555809b89c..81a5c97d647d 100644
+--- a/arch/arm64/include/asm/cpufeature.h
++++ b/arch/arm64/include/asm/cpufeature.h
+@@ -61,6 +61,7 @@ struct arm64_ftr_bits {
+ 	u8		shift;
+ 	u8		width;
+ 	s64		safe_val; /* safe value for FTR_EXACT features */
++	s64		(*filter)(const struct arm64_ftr_bits *ftrp, s64 fval);
+ };
  
-+static __always_inline void ptrauth_enable(void)
-+{
-+	if (!system_supports_address_auth())
-+		return;
-+	sysreg_clear_set(sctlr_el1, 0, (SCTLR_ELx_ENIA | SCTLR_ELx_ENIB |
-+					SCTLR_ELx_ENDA | SCTLR_ELx_ENDB));
-+	isb();
-+}
+ /*
+@@ -566,7 +567,12 @@ cpuid_feature_extract_field(u64 features, int field, bool sign)
+ 
+ static inline s64 arm64_ftr_value(const struct arm64_ftr_bits *ftrp, u64 val)
+ {
+-	return (s64)cpuid_feature_extract_field_width(val, ftrp->shift, ftrp->width, ftrp->sign);
++	s64 fval = (s64)cpuid_feature_extract_field_width(val, ftrp->shift,
++					ftrp->width, ftrp->sign);
 +
- #define ptrauth_thread_init_user(tsk)					\
- 	ptrauth_keys_init_user(&(tsk)->thread.keys_user)
- #define ptrauth_thread_init_kernel(tsk)					\
-@@ -84,6 +93,7 @@ static inline unsigned long ptrauth_strip_insn_pac(unsigned long ptr)
- 	ptrauth_keys_switch_kernel(&(tsk)->thread.keys_kernel)
- 
- #else /* CONFIG_ARM64_PTR_AUTH */
-+#define ptrauth_enable()
- #define ptrauth_prctl_reset_keys(tsk, arg)	(-EINVAL)
- #define ptrauth_strip_insn_pac(lr)	(lr)
- #define ptrauth_thread_init_user(tsk)
-diff --git a/arch/arm64/include/asm/stackprotector.h b/arch/arm64/include/asm/stackprotector.h
-index 7263e0bac680..33f1bb453150 100644
---- a/arch/arm64/include/asm/stackprotector.h
-+++ b/arch/arm64/include/asm/stackprotector.h
-@@ -41,6 +41,7 @@ static __always_inline void boot_init_stack_canary(void)
- #endif
- 	ptrauth_thread_init_kernel(current);
- 	ptrauth_thread_switch_kernel(current);
-+	ptrauth_enable();
++	if (ftrp->filter)
++		fval = ftrp->filter(ftrp, fval);
++	return fval;
  }
  
- #endif	/* _ASM_STACKPROTECTOR_H */
-diff --git a/arch/arm64/kernel/head.S b/arch/arm64/kernel/head.S
-index a0dc987724ed..83d3929e0e8b 100644
---- a/arch/arm64/kernel/head.S
-+++ b/arch/arm64/kernel/head.S
-@@ -404,10 +404,6 @@ SYM_FUNC_START_LOCAL(__primary_switched)
- 	adr_l	x5, init_task
- 	msr	sp_el0, x5			// Save thread_info
+ static inline bool id_aa64mmfr0_mixed_endian_el0(u64 mmfr0)
+diff --git a/arch/arm64/kernel/cpufeature.c b/arch/arm64/kernel/cpufeature.c
+index 7ffb5f1d8b68..b2ffa9eaaaff 100644
+--- a/arch/arm64/kernel/cpufeature.c
++++ b/arch/arm64/kernel/cpufeature.c
+@@ -132,23 +132,28 @@ DEFINE_STATIC_KEY_ARRAY_FALSE(cpu_hwcap_keys, ARM64_NCAPS);
+ EXPORT_SYMBOL(cpu_hwcap_keys);
  
--#ifdef CONFIG_ARM64_PTR_AUTH
--	__ptrauth_keys_init_cpu	x5, x6, x7, x8
--#endif
--
- 	adr_l	x8, vectors			// load VBAR_EL1 with virtual
- 	msr	vbar_el1, x8			// vector table address
- 	isb
+ #define __ARM64_FTR_BITS(SIGNED, VISIBLE, STRICT, TYPE, SHIFT, WIDTH, SAFE_VAL) \
+-	{						\
+ 		.sign = SIGNED,				\
+ 		.visible = VISIBLE,			\
+ 		.strict = STRICT,			\
+ 		.type = TYPE,				\
+ 		.shift = SHIFT,				\
+ 		.width = WIDTH,				\
+-		.safe_val = SAFE_VAL,			\
+-	}
++		.safe_val = SAFE_VAL
+ 
+ /* Define a feature with unsigned values */
+ #define ARM64_FTR_BITS(VISIBLE, STRICT, TYPE, SHIFT, WIDTH, SAFE_VAL) \
+-	__ARM64_FTR_BITS(FTR_UNSIGNED, VISIBLE, STRICT, TYPE, SHIFT, WIDTH, SAFE_VAL)
++	{__ARM64_FTR_BITS(FTR_UNSIGNED, VISIBLE, STRICT, TYPE, SHIFT, WIDTH, SAFE_VAL), }
+ 
+ /* Define a feature with a signed value */
+ #define S_ARM64_FTR_BITS(VISIBLE, STRICT, TYPE, SHIFT, WIDTH, SAFE_VAL) \
+-	__ARM64_FTR_BITS(FTR_SIGNED, VISIBLE, STRICT, TYPE, SHIFT, WIDTH, SAFE_VAL)
++	{__ARM64_FTR_BITS(FTR_SIGNED, VISIBLE, STRICT, TYPE, SHIFT, WIDTH, SAFE_VAL), }
++
++/* Define a feature with a filter function to process the field value */
++#define FILTERED_ARM64_FTR_BITS(SIGNED, VISIBLE, STRICT, TYPE, SHIFT, WIDTH, SAFE_VAL, filter_fn) \
++	{											\
++		__ARM64_FTR_BITS(SIGNED, VISIBLE, STRICT, TYPE, SHIFT, WIDTH, SAFE_VAL),	\
++		.filter = filter_fn,								\
++	}
+ 
+ #define ARM64_FTR_END					\
+ 	{						\
 -- 
 2.7.4
 
