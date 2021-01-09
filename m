@@ -2,66 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A6B32EFFA1
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Jan 2021 13:45:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A3742EFF86
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Jan 2021 13:43:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726801AbhAIMo6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Jan 2021 07:44:58 -0500
-Received: from www.zeus03.de ([194.117.254.33]:50742 "EHLO mail.zeus03.de"
+        id S1726370AbhAIMnw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Jan 2021 07:43:52 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38996 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726763AbhAIMo4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Jan 2021 07:44:56 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple; d=sang-engineering.com; h=
-        from:to:cc:subject:date:message-id:in-reply-to:references
-        :mime-version:content-transfer-encoding; s=k1; bh=FNgj15D3k91S4V
-        PodKXKk0mfMNri6JlDcD9jzLuY7is=; b=jG9LZex9OCBy9LoWiwc1v1/z2Fc58F
-        1zSNXBam222mZH/BMojcb4NVcImikoid5/ydJwnIRvkhEF+C3II2AP57DGdnzGbF
-        rAT/WNOUxj5GQx2w8h9zSZZgYdau0MePyWHPlkPfGcUUnqHnAQ9yhRg0OF6jiZOC
-        +XyXh6zboWCEw=
-Received: (qmail 1725205 invoked from network); 9 Jan 2021 13:43:33 +0100
-Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted, authenticated); 9 Jan 2021 13:43:33 +0100
-X-UD-Smtp-Session: l3s3148p1@CqFLBXe4VpYgAwDPXyBeAD+yeC5KBZLe
-From:   Wolfram Sang <wsa+renesas@sang-engineering.com>
-To:     linux-i2c@vger.kernel.org
-Cc:     linux-renesas-soc@vger.kernel.org,
-        Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 8/8] i2c: s3c2410: advertise SMBus transfers using RECV_LEN
-Date:   Sat,  9 Jan 2021 13:43:12 +0100
-Message-Id: <20210109124314.27466-9-wsa+renesas@sang-engineering.com>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210109124314.27466-1-wsa+renesas@sang-engineering.com>
-References: <20210109124314.27466-1-wsa+renesas@sang-engineering.com>
+        id S1725890AbhAIMnw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 9 Jan 2021 07:43:52 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0C74F23A03;
+        Sat,  9 Jan 2021 12:43:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1610196191;
+        bh=8tdaQjzADBH47moXCZKaZIvSyQffVozoopC7ZSRMLkA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=pb8LNQv9TWnP9FGTIrpyEs4OpT4KeHmqHF7m+DWAnslKjvsGT30MlR54fyZWWhYni
+         /AWwCGOTaIJwskQyi6vkg9atgw2HI0DoZwy2csVXXHatvhfkggg274SOJ2mqQiT4C8
+         2gcSnfwy5g/3n6Po10UiL15KQW5ERjEEcFU2ZTiw=
+Date:   Sat, 9 Jan 2021 13:44:27 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Pavel Machek <pavel@denx.de>
+Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+        patches@kernelci.org, lkft-triage@lists.linaro.org,
+        stable@vger.kernel.org
+Subject: Re: [PATCH 4.19 0/8] 4.19.166-rc1 review
+Message-ID: <X/mlKyfk3q72IcZ0@kroah.com>
+References: <20210107143047.586006010@linuxfoundation.org>
+ <20210107175801.GA3906@amd>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210107175801.GA3906@amd>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This driver implements I2C_M_RECV_LEN, so it can advertise the SMBus
-transfers needing it. This also enables client devices to check for the
-RECV_LEN capability.
+On Thu, Jan 07, 2021 at 06:58:01PM +0100, Pavel Machek wrote:
+> Hi!
+> 
+> > This is the start of the stable review cycle for the 4.19.166 release.
+> > There are 8 patches in this series, all will be posted as a response
+> > to this one.  If anyone has any issues with these being applied, please
+> > let me know.
+> 
+> This was tested by CIP project, and we did not find anything wrong.
+> 
+> https://gitlab.com/cip-project/cip-testing/linux-stable-rc-ci/-/tree/linux-4.19.y
+> 
+> Tested-by: Pavel Machek (CIP) <pavel@denx.de>
 
-Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
----
- drivers/i2c/busses/i2c-s3c2410.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Thanks for testing two of these and letting me know.
 
-diff --git a/drivers/i2c/busses/i2c-s3c2410.c b/drivers/i2c/busses/i2c-s3c2410.c
-index 3eafe0eb3e4c..62a903fbe912 100644
---- a/drivers/i2c/busses/i2c-s3c2410.c
-+++ b/drivers/i2c/busses/i2c-s3c2410.c
-@@ -781,7 +781,7 @@ static int s3c24xx_i2c_xfer(struct i2c_adapter *adap,
- /* declare our i2c functionality */
- static u32 s3c24xx_i2c_func(struct i2c_adapter *adap)
- {
--	return I2C_FUNC_I2C | I2C_FUNC_SMBUS_EMUL | I2C_FUNC_NOSTART |
-+	return I2C_FUNC_I2C | I2C_FUNC_SMBUS_EMUL_ALL | I2C_FUNC_NOSTART |
- 		I2C_FUNC_PROTOCOL_MANGLING;
- }
- 
--- 
-2.29.2
-
+greg k-h
