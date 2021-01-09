@@ -2,97 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 51A522F03E7
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Jan 2021 22:52:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D6AB2F03E3
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Jan 2021 22:52:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726294AbhAIVvS convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Sat, 9 Jan 2021 16:51:18 -0500
-Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:20553 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726238AbhAIVvR (ORCPT
+        id S1726215AbhAIVuf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Jan 2021 16:50:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54708 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726001AbhAIVue (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Jan 2021 16:51:17 -0500
-Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-29-ccqyaF9BNQizm39n7NY-ag-1; Sat, 09 Jan 2021 21:49:28 +0000
-X-MC-Unique: ccqyaF9BNQizm39n7NY-ag-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
- Server (TLS) id 15.0.1347.2; Sat, 9 Jan 2021 21:49:27 +0000
-Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
- AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
- Sat, 9 Jan 2021 21:49:27 +0000
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Al Viro' <viro@zeniv.linux.org.uk>,
-        Pavel Begunkov <asml.silence@gmail.com>
-CC:     "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "Jens Axboe" <axboe@kernel.dk>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH] iov_iter: optimise iter type checking
-Thread-Topic: [PATCH] iov_iter: optimise iter type checking
-Thread-Index: AQHW5qm9/hT6YRd33Eq5lMaMuw9mB6of0+hQ
-Date:   Sat, 9 Jan 2021 21:49:27 +0000
-Message-ID: <b04df39d77114547811d7bfc2c0d4c8c@AcuMS.aculab.com>
-References: <a8cdb781384791c30e30036aced4c027c5dfea86.1605969341.git.asml.silence@gmail.com>
- <6e795064-fdbd-d354-4b01-a4f7409debf5@gmail.com>
- <54cd4d1b-d7ec-a74c-8be0-e48780609d56@gmail.com>
- <20210109170359.GT3579531@ZenIV.linux.org.uk>
-In-Reply-To: <20210109170359.GT3579531@ZenIV.linux.org.uk>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Sat, 9 Jan 2021 16:50:34 -0500
+Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78E0AC06179F
+        for <linux-kernel@vger.kernel.org>; Sat,  9 Jan 2021 13:49:54 -0800 (PST)
+Received: by mail-ed1-x531.google.com with SMTP id j16so14930994edr.0
+        for <linux-kernel@vger.kernel.org>; Sat, 09 Jan 2021 13:49:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=intel-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=mdW7lcpi4bRxwXU3KgxbmWayFCxbAMXV2BJDMr28t4E=;
+        b=vy5LHTUaY8UnAkNKJZKew2GItKTWBB/lbjETLHqVjJ+PKAnyPVJqcurMHNHHN91Bw8
+         AHreos8Jw805wlux4iwOkRz8blrkbZ7qAU/muBsf4agmfmY0HVuvzqGFWYQAJNRZmMog
+         NRWTIoWD7lVjm1uGQ1zgQHlpAQoGFuzbiJiiftpp8PUbH8Amjmmb1oJTZ6LvsVmJFDMX
+         4ocISplhA/UL2MHbfQJ0Fb0O1q50zXF4TZzKQGjsdUvQfWmWFy4NIBe3XteoHOs3kREh
+         1GSZQXJdRpWcPJqU+tdFnZI4/nt3k2E1OF2RT4pHMjZueWr/Ndu0XIZpyVt22mZRiQEe
+         ECMQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=mdW7lcpi4bRxwXU3KgxbmWayFCxbAMXV2BJDMr28t4E=;
+        b=Tylx7SU9gCVxLa3LL0I57WFzm0CJ4p2vIn1Nlw/59rNu6C/kPf2DxZ0pc/G950/aSF
+         f4+wHQ+LwYZRDJj9GxsJgh024N6aXwVTSZ2Xjm3nAgUidCUWT5dF+X5piCFAGg81z8Ug
+         K3dLILA1cSCOfLMeodMQ6AKGmg8+XfaBGoTZJFvEcoao8gX+kWUOEbyI9BPC+nOKIvvs
+         EJEI4CloH3JIeoUs+2llhKPlkbbIK6ONcoM4QPIgROw52fOQAJ6aWCtj3m8MwdCKZlzR
+         pTrQmj0aAm0iHrCWy4jlmq30D2uWO3AGUgENO52KOkhkTNReRwrDDvUP/XsNfpRpOPgB
+         YZaw==
+X-Gm-Message-State: AOAM531Kn0HcX52xzn+Vlba4yVWguBGcVweH5NA0+W+fxrsT4q981JN/
+        rAL2OWIgY9LdqvFR/VP8AItWjzoRLYX7XPZeOb5A2w==
+X-Google-Smtp-Source: ABdhPJxKfbCDHTWpI3BGP1KSuxZgSqIiP9CYlS/MoGPuiSvmg7WZf0mauE1jTMM+2cvhHZ0cZjjWkyHY6EQL4aEmS0A=
+X-Received: by 2002:aa7:df0f:: with SMTP id c15mr9722278edy.354.1610228993223;
+ Sat, 09 Jan 2021 13:49:53 -0800 (PST)
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+References: <20210105025839.23169-1-mike.ximing.chen@intel.com>
+ <20210105025839.23169-5-mike.ximing.chen@intel.com> <X/dmB3q6QEd2aQdG@kroah.com>
+ <SA2PR11MB5018670AEC81EA93598E1212D9AD0@SA2PR11MB5018.namprd11.prod.outlook.com>
+ <X/lqcaLVb+PbbmWg@kroah.com>
+In-Reply-To: <X/lqcaLVb+PbbmWg@kroah.com>
+From:   Dan Williams <dan.j.williams@intel.com>
+Date:   Sat, 9 Jan 2021 13:49:42 -0800
+Message-ID: <CAPcyv4huRyakszL7JPpk6CCK=rRvBfra5vzjxwr4_ThvyxSxLg@mail.gmail.com>
+Subject: Re: [PATCH v8 04/20] dlb: add device ioctl layer and first three ioctls
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     "Chen, Mike Ximing" <mike.ximing.chen@intel.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "arnd@arndb.de" <arnd@arndb.de>,
+        "pierre-louis.bossart@linux.intel.com" 
+        <pierre-louis.bossart@linux.intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Al Viro
-> Sent: 09 January 2021 17:04
-> 
-> On Sat, Jan 09, 2021 at 04:09:08PM +0000, Pavel Begunkov wrote:
-> > On 06/12/2020 16:01, Pavel Begunkov wrote:
-> > > On 21/11/2020 14:37, Pavel Begunkov wrote:
-> > >> The problem here is that iov_iter_is_*() helpers check types for
-> > >> equality, but all iterate_* helpers do bitwise ands. This confuses
-> > >> compilers, so even if some cases were handled separately with
-> > >> iov_iter_is_*(), corresponding ifs in iterate*() right after are not
-> > >> eliminated.
-> > >>
-> > >> E.g. iov_iter_npages() first handles discards, but iterate_all_kinds()
-> > >> still checks for discard iter type and generates unreachable code down
-> > >> the line.
+On Sat, Jan 9, 2021 at 12:34 AM Greg KH <gregkh@linuxfoundation.org> wrote:
+>
+> On Sat, Jan 09, 2021 at 07:49:24AM +0000, Chen, Mike Ximing wrote:
+> > > > +static int dlb_ioctl_arg_size[NUM_DLB_CMD] = {
+> > > > + sizeof(struct dlb_get_device_version_args),
+> > > > + sizeof(struct dlb_create_sched_domain_args),
+> > > > + sizeof(struct dlb_get_num_resources_args)
 > > >
-> > > Ping. This one should be pretty simple
+> > > That list.
+> > >
+> > > Ugh, no.  that's no way to write maintainable code that you will be able
+> > > to understand in 2 years.
+> > >
 > >
-> > Ping please. Any doubts about this patch?
-> 
-> Sorry, had been buried in other crap.  I'm really not fond of the
-> bitmap use; if anything, I would rather turn iterate_and_advance() et.al.
-> into switches...
+> > dlb_ioctl() was implemented with switch-case and real function calls previously.
+> > We changed to the table/list implementation during a code restructure. I will move
+> > back to the old implementation.
+>
+> Who said to change this?  And why did they say that?  Please go back to
+> those developers and point them at this thread so that doesn't happen
+> again...
+>
+> > > > +{
+> > > > + struct dlb *dlb;
+> > > > + dlb_ioctl_fn_t fn;
+> > > > + u32 cmd_nr;
+> > > > + void *karg;
+> > > > + int size;
+> > > > + int ret;
+> > > > +
+> > > > + dlb = f->private_data;
+> > > > +
+> > > > + if (!dlb) {
+> > > > +         pr_err("dlb: [%s()] Invalid DLB data\n", __func__);
+> > > > +         return -EFAULT;
+> > >
+> > > This error value is only allowed if you really do have a memory fault.
+> > >
+> > > Hint, you do not here.
+> > >
+> > > How can that value ever be NULL?
+> > >
+> >
+> > It is targeted at some very rare cases, in which an ioctl command are called immediately after a device unbind (by a different process/application).
+>
+> And how can that happen?  If it really can happen, where is the lock
+> that you are holding to keep that pointer from becoming "stale" right
+> after you assign it?
+>
+> So either this never can happen, or your logic here for this type of
+> thing is totally wrong.  Please work to determine which it is.
 
-That loses any optimisations in the order of the comparisons.
-The bitmap also allows different groups to be optimised for in different code paths.
+I would have preferred a chance to offer a reviewed-by on this set
+before it went out (per the required process) to validate that the
+feedback on the lifetime handling was properly addressed, it wasn't,
+but lets deal with this on the list now.
 
-> How about moving the READ/WRITE part into MSB?  Checking is just as fast
-> (if not faster - check for sign vs. checking bit 0).  And turn the
-> types into straight (dense) enum.
+The race to handle is the one identified by cdev_del():
 
-Does any code actually look at the fields as a pair?
-Would it even be better to use separate bytes?
-Even growing the on-stack structure by a word won't really matter.
+ * NOTE: This guarantees that cdev device will no longer be able to be
+ * opened, however any cdevs already open will remain and their fops will
+ * still be callable even after cdev_del returns.
 
-	David
+This means that the dlb->private_data is pointing to a live device, a
+dying device, or NULL. Without revalidating to the dlb pointer under a
+lock, or some other coordinated reference cout, it can transition
+states underneath the running ioctl.
 
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-Registration No: 1397386 (Wales)
+Greg, I'm thinking of taking a shot at a document, "botching up device
+lifetimes",  in the same spirit as
+Documentation/process/botching-up-ioctls.rst to lay out the different
+schemes for revalidating driver private data in ioctls.
 
+It strikes me that a helper like this might address many of the common patterns:
+
++/**
++ * get_live_device() - increment reference count for device iff !dead
++ * @dev: device.
++ *
++ * Forward the call to get_device() if the device is still alive. If
++ * this is called with the device_lock() held then the device is
++ * guaranteed to not die until the device_lock() is dropped.
++ */
++struct device *get_live_device(struct device *dev)
++{
++       return dev && !dev->p->dead ? get_device(dev) : NULL;
++}
++EXPORT_SYMBOL_GPL(get_live_device);
+
+Alternatively, if device_lock() is too awkward for a driver it could
+use its own lock and kill_device().
+
+...am I off base thinking that cdev_del vs fops liveness is a
+widespread problem worth documenting new design patterns?
