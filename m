@@ -2,109 +2,229 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B19122F021C
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Jan 2021 18:13:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 680872F0223
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Jan 2021 18:15:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726510AbhAIRMI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Jan 2021 12:12:08 -0500
-Received: from mail-40136.protonmail.ch ([185.70.40.136]:34808 "EHLO
-        mail-40136.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725872AbhAIRMH (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Jan 2021 12:12:07 -0500
-Date:   Sat, 09 Jan 2021 17:11:18 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me; s=protonmail;
-        t=1610212284; bh=rNDBsb/5jzCtXm4ccD8b7PVBPJte7jON6vMo9RPdX3M=;
-        h=Date:To:From:Cc:Reply-To:Subject:From;
-        b=nf+g7+lS8IzGv3c6ZvZrzY+ePPPHiMRzcP0qbyj6dCj3V0JZYtnbC/xU0F4qi8UA3
-         lqr6JHYmAlMtG/c/yOOWutwTfhIvq+RLeCLNf2CfKb6I7ZTSfF5+Gq5ALZRC5lVIw8
-         MJdoitNxqtpedH6rdzRbReTQnpkf0P7CrskZ8u3P/PwRqF+lL3SsBhi6rTir74RI2t
-         CKB/4PKkDlNytTni8KsQ/4iOaJSCTb97NhW7NJHFxa0mlFXcGTAuUtg5rA54fc3nZ7
-         VNmfI45t8El6PIDJ0J+WQ0ljEKvd3gUf+NET2t65Kv4Zzp3PcKuXdZWk9VoRznhGJH
-         GFdlXN/qrO4ZQ==
-To:     clang-built-linux@googlegroups.com, linux-mips@vger.kernel.org
-From:   Alexander Lobakin <alobakin@pm.me>
-Cc:     Alexander Lobakin <alobakin@pm.me>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Kees Cook <keescook@chromium.org>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Fangrui Song <maskray@google.com>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Ralf Baechle <ralf@linux-mips.org>,
-        linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org
-Reply-To: Alexander Lobakin <alobakin@pm.me>
-Subject: [BUG mips llvm] MIPS: malformed R_MIPS_{HI16,LO16} with LLVM
-Message-ID: <20210109171058.497636-1-alobakin@pm.me>
+        id S1726263AbhAIRPZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Jan 2021 12:15:25 -0500
+Received: from mail.kernel.org ([198.145.29.99]:39132 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725966AbhAIRPZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 9 Jan 2021 12:15:25 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id DA618236FB;
+        Sat,  9 Jan 2021 17:14:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1610212483;
+        bh=uTdeVlBgZ5aA+Q3knNl7JhR+crPYN5ZuswrxH+1Mxjg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=m01AKH0nqAYsFaRirjgaKkD/GKEMvPaTlpwdvFCGBkySc23ylEwBr3hjmRGN3Dzvv
+         ZmXdA0cvhpvKKtwPqiSZTyKbwOFAg9Z+N2CL5j2U4IBaCj0x15eAnQ9fEJnh1uM9Ps
+         hBlue473g5zmerGn7KLusXALBFZJwZ3Gvvt6R9zEiMTPFMlvcVtkLh6oyVXlmzEVzb
+         Gs262LXUiY0Znyp8VDdq/ZddqX4F7v/AYIjOhLhyeoiAOwy2H11fyitY2b+c5jAJJv
+         NQ15YZ5DC9eMMh+pZmXjIEdQkkXmbPEpnED+n++cDWlz21jf0GYrHvwDN+MXAH0FrI
+         h3h49PWOLi+Lg==
+Date:   Sat, 9 Jan 2021 09:14:41 -0800
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     "Jason A. Donenfeld" <Jason@zx2c4.com>
+Cc:     syzbot <syzbot+e0f501056b282add58a6@syzkaller.appspotmail.com>,
+        davem@davemloft.net, glider@google.com,
+        herbert@gondor.apana.org.au, linux-crypto@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Subject: Re: KMSAN: uninit-value in __crypto_memneq (2)
+Message-ID: <X/nkga4iirR8QKP2@sol.localdomain>
+References: <00000000000079365f05b877530b@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
-        autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
-        mailout.protonmail.ch
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <00000000000079365f05b877530b@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Machine: MIPS32 R2 Big Endian (interAptiv (multi))
++Jason, since this looks WireGuard-related.
 
-While testing MIPS with LLVM, I found a weird and very rare bug with
-MIPS relocs that LLVM emits into kernel modules. It happens on both
-11.0.0 and latest git snapshot and applies, as I can see, only to
-references to static symbols.
-
-When the kernel loads the module, it allocates a space for every
-section and then manually apply the relocations relative to the
-new address.
-
-Let's say we have a function phy_probe() in drivers/net/phy/libphy.ko.
-It's static and referenced only in phy_register_driver(), where it's
-used to fill callback pointer in a structure.
-
-The real function address after module loading is 0xc06c1444, that
-is observed in its ELF st_value field.
-There are two relocs related to this usage in phy_register_driver():
-
-R_MIPS_HI16 refers to 0x3c010000
-R_MIPS_LO16 refers to 0x24339444
-
-The address of .text is 0xc06b8000. So the destination is calculated
-as follows:
-
-0x00000000 from hi16;
-0xffff9444 from lo16 (sign extend as it's always treated as signed);
-0xc06b8000 from base.
-
-=3D 0xc06b1444. The value is lower than the real phy_probe() address
-(0xc06c1444) by 0x10000 and is lower than the base address of
-module's .text, so it's 100% incorrect.
-
-This results in:
-
-[    2.204022] CPU 3 Unable to handle kernel paging request at virtual
-address c06b1444, epc =3D=3D c06b1444, ra =3D=3D 803f1090
-
-The correct instructions should be:
-
-R_MIPS_HI16 0x3c010001
-R_MIPS_LO16 0x24339444
-
-so there'll be 0x00010000 from hi16.
-
-I tried to catch those bugs in arch/mips/kernel/module.c (by checking
-if the destination is lower than the base address, which should never
-happen), and seems like I have only 3 such places in libphy.ko (and
-one in nf_tables.ko).
-I don't think it should be handled somehow in mentioned source code
-as it would look rather ugly and may break kernels build with GNU
-stack, which seems to not produce such bad codes.
-
-If I should report this to any other resources, please let me know.
-I chose clang-built-linux and LKML as it may not happen with userland
-(didn't tried to catch).
-
-Thanks,
-Al
-
+On Sat, Jan 09, 2021 at 05:05:24AM -0800, syzbot wrote:
+> Hello,
+> 
+> syzbot found the following issue on:
+> 
+> HEAD commit:    73d62e81 kmsan: random: prevent boot-time reports in _mix_..
+> git tree:       https://github.com/google/kmsan.git master
+> console output: https://syzkaller.appspot.com/x/log.txt?x=142ab9c0d00000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=2cdf4151c9653e32
+> dashboard link: https://syzkaller.appspot.com/bug?extid=e0f501056b282add58a6
+> compiler:       clang version 11.0.0 (https://github.com/llvm/llvm-project.git ca2dcbd030eadbf0aa9b660efe864ff08af6e18b)
+> 
+> Unfortunately, I don't have any reproducer for this issue yet.
+> 
+> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> Reported-by: syzbot+e0f501056b282add58a6@syzkaller.appspotmail.com
+> 
+> =====================================================
+> BUG: KMSAN: uninit-value in __crypto_memneq_16 crypto/memneq.c:99 [inline]
+> BUG: KMSAN: uninit-value in __crypto_memneq+0x42c/0x470 crypto/memneq.c:161
+> CPU: 0 PID: 20526 Comm: kworker/0:3 Not tainted 5.10.0-rc4-syzkaller #0
+> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+> Workqueue: wg-crypt-wg1 wg_packet_decrypt_worker
+> Call Trace:
+>  __dump_stack lib/dump_stack.c:77 [inline]
+>  dump_stack+0x21c/0x280 lib/dump_stack.c:118
+>  kmsan_report+0xf7/0x1e0 mm/kmsan/kmsan_report.c:118
+>  __msan_warning+0x5f/0xa0 mm/kmsan/kmsan_instr.c:197
+>  __crypto_memneq_16 crypto/memneq.c:99 [inline]
+>  __crypto_memneq+0x42c/0x470 crypto/memneq.c:161
+>  crypto_memneq include/crypto/algapi.h:277 [inline]
+>  chacha20poly1305_crypt_sg_inplace+0x1662/0x1cd0 lib/crypto/chacha20poly1305.c:311
+>  chacha20poly1305_decrypt_sg_inplace+0x179/0x1d0 lib/crypto/chacha20poly1305.c:351
+>  decrypt_packet drivers/net/wireguard/receive.c:284 [inline]
+>  wg_packet_decrypt_worker+0x9cf/0x17d0 drivers/net/wireguard/receive.c:509
+>  process_one_work+0x121c/0x1fc0 kernel/workqueue.c:2272
+>  worker_thread+0x10cc/0x2740 kernel/workqueue.c:2418
+>  kthread+0x51c/0x560 kernel/kthread.c:292
+>  ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:296
+> 
+> Uninit was stored to memory at:
+>  kmsan_save_stack_with_flags mm/kmsan/kmsan.c:121 [inline]
+>  kmsan_internal_chain_origin+0xad/0x130 mm/kmsan/kmsan.c:289
+>  __msan_chain_origin+0x57/0xa0 mm/kmsan/kmsan_instr.c:147
+>  put_unaligned_le64 include/linux/unaligned/access_ok.h:50 [inline]
+>  poly1305_core_emit+0x625/0x6a0 lib/crypto/poly1305-donna64.c:182
+>  poly1305_final_generic+0xe2/0x280 lib/crypto/poly1305.c:71
+>  poly1305_final include/crypto/poly1305.h:94 [inline]
+>  chacha20poly1305_crypt_sg_inplace+0x15cf/0x1cd0 lib/crypto/chacha20poly1305.c:310
+>  chacha20poly1305_decrypt_sg_inplace+0x179/0x1d0 lib/crypto/chacha20poly1305.c:351
+>  decrypt_packet drivers/net/wireguard/receive.c:284 [inline]
+>  wg_packet_decrypt_worker+0x9cf/0x17d0 drivers/net/wireguard/receive.c:509
+>  process_one_work+0x121c/0x1fc0 kernel/workqueue.c:2272
+>  worker_thread+0x10cc/0x2740 kernel/workqueue.c:2418
+>  kthread+0x51c/0x560 kernel/kthread.c:292
+>  ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:296
+> 
+> Uninit was stored to memory at:
+>  kmsan_save_stack_with_flags mm/kmsan/kmsan.c:121 [inline]
+>  kmsan_internal_chain_origin+0xad/0x130 mm/kmsan/kmsan.c:289
+>  __msan_chain_origin+0x57/0xa0 mm/kmsan/kmsan_instr.c:147
+>  poly1305_core_blocks+0x8f4/0x940 lib/crypto/poly1305-donna64.c:107
+>  poly1305_update_generic+0x1a7/0x5a0 lib/crypto/poly1305.c:49
+>  poly1305_update include/crypto/poly1305.h:83 [inline]
+>  chacha20poly1305_crypt_sg_inplace+0x1496/0x1cd0 lib/crypto/chacha20poly1305.c:302
+>  chacha20poly1305_decrypt_sg_inplace+0x179/0x1d0 lib/crypto/chacha20poly1305.c:351
+>  decrypt_packet drivers/net/wireguard/receive.c:284 [inline]
+>  wg_packet_decrypt_worker+0x9cf/0x17d0 drivers/net/wireguard/receive.c:509
+>  process_one_work+0x121c/0x1fc0 kernel/workqueue.c:2272
+>  worker_thread+0x10cc/0x2740 kernel/workqueue.c:2418
+>  kthread+0x51c/0x560 kernel/kthread.c:292
+>  ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:296
+> 
+> Uninit was stored to memory at:
+>  kmsan_save_stack_with_flags mm/kmsan/kmsan.c:121 [inline]
+>  kmsan_internal_chain_origin+0xad/0x130 mm/kmsan/kmsan.c:289
+>  __msan_chain_origin+0x57/0xa0 mm/kmsan/kmsan_instr.c:147
+>  poly1305_core_blocks+0x8f4/0x940 lib/crypto/poly1305-donna64.c:107
+>  poly1305_update_generic+0x1a7/0x5a0 lib/crypto/poly1305.c:49
+>  poly1305_update include/crypto/poly1305.h:83 [inline]
+>  chacha20poly1305_crypt_sg_inplace+0xb4d/0x1cd0 lib/crypto/chacha20poly1305.c:263
+>  chacha20poly1305_decrypt_sg_inplace+0x179/0x1d0 lib/crypto/chacha20poly1305.c:351
+>  decrypt_packet drivers/net/wireguard/receive.c:284 [inline]
+>  wg_packet_decrypt_worker+0x9cf/0x17d0 drivers/net/wireguard/receive.c:509
+>  process_one_work+0x121c/0x1fc0 kernel/workqueue.c:2272
+>  worker_thread+0x10cc/0x2740 kernel/workqueue.c:2418
+>  kthread+0x51c/0x560 kernel/kthread.c:292
+>  ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:296
+> 
+> Uninit was stored to memory at:
+>  kmsan_save_stack_with_flags mm/kmsan/kmsan.c:121 [inline]
+>  kmsan_internal_chain_origin+0xad/0x130 mm/kmsan/kmsan.c:289
+>  __msan_chain_origin+0x57/0xa0 mm/kmsan/kmsan_instr.c:147
+>  crypto_xor_cpy include/crypto/algapi.h:167 [inline]
+>  chacha_crypt_generic+0x696/0x880 lib/crypto/libchacha.c:23
+>  chacha_crypt include/crypto/chacha.h:90 [inline]
+>  chacha20_crypt include/crypto/chacha.h:96 [inline]
+>  chacha20poly1305_crypt_sg_inplace+0xda2/0x1cd0 lib/crypto/chacha20poly1305.c:280
+>  chacha20poly1305_encrypt_sg_inplace+0x125/0x140 lib/crypto/chacha20poly1305.c:338
+>  encrypt_packet drivers/net/wireguard/send.c:216 [inline]
+>  wg_packet_encrypt_worker+0x1288/0x2680 drivers/net/wireguard/send.c:301
+>  process_one_work+0x121c/0x1fc0 kernel/workqueue.c:2272
+>  worker_thread+0x10cc/0x2740 kernel/workqueue.c:2418
+>  kthread+0x51c/0x560 kernel/kthread.c:292
+>  ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:296
+> 
+> Uninit was stored to memory at:
+>  kmsan_save_stack_with_flags mm/kmsan/kmsan.c:121 [inline]
+>  kmsan_internal_chain_origin+0xad/0x130 mm/kmsan/kmsan.c:289
+>  kmsan_memcpy_memmove_metadata+0x25e/0x2d0 mm/kmsan/kmsan.c:226
+>  kmsan_memcpy_metadata+0xb/0x10 mm/kmsan/kmsan.c:246
+>  __msan_memcpy+0x46/0x60 mm/kmsan/kmsan_instr.c:110
+>  pskb_expand_head+0x3eb/0x1df0 net/core/skbuff.c:1631
+>  __skb_cow include/linux/skbuff.h:3165 [inline]
+>  skb_cow_head include/linux/skbuff.h:3199 [inline]
+>  geneve_build_skb+0x56e/0xf80 drivers/net/geneve.c:753
+>  geneve6_xmit_skb drivers/net/geneve.c:1023 [inline]
+>  geneve_xmit+0x2d86/0x3cc0 drivers/net/geneve.c:1056
+>  __netdev_start_xmit include/linux/netdevice.h:4718 [inline]
+>  netdev_start_xmit include/linux/netdevice.h:4732 [inline]
+>  xmit_one+0x2b9/0x770 net/core/dev.c:3564
+>  dev_hard_start_xmit net/core/dev.c:3580 [inline]
+>  __dev_queue_xmit+0x33f2/0x4520 net/core/dev.c:4140
+>  dev_queue_xmit+0x4b/0x60 net/core/dev.c:4173
+>  batadv_send_skb_packet+0x622/0x970 net/batman-adv/send.c:108
+>  batadv_send_broadcast_skb+0x76/0x90 net/batman-adv/send.c:127
+>  batadv_iv_ogm_send_to_if net/batman-adv/bat_iv_ogm.c:394 [inline]
+>  batadv_iv_ogm_emit net/batman-adv/bat_iv_ogm.c:420 [inline]
+>  batadv_iv_send_outstanding_bat_ogm_packet+0xb3a/0xf00 net/batman-adv/bat_iv_ogm.c:1712
+>  process_one_work+0x121c/0x1fc0 kernel/workqueue.c:2272
+>  worker_thread+0x10cc/0x2740 kernel/workqueue.c:2418
+>  kthread+0x51c/0x560 kernel/kthread.c:292
+>  ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:296
+> 
+> Uninit was stored to memory at:
+>  kmsan_save_stack_with_flags mm/kmsan/kmsan.c:121 [inline]
+>  kmsan_internal_chain_origin+0xad/0x130 mm/kmsan/kmsan.c:289
+>  kmsan_memcpy_memmove_metadata+0x25e/0x2d0 mm/kmsan/kmsan.c:226
+>  kmsan_memcpy_metadata+0xb/0x10 mm/kmsan/kmsan.c:246
+>  __msan_memcpy+0x46/0x60 mm/kmsan/kmsan_instr.c:110
+>  pskb_expand_head+0x3eb/0x1df0 net/core/skbuff.c:1631
+>  __skb_cow include/linux/skbuff.h:3165 [inline]
+>  skb_cow_head include/linux/skbuff.h:3199 [inline]
+>  batadv_skb_head_push+0x2ce/0x410 net/batman-adv/soft-interface.c:75
+>  batadv_send_skb_packet+0x1ed/0x970 net/batman-adv/send.c:86
+>  batadv_send_broadcast_skb+0x76/0x90 net/batman-adv/send.c:127
+>  batadv_iv_ogm_send_to_if net/batman-adv/bat_iv_ogm.c:394 [inline]
+>  batadv_iv_ogm_emit net/batman-adv/bat_iv_ogm.c:420 [inline]
+>  batadv_iv_send_outstanding_bat_ogm_packet+0xb3a/0xf00 net/batman-adv/bat_iv_ogm.c:1712
+>  process_one_work+0x121c/0x1fc0 kernel/workqueue.c:2272
+>  worker_thread+0x10cc/0x2740 kernel/workqueue.c:2418
+>  kthread+0x51c/0x560 kernel/kthread.c:292
+>  ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:296
+> 
+> Uninit was created at:
+>  kmsan_save_stack_with_flags+0x3c/0x90 mm/kmsan/kmsan.c:121
+>  kmsan_alloc_page+0xd3/0x1f0 mm/kmsan/kmsan_shadow.c:274
+>  __alloc_pages_nodemask+0x84e/0xfb0 mm/page_alloc.c:4989
+>  __alloc_pages include/linux/gfp.h:511 [inline]
+>  __alloc_pages_node include/linux/gfp.h:524 [inline]
+>  alloc_pages_node include/linux/gfp.h:538 [inline]
+>  __page_frag_cache_refill mm/page_alloc.c:5065 [inline]
+>  page_frag_alloc+0x35b/0x890 mm/page_alloc.c:5095
+>  __netdev_alloc_skb+0xbee/0xc50 net/core/skbuff.c:456
+>  __netdev_alloc_skb_ip_align include/linux/skbuff.h:2846 [inline]
+>  netdev_alloc_skb_ip_align include/linux/skbuff.h:2856 [inline]
+>  batadv_iv_ogm_aggregate_new net/batman-adv/bat_iv_ogm.c:559 [inline]
+>  batadv_iv_ogm_queue_add+0x143f/0x1cf0 net/batman-adv/bat_iv_ogm.c:671
+>  batadv_iv_ogm_schedule_buff net/batman-adv/bat_iv_ogm.c:834 [inline]
+>  batadv_iv_ogm_schedule+0xe4e/0x1670 net/batman-adv/bat_iv_ogm.c:870
+>  batadv_iv_send_outstanding_bat_ogm_packet+0xd7b/0xf00 net/batman-adv/bat_iv_ogm.c:1724
+>  process_one_work+0x121c/0x1fc0 kernel/workqueue.c:2272
+>  worker_thread+0x10cc/0x2740 kernel/workqueue.c:2418
+>  kthread+0x51c/0x560 kernel/kthread.c:292
+>  ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:296
+> =====================================================
+> 
+> 
+> ---
+> This report is generated by a bot. It may contain errors.
+> See https://goo.gl/tpsmEJ for more information about syzbot.
+> syzbot engineers can be reached at syzkaller@googlegroups.com.
+> 
+> syzbot will keep track of this issue. See:
+> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
