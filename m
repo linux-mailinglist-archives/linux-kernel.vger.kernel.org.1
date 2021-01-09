@@ -2,193 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D4392F0217
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Jan 2021 18:10:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B19122F021C
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Jan 2021 18:13:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726416AbhAIRKv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Jan 2021 12:10:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51456 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726013AbhAIRKu (ORCPT
+        id S1726510AbhAIRMI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Jan 2021 12:12:08 -0500
+Received: from mail-40136.protonmail.ch ([185.70.40.136]:34808 "EHLO
+        mail-40136.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725872AbhAIRMH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Jan 2021 12:10:50 -0500
-Received: from mail-yb1-xb2e.google.com (mail-yb1-xb2e.google.com [IPv6:2607:f8b0:4864:20::b2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 230F1C06179F
-        for <linux-kernel@vger.kernel.org>; Sat,  9 Jan 2021 09:10:10 -0800 (PST)
-Received: by mail-yb1-xb2e.google.com with SMTP id y128so12597588ybf.10
-        for <linux-kernel@vger.kernel.org>; Sat, 09 Jan 2021 09:10:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=EL3usNsR6RJ/kaN0gX4dE0zjZk+adUFE1G3dRPjGzc4=;
-        b=pvdQP6wQkmLKyKoYbBICYKmMe81Lh1oUOvgaduNtneTY4/Dw9v7yK3RuKYojT7mPE6
-         dFAN3j0PWoI7ZliFe1xz6xiBR/Qy0kLkAQnbsI05LC9pWOcfvg8/GBxE/JEs7sgn+9DH
-         h7ou9N+XOh3i+Zo+BR0lz5Z28ovaX4PK45UOgwpcoBtpSfxuUHMk2El22tndLV6MdghH
-         G/7n3iPQOnPVDjldgLXeOE+EslcU8Ch3eeswEwLOBjJYKvmVBthWxJLLYz5hzFxkV1rh
-         +EFteDKsqKscftKsKcAqpJqAGCIUtKlVvOvHVg88tdFA2A4+Id/r7Au6bGGts2uqN2NS
-         Lkaw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=EL3usNsR6RJ/kaN0gX4dE0zjZk+adUFE1G3dRPjGzc4=;
-        b=iC534ITjCSBXwRWW8/dAZ4N5B8Vl9oQ1FuMH1g2CUaARUSiyj2/Xvdt3C++nWSRqGw
-         mpLMzf6xhlplHjZYQNu2TLFXS2l4wrGjqM85fXa7sL/yhrcEbocA0eeLPvEBOitqeprx
-         P9ZeSlVCK/asEpHuSD9qX/1ayNfhkMBiZPw6z+Y+i3hCIEogSDg3ojLKTrV+haBxOMpr
-         WK8PG23gC2hSGj/PfCNnJJh0Mb2KKuk+3AwUMyVpmIRM0kUGVjwWPkTaNb/OUoUCP4I/
-         RPGzCPGgmGx6L35PbKqGopSkfGmfDvzEQhOldMkVjz6DwoPepK+97ewx+d1bj34/6liF
-         JYfQ==
-X-Gm-Message-State: AOAM533DieQurhBumMC8IjnIUQH+hrKHbuaqYDw4e4mLQ3HaIe2kbd02
-        hLcqPRWWP+76dwf2gdzhJDEjJxD4eQgtjYwCke7mtw==
-X-Google-Smtp-Source: ABdhPJxHs5vAL9PG0BmAfRSJClqSNUC3Mz6HmKJcNj/c05dWYJWnw0Eok1hSeNWBJjU6gd7mOhnDHRZgdM91tl+VTx8=
-X-Received: by 2002:a25:2506:: with SMTP id l6mr14836274ybl.32.1610212209019;
- Sat, 09 Jan 2021 09:10:09 -0800 (PST)
+        Sat, 9 Jan 2021 12:12:07 -0500
+Date:   Sat, 09 Jan 2021 17:11:18 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me; s=protonmail;
+        t=1610212284; bh=rNDBsb/5jzCtXm4ccD8b7PVBPJte7jON6vMo9RPdX3M=;
+        h=Date:To:From:Cc:Reply-To:Subject:From;
+        b=nf+g7+lS8IzGv3c6ZvZrzY+ePPPHiMRzcP0qbyj6dCj3V0JZYtnbC/xU0F4qi8UA3
+         lqr6JHYmAlMtG/c/yOOWutwTfhIvq+RLeCLNf2CfKb6I7ZTSfF5+Gq5ALZRC5lVIw8
+         MJdoitNxqtpedH6rdzRbReTQnpkf0P7CrskZ8u3P/PwRqF+lL3SsBhi6rTir74RI2t
+         CKB/4PKkDlNytTni8KsQ/4iOaJSCTb97NhW7NJHFxa0mlFXcGTAuUtg5rA54fc3nZ7
+         VNmfI45t8El6PIDJ0J+WQ0ljEKvd3gUf+NET2t65Kv4Zzp3PcKuXdZWk9VoRznhGJH
+         GFdlXN/qrO4ZQ==
+To:     clang-built-linux@googlegroups.com, linux-mips@vger.kernel.org
+From:   Alexander Lobakin <alobakin@pm.me>
+Cc:     Alexander Lobakin <alobakin@pm.me>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Kees Cook <keescook@chromium.org>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Fangrui Song <maskray@google.com>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Ralf Baechle <ralf@linux-mips.org>,
+        linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org
+Reply-To: Alexander Lobakin <alobakin@pm.me>
+Subject: [BUG mips llvm] MIPS: malformed R_MIPS_{HI16,LO16} with LLVM
+Message-ID: <20210109171058.497636-1-alobakin@pm.me>
 MIME-Version: 1.0
-References: <20210108012427.766318-1-saravanak@google.com> <9ec99f2f0e1e75e11f2d7d013dc78203@walle.cc>
- <CAGETcx-TT=ce+oSV2miKN5YdO-gY1oqCMVBkgs6D4kfFLpyn1w@mail.gmail.com> <7f10c6c94729dfa48e18f7f4b038403a@walle.cc>
-In-Reply-To: <7f10c6c94729dfa48e18f7f4b038403a@walle.cc>
-From:   Saravana Kannan <saravanak@google.com>
-Date:   Sat, 9 Jan 2021 09:09:32 -0800
-Message-ID: <CAGETcx-FAaBRLxLS8_s65VHi6S1MF3RZHw5A5RkQ=eikZuMBtA@mail.gmail.com>
-Subject: Re: [PATCH v3] driver core: Fix device link device name collision
-To:     Michael Walle <michael@walle.cc>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        stable <stable@vger.kernel.org>,
-        Android Kernel Team <kernel-team@android.com>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
+        autolearn=disabled version=3.4.4
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
+        mailout.protonmail.ch
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jan 9, 2021 at 8:49 AM Michael Walle <michael@walle.cc> wrote:
->
-> Am 2021-01-08 18:22, schrieb Saravana Kannan:
-> > On Fri, Jan 8, 2021 at 12:16 AM Michael Walle <michael@walle.cc> wrote:
-> >>
-> >> Am 2021-01-08 02:24, schrieb Saravana Kannan:
-> >> > The device link device's name was of the form:
-> >> > <supplier-dev-name>--<consumer-dev-name>
-> >> >
-> >> > This can cause name collision as reported here [1] as device names are
-> >> > not globally unique. Since device names have to be unique within the
-> >> > bus/class, add the bus/class name as a prefix to the device names used
-> >> > to
-> >> > construct the device link device name.
-> >> >
-> >> > So the devuce link device's name will be of the form:
-> >> > <supplier-bus-name>:<supplier-dev-name>--<consumer-bus-name>:<consumer-dev-name>
-> >> >
-> >> > [1] -
-> >> > https://lore.kernel.org/lkml/20201229033440.32142-1-michael@walle.cc/
-> >> >
-> >> > Cc: stable@vger.kernel.org
-> >> > Fixes: 287905e68dd2 ("driver core: Expose device link details in
-> >> > sysfs")
-> >> > Reported-by: Michael Walle <michael@walle.cc>
-> >> > Signed-off-by: Saravana Kannan <saravanak@google.com>
-> >> > ---
-> >> [..]
-> >>
-> >> The changes are missing for the error path and
-> >> devlink_remove_symlinks(),
-> >> right?
-> >
-> > Removing symlinks doesn't need the name. Just needs the "handle". So
-> > we are good there.
->
-> I don't get it. What is the "handle"? Without the patch below
-> kernfs_remove_by_name() in sysfs_remove_link will return -ENOENT. With
-> the patch it will return 0.
->
-> And even if it would work, how is this even logical:
+Machine: MIPS32 R2 Big Endian (interAptiv (multi))
 
-Ah sorry, I confused it with removing device attrs. I need to fix up
-the symlink remove path.
+While testing MIPS with LLVM, I found a weird and very rare bug with
+MIPS relocs that LLVM emits into kernel modules. It happens on both
+11.0.0 and latest git snapshot and applies, as I can see, only to
+references to static symbols.
 
->
->         snprintf(buf, len, "consumer:%s:%s", dev_bus_name(con), dev_name(con));
->         ret = sysfs_create_link(&sup->kobj, &link->link_dev.kobj, buf);
->         if (ret)
->                 goto err_con_dev;
->         snprintf(buf, len, "supplier:%s:%s", dev_bus_name(sup), dev_name(sup));
->         ret = sysfs_create_link(&con->kobj, &link->link_dev.kobj, buf);
->         if (ret)
->                 goto err_sup_dev;
-> [..]
-> err_sup_dev:
->         snprintf(buf, len, "consumer:%s", dev_name(con));
->         sysfs_remove_link(&sup->kobj, buf);
->
-> You call sysfs_create_link("consumer:bus_name:dev_name") but the
-> corresponding rollback is sysfs_remove_link("consumer:dev_name"), that
-> is super confusing.
->
-> >> diff --git a/drivers/base/core.c b/drivers/base/core.c
-> >> index 4140a69dfe18..385e16d92874 100644
-> >> --- a/drivers/base/core.c
-> >> +++ b/drivers/base/core.c
-> >> @@ -485,7 +485,7 @@ static int devlink_add_symlinks(struct device
-> >> *dev,
-> >>         goto out;
-> >>
-> >>   err_sup_dev:
-> >> -       snprintf(buf, len, "consumer:%s", dev_name(con));
-> >> +       snprintf(buf, len, "consumer:%s:%s", dev_bus_name(con),
-> >> dev_name(con));
-> >>         sysfs_remove_link(&sup->kobj, buf);
-> >>   err_con_dev:
-> >>         sysfs_remove_link(&link->link_dev.kobj, "consumer");
-> >> @@ -508,7 +508,9 @@ static void devlink_remove_symlinks(struct device
-> >> *dev,
-> >>         sysfs_remove_link(&link->link_dev.kobj, "consumer");
-> >>         sysfs_remove_link(&link->link_dev.kobj, "supplier");
-> >>
-> >> -       len = max(strlen(dev_name(sup)), strlen(dev_name(con)));
-> >> +       len = max(strlen(dev_bus_name(sup)) + strlen(dev_name(sup)),
-> >> +                 strlen(dev_bus_name(con)) + strlen(dev_name(con)));
-> >> +       len += strlen(":");
-> >>         len += strlen("supplier:") + 1;
-> >>         buf = kzalloc(len, GFP_KERNEL);
-> >>         if (!buf) {
-> >> @@ -516,9 +518,9 @@ static void devlink_remove_symlinks(struct device
-> >> *dev,
-> >>                 return;
-> >>         }
-> >>
-> >> -       snprintf(buf, len, "supplier:%s", dev_name(sup));
-> >> +       snprintf(buf, len, "supplier:%s:%s", dev_bus_name(sup),
-> >> dev_name(sup));
-> >>         sysfs_remove_link(&con->kobj, buf);
-> >> -       snprintf(buf, len, "consumer:%s", dev_name(con));
-> >> +       snprintf(buf, len, "consumer:%s:%s", dev_bus_name(sup),
-> >> dev_name(con));
+When the kernel loads the module, it allocates a space for every
+section and then manually apply the relocations relative to the
+new address.
 
-Ah I completely skimmed over this code thinking it was code from my
-patch. Like I said, I was struggling with the length of the email due
-to the logs. Anyway, I'll fix up the remove symlink path too. Thanks
-for catching that.
+Let's say we have a function phy_probe() in drivers/net/phy/libphy.ko.
+It's static and referenced only in phy_register_driver(), where it's
+used to fill callback pointer in a structure.
 
-> btw this should be dev_bus_name(con).
->
-> >>         sysfs_remove_link(&sup->kobj, buf);
-> >>         kfree(buf);
-> >>   }
-> >>
-> >> With these changes:
-> >>
-> >> Tested-by: Michael Walle <michael@walle.cc>
-> >
-> > Greg,
-> >
-> > I think it's good to pick up this version if you don't see any issues.
->
-> Why so fast?
+The real function address after module loading is 0xc06c1444, that
+is observed in its ELF st_value field.
+There are two relocs related to this usage in phy_register_driver():
 
-Sorry, didn't mean to rush. I was just trying to say I wasn't planning
-on a v4 because I thought your Tested-by was for my unchanged v4, but
-clearly I need to send a v4.
+R_MIPS_HI16 refers to 0x3c010000
+R_MIPS_LO16 refers to 0x24339444
 
--Saravana
+The address of .text is 0xc06b8000. So the destination is calculated
+as follows:
+
+0x00000000 from hi16;
+0xffff9444 from lo16 (sign extend as it's always treated as signed);
+0xc06b8000 from base.
+
+=3D 0xc06b1444. The value is lower than the real phy_probe() address
+(0xc06c1444) by 0x10000 and is lower than the base address of
+module's .text, so it's 100% incorrect.
+
+This results in:
+
+[    2.204022] CPU 3 Unable to handle kernel paging request at virtual
+address c06b1444, epc =3D=3D c06b1444, ra =3D=3D 803f1090
+
+The correct instructions should be:
+
+R_MIPS_HI16 0x3c010001
+R_MIPS_LO16 0x24339444
+
+so there'll be 0x00010000 from hi16.
+
+I tried to catch those bugs in arch/mips/kernel/module.c (by checking
+if the destination is lower than the base address, which should never
+happen), and seems like I have only 3 such places in libphy.ko (and
+one in nf_tables.ko).
+I don't think it should be handled somehow in mentioned source code
+as it would look rather ugly and may break kernels build with GNU
+stack, which seems to not produce such bad codes.
+
+If I should report this to any other resources, please let me know.
+I chose clang-built-linux and LKML as it may not happen with userland
+(didn't tried to catch).
+
+Thanks,
+Al
+
