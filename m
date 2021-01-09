@@ -2,70 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D89E42EFEBD
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Jan 2021 10:15:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 979F72EFEBF
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Jan 2021 10:19:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726732AbhAIJLE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Jan 2021 04:11:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33870 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726500AbhAIJLD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Jan 2021 04:11:03 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D996AC06179F
-        for <linux-kernel@vger.kernel.org>; Sat,  9 Jan 2021 01:10:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=oeFR1Ii2CLZIpiUQWYmQLIKPyDt1VC2/pWydszGRV/w=; b=LZxbf1Efb3bNU7b+f5f15xvaOt
-        5j8L4J6R20ULrZTWXMp995e6CIY8qhN5/UNIpjjazBeK1xklHU6LrNVlmSt6v/xfKybx1v4GYDFMz
-        AeW1ev7pb/Ite4VrBB4vFJv+3ccGeh/LbCyq3+S/LtBYm0Y2L+QgLK+G7HWDw5HcDw3TdzsfjM9xg
-        jOb8TyUE4Q9vw1/URTs9QuSQIZD7EScVjVS3kJIdRI2ApeYw/qyfuHGMlF89RamJtZU6XutAegeTs
-        ybYHZLyLjjsCCEMGTu6N5JU6oQt04R7fMrNRVkb+e0IlIB09hLfa7dXDpd58s//qRDrGGvArlLTaF
-        RA+xHLqA==;
-Received: from hch by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1kyAFN-000Odv-OC; Sat, 09 Jan 2021 09:09:26 +0000
-Date:   Sat, 9 Jan 2021 09:09:21 +0000
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Lu Baolu <baolu.lu@linux.intel.com>
-Cc:     John Garry <john.garry@huawei.com>, joro@8bytes.org,
-        will@kernel.org, iommu@lists.linux-foundation.org,
-        robin.murphy@arm.com, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 6/6] iommu: Delete iommu_dev_has_feature()
-Message-ID: <20210109090921.GA93456@infradead.org>
-References: <1609940111-28563-1-git-send-email-john.garry@huawei.com>
- <1609940111-28563-7-git-send-email-john.garry@huawei.com>
- <f05ee600-705a-0c94-2a12-78eb8538234b@linux.intel.com>
+        id S1726809AbhAIJPp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Jan 2021 04:15:45 -0500
+Received: from mga12.intel.com ([192.55.52.136]:20702 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726557AbhAIJPp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 9 Jan 2021 04:15:45 -0500
+IronPort-SDR: Lvk0XAGy/04NSH1pJxGD7beq6XPxvPPFHthRTUHlIZjgGIMU0/PpqLkHXDvmu5+PH/L6UUPzu1
+ tgBbDAbZ9k8A==
+X-IronPort-AV: E=McAfee;i="6000,8403,9858"; a="156879500"
+X-IronPort-AV: E=Sophos;i="5.79,333,1602572400"; 
+   d="scan'208";a="156879500"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Jan 2021 01:15:04 -0800
+IronPort-SDR: lZJaziW0ZO8BVNQrn0BTkcbN5tk2s40HMQSi0mJxsu2pICw+J/4vBmnwLCFPdXYbwtTC9UAZ6G
+ LYLbQGzjRquQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.79,333,1602572400"; 
+   d="scan'208";a="423213130"
+Received: from lkp-server01.sh.intel.com (HELO 412602b27703) ([10.239.97.150])
+  by orsmga001.jf.intel.com with ESMTP; 09 Jan 2021 01:15:03 -0800
+Received: from kbuild by 412602b27703 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1kyAKs-00010R-HK; Sat, 09 Jan 2021 09:15:02 +0000
+Date:   Sat, 09 Jan 2021 17:14:13 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:x86/cleanups] BUILD SUCCESS
+ 4af0e6e39b7ed77796a41537db91d717fedd0ac3
+Message-ID: <5ff973e5.7KhS0lJ+duomWscG%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <f05ee600-705a-0c94-2a12-78eb8538234b@linux.intel.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 07, 2021 at 09:18:06AM +0800, Lu Baolu wrote:
-> The typical use case is
-> 
->         if (iommu_dev_has_feature(dev, IOMMU_DEV_FEAT_AUX)) {
->                 rc = iommu_dev_enable_feature(dev, IOMMU_DEV_FEAT_AUX);
->                 if (rc < 0) {
->                         dev_warn(dev, "Failed to enable aux-domain: %d\n",
-> rc);
->                         return rc;
->                 }
->         }
-> 
-> So please don't remove it.
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git  x86/cleanups
+branch HEAD: 4af0e6e39b7ed77796a41537db91d717fedd0ac3  x86/mm: Remove duplicate definition of _PAGE_PAT_LARGE
 
-This doesn't have an upstream user, and did not have for years!  If
-new users show up they can add it back.  Note that the above API with
-a separate has vs enable is horrible anyway - the right way is to just
-enable and fail it with a specific error code if not supported.
+elapsed time: 721m
 
-We have a general rule that APIs should only be introduced with their
-users, and this example just confirms the reasons of why that rule is in
-place once again.
+configs tested: 126
+configs skipped: 61
+
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+powerpc                      mgcoge_defconfig
+mips                      malta_kvm_defconfig
+m68k                        mvme16x_defconfig
+powerpc                         wii_defconfig
+riscv                          rv32_defconfig
+arm                         socfpga_defconfig
+powerpc                       ebony_defconfig
+mips                         bigsur_defconfig
+arm                        realview_defconfig
+sh                            migor_defconfig
+m68k                        m5307c3_defconfig
+mips                            gpr_defconfig
+powerpc                     tqm8540_defconfig
+powerpc                  iss476-smp_defconfig
+powerpc                    sam440ep_defconfig
+mips                         tb0219_defconfig
+mips                      bmips_stb_defconfig
+powerpc                      ppc6xx_defconfig
+mips                  decstation_64_defconfig
+mips                        workpad_defconfig
+mips                        omega2p_defconfig
+sh                            titan_defconfig
+powerpc                      ppc64e_defconfig
+sh                        dreamcast_defconfig
+powerpc                           allnoconfig
+m68k                         apollo_defconfig
+powerpc64                           defconfig
+arm                       cns3420vb_defconfig
+m68k                        mvme147_defconfig
+sh                            shmin_defconfig
+mips                         tb0287_defconfig
+arm                       mainstone_defconfig
+arm                           h3600_defconfig
+c6x                                 defconfig
+xtensa                  audio_kc705_defconfig
+arm                       aspeed_g5_defconfig
+m68k                       m5249evb_defconfig
+sh                           se7619_defconfig
+mips                      maltaaprp_defconfig
+arc                          axs103_defconfig
+arc                          axs101_defconfig
+mips                           gcw0_defconfig
+mips                      pic32mzda_defconfig
+parisc                generic-32bit_defconfig
+powerpc                mpc7448_hpc2_defconfig
+mips                      pistachio_defconfig
+arm                    vt8500_v6_v7_defconfig
+powerpc                      chrp32_defconfig
+arm                          lpd270_defconfig
+mips                           ci20_defconfig
+powerpc                     akebono_defconfig
+sh                          rsk7269_defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+c6x                              allyesconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                               tinyconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+x86_64               randconfig-a004-20210108
+x86_64               randconfig-a006-20210108
+x86_64               randconfig-a001-20210108
+x86_64               randconfig-a002-20210108
+x86_64               randconfig-a003-20210108
+x86_64               randconfig-a005-20210108
+i386                 randconfig-a005-20210108
+i386                 randconfig-a002-20210108
+i386                 randconfig-a001-20210108
+i386                 randconfig-a003-20210108
+i386                 randconfig-a006-20210108
+i386                 randconfig-a004-20210108
+i386                 randconfig-a016-20210108
+i386                 randconfig-a011-20210108
+i386                 randconfig-a014-20210108
+i386                 randconfig-a015-20210108
+i386                 randconfig-a013-20210108
+i386                 randconfig-a012-20210108
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                            allmodconfig
+x86_64                                   rhel
+x86_64                           allyesconfig
+x86_64                    rhel-7.6-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                      rhel-8.3-kbuiltin
+x86_64                                  kexec
+
+clang tested configs:
+x86_64               randconfig-a013-20210108
+x86_64               randconfig-a011-20210108
+x86_64               randconfig-a012-20210108
+x86_64               randconfig-a016-20210108
+x86_64               randconfig-a014-20210108
+x86_64               randconfig-a015-20210108
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
