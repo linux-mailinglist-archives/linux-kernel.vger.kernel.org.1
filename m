@@ -2,170 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BC982EFC1F
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Jan 2021 01:29:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D2D02EFC24
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Jan 2021 01:30:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726216AbhAIA15 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Jan 2021 19:27:57 -0500
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:46168 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725793AbhAIA14 (ORCPT
+        id S1726363AbhAIA3t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Jan 2021 19:29:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35926 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725812AbhAIA3t (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Jan 2021 19:27:56 -0500
-Received: from pps.filterd (m0187473.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 1090EbME063778;
-        Fri, 8 Jan 2021 19:27:07 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=references : from : to :
- cc : subject : in-reply-to : date : message-id : mime-version :
- content-type; s=pp1; bh=N8AZ8auiitbxJ7ZQ1LZIrNKSD4SZO4FWsvxsVDUFFNk=;
- b=QNEXeEnkUB1IsHEjEVWgiTXaYd3Th2Zq7Edfym6ZCMq2+VkkmIo4coXi0fkRDi9V04ro
- Cpvr6oUhSGDWzTbnBLouo1NZCQ30lCfh1ZDWFWmgRTPUHC6zEU6bAcqOEyR8Yg9La2NM
- 6g3IucVq7A7czXtqTzO+dOJI7edrlYZfoEdbgiFdjvTjbwk1Vo525pyMMhjuIaJ5JPCb
- DmrXWK84WKQ4kaUtfLviOg+qJeD4T+bncn3vzq/f5InEVeWPcNxAup4JmPDB3igtcbZX
- WhgyGs8hzy7lg3pehWOqLk9HOlQh7rvxdlmaeejrZDP77cZ1XzJ1+ioh8FlRT9BMGeNt sg== 
-Received: from ppma02wdc.us.ibm.com (aa.5b.37a9.ip4.static.sl-reverse.com [169.55.91.170])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 35y1sb05td-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 08 Jan 2021 19:27:07 -0500
-Received: from pps.filterd (ppma02wdc.us.ibm.com [127.0.0.1])
-        by ppma02wdc.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 1090Dpcf024182;
-        Sat, 9 Jan 2021 00:27:06 GMT
-Received: from b01cxnp23034.gho.pok.ibm.com (b01cxnp23034.gho.pok.ibm.com [9.57.198.29])
-        by ppma02wdc.us.ibm.com with ESMTP id 35tgf9qep3-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sat, 09 Jan 2021 00:27:06 +0000
-Received: from b01ledav004.gho.pok.ibm.com (b01ledav004.gho.pok.ibm.com [9.57.199.109])
-        by b01cxnp23034.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 1090R5Ua27263302
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Sat, 9 Jan 2021 00:27:05 GMT
-Received: from b01ledav004.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 8E40C112062;
-        Sat,  9 Jan 2021 00:27:05 +0000 (GMT)
-Received: from b01ledav004.gho.pok.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 00419112061;
-        Sat,  9 Jan 2021 00:27:03 +0000 (GMT)
-Received: from manicouagan.localdomain (unknown [9.80.199.144])
-        by b01ledav004.gho.pok.ibm.com (Postfix) with ESMTPS;
-        Sat,  9 Jan 2021 00:27:03 +0000 (GMT)
-References: <20201218062103.76102-1-bauerman@linux.ibm.com>
- <20201223205838.GA4102@ram-ibm-com.ibm.com>
- <87o8ikukye.fsf@manicouagan.localdomain>
- <20201224031409.GB4102@ram-ibm-com.ibm.com>
-User-agent: mu4e 1.4.10; emacs 27.1
-From:   Thiago Jung Bauermann <bauerman@linux.ibm.com>
-To:     Ram Pai <linuxram@us.ibm.com>
-Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Satheesh Rajendran <sathnaga@linux.vnet.ibm.com>
-Subject: Re: [PATCH] powerpc/mm: Limit allocation of SWIOTLB on server machines
-In-reply-to: <20201224031409.GB4102@ram-ibm-com.ibm.com>
-Date:   Fri, 08 Jan 2021 21:27:01 -0300
-Message-ID: <87bldzlzu2.fsf@manicouagan.localdomain>
+        Fri, 8 Jan 2021 19:29:49 -0500
+Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3E8EC061573
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Jan 2021 16:29:08 -0800 (PST)
+Received: by mail-pl1-x62c.google.com with SMTP id x12so6526769plr.10
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Jan 2021 16:29:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=eveSrO3foL1YR94SADi/xGNY6RU/HiTPaoR//1jI2bc=;
+        b=cemTR8rQ+v7aAc1j8X9bSjTtMv/2eIij1J0jQdOW7eNBqbQFCd58aSYpax3rZVT2eY
+         aoIsHA/4koMVUbI+TLf/cwAkcwY2XCmvpLcT//0ZhklFs+Yz+KCOHvj4iDKgepwwDCy2
+         psVcFqYTpa0VlbUiLHsCrmO18jt6/WbjHzn9c=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=eveSrO3foL1YR94SADi/xGNY6RU/HiTPaoR//1jI2bc=;
+        b=fsb1f0F0jODtr/T4utGg4qdCAijqoVlso+CaykLse0LrGRYJKhfB3v2ED+LrO5hDxm
+         VuLLuqmxsh1yWezsBq0E2kNhyb26vAl3WDPStxe0odkod3L6FkdhCPbgORDxdid+BrwZ
+         OAdj2CIGmWu8rSsCmHWAHWnKOuWkP+H/WAHCRDQQgJhdjwggriVCpEd0ZF9KaMebU8zX
+         jMVKotLM5JomYpKisuPXik/O9N2FaKoNgOUWQgwakuoSrNXqPXb+30SPlOuDjcYlDLWs
+         7vx4QnYOGz5VubTtvzHLxe2ghO7w9h+lRdlHBOBp2lc6H15BqvfzCAj3wgiICD6Skzwy
+         YeRQ==
+X-Gm-Message-State: AOAM531PUDExq3SEr+l8iX+mI1FQUDXKZ2sE24b9OC+u+hnmJGOc0OZX
+        A9OBMKdIKXeFZQ0thpRL5lAX8w==
+X-Google-Smtp-Source: ABdhPJxOK52D16pcAwbT6jFjbq8GC4r4IJlAOsTNR/onet1CRy5aKa4cGbW3hXo1Ls7QfN7irIfQYg==
+X-Received: by 2002:a17:90a:db08:: with SMTP id g8mr6363172pjv.163.1610152148560;
+        Fri, 08 Jan 2021 16:29:08 -0800 (PST)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id p16sm9332768pju.47.2021.01.08.16.29.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 08 Jan 2021 16:29:07 -0800 (PST)
+From:   Kees Cook <keescook@chromium.org>
+To:     Steven Rostedt <rostedt@goodmis.org>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Will Deacon <will@kernel.org>,
+        Masahiro Yamada <masahiroy@kernel.org>
+Cc:     Kees Cook <keescook@chromium.org>,
+        clang-built-linux@googlegroups.com, linux-arch@vger.kernel.org,
+        linux-kbuild@vger.kernel.org, linux-pci@vger.kernel.org,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        linux-kernel@vger.kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        kernel-hardening@lists.openwall.com,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v9 00/16] Add support for Clang LTO
+Date:   Fri,  8 Jan 2021 16:27:13 -0800
+Message-Id: <161015202326.2511797.6087273163265436487.b4-ty@chromium.org>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20201211184633.3213045-1-samitolvanen@google.com>
+References: <20201211184633.3213045-1-samitolvanen@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2021-01-08_12:2021-01-07,2021-01-08 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 phishscore=0
- adultscore=0 mlxscore=0 priorityscore=1501 impostorscore=0 mlxlogscore=884
- lowpriorityscore=0 bulkscore=0 spamscore=0 suspectscore=0 clxscore=1015
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2101080126
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, 11 Dec 2020 10:46:17 -0800, Sami Tolvanen wrote:
+> This patch series adds support for building the kernel with Clang's
+> Link Time Optimization (LTO). In addition to performance, the primary
+> motivation for LTO is to allow Clang's Control-Flow Integrity (CFI)
+> to be used in the kernel. Google has shipped millions of Pixel
+> devices running three major kernel versions with LTO+CFI since 2018.
+> 
+> Most of the patches are build system changes for handling LLVM
+> bitcode, which Clang produces with LTO instead of ELF object files,
+> postponing ELF processing until a later stage, and ensuring initcall
+> ordering.
+> 
+> [...]
 
-Ram Pai <linuxram@us.ibm.com> writes:
+Applied to kspp/lto/v5.11-rc2, thanks!
 
-> On Wed, Dec 23, 2020 at 09:06:01PM -0300, Thiago Jung Bauermann wrote:
->> 
->> Hi Ram,
->> 
->> Thanks for reviewing this patch.
->> 
->> Ram Pai <linuxram@us.ibm.com> writes:
->> 
->> > On Fri, Dec 18, 2020 at 03:21:03AM -0300, Thiago Jung Bauermann wrote:
->> >> On server-class POWER machines, we don't need the SWIOTLB unless we're a
->> >> secure VM. Nevertheless, if CONFIG_SWIOTLB is enabled we unconditionally
->> >> allocate it.
->> >> 
->> >> In most cases this is harmless, but on a few machine configurations (e.g.,
->> >> POWER9 powernv systems with 4 GB area reserved for crashdump kernel) it can
->> >> happen that memblock can't find a 64 MB chunk of memory for the SWIOTLB and
->> >> fails with a scary-looking WARN_ONCE:
->> >> 
->> >>  ------------[ cut here ]------------
->> >>  memblock: bottom-up allocation failed, memory hotremove may be affected
->> >>  WARNING: CPU: 0 PID: 0 at mm/memblock.c:332 memblock_find_in_range_node+0x328/0x340
->> >>  Modules linked in:
->> >>  CPU: 0 PID: 0 Comm: swapper Not tainted 5.10.0-rc2-orig+ #6
->> >>  NIP:  c000000000442f38 LR: c000000000442f34 CTR: c0000000001e0080
->> >>  REGS: c000000001def900 TRAP: 0700   Not tainted  (5.10.0-rc2-orig+)
->> >>  MSR:  9000000002021033 <SF,HV,VEC,ME,IR,DR,RI,LE>  CR: 28022222  XER: 20040000
->> >>  CFAR: c00000000014b7b4 IRQMASK: 1
->> >>  GPR00: c000000000442f34 c000000001defba0 c000000001deff00 0000000000000047
->> >>  GPR04: 00000000ffff7fff c000000001def828 c000000001def820 0000000000000000
->> >>  GPR08: 0000001ffc3e0000 c000000001b75478 c000000001b75478 0000000000000001
->> >>  GPR12: 0000000000002000 c000000002030000 0000000000000000 0000000000000000
->> >>  GPR16: 0000000000000000 0000000000000000 0000000000000000 0000000002030000
->> >>  GPR20: 0000000000000000 0000000000010000 0000000000010000 c000000001defc10
->> >>  GPR24: c000000001defc08 c000000001c91868 c000000001defc18 c000000001c91890
->> >>  GPR28: 0000000000000000 ffffffffffffffff 0000000004000000 00000000ffffffff
->> >>  NIP [c000000000442f38] memblock_find_in_range_node+0x328/0x340
->> >>  LR [c000000000442f34] memblock_find_in_range_node+0x324/0x340
->> >>  Call Trace:
->> >>  [c000000001defba0] [c000000000442f34] memblock_find_in_range_node+0x324/0x340 (unreliable)
->> >>  [c000000001defc90] [c0000000015ac088] memblock_alloc_range_nid+0xec/0x1b0
->> >>  [c000000001defd40] [c0000000015ac1f8] memblock_alloc_internal+0xac/0x110
->> >>  [c000000001defda0] [c0000000015ac4d0] memblock_alloc_try_nid+0x94/0xcc
->> >>  [c000000001defe30] [c00000000159c3c8] swiotlb_init+0x78/0x104
->> >>  [c000000001defea0] [c00000000158378c] mem_init+0x4c/0x98
->> >>  [c000000001defec0] [c00000000157457c] start_kernel+0x714/0xac8
->> >>  [c000000001deff90] [c00000000000d244] start_here_common+0x1c/0x58
->> >>  Instruction dump:
->> >>  2c230000 4182ffd4 ea610088 ea810090 4bfffe84 39200001 3d42fff4 3c62ff60
->> >>  3863c560 992a8bfc 4bd0881d 60000000 <0fe00000> ea610088 4bfffd94 60000000
->> >>  random: get_random_bytes called from __warn+0x128/0x184 with crng_init=0
->> >>  ---[ end trace 0000000000000000 ]---
->> >>  software IO TLB: Cannot allocate buffer
->> >> 
->> >> Unless this is a secure VM the message can actually be ignored, because the
->> >> SWIOTLB isn't needed. Therefore, let's avoid the SWIOTLB in those cases.
->> >
->> > The above warn_on is conveying a genuine warning. Should it be silenced?
->> 
->> Not sure I understand your point. This patch doesn't silence the
->> warning, it avoids the problem it is warning about.
->
-> Sorry, I should have explained it better. My point is...  
->
-> 	If CONFIG_SWIOTLB is enabled, it means that the kernel is
-> 	promising the bounce buffering capability. I know, currently we
-> 	do not have any kernel subsystems that use bounce buffers on
-> 	non-secure-pseries-kernel or powernv-kernel.  But that does not
-> 	mean, there wont be any. In case there is such a third-party
-> 	module needing bounce buffering, it wont be able to operate,
-> 	because of the proposed change in your patch.
->
-> 	Is that a good thing or a bad thing, I do not know. I will let
-> 	the experts opine.
+I'll let 0-day grind on this over the weekend and toss it in -next on
+Monday if there aren't any objections.
 
-Ping? Does anyone else has an opinion on this? The other option I can
-think of is changing the crashkernel code to not reserve so much memory
-below 4 GB. Other people are considering this option, but it's not
-planned for the near future.
-
-Also, there's a patch currently in linux-next which removes the scary
-warning because of unrelated reasons:
-
-https://lore.kernel.org/lkml/20201217201214.3414100-2-guro@fb.com
-
-So assuming that the patch above goes in and keeping the assumption that
-the swiotlb won't be needed in the powernv machines where I've seen the
-warning happen, we can just leave things as they are now.
+[01/16] tracing: move function tracer options to Kconfig
+        https://git.kernel.org/kees/c/3b15cdc15956
+[02/16] kbuild: add support for Clang LTO
+        https://git.kernel.org/kees/c/833174494976
+[03/16] kbuild: lto: fix module versioning
+        https://git.kernel.org/kees/c/6eb20c5338a0
+[04/16] kbuild: lto: limit inlining
+        https://git.kernel.org/kees/c/f6db4eff0691
+[05/16] kbuild: lto: merge module sections
+        https://git.kernel.org/kees/c/d03e46783689
+[06/16] kbuild: lto: add a default list of used symbols
+        https://git.kernel.org/kees/c/81bfbc27b122
+[07/16] init: lto: ensure initcall ordering
+        https://git.kernel.org/kees/c/7918ea64195d
+[08/16] init: lto: fix PREL32 relocations
+        https://git.kernel.org/kees/c/a51d9615ffb5
+[09/16] PCI: Fix PREL32 relocations for LTO
+        https://git.kernel.org/kees/c/dc83615370e7
+[10/16] modpost: lto: strip .lto from module names
+        https://git.kernel.org/kees/c/5c0312ef3ca0
+[11/16] scripts/mod: disable LTO for empty.c
+        https://git.kernel.org/kees/c/3d05432db312
+[12/16] efi/libstub: disable LTO
+        https://git.kernel.org/kees/c/b12eba00cb87
+[13/16] drivers/misc/lkdtm: disable LTO for rodata.o
+        https://git.kernel.org/kees/c/ed02e86f1752
+[14/16] arm64: vdso: disable LTO
+        https://git.kernel.org/kees/c/d73692f0f527
+[15/16] arm64: disable recordmcount with DYNAMIC_FTRACE_WITH_REGS
+        https://git.kernel.org/kees/c/09b812ac146f
+[16/16] arm64: allow LTO to be selected
+        https://git.kernel.org/kees/c/1354b8946c46
 
 -- 
-Thiago Jung Bauermann
-IBM Linux Technology Center
+Kees Cook
+
