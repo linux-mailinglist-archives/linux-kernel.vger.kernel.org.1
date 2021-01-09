@@ -2,130 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E0682F042C
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Jan 2021 23:53:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D10CC2F0430
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Jan 2021 23:59:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726245AbhAIWx2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Jan 2021 17:53:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39868 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726062AbhAIWx1 (ORCPT
+        id S1726315AbhAIW7e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Jan 2021 17:59:34 -0500
+Received: from mail-1.ca.inter.net ([208.85.220.69]:59948 "EHLO
+        mail-1.ca.inter.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726068AbhAIW7e (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Jan 2021 17:53:27 -0500
-Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3C0EC061786;
-        Sat,  9 Jan 2021 14:52:46 -0800 (PST)
-Received: by mail-lf1-x136.google.com with SMTP id s26so31865433lfc.8;
-        Sat, 09 Jan 2021 14:52:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=vN30hxhyeC5Ec58tchhlNmFh+S+moOBZF/ui6MMTzYg=;
-        b=fzsavMinEeJg7wgHZS4usSEFjDXVSw+1Jm14Ljta0ZKw1l90c9ZCEMsNTWOpn5V2yp
-         kFVcItk9xEq6YsG2aySeFyrDwiZx2tLK9zihYRnUSGtZWfIviiAZ826sIcHceIXfwo4Y
-         H02LHGCuxeQS8hZiPiF64GWwXzlv7PgTsK/c1duCyi3wgTHwVY61vZOmdlVVDqIiZwDJ
-         PQm1YPcIOT7XukipOrFtvs70+jOhlwJLAyfJsGSAHF3QHNYAAcIn2sRaqFmothyKfH7p
-         V4ZehhlgpmrgsHMnYz9WcyE5E0l6+LQo3Q5EYYoNbCpJNGjHCjgTJC81PNDEM/q2nThB
-         k/4Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=vN30hxhyeC5Ec58tchhlNmFh+S+moOBZF/ui6MMTzYg=;
-        b=XisXi9jRcc1OZ+AOdO/F9VXf84raytk+CXee8oykTjTRCq+vL+90wKO3QZja0obek0
-         XGZDdBTo+pYYouKNibh63VjaLkxmWKl0mCFJz60G8Li0hcGN3yAnFMv68v0LPiwvvZcc
-         Ohp4ItawJFi8rTH1Qvg89G6Jrai2ItyStVwYMieDbfIO5/D3OGK1VN3YWWsZ1MVcltmp
-         9uu115fNnHeeZADsgu00Avg2Dgty+LSmOgqAovygfI8tw7DhZ03GaXtSqWLL2s8+SPwz
-         FHTg3piDrZmfy3lOLQQFF8DvdsO01+GOvEbhKvvzAysR6+S8LmfIYhRrxmUIDAt8Yb8x
-         MySA==
-X-Gm-Message-State: AOAM531V+c28QL4+pGsdrZmy2ohmUyVkuL1FohaZq7NsyYzxzyk9M9Ui
-        PYiYRC64NyAq8UDXOaMEBkQ=
-X-Google-Smtp-Source: ABdhPJzZrGUDVMjLnOkooECI1+sx1bKVX7L9oMm+yaOvC/U2HUZ8tczmel8xz4UeFZsFnzTC6voreQ==
-X-Received: by 2002:a19:6415:: with SMTP id y21mr4130872lfb.120.1610232765196;
-        Sat, 09 Jan 2021 14:52:45 -0800 (PST)
-Received: from rikard (h-98-128-228-148.NA.cust.bahnhof.se. [98.128.228.148])
-        by smtp.gmail.com with ESMTPSA id k20sm2675238ljc.61.2021.01.09.14.52.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 09 Jan 2021 14:52:44 -0800 (PST)
-From:   Rikard Falkeborn <rikard.falkeborn@gmail.com>
-X-Google-Original-From: Rikard Falkeborn <rikard.falkeborn>
-Date:   Sat, 9 Jan 2021 23:52:40 +0100
-To:     Tom Rix <trix@redhat.com>
-Cc:     Rikard Falkeborn <rikard.falkeborn@gmail.com>,
-        Wu Hao <hao.wu@intel.com>, Moritz Fischer <mdf@kernel.org>,
-        linux-fpga@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] fpga: dfl: fme: Constify static attribute_group structs
-Message-ID: <X/ozuAn64pe71rh+@rikard>
-References: <20210108235414.48017-1-rikard.falkeborn@gmail.com>
- <a1c87050-0962-5169-8ed4-c1da0098ff34@redhat.com>
+        Sat, 9 Jan 2021 17:59:34 -0500
+Received: from localhost (offload-3.ca.inter.net [208.85.220.70])
+        by mail-1.ca.inter.net (Postfix) with ESMTP id 3EEB82EA491;
+        Sat,  9 Jan 2021 17:58:52 -0500 (EST)
+Received: from mail-1.ca.inter.net ([208.85.220.69])
+        by localhost (offload-3.ca.inter.net [208.85.220.70]) (amavisd-new, port 10024)
+        with ESMTP id leBru8RgDJjg; Sat,  9 Jan 2021 17:45:52 -0500 (EST)
+Received: from [192.168.48.23] (host-104-157-204-209.dyn.295.ca [104.157.204.209])
+        (using TLSv1 with cipher DHE-RSA-AES128-SHA (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: dgilbert@interlog.com)
+        by mail-1.ca.inter.net (Postfix) with ESMTPSA id 400562EA023;
+        Sat,  9 Jan 2021 17:58:51 -0500 (EST)
+Reply-To: dgilbert@interlog.com
+Subject: Re: [PATCH v5 1/4] sgl_alloc_order: remove 4 GiB limit, sgl_free()
+ warning
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     linux-scsi@vger.kernel.org, linux-block@vger.kernel.org,
+        target-devel@vger.kernel.org, linux-rdma@vger.kernel.org,
+        linux-kernel@vger.kernel.org, martin.petersen@oracle.com,
+        jejb@linux.vnet.ibm.com, bostroesser@gmail.com, bvanassche@acm.org,
+        ddiss@suse.de
+References: <20201228234955.190858-1-dgilbert@interlog.com>
+ <20201228234955.190858-2-dgilbert@interlog.com>
+ <20210107174410.GB504133@ziepe.ca>
+From:   Douglas Gilbert <dgilbert@interlog.com>
+Message-ID: <76827f07-9484-d2c6-346b-0bdccfdf4a7a@interlog.com>
+Date:   Sat, 9 Jan 2021 17:58:50 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <a1c87050-0962-5169-8ed4-c1da0098ff34@redhat.com>
+In-Reply-To: <20210107174410.GB504133@ziepe.ca>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-CA
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jan 09, 2021 at 01:55:13PM -0800, Tom Rix wrote:
+On 2021-01-07 12:44 p.m., Jason Gunthorpe wrote:
+> On Mon, Dec 28, 2020 at 06:49:52PM -0500, Douglas Gilbert wrote:
+>> diff --git a/lib/scatterlist.c b/lib/scatterlist.c
+>> index a59778946404..4986545beef9 100644
+>> +++ b/lib/scatterlist.c
+>> @@ -554,13 +554,15 @@ EXPORT_SYMBOL(sg_alloc_table_from_pages);
+>>   #ifdef CONFIG_SGL_ALLOC
+>>   
+>>   /**
+>> - * sgl_alloc_order - allocate a scatterlist and its pages
+>> + * sgl_alloc_order - allocate a scatterlist with equally sized elements
+>>    * @length: Length in bytes of the scatterlist. Must be at least one
+>> - * @order: Second argument for alloc_pages()
+>> + * @order: Second argument for alloc_pages(). Each sgl element size will
+>> + *	   be (PAGE_SIZE*2^order) bytes
+>>    * @chainable: Whether or not to allocate an extra element in the scatterlist
+>> - *	for scatterlist chaining purposes
+>> + *	       for scatterlist chaining purposes
+>>    * @gfp: Memory allocation flags
+>> - * @nent_p: [out] Number of entries in the scatterlist that have pages
+>> + * @nent_p: [out] Number of entries in the scatterlist that have pages.
+>> + *		  Ignored if NULL is given.
+>>    *
+>>    * Returns: A pointer to an initialized scatterlist or %NULL upon failure.
+>>    */
+>> @@ -574,8 +576,8 @@ struct scatterlist *sgl_alloc_order(unsigned long long length,
+>>   	u32 elem_len;
+>>   
+>>   	nent = round_up(length, PAGE_SIZE << order) >> (PAGE_SHIFT + order);
+>> -	/* Check for integer overflow */
+>> -	if (length > (nent << (PAGE_SHIFT + order)))
+>> +	/* Integer overflow if:  length > nent*2^(PAGE_SHIFT+order) */
+>> +	if (ilog2(length) > ilog2(nent) + PAGE_SHIFT + order)
+>>   		return NULL;
+>>   	nalloc = nent;
+>>   	if (chainable) {
 > 
-> On 1/8/21 3:54 PM, Rikard Falkeborn wrote:
-> > The only usage of these is to put their addresses in arrays of pointers
-> > to const attribute_groups. Make them const to allow the compiler to put
-> > them in read-only memory.
-> >
-> > Signed-off-by: Rikard Falkeborn <rikard.falkeborn@gmail.com>
-> > ---
-> >  drivers/fpga/dfl-fme-perf.c | 6 +++---
+> This is a little bit too tortured now, how about this:
 > 
-> This looks ok.
+> 	if (length >> (PAGE_SHIFT + order) >= UINT_MAX)
+> 		return NULL;
+> 	nent = length >> (PAGE_SHIFT + order);
+> 	if (length & ((1ULL << (PAGE_SHIFT + order)) - 1))
+> 		nent++;
 > 
-> There are other 'static struct's in drivers/fpga.
-> 
-> Why is the change limited to this file ?
-> 
-> Tom
+> 	if (chainable) {
+> 		if (check_add_overflow(nent, 1, &nalloc))
+> 			return NULL;
+> 	}
+> 	else
+> 		nalloc = nent;
 > 
 
-I have a WIP coccinelle script to constify static struct attribute_group
-and this is the only file in drivers/fpga which has non-const struct
-attribute_group, that's why it's limited to this file. I could have
-mentioned that in the commit message.
+And your proposal is less <<tortured>> ?
 
-Rikard
+I'm looking at performance, not elegance and I'm betting that two
+ilog2() calls [which boil down to ffs()] are faster than two
+right-shift-by-n_s and one left-shift-by-n . Perhaps an extra comment
+could help my code by noting that mathematically:
+   /* if n > m for positive n and m then: log(n) > log(m) */
+
+My original preference was to drop the check all together but Bart
+Van Assche (who wrote that function) wanted me to keep it. Any
+function that takes 'order' (i.e. an exponent) can blow up given
+a silly value.
 
 
-> >  1 file changed, 3 insertions(+), 3 deletions(-)
-> >
-> > diff --git a/drivers/fpga/dfl-fme-perf.c b/drivers/fpga/dfl-fme-perf.c
-> > index 531266287eee..4299145ef347 100644
-> > --- a/drivers/fpga/dfl-fme-perf.c
-> > +++ b/drivers/fpga/dfl-fme-perf.c
-> > @@ -192,7 +192,7 @@ static struct attribute *fme_perf_cpumask_attrs[] = {
-> >  	NULL,
-> >  };
-> >  
-> > -static struct attribute_group fme_perf_cpumask_group = {
-> > +static const struct attribute_group fme_perf_cpumask_group = {
-> >  	.attrs = fme_perf_cpumask_attrs,
-> >  };
-> >  
-> > @@ -225,7 +225,7 @@ static struct attribute *fme_perf_format_attrs[] = {
-> >  	NULL,
-> >  };
-> >  
-> > -static struct attribute_group fme_perf_format_group = {
-> > +static const struct attribute_group fme_perf_format_group = {
-> >  	.name = "format",
-> >  	.attrs = fme_perf_format_attrs,
-> >  };
-> > @@ -239,7 +239,7 @@ static struct attribute *fme_perf_events_attrs_empty[] = {
-> >  	NULL,
-> >  };
-> >  
-> > -static struct attribute_group fme_perf_events_group = {
-> > +static const struct attribute_group fme_perf_events_group = {
-> >  	.name = "events",
-> >  	.attrs = fme_perf_events_attrs_empty,
-> >  };
-> 
+The chainable check_add_overflow() call is new and an improvement.
+
+Doug Gilbert
