@@ -2,200 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA7B92EFD4D
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Jan 2021 04:08:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5FBE52EFD50
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Jan 2021 04:10:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726352AbhAIDH1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Jan 2021 22:07:27 -0500
-Received: from mga18.intel.com ([134.134.136.126]:30742 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725836AbhAIDH1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Jan 2021 22:07:27 -0500
-IronPort-SDR: a6ii57SkbFpPVy0c6NvH4HbZ+uiEJ4mcamsXwkVBFSuT6X3zFOgOPBdJ1v2TD9UUFCK3VDEkzW
- lbJNiESzuCxQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9858"; a="165367735"
-X-IronPort-AV: E=Sophos;i="5.79,333,1602572400"; 
-   d="scan'208";a="165367735"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jan 2021 19:06:45 -0800
-IronPort-SDR: Si2ZgtYrAnYQL8qPLyOBhHtazf7yz/l71jNy/Etr8eNR3UIcqsKwhNwoC31cBdzmMtYLYJ6791
- Og6kJXMZBV5w==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.79,333,1602572400"; 
-   d="scan'208";a="463580732"
-Received: from lkp-server01.sh.intel.com (HELO 412602b27703) ([10.239.97.150])
-  by fmsmga001.fm.intel.com with ESMTP; 08 Jan 2021 19:06:44 -0800
-Received: from kbuild by 412602b27703 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1ky4aR-0000qo-SJ; Sat, 09 Jan 2021 03:06:43 +0000
-Date:   Sat, 09 Jan 2021 11:06:02 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [rcu:dev.2021.01.04b] BUILD SUCCESS
- 27d9a16d9727531fbc4d01025e7c6f5712c7a859
-Message-ID: <5ff91d9a.5V09SWfYZFvuM7qv%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+        id S1726490AbhAIDKT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Jan 2021 22:10:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42002 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725836AbhAIDKT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 Jan 2021 22:10:19 -0500
+Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0403C061573;
+        Fri,  8 Jan 2021 19:09:38 -0800 (PST)
+Received: by mail-pl1-x634.google.com with SMTP id j1so6689141pld.3;
+        Fri, 08 Jan 2021 19:09:38 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=fQoQ591DRcLcx1zBs38ERO9HILV+4vRtO0mx9yq+xxk=;
+        b=tK95k3WSzIGI2ktKiBx/Yc2pT7JqIGFuxCw9xB4BZuzRqqVyOjo5wqbw2kJa+N9TAj
+         3QTR1pST+DQNZBN4e/mKgdsIH2xNsWQ+yShoDArGGiLmot5XUFUTOffPFVRSxiAghoKc
+         XiJ3KGdV/Eoe7t9BN/4LTx90ecVcH0u6p22e1EqURknTRS01ft2TW9oq/qCq3ggKdWfQ
+         HC0nOPLfqpZH7PErVqqQHy1TRcromD8X3xGDHWmfZdQqABwFQMXP6Spl+T9kcbRTjCZx
+         425ZxzG7mEYTpG1/l+aFIf58+fl75ExTQMgtrrkBMc9BjIYBhMXcizVYShC6zQkLIDrH
+         zASA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=fQoQ591DRcLcx1zBs38ERO9HILV+4vRtO0mx9yq+xxk=;
+        b=HfEn/G611Ix6hH6eAEYpsuKAK+8diz1oj/vbhJSkmrmP/mINSaawb345clTqICsT1L
+         eOTVU6M/OVecxsQfn0s3DHXnmHQc5Cg1/BkuUieDhdX1p/MFiuI7vRfjP5i19UogwOnd
+         POVafrX61N6Wedn7IGq9PmDAiLLxIzV/wmM8e+gsLBte07fgOMss71P7ynILsP5mMR+V
+         FICJXS7zqcGfTFSOKXkdeOirrY1QtKTCI+jmCZWy2pYyAV7YUrCTIg7MdsvPae4ba7CL
+         ityOTj3UOL7ZqOyzaniRbHfsrmmrLsQKIcfTdpMyc72NRNMSoqFEg4sLCPY1HCmBNDAH
+         KvgQ==
+X-Gm-Message-State: AOAM533ESsJqMKh6ce3bwnemkBTnkbAHhi1TuSXSP1g8ybkGatsX2ogP
+        dP5HuwHD0ddOQ0DeFdvW+bE=
+X-Google-Smtp-Source: ABdhPJzZtqIcJB2oop8heybvKQtx+XyKUJjT/k/OeanQ/dLSyo21ZUmO1VK/VMQtHgGn5L0F/j8NqA==
+X-Received: by 2002:a17:90a:2ec1:: with SMTP id h1mr7034337pjs.18.1610161778311;
+        Fri, 08 Jan 2021 19:09:38 -0800 (PST)
+Received: from jordon-HP-15-Notebook-PC.domain.name ([122.171.171.27])
+        by smtp.gmail.com with ESMTPSA id 9sm10258074pfn.188.2021.01.08.19.09.34
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 08 Jan 2021 19:09:37 -0800 (PST)
+From:   Souptick Joarder <jrdr.linux@gmail.com>
+To:     pbonzini@redhat.com, seanjc@google.com, vkuznets@redhat.com,
+        wanpengli@tencent.com, jmattson@google.com, joro@8bytes.org,
+        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, hpa@zytor.com
+Cc:     x86@kernel.org, kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Souptick Joarder <jrdr.linux@gmail.com>
+Subject: [PATCH] kvm: x86: Mark __kvm_vcpu_halt() as static
+Date:   Sat,  9 Jan 2021 08:39:32 +0530
+Message-Id: <1610161772-5144-1-git-send-email-jrdr.linux@gmail.com>
+X-Mailer: git-send-email 1.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git  dev.2021.01.04b
-branch HEAD: 27d9a16d9727531fbc4d01025e7c6f5712c7a859  squash! cpuidle: Fix missing need_resched() check after rcu_idle_enter()
+Kernel test robot throws below warning ->
 
-elapsed time: 1525m
+>> arch/x86/kvm/x86.c:7979:5: warning: no previous prototype for
+>> '__kvm_vcpu_halt' [-Wmissing-prototypes]
+    7979 | int __kvm_vcpu_halt(struct kvm_vcpu *vcpu, int state, int
+reason)
+         |     ^~~~~~~~~~~~~~~
 
-configs tested: 138
-configs skipped: 2
+Marking __kvm_vcpu_halt() as static as it is used inside this file.
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-nios2                            alldefconfig
-c6x                         dsk6455_defconfig
-arm                        mini2440_defconfig
-mips                          rb532_defconfig
-mips                       rbtx49xx_defconfig
-nios2                            allyesconfig
-powerpc                    mvme5100_defconfig
-mips                          ath25_defconfig
-sh                             shx3_defconfig
-m68k                          multi_defconfig
-sh                          lboxre2_defconfig
-openrisc                            defconfig
-m68k                           sun3_defconfig
-arm                        spear3xx_defconfig
-arm                           h3600_defconfig
-m68k                          atari_defconfig
-sparc                       sparc64_defconfig
-c6x                        evmc6472_defconfig
-arm                             pxa_defconfig
-mips                     decstation_defconfig
-arm                          pxa168_defconfig
-arm                          lpd270_defconfig
-powerpc                 mpc836x_mds_defconfig
-xtensa                generic_kc705_defconfig
-mips                  decstation_64_defconfig
-sh                        sh7785lcr_defconfig
-powerpc                    sam440ep_defconfig
-mips                         tb0219_defconfig
-mips                      bmips_stb_defconfig
-powerpc                      ppc6xx_defconfig
-mips                        workpad_defconfig
-mips                        omega2p_defconfig
-sh                            titan_defconfig
-powerpc                      ppc64e_defconfig
-sh                        dreamcast_defconfig
-sh                           se7206_defconfig
-sh                           se7751_defconfig
-arm                          prima2_defconfig
-powerpc                        cell_defconfig
-mips                          ath79_defconfig
-m68k                          hp300_defconfig
-sh                          polaris_defconfig
-mips                           ip27_defconfig
-mips                     loongson1c_defconfig
-ia64                        generic_defconfig
-arm                          moxart_defconfig
-m68k                         apollo_defconfig
-arm                            xcep_defconfig
-sh                            shmin_defconfig
-arm                           viper_defconfig
-arm                          imote2_defconfig
-mips                           mtx1_defconfig
-powerpc                     mpc83xx_defconfig
-powerpc                      makalu_defconfig
-powerpc                  mpc885_ads_defconfig
-mips                malta_kvm_guest_defconfig
-i386                             allyesconfig
-powerpc                       ppc64_defconfig
-powerpc                     tqm8560_defconfig
-mips                         cobalt_defconfig
-arm                     eseries_pxa_defconfig
-sh                          r7780mp_defconfig
-powerpc                      acadia_defconfig
-arc                          axs103_defconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nds32                               defconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-c6x                              allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-parisc                           allyesconfig
-s390                                defconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                               tinyconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-x86_64               randconfig-a006-20210108
-x86_64               randconfig-a005-20210108
-x86_64               randconfig-a004-20210108
-x86_64               randconfig-a001-20210108
-x86_64               randconfig-a002-20210108
-x86_64               randconfig-a003-20210108
-i386                 randconfig-a005-20210108
-i386                 randconfig-a002-20210108
-i386                 randconfig-a001-20210108
-i386                 randconfig-a003-20210108
-i386                 randconfig-a006-20210108
-i386                 randconfig-a004-20210108
-i386                 randconfig-a016-20210108
-i386                 randconfig-a011-20210108
-i386                 randconfig-a014-20210108
-i386                 randconfig-a015-20210108
-i386                 randconfig-a013-20210108
-i386                 randconfig-a012-20210108
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-x86_64                                   rhel
-x86_64                           allyesconfig
-x86_64                    rhel-7.6-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                      rhel-8.3-kbuiltin
-x86_64                                  kexec
-
-clang tested configs:
-x86_64               randconfig-a013-20210108
-x86_64               randconfig-a011-20210108
-x86_64               randconfig-a012-20210108
-x86_64               randconfig-a016-20210108
-x86_64               randconfig-a014-20210108
-x86_64               randconfig-a015-20210108
-
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Souptick Joarder <jrdr.linux@gmail.com>
 ---
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+ arch/x86/kvm/x86.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+index 61499e1..c2fdf14 100644
+--- a/arch/x86/kvm/x86.c
++++ b/arch/x86/kvm/x86.c
+@@ -109,6 +109,7 @@
+ static void __kvm_set_rflags(struct kvm_vcpu *vcpu, unsigned long rflags);
+ static void store_regs(struct kvm_vcpu *vcpu);
+ static int sync_regs(struct kvm_vcpu *vcpu);
++static int __kvm_vcpu_halt(struct kvm_vcpu *vcpu, int state, int reason);
+ 
+ struct kvm_x86_ops kvm_x86_ops __read_mostly;
+ EXPORT_SYMBOL_GPL(kvm_x86_ops);
+@@ -7976,7 +7977,7 @@ void kvm_arch_exit(void)
+ 	kmem_cache_destroy(x86_fpu_cache);
+ }
+ 
+-int __kvm_vcpu_halt(struct kvm_vcpu *vcpu, int state, int reason)
++static int __kvm_vcpu_halt(struct kvm_vcpu *vcpu, int state, int reason)
+ {
+ 	++vcpu->stat.halt_exits;
+ 	if (lapic_in_kernel(vcpu)) {
+-- 
+1.9.1
+
