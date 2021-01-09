@@ -2,107 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B4052EFC1B
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Jan 2021 01:27:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BC982EFC1F
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Jan 2021 01:29:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726141AbhAIA0s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Jan 2021 19:26:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35274 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725872AbhAIA0o (ORCPT
+        id S1726216AbhAIA15 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Jan 2021 19:27:57 -0500
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:46168 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725793AbhAIA14 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Jan 2021 19:26:44 -0500
-Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1346FC061574
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Jan 2021 16:26:04 -0800 (PST)
-Received: by mail-lf1-x131.google.com with SMTP id o19so27160133lfo.1
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Jan 2021 16:26:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=HZWtqqmWXFQF6vFVo5YIcMITV5s0aEkVTtLeRZ9cL6A=;
-        b=CwzTe1m7vCRdfJRtlHvio4kU535Zx+X6j1FpPIF968iK7L20sK2yraXj3zQvFYwk+w
-         rO0jyCEMRnOY1fXVDCkA/tQB+bksqSmd4NU7VZE7+nwar4RoRFdn0yzS6vylg6U0kkxs
-         B+8eZ/wlIVe7AihgRk/Ys7AOcNG28HiPV1LVDKeEyvUvZTTPaGUyNx9gHNElDl2IAnnI
-         H1bxeRnoUmcrvxFz8oHzrIlswPCUngUJLz3RbFrQW72vKpkqutOGwBKcY8ZmprevI1gv
-         rZm7VH4ly8+L89l0+HoXtamYRo8QKiq30zJ/9xmgPNmCrjmaKYiLwpdCuVgtpqBBJYhU
-         rpjA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=HZWtqqmWXFQF6vFVo5YIcMITV5s0aEkVTtLeRZ9cL6A=;
-        b=DQbbBNtUhx9Jn/GBBoGdKaxDafKjvRWH606RrNJCiUjpdswhfFPDGYgGnU/hMQ+r/D
-         2n8/YBvWIYMTbcKjVwmsyi+4fzzCgouS/yTQOcfIVAvFOBbrZtK4liYwKsd47BBD2AYL
-         NUP3qCjHeAFySXuTZ9o/pNN7lWsyHGtR4/PiPOTmbTF5d8LaUftrQI0HISu0oAkfDY5u
-         ePwYxcDLZXzSDt4hjrPpZ4p4zrnwmnceVlmaPQ5HxDCN9GDj0rA6WvF3Rvzr9EL8RC7C
-         p7i2ri+znyTdpvTMyFT1lZD82difuMSdYZG0pYr2sHlXpRrnM2jcHqsbCFUe9dlo31lR
-         eAkg==
-X-Gm-Message-State: AOAM530+b5yLq2u7iogzxZ6iz3brWSI5qwdPLQVMPO074u7bgru780Sc
-        354ufStt40OZ7oD/kOqsAk8JOOvXKkxRRJZ3b/Tvzw==
-X-Google-Smtp-Source: ABdhPJxFGeQMiMGltA1+XUR6U1c+bW+b0MUe71WYtK55yrp/rSp/Fq2uTqRVaEWX8O04VWjZG4bzZfbEPE/TC6VZ/6k=
-X-Received: by 2002:a2e:b047:: with SMTP id d7mr2414795ljl.467.1610151962442;
- Fri, 08 Jan 2021 16:26:02 -0800 (PST)
+        Fri, 8 Jan 2021 19:27:56 -0500
+Received: from pps.filterd (m0187473.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 1090EbME063778;
+        Fri, 8 Jan 2021 19:27:07 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=references : from : to :
+ cc : subject : in-reply-to : date : message-id : mime-version :
+ content-type; s=pp1; bh=N8AZ8auiitbxJ7ZQ1LZIrNKSD4SZO4FWsvxsVDUFFNk=;
+ b=QNEXeEnkUB1IsHEjEVWgiTXaYd3Th2Zq7Edfym6ZCMq2+VkkmIo4coXi0fkRDi9V04ro
+ Cpvr6oUhSGDWzTbnBLouo1NZCQ30lCfh1ZDWFWmgRTPUHC6zEU6bAcqOEyR8Yg9La2NM
+ 6g3IucVq7A7czXtqTzO+dOJI7edrlYZfoEdbgiFdjvTjbwk1Vo525pyMMhjuIaJ5JPCb
+ DmrXWK84WKQ4kaUtfLviOg+qJeD4T+bncn3vzq/f5InEVeWPcNxAup4JmPDB3igtcbZX
+ WhgyGs8hzy7lg3pehWOqLk9HOlQh7rvxdlmaeejrZDP77cZ1XzJ1+ioh8FlRT9BMGeNt sg== 
+Received: from ppma02wdc.us.ibm.com (aa.5b.37a9.ip4.static.sl-reverse.com [169.55.91.170])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 35y1sb05td-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 08 Jan 2021 19:27:07 -0500
+Received: from pps.filterd (ppma02wdc.us.ibm.com [127.0.0.1])
+        by ppma02wdc.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 1090Dpcf024182;
+        Sat, 9 Jan 2021 00:27:06 GMT
+Received: from b01cxnp23034.gho.pok.ibm.com (b01cxnp23034.gho.pok.ibm.com [9.57.198.29])
+        by ppma02wdc.us.ibm.com with ESMTP id 35tgf9qep3-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sat, 09 Jan 2021 00:27:06 +0000
+Received: from b01ledav004.gho.pok.ibm.com (b01ledav004.gho.pok.ibm.com [9.57.199.109])
+        by b01cxnp23034.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 1090R5Ua27263302
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sat, 9 Jan 2021 00:27:05 GMT
+Received: from b01ledav004.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 8E40C112062;
+        Sat,  9 Jan 2021 00:27:05 +0000 (GMT)
+Received: from b01ledav004.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 00419112061;
+        Sat,  9 Jan 2021 00:27:03 +0000 (GMT)
+Received: from manicouagan.localdomain (unknown [9.80.199.144])
+        by b01ledav004.gho.pok.ibm.com (Postfix) with ESMTPS;
+        Sat,  9 Jan 2021 00:27:03 +0000 (GMT)
+References: <20201218062103.76102-1-bauerman@linux.ibm.com>
+ <20201223205838.GA4102@ram-ibm-com.ibm.com>
+ <87o8ikukye.fsf@manicouagan.localdomain>
+ <20201224031409.GB4102@ram-ibm-com.ibm.com>
+User-agent: mu4e 1.4.10; emacs 27.1
+From:   Thiago Jung Bauermann <bauerman@linux.ibm.com>
+To:     Ram Pai <linuxram@us.ibm.com>
+Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Satheesh Rajendran <sathnaga@linux.vnet.ibm.com>
+Subject: Re: [PATCH] powerpc/mm: Limit allocation of SWIOTLB on server machines
+In-reply-to: <20201224031409.GB4102@ram-ibm-com.ibm.com>
+Date:   Fri, 08 Jan 2021 21:27:01 -0300
+Message-ID: <87bldzlzu2.fsf@manicouagan.localdomain>
 MIME-Version: 1.0
-References: <1609936000-28378-1-git-send-email-srinivas.neeli@xilinx.com>
- <1609936000-28378-5-git-send-email-srinivas.neeli@xilinx.com>
- <CACRpkdYLp0uuB-QO5HvLH222TkCjk54JmftveHgpiW1JExF7DQ@mail.gmail.com> <DM6PR02MB538673699067F89F6F167121AFAE0@DM6PR02MB5386.namprd02.prod.outlook.com>
-In-Reply-To: <DM6PR02MB538673699067F89F6F167121AFAE0@DM6PR02MB5386.namprd02.prod.outlook.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Sat, 9 Jan 2021 01:25:51 +0100
-Message-ID: <CACRpkdaD03pfffqiU1wMVRAu4axQL_VNqM6FrpVHxcN6Tn3XrQ@mail.gmail.com>
-Subject: Re: [PATCH V4 4/5] gpio: gpio-xilinx: Add support for suspend and resume
-To:     Srinivas Neeli <sneeli@xilinx.com>
-Cc:     Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Michal Simek <michals@xilinx.com>,
-        Shubhrajyoti Datta <shubhraj@xilinx.com>,
-        Srinivas Goud <sgoud@xilinx.com>,
-        Robert Hancock <hancock@sedsystems.ca>,
-        William Breathitt Gray <vilhelm.gray@gmail.com>,
-        Syed Nayyar Waris <syednwaris@gmail.com>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        git <git@xilinx.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
+ definitions=2021-01-08_12:2021-01-07,2021-01-08 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 phishscore=0
+ adultscore=0 mlxscore=0 priorityscore=1501 impostorscore=0 mlxlogscore=884
+ lowpriorityscore=0 bulkscore=0 spamscore=0 suspectscore=0 clxscore=1015
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2101080126
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 8, 2021 at 12:41 PM Srinivas Neeli <sneeli@xilinx.com> wrote:
-> > On Wed, Jan 6, 2021 at 1:27 PM Srinivas Neeli <srinivas.neeli@xilinx.com>
-> > wrote:
 
-> > >  /**
-> > >   * xgpio_remove - Remove method for the GPIO device.
-> > >   * @pdev: pointer to the platform device @@ -289,7 +323,10 @@ static
-> > > int xgpio_remove(struct platform_device *pdev)  {
-> > >         struct xgpio_instance *gpio = platform_get_drvdata(pdev);
-> > >
-> > > -       clk_disable_unprepare(gpio->clk);
-> > > +       if (!pm_runtime_suspended(&pdev->dev))
-> > > +               clk_disable_unprepare(gpio->clk);
-> > > +
-> > > +       pm_runtime_disable(&pdev->dev);
-> >
-> > This looks complex and racy. What if the device is resumed after you
-> > executed the first part of the statement.
+Ram Pai <linuxram@us.ibm.com> writes:
+
+> On Wed, Dec 23, 2020 at 09:06:01PM -0300, Thiago Jung Bauermann wrote:
+>> 
+>> Hi Ram,
+>> 
+>> Thanks for reviewing this patch.
+>> 
+>> Ram Pai <linuxram@us.ibm.com> writes:
+>> 
+>> > On Fri, Dec 18, 2020 at 03:21:03AM -0300, Thiago Jung Bauermann wrote:
+>> >> On server-class POWER machines, we don't need the SWIOTLB unless we're a
+>> >> secure VM. Nevertheless, if CONFIG_SWIOTLB is enabled we unconditionally
+>> >> allocate it.
+>> >> 
+>> >> In most cases this is harmless, but on a few machine configurations (e.g.,
+>> >> POWER9 powernv systems with 4 GB area reserved for crashdump kernel) it can
+>> >> happen that memblock can't find a 64 MB chunk of memory for the SWIOTLB and
+>> >> fails with a scary-looking WARN_ONCE:
+>> >> 
+>> >>  ------------[ cut here ]------------
+>> >>  memblock: bottom-up allocation failed, memory hotremove may be affected
+>> >>  WARNING: CPU: 0 PID: 0 at mm/memblock.c:332 memblock_find_in_range_node+0x328/0x340
+>> >>  Modules linked in:
+>> >>  CPU: 0 PID: 0 Comm: swapper Not tainted 5.10.0-rc2-orig+ #6
+>> >>  NIP:  c000000000442f38 LR: c000000000442f34 CTR: c0000000001e0080
+>> >>  REGS: c000000001def900 TRAP: 0700   Not tainted  (5.10.0-rc2-orig+)
+>> >>  MSR:  9000000002021033 <SF,HV,VEC,ME,IR,DR,RI,LE>  CR: 28022222  XER: 20040000
+>> >>  CFAR: c00000000014b7b4 IRQMASK: 1
+>> >>  GPR00: c000000000442f34 c000000001defba0 c000000001deff00 0000000000000047
+>> >>  GPR04: 00000000ffff7fff c000000001def828 c000000001def820 0000000000000000
+>> >>  GPR08: 0000001ffc3e0000 c000000001b75478 c000000001b75478 0000000000000001
+>> >>  GPR12: 0000000000002000 c000000002030000 0000000000000000 0000000000000000
+>> >>  GPR16: 0000000000000000 0000000000000000 0000000000000000 0000000002030000
+>> >>  GPR20: 0000000000000000 0000000000010000 0000000000010000 c000000001defc10
+>> >>  GPR24: c000000001defc08 c000000001c91868 c000000001defc18 c000000001c91890
+>> >>  GPR28: 0000000000000000 ffffffffffffffff 0000000004000000 00000000ffffffff
+>> >>  NIP [c000000000442f38] memblock_find_in_range_node+0x328/0x340
+>> >>  LR [c000000000442f34] memblock_find_in_range_node+0x324/0x340
+>> >>  Call Trace:
+>> >>  [c000000001defba0] [c000000000442f34] memblock_find_in_range_node+0x324/0x340 (unreliable)
+>> >>  [c000000001defc90] [c0000000015ac088] memblock_alloc_range_nid+0xec/0x1b0
+>> >>  [c000000001defd40] [c0000000015ac1f8] memblock_alloc_internal+0xac/0x110
+>> >>  [c000000001defda0] [c0000000015ac4d0] memblock_alloc_try_nid+0x94/0xcc
+>> >>  [c000000001defe30] [c00000000159c3c8] swiotlb_init+0x78/0x104
+>> >>  [c000000001defea0] [c00000000158378c] mem_init+0x4c/0x98
+>> >>  [c000000001defec0] [c00000000157457c] start_kernel+0x714/0xac8
+>> >>  [c000000001deff90] [c00000000000d244] start_here_common+0x1c/0x58
+>> >>  Instruction dump:
+>> >>  2c230000 4182ffd4 ea610088 ea810090 4bfffe84 39200001 3d42fff4 3c62ff60
+>> >>  3863c560 992a8bfc 4bd0881d 60000000 <0fe00000> ea610088 4bfffd94 60000000
+>> >>  random: get_random_bytes called from __warn+0x128/0x184 with crng_init=0
+>> >>  ---[ end trace 0000000000000000 ]---
+>> >>  software IO TLB: Cannot allocate buffer
+>> >> 
+>> >> Unless this is a secure VM the message can actually be ignored, because the
+>> >> SWIOTLB isn't needed. Therefore, let's avoid the SWIOTLB in those cases.
+>> >
+>> > The above warn_on is conveying a genuine warning. Should it be silenced?
+>> 
+>> Not sure I understand your point. This patch doesn't silence the
+>> warning, it avoids the problem it is warning about.
 >
-> Could you please explain more on this.
-> What is the need to call pm_runtime_get_sync(); in remove API ?
+> Sorry, I should have explained it better. My point is...  
+>
+> 	If CONFIG_SWIOTLB is enabled, it means that the kernel is
+> 	promising the bounce buffering capability. I know, currently we
+> 	do not have any kernel subsystems that use bounce buffers on
+> 	non-secure-pseries-kernel or powernv-kernel.  But that does not
+> 	mean, there wont be any. In case there is such a third-party
+> 	module needing bounce buffering, it wont be able to operate,
+> 	because of the proposed change in your patch.
+>
+> 	Is that a good thing or a bad thing, I do not know. I will let
+> 	the experts opine.
 
-I explain that on the lines right below your comment ;D
+Ping? Does anyone else has an opinion on this? The other option I can
+think of is changing the crashkernel code to not reserve so much memory
+below 4 GB. Other people are considering this option, but it's not
+planned for the near future.
 
-> > The normal sequence is:
-> >
-> > pm_runtime_get_sync(dev);
-> > pm_runtime_put_noidle(dev);
-> > pm_runtime_disable(dev);
-> >
-> > This will make sure the clock is enabled and pm runtime is disabled.
-> > After this you can unconditionally call clk_disable_unprepare(gpio->clk);
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Also, there's a patch currently in linux-next which removes the scary
+warning because of unrelated reasons:
 
-Yours,
-Linus Walleij
+https://lore.kernel.org/lkml/20201217201214.3414100-2-guro@fb.com
+
+So assuming that the patch above goes in and keeping the assumption that
+the swiotlb won't be needed in the powernv machines where I've seen the
+warning happen, we can just leave things as they are now.
+
+-- 
+Thiago Jung Bauermann
+IBM Linux Technology Center
