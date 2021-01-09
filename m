@@ -2,146 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED5462EFCF6
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Jan 2021 03:05:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E2B812EFCF8
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Jan 2021 03:07:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726332AbhAICFW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Jan 2021 21:05:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56416 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725817AbhAICFV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Jan 2021 21:05:21 -0500
-Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0923DC061573
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Jan 2021 18:04:41 -0800 (PST)
-Received: by mail-lf1-x133.google.com with SMTP id h205so27481642lfd.5
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Jan 2021 18:04:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=8X0k10gEU5RU+YALYiXkZo4igtQpWwlajig6tj8kuiQ=;
-        b=fZb6v61atyzfrrDYtqgFHKlNTWj+llarfBgW2li3VAHFiI9v2whnfzp2rPIc5ME6Yc
-         Il4xP9F756ShlIumSNYfUGhyiNgKXRDeenhBPiEROH7todZP8SZEJwYoIcuCW/Bi8yq0
-         JCY1lGtZvB1umvqAU5nCSrnSEPKAUUN+TXGlI=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=8X0k10gEU5RU+YALYiXkZo4igtQpWwlajig6tj8kuiQ=;
-        b=QqyETM04rubwl6Su3hOoSlUFdhurTPYP0LUT9zXodazQFzTsqHozYGqb2A7HPCyXfG
-         7pVSdRkBdMdSKJDU3Qcx8csF33Fbx6/fzNizbjsdOHPSnF4xkxMZKzh9ZVOSr0mr4sJs
-         TSWfV4PLTq3UO72X2VWEscgIYR0F3ZNtOaHYUK9anlhnJjlv3w/ODRO1bC87CRmHUy8a
-         dpBmiONRzSd7gkBLtXDteX+AdrThG8I2dBqxeMeRFyrfXxSX90C1CYAY/oJN1SL5dvxa
-         d4qdSbPn/tBy/JjE+LijbrbApOzUjc0GP1n83AmFbv9WoYdkqI/M9ZCeTgo/IpaT0JMt
-         1Wcg==
-X-Gm-Message-State: AOAM5304ye6su/pJW5aTd1DgxlJoLbgCYOL6pO1Gi/vTBLs9jc6iI8lu
-        LaTTdl96pj8bXYe7I0HNvDg4TnPp1ZTS9w==
-X-Google-Smtp-Source: ABdhPJyqqiRAa1Ek5soS0rWZ/zdZP60usLhk4Cp3+NAyNCKH5iBgDfU/RIBZM5rstuK3Dyj0ZIgo0g==
-X-Received: by 2002:a2e:3314:: with SMTP id d20mr2803667ljc.21.1610157879210;
-        Fri, 08 Jan 2021 18:04:39 -0800 (PST)
-Received: from mail-lf1-f49.google.com (mail-lf1-f49.google.com. [209.85.167.49])
-        by smtp.gmail.com with ESMTPSA id l28sm1439927lfk.25.2021.01.08.18.04.37
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 08 Jan 2021 18:04:37 -0800 (PST)
-Received: by mail-lf1-f49.google.com with SMTP id o10so16548248lfl.13
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Jan 2021 18:04:37 -0800 (PST)
-X-Received: by 2002:ac2:41d9:: with SMTP id d25mr2429298lfi.377.1610157877097;
- Fri, 08 Jan 2021 18:04:37 -0800 (PST)
+        id S1726415AbhAICGX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Jan 2021 21:06:23 -0500
+Received: from mail.kernel.org ([198.145.29.99]:41424 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725835AbhAICGX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 Jan 2021 21:06:23 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AB2AB23A3C;
+        Sat,  9 Jan 2021 02:05:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1610157942;
+        bh=HEm/ZNT9r386IPpf+DpT4StTZr10yItI+392ToDDCE4=;
+        h=From:To:Cc:Subject:Date:From;
+        b=Zkl4R9hjPnUwdHvxlrxwNz4+t8MeFau/aXEuOiCdo/PXhuUhddNj7tyhRmQVbfzkK
+         ORqLOR0djnH6Cg5UsD0cIjP/OoCdenCMoZDqW2gbgiKE4ij48PZS/Afo9t5f9IpFGO
+         pBBWnQe8hngst4urfSDxUW5W9ruKUJ2V1dUQd3Hk8zdWX4fCgrBIa3JHbTFw+lz6eX
+         r0HuCkFhyvegyEOVFy6Df9JdOIItGYjv8nEkiE1Q26pOSIjNbEwLniY1eCEB0FGskN
+         h2RAM1KL4gIXi20fTjJeNnjbQ81YIyGnaOPDHYD/vLYpnS8vyEbchjQqoAuJ8OPY3r
+         XG2anb1Tbzp+Q==
+From:   Frederic Weisbecker <frederic@kernel.org>
+To:     Peter Zijlstra <peterz@infradead.org>,
+        "Paul E . McKenney" <paulmck@kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>, stable@vger.kernel.org
+Subject: [RFC PATCH 0/8] rcu/sched: Fix ignored rescheduling after rcu_eqs_enter() v3
+Date:   Sat,  9 Jan 2021 03:05:28 +0100
+Message-Id: <20210109020536.127953-1-frederic@kernel.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <000000000000886dbd05b7ffa8db@google.com> <20210104124153.0992b1f7fd1a145e193a333f@linux-foundation.org>
- <CAHk-=wi6hd8ATJ1W90goTxjgyvuoFsf0xZdAJmZ2c0dx5wcJSg@mail.gmail.com>
- <alpine.LSU.2.11.2101041839440.3466@eggly.anvils> <CAHk-=wi36CBggdRfdggACvf2hG+djM9kKnorrwsByN6uDvPExA@mail.gmail.com>
- <CAHk-=wh=5kDGukMs2sVZ8uHZJX4VL13oD5+xMAR4HvuY6QckLg@mail.gmail.com>
-In-Reply-To: <CAHk-=wh=5kDGukMs2sVZ8uHZJX4VL13oD5+xMAR4HvuY6QckLg@mail.gmail.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Fri, 8 Jan 2021 18:04:21 -0800
-X-Gmail-Original-Message-ID: <CAHk-=wgD9GK5CeHopYmRHoYS9cNuCmDMsc=+MbM_KgJ0KB+=ng@mail.gmail.com>
-Message-ID: <CAHk-=wgD9GK5CeHopYmRHoYS9cNuCmDMsc=+MbM_KgJ0KB+=ng@mail.gmail.com>
-Subject: Re: kernel BUG at mm/page-writeback.c:LINE!
-To:     Hugh Dickins <hughd@google.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        syzbot <syzbot+2fc0712f8f8b8b8fa0ef@syzkaller.appspotmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
-Content-Type: multipart/mixed; boundary="0000000000004c20ba05b86e1822"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---0000000000004c20ba05b86e1822
-Content-Type: text/plain; charset="UTF-8"
+(This was [PATCH 0/4] sched/idle: Fix missing need_resched() checks after rcu_idle_enter() v2)
 
-On Tue, Jan 5, 2021 at 11:53 AM Linus Torvalds
-<torvalds@linux-foundation.org> wrote:
->
-> I took your "way to go" statement as an ack, and made it all be commit
-> c2407cf7d22d ("mm: make wait_on_page_writeback() wait for multiple
-> pending writebacks").
+I initially followed Peterz review but eventually I tried a different
+approach. Instead of handling the late wake up from rcu_idle_enter(),
+I've split the delayed rcuog wake up and moved it right before
+the last generic need_resched() check, it makes more sense and we don't
+need to fiddle with cpuidle core and drivers anymore. It's also less
+error prone.
 
-Oh, and Michael Larabel (of phoronix) reports that that one-liner does
-something bad to a few PostgreSQL tests, on the order of 5-10%
-regression on some machines (but apparently not others).
+I also fixed the nohz_full case and (hopefully) the guest case.
 
-I suspect that's a sign of instability in the benchmark numbers, but
-it probably also means that we have some silly condition where
-multiple threads want to clean the same page.
+And this comes with debugging to prevent from that pattern to happen
+again.
 
-I sent him a patch to try if it ends up being better to just not wake
-things up early at all (instead of the "if" -> "while") conversion.
-That trivial patch appended here in case anybody has comments.
+Only lightly tested so far.
 
-Just the fact that that one-liner made a performance impact makes me
-go "hmm", though. Michael didn't see the BUG_ON(), so it's presumably
-some _other_ user of wait_on_page_writeback() than the
-write_cache_pages() one that causes issues.
+git://git.kernel.org/pub/scm/linux/kernel/git/frederic/linux-dynticks.git
+	sched/idle-v3
 
-Anybody got any suspicions? Honestly, when working on the page wait
-queues, I was working under the assumption that it's really just the
-page lock that truly matters.
+HEAD: d95fc510e804a5c4658a823ff12d9caba1d906c7
 
-I'm thinking things like __filemap_fdatawait_range(), which doesn't
-hold the page lock at all, so it's all kinds of non-serialized, and
-could now be waiting for any number of IO's ro complete..
+Thanks,
+	Frederic
+---
 
-Oh well. This email doesn't really have a point, it's more of a
-heads-up that that "wait to see one or multiple writebacks" thing
-seems to matter more than I would have expected for some loads..
+Frederic Weisbecker (8):
+      rcu: Remove superfluous rdp fetch
+      rcu: Pull deferred rcuog wake up to rcu_eqs_enter() callers
+      rcu/nocb: Perform deferred wake up before last idle's need_resched() check
+      rcu/nocb: Trigger self-IPI on late deferred wake up before user resume
+      entry: Explicitly flush pending rcuog wakeup before last rescheduling points
+      sched: Report local wake up on resched blind zone within idle loop
+      entry: Report local wake up on resched blind zone while resuming to user
+      timer: Report ignored local enqueue in nohz mode
 
-            Linus
 
---0000000000004c20ba05b86e1822
-Content-Type: application/octet-stream; name=patch
-Content-Disposition: attachment; filename=patch
-Content-Transfer-Encoding: base64
-Content-ID: <f_kjp1dr5k0>
-X-Attachment-Id: f_kjp1dr5k0
-
-IG1tL2ZpbGVtYXAuYyAgICAgICAgfCA2ICsrKystLQogbW0vcGFnZS13cml0ZWJhY2suYyB8IDIg
-Ky0KIDIgZmlsZXMgY2hhbmdlZCwgNSBpbnNlcnRpb25zKCspLCAzIGRlbGV0aW9ucygtKQoKZGlm
-ZiAtLWdpdCBhL21tL2ZpbGVtYXAuYyBiL21tL2ZpbGVtYXAuYwppbmRleCA1YzlkNTY0MzE3YTUu
-LjAzMWQxOWQwZjRiMiAxMDA2NDQKLS0tIGEvbW0vZmlsZW1hcC5jCisrKyBiL21tL2ZpbGVtYXAu
-YwpAQCAtMTA1MiwxNCArMTA1MiwxNiBAQCBzdGF0aWMgaW50IHdha2VfcGFnZV9mdW5jdGlvbih3
-YWl0X3F1ZXVlX2VudHJ5X3QgKndhaXQsIHVuc2lnbmVkIG1vZGUsIGludCBzeW5jLAogCWlmICgh
-d2FrZV9wYWdlX21hdGNoKHdhaXRfcGFnZSwga2V5KSkKIAkJcmV0dXJuIDA7CiAKKwkvKiBTdG9w
-IHdhbGtpbmcgaWYgdGhlIGJpdCB3YXMgYWxyZWFkeSB0YWtlbiAqLworCWlmICh0ZXN0X2JpdChr
-ZXktPmJpdF9uciwgJmtleS0+cGFnZS0+ZmxhZ3MpKQorCQlyZXR1cm4gLTE7CisKIAkvKgogCSAq
-IElmIGl0J3MgYSBsb2NrIGhhbmRvZmYgd2FpdCwgd2UgZ2V0IHRoZSBiaXQgZm9yIGl0LCBhbmQK
-IAkgKiBzdG9wIHdhbGtpbmcgKGFuZCBkbyBub3Qgd2FrZSBpdCB1cCkgaWYgd2UgY2FuJ3QuCiAJ
-ICovCiAJZmxhZ3MgPSB3YWl0LT5mbGFnczsKIAlpZiAoZmxhZ3MgJiBXUV9GTEFHX0VYQ0xVU0lW
-RSkgewotCQlpZiAodGVzdF9iaXQoa2V5LT5iaXRfbnIsICZrZXktPnBhZ2UtPmZsYWdzKSkKLQkJ
-CXJldHVybiAtMTsKIAkJaWYgKGZsYWdzICYgV1FfRkxBR19DVVNUT00pIHsKIAkJCWlmICh0ZXN0
-X2FuZF9zZXRfYml0KGtleS0+Yml0X25yLCAma2V5LT5wYWdlLT5mbGFncykpCiAJCQkJcmV0dXJu
-IC0xOwpkaWZmIC0tZ2l0IGEvbW0vcGFnZS13cml0ZWJhY2suYyBiL21tL3BhZ2Utd3JpdGViYWNr
-LmMKaW5kZXggZWIzNGQyMDRkNGVlLi41ODYwNDI0NzJhYzkgMTAwNjQ0Ci0tLSBhL21tL3BhZ2Ut
-d3JpdGViYWNrLmMKKysrIGIvbW0vcGFnZS13cml0ZWJhY2suYwpAQCAtMjgyNiw3ICsyODI2LDcg
-QEAgRVhQT1JUX1NZTUJPTChfX3Rlc3Rfc2V0X3BhZ2Vfd3JpdGViYWNrKTsKICAqLwogdm9pZCB3
-YWl0X29uX3BhZ2Vfd3JpdGViYWNrKHN0cnVjdCBwYWdlICpwYWdlKQogewotCXdoaWxlIChQYWdl
-V3JpdGViYWNrKHBhZ2UpKSB7CisJaWYgKFBhZ2VXcml0ZWJhY2socGFnZSkpIHsKIAkJdHJhY2Vf
-d2FpdF9vbl9wYWdlX3dyaXRlYmFjayhwYWdlLCBwYWdlX21hcHBpbmcocGFnZSkpOwogCQl3YWl0
-X29uX3BhZ2VfYml0KHBhZ2UsIFBHX3dyaXRlYmFjayk7CiAJfQo=
---0000000000004c20ba05b86e1822--
+ include/linux/rcupdate.h |  2 ++
+ include/linux/sched.h    | 11 ++++++++
+ kernel/entry/common.c    | 10 ++++++++
+ kernel/rcu/tree.c        | 27 ++++++++++++++++++--
+ kernel/rcu/tree.h        |  2 +-
+ kernel/rcu/tree_plugin.h | 30 +++++++++++++++-------
+ kernel/sched/core.c      | 66 +++++++++++++++++++++++++++++++++++++++++++++++-
+ kernel/sched/idle.c      |  6 +++++
+ kernel/sched/sched.h     |  3 +++
+ 9 files changed, 144 insertions(+), 13 deletions(-)
