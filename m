@@ -2,485 +2,216 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D8C3D2F02C3
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Jan 2021 19:08:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B7092F0295
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Jan 2021 19:07:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726929AbhAISHZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Jan 2021 13:07:25 -0500
-Received: from mout.gmx.net ([212.227.15.18]:53667 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725951AbhAISHX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Jan 2021 13:07:23 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1610215502;
-        bh=Tuw+ZgZ4Kq1PeWeeWse0O4WWhQIH6noWqKgzE61zkGs=;
-        h=X-UI-Sender-Class:From:To:Cc:Subject:Date:In-Reply-To:References;
-        b=bOCP+GslRwX4m8cumG51YSJtXjf7QCBOeRUi72FQueIspwYsZmNU9uCrHk9v/CBa2
-         FaDAnADGylGYpgESRp1zR4rgZEgMHWzzjYhQTgAYIzT24pLr7APcbJ2+KZwFL/OqaC
-         Iigpbmy9i9v+rLF7jYW3GS69hOfN1YNOb348n81c=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from longitude ([37.201.215.57]) by mail.gmx.com (mrgmx005
- [212.227.17.190]) with ESMTPSA (Nemesis) id 1MEFvj-1kqIOp20LV-00ACNe; Sat, 09
- Jan 2021 19:05:02 +0100
-From:   =?UTF-8?q?Jonathan=20Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>
-To:     linux-kernel@vger.kernel.org
-Cc:     Lee Jones <lee.jones@linaro.org>, Rob Herring <robh+dt@kernel.org>,
-        =?UTF-8?q?Jonathan=20Neusch=C3=A4fer?= <j.neuschaefer@gmx.net>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Heiko Stuebner <heiko.stuebner@theobroma-systems.com>,
-        Stephan Gerhold <stephan@gerhold.net>,
-        Lubomir Rintel <lkundrak@v3.sk>,
-        Mark Brown <broonie@kernel.org>, allen <allen.chen@ite.com.tw>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        devicetree@vger.kernel.org, linux-pwm@vger.kernel.org,
-        linux-rtc@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        Heiko Stuebner <heiko@sntech.de>,
-        Josua Mayer <josua.mayer@jm0.eu>,
-        Andreas Kemnade <andreas@kemnade.info>,
-        Arnd Bergmann <arnd@arndb.de>, Daniel Palmer <daniel@0x0f.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>
-Subject: [PATCH v7 3/7] mfd: Add base driver for Netronix embedded controller
-Date:   Sat,  9 Jan 2021 19:02:16 +0100
-Message-Id: <20210109180220.121511-4-j.neuschaefer@gmx.net>
+        id S1726460AbhAISFF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Jan 2021 13:05:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34798 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726411AbhAISFE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 9 Jan 2021 13:05:04 -0500
+Received: from relay03.th.seeweb.it (relay03.th.seeweb.it [IPv6:2001:4b7a:2000:18::164])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C49DC061786;
+        Sat,  9 Jan 2021 10:04:08 -0800 (PST)
+Received: from IcarusMOD.eternityproject.eu (unknown [2.237.20.237])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by m-r1.th.seeweb.it (Postfix) with ESMTPSA id 9005E1F508;
+        Sat,  9 Jan 2021 19:04:06 +0100 (CET)
+From:   AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@somainline.org>
+To:     linux-arm-msm@vger.kernel.org
+Cc:     konrad.dybcio@somainline.org, marijn.suijten@somainline.org,
+        martin.botka@somainline.org, phone-devel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, robh+dt@kernel.org,
+        rjw@rjwysocki.net, viresh.kumar@linaro.org, nks@flawful.org,
+        agross@kernel.org, bjorn.andersson@linaro.org,
+        daniel.lezcano@linaro.org, manivannan.sadhasivam@linaro.org,
+        devicetree@vger.kernel.org, linux-pm@vger.kernel.org,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@somainline.org>
+Subject: [PATCH v2 00/15] Enable CPRh/3/4, CPU Scaling on various QCOM SoCs
+Date:   Sat,  9 Jan 2021 19:03:44 +0100
+Message-Id: <20210109180359.236098-1-angelogioacchino.delregno@somainline.org>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210109180220.121511-1-j.neuschaefer@gmx.net>
-References: <20210109180220.121511-1-j.neuschaefer@gmx.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:foAsmsgdOWTVSw/YGXc2EruSMnsyjwSVlFx6zJqHEmmTVsft2cm
- yfQgPRN/LxWFvUEvPLkF6DnhMf7PBYWP+y9vCYJi0do+69/7BYePPvw2iCSCTItLsv35qjS
- hFd16QTidEyNTsVPJmja/a0/q3dcFGZRc0AWcYJs6LI+ABSyFxZmrACsCUH33OHAzs/1yK/
- +lH1OO1Kkoi+vZ77NxJjQ==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:SQ9O/0aZvnQ=:xbrVD/GkkcvZtLsCs/nDs5
- l7oXyzhJhgYh6c8D9dgJko6MfJ+p7JiL6Md6nscLi+YsY+alj+AXHU6lMdrUVD7KUPUmsj9Dn
- U9b3t8w8CZQZ/V8yldEl4IQWyfqSEghZ2Oay4VVOvnss+qn/vJyCKa5Mu5AokGKWXbTiQQhkc
- dwo+vJkLcyP2PQ1OKFVEfEUkCNOdOT872ougp8f6Dqa7MO1f+4bkwkGblHAnNpIrguPPsv8O2
- 2gGiGhBjL2Ihx9JHmTjNhhTBAOrKJmXL99vWWxjjvIR57XSzneom+WxYMOKD/tuzbvAwkb+fu
- nrTMgSLxlhyWjNOuoLU0w2XHqjZM/bvRkR5/AO4EWZ2CsOOpkWEkqSBU0CckWgkpnPgNxHHdn
- 2n62OZrubD5MPvUFeqFTEdF3H1YEOKyN5oyUF+nUGWFfPmGQfKzjywE/LOLWL28pKmPPy3xqQ
- ekBAUFnnXvqgvM2hjSy71GMBCmi/zWGWo+abM+hGtX3XAiFbsIVroR+ggDRfSmKRDsdvJlAEG
- HuI1Oxvf4W8gOclG9dTrCZHhHuDwuYFwsWYhjmp+A80XRLyAxwk8ghioqjRC2JlmPvvGkV5ea
- 7k4wfSiZoswrDvgW1GTsQlUJBPO1PS4hChDqClA7QB5m/ZcsEkn6Yk84kRAC5qapj92r0kjoy
- JEfFGgMLJaRWHnNOnFpZV9yWxTovgQ/QePvMeDieemWrT0txhrGz2uHwSV9I1pqk6ycgb0+IH
- ZmuV2+xO/b8y7h0qcQGCBrRoNQdHWX1gY0dEkirXr7SNYNHUUopoR2yinT7NvHr7tzGMLdYTa
- yBHVsSrYZxgDcRPqB7/RzOPLkTULzx/5YffvuTarbm+u7chDzr4et8svoX5a4VuQ1Yr4jZ5mj
- /epoxKWwvZRw9w7pJXOw==
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The Netronix embedded controller is a microcontroller found in some
-e-book readers designed by the original design manufacturer Netronix,
-Inc. It contains RTC, battery monitoring, system power management, and
-PWM functionality.
+----
 
-This driver implements register access and version detection.
+Changes in v2:
+- Rebased qcom-cpufreq-hw dt-binding on top of Manivannan's patches
+- Fixed CPR and CPR3 YAML doc issues
+- Fixed bugs in qcom-cpufreq-hw:
+-- The APM corner number is now handled correctly when a corner with
+   higher voltage than the maximum APM threshold is detected
+-- The APM corner number now gets written to the SEQ1 register,
+   useful for older firmwares
+- Changes in CPR3:
+-- Memory footprint has been reduced, as unsigned int variables were
+   changed to u8/u16 where applicable (a lot of them, actually)
+-- Some masks were wrong and have been fixed
+-- Min/max step quotients moved in thread descriptor, as they are not
+   global on MSM8998
+-- Fixed a bug about enabling thread aggregation on CPR hardware using
+   one thread but multiple hw instances (these cannot be aggregated)
+-- Added calculations on post voltage adjustments for open and closed
+   loop voltages, needed by MSM8998
+-- Added some more safety checks around the corner voltage calculation
+-- Added fine-tuning open/closed loop based on fixed value offsets,
+   needed by MSM8998
+-- Fixed wrong scaling factor logic: it worked because I had lucky
+   values on SDM630, but MSM8998 was an entirely different story!!
+   I thought that these values were per-ring-oscillator, but it turns
+   out that they are per-fuse-corner instead. Silly me!
+-- Added parameters and compatible for MSM8998 Silver/Gold clusters
+- Added MSM8998 to cpufreq-dt-platdev blacklist
+- Implemented dynamic Memory Accelerator corners support in both CPR3
+  and qcom-cpufreq-hw, needed by MSM8998
+- Implemented ACD programming in qcom-cpufreq-hw, needed by MSM8998
+- Added MSM8998 Silver/Gold parameters to the CPR3 (CPR-Hardened) driver
+- Fixed MSM8998 SAW parameters on SPM driver
+- Tested again on three different SDM630 smartphones (Xperia XA2/XA2Ultra/10)
+- Now also tested on two different MSM8998 smartphones (Xperia XZ Premium
+  and F(x)Tec Pro1)
 
-Third-party hardware documentation is available at:
+----
 
-  https://github.com/neuschaefer/linux/wiki/Netronix-MSP430-embedded-contr=
-oller
+This patch series is definitely big.
+Yup. But it all goes together... here's why:
 
-The EC supports interrupts, but the driver doesn't make use of them so
-far.
+This series implements full support for CPU scaling on *many* Qualcomm
+SoCs and partial support for the others on which the Operating State
+Manager is not present.
+Since this is a bit tangled, let's go step by step.
 
-Signed-off-by: Jonathan Neusch=C3=A4fer <j.neuschaefer@gmx.net>
-Acked-for-MFD-by: Lee Jones <lee.jones@linaro.org>
-=2D--
-v7:
-- Add #define for version number (suggested by Lee Jones).
+First of all, there's the SPM: this is a component that we can find on
+very old chips, like MSM8974; there, it has been used to actually do the
+power scaling basically "on its own" - sending the cores in a specific
+sleep mode to save power.
+On the newer ones, including MSM8998, SDM630, 660 and others, it is still
+present! Though, this time, it's being used for the cluster caches and it
+has a different firmware (and maybe it's also slightly different HW),
+implementing the SAWv4.1 set and getting controlled *not by the OS* but
+by other controllers in the SoC (like the OSM).
 
-v6:
-- https://lore.kernel.org/lkml/20201208011000.3060239-4-j.neuschaefer@gmx.=
-net/
-- Add Lee Jones' ACK
+Contrary from MSM8974 and the like, this new version of the SPM just
+requires us to set the initial parameters for AVS and *nothing else*, as
+its states will be totally managed internally.
 
-v5:
-- no changes
+Then, hardening here we come!
+In all the new SoCs - as new as SM8150 and most probably even newer ones -
+there are also new versions of "the same old story".. and here I'm
+referring to the Core Power Reduction (CPR) block: since MSM8996 (or
+around that time frame), this block has got a sort of major change...
+which actually varies the register set and implements "threads".
+I won't go far with explaining that in this cover letter (as it's all
+explained in the commits) but, in short, here's the catch:
+CPR v3, v4 and CPR-Hardened are all based over the same register set
+and are extensions of their previous.
 
-v4:
-- https://lore.kernel.org/lkml/20201122222739.1455132-4-j.neuschaefer@gmx.=
-net/
-- include asm/unaligned.h after linux/*
-- Use put_unaligned_be16 instead of open-coded big-endian packing
-- Clarify that 0x90=3D0xff00 causes an error in downstream kernel too
-- Add commas after non-sentinel positions
-- ntxec.h: declare structs device and regmap
-- Replace WARN_ON usage and add comments to explain errors
-- Replace dev_alert with dev_warn when the result isn't handled
-- Change subdevice registration error message to dev_err
-- Declare ntxec_reg8 as returning __be16
-- Restructure version detection code
-- Spell out ODM
+A sort of special treatment must be given to CPR-Hardened (CPRh): this is
+the one that's present on the newest SoCs, as this is a hardened version
+of CPR4 and - in this version - it has got the ability to also get managed
+internally, along with the SAWv4.1, by the Operating State Manager (OSM).
 
-v3:
-- https://lore.kernel.org/lkml/20200924192455.2484005-4-j.neuschaefer@gmx.=
-net/
-- Add (EC) to CONFIG_MFD_NTXEC prompt
-- Relicense as GPLv2 or later
-- Add email address to copyright line
-- remove empty lines in ntxec_poweroff and ntxec_restart functions
-- Split long lines
-- Remove 'Install ... handler' comments
-- Make naming of struct i2c_client parameter consistent
-- Remove struct ntxec_info
-- Rework 'depends on' lines in Kconfig, hard-depend on I2C, select REGMAP_=
-I2C and
-  MFD_CORE
-- Register subdevices via mfd_cells
-- Move 8-bit register conversion to ntxec.h
+And finally, we get to the OSM.
+This final piece appeared on MSM8998 for the first time (as far as I know),
+and it is (a sort of microcontroller?) doing the "real deal": CPU DVFS
+through a lookup table providing "corners" - or "performance states" - to
+the OS; pretty straightforward way of offloading a whole lot of tasks that
+the kernel would otherwise have to do.
 
-v2:
-- https://lore.kernel.org/lkml/20200905133230.1014581-4-j.neuschaefer@gmx.=
-net/
-- Add a description of the device to the patch text
-- Unify spelling as 'Netronix embedded controller'.
-  'Netronix' is the proper name of the manufacturer, but 'embedded control=
-ler'
-  is just a label that I have assigned to the device.
-- Switch to regmap, avoid regmap use in poweroff and reboot handlers.
-  Inspired by cf84dc0bb40f4 ("mfd: rn5t618: Make restart handler atomic sa=
-fe")
-- Use a list of known-working firmware versions instead of checking for a
-  known-incompatible version
-- Prefix registers with NTXEC_REG_
-- Define register values as constants
-- Various style cleanups as suggested by Lee Jones
-- Don't align =3D signs in struct initializers [Uwe Kleine-K=C3=B6nig]
-- Don't use dev_dbg for an error message
-- Explain sleep in poweroff handler
-- Remove (struct ntxec).client
-- Switch to .probe_new in i2c driver
-- Add .remove callback
-- Make CONFIG_MFD_NTXEC a tristate option
-=2D--
- drivers/mfd/Kconfig       |  11 ++
- drivers/mfd/Makefile      |   1 +
- drivers/mfd/ntxec.c       | 216 ++++++++++++++++++++++++++++++++++++++
- include/linux/mfd/ntxec.h |  37 +++++++
- 4 files changed, 265 insertions(+)
- create mode 100644 drivers/mfd/ntxec.c
- create mode 100644 include/linux/mfd/ntxec.h
+And there we go with the full picture:
+- From SDM845 onwards, SAW, CPRh and OSM are getting setup by the
+  bootloader/TZ *before* booting the OS, so then all the OS has to do
+  is to request a specific performance state to the OSM hardware and
+  forget about all the rest, which is anyway protected by the hypervisor
+  (so there's no access anyway); BUT:
+- In MSM/APQ 8998, SDM/SDA 630/636/660 (and other variants), there is no
+  setup of any of these puzzle pieces, and they're also (basically) fully
+  accessible, which means that the OS must do it in order to get in the
+  same state as the newer ones and to get the entire scaling hardware to
+  start rolling.
 
-diff --git a/drivers/mfd/Kconfig b/drivers/mfd/Kconfig
-index bdfce7b156216..4280bcd47ec7d 100644
-=2D-- a/drivers/mfd/Kconfig
-+++ b/drivers/mfd/Kconfig
-@@ -976,6 +976,17 @@ config MFD_VIPERBOARD
- 	  You need to select the mfd cell drivers separately.
- 	  The drivers do not support all features the board exposes.
+"Simply", that's it. Now that I've written a kilometer-long "short
+explaination" of what's going on, there's a shorter version of it:
+- On new SoCs, the bootloader sets up the entire thing
+- On old ones, the OS must do what the bootloader didn't do.
+- That's what this patch series does. :))
 
-+config MFD_NTXEC
-+	tristate "Netronix embedded controller (EC)"
-+	depends on OF || COMPILE_TEST
-+	depends on I2C
-+	select REGMAP_I2C
-+	select MFD_CORE
-+	help
-+	  Say yes here if you want to support the embedded controller found in
-+	  certain e-book readers designed by the original design manufacturer
-+	  Netronix.
-+
- config MFD_RETU
- 	tristate "Nokia Retu and Tahvo multi-function device"
- 	select MFD_CORE
-diff --git a/drivers/mfd/Makefile b/drivers/mfd/Makefile
-index 14fdb188af022..948a3bf8e3e57 100644
-=2D-- a/drivers/mfd/Makefile
-+++ b/drivers/mfd/Makefile
-@@ -219,6 +219,7 @@ obj-$(CONFIG_MFD_INTEL_PMC_BXT)	+=3D intel_pmc_bxt.o
- obj-$(CONFIG_MFD_INTEL_PMT)	+=3D intel_pmt.o
- obj-$(CONFIG_MFD_PALMAS)	+=3D palmas.o
- obj-$(CONFIG_MFD_VIPERBOARD)    +=3D viperboard.o
-+obj-$(CONFIG_MFD_NTXEC)		+=3D ntxec.o
- obj-$(CONFIG_MFD_RC5T583)	+=3D rc5t583.o rc5t583-irq.o
- obj-$(CONFIG_MFD_RK808)		+=3D rk808.o
- obj-$(CONFIG_MFD_RN5T618)	+=3D rn5t618.o
-diff --git a/drivers/mfd/ntxec.c b/drivers/mfd/ntxec.c
-new file mode 100644
-index 0000000000000..22ed2ef0669cb
-=2D-- /dev/null
-+++ b/drivers/mfd/ntxec.c
-@@ -0,0 +1,216 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+/*
-+ * The Netronix embedded controller is a microcontroller found in some
-+ * e-book readers designed by the original design manufacturer Netronix, =
-Inc.
-+ * It contains RTC, battery monitoring, system power management, and PWM
-+ * functionality.
-+ *
-+ * This driver implements register access, version detection, and system
-+ * power-off/reset.
-+ *
-+ * Copyright 2020 Jonathan Neusch=C3=A4fer <j.neuschaefer@gmx.net>
-+ */
-+
-+#include <linux/delay.h>
-+#include <linux/errno.h>
-+#include <linux/i2c.h>
-+#include <linux/mfd/core.h>
-+#include <linux/mfd/ntxec.h>
-+#include <linux/module.h>
-+#include <linux/pm.h>
-+#include <linux/reboot.h>
-+#include <linux/regmap.h>
-+#include <linux/types.h>
-+#include <asm/unaligned.h>
-+
-+#define NTXEC_REG_VERSION	0x00
-+#define NTXEC_REG_POWEROFF	0x50
-+#define NTXEC_REG_POWERKEEP	0x70
-+#define NTXEC_REG_RESET		0x90
-+
-+#define NTXEC_POWEROFF_VALUE	0x0100
-+#define NTXEC_POWERKEEP_VALUE	0x0800
-+#define NTXEC_RESET_VALUE	0xff00
-+
-+static struct i2c_client *poweroff_restart_client;
-+
-+static void ntxec_poweroff(void)
-+{
-+	int res;
-+	u8 buf[3] =3D { NTXEC_REG_POWEROFF };
-+	struct i2c_msg msgs[] =3D {
-+		{
-+			.addr =3D poweroff_restart_client->addr,
-+			.flags =3D 0,
-+			.len =3D sizeof(buf),
-+			.buf =3D buf,
-+		},
-+	};
-+
-+	put_unaligned_be16(NTXEC_POWEROFF_VALUE, buf + 1);
-+
-+	res =3D i2c_transfer(poweroff_restart_client->adapter, msgs, ARRAY_SIZE(=
-msgs));
-+	if (res < 0)
-+		dev_warn(&poweroff_restart_client->dev,
-+			 "Failed to power off (err =3D %d)\n", res);
-+
-+	/*
-+	 * The time from the register write until the host CPU is powered off
-+	 * has been observed to be about 2.5 to 3 seconds. Sleep long enough to
-+	 * safely avoid returning from the poweroff handler.
-+	 */
-+	msleep(5000);
-+}
-+
-+static int ntxec_restart(struct notifier_block *nb,
-+			 unsigned long action, void *data)
-+{
-+	int res;
-+	u8 buf[3] =3D { NTXEC_REG_RESET };
-+	/*
-+	 * NOTE: The lower half of the reset value is not sent, because sending
-+	 * it causes an I2C error. (The reset handler in the downstream driver
-+	 * does send the full two-byte value, but doesn't check the result).
-+	 */
-+	struct i2c_msg msgs[] =3D {
-+		{
-+			.addr =3D poweroff_restart_client->addr,
-+			.flags =3D 0,
-+			.len =3D sizeof(buf) - 1,
-+			.buf =3D buf,
-+		},
-+	};
-+
-+	put_unaligned_be16(NTXEC_RESET_VALUE, buf + 1);
-+
-+	res =3D i2c_transfer(poweroff_restart_client->adapter, msgs, ARRAY_SIZE(=
-msgs));
-+	if (res < 0)
-+		dev_warn(&poweroff_restart_client->dev,
-+			 "Failed to restart (err =3D %d)\n", res);
-+
-+	return NOTIFY_DONE;
-+}
-+
-+static struct notifier_block ntxec_restart_handler =3D {
-+	.notifier_call =3D ntxec_restart,
-+	.priority =3D 128,
-+};
-+
-+static const struct regmap_config regmap_config =3D {
-+	.name =3D "ntxec",
-+	.reg_bits =3D 8,
-+	.val_bits =3D 16,
-+	.cache_type =3D REGCACHE_NONE,
-+	.val_format_endian =3D REGMAP_ENDIAN_BIG,
-+};
-+
-+static const struct mfd_cell ntxec_subdevices[] =3D {
-+	{ .name =3D "ntxec-rtc" },
-+	{ .name =3D "ntxec-pwm" },
-+};
-+
-+static int ntxec_probe(struct i2c_client *client)
-+{
-+	struct ntxec *ec;
-+	unsigned int version;
-+	int res;
-+
-+	ec =3D devm_kmalloc(&client->dev, sizeof(*ec), GFP_KERNEL);
-+	if (!ec)
-+		return -ENOMEM;
-+
-+	ec->dev =3D &client->dev;
-+
-+	ec->regmap =3D devm_regmap_init_i2c(client, &regmap_config);
-+	if (IS_ERR(ec->regmap)) {
-+		dev_err(ec->dev, "Failed to set up regmap for device\n");
-+		return res;
-+	}
-+
-+	/* Determine the firmware version */
-+	res =3D regmap_read(ec->regmap, NTXEC_REG_VERSION, &version);
-+	if (res < 0) {
-+		dev_err(ec->dev, "Failed to read firmware version number\n");
-+		return res;
-+	}
-+
-+	/* Bail out if we encounter an unknown firmware version */
-+	switch (version) {
-+	case NTXEC_VERSION_KOBO_AURA:
-+		break;
-+	default:
-+		dev_err(ec->dev,
-+			"Netronix embedded controller version %04x is not supported.\n",
-+			version);
-+		return -ENODEV;
-+	}
-+
-+	dev_info(ec->dev,
-+		 "Netronix embedded controller version %04x detected.\n", version);
-+
-+	if (of_device_is_system_power_controller(ec->dev->of_node)) {
-+		/*
-+		 * Set the 'powerkeep' bit. This is necessary on some boards
-+		 * in order to keep the system running.
-+		 */
-+		res =3D regmap_write(ec->regmap, NTXEC_REG_POWERKEEP,
-+				   NTXEC_POWERKEEP_VALUE);
-+		if (res < 0)
-+			return res;
-+
-+		if (poweroff_restart_client)
-+			/*
-+			 * Another instance of the driver already took
-+			 * poweroff/restart duties.
-+			 */
-+			dev_err(ec->dev, "poweroff_restart_client already assigned\n");
-+		else
-+			poweroff_restart_client =3D client;
-+
-+		if (pm_power_off)
-+			/* Another driver already registered a poweroff handler. */
-+			dev_err(ec->dev, "pm_power_off already assigned\n");
-+		else
-+			pm_power_off =3D ntxec_poweroff;
-+
-+		res =3D register_restart_handler(&ntxec_restart_handler);
-+		if (res)
-+			dev_err(ec->dev,
-+				"Failed to register restart handler: %d\n", res);
-+	}
-+
-+	i2c_set_clientdata(client, ec);
-+
-+	res =3D devm_mfd_add_devices(ec->dev, PLATFORM_DEVID_NONE, ntxec_subdevi=
-ces,
-+				   ARRAY_SIZE(ntxec_subdevices), NULL, 0, NULL);
-+	if (res)
-+		dev_err(ec->dev, "Failed to add subdevices: %d\n", res);
-+
-+	return res;
-+}
-+
-+static int ntxec_remove(struct i2c_client *client)
-+{
-+	if (client =3D=3D poweroff_restart_client) {
-+		poweroff_restart_client =3D NULL;
-+		pm_power_off =3D NULL;
-+		unregister_restart_handler(&ntxec_restart_handler);
-+	}
-+
-+	return 0;
-+}
-+
-+static const struct of_device_id of_ntxec_match_table[] =3D {
-+	{ .compatible =3D "netronix,ntxec", },
-+	{}
-+};
-+
-+static struct i2c_driver ntxec_driver =3D {
-+	.driver =3D {
-+		.name =3D "ntxec",
-+		.of_match_table =3D of_ntxec_match_table,
-+	},
-+	.probe_new =3D ntxec_probe,
-+	.remove =3D ntxec_remove,
-+};
-+module_i2c_driver(ntxec_driver);
-diff --git a/include/linux/mfd/ntxec.h b/include/linux/mfd/ntxec.h
-new file mode 100644
-index 0000000000000..361204d125f1a
-=2D-- /dev/null
-+++ b/include/linux/mfd/ntxec.h
-@@ -0,0 +1,37 @@
-+/* SPDX-License-Identifier: GPL-2.0-only */
-+/*
-+ * Copyright 2020 Jonathan Neusch=C3=A4fer
-+ *
-+ * Register access and version information for the Netronix embedded
-+ * controller.
-+ */
-+
-+#ifndef NTXEC_H
-+#define NTXEC_H
-+
-+#include <linux/types.h>
-+
-+struct device;
-+struct regmap;
-+
-+struct ntxec {
-+	struct device *dev;
-+	struct regmap *regmap;
-+};
-+
-+/*
-+ * Some registers, such as the battery status register (0x41), are in
-+ * big-endian, but others only have eight significant bits, which are in =
-the
-+ * first byte transmitted over I2C (the MSB of the big-endian value).
-+ * This convenience function converts an 8-bit value to 16-bit for use in=
- the
-+ * second kind of register.
-+ */
-+static inline __be16 ntxec_reg8(u8 value)
-+{
-+	return value << 8;
-+}
-+
-+/* Known firmware versions */
-+#define NTXEC_VERSION_KOBO_AURA	0xd726	/* found in Kobo Aura */
-+
-+#endif
-=2D-
+There's also slightly more: since - as already explained - the
+CPR-Hardened is an incremental upgrade of CPR v3->v4, it was necessary
+for me to also implement support for these two versions, present in
+"another whole bunch" of Qualcomm SoCs, including MSM8953, MSM8996 and
+others, which is used to do either power reduction or complete voltage
+scaling for the CPU clusters on these old ones... and, well, also
+in 8998/630/660 along with the Hardened one... and the reason is...
+that this piece of HW is also capable of doing the same with the GPU,
+even though this is not yet implemented in this set.
+
+I didn't feel like implementing the Multimedia Subsystem (MMSS) part
+of the CPR3/4 in this patch series because, eh, it's already long enough,
+I'd say.
+
+Perhaps, later... :)
+
+AngeloGioacchino Del Regno (13):
+  cpuidle: qcom_spm: Detach state machine from main SPM handling
+  soc: qcom: spm: Implement support for SAWv4.1, SDM630/660 L2 AVS
+  soc: qcom: spm: Add compatible for MSM8998 SAWv4.1 L2
+  cpufreq: blacklist SDM630/636/660 in cpufreq-dt-platdev
+  cpufreq: blacklist MSM8998 in cpufreq-dt-platdev
+  soc: qcom: cpr: Move common functions to new file
+  arm64: qcom: qcs404: Change CPR nvmem-names
+  dt-bindings: avs: cpr: Convert binding to YAML schema
+  soc: qcom: Add support for Core Power Reduction v3, v4 and Hardened
+  MAINTAINERS: Add entry for Qualcomm CPRv3/v4/Hardened driver
+  dt-bindings: soc: qcom: cpr3: Add bindings for CPR3 driver
+  cpufreq: qcom-hw: Implement CPRh aware OSM programming
+  dt-bindings: cpufreq: qcom-hw: Add bindings for 8998
+
+Manivannan Sadhasivam (2):
+  dt-bindings: arm: cpus: Document 'qcom,freq-domain' property
+  dt-bindings: cpufreq: cpufreq-qcom-hw: Convert to YAML bindings
+
+ .../devicetree/bindings/arm/cpus.yaml         |    6 +
+ .../bindings/cpufreq/cpufreq-qcom-hw.txt      |  172 -
+ .../bindings/cpufreq/cpufreq-qcom-hw.yaml     |  238 ++
+ .../bindings/power/avs/qcom,cpr.txt           |  131 +-
+ .../bindings/soc/qcom/qcom,cpr.yaml           |  116 +
+ .../bindings/soc/qcom/qcom,cpr3.yaml          |  241 ++
+ MAINTAINERS                                   |    8 +-
+ arch/arm64/boot/dts/qcom/qcs404.dtsi          |   26 +-
+ drivers/cpufreq/cpufreq-dt-platdev.c          |    4 +
+ drivers/cpufreq/qcom-cpufreq-hw.c             | 1240 ++++++-
+ drivers/cpuidle/Kconfig.arm                   |    1 +
+ drivers/cpuidle/cpuidle-qcom-spm.c            |  294 +-
+ drivers/soc/qcom/Kconfig                      |   26 +
+ drivers/soc/qcom/Makefile                     |    4 +-
+ drivers/soc/qcom/cpr-common.c                 |  405 +++
+ drivers/soc/qcom/cpr-common.h                 |  117 +
+ drivers/soc/qcom/cpr.c                        |  441 +--
+ drivers/soc/qcom/cpr3.c                       | 2905 +++++++++++++++++
+ drivers/soc/qcom/spm.c                        |  240 ++
+ include/soc/qcom/spm.h                        |   45 +
+ 20 files changed, 5663 insertions(+), 997 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/cpufreq/cpufreq-qcom-hw.txt
+ create mode 100644 Documentation/devicetree/bindings/cpufreq/cpufreq-qcom-hw.yaml
+ create mode 100644 Documentation/devicetree/bindings/soc/qcom/qcom,cpr.yaml
+ create mode 100644 Documentation/devicetree/bindings/soc/qcom/qcom,cpr3.yaml
+ create mode 100644 drivers/soc/qcom/cpr-common.c
+ create mode 100644 drivers/soc/qcom/cpr-common.h
+ create mode 100644 drivers/soc/qcom/cpr3.c
+ create mode 100644 drivers/soc/qcom/spm.c
+ create mode 100644 include/soc/qcom/spm.h
+
+-- 
 2.29.2
 
