@@ -2,59 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C26F62EFC5F
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Jan 2021 01:49:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CC8D2EFC60
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Jan 2021 01:49:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726761AbhAIAtM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Jan 2021 19:49:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40016 "EHLO
+        id S1726828AbhAIAtS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Jan 2021 19:49:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40018 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726748AbhAIAtL (ORCPT
+        with ESMTP id S1726749AbhAIAtL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 8 Jan 2021 19:49:11 -0500
-Received: from mail-qk1-x749.google.com (mail-qk1-x749.google.com [IPv6:2607:f8b0:4864:20::749])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 80313C06179C
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Jan 2021 16:47:53 -0800 (PST)
-Received: by mail-qk1-x749.google.com with SMTP id a17so10577851qko.11
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Jan 2021 16:47:53 -0800 (PST)
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8A60C06179E
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Jan 2021 16:47:55 -0800 (PST)
+Received: by mail-yb1-xb4a.google.com with SMTP id a206so17358418ybg.0
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Jan 2021 16:47:55 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=sender:reply-to:date:in-reply-to:message-id:mime-version:references
          :subject:from:to:cc;
-        bh=dyPlu6qMQUJ5LjPtUc+nebDh2loDqHfHQ3wm6f9Tp5o=;
-        b=dVRnIHGiQJSzr0UHXeto2OOOBaBXSN2owjt2UtrYDw4giQKl05OFRVg+fq3hekxNB5
-         +GMPBB47eVpf8p41AmnbiYXBcAD9TsbX4wEEqZo1vYFa+UaBMmzjygCmkVPYIqlQOLV4
-         9uFMoM7R1qnv1XvlIKdKHfYQc1eI6g69Kd/k0L95Qzi2k2i5trEMAWRDKfuJntVA5WT6
-         ERRv91xXWkUkLPLUsUjxUwjZvtql2PVE2RbOht/e/jg7RMKGzfItHs/+E4ARkczFkGfY
-         RKRK/yc2LQkW8C0QCh41LQhkIEEDJEStv4SKdS6kMNrwDJHWptb2k52doX9O/A8k55DE
-         sgDw==
+        bh=292fZgTlFSUh9sat6hWygwmIzdDrAIVyQe5fuEoV9fw=;
+        b=hR96DdZVhDK+6qksQXwJIuiZ/+XOj3ixyaTOVgExtrmCRA9k9BiJ8s3YgNFLU3xKuU
+         fWsRiWw1w1gvEMoYm/4WwT2wYvA/XzG2nxmCkgdQN5lEU2o7K8hCtDpjCtGO+NTumXRP
+         uplxJLr4QbseEMJyzcTJM6Q79qZ9JbZZ4t3fZakIvTFj+eHpG3u+xWYc795ob+Fklal2
+         v1ZYK++qgNSSeAcaV1RbXR+IIrS7iZfwAe9eYOQ39xfL4eyYQxA0lnKKwIlQ1poZJRtD
+         CXIharTpYAkcZdwr3+0lweYIN+Vul/f/q7ZrGWHMQPR5tLgWCzd/9snJlJ8sjvSsBIAk
+         YwOQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:reply-to:date:in-reply-to:message-id
          :mime-version:references:subject:from:to:cc;
-        bh=dyPlu6qMQUJ5LjPtUc+nebDh2loDqHfHQ3wm6f9Tp5o=;
-        b=tmGACiCQ5MBLzgRvnwBpJp+aJYpECnOuvCtpc4GPDsODitpnu508OEpUwhUmMNCFb6
-         tsLsxVFuiRuW6yGjaLIxwWo/kWB3ygIDZBsF/cw9gOKHSWM5uEjDVeX1ok2c9vuaX4Zz
-         ze/dfXAtDzSRbPyfxgUhVC9jE0J3Z/bIW43ZGLTmY+iOYPZijhNc1t6P0FdSuyVZYaR5
-         8fYLUkMFS4EzmDK98Uxpqz1W2Ffx7Ee8hXfyqEIrTzD54A7MIInHbzfzhQH04khln84B
-         gOi548c4N4Wp7rCh7OLwgk60SHOMUfrlzk4NJDYO1mOSRK2p+bPf0LJGOqAi8TF/J1zg
-         e9jQ==
-X-Gm-Message-State: AOAM531VKyFoj2xv9os2QFKCLrAAGW5aKJbpZOcTOxwaKPSvoZmXVSwF
-        Kp2Uq2VGpE1jyOLE45s23fJeXvhXlcs=
-X-Google-Smtp-Source: ABdhPJx5uNFlnXoBmo29Hg2qrMf8X5oxWz9P6URzdT9YeG34B54qUi08KKILd1696s4SZ+fig3pUMd/8Q0s=
+        bh=292fZgTlFSUh9sat6hWygwmIzdDrAIVyQe5fuEoV9fw=;
+        b=RFn/WzFAF9SL/lXjL4DZa0LS9oGQkQrAEr/HErjXklZg26eMgBHbryy54uEtCA3ADk
+         t4p0IeaTJkN9fouMH0CGQ/2NYr5DqYykhf1ghGBNd/Nbra62dt29ABJjV8yqeWqhNmlU
+         kA+NpEqiRnBc8pRDmWwI521WcFxjVXmPymSqe8YnczVhjl0aXcu+mRMzY9C1Kq9NRYA+
+         dRm+6AZBajA4x5vOgAC0yYXgX0mTe4ovV6LYTFH49MlUqOcy7XLT8/KWcmKnQRUvvfd+
+         1xhF6LCKg6st/NoMqB5BEiD+nmE/DhGLHhyQ5oUuGTKWR7L/IQMi5Bzo7nb78p2cOCAA
+         LC2Q==
+X-Gm-Message-State: AOAM531+Edx3fREDGUPyMS8DCQUp9V77y4zveo7426Yi+OoD0o2iQ/6H
+        b3+aCKj3Gi2rvd2EA1Y+G3+MM7YdA+0=
+X-Google-Smtp-Source: ABdhPJw3HsMyJQjGxgzaMAsKqmp4qMnS3gGyTkKUApJqynd6ijFrp0GM3mYvd7UgiHpqBBeZTNZSLHGABVk=
 Sender: "seanjc via sendgmr" <seanjc@seanjc798194.pdx.corp.google.com>
 X-Received: from seanjc798194.pdx.corp.google.com ([2620:15c:f:10:1ea0:b8ff:fe73:50f5])
- (user=seanjc job=sendgmr) by 2002:a05:6214:1868:: with SMTP id
- eh8mr6375071qvb.50.1610153272597; Fri, 08 Jan 2021 16:47:52 -0800 (PST)
+ (user=seanjc job=sendgmr) by 2002:a25:5:: with SMTP id 5mr9415276yba.478.1610153275053;
+ Fri, 08 Jan 2021 16:47:55 -0800 (PST)
 Reply-To: Sean Christopherson <seanjc@google.com>
-Date:   Fri,  8 Jan 2021 16:47:08 -0800
+Date:   Fri,  8 Jan 2021 16:47:09 -0800
 In-Reply-To: <20210109004714.1341275-1-seanjc@google.com>
-Message-Id: <20210109004714.1341275-8-seanjc@google.com>
+Message-Id: <20210109004714.1341275-9-seanjc@google.com>
 Mime-Version: 1.0
 References: <20210109004714.1341275-1-seanjc@google.com>
 X-Mailer: git-send-email 2.30.0.284.gd98b1dd5eaa7-goog
-Subject: [PATCH 07/13] KVM: SVM: Append "_enabled" to module-scoped SEV/SEV-ES
- control variables
+Subject: [PATCH 08/13] KVM: SVM: Unconditionally invoke sev_hardware_teardown()
 From:   Sean Christopherson <seanjc@google.com>
 To:     Paolo Bonzini <pbonzini@redhat.com>,
         Dave Hansen <dave.hansen@linux.intel.com>,
@@ -74,86 +73,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Rename sev and sev_es to sev_enabled and sev_es_enabled respectively to
-better align with other KVM terminology, and to avoid pseudo-shadowing
-when the variables are moved to sev.c in a future patch ('sev' is often
-used for local struct kvm_sev_info pointers).
+Remove the redundant svm_sev_enabled() check when calling
+sev_hardware_teardown(), the teardown helper itself does the check.
+Removing the check from svm.c will eventually allow dropping
+svm_sev_enabled() entirely.
 
 No functional change intended.
 
 Signed-off-by: Sean Christopherson <seanjc@google.com>
 ---
- arch/x86/kvm/svm/sev.c | 20 ++++++++++----------
- 1 file changed, 10 insertions(+), 10 deletions(-)
+ arch/x86/kvm/svm/svm.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/arch/x86/kvm/svm/sev.c b/arch/x86/kvm/svm/sev.c
-index 8ba93b8fa435..a024edabaca5 100644
---- a/arch/x86/kvm/svm/sev.c
-+++ b/arch/x86/kvm/svm/sev.c
-@@ -28,12 +28,12 @@
- #define __ex(x) __kvm_handle_fault_on_reboot(x)
- 
- /* enable/disable SEV support */
--static int sev = IS_ENABLED(CONFIG_AMD_MEM_ENCRYPT_ACTIVE_BY_DEFAULT);
--module_param(sev, int, 0444);
-+static bool sev_enabled = IS_ENABLED(CONFIG_AMD_MEM_ENCRYPT_ACTIVE_BY_DEFAULT);
-+module_param_named(sev, sev_enabled, bool, 0444);
- 
- /* enable/disable SEV-ES support */
--static int sev_es = IS_ENABLED(CONFIG_AMD_MEM_ENCRYPT_ACTIVE_BY_DEFAULT);
--module_param(sev_es, int, 0444);
-+static bool sev_es_enabled = IS_ENABLED(CONFIG_AMD_MEM_ENCRYPT_ACTIVE_BY_DEFAULT);
-+module_param_named(sev_es, sev_es_enabled, bool, 0444);
- 
- static u8 sev_enc_bit;
- static int sev_flush_asids(void);
-@@ -213,7 +213,7 @@ static int sev_guest_init(struct kvm *kvm, struct kvm_sev_cmd *argp)
- 
- static int sev_es_guest_init(struct kvm *kvm, struct kvm_sev_cmd *argp)
+diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
+index f89f702b2a58..bb7b99743bea 100644
+--- a/arch/x86/kvm/svm/svm.c
++++ b/arch/x86/kvm/svm/svm.c
+@@ -887,8 +887,7 @@ static void svm_hardware_teardown(void)
  {
--	if (!sev_es)
-+	if (!sev_es_enabled)
- 		return -ENOTTY;
+ 	int cpu;
  
- 	to_kvm_svm(kvm)->sev_info.es_active = true;
-@@ -1052,7 +1052,7 @@ int svm_mem_enc_op(struct kvm *kvm, void __user *argp)
- 	struct kvm_sev_cmd sev_cmd;
- 	int r;
+-	if (svm_sev_enabled())
+-		sev_hardware_teardown();
++	sev_hardware_teardown();
  
--	if (!svm_sev_enabled() || !sev)
-+	if (!svm_sev_enabled() || !sev_enabled)
- 		return -ENOTTY;
- 
- 	if (!argp)
-@@ -1257,7 +1257,7 @@ void __init sev_hardware_setup(void)
- 	bool sev_es_supported = false;
- 	bool sev_supported = false;
- 
--	if (!IS_ENABLED(CONFIG_KVM_AMD_SEV) || !sev)
-+	if (!IS_ENABLED(CONFIG_KVM_AMD_SEV) || !sev_enabled)
- 		goto out;
- 
- 	/* Does the CPU support SEV? */
-@@ -1294,7 +1294,7 @@ void __init sev_hardware_setup(void)
- 	sev_supported = true;
- 
- 	/* SEV-ES support requested? */
--	if (!sev_es)
-+	if (!sev_es_enabled)
- 		goto out;
- 
- 	/* Does the CPU support SEV-ES? */
-@@ -1309,8 +1309,8 @@ void __init sev_hardware_setup(void)
- 	sev_es_supported = true;
- 
- out:
--	sev = sev_supported;
--	sev_es = sev_es_supported;
-+	sev_enabled = sev_supported;
-+	sev_es_enabled = sev_es_supported;
- }
- 
- void sev_hardware_teardown(void)
+ 	for_each_possible_cpu(cpu)
+ 		svm_cpu_uninit(cpu);
 -- 
 2.30.0.284.gd98b1dd5eaa7-goog
 
