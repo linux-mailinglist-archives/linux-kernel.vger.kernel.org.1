@@ -2,205 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B6C282F0365
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Jan 2021 21:18:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5850A2F0362
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Jan 2021 21:18:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726390AbhAIUSS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Jan 2021 15:18:18 -0500
-Received: from out03.mta.xmission.com ([166.70.13.233]:59066 "EHLO
-        out03.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726011AbhAIUSR (ORCPT
+        id S1726367AbhAIUR6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Jan 2021 15:17:58 -0500
+Received: from mail-io1-f72.google.com ([209.85.166.72]:53265 "EHLO
+        mail-io1-f72.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726281AbhAIUR5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Jan 2021 15:18:17 -0500
-Received: from in02.mta.xmission.com ([166.70.13.52])
-        by out03.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1kyKg3-000C1r-5P; Sat, 09 Jan 2021 13:17:35 -0700
-Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=x220.xmission.com)
-        by in02.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1kyKg1-002zDO-RD; Sat, 09 Jan 2021 13:17:34 -0700
-From:   ebiederm@xmission.com (Eric W. Biederman)
-To:     Andy Lutomirski <luto@kernel.org>
-Cc:     x86@kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Linux-MM <linux-mm@kvack.org>, Jason Gunthorpe <jgg@ziepe.ca>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Jann Horn <jannh@google.com>, Jan Kara <jack@suse.cz>,
-        Yu Zhao <yuzhao@google.com>, Peter Xu <peterx@redhat.com>
-References: <3d34069ab2d249d866ea1d18a47e4170dbfb5982.1610132102.git.luto@kernel.org>
-Date:   Sat, 09 Jan 2021 14:16:34 -0600
-In-Reply-To: <3d34069ab2d249d866ea1d18a47e4170dbfb5982.1610132102.git.luto@kernel.org>
-        (Andy Lutomirski's message of "Fri, 8 Jan 2021 10:55:05 -0800")
-Message-ID: <87wnwl27dp.fsf@x220.int.ebiederm.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        Sat, 9 Jan 2021 15:17:57 -0500
+Received: by mail-io1-f72.google.com with SMTP id l20so10326443ioc.20
+        for <linux-kernel@vger.kernel.org>; Sat, 09 Jan 2021 12:17:42 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=DOtSLUgu9OHp2xhaOIkH4fbkHc8mfJ2oKCEW3M693y0=;
+        b=hMpaJK/T0SljpELTwcfZx3yvOZk3ETUK0jh7L79ccEX54qXkaSCBYugsSed+flkbOi
+         VOGoWx/pPJsZWwXszjoslfCMwkllmxteKjRmlXQRR3TtfdkO026lUUX5rb8uyMLS175c
+         GOLAI0wA9t/kGQpMFus53onWyIeh2SjX4ZqtSelTzP5FBXPqDtFJa8L436DfMW0aM/YP
+         tPjYf4i9eU9HCPU7YmS1ejooik1GU6PveOtWwm0R7UuVJWftKY1z/Sr1xVhWyZIrWMIh
+         7qg17w85u+JAVeSaFyKRrRFBgn7+wu9V8xnkx6OCu14Ec3n78mptRaBRZDngdOH5E5TT
+         Rp6A==
+X-Gm-Message-State: AOAM533T2Ut6C3FZCaZk6grx3YKXUuAKwlLcYO8bJbUbWFpTzWMvauvm
+        KMHhUTBvnq32dQjXhztVv1cRM4ecx8fLrWIFDV8/nsnE2LpS
+X-Google-Smtp-Source: ABdhPJxxwioHJph+8kt6pb9ZunIYl4nLWF909hlBmmyLcDiQTwOXNZ+LPJZkNYdvHjaMWgkLnaRw86MYW/RmzyKPvNI1vDmTxsBd
 MIME-Version: 1.0
-Content-Type: text/plain
-X-XM-SPF: eid=1kyKg1-002zDO-RD;;;mid=<87wnwl27dp.fsf@x220.int.ebiederm.org>;;;hst=in02.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
-X-XM-AID: U2FsdGVkX19uC6CfjDUjhVI9OFmoq23lyzi5iE8hdC0=
-X-SA-Exim-Connect-IP: 68.227.160.95
-X-SA-Exim-Mail-From: ebiederm@xmission.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa05.xmission.com
-X-Spam-Level: 
-X-Spam-Status: No, score=0.2 required=8.0 tests=ALL_TRUSTED,BAYES_50,
-        DCC_CHECK_NEGATIVE,FVGT_m_MULTI_ODD,T_TM2_M_HEADER_IN_MSG,
-        T_TooManySym_01 autolearn=disabled version=3.4.2
-X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.4994]
-        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
-        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
-        *      [sa05 1397; Body=1 Fuz1=1 Fuz2=1]
-        *  0.0 T_TooManySym_01 4+ unique symbols in subject
-        *  0.4 FVGT_m_MULTI_ODD Contains multiple odd letter combinations
-X-Spam-DCC: XMission; sa05 1397; Body=1 Fuz1=1 Fuz2=1 
-X-Spam-Combo: ;Andy Lutomirski <luto@kernel.org>
-X-Spam-Relay-Country: 
-X-Spam-Timing: total 783 ms - load_scoreonly_sql: 0.05 (0.0%),
-        signal_user_changed: 13 (1.7%), b_tie_ro: 11 (1.4%), parse: 1.73
-        (0.2%), extract_message_metadata: 41 (5.2%), get_uri_detail_list: 6
-        (0.7%), tests_pri_-1000: 46 (5.8%), tests_pri_-950: 1.41 (0.2%),
-        tests_pri_-900: 1.09 (0.1%), tests_pri_-90: 210 (26.8%), check_bayes:
-        181 (23.1%), b_tokenize: 13 (1.6%), b_tok_get_all: 12 (1.6%),
-        b_comp_prob: 22 (2.8%), b_tok_touch_all: 118 (15.1%), b_finish: 5
-        (0.6%), tests_pri_0: 450 (57.4%), check_dkim_signature: 1.06 (0.1%),
-        check_dkim_adsp: 4.0 (0.5%), poll_dns_idle: 0.78 (0.1%), tests_pri_10:
-        2.2 (0.3%), tests_pri_500: 13 (1.6%), rewrite_mail: 0.00 (0.0%)
-Subject: Re: [PATCH] x86/vm86/32: Remove VM86_SCREEN_BITMAP support
-X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
-X-SA-Exim-Scanned: Yes (on in02.mta.xmission.com)
+X-Received: by 2002:a5d:9c57:: with SMTP id 23mr9875259iof.43.1610223436678;
+ Sat, 09 Jan 2021 12:17:16 -0800 (PST)
+Date:   Sat, 09 Jan 2021 12:17:16 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000f3cf2e05b87d5bcd@google.com>
+Subject: WARNING in bpf_prog_test_run_raw_tp
+From:   syzbot <syzbot+4f98876664c7337a4ae6@syzkaller.appspotmail.com>
+To:     akpm@linux-foundation.org, andriin@fb.com, ast@kernel.org,
+        bpf@vger.kernel.org, daniel@iogearbox.net, davem@davemloft.net,
+        hawk@kernel.org, john.fastabend@gmail.com, kafai@fb.com,
+        kpsingh@chromium.org, kuba@kernel.org,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        netdev@vger.kernel.org, songliubraving@fb.com,
+        syzkaller-bugs@googlegroups.com, yhs@fb.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Andy Lutomirski <luto@kernel.org> writes:
+Hello,
 
-> The implementation was rather buggy.  It unconditionally marked PTEs
-> read-only, even for VM_SHARED mappings.  I'm not sure whether this is
-> actually a problem, but it certainly seems unwise.  More importantly, it
-> released the mmap lock before flushing the TLB, which could allow a racing
-> CoW operation to falsely believe that the underlying memory was not
-> writable.
->
-> I can't find any users at all of this mechanism, so just remove it.
+syzbot found the following issue on:
 
-In another age this was used by dosemu.  Have you looked at dosemu to
-see if it still uses this support (on 32bit where dosemu can use vm86)?
+HEAD commit:    f6e7a024 Merge tag 'arc-5.11-rc3' of git://git.kernel.org/..
+git tree:       net
+console output: https://syzkaller.appspot.com/x/log.txt?x=16f6472b500000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=8aa30b9da402d224
+dashboard link: https://syzkaller.appspot.com/bug?extid=4f98876664c7337a4ae6
+compiler:       gcc (GCC) 10.1.0-syz 20200507
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1004b248d00000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1773c767500000
 
-It may still be a valid removal target I just wanted to point out what
-the original user was.
+The issue was bisected to:
 
-Eric
+commit 1b4d60ec162f82ea29a2e7a907b5c6cc9f926321
+Author: Song Liu <songliubraving@fb.com>
+Date:   Fri Sep 25 20:54:29 2020 +0000
 
-> Cc: Andrea Arcangeli <aarcange@redhat.com>
-> Cc: Linux-MM <linux-mm@kvack.org>
-> Cc: Jason Gunthorpe <jgg@ziepe.ca>
-> Cc: x86@kernel.org
-> Cc: Linus Torvalds <torvalds@linux-foundation.org>
-> Cc: Matthew Wilcox <willy@infradead.org>
-> Cc: Jann Horn <jannh@google.com>
-> Cc: Jan Kara <jack@suse.cz>
-> Cc: Yu Zhao <yuzhao@google.com>
-> Cc: Peter Xu <peterx@redhat.com>
-> Signed-off-by: Andy Lutomirski <luto@kernel.org>
-> ---
->  arch/x86/include/uapi/asm/vm86.h |  2 +-
->  arch/x86/kernel/vm86_32.c        | 55 ++++++--------------------------
->  2 files changed, 10 insertions(+), 47 deletions(-)
->
-> diff --git a/arch/x86/include/uapi/asm/vm86.h b/arch/x86/include/uapi/asm/vm86.h
-> index d2ee4e307ef8..50004fb4590d 100644
-> --- a/arch/x86/include/uapi/asm/vm86.h
-> +++ b/arch/x86/include/uapi/asm/vm86.h
-> @@ -106,7 +106,7 @@ struct vm86_struct {
->  /*
->   * flags masks
->   */
-> -#define VM86_SCREEN_BITMAP	0x0001
-> +#define VM86_SCREEN_BITMAP	0x0001        /* no longer supported */
->  
->  struct vm86plus_info_struct {
->  	unsigned long force_return_for_pic:1;
-> diff --git a/arch/x86/kernel/vm86_32.c b/arch/x86/kernel/vm86_32.c
-> index 764573de3996..28b9e8d511e1 100644
-> --- a/arch/x86/kernel/vm86_32.c
-> +++ b/arch/x86/kernel/vm86_32.c
-> @@ -160,49 +160,6 @@ void save_v86_state(struct kernel_vm86_regs *regs, int retval)
->  	do_exit(SIGSEGV);
->  }
->  
-> -static void mark_screen_rdonly(struct mm_struct *mm)
-> -{
-> -	struct vm_area_struct *vma;
-> -	spinlock_t *ptl;
-> -	pgd_t *pgd;
-> -	p4d_t *p4d;
-> -	pud_t *pud;
-> -	pmd_t *pmd;
-> -	pte_t *pte;
-> -	int i;
-> -
-> -	mmap_write_lock(mm);
-> -	pgd = pgd_offset(mm, 0xA0000);
-> -	if (pgd_none_or_clear_bad(pgd))
-> -		goto out;
-> -	p4d = p4d_offset(pgd, 0xA0000);
-> -	if (p4d_none_or_clear_bad(p4d))
-> -		goto out;
-> -	pud = pud_offset(p4d, 0xA0000);
-> -	if (pud_none_or_clear_bad(pud))
-> -		goto out;
-> -	pmd = pmd_offset(pud, 0xA0000);
-> -
-> -	if (pmd_trans_huge(*pmd)) {
-> -		vma = find_vma(mm, 0xA0000);
-> -		split_huge_pmd(vma, pmd, 0xA0000);
-> -	}
-> -	if (pmd_none_or_clear_bad(pmd))
-> -		goto out;
-> -	pte = pte_offset_map_lock(mm, pmd, 0xA0000, &ptl);
-> -	for (i = 0; i < 32; i++) {
-> -		if (pte_present(*pte))
-> -			set_pte(pte, pte_wrprotect(*pte));
-> -		pte++;
-> -	}
-> -	pte_unmap_unlock(pte, ptl);
-> -out:
-> -	mmap_write_unlock(mm);
-> -	flush_tlb_mm_range(mm, 0xA0000, 0xA0000 + 32*PAGE_SIZE, PAGE_SHIFT, false);
-> -}
-> -
-> -
-> -
->  static int do_vm86_irq_handling(int subfunction, int irqnumber);
->  static long do_sys_vm86(struct vm86plus_struct __user *user_vm86, bool plus);
->  
-> @@ -282,6 +239,15 @@ static long do_sys_vm86(struct vm86plus_struct __user *user_vm86, bool plus)
->  			offsetof(struct vm86_struct, int_revectored)))
->  		return -EFAULT;
->  
-> +
-> +	/* VM86_SCREEN_BITMAP had numerous bugs and appears to have no users. */
-> +	if (v.flags & VM86_SCREEN_BITMAP) {
-> +		char comm[TASK_COMM_LEN];
-> +
-> +		pr_info_once("vm86: '%s' uses VM86_SCREEN_BITMAP, which is no longer supported\n", get_task_comm(comm, current);
-> +		return -EINVAL;
-> +	}
-> +
->  	memset(&vm86regs, 0, sizeof(vm86regs));
->  
->  	vm86regs.pt.bx = v.regs.ebx;
-> @@ -370,9 +336,6 @@ static long do_sys_vm86(struct vm86plus_struct __user *user_vm86, bool plus)
->  	update_task_stack(tsk);
->  	preempt_enable();
->  
-> -	if (vm86->flags & VM86_SCREEN_BITMAP)
-> -		mark_screen_rdonly(tsk->mm);
-> -
->  	memcpy((struct kernel_vm86_regs *)regs, &vm86regs, sizeof(vm86regs));
->  	return regs->ax;
->  }
+    bpf: Enable BPF_PROG_TEST_RUN for raw_tracepoint
+
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=15e5b0f7500000
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=17e5b0f7500000
+console output: https://syzkaller.appspot.com/x/log.txt?x=13e5b0f7500000
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+4f98876664c7337a4ae6@syzkaller.appspotmail.com
+Fixes: 1b4d60ec162f ("bpf: Enable BPF_PROG_TEST_RUN for raw_tracepoint")
+
+------------[ cut here ]------------
+WARNING: CPU: 1 PID: 8484 at mm/page_alloc.c:4976 __alloc_pages_nodemask+0x5f8/0x730 mm/page_alloc.c:5011
+Modules linked in:
+CPU: 1 PID: 8484 Comm: syz-executor862 Not tainted 5.11.0-rc2-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:__alloc_pages_nodemask+0x5f8/0x730 mm/page_alloc.c:4976
+Code: 00 00 0c 00 0f 85 a7 00 00 00 8b 3c 24 4c 89 f2 44 89 e6 c6 44 24 70 00 48 89 6c 24 58 e8 d0 d7 ff ff 49 89 c5 e9 ea fc ff ff <0f> 0b e9 b5 fd ff ff 89 74 24 14 4c 89 4c 24 08 4c 89 74 24 18 e8
+RSP: 0018:ffffc900012efb10 EFLAGS: 00010246
+RAX: 0000000000000000 RBX: 1ffff9200025df66 RCX: 0000000000000000
+RDX: 0000000000000000 RSI: dffffc0000000000 RDI: 0000000000140dc0
+RBP: 0000000000140dc0 R08: 0000000000000000 R09: 0000000000000000
+R10: ffffffff81b1f7e1 R11: 0000000000000000 R12: 0000000000000014
+R13: 0000000000000014 R14: 0000000000000000 R15: 0000000000000000
+FS:  000000000190c880(0000) GS:ffff8880b9e00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f08b7f316c0 CR3: 0000000012073000 CR4: 00000000001506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ alloc_pages_current+0x18c/0x2a0 mm/mempolicy.c:2267
+ alloc_pages include/linux/gfp.h:547 [inline]
+ kmalloc_order+0x2e/0xb0 mm/slab_common.c:837
+ kmalloc_order_trace+0x14/0x120 mm/slab_common.c:853
+ kmalloc include/linux/slab.h:557 [inline]
+ kzalloc include/linux/slab.h:682 [inline]
+ bpf_prog_test_run_raw_tp+0x4b5/0x670 net/bpf/test_run.c:282
+ bpf_prog_test_run kernel/bpf/syscall.c:3120 [inline]
+ __do_sys_bpf+0x1ea9/0x4f10 kernel/bpf/syscall.c:4398
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x440499
+Code: 18 89 d0 c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 7b 13 fc ff c3 66 2e 0f 1f 84 00 00 00 00
+RSP: 002b:00007ffe1f3bfb18 EFLAGS: 00000246 ORIG_RAX: 0000000000000141
+RAX: ffffffffffffffda RBX: 00000000004002c8 RCX: 0000000000440499
+RDX: 0000000000000048 RSI: 0000000020000600 RDI: 000000000000000a
+RBP: 00000000006ca018 R08: 0000000000000000 R09: 00000000004002c8
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000401ca0
+R13: 0000000000401d30 R14: 0000000000000000 R15: 0000000000000000
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
