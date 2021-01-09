@@ -2,90 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 49EDB2F02FF
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Jan 2021 20:01:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 71E8A2F0302
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Jan 2021 20:02:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726223AbhAITBC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Jan 2021 14:01:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46800 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726005AbhAITBC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Jan 2021 14:01:02 -0500
-Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72999C0617A2
-        for <linux-kernel@vger.kernel.org>; Sat,  9 Jan 2021 11:00:21 -0800 (PST)
-Received: by mail-lf1-x12c.google.com with SMTP id x20so31019689lfe.12
-        for <linux-kernel@vger.kernel.org>; Sat, 09 Jan 2021 11:00:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=I6Uz/uNKuxv8kpeBK6zjNMwa2VjYpAJbjFDMrzffj6I=;
-        b=B5MuZOKUiCj7xkpKI58UwPgj+2Ygq8bPiwFnSM6GgJ3giVH0HlyrHQVOus3hpeAH+e
-         ihkFNtQrr7VFzpBW/oNSs7g/4YiRSUG5HnzO4DWt6vSIVmtECXfeVEUA3WxEVCPzhO83
-         q5CbQWf/kWSe6EhP4nvdYTWFSoqBeuXlzrhSs=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=I6Uz/uNKuxv8kpeBK6zjNMwa2VjYpAJbjFDMrzffj6I=;
-        b=XA9uidi1XuEgtpSr54bcW59vb1AA6novNXok8cjtGPB/uAD7WfzwnYuhrzktq4IKNg
-         i6ER3ul78UH/QdBz+VSS1j07iAvqS+DMqRsEQ3v9n2vravnrss3hHKhcnPWs0k85rzcn
-         u9Nea7Y2wWVKOerLYZVEqkME3mHmJGm77Ao2yxyQt4ou8uXtPeNV44ExMgHbYm6BmpPd
-         XF4NlvygrFmbsHLJrXJrIC3dtHEqS0NfKPNlGMp7DBnIhdsnctVa+IKvVgyjLsvoeOts
-         92pYcW1OJIV/vJxKzGjjTKY0HOxrjvHJMDUdKv3F9++qN+r+sphzeTEbXQEW63bd7XNz
-         2Iug==
-X-Gm-Message-State: AOAM532j+gYrQK6qCJqt0wUxGtaf8wWH45J+qJF4Gh1l+GzlONGVcBH8
-        eCXCQg4x2Wxnkl1wFokq2XzN4uNYNDg42w==
-X-Google-Smtp-Source: ABdhPJyo73xSzaVkKG5PkqTlZ1Q1xzSW2aYlc+V4nL8tYh35lHLNjGEe8ade5jfrmXpJUl2HuBEYmQ==
-X-Received: by 2002:ac2:4d91:: with SMTP id g17mr3752771lfe.254.1610218818440;
-        Sat, 09 Jan 2021 11:00:18 -0800 (PST)
-Received: from mail-lf1-f50.google.com (mail-lf1-f50.google.com. [209.85.167.50])
-        by smtp.gmail.com with ESMTPSA id 68sm2682704ljj.23.2021.01.09.11.00.17
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 09 Jan 2021 11:00:17 -0800 (PST)
-Received: by mail-lf1-f50.google.com with SMTP id o10so20200258lfl.13
-        for <linux-kernel@vger.kernel.org>; Sat, 09 Jan 2021 11:00:17 -0800 (PST)
-X-Received: by 2002:a05:6512:338f:: with SMTP id h15mr3759713lfg.40.1610218817016;
- Sat, 09 Jan 2021 11:00:17 -0800 (PST)
+        id S1726376AbhAITCV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Jan 2021 14:02:21 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47540 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726293AbhAITCV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 9 Jan 2021 14:02:21 -0500
+Received: from archlinux (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id B6C602399A;
+        Sat,  9 Jan 2021 19:01:37 +0000 (UTC)
+Date:   Sat, 9 Jan 2021 19:01:33 +0000
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Jyoti Bhayana <jbhayana@google.com>
+Cc:     Hartmut Knaack <knaack.h@gmx.de>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Rob Herring <robh@kernel.org>,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+        linux-kernel@vger.kernel.org, linux-iio@vger.kernel.org,
+        cristian.marussi@arm.com, sudeep.holla@arm.com,
+        egranata@google.com, mikhail.golubev@opensynergy.com,
+        Igor.Skalkin@opensynergy.com, Peter.hilber@opensynergy.com,
+        ankitarora@google.com
+Subject: Re: Reply to [RFC PATCH v2 0/1] Adding support for IIO SCMI based
+ sensors
+Message-ID: <20210109190133.61051fab@archlinux>
+In-Reply-To: <20210106212353.951807-1-jbhayana@google.com>
+References: <20210106161233.GA44413@e120937-lin>
+        <20210106212353.951807-1-jbhayana@google.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-References: <20210109064602.GU6918@magnolia>
-In-Reply-To: <20210109064602.GU6918@magnolia>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Sat, 9 Jan 2021 11:00:01 -0800
-X-Gmail-Original-Message-ID: <CAHk-=wibYWuriC4m-zjU10J65peMDAFTjY2EGjTV=COgg1saPw@mail.gmail.com>
-Message-ID: <CAHk-=wibYWuriC4m-zjU10J65peMDAFTjY2EGjTV=COgg1saPw@mail.gmail.com>
-Subject: Re: [PATCH] maintainers: update my email address
-To:     "Darrick J. Wong" <darrick.wong@oracle.com>
-Cc:     xfs <linux-xfs@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Christoph Hellwig <hch@infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 8, 2021 at 10:46 PM Darrick J. Wong <darrick.wong@oracle.com> wrote:
->
-> Change my email contact ahead of a likely painful eleven-month migration
-> to a certain cobalt enteprisey groupware cloud product that will totally
-> break my workflow.  Some day I may get used to having to email being
-> sequestered behind both claret and cerulean oath2+sms 2fa layers, but
-> for now I'll stick with keying in one password to receive an email vs.
-> the required four.
+On Wed,  6 Jan 2021 21:23:53 +0000
+Jyoti Bhayana <jbhayana@google.com> wrote:
 
-So I appreciate this email coming from your old email address, but I
-also just want to note that as long as you then use the oracle email
-address for sending email, commit authorship, and "Signed-off-by:" (or
-Acked-by etc) addresses, those tend to be the ones that _primarily_
-get used when people then CC you on issues.
+> Hi Jonathan,
+> 
+> Instead of adding IIO_VAL_INT_H32_L32, I am thinking of adding IIO_VAL_FRACTIONAL_LONG
+> or IIO_VAL_FRACTIONAL_64 as the scale/exponent used for min/max range can be different
+> than the one used in resolution according to specification. 
 
-Well, at least that's how I work. The MAINTAINERS file tends to be the
-secondary one.
+That's somewhat 'odd'.  Given min/max are inherently values the sensor is supposed to
+be able to return why give them different resolutions?  Can you point me at a specific
+section of the spec?  The axis_min_range_low etc fields don't seem to have units specified
+but I assumed they were in sensor units and so same scale factors?
 
-But I wish you best of luck with the new email setup ;)
+> 
+> I am planning to use read_avail for IIO_CHAN_INFO_PROCESSED using IIO_AVAIL_RANGE 
+> and this new IIO_VAL_FRACTIONAL_64 for min range,max range and resolution.
+> Instead of two values used in IIO_VAL_FRACTIONAL, IIO_VAL_FRACTIONAL_64 will use 4 values
+> val_high,val_low,and val2_high and val2_low.
 
-            Linus
+I'm not keen on the changing that internal kernel interface unless we absolutely
+have to.  read_avail() is called from consumer drivers and they won't know anything
+about this new variant.
+
+> 
+> Let me know if that is an acceptable solution.
+
+Hmm. It isn't a standard use of the ABI given the value in the buffer is (I assume)
+raw (needs scale applied).  However, it isn't excluded by the ABI docs.  Whether
+a standard userspace is going to expect it is not clear to me.
+
+I don't want to end up in a position where we end up with available being generally
+added for processed when what most people care about is what the value range they
+might get from a polled read is (rather than via a buffer).
+
+So I'm not that keen on this solution but if we can find a way to avoid it.
+
+Jonathan
+
+
+> 
+> 
+> Thanks,
+> Jyoti
+> 
+
