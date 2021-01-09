@@ -2,111 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C218D2F0346
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Jan 2021 20:55:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 34A512F0348
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Jan 2021 20:56:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726504AbhAITyt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Jan 2021 14:54:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58248 "EHLO
+        id S1726240AbhAITzb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Jan 2021 14:55:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58398 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726011AbhAITys (ORCPT
+        with ESMTP id S1726005AbhAITza (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Jan 2021 14:54:48 -0500
-Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7B63C061786;
-        Sat,  9 Jan 2021 11:54:07 -0800 (PST)
-Received: by mail-wr1-x430.google.com with SMTP id t16so12274636wra.3;
-        Sat, 09 Jan 2021 11:54:07 -0800 (PST)
+        Sat, 9 Jan 2021 14:55:30 -0500
+Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FD4FC061786;
+        Sat,  9 Jan 2021 11:54:50 -0800 (PST)
+Received: by mail-lf1-x130.google.com with SMTP id x20so31220445lfe.12;
+        Sat, 09 Jan 2021 11:54:50 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=googlemail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=ijErLEx9QijLdxHcyZ6vJJ1tLpwbdCCs0FW9Exd7T0s=;
-        b=fNXpl8jSERFYuXmTo+UYU2Ew+IDg2aYc9+bWQs1AZr0vYg+5g8ywl7dijHV9JlyvtJ
-         ou9Fgm41iOG9vyoxAzxaTaZFGc1IHTC0cs41IxVJ5nBwKSO67hmI7+eWIOuAqxDukskj
-         MsSg5iD43gAgUvr1JPP0JYX6jF9f7Dw20bCrPzJZkbVZwqRI1zMC2VA9alOfPxqxNZLX
-         /I4+S+V1b/hiTAjsRvhUifLPElFbV+o4jWJwcxKLqunITsJEtV9aKtHOra5KBI3OulOG
-         Vg0T/2Yh+c6yFDVgpXq9z/Ytyd2+to2G+8MTvgmPY3dF9RZRmrDaXu8wkjz5VqR5wHO5
-         d1MA==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=NNvmJAWhKnx+Lp6lw/ACPlHC0ggaRodbLPnupnPJ/QM=;
+        b=UDsKHUVYU4IhEm6irSLPJt4gOgVG84UC6JCDbmgDCtayXe94vIoIRNE6fcaBIejAGG
+         ZAqffKLs4z6ZKLVmKpjbKO4B9UKmwD2uAsa7nr4NDqGrlENhiI/pGlmBDH8fubC8yKTa
+         F2D7b4WaUYeIvvY771ai9+VjDFU0M1yBD3MVjW+MGam5G2OUs7CX7Tik9h0Edp3RIqFc
+         9didFHcZpBXkIchiz/gm5lUESe6HAXodrUYONIUnV//fg2e8I8Hz/uXAcb1R4HGOZfQV
+         cyKj/L9B8Tm7tHEtA+SSXBZj8Ole260s26XKyEM3K6MOm4+UkQmvizfzN6eP04QYZ18+
+         aPuw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=ijErLEx9QijLdxHcyZ6vJJ1tLpwbdCCs0FW9Exd7T0s=;
-        b=FOinJzF4KoG8GlA+6yTsBpL5BKZWRno2CTvkElAK8+Ji7JOmPoaQe68ymIihZM9vCN
-         yY3meBJJBeJYvIpP0uZITye85Jp3kAyLc5NDblri7VrApz1NpMkm9MHf79kjxxwtjy+U
-         hi2IFC1XImXJVoZ2kbpfoVjXutqbxti/9ECXAYsjPl/INeiwELXQITrwKbkios6RG72V
-         DzIjUBNWqyQnNBQxm1y4H1F28687VIrK5TAbINyP9jyO21WOJW1fPLC4jKQ7/EfQwsFT
-         1Tqpo9u1u19xj6As6+qR0MwtI3iiUZNJtfva2ds52DJaaOG6eqfCfiF1uwOjES6I77o+
-         AXGA==
-X-Gm-Message-State: AOAM531fRhFvLawuDdWHjW8mZkz2nRNAFR2SevUKNHKUIQBVj0mulCoQ
-        47CH90KUOyr/4CGHMJH428/+PFJ1wVE=
-X-Google-Smtp-Source: ABdhPJxmtS455Upnnhunr7lfShxr6vb7TGcKnwnciUFK6sQEHV1yvNyXaMfgrKmFFX8yAMqkQz7GPA==
-X-Received: by 2002:a5d:470d:: with SMTP id y13mr9352178wrq.309.1610222046562;
-        Sat, 09 Jan 2021 11:54:06 -0800 (PST)
-Received: from localhost.localdomain (p200300f13711ec00428d5cfffeb99db8.dip0.t-ipconnect.de. [2003:f1:3711:ec00:428d:5cff:feb9:9db8])
-        by smtp.googlemail.com with ESMTPSA id x25sm16072863wmc.3.2021.01.09.11.54.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 09 Jan 2021 11:54:06 -0800 (PST)
-From:   Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-To:     linux-mips@vger.kernel.org
-Cc:     tsbogend@alpha.franken.de, linux-kernel@vger.kernel.org,
-        john@phrozen.org, hauke@hauke-m.de,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>
-Subject: [PATCH] MIPS: lantiq: irq: register the interrupt controllers with irqchip_init
-Date:   Sat,  9 Jan 2021 20:53:51 +0100
-Message-Id: <20210109195351.2724769-1-martin.blumenstingl@googlemail.com>
-X-Mailer: git-send-email 2.30.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=NNvmJAWhKnx+Lp6lw/ACPlHC0ggaRodbLPnupnPJ/QM=;
+        b=nUKXSmMZyqCjluYNBZ4CiwFTXYaJUb7M5LZM1UGF77mBByCuFPOR0BwAoW2F3DYQ/6
+         eNDj4UZh0Jyq3765dFKRywJkJ3agOeuYx5uqxlJVaK6zHEG5vK+5+U4ZTqSi+fv5RzPw
+         48UQ8x37QJLZA9nhcIuh5wq266znWHQBTyeMOXFlvk5ONCzCxoQWkv55EbrN32qP0UtH
+         uf9WkOnVZf1OkMWgfqwP+ZKszCYBR4/5irAo7cHxY4EVNj+3GPoo9P4eULKlmXuvd3A/
+         F8FAGcL+MArtkWPBQS5+VER9X/BAIkfTYHCtGXx02PcvvDCmoduBNbVuSprzLBbfBiKq
+         ssDA==
+X-Gm-Message-State: AOAM530ge2V48zUWFIYkdG25jLMDOx0RIGG54PThLf1uuuEyJF6h1RkW
+        cjR6g6OLvylDBMW6rtezdJloNZ60hWcewwJ0NYA=
+X-Google-Smtp-Source: ABdhPJxMuFYqABsH1N8e+qdc3YdYhatKlC2BjZf6ZcFY7c2md3GjAogfwEBs1F+9nGKVa2d2EpxiZMHu3APMmJtQVdw=
+X-Received: by 2002:a2e:b556:: with SMTP id a22mr3926278ljn.264.1610222088657;
+ Sat, 09 Jan 2021 11:54:48 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <1610144511-19018-1-git-send-email-oliver.graute@gmail.com> <1610144511-19018-4-git-send-email-oliver.graute@gmail.com>
+In-Reply-To: <1610144511-19018-4-git-send-email-oliver.graute@gmail.com>
+From:   Fabio Estevam <festevam@gmail.com>
+Date:   Sat, 9 Jan 2021 16:54:37 -0300
+Message-ID: <CAOMZO5CD2GBroqf+c4vLwDmDEhU3ScGt8b7pxC+YuZK_aKS3nQ@mail.gmail.com>
+Subject: Re: [PATCH v3 3/3] dt-bindings: arm: fsl: Add Variscite i.MX6UL compatibles
+To:     Oliver Graute <oliver.graute@gmail.com>
+Cc:     Shawn Guo <shawnguo@kernel.org>,
+        Marco Felsch <m.felsch@pengutronix.de>,
+        Neil Armstrong <narmstrong@baylibre.com>, parthitce@gmail.com,
+        Rob Herring <robh+dt@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Stefan Riedmueller <s.riedmueller@phytec.de>,
+        Michael Walle <michael@walle.cc>,
+        Robert Jones <rjones@gateworks.com>,
+        =?UTF-8?Q?S=C3=A9bastien_Szymanski?= 
+        <sebastien.szymanski@armadeus.com>, Li Yang <leoyang.li@nxp.com>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add support for more interrupt controllers by switching from
-of_irq_init() to irqchip_init() in Lantiq's arch_init_irq(). This
-requires switching the ICU interrupt controller to use
-IRQCHIP_DECLARE(), like a real irqchip driver would do.
+On Fri, Jan 8, 2021 at 7:23 PM Oliver Graute <oliver.graute@gmail.com> wrote:
 
-This is needed for future changes when new irqchip drivers are
-implemented:
-- a dedicated driver for the EIU interrupt controller
-- a driver for the MSI PIC (Programmable Interrupt Controller) found on
-  VRX200 and newer SoCs
-- ..or any other driver which uses IRQCHIP_DECLARE
+> diff --git a/Documentation/devicetree/bindings/arm/fsl.yaml b/Documentation/devicetree/bindings/arm/fsl.yaml
+> index 05906e2..5f74d78 100644
+> --- a/Documentation/devicetree/bindings/arm/fsl.yaml
+> +++ b/Documentation/devicetree/bindings/arm/fsl.yaml
+> @@ -240,6 +240,7 @@ properties:
+>                - technexion,imx6ul-pico-dwarf   # TechNexion i.MX6UL Pico-Dwarf
+>                - technexion,imx6ul-pico-hobbit  # TechNexion i.MX6UL Pico-Hobbit
+>                - technexion,imx6ul-pico-pi      # TechNexion i.MX6UL Pico-Pi
+> +              - variscite,imx6ul-var-6ulcustomboard # i.MX UltraLite Carrier-board
 
-Signed-off-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
----
- arch/mips/lantiq/irq.c | 8 +++-----
- 1 file changed, 3 insertions(+), 5 deletions(-)
-
-diff --git a/arch/mips/lantiq/irq.c b/arch/mips/lantiq/irq.c
-index df8eed3875f6..76806d11e483 100644
---- a/arch/mips/lantiq/irq.c
-+++ b/arch/mips/lantiq/irq.c
-@@ -8,6 +8,7 @@
- #include <linux/interrupt.h>
- #include <linux/ioport.h>
- #include <linux/sched.h>
-+#include <linux/irqchip.h>
- #include <linux/irqdomain.h>
- #include <linux/of_platform.h>
- #include <linux/of_address.h>
-@@ -422,12 +423,9 @@ unsigned int get_c0_compare_int(void)
- 	return CP0_LEGACY_COMPARE_IRQ;
- }
- 
--static const struct of_device_id of_irq_ids[] __initconst = {
--	{ .compatible = "lantiq,icu", .data = icu_of_init },
--	{},
--};
-+IRQCHIP_DECLARE(lantiq_icu, "lantiq,icu", icu_of_init);
- 
- void __init arch_init_irq(void)
- {
--	of_irq_init(of_irq_ids);
-+	irqchip_init();
- }
--- 
-2.30.0
-
+You missed to add a "6" in the description: i.MX6 UltraLite Carrier-board
