@@ -2,121 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D10CC2F0430
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Jan 2021 23:59:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 09F7F2F0437
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Jan 2021 00:02:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726315AbhAIW7e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Jan 2021 17:59:34 -0500
-Received: from mail-1.ca.inter.net ([208.85.220.69]:59948 "EHLO
-        mail-1.ca.inter.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726068AbhAIW7e (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Jan 2021 17:59:34 -0500
-Received: from localhost (offload-3.ca.inter.net [208.85.220.70])
-        by mail-1.ca.inter.net (Postfix) with ESMTP id 3EEB82EA491;
-        Sat,  9 Jan 2021 17:58:52 -0500 (EST)
-Received: from mail-1.ca.inter.net ([208.85.220.69])
-        by localhost (offload-3.ca.inter.net [208.85.220.70]) (amavisd-new, port 10024)
-        with ESMTP id leBru8RgDJjg; Sat,  9 Jan 2021 17:45:52 -0500 (EST)
-Received: from [192.168.48.23] (host-104-157-204-209.dyn.295.ca [104.157.204.209])
-        (using TLSv1 with cipher DHE-RSA-AES128-SHA (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: dgilbert@interlog.com)
-        by mail-1.ca.inter.net (Postfix) with ESMTPSA id 400562EA023;
-        Sat,  9 Jan 2021 17:58:51 -0500 (EST)
-Reply-To: dgilbert@interlog.com
-Subject: Re: [PATCH v5 1/4] sgl_alloc_order: remove 4 GiB limit, sgl_free()
- warning
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     linux-scsi@vger.kernel.org, linux-block@vger.kernel.org,
-        target-devel@vger.kernel.org, linux-rdma@vger.kernel.org,
-        linux-kernel@vger.kernel.org, martin.petersen@oracle.com,
-        jejb@linux.vnet.ibm.com, bostroesser@gmail.com, bvanassche@acm.org,
-        ddiss@suse.de
-References: <20201228234955.190858-1-dgilbert@interlog.com>
- <20201228234955.190858-2-dgilbert@interlog.com>
- <20210107174410.GB504133@ziepe.ca>
-From:   Douglas Gilbert <dgilbert@interlog.com>
-Message-ID: <76827f07-9484-d2c6-346b-0bdccfdf4a7a@interlog.com>
-Date:   Sat, 9 Jan 2021 17:58:50 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1726376AbhAIXAZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Jan 2021 18:00:25 -0500
+Received: from mail.kernel.org ([198.145.29.99]:46104 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726062AbhAIXAZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 9 Jan 2021 18:00:25 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5D80D238E8
+        for <linux-kernel@vger.kernel.org>; Sat,  9 Jan 2021 22:59:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1610233184;
+        bh=fnoMgybr+1G8nuwpGXS+MC2Rlg+Qkb5sQs6b/Ft7L/8=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=cbsV4BqtD6w0gO5iPcgjgMz7uF/CVhwf5IientYpv2WVOdJPOSS8Rd7saou2Rp06H
+         20373RonIDE7vNkJkPkN3vCC0jkUbwgPFQvJ1mS5Z2YP8m6qEWo1ut8qXSZE4JgGOs
+         wwHboK8O7R3MkRA3wkP82cp8B7QZH0iX6JOZ20YTHcNZ9WnD++0wu9YieoIyr0/buY
+         PXaasg9VanpmG0PwZXufzxTcQgQPpdPTKlwnng934zLLvBPFyjruCbBGGUqDrZW80r
+         RWuiXe+LZ5ztLsPpkvzY7fA+jwtRgqkPMhQYFlC5S33B2ZoRVkA3wzHoi8zm3aZdFT
+         CIhyzkDt2MBsA==
+Received: by mail-ed1-f51.google.com with SMTP id y24so14922995edt.10
+        for <linux-kernel@vger.kernel.org>; Sat, 09 Jan 2021 14:59:44 -0800 (PST)
+X-Gm-Message-State: AOAM530jopB6nV64LN+ak1JYkPmC7ZuIPqd81vg8WPojx2SdyXAI3WsX
+        9ZsV/tNmgP386b28cRxw92zqgxPIb9Q4UBa3Yw==
+X-Google-Smtp-Source: ABdhPJzg/pGerCaQWoQQQmH4uyvNLs23kMnBDhHhKxh3kBiwEEtWRcupfoLlQtwoM6WHVeOmHlY13STveFAlYY4+9P0=
+X-Received: by 2002:a05:6402:3048:: with SMTP id bu8mr9553978edb.49.1610233182880;
+ Sat, 09 Jan 2021 14:59:42 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20210107174410.GB504133@ziepe.ca>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-CA
-Content-Transfer-Encoding: 7bit
+References: <20201202235856.7652-1-chunkuang.hu@kernel.org>
+In-Reply-To: <20201202235856.7652-1-chunkuang.hu@kernel.org>
+From:   Chun-Kuang Hu <chunkuang.hu@kernel.org>
+Date:   Sun, 10 Jan 2021 06:59:30 +0800
+X-Gmail-Original-Message-ID: <CAAOTY__p4C0ctXuOFu42-9HaTrGnOef-Sg47pyC0Uk7yN5406w@mail.gmail.com>
+Message-ID: <CAAOTY__p4C0ctXuOFu42-9HaTrGnOef-Sg47pyC0Uk7yN5406w@mail.gmail.com>
+Subject: Re: [PATCH] soc: mediatek: cmdq: Remove cmdq_pkt_flush()
+To:     Chun-Kuang Hu <chunkuang.hu@kernel.org>
+Cc:     Matthias Brugger <matthias.bgg@gmail.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        DRI Development <dri-devel@lists.freedesktop.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-01-07 12:44 p.m., Jason Gunthorpe wrote:
-> On Mon, Dec 28, 2020 at 06:49:52PM -0500, Douglas Gilbert wrote:
->> diff --git a/lib/scatterlist.c b/lib/scatterlist.c
->> index a59778946404..4986545beef9 100644
->> +++ b/lib/scatterlist.c
->> @@ -554,13 +554,15 @@ EXPORT_SYMBOL(sg_alloc_table_from_pages);
->>   #ifdef CONFIG_SGL_ALLOC
->>   
->>   /**
->> - * sgl_alloc_order - allocate a scatterlist and its pages
->> + * sgl_alloc_order - allocate a scatterlist with equally sized elements
->>    * @length: Length in bytes of the scatterlist. Must be at least one
->> - * @order: Second argument for alloc_pages()
->> + * @order: Second argument for alloc_pages(). Each sgl element size will
->> + *	   be (PAGE_SIZE*2^order) bytes
->>    * @chainable: Whether or not to allocate an extra element in the scatterlist
->> - *	for scatterlist chaining purposes
->> + *	       for scatterlist chaining purposes
->>    * @gfp: Memory allocation flags
->> - * @nent_p: [out] Number of entries in the scatterlist that have pages
->> + * @nent_p: [out] Number of entries in the scatterlist that have pages.
->> + *		  Ignored if NULL is given.
->>    *
->>    * Returns: A pointer to an initialized scatterlist or %NULL upon failure.
->>    */
->> @@ -574,8 +576,8 @@ struct scatterlist *sgl_alloc_order(unsigned long long length,
->>   	u32 elem_len;
->>   
->>   	nent = round_up(length, PAGE_SIZE << order) >> (PAGE_SHIFT + order);
->> -	/* Check for integer overflow */
->> -	if (length > (nent << (PAGE_SHIFT + order)))
->> +	/* Integer overflow if:  length > nent*2^(PAGE_SHIFT+order) */
->> +	if (ilog2(length) > ilog2(nent) + PAGE_SHIFT + order)
->>   		return NULL;
->>   	nalloc = nent;
->>   	if (chainable) {
-> 
-> This is a little bit too tortured now, how about this:
-> 
-> 	if (length >> (PAGE_SHIFT + order) >= UINT_MAX)
-> 		return NULL;
-> 	nent = length >> (PAGE_SHIFT + order);
-> 	if (length & ((1ULL << (PAGE_SHIFT + order)) - 1))
-> 		nent++;
-> 
-> 	if (chainable) {
-> 		if (check_add_overflow(nent, 1, &nalloc))
-> 			return NULL;
-> 	}
-> 	else
-> 		nalloc = nent;
-> 
+Hi, Matthias:
 
-And your proposal is less <<tortured>> ?
+Chun-Kuang Hu <chunkuang.hu@kernel.org> =E6=96=BC 2020=E5=B9=B412=E6=9C=883=
+=E6=97=A5 =E9=80=B1=E5=9B=9B =E4=B8=8A=E5=8D=887:59=E5=AF=AB=E9=81=93=EF=BC=
+=9A
+>
+> rx_callback is a standard mailbox callback mechanism and could
+> cover the function of proprietary cmdq_task_cb, so it is better
+> to use the standard one instead of the proprietary one. But
+> register rx_callback should before mbox_request_channel(),
+> so remove cmdq_pkt_flush() and let client driver implement
+> its own synchronous flush.
 
-I'm looking at performance, not elegance and I'm betting that two
-ilog2() calls [which boil down to ffs()] are faster than two
-right-shift-by-n_s and one left-shift-by-n . Perhaps an extra comment
-could help my code by noting that mathematically:
-   /* if n > m for positive n and m then: log(n) > log(m) */
+How do you think about this patch? This patch is derived from [1]
+according to Jassi's suggestion [2].
 
-My original preference was to drop the check all together but Bart
-Van Assche (who wrote that function) wanted me to keep it. Any
-function that takes 'order' (i.e. an exponent) can blow up given
-a silly value.
+[1] https://patchwork.kernel.org/project/linux-mediatek/patch/2020092723042=
+2.11610-3-chunkuang.hu@kernel.org/
+[2] https://patchwork.kernel.org/project/linux-mediatek/cover/2020092723042=
+2.11610-1-chunkuang.hu@kernel.org/
 
+Regards,
+Chun-Kuang.
 
-The chainable check_add_overflow() call is new and an improvement.
-
-Doug Gilbert
+>
+> Signed-off-by: Chun-Kuang Hu <chunkuang.hu@kernel.org>
+> ---
+>  drivers/soc/mediatek/mtk-cmdq-helper.c | 32 --------------------------
+>  include/linux/soc/mediatek/mtk-cmdq.h  | 12 ----------
+>  2 files changed, 44 deletions(-)
+>
+> diff --git a/drivers/soc/mediatek/mtk-cmdq-helper.c b/drivers/soc/mediate=
+k/mtk-cmdq-helper.c
+> index 505651b0d715..fd3bc39538a1 100644
+> --- a/drivers/soc/mediatek/mtk-cmdq-helper.c
+> +++ b/drivers/soc/mediatek/mtk-cmdq-helper.c
+> @@ -502,36 +502,4 @@ int cmdq_pkt_flush_async(struct cmdq_pkt *pkt, cmdq_=
+async_flush_cb cb,
+>  }
+>  EXPORT_SYMBOL(cmdq_pkt_flush_async);
+>
+> -struct cmdq_flush_completion {
+> -       struct completion cmplt;
+> -       bool err;
+> -};
+> -
+> -static void cmdq_pkt_flush_cb(struct cmdq_cb_data data)
+> -{
+> -       struct cmdq_flush_completion *cmplt;
+> -
+> -       cmplt =3D (struct cmdq_flush_completion *)data.data;
+> -       if (data.sta !=3D CMDQ_CB_NORMAL)
+> -               cmplt->err =3D true;
+> -       else
+> -               cmplt->err =3D false;
+> -       complete(&cmplt->cmplt);
+> -}
+> -
+> -int cmdq_pkt_flush(struct cmdq_pkt *pkt)
+> -{
+> -       struct cmdq_flush_completion cmplt;
+> -       int err;
+> -
+> -       init_completion(&cmplt.cmplt);
+> -       err =3D cmdq_pkt_flush_async(pkt, cmdq_pkt_flush_cb, &cmplt);
+> -       if (err < 0)
+> -               return err;
+> -       wait_for_completion(&cmplt.cmplt);
+> -
+> -       return cmplt.err ? -EFAULT : 0;
+> -}
+> -EXPORT_SYMBOL(cmdq_pkt_flush);
+> -
+>  MODULE_LICENSE("GPL v2");
+> diff --git a/include/linux/soc/mediatek/mtk-cmdq.h b/include/linux/soc/me=
+diatek/mtk-cmdq.h
+> index 960704d75994..2c6aa84c0e80 100644
+> --- a/include/linux/soc/mediatek/mtk-cmdq.h
+> +++ b/include/linux/soc/mediatek/mtk-cmdq.h
+> @@ -288,16 +288,4 @@ int cmdq_pkt_finalize(struct cmdq_pkt *pkt);
+>  int cmdq_pkt_flush_async(struct cmdq_pkt *pkt, cmdq_async_flush_cb cb,
+>                          void *data);
+>
+> -/**
+> - * cmdq_pkt_flush() - trigger CMDQ to execute the CMDQ packet
+> - * @pkt:       the CMDQ packet
+> - *
+> - * Return: 0 for success; else the error code is returned
+> - *
+> - * Trigger CMDQ to execute the CMDQ packet. Note that this is a
+> - * synchronous flush function. When the function returned, the recorded
+> - * commands have been done.
+> - */
+> -int cmdq_pkt_flush(struct cmdq_pkt *pkt);
+> -
+>  #endif /* __MTK_CMDQ_H__ */
+> --
+> 2.17.1
+>
