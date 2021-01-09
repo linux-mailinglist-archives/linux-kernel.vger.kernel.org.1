@@ -2,78 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CE5D2F0030
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Jan 2021 14:51:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B8832F0039
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Jan 2021 14:53:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726196AbhAINu3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Jan 2021 08:50:29 -0500
-Received: from gloria.sntech.de ([185.11.138.130]:35890 "EHLO gloria.sntech.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725872AbhAINu2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Jan 2021 08:50:28 -0500
-Received: from ip5f5aa64a.dynamic.kabel-deutschland.de ([95.90.166.74] helo=diego.localnet)
-        by gloria.sntech.de with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <heiko@sntech.de>)
-        id 1kyEcX-0000Ht-R5; Sat, 09 Jan 2021 14:49:33 +0100
-From:   Heiko =?ISO-8859-1?Q?St=FCbner?= <heiko@sntech.de>
-To:     Johan Jonker <jbx6244@gmail.com>
-Cc:     robh+dt@kernel.org, mchehab@kernel.org, jacob-chen@iotwrt.com,
-        ezequiel@collabora.com, linux-media@vger.kernel.org,
-        linux-rockchip@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Hans Verkuil <hverkuil@xs4all.nl>
-Subject: Re: [RFC PATCH v1 1/4] media: dt-bindings: rockchip-rga: add more rga compatible properties
-Date:   Sat, 09 Jan 2021 14:49:32 +0100
-Message-ID: <1863232.usQuhbGJ8B@diego>
-In-Reply-To: <20201219112653.10705-1-jbx6244@gmail.com>
-References: <20201219112653.10705-1-jbx6244@gmail.com>
+        id S1726558AbhAINwM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Jan 2021 08:52:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37250 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725839AbhAINwL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 9 Jan 2021 08:52:11 -0500
+Received: from relay04.th.seeweb.it (relay04.th.seeweb.it [IPv6:2001:4b7a:2000:18::165])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B025AC061786;
+        Sat,  9 Jan 2021 05:51:15 -0800 (PST)
+Received: from IcarusMOD.eternityproject.eu (unknown [2.237.20.237])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by m-r1.th.seeweb.it (Postfix) with ESMTPSA id 0F3A51F4EA;
+        Sat,  9 Jan 2021 14:51:14 +0100 (CET)
+From:   AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@somainline.org>
+To:     linux-arm-msm@vger.kernel.org
+Cc:     konrad.dybcio@somainline.org, marijn.suijten@somainline.org,
+        martin.botka@somainline.org, phone-devel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, robdclark@gmail.com, sean@poorly.run,
+        airlied@linux.ie, daniel@ffwll.ch, dri-devel@lists.freedesktop.org,
+        freedreno@lists.freedesktop.org,
+        AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@somainline.org>
+Subject: [PATCH 0/5] Clock fixes for DSI 10nm PLL
+Date:   Sat,  9 Jan 2021 14:51:07 +0100
+Message-Id: <20210109135112.147759-1-angelogioacchino.delregno@somainline.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am Samstag, 19. Dezember 2020, 12:26:50 CET schrieb Johan Jonker:
-> Add more rga compatible properties.
-> 
-> "rockchip,px30-rga", "rockchip,rk3288-rga"
-> "rockchip,rk3328-rga", "rockchip,rk3288-rga"
-> "rockchip,rk3368-rga", "rockchip,rk3288-rga"
-> 
-> make ARCH=arm64 dt_binding_check
-> DT_SCHEMA_FILES=Documentation/devicetree/bindings/media/rockchip-rga.yaml
-> 
-> Signed-off-by: Johan Jonker <jbx6244@gmail.com>
+The DSI 10nm PLL driver was apparently ported from downstream, but some
+of its "features" were not ported over, for a good reason.
+Pity is that the removal of the downstream dependencies broke the clock
+calculation logic for this driver and that made it impossible to use any
+DSI display on at least MSM8998.
 
-this patch1 should probably go through the media-tree.
-So hopefully media-people will notice this series?
+This patch series fixes the calculation issues and also solves some TODOs
+that I've found in this driver.
 
+Tested on:
+- Sony Xperia XZ Premium (MSM8998) dual-dsi command-mode LCD display
+- F(x)Tec Pro1 (MSM8998) single dsi, video-mode OLED display
 
-> ---
->  Documentation/devicetree/bindings/media/rockchip-rga.yaml | 6 +++++-
->  1 file changed, 5 insertions(+), 1 deletion(-)
-> 
-> diff --git a/Documentation/devicetree/bindings/media/rockchip-rga.yaml b/Documentation/devicetree/bindings/media/rockchip-rga.yaml
-> index dd645ddcc..a609b63bb 100644
-> --- a/Documentation/devicetree/bindings/media/rockchip-rga.yaml
-> +++ b/Documentation/devicetree/bindings/media/rockchip-rga.yaml
-> @@ -21,7 +21,11 @@ properties:
->        - const: rockchip,rk3288-rga
->        - const: rockchip,rk3399-rga
->        - items:
-> -          - const: rockchip,rk3228-rga
-> +          - enum:
-> +              - rockchip,px30-rga
-> +              - rockchip,rk3228-rga
-> +              - rockchip,rk3328-rga
-> +              - rockchip,rk3368-rga
->            - const: rockchip,rk3288-rga
->  
->    reg:
-> 
+AngeloGioacchino Del Regno (5):
+  drm/msm/dsi_pll_10nm: Fix dividing the same numbers twice
+  drm/msm/dsi_pll_10nm: Solve TODO for multiplier frac_bits assignment
+  drm/msm/dsi_pll_10nm: Fix bad VCO rate calculation and prescaler
+  drm/msm/dsi_pll_10nm: Fix variable usage for pll_lockdet_rate
+  drm/msm/dsi_pll_10nm: Convert pr_err prints to DRM_DEV_ERROR
 
+ drivers/gpu/drm/msm/dsi/pll/dsi_pll_10nm.c | 43 ++++++++++------------
+ 1 file changed, 20 insertions(+), 23 deletions(-)
 
-
+-- 
+2.29.2
 
