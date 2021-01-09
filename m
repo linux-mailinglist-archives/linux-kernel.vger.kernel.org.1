@@ -2,71 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4675F2EFE1A
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Jan 2021 06:55:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 389312EFE1C
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Jan 2021 07:05:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726321AbhAIFve (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Jan 2021 00:51:34 -0500
-Received: from wout1-smtp.messagingengine.com ([64.147.123.24]:40579 "EHLO
-        wout1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725852AbhAIFve (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Jan 2021 00:51:34 -0500
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
-        by mailout.west.internal (Postfix) with ESMTP id D5D9519C9
-        for <linux-kernel@vger.kernel.org>; Sat,  9 Jan 2021 00:50:47 -0500 (EST)
-Received: from imap6 ([10.202.2.56])
-  by compute2.internal (MEProxy); Sat, 09 Jan 2021 00:50:47 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kode54.net; h=
-        mime-version:message-id:date:from:to:subject:content-type; s=
-        fm2; bh=fuj2hxn9MCY7SusyLczxNdhSHb7ZtnoN3g8oH8GUMa0=; b=I+ohpY4t
-        JNQQvFz33d0Sjax6FhxfwO8SUfx0+oJzwKJVkZzcYV4q8NmjeIKfFnzXLlpk6JV7
-        UKji7nscfiaj5KCoIXkwSl6F8HtXryOLVnQU5JaKTzmC8aG7316vyMWtMoVhSkRt
-        426jHT9erFhxULDJI5v7kQmCzgphHn66IkKmIonZDIGALHQdQ3PRcW3IozSKW7HA
-        cEeweTzGKfL6b/Rxra2HM8Jicpu1eaQPV3NUOvILwnYzKkgy84MREDgAubQcGrsp
-        c0Vca+Pn6rBw0VaWuyjd6yUCy0JJLvYDVImGAh1Z7ftYOWJP/FFSjT8cSr47N8Xg
-        bjHzXwpV1daksA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=content-type:date:from:message-id
-        :mime-version:subject:to:x-me-proxy:x-me-proxy:x-me-sender
-        :x-me-sender:x-sasl-enc; s=fm1; bh=fuj2hxn9MCY7SusyLczxNdhSHb7Zt
-        noN3g8oH8GUMa0=; b=Tt5q0nbmQIetYRWNEP5KxWucz49U8ypoDVLF7QYNR3AjS
-        NLbBn19zNg3n9xIj6T6VbtN2jm1WHe1yjl+6F3CeYcuDSl9JyAK7mM2Fj8yzckOX
-        yig8E0H2o4GW/8z4BKkLzST73LqiJVTywh0rBTilDXWwC3fXFpMUxAXMscxfaav8
-        sFWccGWPeGNtnL2/Q8+vMhCoZrZQmOEBx3V4B1dk7HX2ZKx7VxxhyAIU14uhkuq0
-        N+n7t6G8krjiJQe3pa3k8Y/qsF7K5Rs6OW+xTdbIOX8j1um1Kn5y5F72aWAfYrFc
-        5aiLJNwnqu584oTtZx8TzvRifhu957gJUx+NpXFJw==
-X-ME-Sender: <xms:N0T5X4d7hrsRIxn_BKrG-OwRS-KivYwnKe87EC7FBEUWHHaqDXPGbg>
-    <xme:N0T5X6P-p-V4CDjzHSFuDb6KrrseYC0YXplFnMZnzFyPs7DdzPt_fQsGmgVWfjDSe
-    pHtPQg7rftcfggQznY>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrvdegiedgfeehucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucenucfjughrpefofgggkfffhffvufgtsehttdertd
-    erreejnecuhfhrohhmpedfvehhrhhishhtohhphhgvrhcuhghilhhlihgrmhcuufhnohif
-    hhhilhhlfdcuoegthhhrihhssehkohguvgehgedrnhgvtheqnecuggftrfgrthhtvghrnh
-    epvddvjeffkeeujeeiuedugeehfeduteeluedtgeevtdeuveettdeluedvheefueetnecu
-    ffhomhgrihhnpehlkhhmlhdrohhrghenucevlhhushhtvghrufhiiigvpedtnecurfgrrh
-    grmhepmhgrihhlfhhrohhmpegthhhrihhssehkohguvgehgedrnhgvth
-X-ME-Proxy: <xmx:N0T5X5g18sZtx1UNt21YKChzwiMFvBsIQ7YvvLM2tGzNdiD2ksHoUw>
-    <xmx:N0T5X9_NSs5bjAniNxPV0JOPiDnaKs2TY1Odkyc-OIQeHwDjic1THQ>
-    <xmx:N0T5X0vGp3IiK1nOGHWCD5VuXrM2y24Th4heeoux6SxQA04ZwrefZw>
-    <xmx:N0T5Xy4w4vIbfSYvZ13tK40Fg2GOxcNekNBydUsgnWDIjEa1SIYjFA>
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id A4A3B1400A1; Sat,  9 Jan 2021 00:50:54 -0500 (EST)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.3.1-61-gb52c239-fm-20201210.001-gb52c2396
-Mime-Version: 1.0
-Message-Id: <e3367030-b822-4f17-9c6f-cd7e0e2f9933@www.fastmail.com>
-Date:   Fri, 08 Jan 2021 21:50:26 -0800
-From:   "Christopher William Snowhill" <chris@kode54.net>
-To:     linux-kernel@vger.kernel.org
-Subject: =?UTF-8?Q?Re:_False_positive_"do=5FIRQ:_#.55_No_irq_handler_for_vector"_?=
- =?UTF-8?Q?messages_on_AMD_ryzen_based_laptops?=
-Content-Type: text/plain
+        id S1726352AbhAIGAS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Jan 2021 01:00:18 -0500
+Received: from wtarreau.pck.nerim.net ([62.212.114.60]:48972 "EHLO 1wt.eu"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725852AbhAIGAR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 9 Jan 2021 01:00:17 -0500
+Received: (from willy@localhost)
+        by pcw.home.local (8.15.2/8.15.2/Submit) id 1095ujS9002016;
+        Sat, 9 Jan 2021 06:56:45 +0100
+Date:   Sat, 9 Jan 2021 06:56:45 +0100
+From:   Willy Tarreau <w@1wt.eu>
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Krzysztof Adamski <krzysztof.adamski@nokia.com>,
+        Oleksij Rempel <o.rempel@pengutronix.de>,
+        Baruch Siach <baruch@tkos.co.il>,
+        Russell King - ARM Linux <linux@armlinux.org.uk>,
+        Daniel Tang <dt.tangr@gmail.com>,
+        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>, Jamie Iles <jamie@jamieiles.com>,
+        Barry Song <song.bao.hua@hisilicon.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Jonas Jensen <jonas.jensen@gmail.com>,
+        Marc Gonzalez <marc.w.gonzalez@free.fr>,
+        Hartley Sweeten <hsweeten@visionengravers.com>,
+        Lubomir Rintel <lkundrak@v3.sk>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Shawn Guo <shawnguo@kernel.org>, Alex Elder <elder@linaro.org>,
+        Alexander Shiyan <shc_work@mail.ru>,
+        Koen Vandeputte <koen.vandeputte@ncentric.com>,
+        Hans Ulli Kroll <ulli.kroll@googlemail.com>,
+        Vladimir Zapolskiy <vz@mleia.com>,
+        Wei Xu <xuwei5@hisilicon.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Yoshinori Sato <ysato@users.osdn.me>,
+        Mark Salter <msalter@redhat.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Subject: Re: Old platforms: bring out your dead
+Message-ID: <20210109055645.GA2009@1wt.eu>
+References: <CAK8P3a2VW8T+yYUG1pn1yR-5eU4jJXe1+M_ot6DAvfr2KyXCzQ@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAK8P3a2VW8T+yYUG1pn1yR-5eU4jJXe1+M_ot6DAvfr2KyXCzQ@mail.gmail.com>
+User-Agent: Mutt/1.6.1 (2016-04-27)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Replying to https://lkml.org/lkml/2019/2/19/516 from yes, 2019.
+On Fri, Jan 08, 2021 at 11:55:06PM +0100, Arnd Bergmann wrote:
+> * 80486SX/DX: 80386 CPUs were dropped in 2012, and there are
+>   indications that 486 have no users either on recent kernels.
+>   There is still the Vortex86 family of SoCs, and the oldest of those were
+>   486SX-class, but all the modern ones are 586-class.
 
-My MSI B450 Tomahawk is exhibiting this bug now that I've updated the firmware to the latest beta BIOS with AGESA 1.1.0.0 patch D.
+These also are the last generation of fanless x86 boards with 100% compatible
+controllers, that some people have probably kept around because these don't
+age much and have plenty of connectivity. I've used an old one a few times
+to plug in an old floppy drive, ISA SCSI controllers to access an old tape
+drive and a few such things. That doesn't mean that it's a good justification
+not to remove them, what I rather mean is that *if* there is no benefit
+in dropping them maybe we can keep them. On the other hand, good luck for
+running a modern OS on these, when 16MB-32MB RAM was about the maximum that
+was commonly found by then (though if people kept them around that's probably
+because they were well equipped, like that 64MB 386DX I'm having :-)).
+
+Willy
