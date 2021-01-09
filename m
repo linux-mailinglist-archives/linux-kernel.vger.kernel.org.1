@@ -2,65 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B2BDE2EFCA4
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Jan 2021 02:14:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C8422EFC8F
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Jan 2021 02:03:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726516AbhAIBN5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Jan 2021 20:13:57 -0500
-Received: from casper.infradead.org ([90.155.50.34]:60892 "EHLO
-        casper.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725844AbhAIBN4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Jan 2021 20:13:56 -0500
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=GFi/a+k1HV7G0k3FC/yL6n4O7ONrdjcIj5VhIzNlBxI=; b=NFOiddK2qND7tjI20jyRG/kocz
-        f1/faQ6zEiEj2bkwlIlMI3wBuSg9RwPkFslW1upnLJhVSuvoTDoncre0AXzVRGFcScPzKej9DaPKL
-        2vWXD4WBtobctOcZIfYHSXg2/1UT53NYzMXCngmFERwqo9RpPoFnUfFvbuWq+s3NDfs8VkDFo4sIi
-        uSc2kXxTzOa6UXrf89Mab/A/DEAfNjZzUek+Py4ujsZK7wZtc2UDp1qo390qEIAtZRKvQswPEjBMb
-        7plE3QsEc68czdGdUGsn/tGxELkdNm52XBnYTKNreBpRC/yUMqvXoOmfn8Ei0Q0ViU3FFbONem1Z/
-        9bFcpucg==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1kxWlL-0009OI-K2; Thu, 07 Jan 2021 15:00:17 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 1730D3013E5;
-        Thu,  7 Jan 2021 15:59:43 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id F117B2BB7DCC3; Thu,  7 Jan 2021 15:59:42 +0100 (CET)
-Date:   Thu, 7 Jan 2021 15:59:42 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     Yury Norov <yury.norov@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        kernel-team@fb.com, Paul Gortmaker <paul.gortmaker@windriver.com>
-Subject: Re: [PATCH RFC cpumask 4/5] cpumask: Add "last" alias for cpu list
- specifications
-Message-ID: <X/ch3gaCCRMT/Cxw@hirez.programming.kicks-ass.net>
-References: <20210106004850.GA11682@paulmck-ThinkPad-P72>
- <20210106004956.11961-4-paulmck@kernel.org>
- <X/WHk1hY3cmMAXQz@hirez.programming.kicks-ass.net>
- <CAAH8bW9jfSeYe+d6feQUTKuqwKr_U0aCGPZEiBh6Hp=KT2iPrA@mail.gmail.com>
- <X/cYR474/PiTvjfC@hirez.programming.kicks-ass.net>
- <20210107144757.GK2743@paulmck-ThinkPad-P72>
+        id S1726377AbhAIBCW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Jan 2021 20:02:22 -0500
+Received: from mga11.intel.com ([192.55.52.93]:37225 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725861AbhAIBCV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 Jan 2021 20:02:21 -0500
+IronPort-SDR: 5xsQrE1X6E0z/o/pTl1k3kYxSuJZl26Fl39oHUhC9eHj7/BHpZuBcbEBU1llNoz2uzhxRJvIEn
+ 5iqhiimwUR+w==
+X-IronPort-AV: E=McAfee;i="6000,8403,9858"; a="174166644"
+X-IronPort-AV: E=Sophos;i="5.79,333,1602572400"; 
+   d="scan'208";a="174166644"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jan 2021 17:00:34 -0800
+IronPort-SDR: Trq7pdzsOZ/IpVIvI4aoODGktcF/ONJlvGcp7PPi/PcMAZZYUNMw+f75U0cEGP6/KsJ7ZxOQi3
+ Q5JEoP1I++9Q==
+X-IronPort-AV: E=Sophos;i="5.79,333,1602572400"; 
+   d="scan'208";a="423126447"
+Received: from tanmingy-mobl.amr.corp.intel.com (HELO skuppusw-mobl5.amr.corp.intel.com) ([10.212.247.214])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jan 2021 17:00:24 -0800
+From:   Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
+To:     bhelgaas@google.com
+Cc:     linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        ashok.raj@intel.com, sathyanarayanan.kuppuswamy@linux.intel.com,
+        knsathya@kernel.org
+Subject: [PATCH v9 1/2] PCI/ERR: Call pci_bus_reset() before calling ->slot_reset() callback
+Date:   Fri,  8 Jan 2021 17:00:00 -0800
+Message-Id: <c7ec55f92d97b237adae0ee4694dbfc1a766600c.1610153755.git.sathyanarayanan.kuppuswamy@linux.intel.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210107144757.GK2743@paulmck-ThinkPad-P72>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 07, 2021 at 06:47:57AM -0800, Paul E. McKenney wrote:
-> > I don't really see the use of the ranges thing, CPU enumeration just
-> > isn't sane like that. Also, I should really add that randomization pass
-> > to the CPU enumeration :-)
-> 
-> Please don't!!!
+Currently if report_error_detected() or report_mmio_enabled()
+functions requests PCI_ERS_RESULT_NEED_RESET, current
+pcie_do_recovery() implementation does not do the requested
+explicit device reset, but instead just calls the
+report_slot_reset() on all affected devices. Notifying about the
+reset via report_slot_reset() without doing the actual device
+reset is incorrect. So call pci_bus_reset() before triggering
+->slot_reset() callback.
 
-Why not, the BIOS more or less already does that on a per machine basis
-anyway. Doing it per boot just makes things more reliably screwy ;-)
+Signed-off-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+Reviewed-by: Sinan Kaya <okaya@kernel.org>
+Reviewed-by: Ashok Raj <ashok.raj@intel.com>
+---
+ Changes since v7:
+  * Rebased on top of v5.11-rc1.
+
+ Changes since v7:
+  * Rebased on top of v5.10-rc1.
+
+ Changes since v6:
+  * None.
+
+ Changes since v5:
+  * Added Ashok's Reviewed-by tag.
+
+ Changes since v4:
+  * Added check for pci_reset_bus() return value.
+
+ drivers/pci/pcie/err.c | 12 +++++++-----
+ 1 file changed, 7 insertions(+), 5 deletions(-)
+
+diff --git a/drivers/pci/pcie/err.c b/drivers/pci/pcie/err.c
+index 510f31f0ef6d..6c19e9948232 100644
+--- a/drivers/pci/pcie/err.c
++++ b/drivers/pci/pcie/err.c
+@@ -177,6 +177,7 @@ pci_ers_result_t pcie_do_recovery(struct pci_dev *dev,
+ 	struct pci_dev *bridge;
+ 	pci_ers_result_t status = PCI_ERS_RESULT_CAN_RECOVER;
+ 	struct pci_host_bridge *host = pci_find_host_bridge(dev->bus);
++	int ret;
+ 
+ 	/*
+ 	 * If the error was detected by a Root Port, Downstream Port, RCEC,
+@@ -214,11 +215,12 @@ pci_ers_result_t pcie_do_recovery(struct pci_dev *dev,
+ 	}
+ 
+ 	if (status == PCI_ERS_RESULT_NEED_RESET) {
+-		/*
+-		 * TODO: Should call platform-specific
+-		 * functions to reset slot before calling
+-		 * drivers' slot_reset callbacks?
+-		 */
++		ret = pci_reset_bus(bridge);
++		if (ret < 0) {
++			pci_err(dev, "Failed to reset %d\n", ret);
++			status = PCI_ERS_RESULT_DISCONNECT;
++			goto failed;
++		}
+ 		status = PCI_ERS_RESULT_RECOVERED;
+ 		pci_dbg(bridge, "broadcast slot_reset message\n");
+ 		pci_walk_bridge(bridge, report_slot_reset, &status);
+-- 
+2.25.1
+
