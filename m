@@ -2,104 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D0AEE2F0317
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Jan 2021 20:09:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F16D62F031B
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Jan 2021 20:16:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726495AbhAITIr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Jan 2021 14:08:47 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48678 "EHLO mail.kernel.org"
+        id S1726249AbhAITPd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Jan 2021 14:15:33 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49504 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726265AbhAITIq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Jan 2021 14:08:46 -0500
-Received: from archlinux (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5B19E2399A;
-        Sat,  9 Jan 2021 19:08:05 +0000 (UTC)
-Date:   Sat, 9 Jan 2021 19:08:02 +0000
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     Cristian Pop <cristian.pop@analog.com>
-Cc:     <linux-iio@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <devicetree@vger.kernel.org>
-Subject: Re: [PATCH v5 2/3] Documentation/ABI/testing: Add documentation for
- AD5766 new ABI
-Message-ID: <20210109190802.4c4fcbc2@archlinux>
-In-Reply-To: <20210108183739.27634-2-cristian.pop@analog.com>
-References: <20210108183739.27634-1-cristian.pop@analog.com>
-        <20210108183739.27634-2-cristian.pop@analog.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S1725978AbhAITPc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 9 Jan 2021 14:15:32 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E59D1206E9;
+        Sat,  9 Jan 2021 19:14:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1610219691;
+        bh=SmXXBg/PFAnVl4lD56Fg2Rze5qQDH/LIcfWit7B6gj0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=VVjgQ/HmLei1LhTXGEgh0JNvoyCrACFM2Vc3OM+ABfDDK0XVb7vejOZ6hvNfZIBJn
+         YddthS46XgKURJbWntrtivYOv0G3WP9FjjX0RABnP3Ag+ZUhEU+zLQZR1PzPJeta4E
+         vzTs12y/igN2ZePwv7Hep4paZryhb9fMr+KfiMbV79e3CPSzUzXIPJ4tcHPnujREsQ
+         6qzxpoJT8bcvEkWT2/YnAL1xL2emvtRoCe600LcFcIB70K70YCmyk2988fOtcVs4Ke
+         W3cR/O7/x7+6eAYQ3+uOkileupEECXmrMH9eLzXAmX8re4369xkd5w3tmQZDiJYd13
+         M4U0nq0RL/sSg==
+Received: by pali.im (Postfix)
+        id CB2B277B; Sat,  9 Jan 2021 20:14:47 +0100 (CET)
+Date:   Sat, 9 Jan 2021 20:14:47 +0100
+From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
+To:     Russell King - ARM Linux admin <linux@armlinux.org.uk>
+Cc:     Andrew Lunn <andrew@lunn.ch>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Thomas Schreiber <tschreibe@gmail.com>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Marek =?utf-8?B?QmVow7pu?= <kabel@kernel.org>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 2/3] net: sfp: assume that LOS is not implemented if
+ both LOS normal and inverted is set
+Message-ID: <20210109191447.hunwx4fc4d4lox5f@pali>
+References: <20201230154755.14746-1-pali@kernel.org>
+ <20210106153749.6748-1-pali@kernel.org>
+ <20210106153749.6748-3-pali@kernel.org>
+ <X/c8xJcwj8Y1t3u4@lunn.ch>
+ <20210109154601.GZ1551@shell.armlinux.org.uk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210109154601.GZ1551@shell.armlinux.org.uk>
+User-Agent: NeoMutt/20180716
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 8 Jan 2021 20:37:38 +0200
-Cristian Pop <cristian.pop@analog.com> wrote:
-
-> New interface is proposed for dither functionality. This future allows
-> composing  an external signals to the selected output channel.
-> The dither signal can be turned on/off, scaled, inverted, or it can be
-> selected from different sources.
+On Saturday 09 January 2021 15:46:01 Russell King - ARM Linux admin wrote:
+> On Thu, Jan 07, 2021 at 05:54:28PM +0100, Andrew Lunn wrote:
+> > On Wed, Jan 06, 2021 at 04:37:48PM +0100, Pali Rohár wrote:
+> > > From: Russell King <rmk+kernel@armlinux.org.uk>
+> > > 
+> > > Some GPON SFP modules (e.g. Ubiquiti U-Fiber Instant) have set both
+> > > SFP_OPTIONS_LOS_INVERTED and SFP_OPTIONS_LOS_NORMAL bits in their EEPROM.
+> > > 
+> > > Such combination of bits is meaningless so assume that LOS signal is not
+> > > implemented.
+> > > 
+> > > This patch fixes link carrier for GPON SFP module Ubiquiti U-Fiber Instant.
+> > > 
+> > > Signed-off-by: Russell King <rmk+kernel@armlinux.org.uk>
+> > > Signed-off-by: Pali Rohár <pali@kernel.org>
+> > 
+> > Reviewed-by: Andrew Lunn <andrew@lunn.ch>
 > 
-> Signed-off-by: Cristian Pop <cristian.pop@analog.com>
-Hi Cristian,
-
-One trivial inline to fix if you need to respin. Otherwise I can tidy up whilst
-applying.
-
-Jonathan
-
-
-> ---
-> Changelog v5:                                                              
->         - Rename property to: "in_voltageY_dither_enable"                  
->         - Change scale values to: "1 0.75 0.5 0.25"                        
->         - Specify KernelVersion
->  .../ABI/testing/sysfs-bus-iio-dac-ad5766      | 31 +++++++++++++++++++
->  1 file changed, 31 insertions(+)
->  create mode 100644 Documentation/ABI/testing/sysfs-bus-iio-dac-ad5766
+> I'd like to send this patch irrespective of discussion on the other
+> patches - I already have it committed in my repository with a different
+> description, but the patch content is the same.
 > 
-> diff --git a/Documentation/ABI/testing/sysfs-bus-iio-dac-ad5766 b/Documentation/ABI/testing/sysfs-bus-iio-dac-ad5766
-> new file mode 100644
-> index 000000000000..6e5e383b2c53
-> --- /dev/null
-> +++ b/Documentation/ABI/testing/sysfs-bus-iio-dac-ad5766
-> @@ -0,0 +1,31 @@
-> +What:		/sys/bus/iio/devices/iio:deviceX/in_voltageY_dither_ennable
-Typo, enable but I can fix that whilst applying if there is nothing else.
+> Are you happy if I transfer Andrew's r-b tag, and convert yours to an
+> acked-by before I send it?
+> 
+> I'd also like to add a patch that allows 2.5G if no other modes are
+> found, but the bitrate specified by the module allows 2.5G speed - much
+> like we do for 1G speeds.
 
-Jonathan
-
-> +KernelVersion:	5.12
-> +Contact:	linux-iio@vger.kernel.org
-> +Description:
-> +		Dither enable. Write 1 to enable dither or 0 to disable it.
-> +
-> +What:		/sys/bus/iio/devices/iio:deviceX/in_voltageY_dither_invert
-> +KernelVersion:	5.12
-> +Contact:	linux-iio@vger.kernel.org
-> +Description:
-> +		Inverts the dither applied to the selected DAC channel. Dither is not
-> +		inverted by default. Write "1" to invert dither.
-> +
-> +What:		/sys/bus/iio/devices/iio:deviceX/in_voltageY_dither_scale_available
-> +KernelVersion:	5.12
-> +Contact:	linux-iio@vger.kernel.org
-> +Description:
-> +		Returns possible scalings available for the current channel.
-> +
-> +What:		/sys/bus/iio/devices/iio:deviceX/in_voltageY_dither_scale
-> +KernelVersion:	5.12
-> +Contact:	linux-iio@vger.kernel.org
-> +Description:
-> +		Scales the dither before it is applied to the selected channel.
-> +
-> +What:		/sys/bus/iio/devices/iio:deviceX/in_voltageY_dither_source
-> +KernelVersion:	5.12
-> +Contact:	linux-iio@vger.kernel.org
-> +Description:
-> +		Selects dither source applied to the selected channel. Write "0" to
-> +		select N0 source, write "1" to select N1 source.
-
+Russell, should I send a new version of patch series without this patch?
