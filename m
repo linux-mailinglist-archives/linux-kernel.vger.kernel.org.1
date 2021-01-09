@@ -2,62 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 937112EFCE1
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Jan 2021 02:51:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CC2D12EFCE4
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Jan 2021 02:51:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726500AbhAIBuu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Jan 2021 20:50:50 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40294 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725916AbhAIBuu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Jan 2021 20:50:50 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 282C52399C;
-        Sat,  9 Jan 2021 01:50:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-        s=korg; t=1610157009;
-        bh=z7UqMVFYSJxdzVLfXg8lbRyvre2vUdZj4dWLmneULJ0=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=GwP6pSnTvoUY/yBfJMkk4z9bp7cALDgm/YU+jIg/Eon/3Xka/h3LqLuWTZxiODkDo
-         MFnFkoFBKFNtrr+0i3ng7g6gtVRfTrbDniojusqOiVAUSuoY/+5WVlIgzh7nwy3l8Q
-         UwWQEjXrEJW2LEXeUD1nYsUEmDolAmkofFE6WDZ0=
-Date:   Fri, 8 Jan 2021 17:50:08 -0800
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Xiaoming Ni <nixiaoming@huawei.com>,
-        linux-kernel@vger.kernel.org, mcgrof@kernel.org,
-        yzaikin@google.com, adobriyan@gmail.com,
-        linux-fsdevel@vger.kernel.org, vbabka@suse.cz, wangle6@huawei.com
-Subject: Re: [PATCH v2] proc_sysctl: fix oops caused by incorrect command
- parameters.
-Message-Id: <20210108175008.da3c60a6e402f5f1ddab2a65@linux-foundation.org>
-In-Reply-To: <20210108201025.GA17019@dhcp22.suse.cz>
-References: <20210108023339.55917-1-nixiaoming@huawei.com>
-        <20210108092145.GX13207@dhcp22.suse.cz>
-        <829bbba0-d3bb-a114-af81-df7390082958@huawei.com>
-        <20210108114718.GA13207@dhcp22.suse.cz>
-        <202101081152.0CB22390@keescook>
-        <20210108201025.GA17019@dhcp22.suse.cz>
-X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S1726518AbhAIBva (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Jan 2021 20:51:30 -0500
+Received: from so254-31.mailgun.net ([198.61.254.31]:30157 "EHLO
+        so254-31.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725817AbhAIBva (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 Jan 2021 20:51:30 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1610157069; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=ghU2g/Iny5eN7E5fSfRXmvip4hkqKRjVxmdD1byGeNg=; b=ksCG/5TgP+vNQlquw5/kSWUOOYfNrGRIAZBfmiVoPX4tXurVWewpk/o9IzKXLTP+LlhZobcm
+ K6VBl4nHC02NwUeWKxY8XnJKNObWUYNRDOZ1OD+T2ZWmZO7qdrDDPhwPqLpr1xlooQAGfBxh
+ 03PmtXNJ86DQiNT6pK1DIWDOjp8=
+X-Mailgun-Sending-Ip: 198.61.254.31
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n04.prod.us-west-2.postgun.com with SMTP id
+ 5ff90bf2d84bad354727cadd (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Sat, 09 Jan 2021 01:50:42
+ GMT
+Sender: isaacm=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 89015C43464; Sat,  9 Jan 2021 01:50:42 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from isaacm-linux.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: isaacm)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 50452C433CA;
+        Sat,  9 Jan 2021 01:50:41 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 50452C433CA
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=isaacm@codeaurora.org
+From:   "Isaac J. Manjarres" <isaacm@codeaurora.org>
+To:     will@kernel.org, robin.murphy@arm.com, joro@8bytes.org
+Cc:     "Isaac J. Manjarres" <isaacm@codeaurora.org>, pdaly@codeaurora.org,
+        pratikp@codeaurora.org, linux-arm-kernel@lists.infradead.org,
+        iommu@lists.linux-foundation.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 0/5] Optimize iommu_map_sg() performance
+Date:   Fri,  8 Jan 2021 17:50:26 -0800
+Message-Id: <1610157031-26301-1-git-send-email-isaacm@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 8 Jan 2021 21:10:25 +0100 Michal Hocko <mhocko@suse.com> wrote:
+The iommu_map_sg() code currently iterates through the given
+scatter-gather list, and in the worst case, invokes iommu_map()
+for each element in the scatter-gather list, which calls into
+the IOMMU driver through an indirect call. For an IOMMU driver
+that uses a format supported by the io-pgtable code, the IOMMU
+driver will then call into the io-pgtable code to map the chunk.
 
-> > > Why would that matter? A missing value is clearly a error path and it
-> > > should be reported.
-> > 
-> > This test is in the correct place. I think it's just a question of the
-> > return values.
-> 
-> I was probably not clear. The test for val is at the right place. I
-> would just expect -EINVAL and have the generic code to report.
+Jumping between the IOMMU core code, the IOMMU driver, and the
+io-pgtable code and back for each element in a scatter-gather list
+is not efficient.
 
-It does seem a bit screwy that process_sysctl_arg() returns zero in all
-situations (parse_args() is set up to handle an error return from it). 
-But this patch is consistent with all the other error handling in
-process_sysctl_arg().
+Instead, add a map_sg() hook in both the IOMMU driver ops and the
+io-pgtable ops. iommu_map_sg() can then call into the IOMMU driver's
+map_sg() hook with the entire scatter-gather list, which can call
+into the io-pgtable map_sg() hook, which can process the entire
+scatter-gather list, signficantly reducing the number of indirect
+calls, and jumps between these layers, boosting performance.
+
+On a system that uses the ARM SMMU driver, and the ARM LPAE format,
+the current implementation of iommu_map_sg() yields the following
+latencies for mapping scatter-gather lists of various sizes. These
+latencies are calculated by repeating the mapping operation 10 times:
+
+    size        iommu_map_sg latency
+      4K            0.624 us
+     64K            9.468 us
+      1M          122.557 us
+      2M          239.807 us
+     12M         1435.979 us
+     24M         2884.968 us
+     32M         3832.979 us
+
+On the same system, the proposed modifications yield the following
+results:
+
+    size        iommu_map_sg latency
+      4K            3.645 us
+     64K            4.198 us
+      1M           11.010 us
+      2M           17.125 us
+     12M           82.416 us
+     24M          158.677 us
+     32M          210.468 us
+
+The procedure for collecting the iommu_map_sg latencies is
+the same in both experiments. Clearly, reducing the jumps
+between the different layers in the IOMMU code offers a
+signficant performance boost in iommu_map_sg() latency.
+
+Thanks,
+Isaac
+
+Isaac J. Manjarres (5):
+  iommu/io-pgtable: Introduce map_sg() as a page table op
+  iommu/io-pgtable-arm: Hook up map_sg()
+  iommu/io-pgtable-arm-v7s: Hook up map_sg()
+  iommu: Introduce map_sg() as an IOMMU op for IOMMU drivers
+  iommu/arm-smmu: Hook up map_sg()
+
+ drivers/iommu/arm/arm-smmu/arm-smmu.c | 19 ++++++++
+ drivers/iommu/io-pgtable-arm-v7s.c    | 90 +++++++++++++++++++++++++++++++++++
+ drivers/iommu/io-pgtable-arm.c        | 86 +++++++++++++++++++++++++++++++++
+ drivers/iommu/iommu.c                 | 25 ++++++++--
+ include/linux/io-pgtable.h            |  6 +++
+ include/linux/iommu.h                 | 13 +++++
+ 6 files changed, 234 insertions(+), 5 deletions(-)
+
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
+
