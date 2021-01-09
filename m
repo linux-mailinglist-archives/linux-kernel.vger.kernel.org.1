@@ -2,120 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C0442F02C9
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Jan 2021 19:08:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B2D3E2F02DA
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Jan 2021 19:24:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727005AbhAISIB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Jan 2021 13:08:01 -0500
-Received: from mail-io1-f69.google.com ([209.85.166.69]:37850 "EHLO
-        mail-io1-f69.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726006AbhAISIA (ORCPT
+        id S1726195AbhAISX0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Jan 2021 13:23:26 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38786 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725966AbhAISXZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Jan 2021 13:08:00 -0500
-Received: by mail-io1-f69.google.com with SMTP id l22so10232868iom.4
-        for <linux-kernel@vger.kernel.org>; Sat, 09 Jan 2021 10:07:45 -0800 (PST)
+        Sat, 9 Jan 2021 13:23:25 -0500
+Received: from mail-ot1-x329.google.com (mail-ot1-x329.google.com [IPv6:2607:f8b0:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56F3EC061786;
+        Sat,  9 Jan 2021 10:22:45 -0800 (PST)
+Received: by mail-ot1-x329.google.com with SMTP id j12so13019602ota.7;
+        Sat, 09 Jan 2021 10:22:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=nSlEJcVDQ1Is7F8HzL1P4/BpSTCC8IQf3uYHrRHbZMs=;
+        b=DmHvlbUnniUweykeBHqKFo922FZWPH+Jtj/z/Bs0sr22H7FX1Y56KZ/tTIwdiGD6po
+         KskJOjY+wBew3YDlrWjhoDa41VAqRcI+S0Pec9x0BJr9lAXx7ql9WbHG5jGHUxFCf7sR
+         LasgNNZMLl+SArMglAlUdoaTQ6Y0rK2OcOfUcIoIyWN/ZzraR31sALeYa8IwtDzmjEcV
+         dXeHuCYVLByaM5sTCbAYdVhsnEIoyxnUFxhbJMgYJh08rzjxmomv3ugGnkQzOg3fJHxt
+         a1ne+KysVgYv+QH8ux6LSVRnGpJJEJPOUxlry746XWDELhXo3DeKUxjszY+4zb5RLFWJ
+         7B1Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=BsWPSRLwA8RolMCenavGS+3Cc+3bFo32dZEP7iTFhQQ=;
-        b=cEvTg4WW8t/4aiB1N0PPQ5ZREKaR8x+S6C8ogf1KIF1etsqCYz+AQAKJnO5C1LE6mL
-         kmRjaPhr31+KJKD4HIEh3zU048frRL7UNyhkhqQ7JrBUKkSSry5oFpNXqRi1YcZTvyF5
-         IRng/H9chh/pLvqCdxZnERooAVHBLk3AUwejEg6i+TUNFk18wZBi1qBPFe7DzZ8+loii
-         h1MV+fQhykVeKr9ckzk98DAZZHChHpSAV7gd730YIWASubKZIcxjNv7yaY6UtD2Ldv0I
-         E67+Od1X9KP5Zqh/tT4IVuAoQE9svvU4PVY5ebtdxuMQlxNXntn+lHEbD8ot0BE0HVss
-         IqtQ==
-X-Gm-Message-State: AOAM533iA2623v2vw0GCFxi0U59f3crIuRhHqBRichFnCWkgILYN1mov
-        sBSEKpWzeV43kim0oJKtpgqShLs5SZZ1NbL6NR7WdtHcQILV
-X-Google-Smtp-Source: ABdhPJz2Fo27W90BS/ZeLDfCQnG0/dKaG79rae//EhtT+TWJtJJIc7bDQPUyhQPc9JFX+zteVapA2LGjHFUzMWEmpReY/N/GWimy
+        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
+         :mime-version:content-transfer-encoding;
+        bh=nSlEJcVDQ1Is7F8HzL1P4/BpSTCC8IQf3uYHrRHbZMs=;
+        b=ebesDq2dlbUQUtMPfshrjFvGpz2xgsOOgsgtnhyeWsbBXvAvUGlILNHOru4Ie75Suj
+         sFf36UsvqMEZ+O9f1yFTJo6EuhOdye/P+q6IS9CDR++o+YP4cPs3QniuVqKZCw910rx4
+         889LboPOjXVUJk+9BXzP2EVRgd3+Uc9DfcPe4MfDQzTfRh8NJ1E45cVAnbcPbc9WMcbD
+         PiCV2c4TvUh14tbAnrPt/cP7dx/9dAv9TI1UAgZXUCEM/5rKMEToWzRGpqmCu0qUy62y
+         CXeMB5ZlkBQkvBpn8d/84huJKOA4M70cegTG/ZxjQ/So1+bvYnON+DcRybo/a9YwmARw
+         WSgA==
+X-Gm-Message-State: AOAM531ctY8NLL0Wajb+XmMHO3gblQqeycqR2EqETVaZ9JwV/No00jM8
+        L7fMrCBgKntDXcdntY9BSIqMCJYPDMA=
+X-Google-Smtp-Source: ABdhPJymgxtCVJEvFFC6LqVxnD0uOQO+24tFJRkTxsLqwrMRK3RsdJSZ/44/CMzaQF3EZ6mAmcSp0A==
+X-Received: by 2002:a9d:6ad2:: with SMTP id m18mr6499235otq.3.1610216564481;
+        Sat, 09 Jan 2021 10:22:44 -0800 (PST)
+Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id i1sm2601101otr.81.2021.01.09.10.22.42
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Sat, 09 Jan 2021 10:22:43 -0800 (PST)
+Sender: Guenter Roeck <groeck7@gmail.com>
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [GIT PULL] hwmon fixes for v5.11-rc3
+Date:   Sat,  9 Jan 2021 10:22:41 -0800
+Message-Id: <20210109182241.179998-1-linux@roeck-us.net>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-X-Received: by 2002:a02:c7d1:: with SMTP id s17mr8607663jao.142.1610215639684;
- Sat, 09 Jan 2021 10:07:19 -0800 (PST)
-Date:   Sat, 09 Jan 2021 10:07:19 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000371e5a05b87b8bf9@google.com>
-Subject: memory leak in tcp_cdg_init
-From:   syzbot <syzbot+f1e24a0594d4e3a895d3@syzkaller.appspotmail.com>
-To:     davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
-        kuznet@ms2.inr.ac.ru, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com,
-        yoshfuji@linux-ipv6.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Hi Linus,
 
-syzbot found the following issue on:
+Please pull hwmon fixes for Linux v5.11-rc3 from signed tag:
 
-HEAD commit:    36bbbd0e Merge branch 'rcu/urgent' of git://git.kernel.org..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=16ef4dfb500000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=b991a69440391446
-dashboard link: https://syzkaller.appspot.com/bug?extid=f1e24a0594d4e3a895d3
-compiler:       gcc (GCC) 10.1.0-syz 20200507
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=13e1bb2b500000
+    git://git.kernel.org/pub/scm/linux/kernel/git/groeck/linux-staging.git hwmon-for-v5.11-rc3
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+f1e24a0594d4e3a895d3@syzkaller.appspotmail.com
+Thanks,
+Guenter
+------
 
-2021/01/05 17:50:00 executed programs: 127
-2021/01/05 17:50:06 executed programs: 146
-2021/01/05 17:50:12 executed programs: 157
-2021/01/05 17:50:19 executed programs: 175
-BUG: memory leak
-unreferenced object 0xffff888125940080 (size 64):
-  comm "syz-executor.1", pid 11113, jiffies 4294986279 (age 14.750s)
-  hex dump (first 32 bytes):
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-  backtrace:
-    [<00000000bf291225>] kmalloc_array include/linux/slab.h:592 [inline]
-    [<00000000bf291225>] kcalloc include/linux/slab.h:621 [inline]
-    [<00000000bf291225>] tcp_cdg_init+0x37/0x60 net/ipv4/tcp_cdg.c:380
-    [<00000000f991e122>] tcp_init_congestion_control+0x31/0x160 net/ipv4/tcp_cong.c:183
-    [<000000009761f0eb>] tcp_reinit_congestion_control net/ipv4/tcp_cong.c:207 [inline]
-    [<000000009761f0eb>] tcp_set_congestion_control+0x35e/0x380 net/ipv4/tcp_cong.c:377
-    [<00000000825a01e7>] do_tcp_setsockopt net/ipv4/tcp.c:3319 [inline]
-    [<00000000825a01e7>] tcp_setsockopt+0x3fc/0x13f0 net/ipv4/tcp.c:3599
-    [<0000000009f41711>] __sys_setsockopt+0x1b0/0x360 net/socket.c:2115
-    [<000000008873566c>] __do_sys_setsockopt net/socket.c:2126 [inline]
-    [<000000008873566c>] __se_sys_setsockopt net/socket.c:2123 [inline]
-    [<000000008873566c>] __x64_sys_setsockopt+0x22/0x30 net/socket.c:2123
-    [<0000000048fbe902>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
-    [<00000000b377d397>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
+The following changes since commit 5c8fe583cce542aa0b84adc939ce85293de36e5e:
 
-BUG: memory leak
-unreferenced object 0xffff888125940880 (size 64):
-  comm "syz-executor.4", pid 11115, jiffies 4294986279 (age 14.750s)
-  hex dump (first 32 bytes):
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-  backtrace:
-    [<00000000bf291225>] kmalloc_array include/linux/slab.h:592 [inline]
-    [<00000000bf291225>] kcalloc include/linux/slab.h:621 [inline]
-    [<00000000bf291225>] tcp_cdg_init+0x37/0x60 net/ipv4/tcp_cdg.c:380
-    [<00000000f991e122>] tcp_init_congestion_control+0x31/0x160 net/ipv4/tcp_cong.c:183
-    [<000000009761f0eb>] tcp_reinit_congestion_control net/ipv4/tcp_cong.c:207 [inline]
-    [<000000009761f0eb>] tcp_set_congestion_control+0x35e/0x380 net/ipv4/tcp_cong.c:377
-    [<00000000825a01e7>] do_tcp_setsockopt net/ipv4/tcp.c:3319 [inline]
-    [<00000000825a01e7>] tcp_setsockopt+0x3fc/0x13f0 net/ipv4/tcp.c:3599
-    [<0000000009f41711>] __sys_setsockopt+0x1b0/0x360 net/socket.c:2115
-    [<000000008873566c>] __do_sys_setsockopt net/socket.c:2126 [inline]
-    [<000000008873566c>] __se_sys_setsockopt net/socket.c:2123 [inline]
-    [<000000008873566c>] __x64_sys_setsockopt+0x22/0x30 net/socket.c:2123
-    [<0000000048fbe902>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
-    [<00000000b377d397>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
+  Linux 5.11-rc1 (2020-12-27 15:30:22 -0800)
 
+are available in the Git repository at:
 
+  git://git.kernel.org/pub/scm/linux/kernel/git/groeck/linux-staging.git tags/hwmon-for-v5.11-rc3
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+for you to fetch changes up to 84e261553e6f919bf0b4d65244599ab2b41f1da5:
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
+  hwmon: (amd_energy) fix allocation of hwmon_channel_info config (2021-01-08 07:31:03 -0800)
+
+----------------------------------------------------------------
+hwmon fixes for v5.11-rc3
+
+Fix possible KASAN issue in amd_energy driver
+Avoid configuration problem in pwm-fan driver
+Fix kernel-doc warning in sbtsi_temp documentation
+
+----------------------------------------------------------------
+David Arcari (1):
+      hwmon: (amd_energy) fix allocation of hwmon_channel_info config
+
+Randy Dunlap (1):
+      hwmon: (sbtsi_temp) Fix Documenation kernel-doc warning
+
+Uwe Kleine-König (1):
+      hwmon: (pwm-fan) Ensure that calculation doesn't discard big period values
+
+ Documentation/hwmon/sbtsi_temp.rst |  2 +-
+ drivers/hwmon/amd_energy.c         |  3 ++-
+ drivers/hwmon/pwm-fan.c            | 12 +++++++++++-
+ 3 files changed, 14 insertions(+), 3 deletions(-)
