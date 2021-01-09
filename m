@@ -2,67 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 56E9A2EFF7F
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Jan 2021 13:37:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B4A72EFF78
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Jan 2021 13:36:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726416AbhAIMgw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Jan 2021 07:36:52 -0500
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:34312 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725896AbhAIMgv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Jan 2021 07:36:51 -0500
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: ezequiel)
-        with ESMTPSA id 44C971F45F1B
-Message-ID: <ad42babfca4a34d31875ff4f1250f4869be3a5a1.camel@collabora.com>
-Subject: Re: [PATCH v3] staging: media: rkvdec: rkvdec.c: Use semicolon in
- place of comma
-From:   Ezequiel Garcia <ezequiel@collabora.com>
-To:     Sri Laasya Nutheti <nutheti.laasya@gmail.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-media@vger.kernel.org, linux-rockchip@lists.infradead.org,
-        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org
-Date:   Sat, 09 Jan 2021 09:36:01 -0300
-In-Reply-To: <20210109121349.wuf7xpkqicjadlnf@nutheti>
-References: <20210109121349.wuf7xpkqicjadlnf@nutheti>
-Organization: Collabora
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.2-1 
+        id S1726235AbhAIMft (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Jan 2021 07:35:49 -0500
+Received: from mail.kernel.org ([198.145.29.99]:37278 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726001AbhAIMfs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 9 Jan 2021 07:35:48 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 776D422525;
+        Sat,  9 Jan 2021 12:35:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1610195707;
+        bh=GtNFV/pVKoIupNxyNeIvuiRTCJ8JEKJLNh9pSEUSwDY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=zm4qSLU5zAb6HTsLm3jSOYGMlC4w67Gw+jjb0dGLBqknWgDJlnYDMguTHxNGPhdQy
+         M+BfuwANdF2uFOobW7S2IUI5PnWkJwr+k7fGVP6OuFsNspiJEbhyQygE3S+D/BoK4+
+         wZco/Sx7H9BQp2EYBJ+H2pooDYcBkjQvVQXi6QOw=
+Date:   Sat, 9 Jan 2021 13:36:23 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Wen Yang <wenyang@linux.alibaba.com>
+Cc:     Christian Brauner <christian@brauner.io>,
+        Sasha Levin <sashal@kernel.org>,
+        Xunlei Pang <xlpang@linux.alibaba.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 4.9 00/10] fix a race in release_task when flushing
+ the dentry
+Message-ID: <X/mjR1UyAi0QFdcR@kroah.com>
+References: <20210107075222.62623-1-wenyang@linux.alibaba.com>
+ <X/b781Kwn48xq8aS@kroah.com>
+ <e0fa1641-d00b-acfc-91d7-9eb16fb61664@linux.alibaba.com>
+ <X/dS37kyW+jf4gg/@kroah.com>
+ <82fb683a-bc9d-2083-f657-116f3e96d785@linux.alibaba.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <82fb683a-bc9d-2083-f657-116f3e96d785@linux.alibaba.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 2021-01-09 at 17:43 +0530, Sri Laasya Nutheti wrote:
-> Line 146 had a comma in place of a semicolon. Fix it.
+On Fri, Jan 08, 2021 at 10:42:47AM +0800, Wen Yang wrote:
 > 
-> Signed-off-by: Sri Laasya Nutheti <nutheti.laasya@gmail.com>
-> ---
-> v3: Corrected email recipients
->  drivers/staging/media/rkvdec/rkvdec.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> diff --git a/drivers/staging/media/rkvdec/rkvdec.c b/drivers/staging/media/rkvdec/rkvdec.c
-> index aa4f8c287618..d3eb81ee8dc2 100644
-> --- a/drivers/staging/media/rkvdec/rkvdec.c
-> +++ b/drivers/staging/media/rkvdec/rkvdec.c
-> @@ -143,7 +143,7 @@ static void rkvdec_reset_fmt(struct rkvdec_ctx *ctx, struct v4l2_format *f,
->         memset(f, 0, sizeof(*f));
->         f->fmt.pix_mp.pixelformat = fourcc;
->         f->fmt.pix_mp.field = V4L2_FIELD_NONE;
-> -       f->fmt.pix_mp.colorspace = V4L2_COLORSPACE_REC709,
-> +       f->fmt.pix_mp.colorspace = V4L2_COLORSPACE_REC709;
->         f->fmt.pix_mp.ycbcr_enc = V4L2_YCBCR_ENC_DEFAULT;
->         f->fmt.pix_mp.quantization = V4L2_QUANTIZATION_DEFAULT;
->         f->fmt.pix_mp.xfer_func = V4L2_XFER_FUNC_DEFAULT;
+> 在 2021/1/8 上午2:28, Greg Kroah-Hartman 写道:
+> > On Fri, Jan 08, 2021 at 12:21:38AM +0800, Wen Yang wrote:
+> > > 
+> > > 
+> > > 在 2021/1/7 下午8:17, Greg Kroah-Hartman 写道:
+> > > > On Thu, Jan 07, 2021 at 03:52:12PM +0800, Wen Yang wrote:
+> > > > > The dentries such as /proc/<pid>/ns/ have the DCACHE_OP_DELETE flag, they
+> > > > > should be deleted when the process exits.
+> > > > > 
+> > > > > Suppose the following race appears：
+> > > > > 
+> > > > > release_task                 dput
+> > > > > -> proc_flush_task
+> > > > >                                -> dentry->d_op->d_delete(dentry)
+> > > > > -> __exit_signal
+> > > > >                                -> dentry->d_lockref.count--  and return.
+> > > > > 
+> > > > > In the proc_flush_task(), if another process is using this dentry, it will
+> > > > > not be deleted. At the same time, in dput(), d_op->d_delete() can be executed
+> > > > > before __exit_signal(pid has not been hashed), d_delete returns false, so
+> > > > > this dentry still cannot be deleted.
+> > > > > 
+> > > > > This dentry will always be cached (although its count is 0 and the
+> > > > > DCACHE_OP_DELETE flag is set), its parent denry will also be cached too, and
+> > > > > these dentries can only be deleted when drop_caches is manually triggered.
+> > > > > 
+> > > > > This will result in wasted memory. What's more troublesome is that these
+> > > > > dentries reference pid, according to the commit f333c700c610 ("pidns: Add a
+> > > > > limit on the number of pid namespaces"), if the pid cannot be released, it
+> > > > > may result in the inability to create a new pid_ns.
+> > > > > 
+> > > > > This issue was introduced by 60347f6716aa ("pid namespaces: prepare
+> > > > > proc_flust_task() to flush entries from multiple proc trees"), exposed by
+> > > > > f333c700c610 ("pidns: Add a limit on the number of pid namespaces"), and then
+> > > > > fixed by 7bc3e6e55acf ("proc: Use a list of inodes to flush from proc").
+> > > > 
+> > > > Why are you just submitting a series for 4.9 and 4.19, what about 4.14?
+> > > > We can't have users move to a newer kernel and then experience old bugs,
+> > > > right?
+> > > > 
+> > > Okay, the patches corresponding to 4.14 will be ready later.
+> > 
+> > Note for some reason you didn't cc: the stable list for these patches :(
+> > 
+> > > > But the larger question is why are you backporting a whole new feature
+> > > > here?  Why is CLONE_PIDFD needed?  That feels really wrong...
+> > > > 
+> > > 
+> > > The reason for backporting CLONE_PIDFD is because 7bc3e6e55acf ("proc: Use a
+> > > list of inodes to flush from proc") relies on wait_pidfd.lock. There are
+> > > indeed many associated modifications here. We are also testing it. Please
+> > > check the code more.
+> > 
+> > Is the only "issue" here wasted memory?  Will it eventually be freed
+> > anyway even if you do not echo to the proc file to flush caches?
+> > 
+> > You mention the inability to create a new pid for a specific namespace,
+> > is that really a problem?  Shouldn't the code handle such issues
+> > normally?  What breaks without these changes?
+> > 
+> > I think at this point, it might just time for you to move to a newer
+> > kernel release, as adding a whole new userspace feature for this feels
+> > really really odd.
+> > 
+> > What is preventing you from doing that today?  What holds you to older
+> > kernels that will not allow you to move forward?
+> > 
+> 
+> We have encountered this problem in the cloud server environment. Users will
+> frequently create and delete containers, and the corresponding pid_ns will
+> accumulate, eventually making it impossible to create a new container.
+> 
+> https://bugzilla.kernel.org/show_bug.cgi?id=208613
+> 
+> The kernels (4.9/4.19) used on a large scale in our current production
+> environment (almost tens of thousands of machines) may need to be fixed.
 
-A fix was sent already for this:
+What prevents you from moving them to 5.4 or better yet, 5.10?  You will
+have to do it soon anyway, I'm sure you have been testing those kernels
+to validate that all works well with them on a subset of your
+environment, so for those systems that have this problem, why can't you
+update the base kernel?
 
-https://patchwork.kernel.org/project/linux-rockchip/patch/20201204233743.GA8530@linuxmint-midtower-pc/
+thanks,
 
-Thanks,
-Ezequiel
-
+greg k-h
