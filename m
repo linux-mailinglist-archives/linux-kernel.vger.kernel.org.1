@@ -2,152 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A30562EFC35
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Jan 2021 01:32:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E8FF2EFC3B
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Jan 2021 01:35:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726496AbhAIAas (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Jan 2021 19:30:48 -0500
-Received: from m43-15.mailgun.net ([69.72.43.15]:51339 "EHLO
-        m43-15.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726430AbhAIAap (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Jan 2021 19:30:45 -0500
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1610152219; h=References: In-Reply-To: Message-Id: Date:
- Subject: Cc: To: From: Sender;
- bh=x4r+cxfcBhFHJ1Qr3evoxkKZBnhLO4PcCu/YZQwVgd4=; b=vUgNwZs5+dtOCSW4A1rMcIvCVGV0ZBgqpmsLLvBf4SThYhFogo/Wf3W/hTcORFG4H1qUXPe/
- JnWy/9DdUYnbADSqu5CDW7lLgxcQ/hD2KFyX4tyTjXNIGjiNeb9QwJifZmAcWIbMFGhfwqlb
- 0SEmRkyU/X9C2DCs0Z0LDb/yOFQ=
-X-Mailgun-Sending-Ip: 69.72.43.15
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n07.prod.us-east-1.postgun.com with SMTP id
- 5ff8f8fa4dcca12475ec3089 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Sat, 09 Jan 2021 00:29:46
- GMT
-Sender: sramana=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 62E47C43466; Sat,  9 Jan 2021 00:29:45 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
-        autolearn=no autolearn_force=no version=3.4.0
-Received: from sramana-linux1.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: sramana)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 218FFC43464;
-        Sat,  9 Jan 2021 00:29:44 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 218FFC43464
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=sramana@codeaurora.org
-From:   Srinivas Ramana <sramana@codeaurora.org>
-To:     catalin.marinas@arm.com, will@kernel.org, pajay@qti.qualcomm.com
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        Srinivas Ramana <sramana@codeaurora.org>,
-        Prasad Sodagudi <psodagud@codeaurora.org>
-Subject: [PATCH 3/3] arm64: Enable control of pointer authentication using early param
-Date:   Fri,  8 Jan 2021 16:29:23 -0800
-Message-Id: <1610152163-16554-4-git-send-email-sramana@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1610152163-16554-1-git-send-email-sramana@codeaurora.org>
-References: <1610152163-16554-1-git-send-email-sramana@codeaurora.org>
+        id S1726253AbhAIAfH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Jan 2021 19:35:07 -0500
+Received: from elvis.franken.de ([193.175.24.41]:36963 "EHLO elvis.franken.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725792AbhAIAfG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 Jan 2021 19:35:06 -0500
+Received: from uucp (helo=alpha)
+        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
+        id 1ky2D2-0008AZ-01; Sat, 09 Jan 2021 01:34:24 +0100
+Received: by alpha.franken.de (Postfix, from userid 1000)
+        id AFC99C0870; Sat,  9 Jan 2021 01:33:52 +0100 (CET)
+Date:   Sat, 9 Jan 2021 01:33:52 +0100
+From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+To:     Paul Cercueil <paul@crapouillou.net>
+Cc:     tglx@linutronix.de, airlied@linux.ie, airlied@redhat.com,
+        akpm@linux-foundation.org, arnd@arndb.de, bcrl@kvack.org,
+        bigeasy@linutronix.de, bristot@redhat.com, bsegall@google.com,
+        bskeggs@redhat.com, chris@zankel.net, christian.koenig@amd.com,
+        clm@fb.com, davem@davemloft.net, deanbo422@gmail.com,
+        dietmar.eggemann@arm.com, dri-devel@lists.freedesktop.org,
+        dsterba@suse.com, green.hu@gmail.com, hch@lst.de,
+        intel-gfx@lists.freedesktop.org, jcmvbkbc@gmail.com,
+        josef@toxicpanda.com, juri.lelli@redhat.com, kraxel@redhat.com,
+        linux-aio@kvack.org, linux-arm-kernel@lists.infradead.org,
+        linux-btrfs@vger.kernel.org, linux-csky@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org,
+        linux-graphics-maintainer@vmware.com, linux-kernel@vger.kernel.org,
+        linux-mips@vger.kernel.org, linux-mm@kvack.org,
+        linux-snps-arc@lists.infradead.org, linux-xtensa@linux-xtensa.org,
+        linux@armlinux.org.uk, linuxppc-dev@lists.ozlabs.org,
+        mgorman@suse.de, mingo@kernel.org, monstr@monstr.eu,
+        mpe@ellerman.id.au, nickhu@andestech.com,
+        nouveau@lists.freedesktop.org, paulmck@kernel.org,
+        paulus@samba.org, peterz@infradead.org, ray.huang@amd.com,
+        rodrigo.vivi@intel.com, rostedt@goodmis.org,
+        sparclinux@vger.kernel.org, spice-devel@lists.freedesktop.org,
+        sroland@vmware.com, torvalds@linuxfoundation.org,
+        vgupta@synopsys.com, vincent.guittot@linaro.org,
+        viro@zeniv.linux.org.uk, virtualization@lists.linux-foundation.org,
+        x86@kernel.org
+Subject: Re: [patch V3 13/37] mips/mm/highmem: Switch to generic kmap atomic
+Message-ID: <20210109003352.GA18102@alpha.franken.de>
+References: <JUTMMQ.NNFWKIUV7UUJ1@crapouillou.net>
+ <20210108235805.GA17543@alpha.franken.de>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210108235805.GA17543@alpha.franken.de>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add support to control turning off the pointer authentication
-using a kernel command line early param.
-This will help control pointer authentication feature for both kernel
-and userspace without kernel changes.
+On Sat, Jan 09, 2021 at 12:58:05AM +0100, Thomas Bogendoerfer wrote:
+> On Fri, Jan 08, 2021 at 08:20:43PM +0000, Paul Cercueil wrote:
+> > Hi Thomas,
+> > 
+> > 5.11 does not boot anymore on Ingenic SoCs, I bisected it to this commit.
+> > 
+> > Any idea what could be happening?
+> 
+> not yet, kernel crash log of a Malta QEMU is below.
 
-Signed-off-by: Ajay Patil <pajay@qti.qualcomm.com>
-Signed-off-by: Prasad Sodagudi <psodagud@codeaurora.org>
-Signed-off-by: Srinivas Ramana <sramana@codeaurora.org>
----
- Documentation/admin-guide/kernel-parameters.txt |  6 ++++
- arch/arm64/kernel/cpufeature.c                  | 38 +++++++++++++++++++------
- 2 files changed, 36 insertions(+), 8 deletions(-)
+update:
 
-diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-index c722ec19cd00..d6855e0a9085 100644
---- a/Documentation/admin-guide/kernel-parameters.txt
-+++ b/Documentation/admin-guide/kernel-parameters.txt
-@@ -373,6 +373,12 @@
- 	arcrimi=	[HW,NET] ARCnet - "RIM I" (entirely mem-mapped) cards
- 			Format: <io>,<irq>,<nodeID>
- 
-+	arm64.disable_ptr_auth=
-+			[ARM64] Force disable Linux support for address
-+			authentication (both user and in-kernel).
-+			0 - Pointer authentication is enabled[Default]
-+			1 - Pointer authentication is force disabled
-+
- 	ataflop=	[HW,M68k]
- 
- 	atarimouse=	[HW,MOUSE] Atari Mouse
-diff --git a/arch/arm64/kernel/cpufeature.c b/arch/arm64/kernel/cpufeature.c
-index b2ffa9eaaaff..bdaaff78240b 100644
---- a/arch/arm64/kernel/cpufeature.c
-+++ b/arch/arm64/kernel/cpufeature.c
-@@ -164,6 +164,24 @@ static void cpu_enable_cnp(struct arm64_cpu_capabilities const *cap);
- 
- static bool __system_matches_cap(unsigned int n);
- 
-+#ifdef CONFIG_ARM64_PTR_AUTH
-+bool arm64_disable_ptr_auth;
-+
-+static int __init arm64_disable_ptr_auth_fn(char *buf)
-+{
-+	return strtobool(buf, &arm64_disable_ptr_auth);
-+}
-+early_param("arm64.disable_ptr_auth", arm64_disable_ptr_auth_fn);
-+
-+s64 ptr_auth_ftr_filter(const struct arm64_ftr_bits *ftrp, s64 val)
-+{
-+	if (arm64_disable_ptr_auth)
-+		return 0;
-+	else
-+		return val;
-+}
-+#endif
-+
- /*
-  * NOTE: Any changes to the visibility of features should be kept in
-  * sync with the documentation of the CPU feature register ABI.
-@@ -193,17 +211,21 @@ static const struct arm64_ftr_bits ftr_id_aa64isar1[] = {
- 	ARM64_FTR_BITS(FTR_HIDDEN, FTR_STRICT, FTR_LOWER_SAFE, ID_AA64ISAR1_SPECRES_SHIFT, 4, 0),
- 	ARM64_FTR_BITS(FTR_VISIBLE, FTR_STRICT, FTR_LOWER_SAFE, ID_AA64ISAR1_SB_SHIFT, 4, 0),
- 	ARM64_FTR_BITS(FTR_VISIBLE, FTR_STRICT, FTR_LOWER_SAFE, ID_AA64ISAR1_FRINTTS_SHIFT, 4, 0),
--	ARM64_FTR_BITS(FTR_VISIBLE_IF_IS_ENABLED(CONFIG_ARM64_PTR_AUTH),
--		       FTR_STRICT, FTR_LOWER_SAFE, ID_AA64ISAR1_GPI_SHIFT, 4, 0),
--	ARM64_FTR_BITS(FTR_VISIBLE_IF_IS_ENABLED(CONFIG_ARM64_PTR_AUTH),
--		       FTR_STRICT, FTR_LOWER_SAFE, ID_AA64ISAR1_GPA_SHIFT, 4, 0),
-+#ifdef CONFIG_ARM64_PTR_AUTH
-+	FILTERED_ARM64_FTR_BITS(FTR_UNSIGNED, FTR_VISIBLE, FTR_STRICT, FTR_LOWER_SAFE,
-+				ID_AA64ISAR1_GPI_SHIFT, 4, 0, ptr_auth_ftr_filter),
-+	FILTERED_ARM64_FTR_BITS(FTR_UNSIGNED, FTR_VISIBLE, FTR_STRICT, FTR_LOWER_SAFE,
-+				ID_AA64ISAR1_GPA_SHIFT, 4, 0, ptr_auth_ftr_filter),
-+#endif
- 	ARM64_FTR_BITS(FTR_VISIBLE, FTR_STRICT, FTR_LOWER_SAFE, ID_AA64ISAR1_LRCPC_SHIFT, 4, 0),
- 	ARM64_FTR_BITS(FTR_VISIBLE, FTR_STRICT, FTR_LOWER_SAFE, ID_AA64ISAR1_FCMA_SHIFT, 4, 0),
- 	ARM64_FTR_BITS(FTR_VISIBLE, FTR_STRICT, FTR_LOWER_SAFE, ID_AA64ISAR1_JSCVT_SHIFT, 4, 0),
--	ARM64_FTR_BITS(FTR_VISIBLE_IF_IS_ENABLED(CONFIG_ARM64_PTR_AUTH),
--		       FTR_STRICT, FTR_EXACT, ID_AA64ISAR1_API_SHIFT, 4, 0),
--	ARM64_FTR_BITS(FTR_VISIBLE_IF_IS_ENABLED(CONFIG_ARM64_PTR_AUTH),
--		       FTR_STRICT, FTR_EXACT, ID_AA64ISAR1_APA_SHIFT, 4, 0),
-+#ifdef CONFIG_ARM64_PTR_AUTH
-+	FILTERED_ARM64_FTR_BITS(FTR_UNSIGNED, FTR_VISIBLE, FTR_STRICT, FTR_LOWER_SAFE,
-+				ID_AA64ISAR1_API_SHIFT, 4, 0, ptr_auth_ftr_filter),
-+	FILTERED_ARM64_FTR_BITS(FTR_UNSIGNED, FTR_VISIBLE, FTR_STRICT, FTR_LOWER_SAFE,
-+				ID_AA64ISAR1_APA_SHIFT, 4, 0, ptr_auth_ftr_filter),
-+#endif
- 	ARM64_FTR_BITS(FTR_VISIBLE, FTR_STRICT, FTR_LOWER_SAFE, ID_AA64ISAR1_DPB_SHIFT, 4, 0),
- 	ARM64_FTR_END,
- };
+This dirty hack lets the Malta QEMU boot again:
+
+diff --git a/mm/highmem.c b/mm/highmem.c
+index c3a9ea7875ef..190cdda1149d 100644
+--- a/mm/highmem.c
++++ b/mm/highmem.c
+@@ -515,7 +515,7 @@ void *__kmap_local_pfn_prot(unsigned long pfn, pgprot_t prot)
+ 	vaddr = __fix_to_virt(FIX_KMAP_BEGIN + idx);
+ 	BUG_ON(!pte_none(*(kmap_pte - idx)));
+ 	pteval = pfn_pte(pfn, prot);
+-	set_pte_at(&init_mm, vaddr, kmap_pte - idx, pteval);
++	set_pte(kmap_pte - idx, pteval);
+ 	arch_kmap_local_post_map(vaddr, pteval);
+ 	current->kmap_ctrl.pteval[kmap_local_idx()] = pteval;
+ 	preempt_enable();
+
+set_pte_at() tries to update cache and could do an kmap_atomic() there.
+Not sure, if this is allowed at this point.
+
+Thomas.
+
 -- 
-2.7.4
-
+Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
+good idea.                                                [ RFC1925, 2.3 ]
