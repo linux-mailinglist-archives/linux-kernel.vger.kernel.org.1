@@ -2,118 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A0E62F03CD
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Jan 2021 22:27:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 62F0E2F03CB
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Jan 2021 22:27:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726346AbhAIV1C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Jan 2021 16:27:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49684 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726068AbhAIV1B (ORCPT
+        id S1726253AbhAIV0u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Jan 2021 16:26:50 -0500
+Received: from netrider.rowland.org ([192.131.102.5]:34189 "HELO
+        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with SMTP id S1726068AbhAIV0t (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Jan 2021 16:27:01 -0500
-Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E3EBC061786
-        for <linux-kernel@vger.kernel.org>; Sat,  9 Jan 2021 13:26:21 -0800 (PST)
-Received: by mail-lf1-x130.google.com with SMTP id s26so31586922lfc.8
-        for <linux-kernel@vger.kernel.org>; Sat, 09 Jan 2021 13:26:21 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=spScs5BI5KiRRQrhecZKN4jkNwdDHtwVKRu7ZMdvkPQ=;
-        b=XLT6s6rsCMercT6qkvbUhtp35zEHZrRmlL47aYyE6c14wSp3tUTSS7M/fAces2aleg
-         ICuOhvvHeVQI5gtBKv5yFjo3hP0RyGTetvCTdq/pmScVPwoJahSt3DRJHPXSE9yB1nnD
-         txjRsr51eIR4g1vQPU0W1Uta3p/u2tO8wN86Ha6HTth1DDR7+87Yb7oA7QgiivR5tsd8
-         ETIcC7blbrazNWd2f6VbAdRWfKWfzYih7g/3b1U0smQUZzaMqZ2UTAq6lHptUHq0TJae
-         5Fif2KRsK7F2F00AZtisWEUqV/TbwijcK9ZHIw9G3SjFk/dwfpFilHHlHU0xSbOaVlmu
-         90Rg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=spScs5BI5KiRRQrhecZKN4jkNwdDHtwVKRu7ZMdvkPQ=;
-        b=dIfBDZzqBEbzjbgxnIPmZqxFZLqHFT/vi770lVnF+ou0cQxAvOWaAPE1NJzP3pqM7a
-         Urgu7yRi/bLHDZPid1JpAy8FV+9ZfjGpiLakk5+yH05WQdc3ng67BqxsYRKxnWT9yBQ1
-         auIhSosWWDl2mReZZo9B0/FT9C/etnHNt+iZGzI80suQlVeqtH/qKmXbPNTEOnvWLYIZ
-         A/IMgsXN/MMYEt2/qHkxagiyWsu0vEnWa/MRTQQgD5TNtF3iviCGVYkCaFs6ePw6yFGx
-         f3uUsb2ZScwknktxUuMId89/NRsyWWYgtjNEdfCHetGlHck0nxHoq4Zle/ANOF7Prfx6
-         CPjQ==
-X-Gm-Message-State: AOAM533ysnrwCBrZ325BHdmv1WBTro+iKgxb4KsXGjVGCRu51/llJ8cc
-        AKlLKUHf2td0ES6fFt7/W4Kuf+StE2ddgASiRHKeIw==
-X-Google-Smtp-Source: ABdhPJwMMwVLVu0j0Nvz+H/adawTsmdnEhz93v3RChjdhFXmLqXyARbCvh+/qihWD88k1tp1QcVZgSA+vyX4k6yPxQo=
-X-Received: by 2002:a05:6512:74e:: with SMTP id c14mr4610942lfs.529.1610227579697;
- Sat, 09 Jan 2021 13:26:19 -0800 (PST)
+        Sat, 9 Jan 2021 16:26:49 -0500
+Received: (qmail 1137346 invoked by uid 1000); 9 Jan 2021 16:26:08 -0500
+Date:   Sat, 9 Jan 2021 16:26:08 -0500
+From:   Alan Stern <stern@rowland.harvard.edu>
+To:     Paul Kocialkowski <paul.kocialkowski@bootlin.com>
+Cc:     Hamish Martin <hamish.martin@alliedtelesis.co.nz>,
+        gregkh@linuxfoundation.org, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 1/2] usb: ohci: Default to per-port over-current
+ protection
+Message-ID: <20210109212608.GB1136657@rowland.harvard.edu>
+References: <20200910212512.16670-1-hamish.martin@alliedtelesis.co.nz>
+ <X+huemxT9XOeDi5E@aptenodytes>
 MIME-Version: 1.0
-References: <20210109044622.8312-1-hailongliiu@yeah.net>
-In-Reply-To: <20210109044622.8312-1-hailongliiu@yeah.net>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Sat, 9 Jan 2021 22:26:08 +0100
-Message-ID: <CACRpkdb73diprma9Z1-4nm5A9OTQMeGVK=Hcqiwny9VOVdA=QQ@mail.gmail.com>
-Subject: Re: [PATCH] arm/kasan:fix the arry size of kasan_early_shadow_pte
-To:     Hailong liu <hailongliiu@yeah.net>
-Cc:     Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Ziliang Guo <guo.ziliang@zte.com.cn>,
-        Hailong Liu <liu.hailong6@zte.com.cn>,
-        Russell King <linux@armlinux.org.uk>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        Alexander Potapenko <glider@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <X+huemxT9XOeDi5E@aptenodytes>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jan 9, 2021 at 5:51 AM Hailong liu <hailongliiu@yeah.net> wrote:
+On Sun, Dec 27, 2020 at 12:22:34PM +0100, Paul Kocialkowski wrote:
+> Hi,
 
-> From: Hailong Liu <liu.hailong6@zte.com.cn>
->
-> The size of kasan_early_shadow_pte[] now is PTRS_PER_PTE which defined to
-> 512 for arm architecture. This means that it only covers the prev Linux p=
-te
-> entries, but not the HWTABLE pte entries for arm.
->
-> The reason it works well current is that the symbol kasan_early_shadow_pa=
-ge
-> immediately following kasan_early_shadow_pte in memory is page aligned,
-> which makes kasan_early_shadow_pte look like a 4KB size array. But we can=
-'t
-> ensure the order always right with different compiler/linker, nor more bs=
-s
-> symbols be introduced.
->
-> We had a test with QEMU + vexpress=EF=BC=9Aput a 512KB-size symbol with a=
-ttribute
-> __section(".bss..page_aligned") after kasan_early_shadow_pte, and poison =
-it
-> after kasan_early_init(). Then enabled CONFIG_KASAN, it failed to boot up=
-.
->
-> Signed-off-by: Hailong Liu <liu.hailong6@zte.com.cn>
-> Signed-off-by: Ziliang Guo <guo.ziliang@zte.com.cn>
+Sorry it has taken so long to respond to this.  The holidays intervened, 
+but that's no excuse.
 
-OK I see the problem, I think.
+> On Fri 11 Sep 20, 09:25, Hamish Martin wrote:
+> > Some integrated OHCI controller hubs do not expose all ports of the hub
+> > to pins on the SoC. In some cases the unconnected ports generate
+> > spurious over-current events. For example the Broadcom 56060/Ranger 2 SoC
+> > contains a nominally 3 port hub but only the first port is wired.
+> > 
+> > Default behaviour for ohci-platform driver is to use global over-current
+> > protection mode (AKA "ganged"). This leads to the spurious over-current
+> > events affecting all ports in the hub.
+> > 
+> > We now alter the default to use per-port over-current protection.
+> 
+> This specific patch lead to breaking OHCI on my mom's laptop (whom was about
+> to buy a new one thinking the hardware had failed). I get no OHCI interrupt at
+> all and no USB 1 device is ever detected.
+> 
+> I haven't really found a reasonable explanation about why that is, but here
+> are some notes I was able to collect:
+> - The issue showed up on 5.8,18 and 5.9.15, which don't include the patch
+>   from this series that sets distrust_firmware = false; This results in the NPS
+>   bit being set via OHCI_QUIRK_HUB_POWER.
+> - Adding val &= ~RH_A_PSM; (as was done before this change) solves the issue
+>   which is weird because the bit is supposed to be inactive when NPS is set;
+> - Setting ohci_hcd.distrust_firmware=0 in the cmdline results in not setting
+>   the NPS bit and also solves the issue;
+> - The initial value of the register at function entry is 0x1001104 (PSM bit
+>   is set, NPS is unset);
+> - The OHCI controller is the following:
+> 00:03.0 USB controller: Silicon Integrated Systems [SiS] USB 1.1 Controller (rev 0f) (prog-if 10 [OHCI])
+> 	Subsystem: ASUSTeK Computer Inc. Device 1aa7
 
-> +#ifndef PTE_HWTABLE_PTRS
-> +#define PTE_HWTABLE_PTRS 0
-> +#endif
+Great reporting -- thanks.
 
-Can this even happen? We have either pgtable-2level.h or
-pgtable-3level.h, both of which define PTE_HWTABLE_PTRS.
+> Does that make any sense to you?
+> 
+> I really wonder what a proper fix could be and here are some suggestions:
+> - Adding a specific quirk to clear the PSM bit for this hardware which seems to
+>   consider the bit regardless of NPS;
 
->  extern unsigned char kasan_early_shadow_page[PAGE_SIZE];
-> -extern pte_t kasan_early_shadow_pte[PTRS_PER_PTE];
-> +extern pte_t kasan_early_shadow_pte[PTRS_PER_PTE + PTE_HWTABLE_PTRS];
+We don't need a quirk for this.  There shouldn't be anything wrong with 
+_always_ clearing PSM whenever NPS is set, since the controller is 
+supposed to ignore PSM under that condition.
 
-Yeah this looks exactly like bm_pte so it makes sense.
+Would you like to submit a patch for this?
 
-If you drop the first ifndef,
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+> - Adding the patch that sets distrust_firmware = false to stable branches;
 
-Yours,
-Linus Walleij
+That's certainly reasonable.  Nobody has reported any problems caused by 
+that patch, so adding it to the stable branches should be safe enough.
+
+> What do you think?
+
+We could even do both.  That would help if, for example, somebody 
+decided to set ohci_hcd.distrust_firmware=true explicitly.
+
+Greg, in the meantime can we have commit c4005a8f65ed ("usb: ohci: Make 
+distrust_firmware param default to false") added to all the stable 
+kernels which have back-ported versions of commit b77d2a0a223b?
+
+Alan Stern
