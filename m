@@ -2,197 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D979D2F0396
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Jan 2021 21:52:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B5522F0399
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Jan 2021 21:53:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726222AbhAIUv5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Jan 2021 15:51:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42198 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726077AbhAIUv4 (ORCPT
+        id S1726293AbhAIUx1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Jan 2021 15:53:27 -0500
+Received: from esa2.hgst.iphmx.com ([68.232.143.124]:15997 "EHLO
+        esa2.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726062AbhAIUx0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Jan 2021 15:51:56 -0500
-Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E9C8C06179F
-        for <linux-kernel@vger.kernel.org>; Sat,  9 Jan 2021 12:51:16 -0800 (PST)
-Received: by mail-pf1-x42d.google.com with SMTP id m6so2953298pfk.1
-        for <linux-kernel@vger.kernel.org>; Sat, 09 Jan 2021 12:51:16 -0800 (PST)
+        Sat, 9 Jan 2021 15:53:26 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1610226380; x=1641762380;
+  h=from:to:cc:subject:date:message-id:references:
+   content-transfer-encoding:mime-version;
+  bh=a6JK6xLwxXbRs+xrLxYv7QCKvOd7dYs3dfgVMljvLJ4=;
+  b=VcE4Q+BHfvS2kb/7Kc+D9asoDBRrgE+7wMCdSeEOt+Bgt+bRNZeJvS9g
+   ydp156wwDMJa2HI5J1dbmT1hYzbEfXJf8j+fp23znNIv3CU5cYCmSvezK
+   g61BqWnZyr+fmsDjqvvdhznP8ZjdvdXrEueOmiN9lpFg/bCtVv4w/m6U3
+   KqcyZ+ZHfzq7TUlxXdxPo9Wf2OsXOT0SA7WgyRYw6O2yGu4G5ZRDeVrkq
+   9BAYHbodfXzKFRoFM86CAR+C4YRErnQn4NrKFjf6DYeLNzI9oBHKfjg7I
+   LnrIPHT/EC7qSC9CaGb/PABEf9teZJjemCpI9IJHDt1VC8l8y2y30pu/w
+   g==;
+IronPort-SDR: fEdzt2Z6FGpA5oxeeOII9i+qPS11EIyJi2+k7meZdgPnrM2Y/UUDF1jYQM4QtN6J8pSkn4ewYQ
+ jHGlXbBcnPm/XNzo6/fGDVzTVWaE6sW4mzLGtWZVy0zhFeQZWUiUQRTdJGR9grWgimlsEKkapn
+ D54vmF4o9hsTy9KUXbrMc/lGKx2N2xMcvE+RKkvjZwbORETT4bDtVjbVrJoREdkJMASfjDvN6T
+ JZtAQ3VYXvtAAldJ0Ov27lwbhOh68wMLQq9MXQlFt8YKmSH3uzT3zcZk42CAjfFc8fIbK0umnN
+ tS8=
+X-IronPort-AV: E=Sophos;i="5.79,334,1602518400"; 
+   d="scan'208";a="260925140"
+Received: from mail-bn8nam11lp2174.outbound.protection.outlook.com (HELO NAM11-BN8-obe.outbound.protection.outlook.com) ([104.47.58.174])
+  by ob1.hgst.iphmx.com with ESMTP; 10 Jan 2021 05:04:40 +0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=VgQfIHYoRjjyQdLg/PQNFhlqNV7HSAS0Krq+uaKM/DtfIhnPh6q6SDGPoq2LieWYV1VOmbK9Dc+ksPy4VOe7xcagv5S2PjZXGlziZbcgI3f9CgEf7Icqq2Wl9zZjsDe1Qpg6xz5b/5BB0PO267QDr2QMTTcz799wK24iJrfgDh+CuPbO+/EYscbkUc/gc5FjA/llYkZttxROLctnyqU8xRz+eX/LlEkL+mlxO3XKDUZXIg7CAQEUgnXB/UHWNYNi6DUcb4mFXdH40PqkTexSuhH8ClqvnAkG9l7Ix2R765d5AlIHK7GLGvSB375TpOZK89er/18a84w4PUVAUHvvCg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=a6JK6xLwxXbRs+xrLxYv7QCKvOd7dYs3dfgVMljvLJ4=;
+ b=AEuCUswqiaq/RZUxtxCd3n0Cf03mceX17E+4oCMPIzoL0tATz8Uq29cAtO/2ZevEiF3XXkhgkw85ql5FnTbnS0A7ZzNKyTPph1E8xVj2NpONLQ6lGNcWsql2qa6R1Rg1s9BIQ64O2AP0CrGPOLgVLfZk9TTGu5YByazdEjEQyHXPRqR6bOVtf8z1TvnzLPmtpyQIZfb7gAQmFSfJGxJUWQYBlEXitheDuv97xQgsCFU0vqaXxGCnsFNjmGf4oSEguOTBeHNEAzocFCJ2U2EjdZfaIDRjauHNU26232O+R1WclIsfyW/dOYi/GNZqPErtsGPJXiuo9ndbJ8xQ3reSew==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
+ header.d=wdc.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dabbelt-com.20150623.gappssmtp.com; s=20150623;
-        h=date:subject:in-reply-to:cc:from:to:message-id:mime-version
-         :content-transfer-encoding;
-        bh=62H/x/rByJ7ggse69TMiJJtItRYsUHxpZdki7cQ0WSY=;
-        b=DoveRgb7gXjFv1+ebT4gOVEgstLeS7xoNCzngzTIpcb6n9yiwNrt81KUF+6Amd0gkK
-         RGOK1gcWgCICsIv/c4SURHsg8OztnlMoRMvJj1dh4E31jGgzNJHrIsngtGwccM9Jsj4C
-         9b9CVH3nW16+SldrGzvq9Ba75tpJeOrozHIVJPhC3hmxCisbOwttLLbPBvaOZBFFGKkD
-         XktLpcJcbFL6JN2BGMGY4HrfC6+FDi1WDm1zO9/9mJcqnx7TjtgEp766x1eOWP3DZwCH
-         F4ZEalrhwuWiTxNFAId3p3wnknrkMI8Qfo8JUy1Va1ajglff2/EfQinLBe74NKFd7CK9
-         M6Xw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id
-         :mime-version:content-transfer-encoding;
-        bh=62H/x/rByJ7ggse69TMiJJtItRYsUHxpZdki7cQ0WSY=;
-        b=cv3CHf5mKR+FdfCjOi4ByuPjheKfP36bkF/qR7OmicxXNfe0dvUOb8uxPvi/MC0qCt
-         CaJ+vC5SXHUpy2Z7xEK7r70YTEXhoJipEEEVC5ahFsfeQZIkK0xTw1rFUMUF+9zkba78
-         sRcn+NpUfpPf9jG7gz8nb5aZ3H0t3Mb7R05L3LGsFsyuurlsJA4gZuCXkrv7E48Q5FRL
-         zk/r6JmurPOd4KnAUns5Xr+TVZQOu0rWNscNYi+x3Y0uYwDRPBanDA8GCdJk3p1eVU0J
-         8gSNodZQi8PKDJ2Vi/vRG4TumNx94XOiRvxVVROs5IsmVkgfia2rWg+kWVjCjvwDoZzU
-         XbsQ==
-X-Gm-Message-State: AOAM533b+o6Gvk2rtHSpevLTlZBpPHvDkz9ZhpZBZPiHjxn4Dxzd+z4U
-        PI8/DLTaiUD0Qbqde9yurLHimedm4UzV2g==
-X-Google-Smtp-Source: ABdhPJzvQxmL/8rMOc/FYAbYs90guGWjhjVKrS4AG8vAK2ohMHxboO5/LTHzyHEKf2KsQsS1OtwLHQ==
-X-Received: by 2002:a63:e:: with SMTP id 14mr13053823pga.253.1610225475399;
-        Sat, 09 Jan 2021 12:51:15 -0800 (PST)
-Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
-        by smtp.gmail.com with ESMTPSA id z13sm9312972pjt.45.2021.01.09.12.51.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 09 Jan 2021 12:51:14 -0800 (PST)
-Date:   Sat, 09 Jan 2021 12:51:14 -0800 (PST)
-X-Google-Original-Date: Sat, 09 Jan 2021 12:51:12 PST (-0800)
-Subject:     Re: [PATCH v5 0/5] Unify NUMA implementation between ARM64 & RISC-V
-In-Reply-To: <CAOnJCULPCxhirYH8xCciKDNJ=zfWKwiOOfAoT8QQBOKqTuWuTA@mail.gmail.com>
-CC:     linux-kernel@vger.kernel.org, rafael@kernel.org,
-        catalin.marinas@arm.com, Jonathan.Cameron@huawei.com,
-        Atish Patra <Atish.Patra@wdc.com>,
-        linux-riscv@lists.infradead.org, will@kernel.org, ardb@kernel.org,
-        linux-arch@vger.kernel.org, liuzhengyuan@tj.kylinos.cn,
-        bhe@redhat.com, anup@brainfault.org, daniel.lezcano@linaro.org,
-        steven.price@arm.com, greentime.hu@sifive.com,
-        aou@eecs.berkeley.edu, Arnd Bergmann <arnd@arndb.de>,
-        anshuman.khandual@arm.com,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        linux-arm-kernel@lists.infradead.org,
-        Greg KH <gregkh@linuxfoundation.org>,
-        akpm@linux-foundation.org, rppt@kernel.org
-From:   Palmer Dabbelt <palmer@dabbelt.com>
-To:     atishp@atishpatra.org
-Message-ID: <mhng-94c90991-c4e8-49fe-a225-854ae0343d8d@palmerdabbelt-glaptop>
-Mime-Version: 1.0 (MHng)
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+ d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=a6JK6xLwxXbRs+xrLxYv7QCKvOd7dYs3dfgVMljvLJ4=;
+ b=FCCAD01X1sB84juKrp/sGHOi0qBlTJAOq0yku/TMfhyz3OX0oSQoG7q18ynMG4J2CrYLqciJmYSs4/9uZy+xfiJPZj2/EezXAEEpOYyF/C+ehqcvyGkiP32aq/X9vl5I5UMBTeeZvhabEXPqfH9TawX6fFTXGAaq64THHik+kqI=
+Received: from BYAPR04MB4965.namprd04.prod.outlook.com (2603:10b6:a03:4d::25)
+ by BY5PR04MB6961.namprd04.prod.outlook.com (2603:10b6:a03:22b::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3742.9; Sat, 9 Jan
+ 2021 20:52:15 +0000
+Received: from BYAPR04MB4965.namprd04.prod.outlook.com
+ ([fe80::716c:4e0c:c6d1:298a]) by BYAPR04MB4965.namprd04.prod.outlook.com
+ ([fe80::716c:4e0c:c6d1:298a%6]) with mapi id 15.20.3742.009; Sat, 9 Jan 2021
+ 20:52:15 +0000
+From:   Chaitanya Kulkarni <Chaitanya.Kulkarni@wdc.com>
+To:     Pavel Begunkov <asml.silence@gmail.com>,
+        "Martin K . Petersen" <martin.petersen@oracle.com>
+CC:     "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "target-devel@vger.kernel.org" <target-devel@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] target/file: don't zero iter before iov_iter_bvec
+Thread-Topic: [PATCH] target/file: don't zero iter before iov_iter_bvec
+Thread-Index: AQHW5qBkaWm3Wnjfmk+XiYs/GS5+eQ==
+Date:   Sat, 9 Jan 2021 20:52:15 +0000
+Message-ID: <BYAPR04MB49653C92C7925B8C3EAEF3CE86AD0@BYAPR04MB4965.namprd04.prod.outlook.com>
+References: <34cd22d6cec046e3adf402accb1453cc255b9042.1610207523.git.asml.silence@gmail.com>
+ <BYAPR04MB4965F4DCF59E5225CF17322D86AD0@BYAPR04MB4965.namprd04.prod.outlook.com>
+ <4d063dde-c710-44e3-31b9-8fb6b7e1d952@gmail.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: gmail.com; dkim=none (message not signed)
+ header.d=none;gmail.com; dmarc=none action=none header.from=wdc.com;
+x-originating-ip: [199.255.45.62]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: 49a88bea-d636-4365-8859-08d8b4e07210
+x-ms-traffictypediagnostic: BY5PR04MB6961:
+x-microsoft-antispam-prvs: <BY5PR04MB6961D1EA9DBE711BCB39D9DF86AD0@BY5PR04MB6961.namprd04.prod.outlook.com>
+wdcipoutbound: EOP-TRUE
+x-ms-oob-tlc-oobclassifiers: OLM:605;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: dG8X2Fatk7XQ9kvdZfzXeBdR00HJVZI/9V4vcv8HXUBlIqodAnbgd5poHvZah4nIuzil2wzBdZ0EpXdg7BsO2bIpecSbZ/ufYqVPiSMwqTpbNQse2ODdfh7Ac8spf5sjwYpFa42cXZmkirskrb8akJeLJERvNfC8alnaX2LkB73cfMeW4FTzty2BGxGfS9BlheJiOISPfA8MMKXCWif7gOb1eJjsPqwbB53VGeQ8Y6Q/Q135s2X8UA3MPBxufh/xgNvyHHWeISP4rA9fDCSWdhVHYkr38K5CjAQOKUP2hJ5dmBtyp5Nuj0c+9LcN4Akbr953sIJ4VUChSVZ0/MMmm/N3ukHRnl7Ek3mJI0RFMlzh1HXj8bbOae0WqeoZG15jhpyoFfaXhQDVhNgmuFme3Q==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR04MB4965.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(366004)(376002)(396003)(136003)(39860400002)(66556008)(478600001)(2906002)(8936002)(53546011)(6506007)(186003)(26005)(110136005)(54906003)(316002)(86362001)(55016002)(71200400001)(33656002)(9686003)(8676002)(7696005)(52536014)(76116006)(66446008)(4326008)(4744005)(5660300002)(66476007)(64756008)(66946007);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: =?us-ascii?Q?qHRr21L76EIwma8ShmYdd2OGjagterdg5Ry5br/mmxEQFLQjoQd3Zp1OkVvs?=
+ =?us-ascii?Q?iwM4F88P/H0THUYcgK1G8DRyHO+3ejHHhPF2ADpBzv88vii1lP+afdCOCX2/?=
+ =?us-ascii?Q?jHV3pbSkvrSjvUuA9rmuQlzjYwcmlgyNazYbZ7L/6PZXSjCS2XrtF/KeiBQh?=
+ =?us-ascii?Q?IQ5U17rNBjhSfJUA5QMCBfI+zDJVMRVB8ScMysBgAtwi2TFQJ4Qyomadfc8j?=
+ =?us-ascii?Q?KIjlWHQy2rgL9NCiZEtgM2L0U+QrWQEAt35n7ys60s95lB87sdMB71mnkX1/?=
+ =?us-ascii?Q?mVf4g7Ydal4Ka5TzrujE+n2J+hzxTDg2bbT0eoNOzyiw0RtyrGTWpaEBd2Xy?=
+ =?us-ascii?Q?F3odfqAXKaaZw6UZQTjH3b6wUX++7Jz5T0mRH7ggmsriRatHJps6KtyB0AsJ?=
+ =?us-ascii?Q?YYwBUiuDMY0zuwo1TG6n0RoktYP+EuhGJct/+iIh29FSQyUiRdHKNdVeVYMc?=
+ =?us-ascii?Q?mr/ELMM2H4cqdqjCn1H7UMxWKEySNhRYvLW1zpCl5B83CE30yds6Q+17gnj+?=
+ =?us-ascii?Q?XU7fVpvSQ0VEPiAzw+4gRuiXwj7OiHjEfhaeBY0vvrX0tUmuaRSGAt9kiAfY?=
+ =?us-ascii?Q?P6gbkrlPvmfYBnzhYrxxbBzRkn/0OU+SMT0BF4NDniPzxz5eJhkSZA3oP3OM?=
+ =?us-ascii?Q?U+zZC9zzAl93rCp96xGfdcIyzRo4xrCG6AZhkx9kUV8iRsIfMZBYGOwoIwcL?=
+ =?us-ascii?Q?yoQBbrC+3oK3xBf6CX4OkR+ndc/cqvNxr+Q/EsmY1DH9IEH+u+BWhLEY+28x?=
+ =?us-ascii?Q?51Va5jmiJ/84Ekzn0fhygcQzt121mB+o4NaKtjHTNpXorzpRAbgHo6Ic/Kwv?=
+ =?us-ascii?Q?SbD1s26XqNOp3INUkaizHmb9NpJCpCDJRGuB3bOwoW1TRPA44+oZFLGQlpGO?=
+ =?us-ascii?Q?fKIH/nFK79f22BQ0EMt6HCGXaWj/Z1FPJbYhDGCEvTpr4gHtMKZf2w2WlnFP?=
+ =?us-ascii?Q?DcREeakoqrR5QqGLjEotDg3dAjQDA8ZdSZ0ZOVFk8yeRQKs23tl07wGrWz/Z?=
+ =?us-ascii?Q?CdYg?=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-OriginatorOrg: wdc.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR04MB4965.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 49a88bea-d636-4365-8859-08d8b4e07210
+X-MS-Exchange-CrossTenant-originalarrivaltime: 09 Jan 2021 20:52:15.0718
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: IpeMAOA1WsGK1j6erhKN3dJdNkO5/zXW+CcfUK9S4Ev9mm2AY4r7sy1ShUAL7hz3P1yLVvD2ZniomyJbEQ47Tr9Uj22/qEPbaaoi4+tajjc=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR04MB6961
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 13 Dec 2020 17:02:19 PST (-0800), atishp@atishpatra.org wrote:
-> On Wed, Nov 18, 2020 at 4:39 PM Atish Patra <atish.patra@wdc.com> wrote:
->>
->> This series attempts to move the ARM64 numa implementation to common
->> code so that RISC-V can leverage that as well instead of reimplementing
->> it again.
->>
->> RISC-V specific bits are based on initial work done by Greentime Hu [1] but
->> modified to reuse the common implementation to avoid duplication.
->>
->> [1] https://lkml.org/lkml/2020/1/10/233
->>
->> This series has been tested on qemu with numa enabled for both RISC-V & ARM64.
->> It would be great if somebody can test it on numa capable ARM64 hardware platforms.
->> This patch series doesn't modify the maintainers list for the common code (arch_numa)
->> as I am not sure if somebody from ARM64 community or Greg should take up the
->> maintainership. Ganapatrao was the original author of the arm64 version.
->> I would be happy to update that in the next revision once it is decided.
->>
->> # numactl --hardware
->> available: 2 nodes (0-1)
->> node 0 cpus: 0 1 2 3
->> node 0 size: 486 MB
->> node 0 free: 470 MB
->> node 1 cpus: 4 5 6 7
->> node 1 size: 424 MB
->> node 1 free: 408 MB
->> node distances:
->> node   0   1
->>   0:  10  20
->>   1:  20  10
->> # numactl -show
->> policy: default
->> preferred node: current
->> physcpubind: 0 1 2 3 4 5 6 7
->> cpubind: 0 1
->> nodebind: 0 1
->> membind: 0 1
->>
->> The patches are also available at
->> https://github.com/atishp04/linux/tree/5.11_numa_unified_v5
->>
->> For RISC-V, the following qemu series is a pre-requisite(already available in upstream)
->> https://patchwork.kernel.org/project/qemu-devel/list/?series=303313
->>
->> Testing:
->> RISC-V:
->> Tested in Qemu and 2 socket OmniXtend FPGA.
->>
->> ARM64:
->> 2 socket kunpeng920 (4 nodes around 250G a node)
->> Tested-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
->>
->> Changes from v4->v5:
->> 1. Added by Acked-by & Reviewed-by tags.
->> 2. Swapped patch 1 & 2 in v4 version.
->>
->> Changes from v3->v4:
->> 1. Removed redundant duplicate header.
->> 2. Added Reviewed-by tags.
->>
->> Changes from v2->v3:
->> 1. Added Acked-by/Reviewed-by tags.
->> 2. Replaced asm/acpi.h with linux/acpi.h
->> 3. Defined arch_acpi_numa_init as static.
->>
->> Changes from v1->v2:
->> 1. Replaced ARM64 specific compile time protection with ACPI specific ones.
->> 2. Dropped common pcibus_to_node changes. Added required changes in RISC-V.
->> 3. Fixed few typos.
->>
->> Atish Patra (4):
->> arm64, numa: Change the numa init functions name to be generic
->> numa: Move numa implementation to common code
->> riscv: Separate memory init from paging init
->> riscv: Add numa support for riscv64 platform
->>
->> Greentime Hu (1):
->> riscv: Add support pte_protnone and pmd_protnone if
->> CONFIG_NUMA_BALANCING
->>
->> arch/arm64/Kconfig                            |  1 +
->> arch/arm64/include/asm/numa.h                 | 48 +----------------
->> arch/arm64/kernel/acpi_numa.c                 | 12 -----
->> arch/arm64/mm/Makefile                        |  1 -
->> arch/arm64/mm/init.c                          |  4 +-
->> arch/riscv/Kconfig                            | 31 ++++++++++-
->> arch/riscv/include/asm/mmzone.h               | 13 +++++
->> arch/riscv/include/asm/numa.h                 |  8 +++
->> arch/riscv/include/asm/pci.h                  | 14 +++++
->> arch/riscv/include/asm/pgtable.h              | 21 ++++++++
->> arch/riscv/kernel/setup.c                     | 11 +++-
->> arch/riscv/kernel/smpboot.c                   | 12 ++++-
->> arch/riscv/mm/init.c                          | 10 +++-
->> drivers/base/Kconfig                          |  6 +++
->> drivers/base/Makefile                         |  1 +
->> .../mm/numa.c => drivers/base/arch_numa.c     | 27 ++++++++--
->> include/asm-generic/numa.h                    | 52 +++++++++++++++++++
->> 17 files changed, 200 insertions(+), 72 deletions(-)
->> create mode 100644 arch/riscv/include/asm/mmzone.h
->> create mode 100644 arch/riscv/include/asm/numa.h
->> rename arch/arm64/mm/numa.c => drivers/base/arch_numa.c (96%)
->> create mode 100644 include/asm-generic/numa.h
->>
->> --
->> 2.25.1
->>
->>
->> _______________________________________________
->> linux-riscv mailing list
->> linux-riscv@lists.infradead.org
->> http://lists.infradead.org/mailman/listinfo/linux-riscv
->
-> Hey Palmer,
-> I did not see this series in for-next. Let me know if you need
-> anything else to be done for this series.
-
-Sorry about that.  It's on for-next, with Randy's comment addressed.  There was
-one merge conflict: we don't have resource_init() in for-next yet (which I
-think means I missed something else).  IDK if that's necessary for the NUMA
-stuff, I just dropped it.  I haven't tested this yet.
+On 1/9/21 12:40, Pavel Begunkov wrote:=0A=
+> I expect you won't find any, but such little things can pile up=0A=
+> into a not-easy-to-spot overhead over time.=0A=
+=0A=
+That is what I suspected with the resulting assembly. The commit log=0A=
+needs to document that there is no direct impact on the performance=0A=
+which can be seen with this patch, but this is nice to have=0A=
+micro-optimization in the long run.=0A=
+=0A=
+=0A=
