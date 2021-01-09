@@ -2,137 +2,196 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 11F5F2EFBEB
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Jan 2021 00:59:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 48FB92EFC02
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Jan 2021 01:06:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726377AbhAHX67 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Jan 2021 18:58:59 -0500
-Received: from elvis.franken.de ([193.175.24.41]:36870 "EHLO elvis.franken.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725763AbhAHX67 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Jan 2021 18:58:59 -0500
-Received: from uucp (helo=alpha)
-        by elvis.franken.de with local-bsmtp (Exim 3.36 #1)
-        id 1ky1e2-0007pu-01; Sat, 09 Jan 2021 00:58:14 +0100
-Received: by alpha.franken.de (Postfix, from userid 1000)
-        id 804DDC086F; Sat,  9 Jan 2021 00:58:05 +0100 (CET)
-Date:   Sat, 9 Jan 2021 00:58:05 +0100
-From:   Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-To:     Paul Cercueil <paul@crapouillou.net>
-Cc:     tglx@linutronix.de, airlied@linux.ie, airlied@redhat.com,
-        akpm@linux-foundation.org, arnd@arndb.de, bcrl@kvack.org,
-        bigeasy@linutronix.de, bristot@redhat.com, bsegall@google.com,
-        bskeggs@redhat.com, chris@zankel.net, christian.koenig@amd.com,
-        clm@fb.com, davem@davemloft.net, deanbo422@gmail.com,
-        dietmar.eggemann@arm.com, dri-devel@lists.freedesktop.org,
-        dsterba@suse.com, green.hu@gmail.com, hch@lst.de,
-        intel-gfx@lists.freedesktop.org, jcmvbkbc@gmail.com,
-        josef@toxicpanda.com, juri.lelli@redhat.com, kraxel@redhat.com,
-        linux-aio@kvack.org, linux-arm-kernel@lists.infradead.org,
-        linux-btrfs@vger.kernel.org, linux-csky@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org,
-        linux-graphics-maintainer@vmware.com, linux-kernel@vger.kernel.org,
-        linux-mips@vger.kernel.org, linux-mm@kvack.org,
-        linux-snps-arc@lists.infradead.org, linux-xtensa@linux-xtensa.org,
-        linux@armlinux.org.uk, linuxppc-dev@lists.ozlabs.org,
-        mgorman@suse.de, mingo@kernel.org, monstr@monstr.eu,
-        mpe@ellerman.id.au, nickhu@andestech.com,
-        nouveau@lists.freedesktop.org, paulmck@kernel.org,
-        paulus@samba.org, peterz@infradead.org, ray.huang@amd.com,
-        rodrigo.vivi@intel.com, rostedt@goodmis.org,
-        sparclinux@vger.kernel.org, spice-devel@lists.freedesktop.org,
-        sroland@vmware.com, torvalds@linuxfoundation.org,
-        vgupta@synopsys.com, vincent.guittot@linaro.org,
-        viro@zeniv.linux.org.uk, virtualization@lists.linux-foundation.org,
-        x86@kernel.org
-Subject: Re: [patch V3 13/37] mips/mm/highmem: Switch to generic kmap atomic
-Message-ID: <20210108235805.GA17543@alpha.franken.de>
-References: <JUTMMQ.NNFWKIUV7UUJ1@crapouillou.net>
+        id S1726120AbhAIAG2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Jan 2021 19:06:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59686 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725775AbhAIAG0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 Jan 2021 19:06:26 -0500
+Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8746DC061574
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Jan 2021 16:05:46 -0800 (PST)
+Received: by mail-pg1-x536.google.com with SMTP id v19so8625726pgj.12
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Jan 2021 16:05:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=bAcK/bKOWhIjQUdGEVsmUrasCIwhbC+GIeydwFvvWj0=;
+        b=W84QjDCI8Co4fEU1uuC9mw6Y9x1XzfC4RC9h25vh/FSGirqb0wWqE9tULjf3SBBHiS
+         40ov8voOp8curizKbKb6Sp2B9SBI+58NVJtfnRuEjQAD18CtlORjCV4JljGXY01W6Bnb
+         QlMWjkmo+T+9QTZG5z7Y+S+nBviL7b/pAkkr8=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=bAcK/bKOWhIjQUdGEVsmUrasCIwhbC+GIeydwFvvWj0=;
+        b=pwfPKVtpfZdIl2jW4ON56DnHsBcjFrGdd2UuS3Ih9HAUsahzNslxwjctvE5iFJs5/U
+         KKCifiRdGQ/fyxjHwJGlsNoeU9dR+TC+zBnfP8ewP02F4gMJmKrRzYuMyjhFuq7qF/TN
+         YeYk5rl+I7YHHpzhADJW8/IEubGqfDYIOKnH8dw8YcwTK3FORv/x9Cz1UR1f/rn14OBv
+         KSHmldnrIRneXSHvtsiM6l2U5O8ff8ZHFBYwzmVhT9JQjQmpvP+QM9G3w0MvCPL5LAvy
+         93CtPJLSgfdiBOLEyauKcIl96nSKgAeDbi9BSIoh8j3vfM1CDbTwRor1NE7VAB8bj66U
+         KbYw==
+X-Gm-Message-State: AOAM531Gb1LaB/rjczmsTBTHPGPQ/Vxk+MpzitV3I3SS43Z6eNBqC8Av
+        tJIznNbb67q321hJtoBOl68zOts8ULrzwg==
+X-Google-Smtp-Source: ABdhPJw/iv8Obmploe+vQfbeD5lj6H0/RghZKDx9xrFpYRznr90gyXvm9sfyTEJa2ywC1Rbhu/GKwQ==
+X-Received: by 2002:a62:3503:0:b029:1aa:6f15:b9fe with SMTP id c3-20020a6235030000b02901aa6f15b9femr6005097pfa.65.1610150745837;
+        Fri, 08 Jan 2021 16:05:45 -0800 (PST)
+Received: from philipchen.mtv.corp.google.com ([2620:15c:202:201:a6ae:11ff:fe11:fd59])
+        by smtp.gmail.com with ESMTPSA id u68sm9221466pfb.70.2021.01.08.16.05.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 08 Jan 2021 16:05:45 -0800 (PST)
+From:   Philip Chen <philipchen@chromium.org>
+To:     LKML <linux-kernel@vger.kernel.org>, dmitry.torokhov@gmail.com
+Cc:     dianders@chromium.org, swboyd@chromium.org,
+        Philip Chen <philipchen@chromium.org>,
+        Benson Leung <bleung@chromium.org>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        Guenter Roeck <groeck@chromium.org>,
+        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org
+Subject: [PATCH v2 1/2] dt-bindings: input: Create macros for cros-ec keymap
+Date:   Fri,  8 Jan 2021 16:05:40 -0800
+Message-Id: <20210108160515.v2.1.Iaa8a60cf2ed4b7ad5e2fbb4ad76a1c600ee36113@changeid>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <JUTMMQ.NNFWKIUV7UUJ1@crapouillou.net>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 08, 2021 at 08:20:43PM +0000, Paul Cercueil wrote:
-> Hi Thomas,
-> 
-> 5.11 does not boot anymore on Ingenic SoCs, I bisected it to this commit.
-> 
-> Any idea what could be happening?
+In Chrome OS, the keyboard matrix can be split to two groups:
 
-not yet, kernel crash log of a Malta QEMU is below.
+The keymap for the top row keys can be customized based on OEM
+preference, while the keymap for the other keys is generic/fixed
+across boards.
 
-Thomas.
+This patch creates marcos for the keymaps of these two groups, making
+it easier to reuse the generic portion of keymap when we override the
+keymap in the board-specific dts for custom top row design.
 
-Kernel bug detected[#1]:
-CPU: 0 PID: 1 Comm: swapper/0 Not tainted 5.11.0-rc1-00017-gccb21774863a #2
-$ 0   : 00000000 00000001 00000000 00000010
-$ 4   : 00000001 000005cf 9e00059f 00000000
-$ 8   : 00118173 809e6db8 9e00059f 00000000
-$12   : 82023c00 00000001 810da04c 0212422f
-$16   : 810da000 00027800 000005cf 80b4bf9c
-$20   : 809e968c 82602400 810da000 0000000b
-$24   : 021558f9 00000000                  
-$28   : 820e0000 820e3928 80b10000 802710d0
-Hi    : 0000346c
-Lo    : 000002dd
-epc   : 80271114 __kmap_local_pfn_prot+0x78/0x1c0
-ra    : 802710d0 __kmap_local_pfn_prot+0x34/0x1c0
-Status: 1000a403	KERNEL EXL IE 
-Cause : 00800034 (ExcCode 0d)
-PrId  : 0001a800 (MIPS P5600)
-Modules linked in:
-Process swapper/0 (pid: 1, threadinfo=(ptrval), task=(ptrval), tls=00000000)
-Stack : 7fffffff 820c2408 820e3990 ffffff04 ffff0a00 80518224 000081a4 810da000
-        00000001 000005cf fff64000 8011c77c 820e3b26 ffffff04 ffff0a00 80518440
-        80b30000 80b4bf64 9e0005cf 000005cf fff64000 80271188 00000000 820e3a60
-        80b10000 80194478 0000005e 80954406 809e0000 810da000 00000001 000005cf
-        fff68000 8011c77c 8088fd44 809f6074 000000f4 00000000 00000000 80b4bf68
-        ...
-Call Trace:
-[<80271114>] __kmap_local_pfn_prot+0x78/0x1c0
-[<8011c77c>] __update_cache+0x16c/0x174
-[<80271188>] __kmap_local_pfn_prot+0xec/0x1c0
-[<8011c77c>] __update_cache+0x16c/0x174
-[<80271188>] __kmap_local_pfn_prot+0xec/0x1c0
-[<8011c77c>] __update_cache+0x16c/0x174
-[<80271188>] __kmap_local_pfn_prot+0xec/0x1c0
-[<8011c77c>] __update_cache+0x16c/0x174
-[<80271188>] __kmap_local_pfn_prot+0xec/0x1c0
-[<8011c77c>] __update_cache+0x16c/0x174
-[<80271188>] __kmap_local_pfn_prot+0xec/0x1c0
-[<8011c77c>] __update_cache+0x16c/0x174
-[<80271188>] __kmap_local_pfn_prot+0xec/0x1c0
-[<8011c77c>] __update_cache+0x16c/0x174
-[<80271188>] __kmap_local_pfn_prot+0xec/0x1c0
-[<8011c77c>] __update_cache+0x16c/0x174
-[<80271188>] __kmap_local_pfn_prot+0xec/0x1c0
-[<8011c77c>] __update_cache+0x16c/0x174
-[<80271188>] __kmap_local_pfn_prot+0xec/0x1c0
-[<8011c77c>] __update_cache+0x16c/0x174
-[<80271188>] __kmap_local_pfn_prot+0xec/0x1c0
-[<8011c77c>] __update_cache+0x16c/0x174
-[<80271188>] __kmap_local_pfn_prot+0xec/0x1c0
-[<8011c77c>] __update_cache+0x16c/0x174
-[<80271188>] __kmap_local_pfn_prot+0xec/0x1c0
-[<8011c77c>] __update_cache+0x16c/0x174
-[<80271188>] __kmap_local_pfn_prot+0xec/0x1c0
-[<8011c77c>] __update_cache+0x16c/0x174
-[<80271188>] __kmap_local_pfn_prot+0xec/0x1c0
-[<8011c77c>] __update_cache+0x16c/0x174
-[<80271188>] __kmap_local_pfn_prot+0xec/0x1c0
-[<802c49a0>] copy_string_kernel+0x168/0x264
-[<802c5d18>] kernel_execve+0xd0/0x164
-[<801006cc>] try_to_run_init_process+0x18/0x5c
-[<80859e0c>] kernel_init+0xd0/0x120
-[<801037f8>] ret_from_kernel_thread+0x14/0x1c
+Signed-off-by: Philip Chen <philipchen@chromium.org>
+---
 
-Code: 8c630564  28640010  38840001 <00040336> 8f82000c  2463ffff  00021100  00431021  2403ffbf 
+Changes in v2:
+- Rename CROS_STD_NON_TOP_ROW_KEYMAP to CROS_STD_MAIN_KEYMAP
 
+ include/dt-bindings/input/cros-ec-keyboard.h | 103 +++++++++++++++++++
+ 1 file changed, 103 insertions(+)
+ create mode 100644 include/dt-bindings/input/cros-ec-keyboard.h
+
+diff --git a/include/dt-bindings/input/cros-ec-keyboard.h b/include/dt-bindings/input/cros-ec-keyboard.h
+new file mode 100644
+index 0000000000000..a37a8c5701219
+--- /dev/null
++++ b/include/dt-bindings/input/cros-ec-keyboard.h
+@@ -0,0 +1,103 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++/*
++ * This header provides the constants of the standard Chrome OS key matrix
++ * for cros-ec keyboard-controller bindings.
++ *
++ * Copyright (c) 2021 Google, Inc
++ */
++
++#ifndef _CROS_EC_KEYBOARD_H
++#define _CROS_EC_KEYBOARD_H
++
++#define CROS_STD_TOP_ROW_KEYMAP	\
++	MATRIX_KEY(0x00, 0x02, KEY_F1)	\
++	MATRIX_KEY(0x03, 0x02, KEY_F2)	\
++	MATRIX_KEY(0x02, 0x02, KEY_F3)	\
++	MATRIX_KEY(0x01, 0x02, KEY_F4)	\
++	MATRIX_KEY(0x03, 0x04, KEY_F5)	\
++	MATRIX_KEY(0x02, 0x04, KEY_F6)	\
++	MATRIX_KEY(0x01, 0x04, KEY_F7)	\
++	MATRIX_KEY(0x02, 0x09, KEY_F8)	\
++	MATRIX_KEY(0x01, 0x09, KEY_F9)	\
++	MATRIX_KEY(0x00, 0x04, KEY_F10)	\
++	MATRIX_KEY(0x03, 0x09, KEY_F13)
++
++#define CROS_STD_MAIN_KEYMAP	\
++	MATRIX_KEY(0x00, 0x01, KEY_LEFTMETA)	\
++	MATRIX_KEY(0x00, 0x03, KEY_B)		\
++	MATRIX_KEY(0x00, 0x05, KEY_RO)		\
++	MATRIX_KEY(0x00, 0x06, KEY_N)		\
++	MATRIX_KEY(0x00, 0x08, KEY_EQUAL)	\
++	MATRIX_KEY(0x00, 0x0a, KEY_RIGHTALT)	\
++	MATRIX_KEY(0x01, 0x01, KEY_ESC)		\
++	MATRIX_KEY(0x01, 0x03, KEY_G)		\
++	MATRIX_KEY(0x01, 0x06, KEY_H)		\
++	MATRIX_KEY(0x01, 0x08, KEY_APOSTROPHE)	\
++	MATRIX_KEY(0x01, 0x0b, KEY_BACKSPACE)	\
++	MATRIX_KEY(0x01, 0x0c, KEY_HENKAN)	\
++						\
++	MATRIX_KEY(0x02, 0x00, KEY_LEFTCTRL)	\
++	MATRIX_KEY(0x02, 0x01, KEY_TAB)		\
++	MATRIX_KEY(0x02, 0x03, KEY_T)		\
++	MATRIX_KEY(0x02, 0x05, KEY_RIGHTBRACE)	\
++	MATRIX_KEY(0x02, 0x06, KEY_Y)		\
++	MATRIX_KEY(0x02, 0x07, KEY_102ND)	\
++	MATRIX_KEY(0x02, 0x08, KEY_LEFTBRACE)	\
++	MATRIX_KEY(0x02, 0x0a, KEY_YEN)		\
++						\
++	MATRIX_KEY(0x03, 0x00, KEY_LEFTMETA)	\
++	MATRIX_KEY(0x03, 0x01, KEY_GRAVE)	\
++	MATRIX_KEY(0x03, 0x03, KEY_5)		\
++	MATRIX_KEY(0x03, 0x06, KEY_6)		\
++	MATRIX_KEY(0x03, 0x08, KEY_MINUS)	\
++	MATRIX_KEY(0x03, 0x0b, KEY_BACKSLASH)	\
++	MATRIX_KEY(0x03, 0x0c, KEY_MUHENKAN)	\
++						\
++	MATRIX_KEY(0x04, 0x00, KEY_RIGHTCTRL)	\
++	MATRIX_KEY(0x04, 0x01, KEY_A)		\
++	MATRIX_KEY(0x04, 0x02, KEY_D)		\
++	MATRIX_KEY(0x04, 0x03, KEY_F)		\
++	MATRIX_KEY(0x04, 0x04, KEY_S)		\
++	MATRIX_KEY(0x04, 0x05, KEY_K)		\
++	MATRIX_KEY(0x04, 0x06, KEY_J)		\
++	MATRIX_KEY(0x04, 0x08, KEY_SEMICOLON)	\
++	MATRIX_KEY(0x04, 0x09, KEY_L)		\
++	MATRIX_KEY(0x04, 0x0a, KEY_BACKSLASH)	\
++	MATRIX_KEY(0x04, 0x0b, KEY_ENTER)	\
++						\
++	MATRIX_KEY(0x05, 0x01, KEY_Z)		\
++	MATRIX_KEY(0x05, 0x02, KEY_C)		\
++	MATRIX_KEY(0x05, 0x03, KEY_V)		\
++	MATRIX_KEY(0x05, 0x04, KEY_X)		\
++	MATRIX_KEY(0x05, 0x05, KEY_COMMA)	\
++	MATRIX_KEY(0x05, 0x06, KEY_M)		\
++	MATRIX_KEY(0x05, 0x07, KEY_LEFTSHIFT)	\
++	MATRIX_KEY(0x05, 0x08, KEY_SLASH)	\
++	MATRIX_KEY(0x05, 0x09, KEY_DOT)		\
++	MATRIX_KEY(0x05, 0x0b, KEY_SPACE)	\
++						\
++	MATRIX_KEY(0x06, 0x01, KEY_1)		\
++	MATRIX_KEY(0x06, 0x02, KEY_3)		\
++	MATRIX_KEY(0x06, 0x03, KEY_4)		\
++	MATRIX_KEY(0x06, 0x04, KEY_2)		\
++	MATRIX_KEY(0x06, 0x05, KEY_8)		\
++	MATRIX_KEY(0x06, 0x06, KEY_7)		\
++	MATRIX_KEY(0x06, 0x08, KEY_0)		\
++	MATRIX_KEY(0x06, 0x09, KEY_9)		\
++	MATRIX_KEY(0x06, 0x0a, KEY_LEFTALT)	\
++	MATRIX_KEY(0x06, 0x0b, KEY_DOWN)	\
++	MATRIX_KEY(0x06, 0x0c, KEY_RIGHT)	\
++						\
++	MATRIX_KEY(0x07, 0x01, KEY_Q)		\
++	MATRIX_KEY(0x07, 0x02, KEY_E)		\
++	MATRIX_KEY(0x07, 0x03, KEY_R)		\
++	MATRIX_KEY(0x07, 0x04, KEY_W)		\
++	MATRIX_KEY(0x07, 0x05, KEY_I)		\
++	MATRIX_KEY(0x07, 0x06, KEY_U)		\
++	MATRIX_KEY(0x07, 0x07, KEY_RIGHTSHIFT)	\
++	MATRIX_KEY(0x07, 0x08, KEY_P)		\
++	MATRIX_KEY(0x07, 0x09, KEY_O)		\
++	MATRIX_KEY(0x07, 0x0b, KEY_UP)		\
++	MATRIX_KEY(0x07, 0x0c, KEY_LEFT)
++
++#endif /* _CROS_EC_KEYBOARD_H */
 -- 
-Crap can work. Given enough thrust pigs will fly, but it's not necessarily a
-good idea.                                                [ RFC1925, 2.3 ]
+2.26.2
+
