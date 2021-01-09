@@ -2,58 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05BFE2F033D
+	by mail.lfdr.de (Postfix) with ESMTP id DF0872F033F
 	for <lists+linux-kernel@lfdr.de>; Sat,  9 Jan 2021 20:52:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726265AbhAITvt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Jan 2021 14:51:49 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52122 "EHLO mail.kernel.org"
+        id S1726352AbhAITv5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Jan 2021 14:51:57 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52148 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725999AbhAITvt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Jan 2021 14:51:49 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPS id A8E8323A7F;
-        Sat,  9 Jan 2021 19:51:08 +0000 (UTC)
+        id S1725999AbhAITv4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 9 Jan 2021 14:51:56 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPS id E892323A82;
+        Sat,  9 Jan 2021 19:51:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610221868;
-        bh=rd4DEaE3f2znf46Y+qAonYrbgbvDASa8/hVJhb+VU0I=;
+        s=k20201202; t=1610221875;
+        bh=btM3J9huZ052q08sCMPUU5gRld5Te7kDevMc99iHFMM=;
         h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=VjocK5rgYMESnqrZy+NQh8G3YqsIW9CtXWPde+v3SODx4WPUhJeFrgEc4HuicguCP
-         76z+xbEN6UowGCk28vZ67pMUOorwnxcYqw+4YNOeCwcSq4IXDyfMiC1+tsV6vQoLLW
-         4VfdQO4MO2gFUyKJrs2sQd7wQ5zTUyIYtSNvY6Hke21Cq9ALQ7WCinxMv7pzzumVr/
-         Oi24LGTuxRyE1yMgZHnf2iaJuMsLR7pvY+wAWB92hKbQO9Ss5iAP4dQBLR2n9fF9eM
-         DNEOrYK1eyAYyZoucP0NAGVCgoULzExK7W9NYJZwbF/bcJf4PFGUyXYtLC6M7LGSUm
-         RwDI54jYmB3SQ==
+        b=X8aZJ2lnWgCUCY/gWfROOi+zSELn2mdmap4DenNC3wKe4/+QAq8OSlR+ymKoZ1Pnb
+         9AuT5op9EfzG3UoQAW7h7tF9rnnRIUpVTr1ha9kItd5qJvWqN9czyBXIB02qGbdfBw
+         AKzVyIM/7c9F5Ficsij9YyafPEBgT5e+6hbhuhcG4IuZqOqJXtPdbo+ne4ZidIz9PK
+         X3FDwxiJzzpK6aDgMd4KgKRKqUARbg0crh25Zd1ZptuppDrm1C4ISRXxF+XgDzz/zy
+         33o8Exq3EG//U1BxFoR6I+QbarnXhCZLEhAGCK0/QuTstOZxJohLiyL4KKWqrnTReQ
+         PabvvXn/peOdQ==
 Received: from pdx-korg-docbuild-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-1.ci.codeaurora.org (Postfix) with ESMTP id 989FE60508;
-        Sat,  9 Jan 2021 19:51:08 +0000 (UTC)
-Subject: Re: [PULL REQUEST] i2c for 5.11
+        by pdx-korg-docbuild-1.ci.codeaurora.org (Postfix) with ESMTP id E4FA760508;
+        Sat,  9 Jan 2021 19:51:15 +0000 (UTC)
+Subject: Re: [GIT PULL]: dmaengine fixes for v5.11
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20210109083156.GA2924@kunai>
-References: <20210109083156.GA2924@kunai>
-X-PR-Tracked-List-Id: <linux-i2c.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20210109083156.GA2924@kunai>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/wsa/linux.git i2c/for-current
-X-PR-Tracked-Commit-Id: 05f6f7271a38c482c5021967433f7b698e102c45
+In-Reply-To: <20210109090124.GY2771@vkoul-mobl>
+References: <20210109090124.GY2771@vkoul-mobl>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20210109090124.GY2771@vkoul-mobl>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/vkoul/dmaengine.git tags/dmaengine-fix-5.11
+X-PR-Tracked-Commit-Id: e1263f9277bad198c2acc8092a41aea1edbea0e4
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: caab314792aca89f327abc8b9f730526d3080366
-Message-Id: <161022186853.8002.2175436833656146973.pr-tracker-bot@kernel.org>
-Date:   Sat, 09 Jan 2021 19:51:08 +0000
-To:     Wolfram Sang <wsa@kernel.org>
+X-PR-Merge-Commit-Id: f408126be7dc642102224cdb55d6533519a67c19
+Message-Id: <161022187592.8002.2318989684021687150.pr-tracker-bot@kernel.org>
+Date:   Sat, 09 Jan 2021 19:51:15 +0000
+To:     Vinod Koul <vkoul@kernel.org>
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Peter Rosin <peda@axentia.se>,
-        Bartosz Golaszewski <brgl@bgdev.pl>
+        LKML <linux-kernel@vger.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Sat, 9 Jan 2021 09:31:56 +0100:
+The pull request you sent on Sat, 9 Jan 2021 14:31:24 +0530:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/wsa/linux.git i2c/for-current
+> git://git.kernel.org/pub/scm/linux/kernel/git/vkoul/dmaengine.git tags/dmaengine-fix-5.11
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/caab314792aca89f327abc8b9f730526d3080366
+https://git.kernel.org/torvalds/c/f408126be7dc642102224cdb55d6533519a67c19
 
 Thank you!
 
