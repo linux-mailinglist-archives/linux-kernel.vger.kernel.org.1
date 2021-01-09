@@ -2,62 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DBF12F0408
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Jan 2021 23:13:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 965C12F040B
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Jan 2021 23:15:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726385AbhAIWNX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Jan 2021 17:13:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59570 "EHLO
+        id S1726394AbhAIWPU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Jan 2021 17:15:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59994 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726283AbhAIWNW (ORCPT
+        with ESMTP id S1726238AbhAIWPT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Jan 2021 17:13:22 -0500
-Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9324DC06179F
-        for <linux-kernel@vger.kernel.org>; Sat,  9 Jan 2021 14:12:41 -0800 (PST)
-Received: by mail-lf1-x12c.google.com with SMTP id o13so31847059lfr.3
-        for <linux-kernel@vger.kernel.org>; Sat, 09 Jan 2021 14:12:41 -0800 (PST)
+        Sat, 9 Jan 2021 17:15:19 -0500
+Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A2BCBC0617A2
+        for <linux-kernel@vger.kernel.org>; Sat,  9 Jan 2021 14:14:38 -0800 (PST)
+Received: by mail-lf1-x135.google.com with SMTP id 23so31721583lfg.10
+        for <linux-kernel@vger.kernel.org>; Sat, 09 Jan 2021 14:14:38 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=pWNdgAB7F54905PSxndcuizQFvWz899oT1UF8mQCigE=;
-        b=VoWkuuaRzIcof6rg6fCj8gUuVQmk4mX+M7w5MsOegPHy0wlbZN0g5y31EVEOCG+JFc
-         nZe3HayAOiuIRSWyGrg3Kw+lXX5mzU42uxaKbudkmwFyjtUHFjFsAk3586c4vTmyCImp
-         AArWIZlmcpjQVnfPPRFpfGGDDoh5ITf8qYBeLNtsIamK0ewbrxav5lk/vDozVEbyrT2q
-         iQ3QcUfMyEmh5m4HCZzaEhesRxcdlPDbuHZlNQwNxNIJ2dQmaPdt4YzwwF/YqMC9vP7+
-         vXN8AE3jK+j2PoFDezpL6samXXmDbIJLhf4vK2s/Z3jvdmUoiZPiZEhpnxMqDUvtpBO3
-         YpQA==
+        bh=PuGxm3GFcBsNFb4VCYjv1V+efk01JzJKthlrfnQST3E=;
+        b=bUPsrc89m8tMUAGi+l2QVNYeEH/XAGp8VALJgeDbfiWuE5UE4mJMJ74pbL+6B5lPaY
+         PPvNNGMBkWYpZlxHYz2480aZPc8p168tngGCnarSiN2Fb7oZhGas6hcyXlxnVWycYBJv
+         9R3BwGIz801vzLERNgcyn1L83FB7JWHH45BGMOU30x9tBFDOliYomSCX5cJFGiHo27XA
+         hMI6s+B3GJN6HKBzmG9MTBoNrefM8ZWi5WS5Rs2in0ui2FlyypeTnvYU1Z9yY9qxoqN0
+         6ITuUigNRrV/CS56Q/HJEnqEwhJ5IsEN/q5NlDyOgmUSplQ3rp2dAt7+Y2gtQcwTqqDf
+         q6wA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=pWNdgAB7F54905PSxndcuizQFvWz899oT1UF8mQCigE=;
-        b=ZxkweIuNaO5bRdFRqeoSk4DLeUOoWVTGfpd7tsrtZ12dA0d03BTOyiAheKpB1uQ9aC
-         hUZD7bPKAomubfg0qb9eJsPsU2wJIPmofI1gWKi+JdjvFdBJuIdWYSCFRDE7GG9pZ19R
-         e0i60uaHc6Q+izq2hZ/LDh8gjLB3MupIwG5DcXTRP+AfhDBmXUnRJizHY4Fe9k6uHHw/
-         2SIeiky6TLqTDFE5vMEpAdofJ7D7sfOiir6u4jJN9YYUvFCyXgKeqqBlI4+5XJNOAJXv
-         Ze1oatQEqMtv7owWyLi9NMsv/gYxpgPg92/qzxs4OW58x4reZvsLrFIo2dhreMnbztpc
-         fp9g==
-X-Gm-Message-State: AOAM532VEyBsAfJuM1I83v7/GtX//tAWYQqgcXprBIFGbgssheGX8df5
-        HxVj+AjoUzaTuyLW0fuieK+KbTaSZcK60u+2QxCOOg==
-X-Google-Smtp-Source: ABdhPJxACc9VPGH/iTwCxT+Lt9jPUgWD6ypR+Dmax5NfonZfuWTmjtMwb90HF88pUYCiu4Mx2CiDj4k+fDhIva0v5qw=
-X-Received: by 2002:a2e:85d1:: with SMTP id h17mr4095505ljj.438.1610230360062;
- Sat, 09 Jan 2021 14:12:40 -0800 (PST)
+        bh=PuGxm3GFcBsNFb4VCYjv1V+efk01JzJKthlrfnQST3E=;
+        b=E1+emYiuPPxTm3WWzCrW4hVRL3dg04bG2rXzkorL5BvJ0Ufydy+tSWdAdjLwdV8Oq7
+         lAyaaaRGCDdDlAEvbIIMuYXre22Dt1VOkkSwNSgJmSBn80xRmJs4jrEMyZMFUvWgNM81
+         hDx/rXSB2iRVT664FpH0dN9o/Gg7krTZ/hKlHac6/m6IjHoAq69l8B+l5S0V4QFTLeBF
+         x30W1AjDI1Dsh+xAn90JnXg9dPf3qpVhtdjQQ8pQaKm8IS3+5tHjKW8pO7QuhYRJwP32
+         HjsIXe/AIef11YGXUckD/DQkqtsfUdxmjPwFt/AdY2LefbhXJH1CwdlVEowbveX7VW7d
+         jyLw==
+X-Gm-Message-State: AOAM53369w2AT3gmsx/BGeTL9QbpFhDeiPLlXE9sdBXtK9jkBJd7d/3W
+        9UeTuy/rB5reFfpD/znzGG+8l7r0mdTfF2KjAK9arA==
+X-Google-Smtp-Source: ABdhPJw2WqwJduUqNY8DC7qF/2q+9O/eVsIl2egJyl9nuRFKtSZWNQDD5y2ipQevex7TLwS1jqOuJf0xiGv0JFXZy3U=
+X-Received: by 2002:a2e:586:: with SMTP id 128mr4663265ljf.273.1610230477212;
+ Sat, 09 Jan 2021 14:14:37 -0800 (PST)
 MIME-Version: 1.0
-References: <20210109140204.151340-2-angelogioacchino.delregno@somainline.org> <202101100151.3ojnIrPg-lkp@intel.com>
-In-Reply-To: <202101100151.3ojnIrPg-lkp@intel.com>
+References: <20210109140204.151340-1-angelogioacchino.delregno@somainline.org> <20210109140204.151340-3-angelogioacchino.delregno@somainline.org>
+In-Reply-To: <20210109140204.151340-3-angelogioacchino.delregno@somainline.org>
 From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Sat, 9 Jan 2021 23:12:29 +0100
-Message-ID: <CACRpkdbT6tv5ArKRLPh3hE-3fuYHotqG5tNwkF4vftSQ1T=wNA@mail.gmail.com>
-Subject: Re: [PATCH 1/2] pinctrl: Add driver for Awinic AW9523/B I2C GPIO Expander
-To:     kernel test robot <lkp@intel.com>
-Cc:     AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@somainline.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        kbuild-all@lists.01.org, konrad.dybcio@somainline.org,
-        marijn.suijten@somainline.org, martin.botka@somainline.org,
-        phone-devel@vger.kernel.org,
+Date:   Sat, 9 Jan 2021 23:14:26 +0100
+Message-ID: <CACRpkdaB4ejWUzBpkYWtRC=_On0tw2H1=3beaVmnLkjncUzn_Q@mail.gmail.com>
+Subject: Re: [PATCH 2/2] dt-bindings: pinctrl: Add bindings for Awinic AW9523/AW9523B
+To:     AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@somainline.org>
+Cc:     "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        konrad.dybcio@somainline.org, marijn.suijten@somainline.org,
+        martin.botka@somainline.org, phone-devel@vger.kernel.org,
         "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
         "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
         <devicetree@vger.kernel.org>, Rob Herring <robh+dt@kernel.org>
@@ -66,13 +64,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jan 9, 2021 at 6:24 PM kernel test robot <lkp@intel.com> wrote:
+Hi Angelo,
 
->  > 880          gpioirq->parent_domain = NULL;
+thanks for your patch!
 
-The autobuilder is complaining because your irq chip is not
-hierarchical and this is only used for hierarchical irqchips.
-I think you can just delete this line.
+On Sat, Jan 9, 2021 at 3:02 PM AngeloGioacchino Del Regno
+<angelogioacchino.delregno@somainline.org> wrote:
+
+> +#PIN CONFIGURATION NODES
+> +patternProperties:
+> +  '^.*$':
+> +    if:
+> +      type: object
+> +    then:
+> +      properties:
+> +        pins:
+> +          description:
+> +            List of gpio pins affected by the properties specified in
+> +            this subnode.
+> +          items:
+> +            pattern: "^gpio([0-9]|1[0-5])$"
+> +          minItems: 1
+> +          maxItems: 16
+> +
+> +        function:
+> +          description:
+> +            Specify the alternative function to be configured for the
+> +            specified pins.
+> +
+> +          enum: [ gpio, pwm ]
+> +
+> +        bias-disable: true
+> +        bias-pull-down: true
+> +        bias-pull-up: true
+> +        drive-open-drain: true
+> +        drive-push-pull: true
+> +        input-enable: true
+> +        output-high: true
+> +        output-low: true
+> +
+> +      required:
+> +        - pins
+> +        - function
+
+Is it possible to just $ref /pinctrl/pincfg-node.yaml# for some of this?
 
 Yours,
 Linus Walleij
