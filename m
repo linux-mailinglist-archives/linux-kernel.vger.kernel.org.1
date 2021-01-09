@@ -2,130 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D2D02EFC24
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Jan 2021 01:30:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E4B952EFC29
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Jan 2021 01:32:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726363AbhAIA3t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Jan 2021 19:29:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35926 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725812AbhAIA3t (ORCPT
+        id S1726297AbhAIAa3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Jan 2021 19:30:29 -0500
+Received: from m43-15.mailgun.net ([69.72.43.15]:14801 "EHLO
+        m43-15.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725306AbhAIAa3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Jan 2021 19:29:49 -0500
-Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3E8EC061573
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Jan 2021 16:29:08 -0800 (PST)
-Received: by mail-pl1-x62c.google.com with SMTP id x12so6526769plr.10
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Jan 2021 16:29:08 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=eveSrO3foL1YR94SADi/xGNY6RU/HiTPaoR//1jI2bc=;
-        b=cemTR8rQ+v7aAc1j8X9bSjTtMv/2eIij1J0jQdOW7eNBqbQFCd58aSYpax3rZVT2eY
-         aoIsHA/4koMVUbI+TLf/cwAkcwY2XCmvpLcT//0ZhklFs+Yz+KCOHvj4iDKgepwwDCy2
-         psVcFqYTpa0VlbUiLHsCrmO18jt6/WbjHzn9c=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=eveSrO3foL1YR94SADi/xGNY6RU/HiTPaoR//1jI2bc=;
-        b=fsb1f0F0jODtr/T4utGg4qdCAijqoVlso+CaykLse0LrGRYJKhfB3v2ED+LrO5hDxm
-         VuLLuqmxsh1yWezsBq0E2kNhyb26vAl3WDPStxe0odkod3L6FkdhCPbgORDxdid+BrwZ
-         OAdj2CIGmWu8rSsCmHWAHWnKOuWkP+H/WAHCRDQQgJhdjwggriVCpEd0ZF9KaMebU8zX
-         jMVKotLM5JomYpKisuPXik/O9N2FaKoNgOUWQgwakuoSrNXqPXb+30SPlOuDjcYlDLWs
-         7vx4QnYOGz5VubTtvzHLxe2ghO7w9h+lRdlHBOBp2lc6H15BqvfzCAj3wgiICD6Skzwy
-         YeRQ==
-X-Gm-Message-State: AOAM531PUDExq3SEr+l8iX+mI1FQUDXKZ2sE24b9OC+u+hnmJGOc0OZX
-        A9OBMKdIKXeFZQ0thpRL5lAX8w==
-X-Google-Smtp-Source: ABdhPJxOK52D16pcAwbT6jFjbq8GC4r4IJlAOsTNR/onet1CRy5aKa4cGbW3hXo1Ls7QfN7irIfQYg==
-X-Received: by 2002:a17:90a:db08:: with SMTP id g8mr6363172pjv.163.1610152148560;
-        Fri, 08 Jan 2021 16:29:08 -0800 (PST)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id p16sm9332768pju.47.2021.01.08.16.29.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 08 Jan 2021 16:29:07 -0800 (PST)
-From:   Kees Cook <keescook@chromium.org>
-To:     Steven Rostedt <rostedt@goodmis.org>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Will Deacon <will@kernel.org>,
-        Masahiro Yamada <masahiroy@kernel.org>
-Cc:     Kees Cook <keescook@chromium.org>,
-        clang-built-linux@googlegroups.com, linux-arch@vger.kernel.org,
-        linux-kbuild@vger.kernel.org, linux-pci@vger.kernel.org,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        linux-kernel@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        kernel-hardening@lists.openwall.com,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v9 00/16] Add support for Clang LTO
-Date:   Fri,  8 Jan 2021 16:27:13 -0800
-Message-Id: <161015202326.2511797.6087273163265436487.b4-ty@chromium.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20201211184633.3213045-1-samitolvanen@google.com>
-References: <20201211184633.3213045-1-samitolvanen@google.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+        Fri, 8 Jan 2021 19:30:29 -0500
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1610152210; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=3dGnbAVtyB6gyWXMowpwoOXTGcorXVWtWCxmc7pIxOw=; b=rkaqjxC6KUsU5SPrAxa3fJj0TzbmMft3vbBcRkwSjCrfJWQsiAm7/EI75fMP3dQ7LvVhgwYG
+ hPWEM+BMSWG+9lUtMbYlar6AeWnMIZ9uFBFfebMULk+Tt8O3TfNQTSpMsgTT0fVnxQlvO+kB
+ lcsHAhVwq1WGhE6vv5v5WLMujJ8=
+X-Mailgun-Sending-Ip: 69.72.43.15
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n10.prod.us-east-1.postgun.com with SMTP id
+ 5ff8f8f2f1be2d22c4ea7d90 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Sat, 09 Jan 2021 00:29:38
+ GMT
+Sender: sramana=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 5AC2DC43462; Sat,  9 Jan 2021 00:29:37 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from sramana-linux1.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: sramana)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 4B1BCC433C6;
+        Sat,  9 Jan 2021 00:29:36 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 4B1BCC433C6
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=sramana@codeaurora.org
+From:   Srinivas Ramana <sramana@codeaurora.org>
+To:     catalin.marinas@arm.com, will@kernel.org, pajay@qti.qualcomm.com
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        Srinivas Ramana <sramana@codeaurora.org>
+Subject: [PATCH 0/3] arm64: cpufeature: Add filter function to control
+Date:   Fri,  8 Jan 2021 16:29:20 -0800
+Message-Id: <1610152163-16554-1-git-send-email-sramana@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 11 Dec 2020 10:46:17 -0800, Sami Tolvanen wrote:
-> This patch series adds support for building the kernel with Clang's
-> Link Time Optimization (LTO). In addition to performance, the primary
-> motivation for LTO is to allow Clang's Control-Flow Integrity (CFI)
-> to be used in the kernel. Google has shipped millions of Pixel
-> devices running three major kernel versions with LTO+CFI since 2018.
-> 
-> Most of the patches are build system changes for handling LLVM
-> bitcode, which Clang produces with LTO instead of ELF object files,
-> postponing ELF processing until a later stage, and ensuring initcall
-> ordering.
-> 
-> [...]
+This patchset adds a control function for cpufeature framework
+so that the feature can be controlled at runtime.
 
-Applied to kspp/lto/v5.11-rc2, thanks!
+Defer PAC on boot core and use the filter function added to disable
+PAC from command line. This will help toggling the feature on systems
+that do not support PAC or where PAC needs to be disabled at runtime,
+without modifying the core kernel.
 
-I'll let 0-day grind on this over the weekend and toss it in -next on
-Monday if there aren't any objections.
+The idea of adding the filter function for cpufeature is taken from
+https://lore.kernel.org/linux-arm-kernel/20200515171612.1020-25-catalin.marinas@arm.com/
+https://lore.kernel.org/linux-arm-kernel/20200515171612.1020-24-catalin.marinas@arm.com/
 
-[01/16] tracing: move function tracer options to Kconfig
-        https://git.kernel.org/kees/c/3b15cdc15956
-[02/16] kbuild: add support for Clang LTO
-        https://git.kernel.org/kees/c/833174494976
-[03/16] kbuild: lto: fix module versioning
-        https://git.kernel.org/kees/c/6eb20c5338a0
-[04/16] kbuild: lto: limit inlining
-        https://git.kernel.org/kees/c/f6db4eff0691
-[05/16] kbuild: lto: merge module sections
-        https://git.kernel.org/kees/c/d03e46783689
-[06/16] kbuild: lto: add a default list of used symbols
-        https://git.kernel.org/kees/c/81bfbc27b122
-[07/16] init: lto: ensure initcall ordering
-        https://git.kernel.org/kees/c/7918ea64195d
-[08/16] init: lto: fix PREL32 relocations
-        https://git.kernel.org/kees/c/a51d9615ffb5
-[09/16] PCI: Fix PREL32 relocations for LTO
-        https://git.kernel.org/kees/c/dc83615370e7
-[10/16] modpost: lto: strip .lto from module names
-        https://git.kernel.org/kees/c/5c0312ef3ca0
-[11/16] scripts/mod: disable LTO for empty.c
-        https://git.kernel.org/kees/c/3d05432db312
-[12/16] efi/libstub: disable LTO
-        https://git.kernel.org/kees/c/b12eba00cb87
-[13/16] drivers/misc/lkdtm: disable LTO for rodata.o
-        https://git.kernel.org/kees/c/ed02e86f1752
-[14/16] arm64: vdso: disable LTO
-        https://git.kernel.org/kees/c/d73692f0f527
-[15/16] arm64: disable recordmcount with DYNAMIC_FTRACE_WITH_REGS
-        https://git.kernel.org/kees/c/09b812ac146f
-[16/16] arm64: allow LTO to be selected
-        https://git.kernel.org/kees/c/1354b8946c46
+Srinivas Ramana (3):
+  arm64: Defer enabling pointer authentication on boot core
+  arm64: cpufeature: Add a filter function to cpufeature
+  arm64: Enable control of pointer authentication using early param
+
+ Documentation/admin-guide/kernel-parameters.txt |  6 +++
+ arch/arm64/include/asm/cpufeature.h             |  8 +++-
+ arch/arm64/include/asm/pointer_auth.h           | 10 +++++
+ arch/arm64/include/asm/stackprotector.h         |  1 +
+ arch/arm64/kernel/cpufeature.c                  | 53 +++++++++++++++++++------
+ arch/arm64/kernel/head.S                        |  4 --
+ 6 files changed, 64 insertions(+), 18 deletions(-)
 
 -- 
-Kees Cook
+2.7.4
 
