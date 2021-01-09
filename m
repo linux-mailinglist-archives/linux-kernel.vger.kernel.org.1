@@ -2,92 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0492F2F039C
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Jan 2021 21:55:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 361552F03A5
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Jan 2021 21:59:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726370AbhAIUx7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Jan 2021 15:53:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42636 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726006AbhAIUx6 (ORCPT
+        id S1726341AbhAIU6B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Jan 2021 15:58:01 -0500
+Received: from mail-il1-f198.google.com ([209.85.166.198]:43591 "EHLO
+        mail-il1-f198.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726068AbhAIU6A (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Jan 2021 15:53:58 -0500
-Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8A76C061786;
-        Sat,  9 Jan 2021 12:53:18 -0800 (PST)
-Received: by mail-pj1-x102f.google.com with SMTP id n3so6865746pjm.1;
-        Sat, 09 Jan 2021 12:53:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=gHHS7ncbb1G/qj74N3nd5FbAAQidli17E6OlWL4NyBg=;
-        b=L2uPzrfP8MK1tWlhSng1U3a+xzZhzguZ+CTpZuDSfy5XSVQ+HcMpizwwvf76spvpcR
-         7tT1L46bDqAmdJ3fZLlAdHI2ghVYwBe+w0cwPLsZL5T6p7AuGsF3vz3N4kp/j/O1CZHD
-         MF90aga2TNLD0MmrXymw16z9D5xkjxbLCB5eCGeMkcN82LwlIwzlbs96jqLXBsiUuY4P
-         1FW295ZjrOosgTd4aNP+CXFcp0Occi3j+losAkUuXZUSucw3p/HPG7nDVn5ztMwnZY68
-         sGUUYvCkS6c5eC6ZObolKZzZe6Ckk/7eQgLp4nP10j6ZsWcjP3Dy47N41TW2+fh2NTyi
-         cvNw==
+        Sat, 9 Jan 2021 15:58:00 -0500
+Received: by mail-il1-f198.google.com with SMTP id o77so9022326ilb.10
+        for <linux-kernel@vger.kernel.org>; Sat, 09 Jan 2021 12:57:45 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=gHHS7ncbb1G/qj74N3nd5FbAAQidli17E6OlWL4NyBg=;
-        b=LMyb7SMLI5wOxOENr674f+FkHobd+Zxhbw0AxHKVexlBQx9NDmlnsH5sYTWUgdoYRt
-         Ot+67Dqb1qmEnqhYbTV3oc+gM2PQZ85dWMCB1pqVTNmtHDWtEK8t7Rn0NsN6MKPLKE4h
-         KXmlJ9XoDOOyeSOOfyYB+pOo+KZjL3lkCuyL+jpdgI1ob1f4bYutXfxNH00WgyPz6X4y
-         sjHdHO/7dUzSImS+jE5kze+s3xwsvCuya3YJ1w+uR3R8+BHsRCtC1kh4Yai2FlMltGqT
-         vWDPvnBJ/tXaspVQc8kA/IwiQ/wTjWvU5WpuiwgMQj/bh06DVmRAQbfQN5q9lIeYJOD/
-         N8ZA==
-X-Gm-Message-State: AOAM533CwFVl8oSZC44Vtu3NRDM7EkE4VX4syUvhAw99dLQXsimZd4oP
-        CHAiwZAkBA76JoSj2FZ8YfLqQlE2YMcdCCzpa04=
-X-Google-Smtp-Source: ABdhPJxUwngyPRAd3gEzVGalqt4EGZo3FphktmGhwz6bY+Rj07jtf0pMhIQNKl/M7u4VYAU1G0ZuG52xVizBtThG98w=
-X-Received: by 2002:a17:90a:1050:: with SMTP id y16mr10323488pjd.181.1610225598260;
- Sat, 09 Jan 2021 12:53:18 -0800 (PST)
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=3TTiu2M3RHn4JcWH5ej08s7USChU5t3nyfHhSBosYAQ=;
+        b=lX/pPoRLmTZnmUBqRlRPBdt7WBlSgXPV1cyYJO9nvlVsdKaYf0bRQnRjs4zQ/sCvXs
+         hiHOlESg6ue1O38+sBWVrD/PyWx6OSKYD3xao3lv67DCAw8t4X42XslD4GivrnqgNbaI
+         P2fFm1y9JieZhwFm7ag5Kr/70DuRWMpejp87uGHQqG2O/nuzCPjqND0IPV0aYg8aG4hX
+         IlvWH1toOivH1D9O9DgJDms37BHaPE0YP8rfbxrgjB+EKu8xM/oLPKMschTI+BIYoseQ
+         a7oJEiZLvjFt89CYg19BpcLZtZ7E8XrF2trP1wb7dSgmK5CtCtr+n+SgR5FvxnHKkInA
+         lHCA==
+X-Gm-Message-State: AOAM533OZRlklXnIFxSK5AFOlleV/9Glzv+TtSeXHRtYVYcd8cJU9/vT
+        q2kdELK5AwGTzbiZC8uX+wAqQSDqrPlaKeiRhIjoAG9yfs1k
+X-Google-Smtp-Source: ABdhPJyX3C5PwImyAsveNRBLPtx9Zfawm9AJWFt2P8oE5ukfFdBeoLh6aEFEo/O9Jd+1c3J6CRWnJyZEDQMgfRNpkWOR2Ztqv6Ax
 MIME-Version: 1.0
-References: <20210107112049.10815-1-alexandru.ardelean@analog.com> <20210109192340.0e8e422b@archlinux>
-In-Reply-To: <20210109192340.0e8e422b@archlinux>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Sat, 9 Jan 2021 22:53:02 +0200
-Message-ID: <CAHp75Vf8X5ho4ztfGhL-Bkp4m=GL+QMjxhYtuivvSjPLHAfrUA@mail.gmail.com>
-Subject: Re: [PATCH v8] iio: Handle enumerated properties with gaps
-To:     Jonathan Cameron <jic23@kernel.org>
-Cc:     Alexandru Ardelean <alexandru.ardelean@analog.com>,
-        linux-iio <linux-iio@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>
+X-Received: by 2002:a02:8790:: with SMTP id t16mr8947810jai.80.1610225839814;
+ Sat, 09 Jan 2021 12:57:19 -0800 (PST)
+Date:   Sat, 09 Jan 2021 12:57:19 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000030bc3305b87debd4@google.com>
+Subject: WARNING in rds_rdma_extra_size
+From:   syzbot <syzbot+1bd2b07f93745fa38425@syzkaller.appspotmail.com>
+To:     a@unstable.cc, akpm@linux-foundation.org, ast@kernel.org,
+        b.a.t.m.a.n@lists.open-mesh.org, daniel@iogearbox.net,
+        davem@davemloft.net, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, mareklindner@neomailbox.ch,
+        mdroth@linux.vnet.ibm.com, netdev@vger.kernel.org,
+        sw@simonwunderlich.de, syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jan 9, 2021 at 9:23 PM Jonathan Cameron <jic23@kernel.org> wrote:
->
-> On Thu, 7 Jan 2021 13:20:49 +0200
-> Alexandru Ardelean <alexandru.ardelean@analog.com> wrote:
->
-> > From: Lars-Peter Clausen <lars@metafoo.de>
-> >
-> > Some enums might have gaps or reserved values in the middle of their value
-> > range. E.g. consider a 2-bit enum where the values 0, 1 and 3 have a
-> > meaning, but 2 is a reserved value and can not be used.
-> >
-> > Add support for such enums to the IIO enum helper functions. A reserved
-> > values is marked by setting its entry in the items array to NULL rather
-> > than the normal descriptive string value.
-> >
-> > Signed-off-by: Lars-Peter Clausen <lars@metafoo.de>
-> > Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
->
-> Applied to the togreg branch of iio.git and pushed out as testing for all
-> the normal autobuilder related reasons.
->
-> Note I can still rebase so if anyone wants to add tags or comment it's
-> not yet too late!
+Hello,
 
-Free to add
-Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+syzbot found the following issue on:
 
--- 
-With Best Regards,
-Andy Shevchenko
+HEAD commit:    6207214a Merge tag 'afs-fixes-04012021' of git://git.kerne..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=146967c0d00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=8aa30b9da402d224
+dashboard link: https://syzkaller.appspot.com/bug?extid=1bd2b07f93745fa38425
+compiler:       gcc (GCC) 10.1.0-syz 20200507
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1351c11f500000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1710cb50d00000
+
+The issue was bisected to:
+
+commit fdadd04931c2d7cd294dc5b2b342863f94be53a3
+Author: Daniel Borkmann <daniel@iogearbox.net>
+Date:   Tue Dec 11 11:14:12 2018 +0000
+
+    bpf: fix bpf_jit_limit knob for PAGE_SIZE >= 64K
+
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=10056f70d00000
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=12056f70d00000
+console output: https://syzkaller.appspot.com/x/log.txt?x=14056f70d00000
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+1bd2b07f93745fa38425@syzkaller.appspotmail.com
+Fixes: fdadd04931c2 ("bpf: fix bpf_jit_limit knob for PAGE_SIZE >= 64K")
+
+------------[ cut here ]------------
+WARNING: CPU: 1 PID: 8462 at mm/page_alloc.c:4976 __alloc_pages_nodemask+0x5f8/0x730 mm/page_alloc.c:5011
+Modules linked in:
+CPU: 1 PID: 8462 Comm: syz-executor292 Not tainted 5.11.0-rc2-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:__alloc_pages_nodemask+0x5f8/0x730 mm/page_alloc.c:4976
+Code: 00 00 0c 00 0f 85 a7 00 00 00 8b 3c 24 4c 89 f2 44 89 e6 c6 44 24 70 00 48 89 6c 24 58 e8 d0 d7 ff ff 49 89 c5 e9 ea fc ff ff <0f> 0b e9 b5 fd ff ff 89 74 24 14 4c 89 4c 24 08 4c 89 74 24 18 e8
+RSP: 0018:ffffc9000169f790 EFLAGS: 00010246
+RAX: 0000000000000000 RBX: 1ffff920002d3ef6 RCX: 0000000000000000
+RDX: 0000000000000000 RSI: dffffc0000000000 RDI: 0000000000040dc0
+RBP: 0000000000040dc0 R08: 0000000000000000 R09: 0000000000000000
+R10: ffffffff81b1f7f1 R11: 0000000000000000 R12: 0000000000000018
+R13: 0000000000000018 R14: 0000000000000000 R15: 0000000ffffff1f0
+FS:  0000000000f3c880(0000) GS:ffff8880b9f00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f6b332916c0 CR3: 00000000133c3000 CR4: 0000000000350ee0
+Call Trace:
+ alloc_pages_current+0x18c/0x2a0 mm/mempolicy.c:2267
+ alloc_pages include/linux/gfp.h:547 [inline]
+ kmalloc_order+0x2e/0xb0 mm/slab_common.c:837
+ kmalloc_order_trace+0x14/0x120 mm/slab_common.c:853
+ kmalloc_array include/linux/slab.h:592 [inline]
+ kcalloc include/linux/slab.h:621 [inline]
+ rds_rdma_extra_size+0xb2/0x3b0 net/rds/rdma.c:568
+ rds_rm_size net/rds/send.c:928 [inline]
+ rds_sendmsg+0x20d7/0x3020 net/rds/send.c:1265
+ sock_sendmsg_nosec net/socket.c:652 [inline]
+ sock_sendmsg+0xcf/0x120 net/socket.c:672
+ ____sys_sendmsg+0x6e8/0x810 net/socket.c:2345
+ ___sys_sendmsg+0xf3/0x170 net/socket.c:2399
+ __sys_sendmsg+0xe5/0x1b0 net/socket.c:2432
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x440359
+Code: 18 89 d0 c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 7b 13 fc ff c3 66 2e 0f 1f 84 00 00 00 00
+RSP: 002b:00007ffe89376b68 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
+RAX: ffffffffffffffda RBX: 00000000004002c8 RCX: 0000000000440359
+RDX: 0000000000000000 RSI: 0000000020001600 RDI: 0000000000000003
+RBP: 00000000006ca018 R08: 00000000004002c8 R09: 00000000004002c8
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000401b60
+R13: 0000000000401bf0 R14: 0000000000000000 R15: 0000000000000000
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
