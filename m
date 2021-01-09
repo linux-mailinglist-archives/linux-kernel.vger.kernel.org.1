@@ -2,64 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B0302F01F5
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Jan 2021 18:03:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9EC7B2F01FD
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Jan 2021 18:04:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726534AbhAIRBq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Jan 2021 12:01:46 -0500
-Received: from mail-il1-f200.google.com ([209.85.166.200]:36810 "EHLO
-        mail-il1-f200.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725966AbhAIRBp (ORCPT
+        id S1726407AbhAIRD7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Jan 2021 12:03:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49980 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726058AbhAIRD6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Jan 2021 12:01:45 -0500
-Received: by mail-il1-f200.google.com with SMTP id z15so13298771ilb.3
-        for <linux-kernel@vger.kernel.org>; Sat, 09 Jan 2021 09:01:30 -0800 (PST)
+        Sat, 9 Jan 2021 12:03:58 -0500
+Received: from mail-io1-xd2f.google.com (mail-io1-xd2f.google.com [IPv6:2607:f8b0:4864:20::d2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 954BCC061786;
+        Sat,  9 Jan 2021 09:03:18 -0800 (PST)
+Received: by mail-io1-xd2f.google.com with SMTP id z5so13150331iob.11;
+        Sat, 09 Jan 2021 09:03:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=TegRmyV5fZN7nTdiRSNkPUmPZbgQG1wQQmkQT6OhXw4=;
+        b=LhChZ7nQU1BHeTLQvs/HOB6l9f9ts6qyc20DgBlJsDLnMiHB42lJq28yMNFihyJ6/Z
+         PJ3yL4VMhr6h3kx7eQaYqVz+IpmssIIBFlg024Uxsm3ptxh/8RWCBdkLckAzMvMF9pjJ
+         Og/BClcnB4zl1gcu03Kl5jLDsqVxh6VVSqCs0HOgkVxZiibVHWFAYOCyT/pCMNqWuNWe
+         kKtS2jdH3a5tfnsFV0GCppc8iz3MgbyHCeZ8Pax4o1VTfTKaFv3q/pE71imRLJhJyEGX
+         FhM+91qGqHZdipDH/Mly0+Wnhu8RQz6YrY5h1OZd0hhPiJdnOzjJrmQo2joL2vSKm2Ke
+         D4Ig==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=TKUoXu927qEWQVV5Epbyzc7Ss7cy0HmJolu4+tIMmUI=;
-        b=SHX68mmRWjoQfFpCy2/XkB8y8RIA6DiYAVByWY7iwMgR9n9D9WL1MdsBUz636nPh5Z
-         vyj5SebxANFaH4DjsMxljKyZ+2agUG7kvYtaNDZdf/vnRt4yZri/E/6Mk1fcTZ+0ZPtE
-         we+LH+T+sZVD401JTZPjniohCLC5GB/IpKV1kPPpnfgG6dZDHzK3xQHl6jXYqwNBOByq
-         HuNiqU0K0fhklU7ZzfKiGgupL/bbWYmz0Bwi1ck0bZrt1CyzF2QBi0R33I7GF8cCk5jC
-         GLad8lsU+gPECm1KsGKJHl02oR8nwCFaxs7NpImX11jxn05Pw2D4oBSJQUUUUPOLgcV6
-         ccIQ==
-X-Gm-Message-State: AOAM5322wfIcOLk9Km9GBImpfEMHACtE2LQ3SLednqosezI9UWG285uJ
-        m6x60eH2oum0bdEclxgXUoCbxGsXzoepbhPBNmn11noP14bA
-X-Google-Smtp-Source: ABdhPJwpCDQCauEE8T5RinO+sglwtX2Wf03+cIUORnl4QvxsgoLfN20TgVTsEVpOZ5X7+qwp6ZSWudIC7bxQVULggumWU5sdTQq8
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=TegRmyV5fZN7nTdiRSNkPUmPZbgQG1wQQmkQT6OhXw4=;
+        b=ELmtcHjDCZHOZ92QoDqnTcYJGHby6PrsK3wGjZmgFSIFChOFtghsn4OoWgMnm8xvhq
+         oTa5mh2nn/z951LV7y0p94vetj8Yr2JuLiAnRISeAgEkdJKXusN6jNH9YxXp2LZdoP5o
+         9qlT8XLRvKP6T4EDd/nG4xkesnvHgfV0kEhb208rSthMmgi/vM+S9mQtJc3kcKFy0Cpg
+         zl8svi9TacIg2UGAKjeadQXD5ChcKUbyt237oycHFQWW9v55pTBtSgk/R53ZtkBan0f3
+         f9erlUmZK25Btudw+uMlr7FV+2wSFT8te9j8JG3lY0poKWxvDVJt55c359r6mbJcsR3h
+         AbBg==
+X-Gm-Message-State: AOAM5336W/vpIoxh2LsHmxj9N0G9QEWssyypfj1L4DXqa6EMPl6+KH8t
+        w3vL6CGLdv5VqMMNm3eQsCLiMIHvf4Cso/XcayQ=
+X-Google-Smtp-Source: ABdhPJwiQfKEPlBuK6xHNTcZziO0Z6VWdaFcjP5bzs2trqGzg4m3GOf7CBrIH2f3KJf38kgoVOO/M048WXowqWrUlpA=
+X-Received: by 2002:a05:6638:296:: with SMTP id c22mr8338851jaq.65.1610211797894;
+ Sat, 09 Jan 2021 09:03:17 -0800 (PST)
 MIME-Version: 1.0
-X-Received: by 2002:a02:63cd:: with SMTP id j196mr8221257jac.61.1610211664742;
- Sat, 09 Jan 2021 09:01:04 -0800 (PST)
-Date:   Sat, 09 Jan 2021 09:01:04 -0800
-In-Reply-To: <06c3d80d-eb09-5cda-e0bf-862400d02433@gmail.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000004a4ef105b87a9e10@google.com>
-Subject: Re: BUG: unable to handle kernel paging request in percpu_ref_exit
-From:   syzbot <syzbot+99ed55100402022a6276@syzkaller.appspotmail.com>
-To:     asml.silence@gmail.com, axboe@kernel.dk, io-uring@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        mingo@kernel.org, mingo@redhat.com, peterz@infradead.org,
-        rostedt@goodmis.org, syzkaller-bugs@googlegroups.com,
-        viro@zeniv.linux.org.uk, will@kernel.org
+References: <20210109163916.1247431-1-aford173@gmail.com> <8B45575E-A50B-407C-8920-D2A7E295DBE9@goldelico.com>
+In-Reply-To: <8B45575E-A50B-407C-8920-D2A7E295DBE9@goldelico.com>
+From:   Adam Ford <aford173@gmail.com>
+Date:   Sat, 9 Jan 2021 11:03:06 -0600
+Message-ID: <CAHCN7x+j0N6rop616UDhSx_qgkWLyUmRV2MVN74qT17z-ktaAw@mail.gmail.com>
+Subject: Re: [PATCH] ARM: dts: omap36xx: Remove turbo mode for 1GHz variants
+To:     "H. Nikolaus Schaller" <hns@goldelico.com>
+Cc:     Linux-OMAP <linux-omap@vger.kernel.org>,
+        Adam Ford-BE <aford@beaconembedded.com>,
+        =?UTF-8?Q?Beno=C3=AEt_Cousson?= <bcousson@baylibre.com>,
+        Tony Lindgren <tony@atomide.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Andreas Kemnade <andreas@kemnade.info>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Sat, Jan 9, 2021 at 10:58 AM H. Nikolaus Schaller <hns@goldelico.com> wrote:
+>
+> Hi Adam,
+>
+> > Am 09.01.2021 um 17:39 schrieb Adam Ford <aford173@gmail.com>:
+> >
+> > Previously, the 1GHz variants were marked as a turbo,
+> > because that variant has reduced thermal operating range.
+> >
+> > Now that the thermal throttling is in place, it should be
+> > safe to remove the turbo-mode from the 1GHz variants, because
+> > the CPU will automatically slow if the thermal limit is reached.
+>
+> Subject and description may be misunderstood in a way that 1GHz
+> is now disabled.
+>
+> Rather the 1GHz OPP is now permanently enabled and does no longer
+> need to be manuall enabled through something like
+> /sys/devices/system/cpu/cpufreq/boost.
 
-syzbot has tested the proposed patch and the reproducer did not trigger any issue:
+I just sent a V2, before I saw this. I can send a V3 with your
+feedback.  I just want to give Tony and/or others a chance to chime
+in.
 
-Reported-and-tested-by: syzbot+99ed55100402022a6276@syzkaller.appspotmail.com
+>
+> >
+> > Signed-off-by: Adam Ford <aford173@gmail.com>
+> >
+> > diff --git a/arch/arm/boot/dts/logicpd-torpedo-som.dtsi b/arch/arm/boot/dts/logicpd-torpedo-som.dtsi
+> > index 3a5228562b0d..3451f9be104e 100644
+> > --- a/arch/arm/boot/dts/logicpd-torpedo-som.dtsi
+> > +++ b/arch/arm/boot/dts/logicpd-torpedo-som.dtsi
+> > @@ -70,6 +70,7 @@ nand@0,0 {
+> >               gpmc,device-width = <2>;
+> >               #address-cells = <1>;
+> >               #size-cells = <1>;
+> > +             status = "disabled";
+>
+> this does not seem to match the description?
 
-Tested on:
+I just sent an apology e-mail because I realized I grabbed the wrong file.
 
-commit:         d9d05217 io_uring: stop SQPOLL submit on creator's death
-git tree:       git://git.kernel.dk/linux-block
-kernel config:  https://syzkaller.appspot.com/x/.config?x=2455d075a1c4afa8
-dashboard link: https://syzkaller.appspot.com/bug?extid=99ed55100402022a6276
-compiler:       gcc (GCC) 10.1.0-syz 20200507
-
-Note: testing is done by a robot and is best-effort only.
+>
+> >       };
+> > };
+> >
+> > --
+> > 2.25.1
+> >
+>
+> BR,
+> Nikolaus
+>
