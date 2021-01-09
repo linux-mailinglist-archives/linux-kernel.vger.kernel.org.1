@@ -2,111 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 224F42F02E4
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Jan 2021 19:43:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B2A952F02E7
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Jan 2021 19:44:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726240AbhAISmN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Jan 2021 13:42:13 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45782 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725956AbhAISmN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Jan 2021 13:42:13 -0500
-Received: from archlinux (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 131C923A04;
-        Sat,  9 Jan 2021 18:41:30 +0000 (UTC)
-Date:   Sat, 9 Jan 2021 18:41:27 +0000
-From:   Jonathan Cameron <jic23@kernel.org>
-To:     "Ye, Xiang" <xiang.ye@intel.com>
-Cc:     jikos@kernel.org, srinivas.pandruvada@linux.intel.com,
-        linux-input@vger.kernel.org, linux-iio@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 0/3] add custom hinge sensor support
-Message-ID: <20210109184127.48ac58c3@archlinux>
-In-Reply-To: <20201231024640.GA5718@host>
-References: <20201215054444.9324-1-xiang.ye@intel.com>
-        <20201230120517.622d3351@archlinux>
-        <20201231024640.GA5718@host>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S1726260AbhAISoU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Jan 2021 13:44:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43230 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725956AbhAISoT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 9 Jan 2021 13:44:19 -0500
+Received: from mail-pg1-x531.google.com (mail-pg1-x531.google.com [IPv6:2607:f8b0:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9FA54C061786;
+        Sat,  9 Jan 2021 10:43:39 -0800 (PST)
+Received: by mail-pg1-x531.google.com with SMTP id i7so9815136pgc.8;
+        Sat, 09 Jan 2021 10:43:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=jF6VdGJxWmDWa7dHF17UAded0tYZ8eT3kZWL5vZ7tGs=;
+        b=f9Kcpo3HDTN1/Pmd/iQ0bHpjbaBiEsgUKQMFxDnQHM8BpXb143UIvPiDdHahWtgLZ3
+         MaGJtrFl8MAyt5+zqGdxjCviLEMDs4EsHOgtcfZBQAuCxj74NNOcikRaI7ayP36Yt214
+         RHyY+utuv0KD89drRbms4fPc4KyiLz9oCRX90bbYrzx8zAyikheLVDrxyZ+j6vaR6VtN
+         cK0SpD87FAVayVxPYCxMF/UyKlAIpBSkGkauCo/Vw7ZE9ZGYjGrpzdamE18yGgCH70Kd
+         /1weQTbUlobIEnr9rM0Wo30mECZeEa11/ZYIPe4igMIh175Jy1f6kL0dl/U0aVuJK2S2
+         GcuQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=jF6VdGJxWmDWa7dHF17UAded0tYZ8eT3kZWL5vZ7tGs=;
+        b=l3ctj4bxF5/nOh3rPzZrvj0L2n1f46KkoxJtdVnG7Rmrk5IC7ANWAyzFSX3gTv0cEo
+         Ua0WI4fgQU4ATy5Me60TeOG4dqU2bIieIbPtcQJZZ0o/J2KSoH/fcZq49EnI4MAc38U2
+         WBNMl+pNtF7IaBmRRTNYK2YRqjrFkYHFonQPxrYVNhcv/ZZawqiaaC6dUNlFADRybm9Z
+         Y3Ce1EcfUOVw6IJZQTGEYfUnvO7tufI7mlcCzPLP8rGcfCxS4An5xfdLcyevmnPuNMwt
+         YBbxt/4fISZ5wh1b6SZUV3vV7+MxHWsfs8TLNtjnMPhjwFEyylX61w5oWLzH0Gbq2wdn
+         SKZw==
+X-Gm-Message-State: AOAM532Rrg/5MnOfBbXgVgy2vF0lpi3gfTThrKh7PAGm+odW9E9+S5iE
+        8CqXYXll+KXh6kmdVbDb9207wEgvIPmqgtn5lOw=
+X-Google-Smtp-Source: ABdhPJxnSUuAn6njem/U1DeZIftUrkjtGDByzPNhXB52ODPfTqwBxTHn3OEDGeuM1fU+jw7Kh8ZeFwGs7/R+DbH9Rww=
+X-Received: by 2002:a63:4b16:: with SMTP id y22mr12576677pga.203.1610217818960;
+ Sat, 09 Jan 2021 10:43:38 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20210108072348.34091-1-decui@microsoft.com> <CAHp75VfPsMNZxN-hA3Cytjpm0K9xGoQpcGY_FZR4hUrtyqMj=w@mail.gmail.com>
+ <MWHPR21MB0798C62978C2E6F23FAB953EBFAD9@MWHPR21MB0798.namprd21.prod.outlook.com>
+ <5464224.fTvfEN5hHQ@kreacher>
+In-Reply-To: <5464224.fTvfEN5hHQ@kreacher>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Sat, 9 Jan 2021 20:43:22 +0200
+Message-ID: <CAHp75VdwnL_=En1soZX_STdrWY86rm2zqsPLx4pv0NK52SDgkw@mail.gmail.com>
+Subject: Re: [PATCH] ACPI: scan: Fix a Hyper-V Linux VM panic caused by buffer overflow
+To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>
+Cc:     Dexuan Cui <decui@microsoft.com>,
+        "rafael@kernel.org" <rafael@kernel.org>,
+        "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
+        "len.brown@intel.com" <len.brown@intel.com>,
+        Michael Kelley <mikelley@microsoft.com>,
+        "rui.zhang@intel.com" <rui.zhang@intel.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "wei.liu@kernel.org" <wei.liu@kernel.org>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        KY Srinivasan <kys@microsoft.com>,
+        "dwaipayanray1@gmail.com" <dwaipayanray1@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 31 Dec 2020 10:46:40 +0800
-"Ye, Xiang" <xiang.ye@intel.com> wrote:
+On Sat, Jan 9, 2021 at 7:08 PM Rafael J. Wysocki <rjw@rjwysocki.net> wrote:
+> On Saturday, January 9, 2021 10:37:41 AM CET Dexuan Cui wrote:
 
-> On Wed, Dec 30, 2020 at 12:05:17PM +0000, Jonathan Cameron wrote:
-> > On Tue, 15 Dec 2020 13:44:41 +0800
-> > Ye Xiang <xiang.ye@intel.com> wrote:
-> >   
-> > > Here we register one iio device with three channels which present angle for
-> > > hinge, keyboard and screen.
-> > > 
-> > > This driver works on devices with Intel integrated sensor hub, where
-> > > hinge sensor is presented using a custom sensor usage id.
-> > > 
-> > > Here the angle is presented in degrees, which is converted to radians.  
-> > 
-> > Other than those minor bits I'm happy to fix up in patch 2, this looks
-> > good to me.  However, I'll need a Jiri Ack for the hid parts before
-> > I apply it.  We are are early in this cycle, so no great rush given
-> > the usual xmas slow down!  
-> 
-> Ok, let's wait Jiri to review the hid parts. Thanks for the help.
-Series applied with the changes mentioned in review of patch 2.
+...
 
-Applied to the togreg branch of iio.git and pushed out as testing for
-the various autobuilders to poke at it at and see if they can find
-anything I missed.
+> > Do you want a simple strlen() check like the below, or a full
+> > check of the AAA#### or NNNN#### format?
+>
+> It would be good to check the format too while at it.
 
-Thanks,
+Let me summarize. It seems from my perspective that the best is to
+have two checks here (as far as I got word "too" in Rafael's reply):
+ - per length with a message that "length is exceeded"
+ - per format with probably different messages depending on the checks
+(like "vendor prefix has incorrect format" and "device id has
+incorrect format").
 
-Jonathan
 
-> 
-> Thanks
-> Ye Xiang
-> >   
-> > > 
-> > > Changes since v3:
-> > >   - hid-sensor-custom: remove sensor_inst::custom_pdev_exposed.
-> > >   - hid-sensor-custom: use static buf, w_buf to avoid using goto in 
-> > >     get_known_custom_sensor_index.
-> > >   - hid-sensor-custom-intel-hinge: use devm_ prefix function instead.
-> > >   - sysfs-bus-iio: put in_anglY_raw together with in_angl_raw.
-> > > 
-> > > Changes since v2:
-> > >   - use 1 iio device instead of 3 for hinge sensor.
-> > >   - use indexed channel instead of modified channel and added channel
-> > >     labels.
-> > >   - remove 2,3 patch in last version, add a document patch to describe the
-> > >     hinge channels.
-> > >   - hid-sensor-custom: use meaningful return value in 
-> > >     get_known_custom_sensor_index and checked in call side.
-> > >   - hid-sensor-ids.h: use HID_USAGE_SENSOR_DATA_FIELD_CUSTOM_VALUE(x) to 
-> > >     define custom sensor value.
-> > > 
-> > > Changes since v1:
-> > >   - fixed errors reported by lkp
-> > > 
-> > > Ye Xiang (3):
-> > >   HID: hid-sensor-custom: Add custom sensor iio support
-> > >   iio: hid-sensors: Add hinge sensor driver
-> > >   iio:Documentation: Add documentation for hinge sensor channels
-> > > 
-> > >  Documentation/ABI/testing/sysfs-bus-iio       |  11 +
-> > >  drivers/hid/hid-sensor-custom.c               | 143 +++++++
-> > >  .../hid-sensors/hid-sensor-attributes.c       |   2 +
-> > >  drivers/iio/position/Kconfig                  |  16 +
-> > >  drivers/iio/position/Makefile                 |   1 +
-> > >  .../position/hid-sensor-custom-intel-hinge.c  | 391 ++++++++++++++++++
-> > >  include/linux/hid-sensor-ids.h                |  14 +
-> > >  7 files changed, 578 insertions(+)
-> > >  create mode 100644 drivers/iio/position/hid-sensor-custom-intel-hinge.c
-> > >   
-> >   
 
+-- 
+With Best Regards,
+Andy Shevchenko
