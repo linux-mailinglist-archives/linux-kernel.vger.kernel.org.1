@@ -2,46 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 067152F03F8
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Jan 2021 23:01:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D74452F03FB
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Jan 2021 23:06:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726379AbhAIWAV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Jan 2021 17:00:21 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40078 "EHLO mail.kernel.org"
+        id S1726293AbhAIWFu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Jan 2021 17:05:50 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40680 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726301AbhAIWAV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Jan 2021 17:00:21 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9A60123AC6
-        for <linux-kernel@vger.kernel.org>; Sat,  9 Jan 2021 21:59:40 +0000 (UTC)
+        id S1726196AbhAIWFt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 9 Jan 2021 17:05:49 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3BB4B23B01
+        for <linux-kernel@vger.kernel.org>; Sat,  9 Jan 2021 22:05:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610229580;
-        bh=wpNwFNK3KqhpUUJvQnNMnQmGPxhcN8AV75yUk0Lw4cM=;
+        s=k20201202; t=1610229909;
+        bh=LrYmjzX/0OTPPWbAK3r3McV+O3Ujjw+sxGKtvoRiOLM=;
         h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=WTXvGEpoV6EXI0ILtnKc/+c3xkSiTmDZILMLUkrj/Ux5FHjzVA7zi6Y52oNfrgjav
-         br2G/fa3Itm/3X2d7pxxrddna8273yLoeeRRi8TPyCbd1O5ZEPEla3gQqvddvAnUMR
-         qq5Ct8iwOw6lc8skXggNVFQW7ETvvcjmc8N9FiHdAvcuYSQpcr9N04vG32lNQpzHn1
-         94TZIp6sq7fb7QnOsVQ/OXEmVk8oUqrmjhmuTFWaCeoH+4CgkHMX4s0j3nOX3sB+R0
-         sD3p/6gkktPcwHU0YoBMAaPp1nrz82oRpD5CxPBsU473c1oFtRwxUjT7nKOv0PTpv5
-         OJc9QkyeCe2WQ==
-Received: by mail-oo1-f44.google.com with SMTP id j21so3248641oou.11
-        for <linux-kernel@vger.kernel.org>; Sat, 09 Jan 2021 13:59:40 -0800 (PST)
-X-Gm-Message-State: AOAM5335JXj35S2rrse5uSFEFx90lYZeCdXCjqfF/u2xVuW9UqMnGctM
-        7ng5W6+etSGNXcfbD4ALPyUgv0q4GPbLoQwzJgY=
-X-Google-Smtp-Source: ABdhPJwi/IN+9Mt5wBDOhPW01gO2pSKAS7ppMgu8edujZ1ojGRqR+cTESE8LBq4K1alAaq8JthWG4qcCTci/2rHD1H8=
-X-Received: by 2002:a4a:4592:: with SMTP id y140mr8344745ooa.26.1610229579930;
- Sat, 09 Jan 2021 13:59:39 -0800 (PST)
+        b=KgMpvWVmOYksXf3ptaH9FtwztFpRNjyDqTAJxghRAD260RUIOxmnJmRKYDb4ZGmAQ
+         KP0z4d6aEarK+gpLPgmmWbJr0U750bKsV+kn2gfLHV0dKx+OXH0c1nIHFBhunqYSJ4
+         FwcHHnra1BaT+FTHH4fpaRvETdJqF0XfMmHrbNBp1cB4Km8fl6nvbAdCBPL2MPcDPU
+         OqyOaJ5fk1M+Mb8M7LUWZA51jp2oVVlcwNLDjvXDvWV38gdT3/ZZG1yS+yiXz/qPDO
+         zdyM6nXU8czaftZjCfsZIeFQqk99KXlN78Yo3QBiF1HSoAt0/9dOcOtjDOBaqCFa7z
+         HqoLlq+PGiZhQ==
+Received: by mail-ot1-f54.google.com with SMTP id w3so13307465otp.13
+        for <linux-kernel@vger.kernel.org>; Sat, 09 Jan 2021 14:05:09 -0800 (PST)
+X-Gm-Message-State: AOAM533uKv0SKeyE+GmA2MMWyvFrS21c9eIOSuy+TSN0EcVj0L3ilLGm
+        4oXLrYoGhQvUH/BDvxtdDip0087fWLDWV1SxZMk=
+X-Google-Smtp-Source: ABdhPJxRP1xkAcr4bk0TZ07QGBirUbyl2wbVh+kTmQIp6xRoFA0T0cFkvqB20WwPa0H5WV+TExUuevrbQBIjM5q+oRY=
+X-Received: by 2002:a05:6830:2413:: with SMTP id j19mr7073248ots.251.1610229908590;
+ Sat, 09 Jan 2021 14:05:08 -0800 (PST)
 MIME-Version: 1.0
 References: <CAK8P3a2VW8T+yYUG1pn1yR-5eU4jJXe1+M_ot6DAvfr2KyXCzQ@mail.gmail.com>
- <CACRpkdbJkiHR9FSfJTH_5d_qRU1__dRXHM1TL40iqNRKbGQfrQ@mail.gmail.com>
-In-Reply-To: <CACRpkdbJkiHR9FSfJTH_5d_qRU1__dRXHM1TL40iqNRKbGQfrQ@mail.gmail.com>
+ <20210108183251.25d53637@oasis.local.home>
+In-Reply-To: <20210108183251.25d53637@oasis.local.home>
 From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Sat, 9 Jan 2021 22:59:23 +0100
-X-Gmail-Original-Message-ID: <CAK8P3a3te9sYaWGCBMsG+rGQ26-55SV=T2jNLxi5mSZM=UfnEw@mail.gmail.com>
-Message-ID: <CAK8P3a3te9sYaWGCBMsG+rGQ26-55SV=T2jNLxi5mSZM=UfnEw@mail.gmail.com>
+Date:   Sat, 9 Jan 2021 23:04:52 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a1wmEubHuG=Sw2_Fzzh1EKUeSCW4N6H-aeOX4jVhY0KrA@mail.gmail.com>
+Message-ID: <CAK8P3a1wmEubHuG=Sw2_Fzzh1EKUeSCW4N6H-aeOX4jVhY0KrA@mail.gmail.com>
 Subject: Re: Old platforms: bring out your dead
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     Andrea Adami <andrea.adami@gmail.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Linux ARM <linux-arm-kernel@lists.infradead.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
         Krzysztof Adamski <krzysztof.adamski@nokia.com>,
         Oleksij Rempel <o.rempel@pengutronix.de>,
@@ -52,6 +51,7 @@ Cc:     Andrea Adami <andrea.adami@gmail.com>,
         <u.kleine-koenig@pengutronix.de>, Jamie Iles <jamie@jamieiles.com>,
         Barry Song <song.bao.hua@hisilicon.com>,
         Viresh Kumar <viresh.kumar@linaro.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
         Jonas Jensen <jonas.jensen@gmail.com>,
         Marc Gonzalez <marc.w.gonzalez@free.fr>,
         Hartley Sweeten <hsweeten@visionengravers.com>,
@@ -63,7 +63,6 @@ Cc:     Andrea Adami <andrea.adami@gmail.com>,
         Hans Ulli Kroll <ulli.kroll@googlemail.com>,
         Vladimir Zapolskiy <vz@mleia.com>,
         Wei Xu <xuwei5@hisilicon.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
         Yoshinori Sato <ysato@users.sourceforge.jp>,
         Mark Salter <msalter@redhat.com>,
         Michael Ellerman <mpe@ellerman.id.au>,
@@ -74,50 +73,27 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jan 9, 2021 at 1:18 AM Linus Walleij <linus.walleij@linaro.org> wrote:
+On Sat, Jan 9, 2021 at 12:32 AM Steven Rostedt <rostedt@goodmis.org> wrote:
 >
-> On Fri, Jan 8, 2021 at 11:55 PM Arnd Bergmann <arnd@kernel.org> wrote:
+> On Fri, 8 Jan 2021 23:55:06 +0100
+> Arnd Bergmann <arnd@kernel.org> wrote:
 >
-> > * u300 -- added in 2009, no notable changes since 2013
+> > * h8300: Steven Rostedt has repeatedly asked about it to be removed
+> >    or fixed in 2020 with no reply. This was killed before in 2013, added back
+> >    in 2015 but has been mostly stale again since 2016
 >
-> We can delete this, I don't see any use for it moving forward.
-> I'll send patches to drop it.
+> "I'm not dead yet!", "You're not fooling anyone!"
+>
+> The patch that I sent that fixes a critical bug in the architecture
+> (irq disabling does no compiler barriers!), has been ignored since
+> September 18th.
+>
+>   https://lore.kernel.org/lkml/20200918152507.711865ce@gandalf.local.home/
+>
+> I'm thinking to kill it and see if that causes any complaints.
 
-Ok, thanks for confirming.
+I'm happy to queue the patches in my asm-generic tree if you send them
+my way. Then they can spend some more time in linux-next and give
+possible users one last chance to speak up.
 
-> > * ep93xx -- added in 2006, LinusW still working on it, any users left?
->
-> I was contacted by a user of this platform, using it with mainline and
-> fixing bugs in the GPIO driver for this kernel cycle. So it has users.
->
-> > * gemini -- added in 2009, LinusW still working on it
->
-> This has active support and users through OpenWrt on the
-> D-Link DNS-313 and DIR-685.
->
-> > * ixp4xx -- prehistoric, but LinusW and I are still working on it
->
-> One more developer has contacted me showing strong interest
-> in the platform.
->
-> > * nomadik -- added in 2009, LinusW keeps fixing it, probably no other users
->
-> I use this for various subsystem testing actually (for the hardware that
-> is on the board, not necessarily Nomadik per se). So it is in pretty
-> active use.
->
-> > * sa1100 -- prehistoric, but rmk and LinusW sporadically working in it
->
-> There were some users from OpenEmbedded some years back
-> and active patches from Andrea Adami beside RMK and me. Paging
-> Andrea to see if he still has interest in the platform. (I don't.)
-
-And thanks for confirming that we still want to keep all of these.
-
-One thing I'd really like to see for the ep93xx is to have it
-use the COMMON_CLK interfaces. I have patches for OMAP1
-that I need to finalize, and then this one will be the last ARM
-platform without it. I also still hope we can eventually get ep93xx
-into multiplatform build.
-
-      Arnd
+       Arnd
