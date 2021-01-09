@@ -2,168 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 998972F031E
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Jan 2021 20:17:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 87C9B2F0320
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Jan 2021 20:17:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726334AbhAITQX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Jan 2021 14:16:23 -0500
-Received: from mail-40133.protonmail.ch ([185.70.40.133]:50891 "EHLO
-        mail-40133.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726005AbhAITQW (ORCPT
+        id S1726407AbhAITQq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Jan 2021 14:16:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50124 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726366AbhAITQp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Jan 2021 14:16:22 -0500
-Date:   Sat, 09 Jan 2021 19:15:31 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me; s=protonmail;
-        t=1610219739; bh=HTNhGxaumyEfFhC9Rh9YxptEn03qWU8vZ3Aojfr4I3Y=;
-        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
-        b=efJi1H69hfjRY1dichxq85cJ30sh0bLohwHaOzEbHMfKM/BofFpXOlVhw4wGix8sQ
-         Ydq5ZKEnP0O4JjkQ/IRkxH/Cwkr0+x4tmH8qzJkeeBVGdtYLifRvg7zzAuXPJF5PQ6
-         U8rqimZEaDPUSBIUNW2x5NSFk+W63WkYxFq6fTddAnwEBX8atDxWt32/h7v6P77a+y
-         rp+B8i8AuTrcKx4/67h082VgculI/UbrLmeEeMNRDr9cbVer/6LacAmBePatLKpqAr
-         1hoA1r0tpMIMJ4rH/OpQ6HQFH7hGTrlEx79c2GFKWNUI9AmXKgMjfAm97/HUUfGbxN
-         o77cf55f6nF8g==
-To:     Nick Desaulniers <ndesaulniers@google.com>
-From:   Alexander Lobakin <alobakin@pm.me>
-Cc:     Alexander Lobakin <alobakin@pm.me>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        linux-mips@vger.kernel.org,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Kees Cook <keescook@chromium.org>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Fangrui Song <maskray@google.com>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Ralf Baechle <ralf@linux-mips.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>
-Reply-To: Alexander Lobakin <alobakin@pm.me>
-Subject: Re: [BUG mips llvm] MIPS: malformed R_MIPS_{HI16,LO16} with LLVM
-Message-ID: <20210109191457.786517-1-alobakin@pm.me>
-In-Reply-To: <CAKwvOdmV2tj4Uyz1iDkqCj+snWPpnnAmxJyN+puL33EpMRPzUw@mail.gmail.com>
-References: <20210109171058.497636-1-alobakin@pm.me> <CAKwvOdmV2tj4Uyz1iDkqCj+snWPpnnAmxJyN+puL33EpMRPzUw@mail.gmail.com>
+        Sat, 9 Jan 2021 14:16:45 -0500
+Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E285EC061786
+        for <linux-kernel@vger.kernel.org>; Sat,  9 Jan 2021 11:16:04 -0800 (PST)
+Received: by mail-lf1-x12a.google.com with SMTP id h205so31185108lfd.5
+        for <linux-kernel@vger.kernel.org>; Sat, 09 Jan 2021 11:16:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Xj+wdM4M3lEcvuGtKhWJM/1JZgF4kFJC8VcvB5NhKwQ=;
+        b=Js+UCVunDyRvtAD/Vi2SOxakMOjEVHtBYDli/CvLZL9N2kyfy6Mh2BfhkGbmgvwG7d
+         wVAed4qYoC9/strnC4F+u2fujRHgacUGXv0S+xOUtds7NRHfC3EqtIhxPvNnFM/po6Ea
+         G207De9kWt0PKqoSbstfEKMde392XapWvBOaE=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Xj+wdM4M3lEcvuGtKhWJM/1JZgF4kFJC8VcvB5NhKwQ=;
+        b=X6n1TY6XUWjycz9TrF5CmYuG1INvShgNRTVb5uqhiowGrKpBAWsMsXY6tBk+7IlRRs
+         s8YunbqYPyXGOT3XqYpM+0mdmtw5aHieREkf/fXZ6uw2UkXSd7Uwqxen+v3kG+3N0DLV
+         MohtCy/sYWNlvAVO07Tr4xVRiWbD0CGoZjeoD8f+eF7RtSEDtAd33Rbdw8TM3AlVbKKY
+         XFvav5vn7rEcpjolmXq5ZKBYaLMtghiHRCpNn8/lylcyFy8RC5/AFn1WPU5cQfitxEDR
+         eZQVFHj8s0IfWjK5InTtc9vaSHKeEDJa7WQzoWdK+N2I9bUw46CFAhWQ5SG627hH6116
+         ySXw==
+X-Gm-Message-State: AOAM531WO+LI/EEeaCQeEu+hEK//wNA6WpQrBfNl7l2vgHf7NJyXpuNz
+        P54W4YruRy9mVPFFpwCB3j8FOIn8Kt2vIw==
+X-Google-Smtp-Source: ABdhPJzSxff+qslRMFipDvcf2CXwbvU9U5+H3NxATLHeUQT3WvBp4kKxm04L/JLHdld+WIzdYXjLFA==
+X-Received: by 2002:a19:844c:: with SMTP id g73mr3805653lfd.462.1610219762876;
+        Sat, 09 Jan 2021 11:16:02 -0800 (PST)
+Received: from mail-lf1-f41.google.com (mail-lf1-f41.google.com. [209.85.167.41])
+        by smtp.gmail.com with ESMTPSA id m24sm2635209ljj.62.2021.01.09.11.16.01
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 09 Jan 2021 11:16:01 -0800 (PST)
+Received: by mail-lf1-f41.google.com with SMTP id o19so31223700lfo.1
+        for <linux-kernel@vger.kernel.org>; Sat, 09 Jan 2021 11:16:01 -0800 (PST)
+X-Received: by 2002:a2e:3211:: with SMTP id y17mr3877771ljy.61.1610219761030;
+ Sat, 09 Jan 2021 11:16:01 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
-        autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
-        mailout.protonmail.ch
+References: <B1B85771-B211-4FCC-AEEF-BDFD37332C25@vmware.com>
+ <20210107200402.31095-1-aarcange@redhat.com> <20210107202525.GD504133@ziepe.ca>
+ <X/eA/f1r5GXvcRWH@redhat.com> <20210108133649.GE504133@ziepe.ca>
+ <X/iPtCktcQHwuK5T@redhat.com> <20210108181945.GF504133@ziepe.ca>
+ <CALCETrVWGZ5MkN6S+o_h5isOHKVpjwSz-jyXSsp9VJjVOYOyyg@mail.gmail.com>
+ <X/jr8QfeolQwn39f@redhat.com> <CALCETrWbmgyHR_d+FxKYpWYCc2XwZ8V8DNt_5bBL08Mi+1-_Uw@mail.gmail.com>
+In-Reply-To: <CALCETrWbmgyHR_d+FxKYpWYCc2XwZ8V8DNt_5bBL08Mi+1-_Uw@mail.gmail.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Sat, 9 Jan 2021 11:15:45 -0800
+X-Gmail-Original-Message-ID: <CAHk-=wjy6j0PL5bburcTXH3UtD0fqKz5vfgvVJAMi-qevSAp2g@mail.gmail.com>
+Message-ID: <CAHk-=wjy6j0PL5bburcTXH3UtD0fqKz5vfgvVJAMi-qevSAp2g@mail.gmail.com>
+Subject: Re: [PATCH 0/2] page_count can't be used to decide when wp_page_copy
+To:     Andy Lutomirski <luto@kernel.org>
+Cc:     Andrea Arcangeli <aarcange@redhat.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>, Linux-MM <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>, Yu Zhao <yuzhao@google.com>,
+        Peter Xu <peterx@redhat.com>,
+        Pavel Emelyanov <xemul@openvz.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Will Deacon <will@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Hugh Dickins <hughd@google.com>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Oleg Nesterov <oleg@redhat.com>, Jann Horn <jannh@google.com>,
+        Kees Cook <keescook@chromium.org>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Leon Romanovsky <leonro@nvidia.com>, Jan Kara <jack@suse.cz>,
+        Kirill Tkhai <ktkhai@virtuozzo.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nick Desaulniers <ndesaulniers@google.com>
-Date: Sat, 9 Jan 2021 09:50:44 -0800
-
-> On Sat, Jan 9, 2021 at 9:11 AM Alexander Lobakin <alobakin@pm.me> wrote:
->>
->> Machine: MIPS32 R2 Big Endian (interAptiv (multi))
->>
->> While testing MIPS with LLVM, I found a weird and very rare bug with
->> MIPS relocs that LLVM emits into kernel modules. It happens on both
->> 11.0.0 and latest git snapshot and applies, as I can see, only to
->> references to static symbols.
->>
->> When the kernel loads the module, it allocates a space for every
->> section and then manually apply the relocations relative to the
->> new address.
->>
->> Let's say we have a function phy_probe() in drivers/net/phy/libphy.ko.
->> It's static and referenced only in phy_register_driver(), where it's
->> used to fill callback pointer in a structure.
->>
->> The real function address after module loading is 0xc06c1444, that
->> is observed in its ELF st_value field.
->> There are two relocs related to this usage in phy_register_driver():
->>
->> R_MIPS_HI16 refers to 0x3c010000
->> R_MIPS_LO16 refers to 0x24339444
->>
->> The address of .text is 0xc06b8000. So the destination is calculated
->> as follows:
->>
->> 0x00000000 from hi16;
->> 0xffff9444 from lo16 (sign extend as it's always treated as signed);
->> 0xc06b8000 from base.
->>
->> =3D 0xc06b1444. The value is lower than the real phy_probe() address
->> (0xc06c1444) by 0x10000 and is lower than the base address of
->> module's .text, so it's 100% incorrect.
->>
->> This results in:
->>
->> [    2.204022] CPU 3 Unable to handle kernel paging request at virtual
->> address c06b1444, epc =3D=3D c06b1444, ra =3D=3D 803f1090
->>
->> The correct instructions should be:
->>
->> R_MIPS_HI16 0x3c010001
->> R_MIPS_LO16 0x24339444
->>
->> so there'll be 0x00010000 from hi16.
->>
->> I tried to catch those bugs in arch/mips/kernel/module.c (by checking
->> if the destination is lower than the base address, which should never
->> happen), and seems like I have only 3 such places in libphy.ko (and
->> one in nf_tables.ko).
->> I don't think it should be handled somehow in mentioned source code
->> as it would look rather ugly and may break kernels build with GNU
->> stack, which seems to not produce such bad codes.
->>
->> If I should report this to any other resources, please let me know.
->> I chose clang-built-linux and LKML as it may not happen with userland
->> (didn't tried to catch).
+On Sat, Jan 9, 2021 at 11:03 AM Andy Lutomirski <luto@kernel.org> wrote:
 >
-> Thanks for the report.  Sounds like we may indeed be producing an
-> incorrect relocation.  This is only seen for big endian triples?
+> >
+> > Sorry to ask but I'm curious, what also goes wrong if the user
+> > modifies memory under GUP pin from vmsplice? That's not obvious to
+> > see.
+>
+> It breaks the otherwise true rule that the data in pipe buffers is
+> immutable.
 
-Unfortunately I don't have a LE board to play with, so can confirm
-only Big Endian.
+Note that this continued harping on vmsplice() is entirely misguided.
 
-(BTW, if someone can say if it's possible for MIPS (and how if it is)
-to launch a LE kernel from BE-booted preloader and U-Boot, that would
-be super cool)
+Anything using GUP has the same issues.
 
-> Getting a way for us to deterministically reproduce would be a good
-> first step.  Which config or configs beyond defconfig, and which
-> relocations specifically are you observing this with?
+This really has nothing to do with vmsplice() per se.
 
-I use `make 32r2_defconfig` which combines several configs from
-arch/mips/configs:
- - generic_defconfig;
- - generic/32r2.config;
- - generic/eb.config.
+In many ways, vmsplice() might be the least of your issues, because
+it's fairly easy to just limit that for untrusted use.
 
-Aside from that, I enable a bunch of my WIP drivers and the
-Netfilter. On my setup, this bug is always present in libphy.ko,
-so CONFIG_PHYLIB=3Dm (with all deps) should be enough.
+And no, that does not mean "we should make vmsplice root-only" kind of
+limiting. There are no security issues in any normal situation. Again,
+it's mainly about things that don't trust each other _despite_ running
+in similar contexts as far as the kernel is concerned. IOW, exactly
+that "zygote" kind of situation.
 
-The three failed relocs belongs to this part of code: [0]
+If you are a JIT (whether Zygote or a web browser), you basically need
+to limit the things the untrusted JIT'ed code can do. And that
+limiting may include vmsplice().
 
-llvm-readelf on them:
+But note the "include" part of "include vmsplice()". Any other GUP
+user really does have the same issues, it may just be less obvious and
+have very different timings (or depend on access to devices etc).
 
-Relocation section '.rel.text' at offset 0xbf60 contains 2281 entries:=
-=C2=AC
-[...]
-00005740  00029305 R_MIPS_HI16            00000000   .text
-00005744  00029306 R_MIPS_LO16            00000000   .text
-00005720  00029305 R_MIPS_HI16            00000000   .text
-00005748  00029306 R_MIPS_LO16            00000000   .text
-0000573c  00029305 R_MIPS_HI16            00000000   .text
-0000574c  00029306 R_MIPS_LO16            00000000   .text
+Absolutely nothing cares about "data in pipe buffers changing" in any
+other case. You can already write any data you want to a pipe, it
+doesn't matter if it changes after the write or not.
 
-The first pair is the one from my first mail:
-0x3c010000 <-- should be 0x3c010001 to work properly
-0x24339444
+(In many ways, "data in the page cache" is a *much* more difficult
+issue for the kernel, and it's fundamental to any shared mmap. It's
+much more difficult because that data is obviously very much also
+accessible for DMA etc for writeout, and if you have something like
+"checksums are calculated separately and non-atomically from the
+actual DMA accesses", you will potentially get checksum errors where
+the actual disk contents don't match your separately calculated
+checksums until the _next_ write. This can actually be a feature -
+seeing "further modifications were concurrent to the write" - but most
+people end up considering it a bug).
 
-I'm planning to hunt for more now, will let you know.
-
-[0] https://elixir.bootlin.com/linux/v5.11-rc2/source/drivers/net/phy/phy_d=
-evice.c#L2989
-
-> Thanks,
-> ~Nick Desaulniers
-
-Thanks,
-Al
-
+               Linus
