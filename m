@@ -2,117 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C38C2EFEA5
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Jan 2021 09:33:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 013702EFEA6
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Jan 2021 09:35:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726780AbhAIIco (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Jan 2021 03:32:44 -0500
-Received: from mail.kernel.org ([198.145.29.99]:42998 "EHLO mail.kernel.org"
+        id S1726711AbhAIIei (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Jan 2021 03:34:38 -0500
+Received: from mail.kernel.org ([198.145.29.99]:43160 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726051AbhAIIcn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Jan 2021 03:32:43 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 89F1B23A1C;
-        Sat,  9 Jan 2021 08:32:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610181123;
-        bh=jmrtNJNJni981ccFvX0GTmwlqG2gOrIRHUnzc2Nw3Iw=;
-        h=Date:From:To:Cc:Subject:From;
-        b=lUJnYvaFUDVaIU6iH6NR3a4tLglBRFCcAhnaUXRaVC+pFoVMPIjlSRAlN6VKvKNQM
-         pc13cc0Oscqy/s/HJF4Zhd1or2TeczHhXmIo5IQA1NpWgX6DmnOv3Ug0IXMZuYI4pq
-         8GOLLqysRAJiMjG8lZhBVQ25Y1jPOfavHdKKbaDYGJGVoWpUlakvh7eMRyCfsZrGUl
-         x6uQgaF64rfJvC/8iZVTO7dNURRo+eYy+NWdLdj30aAao3yA/n9mbj7pL5MeLtfbKY
-         UBSBd4pOe8egWxlAB2BnFkQeRfJ9++UT5Zonh5Gdy7vTlIZ/CsmPLYqkaWfSI/skH5
-         tw2OfZtOFKMbg==
-Date:   Sat, 9 Jan 2021 09:31:56 +0100
-From:   Wolfram Sang <wsa@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Peter Rosin <peda@axentia.se>,
-        Bartosz Golaszewski <brgl@bgdev.pl>
-Subject: [PULL REQUEST] i2c for 5.11
-Message-ID: <20210109083156.GA2924@kunai>
-Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Peter Rosin <peda@axentia.se>, Bartosz Golaszewski <brgl@bgdev.pl>
+        id S1725938AbhAIIei (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 9 Jan 2021 03:34:38 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B698723A1C;
+        Sat,  9 Jan 2021 08:33:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1610181237;
+        bh=/NVakth6QATJ6MZB9PLPUoh8525ch7muAAkUo+5vnFo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=smIBkVXlI1nr1nBFmaoCf2tI4bL3XgcefyQQdPoiQmDEjv2pLCVbWSTjzD7VYUkxc
+         Epwe5lfOb4jp5dGZ2svNVVPqwnBPRyRjssLbGEAtbZf+dFdls7bxTUmiDMrY8T6YCf
+         2rCxfknLXmA49hBI5KSxqKpynMkkod0qMlCp5mIs=
+Date:   Sat, 9 Jan 2021 09:33:53 +0100
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     "Chen, Mike Ximing" <mike.ximing.chen@intel.com>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "arnd@arndb.de" <arnd@arndb.de>,
+        "Williams, Dan J" <dan.j.williams@intel.com>,
+        "pierre-louis.bossart@linux.intel.com" 
+        <pierre-louis.bossart@linux.intel.com>
+Subject: Re: [PATCH v8 04/20] dlb: add device ioctl layer and first three
+ ioctls
+Message-ID: <X/lqcaLVb+PbbmWg@kroah.com>
+References: <20210105025839.23169-1-mike.ximing.chen@intel.com>
+ <20210105025839.23169-5-mike.ximing.chen@intel.com>
+ <X/dmB3q6QEd2aQdG@kroah.com>
+ <SA2PR11MB5018670AEC81EA93598E1212D9AD0@SA2PR11MB5018.namprd11.prod.outlook.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="a8Wt8u1KmwUX3Y2C"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <SA2PR11MB5018670AEC81EA93598E1212D9AD0@SA2PR11MB5018.namprd11.prod.outlook.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Sat, Jan 09, 2021 at 07:49:24AM +0000, Chen, Mike Ximing wrote:
+> > > +static int dlb_ioctl_arg_size[NUM_DLB_CMD] = {
+> > > +	sizeof(struct dlb_get_device_version_args),
+> > > +	sizeof(struct dlb_create_sched_domain_args),
+> > > +	sizeof(struct dlb_get_num_resources_args)
+> > 
+> > That list.
+> > 
+> > Ugh, no.  that's no way to write maintainable code that you will be able
+> > to understand in 2 years.
+> > 
+> 
+> dlb_ioctl() was implemented with switch-case and real function calls previously. 
+> We changed to the table/list implementation during a code restructure. I will move
+> back to the old implementation. 
 
---a8Wt8u1KmwUX3Y2C
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Who said to change this?  And why did they say that?  Please go back to
+those developers and point them at this thread so that doesn't happen
+again...
 
-Linus,
+> > > +{
+> > > +	struct dlb *dlb;
+> > > +	dlb_ioctl_fn_t fn;
+> > > +	u32 cmd_nr;
+> > > +	void *karg;
+> > > +	int size;
+> > > +	int ret;
+> > > +
+> > > +	dlb = f->private_data;
+> > > +
+> > > +	if (!dlb) {
+> > > +		pr_err("dlb: [%s()] Invalid DLB data\n", __func__);
+> > > +		return -EFAULT;
+> > 
+> > This error value is only allowed if you really do have a memory fault.
+> > 
+> > Hint, you do not here.
+> > 
+> > How can that value ever be NULL?
+> >
+> 
+> It is targeted at some very rare cases, in which an ioctl command are called immediately after a device unbind (by a different process/application).
 
-here are three driver bugfixes for I2C. Buisness as usual.
+And how can that happen?  If it really can happen, where is the lock
+that you are holding to keep that pointer from becoming "stale" right
+after you assign it?
 
-Please pull.
+So either this never can happen, or your logic here for this type of
+thing is totally wrong.  Please work to determine which it is.
 
-Thanks,
+> > > +#define DLB_DEVICE_VERSION(x) (((x) >> 8) & 0xFF)
+> > > +#define DLB_DEVICE_REVISION(x) ((x) & 0xFF)
+> > > +
+> > > +enum dlb_revisions {
+> > > +	DLB_REV_A0 = 0,
+> > 
+> > What is a "revision" and why do you care about it?
+> 
+> This is for different revisions of hardware. Each revision of hardware may have a slight different configuration/feature.
 
-   Wolfram
+So what does this mean?  What are you going to do based on it?
 
+> > > +/*
+> > > + * DLB_CMD_GET_DEVICE_VERSION: Query the DLB device version.
+> > > + *
+> > > + *	Each DLB device version has its own unique ioctl API, but all share
+> > > + *	this as the first command in their interface, which tells user-space
+> > > + *	which API to use. The device revision is provided in case of any
+> > > + *	hardware errata.
+> > > + *
+> > > + * Output parameters:
+> > > + * - response.status: Detailed error code. In certain cases, such as if the
+> > > + *	ioctl request arg is invalid, the driver won't set status.
+> > > + * - response.id[7:0]: Device revision.
+> > > + * - response.id[15:8]: Device version.
+> > 
+> > So userspace has to do different things depending on what the hardware
+> > type is?  Why not make a totally different driver for new hardware
+> > types if things are going to change in the future?
+> > 
+> 
+> This comment is not correct (sorry about this).  There will be different 
+> versions of  DLB hardware (of the same type). All DLB devices will have the same ioctl
+> API and userspace interface.
 
-The following changes since commit e71ba9452f0b5b2e8dc8aa5445198cd9214a6a62:
+Good, please fix then :)
 
-  Linux 5.11-rc2 (2021-01-03 15:55:30 -0800)
+thanks,
 
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/wsa/linux.git i2c/for-current
-
-for you to fetch changes up to 05f6f7271a38c482c5021967433f7b698e102c45:
-
-  i2c: mediatek: Fix apdma and i2c hand-shake timeout (2021-01-05 10:54:37 +0100)
-
-----------------------------------------------------------------
-Chunyan Zhang (1):
-      i2c: sprd: use a specific timeout to avoid system hang up issue
-
-Hans de Goede (1):
-      i2c: i801: Fix the i2c-mux gpiod_lookup_table not being properly terminated
-
-Qii Wang (1):
-      i2c: mediatek: Fix apdma and i2c hand-shake timeout
-
-
-with much appreciated quality assurance from
-----------------------------------------------------------------
-Linus Walleij (1):
-      (Rev.) i2c: i801: Fix the i2c-mux gpiod_lookup_table not being properly terminated
-
-Mika Westerberg (1):
-      (Rev.) i2c: i801: Fix the i2c-mux gpiod_lookup_table not being properly terminated
-
- drivers/i2c/busses/i2c-i801.c   |  2 +-
- drivers/i2c/busses/i2c-mt65xx.c | 27 ++++++++++++++++++++++-----
- drivers/i2c/busses/i2c-sprd.c   |  8 +++++++-
- 3 files changed, 30 insertions(+), 7 deletions(-)
-
---a8Wt8u1KmwUX3Y2C
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAl/5afgACgkQFA3kzBSg
-KbbtZg//enU31i6SOCUXBX9NbVs14/mrheOURbR5uHceRMrgzA9Xgws7XWWFmL16
-54mBDascn6LAJkhBbseojkr7DIcdSa3fvGC8o4Zdr83tn+Ku6p8hTilwrdczd6PU
-M4o7iHvB/tzE7/iHDM7ZUCxsLW09R9k4UdRbpGM+kj99LETW+Y9ZpfcwuM2Vk2tE
-XasCSJLz6igiY9J71lO/Gg1jkMNGF4RDkX2vqD9AmtFa+2cPnO4kMck0UDO0VhSi
-PL7k+aQl2LSYR6m+pJhMgjG9X2n5NWYeUoQxlGdUhhwrTuQ/d0whEjhlr53Kp6iA
-CGKYPAawiwtFDIycrUUSYV/Nl4VMNSuIl05XLjyoVgZkRzvbK1yN8AEiJ0F0X1sT
-zDsd/KMX0uHynOiwm38jIn8c+H5pELR7YdOdaHCag19E/VoBxi8ICNqNq0huH9xS
-lsnb1Ga8s30rUdi4wkLSRoawvN7fBRJU1S5btviPqI5O/WDIyHqLQQ+hUoAA/vPK
-mmpugM9/3MM2a801yM1YXkWda1GnRWToAEqtKmTSxtqoU73u/eFWiEb8brzxWtn8
-gwUALJaXi+vGJNxW5gTajm/0PFq1xjRRdgdsjK5U8eI3rgEiA+RR2sew+zIZrItw
-sxntLITeM0+6b1uErwciH9ZPc0GafNHqjvoKyvvWzteqt6WwElE=
-=haWZ
------END PGP SIGNATURE-----
-
---a8Wt8u1KmwUX3Y2C--
+greg k-h
