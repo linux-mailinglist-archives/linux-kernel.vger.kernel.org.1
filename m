@@ -2,31 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B04FF2F00EE
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Jan 2021 16:41:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 60E502F00EB
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Jan 2021 16:41:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726825AbhAIPlF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Jan 2021 10:41:05 -0500
-Received: from gloria.sntech.de ([185.11.138.130]:36712 "EHLO gloria.sntech.de"
+        id S1726688AbhAIPko (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Jan 2021 10:40:44 -0500
+Received: from gloria.sntech.de ([185.11.138.130]:36748 "EHLO gloria.sntech.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726375AbhAIPkj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Jan 2021 10:40:39 -0500
+        id S1726457AbhAIPkn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 9 Jan 2021 10:40:43 -0500
 Received: from ip5f5aa64a.dynamic.kabel-deutschland.de ([95.90.166.74] helo=phil.lan)
         by gloria.sntech.de with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
         (Exim 4.92)
         (envelope-from <heiko@sntech.de>)
-        id 1kyGLN-0000jX-7n; Sat, 09 Jan 2021 16:39:57 +0100
+        id 1kyGLN-0000jX-L2; Sat, 09 Jan 2021 16:39:57 +0100
 From:   Heiko Stuebner <heiko@sntech.de>
-To:     Katsuhiro Suzuki <katsuhiro@katsuster.net>
-Cc:     Heiko Stuebner <heiko@sntech.de>,
-        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v2] arm64: dts: rockchip: enable HDMI sound nodes for rk3328-rock64
-Date:   Sat,  9 Jan 2021 16:39:51 +0100
-Message-Id: <161020678304.3482489.3049942177726573857.b4-ty@sntech.de>
+To:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-pci@vger.kernel.org, linux-rockchip@lists.infradead.org,
+        Marc Zyngier <maz@kernel.org>
+Cc:     Heiko Stuebner <heiko@sntech.de>, Rob Herring <robh@kernel.org>,
+        Shawn Lin <shawn.lin@rock-chips.com>,
+        Bjorn Helgaas <bhelgaas@google.com>, kernel-team@android.com,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+Subject: Re: (subset) [PATCH 0/2] PCI: rockchip: Fix PCIe probing in 5.9
+Date:   Sat,  9 Jan 2021 16:39:52 +0100
+Message-Id: <161020678304.3482489.16265373778733987316.b4-ty@sntech.de>
 X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20200802154231.2639186-1-katsuhiro@katsuster.net>
-References: <20200802154231.2639186-1-katsuhiro@katsuster.net>
+In-Reply-To: <20200815125112.462652-1-maz@kernel.org>
+References: <20200815125112.462652-1-maz@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -34,21 +37,23 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 3 Aug 2020 00:42:31 +0900, Katsuhiro Suzuki wrote:
-> This patch enables HDMI sound (I2S0) and Analog sound (I2S1) which
-> are defined in rk3328.dtsi, and replace SPDIF nodes.
+On Sat, 15 Aug 2020 13:51:10 +0100, Marc Zyngier wrote:
+> Recent changes to the way PCI DT nodes are parsed are now enforcing
+> the presence of a "device_type" property, which has been mandated
+> since... forever. This has the unfortunate effect of breaking
+> non-compliant systems, and those using the Rockchip PCIe driver are
+> amongst the victims. Oh well.
 > 
-> We can use SPDIF pass-through with suitable ALSA settings and on
-> mpv or other media players.
->   - Settings: https://github.com/LibreELEC/LibreELEC.tv/blob/master/projects/Rockchip/filesystem/usr/share/alsa/cards/SPDIF.conf
->   - Ex.: mpv foo.ac3 --audio-spdif=ac3 --audio-device='alsa/SPDIF.pcm.iec958.0:SPDIF'
+> In order to keep users happy as well as my own machines up and
+> running, let's paper over the problem by detecting a broken DT from
+> the driver itself, and inserting the missing property at runtime.
 > 
 > [...]
 
 Applied, thanks!
 
-[1/1] arm64: dts: rockchip: enable HDMI sound nodes for rk3328-rock64
-      commit: 25572fb5aa986bdbb35d06c0fb52a9b9d9b3b2c9
+[2/2] arm64: dts: rockchip: Fix PCIe DT properties
+      commit: 43f20b1c6140896916f4e91aacc166830a7ba849
 
 Best regards,
 -- 
