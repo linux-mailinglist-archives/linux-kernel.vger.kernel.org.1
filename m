@@ -2,85 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B1A972EFE1D
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Jan 2021 07:12:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 727E02EFE20
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Jan 2021 07:20:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726283AbhAIGKD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Jan 2021 01:10:03 -0500
-Received: from mga03.intel.com ([134.134.136.65]:9152 "EHLO mga03.intel.com"
+        id S1726427AbhAIGS0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Jan 2021 01:18:26 -0500
+Received: from mga12.intel.com ([192.55.52.136]:53689 "EHLO mga12.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725850AbhAIGKD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Jan 2021 01:10:03 -0500
-IronPort-SDR: vCgnhn3mxPIBL4pne4M9kbiJ/TMi75IOvIYGoW07aPvWHhgAYRiJKKHDeZMhDYs2VNS8BOZTmt
- nFrAsYEy96Nw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9858"; a="177786731"
+        id S1725915AbhAIGS0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 9 Jan 2021 01:18:26 -0500
+IronPort-SDR: OBMB3ajgwKmJ3tXYuTZQ8iQBBG6BQnijA/KoooKLwC9yTaxvZnxSrD6+y9mlAtbaFLbKYRvMeA
+ IoKVQJULiBtg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9858"; a="156873367"
 X-IronPort-AV: E=Sophos;i="5.79,333,1602572400"; 
-   d="scan'208";a="177786731"
+   d="scan'208";a="156873367"
 Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jan 2021 22:09:22 -0800
-IronPort-SDR: nMdbyj4cWoQ2nu3AQbRCrlFT/Gds32xvdT+KdU6EoxB1ykUyZom47CcyJNOeAdV/zPJUvVCJ83
- ZC1m8uZluxzQ==
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 08 Jan 2021 22:17:45 -0800
+IronPort-SDR: yFGdWJC34ps3kuqYZzquz1qkUYGDeXySit0OR8/e9dhu88OHUQVhJQjyXmSp/qfFs6Zh3bqgXN
+ BR007qRe8QSA==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.79,333,1602572400"; 
-   d="scan'208";a="423185435"
-Received: from fmsmsx602.amr.corp.intel.com ([10.18.126.82])
-  by orsmga001.jf.intel.com with ESMTP; 08 Jan 2021 22:09:21 -0800
-Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
- fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
+   d="scan'208";a="423186673"
+Received: from orsmsx605.amr.corp.intel.com ([10.22.229.18])
+  by orsmga001.jf.intel.com with ESMTP; 08 Jan 2021 22:17:45 -0800
+Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
+ ORSMSX605.amr.corp.intel.com (10.22.229.18) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Fri, 8 Jan 2021 22:09:21 -0800
-Received: from fmsmsx608.amr.corp.intel.com (10.18.126.88) by
- fmsmsx612.amr.corp.intel.com (10.18.126.92) with Microsoft SMTP Server
+ 15.1.1713.5; Fri, 8 Jan 2021 22:17:44 -0800
+Received: from orsmsx601.amr.corp.intel.com (10.22.229.14) by
+ ORSMSX610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Fri, 8 Jan 2021 22:09:21 -0800
-Received: from fmsedg601.ED.cps.intel.com (10.1.192.135) by
- fmsmsx608.amr.corp.intel.com (10.18.126.88) with Microsoft SMTP Server
+ 15.1.1713.5; Fri, 8 Jan 2021 22:17:44 -0800
+Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
+ orsmsx601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1713.5
- via Frontend Transport; Fri, 8 Jan 2021 22:09:21 -0800
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (104.47.55.173)
- by edgegateway.intel.com (192.55.55.70) with Microsoft SMTP Server
+ via Frontend Transport; Fri, 8 Jan 2021 22:17:44 -0800
+Received: from NAM02-BL2-obe.outbound.protection.outlook.com (104.47.38.51) by
+ edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.1713.5; Fri, 8 Jan 2021 22:09:20 -0800
+ 15.1.1713.5; Fri, 8 Jan 2021 22:17:43 -0800
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ZQbyHBk6SutLwI7ZSFHpYmASQBMqmRfjpy474kpyCmLvGSH2QKxf/GICN9y6VIM5mdeQcJKkn8QYOiLLFQIHBIiLBoLMueR7nW38IfWbhxlD3sNMSxmgSQF1aD3Zxg4VMtx1AL81NCrrx063AVlHqWgP6f/ixiZ/m9nTaLqYfGVYqfH0nJjMWzaCNxudYDO0Ap3Tv43YnSZJtNdskAkxYW1wKOhuZTdYtZBaB9iQ4FTiByMAlO3XSpv71W7a9EMcsMIrZocWWNRxj6sY+ZieDatCZmC+XD4Ws/3H05tuesGnpIy3fayGBq8KOT1jxLYnNMPFwAN2fS7NDhdJWiWvXA==
+ b=GIuoP1k6QtmnChdZ5yslMAOBtXfINYF0Yvm/U8FXeFgs1jjfkLMxJas38hJDUGKOiFt+Ar8laMAJ65Dae5I/wo09Wyv0KXznXWkoQjJ0z8Sn/iUWT2hrsULWFq3WDC5v6Ab+0/F6c0ZcDKm5UBmTGUn5el+dir2VgUWta5S5AN8kfRfStVt6N8SLoW+OMphm7a5kJ8m/YPMPmQpUT45O3dMplXRo6pBQNRTIpV4XvDC/TfstZfbWTnYC5FrARwE5R1t1RxUDZ8JhDlqD9kYoMQ4GgE7HXanRQc8oQhTw/rdWTm+nTOL6Scsbv3Tu5YwZKrwUwK0qzloyLkYGR05m0g==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ZgLr8Kz1JxoFDVUP6KXl48pzSdBYHb0TXebJrlC3kRs=;
- b=Ti/WxLOAe/8tsxMU/ds8TrzDouHtFay4socmnu5TKzUkkayZuyBLno8CX2Ts5k6pu+u3jcHX/83LA3q6citCFFXOCLFCfQ5+KrWfz3sbcmMBKOohyWkatviFf0nAHZkBPpdrubdMJGJFfc+ytdOVg3cwmFs2na5hE8c0vg8JLl4Ui4tLyWZ8t5yWmrnfdLTMgKF3r+ykPF9be6BpdkeA/Ztqq90f5SoiWXdXWel4mVmvLOcl+DA27C/LMhqNRm02xU2OPEbBQ5rq5sn3LQPDcnKjBqEY9SbMVj5tuxf7JueFvCKs/K20zgWzyIicGOhHF4DKfC0wWyVRQw9ZoM5QxA==
+ bh=T/y0RfCHMtbfiDRjqzBu/XFMD2fHcCLXvnL2/viPVrg=;
+ b=SoqPqbF1cm1Ag7Omasgfa95UiGRhH5pgWZP0Yg+XS1C4dVaZ3UsP+5NM/aKEDDC1T0ALF1sgucekk/CATiiiA+bk8SRNJ1YQ05XcvAxNfpiy+8LUfIOCov1w1Rq6G+AEwjc93lu9EZeZD9CYXR5rpWbWL9DOYdBbiZWWI3/TBuwLHbvYrwt/ol53Cehgp/wIlmIYo8yHgWUw3StdIQv7O10iXNB5tATB0DuwfsWDMykt9xVI/WPSHQUE6mhgsl22oXi3CjlTaQwILYEC944Zsw0GJBUckbGGT72oVdbEm8ZJG5ZJKBRewBRB7VteLDIPdLToC6x8XNoasDEcy9JHaw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
  dkim=pass header.d=intel.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
  s=selector2-intel-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ZgLr8Kz1JxoFDVUP6KXl48pzSdBYHb0TXebJrlC3kRs=;
- b=OTvYGrtqjpK2IodwDyJcY0eMcNqLZWlxRHVG2E7gXClTTk+wJad29g3+SilQ0EzCdrM6lfxUeysbfRUMHA42rROoxukQodAXVRdw+eScfQNPbya18tE61Unrh3tWDS5uPhEmohBn7GiNSPFoORDOCo94s5MVoDnRJPa0YTtSkXI=
+ bh=T/y0RfCHMtbfiDRjqzBu/XFMD2fHcCLXvnL2/viPVrg=;
+ b=NfaeIV0441TJvsMw+qc3aDvJRTabWfQIKSG2gHEeY9A3cHyd8zTF0eCcalK7CQXs6AV/qCU7tWGj8wnX9bxeIekNylsRh9id0IIjup32axTAVYsPYtdATgXOiROXo4BpCsJEh5tPSePjxMBrWiWX9RQgaKM46vflpkiyGXJa5rc=
 Received: from SA2PR11MB5018.namprd11.prod.outlook.com (2603:10b6:806:11a::20)
- by SN6PR11MB2768.namprd11.prod.outlook.com (2603:10b6:805:62::20) with
+ by SA2PR11MB4873.namprd11.prod.outlook.com (2603:10b6:806:113::12) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3742.6; Sat, 9 Jan
- 2021 06:09:18 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3742.11; Sat, 9 Jan
+ 2021 06:17:42 +0000
 Received: from SA2PR11MB5018.namprd11.prod.outlook.com
  ([fe80::95d4:6cec:fd81:5712]) by SA2PR11MB5018.namprd11.prod.outlook.com
  ([fe80::95d4:6cec:fd81:5712%6]) with mapi id 15.20.3742.008; Sat, 9 Jan 2021
- 06:09:18 +0000
+ 06:17:42 +0000
 From:   "Chen, Mike Ximing" <mike.ximing.chen@intel.com>
 To:     Greg KH <gregkh@linuxfoundation.org>
 CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
         "arnd@arndb.de" <arnd@arndb.de>,
         "Williams, Dan J" <dan.j.williams@intel.com>,
         "pierre-louis.bossart@linux.intel.com" 
-        <pierre-louis.bossart@linux.intel.com>
-Subject: RE: [PATCH v8 01/20] dlb: add skeleton for DLB driver
-Thread-Topic: [PATCH v8 01/20] dlb: add skeleton for DLB driver
-Thread-Index: AQHW4w6fsZ61IxoEskW9sP4CiaMTeqocknsAgAI9yfA=
-Date:   Sat, 9 Jan 2021 06:09:18 +0000
-Message-ID: <SA2PR11MB5018C88743F2524BC8C5CE6CD9AD0@SA2PR11MB5018.namprd11.prod.outlook.com>
+        <pierre-louis.bossart@linux.intel.com>,
+        Gage Eads <gage.eads@intel.com>
+Subject: RE: [PATCH v8 04/20] dlb: add device ioctl layer and first three
+ ioctls
+Thread-Topic: [PATCH v8 04/20] dlb: add device ioctl layer and first three
+ ioctls
+Thread-Index: AQHW4w80G3nX6IgdcUmItLJqTgp06qock++AgAJCwwA=
+Date:   Sat, 9 Jan 2021 06:17:41 +0000
+Message-ID: <SA2PR11MB5018E707664618A1B7DFA40ED9AD0@SA2PR11MB5018.namprd11.prod.outlook.com>
 References: <20210105025839.23169-1-mike.ximing.chen@intel.com>
- <20210105025839.23169-2-mike.ximing.chen@intel.com>
- <X/dilO0pQI3GVh6F@kroah.com>
-In-Reply-To: <X/dilO0pQI3GVh6F@kroah.com>
+ <20210105025839.23169-5-mike.ximing.chen@intel.com>
+ <X/djzcBWzwDrMmpA@kroah.com>
+In-Reply-To: <X/djzcBWzwDrMmpA@kroah.com>
 Accept-Language: en-US
 Content-Language: en-US
 X-MS-Has-Attach: 
@@ -93,129 +96,79 @@ authentication-results: linuxfoundation.org; dkim=none (message not signed)
  header.from=intel.com;
 x-originating-ip: [69.141.163.46]
 x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 7229030e-e0e0-4a25-ea6f-08d8b4651970
-x-ms-traffictypediagnostic: SN6PR11MB2768:
+x-ms-office365-filtering-correlation-id: d488ddd2-370e-4229-53d1-08d8b46645a5
+x-ms-traffictypediagnostic: SA2PR11MB4873:
 x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr,ExtFwd
 x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <SN6PR11MB276835C193B7A8FAC94ADF8CD9AD0@SN6PR11MB2768.namprd11.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:9508;
+x-microsoft-antispam-prvs: <SA2PR11MB4873F733B0777487BF6621D3D9AD0@SA2PR11MB4873.namprd11.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:3276;
 x-ms-exchange-senderadcheck: 1
 x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 9ExMt5rl6bzcnDw1rpYQTX+bNHQ7UbZIx+STkNqlYzH2qF8YJ4u9lZe0iGd/gn0KgJl0m8btwhpjAqDBQLASke/9Ua96ayauQNY6B8pPdXZyhp2u0tuDvXAbhdcixwxZlF8LROSgUN23qv3i/YdDHZ42zr+ZbSCztURU2RmBtdxbgOHQAMkZP7T80mSwd7SOxkG+VcLPl2wJvjSDl+UycKIU8K6/MAvoNNAc83l5RByDbGnwFMWHIIXwMpXiwfc00f1AnNqiTb7EpNLfKinXwAscOTC5/Q7W4UslvdZB9kglGi/mYeJSF5EC4fjvqSw7m8ZPsfSZs2qnIHDYBUsNzKjbBbd6o/yCcITxs+nNGEaFrK7bb3rdWFpsA8YTxHc2uEF7ZnUZ+ENziBDURdEPxA==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA2PR11MB5018.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(396003)(346002)(376002)(366004)(39860400002)(66446008)(54906003)(9686003)(76116006)(5660300002)(4326008)(316002)(66476007)(66946007)(8676002)(2906002)(52536014)(33656002)(64756008)(71200400001)(478600001)(8936002)(7696005)(86362001)(26005)(186003)(55016002)(6506007)(83380400001)(53546011)(6916009)(66556008);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: =?us-ascii?Q?9tqfc5wI0T6eGWMCNpfVAKi8xG80YHAxMoa70jW1YhKVzILYyUs1y1buen45?=
- =?us-ascii?Q?IuF/YM31kHauEbqLrqUejwpVy4XLPbFP67DfB8AE1YeY4YP/mvl5oD5nZQfn?=
- =?us-ascii?Q?9DjUrrOFAfFVbA1lUTQKnP5Uiv2n9azUnFk/4LbGZzjOsPx1MRgtDSLUSlK5?=
- =?us-ascii?Q?MNPvgEtOmjV5FkBc3AQ3SQIqpI7bDOXHQE/qmpm7cY2d/K8ADdLSQPX+xStr?=
- =?us-ascii?Q?Lk1EVTpMypYfbIKWskH4Tnyd+wQhO0ll9hD93glxF50WztXfVp3GIeIOK5z/?=
- =?us-ascii?Q?3vlL2pB3ZZEa6xy/CYP7/u0NZEQrk0ab0GxIV8j8AtSOxpraJ0Wm3rcZ58ZY?=
- =?us-ascii?Q?gh4g9Eag0P2YYygvadNwVYkqx7f/vMuHbmSn/TimceW+ZQ7sLcAZLSn6DY7h?=
- =?us-ascii?Q?cUf65f3R3lZ3zjrWUiBf2/DLJCoPlEEn/xYhQE3lBhxhNHzZxTN5b5pQWBan?=
- =?us-ascii?Q?0TGNSZkm/aUHawVqUerWlIwXy37fk5RO7OrJhrkYMghkIGki+2Av/JbwGgd4?=
- =?us-ascii?Q?02XYWqnYaOln95IP/RzCW5Iy13mwkU6dqnRiCDz8D+kD7W7W8mMgDBFnVOv2?=
- =?us-ascii?Q?7ac1m+o4mH4L8IDUYqKef9+aRWoZLt5akkdFLlZowrRsrrhuxV3H9BfpAR4d?=
- =?us-ascii?Q?swPS/u4H2d6h0MBsgMkzq5Z5zvw0l+qMaUAx4bMLkvOV2G8cykqxI2PATAwV?=
- =?us-ascii?Q?yBvCHjQREkSPDY5z9OdUQ+NdJgLx9xcUJQkQ1LgEsr1+atujG4Y3YQbBsJuk?=
- =?us-ascii?Q?fQKraBVjNZaFNdcgjbLH6reAt+r1Hbe6t/Co4PXPHFYQMSujaiqNPt6gOZHv?=
- =?us-ascii?Q?BmXgwf8j9tGJuxEChQxp5MsNfhYKUPZ4kImB5iTtAdIy0XwKBLRcSBNEyzQV?=
- =?us-ascii?Q?rdzbxoF2YPH63oa0iYqQnYR/pIFD+Ak55tfE+u9AUPTGixcuN8/m5bwdyxcH?=
- =?us-ascii?Q?RXEdHZiGk8xNbtun0mXl6Ufg1MqqunxggW7bomo6srw=3D?=
+x-microsoft-antispam-message-info: d0m7jkmV/4fRtZYOHS1aT8DuYT4xLPDUbR8FxjviKiGZUH13J0wvpnKhTUJYe8F0VK+Xlw/9C5OqhtzF/vxINb6bWkNHs/SXQdkZoE88zTbLS1ZsG4ISkm5rizlLVZNUF08k/VskkbKvocFPv6TOP/kLUZZQXO/heBjLYi0XHByjOhXRop/cwXiKRToiDCieu0ecxsfHfVvRHiokHINDcZ7yRSR/YkU5qejSBu75L1R1EB3HAgj3LW7QbGRLcXzRoA/9Ia1ORii9jJzADniu5fhO5Iw6+Y0pPGZt+wPVfowW4GYXL7HcZuu/npkcZTrywtJ7s/sex/m5GmF0+EBe6aaGkXWhKX/sD6AY6Xl9DSqbHcGDzhnf1UVRrdR9favHc1ezrp6w449ikqM40rRgcw==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA2PR11MB5018.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(376002)(136003)(366004)(39860400002)(346002)(66946007)(9686003)(55016002)(8676002)(66446008)(66476007)(64756008)(66556008)(8936002)(2906002)(54906003)(76116006)(186003)(316002)(52536014)(26005)(83380400001)(86362001)(6506007)(53546011)(4744005)(7696005)(5660300002)(33656002)(6916009)(478600001)(4326008)(71200400001);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: =?us-ascii?Q?OIX9WVBV8y0a+zCPUA9N+9tFSXoR4lyw9wKc8J9BwQw2Y6diPDAfo0LLqcdG?=
+ =?us-ascii?Q?SHWpMnxtASYyMaqymkY09QB53oilQ59+JKcrrs+ou1l6ijMhQb2vbABImrCA?=
+ =?us-ascii?Q?0gFKoH7q6pWdmFzd4AQlaFksE8D57L9GRCOHwuzYgGEmCvmQ5pFHsm5EmCRY?=
+ =?us-ascii?Q?h/vkaPPgr8AGRJOa2uMso//7CAC5CSJXjzvsJ/UB6CJpi/6YL/aZmWLfhZAU?=
+ =?us-ascii?Q?3ksj/XKsLcj/7f5RaeECKkYQUSN4qvGejsfkkYObQp+CVc8kbpuA7xu62u6b?=
+ =?us-ascii?Q?+1wmrIcURwTV0aVNaSSJXBTqMWDkVALASAFaiMkCcgo8iPioZru4wnXXBe47?=
+ =?us-ascii?Q?1q8BqVySnJkaoumsFHhiI0R5/Q0FosynfIImJrZio1WR0B4/F7JL73k57AF7?=
+ =?us-ascii?Q?+rxL7WeNu6tM7UlyPnWMCJy/uMkABkfLURiNdGqOBeE0Mr/R6maosT0f+HZ0?=
+ =?us-ascii?Q?1HEsi/+AEAAJDFtkZOdgkZQhAyUTYMPZzlZFGe5Rydwj+TLfPWeBnj3yioYP?=
+ =?us-ascii?Q?KeLotzMOJaM9TBRs6IXJHrN/ppOGWPYlcesEgc9aSBfhpYwxdhq8pKRn+Wiz?=
+ =?us-ascii?Q?TgIQZaIXdUAGqUJbQduuzR5O20q++EXMygmh4HyhaNb1eOOfO4RGTV4/fs1q?=
+ =?us-ascii?Q?PJr2k9YOqOvECkXQ41/9ZmYWXeksgDBCoRBjnbU6lnylDTNsY7I0Bi4v5bTv?=
+ =?us-ascii?Q?tdB6l9T/02QvZzL5whSmN3eL9RXJAp8Bdyl7k32cvjGAiZinstTz9AYuaGoE?=
+ =?us-ascii?Q?+H82azA874LptKayPMGtPZuLxroEH0ALQ5DnshAICpuFNZ71Tqn0jhuuA2yR?=
+ =?us-ascii?Q?hGJIxgmLqcLIMK4lFzLMPOyaIpPqGgii15EtRG+FaBCJZ0TgZ1KcM1aKNpa7?=
+ =?us-ascii?Q?L2GK3vyB7F4kVFVKJBCXPY2qMFb7espCrgEp3JiiOTJl6wXH/1l3w2HOvNOV?=
+ =?us-ascii?Q?Qgvf+UO48N6pgoHvcmTKxBBCLbSn7Rs6NvRKZDH0IOo=3D?=
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
 X-MS-Exchange-CrossTenant-AuthAs: Internal
 X-MS-Exchange-CrossTenant-AuthSource: SA2PR11MB5018.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 7229030e-e0e0-4a25-ea6f-08d8b4651970
-X-MS-Exchange-CrossTenant-originalarrivaltime: 09 Jan 2021 06:09:18.3018
+X-MS-Exchange-CrossTenant-Network-Message-Id: d488ddd2-370e-4229-53d1-08d8b46645a5
+X-MS-Exchange-CrossTenant-originalarrivaltime: 09 Jan 2021 06:17:41.9468
  (UTC)
 X-MS-Exchange-CrossTenant-fromentityheader: Hosted
 X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
 X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 89R/xNtYLLN7CL03qlFs4ZZIRWoNgnSk8tVmmUv8iXPNZafC+ykHjl511/t15X9a4U8x6LULOIxndz4HxpF2lRDGb1QIZn2MVxtxqOdigkE=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR11MB2768
+X-MS-Exchange-CrossTenant-userprincipalname: gXCMbZfRb5bMqFsMwwYYbi0NTCJ9h208TyqnE+aFYdEHtw3ZN6VO+zqPfDgDY48jebvvO9wddRSqCQkCh0GDzKLEO2M5P3pmNna9eQnvHmA=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA2PR11MB4873
 X-OriginatorOrg: intel.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
 > -----Original Message-----
 > From: Greg KH <gregkh@linuxfoundation.org>
-> Sent: Thursday, January 7, 2021 2:36 PM
+> Sent: Thursday, January 7, 2021 2:41 PM
 > To: Chen, Mike Ximing <mike.ximing.chen@intel.com>
 > Cc: linux-kernel@vger.kernel.org; arnd@arndb.de; Williams, Dan J
 > <dan.j.williams@intel.com>; pierre-louis.bossart@linux.intel.com; Gage Ea=
 ds
 > <gage.eads@intel.com>
-> Subject: Re: [PATCH v8 01/20] dlb: add skeleton for DLB driver
+> Subject: Re: [PATCH v8 04/20] dlb: add device ioctl layer and first three=
+ ioctls
 >=20
-> On Mon, Jan 04, 2021 at 08:58:20PM -0600, Mike Ximing Chen wrote:
-> > +static int dlb_probe(struct pci_dev *pdev,
-> > +		     const struct pci_device_id *pdev_id)
-> > +{
-> > +	struct dlb *dlb;
-> > +	int ret;
-> > +
-> > +	dlb =3D devm_kzalloc(&pdev->dev, sizeof(*dlb), GFP_KERNEL);
-> > +	if (!dlb)
-> > +		return -ENOMEM;
-> > +
-> > +	pci_set_drvdata(pdev, dlb);
-> > +
-> > +	dlb->pdev =3D pdev;
-> > +
-> > +	spin_lock(&dlb_ids_lock);
-> > +	dlb->id =3D idr_alloc(&dlb_ids,
-> > +			    (void *)dlb,
-> > +			    0,
-> > +			    DLB_MAX_NUM_DEVICES - 1,
-> > +			    GFP_KERNEL);
-> > +	spin_unlock(&dlb_ids_lock);
-> > +
-> > +	if (dlb->id < 0) {
-> > +		dev_err(&pdev->dev, "probe: device ID allocation failed\n");
-> > +
-> > +		ret =3D dlb->id;
-> > +		goto alloc_id_fail;
-> > +	}
-> > +
-> > +	ret =3D pcim_enable_device(pdev);
-> > +	if (ret !=3D 0) {
-> > +		dev_err(&pdev->dev, "pcim_enable_device() returned %d\n", ret);
-> > +
-> > +		goto pci_enable_device_fail;
-> > +	}
-> > +
-> > +	ret =3D pcim_iomap_regions(pdev,
-> > +				 (1U << DLB_CSR_BAR) | (1U << DLB_FUNC_BAR),
-> > +				 "dlb");
-> > +	if (ret !=3D 0) {
-> > +		dev_err(&pdev->dev,
-> > +			"pcim_iomap_regions(): returned %d\n", ret);
-> > +
-> > +		goto pci_enable_device_fail;
-> > +	}
-> > +
-> > +	pci_set_master(pdev);
-> > +
-> > +	if (pci_enable_pcie_error_reporting(pdev))
-> > +		dev_info(&pdev->dev, "[%s()] Failed to enable AER\n", __func__);
+> > diff --git a/Documentation/userspace-api/ioctl/ioctl-number.rst
+> b/Documentation/userspace-api/ioctl/ioctl-number.rst
+> > index 55a2d9b2ce33..afca043d59f8 100644
+> > --- a/Documentation/userspace-api/ioctl/ioctl-number.rst
+> > +++ b/Documentation/userspace-api/ioctl/ioctl-number.rst
+> > @@ -241,6 +241,7 @@ Code  Seq#    Include File
+> Comments
+> >  'h'   00-7F                                                          c=
+onflict! Charon filesystem
+> >                                                                       <=
+mailto:zapman@interlan.net>
+> >  'h'   00-1F  linux/hpet.h                                            c=
+onflict!
+> > +'h'   00-1F  uapi/linux/dlb.h                                        c=
+onflict!
 >=20
-> Shouldn't that be dev_err() and you fail here?
->=20
-Some of our earlier devices/platforms do not support AER.  pci_enable_pcie_=
-error_reporting() fails,=20
-everything else works fine. Will change to dev_err() when the old HWs are p=
-hased out.
+> Why are you taking a range that you know there is a conflict for?
 
-> And no need for __func__ please, the driver name and device is listed,
-> that's all that is necessary.
-
-Will remove __func__.=20
+OK. We will switch to a unused magic number and range, probably 0x81 00-1F.
 Thanks
-
->=20
-> thanks,
->=20
-> greg k-h
