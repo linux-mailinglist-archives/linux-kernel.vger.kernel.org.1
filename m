@@ -2,166 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B71B2EFE42
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Jan 2021 08:22:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EC0062EFE47
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Jan 2021 08:28:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726584AbhAIHWY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Jan 2021 02:22:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38954 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726374AbhAIHWY (ORCPT
+        id S1726523AbhAIH1S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Jan 2021 02:27:18 -0500
+Received: from mailgw02.mediatek.com ([210.61.82.184]:57484 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1725847AbhAIH1R (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Jan 2021 02:22:24 -0500
-Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89805C061757
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Jan 2021 23:21:43 -0800 (PST)
-Received: by mail-ej1-x629.google.com with SMTP id w1so17478961ejf.11
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Jan 2021 23:21:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id;
-        bh=oMPxP8SoOc9C3ojU0+ecvXLMtYQCURVMW/VkKHiEGY4=;
-        b=D3oeU1IUw5BxYChFH5RBM7HmjqemG9yIWB6lQNXUDu/LEVX4AYOn0CEz0Tu+JlpRKA
-         H2YAjUNChY8MYNUtmRJ3iNQNoGYFLTA1oI4P1Znwk5PIfAUwcn/H51JwaINe0B+zZS3z
-         VAEsmp2RAzZfoQH/+gM/qON1rQpIeMC3sfaJZPnV27dlWalgGfs0uQl1CUR9XAU8Bhoz
-         fLt+e1HtXqiCaZSL8CUSnbh+5gPucZo0y5O5pWPsJVvDpV6XyttfKg4VXC6b/hliS5lb
-         m11Ov8r5+GXtZpkXW1gUHvLsodMSodEhFEq558uu3OBjw+XMYAkvzu++gJBS+otcXEVI
-         AbZg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=oMPxP8SoOc9C3ojU0+ecvXLMtYQCURVMW/VkKHiEGY4=;
-        b=Etvg2Bb0Xjg7yye56FWPPOSXQToPQS03rP3yGSucd8T5eCJ5EscysCZJ6BP+dUBbgH
-         FCf2FhTZ/AzF3BVKShHJ8WWJLFphUt3AQCTVGLUvx72K3EzzVE0VeX+dK1h1T/B46U3m
-         JAXQ8Ni756VDmUyOf7+4na7iYMaSNgCc0lEwc/qQToUIkwiAQIZThwNZN6H/Mf5CUY/F
-         VwKDYmneh6m6GPpd+grCB3M5j+bhvbbSpc9WNkxUcIjCLpRjQmXfcxnoRWUM4iUarPwa
-         6dgxhpHyJRwfNO2AnfuI+b4RGe/pu3BLVAjfqmOuaFVvSoFiUZalXNHoNsHXjee3Ais5
-         MBmw==
-X-Gm-Message-State: AOAM533JE8grmW6go/lvzyvO63Rpr8O3P2P5UXIXCQxQxmVNwoDGO8Mo
-        eAfm+9srjUN6cmsS5NBHOEMHZQ==
-X-Google-Smtp-Source: ABdhPJz50lAAVKVmI5+jnQY8Ve3Q6+tO4q+i/rMfqHyZ23xEsIImRCgLUhd+SAECxRJoVR4JSWfl7g==
-X-Received: by 2002:a17:906:b309:: with SMTP id n9mr4905950ejz.365.1610176901271;
-        Fri, 08 Jan 2021 23:21:41 -0800 (PST)
-Received: from localhost.localdomain (hst-221-28.medicom.bg. [84.238.221.28])
-        by smtp.gmail.com with ESMTPSA id o10sm4293997eju.89.2021.01.08.23.21.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 08 Jan 2021 23:21:40 -0800 (PST)
-From:   Stanimir Varbanov <stanimir.varbanov@linaro.org>
-To:     linux-media@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Vikash Garodia <vgarodia@codeaurora.org>,
-        Dikshita Agarwal <dikshita@codeaurora.org>,
-        Mansur Alisha Shaik <mansur@codeaurora.org>,
-        Stanimir Varbanov <stanimir.varbanov@linaro.org>
-Subject: [PATCH] venus: pm_helpers: Control core power domain manually
-Date:   Sat,  9 Jan 2021 09:21:30 +0200
-Message-Id: <20210109072130.784-1-stanimir.varbanov@linaro.org>
-X-Mailer: git-send-email 2.17.1
+        Sat, 9 Jan 2021 02:27:17 -0500
+X-UUID: 2bf8f8f83d444d7cb12be7145ef8876b-20210109
+X-UUID: 2bf8f8f83d444d7cb12be7145ef8876b-20210109
+Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw02.mediatek.com
+        (envelope-from <lecopzer.chen@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1367188255; Sat, 09 Jan 2021 15:26:34 +0800
+Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
+ mtkmbs05n1.mediatek.inc (172.21.101.15) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Sat, 9 Jan 2021 15:26:33 +0800
+Received: from mtksdccf07.mediatek.inc (172.21.84.99) by MTKCAS06.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Sat, 9 Jan 2021 15:26:33 +0800
+From:   Lecopzer Chen <lecopzer.chen@mediatek.com>
+To:     <andreyknvl@google.com>
+CC:     <akpm@linux-foundation.org>, <aryabinin@virtuozzo.com>,
+        <catalin.marinas@arm.com>, <dan.j.williams@intel.com>,
+        <dvyukov@google.com>, <glider@google.com>,
+        <kasan-dev@googlegroups.com>, <lecopzer.chen@mediatek.com>,
+        <lecopzer@gmail.com>, <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-mediatek@lists.infradead.org>, <linux-mm@kvack.org>,
+        <will@kernel.org>, <yj.chiang@mediatek.com>
+Subject: Re: [PATCH 3/3] arm64: Kconfig: support CONFIG_KASAN_VMALLOC
+Date:   Sat, 9 Jan 2021 15:26:33 +0800
+Message-ID: <20210109072633.7234-1-lecopzer.chen@mediatek.com>
+X-Mailer: git-send-email 2.18.0
+In-Reply-To: <CAAeHK+wc-DU2pUma43JtomOSy0Z6smGKwQoG_R+uKzByu3oZ9w@mail.gmail.com>
+References: <CAAeHK+wc-DU2pUma43JtomOSy0Z6smGKwQoG_R+uKzByu3oZ9w@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Presently we use device_link to control core power domain. But this
-leads to issues because the genpd doesn't guarantee synchronous on/off
-for supplier devices. Switch to manually control by pmruntime calls.
+Hi Andrey,
+ 
+> On Sun, Jan 3, 2021 at 6:13 PM Lecopzer Chen <lecopzer@gmail.com> wrote:
+> >
+> > Now I have no device to test for HW_TAG, so keep it not selected
+> > until someone can test this.
+> >
+> > Signed-off-by: Lecopzer Chen <lecopzer.chen@mediatek.com>
+> > ---
+> >  arch/arm64/Kconfig | 1 +
+> >  1 file changed, 1 insertion(+)
+> >
+> > diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
+> > index 05e17351e4f3..29ab35aab59e 100644
+> > --- a/arch/arm64/Kconfig
+> > +++ b/arch/arm64/Kconfig
+> > @@ -136,6 +136,7 @@ config ARM64
+> >         select HAVE_ARCH_JUMP_LABEL
+> >         select HAVE_ARCH_JUMP_LABEL_RELATIVE
+> >         select HAVE_ARCH_KASAN if !(ARM64_16K_PAGES && ARM64_VA_BITS_48)
+> > +       select HAVE_ARCH_KASAN_VMALLOC if (HAVE_ARCH_KASAN && !KASAN_HW_TAGS)
+> 
+> KASAN_VMALLOC currently "depends on" KASAN_GENERIC. I think we should
+> either do "HAVE_ARCH_KASAN && KASAN_GENERIC" here as well, or just do
+> "if HAVE_ARCH_KASAN".
 
-Signed-off-by: Stanimir Varbanov <stanimir.varbanov@linaro.org>
----
- drivers/media/platform/qcom/venus/core.h      |  1 -
- .../media/platform/qcom/venus/pm_helpers.c    | 36 ++++++++++---------
- 2 files changed, 19 insertions(+), 18 deletions(-)
+Thanks for the correctness, I'll change to the following in V2 patch.
+	"select HAVE_ARCH_KASAN_VMALLOC if HAVE_ARCH_KASAN"
 
-diff --git a/drivers/media/platform/qcom/venus/core.h b/drivers/media/platform/qcom/venus/core.h
-index dfc13b2f371f..74d9fd3d51cc 100644
---- a/drivers/media/platform/qcom/venus/core.h
-+++ b/drivers/media/platform/qcom/venus/core.h
-@@ -128,7 +128,6 @@ struct venus_core {
- 	struct icc_path *cpucfg_path;
- 	struct opp_table *opp_table;
- 	bool has_opp_table;
--	struct device_link *pd_dl_venus;
- 	struct device *pmdomains[VIDC_PMDOMAINS_NUM_MAX];
- 	struct device_link *opp_dl_venus;
- 	struct device *opp_pmdomain;
-diff --git a/drivers/media/platform/qcom/venus/pm_helpers.c b/drivers/media/platform/qcom/venus/pm_helpers.c
-index 94219a3093cb..e0338932a720 100644
---- a/drivers/media/platform/qcom/venus/pm_helpers.c
-+++ b/drivers/media/platform/qcom/venus/pm_helpers.c
-@@ -774,13 +774,6 @@ static int vcodec_domains_get(struct device *dev)
- 		core->pmdomains[i] = pd;
- 	}
- 
--	core->pd_dl_venus = device_link_add(dev, core->pmdomains[0],
--					    DL_FLAG_PM_RUNTIME |
--					    DL_FLAG_STATELESS |
--					    DL_FLAG_RPM_ACTIVE);
--	if (!core->pd_dl_venus)
--		return -ENODEV;
--
- skip_pmdomains:
- 	if (!core->has_opp_table)
- 		return 0;
-@@ -807,14 +800,12 @@ static int vcodec_domains_get(struct device *dev)
- opp_dl_add_err:
- 	dev_pm_opp_detach_genpd(core->opp_table);
- opp_attach_err:
--	if (core->pd_dl_venus) {
--		device_link_del(core->pd_dl_venus);
--		for (i = 0; i < res->vcodec_pmdomains_num; i++) {
--			if (IS_ERR_OR_NULL(core->pmdomains[i]))
--				continue;
--			dev_pm_domain_detach(core->pmdomains[i], true);
--		}
-+	for (i = 0; i < res->vcodec_pmdomains_num; i++) {
-+		if (IS_ERR_OR_NULL(core->pmdomains[i]))
-+			continue;
-+		dev_pm_domain_detach(core->pmdomains[i], true);
- 	}
-+
- 	return ret;
- }
- 
-@@ -827,9 +818,6 @@ static void vcodec_domains_put(struct device *dev)
- 	if (!res->vcodec_pmdomains_num)
- 		goto skip_pmdomains;
- 
--	if (core->pd_dl_venus)
--		device_link_del(core->pd_dl_venus);
--
- 	for (i = 0; i < res->vcodec_pmdomains_num; i++) {
- 		if (IS_ERR_OR_NULL(core->pmdomains[i]))
- 			continue;
-@@ -917,16 +905,30 @@ static void core_put_v4(struct device *dev)
- static int core_power_v4(struct device *dev, int on)
- {
- 	struct venus_core *core = dev_get_drvdata(dev);
-+	struct device *pmctrl = core->pmdomains[0];
- 	int ret = 0;
- 
- 	if (on == POWER_ON) {
-+		if (pmctrl) {
-+			ret = pm_runtime_get_sync(pmctrl);
-+			if (ret < 0) {
-+				pm_runtime_put_noidle(pmctrl);
-+				return ret;
-+			}
-+		}
-+
- 		ret = core_clks_enable(core);
-+		if (ret < 0 && pmctrl)
-+			pm_runtime_put_sync(pmctrl);
- 	} else {
- 		/* Drop the performance state vote */
- 		if (core->opp_pmdomain)
- 			dev_pm_opp_set_rate(dev, 0);
- 
- 		core_clks_disable(core);
-+
-+		if (pmctrl)
-+			pm_runtime_put_sync(pmctrl);
- 	}
- 
- 	return ret;
--- 
-2.17.1
-
+Let KASAN_VMALLOC depend on the mode it supports to avoid modifying
+two places if KASAN_VMALLOC can support other than GENERIC in the future.
