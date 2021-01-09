@@ -2,60 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B4A12F0163
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Jan 2021 17:13:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 14F502F0167
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Jan 2021 17:16:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726496AbhAIQNZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Jan 2021 11:13:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39200 "EHLO
+        id S1726410AbhAIQQU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Jan 2021 11:16:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39822 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726058AbhAIQNY (ORCPT
+        with ESMTP id S1726058AbhAIQQU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Jan 2021 11:13:24 -0500
-Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0CD9C061786;
-        Sat,  9 Jan 2021 08:12:43 -0800 (PST)
-Received: by mail-wr1-x435.google.com with SMTP id c5so11886923wrp.6;
-        Sat, 09 Jan 2021 08:12:43 -0800 (PST)
+        Sat, 9 Jan 2021 11:16:20 -0500
+Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 762B9C061786;
+        Sat,  9 Jan 2021 08:15:39 -0800 (PST)
+Received: by mail-wm1-x32c.google.com with SMTP id c124so10170064wma.5;
+        Sat, 09 Jan 2021 08:15:39 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:from:to:cc:references:autocrypt:message-id:date:user-agent
+        h=subject:to:cc:references:from:autocrypt:message-id:date:user-agent
          :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=BAeFMXpJ6VeYN5Oz6Bik3tS9JsMu6FyZikT7e4U/LvU=;
-        b=hWuIBGVp9vNwk2d74SdCUn3URxvcSo2WcyCPnKKowbyzAj3WvVbks/JmSibtvM+TpH
-         XCiUvub3mI6LCceeR1GhKcRLuJAOZnVS0N4yAHDf45u844e2NkXSymGXjaYyiombrxYj
-         Z+sMZwBOO6nOD2yXv64Jj4yyah7B864CRZNoDfvQN9qFZCiTkQCiBRsr3pmZvWjJoA/F
-         rBWY+mxeAzyHJoGra00M9YBR704e4KrCzrVZD3UGOp1vOT6p8OZpFRNsiHPWdYDR+WiB
-         97Gnw0UYyAiWVk6PS4MqT5bJOnwdgAohnCvMLmiOC6j8mtbRowFxlzTTGO152G2tZnO8
-         HTwA==
+        bh=Tv4KROsuRFWlCs9u0SePAVeXz4l1DwM+0/bdhQze184=;
+        b=S5ybtHR4gAD4diOgf5HIvFj2yJgcSAC6eU9kmhNVtYxR5rvJECnYmCtDD4cXo9X8mV
+         eUhSkRtxFMk2gAh9Swtzm46owPtLlKJqwnnwShKMbNMrm9qnj9snau+VSM+r/H7YaVFK
+         qdVHK8weVtljEkQao82MzRYD41bI8kvr2vSgKZzPr3kS4HSdDQYtREVsEzm2hd0Ey9JW
+         SUbba1xCLENRlGtL8Nxdx8FzUkGlYuUhkeZAxX+jhhR/jspaTo7UvhaNvNuloCxqzoMV
+         K0pB82UkUcaWf2so9aVbzCgJRnC7WtAXvJooVH7pjbykwQf5P6Y/cb3177kCPeuEfyMp
+         3zOA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:from:to:cc:references:autocrypt
+        h=x-gm-message-state:subject:to:cc:references:from:autocrypt
          :message-id:date:user-agent:mime-version:in-reply-to
          :content-language:content-transfer-encoding;
-        bh=BAeFMXpJ6VeYN5Oz6Bik3tS9JsMu6FyZikT7e4U/LvU=;
-        b=WXnBn5HCgQddyCJAQRCymk98qM0c/YbXOFRZuQurWQpQMxW40QkiCTTr8joaLnA0hN
-         XeOt2VVsgreOeKXPNZ8RWzT3/HaF+yrgWsVN+0SWixajSe/pZbAe8svUD4sQ2wkNSzfb
-         fJ/Oq7zp6sljx7HWRSu5XhyUQUiL0Khkn80FmvtVat3E9ze+37qRnBvt15m1xH8rJNgB
-         EyMOoGZzDmXo/BI9Izj/4sYLHlQcM+uBT410b5EROVYzgAobShXZCbdXMZxPI+Idl9nl
-         db4XYTEuo2WfgKivz6SIalSYWiTAZnXmXETnEh1e3a8sHQ0LPwaTyTXPJPHT78WR+tZv
-         CZyw==
-X-Gm-Message-State: AOAM532H0MZiH7hJKvsRnaxHGrBekMr7oC3wK7xhmp2LUmIgPqhFkpYC
-        HAGi4xrZevN600+CHlhxw+z0fTJrBxx0IA==
-X-Google-Smtp-Source: ABdhPJz3PG0FTrAEMDCji1mdU0wL8FigZbjluqgBy4mKGPyqDyC9lYZOQ+5XwcZjNi9KNSeKHl73Jg==
-X-Received: by 2002:adf:94e1:: with SMTP id 88mr8661271wrr.341.1610208760638;
-        Sat, 09 Jan 2021 08:12:40 -0800 (PST)
+        bh=Tv4KROsuRFWlCs9u0SePAVeXz4l1DwM+0/bdhQze184=;
+        b=MYF4t7g7EvHPYPn1bpicI5W5L1X2753DxN/Nv4Vcis5QVcbJoIfiKIyajSkyxpFu2N
+         GdQBOtCr1jJ8blzcwYs+KlBDUtZwwOzveDsfgv4rV1mhngEBeQyXe+wJGnM6A6U8M6Ta
+         zGzk4mEiNWcGQeFoqdAa+AFDqVA8W090JrBVmEbXaI5FZKNjD2m81+EHCw/P7VQx1Fkc
+         +hxNd1tlJH8mlRPDd83IoiNkimPN2LTaTyrwu6dts4N67tH8MD+bDWmTfrBTzclotoh4
+         TPD3DUXoLSJhUC1kHhQ49OmOIpuxaxvUXRk3AkkefLfBGALDRYDCjL4HkAph7tBkS1P6
+         QC9g==
+X-Gm-Message-State: AOAM530AdD70fOC43LbJWq6Ui7VZtZRPqVblMC1ZND7/oTw/fIWEOhsh
+        vXCaa+CXm1JEpMwIuLi1EtHJoVpLBJXpuN9e
+X-Google-Smtp-Source: ABdhPJz4OLgQHyPrkIpt89QF9gpLWaWvTsMJfCVH7CqJe+fbvqJCoBx0oe9a5NUkGwObjxJeiz4T0g==
+X-Received: by 2002:a1c:2d8a:: with SMTP id t132mr7512098wmt.119.1610208938268;
+        Sat, 09 Jan 2021 08:15:38 -0800 (PST)
 Received: from [192.168.8.114] ([185.69.144.125])
-        by smtp.gmail.com with ESMTPSA id c16sm18300069wrx.51.2021.01.09.08.12.39
+        by smtp.gmail.com with ESMTPSA id z63sm16614465wme.8.2021.01.09.08.15.37
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 09 Jan 2021 08:12:39 -0800 (PST)
-Subject: Re: [PATCH] iov_iter: optimise iter type checking
+        Sat, 09 Jan 2021 08:15:37 -0800 (PST)
+Subject: Re: general protection fault in io_sqe_files_unregister
+To:     Hillf Danton <hdanton@sina.com>,
+        syzbot <syzbot+9ec0395bc17f2b1e3cc1@syzkaller.appspotmail.com>
+Cc:     axboe@kernel.dk, io-uring@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+References: <000000000000ee606405b873772a@google.com>
+ <20210109115030.11184-1-hdanton@sina.com>
 From:   Pavel Begunkov <asml.silence@gmail.com>
-To:     linux-fsdevel@vger.kernel.org,
-        Alexander Viro <viro@zeniv.linux.org.uk>
-Cc:     Jens Axboe <axboe@kernel.dk>, linux-kernel@vger.kernel.org
-References: <a8cdb781384791c30e30036aced4c027c5dfea86.1605969341.git.asml.silence@gmail.com>
- <6e795064-fdbd-d354-4b01-a4f7409debf5@gmail.com>
 Autocrypt: addr=asml.silence@gmail.com; prefer-encrypt=mutual; keydata=
  mQINBFmKBOQBEAC76ZFxLAKpDw0bKQ8CEiYJRGn8MHTUhURL02/7n1t0HkKQx2K1fCXClbps
  bdwSHrhOWdW61pmfMbDYbTj6ZvGRvhoLWfGkzujB2wjNcbNTXIoOzJEGISHaPf6E2IQx1ik9
@@ -99,12 +100,12 @@ Autocrypt: addr=asml.silence@gmail.com; prefer-encrypt=mutual; keydata=
  UVMKkOCdFhutRmYp0mbv2e87IK4erwNHQRkHUkzbsuym8RVpAZbLzLPIYK/J3RTErL6Z99N2
  m3J6pjwSJY/zNwuFPs9zGEnRO4g0BUbwGdbuvDzaq6/3OJLKohr5eLXNU3JkT+3HezydWm3W
  OPhauth7W0db74Qd49HXK0xe/aPrK+Cp+kU1HRactyNtF8jZQbhMCC8vMGukZtWaAwpjWiiH bA==
-Message-ID: <54cd4d1b-d7ec-a74c-8be0-e48780609d56@gmail.com>
-Date:   Sat, 9 Jan 2021 16:09:08 +0000
+Message-ID: <0156ca8e-0914-3fff-1f2f-a48f14cf46b1@gmail.com>
+Date:   Sat, 9 Jan 2021 16:12:05 +0000
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.3.0
 MIME-Version: 1.0
-In-Reply-To: <6e795064-fdbd-d354-4b01-a4f7409debf5@gmail.com>
+In-Reply-To: <20210109115030.11184-1-hdanton@sina.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -112,72 +113,78 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 06/12/2020 16:01, Pavel Begunkov wrote:
-> On 21/11/2020 14:37, Pavel Begunkov wrote:
->> The problem here is that iov_iter_is_*() helpers check types for
->> equality, but all iterate_* helpers do bitwise ands. This confuses
->> compilers, so even if some cases were handled separately with
->> iov_iter_is_*(), corresponding ifs in iterate*() right after are not
->> eliminated.
+On 09/01/2021 11:50, Hillf Danton wrote:
+> Sat, 09 Jan 2021 00:29:16 -0800
+>> syzbot found the following issue on:
 >>
->> E.g. iov_iter_npages() first handles discards, but iterate_all_kinds()
->> still checks for discard iter type and generates unreachable code down
->> the line.
+>> HEAD commit:    71c061d2 Merge tag 'for-5.11-rc2-tag' of git://git.kernel...
+>> git tree:       upstream
+>> console output: https://syzkaller.appspot.com/x/log.txt?x=17ec3f67500000
+>> kernel config:  https://syzkaller.appspot.com/x/.config?x=8aa30b9da402d224
+>> dashboard link: https://syzkaller.appspot.com/bug?extid=9ec0395bc17f2b1e3cc1
+>> compiler:       gcc (GCC) 10.1.0-syz 20200507
+>>
+>> Unfortunately, I don't have any reproducer for this issue yet.
+>>
+>> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+>> Reported-by: syzbot+9ec0395bc17f2b1e3cc1@syzkaller.appspotmail.com
+>>
+>> general protection fault, probably for non-canonical address 0xdffffc0000000000: 0000 [#1] PREEMPT SMP KASAN
+>> KASAN: null-ptr-deref in range [0x0000000000000000-0x0000000000000007]
+>> CPU: 1 PID: 9107 Comm: syz-executor.2 Not tainted 5.11.0-rc2-syzkaller #0
+>> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+>> RIP: 0010:__list_add include/linux/list.h:71 [inline]
+>> RIP: 0010:list_add_tail include/linux/list.h:100 [inline]
+>> RIP: 0010:io_sqe_files_set_node fs/io_uring.c:7243 [inline]
+>> RIP: 0010:io_sqe_files_unregister+0x42a/0x770 fs/io_uring.c:7279
+>> Code: 00 fc ff df 48 c1 ea 03 80 3c 02 00 0f 85 07 03 00 00 4c 89 ea 4c 89 ad 88 00 00 00 48 b8 00 00 00 00 00 fc ff df 48 c1 ea 03 <80> 3c 02 00 0f 85 f4 02 00 00 49 8d 7f 18 48 8d 85 80 00 00 00 48
+>> RSP: 0018:ffffc9000982fcf8 EFLAGS: 00010247
+>> RAX: dffffc0000000000 RBX: ffff88814763fe90 RCX: ffffc9000d28d000
+>> RDX: 0000000000000000 RSI: ffffffff81d82695 RDI: 0000000000000003
+>> RBP: ffff88814763fe00 R08: 0000000000000001 R09: 0000000000000001
+>> R10: ffffffff81d82684 R11: 0000000000000000 R12: 00000000fffffffc
+>> R13: 0000000000000004 R14: ffff88814763fe80 R15: fffffffffffffff4
+>> FS:  00007f6532203700(0000) GS:ffff8880b9f00000(0000) knlGS:0000000000000000
+>> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+>> CR2: 00000000200000d8 CR3: 0000000014ad5000 CR4: 00000000001506e0
+>> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+>> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+>> Call Trace:
+>>  __io_uring_register fs/io_uring.c:9916 [inline]
+>>  __do_sys_io_uring_register+0x1185/0x4080 fs/io_uring.c:10000
+>>  do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+>>  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+>> RIP: 0033:0x45e219
+>> Code: 0d b4 fb ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 db b3 fb ff c3 66 2e 0f 1f 84 00 00 00 00
+>> RSP: 002b:00007f6532202c68 EFLAGS: 00000246 ORIG_RAX: 00000000000001ab
+>> RAX: ffffffffffffffda RBX: 0000000000000007 RCX: 000000000045e219
+>> RDX: 0000000000000000 RSI: 0000000000000003 RDI: 0000000000000003
+>> RBP: 00007f6532202ca0 R08: 0000000000000000 R09: 0000000000000000
+>> R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+>> R13: 00000000016afb5f R14: 00007f65322039c0 R15: 000000000119bf8c
+>> Modules linked in:
+>> ---[ end trace 6e4aada9e44ca3d1 ]---
 > 
-> Ping. This one should be pretty simple
+> Fix typo in 1ffc54220c44
 
-Ping please. Any doubts about this patch?
+Thanks for the suggestion, but it was already fixed
+
+#syz fix: io_uring: Fix return value from alloc_fixed_file_ref_node
 
 > 
->>
->>            text    data     bss     dec     hex filename
->> before:   24409     805       0   25214    627e lib/iov_iter.o
->> after:    23977     805       0   24782    60ce lib/iov_iter.o
->>
->> Reviewed-by: Jens Axboe <axboe@kernel.dk>
->> Signed-off-by: Pavel Begunkov <asml.silence@gmail.com>
->> ---
->>  include/linux/uio.h | 10 +++++-----
->>  1 file changed, 5 insertions(+), 5 deletions(-)
->>
->> diff --git a/include/linux/uio.h b/include/linux/uio.h
->> index 72d88566694e..c5970b2d3307 100644
->> --- a/include/linux/uio.h
->> +++ b/include/linux/uio.h
->> @@ -57,27 +57,27 @@ static inline enum iter_type iov_iter_type(const struct iov_iter *i)
->>  
->>  static inline bool iter_is_iovec(const struct iov_iter *i)
->>  {
->> -	return iov_iter_type(i) == ITER_IOVEC;
->> +	return iov_iter_type(i) & ITER_IOVEC;
->>  }
->>  
->>  static inline bool iov_iter_is_kvec(const struct iov_iter *i)
->>  {
->> -	return iov_iter_type(i) == ITER_KVEC;
->> +	return iov_iter_type(i) & ITER_KVEC;
->>  }
->>  
->>  static inline bool iov_iter_is_bvec(const struct iov_iter *i)
->>  {
->> -	return iov_iter_type(i) == ITER_BVEC;
->> +	return iov_iter_type(i) & ITER_BVEC;
->>  }
->>  
->>  static inline bool iov_iter_is_pipe(const struct iov_iter *i)
->>  {
->> -	return iov_iter_type(i) == ITER_PIPE;
->> +	return iov_iter_type(i) & ITER_PIPE;
->>  }
->>  
->>  static inline bool iov_iter_is_discard(const struct iov_iter *i)
->>  {
->> -	return iov_iter_type(i) == ITER_DISCARD;
->> +	return iov_iter_type(i) & ITER_DISCARD;
->>  }
->>  
->>  static inline unsigned char iov_iter_rw(const struct iov_iter *i)
->>
+> --- a/fs/io_uring.c
+> +++ b/fs/io_uring.c
+> @@ -7255,8 +7255,8 @@ static int io_sqe_files_unregister(struc
+>  	if (!data)
+>  		return -ENXIO;
+>  	backup_node = alloc_fixed_file_ref_node(ctx);
+> -	if (!backup_node)
+> -		return -ENOMEM;
+> +	if (IS_ERR(backup_node))
+> +		return PTR_ERR(backup_node);
+>  
+>  	spin_lock_bh(&data->lock);
+>  	ref_node = data->node;
 > 
 
 -- 
