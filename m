@@ -2,105 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB4382EFD07
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Jan 2021 03:07:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DCB62EFD01
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Jan 2021 03:07:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726852AbhAICHG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Jan 2021 21:07:06 -0500
-Received: from mail.kernel.org ([198.145.29.99]:41604 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726784AbhAICHF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Jan 2021 21:07:05 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C860623AC4;
-        Sat,  9 Jan 2021 02:05:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610157959;
-        bh=FruuVTRbSSmFOTUvQqJ2CO8k/I1uHvJl6EZqrve6RFA=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=aC10n/IUNawtRE92wVvr68B5rdZLVdR1L9PuWxnwZZX0xx6GiyVTgOYMHLuBy/AgL
-         dx1mlRuQNDmkbd6skznXFvrMqcVdxv0kfgYVHH/W4GJLj3Zqi0cScFpp9CGIqCHzg+
-         eFeuSiDBn8HzP70aCllSyE+vHIkTBHdLqpGRkAhEXiw/ymu6rwKuYAOJ7pzvx0lcn8
-         3vou37KCqPlnHItNHWHmf/d4amypl7lWKqrG5B7gKnZtoTC/ulcKka3xfs9CI6FW0m
-         0YvL0YkudWdWw7wRbSKzRhI2YzhP1j4ooFLaLEeshcP/LSKh8zmsrj1lJiv5gODKpZ
-         PMUB00CHuXEdg==
-From:   Frederic Weisbecker <frederic@kernel.org>
-To:     Peter Zijlstra <peterz@infradead.org>,
-        "Paul E . McKenney" <paulmck@kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>, stable@vger.kernel.org
-Subject: [RFC PATCH 8/8] timer: Report ignored local enqueue in nohz mode
-Date:   Sat,  9 Jan 2021 03:05:36 +0100
-Message-Id: <20210109020536.127953-9-frederic@kernel.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210109020536.127953-1-frederic@kernel.org>
-References: <20210109020536.127953-1-frederic@kernel.org>
+        id S1726731AbhAICGe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Jan 2021 21:06:34 -0500
+Received: from perceval.ideasonboard.com ([213.167.242.64]:46330 "EHLO
+        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726638AbhAICGd (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 Jan 2021 21:06:33 -0500
+Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id E47E5DA;
+        Sat,  9 Jan 2021 03:05:50 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1610157951;
+        bh=3C6AcKaQ28W0d8SFp8xX6ui92oKV6RZKhjeUdRjBMv4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=GYob7zshPlWvmaMFxP9kUXrNy9CvKHDGpxLZtabi5UABghp+AWFnZK2IbwxemBXci
+         dvWTtH6au24GQ0ofaBBmKLQeQrVB2iDwLF//5dtX95PaXtkHmXGJuOxi+cF3ibgk5X
+         OqLwSaCFpikznZaUJAkDRaBytKUkWztL3Op+gWmE=
+Date:   Sat, 9 Jan 2021 04:05:38 +0200
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>
+Cc:     Daniel Scally <djrscally@gmail.com>, linux-kernel@vger.kernel.org,
+        linux-acpi@vger.kernel.org, linux-media@vger.kernel.org,
+        devel@acpica.org, lenb@kernel.org, gregkh@linuxfoundation.org,
+        mchehab@kernel.org, sergey.senozhatsky@gmail.com,
+        yong.zhi@intel.com, sakari.ailus@linux.intel.com,
+        bingbu.cao@intel.com, tian.shu.qiu@intel.com,
+        robert.moore@intel.com, erik.kaneda@intel.com, pmladek@suse.com,
+        rostedt@goodmis.org, andriy.shevchenko@linux.intel.com,
+        linux@rasmusvillemoes.dk,
+        laurent.pinchart+renesas@ideasonboard.com,
+        jacopo+renesas@jmondi.org, kieran.bingham+renesas@ideasonboard.com,
+        hverkuil-cisco@xs4all.nl, m.felsch@pengutronix.de,
+        niklas.soderlund+renesas@ragnatech.se,
+        prabhakar.mahadev-lad.rj@bp.renesas.com, slongerbeam@gmail.com,
+        heikki.krogerus@linux.intel.com,
+        Andy Shevchenko <andy.shevchenko@gmail.com>
+Subject: Re: [PATCH v5 07/15] device property: Define format macros for ports
+ and endpoints
+Message-ID: <X/kPck60UO/NYuRa@pendragon.ideasonboard.com>
+References: <20210107132838.396641-1-djrscally@gmail.com>
+ <20210107132838.396641-8-djrscally@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210107132838.396641-8-djrscally@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Enqueuing a local timer after the tick has been stopped will result in
-the timer being ignored until the next random interrupt.
+Hi Rafael,
 
-Perform sanity checks to report these situations.
+Could you please let us know with an Acked-by if this patch can be
+merged through the linux-media tree for v5.12 ? The cover letter
+contains additional details (in a nutshell, this is a cross-tree series
+and we would like to avoid topic branches).
 
-Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Ingo Molnar<mingo@kernel.org>
-Cc: Paul E. McKenney <paulmck@kernel.org>
-Cc: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
----
- kernel/sched/core.c | 24 +++++++++++++++++++++++-
- 1 file changed, 23 insertions(+), 1 deletion(-)
+On Thu, Jan 07, 2021 at 01:28:30PM +0000, Daniel Scally wrote:
+> OF, ACPI and software_nodes all implement graphs including nodes for ports
+> and endpoints. These are all intended to be named with a common schema,
+> as "port@n" and "endpoint@n" where n is an unsigned int representing the
+> index of the node. To ensure commonality across the subsystems, provide a
+> set of macros to define the format.
+> 
+> Suggested-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+> Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+> Signed-off-by: Daniel Scally <djrscally@gmail.com>
+> ---
+> Changes in v5:
+> 
+> 	- Changed commit subject
+> 
+>  include/linux/fwnode.h | 7 +++++++
+>  1 file changed, 7 insertions(+)
+> 
+> diff --git a/include/linux/fwnode.h b/include/linux/fwnode.h
+> index fde4ad97564c..77414e431e89 100644
+> --- a/include/linux/fwnode.h
+> +++ b/include/linux/fwnode.h
+> @@ -50,6 +50,13 @@ struct fwnode_endpoint {
+>  	const struct fwnode_handle *local_fwnode;
+>  };
+>  
+> +/*
+> + * ports and endpoints defined as software_nodes should all follow a common
+> + * naming scheme; use these macros to ensure commonality.
+> + */
+> +#define SWNODE_GRAPH_PORT_NAME_FMT		"port@%u"
+> +#define SWNODE_GRAPH_ENDPOINT_NAME_FMT		"endpoint@%u"
+> +
+>  #define NR_FWNODE_REFERENCE_ARGS	8
+>  
+>  /**
 
-diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index 6056f0374674..6c8b04272a9a 100644
---- a/kernel/sched/core.c
-+++ b/kernel/sched/core.c
-@@ -715,6 +715,26 @@ int get_nohz_timer_target(void)
- 	return cpu;
- }
- 
-+static void wake_idle_assert_possible(void)
-+{
-+#ifdef CONFIG_SCHED_DEBUG
-+	/* Timers are re-evaluated after idle IRQs */
-+	if (in_hardirq())
-+		return;
-+	/*
-+	 * Same as hardirqs, assuming they are executing
-+	 * on IRQ tail. Ksoftirqd shouldn't reach here
-+	 * as the timer base wouldn't be idle. And inline
-+	 * softirq processing after a call to local_bh_enable()
-+	 * within idle loop sound too fun to be considered here.
-+	 */
-+	if (in_serving_softirq())
-+		return;
-+
-+	WARN_ON_ONCE("Late timer enqueue may be ignored\n");
-+#endif
-+}
-+
- /*
-  * When add_timer_on() enqueues a timer into the timer wheel of an
-  * idle CPU then this timer might expire before the next timer event
-@@ -729,8 +749,10 @@ static void wake_up_idle_cpu(int cpu)
- {
- 	struct rq *rq = cpu_rq(cpu);
- 
--	if (cpu == smp_processor_id())
-+	if (cpu == smp_processor_id()) {
-+		wake_idle_assert_possible();
- 		return;
-+	}
- 
- 	if (set_nr_and_not_polling(rq->idle))
- 		smp_send_reschedule(cpu);
 -- 
-2.25.1
+Regards,
 
+Laurent Pinchart
