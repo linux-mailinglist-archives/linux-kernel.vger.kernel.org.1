@@ -2,117 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD8152F0268
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Jan 2021 18:45:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 492932F026F
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Jan 2021 18:52:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726253AbhAIRpB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Jan 2021 12:45:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58782 "EHLO
+        id S1726068AbhAIRvh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Jan 2021 12:51:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60202 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725951AbhAIRpA (ORCPT
+        with ESMTP id S1725926AbhAIRvg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Jan 2021 12:45:00 -0500
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE0F4C061786
-        for <linux-kernel@vger.kernel.org>; Sat,  9 Jan 2021 09:44:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=GpaoU3cw27IRYx/c768yG/+71BxBlR/KEHcDMD0IvXU=; b=13rNe03tyS23Yg4i8s20zWr63
-        ItKKkysjtblwYeJtMIHO1yBrREUOCUmme4YI9HbHL9ht64RqdF8BbArMNvgi36Whz82SoOdNsVopd
-        qJBD0DhSD4npSBXZ6s1frUD0sb78yWXz+bV29SL4mJ1cRGpgXcHMZUtxhkRobUE81Zl7MCXsDHizP
-        tSBSKMIohV+UOw0VhAFGIlR8UqYIdO0xqCsC/1gj7ppVjRSLbHq+uvdoVzLQ4hGPaBbi+rZIkQyYU
-        EjGEjfhlFplVTrR3fNSKLKiVDOOel+VX34BXNreg7Pfd5P5eIV+3xHx9GesQ0AsukAgw8fl3/1pEa
-        /tpssDDPQ==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:45810)
-        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1kyIHY-0005Fh-Bv; Sat, 09 Jan 2021 17:44:08 +0000
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1kyIHN-0003Nf-Ob; Sat, 09 Jan 2021 17:43:57 +0000
-Date:   Sat, 9 Jan 2021 17:43:57 +0000
-From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Baruch Siach <baruch@tkos.co.il>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Daniel Tang <dt.tangr@gmail.com>,
-        Jamie Iles <jamie@jamieiles.com>,
-        Krzysztof Adamski <krzysztof.adamski@nokia.com>,
-        Alexander Shiyan <shc_work@mail.ru>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Wei Xu <xuwei5@hisilicon.com>,
-        Oleksij Rempel <o.rempel@pengutronix.de>,
-        Alex Elder <elder@linaro.org>,
-        Marc Gonzalez <marc.w.gonzalez@free.fr>,
-        Hans Ulli Kroll <ulli.kroll@googlemail.com>,
-        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Vladimir Zapolskiy <vz@mleia.com>,
-        Lubomir Rintel <lkundrak@v3.sk>,
-        Koen Vandeputte <koen.vandeputte@ncentric.com>,
-        Barry Song <song.bao.hua@hisilicon.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Jonas Jensen <jonas.jensen@gmail.com>,
-        Hartley Sweeten <hsweeten@visionengravers.com>,
-        Mark Salter <msalter@redhat.com>,
-        Shawn Guo <shawnguo@kernel.org>
-Subject: Re: Old platforms: bring out your dead
-Message-ID: <20210109174357.GB1551@shell.armlinux.org.uk>
-References: <CAK8P3a2VW8T+yYUG1pn1yR-5eU4jJXe1+M_ot6DAvfr2KyXCzQ@mail.gmail.com>
+        Sat, 9 Jan 2021 12:51:36 -0500
+Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38A3EC061786
+        for <linux-kernel@vger.kernel.org>; Sat,  9 Jan 2021 09:50:56 -0800 (PST)
+Received: by mail-pf1-x42f.google.com with SMTP id q20so5062756pfu.8
+        for <linux-kernel@vger.kernel.org>; Sat, 09 Jan 2021 09:50:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Rz+U26z6jIIN1uPsEdI8MtvxyqTX3edy55x6DrScyKg=;
+        b=c4bK3l0yv3gmB2uDggyRYvZ392JRXxNpt6ffWyyp/6G1wJPeDMGpurfYs7It0uM9uX
+         0rbU6k8DigmpdRHD2ncyKGQ0y4QPAoW6EZ/ZBwLJKVdODkTf0cM/ifGELos2JR28VEPs
+         ZbpGlwQQzLfB0UKEUQoeYKrXrLKgKUGQS+7Ftnh0Cw6WReD+962gWI4p50Sli1lShulk
+         zDXEekr3MqZBaGgiBbxZ2pmiq33azvRRFcMJe3KhGfONRUVPrZRBaX/FjYzoQBDXXQHZ
+         yAocCh0ukK+nqdnGi+i/NwddPD3WhvVJRi8EB5puWwgflLnc0YnBtYJGSkpAFXVwzRbE
+         8ehA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Rz+U26z6jIIN1uPsEdI8MtvxyqTX3edy55x6DrScyKg=;
+        b=Yi+MaK8quvmPI8Al5kI7ugS+Zh6vFJ89cSRlUrd+IotpBu3fiWL3Yd+ojCk1DCihOi
+         VqgS8xRRPvpkSeSANGTRKQn20ABr27IDH9MCct4L7yS/7Bjg5tv2VO5F/PwQedLveSlW
+         U1zBxa3r3e30q1zK951Bu5tYmZFISHphgjQxfiURoCRKe70USLT2gh//eYEqrk66oFkm
+         XvzfFllpVJizLfOQ+kgJx/MA8ivx5ucEP+4QpwsDOZFb0ewkorhty2LCNh0Ipbzc/f7g
+         OyTQ6vzYfG7bbVufdefp010YNCBnY/zNA9bxZNgumIEva7ITKykzRAwPaVvplJUCsWnD
+         a/WA==
+X-Gm-Message-State: AOAM53160BHiWCGeIPET1QG3+UvJuEgsieFKf7rW78//C4w0kSjzG2+b
+        /LGniQiuluQyF9p92jehh9SUn/vPYPpNXEHmIRry9A==
+X-Google-Smtp-Source: ABdhPJyJP3tazaWOmwaeqbiNSqIF4LtHAbHFNqsY7t9yn3KE2WlrRzEN5UBeo4m5E5d/MzfFWhSdDcnkddpynrl5QIs=
+X-Received: by 2002:a63:1142:: with SMTP id 2mr12540451pgr.263.1610214655571;
+ Sat, 09 Jan 2021 09:50:55 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAK8P3a2VW8T+yYUG1pn1yR-5eU4jJXe1+M_ot6DAvfr2KyXCzQ@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Sender: Russell King - ARM Linux admin <linux@armlinux.org.uk>
+References: <20210109171058.497636-1-alobakin@pm.me>
+In-Reply-To: <20210109171058.497636-1-alobakin@pm.me>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Sat, 9 Jan 2021 09:50:44 -0800
+Message-ID: <CAKwvOdmV2tj4Uyz1iDkqCj+snWPpnnAmxJyN+puL33EpMRPzUw@mail.gmail.com>
+Subject: Re: [BUG mips llvm] MIPS: malformed R_MIPS_{HI16,LO16} with LLVM
+To:     Alexander Lobakin <alobakin@pm.me>
+Cc:     clang-built-linux <clang-built-linux@googlegroups.com>,
+        linux-mips@vger.kernel.org,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Kees Cook <keescook@chromium.org>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Fangrui Song <maskray@google.com>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Ralf Baechle <ralf@linux-mips.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-arch <linux-arch@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 08, 2021 at 11:55:06PM +0100, Arnd Bergmann wrote:
-> * dove -- added in 2009, obsoleted by mach-mvebu in 2015
+On Sat, Jan 9, 2021 at 9:11 AM Alexander Lobakin <alobakin@pm.me> wrote:
+>
+> Machine: MIPS32 R2 Big Endian (interAptiv (multi))
+>
+> While testing MIPS with LLVM, I found a weird and very rare bug with
+> MIPS relocs that LLVM emits into kernel modules. It happens on both
+> 11.0.0 and latest git snapshot and applies, as I can see, only to
+> references to static symbols.
+>
+> When the kernel loads the module, it allocates a space for every
+> section and then manually apply the relocations relative to the
+> new address.
+>
+> Let's say we have a function phy_probe() in drivers/net/phy/libphy.ko.
+> It's static and referenced only in phy_register_driver(), where it's
+> used to fill callback pointer in a structure.
+>
+> The real function address after module loading is 0xc06c1444, that
+> is observed in its ELF st_value field.
+> There are two relocs related to this usage in phy_register_driver():
+>
+> R_MIPS_HI16 refers to 0x3c010000
+> R_MIPS_LO16 refers to 0x24339444
+>
+> The address of .text is 0xc06b8000. So the destination is calculated
+> as follows:
+>
+> 0x00000000 from hi16;
+> 0xffff9444 from lo16 (sign extend as it's always treated as signed);
+> 0xc06b8000 from base.
+>
+> = 0xc06b1444. The value is lower than the real phy_probe() address
+> (0xc06c1444) by 0x10000 and is lower than the base address of
+> module's .text, so it's 100% incorrect.
+>
+> This results in:
+>
+> [    2.204022] CPU 3 Unable to handle kernel paging request at virtual
+> address c06b1444, epc == c06b1444, ra == 803f1090
+>
+> The correct instructions should be:
+>
+> R_MIPS_HI16 0x3c010001
+> R_MIPS_LO16 0x24339444
+>
+> so there'll be 0x00010000 from hi16.
+>
+> I tried to catch those bugs in arch/mips/kernel/module.c (by checking
+> if the destination is lower than the base address, which should never
+> happen), and seems like I have only 3 such places in libphy.ko (and
+> one in nf_tables.ko).
+> I don't think it should be handled somehow in mentioned source code
+> as it would look rather ugly and may break kernels build with GNU
+> stack, which seems to not produce such bad codes.
+>
+> If I should report this to any other resources, please let me know.
+> I chose clang-built-linux and LKML as it may not happen with userland
+> (didn't tried to catch).
 
-May be obsoleted, but I still use this for my dove cubox with
-additional patches.
+Thanks for the report.  Sounds like we may indeed be producing an
+incorrect relocation.  This is only seen for big endian triples?
 
-> * footbridge -- added in prehistory, stable since ~2013, rmk and LinusW
->   have one
-
-Yes, and still running:
-Linux flint 5.6.12+ #94 Sat Oct 17 23:44:28 BST 2020 armv4l armv4l armv4l GNU/Linux
-
-> * iop32x -- added in 2006, no notable changes other than my cleanup, but
->   I think there are still users
-
-I have two TheCUS N2100s here, one still powered up and running and
-one is currently available if anyone wants the machine. Both may
-become available if anyone wants them later in 2021. I notice
-Heiner Kallweit has been patching some of this code recently.
-
-> * rpc -- prehistoric, but I think Russell still uses his machine
-
-Yes, and I have sent some patches in the 5.x timeframe, and I do
-have some further ones I could send, mostly around SCSI stuff.
-It is my only machine that gives me access to some old tape backups
-and syquest cartridges (not that any of that contains "modern" data.)
-
-> * sa1100 -- prehistoric, but rmk and LinusW sporadically working in it
-
-I also have some further patches that have been hanging around for
-some time to modernise sa1100 a bit.
-
+Getting a way for us to deterministically reproduce would be a good
+first step.  Which config or configs beyond defconfig, and which
+relocations specifically are you observing this with?
 -- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
+Thanks,
+~Nick Desaulniers
