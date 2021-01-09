@@ -2,109 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F13EE2EFCD7
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Jan 2021 02:48:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 937112EFCE1
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Jan 2021 02:51:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726437AbhAIBs3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Jan 2021 20:48:29 -0500
-Received: from perceval.ideasonboard.com ([213.167.242.64]:46040 "EHLO
-        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725836AbhAIBs2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Jan 2021 20:48:28 -0500
-Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 91E4A878;
-        Sat,  9 Jan 2021 02:47:45 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1610156865;
-        bh=95zOMPXu02VDLC3VMMhJ0HQxsSOz+U9XLN+9JPdGx+0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=aV+3dPprm9lrkuuSjHbqky0xjg60b6D+am2+DcSjoOU2ZRpqNOGNelorW7HI0hS2s
-         Gb6bLHnY7jgPxGuid5Qw8VPPqZQPW4ElipQVnAyIFnBg2vpAQf7ZgPzFSHQ89aodiD
-         +2pWpkdxQKXLxNvAEFdnBKp7l+V35zrpgIx0B1Fw=
-Date:   Sat, 9 Jan 2021 03:47:32 +0200
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Robert Foss <robert.foss@linaro.org>
-Cc:     agross@kernel.org, bjorn.andersson@linaro.org, todor.too@gmail.com,
-        mchehab@kernel.org, robh+dt@kernel.org, catalin.marinas@arm.com,
-        will@kernel.org, shawnguo@kernel.org, leoyang.li@nxp.com,
-        geert+renesas@glider.be, arnd@arndb.de, Anson.Huang@nxp.com,
-        michael@walle.cc, agx@sigxcpu.org, max.oss.09@gmail.com,
-        linux-arm-msm@vger.kernel.org, linux-media@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        AngeloGioacchino Del Regno <kholk11@gmail.com>,
-        Andrey Konovalov <andrey.konovalov@linaro.org>,
-        Tomasz Figa <tfiga@chromium.org>,
-        Azam Sadiq Pasha Kapatrala Syed <akapatra@quicinc.com>,
-        Sarvesh Sridutt <Sarvesh.Sridutt@smartwirelesscompute.com>
-Subject: Re: [PATCH v1 16/17] arm64: dts: sdm845-db845c: Add CAMSS ISP node
-Message-ID: <X/kLNCOjvTmANYbr@pendragon.ideasonboard.com>
-References: <20210108120429.895046-1-robert.foss@linaro.org>
- <20210108120429.895046-17-robert.foss@linaro.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210108120429.895046-17-robert.foss@linaro.org>
+        id S1726500AbhAIBuu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Jan 2021 20:50:50 -0500
+Received: from mail.kernel.org ([198.145.29.99]:40294 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725916AbhAIBuu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 Jan 2021 20:50:50 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 282C52399C;
+        Sat,  9 Jan 2021 01:50:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+        s=korg; t=1610157009;
+        bh=z7UqMVFYSJxdzVLfXg8lbRyvre2vUdZj4dWLmneULJ0=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=GwP6pSnTvoUY/yBfJMkk4z9bp7cALDgm/YU+jIg/Eon/3Xka/h3LqLuWTZxiODkDo
+         MFnFkoFBKFNtrr+0i3ng7g6gtVRfTrbDniojusqOiVAUSuoY/+5WVlIgzh7nwy3l8Q
+         UwWQEjXrEJW2LEXeUD1nYsUEmDolAmkofFE6WDZ0=
+Date:   Fri, 8 Jan 2021 17:50:08 -0800
+From:   Andrew Morton <akpm@linux-foundation.org>
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Xiaoming Ni <nixiaoming@huawei.com>,
+        linux-kernel@vger.kernel.org, mcgrof@kernel.org,
+        yzaikin@google.com, adobriyan@gmail.com,
+        linux-fsdevel@vger.kernel.org, vbabka@suse.cz, wangle6@huawei.com
+Subject: Re: [PATCH v2] proc_sysctl: fix oops caused by incorrect command
+ parameters.
+Message-Id: <20210108175008.da3c60a6e402f5f1ddab2a65@linux-foundation.org>
+In-Reply-To: <20210108201025.GA17019@dhcp22.suse.cz>
+References: <20210108023339.55917-1-nixiaoming@huawei.com>
+        <20210108092145.GX13207@dhcp22.suse.cz>
+        <829bbba0-d3bb-a114-af81-df7390082958@huawei.com>
+        <20210108114718.GA13207@dhcp22.suse.cz>
+        <202101081152.0CB22390@keescook>
+        <20210108201025.GA17019@dhcp22.suse.cz>
+X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rob,
+On Fri, 8 Jan 2021 21:10:25 +0100 Michal Hocko <mhocko@suse.com> wrote:
 
-Thank you for the patch.
-
-The subject line doesn't match the patch.
-
-On Fri, Jan 08, 2021 at 01:04:28PM +0100, Robert Foss wrote:
-> Add regulators and camss DT node.
+> > > Why would that matter? A missing value is clearly a error path and it
+> > > should be reported.
+> > 
+> > This test is in the correct place. I think it's just a question of the
+> > return values.
 > 
-> Signed-off-by: Robert Foss <robert.foss@linaro.org>
-> ---
->  arch/arm64/boot/dts/qcom/sdm845-db845c.dts | 12 ++++++++++++
->  1 file changed, 12 insertions(+)
-> 
-> diff --git a/arch/arm64/boot/dts/qcom/sdm845-db845c.dts b/arch/arm64/boot/dts/qcom/sdm845-db845c.dts
-> index a943b3f353ce..7bad0515345e 100644
-> --- a/arch/arm64/boot/dts/qcom/sdm845-db845c.dts
-> +++ b/arch/arm64/boot/dts/qcom/sdm845-db845c.dts
-> @@ -294,6 +294,9 @@ vreg_s7a_1p025: smps7 {
->  			regulator-max-microvolt = <1028000>;
->  		};
->  
-> +		vdda_mipi_csi0_0p9:
-> +		vdda_mipi_csi1_0p9:
-> +		vdda_mipi_csi2_0p9:
+> I was probably not clear. The test for val is at the right place. I
+> would just expect -EINVAL and have the generic code to report.
 
-No need for new labels, you can simply use vreg_l1a_0p875 below.
-
->  		vreg_l1a_0p875: ldo1 {
->  			regulator-min-microvolt = <880000>;
->  			regulator-max-microvolt = <880000>;
-> @@ -1106,6 +1109,15 @@ &cci {
->  	status = "okay";
->  };
->  
-> +&camss {
-> +	vdda-csi0-supply = <&vdda_mipi_csi0_0p9>;
-> +	vdda-csi1-supply = <&vdda_mipi_csi1_0p9>;
-> +	vdda-csi2-supply = <&vdda_mipi_csi2_0p9>;
-> +
-> +	status = "disabled";
-
-This isn't needed.
-
-> +
-
-Extra blank line.
-
-> +};
-> +
->  &cci_i2c0 {
->  	camera@10 {
->  		compatible = "ovti,ov8856";
-
--- 
-Regards,
-
-Laurent Pinchart
+It does seem a bit screwy that process_sysctl_arg() returns zero in all
+situations (parse_args() is set up to handle an error return from it). 
+But this patch is consistent with all the other error handling in
+process_sysctl_arg().
