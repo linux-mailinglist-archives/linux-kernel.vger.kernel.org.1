@@ -2,154 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 390252EFEFC
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Jan 2021 11:36:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D970A2EFEFE
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Jan 2021 11:42:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727011AbhAIKe0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Jan 2021 05:34:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51634 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726375AbhAIKeZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Jan 2021 05:34:25 -0500
-Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92C1EC0617A4
-        for <linux-kernel@vger.kernel.org>; Sat,  9 Jan 2021 02:33:45 -0800 (PST)
-Received: by mail-pg1-x536.google.com with SMTP id c132so9319076pga.3
-        for <linux-kernel@vger.kernel.org>; Sat, 09 Jan 2021 02:33:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=xjESqlUb86RQ6iRPUx+QrIUmLWqLivYfrQTN5THOZlI=;
-        b=BPZllgi5j123yuQfqVOrYEdSznE7JM0iGEn20PN86SJp5LuMZ02GpJIdXxKU5f06lo
-         v0sdJbXah37egbezScUS75h3gFsVDu2TvXVT4wFU6e07EoexWe5Bfxd5/0DXNT9OF4Ak
-         0BfyFOyQpbC+ZIru/6UpoqCsDY1grAObtZGP4e+3+b78hIzVb7r8kKLhNZM+whZ+dUr5
-         8rwbKK0V3+7uN+aKrVU+tVUCiBK/hwZjD/3DnB0SKZVrL8zaqHjoCai9Dw9i0EwI4+pF
-         J7hzl7aC7QzoLIXtNAXCicyX085vdBopmyvdwudeQrwfrw2GsvrRfZ4MxlvBZnY5DQ8f
-         DKNQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=xjESqlUb86RQ6iRPUx+QrIUmLWqLivYfrQTN5THOZlI=;
-        b=gy20s68bAuVCpYkmvN8AD2XZ4j8Xuo4K43kvxxKWlPdl+//h3qxa+YTDmG8Zy6Kk+7
-         6KNDLow4wd4qO9Fsz3OtBw3/hD9KJtmsCFgF+7rX6hoNDNHKLltPHa93Xjh2TJOE+m3O
-         EJLTGJ+10suKwOAw86Ch+gXRyF4tMM2gS3/uvJCF7dQTJTJUz1rleWeQHV+yLb64w2cM
-         RBlSsjr4o2yzg6IaWKzGD5Q416qWOOEAlXjypCl3klS1cdAPg+RMv3FRpRjk0zDkECci
-         qZh9PpXgWesK/dxcxIWMipJo+DkUCmd6cDhTTONKTJsZuo7JJqU1z5VBnQMoLccf89Er
-         +tlw==
-X-Gm-Message-State: AOAM531P6wRMr2bwLfsIckKFGLhxpjZp8ff7T4gbDRV/0ZeYGLLZ/yxf
-        oQfsT+++79yhuHXkL3S04jWZybOLbXk=
-X-Google-Smtp-Source: ABdhPJxnAfGcjjOzp0O5bC+zZRpiwF3pGnF0uWlC/oLTtAZ685s5ouGYEu3QKd0emh/MPnfAeJ4Z0Q==
-X-Received: by 2002:a62:25c1:0:b029:1a9:ee40:3fd3 with SMTP id l184-20020a6225c10000b02901a9ee403fd3mr7620101pfl.58.1610188424692;
-        Sat, 09 Jan 2021 02:33:44 -0800 (PST)
-Received: from localhost.localdomain (61-230-13-78.dynamic-ip.hinet.net. [61.230.13.78])
-        by smtp.gmail.com with ESMTPSA id w200sm11691572pfc.14.2021.01.09.02.33.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 09 Jan 2021 02:33:44 -0800 (PST)
-From:   Lecopzer Chen <lecopzer@gmail.com>
-To:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        kasan-dev@googlegroups.com, linux-arm-kernel@lists.infradead.org
-Cc:     dan.j.williams@intel.com, aryabinin@virtuozzo.com,
-        glider@google.com, dvyukov@google.com, akpm@linux-foundation.org,
-        linux-mediatek@lists.infradead.org, yj.chiang@mediatek.com,
-        will@kernel.org, catalin.marinas@arm.com, ardb@kernel.org,
-        andreyknvl@google.com, broonie@kernel.org, linux@roeck-us.net,
-        rppt@kernel.org, tyhicks@linux.microsoft.com, robin.murphy@arm.com,
-        vincenzo.frascino@arm.com, gustavoars@kernel.org,
-        Lecopzer Chen <lecopzer@gmail.com>,
-        Lecopzer Chen <lecopzer.chen@mediatek.com>
-Subject: [PATCH v2 4/4] arm64: kaslr: support randomized module area with KASAN_VMALLOC
-Date:   Sat,  9 Jan 2021 18:32:52 +0800
-Message-Id: <20210109103252.812517-5-lecopzer@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210109103252.812517-1-lecopzer@gmail.com>
-References: <20210109103252.812517-1-lecopzer@gmail.com>
+        id S1726510AbhAIKls (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Jan 2021 05:41:48 -0500
+Received: from mga05.intel.com ([192.55.52.43]:26945 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725956AbhAIKls (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 9 Jan 2021 05:41:48 -0500
+IronPort-SDR: mx1OkdM/h6GFfAX4Cbx/6ERAmyLrblGRG/GMM/V8e6jUe6S53NxrmtQbgS2eqJVyIncqHR6wAu
+ Zzl5CaNBhhyQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9858"; a="262475556"
+X-IronPort-AV: E=Sophos;i="5.79,333,1602572400"; 
+   d="scan'208";a="262475556"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Jan 2021 02:41:07 -0800
+IronPort-SDR: mLDRPDOHX6WNrXs4uiFliL7t+6RV5JRnSYROa6iFrOQC5DMrZILoYUVm6Q4tNUr5pOzaUR2pc4
+ CMZKfiOtPstQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.79,333,1602572400"; 
+   d="scan'208";a="463641645"
+Received: from lkp-server01.sh.intel.com (HELO 412602b27703) ([10.239.97.150])
+  by fmsmga001.fm.intel.com with ESMTP; 09 Jan 2021 02:41:06 -0800
+Received: from kbuild by 412602b27703 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1kyBgA-00012Q-3B; Sat, 09 Jan 2021 10:41:06 +0000
+Date:   Sat, 09 Jan 2021 18:40:29 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [rcu:rcu/next] BUILD SUCCESS WITH WARNING
+ cffdc9c7c24c0bcdd0c9735a8eaca2a39d5c1291
+Message-ID: <5ff9881d.6qwAgdx+brreyZOx%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-After KASAN_VMALLOC works in arm64, we can randomize module region
-into vmalloc area now.
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git  rcu/next
+branch HEAD: cffdc9c7c24c0bcdd0c9735a8eaca2a39d5c1291  EXP sched: Print list of runnable tasks in the current rq
 
-Test:
-	VMALLOC area ffffffc010000000 fffffffdf0000000
+Warning ids grouped by kconfigs:
 
-	before the patch:
-		module_alloc_base/end ffffffc008b80000 ffffffc010000000
-	after the patch:
-		module_alloc_base/end ffffffdcf4bed000 ffffffc010000000
+gcc_recent_errors
+`-- xtensa-randconfig-c004-20210108
+    `-- kernel-rcu-rcutorture.c:WARNING-kmalloc-is-used-to-allocate-this-memory-at-line
 
-	And the function that insmod some modules is fine.
+elapsed time: 1151m
 
-Suggested-by: Ard Biesheuvel <ardb@kernel.org>
-Signed-off-by: Lecopzer Chen <lecopzer.chen@mediatek.com>
+configs tested: 129
+configs skipped: 2
+
+gcc tested configs:
+arm64                            allyesconfig
+arm                              allyesconfig
+arm                                 defconfig
+arm64                               defconfig
+arm                              allmodconfig
+mips                           ip28_defconfig
+riscv                            alldefconfig
+mips                        jmr3927_defconfig
+arm                           spitz_defconfig
+arm                        magician_defconfig
+sh                            migor_defconfig
+arm                         socfpga_defconfig
+powerpc                       ebony_defconfig
+mips                         bigsur_defconfig
+arm                        realview_defconfig
+m68k                        m5307c3_defconfig
+mips                            gpr_defconfig
+powerpc                     tqm8540_defconfig
+powerpc                  iss476-smp_defconfig
+mips                        workpad_defconfig
+mips                        omega2p_defconfig
+sh                            titan_defconfig
+powerpc                      ppc64e_defconfig
+sh                        dreamcast_defconfig
+m68k                         apollo_defconfig
+powerpc64                           defconfig
+arm                       cns3420vb_defconfig
+m68k                        mvme147_defconfig
+sh                            shmin_defconfig
+m68k                          hp300_defconfig
+sh                          polaris_defconfig
+mips                           ip27_defconfig
+mips                     loongson1c_defconfig
+ia64                        generic_defconfig
+sh                             sh03_defconfig
+powerpc                      ppc40x_defconfig
+arm                      jornada720_defconfig
+arm                          pxa3xx_defconfig
+sh                           se7619_defconfig
+mips                           ip22_defconfig
+riscv                    nommu_virt_defconfig
+riscv                            allmodconfig
+powerpc                  mpc885_ads_defconfig
+mips                malta_kvm_guest_defconfig
+powerpc                       ppc64_defconfig
+powerpc                     tqm8560_defconfig
+mips                         cobalt_defconfig
+arm                       aspeed_g5_defconfig
+m68k                       m5249evb_defconfig
+mips                      maltaaprp_defconfig
+arc                          axs103_defconfig
+arm                     eseries_pxa_defconfig
+sh                          r7780mp_defconfig
+powerpc                      acadia_defconfig
+arc                          axs101_defconfig
+mips                           gcw0_defconfig
+mips                      pic32mzda_defconfig
+parisc                generic-32bit_defconfig
+powerpc                mpc7448_hpc2_defconfig
+mips                      pistachio_defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+c6x                              allyesconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+parisc                           allyesconfig
+s390                                defconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                               tinyconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+x86_64               randconfig-a004-20210108
+x86_64               randconfig-a006-20210108
+x86_64               randconfig-a001-20210108
+x86_64               randconfig-a002-20210108
+x86_64               randconfig-a003-20210108
+x86_64               randconfig-a005-20210108
+i386                 randconfig-a005-20210108
+i386                 randconfig-a002-20210108
+i386                 randconfig-a001-20210108
+i386                 randconfig-a003-20210108
+i386                 randconfig-a006-20210108
+i386                 randconfig-a004-20210108
+i386                 randconfig-a016-20210108
+i386                 randconfig-a011-20210108
+i386                 randconfig-a014-20210108
+i386                 randconfig-a015-20210108
+i386                 randconfig-a013-20210108
+i386                 randconfig-a012-20210108
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+x86_64                                   rhel
+x86_64                           allyesconfig
+x86_64                    rhel-7.6-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                      rhel-8.3-kbuiltin
+x86_64                                  kexec
+
+clang tested configs:
+x86_64               randconfig-a013-20210108
+x86_64               randconfig-a011-20210108
+x86_64               randconfig-a012-20210108
+x86_64               randconfig-a016-20210108
+x86_64               randconfig-a014-20210108
+x86_64               randconfig-a015-20210108
+
 ---
- arch/arm64/kernel/kaslr.c  | 18 ++++++++++--------
- arch/arm64/kernel/module.c | 16 +++++++++-------
- 2 files changed, 19 insertions(+), 15 deletions(-)
-
-diff --git a/arch/arm64/kernel/kaslr.c b/arch/arm64/kernel/kaslr.c
-index 1c74c45b9494..a2858058e724 100644
---- a/arch/arm64/kernel/kaslr.c
-+++ b/arch/arm64/kernel/kaslr.c
-@@ -161,15 +161,17 @@ u64 __init kaslr_early_init(u64 dt_phys)
- 	/* use the top 16 bits to randomize the linear region */
- 	memstart_offset_seed = seed >> 48;
- 
--	if (IS_ENABLED(CONFIG_KASAN_GENERIC) ||
--	    IS_ENABLED(CONFIG_KASAN_SW_TAGS))
-+	if (!IS_ENABLED(CONFIG_KASAN_VMALLOC) &&
-+	    (IS_ENABLED(CONFIG_KASAN_GENERIC) ||
-+	     IS_ENABLED(CONFIG_KASAN_SW_TAGS)))
- 		/*
--		 * KASAN does not expect the module region to intersect the
--		 * vmalloc region, since shadow memory is allocated for each
--		 * module at load time, whereas the vmalloc region is shadowed
--		 * by KASAN zero pages. So keep modules out of the vmalloc
--		 * region if KASAN is enabled, and put the kernel well within
--		 * 4 GB of the module region.
-+		 * KASAN without KASAN_VMALLOC does not expect the module region
-+		 * to intersect the vmalloc region, since shadow memory is
-+		 * allocated for each module at load time, whereas the vmalloc
-+		 * region is shadowed by KASAN zero pages. So keep modules
-+		 * out of the vmalloc region if KASAN is enabled without
-+		 * KASAN_VMALLOC, and put the kernel well within 4 GB of the
-+		 * module region.
- 		 */
- 		return offset % SZ_2G;
- 
-diff --git a/arch/arm64/kernel/module.c b/arch/arm64/kernel/module.c
-index fe21e0f06492..b5ec010c481f 100644
---- a/arch/arm64/kernel/module.c
-+++ b/arch/arm64/kernel/module.c
-@@ -40,14 +40,16 @@ void *module_alloc(unsigned long size)
- 				NUMA_NO_NODE, __builtin_return_address(0));
- 
- 	if (!p && IS_ENABLED(CONFIG_ARM64_MODULE_PLTS) &&
--	    !IS_ENABLED(CONFIG_KASAN_GENERIC) &&
--	    !IS_ENABLED(CONFIG_KASAN_SW_TAGS))
-+	    (IS_ENABLED(CONFIG_KASAN_VMALLOC) ||
-+	     (!IS_ENABLED(CONFIG_KASAN_GENERIC) &&
-+	      !IS_ENABLED(CONFIG_KASAN_SW_TAGS))))
- 		/*
--		 * KASAN can only deal with module allocations being served
--		 * from the reserved module region, since the remainder of
--		 * the vmalloc region is already backed by zero shadow pages,
--		 * and punching holes into it is non-trivial. Since the module
--		 * region is not randomized when KASAN is enabled, it is even
-+		 * KASAN without KASAN_VMALLOC can only deal with module
-+		 * allocations being served from the reserved module region,
-+		 * since the remainder of the vmalloc region is already
-+		 * backed by zero shadow pages, and punching holes into it
-+		 * is non-trivial. Since the module region is not randomized
-+		 * when KASAN is enabled without KASAN_VMALLOC, it is even
- 		 * less likely that the module region gets exhausted, so we
- 		 * can simply omit this fallback in that case.
- 		 */
--- 
-2.25.1
-
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
