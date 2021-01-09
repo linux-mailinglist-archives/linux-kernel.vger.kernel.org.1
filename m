@@ -2,30 +2,29 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB5BA2EFE92
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Jan 2021 09:03:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F5902EFE93
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Jan 2021 09:14:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726949AbhAIICw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Jan 2021 03:02:52 -0500
-Received: from szxga04-in.huawei.com ([45.249.212.190]:10124 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726801AbhAIICv (ORCPT
+        id S1726607AbhAIILC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Jan 2021 03:11:02 -0500
+Received: from szxga06-in.huawei.com ([45.249.212.32]:10427 "EHLO
+        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725847AbhAIILC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Jan 2021 03:02:51 -0500
-Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4DCXTy6Dv0z15pfS;
-        Sat,  9 Jan 2021 16:01:10 +0800 (CST)
-Received: from huawei.com (10.175.104.175) by DGGEMS407-HUB.china.huawei.com
- (10.3.19.207) with Microsoft SMTP Server id 14.3.498.0; Sat, 9 Jan 2021
- 16:02:00 +0800
+        Sat, 9 Jan 2021 03:11:02 -0500
+Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4DCXgc1LXfzj3wh;
+        Sat,  9 Jan 2021 16:09:32 +0800 (CST)
+Received: from huawei.com (10.175.104.175) by DGGEMS402-HUB.china.huawei.com
+ (10.3.19.202) with Microsoft SMTP Server id 14.3.498.0; Sat, 9 Jan 2021
+ 16:10:07 +0800
 From:   Miaohe Lin <linmiaohe@huawei.com>
 To:     <akpm@linux-foundation.org>
-CC:     <tglx@linutronix.de>, <dave.hansen@intel.com>,
-        <ak@linux.intel.com>, <jpoimboe@redhat.com>, <linux-mm@kvack.org>,
-        <linux-kernel@vger.kernel.org>, <linmiaohe@huawei.com>
-Subject: [PATCH] mm: Fix potential pte_unmap_unlock pte error
-Date:   Sat, 9 Jan 2021 03:01:18 -0500
-Message-ID: <20210109080118.20885-1-linmiaohe@huawei.com>
+CC:     <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
+        <linmiaohe@huawei.com>
+Subject: [PATCH] mm/swap_slots.c: Remove unnecessary NULL pointer check
+Date:   Sat, 9 Jan 2021 03:09:43 -0500
+Message-ID: <20210109080943.34832-1-linmiaohe@huawei.com>
 X-Mailer: git-send-email 2.19.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7BIT
@@ -36,44 +35,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since commit 42e4089c7890 ("x86/speculation/l1tf: Disallow non privileged
-high MMIO PROT_NONE mappings"), when the first pfn modify is not allowed,
-we would break the loop with pte unchanged. Then the wrong pte - 1 would
-be passed to pte_unmap_unlock.
+The cache->slots and cache->slots_ret is already checked before we try to
+drain it. And kvfree can handle the NULL pointer itself. So remove the
+NULL pointer check here.
 
-Fixes: 42e4089c789 ("x86/speculation/l1tf: Disallow non privileged high MMIO PROT_NONE mappings")
-Signed-off-by: Hongxiang Lou <louhongxiang@huawei.com>
 Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
-Cc: stable@kernel.org
 ---
- mm/memory.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ mm/swap_slots.c | 7 +++----
+ 1 file changed, 3 insertions(+), 4 deletions(-)
 
-diff --git a/mm/memory.c b/mm/memory.c
-index feff48e1465a..351b78ebd5a4 100644
---- a/mm/memory.c
-+++ b/mm/memory.c
-@@ -2165,11 +2165,11 @@ static int remap_pte_range(struct mm_struct *mm, pmd_t *pmd,
- 			unsigned long addr, unsigned long end,
- 			unsigned long pfn, pgprot_t prot)
- {
--	pte_t *pte;
-+	pte_t *pte, *mapped_pte;
- 	spinlock_t *ptl;
- 	int err = 0;
- 
--	pte = pte_alloc_map_lock(mm, pmd, addr, &ptl);
-+	mapped_pte = pte = pte_alloc_map_lock(mm, pmd, addr, &ptl);
- 	if (!pte)
- 		return -ENOMEM;
- 	arch_enter_lazy_mmu_mode();
-@@ -2183,7 +2183,7 @@ static int remap_pte_range(struct mm_struct *mm, pmd_t *pmd,
- 		pfn++;
- 	} while (pte++, addr += PAGE_SIZE, addr != end);
- 	arch_leave_lazy_mmu_mode();
--	pte_unmap_unlock(pte - 1, ptl);
-+	pte_unmap_unlock(mapped_pte, ptl);
- 	return err;
+diff --git a/mm/swap_slots.c b/mm/swap_slots.c
+index 0357fbe70645..4cf99ce033d0 100644
+--- a/mm/swap_slots.c
++++ b/mm/swap_slots.c
+@@ -178,7 +178,7 @@ static void drain_slots_cache_cpu(unsigned int cpu, unsigned int type,
+ 		swapcache_free_entries(cache->slots + cache->cur, cache->nr);
+ 		cache->cur = 0;
+ 		cache->nr = 0;
+-		if (free_slots && cache->slots) {
++		if (free_slots) {
+ 			kvfree(cache->slots);
+ 			cache->slots = NULL;
+ 		}
+@@ -188,13 +188,12 @@ static void drain_slots_cache_cpu(unsigned int cpu, unsigned int type,
+ 		spin_lock_irq(&cache->free_lock);
+ 		swapcache_free_entries(cache->slots_ret, cache->n_ret);
+ 		cache->n_ret = 0;
+-		if (free_slots && cache->slots_ret) {
++		if (free_slots) {
+ 			slots = cache->slots_ret;
+ 			cache->slots_ret = NULL;
+ 		}
+ 		spin_unlock_irq(&cache->free_lock);
+-		if (slots)
+-			kvfree(slots);
++		kvfree(slots);
+ 	}
  }
  
 -- 
