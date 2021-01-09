@@ -2,73 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CF502F0215
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Jan 2021 18:10:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D4392F0217
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Jan 2021 18:10:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726822AbhAIRJI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Jan 2021 12:09:08 -0500
-Received: from cloudserver094114.home.pl ([79.96.170.134]:49092 "EHLO
-        cloudserver094114.home.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726251AbhAIRJI (ORCPT
+        id S1726416AbhAIRKv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Jan 2021 12:10:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51456 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726013AbhAIRKu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Jan 2021 12:09:08 -0500
-Received: from 89-77-60-66.dynamic.chello.pl (89.77.60.66) (HELO kreacher.localnet)
- by serwer1319399.home.pl (79.96.170.134) with SMTP (IdeaSmtpServer 0.83.537)
- id 0d85ad585c7e0c50; Sat, 9 Jan 2021 18:08:25 +0100
-From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
-To:     Dexuan Cui <decui@microsoft.com>
-Cc:     Andy Shevchenko <andy.shevchenko@gmail.com>,
-        "rafael@kernel.org" <rafael@kernel.org>,
-        "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
-        "len.brown@intel.com" <len.brown@intel.com>,
-        Michael Kelley <mikelley@microsoft.com>,
-        "rui.zhang@intel.com" <rui.zhang@intel.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "wei.liu@kernel.org" <wei.liu@kernel.org>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        KY Srinivasan <kys@microsoft.com>,
-        "dwaipayanray1@gmail.com" <dwaipayanray1@gmail.com>
-Subject: Re: [PATCH] ACPI: scan: Fix a Hyper-V Linux VM panic caused by buffer overflow
-Date:   Sat, 09 Jan 2021 18:08:24 +0100
-Message-ID: <5464224.fTvfEN5hHQ@kreacher>
-In-Reply-To: <MWHPR21MB0798C62978C2E6F23FAB953EBFAD9@MWHPR21MB0798.namprd21.prod.outlook.com>
-References: <20210108072348.34091-1-decui@microsoft.com> <CAHp75VfPsMNZxN-hA3Cytjpm0K9xGoQpcGY_FZR4hUrtyqMj=w@mail.gmail.com> <MWHPR21MB0798C62978C2E6F23FAB953EBFAD9@MWHPR21MB0798.namprd21.prod.outlook.com>
+        Sat, 9 Jan 2021 12:10:50 -0500
+Received: from mail-yb1-xb2e.google.com (mail-yb1-xb2e.google.com [IPv6:2607:f8b0:4864:20::b2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 230F1C06179F
+        for <linux-kernel@vger.kernel.org>; Sat,  9 Jan 2021 09:10:10 -0800 (PST)
+Received: by mail-yb1-xb2e.google.com with SMTP id y128so12597588ybf.10
+        for <linux-kernel@vger.kernel.org>; Sat, 09 Jan 2021 09:10:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=EL3usNsR6RJ/kaN0gX4dE0zjZk+adUFE1G3dRPjGzc4=;
+        b=pvdQP6wQkmLKyKoYbBICYKmMe81Lh1oUOvgaduNtneTY4/Dw9v7yK3RuKYojT7mPE6
+         dFAN3j0PWoI7ZliFe1xz6xiBR/Qy0kLkAQnbsI05LC9pWOcfvg8/GBxE/JEs7sgn+9DH
+         h7ou9N+XOh3i+Zo+BR0lz5Z28ovaX4PK45UOgwpcoBtpSfxuUHMk2El22tndLV6MdghH
+         G/7n3iPQOnPVDjldgLXeOE+EslcU8Ch3eeswEwLOBjJYKvmVBthWxJLLYz5hzFxkV1rh
+         +EFteDKsqKscftKsKcAqpJqAGCIUtKlVvOvHVg88tdFA2A4+Id/r7Au6bGGts2uqN2NS
+         Lkaw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=EL3usNsR6RJ/kaN0gX4dE0zjZk+adUFE1G3dRPjGzc4=;
+        b=iC534ITjCSBXwRWW8/dAZ4N5B8Vl9oQ1FuMH1g2CUaARUSiyj2/Xvdt3C++nWSRqGw
+         mpLMzf6xhlplHjZYQNu2TLFXS2l4wrGjqM85fXa7sL/yhrcEbocA0eeLPvEBOitqeprx
+         P9ZeSlVCK/asEpHuSD9qX/1ayNfhkMBiZPw6z+Y+i3hCIEogSDg3ojLKTrV+haBxOMpr
+         WK8PG23gC2hSGj/PfCNnJJh0Mb2KKuk+3AwUMyVpmIRM0kUGVjwWPkTaNb/OUoUCP4I/
+         RPGzCPGgmGx6L35PbKqGopSkfGmfDvzEQhOldMkVjz6DwoPepK+97ewx+d1bj34/6liF
+         JYfQ==
+X-Gm-Message-State: AOAM533DieQurhBumMC8IjnIUQH+hrKHbuaqYDw4e4mLQ3HaIe2kbd02
+        hLcqPRWWP+76dwf2gdzhJDEjJxD4eQgtjYwCke7mtw==
+X-Google-Smtp-Source: ABdhPJxHs5vAL9PG0BmAfRSJClqSNUC3Mz6HmKJcNj/c05dWYJWnw0Eok1hSeNWBJjU6gd7mOhnDHRZgdM91tl+VTx8=
+X-Received: by 2002:a25:2506:: with SMTP id l6mr14836274ybl.32.1610212209019;
+ Sat, 09 Jan 2021 09:10:09 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+References: <20210108012427.766318-1-saravanak@google.com> <9ec99f2f0e1e75e11f2d7d013dc78203@walle.cc>
+ <CAGETcx-TT=ce+oSV2miKN5YdO-gY1oqCMVBkgs6D4kfFLpyn1w@mail.gmail.com> <7f10c6c94729dfa48e18f7f4b038403a@walle.cc>
+In-Reply-To: <7f10c6c94729dfa48e18f7f4b038403a@walle.cc>
+From:   Saravana Kannan <saravanak@google.com>
+Date:   Sat, 9 Jan 2021 09:09:32 -0800
+Message-ID: <CAGETcx-FAaBRLxLS8_s65VHi6S1MF3RZHw5A5RkQ=eikZuMBtA@mail.gmail.com>
+Subject: Re: [PATCH v3] driver core: Fix device link device name collision
+To:     Michael Walle <michael@walle.cc>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        stable <stable@vger.kernel.org>,
+        Android Kernel Team <kernel-team@android.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Saturday, January 9, 2021 10:37:41 AM CET Dexuan Cui wrote:
-> > From: Andy Shevchenko <andy.shevchenko@gmail.com> 
-> > Sent: Saturday, January 9, 2021 12:52 AM
-> >> 
-> >> Hi Rafael, Len, and all,
-> >> Can you please take a look at the v2 patch?
-> >> 
-> >> The Linux mainline has been broken for several weeks when it
-> >> runs as a guest on Hyper-V, so we'd like this to be fixed ASAP,
-> >> as more people are being affected
-> > 
-> > I would like to see a warning printed when the dupped
-> > string violates the spec.
-> 
-> Hi Andy,
-> Do you want a simple strlen() check like the below, or a full
-> check of the AAA#### or NNNN#### format?
+On Sat, Jan 9, 2021 at 8:49 AM Michael Walle <michael@walle.cc> wrote:
+>
+> Am 2021-01-08 18:22, schrieb Saravana Kannan:
+> > On Fri, Jan 8, 2021 at 12:16 AM Michael Walle <michael@walle.cc> wrote:
+> >>
+> >> Am 2021-01-08 02:24, schrieb Saravana Kannan:
+> >> > The device link device's name was of the form:
+> >> > <supplier-dev-name>--<consumer-dev-name>
+> >> >
+> >> > This can cause name collision as reported here [1] as device names are
+> >> > not globally unique. Since device names have to be unique within the
+> >> > bus/class, add the bus/class name as a prefix to the device names used
+> >> > to
+> >> > construct the device link device name.
+> >> >
+> >> > So the devuce link device's name will be of the form:
+> >> > <supplier-bus-name>:<supplier-dev-name>--<consumer-bus-name>:<consumer-dev-name>
+> >> >
+> >> > [1] -
+> >> > https://lore.kernel.org/lkml/20201229033440.32142-1-michael@walle.cc/
+> >> >
+> >> > Cc: stable@vger.kernel.org
+> >> > Fixes: 287905e68dd2 ("driver core: Expose device link details in
+> >> > sysfs")
+> >> > Reported-by: Michael Walle <michael@walle.cc>
+> >> > Signed-off-by: Saravana Kannan <saravanak@google.com>
+> >> > ---
+> >> [..]
+> >>
+> >> The changes are missing for the error path and
+> >> devlink_remove_symlinks(),
+> >> right?
+> >
+> > Removing symlinks doesn't need the name. Just needs the "handle". So
+> > we are good there.
+>
+> I don't get it. What is the "handle"? Without the patch below
+> kernfs_remove_by_name() in sysfs_remove_link will return -ENOENT. With
+> the patch it will return 0.
+>
+> And even if it would work, how is this even logical:
 
-It would be good to check the format too while at it.
+Ah sorry, I confused it with removing device attrs. I need to fix up
+the symlink remove path.
 
-> Can we have the v2 (https://lkml.org/lkml/2021/1/8/53) merged 
-> first, and then we can add another patch for the format checking?
+>
+>         snprintf(buf, len, "consumer:%s:%s", dev_bus_name(con), dev_name(con));
+>         ret = sysfs_create_link(&sup->kobj, &link->link_dev.kobj, buf);
+>         if (ret)
+>                 goto err_con_dev;
+>         snprintf(buf, len, "supplier:%s:%s", dev_bus_name(sup), dev_name(sup));
+>         ret = sysfs_create_link(&con->kobj, &link->link_dev.kobj, buf);
+>         if (ret)
+>                 goto err_sup_dev;
+> [..]
+> err_sup_dev:
+>         snprintf(buf, len, "consumer:%s", dev_name(con));
+>         sysfs_remove_link(&sup->kobj, buf);
+>
+> You call sysfs_create_link("consumer:bus_name:dev_name") but the
+> corresponding rollback is sysfs_remove_link("consumer:dev_name"), that
+> is super confusing.
+>
+> >> diff --git a/drivers/base/core.c b/drivers/base/core.c
+> >> index 4140a69dfe18..385e16d92874 100644
+> >> --- a/drivers/base/core.c
+> >> +++ b/drivers/base/core.c
+> >> @@ -485,7 +485,7 @@ static int devlink_add_symlinks(struct device
+> >> *dev,
+> >>         goto out;
+> >>
+> >>   err_sup_dev:
+> >> -       snprintf(buf, len, "consumer:%s", dev_name(con));
+> >> +       snprintf(buf, len, "consumer:%s:%s", dev_bus_name(con),
+> >> dev_name(con));
+> >>         sysfs_remove_link(&sup->kobj, buf);
+> >>   err_con_dev:
+> >>         sysfs_remove_link(&link->link_dev.kobj, "consumer");
+> >> @@ -508,7 +508,9 @@ static void devlink_remove_symlinks(struct device
+> >> *dev,
+> >>         sysfs_remove_link(&link->link_dev.kobj, "consumer");
+> >>         sysfs_remove_link(&link->link_dev.kobj, "supplier");
+> >>
+> >> -       len = max(strlen(dev_name(sup)), strlen(dev_name(con)));
+> >> +       len = max(strlen(dev_bus_name(sup)) + strlen(dev_name(sup)),
+> >> +                 strlen(dev_bus_name(con)) + strlen(dev_name(con)));
+> >> +       len += strlen(":");
+> >>         len += strlen("supplier:") + 1;
+> >>         buf = kzalloc(len, GFP_KERNEL);
+> >>         if (!buf) {
+> >> @@ -516,9 +518,9 @@ static void devlink_remove_symlinks(struct device
+> >> *dev,
+> >>                 return;
+> >>         }
+> >>
+> >> -       snprintf(buf, len, "supplier:%s", dev_name(sup));
+> >> +       snprintf(buf, len, "supplier:%s:%s", dev_bus_name(sup),
+> >> dev_name(sup));
+> >>         sysfs_remove_link(&con->kobj, buf);
+> >> -       snprintf(buf, len, "consumer:%s", dev_name(con));
+> >> +       snprintf(buf, len, "consumer:%s:%s", dev_bus_name(sup),
+> >> dev_name(con));
 
-Yes, we can.
+Ah I completely skimmed over this code thinking it was code from my
+patch. Like I said, I was struggling with the length of the email due
+to the logs. Anyway, I'll fix up the remove symlink path too. Thanks
+for catching that.
 
-I'm going to apply the v2 early next week.
+> btw this should be dev_bus_name(con).
+>
+> >>         sysfs_remove_link(&sup->kobj, buf);
+> >>         kfree(buf);
+> >>   }
+> >>
+> >> With these changes:
+> >>
+> >> Tested-by: Michael Walle <michael@walle.cc>
+> >
+> > Greg,
+> >
+> > I think it's good to pick up this version if you don't see any issues.
+>
+> Why so fast?
 
-Thanks!
+Sorry, didn't mean to rush. I was just trying to say I wasn't planning
+on a v4 because I thought your Tested-by was for my unchanged v4, but
+clearly I need to send a v4.
 
-
-
+-Saravana
