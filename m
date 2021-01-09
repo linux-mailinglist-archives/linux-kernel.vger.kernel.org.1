@@ -2,64 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B4622F004F
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Jan 2021 14:56:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B37EF2F005B
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Jan 2021 15:01:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726481AbhAINz6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Jan 2021 08:55:58 -0500
-Received: from relay02.th.seeweb.it ([5.144.164.163]:55053 "EHLO
-        relay02.th.seeweb.it" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726223AbhAINz4 (ORCPT
+        id S1725941AbhAIOAs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Jan 2021 09:00:48 -0500
+Received: from outbound-smtp62.blacknight.com ([46.22.136.251]:35281 "EHLO
+        outbound-smtp62.blacknight.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725780AbhAIOAr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Jan 2021 08:55:56 -0500
-Received: from IcarusMOD.eternityproject.eu (unknown [2.237.20.237])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by m-r1.th.seeweb.it (Postfix) with ESMTPSA id 434811F561;
-        Sat,  9 Jan 2021 14:55:14 +0100 (CET)
-From:   AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@somainline.org>
-To:     linux-input@vger.kernel.org
-Cc:     konrad.dybcio@somainline.org, marijn.suijten@somainline.org,
-        martin.botka@somainline.org, phone-devel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, hadess@hadess.net,
-        dmitry.torokhov@gmail.com, devicetree@vger.kernel.org,
-        robh+dt@kernel.org,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@somainline.org>
-Subject: [PATCH 2/2] dt-bindings: ts: goodix: Add binding for GT9286 IC
-Date:   Sat,  9 Jan 2021 14:55:12 +0100
-Message-Id: <20210109135512.149032-3-angelogioacchino.delregno@somainline.org>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210109135512.149032-1-angelogioacchino.delregno@somainline.org>
-References: <20210109135512.149032-1-angelogioacchino.delregno@somainline.org>
+        Sat, 9 Jan 2021 09:00:47 -0500
+Received: from mail.blacknight.com (pemlinmail02.blacknight.ie [81.17.254.11])
+        by outbound-smtp62.blacknight.com (Postfix) with ESMTPS id 43E7AFABA5
+        for <linux-kernel@vger.kernel.org>; Sat,  9 Jan 2021 13:59:55 +0000 (GMT)
+Received: (qmail 23259 invoked from network); 9 Jan 2021 13:59:55 -0000
+Received: from unknown (HELO techsingularity.net) (mgorman@techsingularity.net@[84.203.22.4])
+  by 81.17.254.9 with ESMTPSA (AES256-SHA encrypted, authenticated); 9 Jan 2021 13:59:55 -0000
+Date:   Sat, 9 Jan 2021 13:59:53 +0000
+From:   Mel Gorman <mgorman@techsingularity.net>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     "Li, Aubrey" <aubrey.li@linux.intel.com>,
+        vincent.guittot@linaro.org, linux-kernel@vger.kernel.org,
+        mingo@redhat.com, juri.lelli@redhat.com,
+        valentin.schneider@arm.com, qais.yousef@arm.com,
+        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
+        tim.c.chen@linux.intel.com, benbjiang@gmail.com
+Subject: Re: [RFC][PATCH 1/5] sched/fair: Fix select_idle_cpu()s cost
+ accounting
+Message-ID: <20210109135953.GF3592@techsingularity.net>
+References: <20201214164822.402812729@infradead.org>
+ <20201214170017.877557652@infradead.org>
+ <c4e31235-e1fb-52ac-99a8-ae943ee0de54@linux.intel.com>
+ <20201215075911.GA3040@hirez.programming.kicks-ass.net>
+ <20210108102738.GB3592@techsingularity.net>
+ <X/i+3G53+AH4FfM2@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=iso-8859-15
+Content-Disposition: inline
+In-Reply-To: <X/i+3G53+AH4FfM2@hirez.programming.kicks-ass.net>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Support for this chip was added to the goodix driver: add the
-DT binding for it.
+On Fri, Jan 08, 2021 at 09:21:48PM +0100, Peter Zijlstra wrote:
+> On Fri, Jan 08, 2021 at 10:27:38AM +0000, Mel Gorman wrote:
+> 
+> > 1. avg_scan_cost is now based on the average scan cost of a rq but
+> >    avg_idle is still scaled to the domain size. This is a bit problematic
+> >    because it's comparing scan cost of a single rq with the estimated
+> >    average idle time of a domain. As a result, the scan depth can be much
+> >    larger than it was before the patch and led to some regressions.
+> 
+> > @@ -6164,25 +6164,25 @@ static int select_idle_cpu(struct task_struct *p, struct sched_domain *sd, int t
+> >  		 */
+> >  		avg_idle = this_rq()->avg_idle / 512;
+> >  		avg_cost = this_sd->avg_scan_cost + 1;
+> > -
+> > -		span_avg = sd->span_weight * avg_idle;
+> > -		if (span_avg > 4*avg_cost)
+> > -			nr = div_u64(span_avg, avg_cost);
+> > -		else
+> > +		nr = div_u64(avg_idle, avg_cost);
+> > +		if (nr < 4)
+> >  			nr = 4;
+> 
+> Oooh, could it be I simply didn't remember how that code was supposed to
+> work and should kick my (much) younger self for not writing a comment?
+> 
+> Consider:
+> 
+>        span_weight * avg_idle               avg_cost
+>   nr = ---------------------- = avg_idle / ----------
+>                avg_cost                    span_weigt
+> 
+> Where: avg_cost / span_weight ~= cost-per-rq
+> 
 
-Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>
----
- Documentation/devicetree/bindings/input/touchscreen/goodix.yaml | 1 +
- 1 file changed, 1 insertion(+)
+This would definitely make sense and I even evaluated it but the nature
+of avg_idle and the scale it works at (up to 2*sched_migration_cost)
+just ended up generating lunatic values far outside the size of the domain
+size. Fitting that to the domain size just ended up looking silly too and
+avg_cost does not decay. Still, in principle, it's the right direction,
+it's just not what the code does right now.
 
-diff --git a/Documentation/devicetree/bindings/input/touchscreen/goodix.yaml b/Documentation/devicetree/bindings/input/touchscreen/goodix.yaml
-index da5b0d87e16d..93f2ce3130ae 100644
---- a/Documentation/devicetree/bindings/input/touchscreen/goodix.yaml
-+++ b/Documentation/devicetree/bindings/input/touchscreen/goodix.yaml
-@@ -26,6 +26,7 @@ properties:
-       - goodix,gt927
-       - goodix,gt9271
-       - goodix,gt928
-+      - goodix,gt9286
-       - goodix,gt967
- 
-   reg:
 -- 
-2.29.2
-
+Mel Gorman
+SUSE Labs
