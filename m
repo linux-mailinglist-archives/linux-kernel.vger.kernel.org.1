@@ -2,152 +2,329 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF7CE2EFD21
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Jan 2021 03:24:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1835E2EFD24
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Jan 2021 03:28:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726460AbhAICYI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Jan 2021 21:24:08 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60398 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726013AbhAICYH (ORCPT
+        id S1726305AbhAIC1p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Jan 2021 21:27:45 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:57228 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725817AbhAIC1p (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Jan 2021 21:24:07 -0500
-Received: from mail-oo1-xc2f.google.com (mail-oo1-xc2f.google.com [IPv6:2607:f8b0:4864:20::c2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DC1EC061574
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Jan 2021 18:23:27 -0800 (PST)
-Received: by mail-oo1-xc2f.google.com with SMTP id x23so2874483oop.1
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Jan 2021 18:23:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:in-reply-to:message-id:references
-         :user-agent:mime-version;
-        bh=O512iOdiQl7IEgpRDKJFQeplTuWfwibmOqpv/4fzERA=;
-        b=ZQSLXT9/DFHCTODimbMizY/fKhhRRuE7vZE/TEUrfMucjwAm68A6KiUZ5AXuADWucB
-         jZavZ/PqwcyhqTTMMBrIZZ3QZjVfHd772M0Cyq3wKIVdQX6FY+60PT2ll38GRJeEvMS2
-         AjVFKUgDTfusb98LzWGlu/gTnG2/2Ck3HsINcLjec8htrGs9245emOxHX6G+31Dn5HbQ
-         b+5fPgvEHhmRAD9Mu3TaNFj/KDud1BTXsKoTcpR1WuFaMBwKEjom8LhOxKu/wHR0vjbW
-         nAyvjc+sTA04P51ck86N1cMejaM3idB0BN37mTP8lGh1KoRlOqz0AwIgpCMhh/uCOj3J
-         36Iw==
+        Fri, 8 Jan 2021 21:27:45 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1610159177;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=3deUTSWo7icL2/kX+c+a8SQqHFNh2K28a4hRCkAQWWY=;
+        b=MXHXsDLPE4rz/iUqDzwpKcbgyFlqnhH0mpTWWPR0aFq7/l1bheELs8g7qSbZUpjdCsqGNj
+        Yb88IkVhyjbIbX43x8ViqAG1d3oeyp/y+RgJrSwcul14IvTlWF1ht+MzRHK6BaluIYN8ND
+        KmpEcZgI359tN/swTtY385Q/yovVHT0=
+Received: from mail-io1-f69.google.com (mail-io1-f69.google.com
+ [209.85.166.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-121-RfUJRV4iMi2c-ti6Wfn8og-1; Fri, 08 Jan 2021 21:26:16 -0500
+X-MC-Unique: RfUJRV4iMi2c-ti6Wfn8og-1
+Received: by mail-io1-f69.google.com with SMTP id l20so9278692ioc.20
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Jan 2021 18:26:16 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
-         :references:user-agent:mime-version;
-        bh=O512iOdiQl7IEgpRDKJFQeplTuWfwibmOqpv/4fzERA=;
-        b=Wl7bZkfnXAlCLvJgfsw56ASxaP9uA5KDzq7zC6k67vi2zzcX7F/0NJwByzgp5p9FSy
-         RAe1U6aVg+nGBMGjKFOUrP/ePoxLnN8p9tbk93LkY4iPLNk3LbLCAynrVYwpS17mVTr0
-         IBd91jKQAnzzlcegFqr2F2YeW+hrF23xP0lQsINI33TkX5OFOEjJBPZylC8tY326McYY
-         mC4HXJjceNtIT8reU79ZK+ve//j2kA/GZOxRi7P+LAexRUbZkKkaSNd8jzR7WgkOVK4f
-         leUGOTQTV5uepXjLl77RLjxGWeFPEOfGONqhOC9BXjWs7FCtLCr1M6MHhFYOiAQ/ekH/
-         B0WQ==
-X-Gm-Message-State: AOAM532R/ddB02pPWrF/hNRB+oUkF64LWJi2hTUpq5VrTkA5UKfmGcPB
-        qaWqBvQjMzuJ5XLlovOcqQoTMg==
-X-Google-Smtp-Source: ABdhPJwtu9DUbVYibKPjfPPmuoXTICJS+E8dU1Ezma2JC/Sd3l+R3WccOKyl4/nMLKee3Nxqll6a3Q==
-X-Received: by 2002:a4a:e294:: with SMTP id k20mr6225934oot.82.1610159006663;
-        Fri, 08 Jan 2021 18:23:26 -0800 (PST)
-Received: from eggly.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
-        by smtp.gmail.com with ESMTPSA id e10sm2150117otr.73.2021.01.08.18.23.25
-        (version=TLS1 cipher=ECDHE-ECDSA-AES128-SHA bits=128/128);
-        Fri, 08 Jan 2021 18:23:26 -0800 (PST)
-Date:   Fri, 8 Jan 2021 18:23:09 -0800 (PST)
-From:   Hugh Dickins <hughd@google.com>
-X-X-Sender: hugh@eggly.anvils
-To:     Vlastimil Babka <vbabka@suse.cz>
-cc:     Hugh Dickins <hughd@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Hui Su <sh_def@163.com>, Alex Shi <alex.shi@linux.alibaba.com>,
-        Lorenzo Stoakes <lstoakes@gmail.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Shakeel Butt <shakeelb@google.com>,
-        Roman Gushchin <guro@fb.com>, Baoquan He <bhe@redhat.com>,
-        Chris Down <chris@chrisdown.name>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org
-Subject: Re: [PATCH] mm/memcontrol: fix warning in mem_cgroup_page_lruvec()
-In-Reply-To: <b52ec93d-9d09-888e-3404-c8c78800c683@suse.cz>
-Message-ID: <alpine.LSU.2.11.2101081720420.8770@eggly.anvils>
-References: <alpine.LSU.2.11.2101032056260.1093@eggly.anvils> <b52ec93d-9d09-888e-3404-c8c78800c683@suse.cz>
-User-Agent: Alpine 2.11 (LSU 23 2013-08-11)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=3deUTSWo7icL2/kX+c+a8SQqHFNh2K28a4hRCkAQWWY=;
+        b=sYjB3ZgiKXi8/NrWNn4QL6SnTKmQVrY6UzBkXtCOe5g6QAZl7Ei+RiOQIzI3JSH4oq
+         LefNfOxaZuQn+Gjd40EHa+gRTSA4HtFMkffcYVxcK/Hx1hntJfPQa4St3Dbjfegg/wKN
+         5wD3imU+TG2yk5ngPIyrqd6iGbkYSvc3bXQZIiigNL0jg2Gtde+JBy9NhyN4sM5Hjb2t
+         OMJVnHEVsN09vwiYBdOstNKzVWBHdZfYUFj/YyOAkDYGOXOBOK9urmMJtaZR4N8en2Ba
+         KwXn2fkdYzS3TPRIUFOMOytebKZ2JvuhoIxp+SdEfeZSRZ/Z7GuIY9di2byrxL/yTNF9
+         lViw==
+X-Gm-Message-State: AOAM533iYlq55Lu7TpxJaJCXi7VoBEoLeoygV0yz4bORC8eRx7AKbKxw
+        fpWVdbbxXDtWmhtQvetwAXvYsaf8/ClvokaAshb9AIpCgVHWXJC8iXIlFIAdnc//TWJCL/poyIL
+        4QCLSH3/ly8cazqAqUaEA3DEo
+X-Received: by 2002:a92:6e12:: with SMTP id j18mr6527506ilc.47.1610159175660;
+        Fri, 08 Jan 2021 18:26:15 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJzp6AdgQP1S6tAvq+SLTyOQGHsKz+zbQT3eexm4d0LcPmSvkxbYAXledHnV+hNlWHIra9IjOQ==
+X-Received: by 2002:a92:6e12:: with SMTP id j18mr6527493ilc.47.1610159175334;
+        Fri, 08 Jan 2021 18:26:15 -0800 (PST)
+Received: from xps13 ([2605:a601:a63a:4d01:b7b1:2714:939a:40b8])
+        by smtp.gmail.com with ESMTPSA id s10sm3003553iob.4.2021.01.08.18.26.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 08 Jan 2021 18:26:14 -0800 (PST)
+Date:   Fri, 8 Jan 2021 21:26:12 -0500
+From:   Jeremy Cline <jcline@redhat.com>
+To:     Felix Kuehling <felix.kuehling@amd.com>
+Cc:     Alex Deucher <alexander.deucher@amd.com>,
+        Christian =?utf-8?B?S8O2bmln?= <christian.koenig@amd.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Kent Russell <kent.russell@amd.com>,
+        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] drm/amdkfd: Fix out-of-bounds read in
+ kdf_create_vcrat_image_cpu()
+Message-ID: <20210109022612.GB248768@xps13>
+References: <20210108163104.411442-1-jcline@redhat.com>
+ <a341f82d-5933-3df3-f665-cbb4fb5fc5ff@amd.com>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <a341f82d-5933-3df3-f665-cbb4fb5fc5ff@amd.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 7 Jan 2021, Vlastimil Babka wrote:
-> On 1/4/21 6:03 AM, Hugh Dickins wrote:
-> > Boot a CONFIG_MEMCG=y kernel with "cgroup_disabled=memory" and you are
-> > met by a series of warnings from the VM_WARN_ON_ONCE_PAGE(!memcg, page)
-> > recently added to the inline mem_cgroup_page_lruvec().
-> > 
-> > An earlier attempt to place that warning, in mem_cgroup_lruvec(), had
-> > been careful to do so after weeding out the mem_cgroup_disabled() case;
-> > but was itself invalid because of the mem_cgroup_lruvec(NULL, pgdat) in
-> > clear_pgdat_congested() and age_active_anon().
-> > 
-> > Warning in mem_cgroup_page_lruvec() was once useful in detecting a KSM
-> > charge bug, so may be worth keeping: but skip if mem_cgroup_disabled().
-> > 
-> > Fixes: 9a1ac2288cf1 ("mm/memcontrol:rewrite mem_cgroup_page_lruvec()")
-> > Signed-off-by: Hugh Dickins <hughd@google.com>
+On Fri, Jan 08, 2021 at 06:46:17PM -0500, Felix Kuehling wrote:
+> Am 2021-01-08 um 11:31 a.m. schrieb Jeremy Cline:
+> > KASAN reported a slab-out-of-bounds read of size 1 in
+> > kdf_create_vcrat_image_cpu().
+> >
+> > This occurs when, for example, when on an x86_64 with a single NUMA node
+> > because kfd_fill_iolink_info_for_cpu() is a no-op, but afterwards the
+> > sub_type_hdr->length, which is out-of-bounds, is read and multiplied by
+> > entries. Fortunately, entries is 0 in this case so the overall
+> > crat_table->length is still correct.
 > 
-> Acked-by: Vlastimil Babka <vbabka@suse.cz>
-
-Thanks.
-
+> That's a pretty big change to fix that. Wouldn't it be enough to add a
+> simple check after calling kfd_fill_iolink_info_for_cpu:
 > 
+>     if (entries) {
+>     	crat_table->length += (sub_type_hdr->length * entries);
+>     	crat_table->total_entries += entries;
+>     }
+> 
+> Or change the output parameters of the kfd_fill_..._for_cpu functions
+> from num_entries to size_filled, so the caller doesn't need to read
+> sub_type_hdr->length any more.
+> 
+
+For sure. I felt like this was a bit tidier afterwards, but that's an
+opinion and not one I hold strongly. I'll look at preparing a smaller fix
+next week.
+
+Thanks,
+Jeremy
+
+> >
+> > This refactors the helper functions to accept the crat_table directly
+> > and calculate the table entry pointer based on the current table length.
+> > This allows us to avoid an out-of-bounds read and hopefully makes the
+> > pointer arithmetic clearer. It should have no functional change beyond
+> > removing the out-of-bounds read.
+> >
+> > Fixes: b7b6c38529c9 ("drm/amdkfd: Calculate CPU VCRAT size dynamically (v2)")
+> > Signed-off-by: Jeremy Cline <jcline@redhat.com>
 > > ---
-> > 
-> >  include/linux/memcontrol.h |    2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > 
-> > --- 5.11-rc2/include/linux/memcontrol.h	2020-12-27 20:39:36.751923135 -0800
-> > +++ linux/include/linux/memcontrol.h	2021-01-03 19:38:24.822978559 -0800
-> > @@ -665,7 +665,7 @@ static inline struct lruvec *mem_cgroup_
+> >  drivers/gpu/drm/amd/amdkfd/kfd_crat.c | 86 +++++++++++++--------------
+> >  1 file changed, 40 insertions(+), 46 deletions(-)
+> >
+> > diff --git a/drivers/gpu/drm/amd/amdkfd/kfd_crat.c b/drivers/gpu/drm/amd/amdkfd/kfd_crat.c
+> > index 8cac497c2c45..e50db2c0f4ee 100644
+> > --- a/drivers/gpu/drm/amd/amdkfd/kfd_crat.c
+> > +++ b/drivers/gpu/drm/amd/amdkfd/kfd_crat.c
+> > @@ -829,21 +829,24 @@ int kfd_create_crat_image_acpi(void **crat_image, size_t *size)
+> >  /* kfd_fill_cu_for_cpu - Fill in Compute info for the given CPU NUMA node
+> >   *
+> >   *	@numa_node_id: CPU NUMA node id
+> > - *	@avail_size: Available size in the memory
+> > - *	@sub_type_hdr: Memory into which compute info will be filled in
+> > + *	@avail_size: Available space in bytes at the end of the @crat_table.
+> > + *	@crat_table: The CRAT table to append the Compute info to;
+> > + *		on success the table length and total_entries count is updated.
+> >   *
+> >   *	Return 0 if successful else return -ve value
+> >   */
+> >  static int kfd_fill_cu_for_cpu(int numa_node_id, int *avail_size,
+> > -				int proximity_domain,
+> > -				struct crat_subtype_computeunit *sub_type_hdr)
+> > +				struct crat_header *crat_table)
 > >  {
-> >  	struct mem_cgroup *memcg = page_memcg(page);
+> >  	const struct cpumask *cpumask;
+> > +	struct crat_subtype_computeunit *sub_type_hdr;
 > >  
-> > -	VM_WARN_ON_ONCE_PAGE(!memcg, page);
-> > +	VM_WARN_ON_ONCE_PAGE(!memcg && !mem_cgroup_disabled(), page);
-> 
-> Nit: I would reverse the order of conditions as mem_cgroup_disabled() is either
-> "return true" or a static key. Not that it matters too much on DEBUG_VM configs...
-
-tl;dr I'm going to leave the patch as is.
-
-You are certainly right that I was forgetting the static-key-ness of
-mem_cgroup_disabled() when I put the tests that way round: I was thinking
-of the already-in-a-register-ness of "memcg"; but had also not realized
-that page_memcg() just did an "&", so condition bits nicely set already.
-
-And I think you are right in principle, that the tests should be better
-the way you suggest, when static key is in use - in the (unusual)
-mem_cgroup_disabled() case, though not in the usual enabled case.
-
-I refuse to confess how many hours I've spent poring over "objdump -ld"s
-of lock_page_lruvec_irqsave(), and comparing with how it is patched when
-the kernel is booted with "cgroup_disable=memory".
-
-But I have seen builds where my way round worked out better than yours,
-for both the enabled and disabled cases (SUSE gcc 9.3.1 was good, in
-the config I was trying on it); and builds where disabled was treated
-rather poorly my way (with external call to mem_cgroup_disabled() from
-lock_page_lruvec() and lock_page_lruvec_irqsave(), but inlined into
-lock_page_lruvec_irq() - go figure! - with SUSE gcc 10.2.1).
-
-I suspect a lot depends on what inlining is done, and on that prior
-page_memcg() doing its "&", and the second mem_cgroup_disabled() which
-follows immediately in mem_cgroup_lruvec(): different compilers will
-make different choices, favouring one or the other ordering.
-
-I've grown rather tired of it all (and discovered on the way that
-static keys depend on CONFIG_JUMP_LABEL=y, which I didn't have in
-a config I've carried forward through "make oldconfig"s for years -
-thanks); but not found a decisive reason to change the patch.
-
-Hugh
-
-> 
-> >  	return mem_cgroup_lruvec(memcg, pgdat);
+> >  	*avail_size -= sizeof(struct crat_subtype_computeunit);
+> >  	if (*avail_size < 0)
+> >  		return -ENOMEM;
+> >  
+> > +	sub_type_hdr = (typeof(sub_type_hdr))((char *)crat_table +
+> > +		crat_table->length);
+> >  	memset(sub_type_hdr, 0, sizeof(struct crat_subtype_computeunit));
+> >  
+> >  	/* Fill in subtype header data */
+> > @@ -855,36 +858,42 @@ static int kfd_fill_cu_for_cpu(int numa_node_id, int *avail_size,
+> >  
+> >  	/* Fill in CU data */
+> >  	sub_type_hdr->flags |= CRAT_CU_FLAGS_CPU_PRESENT;
+> > -	sub_type_hdr->proximity_domain = proximity_domain;
+> > +	sub_type_hdr->proximity_domain = crat_table->num_domains;
+> >  	sub_type_hdr->processor_id_low = kfd_numa_node_to_apic_id(numa_node_id);
+> >  	if (sub_type_hdr->processor_id_low == -1)
+> >  		return -EINVAL;
+> >  
+> >  	sub_type_hdr->num_cpu_cores = cpumask_weight(cpumask);
+> >  
+> > +	crat_table->length += sub_type_hdr->length;
+> > +	crat_table->total_entries++;
+> > +
+> >  	return 0;
 > >  }
 > >  
-> > 
+> >  /* kfd_fill_mem_info_for_cpu - Fill in Memory info for the given CPU NUMA node
+> >   *
+> >   *	@numa_node_id: CPU NUMA node id
+> > - *	@avail_size: Available size in the memory
+> > - *	@sub_type_hdr: Memory into which compute info will be filled in
+> > + *	@avail_size: Available space in bytes at the end of the @crat_table.
+> > + *	@crat_table: The CRAT table to append the Memory info to;
+> > + *		on success the table length and total_entries count is updated.
+> >   *
+> >   *	Return 0 if successful else return -ve value
+> >   */
+> >  static int kfd_fill_mem_info_for_cpu(int numa_node_id, int *avail_size,
+> > -			int proximity_domain,
+> > -			struct crat_subtype_memory *sub_type_hdr)
+> > +			struct crat_header *crat_table)
+> >  {
+> >  	uint64_t mem_in_bytes = 0;
+> >  	pg_data_t *pgdat;
+> >  	int zone_type;
+> > +	struct crat_subtype_memory *sub_type_hdr;
+> >  
+> >  	*avail_size -= sizeof(struct crat_subtype_memory);
+> >  	if (*avail_size < 0)
+> >  		return -ENOMEM;
+> >  
+> > +	sub_type_hdr = (typeof(sub_type_hdr))((char *)crat_table +
+> > +		crat_table->length);
+> >  	memset(sub_type_hdr, 0, sizeof(struct crat_subtype_memory));
+> >  
+> >  	/* Fill in subtype header data */
+> > @@ -905,27 +914,37 @@ static int kfd_fill_mem_info_for_cpu(int numa_node_id, int *avail_size,
+> >  
+> >  	sub_type_hdr->length_low = lower_32_bits(mem_in_bytes);
+> >  	sub_type_hdr->length_high = upper_32_bits(mem_in_bytes);
+> > -	sub_type_hdr->proximity_domain = proximity_domain;
+> > +	sub_type_hdr->proximity_domain = crat_table->num_domains;
+> > +
+> > +	crat_table->length += sub_type_hdr->length;
+> > +	crat_table->total_entries++;
+> >  
+> >  	return 0;
+> >  }
+> >  
+> >  #ifdef CONFIG_X86_64
+> > +/* kfd_fill_iolink_info_for_cpu() - Add IO link info to a Virtual CRAT
+> > + *
+> > + * @numa_node_id: The NUMA node ID for the CPU; as from for_each_online_node()
+> > + * @avail_size: Available space in bytes at the end of the @crat_table.
+> > + * @crat_table: The CRAT table to append the IO link info to; on success the
+> > + *              table length and total_entries count is updated.
+> > + *
+> > + * Return: 0 if successful else return -ve value
+> > + */
+> >  static int kfd_fill_iolink_info_for_cpu(int numa_node_id, int *avail_size,
+> > -				uint32_t *num_entries,
+> > -				struct crat_subtype_iolink *sub_type_hdr)
+> > +				struct crat_header *crat_table)
+> >  {
+> >  	int nid;
+> >  	struct cpuinfo_x86 *c = &cpu_data(0);
+> >  	uint8_t link_type;
+> > +	struct crat_subtype_iolink *sub_type_hdr;
+> >  
+> >  	if (c->x86_vendor == X86_VENDOR_AMD)
+> >  		link_type = CRAT_IOLINK_TYPE_HYPERTRANSPORT;
+> >  	else
+> >  		link_type = CRAT_IOLINK_TYPE_QPI_1_1;
+> >  
+> > -	*num_entries = 0;
+> > -
+> >  	/* Create IO links from this node to other CPU nodes */
+> >  	for_each_online_node(nid) {
+> >  		if (nid == numa_node_id) /* node itself */
+> > @@ -935,6 +954,8 @@ static int kfd_fill_iolink_info_for_cpu(int numa_node_id, int *avail_size,
+> >  		if (*avail_size < 0)
+> >  			return -ENOMEM;
+> >  
+> > +		sub_type_hdr = (typeof(sub_type_hdr))((char *)crat_table +
+> > +			crat_table->length);
+> >  		memset(sub_type_hdr, 0, sizeof(struct crat_subtype_iolink));
+> >  
+> >  		/* Fill in subtype header data */
+> > @@ -947,8 +968,8 @@ static int kfd_fill_iolink_info_for_cpu(int numa_node_id, int *avail_size,
+> >  		sub_type_hdr->proximity_domain_to = nid;
+> >  		sub_type_hdr->io_interface_type = link_type;
+> >  
+> > -		(*num_entries)++;
+> > -		sub_type_hdr++;
+> > +		crat_table->length += sub_type_hdr->length;
+> > +		crat_table->total_entries++;
+> >  	}
+> >  
+> >  	return 0;
+> > @@ -966,12 +987,8 @@ static int kfd_create_vcrat_image_cpu(void *pcrat_image, size_t *size)
+> >  	struct crat_header *crat_table = (struct crat_header *)pcrat_image;
+> >  	struct acpi_table_header *acpi_table;
+> >  	acpi_status status;
+> > -	struct crat_subtype_generic *sub_type_hdr;
+> >  	int avail_size = *size;
+> >  	int numa_node_id;
+> > -#ifdef CONFIG_X86_64
+> > -	uint32_t entries = 0;
+> > -#endif
+> >  	int ret = 0;
+> >  
+> >  	if (!pcrat_image)
+> > @@ -1003,48 +1020,25 @@ static int kfd_create_vcrat_image_cpu(void *pcrat_image, size_t *size)
+> >  	crat_table->total_entries = 0;
+> >  	crat_table->num_domains = 0;
+> >  
+> > -	sub_type_hdr = (struct crat_subtype_generic *)(crat_table+1);
+> > -
+> >  	for_each_online_node(numa_node_id) {
+> >  		if (kfd_numa_node_to_apic_id(numa_node_id) == -1)
+> >  			continue;
+> >  
+> >  		/* Fill in Subtype: Compute Unit */
+> > -		ret = kfd_fill_cu_for_cpu(numa_node_id, &avail_size,
+> > -			crat_table->num_domains,
+> > -			(struct crat_subtype_computeunit *)sub_type_hdr);
+> > +		ret = kfd_fill_cu_for_cpu(numa_node_id, &avail_size, crat_table);
+> >  		if (ret < 0)
+> >  			return ret;
+> > -		crat_table->length += sub_type_hdr->length;
+> > -		crat_table->total_entries++;
+> > -
+> > -		sub_type_hdr = (typeof(sub_type_hdr))((char *)sub_type_hdr +
+> > -			sub_type_hdr->length);
+> >  
+> >  		/* Fill in Subtype: Memory */
+> > -		ret = kfd_fill_mem_info_for_cpu(numa_node_id, &avail_size,
+> > -			crat_table->num_domains,
+> > -			(struct crat_subtype_memory *)sub_type_hdr);
+> > +		ret = kfd_fill_mem_info_for_cpu(numa_node_id, &avail_size, crat_table);
+> >  		if (ret < 0)
+> >  			return ret;
+> > -		crat_table->length += sub_type_hdr->length;
+> > -		crat_table->total_entries++;
+> > -
+> > -		sub_type_hdr = (typeof(sub_type_hdr))((char *)sub_type_hdr +
+> > -			sub_type_hdr->length);
+> >  
+> >  		/* Fill in Subtype: IO Link */
+> >  #ifdef CONFIG_X86_64
+> > -		ret = kfd_fill_iolink_info_for_cpu(numa_node_id, &avail_size,
+> > -				&entries,
+> > -				(struct crat_subtype_iolink *)sub_type_hdr);
+> > +		ret = kfd_fill_iolink_info_for_cpu(numa_node_id, &avail_size, crat_table);
+> >  		if (ret < 0)
+> >  			return ret;
+> > -		crat_table->length += (sub_type_hdr->length * entries);
+> > -		crat_table->total_entries += entries;
+> > -
+> > -		sub_type_hdr = (typeof(sub_type_hdr))((char *)sub_type_hdr +
+> > -				sub_type_hdr->length * entries);
+> >  #else
+> >  		pr_info("IO link not available for non x86 platforms\n");
+> >  #endif
+> 
+
