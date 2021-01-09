@@ -2,105 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0756C2EFD61
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Jan 2021 04:19:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 596FE2EFD7B
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Jan 2021 04:32:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726463AbhAIDTm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Jan 2021 22:19:42 -0500
-Received: from foss.arm.com ([217.140.110.172]:59730 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725836AbhAIDTm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Jan 2021 22:19:42 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 7FA0731B;
-        Fri,  8 Jan 2021 19:18:56 -0800 (PST)
-Received: from [192.168.122.166] (unknown [10.119.48.3])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 9EACD3F66E;
-        Fri,  8 Jan 2021 19:18:55 -0800 (PST)
-Subject: Re: [PATCH] mmc: sdhci-iproc: Add ACPI bindings for the rpi4
-To:     kernel test robot <lkp@intel.com>, linux-mmc@vger.kernel.org
-Cc:     kbuild-all@lists.01.org, clang-built-linux@googlegroups.com,
-        bcm-kernel-feedback-list@broadcom.com, sbranden@broadcom.com,
-        rjui@broadcom.com, ulf.hansson@linaro.org, adrian.hunter@intel.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        f.fainelli@gmail.com
-References: <20210108211339.1724769-1-jeremy.linton@arm.com>
- <202101090943.lYXU9GHI-lkp@intel.com>
-From:   Jeremy Linton <jeremy.linton@arm.com>
-Message-ID: <58062024-ca6a-f763-3634-9995f494e81e@arm.com>
-Date:   Fri, 8 Jan 2021 21:18:54 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.3.1
-MIME-Version: 1.0
-In-Reply-To: <202101090943.lYXU9GHI-lkp@intel.com>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        id S1726518AbhAIDbH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Jan 2021 22:31:07 -0500
+Received: from mail-io1-f54.google.com ([209.85.166.54]:32895 "EHLO
+        mail-io1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725906AbhAIDbG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 8 Jan 2021 22:31:06 -0500
+Received: by mail-io1-f54.google.com with SMTP id w18so11943079iot.0;
+        Fri, 08 Jan 2021 19:30:50 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
+         :message-id;
+        bh=+H9IDqbsovueL7letf+rLIIMkhg3UJszYGBQf9zPSuw=;
+        b=gDylqsXXdUlvY8FbklHOEf4kcSl/fsssO5r5G2Ln+MrVOALO4CxO4ogMSoE883jSvj
+         MK59WKKVx6FD0VpPjCI49T6CgywY98OcbCv3s1/xcy+q+vxdGzKJFgneAqZ/c3QBrkhA
+         L02SKfbFAo86bvvGdKWCj4IYAfwL8g/Ko4N4i/EpXMkyviBwZiwl1QcrXICC2+VqDwl0
+         KMo1t15+8jPnTrFZtmzhp5FCFRIVTL19Bp3VoFzLleBcP4DIDvkfEtABhq+4ELbzL9jZ
+         grlkNnIC5ddVvNq+tWKlFt/EZGZ2YwKwVAetBgKuLXTwWZZSlJT0LLZoKkkufFy44Z+X
+         PK0A==
+X-Gm-Message-State: AOAM532vz+5JIX8xSCzF+7f0cKONX4QtEQs5jPKjdf8NPdbBlPRqgaKl
+        X/DAuz+PQWvu2tV1IVyXag==
+X-Google-Smtp-Source: ABdhPJzHiKwMJh0PaWVNXYntY88PZcUJt9OHYgJ2VMnnb/yu1svmesnqnx+wFRaZo7igVW9Tfy+cvQ==
+X-Received: by 2002:a5d:970c:: with SMTP id h12mr7705459iol.103.1610163025502;
+        Fri, 08 Jan 2021 19:30:25 -0800 (PST)
+Received: from robh.at.kernel.org ([64.188.179.253])
+        by smtp.gmail.com with ESMTPSA id z4sm6482374ioh.32.2021.01.08.19.30.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 08 Jan 2021 19:30:24 -0800 (PST)
+Received: (nullmailer pid 3762038 invoked by uid 1000);
+        Sat, 09 Jan 2021 03:30:19 -0000
+From:   Rob Herring <robh@kernel.org>
+To:     Henry Chen <henryc.chen@mediatek.com>
+Cc:     linux-mediatek@lists.infradead.org,
+        Mark Rutland <mark.rutland@arm.com>,
+        Fan Chen <fan.chen@mediatek.com>, linux-pm@vger.kernel.org,
+        Rob Herring <robh+dt@kernel.org>,
+        James Liao <jamesjj.liao@mediatek.com>,
+        linux-arm-kernel@lists.infradead.org,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Georgi Djakov <georgi.djakov@linaro.org>,
+        linux-kernel@vger.kernel.org, Ryan Case <ryandcase@chromium.org>,
+        Arvin Wang <arvin.wang@mediatek.com>,
+        Nicolas Boichat <drinkcat@google.com>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Mark Brown <broonie@kernel.org>, devicetree@vger.kernel.org
+In-Reply-To: <1610092095-5113-2-git-send-email-henryc.chen@mediatek.com>
+References: <1610092095-5113-1-git-send-email-henryc.chen@mediatek.com> <1610092095-5113-2-git-send-email-henryc.chen@mediatek.com>
+Subject: Re: [PATCH V7 01/13] dt-bindings: soc: Add dvfsrc driver bindings
+Date:   Fri, 08 Jan 2021 20:30:19 -0700
+Message-Id: <1610163019.789930.3762037.nullmailer@robh.at.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On 1/8/21 7:10 PM, kernel test robot wrote:
-> Hi Jeremy,
+On Fri, 08 Jan 2021 15:48:03 +0800, Henry Chen wrote:
+> Document the binding for enabling dvfsrc on MediaTek SoC.
 > 
-> Thank you for the patch! Perhaps something to improve:
-> 
-> [auto build test WARNING on linus/master]
-> [also build test WARNING on v5.11-rc2 next-20210108]
-> [If your patch is applied to the wrong git tree, kindly drop us a note.
-> And when submitting patch, we suggest to use '--base' as documented in
-> https://git-scm.com/docs/git-format-patch]
-> 
-> url:    https://github.com/0day-ci/linux/commits/Jeremy-Linton/mmc-sdhci-iproc-Add-ACPI-bindings-for-the-rpi4/20210109-051645
-> base:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git 6279d812eab67a6df6b22fa495201db6f2305924
-> config: riscv-randconfig-r012-20210108 (attached as .config)
-> compiler: clang version 12.0.0 (https://github.com/llvm/llvm-project bc556e5685c0f97e79fb7b3c6f15cc5062db8e36)
-> reproduce (this is a W=1 build):
->          wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
->          chmod +x ~/bin/make.cross
->          # install riscv cross compiling tool for clang build
->          # apt-get install binutils-riscv64-linux-gnu
->          # https://github.com/0day-ci/linux/commit/659eacf5a5de971ea94390dd6c7443c82d53ea5e
->          git remote add linux-review https://github.com/0day-ci/linux
->          git fetch --no-tags linux-review Jeremy-Linton/mmc-sdhci-iproc-Add-ACPI-bindings-for-the-rpi4/20210109-051645
->          git checkout 659eacf5a5de971ea94390dd6c7443c82d53ea5e
->          # save the attached .config to linux build tree
->          COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross ARCH=riscv
-> 
-> If you fix the issue, kindly add following tag as appropriate
-> Reported-by: kernel test robot <lkp@intel.com>
-> 
-> All warnings (new ones prefixed by >>):
-
-(trimming)
-
->     include/asm-generic/io.h:1005:55: warning: performing pointer arithmetic on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
->             return (port > MMIO_UPPER_LIMIT) ? NULL : PCI_IOBASE + port;
->                                                       ~~~~~~~~~~ ^
->>> drivers/mmc/host/sdhci-iproc.c:272:38: warning: unused variable 'bcm_arasan_data' [-Wunused-const-variable]
->     static const struct sdhci_iproc_data bcm_arasan_data = {
-
-I think this is the only one caused by this patch, and its because the 
-new structures are only used inside the #ifdef ACPI block.
-
-I will post a v2.
-
->                                          ^
->     8 warnings generated.
-> 
-> 
-> vim +/bcm_arasan_data +272 drivers/mmc/host/sdhci-iproc.c
-> 
->     271	
->   > 272	static const struct sdhci_iproc_data bcm_arasan_data = {
->     273		.pdata = &sdhci_bcm_arasan_data,
->     274	};
->     275	
-> 
+> Signed-off-by: Henry Chen <henryc.chen@mediatek.com>
 > ---
-> 0-DAY CI Kernel Test Service, Intel Corporation
-> https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+>  .../devicetree/bindings/soc/mediatek/dvfsrc.yaml   | 67 ++++++++++++++++++++++
+>  1 file changed, 67 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/soc/mediatek/dvfsrc.yaml
 > 
+
+My bot found errors running 'make dt_binding_check' on your patch:
+
+yamllint warnings/errors:
+
+dtschema/dtc warnings/errors:
+Documentation/devicetree/bindings/soc/mediatek/dvfsrc.example.dts:19:18: fatal error: dt-bindings/interconnect/mtk,mt8183-emi.h: No such file or directory
+   19 |         #include <dt-bindings/interconnect/mtk,mt8183-emi.h>
+      |                  ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+compilation terminated.
+make[1]: *** [scripts/Makefile.lib:344: Documentation/devicetree/bindings/soc/mediatek/dvfsrc.example.dt.yaml] Error 1
+make: *** [Makefile:1370: dt_binding_check] Error 2
+
+See https://patchwork.ozlabs.org/patch/1423679
+
+This check can fail if there are any dependencies. The base for a patch
+series is generally the most recent rc1.
+
+If you already ran 'make dt_binding_check' and didn't see the above
+error(s), then make sure 'yamllint' is installed and dt-schema is up to
+date:
+
+pip3 install dtschema --upgrade
+
+Please check and re-submit.
 
