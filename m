@@ -2,137 +2,767 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 87C9B2F0320
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Jan 2021 20:17:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CAD652F0322
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Jan 2021 20:22:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726407AbhAITQq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Jan 2021 14:16:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50124 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726366AbhAITQp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Jan 2021 14:16:45 -0500
-Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E285EC061786
-        for <linux-kernel@vger.kernel.org>; Sat,  9 Jan 2021 11:16:04 -0800 (PST)
-Received: by mail-lf1-x12a.google.com with SMTP id h205so31185108lfd.5
-        for <linux-kernel@vger.kernel.org>; Sat, 09 Jan 2021 11:16:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Xj+wdM4M3lEcvuGtKhWJM/1JZgF4kFJC8VcvB5NhKwQ=;
-        b=Js+UCVunDyRvtAD/Vi2SOxakMOjEVHtBYDli/CvLZL9N2kyfy6Mh2BfhkGbmgvwG7d
-         wVAed4qYoC9/strnC4F+u2fujRHgacUGXv0S+xOUtds7NRHfC3EqtIhxPvNnFM/po6Ea
-         G207De9kWt0PKqoSbstfEKMde392XapWvBOaE=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Xj+wdM4M3lEcvuGtKhWJM/1JZgF4kFJC8VcvB5NhKwQ=;
-        b=X6n1TY6XUWjycz9TrF5CmYuG1INvShgNRTVb5uqhiowGrKpBAWsMsXY6tBk+7IlRRs
-         s8YunbqYPyXGOT3XqYpM+0mdmtw5aHieREkf/fXZ6uw2UkXSd7Uwqxen+v3kG+3N0DLV
-         MohtCy/sYWNlvAVO07Tr4xVRiWbD0CGoZjeoD8f+eF7RtSEDtAd33Rbdw8TM3AlVbKKY
-         XFvav5vn7rEcpjolmXq5ZKBYaLMtghiHRCpNn8/lylcyFy8RC5/AFn1WPU5cQfitxEDR
-         eZQVFHj8s0IfWjK5InTtc9vaSHKeEDJa7WQzoWdK+N2I9bUw46CFAhWQ5SG627hH6116
-         ySXw==
-X-Gm-Message-State: AOAM531WO+LI/EEeaCQeEu+hEK//wNA6WpQrBfNl7l2vgHf7NJyXpuNz
-        P54W4YruRy9mVPFFpwCB3j8FOIn8Kt2vIw==
-X-Google-Smtp-Source: ABdhPJzSxff+qslRMFipDvcf2CXwbvU9U5+H3NxATLHeUQT3WvBp4kKxm04L/JLHdld+WIzdYXjLFA==
-X-Received: by 2002:a19:844c:: with SMTP id g73mr3805653lfd.462.1610219762876;
-        Sat, 09 Jan 2021 11:16:02 -0800 (PST)
-Received: from mail-lf1-f41.google.com (mail-lf1-f41.google.com. [209.85.167.41])
-        by smtp.gmail.com with ESMTPSA id m24sm2635209ljj.62.2021.01.09.11.16.01
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 09 Jan 2021 11:16:01 -0800 (PST)
-Received: by mail-lf1-f41.google.com with SMTP id o19so31223700lfo.1
-        for <linux-kernel@vger.kernel.org>; Sat, 09 Jan 2021 11:16:01 -0800 (PST)
-X-Received: by 2002:a2e:3211:: with SMTP id y17mr3877771ljy.61.1610219761030;
- Sat, 09 Jan 2021 11:16:01 -0800 (PST)
+        id S1726253AbhAITWW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Jan 2021 14:22:22 -0500
+Received: from mail.kernel.org ([198.145.29.99]:49948 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726059AbhAITWV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 9 Jan 2021 14:22:21 -0500
+Received: from archlinux (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8A91D239D1;
+        Sat,  9 Jan 2021 19:21:37 +0000 (UTC)
+Date:   Sat, 9 Jan 2021 19:21:33 +0000
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Cristian Pop <cristian.pop@analog.com>
+Cc:     <linux-iio@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <devicetree@vger.kernel.org>
+Subject: Re: [PATCH v5 3/3] iio: dac: ad5766: add driver support for AD5766
+Message-ID: <20210109192133.4ee28a47@archlinux>
+In-Reply-To: <20210108183739.27634-3-cristian.pop@analog.com>
+References: <20210108183739.27634-1-cristian.pop@analog.com>
+        <20210108183739.27634-3-cristian.pop@analog.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-References: <B1B85771-B211-4FCC-AEEF-BDFD37332C25@vmware.com>
- <20210107200402.31095-1-aarcange@redhat.com> <20210107202525.GD504133@ziepe.ca>
- <X/eA/f1r5GXvcRWH@redhat.com> <20210108133649.GE504133@ziepe.ca>
- <X/iPtCktcQHwuK5T@redhat.com> <20210108181945.GF504133@ziepe.ca>
- <CALCETrVWGZ5MkN6S+o_h5isOHKVpjwSz-jyXSsp9VJjVOYOyyg@mail.gmail.com>
- <X/jr8QfeolQwn39f@redhat.com> <CALCETrWbmgyHR_d+FxKYpWYCc2XwZ8V8DNt_5bBL08Mi+1-_Uw@mail.gmail.com>
-In-Reply-To: <CALCETrWbmgyHR_d+FxKYpWYCc2XwZ8V8DNt_5bBL08Mi+1-_Uw@mail.gmail.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Sat, 9 Jan 2021 11:15:45 -0800
-X-Gmail-Original-Message-ID: <CAHk-=wjy6j0PL5bburcTXH3UtD0fqKz5vfgvVJAMi-qevSAp2g@mail.gmail.com>
-Message-ID: <CAHk-=wjy6j0PL5bburcTXH3UtD0fqKz5vfgvVJAMi-qevSAp2g@mail.gmail.com>
-Subject: Re: [PATCH 0/2] page_count can't be used to decide when wp_page_copy
-To:     Andy Lutomirski <luto@kernel.org>
-Cc:     Andrea Arcangeli <aarcange@redhat.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>, Linux-MM <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>, Yu Zhao <yuzhao@google.com>,
-        Peter Xu <peterx@redhat.com>,
-        Pavel Emelyanov <xemul@openvz.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Mike Rapoport <rppt@linux.vnet.ibm.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Will Deacon <will@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Hugh Dickins <hughd@google.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Oleg Nesterov <oleg@redhat.com>, Jann Horn <jannh@google.com>,
-        Kees Cook <keescook@chromium.org>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Leon Romanovsky <leonro@nvidia.com>, Jan Kara <jack@suse.cz>,
-        Kirill Tkhai <ktkhai@virtuozzo.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jan 9, 2021 at 11:03 AM Andy Lutomirski <luto@kernel.org> wrote:
->
-> >
-> > Sorry to ask but I'm curious, what also goes wrong if the user
-> > modifies memory under GUP pin from vmsplice? That's not obvious to
-> > see.
->
-> It breaks the otherwise true rule that the data in pipe buffers is
-> immutable.
+On Fri, 8 Jan 2021 20:37:39 +0200
+Cristian Pop <cristian.pop@analog.com> wrote:
 
-Note that this continued harping on vmsplice() is entirely misguided.
+> The AD5766/AD5767 are 16-channel, 16-bit/12-bit, voltage output dense DACs
+> Digital-to-Analog converters.
+> 
+> This change adds support for these DACs.
+> 
+> Signed-off-by: Cristian Pop <cristian.pop@analog.com>
+One comment inline about including linux/unaligned/be_byteshift.h
+that needed a bit of an investigation of the history of that file.
 
-Anything using GUP has the same issues.
+As long as you are happy with it I can switch this over to
+asm/unaligned.h whilst applying.
 
-This really has nothing to do with vmsplice() per se.
+Otherwise I'm happy with this now.
 
-In many ways, vmsplice() might be the least of your issues, because
-it's fairly easy to just limit that for untrusted use.
+So all that's left is giving Rob time to take another look at the
+dt bindings.
 
-And no, that does not mean "we should make vmsplice root-only" kind of
-limiting. There are no security issues in any normal situation. Again,
-it's mainly about things that don't trust each other _despite_ running
-in similar contexts as far as the kernel is concerned. IOW, exactly
-that "zygote" kind of situation.
+thanks,
 
-If you are a JIT (whether Zygote or a web browser), you basically need
-to limit the things the untrusted JIT'ed code can do. And that
-limiting may include vmsplice().
+Jonathan
 
-But note the "include" part of "include vmsplice()". Any other GUP
-user really does have the same issues, it may just be less obvious and
-have very different timings (or depend on access to devices etc).
+> ---
+> Changelog v5:
+> 	- Remove explicit init in "ad5766_span_tbl"
+> 	- Check the return value of "devm_gpiod_get_optional()" call
+> 	- Remove unreachable code in "ad5766_read_ext"
+>  drivers/iio/dac/Kconfig  |  10 +
+>  drivers/iio/dac/Makefile |   1 +
+>  drivers/iio/dac/ad5766.c | 643 +++++++++++++++++++++++++++++++++++++++
+>  3 files changed, 654 insertions(+)
+>  create mode 100644 drivers/iio/dac/ad5766.c
+> 
+> diff --git a/drivers/iio/dac/Kconfig b/drivers/iio/dac/Kconfig
+> index 6f6074a5d3db..cea07b4cced1 100644
+> --- a/drivers/iio/dac/Kconfig
+> +++ b/drivers/iio/dac/Kconfig
+> @@ -189,6 +189,16 @@ config AD5764
+>  	  To compile this driver as a module, choose M here: the
+>  	  module will be called ad5764.
+>  
+> +config AD5766
+> +	tristate "Analog Devices AD5766/AD5767 DAC driver"
+> +	depends on SPI_MASTER
+> +	help
+> +	  Say yes here to build support for Analog Devices AD5766, AD5767
+> +	  Digital to Analog Converter.
+> +
+> +	  To compile this driver as a module, choose M here: the
+> +	  module will be called ad5766.
+> +
+>  config AD5770R
+>  	tristate "Analog Devices AD5770R IDAC driver"
+>  	depends on SPI_MASTER
+> diff --git a/drivers/iio/dac/Makefile b/drivers/iio/dac/Makefile
+> index 2fc481167724..33e16f14902a 100644
+> --- a/drivers/iio/dac/Makefile
+> +++ b/drivers/iio/dac/Makefile
+> @@ -19,6 +19,7 @@ obj-$(CONFIG_AD5755) += ad5755.o
+>  obj-$(CONFIG_AD5755) += ad5758.o
+>  obj-$(CONFIG_AD5761) += ad5761.o
+>  obj-$(CONFIG_AD5764) += ad5764.o
+> +obj-$(CONFIG_AD5766) += ad5766.o
+>  obj-$(CONFIG_AD5770R) += ad5770r.o
+>  obj-$(CONFIG_AD5791) += ad5791.o
+>  obj-$(CONFIG_AD5686) += ad5686.o
+> diff --git a/drivers/iio/dac/ad5766.c b/drivers/iio/dac/ad5766.c
+> new file mode 100644
+> index 000000000000..dac35711771e
+> --- /dev/null
+> +++ b/drivers/iio/dac/ad5766.c
+> @@ -0,0 +1,643 @@
+> +// SPDX-License-Identifier: GPL-2.0-only
+> +/*
+> + * Analog Devices AD5766, AD5767
+> + * Digital to Analog Converters driver
+> + * Copyright 2019-2020 Analog Devices Inc.
+> + */
+> +#include <linux/bitfield.h>
+> +#include <linux/delay.h>
+> +#include <linux/device.h>
+> +#include <linux/gpio/consumer.h>
+> +#include <linux/iio/iio.h>
+> +#include <linux/module.h>
+> +#include <linux/spi/spi.h>
+> +#include <linux/unaligned/be_byteshift.h>
 
-Absolutely nothing cares about "data in pipe buffers changing" in any
-other case. You can already write any data you want to a pipe, it
-doesn't matter if it changes after the write or not.
+Strangely I hadn't noticed the direct include of this either of the other drivers
+in IIO that do it.   Looking back at the history of that file, it is documented
+as being safe, but then intension is that you include asm/unaligned.h as there
+may be a better option for a given architecture. Particularly likely if it is a big
+endian architecture.
 
-(In many ways, "data in the page cache" is a *much* more difficult
-issue for the kernel, and it's fundamental to any shared mmap. It's
-much more difficult because that data is obviously very much also
-accessible for DMA etc for writeout, and if you have something like
-"checksums are calculated separately and non-atomically from the
-actual DMA accesses", you will potentially get checksum errors where
-the actual disk contents don't match your separately calculated
-checksums until the _next_ write. This can actually be a feature -
-seeing "further modifications were concurrent to the write" - but most
-people end up considering it a bug).
+If I haven't missed anything I'd rather we make that change here and probably
+also clear up the few that have snuck in already.
 
-               Linus
+
+> +
+> +#define AD5766_UPPER_WORD_SPI_MASK		GENMASK(31, 16)
+> +#define AD5766_LOWER_WORD_SPI_MASK		GENMASK(15, 0)
+> +#define AD5766_DITHER_SOURCE_MASK(ch)		GENMASK(((2 * ch) + 1), (2 * ch))
+> +#define AD5766_DITHER_SOURCE(ch, source)	BIT((ch * 2) + source)
+> +#define AD5766_DITHER_SCALE_MASK(x)		AD5766_DITHER_SOURCE_MASK(x)
+> +#define AD5766_DITHER_SCALE(ch, scale)		(scale << (ch * 2))
+> +#define AD5766_DITHER_ENABLE_MASK(ch)		BIT(ch)
+> +#define AD5766_DITHER_ENABLE(ch, state)		((!state) << ch)
+> +#define AD5766_DITHER_INVERT_MASK(ch)		BIT(ch)
+> +#define AD5766_DITHER_INVERT(ch, state)		(state << ch)
+> +
+> +#define AD5766_CMD_NOP_MUX_OUT			0x00
+> +#define AD5766_CMD_SDO_CNTRL			0x01
+> +#define AD5766_CMD_WR_IN_REG(x)			(0x10 | ((x) & GENMASK(3, 0)))
+> +#define AD5766_CMD_WR_DAC_REG(x)		(0x20 | ((x) & GENMASK(3, 0)))
+> +#define AD5766_CMD_SW_LDAC			0x30
+> +#define AD5766_CMD_SPAN_REG			0x40
+> +#define AD5766_CMD_WR_PWR_DITHER		0x51
+> +#define AD5766_CMD_WR_DAC_REG_ALL		0x60
+> +#define AD5766_CMD_SW_FULL_RESET		0x70
+> +#define AD5766_CMD_READBACK_REG(x)		(0x80 | ((x) & GENMASK(3, 0)))
+> +#define AD5766_CMD_DITHER_SIG_1			0x90
+> +#define AD5766_CMD_DITHER_SIG_2			0xA0
+> +#define AD5766_CMD_INV_DITHER			0xB0
+> +#define AD5766_CMD_DITHER_SCALE_1		0xC0
+> +#define AD5766_CMD_DITHER_SCALE_2		0xD0
+> +
+> +#define AD5766_FULL_RESET_CODE			0x1234
+> +
+> +enum ad5766_type {
+> +	ID_AD5766,
+> +	ID_AD5767,
+> +};
+> +
+> +enum ad5766_voltage_range {
+> +	AD5766_VOLTAGE_RANGE_M20V_0V,
+> +	AD5766_VOLTAGE_RANGE_M16V_to_0V,
+> +	AD5766_VOLTAGE_RANGE_M10V_to_0V,
+> +	AD5766_VOLTAGE_RANGE_M12V_to_14V,
+> +	AD5766_VOLTAGE_RANGE_M16V_to_10V,
+> +	AD5766_VOLTAGE_RANGE_M10V_to_6V,
+> +	AD5766_VOLTAGE_RANGE_M5V_to_5V,
+> +	AD5766_VOLTAGE_RANGE_M10V_to_10V,
+> +};
+> +
+> +/**
+> + * struct ad5766_chip_info - chip specific information
+> + * @num_channels:	number of channels
+> + * @channel:	        channel specification
+> + */
+> +struct ad5766_chip_info {
+> +	unsigned int			num_channels;
+> +	const struct iio_chan_spec	*channels;
+> +};
+> +
+> +enum {
+> +	AD5766_DITHER_ENABLE,
+> +	AD5766_DITHER_INVERT,
+> +	AD5766_DITHER_SOURCE,
+> +};
+> +
+> +/*
+> + * Dither signal can also be scaled.
+> + * Available dither scale strings corresponding to "dither_scale" field in
+> + * "struct ad5766_state".
+> + */
+> +static const char * const ad5766_dither_scales[] = {
+> +	"1",
+> +	"0.75",
+> +	"0.5",
+> +	"0.25",
+> +};
+> +
+> +/**
+> + * struct ad5766_state - driver instance specific data
+> + * @spi:		SPI device
+> + * @lock:		Lock used to restrict concurent access to SPI device
+> + * @chip_info:		Chip model specific constants
+> + * @gpio_reset:		Reset GPIO, used to reset the device
+> + * @crt_range:		Current selected output range
+> + * @dither_enable:	Power enable bit for each channel dither block (for
+> + *			example, D15 = DAC 15,D8 = DAC 8, and D0 = DAC 0)
+> + *			0 - Normal operation, 1 - Power down
+> + * @dither_invert:	Inverts the dither signal applied to the selected DAC
+> + *			outputs
+> + * @dither_source:	Selects between 2 possible sources:
+> + *			1: N0, 2: N1
+> + *			Two bits are used for each channel
+> + * @dither_scale:	Two bits are used for each of the 16 channels:
+> + *			0: 1 SCALING, 1: 0.75 SCALING, 2: 0.5 SCALING,
+> + *			3: 0.25 SCALING.
+> + * @data:		SPI transfer buffers
+> + */
+> +struct ad5766_state {
+> +	struct spi_device		*spi;
+> +	struct mutex			lock;
+> +	const struct ad5766_chip_info	*chip_info;
+> +	struct gpio_desc		*gpio_reset;
+> +	enum ad5766_voltage_range	crt_range;
+> +	u16		dither_enable;
+> +	u16		dither_invert;
+> +	u32		dither_source;
+> +	u32		dither_scale;
+> +	union {
+> +		u32	d32;
+> +		u16	w16[2];
+> +		u8	b8[4];
+> +	} data[3] ____cacheline_aligned;
+> +};
+> +
+> +struct ad5766_span_tbl {
+> +	int		min;
+> +	int		max;
+> +};
+> +
+> +static const struct ad5766_span_tbl ad5766_span_tbl[] = {
+> +	[AD5766_VOLTAGE_RANGE_M20V_0V] =	{-20, 0},
+> +	[AD5766_VOLTAGE_RANGE_M16V_to_0V] =	{-16, 0},
+> +	[AD5766_VOLTAGE_RANGE_M10V_to_0V] =	{-10, 0},
+> +	[AD5766_VOLTAGE_RANGE_M12V_to_14V] =	{-12, 14},
+> +	[AD5766_VOLTAGE_RANGE_M16V_to_10V] =	{-16, 10},
+> +	[AD5766_VOLTAGE_RANGE_M10V_to_6V] =	{-10, 6},
+> +	[AD5766_VOLTAGE_RANGE_M5V_to_5V] =	{-5, 5},
+> +	[AD5766_VOLTAGE_RANGE_M10V_to_10V] =	{-10, 10},
+> +};
+> +
+> +static int __ad5766_spi_read(struct ad5766_state *st, u8 dac, int *val)
+> +{
+> +	int ret;
+> +	struct spi_transfer xfers[] = {
+> +		{
+> +			.tx_buf = &st->data[0].d32,
+> +			.bits_per_word = 8,
+> +			.len = 3,
+> +			.cs_change = 1,
+> +		}, {
+> +			.tx_buf = &st->data[1].d32,
+> +			.rx_buf = &st->data[2].d32,
+> +			.bits_per_word = 8,
+> +			.len = 3,
+> +		},
+> +	};
+> +
+> +	st->data[0].d32 = AD5766_CMD_READBACK_REG(dac);
+> +	st->data[1].d32 = AD5766_CMD_NOP_MUX_OUT;
+> +
+> +	ret = spi_sync_transfer(st->spi, xfers, ARRAY_SIZE(xfers));
+> +	if (ret)
+> +		return ret;
+> +
+> +	*val = st->data[2].w16[1];
+> +
+> +	return ret;
+> +}
+> +
+> +static int __ad5766_spi_write(struct ad5766_state *st, u8 command, u16 data)
+> +{
+> +	st->data[0].b8[0] = command;
+> +	put_unaligned_be16(data, &st->data[0].b8[1]);
+> +
+> +	return spi_write(st->spi, &st->data[0].b8[0], 3);
+> +}
+> +
+> +static int ad5766_read(struct iio_dev *indio_dev, u8 dac, int *val)
+> +{
+> +	struct ad5766_state *st = iio_priv(indio_dev);
+> +	int ret;
+> +
+> +	mutex_lock(&st->lock);
+> +	ret = __ad5766_spi_read(st, dac, val);
+> +	mutex_unlock(&st->lock);
+> +
+> +	return ret;
+> +}
+> +
+> +static int ad5766_write(struct iio_dev *indio_dev, u8 dac, u16 data)
+> +{
+> +	struct ad5766_state *st = iio_priv(indio_dev);
+> +	int ret;
+> +
+> +	mutex_lock(&st->lock);
+> +	ret = __ad5766_spi_write(st, AD5766_CMD_WR_DAC_REG(dac), data);
+> +	mutex_unlock(&st->lock);
+> +
+> +	return ret;
+> +}
+> +
+> +static int ad5766_reset(struct ad5766_state *st)
+> +{
+> +	int ret;
+> +
+> +	if (st->gpio_reset) {
+> +		gpiod_set_value_cansleep(st->gpio_reset, 1);
+> +		ndelay(100); /* t_reset >= 100ns */
+> +		gpiod_set_value_cansleep(st->gpio_reset, 0);
+> +	} else {
+> +		ret = __ad5766_spi_write(st, AD5766_CMD_SW_FULL_RESET,
+> +					AD5766_FULL_RESET_CODE);
+> +		if (ret < 0)
+> +			return ret;
+> +	}
+> +
+> +	/*
+> +	 * Minimum time between a reset and the subsequent successful write is
+> +	 * typically 25 ns
+> +	 */
+> +	ndelay(25);
+> +
+> +	return 0;
+> +}
+> +
+> +static int ad5766_read_raw(struct iio_dev *indio_dev,
+> +			   struct iio_chan_spec const *chan,
+> +			   int *val,
+> +			   int *val2,
+> +			   long m)
+> +{
+> +	struct ad5766_state *st = iio_priv(indio_dev);
+> +	int ret;
+> +
+> +	switch (m) {
+> +	case IIO_CHAN_INFO_RAW:
+> +		ret = ad5766_read(indio_dev, chan->address, val);
+> +		if (ret)
+> +			return ret;
+> +
+> +		return IIO_VAL_INT;
+> +	case IIO_CHAN_INFO_OFFSET:
+> +		*val = ad5766_span_tbl[st->crt_range].min;
+> +
+> +		return IIO_VAL_INT;
+> +	case IIO_CHAN_INFO_SCALE:
+> +		*val = ad5766_span_tbl[st->crt_range].max -
+> +		       ad5766_span_tbl[st->crt_range].min;
+> +		*val2 = st->chip_info->channels[0].scan_type.realbits;
+> +
+> +		return IIO_VAL_FRACTIONAL_LOG2;
+> +	default:
+> +		return -EINVAL;
+> +	}
+> +}
+> +
+> +static int ad5766_write_raw(struct iio_dev *indio_dev,
+> +			    struct iio_chan_spec const *chan,
+> +			    int val,
+> +			    int val2,
+> +			    long info)
+> +{
+> +	switch (info) {
+> +	case IIO_CHAN_INFO_RAW:
+> +	{
+> +		const int max_val = GENMASK(chan->scan_type.realbits - 1, 0);
+> +
+> +		if (val > max_val || val < 0)
+> +			return -EINVAL;
+> +		val <<= chan->scan_type.shift;
+> +		return ad5766_write(indio_dev, chan->address, val);
+> +	}
+> +	default:
+> +		return -EINVAL;
+> +	}
+> +}
+> +
+> +static const struct iio_info ad5766_info = {
+> +	.read_raw = ad5766_read_raw,
+> +	.write_raw = ad5766_write_raw,
+> +};
+> +
+> +static int ad5766_get_dither_source(struct iio_dev *dev,
+> +				    const struct iio_chan_spec *chan)
+> +{
+> +	struct ad5766_state *st = iio_priv(dev);
+> +	u32 source;
+> +
+> +	source = st->dither_source & AD5766_DITHER_SOURCE_MASK(chan->channel);
+> +	source = source >> (chan->channel * 2);
+> +	source -= 1;
+> +
+> +	return source;
+> +}
+> +
+> +static int ad5766_set_dither_source(struct iio_dev *dev,
+> +			  const struct iio_chan_spec *chan,
+> +			  unsigned int source)
+> +{
+> +	struct ad5766_state *st = iio_priv(dev);
+> +	uint16_t val;
+> +	int ret;
+> +
+> +	st->dither_source &= ~AD5766_DITHER_SOURCE_MASK(chan->channel);
+> +	st->dither_source |= AD5766_DITHER_SOURCE(chan->channel, source);
+> +
+> +	val = FIELD_GET(AD5766_LOWER_WORD_SPI_MASK, st->dither_source);
+> +	ret = ad5766_write(dev, AD5766_CMD_DITHER_SIG_1, val);
+> +	if (ret)
+> +		return ret;
+> +
+> +	val = FIELD_GET(AD5766_UPPER_WORD_SPI_MASK, st->dither_source);
+> +
+> +	return ad5766_write(dev, AD5766_CMD_DITHER_SIG_2, val);
+> +}
+> +
+> +static int ad5766_get_dither_scale(struct iio_dev *dev,
+> +				   const struct iio_chan_spec *chan)
+> +{
+> +	struct ad5766_state *st = iio_priv(dev);
+> +	u32 scale;
+> +
+> +	scale = st->dither_scale & AD5766_DITHER_SCALE_MASK(chan->channel);
+> +
+> +	return (scale >> (chan->channel * 2));
+> +}
+> +
+> +static int ad5766_set_dither_scale(struct iio_dev *dev,
+> +			  const struct iio_chan_spec *chan,
+> +			  unsigned int scale)
+> +{
+> +	int ret;
+> +	struct ad5766_state *st = iio_priv(dev);
+> +	uint16_t val;
+> +
+> +	st->dither_scale &= ~AD5766_DITHER_SCALE_MASK(chan->channel);
+> +	st->dither_scale |= AD5766_DITHER_SCALE(chan->channel, scale);
+> +
+> +	val = FIELD_GET(AD5766_LOWER_WORD_SPI_MASK, st->dither_scale);
+> +	ret = ad5766_write(dev, AD5766_CMD_DITHER_SCALE_1, val);
+> +	if (ret)
+> +		return ret;
+> +	val = FIELD_GET(AD5766_UPPER_WORD_SPI_MASK, st->dither_scale);
+> +
+> +	return ad5766_write(dev, AD5766_CMD_DITHER_SCALE_2, val);
+> +}
+> +
+> +static const struct iio_enum ad5766_dither_scale_enum = {
+> +	.items = ad5766_dither_scales,
+> +	.num_items = ARRAY_SIZE(ad5766_dither_scales),
+> +	.set = ad5766_set_dither_scale,
+> +	.get = ad5766_get_dither_scale,
+> +};
+> +
+> +static ssize_t ad5766_read_ext(struct iio_dev *indio_dev,
+> +			       uintptr_t private,
+> +			       const struct iio_chan_spec *chan,
+> +			       char *buf)
+> +{
+> +	struct ad5766_state *st = iio_priv(indio_dev);
+> +
+> +	switch (private) {
+> +	case AD5766_DITHER_ENABLE:
+> +		return sprintf(buf, "%u\n",
+> +			       !(st->dither_enable & BIT(chan->channel)));
+> +		break;
+> +	case AD5766_DITHER_INVERT:
+> +		return sprintf(buf, "%u\n",
+> +			       !!(st->dither_invert & BIT(chan->channel)));
+> +		break;
+> +	case AD5766_DITHER_SOURCE:
+> +		return sprintf(buf, "%u\n",
+> +			       ad5766_get_dither_source(indio_dev, chan));
+> +	default:
+> +		return -EINVAL;
+> +	}
+> +}
+> +
+> +static ssize_t ad5766_write_ext(struct iio_dev *indio_dev,
+> +				 uintptr_t private,
+> +				 const struct iio_chan_spec *chan,
+> +				 const char *buf, size_t len)
+> +{
+> +	struct ad5766_state *st = iio_priv(indio_dev);
+> +	bool readin;
+> +	int ret;
+> +
+> +	ret = kstrtobool(buf, &readin);
+> +	if (ret)
+> +		return ret;
+> +
+> +	switch (private) {
+> +	case AD5766_DITHER_ENABLE:
+> +		st->dither_enable &= ~AD5766_DITHER_ENABLE_MASK(chan->channel);
+> +		st->dither_enable |= AD5766_DITHER_ENABLE(chan->channel,
+> +							  readin);
+
+Trivial but the above is under 80 chars on one line so better to not wrap it.
+
+> +		ret = ad5766_write(indio_dev, AD5766_CMD_WR_PWR_DITHER,
+> +				   st->dither_enable);
+> +		break;
+> +	case AD5766_DITHER_INVERT:
+> +		st->dither_invert &= ~AD5766_DITHER_INVERT_MASK(chan->channel);
+> +		st->dither_invert |= AD5766_DITHER_INVERT(chan->channel,
+> +							  readin);
+> +		ret = ad5766_write(indio_dev, AD5766_CMD_INV_DITHER,
+> +				   st->dither_invert);
+> +		break;
+> +	case AD5766_DITHER_SOURCE:
+> +		ret = ad5766_set_dither_source(indio_dev, chan, readin);
+> +		break;
+> +	default:
+> +		return -EINVAL;
+> +	}
+> +
+> +	return ret ? ret : len;
+> +}
+> +
+> +#define _AD5766_CHAN_EXT_INFO(_name, _what, _shared) { \
+> +	.name = _name, \
+> +	.read = ad5766_read_ext, \
+> +	.write = ad5766_write_ext, \
+> +	.private = _what, \
+> +	.shared = _shared, \
+> +}
+> +
+> +#define IIO_ENUM_AVAILABLE_SHARED(_name, _shared, _e) \
+> +{ \
+> +	.name = (_name "_available"), \
+> +	.shared = _shared, \
+> +	.read = iio_enum_available_read, \
+> +	.private = (uintptr_t)(_e), \
+> +}
+> +
+> +static const struct iio_chan_spec_ext_info ad5766_ext_info[] = {
+> +
+> +	_AD5766_CHAN_EXT_INFO("dither_enable", AD5766_DITHER_ENABLE,
+> +			      IIO_SEPARATE),
+> +	_AD5766_CHAN_EXT_INFO("dither_invert", AD5766_DITHER_INVERT,
+> +			      IIO_SEPARATE),
+> +	_AD5766_CHAN_EXT_INFO("dither_source", AD5766_DITHER_SOURCE,
+> +			      IIO_SEPARATE),
+> +	IIO_ENUM("dither_scale", IIO_SEPARATE, &ad5766_dither_scale_enum),
+> +	IIO_ENUM_AVAILABLE_SHARED("dither_scale",
+> +				  IIO_SEPARATE,
+> +				  &ad5766_dither_scale_enum),
+> +	{}
+> +};
+> +
+> +#define AD576x_CHANNEL(_chan, _bits) {					\
+> +	.type = IIO_VOLTAGE,						\
+> +	.indexed = 1,							\
+> +	.output = 1,							\
+> +	.channel = (_chan),						\
+> +	.address = (_chan),						\
+> +	.info_mask_separate = BIT(IIO_CHAN_INFO_RAW),			\
+> +	.info_mask_shared_by_type = BIT(IIO_CHAN_INFO_OFFSET) |		\
+> +		BIT(IIO_CHAN_INFO_SCALE),				\
+> +	.scan_type = {							\
+> +		.sign = 'u',						\
+> +		.realbits = (_bits),					\
+> +		.storagebits = 16,					\
+> +		.shift = 16 - (_bits),					\
+> +	},								\
+> +	.ext_info = ad5766_ext_info,					\
+> +}
+> +
+> +#define DECLARE_AD576x_CHANNELS(_name, _bits)			\
+> +const struct iio_chan_spec _name[] = {				\
+> +	AD576x_CHANNEL(0, (_bits)),				\
+> +	AD576x_CHANNEL(1, (_bits)),				\
+> +	AD576x_CHANNEL(2, (_bits)),				\
+> +	AD576x_CHANNEL(3, (_bits)),				\
+> +	AD576x_CHANNEL(4, (_bits)),				\
+> +	AD576x_CHANNEL(5, (_bits)),				\
+> +	AD576x_CHANNEL(6, (_bits)),				\
+> +	AD576x_CHANNEL(7, (_bits)),				\
+> +	AD576x_CHANNEL(8, (_bits)),				\
+> +	AD576x_CHANNEL(9, (_bits)),				\
+> +	AD576x_CHANNEL(10, (_bits)),				\
+> +	AD576x_CHANNEL(11, (_bits)),				\
+> +	AD576x_CHANNEL(12, (_bits)),				\
+> +	AD576x_CHANNEL(13, (_bits)),				\
+> +	AD576x_CHANNEL(14, (_bits)),				\
+> +	AD576x_CHANNEL(15, (_bits)),				\
+> +}
+> +
+> +static DECLARE_AD576x_CHANNELS(ad5766_channels, 16);
+> +static DECLARE_AD576x_CHANNELS(ad5767_channels, 12);
+> +
+> +static const struct ad5766_chip_info ad5766_chip_infos[] = {
+> +	[ID_AD5766] = {
+> +		.num_channels = ARRAY_SIZE(ad5766_channels),
+> +		.channels = ad5766_channels,
+> +	},
+> +	[ID_AD5767] = {
+> +		.num_channels = ARRAY_SIZE(ad5767_channels),
+> +		.channels = ad5767_channels,
+> +	},
+> +};
+> +
+> +static int ad5766_get_output_range(struct ad5766_state *st)
+> +{
+> +	int i, ret, min, max, tmp[2];
+> +
+> +	ret = device_property_read_u32_array(&st->spi->dev,
+> +					     "output-range-voltage",
+> +					     tmp, 2);
+> +	if (ret)
+> +		return ret;
+> +
+> +	min = tmp[0];
+> +	max = tmp[1];
+> +	for (i = 0; i < ARRAY_SIZE(ad5766_span_tbl); i++) {
+> +		if (ad5766_span_tbl[i].min != min ||
+> +		    ad5766_span_tbl[i].max != max)
+> +			continue;
+> +
+> +		st->crt_range = i;
+> +
+> +		return 0;
+> +	}
+> +
+> +	return -EINVAL;
+> +}
+> +
+> +static int ad5766_default_setup(struct ad5766_state *st)
+> +{
+> +	uint16_t val;
+> +	int ret, i;
+> +
+> +	/* Always issue a reset before writing to the span register. */
+> +	ret = ad5766_reset(st);
+> +	if (ret)
+> +		return ret;
+> +
+> +	ret = ad5766_get_output_range(st);
+> +	if (ret)
+> +		return ret;
+> +
+> +	/* Dither power down */
+> +	st->dither_enable = GENMASK(15, 0);
+> +	ret = __ad5766_spi_write(st, AD5766_CMD_WR_PWR_DITHER,
+> +			     st->dither_enable);
+> +	if (ret)
+> +		return ret;
+> +
+> +	st->dither_source = 0;
+> +	for (i = 0; i < ARRAY_SIZE(ad5766_channels); i++)
+> +		st->dither_source |= AD5766_DITHER_SOURCE(i, 0);
+> +	val = FIELD_GET(AD5766_LOWER_WORD_SPI_MASK, st->dither_source);
+> +	ret = __ad5766_spi_write(st, AD5766_CMD_DITHER_SIG_1, val);
+> +	if (ret)
+> +		return ret;
+> +
+> +	val = FIELD_GET(AD5766_UPPER_WORD_SPI_MASK, st->dither_source);
+> +	ret = __ad5766_spi_write(st, AD5766_CMD_DITHER_SIG_2, val);
+> +	if (ret)
+> +		return ret;
+> +
+> +	st->dither_scale = 0;
+> +	val = FIELD_GET(AD5766_LOWER_WORD_SPI_MASK, st->dither_scale);
+> +	ret = __ad5766_spi_write(st, AD5766_CMD_DITHER_SCALE_1, val);
+> +	if (ret)
+> +		return ret;
+> +
+> +	val = FIELD_GET(AD5766_UPPER_WORD_SPI_MASK, st->dither_scale);
+> +	ret = __ad5766_spi_write(st, AD5766_CMD_DITHER_SCALE_2, val);
+> +	if (ret)
+> +		return ret;
+> +
+> +	st->dither_invert = 0;
+> +	ret = __ad5766_spi_write(st, AD5766_CMD_INV_DITHER, st->dither_invert);
+> +	if (ret)
+> +		return ret;
+> +
+> +	return  __ad5766_spi_write(st, AD5766_CMD_SPAN_REG, st->crt_range);
+> +}
+> +
+> +static int ad5766_probe(struct spi_device *spi)
+> +{
+> +	enum ad5766_type type;
+> +	struct iio_dev *indio_dev;
+> +	struct ad5766_state *st;
+> +	int ret;
+> +
+> +	indio_dev = devm_iio_device_alloc(&spi->dev, sizeof(*st));
+> +	if (!indio_dev)
+> +		return -ENOMEM;
+> +
+> +	st = iio_priv(indio_dev);
+> +	mutex_init(&st->lock);
+> +
+> +	st->spi = spi;
+> +	type = spi_get_device_id(spi)->driver_data;
+> +	st->chip_info = &ad5766_chip_infos[type];
+> +
+> +	indio_dev->channels = st->chip_info->channels;
+> +	indio_dev->num_channels = st->chip_info->num_channels;
+> +	indio_dev->info = &ad5766_info;
+> +	indio_dev->dev.parent = &spi->dev;
+> +	indio_dev->dev.of_node = spi->dev.of_node;
+> +	indio_dev->name = spi_get_device_id(spi)->name;
+> +	indio_dev->modes = INDIO_DIRECT_MODE;
+> +
+> +	st->gpio_reset = devm_gpiod_get_optional(&st->spi->dev, "reset",
+> +						GPIOD_OUT_LOW);
+> +	if (IS_ERR(st->gpio_reset))
+> +		return PTR_ERR(st->gpio_reset);
+> +
+> +	ret = ad5766_default_setup(st);
+> +	if (ret)
+> +		return ret;
+> +
+> +	return devm_iio_device_register(&spi->dev, indio_dev);
+> +}
+> +
+> +static const struct of_device_id ad5766_dt_match[] = {
+> +	{ .compatible = "adi,ad5766" },
+> +	{ .compatible = "adi,ad5767" },
+> +	{}
+> +};
+> +MODULE_DEVICE_TABLE(of, ad5766_dt_match);
+> +
+> +static const struct spi_device_id ad5766_spi_ids[] = {
+> +	{ "ad5766", ID_AD5766 },
+> +	{ "ad5767", ID_AD5767 },
+> +	{}
+> +};
+> +MODULE_DEVICE_TABLE(spi, ad5766_spi_ids);
+> +
+> +static struct spi_driver ad5766_driver = {
+> +	.driver = {
+> +		.name = "ad5766",
+> +		.of_match_table = ad5766_dt_match,
+> +	},
+> +	.probe = ad5766_probe,
+> +	.id_table = ad5766_spi_ids,
+> +};
+> +module_spi_driver(ad5766_driver);
+> +
+> +MODULE_AUTHOR("Denis-Gabriel Gheorghescu <denis.gheorghescu@analog.com>");
+> +MODULE_DESCRIPTION("Analog Devices AD5766/AD5767 DACs");
+> +MODULE_LICENSE("GPL v2");
+
