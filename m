@@ -2,185 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D06C2F0171
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Jan 2021 17:23:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AFCD02F017A
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Jan 2021 17:28:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726265AbhAIQWq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Jan 2021 11:22:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41200 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725970AbhAIQWp (ORCPT
+        id S1726466AbhAIQ2F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Jan 2021 11:28:05 -0500
+Received: from mail-io1-f71.google.com ([209.85.166.71]:43179 "EHLO
+        mail-io1-f71.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725970AbhAIQ2E (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Jan 2021 11:22:45 -0500
-Received: from mail-io1-xd2a.google.com (mail-io1-xd2a.google.com [IPv6:2607:f8b0:4864:20::d2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D99BC061786;
-        Sat,  9 Jan 2021 08:22:05 -0800 (PST)
-Received: by mail-io1-xd2a.google.com with SMTP id p187so13080645iod.4;
-        Sat, 09 Jan 2021 08:22:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
-         :subject:to:cc:content-transfer-encoding;
-        bh=SBw9x5RzF6S1E0bgP/dBM7DvvjaOtCClJyn1xuwfGAM=;
-        b=ivZm2CZr3az3alRQ5FuDxSzTbBb3ILvI9WHM5seIOXxjHBiEx2ZIeqgJm+JV9tl7RO
-         ZhQ77eHFQkMR1oTs1Qa0QNO81vv9qAg5XJr58smMNRbYuVLxsN+dz+a7HNocanIfCQgN
-         P9upEioOrTeQwHgFwE0EhjoMHB/imztKDSo/sq4HgjSnzgGq2XVNdSFfY41ItwXhiGX9
-         vunF4HVM6wF+4jjG/zD0qVBK6qwhBLI95WVy0jw5vvDk53PfFI4umqGvFPEPveT/fzLo
-         +YH6U7Xn1H/MCvNNeGs6AzjNHzSE1lglIGxOWPjush8c+fdZ/UcGEA/lfs79BYGrNrb2
-         H+tg==
+        Sat, 9 Jan 2021 11:28:04 -0500
+Received: by mail-io1-f71.google.com with SMTP id c7so10090807iob.10
+        for <linux-kernel@vger.kernel.org>; Sat, 09 Jan 2021 08:27:48 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
-         :from:date:message-id:subject:to:cc:content-transfer-encoding;
-        bh=SBw9x5RzF6S1E0bgP/dBM7DvvjaOtCClJyn1xuwfGAM=;
-        b=FRnzXU6HynAd6i+H2fnNutVbZOvOxrTZgDEtOVV4YDW63kJcSZvEnVlf9EbuYPoF7d
-         TbltHe7b1FCTkVFGCmOdQpQlmom+NTx6lzg6Wn4sqsIWo+KGY8BZI4Nsvvht0re1hEER
-         ahlCQ6AYhHBP1/P+OPLums4yFHE8s0fNWUU3sWMU/TqRgsCjuUjybe8KWvAWHFAeU67J
-         Q0jU1iHpgkvDd09gHZR1CfVtE57974cjl7RSCBq4kvxCA9rtZmS4ScrZ7Sll/QAptdF8
-         81Nf7h2nzrHgzLxInHcC+nnrSYyBVGLQFxqcAq6f9yYsXoTOCuAxLoVFqD/3et9Yi4Yi
-         pEPQ==
-X-Gm-Message-State: AOAM5327GEF2lvY9vcrCyLeoVtzbGVJ5CnicctfyanHGvdL3XnXPeBy9
-        Pl0sezdCymoJsKexh062sXj2qR4RE7NFZjOIpjw=
-X-Google-Smtp-Source: ABdhPJxOLHtBfV8AOPpXrXXuxrdgkS2WGzZDrDNCogUWxjHgMgHHItj2+IYeGbJgMqzyqqPipfKWi3S0CcurZMGsrh0=
-X-Received: by 2002:a02:9f19:: with SMTP id z25mr8124040jal.30.1610209324708;
- Sat, 09 Jan 2021 08:22:04 -0800 (PST)
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=UfTIgRRR5zQYdkC5mEzTjzS+qdheTB/GHC44FlPG0ew=;
+        b=t6D8u3LFJ+WI1oldDLYVgjNpcZPppu3lReaHbGEFZxO93eKMoZe8TW4G+bxnLkK0bZ
+         Fy2l6qHLHLCNR11NTDwOdDybF7jpwRQCBG3JqDpC8Be9Ox/hprh7S7HyqyVej8K7KUKN
+         Al0Q/axds85qu4On2PCIeHAWTLhB4G0UPY9XcViAv8gGLbrKdq17N8ajQ2IKvUeb5ZQ/
+         etzREkC0nULbxE1k7Zsrd9x6nLDi0YINKTHKpSctwQIuVQ460qB5lg/M2Pe5kWMSSNgX
+         2D8yacsz/MqRZSonccNE5upoJzHpOywQL6CplY6pMUjEF20lYb9/XcAHGSi133Law7rm
+         njpw==
+X-Gm-Message-State: AOAM530hbSDjqFatYAM8MEPw0s0Ah6kD+0clMv5J0oHtgCeYIrTv7gzU
+        lY1uLShYh+3LI2SWA7BZFiAe6o0r6t6TdL1LeZJu9eeSA+lg
+X-Google-Smtp-Source: ABdhPJxYEjCpuXzVfcPSHlt+fWSPBk6hy8bTEZd3BsuWyoGbbZoqLiycmiApJ5uMta4OSIIgIao7ES83euKlBOw+DPAHAEAJmT74
 MIME-Version: 1.0
-References: <20201211184633.3213045-1-samitolvanen@google.com>
- <CA+icZUWYxO1hHW-_vrJid7EstqQRYQphjO3Xn6pj6qfEYEONbA@mail.gmail.com>
- <20210109153646.zrmglpvr27f5zd7m@treble> <CA+icZUUiucbsQZtJKYdD7Y7Cq8hJZdBwsF0U0BFbaBtnLY3Nsw@mail.gmail.com>
- <20210109160709.kqqpf64klflajarl@treble>
-In-Reply-To: <20210109160709.kqqpf64klflajarl@treble>
-Reply-To: sedat.dilek@gmail.com
-From:   Sedat Dilek <sedat.dilek@gmail.com>
-Date:   Sat, 9 Jan 2021 17:21:51 +0100
-Message-ID: <CA+icZUU=sS2xfzo9qTUTPQ0prbbQcj29tpDt1qK5cYZxarXuxg@mail.gmail.com>
-Subject: Re: [PATCH v9 00/16] Add support for Clang LTO
-To:     Josh Poimboeuf <jpoimboe@redhat.com>
-Cc:     Sami Tolvanen <samitolvanen@google.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Will Deacon <will@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Clang-Built-Linux ML <clang-built-linux@googlegroups.com>,
-        kernel-hardening@lists.openwall.com, linux-arch@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kbuild@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org
+X-Received: by 2002:a92:4019:: with SMTP id n25mr9049876ila.25.1610209643255;
+ Sat, 09 Jan 2021 08:27:23 -0800 (PST)
+Date:   Sat, 09 Jan 2021 08:27:23 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000cce36805b87a25e4@google.com>
+Subject: WARNING in tcindex_alloc_perfect_hash
+From:   syzbot <syzbot+1071ad60cd7df39fdadb@syzkaller.appspotmail.com>
+To:     akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, netdev@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jan 9, 2021 at 5:07 PM Josh Poimboeuf <jpoimboe@redhat.com> wrote:
->
-> On Sat, Jan 09, 2021 at 04:46:21PM +0100, Sedat Dilek wrote:
-> > On Sat, Jan 9, 2021 at 4:36 PM Josh Poimboeuf <jpoimboe@redhat.com> wro=
-te:
-> > >
-> > > On Sat, Jan 09, 2021 at 03:54:20PM +0100, Sedat Dilek wrote:
-> > > > I am interested in having Clang LTO (Clang-CFI) for x86-64 working =
-and
-> > > > help with testing.
-> > > >
-> > > > I tried the Git tree mentioned in [3] <jpoimboe.git#objtool-vmlinux=
->
-> > > > (together with changes from <peterz.git#x86/urgent>).
-> > > >
-> > > > I only see in my build-log...
-> > > >
-> > > > drivers/gpu/drm/i915/gem/i915_gem_execbuffer.o: warning: objtool:
-> > > > eb_relocate_parse_slow()+0x3d0: stack state mismatch: cfa1=3D7+120
-> > > > cfa2=3D-1+0
-> > > > drivers/gpu/drm/i915/gem/i915_gem_execbuffer.o: warning: objtool:
-> > > > eb_copy_relocations()+0x229: stack state mismatch: cfa1=3D7+120
-> > > > cfa2=3D-1+0
-> > > >
-> > > > ...which was reported and worked on in [1].
-> > > >
-> > > > This is with Clang-IAS version 11.0.1.
-> > > >
-> > > > Unfortunately, the recent changes in <samitolvanen.github#clang-cfi=
->
-> > > > do not cleanly apply with Josh stuff.
-> > > > My intention/wish was to report this combination of patchsets "heal=
-s"
-> > > > a lot of objtool-warnings for vmlinux.o I observed with Clang-CFI.
-> > > >
-> > > > Is it possible to have a Git branch where Josh's objtool-vmlinux is
-> > > > working together with Clang-LTO?
-> > > > For testing purposes.
-> > >
-> > > I updated my branch with my most recent work from before the holidays=
-,
-> > > can you try it now?  It still doesn't fix any of the crypto warnings,
-> > > but I'll do that in a separate set after posting these next week.
-> > >
-> >
-> > Thanks, Josh.
-> >
-> > Did you push it (oh ah push it push it really really really good...)
-> > to your remote Git please :-).
->
-> I thought I already pushed it pretty good ;-) do you not see it?
->
-> git://git.kernel.org/pub/scm/linux/kernel/git/jpoimboe/linux.git objtool-=
-vmlinux
->
-> d6baee244f2d =E2=80=94 objtool: Alphabetize usage option list (3 weeks ag=
-o)
-> c0b2a6a625ac =E2=80=94 objtool: Separate vmlinux/noinstr validation confi=
-g options (3 weeks ago)
-> 84c53551ad17 =E2=80=94 objtool: Enable full vmlinux validation (3 weeks a=
-go)
-> e518ac0801cd =E2=80=94 x86/power: Support objtool validation in hibernate=
-_asm_64.S (3 weeks ago)
-> d0ac4c7301c1 =E2=80=94 x86/power: Move restore_registers() to top of the =
-file (3 weeks ago)
-> d3389bc83538 =E2=80=94 x86/power: Convert indirect jumps to retpolines (3=
- weeks ago)
-> 7a974d90aa40 =E2=80=94 x86/acpi: Support objtool validation in wakeup_64.=
-S (3 weeks ago)
-> 6693e26cd6cc =E2=80=94 x86/acpi: Convert indirect jump to retpoline (3 we=
-eks ago)
-> 0dfb760c74d1 =E2=80=94 x86/ftrace: Support objtool vmlinux.o validation i=
-n ftrace_64.S (3 weeks ago)
-> 89a4febfd7bf =E2=80=94 x86/xen/pvh: Convert indirect jump to retpoline (3=
- weeks ago)
-> b62837092140 =E2=80=94 x86/xen: Support objtool vmlinux.o validation in x=
-en-head.S (3 weeks ago)
-> 705e18481ed9 =E2=80=94 x86/xen: Support objtool validation in xen-asm.S (=
-3 weeks ago)
-> 3548319e21b9 =E2=80=94 objtool: Add xen_start_kernel() to noreturn list (=
-3 weeks ago)
-> 6016e8da8c3d =E2=80=94 objtool: Combine UNWIND_HINT_RET_OFFSET and UNWIND=
-_HINT_FUNC (3 weeks ago)
-> 56d6a7aee8b1 =E2=80=94 objtool: Add asm version of STACK_FRAME_NON_STANDA=
-RD (3 weeks ago)
-> 68259d951f1a =E2=80=94 objtool: Assume only ELF functions do sibling call=
-s (3 weeks ago)
-> 0d6c8816cf91 =E2=80=94 x86/ftrace: Add UNWIND_HINT_FUNC annotation for ft=
-race_stub (3 weeks ago)
-> 24d6ce8cd8f6 =E2=80=94 objtool: Support retpoline jump detection for vmli=
-nux.o (3 weeks ago)
-> 8145ea268f16 =E2=80=94 objtool: Fix ".cold" section suffix check for newe=
-r versions of GCC (3 weeks ago)
-> b3dfca472514 =E2=80=94 objtool: Fix retpoline detection in asm code (3 we=
-eks ago)
-> b82402fa5211 =E2=80=94 objtool: Fix error handling for STD/CLD warnings (=
-3 weeks ago)
-> 1f02defb4b79 =E2=80=94 objtool: Fix seg fault in BT_FUNC() with fake jump=
- (3 weeks ago)
-> 2c85ebc57b3e =E2=80=94 Linux 5.10 (4 weeks ago)
->
+Hello,
 
-I already have this one in my patch-series - I hoped you pushed
-something new to your objtool-vmlinux Git branch.
-That is what I mean by shortened... <jpoimboe.git#objtool-vmlinux>.
+syzbot found the following issue on:
 
-Hey, it's based on Linux v5.10 - I can test this with Linux v5.10.6 :-).
+HEAD commit:    f6e7a024 Merge tag 'arc-5.11-rc3' of git://git.kernel.org/..
+git tree:       net
+console output: https://syzkaller.appspot.com/x/log.txt?x=11a9a760d00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=8aa30b9da402d224
+dashboard link: https://syzkaller.appspot.com/bug?extid=1071ad60cd7df39fdadb
+compiler:       gcc (GCC) 10.1.0-syz 20200507
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=11adb9c0d00000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=164e8998d00000
 
-- Sedat -
+Bisection is inconclusive: the issue happens on the oldest tested release.
+
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=111bc72f500000
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=131bc72f500000
+console output: https://syzkaller.appspot.com/x/log.txt?x=151bc72f500000
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+1071ad60cd7df39fdadb@syzkaller.appspotmail.com
+
+IPVS: ftp: loaded support on port[0] = 21
+------------[ cut here ]------------
+WARNING: CPU: 1 PID: 8487 at mm/page_alloc.c:4976 __alloc_pages_nodemask+0x5f8/0x730 mm/page_alloc.c:5011
+Modules linked in:
+CPU: 1 PID: 8487 Comm: syz-executor509 Not tainted 5.11.0-rc2-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:__alloc_pages_nodemask+0x5f8/0x730 mm/page_alloc.c:4976
+Code: 00 00 0c 00 0f 85 a7 00 00 00 8b 3c 24 4c 89 f2 44 89 e6 c6 44 24 70 00 48 89 6c 24 58 e8 d0 d7 ff ff 49 89 c5 e9 ea fc ff ff <0f> 0b e9 b5 fd ff ff 89 74 24 14 4c 89 4c 24 08 4c 89 74 24 18 e8
+RSP: 0018:ffffc9000c676e58 EFLAGS: 00010246
+RAX: 0000000000000000 RBX: 1ffff920018cedcf RCX: 0000000000000000
+RDX: 0000000000000000 RSI: dffffc0000000000 RDI: 0000000000040dc0
+RBP: 0000000000040dc0 R08: 0000000000000000 R09: 0000000000000000
+R10: ffffffff81b1f7e1 R11: 0000000000000000 R12: 000000000000001b
+R13: 000000000000001b R14: 0000000000000000 R15: ffff8880265e8000
+FS:  0000000002160880(0000) GS:ffff8880b9f00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000020000280 CR3: 0000000017965000 CR4: 00000000001506e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ alloc_pages_current+0x18c/0x2a0 mm/mempolicy.c:2267
+ alloc_pages include/linux/gfp.h:547 [inline]
+ kmalloc_order+0x2e/0xb0 mm/slab_common.c:837
+ kmalloc_order_trace+0x14/0x120 mm/slab_common.c:853
+ kmalloc_array include/linux/slab.h:592 [inline]
+ kcalloc include/linux/slab.h:621 [inline]
+ tcindex_alloc_perfect_hash+0x57/0x440 net/sched/cls_tcindex.c:306
+ tcindex_set_parms+0x1a87/0x20d0 net/sched/cls_tcindex.c:433
+ tcindex_change+0x212/0x320 net/sched/cls_tcindex.c:546
+ tc_new_tfilter+0x1394/0x2120 net/sched/cls_api.c:2127
+ rtnetlink_rcv_msg+0x80e/0xad0 net/core/rtnetlink.c:5555
+ netlink_rcv_skb+0x153/0x420 net/netlink/af_netlink.c:2494
+ netlink_unicast_kernel net/netlink/af_netlink.c:1304 [inline]
+ netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1330
+ netlink_sendmsg+0x856/0xd90 net/netlink/af_netlink.c:1919
+ sock_sendmsg_nosec net/socket.c:652 [inline]
+ sock_sendmsg+0xcf/0x120 net/socket.c:672
+ ____sys_sendmsg+0x331/0x810 net/socket.c:2345
+ ___sys_sendmsg+0xf3/0x170 net/socket.c:2399
+ __sys_sendmmsg+0x195/0x470 net/socket.c:2489
+ __do_sys_sendmmsg net/socket.c:2518 [inline]
+ __se_sys_sendmmsg net/socket.c:2515 [inline]
+ __x64_sys_sendmmsg+0x99/0x100 net/socket.c:2515
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x440ce9
+Code: 18 89 d0 c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 0b 10 fc ff c3 66 2e 0f 1f 84 00 00 00 00
+RSP: 002b:00007ffdef9e98b8 EFLAGS: 00000246 ORIG_RAX: 0000000000000133
+RAX: ffffffffffffffda RBX: 00000000004a24d0 RCX: 0000000000440ce9
+RDX: 04924924924926d3 RSI: 0000000020000200 RDI: 0000000000000004
+RBP: 00007ffdef9e98c0 R08: 0000000120080522 R09: 0000000120080522
+R10: 0000000000000000 R11: 0000000000000246 R12: 00000000004a24d0
+R13: 0000000000402210 R14: 0000000000000000 R15: 0000000000000000
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
