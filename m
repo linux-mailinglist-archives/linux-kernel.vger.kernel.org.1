@@ -2,85 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2289E2F0344
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Jan 2021 20:54:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C218D2F0346
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Jan 2021 20:55:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726490AbhAITx7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Jan 2021 14:53:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58072 "EHLO
+        id S1726504AbhAITyt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Jan 2021 14:54:49 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58248 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726132AbhAITx6 (ORCPT
+        with ESMTP id S1726011AbhAITys (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Jan 2021 14:53:58 -0500
-Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C387C061786;
-        Sat,  9 Jan 2021 11:53:18 -0800 (PST)
-Received: by mail-lf1-x12b.google.com with SMTP id s26so31264277lfc.8;
-        Sat, 09 Jan 2021 11:53:18 -0800 (PST)
+        Sat, 9 Jan 2021 14:54:48 -0500
+Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7B63C061786;
+        Sat,  9 Jan 2021 11:54:07 -0800 (PST)
+Received: by mail-wr1-x430.google.com with SMTP id t16so12274636wra.3;
+        Sat, 09 Jan 2021 11:54:07 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Cl+kCq9RgNjHFtJ0jMkOqkZFX0EZ3i6SD4sOc9QasOE=;
-        b=A2vHOYTcitTVq1idzX6qJHQ0ZeGNGVZ01Fhfv7n4B8YNp8436zDaEefui8g3Bh8DcA
-         bG2+5Jk+vWvS6MopTUqfgIjt0kij4kE/8SGjPXdPXlI6AIK9VJfm+aPd0cGs0AFdICxd
-         eygbNr4OL2Hkp+v+YsVgpBsrny30pd7j0UZ5hPAt1etVHYoSeVSjKbqWOIe7VzW5fT46
-         q0l85ZTiE1x8S7PnX2ujkqykHCt+g7zN6YFz1xBFjf9TiIF/xC2gLzR+xys+X0ni6MRk
-         H2arIS7UJehZLSPhyatw1QkZml1kex9+2DQql9RGpuP3iKJNN3OdKtmsgyP98BdFCnNC
-         +VKg==
+        d=googlemail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ijErLEx9QijLdxHcyZ6vJJ1tLpwbdCCs0FW9Exd7T0s=;
+        b=fNXpl8jSERFYuXmTo+UYU2Ew+IDg2aYc9+bWQs1AZr0vYg+5g8ywl7dijHV9JlyvtJ
+         ou9Fgm41iOG9vyoxAzxaTaZFGc1IHTC0cs41IxVJ5nBwKSO67hmI7+eWIOuAqxDukskj
+         MsSg5iD43gAgUvr1JPP0JYX6jF9f7Dw20bCrPzJZkbVZwqRI1zMC2VA9alOfPxqxNZLX
+         /I4+S+V1b/hiTAjsRvhUifLPElFbV+o4jWJwcxKLqunITsJEtV9aKtHOra5KBI3OulOG
+         Vg0T/2Yh+c6yFDVgpXq9z/Ytyd2+to2G+8MTvgmPY3dF9RZRmrDaXu8wkjz5VqR5wHO5
+         d1MA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Cl+kCq9RgNjHFtJ0jMkOqkZFX0EZ3i6SD4sOc9QasOE=;
-        b=hf70PhX7AAx3Af0Y/P8DA2nxrv2+MdYjBBKeK2L3jrUXSw27rdx/nunPmdOps1s0DT
-         f6ra+3pSk38SVByMk4sUPjKfookwzEDgdFvkDGqMW1r+A8xqUIdpLdsCf0LfNx47miHB
-         EvZ/b+hCyYGc3he/JkapgG4stJWZbML9bn5l5OmmFFnWnSxvb63xyHU2sA6nmUEJJzF+
-         +FdypAaAkYNazh5aXnSvx0++9krOd0T9pKjrIoUDVMzq15cmninfPnhufsN8znvI/qfZ
-         6gSWYCtCYq2NaU53QXvaC2kdhM5qSxeCYQKf+ZmT02MjBogyl9vchTM2HXEqN2zrCK0e
-         NwQA==
-X-Gm-Message-State: AOAM531bEgULvSk1n/M2b/HsQn2PTg2wm6J4AwpoXFIN0Tka1cPziCwZ
-        W85uzdv+/6ZEinKYr5uzL6R1oOG0AVgwzugElFVhZxvNZFY=
-X-Google-Smtp-Source: ABdhPJzU1r2eTx3+DSxC1CZupRwItg9PZXkK2YTXlGkB10rcIe0vN6ZbKdYWFs0pXmzFjK5gqvhzT0eUA5VBrbbEbe4=
-X-Received: by 2002:a19:e20a:: with SMTP id z10mr4568621lfg.295.1610221996906;
- Sat, 09 Jan 2021 11:53:16 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ijErLEx9QijLdxHcyZ6vJJ1tLpwbdCCs0FW9Exd7T0s=;
+        b=FOinJzF4KoG8GlA+6yTsBpL5BKZWRno2CTvkElAK8+Ji7JOmPoaQe68ymIihZM9vCN
+         yY3meBJJBeJYvIpP0uZITye85Jp3kAyLc5NDblri7VrApz1NpMkm9MHf79kjxxwtjy+U
+         hi2IFC1XImXJVoZ2kbpfoVjXutqbxti/9ECXAYsjPl/INeiwELXQITrwKbkios6RG72V
+         DzIjUBNWqyQnNBQxm1y4H1F28687VIrK5TAbINyP9jyO21WOJW1fPLC4jKQ7/EfQwsFT
+         1Tqpo9u1u19xj6As6+qR0MwtI3iiUZNJtfva2ds52DJaaOG6eqfCfiF1uwOjES6I77o+
+         AXGA==
+X-Gm-Message-State: AOAM531fRhFvLawuDdWHjW8mZkz2nRNAFR2SevUKNHKUIQBVj0mulCoQ
+        47CH90KUOyr/4CGHMJH428/+PFJ1wVE=
+X-Google-Smtp-Source: ABdhPJxmtS455Upnnhunr7lfShxr6vb7TGcKnwnciUFK6sQEHV1yvNyXaMfgrKmFFX8yAMqkQz7GPA==
+X-Received: by 2002:a5d:470d:: with SMTP id y13mr9352178wrq.309.1610222046562;
+        Sat, 09 Jan 2021 11:54:06 -0800 (PST)
+Received: from localhost.localdomain (p200300f13711ec00428d5cfffeb99db8.dip0.t-ipconnect.de. [2003:f1:3711:ec00:428d:5cff:feb9:9db8])
+        by smtp.googlemail.com with ESMTPSA id x25sm16072863wmc.3.2021.01.09.11.54.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 09 Jan 2021 11:54:06 -0800 (PST)
+From:   Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+To:     linux-mips@vger.kernel.org
+Cc:     tsbogend@alpha.franken.de, linux-kernel@vger.kernel.org,
+        john@phrozen.org, hauke@hauke-m.de,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Subject: [PATCH] MIPS: lantiq: irq: register the interrupt controllers with irqchip_init
+Date:   Sat,  9 Jan 2021 20:53:51 +0100
+Message-Id: <20210109195351.2724769-1-martin.blumenstingl@googlemail.com>
+X-Mailer: git-send-email 2.30.0
 MIME-Version: 1.0
-References: <1610144511-19018-1-git-send-email-oliver.graute@gmail.com> <1610144511-19018-3-git-send-email-oliver.graute@gmail.com>
-In-Reply-To: <1610144511-19018-3-git-send-email-oliver.graute@gmail.com>
-From:   Fabio Estevam <festevam@gmail.com>
-Date:   Sat, 9 Jan 2021 16:53:05 -0300
-Message-ID: <CAOMZO5AGro=rGTPV0CAWPh_=Q9KqCYWO199FWn57xBc=eUWdog@mail.gmail.com>
-Subject: Re: [PATCH v8 2/3] ARM: dts: Add support for i.MX6 UltraLite DART
- Variscite Customboard
-To:     Oliver Graute <oliver.graute@gmail.com>
-Cc:     Shawn Guo <shawnguo@kernel.org>,
-        Marco Felsch <m.felsch@pengutronix.de>,
-        Neil Armstrong <narmstrong@baylibre.com>, parthitce@gmail.com,
-        Arnd Bergmann <arnd@arndb.de>, Olof Johansson <olof@lixom.net>,
-        soc@kernel.org, Rob Herring <robh+dt@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 8, 2021 at 7:23 PM Oliver Graute <oliver.graute@gmail.com> wrote:
+Add support for more interrupt controllers by switching from
+of_irq_init() to irqchip_init() in Lantiq's arch_init_irq(). This
+requires switching the ICU interrupt controller to use
+IRQCHIP_DECLARE(), like a real irqchip driver would do.
 
-> +       panel1: panel-lcd {
-> +               compatible = "sgd,gktw70sdad1sd";
-> +
-> +               backlight = <&backlight_lcd>;
-> +               power-supply = <&reg_touch_3v3>;
-> +               label = "gktw70sdad1sd";
-> +
-> +               display-timing {
+This is needed for future changes when new irqchip drivers are
+implemented:
+- a dedicated driver for the EIU interrupt controller
+- a driver for the MSI PIC (Programmable Interrupt Controller) found on
+  VRX200 and newer SoCs
+- ..or any other driver which uses IRQCHIP_DECLARE
 
-If you pass the compatible, then you don't need to add the
-display-timing in the device tree.
+Signed-off-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+---
+ arch/mips/lantiq/irq.c | 8 +++-----
+ 1 file changed, 3 insertions(+), 5 deletions(-)
+
+diff --git a/arch/mips/lantiq/irq.c b/arch/mips/lantiq/irq.c
+index df8eed3875f6..76806d11e483 100644
+--- a/arch/mips/lantiq/irq.c
++++ b/arch/mips/lantiq/irq.c
+@@ -8,6 +8,7 @@
+ #include <linux/interrupt.h>
+ #include <linux/ioport.h>
+ #include <linux/sched.h>
++#include <linux/irqchip.h>
+ #include <linux/irqdomain.h>
+ #include <linux/of_platform.h>
+ #include <linux/of_address.h>
+@@ -422,12 +423,9 @@ unsigned int get_c0_compare_int(void)
+ 	return CP0_LEGACY_COMPARE_IRQ;
+ }
+ 
+-static const struct of_device_id of_irq_ids[] __initconst = {
+-	{ .compatible = "lantiq,icu", .data = icu_of_init },
+-	{},
+-};
++IRQCHIP_DECLARE(lantiq_icu, "lantiq,icu", icu_of_init);
+ 
+ void __init arch_init_irq(void)
+ {
+-	of_irq_init(of_irq_ids);
++	irqchip_init();
+ }
+-- 
+2.30.0
+
