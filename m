@@ -2,136 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 492932F026F
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Jan 2021 18:52:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 149102F0277
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Jan 2021 19:03:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726068AbhAIRvh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Jan 2021 12:51:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60202 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725926AbhAIRvg (ORCPT
+        id S1726080AbhAISCy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Jan 2021 13:02:54 -0500
+Received: from hostingweb31-40.netsons.net ([89.40.174.40]:45068 "EHLO
+        hostingweb31-40.netsons.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725951AbhAISCx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Jan 2021 12:51:36 -0500
-Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38A3EC061786
-        for <linux-kernel@vger.kernel.org>; Sat,  9 Jan 2021 09:50:56 -0800 (PST)
-Received: by mail-pf1-x42f.google.com with SMTP id q20so5062756pfu.8
-        for <linux-kernel@vger.kernel.org>; Sat, 09 Jan 2021 09:50:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Rz+U26z6jIIN1uPsEdI8MtvxyqTX3edy55x6DrScyKg=;
-        b=c4bK3l0yv3gmB2uDggyRYvZ392JRXxNpt6ffWyyp/6G1wJPeDMGpurfYs7It0uM9uX
-         0rbU6k8DigmpdRHD2ncyKGQ0y4QPAoW6EZ/ZBwLJKVdODkTf0cM/ifGELos2JR28VEPs
-         ZbpGlwQQzLfB0UKEUQoeYKrXrLKgKUGQS+7Ftnh0Cw6WReD+962gWI4p50Sli1lShulk
-         zDXEekr3MqZBaGgiBbxZ2pmiq33azvRRFcMJe3KhGfONRUVPrZRBaX/FjYzoQBDXXQHZ
-         yAocCh0ukK+nqdnGi+i/NwddPD3WhvVJRi8EB5puWwgflLnc0YnBtYJGSkpAFXVwzRbE
-         8ehA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Rz+U26z6jIIN1uPsEdI8MtvxyqTX3edy55x6DrScyKg=;
-        b=Yi+MaK8quvmPI8Al5kI7ugS+Zh6vFJ89cSRlUrd+IotpBu3fiWL3Yd+ojCk1DCihOi
-         VqgS8xRRPvpkSeSANGTRKQn20ABr27IDH9MCct4L7yS/7Bjg5tv2VO5F/PwQedLveSlW
-         U1zBxa3r3e30q1zK951Bu5tYmZFISHphgjQxfiURoCRKe70USLT2gh//eYEqrk66oFkm
-         XvzfFllpVJizLfOQ+kgJx/MA8ivx5ucEP+4QpwsDOZFb0ewkorhty2LCNh0Ipbzc/f7g
-         OyTQ6vzYfG7bbVufdefp010YNCBnY/zNA9bxZNgumIEva7ITKykzRAwPaVvplJUCsWnD
-         a/WA==
-X-Gm-Message-State: AOAM53160BHiWCGeIPET1QG3+UvJuEgsieFKf7rW78//C4w0kSjzG2+b
-        /LGniQiuluQyF9p92jehh9SUn/vPYPpNXEHmIRry9A==
-X-Google-Smtp-Source: ABdhPJyJP3tazaWOmwaeqbiNSqIF4LtHAbHFNqsY7t9yn3KE2WlrRzEN5UBeo4m5E5d/MzfFWhSdDcnkddpynrl5QIs=
-X-Received: by 2002:a63:1142:: with SMTP id 2mr12540451pgr.263.1610214655571;
- Sat, 09 Jan 2021 09:50:55 -0800 (PST)
+        Sat, 9 Jan 2021 13:02:53 -0500
+Received: from [77.244.183.192] (port=62314 helo=[192.168.178.24])
+        by hostingweb31.netsons.net with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <luca@lucaceresoli.net>)
+        id 1kyIZ0-005zFT-1I; Sat, 09 Jan 2021 19:02:10 +0100
+Subject: Re: [RFC 2/2] clk: vc5: Add support for optional load capacitance
+To:     Adam Ford <aford173@gmail.com>
+Cc:     linux-clk <linux-clk@vger.kernel.org>,
+        Adam Ford-BE <aford@beaconembedded.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20210106173900.388758-1-aford173@gmail.com>
+ <20210106173900.388758-2-aford173@gmail.com>
+ <c5a97aca-ce74-bbd3-e99d-358e079c4c4a@lucaceresoli.net>
+ <CAHCN7x+gUQwv4cWgg7Jt2oca1n4KW=o08rzoK9TB1Z_rKE0qog@mail.gmail.com>
+From:   Luca Ceresoli <luca@lucaceresoli.net>
+Message-ID: <e64a590d-1b3a-73cd-fb93-970013385224@lucaceresoli.net>
+Date:   Sat, 9 Jan 2021 19:02:09 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20210109171058.497636-1-alobakin@pm.me>
-In-Reply-To: <20210109171058.497636-1-alobakin@pm.me>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Sat, 9 Jan 2021 09:50:44 -0800
-Message-ID: <CAKwvOdmV2tj4Uyz1iDkqCj+snWPpnnAmxJyN+puL33EpMRPzUw@mail.gmail.com>
-Subject: Re: [BUG mips llvm] MIPS: malformed R_MIPS_{HI16,LO16} with LLVM
-To:     Alexander Lobakin <alobakin@pm.me>
-Cc:     clang-built-linux <clang-built-linux@googlegroups.com>,
-        linux-mips@vger.kernel.org,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Kees Cook <keescook@chromium.org>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Fangrui Song <maskray@google.com>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        Ralf Baechle <ralf@linux-mips.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <CAHCN7x+gUQwv4cWgg7Jt2oca1n4KW=o08rzoK9TB1Z_rKE0qog@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
+X-AntiAbuse: Primary Hostname - hostingweb31.netsons.net
+X-AntiAbuse: Original Domain - vger.kernel.org
+X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
+X-AntiAbuse: Sender Address Domain - lucaceresoli.net
+X-Get-Message-Sender-Via: hostingweb31.netsons.net: authenticated_id: luca@lucaceresoli.net
+X-Authenticated-Sender: hostingweb31.netsons.net: luca@lucaceresoli.net
+X-Source: 
+X-Source-Args: 
+X-Source-Dir: 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jan 9, 2021 at 9:11 AM Alexander Lobakin <alobakin@pm.me> wrote:
->
-> Machine: MIPS32 R2 Big Endian (interAptiv (multi))
->
-> While testing MIPS with LLVM, I found a weird and very rare bug with
-> MIPS relocs that LLVM emits into kernel modules. It happens on both
-> 11.0.0 and latest git snapshot and applies, as I can see, only to
-> references to static symbols.
->
-> When the kernel loads the module, it allocates a space for every
-> section and then manually apply the relocations relative to the
-> new address.
->
-> Let's say we have a function phy_probe() in drivers/net/phy/libphy.ko.
-> It's static and referenced only in phy_register_driver(), where it's
-> used to fill callback pointer in a structure.
->
-> The real function address after module loading is 0xc06c1444, that
-> is observed in its ELF st_value field.
-> There are two relocs related to this usage in phy_register_driver():
->
-> R_MIPS_HI16 refers to 0x3c010000
-> R_MIPS_LO16 refers to 0x24339444
->
-> The address of .text is 0xc06b8000. So the destination is calculated
-> as follows:
->
-> 0x00000000 from hi16;
-> 0xffff9444 from lo16 (sign extend as it's always treated as signed);
-> 0xc06b8000 from base.
->
-> = 0xc06b1444. The value is lower than the real phy_probe() address
-> (0xc06c1444) by 0x10000 and is lower than the base address of
-> module's .text, so it's 100% incorrect.
->
-> This results in:
->
-> [    2.204022] CPU 3 Unable to handle kernel paging request at virtual
-> address c06b1444, epc == c06b1444, ra == 803f1090
->
-> The correct instructions should be:
->
-> R_MIPS_HI16 0x3c010001
-> R_MIPS_LO16 0x24339444
->
-> so there'll be 0x00010000 from hi16.
->
-> I tried to catch those bugs in arch/mips/kernel/module.c (by checking
-> if the destination is lower than the base address, which should never
-> happen), and seems like I have only 3 such places in libphy.ko (and
-> one in nf_tables.ko).
-> I don't think it should be handled somehow in mentioned source code
-> as it would look rather ugly and may break kernels build with GNU
-> stack, which seems to not produce such bad codes.
->
-> If I should report this to any other resources, please let me know.
-> I chose clang-built-linux and LKML as it may not happen with userland
-> (didn't tried to catch).
+Hi Adam,
 
-Thanks for the report.  Sounds like we may indeed be producing an
-incorrect relocation.  This is only seen for big endian triples?
+On 09/01/21 04:00, Adam Ford wrote:
+> On Fri, Jan 8, 2021 at 4:49 PM Luca Ceresoli <luca@lucaceresoli.net> wrote:
+>>
+>> Hi Adam,
+>>
+>> On 06/01/21 18:39, Adam Ford wrote:
+>>> There are two registers which can set the load capacitance for
+>>> XTAL1 and XTAL2. These are optional registers when using an
+>>> external crystal.  Parse the device tree and set the
+>>> corresponding registers accordingly.
+>>
+>> No need to repeat the first 2 sentences, they are already in patch 1.
+> 
+> The reason I did that was because if someone does a git log on the
+> individual file, they'd see the comment.  While it's redundant not, it
+> might not be as obvious in the future when looking back.   Not
+> everyone reviews the history of the binding, but the source files' git
+> logs usually have some value.   However, if you want me to drop it or
+> rephrase it, I can do that.
 
-Getting a way for us to deterministically reproduce would be a good
-first step.  Which config or configs beyond defconfig, and which
-relocations specifically are you observing this with?
+Makes sense, I had never considered that before.
+
+>>> +static int vc5_map_cap_value(u32 femtofarads)
+>>> +{
+>>> +     int mapped_value;
+>>> +
+>>> +     /* The datasheet explicitly states 9000 - 25000 */
+>>> +     if ((femtofarads < 9000) || (femtofarads > 25000))
+>>> +             return -EINVAL;
+>>> +
+>>> +     /* The lowest target we can hit is 9430, so exit if it's less */
+>>> +     if (femtofarads < 9430)
+>>> +             return 0;
+>>> +
+>>> +     /*
+>>> +      * According to VersaClock 6E Programming Guide, there are 6
+>>> +      * bits which translate to 64 entries in XTAL registers 12 and
+>>> +      * 13. Because bits 0 and 1 increase the capacitance the
+>>> +      * same, some of the values can be repeated.  Plugging this
+>>> +      * into a spreadsheet and generating a trendline, the output
+>>> +      * equation becomes x = (y-9098.29) / 216.44, where 'y' is
+>>> +      * the desired capacitance in femtofarads, and x is the value
+>>> +      * of XTAL[5:0].
+>>> +      * To help with rounding, do fixed point math
+>>> +      */
+>>> +     femtofarads *= 100;
+>>> +     mapped_value = (femtofarads - 909829) / 21644;
+>>
+>> Thanks for the extensive comment, but I am confused. Not by your code
+>> which is very clean and readable, but by the chip documentation
+>> (disclaimer: I haven't read it in full depth).
+> 
+> I was confused too since the datasheet and programmers manual differ a bit.
+>>
+>> The 5P49V6965 datasheet at page 17 clearly states capacitance can be
+>> increased in 0.5 pF steps. The "VersaClock 6E Family Register
+>> Descriptions and Programming Guide" at page 18 shows a table that allows
+>> 0.43 pF. Can you clarify how the thing works?
+> 
+> I used the Versaclock 6E doc which is based on the following:
+> 
+> BIT 5 - Add 6.92pF
+> BIT 4 - Add 3.46pF
+> BIT 3 - Add 1.73pF
+> BIT 2 - Add 0.86pF
+> Bit 1 - Add 0.43pF
+> Bit 0 - Add 0.43pF
+> 
+> Because the Datasheet starts at 9pF, the math I used, assumes these
+> numbers are added to 9pF.
+> Because the datasheet shows the increments are in .5pF increments, the
+> 430nF seems close.  The datasheet shows 9pF - 25pF and based on the
+> programmer table, we could get close to 25pF by enabling all bits and
+> adding 9pF, however the math doesn't quite hit 25pF.
+> 
+> For what it's worth I needed around 11.5pF, and with this patch, the
+> hardware engineer said our ppm went from around 70 ppm to around 4ppm.
+
+Did he measure what happens if you set the register according to the 0.5
+pF interpretation? Does it improve? I understand the difference is
+probably olwer than the noise, but who knows.
+
+>>> +
+>>> +     /*
+>>> +      * The datasheet states, the maximum capacitance is 25000,
+>>> +      * but the programmer guide shows a max value is 22832,
+>>> +      * so values higher values could overflow, so cap it.
+>>> +      */
+>>
+>> The 22832 limit is if you assume 0.43 pF steps. Assuming 0.5 pF steps
+>> leads to 25000. Now I am more confused than before.
+> 
+> I agree.  It would be nice to get some clarification from Renesas.
+
+Definitely. Do you have access to some support from them?
+I don't think I have, but I can ask next week.
+
+Regards.
 -- 
-Thanks,
-~Nick Desaulniers
+Luca
