@@ -2,119 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9EC7B2F01FD
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Jan 2021 18:04:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 308122F0204
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Jan 2021 18:07:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726407AbhAIRD7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Jan 2021 12:03:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49980 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726058AbhAIRD6 (ORCPT
+        id S1726589AbhAIRFa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Jan 2021 12:05:30 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:52871 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726013AbhAIRFa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Jan 2021 12:03:58 -0500
-Received: from mail-io1-xd2f.google.com (mail-io1-xd2f.google.com [IPv6:2607:f8b0:4864:20::d2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 954BCC061786;
-        Sat,  9 Jan 2021 09:03:18 -0800 (PST)
-Received: by mail-io1-xd2f.google.com with SMTP id z5so13150331iob.11;
-        Sat, 09 Jan 2021 09:03:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=TegRmyV5fZN7nTdiRSNkPUmPZbgQG1wQQmkQT6OhXw4=;
-        b=LhChZ7nQU1BHeTLQvs/HOB6l9f9ts6qyc20DgBlJsDLnMiHB42lJq28yMNFihyJ6/Z
-         PJ3yL4VMhr6h3kx7eQaYqVz+IpmssIIBFlg024Uxsm3ptxh/8RWCBdkLckAzMvMF9pjJ
-         Og/BClcnB4zl1gcu03Kl5jLDsqVxh6VVSqCs0HOgkVxZiibVHWFAYOCyT/pCMNqWuNWe
-         kKtS2jdH3a5tfnsFV0GCppc8iz3MgbyHCeZ8Pax4o1VTfTKaFv3q/pE71imRLJhJyEGX
-         FhM+91qGqHZdipDH/Mly0+Wnhu8RQz6YrY5h1OZd0hhPiJdnOzjJrmQo2joL2vSKm2Ke
-         D4Ig==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=TegRmyV5fZN7nTdiRSNkPUmPZbgQG1wQQmkQT6OhXw4=;
-        b=ELmtcHjDCZHOZ92QoDqnTcYJGHby6PrsK3wGjZmgFSIFChOFtghsn4OoWgMnm8xvhq
-         oTa5mh2nn/z951LV7y0p94vetj8Yr2JuLiAnRISeAgEkdJKXusN6jNH9YxXp2LZdoP5o
-         9qlT8XLRvKP6T4EDd/nG4xkesnvHgfV0kEhb208rSthMmgi/vM+S9mQtJc3kcKFy0Cpg
-         zl8svi9TacIg2UGAKjeadQXD5ChcKUbyt237oycHFQWW9v55pTBtSgk/R53ZtkBan0f3
-         f9erlUmZK25Btudw+uMlr7FV+2wSFT8te9j8JG3lY0poKWxvDVJt55c359r6mbJcsR3h
-         AbBg==
-X-Gm-Message-State: AOAM5336W/vpIoxh2LsHmxj9N0G9QEWssyypfj1L4DXqa6EMPl6+KH8t
-        w3vL6CGLdv5VqMMNm3eQsCLiMIHvf4Cso/XcayQ=
-X-Google-Smtp-Source: ABdhPJwiQfKEPlBuK6xHNTcZziO0Z6VWdaFcjP5bzs2trqGzg4m3GOf7CBrIH2f3KJf38kgoVOO/M048WXowqWrUlpA=
-X-Received: by 2002:a05:6638:296:: with SMTP id c22mr8338851jaq.65.1610211797894;
- Sat, 09 Jan 2021 09:03:17 -0800 (PST)
+        Sat, 9 Jan 2021 12:05:30 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1610211844;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=lgv0MtjN+q9SruMJbKaoUMIuZ7zzQ7Hn/3LTwFUpEAE=;
+        b=VMGs2EUMZ1nrYKcKnSEflbe2BuaRcR9AeQhZWy7WmbHgjUuxqHZMdY3mUVYKnJlMJN0oym
+        iqww3OQJVedugeVnn7AUSNxnSR7IPXvy7pO8MmzwfkQe5bQEOnIKAVi9a4sHIj+tPUxXUd
+        d5NCbstV3pJo86MEN+M3UYbfxMvQTfk=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-514-RgalnBNRPTCReKRWkgJQQQ-1; Sat, 09 Jan 2021 12:04:00 -0500
+X-MC-Unique: RgalnBNRPTCReKRWkgJQQQ-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D1B4B15720;
+        Sat,  9 Jan 2021 17:03:57 +0000 (UTC)
+Received: from treble (ovpn-120-156.rdu2.redhat.com [10.10.120.156])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 5E32D5C1C5;
+        Sat,  9 Jan 2021 17:03:55 +0000 (UTC)
+Date:   Sat, 9 Jan 2021 11:03:53 -0600
+From:   Josh Poimboeuf <jpoimboe@redhat.com>
+To:     Sedat Dilek <sedat.dilek@gmail.com>
+Cc:     Sami Tolvanen <samitolvanen@google.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Will Deacon <will@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Clang-Built-Linux ML <clang-built-linux@googlegroups.com>,
+        kernel-hardening@lists.openwall.com, linux-arch@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kbuild@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org
+Subject: Re: [PATCH v9 00/16] Add support for Clang LTO
+Message-ID: <20210109170353.litivfvc4zotnimv@treble>
+References: <20201211184633.3213045-1-samitolvanen@google.com>
+ <CA+icZUWYxO1hHW-_vrJid7EstqQRYQphjO3Xn6pj6qfEYEONbA@mail.gmail.com>
+ <20210109153646.zrmglpvr27f5zd7m@treble>
+ <CA+icZUUiucbsQZtJKYdD7Y7Cq8hJZdBwsF0U0BFbaBtnLY3Nsw@mail.gmail.com>
+ <20210109160709.kqqpf64klflajarl@treble>
+ <CA+icZUU=sS2xfzo9qTUTPQ0prbbQcj29tpDt1qK5cYZxarXuxg@mail.gmail.com>
+ <20210109163256.3sv3wbgrshbj72ik@treble>
+ <CA+icZUUszOHkJ8Acx2mDowg3StZw9EureDQ7YYkJkcAnpLBA+g@mail.gmail.com>
 MIME-Version: 1.0
-References: <20210109163916.1247431-1-aford173@gmail.com> <8B45575E-A50B-407C-8920-D2A7E295DBE9@goldelico.com>
-In-Reply-To: <8B45575E-A50B-407C-8920-D2A7E295DBE9@goldelico.com>
-From:   Adam Ford <aford173@gmail.com>
-Date:   Sat, 9 Jan 2021 11:03:06 -0600
-Message-ID: <CAHCN7x+j0N6rop616UDhSx_qgkWLyUmRV2MVN74qT17z-ktaAw@mail.gmail.com>
-Subject: Re: [PATCH] ARM: dts: omap36xx: Remove turbo mode for 1GHz variants
-To:     "H. Nikolaus Schaller" <hns@goldelico.com>
-Cc:     Linux-OMAP <linux-omap@vger.kernel.org>,
-        Adam Ford-BE <aford@beaconembedded.com>,
-        =?UTF-8?Q?Beno=C3=AEt_Cousson?= <bcousson@baylibre.com>,
-        Tony Lindgren <tony@atomide.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Andreas Kemnade <andreas@kemnade.info>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <CA+icZUUszOHkJ8Acx2mDowg3StZw9EureDQ7YYkJkcAnpLBA+g@mail.gmail.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jan 9, 2021 at 10:58 AM H. Nikolaus Schaller <hns@goldelico.com> wrote:
->
-> Hi Adam,
->
-> > Am 09.01.2021 um 17:39 schrieb Adam Ford <aford173@gmail.com>:
-> >
-> > Previously, the 1GHz variants were marked as a turbo,
-> > because that variant has reduced thermal operating range.
-> >
-> > Now that the thermal throttling is in place, it should be
-> > safe to remove the turbo-mode from the 1GHz variants, because
-> > the CPU will automatically slow if the thermal limit is reached.
->
-> Subject and description may be misunderstood in a way that 1GHz
-> is now disabled.
->
-> Rather the 1GHz OPP is now permanently enabled and does no longer
-> need to be manuall enabled through something like
-> /sys/devices/system/cpu/cpufreq/boost.
+On Sat, Jan 09, 2021 at 05:45:47PM +0100, Sedat Dilek wrote:
+> I tried merging with clang-cfi Git which is based on Linux v5.11-rc2+
+> with a lot of merge conflicts.
+> 
+> Did you try on top of cfi-10 Git tag which is based on Linux v5.10?
+> 
+> Whatever you successfully did... Can you give me a step-by-step instruction?
 
-I just sent a V2, before I saw this. I can send a V3 with your
-feedback.  I just want to give Tony and/or others a chance to chime
-in.
+Oops, my bad.  My last three commits (which I just added) do conflict.
+Sorry for the confusion.
 
->
-> >
-> > Signed-off-by: Adam Ford <aford173@gmail.com>
-> >
-> > diff --git a/arch/arm/boot/dts/logicpd-torpedo-som.dtsi b/arch/arm/boot/dts/logicpd-torpedo-som.dtsi
-> > index 3a5228562b0d..3451f9be104e 100644
-> > --- a/arch/arm/boot/dts/logicpd-torpedo-som.dtsi
-> > +++ b/arch/arm/boot/dts/logicpd-torpedo-som.dtsi
-> > @@ -70,6 +70,7 @@ nand@0,0 {
-> >               gpmc,device-width = <2>;
-> >               #address-cells = <1>;
-> >               #size-cells = <1>;
-> > +             status = "disabled";
->
-> this does not seem to match the description?
+Just drop my last three commits:
 
-I just sent an apology e-mail because I realized I grabbed the wrong file.
+git fetch https://git.kernel.org/pub/scm/linux/kernel/git/jpoimboe/linux.git objtool-vmlinux
+git checkout -B tmp FETCH_HEAD
+git reset --hard HEAD~~~
+git fetch https://github.com/samitolvanen/linux clang-lto
+git rebase --onto FETCH_HEAD 79881bfc57be
 
->
-> >       };
-> > };
-> >
-> > --
-> > 2.25.1
-> >
->
-> BR,
-> Nikolaus
->
+-- 
+Josh
+
