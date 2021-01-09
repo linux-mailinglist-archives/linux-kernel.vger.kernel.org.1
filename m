@@ -2,156 +2,245 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 86ACE2F01D9
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Jan 2021 17:47:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 84B852F01DD
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Jan 2021 17:50:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726653AbhAIQqj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Jan 2021 11:46:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46282 "EHLO
+        id S1726437AbhAIQuY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Jan 2021 11:50:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47080 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726522AbhAIQqi (ORCPT
+        with ESMTP id S1725966AbhAIQuX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Jan 2021 11:46:38 -0500
-Received: from mail-il1-x129.google.com (mail-il1-x129.google.com [IPv6:2607:f8b0:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6AE3DC061786;
-        Sat,  9 Jan 2021 08:45:58 -0800 (PST)
-Received: by mail-il1-x129.google.com with SMTP id n9so13702640ili.0;
-        Sat, 09 Jan 2021 08:45:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
-         :subject:to:cc:content-transfer-encoding;
-        bh=rDWdOZV033PbHRIoz9gFCdCCPtDWdrf2QpLHI3qC4Ks=;
-        b=lKYcZ/pDNyBpVRy/AIFMoAbc4kprZN1qFvAjZkMTlSPZ5aYun28E09bjuogCaNUv7+
-         Jk00ybCpOX3sRiY1yW7DtbR1t5e0mTTTipytCO1wRUEXHBZlQRRsJKvAw3XkePn6yfiV
-         UFNx1upTAd3QSESauWaa2JAU/2cdQxOzkt5Ztgw/fJYIwXoUFzmkQRpOqFsPrfUNYW9c
-         EFSdjIuirPdJ+egYTzlBHVJ7Rr2et1jlwL7eG1TSMJjCDRIrWqamwd5W4oCOtNuRZded
-         QQ8dIwDS4wHOnvl7ZFgLKeJW/GUG/iAAMiIFzyTyTueJxHEPLZYCOOH5OpE4A9esijMR
-         ph1Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
-         :from:date:message-id:subject:to:cc:content-transfer-encoding;
-        bh=rDWdOZV033PbHRIoz9gFCdCCPtDWdrf2QpLHI3qC4Ks=;
-        b=shnsLYjGX+Oz+75dfoXgzFSvKmQAOR4agl/zGRrp0eWYKzupGWoKqmq0dpb7jBLTNc
-         1fnFfa/V8mLaGhfgz3xRat3xu7kLGw2efR9BvjdQltjyzeDoHmBiWc9DCDTFTg/gvkpL
-         f9m/mShqX3yJbv9XNyURgg6NVWw8U7p5XZUxpSq0On35I8ib7tXBRBrJ6CPxwHiVCUj8
-         T5ea2vhtYdBw/V3EyppGR9uIY7pjwZBeb/05ghOwFt0sFiYkik6RHlchyz/4mns6RmaL
-         QA3ZB5mbgoIjbHU24ZC7MR1lvEEYp1aCSb5cfVALjCUpN6S7jWUQwwxfGbplryGVYfHO
-         DBMA==
-X-Gm-Message-State: AOAM532CTnI7FzLJXNpdqBhvnUtzvOsBeb7a+hIab96nOK/mo0mDoNAn
-        OBqV3WMJn947HoEDQo0mK9fckY+rDDQaN1svg+4=
-X-Google-Smtp-Source: ABdhPJyotcpCJj00XIwZxbBrRJwxOADUXFaeLowTjCUgN91QtyNu5IEBjFHQ+MWTW5HHUGdfbSGUxbCNMTehHWc8gzM=
-X-Received: by 2002:a92:c692:: with SMTP id o18mr9393270ilg.215.1610210757859;
- Sat, 09 Jan 2021 08:45:57 -0800 (PST)
+        Sat, 9 Jan 2021 11:50:23 -0500
+Received: from ssl.serverraum.org (ssl.serverraum.org [IPv6:2a01:4f8:151:8464::1:2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C07D7C061786;
+        Sat,  9 Jan 2021 08:49:42 -0800 (PST)
+Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ssl.serverraum.org (Postfix) with ESMTPSA id 05B8923078;
+        Sat,  9 Jan 2021 17:49:38 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
+        t=1610210978;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=hQdTDGsdDAuLmGfhZkbldybEA0xqL9BQeHyrwnZ7LIw=;
+        b=r1u6SRAJTd2OfjecNlLDN8rWIrfpZ97loVez/sfp6p5IrJn4PkhVefKhNZ/Xq/JeyUmdUb
+        Ta0nD4JwBVjVSSCdYmBCetwUrjaxYU8Xpx/K5VlLDEDHP0xdmT09DutO8tEMxzNEmyDT2U
+        gSP5KiYJ9iqmiy0LKE92Ht9WFJL4PCw=
 MIME-Version: 1.0
-References: <20201211184633.3213045-1-samitolvanen@google.com>
- <CA+icZUWYxO1hHW-_vrJid7EstqQRYQphjO3Xn6pj6qfEYEONbA@mail.gmail.com>
- <20210109153646.zrmglpvr27f5zd7m@treble> <CA+icZUUiucbsQZtJKYdD7Y7Cq8hJZdBwsF0U0BFbaBtnLY3Nsw@mail.gmail.com>
- <20210109160709.kqqpf64klflajarl@treble> <CA+icZUU=sS2xfzo9qTUTPQ0prbbQcj29tpDt1qK5cYZxarXuxg@mail.gmail.com>
- <20210109163256.3sv3wbgrshbj72ik@treble>
-In-Reply-To: <20210109163256.3sv3wbgrshbj72ik@treble>
-Reply-To: sedat.dilek@gmail.com
-From:   Sedat Dilek <sedat.dilek@gmail.com>
-Date:   Sat, 9 Jan 2021 17:45:47 +0100
-Message-ID: <CA+icZUUszOHkJ8Acx2mDowg3StZw9EureDQ7YYkJkcAnpLBA+g@mail.gmail.com>
-Subject: Re: [PATCH v9 00/16] Add support for Clang LTO
-To:     Josh Poimboeuf <jpoimboe@redhat.com>
-Cc:     Sami Tolvanen <samitolvanen@google.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Will Deacon <will@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Clang-Built-Linux ML <clang-built-linux@googlegroups.com>,
-        kernel-hardening@lists.openwall.com, linux-arch@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kbuild@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Sat, 09 Jan 2021 17:49:37 +0100
+From:   Michael Walle <michael@walle.cc>
+To:     Saravana Kannan <saravanak@google.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        stable <stable@vger.kernel.org>,
+        Android Kernel Team <kernel-team@android.com>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v3] driver core: Fix device link device name collision
+In-Reply-To: <CAGETcx-TT=ce+oSV2miKN5YdO-gY1oqCMVBkgs6D4kfFLpyn1w@mail.gmail.com>
+References: <20210108012427.766318-1-saravanak@google.com>
+ <9ec99f2f0e1e75e11f2d7d013dc78203@walle.cc>
+ <CAGETcx-TT=ce+oSV2miKN5YdO-gY1oqCMVBkgs6D4kfFLpyn1w@mail.gmail.com>
+User-Agent: Roundcube Webmail/1.4.9
+Message-ID: <7f10c6c94729dfa48e18f7f4b038403a@walle.cc>
+X-Sender: michael@walle.cc
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jan 9, 2021 at 5:33 PM Josh Poimboeuf <jpoimboe@redhat.com> wrote:
->
-> > > > Did you push it (oh ah push it push it really really really good...=
-)
-> > > > to your remote Git please :-).
-> > >
-> > > I thought I already pushed it pretty good ;-) do you not see it?
-> > >
-> > > git://git.kernel.org/pub/scm/linux/kernel/git/jpoimboe/linux.git objt=
-ool-vmlinux
-> > >
-> > > d6baee244f2d =E2=80=94 objtool: Alphabetize usage option list (3 week=
-s ago)
-> > > c0b2a6a625ac =E2=80=94 objtool: Separate vmlinux/noinstr validation c=
-onfig options (3 weeks ago)
-> > > 84c53551ad17 =E2=80=94 objtool: Enable full vmlinux validation (3 wee=
-ks ago)
-> > > e518ac0801cd =E2=80=94 x86/power: Support objtool validation in hiber=
-nate_asm_64.S (3 weeks ago)
-> > > d0ac4c7301c1 =E2=80=94 x86/power: Move restore_registers() to top of =
-the file (3 weeks ago)
-> > > d3389bc83538 =E2=80=94 x86/power: Convert indirect jumps to retpoline=
-s (3 weeks ago)
-> > > 7a974d90aa40 =E2=80=94 x86/acpi: Support objtool validation in wakeup=
-_64.S (3 weeks ago)
-> > > 6693e26cd6cc =E2=80=94 x86/acpi: Convert indirect jump to retpoline (=
-3 weeks ago)
-> > > 0dfb760c74d1 =E2=80=94 x86/ftrace: Support objtool vmlinux.o validati=
-on in ftrace_64.S (3 weeks ago)
-> > > 89a4febfd7bf =E2=80=94 x86/xen/pvh: Convert indirect jump to retpolin=
-e (3 weeks ago)
-> > > b62837092140 =E2=80=94 x86/xen: Support objtool vmlinux.o validation =
-in xen-head.S (3 weeks ago)
-> > > 705e18481ed9 =E2=80=94 x86/xen: Support objtool validation in xen-asm=
-.S (3 weeks ago)
-> > > 3548319e21b9 =E2=80=94 objtool: Add xen_start_kernel() to noreturn li=
-st (3 weeks ago)
-> > > 6016e8da8c3d =E2=80=94 objtool: Combine UNWIND_HINT_RET_OFFSET and UN=
-WIND_HINT_FUNC (3 weeks ago)
-> > > 56d6a7aee8b1 =E2=80=94 objtool: Add asm version of STACK_FRAME_NON_ST=
-ANDARD (3 weeks ago)
-> > > 68259d951f1a =E2=80=94 objtool: Assume only ELF functions do sibling =
-calls (3 weeks ago)
-> > > 0d6c8816cf91 =E2=80=94 x86/ftrace: Add UNWIND_HINT_FUNC annotation fo=
-r ftrace_stub (3 weeks ago)
-> > > 24d6ce8cd8f6 =E2=80=94 objtool: Support retpoline jump detection for =
-vmlinux.o (3 weeks ago)
-> > > 8145ea268f16 =E2=80=94 objtool: Fix ".cold" section suffix check for =
-newer versions of GCC (3 weeks ago)
-> > > b3dfca472514 =E2=80=94 objtool: Fix retpoline detection in asm code (=
-3 weeks ago)
-> > > b82402fa5211 =E2=80=94 objtool: Fix error handling for STD/CLD warnin=
-gs (3 weeks ago)
-> > > 1f02defb4b79 =E2=80=94 objtool: Fix seg fault in BT_FUNC() with fake =
-jump (3 weeks ago)
-> > > 2c85ebc57b3e =E2=80=94 Linux 5.10 (4 weeks ago)
-> > >
-> >
-> > I already have this one in my patch-series - I hoped you pushed
-> > something new to your objtool-vmlinux Git branch.
-> > That is what I mean by shortened... <jpoimboe.git#objtool-vmlinux>.
-> >
-> > Hey, it's based on Linux v5.10 - I can test this with Linux v5.10.6 :-)=
-.
->
-> This is the most recent version of the patches.  I only pushed them this
-> morning since you said the prior version wasn't applying on Sami's
-> clang-cfi branch.  This version rebases fine on 'clang-cfi'.
->
+Am 2021-01-08 18:22, schrieb Saravana Kannan:
+> On Fri, Jan 8, 2021 at 12:16 AM Michael Walle <michael@walle.cc> wrote:
+>> 
+>> Am 2021-01-08 02:24, schrieb Saravana Kannan:
+>> > The device link device's name was of the form:
+>> > <supplier-dev-name>--<consumer-dev-name>
+>> >
+>> > This can cause name collision as reported here [1] as device names are
+>> > not globally unique. Since device names have to be unique within the
+>> > bus/class, add the bus/class name as a prefix to the device names used
+>> > to
+>> > construct the device link device name.
+>> >
+>> > So the devuce link device's name will be of the form:
+>> > <supplier-bus-name>:<supplier-dev-name>--<consumer-bus-name>:<consumer-dev-name>
+>> >
+>> > [1] -
+>> > https://lore.kernel.org/lkml/20201229033440.32142-1-michael@walle.cc/
+>> >
+>> > Cc: stable@vger.kernel.org
+>> > Fixes: 287905e68dd2 ("driver core: Expose device link details in
+>> > sysfs")
+>> > Reported-by: Michael Walle <michael@walle.cc>
+>> > Signed-off-by: Saravana Kannan <saravanak@google.com>
+>> > ---
+>> [..]
+>> 
+>> The changes are missing for the error path and
+>> devlink_remove_symlinks(),
+>> right?
+> 
+> Removing symlinks doesn't need the name. Just needs the "handle". So
+> we are good there.
 
-I tried merging with clang-cfi Git which is based on Linux v5.11-rc2+
-with a lot of merge conflicts.
+I don't get it. What is the "handle"? Without the patch below
+kernfs_remove_by_name() in sysfs_remove_link will return -ENOENT. With
+the patch it will return 0.
 
-Did you try on top of cfi-10 Git tag which is based on Linux v5.10?
+And even if it would work, how is this even logical:
 
-Whatever you successfully did... Can you give me a step-by-step instruction=
-?
+	snprintf(buf, len, "consumer:%s:%s", dev_bus_name(con), dev_name(con));
+	ret = sysfs_create_link(&sup->kobj, &link->link_dev.kobj, buf);
+	if (ret)
+		goto err_con_dev;
+	snprintf(buf, len, "supplier:%s:%s", dev_bus_name(sup), dev_name(sup));
+	ret = sysfs_create_link(&con->kobj, &link->link_dev.kobj, buf);
+	if (ret)
+		goto err_sup_dev;
+[..]
+err_sup_dev:
+	snprintf(buf, len, "consumer:%s", dev_name(con));
+	sysfs_remove_link(&sup->kobj, buf);
 
-- Sedat -
+You call sysfs_create_link("consumer:bus_name:dev_name") but the
+corresponding rollback is sysfs_remove_link("consumer:dev_name"), that
+is super confusing.
+
+>> diff --git a/drivers/base/core.c b/drivers/base/core.c
+>> index 4140a69dfe18..385e16d92874 100644
+>> --- a/drivers/base/core.c
+>> +++ b/drivers/base/core.c
+>> @@ -485,7 +485,7 @@ static int devlink_add_symlinks(struct device 
+>> *dev,
+>>         goto out;
+>> 
+>>   err_sup_dev:
+>> -       snprintf(buf, len, "consumer:%s", dev_name(con));
+>> +       snprintf(buf, len, "consumer:%s:%s", dev_bus_name(con),
+>> dev_name(con));
+>>         sysfs_remove_link(&sup->kobj, buf);
+>>   err_con_dev:
+>>         sysfs_remove_link(&link->link_dev.kobj, "consumer");
+>> @@ -508,7 +508,9 @@ static void devlink_remove_symlinks(struct device
+>> *dev,
+>>         sysfs_remove_link(&link->link_dev.kobj, "consumer");
+>>         sysfs_remove_link(&link->link_dev.kobj, "supplier");
+>> 
+>> -       len = max(strlen(dev_name(sup)), strlen(dev_name(con)));
+>> +       len = max(strlen(dev_bus_name(sup)) + strlen(dev_name(sup)),
+>> +                 strlen(dev_bus_name(con)) + strlen(dev_name(con)));
+>> +       len += strlen(":");
+>>         len += strlen("supplier:") + 1;
+>>         buf = kzalloc(len, GFP_KERNEL);
+>>         if (!buf) {
+>> @@ -516,9 +518,9 @@ static void devlink_remove_symlinks(struct device
+>> *dev,
+>>                 return;
+>>         }
+>> 
+>> -       snprintf(buf, len, "supplier:%s", dev_name(sup));
+>> +       snprintf(buf, len, "supplier:%s:%s", dev_bus_name(sup),
+>> dev_name(sup));
+>>         sysfs_remove_link(&con->kobj, buf);
+>> -       snprintf(buf, len, "consumer:%s", dev_name(con));
+>> +       snprintf(buf, len, "consumer:%s:%s", dev_bus_name(sup),
+>> dev_name(con));
+
+btw this should be dev_bus_name(con).
+
+>>         sysfs_remove_link(&sup->kobj, buf);
+>>         kfree(buf);
+>>   }
+>> 
+>> With these changes:
+>> 
+>> Tested-by: Michael Walle <michael@walle.cc>
+> 
+> Greg,
+> 
+> I think it's good to pick up this version if you don't see any issues.
+
+Why so fast?
+
+
+>> This at least make the warning go away.
+> 
+> Phew!
+> 
+>> BUT, there is somesthing strange or at least I don't get it:
+>> 
+>> # find /sys/bus/pci/devices/0000:00:00.0/ -name "consumer\:*"
+>> # find /sys/bus/pci/devices/0000:00:00.1/ -name "consumer\:*"
+>> /sys/bus/pci/devices/0000:00:00.1/consumer:mdio_bus:0000:00:00.1:04
+>> /sys/bus/pci/devices/0000:00:00.1/consumer:mdio_bus:0000:00:00.1
+>> 
+>> enetc0 (0000:00:00.0) has no consumers while enetc1 (0000:00:00.1)
+>> has ones. Although both have PHYs connected. Here are the
+>> corresonding device tree entries:
+>> 
+>> enetc0:
+>> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/arch/arm64/boot/dts/freescale/fsl-ls1028a-kontron-sl28.dts?h=v5.11-rc2#n81
+>> 
+>> enetc1:
+>> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/arch/arm64/boot/dts/freescale/fsl-ls1028a-kontron-sl28-var4.dts?h=v5.11-rc2#n21
+>> 
+>> Why is there a link between enetc1 and its PHY (and MDIO bus)
+>> but not for enetc0?
+> 
+> So a lot of subtle things could be going on here that make it look
+> like it's not working correctly but it's actually working fine. Since
+> fw_devlink=permissive is the default mode, all links that are created
+> are SYNC_STATE_ONLY links. These links are deleted after their
+> consumers probe. So if you really want to see all the "real" links
+> persist, try booting with fw_devlink=on. You might have boot issues
+> though -- I'm working on that separately [1]. Also, SYNC_STATE_ONLY
+> links can be created between the parent of a consumer and the supplier
+> (I won't get into the why here) depending on some ordering -- so that
+> might be causing some spurious looking links, but they aren't.
+> 
+> Another way to do what you are trying to do is to enable the logs in
+> device_link_add() and look at them to see if all the links are created
+> as you'd expect.
+> 
+>> btw, here are all links:
+>> 
+>> # ls /sys/class/devlink/
+>> pci:0000:00:00.1--mdio_bus:0000:00:00.1
+>> platform:5000000.iommu--pci:0000:00:00.0
+>> platform:5000000.iommu--pci:0000:00:00.1
+>> platform:5000000.iommu--pci:0000:00:00.2
+>> platform:5000000.iommu--pci:0000:00:00.3
+>> platform:5000000.iommu--pci:0000:00:00.5
+>> platform:5000000.iommu--pci:0000:00:00.6
+>> platform:5000000.iommu--pci:0001:00:00.0
+>> platform:5000000.iommu--pci:0002:00:00.0
+>> platform:5000000.iommu--platform:2140000.mmc
+>> platform:5000000.iommu--platform:2150000.mmc
+>> platform:5000000.iommu--platform:22c0000.dma-controller
+>> platform:5000000.iommu--platform:3100000.usb
+>> platform:5000000.iommu--platform:3110000.usb
+>> platform:5000000.iommu--platform:3200000.sata
+>> platform:5000000.iommu--platform:8000000.crypto
+>> platform:5000000.iommu--platform:8380000.dma-controller
+>> platform:5000000.iommu--platform:f080000.display
+>> platform:f1f0000.clock-controller--platform:f080000.display
+>> regulator:regulator.0--i2c:0-0050
+>> regulator:regulator.0--i2c:1-0057
+>> regulator:regulator.0--i2c:2-0050
+>> regulator:regulator.0--platform:3200000.sata
+> 
+> As you can see, most of the links that fw_devlink created are gone.
+> Because all the consumers probed. Any remaining ones you see here are
+> non-SYNC_STATE_ONLY links created by the driver/frameworks or cases
+> where consumers haven't probed. My guess is that only the first one is
+> of this criteria and it doesn't hurt anything here. Try booting with
+> fw_devlink=on and check this list. That'll give you a better idea.
+
+Thanks for explaining. I'll try that.
+
+-michael
