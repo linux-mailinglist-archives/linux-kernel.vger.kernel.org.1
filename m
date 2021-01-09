@@ -2,91 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 308122F0204
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Jan 2021 18:07:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 829FD2F01FF
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Jan 2021 18:04:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726589AbhAIRFa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Jan 2021 12:05:30 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:52871 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726013AbhAIRFa (ORCPT
+        id S1726466AbhAIREn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Jan 2021 12:04:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50148 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725966AbhAIREm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Jan 2021 12:05:30 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1610211844;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=lgv0MtjN+q9SruMJbKaoUMIuZ7zzQ7Hn/3LTwFUpEAE=;
-        b=VMGs2EUMZ1nrYKcKnSEflbe2BuaRcR9AeQhZWy7WmbHgjUuxqHZMdY3mUVYKnJlMJN0oym
-        iqww3OQJVedugeVnn7AUSNxnSR7IPXvy7pO8MmzwfkQe5bQEOnIKAVi9a4sHIj+tPUxXUd
-        d5NCbstV3pJo86MEN+M3UYbfxMvQTfk=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-514-RgalnBNRPTCReKRWkgJQQQ-1; Sat, 09 Jan 2021 12:04:00 -0500
-X-MC-Unique: RgalnBNRPTCReKRWkgJQQQ-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D1B4B15720;
-        Sat,  9 Jan 2021 17:03:57 +0000 (UTC)
-Received: from treble (ovpn-120-156.rdu2.redhat.com [10.10.120.156])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 5E32D5C1C5;
-        Sat,  9 Jan 2021 17:03:55 +0000 (UTC)
-Date:   Sat, 9 Jan 2021 11:03:53 -0600
-From:   Josh Poimboeuf <jpoimboe@redhat.com>
-To:     Sedat Dilek <sedat.dilek@gmail.com>
-Cc:     Sami Tolvanen <samitolvanen@google.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Will Deacon <will@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Clang-Built-Linux ML <clang-built-linux@googlegroups.com>,
-        kernel-hardening@lists.openwall.com, linux-arch@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kbuild@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org
-Subject: Re: [PATCH v9 00/16] Add support for Clang LTO
-Message-ID: <20210109170353.litivfvc4zotnimv@treble>
-References: <20201211184633.3213045-1-samitolvanen@google.com>
- <CA+icZUWYxO1hHW-_vrJid7EstqQRYQphjO3Xn6pj6qfEYEONbA@mail.gmail.com>
- <20210109153646.zrmglpvr27f5zd7m@treble>
- <CA+icZUUiucbsQZtJKYdD7Y7Cq8hJZdBwsF0U0BFbaBtnLY3Nsw@mail.gmail.com>
- <20210109160709.kqqpf64klflajarl@treble>
- <CA+icZUU=sS2xfzo9qTUTPQ0prbbQcj29tpDt1qK5cYZxarXuxg@mail.gmail.com>
- <20210109163256.3sv3wbgrshbj72ik@treble>
- <CA+icZUUszOHkJ8Acx2mDowg3StZw9EureDQ7YYkJkcAnpLBA+g@mail.gmail.com>
+        Sat, 9 Jan 2021 12:04:42 -0500
+Received: from ZenIV.linux.org.uk (zeniv.linux.org.uk [IPv6:2002:c35c:fd02::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B661C061786;
+        Sat,  9 Jan 2021 09:04:02 -0800 (PST)
+Received: from viro by ZenIV.linux.org.uk with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kyHeh-008iFa-1l; Sat, 09 Jan 2021 17:03:59 +0000
+Date:   Sat, 9 Jan 2021 17:03:59 +0000
+From:   Al Viro <viro@zeniv.linux.org.uk>
+To:     Pavel Begunkov <asml.silence@gmail.com>
+Cc:     linux-fsdevel@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] iov_iter: optimise iter type checking
+Message-ID: <20210109170359.GT3579531@ZenIV.linux.org.uk>
+References: <a8cdb781384791c30e30036aced4c027c5dfea86.1605969341.git.asml.silence@gmail.com>
+ <6e795064-fdbd-d354-4b01-a4f7409debf5@gmail.com>
+ <54cd4d1b-d7ec-a74c-8be0-e48780609d56@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CA+icZUUszOHkJ8Acx2mDowg3StZw9EureDQ7YYkJkcAnpLBA+g@mail.gmail.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+In-Reply-To: <54cd4d1b-d7ec-a74c-8be0-e48780609d56@gmail.com>
+Sender: Al Viro <viro@ftp.linux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jan 09, 2021 at 05:45:47PM +0100, Sedat Dilek wrote:
-> I tried merging with clang-cfi Git which is based on Linux v5.11-rc2+
-> with a lot of merge conflicts.
+On Sat, Jan 09, 2021 at 04:09:08PM +0000, Pavel Begunkov wrote:
+> On 06/12/2020 16:01, Pavel Begunkov wrote:
+> > On 21/11/2020 14:37, Pavel Begunkov wrote:
+> >> The problem here is that iov_iter_is_*() helpers check types for
+> >> equality, but all iterate_* helpers do bitwise ands. This confuses
+> >> compilers, so even if some cases were handled separately with
+> >> iov_iter_is_*(), corresponding ifs in iterate*() right after are not
+> >> eliminated.
+> >>
+> >> E.g. iov_iter_npages() first handles discards, but iterate_all_kinds()
+> >> still checks for discard iter type and generates unreachable code down
+> >> the line.
+> > 
+> > Ping. This one should be pretty simple
 > 
-> Did you try on top of cfi-10 Git tag which is based on Linux v5.10?
-> 
-> Whatever you successfully did... Can you give me a step-by-step instruction?
+> Ping please. Any doubts about this patch?
 
-Oops, my bad.  My last three commits (which I just added) do conflict.
-Sorry for the confusion.
+Sorry, had been buried in other crap.  I'm really not fond of the
+bitmap use; if anything, I would rather turn iterate_and_advance() et.al.
+into switches...
 
-Just drop my last three commits:
+How about moving the READ/WRITE part into MSB?  Checking is just as fast
+(if not faster - check for sign vs. checking bit 0).  And turn the
+types into straight (dense) enum.
 
-git fetch https://git.kernel.org/pub/scm/linux/kernel/git/jpoimboe/linux.git objtool-vmlinux
-git checkout -B tmp FETCH_HEAD
-git reset --hard HEAD~~~
-git fetch https://github.com/samitolvanen/linux clang-lto
-git rebase --onto FETCH_HEAD 79881bfc57be
+Almost all iov_iter_rw() callers have the form (iov_iter_rw(iter) == READ) or
+(iov_iter_rw(iter) == WRITE).  Out of 50-odd callers there are 5 nominal
+exceptions:
+fs/cifs/smbdirect.c:1936:                        iov_iter_rw(&msg->msg_iter));
+fs/exfat/inode.c:442:   int rw = iov_iter_rw(iter);
+fs/f2fs/data.c:3639:    int rw = iov_iter_rw(iter);
+fs/f2fs/f2fs.h:4082:    int rw = iov_iter_rw(iter);
+fs/f2fs/f2fs.h:4092:    int rw = iov_iter_rw(iter);
 
--- 
-Josh
+The first one is debugging printk
+        if (iov_iter_rw(&msg->msg_iter) == WRITE) {
+                /* It's a bug in upper layer to get there */
+                cifs_dbg(VFS, "Invalid msg iter dir %u\n",
+                         iov_iter_rw(&msg->msg_iter));
+                rc = -EINVAL;
+                goto out;
+        }
+and if you look at the condition, the quality of message is
+underwhelming - "Data source msg iter passed by caller" would
+be more informative.
 
+Other 4...  exfat one is
+        if (rw == WRITE) {
+...
+	}
+...
+        if (ret < 0 && (rw & WRITE))
+                exfat_write_failed(mapping, size);
+IOW, doing
+	bool is_write = iov_iter_rw(iter) == WRITE;
+would be cleaner.  f2fs.h ones are
+	int rw = iov_iter_rw(iter);
+	....
+	if (.... && rw == WRITE ...
+so they are of the same sort (assuming we want that local
+variable in the first place).
+
+f2fs/data.c is the least trivial - it includes things like
+                if (!down_read_trylock(&fi->i_gc_rwsem[rw])) {
+and considering the amount of other stuff done there,
+I would suggest something like
+	int rw = is_data_source(iter) ? WRITE : READ;
+
+I'll dig myself from under ->d_revalidate() code review, look
+through the iov_iter-related series and post review, hopefully
+by tonight.
