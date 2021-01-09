@@ -2,104 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB7002F002E
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Jan 2021 14:49:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CE5D2F0030
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Jan 2021 14:51:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726780AbhAINsE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Jan 2021 08:48:04 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36340 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726692AbhAINr7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Jan 2021 08:47:59 -0500
-Received: from relay06.th.seeweb.it (relay06.th.seeweb.it [IPv6:2001:4b7a:2000:18::167])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 718A5C0617AA
-        for <linux-kernel@vger.kernel.org>; Sat,  9 Jan 2021 05:46:24 -0800 (PST)
-Received: from IcarusMOD.eternityproject.eu (unknown [2.237.20.237])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by m-r2.th.seeweb.it (Postfix) with ESMTPSA id CAB6D3EF25;
-        Sat,  9 Jan 2021 14:46:22 +0100 (CET)
-From:   AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@somainline.org>
-To:     linux-arm-msm@vger.kernel.org
-Cc:     konrad.dybcio@somainline.org, marijn.suijten@somainline.org,
-        martin.botka@somainline.org, phone-devel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, agross@kernel.org,
-        bjorn.andersson@linaro.org, mturquette@baylibre.com,
-        sboyd@kernel.org, robh+dt@kernel.org, linux-clk@vger.kernel.org,
-        devicetree@vger.kernel.org,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@somainline.org>
-Subject: [PATCH 9/9] clk: qcom: gpucc-msm8998: Allow fabia gpupll0 rate setting
-Date:   Sat,  9 Jan 2021 14:46:17 +0100
-Message-Id: <20210109134617.146275-10-angelogioacchino.delregno@somainline.org>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210109134617.146275-1-angelogioacchino.delregno@somainline.org>
-References: <20210109134617.146275-1-angelogioacchino.delregno@somainline.org>
+        id S1726196AbhAINu3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Jan 2021 08:50:29 -0500
+Received: from gloria.sntech.de ([185.11.138.130]:35890 "EHLO gloria.sntech.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725872AbhAINu2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 9 Jan 2021 08:50:28 -0500
+Received: from ip5f5aa64a.dynamic.kabel-deutschland.de ([95.90.166.74] helo=diego.localnet)
+        by gloria.sntech.de with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <heiko@sntech.de>)
+        id 1kyEcX-0000Ht-R5; Sat, 09 Jan 2021 14:49:33 +0100
+From:   Heiko =?ISO-8859-1?Q?St=FCbner?= <heiko@sntech.de>
+To:     Johan Jonker <jbx6244@gmail.com>
+Cc:     robh+dt@kernel.org, mchehab@kernel.org, jacob-chen@iotwrt.com,
+        ezequiel@collabora.com, linux-media@vger.kernel.org,
+        linux-rockchip@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Hans Verkuil <hverkuil@xs4all.nl>
+Subject: Re: [RFC PATCH v1 1/4] media: dt-bindings: rockchip-rga: add more rga compatible properties
+Date:   Sat, 09 Jan 2021 14:49:32 +0100
+Message-ID: <1863232.usQuhbGJ8B@diego>
+In-Reply-To: <20201219112653.10705-1-jbx6244@gmail.com>
+References: <20201219112653.10705-1-jbx6244@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The GPU PLL0 is not a fixed PLL and the rate can be set on it:
-this is necessary especially on boards which bootloader is setting
-a very low rate on this PLL before booting Linux, which would be
-unsuitable for postdividing to reach the maximum allowed Adreno GPU
-frequency of 710MHz (or, actually, even 670MHz..) on this SoC.
+Am Samstag, 19. Dezember 2020, 12:26:50 CET schrieb Johan Jonker:
+> Add more rga compatible properties.
+> 
+> "rockchip,px30-rga", "rockchip,rk3288-rga"
+> "rockchip,rk3328-rga", "rockchip,rk3288-rga"
+> "rockchip,rk3368-rga", "rockchip,rk3288-rga"
+> 
+> make ARCH=arm64 dt_binding_check
+> DT_SCHEMA_FILES=Documentation/devicetree/bindings/media/rockchip-rga.yaml
+> 
+> Signed-off-by: Johan Jonker <jbx6244@gmail.com>
 
-To allow setting rates on the GPU PLL0, also define VCO boundaries
-and set the CLK_SET_RATE_PARENT flag to the GPU PLL0 postdivider.
+this patch1 should probably go through the media-tree.
+So hopefully media-people will notice this series?
 
-With this change, the Adreno GPU is now able to scale through all
-the available frequencies.
 
-Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>
----
- drivers/clk/qcom/gpucc-msm8998.c | 10 +++++++++-
- 1 file changed, 9 insertions(+), 1 deletion(-)
+> ---
+>  Documentation/devicetree/bindings/media/rockchip-rga.yaml | 6 +++++-
+>  1 file changed, 5 insertions(+), 1 deletion(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/media/rockchip-rga.yaml b/Documentation/devicetree/bindings/media/rockchip-rga.yaml
+> index dd645ddcc..a609b63bb 100644
+> --- a/Documentation/devicetree/bindings/media/rockchip-rga.yaml
+> +++ b/Documentation/devicetree/bindings/media/rockchip-rga.yaml
+> @@ -21,7 +21,11 @@ properties:
+>        - const: rockchip,rk3288-rga
+>        - const: rockchip,rk3399-rga
+>        - items:
+> -          - const: rockchip,rk3228-rga
+> +          - enum:
+> +              - rockchip,px30-rga
+> +              - rockchip,rk3228-rga
+> +              - rockchip,rk3328-rga
+> +              - rockchip,rk3368-rga
+>            - const: rockchip,rk3288-rga
+>  
+>    reg:
+> 
 
-diff --git a/drivers/clk/qcom/gpucc-msm8998.c b/drivers/clk/qcom/gpucc-msm8998.c
-index 1a518c4915b4..fedfffaf0a8d 100644
---- a/drivers/clk/qcom/gpucc-msm8998.c
-+++ b/drivers/clk/qcom/gpucc-msm8998.c
-@@ -50,6 +50,11 @@ static struct clk_branch gpucc_cxo_clk = {
- 	},
- };
- 
-+static struct pll_vco fabia_vco[] = {
-+	{ 249600000, 2000000000, 0 },
-+	{ 125000000, 1000000000, 1 },
-+};
-+
- static const struct clk_div_table post_div_table_fabia_even[] = {
- 	{ 0x0, 1 },
- 	{ 0x1, 2 },
-@@ -61,11 +66,13 @@ static const struct clk_div_table post_div_table_fabia_even[] = {
- static struct clk_alpha_pll gpupll0 = {
- 	.offset = 0x0,
- 	.regs = clk_alpha_pll_regs[CLK_ALPHA_PLL_TYPE_FABIA],
-+	.vco_table = fabia_vco,
-+	.num_vco = ARRAY_SIZE(fabia_vco),
- 	.clkr.hw.init = &(struct clk_init_data){
- 		.name = "gpupll0",
- 		.parent_hws = (const struct clk_hw *[]){ &gpucc_cxo_clk.clkr.hw },
- 		.num_parents = 1,
--		.ops = &clk_alpha_pll_fixed_fabia_ops,
-+		.ops = &clk_alpha_pll_fabia_ops,
- 	},
- };
- 
-@@ -80,6 +87,7 @@ static struct clk_alpha_pll_postdiv gpupll0_out_even = {
- 		.name = "gpupll0_out_even",
- 		.parent_hws = (const struct clk_hw *[]){ &gpupll0.clkr.hw },
- 		.num_parents = 1,
-+		.flags = CLK_SET_RATE_PARENT,
- 		.ops = &clk_alpha_pll_postdiv_fabia_ops,
- 	},
- };
--- 
-2.29.2
+
+
 
