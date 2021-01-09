@@ -2,52 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E919C2EFEB2
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Jan 2021 09:57:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 21E452EFEB5
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Jan 2021 10:03:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726801AbhAIIzI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Jan 2021 03:55:08 -0500
-Received: from mail.kernel.org ([198.145.29.99]:44184 "EHLO mail.kernel.org"
+        id S1726666AbhAIJCK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Jan 2021 04:02:10 -0500
+Received: from mail.kernel.org ([198.145.29.99]:44546 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726051AbhAIIzI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Jan 2021 03:55:08 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D383B20B1F;
-        Sat,  9 Jan 2021 08:54:26 +0000 (UTC)
+        id S1726051AbhAIJCJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 9 Jan 2021 04:02:09 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6889F2388A;
+        Sat,  9 Jan 2021 09:01:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610182467;
-        bh=KRPIZSgYgsy9SB6GotoJDSh27J5xHqj849MRk9PTSvs=;
+        s=k20201202; t=1610182888;
+        bh=oWWZ4QtPz6X3VjuMisVOWmtyWuCrAIJg6amlhmHFDHg=;
         h=Date:From:To:Cc:Subject:From;
-        b=pyAh1J927XhGTh6N6o8hvOVdvh1SwViXYfK2Ht0V+tID9/9AaC1AtuugY7vgp3CpV
-         O+vgAKfxiUdPzrM2PhSFcJx5tLwa0OlH1J/2slQ+2zMmp72RwFCtGJD/99/tD5yJtB
-         +pvjixh7D6WBN/p+qzFybnonEHPIpjfJNaE1M+AtT6AvVsKjzVK4s5oFTUD0w2j+zv
-         jDOr6KxMTBGXxZCi6vti4KkJQybpL2/CBw25sc5izt8egUueLAYB0uFamsLA1aCs8J
-         UCQd7JHZGHK76iR6UbwyZlWY6z2w7aZ0c9aY0aUPXt4KPzIY8Jx7CWtW9ip/WX+MgE
-         kLlzSAsoS/zAQ==
-Date:   Sat, 9 Jan 2021 14:24:23 +0530
+        b=biTY1/6KLkTa7nC15wCZBcTqdGZBoOb5Bjya80k+R0kEo7tLa6fxavzMORvAupTdC
+         vUkPD69qutJvCc+oJvv1XFBUacaYO53CN2M6HX0tWa/6nJYRgdu8MyyYHOS/0smkwH
+         YRjzpKrHjBdPm0xvN3MSxohGB9+Ll5/zIet3kISirFUVQTyCyQvYB37Xu6ehTI2sFI
+         UW1Gf/jXTIU3tQxrufnAQLfTzJdE2c5Zw2GHUFJDWElejOZwcNDp/upZnLY8a1YUFZ
+         8SVi1hpQ/gPIIWYou0lOwZnBe1uq0kQPDnqtktnzUrT8q44efTxJo7jb8HGgtTIcpx
+         B5dQdLG8FzOKw==
+Date:   Sat, 9 Jan 2021 14:31:24 +0530
 From:   Vinod Koul <vkoul@kernel.org>
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Kishon Vijay Abraham I <kishon@ti.com>
-Subject: [GIT PULL]: Generic phy fixes for v5.11
-Message-ID: <20210109085423.GX2771@vkoul-mobl>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>
+Subject: [GIT PULL]: dmaengine fixes for v5.11
+Message-ID: <20210109090124.GY2771@vkoul-mobl>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="yrj/dFKFPuw6o+aM"
+        protocol="application/pgp-signature"; boundary="oLBj+sq0vYjzfsbl"
 Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---yrj/dFKFPuw6o+aM
+--oLBj+sq0vYjzfsbl
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-Hi Greg,
+Hello Linus,
 
-Please pull to receive couple of driver fixes for generic phy subsystem.
-All these are in linux-next
+Please pull to receive fixes for dmaengine drivers. Odd fixes for few
+drivers.
 
 The following changes since commit 5c8fe583cce542aa0b84adc939ce85293de36e5e:
 
@@ -55,57 +54,96 @@ The following changes since commit 5c8fe583cce542aa0b84adc939ce85293de36e5e:
 
 are available in the Git repository at:
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/phy/linux-phy.git tags/phy-=
-fixes-5.11
+  git://git.kernel.org/pub/scm/linux/kernel/git/vkoul/dmaengine.git tags/dm=
+aengine-fix-5.11
 
-for you to fetch changes up to d092bd9110494de3372722b317510b3692f1b2fe:
+for you to fetch changes up to e1263f9277bad198c2acc8092a41aea1edbea0e4:
 
-  phy: mediatek: allow compile-testing the dsi phy (2021-01-04 13:00:54 +05=
-30)
-
-----------------------------------------------------------------
-phy: fixes for 5.11
-
-*) Fix Ingenic driver build
-*) Warning fix for cpcap-usb
-*) Compile test enabling for mediatek phy
+  dmaengine: stm32-mdma: fix STM32_MDMA_VERY_HIGH_PRIORITY value (2021-01-0=
+4 21:27:45 +0530)
 
 ----------------------------------------------------------------
-Alexander Lobakin (1):
-      PHY: Ingenic: fix unconditional build of phy-ingenic-usb
+dmaengine fixes for v5.11
+
+Bunch of dmaengine driver fixes for:
+- coverity discovered issues for xilinx driver
+- qcom, gpi driver fix for undefined bhaviour and one off cleanup
+- Update Peter's email for TI DMA drivers
+- one off for idxd driver
+- resource leak fix for mediatek and milbeaut drivers
+
+----------------------------------------------------------------
+Amelie Delaunay (1):
+      dmaengine: stm32-mdma: fix STM32_MDMA_VERY_HIGH_PRIORITY value
 
 Arnd Bergmann (1):
-      phy: mediatek: allow compile-testing the dsi phy
+      dmaengine: qcom: fix gpi undefined behavior
 
-Tony Lindgren (1):
-      phy: cpcap-usb: Fix warning for missing regulator_disable
+Christophe JAILLET (2):
+      dmaengine: mediatek: mtk-hsdma: Fix a resource leak in the error hand=
+ling path of the probe function
+      dmaengine: milbeaut-xdmac: Fix a resource leak in the error handling =
+path of the probe function
 
- drivers/phy/ingenic/Makefile         |  2 +-
- drivers/phy/mediatek/Kconfig         |  4 +++-
- drivers/phy/motorola/phy-cpcap-usb.c | 19 +++++++++++++------
- 3 files changed, 17 insertions(+), 8 deletions(-)
+Dan Carpenter (2):
+      dmaengine: idxd: off by one in cleanup code
+      dmaengine: dw-edma: Fix use after free in dw_edma_alloc_chunk()
+
+Peter Ujfalusi (3):
+      dmaengine: ti: k3-udma: Fix pktdma rchan TPL level setup
+      MAINTAINERS: Add entry for Texas Instruments DMA drivers
+      dt-bindings: dma: ti: Update maintainer and author information
+
+Shravya Kumbham (3):
+      dmaengine: xilinx_dma: check dma_async_device_register return value
+      dmaengine: xilinx_dma: fix incompatible param warning in _child_probe=
+()
+      dmaengine: xilinx_dma: fix mixed_enum_type coverity warning
+
+Xiaoming Ni (1):
+      dmaengine: qcom: gpi: Fixes a format mismatch
+
+Zheng Yongjun (1):
+      qcom: bam_dma: Delete useless kfree code
+
+ Documentation/devicetree/bindings/dma/ti/k3-bcdma.yaml  |  4 +++-
+ Documentation/devicetree/bindings/dma/ti/k3-pktdma.yaml |  4 +++-
+ Documentation/devicetree/bindings/dma/ti/k3-udma.yaml   |  4 +++-
+ MAINTAINERS                                             | 13 +++++++++++++
+ drivers/dma/dw-edma/dw-edma-core.c                      |  4 ++--
+ drivers/dma/idxd/sysfs.c                                |  4 ++--
+ drivers/dma/mediatek/mtk-hsdma.c                        |  1 +
+ drivers/dma/milbeaut-xdmac.c                            |  4 +++-
+ drivers/dma/qcom/bam_dma.c                              |  6 +-----
+ drivers/dma/qcom/gpi.c                                  | 10 +++++-----
+ drivers/dma/stm32-mdma.c                                |  2 +-
+ drivers/dma/ti/k3-udma.c                                |  6 +++---
+ drivers/dma/xilinx/xilinx_dma.c                         | 11 ++++++++---
+ 13 files changed, 48 insertions(+), 25 deletions(-)
+
+
 
 --=20
 ~Vinod
 
---yrj/dFKFPuw6o+aM
+--oLBj+sq0vYjzfsbl
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQIzBAEBCAAdFiEE+vs47OPLdNbVcHzyfBQHDyUjg0cFAl/5bz8ACgkQfBQHDyUj
-g0cDFw//T96rzErMyoyb/9jx8LbyLSe6gA3e9bFEuhR3Uzk4OWP1MGRhsZs8qcBJ
-Z2ZcUNkki07XNoN8ZycgFY1AkiHWRDo7jBx9GxunOZb+zwyhosSgInGVGLZf2GMK
-u8Q7DWxmmMy5wITZuqbenEpdS8DP40c51X/2gb4n3VVRleImIWQNSWy8GwiUjXN5
-qUNGIdMLfwVQdZEtw5K0RhScbXj+ULN54s24KSlLdCq1VOMiGnUQ5MxzFRYnvXRM
-OXTMjjete0tzKmNKPHyg5FJcQNDhNa2YM4kEQzSPC3AzWNLCH5SQYi+Lk5d4nPor
-1/rvMk3wEWn3woDb/lfy5+Xzv7V2YProX1nF5TiBFlOz92zQCORJEITnvkkKihhx
-8ACUY5hedrGR4ZFhNL+ilJGEWsgwmBaPdyn30yq1Bpc1o7t0a/Px5qEeL8TwgAjj
-0iMnUSH/EvXXhPvVFb4Vbba1A7wjWCqIhzQm7EirMsI8B+MdcDpO+8B7aWWwa0b4
-moCsoB7wytPtC/zTNDv1OYjM1SfmDFmDQa7+tA0q8OY76fi599ThzvNg+j+kf3S8
-/CjDpwMvZhXDhzohIgRjc9LWyPIyy6W4odyxyo8yYWCgJsuNcQys1E9l9RBig2V8
-NLCNQy0kSe6MMZ1WInN+LoWGRPzsKCLIMk2EKLbhHAxItXkR8js=
-=qAdY
+iQIzBAEBCAAdFiEE+vs47OPLdNbVcHzyfBQHDyUjg0cFAl/5cOMACgkQfBQHDyUj
+g0c8jxAAon5kduChT+JuOQN5fIj3QlaRhppYtLiGlnwazX1XI/vQWxEZnQ38kRRJ
+sbSMLAMHotsAbxQwLQGOgGOiw1OhHLFGag2Cgfk9NOgZTORsh4un0UU9PaIQodXg
+XuefGycC8S4zbfSZn+ZMYoB5TIVBijEw65xekGL3qaWIYI3/UAWHbejHGvZQrYPt
+/aeOb4V6HFFRuULYq9aLEiAUyaLgOHJWRPMCQJUJ+V8qu3RbxM4SV3U+MvcZIwBZ
++CzeX7hqhIaQyr99D7n87s1XoLxOZQ1QqFWvor1NBjkjEmiSoYHxpNSR5sxrl+Jb
+z8EBLypIMEldXhT6esglKyFwl+tWGPXz0/CLIh7nML8LrzoG6cmN14UJTYwpAI0g
+tSnPsxXO7yWpUbNegwWeTECtzZJDxmyGr9EY2MW1mTeoGYaD4dlSiOTnFNyvwkYM
+YphMCB/5Y0Av0sVcwn1jy80a0Iwyebe+PXFFNl3MDF+CkFFM4YB4LM+C/7mHfu/2
+jb+pIQnrJmIi+7zpm+s/4r8T99coZqe7s5RRsG8A7qnORle7+CWRU57SJ4wZb6uV
+oc/SZp9z2nMnH2QPw1pXRcYx0vJ0jwu0YLYobqNevXkMwiEmUPNl7qiMz2UVlRQw
+ZaBoB2KKB3D9clUdZTEYF61FuzPcnERJ70a5wcgEcD1AzwpI4L4=
+=35B1
 -----END PGP SIGNATURE-----
 
---yrj/dFKFPuw6o+aM--
+--oLBj+sq0vYjzfsbl--
