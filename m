@@ -2,124 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 241EA2F02E2
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Jan 2021 19:40:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 224F42F02E4
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Jan 2021 19:43:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726141AbhAISkV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Jan 2021 13:40:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42382 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726001AbhAISkU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Jan 2021 13:40:20 -0500
-Received: from mail-vs1-xe31.google.com (mail-vs1-xe31.google.com [IPv6:2607:f8b0:4864:20::e31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2D81C061786;
-        Sat,  9 Jan 2021 10:39:39 -0800 (PST)
-Received: by mail-vs1-xe31.google.com with SMTP id x26so7490831vsq.1;
-        Sat, 09 Jan 2021 10:39:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=vo7QU1jn/MNR3ZLMnYmlFrmP/67S/5qA3ag8OfiuZXo=;
-        b=F4NrHNRl6wSXFRf551VhA1QEaOWvrzlieBJAA3BUMRiom4EymuGXWf3qSZd2Zo4RZr
-         e8paYqBC9AsXH5zLvdR5Ofss7XyRuT9IOSMTH8fAf3CXe6BJttFJcQFDI32+BO+i3vI+
-         KHEysivbeR/aQ75MjqN/LN7/SaxVbNfbVv04qp8RH4Bpyhzk9DMUEwCpQiDRps2kKBwc
-         U2LnxZyuoaj1H8XCXE96YY/T3cGSWWWd9kCMku4ELqEfsTDgI5UE5xxVyw354MdWcC2t
-         87mCICsgVwgpLbY/vjZ6BKy3+PcPS1KlYXlUmZZ9x22hIu2pu66GuQPB8Fhuf0665sTW
-         hWsw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=vo7QU1jn/MNR3ZLMnYmlFrmP/67S/5qA3ag8OfiuZXo=;
-        b=EPKED+exJCOqkYl0fgZkJbn8E5DymixyQ+7wZ6q0dqWgCTvYRIibwH933/JF/Gxxxx
-         7dxcLHYFw7zGZIA9kEdFNtXfo8Nb7YCMlBib/5oOnKdw3apzGx7E6HXZGeEQVNoy3QEB
-         7/9XJe/YXVAuC8SI7LYtJa5eDptUbmqLIF3+rUm5LDfZ6dbJRv1gwiIDQeVf0eeHuOQs
-         UAHBKTEtlvp4I0zG4t6B+iNl65nwP/c50poVy4QATwmDLGLbAxMFLuO8RQ7s3XKzwwYB
-         r0Vd80jx7EpFGfQysPoFYsGm/oQLErIDRuEQUq/ZPt/edbYfSz8ayhcmldWxrw6ye6VM
-         b3rQ==
-X-Gm-Message-State: AOAM531Sz4XVi7WfrAe2hlwakNpwKZVaccdT8WdqvlRr8K1BCezMTBvn
-        RCI0wQtnBfWZPAe6fmcGkrHjg1Z7EYnhzuLRt3k=
-X-Google-Smtp-Source: ABdhPJz5RXOBbsfRYVPZHWldYLS5QKMxp7/T8n+Rfl7vk3enVt/0kgJIuAiybUWxdD/3wxkide7Ue3ENnrEerrdV5js=
-X-Received: by 2002:a67:d39b:: with SMTP id b27mr7662865vsj.22.1610217578896;
- Sat, 09 Jan 2021 10:39:38 -0800 (PST)
+        id S1726240AbhAISmN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Jan 2021 13:42:13 -0500
+Received: from mail.kernel.org ([198.145.29.99]:45782 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725956AbhAISmN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 9 Jan 2021 13:42:13 -0500
+Received: from archlinux (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 131C923A04;
+        Sat,  9 Jan 2021 18:41:30 +0000 (UTC)
+Date:   Sat, 9 Jan 2021 18:41:27 +0000
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     "Ye, Xiang" <xiang.ye@intel.com>
+Cc:     jikos@kernel.org, srinivas.pandruvada@linux.intel.com,
+        linux-input@vger.kernel.org, linux-iio@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 0/3] add custom hinge sensor support
+Message-ID: <20210109184127.48ac58c3@archlinux>
+In-Reply-To: <20201231024640.GA5718@host>
+References: <20201215054444.9324-1-xiang.ye@intel.com>
+        <20201230120517.622d3351@archlinux>
+        <20201231024640.GA5718@host>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-References: <20200926130306.13843-1-kholk11@gmail.com> <20200926130306.13843-4-kholk11@gmail.com>
- <X8sV2UOipnhP1Y78@builder.lan>
-In-Reply-To: <X8sV2UOipnhP1Y78@builder.lan>
-From:   AngeloGioacchino Del Regno <kholk11@gmail.com>
-Date:   Sat, 9 Jan 2021 19:39:28 +0100
-Message-ID: <CAK7fi1Z0k8AE91KhjMUsBtKgu9ArEhnbfru2CYZHLDyjfgA6NQ@mail.gmail.com>
-Subject: Re: [PATCH 3/5] clk: qcom: mmcc-sdm660: Add MDP clock source CXC to
- MDSS GDSC
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     Andy Gross <agross@kernel.org>, Stephen Boyd <sboyd@kernel.org>,
-        marijns95@gmail.com, Konrad Dybcio <konradybcio@gmail.com>,
-        martin.botka1@gmail.com, MSM <linux-arm-msm@vger.kernel.org>,
-        phone-devel@vger.kernel.org,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Il giorno sab 5 dic 2020 alle ore 06:08 Bjorn Andersson
-<bjorn.andersson@linaro.org> ha scritto:
->
-> On Sat 26 Sep 08:03 CDT 2020, kholk11@gmail.com wrote:
->
-> > From: AngeloGioacchino Del Regno <kholk11@gmail.com>
-> >
-> > It is required for optimal performance and to avoid MDP stalls to
-> > retain mem/periph on GDSC enablement: to achieve this, let's add
-> > the required CXC to the MDSS GDSC.
-> >
->
-> Can you please explain how you came to this conclusion, I don't see the
-> reference to the MDP_CLK_SRC in the downstream kernel.
->
-> Thanks,
-> Bjorn
->
-Hey!
-I am sure I don't have to go too deep with such an explanation. You know,
-downstream is seriously tangled, perhaps that's why you couldn't find how.
+On Thu, 31 Dec 2020 10:46:40 +0800
+"Ye, Xiang" <xiang.ye@intel.com> wrote:
 
-By the way, as you can see, here in sdm660-mdss.dtsi we have the
-MDP_CLK_SRC clock:
-https://source.codeaurora.org/quic/la/kernel/msm-4.4/tree/arch/arm/boot/dts/qcom/sdm660-mdss.dtsi?h=LA.UM.8.2.r2-03400-sdm660.0#n121
+> On Wed, Dec 30, 2020 at 12:05:17PM +0000, Jonathan Cameron wrote:
+> > On Tue, 15 Dec 2020 13:44:41 +0800
+> > Ye Xiang <xiang.ye@intel.com> wrote:
+> >   
+> > > Here we register one iio device with three channels which present angle for
+> > > hinge, keyboard and screen.
+> > > 
+> > > This driver works on devices with Intel integrated sensor hub, where
+> > > hinge sensor is presented using a custom sensor usage id.
+> > > 
+> > > Here the angle is presented in degrees, which is converted to radians.  
+> > 
+> > Other than those minor bits I'm happy to fix up in patch 2, this looks
+> > good to me.  However, I'll need a Jiri Ack for the hid parts before
+> > I apply it.  We are are early in this cycle, so no great rush given
+> > the usual xmas slow down!  
+> 
+> Ok, let's wait Jiri to review the hid parts. Thanks for the help.
+Series applied with the changes mentioned in review of patch 2.
 
-Since downstream uses to set the mem/periph retain in a different way,
-here you find
-some references to what you're looking for:
-https://source.codeaurora.org/quic/la/kernel/msm-4.4/tree/drivers/video/fbdev/msm/mdss_mdp.c?h=LA.UM.8.2.r2-03400-sdm660.0#n1555
+Applied to the togreg branch of iio.git and pushed out as testing for
+the various autobuilders to poke at it at and see if they can find
+anything I missed.
 
-...of course, also from my own tests, failing to set these flags will
-stall the MDP as
-soon as we hit a resume from MDP idle power collapse.
+Thanks,
 
-P.S.: Sorry for the late reply!
---Angelo
+Jonathan
 
-> > Signed-off-by: AngeloGioacchino Del Regno <kholk11@gmail.com>
-> > ---
-> >  drivers/clk/qcom/mmcc-sdm660.c | 2 ++
-> >  1 file changed, 2 insertions(+)
-> >
-> > diff --git a/drivers/clk/qcom/mmcc-sdm660.c b/drivers/clk/qcom/mmcc-sdm660.c
-> > index 234aca7c873b..7b1384cf8506 100644
-> > --- a/drivers/clk/qcom/mmcc-sdm660.c
-> > +++ b/drivers/clk/qcom/mmcc-sdm660.c
-> > @@ -2572,6 +2572,8 @@ static struct gdsc mdss_gdsc = {
-> >       .pd = {
-> >               .name = "mdss",
-> >       },
-> > +     .cxcs = (unsigned int []){ 0x2040 },
-> > +     .cxc_count = 1,
-> >       .pwrsts = PWRSTS_OFF_ON,
-> >  };
-> >
-> > --
-> > 2.28.0
-> >
+> 
+> Thanks
+> Ye Xiang
+> >   
+> > > 
+> > > Changes since v3:
+> > >   - hid-sensor-custom: remove sensor_inst::custom_pdev_exposed.
+> > >   - hid-sensor-custom: use static buf, w_buf to avoid using goto in 
+> > >     get_known_custom_sensor_index.
+> > >   - hid-sensor-custom-intel-hinge: use devm_ prefix function instead.
+> > >   - sysfs-bus-iio: put in_anglY_raw together with in_angl_raw.
+> > > 
+> > > Changes since v2:
+> > >   - use 1 iio device instead of 3 for hinge sensor.
+> > >   - use indexed channel instead of modified channel and added channel
+> > >     labels.
+> > >   - remove 2,3 patch in last version, add a document patch to describe the
+> > >     hinge channels.
+> > >   - hid-sensor-custom: use meaningful return value in 
+> > >     get_known_custom_sensor_index and checked in call side.
+> > >   - hid-sensor-ids.h: use HID_USAGE_SENSOR_DATA_FIELD_CUSTOM_VALUE(x) to 
+> > >     define custom sensor value.
+> > > 
+> > > Changes since v1:
+> > >   - fixed errors reported by lkp
+> > > 
+> > > Ye Xiang (3):
+> > >   HID: hid-sensor-custom: Add custom sensor iio support
+> > >   iio: hid-sensors: Add hinge sensor driver
+> > >   iio:Documentation: Add documentation for hinge sensor channels
+> > > 
+> > >  Documentation/ABI/testing/sysfs-bus-iio       |  11 +
+> > >  drivers/hid/hid-sensor-custom.c               | 143 +++++++
+> > >  .../hid-sensors/hid-sensor-attributes.c       |   2 +
+> > >  drivers/iio/position/Kconfig                  |  16 +
+> > >  drivers/iio/position/Makefile                 |   1 +
+> > >  .../position/hid-sensor-custom-intel-hinge.c  | 391 ++++++++++++++++++
+> > >  include/linux/hid-sensor-ids.h                |  14 +
+> > >  7 files changed, 578 insertions(+)
+> > >  create mode 100644 drivers/iio/position/hid-sensor-custom-intel-hinge.c
+> > >   
+> >   
+
