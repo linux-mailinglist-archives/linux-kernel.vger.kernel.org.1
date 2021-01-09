@@ -2,265 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82B992F0252
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Jan 2021 18:36:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E9952F0250
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Jan 2021 18:36:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726427AbhAIRea (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Jan 2021 12:34:30 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56524 "EHLO
+        id S1726385AbhAIRe2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Jan 2021 12:34:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56516 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726389AbhAIRe3 (ORCPT
+        with ESMTP id S1725942AbhAIRe2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Jan 2021 12:34:29 -0500
-Received: from mail-qk1-x72b.google.com (mail-qk1-x72b.google.com [IPv6:2607:f8b0:4864:20::72b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48205C0617A3
-        for <linux-kernel@vger.kernel.org>; Sat,  9 Jan 2021 09:33:49 -0800 (PST)
-Received: by mail-qk1-x72b.google.com with SMTP id 186so11372565qkj.3
-        for <linux-kernel@vger.kernel.org>; Sat, 09 Jan 2021 09:33:49 -0800 (PST)
+        Sat, 9 Jan 2021 12:34:28 -0500
+Received: from mail-il1-x132.google.com (mail-il1-x132.google.com [IPv6:2607:f8b0:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C03FDC06179F;
+        Sat,  9 Jan 2021 09:33:47 -0800 (PST)
+Received: by mail-il1-x132.google.com with SMTP id e7so13764376ile.7;
+        Sat, 09 Jan 2021 09:33:47 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=WIBhjrUJop7flf9QR2XhtZX9vVZhbTm8p1+uKOf0WUM=;
-        b=wT/OZtJvf1IdzYYBh57re8pdc9pO24OdSuf1F4RgkY1aDWGWT69IcCBzJ6SX2muCcj
-         l+L+AHM/zKQahAJwAC84fAjzjD0y82ZjIwZhfRCFLr88kocJBm2mqDkT03JR3f71uVFA
-         vf/IJuiD8vmB86Vgc1U93/sYT0pjXREKT0/wpmX5W471dA2N3EqDP8TS3wTCWmQPWcXi
-         vStAuvwZUK5l9d2bl83xM9eqtIGD+dH8UCLGogsGrfrnHcIcgX8sFRGJmet1Pc+M4W3L
-         J6bGIPcUVuVXqDEscSVpEFX0BybKrgqXEw5mX64L/MWEYZIBGpQLweZM/r+l1UhBh6rv
-         nmPw==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
+         :subject:to:cc;
+        bh=NikId7Xj7bWOh+hLaIn+ZZMlijXDi8nElT+l6OdToWY=;
+        b=g/pQdtKnuFESOOqddx88eblRnszCnOfblr9FrlAOcVMiw7QPdJqBkMMrQ8qQv9pejD
+         Ny2QqfbXSFy15cuqaGq979m/4cqR8/p9VV4Cuvi9Gve2mhoptlZVOPLFeaYRm9zI89SV
+         +55oFqz636EU/Ok+b+qFnjxTAKDjuWyUWV7m7LPzGH9djYzDFb2Qb/PsVddrPMgbVPDN
+         OrCQxG97wM8LYRaXgfKklCI33p8jWUdT6RGI260XhXB85Yt+7M7k/i+uGfRPxpcOpCIC
+         pA5zReSdT48tC7O9yfnxIhsS+NqdW8Ux/y6F0q7ZlOhNU+h9ZOmHlkhfKUPMM+XFueIr
+         M4gA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=WIBhjrUJop7flf9QR2XhtZX9vVZhbTm8p1+uKOf0WUM=;
-        b=eQnYLyrlkHvzrB4cpJprAzzlbSUqVUwdhNrsOaXZ/2z/R3ekctEcSO8o+zf5B6L5Ig
-         Vp2N+i/784L3MoXVuAMAuZJ8MMwbdB9/eRakJsbYM1LO39VcyZB5+ZKE5fezd9Ri5fTg
-         c7Fuln/OzhkJgAOpQ3E3WJN1v34fX78JbF4SCXSxSFDz6ERpOqjhN3Iu6ZZeSAP+TUKU
-         NuDgvi5W2jYj4i4dJt0yrOYBVzjP0hSY0gbGat+hJpFIdlrMXC7AMZwkOm3OPZMbRrbX
-         FhIKhNZE8lCeWwgCyy08wvruSOWZSesNtEzejn/tc3AKQHX98tCkmy8DJcHV3uIz3cIg
-         tYCw==
-X-Gm-Message-State: AOAM533oasRmF5upEVT7/RqRw4CmPcGp5Ax5RxqmB7Xo9s+DC3OkYP60
-        06gmy734PrO8eyYHZ6QfODOWCRpuZpZfeqVJXk88mA==
-X-Google-Smtp-Source: ABdhPJwaMbmg7jOhk4a0MGYOH5nxdtI/EHr29+NGQwmnmVSprVJmou9UNUSBCqZn12zFbNrwdm/cpeA67NUATY4qhg8=
-X-Received: by 2002:a37:e10c:: with SMTP id c12mr9709644qkm.265.1610213628053;
- Sat, 09 Jan 2021 09:33:48 -0800 (PST)
+        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
+         :from:date:message-id:subject:to:cc;
+        bh=NikId7Xj7bWOh+hLaIn+ZZMlijXDi8nElT+l6OdToWY=;
+        b=eBV+4t/j30uMVQizE6i8Uw5ah+pQWKVmrtCuCs78vrUHzjcJyrNZHhIVMXE4fAxRGe
+         E1Mvwr8tzbd2sjPaTiEcDKuqOYqSAUFzPLz4qqNdUKtvQ2MiowprgKwoIPN369yLOkK0
+         bJ1CqKfuOz+PUTj4eM8wREmE3edH9HgeziimHa9qceQ5EVAw4ncdvChXHsfT08EheUgt
+         gL6tubO99YD2Ega0JUr23Vs1xf094bzwTc7uqAQeHoi1z1rs76mpZuNstizJ7DDPA/CN
+         PWwMO9TA92yduxVAMe87T7TBHL/d31GtdGgHoWhTJw2MqxTm07x7TZc0O/uhdpKSe8j5
+         1GhA==
+X-Gm-Message-State: AOAM533L3sIBcShqYObQpkpovThGMGR4q76mzNDuB+aPKkZjEo5Pgpvw
+        zyhsVZ+dxE6l65yUXzrAlI8NezVBW2mxubm+TzM=
+X-Google-Smtp-Source: ABdhPJx1ffrLsMiWlEmhD/YwfQk9GM6w4n9rJLKldS7um9a/rbcv+zWLw4Px08XWbgZ5NbTJHYMzeaP0UJYTrFD6Q3s=
+X-Received: by 2002:a05:6e02:1a43:: with SMTP id u3mr9156005ilv.209.1610213627012;
+ Sat, 09 Jan 2021 09:33:47 -0800 (PST)
 MIME-Version: 1.0
-References: <00000000000079365f05b877530b@google.com> <X/nkga4iirR8QKP2@sol.localdomain>
-In-Reply-To: <X/nkga4iirR8QKP2@sol.localdomain>
-From:   Dmitry Vyukov <dvyukov@google.com>
+References: <20201211184633.3213045-1-samitolvanen@google.com>
+ <CA+icZUWYxO1hHW-_vrJid7EstqQRYQphjO3Xn6pj6qfEYEONbA@mail.gmail.com>
+ <20210109153646.zrmglpvr27f5zd7m@treble> <CA+icZUUiucbsQZtJKYdD7Y7Cq8hJZdBwsF0U0BFbaBtnLY3Nsw@mail.gmail.com>
+ <20210109160709.kqqpf64klflajarl@treble> <CA+icZUU=sS2xfzo9qTUTPQ0prbbQcj29tpDt1qK5cYZxarXuxg@mail.gmail.com>
+ <20210109163256.3sv3wbgrshbj72ik@treble> <CA+icZUUszOHkJ8Acx2mDowg3StZw9EureDQ7YYkJkcAnpLBA+g@mail.gmail.com>
+ <20210109170353.litivfvc4zotnimv@treble> <20210109170558.meufvgwrjtqo5v3i@treble>
+In-Reply-To: <20210109170558.meufvgwrjtqo5v3i@treble>
+Reply-To: sedat.dilek@gmail.com
+From:   Sedat Dilek <sedat.dilek@gmail.com>
 Date:   Sat, 9 Jan 2021 18:33:36 +0100
-Message-ID: <CACT4Y+bGasXBz1UNo+Se5Hc7r3N5ri8i8RO4MXdiLXaGFhGB6w@mail.gmail.com>
-Subject: Re: KMSAN: uninit-value in __crypto_memneq (2)
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     "Jason A. Donenfeld" <Jason@zx2c4.com>,
-        syzbot <syzbot+e0f501056b282add58a6@syzkaller.appspotmail.com>,
-        David Miller <davem@davemloft.net>,
-        Alexander Potapenko <glider@google.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "open list:HARDWARE RANDOM NUMBER GENERATOR CORE" 
-        <linux-crypto@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
+Message-ID: <CA+icZUVEyCJK4ja_d=45t35=uRoXSDutcqEXBtKbChoP3MozrQ@mail.gmail.com>
+Subject: Re: [PATCH v9 00/16] Add support for Clang LTO
+To:     Josh Poimboeuf <jpoimboe@redhat.com>
+Cc:     Sami Tolvanen <samitolvanen@google.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Will Deacon <will@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Clang-Built-Linux ML <clang-built-linux@googlegroups.com>,
+        kernel-hardening@lists.openwall.com, linux-arch@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kbuild@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jan 9, 2021 at 6:14 PM Eric Biggers <ebiggers@kernel.org> wrote:
+On Sat, Jan 9, 2021 at 6:06 PM Josh Poimboeuf <jpoimboe@redhat.com> wrote:
 >
-> +Jason, since this looks WireGuard-related.
-
-I suspect that the uninit was created by geneve or batadv and then
-just handed off to wireguard, which couldn't deal with it at that
-point.
-
-> On Sat, Jan 09, 2021 at 05:05:24AM -0800, syzbot wrote:
-> > Hello,
+> On Sat, Jan 09, 2021 at 11:03:57AM -0600, Josh Poimboeuf wrote:
+> > On Sat, Jan 09, 2021 at 05:45:47PM +0100, Sedat Dilek wrote:
+> > > I tried merging with clang-cfi Git which is based on Linux v5.11-rc2+
+> > > with a lot of merge conflicts.
+> > >
+> > > Did you try on top of cfi-10 Git tag which is based on Linux v5.10?
+> > >
+> > > Whatever you successfully did... Can you give me a step-by-step instruction?
 > >
-> > syzbot found the following issue on:
+> > Oops, my bad.  My last three commits (which I just added) do conflict.
+> > Sorry for the confusion.
 > >
-> > HEAD commit:    73d62e81 kmsan: random: prevent boot-time reports in _mix_..
-> > git tree:       https://github.com/google/kmsan.git master
-> > console output: https://syzkaller.appspot.com/x/log.txt?x=142ab9c0d00000
-> > kernel config:  https://syzkaller.appspot.com/x/.config?x=2cdf4151c9653e32
-> > dashboard link: https://syzkaller.appspot.com/bug?extid=e0f501056b282add58a6
-> > compiler:       clang version 11.0.0 (https://github.com/llvm/llvm-project.git ca2dcbd030eadbf0aa9b660efe864ff08af6e18b)
+> > Just drop my last three commits:
 > >
-> > Unfortunately, I don't have any reproducer for this issue yet.
-> >
-> > IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> > Reported-by: syzbot+e0f501056b282add58a6@syzkaller.appspotmail.com
-> >
-> > =====================================================
-> > BUG: KMSAN: uninit-value in __crypto_memneq_16 crypto/memneq.c:99 [inline]
-> > BUG: KMSAN: uninit-value in __crypto_memneq+0x42c/0x470 crypto/memneq.c:161
-> > CPU: 0 PID: 20526 Comm: kworker/0:3 Not tainted 5.10.0-rc4-syzkaller #0
-> > Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-> > Workqueue: wg-crypt-wg1 wg_packet_decrypt_worker
-> > Call Trace:
-> >  __dump_stack lib/dump_stack.c:77 [inline]
-> >  dump_stack+0x21c/0x280 lib/dump_stack.c:118
-> >  kmsan_report+0xf7/0x1e0 mm/kmsan/kmsan_report.c:118
-> >  __msan_warning+0x5f/0xa0 mm/kmsan/kmsan_instr.c:197
-> >  __crypto_memneq_16 crypto/memneq.c:99 [inline]
-> >  __crypto_memneq+0x42c/0x470 crypto/memneq.c:161
-> >  crypto_memneq include/crypto/algapi.h:277 [inline]
-> >  chacha20poly1305_crypt_sg_inplace+0x1662/0x1cd0 lib/crypto/chacha20poly1305.c:311
-> >  chacha20poly1305_decrypt_sg_inplace+0x179/0x1d0 lib/crypto/chacha20poly1305.c:351
-> >  decrypt_packet drivers/net/wireguard/receive.c:284 [inline]
-> >  wg_packet_decrypt_worker+0x9cf/0x17d0 drivers/net/wireguard/receive.c:509
-> >  process_one_work+0x121c/0x1fc0 kernel/workqueue.c:2272
-> >  worker_thread+0x10cc/0x2740 kernel/workqueue.c:2418
-> >  kthread+0x51c/0x560 kernel/kthread.c:292
-> >  ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:296
-> >
-> > Uninit was stored to memory at:
-> >  kmsan_save_stack_with_flags mm/kmsan/kmsan.c:121 [inline]
-> >  kmsan_internal_chain_origin+0xad/0x130 mm/kmsan/kmsan.c:289
-> >  __msan_chain_origin+0x57/0xa0 mm/kmsan/kmsan_instr.c:147
-> >  put_unaligned_le64 include/linux/unaligned/access_ok.h:50 [inline]
-> >  poly1305_core_emit+0x625/0x6a0 lib/crypto/poly1305-donna64.c:182
-> >  poly1305_final_generic+0xe2/0x280 lib/crypto/poly1305.c:71
-> >  poly1305_final include/crypto/poly1305.h:94 [inline]
-> >  chacha20poly1305_crypt_sg_inplace+0x15cf/0x1cd0 lib/crypto/chacha20poly1305.c:310
-> >  chacha20poly1305_decrypt_sg_inplace+0x179/0x1d0 lib/crypto/chacha20poly1305.c:351
-> >  decrypt_packet drivers/net/wireguard/receive.c:284 [inline]
-> >  wg_packet_decrypt_worker+0x9cf/0x17d0 drivers/net/wireguard/receive.c:509
-> >  process_one_work+0x121c/0x1fc0 kernel/workqueue.c:2272
-> >  worker_thread+0x10cc/0x2740 kernel/workqueue.c:2418
-> >  kthread+0x51c/0x560 kernel/kthread.c:292
-> >  ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:296
-> >
-> > Uninit was stored to memory at:
-> >  kmsan_save_stack_with_flags mm/kmsan/kmsan.c:121 [inline]
-> >  kmsan_internal_chain_origin+0xad/0x130 mm/kmsan/kmsan.c:289
-> >  __msan_chain_origin+0x57/0xa0 mm/kmsan/kmsan_instr.c:147
-> >  poly1305_core_blocks+0x8f4/0x940 lib/crypto/poly1305-donna64.c:107
-> >  poly1305_update_generic+0x1a7/0x5a0 lib/crypto/poly1305.c:49
-> >  poly1305_update include/crypto/poly1305.h:83 [inline]
-> >  chacha20poly1305_crypt_sg_inplace+0x1496/0x1cd0 lib/crypto/chacha20poly1305.c:302
-> >  chacha20poly1305_decrypt_sg_inplace+0x179/0x1d0 lib/crypto/chacha20poly1305.c:351
-> >  decrypt_packet drivers/net/wireguard/receive.c:284 [inline]
-> >  wg_packet_decrypt_worker+0x9cf/0x17d0 drivers/net/wireguard/receive.c:509
-> >  process_one_work+0x121c/0x1fc0 kernel/workqueue.c:2272
-> >  worker_thread+0x10cc/0x2740 kernel/workqueue.c:2418
-> >  kthread+0x51c/0x560 kernel/kthread.c:292
-> >  ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:296
-> >
-> > Uninit was stored to memory at:
-> >  kmsan_save_stack_with_flags mm/kmsan/kmsan.c:121 [inline]
-> >  kmsan_internal_chain_origin+0xad/0x130 mm/kmsan/kmsan.c:289
-> >  __msan_chain_origin+0x57/0xa0 mm/kmsan/kmsan_instr.c:147
-> >  poly1305_core_blocks+0x8f4/0x940 lib/crypto/poly1305-donna64.c:107
-> >  poly1305_update_generic+0x1a7/0x5a0 lib/crypto/poly1305.c:49
-> >  poly1305_update include/crypto/poly1305.h:83 [inline]
-> >  chacha20poly1305_crypt_sg_inplace+0xb4d/0x1cd0 lib/crypto/chacha20poly1305.c:263
-> >  chacha20poly1305_decrypt_sg_inplace+0x179/0x1d0 lib/crypto/chacha20poly1305.c:351
-> >  decrypt_packet drivers/net/wireguard/receive.c:284 [inline]
-> >  wg_packet_decrypt_worker+0x9cf/0x17d0 drivers/net/wireguard/receive.c:509
-> >  process_one_work+0x121c/0x1fc0 kernel/workqueue.c:2272
-> >  worker_thread+0x10cc/0x2740 kernel/workqueue.c:2418
-> >  kthread+0x51c/0x560 kernel/kthread.c:292
-> >  ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:296
-> >
-> > Uninit was stored to memory at:
-> >  kmsan_save_stack_with_flags mm/kmsan/kmsan.c:121 [inline]
-> >  kmsan_internal_chain_origin+0xad/0x130 mm/kmsan/kmsan.c:289
-> >  __msan_chain_origin+0x57/0xa0 mm/kmsan/kmsan_instr.c:147
-> >  crypto_xor_cpy include/crypto/algapi.h:167 [inline]
-> >  chacha_crypt_generic+0x696/0x880 lib/crypto/libchacha.c:23
-> >  chacha_crypt include/crypto/chacha.h:90 [inline]
-> >  chacha20_crypt include/crypto/chacha.h:96 [inline]
-> >  chacha20poly1305_crypt_sg_inplace+0xda2/0x1cd0 lib/crypto/chacha20poly1305.c:280
-> >  chacha20poly1305_encrypt_sg_inplace+0x125/0x140 lib/crypto/chacha20poly1305.c:338
-> >  encrypt_packet drivers/net/wireguard/send.c:216 [inline]
-> >  wg_packet_encrypt_worker+0x1288/0x2680 drivers/net/wireguard/send.c:301
-> >  process_one_work+0x121c/0x1fc0 kernel/workqueue.c:2272
-> >  worker_thread+0x10cc/0x2740 kernel/workqueue.c:2418
-> >  kthread+0x51c/0x560 kernel/kthread.c:292
-> >  ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:296
-> >
-> > Uninit was stored to memory at:
-> >  kmsan_save_stack_with_flags mm/kmsan/kmsan.c:121 [inline]
-> >  kmsan_internal_chain_origin+0xad/0x130 mm/kmsan/kmsan.c:289
-> >  kmsan_memcpy_memmove_metadata+0x25e/0x2d0 mm/kmsan/kmsan.c:226
-> >  kmsan_memcpy_metadata+0xb/0x10 mm/kmsan/kmsan.c:246
-> >  __msan_memcpy+0x46/0x60 mm/kmsan/kmsan_instr.c:110
-> >  pskb_expand_head+0x3eb/0x1df0 net/core/skbuff.c:1631
-> >  __skb_cow include/linux/skbuff.h:3165 [inline]
-> >  skb_cow_head include/linux/skbuff.h:3199 [inline]
-> >  geneve_build_skb+0x56e/0xf80 drivers/net/geneve.c:753
-> >  geneve6_xmit_skb drivers/net/geneve.c:1023 [inline]
-> >  geneve_xmit+0x2d86/0x3cc0 drivers/net/geneve.c:1056
-> >  __netdev_start_xmit include/linux/netdevice.h:4718 [inline]
-> >  netdev_start_xmit include/linux/netdevice.h:4732 [inline]
-> >  xmit_one+0x2b9/0x770 net/core/dev.c:3564
-> >  dev_hard_start_xmit net/core/dev.c:3580 [inline]
-> >  __dev_queue_xmit+0x33f2/0x4520 net/core/dev.c:4140
-> >  dev_queue_xmit+0x4b/0x60 net/core/dev.c:4173
-> >  batadv_send_skb_packet+0x622/0x970 net/batman-adv/send.c:108
-> >  batadv_send_broadcast_skb+0x76/0x90 net/batman-adv/send.c:127
-> >  batadv_iv_ogm_send_to_if net/batman-adv/bat_iv_ogm.c:394 [inline]
-> >  batadv_iv_ogm_emit net/batman-adv/bat_iv_ogm.c:420 [inline]
-> >  batadv_iv_send_outstanding_bat_ogm_packet+0xb3a/0xf00 net/batman-adv/bat_iv_ogm.c:1712
-> >  process_one_work+0x121c/0x1fc0 kernel/workqueue.c:2272
-> >  worker_thread+0x10cc/0x2740 kernel/workqueue.c:2418
-> >  kthread+0x51c/0x560 kernel/kthread.c:292
-> >  ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:296
-> >
-> > Uninit was stored to memory at:
-> >  kmsan_save_stack_with_flags mm/kmsan/kmsan.c:121 [inline]
-> >  kmsan_internal_chain_origin+0xad/0x130 mm/kmsan/kmsan.c:289
-> >  kmsan_memcpy_memmove_metadata+0x25e/0x2d0 mm/kmsan/kmsan.c:226
-> >  kmsan_memcpy_metadata+0xb/0x10 mm/kmsan/kmsan.c:246
-> >  __msan_memcpy+0x46/0x60 mm/kmsan/kmsan_instr.c:110
-> >  pskb_expand_head+0x3eb/0x1df0 net/core/skbuff.c:1631
-> >  __skb_cow include/linux/skbuff.h:3165 [inline]
-> >  skb_cow_head include/linux/skbuff.h:3199 [inline]
-> >  batadv_skb_head_push+0x2ce/0x410 net/batman-adv/soft-interface.c:75
-> >  batadv_send_skb_packet+0x1ed/0x970 net/batman-adv/send.c:86
-> >  batadv_send_broadcast_skb+0x76/0x90 net/batman-adv/send.c:127
-> >  batadv_iv_ogm_send_to_if net/batman-adv/bat_iv_ogm.c:394 [inline]
-> >  batadv_iv_ogm_emit net/batman-adv/bat_iv_ogm.c:420 [inline]
-> >  batadv_iv_send_outstanding_bat_ogm_packet+0xb3a/0xf00 net/batman-adv/bat_iv_ogm.c:1712
-> >  process_one_work+0x121c/0x1fc0 kernel/workqueue.c:2272
-> >  worker_thread+0x10cc/0x2740 kernel/workqueue.c:2418
-> >  kthread+0x51c/0x560 kernel/kthread.c:292
-> >  ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:296
-> >
-> > Uninit was created at:
-> >  kmsan_save_stack_with_flags+0x3c/0x90 mm/kmsan/kmsan.c:121
-> >  kmsan_alloc_page+0xd3/0x1f0 mm/kmsan/kmsan_shadow.c:274
-> >  __alloc_pages_nodemask+0x84e/0xfb0 mm/page_alloc.c:4989
-> >  __alloc_pages include/linux/gfp.h:511 [inline]
-> >  __alloc_pages_node include/linux/gfp.h:524 [inline]
-> >  alloc_pages_node include/linux/gfp.h:538 [inline]
-> >  __page_frag_cache_refill mm/page_alloc.c:5065 [inline]
-> >  page_frag_alloc+0x35b/0x890 mm/page_alloc.c:5095
-> >  __netdev_alloc_skb+0xbee/0xc50 net/core/skbuff.c:456
-> >  __netdev_alloc_skb_ip_align include/linux/skbuff.h:2846 [inline]
-> >  netdev_alloc_skb_ip_align include/linux/skbuff.h:2856 [inline]
-> >  batadv_iv_ogm_aggregate_new net/batman-adv/bat_iv_ogm.c:559 [inline]
-> >  batadv_iv_ogm_queue_add+0x143f/0x1cf0 net/batman-adv/bat_iv_ogm.c:671
-> >  batadv_iv_ogm_schedule_buff net/batman-adv/bat_iv_ogm.c:834 [inline]
-> >  batadv_iv_ogm_schedule+0xe4e/0x1670 net/batman-adv/bat_iv_ogm.c:870
-> >  batadv_iv_send_outstanding_bat_ogm_packet+0xd7b/0xf00 net/batman-adv/bat_iv_ogm.c:1724
-> >  process_one_work+0x121c/0x1fc0 kernel/workqueue.c:2272
-> >  worker_thread+0x10cc/0x2740 kernel/workqueue.c:2418
-> >  kthread+0x51c/0x560 kernel/kthread.c:292
-> >  ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:296
-> > =====================================================
-> >
-> >
-> > ---
-> > This report is generated by a bot. It may contain errors.
-> > See https://goo.gl/tpsmEJ for more information about syzbot.
-> > syzbot engineers can be reached at syzkaller@googlegroups.com.
-> >
-> > syzbot will keep track of this issue. See:
-> > https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+> > git fetch https://git.kernel.org/pub/scm/linux/kernel/git/jpoimboe/linux.git objtool-vmlinux
+> > git checkout -B tmp FETCH_HEAD
+> > git reset --hard HEAD~~~
+> > git fetch https://github.com/samitolvanen/linux clang-lto
+> > git rebase --onto FETCH_HEAD 79881bfc57be
 >
-> --
-> You received this message because you are subscribed to the Google Groups "syzkaller-bugs" group.
-> To unsubscribe from this group and stop receiving emails from it, send an email to syzkaller-bugs+unsubscribe@googlegroups.com.
-> To view this discussion on the web visit https://groups.google.com/d/msgid/syzkaller-bugs/X/nkga4iirR8QKP2%40sol.localdomain.
+> Last one should be:
+>
+> git rebase --onto FETCH_HEAD 2c85ebc57b3e
+>
+
+OK, that worked fine.
+
+So commit 2c85ebc57b3e is v5.10 Git tag in upstream.
+
+So, I substituted:
+
+git rebase --onto FETCH_HEAD v5.10
+
+Thanks.
+
+- Sedat -
