@@ -2,58 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E71C2EFC69
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Jan 2021 01:49:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 32B4A2EFC6C
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Jan 2021 01:52:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726395AbhAIAtm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Jan 2021 19:49:42 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40180 "EHLO
+        id S1726929AbhAIAti (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Jan 2021 19:49:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40184 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726884AbhAIAtg (ORCPT
+        with ESMTP id S1726893AbhAIAtg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 8 Jan 2021 19:49:36 -0500
-Received: from mail-qv1-xf4a.google.com (mail-qv1-xf4a.google.com [IPv6:2607:f8b0:4864:20::f4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD6F2C0617A3
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Jan 2021 16:48:00 -0800 (PST)
-Received: by mail-qv1-xf4a.google.com with SMTP id eb4so9431004qvb.21
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Jan 2021 16:48:00 -0800 (PST)
+Received: from mail-qt1-x849.google.com (mail-qt1-x849.google.com [IPv6:2607:f8b0:4864:20::849])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 581CFC0617A5
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Jan 2021 16:48:03 -0800 (PST)
+Received: by mail-qt1-x849.google.com with SMTP id i1so9504968qtw.4
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Jan 2021 16:48:03 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=sender:reply-to:date:in-reply-to:message-id:mime-version:references
          :subject:from:to:cc;
-        bh=GZIGOjVPda+c+O82UamW1h7IewucBItkY9B2sexVha8=;
-        b=nDFk3WbLzXD2CBf61X7QA3DO3OSq5V59DWDGCi6i+KTqpxvu+JJDnXm3xHU+hr6Bz7
-         xmHonSFW0NOY6zZ0SktkyIxYosOmBgSbl/Dr6AYd4lPimUvBH0Td6tMW8DMG31TkLHom
-         VpfhFYL7V+SgXAC7JTaCjbbSkEdKeUP1dB/tf5vCInrJcPRkNI96DOrFb8/8Jla1CzGm
-         UqSF530amN0qmVtPLEIW8GP8DnKTrfea+KCeyDlbtCykDakVgdLpVki40DgzRfjcw+r6
-         yBSwX8nA8lx1SIq+Z2Sv4b5t8qHskOQUVQLzhqi7JydBbrPOKPCubmhhK/fizNOJsCo1
-         ioIw==
+        bh=jYzoDTNoVvtxiYfXr7ZVMmi5PaPZLOefqEPk2ReBEho=;
+        b=rYTHs6VtOzbi6t9kEubz4Bd+X+LSpeh5CRREL9KKvWx45B0x4J0JqtXf703AejLdtZ
+         oZd0vk11Abhc/dNaTO6AwGRfWUzPa+15qfOmKU3HE7R5rmTdbuOlJEndJ9HeBFcLKLCx
+         d5OdbCJAuc7xXDH1++YnlhT/Wjk3cDchoMS3Yqhfprh7iobuflp11tBHw1a+E+j06SE2
+         fdJP6K2FCEV09r1EqKSirOXpb2Bt+orJYtoE1AIdrGg+cmynp9ZM2KT0aShabNNamBGE
+         lAryM1BjRSsxC9owM+IXltC9RJRskBjuF6PV4Mwyh532wHel/6LvgcsYD3s6n6ldH7L3
+         YFqQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:reply-to:date:in-reply-to:message-id
          :mime-version:references:subject:from:to:cc;
-        bh=GZIGOjVPda+c+O82UamW1h7IewucBItkY9B2sexVha8=;
-        b=knjqkG0I1ddw48iJEqj9Kx7l8kOOiIMkoj7XoskvsXDLhII0rEljYsyoc19JS3NPvd
-         jWjcL17QDlmAJ6UMk62/+cpU6XwOkt2OpOyFYgrC+czA/cpshPTK1higmOu4NXlZq/Td
-         OeQUUSI3QlhCROccrTThMRD3hmyvEUO01YPV51GwVoMvXQ++OvvNLwweSKDshw2RAmll
-         dML1RrW2BD4lMOq9My6bjTHVTGCQeHTHpfLFQVK3+SlFTUH4YCoaV/QaHe2VfTCi2Owu
-         vdtfmMt5oN85YcQ5DjoXvvoIrnIEH/dY92OhkgL7JYVN72sZRfeiV3zWmlVTydDYsFuI
-         mlSA==
-X-Gm-Message-State: AOAM532xYQBQ8vWKyLVOFTA6U4NVWL7w74x8tmuadSzvZNSdlOkAu2RC
-        13kBs7JWrC8GxDC+p2I8mvMvdxPt9qA=
-X-Google-Smtp-Source: ABdhPJzlKxa6a6SGn1UvXiverv1gdWB35eyRHSNHFI7M+3xx/JUIzg/FiWxrsObSt1oY3EUAgGhHAv03Mn4=
+        bh=jYzoDTNoVvtxiYfXr7ZVMmi5PaPZLOefqEPk2ReBEho=;
+        b=flZfyM0UTFnpv4K3vJbm9LHFBRNChtn1EMAeoo0C+UWSoMtzU1vB5xwlTaCVQX/CJd
+         fFoDEuPSrnCypjBjVINBzCdFxbpI/Vk3qbjqvqb+nh/qo56FfJnDVbLkhx/SvIpdYqb+
+         Z52SyXYANBt/Yjf+JZ9MDNxlhp7paeP74LmDcJCVAn7Sxn2QSoJk0whVc7ORSNUh+zS0
+         7dV9SSNSi/y+IMngz7kTzYUUh65iwtlreWGItiCU1bS+/9XuSyeq632Ygp88goLYFWct
+         3Qi/9o3R8teWOkmboB95g5k2gpsJsPJVLZkckAS24UfIf9MJPT+nhF6F1/Q/Yb3czxs3
+         VnKw==
+X-Gm-Message-State: AOAM532bwCOyRYoDsXL7TeC7SeCmLkJDb0uFvP9LwFfLJjgCUceEJ3BS
+        NVIkfQKgoM098/unSjWejtagR+DLJ/s=
+X-Google-Smtp-Source: ABdhPJxpQ3wLhaubUoaRGswmZy7bijjJZZ0cyMCOzgTd51mh8LwTMxQc3nOKUrHHjQDFkTl1m85lzfclaVs=
 Sender: "seanjc via sendgmr" <seanjc@seanjc798194.pdx.corp.google.com>
 X-Received: from seanjc798194.pdx.corp.google.com ([2620:15c:f:10:1ea0:b8ff:fe73:50f5])
- (user=seanjc job=sendgmr) by 2002:a05:6214:370:: with SMTP id
- t16mr6428915qvu.22.1610153280070; Fri, 08 Jan 2021 16:48:00 -0800 (PST)
+ (user=seanjc job=sendgmr) by 2002:a0c:fa11:: with SMTP id q17mr6347369qvn.55.1610153282514;
+ Fri, 08 Jan 2021 16:48:02 -0800 (PST)
 Reply-To: Sean Christopherson <seanjc@google.com>
-Date:   Fri,  8 Jan 2021 16:47:11 -0800
+Date:   Fri,  8 Jan 2021 16:47:12 -0800
 In-Reply-To: <20210109004714.1341275-1-seanjc@google.com>
-Message-Id: <20210109004714.1341275-11-seanjc@google.com>
+Message-Id: <20210109004714.1341275-12-seanjc@google.com>
 Mime-Version: 1.0
 References: <20210109004714.1341275-1-seanjc@google.com>
 X-Mailer: git-send-email 2.30.0.284.gd98b1dd5eaa7-goog
-Subject: [PATCH 10/13] KVM: SVM: Move SEV VMCB tracking allocation to sev.c
+Subject: [PATCH 11/13] KVM: SVM: Drop redundant svm_sev_enabled() helper
 From:   Sean Christopherson <seanjc@google.com>
 To:     Paolo Bonzini <pbonzini@redhat.com>,
         Dave Hansen <dave.hansen@linux.intel.com>,
@@ -73,98 +73,68 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Move the allocation of the SEV VMCB array to sev.c to help pave the way
-toward encapsulating SEV enabling wholly within sev.c.
-
-No functional change intended.
+Replace calls to svm_sev_enabled() with direct checks on sev_enabled, or
+in the case of svm_mem_enc_op, simply drop the call to svm_sev_enabled().
+This effectively replaces checks against a valid max_sev_asid with checks
+against sev_enabled.  sev_enabled is forced off by sev_hardware_setup()
+if max_sev_asid is invalid, all call sites are guaranteed to run after
+sev_hardware_setup(), and all of the checks care about SEV being fully
+enabled (as opposed to intentionally handling the scenario where
+max_sev_asid is valid but SEV enabling fails due to OOM).
 
 Signed-off-by: Sean Christopherson <seanjc@google.com>
 ---
- arch/x86/kvm/svm/sev.c | 13 +++++++++++++
- arch/x86/kvm/svm/svm.c | 17 ++++++++---------
- arch/x86/kvm/svm/svm.h |  1 +
- 3 files changed, 22 insertions(+), 9 deletions(-)
+ arch/x86/kvm/svm/sev.c | 6 +++---
+ arch/x86/kvm/svm/svm.h | 5 -----
+ 2 files changed, 3 insertions(+), 8 deletions(-)
 
 diff --git a/arch/x86/kvm/svm/sev.c b/arch/x86/kvm/svm/sev.c
-index 3d25d24bcb48..8c34c467a09d 100644
+index 8c34c467a09d..1b9174a49b65 100644
 --- a/arch/x86/kvm/svm/sev.c
 +++ b/arch/x86/kvm/svm/sev.c
-@@ -1323,6 +1323,19 @@ void sev_hardware_teardown(void)
- 	sev_flush_asids();
- }
+@@ -1052,7 +1052,7 @@ int svm_mem_enc_op(struct kvm *kvm, void __user *argp)
+ 	struct kvm_sev_cmd sev_cmd;
+ 	int r;
  
-+int sev_cpu_init(struct svm_cpu_data *sd)
-+{
-+	if (!svm_sev_enabled())
-+		return 0;
-+
-+	sd->sev_vmcbs = kmalloc_array(max_sev_asid + 1, sizeof(void *),
-+				      GFP_KERNEL | __GFP_ZERO);
-+	if (!sd->sev_vmcbs)
-+		return -ENOMEM;
-+
-+	return 0;
-+}
-+
- /*
-  * Pages used by hardware to hold guest encrypted state must be flushed before
-  * returning them to the system.
-diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
-index bb7b99743bea..89b95fb87a0c 100644
---- a/arch/x86/kvm/svm/svm.c
-+++ b/arch/x86/kvm/svm/svm.c
-@@ -552,23 +552,22 @@ static void svm_cpu_uninit(int cpu)
- static int svm_cpu_init(int cpu)
+-	if (!svm_sev_enabled() || !sev_enabled)
++	if (!sev_enabled)
+ 		return -ENOTTY;
+ 
+ 	if (!argp)
+@@ -1314,7 +1314,7 @@ void __init sev_hardware_setup(void)
+ 
+ void sev_hardware_teardown(void)
  {
- 	struct svm_cpu_data *sd;
-+	int ret;
+-	if (!svm_sev_enabled())
++	if (!sev_enabled)
+ 		return;
  
- 	sd = kzalloc(sizeof(struct svm_cpu_data), GFP_KERNEL);
- 	if (!sd)
- 		return -ENOMEM;
- 	sd->cpu = cpu;
- 	sd->save_area = alloc_page(GFP_KERNEL);
--	if (!sd->save_area)
-+	if (!sd->save_area) {
-+		ret = -ENOMEM;
- 		goto free_cpu_data;
-+	}
- 	clear_page(page_address(sd->save_area));
+ 	bitmap_free(sev_asid_bitmap);
+@@ -1325,7 +1325,7 @@ void sev_hardware_teardown(void)
  
--	if (svm_sev_enabled()) {
--		sd->sev_vmcbs = kmalloc_array(max_sev_asid + 1,
--					      sizeof(void *),
--					      GFP_KERNEL | __GFP_ZERO);
--		if (!sd->sev_vmcbs)
--			goto free_save_area;
--	}
-+	ret = sev_cpu_init(sd);
-+	if (ret)
-+		goto free_save_area;
+ int sev_cpu_init(struct svm_cpu_data *sd)
+ {
+-	if (!svm_sev_enabled())
++	if (!sev_enabled)
+ 		return 0;
  
- 	per_cpu(svm_data, cpu) = sd;
- 
-@@ -578,7 +577,7 @@ static int svm_cpu_init(int cpu)
- 	__free_page(sd->save_area);
- free_cpu_data:
- 	kfree(sd);
--	return -ENOMEM;
-+	return ret;
- 
- }
- 
+ 	sd->sev_vmcbs = kmalloc_array(max_sev_asid + 1, sizeof(void *),
 diff --git a/arch/x86/kvm/svm/svm.h b/arch/x86/kvm/svm/svm.h
-index 8e169835f52a..4eb4bab0ca3e 100644
+index 4eb4bab0ca3e..8cb4395b58a0 100644
 --- a/arch/x86/kvm/svm/svm.h
 +++ b/arch/x86/kvm/svm/svm.h
-@@ -583,6 +583,7 @@ int svm_unregister_enc_region(struct kvm *kvm,
- void pre_sev_run(struct vcpu_svm *svm, int cpu);
- void __init sev_hardware_setup(void);
- void sev_hardware_teardown(void);
-+int sev_cpu_init(struct svm_cpu_data *sd);
- void sev_free_vcpu(struct kvm_vcpu *vcpu);
- int sev_handle_vmgexit(struct vcpu_svm *svm);
- int sev_es_string_io(struct vcpu_svm *svm, int size, unsigned int port, int in);
+@@ -569,11 +569,6 @@ void svm_vcpu_unblocking(struct kvm_vcpu *vcpu);
+ 
+ extern unsigned int max_sev_asid;
+ 
+-static inline bool svm_sev_enabled(void)
+-{
+-	return IS_ENABLED(CONFIG_KVM_AMD_SEV) ? max_sev_asid : 0;
+-}
+-
+ void sev_vm_destroy(struct kvm *kvm);
+ int svm_mem_enc_op(struct kvm *kvm, void __user *argp);
+ int svm_register_enc_region(struct kvm *kvm,
 -- 
 2.30.0.284.gd98b1dd5eaa7-goog
 
