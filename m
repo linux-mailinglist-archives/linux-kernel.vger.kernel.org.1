@@ -2,68 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A1B32F03FE
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Jan 2021 23:06:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E22B2F0402
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Jan 2021 23:11:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726381AbhAIWF7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Jan 2021 17:05:59 -0500
-Received: from mail.kernel.org ([198.145.29.99]:40806 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726196AbhAIWF6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Jan 2021 17:05:58 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7272E23B00;
-        Sat,  9 Jan 2021 22:05:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610229917;
-        bh=vWkgu2vHUEdVBU64RaCJjJRVyp2YHBfwHiEYj86Qxmg=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=N0XVoM1ST5UakfWgWS/NBN07++n8rcsvoyRKDjXvk0w+iySvbAg/Top6n+LI+I0Dd
-         c/KPr1Ge6gzj9yYjx0wk9dTUJ44QmE/W3onMtX1O0beuPoxA9j5LgVXDA+DTYyPKkK
-         slqYSJHiHHRLSYqR2B3taOYvknI3oLGDV6aIUTREmqx0awPsoQLRKVNx7DvlwBajqT
-         yxKDKF7nowgnqCYvrJ4TWD0BfHDpxyMIAWckPZvIzgM4uk/cBxzxRLimMVjCzYwamC
-         gg8kU74sqawW2WG1MrZpfgK1RQBz6BofR6Zc9n3jjpLqnTQZqP8gH9lAIw427aJq5A
-         Qr92+pYBjfPsg==
-Date:   Sat, 9 Jan 2021 14:05:16 -0800
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Andrew Lunn <andrew@lunn.ch>
-Cc:     Oleksij Rempel <o.rempel@pengutronix.de>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Russell King <linux@armlinux.org.uk>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mips@vger.kernel.org
-Subject: Re: [PATCH v7 net-next 2/2] net: dsa: qca: ar9331: export stats64
-Message-ID: <20210109140516.2899aac4@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <X/ccfY+9a8R6wcJX@lunn.ch>
-References: <20210107125613.19046-1-o.rempel@pengutronix.de>
-        <20210107125613.19046-3-o.rempel@pengutronix.de>
-        <X/ccfY+9a8R6wcJX@lunn.ch>
+        id S1726298AbhAIWK0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Jan 2021 17:10:26 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:32770 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726196AbhAIWKZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 9 Jan 2021 17:10:25 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1610230138;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=qM7Jheprpt1SAQLOKWSi1zo9qIcexhjMy4GDW3sHcww=;
+        b=bcsB+8A/cqs1cmD4n0hWRqyZgKEK1UYNWnjxjMZD7bPnFudq5xoF+0gKsTDfOm+JCFNWgr
+        C/9Lfpj+KwTYOVrSfR/3Y73PZAeYftK+qz8TMUTL8dvi349KyEJw/hbMp3dM9SrIdq63Hn
+        RZ0k+pK1j/GXsMUpytmnbK7ktnmNthM=
+Received: from mail-io1-f69.google.com (mail-io1-f69.google.com
+ [209.85.166.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-364-WpFMjjcFNMSglLvp4_1x0g-1; Sat, 09 Jan 2021 17:08:57 -0500
+X-MC-Unique: WpFMjjcFNMSglLvp4_1x0g-1
+Received: by mail-io1-f69.google.com with SMTP id x7so10379316ion.12
+        for <linux-kernel@vger.kernel.org>; Sat, 09 Jan 2021 14:08:57 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=qM7Jheprpt1SAQLOKWSi1zo9qIcexhjMy4GDW3sHcww=;
+        b=akWb9b2YLqUYmvD/P5RP+/nsX4mum1gWwza6c2mMdXkUUUpQl34sM5NnTLqMCNu4wA
+         S3okzhiXnfFRYECU4ZfpzuX3TV//f+/Gb/XBOd2t6E0t5gR+z0kfPOoEwF4BW1DDZ3d3
+         0Tdm/BYvZv4xkWWF9YWWuAWtHXSVotxLLhJ01kQyAbiT8i7uq+eRw/PvjwWEEeeajYoA
+         LkgvFEXWt4wb3qNV2SCXn7Mx8OXsOgfgUipbdSYZUxPNB4NXPeO1nSgKltuoLoP9kWqO
+         4QABdGh1aJ4FADl8Sjv5U/uNqdG1GIJy/QaFtmbjwttxGf0XRVgVPLagCcLE2XSMjBIv
+         32NA==
+X-Gm-Message-State: AOAM531oWsfDbG+gxsaMuaefC5UVCFvd3f/njAz1quaOtFlyGUgxy1AG
+        4RVOS33dLEOUHkdQmtFP8B2fSpVukDg4NKBiNj2ggRApjzmxEoGBBvXMAgN+GCg5WZVwbupYSJX
+        ka9UG5FSRohMczFtmazBHXg87mkxorIUEmRz6tJbpNzMZxq8+5Zz+jpV5Y7uAyz7nfYu7swQ=
+X-Received: by 2002:a02:a60a:: with SMTP id c10mr8904102jam.123.1610230136437;
+        Sat, 09 Jan 2021 14:08:56 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJxm8KJEaPmdFGUKfGLkFLI0QWEZmLtWn7s8d3Am7mLmpNm6S5wLh9ZWZF6kBRaGymEkAcZ0tQ==
+X-Received: by 2002:a02:a60a:: with SMTP id c10mr8904092jam.123.1610230136258;
+        Sat, 09 Jan 2021 14:08:56 -0800 (PST)
+Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
+        by smtp.gmail.com with ESMTPSA id t17sm7954555ioc.8.2021.01.09.14.08.54
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 09 Jan 2021 14:08:55 -0800 (PST)
+Subject: Re: [PATCH -next] fpga: Use DEFINE_SPINLOCK() for spinlock
+To:     Zheng Yongjun <zhengyongjun3@huawei.com>, mdf@kernel.org,
+        linux-fpga@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20201228135135.28788-1-zhengyongjun3@huawei.com>
+From:   Tom Rix <trix@redhat.com>
+Message-ID: <58fed6b1-dbab-7696-1086-c8d84cff0379@redhat.com>
+Date:   Sat, 9 Jan 2021 14:08:53 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <20201228135135.28788-1-zhengyongjun3@huawei.com>
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 7 Jan 2021 15:36:45 +0100 Andrew Lunn wrote:
-> > +static void ar9331_get_stats64(struct dsa_switch *ds, int port,
-> > +			       struct rtnl_link_stats64 *s)
-> > +{
-> > +	struct ar9331_sw_priv *priv = (struct ar9331_sw_priv *)ds->priv;
-> > +	struct ar9331_sw_port *p = &priv->port[port];
-> > +
-> > +	spin_lock(&p->stats_lock);
-> > +	memcpy(s, &p->stats, sizeof(*s));
-> > +	spin_unlock(&p->stats_lock);
-> > +}  
-> 
-> This should probably wait until Vladimir's changes for stat64 are
-> merged, so this call can sleep. You can then return up to date
-> statistics.
 
-Plus rx_nohandler is still updated from HW stats here :|
+On 12/28/20 5:51 AM, Zheng Yongjun wrote:
+> spinlock can be initialized automatically with DEFINE_SPINLOCK()
+> rather than explicitly calling spin_lock_init().
+>
+> Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>
 
-+	stats->rx_nohandler += raw.filtered;
+This looks fine.
+
+Reviewed-by: Tom Rix <trix@redhat.com>
+
+> ---
+>  drivers/fpga/fpga-bridge.c | 4 +---
+>  1 file changed, 1 insertion(+), 3 deletions(-)
+>
+> diff --git a/drivers/fpga/fpga-bridge.c b/drivers/fpga/fpga-bridge.c
+> index 2deccacc3aa7..e9266b2a357f 100644
+> --- a/drivers/fpga/fpga-bridge.c
+> +++ b/drivers/fpga/fpga-bridge.c
+> @@ -17,7 +17,7 @@ static DEFINE_IDA(fpga_bridge_ida);
+>  static struct class *fpga_bridge_class;
+>  
+>  /* Lock for adding/removing bridges to linked lists*/
+> -static spinlock_t bridge_list_lock;
+> +static DEFINE_SPINLOCK(bridge_list_lock);
+>  
+>  /**
+>   * fpga_bridge_enable - Enable transactions on the bridge
+> @@ -479,8 +479,6 @@ static void fpga_bridge_dev_release(struct device *dev)
+>  
+>  static int __init fpga_bridge_dev_init(void)
+>  {
+> -	spin_lock_init(&bridge_list_lock);
+> -
+>  	fpga_bridge_class = class_create(THIS_MODULE, "fpga_bridge");
+>  	if (IS_ERR(fpga_bridge_class))
+>  		return PTR_ERR(fpga_bridge_class);
+
