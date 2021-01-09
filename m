@@ -2,125 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C2982F010D
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Jan 2021 17:01:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6AA7E2F0114
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Jan 2021 17:05:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726600AbhAIQBK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Jan 2021 11:01:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36562 "EHLO
+        id S1726465AbhAIQE4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Jan 2021 11:04:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37360 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726059AbhAIQBJ (ORCPT
+        with ESMTP id S1726253AbhAIQEy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Jan 2021 11:01:09 -0500
-Received: from mail-il1-x12f.google.com (mail-il1-x12f.google.com [IPv6:2607:f8b0:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D28EC061786;
-        Sat,  9 Jan 2021 08:00:29 -0800 (PST)
-Received: by mail-il1-x12f.google.com with SMTP id 75so13534754ilv.13;
-        Sat, 09 Jan 2021 08:00:29 -0800 (PST)
+        Sat, 9 Jan 2021 11:04:54 -0500
+Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38249C06179F;
+        Sat,  9 Jan 2021 08:04:14 -0800 (PST)
+Received: by mail-wm1-x332.google.com with SMTP id g185so11016242wmf.3;
+        Sat, 09 Jan 2021 08:04:14 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=UYQyrgoDNjwpWvUBnRddFfEf/fRfH0i7pG63HCGhO9w=;
-        b=DB0Vml99ZCZHvMy5PFEOpv7Zhi9sHQIOK6oGGewCCsWc37EAn2/Dfv3u6jH4FqUQrn
-         xindImLalCHLy82Lv6SET9fdbbsC4G2n4uTiYsq2lHmkbdkbGy9mpvWLBWKoV0XoqXW2
-         jjYAQdjZrYe8pf/D5+SpPKkNPol+pQtqR8MIlrlfW5bfm3KezGwpAOED7xaNKqzrgHNM
-         wlT7Gmm+ECthAa1GJ3BY3smNVkFxE1F11zxys8+EfoD/rEdpwi6AGRG6AGtNMeCpoxu7
-         eDyVY4XfmS3o6B00ZVN3koATiRrL/fCcw32LmPtQdJvralUc4V1LEaTtufJr4zYwn9Ud
-         AUsA==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=4nXYxX9dbuWurmEc3HolnGHKsTnFoJzI5tkjJRNoql4=;
+        b=QJ7SpezQUEwTiGipFEoNbCI2yi0aUPB+zDKB21I11Chcdr+lDmxoAYU4V4bAN0mWUv
+         BVo89nY8B65l97+4OtJUpZQaNj4tnE+nLqWOI/Ndgxpev+XT6UklG97DEunraVHCbLg0
+         yNmd0Fj1VkkitF0FuBAoSsvGkkRkJxObh4LKmuzBBpbtsAm0Af0gdY63nRJ2IDqZDUg1
+         pVkDoiqKTe5mfDkgZdVIgcOXsEN+HgqYSbv0CsVz0auRnBlN/L7WwFmKJa6ATwIusLU0
+         M96hVz7Wa9RXpxTOMWQvdlepLTjlTSgdZnA5OBVRy/WiebLYLgPFaa8mxz+8Y4m4HF0u
+         /t1w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=UYQyrgoDNjwpWvUBnRddFfEf/fRfH0i7pG63HCGhO9w=;
-        b=So02K0pWLxLTHb2d8Sq2HvUXR0qBKR67iSGj4gtAH7e8fvhYh96GPBwDdKEyxKY2pN
-         PJ3BFIL+f7I5i+EZPT+VFTdFQ7WnMCLCdxdiJNcLxYU/UhyILeslM2TnXdIY/xE2wzPz
-         xXDI20kIuQ9f32yjS3FAFev+STTRCK0exP6rTjJfaew5auAfCyqIWq813PLI/xAh/ngZ
-         ZJJSzGiQ5XGOrg/nXxCxsU4Tu+2vzCKAioqAQ5xwaYreZ1icD1cnVk9j75ud3J/LoVAN
-         inALW0LEptwuB1CBrUey7uSdqWs2lz+0hw6uBtGLgednBn9qboBEHNaOqatt6IW/IJe9
-         hGIg==
-X-Gm-Message-State: AOAM531q8PMkhNrGy50DVp6tI0m3/ffYEZNfULW7TvgPr1d0wAU4eoAm
-        rA9WNS+DIAWo041o+zr6HzTXOBZcxKbtEMGjda4=
-X-Google-Smtp-Source: ABdhPJzE/oyX1fpdBwWx0NDxcTp9WVbZRPs3zZLQNp+cBdD5UQ8vsA55bjk4lYh1PbsvsNIwH060bg6Cih7oKoWLm5w=
-X-Received: by 2002:a92:c26f:: with SMTP id h15mr1155498ild.65.1610208028315;
- Sat, 09 Jan 2021 08:00:28 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=4nXYxX9dbuWurmEc3HolnGHKsTnFoJzI5tkjJRNoql4=;
+        b=ipZ3QINI30a+k7RM2fk9H8Q10PTxcymgMrxqYiCS29n+S2W0C/FIz2elSdI2g7kI51
+         QtwNCw7rZ/Cb/vBafSmOrF+KB5EfUdijMFdjq8ylYOPa6f/oz09K4gZo0Q8vaFp2uhKW
+         OPz8di+eYgBBqOiHMQm0Ef76944tBy3LjJHbsFASq9UWqIrjKx/ZD4wzVdMTetQjXaYI
+         RDfUnqfxrGRgcnIzrMLVepcuj3afpi9YWoGIGhD31MRE6cTXubviWN0O1clXx9Db8ooq
+         XfIRQioUS6iUx/Z3W2OtRyTpqec/Ff7DrNI97JzpueOLl3IX6NGVtNk0PBwKNCRp/RAs
+         iL4A==
+X-Gm-Message-State: AOAM533WYJU7XshpK74t3i0H3has5rE1Gmqf/Yx8n3DFCx/qCrLACOtV
+        KJ5IgstB5ZA6QXiGo4BHdhhGTMoxeuJ0AQ==
+X-Google-Smtp-Source: ABdhPJwfIMXxMAe3BSP/M2ADL9lwDIXmQZa4+CHcS1FIt4LSKjy9Aveek7QmF0zZTW3SsdT6SkqsMw==
+X-Received: by 2002:a1c:7f8c:: with SMTP id a134mr7810978wmd.184.1610208253005;
+        Sat, 09 Jan 2021 08:04:13 -0800 (PST)
+Received: from localhost.localdomain ([185.69.144.125])
+        by smtp.gmail.com with ESMTPSA id k1sm17766623wrn.46.2021.01.09.08.04.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 09 Jan 2021 08:04:12 -0800 (PST)
+From:   Pavel Begunkov <asml.silence@gmail.com>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        linux-block@vger.kernel.org
+Subject: [PATCH] mm/filemap: don't revert iter on -EIOCBQUEUED
+Date:   Sat,  9 Jan 2021 16:00:32 +0000
+Message-Id: <f5247b60e7abbd2ff850cd108491f53a2e0c501a.1610207781.git.asml.silence@gmail.com>
+X-Mailer: git-send-email 2.24.0
 MIME-Version: 1.0
-References: <20201204095539.31705-1-andreas@kemnade.info> <CAD=FV=WLcEBv7gaA3MOVYmxJ3d2Q+mo+Amkex=0eu_19jMtjrA@mail.gmail.com>
- <20201204171428.0a011188@aktux> <CAD=FV=Vynttaz00yqbihgK0HxyrPt9b0i0-8Ft6-4NEPc_NkeQ@mail.gmail.com>
- <20201207135753.GA26857@atomide.com> <CAHCN7xLWbXtN6SfUW4fbwfUPvGVOjvGxJS=S-HWH2BSDkrUfYQ@mail.gmail.com>
- <20210108203734.15c5adb9@aktux>
-In-Reply-To: <20210108203734.15c5adb9@aktux>
-From:   Adam Ford <aford173@gmail.com>
-Date:   Sat, 9 Jan 2021 10:00:16 -0600
-Message-ID: <CAHCN7x+OjL17cxcz=rZ7OGaBQDc8rCeP3OzO93iT5GBMdEy_FA@mail.gmail.com>
-Subject: Re: [PATCH] ARM: OMAP2+: omap_device: fix idling of devices during probe
-To:     Andreas Kemnade <andreas@kemnade.info>
-Cc:     Tony Lindgren <tony@atomide.com>,
-        Doug Anderson <dianders@chromium.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        linux-omap <linux-omap@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Discussions about the Letux Kernel 
-        <letux-kernel@openphoenux.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 8, 2021 at 1:37 PM Andreas Kemnade <andreas@kemnade.info> wrote:
->
-> Hi,
->
-> On Fri, 8 Jan 2021 13:17:06 -0600
-> Adam Ford <aford173@gmail.com> wrote:
->
-> > On Mon, Dec 7, 2020 at 8:01 AM Tony Lindgren <tony@atomide.com> wrote:
-> > >
-> > > * Doug Anderson <dianders@chromium.org> [201204 16:43]:
-> > > > Hi,
-> > > >
-> > > > On Fri, Dec 4, 2020 at 8:14 AM Andreas Kemnade <andreas@kemnade.info> wrote:
-> > > > >
-> > > > > > > Fixes: 21b2cec61c04 ("mmc: Set PROBE_PREFER_ASYNCHRONOUS for drivers that existed in v4.4")
-> > > > > >
-> > > > > > From the description it sounds like this problem has always existed
-> > > > > > but the async probe just tickled it reliably.  Seems like it'd make
-> > > > > > sense to tag the "Fixes" as some earlier commit so you make sure your
-> > > > > > fix gets picked to kernels even if they don't have the async probe
-> > > > > > patch?
-> > > > > >
-> > > > >
-> > > > > Hmm, maybe
-> > > > > Fixes: 04abaf07f6d5 ("ARM: OMAP2+: omap_device: Sync omap_device and
-> > > > > pm_runtime after probe defer")
-> > > > >
-> > > > > But on the other hand to stable branches only such patches are applied
-> > > > > which solve pratical problems not only theoretical problems. But maybe
-> > > > > it solves several random issues where nobody took care to debug them.
-> > > > >
-> > > > > That would be since v4.11.
-> > > >
-> > > > I guess maybe best is to include both.  Then if someone is debugging
-> > > > why their async probe is failing they will notice this commit, but
-> > > > they also might decide to pick it earlier just to be safe...
-> > >
-> > > OK I'll add the above fixes tag too and apply this into fixes.
-> > >
-> >
-> > It might be too late, but...
-> >
-> > Tested-by: Adam Ford <aford173@gmail.com>  #logicpd-torpedo-37xx-devkit
-> >
-> hmm, when will it arrive in mainline?
+Currently, if I/O is enqueued for async execution direct paths of
+generic_file_{read,write}_iter() will always revert the iter. There are
+no users expecting that, and that is also costly. Leave iterators as is
+on -EIOCBQUEUED.
 
-It looks like it's been merged onto Linus Torvalds' branch:
+Signed-off-by: Pavel Begunkov <asml.silence@gmail.com>
+---
+ mm/filemap.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=95f05058b2bbe3b85c8617b961879e52f692caa5
+diff --git a/mm/filemap.c b/mm/filemap.c
+index 5bc672d30143..2e1686e09425 100644
+--- a/mm/filemap.c
++++ b/mm/filemap.c
+@@ -2633,7 +2633,8 @@ generic_file_read_iter(struct kiocb *iocb, struct iov_iter *iter)
+ 			iocb->ki_pos += retval;
+ 			count -= retval;
+ 		}
+-		iov_iter_revert(iter, count - iov_iter_count(iter));
++		if (retval != -EIOCBQUEUED)
++			iov_iter_revert(iter, count - iov_iter_count(iter));
+ 
+ 		/*
+ 		 * Btrfs can have a short DIO read if we encounter
+@@ -3458,7 +3459,8 @@ generic_file_direct_write(struct kiocb *iocb, struct iov_iter *from)
+ 		}
+ 		iocb->ki_pos = pos;
+ 	}
+-	iov_iter_revert(from, write_len - iov_iter_count(from));
++	if (written != -EIOCBQUEUED)
++		iov_iter_revert(from, write_len - iov_iter_count(from));
+ out:
+ 	return written;
+ }
+-- 
+2.24.0
 
-
-
->
-> Regards,
-> Andreas
