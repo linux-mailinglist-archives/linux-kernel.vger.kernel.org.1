@@ -2,86 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E55282F0461
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Jan 2021 00:18:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CF8992F0463
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Jan 2021 00:23:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726352AbhAIXSp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Jan 2021 18:18:45 -0500
-Received: from mail.kernel.org ([198.145.29.99]:48934 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726267AbhAIXSp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Jan 2021 18:18:45 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 47D342399A;
-        Sat,  9 Jan 2021 23:18:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610234284;
-        bh=ZFBoTC2mgipz/tgDN/qvYeH+VFW/sGoZi+34KvlR5+k=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=I0KT9ebP3JYEkZCpjp8Yn4cMRbh/Feck/qXNCJS+aTmq9tumgUGPUtVvSAqLFKqvD
-         E2ODj/RkFLRTFUetrLComg+T4uVqjtxWfn4z9xXYalgujMJkCsAWkl+NvtnNvQVeVW
-         +v9vBnNirkqWBynaUflKvMnVGPYT7LNA4xspiEH/xJmHgqvoYUGc0hcAh+qMT8+3j/
-         o1H9f0Wc9Z5S8s3+cKA51+IvA+/vqX0fEpK7LJsavQjgz96MXieGlia/z0RdNtrVjy
-         JgJ69hstuGTzFpWOP3RV+Vq2jQeb7CbUixMTF9VMwIgBzuORKsLSMunbrNOrHL/a1k
-         BYA4pZm0yJGhw==
-Received: by mail-ej1-f50.google.com with SMTP id ce23so19488482ejb.8;
-        Sat, 09 Jan 2021 15:18:04 -0800 (PST)
-X-Gm-Message-State: AOAM532brzDgqVI85gU1w7pnm7HG7/Ctipkg7aLgYwA1X1t3sZ9C3xyG
-        Fa+LHAdYOG8ucLUC7TH7s9lk4LdSIfLXUC6CLA==
-X-Google-Smtp-Source: ABdhPJyEdhJ/KO2Xrmr62wf3DDgLFM9nN3Ypr87VG4/eQLxzqqdHSDQinUf89iOl+Vr/SOlXv2uOuoYRofTdbtYL3xI=
-X-Received: by 2002:a17:906:a106:: with SMTP id t6mr6745897ejy.63.1610234282909;
- Sat, 09 Jan 2021 15:18:02 -0800 (PST)
+        id S1726394AbhAIXVK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Jan 2021 18:21:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45712 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726068AbhAIXVJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 9 Jan 2021 18:21:09 -0500
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95C1AC061786;
+        Sat,  9 Jan 2021 15:20:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:
+        Content-Transfer-Encoding:Content-Type:MIME-Version:References:Message-ID:
+        Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=o/+NVcgrx8JqxXvcbVLVPO61C9UbG6h6mmTwddD0Gr4=; b=gsQph+Lwv6uhcr9c8jxJtkdV3
+        amHs55Qny3BrsypHppdCL8mzydhBf4HY9Lpb7Dbg69Efrf/HbyqoWjcE8Gr4dGmXtWHYz9WWhEiJ+
+        SD3Nx225rDT+t/CBmE2tNFeWTC4s2wQrTOZzcqIEJd69YrEhd50U9zi2qzTdmj9J2ytuADVL6Egmz
+        oimyRbwnlfbdeK/PyfjmLidgejqBv5QVhuiOBf8G27wEx3xqw92DHfPWmvdZyi5V7Edl8YBVq3O12
+        XVh7J7eIZj3Rxm5EBclH1dvBK5F1sax67xGdM3A24zi1t//qxhyB1U+nCpEfcXVdhUlUlIczMoTip
+        cZTdPA9dA==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:45904)
+        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1kyNWW-0005SU-3p; Sat, 09 Jan 2021 23:19:56 +0000
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1kyNWU-0003aS-Kg; Sat, 09 Jan 2021 23:19:54 +0000
+Date:   Sat, 9 Jan 2021 23:19:54 +0000
+From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
+To:     Pali =?iso-8859-1?Q?Roh=E1r?= <pali@kernel.org>
+Cc:     Andrew Lunn <andrew@lunn.ch>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Thomas Schreiber <tschreibe@gmail.com>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Marek =?iso-8859-1?Q?Beh=FAn?= <kabel@kernel.org>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 2/3] net: sfp: assume that LOS is not implemented if
+ both LOS normal and inverted is set
+Message-ID: <20210109231954.GC1551@shell.armlinux.org.uk>
+References: <20201230154755.14746-1-pali@kernel.org>
+ <20210106153749.6748-1-pali@kernel.org>
+ <20210106153749.6748-3-pali@kernel.org>
+ <X/c8xJcwj8Y1t3u4@lunn.ch>
+ <20210109154601.GZ1551@shell.armlinux.org.uk>
+ <20210109191447.hunwx4fc4d4lox5f@pali>
 MIME-Version: 1.0
-References: <20201027160631.608503-1-fparent@baylibre.com> <20201030191714.GA4171611@bogus>
-In-Reply-To: <20201030191714.GA4171611@bogus>
-From:   Chun-Kuang Hu <chunkuang.hu@kernel.org>
-Date:   Sun, 10 Jan 2021 07:17:50 +0800
-X-Gmail-Original-Message-ID: <CAAOTY_8LwVDxZnSQAdK7mS8MAFZ1y_0EnSzj3UqeCxq-Tc5FuQ@mail.gmail.com>
-Message-ID: <CAAOTY_8LwVDxZnSQAdK7mS8MAFZ1y_0EnSzj3UqeCxq-Tc5FuQ@mail.gmail.com>
-Subject: Re: [PATCH 1/2] dt-bindings: mediatek: mmsys: add mt1867 binding
-To:     Rob Herring <robh@kernel.org>
-Cc:     Fabien Parent <fparent@baylibre.com>,
-        DTML <devicetree@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210109191447.hunwx4fc4d4lox5f@pali>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Sender: Russell King - ARM Linux admin <linux@armlinux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Matthias:
+On Sat, Jan 09, 2021 at 08:14:47PM +0100, Pali Rohár wrote:
+> On Saturday 09 January 2021 15:46:01 Russell King - ARM Linux admin wrote:
+> > On Thu, Jan 07, 2021 at 05:54:28PM +0100, Andrew Lunn wrote:
+> > > On Wed, Jan 06, 2021 at 04:37:48PM +0100, Pali Rohár wrote:
+> > > > From: Russell King <rmk+kernel@armlinux.org.uk>
+> > > > 
+> > > > Some GPON SFP modules (e.g. Ubiquiti U-Fiber Instant) have set both
+> > > > SFP_OPTIONS_LOS_INVERTED and SFP_OPTIONS_LOS_NORMAL bits in their EEPROM.
+> > > > 
+> > > > Such combination of bits is meaningless so assume that LOS signal is not
+> > > > implemented.
+> > > > 
+> > > > This patch fixes link carrier for GPON SFP module Ubiquiti U-Fiber Instant.
+> > > > 
+> > > > Signed-off-by: Russell King <rmk+kernel@armlinux.org.uk>
+> > > > Signed-off-by: Pali Rohár <pali@kernel.org>
+> > > 
+> > > Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+> > 
+> > I'd like to send this patch irrespective of discussion on the other
+> > patches - I already have it committed in my repository with a different
+> > description, but the patch content is the same.
+> > 
+> > Are you happy if I transfer Andrew's r-b tag, and convert yours to an
+> > acked-by before I send it?
+> > 
+> > I'd also like to add a patch that allows 2.5G if no other modes are
+> > found, but the bitrate specified by the module allows 2.5G speed - much
+> > like we do for 1G speeds.
+> 
+> Russell, should I send a new version of patch series without this patch?
 
-Rob Herring <robh@kernel.org> =E6=96=BC 2020=E5=B9=B410=E6=9C=8831=E6=97=A5=
- =E9=80=B1=E5=85=AD =E4=B8=8A=E5=8D=883:17=E5=AF=AB=E9=81=93=EF=BC=9A
->
-> On Tue, 27 Oct 2020 17:06:29 +0100, Fabien Parent wrote:
-> > Add binding documentation for MT8167 SoC.
+I think there's some work to be done for patch 1, so I was thinking of
+sending this with another SFP patch. It's really a bug fix since the
+existing code doesn't behave very well if both bits are set - it will
+toggle state on every RX_LOS event received irrespective of the RX_LOS
+state.
 
-Even though the title need to change to 'mt8167', this patch looks
-good to me. How do you think about this patch? One drm patch [1]
-depend on this patch, if you like this patch, could you applied this
-patch first?
-
-[1] https://patchwork.kernel.org/project/linux-mediatek/patch/2020102313313=
-0.194140-6-fparent@baylibre.com/
-
-Regards,
-Chun-Kuang.
-
-> >
-> > Signed-off-by: Fabien Parent <fparent@baylibre.com>
-> > ---
-> >  .../devicetree/bindings/arm/mediatek/mediatek,mmsys.txt          | 1 +
-> >  1 file changed, 1 insertion(+)
-> >
->
-> Acked-by: Rob Herring <robh@kernel.org>
->
-> _______________________________________________
-> Linux-mediatek mailing list
-> Linux-mediatek@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-mediatek
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
