@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D78D2EFE54
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Jan 2021 08:47:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B7DC2EFE56
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Jan 2021 08:47:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726769AbhAIHps (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Jan 2021 02:45:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43894 "EHLO
+        id S1726843AbhAIHqP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Jan 2021 02:46:15 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43990 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725847AbhAIHpr (ORCPT
+        with ESMTP id S1725847AbhAIHqO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Jan 2021 02:45:47 -0500
-Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32A95C0613CF
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Jan 2021 23:45:07 -0800 (PST)
-Received: by mail-pf1-x432.google.com with SMTP id h186so7755127pfe.0
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Jan 2021 23:45:07 -0800 (PST)
+        Sat, 9 Jan 2021 02:46:14 -0500
+Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85EF1C0613D3
+        for <linux-kernel@vger.kernel.org>; Fri,  8 Jan 2021 23:45:10 -0800 (PST)
+Received: by mail-pg1-x52b.google.com with SMTP id n25so9166310pgb.0
+        for <linux-kernel@vger.kernel.org>; Fri, 08 Jan 2021 23:45:10 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=aBb9CTdjrCaMFSuv37sDBP44Tr8vgCGxsAMBQeMmvPk=;
-        b=wUib81WgxJb23ACV58kgLXqy7B3iiG1FXO6+uepjDpylx5t7XtWXJaRyx1UWQ8tFFS
-         JWFyGkXaymuJVJARpo1G2ArFT5JNrDgfTXm3YyCwNzffNXX/EDG2KOFeic4bx9a8lULU
-         zV2YhLnDLqYIEaOcjlHJ10/azV1tul+3iWZIYDpU8k7JrOoNgR+QJI762BmMeNVKxaTd
-         7eoWGDwW1ws7O1gzaOQgAqvLepYiWyFaAd8olKZISQBszjDUKtpYYYS1cTIjc/QZMJ90
-         lGfz/5D0VihsvKUPtPzzjd3utUcgrVN+fM+M7uKitCBiCnbqpHH1YzKlk9UQycwJ29ZZ
-         CW3A==
+        bh=dF/EKdBMWNZukrtDgFeRBaQSiWHOXzvDtMysige8IMM=;
+        b=diKFo4VOSz5+2ldh4AfV1QZNz/cCXen4m7HA5tvmSsq+HrOil8gfH0w8gHxF1twJfe
+         IEOxH4puKJ1c6kSiYkGWx+ra4zzfWZL54en3bx4p6md+/8Y8kiJ7QoIljUr3oX1Rtx7O
+         VN3WF1B4dDobQbkF5VndZgrDzY1fmvghrPP6kYXem/5i+YAms7GKVMGpgfUy12ZMlVIS
+         mj+86A1oFjvDzvvEI3uVsoo3asL0cqOFzbSMibpcXxfC2Mm5qCZ3mNt5nYtLOkFWCnkx
+         PCzpHesTIcCIFOtKJHEXOWf/Lt7Itjdip+3AydoGHH0jC1fvXzAQ6dj+vjdMl+Po0LRR
+         Pbbg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=aBb9CTdjrCaMFSuv37sDBP44Tr8vgCGxsAMBQeMmvPk=;
-        b=j6MbXlLUku58ObhHKEVhR520H58ZATZQHZeWbF3/4WDbnYjVzIyAbwH75ybPNaB5On
-         FddM+P/ipKrfLg3oz8+c+RL/dqTB7UCQWxjhLra28BbgPb2jvx4RamGfCUl5tAwZQaps
-         z4mQX/wW9B5zeaUg3j4G/AWylfF+krs5UpB1MZHWqA8WYrX3Yo1UsAlfqksnSaBQKSo0
-         3g2b4i/DxWs8wgPr3uJA4CumH+Y+7JX2EWu/rNEBwDYQv88ZuBFm0/FbcSyWJ2p0rSik
-         WqmWlsT91iuUDGq77VuA2+KKVQpP1p4noFNuLm/kPU6iCeOQpHjlgqqGmjGwK7SLDyjZ
-         IzwA==
-X-Gm-Message-State: AOAM530J4fOsY760AbHjS2VbVmc5wSAhnMGeEFZwO/l0YCHjJatccuU0
-        tjSTxPQ5SVKTr7hQSkR+7jdk/g==
-X-Google-Smtp-Source: ABdhPJzwdpapP0aNr8+muZOEh1vXlCI2en4/FOpH/5RUlCRozju4tXOh05m2lyzRedQacz4+gVR4YA==
-X-Received: by 2002:a63:5942:: with SMTP id j2mr10550010pgm.33.1610178306716;
-        Fri, 08 Jan 2021 23:45:06 -0800 (PST)
+        bh=dF/EKdBMWNZukrtDgFeRBaQSiWHOXzvDtMysige8IMM=;
+        b=ImBJRQw9j7gy9MGL/Mm1pBLJjVUViFzx9LJ8g/TLpfZc0ODeGQ0gL52s1KIbR83cyz
+         vXKLywG8eXRtCLLrvdp2zP/c9j06j3QO5dOhwCdVS1w75HhaxHWpdU0nsUPW8R3njp/u
+         7HwqPaXrNFh3TW/w8HJj2iwF3dDElCQy4LxJulqRCKL3iiJXX0DUCQRM2dNWb452PvS7
+         niOyLKzd2MsYry8lUSOqcTV4lAUSzIYFFnFj/pgO++vZXE2d/4J+qVSDvpK3P4zBXFnE
+         DosSkX6woq6tQQXbNqVg/emLDEEfGOZZiCaZvyPe6qmWieK4b2F2Bo9Ny9JneVKBwAMH
+         E4xA==
+X-Gm-Message-State: AOAM533g8FHHpvntHGAIwe2HQDYMXZF9FAGOTblxMmtIMBSl+YcnO9P5
+        Vkxhshbw+gYSO6RJE7teVemY9g==
+X-Google-Smtp-Source: ABdhPJwKygRbWFTzLd1YAagyLsompFy5xCkGW8uIHWnEVp+Hs8y/4Y5lV3jiD9y1P8B4j0p+C4TLaw==
+X-Received: by 2002:a65:648c:: with SMTP id e12mr10782768pgv.123.1610178310055;
+        Fri, 08 Jan 2021 23:45:10 -0800 (PST)
 Received: from localhost ([45.137.216.7])
-        by smtp.gmail.com with ESMTPSA id 73sm11721257pga.26.2021.01.08.23.45.05
+        by smtp.gmail.com with ESMTPSA id ay21sm7330832pjb.1.2021.01.08.23.45.09
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 08 Jan 2021 23:45:06 -0800 (PST)
+        Fri, 08 Jan 2021 23:45:09 -0800 (PST)
 From:   Leo Yan <leo.yan@linaro.org>
 To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
         Mathieu Poirier <mathieu.poirier@linaro.org>,
@@ -65,9 +65,9 @@ To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
         Denis Nikitin <denik@chromium.org>, coresight@lists.linaro.org,
         linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
 Cc:     Leo Yan <leo.yan@linaro.org>
-Subject: [PATCH v1 4/7] perf cs-etm: Add PID format into metadata
-Date:   Sat,  9 Jan 2021 15:44:32 +0800
-Message-Id: <20210109074435.626855-5-leo.yan@linaro.org>
+Subject: [PATCH v1 5/7] perf cs-etm: Fixup PID_FMT when it is zero
+Date:   Sat,  9 Jan 2021 15:44:33 +0800
+Message-Id: <20210109074435.626855-6-leo.yan@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210109074435.626855-1-leo.yan@linaro.org>
 References: <20210109074435.626855-1-leo.yan@linaro.org>
@@ -77,105 +77,63 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It's possible for CoreSight to trace PID in either CONTEXTIDR_EL1 or
-CONTEXTIDR_EL2, the PID format info is used to distinguish the PID
-is traced in which register.
+If the metadata item CS_ETM_PID_FMT/CS_ETMV4_PID_FMT is zero, this means
+the perf data file is recorded with old version tool and the tool has
+not extended to support the item.
 
-This patch saves PID format into the metadata when record.
+For this case, this patch fixes up PID_FMT entry to set the value as
+BIT(ETM_OPT_CTXTID), this info will be delivered to the decoder to
+extract PID from packet's field "context_id".
 
 Signed-off-by: Leo Yan <leo.yan@linaro.org>
 ---
- tools/perf/arch/arm/util/cs-etm.c | 21 +++++++++++++++++++++
- tools/perf/util/cs-etm.c          |  2 ++
- tools/perf/util/cs-etm.h          |  2 ++
- 3 files changed, 25 insertions(+)
+ tools/perf/util/cs-etm.c | 19 +++++++++++++++++++
+ 1 file changed, 19 insertions(+)
 
-diff --git a/tools/perf/arch/arm/util/cs-etm.c b/tools/perf/arch/arm/util/cs-etm.c
-index fad7b6e13ccc..ee78df3b1b07 100644
---- a/tools/perf/arch/arm/util/cs-etm.c
-+++ b/tools/perf/arch/arm/util/cs-etm.c
-@@ -613,6 +613,7 @@ static void cs_etm_get_metadata(int cpu, u32 *offset,
- 	struct cs_etm_recording *ptr =
- 			container_of(itr, struct cs_etm_recording, itr);
- 	struct perf_pmu *cs_etm_pmu = ptr->cs_etm_pmu;
-+	u64 pid_fmt;
- 
- 	/* first see what kind of tracer this cpu is affined to */
- 	if (cs_etm_is_etmv4(itr, cpu)) {
-@@ -641,6 +642,16 @@ static void cs_etm_get_metadata(int cpu, u32 *offset,
- 				      metadata_etmv4_ro
- 				      [CS_ETMV4_TRCAUTHSTATUS]);
- 
-+		/*
-+		 * The PID format will be used when decode the trace data;
-+		 * based on it the decoder will make decision for setting
-+		 * sample's PID as context_id or VMID.
-+		 */
-+		pid_fmt = perf_pmu__format_bits(&cs_etm_pmu->format, "pid");
-+		if (!pid_fmt)
-+			pid_fmt = 1ULL << ETM_OPT_CTXTID;
-+		info->priv[*offset + CS_ETMV4_PID_FMT] = pid_fmt;
-+
- 		/* How much space was used */
- 		increment = CS_ETMV4_PRIV_MAX;
- 	} else {
-@@ -658,6 +669,16 @@ static void cs_etm_get_metadata(int cpu, u32 *offset,
- 			cs_etm_get_ro(cs_etm_pmu, cpu,
- 				      metadata_etmv3_ro[CS_ETM_ETMIDR]);
- 
-+		/*
-+		 * The PID format will be used when decode the trace data;
-+		 * based on it the decoder will make decision for setting
-+		 * sample's PID as context_id or VMID.
-+		 */
-+		pid_fmt = perf_pmu__format_bits(&cs_etm_pmu->format, "pid");
-+		if (!pid_fmt)
-+			pid_fmt = 1ULL << ETM_OPT_CTXTID;
-+		info->priv[*offset + CS_ETM_PID_FMT] = pid_fmt;
-+
- 		/* How much space was used */
- 		increment = CS_ETM_PRIV_MAX;
- 	}
 diff --git a/tools/perf/util/cs-etm.c b/tools/perf/util/cs-etm.c
-index 5e284725dceb..763085db29ae 100644
+index 763085db29ae..8c125134a756 100644
 --- a/tools/perf/util/cs-etm.c
 +++ b/tools/perf/util/cs-etm.c
-@@ -2447,6 +2447,7 @@ static const char * const cs_etm_priv_fmts[] = {
- 	[CS_ETM_ETMTRACEIDR]	= "	ETMTRACEIDR		       %llx\n",
- 	[CS_ETM_ETMCCER]	= "	ETMCCER			       %llx\n",
- 	[CS_ETM_ETMIDR]		= "	ETMIDR			       %llx\n",
-+	[CS_ETM_PID_FMT]	= "	PID Format		       %llx\n",
- };
+@@ -7,6 +7,7 @@
+  */
  
- static const char * const cs_etmv4_priv_fmts[] = {
-@@ -2459,6 +2460,7 @@ static const char * const cs_etmv4_priv_fmts[] = {
- 	[CS_ETMV4_TRCIDR2]	= "	TRCIDR2			       %llx\n",
- 	[CS_ETMV4_TRCIDR8]	= "	TRCIDR8			       %llx\n",
- 	[CS_ETMV4_TRCAUTHSTATUS] = "	TRCAUTHSTATUS		       %llx\n",
-+	[CS_ETMV4_PID_FMT]	= "	PID Format		       %llx\n",
- };
+ #include <linux/bitops.h>
++#include <linux/coresight-pmu.h>
+ #include <linux/err.h>
+ #include <linux/kernel.h>
+ #include <linux/log2.h>
+@@ -2577,6 +2578,15 @@ int cs_etm__process_auxtrace_info(union perf_event *event,
+ 			for (k = 0; k < metadata_cpu_array_size; k++)
+ 				metadata[j][k] = ptr[i + k];
  
- static void cs_etm__print_auxtrace_info(__u64 *val, int num)
-diff --git a/tools/perf/util/cs-etm.h b/tools/perf/util/cs-etm.h
-index 4ad925d6d799..8cbbea6100a1 100644
---- a/tools/perf/util/cs-etm.h
-+++ b/tools/perf/util/cs-etm.h
-@@ -38,6 +38,7 @@ enum {
- 	/* RO, taken from sysFS */
- 	CS_ETM_ETMCCER,
- 	CS_ETM_ETMIDR,
-+	CS_ETM_PID_FMT,
- 	CS_ETM_PRIV_MAX,
- };
++			/*
++			 * If the data in CS_ETM_PID_FMT is zero, means the
++			 * information isn't stored in the data file, this is
++			 * because the old perf tool hasn't yet supported
++			 * CS_ETM_PID_FMT.  Fixup the item to option "CTXTID".
++			 */
++			if (!metadata[j][CS_ETM_PID_FMT])
++				metadata[j][CS_ETM_PID_FMT] = BIT(ETM_OPT_CTXTID);
++
+ 			/* The traceID is our handle */
+ 			idx = metadata[j][CS_ETM_ETMTRACEIDR];
+ 			i += metadata_cpu_array_size;
+@@ -2590,6 +2600,15 @@ int cs_etm__process_auxtrace_info(union perf_event *event,
+ 			for (k = 0; k < metadata_cpu_array_size; k++)
+ 				metadata[j][k] = ptr[i + k];
  
-@@ -52,6 +53,7 @@ enum {
- 	CS_ETMV4_TRCIDR2,
- 	CS_ETMV4_TRCIDR8,
- 	CS_ETMV4_TRCAUTHSTATUS,
-+	CS_ETMV4_PID_FMT,
- 	CS_ETMV4_PRIV_MAX,
- };
- 
++			/*
++			 * If the data in CS_ETMV4_PID_FMT is zero, means the
++			 * information isn't stored in the data file, this is
++			 * because the old perf tool hasn't yet supported
++			 * CS_ETMV4_PID_FMT.  Fixup the item to option "CTXTID".
++			 */
++			if (!metadata[j][CS_ETMV4_PID_FMT])
++				metadata[j][CS_ETMV4_PID_FMT] = BIT(ETM_OPT_CTXTID);
++
+ 			/* The traceID is our handle */
+ 			idx = metadata[j][CS_ETMV4_TRCTRACEIDR];
+ 			i += metadata_cpu_array_size;
 -- 
 2.25.1
 
