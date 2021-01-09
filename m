@@ -2,202 +2,202 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FDE72EFCB4
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Jan 2021 02:25:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C56F62EFCD2
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Jan 2021 02:46:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726684AbhAIBYV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Jan 2021 20:24:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47664 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726648AbhAIBYU (ORCPT
+        id S1726346AbhAIBpy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Jan 2021 20:45:54 -0500
+Received: from perceval.ideasonboard.com ([213.167.242.64]:45980 "EHLO
+        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725835AbhAIBpx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Jan 2021 20:24:20 -0500
-Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC0E0C0613CF
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Jan 2021 17:23:39 -0800 (PST)
-Received: by mail-pj1-x1035.google.com with SMTP id u4so5465811pjn.4
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Jan 2021 17:23:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=L6n1/PXC36sUUKPG2dvdrHsUvaK9OPjS2APfRNpFkl8=;
-        b=DRF5swIwGXTsoeqJlBHVYXmgsrHF+kNutcDNJyU/FeNdl8hB+Bi4p6DTLryQey0qFP
-         kiHnYcKSh3p48yO7jJGid1O5K1vi2GyZtOaKLipqNSEn3zIAH3PgiVgGNUJD8JuAn3sI
-         7TZVeVv5i3HUmSsupwH9BktiGb1fWB145T3IA=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=L6n1/PXC36sUUKPG2dvdrHsUvaK9OPjS2APfRNpFkl8=;
-        b=YoMXxjrfVBuZ1hT3aCbJQURJSlC5SkKnRYoc1i327PtcU6XRis+oarL4pGZ4ywyV6q
-         GMgJhB/1C9UQxaYFXtiRLvYJw8cmSwzyQnYdMyO+fbKxpvcVqUfWRaE3qtijcLJvyxns
-         Dp/Z5yIZ0NJw+TVnMH14iDmhWOBei41Ots42ue613gC4WTCj976786CM4J/4nL3iuWmF
-         Rg2ZUIzAqCU/gOKgHB13GEatl+7L9L6tJuyasROhT9bn2e/OvNNgX2qf1met8duET5zI
-         b5Vp7Bky95ubLu4tvOUFYiV4jryoj6+/JmXBHMcx0SGhjEBGEyPFoFH15v9U7jKRkQyF
-         hoBQ==
-X-Gm-Message-State: AOAM533gsjR1qBwFS1QOyKQ+oDG2NTNc946a0cNwzkr5gCefXhmf60MQ
-        vk3nvibEbG1uuzjpYdyRQ3mC+IQQLbQFvg==
-X-Google-Smtp-Source: ABdhPJxZ8sZkglONFRJA5aKiN1oExJKhk7mHQI3r+oYgxBCThJJ5q1JEvZGjTrYP+njszoJ/csReHw==
-X-Received: by 2002:a17:90a:72c6:: with SMTP id l6mr6469698pjk.233.1610155419328;
-        Fri, 08 Jan 2021 17:23:39 -0800 (PST)
-Received: from philipchen.mtv.corp.google.com ([2620:15c:202:201:a6ae:11ff:fe11:fd59])
-        by smtp.gmail.com with ESMTPSA id b7sm9949111pff.96.2021.01.08.17.23.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 08 Jan 2021 17:23:38 -0800 (PST)
-From:   Philip Chen <philipchen@chromium.org>
-To:     LKML <linux-kernel@vger.kernel.org>, dmitry.torokhov@gmail.com
-Cc:     dianders@chromium.org, swboyd@chromium.org,
-        Philip Chen <philipchen@chromium.org>,
-        Benson Leung <bleung@chromium.org>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        Guenter Roeck <groeck@chromium.org>,
-        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org
-Subject: [PATCH v4 2/2] ARM: dts: cros-ec-keyboard: Use keymap marcos
-Date:   Fri,  8 Jan 2021 17:23:32 -0800
-Message-Id: <20210108172316.v4.2.I9ec9c3c61eded22a5f7fbff838d23fc95ec7cfe0@changeid>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20210108172316.v4.1.Iaa8a60cf2ed4b7ad5e2fbb4ad76a1c600ee36113@changeid>
-References: <20210108172316.v4.1.Iaa8a60cf2ed4b7ad5e2fbb4ad76a1c600ee36113@changeid>
+        Fri, 8 Jan 2021 20:45:53 -0500
+Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id F03C5DA;
+        Sat,  9 Jan 2021 02:45:08 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1610156709;
+        bh=iN8/pxPSqsADmJ+CskC5HxBuSlOkfsnvbQDlV+E8fQ4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=XBU55b+3hEC0bfdAuCNmSAqwyzk/lGpRMkapp4itJ/YrTHrnNRBm4KVuG82+fMe5M
+         VH0V5B1c4yFL/Z8ZcoJNMw38jIh6utTcIlw20u+SsvMM8eeaJcC+JFDHDnFdzrKClb
+         +pYrlyRXGl73g1Wd3ZZs2Zt3YXtNNZRwfN8D10jQ=
+Date:   Sat, 9 Jan 2021 03:44:56 +0200
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Robert Foss <robert.foss@linaro.org>
+Cc:     agross@kernel.org, bjorn.andersson@linaro.org, todor.too@gmail.com,
+        mchehab@kernel.org, robh+dt@kernel.org, catalin.marinas@arm.com,
+        will@kernel.org, shawnguo@kernel.org, leoyang.li@nxp.com,
+        geert+renesas@glider.be, arnd@arndb.de, Anson.Huang@nxp.com,
+        michael@walle.cc, agx@sigxcpu.org, max.oss.09@gmail.com,
+        linux-arm-msm@vger.kernel.org, linux-media@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        AngeloGioacchino Del Regno <kholk11@gmail.com>,
+        Andrey Konovalov <andrey.konovalov@linaro.org>,
+        Tomasz Figa <tfiga@chromium.org>,
+        Azam Sadiq Pasha Kapatrala Syed <akapatra@quicinc.com>,
+        Sarvesh Sridutt <Sarvesh.Sridutt@smartwirelesscompute.com>
+Subject: Re: [PATCH v1 12/17] media: dt-bindings: media: qcom,camss: Add
+ bindings for SDM845 camss
+Message-ID: <X/kKmCUuMTsNl/1n@pendragon.ideasonboard.com>
+References: <20210108120429.895046-1-robert.foss@linaro.org>
+ <20210108120429.895046-13-robert.foss@linaro.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210108120429.895046-13-robert.foss@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The common cros-ec keymap has been defined as macros. This patch uses
-the macros to simply linux,keymap in cros-ec-keyboard.dtsi file.
+Hi Rob,
 
-This patch also creates an alias for keyboard-controller to make it
-easier to override the keymap in board-specific dts later.
+Thank you for the patch.
 
-Signed-off-by: Philip Chen <philipchen@chromium.org>
----
+On Fri, Jan 08, 2021 at 01:04:24PM +0100, Robert Foss wrote:
+> Add bindings for qcom,sdm845-camss in order to support the camera
+> subsystem on SDM845.
+> 
+> Signed-off-by: Robert Foss <robert.foss@linaro.org>
+> ---
+>  .../devicetree/bindings/media/qcom,camss.txt  | 51 +++++++++++++++----
+>  1 file changed, 40 insertions(+), 11 deletions(-)
+> 
+> diff --git a/Documentation/devicetree/bindings/media/qcom,camss.txt b/Documentation/devicetree/bindings/media/qcom,camss.txt
+> index 498234629e21..276c5d0c25cb 100644
+> --- a/Documentation/devicetree/bindings/media/qcom,camss.txt
+> +++ b/Documentation/devicetree/bindings/media/qcom,camss.txt
+> @@ -9,6 +9,7 @@ Qualcomm Camera Subsystem
+>  		- "qcom,msm8916-camss"
+>  		- "qcom,msm8996-camss"
+>  		- "qcom,sdm660-camss"
+> +		- "qcom,sdm845-camss"
+>  - reg:
+>  	Usage: required
+>  	Value type: <prop-encoded-array>
+> @@ -18,19 +19,21 @@ Qualcomm Camera Subsystem
+>  	Value type: <stringlist>
+>  	Definition: Should contain the following entries:
+>  		- "csiphy0"
+> -		- "csiphy0_clk_mux"
+> +		- "csiphy0_clk_mux"	(not 845)
+>  		- "csiphy1"
+> -		- "csiphy1_clk_mux"
+> -		- "csiphy2"		(8996 only)
+> +		- "csiphy1_clk_mux"	(not 845)
+> +		- "csiphy2"		(8996 & 845)
+>  		- "csiphy2_clk_mux"	(8996 only)
+> +		- "csiphy3"		(845 only)
+>  		- "csid0"
+>  		- "csid1"
+> -		- "csid2"		(8996 only)
+> -		- "csid3"		(8996 only)
+> +		- "csid2"		(8996 & 845)
+> +		- "csid3"		(8996 & 845)
+>  		- "ispif"
+> -		- "csi_clk_mux"
+> +		- "csi_clk_mux"		(not 845)
+>  		- "vfe0"
+> -		- "vfe1"		(8996 only)
+> +		- "vfe1"		(8996 & 845)
+> +		- "vfe_lite"		(845 only)
 
-Changes in v4:
-- Fix a typo
+All this would be more readable after a conversion to YAML ;-)
 
-Changes in v3:
-- Create an alias for keyboard-controller
+>  - interrupts:
+>  	Usage: required
+>  	Value type: <prop-encoded-array>
+> @@ -41,14 +44,16 @@ Qualcomm Camera Subsystem
+>  	Definition: Should contain the following entries:
+>  		- "csiphy0"
+>  		- "csiphy1"
+> -		- "csiphy2"		(8996 only)
+> +		- "csiphy2"		(8996 & 845)
+> +		- "csiphy3"		(845 only)
+>  		- "csid0"
+>  		- "csid1"
+> -		- "csid2"		(8996 only)
+> +		- "csid2"		(8996 & 845)
+>  		- "csid3"		(8996 only)
+>  		- "ispif"
+>  		- "vfe0"
+> -		- "vfe1"		(8996 only)
+> +		- "vfe1"		(8996 & 845)
+> +		- "vfe_lite"		(845 only)
+>  - power-domains:
+>  	Usage: required
+>  	Value type: <prop-encoded-array>
+> @@ -67,27 +72,40 @@ Qualcomm Camera Subsystem
+>  		- "top_ahb"
+>  		- "throttle_axi"	(660 only)
+>  		- "ispif_ahb"
+> +		- "camnoc_axi"		(845 only)
+> +		- "cpas_ahb"		(845 only)
+> +		- "cphy_rx_src"		(856 only)
+>  		- "csiphy0_timer"
+> +		- "csiphy0"		(845 only)
+> +		- "csiphy0_timer_src"	(845 only)
+>  		- "csiphy1_timer"
+> -		- "csiphy2_timer"	(8996 only)
+> +		- "csiphy2"		(845 only)
+> +		- "csiphy2_timer_src"	(845 only)
+> +		- "csiphy2_timer"	(8996 & 845)
+> +		- "csiphy3"		(845 only)
+> +		- "csiphy3_timer_src"	(845 only)
+> +		- "csiphy3_timer"	(845 only)
+>  		- "csiphy_ahb2crif"	(660 only)
+>  		- "csi0_ahb"
+>  		- "csi0"
+>  		- "csi0_phy"
+>  		- "csi0_pix"
+>  		- "csi0_rdi"
+> +		- "csi0_src"		(845 only)
+>  		- "cphy_csid0"		(660 only)
+>  		- "csi1_ahb"
+>  		- "csi1"
+>  		- "csi1_phy"
+>  		- "csi1_pix"
+>  		- "csi1_rdi"
+> +		- "csi1_src"		(845 only)
+>  		- "cphy_csid1"		(660 only)
+>  		- "csi2_ahb"		(8996 only)
+>  		- "csi2"		(8996 only)
+>  		- "csi2_phy"		(8996 only)
+>  		- "csi2_pix"		(8996 only)
+>  		- "csi2_rdi"		(8996 only)
+> +		- "csi2_src"		(845 only)
+>  		- "cphy_csid2"		(660 only)
+>  		- "csi3_ahb"		(8996 only)
+>  		- "csi3"		(8996 only)
+> @@ -96,14 +114,25 @@ Qualcomm Camera Subsystem
+>  		- "csi3_rdi"		(8996 only)
+>  		- "cphy_csid3"		(660 only)
+>  		- "ahb"
+> +		- "slow_ahb_src"	(845 only)
+> +		- "soc_ahb"		(845 only)
+>  		- "vfe0"
+>  		- "csi_vfe0"
+>  		- "vfe0_ahb",		(8996 only)
+> +		- "vfe0_cphy_rx"	(845 only)
+> +		- "vfe0_axi",		(845 only)
+> +		- "vfe0_src",		(845 only)
+>  		- "vfe0_stream",	(8996 only)
+>  		- "vfe1",		(8996 only)
+>  		- "csi_vfe1",		(8996 only)
+>  		- "vfe1_ahb",		(8996 only)
+> +		- "vfe1_cphy_rx"	(845 only)
+> +		- "vfe1_axi",		(845 only)
+> +		- "vfe1_src",		(845 only)
+>  		- "vfe1_stream",	(8996 only)
+> +		- "vfe_lite_axi",	(845 only)
+> +		- "vfe_lite_cphy_rx"	(845 only)
+> +		- "vfe_lite_src",	(845 only)
+>  		- "vfe_ahb"
+>  		- "vfe_axi"
+>  - vdda-supply:
 
-Changes in v2:
-- Replace CROS_STD_NON_TOP_ROW_KEYMAP with CROS_STD_MAIN_KEYMAP
-
- arch/arm/boot/dts/cros-ec-keyboard.dtsi | 93 ++-----------------------
- 1 file changed, 4 insertions(+), 89 deletions(-)
-
-diff --git a/arch/arm/boot/dts/cros-ec-keyboard.dtsi b/arch/arm/boot/dts/cros-ec-keyboard.dtsi
-index 165c5bcd510e5..55c4744fa7e7a 100644
---- a/arch/arm/boot/dts/cros-ec-keyboard.dtsi
-+++ b/arch/arm/boot/dts/cros-ec-keyboard.dtsi
-@@ -6,103 +6,18 @@
- */
- 
- #include <dt-bindings/input/input.h>
-+#include <dt-bindings/input/cros-ec-keyboard.h>
- 
- &cros_ec {
--	keyboard-controller {
-+	keyboard_controller: keyboard-controller {
- 		compatible = "google,cros-ec-keyb";
- 		keypad,num-rows = <8>;
- 		keypad,num-columns = <13>;
- 		google,needs-ghost-filter;
- 
- 		linux,keymap = <
--			MATRIX_KEY(0x00, 0x01, KEY_LEFTMETA)
--			MATRIX_KEY(0x00, 0x02, KEY_F1)
--			MATRIX_KEY(0x00, 0x03, KEY_B)
--			MATRIX_KEY(0x00, 0x04, KEY_F10)
--			MATRIX_KEY(0x00, 0x05, KEY_RO)
--			MATRIX_KEY(0x00, 0x06, KEY_N)
--			MATRIX_KEY(0x00, 0x08, KEY_EQUAL)
--			MATRIX_KEY(0x00, 0x0a, KEY_RIGHTALT)
--
--			MATRIX_KEY(0x01, 0x01, KEY_ESC)
--			MATRIX_KEY(0x01, 0x02, KEY_F4)
--			MATRIX_KEY(0x01, 0x03, KEY_G)
--			MATRIX_KEY(0x01, 0x04, KEY_F7)
--			MATRIX_KEY(0x01, 0x06, KEY_H)
--			MATRIX_KEY(0x01, 0x08, KEY_APOSTROPHE)
--			MATRIX_KEY(0x01, 0x09, KEY_F9)
--			MATRIX_KEY(0x01, 0x0b, KEY_BACKSPACE)
--			MATRIX_KEY(0x01, 0x0c, KEY_HENKAN)
--
--			MATRIX_KEY(0x02, 0x00, KEY_LEFTCTRL)
--			MATRIX_KEY(0x02, 0x01, KEY_TAB)
--			MATRIX_KEY(0x02, 0x02, KEY_F3)
--			MATRIX_KEY(0x02, 0x03, KEY_T)
--			MATRIX_KEY(0x02, 0x04, KEY_F6)
--			MATRIX_KEY(0x02, 0x05, KEY_RIGHTBRACE)
--			MATRIX_KEY(0x02, 0x06, KEY_Y)
--			MATRIX_KEY(0x02, 0x07, KEY_102ND)
--			MATRIX_KEY(0x02, 0x08, KEY_LEFTBRACE)
--			MATRIX_KEY(0x02, 0x09, KEY_F8)
--			MATRIX_KEY(0x02, 0x0a, KEY_YEN)
--
--			MATRIX_KEY(0x03, 0x00, KEY_LEFTMETA)
--			MATRIX_KEY(0x03, 0x01, KEY_GRAVE)
--			MATRIX_KEY(0x03, 0x02, KEY_F2)
--			MATRIX_KEY(0x03, 0x03, KEY_5)
--			MATRIX_KEY(0x03, 0x04, KEY_F5)
--			MATRIX_KEY(0x03, 0x06, KEY_6)
--			MATRIX_KEY(0x03, 0x08, KEY_MINUS)
--			MATRIX_KEY(0x03, 0x09, KEY_F13)
--			MATRIX_KEY(0x03, 0x0b, KEY_BACKSLASH)
--			MATRIX_KEY(0x03, 0x0c, KEY_MUHENKAN)
--
--			MATRIX_KEY(0x04, 0x00, KEY_RIGHTCTRL)
--			MATRIX_KEY(0x04, 0x01, KEY_A)
--			MATRIX_KEY(0x04, 0x02, KEY_D)
--			MATRIX_KEY(0x04, 0x03, KEY_F)
--			MATRIX_KEY(0x04, 0x04, KEY_S)
--			MATRIX_KEY(0x04, 0x05, KEY_K)
--			MATRIX_KEY(0x04, 0x06, KEY_J)
--			MATRIX_KEY(0x04, 0x08, KEY_SEMICOLON)
--			MATRIX_KEY(0x04, 0x09, KEY_L)
--			MATRIX_KEY(0x04, 0x0a, KEY_BACKSLASH)
--			MATRIX_KEY(0x04, 0x0b, KEY_ENTER)
--
--			MATRIX_KEY(0x05, 0x01, KEY_Z)
--			MATRIX_KEY(0x05, 0x02, KEY_C)
--			MATRIX_KEY(0x05, 0x03, KEY_V)
--			MATRIX_KEY(0x05, 0x04, KEY_X)
--			MATRIX_KEY(0x05, 0x05, KEY_COMMA)
--			MATRIX_KEY(0x05, 0x06, KEY_M)
--			MATRIX_KEY(0x05, 0x07, KEY_LEFTSHIFT)
--			MATRIX_KEY(0x05, 0x08, KEY_SLASH)
--			MATRIX_KEY(0x05, 0x09, KEY_DOT)
--			MATRIX_KEY(0x05, 0x0b, KEY_SPACE)
--
--			MATRIX_KEY(0x06, 0x01, KEY_1)
--			MATRIX_KEY(0x06, 0x02, KEY_3)
--			MATRIX_KEY(0x06, 0x03, KEY_4)
--			MATRIX_KEY(0x06, 0x04, KEY_2)
--			MATRIX_KEY(0x06, 0x05, KEY_8)
--			MATRIX_KEY(0x06, 0x06, KEY_7)
--			MATRIX_KEY(0x06, 0x08, KEY_0)
--			MATRIX_KEY(0x06, 0x09, KEY_9)
--			MATRIX_KEY(0x06, 0x0a, KEY_LEFTALT)
--			MATRIX_KEY(0x06, 0x0b, KEY_DOWN)
--			MATRIX_KEY(0x06, 0x0c, KEY_RIGHT)
--
--			MATRIX_KEY(0x07, 0x01, KEY_Q)
--			MATRIX_KEY(0x07, 0x02, KEY_E)
--			MATRIX_KEY(0x07, 0x03, KEY_R)
--			MATRIX_KEY(0x07, 0x04, KEY_W)
--			MATRIX_KEY(0x07, 0x05, KEY_I)
--			MATRIX_KEY(0x07, 0x06, KEY_U)
--			MATRIX_KEY(0x07, 0x07, KEY_RIGHTSHIFT)
--			MATRIX_KEY(0x07, 0x08, KEY_P)
--			MATRIX_KEY(0x07, 0x09, KEY_O)
--			MATRIX_KEY(0x07, 0x0b, KEY_UP)
--			MATRIX_KEY(0x07, 0x0c, KEY_LEFT)
-+			CROS_STD_TOP_ROW_KEYMAP
-+			CROS_STD_MAIN_KEYMAP
- 		>;
- 	};
- };
 -- 
-2.26.2
+Regards,
 
+Laurent Pinchart
