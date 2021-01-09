@@ -2,105 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7416C2EFD26
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Jan 2021 03:29:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 042C22EFD2E
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Jan 2021 03:49:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726571AbhAIC3A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 8 Jan 2021 21:29:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33200 "EHLO
+        id S1726415AbhAICtg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 8 Jan 2021 21:49:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37578 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726490AbhAIC3A (ORCPT
+        with ESMTP id S1725970AbhAICtg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 8 Jan 2021 21:29:00 -0500
-Received: from mail-oi1-x22d.google.com (mail-oi1-x22d.google.com [IPv6:2607:f8b0:4864:20::22d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE64EC061573
-        for <linux-kernel@vger.kernel.org>; Fri,  8 Jan 2021 18:28:19 -0800 (PST)
-Received: by mail-oi1-x22d.google.com with SMTP id d203so13707419oia.0
-        for <linux-kernel@vger.kernel.org>; Fri, 08 Jan 2021 18:28:19 -0800 (PST)
+        Fri, 8 Jan 2021 21:49:36 -0500
+Received: from mail-il1-x133.google.com (mail-il1-x133.google.com [IPv6:2607:f8b0:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4B05C061573;
+        Fri,  8 Jan 2021 18:48:55 -0800 (PST)
+Received: by mail-il1-x133.google.com with SMTP id h3so4642483ils.4;
+        Fri, 08 Jan 2021 18:48:55 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:reply-to:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=b+XgQyUnCoOiGgr+1GYfr3DJzHJ7A/npVw+YL/876VE=;
-        b=H573ePv/AtnMkHsZ/24KmwfivLwt9HN3mg9yC5QfsVSoMmqUrG5/amVIQqaTb2t0CM
-         FLVOJzbi35ExhVdMJzfE3JAWoT9HGQTdBFmJ+OoCW1O5uRQjJmcS7rM1O0eYfImON91r
-         bhwiUD3Dhy6qX2p+YPHRdG7fk1auT8789ykXv4xoCOs/xIo8iknnaREdcia91KDx4c+r
-         9t6nsPGupWmAg85kEBzqR3F0hYjAMq0hDskkJlm8gf/N+rrmQRkx4mRfmRwui7ZP8mTj
-         b/yMYnSSnsrHd/SxLCwW62tTG51fe6GOHYrProzWqnR5nAE3ltC8Fh/xgob0sFqoKZ89
-         PB+w==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=4QxjVHH/k2EEheDURmsY7RVs3TpbxjnXeiCn/55GgY8=;
+        b=jv3Exx/ZPs37gY4yPcfBCzxcInUqxq76J3hRtGGDgHlB5Gjkcl+9go8ek7xlMjTR24
+         btCZGxszuFYXAevC0wWj/wXyyNTz1HiQcZoj6VIXamk62ayhc+A30jsGKGvlba5pdtzS
+         d/E4ALC0YWHS0MqHIB0MBeFfORXafXUYt+vGd32LGGZhCTNaGJFwb7Cnvra2R+JA86A4
+         tjWqX8YNe2f/E3D7A6oN1flOeLbWdWgi/nf744o/PkVh9yWe2ItHibMjjZTi4Tka41pq
+         zF0I+xAlj+Up5NIlq2USP/qxqgwpVP3wmLA6ekNP4EL1zOGQ4ZMCn3vd9EKeVmwzwyVx
+         v75A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :reply-to:references:mime-version:content-disposition:in-reply-to;
-        bh=b+XgQyUnCoOiGgr+1GYfr3DJzHJ7A/npVw+YL/876VE=;
-        b=ByhIYsqo17oWhFN7GRRZUy9WlEkks+wL1EE/ZDlakC5SsivoXmgvm9YP0952xabr9Z
-         In1YIjNyct06CxJGz2s1la/hxiOKpH0PZQtlPNEYIdv9rG4GIsMephU79bxsIJ3V1iaC
-         Bl4Mlq2teosolerlxJI0QtGr2pUyPkmqAwt0rDD9v4zpwULb2PPf3KlvYLBy96QAh/WC
-         +dSbulgDdya4dz8a3U5EnahXBCDXJp3BhUeO/A/kHyJukctj1dAfcgh8y1AYm/Jbx1vh
-         nPYrWn4Hu4hBj46dEhFDlNScjLjFW3ZJXI8a6QvaW/b44GZHH8rozG9rWho9cXin+lKI
-         aOtQ==
-X-Gm-Message-State: AOAM531+Aiz28EmeI70xjNJWDDe3cqvfnaoFs7JBJc4VxCw/S/QrPDzv
-        M2s9eFoqOUNan7DRdqlMa7DgbXfFmg==
-X-Google-Smtp-Source: ABdhPJx0RwIuDfslO2eAucrgo1mhyrE/6nkIyMV1jjk2o+eEfGJCT0lUuoCUUCw+tNgzgBP74uV4tQ==
-X-Received: by 2002:a54:4e81:: with SMTP id c1mr4003808oiy.52.1610159298968;
-        Fri, 08 Jan 2021 18:28:18 -0800 (PST)
-Received: from serve.minyard.net (serve.minyard.net. [2001:470:b8f6:1b::1])
-        by smtp.gmail.com with ESMTPSA id s77sm2145277oos.27.2021.01.08.18.28.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 08 Jan 2021 18:28:17 -0800 (PST)
-Sender: Corey Minyard <tcminyard@gmail.com>
-Received: from minyard.net (unknown [IPv6:2001:470:b8f6:1b:e49d:8694:914c:6014])
-        by serve.minyard.net (Postfix) with ESMTPSA id 9B0CA18003C;
-        Sat,  9 Jan 2021 02:28:16 +0000 (UTC)
-Date:   Fri, 8 Jan 2021 20:28:15 -0600
-From:   Corey Minyard <minyard@acm.org>
-To:     Asmaa Mnebhi <asmaa@nvidia.com>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: ipmi_msghandler.c question
-Message-ID: <20210109022815.GA3324@minyard.net>
-Reply-To: minyard@acm.org
-References: <CH2PR12MB38958D50FDBA94E2127CA993D7AE0@CH2PR12MB3895.namprd12.prod.outlook.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=4QxjVHH/k2EEheDURmsY7RVs3TpbxjnXeiCn/55GgY8=;
+        b=JahkpEjxTT36rvo7KKkBKL5/N2CSt/tBizqXR8JFqZWwiElcEIlHkncpPW37+MsKqy
+         sC7ATFweTFPBme4Nri5ecpQRF2Q/bMGqRhk3V3wmfyaKMNUaWOeOdPl7/ZuCAMPlKTbR
+         IpT65rgmMuJxB/z11c7Bqc0r8LA/D3jNgv2DMzbcqCSXBG0IAgViLop7rw/FN9YGify+
+         +7qiCRSkKA530tn9pu8xWUR1OL8lCcc0/begrJ4Wdi1/TO6mrVngFJdEaldrdRYZZ2QH
+         voIP52u1k9z2/bAkCPoaEqSJK1D5/tk1Yp3clCjcExJ0BxukQe9/yKfdU860GXbhri+Y
+         XSwA==
+X-Gm-Message-State: AOAM531G/7aaQWlP/OWPoFQ92jHYeQnU2DDKV74dzrFRt4OaSxpfZrL0
+        RiKL2khXWKvbOzCyWDPiw9wPPrq9Tn0oiZjjhaI=
+X-Google-Smtp-Source: ABdhPJxS+9A57zLwR8bsRSnfqQl46R/uDEFOCJ8/ycwNV+IYQdMu9xqsIA8C2sOBHOQlxrCbPQwOWS7582sgHxIs+K8=
+X-Received: by 2002:a92:c081:: with SMTP id h1mr6487153ile.46.1610160534190;
+ Fri, 08 Jan 2021 18:48:54 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CH2PR12MB38958D50FDBA94E2127CA993D7AE0@CH2PR12MB3895.namprd12.prod.outlook.com>
+References: <20210106173900.388758-1-aford173@gmail.com> <833e228f-6fb5-ae98-a367-9566cf5fcf69@lucaceresoli.net>
+In-Reply-To: <833e228f-6fb5-ae98-a367-9566cf5fcf69@lucaceresoli.net>
+From:   Adam Ford <aford173@gmail.com>
+Date:   Fri, 8 Jan 2021 20:48:42 -0600
+Message-ID: <CAHCN7x+57x4WLbq0+7OCPhJs-1=7SJidVHD2jYjdbqn_F+d3dA@mail.gmail.com>
+Subject: Re: [RFC 1/2] dt-bindings: clk: versaclock5: Add load capacitance properties
+To:     Luca Ceresoli <luca@lucaceresoli.net>
+Cc:     linux-clk <linux-clk@vger.kernel.org>,
+        Adam Ford-BE <aford@beaconembedded.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 08, 2021 at 11:37:04PM +0000, Asmaa Mnebhi wrote:
-> Hi Corey,
-> 
-> I have a question for you related to the following function in ipmi_msghandler.c
-> 
-> static void __get_guid(struct ipmi_smi *intf)
-> {
-> 	int rv;
-> 	struct bmc_device *bmc = intf->bmc;
-> 
-> 	bmc->dyn_guid_set = 2;
-> 	intf->null_user_handler = guid_handler;
-> 	rv = send_guid_cmd(intf, 0);
-> 	if (rv)
-> 		/* Send failed, no GUID available. */
-> 		bmc->dyn_guid_set = 0;
-> 	else
-> 		wait_event(intf->waitq, bmc->dyn_guid_set != 2);
-> 
-> 	/* dyn_guid_set makes the guid data available. */
-> 	smp_rmb();
-> 
-> 	intf->null_user_handler = NULL;
-> }
-> 
-> Why is wait_event used as opposed to wait_event_timeout? In the context where the dyn_guid_set value doesn't change from 2, this would run forever. Wouldn't we want to timeout after a certain amount of time?
-> 
+On Fri, Jan 8, 2021 at 4:49 PM Luca Ceresoli <luca@lucaceresoli.net> wrote:
+>
+> Hi Adam,
+>
+> On 06/01/21 18:38, Adam Ford wrote:
+> > There are two registers which can set the load capacitance for
+> > XTAL1 and XTAL2. These are optional registers when using an
+> > external crystal.  Update the bindings to support them.
+> >
+> > Signed-off-by: Adam Ford <aford173@gmail.com>
+> > ---
+> >  .../devicetree/bindings/clock/idt,versaclock5.yaml   | 12 ++++++++++++
+> >  1 file changed, 12 insertions(+)
+> >
+> > diff --git a/Documentation/devicetree/bindings/clock/idt,versaclock5.yaml b/Documentation/devicetree/bindings/clock/idt,versaclock5.yaml
+> > index 2ac1131fd922..e5e55ffb266e 100644
+> > --- a/Documentation/devicetree/bindings/clock/idt,versaclock5.yaml
+> > +++ b/Documentation/devicetree/bindings/clock/idt,versaclock5.yaml
+> > @@ -59,6 +59,18 @@ properties:
+> >      minItems: 1
+> >      maxItems: 2
+> >
+> > +  idt,xtal1-load-femtofarads:
+>
+> I wonder whether we should have a common, vendor independent property.
 
-The low-level IPMI driver is guarateed to return a response to a
-message, though if something goes wrong with the BMC it can take a few
-seconds to return the failure message.  So it shouldn't be an issue.
+That would be nice.
 
--corey
+> In mainline we have xtal-load-pf (ti,cdce925.txt bindings) which has no
+> vendor prefix. However I don't know how much common it is to need
 
-> Thanks.
-> Asmaa
+rtc-pcf85063.c uses  quartz-load-femtofarads, so there is already some
+discrepancy.
+
+Since the unit of measure here is femtofarads, using pF in the name seems wrong.
+We need to read the data as a u32, so femtofarads works better than
+pF, which would require a decimal point.
+
+> different loads for x1 and x2. Any hardware engineer around?
+
+I talked to a hardware engineer where I work, and he said it makes
+sense to keep them the same.  I only separated them because there are
+two registers, and I assumed there might be a reason to have X1 and X2
+be different, but I'm ok with reading one value and writing it to two
+different registers.
+
+adam
+>
+> > +    $ref: /schemas/types.yaml#/definitions/uint32
+> > +    minimum: 9000
+> > +    maximum: 25000
+> > +    description: Optional loading capacitor for XTAL1
+>
+> Nit: I think the common wording is "load capacitor", not "loading
+> capacitor".
+>
+> --
+> Luca
