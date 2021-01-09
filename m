@@ -2,160 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D6AB2F03E3
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Jan 2021 22:52:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C79F22F03EA
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Jan 2021 22:54:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726215AbhAIVuf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Jan 2021 16:50:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54708 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726001AbhAIVue (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Jan 2021 16:50:34 -0500
-Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78E0AC06179F
-        for <linux-kernel@vger.kernel.org>; Sat,  9 Jan 2021 13:49:54 -0800 (PST)
-Received: by mail-ed1-x531.google.com with SMTP id j16so14930994edr.0
-        for <linux-kernel@vger.kernel.org>; Sat, 09 Jan 2021 13:49:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intel-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=mdW7lcpi4bRxwXU3KgxbmWayFCxbAMXV2BJDMr28t4E=;
-        b=vy5LHTUaY8UnAkNKJZKew2GItKTWBB/lbjETLHqVjJ+PKAnyPVJqcurMHNHHN91Bw8
-         AHreos8Jw805wlux4iwOkRz8blrkbZ7qAU/muBsf4agmfmY0HVuvzqGFWYQAJNRZmMog
-         NRWTIoWD7lVjm1uGQ1zgQHlpAQoGFuzbiJiiftpp8PUbH8Amjmmb1oJTZ6LvsVmJFDMX
-         4ocISplhA/UL2MHbfQJ0Fb0O1q50zXF4TZzKQGjsdUvQfWmWFy4NIBe3XteoHOs3kREh
-         1GSZQXJdRpWcPJqU+tdFnZI4/nt3k2E1OF2RT4pHMjZueWr/Ndu0XIZpyVt22mZRiQEe
-         ECMQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=mdW7lcpi4bRxwXU3KgxbmWayFCxbAMXV2BJDMr28t4E=;
-        b=Tylx7SU9gCVxLa3LL0I57WFzm0CJ4p2vIn1Nlw/59rNu6C/kPf2DxZ0pc/G950/aSF
-         f4+wHQ+LwYZRDJj9GxsJgh024N6aXwVTSZ2Xjm3nAgUidCUWT5dF+X5piCFAGg81z8Ug
-         K3dLILA1cSCOfLMeodMQ6AKGmg8+XfaBGoTZJFvEcoao8gX+kWUOEbyI9BPC+nOKIvvs
-         EJEI4CloH3JIeoUs+2llhKPlkbbIK6ONcoM4QPIgROw52fOQAJ6aWCtj3m8MwdCKZlzR
-         pTrQmj0aAm0iHrCWy4jlmq30D2uWO3AGUgENO52KOkhkTNReRwrDDvUP/XsNfpRpOPgB
-         YZaw==
-X-Gm-Message-State: AOAM531Kn0HcX52xzn+Vlba4yVWguBGcVweH5NA0+W+fxrsT4q981JN/
-        rAL2OWIgY9LdqvFR/VP8AItWjzoRLYX7XPZeOb5A2w==
-X-Google-Smtp-Source: ABdhPJxKfbCDHTWpI3BGP1KSuxZgSqIiP9CYlS/MoGPuiSvmg7WZf0mauE1jTMM+2cvhHZ0cZjjWkyHY6EQL4aEmS0A=
-X-Received: by 2002:aa7:df0f:: with SMTP id c15mr9722278edy.354.1610228993223;
- Sat, 09 Jan 2021 13:49:53 -0800 (PST)
+        id S1726377AbhAIVxw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Jan 2021 16:53:52 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38920 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726068AbhAIVxv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 9 Jan 2021 16:53:51 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id C63E423AC6
+        for <linux-kernel@vger.kernel.org>; Sat,  9 Jan 2021 21:53:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1610229190;
+        bh=HEqZj2HKCVGkWXS6z1aZpQYQPvyew/qWMqRtqfGnMKI=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=V9ld5dwKb15Agn8zL8BFKnLlI7txOwTrHoBcmlZ8nhzDfIk6CO3fq1nUA9qh4zTOZ
+         cHynqOXjjfSSr7/OZ2sVD7WQsFs7D2Jg7WeskRLcdpuvDGJsw1Shd+fT06So5Fzr6y
+         gUbN+47sbWiPYKz9NiD7lfkY2h1xb89fUp9IS3N0fw+sIzODarC1WTXA5t4oWzXGdi
+         /H54sWGdjOuCp48/+gyRpAF0RBWC0+4nj0q3SY+dBfF5KzkBjm14ZbAlE2CmOE3C7Z
+         sRBDr4o2GSUg0SJjF9bl2KHCCAeboGx+K/1jDM0pxqr+Uwlqiyq+HlZ4pe4nnvBW7c
+         +hv1/H4ECbW5w==
+Received: by mail-oi1-f181.google.com with SMTP id s2so15841937oij.2
+        for <linux-kernel@vger.kernel.org>; Sat, 09 Jan 2021 13:53:10 -0800 (PST)
+X-Gm-Message-State: AOAM533uiB9cqfVLYuYkBua97apu3ieEvcpfORnPZeRm13lSluaBr18L
+        snlAs4DHuDYA5eA5It0YXFIbiud+14AhDCLhbOQ=
+X-Google-Smtp-Source: ABdhPJyDlCIzcbqftlg/c/ozGcKG+KcymIYX/peu6PftQah90HLPYzRDhGKsfnXdEX684bGJhZH+Ij59dnOsWsbgN+w=
+X-Received: by 2002:aca:44d:: with SMTP id 74mr6300975oie.4.1610229190164;
+ Sat, 09 Jan 2021 13:53:10 -0800 (PST)
 MIME-Version: 1.0
-References: <20210105025839.23169-1-mike.ximing.chen@intel.com>
- <20210105025839.23169-5-mike.ximing.chen@intel.com> <X/dmB3q6QEd2aQdG@kroah.com>
- <SA2PR11MB5018670AEC81EA93598E1212D9AD0@SA2PR11MB5018.namprd11.prod.outlook.com>
- <X/lqcaLVb+PbbmWg@kroah.com>
-In-Reply-To: <X/lqcaLVb+PbbmWg@kroah.com>
-From:   Dan Williams <dan.j.williams@intel.com>
-Date:   Sat, 9 Jan 2021 13:49:42 -0800
-Message-ID: <CAPcyv4huRyakszL7JPpk6CCK=rRvBfra5vzjxwr4_ThvyxSxLg@mail.gmail.com>
-Subject: Re: [PATCH v8 04/20] dlb: add device ioctl layer and first three ioctls
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     "Chen, Mike Ximing" <mike.ximing.chen@intel.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "arnd@arndb.de" <arnd@arndb.de>,
-        "pierre-louis.bossart@linux.intel.com" 
-        <pierre-louis.bossart@linux.intel.com>
+References: <CAK8P3a2VW8T+yYUG1pn1yR-5eU4jJXe1+M_ot6DAvfr2KyXCzQ@mail.gmail.com>
+ <20210109055645.GA2009@1wt.eu>
+In-Reply-To: <20210109055645.GA2009@1wt.eu>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Sat, 9 Jan 2021 22:52:53 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a1C+EUvyLm3fo8TGOV39hhaxhtDM3cX_QLc-=WCzRksMw@mail.gmail.com>
+Message-ID: <CAK8P3a1C+EUvyLm3fo8TGOV39hhaxhtDM3cX_QLc-=WCzRksMw@mail.gmail.com>
+Subject: Re: Old platforms: bring out your dead
+To:     Willy Tarreau <w@1wt.eu>
+Cc:     Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Krzysztof Adamski <krzysztof.adamski@nokia.com>,
+        Oleksij Rempel <o.rempel@pengutronix.de>,
+        Baruch Siach <baruch@tkos.co.il>,
+        Russell King - ARM Linux <linux@armlinux.org.uk>,
+        Daniel Tang <dt.tangr@gmail.com>,
+        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>, Jamie Iles <jamie@jamieiles.com>,
+        Barry Song <song.bao.hua@hisilicon.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Jonas Jensen <jonas.jensen@gmail.com>,
+        Marc Gonzalez <marc.w.gonzalez@free.fr>,
+        Hartley Sweeten <hsweeten@visionengravers.com>,
+        Lubomir Rintel <lkundrak@v3.sk>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Shawn Guo <shawnguo@kernel.org>, Alex Elder <elder@linaro.org>,
+        Alexander Shiyan <shc_work@mail.ru>,
+        Koen Vandeputte <koen.vandeputte@ncentric.com>,
+        Hans Ulli Kroll <ulli.kroll@googlemail.com>,
+        Vladimir Zapolskiy <vz@mleia.com>,
+        Wei Xu <xuwei5@hisilicon.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Yoshinori Sato <ysato@users.osdn.me>,
+        Mark Salter <msalter@redhat.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jan 9, 2021 at 12:34 AM Greg KH <gregkh@linuxfoundation.org> wrote:
+On Sat, Jan 9, 2021 at 6:56 AM Willy Tarreau <w@1wt.eu> wrote:
 >
-> On Sat, Jan 09, 2021 at 07:49:24AM +0000, Chen, Mike Ximing wrote:
-> > > > +static int dlb_ioctl_arg_size[NUM_DLB_CMD] = {
-> > > > + sizeof(struct dlb_get_device_version_args),
-> > > > + sizeof(struct dlb_create_sched_domain_args),
-> > > > + sizeof(struct dlb_get_num_resources_args)
-> > >
-> > > That list.
-> > >
-> > > Ugh, no.  that's no way to write maintainable code that you will be able
-> > > to understand in 2 years.
-> > >
-> >
-> > dlb_ioctl() was implemented with switch-case and real function calls previously.
-> > We changed to the table/list implementation during a code restructure. I will move
-> > back to the old implementation.
+> On Fri, Jan 08, 2021 at 11:55:06PM +0100, Arnd Bergmann wrote:
+> > * 80486SX/DX: 80386 CPUs were dropped in 2012, and there are
+> >   indications that 486 have no users either on recent kernels.
+> >   There is still the Vortex86 family of SoCs, and the oldest of those were
+> >   486SX-class, but all the modern ones are 586-class.
 >
-> Who said to change this?  And why did they say that?  Please go back to
-> those developers and point them at this thread so that doesn't happen
-> again...
->
-> > > > +{
-> > > > + struct dlb *dlb;
-> > > > + dlb_ioctl_fn_t fn;
-> > > > + u32 cmd_nr;
-> > > > + void *karg;
-> > > > + int size;
-> > > > + int ret;
-> > > > +
-> > > > + dlb = f->private_data;
-> > > > +
-> > > > + if (!dlb) {
-> > > > +         pr_err("dlb: [%s()] Invalid DLB data\n", __func__);
-> > > > +         return -EFAULT;
-> > >
-> > > This error value is only allowed if you really do have a memory fault.
-> > >
-> > > Hint, you do not here.
-> > >
-> > > How can that value ever be NULL?
-> > >
-> >
-> > It is targeted at some very rare cases, in which an ioctl command are called immediately after a device unbind (by a different process/application).
->
-> And how can that happen?  If it really can happen, where is the lock
-> that you are holding to keep that pointer from becoming "stale" right
-> after you assign it?
->
-> So either this never can happen, or your logic here for this type of
-> thing is totally wrong.  Please work to determine which it is.
+> These also are the last generation of fanless x86 boards with 100% compatible
+> controllers, that some people have probably kept around because these don't
+> age much and have plenty of connectivity. I've used an old one a few times
+> to plug in an old floppy drive, ISA SCSI controllers to access an old tape
+> drive and a few such things. That doesn't mean that it's a good justification
+> not to remove them, what I rather mean is that *if* there is no benefit
+> in dropping them maybe we can keep them. On the other hand, good luck for
+> running a modern OS on these, when 16MB-32MB RAM was about the maximum that
+> was commonly found by then (though if people kept them around that's probably
+> because they were well equipped, like that 64MB 386DX I'm having :-)).
 
-I would have preferred a chance to offer a reviewed-by on this set
-before it went out (per the required process) to validate that the
-feedback on the lifetime handling was properly addressed, it wasn't,
-but lets deal with this on the list now.
+I think there were 486s with up to 256MB, which would still qualify as barely
+usable for a minimal desktop, or as comfortable for a deeply embedded
+system. The main limit was apparently the cacheable RAM, which is limited
+by the amount of L2 cache -- you needed a rare 1MB of external L2-cache to
+have 256MB of cached RAM, while more common 256KB of cache would
+be good for 64MB. Vortex86SX has no FPU or L2 cache at all, but supports
+256MB of DDR2.
 
-The race to handle is the one identified by cdev_del():
+I checked some distros and found that aside from Debian inadvertently
+dropping i486 a long time ago, Slackware 14.2 (from 2016) also requires
+an i586 or higher now. Slackware 14.1 (from 2013) is still supported
+on i486 but ships with a Linux-3.10 kernel.  archlinux32 is the only
+binary distro I could find that still officially supports i486, which in their
+case means anything below an i686 (cmov+mmx+sse). If it gets
+dropped, it might require some users to stay on LTS kernels
+after the distro moves to i586-only kernel, but as there are no
+long-term supported releases, there is also no need to coordinate
+the timing.
 
- * NOTE: This guarantees that cdev device will no longer be able to be
- * opened, however any cdevs already open will remain and their fops will
- * still be callable even after cdev_del returns.
+As with the other older platforms, the main question to ask is:
+Are there users that are better off running a future LTS kernel on this
+hardware than the v5.10.y version or something older?
 
-This means that the dlb->private_data is pointing to a live device, a
-dying device, or NULL. Without revalidating to the dlb pointer under a
-lock, or some other coordinated reference cout, it can transition
-states underneath the running ioctl.
-
-Greg, I'm thinking of taking a shot at a document, "botching up device
-lifetimes",  in the same spirit as
-Documentation/process/botching-up-ioctls.rst to lay out the different
-schemes for revalidating driver private data in ioctls.
-
-It strikes me that a helper like this might address many of the common patterns:
-
-+/**
-+ * get_live_device() - increment reference count for device iff !dead
-+ * @dev: device.
-+ *
-+ * Forward the call to get_device() if the device is still alive. If
-+ * this is called with the device_lock() held then the device is
-+ * guaranteed to not die until the device_lock() is dropped.
-+ */
-+struct device *get_live_device(struct device *dev)
-+{
-+       return dev && !dev->p->dead ? get_device(dev) : NULL;
-+}
-+EXPORT_SYMBOL_GPL(get_live_device);
-
-Alternatively, if device_lock() is too awkward for a driver it could
-use its own lock and kill_device().
-
-...am I off base thinking that cdev_del vs fops liveness is a
-widespread problem worth documenting new design patterns?
+     Arnd
