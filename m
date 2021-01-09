@@ -2,398 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FDB22F01D2
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Jan 2021 17:45:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 86ACE2F01D9
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Jan 2021 17:47:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726514AbhAIQpy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Jan 2021 11:45:54 -0500
-Received: from mail-wm1-f46.google.com ([209.85.128.46]:36355 "EHLO
-        mail-wm1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725872AbhAIQpx (ORCPT
+        id S1726653AbhAIQqj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Jan 2021 11:46:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46282 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726522AbhAIQqi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Jan 2021 11:45:53 -0500
-Received: by mail-wm1-f46.google.com with SMTP id y23so11074287wmi.1;
-        Sat, 09 Jan 2021 08:45:35 -0800 (PST)
+        Sat, 9 Jan 2021 11:46:38 -0500
+Received: from mail-il1-x129.google.com (mail-il1-x129.google.com [IPv6:2607:f8b0:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6AE3DC061786;
+        Sat,  9 Jan 2021 08:45:58 -0800 (PST)
+Received: by mail-il1-x129.google.com with SMTP id n9so13702640ili.0;
+        Sat, 09 Jan 2021 08:45:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
+         :subject:to:cc:content-transfer-encoding;
+        bh=rDWdOZV033PbHRIoz9gFCdCCPtDWdrf2QpLHI3qC4Ks=;
+        b=lKYcZ/pDNyBpVRy/AIFMoAbc4kprZN1qFvAjZkMTlSPZ5aYun28E09bjuogCaNUv7+
+         Jk00ybCpOX3sRiY1yW7DtbR1t5e0mTTTipytCO1wRUEXHBZlQRRsJKvAw3XkePn6yfiV
+         UFNx1upTAd3QSESauWaa2JAU/2cdQxOzkt5Ztgw/fJYIwXoUFzmkQRpOqFsPrfUNYW9c
+         EFSdjIuirPdJ+egYTzlBHVJ7Rr2et1jlwL7eG1TSMJjCDRIrWqamwd5W4oCOtNuRZded
+         QQ8dIwDS4wHOnvl7ZFgLKeJW/GUG/iAAMiIFzyTyTueJxHEPLZYCOOH5OpE4A9esijMR
+         ph1Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=ny+4xbbpzzJqGhoOe/2PKxMoxEZX7nO4lN2skz+XnXA=;
-        b=d0NGTxlYujTeEEwJvnp05LW6ReQdyJy8g/s/lpL88+U509Vno9PcH6aKq7FN3YkTJw
-         chCeCrUx7ysiszevfcN6ziZNnpXO1fM2Hm14o1BxHpd1xyDAPEVEdVX310XJzL0QnJiM
-         SCa+CES91v/fwcWDUEOn5JrCeuv4Lydi+rJHjyA9IIhsesupIj+DT8rcItz+1Z79A7Ow
-         sIoXKlUF42/HVHEYZpFJsBQP73QUp+7+WSexkra++6N64wBwu97+2hG8U6eGuTa8dxYb
-         l8P/I0r7VY5rQ81z4KLMVZPwyk1STbSnFqaOFLW9oFIDM+UmuFDik/lLwHiKNl/gGR1a
-         hBjQ==
-X-Gm-Message-State: AOAM532788tQrz1W6JpxdOlqJEO/YXNWqjZUbCHGHqPlST0Uznux3BSz
-        VXHQfQWr9Xp6Y1ivh9p6HpEdDHfBuPs=
-X-Google-Smtp-Source: ABdhPJxlv630GEE8PEZzdUjRuvnxnIYgnfdf6Mv2451FQeYXJ+3u/htjAwvHa+jLoqttImg6wiZNCQ==
-X-Received: by 2002:a1c:6741:: with SMTP id b62mr7851628wmc.21.1610210709765;
-        Sat, 09 Jan 2021 08:45:09 -0800 (PST)
-Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
-        by smtp.gmail.com with ESMTPSA id s13sm18461450wra.53.2021.01.09.08.45.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 09 Jan 2021 08:45:09 -0800 (PST)
-Date:   Sat, 9 Jan 2021 16:45:07 +0000
-From:   Wei Liu <wei.liu@kernel.org>
-To:     Linux on Hyper-V List <linux-hyperv@vger.kernel.org>
-Cc:     virtualization@lists.linux-foundation.org,
-        Linux Kernel List <linux-kernel@vger.kernel.org>,
-        Michael Kelley <mikelley@microsoft.com>,
-        Vineeth Pillai <viremana@linux.microsoft.com>,
-        Sunil Muthuswamy <sunilmut@microsoft.com>,
-        Nuno Das Neves <nunodasneves@linux.microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>,
-        "K. Y. Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>, joro@8bytes.org
-Subject: Re: [PATCH v4 17/17] x86/hyperv: handle IO-APIC when running as root
-Message-ID: <20210109164507.cpowxln6uriupvaq@liuwe-devbox-debian-v2>
-References: <20210106203350.14568-1-wei.liu@kernel.org>
- <20210106203350.14568-18-wei.liu@kernel.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
+         :from:date:message-id:subject:to:cc:content-transfer-encoding;
+        bh=rDWdOZV033PbHRIoz9gFCdCCPtDWdrf2QpLHI3qC4Ks=;
+        b=shnsLYjGX+Oz+75dfoXgzFSvKmQAOR4agl/zGRrp0eWYKzupGWoKqmq0dpb7jBLTNc
+         1fnFfa/V8mLaGhfgz3xRat3xu7kLGw2efR9BvjdQltjyzeDoHmBiWc9DCDTFTg/gvkpL
+         f9m/mShqX3yJbv9XNyURgg6NVWw8U7p5XZUxpSq0On35I8ib7tXBRBrJ6CPxwHiVCUj8
+         T5ea2vhtYdBw/V3EyppGR9uIY7pjwZBeb/05ghOwFt0sFiYkik6RHlchyz/4mns6RmaL
+         QA3ZB5mbgoIjbHU24ZC7MR1lvEEYp1aCSb5cfVALjCUpN6S7jWUQwwxfGbplryGVYfHO
+         DBMA==
+X-Gm-Message-State: AOAM532CTnI7FzLJXNpdqBhvnUtzvOsBeb7a+hIab96nOK/mo0mDoNAn
+        OBqV3WMJn947HoEDQo0mK9fckY+rDDQaN1svg+4=
+X-Google-Smtp-Source: ABdhPJyotcpCJj00XIwZxbBrRJwxOADUXFaeLowTjCUgN91QtyNu5IEBjFHQ+MWTW5HHUGdfbSGUxbCNMTehHWc8gzM=
+X-Received: by 2002:a92:c692:: with SMTP id o18mr9393270ilg.215.1610210757859;
+ Sat, 09 Jan 2021 08:45:57 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210106203350.14568-18-wei.liu@kernel.org>
-User-Agent: NeoMutt/20180716
+References: <20201211184633.3213045-1-samitolvanen@google.com>
+ <CA+icZUWYxO1hHW-_vrJid7EstqQRYQphjO3Xn6pj6qfEYEONbA@mail.gmail.com>
+ <20210109153646.zrmglpvr27f5zd7m@treble> <CA+icZUUiucbsQZtJKYdD7Y7Cq8hJZdBwsF0U0BFbaBtnLY3Nsw@mail.gmail.com>
+ <20210109160709.kqqpf64klflajarl@treble> <CA+icZUU=sS2xfzo9qTUTPQ0prbbQcj29tpDt1qK5cYZxarXuxg@mail.gmail.com>
+ <20210109163256.3sv3wbgrshbj72ik@treble>
+In-Reply-To: <20210109163256.3sv3wbgrshbj72ik@treble>
+Reply-To: sedat.dilek@gmail.com
+From:   Sedat Dilek <sedat.dilek@gmail.com>
+Date:   Sat, 9 Jan 2021 17:45:47 +0100
+Message-ID: <CA+icZUUszOHkJ8Acx2mDowg3StZw9EureDQ7YYkJkcAnpLBA+g@mail.gmail.com>
+Subject: Re: [PATCH v9 00/16] Add support for Clang LTO
+To:     Josh Poimboeuf <jpoimboe@redhat.com>
+Cc:     Sami Tolvanen <samitolvanen@google.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Will Deacon <will@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Clang-Built-Linux ML <clang-built-linux@googlegroups.com>,
+        kernel-hardening@lists.openwall.com, linux-arch@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kbuild@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Jan 06, 2021 at 08:33:50PM +0000, Wei Liu wrote:
-> Just like MSI/MSI-X, IO-APIC interrupts are remapped by Microsoft
-> Hypervisor when Linux runs as the root partition. Implement an IRQ chip
-> to handle mapping and unmapping of IO-APIC interrupts.
-> 
-> Use custom functions for mapping and unmapping ACPI GSIs. They will
-> issue Microsoft Hypervisor specific hypercalls on top of the native
-> routines.
-> 
+On Sat, Jan 9, 2021 at 5:33 PM Josh Poimboeuf <jpoimboe@redhat.com> wrote:
+>
+> > > > Did you push it (oh ah push it push it really really really good...=
+)
+> > > > to your remote Git please :-).
+> > >
+> > > I thought I already pushed it pretty good ;-) do you not see it?
+> > >
+> > > git://git.kernel.org/pub/scm/linux/kernel/git/jpoimboe/linux.git objt=
+ool-vmlinux
+> > >
+> > > d6baee244f2d =E2=80=94 objtool: Alphabetize usage option list (3 week=
+s ago)
+> > > c0b2a6a625ac =E2=80=94 objtool: Separate vmlinux/noinstr validation c=
+onfig options (3 weeks ago)
+> > > 84c53551ad17 =E2=80=94 objtool: Enable full vmlinux validation (3 wee=
+ks ago)
+> > > e518ac0801cd =E2=80=94 x86/power: Support objtool validation in hiber=
+nate_asm_64.S (3 weeks ago)
+> > > d0ac4c7301c1 =E2=80=94 x86/power: Move restore_registers() to top of =
+the file (3 weeks ago)
+> > > d3389bc83538 =E2=80=94 x86/power: Convert indirect jumps to retpoline=
+s (3 weeks ago)
+> > > 7a974d90aa40 =E2=80=94 x86/acpi: Support objtool validation in wakeup=
+_64.S (3 weeks ago)
+> > > 6693e26cd6cc =E2=80=94 x86/acpi: Convert indirect jump to retpoline (=
+3 weeks ago)
+> > > 0dfb760c74d1 =E2=80=94 x86/ftrace: Support objtool vmlinux.o validati=
+on in ftrace_64.S (3 weeks ago)
+> > > 89a4febfd7bf =E2=80=94 x86/xen/pvh: Convert indirect jump to retpolin=
+e (3 weeks ago)
+> > > b62837092140 =E2=80=94 x86/xen: Support objtool vmlinux.o validation =
+in xen-head.S (3 weeks ago)
+> > > 705e18481ed9 =E2=80=94 x86/xen: Support objtool validation in xen-asm=
+.S (3 weeks ago)
+> > > 3548319e21b9 =E2=80=94 objtool: Add xen_start_kernel() to noreturn li=
+st (3 weeks ago)
+> > > 6016e8da8c3d =E2=80=94 objtool: Combine UNWIND_HINT_RET_OFFSET and UN=
+WIND_HINT_FUNC (3 weeks ago)
+> > > 56d6a7aee8b1 =E2=80=94 objtool: Add asm version of STACK_FRAME_NON_ST=
+ANDARD (3 weeks ago)
+> > > 68259d951f1a =E2=80=94 objtool: Assume only ELF functions do sibling =
+calls (3 weeks ago)
+> > > 0d6c8816cf91 =E2=80=94 x86/ftrace: Add UNWIND_HINT_FUNC annotation fo=
+r ftrace_stub (3 weeks ago)
+> > > 24d6ce8cd8f6 =E2=80=94 objtool: Support retpoline jump detection for =
+vmlinux.o (3 weeks ago)
+> > > 8145ea268f16 =E2=80=94 objtool: Fix ".cold" section suffix check for =
+newer versions of GCC (3 weeks ago)
+> > > b3dfca472514 =E2=80=94 objtool: Fix retpoline detection in asm code (=
+3 weeks ago)
+> > > b82402fa5211 =E2=80=94 objtool: Fix error handling for STD/CLD warnin=
+gs (3 weeks ago)
+> > > 1f02defb4b79 =E2=80=94 objtool: Fix seg fault in BT_FUNC() with fake =
+jump (3 weeks ago)
+> > > 2c85ebc57b3e =E2=80=94 Linux 5.10 (4 weeks ago)
+> > >
+> >
+> > I already have this one in my patch-series - I hoped you pushed
+> > something new to your objtool-vmlinux Git branch.
+> > That is what I mean by shortened... <jpoimboe.git#objtool-vmlinux>.
+> >
+> > Hey, it's based on Linux v5.10 - I can test this with Linux v5.10.6 :-)=
+.
+>
+> This is the most recent version of the patches.  I only pushed them this
+> morning since you said the prior version wasn't applying on Sami's
+> clang-cfi branch.  This version rebases fine on 'clang-cfi'.
+>
 
-This patch is superseded by a new patch I recently wrote.
+I tried merging with clang-cfi Git which is based on Linux v5.11-rc2+
+with a lot of merge conflicts.
 
-The new approach is to implement a parent IRQ remapping domain for the
-IO-APIC domain in Linux. It fits cleanly into Linux's architecture. No
-more horrendous hooking required! :-)
+Did you try on top of cfi-10 Git tag which is based on Linux v5.10?
 
-Please review the following patch instead.
+Whatever you successfully did... Can you give me a step-by-step instruction=
+?
 
-CC IOMMU maintainer. FYI.
-
----8<---
-From 53d2346c97efdfc6ac3bc435990767bdd29ef311 Mon Sep 17 00:00:00 2001
-From: Wei Liu <wei.liu@kernel.org>
-Date: Fri, 8 Jan 2021 21:29:24 +0000
-Subject: [PATCH] iommu/hyperv: setup an IO-APIC IRQ remapping domain for root
- partition
-
-Just like MSI/MSI-X, IO-APIC interrupts are remapped by Microsoft
-Hypervisor when Linux runs as the root partition. Implement an IRQ
-domain to handle mapping and unmapping of IO-APIC interrupts.
-
-Signed-off-by: Wei Liu <wei.liu@kernel.org>
----
- arch/x86/hyperv/irqdomain.c     |  54 ++++++++++
- arch/x86/include/asm/mshyperv.h |   4 +
- drivers/iommu/hyperv-iommu.c    | 179 +++++++++++++++++++++++++++++++-
- 3 files changed, 233 insertions(+), 4 deletions(-)
-
-diff --git a/arch/x86/hyperv/irqdomain.c b/arch/x86/hyperv/irqdomain.c
-index 19637cd60231..8e2b4e478b70 100644
---- a/arch/x86/hyperv/irqdomain.c
-+++ b/arch/x86/hyperv/irqdomain.c
-@@ -330,3 +330,57 @@ struct irq_domain * __init hv_create_pci_msi_domain(void)
- }
- 
- #endif /* CONFIG_PCI_MSI */
-+
-+int hv_unmap_ioapic_interrupt(int ioapic_id, struct hv_interrupt_entry *entry)
-+{
-+	union hv_device_id device_id;
-+
-+	device_id.as_uint64 = 0;
-+	device_id.device_type = HV_DEVICE_TYPE_IOAPIC;
-+	device_id.ioapic.ioapic_id = (u8)ioapic_id;
-+
-+	return hv_unmap_interrupt(device_id.as_uint64, entry) & HV_HYPERCALL_RESULT_MASK;
-+}
-+EXPORT_SYMBOL_GPL(hv_unmap_ioapic_interrupt);
-+
-+int hv_map_ioapic_interrupt(int ioapic_id, bool level, int vcpu, int vector,
-+		struct hv_interrupt_entry *entry)
-+{
-+	unsigned long flags;
-+	struct hv_input_map_device_interrupt *input;
-+	struct hv_output_map_device_interrupt *output;
-+	union hv_device_id device_id;
-+	struct hv_device_interrupt_descriptor *intr_desc;
-+	u16 status;
-+
-+	device_id.as_uint64 = 0;
-+	device_id.device_type = HV_DEVICE_TYPE_IOAPIC;
-+	device_id.ioapic.ioapic_id = (u8)ioapic_id;
-+
-+	local_irq_save(flags);
-+	input = *this_cpu_ptr(hyperv_pcpu_input_arg);
-+	output = *this_cpu_ptr(hyperv_pcpu_output_arg);
-+	memset(input, 0, sizeof(*input));
-+	intr_desc = &input->interrupt_descriptor;
-+	input->partition_id = hv_current_partition_id;
-+	input->device_id = device_id.as_uint64;
-+	intr_desc->interrupt_type = HV_X64_INTERRUPT_TYPE_FIXED;
-+	intr_desc->target.vector = vector;
-+	intr_desc->vector_count = 1;
-+
-+	if (level)
-+		intr_desc->trigger_mode = HV_INTERRUPT_TRIGGER_MODE_LEVEL;
-+	else
-+		intr_desc->trigger_mode = HV_INTERRUPT_TRIGGER_MODE_EDGE;
-+
-+	__set_bit(vcpu, (unsigned long *)&intr_desc->target.vp_mask);
-+
-+	status = hv_do_rep_hypercall(HVCALL_MAP_DEVICE_INTERRUPT, 0, 0, input, output) &
-+			 HV_HYPERCALL_RESULT_MASK;
-+	local_irq_restore(flags);
-+
-+	*entry = output->interrupt_entry;
-+
-+	return status;
-+}
-+EXPORT_SYMBOL_GPL(hv_map_ioapic_interrupt);
-diff --git a/arch/x86/include/asm/mshyperv.h b/arch/x86/include/asm/mshyperv.h
-index ccc849e25d5e..345d7c6f8c37 100644
---- a/arch/x86/include/asm/mshyperv.h
-+++ b/arch/x86/include/asm/mshyperv.h
-@@ -263,6 +263,10 @@ static inline void hv_set_msi_entry_from_desc(union hv_msi_entry *msi_entry,
- 
- struct irq_domain *hv_create_pci_msi_domain(void);
- 
-+int hv_map_ioapic_interrupt(int ioapic_id, bool level, int vcpu, int vector,
-+		struct hv_interrupt_entry *entry);
-+int hv_unmap_ioapic_interrupt(int ioapic_id, struct hv_interrupt_entry *entry);
-+
- #else /* CONFIG_HYPERV */
- static inline void hyperv_init(void) {}
- static inline void hyperv_setup_mmu_ops(void) {}
-diff --git a/drivers/iommu/hyperv-iommu.c b/drivers/iommu/hyperv-iommu.c
-index b7db6024e65c..6d35e4c303c6 100644
---- a/drivers/iommu/hyperv-iommu.c
-+++ b/drivers/iommu/hyperv-iommu.c
-@@ -116,30 +116,43 @@ static const struct irq_domain_ops hyperv_ir_domain_ops = {
- 	.free = hyperv_irq_remapping_free,
- };
- 
-+static const struct irq_domain_ops hyperv_root_ir_domain_ops;
- static int __init hyperv_prepare_irq_remapping(void)
- {
- 	struct fwnode_handle *fn;
- 	int i;
-+	const char *name;
-+	const struct irq_domain_ops *ops;
- 
- 	if (!hypervisor_is_type(X86_HYPER_MS_HYPERV) ||
- 	    x86_init.hyper.msi_ext_dest_id() ||
--	    !x2apic_supported() || hv_root_partition)
-+	    !x2apic_supported())
- 		return -ENODEV;
- 
--	fn = irq_domain_alloc_named_id_fwnode("HYPERV-IR", 0);
-+	if (hv_root_partition) {
-+		name = "HYPERV-ROOT-IR";
-+		ops = &hyperv_root_ir_domain_ops;
-+	} else {
-+		name = "HYPERV-IR";
-+		ops = &hyperv_ir_domain_ops;
-+	}
-+
-+	fn = irq_domain_alloc_named_id_fwnode(name, 0);
- 	if (!fn)
- 		return -ENOMEM;
- 
- 	ioapic_ir_domain =
- 		irq_domain_create_hierarchy(arch_get_ir_parent_domain(),
--				0, IOAPIC_REMAPPING_ENTRY, fn,
--				&hyperv_ir_domain_ops, NULL);
-+				0, IOAPIC_REMAPPING_ENTRY, fn, ops, NULL);
- 
- 	if (!ioapic_ir_domain) {
- 		irq_domain_free_fwnode(fn);
- 		return -ENOMEM;
- 	}
- 
-+	if (hv_root_partition)
-+		return 0; /* The rest is only relevant to guests */
-+
- 	/*
- 	 * Hyper-V doesn't provide irq remapping function for
- 	 * IO-APIC and so IO-APIC only accepts 8-bit APIC ID.
-@@ -167,4 +180,162 @@ struct irq_remap_ops hyperv_irq_remap_ops = {
- 	.enable			= hyperv_enable_irq_remapping,
- };
- 
-+/* IRQ remapping domain when Linux runs as the root partition */
-+struct hyperv_root_ir_data {
-+	u8 ioapic_id;
-+	bool is_level;
-+	struct hv_interrupt_entry entry;
-+};
-+
-+static void
-+hyperv_root_ir_compose_msi_msg(struct irq_data *irq_data, struct msi_msg *msg)
-+{
-+	u16 status;
-+	u32 vector;
-+	struct irq_cfg *cfg;
-+	int ioapic_id;
-+	struct cpumask *affinity;
-+	int cpu, vcpu;
-+	struct hv_interrupt_entry entry;
-+	struct hyperv_root_ir_data *data = irq_data->chip_data;
-+	struct IO_APIC_route_entry e;
-+
-+	cfg = irqd_cfg(irq_data);
-+	affinity = irq_data_get_effective_affinity_mask(irq_data);
-+	cpu = cpumask_first_and(affinity, cpu_online_mask);
-+	vcpu = hv_cpu_number_to_vp_number(cpu);
-+
-+	vector = cfg->vector;
-+	ioapic_id = data->ioapic_id;
-+
-+	if (data->entry.source == HV_DEVICE_TYPE_IOAPIC
-+	    && data->entry.ioapic_rte.as_uint64) {
-+		entry = data->entry;
-+
-+		status = hv_unmap_ioapic_interrupt(ioapic_id, &entry);
-+
-+		if (status != HV_STATUS_SUCCESS)
-+			pr_debug("%s: unexpected unmap status %d\n", __func__, status);
-+
-+		data->entry.ioapic_rte.as_uint64 = 0;
-+		data->entry.source = 0; /* Invalid source */
-+	}
-+
-+
-+	status = hv_map_ioapic_interrupt(ioapic_id, data->is_level, vcpu,
-+					vector, &entry);
-+
-+	if (status != HV_STATUS_SUCCESS) {
-+		pr_err("%s: map hypercall failed, status %d\n", __func__, status);
-+		return;
-+	}
-+
-+	data->entry = entry;
-+
-+	/* Turn it into an IO_APIC_route_entry, and generate MSI MSG. */
-+	e.w1 = entry.ioapic_rte.low_uint32;
-+	e.w2 = entry.ioapic_rte.high_uint32;
-+
-+	memset(msg, 0, sizeof(*msg));
-+	msg->arch_data.vector = e.vector;
-+	msg->arch_data.delivery_mode = e.delivery_mode;
-+	msg->arch_addr_lo.dest_mode_logical = e.dest_mode_logical;
-+	msg->arch_addr_lo.dmar_format = e.ir_format;
-+	msg->arch_addr_lo.dmar_index_0_14 = e.ir_index_0_14;
-+}
-+
-+static int hyperv_root_ir_set_affinity(struct irq_data *data,
-+		const struct cpumask *mask, bool force)
-+{
-+	struct irq_data *parent = data->parent_data;
-+	struct irq_cfg *cfg = irqd_cfg(data);
-+	int ret;
-+
-+	ret = parent->chip->irq_set_affinity(parent, mask, force);
-+	if (ret < 0 || ret == IRQ_SET_MASK_OK_DONE)
-+		return ret;
-+
-+	send_cleanup_vector(cfg);
-+
-+	return 0;
-+}
-+
-+static struct irq_chip hyperv_root_ir_chip = {
-+	.name			= "HYPERV-ROOT-IR",
-+	.irq_ack		= apic_ack_irq,
-+	.irq_set_affinity	= hyperv_root_ir_set_affinity,
-+	.irq_compose_msi_msg	= hyperv_root_ir_compose_msi_msg,
-+};
-+
-+static int hyperv_root_irq_remapping_alloc(struct irq_domain *domain,
-+				     unsigned int virq, unsigned int nr_irqs,
-+				     void *arg)
-+{
-+	struct irq_alloc_info *info = arg;
-+	struct irq_data *irq_data;
-+	struct hyperv_root_ir_data *data;
-+	int ret = 0;
-+
-+	if (!info || info->type != X86_IRQ_ALLOC_TYPE_IOAPIC || nr_irqs > 1)
-+		return -EINVAL;
-+
-+	ret = irq_domain_alloc_irqs_parent(domain, virq, nr_irqs, arg);
-+	if (ret < 0)
-+		return ret;
-+
-+	data = kzalloc(sizeof(*data), GFP_KERNEL);
-+	if (!data) {
-+		irq_domain_free_irqs_common(domain, virq, nr_irqs);
-+		return -ENOMEM;
-+	}
-+
-+	irq_data = irq_domain_get_irq_data(domain, virq);
-+	if (!irq_data) {
-+		kfree(data);
-+		irq_domain_free_irqs_common(domain, virq, nr_irqs);
-+		return -EINVAL;
-+	}
-+
-+	data->ioapic_id = info->devid;
-+	data->is_level = info->ioapic.is_level;
-+
-+	irq_data->chip = &hyperv_root_ir_chip;
-+	irq_data->chip_data = data;
-+
-+	return 0;
-+}
-+
-+static void hyperv_root_irq_remapping_free(struct irq_domain *domain,
-+				 unsigned int virq, unsigned int nr_irqs)
-+{
-+	struct irq_data *irq_data;
-+	struct hyperv_root_ir_data *data;
-+	struct hv_interrupt_entry *e;
-+	int i;
-+
-+	for (i = 0; i < nr_irqs; i++) {
-+		irq_data = irq_domain_get_irq_data(domain, virq + i);
-+
-+		if (irq_data && irq_data->chip_data) {
-+			data = irq_data->chip_data;
-+			e = &data->entry;
-+
-+			if (e->source == HV_DEVICE_TYPE_IOAPIC
-+			      && e->ioapic_rte.as_uint64)
-+				hv_unmap_ioapic_interrupt(data->ioapic_id,
-+							&data->entry);
-+
-+			kfree(data);
-+		}
-+	}
-+
-+	irq_domain_free_irqs_common(domain, virq, nr_irqs);
-+}
-+
-+static const struct irq_domain_ops hyperv_root_ir_domain_ops = {
-+	.select = hyperv_irq_remapping_select,
-+	.alloc = hyperv_root_irq_remapping_alloc,
-+	.free = hyperv_root_irq_remapping_free,
-+};
-+
- #endif
--- 
-2.20.1
-
+- Sedat -
