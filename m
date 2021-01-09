@@ -2,134 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CCBFF2F0281
-	for <lists+linux-kernel@lfdr.de>; Sat,  9 Jan 2021 19:05:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C0442F02C9
+	for <lists+linux-kernel@lfdr.de>; Sat,  9 Jan 2021 19:08:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726367AbhAISE5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Jan 2021 13:04:57 -0500
-Received: from relay02.th.seeweb.it ([5.144.164.163]:52121 "EHLO
-        relay02.th.seeweb.it" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726301AbhAISE4 (ORCPT
+        id S1727005AbhAISIB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Jan 2021 13:08:01 -0500
+Received: from mail-io1-f69.google.com ([209.85.166.69]:37850 "EHLO
+        mail-io1-f69.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726006AbhAISIA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Jan 2021 13:04:56 -0500
-Received: from IcarusMOD.eternityproject.eu (unknown [2.237.20.237])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by m-r1.th.seeweb.it (Postfix) with ESMTPSA id 0068A1F614;
-        Sat,  9 Jan 2021 19:04:13 +0100 (CET)
-From:   AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@somainline.org>
-To:     linux-arm-msm@vger.kernel.org
-Cc:     konrad.dybcio@somainline.org, marijn.suijten@somainline.org,
-        martin.botka@somainline.org, phone-devel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, robh+dt@kernel.org,
-        rjw@rjwysocki.net, viresh.kumar@linaro.org, nks@flawful.org,
-        agross@kernel.org, bjorn.andersson@linaro.org,
-        daniel.lezcano@linaro.org, manivannan.sadhasivam@linaro.org,
-        devicetree@vger.kernel.org, linux-pm@vger.kernel.org,
-        AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@somainline.org>
-Subject: [PATCH v2 15/15] dt-bindings: cpufreq: qcom-hw: Add bindings for 8998
-Date:   Sat,  9 Jan 2021 19:03:59 +0100
-Message-Id: <20210109180359.236098-16-angelogioacchino.delregno@somainline.org>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210109180359.236098-1-angelogioacchino.delregno@somainline.org>
-References: <20210109180359.236098-1-angelogioacchino.delregno@somainline.org>
+        Sat, 9 Jan 2021 13:08:00 -0500
+Received: by mail-io1-f69.google.com with SMTP id l22so10232868iom.4
+        for <linux-kernel@vger.kernel.org>; Sat, 09 Jan 2021 10:07:45 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=BsWPSRLwA8RolMCenavGS+3Cc+3bFo32dZEP7iTFhQQ=;
+        b=cEvTg4WW8t/4aiB1N0PPQ5ZREKaR8x+S6C8ogf1KIF1etsqCYz+AQAKJnO5C1LE6mL
+         kmRjaPhr31+KJKD4HIEh3zU048frRL7UNyhkhqQ7JrBUKkSSry5oFpNXqRi1YcZTvyF5
+         IRng/H9chh/pLvqCdxZnERooAVHBLk3AUwejEg6i+TUNFk18wZBi1qBPFe7DzZ8+loii
+         h1MV+fQhykVeKr9ckzk98DAZZHChHpSAV7gd730YIWASubKZIcxjNv7yaY6UtD2Ldv0I
+         E67+Od1X9KP5Zqh/tT4IVuAoQE9svvU4PVY5ebtdxuMQlxNXntn+lHEbD8ot0BE0HVss
+         IqtQ==
+X-Gm-Message-State: AOAM533iA2623v2vw0GCFxi0U59f3crIuRhHqBRichFnCWkgILYN1mov
+        sBSEKpWzeV43kim0oJKtpgqShLs5SZZ1NbL6NR7WdtHcQILV
+X-Google-Smtp-Source: ABdhPJz2Fo27W90BS/ZeLDfCQnG0/dKaG79rae//EhtT+TWJtJJIc7bDQPUyhQPc9JFX+zteVapA2LGjHFUzMWEmpReY/N/GWimy
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-Received: by 2002:a02:c7d1:: with SMTP id s17mr8607663jao.142.1610215639684;
+ Sat, 09 Jan 2021 10:07:19 -0800 (PST)
+Date:   Sat, 09 Jan 2021 10:07:19 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000371e5a05b87b8bf9@google.com>
+Subject: memory leak in tcp_cdg_init
+From:   syzbot <syzbot+f1e24a0594d4e3a895d3@syzkaller.appspotmail.com>
+To:     davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+        kuznet@ms2.inr.ac.ru, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com,
+        yoshfuji@linux-ipv6.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The OSM programming addition has been done under the
-qcom,cpufreq-hw-8998 compatible name: specify the requirement
-of two additional register spaces for this functionality.
-This implementation, with the same compatible, has been
-tested on MSM8998 and SDM630.
+Hello,
 
-Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>
+syzbot found the following issue on:
+
+HEAD commit:    36bbbd0e Merge branch 'rcu/urgent' of git://git.kernel.org..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=16ef4dfb500000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=b991a69440391446
+dashboard link: https://syzkaller.appspot.com/bug?extid=f1e24a0594d4e3a895d3
+compiler:       gcc (GCC) 10.1.0-syz 20200507
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=13e1bb2b500000
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+f1e24a0594d4e3a895d3@syzkaller.appspotmail.com
+
+2021/01/05 17:50:00 executed programs: 127
+2021/01/05 17:50:06 executed programs: 146
+2021/01/05 17:50:12 executed programs: 157
+2021/01/05 17:50:19 executed programs: 175
+BUG: memory leak
+unreferenced object 0xffff888125940080 (size 64):
+  comm "syz-executor.1", pid 11113, jiffies 4294986279 (age 14.750s)
+  hex dump (first 32 bytes):
+    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+  backtrace:
+    [<00000000bf291225>] kmalloc_array include/linux/slab.h:592 [inline]
+    [<00000000bf291225>] kcalloc include/linux/slab.h:621 [inline]
+    [<00000000bf291225>] tcp_cdg_init+0x37/0x60 net/ipv4/tcp_cdg.c:380
+    [<00000000f991e122>] tcp_init_congestion_control+0x31/0x160 net/ipv4/tcp_cong.c:183
+    [<000000009761f0eb>] tcp_reinit_congestion_control net/ipv4/tcp_cong.c:207 [inline]
+    [<000000009761f0eb>] tcp_set_congestion_control+0x35e/0x380 net/ipv4/tcp_cong.c:377
+    [<00000000825a01e7>] do_tcp_setsockopt net/ipv4/tcp.c:3319 [inline]
+    [<00000000825a01e7>] tcp_setsockopt+0x3fc/0x13f0 net/ipv4/tcp.c:3599
+    [<0000000009f41711>] __sys_setsockopt+0x1b0/0x360 net/socket.c:2115
+    [<000000008873566c>] __do_sys_setsockopt net/socket.c:2126 [inline]
+    [<000000008873566c>] __se_sys_setsockopt net/socket.c:2123 [inline]
+    [<000000008873566c>] __x64_sys_setsockopt+0x22/0x30 net/socket.c:2123
+    [<0000000048fbe902>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+    [<00000000b377d397>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+BUG: memory leak
+unreferenced object 0xffff888125940880 (size 64):
+  comm "syz-executor.4", pid 11115, jiffies 4294986279 (age 14.750s)
+  hex dump (first 32 bytes):
+    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+  backtrace:
+    [<00000000bf291225>] kmalloc_array include/linux/slab.h:592 [inline]
+    [<00000000bf291225>] kcalloc include/linux/slab.h:621 [inline]
+    [<00000000bf291225>] tcp_cdg_init+0x37/0x60 net/ipv4/tcp_cdg.c:380
+    [<00000000f991e122>] tcp_init_congestion_control+0x31/0x160 net/ipv4/tcp_cong.c:183
+    [<000000009761f0eb>] tcp_reinit_congestion_control net/ipv4/tcp_cong.c:207 [inline]
+    [<000000009761f0eb>] tcp_set_congestion_control+0x35e/0x380 net/ipv4/tcp_cong.c:377
+    [<00000000825a01e7>] do_tcp_setsockopt net/ipv4/tcp.c:3319 [inline]
+    [<00000000825a01e7>] tcp_setsockopt+0x3fc/0x13f0 net/ipv4/tcp.c:3599
+    [<0000000009f41711>] __sys_setsockopt+0x1b0/0x360 net/socket.c:2115
+    [<000000008873566c>] __do_sys_setsockopt net/socket.c:2126 [inline]
+    [<000000008873566c>] __se_sys_setsockopt net/socket.c:2123 [inline]
+    [<000000008873566c>] __x64_sys_setsockopt+0x22/0x30 net/socket.c:2123
+    [<0000000048fbe902>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+    [<00000000b377d397>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+
+
 ---
- .../bindings/cpufreq/cpufreq-qcom-hw.yaml     | 44 ++++++++++++++++---
- 1 file changed, 39 insertions(+), 5 deletions(-)
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-diff --git a/Documentation/devicetree/bindings/cpufreq/cpufreq-qcom-hw.yaml b/Documentation/devicetree/bindings/cpufreq/cpufreq-qcom-hw.yaml
-index bc81b6203e27..0bf539954558 100644
---- a/Documentation/devicetree/bindings/cpufreq/cpufreq-qcom-hw.yaml
-+++ b/Documentation/devicetree/bindings/cpufreq/cpufreq-qcom-hw.yaml
-@@ -18,6 +18,10 @@ description: |
- properties:
-   compatible:
-     oneOf:
-+      - description: Non-secure v1 of CPUFREQ HW
-+        items:
-+          - const: qcom,cpufreq-hw-8998
-+
-       - description: v1 of CPUFREQ HW
-         items:
-           - const: qcom,cpufreq-hw
-@@ -30,19 +34,27 @@ properties:
- 
-   reg:
-     minItems: 2
--    maxItems: 3
-+    maxItems: 7
-     items:
-       - description: Frequency domain 0 register region
-       - description: Frequency domain 1 register region
-       - description: Frequency domain 2 register region
-+      - description: PLL ACD domain 0 register region
-+      - description: PLL ACD domain 1 register region
-+      - description: Operating State Manager domain 0 register region
-+      - description: Operating State Manager domain 1 register region
- 
-   reg-names:
-     minItems: 2
--    maxItems: 3
-+    maxItems: 7
-     items:
--      - const: freq-domain0
--      - const: freq-domain1
--      - const: freq-domain2
-+      - const: "freq-domain0"
-+      - const: "freq-domain1"
-+      - const: "freq-domain2"
-+      - const: "osm-acd0"
-+      - const: "osm-acd1"
-+      - const: "osm-domain0"
-+      - const: "osm-domain1"
- 
-   clocks:
-     items:
-@@ -57,6 +69,28 @@ properties:
-   '#freq-domain-cells':
-     const: 1
- 
-+allOf:
-+ - if:
-+     properties:
-+       reg-names:
-+         contains:
-+           const: qcom,cpufreq-hw-8998
-+   then:
-+     properties:
-+       reg:
-+         minItems: 4
-+         maxItems: 6
-+       reg-names:
-+         items:
-+           minItems: 4
-+   else:
-+     properties:
-+       reg:
-+         maxItems: 3
-+       reg-names:
-+         items:
-+           maxItems: 3
-+
- required:
-   - compatible
-   - reg
--- 
-2.29.2
-
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
