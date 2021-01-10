@@ -2,65 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 149F62F06C3
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Jan 2021 12:54:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A24C22F06C0
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Jan 2021 12:54:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726554AbhAJLyz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Jan 2021 06:54:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36434 "EHLO
+        id S1726428AbhAJLyq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Jan 2021 06:54:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36400 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726254AbhAJLyy (ORCPT
+        with ESMTP id S1726254AbhAJLyp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Jan 2021 06:54:54 -0500
-Received: from mail-io1-xd2e.google.com (mail-io1-xd2e.google.com [IPv6:2607:f8b0:4864:20::d2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFAA2C0617A3;
-        Sun, 10 Jan 2021 03:54:13 -0800 (PST)
-Received: by mail-io1-xd2e.google.com with SMTP id 81so14684821ioc.13;
-        Sun, 10 Jan 2021 03:54:13 -0800 (PST)
+        Sun, 10 Jan 2021 06:54:45 -0500
+Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2884C061786
+        for <linux-kernel@vger.kernel.org>; Sun, 10 Jan 2021 03:54:05 -0800 (PST)
+Received: by mail-pj1-x1033.google.com with SMTP id p12so6089451pju.5
+        for <linux-kernel@vger.kernel.org>; Sun, 10 Jan 2021 03:54:05 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
         h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=7RoK005uE/qFSPumNKEGnm/g33j+iG5Ts9GmzGFIgKE=;
-        b=YgXbtQmnK5M/P0WS7dYb1HCf3k5xprdseoGJn1TEsERtyLnVpnuGsy3VkAjSFZYSQI
-         tQsFWaWv7iNPvTx0EJ0jwSXdXwuVdYMaTBYj3S4H/blsca7tnnhvw647SO9QnTR4sFb5
-         +wqNsPnvLeE9U+7Ppq2QlC/7Osz6VrMsOnwneydQDe4FtCaGGp/9TzNd3HKhzMnF//lV
-         R6s1lIBU1HvMadq+amh8Cp5MWcuoxsHfPuF6fJVuM2N2LOm7M7BJfYcHPIYJVbQEDWjj
-         FrL1IMTbtrwozCk7aJ8JjIlf6VOpxzIH6ATtAAHL/EqClnO3PfeNe+uHhyTeU6YCWqnO
-         +IVg==
+        bh=VrQQUPI56TTkrQd0HB4Qa4KAsPZx7AHK+GwBGWgvesk=;
+        b=fzgc8Ut2i//vG1wPgWUWhTlkVqOf6sMPDaplhnO79PmzwL41jsSKSHH2n77yGoFaIK
+         HMy1aVSXQ3EM2zqa+ESyXnflvabYfHfTfu76SN+gzFlrvUxU1fwfrf5GUZv7OqqAg5O0
+         8vFfM/D67m9+9OE5gdTlkg1axyScBiNRYs9PyGObGwkl9DkTpznwN9QdKQO34eMs+u+6
+         pR+cQLdglriBWlKYFvtwcyowHTGBNPY3ZouLxkY/HHIl/AGWY2mKyKSnknp1Q4xIhumb
+         Lifl9Wt/D+h85DnYQU9L5EMpRoTDbCrRkCcaAs9BaUpypvJKXf4ueYGacj5BUrvm4qoA
+         rSiQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=7RoK005uE/qFSPumNKEGnm/g33j+iG5Ts9GmzGFIgKE=;
-        b=AhRNKzaV8OIE5dxktwgAb+c7cxVToo5od0Wl3qRI54ZF9B5dOnycuhEIovjKyMPsLB
-         78yc47zR4zR6EPNUI4cCvRTGOns9FvSMeT+AGuFb8P4rzver2KgWkpZpC80Ufl7Nrw/e
-         5jI/2Oei8UiRcpFY6qCApKW07cANOVokEligHSxkHJvvp4ZysFIqkzQJBpakZM8VkJZI
-         /X7IsQfExH48PRHpMH6/P80EWDlssI132ZYGei1ME+cKfRJCw0sRN5seAwKeDh6VxdeH
-         f517J5LjFZDAlhYJnoUtjg05J6+wicpLtCDhs+DIUvIO6UBoC3f9eK/gbVLOFQ62v81U
-         LaLw==
-X-Gm-Message-State: AOAM5303k5rjcIZC46+vCdIH8FDLYo2e7ND36fiAuZfEgperZQPmQmuG
-        xz8C8i/z0F0srLXfODbPS9U=
-X-Google-Smtp-Source: ABdhPJwF3q87BcCxzzvNxRtizuQv69WzUYBls3XK6WJwaUUZ6MFkWkJUGa4e58JcBGDAcbzIZtAx6g==
-X-Received: by 2002:a02:6557:: with SMTP id u84mr10391980jab.82.1610279653238;
-        Sun, 10 Jan 2021 03:54:13 -0800 (PST)
-Received: from aford-IdeaCentre-A730.lan ([2601:448:8400:9e8:4119:2ef1:4993:8ada])
-        by smtp.gmail.com with ESMTPSA id 64sm9518063iow.9.2021.01.10.03.54.11
+        bh=VrQQUPI56TTkrQd0HB4Qa4KAsPZx7AHK+GwBGWgvesk=;
+        b=UPh4zKfrxhBhNRLpLSmL9SWojj07wOaetC0erzMJroVHBF6oqhl+jm5NrJ8fxPD/4g
+         63u9NZ4o7x9EaPfk4IuJ2kGtyM+c9cYt2G8Y1MG7uRvtatl4rnfuwRK+tGOGcb+r+csX
+         lMYWiLCLakUZHwTcv2XKhEJJqlDqSZ3QOQfKxra8Q+FI/fPq7ZQckGdiYfl/dUgusjV0
+         k60O6FaTYai2D4qQoB6jLlvZ4NeQuaJT4ik0aHgOSbkwxRy3UJ2kqrQ6NITSoFOQCiIS
+         O1NIYBLpnLoJpzPAX13NQ/NWGsW3MUXICBfGQvBRjIUPMFn4GWTOBHaZfURAZ22/5Cdz
+         UVyQ==
+X-Gm-Message-State: AOAM533p41vtdIeNNLXIxGWJyJDHFVetnMgcIPWiyBeQDmodUnLGli55
+        Yu03QiiPTFkoDccHAjM0T2gHzw==
+X-Google-Smtp-Source: ABdhPJwL6nVy7+Pcy+4C2dqM0lgsiHbO7tJRmB7Tq2ToRvCdHG7Jm+eOZlDduAmKz6Cj+flOaZmCQw==
+X-Received: by 2002:a17:902:7007:b029:dc:e89:50f1 with SMTP id y7-20020a1709027007b02900dc0e8950f1mr12102454plk.72.1610279644969;
+        Sun, 10 Jan 2021 03:54:04 -0800 (PST)
+Received: from always-libai.bytedance.net ([61.120.150.71])
+        by smtp.gmail.com with ESMTPSA id x1sm15613906pfj.95.2021.01.10.03.54.02
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 10 Jan 2021 03:54:12 -0800 (PST)
-From:   Adam Ford <aford173@gmail.com>
-To:     linux-arm-kernel@lists.infradead.org
-Cc:     aford@beaconembedded.com, Adam Ford <aford173@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] arm64: dts: imx8mn-beacon-som: Configure RTC aliases
-Date:   Sun, 10 Jan 2021 05:53:53 -0600
-Message-Id: <20210110115354.1259994-1-aford173@gmail.com>
+        Sun, 10 Jan 2021 03:54:04 -0800 (PST)
+From:   zhenwei pi <pizhenwei@bytedance.com>
+To:     arnd@arndb.de, gregkh@linuxfoundation.org
+Cc:     pbonzini@redhat.com, linux-kernel@vger.kernel.org,
+        pizhenwei@bytedance.com
+Subject: [PATCH v5 0/2] misc: pvpanic: introduce capability & event attribute
+Date:   Sun, 10 Jan 2021 19:53:56 +0800
+Message-Id: <20210110115358.79100-1-pizhenwei@bytedance.com>
 X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -68,42 +62,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On the i.MX8MN Beacon SOM, there is an RTC chip which is fed power
-from the baseboard during power off.  The SNVS RTC integrated into
-the SoC is not fed power.  Depending on the order the modules are
-loaded, this can be a problem if the external RTC isn't rtc0.
+v4 -> v5:
+Use sysfs_emit to export attribute value.
+Only allow subset of capability to set on events.
+Add more detailed infomation in document.
 
-Make the alias for rtc0 point to the external RTC all the time and
-rtc1 point to the SVNS in order to correctly hold date/time over
-a power-cycle.
+v3 -> v4:
+Use event sysfs attribute instead of module parameter.
+Use driver dev_groups instead of creating files by sysfs_* API.
 
-Signed-off-by: Adam Ford <aford173@gmail.com>
+v2 -> v3:
+Seperate the function to 2 parts:
+    1, use sysfs to expose device capability.
+    2, add a module parameter to set limitation by user.
 
-diff --git a/arch/arm64/boot/dts/freescale/imx8mn-beacon-som.dtsi b/arch/arm64/boot/dts/freescale/imx8mn-beacon-som.dtsi
-index 67e5e5b9ddea..2120e6485393 100644
---- a/arch/arm64/boot/dts/freescale/imx8mn-beacon-som.dtsi
-+++ b/arch/arm64/boot/dts/freescale/imx8mn-beacon-som.dtsi
-@@ -4,6 +4,11 @@
-  */
- 
- / {
-+	aliases {
-+		rtc0 = &rtc;
-+		rtc1 = &snvs_rtc;
-+	};
-+
- 	usdhc1_pwrseq: usdhc1_pwrseq {
- 		compatible = "mmc-pwrseq-simple";
- 		pinctrl-names = "default";
-@@ -212,7 +217,7 @@ eeprom@50 {
- 		reg = <0x50>;
- 	};
- 
--	rtc@51 {
-+	rtc: rtc@51 {
- 		compatible = "nxp,pcf85263";
- 		reg = <0x51>;
- 	};
+v1 -> v2:
+Remove device info log, use module parameter to expose capability.
+
+v1:
+The guest sides determines pvpanic capability by RDPT, before kicking
+host side, check the event is supported or not.
+
+zhenwei pi (2):
+  misc: pvpanic: introduce device capability
+  misc: pvpanic: introduce module parameter 'events'
+
+ .../ABI/testing/sysfs-bus-pci-devices-pvpanic | 14 +++++
+ drivers/misc/pvpanic.c                        | 58 +++++++++++++++++--
+ 2 files changed, 67 insertions(+), 5 deletions(-)
+ create mode 100644 Documentation/ABI/testing/sysfs-bus-pci-devices-pvpanic
+
 -- 
 2.25.1
 
