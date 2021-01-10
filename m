@@ -2,153 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0BBC72F095C
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Jan 2021 20:36:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 10C6E2F095E
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Jan 2021 20:47:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726720AbhAJTfy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Jan 2021 14:35:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49782 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726346AbhAJTfx (ORCPT
+        id S1726534AbhAJTp3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Jan 2021 14:45:29 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:30254 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726263AbhAJTp2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Jan 2021 14:35:53 -0500
-Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA30FC06179F
-        for <linux-kernel@vger.kernel.org>; Sun, 10 Jan 2021 11:35:12 -0800 (PST)
-Received: by mail-lj1-x22b.google.com with SMTP id m10so1232094lji.1
-        for <linux-kernel@vger.kernel.org>; Sun, 10 Jan 2021 11:35:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=I52KVXRoRWFS2xNuCU7qX07YCV30BYynTAgvK65w47Y=;
-        b=et1XkaMavR3Kce8/efo37RhnUGmzWg+sVQi824OfRYkwwwKFEOEJge1k0p9oh38A95
-         2nvHjNnvKieqfblT4P1iFKj050qgYyVNfNYM7Vs7Qpaj1hL+1gU3MKBLJrt5VYld2lgQ
-         Y9ySV4YzAYu8WT3nHbbCwY37TOmsmZyxU6fqlLA8C/LQC8bnvFyAaiU5FdzmWru7SOY9
-         htzFYs52udpNP8JciP4o3u5uDXETgiCqEJs+HPK99uU1rHHRlLdaQpdYUUrohL9MvN6m
-         ymBMyFmXNDg6rHtX/K+z9BeWNLD2cXorThk9OxnxCYZbDHTJVpYo+TkFeHHatWFugyWb
-         KAFw==
+        Sun, 10 Jan 2021 14:45:28 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1610307841;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=f1dYfoWP3G2nAzxG7PaOeZ2GC7vIthKJOgs5Vk0jAI8=;
+        b=NwCD4UdQOiOZKc8CaET8tJXP63OXE+mwXGE+EQDsdtR4lhPt53mhIAWLzpps9JPwG/33dM
+        k/GwWBa6sDCvQwfpdPMpNmwVFnEJajK5WKF/N6x9wbJiSHdchwR/QhAU6boxLatBWXaAPf
+        A6uAhjaK9wNOn52OIFQe/6SoXozqEE4=
+Received: from mail-io1-f72.google.com (mail-io1-f72.google.com
+ [209.85.166.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-510-wqjxfeZOOUqcokNvvlvPug-1; Sun, 10 Jan 2021 14:43:59 -0500
+X-MC-Unique: wqjxfeZOOUqcokNvvlvPug-1
+Received: by mail-io1-f72.google.com with SMTP id t23so11198070ioh.0
+        for <linux-kernel@vger.kernel.org>; Sun, 10 Jan 2021 11:43:59 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=I52KVXRoRWFS2xNuCU7qX07YCV30BYynTAgvK65w47Y=;
-        b=Fs9ruaNRXEhC5LrqU6vOTNm+Uw7hRn/qvm7joFZ7l9IawvToFxb6DF3RqMazYn501Y
-         caZ4v5Nf6eHrQHJkEGJqjYDxq5Fs7qnlBYt49KnAY4WEjHQwAhxKMhRRAtgoCKM0d+bf
-         R1+OEURyyN98d1FMHAJ5f45LlWdN7hRzDpptAhEL+sKwMM0EXll7JdF9Hp0B++pXA2rl
-         ROUIdGSv/+jLvxbBSCD8sAUVZ9MyUpjk9VyvfZABopXH5UVpZiZW4xNGim3VNJ/56Quh
-         GsyRHNKLoJhe4chvfCx5DQw7vBVfiLZDOHi/gEplIS5mUPThS+LSbdI5mOScqxgoY5cB
-         5h5g==
-X-Gm-Message-State: AOAM532WCdxSHo1qYG6XIym1COtFq3NyYOOavS/7S7Xuz6qipmraP4Z/
-        Szebn/KYe9bA3e1CZ1aHPGxNp1bnw07w/Jc9FmxEmQ==
-X-Google-Smtp-Source: ABdhPJyV0+I3TSxXiainTzHb4F0+/RU6U5onC7zlRc56humnIx8ItDkCN/DWSBdUQhyalpv+uHUyQDPKQavccEBA4nI=
-X-Received: by 2002:a05:651c:205b:: with SMTP id t27mr6154964ljo.368.1610307311065;
- Sun, 10 Jan 2021 11:35:11 -0800 (PST)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=f1dYfoWP3G2nAzxG7PaOeZ2GC7vIthKJOgs5Vk0jAI8=;
+        b=iK3Z1/5urjlvxFO3FVkFgZUvlggy11XYxX/HM57NSHOXpT/+Sg3HttaWGeMWndkc6V
+         mjyltnUWhtIJOa7NXtnp1VvQQLzvFCT79bFTGfUtB9n2WWA/KepWFuURd1ohlApvhtfJ
+         u5vfraLT1NBBo7nX5mq25O3EOXj/olx8gtbVzww6CHXzRQ2by8BJpxjJ0lSwYA0xs1Wf
+         Oifqk589fCTU02Azq5Sl1Ai3ZqsV7wOssMDE46Y0WDg0pSlvaxZHb/d7oKRdcvC0W+HR
+         5cZDE894wVf+NrQaftlEonq17NehKTzYBTzM2hghsU+eE0cEyq7B6o5+oXdHSEvg1dV1
+         i/cg==
+X-Gm-Message-State: AOAM532IChItV4K8FCKxXhYbZTbRsVaVQxLK/JhQOzjEm8W0oBe3ytEL
+        B3OCJ9jDQullZtnbmOoJAttuBaKTRMRB0y7QTjoDtiW100/mS8yHFN60Di7XjmzGVZlJAWSUJEW
+        8VH+YALk7f8gINT7Ik1a3UWnT
+X-Received: by 2002:a92:418d:: with SMTP id o135mr13296760ila.213.1610307838407;
+        Sun, 10 Jan 2021 11:43:58 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJwtrhrsF/kYCnIjUyqnRA4Oe36UpBrov9xC91eYfAlLOBBdxkH7wwiDRRctSnShZLYmp/aKag==
+X-Received: by 2002:a92:418d:: with SMTP id o135mr13296744ila.213.1610307838181;
+        Sun, 10 Jan 2021 11:43:58 -0800 (PST)
+Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
+        by smtp.gmail.com with ESMTPSA id 17sm7030271ilt.15.2021.01.10.11.43.55
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 10 Jan 2021 11:43:57 -0800 (PST)
+Subject: Re: [PATCH 0/8] FPGA DFL Changes for 5.12
+To:     Moritz Fischer <mdf@kernel.org>
+Cc:     gregkh@linuxfoundation.org,
+        "linux-fpga@vger.kernel.org" <linux-fpga@vger.kernel.org>,
+        linux-kernel@vger.kernel.org, moritzf@google.com,
+        Rikard Falkeborn <rikard.falkeborn@gmail.com>,
+        Zheng Yongjun <zhengyongjun3@huawei.com>,
+        Russ Weight <russell.h.weight@intel.com>,
+        "Gerlach, Matthew" <matthew.gerlach@intel.com>,
+        Sonal Santan <sonal.santan@xilinx.com>,
+        Xu Yilun <yilun.xu@intel.com>,
+        Richard Gong <richard.gong@intel.com>
+References: <20210107043714.991646-1-mdf@kernel.org>
+ <80b29715-aa0a-b2ac-03af-904fc8f8be98@redhat.com>
+ <e1d30642-ce85-b9b7-e8b2-5ad4fe6338e5@redhat.com> <X/sz6lDq8WFzrRUJ@archbook>
+From:   Tom Rix <trix@redhat.com>
+Message-ID: <95af46d6-d123-f610-2f21-6d6de6f248e9@redhat.com>
+Date:   Sun, 10 Jan 2021 11:43:54 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-References: <20210109140204.151340-1-angelogioacchino.delregno@somainline.org>
- <20210109140204.151340-2-angelogioacchino.delregno@somainline.org>
- <CACRpkdbETKnhgR2-T+s3ChY4v-C5ErdPEp2WcMSZHzJ=O-fHig@mail.gmail.com>
- <111b918d-2b43-be81-2dbf-e984750b0ef7@somainline.org> <CACRpkdZXgN91jKBDvf=P5_6ObOaacQa2PGL3-jP1gBW__ZyOaA@mail.gmail.com>
- <744125a7-ffb6-a3f5-70cb-2ab48fcf31b8@somainline.org>
-In-Reply-To: <744125a7-ffb6-a3f5-70cb-2ab48fcf31b8@somainline.org>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Sun, 10 Jan 2021 20:35:00 +0100
-Message-ID: <CACRpkdYmVpEZMruu3UcqiGr2q7xSdTQKmwnu7eq2-MPJte8ATA@mail.gmail.com>
-Subject: Re: [PATCH 1/2] pinctrl: Add driver for Awinic AW9523/B I2C GPIO Expander
-To:     AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@somainline.org>
-Cc:     Mark Brown <broonie@kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        konrad.dybcio@somainline.org, marijn.suijten@somainline.org,
-        martin.botka@somainline.org, phone-devel@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, Rob Herring <robh+dt@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <X/sz6lDq8WFzrRUJ@archbook>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jan 10, 2021 at 3:32 PM AngeloGioacchino Del Regno
-<angelogioacchino.delregno@somainline.org> wrote:
 
-> So, I've retried some basic usage of the regcache, relevant snippets here:
-> static bool aw9523_volatile_reg(struct device *dev, unsigned int reg)
-> {
+On 1/10/21 9:05 AM, Moritz Fischer wrote:
+> Tom,
 >
->         return reg == AW9523_REG_IN_STATE(0) ||
->                reg == AW9523_REG_IN_STATE(AW9523_PINS_PER_PORT) ||
->                reg == AW9523_REG_CHIPID;
-> }
-(...)
-> Since REG_IN_STATE is used to read the GPIO input level, it's not
-> cacheable,
+> On Sun, Jan 10, 2021 at 07:46:29AM -0800, Tom Rix wrote:
+>> On 1/7/21 8:09 AM, Tom Rix wrote:
+>>> On 1/6/21 8:37 PM, Moritz Fischer wrote:
+>>>> This is a resend of the previous (unfortunately late) patchset of
+>>>> changes for FPGA DFL.
+>>> Is there something I can do to help ?
+>>>
+>>> I am paid to look after linux-fpga, so i have plenty of time.
+>>>
+>>> Some ideas of what i am doing now privately i can do publicly.
+>>>
+>>> 1. keep linux-fpga sync-ed to greg's branch so linux-fpga is normally in a pullable state.
+> Is it not? It currently points to v5.11-rc1. If I start applying patches
+> that require the changes that went into Greg's branch I can merge.
 
-Fair enough.
+I mean the window between when we have staged patches and when they go into Greg's branch.
 
-> then CHIPID was set as not cacheable for safety: that may be
-> avoided, but that may make no sense.. since it's a one-time readout for
-> init putposes, it'd be useless to keep it cached.
+We don't have any now, maybe those two trival ones.
 
-I guess.
+Since Greg's branch moves much faster than ours, our staging branch needs to be rebased regularly until its merge.
 
-> Then, the set_bit/clear_bit in aw9523_irq_mask(), aw9523_irq_unmask were
-> replaced with calls to regmap_update_bits_async, example:
+There are no outstanding fixes so all changes would go to -next.
+
+>>> 2. an in-flight dev branch for the outstanding patches 
+>> I have setup these branches based on Greg's char-misc-next
+>>
+>> fpga-next, which is char-misc-next base for fpga-testing
+>>
+>> fpga-testing, all the in-flight patches that would apply with automatic merge conflict resolution
+>>
+>> These are respectively
+>>
+>> https://github.com/trixirt/linux-fpga/tree/fpga-next
+>>
+>> https://github.com/trixirt/linux-fpga/tree/fpga-testing
+> Feel free to have your own repos/branches etc, but I'd like to keep the
+> offical trees on kernel.org.
+Is there a way for me to move these to kernel.org ?
 >
->         regmap_update_bits_async(awi->regmap,
->                                  AW9523_REG_INTR_DIS(d->hwirq),
->                                  BIT(n), BIT(n));
+> Tbh I'd much rather see the patchwork instance be cleaned up if you want
+> to do stuff.
+Please point me at the wreckage and I will clean it up.
+>>
+>> There are two trivial changes, that could go to 5.12 now.
+>>
+>> fpga: dfl: fme: Constify static attribute_group structs
+>>
+>> fpga: Use DEFINE_SPINLOCK() for spinlock
+>>
+>> respectively
+>>
+>> https://lore.kernel.org/linux-fpga/20210108235414.48017-1-rikard.falkeborn@gmail.com/
+>>
+>> https://lore.kernel.org/linux-fpga/20201228135135.28788-1-zhengyongjun3@huawei.com/
+> I was going to pick them up monday ...
+>>
+>> There are a couple of patchsets that conflict
+>>
+>> https://lore.kernel.org/linux-fpga/20210105230855.15019-7-russell.h.weight@intel.com/
+>>
+>> https://lore.kernel.org/linux-fpga/20201203171548.1538178-3-matthew.gerlach@linux.intel.com/
+> Conflict between what and what?
+
+There are basic git am ... applying problems.
+
+By having a -testing branch it is easier to see where the conficts with all the outstanding patchsets.
+
+>  
+>> And the xilinx patchset
+>>
+>> https://lore.kernel.org/linux-fpga/20201217075046.28553-1-sonals@xilinx.com/
+>>
+>> Which is being split/worked on offline.
+> I'm not sure what that means.
+
+Don't worry about this until a new patchset lands.
+
+Tom
+
+>>
+>> If I have missed any patchset, poke me.
+>>
+>> Tom
+> - Moritz
 >
-> Where of course the value is either BIT(n) or 0 for mask and unmask
-> respectively.
-> Also, the bus_sync_unlock callback was changed as follows:
->
-> static void aw9523_irq_bus_sync_unlock(struct irq_data *d)
->
-> {
->       struct aw9523 *awi = gpiochip_get_data(irq_data_get_irq_chip_data(d));
->       regcache_mark_dirty(awi->regmap);
->       regcache_sync_region(awi->regmap, AW9523_REG_INTR_DIS(0),
->                            AW9523_REG_INTR_DIS(AW9523_PINS_PER_PORT));
->        mutex_unlock(&awi->irq->lock);
-(...)
-> One of the biggest / oddest issues that I get when trying to use
-> regcache is that I'm getting badbadbad scheduling while atomic warnings
-> all over and I don't get why, since regcache_default_sync is just
-> calling _regmap_write, which is exactly what (non _prefix) regmap_write
-> also calls...
 
-OK that is the real problem to solve then.
-
-> As a reference, this is one out of "many" (as you can imagine) stacktraces:
->
-> <3>[    1.061428] BUG: scheduling while atomic: kworker/3:1/119/0x00000000
-(...)
-> <4>[    1.063134]  wait_for_completion_timeout+0x8c/0x110
-> <4>[    1.063257]  qup_i2c_wait_for_complete.isra.18+0x1c/0x80
-> <4>[    1.063429]  qup_i2c_xfer_v2_msg+0x2d4/0x3f0
-> <4>[    1.063543]  qup_i2c_xfer_v2+0x290/0xa28
-> <4>[    1.063652]  __i2c_transfer+0x16c/0x380
-> <4>[    1.063798]  i2c_transfer+0x5c/0x138
-> <4>[    1.063903]  i2c_transfer_buffer_flags+0x58/0x80
-> <4>[    1.064060]  regmap_i2c_write+0x1c/0x50
-> <4>[    1.064168]  _regmap_raw_write_impl+0x35c/0x688
-> <4>[    1.064285]  _regmap_bus_raw_write+0x64/0x80
-> <4>[    1.064440]  _regmap_write+0x58/0xa8
-> <4>[    1.064545]  regcache_default_sync+0xcc/0x1a0
-> <4>[    1.064660]  regcache_sync_region+0xdc/0xe8
-> <4>[    1.064811]  aw9523_irq_bus_sync_unlock+0x30/0x48
-> <4>[    1.064931]  __setup_irq+0x798/0x890
-> <4>[    1.065034]  request_threaded_irq+0xe0/0x198
-> <4>[    1.065188]  devm_request_threaded_irq+0x78/0xf8
-> <4>[    1.065311]  gpio_keyboard_probe+0x2a8/0x468
-
-scheduling while atomic happens when this trace gets called with interrupts
-disabled, usually because someone has taken a spinlock.
-
-Looking in __setup_irq() it looks safe.
-
-I would turn on lock debugging (lockdep) and see if I can find it that way.
-
-Yours,
-Linus Walleij
