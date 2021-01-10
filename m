@@ -2,191 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CBF2E2F0500
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Jan 2021 04:58:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D48022F0503
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Jan 2021 04:59:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726410AbhAJD5y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Jan 2021 22:57:54 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48110 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726062AbhAJD5x (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Jan 2021 22:57:53 -0500
-Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03E32C061786
-        for <linux-kernel@vger.kernel.org>; Sat,  9 Jan 2021 19:57:12 -0800 (PST)
-Received: by mail-ej1-x635.google.com with SMTP id x16so19925195ejj.7
-        for <linux-kernel@vger.kernel.org>; Sat, 09 Jan 2021 19:57:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=cV8ZqZdlJCrqMkTrujQl9EAYyHQiNVsrSGFMRnZRJxw=;
-        b=eRAa1kQCQANkeqLwLL3/tJy2lwSmtWHajnrcMYSJ5nN7o46BCeUw9zUVaxBi9eifOH
-         4n3qby9mFGgnOJUzJDVcvsK7YndJvWNIqhupAk8zKFJEYSwhMiPIXqgPAdTwcsByyFdr
-         RPMJOy9Z0j1BumyB3nXDXFy4/7VPYYJbf5R8w=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=cV8ZqZdlJCrqMkTrujQl9EAYyHQiNVsrSGFMRnZRJxw=;
-        b=QguLhQpEin+ZoyWk6goKyi3zRuRuVu2mgWZ6GrJaiNJiHvtm4l2BmBo7JHvsouvMBu
-         6nPdZPNZJ0ckpduHby6So4XswpyISqCJ3Jlkq81ssG0DHK267sPpklMycZPjUwvTFYfs
-         WxBlf7w4Cvx8+t1T51kMm8t06C///4VJEI4waKRsyGeR98RQZdPXGX+ABBV1SUbh/9pl
-         e05o9gTofg2ix+oP8A7KgCLx9wgljeABCVCs1OUCCp0qwqw/iiHz9r9n83HATMSbrev/
-         wPfqJ9ky+RU+pltSzhLpOviFtmGdlf/HX0br2X46EWQjpaoIFO4lxmmBmA3UJ2HcGTrL
-         ajxg==
-X-Gm-Message-State: AOAM533C5PjaI5gstK1Un3hzCRqpqcAlp4NIxVGJHwr70DaMLxXGyGOn
-        KMAePnywUaQkMyYuOuRXOJmSR0fikZy6wQ==
-X-Google-Smtp-Source: ABdhPJzNQdsDUokQLyHiqe/JJHhG/7p5s6chIlpmv0yz74vGbryWYf5Ts1yZXI15avLwrq/XJtMfeA==
-X-Received: by 2002:a17:906:fa12:: with SMTP id lo18mr7349526ejb.354.1610251031031;
-        Sat, 09 Jan 2021 19:57:11 -0800 (PST)
-Received: from mail-ed1-f52.google.com (mail-ed1-f52.google.com. [209.85.208.52])
-        by smtp.gmail.com with ESMTPSA id i24sm5282139ejx.31.2021.01.09.19.57.10
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 09 Jan 2021 19:57:10 -0800 (PST)
-Received: by mail-ed1-f52.google.com with SMTP id b2so15346344edm.3
-        for <linux-kernel@vger.kernel.org>; Sat, 09 Jan 2021 19:57:10 -0800 (PST)
-X-Received: by 2002:a05:6512:338f:: with SMTP id h15mr4358383lfg.40.1610250728515;
- Sat, 09 Jan 2021 19:52:08 -0800 (PST)
+        id S1726566AbhAJD7f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Jan 2021 22:59:35 -0500
+Received: from mail.kernel.org ([198.145.29.99]:35000 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726447AbhAJD7b (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 9 Jan 2021 22:59:31 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5E65723118;
+        Sun, 10 Jan 2021 03:58:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1610251130;
+        bh=C/W4mAMHGOQEJFNc8A0ODhMjqrOG4pFNWO9ISfCS7NA=;
+        h=From:To:Cc:Subject:Date:From;
+        b=Y93JeKdyAKyhGB4P8WXWuhbnwq7A9jr7SK9zh1DWVEhlrO1kpsqDkKFNP/RFU1Vkf
+         uFGupvNgAEQessF2vacB3nhjt2s8gP6HIUPdiHrqat5kI9zAY1LFR1y9UwyhSOtOVe
+         IXV9GSyySjh9JtG3idR/WXgW1RC4DSO3l9jzpVT/NNhqlSBKOpEZt1orETVxujLTuo
+         jTGIKz0rVWUfo4juDW0W6cz8lRPfn/4IczG/A0TQ0oYJphIMaADnyl+PTh/u/o4wA8
+         OnLh8zkr2TfIreFPNAUHEdHCj+qw9d6aLWXqNu7ZxsR8VnjQxxQo+VMxYTb+8pjOiV
+         X1Tf0PwfrxNqQ==
+Received: by wens.tw (Postfix, from userid 1000)
+        id F0B055FB6A; Sun, 10 Jan 2021 11:58:46 +0800 (CST)
+From:   Chen-Yu Tsai <wens@kernel.org>
+To:     Rob Herring <robh@kernel.org>, Heiko Stuebner <heiko@sntech.de>
+Cc:     Chen-Yu Tsai <wens@csie.org>, linux-rockchip@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org
+Subject: [PATCH 0/3] arm64: rockchip: rk3328: Add Radxa ROCK Pi E
+Date:   Sun, 10 Jan 2021 11:58:43 +0800
+Message-Id: <20210110035846.9155-1-wens@kernel.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-References: <20210110004435.26382-1-aarcange@redhat.com> <CAHk-=wghqNywtf=sRv_5FmG=+hPGqj=KWakw34tNeoZ1wPuaHg@mail.gmail.com>
- <CAHk-=wj5=1DKbQut1-21EwQbMSghNL3KOSd82rNrBhuG9+eekA@mail.gmail.com> <X/prosulFrEoNnoF@redhat.com>
-In-Reply-To: <X/prosulFrEoNnoF@redhat.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Sat, 9 Jan 2021 19:51:52 -0800
-X-Gmail-Original-Message-ID: <CAHk-=wjZTMsv0_GOyQpLRk_5U1r5W8e21f8sV0jykK=z47hjGQ@mail.gmail.com>
-Message-ID: <CAHk-=wjZTMsv0_GOyQpLRk_5U1r5W8e21f8sV0jykK=z47hjGQ@mail.gmail.com>
-Subject: Re: [PATCH 0/1] mm: restore full accuracy in COW page reuse
-To:     Andrea Arcangeli <aarcange@redhat.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Yu Zhao <yuzhao@google.com>, Andy Lutomirski <luto@kernel.org>,
-        Peter Xu <peterx@redhat.com>,
-        Pavel Emelyanov <xemul@openvz.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Mike Rapoport <rppt@linux.vnet.ibm.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Will Deacon <will@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Hugh Dickins <hughd@google.com>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Matthew Wilcox <willy@infradead.org>,
-        Oleg Nesterov <oleg@redhat.com>, Jann Horn <jannh@google.com>,
-        Kees Cook <keescook@chromium.org>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>, Jan Kara <jack@suse.cz>,
-        Kirill Tkhai <ktkhai@virtuozzo.com>,
-        Nadav Amit <nadav.amit@gmail.com>, Jens Axboe <axboe@kernel.dk>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jan 9, 2021 at 6:51 PM Andrea Arcangeli <aarcange@redhat.com> wrote:
->
-> I just don't see the simplification coming from
-> 09854ba94c6aad7886996bfbee2530b3d8a7f4f4. Instead of checking
-> page_mapcount above as an optimization, to me it looks much simpler to
-> check it in a single place, in do_wp_page, that in addition of
-> optimizing away the superfluous copy, would optimize away the above
-> complexity as well.
+From: Chen-Yu Tsai <wens@csie.org>
 
-Here's the difference:
+Hi everyone,
 
- (a) in COW, "page_mapcount()" is pure and utter garbage, and has zero meaning.
+This series adds support for the Radxa ROCK Pi E. This is a router
+oriented SBC based on Rockchip's RK3328 SoC. As the official wiki page
+puts it, "E for Ethernets".
 
-Why? Because MAPCOUNT DOES NOT MATTER FOR COW.
+It features the RK3328 SoC, gigabit and fast Ethernet RJ45 ports, both
+directly served by Ethernet controllers in the SoC, a USB 3.0 host port,
+a power-only USB type-C port, a 3.5mm headphone jack for audio output,
+two LEDs, a 40-pin Raspberry Pi style GPIO header, and optional WiFi+BT
+and PoE header.
 
-COW is about "I'm about to write to this page, and that means I need
-an _exclusive_ page so that I don't write to a page that somebody else
-is using".
+The board comes in multiple configurations, differing in the amount of
+onboard RAM, the level of WiFi+BT (none, 802.11n 2.4GHz, or 802.11ac
+2.4 GHz & 5 GHz), and whether PoE is supported or not. These variants
+can all share the same device tree. Currently, the 802.11ac chip
+lacks an in-kernel driver.
 
-Can you admit that fundamental fact?
+The USB 2.0 OTG controller is available on the 40-pin header. This is
+not enabled in the device tree, since it is possible to use it in a
+host-only configuration, or in OTG mode with an extra pin from the
+header as the ID pin.
 
-Notice how "page_mapcount()" has absolutely NOTHING to do with
-"exclusive page". There are lots of other ways the page can be used
-aside from mapcount. The page cache may have a reference to the page.
-Somebody that did a GUP may have a reference to the page.
+The device tree is based on the one of the Rock64, with various parts
+modified to match the ROCK Pi E, and some parts updated to newer styles,
+such as the gmac2io node's mdio sub-node.
 
-So what actually matters at COW time? The only thing that matters is
-"am I the exclusive owner". And guess what? We have a count of page
-references. It's "page_count()". That's *EXACTLY* the thing that says
-"are there maybe other references to this page".
+Patch 1 adds the clock_in_out property to the gmac2phy node. This would
+always have the same setting for gmac2phy, which uses an integrated PHY
+in RMII mode. Having this set by default makes enabling gmac2phy at the
+board level simpler.
 
-In other words, COW needs to use page_count(). It really is that easy.
-End of story.
+Patch 2 adds a compatible string for this board to the list of Rockchip
+based devices.
 
-So, given that, why do I then do
+Patch 3 adds a device tree file for this board. This is based on the
+one for the Rock64, with many modifications to adapt it to the new
+board, as well as style updates.
 
-> +     if (page_mapcount(page) != 1)
-> +             return false;
+Please have a look.
 
-in my patch, when I just told you that "page_mapcount()" is irrelevant for COW?
 
-Guess what? The above isn't about COW. The above isn't about whether
-we need to do a copy in order to be able to write to the page without
-anybody else being affected by it.
+Regards
+ChenYu
 
-No, at fork time, and at this clear_refs time, the question is
-entirely different. The question is not "Do I have exclusive access to
-the page", but it is "Did I _already_ made sure that I have exclusive
-access to the page because I pinned it"?
+Chen-Yu Tsai (3):
+  arm64: dts: rockchip: rk3328: Add clock_in_out property to gmac2phy
+    node
+  dt-bindings: arm: rockchip: Add Radxa ROCK Pi E
+  arm64: dts: rockchip: rk3328: Add Radxa ROCK Pi E
 
-See how different the question is?
+ .../devicetree/bindings/arm/rockchip.yaml     |   5 +
+ arch/arm64/boot/dts/rockchip/Makefile         |   1 +
+ .../boot/dts/rockchip/rk3328-rock-pi-e.dts    | 369 ++++++++++++++++++
+ arch/arm64/boot/dts/rockchip/rk3328.dtsi      |   1 +
+ 4 files changed, 376 insertions(+)
+ create mode 100644 arch/arm64/boot/dts/rockchip/rk3328-rock-pi-e.dts
 
-Because *if* you have done a pinned COW for soem direct-IO read, and
-*if* that page is dirty, then you know it's mapped only in your
-address space. You're basically doing the _reverse_ of the COW test,
-and asking yourself "is this my own private pinned page"?
+-- 
+2.29.2
 
-And then it's actually perfectly sane to do a check that says
-"obviously, if somebody else has this page mapped, then that's not the
-case".
-
-See?
-
-For COW, "page_mapcount()" is pure and utter garbage, and entirely
-meaningless. How many places it's mapped in doesn't matter. You may
-have to COW even if it's only mapped in your address space (page
-cache, GUP, whatever).
-
-But for "did I already make this exclusive", then it's actually
-meaningful to say "is it mapped somewhere else". We know it has other
-users - that "page_may_be_pinned()" in fact *guarantees* that it has
-other users. But we're double-checking that the other users aren't
-other mappings.
-
-That said, I did just realize that that "page_mapcount()" check is
-actually pointless.
-
-Because we do have a simpler one. Instead of checking whether all
-those references that made us go "page_might_be_pinned()" aren't other
-mappings, the simple check for "pte_writable()" would already have
-told us that we had already done the COW.
-
-So you are actually right that the page_mapcount() test in my patch is
-not the best way to check for this. By the time we see
-"page_may_be_pinned()", we might as well just say "Oh, it's a private
-mapping and the pte is already writable, so we know we were the
-exclusive mapper, because COW and fork() already guarantee that".
-
-> And I won't comment if it's actually safe to skip random pages or
-> not. All I know is for mprotect and uffd-wp, definitely the above
-> approach wouldn't work.
-
-Why do you say that?
-
-You say ":definitely know", but I think you're full of it.
-
-The fact is, if you have a pinned page, why wouldn't we say "you can't
-turn it read-only"?
-
-It's pinned in the VM address space - and it's pinned writable. Simple
-and clear semantics. You can *remove* it, but you can't change the
-pinning.
-
-              Linus
