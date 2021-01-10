@@ -2,249 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F1BD2F08E6
+	by mail.lfdr.de (Postfix) with ESMTP id 9DFE92F08E7
 	for <lists+linux-kernel@lfdr.de>; Sun, 10 Jan 2021 18:57:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726768AbhAJRyx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Jan 2021 12:54:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56568 "EHLO
+        id S1726868AbhAJRzq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Jan 2021 12:55:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56754 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726495AbhAJRyw (ORCPT
+        with ESMTP id S1726525AbhAJRzq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Jan 2021 12:54:52 -0500
-Received: from mail-qt1-x849.google.com (mail-qt1-x849.google.com [IPv6:2607:f8b0:4864:20::849])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 801A2C061794
-        for <linux-kernel@vger.kernel.org>; Sun, 10 Jan 2021 09:54:12 -0800 (PST)
-Received: by mail-qt1-x849.google.com with SMTP id p20so11760289qtq.3
-        for <linux-kernel@vger.kernel.org>; Sun, 10 Jan 2021 09:54:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:message-id:mime-version:subject:from:to:cc;
-        bh=PMmvRaQ36fTjEgj6kVCX++Tln5tlagkABbPEgCbdZho=;
-        b=cJsZKMaB3JE5+MUy0LLtyp7E/B0xRpdgO1gMH+09nzW6KLmnjz+a+TzXB1D+eMJHJe
-         k5+pmAs8RQXMZXqr3wvSI98Cg97ua5OjRHWp5jQ7io1yhha42XGV5f5eq4eDSvLT4voh
-         uGbOMwTz4kGj/4zfEsv3XbvmaY/gULHWe2vZzVM9WfbGiuMiNI2WkdUFKUfPHwhWgf75
-         0RQlkUzyhr0UrdFJY/Db3sA64xrWooDXuW7OMdVRDoS6PfuQ8BiUS+yeAdKhSiE5fs9V
-         MJsF8Gj4AgYR6D/4PbjYoVbNuIfWD4x62+398Uh4URilIe4aPWLEPrHqwNtCFhx2ZIcy
-         tIwA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
-         :to:cc;
-        bh=PMmvRaQ36fTjEgj6kVCX++Tln5tlagkABbPEgCbdZho=;
-        b=ZieU0+ckubgWJNIEjPrUtUWx9WwjsRKc3JWGWS0bUZMUlIrlmWQyIsRAHVa1AQa34Z
-         EeOTnE2/LeZ8Fmm8NlyJPk+H+S4qwNxVltEdqU94Pxczi34Hl2wp7DIxiXLyxkhK7j6k
-         JLgvh0WQlArZ2HuuSAfU5PaP+Gz/FPL774J/RbjG81Sl2uxZM+jbVj7XShz1XGJbbLBu
-         NP8gPGt4djwEsmbgfV0xJQvLfCOEdbYpeGpnY9jVoPwcB2dxsh9hyM5rxv0sr0htdvPa
-         mD3w3Thp+oIFEKDKF+aEoEEhmnWOQBCo/3ogAiIZcMZNX2OwgsT4RJuwGvCj+mvuXp6K
-         +9TA==
-X-Gm-Message-State: AOAM531VyGAbB1ewpAiarIkLMuarJ0s6GajuqPSK+/nCj1LBIC0Ch82N
-        HiYc5Q0QZfn7KWh5h7bL/Dc1cYPsIFFe6vo=
-X-Google-Smtp-Source: ABdhPJxxFxEdB7Ve+ZXR4qEY23p/VHRY1z0BnWOv1bfqqOQkaaJYI3FMOfKYAElPSQl2BD0CJTyX3bDHWiyrCp8=
-Sender: "saravanak via sendgmr" <saravanak@saravanak.san.corp.google.com>
-X-Received: from saravanak.san.corp.google.com ([2620:15c:2d:3:7220:84ff:fe09:fedc])
- (user=saravanak job=sendgmr) by 2002:a0c:f812:: with SMTP id
- r18mr12545001qvn.39.1610301251482; Sun, 10 Jan 2021 09:54:11 -0800 (PST)
-Date:   Sun, 10 Jan 2021 09:54:07 -0800
-Message-Id: <20210110175408.1465657-1-saravanak@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.30.0.284.gd98b1dd5eaa7-goog
-Subject: [PATCH v4] driver core: Fix device link device name collision
-From:   Saravana Kannan <saravanak@google.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Saravana Kannan <saravanak@google.com>
-Cc:     stable@vger.kernel.org, Michael Walle <michael@walle.cc>,
-        kernel-team@android.com, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        Sun, 10 Jan 2021 12:55:46 -0500
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC428C061786;
+        Sun, 10 Jan 2021 09:55:05 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=tpKVS0EhYiFmJcF9wK3IHeZQn6yJspAVmUyNEvFs4T0=; b=VMUjiqXvaxlvSpZ+tcJQSLxhs
+        tQNhcgWlOXRWvOdy4JVH3XwtLsB8TTCjZqNdb2cj36r4xmJOq/I+Dfok8LD0Df1dYER+s3KPtgPV9
+        lY1nN0XH0qaEs+FYI69raWB15FsFW6QDHX+ieDL0HDv2CZssaU6VZCWjaqXwPCAdihCLTRr3srPJ4
+        Qon0d/MJKKm95e8v+ce05dLr8u4J4D1wcni8z5lH1/fRvuv21km3DVCdvI5nfG+uP9xnnTle71zGw
+        QOJ+W4u+JLwf2tYBzelbIwlqt5hKhqh2UkNI4Upc2J6EI/7dKOsTT+yrxXeeCYwANQJAfhN1Lm9fF
+        QZnhyOHxQ==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:46238)
+        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1kyevf-00063j-4p; Sun, 10 Jan 2021 17:55:03 +0000
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1kyevc-0004Oa-Ji; Sun, 10 Jan 2021 17:55:00 +0000
+Date:   Sun, 10 Jan 2021 17:55:00 +0000
+From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
+To:     stefanc@marvell.com
+Cc:     netdev@vger.kernel.org, thomas.petazzoni@bootlin.com,
+        davem@davemloft.net, nadavh@marvell.com, ymarkman@marvell.com,
+        linux-kernel@vger.kernel.org, kuba@kernel.org, mw@semihalf.com,
+        andrew@lunn.ch, atenart@kernel.org
+Subject: Re: [PATCH RFC net-next  03/19] net: mvpp2: add CM3 SRAM memory map
+Message-ID: <20210110175500.GG1551@shell.armlinux.org.uk>
+References: <1610292623-15564-1-git-send-email-stefanc@marvell.com>
+ <1610292623-15564-4-git-send-email-stefanc@marvell.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1610292623-15564-4-git-send-email-stefanc@marvell.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Sender: Russell King - ARM Linux admin <linux@armlinux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The device link device's name was of the form:
-<supplier-dev-name>--<consumer-dev-name>
+On Sun, Jan 10, 2021 at 05:30:07PM +0200, stefanc@marvell.com wrote:
+> +	} else {
+> +		priv->sram_pool = of_gen_pool_get(dn, "cm3-mem", 0);
+> +		if (!priv->sram_pool) {
+> +			dev_warn(&pdev->dev, "DT is too old, TX FC disabled\n");
 
-This can cause name collision as reported here [1] as device names are
-not globally unique. Since device names have to be unique within the
-bus/class, add the bus/class name as a prefix to the device names used to
-construct the device link device name.
+I don't see anything in this patch that disables TX flow control, which
+means this warning message is misleading.
 
-So the devuce link device's name will be of the form:
-<supplier-bus-name>:<supplier-dev-name>--<consumer-bus-name>:<consumer-dev-name>
-
-[1] - https://lore.kernel.org/lkml/20201229033440.32142-1-michael@walle.cc/
-
-Cc: stable@vger.kernel.org
-Fixes: 287905e68dd2 ("driver core: Expose device link details in sysfs")
-Reported-by: Michael Walle <michael@walle.cc>
-Tested-by: Michael Walle <michael@walle.cc>
-Signed-off-by: Saravana Kannan <saravanak@google.com>
----
-v1:
-- Fixed the collision in the device link device name.
-v1 -> v2:
-- Tried to fixed collision in the supplier: and consumer: symlinks
-v2 -> v3:
-- Fixed the truncation of the symlink names caused by v2.
-v3 -> v4:
-- Did all the above fixes for the symlink removal path.
-
- Documentation/ABI/testing/sysfs-class-devlink |  4 +--
- .../ABI/testing/sysfs-devices-consumer        |  5 ++--
- .../ABI/testing/sysfs-devices-supplier        |  5 ++--
- drivers/base/core.c                           | 27 ++++++++++---------
- include/linux/device.h                        | 12 +++++++++
- 5 files changed, 35 insertions(+), 18 deletions(-)
-
-diff --git a/Documentation/ABI/testing/sysfs-class-devlink b/Documentation/ABI/testing/sysfs-class-devlink
-index b662f747c83e..8a21ce515f61 100644
---- a/Documentation/ABI/testing/sysfs-class-devlink
-+++ b/Documentation/ABI/testing/sysfs-class-devlink
-@@ -5,8 +5,8 @@ Description:
- 		Provide a place in sysfs for the device link objects in the
- 		kernel at any given time.  The name of a device link directory,
- 		denoted as ... above, is of the form <supplier>--<consumer>
--		where <supplier> is the supplier device name and <consumer> is
--		the consumer device name.
-+		where <supplier> is the supplier bus:device name and <consumer>
-+		is the consumer bus:device name.
- 
- What:		/sys/class/devlink/.../auto_remove_on
- Date:		May 2020
-diff --git a/Documentation/ABI/testing/sysfs-devices-consumer b/Documentation/ABI/testing/sysfs-devices-consumer
-index 1f06d74d1c3c..0809fda092e6 100644
---- a/Documentation/ABI/testing/sysfs-devices-consumer
-+++ b/Documentation/ABI/testing/sysfs-devices-consumer
-@@ -4,5 +4,6 @@ Contact:	Saravana Kannan <saravanak@google.com>
- Description:
- 		The /sys/devices/.../consumer:<consumer> are symlinks to device
- 		links where this device is the supplier. <consumer> denotes the
--		name of the consumer in that device link. There can be zero or
--		more of these symlinks for a given device.
-+		name of the consumer in that device link and is of the form
-+		bus:device name. There can be zero or more of these symlinks
-+		for a given device.
-diff --git a/Documentation/ABI/testing/sysfs-devices-supplier b/Documentation/ABI/testing/sysfs-devices-supplier
-index a919e0db5e90..207f5972e98d 100644
---- a/Documentation/ABI/testing/sysfs-devices-supplier
-+++ b/Documentation/ABI/testing/sysfs-devices-supplier
-@@ -4,5 +4,6 @@ Contact:	Saravana Kannan <saravanak@google.com>
- Description:
- 		The /sys/devices/.../supplier:<supplier> are symlinks to device
- 		links where this device is the consumer. <supplier> denotes the
--		name of the supplier in that device link. There can be zero or
--		more of these symlinks for a given device.
-+		name of the supplier in that device link and is of the form
-+		bus:device name. There can be zero or more of these symlinks
-+		for a given device.
-diff --git a/drivers/base/core.c b/drivers/base/core.c
-index 25e08e5f40bd..47a6faf1605a 100644
---- a/drivers/base/core.c
-+++ b/drivers/base/core.c
-@@ -456,7 +456,9 @@ static int devlink_add_symlinks(struct device *dev,
- 	struct device *con = link->consumer;
- 	char *buf;
- 
--	len = max(strlen(dev_name(sup)), strlen(dev_name(con)));
-+	len = max(strlen(dev_bus_name(sup)) + strlen(dev_name(sup)),
-+		  strlen(dev_bus_name(con)) + strlen(dev_name(con)));
-+	len += strlen(":");
- 	len += strlen("supplier:") + 1;
- 	buf = kzalloc(len, GFP_KERNEL);
- 	if (!buf)
-@@ -470,12 +472,12 @@ static int devlink_add_symlinks(struct device *dev,
- 	if (ret)
- 		goto err_con;
- 
--	snprintf(buf, len, "consumer:%s", dev_name(con));
-+	snprintf(buf, len, "consumer:%s:%s", dev_bus_name(con), dev_name(con));
- 	ret = sysfs_create_link(&sup->kobj, &link->link_dev.kobj, buf);
- 	if (ret)
- 		goto err_con_dev;
- 
--	snprintf(buf, len, "supplier:%s", dev_name(sup));
-+	snprintf(buf, len, "supplier:%s:%s", dev_bus_name(sup), dev_name(sup));
- 	ret = sysfs_create_link(&con->kobj, &link->link_dev.kobj, buf);
- 	if (ret)
- 		goto err_sup_dev;
-@@ -483,7 +485,7 @@ static int devlink_add_symlinks(struct device *dev,
- 	goto out;
- 
- err_sup_dev:
--	snprintf(buf, len, "consumer:%s", dev_name(con));
-+	snprintf(buf, len, "consumer:%s:%s", dev_bus_name(con), dev_name(con));
- 	sysfs_remove_link(&sup->kobj, buf);
- err_con_dev:
- 	sysfs_remove_link(&link->link_dev.kobj, "consumer");
-@@ -506,7 +508,9 @@ static void devlink_remove_symlinks(struct device *dev,
- 	sysfs_remove_link(&link->link_dev.kobj, "consumer");
- 	sysfs_remove_link(&link->link_dev.kobj, "supplier");
- 
--	len = max(strlen(dev_name(sup)), strlen(dev_name(con)));
-+	len = max(strlen(dev_bus_name(sup)) + strlen(dev_name(sup)),
-+		  strlen(dev_bus_name(con)) + strlen(dev_name(con)));
-+	len += strlen(":");
- 	len += strlen("supplier:") + 1;
- 	buf = kzalloc(len, GFP_KERNEL);
- 	if (!buf) {
-@@ -514,9 +518,9 @@ static void devlink_remove_symlinks(struct device *dev,
- 		return;
- 	}
- 
--	snprintf(buf, len, "supplier:%s", dev_name(sup));
-+	snprintf(buf, len, "supplier:%s:%s", dev_bus_name(sup), dev_name(sup));
- 	sysfs_remove_link(&con->kobj, buf);
--	snprintf(buf, len, "consumer:%s", dev_name(con));
-+	snprintf(buf, len, "consumer:%s:%s", dev_bus_name(con), dev_name(con));
- 	sysfs_remove_link(&sup->kobj, buf);
- 	kfree(buf);
- }
-@@ -737,8 +741,9 @@ struct device_link *device_link_add(struct device *consumer,
- 
- 	link->link_dev.class = &devlink_class;
- 	device_set_pm_not_required(&link->link_dev);
--	dev_set_name(&link->link_dev, "%s--%s",
--		     dev_name(supplier), dev_name(consumer));
-+	dev_set_name(&link->link_dev, "%s:%s--%s:%s",
-+		     dev_bus_name(supplier), dev_name(supplier),
-+		     dev_bus_name(consumer), dev_name(consumer));
- 	if (device_register(&link->link_dev)) {
- 		put_device(consumer);
- 		put_device(supplier);
-@@ -1808,9 +1813,7 @@ const char *dev_driver_string(const struct device *dev)
- 	 * never change once they are set, so they don't need special care.
- 	 */
- 	drv = READ_ONCE(dev->driver);
--	return drv ? drv->name :
--			(dev->bus ? dev->bus->name :
--			(dev->class ? dev->class->name : ""));
-+	return drv ? drv->name : dev_bus_name(dev);
- }
- EXPORT_SYMBOL(dev_driver_string);
- 
-diff --git a/include/linux/device.h b/include/linux/device.h
-index 89bb8b84173e..1779f90eeb4c 100644
---- a/include/linux/device.h
-+++ b/include/linux/device.h
-@@ -609,6 +609,18 @@ static inline const char *dev_name(const struct device *dev)
- 	return kobject_name(&dev->kobj);
- }
- 
-+/**
-+ * dev_bus_name - Return a device's bus/class name, if at all possible
-+ * @dev: struct device to get the bus/class name of
-+ *
-+ * Will return the name of the bus/class the device is attached to.  If it is
-+ * not attached to a bus/class, an empty string will be returned.
-+ */
-+static inline const char *dev_bus_name(const struct device *dev)
-+{
-+	return dev->bus ? dev->bus->name : (dev->class ? dev->class->name : "");
-+}
-+
- __printf(2, 3) int dev_set_name(struct device *dev, const char *name, ...);
- 
- #ifdef CONFIG_NUMA
 -- 
-2.30.0.284.gd98b1dd5eaa7-goog
-
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
