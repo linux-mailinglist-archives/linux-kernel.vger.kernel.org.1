@@ -2,102 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 083952F08A3
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Jan 2021 18:22:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9EAD12F08AB
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Jan 2021 18:22:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726901AbhAJRTg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Jan 2021 12:19:36 -0500
-Received: from mail-oi1-f176.google.com ([209.85.167.176]:36562 "EHLO
-        mail-oi1-f176.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726394AbhAJRTd (ORCPT
+        id S1727002AbhAJRTm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Jan 2021 12:19:42 -0500
+Received: from mail-ot1-f54.google.com ([209.85.210.54]:33918 "EHLO
+        mail-ot1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726394AbhAJRTl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Jan 2021 12:19:33 -0500
-Received: by mail-oi1-f176.google.com with SMTP id 9so17703953oiq.3;
-        Sun, 10 Jan 2021 09:19:17 -0800 (PST)
+        Sun, 10 Jan 2021 12:19:41 -0500
+Received: by mail-ot1-f54.google.com with SMTP id a109so14755828otc.1;
+        Sun, 10 Jan 2021 09:19:25 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
          :message-id;
-        bh=gGLZSHHlGA1PUUYqmOxNID2/4S4mZUn+8nzQlPpNCuA=;
-        b=hkfz1/IOfwdhFP/6RWe6Ju2Zt9Yn7ZdtLvlyIBNJrIc6sf8litNdHJ+gyI4btIvGHE
-         zP0O08L29YT0GtvO+PGFh+6DlX+0lhV/8EyVMJbgtmdSnmyLCE97rQc8JGq3lkEQZmCD
-         0hFrCrldxCc2PPHH3OMh3+WRRK5ZDFH42+YZ6NPaT24XafEXtiK5bm3t5rKB5AXxZAf/
-         RK0lCf/+P2QW6YSulTydY0G6UWL6i6FVLgY8Waft+dTo/hrLL5kXkYABtP7hR1Ig9vI0
-         zz8M3TrBcnuxa1TIhVG3JpuWNheG5aCDFtWOi855SXmapMJZMdr0x2xrewEnf2Mui9sD
-         Kr0w==
-X-Gm-Message-State: AOAM530QOhtni0NlS+sDkAuzKNP6zfLPNcq3zHW9BgK0IAm9KxQhi12B
-        E3YeCK304f2ic+xYaXUxbg==
-X-Google-Smtp-Source: ABdhPJyQrkmoBVKuplZ3vDcBNz2G3gF2OijsJ1+7LAIA/WCgpI94hj1rsqSLFXCbwri5tVWbkmB65Q==
-X-Received: by 2002:aca:ab8c:: with SMTP id u134mr8468312oie.15.1610299131979;
-        Sun, 10 Jan 2021 09:18:51 -0800 (PST)
+        bh=+It8DKP+b5gt+Nl1+4PLMeiYko01W1zgU1hu5LDI+fY=;
+        b=m9SIYc1GmIPXP4//Ely5zs3qEbfqhtHf12XG2GEB1MXWsYh6CyCJyYH3SWdSuL6bXv
+         51CP6ZQzFxookyh9s7n0Z45SjWD59FbnzhbSbsVpyRYt2EsyVxhPvGi9HTj0N5fkSSba
+         LiGQISRikrJBcz5vRD/g+3ni0lKnoBo/6JK+fNiaQ5FxmMKmhag1fXNlAxyrSqDGA345
+         c+ijLmA8JwlzN/dIh4SQKx4NLpvbugkHLnhaLVdxfubd9REROXvZp8nzPfx1wrsWg5uc
+         8Iqu/519fBam9hIh91bvXMw1InSXehmRu+7iecIC3/t31GSc8rJNesg5NCGdiGtD/XP6
+         9GlA==
+X-Gm-Message-State: AOAM531jvo/BNFwmYnBbEEbN2DILtEi3tmTOKay0XRRgN0AQGGBRDQLA
+        EZ5H+hWfolYeFbg+ncR8xJeaSbAynA==
+X-Google-Smtp-Source: ABdhPJwEy7JMj1nwAxUQAdeb+EDsAfyf9t/S3EcEh/fWPnviqi+Z1bnyg9L8xy5eODCN8YSdFT/HHA==
+X-Received: by 2002:a9d:4795:: with SMTP id b21mr8535917otf.65.1610299140487;
+        Sun, 10 Jan 2021 09:19:00 -0800 (PST)
 Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id 63sm3042386otx.2.2021.01.10.09.18.50
+        by smtp.gmail.com with ESMTPSA id 31sm3070386otd.24.2021.01.10.09.18.58
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 10 Jan 2021 09:18:51 -0800 (PST)
-Received: (nullmailer pid 785281 invoked by uid 1000);
+        Sun, 10 Jan 2021 09:18:59 -0800 (PST)
+Received: (nullmailer pid 785279 invoked by uid 1000);
         Sun, 10 Jan 2021 17:18:46 -0000
 From:   Rob Herring <robh@kernel.org>
 To:     AngeloGioacchino Del Regno 
         <angelogioacchino.delregno@somainline.org>
-Cc:     linux-kernel@vger.kernel.org, robh+dt@kernel.org,
-        martin.botka@somainline.org, marijn.suijten@somainline.org,
-        devicetree@vger.kernel.org, linus.walleij@linaro.org,
-        phone-devel@vger.kernel.org, konrad.dybcio@somainline.org,
-        linux-gpio@vger.kernel.org
-In-Reply-To: <20210109140204.151340-3-angelogioacchino.delregno@somainline.org>
-References: <20210109140204.151340-1-angelogioacchino.delregno@somainline.org> <20210109140204.151340-3-angelogioacchino.delregno@somainline.org>
-Subject: Re: [PATCH 2/2] dt-bindings: pinctrl: Add bindings for Awinic AW9523/AW9523B
+Cc:     linux-kernel@vger.kernel.org, martin.botka@somainline.org,
+        broonie@kernel.org, konrad.dybcio@somainline.org,
+        marijn.suijten@somainline.org, agross@kernel.org,
+        phone-devel@vger.kernel.org, devicetree@vger.kernel.org,
+        sumit.semwal@linaro.org, linux-arm-msm@vger.kernel.org,
+        robh+dt@kernel.org, bjorn.andersson@linaro.org, lgirdwood@gmail.com
+In-Reply-To: <20210109132921.140932-5-angelogioacchino.delregno@somainline.org>
+References: <20210109132921.140932-1-angelogioacchino.delregno@somainline.org> <20210109132921.140932-5-angelogioacchino.delregno@somainline.org>
+Subject: Re: [PATCH 4/7] dt-bindings: regulator: qcom-labibb: Document soft start properties
 Date:   Sun, 10 Jan 2021 11:18:46 -0600
-Message-Id: <1610299126.040526.785280.nullmailer@robh.at.kernel.org>
+Message-Id: <1610299126.029858.785278.nullmailer@robh.at.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 09 Jan 2021 15:02:04 +0100, AngeloGioacchino Del Regno wrote:
-> Add bindings for the Awinic AW9523/AW9523B I2C GPIO Expander driver.
+On Sat, 09 Jan 2021 14:29:18 +0100, AngeloGioacchino Del Regno wrote:
+> Document properties to configure soft start and discharge resistor
+> for LAB and IBB respectively.
 > 
 > Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>
 > ---
->  .../pinctrl/awinic,aw9523-pinctrl.yaml        | 111 ++++++++++++++++++
->  1 file changed, 111 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/pinctrl/awinic,aw9523-pinctrl.yaml
+>  .../bindings/regulator/qcom-labibb-regulator.yaml         | 8 ++++++++
+>  1 file changed, 8 insertions(+)
 > 
 
 My bot found errors running 'make dt_binding_check' on your patch:
 
 yamllint warnings/errors:
-./Documentation/devicetree/bindings/pinctrl/awinic,aw9523-pinctrl.yaml:102:1: [error] syntax error: found character '\t' that cannot start any token (syntax)
 
 dtschema/dtc warnings/errors:
-./Documentation/devicetree/bindings/pinctrl/awinic,aw9523-pinctrl.yaml:  while scanning a block scalar
-  in "<unicode string>", line 94, column 5
-found a tab character where an indentation space is expected
-  in "<unicode string>", line 102, column 1
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/pinctrl/awinic,aw9523-pinctrl.yaml: ignoring, error parsing file
-warning: no schema found in file: ./Documentation/devicetree/bindings/pinctrl/awinic,aw9523-pinctrl.yaml
-Traceback (most recent call last):
-  File "/usr/local/bin/dt-extract-example", line 45, in <module>
-    binding = yaml.load(open(args.yamlfile, encoding='utf-8').read())
-  File "/usr/local/lib/python3.8/dist-packages/ruamel/yaml/main.py", line 343, in load
-    return constructor.get_single_data()
-  File "/usr/local/lib/python3.8/dist-packages/ruamel/yaml/constructor.py", line 111, in get_single_data
-    node = self.composer.get_single_node()
-  File "_ruamel_yaml.pyx", line 706, in _ruamel_yaml.CParser.get_single_node
-  File "_ruamel_yaml.pyx", line 724, in _ruamel_yaml.CParser._compose_document
-  File "_ruamel_yaml.pyx", line 775, in _ruamel_yaml.CParser._compose_node
-  File "_ruamel_yaml.pyx", line 889, in _ruamel_yaml.CParser._compose_mapping_node
-  File "_ruamel_yaml.pyx", line 773, in _ruamel_yaml.CParser._compose_node
-  File "_ruamel_yaml.pyx", line 848, in _ruamel_yaml.CParser._compose_sequence_node
-  File "_ruamel_yaml.pyx", line 904, in _ruamel_yaml.CParser._parse_next_event
-ruamel.yaml.scanner.ScannerError: while scanning a block scalar
-  in "<unicode string>", line 94, column 5
-found a tab character where an indentation space is expected
-  in "<unicode string>", line 102, column 1
-make[1]: *** [Documentation/devicetree/bindings/Makefile:20: Documentation/devicetree/bindings/pinctrl/awinic,aw9523-pinctrl.example.dts] Error 1
-make[1]: *** Deleting file 'Documentation/devicetree/bindings/pinctrl/awinic,aw9523-pinctrl.example.dts'
-make: *** [Makefile:1370: dt_binding_check] Error 2
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/regulator/qcom-labibb-regulator.yaml: properties:ibb:properties:qcom,discharge-resistor-kohms: 'oneOf' conditional failed, one must be fixed:
+	'type' is a required property
+	Additional properties are not allowed ('default', 'enum' were unexpected)
+	Additional properties are not allowed ('default' was unexpected)
+	/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/regulator/qcom-labibb-regulator.yaml: properties:ibb:properties:qcom,discharge-resistor-kohms: 'oneOf' conditional failed, one must be fixed:
+		'$ref' is a required property
+		'allOf' is a required property
+	300 is not of type 'string'
+	64 is not of type 'string'
+	32 is not of type 'string'
+	16 is not of type 'string'
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/regulator/qcom-labibb-regulator.yaml: ignoring, error in schema: properties: ibb: properties: qcom,discharge-resistor-kohms
+warning: no schema found in file: ./Documentation/devicetree/bindings/regulator/qcom-labibb-regulator.yaml
 
-See https://patchwork.ozlabs.org/patch/1424120
+See https://patchwork.ozlabs.org/patch/1424112
 
 This check can fail if there are any dependencies. The base for a patch
 series is generally the most recent rc1.
