@@ -2,109 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FFD02F065F
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Jan 2021 11:21:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0433B2F0661
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Jan 2021 11:21:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726283AbhAJKT6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Jan 2021 05:19:58 -0500
-Received: from mail-io1-f71.google.com ([209.85.166.71]:42039 "EHLO
-        mail-io1-f71.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725988AbhAJKT5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Jan 2021 05:19:57 -0500
-Received: by mail-io1-f71.google.com with SMTP id m9so10710925ioa.9
-        for <linux-kernel@vger.kernel.org>; Sun, 10 Jan 2021 02:19:41 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=Kt/0k0XvXpnX0NPbrn+9HwSwh7MXuiusmT0Wp7xQF0E=;
-        b=sXXBO3HCvjvlaNbH93C6JsDWZjvDy61EjWo50NiQaPXqj9gFtoDon7CICH1TjVUOkL
-         12RlJRqFSy9j7dK4o1mozEZQhBVUH+mjsPjuou8LbA2mk5T2Jq3Uh7eg2GZqjT28q9Lz
-         NZ6QDwf8T9mlu0Qe3WpjConYit9Lu9jg4TqpZkh7uK75zp8zGFWMAvxg37qZYHacAMWo
-         tmZ5pF7gR1Tgq0mRL7JzjFUWqS7AaZJIFV8fPZ/3h8m+XCCRje4fXLEoaT8om5Hk8r7B
-         AweDVqqKvv1XWM7J2oKtZxFvd7fwef4ICPWQzfM7F+ckZRHYuWhLT/JGf+12gRt5gJ7z
-         D1ZQ==
-X-Gm-Message-State: AOAM532I8Ie8buldPvzMcAUiUrEOP69o+23R67wLadWwKXqE31n7fFGC
-        RNPPgUBDyONAo6FEmkKTirJk00so/GJ4iHOxNIGQc+BpdFze
-X-Google-Smtp-Source: ABdhPJwExw+STqccTHYPQ0FMo0FDuPSiOyAMKtDKx2WDvURFC+rBa/fsVPlT2S217NcqbXU52qF0Fd5ltv/rQ7++F+BJ2c3rs5c3
+        id S1726376AbhAJKUM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Jan 2021 05:20:12 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38356 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726303AbhAJKUL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 10 Jan 2021 05:20:11 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 825B6236F9;
+        Sun, 10 Jan 2021 10:19:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1610273970;
+        bh=Jw0l8gSsx8En7t0dNhT3ZISp+QqP4m6mM+GqH79ZZZY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=u5tyrYK+KUj1HdKkURjetX0/vavu9Q6DGFiVb1AIbGfneigANZRLTM2dqoMaqWYtE
+         cQN2YyEFNUzx7/QnaXW5FS3XoH5yuXqmNvAr8gORRaU1tYw2V4NWF6a8iM4Fq/rea8
+         2MX3a4WgE6b5LzBG+7jd2xx65ZGndylr747MNAfZIVrk8AXWrrz2ql/z66PTLIGhDh
+         PA8LT58ToR56QCt83NA8x1RmFn+OAZKwEMIqPnQvMY++7R8stA5j6KMohBhgff8eal
+         BjMlZ0hNPeWAYAcod+g+gOP8F0diG0EFTS9yvo5O/6l2BatNBTRD201LRlk4xo9/qs
+         ViQ5ImxHhO/3Q==
+Date:   Sun, 10 Jan 2021 05:19:29 -0500
+From:   Sasha Levin <sashal@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Sedat Dilek <sedat.dilek@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        stable@vger.kernel.org
+Subject: Re: depmod fixes for linux-stable releases
+Message-ID: <20210110101929.GG4035784@sasha-vm>
+References: <CA+icZUUq9Skdt0ws7uqa3N9P5vwhQX6DrhfNxMvkoKMEbyWE-Q@mail.gmail.com>
+ <CAHk-=whNpzmU0UQ+dXU-A8tAyiKEzfrX-ax_80UmM77Ehjzy1A@mail.gmail.com>
 MIME-Version: 1.0
-X-Received: by 2002:a92:d350:: with SMTP id a16mr11456432ilh.262.1610273955351;
- Sun, 10 Jan 2021 02:19:15 -0800 (PST)
-Date:   Sun, 10 Jan 2021 02:19:15 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000019908405b8891f9d@google.com>
-Subject: KMSAN: kernel-infoleak in move_addr_to_user (4)
-From:   syzbot <syzbot+057884e2f453e8afebc8@syzkaller.appspotmail.com>
-To:     davem@davemloft.net, glider@google.com, kuba@kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <CAHk-=whNpzmU0UQ+dXU-A8tAyiKEzfrX-ax_80UmM77Ehjzy1A@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Sat, Jan 09, 2021 at 05:23:22PM -0800, Linus Torvalds wrote:
+>Ack, I think 436e980e2ed5 ("kbuild: don't hardcode depmod path") is
+>stable material even if it doesn't fix a bug.
+>
+>Not only does the fix for that commit not make sense without the
+>commit in the first place, but any environment that sets depmod
+>somewhere else might well be an environment that still wants stable
+>kernels.
+>
+>It may not be the traditional case, but there's little reason for the
+>kernel build to force that /sbin/depmod location.
 
-syzbot found the following issue on:
+I'll take it, thanks!
 
-HEAD commit:    73d62e81 kmsan: random: prevent boot-time reports in _mix_..
-git tree:       https://github.com/google/kmsan.git master
-console output: https://syzkaller.appspot.com/x/log.txt?x=15c8b8c7500000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=2cdf4151c9653e32
-dashboard link: https://syzkaller.appspot.com/bug?extid=057884e2f453e8afebc8
-compiler:       clang version 11.0.0 (https://github.com/llvm/llvm-project.git ca2dcbd030eadbf0aa9b660efe864ff08af6e18b)
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=101520c7500000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=100b8f4f500000
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+057884e2f453e8afebc8@syzkaller.appspotmail.com
-
-=====================================================
-BUG: KMSAN: kernel-infoleak in kmsan_copy_to_user+0x9c/0xb0 mm/kmsan/kmsan_hooks.c:249
-CPU: 0 PID: 8245 Comm: syz-executor868 Not tainted 5.10.0-rc4-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:77 [inline]
- dump_stack+0x21c/0x280 lib/dump_stack.c:118
- kmsan_report+0xf7/0x1e0 mm/kmsan/kmsan_report.c:118
- kmsan_internal_check_memory+0x202/0x520 mm/kmsan/kmsan.c:402
- kmsan_copy_to_user+0x9c/0xb0 mm/kmsan/kmsan_hooks.c:249
- instrument_copy_to_user include/linux/instrumented.h:121 [inline]
- _copy_to_user+0x1af/0x270 lib/usercopy.c:33
- copy_to_user include/linux/uaccess.h:209 [inline]
- move_addr_to_user+0x3a2/0x640 net/socket.c:237
- __sys_getsockname+0x407/0x5d0 net/socket.c:1906
- __do_sys_getsockname net/socket.c:1917 [inline]
- __se_sys_getsockname+0x91/0xb0 net/socket.c:1914
- __x64_sys_getsockname+0x4a/0x70 net/socket.c:1914
- do_syscall_64+0x9f/0x140 arch/x86/entry/common.c:48
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x441219
-Code: e8 fc ab 02 00 48 83 c4 18 c3 0f 1f 80 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 1b 09 fc ff c3 66 2e 0f 1f 84 00 00 00 00
-RSP: 002b:00007ffe3c24eaf8 EFLAGS: 00000246 ORIG_RAX: 0000000000000033
-RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 0000000000441219
-RDX: 0000000020000000 RSI: 0000000020000100 RDI: 0000000000000003
-RBP: 00000000006cb018 R08: 00000000004002c8 R09: 00000000004002c8
-R10: 0000000000000004 R11: 0000000000000246 R12: 0000000000401fc0
-R13: 0000000000402050 R14: 0000000000000000 R15: 0000000000000000
-
-Local variable ----address@__sys_getsockname created at:
- __sys_getsockname+0x91/0x5d0 net/socket.c:1891
- __sys_getsockname+0x91/0x5d0 net/socket.c:1891
-
-Bytes 2-3 of 20 are uninitialized
-Memory access of size 20 starts at ffff888124bbbdf0
-Data copied to user address 0000000020000100
-=====================================================
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
+-- 
+Thanks,
+Sasha
