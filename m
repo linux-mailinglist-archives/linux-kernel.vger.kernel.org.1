@@ -2,79 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 276392F05B1
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Jan 2021 07:20:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8EFFF2F05B2
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Jan 2021 07:24:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726554AbhAJGTJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Jan 2021 01:19:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49826 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725267AbhAJGTI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Jan 2021 01:19:08 -0500
-Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33C3DC061786;
-        Sat,  9 Jan 2021 22:18:28 -0800 (PST)
-Received: by mail-pg1-x52d.google.com with SMTP id 15so10455680pgx.7;
-        Sat, 09 Jan 2021 22:18:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=66gZx177cKctl75cI6KyQcdZOqrIj9vdFaNqN2D+LWg=;
-        b=mxJiYnRDU0gJ0TsoGBT0KAB5gqzTGQcb1jauJkqNFBTH8QkW6LKOW2f8VVMyF5bM4x
-         xlhfric7q/hmTyVQHBDQj6ph1XKi0OiHFZsEMM2IheX4v7klqhVMAKh1jpiddkm9wIG4
-         mwqHWGfGY4w+o6Oo0UKRAIRt/eg4O8DBxk5O/z12IVe5HsKJriG6hvc+bB08V21tyxTz
-         mU4UJ6SdhHuws0tRoR9Cbt6Xk08XJJ0k9Xo/YhVgAztJ41MFt6IPfaTrARCw2iyfU0X3
-         7wqqvcYl8HOxPqFxtgikoyZr+MTWVqKYzE0SBu9ZRqzcRuGv645yXeZMSyJM/m2XhXO1
-         /vUw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=66gZx177cKctl75cI6KyQcdZOqrIj9vdFaNqN2D+LWg=;
-        b=X+ieQEDLzGcxv7lYjYGrSgB3M2yDqkJ9wXlDCNoWY8oYAwjUo7MTocEAW7bEdOTdNJ
-         WE/tjMt7DdgNV2Mpfd2lYJ3KWFvAz1i7obkkAEBL3tAyzK3OQPRsrm3qW442i3XX4sH6
-         3y5G/kTlh+hZzskd3ojamdCsGBpjTOvGkpJ5eAS6HPectiELvb8lNIn1X/SCYUuPMd7I
-         /hqodEeXc8cDGsh3qfoLLyh1DxzywZVosgha0+4DOAj9mSetJOzUTPJIJSgOtzKX9nYO
-         +cLwo0xsuf4+qbX3JTr3QmTWonukuKdoiF2N/puVFiuy3p69a3KcH8crf9zclICvDgO8
-         uMEg==
-X-Gm-Message-State: AOAM531czXyt3xcl0j+MALM2abYB3MzJ75j+0rgHEyvAk5tsLwydf1o4
-        ulXINdJrpb+DfZh/sjgBjKM=
-X-Google-Smtp-Source: ABdhPJy3jQO476dT1xhNvJI2x+SYhOTQk78YpnA5ZxULs3f7vjAZfL/x+5/iG6QC2CTtIxIGIJQITA==
-X-Received: by 2002:aa7:97bc:0:b029:19e:18c7:76b with SMTP id d28-20020aa797bc0000b029019e18c7076bmr11303253pfq.23.1610259507720;
-        Sat, 09 Jan 2021 22:18:27 -0800 (PST)
-Received: from google.com ([2620:15c:202:201:a6ae:11ff:fe11:fcc3])
-        by smtp.gmail.com with ESMTPSA id x125sm15448575pgb.35.2021.01.09.22.18.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 09 Jan 2021 22:18:27 -0800 (PST)
-Date:   Sat, 9 Jan 2021 22:18:24 -0800
-From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
-To:     AngeloGioacchino Del Regno 
-        <angelogioacchino.delregno@somainline.org>
-Cc:     linux-input@vger.kernel.org, konrad.dybcio@somainline.org,
-        marijn.suijten@somainline.org, martin.botka@somainline.org,
-        phone-devel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        hadess@hadess.net, devicetree@vger.kernel.org, robh+dt@kernel.org
-Subject: Re: [PATCH 2/2] dt-bindings: ts: goodix: Add binding for GT9286 IC
-Message-ID: <X/qcMF5mYblMHpw6@google.com>
-References: <20210109135512.149032-1-angelogioacchino.delregno@somainline.org>
- <20210109135512.149032-3-angelogioacchino.delregno@somainline.org>
+        id S1726033AbhAJGYW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Jan 2021 01:24:22 -0500
+Received: from wtarreau.pck.nerim.net ([62.212.114.60]:49013 "EHLO 1wt.eu"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725267AbhAJGYV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 10 Jan 2021 01:24:21 -0500
+Received: (from willy@localhost)
+        by pcw.home.local (8.15.2/8.15.2/Submit) id 10A6LDVW002917;
+        Sun, 10 Jan 2021 07:21:13 +0100
+Date:   Sun, 10 Jan 2021 07:21:13 +0100
+From:   Willy Tarreau <w@1wt.eu>
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Baruch Siach <baruch@tkos.co.il>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Daniel Tang <dt.tangr@gmail.com>,
+        Jamie Iles <jamie@jamieiles.com>,
+        Krzysztof Adamski <krzysztof.adamski@nokia.com>,
+        Alexander Shiyan <shc_work@mail.ru>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Yoshinori Sato <ysato@users.osdn.me>,
+        Russell King - ARM Linux <linux@armlinux.org.uk>,
+        Wei Xu <xuwei5@hisilicon.com>,
+        Oleksij Rempel <o.rempel@pengutronix.de>,
+        Alex Elder <elder@linaro.org>,
+        Marc Gonzalez <marc.w.gonzalez@free.fr>,
+        Hans Ulli Kroll <ulli.kroll@googlemail.com>,
+        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Vladimir Zapolskiy <vz@mleia.com>,
+        Lubomir Rintel <lkundrak@v3.sk>,
+        Koen Vandeputte <koen.vandeputte@ncentric.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Barry Song <song.bao.hua@hisilicon.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Jonas Jensen <jonas.jensen@gmail.com>,
+        Hartley Sweeten <hsweeten@visionengravers.com>,
+        Mark Salter <msalter@redhat.com>,
+        Shawn Guo <shawnguo@kernel.org>
+Subject: Re: Old platforms: bring out your dead
+Message-ID: <20210110062113.GA2912@1wt.eu>
+References: <CAK8P3a2VW8T+yYUG1pn1yR-5eU4jJXe1+M_ot6DAvfr2KyXCzQ@mail.gmail.com>
+ <20210109055645.GA2009@1wt.eu>
+ <CAK8P3a1C+EUvyLm3fo8TGOV39hhaxhtDM3cX_QLc-=WCzRksMw@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210109135512.149032-3-angelogioacchino.delregno@somainline.org>
+In-Reply-To: <CAK8P3a1C+EUvyLm3fo8TGOV39hhaxhtDM3cX_QLc-=WCzRksMw@mail.gmail.com>
+User-Agent: Mutt/1.6.1 (2016-04-27)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jan 09, 2021 at 02:55:12PM +0100, AngeloGioacchino Del Regno wrote:
-> Support for this chip was added to the goodix driver: add the
-> DT binding for it.
-> 
-> Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>
+On Sat, Jan 09, 2021 at 10:52:53PM +0100, Arnd Bergmann wrote:
+(... i486 ...)
+> As with the other older platforms, the main question to ask is:
+> Are there users that are better off running a future LTS kernel on this
+> hardware than the v5.10.y version or something older?
 
-Applied, thank you.
+I think this is the most important part of the question. Because the
+possible use case I've described actually doesn't correspond to a
+"prod" machine but to a machine that's powered on every 5 years for
+some old data recovery. In such a case users just start with an old
+system (possibly the one that's still on them if present), and this
+doesn't warrant an up-to-date OS.
 
--- 
-Dmitry
+Moreover, just as I experienced when maintaining 2.4, there's a point
+where support for old stuff starts to break again by lack of testing.
+And just because of this, users shouldn't always expect to see their
+old machines boot fine on a recent kernel. Sometimes there may even be
+difficulties setting up a compatible toolchain.
+
+So actually the question shouldn't be "does anyone want such old
+machines to still be supported" but "does anyone *need* them to be
+supported". And I suspect that for most of them the response is "no",
+it's just a convenience.
+
+Just my two cents,
+Willy
