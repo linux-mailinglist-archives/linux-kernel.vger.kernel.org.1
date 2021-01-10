@@ -2,58 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 826142F09A0
+	by mail.lfdr.de (Postfix) with ESMTP id 1613F2F099F
 	for <lists+linux-kernel@lfdr.de>; Sun, 10 Jan 2021 21:09:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726939AbhAJUIF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Jan 2021 15:08:05 -0500
-Received: from mail.kernel.org ([198.145.29.99]:46876 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726618AbhAJUIE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1726811AbhAJUIE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Sun, 10 Jan 2021 15:08:04 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPS id C214922A85;
+Received: from mail.kernel.org ([198.145.29.99]:46860 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726608AbhAJUIE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 10 Jan 2021 15:08:04 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPS id 9E6A722A84;
         Sun, 10 Jan 2021 20:07:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1610309243;
-        bh=Yz4J6qjZ0UbLgJ+A8qAB+Xdu6r0lzsu+yKE/n0cULXY=;
+        bh=l3BYfZ9T4jh8uGFh0LOO19KGji5xf/gQwKY/slc5NCU=;
         h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=vLeRzwgktZKwGnlvqFyjRgAL2XYVrvRy6iJq3tNqx2+/M8wzwJQS7elMynOvwQHtH
-         c1UWtWkiu41KgjEXQMe65XfjZmcBUzgHPBRvPqChCgAo5ebRo7KHX+NORUJLY242CL
-         ZlRBAMKewKkL3TxEx4iJk5pb+f5mKW5GNbx6oK0EfbrkVVuNsjsVjj1rzb5pxdjF+E
-         911y8jj9zHoIokmoEl9XAi5oWzgqrX4uJXFj14oAiFtNJlN12gigU9DyYtJEJoTaP0
-         qvGewgmN5qqfmGenOmkX2p792d52JOqcJJsoUv9ZOG0d7nXoNl+nfn2QuERRxkARsU
-         b8cm1n+nN6LVQ==
+        b=ldkVfRSq4T0s2vxKCgDLSjSweL8wzlAgdolv7kLoOtcT0Xkm5K6zzcwNehYBYnqmO
+         hgr9IKYaviPJHGWvO76Bxe8pub+v0jWiLrge204srobYl5SNWEciYjXYMGwtDhgT1O
+         zeDbUfRUvjdhy0+HRANOg2VQavypIKzuuNWm5bsds/1B4zfmNm+XCrgpNZxLKMvFUg
+         VrGgSnq22J9dH9y3Fz1XsHrVWMfD05Vl1AqO9lyl/eTYZYDGmfNWJSTICnQLfmvZfj
+         tJIgjK6hPvYufPgI6QkxRrWoHkbeiAbgb1jrPTxwX643C6ftDae0U7kuU7v4AJNR4w
+         fJmD+z1W7Sz9g==
 Received: from pdx-korg-docbuild-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-1.ci.codeaurora.org (Postfix) with ESMTP id BD4ED60140;
+        by pdx-korg-docbuild-1.ci.codeaurora.org (Postfix) with ESMTP id 93F9760141;
         Sun, 10 Jan 2021 20:07:23 +0000 (UTC)
-Subject: Re: [GIT PULL] ARC fixes for 5.11-rc3
+Subject: Re: [GIT PULL] Please pull powerpc/linux.git powerpc-5.11-3 tag
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <0d1b3ae6-2a67-9531-7a41-a4d5d00793ea@synopsys.com>
-References: <0d1b3ae6-2a67-9531-7a41-a4d5d00793ea@synopsys.com>
+In-Reply-To: <87y2h1j6k9.fsf@mpe.ellerman.id.au>
+References: <87y2h1j6k9.fsf@mpe.ellerman.id.au>
 X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <0d1b3ae6-2a67-9531-7a41-a4d5d00793ea@synopsys.com>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/vgupta/arc.git/ tags/arc-5.11-rc3-fixes
-X-PR-Tracked-Commit-Id: e8deee4f1543eda9b75278f63322f412cad52f6a
+X-PR-Tracked-Message-Id: <87y2h1j6k9.fsf@mpe.ellerman.id.au>
+X-PR-Tracked-Remote: https://git.kernel.org/pub/scm/linux/kernel/git/powerpc/linux.git tags/powerpc-5.11-3
+X-PR-Tracked-Commit-Id: 3ce47d95b7346dcafd9bed3556a8d072cb2b8571
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 0653161f0faca68b77b3f36fb4b4b9b8b07050e5
-Message-Id: <161030924376.466.10504053213740025438.pr-tracker-bot@kernel.org>
+X-PR-Merge-Commit-Id: b3cd1a16cc8829776523fcd114299373be4e5187
+Message-Id: <161030924359.466.12818097113991379322.pr-tracker-bot@kernel.org>
 Date:   Sun, 10 Jan 2021 20:07:23 +0000
-To:     Vineet Gupta <Vineet.Gupta1@synopsys.com>
+To:     Michael Ellerman <mpe@ellerman.id.au>
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        lkml <linux-kernel@vger.kernel.org>
+        christophe.leroy@csgroup.eu, linux-kernel@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, natechancellor@gmail.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Sun, 10 Jan 2021 18:49:21 +0000:
+The pull request you sent on Sun, 10 Jan 2021 23:54:30 +1100:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/vgupta/arc.git/ tags/arc-5.11-rc3-fixes
+> https://git.kernel.org/pub/scm/linux/kernel/git/powerpc/linux.git tags/powerpc-5.11-3
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/0653161f0faca68b77b3f36fb4b4b9b8b07050e5
+https://git.kernel.org/torvalds/c/b3cd1a16cc8829776523fcd114299373be4e5187
 
 Thank you!
 
