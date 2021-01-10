@@ -2,104 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F1372F060E
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Jan 2021 09:46:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 48BED2F0613
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Jan 2021 09:50:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726579AbhAJIqP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Jan 2021 03:46:15 -0500
-Received: from mail.kernel.org ([198.145.29.99]:60264 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725820AbhAJIqP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Jan 2021 03:46:15 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2734523B08
-        for <linux-kernel@vger.kernel.org>; Sun, 10 Jan 2021 08:45:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610268334;
-        bh=ezKsWu6SKYCsEDVNC7gYvArnfAqz+A1VYlxI+V1ulzQ=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=OyGTEQE7Eu7na0QE9+L5KBFQIoS9bjGOccxD6tp1TuUK3jOYxkz4O+aT3oddN9v5F
-         5B2U9PwA+jqZ4Z8MmG0YC2IxxVOVqeXBeOhWsyJAM43V4SAjidmT5xM0bDx0LWjLax
-         PGUeOQ13wLgdXVDjEitB8ACIEfGsYsJ4zEkDF8Kq53OHPIolA+h2EP0oZ4izo+mQd8
-         GOMJyaYHkSQLK0IJbjqk4SdKEzOc0WzHL4RsltozkeYqOoLUrdA4D8wdNJKk9owe2+
-         QSWA6UON7BZ2PrTI+nK56+WY51cEWAbICul7Eo07yo8tiDgZTj+DRlaHaNAHH+1f17
-         rMx/7OhIwEdWQ==
-Received: by mail-ot1-f44.google.com with SMTP id x13so14044035oto.8
-        for <linux-kernel@vger.kernel.org>; Sun, 10 Jan 2021 00:45:34 -0800 (PST)
-X-Gm-Message-State: AOAM533TI+ZXPGMIooT5Kn+YlUT5xMUqXwmNRwga8AQEtk4aXyvB8ioT
-        pmoo0ppYZYAj2Y3bB7UrLUiIbSsBul3HZdScG9c=
-X-Google-Smtp-Source: ABdhPJysJm8g3yuu2ckVz7T90Kk8ZQKr5n5eTo9f9M2KyQcpGgNX97ljZKIX/HPRJz/SLyV0n9tOB4w8HVmImRzdy2A=
-X-Received: by 2002:a05:6830:1e14:: with SMTP id s20mr7746394otr.210.1610268333333;
- Sun, 10 Jan 2021 00:45:33 -0800 (PST)
+        id S1726691AbhAJIst (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Jan 2021 03:48:49 -0500
+Received: from esa4.hgst.iphmx.com ([216.71.154.42]:62862 "EHLO
+        esa4.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725956AbhAJIss (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 10 Jan 2021 03:48:48 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1610268528; x=1641804528;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=dKUH/8eT9WQR0MY/ea171yF0916vthqpVDusouW2ttM=;
+  b=eKRBFnddKUzezpG/FoiWFML/wtyg+1QN2WAE07iV1dFtth07eq5Hz148
+   LLUGnS/yyLV1HNoa+ngesAlpRJ7maQO5RuUn/9u2xGZeYFcCfmzuhio1i
+   VE9DJQhwvzCwRkMpTjn42aWa2OaoACXiWT5jL4L49+5sWMjQHswsPlRba
+   6Tnkosyi8woSYwzaS7UuqNcihS/7myVa9//Lara/WdX1AAbGCoEEeIpZn
+   Y0q9iwSVWUVVwMBvQRQddcxVhZm58yhQ13Y1+iXBcGWZDkGUAJQ/fr15B
+   dWxSkkhByTkTGQR/oYdnASwyR0dtGmvOGY2JcLSVVH+PYYqKNcckazn9V
+   A==;
+IronPort-SDR: M2wKaD1CsD/zAcUpiRB6mDelBGREH+a8duMEA75TRVPTh7HmrteIKO+ubevW2epTbbWSOlv/Q9
+ 0TByeSXuxaAV7LI72IV2SN5dTJu9tO6rF1KpCPRaB28S2FeCEcmr4BK1gK71PvcW+7oCwGu+So
+ gpqGphV+ApjVA/z1wFOaw/2qTzLHHqhywuy8gSEJ0SXaku9OldSgmw3jJOCdou6YCeg5CnyGkd
+ Ei0Fkq9Pe7Ce+9pWu7m/jK3aGvtURCy8a0jm56L/JK7rGkzcb3vB5Eb3U2XoOMPh7NUq7An36R
+ cTY=
+X-IronPort-AV: E=Sophos;i="5.79,336,1602518400"; 
+   d="scan'208";a="157073250"
+Received: from h199-255-45-14.hgst.com (HELO uls-op-cesaep01.wdc.com) ([199.255.45.14])
+  by ob1.hgst.iphmx.com with ESMTP; 10 Jan 2021 16:47:42 +0800
+IronPort-SDR: LfukvEU8b7Y6QTxisfAN4R6YzV/MjGf0v/E+3UV0O8Aa8ZbGKTcUQPtan5Y7QeAcsVBacdf7YC
+ NPBxR+ezUs3TxMOAazEEJIKII5huzZhs/vH+CYD35N4sa0BGk+kn4xXZWDjnPryuEg9Fvy2nkT
+ BOkRyqJRw6sm87I+h6oSLdefGZVjHZ4V3neQBFHoJvhb9DumHF0YhfOTpRv2R6R+w34t3+r/W7
+ sX7mZxR8EaLHsCiTdz47rESiscxDp5LWA1YEkCO72xNPwJGZebtSzkli7TY5Iv7pzFhWzSjzxP
+ 43N+Bzds+ZwNceIkHdqbmm0+
+Received: from uls-op-cesaip02.wdc.com ([10.248.3.37])
+  by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Jan 2021 00:32:30 -0800
+IronPort-SDR: aUZQyilq4s1FIoH7A4y9sJ/FCZrPEAnv0f5ZO/+X6EZwJu9tRIAXM0tyWL/LZX89zS9GR0Ni0j
+ CEPVbcORn06k9gmdGEWLn1Bob21+LI9RgjUZokkk8ueuAISCBi7A6ZjQ5I8jPhXgHFzYwI7AuN
+ ZAteFu/+qrcY4i5zM7lR/ExrXsqh2JOqfAYSuQc8EkfXKegAMjH9o3t3Fnb/KFY0DhOchEy+wk
+ llLpw8PFoBMC5K2CokpNfp7Hp4wm8wpr/bSLXLTbcq8Szg3KZySopHGcoGRUlIPdi+i1UqSMBP
+ 9og=
+WDCIronportException: Internal
+Received: from bxygm33.sdcorp.global.sandisk.com ([10.0.231.247])
+  by uls-op-cesaip02.wdc.com with ESMTP; 10 Jan 2021 00:47:41 -0800
+From:   Avri Altman <avri.altman@wdc.com>
+To:     "James E . J . Bottomley" <jejb@linux.vnet.ibm.com>,
+        "Martin K . Petersen" <martin.petersen@oracle.com>,
+        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     alim.akhtar@samsung.com, Bean Huo <beanhuo@micron.com>,
+        Avri Altman <avri.altman@wdc.com>
+Subject: [PATCH] scsi: ufs: A tad optimization in query upiu trace
+Date:   Sun, 10 Jan 2021 10:46:18 +0200
+Message-Id: <20210110084618.189371-1-avri.altman@wdc.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <CAK8P3a2VW8T+yYUG1pn1yR-5eU4jJXe1+M_ot6DAvfr2KyXCzQ@mail.gmail.com>
- <X/o4VZzW4m77AYDB@lunn.ch>
-In-Reply-To: <X/o4VZzW4m77AYDB@lunn.ch>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Sun, 10 Jan 2021 09:45:16 +0100
-X-Gmail-Original-Message-ID: <CAK8P3a3kg1u3QVj1JS92Js7ZO9HvgDfzBtEbN4HULpNfNEJfoA@mail.gmail.com>
-Message-ID: <CAK8P3a3kg1u3QVj1JS92Js7ZO9HvgDfzBtEbN4HULpNfNEJfoA@mail.gmail.com>
-Subject: Re: Old platforms: bring out your dead
-To:     Andrew Lunn <andrew@lunn.ch>
-Cc:     Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Baruch Siach <baruch@tkos.co.il>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Daniel Tang <dt.tangr@gmail.com>,
-        Jamie Iles <jamie@jamieiles.com>,
-        Krzysztof Adamski <krzysztof.adamski@nokia.com>,
-        Alexander Shiyan <shc_work@mail.ru>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Russell King - ARM Linux <linux@armlinux.org.uk>,
-        Wei Xu <xuwei5@hisilicon.com>,
-        Oleksij Rempel <o.rempel@pengutronix.de>,
-        Alex Elder <elder@linaro.org>,
-        Marc Gonzalez <marc.w.gonzalez@free.fr>,
-        Hans Ulli Kroll <ulli.kroll@googlemail.com>,
-        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Vladimir Zapolskiy <vz@mleia.com>,
-        Lubomir Rintel <lkundrak@v3.sk>,
-        Koen Vandeputte <koen.vandeputte@ncentric.com>,
-        Barry Song <song.bao.hua@hisilicon.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Jonas Jensen <jonas.jensen@gmail.com>,
-        Hartley Sweeten <hsweeten@visionengravers.com>,
-        Mark Salter <msalter@redhat.com>,
-        Shawn Guo <shawnguo@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jan 10, 2021 at 12:12 AM Andrew Lunn <andrew@lunn.ch> wrote:
->
-> > Then there are ARM platforms that are old but have still seen some work
-> > in the past years. If I hear nothing, these will all stay, but if maintainers
-> > may want to drop them anyway, I can help with that:
->
-> Hi Arnd
->
-> I notice orion5x is not on this list. Is that because of Debian still
-> building for it?
+Remove a redundant if clause in ufshcd_add_query_upiu_trace.
 
-No, it was a mistake on my end, it should have been in the
-second list of platforms that are fairly old but still updated
-and possibly have users.
+Signed-off-by: Avri Altman <avri.altman@wdc.com>
+---
+ drivers/scsi/ufs/ufshcd.c | 18 ++++++------------
+ 1 file changed, 6 insertions(+), 12 deletions(-)
 
-> I just blew the dust out of my orion5x RDK and booted 5.11-rc2 on it.
-> orion5x_defconfig needs a few updates, but otherwise it seems to work
-> O.K.
->
-> But i have no idea if there are any real users out there running
-> modern kernels.
+diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
+index 53fd59ce50b2..678a520b303e 100644
+--- a/drivers/scsi/ufs/ufshcd.c
++++ b/drivers/scsi/ufs/ufshcd.c
+@@ -316,19 +316,13 @@ static void ufshcd_add_cmd_upiu_trace(struct ufs_hba *hba, unsigned int tag,
+ 			  UFS_TSF_CDB);
+ }
+ 
+-static void ufshcd_add_query_upiu_trace(struct ufs_hba *hba, unsigned int tag,
+-					enum ufs_trace_str_t str_t)
++static void ufshcd_add_query_upiu_trace(struct ufs_hba *hba,
++					enum ufs_trace_str_t str_t,
++					struct utp_upiu_req *rq_rsp)
+ {
+-	struct utp_upiu_req *rq_rsp;
+-
+ 	if (!trace_ufshcd_upiu_enabled())
+ 		return;
+ 
+-	if (str_t == UFS_QUERY_SEND)
+-		rq_rsp = hba->lrb[tag].ucd_req_ptr;
+-	else
+-		rq_rsp = (struct utp_upiu_req *)hba->lrb[tag].ucd_rsp_ptr;
+-
+ 	trace_ufshcd_upiu(dev_name(hba->dev), str_t, &rq_rsp->header,
+ 			  &rq_rsp->qr, UFS_TSF_OSF);
+ }
+@@ -2876,7 +2870,7 @@ static int ufshcd_exec_dev_cmd(struct ufs_hba *hba,
+ 
+ 	hba->dev_cmd.complete = &wait;
+ 
+-	ufshcd_add_query_upiu_trace(hba, tag, UFS_QUERY_SEND);
++	ufshcd_add_query_upiu_trace(hba, UFS_QUERY_SEND, lrbp->ucd_req_ptr);
+ 	/* Make sure descriptors are ready before ringing the doorbell */
+ 	wmb();
+ 	spin_lock_irqsave(hba->host->host_lock, flags);
+@@ -2886,8 +2880,8 @@ static int ufshcd_exec_dev_cmd(struct ufs_hba *hba,
+ 	err = ufshcd_wait_for_dev_cmd(hba, lrbp, timeout);
+ 
+ out:
+-	ufshcd_add_query_upiu_trace(hba, tag,
+-			err ? UFS_QUERY_ERR : UFS_QUERY_COMP);
++	ufshcd_add_query_upiu_trace(hba, err ? UFS_QUERY_ERR : UFS_QUERY_COMP,
++				    (struct utp_upiu_req *)lrbp->ucd_rsp_ptr);
+ 
+ out_put_tag:
+ 	blk_put_request(req);
+-- 
+2.25.1
 
-For this platform, I'm most interested in whether there are still users
-that rely on board files instead of DT. AFAIU we could just fold
-the DT variant into arch-mvebu like kirkwood was, right?
-
-        Arnd
