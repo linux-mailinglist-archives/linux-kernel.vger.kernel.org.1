@@ -2,124 +2,356 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B60B02F05CC
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Jan 2021 08:09:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 53B772F05CD
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Jan 2021 08:09:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726288AbhAJHI4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Jan 2021 02:08:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60384 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725270AbhAJHI4 (ORCPT
+        id S1726518AbhAJHJF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Jan 2021 02:09:05 -0500
+Received: from mail-il1-f199.google.com ([209.85.166.199]:33151 "EHLO
+        mail-il1-f199.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725270AbhAJHJF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Jan 2021 02:08:56 -0500
-Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D402C061786
-        for <linux-kernel@vger.kernel.org>; Sat,  9 Jan 2021 23:08:15 -0800 (PST)
-Received: by mail-io1-xd43.google.com with SMTP id d9so14413913iob.6
-        for <linux-kernel@vger.kernel.org>; Sat, 09 Jan 2021 23:08:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=5iAUopsMfrbRifHXOmhMOv9LXElpS70L7sWSW1Ex5k0=;
-        b=ndrLTN9p65L1wfAK/3noFMon1rk29cu6i9FcAy+MjBqbxSxG+1+RDyTJ1jaf1/YKG1
-         GaU2ivlbEChqBs6eN1CWFcI24/ebavm0b4CtOExNMG8mjW+DwabptlZxKNihAs8N2hyv
-         05Nn2iOB51t/zbOJONjLemjgVvstp/yY6mHIxVO2HyJDABlbfqcVBnnEdQQ5VliTG+0u
-         hFh9puvRgradywLqTHD46ajoXmfbYY452lGJCkLI9Tz3Ms62H+zOTnbRXXPnhBQdnqkR
-         kycHfR60mBnljD8tjG6KK7DFaSJBKETmmiffxOuqTGRSp4xSY37HkT89UQHrxY07UotO
-         uBfw==
+        Sun, 10 Jan 2021 02:09:05 -0500
+Received: by mail-il1-f199.google.com with SMTP id k5so2742348ilu.0
+        for <linux-kernel@vger.kernel.org>; Sat, 09 Jan 2021 23:08:48 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to:content-transfer-encoding;
-        bh=5iAUopsMfrbRifHXOmhMOv9LXElpS70L7sWSW1Ex5k0=;
-        b=neuWa29kT5omz0IOiQ3q7LnRDXl4dnlrlpbykzyoWJLPZZgbDt1LeEFDgNhEBT6PiA
-         lQPevxUMWslMGi7vZiV1ccwNMKZWycOtm4imEJeFw5TLjGP0UTochKLQjg/xhvih7X8C
-         HuejGQmHuoGPefKfhm1Rzr3I+jfs19PjtSNB9ZH8xAzOjyw+nNpIbwhpefGAwxsdA1+E
-         /6xJfXhsFNZzh+d//4JRuep6rS2LsMV08H8HWOLlQdbkrWvmy+y6AHzO72A0kzJazLG/
-         TUWl1pUM6SkEhkrIyT4e2IFUdALaqBRRRzZiUWAYw3+sdjrrZTkIjboEz5cXOLJa/q8g
-         lQAg==
-X-Gm-Message-State: AOAM5303IIx3laiB8JvrTpn6dIW3meeD9Pfr0RoTFHN+ErQTVOqaiIOt
-        tR1PG5+shwe2WQV7gE3wxQq6etv0VO86dA9qhE4=
-X-Google-Smtp-Source: ABdhPJy1Zbmip1HVF8/HWQFIljfF6XbpZxo7OolTgXHw7HNcXszm7epfGUe9zq4qXxw/vclmHToqSWlzikj760p+hYs=
-X-Received: by 2002:a02:3907:: with SMTP id l7mr10270879jaa.0.1610262494280;
- Sat, 09 Jan 2021 23:08:14 -0800 (PST)
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=Fld8zGf0G2n9k/VSVug9v8xw4doWDdch5qYvdaP56FI=;
+        b=sqi0fb9qHyqGyEcvVLFzSXzwq2bSsEUClalAtc1KpiqhgMvYlixv32cZTK4yhlK0xm
+         mzXIS845u0feIULnAk4lofsiEAo6uHDPXHJneSVg1ZgKUequ2BRDMGYzXkm3s+BGxiCo
+         tVZkWYwdJWq3XIdGm9iyo4WK+Bt+pWu+TPFk0zHAAvX/L7n6CFe53aicmAgvojbsqw+7
+         TEfF0Xb4sAdIf8qXh17Y63On0tVfpfqklTrXwXnuQFVe0k+4EvBn3KVvPlS53UnPCKCV
+         cQquForDuocUHSvVYDKOK5vyFDDs9ex6KTh+pVXI5PkVmEDePI7tTq9gFk4Ed4vlYc8H
+         ipaA==
+X-Gm-Message-State: AOAM530v72D5uxfxYqPZBZq0XFvfno+mos2z9m41pfoYc9QylC0vOZo8
+        RM7QU8QuWbtVZ6L2h4zowjB4W/WdtwbytC6ruWUexyv/cNxV
+X-Google-Smtp-Source: ABdhPJzYbxEMMz77Q48kReR0b9oL42RlntGkJ2A1hfd6Z1/skj8HojXhVsDVqQseKP6E6UYOloH4HMEWwgnqFxOj2uf/XHb0tmOl
 MIME-Version: 1.0
-Received: by 2002:a05:6638:d5:0:0:0:0 with HTTP; Sat, 9 Jan 2021 23:08:13
- -0800 (PST)
-Reply-To: cristinacampeell@outlook.com
-From:   "Mrs. Cristina Campbell" <smith76544@gmail.com>
-Date:   Sat, 9 Jan 2021 23:08:13 -0800
-Message-ID: <CAAYzYtOuED1nYJyKXztZ8RmnbT5vVpQtR6PYOHH7PcWGc0TKFA@mail.gmail.com>
-Subject: =?UTF-8?B?2YfZhCDZitmF2YPZhtmDINmF2LPYp9i52K/YqtmK?=
-To:     undisclosed-recipients:;
+X-Received: by 2002:a5e:9b06:: with SMTP id j6mr10976526iok.171.1610262503069;
+ Sat, 09 Jan 2021 23:08:23 -0800 (PST)
+Date:   Sat, 09 Jan 2021 23:08:23 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000007da00605b886740c@google.com>
+Subject: possible deadlock in lock_sock_nested
+From:   syzbot <syzbot+d8d5fa7f3a0c96bcdc78@syzkaller.appspotmail.com>
+To:     davem@davemloft.net, johan.hedberg@gmail.com, kuba@kernel.org,
+        linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org,
+        luiz.dentz@gmail.com, marcel@holtmann.org, netdev@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-2LnYstmK2LLZiiDYp9mE2K3YqNmK2Kgg2IwNCg0K2YrYsdis2Ykg2YLYsdin2KHYqSDZh9iw2Kcg
-2KjYqNi32KEg2YjYqNi52YbYp9mK2Kkg2Iwg2YHZgtivINmK2YPZiNmGINij2K3YryDYo9mH2YUg
-2LHYs9in2KbZhCDYp9mE2KjYsdmK2K8g2KfZhNil2YTZg9iq2LHZiNmG2YoNCtin2YTYqtmKINiq
-2KrZhNmC2KfZh9inINi52YTZiSDYp9mE2KXYt9mE2KfZgiDYjCDYo9mG2Kcg2KfZhNiz2YrYr9ip
-INmD2LHZitiz2KrZitmG2Kcg2YPYp9mF2KjZhCDYjCDZg9mG2Kog2YXYqtiy2YjYrNipINmF2YYN
-Ctin2YTYsdin2K3ZhCDYpdiv2YjYp9ix2K8g2YPYp9mF2KjZhCDYjCDZiNmD2KfZhiDZiti52YXZ
-hCDZgdmKINi02LHZg9ipINi02YQg2YTYqti32YjZitixINin2YTYqNiq2LHZiNmEINio2YTZhtiv
-2YYg2YjZg9in2YYNCtij2YrYttmL2Kcg2YXZgtin2YjZhCDZhdiq2YXYsdizINmB2Yog2YXZhti3
-2YLYqSDYtNix2YIg2KLYs9mK2Kcg2Iwg2KrZiNmB2Yog2YrZiNmFINin2YTYp9ir2YbZitmGIDMx
-INmK2YjZhNmK2YggMjAwMw0K2YHZiiDYqNin2LHZitizLiDYqtiy2YjYrNmG2Kcg2YTZhdiv2Kkg
-2LPYqNi5INiz2YbZiNin2Kog2KjYr9mI2YYg2LfZgdmELg0KDQrYqNmK2YbZhdinINiq2YLYsdij
-INmH2LDYpyDYjCDZhNinINij2LHZitiv2YMg2KPZhiDYqti02LnYsSDYqNin2YTYo9iz2YEg2YXZ
-hiDYo9is2YTZiiDYjCDZhNij2YbZhtmKINij2LnYqtmC2K8g2KPZhg0K2KfZhNis2YXZiti5INiz
-2YrZhdmI2KrZiNmGINmK2YjZhdmL2Kcg2YXYpy4g2YTZgtivINiq2YUg2KrYtNiu2YrYtdmKINio
-2LPYsdi32KfZhiDYp9mE2YXYsdmK2KEg2YjYo9iu2KjYsdmG2Yog2LfYqNmK2KjZig0K2KPZhtmG
-2Yog2YTZhiDYo9iz2KrZhdixINi32YjZitmE2KfZiyDYqNiz2KjYqCDZhdi02KfZg9mE2Yog2KfZ
-hNi12K3ZitipINin2YTZhdi52YLYr9ipLg0KDQrYo9ix2YrYryDYo9mGINmK2LHYrdmF2YbZiiDY
-p9mE2YTZhyDZiNmK2YLYqNmEINix2YjYrdmKINiMINmE2LDZhNmDINmC2LHYsdiqINij2YYg2KPY
-udi32Yog2KfZhNi12K/Zgtin2Kog2YTZhNmF2YbYuNmF2KfYqg0K2KfZhNiu2YrYsdmK2KkgLyDY
-p9mE2YXYs9in2KzYryAvINin2YTZhdi52KfYqNivINin2YTYqNmI2LDZitipIC8g2KfZhNmD2YbY
-p9im2LMgLyDYp9mE2KPYt9mB2KfZhCDYqNmE2Kcg2KPZhSAvINij2YLZhA0K2KfZhdiq2YrYp9iy
-2YvYpyDYjCDYo9ix2KfZhdmEINmE2KPZhtmG2Yog2KPYsdmK2K8g2KPZhiDZitmD2YjZhiDZh9iw
-2Kcg2YXZhiDYotiu2LEg2KfZhNij2LnZhdin2YQg2KfZhNi12KfZhNit2Kkg2KPZgdi52YQNCti5
-2YTZiSDYp9mE2KPYsdi2INmC2KjZhCDYo9mGINij2YXZiNiqLiDZhNmC2K8g2YLZhdiqINit2KrZ
-iSDYp9mE2KLZhiDYqNiq2YjYstmK2Lkg2KfZhNij2YXZiNin2YQg2LnZhNmJINio2LnYtg0K2KfZ
-hNmF2YbYuNmF2KfYqiDYp9mE2K7Zitix2YrYqSDZgdmKINmB2YTYs9i32YrZhiDZiNmD2YXYqNmI
-2K/ZitinINmI2LPZiNmK2LPYsdinINmI2KfZhNi52LHYp9mCLiDYp9mE2KLZhiDZiNmC2K8g2KrY
-r9mH2YjYsdiqDQrYtdit2KrZiiDYqNi02YPZhCDYs9mK2KEg2YTZhNi62KfZitipINiMINmE2Kcg
-2YrZhdmD2YbZhtmKINin2YTZgtmK2KfZhSDYqNiw2YTZgyDYqNmG2YHYs9mKINio2LnYryDYp9mE
-2KLZhi4NCg0K2LfZhNio2Kog2LDYp9iqINmF2LHYqSDZhdmGINij2YHYsdin2K8g2LnYp9im2YTY
-qtmKINil2LrZhNin2YIg2KPYrdivINit2LPYp9io2KfYqtmKINmI2KrZiNiy2YrYuSDYp9mE2KPZ
-hdmI2KfZhCDYp9mE2KrZig0K2KPZhdmE2YPZh9inINmH2YbYp9mDINi52YTZiSDZhdmG2LjZhdip
-INiu2YrYsdmK2Kkg2YHZiiDYp9mE2KPYsdiv2YYg2YjYp9mE2YPZiNmK2Kog2YjZgti32LEg2YjY
-p9mE2KXZhdin2LHYp9iqINin2YTYudix2KjZitipDQrYp9mE2YXYqtit2K/YqSDZiNin2YTZh9mG
-2K8g2Iwg2YTZg9mG2YfZhSDYsdmB2LbZiNinINmI2KfYrdiq2YHYuNmI2Kcg2KjYp9mE2YXYp9mE
-INmE2KPZhtmB2LPZh9mFLiDZhNinINiq2KvZgiDYqNmH2YUg2KjYudivDQrYp9mE2KLZhiDYjCDY
-rdmK2Ksg2YrYqNiv2Ygg2KPZhtmH2YUg2YTYpyDZitmG2KfYsti52YjZhiDZhdinINiq2LHZg9iq
-2Ycg2YTZh9mFLiDYotiu2LEg2KPZhdmI2KfZhNmKINin2YTYqtmKINmE2KcNCtmK2LnYsdmB2YfY
-pyDYo9it2K8g2YfZiCDYp9mE2KXZitiv2KfYuSDYp9mE2YbZgtiv2Yog2KfZhNi22K7ZhSDYp9mE
-2KjYp9mE2Log2LPYqtipINmF2YTYp9mK2YrZhiDYr9mI2YTYp9ixINij2YXYsdmK2YPZig0KNtiM
-MDAw2IwwMDAuMDAg2YTYr9mK2ZEg2YTYr9mJINio2YbZgyDZgdmKINiq2KfZitmE2KfZhtivINit
-2YrYqyDYo9mI2K/YudiqINin2YTYtdmG2K/ZiNmCLiDYo9ix2LrYqCDZgdmKDQrYp9iz2KrYrtiv
-2KfZhSDZh9iw2Kcg2KfZhNi12YbYr9mI2YIg2YTZhNio2LHYp9mF2Kwg2KfZhNiu2YrYsdmK2Kkg
-2YjYr9i52YUg2KfZhNil2YbYs9in2YbZitipINmB2Yog2KjZhNiv2YMg2YHZgti3INil2LDYpyDZ
-g9mG2KoNCtmF2K7ZhNi12YvYpy4NCg0K2YTZgtivINin2KrYrtiw2Kog2YfYsNinINin2YTZgtix
-2KfYsSDZhNij2YbZhyDZhNmK2LMg2YTYr9mKINij2Yog2LfZgdmEINmK2LHYqyDZh9iw2Kcg2KfZ
-hNmF2KfZhCDYjCDZiNmE2Kcg2KPYrtin2YEg2YXZhg0K2KfZhNmF2YjYqiDYjCDZiNmF2YYg2KvZ
-hSDYo9i52LHZgSDYpdmE2Ykg2KPZitmGINiz2KPYsNmH2Kgg2Iwg2YjYo9i52YTZhSDYo9mG2YbZ
-iiDYs9ij2YPZiNmGINmB2Yog2K3YttmGINin2YTYsdioLg0K2KjZhdis2LHYryDYo9mGINij2KrZ
-hNmC2Ykg2LHYr9mDINiMINiz2KPYudi32YrZgyDYp9mE2KfYqti12KfZhCDYqNin2YTYqNmG2YMg
-2YjYo9i12K/YsSDZhNmDINiu2LfYp9ioINiq2YHZiNmK2LYg2YXZhiDYtNij2YbZhw0K2KrZhdmD
-2YrZhtmDINio2LXZgdiq2YMg2KfZhNmF2LPYqtmB2YrYryDYp9mE2KPYtdmE2Yog2YXZhiDZh9iw
-2Kcg2KfZhNi12YbYr9mI2YIg2YTYqNiv2KEg2YfYsNinINin2YTYqNix2YbYp9mF2Kwg2KfZhNiu
-2YrYsdmKDQrYudmE2Ykg2KfZhNmB2YjYsSDZgdmKINio2YTYr9mDLg0KDQrYo9ix2YrYr9mDINij
-2YYg2KrYtdmE2Yog2K/Yp9im2YXZi9inINmF2YYg2KPYrNmE2Yog2Iwg2KPZiiDYqtij2K7Zitix
-INmB2Yog2LHYr9mDINiz2YrZhdmG2K3ZhtmKINmF2LPYp9it2Kkg2YHZiiDYp9mE2KjYrdirDQrY
-udmGINi02K7YtSDYotiu2LEg2YTZhtmB2LMg2KfZhNi62LHYti4g2KXYsNinINmE2YUg2KrZg9mG
-INmF2YfYqtmF2YvYpyDYjCDZgdmK2LHYrNmJINin2YTYudmB2Ygg2LnZhiDYqtmI2KfYtdmE2YMg
-2YXYudmG2KcuDQrZitmF2YPZhtmDINin2YTYqtmI2KfYtdmEINmF2LnZiiDYo9mIINin2YTYsdiv
-INi52YTZiSDYqNix2YrYr9mKINin2YTYpdmE2YPYqtix2YjZhtmKINin2YTYrtin2LU6DQooY3Jp
-c3RpbmFjYW1wZWVsbEBvdXRsb29rLmNvbSkuDQoNCti02YPYsdiMDQrYqtmB2LbZhNmI2Kcg2KjZ
-gtio2YjZhCDZgdin2KbZgiDYp9mE2KfYrdiq2LHYp9mF2IwNCtin2YTYs9mK2K/YqSDZg9ix2YrY
-s9iq2YrZhtinINmD2KfZhdio2YQNCtin2YTYqNix2YrYryDYp9mE2KXZhNmD2KrYsdmI2YbZitib
-IGNyaXN0aW5hY2FtcGVlbGxAb3V0bG9vay5jb20NCg==
+Hello,
+
+syzbot found the following issue on:
+
+HEAD commit:    f6e7a024 Merge tag 'arc-5.11-rc3' of git://git.kernel.org/..
+git tree:       net-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=135c95fb500000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=8aa30b9da402d224
+dashboard link: https://syzkaller.appspot.com/bug?extid=d8d5fa7f3a0c96bcdc78
+compiler:       gcc (GCC) 10.1.0-syz 20200507
+
+Unfortunately, I don't have any reproducer for this issue yet.
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+d8d5fa7f3a0c96bcdc78@syzkaller.appspotmail.com
+
+========================================================
+WARNING: possible irq lock inversion dependency detected
+5.11.0-rc2-syzkaller #0 Not tainted
+--------------------------------------------------------
+kworker/1:0/19 just changed the state of lock:
+ffff88805f80b0a0 (wq_mayday_lock){+.-.}-{2:2}, at: spin_lock_bh include/linux/spinlock.h:359 [inline]
+ffff88805f80b0a0 (wq_mayday_lock){+.-.}-{2:2}, at: lock_sock_nested+0x3b/0x110 net/core/sock.c:3049
+but this lock was taken by another, HARDIRQ-safe lock in the past:
+ (&pool->lock){-.-.}-{2:2}
+
+
+and interrupts could create inverse lock ordering between them.
+
+
+other info that might help us debug this:
+ Possible interrupt unsafe locking scenario:
+
+       CPU0                    CPU1
+       ----                    ----
+  lock(wq_mayday_lock);
+                               local_irq_disable();
+                               lock(&pool->lock);
+                               lock(wq_mayday_lock);
+  <Interrupt>
+    lock(&pool->lock);
+
+ *** DEADLOCK ***
+
+4 locks held by kworker/1:0/19:
+ #0: ffff888010062d38 ((wq_completion)events){+.+.}-{0:0}, at: arch_atomic64_set arch/x86/include/asm/atomic64_64.h:34 [inline]
+ #0: ffff888010062d38 ((wq_completion)events){+.+.}-{0:0}, at: atomic64_set include/asm-generic/atomic-instrumented.h:856 [inline]
+ #0: ffff888010062d38 ((wq_completion)events){+.+.}-{0:0}, at: atomic_long_set include/asm-generic/atomic-long.h:41 [inline]
+ #0: ffff888010062d38 ((wq_completion)events){+.+.}-{0:0}, at: set_work_data kernel/workqueue.c:616 [inline]
+ #0: ffff888010062d38 ((wq_completion)events){+.+.}-{0:0}, at: set_work_pool_and_clear_pending kernel/workqueue.c:643 [inline]
+ #0: ffff888010062d38 ((wq_completion)events){+.+.}-{0:0}, at: process_one_work+0x871/0x15f0 kernel/workqueue.c:2246
+ #1: ffffc90000d97da8 ((work_completion)(&(&chan->chan_timer)->work)){+.+.}-{0:0}, at: process_one_work+0x8a5/0x15f0 kernel/workqueue.c:2250
+ #2: ffff88802fc01ad8 (&conn->chan_lock){+.+.}-{3:3}, at: l2cap_chan_timeout+0x69/0x2f0 net/bluetooth/l2cap_core.c:422
+ #3: ffff8880623c6520 (&chan->lock/1){+.+.}-{3:3}, at: l2cap_chan_lock include/net/bluetooth/l2cap.h:852 [inline]
+ #3: ffff8880623c6520 (&chan->lock/1){+.+.}-{3:3}, at: l2cap_chan_timeout+0xb5/0x2f0 net/bluetooth/l2cap_core.c:426
+
+the shortest dependencies between 2nd lock and 1st lock:
+ -> (&pool->lock){-.-.}-{2:2} {
+    IN-HARDIRQ-W at:
+                      lock_acquire kernel/locking/lockdep.c:5437 [inline]
+                      lock_acquire+0x29d/0x740 kernel/locking/lockdep.c:5402
+                      __raw_spin_lock include/linux/spinlock_api_smp.h:142 [inline]
+                      _raw_spin_lock+0x2a/0x40 kernel/locking/spinlock.c:151
+                      __queue_work+0x375/0xf00 kernel/workqueue.c:1455
+                      queue_work_on+0xc7/0xd0 kernel/workqueue.c:1524
+                      tick_nohz_activate kernel/time/tick-sched.c:1285 [inline]
+                      tick_nohz_activate kernel/time/tick-sched.c:1278 [inline]
+                      tick_setup_sched_timer+0x1e8/0x320 kernel/time/tick-sched.c:1419
+                      hrtimer_switch_to_hres kernel/time/hrtimer.c:738 [inline]
+                      hrtimer_run_queues+0x339/0x400 kernel/time/hrtimer.c:1745
+                      run_local_timers kernel/time/timer.c:1756 [inline]
+                      update_process_times+0xc0/0x200 kernel/time/timer.c:1781
+                      tick_periodic+0x79/0x230 kernel/time/tick-common.c:100
+                      tick_handle_periodic+0x41/0x120 kernel/time/tick-common.c:112
+                      local_apic_timer_interrupt arch/x86/kernel/apic/apic.c:1085 [inline]
+                      __sysvec_apic_timer_interrupt+0x146/0x540 arch/x86/kernel/apic/apic.c:1102
+                      asm_call_irq_on_stack+0xf/0x20
+                      __run_sysvec_on_irqstack arch/x86/include/asm/irq_stack.h:37 [inline]
+                      run_sysvec_on_irqstack_cond arch/x86/include/asm/irq_stack.h:89 [inline]
+                      sysvec_apic_timer_interrupt+0xbd/0x100 arch/x86/kernel/apic/apic.c:1096
+                      asm_sysvec_apic_timer_interrupt+0x12/0x20 arch/x86/include/asm/idtentry.h:628
+                      native_restore_fl arch/x86/include/asm/irqflags.h:41 [inline]
+                      arch_local_irq_restore arch/x86/include/asm/irqflags.h:84 [inline]
+                      console_unlock+0x7b6/0xbb0 kernel/printk/printk.c:2560
+                      vprintk_emit+0x189/0x490 kernel/printk/printk.c:2074
+                      vprintk_func+0x8d/0x1e0 kernel/printk/printk_safe.c:393
+                      printk+0xba/0xed kernel/printk/printk.c:2122
+                      __clocksource_select.cold+0x7c/0xaf kernel/time/clocksource.c:776
+                      clocksource_select kernel/time/clocksource.c:791 [inline]
+                      clocksource_done_booting+0x35/0x44 kernel/time/clocksource.c:815
+                      do_one_initcall+0x103/0x650 init/main.c:1217
+                      do_initcall_level init/main.c:1290 [inline]
+                      do_initcalls init/main.c:1306 [inline]
+                      do_basic_setup init/main.c:1326 [inline]
+                      kernel_init_freeable+0x605/0x689 init/main.c:1533
+                      kernel_init+0xd/0x1b8 init/main.c:1415
+                      ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:296
+    IN-SOFTIRQ-W at:
+                      lock_acquire kernel/locking/lockdep.c:5437 [inline]
+                      lock_acquire+0x29d/0x740 kernel/locking/lockdep.c:5402
+                      __raw_spin_lock include/linux/spinlock_api_smp.h:142 [inline]
+                      _raw_spin_lock+0x2a/0x40 kernel/locking/spinlock.c:151
+                      __queue_work+0x375/0xf00 kernel/workqueue.c:1455
+                      call_timer_fn+0x1a5/0x6b0 kernel/time/timer.c:1417
+                      expire_timers kernel/time/timer.c:1457 [inline]
+                      __run_timers.part.0+0x4a6/0xa50 kernel/time/timer.c:1731
+                      __run_timers kernel/time/timer.c:1712 [inline]
+                      run_timer_softirq+0xb3/0x1d0 kernel/time/timer.c:1744
+                      __do_softirq+0x2a5/0x9f7 kernel/softirq.c:343
+                      asm_call_irq_on_stack+0xf/0x20
+                      __run_on_irqstack arch/x86/include/asm/irq_stack.h:26 [inline]
+                      run_on_irqstack_cond arch/x86/include/asm/irq_stack.h:77 [inline]
+                      do_softirq_own_stack+0xaa/0xd0 arch/x86/kernel/irq_64.c:77
+                      invoke_softirq kernel/softirq.c:226 [inline]
+                      __irq_exit_rcu kernel/softirq.c:420 [inline]
+                      irq_exit_rcu+0x134/0x200 kernel/softirq.c:432
+                      sysvec_apic_timer_interrupt+0x4d/0x100 arch/x86/kernel/apic/apic.c:1096
+                      asm_sysvec_apic_timer_interrupt+0x12/0x20 arch/x86/include/asm/idtentry.h:628
+                      native_safe_halt arch/x86/include/asm/irqflags.h:60 [inline]
+                      arch_safe_halt arch/x86/include/asm/irqflags.h:103 [inline]
+                      default_idle+0xe/0x10 arch/x86/kernel/process.c:688
+                      default_idle_call+0x87/0xd0 kernel/sched/idle.c:112
+                      cpuidle_idle_call kernel/sched/idle.c:194 [inline]
+                      do_idle+0x3fa/0x590 kernel/sched/idle.c:299
+                      cpu_startup_entry+0x14/0x20 kernel/sched/idle.c:396
+                      start_secondary+0x274/0x350 arch/x86/kernel/smpboot.c:271
+                      secondary_startup_64_no_verify+0xb0/0xbb
+    INITIAL USE at:
+                     lock_acquire kernel/locking/lockdep.c:5437 [inline]
+                     lock_acquire+0x29d/0x740 kernel/locking/lockdep.c:5402
+                     __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:110 [inline]
+                     _raw_spin_lock_irqsave+0x39/0x50 kernel/locking/spinlock.c:159
+                     pwq_adjust_max_active+0x177/0x5f0 kernel/workqueue.c:3726
+                     link_pwq+0x144/0x290 kernel/workqueue.c:3792
+                     alloc_and_link_pwqs kernel/workqueue.c:4186 [inline]
+                     alloc_workqueue+0x66f/0xe70 kernel/workqueue.c:4308
+                     workqueue_init_early+0x508/0x69b kernel/workqueue.c:5982
+                     start_kernel+0x1f3/0x48c init/main.c:939
+                     secondary_startup_64_no_verify+0xb0/0xbb
+  }
+  ... key      at: [<ffffffff8e4bf920>] __key.20+0x0/0x40
+  ... acquired at:
+   __raw_spin_lock include/linux/spinlock_api_smp.h:142 [inline]
+   _raw_spin_lock+0x2a/0x40 kernel/locking/spinlock.c:151
+   pool_mayday_timeout+0x36/0x5a0 kernel/workqueue.c:2046
+   call_timer_fn+0x1a5/0x6b0 kernel/time/timer.c:1417
+   expire_timers kernel/time/timer.c:1462 [inline]
+   __run_timers.part.0+0x67c/0xa50 kernel/time/timer.c:1731
+   __run_timers kernel/time/timer.c:1712 [inline]
+   run_timer_softirq+0xb3/0x1d0 kernel/time/timer.c:1744
+   __do_softirq+0x2a5/0x9f7 kernel/softirq.c:343
+   asm_call_irq_on_stack+0xf/0x20
+   __run_on_irqstack arch/x86/include/asm/irq_stack.h:26 [inline]
+   run_on_irqstack_cond arch/x86/include/asm/irq_stack.h:77 [inline]
+   do_softirq_own_stack+0xaa/0xd0 arch/x86/kernel/irq_64.c:77
+   invoke_softirq kernel/softirq.c:226 [inline]
+   __irq_exit_rcu kernel/softirq.c:420 [inline]
+   irq_exit_rcu+0x134/0x200 kernel/softirq.c:432
+   sysvec_apic_timer_interrupt+0x4d/0x100 arch/x86/kernel/apic/apic.c:1096
+   asm_sysvec_apic_timer_interrupt+0x12/0x20 arch/x86/include/asm/idtentry.h:628
+   native_restore_fl arch/x86/include/asm/irqflags.h:41 [inline]
+   arch_local_irq_restore arch/x86/include/asm/irqflags.h:84 [inline]
+   lock_acquire kernel/locking/lockdep.c:5440 [inline]
+   lock_acquire+0x2c7/0x740 kernel/locking/lockdep.c:5402
+   rcu_lock_acquire include/linux/rcupdate.h:259 [inline]
+   rcu_read_lock include/linux/rcupdate.h:648 [inline]
+   inet_twsk_purge+0x112/0x7c0 net/ipv4/inet_timewait_sock.c:268
+   ops_exit_list+0x10d/0x160 net/core/net_namespace.c:190
+   setup_net+0x508/0x850 net/core/net_namespace.c:365
+   copy_net_ns+0x31e/0x760 net/core/net_namespace.c:483
+   create_new_namespaces+0x3f6/0xb20 kernel/nsproxy.c:110
+   unshare_nsproxy_namespaces+0xbd/0x1f0 kernel/nsproxy.c:226
+   ksys_unshare+0x445/0x8e0 kernel/fork.c:2957
+   __do_sys_unshare kernel/fork.c:3025 [inline]
+   __se_sys_unshare kernel/fork.c:3023 [inline]
+   __x64_sys_unshare+0x2d/0x40 kernel/fork.c:3023
+   do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+   entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+-> (wq_mayday_lock){+.-.}-{2:2} {
+   HARDIRQ-ON-W at:
+                    lock_acquire kernel/locking/lockdep.c:5437 [inline]
+                    lock_acquire+0x29d/0x740 kernel/locking/lockdep.c:5402
+                    __raw_spin_lock_bh include/linux/spinlock_api_smp.h:135 [inline]
+                    _raw_spin_lock_bh+0x2f/0x40 kernel/locking/spinlock.c:175
+                    spin_lock_bh include/linux/spinlock.h:359 [inline]
+                    lock_sock_nested+0x3b/0x110 net/core/sock.c:3049
+                    l2cap_sock_teardown_cb+0xa1/0x660 net/bluetooth/l2cap_sock.c:1520
+                    l2cap_chan_del+0xbc/0xa80 net/bluetooth/l2cap_core.c:618
+                    l2cap_chan_close+0x1bc/0xaf0 net/bluetooth/l2cap_core.c:823
+                    l2cap_chan_timeout+0x17e/0x2f0 net/bluetooth/l2cap_core.c:436
+                    process_one_work+0x98d/0x15f0 kernel/workqueue.c:2275
+                    worker_thread+0x64c/0x1120 kernel/workqueue.c:2421
+                    kthread+0x3b1/0x4a0 kernel/kthread.c:292
+                    ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:296
+   IN-SOFTIRQ-W at:
+                    lock_acquire kernel/locking/lockdep.c:5437 [inline]
+                    lock_acquire+0x29d/0x740 kernel/locking/lockdep.c:5402
+                    __raw_spin_lock include/linux/spinlock_api_smp.h:142 [inline]
+                    _raw_spin_lock+0x2a/0x40 kernel/locking/spinlock.c:151
+                    pool_mayday_timeout+0x36/0x5a0 kernel/workqueue.c:2046
+                    call_timer_fn+0x1a5/0x6b0 kernel/time/timer.c:1417
+                    expire_timers kernel/time/timer.c:1462 [inline]
+                    __run_timers.part.0+0x67c/0xa50 kernel/time/timer.c:1731
+                    __run_timers kernel/time/timer.c:1712 [inline]
+                    run_timer_softirq+0xb3/0x1d0 kernel/time/timer.c:1744
+                    __do_softirq+0x2a5/0x9f7 kernel/softirq.c:343
+                    asm_call_irq_on_stack+0xf/0x20
+                    __run_on_irqstack arch/x86/include/asm/irq_stack.h:26 [inline]
+                    run_on_irqstack_cond arch/x86/include/asm/irq_stack.h:77 [inline]
+                    do_softirq_own_stack+0xaa/0xd0 arch/x86/kernel/irq_64.c:77
+                    invoke_softirq kernel/softirq.c:226 [inline]
+                    __irq_exit_rcu kernel/softirq.c:420 [inline]
+                    irq_exit_rcu+0x134/0x200 kernel/softirq.c:432
+                    sysvec_apic_timer_interrupt+0x4d/0x100 arch/x86/kernel/apic/apic.c:1096
+                    asm_sysvec_apic_timer_interrupt+0x12/0x20 arch/x86/include/asm/idtentry.h:628
+                    loop2+0x8/0x39e
+   INITIAL USE at:
+                   lock_acquire kernel/locking/lockdep.c:5437 [inline]
+                   lock_acquire+0x29d/0x740 kernel/locking/lockdep.c:5402
+                   __raw_spin_lock_irq include/linux/spinlock_api_smp.h:128 [inline]
+                   _raw_spin_lock_irq+0x32/0x50 kernel/locking/spinlock.c:167
+                   rescuer_thread+0x1cc/0xd30 kernel/workqueue.c:2495
+                   kthread+0x3b1/0x4a0 kernel/kthread.c:292
+                   ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:296
+ }
+ ... key      at: [<ffffffff8b22dff8>] wq_mayday_lock+0x18/0x60
+ ... acquired at:
+   mark_usage kernel/locking/lockdep.c:4320 [inline]
+   __lock_acquire+0x857/0x5500 kernel/locking/lockdep.c:4786
+   lock_acquire kernel/locking/lockdep.c:5437 [inline]
+   lock_acquire+0x29d/0x740 kernel/locking/lockdep.c:5402
+   __raw_spin_lock_bh include/linux/spinlock_api_smp.h:135 [inline]
+   _raw_spin_lock_bh+0x2f/0x40 kernel/locking/spinlock.c:175
+   spin_lock_bh include/linux/spinlock.h:359 [inline]
+   lock_sock_nested+0x3b/0x110 net/core/sock.c:3049
+   l2cap_sock_teardown_cb+0xa1/0x660 net/bluetooth/l2cap_sock.c:1520
+   l2cap_chan_del+0xbc/0xa80 net/bluetooth/l2cap_core.c:618
+   l2cap_chan_close+0x1bc/0xaf0 net/bluetooth/l2cap_core.c:823
+   l2cap_chan_timeout+0x17e/0x2f0 net/bluetooth/l2cap_core.c:436
+   process_one_work+0x98d/0x15f0 kernel/workqueue.c:2275
+   worker_thread+0x64c/0x1120 kernel/workqueue.c:2421
+   kthread+0x3b1/0x4a0 kernel/kthread.c:292
+   ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:296
+
+
+stack backtrace:
+CPU: 1 PID: 19 Comm: kworker/1:0 Not tainted 5.11.0-rc2-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Workqueue: events l2cap_chan_timeout
+Call Trace:
+ __dump_stack lib/dump_stack.c:79 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:120
+ print_irq_inversion_bug kernel/locking/lockdep.c:3740 [inline]
+ check_usage_backwards kernel/locking/lockdep.c:3884 [inline]
+ mark_lock_irq kernel/locking/lockdep.c:3974 [inline]
+ mark_lock.cold+0x1a/0x73 kernel/locking/lockdep.c:4411
+ mark_usage kernel/locking/lockdep.c:4320 [inline]
+ __lock_acquire+0x857/0x5500 kernel/locking/lockdep.c:4786
+ lock_acquire kernel/locking/lockdep.c:5437 [inline]
+ lock_acquire+0x29d/0x740 kernel/locking/lockdep.c:5402
+ __raw_spin_lock_bh include/linux/spinlock_api_smp.h:135 [inline]
+ _raw_spin_lock_bh+0x2f/0x40 kernel/locking/spinlock.c:175
+ spin_lock_bh include/linux/spinlock.h:359 [inline]
+ lock_sock_nested+0x3b/0x110 net/core/sock.c:3049
+ l2cap_sock_teardown_cb+0xa1/0x660 net/bluetooth/l2cap_sock.c:1520
+ l2cap_chan_del+0xbc/0xa80 net/bluetooth/l2cap_core.c:618
+ l2cap_chan_close+0x1bc/0xaf0 net/bluetooth/l2cap_core.c:823
+ l2cap_chan_timeout+0x17e/0x2f0 net/bluetooth/l2cap_core.c:436
+ process_one_work+0x98d/0x15f0 kernel/workqueue.c:2275
+ worker_thread+0x64c/0x1120 kernel/workqueue.c:2421
+ kthread+0x3b1/0x4a0 kernel/kthread.c:292
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:296
+================================================================================
+UBSAN: array-index-out-of-bounds in kernel/locking/qspinlock.c:130:9
+index 8847 is out of range for type 'long unsigned int [8]'
+CPU: 1 PID: 19 Comm: kworker/1:0 Not tainted 5.11.0-rc2-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Workqueue: events l2cap_chan_timeout
+Call Trace:
+ __dump_stack lib/dump_stack.c:79 [inline]
+ dump_stack+0x107/0x163 lib/dump_stack.c:120
+ ubsan_epilogue+0xb/0x5a lib/ubsan.c:148
+ __ubsan_handle_out_of_bounds.cold+0x62/0x6c lib/ubsan.c:356
+ decode_tail kernel/locking/qspinlock.c:130 [inline]
+ __pv_queued_spin_lock_slowpath+0xa3f/0xb40 kernel/locking/qspinlock.c:468
+ pv_queued_spin_lock_slowpath arch/x86/include/asm/paravirt.h:554 [inline]
+ queued_spin_lock_slowpath arch/x86/include/asm/qspinlock.h:51 [inline]
+ queued_spin_lock include/asm-generic/qspinlock.h:85 [inline]
+ do_raw_spin_lock+0x200/0x2b0 kernel/locking/spinlock_debug.c:113
+ spin_lock_bh include/linux/spinlock.h:359 [inline]
+ lock_sock_nested+0x3b/0x110 net/core/sock.c:3049
+ l2cap_sock_teardown_cb+0xa1/0x660 net/bluetooth/l2cap_sock.c:1520
+ l2cap_chan_del+0xbc/0xa80 net/bluetooth/l2cap_core.c:618
+ l2cap_chan_close+0x1bc/0xaf0 net/bluetooth/l2cap_core.c:823
+ l2cap_chan_timeout+0x17e/0x2f0 net/bluetooth/l2cap_core.c:436
+ process_one_work+0x98d/0x15f0 kernel/workqueue.c:2275
+ worker_thread+0x64c/0x1120 kernel/workqueue.c:2421
+ kthread+0x3b1/0x4a0 kernel/kthread.c:292
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:296
+================================================================================
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
