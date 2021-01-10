@@ -2,86 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DD742F09A8
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Jan 2021 21:14:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A97D12F09AE
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Jan 2021 21:19:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726988AbhAJUNB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Jan 2021 15:13:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57694 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726394AbhAJUNA (ORCPT
+        id S1726932AbhAJUSP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Jan 2021 15:18:15 -0500
+Received: from conssluserg-03.nifty.com ([210.131.2.82]:50256 "EHLO
+        conssluserg-03.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726827AbhAJUSP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Jan 2021 15:13:00 -0500
-Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5093C061786
-        for <linux-kernel@vger.kernel.org>; Sun, 10 Jan 2021 12:12:19 -0800 (PST)
-Received: by mail-wr1-x430.google.com with SMTP id i9so14345601wrc.4
-        for <linux-kernel@vger.kernel.org>; Sun, 10 Jan 2021 12:12:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=An+QxtFW/VPB9KSvU4gnvsIFY2A2uZAxzzqmCzbKa74=;
-        b=YKHTKzMHx5p0pqY54uW0fbp+IwXR4nAZB/RpUw8atLmlStwtkWeNdaUuENMv/2+yW+
-         IB5TQNKhcXBXeIaHqpMc9Hw0aJ4T8Oys+flM9S+6GPt9ERd/baom88I8UujBvZQn4g0N
-         J0S0kphIwdqLPdRz2vrAjNfUPaemQhtV+kTHXV+y8H51f5GkB0NZWe19Hfbnmw03ZNAi
-         DuRSq4GZV1V4UWJdtp1zapxtXjjltQnPrxNvaNZM/PR9v8eN4t6W2IqURFKhyanFUVt7
-         G0hlja4SOPdSMtV+a11+YZysn0Af3RQwQwKmKrtwxefoTyCbiNrWzajC/BU3PioTYoVH
-         nIYQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=An+QxtFW/VPB9KSvU4gnvsIFY2A2uZAxzzqmCzbKa74=;
-        b=A8nb/3nUa1u7jrSNTivk5IWQD+cL5v973JS/jvG0yf02+djGuqKsFYOV9U46zqvI6x
-         ocj5UJ7VSmanv8yFk0LPhAUJ57RAFcJMEWyUgmIwGsvnPP7cMDuoLYA9jj1RZQpRzNqR
-         GFpJQFLMO+28mtQdEA20lVMvaPTIaFQfKuanmzLZJdqGlc269ghbe/5D1mn73+9QxfNJ
-         odLi/qFE0FM+EgQ6D/BbLXfjVDrLhMTSljnCkDXXHXB62WIBciUMaRQB3jpPWvWNXrWp
-         YOUH7caG6cCYHkA4WRO044y5f92ilBQoFMtiRs5CtqTwh/OQkvi+2aL5IWlRYbQbpAa+
-         iOLg==
-X-Gm-Message-State: AOAM533tTTq/UeYsvJUjgvhPxka0Q36g+Rfgz5uNmQ+myApXTQ1W3qNA
-        Xd6fh2WxKbfmAsrBM1sh2xlT3g==
-X-Google-Smtp-Source: ABdhPJz4VyEU2aS9YABa1UfHDVDsTij2GADFAt3K6QEphcuzzNHAOnB2bv4F8wPt5S7YzYZanRlBKw==
-X-Received: by 2002:a5d:4e86:: with SMTP id e6mr13587511wru.33.1610309538702;
-        Sun, 10 Jan 2021 12:12:18 -0800 (PST)
-Received: from Red ([2a01:cb1d:3d5:a100:264b:feff:fe03:2806])
-        by smtp.googlemail.com with ESMTPSA id y130sm20467748wmc.22.2021.01.10.12.12.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 10 Jan 2021 12:12:17 -0800 (PST)
-Date:   Sun, 10 Jan 2021 21:12:15 +0100
-From:   LABBE Corentin <clabbe@baylibre.com>
-To:     Dan Carpenter <dan.carpenter@oracle.com>
-Cc:     kbuild@lists.01.org, lkp@intel.com, kbuild-all@lists.01.org,
-        linux-kernel@vger.kernel.org,
-        Herbert Xu <herbert@gondor.apana.org.au>
-Subject: Re: [kbuild] drivers/crypto/allwinner/sun8i-ss/sun8i-ss-hash.c:443
- sun8i_ss_hash_run() warn: possible memory leak of 'result'
-Message-ID: <X/tfnz9UfW+r6ags@Red>
-References: <20210107131236.GB5105@kadam>
+        Sun, 10 Jan 2021 15:18:15 -0500
+Received: from mail-pj1-f52.google.com (mail-pj1-f52.google.com [209.85.216.52]) (authenticated)
+        by conssluserg-03.nifty.com with ESMTP id 10AKHAHD018308;
+        Mon, 11 Jan 2021 05:17:11 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-03.nifty.com 10AKHAHD018308
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1610309831;
+        bh=92UFZwn5rH6dES5yWvRNhvQHxZ2dhzVHs9u2pm1p3m8=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=w9wZFhrRfhuYH7QMhcKbYvfQ4XywvjU8wmdzxSDDLGF1JHTz+3eFuQUw0PfpYdTHS
+         CLxxEzdG3XbzPl5d0seExPwIsfoIDqtvDe5UkG+ld2U6XkpZM6skneTyJKgoOzoHTM
+         CgLvvotIT/Csh6Yq99SI1AWsvIWKgd1tH+cIT2UDM/nGNzQHerv0TlvkJEpSvbZ+ue
+         xnqKiYnNpXzzMKHBQsw8vASd1vxXWjGxHatu0L3/qMtJHEWa4DZJJ5cLhGcGiyiZJW
+         SGddTHTbZ8e4fuT7C/7ZirHewwm3PcTBheO7dt5yz1EWHpkjY9llQpZo31RQzq3TWN
+         zBqDyzMs9R1Zg==
+X-Nifty-SrcIP: [209.85.216.52]
+Received: by mail-pj1-f52.google.com with SMTP id l23so9208799pjg.1;
+        Sun, 10 Jan 2021 12:17:11 -0800 (PST)
+X-Gm-Message-State: AOAM531nt0Q1z1TousGiZUSI3fK4OCWpoqgjqnSZlpO31THdRKl+Z+OW
+        QravTFB7pNOOINiZbtfzllPHHW6U4ZzuEZiMLBQ=
+X-Google-Smtp-Source: ABdhPJyoDpYzVjeVK4wF66jhvCNZJLbkOwN30MRYXw53O0JWsjmYZ2CY3S9XTi+zQjJYtdxeK2PgV0ITQxEKG1O8D/M=
+X-Received: by 2002:a17:902:9b91:b029:db:f003:c5eb with SMTP id
+ y17-20020a1709029b91b02900dbf003c5ebmr13288781plp.1.1610309830433; Sun, 10
+ Jan 2021 12:17:10 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210107131236.GB5105@kadam>
+References: <6f551ebb80f88e9b1bf6aa981f3c201409e1555c.1610019699.git.viresh.kumar@linaro.org>
+In-Reply-To: <6f551ebb80f88e9b1bf6aa981f3c201409e1555c.1610019699.git.viresh.kumar@linaro.org>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Mon, 11 Jan 2021 05:16:32 +0900
+X-Gmail-Original-Message-ID: <CAK7LNAQ-d-9VSLdS9SLM9_cjUrL3tvLXndiFw124c_qic2vh5g@mail.gmail.com>
+Message-ID: <CAK7LNAQ-d-9VSLdS9SLM9_cjUrL3tvLXndiFw124c_qic2vh5g@mail.gmail.com>
+Subject: Re: [PATCH] Documentation: kbuild: Fix section reference
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     Michal Marek <michal.lkml@markovi.net>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Anmar Oueja <anmar.oueja@linaro.org>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Le Thu, Jan 07, 2021 at 04:12:36PM +0300, Dan Carpenter a écrit :
-> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git  master
-> head:   e71ba9452f0b5b2e8dc8aa5445198cd9214a6a62
-> commit: d9b45418a91773b7672e4c60037a28074b495c6d crypto: sun8i-ss - support hash algorithms
-> config: arc-randconfig-m031-20210106 (attached as .config)
-> compiler: arc-elf-gcc (GCC) 9.3.0
-> 
-> If you fix the issue, kindly add following tag as appropriate
-> Reported-by: kernel test robot <lkp@intel.com>
-> Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
-> 
+On Thu, Jan 7, 2021 at 8:42 PM Viresh Kumar <viresh.kumar@linaro.org> wrote:
+>
+> Section 3.11 was incorrectly called 3.9, fix it.
+>
+> Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
+> ---
+>  Documentation/kbuild/makefiles.rst | 2 +-
 
-Hello
 
-I will fix it
+Applied to linux-kbuild. Thanks.
 
-Thanks.
+
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/Documentation/kbuild/makefiles.rst b/Documentation/kbuild/makefiles.rst
+> index d36768cf1250..9f6a11881951 100644
+> --- a/Documentation/kbuild/makefiles.rst
+> +++ b/Documentation/kbuild/makefiles.rst
+> @@ -598,7 +598,7 @@ more details, with real examples.
+>         explicitly added to $(targets).
+>
+>         Assignments to $(targets) are without $(obj)/ prefix. if_changed may be
+> -       used in conjunction with custom rules as defined in "3.9 Custom Rules".
+> +       used in conjunction with custom rules as defined in "3.11 Custom Rules".
+>
+>         Note: It is a typical mistake to forget the FORCE prerequisite.
+>         Another common pitfall is that whitespace is sometimes significant; for
+> --
+> 2.25.0.rc1.19.g042ed3e048af
+>
+
+
+-- 
+Best Regards
+Masahiro Yamada
