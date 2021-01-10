@@ -2,32 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D0CAC2F0A20
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Jan 2021 23:51:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BF6172F0A28
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Jan 2021 23:54:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727394AbhAJWvM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Jan 2021 17:51:12 -0500
-Received: from foss.arm.com ([217.140.110.172]:39080 "EHLO foss.arm.com"
+        id S1727534AbhAJWvb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Jan 2021 17:51:31 -0500
+Received: from foss.arm.com ([217.140.110.172]:39118 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727327AbhAJWu6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Jan 2021 17:50:58 -0500
+        id S1727463AbhAJWvZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 10 Jan 2021 17:51:25 -0500
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 09DFC1597;
-        Sun, 10 Jan 2021 14:49:43 -0800 (PST)
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A5DF215BF;
+        Sun, 10 Jan 2021 14:49:44 -0800 (PST)
 Received: from ewhatever.cambridge.arm.com (ewhatever.cambridge.arm.com [10.1.197.1])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 70F733F719;
-        Sun, 10 Jan 2021 14:49:41 -0800 (PST)
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 3C8E03F719;
+        Sun, 10 Jan 2021 14:49:43 -0800 (PST)
 From:   Suzuki K Poulose <suzuki.poulose@arm.com>
 To:     linux-arm-kernel@lists.infradead.org
 Cc:     coresight@lists.linaro.org, mathieu.poirier@linaro.org,
         anshuman.khandual@arm.com, mike.leach@linaro.org,
         leo.yan@linaro.org, linux-kernel@vger.kernel.org,
         jonathan.zhouwen@huawei.com, catalin.marinas@arm.com,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        devicetree@vger.kernel.org, Rob Herring <robh@kernel.org>
-Subject: [PATCH v7 26/28] dts: bindings: coresight: ETM system register access only units
-Date:   Sun, 10 Jan 2021 22:48:48 +0000
-Message-Id: <20210110224850.1880240-27-suzuki.poulose@arm.com>
+        Will Deacon <will@kernel.org>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>
+Subject: [PATCH v7 27/28] arm64: Add TRFCR_ELx definitions
+Date:   Sun, 10 Jan 2021 22:48:49 +0000
+Message-Id: <20210110224850.1880240-28-suzuki.poulose@arm.com>
 X-Mailer: git-send-email 2.24.1
 In-Reply-To: <20210110224850.1880240-1-suzuki.poulose@arm.com>
 References: <20210110224850.1880240-1-suzuki.poulose@arm.com>
@@ -37,35 +37,64 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Document the bindings for ETMs with system register accesses.
+From: Jonathan Zhou <jonathan.zhouwen@huawei.com>
 
-Cc: devicetree@vger.kernel.org
-Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
-Cc: Mike Leach <mike.leach@linaro.org>
-Acked-by: Rob Herring <robh@kernel.org>
+Add definitions for the Arm v8.4 SelfHosted trace extensions registers.
+
+Acked-by: Catalin Marinas <catalin.marinas@arm.com>
+Cc: Will Deacon <will@kernel.org>
+Acked-by: Mathieu Poirier <mathieu.poirier@linaro.org>
+Signed-off-by: Jonathan Zhou <jonathan.zhouwen@huawei.com>
+[ split the register definitions to separate patch
+  rename some of the symbols ]
 Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
 ---
- Documentation/devicetree/bindings/arm/coresight.txt | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ arch/arm64/include/asm/sysreg.h | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/arm/coresight.txt b/Documentation/devicetree/bindings/arm/coresight.txt
-index d711676b4a51..7f9c1ca87487 100644
---- a/Documentation/devicetree/bindings/arm/coresight.txt
-+++ b/Documentation/devicetree/bindings/arm/coresight.txt
-@@ -34,9 +34,12 @@ its hardware characteristcs.
- 					Program Flow Trace Macrocell:
- 			"arm,coresight-etm3x", "arm,primecell";
+diff --git a/arch/arm64/include/asm/sysreg.h b/arch/arm64/include/asm/sysreg.h
+index 8b5e7e5c3cc8..4acff97519b9 100644
+--- a/arch/arm64/include/asm/sysreg.h
++++ b/arch/arm64/include/asm/sysreg.h
+@@ -191,6 +191,7 @@
+ #define SYS_GCR_EL1			sys_reg(3, 0, 1, 0, 6)
  
--		- Embedded Trace Macrocell (version 4.x):
-+		- Embedded Trace Macrocell (version 4.x), with memory mapped access.
- 			"arm,coresight-etm4x", "arm,primecell";
+ #define SYS_ZCR_EL1			sys_reg(3, 0, 1, 2, 0)
++#define SYS_TRFCR_EL1			sys_reg(3, 0, 1, 2, 1)
  
-+		- Embedded Trace Macrocell (version 4.x), with system register access only.
-+			"arm,coresight-etm4x-sysreg";
+ #define SYS_TTBR0_EL1			sys_reg(3, 0, 2, 0, 0)
+ #define SYS_TTBR1_EL1			sys_reg(3, 0, 2, 0, 1)
+@@ -471,6 +472,7 @@
+ 
+ #define SYS_SCTLR_EL2			sys_reg(3, 4, 1, 0, 0)
+ #define SYS_ZCR_EL2			sys_reg(3, 4, 1, 2, 0)
++#define SYS_TRFCR_EL2			sys_reg(3, 4, 1, 2, 1)
+ #define SYS_DACR32_EL2			sys_reg(3, 4, 3, 0, 0)
+ #define SYS_SPSR_EL2			sys_reg(3, 4, 4, 0, 0)
+ #define SYS_ELR_EL2			sys_reg(3, 4, 4, 0, 1)
+@@ -829,6 +831,7 @@
+ #define ID_AA64MMFR2_CNP_SHIFT		0
+ 
+ /* id_aa64dfr0 */
++#define ID_AA64DFR0_TRACE_FILT_SHIFT	40
+ #define ID_AA64DFR0_DOUBLELOCK_SHIFT	36
+ #define ID_AA64DFR0_PMSVER_SHIFT	32
+ #define ID_AA64DFR0_CTX_CMPS_SHIFT	28
+@@ -1003,6 +1006,14 @@
+ /* Safe value for MPIDR_EL1: Bit31:RES1, Bit30:U:0, Bit24:MT:0 */
+ #define SYS_MPIDR_SAFE_VAL	(BIT(31))
+ 
++#define TRFCR_ELx_TS_SHIFT		5
++#define TRFCR_ELx_TS_VIRTUAL		((0x1UL) << TRFCR_ELx_TS_SHIFT)
++#define TRFCR_ELx_TS_GUEST_PHYSICAL	((0x2UL) << TRFCR_ELx_TS_SHIFT)
++#define TRFCR_ELx_TS_PHYSICAL		((0x3UL) << TRFCR_ELx_TS_SHIFT)
++#define TRFCR_EL2_CX			BIT(3)
++#define TRFCR_ELx_ExTRE			BIT(1)
++#define TRFCR_ELx_E0TRE			BIT(0)
 +
- 		- Coresight programmable Replicator :
- 			"arm,coresight-dynamic-replicator", "arm,primecell";
+ #ifdef __ASSEMBLY__
  
+ 	.irp	num,0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30
 -- 
 2.24.1
 
