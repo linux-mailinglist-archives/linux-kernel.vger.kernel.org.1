@@ -2,89 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 574E82F0A80
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 00:53:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CE9B2F0A84
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 00:58:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726908AbhAJXvs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Jan 2021 18:51:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47642 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726110AbhAJXvs (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Jan 2021 18:51:48 -0500
-Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1F88C061786
-        for <linux-kernel@vger.kernel.org>; Sun, 10 Jan 2021 15:51:07 -0800 (PST)
-Received: by mail-lj1-x22b.google.com with SMTP id u21so1636291lja.0
-        for <linux-kernel@vger.kernel.org>; Sun, 10 Jan 2021 15:51:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=TeXerxLFQDRy1M/7+6jRhfeAjoOXsFHoiOadjCR5Gxo=;
-        b=Qt+slJnfi7kKerWix4WQ5h3IJviGUsa6pyl2XSZOa5Jguu/1sbrujcumGoqzIniiru
-         QNv6GWf9r3YnXEybcNqWJgIJ1XTxXRieyeSHs9ZIiKMRjBDVi+TJ3rUG4FoIOeN/Sba9
-         EKhHiqY4DBXj8uDRXj/mM9GuNN0nehxPDPN7cGJJfd0iXW8q7JW9QpfjO0vnWHjhR4+R
-         NFQv2goTLNLfTyqFooMd7Ad79y/ZlR/gx+h+QhPhrLxhM9M2fjqAplekdwBhK31EyqbG
-         CBtTuPAG2ILts4fD/jqhIKUVJ5RkCCONSzoku5Z5V0SfuLx7XEwiw2m9bzwYfB038CJT
-         EMtg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=TeXerxLFQDRy1M/7+6jRhfeAjoOXsFHoiOadjCR5Gxo=;
-        b=cV9UNwaqPY3/JmFgsQX2sUp0wmeyKk7+RKcbvSHdo1xXecBnKNScTuFRpK3yi4ET20
-         w++HUHcpebsPNqPP5qmsNELAIdwadvqLgjChov/wAbSfTpEzgba8ugjfs3helL1aZh/0
-         2ccjyI0GL9fxHZp5iNIgdyqtmHfl2dCvVOkZtTrXF0ThovkqO5pzeRS0j8SzQu9CODYN
-         vOPRVf/qt8LEZxmpzs822ABYLvJTd4oBfTxELlLmSTwKOqQv8q2uSnRc6E8M22sG6f6m
-         zBOZYy3oPIk9Z7YVdhFlQC1fsIaV1agmUdwFpEHMljzw1xNxVz9bJwStn1W2n822pty5
-         cLPg==
-X-Gm-Message-State: AOAM530MCK0uYmFE6lSNRD2NZUBfI5x4d8NzN+XOQFM2/XpY2OmC443m
-        on6gkb28ev9i/577BFBW/+tvmJGffN/OOFuimtEQOp8UinLmUw==
-X-Google-Smtp-Source: ABdhPJwqHKxSHgkILumAzY5OKQLD8YP9VBC1kI0H6ZXJ4LVIag60LgqtDk6Pt+7IEB25C6ZhnMGQxCj3WFsKVjDJ03E=
-X-Received: by 2002:a2e:bc05:: with SMTP id b5mr6529624ljf.444.1610322666121;
- Sun, 10 Jan 2021 15:51:06 -0800 (PST)
+        id S1726915AbhAJX5n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Jan 2021 18:57:43 -0500
+Received: from bilbo.ozlabs.org ([203.11.71.1]:45677 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725936AbhAJX5n (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 10 Jan 2021 18:57:43 -0500
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4DDYfJ5RlWz9sVt;
+        Mon, 11 Jan 2021 10:56:55 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1610323021;
+        bh=cLG23pR3dbiQqeVfbzXt+mehia79QJ4+25O39jU3DO0=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=GmTi4eskViAXPBq8cuIDorojxyBEZO4dxh1/uVkcwv8MRMOV5H9L6p9XzFjiqdRSg
+         mUTb4Ss5ycca0u5oEg05w6xeLAjoT6Xu/PssV/8T7QWPktGL9oKbgABvUKa9Q48Jrq
+         RHDbA3H6kPWG3yxD1Bdyky/fVadSZ/FeOu42unX/w7D2KqdC+cjEMxyByZHYeCgBZz
+         7Pxpx0jGTldvKFlKQ4dPINJXvqAxKEwfaiKKdQq3nnI8CqzE1wz9Eh6NKrtQX9a8Yf
+         GrQ0QFjEzkkXlg0RWGOlf7Pijd1Nqgt52OLlXQiKr5I1XXVq2vr2jSQQH2KraQ9nWB
+         tVlqvXQIcALNg==
+Date:   Mon, 11 Jan 2021 10:56:54 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Intel Graphics <intel-gfx@lists.freedesktop.org>,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>
+Cc:     Dave Airlie <airlied@linux.ie>,
+        DRI <dri-devel@lists.freedesktop.org>,
+        Sebastian Reichel <sebastian.reichel@collabora.com>,
+        Tomi Valkeinen <tomi.valkeinen@ti.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: build failure after merge of the drm tree
+Message-ID: <20210111105654.17e3aa76@canb.auug.org.au>
+In-Reply-To: <20210108122540.657501b2@canb.auug.org.au>
+References: <20210108115518.2b3fdf58@canb.auug.org.au>
+        <20210108122540.657501b2@canb.auug.org.au>
 MIME-Version: 1.0
-References: <1608381853-18582-1-git-send-email-oliver.graute@gmail.com>
- <20210108214313.GA7979@ripley> <CAOMZO5AXgeGYt4+4NMBRL1Hm-9M4X2DngdEBsJEAHq8+MRhQgQ@mail.gmail.com>
- <20210110153532.GA7264@ripley> <CAOMZO5C_hDWeVrCh7k+3OiA0jhQfawhGWE6hxnnFn=wA+dkTGQ@mail.gmail.com>
- <20210110200606.GD7264@ripley>
-In-Reply-To: <20210110200606.GD7264@ripley>
-From:   Fabio Estevam <festevam@gmail.com>
-Date:   Sun, 10 Jan 2021 20:50:54 -0300
-Message-ID: <CAOMZO5DJUm4zutTB1oi5M0zj4_PFZEAbGzX6_LUAkX_dvEz=Qg@mail.gmail.com>
-Subject: Re: [PATCH v1] drm/panel: simple: add SGD GKTW70SDAD1SD
-To:     Oliver Graute <oliver.graute@gmail.com>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Marco Felsch <m.felsch@pengutronix.de>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        DRI mailing list <dri-devel@lists.freedesktop.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; boundary="Sig_/VbNUJrqU8Z1uA+OMxwmXnXl";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jan 10, 2021 at 5:09 PM Oliver Graute <oliver.graute@gmail.com> wrote:
+--Sig_/VbNUJrqU8Z1uA+OMxwmXnXl
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-> here the schematics and my dts. The board is using a LVDS connector for
-> the display.
+Hi all,
 
-The schematics shows the GKTW70SDAD1SD panel in the J4 connector, not
-the LVDS J7 connector.
+On Fri, 8 Jan 2021 12:25:40 +1100 Stephen Rothwell <sfr@canb.auug.org.au> w=
+rote:
+>
+> On Fri, 8 Jan 2021 11:55:18 +1100 Stephen Rothwell <sfr@canb.auug.org.au>=
+ wrote:
+> >
+> > After merging the drm tree, today's linux-next build (x86_64 allmodconf=
+ig)
+> > failed like this:
+> >=20
+> > error: the following would cause module name conflict:
+> >   drivers/video/fbdev/omap2/omapfb/displays/panel-dsi-cm.ko
+> >   drivers/gpu/drm/panel/panel-dsi-cm.ko
+> >=20
+> > Maybe caused by commit
+> >=20
+> >   cf64148abcfd ("drm/panel: Move OMAP's DSI command mode panel driver")
+> >=20
+> > I have used the drm tree from next-20210107 for today. =20
+>=20
+> This has affected the drm-misc tree as well (since it merged in the drm
+> tree).
+>=20
+> I have used the drm-misc tree from next-20210107 for today.
 
-> https://www.variscite.de/wp-content/uploads/2017/12/VAR-6ULCustomboard-Schematics.pdf
-> https://lore.kernel.org/linux-arm-kernel/1610144511-19018-3-git-send-email-oliver.graute@gmail.com/
+And now the drm-intel tree.
 
-As I mentioned earlier you should remove the display timings from the
-dts when using the compatible string for the panel.
+I have used the drm-intel tree from next-20210108 for today.
+--=20
+Cheers,
+Stephen Rothwell
 
-power-supply = <&reg_touch_3v3> is not correct, as the reg_touch_3v3
-does not power the LCD.
+--Sig_/VbNUJrqU8Z1uA+OMxwmXnXl
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
-Another hint is to use the PLL5_VIDEO as the clock source for the
-lcdif controller as done in the imx6ul evk dtsi.
+-----BEGIN PGP SIGNATURE-----
 
-It would also help if you could share the complete boot log.
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl/7lEYACgkQAVBC80lX
+0Gy0/gf9G7vW66eTK+izMbymxovjz3qNZPdMKQMRJtVY+9BmywvLdhb2/rQ2Jg9j
+7tdZkmqxV9aILccdwl600Gv77n8pdxo6v0gxdRIh4EggINDYs+RyytyUWa9nT0vf
+ElPag0eHJWvwgrHAjj/11vjqoBvR6kR/5JWIrTZ3XZW+F/BpNShXHy8U94EFaqt9
+PIWejalakASQCEmUzX6n6WM87Nb7DoTiaQkfRPaAqnovFhhG5Q/jj9Y4fDki+Lca
+NObjHxJINksH9/RwNYCQELv8X3okxfbUHc/E8JKL6Ya8xFzNIoPT4qnVW4yqsctq
+6Z0bppzxFI29q0OJc1tJi4iMEU+XVg==
+=AZPL
+-----END PGP SIGNATURE-----
+
+--Sig_/VbNUJrqU8Z1uA+OMxwmXnXl--
