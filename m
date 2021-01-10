@@ -2,136 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ADF932F0A04
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Jan 2021 23:27:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D49E2F0A08
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Jan 2021 23:30:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726846AbhAJW1L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Jan 2021 17:27:11 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57884 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726447AbhAJW1K (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Jan 2021 17:27:10 -0500
-Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E692CC061786
-        for <linux-kernel@vger.kernel.org>; Sun, 10 Jan 2021 14:26:29 -0800 (PST)
-Received: by mail-lf1-x12c.google.com with SMTP id a12so35157776lfl.6
-        for <linux-kernel@vger.kernel.org>; Sun, 10 Jan 2021 14:26:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=zUDP90lO0cgtaoa+C+R0TXIrpE8ZSeZJnX7l4//TRtE=;
-        b=ueOqPPKcPRT/fo3qweKh/vSrq8I/RFOWCmYettzMvTlMMQVzfTw1WMsauYdA75eWZN
-         v4jwr+IrRKLgHKKSiuHge7QsCq5FeZB50iERo/cTt99icOjNG9Obwgap0zFdI++ycABm
-         oURr15CLuolJV8M5mpRE2JQ/vUrp545yik5hFv7FYWDTfLsynWTp8Gnv7Q6ViiKcHJup
-         DTvDG/GVb5ZuirAOfL3BlTpOcTXeawY/SpIvBER4tQLtzC2KMb1O0cDXKr731aNQPGf8
-         nLxbiC6d4ns3li1MA470CFRN3qfv2Ip7NZbp81qCzkCzXwTigLto5+67T+KXKOfrdmTS
-         yBVg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=zUDP90lO0cgtaoa+C+R0TXIrpE8ZSeZJnX7l4//TRtE=;
-        b=XT8XM9Sv2CiAmXZQoy7sxo85BYsEohCHmVGwhB15Ce/zI3vp+Euh2WRMmqLZe5W8Yg
-         n/Vcn5xQH8pQOHFXD/c1RrrHspLcKaKCnhPF2wcZCh35kEbqXFui5dBbtN/JYo6rDanb
-         tJnkqa5JgTHzhOeRm8voOZgT2azvnaZo/rWhzRciiiCJ2EasjXDc0TlmfU8EPw2SQVAR
-         ukn9kCT/g1nN/83blSrHaY7YqaWnEOhrlGG4wK+v0D8XOi5N80XLQNp9o02xWAUvoz8D
-         nWKZ4mGMet84rUJAYndXfy6sGrbgprtAgi/Zu5F5eEve1rFe1RATyZHV+BqA/VJPv3nw
-         bsgg==
-X-Gm-Message-State: AOAM532Q4+RE/+ooTMud8C1TFtMsoS44tFgil1UeBipkVbGMK9rMJCcK
-        lm+JrL+GcN/2X/gjdbUtz/uqf0+cHh7sYdLf/Mw=
-X-Google-Smtp-Source: ABdhPJyRWs1QcD4OkIBMQ8qIEoN6VsFRbmL/QTRoXDlffyxzDStYlQfz7FU5jMVsdoCFH0VrYFz5MYNDXGWqjwlPABU=
-X-Received: by 2002:a19:f203:: with SMTP id q3mr5729955lfh.166.1610317588311;
- Sun, 10 Jan 2021 14:26:28 -0800 (PST)
+        id S1726918AbhAJW3v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Jan 2021 17:29:51 -0500
+Received: from bilbo.ozlabs.org ([203.11.71.1]:42673 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726418AbhAJW3u (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 10 Jan 2021 17:29:50 -0500
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4DDWhz3QcSz9sWj;
+        Mon, 11 Jan 2021 09:29:07 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1610317748;
+        bh=hgFegXw2fumJ+1g6CP92kYW3WXmjcCqoeLU3CJsYOgk=;
+        h=Date:From:To:Cc:Subject:From;
+        b=VEbV5mDRZXWvlWl+a92wwokfasU1iWDUEqVLJq712dJS0vClb46kRxzDcBiBMd//c
+         2oEXbiHobZ1BAjLBifFqye+gPhSNVwCRbCB2f50b3u8StmQWL4lomhnx5CLxjY7yiU
+         /FvOlKoAjQFFPw2MnrGIhnU6MVhUlRmzYV6IzQMl5hOIRXFtYxDSnVkc3SKVNfXdgZ
+         y8V9SO2vEOoERNRsf2DlHGDUOhuEtVdZRpLLNG54AzgE+eX98qBL2kHdBzvSN1Ll2b
+         I9/l8hLfIZXtfD4ACCEXI47QMpoMMQmGT4XQXrhgHOsZ4/3J6mM7ULVAvXH/HNxhOl
+         0twX5bBy3/ubw==
+Date:   Mon, 11 Jan 2021 09:29:06 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     David Sterba <dsterba@suse.cz>
+Cc:     David Sterba <dsterba@suse.com>, Filipe Manana <fdmanana@suse.com>,
+        Josef Bacik <josef@toxicpanda.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: manual merge of the btrfs tree with the btrfs-fixes
+ tree
+Message-ID: <20210111092906.3a0ec8c2@canb.auug.org.au>
 MIME-Version: 1.0
-From:   Mikhail Gavrilov <mikhail.v.gavrilov@gmail.com>
-Date:   Mon, 11 Jan 2021 03:26:17 +0500
-Message-ID: <CABXGCsPSYh-Nvfig4j4N8073vA6WDdhdg13meAcUgCr_pd5mYw@mail.gmail.com>
-Subject: [drm:dm_plane_helper_prepare_fb [amdgpu]] *ERROR* Failed to pin
- framebuffer with error -12
-To:     amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Linux List Kernel Mailing <linux-kernel@vger.kernel.org>,
-        Harry Wentland <harry.wentland@amd.com>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        "Deucher, Alexander" <alexander.deucher@amd.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/signed; boundary="Sig_/ffxc=el3vUyY9L=P24nX6h7";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi folks,
-today I joined to testing Kernel 5.11 and saw that the kernel log was
-flooded with BUG messages:
-BUG: sleeping function called from invalid context at mm/vmalloc.c:1756
-in_atomic(): 1, irqs_disabled(): 0, non_block: 0, pid: 266, name: kswapd0
-INFO: lockdep is turned off.
-CPU: 15 PID: 266 Comm: kswapd0 Tainted: G        W        ---------
----  5.11.0-0.rc2.20210108gitf5e6c330254a.119.fc34.x86_64 #1
-Hardware name: System manufacturer System Product Name/ROG STRIX
-X570-I GAMING, BIOS 2802 10/21/2020
-Call Trace:
- dump_stack+0x8b/0xb0
- ___might_sleep.cold+0xb6/0xc6
- vm_unmap_aliases+0x21/0x40
- change_page_attr_set_clr+0x9e/0x190
- set_memory_wb+0x2f/0x80
- ttm_pool_free_page+0x28/0x90 [ttm]
- ttm_pool_shrink+0x45/0xb0 [ttm]
- ttm_pool_shrinker_scan+0xa/0x20 [ttm]
- do_shrink_slab+0x177/0x3a0
- shrink_slab+0x9c/0x290
- shrink_node+0x2e6/0x700
- balance_pgdat+0x2f5/0x650
- kswapd+0x21d/0x4d0
- ? do_wait_intr_irq+0xd0/0xd0
- ? balance_pgdat+0x650/0x650
- kthread+0x13a/0x150
- ? __kthread_bind_mask+0x60/0x60
- ret_from_fork+0x22/0x30
+--Sig_/ffxc=el3vUyY9L=P24nX6h7
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-But the most unpleasant thing is that after a while the monitor turns
-off and does not go on again until the restart.
-This is accompanied by an entry in the kernel log:
+Hi all,
 
-amdgpu 0000:0b:00.0: amdgpu: 00000000ff7d8b94 pin failed
-[drm:dm_plane_helper_prepare_fb [amdgpu]] *ERROR* Failed to pin
-framebuffer with error -12
+Today's linux-next merge of the btrfs tree got conflicts in:
 
-$ grep "Failed to pin framebuffer with error" -Rn .
-./drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c:5816:
-DRM_ERROR("Failed to pin framebuffer with error %d\n", r);
+  fs/btrfs/inode.c
+  fs/btrfs/space-info.c
 
-$ git blame -L 5811,5821 drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
-Blaming lines:   0% (11/9167), done.
-5d43be0ccbc2f (Christian K=C3=B6nig 2017-10-26 18:06:23 +0200 5811)
- domain =3D AMDGPU_GEM_DOMAIN_VRAM;
-e7b07ceef2a65 (Harry Wentland  2017-08-10 13:29:07 -0400 5812)
-7b7c6c81b3a37 (Junwei Zhang    2018-06-25 12:51:14 +0800 5813)  r =3D
-amdgpu_bo_pin(rbo, domain);
-e7b07ceef2a65 (Harry Wentland  2017-08-10 13:29:07 -0400 5814)  if
-(unlikely(r !=3D 0)) {
-30b7c6147d18d (Harry Wentland  2017-10-26 15:35:14 -0400 5815)
- if (r !=3D -ERESTARTSYS)
-30b7c6147d18d (Harry Wentland  2017-10-26 15:35:14 -0400 5816)
-         DRM_ERROR("Failed to pin framebuffer with error %d\n", r);
-0f257b09531b4 (Chunming Zhou   2019-05-07 19:45:31 +0800 5817)
- ttm_eu_backoff_reservation(&ticket, &list);
-e7b07ceef2a65 (Harry Wentland  2017-08-10 13:29:07 -0400 5818)
- return r;
-e7b07ceef2a65 (Harry Wentland  2017-08-10 13:29:07 -0400 5819)  }
-e7b07ceef2a65 (Harry Wentland  2017-08-10 13:29:07 -0400 5820)
-bb812f1ea87dd (Junwei Zhang    2018-06-25 13:32:24 +0800 5821)  r =3D
-amdgpu_ttm_alloc_gart(&rbo->tbo);
+between commits:
 
-Who knows how to fix it?
+  3d45f221ce62 ("btrfs: fix deadlock when cloning inline extent and low on =
+free metadata space")
+  e076ab2a2ca7 ("btrfs: shrink delalloc pages instead of full inodes")
 
-Full kernel logs is here:
-[1] https://pastebin.com/fLasjDHX
-[2] https://pastebin.com/g3wR2r9e
+from the btrfs-fixes tree and commits:
 
---
-Best Regards,
-Mike Gavrilov.
+  50f2ad0e64bd ("btrfs: fix deadlock when cloning inline extent and low on =
+free metadata space")
+  123b5509410e ("btrfs: track ordered bytes instead of just dio ordered byt=
+es")
+
+from the btrfs tree.
+
+I fixed it up (I used the former version of the conflicts in inode.c
+and see below) and can carry the fix as necessary. This is now fixed as
+far as linux-next is concerned, but any non trivial conflicts should be
+mentioned to your upstream maintainer when your tree is submitted for
+merging.  You may also want to consider cooperating with the maintainer
+of the conflicting tree to minimise any particularly complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+diff --cc fs/btrfs/inode.c
+index a8e0a6b038d3,070716650df8..000000000000
+--- a/fs/btrfs/inode.c
++++ b/fs/btrfs/inode.c
+diff --cc fs/btrfs/space-info.c
+index e8347461c8dd,80f3edd6a391..000000000000
+--- a/fs/btrfs/space-info.c
++++ b/fs/btrfs/space-info.c
+@@@ -531,10 -527,8 +527,10 @@@ static void shrink_delalloc(struct btrf
+  		wait_ordered =3D true;
+ =20
+  	loops =3D 0;
+- 	while ((delalloc_bytes || dio_bytes) && loops < 3) {
++ 	while ((delalloc_bytes || ordered_bytes) && loops < 3) {
+ -		btrfs_start_delalloc_roots(fs_info, items, true);
+ +		u64 nr_pages =3D min(delalloc_bytes, to_reclaim) >> PAGE_SHIFT;
+ +
+ +		btrfs_start_delalloc_roots(fs_info, nr_pages, true);
+ =20
+  		loops++;
+  		if (wait_ordered && !trans) {
+
+--Sig_/ffxc=el3vUyY9L=P24nX6h7
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl/7f7IACgkQAVBC80lX
+0Gz0UAf/TVrzfJ4DDqA+zBTuytGs44ucvH8+WAWEZDGQiv4CjgB9peT3uXCiaaJa
+fSESUnlgtay2WBM7JkOCVIVKVt4xQ1+BtNnGUFoX5Q7mRUreJL2tdA0iE91pmXk1
+Fzgi3ElL3NPfpqwcMc2rHbj4NfYWoLbu+Cos+tqUIDbMrZ+bdvXI3LWttw13J7jO
+vcIyoC3HhwqUQJUd6wwKFB3YlPLrcoDr58U5Y+8H/udzFpIdDnMIs7+2q14EEeyV
+LKS9OGyzmDNJEMPTNb/O6b2IMlzuB0ZjPkN1nXT98rQQJ1sZaZ32Qlcu8BFqS7Cr
+UVjQmz7Ycc9WzOMRJmbMXERQWBfU7Q==
+=IJ1R
+-----END PGP SIGNATURE-----
+
+--Sig_/ffxc=el3vUyY9L=P24nX6h7--
