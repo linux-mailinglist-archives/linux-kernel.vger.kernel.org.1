@@ -2,97 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF9AA2F05E4
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Jan 2021 09:04:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C61572F05FB
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Jan 2021 09:33:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726463AbhAJIEI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Jan 2021 03:04:08 -0500
-Received: from mail.zju.edu.cn ([61.164.42.155]:14318 "EHLO zju.edu.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725783AbhAJIEH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Jan 2021 03:04:07 -0500
-Received: from localhost.localdomain (unknown [222.205.25.254])
-        by mail-app3 (Coremail) with SMTP id cC_KCgB3fyewtPpf7l49AA--.62276S4;
-        Sun, 10 Jan 2021 16:03:02 +0800 (CST)
-From:   Dinghao Liu <dinghao.liu@zju.edu.cn>
-To:     dinghao.liu@zju.edu.cn, kjlu@umn.edu
-Cc:     Mimi Zohar <zohar@linux.ibm.com>, James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        Dmitry Kasatkin <dmitry.kasatkin@nokia.com>,
-        linux-integrity@vger.kernel.org,
-        linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] [v2] evm: Fix memleak in init_desc
-Date:   Sun, 10 Jan 2021 16:02:53 +0800
-Message-Id: <20210110080253.32345-1-dinghao.liu@zju.edu.cn>
-X-Mailer: git-send-email 2.17.1
-X-CM-TRANSID: cC_KCgB3fyewtPpf7l49AA--.62276S4
-X-Coremail-Antispam: 1UD129KBjvJXoW7tFWrurW3WFyDGw4kXrW5Jrb_yoW8Jw47pF
-        15tayxJrZ5AFy8Gr97AFs5Cry3GayYyrW3t3y3Zw1ayF15Xr4ktrs7ArW8uFn8Jay8Ar1S
-        y3ySvw13A3WjvaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUvI1xkIjI8I6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AE
-        w4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2
-        IY67AKxVWDJVCq3wA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxVW8Jr0_Cr1UM28EF7xvwVC2
-        z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v26rxl6s0DM2AIxVAIcxkEcV
-        Aq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1j
-        6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64
-        vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7MxkIecxEwVAFwVW8ZwCF04k20xvY0x0EwIxG
-        rwCF04k20xvE74AGY7Cv6cx26r4fKr1UJr1l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxV
-        Aqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q
-        6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6x
-        kF7I0E14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE
-        14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf
-        9x0JUhdbbUUUUU=
-X-CM-SenderInfo: qrrzjiaqtzq6lmxovvfxof0/1tbiAgoBBlZdtR6iiAAEsB
+        id S1726597AbhAJIdP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Jan 2021 03:33:15 -0500
+Received: from mail.kernel.org ([198.145.29.99]:59012 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726142AbhAJIdP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 10 Jan 2021 03:33:15 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9672D22273;
+        Sun, 10 Jan 2021 08:32:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1610267554;
+        bh=jBOMBbrY8ejC7e+1+GDTy1/aQY2hSrvpdZYSjkPw/QM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Po/iyCtsXWMi0rag0UBrCjRhfDTpm6aVF+VtIidWI8HaZp02lfbr8xW6H7zgpvCH0
+         pwy5FVyUMJ4KMuO4gOPMlsy1KRg6a2PQXok50o3yFrdeevGhuG+knKriybE7FytU1f
+         hZm2VN/nPaBHOkCRgs85ouLdG96G4jCbibDaz+Jk=
+Date:   Sun, 10 Jan 2021 09:32:30 +0100
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Saravana Kannan <saravanak@google.com>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>, stable@vger.kernel.org,
+        Michael Walle <michael@walle.cc>, kernel-team@android.com,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4] driver core: Fix device link device name collision
+Message-ID: <X/q7nhF8E++ASg5Y@kroah.com>
+References: <20210109224506.1254201-1-saravanak@google.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210109224506.1254201-1-saravanak@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When kmalloc() fails, tmp_tfm allocated by
-crypto_alloc_shash() has not been freed, which
-leads to memleak.
+On Sat, Jan 09, 2021 at 02:45:06PM -0800, Saravana Kannan wrote:
+> The device link device's name was of the form:
+> <supplier-dev-name>--<consumer-dev-name>
+> 
+> This can cause name collision as reported here [1] as device names are
+> not globally unique. Since device names have to be unique within the
+> bus/class, add the bus/class name as a prefix to the device names used to
+> construct the device link device name.
+> 
+> So the devuce link device's name will be of the form:
+> <supplier-bus-name>:<supplier-dev-name>--<consumer-bus-name>:<consumer-dev-name>
+> 
+> [1] - https://lore.kernel.org/lkml/20201229033440.32142-1-michael@walle.cc/
+> 
+> Cc: stable@vger.kernel.org
+> Fixes: 287905e68dd2 ("driver core: Expose device link details in sysfs")
+> Reported-by: Michael Walle <michael@walle.cc>
+> Signed-off-by: Saravana Kannan <saravanak@google.com>
+> ---
+>  Documentation/ABI/testing/sysfs-class-devlink |  4 +--
+>  .../ABI/testing/sysfs-devices-consumer        |  5 ++--
+>  .../ABI/testing/sysfs-devices-supplier        |  5 ++--
+>  drivers/base/core.c                           | 27 ++++++++++---------
+>  include/linux/device.h                        | 12 +++++++++
+>  5 files changed, 35 insertions(+), 18 deletions(-)
+> 
 
-Fixes: d46eb3699502b ("evm: crypto hash replaced by shash")
-Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
----
+Hi,
 
-Changelog:
+This is the friendly patch-bot of Greg Kroah-Hartman.  You have sent him
+a patch that has triggered this response.  He used to manually respond
+to these common problems, but in order to save his sanity (he kept
+writing the same thing over and over, yet to different people), I was
+created.  Hopefully you will not take offence and will fix the problem
+in your patch and resubmit it so that it can be accepted into the Linux
+kernel tree.
 
-v2: - Remove checks against tmp_tfm before freeing.
----
- security/integrity/evm/evm_crypto.c | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
+You are receiving this message because of the following common error(s)
+as indicated below:
 
-diff --git a/security/integrity/evm/evm_crypto.c b/security/integrity/evm/evm_crypto.c
-index 168c3b78ac47..a6dd47eb086d 100644
---- a/security/integrity/evm/evm_crypto.c
-+++ b/security/integrity/evm/evm_crypto.c
-@@ -73,7 +73,7 @@ static struct shash_desc *init_desc(char type, uint8_t hash_algo)
- {
- 	long rc;
- 	const char *algo;
--	struct crypto_shash **tfm, *tmp_tfm;
-+	struct crypto_shash **tfm, *tmp_tfm = NULL;
- 	struct shash_desc *desc;
- 
- 	if (type == EVM_XATTR_HMAC) {
-@@ -118,13 +118,16 @@ static struct shash_desc *init_desc(char type, uint8_t hash_algo)
- alloc:
- 	desc = kmalloc(sizeof(*desc) + crypto_shash_descsize(*tfm),
- 			GFP_KERNEL);
--	if (!desc)
-+	if (!desc) {
-+		crypto_free_shash(tmp_tfm);
- 		return ERR_PTR(-ENOMEM);
-+	}
- 
- 	desc->tfm = *tfm;
- 
- 	rc = crypto_shash_init(desc);
- 	if (rc) {
-+		crypto_free_shash(tmp_tfm);
- 		kfree(desc);
- 		return ERR_PTR(rc);
- 	}
--- 
-2.17.1
+- This looks like a new version of a previously submitted patch, but you
+  did not list below the --- line any changes from the previous version.
+  Please read the section entitled "The canonical patch format" in the
+  kernel file, Documentation/SubmittingPatches for what needs to be done
+  here to properly describe this.
 
+If you wish to discuss this problem further, or you have questions about
+how to resolve this issue, please feel free to respond to this email and
+Greg will reply once he has dug out from the pending patches received
+from other developers.
+
+thanks,
+
+greg k-h's patch email bot
