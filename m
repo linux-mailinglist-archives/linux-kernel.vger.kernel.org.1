@@ -2,111 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D39172F0916
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Jan 2021 19:43:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D497A2F0919
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Jan 2021 19:47:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726768AbhAJSmC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Jan 2021 13:42:02 -0500
-Received: from jabberwock.ucw.cz ([46.255.230.98]:40780 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726415AbhAJSmB (ORCPT
+        id S1726662AbhAJSrI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Jan 2021 13:47:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39434 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726263AbhAJSrI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Jan 2021 13:42:01 -0500
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id CB1AE1C0B85; Sun, 10 Jan 2021 19:41:02 +0100 (CET)
-Date:   Sun, 10 Jan 2021 19:41:02 +0100
-From:   Pavel Machek <pavel@ucw.cz>
-To:     "Theodore Y. Ts'o" <tytso@mit.edu>
-Cc:     Josh Triplett <josh@joshtriplett.org>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Jan Kara <jack@suse.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-ext4@vger.kernel.org
-Subject: Malicious fs images was Re: ext4 regression in v5.9-rc2 from
- e7bfb5c9bb3d on ro fs with overlapped bitmaps
-Message-ID: <20210110184101.GA4625@amd>
-References: <20201006025110.GJ49559@magnolia>
- <20201006031834.GA5797@mit.edu>
- <20201006050306.GA8098@localhost>
- <20201006133533.GC5797@mit.edu>
- <20201007080304.GB1112@localhost>
- <20201007143211.GA235506@mit.edu>
- <20201007201424.GB15049@localhost>
- <20201008021017.GD235506@mit.edu>
- <20201008222259.GA45658@localhost>
- <20201009143732.GJ235506@mit.edu>
+        Sun, 10 Jan 2021 13:47:08 -0500
+Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7614DC061786
+        for <linux-kernel@vger.kernel.org>; Sun, 10 Jan 2021 10:46:27 -0800 (PST)
+Received: by mail-lj1-x234.google.com with SMTP id n11so1155293lji.5
+        for <linux-kernel@vger.kernel.org>; Sun, 10 Jan 2021 10:46:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=eQXV1o093eVpYrQ6SjYKMkYU2gxMAjF5N9e9XTlzNEE=;
+        b=ZeHp/DLnTCjx/1ndzrrdXLbs+ofveQ60Mwd9VBFVezBZLlHfmdd3j2voOnqpw8488y
+         HaLlr1rUwDJNnpcMRpAOAtKBNTqrWuGc2WNSPVEBGtVTzQC0Vzx8mbTatpAO5uM8+7wD
+         /TrltXUH7SyNTMyWDX+1SlvDZZeSfzqrCwLlo=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=eQXV1o093eVpYrQ6SjYKMkYU2gxMAjF5N9e9XTlzNEE=;
+        b=tGyArZfcujPLXWfmoPikDhM/5Fi9Ou68AT19EcRbiCb3ss7AXRKakKsofBy3KTm9R8
+         JqcH1uzAO1Yglopj8FX+z9KxpkdLzeKQsuSluwFdrvpO/7F85JooEDuU7SzcFvSCY55z
+         X2fEXDvot301MGICb8fPSEw7KMnRsMlgWaVGv2wPiTSSNE0n0bFgLT/NTEnG4ENrzuku
+         IsuCq4HrVPYF8aMrN5O0iUJ9/ZBXiB1upKjF5J8O2TwuSe5D0OQwpa7QsGohLnYPMIa3
+         AbAsSGCUP5Q7vqRbYA/YIiHP/34eXc71M/vaHseiwgZFXwDpv/oqGdphaShdheesLXDb
+         4unw==
+X-Gm-Message-State: AOAM530nNPMCJ9EHsTZk8tCLam9DuZmL7DTFHUghVCv0kMl4wGlMd0gQ
+        AoNpbo+a6siOcHKKTUnI2Prbgc0/aKW0xg==
+X-Google-Smtp-Source: ABdhPJwmxw9P5AxQM48VNifS+x/ImeUZZMKIv+ktTZQec1wBtDrHWZEeTu0DFROMW+4DCCnXKeDU0w==
+X-Received: by 2002:a2e:8e64:: with SMTP id t4mr5649157ljk.141.1610304384360;
+        Sun, 10 Jan 2021 10:46:24 -0800 (PST)
+Received: from mail-lj1-f169.google.com (mail-lj1-f169.google.com. [209.85.208.169])
+        by smtp.gmail.com with ESMTPSA id f19sm3131514ljm.7.2021.01.10.10.46.23
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 10 Jan 2021 10:46:23 -0800 (PST)
+Received: by mail-lj1-f169.google.com with SMTP id m13so1151582ljo.11
+        for <linux-kernel@vger.kernel.org>; Sun, 10 Jan 2021 10:46:23 -0800 (PST)
+X-Received: by 2002:a2e:9b13:: with SMTP id u19mr5614023lji.48.1610304382840;
+ Sun, 10 Jan 2021 10:46:22 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="sdtB3X0nJg68CQEu"
-Content-Disposition: inline
-In-Reply-To: <20201009143732.GJ235506@mit.edu>
-User-Agent: Mutt/1.5.23 (2014-03-12)
+References: <cover.1610299857.git.gladkov.alexey@gmail.com>
+In-Reply-To: <cover.1610299857.git.gladkov.alexey@gmail.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Sun, 10 Jan 2021 10:46:05 -0800
+X-Gmail-Original-Message-ID: <CAHk-=wgXZmRu762bjSeK80+T_LTo+UP9y5rP-uvym1vquSxmBw@mail.gmail.com>
+Message-ID: <CAHk-=wgXZmRu762bjSeK80+T_LTo+UP9y5rP-uvym1vquSxmBw@mail.gmail.com>
+Subject: Re: [RFC PATCH v2 0/8] Count rlimits in each user namespace
+To:     Alexey Gladkov <gladkov.alexey@gmail.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Linux Containers <containers@lists.linux-foundation.org>,
+        Kernel Hardening <kernel-hardening@lists.openwall.com>,
+        Alexey Gladkov <legion@kernel.org>,
+        "Eric W . Biederman" <ebiederm@xmission.com>,
+        Kees Cook <keescook@chromium.org>,
+        Christian Brauner <christian@brauner.io>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Sun, Jan 10, 2021 at 9:34 AM Alexey Gladkov <gladkov.alexey@gmail.com> wrote:
+>
+> To address the problem, we bind rlimit counters to each user namespace. The
+> result is a tree of rlimit counters with the biggest value at the root (aka
+> init_user_ns). The rlimit counter increment/decrement occurs in the current and
+> all parent user namespaces.
 
---sdtB3X0nJg68CQEu
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+I'm not seeing why this is necessary.
 
-Hi!
+Maybe it's the right approach, but none of the patches (or this cover
+letter email) really explain it to me.
 
-On Fri 2020-10-09 10:37:32, Theodore Y. Ts'o wrote:
-> On Thu, Oct 08, 2020 at 03:22:59PM -0700, Josh Triplett wrote:
-> >=20
-> > I wasn't trying to make a *new* general principle or policy. I was under
-> > the impression that this *was* the policy, because it never occurred to
-> > me that it could be otherwise. It seemed like a natural aspect of the
-> > kernel/userspace boundary, to the point that the idea of it *not* being
-> > part of the kernel's stability guarantees didn't cross my mind.=20
->=20
-> >From our perspective (and Darrick and I discussed this on this week's
-> ext4 video conference, so it represents the ext4 and xfs maintainer's
-> position) is that the file system format is different.  First, the
-> on-disk format is not an ABI, and it is several orders more complex
-> than a system call interface.  Second, we make no guarantees about
-> what the file system created by malicious tools will do.  For example,
-> XFS developers reject bug reports from file system fuzzers, because
-> the v5 format has CRC checks, so randomly corrupted file systems won't
-> crash the kernel.  Yes, this doesn't protect against maliciously
-> created file systems where the attacker makes sure the checksums are
-> valid, but only crazy people who think containers are just as secure
+I understand why you might want the _limits_ themselves would form a
+tree like this - with the "master limit" limiting the limits in the
+user namespaces under it.
 
-Well, it is not just containers. It is also USB sticks. And people who
-believe secure boot is good idea and try to protect kernel against
-root. And crazy people who encrypt pointers in dmesg. And...
+But I don't understand why the _counts_ should do that. The 'struct
+user_struct' should be shared across even user namespaces for the same
+user.
 
-People want to use USB sticks from time to time. And while I
-understand XFS is so complex it is unsuitable for such use, I'd still
-expect bugs to be fixed there.
+IOW, the very example of the problem you quote seems to argue against this:
 
-I hope VFAT to be safe to mount, because that is very common on USB.
+> For example, there are two containers (A and B) created by one user. The
+> container A sets RLIMIT_NPROC=1 and starts one process. Everything is fine, but
+> when container B tries to do the same it will fail because the number of
+> processes is counted globally for each user and user has one process already.
 
-I also hope ext2/3/4 is safe in that regard.
+Note how the problem was _not_ that the _count_ was global. That part
+was fine and all good.
 
-Anyway it would be nice to have documentation explaining this. If I'm
-wrong about VFAT being safe, it would be good to know, and I guess
-many will be surprised that XFS is using different rules.
+No, the problem was that the _limit_ in container A also ended up
+affecting container B.
 
-Best regards,
-								Pavel
---=20
-http://www.livejournal.com/~pavelmachek
+So to me, that says that it would make sense to continue to use the
+resource counts in 'struct user_struct' (because if user A has a hard
+limit of X, then creating a new namespace shouldn't expand that
+limit), but then have the ability to make per-container changes to the
+resource limits (as long as they are within the bounds of the parent
+user namespace resource limit).
 
---sdtB3X0nJg68CQEu
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+Maybe there is some reason for this ucounts approach, but if so, I
+feel it was not explained at all.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-
-iEYEARECAAYFAl/7Sj0ACgkQMOfwapXb+vKCDgCfW4PJ9T5AyLvlZAOFRcpTtgPw
-qfoAn31wDMvqBEaUcwGpxUc0W2RbVoEe
-=l/1d
------END PGP SIGNATURE-----
-
---sdtB3X0nJg68CQEu--
+             Linus
