@@ -2,92 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C61572F05FB
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Jan 2021 09:33:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DECE2F0601
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Jan 2021 09:38:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726597AbhAJIdP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Jan 2021 03:33:15 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59012 "EHLO mail.kernel.org"
+        id S1726526AbhAJIiC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Jan 2021 03:38:02 -0500
+Received: from mout.gmx.net ([212.227.15.18]:49369 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726142AbhAJIdP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Jan 2021 03:33:15 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9672D22273;
-        Sun, 10 Jan 2021 08:32:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1610267554;
-        bh=jBOMBbrY8ejC7e+1+GDTy1/aQY2hSrvpdZYSjkPw/QM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Po/iyCtsXWMi0rag0UBrCjRhfDTpm6aVF+VtIidWI8HaZp02lfbr8xW6H7zgpvCH0
-         pwy5FVyUMJ4KMuO4gOPMlsy1KRg6a2PQXok50o3yFrdeevGhuG+knKriybE7FytU1f
-         hZm2VN/nPaBHOkCRgs85ouLdG96G4jCbibDaz+Jk=
-Date:   Sun, 10 Jan 2021 09:32:30 +0100
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Saravana Kannan <saravanak@google.com>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>, stable@vger.kernel.org,
-        Michael Walle <michael@walle.cc>, kernel-team@android.com,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4] driver core: Fix device link device name collision
-Message-ID: <X/q7nhF8E++ASg5Y@kroah.com>
-References: <20210109224506.1254201-1-saravanak@google.com>
+        id S1725956AbhAJIiC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 10 Jan 2021 03:38:02 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1610267754;
+        bh=AYGpEcijaxGgdxbHWEgk3QAzVtE4/IoirszuB5L1Bg8=;
+        h=X-UI-Sender-Class:Date:In-Reply-To:References:Subject:Reply-to:To:
+         CC:From;
+        b=NLVbQKG+bN4Ab6kgHvSTJhNmmD6otHEk+C2OaUQv6VmltDkud/gIWgNPb6X7skMRS
+         pInDmCIm76nvQORNgRawWFUAhXKhvgAfHA+nAXqJ3Z0RurXD6FaFDxnMmsJA/8LAqJ
+         g9BxEfkFA6/v2gNNtYh5nFr9SW915NrvFoSrXvwg=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from frank-s9 ([80.208.211.2]) by mail.gmx.com (mrgmx004
+ [212.227.17.190]) with ESMTPSA (Nemesis) id 1N7zFZ-1ju8AT26vT-0155dp; Sun, 10
+ Jan 2021 09:35:54 +0100
+Date:   Sun, 10 Jan 2021 09:35:46 +0100
+User-Agent: K-9 Mail for Android
+In-Reply-To: <20210109190937.42409-1-linux@fw-web.de>
+References: <20210109190937.42409-1-linux@fw-web.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210109224506.1254201-1-saravanak@google.com>
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+Subject: Re: [PATCH] dts64: mt7622: fix slow sd card access
+Reply-to: frank-w@public-files.de
+To:     linux-mediatek@lists.infradead.org,
+        Frank Wunderlich <linux@fw-web.de>
+CC:     devicetree@vger.kernel.org, Ryder Lee <ryder.lee@mediatek.com>,
+        Wenbin.Mei@mediatek.com, sin_wenjiehu <sin_wenjiehu@mediatek.com>,
+        Sean Wang <sean.wang@mediatek.com>,
+        linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+        linux-arm-kernel@lists.infradead.org,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Jimin Wang <jimin.wang@mediatek.com>
+From:   Frank Wunderlich <frank-w@public-files.de>
+Message-ID: <059279A9-8530-41AB-9997-04B2D22BB11B@public-files.de>
+X-Provags-ID: V03:K1:K7/234lirOc+CxkHbj/O/PQPi9gMldKz2CdoGZCHu/nKXvcwLkl
+ /EyLYvTxEmDgvO1BI9AiWIPmPVPqzAGIBRlPKDJuzrHceT2YUrG+VLm90SsZjp/1AfnA9xG
+ KmSphA73sAc4MuMo+/B9ee8C4o9m8ORoNa2O2xACMfrOjArUtLD4iqPEHpw2B9ADnK2xLYo
+ eDaJtWzGbe6GkGVA0TUiA==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:JXg5R0fSKYU=:PhAQb/VURv9Qd6VcAQG3eR
+ X9P+X4bJdTsSJxO7v/0gVGgiJExZVHLaVr0S1CnXkB74WN+qJtbQRs+xcsdZw4Img0pyQ0KEj
+ vGjej3oVjtIaRlRmg/e5imcvsLgvDT5Im/npPJl+XxZ621g4V6sSbgXAQREFMm4SRARwc7IJ0
+ poRRx8zZSCoLBh5NqYwlQzteAXfyGg8aVzmC7/nU29Qj6jnZnaV/hbNngn0sU62f0Esqeqtdn
+ kR5W8WY7G5xHd+C442nfwqLUKoQIL3zNA5q2EK/BDoiNSU2CUOPTStH6dKOpRN/aaSG7f6jHP
+ 7+0oSxIlqIWWUnECVOFlJ6WaMWSizgYu4BvJqaxclioYY0Y9e4/Xn8fQ5LOAE0bLS2+VRAUPX
+ 0o+gSumt1IAlx89VtsIKDcr0xfcZG33w45qUMpq2WNRMIq5F+tuVLU5BVquFZZYVCmHM7sqzM
+ NFs2GLFN/owfekiCpzPWo3/PycY8APa2dVHcz4e16NHkXk0UOZJWWhjBnN5pfDt+x+KrMFCqa
+ eVr8jblw2cxxlhSQj2EkaReHh2/ndM9cAEBNIiU/YMrFA/VCz/Lpt2/HrNRiR2uM3oR5Cia78
+ eBQDooEvnsFJwcBuZqM2MCqO+TC3B5AGZuJWlXF5oE+lJVsaCHeaQpJ+ngRcefK7+9BmHW6Qd
+ GYQxRZu0KtIzo73feLbFjMMN9ezcRjrVuo4h2hZlj4oKf3a+nlAzxbUZpTwJcqGS+sLEicZXi
+ XpJMgnwzB1qsN3m8+ay0t1nP5TG1Az43vs2uSCLJNSeyn2DrX7iXGIWin8Dq8x+gfZnRfRC1y
+ XOACaU3I7TMRW2TFitnJqU0AjAHcl8bpBBigGDCt2iTJbLKDKM9LHt8FbjwyhRyAsF7EgVy1Z
+ PR41u3dEmU9GjmZysfzw==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jan 09, 2021 at 02:45:06PM -0800, Saravana Kannan wrote:
-> The device link device's name was of the form:
-> <supplier-dev-name>--<consumer-dev-name>
-> 
-> This can cause name collision as reported here [1] as device names are
-> not globally unique. Since device names have to be unique within the
-> bus/class, add the bus/class name as a prefix to the device names used to
-> construct the device link device name.
-> 
-> So the devuce link device's name will be of the form:
-> <supplier-bus-name>:<supplier-dev-name>--<consumer-bus-name>:<consumer-dev-name>
-> 
-> [1] - https://lore.kernel.org/lkml/20201229033440.32142-1-michael@walle.cc/
-> 
-> Cc: stable@vger.kernel.org
-> Fixes: 287905e68dd2 ("driver core: Expose device link details in sysfs")
-> Reported-by: Michael Walle <michael@walle.cc>
-> Signed-off-by: Saravana Kannan <saravanak@google.com>
-> ---
->  Documentation/ABI/testing/sysfs-class-devlink |  4 +--
->  .../ABI/testing/sysfs-devices-consumer        |  5 ++--
->  .../ABI/testing/sysfs-devices-supplier        |  5 ++--
->  drivers/base/core.c                           | 27 ++++++++++---------
->  include/linux/device.h                        | 12 +++++++++
->  5 files changed, 35 insertions(+), 18 deletions(-)
-> 
+I guess issue is caused by incompatible setting in uboot,but have not found=
+ which exactly so i handled it like emmc=2E
 
-Hi,
+If patch is ready to be applied please add=20
 
-This is the friendly patch-bot of Greg Kroah-Hartman.  You have sent him
-a patch that has triggered this response.  He used to manually respond
-to these common problems, but in order to save his sanity (he kept
-writing the same thing over and over, yet to different people), I was
-created.  Hopefully you will not take offence and will fix the problem
-in your patch and resubmit it so that it can be accepted into the Linux
-kernel tree.
+Cc: stable@vger=2Ekernel=2Eorg
 
-You are receiving this message because of the following common error(s)
-as indicated below:
+because all kernel versions are affected (tested at least in 5=2E4 and 5=
+=2E9)=2E If i need to create a v2,i will add it
 
-- This looks like a new version of a previously submitted patch, but you
-  did not list below the --- line any changes from the previous version.
-  Please read the section entitled "The canonical patch format" in the
-  kernel file, Documentation/SubmittingPatches for what needs to be done
-  here to properly describe this.
-
-If you wish to discuss this problem further, or you have questions about
-how to resolve this issue, please feel free to respond to this email and
-Greg will reply once he has dug out from the pending patches received
-from other developers.
-
-thanks,
-
-greg k-h's patch email bot
+@sean/ryder/wenbin can you tell me if sd on mt7622/bpi-r64 is maybe capabl=
+e of hs400?
+regards Frank
