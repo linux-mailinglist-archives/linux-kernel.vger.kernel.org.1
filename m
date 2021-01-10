@@ -2,92 +2,715 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A97D12F09AE
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Jan 2021 21:19:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B61792F09AB
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Jan 2021 21:18:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726932AbhAJUSP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Jan 2021 15:18:15 -0500
-Received: from conssluserg-03.nifty.com ([210.131.2.82]:50256 "EHLO
-        conssluserg-03.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726827AbhAJUSP (ORCPT
+        id S1726655AbhAJURx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Jan 2021 15:17:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58738 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726263AbhAJURw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Jan 2021 15:18:15 -0500
-Received: from mail-pj1-f52.google.com (mail-pj1-f52.google.com [209.85.216.52]) (authenticated)
-        by conssluserg-03.nifty.com with ESMTP id 10AKHAHD018308;
-        Mon, 11 Jan 2021 05:17:11 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-03.nifty.com 10AKHAHD018308
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1610309831;
-        bh=92UFZwn5rH6dES5yWvRNhvQHxZ2dhzVHs9u2pm1p3m8=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=w9wZFhrRfhuYH7QMhcKbYvfQ4XywvjU8wmdzxSDDLGF1JHTz+3eFuQUw0PfpYdTHS
-         CLxxEzdG3XbzPl5d0seExPwIsfoIDqtvDe5UkG+ld2U6XkpZM6skneTyJKgoOzoHTM
-         CgLvvotIT/Csh6Yq99SI1AWsvIWKgd1tH+cIT2UDM/nGNzQHerv0TlvkJEpSvbZ+ue
-         xnqKiYnNpXzzMKHBQsw8vASd1vxXWjGxHatu0L3/qMtJHEWa4DZJJ5cLhGcGiyiZJW
-         SGddTHTbZ8e4fuT7C/7ZirHewwm3PcTBheO7dt5yz1EWHpkjY9llQpZo31RQzq3TWN
-         zBqDyzMs9R1Zg==
-X-Nifty-SrcIP: [209.85.216.52]
-Received: by mail-pj1-f52.google.com with SMTP id l23so9208799pjg.1;
+        Sun, 10 Jan 2021 15:17:52 -0500
+Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BB30C061786;
         Sun, 10 Jan 2021 12:17:11 -0800 (PST)
-X-Gm-Message-State: AOAM531nt0Q1z1TousGiZUSI3fK4OCWpoqgjqnSZlpO31THdRKl+Z+OW
-        QravTFB7pNOOINiZbtfzllPHHW6U4ZzuEZiMLBQ=
-X-Google-Smtp-Source: ABdhPJyoDpYzVjeVK4wF66jhvCNZJLbkOwN30MRYXw53O0JWsjmYZ2CY3S9XTi+zQjJYtdxeK2PgV0ITQxEKG1O8D/M=
-X-Received: by 2002:a17:902:9b91:b029:db:f003:c5eb with SMTP id
- y17-20020a1709029b91b02900dbf003c5ebmr13288781plp.1.1610309830433; Sun, 10
- Jan 2021 12:17:10 -0800 (PST)
+Received: by mail-ed1-x529.google.com with SMTP id cm17so16727123edb.4;
+        Sun, 10 Jan 2021 12:17:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=p7d/s9t5wKJ7DtbBpujubzbmvyeeJ3JQY9vmSwarSFQ=;
+        b=fuwr+uzGrx0QzUz6smFi2eRMnpJPigr9I4Mrj5WkwUwA+Ii4oWwWvDJ4OFAeIZLGVr
+         DrRVqTAucgiCz6RXKiA3zMwjp7HThwfx1uNcVtyqOKwkgRW8gl5DWXGnJcwVGr5NVzYu
+         JG3FFt+i8CTvFHIwXV27n9fbF5sPujpDuAKeiU/R7kgncx765ZAv/9NSNc4xcelWuEcj
+         ddlqf0q8ctBocK8u2lPns41pdbYQmK6Ec2vimIjL0yS3DDlsiOfmTpSnBwAycPmfOPdc
+         zwitfajAGdx63FX51Xg9hGTiJUufTZQSgwvtr7niT3f4pxsyKS9AbUU/zoGJ0GjnfgAS
+         p94w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=p7d/s9t5wKJ7DtbBpujubzbmvyeeJ3JQY9vmSwarSFQ=;
+        b=mSPUguhh/WuwcFMs/7noOtBefmn71r17hYhTLOFlDT3JIhU3u46DHONTjNy4dV7r2u
+         WfrmH6VkBdWaDR6FqAQVomF0LX+9fDx4mBRPZr3mfygyl6DXAal/xT8j67/7QeQTwngj
+         O/EAkOhtugGeQ7TdWDFhNk07PZvU2Lb2cHoqYMtenP00rqklaC+RwxmKznvlhQPKJBNE
+         S1ta+dTbFL+NjOO58Y9qxPKiSiXzxTiDU8a0cgoDADwWhupiJCZIGUJuX51eSXLgiWZ3
+         YxJ02SQvjzodaxkkYm+OanmCpbBizt6wUquoUauo/3dSD8lqGacUNCXUVoSiV4Vwo2Jm
+         4dDw==
+X-Gm-Message-State: AOAM533a32ha09kQf/nW4zupYsa45M4Lj8MvCYGzKwCDbdRr8gs5zN0+
+        /i/DXzcz1WEbhHLHQXvEf+DhAoE6AcwxZw==
+X-Google-Smtp-Source: ABdhPJyJpE7b/YOxDv4P7VreHiAHX8xAnISZLszHdeqK1sSivnGGDnXdsSK8dSFMQUSt2XwpgZeLOg==
+X-Received: by 2002:a05:6402:8d9:: with SMTP id d25mr11816614edz.278.1610309829428;
+        Sun, 10 Jan 2021 12:17:09 -0800 (PST)
+Received: from [192.168.2.2] (81-204-249-205.fixed.kpn.net. [81.204.249.205])
+        by smtp.gmail.com with ESMTPSA id a20sm6758217edr.70.2021.01.10.12.17.08
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 10 Jan 2021 12:17:08 -0800 (PST)
+Subject: Re: [PATCH 3/3] arm64: dts: rockchip: rk3328: Add Radxa ROCK Pi E
+To:     Chen-Yu Tsai <wens@kernel.org>
+Cc:     Rob Herring <robh@kernel.org>, Heiko Stuebner <heiko@sntech.de>,
+        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        devicetree <devicetree@vger.kernel.org>
+References: <20210110035846.9155-1-wens@kernel.org>
+ <20210110035846.9155-4-wens@kernel.org>
+ <381648f9-d650-dddf-59e6-ef32d1e1bb43@gmail.com>
+ <CAGb2v67=uO4HqRNEbhAJs2-d4mhL8URoijwE4ni9J8cYXrmAtQ@mail.gmail.com>
+From:   Johan Jonker <jbx6244@gmail.com>
+Message-ID: <96b18111-1dda-83c9-c927-0852b0618874@gmail.com>
+Date:   Sun, 10 Jan 2021 21:17:06 +0100
+User-Agent: Mozilla/5.0 (X11; Linux i686; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-References: <6f551ebb80f88e9b1bf6aa981f3c201409e1555c.1610019699.git.viresh.kumar@linaro.org>
-In-Reply-To: <6f551ebb80f88e9b1bf6aa981f3c201409e1555c.1610019699.git.viresh.kumar@linaro.org>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Mon, 11 Jan 2021 05:16:32 +0900
-X-Gmail-Original-Message-ID: <CAK7LNAQ-d-9VSLdS9SLM9_cjUrL3tvLXndiFw124c_qic2vh5g@mail.gmail.com>
-Message-ID: <CAK7LNAQ-d-9VSLdS9SLM9_cjUrL3tvLXndiFw124c_qic2vh5g@mail.gmail.com>
-Subject: Re: [PATCH] Documentation: kbuild: Fix section reference
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     Michal Marek <michal.lkml@markovi.net>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Anmar Oueja <anmar.oueja@linaro.org>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <CAGb2v67=uO4HqRNEbhAJs2-d4mhL8URoijwE4ni9J8cYXrmAtQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 7, 2021 at 8:42 PM Viresh Kumar <viresh.kumar@linaro.org> wrote:
->
-> Section 3.11 was incorrectly called 3.9, fix it.
->
-> Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
-> ---
->  Documentation/kbuild/makefiles.rst | 2 +-
+Hi Chen-Yu,
 
+Most is already answered by Heiko.
 
-Applied to linux-kbuild. Thanks.
+On 1/10/21 4:37 PM, Chen-Yu Tsai wrote:
+> Hi,
+> 
+> On Sun, Jan 10, 2021 at 10:45 PM Johan Jonker <jbx6244@gmail.com> wrote:
+>>
+>> Hi Chen-Yu,
+>>
+>> Some comments, have a look if it is useful...
+>>
+>> On 1/10/21 4:58 AM, Chen-Yu Tsai wrote:
+>>> From: Chen-Yu Tsai <wens@csie.org>
+>>>
+>>> Radxa ROCK Pi E is a router oriented SBC based on Rockchip's RK3328 SoC.
+>>> As the official wiki page puts it, "E for Ethernets".
+>>>
+>>> It features the RK3328 SoC, gigabit and fast Ethernet RJ45 ports, both
+>>> directly served by Ethernet controllers in the SoC, a USB 3.0 host port,
+>>> a power-only USB type-C port, a 3.5mm headphone jack for audio output,
+>>
+>>> two LEDs, a 40-pin Raspberry Pi style GPIO header, and optional WiFi+BT
+>>> and PoE header.
+>>>
+>>> The board comes in multiple configurations, differing in the amount of
+>>> onboard RAM, the level of WiFi+BT (none, 802.11n 2.4GHz, or 802.11ac
+>>> 2.4 GHz & 5 GHz), and whether PoE is supported or not. These variants
+>>> can all share the same device tree.
+>>>
+>>> The USB 2.0 OTG controller is available on the 40-pin header. This is
+>>> not enabled in the device tree, since it is possible to use it in a
+>>> host-only configuration, or in OTG mode with an extra pin from the
+>>> header as the ID pin.
+>>>
+>>> The device tree is based on the one of the Rock64, with various parts
+>>> modified to match the ROCK Pi E, and some parts updated to newer styles,
+>>> such as the gmac2io node's mdio sub-node.
+>>>
+>>> Add a new device tree file for the new board.
+>>>
+>>> Signed-off-by: Chen-Yu Tsai <wens@csie.org>
+>>> ---
+>>>  arch/arm64/boot/dts/rockchip/Makefile         |   1 +
+>>>  .../boot/dts/rockchip/rk3328-rock-pi-e.dts    | 369 ++++++++++++++++++
+>>>  2 files changed, 370 insertions(+)
+>>>  create mode 100644 arch/arm64/boot/dts/rockchip/rk3328-rock-pi-e.dts
+>>>
+>>> diff --git a/arch/arm64/boot/dts/rockchip/Makefile b/arch/arm64/boot/dts/rockchip/Makefile
+>>> index 622d320ddd13..62d3abc17a24 100644
+>>> --- a/arch/arm64/boot/dts/rockchip/Makefile
+>>> +++ b/arch/arm64/boot/dts/rockchip/Makefile
+>>> @@ -11,6 +11,7 @@ dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3328-a1.dtb
+>>>  dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3328-evb.dtb
+>>>  dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3328-nanopi-r2s.dtb
+>>>  dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3328-rock64.dtb
+>>> +dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3328-rock-pi-e.dtb
+>>>  dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3328-roc-cc.dtb
+>>>  dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3368-evb-act8846.dtb
+>>>  dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3368-geekbox.dtb
+>>> diff --git a/arch/arm64/boot/dts/rockchip/rk3328-rock-pi-e.dts b/arch/arm64/boot/dts/rockchip/rk3328-rock-pi-e.dts
+>>> new file mode 100644
+>>> index 000000000000..7818d2e8180c
+>>> --- /dev/null
+>>> +++ b/arch/arm64/boot/dts/rockchip/rk3328-rock-pi-e.dts
+>>> @@ -0,0 +1,369 @@
+>>> +// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
+>>> +/*
+>>> + * (C) Copyright 2020 Chen-Yu Tsai <wens@csie.org>
+>>> + *
+>>> + * Based on ./rk3328-rock64.dts, which is
+>>> + *
+>>> + * Copyright (c) 2017 PINE64
+>>> + */
+>>> +
+>>> +/dts-v1/;
+>>> +
+>>> +#include <dt-bindings/leds/common.h>
+>>> +#include <dt-bindings/gpio/gpio.h>
+>>> +#include <dt-bindings/pinctrl/rockchip.h>
+>>> +#include "rk3328.dtsi"
+>>> +
+>>> +/ {
+>>> +     model = "Radxa ROCK Pi E";
+>>> +     compatible = "radxa,rockpi-e", "rockchip,rk3328";
+>>> +
+>>> +     chosen {
+>>> +             stdout-path = "serial2:1500000n8";
+>>> +     };
+>>> +
+>>> +     gmac_clkin: external-gmac-clock {
+>>> +             compatible = "fixed-clock";
+>>> +             clock-frequency = <125000000>;
+>>> +             clock-output-names = "gmac_clkin";
+>>> +             #clock-cells = <0>;
+>>> +     };
+>>> +
+>>> +     leds {
+>>> +             compatible = "gpio-leds";
+>>> +             pinctrl-0 = <&led_pin>;
+>>> +             pinctrl-names = "default";
+>>> +
+>>> +             led-0 {
+>>
+>>> +                     /* schematic say green but the actual thing is blue */
+>>
+>> In rockpie-v1.2-20200427-sch.pdf this led is already called "LED_BLUE",
+>> so comment maybe not needed anymore?
+> 
+> Thanks. Did not notice there was a new revision.
+> 
+>>> +                     color = <LED_COLOR_ID_BLUE>;
+>>> +                     gpios = <&gpio3 RK_PA5 GPIO_ACTIVE_LOW>;
+>>> +                     linux,default-trigger = "heartbeat";
+>>> +             };> +   };
+>>> +
+>>> +     vcc_sd: sdmmc-regulator {
+>>> +             compatible = "regulator-fixed";
+>>> +             gpio = <&gpio0 RK_PD6 GPIO_ACTIVE_LOW>;
+>>> +             pinctrl-names = "default";
+>>> +             pinctrl-0 = <&sdmmc0m1_pin>;
+>>
+>>> +             regulator-boot-on;
+>>> +             regulator-name = "vcc_sd";
+>>
+>> regulator-name above other regulator properties
+> 
+> That is actually what I was used to, but some other rockchip dts files
+> have all the properties sorted alphabetically. So I stuck with what I
+> saw.
+> 
+>> regulator voltage missing
+>> make things as complete as possible
+>>
+>> from fixed-regulator.yaml:
+>>
+>> description:
+>>   Any property defined as part of the core regulator binding, defined in
+>>   regulator.yaml, can also be used. However a fixed voltage regulator is
+>>   expected to have the regulator-min-microvolt and regulator-max-microvolt
+>>   to be the same.
+> 
+> However this is not a real regulator; it is merely an on/off switch.
+> I believe in this case it should just pass through the voltage from
+> its upstream.
 
+This board is not black box. The schematics are public, so finding out
+limits was not the problem. Up to you if added or not...
 
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/Documentation/kbuild/makefiles.rst b/Documentation/kbuild/makefiles.rst
-> index d36768cf1250..9f6a11881951 100644
-> --- a/Documentation/kbuild/makefiles.rst
-> +++ b/Documentation/kbuild/makefiles.rst
-> @@ -598,7 +598,7 @@ more details, with real examples.
->         explicitly added to $(targets).
->
->         Assignments to $(targets) are without $(obj)/ prefix. if_changed may be
-> -       used in conjunction with custom rules as defined in "3.9 Custom Rules".
-> +       used in conjunction with custom rules as defined in "3.11 Custom Rules".
->
->         Note: It is a typical mistake to forget the FORCE prerequisite.
->         Another common pitfall is that whitespace is sometimes significant; for
-> --
-> 2.25.0.rc1.19.g042ed3e048af
->
+> 
+>>> +             vin-supply = <&vcc_io>;
+>>> +     };
+>>> +
+>>
+>>> +     vcc_host_5v: vcc-host-5v-regulator {
+>>> +             compatible = "regulator-fixed";
+>>> +             gpio = <&gpio3 RK_PA7 GPIO_ACTIVE_HIGH>;
+>>> +             pinctrl-names = "default";
+>>> +             pinctrl-0 = <&usb30_host_drv>;
+>>> +             enable-active-high;
+>>> +             regulator-name = "vcc_host_5v";
+>>
+>> idem limits
+> 
+> Same here.
+> 
+>>> +             regulator-always-on;
+>>> +             regulator-boot-on;
+>>> +             vin-supply = <&vcc_sys>;
+>>> +     };
+>>
+>> For Heiko: ?? remove ??
+>> usb3 has no support in mainline.
+>> Regulators not in use are disabled.
+>> For mainline this node has no use....
+> 
+> As it already has a defined binding, we can put it in the device tree.
+> 
+>>> +
+>>> +     vcc_sys: vcc-sys {
+>>> +             compatible = "regulator-fixed";
+>>> +             regulator-name = "vcc_sys";
+>>
+>>> +             regulator-always-on;
+>>> +             regulator-boot-on;
+>>
+>> At the other regulators this is sort below the regulator limits.
+> 
+> Again, alphabetically sorted vs preferred sorting method.
 
+There's some room for "creativity", but you must use that "style"
+document wise. But not above limits in "vcc_sys" and below in "vcc_io".
 
--- 
-Best Regards
-Masahiro Yamada
+From Heiko:
+
+compatible
+reg
+interrupts
+[alphabetical]
+status [if needed]
+
+////////////////////
+
+My list:
+
+For nodes:
+If exists on top: model, compatible and chosen.
+Sort things without reg alphabetical first,
+then sort the rest by reg address.
+
+Inside nodes:
+If exists on top: compatible, reg and interrupts.
+In alphabetical order the required properties.
+Then in alphabetical order the other properties.
+And as last things that start with '#' in alphabetical order.
+Add status below all other properties for soc internal components with
+any board-specifics.
+Keep an empty line between properties and nodes.
+
+Exceptions:
+Sort pinctrl-0 above pinctrl-names, so it stays in line with clock-names
+and dma-names.
+Sort simple-audio-card,name above other simple-audio-card properties.
+Sort regulator-name above other regulator properties.
+Sort regulator-min-microvolt above regulator-max-microvolt.
+
+> 
+>>> +             regulator-min-microvolt = <5000000>;
+>>> +             regulator-max-microvolt = <5000000>;
+>>> +     };
+>>> +
+>>> +     vcc_wifi: vcc-wifi-regulator {
+>>> +             compatible = "regulator-fixed";
+>>> +             gpio = <&gpio0 RK_PA0 GPIO_ACTIVE_LOW>;
+>>> +             pinctrl-names = "default";
+>>> +             pinctrl-0 = <&wifi_en>;
+>>> +             regulator-name = "vcc_wifi";
+>>
+>> idem limits
+> 
+> Again, it is just a switch.
+> 
+>>> +             regulator-always-on;
+>>> +             regulator-boot-on;
+>>> +             vin-supply = <&vcc_io>;
+>>> +     };
+>>> +};
+>>> +
+>>> +&analog_sound {
+>>> +     status = "okay";
+>>> +};
+>>> +
+>>> +&codec {
+>>> +     status = "okay";
+>>> +};
+>>> +
+>>> +&cpu0 {
+>>> +     cpu-supply = <&vdd_arm>;
+>>> +};
+>>> +
+>>> +&cpu1 {
+>>> +     cpu-supply = <&vdd_arm>;
+>>> +};
+>>> +
+>>> +&cpu2 {
+>>> +     cpu-supply = <&vdd_arm>;
+>>> +};
+>>> +
+>>> +&cpu3 {
+>>> +     cpu-supply = <&vdd_arm>;
+>>> +};
+>>> +
+>>> +&emmc {
+>>> +     bus-width = <8>;
+>>> +     cap-mmc-highspeed;
+>>
+>>> +     max-frequency = <150000000>;
+>>
+>> remove
+>> already defined in dtsi
+> 
+> OK.
+> 
+>>> +     mmc-ddr-1_8v;
+>>> +     mmc-hs200-1_8v;
+>>> +     non-removable;
+>>> +     pinctrl-names = "default";
+>>> +     pinctrl-0 = <&emmc_clk>, <&emmc_cmd>, <&emmc_bus8>;
+>>> +     vmmc-supply = <&vcc_io>;
+>>> +     vqmmc-supply = <&vcc18_emmc>;
+>>> +     status = "okay";
+>>> +};
+>>
+>> ////////////////////////
+>>         emmc: mmc@ff520000 {
+>>                 compatible = "rockchip,rk3328-dw-mshc", "rockchip,rk3288-dw-mshc";
+>>                 reg = <0x0 0xff520000 0x0 0x4000>;
+>>                 interrupts = <GIC_SPI 14 IRQ_TYPE_LEVEL_HIGH>;
+>>                 clocks = <&cru HCLK_EMMC>, <&cru SCLK_EMMC>,
+>>                          <&cru SCLK_EMMC_DRV>, <&cru SCLK_EMMC_SAMPLE>;
+>>                 clock-names = "biu", "ciu", "ciu-drive", "ciu-sample";
+>>                 fifo-depth = <0x100>;
+>>                 max-frequency = <150000000>;
+>>                 status = "disabled";
+>>         };
+>> ////////////////////////
+>>
+>>> +
+>>> +&gmac2io {
+>>> +     assigned-clocks = <&cru SCLK_MAC2IO>, <&cru SCLK_MAC2IO_EXT>;
+>>> +     assigned-clock-parents = <&gmac_clkin>, <&gmac_clkin>;
+>>> +     clock_in_out = "input";
+>>> +     phy-handle = <&rtl8211e>;
+>>> +     phy-mode = "rgmii";
+>>> +     phy-supply = <&vcc_io>;
+>>> +     pinctrl-names = "default";
+>>> +     pinctrl-0 = <&rgmiim1_pins>;
+>>> +     snps,aal;
+>>> +     snps,rxpbl = <0x4>;
+>>> +     snps,txpbl = <0x4>;
+>>> +     tx_delay = <0x26>;
+>>> +     rx_delay = <0x11>;
+>>> +     status = "okay";
+>>> +
+>>> +     mdio {
+>>> +             compatible = "snps,dwmac-mdio";
+>>> +             #address-cells = <1>;
+>>> +             #size-cells = <0>;
+>>> +
+>>> +             rtl8211e: ethernet-phy@1 {
+>>> +                     reg = <1>;
+>>> +                     pinctrl-0 = <&eth_phy_int_pin>, <&eth_phy_reset_pin>;
+>>> +                     pinctrl-names = "default";
+>>> +                     interrupt-parent = <&gpio1>;
+>>> +                     interrupts = <24 IRQ_TYPE_LEVEL_LOW>;
+>>> +                     reset-assert-us = <10000>;
+>>> +                     reset-deassert-us = <50000>;
+>>> +                     reset-gpios = <&gpio1 RK_PC2 GPIO_ACTIVE_LOW>;
+>>> +             };
+>>> +     };
+>>> +};
+>>> +
+>>> +&gmac2phy {
+>>> +     pinctrl-names = "default";
+>>> +     pinctrl-0 = <&fephyled_linkm1>, <&fephyled_rxm1>;
+>>> +     status = "okay";
+>>> +};
+>>> +
+>>> +&i2c1 {
+>>> +     status = "okay";
+>>> +
+>>> +     rk805: pmic@18 {
+>>> +             compatible = "rockchip,rk805";
+>>> +             reg = <0x18>;
+>>> +             interrupt-parent = <&gpio2>;
+>>> +             interrupts = <6 IRQ_TYPE_LEVEL_LOW>;
+>>
+>>> +             #clock-cells = <1>;
+>>
+>> all thing that start with "#" down the list
+> 
+> Is there a proper "preferred" sorting method defined somewhere?
+
+See above.
+
+> 
+>>> +             clock-output-names = "xin32k", "rk805-clkout2";
+>>> +             gpio-controller;
+>>
+>>> +             #gpio-cells = <2>;
+>>
+>> idem
+>>
+>>> +             pinctrl-names = "default";
+>>> +             pinctrl-0 = <&pmic_int_l>;
+>>> +             rockchip,system-power-controller;
+>>> +             wakeup-source;
+>>> +
+>>> +             vcc1-supply = <&vcc_sys>;
+>>> +             vcc2-supply = <&vcc_sys>;
+>>> +             vcc3-supply = <&vcc_sys>;
+>>> +             vcc4-supply = <&vcc_sys>;
+>>> +             vcc5-supply = <&vcc_io>;
+>>> +             vcc6-supply = <&vcc_sys>;
+>>> +
+>>> +             regulators {
+>>> +                     vdd_log: DCDC_REG1 {
+>>> +                             regulator-name = "vdd_log";
+>>> +                             regulator-min-microvolt = <712500>;
+>>> +                             regulator-max-microvolt = <1450000>;
+>>> +                             regulator-ramp-delay = <12500>;
+>>> +                             regulator-always-on;
+>>> +                             regulator-boot-on;
+>>> +
+>>> +                             regulator-state-mem {
+>>> +                                     regulator-on-in-suspend;
+>>> +                                     regulator-suspend-microvolt = <1000000>;
+>>> +                             };
+>>> +                     };
+>>> +
+>>> +                     vdd_arm: DCDC_REG2 {
+>>> +                             regulator-name = "vdd_arm";
+>>> +                             regulator-min-microvolt = <712500>;
+>>> +                             regulator-max-microvolt = <1450000>;
+>>> +                             regulator-ramp-delay = <12500>;
+>>> +                             regulator-always-on;
+>>> +                             regulator-boot-on;
+>>> +
+>>> +                             regulator-state-mem {
+>>> +                                     regulator-on-in-suspend;
+>>> +                                     regulator-suspend-microvolt = <950000>;
+>>> +                             };
+>>> +                     };
+>>> +
+>>> +                     vcc_ddr: DCDC_REG3 {
+>>> +                             regulator-name = "vcc_ddr";
+>>> +                             regulator-always-on;
+>>> +                             regulator-boot-on;
+>>> +
+>>> +                             regulator-state-mem {
+>>> +                                     regulator-on-in-suspend;
+>>> +                             };
+>>> +                     };
+>>> +
+>>> +                     vcc_io: DCDC_REG4 {
+>>> +                             regulator-name = "vcc_io";
+>>> +                             regulator-min-microvolt = <3300000>;
+>>> +                             regulator-max-microvolt = <3300000>;
+>>> +                             regulator-always-on;
+>>> +                             regulator-boot-on;
+>>> +
+>>> +                             regulator-state-mem {
+>>> +                                     regulator-on-in-suspend;
+>>> +                                     regulator-suspend-microvolt = <3300000>;
+>>> +                             };
+>>> +                     };
+>>> +
+>>> +                     vcc_18: LDO_REG1 {
+>>> +                             regulator-name = "vcc_18";
+>>> +                             regulator-min-microvolt = <1800000>;
+>>> +                             regulator-max-microvolt = <1800000>;
+>>> +                             regulator-always-on;
+>>> +                             regulator-boot-on;
+>>> +
+>>> +                             regulator-state-mem {
+>>> +                                     regulator-on-in-suspend;
+>>> +                                     regulator-suspend-microvolt = <1800000>;
+>>> +                             };
+>>> +                     };
+>>> +
+>>> +                     vcc18_emmc: LDO_REG2 {
+>>> +                             regulator-name = "vcc18_emmc";
+>>> +                             regulator-min-microvolt = <1800000>;
+>>> +                             regulator-max-microvolt = <1800000>;
+>>> +                             regulator-always-on;
+>>> +                             regulator-boot-on;
+>>> +
+>>> +                             regulator-state-mem {
+>>> +                                     regulator-on-in-suspend;
+>>> +                                     regulator-suspend-microvolt = <1800000>;
+>>> +                             };
+>>> +                     };
+>>> +
+>>> +                     vdd_10: LDO_REG3 {
+>>> +                             regulator-name = "vdd_10";
+>>> +                             regulator-min-microvolt = <1000000>;
+>>> +                             regulator-max-microvolt = <1000000>;
+>>> +                             regulator-always-on;
+>>> +                             regulator-boot-on;
+>>> +
+>>> +                             regulator-state-mem {
+>>> +                                     regulator-on-in-suspend;
+>>> +                                     regulator-suspend-microvolt = <1000000>;
+>>> +                             };
+>>> +                     };
+>>> +             };
+>>> +     };
+>>> +};
+>>> +
+>>> +&i2s1 {
+>>> +     status = "okay";
+>>> +};
+>>> +
+>>> +&io_domains {
+>>> +     pmuio-supply = <&vcc_io>;
+>>> +     vccio1-supply = <&vcc_io>;
+>>> +     vccio2-supply = <&vcc18_emmc>;
+>>> +     vccio3-supply = <&vcc_io>;
+>>> +     vccio4-supply = <&vcc_io>;
+>>> +     vccio5-supply = <&vcc_io>;
+>>> +     vccio6-supply = <&vcc_io>;
+>>> +     status = "okay";
+>>> +};
+>>> +
+>>> +&pinctrl {
+>>
+>>> +     ethernet-phy {
+>>
+>> gmac2io
+> 
+> OK.
+> 
+>> phy / ethernet-phy is a reserved node name
+>> use something else
+>>
+>> make ARCH=arm64 dtbs_check
+>>
+>> /arch/arm64/boot/dts/rockchip/rk3328-rock-pi-e.dt.yaml: ethernet-phy:
+>> 'reg' is a required property
+>>         From schema: Documentation/devicetree/bindings/net/ethernet-phy.yaml
+> 
+> That's somewhat annoying. :(
+> 
+> I wouldn't say the name is "reserved", just that the binding checking
+> mechanism can't account for these situations.
+> 
+>>> +             eth_phy_int_pin: eth-phy-int-pin {
+>>> +                     rockchip,pins = <1 RK_PD0 RK_FUNC_GPIO &pcfg_pull_down>;
+>>> +             };
+>>> +
+>>> +             eth_phy_reset_pin: eth-phy-reset-pin {
+>>> +                     rockchip,pins = <1 RK_PC2 RK_FUNC_GPIO &pcfg_pull_down>;
+>>> +             };
+>>> +     };
+>>> +
+>>> +     leds {
+>>> +             led_pin: led-pin {
+>>> +                     rockchip,pins = <3 RK_PA5 RK_FUNC_GPIO &pcfg_pull_none>;
+>>> +             };
+>>> +     };
+>>> +
+>>> +     pmic {
+>>> +             pmic_int_l: pmic-int-l {
+>>> +                     rockchip,pins = <2 RK_PA6 RK_FUNC_GPIO &pcfg_pull_up>;
+>>> +             };
+>>> +     };
+>>> +
+>>
+>>> +     usb3 {
+>>
+>> usb
+>>
+>> Last numbers in nodenames are more related to the sort order then to
+>> capabillity.
+>> ie: mmc0, mmc1
+>> All usb pin related things here.
+> 
+> I'd say it is more related to functionality in this case, as in "this group
+> is for USB3 related pins". Makes more sense if the board supported both USB2
+> and USB3.
+> 
+>>> +             usb30_host_drv: usb30-host-drv {
+>>> +                     rockchip,pins = <3 RK_PA7 RK_FUNC_GPIO &pcfg_pull_none>;
+>>> +             };
+>>> +     };
+>>> +
+>>> +     wifi {
+>>> +             wifi_en: wifi-en {
+>>> +                     rockchip,pins = <0 RK_PA0 RK_FUNC_GPIO &pcfg_pull_none>;
+>>> +             };
+>>> +     };
+>>> +};
+>>> +
+>>> +&sdmmc {
+>>> +     bus-width = <4>;
+>>
+>>> +     cap-mmc-highspeed;
+>>
+>> remove
+>> micro SD only
+>>
+>>> +     cap-sd-highspeed;
+>>> +     disable-wp;
+>>> +     pinctrl-names = "default";
+>>> +     pinctrl-0 = <&sdmmc0_clk>, <&sdmmc0_cmd>, <&sdmmc0_dectn>, <&sdmmc0_bus4>;
+>>> +     vmmc-supply = <&vcc_sd>;
+>>> +     status = "okay";
+>>> +};
+>>> +
+>>
+>>> +&saradc {
+>>> +     vref-supply = <&vcc_18>;
+>>> +     status = "okay";
+>>> +};
+>>
+>> What happened to the recovery key from the schematic?
+> 
+> I believe I originally planned on adding it, but failed to find a proper
+> key event for it. Any suggestions?
+
+The consensus seem to be "KEY_VENDOR".
+
+Example:
+
+	adc-keys {
+		compatible = "adc-keys";
+		io-channels = <&saradc 0>;
+		io-channel-names = "buttons";
+		keyup-threshold-microvolt = <1800000>;
+		poll-interval = <100>;
+
+		recovery {
+			label = "recovery";
+			linux,code = <KEY_VENDOR>;
+			press-threshold-microvolt = <17000>;
+		};
+	};
+
+> 
+> AFAIK only U-boot handles the recovery button, but in its case it just
+> looks for the saradc and reads from a predefined channel.
+> 
+> 
+> Regards
+> ChenYu
+> 
+>>> +
+>>> +&tsadc {
+>>> +     status = "okay";
+>>> +};
+>>> +
+>>> +&u2phy {
+>>> +     status = "okay";
+>>> +};
+>>> +
+>>> +&u2phy_host {
+>>> +     status = "okay";
+>>> +};
+>>> +
+>>> +&uart2 {
+>>> +     status = "okay";
+>>> +};
+>>> +
+>>> +&usb_host0_ehci {
+>>> +     status = "okay";
+>>> +};
+>>>
+>>
+
