@@ -2,115 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 760882F099A
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Jan 2021 21:00:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CB5BF2F09A2
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Jan 2021 21:11:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726979AbhAJT72 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Jan 2021 14:59:28 -0500
-Received: from mail-pg1-f177.google.com ([209.85.215.177]:39231 "EHLO
-        mail-pg1-f177.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726263AbhAJT71 (ORCPT
+        id S1727010AbhAJUJx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Jan 2021 15:09:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57028 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726494AbhAJUJw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Jan 2021 14:59:27 -0500
-Received: by mail-pg1-f177.google.com with SMTP id 30so11237074pgr.6;
-        Sun, 10 Jan 2021 11:59:12 -0800 (PST)
+        Sun, 10 Jan 2021 15:09:52 -0500
+Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7290BC061786
+        for <linux-kernel@vger.kernel.org>; Sun, 10 Jan 2021 12:09:12 -0800 (PST)
+Received: by mail-ed1-x532.google.com with SMTP id i24so16657820edj.8
+        for <linux-kernel@vger.kernel.org>; Sun, 10 Jan 2021 12:09:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=kUyUrQs3xayATQiBWATvxgCd0SP5l5aLWIuYGmxV8Jg=;
+        b=mDR2LUmfkn2nNOs0YdM2bPqrC9RQ3FZoumw6mJ+AGC0Xvi+kKiCZ+JDVdSm3P+x8W2
+         sEbqxl1gLTMpJ1cL4y1AOcquOlDcANECEWWxxI7TaKsFv/SSF9N5hiaBkdEup9y3YGov
+         gy21SN97OlMRzxibSNmKt+arB6gSE+g/ajtGbVOrVzw9yvlgf+21fJm0hfEOVd6WilMU
+         vVxZQs3EJ1mOktZvvVB3xzaEf396p1FDP+EdqG35WhZ/Q/FFVUHVW5O9kX+exI1tbyFe
+         yHtPpfw2rbNsJNse5w3qoHZdijULR4KxfOIJzVGbw/yfvPoI3molydO9gYqwGHDP7L86
+         v43w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=6075goJ/FktieZ0+YNncYqmQNb5fVzPo9SUqtP95ezc=;
-        b=n/ipPxvnq/LNrlyYXRWsWU5DX5OhoWjXVfS+swxzTrdT5pyEBhBoiqf64XaCOs0E7D
-         s8Epd6iCiIfj3ljwYytr7GOYw1OXi9NxPrkIVmEHRNYYQZ75nQl2bGNadwXOH44oudJH
-         QyH8j/WNhdoydWWNe0Wf5+coYaaN/L1C62jLrGCl0TBKXXLXVoCXBON1ijNxPDcb/KTW
-         TINLNa0gQWzDwHiUKuWRnxjWQlPWtEGPq+0ya7qFAZFkEnrtRm9ha/x6UZwjOWD8vf25
-         Wk1Am34DxyMD6fTDqJaxJjjXIiKeoJirxxcYfgNM8O5U359TrK37MhqGPccwFA5+0/QH
-         W7wA==
-X-Gm-Message-State: AOAM530bFgbJ0VI4HmeP40P51NYOTrW5GVPFAu9nZi22YjqPhV6Te6D5
-        lsjVIpFB24Yi3rpohEMwtREhYv8zhYo=
-X-Google-Smtp-Source: ABdhPJxVbk2Pp8dtbtH3BSqzC9fy6XbitWnRNtl8GNITFcSxNKY2lX703q1VA9CjAOh9GVrua2bPaw==
-X-Received: by 2002:aa7:979d:0:b029:1a4:3b76:a559 with SMTP id o29-20020aa7979d0000b02901a43b76a559mr13320736pfp.49.1610308726780;
-        Sun, 10 Jan 2021 11:58:46 -0800 (PST)
-Received: from localhost ([2601:647:5b00:1162:1ac0:17a6:4cc6:d1ef])
-        by smtp.gmail.com with ESMTPSA id p9sm15480516pjb.3.2021.01.10.11.58.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 10 Jan 2021 11:58:45 -0800 (PST)
-Date:   Sun, 10 Jan 2021 11:58:44 -0800
-From:   Moritz Fischer <mdf@kernel.org>
-To:     Xu Yilun <yilun.xu@intel.com>
-Cc:     mdf@kernel.org, linux-fpga@vger.kernel.org,
-        linux-kernel@vger.kernel.org, gregkh@linuxfoundation.org,
-        trix@redhat.com, lgoncalv@redhat.com, hao.wu@intel.com
-Subject: Re: [PATCH v5 0/2] UIO support for dfl devices
-Message-ID: <X/tcdB0hwDLog1TW@archbook>
-References: <1609557182-20787-1-git-send-email-yilun.xu@intel.com>
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=kUyUrQs3xayATQiBWATvxgCd0SP5l5aLWIuYGmxV8Jg=;
+        b=hpEd039BHAeTVgU86IaF8FOYLIXDpIZkUNTHXSVM4ngiMfRX6SZiOn7C6+3xkMi67P
+         BdmGP3EfdjJfI4FaaGtbXX66y0u5zTvB8CdEudq4kbAXU9SsnNbq8Y/WeJtwGslRFbtT
+         z5MGvwZVQPmmObWbMOg4pQH8sQ9Q6j6JKehq40VaDLaDwo2BSo7TjAZPUK+WlCGrHlmX
+         xhYCOLJAqK/9WeROzTOGMmN8zPMIOE9aL1FAJ6g/FKfBzv3nXCiwW3WbyXDRzIrA3lmk
+         8KSXzvlGi9uMqqGMQIYAYuQDpv+MxuGkoNm1IzmBUL5LA/Fc3/iEKkqXSzGjESvP10AZ
+         zPTg==
+X-Gm-Message-State: AOAM53067ZuY49Se+vTwQWdqX+efjeLn6RkTPINe/J3tammqP1tGXW1L
+        M/h5MraalVTIt6HQgCsEAKM=
+X-Google-Smtp-Source: ABdhPJwBV78e3ELX9S6MpKm1ZyGlpFi7ZJ+UjlJDv/dZs/CrDycgWvTGrDXLNdNiVWCW6jDV/xw7MA==
+X-Received: by 2002:a05:6402:22e1:: with SMTP id dn1mr12351863edb.347.1610309350980;
+        Sun, 10 Jan 2021 12:09:10 -0800 (PST)
+Received: from localhost (ip1f10d3e8.dynamic.kabel-deutschland.de. [31.16.211.232])
+        by smtp.gmail.com with ESMTPSA id dh19sm6773536edb.78.2021.01.10.12.09.10
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Sun, 10 Jan 2021 12:09:10 -0800 (PST)
+Date:   Sun, 10 Jan 2021 21:06:06 +0100
+From:   Oliver Graute <oliver.graute@gmail.com>
+To:     Fabio Estevam <festevam@gmail.com>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Marco Felsch <m.felsch@pengutronix.de>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        DRI mailing list <dri-devel@lists.freedesktop.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v1] drm/panel: simple: add SGD GKTW70SDAD1SD
+Message-ID: <20210110200606.GD7264@ripley>
+References: <1608381853-18582-1-git-send-email-oliver.graute@gmail.com>
+ <20210108214313.GA7979@ripley>
+ <CAOMZO5AXgeGYt4+4NMBRL1Hm-9M4X2DngdEBsJEAHq8+MRhQgQ@mail.gmail.com>
+ <20210110153532.GA7264@ripley>
+ <CAOMZO5C_hDWeVrCh7k+3OiA0jhQfawhGWE6hxnnFn=wA+dkTGQ@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1609557182-20787-1-git-send-email-yilun.xu@intel.com>
+In-Reply-To: <CAOMZO5C_hDWeVrCh7k+3OiA0jhQfawhGWE6hxnnFn=wA+dkTGQ@mail.gmail.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Xu,
+On 10/01/21, Fabio Estevam wrote:
+> Hi Oliver,
+> 
+> On Sun, Jan 10, 2021 at 12:35 PM Oliver Graute <oliver.graute@gmail.com> wrote:
+> 
+> > the first two errors are gone. But I still get this:
+> >
+> > [   42.387107] mxsfb 21c8000.lcdif: Cannot connect bridge: -517
+> >
+> > The panel is still off perhaps I miss something else.
+> 
+> Some suggestions:
+> 
+> - Take a look at arch/arm/boot/dts/imx6ul-14x14-evk.dtsi as a
+> reference as it has display functional
+> - Use imx_v6_v7_defconfig to make sure all the required drivers are selected
 
-On Sat, Jan 02, 2021 at 11:13:00AM +0800, Xu Yilun wrote:
-> This patchset supports some dfl device drivers written in userspace.
-> 
-> In the patchset v1, the "driver_override" interface should be used to bind
-> the DFL UIO driver to DFL devices. But there is concern that the
-> "driver_override" interface is not OK itself.
-> 
-> In v2, we use a new matching algorithem. The "driver_override" interface
-> is abandoned, the DFL UIO driver matches any DFL device which could not be
-> handled by other DFL drivers. So the DFL UIO driver could be used for new
-> DFL devices which are not supported by kernel. The concern is the UIO may
-> not be suitable as a default/generic driver for all dfl features, such as
-> features with multiple interrupts.
-> 
-> In v4, we specify each matching device in the id_table of the UIO driver,
-> just the same as other dfl drivers do. Now the UIO driver supports Ether
-> Group feature. To support more DFL features, their feature ids should be
-> added to the driver's id_table.
+ok I checked imx6ul-14x14-evk.dtsi and use imx_v6_v7_defconfig
 
-I think this is what you want, yes. Instead of doing a driver override
-or such, add devices that should always be bound to UIO to a device id
-table. For those you temporarily want to bind, make sure you can unbind
-them and use 'new_id' or 'bind' in sysfs, similar to what sysfs does.
+> - If it still does not work, share the dts and schematics
 
-> 
-> 
-> Main changes from v1:
-> - switch to the new matching algorithem. It matches DFL devices which could
->   not be handled by other DFL drivers.
-> - refacor the code about device resources filling.
-> - add the documentation.
-> 
-> Main changes from v2:
-> - split the match ops changes in dfl.c to an independent patch.
-> - move the declarations needed for dfl-uio-pdev from include/linux/dfl.h
->   to driver/fpga/dfl.h
-> - some minor fixes.
-> 
-> Main changes from v3:
-> - switch to specifying each matching device in the driver's id_table.
-> - refactor the irq handling code.
-> 
-> Main changes from v4:
-> - refactor the irq handling code.
-> 
-> Xu Yilun (2):
->   fpga: dfl: add the userspace I/O device support for DFL devices
->   Documentation: fpga: dfl: Add description for DFL UIO support
-> 
->  Documentation/fpga/dfl.rst  | 24 ++++++++++++
->  drivers/fpga/Kconfig        | 10 +++++
->  drivers/fpga/Makefile       |  1 +
->  drivers/fpga/dfl-uio-pdev.c | 91 +++++++++++++++++++++++++++++++++++++++++++++
->  4 files changed, 126 insertions(+)
->  create mode 100644 drivers/fpga/dfl-uio-pdev.c
-> 
-> -- 
-> 2.7.4
-> 
+here the schematics and my dts. The board is using a LVDS connector for
+the display.
 
-- Moritz
+https://www.variscite.de/wp-content/uploads/2017/12/VAR-6ULCustomboard-Schematics.pdf
+https://lore.kernel.org/linux-arm-kernel/1610144511-19018-3-git-send-email-oliver.graute@gmail.com/
+
+Thx for your help,
+
+Best Regards,
+
+Oliver
