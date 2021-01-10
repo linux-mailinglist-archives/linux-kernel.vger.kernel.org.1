@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D48522F073E
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Jan 2021 13:42:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 22AA42F0745
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Jan 2021 13:44:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726546AbhAJMmO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Jan 2021 07:42:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46532 "EHLO
+        id S1726612AbhAJMmq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Jan 2021 07:42:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46654 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726069AbhAJMmN (ORCPT
+        with ESMTP id S1726069AbhAJMmp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Jan 2021 07:42:13 -0500
-Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A622AC0617A2
-        for <linux-kernel@vger.kernel.org>; Sun, 10 Jan 2021 04:41:32 -0800 (PST)
-Received: by mail-pl1-x631.google.com with SMTP id x18so8061156pln.6
-        for <linux-kernel@vger.kernel.org>; Sun, 10 Jan 2021 04:41:32 -0800 (PST)
+        Sun, 10 Jan 2021 07:42:45 -0500
+Received: from mail-pj1-x1033.google.com (mail-pj1-x1033.google.com [IPv6:2607:f8b0:4864:20::1033])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5AFDCC0617A5
+        for <linux-kernel@vger.kernel.org>; Sun, 10 Jan 2021 04:41:36 -0800 (PST)
+Received: by mail-pj1-x1033.google.com with SMTP id v1so6139050pjr.2
+        for <linux-kernel@vger.kernel.org>; Sun, 10 Jan 2021 04:41:36 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=bytedance-com.20150623.gappssmtp.com; s=20150623;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=ffJDakXCDHXSBit9htKSivl1vC+lnq1/j37kP5/245Q=;
-        b=cUxJC0PDgtphFqteTncK1MMWPA0tvaGir94in2c2J8OS1SoLVX445ms53I6WXgvgZt
-         omcPb99wACh3cWgOjXnBmpbdfO6TGUoKvW5FkIAjWnK2WaGBlkaGuWe3fil1eko5nnNz
-         0fEHHF+vbssaLNNJZQ4OERgj1TxSq9doOTw9wn6N/E1c9kvgMXSW8khp42cxCiEKOYZc
-         YIT82Ffe2Dm5QVfgBXtzGRcUq66thL3sVDK8CB/y+caCXc3MflE+iN6IsmWSE3r9Wr0Q
-         dmMPD1A8lozfusvXZFMUOYroviV/u8043Bi2YD3mEM6yJnOAy79Fj1HAx7kIXVvsPX6M
-         uFLg==
+        bh=I3gDuLjEjqpY5hJrgoP0zbm1oa1HSY0dQY30oFlgAYQ=;
+        b=rWeFaHhdx26QIcu4oFq9jt4fdoiwTTEMHiX0GcDFnvXCNSEGXKNUOhSowItykhSP+s
+         MU2lB7VGPKOpR26dagIJbSrZ0z4DQUseP8TI1Hr8218icPt2CE59nrthBPoGc5+2L0py
+         GldzLHOZ/qQ22eoxfirNB/sX7sTFkGnYQS4NQwdHXLZ95tD8fo3K17CN+WvUYYuirXhr
+         TpF+IMj8yyO/hRNwe/nRuTb4oq+CLbVTwC4ZMsGRxI8qPFxdbhi6TNcVuZv0oM+ZLqNg
+         4jK9h5RHhQ6APoWqIDlwAfx9/2k67z/4jNjM/HkPqSz2S5XOK+/rLaWpDAKaMrYgYVJT
+         m2bg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=ffJDakXCDHXSBit9htKSivl1vC+lnq1/j37kP5/245Q=;
-        b=iasonTx+AwY5fNIuSZOvydu9Ksga9BuTh16VIuki5Ty6MbQ7GmnJlyCukRfnVFs4Nh
-         NtSmTREa/3wHP3MgoxBViLKsehsE8LAOMm8nhSM7kPBiz3JfeirFvsvCpM1UU6AE1k0D
-         u6e8x4i6ta+Z0BZvxDvLQj7gjTXmQ9GsEvOwXpxK+dDh2mX27wt0qQJ31w1CaD+GNwRq
-         BJMCARJoA2rCtNX2ZVmEXQwCW7Aa9iZhFolp8Ahjbw/Vh8ONqFL71intin7NNUcGJJIQ
-         rvWZZclzRt5JoWljJMocsjyurwFvXvi4lcoyyGr83bN6t0CEePix+MpQ+KHahAaO6xwq
-         CgAA==
-X-Gm-Message-State: AOAM531BvFDOkIW73BLxXsBK7VsaBFYJzDHNEnZCcKEL0WuXfS2Px93c
-        7/YI+JfL8lJSw9eWdoBYzRBhwuRxeqt3lqxNVWg=
-X-Google-Smtp-Source: ABdhPJyZ047vfaPcWkl/qH5UFf8rFpsGc+XXjNkX+M8hjJ33pepyB/KnD8+n6in94OwlD32paX1+4g==
-X-Received: by 2002:a17:902:b782:b029:dc:251:423f with SMTP id e2-20020a170902b782b02900dc0251423fmr12395450pls.30.1610282492291;
-        Sun, 10 Jan 2021 04:41:32 -0800 (PST)
+        bh=I3gDuLjEjqpY5hJrgoP0zbm1oa1HSY0dQY30oFlgAYQ=;
+        b=Q4bPeycdmXBWkdEo/Nhk5F0eNsaq90I26v/CqrhGoB/006FlIIZ8shJ0UAcJpg8I3/
+         smoSNJPFG7km7wqA6PC7gVAeDw0IYkX1uI+TsnTB0jfuEa8JvXUkCwUQRATDQkO8UIRe
+         UZOvckZbsq+18D2ZFXB7guWh5ztBMq3/QID5SpTZ/M0W89TFZsgkypmPMXJGc8Pk4Iq+
+         chffbUCIBr7dSpkz+AWfnpGWpsZtJq/1Zbk0NCtL1AVYA0YCVLQ+CsghGS9BLLAdNxyv
+         8jgXBMD1dXVRYh7UR/HWauhosQ/2gsZctdf9/IWoA4WEgj8UBCdzagHmE2nnmn4KGyDF
+         lMlA==
+X-Gm-Message-State: AOAM531Hr30aNet8EIPSo4jLtrXWkN2Ks2CqdkI5RbZg0+eZdqL4PyIF
+        4KIhoHZ7K5T/nZEvrTvwCaIpxg==
+X-Google-Smtp-Source: ABdhPJzWrZDYsSoIxdfRxNA612sIivazrBh4X8Socv1b7/yltfVgFXyC4/ghwU7KuryYYJvTKH3CpQ==
+X-Received: by 2002:a17:90a:4402:: with SMTP id s2mr12942473pjg.37.1610282495977;
+        Sun, 10 Jan 2021 04:41:35 -0800 (PST)
 Received: from localhost.localdomain ([139.177.225.247])
-        by smtp.gmail.com with ESMTPSA id p9sm16176960pfq.136.2021.01.10.04.41.28
+        by smtp.gmail.com with ESMTPSA id p9sm16176960pfq.136.2021.01.10.04.41.32
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sun, 10 Jan 2021 04:41:31 -0800 (PST)
+        Sun, 10 Jan 2021 04:41:35 -0800 (PST)
 From:   Muchun Song <songmuchun@bytedance.com>
 To:     mike.kravetz@oracle.com, akpm@linux-foundation.org
 Cc:     n-horiguchi@ah.jp.nec.com, ak@linux.intel.com, mhocko@suse.cz,
         linux-mm@kvack.org, linux-kernel@vger.kernel.org,
         Muchun Song <songmuchun@bytedance.com>, stable@vger.kernel.org
-Subject: [PATCH v3 2/6] mm: hugetlbfs: fix cannot migrate the fallocated HugeTLB page
-Date:   Sun, 10 Jan 2021 20:40:13 +0800
-Message-Id: <20210110124017.86750-3-songmuchun@bytedance.com>
+Subject: [PATCH v3 3/6] mm: hugetlb: fix a race between freeing and dissolving the page
+Date:   Sun, 10 Jan 2021 20:40:14 +0800
+Message-Id: <20210110124017.86750-4-songmuchun@bytedance.com>
 X-Mailer: git-send-email 2.21.0 (Apple Git-122)
 In-Reply-To: <20210110124017.86750-1-songmuchun@bytedance.com>
 References: <20210110124017.86750-1-songmuchun@bytedance.com>
@@ -65,65 +65,103 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If a new hugetlb page is allocated during fallocate it will not be
-marked as active (set_page_huge_active) which will result in a later
-isolate_huge_page failure when the page migration code would like to
-move that page. Such a failure would be unexpected and wrong.
+There is a race condition between __free_huge_page()
+and dissolve_free_huge_page().
 
-Only export set_page_huge_active, just leave clear_page_huge_active
-as static. Because there are no external users.
+CPU0:                         CPU1:
 
-Fixes: 70c3547e36f5 (hugetlbfs: add hugetlbfs_fallocate())
+// page_count(page) == 1
+put_page(page)
+  __free_huge_page(page)
+                              dissolve_free_huge_page(page)
+                                spin_lock(&hugetlb_lock)
+                                // PageHuge(page) && !page_count(page)
+                                update_and_free_page(page)
+                                // page is freed to the buddy
+                                spin_unlock(&hugetlb_lock)
+    spin_lock(&hugetlb_lock)
+    clear_page_huge_active(page)
+    enqueue_huge_page(page)
+    // It is wrong, the page is already freed
+    spin_unlock(&hugetlb_lock)
+
+The race windows is between put_page() and dissolve_free_huge_page().
+
+We should make sure that the page is already on the free list
+when it is dissolved.
+
+Fixes: c8721bbbdd36 ("mm: memory-hotplug: enable memory hotplug to handle hugepage")
 Signed-off-by: Muchun Song <songmuchun@bytedance.com>
 Cc: stable@vger.kernel.org
 ---
- fs/hugetlbfs/inode.c    | 3 ++-
- include/linux/hugetlb.h | 2 ++
- mm/hugetlb.c            | 2 +-
- 3 files changed, 5 insertions(+), 2 deletions(-)
+ mm/hugetlb.c | 26 ++++++++++++++++++++++++++
+ 1 file changed, 26 insertions(+)
 
-diff --git a/fs/hugetlbfs/inode.c b/fs/hugetlbfs/inode.c
-index b5c109703daa..21c20fd5f9ee 100644
---- a/fs/hugetlbfs/inode.c
-+++ b/fs/hugetlbfs/inode.c
-@@ -735,9 +735,10 @@ static long hugetlbfs_fallocate(struct file *file, int mode, loff_t offset,
- 
- 		mutex_unlock(&hugetlb_fault_mutex_table[hash]);
- 
-+		set_page_huge_active(page);
- 		/*
- 		 * unlock_page because locked by add_to_page_cache()
--		 * page_put due to reference from alloc_huge_page()
-+		 * put_page() due to reference from alloc_huge_page()
- 		 */
- 		unlock_page(page);
- 		put_page(page);
-diff --git a/include/linux/hugetlb.h b/include/linux/hugetlb.h
-index ebca2ef02212..b5807f23caf8 100644
---- a/include/linux/hugetlb.h
-+++ b/include/linux/hugetlb.h
-@@ -770,6 +770,8 @@ static inline void huge_ptep_modify_prot_commit(struct vm_area_struct *vma,
- }
- #endif
- 
-+void set_page_huge_active(struct page *page);
-+
- #else	/* CONFIG_HUGETLB_PAGE */
- struct hstate {};
- 
 diff --git a/mm/hugetlb.c b/mm/hugetlb.c
-index 1f3bf1710b66..4741d60f8955 100644
+index 4741d60f8955..4a9011e12175 100644
 --- a/mm/hugetlb.c
 +++ b/mm/hugetlb.c
-@@ -1348,7 +1348,7 @@ bool page_huge_active(struct page *page)
+@@ -79,6 +79,21 @@ DEFINE_SPINLOCK(hugetlb_lock);
+ static int num_fault_mutexes;
+ struct mutex *hugetlb_fault_mutex_table ____cacheline_aligned_in_smp;
+ 
++static inline bool PageHugeFreed(struct page *head)
++{
++	return page_private(head + 4) == -1UL;
++}
++
++static inline void SetPageHugeFreed(struct page *head)
++{
++	set_page_private(head + 4, -1UL);
++}
++
++static inline void ClearPageHugeFreed(struct page *head)
++{
++	set_page_private(head + 4, 0);
++}
++
+ /* Forward declaration */
+ static int hugetlb_acct_memory(struct hstate *h, long delta);
+ 
+@@ -1028,6 +1043,7 @@ static void enqueue_huge_page(struct hstate *h, struct page *page)
+ 	list_move(&page->lru, &h->hugepage_freelists[nid]);
+ 	h->free_huge_pages++;
+ 	h->free_huge_pages_node[nid]++;
++	SetPageHugeFreed(page);
  }
  
- /* never called for tail page */
--static void set_page_huge_active(struct page *page)
-+void set_page_huge_active(struct page *page)
- {
- 	VM_BUG_ON_PAGE(!PageHeadHuge(page), page);
- 	SetPagePrivate(&page[1]);
+ static struct page *dequeue_huge_page_node_exact(struct hstate *h, int nid)
+@@ -1044,6 +1060,7 @@ static struct page *dequeue_huge_page_node_exact(struct hstate *h, int nid)
+ 
+ 		list_move(&page->lru, &h->hugepage_activelist);
+ 		set_page_refcounted(page);
++		ClearPageHugeFreed(page);
+ 		h->free_huge_pages--;
+ 		h->free_huge_pages_node[nid]--;
+ 		return page;
+@@ -1504,6 +1521,7 @@ static void prep_new_huge_page(struct hstate *h, struct page *page, int nid)
+ 	spin_lock(&hugetlb_lock);
+ 	h->nr_huge_pages++;
+ 	h->nr_huge_pages_node[nid]++;
++	ClearPageHugeFreed(page);
+ 	spin_unlock(&hugetlb_lock);
+ }
+ 
+@@ -1770,6 +1788,14 @@ int dissolve_free_huge_page(struct page *page)
+ 		int nid = page_to_nid(head);
+ 		if (h->free_huge_pages - h->resv_huge_pages == 0)
+ 			goto out;
++
++		/*
++		 * We should make sure that the page is already on the free list
++		 * when it is dissolved.
++		 */
++		if (unlikely(!PageHugeFreed(head)))
++			goto out;
++
+ 		/*
+ 		 * Move PageHWPoison flag from head page to the raw error page,
+ 		 * which makes any subpages rather than the error page reusable.
 -- 
 2.11.0
 
