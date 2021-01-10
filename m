@@ -2,57 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2FD22F09DA
+	by mail.lfdr.de (Postfix) with ESMTP id 7379B2F09D9
 	for <lists+linux-kernel@lfdr.de>; Sun, 10 Jan 2021 22:23:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727098AbhAJVWA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S1727115AbhAJVWA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Sun, 10 Jan 2021 16:22:00 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53856 "EHLO mail.kernel.org"
+Received: from mail.kernel.org ([198.145.29.99]:53864 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726735AbhAJVV6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1726768AbhAJVV6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Sun, 10 Jan 2021 16:21:58 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPS id 8470722AAC;
+Received: by mail.kernel.org (Postfix) with ESMTPS id 9C83A22AAD;
         Sun, 10 Jan 2021 21:21:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1610313677;
-        bh=Nno+3pKGQr/ZyEJh/RO8akz3NQ1ZmbQwk9xRF41jSqc=;
+        bh=BeMW1H/pLqMxPy1MS/evxQoWhECMoCOzDEx/lzx/uHE=;
         h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=h7zBtu7BToSSxFpFgJmLfFc2cRSbENxbJqeKESM0Ut+roI+DT0W2dI8qYrNNrArrm
-         6sJWhSeApdvUiZ+XTQ0oZVpdArhg7wVKdwG5+hCE9tgHYPMQW2fiUXx/wEzHP5n1W+
-         l3Kn17TPtgKJJ7umVvN0srLXkIBoAiv0+xQce+q5LDzrH27zK799MXmRNqWKeZhXHp
-         DzJ9joYOTAvHXIvML4kG6TNDixZ9npQeZDsok6VnTJduykF1pnPU8KhD2zx94kVM/o
-         L1bBLpN9XR5tsNyQHg96nR5A+mE44flZZ1ZVwvil9DOVspgawcbp7h3/qzqGj99hru
-         Or7b39OtFNJpw==
+        b=uzoVc0FIEQZmiSdn6gCXhmaOwbl58yUhg6mTAiA1+K/FXKVip58+7xgaQ4ULpqXzF
+         GwnN8OR5E3B6Qi7owA/LKc4aW5cMROry1leeFRI6jtf0sk2jwIuLmldwSTVbTIAkdz
+         2nGCZklb1xesy3LavtnnUeuJUtXK8hZJIn/zqGRuR3U0GusPY6xam2l0E2p+idrZFd
+         tYrCyY2rChkBSWau7xU+SAdFYFcNCWCVgtq29PM+XPBHhpN7+qnvPX7tMIA89YF731
+         7SJS2+DIXFskqmQNe6TPBaj4uACtswSy38N9GHiaEXOzs0zGrRGxyZQaG0f0EvK8GV
+         R4rzo5poh8mPw==
 Received: from pdx-korg-docbuild-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-1.ci.codeaurora.org (Postfix) with ESMTP id 7A5B560141;
+        by pdx-korg-docbuild-1.ci.codeaurora.org (Postfix) with ESMTP id 9813860140;
         Sun, 10 Jan 2021 21:21:17 +0000 (UTC)
-Subject: Re: [GIT PULL] USB driver fixes for 5.11-rc3
+Subject: Re: [GIT PULL] SCSI fixes for 5.11-rc2
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <X/sK8J7QqiNSPZ1e@kroah.com>
-References: <X/sK8J7QqiNSPZ1e@kroah.com>
+In-Reply-To: <14455f8f5d119cb74d3dbe66898863a1a79c0f0b.camel@HansenPartnership.com>
+References: <14455f8f5d119cb74d3dbe66898863a1a79c0f0b.camel@HansenPartnership.com>
 X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <X/sK8J7QqiNSPZ1e@kroah.com>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/usb.git tags/usb-5.11-rc3
-X-PR-Tracked-Commit-Id: a5c7682aaaa10e42928d73de1c9e1e02d2b14c2e
+X-PR-Tracked-Message-Id: <14455f8f5d119cb74d3dbe66898863a1a79c0f0b.camel@HansenPartnership.com>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/jejb/scsi.git scsi-fixes
+X-PR-Tracked-Commit-Id: a8f808839abe3a10011e28b46af1848dfd8c4f21
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 28318f53503090fcd8fd27c49445396ea2ace44b
-Message-Id: <161031367749.28318.2198119359449543218.pr-tracker-bot@kernel.org>
+X-PR-Merge-Commit-Id: 688daed2e5daf0a1513effdc05ce3c56ade836f9
+Message-Id: <161031367761.28318.10874253762165538049.pr-tracker-bot@kernel.org>
 Date:   Sun, 10 Jan 2021 21:21:17 +0000
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org
+To:     James Bottomley <James.Bottomley@HansenPartnership.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-scsi <linux-scsi@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Sun, 10 Jan 2021 15:10:56 +0100:
+The pull request you sent on Sun, 10 Jan 2021 11:05:27 -0800:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/usb.git tags/usb-5.11-rc3
+> git://git.kernel.org/pub/scm/linux/kernel/git/jejb/scsi.git scsi-fixes
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/28318f53503090fcd8fd27c49445396ea2ace44b
+https://git.kernel.org/torvalds/c/688daed2e5daf0a1513effdc05ce3c56ade836f9
 
 Thank you!
 
