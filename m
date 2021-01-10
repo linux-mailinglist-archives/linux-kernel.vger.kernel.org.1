@@ -2,98 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D20032F0785
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Jan 2021 15:06:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 744DF2F0787
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Jan 2021 15:09:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726644AbhAJOG1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Jan 2021 09:06:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36192 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726341AbhAJOG0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Jan 2021 09:06:26 -0500
-Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52D8AC061794
-        for <linux-kernel@vger.kernel.org>; Sun, 10 Jan 2021 06:05:46 -0800 (PST)
-Received: by mail-pf1-x42f.google.com with SMTP id t22so9384869pfl.3
-        for <linux-kernel@vger.kernel.org>; Sun, 10 Jan 2021 06:05:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=PwUU1YKTRto1wQfZpKpX1jWiTQDtu3Oih3JGe/RizdY=;
-        b=JJAczVYOJr2piove4sRN5rNQ5PwlhTMnhuEoiIVroZAG6Kje6V7y/pzjfw9iOFLPxb
-         AdEwHEzOXTodscnF6Ex7EEL3VZTFdTGgQFz+XC8uD1+n8/J7FOtI2yz5SSjgHXLnTG6r
-         f3+tWuWtUv9Tmdfqg67aS6UErR5yoIUyGhcqNsW4HaYGKEIzGA/tUNPVyZDdlBFW9jsw
-         RdkOWj0pk7Sjo29ywJW3P8rnDWxGv4SYObrExO8M1k6kSDbkzet6HaAsPHwJ3lIJFvHU
-         /qGcaRY8BwXymij38uC13l4wgzaCtLeGPrAi2bY7FDY0iGnRmC9/SteIJxVjUZAg4983
-         BEXg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=PwUU1YKTRto1wQfZpKpX1jWiTQDtu3Oih3JGe/RizdY=;
-        b=qwD/1eWnKYueBUO3Te4P01r+TWrpGEDgiPKjBXZpEMkVgw3PUOSOditCGnZXci9Cl5
-         CkUA/4aWSNX78KnFRYpvkDNF5h227tZnSOYKvnAUmj2ptAGZ3D2aHFKdhnyP0XV4DNxO
-         RWn0jbro5zaGR2hd1hKC749fM+AUxJDlsv0bbURUXk4FMOgTig+mN+Yt+eLx3AvCllxR
-         b0glZzXanAMwPhDF8hU/qmXx4UvyW6RFuH8RynQ9I8/D2Zz8iP9jiXTGwwoDVyPOtXLI
-         1YH2XTw4cpgoqW06/nZoXFNJu7k02GCiXuVgM9m7FBiUhPJtQUaaVe+0xAi5R/0NPwO4
-         a8aA==
-X-Gm-Message-State: AOAM532791BI61AokSQUMyQwJ3mLCC4l5YX0mYMBzmRD1C5ILqSyOhXJ
-        wO6TurLIR3u7o4svECUm6d8=
-X-Google-Smtp-Source: ABdhPJxGzAwaLioVlxKIni4tPEBYRHzS+nPpywLkNSMnCzjcbzKfrhgLhTld4VFrP3s1WKMAZuIabQ==
-X-Received: by 2002:aa7:9633:0:b029:19d:d05f:4964 with SMTP id r19-20020aa796330000b029019dd05f4964mr12246859pfg.23.1610287545891;
-        Sun, 10 Jan 2021 06:05:45 -0800 (PST)
-Received: from adolin ([49.207.199.194])
-        by smtp.gmail.com with ESMTPSA id ay21sm11828629pjb.1.2021.01.10.06.05.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 10 Jan 2021 06:05:45 -0800 (PST)
-Date:   Sun, 10 Jan 2021 19:35:41 +0530
-From:   Sumera Priyadarsini <sylphrenadin@gmail.com>
-To:     melissa.srw@gmail.com
-Cc:     rodrigosiqueiramelo@gmail.com, hamohammed.sa@gmail.com,
-        daniel@ffwll.ch, airlied@linux.ie, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH V4 3/3] drm/vkms: Add information about module options
-Message-ID: <68b521bc789640a5f6437bcaa5d5960799be59c9.1610200411.git.sylphrenadin@gmail.com>
-References: <cover.1610200411.git.sylphrenadin@gmail.com>
+        id S1726655AbhAJOI6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Jan 2021 09:08:58 -0500
+Received: from mail.kernel.org ([198.145.29.99]:34698 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726395AbhAJOI6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 10 Jan 2021 09:08:58 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D249D22EBF;
+        Sun, 10 Jan 2021 14:08:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1610287697;
+        bh=NcVIwl9rkpdu5CPbbETn7w1Jwe510qUTFxdppGL3szk=;
+        h=Date:From:To:Cc:Subject:From;
+        b=Rx7tYHWl2qfSnVepJkLA1P+yKUYHupWjjRFEO4U2DjiFfVU8S40Ni8e5Lvy12TBw0
+         w8MBKvvqRqSHdD3yIKQs5zid7IJB3EAB3sQEb/gM24CJ3e51WECN6j4Bzh9Cm7BzEa
+         piC36ernx9xDCsHg1yfBOB9+dd+6ghh8d5bQCpt4=
+Date:   Sun, 10 Jan 2021 15:09:30 +0100
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Arnd Bergmann <arnd@arndb.de>, linux-kernel@vger.kernel.org
+Subject: [GIT PULL] Char/Misc driver fixes for 5.11-rc3
+Message-ID: <X/sKmuNK82RLz8jR@kroah.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <cover.1610200411.git.sylphrenadin@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Update vkms documentation to contain usage of `modinfo`
-command and steps to load vkms with module options enabled.
+The following changes since commit 5c8fe583cce542aa0b84adc939ce85293de36e5e:
 
-Signed-off-by: Sumera Priyadarsini <sylphrenadin@gmail.com>
----
- Documentation/gpu/vkms.rst | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+  Linux 5.11-rc1 (2020-12-27 15:30:22 -0800)
 
-diff --git a/Documentation/gpu/vkms.rst b/Documentation/gpu/vkms.rst
-index 9e030c74a82e..45fe02f643a8 100644
---- a/Documentation/gpu/vkms.rst
-+++ b/Documentation/gpu/vkms.rst
-@@ -35,6 +35,16 @@ Now, to load the driver, use::
- On running the lsmod command now, the VKMS driver will appear listed.
- You can also observe the driver being loaded in the dmesg logs.
- 
-+You can use the `modinfo` command to see module options for vkms::
-+
-+  modinfo vkms
-+
-+Module options are helpful when testing, and enabling modules
-+can be done while loading vkms. For example, to load vkms with cursor enabled,
-+use::
-+
-+  sudo modprobe vkms enable_cursor=1
-+
- To disable the driver, use ::
- 
-   sudo modprobe -r vkms
--- 
-2.25.1
+are available in the Git repository at:
 
+  git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/char-misc.git tags/char-misc-5.11-rc3
+
+for you to fetch changes up to 384b77fd48fd683a82760bc88bef8611cba997fc:
+
+  Fonts: font_ter16x32: Update font with new upstream Terminus release (2021-01-07 21:06:25 +0100)
+
+----------------------------------------------------------------
+Char/Misc driver fixes for 5.11-rc3
+
+Here are some small char and misc driver fixes for 5.11-rc3.
+
+the majority here are fixes for the habanalabs drivers, but also in here
+are:
+	- crypto driver fix
+	- pvpanic driver fix
+	- updated font file
+	- interconnect driver fixes
+
+All of these have been in linux-next for a while with no reported
+issues.
+
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+
+----------------------------------------------------------------
+Alon Mizrahi (5):
+      habanalabs: add comment for pll frequency ioctl opcode
+      habanalabs: fetch PSOC PLL frequency from F/W in goya
+      habanalabs: remove generic gaudi get_pll_freq function
+      habanalabs/gaudi: do not set EB in collective slave queues
+      habanalabs: add validation cs counter, fix misplaced counters
+
+Amanoel Dawod (1):
+      Fonts: font_ter16x32: Update font with new upstream Terminus release
+
+Andy Shevchenko (1):
+      misc: pvpanic: Check devm_ioport_map() for NULL
+
+Arnd Bergmann (1):
+      interconnect: qcom: fix rpmh link failures
+
+Christophe JAILLET (2):
+      interconnect: imx: Add a missing of_node_put after of_device_is_available
+      interconnect: imx: Remove a useless test
+
+Dinghao Liu (1):
+      habanalabs: Fix memleak in hl_device_reset
+
+Georgi Djakov (1):
+      MAINTAINERS: Update Georgi's email address
+
+Greg Kroah-Hartman (3):
+      Merge tag 'misc-habanalabs-fixes-2020-12-30' of https://git.kernel.org/.../ogabbay/linux into char-misc-linus
+      crypto: asym_tpm: correct zero out potential secrets
+      Merge tag 'icc-5.11-rc3' of git://git.kernel.org/.../djakov/icc into char-misc-linus
+
+Martin Kepplinger (1):
+      interconnect: imx8mq: Use icc_sync_state
+
+Oded Gabbay (7):
+      habanalabs/gaudi: disable CGM at HW initialization
+      habanalabs/gaudi: enhance reset message
+      habanalabs: update comment in hl_boot_if.h
+      habanalabs: adjust pci controller init to new firmware
+      habanalabs/gaudi: retry loading TPC f/w on -EINTR
+      habanalabs: register to pci shutdown callback
+      habanalabs: fix order of status check
+
+Ofir Bitton (2):
+      habanalabs: preboot hard reset support
+      habanalabs: full FW hard reset support
+
+Samuel Thibault (1):
+      speakup: Add github repository URL and bug tracker
+
+Tomer Tayar (2):
+      habanalabs: Fix a missing-braces warning
+      habanalabs: Revise comment to align with mirror list name
+
+ MAINTAINERS                                        |   4 +-
+ crypto/asymmetric_keys/asym_tpm.c                  |   2 +-
+ drivers/interconnect/imx/imx.c                     |   3 +-
+ drivers/interconnect/imx/imx8mq.c                  |   2 +
+ drivers/interconnect/qcom/Kconfig                  |  23 ++-
+ .../misc/habanalabs/common/command_submission.c    |  77 +++++++--
+ drivers/misc/habanalabs/common/device.c            |   8 +-
+ drivers/misc/habanalabs/common/firmware_if.c       |  60 +++++--
+ drivers/misc/habanalabs/common/habanalabs.h        |   4 +-
+ drivers/misc/habanalabs/common/habanalabs_drv.c    |   1 +
+ drivers/misc/habanalabs/common/habanalabs_ioctl.c  |   7 +-
+ drivers/misc/habanalabs/common/hw_queue.c          |   5 +-
+ drivers/misc/habanalabs/common/pci.c               |  28 +--
+ drivers/misc/habanalabs/gaudi/gaudi.c              | 191 +++++++++------------
+ drivers/misc/habanalabs/gaudi/gaudiP.h             |   7 -
+ drivers/misc/habanalabs/gaudi/gaudi_coresight.c    |   3 +-
+ drivers/misc/habanalabs/goya/goya.c                |  75 ++++----
+ .../misc/habanalabs/include/common/hl_boot_if.h    |   9 +-
+ drivers/misc/pvpanic.c                             |  19 +-
+ include/uapi/misc/habanalabs.h                     |   5 +
+ lib/fonts/font_ter16x32.c                          |   6 +-
+ 21 files changed, 322 insertions(+), 217 deletions(-)
