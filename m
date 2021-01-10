@@ -2,322 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1C252F05B5
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Jan 2021 07:32:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4247D2F05B7
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Jan 2021 07:35:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726210AbhAJGbp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Jan 2021 01:31:45 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52492 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725267AbhAJGbo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Jan 2021 01:31:44 -0500
-Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85901C061786;
-        Sat,  9 Jan 2021 22:31:04 -0800 (PST)
-Received: by mail-pj1-x1029.google.com with SMTP id lj6so5897753pjb.0;
-        Sat, 09 Jan 2021 22:31:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=YGGZ6fSTacFV3p0yhGT7HTdfidK9m5Fu6uaRbgw/vRo=;
-        b=UGnmnce2mMfNdou+rW0FOfKEPQxJ3kpu0VcmKTvG9PvE0g+iP3CxTVK5JPvclqx28u
-         o2zeFPgbRlgFjBRTi8SfFjxUDVmQZhbFxTfdolQqLnGG3cRyuUNhQhTdHzKm6omTmfNK
-         q7uaJQV27boVp//B1EyeP30jwAKVEaKN3YC4gX7A20GCK8MLaZps443NV26qFMGXQBMM
-         X5AxwSDOQH1N8Lf1d3Ux3xO4NMSy1QvwfeV+uisEqiiDJSFtRGDBtYnVmlq3jZOCQw0t
-         Eq6DfHKxKULa0Ja7rLtwa8RGy893RFVVTd5mr0uhKfwa/RDgLATDesj+qiSs5jhLL1Vg
-         ezpA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=YGGZ6fSTacFV3p0yhGT7HTdfidK9m5Fu6uaRbgw/vRo=;
-        b=CkZBBkEYxuSNnWZTiKYWe9PdB7ZnKog5Kab3+jlebuwzLVIh+wDomSWOWm3W8C1QxN
-         3Sj1yXjhk1R6yew2MWd8nO2pI0mmAzkFfh2ypz1b2QZSpVqtFUchtzk2XBQWHmNm3LzF
-         hEs+ppBOTCB3b52fIgB21TavRDivRYhnIWe39NJrVdDB0RgAYEyFmrCZxhJgcH6olOQD
-         LHFjYPrNFqKZ9p7a12W4dA6cSglesajc61GcJRZYaa9aAqSo8WIZN/Fim08erXYk+8tZ
-         BQ7VaP6X9eR4lEWz7SfYBpDyyS0BO62ploZdo4nuaYm7jsag1K7I/JKJIY8prJHhVJrU
-         nWRw==
-X-Gm-Message-State: AOAM533kXzw0fSJ8BSgWQ0BPphi6Wa8nN0eUg/Kv29MCeaNXfItVyVZj
-        /FndLSrQ197fqYY67BLp7ek=
-X-Google-Smtp-Source: ABdhPJxwhuIteONtpnLyU7uS5xN4LiIgzC55HtaRDYNPxFlkxvqaz4P/Jtyux0AfE96RYbMXtGHHZQ==
-X-Received: by 2002:a17:90b:215:: with SMTP id fy21mr11811895pjb.227.1610260263886;
-        Sat, 09 Jan 2021 22:31:03 -0800 (PST)
-Received: from google.com ([2620:15c:202:201:a6ae:11ff:fe11:fcc3])
-        by smtp.gmail.com with ESMTPSA id i10sm15675388pgt.85.2021.01.09.22.31.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 09 Jan 2021 22:31:02 -0800 (PST)
-Date:   Sat, 9 Jan 2021 22:31:00 -0800
-From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
-To:     Tony Lindgren <tony@atomide.com>
-Cc:     linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-omap@vger.kernel.org,
-        Arthur Demchenkov <spinal.by@gmail.com>,
-        Carl Philipp Klemm <philipp@uvos.xyz>,
-        Merlijn Wajer <merlijn@wizzup.org>,
-        Pavel Machek <pavel@ucw.cz>, ruleh <ruleh@gmx.de>,
-        Sebastian Reichel <sre@kernel.org>
-Subject: Re: [PATCH 4/4] Input: omap4-keypad - simplify probe with devm
-Message-ID: <X/qfJKiM21uyksYl@google.com>
-References: <20210106125822.31315-1-tony@atomide.com>
- <20210106125822.31315-5-tony@atomide.com>
+        id S1726461AbhAJGdW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Jan 2021 01:33:22 -0500
+Received: from mga18.intel.com ([134.134.136.126]:54672 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726250AbhAJGdW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 10 Jan 2021 01:33:22 -0500
+IronPort-SDR: fVyR9DmBfcZNRVwilNHqfzn1vffF28D6Lf1KCLckf3N8hxFAAZ85q/FmLokeBq4RwEV/tFyweF
+ t+ChYX1Z9Jbg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9859"; a="165430749"
+X-IronPort-AV: E=Sophos;i="5.79,335,1602572400"; 
+   d="scan'208";a="165430749"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Jan 2021 22:32:40 -0800
+IronPort-SDR: PE1hZlG6BNY+3gIUBoxV0vZNavCvMj7MZhmMNWGVE5Ll2FMok0Ef1yclobVp/5e3DZQjMs68s+
+ zvS51AEHq7Hg==
+X-IronPort-AV: E=Sophos;i="5.79,335,1602572400"; 
+   d="scan'208";a="423411593"
+Received: from shao2-debian.sh.intel.com (HELO localhost) ([10.239.13.117])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Jan 2021 22:32:39 -0800
+Date:   Sun, 10 Jan 2021 14:31:47 +0800
+From:   kernel test robot <rong.a.chen@intel.com>
+To:     Claudiu Beznea <claudiu.beznea@microchip.com>
+Cc:     kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
+        Andrew Lunn <andrew@lunn.ch>
+Subject: drivers/net/ethernet/cadence/macb_main.c:4661:14: warning: Either
+ the condition 'macb_config' is redundant or there is possible null pointer
+ dereference: macb_config.
+Message-ID: <20210110063147.GS399595@shao2-debian>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20210106125822.31315-5-tony@atomide.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Tony,
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   996e435fd401de35df62ac943ab9402cfe85c430
+commit: edac63861db72a462ccdfad0b5dfa66985d58bd5 net: macb: add userio bits as platform configuration
+compiler: nios2-linux-gcc (GCC) 9.3.0
 
-On Wed, Jan 06, 2021 at 02:58:22PM +0200, Tony Lindgren wrote:
->  static int omap4_keypad_remove(struct platform_device *pdev)
->  {
->  	struct omap4_keypad *keypad_data = platform_get_drvdata(pdev);
-> -	struct resource *res;
->  
->  	dev_pm_clear_wake_irq(&pdev->dev);
-> -
-> -	free_irq(keypad_data->irq, keypad_data);
-> -
->  	pm_runtime_dont_use_autosuspend(&pdev->dev);
->  	pm_runtime_disable(&pdev->dev);
-
-I do not quite like that we need to keep this in remove(). I had the
-patch below for quite some time, could you please try it?
-
-Thanks!
-
--- 
-Dmitry
+If you fix the issue, kindly add following tag as appropriate
+Reported-by: kernel test robot <rong.a.chen@intel.com>
 
 
-Input: omap4-keypad - switch to use managed resources
+cppcheck possible warnings: (new ones prefixed by >>, may not real problems)
 
-From: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+   drivers/net/ethernet/cadence/macb_main.c:2908:5: warning: %d in format string (no. 1) requires 'int' but the argument type is 'unsigned int'. [invalidPrintfArgType_sint]
+       snprintf(stat_string, ETH_GSTRING_LEN, "q%d_%s",
+       ^
+>> drivers/net/ethernet/cadence/macb_main.c:4661:14: warning: Either the condition 'macb_config' is redundant or there is possible null pointer dereference: macb_config. [nullPointerRedundantCheck]
+    bp->usrio = macb_config->usrio;
+                ^
+   drivers/net/ethernet/cadence/macb_main.c:4646:6: note: Assuming that condition 'macb_config' is not redundant
+    if (macb_config)
+        ^
+   drivers/net/ethernet/cadence/macb_main.c:4661:14: note: Null pointer dereference
+    bp->usrio = macb_config->usrio;
+                ^
 
-Now that input core supports devres-managed input devices we can clean
-up this driver a bit.
+vim +/macb_config +4661 drivers/net/ethernet/cadence/macb_main.c
 
-Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+83a77e9ec4150ee drivers/net/ethernet/cadence/macb.c      Bartosz Folta                 2016-12-14  4573  
+421d9df0628be16 drivers/net/ethernet/cadence/macb.c      Cyrille Pitchen               2015-03-07  4574  static int macb_probe(struct platform_device *pdev)
+421d9df0628be16 drivers/net/ethernet/cadence/macb.c      Cyrille Pitchen               2015-03-07  4575  {
+83a77e9ec4150ee drivers/net/ethernet/cadence/macb.c      Bartosz Folta                 2016-12-14  4576  	const struct macb_config *macb_config = &default_gem_config;
+c69618b3e4f220f drivers/net/ethernet/cadence/macb.c      Nicolas Ferre                 2015-03-31  4577  	int (*clk_init)(struct platform_device *, struct clk **,
+f5473d1d44e4b42 drivers/net/ethernet/cadence/macb_main.c Harini Katakam                2019-03-01  4578  			struct clk **, struct clk **,  struct clk **,
+f5473d1d44e4b42 drivers/net/ethernet/cadence/macb_main.c Harini Katakam                2019-03-01  4579  			struct clk **) = macb_config->clk_init;
+83a77e9ec4150ee drivers/net/ethernet/cadence/macb.c      Bartosz Folta                 2016-12-14  4580  	int (*init)(struct platform_device *) = macb_config->init;
+421d9df0628be16 drivers/net/ethernet/cadence/macb.c      Cyrille Pitchen               2015-03-07  4581  	struct device_node *np = pdev->dev.of_node;
+aead88bd0e99054 drivers/net/ethernet/cadence/macb.c      shubhrajyoti.datta@xilinx.com 2016-08-16  4582  	struct clk *pclk, *hclk = NULL, *tx_clk = NULL, *rx_clk = NULL;
+f5473d1d44e4b42 drivers/net/ethernet/cadence/macb_main.c Harini Katakam                2019-03-01  4583  	struct clk *tsu_clk = NULL;
+421d9df0628be16 drivers/net/ethernet/cadence/macb.c      Cyrille Pitchen               2015-03-07  4584  	unsigned int queue_mask, num_queues;
+f2ce8a9e48385f4 drivers/net/ethernet/cadence/macb.c      Andy Shevchenko               2015-07-24  4585  	bool native_io;
+0c65b2b90d13c1d drivers/net/ethernet/cadence/macb_main.c Andrew Lunn                   2019-11-04  4586  	phy_interface_t interface;
+421d9df0628be16 drivers/net/ethernet/cadence/macb.c      Cyrille Pitchen               2015-03-07  4587  	struct net_device *dev;
+421d9df0628be16 drivers/net/ethernet/cadence/macb.c      Cyrille Pitchen               2015-03-07  4588  	struct resource *regs;
+421d9df0628be16 drivers/net/ethernet/cadence/macb.c      Cyrille Pitchen               2015-03-07  4589  	void __iomem *mem;
+421d9df0628be16 drivers/net/ethernet/cadence/macb.c      Cyrille Pitchen               2015-03-07  4590  	const char *mac;
+421d9df0628be16 drivers/net/ethernet/cadence/macb.c      Cyrille Pitchen               2015-03-07  4591  	struct macb *bp;
+404cd086f29e867 drivers/net/ethernet/cadence/macb_main.c Harini Katakam                2018-07-06  4592  	int err, val;
+421d9df0628be16 drivers/net/ethernet/cadence/macb.c      Cyrille Pitchen               2015-03-07  4593  
+f2ce8a9e48385f4 drivers/net/ethernet/cadence/macb.c      Andy Shevchenko               2015-07-24  4594  	regs = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+f2ce8a9e48385f4 drivers/net/ethernet/cadence/macb.c      Andy Shevchenko               2015-07-24  4595  	mem = devm_ioremap_resource(&pdev->dev, regs);
+f2ce8a9e48385f4 drivers/net/ethernet/cadence/macb.c      Andy Shevchenko               2015-07-24  4596  	if (IS_ERR(mem))
+f2ce8a9e48385f4 drivers/net/ethernet/cadence/macb.c      Andy Shevchenko               2015-07-24  4597  		return PTR_ERR(mem);
+f2ce8a9e48385f4 drivers/net/ethernet/cadence/macb.c      Andy Shevchenko               2015-07-24  4598  
+c69618b3e4f220f drivers/net/ethernet/cadence/macb.c      Nicolas Ferre                 2015-03-31  4599  	if (np) {
+c69618b3e4f220f drivers/net/ethernet/cadence/macb.c      Nicolas Ferre                 2015-03-31  4600  		const struct of_device_id *match;
+c69618b3e4f220f drivers/net/ethernet/cadence/macb.c      Nicolas Ferre                 2015-03-31  4601  
+c69618b3e4f220f drivers/net/ethernet/cadence/macb.c      Nicolas Ferre                 2015-03-31  4602  		match = of_match_node(macb_dt_ids, np);
+c69618b3e4f220f drivers/net/ethernet/cadence/macb.c      Nicolas Ferre                 2015-03-31  4603  		if (match && match->data) {
+c69618b3e4f220f drivers/net/ethernet/cadence/macb.c      Nicolas Ferre                 2015-03-31  4604  			macb_config = match->data;
+c69618b3e4f220f drivers/net/ethernet/cadence/macb.c      Nicolas Ferre                 2015-03-31  4605  			clk_init = macb_config->clk_init;
+c69618b3e4f220f drivers/net/ethernet/cadence/macb.c      Nicolas Ferre                 2015-03-31  4606  			init = macb_config->init;
+c69618b3e4f220f drivers/net/ethernet/cadence/macb.c      Nicolas Ferre                 2015-03-31  4607  		}
+c69618b3e4f220f drivers/net/ethernet/cadence/macb.c      Nicolas Ferre                 2015-03-31  4608  	}
+c69618b3e4f220f drivers/net/ethernet/cadence/macb.c      Nicolas Ferre                 2015-03-31  4609  
+f5473d1d44e4b42 drivers/net/ethernet/cadence/macb_main.c Harini Katakam                2019-03-01  4610  	err = clk_init(pdev, &pclk, &hclk, &tx_clk, &rx_clk, &tsu_clk);
+c69618b3e4f220f drivers/net/ethernet/cadence/macb.c      Nicolas Ferre                 2015-03-31  4611  	if (err)
+c69618b3e4f220f drivers/net/ethernet/cadence/macb.c      Nicolas Ferre                 2015-03-31  4612  		return err;
+c69618b3e4f220f drivers/net/ethernet/cadence/macb.c      Nicolas Ferre                 2015-03-31  4613  
+d54f89af6cc4d6d drivers/net/ethernet/cadence/macb_main.c Harini Katakam                2019-03-01  4614  	pm_runtime_set_autosuspend_delay(&pdev->dev, MACB_PM_TIMEOUT);
+d54f89af6cc4d6d drivers/net/ethernet/cadence/macb_main.c Harini Katakam                2019-03-01  4615  	pm_runtime_use_autosuspend(&pdev->dev);
+d54f89af6cc4d6d drivers/net/ethernet/cadence/macb_main.c Harini Katakam                2019-03-01  4616  	pm_runtime_get_noresume(&pdev->dev);
+d54f89af6cc4d6d drivers/net/ethernet/cadence/macb_main.c Harini Katakam                2019-03-01  4617  	pm_runtime_set_active(&pdev->dev);
+d54f89af6cc4d6d drivers/net/ethernet/cadence/macb_main.c Harini Katakam                2019-03-01  4618  	pm_runtime_enable(&pdev->dev);
+f2ce8a9e48385f4 drivers/net/ethernet/cadence/macb.c      Andy Shevchenko               2015-07-24  4619  	native_io = hw_is_native_io(mem);
+421d9df0628be16 drivers/net/ethernet/cadence/macb.c      Cyrille Pitchen               2015-03-07  4620  
+f2ce8a9e48385f4 drivers/net/ethernet/cadence/macb.c      Andy Shevchenko               2015-07-24  4621  	macb_probe_queues(mem, native_io, &queue_mask, &num_queues);
+421d9df0628be16 drivers/net/ethernet/cadence/macb.c      Cyrille Pitchen               2015-03-07  4622  	dev = alloc_etherdev_mq(sizeof(*bp), num_queues);
+c69618b3e4f220f drivers/net/ethernet/cadence/macb.c      Nicolas Ferre                 2015-03-31  4623  	if (!dev) {
+c69618b3e4f220f drivers/net/ethernet/cadence/macb.c      Nicolas Ferre                 2015-03-31  4624  		err = -ENOMEM;
+c69618b3e4f220f drivers/net/ethernet/cadence/macb.c      Nicolas Ferre                 2015-03-31  4625  		goto err_disable_clocks;
+c69618b3e4f220f drivers/net/ethernet/cadence/macb.c      Nicolas Ferre                 2015-03-31  4626  	}
+421d9df0628be16 drivers/net/ethernet/cadence/macb.c      Cyrille Pitchen               2015-03-07  4627  
+421d9df0628be16 drivers/net/ethernet/cadence/macb.c      Cyrille Pitchen               2015-03-07  4628  	dev->base_addr = regs->start;
+421d9df0628be16 drivers/net/ethernet/cadence/macb.c      Cyrille Pitchen               2015-03-07  4629  
+421d9df0628be16 drivers/net/ethernet/cadence/macb.c      Cyrille Pitchen               2015-03-07  4630  	SET_NETDEV_DEV(dev, &pdev->dev);
+421d9df0628be16 drivers/net/ethernet/cadence/macb.c      Cyrille Pitchen               2015-03-07  4631  
+421d9df0628be16 drivers/net/ethernet/cadence/macb.c      Cyrille Pitchen               2015-03-07  4632  	bp = netdev_priv(dev);
+421d9df0628be16 drivers/net/ethernet/cadence/macb.c      Cyrille Pitchen               2015-03-07  4633  	bp->pdev = pdev;
+421d9df0628be16 drivers/net/ethernet/cadence/macb.c      Cyrille Pitchen               2015-03-07  4634  	bp->dev = dev;
+421d9df0628be16 drivers/net/ethernet/cadence/macb.c      Cyrille Pitchen               2015-03-07  4635  	bp->regs = mem;
+f2ce8a9e48385f4 drivers/net/ethernet/cadence/macb.c      Andy Shevchenko               2015-07-24  4636  	bp->native_io = native_io;
+f2ce8a9e48385f4 drivers/net/ethernet/cadence/macb.c      Andy Shevchenko               2015-07-24  4637  	if (native_io) {
+7a6e0706c09b121 drivers/net/ethernet/cadence/macb.c      David S. Miller               2015-07-27  4638  		bp->macb_reg_readl = hw_readl_native;
+7a6e0706c09b121 drivers/net/ethernet/cadence/macb.c      David S. Miller               2015-07-27  4639  		bp->macb_reg_writel = hw_writel_native;
+f2ce8a9e48385f4 drivers/net/ethernet/cadence/macb.c      Andy Shevchenko               2015-07-24  4640  	} else {
+7a6e0706c09b121 drivers/net/ethernet/cadence/macb.c      David S. Miller               2015-07-27  4641  		bp->macb_reg_readl = hw_readl;
+7a6e0706c09b121 drivers/net/ethernet/cadence/macb.c      David S. Miller               2015-07-27  4642  		bp->macb_reg_writel = hw_writel;
+f2ce8a9e48385f4 drivers/net/ethernet/cadence/macb.c      Andy Shevchenko               2015-07-24  4643  	}
+421d9df0628be16 drivers/net/ethernet/cadence/macb.c      Cyrille Pitchen               2015-03-07  4644  	bp->num_queues = num_queues;
+bfa0914afa95d44 drivers/net/ethernet/cadence/macb.c      Nicolas Ferre                 2015-03-31  4645  	bp->queue_mask = queue_mask;
+c69618b3e4f220f drivers/net/ethernet/cadence/macb.c      Nicolas Ferre                 2015-03-31  4646  	if (macb_config)
+f6970505defd0e7 drivers/net/ethernet/cadence/macb.c      Nicolas Ferre                 2015-03-31  4647  		bp->dma_burst_length = macb_config->dma_burst_length;
+c69618b3e4f220f drivers/net/ethernet/cadence/macb.c      Nicolas Ferre                 2015-03-31  4648  	bp->pclk = pclk;
+c69618b3e4f220f drivers/net/ethernet/cadence/macb.c      Nicolas Ferre                 2015-03-31  4649  	bp->hclk = hclk;
+c69618b3e4f220f drivers/net/ethernet/cadence/macb.c      Nicolas Ferre                 2015-03-31  4650  	bp->tx_clk = tx_clk;
+aead88bd0e99054 drivers/net/ethernet/cadence/macb.c      shubhrajyoti.datta@xilinx.com 2016-08-16  4651  	bp->rx_clk = rx_clk;
+f5473d1d44e4b42 drivers/net/ethernet/cadence/macb_main.c Harini Katakam                2019-03-01  4652  	bp->tsu_clk = tsu_clk;
+f36dbe6a285e062 drivers/net/ethernet/cadence/macb.c      Andy Shevchenko               2015-07-24  4653  	if (macb_config)
+98b5a0f4a2282fb drivers/net/ethernet/cadence/macb.c      Harini Katakam                2015-05-06  4654  		bp->jumbo_max_len = macb_config->jumbo_max_len;
+98b5a0f4a2282fb drivers/net/ethernet/cadence/macb.c      Harini Katakam                2015-05-06  4655  
+3e2a5e153906432 drivers/net/ethernet/cadence/macb.c      Sergio Prado                  2016-02-09  4656  	bp->wol = 0;
+7c4a1d0cfdc169b drivers/net/ethernet/cadence/macb.c      Sergio Prado                  2016-02-16  4657  	if (of_get_property(np, "magic-packet", NULL))
+3e2a5e153906432 drivers/net/ethernet/cadence/macb.c      Sergio Prado                  2016-02-09  4658  		bp->wol |= MACB_WOL_HAS_MAGIC_PACKET;
+ced4799d0637592 drivers/net/ethernet/cadence/macb_main.c Nicolas Ferre                 2020-07-10  4659  	device_set_wakeup_capable(&pdev->dev, bp->wol & MACB_WOL_HAS_MAGIC_PACKET);
+3e2a5e153906432 drivers/net/ethernet/cadence/macb.c      Sergio Prado                  2016-02-09  4660  
+edac63861db72a4 drivers/net/ethernet/cadence/macb_main.c Claudiu Beznea                2020-12-09 @4661  	bp->usrio = macb_config->usrio;
+edac63861db72a4 drivers/net/ethernet/cadence/macb_main.c Claudiu Beznea                2020-12-09  4662  
+c69618b3e4f220f drivers/net/ethernet/cadence/macb.c      Nicolas Ferre                 2015-03-31  4663  	spin_lock_init(&bp->lock);
+f6970505defd0e7 drivers/net/ethernet/cadence/macb.c      Nicolas Ferre                 2015-03-31  4664  
+ad78347f06581e4 drivers/net/ethernet/cadence/macb.c      Nicolas Ferre                 2015-03-31  4665  	/* setup capabilities */
+f6970505defd0e7 drivers/net/ethernet/cadence/macb.c      Nicolas Ferre                 2015-03-31  4666  	macb_configure_caps(bp, macb_config);
+f6970505defd0e7 drivers/net/ethernet/cadence/macb.c      Nicolas Ferre                 2015-03-31  4667  
+
 ---
- drivers/input/keyboard/omap4-keypad.c |  139 +++++++++++++--------------------
- 1 file changed, 55 insertions(+), 84 deletions(-)
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
 
-diff --git a/drivers/input/keyboard/omap4-keypad.c b/drivers/input/keyboard/omap4-keypad.c
-index b17ac2a295b9..d36774a55a10 100644
---- a/drivers/input/keyboard/omap4-keypad.c
-+++ b/drivers/input/keyboard/omap4-keypad.c
-@@ -252,8 +252,14 @@ static int omap4_keypad_check_revision(struct device *dev,
- 	return 0;
- }
- 
-+static void omap4_disable_pm(void *d)
-+{
-+	pm_runtime_disable(d);
-+}
-+
- static int omap4_keypad_probe(struct platform_device *pdev)
- {
-+	struct device *dev = &pdev->dev;
- 	struct omap4_keypad *keypad_data;
- 	struct input_dev *input_dev;
- 	struct resource *res;
-@@ -271,33 +277,30 @@ static int omap4_keypad_probe(struct platform_device *pdev)
- 	if (irq < 0)
- 		return irq;
- 
--	keypad_data = kzalloc(sizeof(struct omap4_keypad), GFP_KERNEL);
-+	keypad_data = devm_kzalloc(dev, sizeof(struct omap4_keypad),
-+				   GFP_KERNEL);
- 	if (!keypad_data) {
--		dev_err(&pdev->dev, "keypad_data memory allocation failed\n");
-+		dev_err(dev, "keypad_data memory allocation failed\n");
- 		return -ENOMEM;
- 	}
- 
- 	keypad_data->irq = irq;
- 
--	error = omap4_keypad_parse_dt(&pdev->dev, keypad_data);
-+	error = omap4_keypad_parse_dt(dev, keypad_data);
- 	if (error)
--		goto err_free_keypad;
-+		return error;
- 
--	res = request_mem_region(res->start, resource_size(res), pdev->name);
--	if (!res) {
--		dev_err(&pdev->dev, "can't request mem region\n");
--		error = -EBUSY;
--		goto err_free_keypad;
--	}
-+	keypad_data->base = devm_ioremap_resource(dev, res);
-+	if (IS_ERR(keypad_data->base))
-+		return PTR_ERR(keypad_data->base);
- 
--	keypad_data->base = ioremap(res->start, resource_size(res));
--	if (!keypad_data->base) {
--		dev_err(&pdev->dev, "can't ioremap mem resource\n");
--		error = -ENOMEM;
--		goto err_release_mem;
--	}
-+	pm_runtime_enable(dev);
- 
--	pm_runtime_enable(&pdev->dev);
-+	error = devm_add_action_or_reset(dev, omap4_disable_pm, dev);
-+	if (error) {
-+		dev_err(dev, "unable to register cleanup action\n");
-+		return error;
-+	}
- 
- 	/*
- 	 * Enable clocks for the keypad module so that we can read
-@@ -307,27 +310,26 @@ static int omap4_keypad_probe(struct platform_device *pdev)
- 	if (error) {
- 		dev_err(&pdev->dev, "pm_runtime_get_sync() failed\n");
- 		pm_runtime_put_noidle(&pdev->dev);
--	} else {
--		error = omap4_keypad_check_revision(&pdev->dev,
--						    keypad_data);
--		if (!error) {
--			/* Ensure device does not raise interrupts */
--			omap4_keypad_stop(keypad_data);
--		}
--		pm_runtime_put_sync(&pdev->dev);
-+		return error;
-+	}
-+
-+	error = omap4_keypad_check_revision(&pdev->dev,
-+					    keypad_data);
-+	if (!error) {
-+		/* Ensure device does not raise interrupts */
-+		omap4_keypad_stop(keypad_data);
- 	}
-+
-+	pm_runtime_put_sync(&pdev->dev);
- 	if (error)
--		goto err_pm_disable;
-+		return error;
- 
- 	/* input device allocation */
--	keypad_data->input = input_dev = input_allocate_device();
--	if (!input_dev) {
--		error = -ENOMEM;
--		goto err_pm_disable;
--	}
-+	keypad_data->input = input_dev = devm_input_allocate_device(dev);
-+	if (!input_dev)
-+		return -ENOMEM;
- 
- 	input_dev->name = pdev->name;
--	input_dev->dev.parent = &pdev->dev;
- 	input_dev->id.bustype = BUS_HOST;
- 	input_dev->id.vendor = 0x0001;
- 	input_dev->id.product = 0x0001;
-@@ -344,84 +346,53 @@ static int omap4_keypad_probe(struct platform_device *pdev)
- 
- 	keypad_data->row_shift = get_count_order(keypad_data->cols);
- 	max_keys = keypad_data->rows << keypad_data->row_shift;
--	keypad_data->keymap = kcalloc(max_keys,
--				      sizeof(keypad_data->keymap[0]),
--				      GFP_KERNEL);
-+	keypad_data->keymap = devm_kcalloc(dev,
-+					   max_keys,
-+					   sizeof(keypad_data->keymap[0]),
-+					   GFP_KERNEL);
- 	if (!keypad_data->keymap) {
--		dev_err(&pdev->dev, "Not enough memory for keymap\n");
--		error = -ENOMEM;
--		goto err_free_input;
-+		dev_err(dev, "Not enough memory for keymap\n");
-+		return -ENOMEM;
- 	}
- 
- 	error = matrix_keypad_build_keymap(NULL, NULL,
- 					   keypad_data->rows, keypad_data->cols,
- 					   keypad_data->keymap, input_dev);
- 	if (error) {
--		dev_err(&pdev->dev, "failed to build keymap\n");
--		goto err_free_keymap;
-+		dev_err(dev, "failed to build keymap\n");
-+		return error;
- 	}
- 
--	error = request_threaded_irq(keypad_data->irq, omap4_keypad_irq_handler,
--				     omap4_keypad_irq_thread_fn, IRQF_ONESHOT,
--				     "omap4-keypad", keypad_data);
-+	error = devm_request_threaded_irq(dev, keypad_data->irq,
-+					  omap4_keypad_irq_handler,
-+					  omap4_keypad_irq_thread_fn,
-+					  IRQF_ONESHOT,
-+					  "omap4-keypad", keypad_data);
- 	if (error) {
--		dev_err(&pdev->dev, "failed to register interrupt\n");
--		goto err_free_keymap;
-+		dev_err(dev, "failed to register interrupt\n");
-+		return error;
- 	}
- 
- 	error = input_register_device(keypad_data->input);
--	if (error < 0) {
--		dev_err(&pdev->dev, "failed to register input device\n");
--		goto err_free_irq;
-+	if (error) {
-+		dev_err(dev, "failed to register input device\n");
-+		return error;
- 	}
- 
--	device_init_wakeup(&pdev->dev, true);
--	error = dev_pm_set_wake_irq(&pdev->dev, keypad_data->irq);
-+	device_init_wakeup(dev, true);
-+	error = dev_pm_set_wake_irq(dev, keypad_data->irq);
- 	if (error)
--		dev_warn(&pdev->dev,
--			 "failed to set up wakeup irq: %d\n", error);
-+		dev_warn(dev, "failed to set up wakeup irq: %d\n", error);
- 
- 	platform_set_drvdata(pdev, keypad_data);
- 
- 	return 0;
--
--err_free_irq:
--	free_irq(keypad_data->irq, keypad_data);
--err_free_keymap:
--	kfree(keypad_data->keymap);
--err_free_input:
--	input_free_device(input_dev);
--err_pm_disable:
--	pm_runtime_disable(&pdev->dev);
--	iounmap(keypad_data->base);
--err_release_mem:
--	release_mem_region(res->start, resource_size(res));
--err_free_keypad:
--	kfree(keypad_data);
--	return error;
- }
- 
- static int omap4_keypad_remove(struct platform_device *pdev)
- {
--	struct omap4_keypad *keypad_data = platform_get_drvdata(pdev);
--	struct resource *res;
--
- 	dev_pm_clear_wake_irq(&pdev->dev);
- 
--	free_irq(keypad_data->irq, keypad_data);
--
--	pm_runtime_disable(&pdev->dev);
--
--	input_unregister_device(keypad_data->input);
--
--	iounmap(keypad_data->base);
--
--	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
--	release_mem_region(res->start, resource_size(res));
--
--	kfree(keypad_data->keymap);
--	kfree(keypad_data);
--
- 	return 0;
- }
- 
