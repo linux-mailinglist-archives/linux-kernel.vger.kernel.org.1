@@ -2,109 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5B532F09D4
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Jan 2021 22:21:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E5382F09D7
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Jan 2021 22:23:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726988AbhAJVUu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Jan 2021 16:20:50 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:25935 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726432AbhAJVUu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Jan 2021 16:20:50 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1610313563;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=GzR2svGdni3UUiAwy2uWgYKwGxzlJZYVizDa0vCUdQY=;
-        b=QICQkAEWBK7v64WCZ/rP/AW6Wr0iISKQN+8sLsfm1Qe34zlFMjfNeLDo52tBvoyEFSAsF+
-        dnqN2hafP1rsHbbmSFQWw9/oB23CUrcs47ubOrbR8+lfUq9zl7f06KTkQ99znJrQeTGb1k
-        ix8fOUKhiik01xlL0OlwQCBlAk4cjlc=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-493-gerFTRC6OEKKrZ73RlIjtA-1; Sun, 10 Jan 2021 16:19:18 -0500
-X-MC-Unique: gerFTRC6OEKKrZ73RlIjtA-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 69C8615720;
-        Sun, 10 Jan 2021 21:19:16 +0000 (UTC)
-Received: from file01.intranet.prod.int.rdu2.redhat.com (file01.intranet.prod.int.rdu2.redhat.com [10.11.5.7])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id E1FA350A80;
-        Sun, 10 Jan 2021 21:19:15 +0000 (UTC)
-Received: from file01.intranet.prod.int.rdu2.redhat.com (localhost [127.0.0.1])
-        by file01.intranet.prod.int.rdu2.redhat.com (8.14.4/8.14.4) with ESMTP id 10ALJFNW017003;
-        Sun, 10 Jan 2021 16:19:15 -0500
-Received: from localhost (mpatocka@localhost)
-        by file01.intranet.prod.int.rdu2.redhat.com (8.14.4/8.14.4/Submit) with ESMTP id 10ALJFs6016999;
-        Sun, 10 Jan 2021 16:19:15 -0500
-X-Authentication-Warning: file01.intranet.prod.int.rdu2.redhat.com: mpatocka owned process doing -bs
-Date:   Sun, 10 Jan 2021 16:19:15 -0500 (EST)
-From:   Mikulas Patocka <mpatocka@redhat.com>
-X-X-Sender: mpatocka@file01.intranet.prod.int.rdu2.redhat.com
-To:     Matthew Wilcox <willy@infradead.org>,
-        Al Viro <viro@zeniv.linux.org.uk>
-cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Ira Weiny <ira.weiny@intel.com>, Jan Kara <jack@suse.cz>,
-        Steven Whitehouse <swhiteho@redhat.com>,
-        Eric Sandeen <esandeen@redhat.com>,
-        Dave Chinner <dchinner@redhat.com>,
-        "Theodore Ts'o" <tytso@mit.edu>,
-        Wang Jianchao <jianchao.wan9@gmail.com>,
-        "Kani, Toshi" <toshi.kani@hpe.com>,
-        "Norton, Scott J" <scott.norton@hpe.com>,
-        "Tadakamadla, Rajesh" <rajesh.tadakamadla@hpe.com>,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-nvdimm@lists.01.org
-Subject: Re: Expense of read_iter
-In-Reply-To: <20210110061321.GC35215@casper.infradead.org>
-Message-ID: <alpine.LRH.2.02.2101101458420.7366@file01.intranet.prod.int.rdu2.redhat.com>
-References: <alpine.LRH.2.02.2101061245100.30542@file01.intranet.prod.int.rdu2.redhat.com> <20210107151125.GB5270@casper.infradead.org> <alpine.LRH.2.02.2101071110080.30654@file01.intranet.prod.int.rdu2.redhat.com>
- <20210110061321.GC35215@casper.infradead.org>
-User-Agent: Alpine 2.02 (LRH 1266 2009-07-14)
-MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+        id S1727072AbhAJVV7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Jan 2021 16:21:59 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53838 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726709AbhAJVV6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 10 Jan 2021 16:21:58 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPS id 6659522AAE;
+        Sun, 10 Jan 2021 21:21:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1610313677;
+        bh=+jlF5/wYycNq1KpyfK7+3BlW8JEXp/hwQgNScDFpob4=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=Wo3CEKfAd1p9S61SNCa2oBmSqWaaZGCoUd40PShRg7jENBk6e5PZQKkpo49lQiE1t
+         GD9iKpoCDYFhta3S5lD306PEUN9A0nagvMsGKcfOfF53y6XE7kG0oArskv5EQM6+cG
+         Ti/jOScFXG8dfZqddRx77+7kwWgMEGdEIva0WTxpdGREhQsk6XdnjIgxhFbfMRK2Ot
+         /IIcf/WbJQMveqZiJBzlbMIYAaKyq/Os3hRGwoWnFTzl59GFYX/CD4AyEbNFlf93I0
+         w7VZ8kg6WdicsOeWC9N+eQnJ6Q7KT3nqZjwMz4mvU1aNo+LlalQv4MfhcILM3CjPJo
+         syg8+1ESgHbDg==
+Received: from pdx-korg-docbuild-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-1.ci.codeaurora.org (Postfix) with ESMTP id 5BEAA600E0;
+        Sun, 10 Jan 2021 21:21:17 +0000 (UTC)
+Subject: Re: [GIT PULL] Staging driver fixes for 5.11-rc3
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <X/sKurcTpwVvIuOs@kroah.com>
+References: <X/sKurcTpwVvIuOs@kroah.com>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <X/sKurcTpwVvIuOs@kroah.com>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/staging.git tags/staging-5.11-rc3
+X-PR-Tracked-Commit-Id: 00b8c557d096f0930d5c07df618223d3d06902d6
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 4ad9a28f56d70b950b1232151b2354636853727a
+Message-Id: <161031367736.28318.6312733968459361236.pr-tracker-bot@kernel.org>
+Date:   Sun, 10 Jan 2021 21:21:17 +0000
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        devel@linuxdriverproject.org, linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The pull request you sent on Sun, 10 Jan 2021 15:10:02 +0100:
 
+> git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/staging.git tags/staging-5.11-rc3
 
-On Sun, 10 Jan 2021, Matthew Wilcox wrote:
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/4ad9a28f56d70b950b1232151b2354636853727a
 
-> > That is the reason for that 10% degradation with read_iter.
-> 
-> You seem to be focusing on your argument for "let's just permit
-> filesystems to implement both ->read and ->read_iter".  My suggestion
-> is that we need to optimise the ->read_iter path, but to do that we need
-> to know what's expensive.
-> 
-> nvfs_rw_iter_locked() looks very complicated.  I suspect it can
-> be simplified.
+Thank you!
 
-I split it to a separate read and write function and it improved 
-performance by 1.3%. Using Al Viro's read_iter improves performance by 3%.
-
-> Of course new_sync_read() needs to be improved too,
-> as do the other functions here, but fully a third of the difference
-> between read() and read_iter() is the difference between nvfs_read()
-> and nvfs_rw_iter_locked().
-
-I put counters into vfs_read and vfs_readv.
-
-After a fresh boot of the virtual machine, the counters show "13385 4". 
-After a kernel compilation they show "4475220 8".
-
-So, the readv path is almost unused.
-
-My reasoning was that we should optimize for the "read" path and glue the 
-"readv" path on the top of that. Currently, the kernel is doing the 
-opposite - optimizing for "readv" and glueing "read" on the top of it.
-
-Mikulas
-
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
