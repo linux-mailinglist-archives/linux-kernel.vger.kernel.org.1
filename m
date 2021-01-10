@@ -2,83 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D58A2F08B1
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Jan 2021 18:22:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 083952F08A3
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Jan 2021 18:22:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727036AbhAJRTp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Jan 2021 12:19:45 -0500
-Received: from mail-oi1-f172.google.com ([209.85.167.172]:32906 "EHLO
-        mail-oi1-f172.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726394AbhAJRTn (ORCPT
+        id S1726901AbhAJRTg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Jan 2021 12:19:36 -0500
+Received: from mail-oi1-f176.google.com ([209.85.167.176]:36562 "EHLO
+        mail-oi1-f176.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726394AbhAJRTd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Jan 2021 12:19:43 -0500
-Received: by mail-oi1-f172.google.com with SMTP id d203so17759042oia.0;
-        Sun, 10 Jan 2021 09:19:28 -0800 (PST)
+        Sun, 10 Jan 2021 12:19:33 -0500
+Received: by mail-oi1-f176.google.com with SMTP id 9so17703953oiq.3;
+        Sun, 10 Jan 2021 09:19:17 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
          :message-id;
-        bh=dpRmxYlnzoK4Lg6qNYsLrabnqdmAajbzQvyDJX0Sah8=;
-        b=lSTAfPZ8ldEvDWRDiGt6CZ8Temh1k6D3iy0fi4V8e/HEQTyG0GxW2mpcFq92oAbCMY
-         A4TQuF6yrpog7BcKmRImitC0/9jZ2FBXg2YgTxYZy2V7BPgRtc0cA2s6WegM522UlVFx
-         ljLzJWm5NAx5z4YosHksres36ZjfpAt4jEfpE5S27U/4bpoxD+dawfdaH6DFMsuGHbdo
-         qqNjEBeu+cc8hNlvGfSUpLj0E1r6qWCbR+s6D94621KRWoyHkc0PshvM4OryB8zRYlMl
-         5u9qjiks6waU0C62kqA6ELZ2MIzD0IG5630lVYAZBowJ3SG2x17PBys5MBqtGsS7kP1v
-         xHZQ==
-X-Gm-Message-State: AOAM532HxDmL2VR1rd8Egytjm0+rHeg0iZyuvXvvAt5ItsSrB/td1Y/5
-        9RekOMuUmiMlf9f48rSClg==
-X-Google-Smtp-Source: ABdhPJwLUuMmsbYJA5pNeqvmXXoVg51UlNhmRIQluJbm9TYeOig/e6tOEclqP/USGyTB9k81oNqCEw==
-X-Received: by 2002:a54:4785:: with SMTP id o5mr8249939oic.139.1610299142715;
-        Sun, 10 Jan 2021 09:19:02 -0800 (PST)
+        bh=gGLZSHHlGA1PUUYqmOxNID2/4S4mZUn+8nzQlPpNCuA=;
+        b=hkfz1/IOfwdhFP/6RWe6Ju2Zt9Yn7ZdtLvlyIBNJrIc6sf8litNdHJ+gyI4btIvGHE
+         zP0O08L29YT0GtvO+PGFh+6DlX+0lhV/8EyVMJbgtmdSnmyLCE97rQc8JGq3lkEQZmCD
+         0hFrCrldxCc2PPHH3OMh3+WRRK5ZDFH42+YZ6NPaT24XafEXtiK5bm3t5rKB5AXxZAf/
+         RK0lCf/+P2QW6YSulTydY0G6UWL6i6FVLgY8Waft+dTo/hrLL5kXkYABtP7hR1Ig9vI0
+         zz8M3TrBcnuxa1TIhVG3JpuWNheG5aCDFtWOi855SXmapMJZMdr0x2xrewEnf2Mui9sD
+         Kr0w==
+X-Gm-Message-State: AOAM530QOhtni0NlS+sDkAuzKNP6zfLPNcq3zHW9BgK0IAm9KxQhi12B
+        E3YeCK304f2ic+xYaXUxbg==
+X-Google-Smtp-Source: ABdhPJyQrkmoBVKuplZ3vDcBNz2G3gF2OijsJ1+7LAIA/WCgpI94hj1rsqSLFXCbwri5tVWbkmB65Q==
+X-Received: by 2002:aca:ab8c:: with SMTP id u134mr8468312oie.15.1610299131979;
+        Sun, 10 Jan 2021 09:18:51 -0800 (PST)
 Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id g5sm3128772otq.43.2021.01.10.09.19.00
+        by smtp.gmail.com with ESMTPSA id 63sm3042386otx.2.2021.01.10.09.18.50
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 10 Jan 2021 09:19:01 -0800 (PST)
-Received: (nullmailer pid 785285 invoked by uid 1000);
+        Sun, 10 Jan 2021 09:18:51 -0800 (PST)
+Received: (nullmailer pid 785281 invoked by uid 1000);
         Sun, 10 Jan 2021 17:18:46 -0000
 From:   Rob Herring <robh@kernel.org>
 To:     AngeloGioacchino Del Regno 
         <angelogioacchino.delregno@somainline.org>
-Cc:     marijn.suijten@somainline.org, linux-arm-msm@vger.kernel.org,
-        manivannan.sadhasivam@linaro.org, phone-devel@vger.kernel.org,
-        martin.botka@somainline.org, linux-pm@vger.kernel.org,
-        bjorn.andersson@linaro.org, nks@flawful.org,
-        viresh.kumar@linaro.org, devicetree@vger.kernel.org,
-        robh+dt@kernel.org, daniel.lezcano@linaro.org, rjw@rjwysocki.net,
-        konrad.dybcio@somainline.org, linux-kernel@vger.kernel.org,
-        agross@kernel.org
-In-Reply-To: <20210109180359.236098-16-angelogioacchino.delregno@somainline.org>
-References: <20210109180359.236098-1-angelogioacchino.delregno@somainline.org> <20210109180359.236098-16-angelogioacchino.delregno@somainline.org>
-Subject: Re: [PATCH v2 15/15] dt-bindings: cpufreq: qcom-hw: Add bindings for 8998
+Cc:     linux-kernel@vger.kernel.org, robh+dt@kernel.org,
+        martin.botka@somainline.org, marijn.suijten@somainline.org,
+        devicetree@vger.kernel.org, linus.walleij@linaro.org,
+        phone-devel@vger.kernel.org, konrad.dybcio@somainline.org,
+        linux-gpio@vger.kernel.org
+In-Reply-To: <20210109140204.151340-3-angelogioacchino.delregno@somainline.org>
+References: <20210109140204.151340-1-angelogioacchino.delregno@somainline.org> <20210109140204.151340-3-angelogioacchino.delregno@somainline.org>
+Subject: Re: [PATCH 2/2] dt-bindings: pinctrl: Add bindings for Awinic AW9523/AW9523B
 Date:   Sun, 10 Jan 2021 11:18:46 -0600
-Message-Id: <1610299126.062379.785284.nullmailer@robh.at.kernel.org>
+Message-Id: <1610299126.040526.785280.nullmailer@robh.at.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 09 Jan 2021 19:03:59 +0100, AngeloGioacchino Del Regno wrote:
-> The OSM programming addition has been done under the
-> qcom,cpufreq-hw-8998 compatible name: specify the requirement
-> of two additional register spaces for this functionality.
-> This implementation, with the same compatible, has been
-> tested on MSM8998 and SDM630.
+On Sat, 09 Jan 2021 15:02:04 +0100, AngeloGioacchino Del Regno wrote:
+> Add bindings for the Awinic AW9523/AW9523B I2C GPIO Expander driver.
 > 
 > Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>
 > ---
->  .../bindings/cpufreq/cpufreq-qcom-hw.yaml     | 44 ++++++++++++++++---
->  1 file changed, 39 insertions(+), 5 deletions(-)
+>  .../pinctrl/awinic,aw9523-pinctrl.yaml        | 111 ++++++++++++++++++
+>  1 file changed, 111 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/pinctrl/awinic,aw9523-pinctrl.yaml
 > 
 
 My bot found errors running 'make dt_binding_check' on your patch:
 
 yamllint warnings/errors:
-./Documentation/devicetree/bindings/cpufreq/cpufreq-qcom-hw.yaml:73:2: [warning] wrong indentation: expected 2 but found 1 (indentation)
+./Documentation/devicetree/bindings/pinctrl/awinic,aw9523-pinctrl.yaml:102:1: [error] syntax error: found character '\t' that cannot start any token (syntax)
 
 dtschema/dtc warnings/errors:
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/cpufreq/cpufreq-qcom-hw.example.dt.yaml: cpufreq@17d43000: reg: [[399781888, 5120], [399792128, 5120]] is too short
-	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/cpufreq/cpufreq-qcom-hw.yaml
+./Documentation/devicetree/bindings/pinctrl/awinic,aw9523-pinctrl.yaml:  while scanning a block scalar
+  in "<unicode string>", line 94, column 5
+found a tab character where an indentation space is expected
+  in "<unicode string>", line 102, column 1
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/pinctrl/awinic,aw9523-pinctrl.yaml: ignoring, error parsing file
+warning: no schema found in file: ./Documentation/devicetree/bindings/pinctrl/awinic,aw9523-pinctrl.yaml
+Traceback (most recent call last):
+  File "/usr/local/bin/dt-extract-example", line 45, in <module>
+    binding = yaml.load(open(args.yamlfile, encoding='utf-8').read())
+  File "/usr/local/lib/python3.8/dist-packages/ruamel/yaml/main.py", line 343, in load
+    return constructor.get_single_data()
+  File "/usr/local/lib/python3.8/dist-packages/ruamel/yaml/constructor.py", line 111, in get_single_data
+    node = self.composer.get_single_node()
+  File "_ruamel_yaml.pyx", line 706, in _ruamel_yaml.CParser.get_single_node
+  File "_ruamel_yaml.pyx", line 724, in _ruamel_yaml.CParser._compose_document
+  File "_ruamel_yaml.pyx", line 775, in _ruamel_yaml.CParser._compose_node
+  File "_ruamel_yaml.pyx", line 889, in _ruamel_yaml.CParser._compose_mapping_node
+  File "_ruamel_yaml.pyx", line 773, in _ruamel_yaml.CParser._compose_node
+  File "_ruamel_yaml.pyx", line 848, in _ruamel_yaml.CParser._compose_sequence_node
+  File "_ruamel_yaml.pyx", line 904, in _ruamel_yaml.CParser._parse_next_event
+ruamel.yaml.scanner.ScannerError: while scanning a block scalar
+  in "<unicode string>", line 94, column 5
+found a tab character where an indentation space is expected
+  in "<unicode string>", line 102, column 1
+make[1]: *** [Documentation/devicetree/bindings/Makefile:20: Documentation/devicetree/bindings/pinctrl/awinic,aw9523-pinctrl.example.dts] Error 1
+make[1]: *** Deleting file 'Documentation/devicetree/bindings/pinctrl/awinic,aw9523-pinctrl.example.dts'
+make: *** [Makefile:1370: dt_binding_check] Error 2
 
-See https://patchwork.ozlabs.org/patch/1424138
+See https://patchwork.ozlabs.org/patch/1424120
 
 This check can fail if there are any dependencies. The base for a patch
 series is generally the most recent rc1.
