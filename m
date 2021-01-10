@@ -2,75 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DCB4D2F0992
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Jan 2021 20:56:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 760882F099A
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Jan 2021 21:00:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727075AbhAJTz4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Jan 2021 14:55:56 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54046 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726918AbhAJTzz (ORCPT
+        id S1726979AbhAJT72 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Jan 2021 14:59:28 -0500
+Received: from mail-pg1-f177.google.com ([209.85.215.177]:39231 "EHLO
+        mail-pg1-f177.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726263AbhAJT71 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Jan 2021 14:55:55 -0500
-Received: from ssl.serverraum.org (ssl.serverraum.org [IPv6:2a01:4f8:151:8464::1:2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 996C4C061786;
-        Sun, 10 Jan 2021 11:55:14 -0800 (PST)
-Received: from mwalle01.fritz.box (unknown [IPv6:2a02:810c:c200:2e91:fa59:71ff:fe9b:b851])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by ssl.serverraum.org (Postfix) with ESMTPSA id 879F122EE3;
-        Sun, 10 Jan 2021 20:55:11 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
-        t=1610308511;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=BnxNDk9cWXLJkAiRj7BXECOoU4H/2qZE5jw7moNWo1o=;
-        b=MbGpB+tFkDtn0N1D/sMm+AMdogI7BHA3R0CbcrQ0RD/QMWhrWNomb63b9qacH1lhJjzdmR
-        Z3B1LdCQncXWw9SOjWkC4L+IMpLnaazcOyyUAqyL0PlCuX8sdrcbJYkydh35jmP+lidIE7
-        zG8z8zPEsT9UOBMvZ8kou8mi7y+MpS8=
-From:   Michael Walle <michael@walle.cc>
-To:     linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     Shawn Guo <shawnguo@kernel.org>, Li Yang <leoyang.li@nxp.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Michael Walle <michael@walle.cc>
-Subject: [PATCH 2/2] arm64: dts: freescale: sl28: enable SATA support
-Date:   Sun, 10 Jan 2021 20:54:54 +0100
-Message-Id: <20210110195454.27808-3-michael@walle.cc>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210110195454.27808-1-michael@walle.cc>
-References: <20210110195454.27808-1-michael@walle.cc>
+        Sun, 10 Jan 2021 14:59:27 -0500
+Received: by mail-pg1-f177.google.com with SMTP id 30so11237074pgr.6;
+        Sun, 10 Jan 2021 11:59:12 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=6075goJ/FktieZ0+YNncYqmQNb5fVzPo9SUqtP95ezc=;
+        b=n/ipPxvnq/LNrlyYXRWsWU5DX5OhoWjXVfS+swxzTrdT5pyEBhBoiqf64XaCOs0E7D
+         s8Epd6iCiIfj3ljwYytr7GOYw1OXi9NxPrkIVmEHRNYYQZ75nQl2bGNadwXOH44oudJH
+         QyH8j/WNhdoydWWNe0Wf5+coYaaN/L1C62jLrGCl0TBKXXLXVoCXBON1ijNxPDcb/KTW
+         TINLNa0gQWzDwHiUKuWRnxjWQlPWtEGPq+0ya7qFAZFkEnrtRm9ha/x6UZwjOWD8vf25
+         Wk1Am34DxyMD6fTDqJaxJjjXIiKeoJirxxcYfgNM8O5U359TrK37MhqGPccwFA5+0/QH
+         W7wA==
+X-Gm-Message-State: AOAM530bFgbJ0VI4HmeP40P51NYOTrW5GVPFAu9nZi22YjqPhV6Te6D5
+        lsjVIpFB24Yi3rpohEMwtREhYv8zhYo=
+X-Google-Smtp-Source: ABdhPJxVbk2Pp8dtbtH3BSqzC9fy6XbitWnRNtl8GNITFcSxNKY2lX703q1VA9CjAOh9GVrua2bPaw==
+X-Received: by 2002:aa7:979d:0:b029:1a4:3b76:a559 with SMTP id o29-20020aa7979d0000b02901a43b76a559mr13320736pfp.49.1610308726780;
+        Sun, 10 Jan 2021 11:58:46 -0800 (PST)
+Received: from localhost ([2601:647:5b00:1162:1ac0:17a6:4cc6:d1ef])
+        by smtp.gmail.com with ESMTPSA id p9sm15480516pjb.3.2021.01.10.11.58.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 10 Jan 2021 11:58:45 -0800 (PST)
+Date:   Sun, 10 Jan 2021 11:58:44 -0800
+From:   Moritz Fischer <mdf@kernel.org>
+To:     Xu Yilun <yilun.xu@intel.com>
+Cc:     mdf@kernel.org, linux-fpga@vger.kernel.org,
+        linux-kernel@vger.kernel.org, gregkh@linuxfoundation.org,
+        trix@redhat.com, lgoncalv@redhat.com, hao.wu@intel.com
+Subject: Re: [PATCH v5 0/2] UIO support for dfl devices
+Message-ID: <X/tcdB0hwDLog1TW@archbook>
+References: <1609557182-20787-1-git-send-email-yilun.xu@intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1609557182-20787-1-git-send-email-yilun.xu@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-With a newer bootloader SATA might be used in a mPCI slot using a mSATA
-card. Enable the SATA controller on the Kontron K-Box LS-230-A which
-comes with such a slot.
+Hi Xu,
 
-Signed-off-by: Michael Walle <michael@walle.cc>
----
- .../boot/dts/freescale/fsl-ls1028a-kontron-kbox-a-230-ls.dts  | 4 ++++
- 1 file changed, 4 insertions(+)
+On Sat, Jan 02, 2021 at 11:13:00AM +0800, Xu Yilun wrote:
+> This patchset supports some dfl device drivers written in userspace.
+> 
+> In the patchset v1, the "driver_override" interface should be used to bind
+> the DFL UIO driver to DFL devices. But there is concern that the
+> "driver_override" interface is not OK itself.
+> 
+> In v2, we use a new matching algorithem. The "driver_override" interface
+> is abandoned, the DFL UIO driver matches any DFL device which could not be
+> handled by other DFL drivers. So the DFL UIO driver could be used for new
+> DFL devices which are not supported by kernel. The concern is the UIO may
+> not be suitable as a default/generic driver for all dfl features, such as
+> features with multiple interrupts.
+> 
+> In v4, we specify each matching device in the id_table of the UIO driver,
+> just the same as other dfl drivers do. Now the UIO driver supports Ether
+> Group feature. To support more DFL features, their feature ids should be
+> added to the driver's id_table.
 
-diff --git a/arch/arm64/boot/dts/freescale/fsl-ls1028a-kontron-kbox-a-230-ls.dts b/arch/arm64/boot/dts/freescale/fsl-ls1028a-kontron-kbox-a-230-ls.dts
-index d66d8b2c3d1a..6b575efd84a7 100644
---- a/arch/arm64/boot/dts/freescale/fsl-ls1028a-kontron-kbox-a-230-ls.dts
-+++ b/arch/arm64/boot/dts/freescale/fsl-ls1028a-kontron-kbox-a-230-ls.dts
-@@ -107,3 +107,7 @@
- 	ethernet = <&enetc_port2>;
- 	status = "okay";
- };
-+
-+&sata {
-+	status = "okay";
-+};
--- 
-2.20.1
+I think this is what you want, yes. Instead of doing a driver override
+or such, add devices that should always be bound to UIO to a device id
+table. For those you temporarily want to bind, make sure you can unbind
+them and use 'new_id' or 'bind' in sysfs, similar to what sysfs does.
 
+> 
+> 
+> Main changes from v1:
+> - switch to the new matching algorithem. It matches DFL devices which could
+>   not be handled by other DFL drivers.
+> - refacor the code about device resources filling.
+> - add the documentation.
+> 
+> Main changes from v2:
+> - split the match ops changes in dfl.c to an independent patch.
+> - move the declarations needed for dfl-uio-pdev from include/linux/dfl.h
+>   to driver/fpga/dfl.h
+> - some minor fixes.
+> 
+> Main changes from v3:
+> - switch to specifying each matching device in the driver's id_table.
+> - refactor the irq handling code.
+> 
+> Main changes from v4:
+> - refactor the irq handling code.
+> 
+> Xu Yilun (2):
+>   fpga: dfl: add the userspace I/O device support for DFL devices
+>   Documentation: fpga: dfl: Add description for DFL UIO support
+> 
+>  Documentation/fpga/dfl.rst  | 24 ++++++++++++
+>  drivers/fpga/Kconfig        | 10 +++++
+>  drivers/fpga/Makefile       |  1 +
+>  drivers/fpga/dfl-uio-pdev.c | 91 +++++++++++++++++++++++++++++++++++++++++++++
+>  4 files changed, 126 insertions(+)
+>  create mode 100644 drivers/fpga/dfl-uio-pdev.c
+> 
+> -- 
+> 2.7.4
+> 
+
+- Moritz
