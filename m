@@ -2,131 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B2932F04DF
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Jan 2021 04:27:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 09BBC2F04FE
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Jan 2021 04:51:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726426AbhAJD0f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Jan 2021 22:26:35 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:28068 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726132AbhAJD0e (ORCPT
+        id S1726471AbhAJDs6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Jan 2021 22:48:58 -0500
+Received: from mail-il1-f200.google.com ([209.85.166.200]:42476 "EHLO
+        mail-il1-f200.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726132AbhAJDs5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Jan 2021 22:26:34 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1610249107;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=/+8EcBqhJXYrraKAb9xX5znLleqitaHZlI2nnyEeNlE=;
-        b=Hp+UFFPLBk059CZiqujqX8wpIT3CmDia5hNV0x75vBfaQn96LIXyh9V3udM3nHxyN17OZI
-        fnkwpA/vDi9678oZ+u+bMDwx1PnWevnGlsQT4GrWXrHM5RbkxvNsSiB2DITZF/IrlNVE6e
-        cqiFA23Yab04wHxsBhLmE+7zQ0Co7jw=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-107-X3KvbQBtNUule9ZWTCgMXw-1; Sat, 09 Jan 2021 22:25:04 -0500
-X-MC-Unique: X3KvbQBtNUule9ZWTCgMXw-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D08B3800D25;
-        Sun, 10 Jan 2021 03:25:00 +0000 (UTC)
-Received: from mail (ovpn-112-222.rdu2.redhat.com [10.10.112.222])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id A533E19D9B;
-        Sun, 10 Jan 2021 03:24:53 +0000 (UTC)
-Date:   Sat, 9 Jan 2021 22:24:52 -0500
-From:   Andrea Arcangeli <aarcange@redhat.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Yu Zhao <yuzhao@google.com>, Andy Lutomirski <luto@kernel.org>,
-        Peter Xu <peterx@redhat.com>,
-        Pavel Emelyanov <xemul@openvz.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Mike Rapoport <rppt@linux.vnet.ibm.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Will Deacon <will@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Hugh Dickins <hughd@google.com>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Matthew Wilcox <willy@infradead.org>,
-        Oleg Nesterov <oleg@redhat.com>, Jann Horn <jannh@google.com>,
-        Kees Cook <keescook@chromium.org>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>, Jan Kara <jack@suse.cz>,
-        Kirill Tkhai <ktkhai@virtuozzo.com>,
-        Nadav Amit <nadav.amit@gmail.com>, Jens Axboe <axboe@kernel.dk>
-Subject: Re: [PATCH 0/1] mm: restore full accuracy in COW page reuse
-Message-ID: <X/pzhKj2m48brSdN@redhat.com>
-References: <20210110004435.26382-1-aarcange@redhat.com>
- <CAHk-=wghqNywtf=sRv_5FmG=+hPGqj=KWakw34tNeoZ1wPuaHg@mail.gmail.com>
- <CAHk-=wj5=1DKbQut1-21EwQbMSghNL3KOSd82rNrBhuG9+eekA@mail.gmail.com>
- <CAHk-=wg3zWaXaKN1N=qTWiuLFvEz3e_d5oZSgOEfbSOrXJvVtQ@mail.gmail.com>
+        Sat, 9 Jan 2021 22:48:57 -0500
+Received: by mail-il1-f200.google.com with SMTP id l14so362043ilq.9
+        for <linux-kernel@vger.kernel.org>; Sat, 09 Jan 2021 19:48:42 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=tSiUcg27ESIxzz8qnuK5MB1m0bMVAMb1rUy6oxtuLWI=;
+        b=gkFyou7xRkI8OsIhlybEk8gc8dFXPngnRQDN6yTIQ9H8jnOPNEMg5Ngd1LN0PIqW8o
+         KlgwWuG9C6Jc93A5iG5CW/ow12K6CVmwuS5JEpJ2STyQG0mDcdG3yKz7DVvdiv4C86GY
+         /q57/eIVsSetodr31rdSlkVHw1FV9JsgRnjzIyeGgsvk5ifSWe3WbRq+hyyZwfJPVdpD
+         Fh7LXUR1yFtaDBCNFco+jEt4vSzvL0lO1d0AUnCuc4nby5m8tjAMMULDVBiqI+aWxoG0
+         F0wFBSJA/P4iZ6NsimU13UAus14CIJW8aLxvd3ERyyIDABxaZ97wec+PJ1YYK28nc47e
+         wWyg==
+X-Gm-Message-State: AOAM531W/6KWZsn07jhDjirhcs9h2Tx+Oq9aoZf3X4F7pPjm3yFPbyFI
+        FhPmVC4nazA9YnvOFx5Bvps9gTa2lrxBbX+m0XYEHjNukQ57
+X-Google-Smtp-Source: ABdhPJzi1MutTwTTnv1UrXSKnFLNZktTYSFlDKHulQmpu/A/DvuE/79ktDkUpnqpu+mQ4uYZnONIoFTGpATR3hDi6F2kcSQbLz2+
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHk-=wg3zWaXaKN1N=qTWiuLFvEz3e_d5oZSgOEfbSOrXJvVtQ@mail.gmail.com>
-User-Agent: Mutt/2.0.4 (2020-12-30)
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+X-Received: by 2002:a92:8e46:: with SMTP id k6mr10622328ilh.235.1610250496763;
+ Sat, 09 Jan 2021 19:48:16 -0800 (PST)
+Date:   Sat, 09 Jan 2021 19:48:16 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000dbefbb05b883a826@google.com>
+Subject: WARNING in qrtr_tun_write_iter
+From:   syzbot <syzbot+c2a7e5c5211605a90865@syzkaller.appspotmail.com>
+To:     akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jan 09, 2021 at 05:37:09PM -0800, Linus Torvalds wrote:
-> On Sat, Jan 9, 2021 at 5:19 PM Linus Torvalds
-> <torvalds@linux-foundation.org> wrote:
-> >
-> > And no, I didn't make the UFFDIO_WRITEPROTECT code take the mmap_sem
-> > for writing. For whoever wants to look at that, it's
-> > mwriteprotect_range() in mm/userfaultfd.c and the fix is literally to
-> > turn the read-lock (and unlock) into a write-lock (and unlock).
-> 
-> Oh, and if it wasn't obvious, we'll have to debate what to do with
-> trying to mprotect() a pinned page. Do we just ignore the pinned page
-> (the way my clear_refs patch did)? Or do we turn it into -EBUSY? Or
-> what?
+Hello,
 
-Agreed, I assume mprotect would have the same effect.
+syzbot found the following issue on:
 
-mprotect in parallel of a read or recvmgs may be undefined, so I
-didn't bring it up, but it was pretty clear.
+HEAD commit:    6207214a Merge tag 'afs-fixes-04012021' of git://git.kerne..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=12b600cf500000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=8aa30b9da402d224
+dashboard link: https://syzkaller.appspot.com/bug?extid=c2a7e5c5211605a90865
+compiler:       gcc (GCC) 10.1.0-syz 20200507
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=169c0d0b500000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=152fe7a8d00000
 
-The moment the write bit is cleared (no matter why and from who) and
-the PG lock relased, if there's any GUP pin, GUP currently loses
-synchrony.
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+c2a7e5c5211605a90865@syzkaller.appspotmail.com
 
-In any case I intended to help exercising the new page_count logic
-with the testcase, possibly to make it behave better somehow, no
-matter how.
+------------[ cut here ]------------
+WARNING: CPU: 1 PID: 8469 at mm/page_alloc.c:4976 __alloc_pages_nodemask+0x5f8/0x730 mm/page_alloc.c:5011
+Modules linked in:
+CPU: 0 PID: 8469 Comm: syz-executor105 Not tainted 5.11.0-rc2-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:__alloc_pages_nodemask+0x5f8/0x730 mm/page_alloc.c:4976
+Code: 00 00 0c 00 0f 85 a7 00 00 00 8b 3c 24 4c 89 f2 44 89 e6 c6 44 24 70 00 48 89 6c 24 58 e8 d0 d7 ff ff 49 89 c5 e9 ea fc ff ff <0f> 0b e9 b5 fd ff ff 89 74 24 14 4c 89 4c 24 08 4c 89 74 24 18 e8
+RSP: 0018:ffffc900013efb70 EFLAGS: 00010246
+RAX: 0000000000000000 RBX: 1ffff9200027df72 RCX: 0000000000000000
+RDX: 0000000000000000 RSI: dffffc0000000000 RDI: 0000000000040dc0
+RBP: 0000000000040dc0 R08: 0000000000000000 R09: 0000000000000000
+R10: ffffffff81b1f7f1 R11: 0000000000000000 R12: 0000000000000012
+R13: 0000000000000012 R14: 0000000000000000 R15: 0000000020000020
+FS:  0000000002127880(0000) GS:ffff8880b9f00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000000020000000 CR3: 0000000027766000 CR4: 00000000001506e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ alloc_pages_current+0x18c/0x2a0 mm/mempolicy.c:2267
+ alloc_pages include/linux/gfp.h:547 [inline]
+ kmalloc_order+0x2e/0xb0 mm/slab_common.c:837
+ kmalloc_order_trace+0x14/0x120 mm/slab_common.c:853
+ kmalloc include/linux/slab.h:557 [inline]
+ kzalloc include/linux/slab.h:682 [inline]
+ qrtr_tun_write_iter+0x8a/0x180 net/qrtr/tun.c:83
+ call_write_iter include/linux/fs.h:1901 [inline]
+ new_sync_write+0x426/0x650 fs/read_write.c:518
+ vfs_write+0x791/0xa30 fs/read_write.c:605
+ ksys_write+0x12d/0x250 fs/read_write.c:658
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x440279
+Code: 18 89 d0 c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 7b 13 fc ff c3 66 2e 0f 1f 84 00 00 00 00
+RSP: 002b:00007ffc5f1b8358 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
+RAX: ffffffffffffffda RBX: 00000000004002c8 RCX: 0000000000440279
+RDX: 0000000020000020 RSI: 0000000020000000 RDI: 0000000000000003
+RBP: 00000000006ca018 R08: 0000000000000000 R09: 00000000004002c8
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000401a80
+R13: 0000000000401b10 R14: 0000000000000000 R15: 0000000000000000
 
-I admit I'm also wondering myself the exact semantics of O_DIRECT on
-clear_refs or uffd-wp tracking, but the point is that losing reads and
-getting unexpected data in the page, still doesn't look a good
-behavior and it had to be at least checked.
 
-To me ultimately the useful use case that is become impossible with
-page_count isn't even clear_refs nor uffd-wp.
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-The useful case that I can see zero fundamental flaws in it, is a RDMA
-or some other device computing in pure readonly DMA on the data while
-a program runs normally and produces it. It could be even a
-framebuffer that doesn't care about coherency. You may want to
-occasionally wrprotect the memory under readonly long term GUP pin for
-consistency even against bugs of the program itself. Why should
-wrprotecting make the device lose synchrony? And kind of performance
-we gain to the normal useful cases by breaking the special case? Is
-there a benchmark showing it?
-
-> So it's not *just* the locking that needs to be fixed. But just take a
-> look at that suggested clear_refs patch of mine - it sure isn't
-> complicated.
-
-If we can skip the wrprotection it's fairly easy, I fully agree, even
-then it still looks more difficult than using page_mapcount in
-do_wp_page in my view, so I also don't see the simplification. And
-overall the amount of kernel code had a net increase as result.
-
-Thanks,
-Andrea
-
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
