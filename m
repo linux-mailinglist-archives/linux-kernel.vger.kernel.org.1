@@ -2,75 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92EC62F086F
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Jan 2021 17:48:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B5D22F0873
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Jan 2021 17:50:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726608AbhAJQre (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Jan 2021 11:47:34 -0500
-Received: from vps0.lunn.ch ([185.16.172.187]:59856 "EHLO vps0.lunn.ch"
+        id S1726769AbhAJQul (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Jan 2021 11:50:41 -0500
+Received: from muru.com ([72.249.23.125]:42230 "EHLO muru.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726080AbhAJQre (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Jan 2021 11:47:34 -0500
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
-        (envelope-from <andrew@lunn.ch>)
-        id 1kydrT-00HKz0-HB; Sun, 10 Jan 2021 17:46:39 +0100
-Date:   Sun, 10 Jan 2021 17:46:39 +0100
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Baruch Siach <baruch@tkos.co.il>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Daniel Tang <dt.tangr@gmail.com>,
-        Jamie Iles <jamie@jamieiles.com>,
-        Krzysztof Adamski <krzysztof.adamski@nokia.com>,
-        Alexander Shiyan <shc_work@mail.ru>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Russell King - ARM Linux <linux@armlinux.org.uk>,
-        Wei Xu <xuwei5@hisilicon.com>,
-        Oleksij Rempel <o.rempel@pengutronix.de>,
-        Alex Elder <elder@linaro.org>,
-        Marc Gonzalez <marc.w.gonzalez@free.fr>,
-        Hans Ulli Kroll <ulli.kroll@googlemail.com>,
-        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Vladimir Zapolskiy <vz@mleia.com>,
-        Lubomir Rintel <lkundrak@v3.sk>,
-        Koen Vandeputte <koen.vandeputte@ncentric.com>,
-        Barry Song <song.bao.hua@hisilicon.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Jonas Jensen <jonas.jensen@gmail.com>,
-        Hartley Sweeten <hsweeten@visionengravers.com>,
-        Mark Salter <msalter@redhat.com>,
-        Shawn Guo <shawnguo@kernel.org>
-Subject: Re: Old platforms: bring out your dead
-Message-ID: <X/svb+7x15IiVxU5@lunn.ch>
-References: <CAK8P3a2VW8T+yYUG1pn1yR-5eU4jJXe1+M_ot6DAvfr2KyXCzQ@mail.gmail.com>
- <X/o4VZzW4m77AYDB@lunn.ch>
- <CAK8P3a3kg1u3QVj1JS92Js7ZO9HvgDfzBtEbN4HULpNfNEJfoA@mail.gmail.com>
+        id S1726080AbhAJQul (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 10 Jan 2021 11:50:41 -0500
+Received: from atomide.com (localhost [127.0.0.1])
+        by muru.com (Postfix) with ESMTPS id 5159E80E4;
+        Sun, 10 Jan 2021 16:49:59 +0000 (UTC)
+Date:   Sun, 10 Jan 2021 18:49:56 +0200
+From:   Tony Lindgren <tony@atomide.com>
+To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Cc:     linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-omap@vger.kernel.org,
+        Arthur Demchenkov <spinal.by@gmail.com>,
+        Carl Philipp Klemm <philipp@uvos.xyz>,
+        Merlijn Wajer <merlijn@wizzup.org>,
+        Pavel Machek <pavel@ucw.cz>, ruleh <ruleh@gmx.de>,
+        Sebastian Reichel <sre@kernel.org>
+Subject: Re: [PATCH 3/4] Input: omap4-keypad - use PM runtime to check keys
+ for errata
+Message-ID: <X/swNKbiIQ6+7ibU@atomide.com>
+References: <20210106125822.31315-1-tony@atomide.com>
+ <20210106125822.31315-4-tony@atomide.com>
+ <X/qf5rpxjLxSd3iq@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAK8P3a3kg1u3QVj1JS92Js7ZO9HvgDfzBtEbN4HULpNfNEJfoA@mail.gmail.com>
+In-Reply-To: <X/qf5rpxjLxSd3iq@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> For this platform, I'm most interested in whether there are still users
-> that rely on board files instead of DT. AFAIU we could just fold
-> the DT variant into arch-mvebu like kirkwood was, right?
+* Dmitry Torokhov <dmitry.torokhov@gmail.com> [210110 06:34]:
+> Hi Tony,
+> 
+> On Wed, Jan 06, 2021 at 02:58:21PM +0200, Tony Lindgren wrote:
+> > @@ -301,6 +348,7 @@ static int omap4_keypad_probe(struct platform_device *pdev)
+> >  	}
+> >  
+> >  	keypad_data->irq = irq;
+> > +	mutex_init(&keypad_data->lock);
+> >  
+> >  	error = omap4_keypad_parse_dt(&pdev->dev, keypad_data);
+> >  	if (error)
+> > @@ -320,6 +368,8 @@ static int omap4_keypad_probe(struct platform_device *pdev)
+> >  		goto err_release_mem;
+> >  	}
+> >  
+> > +	pm_runtime_use_autosuspend(&pdev->dev);
+> > +	pm_runtime_set_autosuspend_delay(&pdev->dev, OMAP4_KEYPAD_AUTOIDLE_MS);
+> 
+> This, and corresponding changes in open() and close() seem like a
+> separate improvement. Do you mind splitting them into a separate patch,
+> and have the missing key release fix go on top of it?
 
-Hi Arnd
+Sure will do.
 
-I'm actually booting my device using a board file. But Debian
-flash-kernel is pretty unhappy about that. The bootloader i have on
-this machine is too old to passed DT blob. I will test appended DT
-blob still works. And see if we have any board files which also don't
-have a DT representation.
+Thanks,
 
-     Andrew
+Tony
