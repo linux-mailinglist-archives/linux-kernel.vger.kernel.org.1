@@ -2,197 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 581E92F0958
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Jan 2021 20:32:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0BBC72F095C
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Jan 2021 20:36:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726534AbhAJTcA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Jan 2021 14:32:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48956 "EHLO
+        id S1726720AbhAJTfy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Jan 2021 14:35:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49782 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726263AbhAJTb7 (ORCPT
+        with ESMTP id S1726346AbhAJTfx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Jan 2021 14:31:59 -0500
-Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 787A9C061786
-        for <linux-kernel@vger.kernel.org>; Sun, 10 Jan 2021 11:31:18 -0800 (PST)
-Received: by mail-lf1-x132.google.com with SMTP id o17so34809027lfg.4
-        for <linux-kernel@vger.kernel.org>; Sun, 10 Jan 2021 11:31:18 -0800 (PST)
+        Sun, 10 Jan 2021 14:35:53 -0500
+Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA30FC06179F
+        for <linux-kernel@vger.kernel.org>; Sun, 10 Jan 2021 11:35:12 -0800 (PST)
+Received: by mail-lj1-x22b.google.com with SMTP id m10so1232094lji.1
+        for <linux-kernel@vger.kernel.org>; Sun, 10 Jan 2021 11:35:12 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
+        d=linaro.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=U77Z/e7pPvpSKaZjlLCX+01Zq5Bo7+MX62kJ615oHaE=;
-        b=G+mRxXy9WB+qwItlNZSVxB/DRWseWVu117U84YUv3t/BfX6ZJJuN6Ym6QluxJ6CZU7
-         U4w3a/V2xMaHLe3JZ08/zOZqKMMLmhDFynHH/g9/bslyPz3xd1OC0/uB7FsSgAB8j6hO
-         qk7xFViwthsby2Y810OHu+t4uUwexcNAg7BM4=
+        bh=I52KVXRoRWFS2xNuCU7qX07YCV30BYynTAgvK65w47Y=;
+        b=et1XkaMavR3Kce8/efo37RhnUGmzWg+sVQi824OfRYkwwwKFEOEJge1k0p9oh38A95
+         2nvHjNnvKieqfblT4P1iFKj050qgYyVNfNYM7Vs7Qpaj1hL+1gU3MKBLJrt5VYld2lgQ
+         Y9ySV4YzAYu8WT3nHbbCwY37TOmsmZyxU6fqlLA8C/LQC8bnvFyAaiU5FdzmWru7SOY9
+         htzFYs52udpNP8JciP4o3u5uDXETgiCqEJs+HPK99uU1rHHRlLdaQpdYUUrohL9MvN6m
+         ymBMyFmXNDg6rHtX/K+z9BeWNLD2cXorThk9OxnxCYZbDHTJVpYo+TkFeHHatWFugyWb
+         KAFw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=U77Z/e7pPvpSKaZjlLCX+01Zq5Bo7+MX62kJ615oHaE=;
-        b=uTRnd+VRFe585K8haceRujhn+44B5MStha7N0Cjr6nektczvDG9FWMgoJhUFQjtBUw
-         Fu/HWjFs+EClhHTqCejExy5BQ0xdfvLo68b8ApYeEaQXiz+C7vFPEy7iA5zUPHClPcVQ
-         vXXXSLBqZ9p2pf0TA9ITt9hB2soePvrnP5l4Ya3vEhtDuqUD9zoRmEVwpzqPhw0oDcQu
-         50JOF0sg8AlIqyoB+9O1hjabpzsoX7MJF4i7LjDZ99N6T//H6ALNqOJmMvjEpriEEK3F
-         0q3/p25PGeKL28+uSamV/gp5q0fFaiUJiOAxv3mJE+Uv96s4ekAb+P/M69vNdHECcgsx
-         cVVQ==
-X-Gm-Message-State: AOAM530tXlgkf/aC3P78cOIHB/VpeQfLU9vFZrWZkNIm2fDwoehPQugK
-        WY8N676akZmgxHPH+dxQ4bIhocpoIEey5Q==
-X-Google-Smtp-Source: ABdhPJz1fVysAhf+TMcHy1mZ6rDvcCNkPPmBQuXLWWvpy1UJHHbjnhJzZKs3Z/cYq+k3+K5dWTY1nA==
-X-Received: by 2002:a19:56:: with SMTP id 83mr6015896lfa.561.1610307076304;
-        Sun, 10 Jan 2021 11:31:16 -0800 (PST)
-Received: from mail-lf1-f45.google.com (mail-lf1-f45.google.com. [209.85.167.45])
-        by smtp.gmail.com with ESMTPSA id z14sm3148118ljc.41.2021.01.10.11.31.14
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 10 Jan 2021 11:31:14 -0800 (PST)
-Received: by mail-lf1-f45.google.com with SMTP id a12so34794121lfl.6
-        for <linux-kernel@vger.kernel.org>; Sun, 10 Jan 2021 11:31:14 -0800 (PST)
-X-Received: by 2002:a05:6512:338f:: with SMTP id h15mr5416099lfg.40.1610307073936;
- Sun, 10 Jan 2021 11:31:13 -0800 (PST)
+        bh=I52KVXRoRWFS2xNuCU7qX07YCV30BYynTAgvK65w47Y=;
+        b=Fs9ruaNRXEhC5LrqU6vOTNm+Uw7hRn/qvm7joFZ7l9IawvToFxb6DF3RqMazYn501Y
+         caZ4v5Nf6eHrQHJkEGJqjYDxq5Fs7qnlBYt49KnAY4WEjHQwAhxKMhRRAtgoCKM0d+bf
+         R1+OEURyyN98d1FMHAJ5f45LlWdN7hRzDpptAhEL+sKwMM0EXll7JdF9Hp0B++pXA2rl
+         ROUIdGSv/+jLvxbBSCD8sAUVZ9MyUpjk9VyvfZABopXH5UVpZiZW4xNGim3VNJ/56Quh
+         GsyRHNKLoJhe4chvfCx5DQw7vBVfiLZDOHi/gEplIS5mUPThS+LSbdI5mOScqxgoY5cB
+         5h5g==
+X-Gm-Message-State: AOAM532WCdxSHo1qYG6XIym1COtFq3NyYOOavS/7S7Xuz6qipmraP4Z/
+        Szebn/KYe9bA3e1CZ1aHPGxNp1bnw07w/Jc9FmxEmQ==
+X-Google-Smtp-Source: ABdhPJyV0+I3TSxXiainTzHb4F0+/RU6U5onC7zlRc56humnIx8ItDkCN/DWSBdUQhyalpv+uHUyQDPKQavccEBA4nI=
+X-Received: by 2002:a05:651c:205b:: with SMTP id t27mr6154964ljo.368.1610307311065;
+ Sun, 10 Jan 2021 11:35:11 -0800 (PST)
 MIME-Version: 1.0
-References: <20210110004435.26382-1-aarcange@redhat.com> <CAHk-=wghqNywtf=sRv_5FmG=+hPGqj=KWakw34tNeoZ1wPuaHg@mail.gmail.com>
- <CAHk-=wj5=1DKbQut1-21EwQbMSghNL3KOSd82rNrBhuG9+eekA@mail.gmail.com>
- <X/prosulFrEoNnoF@redhat.com> <CAHk-=wjZTMsv0_GOyQpLRk_5U1r5W8e21f8sV0jykK=z47hjGQ@mail.gmail.com>
-In-Reply-To: <CAHk-=wjZTMsv0_GOyQpLRk_5U1r5W8e21f8sV0jykK=z47hjGQ@mail.gmail.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Sun, 10 Jan 2021 11:30:57 -0800
-X-Gmail-Original-Message-ID: <CAHk-=wgi31FKc9AL6m87+pb2B79V2g_QjdhmtJNW8Pnq2ERQ-Q@mail.gmail.com>
-Message-ID: <CAHk-=wgi31FKc9AL6m87+pb2B79V2g_QjdhmtJNW8Pnq2ERQ-Q@mail.gmail.com>
-Subject: Re: [PATCH 0/1] mm: restore full accuracy in COW page reuse
-To:     Andrea Arcangeli <aarcange@redhat.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Yu Zhao <yuzhao@google.com>, Andy Lutomirski <luto@kernel.org>,
-        Peter Xu <peterx@redhat.com>,
-        Pavel Emelyanov <xemul@openvz.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Mike Rapoport <rppt@linux.vnet.ibm.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Will Deacon <will@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Hugh Dickins <hughd@google.com>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Matthew Wilcox <willy@infradead.org>,
-        Oleg Nesterov <oleg@redhat.com>, Jann Horn <jannh@google.com>,
-        Kees Cook <keescook@chromium.org>,
-        John Hubbard <jhubbard@nvidia.com>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>, Jan Kara <jack@suse.cz>,
-        Kirill Tkhai <ktkhai@virtuozzo.com>,
-        Nadav Amit <nadav.amit@gmail.com>, Jens Axboe <axboe@kernel.dk>
+References: <20210109140204.151340-1-angelogioacchino.delregno@somainline.org>
+ <20210109140204.151340-2-angelogioacchino.delregno@somainline.org>
+ <CACRpkdbETKnhgR2-T+s3ChY4v-C5ErdPEp2WcMSZHzJ=O-fHig@mail.gmail.com>
+ <111b918d-2b43-be81-2dbf-e984750b0ef7@somainline.org> <CACRpkdZXgN91jKBDvf=P5_6ObOaacQa2PGL3-jP1gBW__ZyOaA@mail.gmail.com>
+ <744125a7-ffb6-a3f5-70cb-2ab48fcf31b8@somainline.org>
+In-Reply-To: <744125a7-ffb6-a3f5-70cb-2ab48fcf31b8@somainline.org>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Sun, 10 Jan 2021 20:35:00 +0100
+Message-ID: <CACRpkdYmVpEZMruu3UcqiGr2q7xSdTQKmwnu7eq2-MPJte8ATA@mail.gmail.com>
+Subject: Re: [PATCH 1/2] pinctrl: Add driver for Awinic AW9523/B I2C GPIO Expander
+To:     AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@somainline.org>
+Cc:     Mark Brown <broonie@kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        konrad.dybcio@somainline.org, marijn.suijten@somainline.org,
+        martin.botka@somainline.org, phone-devel@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, Rob Herring <robh+dt@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Jan 9, 2021 at 7:51 PM Linus Torvalds
-<torvalds@linux-foundation.org> wrote:
+On Sun, Jan 10, 2021 at 3:32 PM AngeloGioacchino Del Regno
+<angelogioacchino.delregno@somainline.org> wrote:
+
+> So, I've retried some basic usage of the regcache, relevant snippets here:
+> static bool aw9523_volatile_reg(struct device *dev, unsigned int reg)
+> {
 >
-> COW is about "I'm about to write to this page, and that means I need
-> an _exclusive_ page so that I don't write to a page that somebody else
-> is using".
+>         return reg == AW9523_REG_IN_STATE(0) ||
+>                reg == AW9523_REG_IN_STATE(AW9523_PINS_PER_PORT) ||
+>                reg == AW9523_REG_CHIPID;
+> }
+(...)
+> Since REG_IN_STATE is used to read the GPIO input level, it's not
+> cacheable,
 
-So this kind of fundamentally explains why I hate the games we used to
-play wrt page_mapcount(): they were fundamentally fragile. I _much_
-prefer just having the rule that we use page_count(), which the above
-simple and straightforward single sentence explains 100%.
+Fair enough.
 
-This gets back to the fact that especially considering how we've had
-subtle bugs here (the "wrong-way COW" issue has existed since
-literally the first GUP ever, so it goes back decades), I want the
-core VM rules to be things that can be explained basically from simple
-"first principles".
+> then CHIPID was set as not cacheable for safety: that may be
+> avoided, but that may make no sense.. since it's a one-time readout for
+> init putposes, it'd be useless to keep it cached.
 
-And the reason I argue for the current direction that I'm pushing, is
-exactly that the above is a very simple "first principle" for why COW
-exists.
+I guess.
 
-If the rule for COW is simply "I will always COW if it's not clear
-that I'm the exclusive user", then COW itself is very simple to think
-about.
+> Then, the set_bit/clear_bit in aw9523_irq_mask(), aw9523_irq_unmask were
+> replaced with calls to regmap_update_bits_async, example:
+>
+>         regmap_update_bits_async(awi->regmap,
+>                                  AW9523_REG_INTR_DIS(d->hwirq),
+>                                  BIT(n), BIT(n));
+>
+> Where of course the value is either BIT(n) or 0 for mask and unmask
+> respectively.
+> Also, the bus_sync_unlock callback was changed as follows:
+>
+> static void aw9523_irq_bus_sync_unlock(struct irq_data *d)
+>
+> {
+>       struct aw9523 *awi = gpiochip_get_data(irq_data_get_irq_chip_data(d));
+>       regcache_mark_dirty(awi->regmap);
+>       regcache_sync_region(awi->regmap, AW9523_REG_INTR_DIS(0),
+>                            AW9523_REG_INTR_DIS(AW9523_PINS_PER_PORT));
+>        mutex_unlock(&awi->irq->lock);
+(...)
+> One of the biggest / oddest issues that I get when trying to use
+> regcache is that I'm getting badbadbad scheduling while atomic warnings
+> all over and I don't get why, since regcache_default_sync is just
+> calling _regmap_write, which is exactly what (non _prefix) regmap_write
+> also calls...
 
-The other rule I want to stress is that COW is common, and that argues
-against the model we used to have of "let's lock the page to make sure
-that everything else is stable". That model was garbage anyway, since
-page locking doesn't even guarantee any stability wrt exclusive use in
-the first place (ie GUP being another example), but it's why I truly
-detested the old model that depended so much on the page lock to
-serialize things.
+OK that is the real problem to solve then.
 
-So if you start off with the rule that "I will always COW unless I can
-trivially see I'm the only owner", then I think we have really made
-for a really clear and unambiguous rule.
+> As a reference, this is one out of "many" (as you can imagine) stacktraces:
+>
+> <3>[    1.061428] BUG: scheduling while atomic: kworker/3:1/119/0x00000000
+(...)
+> <4>[    1.063134]  wait_for_completion_timeout+0x8c/0x110
+> <4>[    1.063257]  qup_i2c_wait_for_complete.isra.18+0x1c/0x80
+> <4>[    1.063429]  qup_i2c_xfer_v2_msg+0x2d4/0x3f0
+> <4>[    1.063543]  qup_i2c_xfer_v2+0x290/0xa28
+> <4>[    1.063652]  __i2c_transfer+0x16c/0x380
+> <4>[    1.063798]  i2c_transfer+0x5c/0x138
+> <4>[    1.063903]  i2c_transfer_buffer_flags+0x58/0x80
+> <4>[    1.064060]  regmap_i2c_write+0x1c/0x50
+> <4>[    1.064168]  _regmap_raw_write_impl+0x35c/0x688
+> <4>[    1.064285]  _regmap_bus_raw_write+0x64/0x80
+> <4>[    1.064440]  _regmap_write+0x58/0xa8
+> <4>[    1.064545]  regcache_default_sync+0xcc/0x1a0
+> <4>[    1.064660]  regcache_sync_region+0xdc/0xe8
+> <4>[    1.064811]  aw9523_irq_bus_sync_unlock+0x30/0x48
+> <4>[    1.064931]  __setup_irq+0x798/0x890
+> <4>[    1.065034]  request_threaded_irq+0xe0/0x198
+> <4>[    1.065188]  devm_request_threaded_irq+0x78/0xf8
+> <4>[    1.065311]  gpio_keyboard_probe+0x2a8/0x468
 
-And remember: COW is only an issue for private mappings. So pretty
-much BY DEFINITION, doing a COW is always safe for all normal
-circumstances.
+scheduling while atomic happens when this trace gets called with interrupts
+disabled, usually because someone has taken a spinlock.
 
-Now, this is where it does get subtle: that "all normal circumstances"
-part. The one special case is a cache-coherent GUP. It's arguable
-whether "pinned" should matter or not, and it would obviously be
-better if "pinned" simply didn't matter at all (and the only issue
-with any long-term pinning would simply be about resource counting).
+Looking in __setup_irq() it looks safe.
 
-The current approach I'm advocating is "coherency means that it must
-have been writable", and then the way to solve the whole "Oh, it's
-shared with something else" is to simply never accept making it
-read-only, because BY DEFINITION it's not _really_ read-only (because
-we know we've created that other alias of the virtual address that is
-*not* controlled by the page table protection bits).
+I would turn on lock debugging (lockdep) and see if I can find it that way.
 
-Notice how this is all both conceptually fairly simple (ie I can
-explain the rules in plain English without really making any complex
-argument) and it is arguably internally fairly self-consistent (ie the
-whole notion of "oh, there's another thing that has write access that
-page but doesn't go through the page table, so trying to make it
-read-only in the page tables is a nonsensical operation").
-
-Are the end results wrt something like soft-dirty a bit odd? Not
-really. If you do soft-dirty, such a GUP-shared page would simply
-always show up as dirty. That's still consistent with the rules. If
-somebody else may be writing to it because of GUP, that page really
-*isn't* clean, and us marking it read-only would be just lying about
-things.
-
-I'm admittedly not very happy about mprotect() itself, though. It's
-actually ok to do the mprotect(PROT_READ) and turn the page read-only:
-that will also disable COW itself (because a page fault will now be a
-SIGSEGV, not a COW).
-
-But if you then make it writable again with mprotect(PROT_WRITE), you
-*have* lost the WP bit, and you'll COW on a write, and lose the
-coherency.
-
-Now, I'm willing to just say: "if you do page pinning, and then do
-mprotect(PROT_READ), and then do mprotect(PROT_WRITE) and then write
-to the page, you really do get to keep both broken pieces". IOW, I'm
-perfectly happy to just say you get what you deserve.
-
-But I'd also be perfectly happy to make the whole "I'm the exclusive
-user" logic a bit more extensive. Right now it's basically _purely_
-page_count(), and the other part of "I'm the exclusive owner" is that
-the RW bit in the page table is simply not clear. That makes things
-really easy for COW: it just won't happen in the first place if you
-broke the "obviously exclusive" rule with GUP.
-
-But we _could_ do something slightly smarter. But "page_mapcount()" is
-not that "slightly smarter" thing, because we already know it's broken
-wrt lots of other uses (GUP, page cache, whatever).
-
-Just having a bit in the page flags for "I already made this
-exclusive, and fork() will keep it so" is I feel the best option. In a
-way, "page is writable" right now _is_ that bit. By definition, if you
-have a writable page in an anonymous mapping, that is an exclusive
-user.
-
-But because "writable" has these interactions with other operations,
-it would be better if it was a harder bit than that "maybe_pinned()",
-though. It would be lovely if a regular non-pinning write-GUP just
-always set it, for example.
-
-"maybe_pinned()" is good enough for the fork() case, which is the one
-that matters for long-term pinning. But it's admittedly not perfect.
-
-                  Linus
+Yours,
+Linus Walleij
