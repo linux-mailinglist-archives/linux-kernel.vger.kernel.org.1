@@ -2,83 +2,275 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA4A02F0861
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Jan 2021 17:23:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CC7AE2F086C
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Jan 2021 17:38:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726819AbhAJQXf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Jan 2021 11:23:35 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37182 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726608AbhAJQXf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Jan 2021 11:23:35 -0500
-Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84AD7C061786
-        for <linux-kernel@vger.kernel.org>; Sun, 10 Jan 2021 08:22:54 -0800 (PST)
-Received: by mail-lj1-x230.google.com with SMTP id m13so896227ljo.11
-        for <linux-kernel@vger.kernel.org>; Sun, 10 Jan 2021 08:22:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=GTLBpzTo5LeLsTDW+FDGFlqPoi5x9gPnyhITuJXu+rM=;
-        b=DSYv2zoCerXm2EH5e+7b/j5ZbK2t8jAEzGYQh0iJYcLVTAxjb5fK1Ho1Dw3FMWN7gw
-         NR+wBmqoUIxB654BISsNuF5bjHox78pr5MQCdk8iOZRYoVtlsfOIqbJnuL3lcsU4bL2C
-         8xubwMAexbWdugUs44dosZVFSjpQoU1ZSTMeRntrB54tPAbsPCoXGG0YNhT3YU3Hn9Nz
-         uWzVohmQ0wCT+74oX+HlMkK34KQLUr0poA6ExVtoCyRaZbL3F3WdsreGL4f4oaZy/vcB
-         AVfVOG0uJpwgHZP+HGVHKbR45mYuszQ3vndqE+S3LxQVFftV7491Z/6ukyYQxld/oDui
-         s9vQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=GTLBpzTo5LeLsTDW+FDGFlqPoi5x9gPnyhITuJXu+rM=;
-        b=FrMaORbaCeHBb1WRay/iI+O0Z83aoOrxqfvilwae7pPQXBihJ5+9bfgilV+KkVCvH1
-         epYYk7U53qAXdIFFS/UyX486sGolsrVptGWc6OI+w+LnZA6SO720l4S5p2bJJVFnRiEG
-         Eyy5jqmJwa/aE5eAgw7LJaO31fpeNMGkWZdzmSF41DeL7WnDk7yU1Qlda2XH8Fbn6HNu
-         W45VqtRYokdBAfVwddvIwvI2zjWrXiWrRI8erQ5jUCWNwBqOhETeBCKRCNcXPDQw7ej3
-         j/KEFU9xoVJn2JVp3b5OgrjWqdl7jsAGNjbI3fqCSMGYjoTq2fHu0JnDq6Ygsxo5+5hs
-         7srA==
-X-Gm-Message-State: AOAM530MLacyzroEVUdWVNsb5bp7ms3vFGVxBg890xQfrmWy6EE8soJY
-        MCf2n01fZTIO7qrmSdDwEWAVydDBhXPIDsEJY2k=
-X-Google-Smtp-Source: ABdhPJwfxTKkebF7iHh0xQPCulFMc9mmeS6SOuIeo78Q1pwvGaE4csL7+fOXZDRXARAV1qk+pExkZkGaGhfLhjSCczw=
-X-Received: by 2002:a2e:b80c:: with SMTP id u12mr5589390ljo.490.1610295772934;
- Sun, 10 Jan 2021 08:22:52 -0800 (PST)
+        id S1726631AbhAJQhi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Jan 2021 11:37:38 -0500
+Received: from muru.com ([72.249.23.125]:42210 "EHLO muru.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726069AbhAJQhi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 10 Jan 2021 11:37:38 -0500
+Received: from atomide.com (localhost [127.0.0.1])
+        by muru.com (Postfix) with ESMTPS id D126380E4;
+        Sun, 10 Jan 2021 16:36:54 +0000 (UTC)
+Date:   Sun, 10 Jan 2021 18:36:51 +0200
+From:   Tony Lindgren <tony@atomide.com>
+To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Cc:     linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-omap@vger.kernel.org,
+        Arthur Demchenkov <spinal.by@gmail.com>,
+        Carl Philipp Klemm <philipp@uvos.xyz>,
+        Merlijn Wajer <merlijn@wizzup.org>,
+        Pavel Machek <pavel@ucw.cz>, ruleh <ruleh@gmx.de>,
+        Sebastian Reichel <sre@kernel.org>
+Subject: Re: [PATCH 4/4] Input: omap4-keypad - simplify probe with devm
+Message-ID: <X/stIwdpy0OuPEs9@atomide.com>
+References: <20210106125822.31315-1-tony@atomide.com>
+ <20210106125822.31315-5-tony@atomide.com>
+ <X/qfJKiM21uyksYl@google.com>
 MIME-Version: 1.0
-References: <1608381853-18582-1-git-send-email-oliver.graute@gmail.com>
- <20210108214313.GA7979@ripley> <CAOMZO5AXgeGYt4+4NMBRL1Hm-9M4X2DngdEBsJEAHq8+MRhQgQ@mail.gmail.com>
- <20210110153532.GA7264@ripley>
-In-Reply-To: <20210110153532.GA7264@ripley>
-From:   Fabio Estevam <festevam@gmail.com>
-Date:   Sun, 10 Jan 2021 13:22:41 -0300
-Message-ID: <CAOMZO5C_hDWeVrCh7k+3OiA0jhQfawhGWE6hxnnFn=wA+dkTGQ@mail.gmail.com>
-Subject: Re: [PATCH v1] drm/panel: simple: add SGD GKTW70SDAD1SD
-To:     Oliver Graute <oliver.graute@gmail.com>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Marco Felsch <m.felsch@pengutronix.de>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        DRI mailing list <dri-devel@lists.freedesktop.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <X/qfJKiM21uyksYl@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Oliver,
+* Dmitry Torokhov <dmitry.torokhov@gmail.com> [210110 06:31]:
+> I do not quite like that we need to keep this in remove(). I had the
+> patch below for quite some time, could you please try it?
 
-On Sun, Jan 10, 2021 at 12:35 PM Oliver Graute <oliver.graute@gmail.com> wrote:
+Yes seems to work nice :)
 
-> the first two errors are gone. But I still get this:
->
-> [   42.387107] mxsfb 21c8000.lcdif: Cannot connect bridge: -517
->
-> The panel is still off perhaps I miss something else.
+> Input: omap4-keypad - switch to use managed resources
+> 
+> From: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+> 
+> Now that input core supports devres-managed input devices we can clean
+> up this driver a bit.
+> 
+> Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
 
-Some suggestions:
+Tested-by: Tony Lindgren <tony@atomide.com>
 
-- Take a look at arch/arm/boot/dts/imx6ul-14x14-evk.dtsi as a
-reference as it has display functional
-- Use imx_v6_v7_defconfig to make sure all the required drivers are selected
-- If it still does not work, share the dts and schematics
+
+> ---
+>  drivers/input/keyboard/omap4-keypad.c |  139 +++++++++++++--------------------
+>  1 file changed, 55 insertions(+), 84 deletions(-)
+> 
+> diff --git a/drivers/input/keyboard/omap4-keypad.c b/drivers/input/keyboard/omap4-keypad.c
+> index b17ac2a295b9..d36774a55a10 100644
+> --- a/drivers/input/keyboard/omap4-keypad.c
+> +++ b/drivers/input/keyboard/omap4-keypad.c
+> @@ -252,8 +252,14 @@ static int omap4_keypad_check_revision(struct device *dev,
+>  	return 0;
+>  }
+>  
+> +static void omap4_disable_pm(void *d)
+> +{
+> +	pm_runtime_disable(d);
+> +}
+> +
+>  static int omap4_keypad_probe(struct platform_device *pdev)
+>  {
+> +	struct device *dev = &pdev->dev;
+>  	struct omap4_keypad *keypad_data;
+>  	struct input_dev *input_dev;
+>  	struct resource *res;
+> @@ -271,33 +277,30 @@ static int omap4_keypad_probe(struct platform_device *pdev)
+>  	if (irq < 0)
+>  		return irq;
+>  
+> -	keypad_data = kzalloc(sizeof(struct omap4_keypad), GFP_KERNEL);
+> +	keypad_data = devm_kzalloc(dev, sizeof(struct omap4_keypad),
+> +				   GFP_KERNEL);
+>  	if (!keypad_data) {
+> -		dev_err(&pdev->dev, "keypad_data memory allocation failed\n");
+> +		dev_err(dev, "keypad_data memory allocation failed\n");
+>  		return -ENOMEM;
+>  	}
+>  
+>  	keypad_data->irq = irq;
+>  
+> -	error = omap4_keypad_parse_dt(&pdev->dev, keypad_data);
+> +	error = omap4_keypad_parse_dt(dev, keypad_data);
+>  	if (error)
+> -		goto err_free_keypad;
+> +		return error;
+>  
+> -	res = request_mem_region(res->start, resource_size(res), pdev->name);
+> -	if (!res) {
+> -		dev_err(&pdev->dev, "can't request mem region\n");
+> -		error = -EBUSY;
+> -		goto err_free_keypad;
+> -	}
+> +	keypad_data->base = devm_ioremap_resource(dev, res);
+> +	if (IS_ERR(keypad_data->base))
+> +		return PTR_ERR(keypad_data->base);
+>  
+> -	keypad_data->base = ioremap(res->start, resource_size(res));
+> -	if (!keypad_data->base) {
+> -		dev_err(&pdev->dev, "can't ioremap mem resource\n");
+> -		error = -ENOMEM;
+> -		goto err_release_mem;
+> -	}
+> +	pm_runtime_enable(dev);
+>  
+> -	pm_runtime_enable(&pdev->dev);
+> +	error = devm_add_action_or_reset(dev, omap4_disable_pm, dev);
+> +	if (error) {
+> +		dev_err(dev, "unable to register cleanup action\n");
+> +		return error;
+> +	}
+>  
+>  	/*
+>  	 * Enable clocks for the keypad module so that we can read
+> @@ -307,27 +310,26 @@ static int omap4_keypad_probe(struct platform_device *pdev)
+>  	if (error) {
+>  		dev_err(&pdev->dev, "pm_runtime_get_sync() failed\n");
+>  		pm_runtime_put_noidle(&pdev->dev);
+> -	} else {
+> -		error = omap4_keypad_check_revision(&pdev->dev,
+> -						    keypad_data);
+> -		if (!error) {
+> -			/* Ensure device does not raise interrupts */
+> -			omap4_keypad_stop(keypad_data);
+> -		}
+> -		pm_runtime_put_sync(&pdev->dev);
+> +		return error;
+> +	}
+> +
+> +	error = omap4_keypad_check_revision(&pdev->dev,
+> +					    keypad_data);
+> +	if (!error) {
+> +		/* Ensure device does not raise interrupts */
+> +		omap4_keypad_stop(keypad_data);
+>  	}
+> +
+> +	pm_runtime_put_sync(&pdev->dev);
+>  	if (error)
+> -		goto err_pm_disable;
+> +		return error;
+>  
+>  	/* input device allocation */
+> -	keypad_data->input = input_dev = input_allocate_device();
+> -	if (!input_dev) {
+> -		error = -ENOMEM;
+> -		goto err_pm_disable;
+> -	}
+> +	keypad_data->input = input_dev = devm_input_allocate_device(dev);
+> +	if (!input_dev)
+> +		return -ENOMEM;
+>  
+>  	input_dev->name = pdev->name;
+> -	input_dev->dev.parent = &pdev->dev;
+>  	input_dev->id.bustype = BUS_HOST;
+>  	input_dev->id.vendor = 0x0001;
+>  	input_dev->id.product = 0x0001;
+> @@ -344,84 +346,53 @@ static int omap4_keypad_probe(struct platform_device *pdev)
+>  
+>  	keypad_data->row_shift = get_count_order(keypad_data->cols);
+>  	max_keys = keypad_data->rows << keypad_data->row_shift;
+> -	keypad_data->keymap = kcalloc(max_keys,
+> -				      sizeof(keypad_data->keymap[0]),
+> -				      GFP_KERNEL);
+> +	keypad_data->keymap = devm_kcalloc(dev,
+> +					   max_keys,
+> +					   sizeof(keypad_data->keymap[0]),
+> +					   GFP_KERNEL);
+>  	if (!keypad_data->keymap) {
+> -		dev_err(&pdev->dev, "Not enough memory for keymap\n");
+> -		error = -ENOMEM;
+> -		goto err_free_input;
+> +		dev_err(dev, "Not enough memory for keymap\n");
+> +		return -ENOMEM;
+>  	}
+>  
+>  	error = matrix_keypad_build_keymap(NULL, NULL,
+>  					   keypad_data->rows, keypad_data->cols,
+>  					   keypad_data->keymap, input_dev);
+>  	if (error) {
+> -		dev_err(&pdev->dev, "failed to build keymap\n");
+> -		goto err_free_keymap;
+> +		dev_err(dev, "failed to build keymap\n");
+> +		return error;
+>  	}
+>  
+> -	error = request_threaded_irq(keypad_data->irq, omap4_keypad_irq_handler,
+> -				     omap4_keypad_irq_thread_fn, IRQF_ONESHOT,
+> -				     "omap4-keypad", keypad_data);
+> +	error = devm_request_threaded_irq(dev, keypad_data->irq,
+> +					  omap4_keypad_irq_handler,
+> +					  omap4_keypad_irq_thread_fn,
+> +					  IRQF_ONESHOT,
+> +					  "omap4-keypad", keypad_data);
+>  	if (error) {
+> -		dev_err(&pdev->dev, "failed to register interrupt\n");
+> -		goto err_free_keymap;
+> +		dev_err(dev, "failed to register interrupt\n");
+> +		return error;
+>  	}
+>  
+>  	error = input_register_device(keypad_data->input);
+> -	if (error < 0) {
+> -		dev_err(&pdev->dev, "failed to register input device\n");
+> -		goto err_free_irq;
+> +	if (error) {
+> +		dev_err(dev, "failed to register input device\n");
+> +		return error;
+>  	}
+>  
+> -	device_init_wakeup(&pdev->dev, true);
+> -	error = dev_pm_set_wake_irq(&pdev->dev, keypad_data->irq);
+> +	device_init_wakeup(dev, true);
+> +	error = dev_pm_set_wake_irq(dev, keypad_data->irq);
+>  	if (error)
+> -		dev_warn(&pdev->dev,
+> -			 "failed to set up wakeup irq: %d\n", error);
+> +		dev_warn(dev, "failed to set up wakeup irq: %d\n", error);
+>  
+>  	platform_set_drvdata(pdev, keypad_data);
+>  
+>  	return 0;
+> -
+> -err_free_irq:
+> -	free_irq(keypad_data->irq, keypad_data);
+> -err_free_keymap:
+> -	kfree(keypad_data->keymap);
+> -err_free_input:
+> -	input_free_device(input_dev);
+> -err_pm_disable:
+> -	pm_runtime_disable(&pdev->dev);
+> -	iounmap(keypad_data->base);
+> -err_release_mem:
+> -	release_mem_region(res->start, resource_size(res));
+> -err_free_keypad:
+> -	kfree(keypad_data);
+> -	return error;
+>  }
+>  
+>  static int omap4_keypad_remove(struct platform_device *pdev)
+>  {
+> -	struct omap4_keypad *keypad_data = platform_get_drvdata(pdev);
+> -	struct resource *res;
+> -
+>  	dev_pm_clear_wake_irq(&pdev->dev);
+>  
+> -	free_irq(keypad_data->irq, keypad_data);
+> -
+> -	pm_runtime_disable(&pdev->dev);
+> -
+> -	input_unregister_device(keypad_data->input);
+> -
+> -	iounmap(keypad_data->base);
+> -
+> -	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+> -	release_mem_region(res->start, resource_size(res));
+> -
+> -	kfree(keypad_data->keymap);
+> -	kfree(keypad_data);
+> -
+>  	return 0;
+>  }
+>  
