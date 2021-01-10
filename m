@@ -2,96 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A7A1B2F09A6
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Jan 2021 21:13:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DD742F09A8
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Jan 2021 21:14:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726959AbhAJUMS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Jan 2021 15:12:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57538 "EHLO
+        id S1726988AbhAJUNB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Jan 2021 15:13:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57694 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726267AbhAJUMR (ORCPT
+        with ESMTP id S1726394AbhAJUNA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Jan 2021 15:12:17 -0500
-Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E9DBC061786
-        for <linux-kernel@vger.kernel.org>; Sun, 10 Jan 2021 12:11:37 -0800 (PST)
-Received: by mail-wr1-x42a.google.com with SMTP id i9so14344453wrc.4
-        for <linux-kernel@vger.kernel.org>; Sun, 10 Jan 2021 12:11:37 -0800 (PST)
+        Sun, 10 Jan 2021 15:13:00 -0500
+Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5093C061786
+        for <linux-kernel@vger.kernel.org>; Sun, 10 Jan 2021 12:12:19 -0800 (PST)
+Received: by mail-wr1-x430.google.com with SMTP id i9so14345601wrc.4
+        for <linux-kernel@vger.kernel.org>; Sun, 10 Jan 2021 12:12:19 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=baylibre-com.20150623.gappssmtp.com; s=20150623;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=vzqtQyMRq4VCQF1VUb0eyXg1Bg4nfSL5atIamSsB9uc=;
-        b=x6LH5YZ4oO5+9nfetywRMADEwS3U7bawPknEEexOvy+CexY+QJbashKsVPIyMqwMgC
-         6R0692/OaofsGMM5qHr6+WI/ZCm3momWjYGvNoN9NvQqwdr+PyBNw3LTHxkdG94s7t8e
-         8MqkEXp7kKTOediovoBQTwS8bw/tKTe8PbeSiy3qXVDf19YE0Y8kE1Wz3RxdVGH7HsK0
-         83Qql7RuMHUInzaieaPxgPzrSqTji74SfwGSiGngmIZ7Z4jJkPo5QeQHTh7xWRRuy+ul
-         QYc/haAKWm78z9SqOxtVuybYYoMUMIcwwCma6k81FHNUtMSfN2ITDTm9NBnf7rynJs36
-         VFsQ==
+        bh=An+QxtFW/VPB9KSvU4gnvsIFY2A2uZAxzzqmCzbKa74=;
+        b=YKHTKzMHx5p0pqY54uW0fbp+IwXR4nAZB/RpUw8atLmlStwtkWeNdaUuENMv/2+yW+
+         IB5TQNKhcXBXeIaHqpMc9Hw0aJ4T8Oys+flM9S+6GPt9ERd/baom88I8UujBvZQn4g0N
+         J0S0kphIwdqLPdRz2vrAjNfUPaemQhtV+kTHXV+y8H51f5GkB0NZWe19Hfbnmw03ZNAi
+         DuRSq4GZV1V4UWJdtp1zapxtXjjltQnPrxNvaNZM/PR9v8eN4t6W2IqURFKhyanFUVt7
+         G0hlja4SOPdSMtV+a11+YZysn0Af3RQwQwKmKrtwxefoTyCbiNrWzajC/BU3PioTYoVH
+         nIYQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:content-transfer-encoding
          :in-reply-to;
-        bh=vzqtQyMRq4VCQF1VUb0eyXg1Bg4nfSL5atIamSsB9uc=;
-        b=h1DMf1aphMJq8AWPASPnT7h/GQ4qhVP9tkr8p2Az4yLpoB+NHnw9ZKzvwTBy0gL+zx
-         INd8Txpry36M21HQtTYbLyGlygsAT0NhQLOdnc0PUVugEVxoxCk4AL69schGJmKpW/0U
-         yKuehpMlAHeRkvqIZOT38ACRyQDrS/b/BQLiSUc9vSg8fEtc3fUqUNt/t4vsneZzo+UW
-         1ruANdIkcKnIr9ij8+T06rQKcrgru4W0BySZP/ijdFnTyO1Pef2yAEK2+ZGZNX8HOteW
-         oiFRRNvRJotRhQrBFV2l2x0K9Vrt04tTfkltGGp4261FWjBwTiBggLse9DfHs8glAOB3
-         aBWQ==
-X-Gm-Message-State: AOAM531SNhM3ahyTb/n6/Wl4Tc/J1B+EpcigW2V1OqdNSJYpgfiUdlOz
-        rvrA59rIbOQFCmTni+zzTieJmA==
-X-Google-Smtp-Source: ABdhPJz5Dfz18y8QFO6GGNqOBNMf1RBCsaBQ6rZSVsoyLzkwP4MPg+sEKPlH4sybqmqVaN00KS42qg==
-X-Received: by 2002:a05:6000:100f:: with SMTP id a15mr13320174wrx.300.1610309496048;
-        Sun, 10 Jan 2021 12:11:36 -0800 (PST)
+        bh=An+QxtFW/VPB9KSvU4gnvsIFY2A2uZAxzzqmCzbKa74=;
+        b=A8nb/3nUa1u7jrSNTivk5IWQD+cL5v973JS/jvG0yf02+djGuqKsFYOV9U46zqvI6x
+         ocj5UJ7VSmanv8yFk0LPhAUJ57RAFcJMEWyUgmIwGsvnPP7cMDuoLYA9jj1RZQpRzNqR
+         GFpJQFLMO+28mtQdEA20lVMvaPTIaFQfKuanmzLZJdqGlc269ghbe/5D1mn73+9QxfNJ
+         odLi/qFE0FM+EgQ6D/BbLXfjVDrLhMTSljnCkDXXHXB62WIBciUMaRQB3jpPWvWNXrWp
+         YOUH7caG6cCYHkA4WRO044y5f92ilBQoFMtiRs5CtqTwh/OQkvi+2aL5IWlRYbQbpAa+
+         iOLg==
+X-Gm-Message-State: AOAM533tTTq/UeYsvJUjgvhPxka0Q36g+Rfgz5uNmQ+myApXTQ1W3qNA
+        Xd6fh2WxKbfmAsrBM1sh2xlT3g==
+X-Google-Smtp-Source: ABdhPJz4VyEU2aS9YABa1UfHDVDsTij2GADFAt3K6QEphcuzzNHAOnB2bv4F8wPt5S7YzYZanRlBKw==
+X-Received: by 2002:a5d:4e86:: with SMTP id e6mr13587511wru.33.1610309538702;
+        Sun, 10 Jan 2021 12:12:18 -0800 (PST)
 Received: from Red ([2a01:cb1d:3d5:a100:264b:feff:fe03:2806])
-        by smtp.googlemail.com with ESMTPSA id h3sm19805291wmm.4.2021.01.10.12.11.34
+        by smtp.googlemail.com with ESMTPSA id y130sm20467748wmc.22.2021.01.10.12.12.17
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 10 Jan 2021 12:11:35 -0800 (PST)
-Date:   Sun, 10 Jan 2021 21:11:33 +0100
+        Sun, 10 Jan 2021 12:12:17 -0800 (PST)
+Date:   Sun, 10 Jan 2021 21:12:15 +0100
 From:   LABBE Corentin <clabbe@baylibre.com>
-To:     Zheng Yongjun <zhengyongjun3@huawei.com>
-Cc:     mchehab@kernel.org, mjpeg-users@lists.sourceforge.net,
-        linux-media@vger.kernel.org, devel@driverdev.osuosl.org,
-        linux-kernel@vger.kernel.org, gregkh@linuxfoundation.org
-Subject: Re: [PATCH v2 -next] media: zoran: convert comma to semicolon
-Message-ID: <X/tfdbVP5R2dzMuv@Red>
-References: <20210108092119.18642-1-zhengyongjun3@huawei.com>
+To:     Dan Carpenter <dan.carpenter@oracle.com>
+Cc:     kbuild@lists.01.org, lkp@intel.com, kbuild-all@lists.01.org,
+        linux-kernel@vger.kernel.org,
+        Herbert Xu <herbert@gondor.apana.org.au>
+Subject: Re: [kbuild] drivers/crypto/allwinner/sun8i-ss/sun8i-ss-hash.c:443
+ sun8i_ss_hash_run() warn: possible memory leak of 'result'
+Message-ID: <X/tfnz9UfW+r6ags@Red>
+References: <20210107131236.GB5105@kadam>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210108092119.18642-1-zhengyongjun3@huawei.com>
+In-Reply-To: <20210107131236.GB5105@kadam>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Le Fri, Jan 08, 2021 at 05:21:19PM +0800, Zheng Yongjun a écrit :
-> Replace a comma between expression statements by a semicolon.
+Le Thu, Jan 07, 2021 at 04:12:36PM +0300, Dan Carpenter a écrit :
+> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git  master
+> head:   e71ba9452f0b5b2e8dc8aa5445198cd9214a6a62
+> commit: d9b45418a91773b7672e4c60037a28074b495c6d crypto: sun8i-ss - support hash algorithms
+> config: arc-randconfig-m031-20210106 (attached as .config)
+> compiler: arc-elf-gcc (GCC) 9.3.0
 > 
-> Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>
-> ---
->  drivers/staging/media/zoran/zoran_driver.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/staging/media/zoran/zoran_driver.c b/drivers/staging/media/zoran/zoran_driver.c
-> index 808196ea5b81..d60b4c73ea80 100644
-> --- a/drivers/staging/media/zoran/zoran_driver.c
-> +++ b/drivers/staging/media/zoran/zoran_driver.c
-> @@ -1020,7 +1020,7 @@ int zoran_queue_init(struct zoran *zr, struct vb2_queue *vq)
->  	vq->buf_struct_size = sizeof(struct zr_buffer);
->  	vq->ops = &zr_video_qops;
->  	vq->mem_ops = &vb2_dma_contig_memops;
-> -	vq->gfp_flags = GFP_DMA32,
-> +	vq->gfp_flags = GFP_DMA32;
->  	vq->timestamp_flags = V4L2_BUF_FLAG_TIMESTAMP_MONOTONIC;
->  	vq->min_buffers_needed = 9;
->  	vq->lock = &zr->lock;
-> -- 
-> 2.22.0
+> If you fix the issue, kindly add following tag as appropriate
+> Reported-by: kernel test robot <lkp@intel.com>
+> Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
 > 
 
-Acked-by: Corentin Labbe <clabbe@baylibre.com>
+Hello
 
-Thanks!
+I will fix it
+
+Thanks.
