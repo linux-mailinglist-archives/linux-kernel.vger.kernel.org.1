@@ -2,75 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 87F4E2F0726
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Jan 2021 13:18:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8293B2F072B
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Jan 2021 13:25:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726823AbhAJMR6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Jan 2021 07:17:58 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52692 "EHLO mail.kernel.org"
+        id S1726386AbhAJMZ3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Jan 2021 07:25:29 -0500
+Received: from mail.kernel.org ([198.145.29.99]:53206 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726069AbhAJMR5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Jan 2021 07:17:57 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CECD1206C1;
-        Sun, 10 Jan 2021 12:17:15 +0000 (UTC)
+        id S1726069AbhAJMZ2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 10 Jan 2021 07:25:28 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7F013224D2;
+        Sun, 10 Jan 2021 12:24:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610281037;
-        bh=UlriINonqSCn/Nr9LA6HR3UnVDfNn8cDxzpAgz6jrVY=;
+        s=k20201202; t=1610281488;
+        bh=X1qUIEYc3YCrEbL5H65OA6kfb+Zk0PZj29+V9NliGuM=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=AogRLxZBMIDXg/yVR6w+0u+XNlOpJdqc7LXV2KDjzPXW6BjfegtPeEh+Luhir+HKr
-         cWwzsbpB3Qkx7IH63sWXE7vECC2nAt35X7Ym6kJgkyzMNyUUWBCxj+Ks09Q1uD8Cax
-         qFxilGheJRixSjTSs2umfgJWUFu3J0cMxtGWLhdnQ+GeNNB/w2Fp0dn883KAWtWxYw
-         NYB6F1tmMciV+5tPJ4OBty5pIPS/CW9TMlho1jR9VGDnMWADakscJli8XLWshofjnt
-         y6vXUnJMLcZnKm+teUcrfh7HdypUR98d9JclBtYLLpse/mQGPDu8gZ5uqZfEsHIdzc
-         O7a7mhEMPrwjw==
-Date:   Sun, 10 Jan 2021 20:17:12 +0800
+        b=IgmYry9fJvF5BxlInIafB1JtzlEnVGWZ9wi2Rs6+w0qHtHyAcCpKnF1CDmNHq0RDk
+         paHTabtkeB8pn/xoUATF2hQs5W0MSNGiawGfbmgS2/IW+0/Zv+x7J1OUxPpju/ucvE
+         qsRrMpu+ikB0rc6n2XQEljaF526JFvK3fCf2HSt17WiuJTIpbsNuIER3WdGR1RgV96
+         /fM2vpYIIc4mZz/yQVsPITYM2PTLgiX4yPGrn+69NvAYMRucdqEuur/S9i8CFLzxIF
+         hwsFW5qYZml67EvuykVBsQcHbmZ4uupXbOD31lOz92/PaEl90fKNIDoyzylOAPLSZG
+         ijKgqgsnvUw1g==
+Date:   Sun, 10 Jan 2021 20:24:40 +0800
 From:   Shawn Guo <shawnguo@kernel.org>
-To:     Rouven Czerwinski <r.czerwinski@pengutronix.de>
-Cc:     kernel@pengutronix.de,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "moderated list:ARM AND ARM64 SoC SUB-ARCHITECTURES (COMMON PARTS)" 
-        <linux-arm-kernel@lists.infradead.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Li Yang <leoyang.li@nxp.com>, Rob Herring <robh@kernel.org>
-Subject: Re: [PATCH v2 0/3] Mainline Webasto ccbv2 board
-Message-ID: <20210110121711.GI28365@dragon>
-References: <20201216162433.9138-1-r.czerwinski@pengutronix.de>
+To:     Guido =?iso-8859-1?Q?G=FCnther?= <agx@sigxcpu.org>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Martin Kepplinger <martink@posteo.de>,
+        Angus Ainslie <angus@akkea.ca>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Li Yang <leoyang.li@nxp.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Vinod Koul <vkoul@kernel.org>,
+        Anson Huang <Anson.Huang@nxp.com>,
+        Michael Walle <michael@walle.cc>, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        phone-devel@vger.kernel.org
+Subject: Re: [PATCH v2 2/4] arm64: dts: imx8mq-librem5-devkit: Tweak pmic
+ regulators
+Message-ID: <20210110122440.GJ28365@dragon>
+References: <cover.1608216796.git.agx@sigxcpu.org>
+ <a930ccca2f9a5dc49f24c46c3f4280c4de960f9d.1608216796.git.agx@sigxcpu.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20201216162433.9138-1-r.czerwinski@pengutronix.de>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <a930ccca2f9a5dc49f24c46c3f4280c4de960f9d.1608216796.git.agx@sigxcpu.org>
 User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Dec 16, 2020 at 05:24:29PM +0100, Rouven Czerwinski wrote:
-> Add Webasto ccbv2 device tree.
+On Thu, Dec 17, 2020 at 04:13:13PM +0100, Guido Günther wrote:
+> BUCK3 needs a regulator-enable-ramp-delay since otherwise the board
+> freezes on etnaviv probe. With this pgc_gpu suspends and resumes as
+> expected. This must have been always broken since gpcv2 support was
+> enabled.
 > 
-> v2:
-> - add correct mailing lists to cc
-> - add commit message for vendor-prefix and dt-bindings
+> We also enable all the regulators needed for Deep Sleep Mode (DSM) as
+> always-on:
 > 
-> Rouven Czerwinski (3):
->   dt-bindings: vendor-prefixes: add Webasto SE
+> - VDD_SOC supplied by BUCK1
+> - VDDA_1P8 supplied by BUCK7
+> - VDDA_0P9 supplied by LDO4
+> - VDDA_DRAM supplied by LDO3
+> - NVCC_DRAM supplied by BUCK8
+> - VDD_DRAM supplied by BUCK5
+> 
+> Finally LDO5 and LDO6 provide VDD_PHY_1V8 and VDD_PHY_0V9 used by the
+> SOCs MIPI, HDMI and USB IP cores. While we would in theory be able to
+> turn these off (and I've tested that or LDO6 and mipi with USB disabled)
+> it is of little practical use atm since USB doesn't runtime suspend so
+> let's revisit this at a later point.
+> 
+> Signed-off-by: Guido Günther <agx@sigxcpu.org>
 
-I did not receive this one.
-
-Shawn
-
->   ARM: dts: add Webasto ccbv2
->   dt-bindings: arm: fsl: add Webasto ccbv2
-> 
->  .../devicetree/bindings/arm/fsl.yaml          |   1 +
->  .../devicetree/bindings/vendor-prefixes.yaml  |   2 +
->  arch/arm/boot/dts/Makefile                    |   1 +
->  arch/arm/boot/dts/imx6ul-webasto-ccbv2.dts    | 472 ++++++++++++++++++
->  4 files changed, 476 insertions(+)
->  create mode 100644 arch/arm/boot/dts/imx6ul-webasto-ccbv2.dts
-> 
-> 
-> base-commit: 2c85ebc57b3e1817b6ce1a6b703928e113a90442
-> -- 
-> 2.29.2
-> 
+Applied, thanks.
