@@ -2,93 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 03A032F06B3
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Jan 2021 12:39:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 081BA2F06F6
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Jan 2021 12:59:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726443AbhAJLjU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Jan 2021 06:39:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33106 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726228AbhAJLjT (ORCPT
+        id S1726418AbhAJL6d convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Sun, 10 Jan 2021 06:58:33 -0500
+Received: from mo4-p02-ob.smtp.rzone.de ([85.215.255.83]:23254 "EHLO
+        mo4-p02-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726281AbhAJL6c (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Jan 2021 06:39:19 -0500
-Received: from mail-il1-x12b.google.com (mail-il1-x12b.google.com [IPv6:2607:f8b0:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4716CC06179F;
-        Sun, 10 Jan 2021 03:38:39 -0800 (PST)
-Received: by mail-il1-x12b.google.com with SMTP id e7so73994ili.2;
-        Sun, 10 Jan 2021 03:38:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=aiVkZdx785Za+C8kdKVbVCz+LRIKha9Es2RMYP4mnFE=;
-        b=OW2wO5tS7j6itiIX8wCsOzfJeFvRJyNWFVk7TrM5FLrZ/GX5YwQ1BCEGcmI/jgsAGi
-         pUVYo45d/4dj/g801rEpt2GWjUndKgDF743zxHuPHQ2EL+1ImwV6b1PKuhnCjmPavZS+
-         ZkDgseHawdyvj3+7SoJ/LuwLe8V+Un6bb54FQ0CX1lx98lMMdbvFane3dysIVI7fkUgg
-         jd2raJe4anaL42C+uHwRTxBxPxU4WUo4NHmZ/iHMglBMgaakP+rh+vWftnzVzzTI9lPV
-         D/UwSUXYPXjgOECyLMyY779um0ZtBmkpVsobe5+YbgRxOLITMNC4EonaTwfEKbjxizTz
-         5E0Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=aiVkZdx785Za+C8kdKVbVCz+LRIKha9Es2RMYP4mnFE=;
-        b=PSunUuxu0JTG4hmHBVpa3J5CzYiZYae08L1Bpl4JKjzUgRIza69ggek/z08ZlIUWq6
-         d7LgBZFp5uS0id6NXvUItKf2P9ZD0WKVthpQ8kWQgdLhV3s7+02d/ZmJZlkOHup+dsH9
-         NivP7fWyAaixxiEBpbK1WPQwAVuH4ZbLLSXKz4Wxf8lVdKqU4t/nQcXBJzuVDwwjUHV1
-         dfPNcpHRjPwJVWsPH2E8sRTr128SzECsTHBX/DmDUMlQvY696zGnqGQq27Ri4wx/ggAI
-         kNLyWKXlSt/DfN9nrVKYlYh3rv2OQ99CEMeKyf3LKVME8PA1l2UYrjIaxKsy0zeEXsI6
-         nidw==
-X-Gm-Message-State: AOAM533/nGRmDQFBkMXWw/9D8dy7YvlmQopUDaHYjmgyUy2OwLj3mBnL
-        pfieXfl7s6z1qEW7NP7KWcI=
-X-Google-Smtp-Source: ABdhPJzPA2hMxXMj/qJ6jODlrDcBwV0h+yZaTKHszgc2tbi2+VxiJzwr0toPImBd3kc0Kj9vih+mYw==
-X-Received: by 2002:a92:c692:: with SMTP id o18mr11946048ilg.215.1610278718651;
-        Sun, 10 Jan 2021 03:38:38 -0800 (PST)
-Received: from aford-IdeaCentre-A730.lan ([2601:448:8400:9e8:4119:2ef1:4993:8ada])
-        by smtp.gmail.com with ESMTPSA id e9sm6221298ill.60.2021.01.10.03.38.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 10 Jan 2021 03:38:38 -0800 (PST)
-From:   Adam Ford <aford173@gmail.com>
-To:     linux-arm-kernel@lists.infradead.org
-Cc:     aford@beaconembedded.com, Adam Ford <aford173@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] arm64: dts: imx8mm-beacon: add more pinctrl states for usdhc1
-Date:   Sun, 10 Jan 2021 05:38:26 -0600
-Message-Id: <20210110113826.1257293-1-aford173@gmail.com>
-X-Mailer: git-send-email 2.25.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        Sun, 10 Jan 2021 06:58:32 -0500
+X-RZG-AUTH: ":JGIXVUS7cutRB/49FwqZ7WcJeFKiMgPgp8VKxflSZ1P34KBj7wpz8NMGHPrrwDOsPyQ="
+X-RZG-CLASS-ID: mo00
+Received: from imac.fritz.box
+        by smtp.strato.de (RZmta 47.12.1 DYNA|AUTH)
+        with ESMTPSA id m056b3x0ABrBL8P
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (curve X9_62_prime256v1 with 256 ECDH bits, eq. 3072 bits RSA))
+        (Client did not present a certificate);
+        Sun, 10 Jan 2021 12:53:11 +0100 (CET)
+Subject: Re: [patch V3 13/37] mips/mm/highmem: Switch to generic kmap atomic
+Mime-Version: 1.0 (Mac OS X Mail 9.3 \(3124\))
+Content-Type: text/plain; charset=iso-8859-1
+From:   "H. Nikolaus Schaller" <hns@goldelico.com>
+In-Reply-To: <DUUPMQ.U53A0W7YJPGM@crapouillou.net>
+Date:   Sun, 10 Jan 2021 12:53:10 +0100
+Cc:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        tglx@linutronix.de, airlied@linux.ie, airlied@redhat.com,
+        akpm@linux-foundation.org, arnd@arndb.de, bcrl@kvack.org,
+        bigeasy@linutronix.de, bristot@redhat.com, bsegall@google.com,
+        bskeggs@redhat.com, chris@zankel.net, christian.koenig@amd.com,
+        clm@fb.com, davem@davemloft.net, deanbo422@gmail.com,
+        dietmar.eggemann@arm.com,
+        ML dri-devel <dri-devel@lists.freedesktop.org>,
+        dsterba@suse.com, green.hu@gmail.com, hch@lst.de,
+        intel-gfx@lists.freedesktop.org, jcmvbkbc@gmail.com,
+        josef@toxicpanda.com, juri.lelli@redhat.com, kraxel@redhat.com,
+        linux-aio@kvack.org,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        linux-btrfs@vger.kernel.org, linux-csky@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org,
+        linux-graphics-maintainer@vmware.com,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-mips <linux-mips@vger.kernel.org>, linux-mm@kvack.org,
+        linux-snps-arc@lists.infradead.org, linux-xtensa@linux-xtensa.org,
+        linux@armlinux.org.uk, linuxppc-dev@lists.ozlabs.org,
+        mgorman@suse.de, mingo@kernel.org, monstr@monstr.eu,
+        mpe@ellerman.id.au, nickhu@andestech.com,
+        nouveau@lists.freedesktop.org, paulmck@kernel.org,
+        paulus@samba.org, peterz@infradead.org, ray.huang@amd.com,
+        rodrigo.vivi@intel.com, rostedt@goodmis.org,
+        sparclinux@vger.kernel.org, spice-devel@lists.freedesktop.org,
+        sroland@vmware.com, torvalds@linuxfoundation.org,
+        vgupta@synopsys.com, vincent.guittot@linaro.org,
+        viro@zeniv.linux.org.uk, virtualization@lists.linux-foundation.org,
+        x86@kernel.org
+Content-Transfer-Encoding: 8BIT
+Message-Id: <6B074439-2E91-4FCF-84C8-82AE13D8C7F0@goldelico.com>
+References: <JUTMMQ.NNFWKIUV7UUJ1@crapouillou.net> <20210108235805.GA17543@alpha.franken.de> <20210109003352.GA18102@alpha.franken.de> <DUUPMQ.U53A0W7YJPGM@crapouillou.net>
+To:     Paul Cercueil <paul@crapouillou.net>
+X-Mailer: Apple Mail (2.3124)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The WiFi chip is capable of communication at SDR104 speeds.
-Enable 100Mhz and 200MHz pinmux to support this.
 
-Signed-off-by: Adam Ford <aford173@gmail.com>
+> Am 10.01.2021 um 12:35 schrieb Paul Cercueil <paul@crapouillou.net>:
+> 
+> Hi Thomas,
+> 
+> Le sam. 9 janv. 2021 à 1:33, Thomas Bogendoerfer <tsbogend@alpha.franken.de> a écrit :
+>> On Sat, Jan 09, 2021 at 12:58:05AM +0100, Thomas Bogendoerfer wrote:
+>>> On Fri, Jan 08, 2021 at 08:20:43PM +0000, Paul Cercueil wrote:
+>>> > Hi Thomas,
+>>> >
+>>> > 5.11 does not boot anymore on Ingenic SoCs, I bisected it to this commit.
 
-diff --git a/arch/arm64/boot/dts/freescale/imx8mm-beacon-som.dtsi b/arch/arm64/boot/dts/freescale/imx8mm-beacon-som.dtsi
-index d897913537ca..988f8ab679ad 100644
---- a/arch/arm64/boot/dts/freescale/imx8mm-beacon-som.dtsi
-+++ b/arch/arm64/boot/dts/freescale/imx8mm-beacon-som.dtsi
-@@ -256,8 +256,10 @@ bluetooth {
- &usdhc1 {
- 	#address-cells = <1>;
- 	#size-cells = <0>;
--	pinctrl-names = "default";
-+	pinctrl-names = "default", "state_100mhz", "state_200mhz";
- 	pinctrl-0 = <&pinctrl_usdhc1>;
-+	pinctrl-1 = <&pinctrl_usdhc1_100mhz>;
-+	pinctrl-2 = <&pinctrl_usdhc1_200mhz>;
- 	bus-width = <4>;
- 	non-removable;
- 	cap-power-off-card;
--- 
-2.25.1
+Just for completeness, I have no such problems booting CI20/jz4780 or Skytone400/jz4730 (unpublished work) with 5.11-rc2.
+But may depend on board capabilites (ram size, memory layout or something else).
+
+>>> >
+>>> > Any idea what could be happening?
+>>> not yet, kernel crash log of a Malta QEMU is below.
+>> update:
+>> This dirty hack lets the Malta QEMU boot again:
+>> diff --git a/mm/highmem.c b/mm/highmem.c
+>> index c3a9ea7875ef..190cdda1149d 100644
+>> --- a/mm/highmem.c
+>> +++ b/mm/highmem.c
+>> @@ -515,7 +515,7 @@ void *__kmap_local_pfn_prot(unsigned long pfn, pgprot_t prot)
+>> 	vaddr = __fix_to_virt(FIX_KMAP_BEGIN + idx);
+>> 	BUG_ON(!pte_none(*(kmap_pte - idx)));
+>> 	pteval = pfn_pte(pfn, prot);
+>> -	set_pte_at(&init_mm, vaddr, kmap_pte - idx, pteval);
+>> +	set_pte(kmap_pte - idx, pteval);
+>> 	arch_kmap_local_post_map(vaddr, pteval);
+>> 	current->kmap_ctrl.pteval[kmap_local_idx()] = pteval;
+>> 	preempt_enable();
+>> set_pte_at() tries to update cache and could do an kmap_atomic() there.
+>> Not sure, if this is allowed at this point.
+> 
+> Yes, I can confirm that your workaround works here too.
+> 
+> Cheers,
+> -Paul
+> 
+> 
 
