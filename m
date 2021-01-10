@@ -2,83 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 90A962F06F5
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Jan 2021 12:59:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 883F82F06FB
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Jan 2021 13:01:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726871AbhAJL6E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Jan 2021 06:58:04 -0500
-Received: from mail-40133.protonmail.ch ([185.70.40.133]:33498 "EHLO
-        mail-40133.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726341AbhAJL6C (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Jan 2021 06:58:02 -0500
-Date:   Sun, 10 Jan 2021 11:57:01 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me; s=protonmail;
-        t=1610279826; bh=9X9TtaxhK4MsjM77KJSI8oMJqQq5vrXLNYznXkmw+KE=;
-        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
-        b=VWdf7Pv7GU3OQbBGG8mq7oifuAMWGLdcebsIIG0VJqMxSXYWA6gYp1trUxbhMZ+5u
-         kVyNdxORjLV6pYYeEAt6F0oaCveQfzOzGwU6VCUm5JY6fBBTKCLG5A+vsbVobGdD1M
-         dw0HwQbsYF+S0LX/wNy5iJpN8AdYDgEjD02cs75IDkccGGttqWhlEaSpRa2g44ibS5
-         8vVFHMj6zFg/wICE8+oFGRAPIIRXwh74CipLniLykFRLxz1VyA398AN4TCfL0eOdbZ
-         o2p6KtspEKAzSMpEB5Kn4e25nYWgS07hV/52/4LIpt5iy+FFGZiuDZJfGy0jrpwtTV
-         70Ox9sSoqMfSg==
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-From:   Alexander Lobakin <alobakin@pm.me>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Pei Huang <huangpei@loongson.cn>,
-        Kees Cook <keescook@chromium.org>,
-        Alexander Lobakin <alobakin@pm.me>,
-        Fangrui Song <maskray@google.com>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        Ralf Baechle <ralf@linux-mips.org>,
-        Corey Minyard <cminyard@mvista.com>,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arch@vger.kernel.org, stable@vger.kernel.org,
-        clang-built-linux@googlegroups.com
-Reply-To: Alexander Lobakin <alobakin@pm.me>
-Subject: [PATCH v5 mips-next 9/9] MIPS: select ARCH_WANT_LD_ORPHAN_WARN
-Message-ID: <20210110115546.30970-9-alobakin@pm.me>
-In-Reply-To: <20210110115546.30970-1-alobakin@pm.me>
-References: <20210110115245.30762-1-alobakin@pm.me> <20210110115546.30970-1-alobakin@pm.me>
+        id S1726569AbhAJMA5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Jan 2021 07:00:57 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50792 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726504AbhAJMA5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 10 Jan 2021 07:00:57 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F2D702376E;
+        Sun, 10 Jan 2021 12:00:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1610280016;
+        bh=VKYctqG42804wmTyAS+Qd4LIbcl/miI2AGg1f7H2npM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=fi5tpZVWHNLkyWWco9lMlmq1ZOigONfwJLqcMpjClMHfC8iDFT1qRDPpiSlwazH2R
+         Az45czyBS59q4hQIFT5IgK+z6sxIoDIO+spapfOI1hRR5hJ2+sQpz/5YN3UA5mpqr/
+         j6oVcP/6McL6hTjikiFYHbq8HOA6pAo939Lea7VBq/xLvGYAC1k9ipaeNZXi7u+UQT
+         4zyq9BmRmbgmwKmh3QeDu/YXG/JdjAhmQMz70WlS22wrJeKzpGlGjNjMUCYZPgFJ+G
+         TTfvytWteDlJnAbOhanFsIq6kUQCvXSPSzZ9rFOIEzV4biyKmd8eWB1orSgh26DyVU
+         JHwJNnPABjvbQ==
+Date:   Sun, 10 Jan 2021 20:00:11 +0800
+From:   Shawn Guo <shawnguo@kernel.org>
+To:     Michael Walle <michael@walle.cc>
+Cc:     linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Li Yang <leoyang.li@nxp.com>,
+        Sudhanshu Gupta <sudhanshu.gupta@nxp.com>,
+        Bhaskar Upadhaya <bhaskar.upadhaya@nxp.com>,
+        Rai Harninder <harninder.rai@nxp.com>
+Subject: Re: [PATCH] arm64: dts: ls1028a: fix the offset of the reset register
+Message-ID: <20210110120010.GG28365@dragon>
+References: <20201215212622.717-1-michael@walle.cc>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
-        autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
-        mailout.protonmail.ch
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201215212622.717-1-michael@walle.cc>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Now, after that all the sections are explicitly described and
-declared in vmlinux.lds.S, we can enable ld orphan warnings to
-prevent from missing any new sections in future.
+On Tue, Dec 15, 2020 at 10:26:22PM +0100, Michael Walle wrote:
+> The offset of the reset request register is 0, the absolute address is
+> 0x1e60000. Boards without PSCI support will fail to perform a reset:
+> 
+> [   26.734700] reboot: Restarting system
+> [   27.743259] Unable to restart system
+> [   27.746845] Reboot failed -- System halted
+> 
+> Fixes: 8897f3255c9c ("arm64: dts: Add support for NXP LS1028A SoC")
+> Signed-off-by: Michael Walle <michael@walle.cc>
 
-Signed-off-by: Alexander Lobakin <alobakin@pm.me>
-Reviewed-by: Kees Cook <keescook@chromium.org>
-Reviewed-by: Nathan Chancellor <natechancellor@gmail.com>
----
- arch/mips/Kconfig | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/arch/mips/Kconfig b/arch/mips/Kconfig
-index d68df1febd25..d3e64cc0932b 100644
---- a/arch/mips/Kconfig
-+++ b/arch/mips/Kconfig
-@@ -18,6 +18,7 @@ config MIPS
- =09select ARCH_USE_QUEUED_SPINLOCKS
- =09select ARCH_WANT_DEFAULT_TOPDOWN_MMAP_LAYOUT if MMU
- =09select ARCH_WANT_IPC_PARSE_VERSION
-+=09select ARCH_WANT_LD_ORPHAN_WARN
- =09select BUILDTIME_TABLE_SORT
- =09select CLONE_BACKWARDS
- =09select CPU_NO_EFFICIENT_FFS if (TARGET_ISA_REV < 1)
---=20
-2.30.0
-
-
+Applied, thanks.
