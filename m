@@ -2,127 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE3C22F06BE
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Jan 2021 12:54:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 149F62F06C3
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Jan 2021 12:54:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726375AbhAJLyk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Jan 2021 06:54:40 -0500
-Received: from mail-40131.protonmail.ch ([185.70.40.131]:59169 "EHLO
-        mail-40131.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726254AbhAJLyj (ORCPT
+        id S1726554AbhAJLyz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Jan 2021 06:54:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36434 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726254AbhAJLyy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Jan 2021 06:54:39 -0500
-Date:   Sun, 10 Jan 2021 11:53:50 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me; s=protonmail;
-        t=1610279636; bh=e+CceW4cTSMaSiEXVZcdatIqUeP8AJi4B5rdzKiTWXc=;
-        h=Date:To:From:Cc:Reply-To:Subject:From;
-        b=FBoH46m0JJOf+Mn9CgCEuL4rdSIL1n0YXYcAAVT69BLb+xDN7BH68mxBzUtgiOKXB
-         OQYCCc7upTbzvRT4dBDL+Fa8nHH3kYn7rLN/xsyVFkxCTbPc75vWpN9NR9hd9nELkS
-         V/rb0ZpHTYU1UUaqoXuC5diaIqiJHKxamOtdnWuNRWzV4bpI/8ttijqyRtJkDzl/xQ
-         1/srqKG6F0uvhzx7GsDS5/Xxq9Eqh82KAOlzKZkkx72DjPtCCRrG8jjFFFAgy6w7Oe
-         BqFjT2VnsDtF6tWS88RcW+9j3Pq9Jlc5bLXnoyfNulvbq99PrEGA+qgw1M0W7S1ayl
-         k3YYy74DVPnjw==
-To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-From:   Alexander Lobakin <alobakin@pm.me>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Pei Huang <huangpei@loongson.cn>,
-        Kees Cook <keescook@chromium.org>,
-        Alexander Lobakin <alobakin@pm.me>,
-        Fangrui Song <maskray@google.com>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        Ralf Baechle <ralf@linux-mips.org>,
-        Corey Minyard <cminyard@mvista.com>,
-        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arch@vger.kernel.org, stable@vger.kernel.org,
-        clang-built-linux@googlegroups.com
-Reply-To: Alexander Lobakin <alobakin@pm.me>
-Subject: [PATCH v5 mips-next 0/9] MIPS: vmlinux.lds.S sections fixes & cleanup
-Message-ID: <20210110115245.30762-1-alobakin@pm.me>
+        Sun, 10 Jan 2021 06:54:54 -0500
+Received: from mail-io1-xd2e.google.com (mail-io1-xd2e.google.com [IPv6:2607:f8b0:4864:20::d2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFAA2C0617A3;
+        Sun, 10 Jan 2021 03:54:13 -0800 (PST)
+Received: by mail-io1-xd2e.google.com with SMTP id 81so14684821ioc.13;
+        Sun, 10 Jan 2021 03:54:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=7RoK005uE/qFSPumNKEGnm/g33j+iG5Ts9GmzGFIgKE=;
+        b=YgXbtQmnK5M/P0WS7dYb1HCf3k5xprdseoGJn1TEsERtyLnVpnuGsy3VkAjSFZYSQI
+         tQsFWaWv7iNPvTx0EJ0jwSXdXwuVdYMaTBYj3S4H/blsca7tnnhvw647SO9QnTR4sFb5
+         +wqNsPnvLeE9U+7Ppq2QlC/7Osz6VrMsOnwneydQDe4FtCaGGp/9TzNd3HKhzMnF//lV
+         R6s1lIBU1HvMadq+amh8Cp5MWcuoxsHfPuF6fJVuM2N2LOm7M7BJfYcHPIYJVbQEDWjj
+         FrL1IMTbtrwozCk7aJ8JjIlf6VOpxzIH6ATtAAHL/EqClnO3PfeNe+uHhyTeU6YCWqnO
+         +IVg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=7RoK005uE/qFSPumNKEGnm/g33j+iG5Ts9GmzGFIgKE=;
+        b=AhRNKzaV8OIE5dxktwgAb+c7cxVToo5od0Wl3qRI54ZF9B5dOnycuhEIovjKyMPsLB
+         78yc47zR4zR6EPNUI4cCvRTGOns9FvSMeT+AGuFb8P4rzver2KgWkpZpC80Ufl7Nrw/e
+         5jI/2Oei8UiRcpFY6qCApKW07cANOVokEligHSxkHJvvp4ZysFIqkzQJBpakZM8VkJZI
+         /X7IsQfExH48PRHpMH6/P80EWDlssI132ZYGei1ME+cKfRJCw0sRN5seAwKeDh6VxdeH
+         f517J5LjFZDAlhYJnoUtjg05J6+wicpLtCDhs+DIUvIO6UBoC3f9eK/gbVLOFQ62v81U
+         LaLw==
+X-Gm-Message-State: AOAM5303k5rjcIZC46+vCdIH8FDLYo2e7ND36fiAuZfEgperZQPmQmuG
+        xz8C8i/z0F0srLXfODbPS9U=
+X-Google-Smtp-Source: ABdhPJwF3q87BcCxzzvNxRtizuQv69WzUYBls3XK6WJwaUUZ6MFkWkJUGa4e58JcBGDAcbzIZtAx6g==
+X-Received: by 2002:a02:6557:: with SMTP id u84mr10391980jab.82.1610279653238;
+        Sun, 10 Jan 2021 03:54:13 -0800 (PST)
+Received: from aford-IdeaCentre-A730.lan ([2601:448:8400:9e8:4119:2ef1:4993:8ada])
+        by smtp.gmail.com with ESMTPSA id 64sm9518063iow.9.2021.01.10.03.54.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 10 Jan 2021 03:54:12 -0800 (PST)
+From:   Adam Ford <aford173@gmail.com>
+To:     linux-arm-kernel@lists.infradead.org
+Cc:     aford@beaconembedded.com, Adam Ford <aford173@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] arm64: dts: imx8mn-beacon-som: Configure RTC aliases
+Date:   Sun, 10 Jan 2021 05:53:53 -0600
+Message-Id: <20210110115354.1259994-1-aford173@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
-        autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
-        mailout.protonmail.ch
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This series hunts the problems discovered after manual enabling of
-ARCH_WANT_LD_ORPHAN_WARN. Notably:
- - adds the missing PAGE_ALIGNED_DATA() section affecting VDSO
-   placement (marked for stable);
- - stops blind catching of orphan text sections with .text.*
-   directive;
- - properly stops .eh_frame section generation.
+On the i.MX8MN Beacon SOM, there is an RTC chip which is fed power
+from the baseboard during power off.  The SNVS RTC integrated into
+the SoC is not fed power.  Depending on the order the modules are
+loaded, this can be a problem if the external RTC isn't rtc0.
 
-Compile and runtime tested on MIPS32R2 CPS board with no issues
-using two different toolkits:
- - Binutils 2.35.1, GCC 10.2.1 (with Alpine patches);
- - LLVM stack: 11.0.0 and from latest Git snapshot.
+Make the alias for rtc0 point to the external RTC all the time and
+rtc1 point to the SVNS in order to correctly hold date/time over
+a power-cycle.
 
-Since v4 [3]:
- - new: drop redundant .text.cps-vec creation and blind inclusion
-   of orphan text sections via .text.* directive in vmlinux.lds.S;
- - don't assert SIZEOF(.rel.dyn) as it's reported that it may be not
-   empty on certain machines and compilers (Thomas);
- - align GOT table like it's done for ARM64;
- - new: catch UBSAN's "unnamed data" sections in generic definitions
-   when building with LD_DEAD_CODE_DATA_ELIMINATION;
- - collect Reviewed-bys (Kees, Nathan).
+Signed-off-by: Adam Ford <aford173@gmail.com>
 
-Since v3 [2]:
- - fix the third patch as GNU stack emits .rel.dyn into VDSO for
-   some reason if .cfi_sections is specified.
-
-Since v2 [1]:
- - stop discarding .eh_frame and just prevent it from generating
-   (Kees);
- - drop redundant sections assertions (Fangrui);
- - place GOT table in .text instead of asserting as it's not empty
-   when building with LLVM (Nathan);
- - catch compound literals in generic definitions when building with
-   LD_DEAD_CODE_DATA_ELIMINATION (Kees);
- - collect two Reviewed-bys (Kees).
-
-Since v1 [0]:
- - catch .got entries too as LLD may produce it (Nathan);
- - check for unwanted sections to be zero-sized instead of
-   discarding (Fangrui).
-
-[0] https://lore.kernel.org/linux-mips/20210104121729.46981-1-alobakin@pm.m=
-e
-[1] https://lore.kernel.org/linux-mips/20210106200713.31840-1-alobakin@pm.m=
-e
-[2] https://lore.kernel.org/linux-mips/20210107115120.281008-1-alobakin@pm.=
-me
-[3] https://lore.kernel.org/linux-mips/20210107123331.354075-1-alobakin@pm.=
-me
-
-Alexander Lobakin (9):
-  MIPS: vmlinux.lds.S: add missing PAGE_ALIGNED_DATA() section
-  MIPS: CPS: don't create redundant .text.cps-vec section
-  MIPS: vmlinux.lds.S: add ".gnu.attributes" to DISCARDS
-  MIPS: properly stop .eh_frame generation
-  MIPS: vmlinux.lds.S: explicitly catch .rel.dyn symbols
-  MIPS: vmlinux.lds.S: explicitly declare .got table
-  vmlinux.lds.h: catch compound literals into data and BSS
-  vmlinux.lds.h: catch UBSAN's "unnamed data" into data
-  MIPS: select ARCH_WANT_LD_ORPHAN_WARN
-
- arch/mips/Kconfig                 |  1 +
- arch/mips/include/asm/asm.h       | 18 ++++++++++++++++++
- arch/mips/kernel/cps-vec.S        |  1 -
- arch/mips/kernel/vmlinux.lds.S    | 11 +++++++++--
- include/asm-generic/vmlinux.lds.h |  6 +++---
- 5 files changed, 31 insertions(+), 6 deletions(-)
-
---=20
-2.30.0
-
+diff --git a/arch/arm64/boot/dts/freescale/imx8mn-beacon-som.dtsi b/arch/arm64/boot/dts/freescale/imx8mn-beacon-som.dtsi
+index 67e5e5b9ddea..2120e6485393 100644
+--- a/arch/arm64/boot/dts/freescale/imx8mn-beacon-som.dtsi
++++ b/arch/arm64/boot/dts/freescale/imx8mn-beacon-som.dtsi
+@@ -4,6 +4,11 @@
+  */
+ 
+ / {
++	aliases {
++		rtc0 = &rtc;
++		rtc1 = &snvs_rtc;
++	};
++
+ 	usdhc1_pwrseq: usdhc1_pwrseq {
+ 		compatible = "mmc-pwrseq-simple";
+ 		pinctrl-names = "default";
+@@ -212,7 +217,7 @@ eeprom@50 {
+ 		reg = <0x50>;
+ 	};
+ 
+-	rtc@51 {
++	rtc: rtc@51 {
+ 		compatible = "nxp,pcf85263";
+ 		reg = <0x51>;
+ 	};
+-- 
+2.25.1
 
