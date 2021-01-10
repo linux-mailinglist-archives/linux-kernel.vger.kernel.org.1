@@ -2,107 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB5BF2F09A2
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Jan 2021 21:11:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 963F52F099D
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Jan 2021 21:08:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727010AbhAJUJx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Jan 2021 15:09:53 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57028 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726494AbhAJUJw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Jan 2021 15:09:52 -0500
-Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7290BC061786
-        for <linux-kernel@vger.kernel.org>; Sun, 10 Jan 2021 12:09:12 -0800 (PST)
-Received: by mail-ed1-x532.google.com with SMTP id i24so16657820edj.8
-        for <linux-kernel@vger.kernel.org>; Sun, 10 Jan 2021 12:09:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=kUyUrQs3xayATQiBWATvxgCd0SP5l5aLWIuYGmxV8Jg=;
-        b=mDR2LUmfkn2nNOs0YdM2bPqrC9RQ3FZoumw6mJ+AGC0Xvi+kKiCZ+JDVdSm3P+x8W2
-         sEbqxl1gLTMpJ1cL4y1AOcquOlDcANECEWWxxI7TaKsFv/SSF9N5hiaBkdEup9y3YGov
-         gy21SN97OlMRzxibSNmKt+arB6gSE+g/ajtGbVOrVzw9yvlgf+21fJm0hfEOVd6WilMU
-         vVxZQs3EJ1mOktZvvVB3xzaEf396p1FDP+EdqG35WhZ/Q/FFVUHVW5O9kX+exI1tbyFe
-         yHtPpfw2rbNsJNse5w3qoHZdijULR4KxfOIJzVGbw/yfvPoI3molydO9gYqwGHDP7L86
-         v43w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=kUyUrQs3xayATQiBWATvxgCd0SP5l5aLWIuYGmxV8Jg=;
-        b=hpEd039BHAeTVgU86IaF8FOYLIXDpIZkUNTHXSVM4ngiMfRX6SZiOn7C6+3xkMi67P
-         BdmGP3EfdjJfI4FaaGtbXX66y0u5zTvB8CdEudq4kbAXU9SsnNbq8Y/WeJtwGslRFbtT
-         z5MGvwZVQPmmObWbMOg4pQH8sQ9Q6j6JKehq40VaDLaDwo2BSo7TjAZPUK+WlCGrHlmX
-         xhYCOLJAqK/9WeROzTOGMmN8zPMIOE9aL1FAJ6g/FKfBzv3nXCiwW3WbyXDRzIrA3lmk
-         8KSXzvlGi9uMqqGMQIYAYuQDpv+MxuGkoNm1IzmBUL5LA/Fc3/iEKkqXSzGjESvP10AZ
-         zPTg==
-X-Gm-Message-State: AOAM53067ZuY49Se+vTwQWdqX+efjeLn6RkTPINe/J3tammqP1tGXW1L
-        M/h5MraalVTIt6HQgCsEAKM=
-X-Google-Smtp-Source: ABdhPJwBV78e3ELX9S6MpKm1ZyGlpFi7ZJ+UjlJDv/dZs/CrDycgWvTGrDXLNdNiVWCW6jDV/xw7MA==
-X-Received: by 2002:a05:6402:22e1:: with SMTP id dn1mr12351863edb.347.1610309350980;
-        Sun, 10 Jan 2021 12:09:10 -0800 (PST)
-Received: from localhost (ip1f10d3e8.dynamic.kabel-deutschland.de. [31.16.211.232])
-        by smtp.gmail.com with ESMTPSA id dh19sm6773536edb.78.2021.01.10.12.09.10
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sun, 10 Jan 2021 12:09:10 -0800 (PST)
-Date:   Sun, 10 Jan 2021 21:06:06 +0100
-From:   Oliver Graute <oliver.graute@gmail.com>
-To:     Fabio Estevam <festevam@gmail.com>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Marco Felsch <m.felsch@pengutronix.de>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        DRI mailing list <dri-devel@lists.freedesktop.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v1] drm/panel: simple: add SGD GKTW70SDAD1SD
-Message-ID: <20210110200606.GD7264@ripley>
-References: <1608381853-18582-1-git-send-email-oliver.graute@gmail.com>
- <20210108214313.GA7979@ripley>
- <CAOMZO5AXgeGYt4+4NMBRL1Hm-9M4X2DngdEBsJEAHq8+MRhQgQ@mail.gmail.com>
- <20210110153532.GA7264@ripley>
- <CAOMZO5C_hDWeVrCh7k+3OiA0jhQfawhGWE6hxnnFn=wA+dkTGQ@mail.gmail.com>
+        id S1726534AbhAJUH3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Jan 2021 15:07:29 -0500
+Received: from gloria.sntech.de ([185.11.138.130]:43732 "EHLO gloria.sntech.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726263AbhAJUH2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 10 Jan 2021 15:07:28 -0500
+Received: from ip5f5aa64a.dynamic.kabel-deutschland.de ([95.90.166.74] helo=diego.localnet)
+        by gloria.sntech.de with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <heiko@sntech.de>)
+        id 1kygz2-0000NH-Du; Sun, 10 Jan 2021 21:06:40 +0100
+From:   Heiko =?ISO-8859-1?Q?St=FCbner?= <heiko@sntech.de>
+To:     Johan Jonker <jbx6244@gmail.com>, Chen-Yu Tsai <wens@kernel.org>
+Cc:     Chen-Yu Tsai <wens@kernel.org>, Rob Herring <robh@kernel.org>,
+        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        devicetree <devicetree@vger.kernel.org>
+Subject: Re: [PATCH 3/3] arm64: dts: rockchip: rk3328: Add Radxa ROCK Pi E
+Date:   Sun, 10 Jan 2021 21:06:39 +0100
+Message-ID: <2241380.NG923GbCHz@diego>
+In-Reply-To: <CAGb2v67=uO4HqRNEbhAJs2-d4mhL8URoijwE4ni9J8cYXrmAtQ@mail.gmail.com>
+References: <20210110035846.9155-1-wens@kernel.org> <381648f9-d650-dddf-59e6-ef32d1e1bb43@gmail.com> <CAGb2v67=uO4HqRNEbhAJs2-d4mhL8URoijwE4ni9J8cYXrmAtQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAOMZO5C_hDWeVrCh7k+3OiA0jhQfawhGWE6hxnnFn=wA+dkTGQ@mail.gmail.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/01/21, Fabio Estevam wrote:
-> Hi Oliver,
-> 
-> On Sun, Jan 10, 2021 at 12:35 PM Oliver Graute <oliver.graute@gmail.com> wrote:
-> 
-> > the first two errors are gone. But I still get this:
+Hi,
+
+Am Sonntag, 10. Januar 2021, 16:37:15 CET schrieb Chen-Yu Tsai:
+> > > +     vcc_sd: sdmmc-regulator {
+> > > +             compatible = "regulator-fixed";
+> > > +             gpio = <&gpio0 RK_PD6 GPIO_ACTIVE_LOW>;
+> > > +             pinctrl-names = "default";
+> > > +             pinctrl-0 = <&sdmmc0m1_pin>;
 > >
-> > [   42.387107] mxsfb 21c8000.lcdif: Cannot connect bridge: -517
+> > > +             regulator-boot-on;
+> > > +             regulator-name = "vcc_sd";
 > >
-> > The panel is still off perhaps I miss something else.
+> > regulator-name above other regulator properties
 > 
-> Some suggestions:
+> That is actually what I was used to, but some other rockchip dts files
+> have all the properties sorted alphabetically. So I stuck with what I
+> saw.
+
+I try to keep it alphabetical except for the exceptions :-D .
+
+regulator-name is such an exception. Similar to compatibles, the
+regulator-name is an entry needed to see if you're at the right node,
+so I really like it being the topmost regulator-foo property - just makes
+reading easier.
+
+(same for the compatible first, then regs, interrupts parts, as well
+as "status-last")
+
+But oftentimes, I just fix the ordering when applying - but seem to have
+missed this somewhere in those "other Rockchip dts files" ;-) .
+
+
+> > regulator voltage missing
+> > make things as complete as possible
+> >
+> > from fixed-regulator.yaml:
+> >
+> > description:
+> >   Any property defined as part of the core regulator binding, defined in
+> >   regulator.yaml, can also be used. However a fixed voltage regulator is
+> >   expected to have the regulator-min-microvolt and regulator-max-microvolt
+> >   to be the same.
 > 
-> - Take a look at arch/arm/boot/dts/imx6ul-14x14-evk.dtsi as a
-> reference as it has display functional
-> - Use imx_v6_v7_defconfig to make sure all the required drivers are selected
+> However this is not a real regulator; it is merely an on/off switch.
+> I believe in this case it should just pass through the voltage from
+> its upstream.
 
-ok I checked imx6ul-14x14-evk.dtsi and use imx_v6_v7_defconfig
+regulator-voltages are not marked required so can stay away if it's just
+a dumb switch. I guess it's ok both ways and for individual board-
+devicetrees the impact either way is minimal.
 
-> - If it still does not work, share the dts and schematics
 
-here the schematics and my dts. The board is using a LVDS connector for
-the display.
+> > > +&i2c1 {
+> > > +     status = "okay";
+> > > +
+> > > +     rk805: pmic@18 {
+> > > +             compatible = "rockchip,rk805";
+> > > +             reg = <0x18>;
+> > > +             interrupt-parent = <&gpio2>;
+> > > +             interrupts = <6 IRQ_TYPE_LEVEL_LOW>;
+> >
+> > > +             #clock-cells = <1>;
+> >
+> > all thing that start with "#" down the list
+> 
+> Is there a proper "preferred" sorting method defined somewhere?
 
-https://www.variscite.de/wp-content/uploads/2017/12/VAR-6ULCustomboard-Schematics.pdf
-https://lore.kernel.org/linux-arm-kernel/1610144511-19018-3-git-send-email-oliver.graute@gmail.com/
+I struggle with that often as well, but normally I'd do #clocks to clocks
+with out "#", but really don't have a hard preference here.
 
-Thx for your help,
+especially as just ignoring the "#" would make #address-cells + #size-cells
+look strangely sorted ... so more of a common sense thingy.
 
-Best Regards,
 
-Oliver
+> > > +             eth_phy_int_pin: eth-phy-int-pin {
+> > > +                     rockchip,pins = <1 RK_PD0 RK_FUNC_GPIO &pcfg_pull_down>;
+> > > +             };
+> > > +
+> > > +             eth_phy_reset_pin: eth-phy-reset-pin {
+> > > +                     rockchip,pins = <1 RK_PC2 RK_FUNC_GPIO &pcfg_pull_down>;
+> > > +             };
+> > > +     };
+> > > +
+> > > +     leds {
+> > > +             led_pin: led-pin {
+> > > +                     rockchip,pins = <3 RK_PA5 RK_FUNC_GPIO &pcfg_pull_none>;
+> > > +             };
+> > > +     };
+> > > +
+> > > +     pmic {
+> > > +             pmic_int_l: pmic-int-l {
+> > > +                     rockchip,pins = <2 RK_PA6 RK_FUNC_GPIO &pcfg_pull_up>;
+> > > +             };
+> > > +     };
+> > > +
+> >
+> > > +     usb3 {
+> >
+> > usb
+> >
+> > Last numbers in nodenames are more related to the sort order then to
+> > capabillity.
+> > ie: mmc0, mmc1
+> > All usb pin related things here.
+> 
+> I'd say it is more related to functionality in this case, as in "this group
+> is for USB3 related pins". Makes more sense if the board supported both USB2
+> and USB3.
+
+I'd agree :-) ... especially as usb controllers on Rockchip boards are not
+really numbered and I think we already have precedent for
+usb2 -> usb version 2 pins in some other boards ;-)
+
+
+> > > +     cap-sd-highspeed;
+> > > +     disable-wp;
+> > > +     pinctrl-names = "default";
+> > > +     pinctrl-0 = <&sdmmc0_clk>, <&sdmmc0_cmd>, <&sdmmc0_dectn>, <&sdmmc0_bus4>;
+> > > +     vmmc-supply = <&vcc_sd>;
+> > > +     status = "okay";
+> > > +};
+> > > +
+> >
+> > > +&saradc {
+> > > +     vref-supply = <&vcc_18>;
+> > > +     status = "okay";
+> > > +};
+> >
+> > What happened to the recovery key from the schematic?
+> 
+> I believe I originally planned on adding it, but failed to find a proper
+> key event for it. Any suggestions?
+
+Most boards seem to use the KEY_VENDOR keycode.
+
+
+Heiko
+
+
