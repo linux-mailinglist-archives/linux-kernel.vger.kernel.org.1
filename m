@@ -2,67 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C87192F0858
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Jan 2021 17:17:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E4A32F083B
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Jan 2021 17:02:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726821AbhAJQRE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Jan 2021 11:17:04 -0500
-Received: from m12-13.163.com ([220.181.12.13]:56110 "EHLO m12-13.163.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726080AbhAJQRE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Jan 2021 11:17:04 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id; bh=uWCpczaT+Kp1u2fPcI
-        VWE1toUte4ZvxGSaJT+gjXIv0=; b=IXnsJKlLPiqHSedfWmDHerfp3Ct6f6Lljv
-        KpCuUWEBdmBBzLcxS+QVZeAR4IZTCIBbBGQtKyW0xbVIXPYgS59CQJgCF2JGTfhO
-        Ib6sospHy5sByjTLPhDCjbaIBO1bQmYygBGsZVCzhC89u5GQqnqj+gEKvdamOutk
-        iIyG/8cq8=
-Received: from localhost.localdomain.localdomain (unknown [182.150.135.160])
-        by smtp9 (Coremail) with SMTP id DcCowAB3v2tZt_pf69c2aQ--.11668S2;
-        Sun, 10 Jan 2021 16:14:19 +0800 (CST)
-From:   winndows@163.com
-To:     corbet@lwn.net
-Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Liao Pingfang <winndows@163.com>
-Subject: [PATCH] docs: filesystems: vfs: Correct the struct name
-Date:   Sun, 10 Jan 2021 15:59:59 +0800
-Message-Id: <1610265599-5101-1-git-send-email-winndows@163.com>
-X-Mailer: git-send-email 1.8.3.1
-X-CM-TRANSID: DcCowAB3v2tZt_pf69c2aQ--.11668S2
-X-Coremail-Antispam: 1Uf129KBjvdXoW7Gry5KrWxGr1fCF4kKw15Jwb_yoWxKwbE9r
-        WxXF4kWFZ7JryftF4kCF1YvF1fZrsakr1rXwn3AF4DA343t3ykJFykX34jvrW5Wr4I9rZ8
-        Gan8ZrZIqFnrJjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IUjDKs7UUUUU==
-X-Originating-IP: [182.150.135.160]
-X-CM-SenderInfo: hzlq0vxrzvqiywtou0bp/xtbByhsWmV0CPnHalwAAsD
+        id S1726729AbhAJQAj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Jan 2021 11:00:39 -0500
+Received: from www1102.sakura.ne.jp ([219.94.129.142]:18698 "EHLO
+        www1102.sakura.ne.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726246AbhAJQAi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 10 Jan 2021 11:00:38 -0500
+X-Greylist: delayed 2428 seconds by postgrey-1.27 at vger.kernel.org; Sun, 10 Jan 2021 11:00:38 EST
+Received: from fsav110.sakura.ne.jp (fsav110.sakura.ne.jp [27.133.134.237])
+        by www1102.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 10AFJGvx074003;
+        Mon, 11 Jan 2021 00:19:16 +0900 (JST)
+        (envelope-from katsuhiro@katsuster.net)
+Received: from www1102.sakura.ne.jp (219.94.129.142)
+ by fsav110.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav110.sakura.ne.jp);
+ Mon, 11 Jan 2021 00:19:16 +0900 (JST)
+X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav110.sakura.ne.jp)
+Received: from localhost.localdomain (80.57.232.153.ap.dti.ne.jp [153.232.57.80])
+        (authenticated bits=0)
+        by www1102.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 10AFJEmw073988
+        (version=TLSv1.2 cipher=DHE-RSA-AES256-SHA bits=256 verify=NO);
+        Mon, 11 Jan 2021 00:19:16 +0900 (JST)
+        (envelope-from katsuhiro@katsuster.net)
+From:   Katsuhiro Suzuki <katsuhiro@katsuster.net>
+To:     Heiko Stuebner <heiko@sntech.de>,
+        linux-rockchip@lists.infradead.org
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Katsuhiro Suzuki <katsuhiro@katsuster.net>
+Subject: [PATCH] arm64: dts: rockchip: more user friendly name of sound nodes
+Date:   Mon, 11 Jan 2021 00:19:13 +0900
+Message-Id: <20210110151913.3615326-1-katsuhiro@katsuster.net>
+X-Mailer: git-send-email 2.29.2
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Liao Pingfang <winndows@163.com>
+This patch changes device name to more user friendly name of
+Analog and SPDIF sound nodes for rk3399-rockpro64.
 
-The struct name should be file_system_type instead of
-file_system_operations.
-
-Signed-off-by: Liao Pingfang <winndows@163.com>
+Signed-off-by: Katsuhiro Suzuki <katsuhiro@katsuster.net>
 ---
- Documentation/filesystems/vfs.rst | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/arm64/boot/dts/rockchip/rk3399-rockpro64.dtsi | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/Documentation/filesystems/vfs.rst b/Documentation/filesystems/vfs.rst
-index ca52c82..18d69a4 100644
---- a/Documentation/filesystems/vfs.rst
-+++ b/Documentation/filesystems/vfs.rst
-@@ -112,7 +112,7 @@ members are defined:
+diff --git a/arch/arm64/boot/dts/rockchip/rk3399-rockpro64.dtsi b/arch/arm64/boot/dts/rockchip/rk3399-rockpro64.dtsi
+index 58097245994a..5ab0b9edfc88 100644
+--- a/arch/arm64/boot/dts/rockchip/rk3399-rockpro64.dtsi
++++ b/arch/arm64/boot/dts/rockchip/rk3399-rockpro64.dtsi
+@@ -72,13 +72,13 @@ sdio_pwrseq: sdio-pwrseq {
  
- .. code-block:: c
+ 	sound {
+ 		compatible = "audio-graph-card";
+-		label = "rockchip,rk3399";
++		label = "Analog";
+ 		dais = <&i2s1_p0>;
+ 	};
  
--	struct file_system_operations {
-+	struct file_system_type {
- 		const char *name;
- 		int fs_flags;
- 		struct dentry *(*mount) (struct file_system_type *, int,
+ 	sound-dit {
+ 		compatible = "audio-graph-card";
+-		label = "rockchip,rk3399";
++		label = "SPDIF";
+ 		dais = <&spdif_p0>;
+ 	};
+ 
 -- 
-1.8.3.1
-
+2.29.2
 
