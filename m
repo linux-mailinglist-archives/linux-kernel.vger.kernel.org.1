@@ -2,161 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD5792F0638
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Jan 2021 10:46:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FFD02F065F
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Jan 2021 11:21:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726288AbhAJJqW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Jan 2021 04:46:22 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36176 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725807AbhAJJqV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Jan 2021 04:46:21 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 47F7B238E5
-        for <linux-kernel@vger.kernel.org>; Sun, 10 Jan 2021 09:45:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610271940;
-        bh=5nn4h4NtHDCXue9VfNHsaZlxU7bxJQfKM7EPyThKV4s=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=Jkk+C22tc7csu+FDa3hdEyf1WcpqZ+mzDv0k6r5bB1f5AvFEDE5rD9uPZgoPvjKkc
-         2gciLbolidD0pSVNrVvTEHHhLHifZUo3z7eVdDCP5X73bXMwkCO8PnySZMtQ9KmWI8
-         XGEM2u+ZParM+h0GnBvTOSwbV5JQlE9X4gk5vC6Z0TeUiv1jnT+cQw1dOPa7+DGwHu
-         w0L8RIobKVzRfs4ENAHhPX77id+yjsUmxRX1Q1iNCJmR4vXqjZzCkFXt64q7r6qx1e
-         lIJYv31AHj5UNPxMXpek8AXikHqIwJV/Qn2lMRHEPCb56nyOCLjTh3tnmnhh78DdI0
-         zN+U7p3h1SIaw==
-Received: by mail-oo1-f49.google.com with SMTP id q6so3436590ooo.8
-        for <linux-kernel@vger.kernel.org>; Sun, 10 Jan 2021 01:45:40 -0800 (PST)
-X-Gm-Message-State: AOAM530DREz+8gW5ciy7215M6tzAosGQFeXhpxEtvoqj2/6Am5QZJOCQ
-        PnpNEWGLUHBP0B9c61rQwvks0BXA/fBWnDKO6YA=
-X-Google-Smtp-Source: ABdhPJxFA2UzPoe3lyfsOlxSV6swiWUEug3nw26cfUR6OzU/woA5RXjgkCsrwp+FCnapmHEEnU2ndvwvqnG9X5o6kcg=
-X-Received: by 2002:a4a:bb86:: with SMTP id h6mr37396oop.13.1610271939504;
- Sun, 10 Jan 2021 01:45:39 -0800 (PST)
+        id S1726283AbhAJKT6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Jan 2021 05:19:58 -0500
+Received: from mail-io1-f71.google.com ([209.85.166.71]:42039 "EHLO
+        mail-io1-f71.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725988AbhAJKT5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 10 Jan 2021 05:19:57 -0500
+Received: by mail-io1-f71.google.com with SMTP id m9so10710925ioa.9
+        for <linux-kernel@vger.kernel.org>; Sun, 10 Jan 2021 02:19:41 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=Kt/0k0XvXpnX0NPbrn+9HwSwh7MXuiusmT0Wp7xQF0E=;
+        b=sXXBO3HCvjvlaNbH93C6JsDWZjvDy61EjWo50NiQaPXqj9gFtoDon7CICH1TjVUOkL
+         12RlJRqFSy9j7dK4o1mozEZQhBVUH+mjsPjuou8LbA2mk5T2Jq3Uh7eg2GZqjT28q9Lz
+         NZ6QDwf8T9mlu0Qe3WpjConYit9Lu9jg4TqpZkh7uK75zp8zGFWMAvxg37qZYHacAMWo
+         tmZ5pF7gR1Tgq0mRL7JzjFUWqS7AaZJIFV8fPZ/3h8m+XCCRje4fXLEoaT8om5Hk8r7B
+         AweDVqqKvv1XWM7J2oKtZxFvd7fwef4ICPWQzfM7F+ckZRHYuWhLT/JGf+12gRt5gJ7z
+         D1ZQ==
+X-Gm-Message-State: AOAM532I8Ie8buldPvzMcAUiUrEOP69o+23R67wLadWwKXqE31n7fFGC
+        RNPPgUBDyONAo6FEmkKTirJk00so/GJ4iHOxNIGQc+BpdFze
+X-Google-Smtp-Source: ABdhPJwExw+STqccTHYPQ0FMo0FDuPSiOyAMKtDKx2WDvURFC+rBa/fsVPlT2S217NcqbXU52qF0Fd5ltv/rQ7++F+BJ2c3rs5c3
 MIME-Version: 1.0
-References: <20201105152944.16953-1-ardb@kernel.org> <CAMj1kXGtxWk3Z4fxm=b5YMU1Dy2HfaOAynaMiMGKZx9vLArpmg@mail.gmail.com>
- <CAMj1kXEg+22pejvof-p_z9uxNnf4yv+4ohAsJAo_LmtQ_+Bfmg@mail.gmail.com> <CAMj1kXECsVbO6tqmynSTmu-aGRKKBKSUSE3ZTzJgfCRozmK9Vw@mail.gmail.com>
-In-Reply-To: <CAMj1kXECsVbO6tqmynSTmu-aGRKKBKSUSE3ZTzJgfCRozmK9Vw@mail.gmail.com>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Sun, 10 Jan 2021 10:45:28 +0100
-X-Gmail-Original-Message-ID: <CAMj1kXH2N_e722TiSU6_uUs_arjkBipwUnfD8=xj1etKE11DRQ@mail.gmail.com>
-Message-ID: <CAMj1kXH2N_e722TiSU6_uUs_arjkBipwUnfD8=xj1etKE11DRQ@mail.gmail.com>
-Subject: Re: [PATCH] random: avoid arch_get_random_seed_long() when collecting
- IRQ randomness
-To:     "Theodore Y. Ts'o" <tytso@mit.edu>,
-        Eric Biggers <ebiggers@kernel.org>,
-        Will Deacon <will@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        "Jason A. Donenfeld" <Jason@zx2c4.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Marc Zyngier <maz@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Mark Brown <broonie@kernel.org>,
-        Andre Przywara <andre.przywara@arm.com>
+X-Received: by 2002:a92:d350:: with SMTP id a16mr11456432ilh.262.1610273955351;
+ Sun, 10 Jan 2021 02:19:15 -0800 (PST)
+Date:   Sun, 10 Jan 2021 02:19:15 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000019908405b8891f9d@google.com>
+Subject: KMSAN: kernel-infoleak in move_addr_to_user (4)
+From:   syzbot <syzbot+057884e2f453e8afebc8@syzkaller.appspotmail.com>
+To:     davem@davemloft.net, glider@google.com, kuba@kernel.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 4 Jan 2021 at 20:09, Ard Biesheuvel <ardb@kernel.org> wrote:
->
-> On Tue, 17 Nov 2020 at 14:33, Ard Biesheuvel <ardb@kernel.org> wrote:
-> >
-> > On Wed, 11 Nov 2020 at 09:19, Ard Biesheuvel <ardb@kernel.org> wrote:
-> > >
-> > > (+ Eric)
-> > >
-> > > On Thu, 5 Nov 2020 at 16:29, Ard Biesheuvel <ardb@kernel.org> wrote:
-> > > >
-> > > > When reseeding the CRNG periodically, arch_get_random_seed_long() is
-> > > > called to obtain entropy from an architecture specific source if one
-> > > > is implemented. In most cases, these are special instructions, but in
-> > > > some cases, such as on ARM, we may want to back this using firmware
-> > > > calls, which are considerably more expensive.
-> > > >
-> > > > Another call to arch_get_random_seed_long() exists in the CRNG driver,
-> > > > in add_interrupt_randomness(), which collects entropy by capturing
-> > > > inter-interrupt timing and relying on interrupt jitter to provide
-> > > > random bits. This is done by keeping a per-CPU state, and mixing in
-> > > > the IRQ number, the cycle counter and the return address every time an
-> > > > interrupt is taken, and mixing this per-CPU state into the entropy pool
-> > > > every 64 invocations, or at least once per second. The entropy that is
-> > > > gathered this way is credited as 1 bit of entropy. Every time this
-> > > > happens, arch_get_random_seed_long() is invoked, and the result is
-> > > > mixed in as well, and also credited with 1 bit of entropy.
-> > > >
-> > > > This means that arch_get_random_seed_long() is called at least once
-> > > > per second on every CPU, which seems excessive, and doesn't really
-> > > > scale, especially in a virtualization scenario where CPUs may be
-> > > > oversubscribed: in cases where arch_get_random_seed_long() is backed
-> > > > by an instruction that actually goes back to a shared hardware entropy
-> > > > source (such as RNDRRS on ARM), we will end up hitting it hundreds of
-> > > > times per second.
-> > > >
-> > > > So let's drop the call to arch_get_random_seed_long() from
-> > > > add_interrupt_randomness(), and instead, rely on crng_reseed() to call
-> > > > the arch hook to get random seed material from the platform.
-> > > >
-> > > > Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
-> > > > ---
-> > > >  drivers/char/random.c | 15 +--------------
-> > > >  1 file changed, 1 insertion(+), 14 deletions(-)
-> > > >
-> > > > diff --git a/drivers/char/random.c b/drivers/char/random.c
-> > > > index 2a41b21623ae..a9c393c1466d 100644
-> > > > --- a/drivers/char/random.c
-> > > > +++ b/drivers/char/random.c
-> > > > @@ -1261,8 +1261,6 @@ void add_interrupt_randomness(int irq, int irq_flags)
-> > > >         cycles_t                cycles = random_get_entropy();
-> > > >         __u32                   c_high, j_high;
-> > > >         __u64                   ip;
-> > > > -       unsigned long           seed;
-> > > > -       int                     credit = 0;
-> > > >
-> > > >         if (cycles == 0)
-> > > >                 cycles = get_reg(fast_pool, regs);
-> > > > @@ -1298,23 +1296,12 @@ void add_interrupt_randomness(int irq, int irq_flags)
-> > > >
-> > > >         fast_pool->last = now;
-> > > >         __mix_pool_bytes(r, &fast_pool->pool, sizeof(fast_pool->pool));
-> > > > -
-> > > > -       /*
-> > > > -        * If we have architectural seed generator, produce a seed and
-> > > > -        * add it to the pool.  For the sake of paranoia don't let the
-> > > > -        * architectural seed generator dominate the input from the
-> > > > -        * interrupt noise.
-> > > > -        */
-> > > > -       if (arch_get_random_seed_long(&seed)) {
-> > > > -               __mix_pool_bytes(r, &seed, sizeof(seed));
-> > > > -               credit = 1;
-> > > > -       }
-> > > >         spin_unlock(&r->lock);
-> > > >
-> > > >         fast_pool->count = 0;
-> > > >
-> > > >         /* award one bit for the contents of the fast pool */
-> > > > -       credit_entropy_bits(r, credit + 1);
-> > > > +       credit_entropy_bits(r, 1);
-> > > >  }
-> > > >  EXPORT_SYMBOL_GPL(add_interrupt_randomness);
-> > > >
-> > > > --
-> > > > 2.17.1
-> > > >
-> >
-> > Ping?
->
-> Ping?
+Hello,
 
-Ping again?
+syzbot found the following issue on:
 
-Ted,
+HEAD commit:    73d62e81 kmsan: random: prevent boot-time reports in _mix_..
+git tree:       https://github.com/google/kmsan.git master
+console output: https://syzkaller.appspot.com/x/log.txt?x=15c8b8c7500000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=2cdf4151c9653e32
+dashboard link: https://syzkaller.appspot.com/bug?extid=057884e2f453e8afebc8
+compiler:       clang version 11.0.0 (https://github.com/llvm/llvm-project.git ca2dcbd030eadbf0aa9b660efe864ff08af6e18b)
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=101520c7500000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=100b8f4f500000
 
-Acceptance of this patch is now blocking RNG related work that is in
-flight for ARM and arm64. [0]
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+057884e2f453e8afebc8@syzkaller.appspotmail.com
 
-So please shout if you have any objections to this patch, or if you
-don't, please ack it so it can be taken through one of the ARM trees.
+=====================================================
+BUG: KMSAN: kernel-infoleak in kmsan_copy_to_user+0x9c/0xb0 mm/kmsan/kmsan_hooks.c:249
+CPU: 0 PID: 8245 Comm: syz-executor868 Not tainted 5.10.0-rc4-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x21c/0x280 lib/dump_stack.c:118
+ kmsan_report+0xf7/0x1e0 mm/kmsan/kmsan_report.c:118
+ kmsan_internal_check_memory+0x202/0x520 mm/kmsan/kmsan.c:402
+ kmsan_copy_to_user+0x9c/0xb0 mm/kmsan/kmsan_hooks.c:249
+ instrument_copy_to_user include/linux/instrumented.h:121 [inline]
+ _copy_to_user+0x1af/0x270 lib/usercopy.c:33
+ copy_to_user include/linux/uaccess.h:209 [inline]
+ move_addr_to_user+0x3a2/0x640 net/socket.c:237
+ __sys_getsockname+0x407/0x5d0 net/socket.c:1906
+ __do_sys_getsockname net/socket.c:1917 [inline]
+ __se_sys_getsockname+0x91/0xb0 net/socket.c:1914
+ __x64_sys_getsockname+0x4a/0x70 net/socket.c:1914
+ do_syscall_64+0x9f/0x140 arch/x86/entry/common.c:48
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x441219
+Code: e8 fc ab 02 00 48 83 c4 18 c3 0f 1f 80 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 1b 09 fc ff c3 66 2e 0f 1f 84 00 00 00 00
+RSP: 002b:00007ffe3c24eaf8 EFLAGS: 00000246 ORIG_RAX: 0000000000000033
+RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 0000000000441219
+RDX: 0000000020000000 RSI: 0000000020000100 RDI: 0000000000000003
+RBP: 00000000006cb018 R08: 00000000004002c8 R09: 00000000004002c8
+R10: 0000000000000004 R11: 0000000000000246 R12: 0000000000401fc0
+R13: 0000000000402050 R14: 0000000000000000 R15: 0000000000000000
 
-Thanks,
-Ard.
+Local variable ----address@__sys_getsockname created at:
+ __sys_getsockname+0x91/0x5d0 net/socket.c:1891
+ __sys_getsockname+0x91/0x5d0 net/socket.c:1891
 
-[0] https://lore.kernel.org/kvmarm/20210106103453.152275-1-andre.przywara@arm.com/
+Bytes 2-3 of 20 are uninitialized
+Memory access of size 20 starts at ffff888124bbbdf0
+Data copied to user address 0000000020000100
+=====================================================
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
