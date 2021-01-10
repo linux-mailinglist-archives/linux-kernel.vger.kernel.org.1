@@ -2,97 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A4382F0754
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Jan 2021 13:51:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B69E2F0756
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Jan 2021 13:55:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726579AbhAJMvV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Jan 2021 07:51:21 -0500
-Received: from smtp07.smtpout.orange.fr ([80.12.242.129]:48272 "EHLO
-        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726494AbhAJMvV (ORCPT
+        id S1726456AbhAJMzQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Jan 2021 07:55:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49338 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726263AbhAJMzQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Jan 2021 07:51:21 -0500
-Received: from localhost.localdomain ([153.202.107.157])
-        by mwinf5d13 with ME
-        id F0pW240033PnFJp030paM0; Sun, 10 Jan 2021 13:49:37 +0100
-X-ME-Helo: localhost.localdomain
-X-ME-Auth: bWFpbGhvbC52aW5jZW50QHdhbmFkb28uZnI=
-X-ME-Date: Sun, 10 Jan 2021 13:49:37 +0100
-X-ME-IP: 153.202.107.157
-From:   Vincent Mailhol <mailhol.vincent@wanadoo.fr>
-To:     Marc Kleine-Budde <mkl@pengutronix.de>, linux-can@vger.kernel.org,
-        Jeroen Hofstee <jhofstee@victronenergy.com>
-Cc:     Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
-        Wolfgang Grandegger <wg@grandegger.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        netdev@vger.kernel.org (open list:NETWORKING DRIVERS),
-        linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH v3 1/1] can: dev: add software tx timestamps
-Date:   Sun, 10 Jan 2021 21:49:03 +0900
-Message-Id: <20210110124903.109773-2-mailhol.vincent@wanadoo.fr>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20210110124903.109773-1-mailhol.vincent@wanadoo.fr>
-References: <20210110124903.109773-1-mailhol.vincent@wanadoo.fr>
+        Sun, 10 Jan 2021 07:55:16 -0500
+Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A097BC061786
+        for <linux-kernel@vger.kernel.org>; Sun, 10 Jan 2021 04:54:35 -0800 (PST)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4DDGxz6D3Fz9sW8;
+        Sun, 10 Jan 2021 23:54:31 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
+        s=201909; t=1610283271;
+        bh=g23izZcro+YvXpsj5ZHGOgHZE18lg82o/C04DfMcd+M=;
+        h=From:To:Cc:Subject:Date:From;
+        b=RZ8PTmPBk50jC8VUOyKmBD9lndE4Tq/XPyNJUsU9XDkPzaWUVPoE9fHSoa026PlHy
+         DtJl/YOFqFmpS5N72xc7+zSqw3Rsu5Yc4WUFkDc9KvoG60cYZX8NgdJ+Zi8PCu9/TP
+         LOQBOYr+V9GUQTc18An5Y/7FF/y2MS1DDsdc41EjKNd3zD8K9xHF1itR/wdzdGDvkc
+         PMqZ4qpTCgWJ3k36sassoUj0r185PBLrz+PgjDqp7nLYmxGuQjIfBNd9eg8kdLRIvE
+         oXWFTuHleXsz8lecdNEiE3NWkRcRiGx6axs2RUor1cN0VF2InOz3wMVJ0dMSvJGGgK
+         eN6VFITG0X2+g==
+From:   Michael Ellerman <mpe@ellerman.id.au>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     christophe.leroy@csgroup.eu, linux-kernel@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, natechancellor@gmail.com
+Subject: [GIT PULL] Please pull powerpc/linux.git powerpc-5.11-3 tag
+Date:   Sun, 10 Jan 2021 23:54:30 +1100
+Message-ID: <87y2h1j6k9.fsf@mpe.ellerman.id.au>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Call skb_tx_timestamp() within can_put_echo_skb() so that a software
-tx timestamp gets attached on the skb.
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA256
 
-There two main reasons to include this call in can_put_echo_skb():
+Hi Linus,
 
-  * It easily allow to enable the tx timestamp on all devices with
-    just one small change.
+Please pull a couple of powerpc fixes for 5.11:
 
-  * According to Documentation/networking/timestamping.rst, the tx
-    timestamps should be generated in the device driver as close as
-    possible, but always prior to passing the packet to the network
-    interface. During the call to can_put_echo_skb(), the skb gets
-    cloned meaning that the driver should not dereference the skb
-    variable anymore after can_put_echo_skb() returns. This makes
-    can_put_echo_skb() the very last place we can use the skb without
-    having to access the echo_skb[] array.
+The following changes since commit e71ba9452f0b5b2e8dc8aa5445198cd9214a6a62:
 
-Remarks:
+  Linux 5.11-rc2 (2021-01-03 15:55:30 -0800)
 
-  * By default, skb_tx_timestamp() does nothing. It needs to be
-    activated by passing the SOF_TIMESTAMPING_TX_SOFTWARE flag either
-    through socket options or control messages.
+are available in the git repository at:
 
-  * The hardware rx timestamp of a local loopback message is the
-    hardware tx timestamp. This means that there are no needs to
-    implement SOF_TIMESTAMPING_TX_HARDWARE for CAN sockets.
+  https://git.kernel.org/pub/scm/linux/kernel/git/powerpc/linux.git tags/powerpc-5.11-3
 
-References:
+for you to fetch changes up to 3ce47d95b7346dcafd9bed3556a8d072cb2b8571:
 
-Support for the error queue in CAN RAW sockets (which is needed for tx
-timestamps) was introduced in:
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=eb88531bdbfaafb827192d1fc6c5a3fcc4fadd96
+  powerpc: Handle .text.{hot,unlikely}.* in linker script (2021-01-06 21:59:04 +1100)
 
-Put the call to skb_tx_timestamp() just before adding it to the array:
-https://lkml.org/lkml/2021/1/10/54
+- ------------------------------------------------------------------
+powerpc fixes for 5.11 #3
 
-Signed-off-by: Vincent Mailhol <mailhol.vincent@wanadoo.fr>
----
- drivers/net/can/dev.c | 1 +
- 1 file changed, 1 insertion(+)
+A fix for machine check handling with VMAP stack on 32-bit.
 
-diff --git a/drivers/net/can/dev.c b/drivers/net/can/dev.c
-index 3486704c8a95..850759c7677f 100644
---- a/drivers/net/can/dev.c
-+++ b/drivers/net/can/dev.c
-@@ -481,6 +481,7 @@ int can_put_echo_skb(struct sk_buff *skb, struct net_device *dev,
- 		skb->pkt_type = PACKET_BROADCAST;
- 		skb->ip_summed = CHECKSUM_UNNECESSARY;
- 		skb->dev = dev;
-+		skb_tx_timestamp(skb);
- 
- 		/* save this skb for tx interrupt echo handling */
- 		priv->echo_skb[idx] = skb;
--- 
-2.26.2
+A clang build fix.
 
+Thanks to:
+  Christophe Leroy, Nathan Chancellor.
+
+- ------------------------------------------------------------------
+Christophe Leroy (1):
+      powerpc/32s: Fix RTAS machine check with VMAP stack
+
+Nathan Chancellor (1):
+      powerpc: Handle .text.{hot,unlikely}.* in linker script
+
+
+ arch/powerpc/kernel/head_book3s_32.S | 9 +++++++++
+ arch/powerpc/kernel/vmlinux.lds.S    | 2 +-
+ 2 files changed, 10 insertions(+), 1 deletion(-)
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEEJFGtCPCthwEv2Y/bUevqPMjhpYAFAl/696oACgkQUevqPMjh
+pYDNEg/+POcwQFJL0807yN0tbEmdWx0QJSTEyhSczSQfArqAr6Wjl5cAUf8VIqm1
+cj3zze6syGuC/geCAYTYPc9BTb7st50w2XEj1LIR1S8YMk4sS+TcnWxYr++pliUZ
+vcVFf5Xab5ZTOMODDyYR4C4KCu/FyF7pHYSap3XdJ4HjiDtSSNWowydTrAXxsm0d
+OvfsXqoBZ/6CHquIeGy1qFkC1vWPTeZSBOxLelxaY3LUdBIku7zolHawSvVaubyz
+f6CjFiQQ9HUc4clezqmMtL5f6KZh4q5xiynNFZRBeajGqYjWsd1qZbs7Ankw55qb
+X7XLjbihVjpAzR+x/nZycGTKLCWsQ74vxpbFXg/DsV2ThfXUG23zhmt2qC8il/1Q
+0R1CEPDoE/q3enroDJAfec1ANg0c/o/G/l+n4mK6OKt3fDRYc+BQED78dYWfzZPu
+KwXnXRdAugLNqk3Fp4YOZl3kk/4JvYnguaUiIxWoD94UXf67BESJICS84hMZ2ytT
+x5irkTM9LFwempJ0t+ayfR+4EWH4GkvsnBhfpcZ5KqFF1ttSjhs8ETdWFq7cOn8n
+xHC+6Ed8f36pOzeBv9FIYvRbgMgxQXtVMk90PIPQdRepXzPRm9Ik/n+kq0F8GFEG
+CqX4LpI3lUIkFwei4F9DfUPW01xiHELT7vFM3hFpo6O7M6NR8Rg=
+=S2EG
+-----END PGP SIGNATURE-----
