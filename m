@@ -2,131 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC8D22F09E2
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Jan 2021 22:32:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 401AD2F09E6
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Jan 2021 22:35:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726720AbhAJVcb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Jan 2021 16:32:31 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46322 "EHLO
+        id S1727008AbhAJVeu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Jan 2021 16:34:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46808 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726394AbhAJVcb (ORCPT
+        with ESMTP id S1726534AbhAJVet (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Jan 2021 16:32:31 -0500
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B996C061786;
-        Sun, 10 Jan 2021 13:31:50 -0800 (PST)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4DDVQp2QYrz9sWC;
-        Mon, 11 Jan 2021 08:31:46 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1610314306;
-        bh=Pbaq9lo+XfvR1YVfTGoujyY3dnSQT8kupntgi6qpiH8=;
-        h=Date:From:To:Cc:Subject:From;
-        b=URn0EV6Of0FX6ZV3wT1KXdK/iVWop97b2dwFV1Bui5xao+T+mTxP2JjBZs61rKuV5
-         BQxbgiHDiLdmFUkDQUWJFKRwuoF8MAexFlL+0WAyA0p33G1i6N7NpLnD1yHHXMiJhx
-         DPiHU9pa4n2d5jQmdUb584h9TeB/nP33jc9Q2v40ZYzQCQIo0/gSiGkoKh/aBWkruW
-         vXxdhxEbMS+0+lJIIh//HMo+PYK/+ntJZk+ilf+zevxKacrtTqPI9bfluqQaXKt0xX
-         lGBpi1unrd8gcwDH3ScqLvSYptiiOuOjw78qfgAwFAh10CquNjZN4CvG4XKBxDoTju
-         qL8sN0TDgeiBg==
-Date:   Mon, 11 Jan 2021 08:31:45 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     "Martin K. Petersen" <martin.petersen@oracle.com>
-Cc:     Adrian Hunter <adrian.hunter@intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build warning after merge of the scsi-fixes tree
-Message-ID: <20210111083145.523d4ca8@canb.auug.org.au>
+        Sun, 10 Jan 2021 16:34:49 -0500
+Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99476C061786
+        for <linux-kernel@vger.kernel.org>; Sun, 10 Jan 2021 13:34:08 -0800 (PST)
+Received: by mail-lj1-x22f.google.com with SMTP id u11so1425392ljo.13
+        for <linux-kernel@vger.kernel.org>; Sun, 10 Jan 2021 13:34:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=qwDBLOl5CVCeF0P0kwdlt2wM1kUvDpLPAJMSKBRxg9M=;
+        b=O1MZL5FC+wG8LIdfmsRaBa6/thw+/g110wanUmPYu2Ronl3gKSXhlOepCDQ+s6TL2N
+         xu11epSwwnwpR0Bj54+iV/ib3911s52X9WzFsGqI81Iay78IYobCO+weAiK+SbwsY3/a
+         t9Pl6C3ogoeCKkHD5FIusF45oWvRd0Hlj1JKnO2WcGVMtlR8cqGBbB30f0U6UvQqaaY9
+         BoW60rRmLNxfhsS/OSB6KecyuATGVVV7IwNJM3aWzGDD1d2EFAwvROE/K61qJ3+c6V1N
+         8cTpm6YT70O4fpROcy1vHfMjyrCH7Yeo9dMGwCe9wazTfwm06XqA4xJpkNFVEps8Ceuj
+         3Nhw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=qwDBLOl5CVCeF0P0kwdlt2wM1kUvDpLPAJMSKBRxg9M=;
+        b=Rny6L5G4jumSX1qM4Zugu/xY1f8oL1f09ANuYI+d5SHQcs80Y9IQCwNmODs1Dcj5XJ
+         gHRe+xdfMjWOqvBoQlo7m6TgxEitHej1qtPU4ZnamYgpi38I/tRxxjHrZob4v1Jl3zuw
+         5+ZWkred5XitciMWyVbDVR+bAep8FRE5Fv/7TKzNEFbO0v3sstwe7qg2vtoBQ9lxeUFx
+         UzOUsgwkvB2BcpzChyRA+8gST7DDTqJrfmPPm252RW9IaqhXtenFkdMemnvcrdLxBDzc
+         vZEt+IzmAswTFXit2QmB3Y8F3AOUMGRuS2HR3DedmomIJL2gcwy7JE12ctftCkN0aL7s
+         7/UQ==
+X-Gm-Message-State: AOAM530/RZTciwKyjpKaTP7SGVg5bGetcJ1xgrgJ7Frj5Zlq3shnlafI
+        5H7MJky1DkZ58KSdobtS/htm0JTIH+yYekS0FerUfA==
+X-Google-Smtp-Source: ABdhPJygTM2XUlD9axbmB+KpgakdlAh9kwrXgblXhejGBkbE8aGkF9u6DQX7GQV57RzFX+IaNT9AA+PnJGf0xvJ0BhQ=
+X-Received: by 2002:a2e:9dc3:: with SMTP id x3mr6350880ljj.326.1610314447060;
+ Sun, 10 Jan 2021 13:34:07 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/z2GPRudiTG2ojiDC.vmefTv";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+References: <CAK8P3a2VW8T+yYUG1pn1yR-5eU4jJXe1+M_ot6DAvfr2KyXCzQ@mail.gmail.com>
+ <67171E13-6786-4B44-A8C2-3302963B055F@gmail.com> <CAK8P3a0o=1KjPtp0Ah8Afe5vvG1b72+77HRFh4Z06HUGwN6+Ew@mail.gmail.com>
+ <1702853.1557dWfJA4@linux-e202.suse.de>
+In-Reply-To: <1702853.1557dWfJA4@linux-e202.suse.de>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Sun, 10 Jan 2021 22:33:56 +0100
+Message-ID: <CACRpkdYaMASWWDTX7hTt+xQnVPA=WTWNFk2eDnTjKoJF=LA7LQ@mail.gmail.com>
+Subject: Re: Old platforms: bring out your dead
+To:     Fabian Vogt <fabian@ritter-vogt.de>
+Cc:     Daniel Tang <dt.tangr@gmail.com>, Arnd Bergmann <arnd@kernel.org>,
+        Baruch Siach <baruch@tkos.co.il>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Jamie Iles <jamie@jamieiles.com>,
+        Krzysztof Adamski <krzysztof.adamski@nokia.com>,
+        Alexander Shiyan <shc_work@mail.ru>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Russell King - ARM Linux <linux@armlinux.org.uk>,
+        Wei Xu <xuwei5@hisilicon.com>,
+        Oleksij Rempel <o.rempel@pengutronix.de>,
+        Alex Elder <elder@linaro.org>,
+        Marc Gonzalez <marc.w.gonzalez@free.fr>,
+        Hans Ulli Kroll <ulli.kroll@googlemail.com>,
+        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Vladimir Zapolskiy <vz@mleia.com>,
+        Lubomir Rintel <lkundrak@v3.sk>,
+        Koen Vandeputte <koen.vandeputte@ncentric.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Barry Song <song.bao.hua@hisilicon.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Jonas Jensen <jonas.jensen@gmail.com>,
+        Hartley Sweeten <hsweeten@visionengravers.com>,
+        Mark Salter <msalter@redhat.com>,
+        Shawn Guo <shawnguo@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/z2GPRudiTG2ojiDC.vmefTv
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Sun, Jan 10, 2021 at 7:16 PM Fabian Vogt <fabian@ritter-vogt.de> wrote:
+> Am Samstag, 9. Januar 2021, 23:20:48 CET schrieb Arnd Bergmann:
+> > On Sat, Jan 9, 2021 at 1:06 AM Daniel Tang <dt.tangr@gmail.com> wrote:
 
-Hi all,
+> > > * nspire -- added in 2013, no notable changes after 2015
+>
+> Most of the platform is just the DT sources and some small drivers around it,
+> so it's actually fairly low maintenance. So far the migration away from
+> panel-simple in 2019
+> (https://lore.kernel.org/linux-arm-kernel/20190805085847.25554-1-linus.walleij@linaro.org)
+> was the biggest required change so far.
 
-After merging the scsi-fixes tree, today's linux-next build (KCONFIG_NAME)
-produced this warning:
+What we're seeing here is actually a port that is:
+- Finished
+- Has a complete set of working drivers
+- Supported
+- Just works
 
-Documentation/ABI/testing/sysfs-driver-ufs:915: WARNING: Malformed table.
-Text in column margin in table line 15.
+I.e. it doesn't see much patches because it is pretty much perfect.
 
-=3D=3D  =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D
-0   UFS device will stay active, UIC link will
-    stay active
-1   UFS device will stay active, UIC link will
-    hibernate
-2   UFS device will be moved to sleep, UIC link will
-    stay active
-3   UFS device will be moved to sleep, UIC link will
-    hibernate
-4   UFS device will be powered off, UIC link will
-    hibernate
-5   UFS device will be powered off, UIC link will
-    be powered off
-6   UFS device will be moved to deep sleep, UIC link
-will be powered off. Note, deep sleep might not be
-supported in which case this value will not be accepted
-=3D=3D  =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D
-Documentation/ABI/testing/sysfs-driver-ufs:956: WARNING: Malformed table.
-Text in column margin in table line 15.
+We are so unused to this situation that it can be mistaken for
+the device being abandoned.
 
-=3D=3D  =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D
-0   UFS device will stay active, UIC link will
-    stay active
-1   UFS device will stay active, UIC link will
-    hibernate
-2   UFS device will be moved to sleep, UIC link will
-    stay active
-3   UFS device will be moved to sleep, UIC link will
-    hibernate
-4   UFS device will be powered off, UIC link will
-    hibernate
-5   UFS device will be powered off, UIC link will
-    be powered off
-6   UFS device will be moved to deep sleep, UIC link
-will be powered off. Note, deep sleep might not be
-supported in which case this value will not be accepted
-=3D=3D  =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D
+I think it was Russell who first pointed out that this is actually
+the case for a few machines.
 
-Introduced by commit
+> > Would either of you already have a guess for how long it makes
+> > sense to update kernels on it?
+> >
+> > I see that this is one of the more limited platforms with just 32MB
+> > of RAM (64MB in case of CX), and kernels only get more bloated over
+> > time, so I expect at some point you will be stuck with running old
+> > software.
+>
+> The kernel overhead isn't actually that bad. I just built today's 2ff90100ace8
+> and booted it with a busybox-based initrd. free -m reports:
+> total used free shared buffers
+>    58   12   46      0       0
+>
+> Relatively speaking, still mostly unused ;-) The stock OS actually uses more!
+> With 32MiB, the situation is definitely worse, but still manageable. Should
+> that change in the future, dropping just the Classic/CM variants would be a
+> possible option, but that still seems far enough away.
 
-  0b2894cd0fdf ("scsi: docs: ABI: sysfs-driver-ufs: Add DeepSleep power mod=
-e")
+64 MB is perfectly fine to run Linux. OpenWrt-type distributions (also
+OpenEmbedded/YOCTO) run just fine with that. 32 MB certainly works.
+For example this is the Gemini D-Link DNS-313 which is my NAS
+and works perfectly on 64MB:
 
---=20
-Cheers,
-Stephen Rothwell
+root@DNS-313:~# free -m
+              total        used        free      shared  buff/cache   available
+Mem:          56136       21032       28612           0        6492       23812
+Swap:        131128        1280      129848
 
---Sig_/z2GPRudiTG2ojiDC.vmefTv
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+Not even using the fallback swap.
 
------BEGIN PGP SIGNATURE-----
+I can add that at the time it is syncing a backup AND playing back
+a 1080p movie over SMB. The trick is using ksmbd rather than
+Samba. ksmbd is much less memory-intensive.
 
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl/7ckEACgkQAVBC80lX
-0GxDpQf9Fd3VDgJ4Zi6/2x5q/bgrs/dIzJ6nZ4kRiiKiq7Br+QaMiwf5rZ8cVs7x
-5PlSfM/STTzL5Xd6zkImmP6qTEtl9+Zl90oRD0c2+9GTnUh3REEWSXqDIhMzbCsb
-/xvQ7G9NXro+KCu5wDSW4fD8gbvmrpVrfNJaO8ZWr10u+1JzPt+At2anOofOdR9W
-hYkxjRsoOvibHZmBLgiC3uGKTL9EbvcYaQhDaSj6heYqJGE84VPV+r/JJ6cxUsyc
-FVptUw+EKFZ2Q2q4LmSsJK/FVNrA2OgINdnHEqqHJe2BSuzxvV3LRLL8rkZwfA55
-TiGQLOqxkglS2o//jinFMavobs1k4Q==
-=+j4T
------END PGP SIGNATURE-----
+I like to use this device for NAS since it is good at I/O, stable,
+maintained by myself and JustWorks(TM).
 
---Sig_/z2GPRudiTG2ojiDC.vmefTv--
+Yours,
+Linus Walleij
