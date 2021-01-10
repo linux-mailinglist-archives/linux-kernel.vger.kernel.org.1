@@ -2,107 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 544502F096D
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Jan 2021 20:53:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8AB232F098F
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Jan 2021 20:56:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726995AbhAJTwa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Jan 2021 14:52:30 -0500
-Received: from vps0.lunn.ch ([185.16.172.187]:60236 "EHLO vps0.lunn.ch"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726608AbhAJTw3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Jan 2021 14:52:29 -0500
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
-        (envelope-from <andrew@lunn.ch>)
-        id 1kygkT-00HMyn-Ut; Sun, 10 Jan 2021 20:51:37 +0100
-Date:   Sun, 10 Jan 2021 20:51:37 +0100
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Baruch Siach <baruch@tkos.co.il>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Daniel Tang <dt.tangr@gmail.com>,
-        Jamie Iles <jamie@jamieiles.com>,
-        Krzysztof Adamski <krzysztof.adamski@nokia.com>,
-        Alexander Shiyan <shc_work@mail.ru>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Russell King - ARM Linux <linux@armlinux.org.uk>,
-        Wei Xu <xuwei5@hisilicon.com>,
-        Oleksij Rempel <o.rempel@pengutronix.de>,
-        Alex Elder <elder@linaro.org>,
-        Marc Gonzalez <marc.w.gonzalez@free.fr>,
-        Hans Ulli Kroll <ulli.kroll@googlemail.com>,
-        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Vladimir Zapolskiy <vz@mleia.com>,
-        Lubomir Rintel <lkundrak@v3.sk>,
-        Koen Vandeputte <koen.vandeputte@ncentric.com>,
-        Barry Song <song.bao.hua@hisilicon.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Jonas Jensen <jonas.jensen@gmail.com>,
-        Hartley Sweeten <hsweeten@visionengravers.com>,
-        Mark Salter <msalter@redhat.com>,
-        Shawn Guo <shawnguo@kernel.org>
-Subject: Re: Old platforms: bring out your dead
-Message-ID: <X/tayUwdMuhmuo+n@lunn.ch>
-References: <CAK8P3a2VW8T+yYUG1pn1yR-5eU4jJXe1+M_ot6DAvfr2KyXCzQ@mail.gmail.com>
- <X/o4VZzW4m77AYDB@lunn.ch>
- <CAK8P3a3kg1u3QVj1JS92Js7ZO9HvgDfzBtEbN4HULpNfNEJfoA@mail.gmail.com>
- <X/svb+7x15IiVxU5@lunn.ch>
- <CAK8P3a3zkUjiQzscX5TH_PH9HhNEMa59soQ4gD7aX1fWJOBt6Q@mail.gmail.com>
+        id S1727011AbhAJTzx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Jan 2021 14:55:53 -0500
+Received: from ssl.serverraum.org ([176.9.125.105]:33175 "EHLO
+        ssl.serverraum.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726841AbhAJTzw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 10 Jan 2021 14:55:52 -0500
+Received: from mwalle01.fritz.box (unknown [IPv6:2a02:810c:c200:2e91:fa59:71ff:fe9b:b851])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-384) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by ssl.serverraum.org (Postfix) with ESMTPSA id 81AA422173;
+        Sun, 10 Jan 2021 20:55:04 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
+        t=1610308510;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=xxgr1U2SPitktG1AOG/i/NYvIJpQy1DOR0GalCHtc/E=;
+        b=liAJRdhLENn7CI+/y2c9vewRC2wF2QsN1bYf97JPlfNrUH98KZiHaxM1xAa6CR06/NjbQ5
+        aIxaD4uTFC6z3aUEvGSNLn84JfLW5RcLbvR2Ti7UH8qZL+tV+Yquk9+Db/FXqb1MGYvql0
+        p/3evR0nqhVr5pZ0poENWvzYidu57j4=
+From:   Michael Walle <michael@walle.cc>
+To:     linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Shawn Guo <shawnguo@kernel.org>, Li Yang <leoyang.li@nxp.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Michael Walle <michael@walle.cc>
+Subject: [PATCH 0/2] arm64: small Kontron K-Box A-230-LS fixes
+Date:   Sun, 10 Jan 2021 20:54:52 +0100
+Message-Id: <20210110195454.27808-1-michael@walle.cc>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAK8P3a3zkUjiQzscX5TH_PH9HhNEMa59soQ4gD7aX1fWJOBt6Q@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
+X-Spam: Yes
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jan 10, 2021 at 06:27:12PM +0100, Arnd Bergmann wrote:
-> On Sun, Jan 10, 2021 at 5:48 PM Andrew Lunn <andrew@lunn.ch> wrote:
-> >
-> > > For this platform, I'm most interested in whether there are still users
-> > > that rely on board files instead of DT. AFAIU we could just fold
-> > > the DT variant into arch-mvebu like kirkwood was, right?
-> >
-> > Hi Arnd
-> >
-> > I'm actually booting my device using a board file. But Debian
-> > flash-kernel is pretty unhappy about that. The bootloader i have on
-> > this machine is too old to passed DT blob. I will test appended DT
-> > blob still works. And see if we have any board files which also don't
-> > have a DT representation.
- 
-Hi Arnd
+This will enable the driver for the PHY found on this board as well as
+add SATA support.
 
-Appended DT works fine for my device.
+Michael Walle (2):
+  arm64: defconfig: Enable Broadcom BCM54140 PHY
+  arm64: dts: freescale: sl28: enable SATA support
 
-> It may help to ask for these at
-> https://github.com/1000001101000/Debian_on_Buffalo/,
+ .../boot/dts/freescale/fsl-ls1028a-kontron-kbox-a-230-ls.dts  | 4 ++++
+ arch/arm64/configs/defconfig                                  | 1 +
+ 2 files changed, 5 insertions(+)
 
-Thanks for the link.
+-- 
+2.20.1
 
-I looked at the remaining board files and i'm cooking up a set of
-patches. I don't see any reason to keep the Marvell reference designs
-around, especially since one has been converted to DT and gives a good
-example how the others could be converted.
-
-The two WiFi devices have been dropped by OpenWRT, too little
-RAM/FLASH. OpenWRT seems like the most likely downstream user, so if
-they have given up supporting them, i think it is safe for mainline to
-drop them.
-
-I checked with the ts78xx Maintainer and he says we can drop that.
-
-Kurobox Pro has a DTS file, so i've dropped to board file.
-
-What is left are NAS boxes. The low FLASH is not really an issue for
-them, they can run with the OS on the disk. And they are the sort of
-device which does have a long life.
-
-       Andrew
