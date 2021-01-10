@@ -2,103 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E45632F0733
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Jan 2021 13:33:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 88BA32F0737
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Jan 2021 13:35:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726418AbhAJMdL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Jan 2021 07:33:11 -0500
-Received: from mail-yb1-f178.google.com ([209.85.219.178]:46541 "EHLO
-        mail-yb1-f178.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726069AbhAJMdK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Jan 2021 07:33:10 -0500
-Received: by mail-yb1-f178.google.com with SMTP id f6so14142972ybq.13;
-        Sun, 10 Jan 2021 04:32:55 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Xf9Y4Sd28497N8HdTJIQDbuhCrniQEwtSYEyz2FWEz8=;
-        b=RZM/oP18fqdYa7nUKAWFDEv6/1UXHqaObz6ZCkSHGPc0fCdG4bYMZl+SaQc1ekoYag
-         OkTlWuVK9/Gzw73OJJyTNkdpNez2Z9KrCzn847kAKF3cR0Q/ivNaPPAxuXZtEjRCyt5P
-         dP8Zrx2jGMz7hyCO7rVimQSVig5Sx2wq6ZrI4D7OY8wNMYO+p0FpRZaRMWomlNS27eSf
-         FoP9uUxxf4ZGewK2+iGR/tdMDUf6Q/6qo04OP452zYIpQ/YjVVNHlAGBlaKKmwzzficw
-         pfR6jMlkpiiGvbVjEvHlAc0YPXHjwvCDX/MEJ2O5tfuN8j25B0ZGzJO+16iDsQzFj218
-         UDNQ==
-X-Gm-Message-State: AOAM533jvG2gXBLlRSzc3X7Eo7XT71IDRNxbFYWfessXYnvwdOB0JKOs
-        AZT8P/MjjvenpbCuhuXzSGNHLc5NC7wcelKobum2qLyHwEZ3zA==
-X-Google-Smtp-Source: ABdhPJz2oeOyrvoUsKuLg9Bll0qpGCHxUqcgyHH+cOjcuPjB9q0ZnRE4Wq1BI5YBMbaQuBU99uJ8zcnKgcZQocltLO8=
-X-Received: by 2002:a25:4744:: with SMTP id u65mr19439144yba.239.1610281949723;
- Sun, 10 Jan 2021 04:32:29 -0800 (PST)
+        id S1726460AbhAJMfW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Jan 2021 07:35:22 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54066 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726142AbhAJMfV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 10 Jan 2021 07:35:21 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 33CAD229C7;
+        Sun, 10 Jan 2021 12:34:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1610282081;
+        bh=dQmMkxPxNUhQmCqd+MQpR7iMNocKWEFH3dWqe7unvuI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=I8xtN8+OxQHvG6C9lRCLabJdFOXWiM6LjqMQAZ4Rezvt/ny4Eb/5iteztCrcgIJ30
+         xlFzfoo35AfGFn95E1tXCDnMPgwV3zEY1Et08BWE7JDpEGeb9O+o7YgNcp5YMrco0E
+         5Oo2lfYR1BxLFduW3Jsr2E3QgQn/u/OyaH/crNYyqeGO2yC/zfM5IqOqx9a9pnp7xN
+         p2QpiW5eBvgZe8IxJ+7UnLy5j6d0H9/+8ZrQbx3ZTyQ3Z4cAMYopoFIyLXaAqq6SRm
+         GgeDyK+lXKKilUY6HDLzEACDS3yBGa2vPzK+FU6/7Jn6lP3gsn8DVqM62WiGD3Ak2K
+         c0YmTdDjswdhQ==
+Date:   Sun, 10 Jan 2021 20:34:35 +0800
+From:   Shawn Guo <shawnguo@kernel.org>
+To:     Adam Ford <aford173@gmail.com>
+Cc:     linux-arm-kernel@lists.infradead.org, aford@beaconembedded.com,
+        Rob Herring <robh+dt@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] ARM: dts: imx6q-logicpd: Drop unused clock-names
+ reference
+Message-ID: <20210110123434.GN28365@dragon>
+References: <20201217172530.1459503-1-aford173@gmail.com>
 MIME-Version: 1.0
-References: <20210110103526.61047-1-mailhol.vincent@wanadoo.fr>
- <20210110103526.61047-2-mailhol.vincent@wanadoo.fr> <043c3ea1-6bdd-59c0-0269-27b2b5b36cec@victronenergy.com>
-In-Reply-To: <043c3ea1-6bdd-59c0-0269-27b2b5b36cec@victronenergy.com>
-From:   Vincent MAILHOL <mailhol.vincent@wanadoo.fr>
-Date:   Sun, 10 Jan 2021 21:32:18 +0900
-Message-ID: <CAMZ6RqKL62wR5KRRJgy8fiEHSKCQvP7CJFdR1=8MPh4_3pMq_A@mail.gmail.com>
-Subject: Re: [PATCH 1/1] can: dev: add software tx timestamps
-To:     Jeroen Hofstee <jhofstee@victronenergy.com>
-Cc:     Marc Kleine-Budde <mkl@pengutronix.de>,
-        linux-can <linux-can@vger.kernel.org>,
-        Wolfgang Grandegger <wg@grandegger.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "open list:NETWORKING DRIVERS" <netdev@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201217172530.1459503-1-aford173@gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Jeroen,
+On Thu, Dec 17, 2020 at 11:25:28AM -0600, Adam Ford wrote:
+> The wlf,wm8962 driver does not use the clock-names property.
+> Drop it.
+> 
+> Signed-off-by: Adam Ford <aford173@gmail.com>
 
-On Sun. 10 Jan 2021 at 20:29, Jeroen Hofstee <jhofstee@victronenergy.com> wrote:
->
-> Hello Vincent,
->
-> On 1/10/21 11:35 AM, Vincent Mailhol wrote:
-> > Call skb_tx_timestamp() within can_put_echo_skb() so that a software
-> > tx timestamp gets attached on the skb.
-> >
-> [..]
-> >
-> > diff --git a/drivers/net/can/dev.c b/drivers/net/can/dev.c
-> > index 3486704c8a95..3904e0874543 100644
-> > --- a/drivers/net/can/dev.c
-> > +++ b/drivers/net/can/dev.c
-> > @@ -484,6 +484,8 @@ int can_put_echo_skb(struct sk_buff *skb, struct net_device *dev,
-> >
-> >               /* save this skb for tx interrupt echo handling */
-> >               priv->echo_skb[idx] = skb;
-> > +
-> > +             skb_tx_timestamp(skb);
-> >       } else {
-> >               /* locking problem with netif_stop_queue() ?? */
-> >               netdev_err(dev, "%s: BUG! echo_skb %d is occupied!\n", __func__, idx);
->
-> Personally, I would put the skb_tx_timestamp, before adding it to the array:
->
->          /* make settings for echo to reduce code in irq context */
->          skb->pkt_type = PACKET_BROADCAST;
->          skb->ip_summed = CHECKSUM_UNNECESSARY;
->          skb->dev = dev;
-> +       skb_tx_timestamp(skb);
->
->          /* save this skb for tx interrupt echo handling */
->          priv->echo_skb[idx] = skb;
-
-I agree that it is better like that from an aesthetic point of
-view. The reason to put it at the very end was to really to
-blindly follow the doc and do the timestamp as late as possible.
-
->
-> I don't think it actually matters though.
-
-Indeed, but will still follow your suggestion though. Putting it
-before would just delay the timestamp by a few assembly
-instructions: it is negligible enough.
-
-
-Yours sincerely,
-Vincent Mailhol
+Applied both, thanks.
