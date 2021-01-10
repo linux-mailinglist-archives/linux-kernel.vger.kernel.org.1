@@ -2,109 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3EAD2F09B6
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Jan 2021 21:31:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AC6392F09B7
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Jan 2021 21:35:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726608AbhAJUbM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Jan 2021 15:31:12 -0500
-Received: from conssluserg-06.nifty.com ([210.131.2.91]:45037 "EHLO
-        conssluserg-06.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726267AbhAJUbM (ORCPT
+        id S1726768AbhAJUeK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Jan 2021 15:34:10 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33942 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726263AbhAJUeJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Jan 2021 15:31:12 -0500
-Received: from mail-pl1-f177.google.com (mail-pl1-f177.google.com [209.85.214.177]) (authenticated)
-        by conssluserg-06.nifty.com with ESMTP id 10AKU7bt014421;
-        Mon, 11 Jan 2021 05:30:08 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-06.nifty.com 10AKU7bt014421
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1610310608;
-        bh=AhCDVhmRfaca1ufeJsiXcwnl8shZXxBKRbDxaNWQgUk=;
-        h=From:Date:Subject:To:Cc:From;
-        b=g+b2H1miGo5Kb8gA/lbD9Fi41aukFhx57sJbEFZ31E26N0Xg/pDHFT5mv8Z/m5pdE
-         zUXClqDBpfRXwtfZgm5ZE4wncZswx4Bq1lPtx6YwLe5F1Iiw3HykqiKwFjVtTa8Nv+
-         MYj71WowDzoDrlCV3BVBwdz+ipTVxkEWRpgnhWJOqg5excjCB6sgPaJgEwwVVm1Sz+
-         IULvY+YGsQPlfEHZZ4PrY8nOOUoUept6wQigiRgccX66nPH01/mlanx8//R2tYX3lz
-         Abvr3WKOJV9Rdzs1krxdM8M7M97sZTI012DgBQJgQsOd9Af7XO+K+RtEK+Bdf/t2gG
-         713pzGxnW/mVQ==
-X-Nifty-SrcIP: [209.85.214.177]
-Received: by mail-pl1-f177.google.com with SMTP id be12so8417637plb.4;
-        Sun, 10 Jan 2021 12:30:08 -0800 (PST)
-X-Gm-Message-State: AOAM531eseqtKrPZ4S/TkFqGkRV+WqL67hMpAE31I4Eq8VbplkqPHYbV
-        IbKFkmAteLNQQj606o80LLM+yUJh6im5qK/UedQ=
-X-Google-Smtp-Source: ABdhPJyL7Uqs5OEcmW3q93ue0CTf+DEZmz9j/SDnbl/t+kvhKofQYJ2rzKNKMlqlDLdiPAI5qspAgzJ5lUW+6DVOlxw=
-X-Received: by 2002:a17:902:b415:b029:dc:42b1:9b26 with SMTP id
- x21-20020a170902b415b02900dc42b19b26mr13420259plr.71.1610310607343; Sun, 10
- Jan 2021 12:30:07 -0800 (PST)
+        Sun, 10 Jan 2021 15:34:09 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27813C061786
+        for <linux-kernel@vger.kernel.org>; Sun, 10 Jan 2021 12:33:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description;
+        bh=bzliTk+pD/abvOFgeWFHUrCNiv7v6oE0Jq+wzAicleU=; b=SmUMYOKtWwCu2E+oKe1i5FMDNi
+        MgChyh5CNa1cnjeoeYccApfllv7qjfuA7oDlXFM7SIelYu5DnFupu3L2z5IrSTxEFKt9vu91R1J1k
+        UFXFMpl6GG28hZEpM7B3cB0drbgp0DHkZFLFRIU8DMcErvaWcvZopV6+k/Z3GxXGQQpYinkM5QioJ
+        7mJDbDIckSputPFqUKtgogkOHWizV3iVdX/LQwXhchjw/4xTGdUXgWPgkNEu+PW/kr5Ao2D0l6qaz
+        iwUz4aciXbCOOcEq4Dq9lFj+TN3mO+hBfUOY78IuUZ8wx3H2UJPkKpI3Y8viID3lFSWTcPT8NmQFr
+        MUrjSn8w==;
+Received: from [2601:1c0:6280:3f0::79df]
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kyhOu-0006HN-Rl; Sun, 10 Jan 2021 20:33:26 +0000
+Subject: Re: [PATCH] scripts: mod: fix checkpatch.pl warnings
+To:     Dwaipayan Ray <dwaipayanray1@gmail.com>, masahiroy@kernel.org,
+        michal.lkml@markovi.net
+Cc:     lukas.bulwahn@gmail.com,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        linux-kernel@vger.kernel.org
+References: <20210110185702.111538-1-dwaipayanray1@gmail.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <b11b1e50-bc2a-0037-1f51-fb69300206b1@infradead.org>
+Date:   Sun, 10 Jan 2021 12:33:17 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Mon, 11 Jan 2021 05:29:30 +0900
-X-Gmail-Original-Message-ID: <CAK7LNAR6zJnAo7KwdeghJZk8x8BivXWb2F5Gpxb90LDgP9D4dg@mail.gmail.com>
-Message-ID: <CAK7LNAR6zJnAo7KwdeghJZk8x8BivXWb2F5Gpxb90LDgP9D4dg@mail.gmail.com>
-Subject: [GIT PULL] Kbuild fixes for v5.11-rc3
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210110185702.111538-1-dwaipayanray1@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+Hi,
 
-Please pull some Kbuild fixes for v5.11-rc3
-Thanks.
+On 1/10/21 10:57 AM, Dwaipayan Ray wrote:
+> Fix the following warnings in file2alias reported by
+> checkpatch:
+> 
+> CHECK: spaces preferred around that '*' (ctx:WxV)
+> CHECK: spaces preferred around that '+' (ctx:VxV)
+> CHECK: spaces preferred around that '-' (ctx:VxV)
+> CHECK: spaces preferred around that '&' (ctx:VxV)
+> CHECK: braces {} should be used on all arms of this statement
+> CHECK: Unbalanced braces around else statement
+> CHECK: Alignment should match open parenthesis
+> CHECK: Logical continuations should be on the previous line
+> WARNING: Prefer 'unsigned int' to bare use of 'unsigned'
+> WARNING: Missing a blank line after declarations
+> WARNING: please, no spaces at the start of a line
+> WARNING: Block comments use a trailing */ on a separate line
+> ERROR: spaces required around that '<' (ctx:VxV)
+> ERROR: spaces required around that '=' (ctx:VxV)
+> ERROR: space required after that ',' (ctx:VxV)
+> ERROR: space prohibited before that close parenthesis ')'
+> ERROR: code indent should use tabs where possible
+> ERROR: "(foo*)" should be "(foo *)"
+> 
+> Signed-off-by: Dwaipayan Ray <dwaipayanray1@gmail.com>
+> ---
+> 
+> Note: The patch is compile tested only
+
+Couldn't you at least do a kernel build that builds some
+loadable kernel modules?
+
+Also you could/should tell us if the before and after .o file
+is the same and if not, why not.
+
+> ll file2alias*
+-rw-r--r-- 1 rdunlap users 39536 Jan 10 12:10 file2alias.o
+-rw-r--r-- 1 rdunlap users 39536 Jan  8 10:06 file2alias.o.b4
+
+> cmp file2alias*
+>
+
+Yes, they are the same.
+ 
+>  scripts/mod/file2alias.c | 156 +++++++++++++++++++++------------------
+>  1 file changed, 83 insertions(+), 73 deletions(-)
 
 
+Looks OK to me.
 
-The following changes since commit e71ba9452f0b5b2e8dc8aa5445198cd9214a6a62:
+Acked-by: Randy Dunlap <rdunlap@infradead.org>
 
-  Linux 5.11-rc2 (2021-01-03 15:55:30 -0800)
+-- 
+~Randy
 
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/masahiroy/linux-kbuild.git
-tags/kbuild-fixes-v5.11
-
-for you to fetch changes up to 5625dcfbbcf892e40e8d60abbb5f56701a1d031c:
-
-  Documentation: kbuild: Fix section reference (2021-01-11 05:14:38 +0900)
-
-----------------------------------------------------------------
-Kbuild fixes for v5.11
-
- - Search for <ncurses.h> in the default header path of HOSTCC
-
- - Tweak the option order to be kind to old BSD awk
-
- - Remove 'kvmconfig' and 'xenconfig' shorthands
-
- - Fix documentation
-
-----------------------------------------------------------------
-John Millikin (2):
-      kconfig: Support building mconf with vendor sysroot ncurses
-      lib/raid6: Let $(UNROLL) rules work with macOS userland
-
-Lukas Bulwahn (1):
-      MAINTAINERS: adjust GCC PLUGINS after gcc-plugin.sh removal
-
-Masahiro Yamada (1):
-      kconfig: remove 'kvmconfig' and 'xenconfig' shorthands
-
-Randy Dunlap (1):
-      kconfig: config script: add a little user help
-
-Viresh Kumar (1):
-      Documentation: kbuild: Fix section reference
-
- Documentation/kbuild/makefiles.rst |  2 +-
- MAINTAINERS                        |  1 -
- lib/raid6/Makefile                 |  2 +-
- scripts/config                     |  1 +
- scripts/kconfig/Makefile           | 10 ----------
- scripts/kconfig/mconf-cfg.sh       |  4 +++-
- 6 files changed, 6 insertions(+), 14 deletions(-)
-
---
-Best Regards
-Masahiro Yamada
