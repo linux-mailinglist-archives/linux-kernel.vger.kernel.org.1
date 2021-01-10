@@ -2,105 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 64B8C2F0836
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Jan 2021 16:54:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 72E512F0839
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Jan 2021 16:59:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726742AbhAJPxt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Jan 2021 10:53:49 -0500
-Received: from perceval.ideasonboard.com ([213.167.242.64]:36128 "EHLO
-        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726263AbhAJPxt (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Jan 2021 10:53:49 -0500
-Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id C1BB2DA;
-        Sun, 10 Jan 2021 16:53:06 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1610293986;
-        bh=mdp/42K9ju2NRuvkRPWyCbi9pUrRQdaXR83ukN6BuR4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=RMfhimpuuC7SP/wI7LlPTD3bHKeXEmS/cbmxHGPjZ2rAxeSMC+O4MIykKQlGnvoMU
-         JTQUO005IfZxaEQ5jJR7xcvCJqFdgWEkX0SNOb+huNeu4OXsbit3or9Smd2I5qFwWT
-         kfW8ZFdH5VyHZPARmUtGIXp/FXQJd6w6pkUenk40=
-Date:   Sun, 10 Jan 2021 17:52:52 +0200
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Petr Mladek <pmladek@suse.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Daniel Scally <djrscally@gmail.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-acpi@vger.kernel.org" <linux-acpi@vger.kernel.org>,
-        "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
-        "devel@acpica.org" <devel@acpica.org>,
-        "rjw@rjwysocki.net" <rjw@rjwysocki.net>,
-        "lenb@kernel.org" <lenb@kernel.org>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "mchehab@kernel.org" <mchehab@kernel.org>,
-        "yong.zhi@intel.com" <yong.zhi@intel.com>,
-        "sakari.ailus@linux.intel.com" <sakari.ailus@linux.intel.com>,
-        "bingbu.cao@intel.com" <bingbu.cao@intel.com>,
-        "tian.shu.qiu@intel.com" <tian.shu.qiu@intel.com>,
-        "robert.moore@intel.com" <robert.moore@intel.com>,
-        "erik.kaneda@intel.com" <erik.kaneda@intel.com>,
-        "andriy.shevchenko@linux.intel.com" 
-        <andriy.shevchenko@linux.intel.com>,
-        "linux@rasmusvillemoes.dk" <linux@rasmusvillemoes.dk>,
-        "laurent.pinchart+renesas@ideasonboard.com" 
-        <laurent.pinchart+renesas@ideasonboard.com>,
-        "jacopo+renesas@jmondi.org" <jacopo+renesas@jmondi.org>,
-        "kieran.bingham+renesas@ideasonboard.com" 
-        <kieran.bingham+renesas@ideasonboard.com>,
-        "hverkuil-cisco@xs4all.nl" <hverkuil-cisco@xs4all.nl>,
-        "m.felsch@pengutronix.de" <m.felsch@pengutronix.de>,
-        "niklas.soderlund+renesas@ragnatech.se" 
-        <niklas.soderlund+renesas@ragnatech.se>,
-        "prabhakar.mahadev-lad.rj@bp.renesas.com" 
-        <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-        "slongerbeam@gmail.com" <slongerbeam@gmail.com>,
-        "heikki.krogerus@linux.intel.com" <heikki.krogerus@linux.intel.com>
-Subject: Re: [PATCH v5 09/15] lib/test_printf.c: Use helper function to
- unwind array of software_nodes
-Message-ID: <X/si1LAnrY1YpKWa@pendragon.ideasonboard.com>
-References: <20210107132838.396641-1-djrscally@gmail.com>
- <20210107132838.396641-10-djrscally@gmail.com>
- <X/kOYeZtkCspoAC5@pendragon.ideasonboard.com>
- <CAHp75VeLiMdzXL3Awhco-w6JwJhZNVao_uj7F6bmuty_aW0SNQ@mail.gmail.com>
- <X/riDXHahRAXCQXC@pendragon.ideasonboard.com>
- <CAHp75VcntC5O8v8Q40Vw1oh9c-2eaq_ZRtjFLo1OFrwfku90Pw@mail.gmail.com>
+        id S1726572AbhAJP5w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Jan 2021 10:57:52 -0500
+Received: from mail.kernel.org ([198.145.29.99]:42774 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726069AbhAJP5v (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 10 Jan 2021 10:57:51 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AF7EF2082D
+        for <linux-kernel@vger.kernel.org>; Sun, 10 Jan 2021 15:57:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1610294230;
+        bh=3FDUH0OSyYgBrcIOyENo5ukLKoMIfT4kZFDXBO5Camk=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=TMVeKiSBpwns74kzt9Nh84lidntW3sLr1Q/n6oXG2RhlviRthpqbaxx11FF6oZwmq
+         bQ1FU58xsDo5n/VvrpjQ0Y+RDYZWmmz52zgcgjRQ18SSomDzqsY04pHBlmFwW+/qJ4
+         /J1jzLbEu435MXDL3yHs6II1ZNjamiR3lQZBUGQmM5Y7NhzBnkzxzjkIQzLFCzaSS0
+         d+ZiJ970fKHIsqnRKfME8nd6vKcAu8C8MdW94WN0eihJc+LibFExbSIy4lDjsBQnEE
+         osk7wCTIEQonRXQvOYPo6kHeIF19QF5GZTpE3Do5akBXV6ih5U1Q4JKS6kf2wkpMwA
+         rBquzE8zUsDMQ==
+Received: by mail-oi1-f179.google.com with SMTP id w124so17569785oia.6
+        for <linux-kernel@vger.kernel.org>; Sun, 10 Jan 2021 07:57:10 -0800 (PST)
+X-Gm-Message-State: AOAM530XliGspflo6DEaLoYB9zdoG7LruGxT8m8sxpdsYT2z8yprX4+F
+        SXhC4zMVrjDtFUOVI9udYPpW8Jy+o7j0xmeHOs0=
+X-Google-Smtp-Source: ABdhPJzknFEC+j7Q9V/sFP4GhccP1jg4uYM43kULqiUljW+KHB4bRWj0SAFfbKNabReOiysIIDmVTZk5oKbTksiGJfQ=
+X-Received: by 2002:aca:e103:: with SMTP id y3mr7761427oig.11.1610294230145;
+ Sun, 10 Jan 2021 07:57:10 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <CAHp75VcntC5O8v8Q40Vw1oh9c-2eaq_ZRtjFLo1OFrwfku90Pw@mail.gmail.com>
+References: <CAK8P3a2VW8T+yYUG1pn1yR-5eU4jJXe1+M_ot6DAvfr2KyXCzQ@mail.gmail.com>
+ <bbeb01ba-c941-9237-0ee5-506d9c276e89@baylibre.com>
+In-Reply-To: <bbeb01ba-c941-9237-0ee5-506d9c276e89@baylibre.com>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Sun, 10 Jan 2021 16:56:53 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a0e63dW0ZCKhOjCHVbh-KsyNHbRhLbsyxtEA-yPMWGbLA@mail.gmail.com>
+Message-ID: <CAK8P3a0e63dW0ZCKhOjCHVbh-KsyNHbRhLbsyxtEA-yPMWGbLA@mail.gmail.com>
+Subject: Re: Old platforms: bring out your dead
+To:     Neil Armstrong <narmstrong@baylibre.com>
+Cc:     Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Krzysztof Adamski <krzysztof.adamski@nokia.com>,
+        Oleksij Rempel <o.rempel@pengutronix.de>,
+        Baruch Siach <baruch@tkos.co.il>,
+        Russell King - ARM Linux <linux@armlinux.org.uk>,
+        Daniel Tang <dt.tangr@gmail.com>,
+        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>, Jamie Iles <jamie@jamieiles.com>,
+        Barry Song <song.bao.hua@hisilicon.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Jonas Jensen <jonas.jensen@gmail.com>,
+        Marc Gonzalez <marc.w.gonzalez@free.fr>,
+        Hartley Sweeten <hsweeten@visionengravers.com>,
+        Lubomir Rintel <lkundrak@v3.sk>,
+        Shawn Guo <shawnguo@kernel.org>, Alex Elder <elder@linaro.org>,
+        Alexander Shiyan <shc_work@mail.ru>,
+        Koen Vandeputte <koen.vandeputte@ncentric.com>,
+        Hans Ulli Kroll <ulli.kroll@googlemail.com>,
+        Vladimir Zapolskiy <vz@mleia.com>,
+        Wei Xu <xuwei5@hisilicon.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Mark Salter <msalter@redhat.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jan 10, 2021 at 05:38:03PM +0200, Andy Shevchenko wrote:
-> On Sun, Jan 10, 2021 at 1:16 PM Laurent Pinchart wrote:
-> > On Sat, Jan 09, 2021 at 11:07:33AM +0200, Andy Shevchenko wrote:
-> > > On Saturday, January 9, 2021, Laurent Pinchart wrote:
-> > > > Could you please let us know if you're fine with this patch getting
-> > > > merged in v5.12 through the linux-media tree ? The cover letter contains
-> > > > additional details (in a nutshell, this is a cross-tree series and we
-> > > > would like to avoid topic branches if possible).
-> > >
-> > > There is already a tag by Petr.
-> >
-> > I saw that, but looking at the corresponding e-mail, there was no clear
-> > acknowledgement that we could merge this patch through a different tree.
-> 
-> Fair point.
-> 
-> One question though, what so wrong with topic branches.
+On Sun, Jan 10, 2021 at 4:51 PM Neil Armstrong <narmstrong@baylibre.com> wr=
+ote:
+>
+> Hi Arnd,
+>
+> Le 08/01/2021 =C3=A0 23:55, Arnd Bergmann a =C3=A9crit :
+> > After v5.10 was officially declared an LTS kernel, I had a look around
+> > the Arm platforms that look like they have not seen any patches from
+> > their maintainers or users that are actually running the hardware for
+> > at least five years (2015 or earlier). I made some statistics and lists
+> > for my lwn.net article last year [1], so I'd thought I'd share a summar=
+y
+> > here for discussion about what we should remove. As I found three
+> > years ago when I removed several CPU architectures, it makes sense
+> > to do this in bulk, to simplify a scripted search for device drivers, h=
+eader
+> > files and Kconfig options that become unused in the process.
+>
+> ...
+>
+> > * oxnas -- added in 2016, but already old then, few changes later
+>
+> There is still active users in the openwrt community, so it would be good=
+s to keep it for now.
+> And we have an OX820 board in KerneCI so it's still maintained & boot-tes=
+ted.
 
-They're not wrong, they just add more complexity as all maintainers
-involved would need to create a topic branch based on v5.11-rc1 and
-merge it in their respective tree. It's certainly doable, but when
-there's no risk of conflict, merging the whole series through a single
-tree is just easier.
+Ok, taken off the list now.
 
--- 
-Regards,
+Thanks for the clarification,
 
-Laurent Pinchart
+      Arnd
