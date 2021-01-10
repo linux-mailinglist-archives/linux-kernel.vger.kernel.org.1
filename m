@@ -2,123 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 48BED2F0613
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Jan 2021 09:50:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D2B9D2F0616
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Jan 2021 09:56:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726691AbhAJIst (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Jan 2021 03:48:49 -0500
-Received: from esa4.hgst.iphmx.com ([216.71.154.42]:62862 "EHLO
-        esa4.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725956AbhAJIss (ORCPT
+        id S1726541AbhAJIz1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Jan 2021 03:55:27 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54736 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725807AbhAJIz1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Jan 2021 03:48:48 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1610268528; x=1641804528;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=dKUH/8eT9WQR0MY/ea171yF0916vthqpVDusouW2ttM=;
-  b=eKRBFnddKUzezpG/FoiWFML/wtyg+1QN2WAE07iV1dFtth07eq5Hz148
-   LLUGnS/yyLV1HNoa+ngesAlpRJ7maQO5RuUn/9u2xGZeYFcCfmzuhio1i
-   VE9DJQhwvzCwRkMpTjn42aWa2OaoACXiWT5jL4L49+5sWMjQHswsPlRba
-   6Tnkosyi8woSYwzaS7UuqNcihS/7myVa9//Lara/WdX1AAbGCoEEeIpZn
-   Y0q9iwSVWUVVwMBvQRQddcxVhZm58yhQ13Y1+iXBcGWZDkGUAJQ/fr15B
-   dWxSkkhByTkTGQR/oYdnASwyR0dtGmvOGY2JcLSVVH+PYYqKNcckazn9V
-   A==;
-IronPort-SDR: M2wKaD1CsD/zAcUpiRB6mDelBGREH+a8duMEA75TRVPTh7HmrteIKO+ubevW2epTbbWSOlv/Q9
- 0TByeSXuxaAV7LI72IV2SN5dTJu9tO6rF1KpCPRaB28S2FeCEcmr4BK1gK71PvcW+7oCwGu+So
- gpqGphV+ApjVA/z1wFOaw/2qTzLHHqhywuy8gSEJ0SXaku9OldSgmw3jJOCdou6YCeg5CnyGkd
- Ei0Fkq9Pe7Ce+9pWu7m/jK3aGvtURCy8a0jm56L/JK7rGkzcb3vB5Eb3U2XoOMPh7NUq7An36R
- cTY=
-X-IronPort-AV: E=Sophos;i="5.79,336,1602518400"; 
-   d="scan'208";a="157073250"
-Received: from h199-255-45-14.hgst.com (HELO uls-op-cesaep01.wdc.com) ([199.255.45.14])
-  by ob1.hgst.iphmx.com with ESMTP; 10 Jan 2021 16:47:42 +0800
-IronPort-SDR: LfukvEU8b7Y6QTxisfAN4R6YzV/MjGf0v/E+3UV0O8Aa8ZbGKTcUQPtan5Y7QeAcsVBacdf7YC
- NPBxR+ezUs3TxMOAazEEJIKII5huzZhs/vH+CYD35N4sa0BGk+kn4xXZWDjnPryuEg9Fvy2nkT
- BOkRyqJRw6sm87I+h6oSLdefGZVjHZ4V3neQBFHoJvhb9DumHF0YhfOTpRv2R6R+w34t3+r/W7
- sX7mZxR8EaLHsCiTdz47rESiscxDp5LWA1YEkCO72xNPwJGZebtSzkli7TY5Iv7pzFhWzSjzxP
- 43N+Bzds+ZwNceIkHdqbmm0+
-Received: from uls-op-cesaip02.wdc.com ([10.248.3.37])
-  by uls-op-cesaep01.wdc.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Jan 2021 00:32:30 -0800
-IronPort-SDR: aUZQyilq4s1FIoH7A4y9sJ/FCZrPEAnv0f5ZO/+X6EZwJu9tRIAXM0tyWL/LZX89zS9GR0Ni0j
- CEPVbcORn06k9gmdGEWLn1Bob21+LI9RgjUZokkk8ueuAISCBi7A6ZjQ5I8jPhXgHFzYwI7AuN
- ZAteFu/+qrcY4i5zM7lR/ExrXsqh2JOqfAYSuQc8EkfXKegAMjH9o3t3Fnb/KFY0DhOchEy+wk
- llLpw8PFoBMC5K2CokpNfp7Hp4wm8wpr/bSLXLTbcq8Szg3KZySopHGcoGRUlIPdi+i1UqSMBP
- 9og=
-WDCIronportException: Internal
-Received: from bxygm33.sdcorp.global.sandisk.com ([10.0.231.247])
-  by uls-op-cesaip02.wdc.com with ESMTP; 10 Jan 2021 00:47:41 -0800
-From:   Avri Altman <avri.altman@wdc.com>
-To:     "James E . J . Bottomley" <jejb@linux.vnet.ibm.com>,
-        "Martin K . Petersen" <martin.petersen@oracle.com>,
-        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     alim.akhtar@samsung.com, Bean Huo <beanhuo@micron.com>,
-        Avri Altman <avri.altman@wdc.com>
-Subject: [PATCH] scsi: ufs: A tad optimization in query upiu trace
-Date:   Sun, 10 Jan 2021 10:46:18 +0200
-Message-Id: <20210110084618.189371-1-avri.altman@wdc.com>
-X-Mailer: git-send-email 2.25.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        Sun, 10 Jan 2021 03:55:27 -0500
+Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05793C061786;
+        Sun, 10 Jan 2021 00:54:47 -0800 (PST)
+Received: by mail-pg1-x52b.google.com with SMTP id n25so10615492pgb.0;
+        Sun, 10 Jan 2021 00:54:47 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references;
+        bh=liDHC2sc0cr7MOD3v6T+8shxUFheQf86Vm0SzTQ9WXM=;
+        b=atwdkiH3rwhPEk6LsxtkfISVI2HnSv2gU7B+BrKOk2OPz9qvBr17fBbPjskvH5b9ML
+         ndD0VqBzC84BfCEv2FWekqJAhlQsmBvvsYk3UMn5jPiQkA5W3kxj5xL46SWDMaA1HUhi
+         Ln+IyZkd+l7+XIQVF6rVVw0+Xouoy/xfsUoYhyqsfhprOOZ/oux6iZndi/Cdw7r3IOzP
+         OUDgcP8nqrZNeDY9iWTDkuOCgHzgtAzA4+lReIJYQwmHCyRnRo1wIkISVgDd0XO5rti/
+         q03wbTpYOYM8fv/BnydCPGtCfXYGapvEiWy8l+WuKKzvya/jlLTXYkm59g2q9ceTBQrd
+         mn2w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references;
+        bh=liDHC2sc0cr7MOD3v6T+8shxUFheQf86Vm0SzTQ9WXM=;
+        b=jLXvXMez5XGQLWJXtAziyoZdQwNzn8ye8UmM0kro1tD2l9LbftWjv95YOwvURd1d2h
+         Dw1hmwIMZPYnp/52wDVGblJ0JUswce/HZdNc0hkDFRL6dqq6yFm05okoprBBXsopTUFY
+         7/4zv40M/xuSPHxqSk4/Kf5xhVvBgOzOkTc0xhSU57Oil4rFJnf8nYJDrWUibCID1GV6
+         VXdJZhANseC/1Bfq6OlMhmVq8yvMqhIc0wDufwPGT891/arHE+ktHrwBc85hZtXY/nS2
+         REpN0YyTXaZUIJ4zR22xO7qS4WTN6yprKekd4rpjdodtN29UyHeZHPtMnqMvVv19VD1a
+         9pEg==
+X-Gm-Message-State: AOAM531MClZKGx4CgdX9d2fcN9adefaYxSX1ukAac2Y9n0YuPDHgw5X9
+        O6ldWIKHBvCJxodL/146eVY=
+X-Google-Smtp-Source: ABdhPJxLY/kyPOVEREpU8vfsjTraNvHv+idPkcVTS+ovgVGV70f979+i+ELhOSStG/kkOCAuh0KUFA==
+X-Received: by 2002:a63:db57:: with SMTP id x23mr14673530pgi.131.1610268886518;
+        Sun, 10 Jan 2021 00:54:46 -0800 (PST)
+Received: from android.asia-east2-a.c.savvy-summit-295307.internal (53.207.96.34.bc.googleusercontent.com. [34.96.207.53])
+        by smtp.googlemail.com with ESMTPSA id u3sm12346904pjf.52.2021.01.10.00.54.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 10 Jan 2021 00:54:45 -0800 (PST)
+From:   Bui Quang Minh <minhquangbui99@gmail.com>
+To:     syzbot+57281c762a3922e14dfe@syzkaller.appspotmail.com
+Cc:     a.darwish@linutronix.de, bigeasy@linutronix.de,
+        gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
+        linux-usb@vger.kernel.org, stern@rowland.harvard.edu,
+        syzkaller-bugs@googlegroups.com, tglx@linutronix.de,
+        minhquangbui99@gmail.com
+Subject: Re: memory leak in mcba_usb_probe
+Date:   Sun, 10 Jan 2021 08:54:35 +0000
+Message-Id: <20210110085436.3616-1-minhquangbui99@gmail.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <000000000000f599c005b6f59913@google.com>
+References: <000000000000f599c005b6f59913@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove a redundant if clause in ufshcd_add_query_upiu_trace.
-
-Signed-off-by: Avri Altman <avri.altman@wdc.com>
----
- drivers/scsi/ufs/ufshcd.c | 18 ++++++------------
- 1 file changed, 6 insertions(+), 12 deletions(-)
-
-diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
-index 53fd59ce50b2..678a520b303e 100644
---- a/drivers/scsi/ufs/ufshcd.c
-+++ b/drivers/scsi/ufs/ufshcd.c
-@@ -316,19 +316,13 @@ static void ufshcd_add_cmd_upiu_trace(struct ufs_hba *hba, unsigned int tag,
- 			  UFS_TSF_CDB);
- }
- 
--static void ufshcd_add_query_upiu_trace(struct ufs_hba *hba, unsigned int tag,
--					enum ufs_trace_str_t str_t)
-+static void ufshcd_add_query_upiu_trace(struct ufs_hba *hba,
-+					enum ufs_trace_str_t str_t,
-+					struct utp_upiu_req *rq_rsp)
- {
--	struct utp_upiu_req *rq_rsp;
--
- 	if (!trace_ufshcd_upiu_enabled())
- 		return;
- 
--	if (str_t == UFS_QUERY_SEND)
--		rq_rsp = hba->lrb[tag].ucd_req_ptr;
--	else
--		rq_rsp = (struct utp_upiu_req *)hba->lrb[tag].ucd_rsp_ptr;
--
- 	trace_ufshcd_upiu(dev_name(hba->dev), str_t, &rq_rsp->header,
- 			  &rq_rsp->qr, UFS_TSF_OSF);
- }
-@@ -2876,7 +2870,7 @@ static int ufshcd_exec_dev_cmd(struct ufs_hba *hba,
- 
- 	hba->dev_cmd.complete = &wait;
- 
--	ufshcd_add_query_upiu_trace(hba, tag, UFS_QUERY_SEND);
-+	ufshcd_add_query_upiu_trace(hba, UFS_QUERY_SEND, lrbp->ucd_req_ptr);
- 	/* Make sure descriptors are ready before ringing the doorbell */
- 	wmb();
- 	spin_lock_irqsave(hba->host->host_lock, flags);
-@@ -2886,8 +2880,8 @@ static int ufshcd_exec_dev_cmd(struct ufs_hba *hba,
- 	err = ufshcd_wait_for_dev_cmd(hba, lrbp, timeout);
- 
- out:
--	ufshcd_add_query_upiu_trace(hba, tag,
--			err ? UFS_QUERY_ERR : UFS_QUERY_COMP);
-+	ufshcd_add_query_upiu_trace(hba, err ? UFS_QUERY_ERR : UFS_QUERY_COMP,
-+				    (struct utp_upiu_req *)lrbp->ucd_rsp_ptr);
- 
- out_put_tag:
- 	blk_put_request(req);
--- 
-2.25.1
+#syz test: https://github.com/minhbq-99/linux.git 080e743dff190ee8ebec63a13ac33fe8b7e4fc9e
 
