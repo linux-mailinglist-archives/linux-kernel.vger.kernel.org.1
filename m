@@ -2,164 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 912EB2F06C2
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Jan 2021 12:54:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BC572F06D5
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Jan 2021 12:57:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726511AbhAJLyw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Jan 2021 06:54:52 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36426 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726254AbhAJLyv (ORCPT
+        id S1726603AbhAJL45 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Jan 2021 06:56:57 -0500
+Received: from mail-40131.protonmail.ch ([185.70.40.131]:52591 "EHLO
+        mail-40131.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726254AbhAJL4z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Jan 2021 06:54:51 -0500
-Received: from mail-pl1-x630.google.com (mail-pl1-x630.google.com [IPv6:2607:f8b0:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62A81C0617A2
-        for <linux-kernel@vger.kernel.org>; Sun, 10 Jan 2021 03:54:11 -0800 (PST)
-Received: by mail-pl1-x630.google.com with SMTP id b8so8051427plx.0
-        for <linux-kernel@vger.kernel.org>; Sun, 10 Jan 2021 03:54:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=VeaXxSmfDmEyhYbpRgODxLXYHKKQpbVaRLSWVCUfEEs=;
-        b=ob/PBPUzU3CRW8Ec2HtNpeAtxYohDUGUGRJOlHAb87E8usN3Juk9Zeb47EipxXqIQR
-         /is4Dkb4P5iW4/F5xSNj2/lv9wb1BEUggPHOHmKu9jDEyfh6i34vxuskU9mudlN5D95F
-         c6NGyxcc2S3EijhZM3fETFcghwGK84lqwiLeTgS4IMwcbpw4ziUBngb6STTB1jNIx77/
-         INlaFKIZGJvpfidTuGSujy2kCGWxcuSAYrD75cUarMLnA2V97ZozYTqic0pxkoQ9TcLO
-         sshpKoTwmkdX4QXVNIE6mMVJnJpKz4OXrP09jMXqOGa9E/hNEBC2lJpr2LCCRrPXSxhU
-         mEXg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=VeaXxSmfDmEyhYbpRgODxLXYHKKQpbVaRLSWVCUfEEs=;
-        b=NLA4TQcsDZJCgK5iiKIdwl8K1lLzH2fjY7Rn9cuwKmcNbtOWOlsh8DbJJoHrLmmu2O
-         DBm8THe9J+O3T5sqxErzz4xXKp5LIvMpqt1f3Y2nLUKkWPfBVQ7miXDuGVrU/foj6KXK
-         BAWjFBnVy7BkqkP098tTamSEDSR4U9OXaJ1Wv2qrNl3Td/kAZZgLWBFT96dmqI5MMYa0
-         3CQAS+gTa/FODD2dzstANDVhpLJHg6SZIQUWehb2oUIub1mzU8svmVdcOjP+jxb8AYxC
-         nW3ArSL2vBdYVn3RKt57RLD+VyLK22Xdu7fb3J5/v8TD5OqFS5tiz32WqhLrIItO2oPp
-         a9tQ==
-X-Gm-Message-State: AOAM533G/j6dqJEA6Et69ufRlEyoZ3+Wjpm1iODVP/swc4enfJfZecJj
-        HuHrnavgXK65sCe0VIoyqqeptw==
-X-Google-Smtp-Source: ABdhPJyyqFVF9qSPl2hYa17TC4CdkjgSqQZsxBXIkOhe4fspEVWa3W9lNHJPqtCuD5pvxOcYogV9Yg==
-X-Received: by 2002:a17:90b:ece:: with SMTP id gz14mr13118040pjb.158.1610279650930;
-        Sun, 10 Jan 2021 03:54:10 -0800 (PST)
-Received: from always-libai.bytedance.net ([61.120.150.71])
-        by smtp.gmail.com with ESMTPSA id x1sm15613906pfj.95.2021.01.10.03.54.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 10 Jan 2021 03:54:10 -0800 (PST)
-From:   zhenwei pi <pizhenwei@bytedance.com>
-To:     arnd@arndb.de, gregkh@linuxfoundation.org
-Cc:     pbonzini@redhat.com, linux-kernel@vger.kernel.org,
-        pizhenwei@bytedance.com
-Subject: [PATCH v5 2/2] misc: pvpanic: introduce events device attribue
-Date:   Sun, 10 Jan 2021 19:53:58 +0800
-Message-Id: <20210110115358.79100-3-pizhenwei@bytedance.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210110115358.79100-1-pizhenwei@bytedance.com>
-References: <20210110115358.79100-1-pizhenwei@bytedance.com>
+        Sun, 10 Jan 2021 06:56:55 -0500
+Date:   Sun, 10 Jan 2021 11:56:08 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me; s=protonmail;
+        t=1610279773; bh=MxtmeMzoZosf2A+5OO/KqkqqfNrpxRLfY3mE8BM76lQ=;
+        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
+        b=JZj3U2JaMwR6aIb+WJNixdldVJL+Sv39Cg7zlScN1lcrDdhgLwr1j1U2izIIllaGq
+         myziSQIz+n/t3F5fE6BhvLoGmdhdklFvf5QllTupqf//cw1D2EQcktUtFaKc5tsVe8
+         zr4KO+0q0Ao9RTUUqJ3YPsNu6klprCJxSsxyTIXPInaXkeuXpSH+21g4GOSEH17170
+         M2H3ax30J9U4jtk2/+bfVHbS8uA1Hl1M80fkLdmMv6fXgdnB/k1l9eml8EI8fwNZvM
+         J+Gi5qzKU6R2CwysDgqu4EmsC7Qrb89FW7D+YElgvAqR6F4N9jky+JQ+Z5450u0xjR
+         Movfwmvgv1y+A==
+To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+From:   Alexander Lobakin <alobakin@pm.me>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Pei Huang <huangpei@loongson.cn>,
+        Kees Cook <keescook@chromium.org>,
+        Alexander Lobakin <alobakin@pm.me>,
+        Fangrui Song <maskray@google.com>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Ralf Baechle <ralf@linux-mips.org>,
+        Corey Minyard <cminyard@mvista.com>,
+        linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arch@vger.kernel.org, stable@vger.kernel.org,
+        clang-built-linux@googlegroups.com
+Reply-To: Alexander Lobakin <alobakin@pm.me>
+Subject: [PATCH v5 mips-next 1/9] MIPS: vmlinux.lds.S: add missing PAGE_ALIGNED_DATA() section
+Message-ID: <20210110115546.30970-1-alobakin@pm.me>
+In-Reply-To: <20210110115245.30762-1-alobakin@pm.me>
+References: <20210110115245.30762-1-alobakin@pm.me>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
+        autolearn=disabled version=3.4.4
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
+        mailout.protonmail.ch
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Suggested by Paolo & Greg, add 'events' device attribute that can be
-used to limit which capabilities the driver uses.
+MIPS uses its own declaration of rwdata, and thus it should be kept
+in sync with the asm-generic one. Currently PAGE_ALIGNED_DATA() is
+missing from the linker script, which emits the following ld
+warnings:
 
-Finally, the pvpanic guest driver works by the limitation of both
-device capability and user setting.
+mips-alpine-linux-musl-ld: warning: orphan section
+`.data..page_aligned' from `arch/mips/kernel/vdso.o' being placed
+in section `.data..page_aligned'
+mips-alpine-linux-musl-ld: warning: orphan section
+`.data..page_aligned' from `arch/mips/vdso/vdso-image.o' being placed
+in section `.data..page_aligned'
 
-Signed-off-by: zhenwei pi <pizhenwei@bytedance.com>
+Add the necessary declaration, so the mentioned structures will be
+placed in vmlinux as intended:
+
+ffffffff80630580 D __end_once
+ffffffff80630580 D __start___dyndbg
+ffffffff80630580 D __start_once
+ffffffff80630580 D __stop___dyndbg
+ffffffff80634000 d mips_vdso_data
+ffffffff80638000 d vdso_data
+ffffffff80638580 D _gp
+ffffffff8063c000 T __init_begin
+ffffffff8063c000 D _edata
+ffffffff8063c000 T _sinittext
+
+->
+
+ffffffff805a4000 D __end_init_task
+ffffffff805a4000 D __nosave_begin
+ffffffff805a4000 D __nosave_end
+ffffffff805a4000 d mips_vdso_data
+ffffffff805a8000 d vdso_data
+ffffffff805ac000 D mmlist_lock
+ffffffff805ac080 D tasklist_lock
+
+Fixes: ebb5e78cc634 ("MIPS: Initial implementation of a VDSO")
+Cc: stable@vger.kernel.org # 4.4+
+Signed-off-by: Alexander Lobakin <alobakin@pm.me>
+Reviewed-by: Kees Cook <keescook@chromium.org>
+Reviewed-by: Nathan Chancellor <natechancellor@gmail.com>
 ---
- .../ABI/testing/sysfs-bus-pci-devices-pvpanic | 12 ++++++++
- drivers/misc/pvpanic.c                        | 30 ++++++++++++++++++-
- 2 files changed, 41 insertions(+), 1 deletion(-)
+ arch/mips/kernel/vmlinux.lds.S | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/Documentation/ABI/testing/sysfs-bus-pci-devices-pvpanic b/Documentation/ABI/testing/sysfs-bus-pci-devices-pvpanic
-index 79b7dc31cd55..1936f7324155 100644
---- a/Documentation/ABI/testing/sysfs-bus-pci-devices-pvpanic
-+++ b/Documentation/ABI/testing/sysfs-bus-pci-devices-pvpanic
-@@ -10,3 +10,15 @@ Description:
- 		Detailed bit definition refers to section <Bit Definition>
- 		from pvpanic device specification:
- 		https://git.qemu.org/?p=qemu.git;a=blob_plain;f=docs/specs/pvpanic.txt
-+
-+What:		/sys/devices/pci0000:00/*/QEMU0001:00/events
-+Date:		Jan 2021
-+Contact:	zhenwei pi <pizhenwei@bytedance.com>
-+Description:
-+		RW attribute. Set/get which features in-use. This attribute
-+		is used to enable/disable feature(s) of pvpanic device.
-+		Notice that this value should be a subset of capability.
-+
-+		Format: %x.
-+
-+		Also refer to pvpanic device specification.
-diff --git a/drivers/misc/pvpanic.c b/drivers/misc/pvpanic.c
-index 7e5254e8af1f..a9ac26c7b11f 100644
---- a/drivers/misc/pvpanic.c
-+++ b/drivers/misc/pvpanic.c
-@@ -20,6 +20,7 @@
- 
- static void __iomem *base;
- static unsigned int capability = PVPANIC_PANICKED | PVPANIC_CRASH_LOADED;
-+static unsigned int events;
- 
- static ssize_t capability_show(struct device *dev,
- 			       struct device_attribute *attr, char *buf)
-@@ -28,8 +29,34 @@ static ssize_t capability_show(struct device *dev,
- }
- static DEVICE_ATTR_RO(capability);
- 
-+static ssize_t events_show(struct device *dev,  struct device_attribute *attr, char *buf)
-+{
-+	return sysfs_emit(buf, "%x", events);
-+}
-+
-+static ssize_t events_store(struct device *dev,  struct device_attribute *attr,
-+			    const char *buf, size_t count)
-+{
-+	unsigned int tmp;
-+	int err;
-+
-+	err = kstrtouint(buf, 16, &tmp);
-+	if (err)
-+		return err;
-+
-+	if ((tmp & capability) != tmp)
-+		return -EINVAL;
-+
-+	events = tmp;
-+
-+	return count;
-+
-+}
-+static DEVICE_ATTR_RW(events);
-+
- static struct attribute *pvpanic_dev_attrs[] = {
- 	&dev_attr_capability.attr,
-+	&dev_attr_events.attr,
- 	NULL
- };
- ATTRIBUTE_GROUPS(pvpanic_dev);
-@@ -41,7 +68,7 @@ MODULE_LICENSE("GPL");
- static void
- pvpanic_send_event(unsigned int event)
- {
--	if (event & capability)
-+	if (event & capability & events)
- 		iowrite8(event, base);
- }
- 
-@@ -79,6 +106,7 @@ static int pvpanic_mmio_probe(struct platform_device *pdev)
- 
- 	/* initlize capability by RDPT */
- 	capability &= ioread8(base);
-+	events = capability;
- 
- 	if (capability)
- 		atomic_notifier_chain_register(&panic_notifier_list,
--- 
-2.25.1
+diff --git a/arch/mips/kernel/vmlinux.lds.S b/arch/mips/kernel/vmlinux.lds.=
+S
+index 5e97e9d02f98..83e27a181206 100644
+--- a/arch/mips/kernel/vmlinux.lds.S
++++ b/arch/mips/kernel/vmlinux.lds.S
+@@ -90,6 +90,7 @@ SECTIONS
+=20
+ =09=09INIT_TASK_DATA(THREAD_SIZE)
+ =09=09NOSAVE_DATA
++=09=09PAGE_ALIGNED_DATA(PAGE_SIZE)
+ =09=09CACHELINE_ALIGNED_DATA(1 << CONFIG_MIPS_L1_CACHE_SHIFT)
+ =09=09READ_MOSTLY_DATA(1 << CONFIG_MIPS_L1_CACHE_SHIFT)
+ =09=09DATA_DATA
+--=20
+2.30.0
+
 
