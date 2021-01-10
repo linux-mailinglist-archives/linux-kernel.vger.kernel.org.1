@@ -2,169 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F3FD2F0620
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Jan 2021 10:11:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DD5792F0638
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Jan 2021 10:46:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726576AbhAJJJw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Jan 2021 04:09:52 -0500
-Received: from mail-il1-f199.google.com ([209.85.166.199]:43088 "EHLO
-        mail-il1-f199.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726398AbhAJJJv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Jan 2021 04:09:51 -0500
-Received: by mail-il1-f199.google.com with SMTP id o77so10083491ilb.10
-        for <linux-kernel@vger.kernel.org>; Sun, 10 Jan 2021 01:09:34 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=fkJSIuFYeFa0Ztae+QHxCODB8dGO1qk9OvKO2QvKzjE=;
-        b=WE2zSMYYwHT0/m/guIvdvxx9ijE0W0LJfv8lMNVBmTf5NrXAUhb9gkmn0spItDSh1U
-         WhH0j3Ah8s3niEUIPU7uBfQULP5DgknV6L9rzSLNN511s5ugeoxa7MdLZhYvDTtmmQhZ
-         HLdUCO98dxMu7otCkLgkyxLzl/an1va3r37eVfIntIz3Bv+hhhhzNmblkYjWOmh9yZEC
-         CBpl7iBIluNXC8NOVWYx0YazQgN8RsQhNxJI4nlBOuQ+FwZL2/V1X7UFWLaHUKDH+2k5
-         7ZPf8HlBgRJqjsMtli3fFqUgvAFqOKo2FRRKIbsUwtm6Z/2wxRonGW4omAOHoIp7kubI
-         ydiA==
-X-Gm-Message-State: AOAM53208QAXDJvftqBGRvuF/mpznXYXcxIJF2HwVTJ77KpyyGZ4p8ik
-        AV8Fhq1rO4hqxG9kADwW3LDvBXzMjs0cdzTxj5/qWeohycjy
-X-Google-Smtp-Source: ABdhPJzbFmajWu5FCXq4JsdlbhQfmDehOX7vvU72XKCfLEuwLkCgwXVk8BnKMTi3cRe2pjsH7oXAApcI0TBLcwGyonkyVMnHb5Yj
+        id S1726288AbhAJJqW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Jan 2021 04:46:22 -0500
+Received: from mail.kernel.org ([198.145.29.99]:36176 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725807AbhAJJqV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 10 Jan 2021 04:46:21 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 47F7B238E5
+        for <linux-kernel@vger.kernel.org>; Sun, 10 Jan 2021 09:45:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1610271940;
+        bh=5nn4h4NtHDCXue9VfNHsaZlxU7bxJQfKM7EPyThKV4s=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=Jkk+C22tc7csu+FDa3hdEyf1WcpqZ+mzDv0k6r5bB1f5AvFEDE5rD9uPZgoPvjKkc
+         2gciLbolidD0pSVNrVvTEHHhLHifZUo3z7eVdDCP5X73bXMwkCO8PnySZMtQ9KmWI8
+         XGEM2u+ZParM+h0GnBvTOSwbV5JQlE9X4gk5vC6Z0TeUiv1jnT+cQw1dOPa7+DGwHu
+         w0L8RIobKVzRfs4ENAHhPX77id+yjsUmxRX1Q1iNCJmR4vXqjZzCkFXt64q7r6qx1e
+         lIJYv31AHj5UNPxMXpek8AXikHqIwJV/Qn2lMRHEPCb56nyOCLjTh3tnmnhh78DdI0
+         zN+U7p3h1SIaw==
+Received: by mail-oo1-f49.google.com with SMTP id q6so3436590ooo.8
+        for <linux-kernel@vger.kernel.org>; Sun, 10 Jan 2021 01:45:40 -0800 (PST)
+X-Gm-Message-State: AOAM530DREz+8gW5ciy7215M6tzAosGQFeXhpxEtvoqj2/6Am5QZJOCQ
+        PnpNEWGLUHBP0B9c61rQwvks0BXA/fBWnDKO6YA=
+X-Google-Smtp-Source: ABdhPJxFA2UzPoe3lyfsOlxSV6swiWUEug3nw26cfUR6OzU/woA5RXjgkCsrwp+FCnapmHEEnU2ndvwvqnG9X5o6kcg=
+X-Received: by 2002:a4a:bb86:: with SMTP id h6mr37396oop.13.1610271939504;
+ Sun, 10 Jan 2021 01:45:39 -0800 (PST)
 MIME-Version: 1.0
-X-Received: by 2002:a6b:7f0b:: with SMTP id l11mr11228696ioq.34.1610269749258;
- Sun, 10 Jan 2021 01:09:09 -0800 (PST)
-Date:   Sun, 10 Jan 2021 01:09:09 -0800
-In-Reply-To: <20210110085436.3616-1-minhquangbui99@gmail.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000065b02205b8882492@google.com>
-Subject: Re: memory leak in mcba_usb_probe
-From:   syzbot <syzbot+57281c762a3922e14dfe@syzkaller.appspotmail.com>
-To:     a.darwish@linutronix.de, bigeasy@linutronix.de,
-        gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
-        linux-usb@vger.kernel.org, minhquangbui99@gmail.com,
-        stern@rowland.harvard.edu, syzkaller-bugs@googlegroups.com,
-        tglx@linutronix.de
+References: <20201105152944.16953-1-ardb@kernel.org> <CAMj1kXGtxWk3Z4fxm=b5YMU1Dy2HfaOAynaMiMGKZx9vLArpmg@mail.gmail.com>
+ <CAMj1kXEg+22pejvof-p_z9uxNnf4yv+4ohAsJAo_LmtQ_+Bfmg@mail.gmail.com> <CAMj1kXECsVbO6tqmynSTmu-aGRKKBKSUSE3ZTzJgfCRozmK9Vw@mail.gmail.com>
+In-Reply-To: <CAMj1kXECsVbO6tqmynSTmu-aGRKKBKSUSE3ZTzJgfCRozmK9Vw@mail.gmail.com>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Sun, 10 Jan 2021 10:45:28 +0100
+X-Gmail-Original-Message-ID: <CAMj1kXH2N_e722TiSU6_uUs_arjkBipwUnfD8=xj1etKE11DRQ@mail.gmail.com>
+Message-ID: <CAMj1kXH2N_e722TiSU6_uUs_arjkBipwUnfD8=xj1etKE11DRQ@mail.gmail.com>
+Subject: Re: [PATCH] random: avoid arch_get_random_seed_long() when collecting
+ IRQ randomness
+To:     "Theodore Y. Ts'o" <tytso@mit.edu>,
+        Eric Biggers <ebiggers@kernel.org>,
+        Will Deacon <will@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        "Jason A. Donenfeld" <Jason@zx2c4.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Marc Zyngier <maz@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Mark Brown <broonie@kernel.org>,
+        Andre Przywara <andre.przywara@arm.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Mon, 4 Jan 2021 at 20:09, Ard Biesheuvel <ardb@kernel.org> wrote:
+>
+> On Tue, 17 Nov 2020 at 14:33, Ard Biesheuvel <ardb@kernel.org> wrote:
+> >
+> > On Wed, 11 Nov 2020 at 09:19, Ard Biesheuvel <ardb@kernel.org> wrote:
+> > >
+> > > (+ Eric)
+> > >
+> > > On Thu, 5 Nov 2020 at 16:29, Ard Biesheuvel <ardb@kernel.org> wrote:
+> > > >
+> > > > When reseeding the CRNG periodically, arch_get_random_seed_long() is
+> > > > called to obtain entropy from an architecture specific source if one
+> > > > is implemented. In most cases, these are special instructions, but in
+> > > > some cases, such as on ARM, we may want to back this using firmware
+> > > > calls, which are considerably more expensive.
+> > > >
+> > > > Another call to arch_get_random_seed_long() exists in the CRNG driver,
+> > > > in add_interrupt_randomness(), which collects entropy by capturing
+> > > > inter-interrupt timing and relying on interrupt jitter to provide
+> > > > random bits. This is done by keeping a per-CPU state, and mixing in
+> > > > the IRQ number, the cycle counter and the return address every time an
+> > > > interrupt is taken, and mixing this per-CPU state into the entropy pool
+> > > > every 64 invocations, or at least once per second. The entropy that is
+> > > > gathered this way is credited as 1 bit of entropy. Every time this
+> > > > happens, arch_get_random_seed_long() is invoked, and the result is
+> > > > mixed in as well, and also credited with 1 bit of entropy.
+> > > >
+> > > > This means that arch_get_random_seed_long() is called at least once
+> > > > per second on every CPU, which seems excessive, and doesn't really
+> > > > scale, especially in a virtualization scenario where CPUs may be
+> > > > oversubscribed: in cases where arch_get_random_seed_long() is backed
+> > > > by an instruction that actually goes back to a shared hardware entropy
+> > > > source (such as RNDRRS on ARM), we will end up hitting it hundreds of
+> > > > times per second.
+> > > >
+> > > > So let's drop the call to arch_get_random_seed_long() from
+> > > > add_interrupt_randomness(), and instead, rely on crng_reseed() to call
+> > > > the arch hook to get random seed material from the platform.
+> > > >
+> > > > Signed-off-by: Ard Biesheuvel <ardb@kernel.org>
+> > > > ---
+> > > >  drivers/char/random.c | 15 +--------------
+> > > >  1 file changed, 1 insertion(+), 14 deletions(-)
+> > > >
+> > > > diff --git a/drivers/char/random.c b/drivers/char/random.c
+> > > > index 2a41b21623ae..a9c393c1466d 100644
+> > > > --- a/drivers/char/random.c
+> > > > +++ b/drivers/char/random.c
+> > > > @@ -1261,8 +1261,6 @@ void add_interrupt_randomness(int irq, int irq_flags)
+> > > >         cycles_t                cycles = random_get_entropy();
+> > > >         __u32                   c_high, j_high;
+> > > >         __u64                   ip;
+> > > > -       unsigned long           seed;
+> > > > -       int                     credit = 0;
+> > > >
+> > > >         if (cycles == 0)
+> > > >                 cycles = get_reg(fast_pool, regs);
+> > > > @@ -1298,23 +1296,12 @@ void add_interrupt_randomness(int irq, int irq_flags)
+> > > >
+> > > >         fast_pool->last = now;
+> > > >         __mix_pool_bytes(r, &fast_pool->pool, sizeof(fast_pool->pool));
+> > > > -
+> > > > -       /*
+> > > > -        * If we have architectural seed generator, produce a seed and
+> > > > -        * add it to the pool.  For the sake of paranoia don't let the
+> > > > -        * architectural seed generator dominate the input from the
+> > > > -        * interrupt noise.
+> > > > -        */
+> > > > -       if (arch_get_random_seed_long(&seed)) {
+> > > > -               __mix_pool_bytes(r, &seed, sizeof(seed));
+> > > > -               credit = 1;
+> > > > -       }
+> > > >         spin_unlock(&r->lock);
+> > > >
+> > > >         fast_pool->count = 0;
+> > > >
+> > > >         /* award one bit for the contents of the fast pool */
+> > > > -       credit_entropy_bits(r, credit + 1);
+> > > > +       credit_entropy_bits(r, 1);
+> > > >  }
+> > > >  EXPORT_SYMBOL_GPL(add_interrupt_randomness);
+> > > >
+> > > > --
+> > > > 2.17.1
+> > > >
+> >
+> > Ping?
+>
+> Ping?
 
-syzbot has tested the proposed patch but the reproducer is still triggering an issue:
-memory leak in rxrpc_lookup_local
+Ping again?
 
-BUG: memory leak
-unreferenced object 0xffff888118b2f300 (size 256):
-  comm "syz-executor.5", pid 8860, jiffies 4294944050 (age 373.640s)
-  hex dump (first 32 bytes):
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-    00 00 00 00 0a 00 00 00 00 80 c3 18 81 88 ff ff  ................
-  backtrace:
-    [<00000000799c996d>] kmalloc include/linux/slab.h:552 [inline]
-    [<00000000799c996d>] kzalloc include/linux/slab.h:682 [inline]
-    [<00000000799c996d>] rxrpc_alloc_local net/rxrpc/local_object.c:79 [inline]
-    [<00000000799c996d>] rxrpc_lookup_local+0x1c1/0x760 net/rxrpc/local_object.c:244
-    [<00000000a9547b72>] rxrpc_bind+0x174/0x240 net/rxrpc/af_rxrpc.c:149
-    [<00000000c8d0f9b2>] afs_open_socket+0xdb/0x200 fs/afs/rxrpc.c:64
-    [<0000000029791b25>] afs_net_init+0x2b4/0x340 fs/afs/main.c:126
-    [<000000005937929d>] ops_init+0x4e/0x190 net/core/net_namespace.c:152
-    [<0000000064e0e1db>] setup_net+0xde/0x2d0 net/core/net_namespace.c:342
-    [<00000000ca4d5a61>] copy_net_ns+0x19f/0x3e0 net/core/net_namespace.c:483
-    [<0000000029feabb4>] create_new_namespaces+0x199/0x4f0 kernel/nsproxy.c:110
-    [<000000005ce44751>] unshare_nsproxy_namespaces+0x9b/0x120 kernel/nsproxy.c:226
-    [<000000003c257699>] ksys_unshare+0x2fe/0x5c0 kernel/fork.c:2957
-    [<000000001788a4be>] __do_sys_unshare kernel/fork.c:3025 [inline]
-    [<000000001788a4be>] __se_sys_unshare kernel/fork.c:3023 [inline]
-    [<000000001788a4be>] __x64_sys_unshare+0x12/0x20 kernel/fork.c:3023
-    [<00000000db77e81f>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
-    [<0000000052c5dd81>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
+Ted,
 
-BUG: memory leak
-unreferenced object 0xffff888118afb200 (size 256):
-  comm "syz-executor.0", pid 8858, jiffies 4294944054 (age 373.600s)
-  hex dump (first 32 bytes):
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-    00 00 00 00 0a 00 00 00 00 00 92 18 81 88 ff ff  ................
-  backtrace:
-    [<00000000799c996d>] kmalloc include/linux/slab.h:552 [inline]
-    [<00000000799c996d>] kzalloc include/linux/slab.h:682 [inline]
-    [<00000000799c996d>] rxrpc_alloc_local net/rxrpc/local_object.c:79 [inline]
-    [<00000000799c996d>] rxrpc_lookup_local+0x1c1/0x760 net/rxrpc/local_object.c:244
-    [<00000000a9547b72>] rxrpc_bind+0x174/0x240 net/rxrpc/af_rxrpc.c:149
-    [<00000000c8d0f9b2>] afs_open_socket+0xdb/0x200 fs/afs/rxrpc.c:64
-    [<0000000029791b25>] afs_net_init+0x2b4/0x340 fs/afs/main.c:126
-    [<000000005937929d>] ops_init+0x4e/0x190 net/core/net_namespace.c:152
-    [<0000000064e0e1db>] setup_net+0xde/0x2d0 net/core/net_namespace.c:342
-    [<00000000ca4d5a61>] copy_net_ns+0x19f/0x3e0 net/core/net_namespace.c:483
-    [<0000000029feabb4>] create_new_namespaces+0x199/0x4f0 kernel/nsproxy.c:110
-    [<000000005ce44751>] unshare_nsproxy_namespaces+0x9b/0x120 kernel/nsproxy.c:226
-    [<000000003c257699>] ksys_unshare+0x2fe/0x5c0 kernel/fork.c:2957
-    [<000000001788a4be>] __do_sys_unshare kernel/fork.c:3025 [inline]
-    [<000000001788a4be>] __se_sys_unshare kernel/fork.c:3023 [inline]
-    [<000000001788a4be>] __x64_sys_unshare+0x12/0x20 kernel/fork.c:3023
-    [<00000000db77e81f>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
-    [<0000000052c5dd81>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
+Acceptance of this patch is now blocking RNG related work that is in
+flight for ARM and arm64. [0]
 
-BUG: memory leak
-unreferenced object 0xffff8881189f4800 (size 256):
-  comm "syz-executor.6", pid 8856, jiffies 4294944054 (age 373.600s)
-  hex dump (first 32 bytes):
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-    00 00 00 00 0a 00 00 00 00 c0 56 18 81 88 ff ff  ..........V.....
-  backtrace:
-    [<00000000799c996d>] kmalloc include/linux/slab.h:552 [inline]
-    [<00000000799c996d>] kzalloc include/linux/slab.h:682 [inline]
-    [<00000000799c996d>] rxrpc_alloc_local net/rxrpc/local_object.c:79 [inline]
-    [<00000000799c996d>] rxrpc_lookup_local+0x1c1/0x760 net/rxrpc/local_object.c:244
-    [<00000000a9547b72>] rxrpc_bind+0x174/0x240 net/rxrpc/af_rxrpc.c:149
-    [<00000000c8d0f9b2>] afs_open_socket+0xdb/0x200 fs/afs/rxrpc.c:64
-    [<0000000029791b25>] afs_net_init+0x2b4/0x340 fs/afs/main.c:126
-    [<000000005937929d>] ops_init+0x4e/0x190 net/core/net_namespace.c:152
-    [<0000000064e0e1db>] setup_net+0xde/0x2d0 net/core/net_namespace.c:342
-    [<00000000ca4d5a61>] copy_net_ns+0x19f/0x3e0 net/core/net_namespace.c:483
-    [<0000000029feabb4>] create_new_namespaces+0x199/0x4f0 kernel/nsproxy.c:110
-    [<000000005ce44751>] unshare_nsproxy_namespaces+0x9b/0x120 kernel/nsproxy.c:226
-    [<000000003c257699>] ksys_unshare+0x2fe/0x5c0 kernel/fork.c:2957
-    [<000000001788a4be>] __do_sys_unshare kernel/fork.c:3025 [inline]
-    [<000000001788a4be>] __se_sys_unshare kernel/fork.c:3023 [inline]
-    [<000000001788a4be>] __x64_sys_unshare+0x12/0x20 kernel/fork.c:3023
-    [<00000000db77e81f>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
-    [<0000000052c5dd81>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
+So please shout if you have any objections to this patch, or if you
+don't, please ack it so it can be taken through one of the ARM trees.
 
-BUG: memory leak
-unreferenced object 0xffff888118c34100 (size 256):
-  comm "syz-executor.2", pid 8861, jiffies 4294944055 (age 373.590s)
-  hex dump (first 32 bytes):
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-    00 00 00 00 0a 00 00 00 00 40 56 18 81 88 ff ff  .........@V.....
-  backtrace:
-    [<00000000799c996d>] kmalloc include/linux/slab.h:552 [inline]
-    [<00000000799c996d>] kzalloc include/linux/slab.h:682 [inline]
-    [<00000000799c996d>] rxrpc_alloc_local net/rxrpc/local_object.c:79 [inline]
-    [<00000000799c996d>] rxrpc_lookup_local+0x1c1/0x760 net/rxrpc/local_object.c:244
-    [<00000000a9547b72>] rxrpc_bind+0x174/0x240 net/rxrpc/af_rxrpc.c:149
-    [<00000000c8d0f9b2>] afs_open_socket+0xdb/0x200 fs/afs/rxrpc.c:64
-    [<0000000029791b25>] afs_net_init+0x2b4/0x340 fs/afs/main.c:126
-    [<000000005937929d>] ops_init+0x4e/0x190 net/core/net_namespace.c:152
-    [<0000000064e0e1db>] setup_net+0xde/0x2d0 net/core/net_namespace.c:342
-    [<00000000ca4d5a61>] copy_net_ns+0x19f/0x3e0 net/core/net_namespace.c:483
-    [<0000000029feabb4>] create_new_namespaces+0x199/0x4f0 kernel/nsproxy.c:110
-    [<000000005ce44751>] unshare_nsproxy_namespaces+0x9b/0x120 kernel/nsproxy.c:226
-    [<000000003c257699>] ksys_unshare+0x2fe/0x5c0 kernel/fork.c:2957
-    [<000000001788a4be>] __do_sys_unshare kernel/fork.c:3025 [inline]
-    [<000000001788a4be>] __se_sys_unshare kernel/fork.c:3023 [inline]
-    [<000000001788a4be>] __x64_sys_unshare+0x12/0x20 kernel/fork.c:3023
-    [<00000000db77e81f>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
-    [<0000000052c5dd81>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
+Thanks,
+Ard.
 
-
-
-Tested on:
-
-commit:         080e743d can: mcba_usb: Fix memory leak when cancelling urb
-git tree:       https://github.com/minhbq-99/linux.git
-console output: https://syzkaller.appspot.com/x/log.txt?x=1322c7a8d00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=67a7baec24faba80
-dashboard link: https://syzkaller.appspot.com/bug?extid=57281c762a3922e14dfe
-compiler:       gcc (GCC) 10.1.0-syz 20200507
-
+[0] https://lore.kernel.org/kvmarm/20210106103453.152275-1-andre.przywara@arm.com/
