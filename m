@@ -2,81 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9EE082F05BB
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Jan 2021 07:41:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5222E2F05C0
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Jan 2021 07:55:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726069AbhAJGkl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Jan 2021 01:40:41 -0500
-Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:19563 "EHLO
-        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725267AbhAJGkk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Jan 2021 01:40:40 -0500
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5ffaa1400001>; Sat, 09 Jan 2021 22:40:00 -0800
-Received: from mtl-vdi-166.wap.labs.mlnx (172.20.145.6) by
- HQMAIL107.nvidia.com (172.20.187.13) with Microsoft SMTP Server (TLS) id
- 15.0.1473.3; Sun, 10 Jan 2021 06:39:58 +0000
-Date:   Sun, 10 Jan 2021 08:39:55 +0200
-From:   Eli Cohen <elic@nvidia.com>
-To:     Jason Wang <jasowang@redhat.com>
-CC:     <mst@redhat.com>, <virtualization@lists.linux-foundation.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] mlx5: vdpa: fix possible uninitialized var
-Message-ID: <20210110063955.GA115874@mtl-vdi-166.wap.labs.mlnx>
-References: <20210108082443.5609-1-jasowang@redhat.com>
+        id S1726250AbhAJGyV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Jan 2021 01:54:21 -0500
+Received: from mail.kernel.org ([198.145.29.99]:52862 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725267AbhAJGyV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 10 Jan 2021 01:54:21 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 17B9923884;
+        Sun, 10 Jan 2021 06:53:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1610261620;
+        bh=zkbXK6BnoIMcnVylcGQ3Y2IBNNSj9bS1jAU9NzNCeiI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=bYQCbsBDLTQFKB/qib2gQU9NwhewXR0H5EQnYrmo2MSPdX1DozlrhICO6yGnoC+Z3
+         tkxkopqVjgeDnjp3yr/jYG24F34Pxlx4VvSgPtHIu5WwsV62ZtoQT4c1eGEYLK1VI6
+         szqUC09R9wk+YIHl/Br36iPzfo3sxWnKtACQWmzLi3eN5e1QhWHB+6Rgsr4zGiqGso
+         SX2XbAlSoXUhoyZvNpTAHE1eL6MfNjclbD/ZUtwfmT5XpLE+UGreaLYcvWTegcQKz3
+         Zep9eBTpbfz/F10vWx+OWGGP/D5CG20Lb0Gpzj3IivD7PJ+EdVkWd8al+lsJ4VYbaa
+         c7sCoCOCOXinQ==
+Date:   Sat, 9 Jan 2021 22:53:38 -0800
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     dinghao.liu@zju.edu.cn
+Cc:     kjlu@umn.edu, Mimi Zohar <zohar@linux.ibm.com>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        Dmitry Kasatkin <dmitry.kasatkin@nokia.com>,
+        linux-integrity@vger.kernel.org,
+        linux-security-module@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: Re: [PATCH] evm: Fix memleak in init_desc
+Message-ID: <X/qkcgLg2h8Yxn3a@sol.localdomain>
+References: <20210109113305.11035-1-dinghao.liu@zju.edu.cn>
+ <X/nixOkNqQdWUAv8@sol.localdomain>
+ <5a36a73a.2e704.176eac332ca.Coremail.dinghao.liu@zju.edu.cn>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210108082443.5609-1-jasowang@redhat.com>
-User-Agent: Mutt/1.9.5 (bf161cf53efb) (2018-04-13)
-X-Originating-IP: [172.20.145.6]
-X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
- HQMAIL107.nvidia.com (172.20.187.13)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1610260800; bh=JTT7LraeNZwxgbWXZ93S3R16J1s+M871mksvKda7ArA=;
-        h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
-         Content-Type:Content-Disposition:In-Reply-To:User-Agent:
-         X-Originating-IP:X-ClientProxiedBy;
-        b=Fzf7hRVqwqvu/A9pHll5tOrNbH/WNIVqCySWEFcLLm3avVzqILnqgCZT+wjeWi/I6
-         J2WWGYBqQb1IWRUwj/TlaUP3vKHBwRB/f+AWaLy1+v8XSMWEKJwjEpijkcB5S21DDu
-         utB73fLfQ6hhpKb3YrIBBnsKAhwfjKBauPbQ13gHxMrP5HcwZAXBuTT4eCeea8cMRH
-         kh+dzudzDV7Njid8sQwLbgyfZvBf35bEQ7KXHch9kZppVL/vR0s75iyBHFl6HiaeeN
-         jT/J7CWaN9YTcqT1vRQ908b3G0mJoLQpAJD7cFxZhknlcTIXKYjzzTWZ38dAxoMwck
-         bJYLZ7uuBQV6Q==
+In-Reply-To: <5a36a73a.2e704.176eac332ca.Coremail.dinghao.liu@zju.edu.cn>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Jan 08, 2021 at 04:24:43PM +0800, Jason Wang wrote:
-> Upstream: posted
+On Sun, Jan 10, 2021 at 01:27:09PM +0800, dinghao.liu@zju.edu.cn wrote:
+> > On Sat, Jan 09, 2021 at 07:33:05PM +0800, Dinghao Liu wrote:
+> > > When kmalloc() fails, tmp_tfm allocated by
+> > > crypto_alloc_shash() has not been freed, which
+> > > leads to memleak.
+> > > 
+> > > Fixes: d46eb3699502b ("evm: crypto hash replaced by shash")
+> > > Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
+> > > ---
+> > >  security/integrity/evm/evm_crypto.c | 9 +++++++--
+> > >  1 file changed, 7 insertions(+), 2 deletions(-)
+> > > 
+> > > diff --git a/security/integrity/evm/evm_crypto.c b/security/integrity/evm/evm_crypto.c
+> > > index 168c3b78ac47..39fb31a638ac 100644
+> > > --- a/security/integrity/evm/evm_crypto.c
+> > > +++ b/security/integrity/evm/evm_crypto.c
+> > > @@ -73,7 +73,7 @@ static struct shash_desc *init_desc(char type, uint8_t hash_algo)
+> > >  {
+> > >  	long rc;
+> > >  	const char *algo;
+> > > -	struct crypto_shash **tfm, *tmp_tfm;
+> > > +	struct crypto_shash **tfm, *tmp_tfm = NULL;
+> > >  	struct shash_desc *desc;
+> > >  
+> > >  	if (type == EVM_XATTR_HMAC) {
+> > > @@ -118,13 +118,18 @@ static struct shash_desc *init_desc(char type, uint8_t hash_algo)
+> > >  alloc:
+> > >  	desc = kmalloc(sizeof(*desc) + crypto_shash_descsize(*tfm),
+> > >  			GFP_KERNEL);
+> > > -	if (!desc)
+> > > +	if (!desc) {
+> > > +		if (tmp_tfm)
+> > > +			crypto_free_shash(tmp_tfm);
+> > >  		return ERR_PTR(-ENOMEM);
+> > > +	}
+> > >  
+> > >  	desc->tfm = *tfm;
+> > >  
+> > >  	rc = crypto_shash_init(desc);
+> > >  	if (rc) {
+> > > +		if (tmp_tfm)
+> > > +			crypto_free_shash(tmp_tfm);
+> > >  		kfree(desc);
+> > >  		return ERR_PTR(rc);
+> > >  	}
+> > 
+> > There's no need to check for NULL before calling crypto_free_shash().
+> > 
 > 
-> When compiling with -Werror=maybe-uninitialized, gcc may complains the
-> possible uninitialized umem. Fix that.
+> I find there is a crypto_shash_tfm() in the definition of 
+> crypto_free_shash(). Will this lead to null pointer dereference
+> when we use it to free a NULL pointer?
 > 
-> Signed-off-by: Jason Wang <jasowang@redhat.com>
-> ---
->  drivers/vdpa/mlx5/net/mlx5_vnet.c | 3 +++
->  1 file changed, 3 insertions(+)
-> 
-> diff --git a/drivers/vdpa/mlx5/net/mlx5_vnet.c b/drivers/vdpa/mlx5/net/mlx5_vnet.c
-> index f1d54814db97..a6ad83d8d8e2 100644
-> --- a/drivers/vdpa/mlx5/net/mlx5_vnet.c
-> +++ b/drivers/vdpa/mlx5/net/mlx5_vnet.c
-> @@ -706,6 +706,9 @@ static void umem_destroy(struct mlx5_vdpa_net *ndev, struct mlx5_vdpa_virtqueue
->  	case 3:
->  		umem = &mvq->umem3;
->  		break;
-> +	default:
-> +		WARN(1, "unsupported umem num %d\n", num);
-> +		return;
->  	}
->  
->  	MLX5_SET(destroy_umem_in, in, opcode, MLX5_CMD_OP_DESTROY_UMEM);
 
-Since the "default" case will never be executed, maybe it's better to
-just change "case 3:" to "default:" and avoid the WARN().
+No.  It does &tfm->base, not tfm->base.
 
-> -- 
-> 2.25.1
-> 
+- Eric
