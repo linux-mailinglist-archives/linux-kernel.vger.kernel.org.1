@@ -2,106 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC6392F09B7
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Jan 2021 21:35:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 92E712F09B9
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Jan 2021 21:35:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726768AbhAJUeK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Jan 2021 15:34:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33942 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726263AbhAJUeJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Jan 2021 15:34:09 -0500
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27813C061786
-        for <linux-kernel@vger.kernel.org>; Sun, 10 Jan 2021 12:33:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=bzliTk+pD/abvOFgeWFHUrCNiv7v6oE0Jq+wzAicleU=; b=SmUMYOKtWwCu2E+oKe1i5FMDNi
-        MgChyh5CNa1cnjeoeYccApfllv7qjfuA7oDlXFM7SIelYu5DnFupu3L2z5IrSTxEFKt9vu91R1J1k
-        UFXFMpl6GG28hZEpM7B3cB0drbgp0DHkZFLFRIU8DMcErvaWcvZopV6+k/Z3GxXGQQpYinkM5QioJ
-        7mJDbDIckSputPFqUKtgogkOHWizV3iVdX/LQwXhchjw/4xTGdUXgWPgkNEu+PW/kr5Ao2D0l6qaz
-        iwUz4aciXbCOOcEq4Dq9lFj+TN3mO+hBfUOY78IuUZ8wx3H2UJPkKpI3Y8viID3lFSWTcPT8NmQFr
-        MUrjSn8w==;
-Received: from [2601:1c0:6280:3f0::79df]
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kyhOu-0006HN-Rl; Sun, 10 Jan 2021 20:33:26 +0000
-Subject: Re: [PATCH] scripts: mod: fix checkpatch.pl warnings
-To:     Dwaipayan Ray <dwaipayanray1@gmail.com>, masahiroy@kernel.org,
-        michal.lkml@markovi.net
-Cc:     lukas.bulwahn@gmail.com,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        linux-kernel@vger.kernel.org
-References: <20210110185702.111538-1-dwaipayanray1@gmail.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <b11b1e50-bc2a-0037-1f51-fb69300206b1@infradead.org>
-Date:   Sun, 10 Jan 2021 12:33:17 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        id S1726884AbhAJUej (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Jan 2021 15:34:39 -0500
+Received: from ozlabs.org ([203.11.71.1]:39883 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726263AbhAJUei (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 10 Jan 2021 15:34:38 -0500
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4DDT8422ZCz9sVy;
+        Mon, 11 Jan 2021 07:33:55 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1610310836;
+        bh=GZ4MvaKEK1fYz8dr5DQKQMMpLdz1zv/B/mXwebW6syQ=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=JAdRQL7LTQhNLVf//NOM7sY4wjnc1y2nhwYK0RDGFsyMz3HUXcEplAaUmcPtHV8n+
+         r3836yADPSrXmZaLH0f0B7o5GbbKDuJ3tzUT9IYLPpE/n36/kuzuIxusJCOcMzyWSM
+         omyRQEgVrAV7zuYxm51MIDEh8IXyTQJpjgsc16+vyzGLXz8Tu/xOloFokOi8i6wMne
+         kq7lX70cMGAp6XDcth1nevQFtvHDEh45LgKQamHQWfEia/b7cItzRE3+ZIViGJZ0ar
+         02Oghgxiow+CwroanMODnriZwePpzQ9CPc7i8NnNcmbE2h+/izAYc3oxa9+VEabBr6
+         yFxeEX0w1s0CA==
+Date:   Mon, 11 Jan 2021 07:33:54 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Chao Yu <yuchao0@huawei.com>
+Cc:     Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>
+Subject: Re: linux-next: build warning after merge of the f2fs tree
+Message-ID: <20210111073354.6ec0bbb5@canb.auug.org.au>
+In-Reply-To: <3f921b3d-e8f2-e010-0f6b-76596e29e997@huawei.com>
+References: <20210107141158.312835d8@canb.auug.org.au>
+        <3f921b3d-e8f2-e010-0f6b-76596e29e997@huawei.com>
 MIME-Version: 1.0
-In-Reply-To: <20210110185702.111538-1-dwaipayanray1@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; boundary="Sig_/fLaMUFB3KQfvEW9ViHRqyVC";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+--Sig_/fLaMUFB3KQfvEW9ViHRqyVC
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-On 1/10/21 10:57 AM, Dwaipayan Ray wrote:
-> Fix the following warnings in file2alias reported by
-> checkpatch:
-> 
-> CHECK: spaces preferred around that '*' (ctx:WxV)
-> CHECK: spaces preferred around that '+' (ctx:VxV)
-> CHECK: spaces preferred around that '-' (ctx:VxV)
-> CHECK: spaces preferred around that '&' (ctx:VxV)
-> CHECK: braces {} should be used on all arms of this statement
-> CHECK: Unbalanced braces around else statement
-> CHECK: Alignment should match open parenthesis
-> CHECK: Logical continuations should be on the previous line
-> WARNING: Prefer 'unsigned int' to bare use of 'unsigned'
-> WARNING: Missing a blank line after declarations
-> WARNING: please, no spaces at the start of a line
-> WARNING: Block comments use a trailing */ on a separate line
-> ERROR: spaces required around that '<' (ctx:VxV)
-> ERROR: spaces required around that '=' (ctx:VxV)
-> ERROR: space required after that ',' (ctx:VxV)
-> ERROR: space prohibited before that close parenthesis ')'
-> ERROR: code indent should use tabs where possible
-> ERROR: "(foo*)" should be "(foo *)"
-> 
-> Signed-off-by: Dwaipayan Ray <dwaipayanray1@gmail.com>
-> ---
-> 
-> Note: The patch is compile tested only
+Hi Chao,
 
-Couldn't you at least do a kernel build that builds some
-loadable kernel modules?
-
-Also you could/should tell us if the before and after .o file
-is the same and if not, why not.
-
-> ll file2alias*
--rw-r--r-- 1 rdunlap users 39536 Jan 10 12:10 file2alias.o
--rw-r--r-- 1 rdunlap users 39536 Jan  8 10:06 file2alias.o.b4
-
-> cmp file2alias*
+On Thu, 7 Jan 2021 19:28:19 +0800 Chao Yu <yuchao0@huawei.com> wrote:
 >
+> On 2021/1/7 11:11, Stephen Rothwell wrote:
+> >=20
+> > After merging the f2fs tree, today's linux-next build (htmldocs) produc=
+ed
+> > this warning:
+> >=20
+> > Documentation/ABI/testing/sysfs-fs-f2fs:382: WARNING: Inline emphasis s=
+tart-string without end-string. =20
+>=20
+> IIUC, should I remove "/*" and "*/" for newly added entry in sysfs-fs-f2f=
+s?
 
-Yes, they are the same.
- 
->  scripts/mod/file2alias.c | 156 +++++++++++++++++++++------------------
->  1 file changed, 83 insertions(+), 73 deletions(-)
+Sorry, I don't know.  Cc'ing Jon.
 
+>=20
+> +What:		/sys/fs/f2fs/<disk>/stat/sb_status
+> +Date:		December 2020
+> +Contact:	"Chao Yu" <yuchao0@huawei.com>
+> +Description:	Show status of f2fs superblock in real time.
+> +
+> +		value           sb status macro                 description
+> +		0x1             SBI_IS_DIRTY,                   /* dirty flag for chec=
+kpoint */
+> +		0x2             SBI_IS_CLOSE,                   /* specify unmounting =
+*/
+> +		0x4             SBI_NEED_FSCK,                  /* need fsck.f2fs to f=
+ix */
+> ...
+>=20
+> Thanks,
+>=20
+> >=20
+> > Introduced by commit
+> >=20
+> >    f23307575903 ("f2fs: introduce sb_status sysfs node")
+> >  =20
 
-Looks OK to me.
+--=20
+Cheers,
+Stephen Rothwell
 
-Acked-by: Randy Dunlap <rdunlap@infradead.org>
+--Sig_/fLaMUFB3KQfvEW9ViHRqyVC
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
--- 
-~Randy
+-----BEGIN PGP SIGNATURE-----
 
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl/7ZLIACgkQAVBC80lX
+0GxeNggAlc6+VK8tjBictAXtBxeRZCfGI7wKx9lrwjema49gfZ/rfANpfx1i0aQg
+YrV7UbQwCSdW2JK7NNXhCFJ4WjFkEfYu1J9CzQdU1bFmiTpwbYANR9vJtQKifcO4
+mxTGvZvb+pb/mrQDl3tQEAAtqHU8Lf8QYpcV9b+0rEqrTBxTYo5RKxSQKCWfCA19
+01Elwf620+9ceyROuBxgkn7SrTM9/JGiGwiuTRsUDg95tCcvvlklYgKBIt9tzF86
+5UUNLmT9I/alovoWR3OhEVQso/4vYygwQMsFqs40LFKL74OelnDi40MfJ3f/5gYW
+AG7dyyNYRdOmyy0DcBaUXg/hE6u9tQ==
+=XzYd
+-----END PGP SIGNATURE-----
+
+--Sig_/fLaMUFB3KQfvEW9ViHRqyVC--
