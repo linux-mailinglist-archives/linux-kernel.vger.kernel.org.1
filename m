@@ -2,191 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C9592F082F
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Jan 2021 16:46:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F0422F0832
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Jan 2021 16:48:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726503AbhAJPom (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Jan 2021 10:44:42 -0500
-Received: from www381.your-server.de ([78.46.137.84]:53714 "EHLO
-        www381.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726069AbhAJPol (ORCPT
+        id S1726635AbhAJPsF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Jan 2021 10:48:05 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:21352 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726265AbhAJPsE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Jan 2021 10:44:41 -0500
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=metafoo.de;
-         s=default2002; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:
-        MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender:Reply-To:
-        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-        Resent-To:Resent-Cc:Resent-Message-ID;
-        bh=R29doNJpSYKaxeNU2r78cLtxqxuJ6ZMJ9rTHB65R/uo=; b=UeiLT2Huki4bCzWCzEDPcWsiPr
-        91nSMjqvYNHvR3MpJXbeV1zIWWEuECmFRAVkCj9qIsr1KKV2IKu1d+sbNVah5u6CcXDxxQ2xbBLJs
-        jkS0LFZ6U+bflPZ7e01GcQ6kop8phGH3j+cwA+IwXVf5Q6gaxQbf1vLYdZRGPn6If8QzQvT0lSloL
-        nn3ChIOapIIwCp7ax13sCvkLgZLKkeLF1wMVbJRYed/roQCdjpapNxpYZ/JSeYJ8fTyWcYoPYPpHb
-        yj+Sfz+hPjmf+xxFz/S1dbTxdLrZRNL9BgwZQMc/WzDP1hOGXVb7pkxJTLjTubayvwpjm4IVD+ycC
-        9DLGANDQ==;
-Received: from sslproxy03.your-server.de ([88.198.220.132])
-        by www381.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92.3)
-        (envelope-from <lars@metafoo.de>)
-        id 1kycse-0008Dv-Km; Sun, 10 Jan 2021 16:43:48 +0100
-Received: from [2001:a61:2bd0:3301:9e5c:8eff:fe01:8578]
-        by sslproxy03.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <lars@metafoo.de>)
-        id 1kycse-000Day-CA; Sun, 10 Jan 2021 16:43:48 +0100
-Subject: Re: dmaengine : xilinx_dma two issues
-To:     Paul Thomas <pthomas8589@gmail.com>,
-        Radhey Shyam Pandey <radheys@xilinx.com>
-Cc:     Dan Williams <dan.j.williams@intel.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Michal Simek <michals@xilinx.com>,
-        Matthew Murrian <matthew.murrian@goctsi.com>,
-        Romain Perier <romain.perier@gmail.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Marc Ferland <ferlandm@amotus.ca>,
-        Sebastian von Ohr <vonohr@smaract.com>,
-        "dmaengine@vger.kernel.org" <dmaengine@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        "dave.jiang@intel.com" <dave.jiang@intel.com>,
-        Shravya Kumbham <shravyak@xilinx.com>, git <git@xilinx.com>
-References: <CAD56B7dpewwJVttuk4GAcAsx62HP=vPF9jmxTFNG3Z9RP4u9zA@mail.gmail.com>
- <BY5PR02MB652004976C500CD4EA763047C7D20@BY5PR02MB6520.namprd02.prod.outlook.com>
- <BY5PR02MB6520C9083F072E6907534497C7AE0@BY5PR02MB6520.namprd02.prod.outlook.com>
- <CAD56B7f9D5HnN-rx2QRi4z4HA-bM1=oVpUv6XY35HxBQkAaXmQ@mail.gmail.com>
- <BY5PR02MB6520112ACAD71BD7339BAE89C7AE0@BY5PR02MB6520.namprd02.prod.outlook.com>
- <CAD56B7eUrNYFnV8dhmRE-2RdAA+dix-dYGHAewDutF6B849b0g@mail.gmail.com>
-From:   Lars-Peter Clausen <lars@metafoo.de>
-Message-ID: <d153eb8c-bc55-37b5-2b22-a4f6c6263d38@metafoo.de>
-Date:   Sun, 10 Jan 2021 16:43:48 +0100
+        Sun, 10 Jan 2021 10:48:04 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1610293597;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=nJHPoDKDKNzn4WVZWR4KeYqpHAlbzTvnVzZyjMDlt1c=;
+        b=HDRVXHEuphXrHfm6cZOsQ7dw/eWv10yEu1olpo+59+uVzR/AGWOKGFVfDIACIZz38XYke/
+        pUeDe5M3LAybE3hQou6uFnwmhJP4pXCdE9YgEx1ecV5p8Ss7Xnz5z+wqkaVQyHmEJhVVdT
+        5kXkQam/vZ0puSBUY1BciUYQUX+odhQ=
+Received: from mail-io1-f70.google.com (mail-io1-f70.google.com
+ [209.85.166.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-433-fwfEgbcKM3uDWK7tSk-SaA-1; Sun, 10 Jan 2021 10:46:33 -0500
+X-MC-Unique: fwfEgbcKM3uDWK7tSk-SaA-1
+Received: by mail-io1-f70.google.com with SMTP id b136so10918884iof.19
+        for <linux-kernel@vger.kernel.org>; Sun, 10 Jan 2021 07:46:33 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=nJHPoDKDKNzn4WVZWR4KeYqpHAlbzTvnVzZyjMDlt1c=;
+        b=pzv4RXDW60w95bbC2QjcYIiyaH8HBFvU2i2aeqfNh9DMfVpx+g54xR4+ii859Qq+2L
+         TwVOzpFLnazN+DXYFgG7Z6jGH8CWqtcpEnZnr5+KDlnVqSk/oUo8NllyLj6TTqwi8v/n
+         S1sZzh5ar4kUPs0xsAgJ4t4LKveKvO/No6TRK78x9/Mb0RTiKkLIx1N0hgYrh2KXpPJb
+         A6/jnD79PqaTiV1JcXxjcAsxfp9flwqNbWicCUxmByplkJyFToGUKNs1I96N++/Mn3WZ
+         pp9EgOBM+Q8j6n4P3J2IxCybsZuNxljMErINxpuEgZ5EcOtHYtWingK46vvc32sYWuLz
+         6c/A==
+X-Gm-Message-State: AOAM53161qYJ0hpcgeqcUU4u7WzM6jz8Azn8yVguUmtrfLAeKEOxf0Xq
+        m1rI8OzRCk8OdwaPqOkU5op+Mya37aJezSyQ/3EstTiFwk9tFmyRs8u8ekcMfc52Mdjb1B41OYL
+        wm2/BbhncP667YKpWdaFk0Zzm
+X-Received: by 2002:a92:bbc1:: with SMTP id x62mr12385743ilk.73.1610293593354;
+        Sun, 10 Jan 2021 07:46:33 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJzZ3r6sw5d9VM0GgPbcaCZGcSx2U4R9erKNULHXWVKc2CCssIlcALBlqUui9irGxbStQvwoBw==
+X-Received: by 2002:a92:bbc1:: with SMTP id x62mr12385736ilk.73.1610293593158;
+        Sun, 10 Jan 2021 07:46:33 -0800 (PST)
+Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
+        by smtp.gmail.com with ESMTPSA id v6sm12043670ilo.61.2021.01.10.07.46.30
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 10 Jan 2021 07:46:32 -0800 (PST)
+Subject: Re: [PATCH 0/8] FPGA DFL Changes for 5.12
+From:   Tom Rix <trix@redhat.com>
+To:     Moritz Fischer <mdf@kernel.org>, gregkh@linuxfoundation.org,
+        "linux-fpga@vger.kernel.org" <linux-fpga@vger.kernel.org>
+Cc:     linux-kernel@vger.kernel.org, moritzf@google.com,
+        Rikard Falkeborn <rikard.falkeborn@gmail.com>,
+        Zheng Yongjun <zhengyongjun3@huawei.com>,
+        Russ Weight <russell.h.weight@intel.com>,
+        "Gerlach, Matthew" <matthew.gerlach@intel.com>,
+        Sonal Santan <sonal.santan@xilinx.com>,
+        Xu Yilun <yilun.xu@intel.com>,
+        Richard Gong <richard.gong@intel.com>
+References: <20210107043714.991646-1-mdf@kernel.org>
+ <80b29715-aa0a-b2ac-03af-904fc8f8be98@redhat.com>
+Message-ID: <e1d30642-ce85-b9b7-e8b2-5ad4fe6338e5@redhat.com>
+Date:   Sun, 10 Jan 2021 07:46:29 -0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-In-Reply-To: <CAD56B7eUrNYFnV8dhmRE-2RdAA+dix-dYGHAewDutF6B849b0g@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <80b29715-aa0a-b2ac-03af-904fc8f8be98@redhat.com>
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
 Content-Language: en-US
-X-Authenticated-Sender: lars@metafoo.de
-X-Virus-Scanned: Clear (ClamAV 0.102.4/26045/Sun Jan 10 13:36:42 2021)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 1/10/21 4:16 PM, Paul Thomas wrote:
-> On Fri, Jan 8, 2021 at 1:36 PM Radhey Shyam Pandey <radheys@xilinx.com> wrote:
->>> -----Original Message-----
->>> From: Paul Thomas <pthomas8589@gmail.com>
->>> Sent: Friday, January 8, 2021 9:27 PM
->>> To: Radhey Shyam Pandey <radheys@xilinx.com>
->>> Cc: Dan Williams <dan.j.williams@intel.com>; Vinod Koul
->>> <vkoul@kernel.org>; Michal Simek <michals@xilinx.com>; Matthew Murrian
->>> <matthew.murrian@goctsi.com>; Romain Perier
->>> <romain.perier@gmail.com>; Krzysztof Kozlowski <krzk@kernel.org>; Marc
->>> Ferland <ferlandm@amotus.ca>; Sebastian von Ohr
->>> <vonohr@smaract.com>; dmaengine@vger.kernel.org; Linux ARM <linux-
->>> arm-kernel@lists.infradead.org>; linux-kernel <linux-
->>> kernel@vger.kernel.org>; dave.jiang@intel.com; Shravya Kumbham
->>> <shravyak@xilinx.com>; git <git@xilinx.com>
->>> Subject: Re: dmaengine : xilinx_dma two issues
->>>
->>> Hi All,
->>>
->>> On Fri, Jan 8, 2021 at 2:13 AM Radhey Shyam Pandey <radheys@xilinx.com>
->>> wrote:
->>>>> -----Original Message-----
->>>>> From: Radhey Shyam Pandey
->>>>> Sent: Monday, January 4, 2021 10:50 AM
->>>>> To: Paul Thomas <pthomas8589@gmail.com>; Dan Williams
->>>>> <dan.j.williams@intel.com>; Vinod Koul <vkoul@kernel.org>; Michal
->>>>> Simek <michals@xilinx.com>; Matthew Murrian
->>>>> <matthew.murrian@goctsi.com>; Romain Perier
->>>>> <romain.perier@gmail.com>; Krzysztof Kozlowski <krzk@kernel.org>;
->>>>> Marc Ferland <ferlandm@amotus.ca>; Sebastian von Ohr
->>>>> <vonohr@smaract.com>; dmaengine@vger.kernel.org; Linux ARM <linux-
->>>>> arm-kernel@lists.infradead.org>; linux-kernel <linux-
->>>>> kernel@vger.kernel.org>; Shravya Kumbham <shravyak@xilinx.com>; git
->>>>> <git@xilinx.com>
->>>>> Subject: RE: dmaengine : xilinx_dma two issues
->>>>>
->>>>>> -----Original Message-----
->>>>>> From: Paul Thomas <pthomas8589@gmail.com>
->>>>>> Sent: Monday, December 28, 2020 10:14 AM
->>>>>> To: Dan Williams <dan.j.williams@intel.com>; Vinod Koul
->>>>>> <vkoul@kernel.org>; Michal Simek <michals@xilinx.com>; Radhey
->>>>>> Shyam Pandey <radheys@xilinx.com>; Matthew Murrian
->>>>>> <matthew.murrian@goctsi.com>; Romain Perier
->>>>> <romain.perier@gmail.com>;
->>>>>> Krzysztof Kozlowski <krzk@kernel.org>; Marc Ferland
->>>>>> <ferlandm@amotus.ca>; Sebastian von Ohr <vonohr@smaract.com>;
->>>>>> dmaengine@vger.kernel.org; Linux ARM <linux-
->>>>>> arm-kernel@lists.infradead.org>; linux-kernel <linux-
->>>>>> kernel@vger.kernel.org>
->>>>>> Subject: dmaengine : xilinx_dma two issues
->>>>>>
->>>>>> Hello,
->>>>>>
->>>>>> I'm trying to get the 5.10 kernel up and running for our system,
->>>>>> and I'm running into a couple of issues with xilinx_dma.
->>>>> + (Xilinx mailing list)
->>>>>
->>>>> Thanks for bringing the issues to our notice. Replies inline.
->>>>>
->>>>>> First, commit 14ccf0aab46e 'dmaengine: xilinx_dma: In dma channel
->>>>>> probe fix node order dependency' breaks our usage. Before this
->>>>>> commit a
->>>>> call to:
->>>>>> dma_request_chan(&indio_dev->dev, "axi_dma_0"); returns fine, but
->>>>>> after that commit it returns -19. The reason for this seems to be
->>>>>> that the only channel that is setup is channel 1 (chan->id is 1 in
->>>>> xilinx_dma_chan_probe()).
->>>>>> However in
->>>>>> of_dma_xilinx_xlate() chan_id is gets set to 0 (int chan_id =
->>>>>> dma_spec-
->>>>>>> args[0];), which causes the:
->>>>>> !xdev->chan[chan_id]
->>>>>> test to fail in of_dma_xilinx_xlate()
->>>>> What is the channel number passed in dmaclient DT?
->>> Is this a question for me?
->> Yes, please also share the dmaclient DT client node. Need to see
->> channel number passed to dmas property. Something like below-
->>
->> dmas = <& axi_dma_0 1>
->> dma-names = "axi_dma_0"
-> OK, I think I need to revisit this and clean it up some. Currently In
-> the driver (a custom iio adc driver) it is hard coded:
-> dma_request_chan(&indio_dev->dev, "axi_dma_0");
->
-> However, the DT also has the entries (currently unused by the driver):
->          dmas = <&axi_dma_0 0>;
->          dma-names = "axi_dma_0";
->
-> I'll go back and clean up our driver to do something like adi-axi-adc.c does:
->
->          if (!device_property_present(dev, "dmas"))
->                  return 0;
->
->          if (device_property_read_string(dev, "dma-names", &dma_name))
->                  dma_name = "axi_dma_0";
->
-> Should the dmas node get used by the driver? I see the second argument
-> is: '0' for write/tx and '1' for read/rx channel. So I should be
-> setting this to 1 like this?
->          dmas = <&axi_dma_0 1>;
->          dma-names = "axi_dma_0";
->
-> But where does that field get used?
 
-This got broken in "dmaengine: xilinx_dma: In dma channel probe fix node 
-order dependency" 
-<https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=14ccf0aab46e1888e2f45b6e995c621c70b32651>. 
-Before if there was only one channel that channel was always at index 0. 
-Regardless of whether the channel was RX or TX. But after that change 
-the RX channel is always at offset 1, regardless of whether the DMA has 
-one or two channels. This is a breakage in ABI.
+On 1/7/21 8:09 AM, Tom Rix wrote:
+> On 1/6/21 8:37 PM, Moritz Fischer wrote:
+>> This is a resend of the previous (unfortunately late) patchset of
+>> changes for FPGA DFL.
+> Is there something I can do to help ?
+>
+> I am paid to look after linux-fpga, so i have plenty of time.
+>
+> Some ideas of what i am doing now privately i can do publicly.
+>
+> 1. keep linux-fpga sync-ed to greg's branch so linux-fpga is normally in a pullable state.
+>
+> 2. an in-flight dev branch for the outstanding patches 
 
-If you have the choice I'd recommend to not use the Xilinx DMA, it gets 
-broken pretty much every other release.
+I have setup these branches based on Greg's char-misc-next
 
-- Lars
+fpga-next, which is char-misc-next base for fpga-testing
+
+fpga-testing, all the in-flight patches that would apply with automatic merge conflict resolution
+
+These are respectively
+
+https://github.com/trixirt/linux-fpga/tree/fpga-next
+
+https://github.com/trixirt/linux-fpga/tree/fpga-testing
 
 
+There are two trivial changes, that could go to 5.12 now.
+
+fpga: dfl: fme: Constify static attribute_group structs
+
+fpga: Use DEFINE_SPINLOCK() for spinlock
+
+respectively
+
+https://lore.kernel.org/linux-fpga/20210108235414.48017-1-rikard.falkeborn@gmail.com/
+
+https://lore.kernel.org/linux-fpga/20201228135135.28788-1-zhengyongjun3@huawei.com/
+
+
+There are a couple of patchsets that conflict
+
+https://lore.kernel.org/linux-fpga/20210105230855.15019-7-russell.h.weight@intel.com/
+
+https://lore.kernel.org/linux-fpga/20201203171548.1538178-3-matthew.gerlach@linux.intel.com/
+
+Which I will follow up on.
+
+
+And the xilinx patchset
+
+https://lore.kernel.org/linux-fpga/20201217075046.28553-1-sonals@xilinx.com/
+
+Which is being split/worked on offline.
+
+
+If I have missed any patchset, poke me.
+
+Tom
+
+
+>
+> Tom
+>
+>
 
