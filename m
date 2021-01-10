@@ -2,87 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F4B72F0A79
-	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 00:44:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 574E82F0A80
+	for <lists+linux-kernel@lfdr.de>; Mon, 11 Jan 2021 00:53:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726932AbhAJXmA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Jan 2021 18:42:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45526 "EHLO
+        id S1726908AbhAJXvs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Jan 2021 18:51:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47642 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726110AbhAJXl7 (ORCPT
+        with ESMTP id S1726110AbhAJXvs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Jan 2021 18:41:59 -0500
-Received: from ZenIV.linux.org.uk (zeniv.linux.org.uk [IPv6:2002:c35c:fd02::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BAFFC061786;
-        Sun, 10 Jan 2021 15:41:19 -0800 (PST)
-Received: from viro by ZenIV.linux.org.uk with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kykKA-0094e9-Rx; Sun, 10 Jan 2021 23:40:42 +0000
-Date:   Sun, 10 Jan 2021 23:40:42 +0000
-From:   Al Viro <viro@zeniv.linux.org.uk>
-To:     Mikulas Patocka <mpatocka@redhat.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Vishal Verma <vishal.l.verma@intel.com>,
-        Dave Jiang <dave.jiang@intel.com>,
-        Ira Weiny <ira.weiny@intel.com>,
-        Matthew Wilcox <willy@infradead.org>, Jan Kara <jack@suse.cz>,
-        Steven Whitehouse <swhiteho@redhat.com>,
-        Eric Sandeen <esandeen@redhat.com>,
-        Dave Chinner <dchinner@redhat.com>,
-        Theodore Ts'o <tytso@mit.edu>,
-        Wang Jianchao <jianchao.wan9@gmail.com>,
-        "Kani, Toshi" <toshi.kani@hpe.com>,
-        "Norton, Scott J" <scott.norton@hpe.com>,
-        "Tadakamadla, Rajesh" <rajesh.tadakamadla@hpe.com>,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-nvdimm@lists.01.org
-Subject: Re: [RFC v2] nvfs: a filesystem for persistent memory
-Message-ID: <20210110234042.GX3579531@ZenIV.linux.org.uk>
-References: <alpine.LRH.2.02.2101061245100.30542@file01.intranet.prod.int.rdu2.redhat.com>
- <20210110162008.GV3579531@ZenIV.linux.org.uk>
- <alpine.LRH.2.02.2101101410230.7245@file01.intranet.prod.int.rdu2.redhat.com>
+        Sun, 10 Jan 2021 18:51:48 -0500
+Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1F88C061786
+        for <linux-kernel@vger.kernel.org>; Sun, 10 Jan 2021 15:51:07 -0800 (PST)
+Received: by mail-lj1-x22b.google.com with SMTP id u21so1636291lja.0
+        for <linux-kernel@vger.kernel.org>; Sun, 10 Jan 2021 15:51:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=TeXerxLFQDRy1M/7+6jRhfeAjoOXsFHoiOadjCR5Gxo=;
+        b=Qt+slJnfi7kKerWix4WQ5h3IJviGUsa6pyl2XSZOa5Jguu/1sbrujcumGoqzIniiru
+         QNv6GWf9r3YnXEybcNqWJgIJ1XTxXRieyeSHs9ZIiKMRjBDVi+TJ3rUG4FoIOeN/Sba9
+         EKhHiqY4DBXj8uDRXj/mM9GuNN0nehxPDPN7cGJJfd0iXW8q7JW9QpfjO0vnWHjhR4+R
+         NFQv2goTLNLfTyqFooMd7Ad79y/ZlR/gx+h+QhPhrLxhM9M2fjqAplekdwBhK31EyqbG
+         CBtTuPAG2ILts4fD/jqhIKUVJ5RkCCONSzoku5Z5V0SfuLx7XEwiw2m9bzwYfB038CJT
+         EMtg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=TeXerxLFQDRy1M/7+6jRhfeAjoOXsFHoiOadjCR5Gxo=;
+        b=cV9UNwaqPY3/JmFgsQX2sUp0wmeyKk7+RKcbvSHdo1xXecBnKNScTuFRpK3yi4ET20
+         w++HUHcpebsPNqPP5qmsNELAIdwadvqLgjChov/wAbSfTpEzgba8ugjfs3helL1aZh/0
+         2ccjyI0GL9fxHZp5iNIgdyqtmHfl2dCvVOkZtTrXF0ThovkqO5pzeRS0j8SzQu9CODYN
+         vOPRVf/qt8LEZxmpzs822ABYLvJTd4oBfTxELlLmSTwKOqQv8q2uSnRc6E8M22sG6f6m
+         zBOZYy3oPIk9Z7YVdhFlQC1fsIaV1agmUdwFpEHMljzw1xNxVz9bJwStn1W2n822pty5
+         cLPg==
+X-Gm-Message-State: AOAM530MCK0uYmFE6lSNRD2NZUBfI5x4d8NzN+XOQFM2/XpY2OmC443m
+        on6gkb28ev9i/577BFBW/+tvmJGffN/OOFuimtEQOp8UinLmUw==
+X-Google-Smtp-Source: ABdhPJwqHKxSHgkILumAzY5OKQLD8YP9VBC1kI0H6ZXJ4LVIag60LgqtDk6Pt+7IEB25C6ZhnMGQxCj3WFsKVjDJ03E=
+X-Received: by 2002:a2e:bc05:: with SMTP id b5mr6529624ljf.444.1610322666121;
+ Sun, 10 Jan 2021 15:51:06 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <alpine.LRH.2.02.2101101410230.7245@file01.intranet.prod.int.rdu2.redhat.com>
-Sender: Al Viro <viro@ftp.linux.org.uk>
+References: <1608381853-18582-1-git-send-email-oliver.graute@gmail.com>
+ <20210108214313.GA7979@ripley> <CAOMZO5AXgeGYt4+4NMBRL1Hm-9M4X2DngdEBsJEAHq8+MRhQgQ@mail.gmail.com>
+ <20210110153532.GA7264@ripley> <CAOMZO5C_hDWeVrCh7k+3OiA0jhQfawhGWE6hxnnFn=wA+dkTGQ@mail.gmail.com>
+ <20210110200606.GD7264@ripley>
+In-Reply-To: <20210110200606.GD7264@ripley>
+From:   Fabio Estevam <festevam@gmail.com>
+Date:   Sun, 10 Jan 2021 20:50:54 -0300
+Message-ID: <CAOMZO5DJUm4zutTB1oi5M0zj4_PFZEAbGzX6_LUAkX_dvEz=Qg@mail.gmail.com>
+Subject: Re: [PATCH v1] drm/panel: simple: add SGD GKTW70SDAD1SD
+To:     Oliver Graute <oliver.graute@gmail.com>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Marco Felsch <m.felsch@pengutronix.de>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        DRI mailing list <dri-devel@lists.freedesktop.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jan 10, 2021 at 04:14:55PM -0500, Mikulas Patocka wrote:
+On Sun, Jan 10, 2021 at 5:09 PM Oliver Graute <oliver.graute@gmail.com> wrote:
 
-> That's a good point. I split nvfs_rw_iter to separate functions 
-> nvfs_read_iter and nvfs_write_iter - and inlined nvfs_rw_iter_locked into 
-> both of them. It improved performance by 1.3%.
-> 
-> > Not that it had been more useful on the write side, really,
-> > but that's another story (nvfs_write_pages() handling of
-> > copyin is... interesting).  Let's figure out what's going
-> > on with the read overhead first...
-> > 
-> > lib/iov_iter.c primitives certainly could use massage for
-> > better code generation, but let's find out how much of the
-> > PITA is due to those and how much comes from you fighing
-> > the damn thing instead of using it sanely...
-> 
-> The results are:
-> 
-> read:                                           6.744s
-> read_iter:                                      7.417s
-> read_iter - separate read and write path:       7.321s
-> Al's read_iter:                                 7.182s
-> Al's read_iter with _copy_to_iter:              7.181s
+> here the schematics and my dts. The board is using a LVDS connector for
+> the display.
 
-So
-	* overhead of hardening stuff is noise here
-	* switching to more straightforward ->read_iter() cuts
-the overhead by about 1/3.
+The schematics shows the GKTW70SDAD1SD panel in the J4 connector, not
+the LVDS J7 connector.
 
-	Interesting...  I wonder how much of that is spent in
-iterate_and_advance() glue inside copy_to_iter() here.  There's
-certainly quite a bit of optimizations possible in those
-primitives and your usecase makes a decent test for that...
+> https://www.variscite.de/wp-content/uploads/2017/12/VAR-6ULCustomboard-Schematics.pdf
+> https://lore.kernel.org/linux-arm-kernel/1610144511-19018-3-git-send-email-oliver.graute@gmail.com/
 
-	Could you profile that and see where is it spending
-the time, on instruction level?
+As I mentioned earlier you should remove the display timings from the
+dts when using the compatible string for the panel.
+
+power-supply = <&reg_touch_3v3> is not correct, as the reg_touch_3v3
+does not power the LCD.
+
+Another hint is to use the PLL5_VIDEO as the clock source for the
+lcdif controller as done in the imx6ul evk dtsi.
+
+It would also help if you could share the complete boot log.
