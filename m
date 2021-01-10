@@ -2,73 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 27B912F0731
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Jan 2021 13:28:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E45632F0733
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Jan 2021 13:33:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726566AbhAJM1G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Jan 2021 07:27:06 -0500
-Received: from mail.kernel.org ([198.145.29.99]:53604 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726418AbhAJM1F (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Jan 2021 07:27:05 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3B17E224D2;
-        Sun, 10 Jan 2021 12:26:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610281585;
-        bh=wgwc5pZ2wCCwctYNUxDibkCWCm5JG3BzKhsS7z1kKsA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=lB6rDrVh0s1UqTJrtDyLDg3nJ0JsycKE19vLrBzn6EPcwPk6QQHyehPg1tHkm5YI5
-         RJgxg0bTZURHP+aYWGU5H12LQkwOjHGfBPT+hwdmfDTt6TiQ6VoQsbYPBlMAZxGmwD
-         2SbrQRmDCobvQGESjQGE5AnJkKSftRW6xsmUHfsBNFYmof941dJdt8bpipcXOEa/Hp
-         Tqoq27/7AUo3vRAlK9PhzsxuC5QiF2Eu5CTPZByup70RTIQTgPzGK7hQkQJTpz1SFh
-         cfPZSvO3OLFE/XxPUsELv6DIf0Kc1ubRGEAwJBHYfd0wapZu75uShfd1/MadAEzpOp
-         DxdZTDY9t+hKA==
-Date:   Sun, 10 Jan 2021 20:26:18 +0800
-From:   Shawn Guo <shawnguo@kernel.org>
-To:     Guido =?iso-8859-1?Q?G=FCnther?= <agx@sigxcpu.org>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Martin Kepplinger <martink@posteo.de>,
-        Angus Ainslie <angus@akkea.ca>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Li Yang <leoyang.li@nxp.com>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Vinod Koul <vkoul@kernel.org>,
-        Anson Huang <Anson.Huang@nxp.com>,
-        Michael Walle <michael@walle.cc>, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        phone-devel@vger.kernel.org
-Subject: Re: [PATCH v2 0/4] Config and device tree updates for the Librem 5
- devkit
-Message-ID: <20210110122617.GM28365@dragon>
-References: <cover.1608216796.git.agx@sigxcpu.org>
+        id S1726418AbhAJMdL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Jan 2021 07:33:11 -0500
+Received: from mail-yb1-f178.google.com ([209.85.219.178]:46541 "EHLO
+        mail-yb1-f178.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726069AbhAJMdK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 10 Jan 2021 07:33:10 -0500
+Received: by mail-yb1-f178.google.com with SMTP id f6so14142972ybq.13;
+        Sun, 10 Jan 2021 04:32:55 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Xf9Y4Sd28497N8HdTJIQDbuhCrniQEwtSYEyz2FWEz8=;
+        b=RZM/oP18fqdYa7nUKAWFDEv6/1UXHqaObz6ZCkSHGPc0fCdG4bYMZl+SaQc1ekoYag
+         OkTlWuVK9/Gzw73OJJyTNkdpNez2Z9KrCzn847kAKF3cR0Q/ivNaPPAxuXZtEjRCyt5P
+         dP8Zrx2jGMz7hyCO7rVimQSVig5Sx2wq6ZrI4D7OY8wNMYO+p0FpRZaRMWomlNS27eSf
+         FoP9uUxxf4ZGewK2+iGR/tdMDUf6Q/6qo04OP452zYIpQ/YjVVNHlAGBlaKKmwzzficw
+         pfR6jMlkpiiGvbVjEvHlAc0YPXHjwvCDX/MEJ2O5tfuN8j25B0ZGzJO+16iDsQzFj218
+         UDNQ==
+X-Gm-Message-State: AOAM533jvG2gXBLlRSzc3X7Eo7XT71IDRNxbFYWfessXYnvwdOB0JKOs
+        AZT8P/MjjvenpbCuhuXzSGNHLc5NC7wcelKobum2qLyHwEZ3zA==
+X-Google-Smtp-Source: ABdhPJz2oeOyrvoUsKuLg9Bll0qpGCHxUqcgyHH+cOjcuPjB9q0ZnRE4Wq1BI5YBMbaQuBU99uJ8zcnKgcZQocltLO8=
+X-Received: by 2002:a25:4744:: with SMTP id u65mr19439144yba.239.1610281949723;
+ Sun, 10 Jan 2021 04:32:29 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <cover.1608216796.git.agx@sigxcpu.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+References: <20210110103526.61047-1-mailhol.vincent@wanadoo.fr>
+ <20210110103526.61047-2-mailhol.vincent@wanadoo.fr> <043c3ea1-6bdd-59c0-0269-27b2b5b36cec@victronenergy.com>
+In-Reply-To: <043c3ea1-6bdd-59c0-0269-27b2b5b36cec@victronenergy.com>
+From:   Vincent MAILHOL <mailhol.vincent@wanadoo.fr>
+Date:   Sun, 10 Jan 2021 21:32:18 +0900
+Message-ID: <CAMZ6RqKL62wR5KRRJgy8fiEHSKCQvP7CJFdR1=8MPh4_3pMq_A@mail.gmail.com>
+Subject: Re: [PATCH 1/1] can: dev: add software tx timestamps
+To:     Jeroen Hofstee <jhofstee@victronenergy.com>
+Cc:     Marc Kleine-Budde <mkl@pengutronix.de>,
+        linux-can <linux-can@vger.kernel.org>,
+        Wolfgang Grandegger <wg@grandegger.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "open list:NETWORKING DRIVERS" <netdev@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Dec 17, 2020 at 04:13:11PM +0100, Guido Günther wrote:
-> This enables more components to get a working display, panel, audio and
-> sensors. It also updates some device tree bits to make mainline boot.
-> 
-> I've skipped wifi (which needs some more driver work) and devfreq (since Martin
-> is working on that).
-> 
-> The config changes don't depend on the DT parts so could be applied
-> independently. The series was tested against next-20201214 and i made sure the
-> defconfig changes also apply on top of shawnguo/imx/defconfig.
+Hello Jeroen,
 
-Sorry.  It doesn't apply any more.
+On Sun. 10 Jan 2021 at 20:29, Jeroen Hofstee <jhofstee@victronenergy.com> wrote:
+>
+> Hello Vincent,
+>
+> On 1/10/21 11:35 AM, Vincent Mailhol wrote:
+> > Call skb_tx_timestamp() within can_put_echo_skb() so that a software
+> > tx timestamp gets attached on the skb.
+> >
+> [..]
+> >
+> > diff --git a/drivers/net/can/dev.c b/drivers/net/can/dev.c
+> > index 3486704c8a95..3904e0874543 100644
+> > --- a/drivers/net/can/dev.c
+> > +++ b/drivers/net/can/dev.c
+> > @@ -484,6 +484,8 @@ int can_put_echo_skb(struct sk_buff *skb, struct net_device *dev,
+> >
+> >               /* save this skb for tx interrupt echo handling */
+> >               priv->echo_skb[idx] = skb;
+> > +
+> > +             skb_tx_timestamp(skb);
+> >       } else {
+> >               /* locking problem with netif_stop_queue() ?? */
+> >               netdev_err(dev, "%s: BUG! echo_skb %d is occupied!\n", __func__, idx);
+>
+> Personally, I would put the skb_tx_timestamp, before adding it to the array:
+>
+>          /* make settings for echo to reduce code in irq context */
+>          skb->pkt_type = PACKET_BROADCAST;
+>          skb->ip_summed = CHECKSUM_UNNECESSARY;
+>          skb->dev = dev;
+> +       skb_tx_timestamp(skb);
+>
+>          /* save this skb for tx interrupt echo handling */
+>          priv->echo_skb[idx] = skb;
 
-Shawn
+I agree that it is better like that from an aesthetic point of
+view. The reason to put it at the very end was to really to
+blindly follow the doc and do the timestamp as late as possible.
+
+>
+> I don't think it actually matters though.
+
+Indeed, but will still follow your suggestion though. Putting it
+before would just delay the timestamp by a few assembly
+instructions: it is negligible enough.
+
+
+Yours sincerely,
+Vincent Mailhol
