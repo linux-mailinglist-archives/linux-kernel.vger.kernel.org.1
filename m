@@ -2,155 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 401AD2F09E6
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Jan 2021 22:35:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BDD4F2F09E5
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Jan 2021 22:35:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727008AbhAJVeu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Jan 2021 16:34:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46808 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726534AbhAJVet (ORCPT
+        id S1726919AbhAJVer (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Jan 2021 16:34:47 -0500
+Received: from mail-il1-f199.google.com ([209.85.166.199]:34647 "EHLO
+        mail-il1-f199.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726534AbhAJVer (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Jan 2021 16:34:49 -0500
-Received: from mail-lj1-x22f.google.com (mail-lj1-x22f.google.com [IPv6:2a00:1450:4864:20::22f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99476C061786
-        for <linux-kernel@vger.kernel.org>; Sun, 10 Jan 2021 13:34:08 -0800 (PST)
-Received: by mail-lj1-x22f.google.com with SMTP id u11so1425392ljo.13
-        for <linux-kernel@vger.kernel.org>; Sun, 10 Jan 2021 13:34:08 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=qwDBLOl5CVCeF0P0kwdlt2wM1kUvDpLPAJMSKBRxg9M=;
-        b=O1MZL5FC+wG8LIdfmsRaBa6/thw+/g110wanUmPYu2Ronl3gKSXhlOepCDQ+s6TL2N
-         xu11epSwwnwpR0Bj54+iV/ib3911s52X9WzFsGqI81Iay78IYobCO+weAiK+SbwsY3/a
-         t9Pl6C3ogoeCKkHD5FIusF45oWvRd0Hlj1JKnO2WcGVMtlR8cqGBbB30f0U6UvQqaaY9
-         BoW60rRmLNxfhsS/OSB6KecyuATGVVV7IwNJM3aWzGDD1d2EFAwvROE/K61qJ3+c6V1N
-         8cTpm6YT70O4fpROcy1vHfMjyrCH7Yeo9dMGwCe9wazTfwm06XqA4xJpkNFVEps8Ceuj
-         3Nhw==
+        Sun, 10 Jan 2021 16:34:47 -0500
+Received: by mail-il1-f199.google.com with SMTP id c72so15612547ila.1
+        for <linux-kernel@vger.kernel.org>; Sun, 10 Jan 2021 13:34:31 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=qwDBLOl5CVCeF0P0kwdlt2wM1kUvDpLPAJMSKBRxg9M=;
-        b=Rny6L5G4jumSX1qM4Zugu/xY1f8oL1f09ANuYI+d5SHQcs80Y9IQCwNmODs1Dcj5XJ
-         gHRe+xdfMjWOqvBoQlo7m6TgxEitHej1qtPU4ZnamYgpi38I/tRxxjHrZob4v1Jl3zuw
-         5+ZWkred5XitciMWyVbDVR+bAep8FRE5Fv/7TKzNEFbO0v3sstwe7qg2vtoBQ9lxeUFx
-         UzOUsgwkvB2BcpzChyRA+8gST7DDTqJrfmPPm252RW9IaqhXtenFkdMemnvcrdLxBDzc
-         vZEt+IzmAswTFXit2QmB3Y8F3AOUMGRuS2HR3DedmomIJL2gcwy7JE12ctftCkN0aL7s
-         7/UQ==
-X-Gm-Message-State: AOAM530/RZTciwKyjpKaTP7SGVg5bGetcJ1xgrgJ7Frj5Zlq3shnlafI
-        5H7MJky1DkZ58KSdobtS/htm0JTIH+yYekS0FerUfA==
-X-Google-Smtp-Source: ABdhPJygTM2XUlD9axbmB+KpgakdlAh9kwrXgblXhejGBkbE8aGkF9u6DQX7GQV57RzFX+IaNT9AA+PnJGf0xvJ0BhQ=
-X-Received: by 2002:a2e:9dc3:: with SMTP id x3mr6350880ljj.326.1610314447060;
- Sun, 10 Jan 2021 13:34:07 -0800 (PST)
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=4LoZGTCd2t0PplwDQfQEE+U/aUfHCI0fmScR3fZ7eks=;
+        b=PTStok2zv4YbV1fwnrVxOK3fc2qJNzQmGzsmYiCgISvOFandfHTdbPP1vdpd5mahAO
+         /sW+cUbkU4sIsY/7qazRAilKDVL+Re7buIl5rQUk6d+Fv8YhvkQJmWMN1Y93JjaHgMj3
+         WuvJIWXMVGGoFQcqILrfG7lht/9V6DhRup8oUIl9c2uUuqR73YENaNLYuLOK2LI93nPJ
+         rYR68tXDYFFVyH3ZyfaDBXafINPiwWu3ztIsBhrVHWzs5+/5KwUzlvB8bWAczEdT9bPh
+         EdhQkOFrAjDMhc9AicnclklY6mjT6VZhubdi9/nmWUiEuvTCBHvJtMfd/ijF8Ezdg+kC
+         kHuQ==
+X-Gm-Message-State: AOAM531REl7egw3AyTH6PXHScM2t8iP+5AKHcvL7KYr1xqyiYyLhMobF
+        7lLR+ROJCEA4FU67XjuPZdBkdsO09d/NUvJV+NVCULtZsgVH
+X-Google-Smtp-Source: ABdhPJx67Ra1fKhg2km05vdN/7nOfGovy2vCeemD7oaDvO+wU2FWsRqdlpTPosKZn2Kc7GVpOHOHrDRZ6reF4GfhUVz3wBglI2w6
 MIME-Version: 1.0
-References: <CAK8P3a2VW8T+yYUG1pn1yR-5eU4jJXe1+M_ot6DAvfr2KyXCzQ@mail.gmail.com>
- <67171E13-6786-4B44-A8C2-3302963B055F@gmail.com> <CAK8P3a0o=1KjPtp0Ah8Afe5vvG1b72+77HRFh4Z06HUGwN6+Ew@mail.gmail.com>
- <1702853.1557dWfJA4@linux-e202.suse.de>
-In-Reply-To: <1702853.1557dWfJA4@linux-e202.suse.de>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Sun, 10 Jan 2021 22:33:56 +0100
-Message-ID: <CACRpkdYaMASWWDTX7hTt+xQnVPA=WTWNFk2eDnTjKoJF=LA7LQ@mail.gmail.com>
-Subject: Re: Old platforms: bring out your dead
-To:     Fabian Vogt <fabian@ritter-vogt.de>
-Cc:     Daniel Tang <dt.tangr@gmail.com>, Arnd Bergmann <arnd@kernel.org>,
-        Baruch Siach <baruch@tkos.co.il>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Jamie Iles <jamie@jamieiles.com>,
-        Krzysztof Adamski <krzysztof.adamski@nokia.com>,
-        Alexander Shiyan <shc_work@mail.ru>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Russell King - ARM Linux <linux@armlinux.org.uk>,
-        Wei Xu <xuwei5@hisilicon.com>,
-        Oleksij Rempel <o.rempel@pengutronix.de>,
-        Alex Elder <elder@linaro.org>,
-        Marc Gonzalez <marc.w.gonzalez@free.fr>,
-        Hans Ulli Kroll <ulli.kroll@googlemail.com>,
-        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Vladimir Zapolskiy <vz@mleia.com>,
-        Lubomir Rintel <lkundrak@v3.sk>,
-        Koen Vandeputte <koen.vandeputte@ncentric.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Barry Song <song.bao.hua@hisilicon.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Jonas Jensen <jonas.jensen@gmail.com>,
-        Hartley Sweeten <hsweeten@visionengravers.com>,
-        Mark Salter <msalter@redhat.com>,
-        Shawn Guo <shawnguo@kernel.org>
+X-Received: by 2002:a92:ad05:: with SMTP id w5mr12555250ilh.226.1610314445966;
+ Sun, 10 Jan 2021 13:34:05 -0800 (PST)
+Date:   Sun, 10 Jan 2021 13:34:05 -0800
+In-Reply-To: <000000000000588c2c05aa156b2b@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000087569605b8928ce3@google.com>
+Subject: Re: kernel BUG at mm/vmalloc.c:LINE! (2)
+From:   syzbot <syzbot+5f326d255ca648131f87@syzkaller.appspotmail.com>
+To:     akpm@linux-foundation.org, andrii@kernel.org, ast@kernel.org,
+        bjorn.topel@intel.com, bp@alien8.de, bpf@vger.kernel.org,
+        daniel@iogearbox.net, dave.hansen@linux.intel.com,
+        davem@davemloft.net, hawk@kernel.org, hpa@zytor.com,
+        john.fastabend@gmail.com, jonathan.lemon@gmail.com, kafai@fb.com,
+        kpsingh@chromium.org, kuba@kernel.org,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org, luto@kernel.org,
+        magnus.karlsson@intel.com, marekx.majtyka@intel.com,
+        mingo@kernel.org, mingo@redhat.com, netdev@vger.kernel.org,
+        peterz@infradead.org, songliubraving@fb.com,
+        syzkaller-bugs@googlegroups.com, tglx@linutronix.de,
+        x86@kernel.org, yhs@fb.com
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Jan 10, 2021 at 7:16 PM Fabian Vogt <fabian@ritter-vogt.de> wrote:
-> Am Samstag, 9. Januar 2021, 23:20:48 CET schrieb Arnd Bergmann:
-> > On Sat, Jan 9, 2021 at 1:06 AM Daniel Tang <dt.tangr@gmail.com> wrote:
+syzbot suspects this issue was fixed by commit:
 
-> > > * nspire -- added in 2013, no notable changes after 2015
->
-> Most of the platform is just the DT sources and some small drivers around it,
-> so it's actually fairly low maintenance. So far the migration away from
-> panel-simple in 2019
-> (https://lore.kernel.org/linux-arm-kernel/20190805085847.25554-1-linus.walleij@linaro.org)
-> was the biggest required change so far.
+commit 537cf4e3cc2f6cc9088dcd6162de573f603adc29
+Author: Magnus Karlsson <magnus.karlsson@intel.com>
+Date:   Fri Nov 20 11:53:39 2020 +0000
 
-What we're seeing here is actually a port that is:
-- Finished
-- Has a complete set of working drivers
-- Supported
-- Just works
+    xsk: Fix umem cleanup bug at socket destruct
 
-I.e. it doesn't see much patches because it is pretty much perfect.
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=139f3dfb500000
+start commit:   e87d24fc Merge branch 'net-iucv-fixes-2020-11-09'
+git tree:       net
+kernel config:  https://syzkaller.appspot.com/x/.config?x=61033507391c77ff
+dashboard link: https://syzkaller.appspot.com/bug?extid=5f326d255ca648131f87
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=10d10006500000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=126c9eaa500000
 
-We are so unused to this situation that it can be mistaken for
-the device being abandoned.
+If the result looks correct, please mark the issue as fixed by replying with:
 
-I think it was Russell who first pointed out that this is actually
-the case for a few machines.
+#syz fix: xsk: Fix umem cleanup bug at socket destruct
 
-> > Would either of you already have a guess for how long it makes
-> > sense to update kernels on it?
-> >
-> > I see that this is one of the more limited platforms with just 32MB
-> > of RAM (64MB in case of CX), and kernels only get more bloated over
-> > time, so I expect at some point you will be stuck with running old
-> > software.
->
-> The kernel overhead isn't actually that bad. I just built today's 2ff90100ace8
-> and booted it with a busybox-based initrd. free -m reports:
-> total used free shared buffers
->    58   12   46      0       0
->
-> Relatively speaking, still mostly unused ;-) The stock OS actually uses more!
-> With 32MiB, the situation is definitely worse, but still manageable. Should
-> that change in the future, dropping just the Classic/CM variants would be a
-> possible option, but that still seems far enough away.
-
-64 MB is perfectly fine to run Linux. OpenWrt-type distributions (also
-OpenEmbedded/YOCTO) run just fine with that. 32 MB certainly works.
-For example this is the Gemini D-Link DNS-313 which is my NAS
-and works perfectly on 64MB:
-
-root@DNS-313:~# free -m
-              total        used        free      shared  buff/cache   available
-Mem:          56136       21032       28612           0        6492       23812
-Swap:        131128        1280      129848
-
-Not even using the fallback swap.
-
-I can add that at the time it is syncing a backup AND playing back
-a 1080p movie over SMB. The trick is using ksmbd rather than
-Samba. ksmbd is much less memory-intensive.
-
-I like to use this device for NAS since it is good at I/O, stable,
-maintained by myself and JustWorks(TM).
-
-Yours,
-Linus Walleij
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
