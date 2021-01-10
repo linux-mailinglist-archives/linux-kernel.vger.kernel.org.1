@@ -2,72 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B9DE42F08B2
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Jan 2021 18:22:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AF5372F0887
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Jan 2021 18:04:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727045AbhAJRUS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Jan 2021 12:20:18 -0500
-Received: from m12-18.163.com ([220.181.12.18]:35004 "EHLO m12-18.163.com"
+        id S1726495AbhAJREF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Jan 2021 12:04:05 -0500
+Received: from honk.sigxcpu.org ([24.134.29.49]:35500 "EHLO honk.sigxcpu.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726228AbhAJRUR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Jan 2021 12:20:17 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id; bh=PDPR1EvJ8p2jFoEYZJ
-        /H6tQbh9r5SwukeSGEZ5VrZLI=; b=mq1FUfXU8lXDbDQ7i3hxQhBuRsebQrJcpp
-        6A+bvaObtO2SGNuk4uGtyFPVd2ZChZ4rgKUa9Su9INy9PIldmGBYti0XK5il3eSJ
-        dEO7LTO9njjT6PK2G7kfO+wp3DCbgksZ0F7EN9ccBY80hq6/cxjd2W+pFHm2xfxP
-        +KZ4Yw8hg=
-Received: from localhost.localdomain (unknown [36.170.32.128])
-        by smtp14 (Coremail) with SMTP id EsCowACXmPbp_fpfpmHJOQ--.54130S2;
-        Sun, 10 Jan 2021 21:15:22 +0800 (CST)
-From:   Hailong Liu <liuhailongg6@163.com>
-To:     Andrey Ryabinin <aryabinin@virtuozzo.com>, linus.walleij@linaro.org
-Cc:     Alexander Potapenko <glider@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Russell King <linux@armlinux.org.uk>,
-        kasan-dev@googlegroups.com, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, liuhailongg6@163.com,
-        Hailong Liu <liu.hailong6@zte.com.cn>
-Subject: [PATCH] arm/kasan: kasan_alloc a more precise size for pte
-Date:   Sun, 10 Jan 2021 21:15:00 +0800
-Message-Id: <20210110131500.12378-1-liuhailongg6@163.com>
-X-Mailer: git-send-email 2.17.1
-X-CM-TRANSID: EsCowACXmPbp_fpfpmHJOQ--.54130S2
-X-Coremail-Antispam: 1Uf129KBjvdXoWrZrWkZw1fGr43tryfGr4xCrg_yoWfXFXEg3
-        Waqw4I9rySyrZ09asrXF4fXr1Syan2vw1kJF13KFyUZryjqwn5Ww1vq3y3Way8Wr429rWa
-        yrWYqr1ayw1j9jkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IUnkOz7UUUUU==
-X-Originating-IP: [36.170.32.128]
-X-CM-SenderInfo: xolxxtxlor0wjjw6il2tof0z/xtbBFQwWYFXlna-WSAABsy
+        id S1726250AbhAJREF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 10 Jan 2021 12:04:05 -0500
+Received: from localhost (localhost [127.0.0.1])
+        by honk.sigxcpu.org (Postfix) with ESMTP id 19E31FB03;
+        Sun, 10 Jan 2021 18:03:23 +0100 (CET)
+X-Virus-Scanned: Debian amavisd-new at honk.sigxcpu.org
+Received: from honk.sigxcpu.org ([127.0.0.1])
+        by localhost (honk.sigxcpu.org [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id j46i6NiFsSWV; Sun, 10 Jan 2021 18:03:22 +0100 (CET)
+Received: by bogon.sigxcpu.org (Postfix, from userid 1000)
+        id A9B3A40885; Sun, 10 Jan 2021 18:03:21 +0100 (CET)
+Date:   Sun, 10 Jan 2021 18:03:21 +0100
+From:   Guido =?iso-8859-1?Q?G=FCnther?= <agx@sigxcpu.org>
+To:     Shawn Guo <shawnguo@kernel.org>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Peng Fan <peng.fan@nxp.com>,
+        Dong Aisheng <aisheng.dong@nxp.com>,
+        Anson Huang <Anson.Huang@nxp.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Shengjiu Wang <shengjiu.wang@nxp.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] arm64: dts: imx8mq: Add clock parents for mipi dphy
+Message-ID: <20210110170321.GA30072@bogon.m.sigxcpu.org>
+References: <dd135fa55084d886bd6daf777d76677f232c53c6.1608313793.git.agx@sigxcpu.org>
+ <20210110124629.GO28365@dragon>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210110124629.GO28365@dragon>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hailong Liu <liu.hailong6@zte.com.cn>
+Hi,
+On Sun, Jan 10, 2021 at 08:46:29PM +0800, Shawn Guo wrote:
+> On Fri, Dec 18, 2020 at 06:50:05PM +0100, Guido Günther wrote:
+> > This makes sure the clock tree setup for the dphy is not dependent on
+> > other components.
+> > 
+> > Without this change bringing up the display can fail like
+> > 
+> >   kernel: phy phy-30a00300.dphy.2: Invalid CM/CN/CO values: 165/217/1
+> >   kernel: phy phy-30a00300.dphy.2: for hs_clk/ref_clk=451656000/593999998 ~ 165/217
+> > 
+> > if LCDIF doesn't set up that part of the clock tree first. This was
+> > noticed when testing the Librem 5 devkit with defconfig. It doesn't
+> > happen when modules are built in.
+> > 
+> > Signed-off-by: Guido Günther <agx@sigxcpu.org>
+> > ---
+> >  arch/arm64/boot/dts/freescale/imx8mq.dtsi | 11 ++++++++---
+> >  1 file changed, 8 insertions(+), 3 deletions(-)
+> > 
+> > diff --git a/arch/arm64/boot/dts/freescale/imx8mq.dtsi b/arch/arm64/boot/dts/freescale/imx8mq.dtsi
+> > index a841a023e8e0..ca0847e8f13c 100644
+> > --- a/arch/arm64/boot/dts/freescale/imx8mq.dtsi
+> > +++ b/arch/arm64/boot/dts/freescale/imx8mq.dtsi
+> > @@ -1016,9 +1016,14 @@ dphy: dphy@30a00300 {
+> >  				reg = <0x30a00300 0x100>;
+> >  				clocks = <&clk IMX8MQ_CLK_DSI_PHY_REF>;
+> >  				clock-names = "phy_ref";
+> > -				assigned-clocks = <&clk IMX8MQ_CLK_DSI_PHY_REF>;
+> > -				assigned-clock-parents = <&clk IMX8MQ_VIDEO_PLL1_OUT>;
+> > -				assigned-clock-rates = <24000000>;
+> > +				assigned-clocks = <&clk IMX8MQ_VIDEO_PLL1_REF_SEL>,
+> > +						  <&clk IMX8MQ_VIDEO_PLL1_BYPASS>,
+> > +						  <&clk IMX8MQ_CLK_DSI_PHY_REF>,
+> > +						  <&clk IMX8MQ_VIDEO_PLL1>;
+> 
+> You do not seem to set parent or rate on IMX8MQ_VIDEO_PLL1.  Why do you
+> have it here?
 
-The *PTE_HWTABLE_OFF + PTE_HWTABLE_SIZE* may be a more accurate and
-meaningful size for PTE tables than *PAGE_SIZE* when populating the
-PMD entries for arm.
+Good point. I've added a clock rate for IMX8MQ_VIDEO_PLL1 since
+then the clock tree reproduces exactly with and with the DSI host
+controller disabled in DT (otherwise we end up with a rate of 22MHz
+instead of 24Mhz).
 
-Signed-off-by: Hailong Liu <liu.hailong6@zte.com.cn>
----
- arch/arm/mm/kasan_init.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Cheers,
+ -- Guido
 
-diff --git a/arch/arm/mm/kasan_init.c b/arch/arm/mm/kasan_init.c
-index 9c348042a724..c2a697704d6c 100644
---- a/arch/arm/mm/kasan_init.c
-+++ b/arch/arm/mm/kasan_init.c
-@@ -99,7 +99,7 @@ static void __init kasan_pmd_populate(pud_t *pudp, unsigned long addr,
- 			 * allocated.
- 			 */
- 			void *p = early ? kasan_early_shadow_pte :
--				kasan_alloc_block(PAGE_SIZE);
-+				kasan_alloc_block(PTE_HWTABLE_OFF + PTE_HWTABLE_SIZE);
- 
- 			if (!p) {
- 				panic("%s failed to allocate shadow block for address 0x%lx\n",
--- 
-2.17.1
-
-
+> 
+> Shawn
+> 
+> > +				assigned-clock-parents = <&clk IMX8MQ_CLK_25M>,
+> > +						  <&clk IMX8MQ_VIDEO_PLL1>,
+> > +						  <&clk IMX8MQ_VIDEO_PLL1_OUT>;
+> > +				assigned-clock-rates = <0>, <0>, <24000000>;
+> >  				#phy-cells = <0>;
+> >  				power-domains = <&pgc_mipi>;
+> >  				status = "disabled";
+> > -- 
+> > 2.29.2
+> > 
+> 
