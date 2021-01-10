@@ -2,112 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C546F2F08D3
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Jan 2021 18:44:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 95A872F08CE
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Jan 2021 18:36:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726559AbhAJRn1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Jan 2021 12:43:27 -0500
-Received: from raptor.unsafe.ru ([5.9.43.93]:38132 "EHLO raptor.unsafe.ru"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726346AbhAJRn1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Jan 2021 12:43:27 -0500
-Received: from comp-core-i7-2640m-0182e6.redhat.com (ip-89-103-122-167.net.upcbroadband.cz [89.103.122.167])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
-        (No client certificate requested)
-        by raptor.unsafe.ru (Postfix) with ESMTPSA id AADA620A1F;
-        Sun, 10 Jan 2021 17:34:53 +0000 (UTC)
-From:   Alexey Gladkov <gladkov.alexey@gmail.com>
-To:     LKML <linux-kernel@vger.kernel.org>,
-        Linux Containers <containers@lists.linux-foundation.org>,
-        Kernel Hardening <kernel-hardening@lists.openwall.com>
-Cc:     Alexey Gladkov <legion@kernel.org>,
-        "Eric W . Biederman" <ebiederm@xmission.com>,
-        Kees Cook <keescook@chromium.org>,
-        Christian Brauner <christian@brauner.io>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: [RFC PATCH v2 8/8] Move RLIMIT_NPROC check to the place where we increment the counter
-Date:   Sun, 10 Jan 2021 18:33:47 +0100
-Message-Id: <54b0cf752c2c275a164aa980e2d8e4e464797ca1.1610299858.git.gladkov.alexey@gmail.com>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <cover.1610299857.git.gladkov.alexey@gmail.com>
-References: <cover.1610299857.git.gladkov.alexey@gmail.com>
+        id S1726662AbhAJRgl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Jan 2021 12:36:41 -0500
+Received: from outpost1.zedat.fu-berlin.de ([130.133.4.66]:60719 "EHLO
+        outpost1.zedat.fu-berlin.de" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726267AbhAJRgl (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 10 Jan 2021 12:36:41 -0500
+Received: from inpost2.zedat.fu-berlin.de ([130.133.4.69])
+          by outpost.zedat.fu-berlin.de (Exim 4.94)
+          with esmtps (TLS1.2)
+          tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+          (envelope-from <glaubitz@zedat.fu-berlin.de>)
+          id 1kyedC-000z7W-GH; Sun, 10 Jan 2021 18:35:58 +0100
+Received: from p5b13a61e.dip0.t-ipconnect.de ([91.19.166.30] helo=[192.168.178.139])
+          by inpost2.zedat.fu-berlin.de (Exim 4.94)
+          with esmtpsa (TLS1.2)
+          tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+          (envelope-from <glaubitz@physik.fu-berlin.de>)
+          id 1kyedB-0007jE-HL; Sun, 10 Jan 2021 18:35:58 +0100
+In-Reply-To: <CAK8P3a2VW8T+yYUG1pn1yR-5eU4jJXe1+M_ot6DAvfr2KyXCzQ@mail.gmail.com>
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        Sparc kernel list <sparclinux@vger.kernel.org>,
+        Linux-sh list <linux-sh@vger.kernel.org>
+From:   John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+Subject: Re: Old platforms: bring out your dead
+Message-ID: <ef1dc21f-694b-2433-e1c6-aa121320173e@physik.fu-berlin.de>
+Date:   Sun, 10 Jan 2021 18:35:57 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.6.0
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.6.1 (raptor.unsafe.ru [5.9.43.93]); Sun, 10 Jan 2021 17:34:53 +0000 (UTC)
+X-Original-Sender: glaubitz@physik.fu-berlin.de
+X-Originating-IP: 91.19.166.30
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-After calling set_user(), we always have to call commit_creds() to apply
-new credentials upon the current task. There is no need to separate
-limit check and counter incrementing.
+Hi Arnd!
 
-Signed-off-by: Alexey Gladkov <gladkov.alexey@gmail.com>
----
- kernel/cred.c | 22 +++++++++++++++++-----
- kernel/sys.c  | 13 -------------
- 2 files changed, 17 insertions(+), 18 deletions(-)
+(Please let's have this cross-posted for more visibility. I only learned about this
+ while reading Phoronix news)
 
-diff --git a/kernel/cred.c b/kernel/cred.c
-index 89a945571533..770447b4f4de 100644
---- a/kernel/cred.c
-+++ b/kernel/cred.c
-@@ -488,14 +488,26 @@ int commit_creds(struct cred *new)
- 	if (!gid_eq(new->fsgid, old->fsgid))
- 		key_fsgid_changed(new);
- 
--	/* do it
--	 * RLIMIT_NPROC limits on user->processes have already been checked
--	 * in set_user().
--	 */
- 	alter_cred_subscribers(new, 2);
- 	if (new->user != old->user || new->user_ns != old->user_ns) {
-+		bool overlimit;
-+
- 		set_cred_ucounts(new, new->user_ns, new->euid);
--		inc_rlimit_ucounts(new->ucounts, UCOUNT_RLIMIT_NPROC, 1);
-+
-+		overlimit = inc_rlimit_ucounts_and_test(new->ucounts, UCOUNT_RLIMIT_NPROC,
-+				1, rlimit(RLIMIT_NPROC));
-+
-+		/*
-+		 * We don't fail in case of NPROC limit excess here because too many
-+		 * poorly written programs don't check set*uid() return code, assuming
-+		 * it never fails if called by root.  We may still enforce NPROC limit
-+		 * for programs doing set*uid()+execve() by harmlessly deferring the
-+		 * failure to the execve() stage.
-+		 */
-+		if (overlimit && new->user != INIT_USER)
-+			current->flags |= PF_NPROC_EXCEEDED;
-+		else
-+			current->flags &= ~PF_NPROC_EXCEEDED;
- 	}
- 	rcu_assign_pointer(task->real_cred, new);
- 	rcu_assign_pointer(task->cred, new);
-diff --git a/kernel/sys.c b/kernel/sys.c
-index c2734ab9474e..180c4e06064f 100644
---- a/kernel/sys.c
-+++ b/kernel/sys.c
-@@ -467,19 +467,6 @@ static int set_user(struct cred *new)
- 	if (!new_user)
- 		return -EAGAIN;
- 
--	/*
--	 * We don't fail in case of NPROC limit excess here because too many
--	 * poorly written programs don't check set*uid() return code, assuming
--	 * it never fails if called by root.  We may still enforce NPROC limit
--	 * for programs doing set*uid()+execve() by harmlessly deferring the
--	 * failure to the execve() stage.
--	 */
--	if (is_ucounts_overlimit(new->ucounts, UCOUNT_RLIMIT_NPROC, rlimit(RLIMIT_NPROC)) &&
--			new_user != INIT_USER)
--		current->flags |= PF_NPROC_EXCEEDED;
--	else
--		current->flags &= ~PF_NPROC_EXCEEDED;
--
- 	free_uid(new->user);
- 	new->user = new_user;
- 	return 0;
+> I also looked at non-ARM platforms while preparing for my article. Some of
+> these look like they are no longer actively maintained or used, but I'm not
+> doing anything about those unless the maintainers would like me to:
+> 
+> * h8300: Steven Rostedt has repeatedly asked about it to be removed
+>    or fixed in 2020 with no reply. This was killed before in 2013, added back
+>    in 2015 but has been mostly stale again since 2016
+
+As far as I know, Yoshinori Sato is actively maintaining H8300 support, see:
+
+> https://osdn.net/projects/uclinux-h8/
+
+> * c6x: Added in 2011, this has seen very few updates since, but
+>     Mark still Acks patches when they come. Like most other DSP platforms,
+>     the model of running Linux on a DSP appears to have been obsoleted
+>     by using Linux on ARM with on-chip DSP cores running bare-metal code.
+> * sparc/sun4m: A patch for removing 32-bit Sun sparc support (not LEON)
+>    is currently under review
+
+I don't think this has reached any agreement yet. Multiple people want it to stay.
+
+> * powerpc/cell: I'm the maintainer and I promised to send a patch to remove it.
+>    it's in my backlog but I will get to it. This is separate from PS3,
+> which is actively
+>    maintained and used; spufs will move to ps3
+> * powerpc/chrp (32-bit rs6000, pegasos2): last updated in 2009
+
+I'm still using this. Please keep it.
+
+> * powerpc/amigaone: last updated in 2009
+> * powerpc/maple: last updated in 2011
+> * m68k/{apollo,hp300,sun3,q40} these are all presumably dead and have not
+>    seen updates in many years (atari/amiga/mac and coldfire are very much
+>    alive)
+
+Dito. I have both sun3 and hp300 machines.
+
+> * mips/jazz: last updated in 2007
+> * mips/cobalt: last updated in 2010
+> 
+> There might be some value in dropping old CPU support on architectures
+> and platforms that are almost exclusively used with more modern CPUs.
+> If there are only few users, those can still keep using v5.10 or v5.4 stable
+> kernels for a few more years. Again, I'm not doing anything about them,
+> except mention them since I did the research.
+> These are the oldest one by architecture, and they may have reached
+> their best-served-by-date:
+> 
+> * 80486SX/DX: 80386 CPUs were dropped in 2012, and there are
+>   indications that 486 have no users either on recent kernels.
+>   There is still the Vortex86 family of SoCs, and the oldest of those were
+>   486SX-class, but all the modern ones are 586-class.
+> * Alpha 2106x: First generation that lacks some of the later features.
+>   Since all Alphas are ancient by now, it's hard to tell whether these have
+>   any fewer users.
+
+I don't see the point in crippling Alpha support. Does this achieve anything?
+
+> * IA64 Merced: first generation Itanium (2001) was quickly replaced by
+>   Itanium II in 2002.
+> * MIPS R3000/TX39xx: 32-bit MIPS-II generation, mostly superseded by
+>   64-bit MIPS-III (R4000 and higher) starting in 1991. arch/mips still
+>   supports these in DECstation and Toshiba Txx9, but it appears that most
+>   of those machines are of the 64-bit kind. Later MIPS32 such as 4Kc and
+>   later are rather different and widely used.
+> * PowerPC 601 (from 1992) just got removed, later 60x, 4xx, 8xx etc
+>   are apparently all still used.
+> * SuperH SH-2: We discussed removing SH-2 (not J2 or SH-4)
+>   support in the past, I don't think there were any objections, but
+>   nobody submitted a patch.
+
+Isn't SH-2 basically J-2? I'm not sure what we would gain here.
+
+> * 68000/68328 (Dragonball): these are less capable than the
+>   68020+ or the Coldfire MCF5xxx line and similar to the 68360
+>   that was removed in 2016.
+
+Adrian
+
 -- 
-2.29.2
+ .''`.  John Paul Adrian Glaubitz
+: :' :  Debian Developer - glaubitz@debian.org
+`. `'   Freie Universitaet Berlin - glaubitz@physik.fu-berlin.de
+  `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
 
