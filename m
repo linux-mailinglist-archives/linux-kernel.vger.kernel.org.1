@@ -2,138 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1277E2F04B8
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Jan 2021 02:42:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FA0F2F04BE
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Jan 2021 02:51:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726336AbhAJBmL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Jan 2021 20:42:11 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:51975 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726132AbhAJBmK (ORCPT
+        id S1726324AbhAJBuJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Jan 2021 20:50:09 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49208 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726062AbhAJBuI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Jan 2021 20:42:10 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1610242843;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=2sAhMPAqZzotrO2nlPyhJHBXpEmoJ10fcvEPsZhICVM=;
-        b=K1hM3EjKz3Hdt91Z6Pk4HRK3eq61ERsGPcOdDoIaGQ0ZWTfsicwEK9sD+1+BodpzG03SO1
-        WgghHD1I4Z5r6LuoxlHcBGihRWpAwlHUK4hkIFFWlq4RnPx4XNg8GV4CKPVx7hiseKfIjX
-        Z72D3ns2PvO2qmPKIkIHG/K4wRO2u8Y=
-Received: from mail-il1-f200.google.com (mail-il1-f200.google.com
- [209.85.166.200]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-430-Q_eCm_NMP2yhOXdtbq9HyQ-1; Sat, 09 Jan 2021 20:40:41 -0500
-X-MC-Unique: Q_eCm_NMP2yhOXdtbq9HyQ-1
-Received: by mail-il1-f200.google.com with SMTP id g3so2133411ild.4
-        for <linux-kernel@vger.kernel.org>; Sat, 09 Jan 2021 17:40:41 -0800 (PST)
+        Sat, 9 Jan 2021 20:50:08 -0500
+Received: from mail-ua1-x92c.google.com (mail-ua1-x92c.google.com [IPv6:2607:f8b0:4864:20::92c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9057EC061786
+        for <linux-kernel@vger.kernel.org>; Sat,  9 Jan 2021 17:49:28 -0800 (PST)
+Received: by mail-ua1-x92c.google.com with SMTP id f16so4783193uav.12
+        for <linux-kernel@vger.kernel.org>; Sat, 09 Jan 2021 17:49:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=1UjVBI6DwWGEqKjlb956Wzfzp6jzPMsT75ZWabonuRA=;
+        b=mJ37GlA6KDO7ZYwk4swiCGQNWElQShNlGobj/6SXwudRq5SMY8GWPXxqXJLdEurKVX
+         OQQzyL7n6Kj9tysDd7Om15PlCPGA7rOGtA4oka0yHLZdDcC1Qc1UkgAP3C4DlzZpsOog
+         dWWdH1rTjXYcKkiSV8QvUcdErxw7sSNpW+yOc=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=2sAhMPAqZzotrO2nlPyhJHBXpEmoJ10fcvEPsZhICVM=;
-        b=M/ZQEnQueLrfE0XQof2EF4oDWVKXMyGr1X2c0MuGmD2mwesXsLjQol4vhkNg5ciSGh
-         9QFcD+Sa+WTEJPfWbwwA6igjCf23tQBxlA6zON5uv/bObkC8sGYHDFl7RojfWlBxIRPY
-         ojqWMAXQ9AuzZbrDB4/SH8QD8wrGwTAx5J9BkvLAzzSWkl6VcHDT8mJg7TWU6E01Z+Pn
-         CyrE1WYe0OfC5S+5PEc1T6Pj8zZGKNcS3rpQNbLxsCwynMDi4IbAomRzcvAxOvl8gO8G
-         2ntoZQJyc3vl2S0CacFSSzAYfOu6UdRdE7B4X878xS9GWjydhZK4mzdT4GZ8txOd7eUI
-         REIg==
-X-Gm-Message-State: AOAM533S4meA9gDYmVkelqfD9csteLJV3LxJdRPFLaRP4Beo1syqx94X
-        pzC9kTNkcUsl30KN2R8JUGiMlIj0NZrBqGpE9Qr5haVVb8fTvcxvi49/FKkWG9thMLvX0zce2oY
-        WTmN5D+xVqKiyTiBVmnXzFfQDQUnebxdQhZ+/4bTxz20sjOFuz06f3vwczHUbMtxt6KKzjxw=
-X-Received: by 2002:a05:6602:2d81:: with SMTP id k1mr10582282iow.90.1610242840925;
-        Sat, 09 Jan 2021 17:40:40 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJxiXUcJQB4lXNerQgsf1XbHxTycNdizR8B4WJUw/0QV7qNzteCeyovlCFvltXLwwYS30Y6DIg==
-X-Received: by 2002:a05:6602:2d81:: with SMTP id k1mr10582273iow.90.1610242840681;
-        Sat, 09 Jan 2021 17:40:40 -0800 (PST)
-Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
-        by smtp.gmail.com with ESMTPSA id 62sm8844048ioc.36.2021.01.09.17.40.39
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 09 Jan 2021 17:40:40 -0800 (PST)
-Subject: Re: [PATCH] fpga: dfl: fme: Constify static attribute_group structs
-To:     Rikard Falkeborn <rikard.falkeborn@gmail.com>
-Cc:     Wu Hao <hao.wu@intel.com>, Moritz Fischer <mdf@kernel.org>,
-        linux-fpga@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210108235414.48017-1-rikard.falkeborn@gmail.com>
- <a1c87050-0962-5169-8ed4-c1da0098ff34@redhat.com> <X/ozuAn64pe71rh+@rikard>
-From:   Tom Rix <trix@redhat.com>
-Message-ID: <55ca10fc-e52e-af47-609a-edaa65752a38@redhat.com>
-Date:   Sat, 9 Jan 2021 17:40:38 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=1UjVBI6DwWGEqKjlb956Wzfzp6jzPMsT75ZWabonuRA=;
+        b=FYc2fgZaDspRWWJjhIyV1pz5OPwByGmMu35rAef7v73qvg34rl95X0htYE1Ihzqb5z
+         5UjlJFI1kiOVeakaTcsvdyZtA9VX4Q/0fem5SO6SSONz4UNt/kyWuiuwxZbh1gGwKqdP
+         hYpjB6EWtfdRhDrNpaBUHWzAJdiqlrNKQDD+uLsYAsxo/6aF5TmqP4AjN08nGYb2AptW
+         OtB1ynTKOA3BRFidWuFJXXRsf+fINPc8yuSi1bGeGQJaw/y/qHdQshTMGNRVI37VTndq
+         tP5RV1EkDxn2nzauGRM9MXJfjJqzZQMSWdFRANkeo8blm8fUXn5Tk7fBY+ECFa80X/tk
+         W+jw==
+X-Gm-Message-State: AOAM532oC1GjLc+2nOEMnP5mQMXdEPXETyBLUA9hvJ6uSTeggSzIRrNb
+        3igdc/6V9IIvotP7Hw1XHSZhxHRjheXSRzq6nDocpw==
+X-Google-Smtp-Source: ABdhPJzBebHk146ZhAkD8otYtFgViiYtu+ubVds7PRUth6EO2Xh1rNYSE0WzcSgsh+QcdojwPhtJGAZrnOAzVQbKXdQ=
+X-Received: by 2002:ab0:474e:: with SMTP id i14mr8074392uac.74.1610243367666;
+ Sat, 09 Jan 2021 17:49:27 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <X/ozuAn64pe71rh+@rikard>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+References: <20210107104915.2888408-1-hsinyi@chromium.org> <20210107104915.2888408-3-hsinyi@chromium.org>
+In-Reply-To: <20210107104915.2888408-3-hsinyi@chromium.org>
+From:   Nicolas Boichat <drinkcat@chromium.org>
+Date:   Sun, 10 Jan 2021 09:49:16 +0800
+Message-ID: <CANMq1KAWCbtpJWMG2nE6k1hOzA=hCWYJxzC7RXb_voEri0v2=g@mail.gmail.com>
+Subject: Re: [PATCH 2/3] soc: mediatek: pm-domains: Add domain regulator supply
+To:     Hsin-Yi Wang <hsinyi@chromium.org>
+Cc:     linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
+        Devicetree List <devicetree@vger.kernel.org>,
+        Weiyi Lu <weiyi.lu@mediatek.com>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
+        Mark Brown <broonie@kernel.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Jan 7, 2021 at 6:49 PM Hsin-Yi Wang <hsinyi@chromium.org> wrote:
+>
+> Some power domains (eg. mfg) needs to turn on power supply before power
+> on.
+>
+> Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
 
-On 1/9/21 2:52 PM, Rikard Falkeborn wrote:
-> On Sat, Jan 09, 2021 at 01:55:13PM -0800, Tom Rix wrote:
->> On 1/8/21 3:54 PM, Rikard Falkeborn wrote:
->>> The only usage of these is to put their addresses in arrays of pointers
->>> to const attribute_groups. Make them const to allow the compiler to put
->>> them in read-only memory.
->>>
->>> Signed-off-by: Rikard Falkeborn <rikard.falkeborn@gmail.com>
->>> ---
->>>  drivers/fpga/dfl-fme-perf.c | 6 +++---
->> This looks ok.
->>
->> There are other 'static struct's in drivers/fpga.
->>
->> Why is the change limited to this file ?
->>
->> Tom
->>
-> I have a WIP coccinelle script to constify static struct attribute_group
-> and this is the only file in drivers/fpga which has non-const struct
-> attribute_group, that's why it's limited to this file. I could have
-> mentioned that in the commit message.
+Reviewed-by: Nicolas Boichat <drinkcat@chromium.org>
 
-No worries, thanks for the change!
+> ---
+>  drivers/soc/mediatek/mt8183-pm-domains.h |  1 +
+>  drivers/soc/mediatek/mtk-pm-domains.c    | 36 +++++++++++++++++++++++-
+>  drivers/soc/mediatek/mtk-pm-domains.h    |  1 +
+>  3 files changed, 37 insertions(+), 1 deletion(-)
+>
+> diff --git a/drivers/soc/mediatek/mt8183-pm-domains.h b/drivers/soc/mediatek/mt8183-pm-domains.h
+> index 8d996c5d2682d..aa5230e6c12f8 100644
+> --- a/drivers/soc/mediatek/mt8183-pm-domains.h
+> +++ b/drivers/soc/mediatek/mt8183-pm-domains.h
+> @@ -38,6 +38,7 @@ static const struct scpsys_domain_data scpsys_domain_data_mt8183[] = {
+>                 .ctl_offs = 0x0338,
+>                 .sram_pdn_bits = GENMASK(8, 8),
+>                 .sram_pdn_ack_bits = GENMASK(12, 12),
+> +               .caps = MTK_SCPD_DOMAIN_SUPPLY,
+>         },
+>         [MT8183_POWER_DOMAIN_MFG_CORE0] = {
+>                 .sta_mask = BIT(7),
+> diff --git a/drivers/soc/mediatek/mtk-pm-domains.c b/drivers/soc/mediatek/mtk-pm-domains.c
+> index fb70cb3b07b36..ae255aa7b1a97 100644
+> --- a/drivers/soc/mediatek/mtk-pm-domains.c
+> +++ b/drivers/soc/mediatek/mtk-pm-domains.c
+[snip]
+> @@ -275,6 +295,7 @@ generic_pm_domain *scpsys_add_one_domain(struct scpsys *scpsys, struct device_no
+>  {
+>         const struct scpsys_domain_data *domain_data;
+>         struct scpsys_domain *pd;
+> +       struct device_node *np = scpsys->dev->of_node;
+>         struct property *prop;
+>         const char *clk_name;
+>         int i, ret, num_clks;
+> @@ -307,6 +328,19 @@ generic_pm_domain *scpsys_add_one_domain(struct scpsys *scpsys, struct device_no
+>         pd->data = domain_data;
+>         pd->scpsys = scpsys;
+>
+> +       if (MTK_SCPD_CAPS(pd, MTK_SCPD_DOMAIN_SUPPLY)) {
+> +               /* Find regulator in current power domain node */
+> +               scpsys->dev->of_node = node;
+> +               pd->supply = devm_regulator_get(scpsys->dev, "domain");
+> +               scpsys->dev->of_node = np;
 
-Reviewed-by: Tom Rix <trix@redhat.com>
+This pattern is a bit strange to me. But Hsin-Yi pointed out that
+there are precedents:
+https://elixir.bootlin.com/linux/v5.11-rc2/source/drivers/iio/adc/rcar-gyroadc.c#L397
+.
 
-> Rikard
+> +               if (IS_ERR(pd->supply)) {
+> +                       dev_err_probe(scpsys->dev, PTR_ERR(pd->supply),
+> +                                     "%pOF: failed to get power supply.\n",
+> +                                     node);
+> +                       return ERR_CAST(pd->supply);
+> +               }
+> +       }
+> +
+>         pd->infracfg = syscon_regmap_lookup_by_phandle_optional(node, "mediatek,infracfg");
+>         if (IS_ERR(pd->infracfg))
+>                 return ERR_CAST(pd->infracfg);
+> diff --git a/drivers/soc/mediatek/mtk-pm-domains.h b/drivers/soc/mediatek/mtk-pm-domains.h
+> index a2f4d8f97e058..b2770b5266dba 100644
+> --- a/drivers/soc/mediatek/mtk-pm-domains.h
+> +++ b/drivers/soc/mediatek/mtk-pm-domains.h
+> @@ -7,6 +7,7 @@
+>  #define MTK_SCPD_FWAIT_SRAM            BIT(1)
+>  #define MTK_SCPD_SRAM_ISO              BIT(2)
+>  #define MTK_SCPD_KEEP_DEFAULT_OFF      BIT(3)
+> +#define MTK_SCPD_DOMAIN_SUPPLY         BIT(4)
+>  #define MTK_SCPD_CAPS(_scpd, _x)       ((_scpd)->data->caps & (_x))
+>
+>  #define SPM_VDE_PWR_CON                        0x0210
+> --
+> 2.29.2.729.g45daf8777d-goog
 >
 >
->>>  1 file changed, 3 insertions(+), 3 deletions(-)
->>>
->>> diff --git a/drivers/fpga/dfl-fme-perf.c b/drivers/fpga/dfl-fme-perf.c
->>> index 531266287eee..4299145ef347 100644
->>> --- a/drivers/fpga/dfl-fme-perf.c
->>> +++ b/drivers/fpga/dfl-fme-perf.c
->>> @@ -192,7 +192,7 @@ static struct attribute *fme_perf_cpumask_attrs[] = {
->>>  	NULL,
->>>  };
->>>  
->>> -static struct attribute_group fme_perf_cpumask_group = {
->>> +static const struct attribute_group fme_perf_cpumask_group = {
->>>  	.attrs = fme_perf_cpumask_attrs,
->>>  };
->>>  
->>> @@ -225,7 +225,7 @@ static struct attribute *fme_perf_format_attrs[] = {
->>>  	NULL,
->>>  };
->>>  
->>> -static struct attribute_group fme_perf_format_group = {
->>> +static const struct attribute_group fme_perf_format_group = {
->>>  	.name = "format",
->>>  	.attrs = fme_perf_format_attrs,
->>>  };
->>> @@ -239,7 +239,7 @@ static struct attribute *fme_perf_events_attrs_empty[] = {
->>>  	NULL,
->>>  };
->>>  
->>> -static struct attribute_group fme_perf_events_group = {
->>> +static const struct attribute_group fme_perf_events_group = {
->>>  	.name = "events",
->>>  	.attrs = fme_perf_events_attrs_empty,
->>>  };
-
+> _______________________________________________
+> Linux-mediatek mailing list
+> Linux-mediatek@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-mediatek
