@@ -2,148 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A41502F0566
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Jan 2021 06:38:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6739D2F05A6
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Jan 2021 07:16:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726531AbhAJFiO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Jan 2021 00:38:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41102 "EHLO
+        id S1726112AbhAJGOi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Jan 2021 01:14:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48868 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726447AbhAJFiN (ORCPT
+        with ESMTP id S1725267AbhAJGOi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Jan 2021 00:38:13 -0500
-Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90A5FC0617A2
-        for <linux-kernel@vger.kernel.org>; Sat,  9 Jan 2021 21:37:32 -0800 (PST)
-Received: by mail-pl1-x631.google.com with SMTP id s15so7789397plr.9
-        for <linux-kernel@vger.kernel.org>; Sat, 09 Jan 2021 21:37:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=3I/CL8Jla53b7d11LKJ+4S2e8QSsZLZtH4O2WL7MyxQ=;
-        b=J8H1r9zb83GPmaYa1HkjTuIcIO1g0aq90jxvx2XAeuLZoE6rc1wF8bhferTQCKKUm/
-         fWPGSgGYLy97jDpcpkaXuSKR8rky6RG9cS43vdI+rC1VuWmOE6EnphR9BS5FMOCi/A59
-         gr6014A3DFbb8jq/y49xBkwA1bdYFSw9HgLWleZMG3MZ7+xFvlxUtM1eH+qGL64Si8xb
-         AP5r7RPE+A6KbX5cp+VDk/RQo83vAMmxGrFW83u9FvWcUnJF8nODlppkZOkXAq1/fe0z
-         /bn+HiQp303JtxkmYspysnWYBt4LfgrPT9WYvQXBGuisNs+8Q1brUVIisIb41r1FBdct
-         kQdA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=3I/CL8Jla53b7d11LKJ+4S2e8QSsZLZtH4O2WL7MyxQ=;
-        b=DSNPhQrihy0TPKZp1wk/hxQ8faUWzFsUS7ILEP/MrWNqQwYhFFm8utIQugnEAxOS9S
-         IWjcFsJSGXfhx5+48EGAlWDw4tfYkYUBSZ3PNMHvWVUXkPNFEvBgtNgXpgIAYsPnFFYx
-         frCEvKpT/3I8XBbp1eP99cNTdH22Vovml/199puYmtENlrAK3cEYDqotRjz+Jweo7+uR
-         sJXK6+t4u0ylQ/0Kaj0zCotPRhp+BTBBXvkknuEvidk9D1WbFq3p2XRRglP24KRJmYBq
-         eKzuir+sJV4jjpJXxNQMpGd2/sXuxNsfDwnK3rUl8mAw53K0EJzFFCaKuFifQtaynCVH
-         YEUg==
-X-Gm-Message-State: AOAM531zLrGf4/5krPvXfpf2xXH5KPXMw9Wy8i7H9VJDf60Dwzk88LfA
-        G7XN51rVgqKPrzaNuJ+3Fmf6OQ==
-X-Google-Smtp-Source: ABdhPJz6HBCX2l4Z0qe7iSea5XOLs3zF2OGQOqF7ltEyrFvLjQJwhYpg0dxdsvzopi+HB8sO9kXJPg==
-X-Received: by 2002:a17:902:ec03:b029:dc:f27:dd4a with SMTP id l3-20020a170902ec03b02900dc0f27dd4amr11168478pld.9.1610257052116;
-        Sat, 09 Jan 2021 21:37:32 -0800 (PST)
-Received: from always-libai.bytedance.net ([61.120.150.71])
-        by smtp.gmail.com with ESMTPSA id q15sm14474013pgk.11.2021.01.09.21.37.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 09 Jan 2021 21:37:31 -0800 (PST)
-From:   zhenwei pi <pizhenwei@bytedance.com>
-To:     arnd@arndb.de, gregkh@linuxfoundation.org
-Cc:     pbonzini@redhat.com, linux-kernel@vger.kernel.org,
-        pizhenwei@bytedance.com
-Subject: [PATCH v4 2/2] misc: pvpanic: introduce events device attribue
-Date:   Sun, 10 Jan 2021 13:37:19 +0800
-Message-Id: <20210110053719.3038348-3-pizhenwei@bytedance.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210110053719.3038348-1-pizhenwei@bytedance.com>
-References: <20210110053719.3038348-1-pizhenwei@bytedance.com>
+        Sun, 10 Jan 2021 01:14:38 -0500
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDBA5C061786;
+        Sat,  9 Jan 2021 22:13:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=GNdziTbQbEJ9mo4mjqBaEUuZozMS1eNM8r/cJMJoprY=; b=SsfT8KjpTJHHhQ8OIYtxfv9/Ii
+        TdZoUe768+SB0A2U8voTxFHiKC7KjTFx9AElQatAVXunYvC6bM4WdH9g1fq3IbWOmbO6SK/GDSBAk
+        Beznn47owEO/xpUe5dBBTOY2zElJZrLyLh5THB9hoN+QcO0POI2/FeW4TCKpfnl2t/TIjyx8LjG2R
+        pLCEf4RZMXyipHT+QZ8x3k8mma4VCk8BbYfYLAKvsb+9sMs1JWPyjA5/ZB8fl42iyEis5CWJ/tSnz
+        5EtHLksnUq35W5uGAi0IhRNu2CulCK4X0XwCg8eGv3HZdIVBVVKyCTBkTcNHVIDaSWAr6FEAb8JSD
+        /oCMRNhQ==;
+Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1kyTyb-001Rl1-QK; Sun, 10 Jan 2021 06:13:24 +0000
+Date:   Sun, 10 Jan 2021 06:13:21 +0000
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Mikulas Patocka <mpatocka@redhat.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Vishal Verma <vishal.l.verma@intel.com>,
+        Dave Jiang <dave.jiang@intel.com>,
+        Ira Weiny <ira.weiny@intel.com>, Jan Kara <jack@suse.cz>,
+        Steven Whitehouse <swhiteho@redhat.com>,
+        Eric Sandeen <esandeen@redhat.com>,
+        Dave Chinner <dchinner@redhat.com>,
+        Theodore Ts'o <tytso@mit.edu>,
+        Wang Jianchao <jianchao.wan9@gmail.com>,
+        "Kani, Toshi" <toshi.kani@hpe.com>,
+        "Norton, Scott J" <scott.norton@hpe.com>,
+        "Tadakamadla, Rajesh" <rajesh.tadakamadla@hpe.com>,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-nvdimm@lists.01.org
+Subject: Re: Expense of read_iter
+Message-ID: <20210110061321.GC35215@casper.infradead.org>
+References: <alpine.LRH.2.02.2101061245100.30542@file01.intranet.prod.int.rdu2.redhat.com>
+ <20210107151125.GB5270@casper.infradead.org>
+ <alpine.LRH.2.02.2101071110080.30654@file01.intranet.prod.int.rdu2.redhat.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <alpine.LRH.2.02.2101071110080.30654@file01.intranet.prod.int.rdu2.redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Suggested by Paolo & Greg, add 'events' device attribute that can be
-used to limit which capabilities the driver uses.
+On Thu, Jan 07, 2021 at 01:59:01PM -0500, Mikulas Patocka wrote:
+> On Thu, 7 Jan 2021, Matthew Wilcox wrote:
+> > On Thu, Jan 07, 2021 at 08:15:41AM -0500, Mikulas Patocka wrote:
+> > > I'd like to ask about this piece of code in __kernel_read:
+> > > 	if (unlikely(!file->f_op->read_iter || file->f_op->read))
+> > > 		return warn_unsupported...
+> > > and __kernel_write:
+> > > 	if (unlikely(!file->f_op->write_iter || file->f_op->write))
+> > > 		return warn_unsupported...
+> > > 
+> > > - It exits with an error if both read_iter and read or write_iter and 
+> > > write are present.
+> > > 
+> > > I found out that on NVFS, reading a file with the read method has 10% 
+> > > better performance than the read_iter method. The benchmark just reads the 
+> > > same 4k page over and over again - and the cost of creating and parsing 
+> > > the kiocb and iov_iter structures is just that high.
+> > 
+> > Which part of it is so expensive?
+> 
+> The read_iter path is much bigger:
+> vfs_read		- 0x160 bytes
+> new_sync_read		- 0x160 bytes
+> nvfs_rw_iter		- 0x100 bytes
+> nvfs_rw_iter_locked	- 0x4a0 bytes
+> iov_iter_advance	- 0x300 bytes
 
-Finally, the pvpanic guest driver works by the limitation of both
-device capability and user setting.
+Number of bytes in a function isn't really correlated with how expensive
+a particular function is.  That said, looking at new_sync_read() shows
+one part that's particularly bad, init_sync_kiocb():
 
-Signed-off-by: zhenwei pi <pizhenwei@bytedance.com>
----
- .../ABI/testing/sysfs-bus-pci-devices-pvpanic |  7 +++++
- drivers/misc/pvpanic.c                        | 26 ++++++++++++++++++-
- 2 files changed, 32 insertions(+), 1 deletion(-)
+static inline int iocb_flags(struct file *file)
+{
+        int res = 0;
+        if (file->f_flags & O_APPEND)
+                res |= IOCB_APPEND;
+     7ec:       8b 57 40                mov    0x40(%rdi),%edx
+     7ef:       48 89 75 80             mov    %rsi,-0x80(%rbp)
+        if (file->f_flags & O_DIRECT)
+     7f3:       89 d0                   mov    %edx,%eax
+     7f5:       c1 e8 06                shr    $0x6,%eax
+     7f8:       83 e0 10                and    $0x10,%eax
+                res |= IOCB_DIRECT;
+        if ((file->f_flags & O_DSYNC) || IS_SYNC(file->f_mapping->host))
+     7fb:       89 c1                   mov    %eax,%ecx
+     7fd:       81 c9 00 00 02 00       or     $0x20000,%ecx
+     803:       f6 c6 40                test   $0x40,%dh
+     806:       0f 45 c1                cmovne %ecx,%eax
+                res |= IOCB_DSYNC;
+     809:       f6 c6 10                test   $0x10,%dh
+     80c:       75 18                   jne    826 <new_sync_read+0x66>
+     80e:       48 8b 8f d8 00 00 00    mov    0xd8(%rdi),%rcx
+     815:       48 8b 09                mov    (%rcx),%rcx
+     818:       48 8b 71 28             mov    0x28(%rcx),%rsi
+     81c:       f6 46 50 10             testb  $0x10,0x50(%rsi)
+     820:       0f 84 e2 00 00 00       je     908 <new_sync_read+0x148>
+        if (file->f_flags & __O_SYNC)
+     826:       83 c8 02                or     $0x2,%eax
+                res |= IOCB_SYNC;
+        return res;
+     829:       89 c1                   mov    %eax,%ecx
+     82b:       83 c9 04                or     $0x4,%ecx
+     82e:       81 e2 00 00 10 00       and    $0x100000,%edx
 
-diff --git a/Documentation/ABI/testing/sysfs-bus-pci-devices-pvpanic b/Documentation/ABI/testing/sysfs-bus-pci-devices-pvpanic
-index 57d014a2c339..4750cfa0af2b 100644
---- a/Documentation/ABI/testing/sysfs-bus-pci-devices-pvpanic
-+++ b/Documentation/ABI/testing/sysfs-bus-pci-devices-pvpanic
-@@ -5,3 +5,10 @@ Description:
- 		Read-only attribute. Capabilities of pvpanic device
- 		which are supported by QEMU.
- 		Format: %s.
-+
-+What:          /sys/devices/pci0000:00/*/QEMU0001:00/events
-+Date:          Jan 2021
-+Contact:       zhenwei pi <pizhenwei@bytedance.com>
-+Description:
-+               RW attribute. Set/get which features in-use.
-+               Format: %x.
-diff --git a/drivers/misc/pvpanic.c b/drivers/misc/pvpanic.c
-index c2f6a9e866b3..07a008e15bd2 100644
---- a/drivers/misc/pvpanic.c
-+++ b/drivers/misc/pvpanic.c
-@@ -19,8 +19,31 @@
- #include <uapi/misc/pvpanic.h>
- 
- static void __iomem *base;
-+static unsigned int events = PVPANIC_PANICKED | PVPANIC_CRASH_LOADED;
- static unsigned int capability = PVPANIC_PANICKED | PVPANIC_CRASH_LOADED;
- 
-+static ssize_t events_show(struct device *dev,  struct device_attribute *attr, char *buf)
-+{
-+	return sprintf(buf, "%x\n", events);
-+}
-+
-+static ssize_t events_store(struct device *dev,  struct device_attribute *attr,
-+			    const char *buf, size_t count)
-+{
-+	unsigned int tmp;
-+	int err;
-+
-+	err = kstrtouint(buf, 16, &tmp);
-+	if (err)
-+		return err;
-+
-+	events = tmp;
-+
-+	return count;
-+
-+}
-+static DEVICE_ATTR_RW(events);
-+
- static ssize_t capability_show(struct device *dev,
- 			       struct device_attribute *attr, char *buf)
- {
-@@ -32,6 +55,7 @@ static DEVICE_ATTR_RO(capability);
- 
- static struct attribute *pvpanic_dev_attrs[] = {
- 	&dev_attr_capability.attr,
-+	&dev_attr_events.attr,
- 	NULL
- };
- ATTRIBUTE_GROUPS(pvpanic_dev);
-@@ -43,7 +67,7 @@ MODULE_LICENSE("GPL");
- static void
- pvpanic_send_event(unsigned int event)
- {
--	if (event & capability)
-+	if (event & capability & events)
- 		iowrite8(event, base);
- }
- 
--- 
-2.25.1
+We could optimise this by, eg, checking for (__O_SYNC | O_DIRECT |
+O_APPEND) and returning 0 if none of them are set, since they're all
+pretty rare.  It might be better to maintain an f_iocb_flags in the
+struct file and just copy that unconditionally.  We'd need to remember
+to update it in fcntl(F_SETFL), but I think that's the only place.
 
+
+> If we go with the "read" method, there's just:
+> vfs_read		- 0x160 bytes
+> nvfs_read		- 0x200 bytes
+> 
+> > Is it worth, eg adding an iov_iter
+> > type that points to a single buffer instead of a single-member iov?
+
+>      6.57%  pread    [nvfs]            [k] nvfs_rw_iter_locked
+>      2.31%  pread    [kernel.vmlinux]  [k] new_sync_read
+>      1.89%  pread    [kernel.vmlinux]  [k] iov_iter_advance
+>      1.24%  pread    [nvfs]            [k] nvfs_rw_iter
+>      0.29%  pread    [kernel.vmlinux]  [k] iov_iter_init
+
+>      2.71%  pread    [nvfs]            [k] nvfs_read
+
+> Note that if we sum the percentage of nvfs_iter_locked, new_sync_read, 
+> iov_iter_advance, nvfs_rw_iter, we get 12.01%. On the other hand, in the 
+> second trace, nvfs_read consumes just 2.71% - and it replaces 
+> functionality of all these functions.
+> 
+> That is the reason for that 10% degradation with read_iter.
+
+You seem to be focusing on your argument for "let's just permit
+filesystems to implement both ->read and ->read_iter".  My suggestion
+is that we need to optimise the ->read_iter path, but to do that we need
+to know what's expensive.
+
+nvfs_rw_iter_locked() looks very complicated.  I suspect it can
+be simplified.  Of course new_sync_read() needs to be improved too,
+as do the other functions here, but fully a third of the difference
+between read() and read_iter() is the difference between nvfs_read()
+and nvfs_rw_iter_locked().
