@@ -2,21 +2,21 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2429A2F0A16
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Jan 2021 23:51:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 31D692F0A2B
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Jan 2021 23:54:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727243AbhAJWuj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Jan 2021 17:50:39 -0500
-Received: from foss.arm.com ([217.140.110.172]:39080 "EHLO foss.arm.com"
+        id S1727626AbhAJWwF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Jan 2021 17:52:05 -0500
+Received: from foss.arm.com ([217.140.110.172]:39078 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727169AbhAJWuh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1727203AbhAJWuh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Sun, 10 Jan 2021 17:50:37 -0500
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 976EF143D;
-        Sun, 10 Jan 2021 14:49:16 -0800 (PST)
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 249C31474;
+        Sun, 10 Jan 2021 14:49:18 -0800 (PST)
 Received: from ewhatever.cambridge.arm.com (ewhatever.cambridge.arm.com [10.1.197.1])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 48CEB3F719;
-        Sun, 10 Jan 2021 14:49:15 -0800 (PST)
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id CA1F63F719;
+        Sun, 10 Jan 2021 14:49:16 -0800 (PST)
 From:   Suzuki K Poulose <suzuki.poulose@arm.com>
 To:     linux-arm-kernel@lists.infradead.org
 Cc:     coresight@lists.linaro.org, mathieu.poirier@linaro.org,
@@ -24,9 +24,9 @@ Cc:     coresight@lists.linaro.org, mathieu.poirier@linaro.org,
         leo.yan@linaro.org, linux-kernel@vger.kernel.org,
         jonathan.zhouwen@huawei.com, catalin.marinas@arm.com,
         Suzuki K Poulose <suzuki.poulose@arm.com>
-Subject: [PATCH v7 09/28] coresight: etm4x: Make offset available for sysfs attributes
-Date:   Sun, 10 Jan 2021 22:48:31 +0000
-Message-Id: <20210110224850.1880240-10-suzuki.poulose@arm.com>
+Subject: [PATCH v7 10/28] coresight: etm4x: Add commentary on the registers
+Date:   Sun, 10 Jan 2021 22:48:32 +0000
+Message-Id: <20210110224850.1880240-11-suzuki.poulose@arm.com>
 X-Mailer: git-send-email 2.24.1
 In-Reply-To: <20210110224850.1880240-1-suzuki.poulose@arm.com>
 References: <20210110224850.1880240-1-suzuki.poulose@arm.com>
@@ -36,175 +36,82 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Some of the ETM management registers are not accessible via
-system instructions. Thus we need to filter accesses to these
-registers depending on the access mechanism for the ETM at runtime.
-The driver can cope with this for normal operation, by regular
-checks. But the driver also exposes them via sysfs, which now
-needs to be removed.
+As we are about define a switch..case table for individual register
+access by offset for implementing the system instruction support,
+document the possible set of registers for each group to make
+it easier to correlate.
 
-So far, we have used the generic coresight sysfs helper macros
-to export a given device register, defining a "show" operation
-per register. This is not helpful to filter the files at runtime,
-based on the access.
-
-In order to do this dynamically, we need to filter the attributes
-by offsets and hard coded "show" functions doesn't make this easy.
-Thus, switch to extended attributes, storing the offset in the scratch
-space. This allows us to implement filtering based on the offset and
-also saves us some text size. This will be later used for determining
-a given attribute must be "visible" via sysfs.
-
-Cc: Mathieu Poirier <mathieu.poirier@linaro.org>
 Cc: Mike Leach <mike.leach@linaro.org>
+Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
 Signed-off-by: Suzuki K Poulose <suzuki.poulose@arm.com>
 ---
-New patch in v7
+Changes since v3
+ - Fix commit description spelling mistake (Mathieu)
 ---
- .../coresight/coresight-etm4x-sysfs.c         | 115 +++++++++---------
- 1 file changed, 57 insertions(+), 58 deletions(-)
+ drivers/hwtracing/coresight/coresight-etm4x.h | 21 ++++++++++++-------
+ 1 file changed, 13 insertions(+), 8 deletions(-)
 
-diff --git a/drivers/hwtracing/coresight/coresight-etm4x-sysfs.c b/drivers/hwtracing/coresight/coresight-etm4x-sysfs.c
-index fce9df16bfb5..ddbfeb24fc3f 100644
---- a/drivers/hwtracing/coresight/coresight-etm4x-sysfs.c
-+++ b/drivers/hwtracing/coresight/coresight-etm4x-sysfs.c
-@@ -2331,9 +2331,8 @@ static void do_smp_cross_read(void *data)
- 	reg->data = etm4x_relaxed_read32(&reg->csdev->access, reg->offset);
- }
- 
--static u32 etmv4_cross_read(const struct device *dev, u32 offset)
-+static u32 etmv4_cross_read(const struct etmv4_drvdata *drvdata, u32 offset)
- {
--	struct etmv4_drvdata *drvdata = dev_get_drvdata(dev);
- 	struct etmv4_reg reg;
- 
- 	reg.offset = offset;
-@@ -2347,69 +2346,69 @@ static u32 etmv4_cross_read(const struct device *dev, u32 offset)
- 	return reg.data;
- }
- 
--#define coresight_etm4x_cross_read(name, offset)			\
--	coresight_simple_func(struct etmv4_drvdata, etmv4_cross_read,	\
--			      name, offset)
--
--coresight_etm4x_cross_read(trcpdcr, TRCPDCR);
--coresight_etm4x_cross_read(trcpdsr, TRCPDSR);
--coresight_etm4x_cross_read(trclsr, TRCLSR);
--coresight_etm4x_cross_read(trcauthstatus, TRCAUTHSTATUS);
--coresight_etm4x_cross_read(trcdevid, TRCDEVID);
--coresight_etm4x_cross_read(trcdevtype, TRCDEVTYPE);
--coresight_etm4x_cross_read(trcpidr0, TRCPIDR0);
--coresight_etm4x_cross_read(trcpidr1, TRCPIDR1);
--coresight_etm4x_cross_read(trcpidr2, TRCPIDR2);
--coresight_etm4x_cross_read(trcpidr3, TRCPIDR3);
--coresight_etm4x_cross_read(trcoslsr, TRCOSLSR);
--coresight_etm4x_cross_read(trcconfig, TRCCONFIGR);
--coresight_etm4x_cross_read(trctraceid, TRCTRACEIDR);
-+static inline u32 coresight_etm4x_attr_to_offset(struct device_attribute *attr)
-+{
-+	struct dev_ext_attribute *eattr;
-+
-+	eattr = container_of(attr, struct dev_ext_attribute, attr);
-+	return (u32)(unsigned long)eattr->var;
-+}
-+
-+static ssize_t coresight_etm4x_reg_show(struct device *dev,
-+					struct device_attribute *d_attr,
-+					char *buf)
-+{
-+	u32 val, offset;
-+	struct etmv4_drvdata *drvdata = dev_get_drvdata(dev->parent);
-+
-+	offset = coresight_etm4x_attr_to_offset(d_attr);
-+
-+	pm_runtime_get_sync(dev->parent);
-+	val = etmv4_cross_read(drvdata, offset);
-+	pm_runtime_put_sync(dev->parent);
-+
-+	return scnprintf(buf, PAGE_SIZE, "0x%x\n", val);
-+}
-+
-+#define coresight_etm4x_reg(name, offset)				\
-+	&((struct dev_ext_attribute[]) {				\
-+	   {								\
-+		__ATTR(name, 0444, coresight_etm4x_reg_show, NULL),	\
-+		(void *)(unsigned long)offset				\
-+	   }								\
-+	})[0].attr.attr
- 
- static struct attribute *coresight_etmv4_mgmt_attrs[] = {
--	&dev_attr_trcoslsr.attr,
--	&dev_attr_trcpdcr.attr,
--	&dev_attr_trcpdsr.attr,
--	&dev_attr_trclsr.attr,
--	&dev_attr_trcconfig.attr,
--	&dev_attr_trctraceid.attr,
--	&dev_attr_trcauthstatus.attr,
--	&dev_attr_trcdevid.attr,
--	&dev_attr_trcdevtype.attr,
--	&dev_attr_trcpidr0.attr,
--	&dev_attr_trcpidr1.attr,
--	&dev_attr_trcpidr2.attr,
--	&dev_attr_trcpidr3.attr,
-+	coresight_etm4x_reg(trcpdcr, TRCPDCR),
-+	coresight_etm4x_reg(trcpdsr, TRCPDSR),
-+	coresight_etm4x_reg(trclsr, TRCLSR),
-+	coresight_etm4x_reg(trcauthstatus, TRCAUTHSTATUS),
-+	coresight_etm4x_reg(trcdevid, TRCDEVID),
-+	coresight_etm4x_reg(trcdevtype, TRCDEVTYPE),
-+	coresight_etm4x_reg(trcpidr0, TRCPIDR0),
-+	coresight_etm4x_reg(trcpidr1, TRCPIDR1),
-+	coresight_etm4x_reg(trcpidr2, TRCPIDR2),
-+	coresight_etm4x_reg(trcpidr3, TRCPIDR3),
-+	coresight_etm4x_reg(trcoslsr, TRCOSLSR),
-+	coresight_etm4x_reg(trcconfig, TRCCONFIGR),
-+	coresight_etm4x_reg(trctraceid, TRCTRACEIDR),
- 	NULL,
- };
- 
--coresight_etm4x_cross_read(trcidr0, TRCIDR0);
--coresight_etm4x_cross_read(trcidr1, TRCIDR1);
--coresight_etm4x_cross_read(trcidr2, TRCIDR2);
--coresight_etm4x_cross_read(trcidr3, TRCIDR3);
--coresight_etm4x_cross_read(trcidr4, TRCIDR4);
--coresight_etm4x_cross_read(trcidr5, TRCIDR5);
--/* trcidr[6,7] are reserved */
--coresight_etm4x_cross_read(trcidr8, TRCIDR8);
--coresight_etm4x_cross_read(trcidr9, TRCIDR9);
--coresight_etm4x_cross_read(trcidr10, TRCIDR10);
--coresight_etm4x_cross_read(trcidr11, TRCIDR11);
--coresight_etm4x_cross_read(trcidr12, TRCIDR12);
--coresight_etm4x_cross_read(trcidr13, TRCIDR13);
--
- static struct attribute *coresight_etmv4_trcidr_attrs[] = {
--	&dev_attr_trcidr0.attr,
--	&dev_attr_trcidr1.attr,
--	&dev_attr_trcidr2.attr,
--	&dev_attr_trcidr3.attr,
--	&dev_attr_trcidr4.attr,
--	&dev_attr_trcidr5.attr,
-+	coresight_etm4x_reg(trcidr0, TRCIDR0),
-+	coresight_etm4x_reg(trcidr1, TRCIDR1),
-+	coresight_etm4x_reg(trcidr2, TRCIDR2),
-+	coresight_etm4x_reg(trcidr3, TRCIDR3),
-+	coresight_etm4x_reg(trcidr4, TRCIDR4),
-+	coresight_etm4x_reg(trcidr5, TRCIDR5),
- 	/* trcidr[6,7] are reserved */
--	&dev_attr_trcidr8.attr,
--	&dev_attr_trcidr9.attr,
--	&dev_attr_trcidr10.attr,
--	&dev_attr_trcidr11.attr,
--	&dev_attr_trcidr12.attr,
--	&dev_attr_trcidr13.attr,
-+	coresight_etm4x_reg(trcidr8, TRCIDR8),
-+	coresight_etm4x_reg(trcidr9, TRCIDR9),
-+	coresight_etm4x_reg(trcidr10, TRCIDR10),
-+	coresight_etm4x_reg(trcidr11, TRCIDR11),
-+	coresight_etm4x_reg(trcidr12, TRCIDR12),
-+	coresight_etm4x_reg(trcidr13, TRCIDR13),
- 	NULL,
- };
- 
+diff --git a/drivers/hwtracing/coresight/coresight-etm4x.h b/drivers/hwtracing/coresight/coresight-etm4x.h
+index b6854f6fd666..3c2b49ffabc8 100644
+--- a/drivers/hwtracing/coresight/coresight-etm4x.h
++++ b/drivers/hwtracing/coresight/coresight-etm4x.h
+@@ -45,13 +45,13 @@
+ #define TRCVDSACCTLR			0x0A4
+ #define TRCVDARCCTLR			0x0A8
+ /* Derived resources registers */
+-#define TRCSEQEVRn(n)			(0x100 + (n * 4))
++#define TRCSEQEVRn(n)			(0x100 + (n * 4)) /* n = 0-2 */
+ #define TRCSEQRSTEVR			0x118
+ #define TRCSEQSTR			0x11C
+ #define TRCEXTINSELR			0x120
+-#define TRCCNTRLDVRn(n)			(0x140 + (n * 4))
+-#define TRCCNTCTLRn(n)			(0x150 + (n * 4))
+-#define TRCCNTVRn(n)			(0x160 + (n * 4))
++#define TRCCNTRLDVRn(n)			(0x140 + (n * 4)) /* n = 0-3 */
++#define TRCCNTCTLRn(n)			(0x150 + (n * 4)) /* n = 0-3 */
++#define TRCCNTVRn(n)			(0x160 + (n * 4)) /* n = 0-3 */
+ /* ID registers */
+ #define TRCIDR8				0x180
+ #define TRCIDR9				0x184
+@@ -60,7 +60,7 @@
+ #define TRCIDR12			0x190
+ #define TRCIDR13			0x194
+ #define TRCIMSPEC0			0x1C0
+-#define TRCIMSPECn(n)			(0x1C0 + (n * 4))
++#define TRCIMSPECn(n)			(0x1C0 + (n * 4)) /* n = 1-7 */
+ #define TRCIDR0				0x1E0
+ #define TRCIDR1				0x1E4
+ #define TRCIDR2				0x1E8
+@@ -69,9 +69,12 @@
+ #define TRCIDR5				0x1F4
+ #define TRCIDR6				0x1F8
+ #define TRCIDR7				0x1FC
+-/* Resource selection registers */
++/*
++ * Resource selection registers, n = 2-31.
++ * First pair (regs 0, 1) is always present and is reserved.
++ */
+ #define TRCRSCTLRn(n)			(0x200 + (n * 4))
+-/* Single-shot comparator registers */
++/* Single-shot comparator registers, n = 0-7 */
+ #define TRCSSCCRn(n)			(0x280 + (n * 4))
+ #define TRCSSCSRn(n)			(0x2A0 + (n * 4))
+ #define TRCSSPCICRn(n)			(0x2C0 + (n * 4))
+@@ -81,11 +84,13 @@
+ #define TRCPDCR				0x310
+ #define TRCPDSR				0x314
+ /* Trace registers (0x318-0xEFC) */
+-/* Comparator registers */
++/* Address Comparator registers n = 0-15 */
+ #define TRCACVRn(n)			(0x400 + (n * 8))
+ #define TRCACATRn(n)			(0x480 + (n * 8))
++/* Data Value Comparator Value registers, n = 0-7 */
+ #define TRCDVCVRn(n)			(0x500 + (n * 16))
+ #define TRCDVCMRn(n)			(0x580 + (n * 16))
++/* ContextID/Virtual ContextID comparators, n = 0-7 */
+ #define TRCCIDCVRn(n)			(0x600 + (n * 8))
+ #define TRCVMIDCVRn(n)			(0x640 + (n * 8))
+ #define TRCCIDCCTLR0			0x680
 -- 
 2.24.1
 
