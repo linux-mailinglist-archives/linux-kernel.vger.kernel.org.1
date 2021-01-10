@@ -2,56 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB7992F0710
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Jan 2021 13:15:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C20792F0719
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Jan 2021 13:16:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726398AbhAJMOr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Jan 2021 07:14:47 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52076 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726069AbhAJMOr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Jan 2021 07:14:47 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5C660238E1;
-        Sun, 10 Jan 2021 12:14:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1610280846;
-        bh=g9ViYPHPt0K15PWlJKJmyOcucEq5NZqkJRHOLX01QgQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=X3HNgh+IZJxoRkYjWez7bfhbAAx+BFCwsnElstNtRIFZGdcwgsgPaH89PHMAoPKLj
-         9QxkGemoCaMJBlz+f97KC1esYxIJ+XFgmr6ewZP5KjZBIo62BEtFhXyOJ5VgYgE5HL
-         uqAxgDdOoG7lbe9pMCua7hva4UWcGUNs/+h9L9o9Z34GCgtK2ExillKon44W2BqnhQ
-         GtWntpACaH7dkCRd1ouFPdfyEKH8kiChRfuZwak7f/TfpZsFCLs2+nfQss/h792T0e
-         HL1cUKioHhGRXxlXgFkaM7rY/Sgma+Nl1AvAnwi2rtJJB1hU5+xpN3YVDlyYZVjtl3
-         5DKwWboDbXTXg==
-Date:   Sun, 10 Jan 2021 07:14:05 -0500
-From:   Sasha Levin <sashal@kernel.org>
-To:     Florian Fainelli <f.fainelli@gmail.com>
-Cc:     stable@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jan Kiszka <jan.kiszka@siemens.com>,
-        Kieran Bingham <kieran@ksquared.org.uk>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Leonard Crestez <leonard.crestez@nxp.com>,
-        =?iso-8859-1?Q?Andr=E9?= Draszik <git@andred.net>,
-        Du Changbin <changbin.du@gmail.com>
-Subject: Re: [stable 4.9.y 0/4] scripts/gdb Fixes for stable 4.9
-Message-ID: <20210110121405.GJ4035784@sasha-vm>
-References: <20210107225229.1502459-1-f.fainelli@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <20210107225229.1502459-1-f.fainelli@gmail.com>
+        id S1726511AbhAJMQQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Jan 2021 07:16:16 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41002 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726250AbhAJMQP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 10 Jan 2021 07:16:15 -0500
+Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 483FAC0617A2;
+        Sun, 10 Jan 2021 04:15:35 -0800 (PST)
+Received: by mail-pl1-x632.google.com with SMTP id t6so8056532plq.1;
+        Sun, 10 Jan 2021 04:15:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references;
+        bh=q8foebQUtGdCypSWJHLEUtXdb+11eXd3D5tTzSpdHi4=;
+        b=vNDO9XhNgi/jOXglfVW3ZDrJ5XjA2pAAJAQldBivQ6k/3l0t/ppYVQf1WyZRo7D+Hz
+         yTpy3C5ucWyI0VaCiJ3riJ2WkfebApRChkHJjaRXPdU5ke5SpEbHFCeXKy7HNxgQUShj
+         Nt+veaMh37f22kyJdF49JHLJSIdg/c4QOnhzLsiuIK+51luEOEtYZoJcXLUJE+K2ZsMC
+         o4aeb9hdQB7ROZMI/vD85fp5OQ6nfw8rerbgnKqrEYfxbSiU5CNIUAI75M7vsl9i+EPn
+         EdBeXtGNzID7aurrJFumDCc6Jd5xLhxXA5eVtcsbroX69D8EM3BcricRUP+a7ANu7Tvd
+         X58A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references;
+        bh=q8foebQUtGdCypSWJHLEUtXdb+11eXd3D5tTzSpdHi4=;
+        b=Re4ZqaBEE4LIalq82ox0nRIKlgrHj6YPAYynaof5K1p2kR/i3hPbzzFI9immMQU7qV
+         BppnD6Zb88uXooSmHZbi3hoE/5MH4XyX1DxdfghK3k8jF+nnkJST4CcSDTTOgpGieLXi
+         CsH9Gc1wOgxz/b0dZfHGRNVZCCY5t/DIDUKvKXCJrOShTI7KFY6w82aD2M98thHFZD6B
+         C4zXvrsgoMzxFvhkTOfRNlH9QsbwGeLyvMcMrEgyXfJyspDClA85sDW0vS5wIFsXHzIf
+         3EcyjYX6xb7Wd166tMny8K9G/silLES4GEtcDCXJ2rMxmJ/wU3J5/TPflFAcPWE49x9M
+         S6YA==
+X-Gm-Message-State: AOAM533ZjUOrhr8960PsnwnpJL48tdLlcSq5IPUDM5KCy1jNpkz0xr+X
+        HX1BZ5lre2gGClBxyWYM4O8YnhcuURIAq5BP
+X-Google-Smtp-Source: ABdhPJy2YzfzC41j6G3vg4QRgtbHlF/H61TP8HB26CIho8E4kTDY1jTU3xlowlN1CWMlCMlTo96GgQ==
+X-Received: by 2002:a17:902:228:b029:da:6be8:ee22 with SMTP id 37-20020a1709020228b02900da6be8ee22mr12244804plc.44.1610280934403;
+        Sun, 10 Jan 2021 04:15:34 -0800 (PST)
+Received: from localhost.localdomain ([2405:201:600d:a089:381d:ba42:3c3c:81ce])
+        by smtp.googlemail.com with ESMTPSA id y5sm10959791pjt.42.2021.01.10.04.15.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 10 Jan 2021 04:15:33 -0800 (PST)
+From:   Aditya Srivastava <yashsri421@gmail.com>
+To:     linux-wireless@vger.kernel.org
+Cc:     pkshih@realtek.com, kvalo@codeaurora.org, davem@davemloft.net,
+        kuba@kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        lukas.bulwahn@gmail.com, yashsri421@gmail.com
+Subject: [PATCH 0/5] rtlwifi: fix bool comparison in expressions
+Date:   Sun, 10 Jan 2021 17:45:20 +0530
+Message-Id: <20210110121525.2407-1-yashsri421@gmail.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <3c121981-1468-fc9d-7813-483246066cc4@lwfinger.net>
+References: <3c121981-1468-fc9d-7813-483246066cc4@lwfinger.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Jan 07, 2021 at 02:52:25PM -0800, Florian Fainelli wrote:
->Hi Greg, Sasha,
->
->This series contains some scripts/gdb/ fixes that are already present in
->newer stable kernels.
+This patch series fixes the bool comparison in conditional expressions
+for all the drivers in rtlwifi.
 
-Queued up, thanks!
+There are certain conditional expressions in rtlwifi drivers, where a
+boolean variable is compared with true/false, in forms such as
+(foo == true) or (false != bar), which does not comply with checkpatch.pl
+(CHECK: BOOL_COMPARISON), according to which boolean variables should be
+themselves used in the condition, rather than comparing with true/false
+
+E.g., in drivers/net/wireless/realtek/rtlwifi/rtl8188ee/dm.c,
+"if (mac->act_scanning == true)" can be replaced with
+"if (mac->act_scanning)"
+
+Fix all such expressions with the bool variables appropriately for all
+the drivers in rtlwifi
+
+* The changes made are compile tested.
+* The patches apply perfectly on next-20210108
+
+Aditya Srivastava (5):
+  rtlwifi: rtl_pci: fix bool comparison in expressions
+  rtlwifi: rtl8192c-common: fix bool comparison in expressions
+  rtlwifi: rtl8188ee: fix bool comparison in expressions
+  rtlwifi: rtl8192se: fix bool comparison in expressions
+  rtlwifi: rtl8821ae: fix bool comparison in expressions
+
+ drivers/net/wireless/realtek/rtlwifi/ps.c                 | 4 ++--
+ drivers/net/wireless/realtek/rtlwifi/rtl8188ee/dm.c       | 8 ++++----
+ drivers/net/wireless/realtek/rtlwifi/rtl8188ee/hw.c       | 4 ++--
+ drivers/net/wireless/realtek/rtlwifi/rtl8192c/dm_common.c | 4 ++--
+ drivers/net/wireless/realtek/rtlwifi/rtl8192se/hw.c       | 4 ++--
+ drivers/net/wireless/realtek/rtlwifi/rtl8821ae/phy.c      | 8 ++++----
+ 6 files changed, 16 insertions(+), 16 deletions(-)
 
 -- 
-Thanks,
-Sasha
+2.17.1
+
