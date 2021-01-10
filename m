@@ -2,127 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 550702F0900
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Jan 2021 19:17:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DC7FA2F08FF
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Jan 2021 19:17:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726787AbhAJSQp convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Sun, 10 Jan 2021 13:16:45 -0500
-Received: from mout.kundenserver.de ([217.72.192.74]:47291 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726250AbhAJSQp (ORCPT
+        id S1726618AbhAJSQG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Jan 2021 13:16:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32854 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726250AbhAJSQF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Jan 2021 13:16:45 -0500
-Received: from linux-e202.suse.de ([87.156.29.153]) by
- mrelayeu.kundenserver.de (mreue106 [212.227.15.183]) with ESMTPSA (Nemesis)
- id 1Mr8O8-1kD0WB40Jy-00oGN1; Sun, 10 Jan 2021 19:12:38 +0100
-From:   Fabian Vogt <fabian@ritter-vogt.de>
-To:     Daniel Tang <dt.tangr@gmail.com>, Arnd Bergmann <arnd@kernel.org>
-Cc:     Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Krzysztof Adamski <krzysztof.adamski@nokia.com>,
-        Oleksij Rempel <o.rempel@pengutronix.de>,
-        Baruch Siach <baruch@tkos.co.il>,
-        Russell King - ARM Linux <linux@armlinux.org.uk>,
-        Uwe =?ISO-8859-1?Q?Kleine=2DK=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>, Jamie Iles <jamie@jamieiles.com>,
-        Barry Song <song.bao.hua@hisilicon.com>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Jonas Jensen <jonas.jensen@gmail.com>,
-        Marc Gonzalez <marc.w.gonzalez@free.fr>,
-        Hartley Sweeten <hsweeten@visionengravers.com>,
-        Lubomir Rintel <lkundrak@v3.sk>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Shawn Guo <shawnguo@kernel.org>, Alex Elder <elder@linaro.org>,
-        Alexander Shiyan <shc_work@mail.ru>,
-        Koen Vandeputte <koen.vandeputte@ncentric.com>,
-        Hans Ulli Kroll <ulli.kroll@googlemail.com>,
-        Vladimir Zapolskiy <vz@mleia.com>,
-        Wei Xu <xuwei5@hisilicon.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        Mark Salter <msalter@redhat.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Geert Uytterhoeven <geert+renesas@glider.be>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Subject: Re: Old platforms: bring out your dead
-Date:   Sun, 10 Jan 2021 19:12:24 +0100
-Message-ID: <1702853.1557dWfJA4@linux-e202.suse.de>
-In-Reply-To: <CAK8P3a0o=1KjPtp0Ah8Afe5vvG1b72+77HRFh4Z06HUGwN6+Ew@mail.gmail.com>
-References: <CAK8P3a2VW8T+yYUG1pn1yR-5eU4jJXe1+M_ot6DAvfr2KyXCzQ@mail.gmail.com> <67171E13-6786-4B44-A8C2-3302963B055F@gmail.com> <CAK8P3a0o=1KjPtp0Ah8Afe5vvG1b72+77HRFh4Z06HUGwN6+Ew@mail.gmail.com>
+        Sun, 10 Jan 2021 13:16:05 -0500
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44931C061786;
+        Sun, 10 Jan 2021 10:15:25 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=O+uPm9U2WIb+ZW77mowWQe4OrWj3S34uU87jdrERcxY=; b=hGFI+0OTX1DkDmIAEEmDzCpkS
+        fOr2Yqf4oaKMbSPGw70B6JLLg+hPe291w2jW/SunnICFKGMFLnERrBVq3+Y7mwztnLFyR5bMlyyuu
+        7MkWWCOjHcmEYsI6hnOJfYaP3KobpSq1873mjnRtZ0TFbOdPsoaV1oMMCK7X4Yr3l5O7dsIPyEiD/
+        +OqG3lpDV8xn0xTZAf9+GEAZBPeGfNGejuGFcbVIfnnaa6bKhI5Th1B0W6P/GAz5gNt3ssvq4LTKj
+        OEjK7l7C4uXo3SoIMId40N2IKmeJtf15ggjwwpKwmtulCkbxavw1MHFsl4kqZyfX6ysgpapXPq5gl
+        XIXIdoCqg==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:46252)
+        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1kyfFJ-00065a-AM; Sun, 10 Jan 2021 18:15:21 +0000
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1kyfFH-0004QE-8l; Sun, 10 Jan 2021 18:15:19 +0000
+Date:   Sun, 10 Jan 2021 18:15:19 +0000
+From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
+To:     stefanc@marvell.com
+Cc:     netdev@vger.kernel.org, thomas.petazzoni@bootlin.com,
+        davem@davemloft.net, nadavh@marvell.com, ymarkman@marvell.com,
+        linux-kernel@vger.kernel.org, kuba@kernel.org, mw@semihalf.com,
+        andrew@lunn.ch, atenart@kernel.org
+Subject: Re: [PATCH RFC net-next  14/19] net: mvpp2: add ethtool flow control
+ configuration support
+Message-ID: <20210110181519.GJ1551@shell.armlinux.org.uk>
+References: <1610292623-15564-1-git-send-email-stefanc@marvell.com>
+ <1610292623-15564-15-git-send-email-stefanc@marvell.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-Content-Type: text/plain; charset="UTF-8"
-X-Provags-ID: V03:K1:FZfLnsMqM+HOkFR0A8Q+7hD0yEN6vJJp7umyK7UxHG2SFbYGYqe
- prdJag+bq2hU69eIOwNmBTT4vgJPuhGBNVxvuFE/d/xc3TK0NlHfYK3/AbsEtp7ERFWCgHh
- oeteavuGRbdJA8qmy3CJCrDABvp8xwdHwVTivZ83/VthdOYNS4VD8xikOz/5n7HaRM08BC0
- Rh7tAL3GZueJ+hxcFuyVA==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:vSk/mHijXw4=:tQjamyoZ/Bl2bxHBtUPnQy
- Tf6sDTYDvd4imhZ+OoEbEKp6+Q57Ben7GYfkyK3KB14DEqrp166WQZDxzxcxFvTCxCJ+wITS8
- y48uvjBfwbsOHcc4lxDaZu+kD8K1HWhWN8kIUbevevUOgTUxPkyxgvan+A0p0gWabG0YgoodA
- wNPmylbeRb4hwrsGhGdFBCdgjRgFPdIYD+Cd343vgd0nDKsiGh8xdDWurhiFtjX/JeOriQCLa
- rreNPrQ9rbrNmykF8ncUYShuoKFwepqP/Lpq3HJ60hSMH6Smx17vEw+hQgqamCM8OqVGnY/Z4
- SidCTK+SMWopl6NWLbfZiptvng4HJQvO+T8lAo6ylN/YFXP6D3xlQYYEMyYvXSEtwyoh8WYUy
- xlJe5sqqiyNMjLDaOXMCbbACAhCpv+oo4nRuHFM8fDcLop3v18H9KSagb/sxBTUBu9zezY1tl
- xuTTsPGAQg==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1610292623-15564-15-git-send-email-stefanc@marvell.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Sender: Russell King - ARM Linux admin <linux@armlinux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Sun, Jan 10, 2021 at 05:30:18PM +0200, stefanc@marvell.com wrote:
+> @@ -5373,6 +5402,30 @@ static int mvpp2_ethtool_set_pause_param(struct net_device *dev,
+>  					 struct ethtool_pauseparam *pause)
+>  {
+>  	struct mvpp2_port *port = netdev_priv(dev);
+> +	int i;
+> +
+> +	if (pause->tx_pause && port->priv->global_tx_fc) {
+> +		port->tx_fc = true;
+> +		mvpp2_rxq_enable_fc(port);
+> +		if (port->priv->percpu_pools) {
+> +			for (i = 0; i < port->nrxqs; i++)
+> +				mvpp2_bm_pool_update_fc(port, &port->priv->bm_pools[i], true);
+> +		} else {
+> +			mvpp2_bm_pool_update_fc(port, port->pool_long, true);
+> +			mvpp2_bm_pool_update_fc(port, port->pool_short, true);
+> +		}
+> +
+> +	} else if (port->priv->global_tx_fc) {
+> +		port->tx_fc = false;
+> +		mvpp2_rxq_disable_fc(port);
+> +		if (port->priv->percpu_pools) {
+> +			for (i = 0; i < port->nrxqs; i++)
+> +				mvpp2_bm_pool_update_fc(port, &port->priv->bm_pools[i], false);
+> +		} else {
+> +			mvpp2_bm_pool_update_fc(port, port->pool_long, false);
+> +			mvpp2_bm_pool_update_fc(port, port->pool_short, false);
+> +		}
+> +	}
 
-Am Samstag, 9. Januar 2021, 23:20:48 CET schrieb Arnd Bergmann:
-> On Sat, Jan 9, 2021 at 1:06 AM Daniel Tang <dt.tangr@gmail.com> wrote:
-> >
-> > Hi Arnd,
-> >
-> > On 9 Jan 2021, at 9:55 am, Arnd Bergmann <arnd@kernel.org> wrote:
-> >
-> > * nspire -- added in 2013, no notable changes after 2015
+This doesn't look correct to me. This function is only called when
+ethtool -A is used to change the flow control settings. This is not
+the place to be configuring flow control, as flow control is
+negotiated with the link partner.
 
-Most of the platform is just the DT sources and some small drivers around it,
-so it's actually fairly low maintenance. So far the migration away from
-panel-simple in 2019
-(https://lore.kernel.org/linux-arm-kernel/20190805085847.25554-1-linus.walleij@linaro.org)
-was the biggest required change so far.
+The final resolved flow control settings are available in
+mvpp2_mac_link_up() via the tx_pause and rx_pause parameters.
 
-> > I believe this is still in active use. I’ve CC’d Fabian into this thread who’s
-> > probably in a better position to respond to this.
-> 
-> Ok, moving it to the "keep around for now list" as well, to be on the
-> safe side.
+What also concerns me is whether flow control is supported in the
+existing driver at all, given this patch set. If it isn't supported
+without the firmware's help, then we should _not_ be negotiating flow
+control with the link partner unless we actually support it, so the
+Pause and Asym_Pause bits in mvpp2_phylink_validate() should be
+cleared.
 
-Thanks!
-
-> Would either of you already have a guess for how long it makes
-> sense to update kernels on it?
-> 
-> I see that this is one of the more limited platforms with just 32MB
-> of RAM (64MB in case of CX), and kernels only get more bloated over
-> time, so I expect at some point you will be stuck with running old
-> software.
-
-The kernel overhead isn't actually that bad. I just built today's 2ff90100ace8
-and booted it with a busybox-based initrd. free -m reports:
-total used free shared buffers
-   58   12   46      0       0
-
-Relatively speaking, still mostly unused ;-) The stock OS actually uses more!
-With 32MiB, the situation is definitely worse, but still manageable. Should
-that change in the future, dropping just the Classic/CM variants would be a
-possible option, but that still seems far enough away.
-
-> Wikipedia tells me that new models came out recently. Are you
-> planning to add support for those as well?
-
-Yes, someone from the community actually managed to boot Linux on a CX II-T,
-and I'm hoping to get that upstreamed soon. Most of the hardware changes are
-supported by drivers already and so this is mainly just another device tree.
-
-Cheers,
-Fabian
-
->       Arnd
-
-
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
