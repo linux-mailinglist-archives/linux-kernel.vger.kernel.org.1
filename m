@@ -2,81 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 713432F04B3
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Jan 2021 02:24:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D169C2F04BA
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Jan 2021 02:46:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726432AbhAJBYX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 9 Jan 2021 20:24:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43740 "EHLO
+        id S1726411AbhAJBow (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 9 Jan 2021 20:44:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48056 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726253AbhAJBYX (ORCPT
+        with ESMTP id S1726090AbhAJBov (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 9 Jan 2021 20:24:23 -0500
-Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C163BC061786
-        for <linux-kernel@vger.kernel.org>; Sat,  9 Jan 2021 17:23:42 -0800 (PST)
-Received: by mail-lf1-x12e.google.com with SMTP id b26so32361197lff.9
-        for <linux-kernel@vger.kernel.org>; Sat, 09 Jan 2021 17:23:42 -0800 (PST)
+        Sat, 9 Jan 2021 20:44:51 -0500
+Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77907C06179F
+        for <linux-kernel@vger.kernel.org>; Sat,  9 Jan 2021 17:44:05 -0800 (PST)
+Received: by mail-ej1-x62d.google.com with SMTP id ce23so19716108ejb.8
+        for <linux-kernel@vger.kernel.org>; Sat, 09 Jan 2021 17:44:05 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linux-foundation.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=IumjRJ1pkvNLOaocIO/t7RJ2KyYMIIvjOvzcmVtgrmQ=;
-        b=H4LtV0o+Xyo3cPEBi1guctN6qp95IQkZ1aPWndFoTe+dbz2nvefJkHbcEQzoRcFmKH
-         B8KYrASDjZNBM6KGhxTBg0YP3c12DAEEWZQ9YN6ZROxd8+V3JZtmTyJHSiY31sBH/bFT
-         BQHO1SZ1tX2X23C/T6Cry9I4h4E+86771BxaY=
+        bh=uBVkrWF/ITar/TCRB0GlVs8VwamJlUjk1ZeB4Qt+7CQ=;
+        b=OVfU5l5FRJKWzy0gPczQthTegFzC6xnQ2MOTRxvojatPuTnPfi539OuCVllS+6LMII
+         mhrWP++mZblQDRv00D8nSfg8WdwVc6kke9jo8QJ7hr0ToXIYuk2O0WtvxiMwSeaFiZNw
+         UU1h1bCjbfkAEabzFJuhnFGnSW/Hk4Fjjs9K8=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=IumjRJ1pkvNLOaocIO/t7RJ2KyYMIIvjOvzcmVtgrmQ=;
-        b=Aa4XASOliuTTErZfFZW8tG4ZCt34eOH9vcFajIPQkSLPlEwCFYz8EK7xy7TEIKQAz6
-         +I5iCRLlMSl4Xd+jxu84gLcAExuqTewLIWFTe9+81NJgAS1Krq0qG1JzPleLYodTMJ8l
-         +2RO0N622qcNkLsQ5IdaK9DfzM0p12kII7/AX5P7ikHLuXcoXNDGBo3x7e06JfJQcx88
-         SmHVVTxM0BoRzcu0pntsgj1MtjlTsisBWHqZ/YLpSzQUFjYyJUWIdkReU5/lFgjL4KxN
-         azTidPMaKLFi7XjSSSgsBfFkY+vVse4/L4D1UOy2a6o3HG7UvCp/mDOn+bw2SU/5jSAO
-         BLBQ==
-X-Gm-Message-State: AOAM532gyWIfQDj9Kh2xF6Q7iBN1GCHOqUSVaKk2G2N6QBo9fnuJJ3fp
-        r2BNqnI6HN2dDx7lyELeoZBQTryiK7klWg==
-X-Google-Smtp-Source: ABdhPJxbvpB3bpAU8ASwptos38H2UJgjp+5Yr6LcN3OiZpQVSNC2zas1zaYCD8w8xafCHXPw66y5Ww==
-X-Received: by 2002:a05:651c:1a9:: with SMTP id c9mr4745056ljn.189.1610241819874;
-        Sat, 09 Jan 2021 17:23:39 -0800 (PST)
-Received: from mail-lf1-f42.google.com (mail-lf1-f42.google.com. [209.85.167.42])
-        by smtp.gmail.com with ESMTPSA id v10sm2816132lji.130.2021.01.09.17.23.39
+        bh=uBVkrWF/ITar/TCRB0GlVs8VwamJlUjk1ZeB4Qt+7CQ=;
+        b=joP/+aKUtswpfa4O9hpk0y0g2DKUYCHwjPGjUjPWGX4QgwdTxmqNlu779qOmoz5CUC
+         ftA4kbM0bZ9+tVebpavaHb5MTpImhiZp0l0bIwMub8JsbfpY7rc8AsrlZTU4epsspZQx
+         yyeLu2k9P9+K+0sLtTId+ZCCYulu10X6TOClcs1wm9+59Fqub+UsfilEHYDBG9LN2ws6
+         KHgbgsjHS1smK7m/cJNFdKevOIeQUJNbZrZ7/C0RRSYAhE59jrkCQIdqn3UzmLntgDC0
+         496a3DHWfFlf04T89ZkWm01YKcan4alD4ryhHkUUfDUiiZGF/q12aqMms9+wZKUdAnEa
+         4U+A==
+X-Gm-Message-State: AOAM531rrxZvzalveafqfSsQ4ybicFzzM5t5+n8d1HGk+BHM32VzTVUi
+        OfggEYerT3X8OGv8QWXkI+FFIPOttaqK2A==
+X-Google-Smtp-Source: ABdhPJxM4nSRLyY6W1XiKMf3GwaqKQckRqXM+SDqfzq1Y9lGHE3b+pGz4zxnL2gDBeeh5IXrbOoUsw==
+X-Received: by 2002:a17:906:5e0d:: with SMTP id n13mr6664630eju.500.1610243043972;
+        Sat, 09 Jan 2021 17:44:03 -0800 (PST)
+Received: from mail-ej1-f48.google.com (mail-ej1-f48.google.com. [209.85.218.48])
+        by smtp.gmail.com with ESMTPSA id dk16sm5173420ejb.85.2021.01.09.17.44.03
         for <linux-kernel@vger.kernel.org>
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 09 Jan 2021 17:23:39 -0800 (PST)
-Received: by mail-lf1-f42.google.com with SMTP id a12so32381888lfl.6
-        for <linux-kernel@vger.kernel.org>; Sat, 09 Jan 2021 17:23:39 -0800 (PST)
-X-Received: by 2002:a2e:9b13:: with SMTP id u19mr4301062lji.48.1610241818737;
- Sat, 09 Jan 2021 17:23:38 -0800 (PST)
+        Sat, 09 Jan 2021 17:44:03 -0800 (PST)
+Received: by mail-ej1-f48.google.com with SMTP id g20so19812006ejb.1
+        for <linux-kernel@vger.kernel.org>; Sat, 09 Jan 2021 17:44:03 -0800 (PST)
+X-Received: by 2002:a19:f014:: with SMTP id p20mr4272695lfc.421.1610242645588;
+ Sat, 09 Jan 2021 17:37:25 -0800 (PST)
 MIME-Version: 1.0
-References: <CA+icZUUq9Skdt0ws7uqa3N9P5vwhQX6DrhfNxMvkoKMEbyWE-Q@mail.gmail.com>
-In-Reply-To: <CA+icZUUq9Skdt0ws7uqa3N9P5vwhQX6DrhfNxMvkoKMEbyWE-Q@mail.gmail.com>
+References: <20210110004435.26382-1-aarcange@redhat.com> <CAHk-=wghqNywtf=sRv_5FmG=+hPGqj=KWakw34tNeoZ1wPuaHg@mail.gmail.com>
+ <CAHk-=wj5=1DKbQut1-21EwQbMSghNL3KOSd82rNrBhuG9+eekA@mail.gmail.com>
+In-Reply-To: <CAHk-=wj5=1DKbQut1-21EwQbMSghNL3KOSd82rNrBhuG9+eekA@mail.gmail.com>
 From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Sat, 9 Jan 2021 17:23:22 -0800
-X-Gmail-Original-Message-ID: <CAHk-=whNpzmU0UQ+dXU-A8tAyiKEzfrX-ax_80UmM77Ehjzy1A@mail.gmail.com>
-Message-ID: <CAHk-=whNpzmU0UQ+dXU-A8tAyiKEzfrX-ax_80UmM77Ehjzy1A@mail.gmail.com>
-Subject: Re: depmod fixes for linux-stable releases
-To:     Sedat Dilek <sedat.dilek@gmail.com>
-Cc:     Sasha Levin <sashal@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+Date:   Sat, 9 Jan 2021 17:37:09 -0800
+X-Gmail-Original-Message-ID: <CAHk-=wg3zWaXaKN1N=qTWiuLFvEz3e_d5oZSgOEfbSOrXJvVtQ@mail.gmail.com>
+Message-ID: <CAHk-=wg3zWaXaKN1N=qTWiuLFvEz3e_d5oZSgOEfbSOrXJvVtQ@mail.gmail.com>
+Subject: Re: [PATCH 0/1] mm: restore full accuracy in COW page reuse
+To:     Andrea Arcangeli <aarcange@redhat.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Linux-MM <linux-mm@kvack.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-stable@vger.kernel.org
+        Yu Zhao <yuzhao@google.com>, Andy Lutomirski <luto@kernel.org>,
+        Peter Xu <peterx@redhat.com>,
+        Pavel Emelyanov <xemul@openvz.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Will Deacon <will@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Hugh Dickins <hughd@google.com>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Matthew Wilcox <willy@infradead.org>,
+        Oleg Nesterov <oleg@redhat.com>, Jann Horn <jannh@google.com>,
+        Kees Cook <keescook@chromium.org>,
+        John Hubbard <jhubbard@nvidia.com>,
+        Leon Romanovsky <leonro@nvidia.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>, Jan Kara <jack@suse.cz>,
+        Kirill Tkhai <ktkhai@virtuozzo.com>,
+        Nadav Amit <nadav.amit@gmail.com>, Jens Axboe <axboe@kernel.dk>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Ack, I think 436e980e2ed5 ("kbuild: don't hardcode depmod path") is
-stable material even if it doesn't fix a bug.
+On Sat, Jan 9, 2021 at 5:19 PM Linus Torvalds
+<torvalds@linux-foundation.org> wrote:
+>
+> And no, I didn't make the UFFDIO_WRITEPROTECT code take the mmap_sem
+> for writing. For whoever wants to look at that, it's
+> mwriteprotect_range() in mm/userfaultfd.c and the fix is literally to
+> turn the read-lock (and unlock) into a write-lock (and unlock).
 
-Not only does the fix for that commit not make sense without the
-commit in the first place, but any environment that sets depmod
-somewhere else might well be an environment that still wants stable
-kernels.
+Oh, and if it wasn't obvious, we'll have to debate what to do with
+trying to mprotect() a pinned page. Do we just ignore the pinned page
+(the way my clear_refs patch did)? Or do we turn it into -EBUSY? Or
+what?
 
-It may not be the traditional case, but there's little reason for the
-kernel build to force that /sbin/depmod location.
+So it's not *just* the locking that needs to be fixed. But just take a
+look at that suggested clear_refs patch of mine - it sure isn't
+complicated.
 
-               Linus
+              Linus
