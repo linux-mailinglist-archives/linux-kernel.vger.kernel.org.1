@@ -2,153 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE9022F081F
-	for <lists+linux-kernel@lfdr.de>; Sun, 10 Jan 2021 16:36:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B29242F0825
+	for <lists+linux-kernel@lfdr.de>; Sun, 10 Jan 2021 16:42:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727342AbhAJPfE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 10 Jan 2021 10:35:04 -0500
-Received: from mx0b-0016f401.pphosted.com ([67.231.156.173]:17690 "EHLO
-        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727175AbhAJPe6 (ORCPT
+        id S1726697AbhAJPg2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 10 Jan 2021 10:36:28 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55360 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726418AbhAJPgY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 10 Jan 2021 10:34:58 -0500
-Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
-        by mx0b-0016f401.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 10AFPV9T022752;
-        Sun, 10 Jan 2021 07:32:11 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-type; s=pfpt0220; bh=ncb9QbrBugW37aDFKBIROi0JWgSAf8S9BmfsOxURfXI=;
- b=PJfr1G8JcX8rhQm3s13Pja2U+NwbIo14e12u/dQsYE1XyUjz0zWDrDQoLkn8DzYbqdq3
- m3zrRsNvmMuZO0E67CpOpTwPVtT7hjuT5zrHi7u8zJ2LBQVgbMbCqaNs9Y6IdzbsBXpZ
- mt0BOkxQjOnI5wscnsw5cHhS0I0ThHdDpQYDwGh6bGtKT4X00PnfNCCDYYiOpJYP8oZZ
- mgBHNMuPEYfVsLSCR75CINouLUbfUnedegPVPphtzbhqLQuUwcyYP/88qkNbovJWUQoo
- YYu8J/nj850fV7kmkUjxJzDFas1rSQlR73X4zMcfP9ELEPlmm1ptNGX8am22mGR30ewc ZQ== 
-Received: from dc5-exch02.marvell.com ([199.233.59.182])
-        by mx0b-0016f401.pphosted.com with ESMTP id 35ycvphvf3-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-        Sun, 10 Jan 2021 07:32:11 -0800
-Received: from SC-EXCH01.marvell.com (10.93.176.81) by DC5-EXCH02.marvell.com
- (10.69.176.39) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Sun, 10 Jan
- 2021 07:32:09 -0800
-Received: from DC5-EXCH02.marvell.com (10.69.176.39) by SC-EXCH01.marvell.com
- (10.93.176.81) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Sun, 10 Jan
- 2021 07:32:08 -0800
-Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH02.marvell.com
- (10.69.176.39) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Sun, 10 Jan 2021 07:32:08 -0800
-Received: from stefan-pc.marvell.com (stefan-pc.marvell.com [10.5.25.21])
-        by maili.marvell.com (Postfix) with ESMTP id B7FAD3F703F;
-        Sun, 10 Jan 2021 07:32:05 -0800 (PST)
-From:   <stefanc@marvell.com>
-To:     <netdev@vger.kernel.org>
-CC:     <thomas.petazzoni@bootlin.com>, <davem@davemloft.net>,
-        <nadavh@marvell.com>, <ymarkman@marvell.com>,
-        <linux-kernel@vger.kernel.org>, <stefanc@marvell.com>,
-        <kuba@kernel.org>, <linux@armlinux.org.uk>, <mw@semihalf.com>,
-        <andrew@lunn.ch>, <rmk+kernel@armlinux.org.uk>,
-        <atenart@kernel.org>
-Subject: [PATCH RFC net-next  19/19] net: mvpp2: add TX FC firmware check
-Date:   Sun, 10 Jan 2021 17:30:23 +0200
-Message-ID: <1610292623-15564-20-git-send-email-stefanc@marvell.com>
-X-Mailer: git-send-email 1.9.1
-In-Reply-To: <1610292623-15564-1-git-send-email-stefanc@marvell.com>
-References: <1610292623-15564-1-git-send-email-stefanc@marvell.com>
+        Sun, 10 Jan 2021 10:36:24 -0500
+Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52E6BC061786
+        for <linux-kernel@vger.kernel.org>; Sun, 10 Jan 2021 07:35:44 -0800 (PST)
+Received: by mail-ej1-x629.google.com with SMTP id n26so21186085eju.6
+        for <linux-kernel@vger.kernel.org>; Sun, 10 Jan 2021 07:35:44 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=naEHngvAfFaWU0qNEz4MsGy5SHtJ4Fc1pZjtZRQ/R7A=;
+        b=SKhejTHVrnmvxoi96I8oG2caR7ZKzOGKmjQdwbghyOYz7IJgq4zgEnak1joV2x0XwI
+         RSsMuDayu4oe6gizQfKuvkl0EouzfypKjiq6nAVWS9i87pd0th4TUG7zK/BQYEMnpmCH
+         VN/VpDZnDVAR7MqpaPgXovwhPKdUdV6YTdz6oQafe+LBMHGuxV1UDWIftC0Rqze1wCfk
+         65RC/VZ4g/Jc0O9wzQOnfVm3JPoqnisJ/ETz/61rdTAdjiOBsRkKCycWbmw8uIK3dlAk
+         Kd0YnnI/cdheVRrRTEvaXOa5ShTyVJ8xKR6RiTVse5K3TXb/tJGHJ7H59qVg5kIV9SMP
+         uNiQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=naEHngvAfFaWU0qNEz4MsGy5SHtJ4Fc1pZjtZRQ/R7A=;
+        b=qnkb3c8LTzfvgEHTp+EPgz0Tgmx+Xvwno9o6i8YsbkTDBdy76ZDSwbluBkfh/6GDcq
+         3MFjQzn3/vA2ypgrETdh9j9NXdlKX/FXcRytZ6fupKeJOPMnVao+q1aMhqx8ZJcJ32lB
+         ZGw8jRPFllCFlQdXwZB0v38v8Xxjgs4LXy7EnOOtUMNSkdwD16ro7pi/P6ur7Elk6w+D
+         o+zmgiqCGqWiz2Xk3Us1Uu+Y9VN/uKuRT4vbeMdbq5Xg2Ard0j6Fm9Ctwzdsu7sXk3Lr
+         uy7y1/+WLwv6/zd4nF61E6AQJKtTXQsOdAvMCdAykjtPk+XuOEmJyZtaUUtlU8tauLlG
+         3Smg==
+X-Gm-Message-State: AOAM531uEuYraliy3JZTvNVAl3iap+bNfGVN6bkobGT0ADtAf/QAulkS
+        SCTg/DE7pUqQtPmd2T/gX7E=
+X-Google-Smtp-Source: ABdhPJzxnXR0a06rh8Z9nCUeV/eMkVI5BFMVGBdQyXJx+wfhB71QZy4bXa+FxYNnU6mD+fRauHWPLA==
+X-Received: by 2002:a17:906:1393:: with SMTP id f19mr8083162ejc.431.1610292942807;
+        Sun, 10 Jan 2021 07:35:42 -0800 (PST)
+Received: from localhost (ip1f10d3e8.dynamic.kabel-deutschland.de. [31.16.211.232])
+        by smtp.gmail.com with ESMTPSA id a2sm5852660ejt.46.2021.01.10.07.35.41
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Sun, 10 Jan 2021 07:35:41 -0800 (PST)
+Date:   Sun, 10 Jan 2021 16:35:32 +0100
+From:   Oliver Graute <oliver.graute@gmail.com>
+To:     Fabio Estevam <festevam@gmail.com>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Marco Felsch <m.felsch@pengutronix.de>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        DRI mailing list <dri-devel@lists.freedesktop.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v1] drm/panel: simple: add SGD GKTW70SDAD1SD
+Message-ID: <20210110153532.GA7264@ripley>
+References: <1608381853-18582-1-git-send-email-oliver.graute@gmail.com>
+ <20210108214313.GA7979@ripley>
+ <CAOMZO5AXgeGYt4+4NMBRL1Hm-9M4X2DngdEBsJEAHq8+MRhQgQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2021-01-09_13:2021-01-07,2021-01-09 signatures=0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAOMZO5AXgeGYt4+4NMBRL1Hm-9M4X2DngdEBsJEAHq8+MRhQgQ@mail.gmail.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Stefan Chulski <stefanc@marvell.com>
+On 09/01/21, Fabio Estevam wrote:
+> Hi Oliver,
+> 
+> On Fri, Jan 8, 2021 at 7:24 PM Oliver Graute <oliver.graute@gmail.com> wrote:
+> >
+> > On 19/12/20, Oliver Graute wrote:
+> > > Add support for the Solomon Goldentek Display Model: GKTW70SDAD1SD
+> > > to panel-simple.
+> > >
+> > > The panel spec from Variscite can be found at:
+> > > https://www.variscite.com/wp-content/uploads/2017/12/VLCD-CAP-GLD-RGB.pdf
+> >
+> > some clue what bus_format and bus_flags I have to use?
+> >
+> > [   42.505156] panel-simple panel-lcd: Specify missing bus_flags
+> > [   42.511090] panel-simple panel-lcd: Specify missing bus_format
+> > [   42.615131] mxsfb 21c8000.lcdif: Cannot connect bridge: -517
+> 
+> Does this patch work?
+> https://pastebin.com/raw/diTMVsh8
 
-Patch check that TX FC firmware is running in CM3.
-If not, global TX FC would be disabled.
+the first two errors are gone. But I still get this:
 
-Signed-off-by: Stefan Chulski <stefanc@marvell.com>
----
- drivers/net/ethernet/marvell/mvpp2/mvpp2.h      |  1 +
- drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c | 39 ++++++++++++++++----
- 2 files changed, 33 insertions(+), 7 deletions(-)
+[   42.387107] mxsfb 21c8000.lcdif: Cannot connect bridge: -517
 
-diff --git a/drivers/net/ethernet/marvell/mvpp2/mvpp2.h b/drivers/net/ethernet/marvell/mvpp2/mvpp2.h
-index 3451618..1a65f2c 100644
---- a/drivers/net/ethernet/marvell/mvpp2/mvpp2.h
-+++ b/drivers/net/ethernet/marvell/mvpp2/mvpp2.h
-@@ -829,6 +829,7 @@
- 
- #define MSS_THRESHOLD_STOP	768
- #define MSS_THRESHOLD_START	1024
-+#define MSS_FC_MAX_TIMEOUT	5000
- 
- /* RX buffer constants */
- #define MVPP2_SKB_SHINFO_SIZE \
-diff --git a/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c b/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c
-index 3607382..1690142 100644
---- a/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c
-+++ b/drivers/net/ethernet/marvell/mvpp2/mvpp2_main.c
-@@ -946,6 +946,34 @@ void mvpp2_bm_pool_update_fc(struct mvpp2_port *port,
- 	spin_unlock_irqrestore(&port->priv->mss_spinlock, flags);
- }
- 
-+static int mvpp2_enable_global_fc(struct mvpp2 *priv)
-+{
-+	int val, timeout = 0;
-+
-+	/* Enable global flow control. In this stage global
-+	 * flow control enabled, but still disabled per port.
-+	 */
-+	val = mvpp2_cm3_read(priv, MSS_FC_COM_REG);
-+	val |= FLOW_CONTROL_ENABLE_BIT;
-+	mvpp2_cm3_write(priv, MSS_FC_COM_REG, val);
-+
-+	/* Check if Firmware running and disable FC if not*/
-+	val |= FLOW_CONTROL_UPDATE_COMMAND_BIT;
-+	mvpp2_cm3_write(priv, MSS_FC_COM_REG, val);
-+
-+	while (timeout < MSS_FC_MAX_TIMEOUT) {
-+		val = mvpp2_cm3_read(priv, MSS_FC_COM_REG);
-+
-+		if (!(val & FLOW_CONTROL_UPDATE_COMMAND_BIT))
-+			return 0;
-+		usleep_range(10, 20);
-+		timeout++;
-+	}
-+
-+	priv->global_tx_fc = false;
-+	return -EOPNOTSUPP;
-+}
-+
- /* Release buffer to BM */
- static inline void mvpp2_bm_pool_put(struct mvpp2_port *port, int pool,
- 				     dma_addr_t buf_dma_addr,
-@@ -7307,7 +7335,7 @@ static int mvpp2_probe(struct platform_device *pdev)
- 	struct resource *res;
- 	void __iomem *base;
- 	int i, shared;
--	int err, val;
-+	int err;
- 
- 	priv = devm_kzalloc(&pdev->dev, sizeof(*priv), GFP_KERNEL);
- 	if (!priv)
-@@ -7533,13 +7561,10 @@ static int mvpp2_probe(struct platform_device *pdev)
- 		goto err_port_probe;
- 	}
- 
--	/* Enable global flow control. In this stage global
--	 * flow control enabled, but still disabled per port.
--	 */
- 	if (priv->global_tx_fc && priv->hw_version != MVPP21) {
--		val = mvpp2_cm3_read(priv, MSS_FC_COM_REG);
--		val |= FLOW_CONTROL_ENABLE_BIT;
--		mvpp2_cm3_write(priv, MSS_FC_COM_REG, val);
-+		err = mvpp2_enable_global_fc(priv);
-+		if (err)
-+			dev_warn(&pdev->dev, "CM3 firmware not running, TX FC disabled\n");
- 	}
- 
- 	mvpp2_dbgfs_init(priv, pdev->name);
--- 
-1.9.1
+The panel is still off perhaps I miss something else. 
 
+Best Regards,
+
+Oliver
